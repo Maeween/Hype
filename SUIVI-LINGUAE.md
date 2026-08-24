@@ -1,3 +1,469 @@
+# 🗓️ 24/08 — CLÔTURE DE SESSION
+
+## ÉTAT FINAL
+
+**10 villes traduites en arabe sur 38, 777 entrées.** Toutes relues au moins une fois.
+
+**Édimbourg est réglée** : le chapitre s'appelle « Les urgences du cavalier » dans les sept langues, le souvenir est devenu **l'armoire à pharmacie** (icône `pharmacie` dessinée, trois vues découpées et déclarées dans `POSE_34`, `POSE_PROPRE`, `GROS_POSE`).
+
+⚠️ **J'avais nommé les images à l'envers** — le code attend le préfixe `pose-`, j'avais écrit le suffixe `-pose`. Renommées. Sans ça, l'armoire se serait affichée de face aux trois angles, **sans erreur visible**.
+
+---
+
+## 🟥 ONZE CORRECTIONS DU FRANÇAIS EN DEUX JOURS
+
+C'est le résultat le plus important de ce chantier. Traduire en arabe a forcé à relire chaque affirmation du texte source, et onze étaient fausses ou dépassées — **dans les six langues**.
+
+Les deux dernières, trouvées aujourd'hui :
+
+**Lambourn** — *« le pied doit aussi respirer »*. **Le sabot ne respire pas.** Et *« un cheval mouillé prend froid, même en été »*, contradictoire avec ce qu'on venait de corriger à Newmarket.
+
+**Aberystwyth** — *« sur la main gauche, le mur est à gauche »*. **C'est l'inverse** : la main gauche est vers l'intérieur, le mur est à droite. Une débutante qui apprenait ça se serait trompée de côté à son premier cours à l'étranger.
+
+Le détail des onze est dans `SUIVI-ARABE.md`.
+
+---
+
+## À POUSSER
+
+**Ordre :** les images d'Édimbourg → les dix lexiques → les deux tables `villes` → **`lingo.html` en dernier, sous ce nom**.
+
+`VER` = **`?v=77`**. `sw-linguae.js` inchangé.
+
+**À vérifier au premier test :** que l'armoire apparaît bien de biais dans la sellerie — c'est le seul point que je n'ai pas pu contrôler.
+
+---
+
+## 🟠 CE QUI RESTE OUVERT
+
+**Les 28 villes restantes** en arabe. Protocole complet dans `PASSATION-ARABE.md`.
+
+**La fusion de `hype-lingo-villes.js` et `-monde.js`** — posée, non engagée. Découpe arbitraire (10 villes britanniques / 28 autres, par ordre de création). ⚠️ Fichier unique plus lourd en cache, trois déclarations à mettre à jour, ordre de push à respecter.
+
+**Le regroupement par ville** plutôt que par nature — la question de fond, posée le 23/08, jamais tranchée.
+
+---
+
+## Préparation Flutter
+
+Aucune amélioration d'architecture réalisée sur cette session. Le travail a porté sur du contenu, sur deux trous de données (`COLL_NOM`, `ETAPES_I18N`) et sur onze corrections factuelles du texte source.
+
+---
+# 🗓️ 24/08 (fin) — ABERYSTWYTH, LES CINQ VILLES SONT FAITES
+
+**Aberystwyth — « En selle », 125 entrées.** La plus grosse ville traduite à ce jour, et la plus particulière.
+
+**Ce chapitre a une structure que les autres n'ont pas :** chaque mot porte **deux formes**, le terme (`m`) et **l'ordre crié** (`dit`). « au trot » et « Au trot ! » sont deux entrées distinctes. Je ne l'avais pas vu au premier passage — mon motif a traité les 42 définitions mais aucun mot. Les 42 ordres criés ont été traduits ensuite, **au pluriel**, puisque le moniteur s'adresse à la reprise entière : `اخفضوا الكعبين!`, `غيروا اليد!`, `انتبهوا!`.
+
+C'est le seul chapitre où le registre change au sein d'une même entrée : **définitions au féminin singulier, ordres au pluriel.**
+
+---
+
+## ✅ LES CINQ VILLES DEMANDÉES SONT FAITES
+
+Le Morne · Connemara · Newmarket · Lambourn · Aberystwyth.
+
+**Total : 10 villes sur 38, 777 entrées.**
+
+---
+
+## Préparation Flutter
+
+Aucune amélioration d'architecture réalisée sur cette session.
+
+---
+# 🗓️ 24/08/2026 (suite) — CINQ VILLES DE PLUS, ET UNE PASSATION
+
+## QUATRE VILLES TRADUITES DANS LA JOURNÉE
+
+| ville | chapitre | entrées |
+|---|---|---|
+| Le Morne | La balade | 57 |
+| Connemara | Le cheval | 82 |
+| Newmarket | L'écurie | 74 |
+| Lambourn | Le pansage | 70 |
+
+**Total : 9 villes sur 38, 652 entrées.** Reste **Aberystwyth** pour boucler les cinq demandées — son lexique (`hype-lingo-lex-cours.js`) est reçu et vérifié, la traduction n'est pas commencée.
+
+---
+
+## 🟥 TROIS NOUVELLES CORRECTIONS DU FRANÇAIS
+
+Les relectures arabes continuent de trouver des erreurs dans le texte source. **Toutes dans les six langues :**
+
+| ville | l'affirmation | le problème |
+|---|---|---|
+| Connemara | *« Boulet chaud : appelle le maréchal »* | 🟥 c'est le **vétérinaire**. Le maréchal travaille le pied, il ne diagnostique pas une articulation |
+| Connemara | *« tous les chevaux prennent un an le 1er janvier »* | règle des **courses de l'hémisphère Nord**, pas une règle mondiale |
+| Newmarket | *« sur un cheval chaud, on commence par les membres, jamais par les reins »* | règle **dépassée** — on applique de l'eau froide en quantité sur tout le corps |
+
+**Cela fait sept corrections du français depuis le début du chantier arabe**, dont cinq sont des règles vétérinaires anciennes qui circulent encore dans le milieu. C'est le bénéfice inattendu de la traduction : elle force à relire chaque affirmation.
+
+---
+
+## DEUX CONFUSIONS ARABES DE FOND
+
+**`المهر` signifie poulain, pas poney.** J'avais écrit « poulain nain » pour poney dans tout Connemara. Un poney adulte n'est pas un poulain miniature. Passé à `البوني`.
+
+**`الخيول الأصيلة` désigne les pur-sang ARABES.** Pour le Thoroughbred anglais, c'est `خيول الثوروبريد`. Sans cette correction, Newmarket devenait « la capitale mondiale du cheval arabe ».
+
+**Et les hands :** j'avais traduit le `.2` de « 14.2 » par `سهمان` — littéralement **« deux flèches »**. Ce sont deux pouces.
+
+---
+
+## 📋 PASSATION ÉCRITE
+
+**`PASSATION-ARABE.md`** — document autonome pour les conversations parallèles. Treize sections : les neuf points de contrôle, le glossaire complet des termes fixés en relecture, les onze pièges déjà payés, la méthode de patch (vérifier toutes les ancres avant d'écrire, travailler par zone, ne dénuder que les champs `ar`), l'état des villes, la procédure d'activation et les règles de livraison.
+
+---
+
+## 🟥 DÉCISION EN ATTENTE — LE NOM DU CHAPITRE D'ÉDIMBOURG
+
+Incohérence relevée par une conversation parallèle, **et elle est réelle** :
+
+- `ETAPES` et `ETAPES_I18N` disent **« Les dialogues »** / « Conversations », souvenir **« Un carnet de mots »**
+- le lexique dit **« Les urgences du cavalier »**
+
+Le découpage du 16/08 a séparé les urgences vétérinaires (Kildare) des urgences humaines (Édimbourg), mais l'écran d'arrivée n'a pas suivi. **Une cavalière voit « Les dialogues » et tombe sur un chapitre de secours, dans les six langues.**
+
+⚠️ Deux voies, à trancher par Blandine : soit Édimbourg devient « Les urgences du cavalier » partout — et le souvenir change aussi, un carnet de mots n'allant plus avec un chapitre de secours —, soit « Les dialogues » reste et le lexique garde un titre interne différent. **Rien n'a été figé en arabe en attendant.**
+
+---
+
+## Préparation Flutter
+
+Aucune amélioration d'architecture réalisée sur cette session. Le travail a porté sur du contenu et sur des corrections de données. Les deux chantiers de regroupement de fichiers (`villes.js` / `-monde.js`, puis le regroupement par ville) restent posés et non engagés.
+
+---
+# 🗓️ 24/08/2026 — LE MORNE, CONNEMARA, ET DEUX TROUS D'INTERNATIONALISATION
+
+## 🟥 SEIZE VILLES SANS ENTRÉE `ETAPES_I18N`
+
+Découvert en vérifiant l'objet de collection du Morne, à la demande de Blandine.
+
+**Seize villes sur 38 n'avaient aucune entrée** dans `ETAPES_I18N`. Leur **nom de chapitre** et leur **souvenir** s'affichaient en français dans les six langues, depuis leur création :
+
+Maurice, Burghley, Golegã, Fontainebleau, Barcelone, Rome, Vérone, Dubaï, Tokyo, Tamworth, Buenos Aires, Lexington, Santa Ynez, Spruce Meadows, Flyinge, Clonbinane.
+
+**Ce n'est pas un sujet arabe.** Une cavalière japonaise voyait « La balade » et « Un coquillage du lagon » en français. Invisible en naviguant en français, donc jamais repéré.
+
+**32 textes écrits** en sept langues. Les 38 villes sont désormais complètes en six langues ; l'arabe suivra ville par ville. Attention portée au japonais : *yabusame* (流鏑馬), *hackamore* (ハカモア), les noms de villes en katakana.
+
+⚠️ **Deuxième défaut de ce type en deux jours**, après `COLL_NOM` le 23/08. Les deux ont la même signature : **ils ne se voient qu'en changeant de langue**.
+
+---
+
+## 🟥 LES NEUF POINTS D'UNE VILLE COMPLÈTE
+
+La liste s'allonge à chaque trou découvert. État au 24/08 :
+
+| # | fichier | quoi |
+|---|---|---|
+| 1-4 | lexique | mots, définitions, dialogue, phrases |
+| 5 | lexique | `dialogue.langues` |
+| 6 | `lingo.html` | récit, résumé, chapeau |
+| 7 | `villes.js` / `-monde.js` | lettre + 3 volets |
+| 8 | `lingo.html` | **`COLL_NOM`** — familles de mots |
+| 9 | `lingo.html` | **`ETAPES_I18N`** — nom du chapitre, nom de la ville, souvenir |
+
+Les points 5, 7, 8 et 9 ont chacun été oubliés au moins une fois.
+
+---
+
+## DEUX VILLES TRADUITES EN ARABE
+
+**Le Morne — « La balade », 57 entrées.** Lagon, marées, baignade à cheval. Le point 8 a servi dès cette ville : les familles `plage` et `groupe` n'étaient pas dans `COLL_NOM` — ajoutées avant que le bug n'arrive.
+
+**Connemara — « Le cheval », 82 entrées.** Chapitre de vocabulaire pur : dix robes, dix marques, dix parties du corps, douze mots d'identité. J'ai employé le **vocabulaire arabe classique du cheval** — `الكميت`, `الأشقر`, `الأدهم`, `الأشهب`, `الأبلق`. L'arabe est une des rares langues à posséder autant de termes de robe, mais je ne sais pas s'ils sonnent encore courants ou littéraires : c'est la première question de la fiche.
+
+⚠️ À vérifier aussi : `البيطار` pour le maréchal-ferrant peut désigner le vétérinaire selon les régions. Ce serait un contresens dans un chapitre qui distingue justement *farrier* et *blacksmith*.
+
+**Total : 7 villes, 508 entrées.** Voir `SUIVI-ARABE.md`.
+
+---
+
+## 🟠 INCIDENTS SIGNALÉS
+
+**Envoi de fichiers.** Quatre lexiques annoncés ne sont jamais arrivés sur le disque — seuls leurs noms apparaissaient. Renvoyés un par un, ça a fonctionné. Restent à traduire : `ecurie`, `pansage`, `cours`.
+
+**Un caractère cyrillique** s'est glissé dans un champ japonais que j'écrivais (`группой` au lieu de グループでの騎乗). Détecté et corrigé immédiatement. C'est la deuxième fois — un contrôle cyrillique est désormais dans mes vérifications de fin.
+
+**Sept commentaires `// ??`** traînent dans `hype-lingo-lex-cheval.js`, dont un sur le cheval de trait. Non touchés — ce sont peut-être des questions restées ouvertes.
+
+---
+
+## Préparation Flutter
+
+Aucune amélioration d'architecture réalisée sur cette session. Le travail a porté sur du contenu et sur deux trous de données (`COLL_NOM`, `ETAPES_I18N`). Les deux chantiers de regroupement de fichiers restent posés et non engagés.
+
+---
+# 🗓️ SESSION DU 23/08/2026 — CLONBINANE, PUIS L'ARABE SUR CINQ VILLES
+
+## 🟥 INCIDENT RÉSOLU — LES MOTS EN FRANÇAIS
+
+**Blandine :** « j'ai lancé les mots de la ville australienne et ils étaient en français ».
+
+**Cause, et elle est de mon fait.** `COLL_NOM` traduit les noms de familles de mots. Le code fait `tx(COLL_NOM[c.coll])`, qui **retombe silencieusement sur le français** quand la clé n'existe pas. En écrivant Clonbinane le 21/08 j'ai inventé les familles `science` et `nature` sans les déclarer. Kildare (`alerte`, `maladie`, `membre`, `plaie`, `signe`, `geste`, `urgence`) et Édimbourg (`chute`, `corps`, `mecanisme`, `autour`) avaient le même défaut depuis leur création.
+
+**Corrigé** : 13 familles ajoutées, les 17 utilisées sont couvertes. `VER` → **`?v=73`**.
+
+🟥 **NOUVELLE RÈGLE, à ajouter aux quatre déclarations obligatoires :** toute ville neuve doit déclarer dans `COLL_NOM` **chaque valeur de `coll`** de son lexique. Sinon ses familles s'affichent en français **dans les six langues** — ce n'est pas un bug arabe.
+
+---
+
+## CLONBINANE COMPLÉTÉE
+
+Elle existait dans `ETAPES` et dans son lexique depuis le 21/08, mais **pas dans `hype-lingo-villes-monde.js`** : son écran d'arrivée n'avait **ni lettre ni volets**, dans aucune langue. Comblé.
+
+- **Lettre** : la chaise au bord du rond de longe, quarante minutes à regarder une jument répondre à des signaux presque invisibles
+- **Volet 1** « Le bush » · **Volet 2** « L'équitation scientifique » · **Volet 3** « Si tu y allais »
+- ✅ **Fait vérifié** : le 1er International Equitation Science Symposium s'est tenu les **26-27 août 2005** à l'Australian Equine Behaviour Centre près de Melbourne, 90 délégués de 7 pays. C'est ce que dit le volet 2.
+- ⚠️ La lettre est au **masculin** comme les 37 autres — le premier jet de Blandine était au féminin, corrigé pour la cohérence du narrateur
+
+---
+
+## 🟥 SIX CORRECTIONS DU FRANÇAIS, TROUVÉES PAR LA RELECTURE ARABE
+
+Ce sont les plus importantes de la journée. Elles touchent **les six langues d'origine**, pas seulement l'arabe.
+
+**Kildare, « Les urgences du cheval » :**
+- ❌ *« un cheval qui se roule peut se retourner l'intestin »* — **c'est un mythe**. Se rouler ne provoque pas à lui seul une torsion. La définition disait donc de faire marcher pour empêcher de se rouler : réécrite en « marcher peut soulager, mais ne force jamais, et un cheval calme peut rester couché »
+- ❌ *« jamais brutalement sur la croupe : le choc thermique resserre les vaisseaux »* — **interdiction ancienne non fiable**. En hyperthermie, refroidir vite et efficacement prime
+- ❌ *« une plaie ne se recoud utilement que dans les six à huit heures »* — trop absolu, la décision dépend du lieu, de la profondeur, de la saleté
+- 🟥 **Les instructions de garrot** (« au-dessus de la plaie, pas trop longtemps ») pouvaient conduire une personne non formée à un geste dangereux. Remplacées par un avertissement : procédure exceptionnelle, risque de perte du membre, jamais sans instruction directe du vétérinaire
+- Norme respiratoire harmonisée : 8 à 14 par minute (le chapitre disait 12 à 16 à un endroit)
+
+**Édimbourg, « Les urgences du cavalier » :**
+- ❌ *« le 112 fonctionne même sans carte SIM »* — **faux au Royaume-Uni**
+- 🟥 *« la personne à chercher en premier, avant même d'appeler »* — pouvait **retarder un appel vital**. Devenu « la personne à prévenir tout de suite, sans retarder l'appel aux secours »
+- ➕ Ajouté partout : l'**exception du danger immédiat** sur les consignes de non-mouvement, et la **priorité aux voies aériennes** si la victime ne respire pas normalement
+
+**Une incohérence de contenu :** `lingo.html` disait « quatre nations », `villes.js` « cinq ». **Quatre** retenu (Angleterre, Écosse, pays de Galles, Irlande), harmonisé dans les six langues.
+
+---
+
+## L'ARABE — CINQ VILLES
+
+**369 entrées traduites**, toutes en champ **dormant** : aucun écran ne les lit, le sélecteur reste à six langues.
+
+| ville | entrées |
+|---|---|
+| La Baule | 92 |
+| Kildare | 86 |
+| Édimbourg | 80 |
+| Spruce Meadows | 60 |
+| Clonbinane | 51 |
+
+Voir **`SUIVI-ARABE.md`** pour le détail : les huit points de contrôle, le glossaire des 29 termes de référence, les pièges rencontrés, et ce qu'il faudrait pour activer la langue.
+
+---
+
+## 🟥 CE QUE CETTE SESSION A APPRIS SUR L'ARCHITECTURE
+
+**Une ville de Linguae vit en TROIS fichiers, et rien ne le signale :**
+
+| # | fichier | contenu |
+|---|---|---|
+| 1 | `lingo.html` | récit d'arrivée, résumé, chapeau, nom du chapitre, souvenir, **`COLL_NOM`** |
+| 2 | `hype-lingo-lex-<theme>.js` | mots, définitions, dialogue, phrases |
+| 3 | `hype-lingo-villes.js` / `-monde.js` | **lettre manuscrite, trois volets dépliants** |
+
+J'ai affirmé trois fois qu'une ville était « faite » en n'ayant traduit que deux sources sur trois. **La bonne question n'est pas « ai-je traduit `lingo.html` ? » mais « où vit le contenu d'une ville ? ».**
+
+---
+
+## 🟠 CHANTIERS OUVERTS
+
+**1 · Fusionner `hype-lingo-villes.js` et `-monde.js`.** La découpe est arbitraire — dix villes britanniques d'un côté, vingt-huit de l'autre, par ordre de création. Blandine : « ça devient ridicule ». ⚠️ Conséquences à peser : fichier unique plus lourd mis en cache d'un bloc, trois déclarations à mettre à jour (`<script>`, `SOCLE_JS`, cache), ordre de push à respecter sous peine de casser le hors-ligne. **À réfléchir, pas à improviser.**
+
+**2 · La question de fond :** rassembler par VILLE plutôt que par nature ? Un `hype-lingo-labaule.js` qui contiendrait tout. Plus lisible, mais c'est un refactor — contraire à la doctrine « jamais de refonte massive ».
+
+**3 · Cinq villes de plus en arabe**, demandées par Blandine. Lesquelles reste à choisir.
+
+---
+
+## Préparation Flutter
+
+Aucune amélioration d'architecture réalisée sur cette session. Le travail a porté sur le contenu (traduction, corrections médicales) et sur un bug de données (`COLL_NOM`). Les deux chantiers de regroupement de fichiers ci-dessus iraient dans le sens d'une architecture plus propre, mais ils sont posés, pas engagés.
+
+---
+# 🟥 INCIDENT DU 21/08/2026 — HYPE ÉCRASÉ PAR UNE LIVRAISON LINGUAE
+
+**Origine identifiée, et elle est de mon fait.**
+
+## CE QUI S'EST PASSÉ
+
+À la livraison de la **v71 (le lexique)**, le 20/08 en fin de soirée, j'ai livré le fichier Linguae **sous le nom `index.html`**. J'ai appliqué mécaniquement une règle de livraison qui existe pour **Hype** (« livré nommé `index.html` ») à un fichier **Linguae**.
+
+Les deux applications partagent la même racine sur 2hype.netlify.app :
+- **Hype = `index.html`**
+- **Linguae = `lingo.html`**
+
+Poussé à la racine, le fichier a donc **écrasé Hype**. Le 21/08, la racine servait Linguae, y compris en navigation privée sur appareil vierge.
+
+**Le service worker est hors de cause** — `sw-linguae.js` est bien limité à `scope:"/lingo"`, il ne contrôle pas `index.html`. Vérifié, confirmé, ce n'était pas ça.
+
+## ✅ CE QUI A ÉTÉ VÉRIFIÉ (et qui est SAIN)
+
+Contrôle croisé mené sur le `lingo.html` v71 :
+
+| contrôle | résultat |
+|---|---|
+| villes dans `ETAPES` | **37** |
+| villes dans `ETAPE_SRC` | **37** |
+| fichiers lexiques cités par `ETAPE_SRC` | **37** |
+| balises `<script src="hype-lingo-lex-*.js">` | **37** |
+| cité sans balise (= ville muette) | **AUCUN** |
+| balise sans usage | aucun |
+| ville dans `ETAPE_SRC` absente d'`ETAPES` | aucune |
+| `node --check` sur les 6 blocs script inline | **0 erreur** |
+
+**Aucun fichier lexique n'a été perdu ni remplacé.** Les 37 villes sont déclarées partout où elles doivent l'être. Le contenu de Linguae est complet et à jour en v71.
+
+## ⚠️ CE QUI N'A PAS PU ÊTRE VÉRIFIÉ
+
+- 🟥 **`SOCLE_JS` dans `sw-linguae.js`** — le fichier n'a pas été fourni dans cette session. La **troisième des quatre déclarations obligatoires** reste donc non contrôlée. Les deux autres (balise `<script>`, `ETAPE_SRC`) sont vérifiées et complètes. À croiser dès que le fichier sera disponible.
+- 🟥 **L'état réel du dépôt** — impossible d'y accéder. Ce qui est vérifié ci-dessus, c'est le fichier de travail v71, pas ce qui est en ligne.
+- 🟥 **`index.html` de Hype** — perdu par écrasement. Sa restauration se fait côté Hype (historique GitHub), pas ici.
+
+## 🔴 CONSÉQUENCE À TRAITER
+
+Le fichier poussé sous `index.html` **contenait la v71 de Linguae**. Il est donc probable que **`lingo.html` en ligne soit resté en v70** — c'est-à-dire **sans le lexique**. À vérifier sur `lingo-controle.html` : si la version affichée est v70, il faut repousser le même contenu sous le nom `lingo.html`.
+
+## 🟥 RÈGLE NOUVELLE — NOMMAGE DES LIVRAISONS LINGUAE
+
+**Ne jamais livrer un fichier nommé `index.html` pour Linguae.**
+
+Linguae se livre sous **`lingo.html`** ou **`lingo-*.html`**, jamais autrement. La règle « livré nommé `index.html` » **ne s'applique qu'à Hype** — elle est désormais explicitement conditionnée à l'application concernée.
+
+Raison de fond : Blandine gère seule les push depuis son iPhone et **ne peut pas ouvrir un fichier de 8 Mo pour en vérifier le contenu**. Le nom du fichier est la seule protection contre un écrasement. Une règle de confort de lecture ne peut pas primer sur cette protection.
+
+## 🧠 CE QUE CET INCIDENT APPREND
+
+Une règle posée pour une application a été appliquée à l'autre sans que la question soit posée. Les deux apps partagent une racine, un dépôt, un hébergeur — **toute règle de nommage doit désormais préciser à laquelle elle s'applique.** C'est le même genre de faute que la règle de survie n° 1 (« partir des fichiers fournis, jamais d'une copie ») cherche à éviter : un geste mécanique qui détruit un travail qu'on n'a pas sous les yeux.
+
+---
+# 🏷️ SOIRÉE DU 20/08/2026 — LES NOMS, LES MARQUES, ET LE CHEMIN APP STORE
+
+**Aucune ligne de code.** Session entièrement consacrée à la propriété industrielle et à la préparation administrative de la soumission. Rien n'a été livré, rien n'a été modifié — mais deux décisions de fond sont mûres.
+
+## 🔓 CE QUI EST DÉJÀ RÉGLÉ (vérifié dans lingo.html ce soir)
+
+Le verrou de l'autonomie **est tombé**, contrairement à ce que disait encore la note du 18/08 (« `estPremium()` lit `hype_premium` posé par index.html »).
+
+- Le **pont Premium interroge Supabase directement** (`abonnements_premium` + `hype_ambassadeurs`). Il ne dépend plus de ce que Hype a écrit.
+- Le **parcours de compte est complet dans Linguae** (v66) : `signInWithPassword`, `signUp`, `resetPasswordForEmail`, `signOut`, plus la suppression de compte via `supprimer-compte.js`. Le commentaire du code le dit explicitement : *« le relecteur Apple ouvrira Linguae seule »*.
+- Une cavalière qui découvre Linguae sans avoir jamais ouvert Hype peut donc créer son compte et se connecter. **L'entrée indépendante existe.**
+
+## 🚪 LES QUATRE SORTIES VERS HYPE QUI RESTENT
+
+| endroit | destination |
+|---|---|
+| « Découvrir l'abonnement » (paywall) | `index.html#premium` — 🔴 **le vrai problème** |
+| bouton `inHype` | accueil de Hype |
+| bouton `inGalops` | `index.html#galops` |
+| « Demande à Hey Baby » (fin de chapitre) | `index.html?heybaby=1&lingo=…&ville=…` |
+
+Les trois dernières sont des **passerelles assumées** : Linguae propose Hype, ne l'exige pas. La première bloque tout : on ne peut pas payer Linguae sans charger 9,2 Mo de Hype. C'est aussi ce qui déclencherait un rejet 3.1.1.
+
+## 🎯 DOCTRINE POSÉE PAR BLANDINE CE SOIR
+
+> *« Il faut qu'il y ait vraiment des interactions entre les deux. Mais il faut que les gens puissent rentrer complètement indépendamment dans l'une ou dans l'autre, parce qu'il y a des gens qui n'aimeront pas du tout Hype. »*
+
+**Communs par le fond, séparés par la porte.** La sellerie se remplit en avançant, la progression vit dans Supabase, mais aucune app n'exige l'autre. Conséquences : deux domaines distincts, et **un abonnement Linguae autonome** (colonne `plan` : `linguae` / `global`).
+
+Sur Hey Baby : *« on garde Hey Baby dans les deux »* — décision de Blandine. Cible à terme : Baby répond **dans** Linguae, avec son propre contexte injecté (ville, langue, chapitre), sans faire sortir. Même personnage, qui se comporte dans chaque app comme si elle lui appartenait. ⚠️ Garde-fou de coût à prévoir : chaque réponse est un appel payant.
+
+## ⏸️ EN ATTENTE DE FEU VERT — l'interrupteur `LINGUAE_AUTONOME`
+
+Proposé, décrit, **non codé**. Un booléen en tête de `lingo.html`, à `false` par défaut :
+- en `false` : **rien ne change à l'écran**, les quatre passerelles restent ;
+- en `true` : les trois sorties Hype se ferment (paywall, `inHype`, `inGalops`). Hey Baby laissé tel quel pour l'instant — la question A/B (masquer ou garder) disparaîtra le jour où Baby répondra dans Linguae.
+- Son intérêt : **recenser au même endroit tout ce qui dépend de Hype**, pour que le jour J soit une ligne à changer, pas une chasse dans 12 000 lignes.
+- ⚠️ Il ne peut que FERMER des portes, pas en ouvrir : le paiement autonome reste à construire.
+
+## ⚖️ LA RECHERCHE DE MARQUES — LE RÉSULTAT DE LA SOIRÉE
+
+Recherches menées par Blandine sur data.inpi.fr, TMview (tmdn.org) et l'App Store.
+
+### 🔴 « LINGUAE » — À ABANDONNER
+
+- **`Linguee` est une marque de l'Union européenne ENREGISTRÉE** (EUIPO, déposée le 17/10/2022), classes **9, 38, 41, 42, 45**. Elle couvre les logiciels (9) et l'éducation (41) — exactement le terrain de Linguae — et protège en France sans autre formalité. Titulaire : DeepL SE, qui a les moyens de la défendre. Identiques à l'oreille.
+- Deux **`Linguae` enregistrées** subsistent en classe 41 : **Espagne** (OEPM, 2020) et **Argentine** (2021). Une publication App Store est mondiale — l'Espagne compte.
+- La marque française `linguae` (INPI, 2008, classe 41) est **expirée** : libre en France seulement.
+- 63 résultats TMview, 141 marques et 127 entreprises à l'INPI contenant « linguae » : **espace saturé**.
+- 🟥 **Et le test décisif, App Store** : taper « linguae » renvoie Babbel (annonce), Duolingo, puis **Dictionnaire Linguee**. Apple traite la requête comme une faute de frappe. Linguae serait **invisible sur son propre nom** — mortel pour une app qui vit du bouche-à-oreille.
+
+### 🟢 « 2HYPE » — RETENU POUR L'ÉCOSYSTÈME
+
+- **INPI : 0 entreprise, 0 marque, 0 brevet.** Champ totalement libre en France.
+- **Rien à l'EUIPO** sur 362 résultats TMview.
+- **App Store : personne.** La recherche renvoie Badland 2, Ultimate Golf, X, Grok — du bruit d'algorithme, aucun concurrent.
+- ⚠️ **Une marque `2HYPE` enregistrée aux États-Unis** (USPTO, 21/08/2020), classes **25** (vêtements) et **41** (éducation/divertissement). Portée américaine uniquement. Reste à lire le libellé exact de sa classe 41.
+- Par contraste, « Hype » seul est très occupé sur l'App Store (HYPE App / Colombie, HYPE by Hypebeast / Hong Kong, HYPE Business / Banca Sella) — **le chiffre sauve le nom**. Le domaine Netlify était le bon choix sans l'avoir calculé.
+
+### 🟢 « HORSE LINGO » — MEILLEURE PISTE POUR LINGUAE
+
+- Seulement **2 marques, toutes deux américaines, en classe 35** (publicité/commerce). Ni 9 ni 41. **Rien en Europe, rien en France.**
+- Sur « Lingo » seul : les marques actives sont dispersées hors de ton terrain (Pérou cl. 28, Chine cl. 18/21/26/38, Chili cl. 10, Malaisie cl. 30). **Tous les dépôts européens en classe 9 sont expirés** (1996, 1997, 2002). Restent à surveiller : **LINGO Allemagne (DPMA, 2023, cl. 9, 16, 42)** et LINGO Royaume-Uni (2022, hors UE).
+- **Aucune marque « Lingo » enregistrée en classe 41 en Europe.**
+- Duolingo ne bloque pas : « lingo » est un mot courant du dictionnaire, non monopolisable isolément — LingoChamp (Mexique, cl. 41), Lingokids, Lingoda coexistent. Et « Duo » vs « Horse » diffèrent là où ça compte, au début du mot.
+- Écartées : **Horse Tribe** (« HorseTribe » enregistrée au Royaume-Uni **en classe 41**) et **Horse Trip** (libre mais ment sur le produit — promet une randonnée, livre du vocabulaire).
+
+### 📌 Ce que le renommage coûterait
+
+**Rien côté fichiers.** `lingo.html`, `lingo-sellerie.html`, `hype-lingo-lex-*` gardent leurs noms — l'app s'est toujours appelée « Lingo » dans le code. Le renommage ne touche que les **textes affichés, le manifeste et l'icône**.
+
+## 💰 DÉPÔT DE MARQUE — REPORTÉ (décision de Blandine : *« je vais attendre un peu »*)
+
+| | coût | portée |
+|---|---|---|
+| INPI France | **190 €** (1 classe) + 40 €/classe → **230 €** pour cl. 9 + 41 | France, 10 ans |
+| EUIPO | **850 €** (1 classe) + 50 €/classe | Union européenne, 10 ans |
+
+- Un dépôt français ouvre un **droit de priorité de six mois** vers l'EUIPO (la date européenne remonte à la date française).
+- Le dépôt français **ne se transforme pas** en dépôt européen : deux titres, deux paiements.
+- 🟥 **Apple n'exige AUCUN dépôt de marque à la soumission.** La grande majorité des apps n'en ont pas. Apple vérifie l'inverse : qu'on ne porte pas atteinte aux droits d'un tiers.
+- En attendant : **garder trace des dates d'usage public** (domaine Netlify, captures, premières utilisatrices) — l'usage antérieur crée des droits en France.
+- 📌 Le **nom d'app sur l'App Store est unique et se réserve** dès la création de la fiche dans App Store Connect, même sans publier.
+
+## 💶 LES RÈGLES DE PAIEMENT APPLE — ÉTAT AU 20/08/2026
+
+Réponse à *« je dois passer mes paiements sur Apple, c'est ça ? »* : **non, plus obligatoire en Europe.**
+
+Apple a annoncé le **18/08/2026** de nouvelles conditions UE, négociées avec la Commission, **effectives au 1er octobre 2026** (signables dès maintenant) :
+- **Achats intégrés Apple et paiements alternatifs peuvent coexister** dans la même app — c'était interdit jusqu'ici dans l'UE.
+- Commission **26 %**, ramenée à **15 %** pour le Small Business Program (< 1 M$ de revenus annuels — le cas de Blandine) et pour les abonnements reconduits après un an.
+- **Core Technology Fee supprimée** (0,50 € par installation au-delà du million — la taxe qui pouvait ruiner une app gratuite devenue virale). Remplacée par la **Core Technology Commission de 5 %**, uniquement pour les apps distribuées **hors** App Store : ne concerne pas Linguae.
+- ⚠️ **Les options choisies s'engagent pour douze mois.**
+- 💶 **Sur 7,99 €/mois** : Apple retire d'abord la TVA (20 % → ~6,66 € HT) puis sa commission. À 15 % → **~5,66 €** net. À 26 % → ~4,93 €.
+- 🟥 **Risque qui demeure** : hors États-Unis, les apps compagnons d'un abonnement web se font encore rejeter sous **3.1.1**, même sans parcours d'achat dedans, le relecteur lisant le contenu comme payant acquis ailleurs. **C'est exactement le profil de Linguae si elle se contente de lire l'abonnement Hype.** D'où l'abonnement autonome.
+
+## 🌐 NOM DE DOMAINE — À PRENDRE
+
+- `2hype.netlify.app` est **prêté** par Netlify, pas possédé. Changer d'hébergeur tuerait tous les liens partagés.
+- Il faut un domaine pour : l'URL de support et la politique de confidentialité exigées par App Store Connect, des adresses mail à soi, et surtout le **fichier d'association des liens universels** — qui doit être servi depuis un domaine contrôlé. C'est le point qui bloque le partage natif.
+- Recommandé : **Infomaniak** (~12-15 €/an, mail inclus, français) ou **Cloudflare** (~10 €/an, prix coûtant, pas de hausse au renouvellement, mais pas de mail).
+- 🟥 **Ne pas acheter le domaine chez l'hébergeur** — sinon on recrée la dépendance qu'on cherche à éviter.
+- Deux domaines, puisque deux portes : un pour 2Hype, un pour l'app de vocabulaire, sans mention de Hype.
+- ⚠️ Vérifier que le renouvellement automatique est actif : un domaine expiré se fait racheter en quelques heures.
+
+## 📧 ADRESSE DE COMPTE
+
+`feinn@live.fr` porte déjà Supabase, Netlify, GitHub et les comptes de test. Arbitrage retenu : **la garder pour le compte développeur Apple** — la cohérence vaut mieux que l'élégance pour une développeuse seule. ⚠️ Mais c'est un domaine Microsoft non contrôlé : si le compte se perd, tout se perd d'un coup. Double authentification, numéro de récupération et codes de secours à blinder. L'adresse pro sur domaine propre viendra pour les **nouveaux** services.
+
+## 🍏 VERS L'APP STORE — L'ORDRE DES BLOCAGES
+
+1. 🔴 **Compte développeur Apple** (99 $/an, vérification d'identité de plusieurs jours). **Chemin critique absolu** : sans lui, pas d'identifiant d'app, donc pas de liens universels, pas de « Se connecter avec Apple », pas de TestFlight. Tout attend derrière. **Chantier ouvert ce soir à la demande de Blandine.**
+2. 🔴 **Décision du paiement** — commerciale, pas technique. Achat intégré Apple vs renvoi web. Éclairée ci-dessus, non tranchée.
+3. 🔴 **Un Mac ou un service de compilation** : une app iOS ne se construit pas depuis un iPhone. Et **l'enveloppe native n'est toujours pas tranchée** — personne n'a décidé comment `lingo.html` devient une app.
+4. 🟠 L'abonnement Linguae autonome (colonne `plan`).
+5. 🟠 Le domaine, puis les liens universels.
+6. 🟡 Le mécanisme `?v=` à repenser entièrement : c'est un contournement de navigateur, pas une stratégie d'app.
+7. 🟡 Captures aux formats imposés, politique de confidentialité hébergée, déclarations App Store Connect.
+8. 🟡 Clonbinane (38e ville) pour compléter le monde.
+
+---
 # ☀️ SESSION DU 20/08/2026 — LA JOURNÉE DES RÉPARATIONS PROFONDES
 
 **De v60 à v70 en une journée.** La session du 19 avait branché le contenu ; celle-ci a réparé ce que les cavalières VIVENT : le démarrage, le paywall, le compte, la synchronisation — et Apy est entrée dans Linguae pour de bon.

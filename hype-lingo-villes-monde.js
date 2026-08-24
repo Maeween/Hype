@@ -1079,32 +1079,38 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       es:["Las diez, y el camión acababa de apagar el motor sobre la ciudad.","No abrimos enseguida: el chófer dejó que el caballo entendiera que ya nada se movía, y mientras tanto me enseñó su cuaderno de ruta — las pausas, el agua bebida, las horas. Un caballo que viaja bien, me dijo, es un caballo cuyo viaje se escribió antes de salir."],
       it:["Le dieci, e il camion aveva appena spento il motore sopra la città.","Non abbiamo aperto subito: l'autista ha lasciato che il cavallo capisse che non si muoveva più niente, e intanto mi ha mostrato il suo diario di viaggio — le soste, l'acqua bevuta, le ore. Un cavallo che viaggia bene, mi ha detto, è un cavallo il cui viaggio è stato scritto prima di partire."],
       de:["Zehn Uhr, und der Transporter hatte gerade über der Stadt den Motor abgestellt.","Wir öffneten nicht sofort: Der Fahrer ließ das Pferd begreifen, dass sich nichts mehr bewegte, und zeigte mir derweil sein Fahrtenbuch — die Pausen, das getrunkene Wasser, die Stunden. Ein Pferd, das gut reist, sagte er mir, ist ein Pferd, dessen Reise vor der Abfahrt geschrieben wurde."],
-      ja:["十時。馬運車は街を見下ろす場所でエンジンを切ったばかりだった。","すぐには開けなかった。運転手は、もう何も動かないと馬に理解させてから、そのあいだに私に運行記録を見せてくれた — 休憩、飲んだ水、時間。「うまく旅する馬というのはね」と彼は言った。「出発する前に、旅がぜんぶ書かれている馬のことだよ。」"]},
+      ja:["十時。馬運車は街を見下ろす場所でエンジンを切ったばかりだった。","すぐには開けなかった。運転手は、もう何も動かないと馬に理解させてから、そのあいだに私に運行記録を見せてくれた — 休憩、飲んだ水、時間。「うまく旅する馬というのはね」と彼は言った。「出発する前に、旅がぜんぶ書かれている馬のことだよ。」"],
+    /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+    ar:["كانت الساعة العاشرة، وكان السائق قد أطفأ محرك الشاحنة للتو على مرتفع يطل على المدينة.",
+        "لم نفتح الأبواب فورا: ترك السائق الحصان يدرك أن المركبة توقفت عن الحركة، وفي تلك الأثناء أراني سجل الرحلة — أوقات الاستراحة، وكمية الماء التي شربها الحصان، وساعات الطريق. ثم قال لي: الرحلة الناجحة تبدأ بخطة توضع قبل الانطلاق."]},
     volets:[
-     {t:{fr:"Le Real Club de Polo", en:"The Real Club de Polo", es:"El Real Club de Polo", it:"Il Real Club de Polo", de:"Der Real Club de Polo", ja:"レアル・クルブ・デ・ポロ"},
+     {t:{fr:"Le Real Club de Polo", en:"The Real Club de Polo", es:"El Real Club de Polo", it:"Il Real Club de Polo", de:"Der Real Club de Polo", ja:"レアル・クルブ・デ・ポロ", ar:"ريال كلوب دي بولو"},
       c:{
           fr:"Fondé à la fin du XIXe siècle et posé en pleine ville, il accueille chaque automne la finale de la Coupe des nations de saut d'obstacles : les meilleures équipes du monde s'y retrouvent pour conclure la saison. La plupart des chevaux arrivent par la route, de toute l'Europe — certains avec plus de kilomètres dans l'année qu'un routier.",
           en:"Founded at the end of the nineteenth century and set right inside the city, it hosts the Nations Cup jumping final every autumn: the world's best teams gather there to close the season. Most horses arrive by road, from all over Europe — some with more kilometres in a year than a truck driver.",
           es:"Fundado a finales del siglo XIX y situado en plena ciudad, acoge cada otoño la final de la Copa de Naciones de salto: los mejores equipos del mundo se reúnen allí para cerrar la temporada. La mayoría de los caballos llegan por carretera, de toda Europa — algunos con más kilómetros al año que un camionero.",
           it:"Fondato alla fine dell'Ottocento e posato in piena città, ospita ogni autunno la finale della Coppa delle Nazioni di salto ostacoli: le migliori squadre del mondo vi si ritrovano per chiudere la stagione. La maggior parte dei cavalli arriva su strada, da tutta Europa — alcuni con più chilometri all'anno di un camionista.",
           de:"Ende des 19. Jahrhunderts gegründet und mitten in der Stadt gelegen, empfängt er jeden Herbst das Nationenpreis-Finale im Springen: Die besten Teams der Welt treffen sich dort zum Saisonabschluss. Die meisten Pferde kommen über die Straße, aus ganz Europa — manche mit mehr Kilometern im Jahr als ein Fernfahrer.",
-          ja:"十九世紀末に創設され、街のただ中にあるこのクラブでは、毎年秋に障害馬術ネイションズカップの決勝が開かれます。世界最強のチームがシーズンを締めくくりに集まるのです。馬たちの多くは欧州各地から陸路でやって来ます — 一年の走行距離がトラック運転手より長い馬もいるほどです。"}},
-     {t:{fr:"L'attache rapide", en:"The quick-release tie", es:"El atado de seguridad", it:"La legatura di sicurezza", de:"Die Sicherheitsanbindung", ja:"安全結び"},
+          ja:"十九世紀末に創設され、街のただ中にあるこのクラブでは、毎年秋に障害馬術ネイションズカップの決勝が開かれます。世界最強のチームがシーズンを締めくくりに集まるのです。馬たちの多くは欧州各地から陸路でやって来ます — 一年の走行距離がトラック運転手より長い馬もいるほどです。",
+          ar:"أنشئ النادي في أواخر القرن التاسع عشر داخل مدينة برشلونة، ويستضيف في الخريف نهائي دوري لونجين للأمم في قفز الحواجز، حيث تلتقي أفضل الفرق في ختام الموسم. تصل معظم الخيول برا من أنحاء أوروبا، وبعضها يقطع خلال العام مسافات أطول مما يقطعه كثير من سائقي الشاحنات."}},
+     {t:{fr:"L'attache rapide", en:"The quick-release tie", es:"El atado de seguridad", it:"La legatura di sicurezza", de:"Die Sicherheitsanbindung", ja:"安全結び", ar:"رباط الأمان سريع التحرير"},
       c:{
           fr:"Un nœud ou un panneton qui cède d'un seul geste. Dans un van, on n'attache jamais un cheval ferme : s'il panique et se jette en arrière, c'est l'attache qui doit lâcher, pas sa nuque. Tout le transport tient dans ce principe — chaque protection cède avant le cheval.",
           en:"A knot or clip that gives way in one motion. In a trailer, you never tie a horse fast: if he panics and throws himself backwards, the tie must give, not his poll. All of transport lives in that principle — every protection yields before the horse does.",
           es:"Un nudo o pestillo que cede de un solo gesto. En un remolque nunca se ata a un caballo en firme: si entra en pánico y se echa hacia atrás, es el atado el que debe soltar, no su nuca. Todo el transporte cabe en ese principio — cada protección cede antes que el caballo.",
           it:"Un nodo o un moschettone che cede con un solo gesto. In un van non si lega mai un cavallo saldo: se va nel panico e si getta all'indietro, è la legatura che deve cedere, non la sua nuca. Tutto il trasporto sta in questo principio — ogni protezione cede prima del cavallo.",
           de:"Ein Knoten oder Karabiner, der mit einem einzigen Griff nachgibt. Im Hänger bindet man ein Pferd nie fest an: Gerät es in Panik und wirft sich zurück, muss die Anbindung nachgeben, nicht sein Genick. Der ganze Transport steckt in diesem Prinzip — jede Sicherung gibt nach, bevor das Pferd es tut.",
-          ja:"ひと動作で外れる結び目や金具。馬運車の中で、馬を固く繋ぐことは決してありません。パニックになって後ろへ跳ねたとき、外れるべきは結び目であって、馬の首ではないからです。輸送のすべてはこの原則に尽きます — どの防具も、馬より先に壊れること。"}},
-     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+          ja:"ひと動作で外れる結び目や金具。馬運車の中で、馬を固く繋ぐことは決してありません。パニックになって後ろへ跳ねたとき、外れるべきは結び目であって、馬の首ではないからです。輸送のすべてはこの原則に尽きます — どの防具も、馬より先に壊れること。",
+          ar:"نظام ربط يمكن تحريره بسرعة عند الطوارئ. في مركبة النقل، يربط الحصان برباط أمان مناسب مضبوط الطول، مع نقطة انفصال مصممة للطوارئ. يجب اتباع تعليمات المركبة ومعدات الربط، لأن الرباط غير المناسب قد يسبب إصابة أو تشابكا."}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Arrive avant les épreuves et poste-toi côté écuries : le déchargement des camions est un ballet réglé — le pont, les protections qu'on retire, le premier tour de marche. Tu reconnaîtras chaque geste, parce que ce chapitre te les aura nommés avant.",
           en:"Arrive before the classes and stand on the stables side: the unloading of the lorries is a choreographed ballet — the ramp, the boots coming off, the first walk around. You'll recognise every gesture, because this chapter will have named them for you first.",
           es:"Llega antes de las pruebas y colócate del lado de las cuadras: la descarga de los camiones es un ballet reglado — la rampa, las protecciones que se quitan, la primera vuelta al paso. Reconocerás cada gesto, porque este capítulo te los habrá nombrado antes.",
           it:"Arriva prima delle prove e piazzati dal lato scuderie: lo scarico dei camion è un balletto regolato — la rampa, le protezioni che si tolgono, il primo giro al passo. Riconoscerai ogni gesto, perché questo capitolo te li avrà nominati prima.",
           de:"Komm vor den Prüfungen und stell dich auf die Stallseite: das Ausladen der Transporter ist ein einstudiertes Ballett — die Rampe, die Gamaschen, die abgenommen werden, die erste Schrittrunde. Du wirst jede Geste wiedererkennen, weil dieses Kapitel sie dir vorher benannt hat.",
-          ja:"競技の前に着いて、厩舎側に立ってください。馬運車からの馬降ろしは、型の決まったバレエです — スロープ、外されていくプロテクター、最初の常歩の一周。ひとつひとつの所作がわかるはずです。この章が、先にその名前を教えてくれているのだから。"}}
+          ja:"競技の前に着いて、厩舎側に立ってください。馬運車からの馬降ろしは、型の決まったバレエです — スロープ、外されていくプロテクター、最初の常歩の一周。ひとつひとつの所作がわかるはずです。この章が、先にその名前を教えてくれているのだから。",
+          ar:"احضري قبل الأشواط وقفي قرب الإسطبلات: إنزال الخيول من الشاحنات عملية منظمة — منحدر التحميل، ثم إزالة الواقيات بعد النزول، ثم جولة المشي الأولى. ستتعرفين على كل حركة، لأن هذا الفصل قد سماها لك من قبل."}}
     ]
   };
 
@@ -1193,32 +1199,38 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       es:["Las siete de la tarde, y la fragua aún sonaba.","El herrador levantó el pie, leyó la palma como un mapa, y limó tres veces — no cuatro. « El hierro se ajusta al pie », me dijo devolviéndolo al fuego, « nunca al revés. Es lo primero que se aprende aquí, y se tarda diez años en entenderlo. »"],
       it:["Le sette di sera, e la forgia suonava ancora.","Il maniscalco ha sollevato il piede, letto la suola come una mappa, e raspato tre volte — non quattro. « Il ferro si regola sul piede », mi ha detto rimettendolo al fuoco, « mai il contrario. È la prima cosa che si impara qui, e ci vogliono dieci anni per capirla. »"],
       de:["Sieben Uhr abends, und die Schmiede klang noch.","Der Hufschmied hob den Huf, las die Sohle wie eine Karte und raspelte dreimal — nicht viermal. « Das Eisen richtet sich nach dem Huf », sagte er mir, während er es zurück ins Feuer legte, « niemals umgekehrt. Es ist das Erste, was man hier lernt, und man braucht zehn Jahre, um es zu verstehen. »"],
-      ja:["夜の七時。鍛冶場ではまだ槌の音が響いていた。","装蹄師は蹄を持ち上げ、蹄底を地図のように読み、やすりを三度かけた — 四度ではなく。「蹄鉄を蹄に合わせるんだ」と、鉄を火に戻しながら彼は言った。「その逆は決してない。ここで最初に習うことだが、理解するのに十年かかる。」"]},
+      ja:["夜の七時。鍛冶場ではまだ槌の音が響いていた。","装蹄師は蹄を持ち上げ、蹄底を地図のように読み、やすりを三度かけた — 四度ではなく。「蹄鉄を蹄に合わせるんだ」と、鉄を火に戻しながら彼は言った。「その逆は決してない。ここで最初に習うことだが、理解するのに十年かかる。」"],
+    /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+    ar:["السابعة مساء، وما زال المصهر يرن.",
+        "رفع الحداد القدم، وقرأ باطن الحافر كما تقرأ خريطة، وبرد ثلاث مرات — لا أربعا. قال لي وهو يعيد الحدوة إلى النار: «الحدوة تضبط على القدم، ولا يكون العكس أبدا. هذا أول ما يتعلم هنا، ونحتاج إلى عشر سنين لنفهمه.»"]},
     volets:[
-     {t:{fr:"Le haras de Flyinge", en:"The Flyinge stud", es:"La yeguada de Flyinge", it:"Il haras di Flyinge", de:"Das Gestüt Flyinge", ja:"フリンゲ牧場"},
+     {t:{fr:"Le haras de Flyinge", en:"The Flyinge stud", es:"La yeguada de Flyinge", it:"Il haras di Flyinge", de:"Das Gestüt Flyinge", ja:"フリンゲ牧場", ar:"مزرعة فلينغه"},
       c:{
           fr:"Fondé en 1661 pour fournir la cavalerie royale, c'est l'un des plus anciens haras du monde encore en activité. La Suède y forme aussi ses professionnels du cheval — et sa maréchalerie est une école à part entière, où l'on étudie le pied vivant bien avant de toucher un fer.",
           en:"Founded in 1661 to supply the royal cavalry, it is one of the oldest studs in the world still working. Sweden also trains its horse professionals there — and its farriery is a school in its own right, where you study the living foot long before touching a shoe.",
           es:"Fundada en 1661 para abastecer a la caballería real, es una de las yeguadas más antiguas del mundo aún en activo. Suecia forma allí también a sus profesionales del caballo — y su herrería es una escuela por derecho propio, donde se estudia el pie vivo mucho antes de tocar un hierro.",
           it:"Fondato nel 1661 per fornire la cavalleria reale, è uno dei più antichi haras del mondo ancora in attività. La Svezia vi forma anche i suoi professionisti del cavallo — e la sua mascalcia è una scuola a pieno titolo, dove si studia il piede vivo molto prima di toccare un ferro.",
           de:"1661 gegründet, um die königliche Kavallerie zu versorgen, ist es eines der ältesten noch aktiven Gestüte der Welt. Schweden bildet dort auch seine Pferdefachleute aus — und sein Hufbeschlag ist eine eigene Schule, in der man den lebenden Huf studiert, lange bevor man ein Eisen anfasst.",
-          ja:"1661年、王室騎兵隊に馬を供給するために創設された、世界最古級の現役の牧場です。スウェーデンはここで馬の専門家たちも育てています — そして装蹄は独立したひとつの学校であり、蹄鉄に触れるずっと前から、生きた蹄そのものを学ぶのです。"}},
-     {t:{fr:"Pas de pied, pas de cheval", en:"No foot, no horse", es:"Sin pie no hay caballo", it:"Niente piede, niente cavallo", de:"Ohne Huf kein Pferd", ja:"蹄なくして馬なし"},
+          ja:"1661年、王室騎兵隊に馬を供給するために創設された、世界最古級の現役の牧場です。スウェーデンはここで馬の専門家たちも育てています — そして装蹄は独立したひとつの学校であり、蹄鉄に触れるずっと前から、生きた蹄そのものを学ぶのです。",
+          ar:"أنشئت سنة 1661 لتزويد الفرسان الملكيين بالخيل، وهي من أقدم مزارع الخيول في العالم التي ما زالت عاملة. وفيها تكون السويد أيضا محترفي الخيل — وحدادة الخيل فيها مدرسة قائمة بذاتها، يدرس فيها الحافر الحي قبل لمس أي حدوة بزمن طويل."}},
+     {t:{fr:"Pas de pied, pas de cheval", en:"No foot, no horse", es:"Sin pie no hay caballo", it:"Niente piede, niente cavallo", de:"Ohne Huf kein Pferd", ja:"蹄なくして馬なし", ar:"لا حافر، لا حصان"},
       c:{
           fr:"Le dicton est vieux comme le métier : paroi, sole, fourchette portent une demi-tonne à chaque foulée. La fourchette, souple, sert d'amortisseur et de pompe — c'est elle qui aide le sang à remonter la jambe. Un pied se lit avant de se parer : usure, appui, chaleur, tout y est écrit.",
           en:"The saying is as old as the trade: wall, sole and frog carry half a tonne at every stride. The frog, supple, works as shock absorber and pump — it's what helps the blood climb back up the leg. A foot is read before it is trimmed: wear, bearing, heat, everything is written there.",
           es:"El dicho es viejo como el oficio: pared, palma y ranilla llevan media tonelada a cada tranco. La ranilla, flexible, sirve de amortiguador y de bomba — es ella la que ayuda a la sangre a subir por la pata. Un pie se lee antes de recortarse: desgaste, apoyo, calor, todo está escrito ahí.",
           it:"Il detto è vecchio come il mestiere: muraglia, suola e fettone portano mezza tonnellata a ogni falcata. Il fettone, elastico, fa da ammortizzatore e da pompa — è lui che aiuta il sangue a risalire la gamba. Un piede si legge prima di pareggiarsi: usura, appoggio, calore, tutto vi è scritto.",
           de:"Das Sprichwort ist so alt wie das Handwerk: Wand, Sohle und Strahl tragen bei jedem Tritt eine halbe Tonne. Der elastische Strahl dient als Stoßdämpfer und Pumpe — er hilft dem Blut, das Bein wieder hinaufzusteigen. Ein Huf wird gelesen, bevor er ausgeschnitten wird: Abrieb, Auflage, Wärme, alles steht darin geschrieben.",
-          ja:"この格言は仕事そのものと同じくらい古いものです。蹄壁、蹄底、蹄叉が、一完歩ごとに半トンを支えます。柔軟な蹄叉は緩衝材でありポンプでもあり — 血液を脚の上へ押し戻す手助けをしているのです。蹄は削る前に読むもの。摩耗、接地、熱 — すべてがそこに書かれています。"}},
-     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+          ja:"この格言は仕事そのものと同じくらい古いものです。蹄壁、蹄底、蹄叉が、一完歩ごとに半トンを支えます。柔軟な蹄叉は緩衝材でありポンプでもあり — 血液を脚の上へ押し戻す手助けをしているのです。蹄は削る前に読むもの。摩耗、接地、熱 — すべてがそこに書かれています。",
+          ar:"قول قديم قدم المهنة: الجدار والباطن والنسر تحمل نصف طن في كل خطوة. والنسر المرن يعمل ممتصا للصدمات ومضخة — فهو ما يساعد الدم على الصعود في القائمة. والقدم تقرأ قبل أن تقلم: التآكل، والارتكاز، والحرارة، كل شيء مكتوب فيها."}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Demande la forge plutôt que les manèges, et reste pour un ferrage à chaud : la fumée qui monte du fer posé une seconde sur la corne dessine exactement les points de contact. Cinq siècles de savoir tiennent dans ce nuage — et tu sauras enfin pourquoi on dit « parer » un pied, comme on pare un navire.",
           en:"Ask for the forge rather than the arenas, and stay for a hot shoeing: the smoke rising from the shoe held one second against the horn draws exactly the points of contact. Five centuries of knowledge live in that cloud — and you'll finally know why a foot is « dressed », the way a ship is.",
           es:"Pide la fragua en lugar de los picaderos, y quédate para un herraje en caliente: el humo que sube del hierro posado un segundo sobre el casco dibuja exactamente los puntos de contacto. Cinco siglos de saber caben en esa nube — y por fin sabrás por qué se dice « recortar » un pie, como se apareja un barco.",
           it:"Chiedi la forgia invece dei maneggi, e resta per una ferratura a caldo: il fumo che sale dal ferro posato un secondo sulla corna disegna esattamente i punti di contatto. Cinque secoli di sapere stanno in quella nuvola — e saprai finalmente perché si dice « pareggiare » un piede, come si allestisce una nave.",
           de:"Bitte um die Schmiede statt der Reithallen, und bleib für ein Heißbeschlagen: Der Rauch, der vom eine Sekunde auf das Horn gesetzten Eisen aufsteigt, zeichnet genau die Kontaktpunkte. Fünf Jahrhunderte Wissen stecken in dieser Wolke — und du weißt endlich, warum man einen Huf « ausrichtet », wie man ein Schiff ausrichtet.",
-          ja:"馬場ではなく鍛冶場を頼んで、熱間装蹄まで見ていってください。蹄の角質に一秒だけ当てた蹄鉄から立ちのぼる煙が、接点を正確に描き出します。五世紀分の知恵がその煙の中にあります — そして「蹄を整える」という言葉の意味が、船を整えるのと同じ意味だと、ようやくわかるはずです。"}}
+          ja:"馬場ではなく鍛冶場を頼んで、熱間装蹄まで見ていってください。蹄の角質に一秒だけ当てた蹄鉄から立ちのぼる煙が、接点を正確に描き出します。五世紀分の知恵がその煙の中にあります — そして「蹄を整える」という言葉の意味が、船を整えるのと同じ意味だと、ようやくわかるはずです。",
+          ar:"اسألي عن المصهر لا عن الميادين، وابقي لحضور حدو على الساخن: الدخان المتصاعد من الحدوة الموضوعة ثانية واحدة على القرن يرسم نقاط التماس بدقة. خمسة قرون من المعرفة في تلك السحابة — وستفهمين أخيرا لماذا تستعمل الفرنسية للتقليم كلمة «parer» نفسها التي تجهز بها السفن."}}
     ]
   };
 

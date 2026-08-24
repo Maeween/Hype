@@ -3055,7 +3055,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      cours.js et froid.js — c'est le cas ici.
      🟥 `van` et `embarquer` ONT ÉTÉ RETIRÉS de `concours-reserve.js` dans le
      même geste : ne pas les y remettre. -->
-<script src="hype-lingo-lex-barcelone.js?l=1"></script>
+<script src="hype-lingo-lex-barcelone.js?l=3"></script>
 <!-- 🟥 17/08 : FICHIER NEUF POUR WARENDORF. Elle utilisait la LEÇON 4 de
      `materiel` alors que son chapitre s'appelle « La formation » — on lui
      servait du vocabulaire d'équipement. Décision de Blandine : « crée
@@ -3229,7 +3229,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      ⚠️ `marechal` et `fer` NE SONT PAS dans ce fichier : ils existent
      dans `connemara.js` et sont repris via `motsAilleurs`. Doit donc se
      charger APRÈS connemara.js. -->
-<script src="hype-lingo-lex-flyinge.js?l=1"></script>
+<script src="hype-lingo-lex-flyinge.js?l=2"></script>
 <!-- 21/08 : Clonbinane, « L'apprentissage ». 16 concepts, dialogue de 25 répliques. -->
 <script src="hype-lingo-lex-apprentissage.js?l=1"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
@@ -3934,7 +3934,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=79";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=83";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4596,7 +4596,8 @@ var ETAPES_I18N = {
          ja:"冬用の馬着", ar:"غطاء شتوي"}},
  flyinge:{
    ch:{en:"Farriery", es:"El herraje", it:"La mascalcia", de:"Die Hufbeschlagkunst", ja:"装蹄",
-       ar:"البيطرة"},
+       /* 🟥 24/08 : البيطرة = médecine vétérinaire — corrigé, à confirmer en relecture. */
+       ar:"حدادة الخيل"},
    v:{ja:"フリンゲ"},
    souv:{en:"A gilded horseshoe", es:"Una herradura dorada",
          it:"Un ferro di cavallo dorato", de:"Ein vergoldetes Hufeisen",
@@ -5397,7 +5398,11 @@ var RECITS = {
       {f:"Ein Pferd, das im fahrenden Fahrzeug steht, arbeitet in jeder Kurve: Vier Stunden Fahrt ermüden es wie eine Trainingseinheit."}],
   ja:["馬運車は一晩じゅう海岸沿いを走り、夜が明けるとともに街が現れた。",
       "馬は急ぐでもなくスロープを降りてきた。まるでこの場所をもう知っているかのように。",
-      {f:"走行中の車内で立つ馬は、カーブのたびに働いている。4時間の移動は、一回の運動と同じだけ馬を疲れさせる。"}]},
+      {f:"走行中の車内で立つ馬は、カーブのたびに働いている。4時間の移動は、一回の運動と同じだけ馬を疲れさせる。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["سارت الشاحنة طوال الليل بمحاذاة الساحل، وظهرت المدينة مع طلوع النهار.",
+      "نزل الحصان عبر منحدر التحميل من دون عجلة، وكأنه يعرف المكان من قبل.",
+      {f:"يبذل الحصان الواقف في مركبة متحركة جهدا متواصلا للحفاظ على توازنه في المنعطفات وعند التسارع والكبح، لذلك قد تكون الرحلة الطويلة مرهقة."}]},
  vejer:{
   fr:["Six heures du matin, et la journée avait commencé pour tout le monde sauf moi.",
       "Les brouettes passaient, les seaux se remplissaient. Personne ne montait encore, et tout le monde travaillait.",
@@ -5581,7 +5586,11 @@ var RECITS = {
       {f:"Flyinge ist Schwedens Nationalgestüt, seit Jahrhunderten mit der Krone verbunden."}],
   ja:["鍛冶場の火、そして支えるために曲がることを厭わない鉄の忍耐。",
       "ここでは馬を鍛えるのではない。馬が立つ土台を整えるのだ。",
-      {f:"フリインゲはスウェーデンの国立牧場であり、何世紀にもわたり王室と結びついてきた。"}]},
+      {f:"フリインゲはスウェーデンの国立牧場であり、何世紀にもわたり王室と結びついてきた。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["نار الكور، وصبر الحديد الذي يتشكل قبل أن يثبت.",
+      "هنا لا ندرب الحصان — بل نهيئ الأساس الذي يقف عليه.",
+      {f:"فلينغه هي المزرعة الوطنية السويدية للخيول، وترتبط بالتاج منذ قرون."}]},
  /* 🟥🟥 18/08 : DEUX AUTRES VILLES SANS RÉCIT, TROUVÉES EN AUDITANT TOUTE
     LA TABLE (pas seulement les villes créées ce soir). Burghley n'avait
     NI RECITS NI POURQUOI — écran d'arrivée entièrement vide, comme
@@ -5805,7 +5814,9 @@ var POURQUOI = {
   de:"Die Stadt, in der das Pferd gezeigt wird: Gespanne, Tracht, Doma Vaquera.",
   ja:"馬を「見せる」街。馬車、伝統衣装、ドマ・バケーラ。"},
  /* 🟥 19/08 : brouillon de Claude, non validé. */
- barcelone:{fr:"La route avant le concours : préparer, embarquer, arriver entier.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ barcelone:{ar:"الطريق قبل المسابقة: التجهيز، وتحميل الحصان، والوصول بسلام.",
+  fr:"La route avant le concours : préparer, embarquer, arriver entier.",
   en:"The road before the show: preparing, loading, arriving in one piece.",
   es:"La carretera antes del concurso: preparar, embarcar, llegar entero.",
   it:"La strada prima del concorso: preparare, caricare, arrivare interi.",
@@ -5933,7 +5944,9 @@ var POURQUOI = {
   it:"Il bush del Victoria, dove si guarda come impara un cavallo prima di chiedergli qualcosa.",
   de:"Der Busch von Victoria, wo man zusieht, wie ein Pferd lernt, bevor man es etwas fragt.",
   ja:"ヴィクトリアのブッシュ。何かを求める前に、馬がどう学ぶのかを見る場所。"},
- flyinge:{fr:"Le haras national suédois, où l'on apprend ce que le maréchal fait vraiment pour le pied.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ flyinge:{ar:"المزرعة الوطنية السويدية للخيول، حيث تتعلمين ما يفعله حداد الخيل حقا للعناية بالحافر.",
+  fr:"Le haras national suédois, où l'on apprend ce que le maréchal fait vraiment pour le pied.",
   en:"Sweden's national stud, where you learn what the farrier really does for the foot.",
   es:"El criadero nacional sueco, donde se aprende lo que el herrador realmente hace por el casco.",
   it:"L'allevamento nazionale svedese, dove si impara cosa fa davvero il maniscalco per il piede.",
@@ -6064,22 +6077,23 @@ var TH_FAMILLES = [
 ];
 
 var TH_LIB = {
-  arrivee:{fr:"arriver dans un club",en:"arrive at a riding school",es:"llegar a un club",it:"arrivare in un club",de:"im Reitverein ankommen",ja:"乗馬クラブに着く"},
-  balade:{fr:"réserver une balade",en:"book a ride out",es:"reservar un paseo",it:"prenotare una passeggiata",de:"einen Ausritt buchen",ja:"外乗を予約する"},
-  urgences:{fr:"gérer une urgence",en:"handle an emergency",es:"gestionar una urgencia",it:"gestire un'emergenza",de:"einen Notfall bewältigen",ja:"緊急事態に対応する"},
-  vente:{fr:"acheter un cheval",en:"buy a horse",es:"comprar un caballo",it:"comprare un cavallo",de:"ein Pferd kaufen",ja:"馬を買う"},
-  pansage:{fr:"panser ton cheval",en:"groom your horse",es:"cepillar tu caballo",it:"governare il tuo cavallo",de:"dein Pferd putzen",ja:"馬を手入れする"},
-  materiel:{fr:"parler du matériel",en:"talk tack",es:"hablar de equipo",it:"parlare di attrezzatura",de:"über Ausrüstung sprechen",ja:"馬具について話す"},
-  barcelone:{fr:"voyager avec son cheval",en:"travel with your horse",es:"viajar con tu caballo",it:"viaggiare con il tuo cavallo",de:"mit dem Pferd reisen",ja:"馬と旅する"},
-  ecurie:{fr:"visiter une écurie",en:"visit a yard",es:"visitar una cuadra",it:"visitare una scuderia",de:"einen Stall besichtigen",ja:"厩舎を見学する"},
-  cheval:{fr:"décrire un cheval",en:"describe a horse",es:"describir un caballo",it:"descrivere un cavallo",de:"ein Pferd beschreiben",ja:"馬を描写する"},
-  horsemanship:{fr:"faire du horsemanship",en:"practise horsemanship",es:"practicar doma natural",it:"praticare il horsemanship",de:"Horsemanship üben",ja:"ホースマンシップを学ぶ"},
-  elevage:{fr:"parler élevage",en:"talk breeding",es:"hablar de cría",it:"parlare di allevamento",de:"über Zucht sprechen",ja:"繁殖について話す"},
-  haras:{fr:"visiter un haras",en:"visit a stud farm",es:"visitar una yeguada",it:"visitare un allevamento",de:"ein Gestüt besuchen",ja:"牧場を訪ねる"},
-  cours:{fr:"suivre un cours",en:"take a lesson",es:"tomar una clase",it:"seguire una lezione",de:"an einer Reitstunde teilnehmen",ja:"レッスンを受ける"},
-  dressage:{fr:"travailler sur le plat",en:"work on the flat",es:"trabajar en el plano",it:"lavorare in piano",de:"auf dem Platz arbeiten",ja:"平地で調馬する"},
-  obstacle:{fr:"sauter un obstacle",en:"jump a fence",es:"saltar un obstáculo",it:"saltare un ostacolo",de:"ein Hindernis springen",ja:"障害を飛ぶ"},
-  cross:{fr:"marcher un cross",en:"walk a cross-country course",es:"recorrer un cross",it:"ricognire un cross",de:"einen Geländeparcours abgehen",ja:"クロスカントリーを下見する"},
+  /* 🟡 ARABE DORMANT (24/08) : champ `ar` sur les 23 objectifs — aucun écran ne le lit. Termes alignés sur le glossaire des relectures. */
+  arrivee:{fr:"arriver dans un club",en:"arrive at a riding school",es:"llegar a un club",it:"arrivare in un club",de:"im Reitverein ankommen",ja:"乗馬クラブに着く",ar:"الوصول إلى النادي"},
+  balade:{fr:"réserver une balade",en:"book a ride out",es:"reservar un paseo",it:"prenotare una passeggiata",de:"einen Ausritt buchen",ja:"外乗を予約する",ar:"حجز نزهة على الخيل"},
+  urgences:{fr:"gérer une urgence",en:"handle an emergency",es:"gestionar una urgencia",it:"gestire un'emergenza",de:"einen Notfall bewältigen",ja:"緊急事態に対応する",ar:"التصرف في حالة طارئة"},
+  vente:{fr:"acheter un cheval",en:"buy a horse",es:"comprar un caballo",it:"comprare un cavallo",de:"ein Pferd kaufen",ja:"馬を買う",ar:"شراء حصان"},
+  pansage:{fr:"panser ton cheval",en:"groom your horse",es:"cepillar tu caballo",it:"governare il tuo cavallo",de:"dein Pferd putzen",ja:"馬を手入れする",ar:"تنظيف حصانك"},
+  materiel:{fr:"parler du matériel",en:"talk tack",es:"hablar de equipo",it:"parlare di attrezzatura",de:"über Ausrüstung sprechen",ja:"馬具について話す",ar:"الحديث عن المعدات"},
+  barcelone:{fr:"voyager avec son cheval",en:"travel with your horse",es:"viajar con tu caballo",it:"viaggiare con il tuo cavallo",de:"mit dem Pferd reisen",ja:"馬と旅する",ar:"السفر مع الحصان"},
+  ecurie:{fr:"visiter une écurie",en:"visit a yard",es:"visitar una cuadra",it:"visitare una scuderia",de:"einen Stall besichtigen",ja:"厩舎を見学する",ar:"زيارة إسطبل"},
+  cheval:{fr:"décrire un cheval",en:"describe a horse",es:"describir un caballo",it:"descrivere un cavallo",de:"ein Pferd beschreiben",ja:"馬を描写する",ar:"وصف حصان"},
+  horsemanship:{fr:"faire du horsemanship",en:"practise horsemanship",es:"practicar doma natural",it:"praticare il horsemanship",de:"Horsemanship üben",ja:"ホースマンシップを学ぶ",ar:"ممارسة الهورسمانشيب"},
+  elevage:{fr:"parler élevage",en:"talk breeding",es:"hablar de cría",it:"parlare di allevamento",de:"über Zucht sprechen",ja:"繁殖について話す",ar:"الحديث عن تربية الخيل"},
+  haras:{fr:"visiter un haras",en:"visit a stud farm",es:"visitar una yeguada",it:"visitare un allevamento",de:"ein Gestüt besuchen",ja:"牧場を訪ねる",ar:"زيارة مزرعة خيول"},
+  cours:{fr:"suivre un cours",en:"take a lesson",es:"tomar una clase",it:"seguire una lezione",de:"an einer Reitstunde teilnehmen",ja:"レッスンを受ける",ar:"متابعة حصة تدريب"},
+  dressage:{fr:"travailler sur le plat",en:"work on the flat",es:"trabajar en el plano",it:"lavorare in piano",de:"auf dem Platz arbeiten",ja:"平地で調馬する",ar:"العمل على الأرض المستوية"},
+  obstacle:{fr:"sauter un obstacle",en:"jump a fence",es:"saltar un obstáculo",it:"saltare un ostacolo",de:"ein Hindernis springen",ja:"障害を飛ぶ",ar:"قفز حاجز"},
+  cross:{fr:"marcher un cross",en:"walk a cross-country course",es:"recorrer un cross",it:"ricognire un cross",de:"einen Geländeparcours abgehen",ja:"クロスカントリーを下見する",ar:"تفقد مسار اختراق الضاحية"},
   /* ⚠️ v42 — « t'engager en concours » DEVIENT « en concours » (demande de
      Blandine). Le verbe etait faux pour deux de ses trois villes : Rome
      enseigne les gens du concours et Badminton le complet, on ne s'y engage
@@ -6088,13 +6102,13 @@ var TH_LIB = {
      tourne a l'infinitif, volontairement : il coiffe trois villes trop
      differentes pour un verbe commun.
      ⚠️ Ecrit en minuscule comme tous les autres : `thMaj()` met la capitale. */
-  concours:{fr:"en concours",en:"at a show",es:"en concurso",it:"in concorso",de:"auf dem Turnier",ja:"競技会で"},
-  poney:{fr:"équitation poney",en:"pony riding",es:"equitación con ponis",it:"equitazione con i pony",de:"Ponyreiten",ja:"ポニーの乗馬"},
-  polo:{fr:"jouer au polo",en:"play polo",es:"jugar al polo",it:"giocare a polo",de:"Polo spielen",ja:"ポロをする"},
-  western:{fr:"monter western",en:"ride western",es:"montar western",it:"montare western",de:"Westernreiten",ja:"ウエスタンで乗る"},
-  endurance:{fr:"partir en endurance",en:"ride endurance",es:"hacer raid",it:"fare endurance",de:"Distanzreiten",ja:"エンデュランスに出る"},
-  tradition:{fr:"découvrir une tradition",en:"discover a tradition",es:"descubrir una tradición",it:"scoprire una tradizione",de:"eine Tradition entdecken",ja:"伝統を知る"},
-  froid:{fr:"monter par grand froid",en:"ride in deep cold",es:"montar con frío intenso",it:"montare col grande freddo",de:"bei strengem Frost reiten",ja:"厳寒の中で乗る"}
+  concours:{fr:"en concours",en:"at a show",es:"en concurso",it:"in concorso",de:"auf dem Turnier",ja:"競技会で",ar:"في المسابقة"},
+  poney:{fr:"équitation poney",en:"pony riding",es:"equitación con ponis",it:"equitazione con i pony",de:"Ponyreiten",ja:"ポニーの乗馬",ar:"فروسية البوني"},
+  polo:{fr:"jouer au polo",en:"play polo",es:"jugar al polo",it:"giocare a polo",de:"Polo spielen",ja:"ポロをする",ar:"لعب البولو"},
+  western:{fr:"monter western",en:"ride western",es:"montar western",it:"montare western",de:"Westernreiten",ja:"ウエスタンで乗る",ar:"الركوب الغربي"},
+  endurance:{fr:"partir en endurance",en:"ride endurance",es:"hacer raid",it:"fare endurance",de:"Distanzreiten",ja:"エンデュランスに出る",ar:"الانطلاق في سباق القدرة"},
+  tradition:{fr:"découvrir une tradition",en:"discover a tradition",es:"descubrir una tradición",it:"scoprire una tradizione",de:"eine Tradition entdecken",ja:"伝統を知る",ar:"اكتشاف تقليد عريق"},
+  froid:{fr:"monter par grand froid",en:"ride in deep cold",es:"montar con frío intenso",it:"montare col grande freddo",de:"bei strengem Frost reiten",ja:"厳寒の中で乗る",ar:"الركوب في البرد الشديد"}
 };
 
 var TH_TXT = {
@@ -9073,7 +9087,7 @@ var COLL_NOM = {
   haras:{fr:"Le haras", en:"The stud farm", es:"La yeguada",
     it:"L'allevamento da corsa", de:"Das Gestüt", ja:"牧場"},
   froid:{fr:"Le froid", en:"The cold", es:"El frío", it:"Il freddo",
-    de:"Die Kälte", ja:"寒さ"},
+    de:"Die Kälte", ja:"寒さ", ar:"البرد"},
   tradition:{fr:"La tradition", en:"Tradition", es:"La tradición",
     it:"La tradizione", de:"Die Tradition", ja:"伝統"},
   polo:{fr:"Le polo", en:"Polo", es:"El polo", it:"Il polo",
@@ -9082,7 +9096,7 @@ var COLL_NOM = {
     it:"L'equitazione western", de:"Westernreiten", ja:"ウエスタン"},
   corps:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体"},
   etat:{fr:"L'état du poil", en:"The state of the coat", es:"El estado de la capa",
-        it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態"},
+        it:"Lo stato del mantello", de:"Der Zustand des Fells", ja:"毛の状態", ar:"حالة الشعر"},
   "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo",
         it:"Sul cavallo", de:"Am Pferd", ja:"馬について"},
   "jour-j":{fr:"Le jour J", en:"The big day", es:"El día del concurso",
@@ -9091,12 +9105,12 @@ var COLL_NOM = {
         de:"Die Rassen", ja:"品種"},
   lieu:{fr:"Le lieu", en:"The place", es:"El lugar", it:"Il luogo", de:"Der Ort", ja:"場所"},
   litiere:{fr:"La litière", en:"The bedding", es:"La cama", it:"La lettiera", de:"Die Einstreu", ja:"敷料"},
-  outils:{fr:"Les outils", en:"The tools", es:"Las herramientas", it:"Gli attrezzi", de:"Das Werkzeug", ja:"道具"},
-  nourriture:{fr:"L'eau et la nourriture", en:"Water and feed", es:"El agua y el pienso", it:"L'acqua e il mangime", de:"Wasser und Futter", ja:"水と飼料"},
-  materiel:{fr:"Tenir et attacher", en:"Holding and tying", es:"Sujetar y atar", it:"Tenere e legare", de:"Halten und anbinden", ja:"持つ・つなぐ"},
-  gestes:{fr:"Les gestes", en:"The handling", es:"El manejo", it:"I gesti", de:"Der Umgang", ja:"扱い方"},
+  outils:{fr:"Les outils", en:"The tools", es:"Las herramientas", it:"Gli attrezzi", de:"Das Werkzeug", ja:"道具", ar:"الأدوات"},
+  nourriture:{fr:"L'eau et la nourriture", en:"Water and feed", es:"El agua y el pienso", it:"L'acqua e il mangime", de:"Wasser und Futter", ja:"水と飼料", ar:"الغذاء"},
+  materiel:{fr:"Tenir et attacher", en:"Holding and tying", es:"Sujetar y atar", it:"Tenere e legare", de:"Halten und anbinden", ja:"持つ・つなぐ", ar:"المعدات"},
+  gestes:{fr:"Les gestes", en:"The handling", es:"El manejo", it:"I gesti", de:"Der Umgang", ja:"扱い方", ar:"الحركات"},
   robes:{fr:"Les robes", en:"The coat colours", es:"Las capas", it:"I mantelli", de:"Die Fellfarben", ja:"毛色"},
-  marques:{fr:"Les marques", en:"The markings", es:"Las marcas", it:"I segni particolari", de:"Die Abzeichen", ja:"標徴"},
+  marques:{fr:"Les marques", en:"The markings", es:"Las marcas", it:"I segni particolari", de:"Die Abzeichen", ja:"標徴", ar:"العلامات"},
   morpho:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体の部位"},
   identite:{fr:"L'identité", en:"Identity", es:"La identidad", it:"L'identità", de:"Die Identität", ja:"個体識別"},
   selle:{fr:"La selle", en:"The saddle", es:"La silla", it:"La sella", de:"Der Sattel", ja:"鞍"},
@@ -9106,7 +9120,7 @@ var COLL_NOM = {
   allures:{fr:"Les allures", en:"The paces", es:"Los aires", it:"Le andature", de:"Die Gangarten", ja:"歩様"},
   position:{fr:"La position", en:"The position", es:"La posición", it:"L'assetto", de:"Der Sitz", ja:"騎座"},
   figures:{fr:"La piste et les figures", en:"The track and the figures", es:"La pista y las figuras", it:"La pista e le figure", de:"Die Bahn und die Hufschlagfiguren", ja:"馬場と図形運動"},
-  deroule:{fr:"Le déroulé du cours", en:"How a lesson runs", es:"El desarrollo de la clase", it:"Lo svolgimento della lezione", de:"Der Ablauf der Reitstunde", ja:"レッスンの流れ"},
+  deroule:{fr:"Le déroulé du cours", en:"How a lesson runs", es:"El desarrollo de la clase", it:"Lo svolgimento della lezione", de:"Der Ablauf der Reitstunde", ja:"レッスンの流れ", ar:"سير الرحلة"},
   rectangle:{fr:"Le rectangle", en:"The arena", es:"El rectángulo", it:"Il rettangolo", de:"Das Viereck", ja:"競技馬場"},
   mouvements:{fr:"Les mouvements", en:"The movements", es:"Los movimientos", it:"I movimenti", de:"Die Lektionen", ja:"運動"},
   qualites:{fr:"Les qualités", en:"The qualities", es:"Las cualidades", it:"Le qualità", de:"Die Qualitäten", ja:"馬の質"},
@@ -9135,7 +9149,18 @@ var COLL_NOM = {
   gens:{fr:"Les gens", en:"The people", es:"La gente", it:"Le persone", de:"Die Leute", ja:"人びと"},
   alerte:{fr:"Donner l'alerte", en:"Raising the alarm", es:"Dar la alarma", it:"Dare l'allarme", de:"Alarm schlagen", ja:"通報する"},
   "cheval-urg":{fr:"Sur le cheval", en:"On the horse", es:"En el caballo", it:"Sul cavallo", de:"Am Pferd", ja:"馬の状態"},
-  mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"}
+  mots:{fr:"Les mots qui sauvent", en:"The words that save", es:"Las palabras que salvan", it:"Le parole che salvano", de:"Die Worte, die retten", ja:"命を救う言葉"},
+  /* 🟥 24/08 : DIX FAMILLES ABSENTES (Flyinge ×6, Barcelone ×4) — le bug du point 8, six langues cassées. Textes écrits par Claude, à valider. 🟡 ar dormant. */
+  anatomie:{fr:"L'anatomie du pied", en:"The anatomy of the foot", es:"La anatomía del casco", it:"L'anatomia del piede", de:"Die Anatomie des Hufs", ja:"蹄のつくり", ar:"تشريح الحافر"},
+  "parage-ferrure":{fr:"Le parage et la ferrure", en:"Trimming and shoeing", es:"El recorte y el herraje", it:"Il pareggio e la ferratura", de:"Ausschneiden und Beschlag", ja:"削蹄と装蹄", ar:"تقليم الحافر وتركيب الحدوة"},
+  clous:{fr:"Les clous", en:"The nails", es:"Los clavos", it:"I chiodi", de:"Die Nägel", ja:"釘", ar:"المسامير"},
+  crampons:{fr:"Les crampons", en:"The studs", es:"Los ramplones", it:"I ramponi", de:"Die Stollen", ja:"スタッド", ar:"مسامير منع الانزلاق"},
+  problemes:{fr:"Les problèmes", en:"The problems", es:"Los problemas", it:"I problemi", de:"Die Probleme", ja:"トラブル", ar:"المشكلات"},
+  alternatives:{fr:"Les alternatives", en:"The alternatives", es:"Las alternativas", it:"Le alternative", de:"Die Alternativen", ja:"代わりの選択肢", ar:"البدائل"},
+  depart:{fr:"Le départ", en:"Setting off", es:"La salida", it:"La partenza", de:"Der Aufbruch", ja:"出発", ar:"الانطلاق"},
+  embarquement:{fr:"L'embarquement", en:"Loading", es:"El embarque", it:"Il carico", de:"Das Verladen", ja:"積み込み", ar:"تحميل الحصان"},
+  route:{fr:"La route", en:"The road", es:"La carretera", it:"La strada", de:"Die Fahrt", ja:"道中", ar:"الطريق"},
+  vehicule:{fr:"Le véhicule", en:"The vehicle", es:"El vehículo", it:"Il veicolo", de:"Das Fahrzeug", ja:"車両", ar:"المركبة"},
 };
 var ACCUEIL_CHAP = {
   /* 🟥🟥 19/08 : SIX ENTRÉES NEUVES — LA TABLE EST COMPLÈTE POUR LES 36 VILLES.
@@ -9148,7 +9173,9 @@ var ACCUEIL_CHAP = {
      ⚠️ TRADUCTIONS EN/ES/IT/DE/JA ÉCRITES PAR CLAUDE, jamais relues par un
      natif. Les français sont à valider par Blandine. */
   /* 🟥 19/08 : BARCELONE, 37e ville. ⚠️ Texte écrit par Claude, à valider. */
-  barcelone:{fr:"Préparer, embarquer, rouler : ce qui se dit autour d'un camion quand le cheval doit partir.", en:"Preparing, loading, driving: what gets said around a horsebox when the horse has to travel.", es:"Preparar, embarcar, conducir: lo que se dice alrededor de un camión cuando el caballo debe viajar.", it:"Preparare, caricare, viaggiare: ciò che si dice attorno a un camion quando il cavallo deve partire.", de:"Vorbereiten, verladen, fahren: was rund um den Transporter gesagt wird, wenn das Pferd reisen muss.", ja:"準備し、積み込み、走る — 馬を送り出すとき、馬運車のまわりで交わされる言葉。"},
+  /* 🟡 ar dormant (24/08) — voir RECITS. */
+ barcelone:{ar:"التجهيز، وتحميل الحصان، والسفر: ما يقال حول مركبة النقل حين يحين موعد رحيل الحصان.",
+  fr:"Préparer, embarquer, rouler : ce qui se dit autour d'un camion quand le cheval doit partir.", en:"Preparing, loading, driving: what gets said around a horsebox when the horse has to travel.", es:"Preparar, embarcar, conducir: lo que se dice alrededor de un camión cuando el caballo debe viajar.", it:"Preparare, caricare, viaggiare: ciò che si dice attorno a un camion quando il cavallo deve partire.", de:"Vorbereiten, verladen, fahren: was rund um den Transporter gesagt wird, wenn das Pferd reisen muss.", ja:"準備し、積み込み、走る — 馬を送り出すとき、馬運車のまわりで交わされる言葉。"},
   derby:{fr:"Le derby : la banque, le terrain, et un galop qui n'est pas celui du concours.", en:"The derby: the bank, the ground, and a gallop that is not the show ring's.", es:"El derby: el banco, el terreno, y un galope que no es el del concurso.", it:"Il derby: la banca, il terreno, e un galoppo che non è quello del concorso.", de:"Das Derby: der Wall, der Boden und ein Galopp, der nicht der des Turniers ist.", ja:"ダービー — バンク、馬場の状態、そして競技場とは違うギャロップ。"},
   enseignant:{fr:"Passer de l'autre côté : donner une consigne, corriger, veiller sur un groupe.", en:"Moving to the other side: giving an instruction, correcting, watching over a group.", es:"Pasar al otro lado: dar una consigna, corregir, velar por un grupo.", it:"Passare dall'altra parte: dare una consegna, correggere, vegliare su un gruppo.", de:"Auf die andere Seite wechseln: eine Anweisung geben, korrigieren, auf eine Gruppe achten.", ja:"教える側に立つ — 指示を出し、直し、グループを見守る。"},
   poney:{fr:"Le poney : la toise, les catégories, et des épreuves qui n'existent qu'ici.", en:"The pony: the measuring stick, the height classes, and classes you'll find nowhere else.", es:"El poni: la medición, las categorías, y pruebas que no existen en otra parte.", it:"Il pony: la misurazione, le categorie, e prove che non esistono altrove.", de:"Das Pony: das Messen, die Größenklassen und Prüfungen, die es nur hier gibt.", ja:"ポニー — 体高の計測、カテゴリー、そしてここにしかない競技。"},
@@ -9176,7 +9203,9 @@ var ACCUEIL_CHAP = {
   /* 🟡 `ar` dormant — voir RECITS. */
   clonbinane:{ar:"كيف يتعلم الحصان: المراقبة، عتبة الاستجابة، الإشارة، تخفيف الضغط، والاستراحة.",
   fr:"Comment le cheval apprend : observer, le seuil, le signal, le relâchement, la pause.", en:"How a horse learns: observing, threshold, the cue, the release, the break.", es:"Cómo aprende el caballo: observar, el umbral, la señal, la soltura, la pausa.", it:"Come impara il cavallo: osservare, la soglia, il segnale, il rilascio, la pausa.", de:"Wie das Pferd lernt: beobachten, die Schwelle, das Signal, das Nachgeben, die Pause.", ja:"馬の学び方 — 観察、閾値、合図、解放、休憩。"},
-  flyinge:{fr:"Le pied et la maréchalerie : parer, ferrer, comprendre les choix du maréchal.", en:"The foot and farriery: trimming, shoeing, understanding the farrier's choices.", es:"El casco y la herrería: recortar, herrar, comprender las decisiones del herrador.", it:"Lo zoccolo e la maniscalcheria: pareggiare, ferrare, capire le scelte del maniscalco.", de:"Der Huf und der Hufbeschlag: bearbeiten, beschlagen, die Entscheidungen des Hufschmieds verstehen.", ja:"蹄と装蹄 — 削蹄、装蹄、装蹄師の判断を理解する。"},
+  /* 🟡 ar dormant (24/08) — voir RECITS. */
+ flyinge:{ar:"الحافر وحدادة الخيل: التقليم، وتركيب الحدوة، وفهم اختيارات الحداد.",
+  fr:"Le pied et la maréchalerie : parer, ferrer, comprendre les choix du maréchal.", en:"The foot and farriery: trimming, shoeing, understanding the farrier's choices.", es:"El casco y la herrería: recortar, herrar, comprender las decisiones del herrador.", it:"Lo zoccolo e la maniscalcheria: pareggiare, ferrare, capire le scelte del maniscalco.", de:"Der Huf und der Hufbeschlag: bearbeiten, beschlagen, die Entscheidungen des Hufschmieds verstehen.", ja:"蹄と装蹄 — 削蹄、装蹄、装蹄師の判断を理解する。"},
   cross:{fr:"Le terrain et son équipement : les obstacles fixes, les crampons, la toque, le chronomètre.", en:"The country and its kit: the fixed fences, the studs, the hat cover, the stopwatch.", es:"El terreno y su equipo: los obstáculos fijos, los tacos, la funda del casco, el cronómetro.", it:"Il terreno e il suo equipaggiamento: gli ostacoli fissi, i ramponi, la copertura del casco, il cronometro.", de:"Das Gelände und seine Ausrüstung: die festen Hindernisse, die Stollen, der Helmbezug, die Stoppuhr.", ja:"クロスの地形と装備 — 固定障害、スタッド、ヘルメットカバー、ストップウォッチ。"},
   /* `balade` : le chapitre du Morne. `arrivee` : celui de La Baule, qui
      n'avait AUCUN mot d'accueil depuis qu'elle est devenue l'étape 1 —

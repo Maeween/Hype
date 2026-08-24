@@ -594,11 +594,36 @@
   }
 
   /* ==== 4 · C'EST FAIT ================================================= */
-  function vueFin(n) {
-    return '<div class="hi-fin"><div class="ic">🏆</div>' +
-      "<b>" + n + " résultat" + (n > 1 ? "s enregistrés" : " enregistré") + "</b>" +
-      "<span>Son palmarès vient de grandir. Tu peux importer une autre saison " +
-      "quand tu veux.</span></div>" +
+  /* 🟥 24/08 — CET ÉCRAN DISAIT « 0 résultat enregistré » PUIS « Son palmarès
+     vient de grandir », ce qui est contradictoire, et surtout il ne disait pas
+     POURQUOI zéro. Deux causes opposées se cachaient derrière le même mot :
+     tout était déjà en base, ou rien n était passé. Il le dit maintenant. */
+  function vueFin(n, doublons, envoyees) {
+    doublons = doublons || 0; envoyees = envoyees || 0;
+    var titre, phrase;
+    if (n > 0) {
+      titre = n + " résultat" + (n > 1 ? "s enregistrés" : " enregistré");
+      phrase = "Son palmarès vient de grandir.";
+      if (doublons > 0) phrase += " " + doublons + " ligne" + (doublons > 1 ? "s étaient" : " était")
+        + " déjà là, " + (doublons > 1 ? "elles ont" : "elle a") + " été ignorée"
+        + (doublons > 1 ? "s" : "") + ".";
+      phrase += " Tu peux importer une autre saison quand tu veux.";
+    } else if (doublons > 0) {
+      titre = "Cette saison était déjà là";
+      phrase = "Les " + doublons + " ligne" + (doublons > 1 ? "s de ce fichier étaient" : " de ce fichier était")
+        + " déjà dans son palmarès. Rien n'a été ajouté, et rien n'a été perdu.";
+    } else if (envoyees === 0) {
+      titre = "Rien à enregistrer";
+      phrase = "Ce fichier ne contient aucune épreuve courue — que des forfaits "
+        + "ou des épreuves annulées.";
+    } else {
+      titre = "Rien n'a été écrit";
+      phrase = envoyees + " ligne" + (envoyees > 1 ? "s ont" : " a") + " été envoyée"
+        + (envoyees > 1 ? "s" : "") + " mais la base n'en a accepté aucune. "
+        + "Ce n'est pas normal — signale-le.";
+    }
+    return '<div class="hi-fin"><div class="ic">' + (n > 0 ? "🏆" : "✓") + '</div>' +
+      "<b>" + titre + "</b><span>" + phrase + "</span></div>" +
       '<div class="hi-pied"><button class="hi-bt" data-hi="encore">Importer une autre saison</button>' +
       '<button class="hi-bt2" data-hi="fermer">Revenir à sa fiche</button></div>';
   }
@@ -614,7 +639,7 @@
       : E.etape === "lecture" ? vueLecture()
       : E.etape === "niveau" ? vueChoixNiveau()
       : E.etape === "relecture" ? vueRelecture()
-      : vueFin(E.enregistres || 0);
+      : vueFin(E.enregistres || 0, E.doublons || 0, E.envoyees || 0);
     hote.innerHTML = h;
     brancher(hote, options);
   }
@@ -749,9 +774,18 @@
       E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
       refaire(); return;
     }
-    Promise.resolve(p).then(function (n) {
+    Promise.resolve(p).then(function (rep) {
       E.occupe = false;
-      E.enregistres = (typeof n === "number") ? n : aGarder.length;
+      /* 🟥 24/08 : on retient AUSSI les doublons et le total lu, pour que
+         l ecran de fin puisse dire POURQUOI c est zero. */
+      if (rep && typeof rep === "object") {
+        E.enregistres = Number(rep.n) || 0;
+        E.doublons = Number(rep.doublons) || 0;
+      } else {
+        E.enregistres = (typeof rep === "number") ? rep : aGarder.length;
+        E.doublons = 0;
+      }
+      E.envoyees = aGarder.length;
       E.etape = "fin"; refaire();
     }).catch(function (e) {
       E.occupe = false;

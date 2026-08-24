@@ -22002,7 +22002,11 @@ function Router() {
                     return enregistrerImportFFE(chId, lignes)
                       .then(function (r) {
                         if (r && r.error) throw new Error(r.error);
-                        return (r && r.n) || 0;
+                        /* 🟥 24/08 : on rend l OBJET, plus seulement le compte.
+                           « 0 résultat enregistré » ne disait pas POURQUOI zéro —
+                           tout était-il déjà en base, ou rien n était-il passé ?
+                           Le module a besoin des doublons pour le dire. */
+                        return { n: (r && r.n) || 0, doublons: (r && r.doublons) || 0 };
                       });
                   }
                 }),
@@ -32110,7 +32114,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=4";
+    sc.src = "hype-import-ffe.js?v=5";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
