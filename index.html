@@ -22033,7 +22033,18 @@ function Router() {
                 React.createElement(OverlayQuoiDeNeuf, null),
                 React.createElement(InvitationIdentifiant, null),
                 React.createElement(InvitationsEcurieHype, null),
-                showNav && React.createElement(NavBar, null)))));
+                /* 🟥 23/08 session 160 — LA BARRE SORT DU ROUTER.
+                   Elle restait plantée au milieu de l écran par moments
+                   (constaté les 23/08 10h18, 18h30 et 22h07). `overflow: clip`
+                   posé en 152l n a rien réglé : l hypothèse était fausse.
+                   Plutôt que de deviner quel ancêtre la retient, on la sort de
+                   TOUS les ancêtres : un portail vers le <body>. Un élément
+                   `position: fixed` ne doit pas vivre dans un sous-arbre rogné.
+                   Repli : si createPortal manque, on la rend sur place comme
+                   avant — l app ne peut pas tomber pour ça. */
+                showNav && ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body)
+                  ? ReactDOM.createPortal(React.createElement(NavBar, null), document.body)
+                  : React.createElement(NavBar, null))))));
 }
 /* ---------- STYLES GLOBAUX ---------- */
 function GlobalStyles() {
@@ -32099,7 +32110,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=3";
+    sc.src = "hype-import-ffe.js?v=4";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -32217,7 +32228,18 @@ function EcranCheval() {
     (async function () {
       try {
         if (!(chevalDyn && chevalDyn.dbId) || typeof supa === "undefined" || !supa) { if (vif) setResDb([]); return; }
-        var rQ = await supa.from("resultats").select("*").eq("cheval_id", chevalDyn.dbId).order("created_at", { ascending: false }).limit(60);
+        /* 🟥 23/08 session 159 — LE PLAFOND ÉTAIT À 60.
+           La fiche ne lisait que 60 lignes sur les 154 de Rizotto d Emery,
+           les 60 dernieres ECRITES. D ou « 47 sorties, 2 victoires,
+           5 podiums » alors que la base contient 49 premieres et 81 podiums
+           (verifie en SQL le 23/08 a 23h10). Les vraies victoires tombaient
+           hors du plafond, et seules les lignes ecrites en dur restaient.
+           500 couvre tres largement une carriere : sept saisons = 154 lignes.
+           On garde un plafond : sans lui, 800 resultats se chargeraient d un coup.
+           🟥 Et on trie par DATE D EPREUVE, pas par date d ecriture : l ordre
+           dependait de l ordre ou Blandine avait importe ses saisons. */
+        var rQ = await supa.from("resultats").select("*").eq("cheval_id", chevalDyn.dbId)
+          .order("date_epreuve", { ascending: false, nullsFirst: false }).limit(500);
         if (vif) setResDb(((rQ && rQ.data) || []));
       } catch (eRd) { if (vif) setResDb([]); }
     })();
@@ -32449,10 +32471,33 @@ function EcranCheval() {
   }
   /* les meilleurs, comme avant : victoires, puis podiums, puis le reste,
      et à rang égal le plus gros champ d abord. */
+  /* 🟥 23/08 session 159 — LE TRI RÉÉCRIT.
+     L ancien rangeait par palier (1er / podium / le reste) puis par taille du
+     champ. Resultat : une « 3e sur 4 » passait DEVANT une « 2e sur 30 », ce
+     que Blandine a vu tout de suite. Defaut de conception de ma part.
+     Desormais on classe sur un MERITE : le rang compte d abord, mais le
+     champ battu le pondere. 1er sur 57 vaut mieux que 1er sur 4, et
+     2e sur 30 vaut mieux que 3e sur 4.                                     */
+  function meriteResultat(f) {
+    if (!f || f.pl == null) return -1;
+    var part = f.part || 1;
+    if (part < 1) part = 1;
+    /* part des concurrents battus : 1er sur 30 -> 1, dernier -> 0 */
+    var battus = (part > 1) ? (part - f.pl) / (part - 1) : 0;
+    /* le rang seul : 1er = 1, 2e = 0.5, 3e = 0.33… */
+    var rang = 1 / f.pl;
+    /* 🟥 et la TAILLE du champ departage a rang egal : sans elle, 1er sur 57
+       et 1er sur 2 valaient exactement pareil (constate au banc le 23/08).
+       Logarithme, pour qu un champ deux fois plus gros compte, mais pas
+       deux fois plus : gagner sur 60 n est pas dix fois gagner sur 6.     */
+    var ampleur = Math.log(part + 1) / Math.log(200);
+    /* le rang pese le double du champ : gagner reste ce qui compte le plus */
+    return rang * 2 + battus + ampleur;
+  }
   function meilleursPalmares(fts) {
     return (fts || []).filter(function (f) { return f.pl != null; })
       .sort(function (a, b) {
-        var d = (a.pl === 1 ? 0 : a.pl <= 3 ? 1 : 2) - (b.pl === 1 ? 0 : b.pl <= 3 ? 1 : 2);
+        var d = meriteResultat(b) - meriteResultat(a);
         if (d !== 0) return d;
         return (b.part || 0) - (a.part || 0);
       });

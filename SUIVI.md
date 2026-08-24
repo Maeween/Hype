@@ -164,6 +164,159 @@ Sa section est rétablie ci-dessous sous le titre **SESSION 141 (PAGE HYPE)**, �
 
 ---
 
+## SESSION 160 — 23/08/2026 (23h35) · LA BARRE SORT DU ROUTER
+
+**Livré : `index.html`** md5 `56357121df9549031af627f1a0fe7e21`. Part **seul**.
+`hype-import-ffe.js` (`ac7633e0…`) + `aide-import.mp4` + `aide-import.jpg` toujours à
+pousser s'ils ne le sont pas — l'index appelle `?v=4`.
+
+### 🟥 LA BARRE DU BAS — TROISIÈME TENTATIVE, AUTRE MÉTHODE
+
+Elle restait plantée au milieu de l'écran par moments (23/08 à 10h18, 18h30, 22h07).
+**`overflow: clip` posé en 152l n'a rien réglé : l'hypothèse était fausse**, et `clip`
+rogne même les éléments fixes là où `hidden` les laissait passer.
+
+Plutôt que de continuer à deviner quel ancêtre la retient, on la sort de **tous** les
+ancêtres : `ReactDOM.createPortal(NavBar, document.body)`. Un élément `position: fixed`
+n'a rien à faire dans un sous-arbre rogné.
+
+**Repli prévu** : si `createPortal` manque, elle se rend sur place comme avant. L'app ne
+peut pas tomber pour ça.
+
+**Vérifié au banc** : le nœud sort bien en portail vers le `body`, il contient bien la
+NavBar, et le repli rend sur place.
+
+⚠️ **C'est une correction structurelle, pas une preuve.** Si elle se replante encore, il
+faudra chercher ailleurs — mais cette fois il ne restera plus d'ancêtre à soupçonner.
+
+### LE DIPLÔME DU GALOP 1 — maquette, rien de codé
+
+Trois versions sur le fond fourni par Blandine (cheval noir, liserés turquoise) :
+turquoise, doré, sobre. Fichier `diplome-galop1.html`.
+
+🟥 **Point signalé, non tranché** : j'ai écrit « Hype · Fédération Française d'Équitation »
+en tête. **Si Hype n'est pas habilitée par la FFE à délivrer un diplôme, cette ligne
+l'expose** — elle laisse croire à une reconnaissance officielle. À remplacer par « Hype »
+seul sur un mot d'elle.
+
+Restent ouverts : le numéro (il faudrait une suite en base pour qu'il soit unique), la
+langue (français seul, l'app en parle six), et l'enregistrement en image (il faudra un
+canvas, pas seulement du HTML).
+
+Rappel : le « certificat de fin de Galop » figurait dans les **idées en attente**, à
+discuter avant implémentation. C'est une maquette, pas une fonctionnalité.
+
+### À l'écran : + / −
+
+- **+** rien de visible. **−** rien.
+- **effet réel** : la barre du bas ne peut plus être retenue par un conteneur du Router.
+
+### Contrôles passés
+
+149 blocs, 0 échec · portail vérifié au banc (destination `body`, contenu NavBar, repli OK).
+
+### 🔴 OUVERT
+
+1. **Réimport des sept saisons à faire** par Blandine, en « Tous ses résultats » :
+   154 lignes en base sur 178 courues, dont les 12 éliminés qui manquent toujours.
+2. **La vidéo d'aide n'est pas encore poussée** (fichiers prêts).
+3. **Le diplôme** : maquette seule, aucune décision prise.
+
+### Préparation Flutter
+
+Aucun refactor. Mais la leçon est architecturale et mérite d'être écrite : **une surface
+flottante ne doit pas dépendre de l'arbre qui la contient.** Trois tentatives ont échoué
+tant qu'on cherchait *quel* ancêtre fautait ; la bonne réponse était de n'en avoir aucun.
+En Flutter, c'est un `Overlay` — même principe, même raison.
+
+---
+
+## SESSION 159 — 23/08/2026 (23h20) · LE PLAFOND À 60
+
+**Livré : `index.html`** md5 `8fff4e4d80eea111cf114502bf3ebab1`. Part **seul**.
+`hype-import-ffe.js` (`ac7633e0…`), `aide-import.mp4` et `aide-import.jpg` restent à
+pousser s'ils ne le sont pas — l'index appelle `?v=4`.
+
+### 🟥 LES CHIFFRES FAUX — LA CAUSE, ENFIN
+
+Mesuré en SQL sur Rizotto d'Émery le 23/08 à 23h10 :
+
+| | base | PDF |
+|---|---|---|
+| premières | **49** | 49 |
+| podiums | **81** | 81 |
+| sans place | 11 | 12 |
+| total | **154** | 178 |
+
+**La base était juste.** L'import marchait, le lecteur marchait. C'est **l'app** qui ne
+lisait qu'une partie.
+
+**Ligne 32220 :** `.order("created_at").limit(60)`. La fiche ne lisait que **60 lignes sur
+154**, les soixante dernières ÉCRITES. D'où « 47 sorties, 2 victoires, 5 podiums » : les
+chiffres d'un échantillon arbitraire. Les vraies victoires tombaient hors du plafond, et
+seules les deux lignes écrites en dur restaient visibles.
+
+**Corrigé** : `limit(500)`. On garde un plafond — sans lui, 800 résultats se chargeraient
+d'un coup. 500 couvre très largement une carrière : sept saisons de Rizotto = 154 lignes.
+
+**Et le tri passe à `date_epreuve`** au lieu de `created_at` : l'ordre dépendait de l'ordre
+dans lequel Blandine avait importé ses saisons, ce qui n'a aucun sens pour un palmarès.
+
+### CE QUI A ÉTÉ ÉCARTÉ EN CHEMIN, MESURÉ
+
+- **`lireClassement` est innocent** : éprouvé sur quinze formes de victoire, dont toutes
+  celles que PDF.js déforme (`1er / 30`, `1 / 30 er`, `1 / 13 - SF er`, `1ER / 30`,
+  `1 er / 30`…). Les quinze sortent en `classe`, place 1, partants justes.
+- **Le garde-fou anti-doublons** ne coûtait qu'**une** ligne sur 166.
+- ⚠️ **Une requête erronée de ma part** : `select place, count(*) from resultats` sans
+  filtre sur le cheval. Elle couvrait TOUS les chevaux. Signalé à Blandine, refaite.
+
+### LE TRI DES MEILLEURS, RÉÉCRIT
+
+L'ancien rangeait par palier (1er / podium / le reste) puis par taille du champ. Une
+**« 3ᵉ sur 4 » passait devant une « 2ᵉ sur 30 »** — Blandine l'a vu tout de suite. Défaut
+de conception de ma part.
+
+`meriteResultat(f)` = `2 / place` + `part des concurrents battus` + `log(partants)`.
+Le rang pèse le double du champ (gagner reste ce qui compte), le champ départage.
+
+Classement obtenu au banc : `1ᵉʳ/57` › `1ᵉʳ/19` › `1ᵉʳ/4` › `1ᵉʳ/2` › `2ᵉ/83` › `2ᵉ/30` ›
+`3ᵉ/62` › `5ᵉ/27` › `13ᵉ/33` › **`3ᵉ/4`** › `2ᵉ/2`.
+
+⚠️ Première version sans le terme `log` : `1ᵉʳ sur 57` et `1ᵉʳ sur 2` valaient exactement
+pareil. Rattrapé au banc avant livraison.
+
+### À l'écran : + / −
+
+- **modifié** : les quatre chiffres de la fiche deviennent justes (49 victoires, 81 podiums)
+- **modifié** : le palmarès se range par date d'épreuve, plus par date d'import
+- **modifié** : « 3ᵉ sur 4 » ne passe plus devant « 2ᵉ sur 30 »
+- **+** les ~94 résultats qui étaient hors du plafond apparaissent
+- **−** rien
+
+### Contrôles passés
+
+149 blocs, 0 échec · `limit(500)` ×1 sur la fiche, les six `limit(60)` restants vérifiés
+un par un (aucun ne la concerne) · **page exécutée hors navigateur : 127 nœuds** · barème
+du mérite rejoué sur onze cas.
+
+### 🔴 OUVERT
+
+1. **La barre du bas se plante encore au milieu** par moments. Sortie identifiée
+   (`ReactDOM.createPortal` vers le `body`), **non faite**.
+2. **154 lignes en base sur 178 courues** : il manque encore ~24 lignes, dont les 12
+   éliminés et abandons. Le module corrigé en 156 les enverra — **il faut réimporter les
+   sept saisons après ce push**, en choisissant « Tous ses résultats ».
+
+### Préparation Flutter
+
+Aucun refactor. `meriteResultat()` rejoint le socle de fonctions pures — c'est la septième.
+Le fait qu'elle se soit rejouée en dix lignes au banc, et que le défaut du `log` ait été
+attrapé AVANT livraison, valide la méthode posée en 157. **Le module `palmares.js`
+détachable reste à faire**, aucun feu vert.
+
+---
+
 ## SESSION 157 — 23/08/2026 (22h40) · 🟥 INCIDENT — L'APP PLANTAIT SUR LA FICHE CHEVAL
 
 **Livré : `index.html`** md5 `268f4078c633567a9c01d4cde4a92032`. Part **seul**.

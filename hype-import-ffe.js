@@ -312,6 +312,17 @@
 '.hi-aide b{color:rgba(var(--tx),.85);font-weight:700}',
 '.hi-aide ol{margin:8px 0 0;padding-left:18px}',
 '.hi-aide li{margin-bottom:5px}',
+'.hi-film-t{display:flex;align-items:center;gap:11px;margin:26px 16px 0}',
+'.hi-film-t i{flex:1;height:1px;background:rgba(var(--t),.25)}',
+'.hi-film-t b{font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;',
+'  color:rgba(var(--tx),.5);font-weight:700}',
+'.hi-film{margin:13px auto 0;width:280px;max-width:calc(100% - 32px);border-radius:14px;',
+'  overflow:hidden;position:relative;cursor:pointer;background:#04070A;',
+'  border:1px solid rgba(var(--t),.2);box-shadow:0 10px 30px rgba(0,0,0,.45)}',
+'.hi-loupe{position:absolute;right:10px;bottom:10px;width:32px;height:32px;border-radius:50%;',
+'  display:flex;align-items:center;justify-content:center;pointer-events:none;font-size:14px;',
+'  color:rgba(var(--tx),.9);background:rgba(4,7,10,.62);border:1px solid rgba(255,255,255,.16)}',
+'.hi-film-l{margin:10px auto 4px;text-align:center;font-size:10.5px;color:rgba(var(--tx),.4)}',
 
 '.hi-att{margin:16px;padding:22px 18px;text-align:center;border-radius:16px;',
 '  background:rgba(var(--tx),.03);border:1px solid rgba(var(--tx),.08)}',
@@ -447,6 +458,21 @@
       '<li>Choisis l\'onglet <b>« Page entière »</b></li>' +
       '<li><b>Enregistrer le PDF dans Fichiers</b></li></ol>' +
       '⚠️ Il faut bien un <b>PDF</b> : une capture en image ne se lit pas.</div>';
+    /* 🟥 23/08 session 158 — LA VIDÉO D AIDE, TOUT EN BAS.
+       Maquette validee par Blandine : centree, 280 px, couverture E (le poney
+       et la coupe), muette et en boucle. Muette EXPRES : avec du son, iOS et
+       Android bloquent le demarrage automatique et on ne verrait qu une image
+       figee. Un tap la passe en plein ecran et rend le son.
+       `preload="none"` : elle ne se telecharge QUE si cet ecran s ouvre.
+       🟥 Les deux fichiers doivent etre pousses a la racine du depot :
+       aide-import.mp4 (1,45 Mo) et aide-import.jpg (47 Ko). */
+    h += '<div class="hi-film-t"><i></i><b>En images</b><i></i></div>' +
+      '<div class="hi-film" data-hi="film">' +
+      '<video id="hiFilm" src="aide-import.mp4?v=1" poster="aide-import.jpg?v=1" ' +
+      'autoplay muted loop playsinline preload="none" ' +
+      'style="display:block;width:100%;height:auto"></video>' +
+      '<span class="hi-loupe">⤢</span></div>' +
+      '<div class="hi-film-l">14 secondes, sans le son</div>';
     if (E.err) h += '<div class="hi-err"><b>Ça n\'a pas marché</b>' + ech(E.err) + '</div>';
     return h;
   }
@@ -662,6 +688,21 @@
       if (cv !== null) { E.cavalier = cv || ""; refaire(); return; }
 
       var act = cible.getAttribute("data-hi");
+      if (act === "film") {
+        /* iOS n expose pas requestFullscreen sur un <video> mais
+           webkitEnterFullscreen ; Chrome/Android l inverse. On tente les deux,
+           et on retombe sur les controles natifs si aucun ne repond. */
+        var vd = hote.querySelector("#hiFilm");
+        if (vd) {
+          try {
+            vd.muted = false;
+            if (vd.webkitEnterFullscreen) { vd.webkitEnterFullscreen(); return; }
+            if (vd.requestFullscreen) { vd.requestFullscreen(); return; }
+            vd.controls = true;
+          } catch (eV) { try { vd.controls = true; } catch (eV2) { } }
+        }
+        return;
+      }
       if (act === "versrelecture") { E.etape = "relecture"; refaire(); return; }
       if (act === "annuler" || act === "fermer") {
         reinitialiser();
