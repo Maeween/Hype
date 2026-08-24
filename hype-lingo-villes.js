@@ -49,35 +49,40 @@ newmarket:{
     de:["Heute Morgen habe ich Newmarket entdeckt.",
         "Ich hielt an einem Pferdeübergang, und es war das Auto vor mir, das wartete. An die zwanzig Vollblüter zogen im Nebel vorbei, ohne ein Wort, und die Stadt schlief noch."],
     ja:["今朝、ニューマーケットに出会った。",
-        "馬専用の横断路で足を止めると、待っていたのは私の前の車のほうだった。二十頭ほどのサラブレッドが霧の中を、ひと言もなく通り過ぎていき、町はまだ眠っていた。"]},
+        "馬専用の横断路で足を止めると、待っていたのは私の前の車のほうだった。二十頭ほどのサラブレッドが霧の中を、ひと言もなく通り過ぎていき、町はまだ眠っていた。"],
+      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+      ar:["هذا الصباح اكتشفت نيوماركت.", "توقفت عند معبر للخيل، فانتظرت السيارة التي أمامي. مر نحو عشرين حصانا من خيول الثوروبريد، وظهر البخار من أنفاسها في الهواء البارد، والمدينة ما زالت نائمة."]},
   volets:[
    {t:{fr:"La race d'ici", en:"The breed of this place", es:"La raza de aquí",
-       it:"La razza di qui", de:"Die Rasse von hier", ja:"この土地の品種"},
+       it:"La razza di qui", de:"Die Rasse von hier", ja:"この土地の品種", ar:"سلالة هذا المكان"},
     c:{
       fr:"Le pur-sang anglais. Trois étalons fondateurs importés au tournant du XVIII siècle, croisés avec des juments locales : toute la race en descend. Sélectionné sur une seule qualité, la vitesse tenue sur la distance.",
       en:"The English thoroughbred. Three foundation stallions imported at the turn of the 18th century, crossed with local mares: the whole breed descends from them. Selected for a single quality — speed held over a distance.",
       es:"El purasangre inglés. Tres sementales fundadores importados a comienzos del siglo XVIII, cruzados con yeguas locales: toda la raza desciende de ellos. Seleccionado por una sola cualidad: la velocidad mantenida en la distancia.",
       it:"Il purosangue inglese. Tre stalloni fondatori importati a cavallo del Settecento, incrociati con giumente locali: tutta la razza discende da loro. Selezionato per una sola qualità: la velocità tenuta sulla distanza.",
       de:"Das Englische Vollblut. Drei Gründerhengste, um die Wende zum 18. Jahrhundert eingeführt und mit einheimischen Stuten gekreuzt: Die ganze Rasse stammt von ihnen ab. Gezüchtet auf eine einzige Eigenschaft — über die Distanz gehaltene Geschwindigkeit.",
-      ja:"イギリスのサラブレッド。十八世紀初頭に輸入された三頭の基礎種牡馬が地元の牝馬と交配され、この品種のすべてがそこから生まれました。選抜の基準はただひとつ — 距離を走りきる速さです。"}},
+      ja:"イギリスのサラブレッド。十八世紀初頭に輸入された三頭の基礎種牡馬が地元の牝馬と交配され、この品種のすべてがそこから生まれました。選抜の基準はただひとつ — 距離を走りきる速さです。",
+      ar:"خيول الثوروبريد الإنجليزية. تنحدر السلالة كلها من ثلاثة فحول مؤسسة استوردت في أواخر القرن السابع عشر ومطلع القرن الثامن عشر وزوجت بأفراس محلية. وانتخبت السلالة أساسا لقدرتها على الحفاظ على سرعتها طوال مسافة السباق."}},
    {t:{fr:"Le rendez-vous", en:"The meeting place", es:"La cita",
-       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地"},
+       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地", ar:"الموعد"},
     c:{
       fr:"Deux hippodromes se partagent l'année, le Rowley Mile et la July Course. Le premier tirerait son nom du cheval favori de Charles II, qui installa sa cour ici au XVII siècle pour suivre les courses — et courait lui-même.",
       en:"Two racecourses share the year, the Rowley Mile and the July Course. The first is said to take its name from the favourite horse of Charles II, who moved his court here in the 17th century to follow the racing — and rode races himself.",
       es:"Dos hipódromos se reparten el año, la Rowley Mile y el July Course. Se dice que el primero toma su nombre del caballo favorito de Carlos II, que instaló aquí su corte en el siglo XVII para seguir las carreras — y corría él mismo.",
       it:"Due ippodromi si dividono l'anno, il Rowley Mile e il July Course. Si dice che il primo prenda il nome dal cavallo preferito di Carlo II, che nel Seicento trasferì qui la sua corte per seguire le corse — e correva lui stesso.",
       de:"Zwei Rennbahnen teilen sich das Jahr, die Rowley Mile und der July Course. Die erste soll ihren Namen vom Lieblingspferd Karls II. haben, der im 17. Jahrhundert seinen Hof hierher verlegte, um die Rennen zu verfolgen — und selbst Rennen ritt.",
-      ja:"一年をふたつの競馬場が分け合います。ローリーマイルとジュライコース。前者の名は、十七世紀に競馬を追ってここへ宮廷を移したチャールズ二世の愛馬に由来すると伝えられています — 王自身も馬を駆りました。"}}, // ?? l'origine du nom « Rowley » est traditionnelle, à formuler prudemment
+      ja:"一年をふたつの競馬場が分け合います。ローリーマイルとジュライコース。前者の名は、十七世紀に競馬を追ってここへ宮廷を移したチャールズ二世の愛馬に由来すると伝えられています — 王自身も馬を駆りました。",
+      ar:"يتقاسم مضماران السنة: الرولي مايل والجولاي كورس. ويقال إن الأول أخذ اسمه من الحصان المفضل لدى تشارلز الثاني، الذي أقام بلاطه هنا في القرن السابع عشر لمتابعة السباقات، وكان يشارك في السباقات بنفسه."}}, // ?? l'origine du nom « Rowley » est traditionnelle, à formuler prudemment
    {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí",
-       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
     c:{
       fr:"Va sur la lande au petit matin. Des chemins de sable traversent la ville et croisent les routes : aux passages cavaliers, les voitures s'arrêtent. Plus de deux mille chevaux y sont à l'entraînement.",
       en:"Go up on the heath at first light. Sand tracks run through the town and cross the roads: at the horse crossings, the cars stop. More than two thousand horses are in training there.",
       es:"Sube al páramo al amanecer. Caminos de arena atraviesan la ciudad y cruzan las carreteras: en los pasos de caballos, los coches se detienen. Más de dos mil caballos se entrenan allí.",
       it:"Sali sulla brughiera alle prime luci. Sentieri di sabbia attraversano la città e incrociano le strade: ai passaggi per cavalli, le auto si fermano. Più di duemila cavalli vi sono in allenamento.",
       de:"Geh im ersten Morgenlicht auf die Heide. Sandwege ziehen durch die Stadt und kreuzen die Straßen: An den Pferdeübergängen halten die Autos an. Mehr als zweitausend Pferde stehen dort im Training.",
-      ja:"夜明けの荒野へ行ってみて。砂の馬道が町を横切り、車道と交差します。馬の横断路では車のほうが止まるのです。二千頭を超える馬たちが、そこで調教を受けています。"}}
+      ja:"夜明けの荒野へ行ってみて。砂の馬道が町を横切り、車道と交差します。馬の横断路では車のほうが止まるのです。二千頭を超える馬たちが、そこで調教を受けています。",
+      ar:"اذهبي إلى أرض التدريب المفتوحة في الصباح الباكر. تعبر المدينة دروب رملية تتقاطع مع الطرق: وعند معابر الخيل تتوقف السيارات. ويتدرب هناك أكثر من ألفي حصان كل صباح، لكنك لا ترينها مجتمعة أبدا."}}
   ]},
 
 /* ============ 2 · LAMBOURN · Le pansage ============ */
@@ -96,35 +101,40 @@ lambourn:{
     de:["Es war noch dunkel, als der Hof aufleuchtete.",
         "Ich hörte die Eimer, dann die Hufe auf dem Pflaster. Als ich oben auf den Downs ankam, waren die Lots schon fort — ich sah nur noch den Dampf, den sie hinter sich gelassen hatten."],
     ja:["厩舎に明かりが灯ったとき、まだ夜だった。",
-        "バケツの音がして、それから石畳を打つ蹄の音。ダウンズの丘の上にたどり着いたときには、調教の一団はもう行ってしまっていた — 見えたのは、彼らが残していった白い息だけだった。"]},
+        "バケツの音がして、それから石畳を打つ蹄の音。ダウンズの丘の上にたどり着いたときには、調教の一団はもう行ってしまっていた — 見えたのは、彼らが残していった白い息だけだった。"],
+      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+      ar:["كان الليل ما زال قائما حين أضيئت الساحة.", "سمعت الدلاء، ثم وقع الحوافر على الحجارة. وحين وصلت إلى أعلى هضاب الداونز، كانت مجموعات الخيل قد انطلقت، ولم أر إلا البخار الذي خلفته وراءها."]},
   volets:[
    {t:{fr:"La vallée", en:"The valley", es:"El valle",
-       it:"La valle", de:"Das Tal", ja:"谷"},
+       it:"La valle", de:"Das Tal", ja:"谷", ar:"الوادي"},
     c:{
       fr:"Lambourn est le deuxième centre d'entraînement britannique après Newmarket. Un village entier qui ne vit que du cheval : entraîneurs, lads, maréchaux, vétérinaires, transporteurs. On l'appelle la vallée du cheval de course.",
       en:"Lambourn is Britain's second training centre after Newmarket. A whole village that lives on nothing but the horse: trainers, lads, farriers, vets, transporters. They call it the valley of the racehorse.",
       es:"Lambourn es el segundo centro de entrenamiento británico después de Newmarket. Un pueblo entero que solo vive del caballo: entrenadores, mozos, herradores, veterinarios, transportistas. Lo llaman el valle del caballo de carreras.",
       it:"Lambourn è il secondo centro di allenamento britannico dopo Newmarket. Un intero villaggio che vive solo di cavalli: allenatori, lads, maniscalchi, veterinari, trasportatori. Lo chiamano la valle del cavallo da corsa.",
       de:"Lambourn ist Großbritanniens zweites Trainingszentrum nach Newmarket. Ein ganzes Dorf, das von nichts als dem Pferd lebt: Trainer, Lads, Hufschmiede, Tierärzte, Transporteure. Man nennt es das Tal des Rennpferds.",
-      ja:"ラムボーンはニューマーケットに次ぐイギリス第二の調教拠点。村全体が馬だけで生きています。調教師、厩務員、装蹄師、獣医、馬運車の運転手。人はここを「競走馬の谷」と呼びます。"}},
+      ja:"ラムボーンはニューマーケットに次ぐイギリス第二の調教拠点。村全体が馬だけで生きています。調教師、厩務員、装蹄師、獣医、馬運車の運転手。人はここを「競走馬の谷」と呼びます。",
+      ar:"لامبورن ثاني أكبر مركز لتدريب خيول السباق في بريطانيا بعد نيوماركت. قرية بأكملها لا تعيش إلا من الخيل: مدربون وعمال إسطبل وبيطارون وأطباء بيطريون وناقلون. وتعرف باسم وادي خيول السباق."}},
    {t:{fr:"Le terrain", en:"The ground", es:"El terreno",
-       it:"Il terreno", de:"Der Boden", ja:"大地"},
+       it:"Il terreno", de:"Der Boden", ja:"大地", ar:"الأرض"},
     c:{
       fr:"Les Downs, ces collines de craie couvertes d'herbe rase, drainent vite et amortissent bien. C'est le sol qui a fait la réputation de la vallée, pas le hasard : la craie boit l'eau et l'herbe reste portante même après la pluie.",
       en:"The Downs, those chalk hills covered in short grass, drain fast and cushion well. It is the ground that made the valley's name, not chance: the chalk drinks the water and the turf stays sound even after rain.",
       es:"Los Downs, esas colinas de creta cubiertas de hierba rasa, drenan rápido y amortiguan bien. Es el suelo lo que hizo la reputación del valle, no el azar: la creta bebe el agua y la hierba sigue firme incluso después de la lluvia.",
       it:"I Downs, quelle colline di gesso coperte d'erba rasa, drenano in fretta e ammortizzano bene. È il terreno ad aver fatto la reputazione della valle, non il caso: il gesso beve l'acqua e l'erba resta portante anche dopo la pioggia.",
       de:"Die Downs, diese mit kurzem Gras bewachsenen Kreidehügel, entwässern schnell und federn gut. Der Boden hat den Ruf des Tals gemacht, nicht der Zufall: Die Kreide trinkt das Wasser, und das Gras bleibt tragfähig, selbst nach dem Regen.",
-      ja:"ダウンズ — 短い草に覆われた白亜の丘は、水はけがよく、脚への衝撃をやわらげます。この谷の名声をつくったのは偶然ではなく大地です。白亜は水を飲み込み、雨のあとでも芝はしっかりと馬を支えます。"}},
+      ja:"ダウンズ — 短い草に覆われた白亜の丘は、水はけがよく、脚への衝撃をやわらげます。この谷の名声をつくったのは偶然ではなく大地です。白亜は水を飲み込み、雨のあとでも芝はしっかりと馬を支えます。",
+      ar:"هضاب الداونز، تلك التلال الطباشيرية التي يكسوها عشب قصير، تصرف الماء بسرعة وتمتص الصدمات جيدا. فهذه التربة هي التي صنعت سمعة الوادي، لا الصدفة: يمتص الطباشير الماء سريعا، ويبقى العشب متماسكا وصالحا للتدريب حتى بعد المطر."}},
    {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí",
-       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
     c:{
       fr:"Monte sur les Downs avant sept heures. On entend les lots arriver bien avant de les voir — d'abord un grondement sourd, puis la respiration des chevaux, et ils passent.",
       en:"Climb the Downs before seven. You hear the strings coming long before you see them — first a low rumble, then the horses' breathing, and they pass.",
       es:"Sube a los Downs antes de las siete. Se oye llegar a los lotes mucho antes de verlos — primero un retumbo sordo, luego la respiración de los caballos, y pasan.",
       it:"Sali sui Downs prima delle sette. Si sentono arrivare i lotti molto prima di vederli — prima un rombo sordo, poi il respiro dei cavalli, e passano.",
       de:"Steig vor sieben auf die Downs. Man hört die Lots kommen, lange bevor man sie sieht — erst ein dumpfes Grollen, dann der Atem der Pferde, und sie ziehen vorbei.",
-      ja:"七時前にダウンズへ登ってみて。一団は姿が見えるずっと前から聞こえてきます — まず低い地響き、それから馬たちの息づかい。そして、目の前を駆け抜けていきます。"}}
+      ja:"七時前にダウンズへ登ってみて。一団は姿が見えるずっと前から聞こえてきます — まず低い地響き、それから馬たちの息づかい。そして、目の前を駆け抜けていきます。",
+      ar:"اصعدي إلى هضاب الداونز قبل السابعة. ستسمعين مجموعات الخيل تقترب قبل أن تريها بوقت طويل: أولا دوي خافت، ثم أنفاس الخيول، قبل أن تمر أمامك."}}
   ]},
 
 /* ============ 3 · CONNEMARA · Le cheval ============ */
@@ -143,35 +153,40 @@ connemara:{
     de:["Ich suchte die Ponys lange, bevor ich sie sah.",
         "Sie standen draußen, grau wie der Himmel, reglos hinter einer Trockensteinmauer. Der Wind hörte den ganzen Tag nicht ein einziges Mal auf, und sie rührten sich nicht."],
     ja:["ポニーたちを見つけるまで、ずいぶん探した。",
-        "彼らは外にいた。空と同じ灰色で、石積みの塀の向こうに、身じろぎもせずに。風は一日じゅう一度もやまなかったのに、彼らは動かなかった。"]},
+        "彼らは外にいた。空と同じ灰色で、石積みの塀の向こうに、身じろぎもせずに。風は一日じゅう一度もやまなかったのに、彼らは動かなかった。"],
+      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+      ar:["بحثت طويلا عن خيول البوني قبل أن أراها.", "كانت خيول البوني في الخارج، رمادية كلون السماء، ساكنة خلف جدار من الحجارة المرصوصة من دون ملاط. ولم تهدأ الريح لحظة واحدة طوال اليوم، أما الخيول فلم تتحرك."]},
   volets:[
    {t:{fr:"Une terre entre ciel et océan", en:"A land between sky and ocean", es:"Una tierra entre cielo y océano",
-       it:"Una terra tra cielo e oceano", de:"Ein Land zwischen Himmel und Ozean", ja:"空と海のあいだの土地"},
+       it:"Una terra tra cielo e oceano", de:"Ein Land zwischen Himmel und Ozean", ja:"空と海のあいだの土地", ar:"أرض بين السماء والمحيط"},
     c:{
       fr:"Le Connemara est une région où les montagnes, les tourbières, les lacs et l'Atlantique se rencontrent. La lumière y change toutes les heures, et le vent ne s'arrête jamais tout à fait.",
       en:"Connemara is a region where mountains, peat bogs, lakes and the Atlantic meet. The light changes every hour, and the wind never quite stops.",
       es:"Connemara es una región donde las montañas, las turberas, los lagos y el Atlántico se encuentran. La luz cambia cada hora, y el viento nunca se detiene del todo.",
       it:"Il Connemara è una regione dove le montagne, le torbiere, i laghi e l'Atlantico si incontrano. La luce vi cambia ogni ora, e il vento non si ferma mai del tutto.",
       de:"Connemara ist eine Region, in der Berge, Torfmoore, Seen und der Atlantik zusammentreffen. Das Licht wechselt dort jede Stunde, und der Wind hört nie ganz auf.",
-      ja:"コネマラは、山と泥炭地と湖と大西洋が出会う土地。光は一時間ごとに変わり、風は決して完全にはやみません。"}},
+      ja:"コネマラは、山と泥炭地と湖と大西洋が出会う土地。光は一時間ごとに変わり、風は決して完全にはやみません。",
+      ar:"الكونيمارا منطقة تلتقي فيها الجبال والمستنقعات الخثية والبحيرات والمحيط الأطلسي. يتغير الضوء فيها كل ساعة، والريح لا تهدأ تماما أبدا."}},
    {t:{fr:"Le poney des grands espaces", en:"The pony of the wide open spaces", es:"El poni de los grandes espacios",
-       it:"Il pony dei grandi spazi", de:"Das Pony der weiten Räume", ja:"大地のポニー"},
+       it:"Il pony dei grandi spazi", de:"Das Pony der weiten Räume", ja:"大地のポニー", ar:"مهر المساحات الواسعة"},
     c:{
       fr:"Élevé pendant des générations dans un environnement exigeant, le Connemara est réputé pour son courage, son intelligence et sa sûreté de pied. Compact et bas sur pattes, il saute bien au-dessus de sa taille et porte aussi bien un enfant qui débute qu'un cavalier en compétition.",
       en:"Bred for generations in a demanding environment, the Connemara is known for its courage, intelligence and sure-footedness. Compact and close to the ground, it jumps well above its height and carries a beginner child as happily as a competition rider.",
       es:"Criado durante generaciones en un entorno exigente, el Connemara es conocido por su valor, su inteligencia y su seguridad de pie. Compacto y bajo de patas, salta muy por encima de su talla y lleva tan bien a un niño que empieza como a un jinete de competición.",
       it:"Allevato per generazioni in un ambiente esigente, il Connemara è noto per il coraggio, l'intelligenza e la sicurezza di piede. Compatto e basso sugli arti, salta ben oltre la sua taglia e porta bene tanto un bambino che inizia quanto un cavaliere in gara.",
       de:"Über Generationen in einer fordernden Umgebung gezüchtet, ist das Connemara für Mut, Intelligenz und Trittsicherheit bekannt. Kompakt und tief gestellt, springt es weit über seine Größe hinaus und trägt ein Anfängerkind ebenso gern wie einen Turnierreiter.",
-      ja:"厳しい環境で何世代も育まれてきたコネマラは、勇気と賢さ、そして足取りの確かさで知られます。小柄でがっしりとして、体高をはるかに超える障害を跳び、初心者の子どもも競技の騎手も、同じように背に乗せてくれます。"}},
+      ja:"厳しい環境で何世代も育まれてきたコネマラは、勇気と賢さ、そして足取りの確かさで知られます。小柄でがっしりとして、体高をはるかに超える障害を跳び、初心者の子どもも競技の騎手も、同じように背に乗せてくれます。",
+      ar:"تربى بوني الكونيمارا على مدى أجيال في بيئة قاسية، فاشتهر بشجاعته وذكائه وثباته على الأرض. وهو قوي البنية وقصير القوائم، ويقفز حواجز تفوق ما يوحي به حجمه، ويناسب طفلة مبتدئة كما يناسب فارسة تشارك في المسابقات."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
-       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？"},
+       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
       fr:"Une vieille légende veut que certains ancêtres du Connemara soient issus de chevaux espagnols échoués sur ces côtes après le naufrage de l'Armada, en 1588. Les études sur la race ne l'appuient pas, mais l'histoire se raconte encore là-bas — et elle fait partie du paysage autant que les murets de pierre.",
       en:"An old legend has it that some of the Connemara's ancestors came from Spanish horses washed ashore after the wreck of the Armada in 1588. Studies of the breed do not support it, but the story is still told over there — and it belongs to the landscape as much as the stone walls do.",
       es:"Una vieja leyenda cuenta que algunos antepasados del Connemara procedían de caballos españoles llegados a estas costas tras el naufragio de la Armada, en 1588. Los estudios sobre la raza no lo respaldan, pero la historia aún se cuenta allí — y forma parte del paisaje tanto como los muros de piedra.",
       it:"Una vecchia leggenda vuole che alcuni antenati del Connemara discendano da cavalli spagnoli naufragati su queste coste dopo il disastro dell'Armada, nel 1588. Gli studi sulla razza non la sostengono, ma la storia si racconta ancora laggiù — e fa parte del paesaggio quanto i muretti di pietra.",
       de:"Eine alte Legende will, dass einige Vorfahren des Connemara von spanischen Pferden stammen, die nach dem Untergang der Armada 1588 an diese Küsten gespült wurden. Die Studien zur Rasse stützen das nicht, aber die Geschichte wird dort noch erzählt — und sie gehört zur Landschaft wie die Steinmauern.",
-      ja:"古い言い伝えでは、コネマラの祖先の一部は、一五八八年の無敵艦隊の遭難でこの海岸に流れ着いたスペインの馬だと言われます。品種の研究はそれを裏づけていませんが、この物語は今も土地で語り継がれています — 石積みの塀と同じく、風景の一部として。"}}
+      ja:"古い言い伝えでは、コネマラの祖先の一部は、一五八八年の無敵艦隊の遭難でこの海岸に流れ着いたスペインの馬だと言われます。品種の研究はそれを裏づけていませんが、この物語は今も土地で語り継がれています — 石積みの塀と同じく、風景の一部として。",
+      ar:"تقول أسطورة قديمة إن بعض أسلاف الكونيمارا ينحدرون من خيول إسبانية وصلت إلى هذه السواحل بعد غرق سفن الأرمادا عام 1588. ولا تؤيد الدراسات المتعلقة بالسلالة هذه الرواية، لكن الحكاية ما زالت تروى هناك، وأصبحت جزءا من المكان مثل الجدران الحجرية."}}
   ]},
 
 /* ============ 4 · WALSALL · Le matériel ============ */
@@ -237,35 +252,40 @@ aberystwyth:{
     de:["Heute Morgen bin ich im Meer galoppiert.",
         "Der Strand war leer. Der Cob ging ohne eine Sekunde Zögern ins Wasser, und wir endeten im Galopp durch die Wellen. Das Salz trocknete auf meinen Stiefeln, und ich lächelte ganz für mich."],
     ja:["今朝、海の中を駆けた。",
-        "浜辺には誰もいなかった。コブは一瞬もためらわず水に入り、最後は波の中を駆け抜けた。ブーツの上で塩が乾いていき、私はひとりで笑っていた。"]},
+        "浜辺には誰もいなかった。コブは一瞬もためらわず水に入り、最後は波の中を駆け抜けた。ブーツの上で塩が乾いていき、私はひとりで笑っていた。"],
+      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+      ar:["هذا الصباح، عدوت داخل البحر.", "كان الشاطئ خاليا. دخل حصان الكوب الماء من دون تردد لحظة واحدة، وانتهى بنا الأمر نعدو داخل الأمواج. جف الملح على حذائي، وكنت أبتسم وحدي."]},
   volets:[
    {t:{fr:"Le Welsh pony and cob", en:"The Welsh pony and cob", es:"El poni y cob galés",
-       it:"Il Welsh pony and cob", de:"Das Welsh Pony and Cob", ja:"ウェルシュ・ポニー＆コブ"},
+       it:"Il Welsh pony and cob", de:"Das Welsh Pony and Cob", ja:"ウェルシュ・ポニー＆コブ", ar:"المهر والكوب الويلزيان"},
     c:{
       fr:"Un seul stud-book, quatre sections. La A, le poney de montagne, le plus petit. La B, plus fine, montée par les enfants en concours. La C, trapue, très utilisée en attelage. La D, le Welsh cob, assez grand pour porter un adulte. Le Ceredigion est son pays.",
       en:"One stud book, four sections. Section A, the mountain pony, the smallest. Section B, finer, ridden by children in competition. Section C, stocky, much used in driving. Section D, the Welsh cob, big enough to carry an adult. Ceredigion is its homeland.",
       es:"Un solo libro genealógico, cuatro secciones. La A, el poni de montaña, el más pequeño. La B, más fina, montada por los niños en concurso. La C, robusta, muy usada en enganche. La D, el cob galés, lo bastante grande para llevar a un adulto. El Ceredigion es su tierra.",
       it:"Un solo libro genealogico, quattro sezioni. La A, il pony di montagna, il più piccolo. La B, più fine, montata dai bambini in gara. La C, tarchiata, molto usata negli attacchi. La D, il Welsh cob, abbastanza grande da portare un adulto. Il Ceredigion è la sua terra.",
       de:"Ein einziges Zuchtbuch, vier Sektionen. Die A, das Bergpony, das kleinste. Die B, feiner, von Kindern im Turnier geritten. Die C, gedrungen, viel im Fahrsport genutzt. Die D, das Welsh Cob, groß genug, um einen Erwachsenen zu tragen. Ceredigion ist seine Heimat.",
-      ja:"血統書はひとつ、セクションは四つ。Aは山のポニーで最も小さく、Bはより繊細で子どもたちが競技で乗ります。Cはがっしりとして馬車競技で活躍し、Dのウェルシュ・コブは大人を乗せられる大きさ。ケレディジョンこそ、その故郷です。"}},
+      ja:"血統書はひとつ、セクションは四つ。Aは山のポニーで最も小さく、Bはより繊細で子どもたちが競技で乗ります。Cはがっしりとして馬車競技で活躍し、Dのウェルシュ・コブは大人を乗せられる大きさ。ケレディジョンこそ、その故郷です。",
+      ar:"سجل أنساب واحد، وأربعة أقسام. القسم ألف: مهر الجبل، وهو الأصغر. والقسم باء: أنحف بنية، ويركبه الأطفال في المسابقات. والقسم جيم: ممتلئ البنية، ويستعمل كثيرا في الجر. والقسم دال: الكوب الويلزي، وهو كبير بما يكفي ليحمل بالغا. ومقاطعة كيريديجون هي أرضه."}},
    {t:{fr:"Le rendez-vous", en:"The meeting place", es:"La cita",
-       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地"},
+       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地", ar:"الموعد"},
     c:{
       fr:"L'Aberystwyth and Ceredigion County Show, affilié à la Welsh Pony and Cob Society, décerne sa médaille au meilleur sujet de chaque section. C'est là qu'on comprend ce que veulent vraiment dire ces quatre lettres.",
       en:"The Aberystwyth and Ceredigion County Show, affiliated to the Welsh Pony and Cob Society, awards its medal to the best of each section. That is where you understand what those four letters really mean.",
       es:"El Aberystwyth and Ceredigion County Show, afiliado a la Welsh Pony and Cob Society, entrega su medalla al mejor ejemplar de cada sección. Allí se entiende lo que de verdad significan esas cuatro letras.",
       it:"L'Aberystwyth and Ceredigion County Show, affiliato alla Welsh Pony and Cob Society, assegna la sua medaglia al miglior soggetto di ogni sezione. È lì che si capisce cosa vogliono dire davvero quelle quattro lettere.",
       de:"Die Aberystwyth and Ceredigion County Show, der Welsh Pony and Cob Society angeschlossen, verleiht ihre Medaille an das beste Tier jeder Sektion. Dort versteht man, was diese vier Buchstaben wirklich bedeuten.",
-      ja:"ウェルシュ・ポニー＆コブ協会公認のアベリストウィス＆ケレディジョン・カウンティショーでは、各セクションの最優秀馬にメダルが贈られます。あの四つの文字が本当は何を意味するのか、そこで初めて分かります。"}},
+      ja:"ウェルシュ・ポニー＆コブ協会公認のアベリストウィス＆ケレディジョン・カウンティショーでは、各セクションの最優秀馬にメダルが贈られます。あの四つの文字が本当は何を意味するのか、そこで初めて分かります。",
+      ar:"معرض أبريستويث وكيريديجون، المنتسب إلى جمعية المهر والكوب الويلزيين، يمنح ميداليته لأفضل فرد في كل قسم. وهناك تفهمين ما تعنيه هذه الحروف الأربعة حقا."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
-       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？"},
+       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
       fr:"La Trans Wales Trail, une traversée du pays de Galles de plusieurs jours à cheval, se termine par un galop dans la mer d'Irlande, près d'ici. Et un sentier remonte vers les monts Cambriens, là où les fermiers rassemblaient autrefois les poneys des pâtures de montagne pour emmener les visiteurs en randonnée.",
       en:"The Trans Wales Trail, a ride of several days across Wales, ends with a gallop into the Irish Sea, near here. And a trail climbs towards the Cambrian Mountains, where farmers once gathered the ponies off the mountain pastures to take visitors trekking.",
       es:"La Trans Wales Trail, una travesía de varios días a caballo por Gales, termina con un galope en el mar de Irlanda, cerca de aquí. Y un sendero sube hacia los montes Cámbricos, donde los granjeros reunían antaño los ponis de los pastos de montaña para llevar a los visitantes de excursión.",
       it:"La Trans Wales Trail, una traversata del Galles di più giorni a cavallo, si conclude con un galoppo nel mare d'Irlanda, vicino a qui. E un sentiero risale verso i monti Cambrici, dove un tempo i fattori radunavano i pony dei pascoli di montagna per portare i visitatori in escursione.",
       de:"Der Trans Wales Trail, eine mehrtägige Durchquerung von Wales zu Pferd, endet mit einem Galopp in die Irische See, ganz in der Nähe. Und ein Pfad steigt zu den Kambrischen Bergen hinauf, wo die Bauern einst die Ponys von den Bergweiden zusammentrieben, um Besucher auf Wanderritte mitzunehmen.",
-      ja:"数日かけてウェールズを馬で横断するトランス・ウェールズ・トレイルは、この近くのアイリッシュ海への駆け込みで幕を閉じます。そしてカンブリア山地へ続く小道では、かつて農夫たちが山の放牧地からポニーを集め、訪れる人々をトレッキングに連れ出していました。"}}
+      ja:"数日かけてウェールズを馬で横断するトランス・ウェールズ・トレイルは、この近くのアイリッシュ海への駆け込みで幕を閉じます。そしてカンブリア山地へ続く小道では、かつて農夫たちが山の放牧地からポニーを集め、訪れる人々をトレッキングに連れ出していました。",
+      ar:"مسار عبر ويلز، وهو رحلة على ظهر الخيل تستغرق أياما، ينتهي بعدو داخل البحر الإيرلندي قريبا من هنا. وثمة درب يصعد نحو جبال كامبريان، حيث كان المزارعون يجمعون المهور من مراعي الجبل ليأخذوا الزوار في نزهات."}}
   ]},
 /* ============ 6 · WINDSOR · Le dressage ============ */
 windsor:{

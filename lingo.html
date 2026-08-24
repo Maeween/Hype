@@ -3020,7 +3020,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      Ces fichiers DOIVENT etre charges avant le script principal.
      Ajoute le 4 aout 2026 : ils existaient au depot mais n'etaient
      charges par personne.
-     Le chapitre 10 (Les dialogues) n'est pas encore ecrit.
+     Note du 4 aout devenue fausse, corrigee le 24/08 : le chapitre 10
+     est ecrit, et il s'appelle desormais « Les urgences du cavalier ».
      ================================================================== -->
 <!-- ⚠️ ?l=3 DEPUIS LE 19/08 : 42 -> 37 concepts, quatre phrases du
      dialogue et un exercice réécrits, table `titres` ajoutée. Sans ce
@@ -3933,7 +3934,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=72";   /* 🟥 v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
+var VER = "?v=74";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+/* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
    v70 (20/08) : casse-cache du lot d'images Versailles — la carte
@@ -4147,7 +4149,7 @@ var ETAPES = [
   {ref:"burghley",  ch:"Le cross",     v:"Burghley",    nat:"Angleterre",     h:"02 h 55", ciel:["#0A1424","#16263C"], forme:"manoir",   souv:"Une paire de crampons",        ic:"fer"},
  {ref:"badminton", ch:"Le concours",  v:"Badminton",   nat:"Angleterre",     h:"02 h 50", ciel:["#081020","#122036"], forme:"manoir",   souv:"Le trophée de Badminton",                  ic:"trophee"},
  {ref:"kildare",   ch:"Les urgences", v:"Kildare",     nat:"Irlande",        h:"04 h 10", ciel:["#0C1A2C","#20344B"], forme:"haras",    souv:"Une trousse de secours",               ic:"trousse"},
- {ref:"edimbourg", ch:"Les dialogues",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
+ {ref:"edimbourg", ch:"Les urgences du cavalier",v:"Édimbourg",   nat:"Écosse",         h:"05 h 25", ciel:["#16283F","#C58B45"], forme:"edim",     souv:"Un carnet de mots",            ic:"carnet"},
  /* ---- les huit destinations du tour du monde, ajoutées le 5 août 2026 ----
     Le champ `h` est un reste du chemin d'une nuit, abandonné avec lui : il
     ne raconte plus une progression, seulement une heure d'arrivée plausible.
@@ -4486,6 +4488,126 @@ var I18N_H = {
  "12 h 10":{en:"12.10 pm",es:"12:10", it:"12:10", de:"12:10 Uhr", ja:"12時10分"}
 };
 var ETAPES_I18N = {
+ /* 🟥 24/08/2026 — SEIZE VILLES SANS AUCUNE ENTRÉE ICI.
+    Leur nom de chapitre et leur souvenir s'affichaient en FRANÇAIS dans
+    les six langues, depuis leur création. Ce n'est pas un sujet arabe :
+    c'était un trou pour toutes les cavalières non francophones, invisible
+    en naviguant en français.
+    ⚠️ RÈGLE : toute ville neuve doit avoir son entrée ICI, au même titre
+    que ses quatre déclarations et que ses familles dans COLL_NOM.
+    🟡 Le champ `ar` est dormant : aucun écran ne le lit. */
+ maurice:{
+   ch:{en:"The ride out", es:"El paseo", it:"La passeggiata", de:"Der Ausritt", ja:"外乗",
+       ar:"النزهة على الخيل"},
+   v:{ja:"ル・モルヌ"},
+   souv:{en:"A shell from the lagoon", es:"Una concha del lagón",
+         it:"Una conchiglia della laguna", de:"Eine Muschel aus der Lagune",
+         ja:"ラグーンの貝殻", ar:"صدفة من البحيرة الشاطئية"}},
+ burghley:{
+   ch:{en:"Cross-country", es:"El cross", it:"Il cross", de:"Die Geländeprüfung", ja:"クロスカントリー",
+       ar:"سباق الضاحية"},
+   v:{ja:"バーリー"},
+   souv:{en:"A pair of studs", es:"Un par de clavos",
+         it:"Una coppia di ramponi", de:"Ein Paar Stollen",
+         ja:"スタッド一組", ar:"زوج من مسامير الجليد"}},
+ golega:{
+   ch:{en:"Breeding", es:"La cría", it:"L'allevamento", de:"Die Zucht", ja:"繁殖",
+       ar:"تربية الخيل"},
+   v:{ja:"ゴレガン"},
+   souv:{en:"A page from the stud-book", es:"Una página del libro genealógico",
+         it:"Una pagina dello stud-book", de:"Eine Seite aus dem Zuchtbuch",
+         ja:"血統書の一ページ", ar:"صفحة من سجل الأنساب"}},
+ fontainebleau:{
+   ch:{en:"Young horses", es:"Los caballos jóvenes", it:"I cavalli giovani", de:"Die jungen Pferde", ja:"若馬",
+       ar:"الخيول الصغيرة"},
+   v:{ja:"フォンテーヌブロー"},
+   souv:{en:"A stable door plate", es:"Una placa de box",
+         it:"Una targhetta da box", de:"Ein Boxenschild",
+         ja:"馬房のネームプレート", ar:"لوحة من باب الحجرة"}},
+ barcelone:{
+   ch:{en:"Travelling with your horse", es:"Viajar con su caballo", it:"Viaggiare con il proprio cavallo", de:"Mit dem Pferd reisen", ja:"馬とともに旅する",
+       ar:"السفر مع الحصان"},
+   v:{ja:"バルセロナ"},
+   souv:{en:"Hibiscus in a blue jar", es:"Hibiscos en jarra azul",
+         it:"Ibischi in un vaso azzurro", de:"Hibiskus in blauem Krug",
+         ja:"青い壺のハイビスカス", ar:"زهور الكركديه في جرة زرقاء"}},
+ rome:{
+   ch:{en:"The Nations Cup", es:"La Copa de las Naciones", it:"La Coppa delle Nazioni", de:"Der Nationenpreis", ja:"ネイションズカップ",
+       ar:"كأس الأمم"},
+   v:{ja:"ローマ"},
+   souv:{en:"A cup from Piazza di Siena", es:"Una copa de Piazza di Siena",
+         it:"Una coppa di Piazza di Siena", de:"Ein Pokal von der Piazza di Siena",
+         ja:"ピアッツァ・ディ・シエナの杯", ar:"كأس من ساحة سيينا"}},
+ verone:{
+   ch:{en:"The horse trade", es:"El comercio", it:"Il commercio", de:"Der Pferdehandel", ja:"馬の取引",
+       ar:"تجارة الخيل"},
+   v:{ja:"ヴェローナ"},
+   souv:{en:"A fair contract", es:"Un contrato de feria",
+         it:"Un contratto di fiera", de:"Ein Messevertrag",
+         ja:"市の契約書", ar:"عقد من السوق"}},
+ dubai:{
+   ch:{en:"Endurance", es:"El raid", it:"L'endurance", de:"Die Distanzreiterei", ja:"エンデュランス",
+       ar:"سباق التحمل"},
+   v:{ja:"ドバイ"},
+   souv:{en:"An endurance saddle", es:"Una silla de raid",
+         it:"Una sella da endurance", de:"Ein Distanzsattel",
+         ja:"エンデュランス用鞍", ar:"سرج التحمل"}},
+ tokyo:{
+   ch:{en:"Tradition", es:"La tradición", it:"La tradizione", de:"Die Tradition", ja:"伝統",
+       ar:"التقاليد"},
+   v:{ja:"東京"},
+   souv:{en:"A yabusame arrow", es:"Una flecha de yabusame",
+         it:"Una freccia di yabusame", de:"Ein Yabusame-Pfeil",
+         ja:"流鏑馬の矢", ar:"سهم من اليابوساميه"}},
+ tamworth:{
+   ch:{en:"Western riding", es:"La monta western", it:"La monta western", de:"Das Westernreiten", ja:"ウエスタン",
+       ar:"الركوب الغربي"},
+   v:{ja:"タムワース"},
+   souv:{en:"A braided rope", es:"Una cuerda trenzada",
+         it:"Una corda intrecciata", de:"Ein geflochtenes Seil",
+         ja:"編み込みのロープ", ar:"حبل مجدول"}},
+ buenos:{
+   ch:{en:"Polo", es:"El polo", it:"Il polo", de:"Das Polo", ja:"ポロ",
+       ar:"البولو"},
+   v:{ja:"ブエノスアイレス"},
+   souv:{en:"A bamboo mallet", es:"Un taco de bambú",
+         it:"Una stecca di bambù", de:"Ein Bambusschläger",
+         ja:"竹のマレット", ar:"مطرقة من الخيزران"}},
+ lexington:{
+   ch:{en:"The stud farm", es:"El haras", it:"L'allevamento", de:"Das Gestüt", ja:"牧場",
+       ar:"مزرعة الخيول"},
+   v:{ja:"レキシントン"},
+   souv:{en:"A lot number", es:"Un número de lote",
+         it:"Un numero di lotto", de:"Eine Losnummer",
+         ja:"上場番号", ar:"رقم من المزاد"}},
+ santaynez:{
+   ch:{en:"Horsemanship", es:"El horsemanship", it:"L'horsemanship", de:"Die Horsemanship", ja:"ホースマンシップ",
+       ar:"فن التعامل مع الخيل"},
+   v:{ja:"サンタ・イネス"},
+   souv:{en:"A horsehair hackamore", es:"Una hackamore de crin",
+         it:"Un hackamore di crine", de:"Ein Hackamore aus Rosshaar",
+         ja:"馬毛のハカモア", ar:"لجام من شعر الخيل"}},
+ spruce:{
+   ch:{en:"The cold", es:"El frío", it:"Il freddo", de:"Die Kälte", ja:"寒さ",
+       ar:"البرد"},
+   v:{ja:"スプルース・メドウズ"},
+   souv:{en:"A winter rug", es:"Una manta de invierno",
+         it:"Una coperta invernale", de:"Eine Winterdecke",
+         ja:"冬用の馬着", ar:"غطاء شتوي"}},
+ flyinge:{
+   ch:{en:"Farriery", es:"El herraje", it:"La mascalcia", de:"Die Hufbeschlagkunst", ja:"装蹄",
+       ar:"البيطرة"},
+   v:{ja:"フリンゲ"},
+   souv:{en:"A gilded horseshoe", es:"Una herradura dorada",
+         it:"Un ferro di cavallo dorato", de:"Ein vergoldetes Hufeisen",
+         ja:"金色の蹄鉄", ar:"حدوة مذهبة"}},
+ clonbinane:{
+   ch:{en:"Learning", es:"El aprendizaje", it:"L'apprendimento", de:"Das Lernen", ja:"学習",
+       ar:"التعلم"},
+   v:{ja:"クロンビナン"},
+   souv:{en:"An oilskin drover's coat", es:"Un abrigo australiano encerado",
+         it:"Un cappotto australiano cerato", de:"Ein gewachster Reitmantel",
+         ja:"オイルスキンのコート", ar:"معطف أسترالي من القماش المزيت"}},
  labaule:{
    /* 🟡 `ar` dormant (23/08) — aucun écran ne lit ces champs. */
    ch:{en:"Arriving", es:"La llegada", it:"L'arrivo", de:"Die Ankunft", ja:"到着",
@@ -4635,7 +4757,12 @@ var ETAPES_I18N = {
          it:"Una cassetta di pronto soccorso", de:"Ein Verbandskasten fürs Pferd",
          ja:"馬用の救急箱", ar:"حقيبة إسعافات أولية للخيل"}},
  edimbourg:{
-   ch:{en:"Conversations", es:"Las conversaciones", it:"I dialoghi", de:"Gespräche", ja:"会話"},
+   /* 🟥 24/08 : renommé. Le découpage du 16/08 a séparé les urgences
+      vétérinaires (Kildare) des urgences humaines (Édimbourg), mais
+      l'écran d'arrivée disait encore « Les dialogues » — une cavalière
+      voyait ce titre et tombait sur un chapitre de secours. */
+   ch:{en:"Rider emergencies", es:"Urgencias del jinete", it:"Le urgenze del cavaliere",
+       de:"Notfälle beim Reiter", ja:"騎手の緊急事態", ar:"إسعاف الفارسة"},
    v:{en:"Edinburgh", es:"Edimburgo", it:"Edimburgo", de:"Edinburgh", ja:"エディンバラ"},
    souv:{en:"A notebook of words", es:"Un cuaderno de palabras", it:"Un quaderno di parole",
          de:"Ein Wörterheft", ja:"言葉の手帳"}}
@@ -4753,7 +4880,11 @@ var RECITS = {
       {f:"Das Riff bricht die Dünung einen Kilometer draußen — das macht das Baden zu Pferd hier möglich."}],
   ja:["水は朝からぬるく、ラグーンはサンゴ礁まで波ととのひとつ立てない。",
       "水は鞍の高さまで上がり、馬は騎乗者を乗せたまま泳ぐ。",
-      {f:"サンゴ礁が沖合一キロでうねりを砕く。だからここでは、馬と海に入ることができる。"}]},
+      {f:"サンゴ礁が沖合一キロでうねりを砕く。だからここでは、馬と海に入ることができる。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["الماء دافئ منذ الصباح، ولا تتشكل موجة واحدة في البحيرة الشاطئية حتى الحاجز المرجاني.",
+      "يرتفع الماء إلى مستوى السرج، ويسبح الحصان وفارسته على ظهره.",
+      {f:"يكسر الحاجز المرجاني أمواج البحر على بعد كيلومتر من الشاطئ، وهذا ما يجعل دخول الماء على ظهور الخيل ممكنا هنا."}]},
  newmarket:{
   fr:["Le brouillard n'est pas encore tombé. Les pur-sang sortent des écuries un par un, et les lads ne se parlent pas.",
       "Aux passages cavaliers, les voitures s'arrêtent. Ici, on entend le galop avant de voir le jour.",
@@ -4772,7 +4903,11 @@ var RECITS = {
       {f:"Über zweitausend Pferde im Training, und ein Königshof, der sich im 17. Jahrhundert hier niederließ, um den Rennen zu folgen."}],
   ja:["霧はまだ降りていない。サラブレッドが一頭ずつ厩舎から出てくる。厩務員たちは口を開かない。",
       "馬の横断路では車が止まる。ここでは、夜が明けるより先に蹄の音が聞こえる。",
-      {f:"二千頭を超える調教馬。17世紀、競馬を見るために王の宮廷がここに置かれた。"}]},
+      {f:"二千頭を超える調教馬。17世紀、競馬を見るために王の宮廷がここに置かれた。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["لم يهبط الضباب بعد. تخرج خيول الثوروبريد من الإسطبلات واحدا تلو الآخر، ولا يتبادل عمال الإسطبل الكلام.",
+      "عند معابر الخيل تتوقف السيارات. هنا يسمع وقع الحوافر قبل أن يطلع النهار.",
+      {f:"يوجد أكثر من ألفي حصان قيد التدريب، وقد أقام الملك بلاطه هنا، وجاء المدربون في أثره."}]},
  lambourn:{
   fr:["Un village de pierre au creux des Downs. À six heures, les seaux résonnent dans la cour et la buée sort des naseaux.",
       "On étrille avant que le jour se lève, parce qu'après, il faut travailler.",
@@ -4791,7 +4926,11 @@ var RECITS = {
       {f:"Ein ganzes Tal, das nur vom Rennpferd im Training lebt."}],
   ja:["ダウンズのくぼ地にある石の村。六時、中庭にバケツの音が響き、鼻から白い息が立つ。",
       "夜が明ける前に手入れを済ませる。そのあとは、仕事が待っているからだ。",
-      {f:"谷ひとつが、調教馬だけで生きている。"}]},
+      {f:"谷ひとつが、調教馬だけで生きている。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["قرية حجرية في منخفض بين هضاب الداونز. عند السادسة، يتردد صدى الدلاء في الساحة، ويتصاعد البخار من مناخر الخيول.",
+      "تستعمل مكشطة التنظيف قبل بزوغ النهار، لأن العمل يبدأ بعد ذلك.",
+      {f:"واد بأكمله لا يعيش إلا من خيول السباق التي تخضع للتدريب."}]},
  connemara:{
   fr:["La pierre, la tourbe, et un vent qui ne s'arrête jamais. Les poneys sont dehors, gris comme le ciel.",
       "Personne ne les a fabriqués. Ce sol les a faits solides.",
@@ -4810,7 +4949,11 @@ var RECITS = {
       {f:"Das Connemara ist die einzige Ponyrasse, die aus Irland stammt."}],
   ja:["石、泥炭、そして止むことのない風。ポニーたちは外にいる。空と同じ芦毛だ。",
       "誰かが作ったのではない。この土地が彼らを頑丈にした。",
-      {f:"コネマラは、アイルランド固有の唯一のポニー種。"}]},
+      {f:"コネマラは、アイルランド固有の唯一のポニー種。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["الحجر والخث وريح لا تهدأ. خيول البوني في الخارج، بلون رمادي كلون السماء.",
+      "لم يشكلها أحد عمدا. هذه الأرض هي التي جعلتها قوية وصلبة.",
+      {f:"الكونيمارا سلالة البوني الأصلية الوحيدة في إيرلندا."}]},
  walsall:{
   fr:["Odeur de cuir et de cire chaude. Derrière les verrières, on coud encore à la main, deux aiguilles à la fois.",
       "Le point sellier ne s'apprend pas en un mois.",
@@ -4848,7 +4991,11 @@ var RECITS = {
       {f:"Heimat des Welsh Pony und des Welsh Cob — vier Sektionen, von der kleinsten bis zum Cob, den Erwachsene reiten."}],
   ja:["アイリッシュ海、人のいない浜、そして波打ち際で前掻きをするコブたち。",
       "駈歩は波の中で終わる。長靴に塩が乾き、ポニーが鼻を鳴らす。",
-      {f:"ウェルシュポニーとウェルシュコブの土地。四つのセクションがあり、最小のものから大人が乗るコブまで。"}]},
+      {f:"ウェルシュポニーとウェルシュコブの土地。四つのセクションがあり、最小のものから大人が乗るコブまで。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["البحر الإيرلندي، وشاطئ خال، وخيول الكوب تحفر الرمل عند حافة الموج.",
+      "ينتهي العدو داخل الأمواج. يجف الملح على الأحذية، وتنفخ المهور من مناخرها.",
+      {f:"أرض المهر الويلزي وحصان الكوب الويلزي. أربعة أقسام، من أصغرها إلى الكوب الذي يحمل البالغين."}]},
  windsor:{
   fr:["Les tours au fond, le sable ratissé, le silence. Un cheval seul, une piste, des lettres.",
       "Ici, la précision est une forme de politesse.",
@@ -5547,7 +5694,9 @@ var POURQUOI = {
   it:"Un lago nel cavo di un vulcano, pascoli fino all'orizzonte, e cavalli che si montano senza nulla.",
   de:"Ein See in der Mulde eines Vulkans, Weiden bis zum Horizont — und Pferde, die man ohne alles reitet.",
   ja:"火山のくぼみに広がる湖、地平線まで続く牧草地。そして、何もつけずに乗る馬たち。"},
- maurice:{fr:"Un lagon sans vague, et des chevaux qui entrent dans l'eau jusqu'à nager.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ maurice:{ar:"بحيرة شاطئية بلا موج، وخيول تدخل الماء حتى تسبح.",
+  fr:"Un lagon sans vague, et des chevaux qui entrent dans l'eau jusqu'à nager.",
   en:"A lagoon without a single wave, and horses that walk in until they swim.",
   es:"Una laguna sin olas, y caballos que entran en el agua hasta nadar.",
   it:"Una laguna senza onde, e cavalli che entrano in acqua fino a nuotare.",
@@ -5670,19 +5819,25 @@ var POURQUOI = {
   it:"Il CHIO: uno stadio pieno, e un silenzio totale al primo ostacolo.",
   de:"Das CHIO: ein vollbesetztes Stadion — und völlige Stille am ersten Sprung.",
   ja:"CHIO。満員のスタジアムが、最初の障害で完全に静まる。"},
- newmarket:{fr:"Capitale mondiale du pur-sang. Les chevaux y ont la priorité sur les voitures.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ newmarket:{ar:"العاصمة العالمية لخيول الثوروبريد. وللخيول فيها أولوية المرور على السيارات.",
+  fr:"Capitale mondiale du pur-sang. Les chevaux y ont la priorité sur les voitures.",
   en:"World capital of the thoroughbred. Here horses have right of way over cars.",
   es:"Capital mundial del purasangre. Aquí los caballos tienen prioridad sobre los coches.",
   it:"Capitale mondiale del purosangue. Qui i cavalli hanno la priorità sulle auto.",
   de:"Welthauptstadt des Vollbluts. Hier haben Pferde Vorfahrt vor Autos.",
   ja:"サラブレッドの世界的中心地。ここでは馬が車より優先される。"},
- lambourn:{fr:"La vallée du cheval de course : un village entier qui ne vit que de ça.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ lambourn:{ar:"وادي خيول السباق: قرية بأكملها لا تعيش إلا من ذلك.",
+  fr:"La vallée du cheval de course : un village entier qui ne vit que de ça.",
   en:"The racehorse valley: a whole village that lives on nothing else.",
   es:"El valle del caballo de carreras: un pueblo entero que no vive de otra cosa.",
   it:"La valle del cavallo da corsa: un intero villaggio che vive solo di questo.",
   de:"Das Tal des Rennpferds: ein ganzes Dorf, das von nichts anderem lebt.",
   ja:"競走馬の谷。村ひとつが、それだけで生きている。"},
- connemara:{fr:"La seule race de poney native d'Irlande, née de la pierre et du vent.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ connemara:{ar:"سلالة البوني الأصلية الوحيدة في إيرلندا، وليدة الحجر والريح.",
+  fr:"La seule race de poney native d'Irlande, née de la pierre et du vent.",
   en:"The only pony breed native to Ireland, born of stone and wind.",
   es:"La única raza de poni nativa de Irlanda, nacida de la piedra y del viento.",
   it:"L'unica razza di pony autoctona d'Irlanda, nata dalla pietra e dal vento.",
@@ -5694,7 +5849,9 @@ var POURQUOI = {
   it:"La città del cuoio. È qui che le selle si cuciono ancora a mano.",
   de:"Die Stadt des Leders. Hier werden Sättel noch von Hand genäht.",
   ja:"革の町。ここでは今も鞍を手で縫っている。"},
- aberystwyth:{fr:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
+ /* 🟡 `ar` dormant — voir le récit. */
+ aberystwyth:{ar:"أرض حصان الكوب الويلزي، وشاطئ تنتهي فيه النزهات بالعدو داخل البحر.",
+  fr:"Le pays du Welsh cob — et une plage où les randonnées finissent au galop dans la mer.",
   en:"Welsh cob country — and a beach where rides end at a gallop in the sea.",
   es:"La tierra del Welsh cob, y una playa donde las rutas terminan al galope dentro del mar.",
   it:"La terra del Welsh cob, e una spiaggia dove le passeggiate finiscono al galoppo in mare.",
@@ -6964,25 +7121,33 @@ var PHRASES_FIN = {
   it:"Entrare in una scuderia in un'altra lingua è già viaggiare. <b>La tua inizia qui.</b>",
   de:"In einer anderen Sprache einen Stall zu betreten ist schon eine Reise. <b>Deine beginnt hier.</b>",
   ja:"別の言葉で厩舎の扉を開くこと、それはもう旅。<b>きみの旅はここから始まる。</b>"},
- maurice:{fr:"Partager une baignade avec son cheval est un moment incroyable. <b>Si l'occasion se présente, ne la laisse pas passer.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ maurice:{ar:"دخول الماء مع حصانك لحظة لا تنسى. <b>وإن سنحت لك الفرصة، فلا تدعيها تفوتك.</b>",
+  fr:"Partager une baignade avec son cheval est un moment incroyable. <b>Si l'occasion se présente, ne la laisse pas passer.</b>",
   en:"Sharing a swim with your horse is an incredible moment. <b>If the chance comes, take it.</b>",
   es:"Compartir un baño con tu caballo es un momento increíble. <b>Si surge la ocasión, no la dejes pasar.</b>",
   it:"Fare il bagno con il proprio cavallo è un momento incredibile. <b>Se capita l'occasione, non lasciartela sfuggire.</b>",
   de:"Mit dem eigenen Pferd zu schwimmen ist ein unglaublicher Moment. <b>Wenn sich die Gelegenheit bietet, nutze sie.</b>",
   ja:"馬と一緒に海を泳ぐのは信じられないほど素敵な瞬間。<b>チャンスが来たら、逃さないで。</b>"},
- connemara:{fr:"Savoir décrire un cheval, c'est savoir le regarder. <b>Et on n'a jamais fini de les regarder.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ connemara:{ar:"أن تعرفي كيف تصفين حصانا يعني أن تعرفي كيف تنظرين إليه. <b>ولا نمل أبدا من تأمل الخيل.</b>",
+  fr:"Savoir décrire un cheval, c'est savoir le regarder. <b>Et on n'a jamais fini de les regarder.</b>",
   en:"Knowing how to describe a horse means knowing how to look at one. <b>And you never stop looking.</b>",
   es:"Saber describir un caballo es saber mirarlo. <b>Y nunca se termina de mirarlos.</b>",
   it:"Saper descrivere un cavallo è saperlo guardare. <b>E non si smette mai di guardarli.</b>",
   de:"Ein Pferd beschreiben zu können heißt, es sehen zu können. <b>Und man hört nie auf hinzusehen.</b>",
   ja:"馬を言葉で描けることは、馬をよく見られるということ。<b>そして馬は、いくら見ても見飽きない。</b>"},
- newmarket:{fr:"Une écurie se comprend avec les mots de ceux qui y vivent. <b>Les tiens sont maintenant les leurs.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ newmarket:{ar:"الإسطبل يفهم بكلمات من يعيشون فيه. <b>وكلماتك صارت الآن كلماتهم.</b>",
+  fr:"Une écurie se comprend avec les mots de ceux qui y vivent. <b>Les tiens sont maintenant les leurs.</b>",
   en:"A yard makes sense in the words of the people who live there. <b>Now their words are yours.</b>",
   es:"Una cuadra se entiende con las palabras de quienes viven en ella. <b>Ahora sus palabras son tuyas.</b>",
   it:"Una scuderia si capisce con le parole di chi la vive. <b>Ora le loro parole sono tue.</b>",
   de:"Einen Stall versteht man mit den Worten derer, die dort leben. <b>Jetzt sind ihre Worte deine.</b>",
   ja:"厩舎は、そこで生きる人たちの言葉で理解できる。<b>その言葉が、今きみのものになった。</b>"},
- lambourn:{fr:"Le pansage est le moment où le cheval apprend à te connaître. <b>Prends ton temps, il compte double.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ lambourn:{ar:"العناية بالحصان هي اللحظة التي يتعرف فيها إليك. <b>خذي وقتك، فهذه اللحظات أهم مما تبدو.</b>",
+  fr:"Le pansage est le moment où le cheval apprend à te connaître. <b>Prends ton temps, il compte double.</b>",
   en:"Grooming is when your horse gets to know you. <b>Take your time — it counts double.</b>",
   es:"La limpieza es el momento en que el caballo te conoce. <b>Tómate tu tiempo: cuenta doble.</b>",
   it:"La pulizia è il momento in cui il cavallo impara a conoscerti. <b>Prenditi tempo: vale doppio.</b>",
@@ -6994,7 +7159,9 @@ var PHRASES_FIN = {
   it:"Un cuoio ben curato dura tutta una vita da cavaliere. <b>Il materiale lo restituisce sempre.</b>",
   de:"Gut gepflegtes Leder hält ein Reiterleben lang. <b>Gute Pflege zahlt sich immer aus.</b>",
   ja:"よく手入れされた革は、騎手の一生に寄り添う。<b>道具への愛情は必ず返ってくる。</b>"},
- aberystwyth:{fr:"Les premières foulées au bord de la mer ne s'oublient pas. <b>Chaque mise en selle en garde un peu.</b>",
+ /* 🟡 `ar` dormant — voir le récit. */
+ aberystwyth:{ar:"الخطوات الأولى على حافة البحر لا تنسى. <b>ويبقى منها شيء في كل مرة تركبين فيها.</b>",
+  fr:"Les premières foulées au bord de la mer ne s'oublient pas. <b>Chaque mise en selle en garde un peu.</b>",
   en:"Your first strides by the sea are never forgotten. <b>Every ride keeps a little of them.</b>",
   es:"Los primeros pasos junto al mar no se olvidan. <b>Cada monta guarda un poco de ellos.</b>",
   it:"Le prime falcate in riva al mare non si dimenticano. <b>Ogni volta in sella ne conserva un po'.</b>",
@@ -8807,6 +8974,48 @@ var LC = null;
    et les outils » dit ce qu'on va apprendre.
    ================================================================== */
 var COLL_NOM = {
+  /* 🟥 23/08/2026 — TREIZE FAMILLES MANQUANTES, AJOUTÉES APRÈS UN BUG.
+     Blandine : « j'ai lancé les mots de la ville australienne et ils
+     étaient en français ». Cause : `tx(COLL_NOM[c.coll])` retombe sur le
+     français quand la clé n'existe pas. Clonbinane employait `science` et
+     `nature`, Kildare sept familles et Édimbourg six — aucune déclarée.
+     ⚠️ RÈGLE : toute ville neuve doit déclarer ICI chaque valeur de `coll`
+     de son lexique, sinon ses familles de mots s'affichent en français
+     dans les six langues. À vérifier au même titre que les quatre
+     déclarations obligatoires. */
+  plage:{fr:"La plage", en:"The beach", es:"La playa", it:"La spiaggia",
+    de:"Der Strand", ja:"浜辺", ar:"الشاطئ"},
+  groupe:{fr:"Monter en groupe", en:"Riding in a group", es:"Montar en grupo",
+    it:"Cavalcare in gruppo", de:"In der Gruppe reiten", ja:"グループでの騎乗" , ar:"الركوب في مجموعة"},
+  science:{fr:"La science", en:"The science", es:"La ciencia", it:"La scienza",
+    de:"Die Wissenschaft", ja:"科学", ar:"العلم"},
+  nature:{fr:"Le naturel du cheval", en:"The horse's nature", es:"La naturaleza del caballo",
+    it:"La natura del cavallo", de:"Das Wesen des Pferdes", ja:"馬の本性", ar:"طبيعة الحصان"},
+  alerte:{fr:"Donner l'alerte", en:"Raising the alarm", es:"Dar la alarma",
+    it:"Dare l'allarme", de:"Alarm schlagen", ja:"通報する", ar:"طلب النجدة"},
+  maladie:{fr:"Les urgences vitales", en:"Life-threatening emergencies",
+    es:"Las urgencias vitales", it:"Le emergenze vitali", de:"Lebensbedrohliche Notfälle",
+    ja:"生命にかかわる緊急事態", ar:"الحالات الطارئة الحرجة"},
+  membre:{fr:"Les membres", en:"The limbs", es:"Los miembros", it:"Gli arti",
+    de:"Die Gliedmaßen", ja:"四肢", ar:"القوائم"},
+  plaie:{fr:"Les plaies", en:"Wounds", es:"Las heridas", it:"Le ferite",
+    de:"Die Wunden", ja:"創傷", ar:"الجروح"},
+  signe:{fr:"Les signes", en:"The signs", es:"Los signos", it:"I segni",
+    de:"Die Anzeichen", ja:"兆候", ar:"العلامات"},
+  geste:{fr:"Les gestes", en:"What to do", es:"Los gestos", it:"I gesti",
+    de:"Die Handgriffe", ja:"処置", ar:"الإجراءات"},
+  urgence:{fr:"Les chiffres à connaître", en:"The numbers to know",
+    es:"Las cifras que hay que saber", it:"I numeri da sapere",
+    de:"Die Zahlen, die man kennt", ja:"覚えておく数値", ar:"الأرقام التي تحفظ"},
+  chute:{fr:"La chute", en:"The fall", es:"La caída", it:"La caduta",
+    de:"Der Sturz", ja:"落馬", ar:"السقوط"},
+  mecanisme:{fr:"Comment on tombe", en:"How you fall", es:"Cómo se cae",
+    it:"Come si cade", de:"Wie man stürzt", ja:"落ち方", ar:"كيف يحدث السقوط"},
+  autour:{fr:"Autour de la blessée", en:"Around the casualty",
+    es:"Alrededor de la herida", it:"Attorno alla ferita",
+    de:"Um die Verletzte", ja:"負傷者のまわり", ar:"حول المصابة"},
+  cavalier:{fr:"Le cavalier", en:"The rider", es:"El jinete", it:"Il cavaliere",
+    de:"Der Reiter", ja:"騎手", ar:"الفارس"},
   /* Santa Ynez, 8 aout 2026 : sans ces deux entrees, ses lecons
      s'afficheraient « Lecon 1 » au lieu de porter un nom. */
   pied:{fr:"Le travail à pied", en:"Groundwork", es:"El trabajo desde el suelo",
