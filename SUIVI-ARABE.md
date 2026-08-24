@@ -143,7 +143,7 @@ Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en 
 | Oliva | « membership = la seule exigence britannique » | varie selon discipline, niveau, day tickets |
 | Oliva | « au chronomètre OU au barème A » | fausse opposition — un barème A peut être au chrono |
 
-🟥 **Les 16 corrections Badminton/Oliva ne sont PAS encore appliquées aux six langues** (en attente de décision Blandine). L'arabe dit déjà la version corrigée.
+✅ **Les 16 corrections Badminton/Oliva ont été APPLIQUÉES aux six langues le 24/08** (validation Blandine), chirurgicalement — seule la phrase fautive a changé dans chaque langue. Lexiques passés en `?l=2`, `VER` → `?v=79`.
 
 Plus deux incohérences de contenu : « quatre nations » / « cinq nations » entre deux fichiers, et le chapitre d'Édimbourg qui s'appelait encore « Les dialogues ».
 
