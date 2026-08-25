@@ -312,7 +312,7 @@ windsor:{
         "砂は均されたばかりで、一頭の馬が城の塔の前をひとり速歩で進んでいた。そして私は理解した — 沈黙もまた、この仕事の一部なのだと。"],
     /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
     ar:["لم يكن أحد يتكلم.",
-        "كان الرمل قد مشط للتو، وحصان واحد يخب أمام أبراج القلعة، وفهمت أن الصمت جزء من العمل."]},
+        "كان الرمل قد سوي للتو، وكان حصان واحد يخب أمام أبراج القلعة، وفهمت أن الصمت جزء من العمل."]},
   volets:[
    {t:{fr:"Le château", en:"The castle", es:"El castillo",
        it:"Il castello", de:"Das Schloss", ja:"城", ar:"القلعة"},
@@ -333,7 +333,7 @@ windsor:{
       it:"Il Royal Windsor Horse Show si tiene ogni primavera nel parco del castello. È uno dei più grandi concorsi all'aperto del paese, con salto, dressage e attacchi su più giorni.",
       de:"Die Royal Windsor Horse Show findet jedes Frühjahr im Schlosspark statt. Sie ist eines der größten Freiluftturniere des Landes, mit Springen, Dressur und Fahren über mehrere Tage.",
       ja:"ロイヤル・ウィンザー・ホースショーは毎年春、城の公園で開かれます。国内最大級の野外競技会で、障害、馬場馬術、馬車競技が数日間にわたって行われます。",
-      ar:"يقام عرض وندسور الملكي للخيل كل ربيع في حديقة القلعة. إنه من أكبر مسابقات البلاد في الهواء الطلق، ويجمع القفز والترويض وقيادة العربات على عدة أيام."}},
+      ar:"يقام عرض وندسور الملكي للخيل كل ربيع في حديقة القلعة. وهو من أكبر فعاليات الفروسية في الهواء الطلق في البلاد، ويجمع على مدى عدة أيام بين قفز الحواجز والترويض وقيادة العربات."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
        it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
