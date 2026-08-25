@@ -21835,9 +21835,24 @@ function HypeApp() {
     const __ecranPrec = useRef(ecran);
     useEffect(() => { if (ecran === "dashboard" && __ecranPrec.current !== "dashboard") dernierAvantRef.current = __ecranPrec.current; __ecranPrec.current = ecran; }, [ecran]);
     const retourDepuisAccueil = () => { const c = dernierAvantRef.current; if (c && c !== "dashboard") naviguer(c); };
+    /* 25/08 — UN GESTE, UN SEUL RECUL. Signale par Blandine : « je reviens en
+       arriere du menu galop 3, ca me remet sur la page de l accueil general au
+       lieu du menu des galops ». Deux mecanismes de retour coexistent et se
+       declenchent tous les deux sur le MEME geste : le balayage maison
+       (onNavTouchEnd du Router) et le retour systeme d iOS/Android (popstate).
+       Chacun depile un ecran, donc on reculait DEUX fois : galop-detail ->
+       galops -> accueil. Le garde-fou de 450 ms pose le 14/08 ne protegeait que
+       popstate contre lui-meme. Il descend ici, dans `retourEcran`, ou passent
+       les DEUX chemins : le second recul survenu dans la foulee est ignore.
+       Un humain ne recule pas deux fois en moins d une demi-seconde. */
+    const __retourTs = useRef(0);
     const retourEcran = () => {
         if (historiqueEcrans.length === 0)
             return;
+        const t = Date.now();
+        if (t - (__retourTs.current || 0) < 450)
+            return;
+        __retourTs.current = t;
         __noterScroll();
         const prec = historiqueEcrans[historiqueEcrans.length - 1];
         setPileAvant((p) => [...p, ecran]);
@@ -37138,6 +37153,14 @@ function EcranCours() {
        changement de bloc — la fenetre, et aussi le conteneur interne quand l ecran scrolle dedans. */
     React.useEffect(() => {
         try {
+            /* 25/08 — LE VERROU FANTOME DANS UN COURS. `hypeFiletScroll` realigne
+               body.overflow sur la realite du DOM, mais il n etait appele qu au
+               CHANGEMENT D ECRAN (useEffect [ecran] du Router). Or tourner les pages
+               d un chapitre ne change pas `ecran`, ca change `blocIdx` : une visionneuse
+               mal refermee sur une page precedente laissait donc body{overflow:hidden}
+               jusqu a la sortie du cours — plus aucun defilement, obligee de fermer
+               l application. Le filet est desormais repasse a chaque page. */
+            if (typeof hypeFiletScroll === "function") hypeFiletScroll();
             window.scrollTo(0, 0);
             const racine = document.scrollingElement || document.documentElement;
             if (racine) racine.scrollTop = 0;
