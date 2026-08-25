@@ -14287,3 +14287,18 @@ Haut de page v2 conservé à l'identique (hero, identité, barre 4 chiffres calc
 # HYPE ▸ 25/08 (8e livraison) · LE TROU DU MUR ÉLIMINÉ
 
 Constat de Blandine sur la v3 en ligne : trou noir en bas à droite du mur. Cause : `columns: 2` CSS répartit **au nombre** de photos, pas à la hauteur → colonnes inégales. Remplacé par **deux colonnes flex équilibrées à la hauteur** (répartition gloutonne par ratio d'image) + le dernier cliché de la colonne courte **s'étire** (ratio +diff, plafonné 1,7) pour finir à fleur. Cas 1-2 photos : pile centrée pleine largeur (plus de colonne vide). Banc mesuré : écart bas de colonnes = **0 px** (8 photos), 3 px (11), 15 px (5) ; 1-2 photos = 1 colonne ; 0 erreur partout. À pousser : `index.html` (remplace le précédent de la session).
+
+---
+
+# HYPE ▸ 25/08 (9e livraison) · PASSE DE FINITION V3 (brief « compacter · clarifier · hiérarchiser · polir »)
+
+Brief reçu écrit AVANT la 8e livraison — appliqué sur l'état réel. Haut de page et constellation : **intouchés** (validés).
+- **Mur** : ratios réduits (1,12/0,62/0,9), chevauchements verticaux (−10 px) + imbrication translateX ±1,5 %, étirement de fin plafonné 1,5. **Mesuré : 795 → 660 px (−17 %)** à 390 px, page 2399 → 2259 px, colonnes à fleur (écart 0), 8 souvenirs conservés (aucune photo cachée, aucune miniaturisation).
+- **Coupes** : sous-section des vidéos — pilule discrète « COUPES · N » (9 px, or feutré), vignettes 26 %, bord or fin, pas de bouton play, terme « Coupes » inchangé dans le code.
+- **En concours** : mini-palmarès — médaillon hiérarchisé (1 = or plein éclat, 2-3 = cercle or sobre, autres = neutre), préfixe « 1er » redondant retiré de la ligne (le rang vit dans le médaillon), concours = ligne principale, année à droite, lien palmarès conservé.
+- **IPO** : libellé IPO en tête, valeur en donnée principale, note dessous ; carte à 34 % de largeur, même hauteur que Partager (flex stretch). Aucune valeur fabriquée.
+- **Partager** : boutons plus nets (bord .22, fond froid .06), titre seul, dernier souvenir conservé.
+- **Espacements** après le mur resserrés (rails 8, cartes 10, coupes 4). **Desktop** : contenu centré max 560 px (≥ 760 px).
+- **Banc** : 375/390/430 px → débordement horizontal **0** partout (rotations/translates inoffensifs grâce à overflow-x:clip), 0 erreur page, captures jointes.
+
+## À pousser : `index.html` uniquement (md5 cf2b3114).
