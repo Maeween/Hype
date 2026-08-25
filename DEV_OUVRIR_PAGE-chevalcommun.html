@@ -20259,108 +20259,122 @@ const CIBLE_DIRECTE = (function () {
 let SAUT_BLOC_INITIAL = CIBLE_DIRECTE ? CIBLE_DIRECTE.page : null;
 try { if (CIBLE_DIRECTE && typeof CIBLE_DIRECTE.quizPreview === "number") { window.__quizPreviewResultat = CIBLE_DIRECTE.quizPreview; } } catch (eQP) { }
 try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTerminePreview = true; } } catch (eCT) { }
-/* ===== PAGE COMMUNAUTAIRE CHEVAL — EcranChevalCommun (25/08/2026, v2 fidele au PNG) =====
-   Refonte visuelle complete sur la maquette validee 93DC76BF : hero cheval a gauche
-   + identite a droite, etiquettes Pere/Mere turquoise, barre EN CONCOURS 4 chiffres,
-   constellation cristal, mur dense qui se chevauche, rail videos avec durees,
-   cartes palmares / medaillon IPO aux lauriers / partager. Donnees inchangees :
-   albums PUBLICS, resultats fusion table+JSON (calcul fiche), zero requete au boot. */
+/* ===== PAGE COMMUNAUTAIRE CHEVAL — EcranChevalCommun (25/08/2026, v3 brief valide) =====
+   v3 sur cahier de Blandine : haut de page v2 CONSERVE (hero, identite, barre 4 chiffres,
+   constellation) ; mur des souvenirs refait en PELE-MELE compact cliquable (albums publics,
+   signatures @pseudo discretes, clic -> visionneuse memoirescavalier existante) ; rail
+   videos ~2,2 cellules visibles avec fin de rail "Voir toutes ses videos" ; En concours
+   limite a 4 lignes + lien fiche ; IPO compact or entre concours et partage ; Partager
+   compact (flux existant de la fiche, aucun second upload). Hooks histoire prepares
+   (data-cav-id, __hyccFiltreHistoire) sans logique de filtre. Donnees 100% reelles ;
+   demo #chevalcommun surchargable par window.__chevalCommunDemoData pour les tests. */
 (function () {
     try {
         var anc = document.getElementById("hycc-css");
         if (anc) anc.remove();
         var s = document.createElement("style");
         s.id = "hycc-css";
-        s.textContent = ".hycc-root{min-height:100vh;background:#05060A;color:#F2F3F5;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:120px}" +
-            ".hycc-hero{position:relative;min-height:432px;padding:calc(env(safe-area-inset-top) + 14px) 18px 6px;overflow:hidden}" +
+        s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:118px}" +
+            ".hycc-hero{position:relative;min-height:420px;padding:calc(env(safe-area-inset-top) + 14px) 18px 6px;overflow:hidden}" +
             ".hycc-hphoto{position:absolute;left:0;top:0;width:64%;height:100%;object-fit:cover;object-position:left center;-webkit-mask-image:linear-gradient(100deg,#000 46%,transparent 88%);mask-image:linear-gradient(100deg,#000 46%,transparent 88%)}" +
-            ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(180deg,transparent,#05060A 92%)}" +
+            ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
             ".hycc-marque{position:relative;z-index:2;display:inline-flex;flex-direction:column;line-height:1}" +
-            ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F2F3F5;letter-spacing:.5px}" +
+            ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F4F7FA;letter-spacing:.5px}" +
             ".hycc-marque .h i{color:#F4C455;font-style:normal;font-size:12px;margin-left:2px}" +
             ".hycc-marque .c{font-size:7.5px;letter-spacing:.42em;color:#9FA3A8;margin-top:4px;text-transform:uppercase}" +
-            ".hycc-back{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(16,20,26,.55);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F2F3F5;font-size:19px;line-height:1}" +
-            ".hycc-idb{position:relative;z-index:2;margin:64px 0 0 34%;max-width:64%}" +
+            ".hycc-back{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(17,20,23,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F4F7FA;font-size:19px;line-height:1}" +
+            ".hycc-idb{position:relative;z-index:2;margin:58px 0 0 34%;max-width:64%}" +
             ".hycc-couronne{width:24px;height:17px;display:block;margin-bottom:4px}" +
             ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:25px;line-height:1.12;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85)}" +
             ".hycc-legende{display:flex;align-items:center;gap:8px;margin-top:7px}" +
             ".hycc-legende i{display:block;width:22px;height:1px;background:#14E2EF;opacity:.85}" +
-            ".hycc-legende span{font-size:9px;letter-spacing:.34em;color:#DFE1E4;text-transform:uppercase;font-style:normal}" +
+            ".hycc-legende span{font-size:9px;letter-spacing:.34em;color:#DFE1E4;text-transform:uppercase}" +
             ".hycc-sub{font-size:11.5px;color:#D3D5D8;margin-top:11px;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.8)}" +
             ".hycc-ped{margin-top:9px;font-size:12.5px;line-height:1.55}" +
             ".hycc-ped b{color:#14E2EF;font-weight:600}" +
-            ".hycc-ped span{color:#F2F3F5}" +
-            ".hycc-encbar{position:relative;z-index:2;margin:20px 16px 0;display:flex;align-items:center;gap:6px;padding:12px 12px 12px 16px;border-radius:16px;background:rgba(14,18,24,.72);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}" +
+            ".hycc-ped span{color:#F4F7FA}" +
+            ".hycc-encbar{position:relative;z-index:2;margin:18px 16px 0;display:flex;align-items:center;gap:6px;padding:12px 12px 12px 16px;border-radius:16px;background:rgba(17,20,23,.74);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}" +
             ".hycc-encbar .lab{font-size:10px;letter-spacing:.18em;color:#E8EAEC;text-transform:uppercase;font-weight:600;white-space:nowrap}" +
             ".hycc-encbar .chv{color:#14E2EF;font-size:13px;margin:0 2px 0 1px}" +
             ".hycc-encbar .cols{flex:1;display:flex;justify-content:space-evenly;gap:4px}" +
             ".hycc-encbar .c{text-align:center;min-width:0}" +
             ".hycc-encbar b{font-family:'Cinzel',serif;font-size:18px;color:#37E6F0;font-weight:700;display:block;line-height:1}" +
             ".hycc-encbar span{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:#A9ADB2;display:block;margin-top:4px}" +
-            ".hycc-tit{margin:34px 18px 4px;display:flex;align-items:center;gap:12px;justify-content:center}" +
+            ".hycc-tit{margin:26px 18px 4px;display:flex;align-items:center;gap:12px;justify-content:center}" +
             ".hycc-tit i{flex:0 0 34px;height:1px;background:linear-gradient(90deg,transparent,rgba(244,196,85,.75));display:block}" +
             ".hycc-tit i.r{background:linear-gradient(90deg,rgba(244,196,85,.75),transparent)}" +
-            ".hycc-tit .t{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:20px;letter-spacing:.14em;color:#F2F3F5;white-space:nowrap}" +
+            ".hycc-tit .t{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:19px;letter-spacing:.13em;color:#F4F7FA;white-space:nowrap}" +
             ".hycc-tit .cr{color:#F4C455;font-size:14px;margin-left:2px}" +
-            ".hycc-soustit{text-align:center;font-size:11px;color:#A9ADB2;font-style:italic;margin:2px 24px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px}" +
-            ".hycc-const{position:relative;height:308px;margin:6px 8px 0}" +
+            ".hycc-soustit{text-align:center;color:#A9ADB2;font-style:italic;margin:2px 24px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:12.5px}" +
+            ".hycc-const{position:relative;height:274px;margin:4px 8px 0}" +
             ".hycc-fils{position:absolute;inset:0;width:100%;height:100%}" +
             ".hycc-cristalW{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 22px rgba(20,226,239,.5));z-index:2}" +
-            ".hycc-cristal{position:relative;width:138px;height:158px;clip-path:polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%);overflow:hidden;background:linear-gradient(160deg,#16333B,#0A161B)}" +
+            ".hycc-cristal{position:relative;width:126px;height:146px;clip-path:polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%);overflow:hidden;background:linear-gradient(160deg,#16333B,#0A161B)}" +
             ".hycc-cristal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
             ".hycc-cristal .fac{position:absolute;inset:0;background:linear-gradient(115deg,rgba(127,240,255,.22),transparent 32%,transparent 62%,rgba(127,240,255,.14));mix-blend-mode:screen;pointer-events:none}" +
-            ".hycc-cristal .bas{position:absolute;left:0;right:0;bottom:0;padding:20px 6px 9px;background:linear-gradient(180deg,transparent,rgba(4,8,11,.92) 62%);text-align:center}" +
-            ".hycc-cristal .n{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.14em;color:#FBFBFC;text-transform:uppercase}" +
-            ".hycc-cristal .s{font-size:8.5px;color:#BFE9EF;margin-top:2px}" +
-            ".hycc-cristal .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:44px;color:#7FF0FF}" +
-            ".hycc-cav{position:absolute;width:84px;text-align:center;transform:translate(-50%,-50%);z-index:3}" +
-            ".hycc-cav .a{position:relative;width:62px;height:62px;border-radius:50%;margin:0 auto;background:linear-gradient(158deg,#17262E,#0A1216);display:grid;place-items:center;font-family:'Cinzel',serif;font-size:21px;color:#F2F3F5;box-shadow:0 0 0 1px rgba(20,226,239,.55),0 0 0 3px rgba(20,226,239,.12),0 0 18px -2px rgba(20,226,239,.65)}" +
+            ".hycc-cristal .bas{position:absolute;left:0;right:0;bottom:0;padding:18px 6px 8px;background:linear-gradient(180deg,transparent,rgba(4,8,11,.92) 62%);text-align:center}" +
+            ".hycc-cristal .n{font-family:'Cinzel',serif;font-size:12.5px;letter-spacing:.13em;color:#FBFBFC;text-transform:uppercase}" +
+            ".hycc-cristal .s{font-size:8px;color:#BFE9EF;margin-top:2px}" +
+            ".hycc-cristal .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:42px;color:#7FF0FF}" +
+            ".hycc-cav{position:absolute;width:80px;text-align:center;transform:translate(-50%,-50%);z-index:3}" +
+            ".hycc-cav .a{position:relative;width:58px;height:58px;border-radius:50%;margin:0 auto;background:linear-gradient(158deg,#17262E,#0A1216);display:grid;place-items:center;font-family:'Cinzel',serif;font-size:20px;color:#F4F7FA;box-shadow:0 0 0 1px rgba(20,226,239,.55),0 0 0 3px rgba(20,226,239,.12),0 0 18px -2px rgba(20,226,239,.65)}" +
             ".hycc-cav .a img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover}" +
             ".hycc-cav .a i{position:absolute;inset:0;border-radius:50%;background:linear-gradient(120deg,rgba(127,240,255,.28),transparent 38%);mix-blend-mode:screen}" +
-            ".hycc-cav .p{font-size:10px;color:#CFD2D6;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-            ".hycc-plus{position:absolute;transform:translate(-50%,-50%);padding:4px 12px;border-radius:999px;font-size:10.5px;color:#7FF0FF;border:1px solid rgba(20,226,239,.45);background:rgba(10,20,24,.8);z-index:4}" +
-            ".hycc-mur{position:relative;margin:14px 8px 0}" +
-            ".hycc-pol{position:absolute;background:linear-gradient(165deg,#DCCFBB,#BCA395);padding:4px 4px 5px;border-radius:2px;box-shadow:0 14px 30px -12px rgba(0,0,0,.85)}" +
-            ".hycc-pol img{width:100%;aspect-ratio:1/0.92;object-fit:cover;display:block;border-radius:1px}" +
-            ".hycc-pol.hh img{aspect-ratio:1/1.14}" +
-            ".hycc-pol::before{content:\"\";position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-3deg);width:40px;height:15px;background:rgba(238,230,212,.6);box-shadow:0 1px 3px rgba(0,0,0,.3)}" +
-            ".hycc-railW{margin-top:18px}" +
-            ".hycc-railH{display:flex;align-items:baseline;justify-content:space-between;margin:0 18px 8px}" +
-            ".hycc-voirtout{font-size:11px;color:#14E2EF;letter-spacing:.02em}" +
-            ".hycc-rail{display:flex;gap:12px;overflow-x:auto;padding:4px 18px 12px;scroll-snap-type:x proximity;scroll-padding-left:18px;-webkit-overflow-scrolling:touch}" +
-            ".hycc-vid{flex:0 0 216px;scroll-snap-align:start}" +
-            ".hycc-vid .cell{position:relative;border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#0A0E13}" +
+            ".hycc-cav .p{font-size:10px;color:#CFD2D6;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-plus{position:absolute;transform:translate(-50%,-50%);padding:4px 12px;border-radius:999px;font-size:10.5px;color:#7FF0FF;border:1px solid rgba(20,226,239,.45);background:rgba(10,20,24,.85);z-index:4}" +
+            ".hycc-cavplus{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;margin:8px 20px 0}" +
+            ".hycc-cavplus .hycc-cav{position:static;transform:none;width:64px}" +
+            ".hycc-cavplus .a{width:46px;height:46px;font-size:16px}" +
+            ".hycc-mur{columns:2 8px;column-gap:8px;padding:8px 10px 0;margin:0}" +
+            ".hycc-ph{position:relative;display:block;break-inside:avoid;margin:0 0 7px;border-radius:3px;overflow:hidden;background:#111417;box-shadow:0 8px 20px -10px rgba(0,0,0,.8);border:2px solid rgba(238,230,214,.9)}" +
+            ".hycc-ph img{width:100%;display:block;object-fit:cover}" +
+            ".hycc-ph.f-p img{aspect-ratio:1/1.26}" +
+            ".hycc-ph.f-l img{aspect-ratio:1/0.72}" +
+            ".hycc-ph.f-c img{aspect-ratio:1/1}" +
+            ".hycc-ph .qui{position:absolute;left:5px;bottom:5px;font-size:8.5px;color:#F4F7FA;background:rgba(6,7,9,.55);padding:2px 6px;border-radius:7px;letter-spacing:.03em}" +
+            ".hycc-ph .scotch{position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(-3deg);width:34px;height:12px;background:rgba(238,230,212,.55);box-shadow:0 1px 2px rgba(0,0,0,.3)}" +
+            ".hycc-railW{margin-top:14px}" +
+            ".hycc-rail{display:flex;gap:10px;overflow-x:auto;padding:6px 16px 10px;scroll-snap-type:x proximity;scroll-padding-left:16px;-webkit-overflow-scrolling:touch}" +
+            ".hycc-vid{flex:0 0 46%;scroll-snap-align:start}" +
+            ".hycc-vid .cell{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#111417}" +
             ".hycc-vid video{width:100%;aspect-ratio:16/10;display:block;background:#000}" +
-            ".hycc-vid .play{position:absolute;left:10px;bottom:10px;width:30px;height:30px;border-radius:50%;background:rgba(8,10,14,.62);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;pointer-events:none}" +
-            ".hycc-vid .play::before{content:\"\";display:block;width:0;height:0;border-left:9px solid #F2F3F5;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;margin-left:2px}" +
-            ".hycc-vid .dur{position:absolute;right:9px;bottom:11px;font-size:10px;color:#F2F3F5;background:rgba(8,10,14,.7);padding:2px 7px;border-radius:7px;letter-spacing:.04em;pointer-events:none}" +
-            ".hycc-vid .t{font-size:11.5px;color:#DFE1E4;margin:7px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-            ".hycc-carte{margin:16px 16px 0;border-radius:18px;border:1px solid rgba(255,255,255,.09);background:rgba(15,19,25,.62);padding:16px 14px}" +
-            ".hycc-carteT{display:flex;align-items:center;gap:9px;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;letter-spacing:.1em;color:#F2F3F5;margin-bottom:12px}" +
-            ".hycc-rrow{display:flex;align-items:center;gap:11px;padding:9px 2px;position:relative}" +
-            ".hycc-rrow+.hycc-rrow::before{content:\"\";position:absolute;top:0;left:40px;right:2px;height:1px;background:rgba(255,255,255,.06)}" +
-            ".hycc-rond{flex:0 0 29px;width:29px;height:29px;border-radius:50%;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:12.5px;font-weight:700;color:#F4C455;border:1.5px solid rgba(244,196,85,.8);box-shadow:0 0 10px -3px rgba(232,161,64,.7)}" +
+            ".hycc-vid .play{position:absolute;left:8px;bottom:8px;width:26px;height:26px;border-radius:50%;background:rgba(6,7,9,.62);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;pointer-events:none}" +
+            ".hycc-vid .play::before{content:\"\";display:block;width:0;height:0;border-left:8px solid #F4F7FA;border-top:5px solid transparent;border-bottom:5px solid transparent;margin-left:2px}" +
+            ".hycc-vid .dur{position:absolute;right:7px;bottom:9px;font-size:9.5px;color:#F4F7FA;background:rgba(6,7,9,.7);padding:2px 6px;border-radius:7px;letter-spacing:.04em;pointer-events:none}" +
+            ".hycc-vid .t{font-size:11px;color:#DFE1E4;margin:6px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-finrail{flex:0 0 40%;scroll-snap-align:start;display:grid;place-items:center;border-radius:12px;border:1px dashed rgba(20,226,239,.4);color:#14E2EF;font-size:11.5px;text-align:center;padding:10px;min-height:96px}" +
+            ".hycc-coupesW{margin-top:14px}" +
+            ".hycc-cpill{display:inline-block;margin:0 0 8px 16px;padding:4px 12px;border-radius:999px;border:1px solid rgba(244,196,85,.55);color:#F4C455;font-size:10px;letter-spacing:.14em;text-transform:uppercase;font-family:'Cinzel',serif}" +
+            ".hycc-crail{display:flex;gap:10px;overflow-x:auto;padding:2px 16px 10px;scroll-snap-type:x proximity;scroll-padding-left:16px;-webkit-overflow-scrolling:touch}" +
+            ".hycc-coupe{flex:0 0 31%;scroll-snap-align:start}" +
+            ".hycc-coupe .im{width:100%;aspect-ratio:1/1;border-radius:12px;object-fit:cover;display:block;border:1px solid rgba(244,196,85,.45);background:#111417}" +
+            ".hycc-coupe .lb{font-size:10px;color:#DFE1E4;text-align:center;margin-top:5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}" +
+            ".hycc-carte{margin:14px 16px 0;border-radius:16px;border:1px solid rgba(255,255,255,.09);background:rgba(17,20,23,.62);padding:13px 13px}" +
+            ".hycc-carteT{display:flex;align-items:center;gap:9px;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;letter-spacing:.1em;color:#F4F7FA;margin-bottom:8px}" +
+            ".hycc-rrow{display:flex;align-items:center;gap:10px;padding:8px 2px;position:relative}" +
+            ".hycc-rrow+.hycc-rrow::before{content:\"\";position:absolute;top:0;left:38px;right:2px;height:1px;background:rgba(255,255,255,.06)}" +
+            ".hycc-rond{flex:0 0 27px;width:27px;height:27px;border-radius:50%;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:#F4C455;border:1.5px solid rgba(244,196,85,.8);box-shadow:0 0 10px -3px rgba(232,161,64,.7)}" +
             ".hycc-rond.n{color:#B9BDC2;border-color:rgba(255,255,255,.28);box-shadow:none}" +
             ".hycc-rrow .t{flex:1;min-width:0}" +
-            ".hycc-rrow .e{font-size:12.5px;color:#F5F6F7;font-weight:600;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-            ".hycc-rrow .e b{font-weight:700;color:#F4C455;font-size:11px;margin-right:7px}" +
-            ".hycc-rrow .d{font-size:10px;color:#9FA3A8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-            ".hycc-rrow .an{flex:0 0 auto;font-size:11px;color:#8A8E94}" +
-            ".hycc-lien{display:inline-block;margin-top:10px;font-size:11.5px;color:#14E2EF}" +
-            ".hycc-ipoC{margin:16px 16px 0;border-radius:18px;border:1px solid rgba(244,196,85,.3);background:radial-gradient(90% 80% at 50% 0%,rgba(232,161,64,.1),rgba(15,19,25,.62) 70%);padding:20px 14px 18px;text-align:center}" +
-            ".hycc-ipoC .laur{display:flex;align-items:center;justify-content:center;gap:10px}" +
-            ".hycc-ipoC .v{font-family:'Cinzel',serif;font-size:42px;color:#F4C455;font-weight:700;line-height:1;text-shadow:0 0 22px rgba(232,161,64,.55)}" +
-            ".hycc-ipoC .s{font-size:11px;letter-spacing:.34em;color:#E8C888;text-transform:uppercase;margin-top:6px}" +
-            ".hycc-ipoC .fil{width:44px;height:1px;margin:11px auto;background:linear-gradient(90deg,transparent,rgba(244,196,85,.7),transparent)}" +
-            ".hycc-ipoC .n2{font-size:12px;color:#CFD2D6;letter-spacing:.14em}" +
-            ".hycc-share{display:flex;gap:10px;margin-bottom:12px}" +
-            ".hycc-sbtn{flex:1;padding:11px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#EDEFF1;font-size:11.5px;letter-spacing:.04em;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}" +
-            ".hycc-dernier{display:flex;align-items:center;gap:11px;padding:10px;border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}" +
-            ".hycc-dernier img{flex:0 0 52px;width:52px;height:52px;border-radius:10px;object-fit:cover;background:#0A0E13}" +
+            ".hycc-rrow .e{font-size:12px;color:#F5F6F7;font-weight:600;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-rrow .e b{font-weight:700;color:#F4C455;font-size:10.5px;margin-right:6px}" +
+            ".hycc-rrow .d{font-size:9.5px;color:#9FA3A8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-rrow .an{flex:0 0 auto;font-size:10.5px;color:#8A8E94}" +
+            ".hycc-lien{display:inline-block;margin-top:8px;font-size:11.5px;color:#14E2EF}" +
+            ".hycc-basdeux{display:flex;gap:12px;align-items:stretch;margin:14px 16px 0}" +
+            ".hycc-ipoC{flex:0 0 auto;border-radius:16px;border:1px solid rgba(244,196,85,.3);background:radial-gradient(90% 80% at 50% 0%,rgba(232,161,64,.09),rgba(17,20,23,.62) 70%);padding:12px 16px;text-align:center;align-self:center}" +
+            ".hycc-ipoC .v{font-family:'Cinzel',serif;font-size:30px;color:#F4C455;font-weight:700;line-height:1;text-shadow:0 0 18px rgba(232,161,64,.5)}" +
+            ".hycc-ipoC .s{font-size:9.5px;letter-spacing:.3em;color:#E8C888;text-transform:uppercase;margin-top:4px}" +
+            ".hycc-ipoC .n2{font-size:10px;color:#CFD2D6;letter-spacing:.1em;margin-top:6px;white-space:nowrap}" +
+            ".hycc-partC{flex:1;min-width:0;border-radius:16px;border:1px solid rgba(255,255,255,.09);background:rgba(17,20,23,.62);padding:12px 12px}" +
+            ".hycc-share{display:flex;gap:8px;margin-bottom:9px}" +
+            ".hycc-sbtn{flex:1;padding:9px 6px;border-radius:11px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#EDEFF1;font-size:10.5px;letter-spacing:.03em;font-weight:600;display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap}" +
+            ".hycc-dernier{display:flex;align-items:center;gap:9px;padding:8px;border-radius:11px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}" +
+            ".hycc-dernier img{flex:0 0 42px;width:42px;height:42px;border-radius:9px;object-fit:cover;background:#111417}" +
             ".hycc-dernier .t{flex:1;min-width:0}" +
-            ".hycc-dernier .e{font-size:12px;color:#F2F3F5;line-height:1.35}" +
-            ".hycc-dernier .d{font-size:10px;color:#9FA3A8;margin-top:3px}" +
-            ".hycc-empty{margin:8px 18px 0;padding:16px;border-radius:14px;border:1px dashed rgba(255,255,255,.14);color:#A9ADB2;font-size:12px;text-align:center;font-style:italic}" +
+            ".hycc-dernier .e{font-size:11px;color:#F4F7FA;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-dernier .d{font-size:9.5px;color:#9FA3A8;margin-top:2px}" +
+            ".hycc-empty{margin:8px 18px 0;padding:14px;border-radius:14px;border:1px dashed rgba(255,255,255,.14);color:#A9ADB2;font-size:12px;text-align:center;font-style:italic}" +
             ".hycc-load{padding:90px 20px;text-align:center;color:#A9ADB2;font-size:12px;letter-spacing:.08em}";
         document.head.appendChild(s);
     } catch (eCss) { }
@@ -20371,6 +20385,7 @@ function EcranChevalCommun() {
     var _st = React.useState({ pret: false, erreur: null, ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false });
     var st = _st[0], setSt = _st[1];
     var _vt = React.useState(false); var voirTout = _vt[0], setVoirTout = _vt[1];
+    var _tc = React.useState(false); var toutesCav = _tc[0], setToutesCav = _tc[1];
     var _du = React.useState({}); var durees = _du[0], setDurees = _du[1];
 
     /* — lecture d'un resultat EXACTEMENT comme la fiche (sessions 154/161) — */
@@ -20397,30 +20412,32 @@ function EcranChevalCommun() {
         if (window.__chevalCommunDemo) {
             var ph = (typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || "";
             var av = (typeof IMG_CAVALIER_DEFAUT !== "undefined" && IMG_CAVALIER_DEFAUT) || "";
+            var sur = window.__chevalCommunDemoData || {}; /* surcharge pour les tests */
             pose({
-                pret: true, erreur: null, estLie: true, nomsPar: {},
-                ch: { id: "demo", nom: "Orph\u00e9e (d\u00e9mo)", race: "Selle Fran\u00e7ais", discipline: "CSO", age: 9, photo_url: ph, origines: { pere: { nom: "P\u00e8re d\u00e9mo" }, mere: { nom: "M\u00e8re d\u00e9mo" } } },
-                cavs: [
+                pret: true, erreur: null,
+                estLie: (sur.estLie != null ? sur.estLie : true), nomsPar: {},
+                ch: sur.ch || { id: "demo", nom: "Orph\u00e9e (d\u00e9mo)", race: "Selle Fran\u00e7ais", discipline: "CSO", age: 9, photo_url: ph, origines: { pere: { nom: "P\u00e8re d\u00e9mo" }, mere: { nom: "M\u00e8re d\u00e9mo" } }, flots: [{ img: ph, lab: "Open d\u00e9mo \u00b7 P1 D" }, { img: ph, lab: "Salon d\u00e9mo \u00b7 Grand Prix" }, { img: ph, lab: "Salon d\u00e9mo \u00b7 Vitesse" }] },
+                cavs: sur.cavs || [
                     { id: "d1", nom: "@luna", avatar: av }, { id: "d2", nom: "@maya", avatar: av },
                     { id: "d3", nom: "@swan", avatar: av }, { id: "d4", nom: "@iris", avatar: av }, { id: "d5", nom: "@nell", avatar: av }
                 ],
-                photos: [
-                    { u: ph, an: "Premi\u00e8re rencontre" }, { u: ph, an: "" }, { u: ph, an: "Stage d'\u00e9t\u00e9" }, { u: ph, an: "" },
-                    { u: ph, an: "Concours (d\u00e9mo)" }, { u: ph, an: "" }, { u: ph, an: "" }, { u: ph, an: "Complices" }
+                photos: sur.photos || [
+                    { u: ph, qui: "@luna", alb: null }, { u: ph, qui: "@maya", alb: null }, { u: ph, qui: "", alb: null }, { u: ph, qui: "@swan", alb: null },
+                    { u: ph, qui: "", alb: null }, { u: ph, qui: "@luna", alb: null }, { u: ph, qui: "", alb: null }, { u: ph, qui: "@nell", alb: null }
                 ],
-                videos: [
+                videos: sur.videos || [
                     { u: "", t: "Open d\u00e9mo 2026" }, { u: "", t: "Grand Prix d\u00e9mo" }, { u: "", t: "\u00c0 la maison" },
                     { u: "", t: "Vitesse d\u00e9mo" }, { u: "", t: "Nos parcours" }
                 ],
-                dernier: { u: ph, an: "Open d\u00e9mo 2026", qui: "@luna", quand: "12 juil." },
-                resultats: [
+                dernier: (sur.dernier !== undefined ? sur.dernier : { u: ph, an: "Open d\u00e9mo 2026", qui: "@luna", quand: "12 juil." }),
+                resultats: sur.resultats || [
                     { pl: 1, part: 47, nom: "Concours d\u00e9mo", ep: "Grand Prix", cav: "@luna", an: "2026", date: "2026-05-02", compte: true },
                     { pl: 3, part: 48, nom: "Concours d\u00e9mo", ep: "Vitesse", cav: "@maya", an: "2026", date: "2026-05-03", compte: true },
                     { pl: 1, part: 19, nom: "RDV d\u00e9mo", ep: "Grand Prix", cav: "@luna", an: "2025", date: "2025-09-14", compte: true },
                     { pl: 2, part: 72, nom: "\u00c9tape d\u00e9mo BIP", ep: "Grand Prix", cav: "@swan", an: "2025", date: "2025-06-21", compte: true },
                     { pl: 1, part: 41, nom: "Haras d\u00e9mo", ep: "Poney 2 GP", cav: "@luna", an: "2025", date: "2025-04-11", compte: true }
                 ],
-                ipo: ["IPO", "d\u00e9mo", "aper\u00e7u \u00b7 2026"]
+                ipo: (sur.ipo !== undefined ? sur.ipo : ["IPO", "d\u00e9mo", "aper\u00e7u \u00b7 2026"])
             });
             return;
         }
@@ -20453,9 +20470,9 @@ function EcranChevalCommun() {
                         var tous = (al.photos || []).concat(al.videos || []);
                         tous.forEach(function (p) {
                             var u = urlDe(p); if (!u) return;
-                            if (estUrlVideo(u)) { videos.push({ u: u, t: al.nom || "" }); }
+                            if (estUrlVideo(u)) { videos.push({ u: u, t: al.nom || "", alb: al.id }); }
                             else {
-                                if (photos.length < 12) photos.push({ u: u, an: al.nom || "" });
+                                if (photos.length < 14) photos.push({ u: u, qui: nomsPar[al.user_id] || "", alb: al.id });
                                 dernier = { u: u, an: al.nom || "", qui: nomsPar[al.user_id] || "", quand: fmtJour(al.created_at) };
                             }
                         });
@@ -20477,7 +20494,7 @@ function EcranChevalCommun() {
                     var uid = rS && rS.data && rS.data.session && rS.data.session.user && rS.data.session.user.id;
                     estLie = !!(uid && ids.indexOf(uid) >= 0);
                 } catch (eS) { }
-                pose({ pret: true, erreur: null, ch: ch, cavs: cavs, nomsPar: nomsPar, photos: photos, videos: videos.slice(0, 12), dernier: dernier, resultats: res, ipo: ipo, estLie: estLie });
+                pose({ pret: true, erreur: null, ch: ch, cavs: cavs, nomsPar: nomsPar, photos: photos, videos: videos.slice(0, 15), dernier: dernier, resultats: res, ipo: ipo, estLie: estLie });
             } catch (eTout) {
                 pose({ pret: true, erreur: "chargement", ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false });
             }
@@ -20491,6 +20508,7 @@ function EcranChevalCommun() {
         else { try { history.back(); } catch (eH) { } }
     }
     function ouvrirCavaliere(cid) {
+        try { window.__hyccFiltreHistoire = cid; } catch (eFh) { } /* hook filtre (V2, non branche) */
         if (!ctx || !ctx.setEcran || !cid || (st.ch && st.ch.id === "demo")) return;
         try { window.__cavalierOuvert = cid; } catch (eC) { }
         ctx.setEcran("profil");
@@ -20500,13 +20518,18 @@ function EcranChevalCommun() {
         try { window.__chevalOuvert = st.ch.id; } catch (eF) { }
         ctx.setEcran("cheval");
     }
+    function ouvrirAlbum(albId) {
+        /* reutilise la visionneuse existante ; permissions = celles de la base */
+        if (!albId || !ctx || !ctx.setEcran || (st.ch && st.ch.id === "demo")) return;
+        try { window.__albumOuvert = albId; } catch (eAo) { }
+        ctx.setEcran("memoirescavalier");
+    }
 
     var boutonRetour = H("button", { className: "hycc-back", "aria-label": "Retour", onClick: retour }, "\u2039");
     if (!st.pret) return H("div", { className: "hycc-root" }, boutonRetour, H("div", { className: "hycc-load" }, "Un instant\u2026 la page commune se pr\u00e9pare."));
     if (st.erreur || !st.ch) return H("div", { className: "hycc-root" }, boutonRetour, H("div", { className: "hycc-load" }, st.erreur === "introuvable" ? "Ce cheval est introuvable." : "La page commune n'a pas pu se charger."));
 
     var ch = st.ch;
-    /* — LES QUATRE CHIFFRES, calcul de la fiche (sessions 154/161) — */
     var comptes = st.resultats.filter(function (r) { return r.compte; });
     var victoires = comptes.filter(function (r) { return r.pl === 1; }).length;
     var podiums = comptes.filter(function (r) { return r.pl <= 3; }).length;
@@ -20533,47 +20556,42 @@ function EcranChevalCommun() {
         var d = (a.pl === 1 ? 0 : a.pl <= 3 ? 1 : 2) - (b.pl === 1 ? 0 : b.pl <= 3 ? 1 : 2);
         if (d !== 0) return d;
         return (b.part || 0) - (a.part || 0);
-    }).slice(0, 5);
+    }).slice(0, 4);
+    /* rail des coupes : memes donnees que la fiche (ch.flots, items avec image) */
+    var coupes = ((ch.flots || []).filter(function (f) { return f && f.img; })).slice(0, 12);
     var pere = "", mere = "";
     try { var og = ch.origines || {}; pere = (og.pere && og.pere.nom) || ""; mere = (og.mere && og.mere.nom) || ""; } catch (ePed) { }
     var infos = [ch.race, ch.sexe, ch.robe, (ch.naissance ? ("N\u00e9 le " + ch.naissance) : null), ch.discipline, (ch.age ? (ch.age + " ans") : null)].filter(Boolean).join(" \u2022 ");
     var couronne = H("svg", { className: "hycc-couronne", viewBox: "0 0 30 22", "aria-hidden": true },
         H("path", { d: "M2 18 L4 6 L10 12 L15 3 L20 12 L26 6 L28 18 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.6, strokeLinejoin: "round" }));
-    function laurier(miroir) {
-        return H("svg", { viewBox: "0 0 22 52", width: 17, height: 40, "aria-hidden": true, style: miroir ? { transform: "scaleX(-1)" } : null },
-            H("path", { d: "M18 2 C8 12 5 24 8 38 C10 45 14 49 18 50", fill: "none", stroke: "#C89B4E", strokeWidth: 1.4 }),
-            [6, 12, 18, 24, 30, 36].map(function (y, i) {
-                return H("path", { key: i, d: "M" + (13 - i * 0.6) + " " + y + " q -7 1 -9 6 q 6 1 9 -6", fill: "rgba(232,161,64,.75)" });
-            }));
-    }
     function titre(txt, coeur) {
         return H("div", { className: "hycc-tit" }, H("i", null), H("span", { className: "t" }, txt, coeur ? H("span", { className: "cr" }, " \u2661") : null), H("i", { className: "r" }));
     }
 
-    /* constellation : 4 avatars relies au cristal, +N sous le cristal */
     var POS = [{ x: 16, y: 21 }, { x: 84, y: 17 }, { x: 15, y: 76 }, { x: 85, y: 72 }];
     var visibles = st.cavs.slice(0, 4);
-    var reste = Math.max(0, st.cavs.length - visibles.length);
+    var restantes = st.cavs.slice(4);
     var fils = H("svg", { className: "hycc-fils", viewBox: "0 0 100 100", preserveAspectRatio: "none" },
         visibles.map(function (c, i) {
             return H("line", { key: "f" + i, x1: 50, y1: 47, x2: POS[i].x, y2: POS[i].y, stroke: "rgba(20,226,239,.5)", strokeWidth: 0.4, style: { filter: "drop-shadow(0 0 2px rgba(20,226,239,.8))" } });
         }));
 
-    /* mur : gabarits absolus qui se chevauchent (rangees de 3, tailles et angles varies) */
-    var GAB = [
-        { l: 0,  w: 40, r: -6, z: 2, hh: 0 }, { l: 29, w: 35, r: 3,  z: 3, hh: 1 }, { l: 61, w: 38, r: -3, z: 2, hh: 0 },
-        { l: 2,  w: 36, r: 5,  z: 4, hh: 1 }, { l: 32, w: 41, r: -4, z: 2, hh: 0 }, { l: 66, w: 33, r: 6,  z: 3, hh: 1 },
-        { l: 0,  w: 35, r: -5, z: 3, hh: 1 }, { l: 27, w: 42, r: 3,  z: 2, hh: 0 }, { l: 64, w: 35, r: -6, z: 4, hh: 0 },
-        { l: 4,  w: 38, r: 4,  z: 2, hh: 0 }, { l: 35, w: 36, r: -3, z: 3, hh: 1 }, { l: 65, w: 33, r: 5,  z: 2, hh: 0 }
-    ];
-    var RANGEE = 118; /* px de pas vertical : les rangees se chevauchent */
-    var nMur = Math.min(st.photos.length, GAB.length);
-    var hMur = nMur > 0 ? (Math.ceil(nMur / 3) - 1) * RANGEE + 190 : 0;
+    /* pele-mele : formats et angles varies, cadres quasi absents, scotch un item sur trois */
+    var FORMES = ["f-p", "f-l", "f-c", "f-l", "f-p", "f-c", "f-l", "f-p", "f-c", "f-p", "f-l", "f-c", "f-p", "f-l"];
+    var ANGLES = [-2.4, 1.8, -1.2, 2.6, -1.8, 1.2, -2.8, 2.2, -1.4, 1.6, -2.2, 2.8, -1.6, 1.4];
 
-    var videosAff = voirTout ? st.videos : st.videos.slice(0, 5);
+    var videosAff = voirTout ? st.videos : st.videos.slice(0, 6);
+    var finRail = st.videos.length > videosAff.length;
+
+    function cavNoeud(c, i, dansListe) {
+        return H("div", { key: (dansListe ? "e" : "c") + i, className: "hycc-cav", "data-cav-id": c.id || "",
+            style: dansListe ? null : { left: POS[i].x + "%", top: POS[i].y + "%" }, onClick: function () { ouvrirCavaliere(c.id); } },
+            H("div", { className: "a" }, c.avatar ? H("img", { src: c.avatar, alt: "" }) : (c.nom || "?").replace("@", "").charAt(0).toUpperCase(), H("i", null)),
+            H("div", { className: "p" }, c.nom || ""));
+    }
 
     return H("div", { className: "hycc-root" },
-        /* — A · HERO : cheval a gauche (fondu de bords, jamais de voile SUR le sujet), identite a droite — */
+        /* — 1 · HERO (structure v2 conservee) — */
         H("div", { className: "hycc-hero" },
             ch.photo_url ? H("img", { className: "hycc-hphoto", src: ch.photo_url, alt: ch.nom || "" }) : null,
             H("div", { className: "hycc-hfade" }),
@@ -20597,53 +20615,61 @@ function EcranChevalCommun() {
                     H("div", { className: "c" }, H("b", null, String(classes)), H("span", null, "class\u00e9s")))
             ) : null
         ),
-        /* — C · SES HISTOIRES — */
+        /* — 3 · SES HISTOIRES (conserve ; +N deplie ; hooks filtre prepares) — */
         titre("SES HISTOIRES"),
-        (st.cavs.length > 0) ? H("div", { className: "hycc-const" },
-            fils,
-            H("div", { className: "hycc-cristalW" }, H("div", { className: "hycc-cristal" },
-                ch.photo_url ? H("img", { src: ch.photo_url, alt: "" }) : H("span", { className: "ini" }, (ch.nom || "?").charAt(0)),
-                H("div", { className: "fac" }),
-                H("div", { className: "bas" },
-                    H("div", { className: "n" }, (ch.nom || "").split(" ")[0] || "\u2014"),
-                    H("div", { className: "s" }, "Toutes ses histoires")))),
-            visibles.map(function (c, i) {
-                return H("div", { key: "c" + i, className: "hycc-cav", style: { left: POS[i].x + "%", top: POS[i].y + "%" }, onClick: function () { ouvrirCavaliere(c.id); } },
-                    H("div", { className: "a" }, c.avatar ? H("img", { src: c.avatar, alt: "" }) : (c.nom || "?").replace("@", "").charAt(0).toUpperCase(), H("i", null)),
-                    H("div", { className: "p" }, c.nom || ""));
-            }),
-            reste > 0 ? H("div", { className: "hycc-plus", style: { left: "50%", top: "89%" } }, "+" + reste) : null
+        (st.cavs.length > 0) ? H(React.Fragment, null,
+            H("div", { className: "hycc-const" },
+                fils,
+                H("div", { className: "hycc-cristalW", "data-filtre": "tous", onClick: function () { try { window.__hyccFiltreHistoire = null; } catch (eT) { } setToutesCav(false); } },
+                    H("div", { className: "hycc-cristal" },
+                        ch.photo_url ? H("img", { src: ch.photo_url, alt: "" }) : H("span", { className: "ini" }, (ch.nom || "?").charAt(0)),
+                        H("div", { className: "fac" }),
+                        H("div", { className: "bas" },
+                            H("div", { className: "n" }, (ch.nom || "").split(" ")[0] || "\u2014"),
+                            H("div", { className: "s" }, "Toutes ses histoires")))),
+                visibles.map(function (c, i) { return cavNoeud(c, i, false); }),
+                (restantes.length > 0 && !toutesCav) ? H("div", { className: "hycc-plus", style: { left: "50%", top: "89%" }, onClick: function () { setToutesCav(true); } }, "+" + restantes.length) : null
+            ),
+            toutesCav ? H("div", { className: "hycc-cavplus" }, restantes.map(function (c, i) { return cavNoeud(c, i, true); })) : null
         ) : H("div", { className: "hycc-empty" }, "Sa constellation attend ses premi\u00e8res cavali\u00e8res."),
-        /* — D · MUR DES SOUVENIRS — */
-        titre("MUR DES SOUVENIRS", true),
-        H("div", { className: "hycc-soustit" }, "Tous les albums publics, toutes les \u00e9motions partag\u00e9es."),
-        (nMur > 0) ? H("div", { className: "hycc-mur", style: { height: hMur + "px" } },
-            st.photos.slice(0, nMur).map(function (p, i) {
-                var g = GAB[i];
-                return H("div", { key: "p" + i, className: "hycc-pol" + (g.hh ? " hh" : ""), style: { left: g.l + "%", top: (Math.floor(i / 3) * RANGEE + (i % 3) * 9) + "px", width: g.w + "%", transform: "rotate(" + g.r + "deg)", zIndex: g.z } },
-                    H("img", { src: p.u, alt: "", loading: "lazy" }));
+        /* — 4/5 · MUR DES SOUVENIRS : pele-mele compact, photos cliquables — */
+        titre("LE MUR DES SOUVENIRS", true),
+        (st.photos.length > 0) ? H("div", { className: "hycc-mur" },
+            st.photos.map(function (p, i) {
+                return H("div", { key: "p" + i, className: "hycc-ph " + FORMES[i % FORMES.length], style: { transform: "rotate(" + ANGLES[i % ANGLES.length] + "deg)", marginTop: (i % 2 === 1 ? 4 : 0) + "px" }, onClick: function () { ouvrirAlbum(p.alb); } },
+                    H("img", { src: p.u, alt: "", loading: "lazy" }),
+                    i % 3 === 0 ? H("div", { className: "scotch" }) : null,
+                    p.qui ? H("div", { className: "qui" }, p.qui) : null);
             })
-        ) : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment. Les albums publics de ses cavali\u00e8res appara\u00eetront ici."),
-        /* — E · SES VIDEOS (masque si vide) — */
+        ) : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment."),
+        /* — 6 · SES VIDEOS : rail horizontal, ~2,2 visibles, fin de rail — */
         (st.videos.length > 0) ? H("div", { className: "hycc-railW" },
-            H("div", { className: "hycc-railH" },
-                H("div", { className: "hycc-tit", style: { margin: 0 } }, H("i", null), H("span", { className: "t" }, "SES VID\u00c9OS (" + st.videos.length + ")"), H("i", { className: "r" })),
-                st.videos.length > 5 ? H("span", { className: "hycc-voirtout", onClick: function () { setVoirTout(!voirTout); } }, voirTout ? "Réduire" : "Voir toutes ses vid\u00e9os \u2192") : null),
+            titre("SES VID\u00c9OS (" + st.videos.length + ")"),
             H("div", { className: "hycc-rail", "data-hscroll": "1" },
                 videosAff.map(function (v, i) {
                     return H("div", { key: "v" + i, className: "hycc-vid" },
-                        H("div", { className: "cell" },
+                        H("div", { className: "cell", onClick: v.alb ? function () { ouvrirAlbum(v.alb); } : null },
                             H("video", { src: v.u, playsInline: true, controls: true, preload: "metadata", controlsList: "nodownload",
-                                onLoadedMetadata: function (e) { var d = fmtDur(e.target.duration); if (d) { var nx = {}; nx[i] = d; setDurees(function (o) { var c = Object.assign({}, o); c[i] = d; return c; }); } } }),
+                                onLoadedMetadata: function (e) { var d = fmtDur(e.target.duration); if (d) { setDurees(function (o) { var c = Object.assign({}, o); c[i] = d; return c; }); } } }),
                             H("div", { className: "play" }),
                             durees[i] ? H("div", { className: "dur" }, durees[i]) : null),
                         v.t ? H("div", { className: "t" }, v.t) : null);
-                }))
+                }),
+                finRail ? H("div", { className: "hycc-finrail", onClick: function () { setVoirTout(true); } }, "Voir toutes ses vid\u00e9os \u2192") : null)
         ) : null,
-        /* — F · EN CONCOURS (carte palmares) — */
+        /* — 7a · RAIL DES COUPES (fait partie des resultats ; a perfectionner ensuite) — */
+        (coupes.length > 0) ? H("div", { className: "hycc-coupesW" },
+            H("div", { className: "hycc-cpill" }, "Coupes " + coupes.length),
+            H("div", { className: "hycc-crail", "data-hscroll": "1" },
+                coupes.map(function (f, i) {
+                    return H("div", { key: "cp" + i, className: "hycc-coupe" },
+                        H("img", { className: "im", src: f.img, alt: f.lab || "", loading: "lazy" }),
+                        f.lab ? H("div", { className: "lb" }, f.lab) : null);
+                }))) : null,
+        /* — 7 · EN CONCOURS : 4 lignes max + lien vers le palmares existant (fiche) — */
         (meilleurs.length > 0) ? H("div", { className: "hycc-carte" },
             H("div", { className: "hycc-carteT" },
-                H("svg", { viewBox: "0 0 24 24", width: 17, height: 17, "aria-hidden": true },
+                H("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": true },
                     H("path", { d: "M6 3 h12 v3 a6 6 0 0 1 -12 0 Z M6 4 H3 a4 4 0 0 0 4 5 M18 4 h3 a4 4 0 0 1 -4 5 M12 12 v4 M8 20 h8 M9 16 h6 v4 h-6 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.5, strokeLinejoin: "round" })),
                 "EN CONCOURS"),
             meilleurs.map(function (r, i) {
@@ -20657,26 +20683,22 @@ function EcranChevalCommun() {
             }),
             st.estLie ? H("span", { className: "hycc-lien", onClick: ouvrirFiche }, "Voir tout son palmar\u00e8s \u2192") : null
         ) : H("div", { className: "hycc-empty" }, "Aucun r\u00e9sultat partag\u00e9 pour le moment."),
-        /* — G · MEDAILLON IPO aux lauriers, entre le palmares et le partage (masque si absent) — */
-        st.ipo ? H("div", { className: "hycc-ipoC" },
-            H("svg", { className: "hycc-couronne", viewBox: "0 0 30 22", "aria-hidden": true, style: { margin: "0 auto 2px" } },
-                H("path", { d: "M2 18 L4 6 L10 12 L15 3 L20 12 L26 6 L28 18 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.6, strokeLinejoin: "round" })),
-            H("div", { className: "laur" }, laurier(false), H("div", null, H("div", { className: "v" }, String(st.ipo[1] || "")), H("div", { className: "s" }, String(st.ipo[0] || ""))), laurier(true)),
-            H("div", { className: "fil" }),
-            st.ipo[2] ? H("div", { className: "n2" }, String(st.ipo[2]).replace(/\s*\u00b7\s*/g, " \u2022 ")) : null
-        ) : null,
-        /* — H · PARTAGER UN MOMENT (boutons pour les liees ; dernier souvenir pour toutes) — */
-        (st.estLie || st.dernier) ? H("div", { className: "hycc-carte" },
-            H("div", { className: "hycc-carteT" }, "PARTAGER UN MOMENT\u2026"),
-            st.estLie ? H("div", { className: "hycc-share" },
-                H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\ud83d\udcf7 Photo"),
-                H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\u270e Publier")) : null,
-            st.dernier ? H("div", { className: "hycc-dernier" },
-                st.dernier.u ? H("img", { src: st.dernier.u, alt: "" }) : null,
-                H("div", { className: "t" },
-                    H("div", { className: "e" }, st.dernier.an || "Dernier souvenir"),
-                    H("div", { className: "d" }, [st.dernier.qui, st.dernier.quand].filter(Boolean).join(" \u2022 "))))
-                : null
+        /* — 8/9 · IPO compact (or, masque si absent) + PARTAGER compact, cote a cote — */
+        (st.ipo || st.estLie || st.dernier) ? H("div", { className: "hycc-basdeux" },
+            st.ipo ? H("div", { className: "hycc-ipoC" },
+                H("div", { className: "v" }, String(st.ipo[1] || "")),
+                H("div", { className: "s" }, String(st.ipo[0] || "")),
+                st.ipo[2] ? H("div", { className: "n2" }, String(st.ipo[2]).replace(/\s*\u00b7\s*/g, " \u2022 ")) : null) : null,
+            (st.estLie || st.dernier) ? H("div", { className: "hycc-partC" },
+                H("div", { className: "hycc-carteT", style: { fontSize: 14, marginBottom: 7 } }, "PARTAGER UN MOMENT"),
+                st.estLie ? H("div", { className: "hycc-share" },
+                    H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\ud83d\udcf7 Photo"),
+                    H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\u270e Publier")) : null,
+                st.dernier ? H("div", { className: "hycc-dernier" },
+                    st.dernier.u ? H("img", { src: st.dernier.u, alt: "" }) : null,
+                    H("div", { className: "t" },
+                        H("div", { className: "e" }, st.dernier.an || "Dernier souvenir"),
+                        H("div", { className: "d" }, [st.dernier.qui, st.dernier.quand].filter(Boolean).join(" \u2022 ")))) : null) : null
         ) : null
     );
 }

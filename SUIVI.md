@@ -14264,3 +14264,20 @@ L'app n'a **aucun autre réservoir de vidéos par cheval** que `albums_cheval` (
 
 ## Vérifications
 node --check OK, 16 scripts 0 erreur, Playwright : 0 erreur page, captures hero / constellation / mur / cartes. À pousser : **index.html uniquement**.
+
+---
+
+# HYPE ▸ 25/08 (6e livraison) · PAGE COMMUNE v3 — CAHIER DU BRIEF APPLIQUÉ
+
+Haut de page v2 conservé à l'identique (hero, identité, barre 4 chiffres calcul fiche, constellation). Modifié selon le brief :
+- **Mur des souvenirs** refait en pêle-mêle compact (2 colonnes serrées, formats portrait/paysage/carré alternés, rotations ≤ 2,8°, cadre papier 2 px seulement, scotch 1 photo sur 3, signature `@pseudo` discrète en chip). **Clic → visionneuse existante** (`window.__albumOuvert` + écran `memoirescavalier`, permissions de la base conservées, publics uniquement).
+- **Ses vidéos** : rail horizontal `data-hscroll`, cellules 46 % (~2,2 visibles), pastille lecture + durée (métadonnées), 6 affichées puis **cellule de fin « Voir toutes ses vidéos → »** qui déplie. Module absent si 0 vidéo.
+- **En concours** : 4 lignes max (tri victoires > podiums > reste, départage partants), « Voir tout son palmarès → » vers la fiche (seul palmarès existant — pas d'écran dédié dans l'app), réservé aux liées.
+- **IPO + Partager** côte à côte en bas (IPO compact or à gauche, masqué si absent avec rééquilibrage auto ; Partager compact : boutons → flux existant de la fiche `__murPhotoOuvrir`, aucun second upload ; dernier souvenir public en vignette).
+- **Ses histoires** : +N **dépliable** (rangée d'avatars sous la constellation), hooks V2 préparés sans logique : `data-cav-id`, `data-filtre="tous"` sur le cristal, `window.__hyccFiltreHistoire`.
+- Démo surchargable par `window.__chevalCommunDemoData` (pour les tests).
+
+## Tests (§16 du brief) — 15 cas au banc Playwright, tous ✅
+1/5/12 histoires (+8 déplie bien 8 avatars) · 1/6/14 souvenirs · 0/1/5/15 vidéos (0 = module absent ; 15 = fin de rail) · 0/2/120 résultats (0 = ni barre ni carte ; 120 = 4 lignes) · IPO absent (rééquilibré) · visiteuse non liée sans souvenir (aucun bloc bas). 0 erreur page partout. Privé/public : filtre `visibilite === "public"` côté chargement (non simulable au banc hors-ligne). Fiche perso / Résultats : non touchées (composant isolé `.hycc-`).
+
+## À pousser : `index.html` uniquement.
