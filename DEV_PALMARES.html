@@ -20761,7 +20761,7 @@ function EcranChevalCommun() {
                     r.an ? H("div", { className: "an" }, r.an) : null);
             }),
             (classes > meilleurs.length) ? H("div", { style: { fontSize: 11, color: "#9FA3A8", fontStyle: "italic", margin: "8px 0 0 2px" } }, "\u2026 et " + (classes - meilleurs.length) + " autres") : null,
-            st.estLie ? H("span", { className: "hycc-lien", onClick: ouvrirFiche }, "Voir tout son palmar\u00e8s \u2192") : null
+            st.estLie ? H("span", { className: "hycc-lien", onClick: function () { try { window.__ouvrirPalmares = true; } catch (eOP) { } ouvrirFiche(); } }, "Voir tout son palmar\u00e8s \u2192") : null
         ) : H("div", { className: "hycc-empty" }, "Aucun r\u00e9sultat partag\u00e9 pour le moment."),
         /* — 8/9 · IPO compact (or, masque si absent) + PARTAGER compact, cote a cote — */
         (st.ipo || st.estLie || st.dernier) ? H("div", { className: "hycc-basdeux" },
@@ -32368,7 +32368,46 @@ function AlbumsPromus(props) {
           h("div", { style: { fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: tnT, fontWeight: 700 } }, T("Ses vid\u00e9os", "Videos", "Sus v\u00eddeos", "I suoi video", "\u52d5\u753b", "Videos") + " (" + toutesV.length + ")"),
           h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))));
     })(),
-    null /* 25/08 22h : bande photos AlbumsPromus SUPPRIMEE DEFINITIVEMENT (Blandine) — le rail des moments du fil est le seul rail. Pas d ancrage, pas de portail. */);
+    (function () {
+      var phsA = [];
+      ((galeriePh && galeriePh.length) ? galeriePh : []).forEach(function (uG) { if (uG && phsA.length < 14 && phsA.indexOf(uG) < 0) phsA.push(uG); });
+      if (!phsA.length) (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
+      if (!phsA.length) return null;
+      var phsD = [];
+      return h("div", null, /* 31/07 : proposition 1 — vedette large + rail qui defile (choix Blandine) */
+        (function () { /* 31/07 : plus de grande photo a la une — seule la video reste en grand (demande Blandine) */
+          var estV = function (uX) { return (typeof estUrlVideo === "function" && estUrlVideo(uX)); };
+          var vd0 = null;
+          phsA.forEach(function (uX) { if (!vd0 && estV(uX)) vd0 = uX; });
+          phsD = [];
+          return null; /* 01/08 : GRAND BLOC VIDEO RETIRE (decision Blandine) — une seule carte, celle qui mene a la page des videos. La video reste visible en vignette dans la bande. */
+          /* code conserve ci-dessous, inatteignable, pour pouvoir revenir en arriere en une ligne */
+          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 26, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
+            h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, controls: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+            h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
+        })(),
+        h("div", { ref: function (elC) {
+          if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
+          var pauseD = false;
+          elC.addEventListener("touchstart", function () { pauseD = true; }, { passive: true });
+          elC.addEventListener("touchend", function () { setTimeout(function () { pauseD = false; }, 2600); }, { passive: true });
+          var tick = setInterval(function () {
+            if (!elC.isConnected) { clearInterval(tick); return; }
+            if (pauseD) return;
+            var maxD = elC.scrollWidth - elC.clientWidth;
+            if (maxD <= 0) return;
+            elC.scrollLeft += 1.4; /* 31/07 : defilement plus franc */
+            if (elC.getAttribute("data-boucle") === "1") { var moitR = elC.scrollWidth / 2; if (elC.scrollLeft >= moitR) elC.scrollLeft -= moitR; } /* 31/07 soir : liste doublee -> retour au point identique, aucun saut visible */
+            else if (elC.scrollLeft >= maxD - 1) { elC.scrollLeft = 0; }
+          }, 28);
+        }, "data-hscroll": "1", "data-boucle": (phsA.filter(function (uB) { return phsD.indexOf(uB) < 0; }).length >= 4 ? "1" : "0"), style: { display: "flex", gap: 15, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 26, paddingBottom: 2 } },
+        (function () { var lR = phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }); return lR.length >= 4 ? lR.concat(lR) : lR; })().map(function (uP, iP) {
+          var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
+          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 108, height: 132, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
+            vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+               : h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(uP, 224, 272) : uP), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uP); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+        })));
+    })());
 }
 
 /* 27/07 : jusque-la, GalerieSouvenirs (le carrousel "Souvenirs" en tete de fiche cheval) ne lisait que
@@ -33407,7 +33446,7 @@ function EcranCheval() {
   var selSt = React.useState(null); var selRuban = selSt[0], setSelRuban = selSt[1];
   var palmSt = React.useState(false); var voirTout = palmSt[0], setVoirTout = palmSt[1];
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
-  var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : (window.__DEV_PALMARES ? "palmares" : null); } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1];
+  var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : ((typeof window !== "undefined" && window.__ouvrirPalmares) ? (function () { try { window.__ouvrirPalmares = false; } catch (eF) { } return "palmares"; })() : (window.__DEV_PALMARES ? "palmares" : null)); } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1]; React.useEffect(function () { try { if (typeof window !== "undefined" && window.__ouvrirPalmares) { window.__ouvrirPalmares = false; setPanneau("palmares"); } } catch (eOPf) { } }); /* 25/08 : lu a CHAQUE rendu — la fiche peut etre deja montee quand on arrive de la page commune */
   var vedSt = React.useState(null); var vedettes = vedSt[0], setVedettes = vedSt[1];
   var lkSt = React.useState({ count: 0, jaiLike: false }); var lkV = lkSt[0], setLkV = lkSt[1]; /* 31/07 : likes + commentaires dans la visionneuse de la fiche (bug signale par Blandine) */
   var cmSt = React.useState(null); var cmV = cmSt[0], setCmV = cmSt[1];

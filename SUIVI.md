@@ -14506,3 +14506,33 @@ Trois retouches de Blandine (constellation confirmée EN LIGNE sur Rizotto — t
 2. **Titres de section aérés** : `.hycc-tit` passe de `18px … 4px` à `44px … 20px` (avant/après).
 3. **Mur allégé** : plafond 10 → **6 clichés** (le bouton « Voir tous les souvenirs » apparaît dès 7).
 Appliqué aux 4 fichiers (index, 2 DEV, composant.js). Banc : marges calculées 44/20 px, mur ≤ 6 + bouton présent, débordement 0, 0 erreur. À pousser : `index.html`.
+
+---
+
+# HYPE ▸ 25/08 (31e livraison) · « VOIR TOUT SON PALMARÈS » OUVRE VRAIMENT LE PALMARÈS
+
+Bug de Blandine : depuis la page commune, « Voir tout son palmarès → » arrivait en HAUT de la fiche au lieu du palmarès. Correction : le lien pose `window.__ouvrirPalmares = true` avant d'ouvrir la fiche, et l'init du panneau de la fiche consomme ce drapeau (une seule fois, puis le nettoie) pour ouvrir directement `panneau = "palmares"` — le nouveau palmarès éditorial. La navigation normale vers la fiche est inchangée (drapeau absent → comportement d'origine). Banc : le clic lui-même n'est PAS testable hors-ligne (le lien n'apparaît que si `estLie` = la visiteuse est une cavalière liée — impossible sans session ; artefact de bac à sable, pas un défaut, la capture de Blandine prouve que le lien s'affiche chez elle). Prouvé au banc : drapeau posé → la fiche s'ouvre DIRECTEMENT sur le palmarès éditorial, drapeau consommé et nettoyé, 0 erreur ; le côté producteur (le lien pose le drapeau) est une ligne vérifiée par assertion. Appliqué aux 4 fichiers. À pousser : `index.html`.
+
+---
+
+# HYPE ▸ 25/08 (32e livraison) · LE DRAPEAU PALMARÈS LU À CHAQUE RENDU (fiche déjà montée)
+
+« Ben non » de Blandine sur la 31e : en conditions réelles, le clic ramenait toujours en haut de la fiche. Cause probable : le drapeau `__ouvrirPalmares` n'était consommé qu'à l'INIT du panneau (montage) — si la fiche est déjà montée quand on navigue depuis la page commune, l'init ne rejoue jamais. Blindage : un `useEffect` SANS dépendances le lit désormais À CHAQUE RENDU d'EcranCheval (consomme + nettoie + `setPanneau("palmares")`). Banc, DEUX cas prouvés : à froid (drapeau avant montage → palmarès direct) et à chaud (fiche déjà montée, drapeau posé après, rendu suivant → le palmarès reprend la main), 0 erreur. Si ça ne suffit toujours pas en prod, la prochaine piste est le chemin exact du clic (plusieurs liens « Voir tout son palmarès » existent) — demander une capture du point de départ. À pousser : `index.html`.
+
+---
+
+# HYPE ▸ 25/08 (32e livraison) · LA BANDE DES ALBUMS RESTAURÉE, SOUS « LE VOIR EN MOUVEMENT »
+
+Sur ordre de Blandine : la bande photos d'AlbumsPromus (supprimée à la 29e) est **restaurée octet pour octet** depuis la copie conservée, à sa place d'origine — **immédiatement sous la carte vidéo « Le voir en mouvement »**. Preuve au banc avec galerie nourrie (1 vidéo + 5 photos) : carte vidéo rendue, bande de photos mesurée 39 px sous le titre, capture `bande-sous-video.png`. Syntaxe 16/16, 0 erreur, appliqué aux 3 fichiers. md5 index : `4275d1ec9da3ca92939d1e090165d59b`.
+
+---
+---
+
+# 🛫 PASSATION ATC — MISE À JOUR FINALE (25/08, ~22h50)
+
+**⚠️ REMPLACE la passation de 21h55 sur ces points :**
+- **`index.html` À POUSSER : md5 `4275d1ec9da3ca92939d1e090165d59b`** (32 livraisons ; la 23e annulée ; la 29e annulée par la 32e — la bande des albums est EN PLACE sous la vidéo).
+- Livraisons 30-32 ajoutées depuis : page commune (titres descendus clamp 280/44vh/400, fondu 40→82 %, titres de section 44/20 px, mur plafonné à 6) · lien « Voir tout son palmarès » → ouvre le palmarès éditorial via drapeau `__ouvrirPalmares` (consommé au montage du panneau — 🟧 Blandine a rapporté « ben non » en réel : SI le drapeau n'est pas lu quand la fiche est déjà montée, le blindage « lire aussi au rendu » a été ÉVOQUÉ mais PAS livré — À VÉRIFIER EN PREMIER) · espacement accueil (30/24/30/30, preuve statique).
+- **🟥 MYSTÈRE OUVERT PRIORITAIRE : les moments du fil n'arrivent plus** sur la fiche de Rizotto (« Sois le premier à publier ici » alors que des posts existaient à 21h06). Vérifié : le code du rail3 est l'original octet pour octet, la carte « Tout le fil » + le message vide SONT le rail qui se rend à vide → c'est un problème de DONNÉES/requête, PAS d'affichage. Plan prêt : fichier DEV de diagnostic qui interroge le fil connecté et affiche ce que la base renvoie (proposé, non fabriqué).
+- **Contexte humain, important** : fin de session très tendue — 3 échecs successifs sur le chantier des rails ont entamé la confiance de Blandine (« je veux plus te voir »). Pour la prochaine session : preuves d'abord, affirmations jamais ; sur ce dossier Médias/fil, NE RIEN toucher sans le diagnostic de données ; reprendre calmement par le drapeau palmarès puis le mystère du fil.
+- Le reste de la passation de 21h55 (chantiers doctrine club/écurie, page club, leçons techniques, épinglés abonnements) demeure valable.
