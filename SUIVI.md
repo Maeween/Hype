@@ -14058,3 +14058,99 @@ phrase réduite dans la carte, ou phrase sortie sous la carte à sa taille actue
 `webkitEnterFullscreen`).
 🟥 **Maquette ET code dans la MÊME session.** La leçon de la nuit du 24 : trois heures de
 maquettes validées et presque rien porté dans l'app.
+
+---
+
+## SESSION 164 — 25/08/2026, ~04h00
+### Résultats à trois · vidéo horizontale nettoyée
+
+**LE PLAFOND DES RÉSULTATS : SEPT → TROIS.**
+Demande de Blandine sur la fiche cheval. 🟥 **DEUX endroits, pas un** : l'encart a deux
+chemins selon qu'il y a des résultats épinglés ou non (`fusion.slice(0, 7)` et
+`faits.slice(0, 7)`). Les deux passent à 3 — n'en changer qu'un ferait varier le nombre
+d'un cheval à l'autre. Le « et N autres » et « Voir tout son palmarès » se recalculent seuls.
+Le rail de coupes n'est PAS touché.
+
+**LA VIDÉO HORIZONTALE.** Blandine a fourni un nouveau tournage
+(`0D81BA7F-….mov`, 1440 × 1080, HEVC + audio AAC, 20,3 Mo, 16,1 s).
+Livrée sous `palmares-video-2.mp4` — **nom neuf, pas un remplacement**, pour ne pas
+combattre le cache (leçon des 21 et 22/08). 1,01 Mo, H.264, sans audio, 720 × 540.
+Couverture `palmares-video-2.jpg` regénérée. L'index pointe sur les deux noms neufs.
+
+🟥 **CE QUI N'EST PAS RÉSOLU** : les six numéros de scène et le filigrane « Ai » sont
+**recouverts de rectangles noirs**, pas reconstitués. Scènes 1 à 4 : fond noir, invisible.
+Scènes 5 et 6 : le bord du rectangle se devine. Accepté par Blandine par avance
+(« au pire colle de la couleur de la coupe »), mais **jamais validé sur écran**.
+
+🟥 **DEUX MÉTHODES ESSAYÉES ET JETÉES — ne pas les repayer :**
+- **`delogo`** (reconstitution par les bords) : laisse des **traînées verticales claires**.
+  Inefficace même sur fond noir, et le « Ai » n'est pas parti.
+- **`boxblur`** : **étale la lumière du rond** et fabrique un rectangle gris pâle sur le noir.
+  Pire que le noir plein.
+- Le remplissage noir plein a marché **au troisième essai**, après élargissement puis
+  resserrement des cadres. Deux allers-retours de mesure ont été nécessaires.
+
+🟥 **LE DÉTECTEUR AUTOMATIQUE DE RONDS A ENCORE ÉCHOUÉ.** Même piège que sur la deuxième
+vidéo du 24/08. Détection par couleur cyan : prend la crinière du poney et les étincelles.
+Détection par forme d'anneau creux : une seule vraie détection sur 64 images.
+**Positions relevées à l'œil sur une planche-contact quadrillée. C'est la seule méthode
+qui a marché.**
+
+**Coupes de scène mesurées** (`select=gt(scene,0.25)`) : 1,767 · 3,567 · 5,7 · 10,067 · 11,4.
+Les cadres de masquage sont bornés sur ces coupes.
+
+**LE FORMAT.** 🟥 La vidéo n'est **PAS du 16/9** : c'est du **4/3**. Dans la fiche, à 280 px
+de large, elle fera **210 px de haut** (contre 492 pour la verticale, 158 pour du vrai 16/9).
+Le fichier ressemble à une capture et non à un export : coins arrondis sur les scènes 1 à 3,
+bande noire à gauche sur les scènes 4 à 6.
+
+**LE GAG DE FIN MANQUE.** Dans la verticale, le poney émergeait d'entre les coupes sur les
+deux dernières secondes — c'est la chute. Elle n'est pas dans l'horizontale. Greffer la fin
+de la verticale supposerait de recadrer du 540 × 960 en 16/9, soit du 540 × 304 à agrandir :
+**visiblement plus flou que le reste**. Non fait.
+
+**FAUTE DE LA SESSION, signalée à Blandine et corrigée** : j'ai affirmé qu'il y avait du noir
+mort en haut et en bas de la verticale, donc qu'on pouvait la rogner. **Faux.** Mesuré image
+par image : les coupes remplissent le cadre de 0 à 960, aucune bande morte. Rogner aurait
+coupé dedans. 🟥 **Ne jamais annoncer une mesure faite sur une capture d'écran comme si elle
+avait été faite sur le fichier.**
+
+**Maquette `maquette-filets.html`** — trois options de mise en page du bloc découverte.
+🟥 **Première version jetée** : le faux lecteur était en 4/3 alors que la vidéo était en 9/16.
+Blandine : « tes maquettes si elles ne sont pas à taille réelle elles servent à rien. »
+**Leçon : une maquette se fait aux dimensions réelles mesurées, ou elle ne se fait pas.**
+Refaite au format exact. Le choix entre les trois options **n'est pas fait** — dépassé par
+le passage à l'horizontale.
+
+**Les « filets »** : les deux traits fins gris ardoise (`#2A323D`) au-dessus et en dessous de
+la phrase en Cormorant italique. Terme expliqué à Blandine, elle ne le connaissait pas.
+
+**À POUSSER — les trois ENSEMBLE :**
+| fichier | md5 |
+|---|---|
+| `index.html` | `1e86ed6d59b41311db264a305164ddd5` |
+| `palmares-video-2.mp4` | `651b9fc8e7ec1b75c39662fab0b72ec3` |
+| `palmares-video-2.jpg` | `392af0e17b58ad4124045e1a1912bfc8` |
+
+**Vérifié** : 16 blocs JS en ligne, `node --check`, zéro échec.
+
+🟥 **INCIDENT DE LIVRAISON.** Une première version a été bâtie sur un index périmé
+(`b4898158…`, 9 371 949 o). Blandine a signalé l'erreur et fourni le bon
+(`2fe6981a…`, 9 400 523 o, 28 ko de plus, mêmes versions de modules). Les deux
+modifications ont été réappliquées sur le bon fichier. **La première livraison
+(`5a8e72d7…`) est CADUQUE — la pousser effacerait du travail.**
+🟥 **Leçon : vérifier le md5 de l'index reçu contre celui de la dernière livraison
+AVANT d'écrire dedans, pas après.**
+
+**RESTE OUVERT, inchangé depuis la passation du 25/08 :**
+1. 🔴 **L'écran blanc de quatre minutes.** Cause confirmée dans le code cette session :
+   **135 balises `<script src>`, dont 119 `hype-images-*.js`, et ZÉRO en `defer`/`async`.**
+   Tout est bloquant. Le `<div id="boot">Hype — chargement…</div>` existe mais **ne s'affiche
+   jamais** : rien n'est peint, d'où le blanc pur. 🟥 **Ajouter `defer` casserait tout** :
+   le programme de l'app est un script EN LIGNE placé après, il tournerait avant l'arrivée
+   des images et `HYPE_IMGS` serait vide. Il faut traiter le blanc et le poids séparément.
+2. 🔴 La page du palmarès qui se comporte mal — toujours non diagnostiquée
+3. Les deux cadres pointillés qui débordent sur l'écran d'import. Piste relevée :
+   les deux « + » du rail (`addres`, `addres2`) font 56 et 64 px en `1.5px dashed`
+4. Le titre de l'écran d'import — « centralise le titre la hauteur » jamais élucidé
+5. Le reste de la liste du 25/08, inchangé
