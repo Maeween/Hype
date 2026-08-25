@@ -14397,3 +14397,28 @@ Brief-infographie appliqué, SAUF la section constellation (Blandine garde la ve
 - **En concours** : ligne « … et N autres » (N = classés − 4 affichés) avant « Voir tout son palmarès → ».
 - Mur et vidéos : déjà conformes aux vignettes APRÈS (17e livraison), non retouchés.
 À pousser : `index.html` (md5 f4d4109d).
+
+---
+
+# HYPE ▸ 25/08 (21e livraison) · FINI LE JAUNE PIPI DE L'AUTO-REMPLISSAGE
+
+Sur l'écran de connexion, les champs pré-remplis viraient jaune pâle : c'est le style `-webkit-autofill` de Safari iOS, pas une couleur Hype. Règle globale ajoutée (chargée au démarrage via la feuille hycc-css, donc active sur TOUTES les pages y compris connexion) : fond anthracite #111417 forcé (ombre interne 1000 px), texte #F4F7FA, curseur turquoise, transition 99999 s pour empêcher le flash jaune. Vérifié au banc : règle présente au boot. À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 25/08 (22e livraison) · FICHE : PILULE « COUPES » RETIRÉE + PONT DÉPLACÉ EN BAS
+
+1. **Pilule « Coupes 3 » supprimée** (demande de Blandine : « elle sert à rien »). Sans risque : l'onglet « Résultats » avait déjà été retiré (session 152), la pilule ne basculait plus vers rien ; l'onglet par défaut reste « coupes » et **le rail des coupes est intact** (son code n'a pas été touché — seul le bloc-pilule du 31/07 a été remplacé par `null`).
+2. **Le pont « Découvrir l'histoire de X à travers N autres aventures → » déplacé tout en bas de la fiche** (dernier enfant du flux, après les Médias), avec l'id fiable `chevalDyn.dbId`. Banc (fixtures 2 liens) : pilule absente, pont présent à 91 % de la hauteur de page, tap inchangé (→ page commune, retour fiche), 0 erreur.
+À pousser : `index.html` (md5 9e747f56).
+
+---
+
+# HYPE ▸ 25/08 (23e livraison) · MÉDIAS : UN SEUL RAIL, EN CARROUSEL AUTO
+
+Constat de Blandine : DEUX rails photos (la bande `phsA` d'AlbumsPromus sous « Le voir en mouvement », et le rail « Moments encadrés » du fil — `rail3`, choix du 31/07). Correction en 3 gestes :
+1. La bande `phsA` (4 411 caractères) **supprimée**, remplacée par un point d'ancrage `#ancrageMoments` à sa place exacte (sous la carte vidéo).
+2. `MurHype` (le fil) repère l'ancrage au montage (état + effet).
+3. Son rail de moments est **téléporté dans l'ancrage** via `ReactDOM.createPortal` (le portail réparé ce matin) — s'il n'y a pas d'ancrage (fil affiché hors fiche), le rail reste à sa place d'origine, rien ne casse ailleurs.
+4. Le rail devient **carrousel auto-défilant** : un cran (158 px, fluide) toutes les 3,2 s, retour au début en bout de rail, **pause définitive au premier toucher**, minuteur nettoyé si l'élément quitte le DOM. L'init aléatoire du 31/07 retirée.
+Banc (fixtures) : ancrage présent dans le chapitre Médias, fiche saine, 0 erreur — le carrousel lui-même se vérifiera en ligne (le fil est vide hors-ligne). À pousser : `index.html` (md5 ci-dessous).
