@@ -20325,12 +20325,10 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
             ".hycc-cavplus{display:flex;flex-wrap:wrap;gap:10px 14px;justify-content:center;margin:8px 20px 0}" +
             ".hycc-cavplus .hycc-cav{position:static;transform:none;width:64px}" +
             ".hycc-cavplus .a{width:46px;height:46px;font-size:16px}" +
-            ".hycc-mur{columns:2 8px;column-gap:8px;padding:8px 10px 0;margin:0}" +
-            ".hycc-ph{position:relative;display:block;break-inside:avoid;margin:0 0 7px;border-radius:3px;overflow:hidden;background:#111417;box-shadow:0 8px 20px -10px rgba(0,0,0,.8);border:2px solid rgba(238,230,214,.9)}" +
+            ".hycc-mur{display:flex;gap:8px;padding:8px 10px 0;align-items:flex-start}" +
+            ".hycc-murcol{flex:1;min-width:0;display:flex;flex-direction:column;gap:7px}" +
+            ".hycc-ph{position:relative;border-radius:3px;overflow:hidden;background:#111417;box-shadow:0 8px 20px -10px rgba(0,0,0,.8);border:2px solid rgba(238,230,214,.9)}" +
             ".hycc-ph img{width:100%;display:block;object-fit:cover}" +
-            ".hycc-ph.f-p img{aspect-ratio:1/1.26}" +
-            ".hycc-ph.f-l img{aspect-ratio:1/0.72}" +
-            ".hycc-ph.f-c img{aspect-ratio:1/1}" +
             ".hycc-ph .qui{position:absolute;left:5px;bottom:5px;font-size:8.5px;color:#F4F7FA;background:rgba(6,7,9,.55);padding:2px 6px;border-radius:7px;letter-spacing:.03em}" +
             ".hycc-ph .scotch{position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(-3deg);width:34px;height:12px;background:rgba(238,230,212,.55);box-shadow:0 1px 2px rgba(0,0,0,.3)}" +
             ".hycc-railW{margin-top:14px}" +
@@ -20634,14 +20632,41 @@ function EcranChevalCommun() {
         ) : H("div", { className: "hycc-empty" }, "Sa constellation attend ses premi\u00e8res cavali\u00e8res."),
         /* — 4/5 · MUR DES SOUVENIRS : pele-mele compact, photos cliquables — */
         titre("LE MUR DES SOUVENIRS", true),
-        (st.photos.length > 0) ? H("div", { className: "hycc-mur" },
+        (st.photos.length > 0 && st.photos.length < 3) ? H("div", { style: { padding: "8px 44px 0" } },
             st.photos.map(function (p, i) {
-                return H("div", { key: "p" + i, className: "hycc-ph " + FORMES[i % FORMES.length], style: { transform: "rotate(" + ANGLES[i % ANGLES.length] + "deg)", marginTop: (i % 2 === 1 ? 4 : 0) + "px" }, onClick: function () { ouvrirAlbum(p.alb); } },
-                    H("img", { src: p.u, alt: "", loading: "lazy" }),
-                    i % 3 === 0 ? H("div", { className: "scotch" }) : null,
+                return H("div", { key: "p" + i, className: "hycc-ph", style: { transform: "rotate(" + ANGLES[i % ANGLES.length] + "deg)", marginBottom: 8 }, onClick: function () { ouvrirAlbum(p.alb); } },
+                    H("img", { src: p.u, alt: "", loading: "lazy", style: { aspectRatio: "1 / 0.9" } }),
+                    H("div", { className: "scotch" }),
                     p.qui ? H("div", { className: "qui" }, p.qui) : null);
             })
-        ) : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment."),
+        ) :
+        (st.photos.length > 0) ? (function () {
+            /* deux colonnes equilibrees a la HAUTEUR (le trou en bas a droite venait des
+               colonnes CSS remplies au nombre) ; le dernier cliche de la colonne courte
+               s'etire pour finir a fleur. */
+            var RATIOS = { "f-p": 1.26, "f-l": 0.72, "f-c": 1 };
+            var cols = [[], []], haut = [0, 0];
+            st.photos.forEach(function (p, i) {
+                var r = RATIOS[FORMES[i % FORMES.length]];
+                var c = haut[0] <= haut[1] ? 0 : 1;
+                cols[c].push({ p: p, i: i, r: r });
+                haut[c] += r + 0.06;
+            });
+            var courte = haut[0] < haut[1] ? 0 : 1, diff = Math.abs(haut[0] - haut[1]);
+            if (cols[courte].length && diff > 0.12) {
+                var dern = cols[courte][cols[courte].length - 1];
+                dern.r = Math.min(1.7, dern.r + diff);
+            }
+            return H("div", { className: "hycc-mur" }, cols.map(function (col, ci) {
+                return H("div", { key: "col" + ci, className: "hycc-murcol" }, col.map(function (x) {
+                    var p = x.p, i = x.i;
+                    return H("div", { key: "p" + i, className: "hycc-ph", style: { transform: "rotate(" + ANGLES[i % ANGLES.length] + "deg)" }, onClick: function () { ouvrirAlbum(p.alb); } },
+                        H("img", { src: p.u, alt: "", loading: "lazy", style: { aspectRatio: "1 / " + x.r } }),
+                        i % 3 === 0 ? H("div", { className: "scotch" }) : null,
+                        p.qui ? H("div", { className: "qui" }, p.qui) : null);
+                }));
+            }));
+        })() : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment."),
         /* — 6 · SES VIDEOS : rail horizontal, ~2,2 visibles, fin de rail — */
         (st.videos.length > 0) ? H("div", { className: "hycc-railW" },
             titre("SES VID\u00c9OS (" + st.videos.length + ")"),

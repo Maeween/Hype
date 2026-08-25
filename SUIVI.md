@@ -14281,3 +14281,9 @@ Haut de page v2 conservé à l'identique (hero, identité, barre 4 chiffres calc
 1/5/12 histoires (+8 déplie bien 8 avatars) · 1/6/14 souvenirs · 0/1/5/15 vidéos (0 = module absent ; 15 = fin de rail) · 0/2/120 résultats (0 = ni barre ni carte ; 120 = 4 lignes) · IPO absent (rééquilibré) · visiteuse non liée sans souvenir (aucun bloc bas). 0 erreur page partout. Privé/public : filtre `visibilite === "public"` côté chargement (non simulable au banc hors-ligne). Fiche perso / Résultats : non touchées (composant isolé `.hycc-`).
 
 ## À pousser : `index.html` uniquement.
+
+---
+
+# HYPE ▸ 25/08 (8e livraison) · LE TROU DU MUR ÉLIMINÉ
+
+Constat de Blandine sur la v3 en ligne : trou noir en bas à droite du mur. Cause : `columns: 2` CSS répartit **au nombre** de photos, pas à la hauteur → colonnes inégales. Remplacé par **deux colonnes flex équilibrées à la hauteur** (répartition gloutonne par ratio d'image) + le dernier cliché de la colonne courte **s'étire** (ratio +diff, plafonné 1,7) pour finir à fleur. Cas 1-2 photos : pile centrée pleine largeur (plus de colonne vide). Banc mesuré : écart bas de colonnes = **0 px** (8 photos), 3 px (11), 15 px (5) ; 1-2 photos = 1 colonne ; 0 erreur partout. À pousser : `index.html` (remplace le précédent de la session).
