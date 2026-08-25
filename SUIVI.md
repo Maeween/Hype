@@ -14347,3 +14347,18 @@ Deux réglages ajustables si Blandine préfère : seuil du badge (≥2 → ≥1)
 **Banc (bouchon supabase par table)** : 3 tuiles rendues, badge « 3 » sur le cheval partagé seulement, tap → `.hycc-root` monté, `__hyccRetour = "guilde"`, 0 erreur. Aperçus `#chevalcommun`/`#chevalcommun-<id>` inchangés.
 
 ## À pousser : `index.html` uniquement.
+
+---
+
+# HYPE ▸ 25/08 (16e livraison) · FUSION DES DEUX BRANCHES + ÉTAPE 3 — LE PONT FICHE → PAGE COMMUNE
+
+## 🟥 FUSION (à lire avant toute prochaine session)
+Le « dernier index » remis par Blandine (branche de la session vidéo palmarès) NE contenait PAS les livraisons du jour : page commune en vieille version, étape 2 absente. Fusion réalisée : **sa branche = base** (la vidéo `palmares-video-2` et le correctif createPortal y sont conservés), l'ancien composant page commune (26 118 caractères) remplacé par la version du jour via analyseur d'accolades JS (les chaînes CSS pleines de `{}` interdisent un comptage naïf), étape 2 reposée (4 greffes guilde). Leçon : toujours vérifier les marqueurs (`liensClub`, `chevalCommunDemoData`) avant de greffer sur un index remis en cours de journée.
+
+## Étape 3 — le pont (idée de Blandine : « découvrir l'histoire de Rizotto à travers d'autres aventures »)
+Nouveau composant isolé `PontChevalCommun`, inséré sur la fiche juste avant le chapitre Médias : bouton doux (verre sombre, mini-cristal, Cormorant italique) « Découvrir l'histoire de {prénom du cheval} à travers N autre(s) aventure(s) → ». **Visible seulement si le cheval a ≥ 1 cavalière liée** (requête unique `chevaux_liens` au montage du bouton — la fiche elle-même n'est pas touchée : composant autonome, silence total en cas d'échec ou de zéro lien). Tap → page commune, retour → fiche. `chevalId` robuste : le `c` local du site d'insertion n'étant pas fiable, repli sur `window.__chevalOuvert` (posé à toute ouverture de fiche) — c'est ce repli qui a fait passer le banc.
+
+## Banc (fichier fusionné, bouchon supabase par table)
+1· `#chevalcommun` → page commune OK. 2· `#monclub` → badge cristal « 3 » sur le cheval partagé. 3· `#cheval-c1` (2 liens en fixtures) → pont affiché « …à travers 2 autres aventures → », tap → page commune montée, retour `cheval`. 16 scripts, 0 erreur partout.
+
+## À pousser : `index.html` uniquement (contient : branche vidéo palmarès + les 15 livraisons du jour + étape 3).

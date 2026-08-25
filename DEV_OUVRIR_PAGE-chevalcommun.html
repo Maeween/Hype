@@ -20729,6 +20729,40 @@ function EcranChevalCommun() {
     );
 }
 
+/* ===== PONT FICHE -> PAGE COMMUNE (etape 3, 25/08) =====
+   Invitation douce sur la fiche perso : « Decouvrir l'histoire de X a travers
+   N autres aventures -> ». Visible SEULEMENT si le cheval a au moins une
+   cavaliere liee (requete unique au montage, composant isole : la fiche ne
+   change pas d'un iota si le pont echoue ou n'a rien a dire). */
+function PontChevalCommun(props) {
+    var H = React.createElement;
+    var ctx = null; try { ctx = useApp(); } catch (ePc) { }
+    var _n = React.useState(null); var n = _n[0], setN = _n[1];
+    React.useEffect(function () {
+        var vivant = true;
+        (async function () {
+            try {
+                var id = props && props.chevalId;
+                if (!id) return;
+                var r = await supa.from("chevaux_liens").select("user_id").eq("cheval_id", id);
+                if (vivant) setN(((r && r.data) || []).length);
+            } catch (eP) { if (vivant) setN(0); }
+        })();
+        return function () { vivant = false; };
+    }, [props && props.chevalId]);
+    if (!n || n < 1) return null;
+    var prenom = String((props && props.nom) || "ce cheval").split(" ")[0];
+    function ouvrir() {
+        try { window.__chevalCommunOuvert = props.chevalId; window.__hyccRetour = "cheval"; } catch (eO) { }
+        if (ctx && ctx.setEcran) ctx.setEcran("cheval-commun");
+    }
+    return H("button", { onClick: ouvrir, style: { display: "flex", alignItems: "center", gap: 10, width: "calc(100% - 32px)", margin: "14px 16px 2px", padding: "11px 14px", borderRadius: 14, border: "1px solid rgba(32,217,245,.3)", background: "rgba(17,20,23,.55)", cursor: "pointer", textAlign: "left" } },
+        H("span", { style: { flex: "0 0 auto", width: 20, height: 24, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", filter: "drop-shadow(0 0 6px rgba(32,217,245,.6))" } }),
+        H("span", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 14.5, color: "#EDF2F5", lineHeight: 1.35 } },
+            "D\u00e9couvrir l'histoire de " + prenom + " \u00e0 travers " + (n === 1 ? "une autre aventure" : (n + " autres aventures"))),
+        H("span", { style: { flex: "0 0 auto", color: "#20D9F5", fontSize: 15 } }, "\u2192"));
+}
+
 
 /* ===== ECRAN MA COMMUNAUTE EQUESTRE — integre depuis mockup valide ===== */
 var COMM_CSS_HYPE = "@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:ital,wght@1,500&family=Montserrat:wght@300;400;500;600&display=swap');\n.hype-comm{min-height:100vh;--ink:#05070C;--blue:#4FA6FF;--blue-soft:#8FD0FF;--turq:#3FE0EA;--gold:#E6C67F;--gold-deep:#BE9A52;\n  --name:#F1EBDD;--text:#EAEFF3;--muted:rgba(234,239,243,.6);--muted-2:rgba(234,239,243,.36);--faint:rgba(234,239,243,.12);\n  --card:rgba(120,170,230,.07);--card-2:rgba(140,185,240,.11);--stroke:rgba(150,190,240,.16);}\n.hype-comm *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}\n.hype-comm{font-family:'Montserrat',system-ui,sans-serif;background:var(--ink);color:var(--text);-webkit-font-smoothing:antialiased;overflow-x:hidden}\n.hype-comm .app{position:relative;max-width:440px;margin:0 auto;min-height:auto;overflow:visible;background:radial-gradient(140% 40% at 50% 0%,rgba(70,130,220,.16),transparent 55%),linear-gradient(180deg,#070A12,#05070C 60%,#04060B)}\n.hype-comm .scroll{position:relative;z-index:2;padding-bottom:28px}\n.hype-comm .hero{position:relative;height:400px;overflow:hidden}\n.hype-comm .hero img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}\n.hype-comm .hero .top{position:absolute;top:0;left:0;right:0;height:120px;background:linear-gradient(180deg,rgba(5,7,12,.55),transparent)}\n.hype-comm .hero .btm{position:absolute;left:0;right:0;bottom:0;height:60%;background:linear-gradient(180deg,transparent,rgba(5,7,12,.35) 55%,rgba(5,7,12,.92))}\n.hype-comm .hero .content{position:absolute;left:0;right:0;bottom:0;padding:0 24px 22px;z-index:3}\n.hype-comm .hero .k{font-size:9.5px;letter-spacing:.36em;text-transform:uppercase;color:var(--blue-soft);font-weight:600}\n.hype-comm .hero h1{font-family:'Cinzel';font-weight:700;font-size:25px;line-height:1.12;letter-spacing:.6px;margin-top:9px;color:var(--name);text-shadow:0 2px 20px rgba(10,26,36,0.132)}\n.hype-comm .hero .q{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;color:rgba(241,235,221,.85);margin-top:8px;letter-spacing:.2px}\n.hype-comm .sec{margin:30px 24px 14px;display:flex;align-items:baseline}\n.hype-comm .lbl{font-size:9.5px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted-2);font-weight:600}\n.hype-comm .sec .all{margin-left:auto;font-size:10.5px;color:var(--blue-soft);font-weight:500}\n.hype-comm .sec .n{margin-left:auto;font-family:'Cinzel';font-size:12px;color:var(--muted)}\n.hype-comm .av{position:relative;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;font-family:'Cinzel';font-weight:600;font-size:16px;flex:0 0 auto;background:linear-gradient(158deg,#1b2836,#0d1522);border:1px solid var(--c,rgba(150,190,240,.22));color:var(--name);box-shadow:0 0 16px -3px var(--c,rgba(80,140,230,.4)),inset 0 1px 0 rgba(255,255,255,.07)}\n.hype-comm .av.sm{width:42px;height:42px;font-size:14px}\n.hype-comm .addrow{display:flex;gap:9px;padding:0 24px}\n.hype-comm .atile{flex:1;display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px 4px;border-radius:15px;background:var(--card);border:1px solid var(--stroke)}\n.hype-comm .atile svg{width:20px;height:20px;stroke:var(--blue-soft);fill:none;stroke-width:1.5;opacity:.85}\n.hype-comm .atile .lab{font-size:10px;font-weight:500;color:var(--muted);letter-spacing:.02em}\n.hype-comm .req{margin:0 24px 9px;border-radius:15px;padding:13px 14px;display:flex;align-items:center;gap:13px;background:var(--card);border:1px solid var(--stroke)}\n.hype-comm .req .m{flex:1;min-width:0}\n.hype-comm .req .nm{font-family:'Cinzel';font-weight:600;font-size:14px;color:var(--name)}\n.hype-comm .req .s{font-size:10.5px;color:var(--muted);margin-top:3px}\n.hype-comm .reqb{display:flex;gap:8px}\n.hype-comm .bok, .hype-comm .bno{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;border:1px solid var(--stroke)}\n.hype-comm .bok{background:rgba(80,150,240,.18);border-color:rgba(120,180,255,.4);box-shadow:0 0 13px -3px rgba(90,160,255,.6)}\n.hype-comm .bok svg{width:17px;height:17px;stroke:var(--blue-soft);fill:none;stroke-width:2.4}\n.hype-comm .bno svg{width:15px;height:15px;stroke:var(--muted-2);fill:none;stroke-width:2}\n.hype-comm .story{margin:0 24px;border-radius:20px;padding:20px;position:relative;overflow:hidden;background:linear-gradient(155deg,rgba(230,198,127,.12),rgba(120,170,230,.06) 55%,rgba(255,255,255,.02));border:1px solid rgba(230,198,127,.3)}\n.hype-comm .story .glow{position:absolute;width:200px;height:160px;right:-30px;top:-30px;background:radial-gradient(closest-side,rgba(230,198,127,.22),transparent 72%);mix-blend-mode:screen}\n.hype-comm .story .row{position:relative;display:flex;align-items:center;gap:15px}\n.hype-comm .story .m{flex:1;min-width:0}\n.hype-comm .story .e{font-size:8.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--gold);font-weight:600}\n.hype-comm .story .nm{font-family:'Cinzel';font-weight:600;font-size:17px;color:var(--name);margin-top:5px;letter-spacing:.3px}\n.hype-comm .story .meta{font-size:11px;color:var(--muted);margin-top:3px}\n.hype-comm .story .fl{width:60px;height:60px;flex:0 0 auto;border-radius:50%;overflow:hidden;border:1px solid rgba(230,198,127,.45);box-shadow:0 0 20px -4px rgba(230,198,127,.55)}\n.hype-comm .story .fl img{width:100%;height:100%;object-fit:cover;object-position:50% 30%}\n.hype-comm .story .q{position:relative;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:16px;color:rgba(241,235,221,.92);margin-top:16px;line-height:1.4}\n.hype-comm .story .btn{position:relative;margin-top:16px;width:100%;padding:13px;border-radius:12px;background:linear-gradient(180deg,rgba(230,198,127,.9),rgba(190,154,82,.9));border:none;color:#2c2109;font-weight:700;font-size:12px;letter-spacing:.09em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:9px}\n.hype-comm .story .btn svg{width:15px;height:15px;stroke:#2c2109;fill:none;stroke-width:2}\n.hype-comm .list{margin:0 24px;border-radius:16px;overflow:hidden;background:var(--card);border:1px solid var(--stroke)}\n.hype-comm .frow{display:flex;align-items:center;gap:14px;padding:14px 16px;position:relative}\n.hype-comm .frow+.frow::before{content:\"\";position:absolute;top:0;left:66px;right:16px;height:1px;background:var(--faint)}\n.hype-comm .frow .m{flex:1;min-width:0}\n.hype-comm .frow .nm{font-family:'Cinzel';font-weight:600;font-size:14px;color:var(--name)}\n.hype-comm .frow .s{font-size:10.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n.hype-comm .frow .s b{color:rgba(241,235,221,.72);font-weight:500}\n.hype-comm .frow .right{flex:0 0 auto;text-align:right}\n.hype-comm .frow .g{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:rgba(241,235,221,.66);font-weight:500}\n.hype-comm .frow .fl{font-size:10px;color:var(--muted-2);margin-top:4px}\n.hype-comm .tabbar{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:440px;z-index:25;padding:10px 8px calc(env(safe-area-inset-bottom) + 12px);display:flex;justify-content:space-between;background:linear-gradient(180deg,rgba(5,7,12,0),rgba(5,7,12,.92) 40%,#05070C)}\n.hype-comm .tab{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;padding:6px 0;color:var(--muted-2)}\n.hype-comm .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.5}\n.hype-comm .tab span{font-size:8.5px;font-weight:500}\n.hype-comm .tab.active{color:var(--blue-soft)}\n.hype-comm .tab.active span{color:var(--blue-soft)}\n.hype-comm .tab.active svg{filter:drop-shadow(0 0 6px rgba(90,160,255,.7))}";
@@ -21971,9 +22005,24 @@ function HypeApp() {
     const __ecranPrec = useRef(ecran);
     useEffect(() => { if (ecran === "dashboard" && __ecranPrec.current !== "dashboard") dernierAvantRef.current = __ecranPrec.current; __ecranPrec.current = ecran; }, [ecran]);
     const retourDepuisAccueil = () => { const c = dernierAvantRef.current; if (c && c !== "dashboard") naviguer(c); };
+    /* 25/08 — UN GESTE, UN SEUL RECUL. Signale par Blandine : « je reviens en
+       arriere du menu galop 3, ca me remet sur la page de l accueil general au
+       lieu du menu des galops ». Deux mecanismes de retour coexistent et se
+       declenchent tous les deux sur le MEME geste : le balayage maison
+       (onNavTouchEnd du Router) et le retour systeme d iOS/Android (popstate).
+       Chacun depile un ecran, donc on reculait DEUX fois : galop-detail ->
+       galops -> accueil. Le garde-fou de 450 ms pose le 14/08 ne protegeait que
+       popstate contre lui-meme. Il descend ici, dans `retourEcran`, ou passent
+       les DEUX chemins : le second recul survenu dans la foulee est ignore.
+       Un humain ne recule pas deux fois en moins d une demi-seconde. */
+    const __retourTs = useRef(0);
     const retourEcran = () => {
         if (historiqueEcrans.length === 0)
             return;
+        const t = Date.now();
+        if (t - (__retourTs.current || 0) < 450)
+            return;
+        __retourTs.current = t;
         __noterScroll();
         const prec = historiqueEcrans[historiqueEcrans.length - 1];
         setPileAvant((p) => [...p, ecran]);
@@ -34082,11 +34131,11 @@ function EcranCheval() {
               return !(f.__id && prisE[f.__id]);
             });
             var fusion = tete.concat(suite);
-            vus = fusion.slice(0, 7);
+            vus = fusion.slice(0, 3);
             reste = faits.length - vus.filter(function (f) { return !f.__ep; }).length - tete.length;
             if (reste < 0) reste = 0;
           } else {
-            vus = faits.slice(0, 7); reste = faits.length - vus.length;
+            vus = faits.slice(0, 3); reste = faits.length - vus.length;
           }
 
           function ch(n, lb, or) {
@@ -34193,7 +34242,7 @@ function EcranCheval() {
           h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto",
                               borderRadius: 16, overflow: "hidden", background: "#000",
                               border: "1px solid rgba(255,255,255,.07)" } },
-            h("video", { src: "palmares-video.mp4?v=1", poster: "palmares-video.jpg?v=1",
+            h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1",
                          autoPlay: true, muted: true, loop: true, playsInline: true,
                          "webkit-playsinline": "true", preload: "metadata",
                          onClick: function (eV) { try { eV.stopPropagation(); var v = eV.currentTarget;
@@ -34247,7 +34296,7 @@ function EcranCheval() {
         h("div", { id: "chapMedias", style: { position: "relative" } },
           h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien"))),
-          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
+          h("div", { style: { minWidth: 0 } },  h(PontChevalCommun, { chevalId: (typeof c === "object" && c && c.id) || (typeof window !== "undefined" ? window.__chevalOuvert : null) || null, nom: (typeof c === "object" && c && c.nom) || "" }), h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
@@ -37283,6 +37332,14 @@ function EcranCours() {
        changement de bloc — la fenetre, et aussi le conteneur interne quand l ecran scrolle dedans. */
     React.useEffect(() => {
         try {
+            /* 25/08 — LE VERROU FANTOME DANS UN COURS. `hypeFiletScroll` realigne
+               body.overflow sur la realite du DOM, mais il n etait appele qu au
+               CHANGEMENT D ECRAN (useEffect [ecran] du Router). Or tourner les pages
+               d un chapitre ne change pas `ecran`, ca change `blocIdx` : une visionneuse
+               mal refermee sur une page precedente laissait donc body{overflow:hidden}
+               jusqu a la sortie du cours — plus aucun defilement, obligee de fermer
+               l application. Le filet est desormais repasse a chaque page. */
+            if (typeof hypeFiletScroll === "function") hypeFiletScroll();
             window.scrollTo(0, 0);
             const racine = document.scrollingElement || document.documentElement;
             if (racine) racine.scrollTop = 0;
