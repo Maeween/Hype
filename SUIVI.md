@@ -1,3 +1,11 @@
+# SUIVI — HYPE
+
+**Hype** → https://2hype.netlify.app · **Linguae** → https://majestic-melba-997a68.netlify.app
+Hébergement **Netlify** : chaque poussée redéploie. Onglet *Deploys* → « Publish deploy » pour
+revenir à une version précédente en un clic — le retour arrière d'urgence.
+
+---
+
 # SUIVI HYPE
 
 ---
@@ -13724,3 +13732,329 @@ l'écran d'import sera fait). Sans les vidéos, le bloc affiche un cadre vide.
 3. **Le tampon « officiel »** — maquette livrée, choix jamais fait.
 4. **La vidéo apparaissait en carré noir** sur les captures de Blandine dans le navigateur
    intégré. L'image de couverture est là pour ça, mais **à vérifier sur l'app réelle**.
+
+### 🧹 24/08, minuit passé — deux retraits sur la carte des clubs (page Communauté)
+
+Sur demande de Blandine, capture à l'appui :
+
+- **« 131 clubs en France »** retiré de la carte.
+- **Le titre « CARTE DES CLUBS » écrit à l'intérieur de la carte** retiré aussi : il DOUBLAIT
+  le titre de section posé juste au-dessus. Le mot apparaissait deux fois à l'écran.
+
+🟥 **Le titre de section est intact** : `titreSec(T("Carte des clubs", ...))`, six langues,
+juste avant le cadre. Vérifié après coup — la carte n'est pas restée sans titre. Le libellé
+est écrit en minuscules dans le code et mis en capitales à l'affichage : un `grep` sur
+« CARTE DES CLUBS » renvoie donc zéro, ce qui n'est PAS un titre manquant.
+
+La carte vit dans un `srcdoc` d'iframe : le HTML y est échappé (`<\/div>`). Toute retouche
+doit respecter cet échappement.
+
+### 🟠 Demandé, PAS FAIT — il manque le fichier
+
+**Le halo des stories** (page Écurie) : Blandine le veut **plus discret** et **dans la teinte
+de la page**, comme tout le reste depuis ce soir. Il est aujourd'hui en turquoise fixe.
+⚠️ **Il ne vit pas dans `index.html`** — il est dans **`hype-stories.js`**, qui n'a pas été
+fourni. À demander à la reprise.
+
+### 🌫️ Le halo des stories — quatrième passe (`hype-stories.js`)
+
+Demande de Blandine : « un halo plus discret » et « qu'il puisse passer dans la couleur de la
+page choisie ».
+
+🟥 **Sur le second point, il n'y avait rien à faire : le halo SUIT DÉJÀ la teinte.** Sa
+couleur vient de `tA()`, donc de `teinteHypeActive()` — aucune valeur turquoise écrite en dur.
+Sur une écurie dorée il est doré depuis le 17/08. Blandine le croyait figé ; dit et corrigé.
+
+**Sur le premier point**, la règle écrite dans le module le 17/08 a été suivie à la lettre :
+🟥 **« plus léger » = baisser l'OPACITÉ, JAMAIS toucher à la géométrie.** La forme (étendue
+1,32x, pic à 76 %) est validée depuis la passe 1 ; c'est en la changeant que la passe 2 avait
+produit un hublot invisible.
+
+Pic **0,14 → 0,09** (−36 %), les deux appuis descendent d'autant. Repère complet des passes,
+laissé dans le code pour ne pas le reperdre :
+
+| | |
+|---|---|
+| 0,34 en disque | « un peu violent » (17/08) |
+| 0,09 en **anneau étroit** | « on voit plus rien » — géométrie changée, faute reconnue |
+| 0,14 en disque | retenu le 17/08 |
+| **0,09 en disque** | **ici, 24/08** |
+
+🟥 **`hype-stories.js?v=19` → `?v=20` dans l'index.** Sans ça Safari sert sa copie et la
+livraison n'arrive jamais sur le téléphone — les deux jours perdus des 21 et 22/08.
+**Les deux fichiers vont donc ENSEMBLE.**
+
+---
+
+# 🟡 IDÉES DE BLANDINE — 25/08, une heure du matin
+## RIEN N'EST CODÉ. Aucune décision technique. Notes de conception.
+
+## 1 · Un cheval, plusieurs cavalières
+
+**Le problème** : à l'Écurie Feinn, le même cheval existe en plusieurs exemplaires — un par
+cavalière qui l'a créé. Ils s'affichent tous à la suite, comme s'il y avait cinq chevaux.
+
+**L'idée de Blandine, dans sa forme finale** : un petit nombre sur le cheval dans l'écurie,
+qui dit combien de fois il est repris. Au clic, **une seule fiche, et à l'intérieur un GRAND
+ENCART par cavalière** — sa photo, son palmarès, ses albums souvenirs à elle.
+
+Ce que ça donne et qui n'existe nulle part : **le cheval traverse les cavalières.** Louane le
+montait en Club 2 en 2019, Liam en Poney 1 Elite en 2024. Sur une page, c'est la vie du poney
+qu'on lit, pas un annuaire. C'est déjà ce que montrent les PDF de Rizotto.
+
+### Comment reconnaître que c'est le même cheval — TRANCHÉ
+
+🟥 **Nom rapproché À L'INTÉRIEUR D'UN MÊME CLUB**, puis **la question posée à la création.**
+Le rapprochement n'est qu'un DÉTECTEUR, jamais une décision. Même principe que
+`noyauEcurie()` (accents, majuscules, mots vides), déjà écrit et éprouvé sur les noms de clubs.
+
+🟥 **La question ne nomme PERSONNE.** Décision de Blandine, sur son propre motif : dire
+« monté par Liam Roux » révélerait qui monte quoi à quelqu'un qui ne le sait pas — dans un
+club, ça crée des jalousies. La question dit :
+
+> **Un cheval nommé Rizotto d'Emery existe déjà à l'Écurie Feinn. C'est le même ?**
+
+Nom, écurie, rien d'autre. **Le nom des autres cavalières n'apparaît nulle part dans le
+rapprochement** — ni dans la question, ni dans un aperçu. Elles se découvrent sur la fiche,
+une fois le lien fait.
+
+**Un « non » vaut autant qu'un « oui »** : deux poneys peuvent vraiment porter le même nom
+dans un club. La réponse est enregistrée, la question n'est plus jamais reposée.
+
+⚠️ **Régler le rapprochement SERRÉ au début.** Mieux vaut manquer un regroupement que
+suggérer une bêtise.
+
+### ⚠️ Deux points de vigilance à ne pas perdre
+
+**Les albums privés restent privés.** Règle de Blandine du 02/08 : un album est public par
+défaut, son auteur peut le passer en privé. Sur cette page, un album privé ne doit apparaître
+qu'à celle qui l'a créé — sinon on ouvre les souvenirs de tout le monde à tout le monde.
+
+**Ça pèse.** Cinq encarts = cinq palmarès + cinq albums, sur un plan Supabase gratuit.
+Charger les encarts UN PAR UN, jamais tous d'un coup.
+
+## 2 · L'import remplit aussi l'IDENTITÉ et les ORIGINES
+
+🟥 **La donnée est DÉJÀ dans les PDF que Blandine importe.** Vérifié sur les deux fichiers,
+en-tête de la page de résultats :
+
+| | Rizotto d'Émery | Tully Blue Moon |
+|---|---|---|
+| né le | 07/05/2005 | 19/05/2007 |
+| race | Poney Français de Selle | Poney Français de Selle |
+| robe · sexe · taille | Bai Foncé · Hongre · Cat. D | Gris · Femelle · Cat. D |
+| père | Kantje's Admiraal | Kooihuster Teake |
+| mère | Moyra de Karyann | Leila de l'Aubier |
+| naisseur | Rachel Triqueneaux | Claude Billat–Anne-Mieke Schol |
+
+🟥 **AUCUN NUMÉRO SIRE** dans ces pages. Zéro occurrence sur les deux fichiers. Le SIRE ne
+résoudra donc pas la reconnaissance des doublons. **En revanche père + mère + date de
+naissance forment ensemble une signature quasi certaine** — deux poneys du même nom n'ont pas
+les mêmes parents.
+
+🟥 **C'est la DATE DE NAISSANCE qui est écrite, pas l'âge — et c'est mieux.** Un âge écrit en
+dur vieillit mal : dans huit mois il est faux et personne ne le voit. La date reste juste
+pour toujours, l'app calcule l'âge à l'affichage.
+
+**Proposé, pas imposé** (demande explicite de Blandine) : à l'écran de relecture, au-dessus
+des lignes de résultats, un encart
+
+> **Sa fiche peut aussi être complétée**
+> Poney Français de Selle · né le 07/05/2005 · bai foncé · hongre · catégorie D
+> par Kantje's Admiraal et Moyra de Karyann
+> [ Mettre à jour sa fiche ]
+
+⚠️ **À trancher à froid, deux questions posées et NON répondues :**
+1. **Ce qui est déjà rempli.** Si la cavalière a écrit « Bai » et que le PDF dit « Bai
+   Foncé » : on remplace, ou on ne complète que les cases vides ? Écraser une saisie manuelle
+   serait le même piège que les trois lignes en dur corrigées ce soir.
+2. **Les origines sont du TEXTE que PDF.js peut déformer** (« RÈGLATS GPTERCLS » sur les
+   papiers de la vidéo). Père et mère doivent être relus SÉPARÉMENT, jamais noyés dans une
+   ligne. **Ne jamais écrire un nom d'ascendance sans que Blandine l'ait vu.**
+
+## 3 · Une seconde source : la page des ORIGINES, pour celles qui ne sortent pas
+
+🟥 **Angle mort relevé par Blandine** : tout ce qui a été construit suppose qu'un cheval sorte
+en concours. Une jument de loisir, un poney de club, un retraité n'ont aucun PDF de résultats
+— donc aucune fiche remplie.
+
+La page des origines de la FFE existe **indépendamment** des résultats. Même site, même geste
+de capture, même lecture.
+
+🟥 **Ce n'est PAS un second outil.** C'est une **seconde source pour le même moteur** : le
+lecteur de PDF est déjà éprouvé, la relecture avant écriture existe, l'écran d'import aussi.
+Un fichier qui n'apporte que l'identité au lieu d'identité + résultats.
+
+**Ce que ça change** : aujourd'hui l'import ne parle qu'aux cavalières qui sortent en
+concours. Avec ça, il parle à toutes.
+
+⚠️ Question ouverte, non tranchée : demande-t-on à la cavalière QUEL fichier elle importe, ou
+le module reconnaît-il tout seul la nature de la page qu'on lui donne ?
+
+### 🧬 `hype-origines.js` — LE LECTEUR D'IDENTITÉ ET D'ORIGINES (première pierre)
+
+**Fonction pure. Ne lit qu'un texte, ne rend qu'un objet.** Aucune base, aucun React, aucun
+DOM. Même gabarit que les sept fonctions de la session 160 : c'est la frontière Données qui
+se dessine pour Flutter.
+
+**Éprouvé sur les DEUX VRAIS PDF de Blandine** (Rizotto 2020, Tully 2022). Il lit :
+race · **date de naissance** · robe · sexe · taille · père · mère · naisseur · propriétaire.
+
+🟥 **L'ÂGE N'EST JAMAIS LU, IL EST CALCULÉ** depuis la date. Un âge écrit en dur est faux
+quelques mois plus tard et personne ne le voit.
+
+🟥 **UNE SEULE SOURCE EST ÉCRITE : `ffe-cavalerie`.** Blandine a demandé de lire aussi
+**FFE SIF, FFE Compet, Haras SIRE (IFCE)** et des bases internationales. Ces quatre sources
+sont **DÉCLARÉES mais VIDES** : elles renvoient « lecteur pas encore écrit » et **aucune
+donnée inventée**. Raison, dite à Blandine : je n'ai jamais vu ces pages. Le lecteur de
+résultats qui marche a été éprouvé sur sept vrais fichiers. Écrire des motifs sans échantillon
+remplirait la fiche de bêtises silencieuses.
+**⏳ IL FAUT UN VRAI FICHIER DE CHAQUE SOURCE — un seul suffit par source.**
+
+**Deux pièges du format FFE, tenus dans le code :** « né le » et la date sont sur DEUX lignes ;
+« Père » et « Mère » sont sur la MÊME. Et « Naisseur » s'écrit avec ou sans s.
+
+🟥 **`comparerAFiche()` ne remplit QUE les cases vides** et rend les conflits à part
+(« Bai » saisi à la main contre « Bai Foncé » lu dans le PDF). Il ne tranche jamais : c'est
+l'écran de relecture qui montre les deux, et la cavalière qui choisit. Même faute évitée que
+les trois lignes en dur du 24/08.
+
+**Les noms d'ascendance déformés remontent en doutes** : un « K4nt » à la place de
+« Kantje'S Admiraal » sort en « nom à relire ». PDF.js déforme — vu sur la vidéo
+(« RÈGLATS GPTERCLS »).
+
+**Le banc** (`banc-origines.js`) : **24 essais sur les vrais fichiers, tous passent**, dont
+trois qui vérifient que le module REFUSE d'inventer quand il ne connaît pas la source.
+
+⏳ **NON BRANCHÉ.** Le fichier n'est appelé par aucune balise, `index.html` n'a pas bougé et
+aucune version n'a été incrémentée. Il ne sert à rien tant que l'écran de relecture ne
+l'appelle pas — c'est le geste suivant, et il attend la maquette.
+
+---
+
+## Session 163 — 25/08, 02h30 · Ce qui manquait vraiment dans l'app
+
+🟥 **CONSTAT DE DÉPART, DIT PAR BLANDINE ET JUSTE :** trois heures de maquettes validées la
+nuit du 24, et **presque rien n'avait été porté dans l'app**. Seuls le délai de garde et les
+compteurs y étaient. L'inversion IPO/rail, l'encart, les lisérés, les boutons, le bloc vidéo
+n'existaient que sur des maquettes. Faute reconnue.
+
+### 🔧 Fait cette fois, dans le code
+
+**L'IPO passe au-dessus du rail de coupes.** Le bloc IPO (3 219 caractères) a été **déplacé
+tel quel**, pas une virgule changée. Le rail non plus n'a pas bougé — seulement sa place.
+
+**Le bloc découverte est enfin à sa vraie place** : sous le résumé de la fiche cheval, et
+**HORS de l'encart**. Il remplace le bouton « Importer mes résultats FFE » en pointillés dorés
+qui vivait là.
+
+🟥 **LE BUG DU BOUTON, TROUVÉ ET RÉPARÉ.** Blandine : « quand j'appuie sur télécharger
+résultats ça m'emmène direct sur les résultats ». Cause **vue dans le code** : l'encart du
+résumé porte lui-même un `onClick` qui fait `setPanneau("palmares")`. **Tout clic à
+l'intérieur remonte jusqu'à lui.** Le nouveau bloc est posé hors de l'encart ET appelle
+`stopPropagation()`. ⚠️ **Toute future commande posée près de cet encart doit faire pareil.**
+
+**Plus aucun bouton rempli.** `.addbtn` perd son fond teinté (`color-mix … 9%` → `none`).
+Trois boutons concernés dans toute l'app. Règle de Blandine du 24/08, vue en crimson.
+
+### ✅ `banc-ordre.js` — LE BANC QUI MANQUAIT
+
+🟥 **La faute de la nuit : un banc qui vérifie le CONTENU ne vérifie pas la PLACE.**
+`banc-bloc.js` passait dix-neuf essais sur un bloc posé en bas de 144 résultats.
+
+`banc-ordre.js` vérifie **l'ordre des blocs dans le fichier** : IPO avant les pilules, avant
+le rail, avant les résultats ; le bloc découverte après le résumé, hors de l'encart, et pas
+dans le panneau palmarès. Plus : le rail garde ses vignettes de 108 px et son défilement, et
+**aucun bloc n'existe en double** (un déplacement raté duplique). **22 essais, tous passent.**
+
+### 🟢 Déjà conforme aux maquettes, vérifié sans rien toucher
+
+- **Le liseré de l'encart suit déjà la teinte** (`borderLeft: "3px solid " + teinteCl`).
+- **L'encart se referme déjà** après « Voir tout son palmarès ».
+
+### 📦 À pousser — QUATRE fichiers ENSEMBLE
+
+`index.html` · `palmares-video.mp4` · `palmares-video.jpg` · `hype-stories.js`
+
+### 🎬 La seconde vidéo est branchée — écran d'import
+
+`hype-import-ffe.js` appelle désormais **`aide-import-2.mp4`** (la mascotte au téléphone) à la
+place de `aide-import.mp4`. Muette, en boucle, `preload="none"` — elle ne se télécharge que si
+l'écran d'import s'ouvre.
+
+🟥 **NOM DE FICHIER NEUF, PAS UN REMPLACEMENT SOUS LE MÊME NOM.** Garder `aide-import.mp4`
+aurait laissé Safari servir sa copie en cache et la nouvelle vidéo ne serait jamais arrivée
+sur le téléphone — les deux jours perdus des 21 et 22/08. L'ancienne peut rester en ligne,
+elle n'est plus appelée.
+
+🟥 **`hype-import-ffe.js?v=5` → `?v=6` dans l'index.** Le module ET l'index vont ensemble.
+
+`banc-import-video.js` : 9 essais, tous passent, dont la vérification du numéro de version.
+
+⏳ **« Comment préparer mon fichier ? » n'est PAS fait.** L'écran d'import garde son bloc
+« Comment obtenir ce PDF » en quatre étapes, écrit avant. Le mettre en feuille du bas, comme
+sur la maquette, reste à faire.
+
+### 📦 LIVRAISON COMPLÈTE DE LA NUIT — SIX fichiers, tous ENSEMBLE
+
+| fichier | md5 |
+|---|---|
+| `index.html` | `b489815800581858339847478f57746d` |
+| `hype-import-ffe.js` | `3151049865bb6861a8e4f443610f8088` |
+| `hype-stories.js` | `62987f05dbed085b31bef4dbad597f55` |
+| `palmares-video.mp4` | `8743e068570fa4e07d8efa676a82e08a` |
+| `palmares-video.jpg` | `c8117605d605fc832c1cccab38df8f06` |
+| `aide-import-2.mp4` | `3ee3c0dcf8bafd53220d669cbb9c6004` |
+| `aide-import-2.jpg` | `3c6b24a1dcfb567684b8a7ecf09e8e3a` |
+
+⚠️ L'index appelle `hype-import-ffe.js?v=6` et `hype-stories.js?v=20` : **les trois fichiers
+de code partent ensemble**, sinon l'app cherche des versions qui n'existent pas.
+
+### 🔧 25/08, 03h30 — l'écran d'import : le titre respire
+
+🟥 **« IMPORTER MES RÉSULTATS » passait SOUS l'heure et la batterie de l'iPhone.** Capture de
+Blandine à 03h19. Cause vue dans le code : `.hi-h` avait un `padding` haut **fixe à 16 px**,
+sans marge de sécurité.
+
+Corrigé : `padding: calc(env(safe-area-inset-top) + 26px) 16px 4px`. Et de l'air en dessous —
+la barre d'étapes passe de 14 à 24 px de retrait, la zone « Choisir un PDF » de 16 à 26.
+
+⚠️ **L'alignement horizontal n'a PAS été touché** (le titre reste à gauche). Blandine a écrit
+« centralise le titre la hauteur » — compris comme *le centrer en hauteur / l'aérer*. Si elle
+voulait dire *centré horizontalement*, c'est une ligne : `text-align:center` sur `.hi-h`.
+**À lui redemander.**
+
+### 🔴 NON RÉSOLU — les deux cadres en pointillés qui débordent à gauche
+
+Sur la capture de 03h19, **deux rectangles à bord pointillé dépassent du bord gauche de
+l'écran**, à moitié hors champ, sous la barre d'étapes.
+
+🟥 **NON DIAGNOSTIQUÉ, ET RIEN N'A ÉTÉ CODÉ.** Cherché dans `hype-import-ffe.js` : il n'existe
+qu'**une seule** classe à bord pointillé, `.hi-zone`, et elle n'est écrite qu'**une fois** dans
+`vueChoix()`, avec `margin:16px` — donc centrée, pas débordante. Ce qui déborde vient
+d'ailleurs.
+
+**Pistes à explorer à froid, dans cet ordre :**
+1. l'écran d'import est rendu dans un hôte React (`HypeImportEcran`) : regarder si l'hôte ou
+   un parent porte un `transform`, une largeur figée ou un `overflow-x`;
+2. chercher d'autres `dashed` dans `index.html` près du Router — les « + » du rail de coupes
+   (`addres`, `addres2`) sont en `1.5px dashed` et font 56 px de large : **deux éléments, bord
+   pointillé, taille cohérente avec ce qu'on voit**. Vérifier s'ils fuient hors de leur rail ;
+3. demander à Blandine si ces cadres étaient là AVANT la nuit du 24.
+
+### 📝 CONSIGNE POUR LA PROCHAINE SESSION — la taille de la vidéo
+
+Blandine trouve la vidéo de la fiche cheval **trop grosse** en 280 px. Cinq tailles lui ont été
+montrées (`maquette-tailles.html`). **Sa demande, mot pour mot : « la C, on peut pas la coller
+à gauche et mettre toutes les écritures à droite ? »**
+
+Donc : **vidéo à 180 px de large, collée à GAUCHE ; titre, phrase et bouton à DROITE.**
+C'est un intermédiaire entre la vidéo centrée à 280 px (en ligne aujourd'hui) et la carte
+horizontale à 86 px de ses consignes du 24/08.
+
+⚠️ **La phrase perdra ses deux filets courts** dans une colonne étroite — à décider avec elle :
+phrase réduite dans la carte, ou phrase sortie sous la carte à sa taille actuelle.
+⚠️ **Un tap sur la vidéo doit l'ouvrir en plein écran** (déjà codé, `requestFullscreen` +
+`webkitEnterFullscreen`).
+🟥 **Maquette ET code dans la MÊME session.** La leçon de la nuit du 24 : trois heures de
+maquettes validées et presque rien porté dans l'app.

@@ -289,17 +289,21 @@
 '.hi *{box-sizing:border-box}',
 '.hi sup{font-size:9px}',
 
-'.hi-h{padding:16px 16px 0}',
+/* 🟥 25/08 — LE TITRE SE COGNAIT A LA BARRE D ETAT DE L IPHONE.
+   « IMPORTER MES RESULTATS » passait SOUS l heure et la batterie
+   (capture de Blandine, 03h19). Cause : padding haut fixe a 16 px,
+   sans marge de securite. On respire au-dessus ET en dessous. */
+'.hi-h{padding:calc(env(safe-area-inset-top) + 26px) 16px 4px}',
 '.hi-k{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;',
 '  color:rgba(var(--t),.85);font-weight:800}',
 '.hi-h h2{margin:6px 0 0;font-family:Cinzel,Georgia,serif;font-size:19px;font-weight:600;line-height:1.2}',
-'.hi-h p{margin:7px 0 0;font-size:11.5px;line-height:1.6;color:#8A929C}',
+'.hi-h p{margin:10px 0 0;font-size:11.5px;line-height:1.6;color:#8A929C}',
 
-'.hi-etapes{display:flex;gap:6px;padding:14px 16px 0}',
+'.hi-etapes{display:flex;gap:6px;padding:24px 16px 0}',
 '.hi-etapes i{flex:1;height:3px;border-radius:2px;background:rgba(var(--tx),.12)}',
 '.hi-etapes i.on{background:rgb(var(--t))}',
 
-'.hi-zone{margin:16px;padding:26px 18px;border-radius:16px;text-align:center;',
+'.hi-zone{margin:26px 16px 16px;padding:26px 18px;border-radius:16px;text-align:center;',
 '  border:1.5px dashed rgba(var(--t),.35);background:rgba(var(--t),.035);cursor:pointer;',
 '  -webkit-tap-highlight-color:transparent}',
 '.hi-zone .ic{font-size:26px;line-height:1}',
