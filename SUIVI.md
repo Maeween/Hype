@@ -14435,3 +14435,9 @@ Audit : trois portes vers `monde` hors onboarding — l'onglet « Clubs » de Co
 # HYPE ▸ 25/08 (25e livraison) · LA VIDÉO « RÉSULTATS OFFICIELS » S'EFFACE APRÈS IMPORT
 
 Idée de Blandine (même principe que le globe) : la petite vidéo d'invitation à importer ses résultats (le poney bleu, vitrine de la fiche) disparaît dès que des résultats existent — remplacée par une **ligne italique grise discrète « Revoir la petite vidéo ↻ »** qui la rejoue au tap. Le bouton « Importer mes résultats officiels » reste TOUJOURS visible pour la propriétaire (on peut réimporter). Condition sur la donnée (`palmTous.length`), pas sur « déjà vu ». Banc deux cas : AVEC résultats → vidéo absente, ligne présente, clic → vidéo revient ; SANS résultats → vidéo présente, pas de ligne. 0 erreur, 16 scripts. À pousser : `index.html`.
+
+---
+
+# HYPE ▸ 25/08 (26e livraison) · 🟥 RETOUR ARRIÈRE : LA 23e (RAIL UNIQUE MÉDIAS) EST ANNULÉE
+
+Sur le terrain, la 23e livraison n'a réalisé qu'un tiers du contrat : la bande d'AlbumsPromus a bien disparu, mais le rail « Moments encadrés » ne s'est PAS téléporté sous la vidéo (le portail vers l'ancrage n'a pas pris en conditions réelles) — Blandine a demandé de repartir d'avant. Retour arrière CHIRURGICAL : les 3 gestes de la 23e sont restaurés à l'identique (bande `phsA` d'origine reposée depuis la copie conservée, état/effet d'ancrage retirés de MurHype, rail3 rendu à son ref d'origine — init aléatoire — et à sa place dans le fil). Les livraisons 24 (globe conditionné) et 25 (vidéo palmarès escamotable, ligne « Revoir ») sont CONSERVÉES et revérifiées au banc après restauration : ancrage absent, ligne « Revoir » présente, pont présent, 0 erreur. Traces `ancrageMoments`/`railMoments`/`__r3auto` : zéro. Le chantier « un seul rail Médias » reste À FAIRE, avec une approche à revoir (le portail inter-composants est à proscrire ici). À pousser : `index.html`.

@@ -31491,7 +31491,7 @@ function EcranAlbumPhotos(props) {
 var __murPhotoOuvrir = {};
 function MurHype(props) {
   var h = React.createElement;
-  var ctx = useApp(); var ancSt = React.useState(null); var ancrMoments = ancSt[0], setAncrMoments = ancSt[1]; React.useEffect(function () { try { setAncrMoments(document.getElementById("ancrageMoments") || null); } catch (eAn) { } }, []); var tr = ctx.tr; var langue = ctx.langue || "fr";
+  var ctx = useApp(); var tr = ctx.tr; var langue = ctx.langue || "fr";
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var TQm = props.teinte || "#20D9F5";
   var TQmCl = props.teinte || "#5FE9F0";
@@ -31620,7 +31620,7 @@ function MurHype(props) {
   var listeAffichee = props.compact ? liste.slice(0, 2) : liste;
   if (props.rail && (liste.length || props.onVoirTout)) { /* 31/07 soir : la carte Tout le fil reste presente meme si le fil est vide — c est la porte vers la page souvenirs (demande Blandine) */ /* 31/07 : fil direction 3 « Moments encadres » (choix definitif Blandine) */
     var listeR = liste.slice(0, 6);
-    var railMoments = h("div", { key: "rail3", ref: function (elR) { try { if (elR && !elR.__r3auto) { elR.__r3auto = 1; if (listeR.length > 2) { var pas = function () { try { if (!elR.isConnected) { clearInterval(elR.__r3t); return; } if (elR.scrollLeft + elR.clientWidth >= elR.scrollWidth - 6) { elR.scrollTo({ left: 0, behavior: "smooth" }); } else { elR.scrollBy({ left: 158, behavior: "smooth" }); } } catch (eP) { } }; elR.__r3t = setInterval(pas, 3200); elR.addEventListener("touchstart", function () { clearInterval(elR.__r3t); }, { passive: true, once: true }); } } } catch (eR3) { } }, style: { display: "flex", gap: 13, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 2px 10px", scrollbarWidth: "none" } },
+    enfants.push(h("div", { key: "rail3", ref: function (elR) { try { if (elR && !elR.__r3init) { elR.__r3init = 1; if (listeR.length > 3) elR.scrollLeft = [0, 118, 236][Math.floor(Math.random() * 3)]; } } catch (eR3) { } }, style: { display: "flex", gap: 13, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 2px 10px", scrollbarWidth: "none" } },
       listeR.map(function (pR) {
         var aR = pR.auteur || {}; var annR = !!pR.estAnnonce;
         var media = pR.photo_url
@@ -31638,7 +31638,7 @@ function MurHype(props) {
       }).concat(props.onVoirTout ? [h("div", { key: "r3tout", role: "button", onClick: props.onVoirTout, style: { flex: "0 0 116px", width: 116, borderRadius: 16, border: "1.5px dashed " + tAm(0.45), display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
         h("div", { style: { textAlign: "center", fontFamily: M2 } },
           h("div", { style: { fontSize: 12, fontWeight: 700, color: TQmCl } }, T("Tout le fil", "Full feed", "Todo el hilo", "Tutto il filo", "\u3059\u3079\u3066") + " \u2192"),
-          h("div", { style: { marginTop: 4, fontSize: 9.5, color: "rgba(244,247,250,0.5)" } }, (liste.length ? liste.length + " " : "") + T("moments", "moments", "momentos", "momenti", "\u30e2\u30fc\u30e1\u30f3\u30c8"))))] : [])); enfants.push((ancrMoments && typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? h(React.Fragment, { key: "rail3p" }, ReactDOM.createPortal(railMoments, ancrMoments)) : railMoments);
+          h("div", { style: { marginTop: 4, fontSize: 9.5, color: "rgba(244,247,250,0.5)" } }, (liste.length ? liste.length + " " : "") + T("moments", "moments", "momentos", "momenti", "\u30e2\u30fc\u30e1\u30f3\u30c8"))))] : [])));
   } else listeAffichee.forEach(function (p) {
     var a = p.auteur || {};
     var estAnn = !!p.estAnnonce;
@@ -32345,7 +32345,46 @@ function AlbumsPromus(props) {
           h("div", { style: { fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: tnT, fontWeight: 700 } }, T("Ses vid\u00e9os", "Videos", "Sus v\u00eddeos", "I suoi video", "\u52d5\u753b", "Videos") + " (" + toutesV.length + ")"),
           h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))));
     })(),
-    h("div", { id: "ancrageMoments", style: { minHeight: 1 } }));
+    (function () {
+      var phsA = [];
+      ((galeriePh && galeriePh.length) ? galeriePh : []).forEach(function (uG) { if (uG && phsA.length < 14 && phsA.indexOf(uG) < 0) phsA.push(uG); });
+      if (!phsA.length) (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
+      if (!phsA.length) return null;
+      var phsD = [];
+      return h("div", null, /* 31/07 : proposition 1 — vedette large + rail qui defile (choix Blandine) */
+        (function () { /* 31/07 : plus de grande photo a la une — seule la video reste en grand (demande Blandine) */
+          var estV = function (uX) { return (typeof estUrlVideo === "function" && estUrlVideo(uX)); };
+          var vd0 = null;
+          phsA.forEach(function (uX) { if (!vd0 && estV(uX)) vd0 = uX; });
+          phsD = [];
+          return null; /* 01/08 : GRAND BLOC VIDEO RETIRE (decision Blandine) — une seule carte, celle qui mene a la page des videos. La video reste visible en vignette dans la bande. */
+          /* code conserve ci-dessous, inatteignable, pour pouvoir revenir en arriere en une ligne */
+          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 26, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
+            h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, controls: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+            h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
+        })(),
+        h("div", { ref: function (elC) {
+          if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
+          var pauseD = false;
+          elC.addEventListener("touchstart", function () { pauseD = true; }, { passive: true });
+          elC.addEventListener("touchend", function () { setTimeout(function () { pauseD = false; }, 2600); }, { passive: true });
+          var tick = setInterval(function () {
+            if (!elC.isConnected) { clearInterval(tick); return; }
+            if (pauseD) return;
+            var maxD = elC.scrollWidth - elC.clientWidth;
+            if (maxD <= 0) return;
+            elC.scrollLeft += 1.4; /* 31/07 : defilement plus franc */
+            if (elC.getAttribute("data-boucle") === "1") { var moitR = elC.scrollWidth / 2; if (elC.scrollLeft >= moitR) elC.scrollLeft -= moitR; } /* 31/07 soir : liste doublee -> retour au point identique, aucun saut visible */
+            else if (elC.scrollLeft >= maxD - 1) { elC.scrollLeft = 0; }
+          }, 28);
+        }, "data-hscroll": "1", "data-boucle": (phsA.filter(function (uB) { return phsD.indexOf(uB) < 0; }).length >= 4 ? "1" : "0"), style: { display: "flex", gap: 15, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 26, paddingBottom: 2 } },
+        (function () { var lR = phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }); return lR.length >= 4 ? lR.concat(lR) : lR; })().map(function (uP, iP) {
+          var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
+          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 108, height: 132, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
+            vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+               : h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(uP, 224, 272) : uP), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uP); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+        })));
+    })());
 }
 
 /* 27/07 : jusque-la, GalerieSouvenirs (le carrousel "Souvenirs" en tete de fiche cheval) ne lisait que
