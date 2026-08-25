@@ -22521,8 +22521,7 @@ function Router() {
         const t1 = e.changedTouches[0];
         const dx = t1.clientX - d.x, dy = t1.clientY - d.y;
         if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.6) {
-            if (ecran === "dashboard" && dx < 0)
-                setEcran("monde");
+            if (ecran === "dashboard" && dx < 0 && !(profil && (profil.ecurie || profil.club))) setEcran("monde"); /* 25/08 : ecurie renseignee -> le globe ne s'impose plus depuis l'accueil (Communaute y mene toujours) */
             else if (dx < 0)
                 avancerEcran();
             else
@@ -32763,7 +32762,7 @@ function EcranCheval() {
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-([\w-]+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-([\w-]+)$/) || [])[1]) || "rizotto");   /* 22/08 : repli de la fiche cheval, My Dream retirée */
-  var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1];
+  var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1]; var vpSt = React.useState(false); var montrerVideoPalm = vpSt[0], setMontrerVideoPalm = vpSt[1];
   React.useEffect(function () {
     var actif = true;
     /* 30/07 bascule migration : les 7 fiches demo vivent desormais en base ; le code n'est plus qu'un secours. */
@@ -34217,6 +34216,7 @@ function EcranCheval() {
               Seul le bouton est reserve a la proprietaire, et une visiteuse
               n a RIEN a sa place. */
         h("div", { style: { margin: "34px 16px 0" } },
+          ((typeof palmTous !== "undefined" && palmTous && palmTous.length && !montrerVideoPalm) ? h("div", { style: { textAlign: "center", padding: "2px 0" } }, h("span", { onClick: function () { setMontrerVideoPalm(true); }, style: { fontSize: 12.5, color: "rgba(237,242,245,.45)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer", letterSpacing: ".02em" } }, "Revoir la petite vid\u00e9o \u21bb")) : h(React.Fragment, null, 
           h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto",
                               borderRadius: 16, overflow: "hidden", background: "#000",
                               border: "1px solid rgba(255,255,255,.07)" } },
@@ -34243,7 +34243,7 @@ function EcranCheval() {
                 "公式成績を Hype で見つけ直そう。",
                 "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.")),
             h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%",
-                                height: 1, background: "#2A323D" } })),
+                                height: 1, background: "#2A323D" } })))),
           (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", {
             onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } ouvrirImportFFE(); },
             style: { width: "100%", marginTop: 26, padding: 14, border: 0,

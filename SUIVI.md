@@ -14422,3 +14422,16 @@ Constat de Blandine : DEUX rails photos (la bande `phsA` d'AlbumsPromus sous « 
 3. Son rail de moments est **téléporté dans l'ancrage** via `ReactDOM.createPortal` (le portail réparé ce matin) — s'il n'y a pas d'ancrage (fil affiché hors fiche), le rail reste à sa place d'origine, rien ne casse ailleurs.
 4. Le rail devient **carrousel auto-défilant** : un cran (158 px, fluide) toutes les 3,2 s, retour au début en bout de rail, **pause définitive au premier toucher**, minuteur nettoyé si l'élément quitte le DOM. L'init aléatoire du 31/07 retirée.
 Banc (fixtures) : ancrage présent dans le chapitre Médias, fiche saine, 0 erreur — le carrousel lui-même se vérifiera en ligne (le fil est vide hors-ligne). À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 25/08 (24e livraison) · LE GLOBE NE S'IMPOSE PLUS DEPUIS L'ACCUEIL QUAND L'ÉCURIE EST RENSEIGNÉE
+
+Décision de Blandine (validée en discussion) : la page globe de choix d'écurie ne doit plus réapparaître depuis l'accueil une fois l'écurie renseignée — on la retrouve via Communauté.
+Audit : trois portes vers `monde` hors onboarding — l'onglet « Clubs » de Communauté, le bouton « Carte des clubs » (DANS EcranCommunaute, donc déjà le chemin de repli, intouché), et le **glissement gauche depuis l'accueil** (le fautif). Correction : le glissement gauche n'ouvre le monde que si `profil.ecurie/club` est vide ; écurie connue → il retombe sur la navigation normale (`avancerEcran`). L'onboarding d'inscription (GLOBE_ONBOARDING) n'est pas touché : une nouvelle inscrite voit toujours le globe. Condition sur la donnée (« écurie renseignée »), pas sur « déjà vu » : si l'écurie est effacée un jour, l'invitation revient. Syntaxe 16/16, démarrage sain au banc. À pousser : `index.html`.
+
+---
+
+# HYPE ▸ 25/08 (25e livraison) · LA VIDÉO « RÉSULTATS OFFICIELS » S'EFFACE APRÈS IMPORT
+
+Idée de Blandine (même principe que le globe) : la petite vidéo d'invitation à importer ses résultats (le poney bleu, vitrine de la fiche) disparaît dès que des résultats existent — remplacée par une **ligne italique grise discrète « Revoir la petite vidéo ↻ »** qui la rejoue au tap. Le bouton « Importer mes résultats officiels » reste TOUJOURS visible pour la propriétaire (on peut réimporter). Condition sur la donnée (`palmTous.length`), pas sur « déjà vu ». Banc deux cas : AVEC résultats → vidéo absente, ligne présente, clic → vidéo revient ; SANS résultats → vidéo présente, pas de ligne. 0 erreur, 16 scripts. À pousser : `index.html`.
