@@ -20277,14 +20277,14 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
         s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:118px}" +
             ".hycc-hero{position:relative;padding:0 0 4px;overflow:hidden}" +
             ".hycc-hphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%}" +
-            ".hycc-hgrad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0) 26%,rgba(6,7,9,.55) 52%,rgba(6,7,9,.92) 74%,#060709 92%)}" +
+            ".hycc-hgrad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0) 40%,rgba(6,7,9,.5) 62%,rgba(6,7,9,.92) 82%,#060709 96%)}" +
             ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
             ".hycc-marque{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:18px;z-index:6;display:inline-flex;flex-direction:column;line-height:1}" +
             ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F4F7FA;letter-spacing:.5px}" +
             ".hycc-marque .h i{color:#F4C455;font-style:normal;font-size:12px;margin-left:2px}" +
             ".hycc-marque .c{font-size:7.5px;letter-spacing:.42em;color:#9FA3A8;margin-top:4px;text-transform:uppercase}" +
             ".hycc-back{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(17,20,23,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F4F7FA;font-size:19px;line-height:1}" +
-            ".hycc-idb{position:relative;z-index:2;margin:clamp(200px,32vh,290px) 0 0 0;max-width:100%;padding:0 18px}" +
+            ".hycc-idb{position:relative;z-index:2;margin:clamp(280px,44vh,400px) 0 0 0;max-width:100%;padding:0 18px}" +
             ".hycc-couronne{width:19px;height:14px;display:block;margin-bottom:2px}" +
             ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(22px,6.4vw,27px);line-height:1.16;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85);overflow-wrap:break-word}" +
             ".hycc-legende{display:flex;align-items:center;gap:8px;margin-top:5px}" +
@@ -20301,7 +20301,7 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
             ".hycc-encbar .c{text-align:center;min-width:0}" +
             ".hycc-encbar b{font-family:'Cinzel',serif;font-size:17px;color:#37E6F0;font-weight:700;display:block;line-height:1}" +
             ".hycc-encbar span{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:#A9ADB2;display:block;margin-top:3px}" +
-            ".hycc-tit{margin:18px 18px 4px;display:flex;align-items:center;gap:12px;justify-content:center}" +
+            ".hycc-tit{margin:44px 18px 20px;display:flex;align-items:center;gap:12px;justify-content:center}" +
             ".hycc-tit i{flex:0 0 34px;height:1px;background:linear-gradient(90deg,transparent,rgba(244,196,85,.75));display:block}" +
             ".hycc-tit i.r{background:linear-gradient(90deg,rgba(244,196,85,.75),transparent)}" +
             ".hycc-tit .t{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:19px;letter-spacing:.13em;color:#F4F7FA;white-space:nowrap}" +
@@ -20674,7 +20674,7 @@ function EcranChevalCommun() {
                colonnes CSS remplies au nombre) ; le dernier cliche de la colonne courte
                s'etire pour finir a fleur. */
             var RATIOS = { "f-p": 1.12, "f-l": 0.62, "f-c": 0.9 };
-            var LOTS = (typeof voirToutMur !== "undefined" && voirToutMur) ? st.photos : st.photos.slice(0, 10);
+            var LOTS = (typeof voirToutMur !== "undefined" && voirToutMur) ? st.photos : st.photos.slice(0, 6);
             var cols = [[], []], haut = [0, 0];
             LOTS.forEach(function (p, i) {
                 var r = RATIOS[FORMES[i % FORMES.length]];
@@ -20697,7 +20697,7 @@ function EcranChevalCommun() {
                 }));
             }));
         })() : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment."),
-        (st.photos.length > 10 && !voirToutMur) ? H("div", { style: { textAlign: "center", marginTop: 8 } }, H("span", { className: "hycc-voirtout", onClick: function () { setVoirToutMur(true); } }, "Voir tous les souvenirs \u2192")) : null,
+        (st.photos.length > 6 && !voirToutMur) ? H("div", { style: { textAlign: "center", marginTop: 8 } }, H("span", { className: "hycc-voirtout", onClick: function () { setVoirToutMur(true); } }, "Voir tous les souvenirs \u2192")) : null,
         /* — 6 · SES VIDEOS : rail horizontal, ~2,2 visibles, fin de rail — */
         (st.videos.length > 0) ? H("div", { className: "hycc-railW" },
             titre("SES VID\u00c9OS (" + st.videos.length + ")"),

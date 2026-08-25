@@ -14496,3 +14496,13 @@ Jamais décider pour elle (« vas-y »/« valide ») · signaler erreurs immédi
 # HYPE ▸ 25/08 (29e livraison) · 🟥 LA BANDE SOUS LA VIDÉO SUPPRIMÉE DÉFINITIVEMENT
 
 Colère légitime de Blandine : ma restauration de la 26e avait remis « l'état d'avant » = LES DEUX rails, donc la bande AlbumsPromus (le mauvais) était revenue sous « Le voir en mouvement ». Cette fois : **suppression pure et définitive** de la bande `phsA` (remplacée par `null`, AUCUN ancrage, AUCUN portail — leçon de la 23e appliquée). Le rail des moments du fil reste l'unique rail, à sa place d'origine, code intouché ; s'il affiche « Sois le premier à publier ici », c'est son état vide de données, pas une suppression. Traces `phsA` : zéro. Appliqué aux 3 fichiers (index, DEV commune, DEV palmarès). Banc : fiche saine, fil présent, 0 erreur. À pousser : `index.html` (md5 ci-dessous). Le carrousel auto reste au backlog, à refaire SANS portail.
+
+---
+
+# HYPE ▸ 25/08 (30e livraison) · PAGE COMMUNE : PHOTO ENTIÈRE, TITRES AÉRÉS, MUR ALLÉGÉ
+
+Trois retouches de Blandine (constellation confirmée EN LIGNE sur Rizotto — triangle Blandine/Violaine/Liam ✓) :
+1. **Identité bien plus basse** : marge `clamp(200,32vh,290)` → `clamp(280,44vh,400)` et fondu vertical repoussé (extinction 40→82 % au lieu de 26→74 %) — la photo du hero n'est plus coupée par les titres.
+2. **Titres de section aérés** : `.hycc-tit` passe de `18px … 4px` à `44px … 20px` (avant/après).
+3. **Mur allégé** : plafond 10 → **6 clichés** (le bouton « Voir tous les souvenirs » apparaît dès 7).
+Appliqué aux 4 fichiers (index, 2 DEV, composant.js). Banc : marges calculées 44/20 px, mur ≤ 6 + bouton présent, débordement 0, 0 erreur. À pousser : `index.html`.
