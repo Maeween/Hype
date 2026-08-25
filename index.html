@@ -27898,6 +27898,7 @@ function EcranGuilde() {
   var _mb = React.useState(null), membres = _mb[0], setMembres = _mb[1];
   var _pc = React.useState(null), photosClub = _pc[0], setPhotosClub = _pc[1];
   var _cvc = React.useState(null), chevauxClub = _cvc[0], setChevauxClub = _cvc[1];
+  var _lcl = React.useState({}), liensClub = _lcl[0], setLiensClub = _lcl[1]; /* etape 2 : nb de cavalieres par cheval */
   var _rsc = React.useState(null), resultatsClub = _rsc[0], setResultatsClub = _rsc[1];
   React.useEffect(function () { (async function () {
     var idsMembres = [];
@@ -27911,7 +27912,14 @@ function EcranGuilde() {
     } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
     if (idsMembres.length) {
-      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(24); if (cv && cv.data && cv.data.length) setChevauxClub(cv.data); } catch (eCv) { }
+      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(24); if (cv && cv.data && cv.data.length) { setChevauxClub(cv.data);
+        try { /* etape 2 : proprietaire (1) + liens — meme table que la page commune */
+          var idsCv = cv.data.map(function (c) { return c.id; });
+          var rLi = await supa.from("chevaux_liens").select("cheval_id").in("cheval_id", idsCv);
+          var cptes = {}; cv.data.forEach(function (c) { cptes[c.id] = 1; });
+          ((rLi && rLi.data) || []).forEach(function (l) { if (cptes[l.cheval_id] != null) cptes[l.cheval_id] += 1; });
+          setLiensClub(cptes);
+        } catch (eLi) { } } } catch (eCv) { }
       /* 02/08 : les resultats vivent a DEUX endroits qui ne se parlaient pas — la table
          resultats (fil, communaute) et la colonne JSON chevaux.palmares (saisie depuis la fiche
          cheval). La page club ne lisait que la premiere : tout ce que Blandine ajoutait sur la
@@ -28125,9 +28133,10 @@ function EcranGuilde() {
          Mes chevaux : 3 colonnes, cartes 4/5, tous les chevaux visibles. */
       (chevauxClub && chevauxClub.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, paddingBottom: 4 } },
         chevauxClub.map(function (cv, i) {
-          return h("button", { key: cv.id || i, onClick: function () { try { if (typeof window !== "undefined" && cv && cv.id) { window.__chevalOuvert = cv.id; setEcran("cheval"); } } catch (eOc) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
+          return h("button", { key: cv.id || i, onClick: function () { try { if (typeof window !== "undefined" && cv && cv.id) { window.__chevalCommunOuvert = cv.id; window.__hyccRetour = "guilde"; setEcran("cheval-commun"); } } catch (eOc) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
-              cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true })),
+              cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
+              (liensClub && liensClub[cv.id] > 1) ? h("div", { style: { position: "absolute", top: 6, right: 6, width: 26, height: 30, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", display: "grid", placeItems: "center", fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: "#7FF0FF", filter: "drop-shadow(0 0 8px rgba(32,217,245,.65))" } }, String(liensClub[cv.id])) : null),
             h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval"),
             (cv.race || cv.discipline) ? h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, cv.race || cv.discipline) : null);
         }))

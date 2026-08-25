@@ -14333,3 +14333,17 @@ Retour de Blandine : encore du chevauchement. Photo **78 → 88 %**, textes **42
 - **Fondu du hero** : le dégradé à 100° plaçait ses pourcentages sur la diagonale → la photo restait à ~25 % d'opacité sous le nom (tapis de selle clair visible). Passé à 90° avec extinction TOTALE à 52 % de l'image = 178 px, soit **9 px avant** le début du texte (187 px). Photo 88 %, texte 48 %, tailles réduites (12e livraison) conservés.
 - **Rail des coupes** : déjà en rail déroulant — prouvé au banc avec 8 coupes : contenu 928 px pour 390 visibles, scroll horizontal fonctionnel, débordement de page 0. Rien à changer pour que « les suivantes se déroulent ».
 À pousser : `index.html` (mise en ligne prévue par Blandine dans la foulée).
+
+---
+
+# HYPE ▸ 25/08 (15e livraison) · ÉTAPE 2 — LA PORTE D'ENTRÉE : CRISTAL + CHIFFRE SUR LA GRILLE DU CLUB
+
+La page commune devient accessible aux cavalières. 4 greffes dans `EcranGuilde` (écran `guilde`) :
+1. État `liensClub` (nb de cavalières par cheval).
+2. Après le chargement de `chevauxClub` : UNE requête `chevaux_liens` sur les ids affichés → compte = propriétaire (1) + liens. Zéro poids au boot, zéro table nouvelle.
+3. **Tap sur une vignette du club → page commune** (`__chevalCommunOuvert` + écran `cheval-commun`, retour `guilde`) — principe validé « chez moi → ma fiche, ailleurs → la page commune ». Avant : la vignette ouvrait la fiche.
+4. **Badge cristal + chiffre** (facettes de la page commune, lueur turquoise) en haut à droite de la vignette dès **2 cavalières** ; les chevaux à une seule cavalière restent sans badge (sinon bruit sur toute la grille).
+Deux réglages ajustables si Blandine préfère : seuil du badge (≥2 → ≥1) et destination du tap (page commune pour tous, y compris son propre cheval vu depuis le club).
+**Banc (bouchon supabase par table)** : 3 tuiles rendues, badge « 3 » sur le cheval partagé seulement, tap → `.hycc-root` monté, `__hyccRetour = "guilde"`, 0 erreur. Aperçus `#chevalcommun`/`#chevalcommun-<id>` inchangés.
+
+## À pousser : `index.html` uniquement.
