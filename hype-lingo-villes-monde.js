@@ -1101,12 +1101,12 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           ar:"أنشئ النادي في أواخر القرن التاسع عشر داخل مدينة برشلونة، ويستضيف في الخريف نهائي دوري لونجين للأمم في قفز الحواجز، حيث تلتقي أفضل الفرق في ختام الموسم. تصل معظم الخيول برا من أنحاء أوروبا، وبعضها يقطع خلال العام مسافات أطول مما يقطعه كثير من سائقي الشاحنات."}},
      {t:{fr:"L'attache rapide", en:"The quick-release tie", es:"El atado de seguridad", it:"La legatura di sicurezza", de:"Die Sicherheitsanbindung", ja:"安全結び", ar:"رباط الأمان سريع التحرير"},
       c:{
-          fr:"Un nœud ou un panneton qui cède d'un seul geste. Dans un van, on n'attache jamais un cheval ferme : s'il panique et se jette en arrière, c'est l'attache qui doit lâcher, pas sa nuque. Tout le transport tient dans ce principe — chaque protection cède avant le cheval.",
-          en:"A knot or clip that gives way in one motion. In a trailer, you never tie a horse fast: if he panics and throws himself backwards, the tie must give, not his poll. All of transport lives in that principle — every protection yields before the horse does.",
-          es:"Un nudo o pestillo que cede de un solo gesto. En un remolque nunca se ata a un caballo en firme: si entra en pánico y se echa hacia atrás, es el atado el que debe soltar, no su nuca. Todo el transporte cabe en ese principio — cada protección cede antes que el caballo.",
-          it:"Un nodo o un moschettone che cede con un solo gesto. In un van non si lega mai un cavallo saldo: se va nel panico e si getta all'indietro, è la legatura che deve cedere, non la sua nuca. Tutto il trasporto sta in questo principio — ogni protezione cede prima del cavallo.",
-          de:"Ein Knoten oder Karabiner, der mit einem einzigen Griff nachgibt. Im Hänger bindet man ein Pferd nie fest an: Gerät es in Panik und wirft sich zurück, muss die Anbindung nachgeben, nicht sein Genick. Der ganze Transport steckt in diesem Prinzip — jede Sicherung gibt nach, bevor das Pferd es tut.",
-          ja:"ひと動作で外れる結び目や金具。馬運車の中で、馬を固く繋ぐことは決してありません。パニックになって後ろへ跳ねたとき、外れるべきは結び目であって、馬の首ではないからです。輸送のすべてはこの原則に尽きます — どの防具も、馬より先に壊れること。",
+          fr:"Un nœud ou un panneton qui cède d'un seul geste. Dans un van, on n'attache jamais un cheval ferme : s'il panique et se jette en arrière, c'est l'attache qui doit lâcher, pas sa nuque.",
+          en:"A knot or clip that gives way in one motion. In a trailer, you never tie a horse fast: if he panics and throws himself backwards, the tie must give, not his poll.",
+          es:"Un nudo o pestillo que cede de un solo gesto. En un remolque nunca se ata a un caballo en firme: si entra en pánico y se echa hacia atrás, es el atado el que debe soltar, no su nuca.",
+          it:"Un nodo o un moschettone che cede con un solo gesto. In un van non si lega mai un cavallo saldo: se va nel panico e si getta all'indietro, è la legatura che deve cedere, non la sua nuca.",
+          de:"Ein Knoten oder Karabiner, der mit einem einzigen Griff nachgibt. Im Hänger bindet man ein Pferd nie fest an: Gerät es in Panik und wirft sich zurück, muss die Anbindung nachgeben, nicht sein Genick.",
+          ja:"ひと動作で外れる結び目や金具。馬運車の中で、馬を固く繋ぐことは決してありません。パニックになって後ろへ跳ねたとき、外れるべきは結び目であって、馬の首ではないからです。",
           ar:"نظام ربط يمكن تحريره بسرعة عند الطوارئ. في مركبة النقل، يربط الحصان برباط أمان مناسب مضبوط الطول، مع نقطة انفصال مصممة للطوارئ. يجب اتباع تعليمات المركبة ومعدات الربط، لأن الرباط غير المناسب قد يسبب إصابة أو تشابكا."}},
      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
