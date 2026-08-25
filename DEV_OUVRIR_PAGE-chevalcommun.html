@@ -29667,7 +29667,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
         /* 26/07 : ordre demande par Blandine -> titre « Mon monde », puis MON ECURIE bien espace, puis les chevaux juste
            en dessous (aucun titre entre les deux). L annonce est remontee tout en haut de l accueil. */
         React.createElement("div", { style: { marginTop: 26 } },
-          React.createElement("button", { className: "banner ecurieb rv d3", style: { marginTop: 18 }, onClick: nav("ecurie") },
+          React.createElement("button", { className: "banner ecurieb rv d3", style: { marginTop: 30 }, onClick: nav("ecurie") },
               ecImg
                 ? React.createElement("div", { className: "ecurie-img", role: "img", "aria-label": "Mon \u00c9curie", style: { backgroundImage: "url(" + ecImg + ")" } })
                 : React.createElement("div", { className: "ecurie-img", style: { position: "relative", background: "radial-gradient(90% 70% at 78% 30%, rgba(32,217,245,0.14), transparent 62%), linear-gradient(150deg,#0C1218,#080B0F)" } },
@@ -29677,7 +29677,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
                     React.createElement("span", { style: { position: "absolute", right: 15, bottom: 13, color: "#7DDDE8", fontSize: 17, fontWeight: 700 } }, "\u203a"))),
         ),
 
-        React.createElement("div", { className: "manwrap rv d2" },
+        React.createElement("div", { className: "manwrap rv d2", style: { marginTop: 24 } },
           React.createElement("div", { className: "manege", ref: manegeRef, "data-hscroll": "1" },
             React.createElement("div", { className: "mtrack" },
               manegeCartesAcc("a"),
@@ -29685,7 +29685,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
 
 /* 27/07 : carte Communaute equestre remise dans Mon monde, meme format que Mon Ecurie (grande carte,
            demande explicite de Blandine apres l avoir retiree par erreur de partout). */
-        React.createElement("button", { className: "rv d3", style: { marginTop: 18, position: "relative", width: "100%", height: "auto", minHeight: 188, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14" }, onClick: nav("communaute") },
+        React.createElement("button", { className: "rv d3", style: { marginTop: 30, position: "relative", width: "100%", height: "auto", minHeight: 188, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.24)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14" }, onClick: nav("communaute") },
           React.createElement("div", { style: { position: "absolute", inset: 0, backgroundImage: ((typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.duoCommunaute) ? ("url(" + HYPE_IMGS.duoCommunaute + ")") : "none"), backgroundSize: "cover", backgroundPosition: "center" } }),
           /* 05/08 : la carte Communaute passe de l image fixe a l animation (globe, Europe,
              ecurie de nuit, cheval). La video est DANS LE FLUX en width 100% / height auto :
@@ -29727,7 +29727,7 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
 
         /* 28/07 : la messagerie etait seulement accessible par une petite icone du hero — donc invisible.
            Elle devient un vrai encart de Mon monde, avec le compteur de non lus (choix B2+B3 de Blandine). */
-        (AFFICHER_ENCART_MESSAGES ? React.createElement("button", { className: "rv d3", onClick: function () { setEcran("messagerie"); }, style: { position: "relative", width: "100%", height: 150, marginTop: 18, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.30)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14", boxShadow: "0 12px 28px rgba(0,0,0,0.5)" } },
+        (AFFICHER_ENCART_MESSAGES ? React.createElement("button", { className: "rv d3", onClick: function () { setEcran("messagerie"); }, style: { position: "relative", width: "100%", height: 150, marginTop: 30, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(32,217,245,0.30)", cursor: "pointer", padding: 0, textAlign: "left", display: "block", background: "#0A0F14", boxShadow: "0 12px 28px rgba(0,0,0,0.5)" } },
           React.createElement("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(110% 90% at 78% 14%, rgba(32,217,245,0.22), transparent 62%), linear-gradient(135deg,#0c1620,#05080d)" } }),
           React.createElement("span", { style: { position: "absolute", top: 16, right: 20, fontSize: 56, opacity: 0.3 } }, "\uD83D\uDCAC"),
           React.createElement("div", { style: { position: "absolute", left: 18, right: 60, bottom: 16 } },
@@ -32801,7 +32801,7 @@ function EcranCheval() {
   var setEcran = ctx.setEcran, tr = ctx.tr;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var id = (typeof window !== "undefined" && window.__chevalOuvert) ? window.__chevalOuvert : ((typeof location !== "undefined" && (location.hash.match(/cheval-([\w-]+)/) || [])[1]) || (typeof DEV_OUVRIR_PAGE !== "undefined" && (String(DEV_OUVRIR_PAGE).match(/^cheval-([\w-]+)$/) || [])[1]) || "rizotto");   /* 22/08 : repli de la fiche cheval, My Dream retirée */
-  var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1]; var vpSt = React.useState(false); var montrerVideoPalm = vpSt[0], setMontrerVideoPalm = vpSt[1];
+  var chDynSt = React.useState(null); var chevalDyn = chDynSt[0], setChevalDyn = chDynSt[1]; var ptSt = React.useState(false); var palmTech = ptSt[0], setPalmTech = ptSt[1]; var vpSt = React.useState(false); var montrerVideoPalm = vpSt[0], setMontrerVideoPalm = vpSt[1];
   React.useEffect(function () {
     var actif = true;
     /* 30/07 bascule migration : les 7 fiches demo vivent desormais en base ; le code n'est plus qu'un secours. */
@@ -34398,7 +34398,7 @@ function EcranCheval() {
                 h("div", { style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.65), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6")));
           }))
         : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant — ajoute-en une depuis Souvenirs.", "No videos yet — add one from Memories.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
-      panneau === "palmares" ? h("div", { style: { padding: "8px 16px 0" } },
+      panneau === "palmares" ? (palmTech ? h(React.Fragment, null, h("div", { role: "button", onClick: function () { setPalmTech(false); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, "\u2039 " + T("Revenir au palmar\u00e8s", "Back to the record", "Volver al palmar\u00e9s", "Torna al palmar\u00e8s", "\u623b\u308b", "Zur\u00fcck")), h("div", { style: { padding: "8px 16px 0" } },
         h("div", { style: { position: "relative", borderRadius: 18, overflow: "hidden", marginBottom: 16, aspectRatio: "966/720", maxHeight: "44svh", background: "#04070A" } }, /* 30/07 : coin competition — la video suit la teinte de la fiche (maquette validee) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, preload: "auto", ref: function (elV) { try { if (!elV) return; elV.muted = true; elV.setAttribute("playsinline", ""); var pV = elV.play(); if (pV && pV.catch) pV.catch(function () { setTimeout(function () { try { var p2 = elV.play(); if (p2 && p2.catch) p2.catch(function () { }); } catch (e7) { } }, 120); }); } catch (e8) { } }, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
@@ -34611,7 +34611,105 @@ function EcranCheval() {
            ⚠️ La vidéo porte une IMAGE DE COUVERTURE : si iOS refuse la
               lecture automatique, on voit la mascotte, pas un carré noir. */
         (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren")) : null,
-        h("button", { className: "addbtn", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen"))) : null,
+        h("button", { className: "addbtn", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen")))) : h("div", { style: { padding: "0 0 28px" } },
+        /* ═══ 25/08 s165 — PALMARÈS ÉDITORIAL (Proposition B, référence IMG_8514) ═══
+           Le corps historique (vidéo + cartes par année) devient la « page technique »
+           derrière le CTA VOIR TOUS SES RÉSULTATS (état palmTech). Les 4 chiffres
+           reprennent l ALGO EXACT du résumé (s154) : toute évolution doit se faire
+           AUX DEUX ENDROITS. */
+        (function () {
+          var lignesBrutes = (resDb || []).filter(function (r) { return r && (r.place != null || r.classement); });
+          function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
+          var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
+          var nV = tousF.filter(function (f) { return f.pl === 1; }).length;
+          var nP = tousF.filter(function (f) { return f.pl <= 3; }).length;
+          var nC = tousF.length;
+          function sortiesDe(fs) { var parLieu = {}; fs.forEach(function (f) { if (!f.d) return; var k = f.nom.toLowerCase().trim(); (parLieu[k] = parLieu[k] || {})[f.d] = true; }); var tot = 0; Object.keys(parLieu).forEach(function (k) { var js = Object.keys(parLieu[k]).sort(); var prec = null; js.forEach(function (j) { var t = Date.parse(j + "T00:00:00Z"); if (prec == null || isNaN(t) || (t - prec) > 86400000) tot++; if (!isNaN(t)) prec = t; }); }); return tot; }
+          var nS = sortiesDe(tousF);
+          var vics = tousF.filter(function (f) { return f.pl === 1; }).slice().sort(function (a, b) { return (b.part || 0) - (a.part || 0); });
+          var forts = vics.slice(0, 3);
+          var ans = {}; tousF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
+          var listeAns = Object.keys(ans).sort().reverse();
+          var recents = tousF.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
+          var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
+          function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
+          var OR9 = "#D9A85C";
+          function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
+          function carteFort(f, grande, idx) {
+            if (!f) return null;
+            return h("div", { key: "mf" + idx, style: { position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", height: grande ? 198 : 148, flex: grande ? null : 1, minWidth: 0 } },
+              photoCh ? h("img", { src: photoCh, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
+              h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
+              h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.72)", color: grande ? "#241503" : teinteCl, border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid " + teinteCl } }, "1"),
+              h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 12px 12px" : "0 9px 9px", textAlign: "center" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grande ? 14.5 : 10.8, color: "#F2EDE2", letterSpacing: ".03em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom + (f.an ? " " + f.an : "")),
+                f.ep ? h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.ep) : null,
+                h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                  h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?") + (f.cav ? " \u00b7 " + f.cav : ""))));
+          }
+          return h(React.Fragment, null,
+            /* — 1 · IDENTITÉ — */
+            h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
+              photoCh ? h("img", { src: photoCh, style: { width: "58%", height: 172, objectFit: "cover", objectPosition: "center 25%", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
+              h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
+              (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
+              h("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", width: "52%" } },
+                h("div", { style: { color: OR9, fontSize: 13, lineHeight: 1, marginBottom: 5 } }, "\u265B"),
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 18, lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase" } }, c.nom),
+                h("div", { style: { marginTop: 6, fontSize: 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "\u2014 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "HYPE\u30ec\u30b8\u30a7\u30f3\u30c9", "HYPE-LEGENDE")))),
+            /* — 2 · LE BANDEAU DES QUATRE CHIFFRES — */
+            h("div", { style: { display: "flex", margin: "12px 16px 0", padding: "12px 6px 11px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
+              [[nS, T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts")], [nV, T("victoires", "wins", "victorias", "vittorie", "\u512a\u52dd", "Siege")], [nP, T("podiums", "podiums", "podios", "podi", "\u8868\u5f70\u53f0", "Podien")], [nC, T("class\u00e9s", "placings", "clasificados", "piazzamenti", "\u5165\u8cde", "Platzierungen")]].map(function (cq, iq) {
+                return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: teinteCl } }, String(cq[0])),
+                  h("div", { style: { marginTop: 2, fontSize: 8.2, letterSpacing: ".13em", color: "#8A929C", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1])); })),
+            /* — 3 · SES MOMENTS FORTS — */
+            forts.length ? h(React.Fragment, null,
+              h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "24px 22px 12px" } }, filetOr(),
+                h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, letterSpacing: ".1em", color: "#EFE9DC", whiteSpace: "nowrap" } }, T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "\u30cf\u30a4\u30e9\u30a4\u30c8", "Seine Highlights").toUpperCase()), filetOr()),
+              h("div", { style: { margin: "0 16px" } },
+                carteFort(forts[0], true, 0),
+                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 10, marginTop: 10 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null),
+              h("div", { role: "button", onClick: function () { setPalmTech(true); }, style: { textAlign: "center", margin: "13px 0 0", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, T("Voir tous ses moments forts", "See all highlights", "Ver todos sus momentos", "Vedi tutti i momenti", "\u3059\u3079\u3066\u898b\u308b", "Alle Highlights") + " \u2192")) : null,
+            /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
+            listeAns.length ? h(React.Fragment, null,
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
+                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison").toUpperCase()), filetOr()),
+              listeAns.map(function (anK) {
+                var fsA = ans[anK]; var sA = sortiesDe(fsA);
+                var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
+                var pA = fsA.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).length;
+                var cA = fsA.length;
+                var pct = Math.max(6, Math.min(100, Math.round(100 * (vA + pA) / Math.max(1, cA))));
+                return h("div", { key: "an" + anK, style: { margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" } },
+                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
+                    h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
+                    h("span", { style: { fontSize: 10.3, color: "#8A929C", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start"))),
+                    h("span", { style: { marginLeft: "auto", fontSize: 10.8, color: "#C8CDD3", whiteSpace: "nowrap" } },
+                      h("span", { style: { color: OR9 } }, "\uD83C\uDFC6 " + vA), "\u2003",
+                      h("span", { style: { color: "#B9BEC4" } }, "\uD83E\uDD48 " + pA), "\u2003",
+                      h("span", { style: { color: "#8A929C" } }, "\uD83C\uDFC5 " + cA)),
+                    h("span", { style: { marginLeft: 7, color: "#5B646E", fontSize: 12 } }, "\u02c5")),
+                  h("div", { style: { marginTop: 8, height: 2, borderRadius: 2, background: "rgba(255,255,255,.06)", overflow: "hidden" } },
+                    h("div", { style: { width: pct + "%", height: "100%", background: "linear-gradient(90deg,#8A5A2B," + OR9 + ")" } })));
+              })) : null,
+            /* — 5 · DERNIERS RÉSULTATS — */
+            recents.length ? h(React.Fragment, null,
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "24px 16px 9px" } },
+                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e", "Letzte Ergebnisse").toUpperCase()), filetOr()),
+              h("div", { style: { margin: "0 16px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)", overflow: "hidden" } },
+                recents.map(function (rD, iD) {
+                  return h("div", { key: "dr" + iD, style: { display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderTop: iD ? "1px solid rgba(255,255,255,0.05)" : "none", minWidth: 0 } },
+                    h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, dateFr(rD.d)),
+                    h("div", { style: { flex: 1, minWidth: 0 } },
+                      h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.nom),
+                      h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [rD.ep, rD.cav].filter(Boolean).join(" \u00b7 "))),
+                    h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rD.pl + "/" + (rD.part || "?")));
+                }))) : null,
+            /* — 6 · CTA — */
+            h("div", { role: "button", onClick: function () { setPalmTech(true); }, style: { margin: "22px 16px 0", padding: "13px 10px", textAlign: "center", borderRadius: 13, border: "1px solid " + tA(0.4), color: teinteCl, fontSize: 12, letterSpacing: ".12em", fontWeight: 700, cursor: "pointer" } }, T("Voir tous ses r\u00e9sultats", "See all results", "Ver todos los resultados", "Vedi tutti i risultati", "\u5168\u3066\u306e\u6210\u7e3e", "Alle Ergebnisse").toUpperCase() + " \u2192"),
+            h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse")));
+        })()))  : null,
       panneau === "souvenirs" ? h("div", null,
         h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
         h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
