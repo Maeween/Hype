@@ -20276,21 +20276,21 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
         s.id = "hycc-css";
         s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:118px}" +
             ".hycc-hero{position:relative;padding:calc(env(safe-area-inset-top) + 12px) 18px 4px;overflow:hidden}" +
-            ".hycc-hphoto{position:absolute;left:0;top:0;width:78%;height:100%;object-fit:cover;object-position:left center;-webkit-mask-image:linear-gradient(100deg,#000 48%,rgba(0,0,0,.35) 66%,transparent 84%);mask-image:linear-gradient(100deg,#000 48%,rgba(0,0,0,.35) 66%,transparent 84%)}" +
+            ".hycc-hphoto{position:absolute;left:0;top:0;width:88%;height:100%;object-fit:cover;object-position:left center;-webkit-mask-image:linear-gradient(100deg,#000 40%,rgba(0,0,0,.22) 56%,transparent 73%);mask-image:linear-gradient(100deg,#000 40%,rgba(0,0,0,.22) 56%,transparent 73%)}" +
             ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
             ".hycc-marque{position:relative;z-index:2;display:inline-flex;flex-direction:column;line-height:1}" +
             ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F4F7FA;letter-spacing:.5px}" +
             ".hycc-marque .h i{color:#F4C455;font-style:normal;font-size:12px;margin-left:2px}" +
             ".hycc-marque .c{font-size:7.5px;letter-spacing:.42em;color:#9FA3A8;margin-top:4px;text-transform:uppercase}" +
             ".hycc-back{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(17,20,23,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F4F7FA;font-size:19px;line-height:1}" +
-            ".hycc-idb{position:relative;z-index:2;margin:22px 0 0 42%;max-width:56%}" +
-            ".hycc-couronne{width:21px;height:15px;display:block;margin-bottom:2px}" +
-            ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(19px,5.6vw,23px);line-height:1.16;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85);overflow-wrap:break-word}" +
+            ".hycc-idb{position:relative;z-index:2;margin:22px 0 0 48%;max-width:50%}" +
+            ".hycc-couronne{width:19px;height:14px;display:block;margin-bottom:2px}" +
+            ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(17px,5vw,21px);line-height:1.16;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85);overflow-wrap:break-word}" +
             ".hycc-legende{display:flex;align-items:center;gap:8px;margin-top:5px}" +
             ".hycc-legende i{display:block;width:22px;height:1px;background:#14E2EF;opacity:.85}" +
             ".hycc-legende span{font-size:9px;letter-spacing:.34em;color:#DFE1E4;text-transform:uppercase}" +
-            ".hycc-sub{font-size:11.5px;color:#D3D5D8;margin-top:7px;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.8)}" +
-            ".hycc-ped{margin-top:6px;font-size:12.5px;line-height:1.45}" +
+            ".hycc-sub{font-size:11px;color:#D3D5D8;margin-top:7px;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.8)}" +
+            ".hycc-ped{margin-top:6px;font-size:12px;line-height:1.45}" +
             ".hycc-ped b{color:#14E2EF;font-weight:600}" +
             ".hycc-ped span{color:#F4F7FA}" +
             ".hycc-encbar{position:relative;z-index:2;margin:13px 16px 0;display:flex;align-items:center;gap:6px;padding:9px 10px 9px 14px;border-radius:16px;background:rgba(17,20,23,.74);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}" +
@@ -20603,8 +20603,7 @@ function EcranChevalCommun() {
                 H("div", { className: "hycc-legende" }, H("i", null), H("span", null, "L\u00e9gende Hype")),
                 infos ? H("div", { className: "hycc-sub" }, infos) : null,
                 (pere || mere) ? H("div", { className: "hycc-ped" },
-                    pere ? H("div", null, H("b", null, "P\u00e8re : "), H("span", null, pere)) : null,
-                    mere ? H("div", null, H("b", null, "M\u00e8re : "), H("span", null, mere)) : null) : null
+                    H("span", null, pere || ""), (pere && mere) ? H("b", null, " \u00d7 ") : null, H("span", null, mere || "")) : null
             ),
             classes > 0 ? H("div", { className: "hycc-encbar" },
                 H("span", { className: "lab" }, "En concours"), H("span", { className: "chv" }, "\u203a"),
