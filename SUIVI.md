@@ -14318,3 +14318,18 @@ Correctif ciblé (rien touché sous « Ses histoires ») : hero en **hauteur de 
 # HYPE ▸ 25/08 (11e livraison) · HERO : PHOTO AGRANDIE, ÉCRITURES DÉCALÉES À DROITE
 
 Retour de Blandine (cercle violet n°2) : la croupe du cheval passait en plein sous « Légende Hype » et le pedigree. Correctif : photo élargie **64 % → 78 %** de l'écran, textes décalés **34 % → 42 %** (largeur 56 %), et le fondu recalibré pour s'éteindre AVANT la zone de texte (plein jusqu'à ~48 % de l'image, 35 % d'opacité à hauteur du texte, éteint à 84 %) — la photo ne subsiste sous les lignes qu'en voile de poussière, comme sur la maquette, plus jamais en solide. Banc : photo 304 px, texte à x=167, débordement 0, « SES HISTOIRES » toujours visible au chargement, nom long 2 lignes sans collision. À pousser : `index.html` (md5 641e67f7).
+
+---
+
+# HYPE ▸ 25/08 (12e livraison) · HERO, 2e AJUSTEMENT : PHOTO 88 %, TEXTE 48 % RÉDUIT
+
+Retour de Blandine : encore du chevauchement. Photo **78 → 88 %**, textes **42 → 48 %** (largeur 50 %), tailles réduites (nom clamp 17-21 px, infos 11, pedigree 12, couronne 19), fondu recalé (plein 40 %, 22 % d'opacité à 56 %, éteint à 73 % de l'image — soit avant la colonne de texte). Banc 375/390/430 : débordement 0, « SES HISTOIRES » toujours dans le premier écran. À pousser : `index.html`.
+
+---
+
+# HYPE ▸ 25/08 (13e-14e retouches) · PEDIGREE UNE LIGNE, FONDU ÉTEINT AVANT LE TEXTE, RAIL COUPES PROUVÉ
+
+- **Pedigree** : « Père × Mère » sur une ligne (× turquoise), sans étiquettes ; un seul parent = un seul nom.
+- **Fondu du hero** : le dégradé à 100° plaçait ses pourcentages sur la diagonale → la photo restait à ~25 % d'opacité sous le nom (tapis de selle clair visible). Passé à 90° avec extinction TOTALE à 52 % de l'image = 178 px, soit **9 px avant** le début du texte (187 px). Photo 88 %, texte 48 %, tailles réduites (12e livraison) conservés.
+- **Rail des coupes** : déjà en rail déroulant — prouvé au banc avec 8 coupes : contenu 928 px pour 390 visibles, scroll horizontal fonctionnel, débordement de page 0. Rien à changer pour que « les suivantes se déroulent ».
+À pousser : `index.html` (mise en ligne prévue par Blandine dans la foulée).
