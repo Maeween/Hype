@@ -33421,28 +33421,16 @@ function EcranCheval() {
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
 
-        (function () { /* 31/07 : pilules Coupes / Resultats */
-          var nbC = ((c.flots || []).filter(function (fP) { return fP && fP.img; })).length;
-          var nbR = ((palmTous || [])).length;
-          if (!nbC && !nbR) return null;
-          return h("div", { style: { display: "flex", gap: 7, margin: "12px 16px 2px" } },
-            /* 22/08 session 152 : pilule « Résultats » RETIRÉE à la demande
-               de Blandine — elle n'aboutissait à rien de lisible. La pilule
-               « Coupes » et le rail restent intacts. Le résumé des résultats
-               vit désormais sous la carte IPO.                          */
-            [["coupes", T("Coupes", "Cups", "Copas", "Coppe", "\u30ab\u30c3\u30d7", "Pokale"), nbC]].map(function (pl) {
-              if (!pl[2]) return null;
-              var onP = ongletPerf === pl[0];
-              return h("button", { key: "pl" + pl[0], onClick: function () { setOngletPerf(pl[0]); }, style: { padding: "7px 14px", borderRadius: 999, border: "1px solid " + (onP ? tA(0.75) : "rgba(255,255,255,0.14)"), background: onP ? tA(0.14) : "rgba(255,255,255,0.04)", color: onP ? teinteCl : "rgba(237,242,245,0.62)", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, pl[1] + " " + pl[2]);
-            }));
-        })(),
-        (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 10 } },
-          c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
-            return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") setVisionneuse(fl.img); else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
-              fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
-                : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
-              fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
-          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
+        /* ═══ 25/08 session 163 — L IPO REMONTE AU-DESSUS DU RAIL ═══════
+           Decision de Blandine, 24/08 au soir : « intervertir le bandeau de
+           l IPO avec le rail des coupes, car si les autres resultats doivent
+           s aligner la-dessus, ca va pas etre normal d avoir le bandeau IPO
+           au milieu. » Le rail descend contre les resultats, puisque c est
+           d eux qu il parle ; l IPO ne coupe plus la lecture en deux.
+           🟥 LE BLOC IPO EST DEPLACE TEL QUEL, pas une virgule changee. Le
+           rail de flots non plus n a pas bouge d un pixel — seulement sa
+           place, avec l accord explicite de Blandine (la passation du 24/08
+           le disait INTOUCHABLE : cela vaut pour son contenu et son style). */
         (ongletPerf === "coupes") ? (function () { /* 31/07 soir : carte IPO REMISE sous les coupes — elle etait piegee dans l etat vide, donc jamais affichee pour un cheval ayant coupes ou resultats */
           var ogI = c.origines || {};
           var ixI = (ogI.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; });
@@ -33466,6 +33454,30 @@ function EcranCheval() {
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13 + pI, fontWeight: 700, color: teinteCl, lineHeight: 1.25 } }, lblI),
               h("div", { style: { fontSize: 7.5, letterSpacing: "0.12em", color: "#8A929C", fontWeight: 700, textTransform: "uppercase", marginTop: 3 } }, T("chevaux de sport", "sport horses", "caballos de deporte", "cavalli sportivi", "\u30b9\u30dd\u30fc\u30c4\u99ac", "Sportpferde"))) : null);
         })() : null,
+
+        (function () { /* 31/07 : pilules Coupes / Resultats */
+          var nbC = ((c.flots || []).filter(function (fP) { return fP && fP.img; })).length;
+          var nbR = ((palmTous || [])).length;
+          if (!nbC && !nbR) return null;
+          return h("div", { style: { display: "flex", gap: 7, margin: "12px 16px 2px" } },
+            /* 22/08 session 152 : pilule « Résultats » RETIRÉE à la demande
+               de Blandine — elle n'aboutissait à rien de lisible. La pilule
+               « Coupes » et le rail restent intacts. Le résumé des résultats
+               vit désormais sous la carte IPO.                          */
+            [["coupes", T("Coupes", "Cups", "Copas", "Coppe", "\u30ab\u30c3\u30d7", "Pokale"), nbC]].map(function (pl) {
+              if (!pl[2]) return null;
+              var onP = ongletPerf === pl[0];
+              return h("button", { key: "pl" + pl[0], onClick: function () { setOngletPerf(pl[0]); }, style: { padding: "7px 14px", borderRadius: 999, border: "1px solid " + (onP ? tA(0.75) : "rgba(255,255,255,0.14)"), background: onP ? tA(0.14) : "rgba(255,255,255,0.04)", color: onP ? teinteCl : "rgba(237,242,245,0.62)", fontSize: 11, fontWeight: 700, letterSpacing: "0.06em", fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, pl[1] + " " + pl[2]);
+            }));
+        })(),
+        (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 10 } },
+          c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
+            return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") setVisionneuse(fl.img); else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
+              fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
+                : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
+              fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
+          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres2", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 56, height: 132, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : [])) : null, /* 30/07 : les coupes/flots de Blandine en vitrine sur la fiche (tap = zoom), avant les medailles */
+
 
         /* ═══ 22/08 session 152 — LE RÉSUMÉ DES RÉSULTATS ═══════════════
            Maquette validée par Blandine : structure B (liseré à gauche dans
@@ -33675,21 +33687,64 @@ function EcranCheval() {
                     "Noch keine Ergebnisse")));
         })(),
 
-        /* le chemin franc vers l'import, sous le résumé */
-        (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", {
-          onClick: function () { ouvrirImportFFE(); },
-          style: {
-            display: "block", width: "calc(100% - 32px)", margin: "10px 16px 0",
-            padding: "14px", borderRadius: 14, fontSize: 12.5, fontWeight: 700,
-            letterSpacing: "0.03em", cursor: "pointer",
-            color: "rgba(217,181,108,0.95)", background: "rgba(217,181,108,0.045)",
-            border: "1.5px dashed rgba(217,181,108,0.32)",
-            fontFamily: "'Montserrat',sans-serif"
-          }
-        }, "\u2913 " + T("Importer mes r\u00e9sultats FFE", "Import my FFE results",
-             "Importar mis resultados FFE", "Importa i miei risultati FFE",
-             "FFE\u306e\u7d50\u679c\u3092\u53d6\u308a\u8fbc\u3080",
-             "Meine FFE-Ergebnisse importieren")) : null,
+        /* ═══ 25/08 session 163 — LE BLOC DÉCOUVERTE, À SA VRAIE PLACE ═══
+           🟥 IL EST ICI, SOUS LE RÉSUMÉ, ET SURTOUT **HORS DE L ENCART**.
+           Premier jet du 24/08 : posé a la fin du panneau `palmares`, donc
+           tout en bas des 144 resultats — invisible sans derouler la page
+           entiere. Blandine : « je vois les videos nulle part ».
+           🟥 ET IL NE DOIT JAMAIS ENTRER DANS L ENCART DU RESUME : cet
+           encart porte lui-meme un onClick qui ouvre la page du palmares.
+           Un bouton pose dedans declenche LES DEUX — c est exactement ce que
+           Blandine a vu : « quand j appuie sur telecharger resultats ca
+           m emmene direct sur les resultats ».
+           Remplace le bouton en pointilles dore qui vivait ici.
+           Maquettes validees le 24/08 au soir :
+           · video centree 280 px, image de couverture, muette, en boucle ;
+           · phrase entre DEUX FILETS COURTS, Cormorant italique, AUCUNE
+             couleur — elle ne bouge pas sur une fiche doree ou crimson ;
+           · bouton a LISERE, aucun fond, libelle « officiels ».
+           🟥 La video et la phrase sont une VITRINE : tout le monde les voit.
+              Seul le bouton est reserve a la proprietaire, et une visiteuse
+              n a RIEN a sa place. */
+        h("div", { style: { margin: "34px 16px 0" } },
+          h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto",
+                              borderRadius: 16, overflow: "hidden", background: "#000",
+                              border: "1px solid rgba(255,255,255,.07)" } },
+            h("video", { src: "palmares-video.mp4?v=1", poster: "palmares-video.jpg?v=1",
+                         autoPlay: true, muted: true, loop: true, playsInline: true,
+                         "webkit-playsinline": "true", preload: "metadata",
+                         onClick: function (eV) { try { eV.stopPropagation(); var v = eV.currentTarget;
+                           if (v.requestFullscreen) v.requestFullscreen();
+                           else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (eF) { } },
+                         style: { width: "100%", display: "block" } }),
+            h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "32%",
+                                pointerEvents: "none",
+                                background: "linear-gradient(180deg,rgba(6,7,9,0),rgba(6,7,9,.9))" } })),
+          h("div", { style: { position: "relative", margin: "26px auto 0", maxWidth: "17em",
+                              padding: "19px 0", textAlign: "center" } },
+            h("div", { style: { position: "absolute", top: 0, left: "32%", right: "32%",
+                                height: 1, background: "#2A323D" } }),
+            h("div", { style: { fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic",
+                                fontSize: 24, lineHeight: 1.3, fontWeight: 400, color: "#F4F7FA" } },
+              T("Tes résultats officiels, à redécouvrir sur Hype.",
+                "Your official results, to rediscover on Hype.",
+                "Tus resultados oficiales, para redescubrir en Hype.",
+                "I tuoi risultati ufficiali, da riscoprire su Hype.",
+                "公式成績を Hype で見つけ直そう。",
+                "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.")),
+            h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%",
+                                height: 1, background: "#2A323D" } })),
+          (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", {
+            onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } ouvrirImportFFE(); },
+            style: { width: "100%", marginTop: 26, padding: 14, border: 0,
+                     borderLeft: "2px solid " + teinteCl, borderRadius: "0 12px 12px 0",
+                     background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)",
+                     color: "#F4F7FA", fontSize: 12.5, fontWeight: 700,
+                     fontFamily: "'Montserrat',sans-serif", textAlign: "left", cursor: "pointer" } },
+            T("Importer mes résultats officiels", "Import my official results",
+              "Importar mis resultados oficiales", "Importa i miei risultati ufficiali",
+              "公式成績を取り込む", "Meine offiziellen Ergebnisse importieren"),
+            h("span", { style: { float: "right", color: teinteCl, fontWeight: 400 } }, "\u2192")) : null),
 
         (ongletPerf === "resultats" && palmTous && palmTous.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
           ((c.flots && c.flots.length) ? palmTous.filter(function (pF) { return pF && pF.auth === "perso"; }) : palmTous).slice(0, 6).map(function (rP, iR) {
