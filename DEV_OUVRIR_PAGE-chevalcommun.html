@@ -32816,7 +32816,7 @@ function EcranCheval() {
             : await supa.from("chevaux").select("*").eq("id", id).single();
           if (actif && r && r.data) {
             var secours = (NOMS_MIGRES[id] && CHEVAUX_FICHE[id]) ? CHEVAUX_FICHE[id] : {};
-            if (!secours.nom) { try { for (var kSec in NOMS_MIGRES) { if (NOMS_MIGRES[kSec] === r.data.nom && CHEVAUX_FICHE[kSec]) { secours = CHEVAUX_FICHE[kSec]; break; } } } catch (eSec) { } } /* 31/07 : secours retrouve par NOM aussi (coupes disparues via ouverture par identifiant base — bug signale par Blandine) */ var palmDb = null; try { palmDb = (typeof r.data.palmares === "string") ? JSON.parse(r.data.palmares) : r.data.palmares; } catch (ePj) { } var origDb = null; try { origDb = (typeof r.data.origines === "string") ? JSON.parse(r.data.origines) : r.data.origines; } catch (eOj) { } setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || secours.photo || UV3_H1, tag: secours.tag || null, info: [r.data.race, r.data.age ? (String(r.data.age) + " ans") : null, r.data.discipline].filter(Boolean).join(" · "), flots: (secours.flots || []), palmares: (palmDb && palmDb.length ? palmDb : (secours.palmares || [])), origines: (origDb || secours.origines || null), histoire: r.data.histoire || (secours.histoire || null), dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, supprime_le: r.data.supprime_le || null, restaure_le: r.data.restaure_le || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
+            if (!secours.nom) { try { for (var kSec in NOMS_MIGRES) { if (NOMS_MIGRES[kSec] === r.data.nom && CHEVAUX_FICHE[kSec]) { secours = CHEVAUX_FICHE[kSec]; break; } } } catch (eSec) { } } /* 31/07 : secours retrouve par NOM aussi (coupes disparues via ouverture par identifiant base — bug signale par Blandine) */ var palmDb = null; try { palmDb = (typeof r.data.palmares === "string") ? JSON.parse(r.data.palmares) : r.data.palmares; } catch (ePj) { } var origDb = null; try { origDb = (typeof r.data.origines === "string") ? JSON.parse(r.data.origines) : r.data.origines; } catch (eOj) { } setChevalDyn({ teinte: r.data.teinte || null, nom: r.data.nom || "Cheval", photo: r.data.photo_url || secours.photo || UV3_H1, photo_palmares: r.data.photo_palmares || null, /* 25/08 : photo d'en-tete du palmares (surcharge admin) */ tag: secours.tag || null, info: [r.data.race, r.data.age ? (String(r.data.age) + " ans") : null, r.data.discipline].filter(Boolean).join(" · "), flots: (secours.flots || []), palmares: (palmDb && palmDb.length ? palmDb : (secours.palmares || [])), origines: (origDb || secours.origines || null), histoire: r.data.histoire || (secours.histoire || null), dbId: r.data.id, ownerId: r.data.user_id, partage_ecurie_hype: !!r.data.partage_ecurie_hype, supprime_le: r.data.supprime_le || null, restaure_le: r.data.restaure_le || null, race: r.data.race || "", age: (r.data.age != null ? String(r.data.age) : ""), discipline: r.data.discipline || "" });
             try {
               if (r.data.user_id && typeof supa !== "undefined" && supa) {
                 var rPro = await supa.from("profiles").select("pseudo, ecurie").eq("id", r.data.user_id).maybeSingle();
@@ -33130,6 +33130,31 @@ function EcranCheval() {
   var busyFicheSt = React.useState(false); var busyFiche = busyFicheSt[0], setBusyFiche = busyFicheSt[1];
   var champsFicheSt = React.useState(null); var champsFiche = champsFicheSt[0], setChampsFiche = champsFicheSt[1];
   function ouvrirEditFiche() { setChampsFiche({ nom: c.nom || "", race: c.race || "", age: c.age || "", discipline: c.discipline || "", teinte: (chevalDyn && chevalDyn.teinte) || "" }); setEditFiche(true); setMenuFiche(false); }
+  async function changerPhotoPalm() { /* 25/08 : ADMINS SEULEMENT (estModerateurHype) — changer en ligne la photo d'en-tete du palmares editorial ; stockee dans chevaux.photo_palmares (SQL a passer). Droit a elargir plus tard sur decision de Blandine. */
+    try {
+      var uA = await utilisateurActuel();
+      if (!uA || typeof estModerateurHype !== "function" || !estModerateurHype(uA)) return;
+      if (!chevalDyn || !chevalDyn.dbId) return;
+      var inp = document.createElement("input");
+      inp.type = "file"; inp.accept = "image/*";
+      inp.onchange = function () {
+        var f = inp.files && inp.files[0]; if (!f) return;
+        (async function () {
+          try {
+            setToast(T("Envoi de la photo\u2026", "Uploading photo\u2026", "Subiendo foto\u2026", "Caricamento foto\u2026", "\u5199\u771f\u3092\u9001\u4fe1\u4e2d\u2026", "Foto wird hochgeladen\u2026"));
+            var rU = await envoyerPhoto(f);
+            if (!rU || !rU.url) { setToast(T("Envoi impossible", "Upload failed", "No se pudo subir", "Caricamento non riuscito", "\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093", "Upload fehlgeschlagen")); setTimeout(function () { setToast(null); }, 2800); return; }
+            var rS = await supa.from("chevaux").update({ photo_palmares: rU.url }).eq("id", chevalDyn.dbId);
+            if (rS && rS.error) { setToast(T("Enregistrement indisponible \u2014 colonne photo_palmares \u00e0 ajouter c\u00f4t\u00e9 base", "Could not save \u2014 photo_palmares column missing in database", "No se pudo guardar \u2014 falta la columna", "Salvataggio non riuscito \u2014 colonna mancante", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern nicht verf\u00fcgbar \u2014 Spalte photo_palmares fehlt")); setTimeout(function () { setToast(null); }, 3400); return; }
+            setChevalDyn(Object.assign({}, chevalDyn, { photo_palmares: rU.url }));
+            setToast(T("Photo du palmar\u00e8s mise \u00e0 jour \u2728", "Results photo updated \u2728", "Foto actualizada \u2728", "Foto aggiornata \u2728", "\u5199\u771f\u3092\u66f4\u65b0\u3057\u307e\u3057\u305f \u2728", "Foto aktualisiert \u2728"));
+            setTimeout(function () { setToast(null); }, 2400);
+          } catch (eCP) { setToast(T("Envoi impossible", "Upload failed", "No se pudo subir", "Caricamento non riuscito", "\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093", "Upload fehlgeschlagen")); setTimeout(function () { setToast(null); }, 2800); }
+        })();
+      };
+      inp.click();
+    } catch (eA) { }
+  }
   async function soumettreEditFiche() {
     if (!champsFiche || !c.dbId || busyFiche) return;
     setBusyFiche(true);
@@ -34613,6 +34638,7 @@ function EcranCheval() {
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
           function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
           var OR9 = "#D9A85C";
+          var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
           function carteFort(f, grande, idx) {
             if (!f) return null;
@@ -34629,9 +34655,10 @@ function EcranCheval() {
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — */
             h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
-              photoCh ? h("img", { src: photoCh, style: { width: "58%", height: 172, objectFit: "cover", objectPosition: "center 25%", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
+              photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 172, objectFit: "cover", objectPosition: "center 25%", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
               h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
               (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
+              (moi && typeof estModerateurHype === "function" && estModerateurHype(moi) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: changerPhotoPalm, title: "Changer la photo (admin)", style: { position: "absolute", top: 9, right: 45, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u270E") : null, /* 25/08 : admins — changer la photo en ligne */
               h("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", width: "52%" } },
                 h("div", { style: { color: OR9, fontSize: 13, lineHeight: 1, marginBottom: 5 } }, "\u265B"),
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 18, lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase" } }, c.nom),

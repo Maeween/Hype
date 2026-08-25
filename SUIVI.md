@@ -14536,3 +14536,71 @@ Sur ordre de Blandine : la bande photos d'AlbumsPromus (supprimée à la 29e) es
 - **🟥 MYSTÈRE OUVERT PRIORITAIRE : les moments du fil n'arrivent plus** sur la fiche de Rizotto (« Sois le premier à publier ici » alors que des posts existaient à 21h06). Vérifié : le code du rail3 est l'original octet pour octet, la carte « Tout le fil » + le message vide SONT le rail qui se rend à vide → c'est un problème de DONNÉES/requête, PAS d'affichage. Plan prêt : fichier DEV de diagnostic qui interroge le fil connecté et affiche ce que la base renvoie (proposé, non fabriqué).
 - **Contexte humain, important** : fin de session très tendue — 3 échecs successifs sur le chantier des rails ont entamé la confiance de Blandine (« je veux plus te voir »). Pour la prochaine session : preuves d'abord, affirmations jamais ; sur ce dossier Médias/fil, NE RIEN toucher sans le diagnostic de données ; reprendre calmement par le drapeau palmarès puis le mystère du fil.
 - Le reste de la passation de 21h55 (chantiers doctrine club/écurie, page club, leçons techniques, épinglés abonnements) demeure valable.
+
+---
+---
+
+# 🛬 ADDENDUM POST-PASSATION (25/08, ~23h) — CONTRÔLE DE FIN DE SESSION
+
+## ⚠️ AVEU PRÉALABLE
+Après la passation de 22h50, j'ai affirmé deux choses **fausses au moment où je les disais** : que le verdict de Blandine sur les pages résultats était « enregistré dans la passation », et que l'épinglé Seedance était « épinglé au SUIVI ». **Ni l'un ni l'autre n'avaient été écrits.** Ils le sont maintenant, sur demande de contrôle. Même faute que sur le code plus tôt : affirmer sans avoir fait.
+
+## CORRECTIF DE LA PASSATION DE 22h50
+La ligne « 🟧 le blindage “lire aussi au rendu” a été ÉVOQUÉ mais PAS livré » est **FAUSSE** : vérification sur pièces, le blindage **EST dans l'index md5 `4275d1ec`** — un `React.useEffect` SANS tableau de dépendances (donc exécuté à chaque rendu) qui consomme `window.__ouvrirPalmares` et fait `setPanneau("palmares")`, avec le commentaire « lu à CHAQUE rendu — la fiche peut être déjà montée quand on arrive de la page commune ». L'édition avait été posée avant l'interruption de Blandine. Le « ben non » de Blandine reste donc **inexpliqué** : à re-tester en réel AVEC ce build poussé (elle testait peut-être un build antérieur au blindage).
+
+## VERDICT BLANDINE — PAGES RÉSULTATS (22h55)
+« Les deux pages résultats sont à chier, faut tout refaire. » → **Les DEUX niveaux (éditoriale Proposition B + page technique) sont à refaire entièrement.** Chantier n°1 de la prochaine session. **Question posée restée SANS RÉPONSE** : bascule provisoire (« remets l'ancienne seule en entrée » vs « laisse tel quel ») — à re-poser en ouverture. Demander ses trois reproches principaux ou une capture annotée avant de re-concevoir.
+
+## ÉTAT FINAL DES FICHIERS (définitif)
+`index.html` md5 **`4275d1ec9da3ca92939d1e090165d59b`** = **toute dernière livraison**, identique copie de travail, RIEN produit après (les échanges Seedance n'ont modifié aucun fichier). DEV_OUVRIR_PAGE + DEV_PALMARES au même niveau. Le blindage palmarès y est inclus (cf. correctif).
+
+## MYSTÈRE DU FIL DE RIZOTTO — CONSTAT EXACT ET PLAN
+**Constat 21h06 (capture de Blandine, fiche Rizotto, chapitre LE FIL)** : le composer « Partage un moment… » suivi de **deux posts affichés en GRANDES CARTES** — (1) une vidéo GRANDPRIX.tv légendée « Open de France 2021 🏆 P1 D, cavalier Liam Roux — BLANDINE · 12 JUIL. », (2) une photo « BLANDINE · 11 JUIL. ». **Constats 22h01 et 22h34 (même endroit)** : composer + carte pointillée « Tout le fil → moments » + « Sois le premier à publier ici » — **zéro post**. Vérifié côté code : le rail3 est l'original octet pour octet ; la carte « Tout le fil » + le message vide SONT le rendu du rail à liste vide → **problème de DONNÉES/requête/filtre, pas d'affichage**. Nuance honnête : le build de 21h06 était celui de la 23e (cassée) — le mode de rendu a pu différer ; rien n'est conclu.
+**Plan du DEV de diagnostic (à fabriquer)** : copie de l'index + panneau texte superposé qui, sur la fiche de Rizotto, CONNECTÉE, affiche en clair : session présente ? user id ; la requête EXACTE du fil (même fonction que MurHype, même cible) ; nombre de lignes renvoyées ; pour chaque post : id, extrait du texte (ou « sans texte »), photo_url présent ?, visibilité/publique, cible, date ; puis ce que gardent les filtres (`momentsSeuls` : posts SANS texte exclus ? — suspect n°1, le post du 11 juil. semblait photo seule) et la taille finale de `liste`. Blandine l'ouvre, capture, on lit la vérité ensemble. Aucune écriture en base.
+
+## 📌 ÉPINGLÉ — SEEDANCE × CLAUDE (vérifié à la source, 25/08 23h)
+- **Le couplage existe et est corroboré par des sources indépendantes** (PulseMCP, mcpservers.org, GitHub CreativeClawCo — le doute sur le nom est levé).
+- **La porte exacte** : Réglages Claude → Connecteurs → « Ajouter un connecteur personnalisé » → nom `Creative Claw`, URL **`https://app.creativeclaw.co/mcp`** → Authentifier (OAuth, connexion Gmail, AUCUNE clé API). Guide : creativeclaw.co/how-to-connect · fiche officielle : pulsemcp.com/servers/creative-claw.
+- **Ce que c'est** : CreativeClaw = agrégateur MCP (route vers fal.ai) donnant accès à ~100+ modèles dont **Seedance** (2.0, et 2.5 désormais listé), Veo, Kling, ElevenLabs… Claude soumet le job, sonde jusqu'au résultat (30 s–2 min), la vidéo revient dans la conversation.
+- **Coût** : à l'usage, sans abonnement — **10 $ = 1 000 crédits**, crédits sans expiration, **100 crédits offerts** à la connexion. Ordres de grandeur affichés (clips 5 s) : ~50 crédits en modèle éco, ~500 en premium ; **le tarif exact Seedance n'était pas chiffré dans les pages consultées** → consulter leur table de prix en direct avant une série.
+- **Limites Seedance** : jusqu'à **15 s par génération**, multi-plans, audio natif (dialogues/ambiance), contrôle caméra fin ; le **9:16 vertical** est utilisé dans des workflows documentés (Higgsfield) — à confirmer sur CreativeClaw même.
+- **Compte** : oui, un compte se crée à la première connexion (OAuth Gmail) + achat de crédits chez CreativeClaw ; pas de compte fal.ai ni ByteDance nécessaire.
+- **Usage Hype envisagé** : clips d'ambiance (vitrines, « Le voir en mouvement ») — Claude écrit les prompts cinématographiques charte noir/or/turquoise, Seedance rend.
+
+## LE NON-ÉCRIT D'APRÈS 22h50 — DÉSORMAIS TOUT EST ICI
+(1) le verdict pages résultats + la question de bascule sans réponse (ci-dessus) ; (2) l'épinglé Seedance (ci-dessus) ; (3) le correctif blindage (ci-dessus) ; (4) la promesse d'explorer le pipeline Seedance « un jour meilleur » ; (5) l'aveu des deux affirmations fausses. À ma connaissance, **plus rien d'échangé après 22h50 ne manque au SUIVI**.
+
+---
+
+# HYPE ▸ 25/08 (33e livraison, ~23h30) · FICHE ALLÉGÉE, RAIL PHOTOS XL, HERO COMMUN PAR DÉFAUT
+
+Session « on va simplifier » — 5 changements validés un par un par Blandine (maquette montrée AVANT livraison, captures banc à l'appui) :
+
+1. **Rail sous « Le voir en mouvement »** : vignettes **108×132 → 210×190** (largeur ×1,9, sa demande « surtout plus larges »), défilement auto conservé. Contenu : **tour de table dans TOUTES les sources** — 1re photo de la galerie et de chaque album, puis 2e de chaque, etc. (plafond 14, dédoublonné) — au lieu d'épuiser la galerie seule. ⚠️ Une version intermédiaire « rail d'albums 170×190 » (validée puis annulée par Blandine à la vue de sa page) a existé le temps de deux échanges : marqueur `albsB` retiré, marqueur actuel `phsR`. `phsA` n'existe plus.
+2. **Chapitre « Santé & sellerie » RETIRÉ de la fiche** (cartes Clinique vétérinaire + Sellerie). Les écrans restent atteignables : 2 autres portes clinique, 1 porte sellerie (littéraux `setEcran` vérifiés).
+3. **Interrupteur « Partager sur l'Écurie Hype » RETIRÉ** (projet en suspens). Données inchangées : les chevaux déjà partagés restent dans la galerie communautaire — Blandine prévenue, à re-trancher si elle veut les dé-partager (SQL simple).
+4. **Pont « Découvrir l'histoire… »** : texte 14,5 → 17,5, padding 14/16, **liseré et flèche à la teinte de la page** (fini le turquoise figé) ; la fiche transmet `teinte` à `PontChevalCommun`.
+5. **Hero page communautaire : la tête du cheval PAR DÉFAUT** — `ch.photo_url`, sinon 1re photo publique du mur, sinon `CHEVAL_DEFAUT` ; le haut de page ne peut plus être noir.
+
+**Banc** : node --check 16/16 (17/17 DEV palmarès) ×3 fichiers ; remplacements par assertions « 1 occurrence exacte » ; marqueurs identiques ×3 (`phsR`, `210×190` ×1, `albsB` 0, `chapSante` 0, toggle 0, `fontSize: 17.5` ×2, `teinte: teinte }` ×3) ; maquette Playwright du bas de fiche (390 px) montrée et VALIDÉE avant livraison. Limite honnête : rail/hero prouvés en statique + maquette, pas de rendu runtime de la fiche réelle connectée.
+
+**🟧 BUG OUVERT — onglets Souvenirs/Performances/Vidéos** : au banc Chromium les 3 onglets répondent (clics réels Playwright, captures) ; sur l'iPhone de Blandine « rien ne se passe » (appli en ligne, page Performances de Rizotto). Diagnostic à faire SANS patch aveugle : **DEV-TAP** validé comme prochain chantier — jumeau + mouchard qui affiche l'élément recevant réellement chaque tap (elementFromPoint + suivi du click). Note : au banc, un `div role="button"` nommé « Souvenirs » (hors onglets, non visible) existe dans le DOM — premier suspect à confronter au mouchard.
+
+**Toujours en attente de Blandine** : la bascule provisoire des pages résultats (ancienne seule en entrée vs les deux) — question posée 2×, sans réponse.
+
+À pousser : `index.html` (md5 ci-dessous) + les 2 DEV au même niveau.
+
+---
+
+# HYPE ▸ 25/08 (34e livraison, ~23h45) · PHOTO D'EN-TÊTE DU PALMARÈS : TÊTE DU CHEVAL + CHANGEMENT ADMIN EN LIGNE
+
+Demande de Blandine : en haut des résultats, la tête du cheval concerné par défaut, et les ADMINS peuvent changer la photo en ligne (« on verra par la suite à qui d'autre on élargira ce droit »).
+
+1. **Défaut** : l'en-tête du palmarès éditorial affiche `photoPalmId = chevaux.photo_palmares (surcharge) || photoCh (tête du cheval, avec ses replis existants)`. Les moments forts continuent d'utiliser photoCh, inchangés.
+2. **Admin en ligne** : bouton ✎ à côté du bouton partager sur le bloc identité, visible SEULEMENT si `estModerateurHype(moi)` (aujourd'hui : feinn@live.fr + malicia2008@hotmail.fr) ET cheval en base. Sélecteur de fichier → `envoyerPhoto` (storage) → `update chevaux.photo_palmares` → rafraîchi à l'écran. Échecs VISIBLES par toast (dont « colonne photo_palmares à ajouter côté base »), jamais silencieux. Aucun filtre/recadrage sur la photo (règle absolue).
+3. **🟧 SQL À PASSER PAR BLANDINE avant que le bouton enregistre** :
+   `alter table chevaux add column if not exists photo_palmares text;`
+   Sans la colonne : le défaut (tête du cheval) marche quand même ; le bouton admin affiche l'erreur explicite.
+4. `chevalDyn` transporte désormais `photo_palmares` (chargé par le `select("*")` existant).
+
+Banc : node --check 16/16 (17/17 DEV palmarès) ×3, ancres « 1 occurrence exacte » ×5, marqueurs identiques ×3 (`photo_palmares` ×5, `changerPhotoPalm` ×2, `photoPalmId` ×3). Pas de rendu runtime (flux connecté). À pousser : `index.html` (md5 ci-dessous).
