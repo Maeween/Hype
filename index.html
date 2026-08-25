@@ -30195,7 +30195,7 @@ const ECHV_R_CSS = `
 .chvr .rband .rc{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--teinte);margin-top:7px;font-weight:600}
 .chvr .rband .rc svg{width:12px;height:12px;stroke:var(--teinte);fill:none;stroke-width:2}
 .chvr .empty{border-radius:16px;border:1px dashed rgba(255,255,255,.16);background:color-mix(in srgb, var(--teinte) 4%, transparent);padding:22px 16px;text-align:center;color:rgba(234,242,244,.6);font-size:13px;line-height:1.5}
-.chvr .addbtn{margin-top:12px;width:100%;padding:13px;border-radius:14px;border:1px dashed rgba(255,255,255,.2);background:color-mix(in srgb, var(--teinte) 9%, transparent);color:var(--teinte);font-size:12.5px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer}
+.chvr .addbtn{margin-top:12px;width:100%;padding:13px;border-radius:14px;border:1px dashed rgba(255,255,255,.2);background:none;color:var(--teinte);font-size:12.5px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer}
 .chvr .gfeatured{position:relative;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.09);aspect-ratio:16/10}
 .chvr .gfeatured img{width:100%;height:100%;object-fit:cover;display:block}
 .chvr .gfeatured .go{position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,rgba(6,11,16,.7))}
@@ -32168,7 +32168,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=5";
+    sc.src = "hype-import-ffe.js?v=6";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);

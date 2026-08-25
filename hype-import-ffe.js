@@ -464,15 +464,24 @@
        Android bloquent le demarrage automatique et on ne verrait qu une image
        figee. Un tap la passe en plein ecran et rend le son.
        `preload="none"` : elle ne se telecharge QUE si cet ecran s ouvre.
-       🟥 Les deux fichiers doivent etre pousses a la racine du depot :
-       aide-import.mp4 (1,45 Mo) et aide-import.jpg (47 Ko). */
+       🟥 Les deux fichiers doivent etre pousses a la racine du depot.
+       ⚠️ 25/08 session 163 — NOUVELLE VIDEO. `aide-import.mp4` est remplacee
+       par `aide-import-2.mp4` (la mascotte au telephone), fournie par
+       Blandine le 24/08 au soir. 11,8 Mo -> 0,93 Mo, HEVC -> H.264 (le HEVC
+       ne se lit pas hors Safari), muette, filigrane « Ai » efface.
+       🟥 NOM DE FICHIER NEUF, PAS UN REMPLACEMENT SOUS LE MEME NOM : garder
+       `aide-import.mp4` aurait laisse Safari servir sa copie en cache, et la
+       nouvelle video ne serait jamais arrivee sur le telephone. C est ce qui
+       a coute deux jours les 21 et 22/08. L ancienne peut rester en ligne,
+       elle n est plus appelee.
+       🟥 A pousser a la racine : aide-import-2.mp4 et aide-import-2.jpg. */
     h += '<div class="hi-film-t"><i></i><b>En images</b><i></i></div>' +
       '<div class="hi-film" data-hi="film">' +
-      '<video id="hiFilm" src="aide-import.mp4?v=1" poster="aide-import.jpg?v=1" ' +
+      '<video id="hiFilm" src="aide-import-2.mp4?v=1" poster="aide-import-2.jpg?v=1" ' +
       'autoplay muted loop playsinline preload="none" ' +
       'style="display:block;width:100%;height:auto"></video>' +
       '<span class="hi-loupe">⤢</span></div>' +
-      '<div class="hi-film-l">14 secondes, sans le son</div>';
+      '<div class="hi-film-l">15 secondes, sans le son</div>';
     if (E.err) h += '<div class="hi-err"><b>Ça n\'a pas marché</b>' + ech(E.err) + '</div>';
     return h;
   }
