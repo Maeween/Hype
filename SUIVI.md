@@ -10,75 +10,6 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
-# ✅ 25/08/2026 — COUVERTURES DE CHAPITRE : « ÇA NE SCROLLE PLUS »
-
-> **Point de départ (Blandine, capture `L'assiette et la posture assise`, Galop 3 · g3-c12) :**
-> « on ne peut de nouveau plus scroll, je suis sur image figée sur ce chapitre ».
-
-## La conclusion : il n'y avait pas de bug de défilement
-
-`CouvAffiche` fait **exactement** la hauteur de l'écran : `minHeight: calc(100dvh - 84px)` plus les
-84 px de la barre d'onglets. Le document ne dépasse donc jamais la fenêtre — rien à faire défiler.
-Le bouton **Commencer** répondait normalement (vérifié par Blandine) : la page était complète, pas
-figée. On en sort par le bouton ou par un balayage vers la gauche.
-
-**Pourquoi d'autres chapitres bougeaient, lui non :** le `minHeight` n'est pas une hauteur fixe. Une
-couverture au titre long, à la citation en quatre lignes ou avec un auteur sous la citation dépasse
-la hauteur d'écran, la boîte grandit et la page défile un peu. `g3-c12` a un titre court, trois
-lignes de citation et pas d'auteur : tout rentre pile. D'où l'impression d'écran gelé — renforcée
-par le placeholder `GALOPS_HERO` affiché en `contain`, qui laisse des bandes noires et un cadre.
-
-## Ce qui a été livré
-
-**1. Respiration sous la couverture** — `EcranCours`, branche `couv-affiche` (~37255).
-Un simple bloc de **56 px** ajouté **en frère** de `CouvAffiche`, pas à l'intérieur : le composant
-n'est pas touché, titre / citation / bouton ne bougent pas d'un pixel, et le document dépasse
-l'écran de 56 px. La page répond au doigt et revient. Vaut pour **toutes** les couvertures
-`couv-affiche`. Retour arrière = supprimer cette ligne. Le chiffre 56 est le seul réglage.
-
-**2. Filet anti-verrou repassé à chaque page d'un chapitre** — `EcranCours`, effet `[blocIdx]`.
-`hypeFiletScroll()` réaligne `body.overflow` sur la réalité du DOM, mais il n'était appelé qu'au
-**changement d'écran** (`useEffect [ecran]` du `Router`). Tourner les pages d'un chapitre ne change
-pas `ecran`, ça change `blocIdx` : une visionneuse mal refermée pouvait laisser
-`body{overflow:hidden}` jusqu'à la sortie du cours. **Ce n'était pas la cause du symptôme signalé**,
-mais le trou était réel et il est bouché. Conservé.
-
-**3. Un geste = un seul recul** — `retourEcran`, garde-fou de 450 ms.
-Posé sur l'hypothèse que le balayage maison (`onNavTouchEnd` du `Router`) et le retour système
-(`popstate`) dépilaient tous les deux sur le même geste. **Hypothèse non confirmée** : Blandine
-arrivait bien par le menu des Galops et le retour ramenait quand même à l'accueil. Le garde-fou est
-laissé en place (il ne nuit pas, le double-recul reste un risque réel sur iOS), mais **la cause du
-retour fautif n'est pas identifiée** — voir « reste à traiter ».
-
-## ⚠️ Fausses pistes déjà explorées — ne pas les refaire
-
-- **« Le raccourci de la courbe saute la page des Galops »** → faux. `allerVersGalop` vit dans
-  `EcranBibliothequeGalops`, donc `galops` est déjà dans l'historique. `EcranDashboard` et
-  `SommaireGalops`, qui sautaient bien à `galop-detail`, sont **du code mort**, jamais rendus.
-- **« La couverture est cassée / l'image ne charge pas »** → non. Le repli `GALOPS_HERO` de
-  `CouvAffiche` fonctionne, l'image est bien là. C'est un placeholder, pas un échec de chargement.
-
-## 🔎 Reste à traiter
-
-**A. Le retour depuis un menu de Galop ramène à l'accueil.** Signalé, non résolu, cause inconnue.
-Le garde-fou de 450 ms n'a rien changé. À reprendre à froid en instrumentant `historiqueEcrans`
-(afficher la pile au moment du retour) plutôt qu'en devinant.
-
-**B. « Le cours suivant pareil, on est obligé de fermer, à la main plus rien ne marche. »**
-Jamais confirmé depuis. À vérifier : après avoir tapé **Commencer**, est-ce que les pages de texte
-défilent normalement ? Si non, relever si le blocage arrive **dès la première page** ou seulement
-**après avoir touché une image**, et si la **barre d'onglets du bas** répond encore. Pistes ouvertes
-dans cet ordre : `hypeLibererPuitsTactiles` (pose `overflow:clip` + `touch-action:pan-y` sur tout
-élément qui déborde horizontalement, en boucle sur `div,section,header,ul,li,span` à chaque
-changement d'écran) ; le conteneur `overflow:"clip"` du `Router` (correctif du 23/08) ; un
-`data-hype-zoom` resté monté.
-
-**C. Couvertures encore sur le placeholder.** `g3-c12` et les autres chapitres dont le bloc
-`couv-affiche` pointe sur `GALOPS_HERO` attendent une vraie image spectrale dédiée, comme `k332` /
-`k333` / `k334`. Purement visuel, aucun lien avec le défilement.
-
----
-
 # 🔴 À FAIRE — ABONNEMENTS · rappel posé le 22/08/2026 (22h20)
 
 > **À traiter à tête reposée. Rien n'est urgent, rien n'est perdu, personne n'est bloqué.**
@@ -14314,3 +14245,22 @@ node --check OK, 16 scripts inline 0 erreur, Playwright : pilule « 3 SORTIES 2 
 
 ## À pousser
 - **`index.html` uniquement** (cumule : page commune, correctif barre, séparateur IPO, En concours aligné).
+
+---
+
+# HYPE ▸ 25/08 (5e livraison de la session) · REFONTE VISUELLE DE LA PAGE COMMUNE SUR LA MAQUETTE PNG
+
+Constat de Blandine : la V1 était un squelette, très loin de la maquette validée (93DC76BF). Le composant a été **entièrement réécrit** section par section sur le PNG :
+- **Hero** : photo du cheval à GAUCHE en fondu de bords (mask-image sur les bords, jamais de voile sur le sujet), marque « Hype ✦ COMMUNAUTÉ » en haut, identité à droite : couronne, nom Cinzel, « — LÉGENDE HYPE », ligne infos (race • sexe • robe • naissance • discipline • âge, selon colonnes présentes), **Père :/Mère :** en étiquettes turquoise.
+- **Barre EN CONCOURS** : carte verre fumé, label + chevron ›, 4 chiffres turquoise Cinzel (calcul fiche inchangé).
+- **Ses histoires** : titre Cormorant italique à filets or, cristal central FACETTÉ (reflets screen, nom + « Toutes ses histoires » sur bandeau bas), avatars sertis (double anneau + lueur), fils lumineux, chip +N sous le cristal.
+- **Mur des souvenirs** : titre + ♡ + sous-titre « Tous les albums publics… », **collage absolu qui se CHEVAUCHE** (12 gabarits : largeurs 33-42 %, rotations −6/+6°, z-index variés, scotch), cadres papier dégradé.
+- **Ses vidéos (N)** : titre à filets avec compteur, « Voir toutes ses vidéos → » si plus de 5 (déplie le rail), cellules 16/10 avec **pastille lecture + durée** (remplie à la lecture des métadonnées), titre = nom d'album.
+- **Cartes du bas** : palmarès (trophée or, ronds cerclés or si top 3, « 1er Jumping… » + sous-ligne + année, « Voir tout son palmarès → » pour les liées), **médaillon IPO aux LAURIERS** (couronne, 42 px or, filet, « 0,87 • 2021 ») placé ENTRE palmarès et partage (= le séparateur voulu), carte Partager (boutons Photo/Publier pour les liées + **dernier souvenir public** : vignette, nom d'album, auteure • date — visible par toutes).
+- Source vidéos **élargie** : `photos` ET champ `videos` éventuel des albums publics.
+
+## 🔴 CONSTAT VIDÉOS (audit)
+L'app n'a **aucun autre réservoir de vidéos par cheval** que `albums_cheval` (NAV_VIDEOS = simple icône ; les seuls lecteurs sont accueil / vidéo palmarès / stories). Si des vidéos manquent sur la page commune d'un vrai cheval : soit l'album qui les contient n'est pas `public`, soit RLS bloque la lecture inter-comptes. À vérifier sur un vrai cheval.
+
+## Vérifications
+node --check OK, 16 scripts 0 erreur, Playwright : 0 erreur page, captures hero / constellation / mur / cartes. À pousser : **index.html uniquement**.

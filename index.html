@@ -20259,86 +20259,121 @@ const CIBLE_DIRECTE = (function () {
 let SAUT_BLOC_INITIAL = CIBLE_DIRECTE ? CIBLE_DIRECTE.page : null;
 try { if (CIBLE_DIRECTE && typeof CIBLE_DIRECTE.quizPreview === "number") { window.__quizPreviewResultat = CIBLE_DIRECTE.quizPreview; } } catch (eQP) { }
 try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTerminePreview = true; } } catch (eCT) { }
-/* ===== PAGE COMMUNAUTAIRE CHEVAL — EcranChevalCommun (25/08/2026) =====
-   Vue COMMUNE d'un cheval : fiche partagee + cavalieres liees (chevaux_liens)
-   + albums PUBLICS + fusion resultats (table resultats par cheval_id + JSON
-   palmares). AUCUNE table nouvelle. Turquoise FIXE (exception validee),
-   fond #060709, cadres papier autorises sur le mur uniquement.
-   Charge UNIQUEMENT a l'ouverture : zero requete au demarrage de l'app.
-   Apercu sans reseau : hash #chevalcommun (donnees de demonstration). */
+/* ===== PAGE COMMUNAUTAIRE CHEVAL — EcranChevalCommun (25/08/2026, v2 fidele au PNG) =====
+   Refonte visuelle complete sur la maquette validee 93DC76BF : hero cheval a gauche
+   + identite a droite, etiquettes Pere/Mere turquoise, barre EN CONCOURS 4 chiffres,
+   constellation cristal, mur dense qui se chevauche, rail videos avec durees,
+   cartes palmares / medaillon IPO aux lauriers / partager. Donnees inchangees :
+   albums PUBLICS, resultats fusion table+JSON (calcul fiche), zero requete au boot. */
 (function () {
     try {
-        if (document.getElementById("hycc-css")) return;
+        var anc = document.getElementById("hycc-css");
+        if (anc) anc.remove();
         var s = document.createElement("style");
         s.id = "hycc-css";
-        s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F8F9F8;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:120px}" +
-            ".hycc-back{position:fixed;top:calc(env(safe-area-inset-top) + 10px);left:12px;z-index:60;width:40px;height:40px;border-radius:13px;display:grid;place-items:center;background:rgba(10,14,18,.55);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F8F9F8;font-size:20px;line-height:1}" +
-            ".hycc-hero{position:relative;width:100%;aspect-ratio:4/3;background:radial-gradient(120% 90% at 50% 20%,#0E1B21,#060709 72%);overflow:hidden}" +
-            ".hycc-hero img{width:100%;height:100%;object-fit:cover;display:block}" +
-            ".hycc-idb{padding:20px 20px 2px;text-align:center}" +
-            ".hycc-eyebrow{font-size:9.5px;letter-spacing:.34em;text-transform:uppercase;color:#14E2EF;font-weight:600}" +
-            ".hycc-crown{width:30px;height:22px;margin:12px auto 0;display:block}" +
-            ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:26px;letter-spacing:1.4px;color:#F8F9F8;margin-top:8px;text-shadow:0 0 24px rgba(20,226,239,.28)}" +
-            ".hycc-sub{font-size:11.5px;color:#B4B4B3;margin-top:9px;letter-spacing:.05em}" +
-            ".hycc-ped{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;color:rgba(244,196,85,.92);margin-top:7px}" +
-            ".hycc-pillW{text-align:center;margin-top:18px}" +
-            ".hycc-pill{display:inline-flex;gap:13px;align-items:center;padding:11px 14px;border-radius:999px;border:1px solid rgba(20,226,239,.35);background:rgba(20,226,239,.06);box-shadow:0 0 20px -7px rgba(20,226,239,.55)}" +
-            ".hycc-pill .c{text-align:center}" +
-            ".hycc-pill b{font-family:'Cinzel',serif;font-size:16px;color:#7FF0FF;font-weight:700;display:block}" +
-            ".hycc-pill span{font-size:8.5px;letter-spacing:.16em;text-transform:uppercase;color:#B4B4B3;display:block;margin-top:3px}" +
-            ".hycc-sec{margin:36px 20px 14px;text-align:center}" +
-            ".hycc-lbl{font-size:10px;letter-spacing:.32em;text-transform:uppercase;color:#14E2EF;font-weight:600}" +
-            ".hycc-filet{width:56px;height:1px;margin:9px auto 0;background:linear-gradient(90deg,transparent,rgba(20,226,239,.6),transparent)}" +
-            ".hycc-const{position:relative;height:296px;margin:2px 10px 0}" +
+        s.textContent = ".hycc-root{min-height:100vh;background:#05060A;color:#F2F3F5;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:120px}" +
+            ".hycc-hero{position:relative;min-height:432px;padding:calc(env(safe-area-inset-top) + 14px) 18px 6px;overflow:hidden}" +
+            ".hycc-hphoto{position:absolute;left:0;top:0;width:64%;height:100%;object-fit:cover;object-position:left center;-webkit-mask-image:linear-gradient(100deg,#000 46%,transparent 88%);mask-image:linear-gradient(100deg,#000 46%,transparent 88%)}" +
+            ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:110px;background:linear-gradient(180deg,transparent,#05060A 92%)}" +
+            ".hycc-marque{position:relative;z-index:2;display:inline-flex;flex-direction:column;line-height:1}" +
+            ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F2F3F5;letter-spacing:.5px}" +
+            ".hycc-marque .h i{color:#F4C455;font-style:normal;font-size:12px;margin-left:2px}" +
+            ".hycc-marque .c{font-size:7.5px;letter-spacing:.42em;color:#9FA3A8;margin-top:4px;text-transform:uppercase}" +
+            ".hycc-back{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(16,20,26,.55);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F2F3F5;font-size:19px;line-height:1}" +
+            ".hycc-idb{position:relative;z-index:2;margin:64px 0 0 34%;max-width:64%}" +
+            ".hycc-couronne{width:24px;height:17px;display:block;margin-bottom:4px}" +
+            ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:25px;line-height:1.12;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85)}" +
+            ".hycc-legende{display:flex;align-items:center;gap:8px;margin-top:7px}" +
+            ".hycc-legende i{display:block;width:22px;height:1px;background:#14E2EF;opacity:.85}" +
+            ".hycc-legende span{font-size:9px;letter-spacing:.34em;color:#DFE1E4;text-transform:uppercase;font-style:normal}" +
+            ".hycc-sub{font-size:11.5px;color:#D3D5D8;margin-top:11px;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.8)}" +
+            ".hycc-ped{margin-top:9px;font-size:12.5px;line-height:1.55}" +
+            ".hycc-ped b{color:#14E2EF;font-weight:600}" +
+            ".hycc-ped span{color:#F2F3F5}" +
+            ".hycc-encbar{position:relative;z-index:2;margin:20px 16px 0;display:flex;align-items:center;gap:6px;padding:12px 12px 12px 16px;border-radius:16px;background:rgba(14,18,24,.72);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}" +
+            ".hycc-encbar .lab{font-size:10px;letter-spacing:.18em;color:#E8EAEC;text-transform:uppercase;font-weight:600;white-space:nowrap}" +
+            ".hycc-encbar .chv{color:#14E2EF;font-size:13px;margin:0 2px 0 1px}" +
+            ".hycc-encbar .cols{flex:1;display:flex;justify-content:space-evenly;gap:4px}" +
+            ".hycc-encbar .c{text-align:center;min-width:0}" +
+            ".hycc-encbar b{font-family:'Cinzel',serif;font-size:18px;color:#37E6F0;font-weight:700;display:block;line-height:1}" +
+            ".hycc-encbar span{font-size:7.5px;letter-spacing:.1em;text-transform:uppercase;color:#A9ADB2;display:block;margin-top:4px}" +
+            ".hycc-tit{margin:34px 18px 4px;display:flex;align-items:center;gap:12px;justify-content:center}" +
+            ".hycc-tit i{flex:0 0 34px;height:1px;background:linear-gradient(90deg,transparent,rgba(244,196,85,.75));display:block}" +
+            ".hycc-tit i.r{background:linear-gradient(90deg,rgba(244,196,85,.75),transparent)}" +
+            ".hycc-tit .t{font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:20px;letter-spacing:.14em;color:#F2F3F5;white-space:nowrap}" +
+            ".hycc-tit .cr{color:#F4C455;font-size:14px;margin-left:2px}" +
+            ".hycc-soustit{text-align:center;font-size:11px;color:#A9ADB2;font-style:italic;margin:2px 24px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px}" +
+            ".hycc-const{position:relative;height:308px;margin:6px 8px 0}" +
             ".hycc-fils{position:absolute;inset:0;width:100%;height:100%}" +
-            ".hycc-cristalW{position:absolute;left:50%;top:53%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 18px rgba(20,226,239,.45));z-index:2}" +
-            ".hycc-cristal{width:116px;height:130px;clip-path:polygon(50% 0%,97% 25%,79% 97%,50% 100%,21% 97%,3% 25%);overflow:hidden;background:linear-gradient(160deg,#123037,#0A161B);display:grid;place-items:center}" +
-            ".hycc-cristal img{width:100%;height:100%;object-fit:cover}" +
-            ".hycc-cristal .ini{font-family:'Cinzel',serif;font-size:34px;color:#7FF0FF}" +
-            ".hycc-cav{position:absolute;width:72px;text-align:center;transform:translate(-50%,-50%);z-index:3}" +
-            ".hycc-cav .a{width:52px;height:52px;border-radius:50%;margin:0 auto;overflow:hidden;border:1px solid rgba(20,226,239,.45);box-shadow:0 0 14px -3px rgba(20,226,239,.6);background:linear-gradient(158deg,#14232B,#0A1216);display:grid;place-items:center;font-family:'Cinzel',serif;font-size:18px;color:#F8F9F8}" +
-            ".hycc-cav .a img{width:100%;height:100%;object-fit:cover}" +
-            ".hycc-cav .p{font-size:9.5px;color:#B4B4B3;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-            ".hycc-plus{position:absolute;transform:translate(-50%,-50%);padding:5px 11px;border-radius:999px;font-size:10px;color:#7FF0FF;border:1px solid rgba(20,226,239,.4);background:rgba(20,226,239,.08);z-index:3}" +
-            ".hycc-mur{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 10px;padding:6px 12px 0}" +
-            ".hycc-pol{position:relative;width:44%;background:#BCA395;padding:5px 5px 18px;border-radius:3px;box-shadow:0 12px 26px -12px rgba(0,0,0,.75)}" +
-            ".hycc-pol img{width:100%;aspect-ratio:1/1.06;object-fit:cover;display:block;border-radius:2px}" +
-            ".hycc-pol::before{content:\"\";position:absolute;top:-7px;left:50%;transform:translateX(-50%) rotate(-4deg);width:44px;height:14px;background:rgba(240,235,220,.55);box-shadow:0 1px 3px rgba(0,0,0,.28)}" +
-            ".hycc-pol .an{position:absolute;left:0;right:0;bottom:2px;text-align:center;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:10.5px;color:#3A2F28;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 5px}" +
-            ".hycc-rail{display:flex;gap:12px;overflow-x:auto;padding:6px 18px 12px;scroll-snap-type:x proximity;scroll-padding-left:18px;-webkit-overflow-scrolling:touch}" +
-            ".hycc-vid{flex:0 0 218px;scroll-snap-align:start;border-radius:14px;overflow:hidden;border:1px solid rgba(20,226,239,.22);background:#0A1216}" +
+            ".hycc-cristalW{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);filter:drop-shadow(0 0 22px rgba(20,226,239,.5));z-index:2}" +
+            ".hycc-cristal{position:relative;width:138px;height:158px;clip-path:polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%);overflow:hidden;background:linear-gradient(160deg,#16333B,#0A161B)}" +
+            ".hycc-cristal img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}" +
+            ".hycc-cristal .fac{position:absolute;inset:0;background:linear-gradient(115deg,rgba(127,240,255,.22),transparent 32%,transparent 62%,rgba(127,240,255,.14));mix-blend-mode:screen;pointer-events:none}" +
+            ".hycc-cristal .bas{position:absolute;left:0;right:0;bottom:0;padding:20px 6px 9px;background:linear-gradient(180deg,transparent,rgba(4,8,11,.92) 62%);text-align:center}" +
+            ".hycc-cristal .n{font-family:'Cinzel',serif;font-size:13.5px;letter-spacing:.14em;color:#FBFBFC;text-transform:uppercase}" +
+            ".hycc-cristal .s{font-size:8.5px;color:#BFE9EF;margin-top:2px}" +
+            ".hycc-cristal .ini{position:absolute;inset:0;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:44px;color:#7FF0FF}" +
+            ".hycc-cav{position:absolute;width:84px;text-align:center;transform:translate(-50%,-50%);z-index:3}" +
+            ".hycc-cav .a{position:relative;width:62px;height:62px;border-radius:50%;margin:0 auto;background:linear-gradient(158deg,#17262E,#0A1216);display:grid;place-items:center;font-family:'Cinzel',serif;font-size:21px;color:#F2F3F5;box-shadow:0 0 0 1px rgba(20,226,239,.55),0 0 0 3px rgba(20,226,239,.12),0 0 18px -2px rgba(20,226,239,.65)}" +
+            ".hycc-cav .a img{position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover}" +
+            ".hycc-cav .a i{position:absolute;inset:0;border-radius:50%;background:linear-gradient(120deg,rgba(127,240,255,.28),transparent 38%);mix-blend-mode:screen}" +
+            ".hycc-cav .p{font-size:10px;color:#CFD2D6;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-plus{position:absolute;transform:translate(-50%,-50%);padding:4px 12px;border-radius:999px;font-size:10.5px;color:#7FF0FF;border:1px solid rgba(20,226,239,.45);background:rgba(10,20,24,.8);z-index:4}" +
+            ".hycc-mur{position:relative;margin:14px 8px 0}" +
+            ".hycc-pol{position:absolute;background:linear-gradient(165deg,#DCCFBB,#BCA395);padding:4px 4px 5px;border-radius:2px;box-shadow:0 14px 30px -12px rgba(0,0,0,.85)}" +
+            ".hycc-pol img{width:100%;aspect-ratio:1/0.92;object-fit:cover;display:block;border-radius:1px}" +
+            ".hycc-pol.hh img{aspect-ratio:1/1.14}" +
+            ".hycc-pol::before{content:\"\";position:absolute;top:-8px;left:50%;transform:translateX(-50%) rotate(-3deg);width:40px;height:15px;background:rgba(238,230,212,.6);box-shadow:0 1px 3px rgba(0,0,0,.3)}" +
+            ".hycc-railW{margin-top:18px}" +
+            ".hycc-railH{display:flex;align-items:baseline;justify-content:space-between;margin:0 18px 8px}" +
+            ".hycc-voirtout{font-size:11px;color:#14E2EF;letter-spacing:.02em}" +
+            ".hycc-rail{display:flex;gap:12px;overflow-x:auto;padding:4px 18px 12px;scroll-snap-type:x proximity;scroll-padding-left:18px;-webkit-overflow-scrolling:touch}" +
+            ".hycc-vid{flex:0 0 216px;scroll-snap-align:start}" +
+            ".hycc-vid .cell{position:relative;border-radius:13px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#0A0E13}" +
             ".hycc-vid video{width:100%;aspect-ratio:16/10;display:block;background:#000}" +
-            ".hycc-res{margin:0 20px;border-radius:16px;border:1px solid rgba(255,255,255,.09);background:rgba(255,255,255,.03);overflow:hidden}" +
-            ".hycc-rrow{display:flex;align-items:center;gap:12px;padding:13px 14px;position:relative}" +
-            ".hycc-rrow+.hycc-rrow::before{content:\"\";position:absolute;top:0;left:14px;right:14px;height:1px;background:rgba(255,255,255,.07)}" +
-            ".hycc-pl{flex:0 0 44px;font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#B4B4B3;letter-spacing:.04em}" +
-            ".hycc-pl.or{color:#F4C455;text-shadow:0 0 12px rgba(232,161,64,.5)}" +
-            ".hycc-an{flex:0 0 auto;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px;color:#B4B4B3}" +
+            ".hycc-vid .play{position:absolute;left:10px;bottom:10px;width:30px;height:30px;border-radius:50%;background:rgba(8,10,14,.62);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;pointer-events:none}" +
+            ".hycc-vid .play::before{content:\"\";display:block;width:0;height:0;border-left:9px solid #F2F3F5;border-top:5.5px solid transparent;border-bottom:5.5px solid transparent;margin-left:2px}" +
+            ".hycc-vid .dur{position:absolute;right:9px;bottom:11px;font-size:10px;color:#F2F3F5;background:rgba(8,10,14,.7);padding:2px 7px;border-radius:7px;letter-spacing:.04em;pointer-events:none}" +
+            ".hycc-vid .t{font-size:11.5px;color:#DFE1E4;margin:7px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-carte{margin:16px 16px 0;border-radius:18px;border:1px solid rgba(255,255,255,.09);background:rgba(15,19,25,.62);padding:16px 14px}" +
+            ".hycc-carteT{display:flex;align-items:center;gap:9px;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;letter-spacing:.1em;color:#F2F3F5;margin-bottom:12px}" +
+            ".hycc-rrow{display:flex;align-items:center;gap:11px;padding:9px 2px;position:relative}" +
+            ".hycc-rrow+.hycc-rrow::before{content:\"\";position:absolute;top:0;left:40px;right:2px;height:1px;background:rgba(255,255,255,.06)}" +
+            ".hycc-rond{flex:0 0 29px;width:29px;height:29px;border-radius:50%;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:12.5px;font-weight:700;color:#F4C455;border:1.5px solid rgba(244,196,85,.8);box-shadow:0 0 10px -3px rgba(232,161,64,.7)}" +
+            ".hycc-rond.n{color:#B9BDC2;border-color:rgba(255,255,255,.28);box-shadow:none}" +
             ".hycc-rrow .t{flex:1;min-width:0}" +
-            ".hycc-rrow .e{font-size:12px;color:#F8F9F8;font-weight:600;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
-            ".hycc-rrow .d{font-size:10px;color:#B4B4B3;margin-top:3px}" +
-            ".hycc-ipoSep{display:flex;align-items:center;gap:14px;margin:36px 26px 2px}" +
-            ".hycc-ipoSep .l{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(244,196,85,.4))}" +
-            ".hycc-ipoSep .l.r{background:linear-gradient(90deg,rgba(244,196,85,.4),transparent)}" +
-            ".hycc-ipoSep .b{display:flex;flex-direction:column;align-items:center;gap:1px}" +
-            ".hycc-ipoSep .v{font-family:'Cinzel',serif;font-size:19px;color:#F4C455;font-weight:700;text-shadow:0 0 14px rgba(232,161,64,.45)}" +
-            ".hycc-ipoSep .s{font-size:8.5px;letter-spacing:.3em;color:#E8A140;text-transform:uppercase}" +
-            ".hycc-filetSep{width:56px;height:1px;margin:36px auto 2px;background:linear-gradient(90deg,transparent,rgba(20,226,239,.5),transparent)}" +
-            ".hycc-share{margin:0 20px;display:flex;gap:10px}" +
-            ".hycc-sbtn{flex:1;padding:13px 8px;border-radius:13px;border:1px solid rgba(20,226,239,.35);background:linear-gradient(160deg,rgba(24,32,38,.85),rgba(10,14,17,.9));backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#CFF8FD;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}" +
-            ".hycc-empty{margin:0 20px;padding:18px;border-radius:14px;border:1px dashed rgba(255,255,255,.14);color:#B4B4B3;font-size:12px;text-align:center;font-style:italic}" +
-            ".hycc-load{padding:90px 20px;text-align:center;color:#B4B4B3;font-size:12px;letter-spacing:.08em}";
+            ".hycc-rrow .e{font-size:12.5px;color:#F5F6F7;font-weight:600;letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-rrow .e b{font-weight:700;color:#F4C455;font-size:11px;margin-right:7px}" +
+            ".hycc-rrow .d{font-size:10px;color:#9FA3A8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-rrow .an{flex:0 0 auto;font-size:11px;color:#8A8E94}" +
+            ".hycc-lien{display:inline-block;margin-top:10px;font-size:11.5px;color:#14E2EF}" +
+            ".hycc-ipoC{margin:16px 16px 0;border-radius:18px;border:1px solid rgba(244,196,85,.3);background:radial-gradient(90% 80% at 50% 0%,rgba(232,161,64,.1),rgba(15,19,25,.62) 70%);padding:20px 14px 18px;text-align:center}" +
+            ".hycc-ipoC .laur{display:flex;align-items:center;justify-content:center;gap:10px}" +
+            ".hycc-ipoC .v{font-family:'Cinzel',serif;font-size:42px;color:#F4C455;font-weight:700;line-height:1;text-shadow:0 0 22px rgba(232,161,64,.55)}" +
+            ".hycc-ipoC .s{font-size:11px;letter-spacing:.34em;color:#E8C888;text-transform:uppercase;margin-top:6px}" +
+            ".hycc-ipoC .fil{width:44px;height:1px;margin:11px auto;background:linear-gradient(90deg,transparent,rgba(244,196,85,.7),transparent)}" +
+            ".hycc-ipoC .n2{font-size:12px;color:#CFD2D6;letter-spacing:.14em}" +
+            ".hycc-share{display:flex;gap:10px;margin-bottom:12px}" +
+            ".hycc-sbtn{flex:1;padding:11px 8px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);color:#EDEFF1;font-size:11.5px;letter-spacing:.04em;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}" +
+            ".hycc-dernier{display:flex;align-items:center;gap:11px;padding:10px;border-radius:13px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.03)}" +
+            ".hycc-dernier img{flex:0 0 52px;width:52px;height:52px;border-radius:10px;object-fit:cover;background:#0A0E13}" +
+            ".hycc-dernier .t{flex:1;min-width:0}" +
+            ".hycc-dernier .e{font-size:12px;color:#F2F3F5;line-height:1.35}" +
+            ".hycc-dernier .d{font-size:10px;color:#9FA3A8;margin-top:3px}" +
+            ".hycc-empty{margin:8px 18px 0;padding:16px;border-radius:14px;border:1px dashed rgba(255,255,255,.14);color:#A9ADB2;font-size:12px;text-align:center;font-style:italic}" +
+            ".hycc-load{padding:90px 20px;text-align:center;color:#A9ADB2;font-size:12px;letter-spacing:.08em}";
         document.head.appendChild(s);
     } catch (eCss) { }
 })();
 function EcranChevalCommun() {
     var H = React.createElement;
     var ctx = null; try { ctx = useApp(); } catch (eCtx) { }
-    var _st = React.useState({ pret: false, erreur: null, ch: null, cavs: [], photos: [], videos: [], resultats: [], ipo: null, estLie: false });
+    var _st = React.useState({ pret: false, erreur: null, ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false });
     var st = _st[0], setSt = _st[1];
+    var _vt = React.useState(false); var voirTout = _vt[0], setVoirTout = _vt[1];
+    var _du = React.useState({}); var durees = _du[0], setDurees = _du[1];
 
-    /* — lecture d'un resultat EXACTEMENT comme la fiche (sessions 154/161) :
-       `place` sinon tete du texte `classement` ; le Quart FFE n'est JAMAIS recalcule — */
+    /* — lecture d'un resultat EXACTEMENT comme la fiche (sessions 154/161) — */
     function normRes(r, compte) {
         if (!r || typeof r !== "object") return null;
         var pl = null;
@@ -20352,65 +20387,77 @@ function EcranChevalCommun() {
     }
     function urlDe(p) { if (!p) return ""; if (typeof p === "string") return p; return p.url || p.src || ""; }
     function estUrlVideo(u) { return /\.(mp4|mov|webm|m4v)(\?|#|$)/i.test(String(u || "")); }
+    function fmtDur(sec) { if (!sec || !isFinite(sec)) return ""; var m = Math.floor(sec / 60), x = Math.round(sec % 60); return m + ":" + (x < 10 ? "0" : "") + x; }
+    function fmtJour(iso) { try { var d = new Date(iso); if (isNaN(d)) return ""; return d.getDate() + " " + ["janv.","f\u00e9vr.","mars","avr.","mai","juin","juil.","ao\u00fbt","sept.","oct.","nov.","d\u00e9c."][d.getMonth()]; } catch (eD) { return ""; } }
 
     React.useEffect(function () {
         try { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (eSc) { }
         var vivant = true;
         function pose(x) { if (vivant) setSt(x); }
-        /* — APERCU DEMO (hash #chevalcommun) : aucune requete, donnees fictives marquees — */
         if (window.__chevalCommunDemo) {
             var ph = (typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || "";
             var av = (typeof IMG_CAVALIER_DEFAUT !== "undefined" && IMG_CAVALIER_DEFAUT) || "";
             pose({
-                pret: true, erreur: null, estLie: true,
+                pret: true, erreur: null, estLie: true, nomsPar: {},
                 ch: { id: "demo", nom: "Orph\u00e9e (d\u00e9mo)", race: "Selle Fran\u00e7ais", discipline: "CSO", age: 9, photo_url: ph, origines: { pere: { nom: "P\u00e8re d\u00e9mo" }, mere: { nom: "M\u00e8re d\u00e9mo" } } },
                 cavs: [
                     { id: "d1", nom: "@luna", avatar: av }, { id: "d2", nom: "@maya", avatar: av },
                     { id: "d3", nom: "@swan", avatar: av }, { id: "d4", nom: "@iris", avatar: av }, { id: "d5", nom: "@nell", avatar: av }
                 ],
                 photos: [
-                    { u: ph, an: "Premi\u00e8re rencontre" }, { u: ph, an: "" }, { u: ph, an: "Stage d'\u00e9t\u00e9" },
-                    { u: ph, an: "" }, { u: ph, an: "Concours (d\u00e9mo)" }, { u: ph, an: "" }
+                    { u: ph, an: "Premi\u00e8re rencontre" }, { u: ph, an: "" }, { u: ph, an: "Stage d'\u00e9t\u00e9" }, { u: ph, an: "" },
+                    { u: ph, an: "Concours (d\u00e9mo)" }, { u: ph, an: "" }, { u: ph, an: "" }, { u: ph, an: "Complices" }
                 ],
-                videos: [],
+                videos: [
+                    { u: "", t: "Open d\u00e9mo 2026" }, { u: "", t: "Grand Prix d\u00e9mo" }, { u: "", t: "\u00c0 la maison" },
+                    { u: "", t: "Vitesse d\u00e9mo" }, { u: "", t: "Nos parcours" }
+                ],
+                dernier: { u: ph, an: "Open d\u00e9mo 2026", qui: "@luna", quand: "12 juil." },
                 resultats: [
                     { pl: 1, part: 47, nom: "Concours d\u00e9mo", ep: "Grand Prix", cav: "@luna", an: "2026", date: "2026-05-02", compte: true },
                     { pl: 3, part: 48, nom: "Concours d\u00e9mo", ep: "Vitesse", cav: "@maya", an: "2026", date: "2026-05-03", compte: true },
                     { pl: 1, part: 19, nom: "RDV d\u00e9mo", ep: "Grand Prix", cav: "@luna", an: "2025", date: "2025-09-14", compte: true },
-                    { pl: 7, part: 52, nom: "\u00c9tape d\u00e9mo", ep: "Elite", cav: "@swan", an: "2025", date: "2025-06-21", compte: true }
+                    { pl: 2, part: 72, nom: "\u00c9tape d\u00e9mo BIP", ep: "Grand Prix", cav: "@swan", an: "2025", date: "2025-06-21", compte: true },
+                    { pl: 1, part: 41, nom: "Haras d\u00e9mo", ep: "Poney 2 GP", cav: "@luna", an: "2025", date: "2025-04-11", compte: true }
                 ],
-                ipo: ["IPO", "d\u00e9mo", "aper\u00e7u"]
+                ipo: ["IPO", "d\u00e9mo", "aper\u00e7u \u00b7 2026"]
             });
             return;
         }
         var id = window.__chevalCommunOuvert || null;
-        if (!id) { pose({ pret: true, erreur: "aucun", ch: null, cavs: [], photos: [], videos: [], resultats: [], ipo: null, estLie: false }); return; }
+        if (!id) { pose({ pret: true, erreur: "aucun", ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false }); return; }
         (async function () {
             try {
                 var rCh = await supa.from("chevaux").select("*").eq("id", id).maybeSingle();
                 var ch = rCh && rCh.data ? rCh.data : null;
-                if (!ch) { pose({ pret: true, erreur: "introuvable", ch: null, cavs: [], photos: [], videos: [], resultats: [], ipo: null, estLie: false }); return; }
+                if (!ch) { pose({ pret: true, erreur: "introuvable", ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false }); return; }
                 var ids = [ch.user_id];
                 try {
                     var rL = await supa.from("chevaux_liens").select("user_id").eq("cheval_id", id);
                     ((rL && rL.data) || []).forEach(function (l) { if (l.user_id && ids.indexOf(l.user_id) < 0) ids.push(l.user_id); });
                 } catch (eL) { }
-                var cavs = [];
+                var cavs = [], nomsPar = {};
                 try {
                     var rP = await supa.from("profiles").select("id, prenom, pseudo, avatar_url").in("id", ids);
                     cavs = ((rP && rP.data) || []).map(function (p) {
-                        return { id: p.id, nom: p.pseudo ? ("@" + p.pseudo) : (p.prenom || "Cavali\u00e8re"), avatar: p.avatar_url || "" };
+                        var nm = p.pseudo ? ("@" + p.pseudo) : (p.prenom || "Cavali\u00e8re");
+                        nomsPar[p.id] = nm;
+                        return { id: p.id, nom: nm, avatar: p.avatar_url || "" };
                     });
                 } catch (eP) { }
-                var photos = [], videos = [];
+                var photos = [], videos = [], dernier = null;
                 try {
                     var rA = await supa.from("albums_cheval").select("*").eq("cible", "cheval:" + id).order("created_at", { ascending: true });
                     ((rA && rA.data) || []).forEach(function (al) {
                         if (al.visibilite !== "public") return; /* mur commun = PUBLIC uniquement */
-                        (al.photos || []).forEach(function (p) {
+                        var tous = (al.photos || []).concat(al.videos || []);
+                        tous.forEach(function (p) {
                             var u = urlDe(p); if (!u) return;
-                            if (estUrlVideo(u)) { videos.push({ u: u }); }
-                            else if (photos.length < 10) { photos.push({ u: u, an: al.nom || "" }); }
+                            if (estUrlVideo(u)) { videos.push({ u: u, t: al.nom || "" }); }
+                            else {
+                                if (photos.length < 12) photos.push({ u: u, an: al.nom || "" });
+                                dernier = { u: u, an: al.nom || "", qui: nomsPar[al.user_id] || "", quand: fmtJour(al.created_at) };
+                            }
                         });
                     });
                 } catch (eA) { }
@@ -20420,8 +20467,7 @@ function EcranChevalCommun() {
                     var rR = await supa.from("resultats").select("*").eq("cheval_id", id).order("created_at", { ascending: false }).limit(400);
                     ((rR && rR.data) || []).forEach(function (r) { var n = normRes(r, true); if (n) res.push(n); });
                 } catch (eR) { }
-                /* le palmares JSON s'AFFICHE mais ne COMPTE pas (decision du 24/08 :
-                   memes resultats que les PDF, deja dans la table — compter = doubler) */
+                /* le palmares JSON s'AFFICHE mais ne COMPTE pas (decision du 24/08) */
                 try { (Array.isArray(ch.palmares) ? ch.palmares : []).forEach(function (r) { var n = normRes(r, false); if (n) res.push(n); }); } catch (eJ) { }
                 var ipo = null;
                 try { var og = ch.origines || {}; var ix = (og.indices || [])[0]; if (ix && ix[0]) ipo = ix; } catch (eI) { }
@@ -20431,9 +20477,9 @@ function EcranChevalCommun() {
                     var uid = rS && rS.data && rS.data.session && rS.data.session.user && rS.data.session.user.id;
                     estLie = !!(uid && ids.indexOf(uid) >= 0);
                 } catch (eS) { }
-                pose({ pret: true, erreur: null, ch: ch, cavs: cavs, photos: photos, videos: videos.slice(0, 8), resultats: res, ipo: ipo, estLie: estLie });
+                pose({ pret: true, erreur: null, ch: ch, cavs: cavs, nomsPar: nomsPar, photos: photos, videos: videos.slice(0, 12), dernier: dernier, resultats: res, ipo: ipo, estLie: estLie });
             } catch (eTout) {
-                pose({ pret: true, erreur: "chargement", ch: null, cavs: [], photos: [], videos: [], resultats: [], ipo: null, estLie: false });
+                pose({ pret: true, erreur: "chargement", ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false });
             }
         })();
         return function () { vivant = false; };
@@ -20445,7 +20491,7 @@ function EcranChevalCommun() {
         else { try { history.back(); } catch (eH) { } }
     }
     function ouvrirCavaliere(cid) {
-        if (!ctx || !ctx.setEcran || !cid || String(cid).indexOf("d") === 0 && st.ch && st.ch.id === "demo") return;
+        if (!ctx || !ctx.setEcran || !cid || (st.ch && st.ch.id === "demo")) return;
         try { window.__cavalierOuvert = cid; } catch (eC) { }
         ctx.setEcran("profil");
     }
@@ -20464,9 +20510,8 @@ function EcranChevalCommun() {
     var comptes = st.resultats.filter(function (r) { return r.compte; });
     var victoires = comptes.filter(function (r) { return r.pl === 1; }).length;
     var podiums = comptes.filter(function (r) { return r.pl <= 3; }).length;
-    var classes = comptes.length; /* parcours classes */
+    var classes = comptes.length;
     var sorties = (function () {
-        /* une sortie = un deplacement : meme concours sur des jours consecutifs = 1 */
         var parLieu = {};
         comptes.forEach(function (r) {
             if (!r.date) return;
@@ -20488,107 +20533,150 @@ function EcranChevalCommun() {
         var d = (a.pl === 1 ? 0 : a.pl <= 3 ? 1 : 2) - (b.pl === 1 ? 0 : b.pl <= 3 ? 1 : 2);
         if (d !== 0) return d;
         return (b.part || 0) - (a.part || 0);
-    }).slice(0, 4);
-    var pedigree = "";
-    try { var og = ch.origines || {}; var pn = og.pere && og.pere.nom, mn = og.mere && og.mere.nom; if (pn || mn) pedigree = (pn ? ("par " + pn) : "") + (pn && mn ? " \u00b7 " : "") + (mn ? ("et " + mn) : ""); } catch (ePed) { }
-    var sousTitre = [ch.race, ch.discipline, (ch.age ? (ch.age + " ans") : null)].filter(Boolean).join(" \u00b7 ");
-    var couronne = H("svg", { className: "hycc-crown", viewBox: "0 0 30 22", "aria-hidden": true },
-        H("path", { d: "M2 18 L4 6 L10 12 L15 3 L20 12 L26 6 L28 18 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.4, strokeLinejoin: "round" }));
+    }).slice(0, 5);
+    var pere = "", mere = "";
+    try { var og = ch.origines || {}; pere = (og.pere && og.pere.nom) || ""; mere = (og.mere && og.mere.nom) || ""; } catch (ePed) { }
+    var infos = [ch.race, ch.sexe, ch.robe, (ch.naissance ? ("N\u00e9 le " + ch.naissance) : null), ch.discipline, (ch.age ? (ch.age + " ans") : null)].filter(Boolean).join(" \u2022 ");
+    var couronne = H("svg", { className: "hycc-couronne", viewBox: "0 0 30 22", "aria-hidden": true },
+        H("path", { d: "M2 18 L4 6 L10 12 L15 3 L20 12 L26 6 L28 18 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.6, strokeLinejoin: "round" }));
+    function laurier(miroir) {
+        return H("svg", { viewBox: "0 0 22 52", width: 17, height: 40, "aria-hidden": true, style: miroir ? { transform: "scaleX(-1)" } : null },
+            H("path", { d: "M18 2 C8 12 5 24 8 38 C10 45 14 49 18 50", fill: "none", stroke: "#C89B4E", strokeWidth: 1.4 }),
+            [6, 12, 18, 24, 30, 36].map(function (y, i) {
+                return H("path", { key: i, d: "M" + (13 - i * 0.6) + " " + y + " q -7 1 -9 6 q 6 1 9 -6", fill: "rgba(232,161,64,.75)" });
+            }));
+    }
+    function titre(txt, coeur) {
+        return H("div", { className: "hycc-tit" }, H("i", null), H("span", { className: "t" }, txt, coeur ? H("span", { className: "cr" }, " \u2661") : null), H("i", { className: "r" }));
+    }
 
-    /* constellation : jusqu'a 4 avatars relies au cristal, chip +N au-dela */
-    var POS = [{ x: 17, y: 22 }, { x: 83, y: 18 }, { x: 15, y: 82 }, { x: 85, y: 80 }];
+    /* constellation : 4 avatars relies au cristal, +N sous le cristal */
+    var POS = [{ x: 16, y: 21 }, { x: 84, y: 17 }, { x: 15, y: 76 }, { x: 85, y: 72 }];
     var visibles = st.cavs.slice(0, 4);
     var reste = Math.max(0, st.cavs.length - visibles.length);
     var fils = H("svg", { className: "hycc-fils", viewBox: "0 0 100 100", preserveAspectRatio: "none" },
         visibles.map(function (c, i) {
-            return H("line", { key: "f" + i, x1: 50, y1: 53, x2: POS[i].x, y2: POS[i].y, stroke: "rgba(20,226,239,.35)", strokeWidth: 0.45 });
+            return H("line", { key: "f" + i, x1: 50, y1: 47, x2: POS[i].x, y2: POS[i].y, stroke: "rgba(20,226,239,.5)", strokeWidth: 0.4, style: { filter: "drop-shadow(0 0 2px rgba(20,226,239,.8))" } });
         }));
 
-    /* mur : rotations et decalages precalcules (cadres papier autorises ici) */
-    var MURS = [{ r: -3, m: 0 }, { r: 2.5, m: 26 }, { r: 2, m: -6 }, { r: -2, m: 18 }, { r: -1.5, m: -4 }, { r: 3, m: 22 }, { r: -2.5, m: -2 }, { r: 1.5, m: 16 }, { r: 2, m: -4 }, { r: -2, m: 14 }];
+    /* mur : gabarits absolus qui se chevauchent (rangees de 3, tailles et angles varies) */
+    var GAB = [
+        { l: 0,  w: 40, r: -6, z: 2, hh: 0 }, { l: 29, w: 35, r: 3,  z: 3, hh: 1 }, { l: 61, w: 38, r: -3, z: 2, hh: 0 },
+        { l: 2,  w: 36, r: 5,  z: 4, hh: 1 }, { l: 32, w: 41, r: -4, z: 2, hh: 0 }, { l: 66, w: 33, r: 6,  z: 3, hh: 1 },
+        { l: 0,  w: 35, r: -5, z: 3, hh: 1 }, { l: 27, w: 42, r: 3,  z: 2, hh: 0 }, { l: 64, w: 35, r: -6, z: 4, hh: 0 },
+        { l: 4,  w: 38, r: 4,  z: 2, hh: 0 }, { l: 35, w: 36, r: -3, z: 3, hh: 1 }, { l: 65, w: 33, r: 5,  z: 2, hh: 0 }
+    ];
+    var RANGEE = 118; /* px de pas vertical : les rangees se chevauchent */
+    var nMur = Math.min(st.photos.length, GAB.length);
+    var hMur = nMur > 0 ? (Math.ceil(nMur / 3) - 1) * RANGEE + 190 : 0;
 
-    function secTitre(txt) { return H("div", { className: "hycc-sec" }, H("div", { className: "hycc-lbl" }, txt), H("div", { className: "hycc-filet" })); }
+    var videosAff = voirTout ? st.videos : st.videos.slice(0, 5);
 
     return H("div", { className: "hycc-root" },
-        boutonRetour,
-        /* — A · HERO : la photo n'est JAMAIS voilee, les textes vivent dessous — */
-        H("div", { className: "hycc-hero" }, ch.photo_url ? H("img", { src: ch.photo_url, alt: ch.nom || "" }) : null),
-        H("div", { className: "hycc-idb" },
-            H("div", { className: "hycc-eyebrow" }, "Hype \u2726 Page commune"),
-            couronne,
-            H("h1", { className: "hycc-nom" }, ch.nom || "Cheval"),
-            sousTitre ? H("div", { className: "hycc-sub" }, sousTitre) : null,
-            pedigree ? H("div", { className: "hycc-ped" }, pedigree) : null,
-            classes > 0 ? H("div", { className: "hycc-pillW" }, H("div", { className: "hycc-pill" },
-                H("div", { className: "c" }, H("b", null, String(sorties)), H("span", null, "sorties")),
-                H("div", { className: "c" }, H("b", null, String(victoires)), H("span", null, "victoires")),
-                H("div", { className: "c" }, H("b", null, String(podiums)), H("span", null, "podiums")),
-                H("div", { className: "c" }, H("b", null, String(classes)), H("span", null, "class\u00e9s"))
-            )) : null
+        /* — A · HERO : cheval a gauche (fondu de bords, jamais de voile SUR le sujet), identite a droite — */
+        H("div", { className: "hycc-hero" },
+            ch.photo_url ? H("img", { className: "hycc-hphoto", src: ch.photo_url, alt: ch.nom || "" }) : null,
+            H("div", { className: "hycc-hfade" }),
+            H("div", { className: "hycc-marque" }, H("span", { className: "h" }, "Hype", H("i", null, "\u2726")), H("span", { className: "c" }, "Communaut\u00e9")),
+            boutonRetour,
+            H("div", { className: "hycc-idb" },
+                couronne,
+                H("h1", { className: "hycc-nom" }, ch.nom || "Cheval"),
+                H("div", { className: "hycc-legende" }, H("i", null), H("span", null, "L\u00e9gende Hype")),
+                infos ? H("div", { className: "hycc-sub" }, infos) : null,
+                (pere || mere) ? H("div", { className: "hycc-ped" },
+                    pere ? H("div", null, H("b", null, "P\u00e8re : "), H("span", null, pere)) : null,
+                    mere ? H("div", null, H("b", null, "M\u00e8re : "), H("span", null, mere)) : null) : null
+            ),
+            classes > 0 ? H("div", { className: "hycc-encbar" },
+                H("span", { className: "lab" }, "En concours"), H("span", { className: "chv" }, "\u203a"),
+                H("div", { className: "cols" },
+                    H("div", { className: "c" }, H("b", null, String(sorties)), H("span", null, "sorties")),
+                    H("div", { className: "c" }, H("b", null, String(victoires)), H("span", null, "victoires")),
+                    H("div", { className: "c" }, H("b", null, String(podiums)), H("span", null, "podiums")),
+                    H("div", { className: "c" }, H("b", null, String(classes)), H("span", null, "class\u00e9s")))
+            ) : null
         ),
         /* — C · SES HISTOIRES — */
-        secTitre("Ses histoires"),
+        titre("SES HISTOIRES"),
         (st.cavs.length > 0) ? H("div", { className: "hycc-const" },
             fils,
             H("div", { className: "hycc-cristalW" }, H("div", { className: "hycc-cristal" },
-                ch.photo_url ? H("img", { src: ch.photo_url, alt: "" }) : H("span", { className: "ini" }, (ch.nom || "?").charAt(0)))),
+                ch.photo_url ? H("img", { src: ch.photo_url, alt: "" }) : H("span", { className: "ini" }, (ch.nom || "?").charAt(0)),
+                H("div", { className: "fac" }),
+                H("div", { className: "bas" },
+                    H("div", { className: "n" }, (ch.nom || "").split(" ")[0] || "\u2014"),
+                    H("div", { className: "s" }, "Toutes ses histoires")))),
             visibles.map(function (c, i) {
                 return H("div", { key: "c" + i, className: "hycc-cav", style: { left: POS[i].x + "%", top: POS[i].y + "%" }, onClick: function () { ouvrirCavaliere(c.id); } },
-                    H("div", { className: "a" }, c.avatar ? H("img", { src: c.avatar, alt: "" }) : (c.nom || "?").replace("@", "").charAt(0).toUpperCase()),
+                    H("div", { className: "a" }, c.avatar ? H("img", { src: c.avatar, alt: "" }) : (c.nom || "?").replace("@", "").charAt(0).toUpperCase(), H("i", null)),
                     H("div", { className: "p" }, c.nom || ""));
             }),
-            reste > 0 ? H("div", { className: "hycc-plus", style: { left: "50%", top: "8%" } }, "+" + reste + " cavali\u00e8re" + (reste > 1 ? "s" : "")) : null
+            reste > 0 ? H("div", { className: "hycc-plus", style: { left: "50%", top: "89%" } }, "+" + reste) : null
         ) : H("div", { className: "hycc-empty" }, "Sa constellation attend ses premi\u00e8res cavali\u00e8res."),
-        /* — D · MUR DES SOUVENIRS (albums publics) — */
-        secTitre("Le mur des souvenirs"),
-        (st.photos.length > 0) ? H("div", { className: "hycc-mur" },
-            st.photos.map(function (p, i) {
-                var m = MURS[i % MURS.length];
-                return H("div", { key: "p" + i, className: "hycc-pol", style: { transform: "rotate(" + m.r + "deg)", marginTop: (m.m > 0 ? m.m : 0) + "px" } },
-                    H("img", { src: p.u, alt: "", loading: "lazy" }),
-                    p.an ? H("div", { className: "an" }, p.an) : null);
+        /* — D · MUR DES SOUVENIRS — */
+        titre("MUR DES SOUVENIRS", true),
+        H("div", { className: "hycc-soustit" }, "Tous les albums publics, toutes les \u00e9motions partag\u00e9es."),
+        (nMur > 0) ? H("div", { className: "hycc-mur", style: { height: hMur + "px" } },
+            st.photos.slice(0, nMur).map(function (p, i) {
+                var g = GAB[i];
+                return H("div", { key: "p" + i, className: "hycc-pol" + (g.hh ? " hh" : ""), style: { left: g.l + "%", top: (Math.floor(i / 3) * RANGEE + (i % 3) * 9) + "px", width: g.w + "%", transform: "rotate(" + g.r + "deg)", zIndex: g.z } },
+                    H("img", { src: p.u, alt: "", loading: "lazy" }));
             })
         ) : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment. Les albums publics de ses cavali\u00e8res appara\u00eetront ici."),
         /* — E · SES VIDEOS (masque si vide) — */
-        (st.videos.length > 0) ? H(React.Fragment, null,
-            secTitre("Ses vid\u00e9os"),
+        (st.videos.length > 0) ? H("div", { className: "hycc-railW" },
+            H("div", { className: "hycc-railH" },
+                H("div", { className: "hycc-tit", style: { margin: 0 } }, H("i", null), H("span", { className: "t" }, "SES VID\u00c9OS (" + st.videos.length + ")"), H("i", { className: "r" })),
+                st.videos.length > 5 ? H("span", { className: "hycc-voirtout", onClick: function () { setVoirTout(!voirTout); } }, voirTout ? "Réduire" : "Voir toutes ses vid\u00e9os \u2192") : null),
             H("div", { className: "hycc-rail", "data-hscroll": "1" },
-                st.videos.map(function (v, i) {
+                videosAff.map(function (v, i) {
                     return H("div", { key: "v" + i, className: "hycc-vid" },
-                        H("video", { src: v.u, controls: true, playsInline: true, preload: "metadata", controlsList: "nodownload" }));
+                        H("div", { className: "cell" },
+                            H("video", { src: v.u, playsInline: true, controls: true, preload: "metadata", controlsList: "nodownload",
+                                onLoadedMetadata: function (e) { var d = fmtDur(e.target.duration); if (d) { var nx = {}; nx[i] = d; setDurees(function (o) { var c = Object.assign({}, o); c[i] = d; return c; }); } } }),
+                            H("div", { className: "play" }),
+                            durees[i] ? H("div", { className: "dur" }, durees[i]) : null),
+                        v.t ? H("div", { className: "t" }, v.t) : null);
                 }))
         ) : null,
-        /* — F · EN CONCOURS — */
-        secTitre("En concours"),
-        (meilleurs.length > 0) ? H("div", { className: "hycc-res" },
+        /* — F · EN CONCOURS (carte palmares) — */
+        (meilleurs.length > 0) ? H("div", { className: "hycc-carte" },
+            H("div", { className: "hycc-carteT" },
+                H("svg", { viewBox: "0 0 24 24", width: 17, height: 17, "aria-hidden": true },
+                    H("path", { d: "M6 3 h12 v3 a6 6 0 0 1 -12 0 Z M6 4 H3 a4 4 0 0 0 4 5 M18 4 h3 a4 4 0 0 1 -4 5 M12 12 v4 M8 20 h8 M9 16 h6 v4 h-6 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.5, strokeLinejoin: "round" })),
+                "EN CONCOURS"),
             meilleurs.map(function (r, i) {
-                var rang = String(r.pl) + (r.pl === 1 ? "ER" : "E");
-                var sous = [r.ep, (String(r.pl) + (r.pl === 1 ? "er" : "e") + (r.part ? (" sur " + r.part) : "")), r.cav].filter(Boolean).join(" \u00b7 ");
+                var sous = [r.ep, (String(r.pl) + (r.pl === 1 ? "er" : "e") + (r.part ? (" sur " + r.part) : "")), r.cav].filter(Boolean).join(" \u2022 ");
                 return H("div", { key: "r" + i, className: "hycc-rrow" },
-                    H("div", { className: "hycc-pl" + (r.pl === 1 ? " or" : "") }, rang),
+                    H("div", { className: "hycc-rond" + (r.pl <= 3 ? "" : " n") }, String(r.pl)),
                     H("div", { className: "t" },
-                        H("div", { className: "e" }, r.nom || r.ep || "\u00c9preuve"),
+                        H("div", { className: "e" }, H("b", null, String(r.pl) + (r.pl === 1 ? "er" : "e")), r.nom || r.ep || "\u00c9preuve"),
                         sous ? H("div", { className: "d" }, sous) : null),
-                    r.an ? H("div", { className: "hycc-an" }, r.an) : null);
-            })
+                    r.an ? H("div", { className: "an" }, r.an) : null);
+            }),
+            st.estLie ? H("span", { className: "hycc-lien", onClick: ouvrirFiche }, "Voir tout son palmar\u00e8s \u2192") : null
         ) : H("div", { className: "hycc-empty" }, "Aucun r\u00e9sultat partag\u00e9 pour le moment."),
-        /* — G · L'indice n'est plus un bloc a part : c'est le SEPARATEUR entre
-           les resultats et le partage (demande de Blandine, 25/08). Sans indice,
-           simple filet. Rendu seulement quand le bloc Partager suit. — */
-        st.estLie ? (st.ipo ? H("div", { className: "hycc-ipoSep" },
-            H("span", { className: "l" }),
-            H("div", { className: "b" },
-                H("svg", { viewBox: "0 0 30 22", "aria-hidden": true, style: { width: 22, height: 16 } },
-                    H("path", { d: "M2 18 L4 6 L10 12 L15 3 L20 12 L26 6 L28 18 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.4, strokeLinejoin: "round" })),
-                H("span", { className: "v" }, String(st.ipo[1] || "")),
-                H("span", { className: "s" }, String(st.ipo[0] || ""))),
-            H("span", { className: "l r" })) : H("div", { className: "hycc-filetSep" })) : null,
-        /* — H · PARTAGER UN MOMENT (cavalieres liees uniquement ; renvoie au flux d'ajout de la fiche) — */
-        st.estLie ? H(React.Fragment, null,
-            secTitre("Partager un moment"),
-            H("div", { className: "hycc-share" },
-                H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\ud83d\udcf7 Ajouter une photo"),
-                H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\u270e Publier un souvenir"))
+        /* — G · MEDAILLON IPO aux lauriers, entre le palmares et le partage (masque si absent) — */
+        st.ipo ? H("div", { className: "hycc-ipoC" },
+            H("svg", { className: "hycc-couronne", viewBox: "0 0 30 22", "aria-hidden": true, style: { margin: "0 auto 2px" } },
+                H("path", { d: "M2 18 L4 6 L10 12 L15 3 L20 12 L26 6 L28 18 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.6, strokeLinejoin: "round" })),
+            H("div", { className: "laur" }, laurier(false), H("div", null, H("div", { className: "v" }, String(st.ipo[1] || "")), H("div", { className: "s" }, String(st.ipo[0] || ""))), laurier(true)),
+            H("div", { className: "fil" }),
+            st.ipo[2] ? H("div", { className: "n2" }, String(st.ipo[2]).replace(/\s*\u00b7\s*/g, " \u2022 ")) : null
+        ) : null,
+        /* — H · PARTAGER UN MOMENT (boutons pour les liees ; dernier souvenir pour toutes) — */
+        (st.estLie || st.dernier) ? H("div", { className: "hycc-carte" },
+            H("div", { className: "hycc-carteT" }, "PARTAGER UN MOMENT\u2026"),
+            st.estLie ? H("div", { className: "hycc-share" },
+                H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\ud83d\udcf7 Photo"),
+                H("button", { className: "hycc-sbtn", onClick: ouvrirFiche }, "\u270e Publier")) : null,
+            st.dernier ? H("div", { className: "hycc-dernier" },
+                st.dernier.u ? H("img", { src: st.dernier.u, alt: "" }) : null,
+                H("div", { className: "t" },
+                    H("div", { className: "e" }, st.dernier.an || "Dernier souvenir"),
+                    H("div", { className: "d" }, [st.dernier.qui, st.dernier.quand].filter(Boolean).join(" \u2022 "))))
+                : null
         ) : null
     );
 }
@@ -21835,24 +21923,9 @@ function HypeApp() {
     const __ecranPrec = useRef(ecran);
     useEffect(() => { if (ecran === "dashboard" && __ecranPrec.current !== "dashboard") dernierAvantRef.current = __ecranPrec.current; __ecranPrec.current = ecran; }, [ecran]);
     const retourDepuisAccueil = () => { const c = dernierAvantRef.current; if (c && c !== "dashboard") naviguer(c); };
-    /* 25/08 — UN GESTE, UN SEUL RECUL. Signale par Blandine : « je reviens en
-       arriere du menu galop 3, ca me remet sur la page de l accueil general au
-       lieu du menu des galops ». Deux mecanismes de retour coexistent et se
-       declenchent tous les deux sur le MEME geste : le balayage maison
-       (onNavTouchEnd du Router) et le retour systeme d iOS/Android (popstate).
-       Chacun depile un ecran, donc on reculait DEUX fois : galop-detail ->
-       galops -> accueil. Le garde-fou de 450 ms pose le 14/08 ne protegeait que
-       popstate contre lui-meme. Il descend ici, dans `retourEcran`, ou passent
-       les DEUX chemins : le second recul survenu dans la foulee est ignore.
-       Un humain ne recule pas deux fois en moins d une demi-seconde. */
-    const __retourTs = useRef(0);
     const retourEcran = () => {
         if (historiqueEcrans.length === 0)
             return;
-        const t = Date.now();
-        if (t - (__retourTs.current || 0) < 450)
-            return;
-        __retourTs.current = t;
         __noterScroll();
         const prec = historiqueEcrans[historiqueEcrans.length - 1];
         setPileAvant((p) => [...p, ecran]);
@@ -33952,11 +34025,11 @@ function EcranCheval() {
               return !(f.__id && prisE[f.__id]);
             });
             var fusion = tete.concat(suite);
-            vus = fusion.slice(0, 3);
+            vus = fusion.slice(0, 7);
             reste = faits.length - vus.filter(function (f) { return !f.__ep; }).length - tete.length;
             if (reste < 0) reste = 0;
           } else {
-            vus = faits.slice(0, 3); reste = faits.length - vus.length;
+            vus = faits.slice(0, 7); reste = faits.length - vus.length;
           }
 
           function ch(n, lb, or) {
@@ -34063,7 +34136,7 @@ function EcranCheval() {
           h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto",
                               borderRadius: 16, overflow: "hidden", background: "#000",
                               border: "1px solid rgba(255,255,255,.07)" } },
-            h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1",
+            h("video", { src: "palmares-video.mp4?v=1", poster: "palmares-video.jpg?v=1",
                          autoPlay: true, muted: true, loop: true, playsInline: true,
                          "webkit-playsinline": "true", preload: "metadata",
                          onClick: function (eV) { try { eV.stopPropagation(); var v = eV.currentTarget;
@@ -37153,14 +37226,6 @@ function EcranCours() {
        changement de bloc — la fenetre, et aussi le conteneur interne quand l ecran scrolle dedans. */
     React.useEffect(() => {
         try {
-            /* 25/08 — LE VERROU FANTOME DANS UN COURS. `hypeFiletScroll` realigne
-               body.overflow sur la realite du DOM, mais il n etait appele qu au
-               CHANGEMENT D ECRAN (useEffect [ecran] du Router). Or tourner les pages
-               d un chapitre ne change pas `ecran`, ca change `blocIdx` : une visionneuse
-               mal refermee sur une page precedente laissait donc body{overflow:hidden}
-               jusqu a la sortie du cours — plus aucun defilement, obligee de fermer
-               l application. Le filet est desormais repasse a chaque page. */
-            if (typeof hypeFiletScroll === "function") hypeFiletScroll();
             window.scrollTo(0, 0);
             const racine = document.scrollingElement || document.documentElement;
             if (racine) racine.scrollTop = 0;
@@ -37252,21 +37317,7 @@ function EcranCours() {
         if (bloc && bloc.type === "couv-image")
             return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd }, React.createElement(CouvImage, { src: bloc.src, cta: bloc.cta, onRetour: () => setEcran("galop-detail"), onContinuer: suivant, langue: langue }));
         if (bloc && bloc.type === "couv-affiche")
-            /* 25/08 — « FAIS EN SORTE QUE CA PUISSE BOUGER UN PEU, LA CA FAIT BIZARRE. »
-               La couverture fait exactement la hauteur de l ecran (minHeight
-               calc(100dvh - 84px) + les 84px de la barre d onglets) : le document ne
-               depasse donc JAMAIS l ecran et la page est parfaitement immobile. Rien
-               n est casse — il n y a simplement rien a faire defiler — mais l immobilite
-               totale se lit comme un ecran fige, surtout quand la couverture est encore
-               le placeholder GALOPS_HERO et laisse des bandes noires.
-               On ajoute une simple respiration SOUS la couverture, en frere et non a
-               l interieur : `CouvAffiche` n est pas touche, le titre, la citation et le
-               bouton Commencer ne bougent pas d un pixel, et le document depasse
-               l ecran de 56px — juste assez pour que la page reponde au doigt et
-               revienne. Une ligne a supprimer pour revenir en arriere. */
-            return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd },
-                React.createElement(CouvAffiche, { data: bloc.couv, hero: bloc.src, logo: bloc.logo, chapitre: (cours && cours.titre) || null, onRetour: () => setEcran("galop-detail"), onContinuer: suivant, langue: langue }),
-                React.createElement("div", { "aria-hidden": "true", style: { height: 56, background: "#01060f" } }));
+            return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd }, React.createElement(CouvAffiche, { data: bloc.couv, hero: bloc.src, logo: bloc.logo, chapitre: (cours && cours.titre) || null, onRetour: () => setEcran("galop-detail"), onContinuer: suivant, langue: langue }));
     if (bloc && bloc.type === "sommaire")
         return React.createElement(SommaireCours, { bloc: bloc, total: total, baseIdx: blocIdx, progression: dejaTermine ? 100 : 0, onRetour: precedent, onAllerA: (i) => { if (i < total) setBlocIdx(i); }, langue: langue });
     if (bloc && bloc.type === "notion")
