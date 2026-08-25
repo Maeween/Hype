@@ -14302,3 +14302,19 @@ Brief reçu écrit AVANT la 8e livraison — appliqué sur l'état réel. Haut d
 - **Banc** : 375/390/430 px → débordement horizontal **0** partout (rotations/translates inoffensifs grâce à overflow-x:clip), 0 erreur page, captures jointes.
 
 ## À pousser : `index.html` uniquement (md5 cf2b3114).
+
+---
+
+# HYPE ▸ 25/08 (10e livraison) · HERO MOBILE COMPACTÉ — LE GRAND VIDE SUPPRIMÉ
+
+Problème (capture iPhone de Blandine, cercle violet) : le hero occupait presque un écran, avec un grand noir mort entre la barre EN CONCOURS et « SES HISTOIRES ». Cause : `min-height: 420px` sur le hero — contenu plus court = vide résiduel.
+Correctif ciblé (rien touché sous « Ses histoires ») : hero en **hauteur de contenu** (min-height supprimé), identité compactée (idb 58→24 px, couronne/légende/infos/pedigree resserrés), nom en `clamp(19px, 5.6vw, 23px)` avec retour à la ligne propre pour les noms longs, barre stats padding 12→9 et chiffres 18→17 (une seule ligne conservée), titres de section 26→18 px.
+**Mesuré** : hero 274 px ; « SES HISTOIRES » apparaît à y≈292 px → **visible au chargement sans scroll** sur 375×667, 390×844, 393×852 et 430×932 ; débordement horizontal 0 partout ; nom long « Quabri de l'Isle du Haras des Rêves » : 2 lignes propres, aucun chevauchement avec le bouton retour. Desktop inchangé (contenu centré 560 px).
+
+## À pousser : `index.html` (md5 466fb366).
+
+---
+
+# HYPE ▸ 25/08 (11e livraison) · HERO : PHOTO AGRANDIE, ÉCRITURES DÉCALÉES À DROITE
+
+Retour de Blandine (cercle violet n°2) : la croupe du cheval passait en plein sous « Légende Hype » et le pedigree. Correctif : photo élargie **64 % → 78 %** de l'écran, textes décalés **34 % → 42 %** (largeur 56 %), et le fondu recalibré pour s'éteindre AVANT la zone de texte (plein jusqu'à ~48 % de l'image, 35 % d'opacité à hauteur du texte, éteint à 84 %) — la photo ne subsiste sous les lignes qu'en voile de poussière, comme sur la maquette, plus jamais en solide. Banc : photo 304 px, texte à x=167, débordement 0, « SES HISTOIRES » toujours visible au chargement, nom long 2 lignes sans collision. À pousser : `index.html` (md5 641e67f7).
