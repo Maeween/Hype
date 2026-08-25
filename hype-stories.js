@@ -1957,7 +1957,17 @@ function BandeauStories(props) {
               position: "absolute", left: "50%", top: "50%",
               width: HD, height: HD, marginLeft: -(HD / 2), marginTop: -(HD / 2),
               borderRadius: "50%", pointerEvents: "none",
-              background: "radial-gradient(circle closest-side, " + tA(0.05) + " 0%, " + tA(0.14) + " 76%, " + tA(0.06) + " 88%, " + tA(0) + " 100%)"
+              /* ⚠️ 24/08 (session 162) — QUATRIEME PASSE : « un halo plus discret ».
+                 On applique la REGLE ecrite le 17/08 au-dessus : plus leger = baisser
+                 l OPACITE, jamais toucher a la geometrie. Etendue 1,32x et pic a 76 %
+                 INCHANGES — c est la forme validee des la passe 1.
+                 Pic 0.14 -> 0.09 (-36 %), et les deux appuis descendent d autant.
+                 Repere des passes precedentes, a ne pas reperdre :
+                   0.34 « un peu violent » · 0.09 en ANNEAU etroit « on voit plus rien »
+                   0.14 en disque = retenu le 17/08 · 0.09 en disque = ici.
+                 ⚠️ La couleur venait DEJA de tA(), donc de la teinte du cavalier :
+                 Blandine la croyait figee en turquoise, elle ne l a jamais ete. */
+                background: "radial-gradient(circle closest-side, " + tA(0.032) + " 0%, " + tA(0.09) + " 76%, " + tA(0.038) + " 88%, " + tA(0) + " 100%)"
             }
           }),
           h("div", {
