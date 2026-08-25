@@ -14453,3 +14453,46 @@ Le corps du panneau palmarès (« Performances ») est remplacé par la **Propos
 # HYPE ▸ 25/08 (28e livraison) · ACCUEIL : DE L'AIR ENTRE LES ENCARTS
 
 Demande de Blandine : plus d'espace entre les encarts de l'accueil. Les quatre blocs de la zone « Mon monde » respiraient à 18 px (ou 0 pour le rail) : **Mon écurie 18 → 30**, **rail des chevaux 0 → 24** (marge inline sur `.manwrap`, la classe n'en portait pas), **Ensemble 18 → 30**, **messagerie 18 → 30**. Le bloc annonces (24/26, déjà réglé sur demande antérieure) n'est pas touché. Banc : les 4 remplacements exacts sont posés (assertions) et la syntaxe est saine — mais les marges N'ONT PAS pu être mesurées au runtime (hors-ligne sans session, l'accueil n'est pas atteignable au banc). Preuve statique seulement ; contrôle visuel à faire par Blandine après poussée. À pousser : `index.html`.
+
+---
+---
+
+# 🛫 PASSATION ATC — FIN DE SESSION 25/08/2026 (~21h55) · POUR LA PROCHAINE CONVERSATION
+
+## ÉTAT DES FICHIERS
+- **`index.html` À POUSSER : md5 `ab05fec68a233feedfc23233c4b30164`** (~8,9 Mo, 16 scripts, syntaxe 16/16). Cumule les livraisons 1→28 du jour, SAUF la 23e (rail unique Médias) **annulée et restaurée** à la 26e. Anti-cache : `?v=N` ou fermer les onglets (service worker).
+- `DEV_OUVRIR_PAGE-chevalcommun.html` : jumeau de l'index (page commune en démo).
+- `DEV_PALMARES.html` : **banc d'essai autonome du nouveau palmarès** (s'ouvre direct sur la page résultats, 17 résultats de démo, sans connexion). Blandine était en train de le tester à la fin de session — **attendre son verdict avant toute retouche du palmarès**.
+- Copie de travail : `/home/claude/hycc/` (index, DEV, composant.js, verif.py avec SUPA_STUB, /tmp/phsA.txt = bande AlbumsPromus d'origine conservée).
+
+## LIVRÉ AUJOURD'HUI (28 livraisons — voir entrées détaillées ci-dessus)
+Page commune v3 complète (hero bord à bord, constellation adaptative 1/2/3/4, mur pêle-mêle, vidéos homogènes, IPO/Partager) · étapes 2-3 (grille club + pont) · fusion des branches · profil public cavalière (protocole `__cavalierPublic`) · autofill anti-jaune · pilule Coupes retirée + pont en bas de fiche · globe conditionné (écurie renseignée → plus d'accès forcé depuis l'accueil) · vidéo palmarès escamotable + ligne « Revoir ↻ » · **palmarès éditorial Proposition B** (brief strict IMG_8514 ; ancien corps = page technique derrière le CTA, état `palmTech`) · accueil espacé (30/24/30/30 px — preuve statique seulement, à contrôler visuellement).
+
+## CHANTIERS OUVERTS (par priorité)
+1. **Verdict DEV_PALMARES** puis suites du brief : module « cavaliers », dépliage des saisons (chevrons déjà posés, données groupées par an prêtes), vraies photos par concours sur les moments forts (pas de colonne média en base aujourd'hui).
+2. **Doctrine club/écurie VALIDÉE** (« l'écurie c'est chez moi, le club c'est nous » ; écurie = bureau exhaustif, profil = vitrine choisie) + plan validé : colonne `chevaux_liens.affiche` (défaut false), interrupteur « Afficher sur mon profil » par cheval (possédé ON / rattaché OFF), flux « rattacher » qui demande avant de lier un cheval d'autrui. **RIEN N'EST CODÉ.** SQL de nettoyage Quarla et `alter table` fournis à Blandine (à vérifier si passés).
+3. **Maquette page club** (socle commun officiel en haut + partie basse personnelle, comme la page commune) : idée de Blandine, maquette DEV proposée, en attente.
+4. **Chantier « un seul rail Médias » à REFAIRE autrement** : le portail inter-composants a échoué en réel (23e annulée). Piste : déplacer le rendu dans le même composant, pas de téléportation.
+5. Audit glossaire écurie/club (chantier 4 de la doctrine) : proposé, jamais lancé.
+
+## ÉPINGLÉS PERMANENTS
+- ABONNEMENTS : 23/09 vérifier renouvellements Aurélie/Lauren (SQL prêt plus haut dans ce SUIVI) ; Duo Dominique 15/08 à rattraper.
+- Confirmations terrain en attente : badge cristal étape 2 sur vrai club, carrousel « Revoir » vidéo en ligne, constellation Rizotto après le fix `select("*")`, marges accueil.
+- Idée jamais tranchée : tampon de version visible en mode démo (proposée 2×, sans réponse).
+
+## LEÇONS TECHNIQUES DU JOUR (à relire avant de coder)
+- 🟥 Playwright : handler route à DEUX arguments `def route(r, requete)` — jamais `def route(r, X=X)` (la Request écrase le défaut) ; fabrique `faire_route(corps)` pour capturer.
+- 🟥 `profiles.select` nommé échoue EN ENTIER si une colonne manque → `select("*")`.
+- 🟥 Écran `profil` = Mon compte ; profil public = `__cavalierPublic` + `"__public"` + écran `cavalier`.
+- 🟥 Les 4 chiffres du palmarès : algo s154 DUPLIQUÉ (résumé fiche + panneau éditorial) — évolutions AUX DEUX ENDROITS.
+- Aperçus `print` aplatissent les \n → insertions par index + regex souples + scanners accolades/parenthèses JS-aware ; heredocs Python : gare aux apostrophes et aux lignes bash égarées.
+- Vérifier les marqueurs (`liensClub`, `chevalCommunDemoData`, `palmTech`) avant toute greffe sur un index remis par Blandine en cours de journée.
+
+## RÈGLES DE TRAVAIL (rappel)
+Jamais décider pour elle (« vas-y »/« valide ») · signaler erreurs immédiatement, jamais de retour arrière silencieux · node --check + banc avant livraison · « À l'écran : +/− » · SUIVI à chaque livraison · index.html livré EN PREMIER + copie DEV · marqueur Hype (jamais Linguae à la racine) · protocole marqueurs avant livraison d'index.
+
+---
+
+# HYPE ▸ 25/08 (29e livraison) · 🟥 LA BANDE SOUS LA VIDÉO SUPPRIMÉE DÉFINITIVEMENT
+
+Colère légitime de Blandine : ma restauration de la 26e avait remis « l'état d'avant » = LES DEUX rails, donc la bande AlbumsPromus (le mauvais) était revenue sous « Le voir en mouvement ». Cette fois : **suppression pure et définitive** de la bande `phsA` (remplacée par `null`, AUCUN ancrage, AUCUN portail — leçon de la 23e appliquée). Le rail des moments du fil reste l'unique rail, à sa place d'origine, code intouché ; s'il affiche « Sois le premier à publier ici », c'est son état vide de données, pas une suppression. Traces `phsA` : zéro. Appliqué aux 3 fichiers (index, DEV commune, DEV palmarès). Banc : fiche saine, fil présent, 0 erreur. À pousser : `index.html` (md5 ci-dessous). Le carrousel auto reste au backlog, à refaire SANS portail.
