@@ -14381,3 +14381,9 @@ Banc : fantômes 4, boîte vide absente, gradient présent, mur 10→14 au tap, 
 # HYPE ▸ 25/08 (18e livraison) · 🟥 CONSTELLATION : LE TAP OUVRAIT « MON COMPTE »
 
 Bug signalé par Blandine : taper une cavalière de la constellation ouvrait la page Mon compte. Cause : j'envoyais `__cavalierOuvert = <id>` + écran `"profil"` — or dans Hype, **l'écran `profil` = Mon compte**. Le protocole de l'app pour un profil PUBLIC est : `window.__cavalierPublic = { id, pseudo, handle, photo, ecurie, club, ville }` + `__cavalierOuvert = "__public"` + écran **`"cavalier"`** (relevé sur 5 sites d'appel existants). Corrigé : les cavalières de la constellation portent maintenant leurs champs de profil complets et le tap suit ce protocole. Banc (fixtures 2 cavalières) : tap → `__cavalierOuvert = "__public"`, `__cavalierPublic.pseudo = "blandine"`, PAS d'écran Mon compte, 0 erreur. À pousser : `index.html` (md5 9890dea3).
+
+---
+
+# HYPE ▸ 25/08 (19e livraison) · CONSTELLATION : DISPOSITIONS PAR EFFECTIF
+
+Constat de Blandine : à 2-3 cavalières, les 4 positions en coins laissaient des trous ridicules. La constellation choisit désormais sa disposition selon l'effectif : **1** = au-dessus du cristal (hauteur 208 px), **2** = de part et d'autre à mi-hauteur (222 px), **3** = triangle (deux en haut, une sous le cristal, 258 px), **4** = les coins (274 px). Le chip +N n'existe qu'à 4 visibles (position libre). Les fantômes de l'état vide gardent les 4 coins. Banc : 4 effectifs mesurés aux bonnes hauteurs, 0 erreur, captures 2 et 3 jointes. À pousser : `index.html` (md5 ced4b04e).
