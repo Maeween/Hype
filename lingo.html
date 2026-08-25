@@ -3045,7 +3045,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-connemara.js?l=1"></script>
 <!-- ex-`materiel` : leçon 1 à Walsall, leçons 3+4 à Vejer.
      La leçon 2 (le filet) dort dans `materiel-reserve.js`, non chargé. -->
-<script src="hype-lingo-lex-walsall.js?l=1"></script>
+<script src="hype-lingo-lex-walsall.js?l=3"></script>
 <script src="hype-lingo-lex-vejer.js?l=1"></script>
 <!-- 🟥 BARCELONE, 37e ville (19/08) — « Voyager avec son cheval ».
      ⚠️ QUINZE de ses trente concepts sont des RAPPELS : 9 d'`ecurie`, plus
@@ -3089,7 +3089,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      Les leçons 2+4 dorment dans `dressage-reserve.js`, non chargé.
      ⚠️ La leçon 2 (les mouvements) est employée en `motsAilleurs` par le
      dialogue de Versailles — ne pas la dupliquer ici. -->
-<script src="hype-lingo-lex-windsor.js?l=1"></script>
+<script src="hype-lingo-lex-windsor.js?l=2"></script>
 <script src="hype-lingo-lex-versailles.js?l=1"></script>
 <!-- 🟥 16/08 : LE CHAPITRE DE L'ENSEIGNANT, pour SAUMUR. Le role
      « enseignant » etait annonce depuis le 6 aout dans lex-cours.js
@@ -3102,7 +3102,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      d'un vertical, on ne s'en rapproche pas — c'est à l'oxer qu'on vient
      plus près) a suivi le contenu dans `wellington.js`. -->
 <script src="hype-lingo-lex-wellington.js?l=1"></script>
-<script src="hype-lingo-lex-aachen.js?l=1"></script>
+<script src="hype-lingo-lex-aachen.js?l=2"></script>
 <!-- v76 : le chapitre du Derby de Hickstead — nouveau format 15-18 mots.
      `obstacle` EST BRANCHE SUR WELLINGTON depuis le 16/08/2026 (32e ville,
      la tournee d'hiver de Floride). Il ne dort plus. -->
@@ -3934,7 +3934,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=83";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=87";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4679,11 +4679,12 @@ var ETAPES_I18N = {
          it:"Un quaderno della scala", de:"Ein Heft zur Ausbildungsskala",
          ja:"訓練スケールの手帳"}},
  aachen:{
+   /* 🟡 `ar` dormant (24/08). 🟥 Pas de mot d'accueil ACCUEIL_CHAP pour ce chapitre — comme Rome, Kildare, Édimbourg. */
    ch:{en:"The great show", es:"El gran concurso", it:"Il grande concorso",
-       de:"Das große Turnier", ja:"大競技会"},
-   v:{en:"Aachen", es:"Aquisgrán", it:"Aquisgrana", de:"Aachen", ja:"アーヘン"},
+       de:"Das große Turnier", ja:"大競技会", ar:"المسابقة الكبرى"},
+   v:{en:"Aachen", es:"Aquisgrán", it:"Aquisgrana", de:"Aachen", ja:"アーヘン", ar:"آخن"},
    souv:{en:"A jump-off bell", es:"Una campana de desempate", it:"Una campana di barrage",
-         de:"Eine Glocke des Stechens", ja:"ジャンプオフの鐘"}},
+         de:"Eine Glocke des Stechens", ja:"ジャンプオフの鐘", ar:"جرس جولة التمايز"}},
 
  newmarket:{
    ch:{en:"The yard", es:"La cuadra", it:"La scuderia", de:"Der Stall", ja:"厩舎"},
@@ -4704,20 +4705,24 @@ var ETAPES_I18N = {
    souv:{en:"A rope halter", es:"Una cabezada de cuerda", it:"Una capezza di corda",
          de:"Ein Knotenhalter", ja:"ロープの無口"}},
  walsall:{
-   ch:{en:"The tack", es:"El equipo", it:"L'attrezzatura", de:"Die Ausrüstung", ja:"馬具"},
-   v:{ja:"ウォルソール"},
+   /* 🟡 `ar` dormant (24/08). */
+   ch:{en:"The tack", es:"El equipo", it:"L'attrezzatura", de:"Die Ausrüstung", ja:"馬具",
+       ar:"المعدات"},
+   v:{ja:"ウォルソール", ar:"وولسول"},
    souv:{en:"A leather English saddle", es:"Una silla inglesa de cuero",
          it:"Una sella inglese in cuoio", de:"Ein englischer Ledersattel",
-         ja:"革の英国鞍"}},
+         ja:"革の英国鞍", ar:"سرج إنجليزي من الجلد"}},
  aberystwyth:{
    ch:{en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"騎乗"},
    v:{ja:"アベリストゥイス"},
    souv:{en:"A Welsh cob's shoe", es:"Una herradura de cob galés", it:"Un ferro di cob gallese",
          de:"Ein Hufeisen eines Welsh Cob", ja:"ウェルシュ・コブの蹄鉄"}},
  windsor:{
-   ch:{en:"Dressage", es:"La doma", it:"Il dressage", de:"Die Dressur", ja:"馬場馬術"},
-   v:{ja:"ウィンザー"},
-   souv:{en:"The letter A", es:"La letra A", it:"La lettera A", de:"Der Buchstabe A", ja:"「A」の文字"}},
+   /* 🟡 `ar` dormant (24/08). */
+   ch:{en:"Dressage", es:"La doma", it:"Il dressage", de:"Die Dressur", ja:"馬場馬術",
+       ar:"الترويض"},
+   v:{ja:"ウィンザー", ar:"وندسور"},
+   souv:{en:"The letter A", es:"La letra A", it:"La lettera A", de:"Der Buchstabe A", ja:"「A」の文字", ar:"حرف A"}},
  wellington:{
    ch:{en:"The winter circuit", es:"La gira de invierno", it:"Il circuito invernale",
        de:"Die Wintertour", ja:"ウィンターサーキット"},
@@ -4816,7 +4821,19 @@ var RECITS = {
       {f:"In diesem Land ist ein Paar Vielseitigkeit geritten, bevor es das freie Reiten bekannt machte. Das Spektakuläre kam nach dem Sport, nicht an seiner Stelle."}],
   ja:["湖が火口を満たし、草地は柵に出会うことなく火山まで続いています。",
       "ここでは、ロープなしで働く馬と、手に何も持たない騎手を見かけます。",
-      {f:"フリーライディングを世に知らせる前に、ある人馬が総合馬術を走ったのがこの国です。華やかさは競技の後に来たのであって、競技の代わりに来たのではありません。"}]},
+      {f:"フリーライディングを世に知らせる前に、ある人馬が総合馬術を走ったのがこの国です。華やかさは競技の後に来たのであって、競技の代わりに来たのではありません。"}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["رائحة الجلد والشمع الدافئ. خلف الواجهات الزجاجية، ما زالت الخياطة تتم يدويا، بإبرتين في آن واحد.",
+      "غرزة السراج لا تتعلم في شهر واحد.",
+      {f:"مدينة السراجين وصناع اللجم منذ القرن التاسع عشر."}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["الأبراج في الخلف، والرمل الممشط، والصمت. حصان واحد، وميدان، وحروف.",
+      "هنا، الدقة شكل من أشكال اللياقة.",
+      {f:"قلعة مأهولة منذ تسعة قرون، وتقليد فروسية يليق بها."}],
+  /* 🟡 ARABE DORMANT (24/08) — aucun écran ne lit ce champ. */
+  ar:["كان الملعب ممتلئا، ومع ذلك لم يكن يسمع شيء.",
+      "رن الجرس، ولمدة دقيقة وعشرين ثانية لم يبق سوى صوت الحوافر.",
+      {f:"يجمع CHIO في الأسبوع نفسه قفز الحواجز والترويض وقيادة العربات والفروسية الثلاثية — وجولة التمايز تجرى على التوقيت."}]},
  santaynez:{
   fr:["La vallée sent la poussière chaude et l'eucalyptus, et rien ici ne se fait dans le bruit.",
       "On y apprend à demander si peu que le cheval réponde avant qu'on ait insisté.",
@@ -5842,7 +5859,9 @@ var POURQUOI = {
   it:"La città dove la Germania forma istruttori, giudici e cavalieri.",
   de:"Die Stadt, in der Deutschland Ausbilder, Richter und Reiter ausbildet.",
   ja:"ドイツが指導者と審判員と騎手を育てる町。"},
- aachen:{fr:"Le CHIO : un stade plein, et un silence total au premier obstacle.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ aachen:{ar:"CHIO: ملعب ممتلئ، وصمت تام عند الحاجز الأول.",
+  fr:"Le CHIO : un stade plein, et un silence total au premier obstacle.",
   en:"The CHIO: a stadium full of people, and total silence at the first fence.",
   es:"El CHIO: un estadio lleno, y un silencio total en el primer obstáculo.",
   it:"Il CHIO: uno stadio pieno, e un silenzio totale al primo ostacolo.",
@@ -5872,7 +5891,9 @@ var POURQUOI = {
   it:"L'unica razza di pony autoctona d'Irlanda, nata dalla pietra e dal vento.",
   de:"Die einzige Ponyrasse, die aus Irland stammt — geboren aus Stein und Wind.",
   ja:"アイルランド固有の唯一のポニー種。石と風から生まれた。"},
- walsall:{fr:"La ville du cuir. C'est ici qu'on coud encore les selles à la main.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ walsall:{ar:"مدينة الجلد. هنا، ما زالت السروج تخاط يدويا.",
+  fr:"La ville du cuir. C'est ici qu'on coud encore les selles à la main.",
   en:"The leather town. This is where saddles are still sewn by hand.",
   es:"La ciudad del cuero. Aquí todavía se cosen las sillas a mano.",
   it:"La città del cuoio. È qui che le selle si cuciono ancora a mano.",
@@ -5886,7 +5907,9 @@ var POURQUOI = {
   it:"La terra del Welsh cob, e una spiaggia dove le passeggiate finiscono al galoppo in mare.",
   de:"Das Land des Welsh Cob — und ein Strand, an dem Ausritte im Galopp ins Meer enden.",
   ja:"ウェルシュコブの故郷。外乗が海の中の駈歩で終わる浜がある。"},
- windsor:{fr:"Neuf siècles de tradition équestre au pied d'un château habité.",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ windsor:{ar:"تسعة قرون من تقاليد الفروسية عند سفح قلعة مأهولة.",
+  fr:"Neuf siècles de tradition équestre au pied d'un château habité.",
   en:"Nine centuries of riding tradition at the foot of a castle still lived in.",
   es:"Nueve siglos de tradición ecuestre al pie de un castillo habitado.",
   it:"Nove secoli di tradizione equestre ai piedi di un castello abitato.",
@@ -7187,7 +7210,9 @@ var PHRASES_FIN = {
   it:"La pulizia è il momento in cui il cavallo impara a conoscerti. <b>Prenditi tempo: vale doppio.</b>",
   de:"Beim Putzen lernt dein Pferd dich kennen. <b>Nimm dir Zeit — sie zählt doppelt.</b>",
   ja:"手入れの時間は、馬がきみを知る時間。<b>ゆっくりでいい。その時間は二倍の価値がある。</b>"},
- walsall:{fr:"Un cuir bien entretenu dure toute une vie de cavalier. <b>Le matériel le rend toujours.</b>",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ walsall:{ar:"الجلد المعتنى به جيدا يدوم طوال حياة الفارس. <b>والمعدات الجيدة ترد لك الجميل دائما.</b>",
+  fr:"Un cuir bien entretenu dure toute une vie de cavalier. <b>Le matériel le rend toujours.</b>",
   en:"Well-kept leather lasts a rider's lifetime. <b>Good care always pays back.</b>",
   es:"Un cuero bien cuidado dura toda una vida de jinete. <b>El material siempre lo devuelve.</b>",
   it:"Un cuoio ben curato dura tutta una vita da cavaliere. <b>Il materiale lo restituisce sempre.</b>",
@@ -7201,7 +7226,9 @@ var PHRASES_FIN = {
   it:"Le prime falcate in riva al mare non si dimenticano. <b>Ogni volta in sella ne conserva un po'.</b>",
   de:"Die ersten Schritte am Meer vergisst man nie. <b>Jedes Aufsitzen trägt etwas davon weiter.</b>",
   ja:"海辺での初めての騎乗は忘れられない。<b>これからの騎乗のたびに、その記憶が少しずつ生きる。</b>"},
- windsor:{fr:"Le dressage n'est pas une contrainte : c'est une conversation. <b>Tu viens d'en apprendre la langue.</b>",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ windsor:{ar:"الترويض ليس قيدا: إنه حوار. <b>وقد تعلمت للتو لغته.</b>",
+  fr:"Le dressage n'est pas une contrainte : c'est une conversation. <b>Tu viens d'en apprendre la langue.</b>",
   en:"Dressage isn't constraint — it's a conversation. <b>You've just learned its language.</b>",
   es:"La doma no es una imposición: es una conversación. <b>Acabas de aprender su idioma.</b>",
   it:"Il dressage non è una costrizione: è una conversazione. <b>Hai appena imparato la sua lingua.</b>",
@@ -7299,7 +7326,9 @@ var PHRASES_FIN = {
   it:"Non si finisce mai di imparare a cavallo — ed è una buona notizia. <b>Ci sarà sempre un domani per migliorare.</b>",
   de:"Mit Pferden lernt man nie aus — und das ist eine gute Nachricht. <b>Es gibt immer ein Morgen zum Besserwerden.</b>",
   ja:"馬の世界に学び終わりはない。それは嬉しい知らせ。<b>明日はいつでも、上達のためにある。</b>"},
- aachen:{fr:"Les plus grands cavaliers du monde ont le trac, eux aussi. <b>Ce qui compte, c'est d'entrer en piste.</b>",
+ /* 🟡 ar dormant (24/08) — voir le récit. */
+ aachen:{ar:"أعظم فرسان العالم يشعرون برهبة المنافسة هم أيضا. <b>المهم أن تدخلي الميدان.</b>",
+  fr:"Les plus grands cavaliers du monde ont le trac, eux aussi. <b>Ce qui compte, c'est d'entrer en piste.</b>",
   en:"The best riders in the world get nervous too. <b>What counts is riding into the arena.</b>",
   es:"Los mejores jinetes del mundo también tienen nervios. <b>Lo que cuenta es entrar en pista.</b>",
   it:"Anche i più grandi cavalieri del mondo hanno il batticuore. <b>Ciò che conta è entrare in campo.</b>",
@@ -9113,18 +9142,18 @@ var COLL_NOM = {
   marques:{fr:"Les marques", en:"The markings", es:"Las marcas", it:"I segni particolari", de:"Die Abzeichen", ja:"標徴", ar:"العلامات"},
   morpho:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体の部位"},
   identite:{fr:"L'identité", en:"Identity", es:"La identidad", it:"L'identità", de:"Die Identität", ja:"個体識別"},
-  selle:{fr:"La selle", en:"The saddle", es:"La silla", it:"La sella", de:"Der Sattel", ja:"鞍"},
-  filet:{fr:"Le filet", en:"The bridle", es:"La cabezada", it:"La testiera", de:"Die Trense", ja:"頭絡"},
+  selle:{fr:"La selle", en:"The saddle", es:"La silla", it:"La sella", de:"Der Sattel", ja:"鞍", ar:"السرج"},
+  filet:{fr:"Le filet", en:"The bridle", es:"La cabezada", it:"La testiera", de:"Die Trense", ja:"頭絡", ar:"اللجام"},
   cavalier:{fr:"Le cavalier", en:"The rider", es:"El jinete", it:"Il cavaliere", de:"Der Reiter", ja:"騎乗者"},
   protections:{fr:"Les protections", en:"The protective gear", es:"Las protecciones", it:"Le protezioni", de:"Die Schutzausrüstung", ja:"保護具"},
   allures:{fr:"Les allures", en:"The paces", es:"Los aires", it:"Le andature", de:"Die Gangarten", ja:"歩様"},
   position:{fr:"La position", en:"The position", es:"La posición", it:"L'assetto", de:"Der Sitz", ja:"騎座"},
   figures:{fr:"La piste et les figures", en:"The track and the figures", es:"La pista y las figuras", it:"La pista e le figure", de:"Die Bahn und die Hufschlagfiguren", ja:"馬場と図形運動"},
   deroule:{fr:"Le déroulé du cours", en:"How a lesson runs", es:"El desarrollo de la clase", it:"Lo svolgimento della lezione", de:"Der Ablauf der Reitstunde", ja:"レッスンの流れ", ar:"سير الرحلة"},
-  rectangle:{fr:"Le rectangle", en:"The arena", es:"El rectángulo", it:"Il rettangolo", de:"Das Viereck", ja:"競技馬場"},
-  mouvements:{fr:"Les mouvements", en:"The movements", es:"Los movimientos", it:"I movimenti", de:"Die Lektionen", ja:"運動"},
+  rectangle:{fr:"Le rectangle", en:"The arena", es:"El rectángulo", it:"Il rettangolo", de:"Das Viereck", ja:"競技馬場", ar:"المستطيل"},
+  mouvements:{fr:"Les mouvements", en:"The movements", es:"Los movimientos", it:"I movimenti", de:"Die Lektionen", ja:"運動", ar:"حركات الترويض"},
   qualites:{fr:"Les qualités", en:"The qualities", es:"Las cualidades", it:"Le qualità", de:"Die Qualitäten", ja:"馬の質"},
-  notation:{fr:"La notation", en:"The marking", es:"La puntuación", it:"Il punteggio", de:"Die Bewertung", ja:"採点"},
+  notation:{fr:"La notation", en:"The marking", es:"La puntuación", it:"Il punteggio", de:"Die Bewertung", ja:"採点", ar:"الدرجات"},
   obstacles:{fr:"Les obstacles", en:"The fences", es:"Los obstáculos", it:"Gli ostacoli", de:"Die Hindernisse", ja:"障害"},
   parcours:{fr:"Le parcours", en:"The course", es:"El recorrido", it:"Il percorso", de:"Der Parcours", ja:"コース"},
   fautes:{fr:"Les fautes", en:"The faults", es:"Las faltas", it:"Le penalità", de:"Die Fehler", ja:"減点"},
@@ -9139,7 +9168,7 @@ var COLL_NOM = {
      Les six traductions reprennent MOT POUR MOT celles de `ACCUEIL_CHAP.obstacle`
      (« les phases du saut ») pour que l'appli ne se contredise pas. */
   saut:{fr:"Les phases du saut", en:"The phases of the jump", es:"Las fases del salto",
-        it:"Le fasi del salto", de:"Die Phasen des Sprungs", ja:"飛越の各局面"},
+        it:"Le fasi del salto", de:"Die Phasen des Sprungs", ja:"飛越の各局面", ar:"قفز الحواجز"},
   engager:{fr:"S'engager", en:"Entering", es:"Inscribirse", it:"Iscriversi", de:"Nennen", ja:"出場申込"},
   complet:{fr:"Le concours complet", en:"Eventing", es:"El concurso completo", it:"Il concorso completo", de:"Die Vielseitigkeit", ja:"総合馬術",
     /* 🟡 ar dormant (24/08). */ ar:"الفروسية الثلاثية"},
@@ -9161,6 +9190,10 @@ var COLL_NOM = {
   embarquement:{fr:"L'embarquement", en:"Loading", es:"El embarque", it:"Il carico", de:"Das Verladen", ja:"積み込み", ar:"تحميل الحصان"},
   route:{fr:"La route", en:"The road", es:"La carretera", it:"La strada", de:"Die Fahrt", ja:"道中", ar:"الطريق"},
   vehicule:{fr:"Le véhicule", en:"The vehicle", es:"El vehículo", it:"Il veicolo", de:"Das Fahrzeug", ja:"車両", ar:"المركبة"},
+  /* 🟥 24/08 : famille absente (réserve du dressage) — texte de Claude, à valider. 🟡 ar dormant. */
+  tenue:{fr:"La tenue", en:"The turnout", es:"La vestimenta", it:"La tenuta", de:"Die Kleidung", ja:"服装", ar:"الزي"},
+  /* 🟥 24/08 : famille absente de toutes les langues (Aachen) — texte de Claude, à valider. 🟡 ar dormant. */
+  grand:{fr:"Le grand concours", en:"The great show", es:"El gran concurso", it:"Il grande concorso", de:"Das große Turnier", ja:"大競技会", ar:"المسابقة الكبرى"},
 };
 var ACCUEIL_CHAP = {
   /* 🟥🟥 19/08 : SIX ENTRÉES NEUVES — LA TABLE EST COMPLÈTE POUR LES 36 VILLES.
@@ -9226,9 +9259,13 @@ var ACCUEIL_CHAP = {
   ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},
   pansage:{fr:"Le pansage, outil par outil, geste par geste.", en:"Grooming, tool by tool, job by job.", es:"El cepillado, herramienta por herramienta, gesto por gesto.", it:"La pulizia, attrezzo per attrezzo, gesto per gesto.", de:"Das Putzen, Werkzeug für Werkzeug, Griff für Griff.", ja:"手入れを、道具ごと、動作ごとに。"},
   cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。"},
-  materiel:{fr:"Tout ce qu'on met sur le cheval — et sur soi.", en:"Everything you put on the horse — and on yourself.", es:"Todo lo que se le pone al caballo, y todo lo que te pones tú.", it:"Tutto ciò che si mette sul cavallo — e su di sé.", de:"Alles, was man dem Pferd anlegt — und sich selbst.", ja:"馬に着けるもの、そして自分が身に着けるもの。"},
+  /* 🟡 ar dormant (24/08). */
+  materiel:{ar:"كل ما يوضع على الحصان — وما تلبسينه أنت.",
+   fr:"Tout ce qu'on met sur le cheval — et sur soi.", en:"Everything you put on the horse — and on yourself.", es:"Todo lo que se le pone al caballo, y todo lo que te pones tú.", it:"Tutto ciò che si mette sul cavallo — e su di sé.", de:"Alles, was man dem Pferd anlegt — und sich selbst.", ja:"馬に着けるもの、そして自分が身に着けるもの。"},
   cours:{fr:"Les ordres qu'on entend en reprise, et ceux qu'on donne quand on enseigne.", en:"The commands you hear in a lesson, and the ones you give when you teach.", es:"Las órdenes que se oyen en clase, y las que se dan cuando se enseña.", it:"I comandi che si sentono in lezione, e quelli che si danno quando si insegna.", de:"Die Kommandos, die man in der Reitstunde hört — und die man gibt, wenn man unterrichtet.", ja:"レッスンで飛ぶ号令、そして教えるときに出す号令。"},
-  dressage:{fr:"Le travail sur le plat : le rectangle, les mouvements, ce qu'un juge regarde.", en:"Flatwork: the arena, the movements, what a judge looks for.", es:"El trabajo en llano: el rectángulo, los movimientos, lo que mira un juez.", it:"Il lavoro in piano: il rettangolo, i movimenti, ciò che guarda un giudice.", de:"Die Dressurarbeit: das Viereck, die Lektionen, worauf ein Richter schaut.", ja:"平地運動。馬場、運動、審判員が見るところ。"},
+  /* 🟡 ar dormant (24/08). */
+  dressage:{ar:"العمل على الأرض المستوية: المستطيل، والحركات، وما ينظر إليه الحكم.",
+   fr:"Le travail sur le plat : le rectangle, les mouvements, ce qu'un juge regarde.", en:"Flatwork: the arena, the movements, what a judge looks for.", es:"El trabajo en llano: el rectángulo, los movimientos, lo que mira un juez.", it:"Il lavoro in piano: il rettangolo, i movimenti, ciò che guarda un giudice.", de:"Die Dressurarbeit: das Viereck, die Lektionen, worauf ein Richter schaut.", ja:"平地運動。馬場、運動、審判員が見るところ。"},
   obstacle:{fr:"Le saut : les obstacles, le parcours, les fautes, les phases du saut.", en:"Jumping: the fences, the course, the faults, the phases of the jump.", es:"El salto: los obstáculos, el recorrido, las faltas, las fases del salto.", it:"Il salto: gli ostacoli, il percorso, le penalità, le fasi del salto.", de:"Das Springen: die Hindernisse, der Parcours, die Fehler, die Phasen des Sprungs.", ja:"飛越。障害、コース、減点、飛越の各局面。"},
   concours:{fr:"S'engager, arriver, passer, comprendre son classement.", en:"Entering, arriving, competing, reading your result.", es:"Inscribirse, llegar, competir, entender la clasificación.", it:"Iscriversi, arrivare, gareggiare, capire la classifica.", de:"Nennen, ankommen, starten, sein Ergebnis lesen.", ja:"申し込み、到着、出番、順位の読み方。"},
   urgences:{fr:"Ce qu'on ne veut jamais avoir à dire — et qu'il faut savoir dire vite.", en:"What you never want to say — and must be able to say fast.", es:"Lo que nunca quieres tener que decir, y que hay que saber decir rápido.", it:"Ciò che non si vuole mai dover dire — e che bisogna saper dire in fretta.", de:"Was man nie sagen will — und schnell sagen können muss.", ja:"言わずに済ませたい言葉。だから、すぐ言えなければならない。"},

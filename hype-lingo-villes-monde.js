@@ -312,32 +312,38 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       es:["Un estadio lleno, y un silencio total.", "El caballo entró, sonó la campana, y durante ochenta segundos no hubo más que el ruido de los cascos. El público no volvió a respirar hasta el último obstáculo."],
       it:["Uno stadio pieno, e un silenzio totale.", "Il cavallo è entrato, la campana ha suonato, e per ottanta secondi non si è sentito altro che gli zoccoli. Il pubblico ha ricominciato a respirare solo dopo l'ultimo ostacolo."],
       de:["Ein volles Stadion, und völlige Stille.", "Das Pferd kam herein, die Glocke ertönte, und achtzig Sekunden lang gab es nichts als Hufschlag. Das Publikum atmete erst nach dem letzten Sprung wieder."],
-      ja:["満員のスタジアムが、完全に静まりかえっていた。", "馬が入場し、開始の鐘が鳴り、八十秒のあいだ聞こえるのは蹄の音だけだった。観客が息をし直したのは、最後の障害を跳んだあとだった。"]},
+      ja:["満員のスタジアムが、完全に静まりかえっていた。", "馬が入場し、開始の鐘が鳴り、八十秒のあいだ聞こえるのは蹄の音だけだった。観客が息をし直したのは、最後の障害を跳んだあとだった。"],
+      /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+      ar:["كان الملعب ممتلئا، ومع ذلك لم يكن يسمع شيء.",
+          "دخل الحصان، ورن الجرس، ولمدة دقيقة وعشرين ثانية لم يبق سوى صوت الحوافر. ولم يستأنف الجمهور التنفس إلا بعد العارضة الأخيرة."]},
     volets:[
-     {t:{fr:"Le CHIO", en:"The CHIO", es:"El CHIO", it:"Il CHIO", de:"Das CHIO", ja:"CHIO（国際馬術大会）"},
+     {t:{fr:"Le CHIO", en:"The CHIO", es:"El CHIO", it:"Il CHIO", de:"Das CHIO", ja:"CHIO（国際馬術大会）", ar:"CHIO (المسابقة الدولية)"},
       c:{
           fr:"Un concours international qui réunit plusieurs disciplines la même semaine : saut, dressage, attelage, complet. C'est l'un des rendez-vous les plus suivis du calendrier, et beaucoup de cavaliers le placent au-dessus des championnats.",
           en:"An international show bringing several disciplines together in the same week: jumping, dressage, driving, eventing. It is one of the most closely followed fixtures of the year, and many riders rate it above a championship.",
           es:"Un concurso internacional que reúne varias disciplinas en la misma semana: salto, doma, enganches, completo. Es una de las citas más seguidas del año, y muchos jinetes la ponen por encima de un campeonato.",
           it:"Un concorso internazionale che riunisce più discipline nella stessa settimana: salto, dressage, attacchi, completo. È uno degli appuntamenti più seguiti dell'anno, e molti cavalieri lo mettono sopra un campionato.",
           de:"Ein internationales Turnier, das mehrere Disziplinen in derselben Woche zusammenbringt: Springen, Dressur, Fahren, Vielseitigkeit. Es ist einer der meistbeachteten Termine des Jahres, und viele Reiter stellen es über eine Meisterschaft.",
-          ja:"同じ一週間に複数種目が集まる国際大会です。障害、馬場、馬車、総合。一年でもっとも注目される大会のひとつで、選手権より上に置く騎手も少なくありません。"}},
-     {t:{fr:"Le barrage", en:"The jump-off", es:"El desempate", it:"Il barrage", de:"Das Stechen", ja:"ジャンプオフ"},
+          ja:"同じ一週間に複数種目が集まる国際大会です。障害、馬場、馬車、総合。一年でもっとも注目される大会のひとつで、選手権より上に置く騎手も少なくありません。",
+          ar:"مسابقة دولية تجمع عدة تخصصات في الأسبوع نفسه: قفز الحواجز، والترويض، وقيادة العربات، والفروسية الثلاثية. إنها من أكثر مواعيد الروزنامة متابعة، وكثير من الفرسان يضعونها فوق البطولات."}},
+     {t:{fr:"Le barrage", en:"The jump-off", es:"El desempate", it:"Il barrage", de:"Das Stechen", ja:"ジャンプオフ", ar:"جولة التمايز"},
       c:{
           fr:"Quand plusieurs cavaliers finissent sans faute, on recommence : parcours raccourci, chronomètre lancé, et cette fois la vitesse départage. C'est le moment où l'on voit qui accepte de risquer une barre pour gagner une seconde.",
           en:"When several riders finish clear, you start again: shortened course, clock running, and this time speed decides. It's the moment you see who will risk a fence to gain a second.",
           es:"Cuando varios jinetes terminan sin falta, se vuelve a empezar: recorrido acortado, cronómetro en marcha, y esta vez decide la velocidad. Es el momento en que se ve quién acepta arriesgar un derribo por ganar un segundo.",
           it:"Quando più cavalieri finiscono netti, si ricomincia: percorso accorciato, cronometro avviato, e stavolta decide la velocità. È il momento in cui si vede chi accetta di rischiare un abbattimento per guadagnare un secondo.",
           de:"Wenn mehrere Reiter fehlerfrei bleiben, geht es von vorn los: verkürzter Parcours, laufende Uhr, und diesmal entscheidet die Zeit. Der Moment, in dem man sieht, wer eine Stange riskiert, um eine Sekunde zu gewinnen.",
-          ja:"何人もが無失点で終えたとき、もう一度走ります。短縮されたコース、動き出す時計、そして今度は速さで決まります。一秒のために一本を落とす危険を取る人が、誰なのかが見える瞬間です。"}},
-     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+          ja:"何人もが無失点で終えたとき、もう一度走ります。短縮されたコース、動き出す時計、そして今度は速さで決まります。一秒のために一本を落とす危険を取る人が、誰なのかが見える瞬間です。",
+          ar:"حين ينهي عدة فرسان جولاتهم من دون أخطاء، تعاد الكرة: مسار مختصر، وساعة تنطلق، وهذه المرة السرعة هي التي تفصل. إنها اللحظة التي ترين فيها من يقبل المخاطرة بعارضة ليكسب ثانية."}},
+     {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Assieds-toi près de la sortie de piste. On y voit les cavaliers redevenir eux-mêmes en trois secondes : ceux qui tapent l'encolure, ceux qui ne disent rien, et ceux qui vérifient un antérieur avant même de mettre pied à terre.",
           en:"Sit near the arena exit. You watch riders become themselves again in three seconds: the ones who pat the neck, the ones who say nothing, and the ones who check a foreleg before they've even dismounted.",
           es:"Siéntate cerca de la salida de pista. Ahí se ve a los jinetes volver a ser ellos mismos en tres segundos: los que palmean el cuello, los que no dicen nada, y los que revisan una mano antes incluso de echar pie a tierra.",
           it:"Siediti vicino all'uscita di campo. Lì i cavalieri ridiventano se stessi in tre secondi: chi dà una pacca sul collo, chi non dice niente, e chi controlla un anteriore prima ancora di scendere.",
           de:"Setz dich an den Ausgang des Parcours. Dort werden Reiter in drei Sekunden wieder sie selbst: die einen klopfen den Hals, die anderen sagen nichts, und wieder andere prüfen ein Vorderbein, bevor sie überhaupt abgestiegen sind.",
-          ja:"出口のそばに座ってください。騎手が三秒で素の自分に戻るのが見えます。首を叩く人、何も言わない人、降りる前に前肢を確かめる人。"}}
+          ja:"出口のそばに座ってください。騎手が三秒で素の自分に戻るのが見えます。首を叩く人、何も言わない人、降りる前に前肢を確かめる人。",
+          ar:"اجلسي قرب مخرج الميدان. هناك ترين الفرسان يعودون إلى أنفسهم في ثلاث ثوان: من يربت على العنق، ومن لا يقول شيئا، ومن يتفقد قائمة أمامية قبل أن ينزل أصلا."}}
     ]}
 
   };

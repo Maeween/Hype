@@ -205,35 +205,41 @@ walsall:{
     de:["Heute Abend habe ich die Tür einer Werkstatt aufgestoßen.",
         "Unter der Lampe wanderten zwei Nadeln gleichzeitig eine Naht entlang. Niemand sprach mich an. Ich sah zwanzig Minuten lang zu und merkte nicht, wie die Zeit verging."],
     ja:["今夜、ひとつの工房の扉を押し開けた。",
-        "ランプの下で、二本の針が同時にひとつの縫い目を進んでいた。誰も私に話しかけなかった。二十分間ただ見つめていて、時間が経つのを忘れていた。"]},
+        "ランプの下で、二本の針が同時にひとつの縫い目を進んでいた。誰も私に話しかけなかった。二十分間ただ見つめていて、時間が経つのを忘れていた。"],
+    /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+    ar:["هذا المساء، دفعت باب إحدى الورش ودخلت.",
+        "تحت ضوء المصباح، كانت إبرتان تتقدمان معا على طول درزة واحدة. لم يكلمني أحد. بقيت عشرين دقيقة أراقب، ولم أشعر بمرور الوقت."]},
   volets:[
    {t:{fr:"La ville du cuir", en:"The town of leather", es:"La ciudad del cuero",
-       it:"La città del cuoio", de:"Die Stadt des Leders", ja:"革の町"},
+       it:"La città del cuoio", de:"Die Stadt des Leders", ja:"革の町", ar:"مدينة الجلد"},
     c:{
       fr:"Walsall est la capitale britannique de la sellerie. La ville a d'abord travaillé le métal du harnais — mors, étriers, éperons — avant que le cuir n'y prenne le dessus. Un musée du cuir raconte cette histoire, et des ateliers y travaillent encore à la main.",
       en:"Walsall is Britain's saddlery capital. The town first worked the metal of the harness — bits, stirrups, spurs — before leather took over. A leather museum tells that story, and workshops there still work by hand.",
       es:"Walsall es la capital británica de la guarnicionería. La ciudad trabajó primero el metal del arnés — bocados, estribos, espuelas — antes de que el cuero tomara el relevo. Un museo del cuero cuenta esa historia, y aún hay talleres que trabajan a mano.",
       it:"Walsall è la capitale britannica della selleria. La città ha lavorato prima il metallo dei finimenti — imboccature, staffe, speroni — prima che il cuoio prendesse il sopravvento. Un museo del cuoio racconta questa storia, e vi sono laboratori che lavorano ancora a mano.",
       de:"Walsall ist Großbritanniens Hauptstadt der Sattlerei. Die Stadt bearbeitete zuerst das Metall des Geschirrs — Gebisse, Steigbügel, Sporen —, bevor das Leder die Oberhand gewann. Ein Ledermuseum erzählt diese Geschichte, und Werkstätten arbeiten dort noch von Hand.",
-      ja:"ウォルソールはイギリス馬具づくりの都。町は最初、ハミ、鐙、拍車といった馬具の金属を扱い、やがて革がその座を継ぎました。革の博物館がその歴史を伝え、今も手仕事の工房が息づいています。"}}, // ?? chronologie métal puis cuir : formulation prudente, à confirmer
+      ja:"ウォルソールはイギリス馬具づくりの都。町は最初、ハミ、鐙、拍車といった馬具の金属を扱い、やがて革がその座を継ぎました。革の博物館がその歴史を伝え、今も手仕事の工房が息づいています。",
+      ar:"وولسول هي العاصمة البريطانية لصناعة السروج. بدأت المدينة أولا بصناعة الأجزاء المعدنية لعدة الفروسية — الشكائم والركائب والمهاميز — قبل أن تشتهر بصناعة الجلود. ويروي متحف للجلد هذه الحكاية، فيما لا تزال بعض الورش تعمل يدويا."}}, // ?? chronologie métal puis cuir : formulation prudente, à confirmer
    {t:{fr:"Le point sellier", en:"The saddle stitch", es:"La costura de guarnicionero",
-       it:"Il punto sellaio", de:"Die Sattlernaht", ja:"サドルステッチ"},
+       it:"Il punto sellaio", de:"Die Sattlernaht", ja:"サドルステッチ", ar:"غرزة صانعي السروج"},
     c:{
       fr:"Deux aiguilles, un seul fil, chacune passant à son tour dans le même trou. C'est ce qui rend la couture indéfaillible : si un fil casse, l'autre tient. Une machine ne sait pas le faire — c'est pour ça qu'une selle se coud encore à la main.",
       en:"Two needles, one thread, each passing in turn through the same hole. That is what makes the seam unfailing: if one thread breaks, the other holds. A machine cannot do it — which is why a saddle is still sewn by hand.",
       es:"Dos agujas, un solo hilo, cada una pasando por turno por el mismo agujero. Eso es lo que hace la costura infalible: si un hilo se rompe, el otro aguanta. Una máquina no sabe hacerlo — por eso una silla aún se cose a mano.",
       it:"Due aghi, un solo filo, ognuno che passa a turno nello stesso foro. È questo che rende la cucitura infallibile: se un filo si rompe, l'altro tiene. Una macchina non sa farlo — ed è per questo che una sella si cuce ancora a mano.",
       de:"Zwei Nadeln, ein einziger Faden, jede sticht abwechselnd durch dasselbe Loch. Das macht die Naht unfehlbar: Reißt ein Faden, hält der andere. Eine Maschine kann das nicht — deshalb wird ein Sattel noch von Hand genäht.",
-      ja:"二本の針、一本の糸。同じ穴を交互にくぐらせます。これが縫い目を裏切らないものにする秘密 — 一本の糸が切れても、もう一本が持ちこたえる。機械にはできません。だから鞍は、今も手で縫われるのです。"}},
+      ja:"二本の針、一本の糸。同じ穴を交互にくぐらせます。これが縫い目を裏切らないものにする秘密 — 一本の糸が切れても、もう一本が持ちこたえる。機械にはできません。だから鞍は、今も手で縫われるのです。",
+      ar:"إبرتان وخيط واحد، تمر كل منهما بالتناوب عبر الثقب نفسه. وهذا ما يجعل هذه الخياطة شديدة المتانة: فإذا انقطع جزء من الخيط، بقيت الغرزة متماسكة. لا تستطيع الآلة تنفيذها بالطريقة نفسها — ولهذا ما زالت السروج تخاط يدويا."}},
    {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí",
-       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら"},
+       it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
     c:{
       fr:"Demande à voir une selle en cours de montage. Entre la coupe du cuir et la dernière couture, il y a des dizaines d'heures de travail que personne ne voit — et que personne ne verra jamais, puisque tout est à l'intérieur.",
       en:"Ask to see a saddle being built. Between the cutting of the leather and the last stitch there are dozens of hours of work nobody sees — and nobody ever will, since it is all on the inside.",
       es:"Pide ver una silla en pleno montaje. Entre el corte del cuero y la última costura hay decenas de horas de trabajo que nadie ve — y que nadie verá jamás, porque todo queda por dentro.",
       it:"Chiedi di vedere una sella in corso di montaggio. Tra il taglio del cuoio e l'ultima cucitura ci sono decine di ore di lavoro che nessuno vede — e che nessuno vedrà mai, perché è tutto all'interno.",
       de:"Bitte darum, einen Sattel im Bau zu sehen. Zwischen dem Zuschnitt des Leders und der letzten Naht liegen Dutzende Arbeitsstunden, die niemand sieht — und niemand je sehen wird, denn alles liegt im Inneren.",
-      ja:"組み立て途中の鞍を見せてもらって。革の裁断から最後のひと針まで、誰の目にも触れない何十時間もの仕事があります — そしてこの先も誰も見ることはありません。すべては鞍の内側にあるのですから。"}}
+      ja:"組み立て途中の鞍を見せてもらって。革の裁断から最後のひと針まで、誰の目にも触れない何十時間もの仕事があります — そしてこの先も誰も見ることはありません。すべては鞍の内側にあるのですから。",
+      ar:"اطلبي رؤية سرج وهو قيد التصنيع. بين قص الجلد والغرزة الأخيرة عشرات الساعات من العمل التي لا يراها أحد — ولن يراها أحد أبدا، لأن كل ذلك مخفي في الداخل."}}
   ]},
 
 /* ============ 5 · ABERYSTWYTH · En selle ============ */
@@ -303,35 +309,41 @@ windsor:{
     de:["Niemand sprach.",
         "Der Sand war gerade geharkt worden, ein einzelnes Pferd trabte vor den Türmen des Schlosses, und ich begriff, dass die Stille Teil der Arbeit war."],
     ja:["誰も話さなかった。",
-        "砂は均されたばかりで、一頭の馬が城の塔の前をひとり速歩で進んでいた。そして私は理解した — 沈黙もまた、この仕事の一部なのだと。"]},
+        "砂は均されたばかりで、一頭の馬が城の塔の前をひとり速歩で進んでいた。そして私は理解した — 沈黙もまた、この仕事の一部なのだと。"],
+    /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
+    ar:["لم يكن أحد يتكلم.",
+        "كان الرمل قد مشط للتو، وحصان واحد يخب أمام أبراج القلعة، وفهمت أن الصمت جزء من العمل."]},
   volets:[
    {t:{fr:"Le château", en:"The castle", es:"El castillo",
-       it:"Il castello", de:"Das Schloss", ja:"城"},
+       it:"Il castello", de:"Das Schloss", ja:"城", ar:"القلعة"},
     c:{
       fr:"Windsor est l'un des plus anciens châteaux habités d'Europe, et la tradition équestre y va avec : écuries, attelages, et un grand parc où les chevaux travaillent depuis des siècles.",
       en:"Windsor is one of the oldest inhabited castles in Europe, and the equestrian tradition goes with it: stables, carriages, and a great park where horses have worked for centuries.",
       es:"Windsor es uno de los castillos habitados más antiguos de Europa, y la tradición ecuestre va con él: cuadras, enganches, y un gran parque donde los caballos trabajan desde hace siglos.",
       it:"Windsor è uno dei più antichi castelli abitati d'Europa, e la tradizione equestre va di pari passo: scuderie, attacchi, e un grande parco dove i cavalli lavorano da secoli.",
       de:"Windsor ist eines der ältesten bewohnten Schlösser Europas, und die Reittradition gehört dazu: Ställe, Gespanne und ein großer Park, in dem seit Jahrhunderten Pferde arbeiten.",
-      ja:"ウィンザーはヨーロッパで最も古くから人が住み続けている城のひとつ。馬の伝統もそれとともにあります。厩舎、馬車、そして何世紀ものあいだ馬たちが働いてきた広大な公園。"}},
+      ja:"ウィンザーはヨーロッパで最も古くから人が住み続けている城のひとつ。馬の伝統もそれとともにあります。厩舎、馬車、そして何世紀ものあいだ馬たちが働いてきた広大な公園。",
+      ar:"وندسور من أقدم القلاع المأهولة في أوروبا، ومعها تقاليد الفروسية: إسطبلات، وعربات تجرها الخيل، وحديقة كبيرة تعمل فيها الخيول منذ قرون."}},
    {t:{fr:"Le rendez-vous", en:"The meeting place", es:"La cita",
-       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地"},
+       it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地", ar:"الموعد الكبير"},
     c:{
       fr:"Le Royal Windsor Horse Show se tient chaque printemps dans le parc du château. C'est l'un des plus grands concours en plein air du pays, avec du saut, du dressage et de l'attelage sur plusieurs jours.",
       en:"The Royal Windsor Horse Show is held every spring in the castle park. It is one of the country's biggest outdoor shows, with jumping, dressage and driving over several days.",
       es:"El Royal Windsor Horse Show se celebra cada primavera en el parque del castillo. Es uno de los mayores concursos al aire libre del país, con salto, doma y enganche durante varios días.",
       it:"Il Royal Windsor Horse Show si tiene ogni primavera nel parco del castello. È uno dei più grandi concorsi all'aperto del paese, con salto, dressage e attacchi su più giorni.",
       de:"Die Royal Windsor Horse Show findet jedes Frühjahr im Schlosspark statt. Sie ist eines der größten Freiluftturniere des Landes, mit Springen, Dressur und Fahren über mehrere Tage.",
-      ja:"ロイヤル・ウィンザー・ホースショーは毎年春、城の公園で開かれます。国内最大級の野外競技会で、障害、馬場馬術、馬車競技が数日間にわたって行われます。"}},
+      ja:"ロイヤル・ウィンザー・ホースショーは毎年春、城の公園で開かれます。国内最大級の野外競技会で、障害、馬場馬術、馬車競技が数日間にわたって行われます。",
+      ar:"يقام عرض وندسور الملكي للخيل كل ربيع في حديقة القلعة. إنه من أكبر مسابقات البلاد في الهواء الطلق، ويجمع القفز والترويض وقيادة العربات على عدة أيام."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
-       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？"},
+       it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
       fr:"A, K, E, H, C, M, B, F : les huit lettres qui balisent une carrière de dressage. Personne ne sait vraiment d'où vient cet ordre. Plusieurs explications circulent — dont une histoire d'écuries impériales allemandes — mais aucune n'est établie, et c'est l'un des rares mystères du monde équestre que personne n'a résolu.",
       en:"A, K, E, H, C, M, B, F: the eight letters that mark out a dressage arena. Nobody really knows where that order comes from. Several explanations circulate — including a story about German imperial stables — but none is established, and it is one of the rare mysteries of the horse world that nobody has solved.",
       es:"A, K, E, H, C, M, B, F: las ocho letras que balizan una pista de doma. Nadie sabe realmente de dónde viene ese orden. Circulan varias explicaciones — incluida una historia de caballerizas imperiales alemanas — pero ninguna está establecida, y es uno de los raros misterios del mundo ecuestre que nadie ha resuelto.",
       it:"A, K, E, H, C, M, B, F: le otto lettere che delimitano un rettangolo di dressage. Nessuno sa davvero da dove venga quest'ordine. Circolano diverse spiegazioni — compresa una storia di scuderie imperiali tedesche — ma nessuna è accertata, ed è uno dei rari misteri del mondo equestre che nessuno ha risolto.",
       de:"A, K, E, H, C, M, B, F: die acht Buchstaben, die ein Dressurviereck markieren. Niemand weiß wirklich, woher diese Reihenfolge kommt. Mehrere Erklärungen sind im Umlauf — darunter eine Geschichte über deutsche kaiserliche Ställe —, aber keine ist belegt, und es ist eines der seltenen Rätsel der Pferdewelt, das niemand gelöst hat.",
-      ja:"A、K、E、H、C、M、B、F — 馬場を区切る八つの文字。この並び順の由来を、本当のところ誰も知りません。ドイツ帝国の厩舎にまつわる話などいくつかの説が語られますが、どれも確かめられておらず、馬の世界に残された、誰にも解けていない数少ない謎のひとつです。"}}
+      ja:"A、K、E、H、C、M、B、F — 馬場を区切る八つの文字。この並び順の由来を、本当のところ誰も知りません。ドイツ帝国の厩舎にまつわる話などいくつかの説が語られますが、どれも確かめられておらず、馬の世界に残された、誰にも解けていない数少ない謎のひとつです。",
+      ar:"A وK وE وH وC وM وB وF: الحروف الثمانية التي تحدد ميدان الترويض. لا أحد يعرف حقا من أين جاء هذا الترتيب. تتداول عدة تفسيرات — منها حكاية عن إسطبلات إمبراطورية ألمانية — لكن أيا منها لم يثبت، وهو من ألغاز عالم الفروسية القليلة التي لم يحلها أحد."}}
   ]},
 
 /* ============ 7 · HICKSTEAD · L'obstacle ============ */

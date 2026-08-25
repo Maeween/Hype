@@ -6,13 +6,18 @@
 
 ## OÙ ON EN EST
 
-**12 villes sur 38**, toutes dormantes : aucun écran ne lit le champ `ar`, le sélecteur reste à six langues.
+**17 villes sur 38**, toutes dormantes : aucun écran ne lit le champ `ar`, le sélecteur reste à six langues.
 
 | ville | entrées | relectures |
 |---|---|---|
 | **Aberystwyth** — En selle | 125 | 1 passe |
 | **Badminton** — Le concours | 92 | **1 passe, appliquée** |
 | **Oliva Nova** — S'engager | 79 | **1 passe, appliquée** |
+| **Barcelone** — Voyager avec son cheval | 108 | **1 passe, appliquée** |
+| **Flyinge** — La maréchalerie | 92 | corrections 1-8 appliquées |
+| **Walsall** — Le matériel | 69 | **1 passe, appliquée** |
+| **Windsor** — Le dressage | 60 | 0 relecture |
+| **Aachen** — Le grand concours | 63 | 0 relecture |
 | **La Baule** — L'arrivée | 92 | 2 passes |
 | **Kildare** — Les urgences du cheval | 86 | 3 passes |
 | **Connemara** — Le cheval | 82 | 2 passes |
@@ -23,7 +28,7 @@
 | **Le Morne** — La balade | 57 | 2 passes |
 | **Clonbinane** — L'apprentissage | 51 | 3 passes |
 
-**948 entrées traduites.** 🟥 Aucune validée par un arabophone.
+**1436 entrées traduites** (dont 96 dans quatre fichiers de réserve non chargés : pansage 13, jour J 5, filet 22, dressage 56). 🟥 Aucune validée par un arabophone.
 
 ✅ **Les dix villes ont été relues au moins une fois.**
 
@@ -38,7 +43,8 @@ Badminton et Oliva ont été traduites dans une seconde conversation, **sur une 
 🟥 **`hype-lingo-villes.js` reste à fusionner.** La version de la première conversation (avec l'arabe de Connemara, Newmarket, Lambourn, Aberystwyth, Kildare, Édimbourg) n'a pas été fournie. La lettre et les volets de **Badminton** n'existent que dans une copie fondée sur l'ancienne base — **ne pas pousser cette copie-là**, elle écraserait quatre villes. Dès réception du bon `villes.js`, y greffer Badminton (7 entrées, ancres connues).
 
 **Anomalies structurelles relevées (pas un sujet arabe, à trancher un jour) :**
-- `ACCUEIL_CHAP` : clés orphelines `concours`, `urgences`, `dialogues` depuis le découpage du 18/08 ; `rome`, `urgences-vet`, `urgences-med` absentes (Rome, Kildare et Édimbourg n'ont pas de mot d'accueil). `oliva` créée le 24/08 — texte de Claude validé dans son principe ; le relecteur propose une variante (« Avant d'entrer en piste, il faut d'abord entrer dans la liste. Vérifie tout deux fois. ») — à trancher.
+- `ACCUEIL_CHAP` : clés orphelines `concours`, `urgences`, `dialogues` depuis le découpage du 18/08 ; `rome`, `urgences-vet`, `urgences-med` absentes, et **rien pour Aachen non plus** (Rome, Kildare, Édimbourg et Aix-la-Chapelle n'ont pas de mot d'accueil). `oliva` créée le 24/08 — texte de Claude validé dans son principe ; le relecteur propose une variante (« Avant d'entrer en piste, il faut d'abord entrer dans la liste. Vérifie tout deux fois. ») — à trancher.
+- 🟥 **24/08 (Flyinge/Barcelone)** : **dix familles `COLL_NOM` absentes de toutes les langues** (bug du point 8) — créées en sept langues, textes de Claude **à valider** ; sept familles existantes complétées en arabe. **Le chapeau (`PHRASES_FIN`) couvre 29 villes sur 38** : Flyinge, Barcelone et 7 autres n'en ont dans aucune langue — chantier français, pas arabe. **La table d'objectifs `TH_LIB`** (« voyager avec son cheval », 23 entrées) a reçu son arabe le 24/08 sur validation Blandine — dormante comme le reste, glossaire des relectures appliqué. Le nom de chapitre de Flyinge disait البيطرة (médecine vétérinaire) — corrigé en حدادة الخيل, **confirmé par le relecteur le 24/08**. ⚠️ La famille `deroule` (partagée entre chapitres) a été traduite سير الرحلة sur instruction de la relecture Barcelone — à revoir si une ville de dressage l'utilise un jour. Familles complétées le 24/08 au soir : `selle`, `filet`, `mouvements` (حركات الترويض), `notation` ; `tenue` créée en sept langues (réserve du dressage, à valider). Le mot d'accueil du chapitre matériel a reçu son arabe.
 - `COLL_NOM` : **quatre clés dupliquées** (`alerte`, `cavalier`, `cheval-urg`, `jour-j`), traductions en/ja divergentes ; la seconde écrase la première en silence.
 
 ---
@@ -142,6 +148,19 @@ Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en 
 | Oliva | « on vérifie au bureau la veille » | souvent en ligne aujourd'hui |
 | Oliva | « membership = la seule exigence britannique » | varie selon discipline, niveau, day tickets |
 | Oliva | « au chronomètre OU au barème A » | fausse opposition — un barème A peut être au chrono |
+| 🟥 Barcelone | **dialogue E84–E86 : « ferme le pont » puis « attache-le » puis « vérifie la barre »** | **ORDRE DANGEREUX** — l'ordre sûr est barre de recul → attache → pont |
+| Barcelone | déf. de « la pause » : marche au pas, rênes longues | **vient d'un cours d'équitation**, pas du transport |
+| Barcelone | déf. de « la température » : Canada, Calgary, bulletins météo | **vient du chapitre du froid**, rien à voir avec Barcelone |
+| Barcelone | « 4 h de route fatiguent autant qu'une séance » | équivalence non démontrée |
+| Barcelone | « chaque protection cède avant le cheval » | trop absolu, peut être dangereux |
+| Barcelone | « jamais un cheval en liberté avec un licol » | il existe des licols de sécurité conçus pour céder |
+| Barcelone | « le protège-queue jamais directement sur les crins » | faux en règle générale |
+| Barcelone | « contrôlé à l'entrée de tout transport » | pas systématique |
+| Barcelone | « un Américain dit trailer pour les deux » / « jamais van » | horse van existe |
+| Barcelone | « toujours ouvrir l'avant, jamais à reculons » | pas universel — certains chevaux descendent à reculons |
+| Barcelone | « attaché ferme = blessé à la nuque » | risque réel, conséquence pas automatique |
+| Barcelone | « on ne débarque pas » à l'aire de repos / « attendre avant d'ouvrir » | interdictions/règles trop absolues, l'attente porte fermée peut être dangereuse en chaleur |
+| Barcelone | « accrocher le filet assez haut » | il faut aussi une position de tête confortable |
 
 ✅ **Les 16 corrections Badminton/Oliva ont été APPLIQUÉES aux six langues le 24/08** (validation Blandine), chirurgicalement — seule la phrase fautive a changé dans chaque langue. Lexiques passés en `?l=2`, `VER` → `?v=79`.
 
@@ -219,6 +238,16 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | la licence | رخصة الفروسية |
 | la remise des prix | حفل توزيع الجوائز |
 | la sonorisation | نظام مكبرات الصوت |
+| le pont, la rampe (transport) | منحدر التحميل *(remplace منحدر المقطورة — Le Morne à harmoniser)* |
+| embarquer | تحميل الحصان |
+| débarquer | إنزال الحصان من مركبة النقل |
+| la barre de poitrail · de recul | عارضة الصدر · عارضة المؤخرة |
+| l'attache rapide | رباط الأمان سريع التحرير |
+| la stalle de transport | حجرة النقل |
+| le passeport du cheval | جواز الحصان |
+| les documents | الوثائق |
+| l'aire de repos | منطقة الاستراحة |
+| le véhicule de transport | مركبة النقل |
 
 ---
 
@@ -277,9 +306,9 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | 3 | Connemara | Irlande | Le cheval | ✅ |
 | 4 | Newmarket | Angleterre | L'écurie | ✅ |
 | 5 | Lambourn | Angleterre | Le pansage | ✅ |
-| 6 | Walsall | Angleterre | Le matériel | — |
+| 6 | Walsall | Angleterre | Le matériel | ✅ |
 | 7 | Aberystwyth | Pays de Galles | En selle | ✅ |
-| 8 | Windsor | Angleterre | Le dressage | — |
+| 8 | Windsor | Angleterre | Le dressage | ✅ |
 | 9 | Wellington | États-Unis | La tournée d'hiver | — |
 | 10 | Hickstead | Angleterre | Le derby | — |
 | 11 | Burghley | Angleterre | Le cross | — |
@@ -294,12 +323,12 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | 20 | Jerez | Espagne | Le cheval | — |
 | 21 | Séville | Espagne | La présentation | — |
 | 22 | Vejer | Espagne | L'intendance | — |
-| 23 | Barcelone | Espagne | Voyager avec son cheval | — |
+| 23 | Barcelone | Espagne | Voyager avec son cheval | ✅ |
 | 24 | Oliva Nova | Espagne | S'engager | ✅ |
 | 25 | Rome | Italie | La Coupe des Nations | — |
 | 26 | Vérone | Italie | Le commerce | — |
 | 27 | Warendorf | Allemagne | La formation | — |
-| 28 | Aix-la-Chapelle | Allemagne | Le grand concours | — |
+| 28 | Aix-la-Chapelle | Allemagne | Le grand concours | ✅ |
 | 29 | Dubaï | Émirats | L'endurance | — |
 | 30 | Tokyo | Japon | La tradition | — |
 | 31 | Tamworth | Australie | Le western | — |
@@ -308,7 +337,7 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | 34 | Lexington | États-Unis | Le haras | — |
 | 35 | Santa Ynez | États-Unis | Le horsemanship | — |
 | 36 | Spruce Meadows | Canada | Le froid | ✅ |
-| 37 | Flyinge | Suède | La maréchalerie | — |
+| 37 | Flyinge | Suède | La maréchalerie | ✅ |
 | 38 | Clonbinane | Australie | L'apprentissage | ✅ |
 
 ---
