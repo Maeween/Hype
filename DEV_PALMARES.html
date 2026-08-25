@@ -20627,8 +20627,10 @@ function EcranChevalCommun() {
     return H("div", { className: "hycc-root" },
         /* — 1 · HERO (structure v2 conservee) — */
         H("div", { className: "hycc-hero" },
-            ch.photo_url ? H("img", { className: "hycc-hphoto", src: ch.photo_url, alt: ch.nom || "" }) : null,
-            ch.photo_url ? H("div", { className: "hycc-hgrad" }) : null,
+            (function () { /* 25/08 : PAR DEFAUT, la tete du cheval concerne en haut — photo de fiche d'abord, sinon 1re photo publique du mur, sinon portrait Hype ; le hero n'est plus jamais noir (demande Blandine) */
+                var pH = ch.photo_url || ((st.photos && st.photos[0] && st.photos[0].u) || "") || ((typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || "");
+                return pH ? [H("img", { key: "hp", className: "hycc-hphoto", src: pH, alt: ch.nom || "" }), H("div", { key: "hg", className: "hycc-hgrad" })] : null;
+            })(),
             H("div", { className: "hycc-hfade" }),
             H("div", { className: "hycc-marque" }, H("span", { className: "h" }, "Hype", H("i", null, "\u2726")), H("span", { className: "c" }, "Communaut\u00e9")),
             boutonRetour,
@@ -20810,11 +20812,12 @@ function PontChevalCommun(props) {
         try { window.__chevalCommunOuvert = props.chevalId; window.__hyccRetour = "cheval"; } catch (eO) { }
         if (ctx && ctx.setEcran) ctx.setEcran("cheval-commun");
     }
-    return H("button", { onClick: ouvrir, style: { display: "flex", alignItems: "center", gap: 10, width: "calc(100% - 32px)", margin: "14px 16px 2px", padding: "11px 14px", borderRadius: 14, border: "1px solid rgba(32,217,245,.3)", background: "rgba(17,20,23,.55)", cursor: "pointer", textAlign: "left" } },
+    var tnP = (props && props.teinte) || "#20D9F5"; var bordP = (typeof teinteRGBA === "function" ? teinteRGBA(tnP, 0.38) : "rgba(32,217,245,.3)"); /* 25/08 : lisere a la teinte de la page + texte agrandi (demande Blandine) */
+    return H("button", { onClick: ouvrir, style: { display: "flex", alignItems: "center", gap: 10, width: "calc(100% - 32px)", margin: "14px 16px 2px", padding: "14px 16px", borderRadius: 14, border: "1px solid " + bordP, background: "rgba(17,20,23,.55)", cursor: "pointer", textAlign: "left" } },
         H("span", { style: { flex: "0 0 auto", width: 20, height: 24, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", filter: "drop-shadow(0 0 6px rgba(32,217,245,.6))" } }),
-        H("span", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 14.5, color: "#EDF2F5", lineHeight: 1.35 } },
+        H("span", { style: { flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 17.5, color: "#EDF2F5", lineHeight: 1.35 } },
             "D\u00e9couvrir l'histoire de " + prenom + " \u00e0 travers " + (n === 1 ? "une autre aventure" : (n + " autres aventures"))),
-        H("span", { style: { flex: "0 0 auto", color: "#20D9F5", fontSize: 15 } }, "\u2192"));
+        H("span", { style: { flex: "0 0 auto", color: tnP, fontSize: 17 } }, "\u2192"));
 }
 
 
@@ -32368,24 +32371,22 @@ function AlbumsPromus(props) {
           h("div", { style: { fontSize: 9, letterSpacing: "0.28em", textTransform: "uppercase", color: tnT, fontWeight: 700 } }, T("Ses vid\u00e9os", "Videos", "Sus v\u00eddeos", "I suoi video", "\u52d5\u753b", "Videos") + " (" + toutesV.length + ")"),
           h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))));
     })(),
-    (function () {
-      var phsA = [];
-      ((galeriePh && galeriePh.length) ? galeriePh : []).forEach(function (uG) { if (uG && phsA.length < 14 && phsA.indexOf(uG) < 0) phsA.push(uG); });
-      if (!phsA.length) (albums || []).forEach(function (aA) { ((aA && aA.photos) || []).forEach(function (uA) { if (uA && phsA.length < 14 && phsA.indexOf(uA) < 0) phsA.push(uA); }); });
-      if (!phsA.length) return null;
-      var phsD = [];
-      return h("div", null, /* 31/07 : proposition 1 — vedette large + rail qui defile (choix Blandine) */
-        (function () { /* 31/07 : plus de grande photo a la une — seule la video reste en grand (demande Blandine) */
-          var estV = function (uX) { return (typeof estUrlVideo === "function" && estUrlVideo(uX)); };
-          var vd0 = null;
-          phsA.forEach(function (uX) { if (!vd0 && estV(uX)) vd0 = uX; });
-          phsD = [];
-          return null; /* 01/08 : GRAND BLOC VIDEO RETIRE (decision Blandine) — une seule carte, celle qui mene a la page des videos. La video reste visible en vignette dans la bande. */
-          /* code conserve ci-dessous, inatteignable, pour pouvoir revenir en arriere en une ligne */
-          return h("div", { role: "button", onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(vd0); else if (props.onTout) props.onTout(); }, style: { marginTop: 26, height: 196, borderRadius: 16, overflow: "hidden", border: "1px solid " + tA(0.5), cursor: "pointer", position: "relative", background: "#04070A" } },
-            h("video", { src: vd0 + "#t=0.01", muted: true, loop: true, controls: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-            h("div", { style: { position: "absolute", left: 10, bottom: 8, fontSize: 8, letterSpacing: "0.2em", color: "rgba(244,247,250,0.85)", textShadow: "0 1px 6px rgba(0,0,0,0.8)" } }, "\u25b6\ufe0e " + T("VID\u00c9O", "VIDEO", "V\u00cdDEO", "VIDEO", "\u52d5\u753b", "VIDEO")));
-        })(),
+    (function () { /* 25/08 (2e passe) : retour aux PHOTOS qui defilent sous « Le voir en mouvement » — cartes bien plus grandes et surtout plus larges (210x190 au lieu de 108x132), et piochage TOUR DE TABLE dans TOUS les albums (1re photo de chaque album, puis 2e de chaque, etc.) + la galerie libre, au lieu d'epuiser une seule source (demande Blandine) */
+      var srcR = [];
+      var galR = []; ((galeriePh) || []).forEach(function (uG) { if (uG && galR.indexOf(uG) < 0) galR.push(uG); });
+      if (galR.length) srcR.push(galR);
+      (albums || []).forEach(function (aR) { var phL = ((aR && aR.photos) || []).filter(Boolean); if (phL.length) srcR.push(phL); });
+      var phsR = [];
+      var rangR = 0, resteR = srcR.length > 0;
+      while (resteR && phsR.length < 14) {
+        resteR = false;
+        for (var iR = 0; iR < srcR.length && phsR.length < 14; iR++) {
+          if (rangR < srcR[iR].length) { resteR = true; var uR0 = srcR[iR][rangR]; if (uR0 && phsR.indexOf(uR0) < 0) phsR.push(uR0); }
+        }
+        rangR++;
+      }
+      if (!phsR.length) return null;
+      return h("div", null,
         h("div", { ref: function (elC) {
           if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
           var pauseD = false;
@@ -32396,16 +32397,16 @@ function AlbumsPromus(props) {
             if (pauseD) return;
             var maxD = elC.scrollWidth - elC.clientWidth;
             if (maxD <= 0) return;
-            elC.scrollLeft += 1.4; /* 31/07 : defilement plus franc */
-            if (elC.getAttribute("data-boucle") === "1") { var moitR = elC.scrollWidth / 2; if (elC.scrollLeft >= moitR) elC.scrollLeft -= moitR; } /* 31/07 soir : liste doublee -> retour au point identique, aucun saut visible */
+            elC.scrollLeft += 1.4;
+            if (elC.getAttribute("data-boucle") === "1") { var moitR = elC.scrollWidth / 2; if (elC.scrollLeft >= moitR) elC.scrollLeft -= moitR; }
             else if (elC.scrollLeft >= maxD - 1) { elC.scrollLeft = 0; }
           }, 28);
-        }, "data-hscroll": "1", "data-boucle": (phsA.filter(function (uB) { return phsD.indexOf(uB) < 0; }).length >= 4 ? "1" : "0"), style: { display: "flex", gap: 15, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 26, paddingBottom: 2 } },
-        (function () { var lR = phsA.filter(function (uR) { return phsD.indexOf(uR) < 0; }); return lR.length >= 4 ? lR.concat(lR) : lR; })().map(function (uP, iP) {
+        }, "data-hscroll": "1", "data-boucle": (phsR.length >= 4 ? "1" : "0"), style: { display: "flex", gap: 15, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 26, paddingBottom: 2 } },
+        (phsR.length >= 4 ? phsR.concat(phsR) : phsR).map(function (uP, iP) {
           var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
-          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 108, height: 132, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
+          return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 210, height: 190, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
             vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-               : h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(uP, 224, 272) : uP), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uP); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+               : h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(uP, 420, 380) : uP), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uP); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
         })));
     })());
 }
@@ -34349,24 +34350,7 @@ function EcranCheval() {
 
         /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
         /* 30/07: encart Sellerie retire a la demande de Blandine */)),
-        cristal("sante"),
-        h("div", { id: "chapSante", style: { position: "relative" } },
-          h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Santé & sellerie", "Health & tack", "Salud", "Salute", "健康", "Gesundheit"))),
-          h("div", { style: { minWidth: 0 } },  h("div", { className: "rise", style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 11, animationDelay: ".175s", marginBottom: 18 } },
-          [["clinique", "\ud83e\ude7a", T("Clinique v\u00e9t\u00e9rinaire", "Vet clinic", "Cl\u00ednica veterinaria", "Clinica veterinaria", "\u52d5\u7269\u75c5\u9662", "Tierklinik"), T("Soins & conseils", "Care & advice", "Cuidados y consejos", "Cure e consigli", "\u30b1\u30a2\u3068\u52a9\u8a00", "Pflege & Beratung")],
-           ["sellerie", "\ud83e\uddf5", T("Sellerie", "Tack room", "Guadarn\u00e9s", "Selleria", "\u99ac\u5177", "Sattelkammer"), T("\u00c9quipement & codes promo", "Gear & promo codes", "Equipo y c\u00f3digos promo", "Attrezzatura e codici promo", "\u88c5\u5099\u3068\u30af\u30fc\u30dd\u30f3", "Ausr\u00fcstung & Promocodes")]].map(function (cS) {
-            var imgSq = "";
-            try { if (typeof HYPE_IMGS !== "undefined") imgSq = (cS[0] === "clinique") ? (HYPE_IMGS.encartVeto || HYPE_IMGS.cliniqueEncart || "") : (HYPE_IMGS.sellerieEncart || ""); } catch (eIS) { }
-            return h("div", { key: "sq" + cS[0], role: "button", onClick: function () { setEcran(cS[0]); }, style: { position: "relative", overflow: "hidden", border: "1px solid " + tA(0.35), borderRadius: 20, background: "rgba(0,0,0,0.35)", minHeight: 200, padding: "18px 10px 18px", textAlign: "center", cursor: "pointer" } }, /* 31/07 soir : les deux cartes agrandies (demande Blandine) */
-              imgSq ? h("img", { src: imgSq, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 32%", display: "block" } }) : null,
-        null, /* 30/07: retour des images de couverture (demande Blandine), memes cles que les anciens encarts pleine largeur */
-              imgSq ? h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0.06) 30%, rgba(4,6,9,0.82) 100%)" } }) : null,
-              h("div", { style: { position: "relative", zIndex: 2 } },
-                imgSq ? null : h("div", { style: { width: 44, height: 44, borderRadius: "50%", margin: "0 auto", border: "1px solid " + tA(0.5), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19 } }, cS[1]),
-                h("div", { style: { marginTop: imgSq ? 116 : 14, minHeight: 34, display: "flex", alignItems: "flex-end", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 14, fontWeight: 600, color: "#F0F4F6", lineHeight: 1.2, textShadow: imgSq ? "0 2px 12px rgba(0,0,0,0.85)" : "none" } }, cS[2]),
-                h("div", { style: { marginTop: 5, fontSize: 10, color: imgSq ? "rgba(240,245,248,0.85)" : "#9AA2AC", textShadow: imgSq ? "0 1px 8px rgba(0,0,0,0.85)" : "none" } }, cS[3])));
-          })))),
+        /* 25/08 : chapitre Sante & sellerie RETIRE de la fiche (cartes Clinique veterinaire + Sellerie) — decision Blandine ; les ecrans clinique/sellerie restent atteignables depuis leurs autres portes */
         cristal("partage"), h("div", { style: { position: "relative" } }, /* 02/08 : conteneur positionne ajoute — le titre vertical s ancrait a un ancetre lointain et se posait par-dessus le titre d un autre chapitre (bug signale par Blandine) */
           h("div", { id: "chapPartage", style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } }, /* 31/07 soir : dernier titre horizontal passe a la verticale dans la marge, comme les autres chapitres */
           h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen"))),
@@ -34377,12 +34361,7 @@ function EcranCheval() {
               h("div", { className: "s" }, T("Avec ton entra\u00eeneur, ton \u00e9curie ou tes proches.", "With your coach, stable or family.", "Con tu entrenador, cuadra o familia.", "Con il tuo istruttore, la scuderia o i tuoi cari.", "\u30b3\u30fc\u30c1\u3084\u5bb6\u65cf\u3068\u5171\u6709\u3002", "Mit deinem Trainer, deinem Stall oder deinen Nahestehenden."))),
             h("div", { className: "qr" }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h3v3h-3zM19 14v6M17 19h3" })))),
           h("button", { className: "btnGhost", onClick: partagerFiche }, T("G\u00e9n\u00e9rer un lien", "Generate a link", "Generar enlace", "Genera un link", "\u30ea\u30f3\u30af\u3092\u751f\u6210", "Link erstellen")),
-          (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) ? h("div", { style: { margin: "14px 0 0", borderRadius: 20, border: "1px solid " + (partageEH ? tA(0.55) : "rgba(255,255,255,0.09)"), background: "rgba(17,20,23,0.72)", backdropFilter: "blur(10px)", padding: "16px 16px", display: "flex", alignItems: "center", gap: 14, boxShadow: partageEH ? ("0 0 26px " + tA(0.18)) : "none", transition: "all .4s ease" } },
-      h("div", { style: { minWidth: 0 } },
-        h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, color: "#F4F7FA", letterSpacing: "0.02em" } }, T("Partager sur l'Écurie Hype", "Share on the Écurie Hype", "Compartir en la Écurie Hype", "Condividi sull'Écurie Hype", "Écurie Hype に共有", "Im Hype-Stall teilen")),
-        h("div", { style: { marginTop: 4, fontSize: 11, fontWeight: 300, color: "#8A96A2", lineHeight: 1.5 } }, T("Ton cheval apparaîtra dans la galerie de la communauté.", "Your horse will appear in the community gallery.", "Tu caballo aparecerá en la galería de la comunidad.", "Il tuo cavallo apparirà nella galleria della comunità.", "コミュニティのギャラリーに表示されます。", "Dein Pferd erscheint in der Community-Galerie."))),
-      h("div", { role: "switch", "aria-checked": partageEH ? "true" : "false", onClick: basculerPartageEH, style: { flex: "0 0 auto", width: 52, height: 30, borderRadius: 999, cursor: "pointer", position: "relative", background: partageEH ? ("linear-gradient(120deg," + tA(0.85) + "," + (teinteCl || "#5FE9F0") + ")") : "rgba(255,255,255,0.1)", border: "1px solid " + (partageEH ? "rgba(95,233,240,0.8)" : "rgba(255,255,255,0.15)"), boxShadow: partageEH ? ("0 0 18px " + tA(0.55)) : "none", transition: "all .35s ease" } },
-        h("div", { style: { position: "absolute", top: 3, left: partageEH ? 25 : 3, width: 22, height: 22, borderRadius: "50%", background: "#F4F7FA", boxShadow: "0 2px 8px rgba(0,0,0,0.4)", transition: "left .35s cubic-bezier(.2,.8,.2,1)" } }))) : null, /* 30/07 : encart Ecurie Hype remonte dans Liens & partage (maquette validee) */
+          null, /* 25/08 : encart « Partager sur l'Ecurie Hype » RETIRE — projet Ecurie Hype en suspens (decision Blandine) ; donnees inchangees, aucun cheval departage */
           null /* 30/07 : ligne FFE retiree (promesse sans backend — decision Blandine ; lien SIRE dans Origines a la place) */)),
 
         
@@ -34975,7 +34954,7 @@ h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { 
           h("button", { onClick: function () { sauverOrigines(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern"))))) : null,
     toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(40px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 90, background: "rgba(20,26,33,0.96)", color: "#EDF2F5", border: "1px solid " + tA(0.74) + "", borderRadius: 999, padding: "10px 18px", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", boxShadow: "0 10px 30px rgba(10,26,36,0.11)" } }, toast) : null,
     albumChOuvert ? h(EcranAlbumPhotos, { userId: chevalDyn && chevalDyn.ownerId, cible: "cheval", cibleId: chevalDyn && chevalDyn.dbId, tr: tr, onClose: function () { setAlbumChOuvert(false); }, onRepublier: function (url) { appliquerPhotoCheval({ dataUrl: url, fichier: null, original: null }); } }) : null,
-    h(PontChevalCommun, { chevalId: (chevalDyn && chevalDyn.dbId) || (typeof window !== "undefined" ? window.__chevalOuvert : null) || null, nom: (chevalDyn && chevalDyn.nom) || "" }));
+    h(PontChevalCommun, { chevalId: (chevalDyn && chevalDyn.dbId) || (typeof window !== "undefined" ? window.__chevalOuvert : null) || null, nom: (chevalDyn && chevalDyn.nom) || "", teinte: teinte }));
 }
 
 
