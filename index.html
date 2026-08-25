@@ -33952,11 +33952,11 @@ function EcranCheval() {
               return !(f.__id && prisE[f.__id]);
             });
             var fusion = tete.concat(suite);
-            vus = fusion.slice(0, 7);
+            vus = fusion.slice(0, 3);
             reste = faits.length - vus.filter(function (f) { return !f.__ep; }).length - tete.length;
             if (reste < 0) reste = 0;
           } else {
-            vus = faits.slice(0, 7); reste = faits.length - vus.length;
+            vus = faits.slice(0, 3); reste = faits.length - vus.length;
           }
 
           function ch(n, lb, or) {
@@ -34063,7 +34063,7 @@ function EcranCheval() {
           h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto",
                               borderRadius: 16, overflow: "hidden", background: "#000",
                               border: "1px solid rgba(255,255,255,.07)" } },
-            h("video", { src: "palmares-video.mp4?v=1", poster: "palmares-video.jpg?v=1",
+            h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1",
                          autoPlay: true, muted: true, loop: true, playsInline: true,
                          "webkit-playsinline": "true", preload: "metadata",
                          onClick: function (eV) { try { eV.stopPropagation(); var v = eV.currentTarget;
@@ -37252,7 +37252,21 @@ function EcranCours() {
         if (bloc && bloc.type === "couv-image")
             return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd }, React.createElement(CouvImage, { src: bloc.src, cta: bloc.cta, onRetour: () => setEcran("galop-detail"), onContinuer: suivant, langue: langue }));
         if (bloc && bloc.type === "couv-affiche")
-            return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd }, React.createElement(CouvAffiche, { data: bloc.couv, hero: bloc.src, logo: bloc.logo, chapitre: (cours && cours.titre) || null, onRetour: () => setEcran("galop-detail"), onContinuer: suivant, langue: langue }));
+            /* 25/08 — « FAIS EN SORTE QUE CA PUISSE BOUGER UN PEU, LA CA FAIT BIZARRE. »
+               La couverture fait exactement la hauteur de l ecran (minHeight
+               calc(100dvh - 84px) + les 84px de la barre d onglets) : le document ne
+               depasse donc JAMAIS l ecran et la page est parfaitement immobile. Rien
+               n est casse — il n y a simplement rien a faire defiler — mais l immobilite
+               totale se lit comme un ecran fige, surtout quand la couverture est encore
+               le placeholder GALOPS_HERO et laisse des bandes noires.
+               On ajoute une simple respiration SOUS la couverture, en frere et non a
+               l interieur : `CouvAffiche` n est pas touche, le titre, la citation et le
+               bouton Commencer ne bougent pas d un pixel, et le document depasse
+               l ecran de 56px — juste assez pour que la page reponde au doigt et
+               revienne. Une ligne a supprimer pour revenir en arriere. */
+            return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd },
+                React.createElement(CouvAffiche, { data: bloc.couv, hero: bloc.src, logo: bloc.logo, chapitre: (cours && cours.titre) || null, onRetour: () => setEcran("galop-detail"), onContinuer: suivant, langue: langue }),
+                React.createElement("div", { "aria-hidden": "true", style: { height: 56, background: "#01060f" } }));
     if (bloc && bloc.type === "sommaire")
         return React.createElement(SommaireCours, { bloc: bloc, total: total, baseIdx: blocIdx, progression: dejaTermine ? 100 : 0, onRetour: precedent, onAllerA: (i) => { if (i < total) setBlocIdx(i); }, langue: langue });
     if (bloc && bloc.type === "notion")

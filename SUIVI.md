@@ -10,6 +10,75 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 25/08/2026 — COUVERTURES DE CHAPITRE : « ÇA NE SCROLLE PLUS »
+
+> **Point de départ (Blandine, capture `L'assiette et la posture assise`, Galop 3 · g3-c12) :**
+> « on ne peut de nouveau plus scroll, je suis sur image figée sur ce chapitre ».
+
+## La conclusion : il n'y avait pas de bug de défilement
+
+`CouvAffiche` fait **exactement** la hauteur de l'écran : `minHeight: calc(100dvh - 84px)` plus les
+84 px de la barre d'onglets. Le document ne dépasse donc jamais la fenêtre — rien à faire défiler.
+Le bouton **Commencer** répondait normalement (vérifié par Blandine) : la page était complète, pas
+figée. On en sort par le bouton ou par un balayage vers la gauche.
+
+**Pourquoi d'autres chapitres bougeaient, lui non :** le `minHeight` n'est pas une hauteur fixe. Une
+couverture au titre long, à la citation en quatre lignes ou avec un auteur sous la citation dépasse
+la hauteur d'écran, la boîte grandit et la page défile un peu. `g3-c12` a un titre court, trois
+lignes de citation et pas d'auteur : tout rentre pile. D'où l'impression d'écran gelé — renforcée
+par le placeholder `GALOPS_HERO` affiché en `contain`, qui laisse des bandes noires et un cadre.
+
+## Ce qui a été livré
+
+**1. Respiration sous la couverture** — `EcranCours`, branche `couv-affiche` (~37255).
+Un simple bloc de **56 px** ajouté **en frère** de `CouvAffiche`, pas à l'intérieur : le composant
+n'est pas touché, titre / citation / bouton ne bougent pas d'un pixel, et le document dépasse
+l'écran de 56 px. La page répond au doigt et revient. Vaut pour **toutes** les couvertures
+`couv-affiche`. Retour arrière = supprimer cette ligne. Le chiffre 56 est le seul réglage.
+
+**2. Filet anti-verrou repassé à chaque page d'un chapitre** — `EcranCours`, effet `[blocIdx]`.
+`hypeFiletScroll()` réaligne `body.overflow` sur la réalité du DOM, mais il n'était appelé qu'au
+**changement d'écran** (`useEffect [ecran]` du `Router`). Tourner les pages d'un chapitre ne change
+pas `ecran`, ça change `blocIdx` : une visionneuse mal refermée pouvait laisser
+`body{overflow:hidden}` jusqu'à la sortie du cours. **Ce n'était pas la cause du symptôme signalé**,
+mais le trou était réel et il est bouché. Conservé.
+
+**3. Un geste = un seul recul** — `retourEcran`, garde-fou de 450 ms.
+Posé sur l'hypothèse que le balayage maison (`onNavTouchEnd` du `Router`) et le retour système
+(`popstate`) dépilaient tous les deux sur le même geste. **Hypothèse non confirmée** : Blandine
+arrivait bien par le menu des Galops et le retour ramenait quand même à l'accueil. Le garde-fou est
+laissé en place (il ne nuit pas, le double-recul reste un risque réel sur iOS), mais **la cause du
+retour fautif n'est pas identifiée** — voir « reste à traiter ».
+
+## ⚠️ Fausses pistes déjà explorées — ne pas les refaire
+
+- **« Le raccourci de la courbe saute la page des Galops »** → faux. `allerVersGalop` vit dans
+  `EcranBibliothequeGalops`, donc `galops` est déjà dans l'historique. `EcranDashboard` et
+  `SommaireGalops`, qui sautaient bien à `galop-detail`, sont **du code mort**, jamais rendus.
+- **« La couverture est cassée / l'image ne charge pas »** → non. Le repli `GALOPS_HERO` de
+  `CouvAffiche` fonctionne, l'image est bien là. C'est un placeholder, pas un échec de chargement.
+
+## 🔎 Reste à traiter
+
+**A. Le retour depuis un menu de Galop ramène à l'accueil.** Signalé, non résolu, cause inconnue.
+Le garde-fou de 450 ms n'a rien changé. À reprendre à froid en instrumentant `historiqueEcrans`
+(afficher la pile au moment du retour) plutôt qu'en devinant.
+
+**B. « Le cours suivant pareil, on est obligé de fermer, à la main plus rien ne marche. »**
+Jamais confirmé depuis. À vérifier : après avoir tapé **Commencer**, est-ce que les pages de texte
+défilent normalement ? Si non, relever si le blocage arrive **dès la première page** ou seulement
+**après avoir touché une image**, et si la **barre d'onglets du bas** répond encore. Pistes ouvertes
+dans cet ordre : `hypeLibererPuitsTactiles` (pose `overflow:clip` + `touch-action:pan-y` sur tout
+élément qui déborde horizontalement, en boucle sur `div,section,header,ul,li,span` à chaque
+changement d'écran) ; le conteneur `overflow:"clip"` du `Router` (correctif du 23/08) ; un
+`data-hype-zoom` resté monté.
+
+**C. Couvertures encore sur le placeholder.** `g3-c12` et les autres chapitres dont le bloc
+`couv-affiche` pointe sur `GALOPS_HERO` attendent une vraie image spectrale dédiée, comme `k332` /
+`k333` / `k334`. Purement visuel, aucun lien avec le défilement.
+
+---
+
 # 🔴 À FAIRE — ABONNEMENTS · rappel posé le 22/08/2026 (22h20)
 
 > **À traiter à tête reposée. Rien n'est urgent, rien n'est perdu, personne n'est bloqué.**
@@ -14154,3 +14223,94 @@ AVANT d'écrire dedans, pas après.**
    les deux « + » du rail (`addres`, `addres2`) font 56 et 64 px en `1.5px dashed`
 4. Le titre de l'écran d'import — « centralise le titre la hauteur » jamais élucidé
 5. Le reste de la liste du 25/08, inchangé
+
+
+---
+
+# HYPE ▸ VERSION 25/08/2026 · PAGE COMMUNAUTAIRE CHEVAL — ÉTAPE 1 CODÉE DANS L'INDEX
+
+## Ce qui a été fait
+Nouvel écran **`cheval-commun`** (composant `EcranChevalCommun`) intégré dans `index.html` par **3 greffes** :
+1. **CIBLE_DIRECTE** : clé d'aperçu `chevalcommun` (page en mode DÉMO, zéro requête réseau) et motif `chevalcommun-<id>` (ouvre la page commune d'un vrai cheval par son id).
+2. **Définition du composant** (après le bloc CIBLE_DIRECTE) : CSS injecté une seule fois (id `hycc-css`, préfixe `.hycc-` — aucun style existant touché) + la fonction `EcranChevalCommun`.
+3. **Branche de rendu** ajoutée juste après `ecran === "cheval"` : `ecran === "cheval-commun"`.
+
+## Contenu de la page (V1, cahier validé)
+- **Hero** : photo du cheval **sans aucun voile** (les textes vivent SOUS la photo), sourcil « HYPE ✦ PAGE COMMUNE », couronne or, nom Cinzel, ligne race · discipline · âge, pedigree Cormorant italique « par Père · et Mère » (depuis `origines`).
+- **Pilule EN CONCOURS** : sorties / victoires / podiums calculées depuis les données réelles (fusion table `resultats` par `cheval_id` + JSON `chevaux.palmares`, lecture tolérante des champs). **« Classés » volontairement omis** (le Quart FFE ne se recalcule jamais). Pilule masquée s'il n'y a aucun résultat.
+- **Ses histoires** : constellation — cristal central (photo du cheval, clip-path) relié par fils turquoise à 4 avatars max (propriétaire + `chevaux_liens`), `@pseudo` sinon prénom, chip `+N cavalières` au-delà. Tap avatar → profil de la cavalière.
+- **Le mur des souvenirs** : photos des **albums `albums_cheval` PUBLICS uniquement** (`visibilite === "public"`), cadres papier/polaroid + scotch (exception charte autorisée sur ce mur seulement), rotations/décalages précalculés, annotation = nom d'album. 10 photos max.
+- **Ses vidéos** : rail horizontal (`data-hscroll="1"` pour ne pas se battre avec le swipe de navigation) alimenté par les URLs vidéo des albums publics. **Masqué si vide.**
+- **En concours** : les 4 meilleurs classements, pastille dorée si top 3, pastille neutre sinon.
+- **Son indice** : bijou or avec le premier indice de `origines.indices` (IPO…). **Masqué si absent.**
+- **Partager un moment** : visible **uniquement pour les cavalières liées** (session locale + liste des liées) ; les deux boutons verre fumé renvoient vers la fiche du cheval où le flux d'ajout existe déjà. Aucun bouton rempli.
+- États vides §15 partout (constellation / mur / concours) en encarts doux.
+- `scrollTop = 0` à chaque ouverture (règle), `overflow-x: clip` (jamais `hidden` seul), turquoise fixe pour tous (exception validée), fond #060709.
+
+## Chargement
+Toutes les requêtes se font **à l'ouverture de la page seulement** — zéro poids au boot de l'app (priorité 1 de la passation respectée). Requêtes : `chevaux` (1), `chevaux_liens` (1), `profiles` (1), `albums_cheval` (1), `resultats` (1), session locale.
+
+## Aperçus
+- `…/index.html#chevalcommun` → la page en **mode démo** (cheval « Orphée (démo) », données fictives, aucune requête).
+- `…/index.html#chevalcommun-<id>` → la page commune d'un **vrai cheval**.
+- Copie `DEV_OUVRIR_PAGE-chevalcommun.html` fournie (s'ouvre directement sur la démo).
+
+## Vérifications faites
+- `node --check` du composant isolé : OK.
+- Les **16 scripts inline** de l'index modifié revérifiés : 0 erreur de syntaxe.
+- **Playwright complet** (Chromium, hors-ligne avec bouchon supabase-js) : `#chevalcommun` s'affiche, 0 erreur de page, 0 écran « Un caillou dans le sabot ». Captures 390 px et 820 px jointes. NB : dans le bac à sable les fichiers `hype-images-*.js` n'existent pas → polaroids/hero vides sur les captures ; en ligne, les vraies photos s'affichent.
+
+## Ce qui n'est PAS branché (étapes suivantes, à ta validation)
+- **Étape 2** : cristal + chiffre sur les vignettes de la grille « chevaux du club » (EcranGuilde) → point d'entrée réel vers la page commune.
+- **Étape 3** : pont « Toutes ses histoires → » sur la fiche privée.
+- **V2** : rapprochement des doublons non liés (§14) + garanties non-régressives fiche (§13).
+Aujourd'hui la page n'est accessible que par les aperçus : **aucun changement visible pour les cavalières.**
+
+## Réserve signalée
+- Les **politiques RLS** de `albums_cheval` / `chevaux_liens` / `profiles` doivent permettre la lecture inter-comptes pour que la page commune d'un cheval d'une AUTRE cavalière se remplisse. À vérifier sur un vrai id après mise en ligne ; si une section reste vide à tort, c'est la première piste.
+
+## À pousser
+- **`index.html` uniquement.** Aucun module externe modifié, aucun `?v=` à incrémenter, aucun SQL.
+- Marqueur vérifié : le fichier livré est bien **Hype** (jamais Linguae à la racine).
+
+---
+
+# HYPE ▸ VERSION 25/08/2026 (2e livraison de la session) · 🟥 LA SORTIE DE LA BARRE DU BAS MARCHE ENFIN
+
+## Le constat (au banc, preuve à l'appui)
+Le correctif de la **session 160** (barre du bas sortie du Router par `ReactDOM.createPortal` vers le `body`) était **inopérant en production** : au rendu réel, la barre restait rendue DANS `#root` (chaîne mesurée : `DIV < DIV < DIV < DIV < DIV#root < BODY`). Cause : le pont global fabrique `window.ReactDOM` à partir du module `react-dom-client`, qui n'exporte que `createRoot`/`hydrateRoot`/`version`. **`createPortal` n'y est pas** — il vit dans le module de base `react-dom` (pourtant bundlé et enregistré via `__def("react-dom")`). La condition de la session 160 échouait donc silencieusement et prenait son repli « rendu sur place, comme avant ». Le bug intermittent de la barre plantée au milieu pouvait toujours se produire.
+
+## Le correctif (1 ligne, dans le pont ReactDOM)
+Dans le petit script d'amorçage (`window.ReactDOM = { createRoot, hydrateRoot, version }`), ajout guardé :
+`ReactDOM.createPortal = __require("react-dom").createPortal` (try/catch : si le module manquait, rien ne casse, on retombe sur l'ancien comportement).
+
+## Preuve au banc (Playwright, 3 écrans : page commune, mon club, accueil)
+- `ReactDOM.createPortal` : **présent** (était absent avant le correctif).
+- La barre du bas est **enfant directe de `<body>`** sur les 3 écrans (était dans `#root` avant).
+- Position : 765→844 sur un écran de 844 (collée au bord bas). 0 erreur de page, 0 écran caillou.
+
+## Honnêteté sur le bug d'origine
+Le défaut « barre plantée au milieu » est **intermittent** : le banc prouve que la sortie du Router est enfin **active**, pas encore que le symptôme a disparu — ça, seule ton utilisation sur plusieurs jours le dira. Mais l'hypothèse de la session 160 (aucun ancêtre rogné ne peut plus la retenir) est maintenant réellement en place.
+
+## À pousser
+- **`index.html` uniquement** (contient page commune étape 1 + ce correctif). Rien d'autre.
+
+---
+
+# HYPE ▸ 25/08 (3e et 4e retouches de la session) · IPO EN SÉPARATEUR + EN CONCOURS ALIGNÉ SUR LA FICHE
+
+## IPO → séparateur (demande de Blandine)
+Le bloc « Son indice » disparaît : l'indice devient un **séparateur bijou** (filet doré, petite couronne, valeur + sigle au centre) entre « En concours » et « Partager un moment ». Sans indice : simple filet turquoise. Rendu seulement quand le bloc Partager suit (cavalières liées) — sinon il ne séparerait rien. Le grand écrin IPO reste l'affaire de la fiche privée.
+
+## En concours : reproduction EXACTE du calcul de la fiche (sessions 154/161)
+- **Lecture d'une ligne** : `place` sinon tête du texte `classement` ; champs `partants`, `concours`, `epreuve`, `cavalier`, `date_epreuve`. Le Quart FFE n'est jamais recalculé.
+- **Les 4 chiffres** : SORTIES (une sortie = un déplacement : même concours sur jours consécutifs = 1), VICTOIRES (place 1), PODIUMS (≤3), **CLASSÉS** (parcours classés) — vérifié au banc : 4 parcours démo dont 2 jours consécutifs du même concours → 3 sorties.
+- **Deux listes, deux rôles** (décision du 24/08 reconduite) : la table `resultats` COMPTE ; le palmarès JSON de `chevaux.palmares` S'AFFICHE mais ne compte pas (ce sont les mêmes résultats que les PDF — compter = doubler).
+- **Lignes au format fiche** : `1ER`/`3E` (or si 1ᵉʳ), CONCOURS en capitales, « épreuve · 1er sur 47 · cavalière », année à droite. Tri : victoires, puis podiums, puis le reste (départage par nombre de partants) — 4 lignes max.
+- **Correction au passage** : ma limite de lecture passait de 80 à 400 lignes — à 80, les compteurs d'un cheval à 178 parcours auraient été faux.
+
+## Vérifications
+node --check OK, 16 scripts inline 0 erreur, Playwright : pilule « 3 SORTIES 2 VICTOIRES 3 PODIUMS 4 CLASSÉS », ligne « 1ER · CONCOURS DÉMO · Grand Prix · 1er sur 47 · @luna · 2026 », 0 erreur page. (Une coquille de guillemet dans ma passe de remplacement a été introduite puis corrigée dans la même minute — signalée par honnêteté, le banc final est propre.)
+
+## À pousser
+- **`index.html` uniquement** (cumule : page commune, correctif barre, séparateur IPO, En concours aligné).
