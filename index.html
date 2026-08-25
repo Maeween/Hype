@@ -20276,7 +20276,8 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
         s.id = "hycc-css";
         s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:118px}" +
             ".hycc-hero{position:relative;padding:calc(env(safe-area-inset-top) + 12px) 18px 4px;overflow:hidden}" +
-            ".hycc-hphoto{position:absolute;left:0;top:0;width:88%;height:100%;object-fit:cover;object-position:left center;-webkit-mask-image:linear-gradient(90deg,#000 38%,rgba(0,0,0,.2) 46%,transparent 52%);mask-image:linear-gradient(90deg,#000 38%,rgba(0,0,0,.2) 46%,transparent 52%)}" +
+            ".hycc-hphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}" +
+            ".hycc-hgrad{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,0) 8%,rgba(6,7,9,.42) 44%,rgba(6,7,9,.84) 70%,rgba(6,7,9,.95) 100%)}" +
             ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
             ".hycc-marque{position:relative;z-index:2;display:inline-flex;flex-direction:column;line-height:1}" +
             ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F4F7FA;letter-spacing:.5px}" +
@@ -20333,13 +20334,13 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
             ".hycc-ph .scotch{position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(-3deg);width:34px;height:12px;background:rgba(238,230,212,.55);box-shadow:0 1px 2px rgba(0,0,0,.3)}" +
             ".hycc-railW{margin-top:8px}" +
             ".hycc-rail{display:flex;gap:10px;overflow-x:auto;padding:6px 16px 10px;scroll-snap-type:x proximity;scroll-padding-left:16px;-webkit-overflow-scrolling:touch}" +
-            ".hycc-vid{flex:0 0 46%;scroll-snap-align:start}" +
+            ".hycc-vid{flex:0 0 52%;scroll-snap-align:start}" +
             ".hycc-vid .cell{position:relative;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.1);background:#111417}" +
             ".hycc-vid video{width:100%;aspect-ratio:16/10;display:block;background:#000}" +
-            ".hycc-vid .play{position:absolute;left:8px;bottom:8px;width:26px;height:26px;border-radius:50%;background:rgba(6,7,9,.62);border:1px solid rgba(255,255,255,.28);display:grid;place-items:center;pointer-events:none}" +
+            ".hycc-vid .play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:34px;height:34px;border-radius:50%;background:rgba(6,7,9,.55);border:1px solid rgba(255,255,255,.3);display:grid;place-items:center;pointer-events:none}" +
             ".hycc-vid .play::before{content:\"\";display:block;width:0;height:0;border-left:8px solid #F4F7FA;border-top:5px solid transparent;border-bottom:5px solid transparent;margin-left:2px}" +
             ".hycc-vid .dur{position:absolute;right:7px;bottom:9px;font-size:9.5px;color:#F4F7FA;background:rgba(6,7,9,.7);padding:2px 6px;border-radius:7px;letter-spacing:.04em;pointer-events:none}" +
-            ".hycc-vid .t{font-size:11px;color:#DFE1E4;margin:6px 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}" +
+            ".hycc-vid .t{font-size:11px;color:#DFE1E4;margin:6px 2px 0;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}" +
             ".hycc-finrail{flex:0 0 40%;scroll-snap-align:start;display:grid;place-items:center;border-radius:12px;border:1px dashed rgba(20,226,239,.4);color:#14E2EF;font-size:11.5px;text-align:center;padding:10px;min-height:96px}" +
             ".hycc-coupesW{margin-top:4px}" +
             ".hycc-cpill{display:inline-block;margin:0 0 6px 16px;padding:3px 10px;border-radius:999px;border:1px solid rgba(244,196,85,.4);color:#E8C888;font-size:9px;letter-spacing:.2em;text-transform:uppercase;font-family:'Cinzel',serif}" +
@@ -20385,6 +20386,7 @@ function EcranChevalCommun() {
     var _st = React.useState({ pret: false, erreur: null, ch: null, cavs: [], nomsPar: {}, photos: [], videos: [], dernier: null, resultats: [], ipo: null, estLie: false });
     var st = _st[0], setSt = _st[1];
     var _vt = React.useState(false); var voirTout = _vt[0], setVoirTout = _vt[1];
+    var _vm = React.useState(false); var voirToutMur = _vm[0], setVoirToutMur = _vm[1];
     var _tc = React.useState(false); var toutesCav = _tc[0], setToutesCav = _tc[1];
     var _du = React.useState({}); var durees = _du[0], setDurees = _du[1];
 
@@ -20455,7 +20457,7 @@ function EcranChevalCommun() {
                 } catch (eL) { }
                 var cavs = [], nomsPar = {};
                 try {
-                    var rP = await supa.from("profiles").select("id, prenom, pseudo, avatar_url").in("id", ids);
+                    var rP = await supa.from("profiles").select("*").in("id", ids); /* select("*") : une colonne nommee absente (pseudo ?) faisait echouer TOUTE la requete -> constellation vide meme sur son propre cheval */
                     cavs = ((rP && rP.data) || []).map(function (p) {
                         var nm = p.pseudo ? ("@" + p.pseudo) : (p.prenom || "Cavali\u00e8re");
                         nomsPar[p.id] = nm;
@@ -20470,7 +20472,7 @@ function EcranChevalCommun() {
                         var tous = (al.photos || []).concat(al.videos || []);
                         tous.forEach(function (p) {
                             var u = urlDe(p); if (!u) return;
-                            if (estUrlVideo(u)) { videos.push({ u: u, t: al.nom || "", alb: al.id }); }
+                            if (estUrlVideo(u)) { videos.push({ u: u, t: al.nom || "", alb: al.id, poster: (p && typeof p === "object" && (p.poster || p.thumb || p.cover)) || "" }); }
                             else {
                                 if (photos.length < 14) photos.push({ u: u, qui: nomsPar[al.user_id] || "", alb: al.id });
                                 dernier = { u: u, an: al.nom || "", qui: nomsPar[al.user_id] || "", quand: fmtJour(al.created_at) };
@@ -20594,6 +20596,7 @@ function EcranChevalCommun() {
         /* — 1 · HERO (structure v2 conservee) — */
         H("div", { className: "hycc-hero" },
             ch.photo_url ? H("img", { className: "hycc-hphoto", src: ch.photo_url, alt: ch.nom || "" }) : null,
+            ch.photo_url ? H("div", { className: "hycc-hgrad" }) : null,
             H("div", { className: "hycc-hfade" }),
             H("div", { className: "hycc-marque" }, H("span", { className: "h" }, "Hype", H("i", null, "\u2726")), H("span", { className: "c" }, "Communaut\u00e9")),
             boutonRetour,
@@ -20630,7 +20633,23 @@ function EcranChevalCommun() {
                 (restantes.length > 0 && !toutesCav) ? H("div", { className: "hycc-plus", style: { left: "50%", top: "89%" }, onClick: function () { setToutesCav(true); } }, "+" + restantes.length) : null
             ),
             toutesCav ? H("div", { className: "hycc-cavplus" }, restantes.map(function (c, i) { return cavNoeud(c, i, true); })) : null
-        ) : H("div", { className: "hycc-empty" }, "Sa constellation attend ses premi\u00e8res cavali\u00e8res."),
+        ) : H(React.Fragment, null,
+            H("div", { className: "hycc-const" },
+                H("svg", { className: "hycc-fils", viewBox: "0 0 100 100", preserveAspectRatio: "none" },
+                    POS.map(function (pz, gi) { return H("line", { key: "gl" + gi, x1: 50, y1: 47, x2: pz.x, y2: pz.y, stroke: "rgba(20,226,239,.15)", strokeWidth: 0.35 }); })),
+                H("div", { className: "hycc-cristalW" }, H("div", { className: "hycc-cristal" },
+                    ch.photo_url ? H("img", { src: ch.photo_url, alt: "" }) : H("span", { className: "ini" }, (ch.nom || "?").charAt(0)),
+                    H("div", { className: "fac" }),
+                    H("div", { className: "bas" },
+                        H("div", { className: "n" }, (ch.nom || "").split(" ")[0] || "\u2014"),
+                        H("div", { className: "s" }, "Toutes ses histoires")))),
+                POS.map(function (pz, gi) {
+                    return H("div", { key: "gh" + gi, className: "hycc-cav", style: { left: pz.x + "%", top: pz.y + "%" } },
+                        H("div", { className: "a", style: { border: "1px dashed rgba(32,217,245,.32)", boxShadow: "none", background: "rgba(17,20,23,.5)" } }),
+                        H("div", { className: "p", style: { opacity: .5, fontStyle: "italic" } }, "\u00e0 \u00e9crire\u2026"));
+                })),
+            H("div", { className: "hycc-soustit" }, "Sa constellation attend ses premi\u00e8res cavali\u00e8res.")
+        ),
         /* — 4/5 · MUR DES SOUVENIRS : pele-mele compact, photos cliquables — */
         titre("LE MUR DES SOUVENIRS", true),
         (st.photos.length > 0 && st.photos.length < 3) ? H("div", { style: { padding: "8px 44px 0" } },
@@ -20646,8 +20665,9 @@ function EcranChevalCommun() {
                colonnes CSS remplies au nombre) ; le dernier cliche de la colonne courte
                s'etire pour finir a fleur. */
             var RATIOS = { "f-p": 1.12, "f-l": 0.62, "f-c": 0.9 };
+            var LOTS = (typeof voirToutMur !== "undefined" && voirToutMur) ? st.photos : st.photos.slice(0, 10);
             var cols = [[], []], haut = [0, 0];
-            st.photos.forEach(function (p, i) {
+            LOTS.forEach(function (p, i) {
                 var r = RATIOS[FORMES[i % FORMES.length]];
                 var c = haut[0] <= haut[1] ? 0 : 1;
                 cols[c].push({ p: p, i: i, r: r });
@@ -20661,22 +20681,23 @@ function EcranChevalCommun() {
             return H("div", { className: "hycc-mur" }, cols.map(function (col, ci) {
                 return H("div", { key: "col" + ci, className: "hycc-murcol" }, col.map(function (x, k) {
                     var p = x.p, i = x.i;
-                    return H("div", { key: "p" + i, className: "hycc-ph", style: { transform: "rotate(" + ANGLES[i % ANGLES.length] + "deg) translateX(" + (k % 2 ? 1.5 : -1.5) + "%)", marginTop: (k ? -10 : 0) + "px", zIndex: 1 + (k % 2) }, onClick: function () { ouvrirAlbum(p.alb); } },
+                    return H("div", { key: "p" + i, className: "hycc-ph", style: { transform: "rotate(" + ANGLES[i % ANGLES.length] + "deg) translateX(" + (k % 2 ? (2.5 + (i % 2)) : -(2.5 + (i % 3))) + "%)", width: (i % 5 === 2 ? "108%" : "100%"), marginLeft: (i % 5 === 2 ? "-4%" : 0), marginTop: (k ? -(12 + (i % 3) * 6) : 0) + "px", zIndex: 1 + ((i * 2 + k) % 4) }, onClick: function () { ouvrirAlbum(p.alb); } },
                         H("img", { src: p.u, alt: "", loading: "lazy", style: { aspectRatio: "1 / " + x.r } }),
                         i % 3 === 0 ? H("div", { className: "scotch" }) : null,
                         p.qui ? H("div", { className: "qui" }, p.qui) : null);
                 }));
             }));
         })() : H("div", { className: "hycc-empty" }, "Aucun souvenir public pour le moment."),
+        (st.photos.length > 10 && !voirToutMur) ? H("div", { style: { textAlign: "center", marginTop: 8 } }, H("span", { className: "hycc-voirtout", onClick: function () { setVoirToutMur(true); } }, "Voir tous les souvenirs \u2192")) : null,
         /* — 6 · SES VIDEOS : rail horizontal, ~2,2 visibles, fin de rail — */
         (st.videos.length > 0) ? H("div", { className: "hycc-railW" },
             titre("SES VID\u00c9OS (" + st.videos.length + ")"),
             H("div", { className: "hycc-rail", "data-hscroll": "1" },
                 videosAff.map(function (v, i) {
                     return H("div", { key: "v" + i, className: "hycc-vid" },
-                        H("div", { className: "cell", onClick: v.alb ? function () { ouvrirAlbum(v.alb); } : null },
-                            H("video", { src: v.u, playsInline: true, controls: true, preload: "metadata", controlsList: "nodownload",
-                                onLoadedMetadata: function (e) { var d = fmtDur(e.target.duration); if (d) { setDurees(function (o) { var c = Object.assign({}, o); c[i] = d; return c; }); } } }),
+                        H("div", { className: "cell", onClick: function (e) { if (v.alb) { ouvrirAlbum(v.alb); return; } try { var vd = e.currentTarget.querySelector("video"); if (vd) { if (vd.paused) { vd.play(); } else { vd.pause(); } } } catch (eV) { } } },
+                            H("video", { src: v.u, playsInline: true, muted: true, preload: "metadata", poster: v.poster || undefined,
+                                onLoadedMetadata: function (e) { try { var d = fmtDur(e.target.duration); if (d) { setDurees(function (o) { var c = Object.assign({}, o); c[i] = d; return c; }); } if (!v.poster) { e.target.currentTime = 0.12; } } catch (eM) { } } }),
                             H("div", { className: "play" }),
                             durees[i] ? H("div", { className: "dur" }, durees[i]) : null),
                         v.t ? H("div", { className: "t" }, v.t) : null);
