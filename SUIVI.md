@@ -14387,3 +14387,13 @@ Bug signalé par Blandine : taper une cavalière de la constellation ouvrait la 
 # HYPE ▸ 25/08 (19e livraison) · CONSTELLATION : DISPOSITIONS PAR EFFECTIF
 
 Constat de Blandine : à 2-3 cavalières, les 4 positions en coins laissaient des trous ridicules. La constellation choisit désormais sa disposition selon l'effectif : **1** = au-dessus du cristal (hauteur 208 px), **2** = de part et d'autre à mi-hauteur (222 px), **3** = triangle (deux en haut, une sous le cristal, 258 px), **4** = les coins (274 px). Le chip +N n'existe qu'à 4 visibles (position libre). Les fantômes de l'état vide gardent les 4 coins. Banc : 4 effectifs mesurés aux bonnes hauteurs, 0 erreur, captures 2 et 3 jointes. À pousser : `index.html` (md5 ced4b04e).
+
+---
+
+# HYPE ▸ 25/08 (20e livraison) · HERO CIBLE DE L'INFOGRAPHIE (constellation adaptative conservée)
+
+Brief-infographie appliqué, SAUF la section constellation (Blandine garde la version adaptative 1/2/3/4). 
+- **Hero cible** : photo **bord à bord** (padding latéral 0, marque Hype en absolu sur la photo), cheval en majesté (cadrage `center 22%`), **dégradé vertical** (transparent 26 % → noir 92 %) et l'identité posée EN BAS sur le dégradé, alignée à gauche pleine largeur (nom `clamp(22-27px)`, infos/pedigree remontés d'un cran). Hauteur totale : 409-493 px selon gabarit, « SES HISTOIRES » **visible sans scroll** sur 375/390/430 (mesuré), débordement 0.
+- **En concours** : ligne « … et N autres » (N = classés − 4 affichés) avant « Voir tout son palmarès → ».
+- Mur et vidéos : déjà conformes aux vignettes APRÈS (17e livraison), non retouchés.
+À pousser : `index.html` (md5 f4d4109d).

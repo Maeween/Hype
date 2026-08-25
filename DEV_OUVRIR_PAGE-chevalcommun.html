@@ -20275,23 +20275,23 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
         var s = document.createElement("style");
         s.id = "hycc-css";
         s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:118px}" +
-            ".hycc-hero{position:relative;padding:calc(env(safe-area-inset-top) + 12px) 18px 4px;overflow:hidden}" +
-            ".hycc-hphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%}" +
-            ".hycc-hgrad{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,0) 8%,rgba(6,7,9,.42) 44%,rgba(6,7,9,.84) 70%,rgba(6,7,9,.95) 100%)}" +
+            ".hycc-hero{position:relative;padding:0 0 4px;overflow:hidden}" +
+            ".hycc-hphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%}" +
+            ".hycc-hgrad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0) 26%,rgba(6,7,9,.55) 52%,rgba(6,7,9,.92) 74%,#060709 92%)}" +
             ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
-            ".hycc-marque{position:relative;z-index:2;display:inline-flex;flex-direction:column;line-height:1}" +
+            ".hycc-marque{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:18px;z-index:6;display:inline-flex;flex-direction:column;line-height:1}" +
             ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F4F7FA;letter-spacing:.5px}" +
             ".hycc-marque .h i{color:#F4C455;font-style:normal;font-size:12px;margin-left:2px}" +
             ".hycc-marque .c{font-size:7.5px;letter-spacing:.42em;color:#9FA3A8;margin-top:4px;text-transform:uppercase}" +
             ".hycc-back{position:absolute;top:calc(env(safe-area-inset-top) + 10px);right:14px;z-index:6;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:rgba(17,20,23,.6);border:1px solid rgba(255,255,255,.14);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);color:#F4F7FA;font-size:19px;line-height:1}" +
-            ".hycc-idb{position:relative;z-index:2;margin:22px 0 0 48%;max-width:50%}" +
+            ".hycc-idb{position:relative;z-index:2;margin:clamp(200px,32vh,290px) 0 0 0;max-width:100%;padding:0 18px}" +
             ".hycc-couronne{width:19px;height:14px;display:block;margin-bottom:2px}" +
-            ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(17px,5vw,21px);line-height:1.16;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85);overflow-wrap:break-word}" +
+            ".hycc-nom{font-family:'Cinzel',serif;font-weight:700;font-size:clamp(22px,6.4vw,27px);line-height:1.16;letter-spacing:.4px;color:#FBFBFC;text-shadow:0 2px 26px rgba(0,0,0,.85);overflow-wrap:break-word}" +
             ".hycc-legende{display:flex;align-items:center;gap:8px;margin-top:5px}" +
             ".hycc-legende i{display:block;width:22px;height:1px;background:#14E2EF;opacity:.85}" +
             ".hycc-legende span{font-size:9px;letter-spacing:.34em;color:#DFE1E4;text-transform:uppercase}" +
-            ".hycc-sub{font-size:11px;color:#D3D5D8;margin-top:7px;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.8)}" +
-            ".hycc-ped{margin-top:6px;font-size:12px;line-height:1.45}" +
+            ".hycc-sub{font-size:11.5px;color:#D3D5D8;margin-top:7px;letter-spacing:.03em;text-shadow:0 1px 10px rgba(0,0,0,.8)}" +
+            ".hycc-ped{margin-top:6px;font-size:12.5px;line-height:1.45}" +
             ".hycc-ped b{color:#14E2EF;font-weight:600}" +
             ".hycc-ped span{color:#F4F7FA}" +
             ".hycc-encbar{position:relative;z-index:2;margin:13px 16px 0;display:flex;align-items:center;gap:6px;padding:9px 10px 9px 14px;border-radius:16px;background:rgba(17,20,23,.74);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}" +
@@ -20736,6 +20736,7 @@ function EcranChevalCommun() {
                         sous ? H("div", { className: "d" }, sous) : null),
                     r.an ? H("div", { className: "an" }, r.an) : null);
             }),
+            (classes > meilleurs.length) ? H("div", { style: { fontSize: 11, color: "#9FA3A8", fontStyle: "italic", margin: "8px 0 0 2px" } }, "\u2026 et " + (classes - meilleurs.length) + " autres") : null,
             st.estLie ? H("span", { className: "hycc-lien", onClick: ouvrirFiche }, "Voir tout son palmar\u00e8s \u2192") : null
         ) : H("div", { className: "hycc-empty" }, "Aucun r\u00e9sultat partag\u00e9 pour le moment."),
         /* — 8/9 · IPO compact (or, masque si absent) + PARTAGER compact, cote a cote — */
