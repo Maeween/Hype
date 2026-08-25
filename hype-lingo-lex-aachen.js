@@ -36,7 +36,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Cinque fasi concatenate: arrivo, stacco, planata, ricezione, ripartenza. Il cavaliere agisce davvero solo sulla prima — il resto, accompagna.",
           de:"Fünf verkettete Phasen: Anreiten, Absprung, Flug, Landung, Weiterreiten. Wirklich einwirken kann der Reiter nur auf die erste — den Rest begleitet er.",
           ja:"連なる五つの局面 — 進入、踏切、滞空、着地、再発進。騎手が本当に働きかけられるのは最初のひとつだけ。あとは、寄り添うだけです。",
-          ar:"خمس مراحل متتابعة: الاقتراب، والارتقاء، والتعلق، والهبوط، والانطلاق. لا يؤثر الفارس فعليا إلا في الأولى — أما الباقي فيرافقه مرافقة." } },
+          ar:"خمس مراحل متتابعة: الاقتراب، والارتقاء، والطيران، والهبوط، والانطلاق. يتدخل الفارس فعليا في مرحلة الاقتراب أساسا — أما بقية القفزة فيرافق فيها حركة الحصان." } },
 
   { ref:"sauter", lecon:4, coll:"saut", v:true,
     mots:{ fr:{m:"sauter"}, en:{m:"to jump", p:"djeumpe", var:"to pop over = sauter tranquillement"},
@@ -49,7 +49,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"⚠️ Espressione britannica molto utile: **« pop over »** vuol dire saltare senza farne un dramma — « just pop him over a cross-pole » è un invito rilassato, non un esercizio.",
           de:"⚠️ Sehr nützliche britische Wendung: **« pop over »** heißt springen, ohne ein Ding daraus zu machen — « just pop him over a cross-pole » ist eine entspannte Einladung, keine Übung.",
           ja:"⚠️ とても便利なイギリス表現：**« pop over »** は、気負わずひょいと跳ぶこと。« just pop him over a cross-pole » は肩の力の抜けた誘いであって、課題ではありません。",
-          ar:"⚠️ تعبير بريطاني مفيد جدا: **«pop over»** يعني القفز من دون تهويل — عبارة «just pop him over a cross-pole» دعوة مسترخية، لا تمرين." } },
+          ar:"⚠️ تعبير بريطاني مفيد جدا: **«pop over»** يعني جعل الحصان يقفز حاجزا ببساطة ومن دون تعقيد الأمر — وعبارة «just pop him over a cross-pole» تقال بنبرة عفوية ومطمئنة، لا كأنها تمرين صعب." } },
 
   { ref:"foulee", lecon:4, coll:"saut",
     mots:{ fr:{m:"la foulée"}, en:{m:"the stride", p:"straïde"},
@@ -62,7 +62,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Un ciclo completo di galoppo, circa 3,50 m in un cavallo di taglia media. Il tedesco è molto logico: *Galoppsprung*, « il balzo di galoppo » — ogni falcata di galoppo è già un piccolo salto.",
           de:"Ein voller Galoppzyklus, etwa 3,50 m beim mittelgroßen Pferd. Das Deutsche ist ganz logisch: der Galoppsprung — jeder Galopptritt ist schon ein kleiner Sprung.",
           ja:"駈歩のひと巡り。中型の馬でおよそ3.5メートルです。ドイツ語はじつに論理的で *Galoppsprung*、「駈歩の跳躍」— 駈歩の一歩一歩が、すでに小さなジャンプなのです。",
-          ar:"دورة عدو كاملة، نحو 3,50 م عند حصان متوسط القامة. الألمانية منطقية جدا: *Galoppsprung*، «وثبة العدو» — فكل خطوة عدو قفزة صغيرة أصلا." } },
+          ar:"دورة كاملة من العدو، تبلغ نحو 3,50 م لدى حصان متوسط الحجم. والتعبير الألماني منطقي جدا: *Galoppsprung*، أي «وثبة العدو» — فكل خطوة عدو تشبه في حركتها قفزة صغيرة." } },
 
   { ref:"voir-foulee", lecon:4, coll:"saut", v:true,
     mots:{ fr:{m:"voir sa foulée"}, en:{m:"to see a stride", p:"si eu straïde", var:"a good eye"},
@@ -75,7 +75,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Percepire da abbastanza lontano dove il cavallo staccherà. ⚠️ L'inglese ne ha fatto una qualità della persona: **« she has a good eye »**, un complimento che si sente molto a bordo campo britannico.",
           de:"Früh erkennen, wo das Pferd abspringen wird. ⚠️ Das Englische machte daraus eine Eigenschaft der Person: **« she has a good eye »** — ein Lob, das man am britischen Parcoursrand oft hört.",
           ja:"馬がどこで踏み切るかを、手前から感じ取る力。⚠️ 英語はこれを人の資質にしました — **« she has a good eye »**。イギリスの馬場の柵ぎわでよく聞こえてくる、賛辞の言葉です。",
-          ar:"إدراك نقطة ارتقاء الحصان من مسافة كافية. ⚠️ جعلتها الإنجليزية صفة في الشخص: **«she has a good eye»** — مديح يسمع كثيرا على حافة ميدان بريطاني." } },
+          ar:"القدرة على تقدير نقطة ارتقاء الحصان من مسافة كافية. ⚠️ وتحولها الإنجليزية إلى صفة للفارس: **«she has a good eye»** — وهي عبارة مديح تسمع كثيرا على حافة ميادين قفز الحواجز البريطانية." } },
 
   { ref:"toucher", lecon:4, coll:"saut", v:true,
     mots:{ fr:{m:"toucher la barre"}, en:{m:"to rub", p:"reub", var:"to touch · to rattle"},
@@ -101,7 +101,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Le barrette su crocette di legno, per il lavoro del ritmo e della cadenza. Caso unico in tutto il modulo: è **l'italiano** ad aver vinto nelle sei lingue — eredità della scuola di Pinerolo e del sistema Caprilli.",
           de:"Die kleinen Stangen auf Holzkreuzen, für Rhythmus- und Taktarbeit. Einmalig im ganzen Modul: **Das Italienische** hat in allen sechs Sprachen gewonnen — Erbe der Schule von Pinerolo und des Caprilli-Systems.",
           ja:"木の十字台に載せた低いバー。リズムと拍子の練習に使います。この教材全体で唯一のケース — 六言語すべてで勝ったのは**イタリア語**でした。ピネローロ校とカプリッリ式の遺産です。",
-          ar:"العوارض الصغيرة على حوامل خشبية متصالبة، للعمل على الإيقاع والوتيرة. حالة فريدة في الوحدة كلها: **الإيطالية** هي التي فازت في اللغات الست — إرث مدرسة بينيرولو ونظام كابريلي." } },
+          ar:"عوارض صغيرة موضوعة على حوامل، تستخدم للعمل على الإيقاع وانتظام الخطوات. حالة فريدة في هذه الوحدة: **المصطلح الإيطالي** هو الذي انتشر في اللغات الست — إرث مدرسة بينيرولو ونظام كابريلي." } },
 
   { ref:"hauteur-obstacle", lecon:4, coll:"saut",
     mots:{ fr:{m:"la hauteur"}, en:{m:"the height", p:"haïte"},
@@ -114,7 +114,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Le prove si chiamano con lei: un « 1,10 », un « 90 ». ⚠️ Attenzione, *la altura* e *l'altezza* servono anche per la taglia del cavallo al garrese (capitolo 3) — solo il contesto decide.",
           de:"Die Prüfungen heißen nach ihr: ein « 1,10er », ein « 90er ». ⚠️ Achtung: *la altura* und *l'altezza* meinen auch das Stockmaß (Kapitel 3) — nur der Kontext entscheidet.",
           ja:"競技はこの数字で呼ばれます — 「110」、「90」。⚠️ 注意：スペイン語の *la altura* もイタリア語の *l'altezza* も、馬の体高（第3章）を指すことがあります。決めるのは文脈だけです。",
-          ar:"تسمى الأشواط بها: شوط «1,10 م»، وشوط «90». ⚠️ انتبهي: *la altura* و*l'altezza* تستعملان أيضا لقامة الحصان عند الحارك — والسياق وحده يحسم." } },
+          ar:"تسمى الأشواط بحسب ارتفاع الحواجز: شوط «1,10 م»، أو شوط «90 سم». ⚠️ انتبهي: *la altura* و*l'altezza* تستعملان أيضا لارتفاع الحصان عند الحارك — والسياق وحده هو الذي يحدد المعنى." } },
 
   /* ================================================================
      LE GRAND CONCOURS — huit entrées ajoutées le 17/08/2026 pour
@@ -147,7 +147,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Ciò che cambia non è l'altezza ma LO STADIO: venti, trenta, quarantamila persone. Un cavallo che salta benissimo a casa può scoprire di non saltare là dentro.",
           de:"Was sich ändert, ist nicht die Höhe, sondern DAS STADION: zwanzig-, dreißig-, vierzigtausend Menschen. Ein Pferd, das zu Hause großartig springt, springt dort vielleicht nicht.",
           ja:"通常の大会と違うのは高さではなく「スタジアム」です。二万、三万、四万の観客。自宅では見事に飛ぶ馬が、その中では飛べなくなることがあります。",
-          ar:"⚠️ ما يتغير مقارنة بمسابقة عادية ليس الارتفاع بل الملعب: عشرون، ثلاثون، أربعون ألف شخص. الحصان الذي يقفز جيدا في بيته قد يكتشف أنه لا يقفز وسط ذلك. 🟥 «يبدو المسار أكبر بكثير داخل الملعب» — وهذا صحيح للجميع، في كل المستويات." } },
+          ar:"⚠️ ما يتغير مقارنة بمسابقة عادية ليس ارتفاع الحواجز فقط، بل حجم الملعب وأجواؤه: عشرون أو ثلاثون أو أربعون ألف متفرج. قد يقفز الحصان بصورة ممتازة في ظروفه المعتادة ثم يتأثر تماما بهذه الأجواء. 🟥 «يبدو المسار أكبر بكثير عندما تدخلين الملعب» — وهذا شعور يعرفه الفرسان في جميع المستويات." } },
 
   { ref:"grand-prix", lecon:4, coll:"grand",
     mots:{ fr:{m:"le Grand Prix"}, en:{m:"the Grand Prix", p:"grann prii"},
@@ -160,7 +160,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"L'inglese conserva il francese. È la prova regina del concorso: la più alta, la più ricca, quella della domenica. Non ci si iscrive: ci si qualifica.",
           de:"Englisch behält das Französische. Die Königsprüfung des Turniers: die höchste, die bestdotierte, die des Sonntags. Man nennt nicht — man qualifiziert sich.",
           ja:"英語もフランス語のまま使い、発音も「グラン・プリ」で語末の X は読みません。大会の頂点となる競技で、最も高く、賞金も最も多い日曜の競技です。申し込むのではなく、資格を得るのです。",
-          ar:"⚠️ الإنجليزية تحتفظ بالفرنسية نطقا أيضا: يقال «غران بري»، والحرف X صامت. إنه الشوط الملك في المسابقة — الأعلى، والأكبر جوائز، وشوط يوم الأحد. لا يسجل فيه أحد: **بل يتأهل إليه**." } },
+          ar:"⚠️ تحتفظ الإنجليزية بالاسم الفرنسي وبنطقه أيضا: يقال «غران بري»، ولا ينطق حرف X. إنه الشوط الأهم في المسابقة — الأعلى مستوى، والأكبر من حيث الجوائز، وغالبا ما يقام يوم الأحد. لا يكون الاشتراك فيه مباشرا: **بل يتأهل إليه الفرسان**." } },
 
   { ref:"qualificative", lecon:4, coll:"grand",
     mots:{ fr:{m:"l'épreuve qualificative"}, en:{m:"the qualifier", p:"kwo-li-faï-eur", var:"the qualifying class"},
@@ -174,7 +174,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Non ci si iscrive a un Gran Premio, ci si qualifica. Due prove di qualificazione nella settimana, e i punti delle due si sommano.",
           de:"Man nennt nicht für einen Großen Preis, man qualifiziert sich. Zwei Qualifikationsprüfungen in der Woche, und die Punkte beider werden addiert.",
           ja:"グランプリには申し込むのではなく、予選を通過して出ます。週に二つの予選があり、両方の得点が合算されます。水曜の失敗は金曜で取り返せますが、二度は取り返せません。",
-          ar:"🟥 لا نسجل في الجائزة الكبرى، بل نتأهل إليها. شوطان تأهيليان في الأسبوع، **ونقاط الاثنين تجمع**: المسار السيئ يوم الأربعاء يعوض يوم الجمعة، لكن ليس مرتين. ⚠️ في الإنجليزية تكفي كلمة **a qualifier** وحدها: *the first qualifier is on Wednesday*." } },
+          ar:"🟥 لا يكون الاشتراك في الجائزة الكبرى مباشرا، بل يتم التأهل إليها. هناك شوطان تأهيليان خلال الأسبوع، **وتجمع نقاط الشوطين**: يمكن تعويض نتيجة سيئة يوم الأربعاء بنتيجة أفضل يوم الجمعة، لكن نتيجتين سيئتين يصعب تعويضهما. ⚠️ في الإنجليزية تكفي كلمة **a qualifier** وحدها: *the first qualifier is on Wednesday*." } },
 
   { ref:"se-qualifier", lecon:4, coll:"grand", v:true,
     mots:{ fr:{m:"se qualifier"}, en:{m:"to qualify", p:"kwo-li-faï"},
@@ -200,7 +200,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"« Aggregate » è la parola ufficiale in inglese e sorprende: viene dalla statistica, non dallo sport.",
           de:"« Aggregate » ist im Englischen das amtliche Wort und überrascht: es kommt aus der Statistik, nicht aus dem Sport.",
           ja:"英語の aggregate は公式用語で、統計から来た語なので意外に響きます。会話では combined score のほうがよく使われます。計算は減点で行うため、低いほうが上位です。",
-          ar:"⚠️ **aggregate** هي الكلمة الرسمية، وهي مفاجئة: جاءت من إنجليزية الإحصاء لا من الرياضة. يقال *the aggregate standings*، الترتيب التراكمي. وفي الحديث اليومي تسمع *the combined score*. 🟥 والحساب يجرى بالجزاءات، فالأدنى يفوز — كما في الفروسية الثلاثية." } },
+          ar:"⚠️ **aggregate** هو المصطلح الرسمي، وقد يبدو غريبا لأنه آت من لغة الإحصاء لا من الرياضة. يقال *the aggregate standings*، أي الترتيب التراكمي. وفي الحديث اليومي يسمع أكثر *the combined score*. 🟥 ويحسب الترتيب هنا على أساس الجزاءات، لذلك يكون المجموع الأقل هو الأفضل — كما في الفروسية الثلاثية." } },
 
   { ref:"seuil-qualification", lecon:4, coll:"grand",
     mots:{ fr:{m:"le seuil de qualification"}, en:{m:"the qualification cut-off", p:"keut-off"},
@@ -213,7 +213,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Il posto da non mancare: finire tra i primi quaranta. L'espressione inglese « on the bubble » significa essere proprio sulla soglia, senza sapere ancora.",
           de:"Der Platz, den man nicht verpassen darf: unter die ersten vierzig. Der englische Ausdruck « on the bubble » heißt: genau an der Grenze, noch ohne Gewissheit.",
           ja:"逃してはならない順位。グランプリに出るには上位四十位以内で終える必要があります。四十位か四十一位かで一年が変わります。英語の on the bubble は「通過ラインぎりぎりで、まだ分からない」という意味で、英語圏のスポーツ全般で使われます。",
-          ar:"🟥 المركز الذي لا يفوت: يجب إنهاء المنافسة بين الأربعين الأوائل لدخول الجائزة الكبرى. أن تكوني الأربعين أو الحادية والأربعين يغير سنة كاملة. ⚠️ **العبارة الواجب معرفتها: *we're on the bubble*** — أن تكوني على حافة آخر مركز مؤهل، من دون أن تعرفي بعد إن كنت ستعبرين. شائعة في كل الرياضات الأنغلوفونية. والصياغة الواضحة: *we're right on the qualification cut-off*." } },
+          ar:"🟥 الحد الذي لا تريدين تجاوزه: يجب أن تكوني ضمن الأربعين الأوائل للتأهل إلى الجائزة الكبرى. والفرق بين المركز الأربعين والحادي والأربعين قد يغير موسما كاملا. ⚠️ **العبارة التي يجب معرفتها: *we're on the bubble*** — أي أنك عند حدود آخر مركز مؤهل، من دون أن تعرفي بعد إن كنت ستتأهلين. وهي عبارة شائعة في الرياضات الناطقة بالإنجليزية. والصياغة الأكثر وضوحا هي: *we're right on the qualification cut-off*." } },
 
   { ref:"premiere-manche-gp", lecon:4, coll:"grand",
     mots:{ fr:{m:"la première manche"}, en:{m:"the first round", p:"feurst raound"},
@@ -226,7 +226,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Passano i quaranta qualificati. Qui non si corrono rischi: l'obiettivo è essere nella seconda manche, non vincere subito.",
           de:"Alle vierzig Qualifizierten gehen. Hier geht man kein Risiko ein: das Ziel ist der zweite Umlauf, nicht der sofortige Sieg.",
           ja:"通過した四十人が走ります。ここで無理はしません。目的は第二回走行に残ることで、いきなり勝つことではありません。",
-          ar:"يمر فيها المتأهلون الأربعون. ⚠️ لا مخاطرة فيها: الهدف بلوغ الجولة الثانية، لا الفوز فورا. «لا تأخذي مخاطر غير ضرورية في الجولة الأولى» هي وصية المدربين المعتادة." } },
+          ar:"يشارك فيها المتأهلون الأربعون. ⚠️ لا داعي للمخاطرة فيها بلا ضرورة: فالهدف هو التأهل إلى الجولة الثانية، لا الفوز فورا. «لا تأخذي مخاطر غير ضرورية في الجولة الأولى» من التعليمات المعتادة للمدربين." } },
 
   { ref:"deuxieme-manche-gp", lecon:4, coll:"grand",
     mots:{ fr:{m:"la deuxième manche"}, en:{m:"the second round", p:"sè-keunde raound"},
@@ -239,7 +239,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Tornano al massimo diciotto, e in ordine inverso alla classifica: il migliore passa per ultimo. In caso di parità c'è barrage.",
           de:"Höchstens achtzehn kommen zurück, in umgekehrter Reihenfolge: der Führende reitet zuletzt. Bei Gleichstand gibt es ein Stechen.",
           ja:"戻れるのは最大十八人。順位の逆順で走るため、首位は最後です。だから終盤は耐えがたい。何をすべきか本人も、スタジアム全体も分かっています。同点なら決勝ジャンプオフです。",
-          ar:"🟥 يعود إليها ثمانية عشر على الأكثر، **وبترتيب معكوس للترتيب العام**: الأفضل مركزا يمر أخيرا. وهذا ما يجعل النهاية لا تحتمل — الجميع يعرف بالضبط ما المطلوب، والملعب كله يعرفه أيضا. وإذا تعادل اثنان في الصدارة، أقيمت جولة تمايز. ⚠️ العدد يختلف بحسب الشوط: لا تفترضيه، بل اقرئيه في البرنامج." } },
+          ar:"🟥 يعود إليها ثمانية عشر فارسا كحد أقصى، **وبترتيب عكسي للترتيب العام**: صاحب أفضل مركز ينطلق أخيرا. وهذا ما يجعل النهاية شديدة التوتر — فالفارس يعرف بالضبط ما يجب عليه فعله، والجمهور كله يعرف ذلك أيضا. وإذا تعادل فارسان في الصدارة، تقام جولة تمايز. ⚠️ قد يختلف العدد بحسب الشوط، لذلك لا تفترضيه مسبقا بل تحققي منه في البرنامج." } },
 
   { ref:"barrage", lecon:4, coll:"saut",
     mots:{ fr:{m:"le barrage"}, en:{m:"the jump-off", p:"djeump-off", var:"against the clock"},
@@ -252,7 +252,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Il secondo percorso, accorciato e cronometrato, tra i netti. ⚠️ Ogni lingua ha scelto diversamente: l'italiano tiene la parola francese, l'inglese descrive l'azione (*jump-off*), lo spagnolo il risultato (*desempate*, « lo spareggio »), e il tedesco usa un'immagine di scherma, *das Stechen*.",
           de:"Der zweite, verkürzte Parcours auf Zeit unter den Nullrunden. ⚠️ Jede Sprache wählte anders: Italienisch behielt das französische Wort, Englisch beschreibt die Handlung (*jump-off*), Spanisch das Ergebnis (*desempate*) — und Deutsch nahm ein Fechtbild: das Stechen.",
           ja:"クリアラウンド同士で争う、短縮されたタイム勝負の第二走行。⚠️ 言語ごとに選択が分かれました。イタリア語はフランス語をそのまま、英語は行為を（*jump-off*）、スペイン語は結果を（*desempate*、「決着」）、そしてドイツ語はフェンシングの比喩を — *das Stechen*、「突き合い」。",
-          ar:"المسار الثاني، المختصر والموقوت، بين أصحاب الجولات من دون أخطاء. ⚠️ اختارت كل لغة خيارا مختلفا: الإيطالية تحتفظ بالكلمة الفرنسية، والإنجليزية تصف الفعل (*jump-off*)، والإسبانية النتيجة (*desempate*، «فض التعادل»)، والألمانية تستعير صورة من المبارزة، *das Stechen*." } },
+          ar:"مسار ثان أقصر ويجرى ضد الساعة بين الفرسان أصحاب الجولات الخالية من الأخطاء. ⚠️ اختارت كل لغة خيارا مختلفا: الإيطالية تحتفظ بالكلمة الفرنسية، والإنجليزية تصف الفعل (*jump-off*)، والإسبانية النتيجة (*desempate*، «فض التعادل»)، والألمانية تستعير صورة من المبارزة، *das Stechen*." } },
 
   { ref:"chrono", lecon:4, coll:"saut",
     mots:{ fr:{m:"le chrono"}, en:{m:"the clock", p:"klok", var:"the time"},
@@ -265,7 +265,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"⚠️ L'inglese non dice « the chrono » ma **the clock**, e soprattutto l'espressione **« against the clock »** — contro il tempo. È quella che si sente annunciare al microfono prima di un barrage.",
           de:"⚠️ Das Englische sagt nicht « the chrono », sondern **the clock** — und vor allem **« against the clock »**. Genau das hört man vor einem Stechen aus dem Lautsprecher.",
           ja:"⚠️ 英語では « the chrono » ではなく **the clock**。とりわけ **« against the clock »**（時計との勝負）という言い回しを、ジャンプオフの前に場内放送で耳にします。",
-          ar:"⚠️ الإنجليزية لا تقول «the chrono» بل **the clock**، وخصوصا عبارة **«against the clock»** — ضد الساعة. وهي التي تسمعينها في مكبرات الصوت قبل جولة التمايز." } },
+          ar:"⚠️ لا تقول الإنجليزية «the chrono»، بل **the clock**، والأهم هو التعبير **«against the clock»** — أي «ضد الساعة». وهذا هو التعبير الذي تسمعينه في الإعلان قبل جولة التمايز." } },
 
   { ref:"puissance", lecon:4, coll:"saut",
     mots:{ fr:{m:"l'épreuve de puissance"}, en:{m:"the puissance", p:"pu-i-sanss"},
@@ -278,7 +278,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"La prova di altezza pura, dove il muro sale a ogni giro. ⚠️ Caso gustoso: **l'inglese usa la parola francese** *puissance*, pronunciata all'inglese, e fu il muro di Hickstead a renderla celebre. Il tedesco, fedele a se stesso, ha preferito forgiare *Mächtigkeitsspringen*.",
           de:"Die reine Höhenprüfung, bei der die Mauer Runde für Runde steigt. ⚠️ Köstlich: **Das Englische benutzt das französische Wort** *puissance*, englisch ausgesprochen — berühmt gemacht von der Mauer von Hickstead. Das Deutsche blieb sich treu und baute *Mächtigkeitsspringen*.",
           ja:"純粋な高さの競技。壁は一巡ごとに高くなります。⚠️ 味わい深いことに、**英語はフランス語の** *puissance* **をそのまま使い**、英語ふうに発音します。有名にしたのはヒックステッドの壁。ドイツ語は自分に忠実に、*Mächtigkeitsspringen* という複合語を鍛え上げました。",
-          ar:"شوط الارتفاع الخالص، حيث يعلو الجدار في كل دورة. ⚠️ حالة لذيذة: **الإنجليزية تستعمل الكلمة الفرنسية** *puissance* بنطق إنجليزي، وجدار هيكستيد هو الذي جعلها مشهورة. أما الألمانية، الوفية لنفسها، فقد صاغت *Mächtigkeitsspringen*." } },
+          ar:"شوط يقوم على الارتفاع، حيث يرتفع الجدار في كل جولة. ⚠️ والمفارقة أن **الإنجليزية تستعمل الكلمة الفرنسية** *puissance* بنطق إنجليزي، وقد ساهم جدار هيكستيد الشهير في انتشارها. أما الألمانية فقد اختارت مصطلح *Mächtigkeitsspringen*." } },
 
   { ref:"tour-honneur", lecon:4, coll:"saut",
     mots:{ fr:{m:"le tour d'honneur"}, en:{m:"the lap of honour", p:"lap of o-neur", var:"victory gallop"},
@@ -291,7 +291,7 @@ window.HYPE_LINGO_LEX.aachen = {
           it:"Il galoppo dei vincitori, coccarda al frontale, dietro il primo. I britannici lo chiamano anche **victory gallop**, e si fa al galoppo, non al passo — un cavallo stanco può essere dispensato.",
           de:"Der Galopp der Sieger, Schleife am Stirnband, hinter dem Ersten. Die Briten nennen ihn auch **victory gallop** — geritten wird er im Galopp, nicht im Schritt; ein müdes Pferd darf entschuldigt werden.",
           ja:"勝者たちの周回。額革にロゼットをつけ、優勝者の後ろに続きます。イギリスでは **victory gallop** とも呼ばれ、常歩ではなく駈歩で回ります — 疲れた馬は免除してもらえます。",
-          ar:"عدو الفائزين، والشارة على رباط الجبهة، خلف الأول. يسميها البريطانيون أيضا **victory gallop**، وتجرى بالعدو لا بالمشي — ويمكن إعفاء الحصان المتعب منها." } }
+          ar:"جولة بالعدو يؤديها الفائزون خلف صاحب المركز الأول، مع شارة الفوز على رباط جبهة الحصان. ويسميها البريطانيون أيضا **victory gallop**، وتؤدى بالعدو لا بالمشي — ويمكن إعفاء الحصان المتعب منها." } }
   ],
 
   /* ---- phrases complètes ---- */
@@ -327,7 +327,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"È la prima volta che monto in uno stadio così grande.",
         de:"Es ist das erste Mal, dass ich in einem so großen Stadion reite.",
         ja:"こんな に 大きな スタジアム で 走る の は 初めて です。",
-        ar:"هذه أول مرة أركب فيها في ملعب بهذا الحجم." },
+        ar:"هذه أول مرة أمتطي فيها حصاني داخل ملعب بهذا الحجم." },
 
       { ref:"da-parcours-plus-gros", temps:1, dit:"club", mots:["grand-concours","parcours"],
         fr:"Le parcours paraît beaucoup plus gros une fois dans le stade.",
@@ -345,7 +345,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"La ricognizione del percorso comincia tra dieci minuti.",
         de:"Der Parcoursbesichtigung beginnt in zehn Minuten.",
         ja:"コース の 下見 は 十 分 後 に 始まり ます。",
-        ar:"تبدأ معاينة المسار بعد عشر دقائق." },
+        ar:"تبدأ معاينة مسار الحواجز بعد عشر دقائق." },
 
       /* ---- temps 2 · les qualificatives ---- */
       { ref:"da-premiere-qualif", temps:2, dit:"club", mots:["qualificative","grand-prix"],
@@ -382,7 +382,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Il tempo accordato rischia di essere difficile da rispettare.",
         de:"Die erlaubte Zeit dürfte schwer zu halten sein.",
         ja:"規定 タイム を 守る の は 難しい かも しれ ませ ん。",
-        ar:"قد يكون الالتزام بالزمن المحدد صعبا." },
+        ar:"قد يكون من الصعب إنهاء المسار ضمن الزمن المسموح." },
 
       /* ---- temps 3 · compter ses points ---- */
       { ref:"da-quarante-premiers", temps:3, dit:"club", mots:["seuil-qualification","se-qualifier"],
@@ -392,7 +392,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Bisogna finire tra i primi quaranta per qualificarsi.",
         de:"Man muss unter die ersten vierzig kommen, um sich zu qualifizieren.",
         ja:"予選 を 通過 する に は、 上位 四十 位 以内 で 終える 必要 が あり ます。",
-        ar:"يجب إنهاء المنافسة بين الأربعين الأوائل للتأهل." },
+        ar:"يجب أن ننهي المنافسة ضمن الأربعين الأوائل للتأهل." },
 
       { ref:"da-juste-a-la-limite", temps:3, dit:"joueuse", mots:["seuil-qualification"],
         fr:"Pour l'instant, nous sommes juste à la limite de la qualification.",
@@ -401,7 +401,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Per ora siamo proprio sulla soglia di qualificazione.",
         de:"Im Moment liegen wir genau an der Qualifikationsgrenze.",
         ja:"今 の ところ、 予選 通過 ライン の ちょうど 境目 に い ます。",
-        ar:"حتى الآن، نحن على حافة التأهل تماما." },
+        ar:"حتى الآن، نحن تماما عند حد التأهل." },
 
       { ref:"da-officiellement-qualifies", temps:3, dit:"joueuse", mots:["se-qualifier","grand-prix"],
         fr:"Nous sommes officiellement qualifiés pour le Grand Prix de dimanche.",
@@ -429,7 +429,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Parto trentaduesima.",
         de:"Ich bin als Zweiunddreißigste dran.",
         ja:"三十二 番目 の 出番 です。",
-        ar:"أمر في الترتيب الثاني والثلاثين." },
+        ar:"سأنطلق في المركز الثاني والثلاثين." },
 
       /* ---- temps 5 · le Grand Prix, première manche ---- */
       { ref:"da-pas-de-risques", temps:5, dit:"club", mots:["premiere-manche-gp"],
@@ -439,7 +439,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Non correre rischi inutili nella prima manche.",
         de:"Geh im ersten Umlauf kein unnötiges Risiko ein.",
         ja:"第一 回 走行 で 無用 な 危険 を 冒さ ない で ください。",
-        ar:"لا تأخذي مخاطر غير ضرورية في الجولة الأولى." },
+        ar:"لا تخاطري بلا داع في الجولة الأولى." },
 
       { ref:"da-meilleurs-deuxieme", temps:5, dit:"club", mots:["deuxieme-manche-gp"],
         fr:"Les meilleurs cavaliers accéderont à la deuxième manche.",
@@ -457,7 +457,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Ripartiamo in ordine inverso alla classifica.",
         de:"Wir starten erneut in umgekehrter Reihenfolge.",
         ja:"順位 の 逆順 で 再 スタート し ます。",
-        ar:"ننطلق من جديد بترتيب معكوس للترتيب العام." },
+        ar:"سننطلق في الجولة التالية بترتيب عكسي للترتيب العام." },
 
       /* ---- temps 6 · le barrage ---- */
       { ref:"da-sans-faute-barrage", temps:6, dit:"club", mots:["sans-faute","barrage"],
@@ -467,7 +467,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Un percorso netto ci qualificherebbe per il barrage.",
         de:"Eine Nullrunde würde uns fürs Stechen qualifizieren.",
         ja:"クリア ラウンド なら、 ジャンプオフ に 進め ます。",
-        ar:"جولة من دون أخطاء تؤهلنا إلى جولة التمايز." },
+        ar:"جولة خالية من الأخطاء ستؤهلنا إلى جولة التمايز." },
 
       { ref:"da-plus-de-risques", temps:6, dit:"club", mots:["barrage","chrono"],
         fr:"Au barrage, il faudra prendre davantage de risques.",
@@ -476,7 +476,7 @@ window.HYPE_LINGO_LEX.aachen = {
         it:"Al barrage bisognerà rischiare di più.",
         de:"Im Stechen müssen wir mehr riskieren.",
         ja:"ジャンプオフ で は、 もっと 攻める 必要 が あり ます。",
-        ar:"في جولة التمايز، سيلزم أخذ مزيد من المخاطر." },
+        ar:"في جولة التمايز، سنحتاج إلى المخاطرة أكثر." },
 
       { ref:"da-gagner-ici", temps:6, dit:"joueuse", mots:["grand-prix","grand-concours"],
         fr:"Gagner ici serait l'une des plus grandes victoires de ma carrière.",

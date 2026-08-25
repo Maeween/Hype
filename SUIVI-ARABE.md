@@ -14,10 +14,10 @@
 | **Badminton** — Le concours | 92 | **1 passe, appliquée** |
 | **Oliva Nova** — S'engager | 79 | **1 passe, appliquée** |
 | **Barcelone** — Voyager avec son cheval | 108 | **1 passe, appliquée** |
-| **Flyinge** — La maréchalerie | 92 | corrections 1-8 appliquées |
+| **Flyinge** — La maréchalerie | 92 | **1 passe complète, appliquée** |
 | **Walsall** — Le matériel | 69 | **1 passe, appliquée** |
-| **Windsor** — Le dressage | 60 | 0 relecture |
-| **Aachen** — Le grand concours | 63 | 0 relecture |
+| **Windsor** — Le dressage | 60 | **1 passe, appliquée** |
+| **Aachen** — Le grand concours | 63 | **1 passe, appliquée** |
 | **La Baule** — L'arrivée | 92 | 2 passes |
 | **Kildare** — Les urgences du cheval | 86 | 3 passes |
 | **Connemara** — Le cheval | 82 | 2 passes |
@@ -247,6 +247,13 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | le passeport du cheval | جواز الحصان |
 | les documents | الوثائق |
 | l'aire de repos | منطقة الاستراحة |
+| au chronomètre (explications) | ضد الساعة *(relecture Aachen)* |
+| la forge | الكور *(jamais المصهر)* |
+| le haras (Flyinge) | مربط فلينغه |
+| la ferrure, le shoeing en général | تركيب الحدوات |
+| pieds nus (explications) | الحافر غير المنتعل / من دون حدوات |
+| la reconnaissance du parcours | معاينة مسار الحواجز |
+| l'appuyer | الأبوييه *(translittération — règle relecteur 24/08 : pour les termes internationaux de dressage sans équivalent arabe stabilisé, garder le terme translittéré et expliquer ensuite ; à arbitrer aussi pour التغيير الطائر et consorts à la relecture de la réserve du dressage)* |
 | le véhicule de transport | مركبة النقل |
 
 ---
@@ -343,3 +350,9 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 ---
 
 *À tenir à jour à chaque ville traduite. Vérifier les NEUF points avant de cocher.*
+
+
+---
+
+## POINT DE PASSATION — 24/08/2026 AU SOIR
+Conversation pilote pleine. La suite se fait en nouvelle conversation avec **PASSATION-ARABE.md**. État : 17 villes · 1436 entrées · VER ?v=88 · relectures appliquées jusqu'à Aachen incluse (VER ?v=89). En vol : relecture Aachen annoncée, réserves filet et dressage chez le relecteur, Versailles et Vejer à traduire, feu vert français Barcelone en attente.

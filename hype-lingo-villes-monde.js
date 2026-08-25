@@ -315,7 +315,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       ja:["満員のスタジアムが、完全に静まりかえっていた。", "馬が入場し、開始の鐘が鳴り、八十秒のあいだ聞こえるのは蹄の音だけだった。観客が息をし直したのは、最後の障害を跳んだあとだった。"],
       /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
       ar:["كان الملعب ممتلئا، ومع ذلك لم يكن يسمع شيء.",
-          "دخل الحصان، ورن الجرس، ولمدة دقيقة وعشرين ثانية لم يبق سوى صوت الحوافر. ولم يستأنف الجمهور التنفس إلا بعد العارضة الأخيرة."]},
+          "دخل الحصان، ورن الجرس، ولمدة دقيقة وعشرين ثانية لم يبق سوى صوت الحوافر. ولم يتنفس الجمهور من جديد إلا بعد اجتياز العارضة الأخيرة."]},
     volets:[
      {t:{fr:"Le CHIO", en:"The CHIO", es:"El CHIO", it:"Il CHIO", de:"Das CHIO", ja:"CHIO（国際馬術大会）", ar:"CHIO (المسابقة الدولية)"},
       c:{
@@ -325,7 +325,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Un concorso internazionale che riunisce più discipline nella stessa settimana: salto, dressage, attacchi, completo. È uno degli appuntamenti più seguiti dell'anno, e molti cavalieri lo mettono sopra un campionato.",
           de:"Ein internationales Turnier, das mehrere Disziplinen in derselben Woche zusammenbringt: Springen, Dressur, Fahren, Vielseitigkeit. Es ist einer der meistbeachteten Termine des Jahres, und viele Reiter stellen es über eine Meisterschaft.",
           ja:"同じ一週間に複数種目が集まる国際大会です。障害、馬場、馬車、総合。一年でもっとも注目される大会のひとつで、選手権より上に置く騎手も少なくありません。",
-          ar:"مسابقة دولية تجمع عدة تخصصات في الأسبوع نفسه: قفز الحواجز، والترويض، وقيادة العربات، والفروسية الثلاثية. إنها من أكثر مواعيد الروزنامة متابعة، وكثير من الفرسان يضعونها فوق البطولات."}},
+          ar:"مسابقة دولية تجمع عدة تخصصات في الأسبوع نفسه: قفز الحواجز، والترويض، وقيادة العربات، والفروسية الثلاثية. وهي من أبرز مواعيد الموسم وأكثرها متابعة، حتى إن كثيرا من الفرسان يمنحونها مكانة تفوق بعض البطولات."}},
      {t:{fr:"Le barrage", en:"The jump-off", es:"El desempate", it:"Il barrage", de:"Das Stechen", ja:"ジャンプオフ", ar:"جولة التمايز"},
       c:{
           fr:"Quand plusieurs cavaliers finissent sans faute, on recommence : parcours raccourci, chronomètre lancé, et cette fois la vitesse départage. C'est le moment où l'on voit qui accepte de risquer une barre pour gagner une seconde.",
@@ -334,7 +334,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Quando più cavalieri finiscono netti, si ricomincia: percorso accorciato, cronometro avviato, e stavolta decide la velocità. È il momento in cui si vede chi accetta di rischiare un abbattimento per guadagnare un secondo.",
           de:"Wenn mehrere Reiter fehlerfrei bleiben, geht es von vorn los: verkürzter Parcours, laufende Uhr, und diesmal entscheidet die Zeit. Der Moment, in dem man sieht, wer eine Stange riskiert, um eine Sekunde zu gewinnen.",
           ja:"何人もが無失点で終えたとき、もう一度走ります。短縮されたコース、動き出す時計、そして今度は速さで決まります。一秒のために一本を落とす危険を取る人が、誰なのかが見える瞬間です。",
-          ar:"حين ينهي عدة فرسان جولاتهم من دون أخطاء، تعاد الكرة: مسار مختصر، وساعة تنطلق، وهذه المرة السرعة هي التي تفصل. إنها اللحظة التي ترين فيها من يقبل المخاطرة بعارضة ليكسب ثانية."}},
+          ar:"عندما ينهي عدة فرسان جولاتهم من دون أخطاء، تبدأ جولة جديدة: مسار أقصر، وتوقيت ضد الساعة، وهذه المرة تحسم السرعة النتيجة. إنها اللحظة التي ترين فيها من يقبل بالمخاطرة بإسقاط عارضة من أجل كسب ثانية."}},
      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Assieds-toi près de la sortie de piste. On y voit les cavaliers redevenir eux-mêmes en trois secondes : ceux qui tapent l'encolure, ceux qui ne disent rien, et ceux qui vérifient un antérieur avant même de mettre pied à terre.",
@@ -343,7 +343,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Siediti vicino all'uscita di campo. Lì i cavalieri ridiventano se stessi in tre secondi: chi dà una pacca sul collo, chi non dice niente, e chi controlla un anteriore prima ancora di scendere.",
           de:"Setz dich an den Ausgang des Parcours. Dort werden Reiter in drei Sekunden wieder sie selbst: die einen klopfen den Hals, die anderen sagen nichts, und wieder andere prüfen ein Vorderbein, bevor sie überhaupt abgestiegen sind.",
           ja:"出口のそばに座ってください。騎手が三秒で素の自分に戻るのが見えます。首を叩く人、何も言わない人、降りる前に前肢を確かめる人。",
-          ar:"اجلسي قرب مخرج الميدان. هناك ترين الفرسان يعودون إلى أنفسهم في ثلاث ثوان: من يربت على العنق، ومن لا يقول شيئا، ومن يتفقد قائمة أمامية قبل أن ينزل أصلا."}}
+          ar:"اجلسي قرب مخرج الميدان. هناك ترين الفرسان يستعيدون هدوءهم خلال ثلاث ثوان: منهم من يربت على عنق حصانه، ومنهم من لا يقول شيئا، ومنهم من يتفقد إحدى القوائم الأمامية قبل أن ينزل عن حصانه."}}
     ]}
 
   };
@@ -1207,10 +1207,10 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
       de:["Sieben Uhr abends, und die Schmiede klang noch.","Der Hufschmied hob den Huf, las die Sohle wie eine Karte und raspelte dreimal — nicht viermal. « Das Eisen richtet sich nach dem Huf », sagte er mir, während er es zurück ins Feuer legte, « niemals umgekehrt. Es ist das Erste, was man hier lernt, und man braucht zehn Jahre, um es zu verstehen. »"],
       ja:["夜の七時。鍛冶場ではまだ槌の音が響いていた。","装蹄師は蹄を持ち上げ、蹄底を地図のように読み、やすりを三度かけた — 四度ではなく。「蹄鉄を蹄に合わせるんだ」と、鉄を火に戻しながら彼は言った。「その逆は決してない。ここで最初に習うことだが、理解するのに十年かかる。」"],
     /* 🟡 arabe dormant (24/08) — aucun écran ne le lit. */
-    ar:["السابعة مساء، وما زال المصهر يرن.",
-        "رفع الحداد القدم، وقرأ باطن الحافر كما تقرأ خريطة، وبرد ثلاث مرات — لا أربعا. قال لي وهو يعيد الحدوة إلى النار: «الحدوة تضبط على القدم، ولا يكون العكس أبدا. هذا أول ما يتعلم هنا، ونحتاج إلى عشر سنين لنفهمه.»"]},
+    ar:["السابعة مساء، وما زالت أصوات الكور تتردد.",
+        "رفع حداد الخيل القدم، وقرأ باطن الحافر كما تقرأ خريطة، ثم برده ثلاث مرات — لا أربعا. وقال لي وهو يعيد الحدوة إلى النار: «الحدوة تضبط على الحافر، لا العكس أبدا. هذا أول ما نتعلمه هنا، ونحتاج إلى عشر سنوات كي نفهمه حقا.»"]},
     volets:[
-     {t:{fr:"Le haras de Flyinge", en:"The Flyinge stud", es:"La yeguada de Flyinge", it:"Il haras di Flyinge", de:"Das Gestüt Flyinge", ja:"フリンゲ牧場", ar:"مزرعة فلينغه"},
+     {t:{fr:"Le haras de Flyinge", en:"The Flyinge stud", es:"La yeguada de Flyinge", it:"Il haras di Flyinge", de:"Das Gestüt Flyinge", ja:"フリンゲ牧場", ar:"مربط فلينغه"},
       c:{
           fr:"Fondé en 1661 pour fournir la cavalerie royale, c'est l'un des plus anciens haras du monde encore en activité. La Suède y forme aussi ses professionnels du cheval — et sa maréchalerie est une école à part entière, où l'on étudie le pied vivant bien avant de toucher un fer.",
           en:"Founded in 1661 to supply the royal cavalry, it is one of the oldest studs in the world still working. Sweden also trains its horse professionals there — and its farriery is a school in its own right, where you study the living foot long before touching a shoe.",
@@ -1218,7 +1218,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Fondato nel 1661 per fornire la cavalleria reale, è uno dei più antichi haras del mondo ancora in attività. La Svezia vi forma anche i suoi professionisti del cavallo — e la sua mascalcia è una scuola a pieno titolo, dove si studia il piede vivo molto prima di toccare un ferro.",
           de:"1661 gegründet, um die königliche Kavallerie zu versorgen, ist es eines der ältesten noch aktiven Gestüte der Welt. Schweden bildet dort auch seine Pferdefachleute aus — und sein Hufbeschlag ist eine eigene Schule, in der man den lebenden Huf studiert, lange bevor man ein Eisen anfasst.",
           ja:"1661年、王室騎兵隊に馬を供給するために創設された、世界最古級の現役の牧場です。スウェーデンはここで馬の専門家たちも育てています — そして装蹄は独立したひとつの学校であり、蹄鉄に触れるずっと前から、生きた蹄そのものを学ぶのです。",
-          ar:"أنشئت سنة 1661 لتزويد الفرسان الملكيين بالخيل، وهي من أقدم مزارع الخيول في العالم التي ما زالت عاملة. وفيها تكون السويد أيضا محترفي الخيل — وحدادة الخيل فيها مدرسة قائمة بذاتها، يدرس فيها الحافر الحي قبل لمس أي حدوة بزمن طويل."}},
+          ar:"تأسس مربط فلينغه سنة 1661 لتزويد سلاح الفرسان الملكي بالخيول، وهو من أقدم مرابط الخيل في العالم التي ما زالت تعمل حتى اليوم. وفيه تدرب السويد أيضا محترفي قطاع الخيل — وحدادة الخيل فيه تخصص قائم بذاته، يدرس فيه الحافر الحي قبل وقت طويل من لمس أول حدوة."}},
      {t:{fr:"Pas de pied, pas de cheval", en:"No foot, no horse", es:"Sin pie no hay caballo", it:"Niente piede, niente cavallo", de:"Ohne Huf kein Pferd", ja:"蹄なくして馬なし", ar:"لا حافر، لا حصان"},
       c:{
           fr:"Le dicton est vieux comme le métier : paroi, sole, fourchette portent une demi-tonne à chaque foulée. La fourchette, souple, sert d'amortisseur et de pompe — c'est elle qui aide le sang à remonter la jambe. Un pied se lit avant de se parer : usure, appui, chaleur, tout y est écrit.",
@@ -1227,7 +1227,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Il detto è vecchio come il mestiere: muraglia, suola e fettone portano mezza tonnellata a ogni falcata. Il fettone, elastico, fa da ammortizzatore e da pompa — è lui che aiuta il sangue a risalire la gamba. Un piede si legge prima di pareggiarsi: usura, appoggio, calore, tutto vi è scritto.",
           de:"Das Sprichwort ist so alt wie das Handwerk: Wand, Sohle und Strahl tragen bei jedem Tritt eine halbe Tonne. Der elastische Strahl dient als Stoßdämpfer und Pumpe — er hilft dem Blut, das Bein wieder hinaufzusteigen. Ein Huf wird gelesen, bevor er ausgeschnitten wird: Abrieb, Auflage, Wärme, alles steht darin geschrieben.",
           ja:"この格言は仕事そのものと同じくらい古いものです。蹄壁、蹄底、蹄叉が、一完歩ごとに半トンを支えます。柔軟な蹄叉は緩衝材でありポンプでもあり — 血液を脚の上へ押し戻す手助けをしているのです。蹄は削る前に読むもの。摩耗、接地、熱 — すべてがそこに書かれています。",
-          ar:"قول قديم قدم المهنة: الجدار والباطن والنسر تحمل نصف طن في كل خطوة. والنسر المرن يعمل ممتصا للصدمات ومضخة — فهو ما يساعد الدم على الصعود في القائمة. والقدم تقرأ قبل أن تقلم: التآكل، والارتكاز، والحرارة، كل شيء مكتوب فيها."}},
+          ar:"مثل قديم قدم المهنة: جدار الحافر وباطنه ونسره تحمل جميعها نحو نصف طن مع كل خطوة. ويعمل نسر الحافر المرن كممتص للصدمات وكمضخة تساعد على عودة الدم في القائمة. ويقرأ الحافر قبل تقليمه: التآكل، وطريقة الارتكاز، والحرارة — كل شيء يترك علامته فيه."}},
      {t:{fr:"Si tu y allais", en:"If you went there", es:"Si fueras allí", it:"Se ci andassi", de:"Wenn du hinführest", ja:"もし行くなら", ar:"لو ذهبت إلى هناك"},
       c:{
           fr:"Demande la forge plutôt que les manèges, et reste pour un ferrage à chaud : la fumée qui monte du fer posé une seconde sur la corne dessine exactement les points de contact. Cinq siècles de savoir tiennent dans ce nuage — et tu sauras enfin pourquoi on dit « parer » un pied, comme on pare un navire.",
@@ -1236,7 +1236,7 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
           it:"Chiedi la forgia invece dei maneggi, e resta per una ferratura a caldo: il fumo che sale dal ferro posato un secondo sulla corna disegna esattamente i punti di contatto. Cinque secoli di sapere stanno in quella nuvola — e saprai finalmente perché si dice « pareggiare » un piede, come si allestisce una nave.",
           de:"Bitte um die Schmiede statt der Reithallen, und bleib für ein Heißbeschlagen: Der Rauch, der vom eine Sekunde auf das Horn gesetzten Eisen aufsteigt, zeichnet genau die Kontaktpunkte. Fünf Jahrhunderte Wissen stecken in dieser Wolke — und du weißt endlich, warum man einen Huf « ausrichtet », wie man ein Schiff ausrichtet.",
           ja:"馬場ではなく鍛冶場を頼んで、熱間装蹄まで見ていってください。蹄の角質に一秒だけ当てた蹄鉄から立ちのぼる煙が、接点を正確に描き出します。五世紀分の知恵がその煙の中にあります — そして「蹄を整える」という言葉の意味が、船を整えるのと同じ意味だと、ようやくわかるはずです。",
-          ar:"اسألي عن المصهر لا عن الميادين، وابقي لحضور حدو على الساخن: الدخان المتصاعد من الحدوة الموضوعة ثانية واحدة على القرن يرسم نقاط التماس بدقة. خمسة قرون من المعرفة في تلك السحابة — وستفهمين أخيرا لماذا تستعمل الفرنسية للتقليم كلمة «parer» نفسها التي تجهز بها السفن."}}
+          ar:"اسألي عن الكور بدل الميادين، وابقي لتشاهدي تركيب الحدوة على الساخن: فالدخان المتصاعد عندما توضع الحدوة الساخنة على قرن الحافر لثانية واحدة يكشف نقاط التماس بدقة. خمسة قرون من الخبرة في تلك السحابة — وستفهمين أخيرا لماذا تستخدم الفرنسية للتقليم كلمة «parer» نفسها التي تستخدمها في تجهيز السفن."}}
     ]
   };
 

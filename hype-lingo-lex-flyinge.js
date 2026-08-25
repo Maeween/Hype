@@ -70,7 +70,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ L'involucro corneo del piede, insensibile in superficie. Un ascesso del piede — un'infezione sotto la corneo — è la causa più frequente di una zoppia improvvisa e grave.",
           de:"⚠️ Die Hornkapsel des Fußes, an der Oberfläche unempfindlich. Ein Hufabszess — eine Infektion unter dem Horn — ist die häufigste Ursache einer plötzlichen, schweren Lahmheit.",
           ja:"蹄を覆う角質の外殻。表面には感覚がありません。⚠️ 蹄膿瘍（角質の下の感染）は、突然の重度の跛行の最も多い原因です。",
-          ar:"الغلاف القرني، وسطحه لا يحس بالألم. أما حداد الخيل فيقول «القدم»: يقصد المجموع كله، القرن والأنسجة الحية معا. ⚠️ خراج القدم — عدوى تحت القرن — هو أكثر أسباب العرج المفاجئ والشديد شيوعا؛ ويعالج بفتح منفذ للخروج، ولا ينتظر أبدا." } },
+          ar:"الغلاف القرني للحافر، وسطحه غير حساس للألم. أما حداد الخيل فيستعمل كلمة «القدم» ليقصد الحافر كله، أي القرن والأنسجة الحية معا. ⚠️ خراج الحافر — وهو عدوى تحت القرن — من أكثر أسباب العرج المفاجئ والشديد شيوعا؛ ويعالج بفتح منفذ لتصريفه، ولا ينبغي تركه من دون علاج." } },
 
   { ref:"paroi", lecon:1, coll:"anatomie",
     mots:{ fr:{m:"la paroi"}, en:{m:"the hoof wall", p:"houf ouol"},
@@ -96,7 +96,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ La faccia inferiore dello zoccolo, leggermente concava, che protegge i tessuti sensibili. Tre parole da distinguere: una suola **sottile**, una suola **sensibile** (reagisce al pinzone del maniscalco) e una suola **friabile** (si sgretola).",
           de:"⚠️ Die leicht gewölbte Unterseite des Hufs, die empfindliches Gewebe schützt. Drei Begriffe zu unterscheiden: eine **dünne** Sohle, eine **empfindliche** Sohle (reagiert auf die Hufuntersuchzange) und eine **bröckelige** Sohle (schlechte Hornqualität).",
           ja:"⚠️ 蹄のわずかに凹んだ底面で、敏感な組織を守っています。区別すべき三つの言葉：**薄い**蹄底、**敏感な**蹄底（装蹄鉗子に反応する、警戒サイン）、**もろい**蹄底（崩れやすい、角質の質の問題）。",
-          ar:"الوجه السفلي للحافر، المقعر قليلا، الذي يحمي الأنسجة الحساسة. ⚠️ ثلاث صفات يجب التمييز بينها: باطن **رقيق** (قليل السمك، يتحسس من الحصى)، وباطن **حساس** (يتفاعل مع كماشة الحداد، وهو علامة تنبيه)، وباطن **هش** (يتفتت، وغالبا ما يدل على مشكلة في نوعية القرن)." } },
+          ar:"السطح السفلي للحافر، وهو مقعر قليلا ويحمي الأنسجة الحساسة. ⚠️ يجب التمييز بين ثلاثة أوصاف: باطن **رقيق** (قليل السماكة وحساس للحصى)، وباطن **حساس** (يستجيب للضغط بكماشة فحص الحافر، وهي علامة تستدعي الانتباه)، وباطن **هش** (يتفتت وغالبا ما يشير إلى ضعف في جودة القرن)." } },
 
   { ref:"fourchette", lecon:1, coll:"anatomie",
     mots:{ fr:{m:"la fourchette"}, en:{m:"the frog", p:"frog"},
@@ -109,7 +109,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ La struttura elastica a V al centro della suola, che ammortizza e drena. La **forchetta marcia** (thrush) è un'infezione umida e maleodorante, molto frequente in un box mal pulito.",
           de:"⚠️ Die elastische, V-förmige Struktur in der Mitte der Sohle, die dämpft und entwässert. **Strahlfäule** ist eine feuchte, übelriechende Infektion, häufig bei schlecht ausgemisteten Boxen.",
           ja:"蹄底の中央にあるV字形の弾力性のある構造で、衝撃を吸収し排水します。⚠️ 「蹄叉腐乱」（thrush）は湿った悪臭のする感染症で、清掃の悪い馬房でよく見られます — 放置してはいけません。",
-          ar:"البنية المرنة على شكل V في وسط باطن الحافر، تمتص الصدمات وتصرف الرطوبة. ⚠️ «تعفن النسر» (thrush بالإنجليزية) عدوى رطبة كريهة الرائحة، شائعة جدا في الحجرة السيئة التنظيف — تبلغ عنها فورا ولا تترك أبدا." } },
+          ar:"البنية المرنة على شكل V في وسط باطن الحافر، وتساعد على امتصاص الصدمات وتصريف الرطوبة. ⚠️ «تعفن نسر الحافر» (thrush بالإنجليزية) عدوى رطبة كريهة الرائحة، شائعة جدا في الحظائر سيئة التنظيف — يجب الإبلاغ عنها وعدم تركها من دون علاج." } },
 
   { ref:"ligne-blanche", lecon:1, coll:"anatomie",
     mots:{ fr:{m:"la ligne blanche"}, en:{m:"the white line", p:"ouaïte laïn"},
@@ -122,7 +122,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ La giunzione, visibile sotto il piede, tra la muraglia e la suola — il riferimento del maniscalco per posizionare i chiodi senza pungere. La **malattia della linea bianca** è un'infezione fungina che stacca la muraglia dall'interno.",
           de:"⚠️ Der unter dem Fuß sichtbare Übergang zwischen Wand und Sohle — der Orientierungspunkt des Hufschmieds, um Nägel ohne Vernageln zu setzen. Die **Weiße-Linie-Krankheit** ist eine Pilzinfektion, die die Wand von innen löst.",
           ja:"⚠️ 蹄底に見える、蹄壁と蹄底の接合部 — 装蹄師が釘を刺さずに打つための目印。「白線病」は真菌感染で、内側から蹄壁を剥離させます。最初は接合部の小さな黒い穴として現れます。",
-          ar:"الوصلة الظاهرة تحت القدم بين الجدار والباطن — وهي علامة الحداد لوضع المسامير من دون وخز. ⚠️ **مرض الخط الأبيض** عدوى فطرية تفصل الجدار من الداخل؛ وتظهر أولا كثقب صغير داكن عند هذه الوصلة." } },
+          ar:"منطقة الاتصال الظاهرة أسفل الحافر بين الجدار والباطن — وهي دليل حداد الخيل عند وضع المسامير لتجنب إصابة الأنسجة الحساسة. ⚠️ **مرض الخط الأبيض** عدوى تصيب هذه المنطقة وتؤدي إلى انفصال جدار الحافر من الداخل؛ وقد تظهر أولا على شكل تجويف صغير داكن عند هذا الاتصال." } },
 
   { ref:"pince", lecon:1, coll:"anatomie",
     mots:{ fr:{m:"la pince"}, en:{m:"the toe", p:"tô"},
@@ -135,7 +135,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"La parte anteriore dello zoccolo, in asse con la gamba. È lì che si regola l'appoggio nel momento del distacco del passo.",
           de:"Der vordere Teil des Hufs, in der Achse des Beins. Dort erfolgt das Abrollen des Schritts.",
           ja:"脚の軸に沿った蹄の前部分。歩行時に地面から離れる瞬間の支点となる場所です。",
-          ar:"الجزء الأمامي من الحافر، في محور القدم. هناك يضبط الارتكاز عند انفصال الخطوة — وهي النقطة التي يأتي تدوير المقدمة (انظري أدناه) لتصحيحها." } },
+          ar:"الجزء الأمامي من الحافر، في محور القدم. ومن هذه المنطقة يبدأ انفصال الحافر عن الأرض أثناء الخطوة — وهو ما يساعد تدوير المقدمة (انظري أدناه) على تسهيله." } },
 
   { ref:"talons", lecon:1, coll:"anatomie",
     mots:{ fr:{m:"les talons"}, en:{m:"the heels", p:"hilz"},
@@ -163,7 +163,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"L'azione di riequilibrare il piede rimuovendo l'eccesso di corneo, sempre fatta prima di ferrare — o da sola, su un cavallo scalzo. Un piede ben pareggiato è la base di tutto il resto.",
           de:"Das Ausgleichen des Hufs durch Entfernen von überschüssigem Horn, immer vor dem Beschlagen — oder allein, bei einem barhuf gehenden Pferd. Ein gut bearbeiteter Huf ist die Grundlage für alles andere.",
           ja:"余分な角質を取り除いて蹄のバランスを整える作業。装蹄の前には必ず行い、裸蹄の馬ではこれだけを行います。よく削られた蹄が、すべての土台になります。",
-          ar:"إعادة توازن القدم بإزالة القرن الزائد، وتجرى دائما قبل تركيب الحدوة — أو وحدها عند الحصان ذي الحوافر العارية. القدم الجيدة التقليم أساس كل ما يأتي بعدها." } },
+          ar:"إعادة توازن الحافر بإزالة القرن الزائد، وتجرى دائما قبل تركيب الحدوة — أو تكون الإجراء الوحيد عند الحصان غير المنتعل. والحافر المقلم جيدا هو أساس كل ما يأتي بعد ذلك." } },
 
   { ref:"parer-pied", lecon:1, coll:"parage-ferrure",
     mots:{ fr:{m:"parer"}, en:{m:"to trim", p:"trim"},
@@ -176,7 +176,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Il verbo dell'azione descritta dal pareggio.",
           de:"Das Verb zur Hufbearbeitung.",
           ja:"削蹄という作業を表す動詞。",
-          ar:"المصدر الدال على الفعل الموصوف في تقليم الحافر." } },
+          ar:"إزالة القرن الزائد وإعادة توازن الحافر؛ وهو الفعل الذي نسمي نتيجته «تقليم الحافر»." } },
 
   { ref:"ferrer", lecon:1, coll:"parage-ferrure",
     mots:{ fr:{m:"ferrer"}, en:{m:"to shoe", p:"chô"},
@@ -189,7 +189,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ Applicare un ferro. La parola generale è **ferratura** (shoeing). **Riferrare** significa rimettere un ferro già applicato; **sferrare** significa toglierlo senza rimetterne un altro. Ci sono ferri **anteriori** e **posteriori**.",
           de:"⚠️ Ein Eisen anbringen. Das allgemeine Wort ist **Beschlag**. **Neu beschlagen** heißt ein Eisen erneut anbringen; **ausschuhen** heißt es entfernen, ohne ein neues aufzuziehen. Es gibt **Vorder-** und **Hintereisen**.",
           ja:"蹄鉄を打つこと。総称は「装蹄」。既に着けていた蹄鉄を打ち直すことを「つけ直し」、外して次を着けないことを「脱蹄」と言います。前肢用と後肢用の蹄鉄は形が異なります。",
-          ar:"تثبيت حدوة. ⚠️ الكلمة العامة هي **الحدو** (shoeing). **إعادة التثبيت** هي إرجاع حدوة سبق وضعها (to refit)؛ و**نزع الحدوة** إزالتها من دون وضع أخرى (to remove/pull a shoe). توضع الحدوة على القائمة **الأمامية** (front shoe) كما على **الخلفية** (hind shoe) — وشكلاهما مختلفان، وقد يكيف حداد خبير، استثنائيا، حدوة خلفية لقائمة أمامية لتصحيح وضع خاص." } },
+          ar:"تركيب حدوة على الحافر. ⚠️ المصطلح العام هو **تركيب الحدوات** (shoeing). **إعادة تركيب الحدوة** تعني إعادة وضع حدوة سبق تركيبها (to refit)، أما **نزع الحدوة** فيعني إزالتها من دون تركيب أخرى (to remove/pull a shoe). وتختلف حدوة القائمة **الأمامية** (front shoe) عن حدوة القائمة **الخلفية** (hind shoe) في شكلها؛ وقد يعدل حداد خبير، في حالات خاصة، حدوة خلفية لتناسب قائمة أمامية بهدف تصحيح وضع معين." } },
 
   /* ============ CLOUS, PINÇONS ET GARNITURE ============ */
 
@@ -204,7 +204,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ Ciò che fissa il ferro alla muraglia, mai alla suola. Due parole da non confondere: un chiodo **vicino** passa pericolosamente vicino al tessuto sensibile senza toccarlo; un chiodo che **punge** lo tocca realmente.",
           de:"⚠️ Was das Eisen an der Wand befestigt, nie an der Sohle. Zwei Begriffe: ein **naher** Nagel verläuft gefährlich nah am empfindlichen Gewebe, ohne es zu berühren; ein **vernagelter** Huf bedeutet, dass der Nagel es tatsächlich trifft.",
           ja:"蹄鉄を蹄壁に固定するもので、蹄底には決して打ちません。⚠️ 混同しないための二つの言葉：「近すぎる釘」は敏感な組織のすぐ近くを通るが触れていない状態、「刺さった釘」は実際に触れてしまった状態です。",
-          ar:"ما يثبت الحدوة في الجدار، ولا يثبت في الباطن أبدا. ⚠️ كلمتان لا يخلط بينهما: المسمار **القريب جدا** (close nail) يسلك مسارا خطرا قرب الأنسجة الحساسة من دون أن يمسها — وقد يكفي ذلك لإحداث عرج؛ والمسمار **الواخز** (nail prick) يذهب أبعد ويصيب الحي فعلا. درجتان من الخطأ نفسه، وليسا الشيء نفسه." } },
+          ar:"يثبت المسمار الحدوة في جدار الحافر، ولا يدخل في الباطن أبدا. ⚠️ يجب التمييز بين حالتين: المسمار **القريب جدا** (close nail) يمر على مسافة خطرة من الأنسجة الحساسة من دون أن يصيبها — وقد يكون ذلك كافيا لإحداث العرج؛ أما المسمار **الواخز** (nail prick) فيصيب الأنسجة الحية فعلا. هما درجتان مختلفتان من الخطأ نفسه، وليستا الحالة نفسها." } },
 
   { ref:"pincon", lecon:1, coll:"clous",
     mots:{ fr:{m:"le pinçon"}, en:{m:"the clip", p:"klip"},
@@ -217,7 +217,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Il piccolo rilievo sollevato dal ferro contro la muraglia, che ne impedisce lo scivolamento. Può essere posto in punta o sui lati.",
           de:"Die kleine, aus dem Eisen hochgezogene Kappe gegen die Wand, die ein Verrutschen verhindert. Sie kann vorn oder seitlich sitzen.",
           ja:"蹄鉄から蹄壁に沿って立ち上げられた小さな出っ張りで、ずれを防ぎます。爪先側にも側面にも配置できます。",
-          ar:"النتوء الصغير المرفوع من الحدوة على الجدار، يمنعها من الانزلاق. يوضع في المقدمة أو على الجانبين." } },
+          ar:"لسان معدني صغير يرتفع من الحدوة بمحاذاة جدار الحافر ويساعد على منع الحدوة من التحرك. ويمكن أن يكون في المقدمة أو على الجانبين." } },
 
   { ref:"pincon-pince", lecon:1, coll:"clous",
     mots:{ fr:{m:"le pinçon en pince"}, en:{m:"toe clip", p:"tô klip"},
@@ -256,7 +256,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ Nessuna traduzione unica e fissa — è la larghezza del ferro lasciata oltre la muraglia, per dare più supporto. Un supporto ampio aiuta un piede fragile.",
           de:"⚠️ Keine einzige feste Übersetzung — es ist die über die Wand hinausragende Eisenbreite, für zusätzliche Stütze. Viel Auflagefläche hilft einem schwachen Huf.",
           ja:"⚠️ 決まった一つの訳語はありません — 蹄壁より外側に残された蹄鉄の幅で、より多くの支えを与えます。幅が広いと弱い蹄を助けますが、広すぎると引っかかりやすくなります。",
-          ar:"⚠️ لا ترجمة واحدة جامدة لها — هي عرض الحدوة المتروك بارزا خارج الجدار، لتقديم دعم أكبر. البروز الواسع يساعد القدم الهشة؛ وإذا زاد عن الحد علق بالأرض وزاد خطر انتزاع الحدوة." } },
+          ar:"⚠️ لا يوجد لها مقابل عربي واحد ثابت — والمقصود هو مقدار بروز الحدوة خارج جدار الحافر لتوفير دعم إضافي. وقد يفيد البروز الأكبر الحافر الذي يحتاج إلى مزيد من الدعم؛ لكن إذا كان مفرطا فقد يعلق بالأرض ويزيد خطر اقتلاع الحدوة." } },
 
   { ref:"rolling", lecon:1, coll:"clous",
     mots:{ fr:{m:"le rolling"}, en:{m:"rolled toe", p:"rôld tô"},
@@ -269,7 +269,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Una punta di ferro arrotondata invece che piatta, che facilita il distacco del passo. ⚠️ Da non confondere con il **rocker toe**: diverso dal semplice arrotondamento.",
           de:"Eine abgerundete statt flache Zehe am Eisen, die das Abrollen erleichtert. ⚠️ Nicht mit dem **Rocker Toe** zu verwechseln — verwandt, aber verschieden.",
           ja:"蹄鉄の爪先を平らではなく丸く仕上げたもので、踏み出しを助けます。⚠️「ロッカートゥ」と混同しないこと — 似ていますが別の調整です。",
-          ar:"مقدمة حدوة مدورة بدلا من المسطحة، تسهل انفصال الخطوة. ⚠️ لا تخلطي بينها وبين **rocker toe**: التدوير يدور الحافة، أما rocker toe فيرفع المقدمة كلها بزاوية — ضبطان متجاوران لكنهما مختلفان، يوضحان للحداد إذا اقتضت الحالة." } },
+          ar:"تدوير الحافة الأمامية للحدوة بدل تركها مسطحة، لتسهيل انفصال الحافر عن الأرض. ⚠️ لا تخلطي بينه وبين **rocker toe**: ففي rolling تدور الحافة الأمامية، أما rocker toe فترفع فيه المقدمة كلها بزاوية. هما تعديلان متقاربان لكن مختلفان، ويجب تحديد المطلوب لحداد الخيل بحسب الحالة." } },
 
   /* ============ CRAMPONS ============ */
 
@@ -284,7 +284,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Il foro praticato nel ferro per avvitare un rampone. Un foro vuoto si tappa per non incrostarsi.",
           de:"Das ins Eisen gebohrte Loch zum Einschrauben eines Stollens. Ein leeres Stollenloch wird verschlossen, damit es nicht verschmutzt.",
           ja:"スタッドをねじ込むために蹄鉄に開けられた穴。空の穴は汚れないよう栓をします。",
-          ar:"الثقب المحفور في الحدوة ليلولب فيه مسمار منع الانزلاق. الثقب الفارغ يسد بسدادة كي لا يتسخ." } },
+          ar:"ثقب ملولب في الحدوة يثبت فيه مسمار منع الانزلاق. وعندما لا يستخدم، يغلق بسدادة لمنع تراكم الأوساخ داخله." } },
 
   { ref:"tarauder-mortaise", lecon:1, coll:"crampons",
     mots:{ fr:{m:"tarauder"}, en:{m:"to tap", p:"tap", var:"a stud hole"},
@@ -297,7 +297,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Ricavare la filettatura interna del foro perché il rampone possa avvitarsi. Senza questa filettatura, nessun rampone tiene.",
           de:"Das Innengewinde im Stollenloch schneiden, damit der Stollen eingeschraubt werden kann. Ohne dieses Gewinde hält kein Stollen.",
           ja:"クランポンをねじ込めるように、穴の内側にねじ山を切ること。これがなければクランポンは固定できません。",
-          ar:"حفر اللولبة داخل الثقب ليلولب فيه المسمار. من دون هذه اللولبة لا يثبت أي مسمار." } },
+          ar:"إنشاء سن لولبي داخل الثقب حتى يمكن تثبيت مسمار منع الانزلاق فيه. ومن دون هذا السن لا يمكن ربط المسمار بإحكام." } },
 
   { ref:"crampon", lecon:1, coll:"crampons",
     mots:{ fr:{m:"le crampon"}, en:{m:"the stud", p:"steude"},
@@ -310,7 +310,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Un pezzo avvitato nel ferro per migliorare la presa su un terreno grasso o scivoloso. Si toglie dopo l'uso.",
           de:"Ein ins Eisen geschraubtes Teil für besseren Halt auf nassem oder rutschigem Boden. Wird nach Gebrauch entfernt, nie dauerhaft gelassen.",
           ja:"ぬかるんだ、または滑りやすい地面でのグリップを高めるため蹄鉄にねじ込む部品。使用後は外し、常時つけたままにはしません。",
-          ar:"قطعة تلولب في الحدوة لتحسين التماسك على أرض لزجة أو زلقة. تنزع بعد الاستعمال، ولا تترك دائمة أبدا." } },
+          ar:"قطعة معدنية تثبت باللولب في الحدوة لتحسين الثبات على أرض لينة أو زلقة. وتنزع بعد الاستخدام ولا تترك مركبة بصورة دائمة." } },
 
   /* ============ PROBLÈMES COURANTS ============ */
 
@@ -325,7 +325,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Il ferro si è staccato completamente, spesso all'aperto su terreno che si aggrappa. Il piede scalzo va protetto e il maniscalco avvisato senza aspettare il prossimo appuntamento.",
           de:"Das Eisen hat sich vollständig gelöst, oft im Gelände auf zähem Boden. Der bloße Huf muss geschützt und der Hufschmied ohne Verzug informiert werden.",
           ja:"蹄鉄が完全に外れてしまった状態で、粘りのある地面での外乗中によく起こります。裸になった蹄は保護し、次の予約を待たずに装蹄師に連絡する必要があります。",
-          ar:"انفصلت الحدوة كليا، وغالبا في الخارج على أرض ماسكة. القدم العارية الباقية يجب أن تحمى، ويبلغ الحداد من دون انتظار الموعد المقبل." } },
+          ar:"حدوة انفصلت بالكامل عن الحافر، ويحدث ذلك كثيرا في الخارج على أرض تمسك بالحافر. يجب حماية الحافر الذي أصبح عاريا وإبلاغ حداد الخيل من دون انتظار الموعد التالي." } },
 
   { ref:"fer-bouge", lecon:1, coll:"problemes",
     mots:{ fr:{m:"un fer qui bouge"}, en:{m:"a loose shoe", p:"lousse chô"},
@@ -338,7 +338,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Il ferro tiene ancora ma comincia a scollarsi — spesso un chiodo che ha ceduto. Segnale d'allarme da non ignorare: finisce sempre in ferro perso, nel momento peggiore.",
           de:"Das Eisen hält noch, beginnt sich aber zu lösen — oft ein nachgebender Nagel. Ein Warnzeichen, das man nicht ignorieren sollte: es endet immer als verlorenes Eisen, im ungünstigsten Moment.",
           ja:"蹄鉄はまだ着いているが緩み始めている状態 — 多くは釘が一本外れかけています。無視してはいけない警告サインで、放っておくと必ず最悪のタイミングで完全に外れます。",
-          ar:"ما زالت الحدوة ثابتة لكنها بدأت تتخلخل — وغالبا مسمار استسلم. علامة تنبيه لا تهمل: تنتهي دائما بحدوة مفقودة، في أسوأ لحظة." } },
+          ar:"ما زالت الحدوة في مكانها لكنها بدأت تتحرك — وغالبا بسبب مسمار ارتخى أو لم يعد يثبتها جيدا. إنها علامة تحذير لا ينبغي تجاهلها، لأنها قد تنتهي بفقدان الحدوة في أسوأ وقت." } },
 
   /* ============ PIEDS NUS ET ALTERNATIVES ============ */
 
@@ -353,7 +353,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"⚠️ Un cavallo senza ferri, perfettamente possibile con un pareggio regolare — che richiede anzi più precisione, non meno. Questo capitolo non presenta lo scalzo come migliore o peggiore della ferratura: è una scelta.",
           de:"⚠️ Ein Pferd ohne Eisen — durchaus möglich bei regelmäßiger Hufbearbeitung, die sogar mehr statt weniger Präzision verlangt. Dieses Kapitel stellt Barhuf nicht als besser oder schlechter als Beschlag dar: Es ist eine Wahl.",
           ja:"⚠️ 蹄鉄を着けていない馬。定期的な削蹄があれば十分可能で、むしろ蹄鉄で欠点を補えない分、より高い精度が求められます。この章は裸蹄を装蹄より良い・悪いとは位置づけていません — それは選択です。",
-          ar:"حصان من دون حدوات، وهو ممكن تماما بشرط تقليم منتظم — بل إن تقليم الحافر العاري يتطلب دقة أكبر لا أقل، إذ لا حدوة تعوض أي خلل. ⚠️ لا يقدم هذا الفصل الحافر العاري على أنه أفضل من الحدو ولا أسوأ: إنه خيار يلائم الحصان والأرض والعمل المطلوب. الحافر العاري على أرض صلبة أو حاكة يتآكل أسرع مما ينمو — ومن هنا فائدة الحمايات أدناه." } },
+          ar:"حصان من دون حدوات، وهو خيار ممكن تماما بشرط التقليم المنتظم — بل إن تقليم الحافر غير المنتعل يتطلب دقة كبيرة، إذ لا توجد حدوة تعوض أي خلل في التوازن. ⚠️ لا يقدم هذا الفصل الحافر غير المنتعل على أنه أفضل أو أسوأ من الحافر المنتعل: إنه خيار يتحدد بحسب الحصان والأرض وطبيعة العمل. وعلى أرض صلبة أو كاشطة قد يتآكل الحافر أسرع من نموه — ومن هنا تأتي فائدة وسائل الحماية المذكورة أدناه." } },
 
   { ref:"hipposandale", lecon:1, coll:"alternatives",
     mots:{ fr:{m:"l'hipposandale"}, en:{m:"the hoof boot", p:"houf boute"},
@@ -366,7 +366,7 @@ window.HYPE_LINGO_LEX.flyinge = {
           it:"Una protezione amovibile infilata su un piede scalzo per un'uscita occasionale su terreno duro. ⚠️ Altre due opzioni esistono: la **protezione incollata** (glue-on) e la **ferratura composita** (composite).",
           de:"Ein abnehmbarer Schutz, der über einen bloßen Huf gezogen wird, für gelegentliche Arbeit auf hartem Boden. ⚠️ Zwei weitere Optionen: der **geklebte Schutz** (glue-on) und das **Komposit-Eisen** (composite).",
           ja:"裸蹄に一時的にかぶせる取り外し可能な保護具で、硬い地面での単発の外乗などに使います。⚠️ 他に二つの選択肢があります：釘ではなく接着剤で固定する「接着プロテクション」と、従来の鉄より軽く柔軟な「コンポジット蹄鉄」。",
-          ar:"حماية قابلة للنزع تلبس على حافر عار، لخرجة عارضة على أرض صلبة — من دون مساوئ الحدوة الدائمة. ⚠️ يوجد خياران آخران، يختاران مع الحداد بحسب الحالة: **الحماية الملصقة** (glue-on) المثبتة بلاصق لا بمسامير، و**الحدوة المركبة** (composite shoe) الأخف والأكثر مرونة من حدوة الفولاذ التقليدية." } }
+          ar:"حذاء واق قابل للنزع يلبس على الحافر غير المنتعل، مثلا عند الخروج على أرض صلبة — من دون الحاجة إلى حدوة دائمة. ⚠️ وهناك خياران آخران يمكن اختيارهما مع حداد الخيل بحسب الحالة: **الحماية الملصقة** (glue-on)، التي تثبت بمادة لاصقة بدل المسامير، و**الحدوة المركبة** (composite shoe)، وهي أخف وأكثر مرونة من الحدوة الفولاذية التقليدية." } }
 
   ],
 
@@ -395,7 +395,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Anche il ferro sinistro è un po' allentato.",
         de:"Das linke Eisen ist auch etwas locker.",
         ja:"左 の 蹄鉄 も 少し 緩ん で い ます。",
-        ar:"الحدوة اليسرى تتحرك قليلا هي أيضا." },
+        ar:"الحدوة اليسرى متخلخلة قليلا أيضا." },
 
       { ref:"d-fly-tenir-cheval", temps:1, dit:"joueuse", mots:[], motsAilleurs:["marechal"],
         fr:"Tu veux que je te tienne le cheval ?",
@@ -413,7 +413,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Dà bene gli anteriori, ma si muove di più dietro.",
         de:"Vorne gibt er die Füße gut, hinten bewegt er sich mehr.",
         ja:"前肢 は 素直 に 上げ ます が 、 後肢 は もっと 動き ます。",
-        ar:"يعطي القائمتين الأماميتين جيدا، لكنه يتحرك أكثر في الخلف." },
+        ar:"يرفع قائمتيه الأماميتين بسهولة، لكنه يتحرك أكثر عند رفع القائمتين الخلفيتين." },
 
       /* ---- temps 2 · le parage ---- */
       { ref:"d-fly-parer-avant", temps:2, dit:"joueuse", mots:["parage","ferrer"], motsAilleurs:["marechal"],
@@ -423,7 +423,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Lo pareggi prima di riferrarlo?",
         de:"Bearbeitest du die Hufe, bevor du ihn neu beschlägst?",
         ja:"つけ直す 前 に 削蹄 し ます か ?",
-        ar:"هل ستقلم حافره قبل إعادة تثبيت الحدوة؟" },
+        ar:"هل ستقلم الحافر قبل إعادة تركيب الحدوة؟" },
 
       { ref:"d-fly-sole-fine", temps:2, dit:"club", mots:["sole"],
         fr:"La sole est assez fine sur ce pied.",
@@ -469,7 +469,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"È sensibile dall'ultima ferratura.",
         de:"Er ist seit dem letzten Beschlag etwas empfindlich.",
         ja:"前回 の 装蹄 から 、 少し 敏感 な 様子 です。",
-        ar:"إنه حساس منذ الحدو الأخير." },
+        ar:"أصبح حساسا منذ آخر تركيب للحدوات." },
 
       /* ---- temps 4 · les choix de ferrure ---- */
       { ref:"d-fly-pincon-ou-lateraux", temps:4, dit:"club", mots:["pincon-pince","pincons-lateraux"],
@@ -479,7 +479,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Preferisci una brida di punta o due bride laterali?",
         de:"Möchtest du lieber eine Zehenkappe oder zwei Seitenkappen?",
         ja:"トゥークリップ と サイドクリップ 、 どちら が いい です か ?",
-        ar:"أتفضلين لسانا أماميا واحدا أم لسانين جانبيين؟" },
+        ar:"أتفضل لسانا أماميا واحدا أم لسانين جانبيين؟" },
 
       { ref:"d-fly-soutien-talons", temps:4, dit:"joueuse", mots:["talons"],
         fr:"Je voudrais un peu plus de soutien en talons.",
@@ -506,7 +506,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Puoi arrotondargli un po' la punta?",
         de:"Kannst du ihm die Zehe etwas abrunden?",
         ja:"爪先 を ロールド トゥ に し て もらえ ます か ?",
-        ar:"هل يمكنك عمل تدوير للمقدمة؟" },
+        ar:"هل يمكنك تدوير مقدمة الحدوة له؟" },
 
       { ref:"d-fly-postat-devant", temps:4, dit:"joueuse", mots:[], motsAilleurs:["fer"],
         fr:"Tu mettrais un fer de postérieur devant sur celui-là ?",
@@ -515,7 +515,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Gli metteresti un ferro posteriore davanti su questo?",
         de:"Würdest du bei diesem ein Hintereisen vorn aufziehen?",
         ja:"この 子 に は 、 前肢 に 後肢 用 の 蹄鉄 を 使い ます か ?",
-        ar:"هل تضع حدوة خلفية في الأمام لهذا الحصان؟" },
+        ar:"هل ستستخدم حدوة خلفية على قائمة أمامية لهذا الحصان؟" },
 
       /* ---- temps 5 · les crampons ---- */
       { ref:"d-fly-mortaises-faites", temps:5, dit:"joueuse", mots:["mortaise-crampon"],
@@ -525,7 +525,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"I fori sono già fatti?",
         de:"Sind die Stollenlöcher schon gemacht?",
         ja:"スタッド ホール は もう 開い て い ます か ?",
-        ar:"هل ثقوب التثبيت جاهزة؟" },
+        ar:"هل ثقوب مسامير منع الانزلاق جاهزة؟" },
 
       { ref:"d-fly-mortaises-taraudees", temps:5, dit:"joueuse", mots:["tarauder-mortaise"],
         fr:"Elles sont taraudées ?",
@@ -552,7 +552,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Vuoi che pulisca i fori prima di mettere i ramponi?",
         de:"Soll ich die Stollenlöcher reinigen, bevor die Stollen reinkommen?",
         ja:"スタッド を 入れる 前 に 、 穴 を 掃除 し ましょう か ?",
-        ar:"أتريد أن أنظف الثقوب قبل وضع المسامير؟" },
+        ar:"أتريد أن أنظف ثقوب التثبيت قبل تركيب مسامير منع الانزلاق؟" },
 
       /* ---- temps 6 · pieds nus et prochain rendez-vous ---- */
       { ref:"d-fly-nus-derriere", temps:6, dit:"joueuse", mots:["pieds-nus"],
@@ -562,7 +562,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Può restare scalzo dietro?",
         de:"Kann er hinten barhuf bleiben?",
         ja:"後肢 は 裸蹄 の まま で いい です か ?",
-        ar:"هل يمكنه البقاء بحوافر عارية في الخلف؟" },
+        ar:"هل يمكنه البقاء من دون حدوات في القائمتين الخلفيتين؟" },
 
       { ref:"d-fly-use-terrain-dur", temps:6, dit:"joueuse", mots:["sabot"],
         fr:"Il use beaucoup ses pieds quand il travaille sur terrain dur.",
@@ -580,7 +580,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Basterebbe uno stivaletto per le uscite?",
         de:"Würde ein Hufschuh für Ausritte reichen?",
         ja:"外乗 に は 蹄 用 ブーツ で 十分 でしょう か ?",
-        ar:"هل يكفي حذاء الحافر للخرجات؟" },
+        ar:"هل يمكن أن يكون حذاء الحافر كافيا عند الخروج؟" },
 
       { ref:"d-fly-classique-composite", temps:6, dit:"joueuse", mots:[], motsAilleurs:["fer"],
         fr:"Tu utiliserais plutôt un fer classique ou une protection composite ?",
@@ -589,7 +589,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Useresti piuttosto un ferro classico o una protezione composita?",
         de:"Würdest du eher ein klassisches oder ein Komposit-Eisen nehmen?",
         ja:"従来 の 蹄鉄 と コンポジット 、 どちら を 使い ます か ?",
-        ar:"أتستعمل حدوة تقليدية أم حماية مركبة؟" },
+        ar:"هل تفضل استخدام حدوة تقليدية أم حدوة مركبة؟" },
 
       { ref:"d-fly-revoir-semaines", temps:6, dit:"joueuse", mots:[],
         fr:"Tu veux le revoir dans combien de semaines ?",
@@ -598,7 +598,7 @@ window.HYPE_LINGO_LEX.flyinge = {
         it:"Tra quante settimane vuoi rivederlo?",
         de:"In wie vielen Wochen möchtest du ihn wiedersehen?",
         ja:"次 は 何 週間 後 に 見 て もらい ます か ?",
-        ar:"بعد كم أسبوعا تريد رؤيته من جديد؟" }
+        ar:"بعد كم أسبوع تريد فحصه من جديد؟" }
     ]
   }
 };
