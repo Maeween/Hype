@@ -20461,7 +20461,7 @@ function EcranChevalCommun() {
                     cavs = ((rP && rP.data) || []).map(function (p) {
                         var nm = p.pseudo ? ("@" + p.pseudo) : (p.prenom || "Cavali\u00e8re");
                         nomsPar[p.id] = nm;
-                        return { id: p.id, nom: nm, avatar: p.avatar_url || "" };
+                        return { id: p.id, nom: nm, avatar: p.avatar_url || "", pseudo: p.pseudo || "", handle: p.handle || "", ecurie: p.ecurie || "", club: p.club || "", ville: p.ville || "" };
                     });
                 } catch (eP) { }
                 var photos = [], videos = [], dernier = null;
@@ -20509,11 +20509,15 @@ function EcranChevalCommun() {
         if (ctx && ctx.setEcran) ctx.setEcran(window.__hyccRetour || "dashboard");
         else { try { history.back(); } catch (eH) { } }
     }
-    function ouvrirCavaliere(cid) {
-        try { window.__hyccFiltreHistoire = cid; } catch (eFh) { } /* hook filtre (V2, non branche) */
-        if (!ctx || !ctx.setEcran || !cid || (st.ch && st.ch.id === "demo")) return;
-        try { window.__cavalierOuvert = cid; } catch (eC) { }
-        ctx.setEcran("profil");
+    function ouvrirCavaliere(cv) {
+        try { window.__hyccFiltreHistoire = cv && cv.id; } catch (eFh) { } /* hook filtre (V2, non branche) */
+        if (!ctx || !ctx.setEcran || !cv || !cv.id || (st.ch && st.ch.id === "demo")) return;
+        /* protocole de l'app pour un profil PUBLIC (l'ecran "profil" = Mon compte !) */
+        try {
+            window.__cavalierPublic = { id: cv.id, pseudo: cv.pseudo || (cv.nom || "").replace("@", ""), handle: cv.handle || "", photo: (typeof avSrc === "function" ? avSrc(cv.avatar) : cv.avatar) || null, ecurie: cv.ecurie || "", club: (cv.club || cv.ecurie || ""), ville: cv.ville || "" };
+            window.__cavalierOuvert = "__public";
+        } catch (eC) { }
+        ctx.setEcran("cavalier");
     }
     function ouvrirFiche() {
         if (!ctx || !ctx.setEcran || !st.ch || st.ch.id === "demo") return;
@@ -20587,7 +20591,7 @@ function EcranChevalCommun() {
 
     function cavNoeud(c, i, dansListe) {
         return H("div", { key: (dansListe ? "e" : "c") + i, className: "hycc-cav", "data-cav-id": c.id || "",
-            style: dansListe ? null : { left: POS[i].x + "%", top: POS[i].y + "%" }, onClick: function () { ouvrirCavaliere(c.id); } },
+            style: dansListe ? null : { left: POS[i].x + "%", top: POS[i].y + "%" }, onClick: function () { ouvrirCavaliere(c); } },
             H("div", { className: "a" }, c.avatar ? H("img", { src: c.avatar, alt: "" }) : (c.nom || "?").replace("@", "").charAt(0).toUpperCase(), H("i", null)),
             H("div", { className: "p" }, c.nom || ""));
     }

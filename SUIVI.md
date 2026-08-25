@@ -14362,3 +14362,22 @@ Nouveau composant isolé `PontChevalCommun`, inséré sur la fiche juste avant l
 1· `#chevalcommun` → page commune OK. 2· `#monclub` → badge cristal « 3 » sur le cheval partagé. 3· `#cheval-c1` (2 liens en fixtures) → pont affiché « …à travers 2 autres aventures → », tap → page commune montée, retour `cheval`. 16 scripts, 0 erreur partout.
 
 ## À pousser : `index.html` uniquement (contient : branche vidéo palmarès + les 15 livraisons du jour + étape 3).
+
+---
+
+# HYPE ▸ 25/08 (17e livraison) · LES 4 CORRECTIONS DU BRIEF « VRAIES PHOTOS »
+
+1. **HERO** : la photo occupe TOUTE la largeur en fond (`inset:0`, cover, cadrage `center 30%`), gradient noir 90° par-dessus (demandé explicitement par le brief) pour asseoir les textes à droite — fini la photo coincée à gauche avec sa moitié noire. Compacité conservée.
+2. **CONSTELLATION VIDE** : plus de boîte rectangulaire — la signature reste : cristal du cheval au centre, 4 nœuds fantômes en pointillés turquoise (« à écrire… »), fils estompés, phrase d'attente en sous-titre.
+3. **MUR** : chevauchements renforcés et variés (marges -12/-24, décalages ±2,5-5,5 %, une photo sur 5 déborde à 108 %), **plafond 10 photos + « Voir tous les souvenirs → »** qui déplie. Zéro débordement de page (mesuré).
+4. **VIDÉOS** : cartes STRICTEMENT identiques (52 % de large ≈ 1,9 visibles, 16/10, même rayon — mesuré 186 px × N), **cover** = poster/thumb de l'album si présent sinon 1re image de la vidéo (seek 0,12 s après métadonnées, muted playsinline), petit play central 34 px, durée en bas à droite, titre 2 lignes max. Tap : album si lié, sinon lecture/pause.
+🔑 **Découverte majeure** : `profiles.select("id, prenom, pseudo, avatar_url")` échouait EN ENTIER si une colonne nommée manque (pseudo ?) → constellation vide même sur son propre cheval (capture Rizotto). Passé à `select("*")` + lectures défensives. C'est probablement ça, le « vide » constaté — pas RLS.
+Banc : fantômes 4, boîte vide absente, gradient présent, mur 10→14 au tap, vidéos uniformes, play centrés, débordement 0, 0 erreur.
+
+## À pousser : `index.html` uniquement.
+
+---
+
+# HYPE ▸ 25/08 (18e livraison) · 🟥 CONSTELLATION : LE TAP OUVRAIT « MON COMPTE »
+
+Bug signalé par Blandine : taper une cavalière de la constellation ouvrait la page Mon compte. Cause : j'envoyais `__cavalierOuvert = <id>` + écran `"profil"` — or dans Hype, **l'écran `profil` = Mon compte**. Le protocole de l'app pour un profil PUBLIC est : `window.__cavalierPublic = { id, pseudo, handle, photo, ecurie, club, ville }` + `__cavalierOuvert = "__public"` + écran **`"cavalier"`** (relevé sur 5 sites d'appel existants). Corrigé : les cavalières de la constellation portent maintenant leurs champs de profil complets et le tap suit ce protocole. Banc (fixtures 2 cavalières) : tap → `__cavalierOuvert = "__public"`, `__cavalierPublic.pseudo = "blandine"`, PAS d'écran Mon compte, 0 erreur. À pousser : `index.html` (md5 9890dea3).
