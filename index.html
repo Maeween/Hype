@@ -1493,16 +1493,19 @@ async function enregistrerImportFFE(chevalId, lignes) {
     const k = cle(r.date, r.epreuve, r.concours, r.cavalier);
     if (vues[k] || seen[k]) { doublons++; return; }
     seen[k] = true;
+    var netFFE = function (tN) { /* 26/08 : Postgres refuse les caracteres de controle (« unsupported Unicode escape sequence », erreur reelle de Blandine 08h34) — on purge chaque champ texte avant l ecriture, quelle que soit la version du lecteur en cache */
+      return String(tN || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "").replace(/\s+/g, " ").trim();
+    };
     neufs.push({
       user_id: user.id,
       cheval_id: chevalId,
-      concours: r.concours || "",
-      epreuve: r.epreuve || "",
+      concours: netFFE(r.concours),
+      epreuve: netFFE(r.epreuve),
       date_epreuve: r.date,
       place: r.place,
       partants: r.partants,
       quart: r.quart,          /* donné par la FFE, jamais calculé */
-      cavalier: r.cavalier || "",
+      cavalier: netFFE(r.cavalier),
       origine: "import",
       /* la coche ne décide QUE de l affichage, plus de l enregistrement */
       visible: (r.garder !== false),
@@ -32746,7 +32749,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=7";
+    sc.src = "hype-import-ffe.js?v=8";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -33465,6 +33468,18 @@ function EcranCheval() {
   var selSt = React.useState(null); var selRuban = selSt[0], setSelRuban = selSt[1];
   var palmSt = React.useState(false); var voirTout = palmSt[0], setVoirTout = palmSt[1];
   var sOuvSt = React.useState(null); var saisonOuv = sOuvSt[0], setSaisonOuv = sOuvSt[1]; /* 26/08 : saison depliee du palmares editorial */
+  var pfSt = React.useState(null); var photosForts = pfSt[0], setPhotosForts = pfSt[1]; /* 26/08 : des photos VARIEES pour les moments forts (reproche Blandine : « trois fois la meme photo ») */
+  React.useEffect(function () {
+    if (panneau !== "palmares" || (photosForts && photosForts.length)) return;
+    var actifPF = true;
+    try {
+      Promise.resolve(typeof chargerPhotosSouvenirs === "function" ? chargerPhotosSouvenirs(cibleCh) : []).then(function (phF) {
+        if (!actifPF) return;
+        setPhotosForts((phF || []).filter(function (uF) { return uF && !(typeof estUrlVideo === "function" && estUrlVideo(uF)); }).slice(0, 9));
+      }).catch(function () { if (actifPF) setPhotosForts([]); });
+    } catch (ePF) { setPhotosForts([]); }
+    return function () { actifPF = false; };
+  }, [panneau, photosForts]);
   var cavFSt = React.useState("tous"); var cavFiltre = cavFSt[0], setCavFiltre = cavFSt[1]; /* 26/08 : onglet cavalier du palmares editorial */
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
   var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : ((typeof window !== "undefined" && window.__ouvrirPalmares) ? (function () { try { window.__ouvrirPalmares = false; } catch (eF) { } return "palmares"; })() : null); } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1]; React.useEffect(function () { try { if (typeof window !== "undefined" && window.__ouvrirPalmares) { window.__ouvrirPalmares = false; setPanneau("palmares"); } } catch (eOPf) { } }); /* 25/08 : lu a CHAQUE rendu — la fiche peut etre deja montee quand on arrive de la page commune */
@@ -34672,8 +34687,9 @@ function EcranCheval() {
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
           function carteFort(f, grande, idx) {
             if (!f) return null;
+            var phF = (photosForts && photosForts.length) ? photosForts[idx % photosForts.length] : photoCh; /* 26/08 : une photo differente par carte */
             return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", height: grande ? 198 : 148, flex: grande ? null : 1, minWidth: 0 } },
-              photoCh ? h("img", { src: photoCh, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
+              phF ? h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
               h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.72)", color: grande ? "#241503" : teinteCl, border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid " + teinteCl } }, "1"),
               h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 12px 12px" : "0 9px 9px", textAlign: "center" } },

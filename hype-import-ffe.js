@@ -102,6 +102,7 @@
     var lignes = [];
     items.forEach(function (it) {
       var t = reparerMojibake(String(it.str || ""));
+      t = t.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, ""); /* 26/08 : Postgres refuse \u0000 et consorts (« unsupported Unicode escape sequence ») — l'erreur enfin VISIBLE de Blandine, 08h34. On purge apres reparation (elle a besoin des octets 80-9F). */
       if (!t.trim()) return;
       var y = Math.round((it.transform ? it.transform[5] : 0) * 10) / 10;
       var x = it.transform ? it.transform[4] : 0;
@@ -116,8 +117,9 @@
     lignes.sort(function (a, b) { return b.y - a.y; });   /* de haut en bas */
     return lignes.map(function (l) {
       l.mots.sort(function (a, b) { return a.x - b.x; }); /* de gauche à droite */
-      return l.mots.map(function (m) { return m.t; }).join(" ")
-        .replace(/\s+/g, " ").trim();
+      return reparerMojibake(l.mots.map(function (m) { return m.t; }).join(" "))
+        .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "")
+        .replace(/\s+/g, " ").trim(); /* 26/08 : reparation AUSSI sur la ligne assemblee — « PrÃ©paratoire » arrivait coupe en fragments, la reparation par fragment le ratait */
     }).join("\n");
   }
 
@@ -320,7 +322,7 @@
    « IMPORTER MES RESULTATS » passait SOUS l heure et la batterie
    (capture de Blandine, 03h19). Cause : padding haut fixe a 16 px,
    sans marge de securite. On respire au-dessus ET en dessous. */
-'.hi-h{padding:calc(env(safe-area-inset-top) + 26px) 16px 4px}',
+'.hi-h{padding:calc(env(safe-area-inset-top) + 26px) 16px 4px;text-align:center} /* 26/08 : tout l en-tete recentre (demande Blandine, capture 08h34) */',
 '.hi-k{font-size:8.5px;letter-spacing:.22em;text-transform:uppercase;',
 '  color:rgba(var(--t),.85);font-weight:800}',
 '.hi-h h2{margin:6px 0 0;font-family:Cinzel,Georgia,serif;font-size:19px;font-weight:600;line-height:1.2}',
@@ -338,7 +340,7 @@
 '.hi-zone span{display:block;font-size:11px;color:#8A929C;margin-top:7px;line-height:1.6}',
 '.hi-zone input{display:none}',
 
-'.hi-aide{margin:0 16px;padding:13px 14px;border-radius:12px;font-size:11px;line-height:1.7;',
+'.hi-aide{margin:0 auto;max-width:calc(100% - 32px);padding:13px 14px;border-radius:12px;font-size:11px;line-height:1.7;',
 '  color:#8A929C;background:rgba(var(--tx),.03);border:1px solid rgba(var(--tx),.08)}',
 '.hi-aide b{color:rgba(var(--tx),.85);font-weight:700}',
 '.hi-aide ol{margin:8px 0 0;padding-left:18px}',
@@ -510,7 +512,7 @@
       '<div class="hi-film" data-hi="film">' +
       '<video id="hiFilm" src="aide-import-2.mp4?v=1" poster="aide-import-2.jpg?v=1" ' +
       'autoplay muted loop playsinline preload="none" ' +
-      'style="display:block;width:100%;height:auto"></video>' +
+      'style="display:block;width:76%;max-width:340px;height:auto;margin:0 auto;border-radius:14px"></video>' +
       '<span class="hi-loupe">⤢</span></div>' +
       '<div class="hi-film-l">15 secondes, sans le son</div>';
     if (E.err) h += '<div class="hi-err"><b>Ça n\'a pas marché</b>' + ech(E.err) + '</div>';
