@@ -71,10 +71,37 @@
     });
   }
 
+  var MOJI_CP1252 = { 8364:128, 8218:130, 402:131, 8222:132, 8230:133, 8224:134, 8225:135, 710:136, 8240:137, 352:138, 8249:139, 338:140, 381:142, 8216:145, 8217:146, 8220:147, 8221:148, 8226:149, 8211:150, 8212:151, 732:152, 8482:153, 353:154, 8250:155, 339:156, 382:158, 376:159 };
+  function reparerMojibake(t) {
+    /* 26/08 : certains telemat sortent leurs accents en UTF-8 relu en Windows-1252
+       (parfois DEUX fois) : « Préparatoire » devient « PrÃ©paratoire » puis
+       « PrÃƒÂ©paratoire ». On inverse la faute octet par octet, et on ne garde le
+       résultat QUE si le décodage UTF-8 strict réussit — sinon on ne touche rien.
+       « Âge », « À bientôt » et tout texte sain échouent au décodage strict et
+       ressortent intacts. Au plus 2 tours. */
+    var tR = String(t || ""), tours = 0;
+    if (typeof TextDecoder === "undefined") return tR;
+    while (tours < 2 && /[\u00c2\u00c3]/.test(tR)) {
+      var octs = [];
+      for (var iM = 0; iM < tR.length; iM++) {
+        var cM = tR.charCodeAt(iM);
+        if (cM < 256) octs.push(cM);
+        else if (MOJI_CP1252[cM] !== undefined) octs.push(MOJI_CP1252[cM]);
+        else { octs = null; break; }
+      }
+      if (!octs) break;
+      try {
+        var tD = new TextDecoder("utf-8", { fatal: true }).decode(new Uint8Array(octs));
+        if (!tD || tD === tR) break;
+        tR = tD; tours++;
+      } catch (eMj) { break; }
+    }
+    return tR;
+  }
   function lignesDePage(items) {
     var lignes = [];
     items.forEach(function (it) {
-      var t = String(it.str || "");
+      var t = reparerMojibake(String(it.str || ""));
       if (!t.trim()) return;
       var y = Math.round((it.transform ? it.transform[5] : 0) * 10) / 10;
       var x = it.transform ? it.transform[4] : 0;
@@ -581,6 +608,7 @@
       return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee";
     }).length;
     var caches = aEcrire - E.lignes.filter(function (r) { return r.garder; }).length;
+    if (E.err) h += '<div class="hi-err" style="margin:0 16px 12px"><b>L\'enregistrement a \u00e9chou\u00e9 : </b>' + ech(E.err) + "</div>"; /* 26/08 : l'erreur s'affiche AU-DESSUS du bouton — elle \u00e9tait rendue sous le pied, hors de l'\u00e9cran, et Blandine ne voyait \u00ab rien se passer \u00bb */
     h += '<div class="hi-pied">' +
       '<button class="hi-bt" data-hi="enregistrer"' + (aEcrire ? "" : " disabled") + '>' +
       (E.occupe ? "…" : "Enregistrer " + aEcrire + " résultat" + (aEcrire > 1 ? "s" : "")) + "</button>" +
@@ -593,8 +621,6 @@
         : "Tout est enregistré. Les coches ne décident que de ce qui s'affiche.") +
       "</div>" +
       '<button class="hi-bt2" data-hi="annuler">Annuler, ne rien enregistrer</button></div>';
-    if (E.err) h += '<div class="hi-err" style="margin:0 16px 90px"><b>L\'enregistrement a échoué</b>' +
-      ech(E.err) + '</div>';
     return h;
   }
 
@@ -787,7 +813,9 @@
       E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
       refaire(); return;
     }
-    Promise.resolve(p).then(function (rep) {
+    var pGardee = Promise.race([Promise.resolve(p), new Promise(function (resG) { setTimeout(function () { resG({ __gardeModule: true }); }, 35000); })]); /* 26/08 : ceinture du module — même si l'app ne répond JAMAIS, l'écran se libère et le dit */
+    pGardee.then(function (rep) {
+      if (rep && rep.__gardeModule) { E.occupe = false; E.err = "Pas de r\u00e9ponse au bout de 35 secondes \u2014 rien n'a \u00e9t\u00e9 confirm\u00e9. V\u00e9rifie le r\u00e9seau et r\u00e9essaie."; E.etape = "relecture"; refaire(); return; }
       E.occupe = false;
       /* 🟥 24/08 : on retient AUSSI les doublons et le total lu, pour que
          l ecran de fin puisse dire POURQUOI c est zero. */

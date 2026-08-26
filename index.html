@@ -149,6 +149,9 @@ async function utilisateurActuel() {
     return (rU && rU.data && rU.data.user) || null;
   } catch (eU) { return null; }
 }
+function avecGarde(pG, msG) { /* 26/08 : delai de garde generique — une requete qui pend ne doit JAMAIS geler un flux ni verrouiller un panneau */
+  return Promise.race([pG, new Promise(function (resG) { setTimeout(function () { resG({ __garde: true }); }, msG); })]);
+}
 
 // Être prévenu à chaque connexion / déconnexion.
 // callback reçoit l'utilisateur (ou null). Sert à afficher/cacher l'écran de login.
@@ -32743,7 +32746,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=6";
+    sc.src = "hype-import-ffe.js?v=7";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -33297,7 +33300,8 @@ function EcranCheval() {
     }
     setHistBusy(true);
     try {
-      var rH = await supa.from("chevaux").update({ histoire: txtH || null }).eq("id", chevalDyn.dbId);
+      var rH = await avecGarde(supa.from("chevaux").update({ histoire: txtH || null }).eq("id", chevalDyn.dbId), 10000);
+      if (rH && rH.__garde) { setToast(T("R\u00e9seau injoignable \u2014 rien n'a \u00e9t\u00e9 enregistr\u00e9. R\u00e9essaie.", "Network unreachable \u2014 nothing was saved. Try again.", "Red inaccesible \u2014 no se guard\u00f3 nada.", "Rete irraggiungibile \u2014 nulla \u00e8 stato salvato.", "\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u306b\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002", "Netz nicht erreichbar \u2014 nichts gespeichert.")); setTimeout(function () { setToast(null); }, 3200); setHistBusy(false); return; }
       if (rH && rH.error) { setToast(T("Enregistrement impossible pour le moment", "Could not save right now", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern derzeit nicht möglich")); }
       else {
         setChevalDyn(Object.assign({}, chevalDyn, { histoire: txtH || null }));
@@ -33471,6 +33475,9 @@ function EcranCheval() {
     window.addEventListener("popstate", surPopPan);
     return function () { window.removeEventListener("popstate", surPopPan); };
   }, [panneau ? 1 : 0]);
+  React.useEffect(function () { /* 26/08 : TOUTE entree dans Performances arrive sur la NOUVELLE page (ordre de Blandine) — l'ancienne page technique ne se memorise plus entre deux visites ; on n'y accede que par les CTA internes */
+    if (panneau === "palmares") setPalmTech(false);
+  }, [panneau]);
   var vedSt = React.useState(null); var vedettes = vedSt[0], setVedettes = vedSt[1];
   var lkSt = React.useState({ count: 0, jaiLike: false }); var lkV = lkSt[0], setLkV = lkSt[1]; /* 31/07 : likes + commentaires dans la visionneuse de la fiche (bug signale par Blandine) */
   var cmSt = React.useState(null); var cmV = cmSt[0], setCmV = cmSt[1];
@@ -34009,7 +34016,7 @@ function EcranCheval() {
               h("button", { onClick: function () { setEditIx(false); }, style: { flex: 1, padding: "13px 0", borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
               h("button", { onClick: sauverIndice, style: { flex: 1.4, padding: "13px 0", borderRadius: 14, border: "1px solid " + tA(0.7), background: tA(0.16), color: teinteCl, fontSize: 13, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern"))))) : null,
 
-        editHist ? h("div", { style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" }, onClick: function () { if (!histBusy) setEditHist(false); } },
+        editHist ? h("div", { style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" }, onClick: function () { setEditHist(false); /* 26/08 : la sortie n est JAMAIS verrouillee — l enregistrement continue en arriere-plan et son toast dira la verite */ } },
           h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", maxWidth: 560, background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.3), borderBottom: "none", padding: "18px 18px calc(20px + env(safe-area-inset-bottom))", maxHeight: "92svh", overflowY: "auto" } },
             h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.5, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 5 } }, T("Son histoire", "Their story", "Su historia", "La sua storia", "\u305d\u306e\u7269\u8a9e", "Seine Geschichte")),
             h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 11, fontWeight: 300, color: "#8A99A1", textAlign: "center", lineHeight: 1.55, marginBottom: 14 } }, T("Ses d\u00e9buts, ses concours, son caract\u00e8re \u2014 prends la place qu\u2019il te faut.", "Their beginnings, their shows, their character \u2014 take all the room you need.", "Sus inicios, sus concursos, su car\u00e1cter \u2014 usa todo el espacio que necesites.", "I suoi inizi, i suoi concorsi, il suo carattere \u2014 prenditi tutto lo spazio.", "\u59cb\u307e\u308a\u3001\u5927\u4f1a\u3001\u6027\u683c \u2014 \u5fc5\u8981\u306a\u3060\u3051\u66f8\u3044\u3066\u304f\u3060\u3055\u3044\u3002", "Seine Anf\u00e4nge, Turniere, sein Charakter \u2014 nimm dir so viel Platz wie n\u00f6tig.")),
@@ -34018,7 +34025,7 @@ function EcranCheval() {
               h("button", { onClick: collerDansHistoire, style: { display: "inline-flex", alignItems: "center", gap: 7, background: "none", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 999, padding: "7px 13px", color: "#C9D3D8", fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2398 " + T("Coller", "Paste", "Pegar", "Incolla", "\u8cbc\u308a\u4ed8\u3051", "Einf\u00fcgen")),
               h("div", { style: { marginLeft: "auto", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: (String(histTxt || "").length > 3800 ? "#E8A87C" : "#6B7580") } }, String(histTxt || "").length + " / 4000")),
             h("div", { style: { display: "flex", gap: 9, marginTop: 16 } },
-              h("button", { onClick: function () { if (!histBusy) setEditHist(false); }, style: { flex: 1, padding: "13px 0", borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
+              h("button", { onClick: function () { setEditHist(false); /* 26/08 : la sortie n est JAMAIS verrouillee — l enregistrement continue en arriere-plan et son toast dira la verite */ }, style: { flex: 1, padding: "13px 0", borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
               h("button", { onClick: function () { if (!histBusy) sauverHistoireCheval(); }, style: { flex: 1.4, padding: "13px 0", borderRadius: 14, border: "1px solid " + tA(0.7), background: tA(0.16), color: teinteCl, fontSize: 13, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", letterSpacing: "0.03em", cursor: "pointer", opacity: histBusy ? 0.6 : 1 } }, histBusy ? "\u2026" : T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern"))))) : null,
 
 
