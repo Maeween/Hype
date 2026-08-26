@@ -1423,7 +1423,7 @@ function delaiDeGarde(promesse, secondes, quoi) {
   });
 }
 
-async function enregistrerImportFFE(chevalId, lignes) {
+async function enregistrerImportFFE(chevalId, lignes, originesOff) {
   let user = null;
   try {
     user = await delaiDeGarde(utilisateurActuel(), 15, "connexion");
@@ -1534,8 +1534,55 @@ async function enregistrerImportFFE(chevalId, lignes) {
     if (r && r.error) return { n: n, doublons: doublons, error: String(r.error.message || r.error) };
     n += (r && r.data ? r.data.length : 0);
   }
-  /* 🟥 aucune diffusion à l'écurie : sept saisons noieraient le fil. */
-  return { n: n, doublons: doublons };
+  /* 🟥 aucune diffusion à l'écurie : sept saisons noieraienT le fil. */
+  var infoOg = null;
+  if (originesOff && (originesOff.pere || originesOff.mere || originesOff.robe || originesOff.naissance)) {
+    /* 26/08 — REGLE DE BLANDINE : case vide -> l officiel remplit sans demander ;
+       saisie manuelle differente -> le cavalier choisit (rien ne s ecrase par surprise). */
+    try {
+      var rOg = await delaiDeGarde(supa.from("chevaux").select("origines").eq("id", chevalId).maybeSingle(), 15, "origines");
+      var exOg = (rOg && rOg.data && rOg.data.origines) || null;
+      if (typeof exOg === "string") { try { exOg = JSON.parse(exOg); } catch (eJ0) { exOg = null; } }
+      var nomDeOg = function (x) { if (!x) return ""; if (typeof x === "string") return x.trim(); return String(x.nom || "").trim(); };
+      var pdEx = (exOg && (exOg.pedigree || exOg)) || {};
+      var pereEx = nomDeOg(pdEx.pere), mereEx = nomDeOg(pdEx.mere);
+      var pareil = function (a, b) { return String(a || "").trim().toLowerCase() === String(b || "").trim().toLowerCase(); };
+      var conflit = (pereEx && originesOff.pere && !pareil(pereEx, originesOff.pere)) || (mereEx && originesOff.mere && !pareil(mereEx, originesOff.mere));
+      if (conflit) { infoOg = { etat: "conflit" }; }
+      else {
+        var fusion = Object.assign({}, exOg || {});
+        if (!pereEx && originesOff.pere) fusion.pere = { nom: originesOff.pere };
+        if (!mereEx && originesOff.mere) fusion.mere = { nom: originesOff.mere };
+        if (!fusion.robe && originesOff.robe) fusion.robe = originesOff.robe;
+        if (!fusion.naissance && originesOff.naissance) fusion.naissance = originesOff.naissance;
+        if (!fusion.naisseur && originesOff.naisseur) fusion.naisseur = originesOff.naisseur;
+        if (!fusion.sexe && originesOff.sexe) fusion.sexe = originesOff.sexe;
+        if (!fusion.taille && originesOff.taille) fusion.taille = originesOff.taille;
+        var rW = await delaiDeGarde(supa.from("chevaux").update({ origines: fusion }).eq("id", chevalId), 15, "origines");
+        infoOg = (rW && rW.error) ? { etat: "conflit" } : { etat: "posees" };
+      }
+    } catch (eOg) { infoOg = null; /* les origines ne doivent JAMAIS faire echouer l import des resultats */ }
+  }
+  return { n: n, doublons: doublons, origines: infoOg };
+}
+async function appliquerOriginesOfficielles(chevalId, originesOff) { /* 26/08 : le cavalier a choisi « prendre l officiel » — on remplace pere/mere et on complete le reste */
+  try {
+    if (!chevalId || !originesOff) return { error: "rien \u00e0 appliquer" };
+    var rOg = await delaiDeGarde(supa.from("chevaux").select("origines").eq("id", chevalId).maybeSingle(), 15, "origines");
+    var exOg = (rOg && rOg.data && rOg.data.origines) || null;
+    if (typeof exOg === "string") { try { exOg = JSON.parse(exOg); } catch (eJ1) { exOg = null; } }
+    var fusion = Object.assign({}, exOg || {});
+    if (fusion.pedigree) { fusion.pedigree = Object.assign({}, fusion.pedigree, { pere: { nom: originesOff.pere || "" }, mere: { nom: originesOff.mere || "" } }); }
+    if (originesOff.pere) fusion.pere = { nom: originesOff.pere };
+    if (originesOff.mere) fusion.mere = { nom: originesOff.mere };
+    if (originesOff.robe) fusion.robe = originesOff.robe;
+    if (originesOff.naissance) fusion.naissance = originesOff.naissance;
+    if (originesOff.naisseur) fusion.naisseur = originesOff.naisseur;
+    if (originesOff.sexe) fusion.sexe = originesOff.sexe;
+    if (originesOff.taille) fusion.taille = originesOff.taille;
+    var rW = await delaiDeGarde(supa.from("chevaux").update({ origines: fusion }).eq("id", chevalId), 15, "origines");
+    return (rW && rW.error) ? { error: String(rW.error.message || rW.error) } : { ok: true };
+  } catch (eA) { return { error: String((eA && eA.message) || eA) }; }
 }
 
 async function publierResultat({ concours, classement, fichierPhoto, media_url } = {}) {
@@ -22617,7 +22664,13 @@ function Router() {
                     err: "L'import n'a pas pu s'ouvrir."
                   },
                   onFermer: function () { setEcran("cheval"); },
-                  onEnregistrer: function (lignes) {
+                  onOrigines: function (originesOff) { /* 26/08 : conflit tranche par le cavalier */
+                    var chId2 = window.HYPE_CHEVAL_IMPORT || null;
+                    if (!chId2) { try { chId2 = window.localStorage.getItem("hype_cheval_import") || null; } catch (eL2) { } }
+                    if (!chId2) return Promise.resolve({ error: "cheval introuvable" });
+                    return appliquerOriginesOfficielles(chId2, originesOff);
+                  },
+                  onEnregistrer: function (lignes, originesOff) {
                     /* 22/08 : si l'app a rechargé entre l'ouverture de l'écran
                        et l'enregistrement, HYPE_CHEVAL_IMPORT est vide et la
                        fonction refusait avec « Cheval inconnu » SANS RIEN
@@ -22625,7 +22678,7 @@ function Router() {
                     var chId = window.HYPE_CHEVAL_IMPORT || null;
                     if (!chId) { try { chId = window.localStorage.getItem("hype_cheval_import") || null; } catch (eL) { } }
                     if (!chId) return Promise.reject(new Error("le cheval n'a pas été retrouvé — rouvre l'import depuis sa fiche."));
-                    return enregistrerImportFFE(chId, lignes)
+                    return enregistrerImportFFE(chId, lignes, originesOff || null)
                       .then(function (r) {
                         if (r && r.error) throw new Error(r.error);
                         /* 🟥 24/08 : on rend l OBJET, plus seulement le compte.
@@ -32749,7 +32802,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=8";
+    sc.src = "hype-import-ffe.js?v=9";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);

@@ -179,8 +179,26 @@
     return Math.min(4, Math.ceil(place / Math.ceil(partants / 4)));
   }
 
+  function extraireOrigines(lignes) {
+    /* 26/08 : l'EN-TETE du telemat porte l'identite officielle du cheval.
+       Motifs valides sur le PDF reel de Vallieres (Vallieres_2024.pdf) :
+         « Selle Francais né le 15/03/2009 »
+         « Robe : Bai | Sexe : Femelle | Taille : Catégorie F »
+         « Père : → Nighthawk Mère : → Maelia Varennes »
+         « Naisseur : LES VALLIERES »                                    */
+    var o = {};
+    (lignes || []).forEach(function (t) {
+      var mR;
+      if (!o.pere && (mR = t.match(/^P[e\u00e8]re\s*:\s*\u2192?\s*(.+?)\s+M[e\u00e8]re\s*:\s*\u2192?\s*(.+)$/i))) { o.pere = mR[1].trim(); o.mere = mR[2].trim(); }
+      else if (!o.robe && (mR = t.match(/^Robe\s*:\s*([^|]+)\|\s*Sexe\s*:\s*([^|]+)\|\s*Taille\s*:\s*(.+)$/i))) { o.robe = mR[1].trim(); o.sexe = mR[2].trim(); o.taille = mR[3].trim(); }
+      else if (!o.naissance && (mR = t.match(/^([A-Za-z\u00c0-\u00ff' -]{3,40})\s+n[e\u00e9]e?\s+le\s+(\d{2}\/\d{2}\/\d{4})$/i))) { o.race = mR[1].trim(); o.naissance = mR[2]; }
+      else if (!o.naisseur && (mR = t.match(/^Naisseur\s*:\s*(.+)$/i))) { o.naisseur = mR[1].trim(); }
+    });
+    return (o.pere || o.mere || o.robe || o.naissance) ? o : null;
+  }
   function lireFiches(texte) {
     var lignes = String(texte).split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
+    try { E.origines = extraireOrigines(lignes); } catch (eOx) { E.origines = null; } /* 26/08 : origines officielles transmises a l ecrivain */
     var fiches = [], cour = null, derniere = null;
     for (var i = 0; i < lignes.length; i++) {
       var ligne = lignes[i];
@@ -663,8 +681,23 @@
         + (envoyees > 1 ? "s" : "") + " mais la base n'en a accepté aucune. "
         + "Ce n'est pas normal — signale-le.";
     }
+    var blocOg = "";
+    if (E.originesInfo && E.originesInfo.etat === "posees") {
+      blocOg = '<div class="hi-aide" style="margin-top:12px">\u2713 <b>Origines officielles ajout\u00e9es \u00e0 sa fiche</b>'
+        + (E.origines && E.origines.pere ? "<br>P\u00e8re : <b>" + ech(E.origines.pere) + "</b> \u00b7 M\u00e8re : <b>" + ech(E.origines.mere || "\u2014") + "</b>" : "") + "</div>";
+    } else if (E.originesInfo && E.originesInfo.etat === "conflit") {
+      blocOg = '<div class="hi-aide" style="margin-top:12px"><b>Les origines officielles diff\u00e8rent de ta saisie.</b>'
+        + "<br>Officiel : P\u00e8re <b>" + ech((E.origines && E.origines.pere) || "\u2014") + "</b> \u00b7 M\u00e8re <b>" + ech((E.origines && E.origines.mere) || "\u2014") + "</b>"
+        + '<div style="display:flex;gap:8px;margin-top:10px">'
+        + '<button class="hi-bt" data-hi="ogRemplacer" style="flex:1">Prendre l\'officiel</button>'
+        + '<button class="hi-bt2" data-hi="ogGarder" style="flex:1">Garder ma saisie</button></div></div>';
+    } else if (E.originesInfo && E.originesInfo.etat === "gardees") {
+      blocOg = '<div class="hi-aide" style="margin-top:12px">\u2713 Ta saisie est conserv\u00e9e.</div>';
+    } else if (E.originesInfo && E.originesInfo.etat === "remplacees") {
+      blocOg = '<div class="hi-aide" style="margin-top:12px">\u2713 Origines officielles pos\u00e9es sur sa fiche.</div>';
+    }
     return '<div class="hi-fin"><div class="ic">' + (n > 0 ? "🏆" : "✓") + '</div>' +
-      "<b>" + titre + "</b><span>" + phrase + "</span></div>" +
+      "<b>" + titre + "</b><span>" + phrase + "</span></div>" + blocOg +
       '<div class="hi-pied"><button class="hi-bt" data-hi="encore">Importer une autre saison</button>' +
       '<button class="hi-bt2" data-hi="fermer">Revenir à sa fiche</button></div>';
   }
@@ -775,6 +808,18 @@
         if (typeof options.onFermer === "function") options.onFermer(); else refaire();
         return;
       }
+      if (act === "ogRemplacer" || act === "ogGarder") { /* 26/08 : le cavalier tranche le conflit d origines */
+        if (act === "ogGarder") { E.originesInfo = { etat: "gardees" }; refaire(); return; }
+        if (typeof options.onOrigines !== "function" || !E.origines) { E.originesInfo = { etat: "gardees" }; refaire(); return; }
+        E.originesInfo = { etat: "encours" };
+        refaire();
+        Promise.resolve(options.onOrigines(E.origines)).then(function (rOk) {
+          E.originesInfo = { etat: (rOk && rOk.error) ? "conflit" : "remplacees" };
+          if (rOk && rOk.error) E.err = String(rOk.error);
+          refaire();
+        }).catch(function (eOc) { E.originesInfo = { etat: "conflit" }; E.err = String((eOc && eOc.message) || eOc); refaire(); });
+        return;
+      }
       if (act === "encore") { reinitialiser(); refaire(); return; }
       if (act === "enregistrer") { enregistrer(hote, options, refaire); return; }
     }, false);
@@ -810,7 +855,7 @@
     }
     E.err = null; E.occupe = true; refaire();
     var p;
-    try { p = options.onEnregistrer(aGarder); }
+    try { p = options.onEnregistrer(aGarder, E.origines || null); } /* 26/08 : les origines voyagent avec les resultats */
     catch (eS) {
       E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
       refaire(); return;
@@ -829,6 +874,7 @@
         E.doublons = 0;
       }
       E.envoyees = aGarder.length;
+      E.originesInfo = (rep && typeof rep === "object" && rep.origines) ? rep.origines : null; /* 26/08 */
       E.etape = "fin"; refaire();
     }).catch(function (e) {
       E.occupe = false;
