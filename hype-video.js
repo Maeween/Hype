@@ -965,14 +965,24 @@
   var CSS_ID = "hype-video-css";
   var CSS = [
     ".hv-wrap{padding-bottom:26px}",
-    ".hv-hero{position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top) + 34px) 18px 24px;",
+    /* 26/08 : l'animation et le texte ne se superposent plus (demande
+       Blandine). Le titre etait ecrit par-dessus la video, qui porte deja
+       le mot HYPE en grand : les deux ecritures se chevauchaient et le
+       titre devenait illisible. Meme decision que la bannière d'accueil —
+       l'animation passe en flux a son format naturel, le texte descend
+       dessous, sur le fond sombre. Elle n'est donc plus voilee ni reduite
+       a 60% d'opacite : on la voit enfin en entier. */
+    ".hv-hero{position:relative;overflow:hidden;padding:calc(env(safe-area-inset-top) + 30px) 0 24px;",
     "background:radial-gradient(120% 90% at 78% 8%,rgba(32,217,245,.20) 0%,transparent 55%),",
     "radial-gradient(90% 70% at 12% 30%,rgba(20,80,140,.28) 0%,transparent 60%),",
     "linear-gradient(180deg,#07111F 0%,#080B10 62%,#12161C 100%)}",
-    ".hv-hero-anim{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.60;pointer-events:none}",
-    ".hv-hero-voile{position:absolute;inset:0;pointer-events:none;",
-    "background:linear-gradient(180deg,rgba(7,17,31,.34) 0%,rgba(7,17,31,.64) 55%,rgba(18,22,28,.94) 100%)}",
-    ".hv-hero-in{position:relative}",
+    ".hv-hero-anim{display:block;width:100%;height:auto;pointer-events:none}",
+    /* Simple raccord entre le bas de l'animation et le fond de la page :
+       le voile ne sert plus a rendre un texte lisible, il ne couvre donc
+       plus toute l'image. */
+    ".hv-hero-voile{position:relative;display:block;height:56px;margin-top:-56px;pointer-events:none;",
+    "background:linear-gradient(180deg,rgba(8,11,16,0) 0%,rgba(8,11,16,.72) 62%,#080B10 100%)}",
+    ".hv-hero-in{position:relative;padding:22px 18px 0}",
     ".hv-hero h1{font-family:'Cinzel',Georgia,serif;font-weight:500;font-size:29px;line-height:1.12;margin:10px 0 0;letter-spacing:.05em;color:#F4F6F7}",
     ".hv-hero h1 span{display:block;color:#20D9F5;text-shadow:0 0 26px rgba(32,217,245,.45)}",
     ".hv-kick{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#20D9F5;font-weight:500}",
@@ -1352,20 +1362,25 @@
       },
         h("source", { key: "w", src: "images/hype-anim-rideaux.webm", type: "video/webm" }),
         h("source", { key: "m", src: "images/hype-anim-rideaux.mp4", type: "video/mp4" })
-      ) : h("div", {
+      ) : h("img", {
+        /* 26/08 : le repli etait un div en background-image. Sorti du
+           positionnement absolu, un div n'a plus de hauteur propre et
+           s'ecraserait a zero : il faut une vraie image, qui porte son
+           format naturel comme la video. */
         key: "anim", className: "hv-hero-anim",
-        style: { backgroundImage: "url(images/hype-anim-rideaux-poster.jpg)", backgroundSize: "cover", backgroundPosition: "center" }
+        src: "images/hype-anim-rideaux-poster.jpg", alt: "", "aria-hidden": "true"
       }),
       h("div", { key: "voile", className: "hv-hero-voile" }),
-      h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie")),
-      h("h1", null,
-        T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video"),
-        h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek"))),
-      h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen")),
-      h("div", { className: "hv-stats" },
-        h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos"))),
-        h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten"))),
-        h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel")))));
+      h("div", { key: "txt", className: "hv-hero-in" },
+        h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie")),
+        h("h1", null,
+          T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video"),
+          h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek"))),
+        h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen")),
+        h("div", { className: "hv-stats" },
+          h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos"))),
+          h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten"))),
+          h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel"))))));
 
     var recherche = h("div", { className: "hv-rech" },
       h("span", { style: { opacity: .5, fontSize: 14 } }, "⌕"),
