@@ -64,21 +64,14 @@ const stockageHype = {
   removeItem: (k) => { try { sessionStorage.removeItem(k); localStorage.removeItem(k); } catch (e) { } }
 };
 try { if (localStorage.getItem("hype_rappeler") === "0") localStorage.setItem("hype_rappeler", "1"); } catch (e) { }
-/* 26/08 ~00h15 — 🟥 LE GEL DES ECRITURES SUR iPHONE (PWA).
-   Mecanisme documente de supabase-js v2 : le rafraichissement du jeton passe par
-   un VERROU navigator.locks. En PWA iOS, ce verrou peut rester tenu par un contexte
-   gele/tue par le systeme -> il n'est JAMAIS relache -> chaque appel suivant
-   (getSession, update, insert...) attend le verrou POUR TOUJOURS. Symptomes vus ce
-   soir chez Blandine : histoire impossible a enregistrer, import PDF fige sur
-   « Enregistrer 2 resultats » (bouton "..." puis retour, rien d'ecrit), onglets et
-   fil intermittents. Remede : un verrou PASSE-DROIT (la fonction s'execute
-   directement). Cout assume : sans verrou, deux rafraichissements simultanes
-   peuvent se croiser (au pire une requete 400 benigne, reessayee) — negligeable
-   face au gel total. NE PAS retirer sans relire cette note. */
-const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, lock: async function (nomV, attenteV, fnV) { return await fnV(); } } });
-try { /* au retour au premier plan, on force une lecture de session : le rafraichissement se fait LA, pas au milieu d'un enregistrement */
-  document.addEventListener("visibilitychange", function () { if (!document.hidden) { try { supa.auth.getSession().catch(function () { }); } catch (eVc) { } } });
-} catch (eVg) { }
+/* 26/08 ~13h55 — RETOUR ARRIERE sur demande de Blandine (« revenir a une version
+   avant que tout ce bordel n'arrive ») : les pages qui se vidaient (ecurie, amis,
+   fiche) sont apparues APRES mes modifications d'authentification de la nuit
+   (verrou passe-droit + relance visibilitychange + delais de garde). Les trois
+   sont RETIREES ici — client supabase et utilisateurActuel redeviennent EXACTEMENT
+   ceux d'avant. Les protections locales restent (panneau histoire : garde 10 s +
+   sortie libre ; ecrivain d'import : delaiDeGarde 15 s) : pas de retour des prisons. */
+const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
 
 
 /* --- 2. Comptes (inscription / connexion) ------------------ */
@@ -131,45 +124,19 @@ async function hypeSeDeconnecter(videurs) {
 }
 
 // Qui est connecté ? (renvoie l'utilisateur, ou null)
-function utilisateurDepuisStockage() {
-  /* 26/08 ~12h40 — LA PAGE VIDE DE BLANDINE (écurie, chevaux, amis « comme reset ») :
-     ma garde de 4 s du matin transformait une session LENTE en « pas connecté »,
-     et chaque écran chargé à ce moment-là restait vide, sans réessai. Régression
-     assumée (39e). Remède : la session vit déjà DANS LE TÉLÉPHONE (localStorage,
-     clé sb-…-auth-token, via stockageHype) — on la lit en 0 ms, sans réseau ni
-     verrou. Jeton peut-être périmé ? Peu importe pour AFFICHER : l'identité (id)
-     est bonne, et les requêtes rafraîchiront le jeton d'elles-mêmes. */
-  try {
-    for (var iK = 0; iK < localStorage.length; iK++) {
-      var kK = localStorage.key(iK);
-      if (!kK || kK.indexOf("auth-token") < 0 || kK.indexOf("sb-") !== 0) continue;
-      var brut = stockageHype.getItem(kK);
-      if (!brut) continue;
-      var jS = JSON.parse(brut);
-      var sess = (jS && (jS.currentSession || jS)) || null;
-      var uS = sess && sess.user;
-      if (uS && uS.id) return uS;
-    }
-  } catch (eDS) { }
-  return null;
-}
 async function utilisateurActuel() {
-  /* getSession (mémoire) d'abord — garde 4 s ; si LENT, repli INSTANTANÉ sur le
-     stockage local (jamais « déconnecté » à tort) ; getUser (réseau, garde 6 s)
-     en dernier recours seulement si le stockage est vraiment vide. */
-  function delaiNul(msDG) { return new Promise(function (resDG) { setTimeout(function () { resDG(null); }, msDG); }); }
+  /* 22/08 session 152 — LA FAUSSE DECONNEXION : getSession() (memoire) d'abord,
+     getUser() (reseau) en secours. 26/08 13h55 : version RESTAUREE a l'identique
+     (retrait des delais de garde de la nuit, voir note sur le client ci-dessus). */
   try {
-    const rS = await Promise.race([supa.auth.getSession(), delaiNul(4000)]);
-    const us = rS && rS.data && rS.data.session && rS.data.session.user;
+    const { data: ds } = await supa.auth.getSession();
+    const us = ds && ds.session && ds.session.user;
     if (us) return us;
-    if (rS === null) { var uL = utilisateurDepuisStockage(); if (uL) return uL; } /* lent ≠ déconnecté */
-  } catch (eS) { var uL2 = utilisateurDepuisStockage(); if (uL2) return uL2; }
+  } catch (eS) { }
   try {
-    const rU = await Promise.race([supa.auth.getUser(), delaiNul(6000)]);
-    var uN = (rU && rU.data && rU.data.user) || null;
-    if (uN) return uN;
-    return utilisateurDepuisStockage();
-  } catch (eU) { return utilisateurDepuisStockage(); }
+    const { data } = await supa.auth.getUser();
+    return (data && data.user) || null;
+  } catch (eU) { return null; }
 }
 function avecGarde(pG, msG) { /* 26/08 : delai de garde generique — une requete qui pend ne doit JAMAIS geler un flux ni verrouiller un panneau */
   return Promise.race([pG, new Promise(function (resG) { setTimeout(function () { resG({ __garde: true }); }, msG); })]);
