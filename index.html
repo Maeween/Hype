@@ -20401,9 +20401,12 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
             ".hycc-coupe{flex:0 0 26%;scroll-snap-align:start}" +
             ".hycc-coupe .im{width:100%;aspect-ratio:1/1;border-radius:12px;object-fit:cover;display:block;border:1px solid rgba(244,196,85,.45);background:#111417}" +
             ".hycc-coupe .lb{font-size:10px;color:#DFE1E4;text-align:center;margin-top:5px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}" +
-            ".hycc-carte{margin:10px 16px 0;border-radius:16px;border:1px solid rgba(255,255,255,.09);background:rgba(17,20,23,.62);padding:13px 13px}" +
-            ".hycc-carteT{display:flex;align-items:center;gap:9px;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;letter-spacing:.1em;color:#F4F7FA;margin-bottom:8px}" +
-            ".hycc-rrow{display:flex;align-items:center;gap:10px;padding:8px 2px;position:relative}" +
+            ".hycc-carte{margin:10px 16px 0;border-radius:16px;border:1px solid rgba(255,255,255,.06);background:rgba(17,20,23,.62);padding:15px 15px}" +
+            ".hycc-carteT{display:flex;align-items:center;gap:9px;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;letter-spacing:.1em;color:#F4F7FA;margin-bottom:10px}" +
+            ".hycc-chapT{font-size:10px;letter-spacing:.26em;color:#14E2EF;text-transform:uppercase;font-weight:700;margin:30px 16px 8px}" +
+            ".hycc-chapF{display:flex;align-items:center;gap:10px;margin:0 16px 10px}" +
+            ".hycc-chapF::after{content:\"\";flex:1;height:1px;background:linear-gradient(90deg,rgba(244,196,85,.5),transparent)}" +
+            ".hycc-rrow{display:flex;align-items:center;gap:10px;padding:12px 2px;position:relative}" +
             ".hycc-rrow+.hycc-rrow::before{content:\"\";position:absolute;top:0;left:38px;right:2px;height:1px;background:rgba(255,255,255,.06)}" +
             ".hycc-rond{flex:0 0 28px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-family:'Cinzel',serif;font-size:12.5px;font-weight:700;color:#B9BDC2;border:1px solid rgba(255,255,255,.24)}" +
             ".hycc-rond.or1{color:#F4C455;border:1.5px solid rgba(244,196,85,.85);background:radial-gradient(70% 70% at 50% 30%,rgba(232,161,64,.16),transparent 75%);box-shadow:0 0 11px -3px rgba(232,161,64,.75)}" +
@@ -20778,6 +20781,9 @@ function EcranChevalCommun() {
                         f.lab ? H("div", { className: "lb" }, f.lab) : null);
                 }))) : null,
         /* — 7 · EN CONCOURS : 4 lignes max + lien vers le palmares existant (fiche) — */
+        /* 26/08 : PROPOSITION B choisie par Blandine — chapitres turquoise + filet dore */
+        (meilleurs.length > 0) ? H("div", { className: "hycc-chapT" }, "En concours") : null,
+        (meilleurs.length > 0) ? H("div", { className: "hycc-chapF" }) : null,
         (meilleurs.length > 0) ? H("div", { className: "hycc-carte" },
             H("div", { className: "hycc-carteT" },
                 H("svg", { viewBox: "0 0 24 24", width: 16, height: 16, "aria-hidden": true },
@@ -20796,6 +20802,8 @@ function EcranChevalCommun() {
             st.estLie ? H("span", { className: "hycc-lien", onClick: function () { try { window.__ouvrirPalmares = true; } catch (eOP) { } ouvrirFiche(); } }, "Voir tout son palmar\u00e8s \u2192") : null
         ) : H("div", { className: "hycc-empty" }, "Aucun r\u00e9sultat partag\u00e9 pour le moment."),
         /* — 8/9 · IPO compact (or, masque si absent) + PARTAGER compact, cote a cote — */
+        (st.ipo || st.estLie || st.dernier) ? H("div", { className: "hycc-chapT" }, "Indices & partage") : null,
+        (st.ipo || st.estLie || st.dernier) ? H("div", { className: "hycc-chapF" }) : null,
         (st.ipo || st.estLie || st.dernier) ? H("div", { className: "hycc-basdeux" },
             st.ipo ? H("div", { className: "hycc-ipoC" },
                 H("div", { className: "s" }, String(st.ipo[0] || "")),
@@ -36632,31 +36640,6 @@ function EcranBibliothequeGalops() {
                     React.createElement("div", { style: { marginTop: 7, fontSize: 10.5, fontFamily: "'Montserrat',sans-serif", color: "rgba(234,241,244,0.85)", lineHeight: 1.4 } }, tr({ fr: "Pars au galop avec Apy vers de nouvelles aventures !", en: "Gallop off with Apy towards new adventures!", es: "\u00a1Galopa con Apy hacia nuevas aventuras!", it: "Parti al galoppo con Apy verso nuove avventure!", ja: "Apy\u3068\u4e00\u7dd2\u306b\u65b0\u3057\u3044\u5192\u967a\u3078\uff01", de: "Galoppiere mit Apy in neue Abenteuer!" }))),
                 React.createElement("div", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", width: 38, height: 38, borderRadius: "50%", background: "rgba(13,58,64,0.85)", border: "1.5px solid #5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 16px rgba(32,217,245,0.4)" } },
                     React.createElement("svg", { viewBox: "0 0 24 24", width: 16, height: 16, fill: "none", stroke: "#7FE8F2", strokeWidth: 2.2, strokeLinecap: "round" }, React.createElement("path", { d: "M5 12h14M13 6l6 6-6 6" }))))),
-        profil.estPro && React.createElement("div", { style: { padding: "12px 20px 0" } },
-            React.createElement("style", null, "@keyframes proTwinkle{0%,100%{opacity:0.3;transform:scale(0.85);}50%{opacity:1;transform:scale(1.08);}}"),
-            React.createElement("div", { style: { position: "relative", width: "100%", border: "1px solid rgba(201,164,74,0.45)", borderRadius: 26, padding: "18px 18px 17px", overflow: "hidden", background: "radial-gradient(120% 160% at 8% 12%, rgba(201,164,74,0.24) 0%, rgba(20,15,6,0.5) 46%, rgba(6,7,9,0.98) 78%)", boxShadow: "0 14px 34px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(244,247,250,0.04)" } },
-                React.createElement("span", { style: { position: "absolute", top: 14, right: 20, fontSize: 13, animation: "proTwinkle 2.6s ease-in-out infinite" } }, "\u2728"),
-                React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 14 } },
-                    React.createElement("div", { style: { flexShrink: 0, width: 58, height: 58, borderRadius: "50%", background: "linear-gradient(135deg, #C9A44A, #F0D48A)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, boxShadow: "0 0 22px rgba(201,164,74,0.5)" } }, "\uD83C\uDF93"),
-                    React.createElement("div", { style: { flex: 1, minWidth: 0 } },
-                        React.createElement("span", { style: { display: "inline-block", fontSize: 9.5, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: "#231A05", background: "linear-gradient(90deg,#C9A44A,#F0D48A)", padding: "3px 9px", borderRadius: 999, marginBottom: 6 } }, tr({ fr: "R\u00e9serv\u00e9 aux pros \u00b7 Abonnement", en: "For professionals \u00b7 Subscription", es: "Solo profesionales \u00b7 Suscripci\u00f3n", it: "Solo professionisti \u00b7 Abbonamento", ja: "プロ限定 \u00b7 サブスク", de: "Nur f\u00fcr Profis \u00b7 Abo" })),
-                        React.createElement("p", { style: { margin: 0, fontFamily: "'Cinzel', serif", fontWeight: 700, fontSize: 17, letterSpacing: 0.4, color: COLORS.blanc } }, tr({ fr: "Hype Pro", en: "Hype Pro", es: "Hype Pro", it: "Hype Pro", ja: "Hype Pro", de: "Hype Pro" })),
-                        React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12, color: "rgba(244,247,250,0.65)", lineHeight: 1.4 } }, tr({ fr: "Pour les enseignants et moniteurs \u00b7 suivez vos \u00e9l\u00e8ves \uD83C\uDFC7", en: "For teachers and instructors \u00b7 track your students \uD83C\uDFC7", es: "Para profesores y monitores \u00b7 sigue a tus alumnos \uD83C\uDFC7", it: "Per insegnanti e istruttori \u00b7 segui i tuoi allievi \uD83C\uDFC7", ja: "指導者向け \u00b7 生徒の進み具合を見守る \uD83C\uDFC7", de: "F\u00fcr Lehrer und Ausbilder \u00b7 verfolge deine Sch\u00fcler \uD83C\uDFC7" })))),
-                React.createElement("div", { style: { display: "flex", flexWrap: "wrap", gap: 8 } },
-                    React.createElement("button", { onClick: () => { try { window.hypeOuvrirPaiement(HYPE_STRIPE_PRO_SANS_IA); } catch (e) { } }, style: { flex: "1 1 30%", minWidth: 92, textAlign: "left", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,164,74,0.35)", borderRadius: 16, padding: "12px 11px", cursor: "pointer" } },
-                        React.createElement("p", { style: { margin: 0, fontSize: 14, fontWeight: 800, color: "#F0D48A" } }, "9,99\u00a0\u20ac", React.createElement("span", { style: { fontSize: 10, fontWeight: 600, color: "rgba(244,247,250,0.55)" } }, tr({ fr: "/mois", en: "/mo", es: "/mes", it: "/mese", ja: "/月", de: "/Monat" }))),
-                        React.createElement("p", { style: { margin: "3px 0 0", fontSize: 10, color: "rgba(244,247,250,0.6)" } }, tr({ fr: "Sans IA", en: "Without AI", es: "Sin IA", it: "Senza IA", ja: "AIなし", de: "Ohne KI" }))),
-                    React.createElement("button", { onClick: () => { try { window.hypeOuvrirPaiement(HYPE_STRIPE_PRO_SANS_IA_ANNUEL); } catch (e) { } }, style: { flex: "1 1 30%", minWidth: 92, textAlign: "left", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,164,74,0.35)", borderRadius: 16, padding: "12px 11px", cursor: "pointer" } },
-                        React.createElement("p", { style: { margin: 0, fontSize: 14, fontWeight: 800, color: "#F0D48A" } }, "79,99\u00a0\u20ac", React.createElement("span", { style: { fontSize: 10, fontWeight: 600, color: "rgba(244,247,250,0.55)" } }, tr({ fr: "/an", en: "/yr", es: "/año", it: "/anno", ja: "/年", de: "/Jahr" }))),
-                        React.createElement("p", { style: { margin: "3px 0 0", fontSize: 10, color: "rgba(244,247,250,0.6)" } }, tr({ fr: "Sans IA \u00b7 annuel", en: "Without AI \u00b7 yearly", es: "Sin IA \u00b7 anual", it: "Senza IA \u00b7 annuale", ja: "AIなし・年間", de: "Ohne KI \u00b7 j\u00e4hrlich" }))),
-                    React.createElement("button", { onClick: () => { try { window.hypeOuvrirPaiement(HYPE_STRIPE_PRO_AVEC_IA); } catch (e) { } }, style: { flex: "1 1 30%", minWidth: 92, textAlign: "left", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,164,74,0.6)", borderRadius: 16, padding: "12px 11px", cursor: "pointer", position: "relative" } },
-                        React.createElement("span", { style: { position: "absolute", top: -8, right: 8, fontSize: 8.5, fontWeight: 800, letterSpacing: 1, textTransform: "uppercase", color: "#231A05", background: "linear-gradient(90deg,#C9A44A,#F0D48A)", padding: "2px 7px", borderRadius: 999 } }, "IA"),
-                        React.createElement("p", { style: { margin: 0, fontSize: 14, fontWeight: 800, color: "#F0D48A" } }, "16,99\u00a0\u20ac", React.createElement("span", { style: { fontSize: 10, fontWeight: 600, color: "rgba(244,247,250,0.55)" } }, tr({ fr: "/mois", en: "/mo", es: "/mes", it: "/mese", ja: "/月", de: "/Monat" }))),
-                        React.createElement("p", { style: { margin: "3px 0 0", fontSize: 10, color: "rgba(244,247,250,0.6)" } }, tr({ fr: "Avec IA", en: "With AI", es: "Con IA", it: "Con IA", ja: "AIあり", de: "Mit KI" }))),
-                    React.createElement("button", { onClick: () => { try { window.hypeOuvrirPaiement(HYPE_STRIPE_PRO_DUO); } catch (e) { } }, style: { flex: "1 1 30%", minWidth: 92, textAlign: "left", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(201,164,74,0.35)", borderRadius: 16, padding: "12px 11px", cursor: "pointer" } },
-                        React.createElement("p", { style: { margin: 0, fontSize: 14, fontWeight: 800, color: "#F0D48A" } }, "15,90\u00a0\u20ac", React.createElement("span", { style: { fontSize: 10, fontWeight: 600, color: "rgba(244,247,250,0.55)" } }, tr({ fr: "/mois", en: "/mo", es: "/mes", it: "/mese", ja: "/月", de: "/Monat" }))),
-                        React.createElement("p", { style: { margin: "3px 0 0", fontSize: 10, color: "rgba(244,247,250,0.6)" } }, tr({ fr: "Duo Pro", en: "Pro Duo", es: "Dúo Pro", it: "Duo Pro", ja: "デュオプロ", de: "Duo Pro" })))))),
-        
         /* 27/07 : titre au-dessus de la liste des depliants (option C validee par Blandine, en plus grand) —
            italique argente facon phrase magique, avec etoiles turquoise qui scintillent. */
         React.createElement("div", { style: { padding: "26px 24px 2px", textAlign: "center" } },
@@ -47908,6 +47891,18 @@ function EcranPremium() {
             T_HSUB: planLigneP
         });
     }
+    /* 26/08 — HYPE PRO DEMENAGE ICI (demande Blandine) : la carte quitte la page
+       Galops ; tarifs RETIRES (pas a jour, liens Stripe pas crees) ; badge
+       « PROCHAINEMENT ». Teaser pour tout le monde, en pied de la page Crystal. */
+    var teaserHypePro = React.createElement("div", { style: { padding: "6px 20px calc(30px + env(safe-area-inset-bottom))" } },
+        React.createElement("div", { style: { position: "relative", maxWidth: 430, margin: "0 auto", border: "1px solid rgba(201,164,74,0.45)", borderRadius: 26, padding: "18px 18px 17px", overflow: "hidden", background: "radial-gradient(120% 160% at 8% 12%, rgba(201,164,74,0.24) 0%, rgba(20,15,6,0.5) 46%, rgba(6,7,9,0.98) 78%)", boxShadow: "0 14px 34px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(244,247,250,0.04)" } },
+            React.createElement("span", { style: { position: "absolute", top: 14, right: 20, fontSize: 13 } }, "\u2728"),
+            React.createElement("span", { style: { display: "inline-block", padding: "4px 12px", borderRadius: 999, background: "linear-gradient(90deg,#E8C888,#C9A44A)", color: "#14100A", fontSize: 10, fontWeight: 800, letterSpacing: ".14em" } }, tr({ fr: "PROCHAINEMENT", en: "COMING SOON", es: "PR\u00d3XIMAMENTE", it: "PROSSIMAMENTE", ja: "\u8fd1\u65e5\u516c\u958b", de: "DEMN\u00c4CHST" })),
+            React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 13, marginTop: 12 } },
+                React.createElement("div", { style: { width: 52, height: 52, borderRadius: "50%", background: "radial-gradient(70% 70% at 50% 32%, #F2DEA6, #C9A44A)", display: "grid", placeItems: "center", fontSize: 24, flex: "0 0 auto" } }, "\uD83C\uDF93"),
+                React.createElement("div", null,
+                    React.createElement("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 19, fontWeight: 700, color: "#F4F7FA" } }, "Hype Pro"),
+                    React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12, lineHeight: 1.55, color: "rgba(244,247,250,0.78)" } }, tr({ fr: "Pour les enseignants et moniteurs \u00b7 suivez vos \u00e9l\u00e8ves \uD83C\uDFC7", en: "For teachers and instructors \u00b7 follow your riders \uD83C\uDFC7", es: "Para profesores y monitores \u00b7 sigue a tus alumnos \uD83C\uDFC7", it: "Per insegnanti e istruttori \u00b7 segui i tuoi allievi \uD83C\uDFC7", ja: "\u5148\u751f\u30fb\u30a4\u30f3\u30b9\u30c8\u30e9\u30af\u30bf\u30fc\u5411\u3051 \uD83C\uDFC7", de: "F\u00fcr Lehrer und Trainer \u00b7 begleite deine Sch\u00fcler \uD83C\uDFC7" }))))));
     var htmlPage = PV5_TPL;
     for (var k in L) { htmlPage = htmlPage.split("{{" + k + "}}").join(L[k]); }
     htmlPage = htmlPage.split("{{IMG}}").join(PV5_IMG);
@@ -47917,7 +47912,8 @@ function EcranPremium() {
         React.createElement("button", { onClick: function () { setEcran("dashboard"); }, "aria-label": tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "\u623b\u308b", de: "Zur\u00fcck" }), style: { position: "absolute", top: "calc(12px + env(safe-area-inset-top))", left: 12, zIndex: 20, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: "#EAF1F4", fontSize: 24, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, "\u2039"),
         React.createElement("div", { style: { position: "absolute", top: "calc(12px + env(safe-area-inset-top))", left: 58, zIndex: 20 } },
             React.createElement(SelecteurLangue, { compact: true })),
-        React.createElement("div", { key: langue, dangerouslySetInnerHTML: { __html: htmlPage } })));
+        React.createElement("div", { key: langue, dangerouslySetInnerHTML: { __html: htmlPage } }),
+        teaserHypePro));
 }
 
 function CartePlan({ actif, titre, prix, periode, detail, badge, onClick }) {
