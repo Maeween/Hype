@@ -32893,7 +32893,7 @@ function EcranCheval() {
      Les lignes en dur n ont ni partants ni quart : elles restent
      visibles mais ne comptent pas dans les Classements.               */
   var lignesPourModule = (function () {
-    var out = ((resDb) || []).slice();
+    var out = ((resDb) || []).filter(function (rV) { return rV && rV.visible !== false; }); /* 26/08 : coche de l import respectee (voir palmares editorial) */
     ((c && c.palmares) || []).forEach(function (pp, iP) {
       if (!pp || !pp.event) return;
       out.push({
@@ -32911,6 +32911,7 @@ function EcranCheval() {
   var palmTous = (function () {
     var out = [];
     ((resDb) || []).forEach(function (rr) {
+      if (rr && rr.visible === false) return; /* 26/08 : coche de l import respectee */
       var anR = "";
       if (rr.annee) anR = String(rr.annee);
       else { try { anR = String(new Date(rr.created_at).getFullYear()); } catch (eAn) { } }
@@ -34665,7 +34666,7 @@ function EcranCheval() {
            reprennent l ALGO EXACT du résumé (s154) : toute évolution doit se faire
            AUX DEUX ENDROITS. */
         (function () {
-          var lignesBrutes = (resDb || []).filter(function (r) { return r && (r.place != null || r.classement); });
+          var lignesBrutes = (resDb || []).filter(function (r) { return r && r.visible !== false && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
           function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
           var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
           var nV = tousF.filter(function (f) { return f.pl === 1; }).length;
