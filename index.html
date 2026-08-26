@@ -1412,7 +1412,18 @@ function delaiDeGarde(promesse, secondes, quoi) {
   });
 }
 
-async function enregistrerImportFFE(chevalId, lignes, originesOff) {
+async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
+  if (nomPdf) { /* 26/08 : VERROU D'IDENTITE — le nom lu dans le telemat doit correspondre a la fiche cible, sinon REFUS (aucun croisement possible, pour Blandine comme pour Delphine et tous les cavaliers) */
+    try {
+      var rNo = await delaiDeGarde(supa.from("chevaux").select("nom").eq("id", chevalId).maybeSingle(), 15, "v\u00e9rification du cheval");
+      var nomCible = (rNo && rNo.data && rNo.data.nom) || "";
+      var nrmN = function (x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, " ").replace(/\s+/g, " ").trim(); };
+      var nP = nrmN(nomPdf), nC = nrmN(nomCible);
+      if (nP && nC && nP.indexOf(nC) < 0 && nC.indexOf(nP) < 0) {
+        return { error: "Ce telemat est celui de \u00ab " + nomPdf + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour prot\u00e9ger les deux fiches — rouvre l'import depuis la fiche de \u00ab " + nomPdf + " \u00bb." };
+      }
+    } catch (eNo) { }
+  }
   let user = null;
   try {
     user = await delaiDeGarde(utilisateurActuel(), 15, "connexion");
@@ -22660,22 +22671,21 @@ function Router() {
                     attente: "Préparation de l'import…",
                     err: "L'import n'a pas pu s'ouvrir."
                   },
+                  nomCheval: (typeof window !== "undefined" && window.HYPE_CHEVAL_IMPORT_NOM) || null, /* 26/08 : la cible s AFFICHE sur l ecran d import */
                   onFermer: function () { setEcran("cheval"); },
                   onOrigines: function (originesOff) { /* 26/08 : conflit tranche par le cavalier */
-                    var chId2 = window.HYPE_CHEVAL_IMPORT || null;
-                    if (!chId2) { try { chId2 = window.localStorage.getItem("hype_cheval_import") || null; } catch (eL2) { } }
+                    var chId2 = window.HYPE_CHEVAL_IMPORT || null; /* 26/08 : cible fraiche obligatoire (voir onEnregistrer) */
                     if (!chId2) return Promise.resolve({ error: "cheval introuvable" });
                     return appliquerOriginesOfficielles(chId2, originesOff);
                   },
-                  onEnregistrer: function (lignes, originesOff) {
+                  onEnregistrer: function (lignes, originesOff, nomPdf) {
                     /* 22/08 : si l'app a rechargé entre l'ouverture de l'écran
                        et l'enregistrement, HYPE_CHEVAL_IMPORT est vide et la
                        fonction refusait avec « Cheval inconnu » SANS RIEN
                        AFFICHER. On garde le cheval aussi en mémoire locale. */
-                    var chId = window.HYPE_CHEVAL_IMPORT || null;
-                    if (!chId) { try { chId = window.localStorage.getItem("hype_cheval_import") || null; } catch (eL) { } }
-                    if (!chId) return Promise.reject(new Error("le cheval n'a pas été retrouvé — rouvre l'import depuis sa fiche."));
-                    return enregistrerImportFFE(chId, lignes, originesOff || null)
+                    var chId = window.HYPE_CHEVAL_IMPORT || null; /* 26/08 : CIBLE FRAICHE OBLIGATOIRE — plus aucun repli sur une memoire de session */
+                    if (!chId) return Promise.reject(new Error("le cheval n'a pas \u00e9t\u00e9 retrouv\u00e9 — rouvre l'import depuis sa fiche."));
+                    return enregistrerImportFFE(chId, lignes, originesOff || null, nomPdf || null)
                       .then(function (r) {
                         if (r && r.error) throw new Error(r.error);
                         /* 🟥 24/08 : on rend l OBJET, plus seulement le compte.
@@ -32792,7 +32802,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=11";
+    sc.src = "hype-import-ffe.js?v=12";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -33235,7 +33245,8 @@ function EcranCheval() {
     if (!(chevalDyn && moi && chevalDyn.ownerId === moi.id)) { bientot(); return; }
     try {
       window.HYPE_CHEVAL_IMPORT = c.dbId || null;
-      if (c.dbId) window.localStorage.setItem("hype_cheval_import", String(c.dbId));
+      window.HYPE_CHEVAL_IMPORT_NOM = (c && c.nom) || null;
+      window.localStorage.removeItem("hype_cheval_import"); /* 26/08 : la memoire collante est PURGEE — ce repli rattachait les telemat au DERNIER cheval ouvert d une session passee (72 lignes de Rizotto retrouvees sur la fiche de Vallieres). Une cible d import ne se devine JAMAIS. */
     } catch (eCI) { }
     setPanneau(null);
     setEcran("import-resultats");

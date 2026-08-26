@@ -199,6 +199,13 @@
   function lireFiches(texte) {
     var lignes = String(texte).split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
     try { if (typeof window !== "undefined") window.__hypeOriginesFFE = extraireOrigines(lignes); } catch (eOx) { try { window.__hypeOriginesFFE = null; } catch (eOx2) { } } /* 26/08 (corrige 12h05) : le lecteur vit dans le BLOC 1, sans la variable d etat E du bloc 2 — la premiere greffe y referencait E et cassait TOUTE lecture (« Can't find variable: E », capture Blandine 12h02). Pont par window. */
+    try { /* 26/08 soir : VERROU D'IDENTITE — on lit AUSSI le nom du cheval dans l'en-tete du telemat (la ligne juste au-dessus de « … né le JJ/MM/AAAA ») ; l'ecrivain refusera un telemat qui ne correspond pas a la fiche ouverte (72 lignes de Rizotto ont ete retrouvees sur Vallieres). */
+      var nomPdfX = null;
+      for (var iN = 0; iN + 1 < lignes.length; iN++) {
+        if (/n[e\u00e9]e?\s+le\s+\d{2}\/\d{2}\/\d{4}/i.test(lignes[iN + 1]) && /^[A-Z\u00c0-\u00dc0-9' .-]{2,40}$/.test(lignes[iN].trim()) && !/^(Robe|P[e\u00e8]re|Naisseur|Date|Selle|Poney)\b/i.test(lignes[iN].trim())) { nomPdfX = lignes[iN].trim(); break; }
+      }
+      if (typeof window !== "undefined") window.__hypeNomPdfFFE = nomPdfX;
+    } catch (eNp) { }
     var fiches = [], cour = null, derniere = null;
     for (var i = 0; i < lignes.length; i++) {
       var ligne = lignes[i];
@@ -497,7 +504,8 @@
   function vueChoix() {
     var h = '<div class="hi-h"><div class="hi-k">Importer mes résultats</div>' +
       '<h2>Ton telemat FFE</h2>' +
-      '<p>Une saison par fichier. L\'app lit, tu relis, et rien ne s\'enregistre sans toi.</p></div>' +
+      '<p>Une saison par fichier. L\'app lit, tu relis, et rien ne s\'enregistre sans toi.</p>' +
+      (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Rattach\u00e9 \u00e0 : <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i></i><i></i></div>';
     h += '<label class="hi-zone"><div class="ic">⤓</div>' +
       '<b>Choisir un PDF</b>' +
@@ -579,7 +587,8 @@
     var h = '<div class="hi-h"><div class="hi-k">Étape 3 sur 3</div>' +
       '<h2>Relis avant d\'enregistrer</h2>' +
       '<p>Coche ce que tu veux voir apparaître. Les lignes en doré demandent ' +
-      'ton œil : l\'app n\'est pas sûre d\'elle.</p></div>' +
+      'ton œil : l\'app n\'est pas sûre d\'elle.</p>' +
+      (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Ces r\u00e9sultats iront sur la fiche de <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i class="on"></i></div>';
 
     h += '<div class="hi-bilan">' +
@@ -707,6 +716,7 @@
   function rendre(hote, options) {
     if (!hote) return;
     options = options || {};
+    E.nomCheval = options.nomCheval || E.nomCheval || null; /* 26/08 : la cible affichable voyage par E (les vues ne voient pas options) */
     poserStyle();
     if (hote.className.indexOf("hi") < 0) hote.className += " hi";
 
@@ -857,7 +867,7 @@
     }
     E.err = null; E.occupe = true; refaire();
     var p;
-    try { p = options.onEnregistrer(aGarder, ((typeof window !== "undefined" && window.__hypeOriginesFFE) || null)); } /* 26/08 : les origines voyagent avec les resultats (pont window, voir bloc 1) */
+    try { p = options.onEnregistrer(aGarder, ((typeof window !== "undefined" && window.__hypeOriginesFFE) || null), ((typeof window !== "undefined" && window.__hypeNomPdfFFE) || null)); } /* 26/08 : origines + NOM DU CHEVAL voyagent avec les resultats (ponts window, voir bloc 1) */
     catch (eS) {
       E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
       refaire(); return;
