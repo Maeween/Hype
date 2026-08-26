@@ -3042,7 +3042,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      rebrancher : le contenu a déménagé, il n'a pas été dupliqué. -->
 <!-- ex-`cheval` leçons 1+2+3 (robes, marques, anatomie) + le bloc `races`.
      La leçon 4 est partie à Fontainebleau, dans `jeunes.js`. -->
-<script src="hype-lingo-lex-connemara.js?l=1"></script>
+<script src="hype-lingo-lex-connemara.js?l=2"></script>
 <!-- ex-`materiel` : leçon 1 à Walsall, leçons 3+4 à Vejer.
      La leçon 2 (le filet) dort dans `materiel-reserve.js`, non chargé. -->
 <script src="hype-lingo-lex-walsall.js?l=3"></script>
@@ -3055,7 +3055,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      cours.js et froid.js — c'est le cas ici.
      🟥 `van` et `embarquer` ONT ÉTÉ RETIRÉS de `concours-reserve.js` dans le
      même geste : ne pas les y remettre. -->
-<script src="hype-lingo-lex-barcelone.js?l=5"></script>
+<script src="hype-lingo-lex-barcelone.js?l=6"></script>
 <!-- 🟥 17/08 : FICHIER NEUF POUR WARENDORF. Elle utilisait la LEÇON 4 de
      `materiel` alors que son chapitre s'appelle « La formation » — on lui
      servait du vocabulaire d'équipement. Décision de Blandine : « crée
@@ -3934,7 +3934,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=92";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=93";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4700,10 +4700,11 @@ var ETAPES_I18N = {
          it:"Una capezza in cuoio intrecciato", de:"Ein geflochtenes Lederhalfter",
          ja:"編み革のハルター"}},
  connemara:{
-   ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬"},
-   v:{ja:"コネマラ"},
+   /* 🟡 `ar` dormant (25/08). */
+   ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬", ar:"الحصان"},
+   v:{ja:"コネマラ", ar:"كونيمارا"},
    souv:{en:"A rope halter", es:"Una cabezada de cuerda", it:"Una capezza di corda",
-         de:"Ein Knotenhalter", ja:"ロープの無口"}},
+         de:"Ein Knotenhalter", ja:"ロープの無口", ar:"رسن من الحبل"}},
  walsall:{
    /* 🟡 `ar` dormant (24/08). */
    ch:{en:"The tack", es:"El equipo", it:"L'attrezzatura", de:"Die Ausrüstung", ja:"馬具",
@@ -9131,16 +9132,16 @@ var COLL_NOM = {
   "jour-j":{fr:"Le jour J", en:"The big day", es:"El día del concurso",
         it:"Il giorno di gara", de:"Der Turniertag", ja:"当日", ar:"يوم المسابقة"},
   races:{fr:"Les races", en:"The breeds", es:"Las razas", it:"Le razze",
-        de:"Die Rassen", ja:"品種"},
+        de:"Die Rassen", ja:"品種", ar:"السلالات"},
   lieu:{fr:"Le lieu", en:"The place", es:"El lugar", it:"Il luogo", de:"Der Ort", ja:"場所"},
   litiere:{fr:"La litière", en:"The bedding", es:"La cama", it:"La lettiera", de:"Die Einstreu", ja:"敷料"},
   outils:{fr:"Les outils", en:"The tools", es:"Las herramientas", it:"Gli attrezzi", de:"Das Werkzeug", ja:"道具", ar:"الأدوات"},
   nourriture:{fr:"L'eau et la nourriture", en:"Water and feed", es:"El agua y el pienso", it:"L'acqua e il mangime", de:"Wasser und Futter", ja:"水と飼料", ar:"الغذاء"},
   materiel:{fr:"Tenir et attacher", en:"Holding and tying", es:"Sujetar y atar", it:"Tenere e legare", de:"Halten und anbinden", ja:"持つ・つなぐ", ar:"المعدات"},
   gestes:{fr:"Les gestes", en:"The handling", es:"El manejo", it:"I gesti", de:"Der Umgang", ja:"扱い方", ar:"الحركات"},
-  robes:{fr:"Les robes", en:"The coat colours", es:"Las capas", it:"I mantelli", de:"Die Fellfarben", ja:"毛色"},
+  robes:{fr:"Les robes", en:"The coat colours", es:"Las capas", it:"I mantelli", de:"Die Fellfarben", ja:"毛色", ar:"ألوان الشعر"},
   marques:{fr:"Les marques", en:"The markings", es:"Las marcas", it:"I segni particolari", de:"Die Abzeichen", ja:"標徴", ar:"العلامات"},
-  morpho:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体の部位"},
+  morpho:{fr:"Le corps", en:"The body", es:"El cuerpo", it:"Il corpo", de:"Der Körper", ja:"体の部位", ar:"أجزاء الجسم"},
   identite:{fr:"L'identité", en:"Identity", es:"La identidad", it:"L'identità", de:"Die Identität", ja:"個体識別"},
   selle:{fr:"La selle", en:"The saddle", es:"La silla", it:"La sella", de:"Der Sattel", ja:"鞍", ar:"السرج"},
   filet:{fr:"Le filet", en:"The bridle", es:"La cabezada", it:"La testiera", de:"Die Trense", ja:"頭絡", ar:"اللجام"},
@@ -9258,7 +9259,7 @@ var ACCUEIL_CHAP = {
   gens:{fr:"Les gens d'un concours : qui décide, qui accompagne, qui réclame — et ce qu'on se dit à l'arrivée.", en:"The people at a show: who decides, who supports, who objects — and what you say to each other at the end.", es:"La gente de un concurso: quién decide, quién acompaña, quién reclama, y qué se dice al final.", it:"Le persone di un concorso: chi decide, chi accompagna, chi reclama — e cosa ci si dice all'arrivo.", de:"Die Menschen auf einem Turnier: wer entscheidet, wer begleitet, wer Einspruch erhebt — und was man sich am Ende sagt.", ja:"競技会にいる人たち。決める人、支える人、異議を申し立てる人。そして終わったあとに交わす言葉。"},
   ecurie:{fr:"Les mots de l'écurie : le lieu, la litière, la nourriture, les gestes du matin.", en:"The words of the yard: the place, the bedding, the feed, the morning jobs.", es:"Las palabras de la cuadra: el lugar, la cama, el pienso, los gestos de la mañana.", it:"Le parole della scuderia: il luogo, la lettiera, il mangime, i gesti del mattino.", de:"Die Wörter des Stalls: der Ort, die Einstreu, das Futter, die Arbeit am Morgen.", ja:"厩舎の言葉。場所、敷料、飼料、朝の作業。"},
   pansage:{fr:"Le pansage, outil par outil, geste par geste.", en:"Grooming, tool by tool, job by job.", es:"El cepillado, herramienta por herramienta, gesto por gesto.", it:"La pulizia, attrezzo per attrezzo, gesto per gesto.", de:"Das Putzen, Werkzeug für Werkzeug, Griff für Griff.", ja:"手入れを、道具ごと、動作ごとに。"},
-  cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。"},
+  cheval:{fr:"Décrire un cheval : sa robe, ses marques, son corps, son identité.", en:"Describing a horse: colour, markings, body, identity.", es:"Describir un caballo: su capa, sus marcas, su cuerpo, su identidad.", it:"Descrivere un cavallo: il mantello, i segni particolari, il corpo, l'identità.", de:"Ein Pferd beschreiben: Farbe, Abzeichen, Körper, Identität.", ja:"馬を描写する。毛色、標徴、体、個体情報。", ar:"وصف حصان: لون شعره، وعلاماته، وجسمه، وهويته."},
   /* 🟡 ar dormant (24/08). */
   materiel:{ar:"كل ما يوضع على الحصان — وما تلبسينه أنت.",
    fr:"Tout ce qu'on met sur le cheval — et sur soi.", en:"Everything you put on the horse — and on yourself.", es:"Todo lo que se le pone al caballo, y todo lo que te pones tú.", it:"Tutto ciò che si mette sul cavallo — e su di sé.", de:"Alles, was man dem Pferd anlegt — und sich selbst.", ja:"馬に着けるもの、そして自分が身に着けるもの。"},

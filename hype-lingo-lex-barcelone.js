@@ -160,12 +160,12 @@ window.HYPE_LINGO_LEX.barcelone = {
            es:{m:"el pasaporte"}, it:{m:"il passaporto"},
            de:{m:"der Pferdepass", p:"pfèr-de-pass"}, ja:{m:"馬パスポート", p:"uma pasupōto"},
            ar:{m:"جواز الحصان"} }, // ??
-    def:{ fr:"Le document qui suit le cheval partout : signalement dessiné, épis, balzanes, vaccins, numéro de puce. Contrôlé à l'entrée de tout concours et de tout transport.",
-          en:"The document that follows the horse everywhere: drawn markings, whorls, socks, vaccinations, chip number. Checked at every show and every border.",
-          es:"El documento que sigue al caballo a todas partes: reseña dibujada, remolinos, calzados, vacunas, número de chip. Se controla a la entrada de todo concurso y todo transporte.",
-          it:"Il documento che segue il cavallo ovunque: segnalamento disegnato, vortici, balzane, vaccini, numero di chip. Controllato all'ingresso di ogni concorso e di ogni trasporto.",
-          de:"Das Dokument, das dem Pferd überallhin folgt: gezeichnete Beschreibung, Wirbel, Abzeichen, Impfungen, Chipnummer. Wird an jedem Turnier- und Transporteingang geprüft.",
-          ja:"馬にどこまでもついて回る書類。図で描かれた特徴、つむじ、白斑、ワクチン、チップ番号。競技会でも輸送でも、入り口で必ず確認されます。",
+    def:{ fr:"Le document qui suit le cheval partout : signalement dessiné, épis, balzanes, vaccins, numéro de puce. Contrôlé à l'entrée des concours, et exigé pour les transports selon la réglementation du pays traversé.",
+          en:"The document that follows the horse everywhere: drawn markings, whorls, socks, vaccinations, chip number. Checked at shows, and required for transport under the rules of the country you cross.",
+          es:"El documento que sigue al caballo a todas partes: reseña dibujada, remolinos, calzados, vacunas, número de chip. Se controla a la entrada de los concursos y se exige en los transportes según la normativa del país.",
+          it:"Il documento che segue il cavallo ovunque: segnalamento disegnato, vortici, balzane, vaccini, numero di chip. Controllato all'ingresso dei concorsi e richiesto nei trasporti secondo la normativa del paese.",
+          de:"Das Dokument, das dem Pferd überallhin folgt: gezeichnete Beschreibung, Wirbel, Abzeichen, Impfungen, Chipnummer. Wird bei Turnieren kontrolliert und für Transporte je nach Landesrecht verlangt.",
+          ja:"馬にどこまでもついて回る書類。図で描かれた特徴、つむじ、白斑、ワクチン、チップ番号。競技会では入り口で確認され、輸送の際は通過する国の規則に応じて携行が求められます。",
           ar:"وثيقة تعريف ترافق الحصان أثناء نقله، وتتضمن رسم علاماته، ودوامات شعره، والعلامات البيضاء على قوائمه، والتطعيمات، ورقم الشريحة الإلكترونية. وقد تفحص عند الوصول إلى المسابقة أو أثناء عمليات المراقبة والنقل." } },
 
   { ref:"documents", lecon:1, coll:"depart",
