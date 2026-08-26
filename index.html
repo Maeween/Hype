@@ -64,7 +64,21 @@ const stockageHype = {
   removeItem: (k) => { try { sessionStorage.removeItem(k); localStorage.removeItem(k); } catch (e) { } }
 };
 try { if (localStorage.getItem("hype_rappeler") === "0") localStorage.setItem("hype_rappeler", "1"); } catch (e) { }
-const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true } });
+/* 26/08 ~00h15 — 🟥 LE GEL DES ECRITURES SUR iPHONE (PWA).
+   Mecanisme documente de supabase-js v2 : le rafraichissement du jeton passe par
+   un VERROU navigator.locks. En PWA iOS, ce verrou peut rester tenu par un contexte
+   gele/tue par le systeme -> il n'est JAMAIS relache -> chaque appel suivant
+   (getSession, update, insert...) attend le verrou POUR TOUJOURS. Symptomes vus ce
+   soir chez Blandine : histoire impossible a enregistrer, import PDF fige sur
+   « Enregistrer 2 resultats » (bouton "..." puis retour, rien d'ecrit), onglets et
+   fil intermittents. Remede : un verrou PASSE-DROIT (la fonction s'execute
+   directement). Cout assume : sans verrou, deux rafraichissements simultanes
+   peuvent se croiser (au pire une requete 400 benigne, reessayee) — negligeable
+   face au gel total. NE PAS retirer sans relire cette note. */
+const supa = createClient(SUPABASE_URL, CLE_PUBLISHABLE, { auth: { storage: stockageHype, persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, lock: async function (nomV, attenteV, fnV) { return await fnV(); } } });
+try { /* au retour au premier plan, on force une lecture de session : le rafraichissement se fait LA, pas au milieu d'un enregistrement */
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) { try { supa.auth.getSession().catch(function () { }); } catch (eVc) { } } });
+} catch (eVg) { }
 
 
 /* --- 2. Comptes (inscription / connexion) ------------------ */
@@ -118,24 +132,21 @@ async function hypeSeDeconnecter(videurs) {
 
 // Qui est connecté ? (renvoie l'utilisateur, ou null)
 async function utilisateurActuel() {
-  /* 22/08 session 152 — LA FAUSSE DECONNEXION.
-     getUser() interroge le SERVEUR a chaque appel. Reseau lent, jeton a
-     rafraichir, coupure : il renvoie null, et l app conclut que personne
-     n est connecte. Symptomes vus chez une abonnee le 22/08 : le menu
-     propose « Se connecter » alors qu elle est connectee, impossible de
-     se deconnecter, et surtout CADENAS PARTOUT — lireAbo() n est jamais
-     parti. Son profil s affichait pourtant.
-     getSession() lit la session DEJA EN MEMOIRE, sans reseau. On la lit
-     d abord ; getUser() ne sert plus que de secours.
-     Cette fonction est appelee 148 fois : la reparer ici les repare toutes. */
+  /* 22/08 session 152 — LA FAUSSE DECONNEXION : getSession() (memoire) d'abord,
+     getUser() (reseau) en secours. Voir l'historique dans le SUIVI.
+     26/08 — DELAIS DE GARDE : si le client supabase est gele (verrou iOS, reseau
+     mort), ces appels pouvaient attendre pour toujours et geler tous les flux.
+     Desormais 4 s max (session) / 5 s max (reseau) : au pire on repond
+     « pas connecte », JAMAIS le gel silencieux. */
+  function delaiNul(msDG) { return new Promise(function (resDG) { setTimeout(function () { resDG(null); }, msDG); }); }
   try {
-    const { data: ds } = await supa.auth.getSession();
-    const us = ds && ds.session && ds.session.user;
+    const rS = await Promise.race([supa.auth.getSession(), delaiNul(4000)]);
+    const us = rS && rS.data && rS.data.session && rS.data.session.user;
     if (us) return us;
   } catch (eS) { }
   try {
-    const { data } = await supa.auth.getUser();
-    return (data && data.user) || null;
+    const rU = await Promise.race([supa.auth.getUser(), delaiNul(5000)]);
+    return (rU && rU.data && rU.data.user) || null;
   } catch (eU) { return null; }
 }
 
@@ -20277,8 +20288,8 @@ try { if (CIBLE_DIRECTE && CIBLE_DIRECTE.coursTerminePreview) { window.__coursTe
         s.textContent = ".hycc-root{min-height:100vh;background:#060709;color:#F4F7FA;font-family:'Montserrat',system-ui,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:clip;padding-bottom:118px}" +
             ".hycc-hero{position:relative;padding:0 0 4px;overflow:hidden}" +
             ".hycc-hphoto{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 22%}" +
-            ".hycc-hgrad{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0) 40%,rgba(6,7,9,.5) 62%,rgba(6,7,9,.92) 82%,#060709 96%)}" +
-            ".hycc-hfade{position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
+            ".hycc-hgrad{pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0) 40%,rgba(6,7,9,.5) 62%,rgba(6,7,9,.92) 82%,#060709 96%)}" +
+            ".hycc-hfade{pointer-events:none;position:absolute;left:0;right:0;bottom:0;height:104px;background:linear-gradient(180deg,transparent,#060709 92%)}" +
             ".hycc-marque{position:absolute;top:calc(env(safe-area-inset-top) + 12px);left:18px;z-index:6;display:inline-flex;flex-direction:column;line-height:1}" +
             ".hycc-marque .h{font-family:'Cinzel',serif;font-size:17px;color:#F4F7FA;letter-spacing:.5px}" +
             ".hycc-marque .h i{color:#F4C455;font-style:normal;font-size:12px;margin-left:2px}" +
@@ -24692,7 +24703,7 @@ function EcranHypeUniverse(props){
   return h("div", { className: "hu-root" + (fFoc ? " hu-slow" : "") + (lance ? " hu-launch" : "") + (retour ? " hu-retour" : ""), onClick: (retour && !lance) ? function(){ setLance(true); playCristal(); setTimeout(function(){ onSuivant(); }, 3000); } : undefined, style: { position: "relative", /* 14/08 (reapplique, session 134) : height:"100%" RETIRE — il figeait la boite a la hauteur de l ecran alors que le contenu la depasse (97px sequestres, boutons inatteignables, et plus rien a faire defiler pour le deck intro qui porte l overflowY:auto). minHeight garde le plein ecran ; la boite grandit avec le contenu et c est la page du deck qui defile. */ minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
     h("div", { style: { position: "absolute", inset: "-6%", backgroundImage: "url(" + IMG_HYPE_UNIVERSE_BG + ")", backgroundSize: "cover", backgroundPosition: "center 30%", filter: "blur(24px) brightness(.72)", transform: "scale(1.12)" } }),
     h("div", { className: "hu-bg", style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_HYPE_UNIVERSE_BG + ")", backgroundSize: "auto 62%", backgroundPosition: "center 50%", backgroundRepeat: "no-repeat", backgroundColor: "#04070d", WebkitMaskImage: "linear-gradient(180deg, transparent 15%, #000 30%, #000 75%, transparent 89%)", maskImage: "linear-gradient(180deg, transparent 15%, #000 30%, #000 75%, transparent 89%)" } }),
-    h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,7,13,.60) 0%, rgba(4,7,13,.10) 22%, rgba(4,7,13,0) 46%, rgba(4,7,13,.28) 70%, rgba(4,7,13,.92) 100%)" } }),
+    h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,7,13,.60) 0%, rgba(4,7,13,.10) 22%, rgba(4,7,13,0) 46%, rgba(4,7,13,.28) 70%, rgba(4,7,13,.92) 100%)" } }),
     h("div", { className: "hu-mist" }),
     h("div", { className: "hu-glb" }, h("div", { className: "hu-spin" }), h("i", { className: "hu-dot hu-d1" }), h("i", { className: "hu-dot hu-d2" }), h("i", { className: "hu-dot hu-d3" }), h("i", { className: "hu-dot hu-d4" }), h("i", { className: "hu-dot hu-d5" })),
     (waveN ? h("div", { key: "w" + waveN, className: "hu-wave" }) : null),
@@ -24810,7 +24821,7 @@ function EcranPersonnalisation(props){
     h("div", { style: { position: "absolute", inset: 0, animation: "souffle 7.5s ease-in-out infinite", transformOrigin: "20% 62%", willChange: "transform", filter: charge ? "brightness(1.15) saturate(1.06)" : "none", transition: "filter .6s ease" } },
       h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_PERSONNALISATION_BG + ")", backgroundSize: "cover", backgroundPosition: "0% center" } }),
       h("div", { style: { position: "absolute", left: "16%", top: "45%", width: 26, height: 13, marginLeft: -13, marginTop: -7, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(255,255,255,.85), rgba(95,233,240,.5) 42%, transparent 72%)", mixBlendMode: "screen", filter: "blur(1px)", animation: "eyeGlint 13s ease-in-out infinite", pointerEvents: "none" } })),
-    h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,7,13,.55) 0%, rgba(4,7,13,.24) 30%, rgba(4,7,13,.48) 66%, rgba(4,7,13,.9) 100%)", pointerEvents: "none" } }),
+    h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,7,13,.55) 0%, rgba(4,7,13,.24) 30%, rgba(4,7,13,.48) 66%, rgba(4,7,13,.9) 100%)", pointerEvents: "none" } }),
     (charge ? h("div", { style: { position: "absolute", inset: 0, background: "rgba(95,233,240,.1)", pointerEvents: "none", animation: "persUp .5s both" } }) : null),
     h("svg", { viewBox: "0 0 200 300", preserveAspectRatio: "xMidYMid slice", style: { position: "absolute", right: 0, top: "8%", width: "58%", height: "66%", opacity: .32, pointerEvents: "none", animation: "bgDrift 24s ease-in-out infinite alternate" } },
       h("path", { d: "M40 60 L92 34 L150 70 L128 138 L172 190", fill: "none", stroke: "rgba(95,233,240,.5)", strokeWidth: .7 }),
@@ -26610,7 +26621,7 @@ function EcranMemoiresCavalier() {
     h("div", { style: { position: "relative", height: 196, margin: "calc(env(safe-area-inset-top) + 14px) 16px 14px", borderRadius: 22, overflow: "hidden", border: "1px solid " + tA(0.4) } },
       photoV ? h("img", { src: photoV, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", animation: "hmKen 14s ease-in-out infinite alternate" } })
         : h("div", { style: { width: "100%", height: "100%", background: "linear-gradient(160deg, #0B141B, #06090C)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 52, color: tA(0.55) } }, (pseudoV || "?").charAt(0).toUpperCase()),
-      h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0) 52%, rgba(7,8,10,0.76) 100%)" } }),
+      h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0) 52%, rgba(7,8,10,0.76) 100%)" } }),
       h("button", { onClick: function () { setEcran(__estVisite ? "cavalier" : "moncavalier"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", top: 12, left: 12, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, "\u2039"),
       h("div", { style: { position: "absolute", left: 16, bottom: 12 } },
         h("div", { style: { fontSize: 9, letterSpacing: "0.26em", textTransform: "uppercase", fontWeight: 800, color: tnL, fontFamily: M } }, "Hype Memories"),
@@ -28127,7 +28138,7 @@ function EcranGuilde() {
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
     h("div", { style: { position: "relative", margin: "0 0 4px", height: "clamp(360px, 58vh, 500px)", overflow: "hidden" } },
       h("div", { style: { position: "absolute", inset: 0, background: (banniere ? ("url(" + banniere + ")") : ("url(" + ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2) + ")")) + " center/cover no-repeat" } }),
-      h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.25) 0%, rgba(7,8,10,0.05) 45%, rgba(7,8,10,0.92) 100%)" } }),
+      h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.25) 0%, rgba(7,8,10,0.05) 45%, rgba(7,8,10,0.92) 100%)" } }),
       h("div", { style: { position: "absolute", left: 18, right: 18, bottom: 14 } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9", textShadow: "0 2px 14px rgba(0,0,0,0.7)" } }, monClub),
         villeClub ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 600, letterSpacing: 0.8, color: "rgba(234,247,250,0.82)", marginTop: 3, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, "\uD83D\uDCCD " + villeClub) : null,
@@ -32318,7 +32329,7 @@ function AlbumsPromus(props) {
       [((albums || []).length >= 2) ? null : h("div", { key: "tout", onClick: function () { if (props.onTout) props.onTout(); }, role: "button", style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.5), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
           props.photoDefaut ? h("img", { src: props.photoDefaut, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", objectPosition: "center 30%" } }) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
-          h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
+          h("div", { style: { pointerEvents: "none", position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
             h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, T("Toutes ses photos", "All his photos", "Todas sus fotos", "Tutte le sue foto", "\u3059\u3079\u3066\u306e\u5199\u771f", "Alle Fotos")))))
       ].concat(albums.slice(0, 10).map(function (alb) {
         var cov = alb.couverture || (alb.photos || [])[0];
@@ -32327,7 +32338,7 @@ function AlbumsPromus(props) {
           h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(0.4), background: "#0B1116", boxShadow: "0 14px 28px -18px rgba(0,0,0,0.9)" } },
             cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
             estV && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
-            h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
+            h("div", { style: { pointerEvents: "none", position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
               h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, alb.nom))));
       })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, border: "1.5px dashed " + tA(0.45), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, boxSizing: "border-box" } },
@@ -33449,8 +33460,17 @@ function EcranCheval() {
   var tACl = function (aT) { return teinteRGBA(teinteCl, aT); };
   var selSt = React.useState(null); var selRuban = selSt[0], setSelRuban = selSt[1];
   var palmSt = React.useState(false); var voirTout = palmSt[0], setVoirTout = palmSt[1];
+  var sOuvSt = React.useState(null); var saisonOuv = sOuvSt[0], setSaisonOuv = sOuvSt[1]; /* 26/08 : saison depliee du palmares editorial */
+  var cavFSt = React.useState("tous"); var cavFiltre = cavFSt[0], setCavFiltre = cavFSt[1]; /* 26/08 : onglet cavalier du palmares editorial */
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
   var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : ((typeof window !== "undefined" && window.__ouvrirPalmares) ? (function () { try { window.__ouvrirPalmares = false; } catch (eF) { } return "palmares"; })() : null); } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1]; React.useEffect(function () { try { if (typeof window !== "undefined" && window.__ouvrirPalmares) { window.__ouvrirPalmares = false; setPanneau("palmares"); } } catch (eOPf) { } }); /* 25/08 : lu a CHAQUE rendu — la fiche peut etre deja montee quand on arrive de la page commune */
+  React.useEffect(function () { /* 26/08 : LE SWIPE NE QUITTE PLUS LA PAGE — un panneau ouvert pose un cran dans l'historique ; le geste retour iOS (popstate) referme le panneau au lieu de renvoyer a l'accueil. Residu assume : fermer par le bouton laisse un cran silencieux (le swipe suivant sort). */
+    if (!panneau) return;
+    try { history.pushState({ hypePanneau: true }, ""); } catch (eHp) { }
+    function surPopPan() { try { setPanneau(null); } catch (eSp) { } }
+    window.addEventListener("popstate", surPopPan);
+    return function () { window.removeEventListener("popstate", surPopPan); };
+  }, [panneau ? 1 : 0]);
   var vedSt = React.useState(null); var vedettes = vedSt[0], setVedettes = vedSt[1];
   var lkSt = React.useState({ count: 0, jaiLike: false }); var lkV = lkSt[0], setLkV = lkSt[1]; /* 31/07 : likes + commentaires dans la visionneuse de la fiche (bug signale par Blandine) */
   var cmSt = React.useState(null); var cmV = cmSt[0], setCmV = cmSt[1];
@@ -33897,7 +33917,7 @@ function EcranCheval() {
           function carteR(img3, ic3, ti3, cta3, act3, kR) {
             return h("div", { key: kR, role: "button", onClick: act3, style: { position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid " + tA(0.3), background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 104, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "9px 4px 7px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
               img3 ? h("img", { src: img3, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.42) saturate(0.92)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
-              h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
+              h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
               h("div", { style: { position: "relative", zIndex: 2, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid " + tA(0.7), background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) } },
                 h("svg", { viewBox: "0 0 24 24", style: { width: 20, height: 20, stroke: teinteCl, fill: "none", strokeWidth: 1.6 } }, ic3)),
               h("div", { style: { position: "relative", zIndex: 2, fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.5, color: "#F4F6F7", marginTop: 9, whiteSpace: "nowrap" } }, ti3),
@@ -34008,7 +34028,7 @@ function EcranCheval() {
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"))),
           h("div", { style: { minWidth: 0 } }, h("div", { className: "rise", role: "button", onClick: function () { setPanneau("palmares"); }, style: { animationDelay: ".075s", position: "relative", borderRadius: 18, overflow: "hidden", margin: "0 16px 52px", aspectRatio: "966/720", maxHeight: "40svh", background: "#04070A", cursor: "pointer" } }, /* 30/07 : la ceremonie remonte sur la fiche (demande Blandine — dommage de passer a cote) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
-          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
+          h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.12) 0%, rgba(6,7,9,0) 40%, rgba(6,7,9,0.5) 80%, rgba(6,7,9,0.85) 100%)" } })),
 
         /* ═══ 25/08 session 163 — L IPO REMONTE AU-DESSUS DU RAIL ═══════
            Decision de Blandine, 24/08 au soir : « intervertir le bandeau de
@@ -34406,7 +34426,7 @@ function EcranCheval() {
       panneau === "palmares" ? (palmTech ? h(React.Fragment, null, h("div", { role: "button", onClick: function () { setPalmTech(false); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, "\u2039 " + T("Revenir au palmar\u00e8s", "Back to the record", "Volver al palmar\u00e9s", "Torna al palmar\u00e8s", "\u623b\u308b", "Zur\u00fcck")), h("div", { style: { padding: "8px 16px 0" } },
         h("div", { style: { position: "relative", borderRadius: 18, overflow: "hidden", marginBottom: 16, aspectRatio: "966/720", maxHeight: "44svh", background: "#04070A" } }, /* 30/07 : coin competition — la video suit la teinte de la fiche (maquette validee) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, preload: "auto", ref: function (elV) { try { if (!elV) return; elV.muted = true; elV.setAttribute("playsinline", ""); var pV = elV.play(); if (pV && pV.catch) pV.catch(function () { setTimeout(function () { try { var p2 = elV.play(); if (p2 && p2.catch) p2.catch(function () { }); } catch (e7) { } }, 120); }); } catch (e8) { } }, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
-          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
+          h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
         /* ═══ 23/08 session 153 — LA PAGE DES RÉSULTATS ══════════════════
            Maquette validée par Blandine : tuiles « Fraction » (place en
@@ -34635,6 +34655,8 @@ function EcranCheval() {
           var forts = vics.slice(0, 3);
           var ans = {}; tousF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
           var listeAns = Object.keys(ans).sort().reverse();
+          var cavsPalm = []; tousF.forEach(function (fC) { if (fC.cav && cavsPalm.indexOf(fC.cav) < 0) cavsPalm.push(fC.cav); }); /* 26/08 : onglets cavaliers */
+          function filtreCav(lF) { return (cavFiltre && cavFiltre !== "tous") ? lF.filter(function (fF) { return fF.cav === cavFiltre; }) : lF; }
           var recents = tousF.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
           function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
@@ -34643,9 +34665,9 @@ function EcranCheval() {
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
           function carteFort(f, grande, idx) {
             if (!f) return null;
-            return h("div", { key: "mf" + idx, style: { position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", height: grande ? 198 : 148, flex: grande ? null : 1, minWidth: 0 } },
+            return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", height: grande ? 198 : 148, flex: grande ? null : 1, minWidth: 0 } },
               photoCh ? h("img", { src: photoCh, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
-              h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
+              h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
               h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.72)", color: grande ? "#241503" : teinteCl, border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid " + teinteCl } }, "1"),
               h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 12px 12px" : "0 9px 9px", textAlign: "center" } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grande ? 14.5 : 10.8, color: "#F2EDE2", letterSpacing: ".03em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom + (f.an ? " " + f.an : "")),
@@ -34657,7 +34679,7 @@ function EcranCheval() {
             /* — 1 · IDENTITÉ — */
             h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
               photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 172, objectFit: "cover", objectPosition: "center 25%", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
-              h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
+              h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
               (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
               (moi && typeof estModerateurHype === "function" && estModerateurHype(moi) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: changerPhotoPalm, title: "Changer la photo (admin)", style: { position: "absolute", top: 9, right: 45, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u270E") : null, /* 25/08 : admins — changer la photo en ligne */
               h("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", width: "52%" } },
@@ -34682,13 +34704,19 @@ function EcranCheval() {
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison").toUpperCase()), filetOr()),
+              (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
+                [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
+                  var onC = (cavFiltre === oC[0]);
+                  return h("button", { key: "cav" + oC[0], onClick: function () { setCavFiltre(oC[0]); }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, oC[1]);
+                })) : null,
               listeAns.map(function (anK) {
-                var fsA = ans[anK]; var sA = sortiesDe(fsA);
+                var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
                 var pA = fsA.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).length;
                 var cA = fsA.length;
                 var pct = Math.max(6, Math.min(100, Math.round(100 * (vA + pA) / Math.max(1, cA))));
-                return h("div", { key: "an" + anK, style: { margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" } },
+                var ouvA = (saisonOuv === anK);
+                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "rgba(255,255,255,0.025)", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 26/08 : la saison se DEPLIE au tap et montre ses classements (demande Blandine) */
                   h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
                     h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
                     h("span", { style: { fontSize: 10.3, color: "#8A929C", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start"))),
@@ -34696,9 +34724,18 @@ function EcranCheval() {
                       h("span", { style: { color: OR9 } }, "\uD83C\uDFC6 " + vA), "\u2003",
                       h("span", { style: { color: "#B9BEC4" } }, "\uD83E\uDD48 " + pA), "\u2003",
                       h("span", { style: { color: "#8A929C" } }, "\uD83C\uDFC5 " + cA)),
-                    h("span", { style: { marginLeft: 7, color: "#5B646E", fontSize: 12 } }, "\u02c5")),
+                    h("span", { style: { marginLeft: 7, color: ouvA ? OR9 : "#5B646E", fontSize: 12, display: "inline-block", transition: "transform .25s ease", transform: ouvA ? "rotate(180deg)" : "none" } }, "\u02c5")),
                   h("div", { style: { marginTop: 8, height: 2, borderRadius: 2, background: "rgba(255,255,255,.06)", overflow: "hidden" } },
-                    h("div", { style: { width: pct + "%", height: "100%", background: "linear-gradient(90deg,#8A5A2B," + OR9 + ")" } })));
+                    h("div", { style: { width: pct + "%", height: "100%", background: "linear-gradient(90deg,#8A5A2B," + OR9 + ")" } })),
+                  ouvA ? h("div", { onClick: function (eDp) { try { eDp.stopPropagation(); } catch (eS9) { } }, style: { marginTop: 9, borderTop: "1px solid rgba(255,255,255,0.06)", cursor: "default" } },
+                    fsA.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).map(function (rS, iS) {
+                      return h("div", { key: "sr" + iS, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 2px", borderTop: iS ? "1px solid rgba(255,255,255,0.045)" : "none", minWidth: 0 } },
+                        h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, rS.d ? dateFr(rS.d) : anK),
+                        h("div", { style: { flex: 1, minWidth: 0 } },
+                          h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
+                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [rS.ep, rS.cav].filter(Boolean).join(" \u00b7 "))),
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")));
+                    })) : null);
               })) : null,
             /* — 5 · DERNIERS RÉSULTATS — */
             recents.length ? h(React.Fragment, null,
@@ -34724,7 +34761,7 @@ function EcranCheval() {
         h("i", { className: "souvLuciole", style: { left: "40%", top: "72%", animationDelay: "17s" } }),
         h("div", { className: "souvin", style: { position: "relative", height: "auto", aspectRatio: "4 / 5", maxHeight: "52svh", margin: "4px 16px 14px", borderRadius: 22, overflow: "hidden", border: "1px solid " + tA(0.28) + "", boxShadow: "0 12px 44px rgba(0,0,0,0.5)" } }, /* 31/07 : l encart porte la photo entiere (demande Blandine) */
           h("img", { src: photoCh, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", animation: "souvKen 14s ease-in-out infinite alternate" } }),
-          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0) 55%, rgba(7,8,10,0.72) 100%)" } }),
+          h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0) 55%, rgba(7,8,10,0.72) 100%)" } }),
           h("button", { onClick: function (eA) { if (eA && eA.stopPropagation) eA.stopPropagation(); ajusterPhotoCheval(); }, "aria-label": "Ajuster la photo", title: "Ajuster la photo", style: { position: "absolute", top: 10, right: 52, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(32,217,245,0.55)", color: "#5FE9F0", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2922"),
           h("button", { onClick: function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); if (refPhotoCh.current) refPhotoCh.current.click(); }, "aria-label": "Changer la photo", style: { position: "absolute", top: 10, right: 10, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u270E"),
           h("button", { onClick: function (eAl) { if (eAl && eAl.stopPropagation) eAl.stopPropagation(); setAlbumChOuvert(true); }, "aria-label": "Album", title: "Album", style: { position: "absolute", top: 10, right: 94, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\uD83D\uDDBC\uFE0F"),
@@ -43405,7 +43442,7 @@ function EcranEcolePortugaise() {
     if (!premium) {
         return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#F4F7FA", fontFamily: "'Montserrat',sans-serif", position: "relative", overflow: "hidden" } },
             h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_EPA_HERO + ")", backgroundSize: "cover", backgroundPosition: "center 26%", filter: "blur(9px) brightness(0.55) saturate(0.9)", transform: "scale(1.08)" } }),
-            h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.88) 60%, #060709 100%)" } }),
+            h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.88) 60%, #060709 100%)" } }),
             h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 5, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039"),
             h("div", { style: { position: "relative", zIndex: 2, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 28px", textAlign: "center" } },
                 h("div", { style: { fontSize: 34, marginBottom: 16 } }, "\uD83D\uDD12"),
@@ -43808,7 +43845,7 @@ function EcranEcoleJerez() {
     if (!premium) {
         return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#F4F7FA", fontFamily: "'Montserrat',sans-serif", position: "relative", overflow: "hidden" } },
             h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_EJ_HERO + ")", backgroundSize: "cover", backgroundPosition: "center 38%", filter: "blur(9px) brightness(0.55) saturate(0.9)", transform: "scale(1.08)" } }),
-            h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.88) 60%, #060709 100%)" } }),
+            h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.88) 60%, #060709 100%)" } }),
             h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 5, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039"),
             h("div", { style: { position: "relative", zIndex: 2, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 28px", textAlign: "center" } },
                 h("div", { style: { fontSize: 34, marginBottom: 16 } }, "\uD83D\uDD12"),
@@ -44197,7 +44234,7 @@ function EcranEcoleVienne() {
     if (!premium) {
         return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#F4F7FA", fontFamily: "'Montserrat',sans-serif", position: "relative", overflow: "hidden" } },
             h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_EV_HERO + ")", backgroundSize: "cover", backgroundPosition: "center 30%", filter: "blur(9px) brightness(0.55) saturate(0.9)", transform: "scale(1.08)" } }),
-            h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.88) 60%, #060709 100%)" } }),
+            h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.55) 0%, rgba(6,7,9,0.88) 60%, #060709 100%)" } }),
             h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 5, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.15)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039"),
             h("div", { style: { position: "relative", zIndex: 2, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "32px 28px", textAlign: "center" } },
                 h("div", { style: { fontSize: 34, marginBottom: 16 } }, "\uD83D\uDD12"),

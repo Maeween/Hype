@@ -14604,3 +14604,52 @@ Demande de Blandine : en haut des résultats, la tête du cheval concerné par d
 4. `chevalDyn` transporte désormais `photo_palmares` (chargé par le `select("*")` existant).
 
 Banc : node --check 16/16 (17/17 DEV palmarès) ×3, ancres « 1 occurrence exacte » ×5, marqueurs identiques ×3 (`photo_palmares` ×5, `changerPhotoPalm` ×2, `photoPalmId` ×3). Pas de rendu runtime (flux connecté). À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~00h00 (35e livraison) · 🟥 LE RAIL DU FIL RETIRÉ DE LA FICHE — L'UNIQUE RAIL EST LA BANDE MÉDIAS
+
+Colère légitime de Blandine (« dans quelle langue je dois dire ça ») : à 23h49, sa fiche montrait DEUX rails — la bande photos sous « Le voir en mouvement » (voulue, agrandie ce soir) ET les cartes de moments sous « Partage un moment » dans LE FIL (les posts du fil étaient revenus — voir note mystère plus bas). Ordre exécuté : **« vire celui qui est sous le fil »**.
+
+Réalisation SANS portail (leçon 23e) : mode `sansListe` dans MurHype — `liste = []` quand le prop est posé + le message « Sois le premier à publier ici » muselé dans ce mode — et la fiche passe `sansListe: true` sur son appel chapFil. **Restent sur la fiche : le composer (publier texte/photo) et la porte « Tout le fil → »** ; les moments se lisent dans Tout le fil. Les autres murs (écurie, club, page seconde) ne passent pas ce prop : inchangés.
+
+Banc, preuve RUNTIME (Playwright, fil nourri de 2 faux posts via surcharge de listerCommentaires) : `chapFil` → **0 carte**, porte « Tout le fil » présente, message « Sois le premier » ABSENT ; syntaxe 16/16 (17/17 DEV) ×3 ; `sansListe` ×3 identiques ×3. Au banc sans session, le composer affiche « Connecte-toi pour publier » (comportement d'origine hors ligne).
+
+## 🟥 NOTES DE MINUIT — à traiter EN PREMIER à la prochaine session
+1. **Les écritures meurent en silence sur l'iPhone de Blandine (appli en ligne)** : histoire de Vallieres impossible à enregistrer (vidéo 1, texte tapé, placeholder toujours là ensuite) ; import PDF : étape 3/3 OK, « Enregistrer 2 résultats » → « … » → retour du bouton, rien d'écrit, **et on reste coincé sur la page d'import** (rapport Blandine, y compris après force-quit). Suspect n°1 : le deadlock jeton supabase-js iOS PWA déjà consigné (hype-import-ffe.js). Onglets Souvenirs/Performances/Vidéos muets chez elle aussi (répondent au banc Chromium) — possiblement même racine, possiblement recouvrement : DEV-TAP toujours à fabriquer.
+2. **Mystère du fil de Rizotto : les posts sont RÉAPPARUS à 23h49** (GRANDPRIX.tv 12 juil. + photo 11 juil. visibles sur sa capture) sans aucun correctif — donc panne intermittente côté données/session, PAS un bug d'affichage. Cohérent avec le suspect n°1.
+3. **Import PDF, bug d'accents** : les lignes lues affichent « PrÃƒÂ©paratoire » (UTF-8 doublement encodé) — à corriger dans hype-import-ffe.js.
+4. **Presse-papiers** : toast « Presse-papiers vide ou refusé » quand Blandine colle dans l'histoire — iOS a refusé l'accès ; à regarder (permission/geste utilisateur).
+5. SQL `photo_palmares` : Blandine l'avait dans l'éditeur SQL à 23h44 — vérifier qu'il a été exécuté.
+
+À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~00h15 (36e livraison) · 🟥 CORRECTIF DU GEL DES ÉCRITURES (verrou iOS supabase-js)
+
+Sur exigence de Blandine (« tu me codes ça ») — attaque du suspect n°1, le seul mécanisme qui explique TOUS les symptômes du soir (histoire non enregistrée, import PDF figé sur « Enregistrer », onglets muets, fil intermittent) :
+
+1. **Verrou passe-droit sur le client supabase** : supabase-js v2 sérialise le rafraîchissement du jeton derrière un verrou `navigator.locks` ; en PWA iOS ce verrou peut rester tenu par un contexte gelé par le système et n'être JAMAIS relâché → tous les appels suivants pendent pour toujours, en silence. Le client passe désormais `auth.lock = (…) => fn()` (exécution directe). Coût assumé et documenté dans le code : deux rafraîchissements simultanés peuvent se croiser (au pire un 400 bénin réessayé) — négligeable face au gel total.
+2. **Relance au premier plan** : `visibilitychange` → lecture de session au retour de l'app, pour que le rafraîchissement se fasse là, pas au milieu d'un enregistrement.
+3. **utilisateurActuel ne peut plus pendre** : délais de garde `Promise.race` — 4 s (getSession) / 5 s (getUser) → au pire « pas connecté », jamais le gel (fonction appelée ~148 fois, chemin heureux inchangé).
+
+Banc : node --check 16/16 (17/17) ×3 ; marqueurs identiques ×3 ; démarrage DEV + bascule d'onglet re-testés après correctif, 0 erreur. **Limites honnêtes** : le gel réel n'est reproductible que sur l'iPhone de Blandine — test de vérité = pousser, forcer la fermeture de la PWA, rouvrir, réessayer l'histoire puis l'import. **Si l'import reste figé** : hype-import-ffe.js (non fourni cette session) crée peut-être son propre client — le fichier est chargé dans la MÊME page (appendChild) donc utilise très probablement le `supa` partagé, mais à vérifier sur pièce : Blandine doit remettre hype-import-ffe.js (et penser à incrémenter `?v=` à toute livraison de ce fichier, règle 🟥 existante).
+
+À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~00h40 (37e livraison) · PALMARÈS VIVANT : SAISONS DÉPLIABLES, ONGLETS CAVALIERS, MOMENTS FORTS CLIQUABLES, VOILES NEUTRALISÉS, CRAN D'ARRÊT DU SWIPE
+
+Brief dicté par Blandine en 4 points, tous livrés avec preuve RUNTIME (Playwright sur le DEV, 17 résultats de démo) :
+
+1. **Saisons = accordéons.** Tap sur une année → elle se déplie et montre ses classements (date, concours, épreuve · cavalier, place/partants, tri du plus récent) ; re-tap sur l'EN-TÊTE → repli (la liste dépliée bloque la propagation exprès, pour que consulter ne referme pas). Chevron qui pivote, liseré or à l'ouverture. États `saisonOuv` au niveau EcranCheval (pas dans l'IIFE — hooks interdits là).
+2. **Onglets cavaliers au-dessus des saisons** (« Tous » + chaque cavalier des résultats, dès 2 cavaliers) : filtrent les saisons ET leurs compteurs 🏆🥈🥉 ; les années sans résultat du cavalier disparaissent. **Choix assumé** : le bandeau 4 chiffres et Derniers résultats restent GLOBAUX (le bandeau = algo s154 dupliqué, interdiction d'y toucher unilatéralement) — Blandine tranchera si elle veut le filtre partout.
+3. **Moments forts cliquables** : tap → la saison du résultat se déplie + défilement doux jusqu'à elle. (Vérité consignée : ces cartes n'avaient JAMAIS eu d'action ; photos = 3× la photo du cheval faute de médias par concours en base — vraies photos par concours = chantier à part, colonne média à créer.)
+4. **🟥 VOILES DÉGRADÉS NEUTRALISÉS (17 occurrences ×3 fichiers)** : tous les calques décoratifs `position:absolute; inset:0; linear-gradient` + les bandeaux de nom d'albums + `.hycc-hgrad/.hycc-hfade` passent `pointerEvents: none`. Sur iOS, un tap qui atterrit sur une couche non interactive peut ne jamais devenir un clic : ces voiles pouvaient voler les taps (cartes, onglets…). Vérifié avant patch : les 17 sont des calques PURS (aucun enfant, aucun handler).
+5. **Cran d'arrêt du swipe** : panneau ouvert = un cran `history.pushState` ; le geste retour iOS (popstate) REFERME LE PANNEAU au lieu d'éjecter vers l'accueil. Résidu assumé : fermer par le bouton laisse un cran silencieux (le swipe suivant sort de la page).
+
+Banc : node --check 16/16 (17/17) ×3 ; marqueurs identiques ×3 ; preuves runtime — moment fort → saison 2021 dépliée ✓, filtre EVAN ROUX → seules 2026/2025 restent avec compteurs recalculés ✓, tap année → repli 3→0 lignes ✓, capture banc-11/12 jointes. Leçon de banc consignée : `:has-text` sans ancrage `#panneauCheval` attrape les éléments de la FICHE DERRIÈRE le panneau (deux fausses alertes d'interception ce soir avant diagnostic).
+
+À pousser : `index.html` (md5 ci-dessous).
