@@ -32893,7 +32893,7 @@ function EcranCheval() {
      Les lignes en dur n ont ni partants ni quart : elles restent
      visibles mais ne comptent pas dans les Classements.               */
   var lignesPourModule = (function () {
-    var out = ((resDb) || []).filter(function (rV) { return rV && rV.visible !== false; }); /* 26/08 : coche de l import respectee (voir palmares editorial) */
+    var out = ((resDb) || []).filter(function (rV) { return rV && (voirMasques || rV.visible !== false); }); /* 26/08 : coche respectee — sauf si la proprietaire demande a tout voir */
     ((c && c.palmares) || []).forEach(function (pp, iP) {
       if (!pp || !pp.event) return;
       out.push({
@@ -32911,7 +32911,7 @@ function EcranCheval() {
   var palmTous = (function () {
     var out = [];
     ((resDb) || []).forEach(function (rr) {
-      if (rr && rr.visible === false) return; /* 26/08 : coche de l import respectee */
+      if (rr && rr.visible === false && !voirMasques) return; /* 26/08 : coche respectee — sauf si la proprietaire demande a tout voir */
       var anR = "";
       if (rr.annee) anR = String(rr.annee);
       else { try { anR = String(new Date(rr.created_at).getFullYear()); } catch (eAn) { } }
@@ -33482,6 +33482,7 @@ function EcranCheval() {
     return function () { actifPF = false; };
   }, [panneau, photosForts]);
   var cavFSt = React.useState("tous"); var cavFiltre = cavFSt[0], setCavFiltre = cavFSt[1]; /* 26/08 : onglet cavalier du palmares editorial */
+  var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1]; /* 26/08 : « qu on puisse tout voir si on le souhaite » (Blandine) — proprietaire seulement, page technique */
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
   var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : ((typeof window !== "undefined" && window.__ouvrirPalmares) ? (function () { try { window.__ouvrirPalmares = false; } catch (eF) { } return "palmares"; })() : null); } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1]; React.useEffect(function () { try { if (typeof window !== "undefined" && window.__ouvrirPalmares) { window.__ouvrirPalmares = false; setPanneau("palmares"); } } catch (eOPf) { } }); /* 25/08 : lu a CHAQUE rendu — la fiche peut etre deja montee quand on arrive de la page commune */
   React.useEffect(function () { /* 26/08 : LE SWIPE NE QUITTE PLUS LA PAGE — un panneau ouvert pose un cran dans l'historique ; le geste retour iOS (popstate) referme le panneau au lieu de renvoyer a l'accueil. Residu assume : fermer par le bouton laisse un cran silencieux (le swipe suivant sort). */
@@ -34446,7 +34447,13 @@ function EcranCheval() {
                 h("div", { style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.65), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6")));
           }))
         : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant — ajoute-en une depuis Souvenirs.", "No videos yet — add one from Memories.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
-      panneau === "palmares" ? (palmTech ? h(React.Fragment, null, h("div", { role: "button", onClick: function () { setPalmTech(false); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, "\u2039 " + T("Revenir au palmar\u00e8s", "Back to the record", "Volver al palmar\u00e9s", "Torna al palmar\u00e8s", "\u623b\u308b", "Zur\u00fcck")), h("div", { style: { padding: "8px 16px 0" } },
+      panneau === "palmares" ? (palmTech ? h(React.Fragment, null, h("div", { role: "button", onClick: function () { setPalmTech(false); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, "\u2039 " + T("Revenir au palmar\u00e8s", "Back to the record", "Volver al palmar\u00e9s", "Torna al palmar\u00e8s", "\u623b\u308b", "Zur\u00fcck")),
+        (function () { /* 26/08 : rien n est jamais efface — bouton pour TOUT revoir, proprietaire seulement */
+          var nMq = ((resDb) || []).filter(function (rM) { return rM && rM.visible === false; }).length;
+          if (!proprio || !nMq) return null;
+          return h("div", { role: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: voirMasques ? teinteCl : "#8A929C", cursor: "pointer" } },
+            (voirMasques ? "\u2611 " : "\u2610 ") + (voirMasques ? T("Les lignes masqu\u00e9es sont affich\u00e9es", "Hidden lines are shown", "L\u00edneas ocultas visibles", "Righe nascoste visibili", "\u975e\u8868\u793a\u306e\u884c\u3092\u8868\u793a\u4e2d", "Ausgeblendete Zeilen sichtbar") : T("Afficher aussi les " + nMq + " lignes masqu\u00e9es", "Also show the " + nMq + " hidden lines", "Mostrar tambi\u00e9n las " + nMq + " l\u00edneas ocultas", "Mostra anche le " + nMq + " righe nascoste", "\u975e\u8868\u793a\u306e\u884c\u3082\u8868\u793a", "Auch die " + nMq + " ausgeblendeten Zeilen zeigen")));
+        })(), h("div", { style: { padding: "8px 16px 0" } },
         h("div", { style: { position: "relative", borderRadius: 18, overflow: "hidden", marginBottom: 16, aspectRatio: "966/720", maxHeight: "44svh", background: "#04070A" } }, /* 30/07 : coin competition — la video suit la teinte de la fiche (maquette validee) */
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + ((teinte || "").toUpperCase() === "#D9B56C" ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, preload: "auto", ref: function (elV) { try { if (!elV) return; elV.muted = true; elV.setAttribute("playsinline", ""); var pV = elV.play(); if (pV && pV.catch) pV.catch(function () { setTimeout(function () { try { var p2 = elV.play(); if (p2 && p2.catch) p2.catch(function () { }); } catch (e7) { } }, 120); }); } catch (e8) { } }, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
