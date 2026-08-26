@@ -20817,12 +20817,12 @@ function EcranChevalCommun() {
                     H("path", { d: "M6 3 h12 v3 a6 6 0 0 1 -12 0 Z M6 4 H3 a4 4 0 0 0 4 5 M18 4 h3 a4 4 0 0 1 -4 5 M12 12 v4 M8 20 h8 M9 16 h6 v4 h-6 Z", fill: "none", stroke: "#F4C455", strokeWidth: 1.5, strokeLinejoin: "round" })),
                 "EN CONCOURS"),
             meilleurs.map(function (r, i) {
-                var sous = [r.ep, (String(r.pl) + (r.pl === 1 ? "er" : "e") + (r.part ? (" sur " + r.part) : "")), r.cav].filter(Boolean).join(" \u2022 ");
+                var sous = [r.ep, (String(r.pl) + (r.pl === 1 ? "er" : "e") + (r.part ? (" sur " + r.part) : ""))].filter(Boolean).join(" \u2022 "); var cavSous = r.cav || null; /* 26/08 : cavalier en blanc gras */
                 return H("div", { key: "r" + i, className: "hycc-rrow" },
                     H("div", { className: "hycc-rond " + (r.pl === 1 ? "or1" : r.pl <= 3 ? "or23" : "") }, String(r.pl)),
                     H("div", { className: "t" },
                         H("div", { className: "e" }, r.nom || r.ep || "\u00c9preuve"),
-                        sous ? H("div", { className: "d" }, sous) : null),
+                        (sous || cavSous) ? H("div", { className: "d" }, sous, (sous && cavSous) ? " \u2022 " : null, cavSous ? H("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, cavSous) : null) : null),
                     r.an ? H("div", { className: "an" }, r.an) : null);
             }),
             (classes > meilleurs.length) ? H("div", { style: { fontSize: 11, color: "#9FA3A8", fontStyle: "italic", margin: "8px 0 0 2px" } }, "\u2026 et " + (classes - meilleurs.length) + " autres") : null,
@@ -34357,8 +34357,9 @@ function EcranCheval() {
                     h("span", { style: { display: "block", fontSize: 10, color: "#8A929C",
                       marginTop: 3, whiteSpace: "nowrap", overflow: "hidden",
                       textOverflow: "ellipsis" } },
-                      [f.ep, f.part ? (String(f.pl) + (f.pl === 1 ? "er" : "e") + " sur " + f.part) : null,
-                       f.cav].filter(Boolean).join(" \u00b7 "))),
+                      [f.ep, f.part ? (String(f.pl) + (f.pl === 1 ? "er" : "e") + " sur " + f.part) : null].filter(Boolean).join(" \u00b7 "),
+                      f.cav ? " \u00b7 " : null,
+                      f.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, f.cav) : null)), /* 26/08 : le cavalier en BLANC GRAS (demande Blandine) */
                   f.an ? h("span", { style: { flex: "0 0 38px", textAlign: "right", fontSize: 10.5,
                     color: "#6E7780", fontFamily: "'Cinzel',Georgia,serif" } }, f.an) : null);
               }),
@@ -34756,8 +34757,32 @@ function EcranCheval() {
           var nC = tousF.length;
           function sortiesDe(fs) { var parLieu = {}; fs.forEach(function (f) { if (!f.d) return; var k = f.nom.toLowerCase().trim(); (parLieu[k] = parLieu[k] || {})[f.d] = true; }); var tot = 0; Object.keys(parLieu).forEach(function (k) { var js = Object.keys(parLieu[k]).sort(); var prec = null; js.forEach(function (j) { var t = Date.parse(j + "T00:00:00Z"); if (prec == null || isNaN(t) || (t - prec) > 86400000) tot++; if (!isNaN(t)) prec = t; }); }); return tot; }
           var nS = sortiesDe(tousF);
-          var vics = tousF.filter(function (f) { return f.pl === 1; }).slice().sort(function (a, b) { return (b.part || 0) - (a.part || 0); });
-          var forts = vics.slice(0, 3);
+          /* 26/08 — CLASSEMENT DES MOMENTS FORTS, regle dictee par Blandine (« pourquoi
+             Villers alors que t'as l'Open de France gagne en P1, le Salon de Bordeaux,
+             la P Elite de Barbizon ») : 1) les concours a TITRES d'abord (Open de
+             France, championnats… puis les grands internationaux/salons), 2) puis le
+             NIVEAU d'epreuve (Elite > 1 > 2 > 3), 3) puis les PARTANTS. Victoires en
+             tete de pool, podiums en complement s'il manque des cartes. Le palmares
+             ecrit en dur (decision 24/08 : s'affiche, ne compte pas) entre dans CE
+             pool d'affichage, avec dedoublonnage (les deux Bordeaux ne font qu'un). */
+          var fortsPool = tousF.slice();
+          try {
+            (((typeof c !== "undefined" && c) && c.palmares) || []).forEach(function (rJ) {
+              if (!rJ || !rJ.event) return;
+              var mR = String(rJ.rang || "").match(/^\s*(\d+)/); var plJ = mR ? Number(mR[1]) : null;
+              if (plJ == null) return;
+              var dsJ = String(rJ.ds || ""); var mC = dsJ.match(/avec\s+(.+)$/i);
+              fortsPool.push({ pl: plJ, part: null, nom: String(rJ.event || ""), ep: dsJ.split("\u00b7")[0].trim(), cav: (mC ? mC[1].trim() : ""), d: "", an: String(rJ.annee || "").slice(0, 4) });
+            });
+          } catch (eFp) { }
+          function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); if (/open de france|championnat|\bchp\b|finale|coupe de france|crit\u00e9rium|criterium|grand tournoi/.test(tT)) return 2; if (/internation|\bint\b|salon du cheval|salon internat/.test(tT)) return 1; return 0; }
+          function poidsNiveau(f) { var eN = (f.ep || "").toLowerCase(); if (/\u00e9lite|elite/.test(eN)) return 5; var mN = eN.match(/\b([1-4])\b/); return mN ? (5 - Number(mN[1])) : 0; }
+          function jetonFort(f) { var ts = String(f.nom || "").toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g, "").split(/\s+/).filter(function (w) { return w.length > 5; }).sort(function (a, b) { return b.length - a.length; }); return (f.an || "") + "|" + (ts[0] || String(f.nom || "").toLowerCase()); }
+          function triFort(a, b) { return (poidsTitre(b) - poidsTitre(a)) || (poidsNiveau(b) - poidsNiveau(a)) || ((b.part || 0) - (a.part || 0)) || ((a.pl || 99) - (b.pl || 99)); }
+          var vics = fortsPool.filter(function (f) { return f.pl === 1; }).slice().sort(triFort);
+          if (vics.length < 3) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
+          var forts = []; var jetonsVus = {};
+          vics.forEach(function (fV) { if (forts.length >= 3) return; var jV = jetonFort(fV); if (jetonsVus[jV]) return; jetonsVus[jV] = 1; forts.push(fV); });
           var ans = {}; tousF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
           var listeAns = Object.keys(ans).sort().reverse();
           var cavsPalm = []; tousF.forEach(function (fC) { if (fC.cav && cavsPalm.indexOf(fC.cav) < 0) cavsPalm.push(fC.cav); }); /* 26/08 : onglets cavaliers */
@@ -34779,7 +34804,7 @@ function EcranCheval() {
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grande ? 14.5 : 10.8, color: "#F2EDE2", letterSpacing: ".03em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom + (f.an ? " " + f.an : "")),
                 f.ep ? h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.ep) : null,
                 h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-                  h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?") + (f.cav ? " \u00b7 " + f.cav : ""))));
+                  h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?"), f.cav ? " \u00b7 " : null, f.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, f.cav) : null)));
           }
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — */
@@ -34839,7 +34864,7 @@ function EcranCheval() {
                         h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, rS.d ? dateFr(rS.d) : anK),
                         h("div", { style: { flex: 1, minWidth: 0 } },
                           h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
-                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [rS.ep, rS.cav].filter(Boolean).join(" \u00b7 "))),
+                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rS.cav) : null)),
                         h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")));
                     })) : null);
               })) : null,
@@ -34853,7 +34878,7 @@ function EcranCheval() {
                     h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, dateFr(rD.d)),
                     h("div", { style: { flex: 1, minWidth: 0 } },
                       h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.nom),
-                      h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [rD.ep, rD.cav].filter(Boolean).join(" \u00b7 "))),
+                      h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.ep || "", (rD.ep && rD.cav) ? " \u00b7 " : null, rD.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rD.cav) : null)),
                     h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rD.pl + "/" + (rD.part || "?")));
                 }))) : null,
             /* — 6 · CTA — */
