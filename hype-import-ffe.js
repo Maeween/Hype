@@ -331,7 +331,7 @@
   "use strict";
 
   var STYLE = [
-'.hi{--t:32,217,245;--or:217,181,108;--tx:242,246,248;',
+'.hi{--t:32,217,245;--or:217,181,108;--tx:242,246,248;background:#06070A;position:relative;z-index:1;min-height:100svh;'  /* 26/08 : fond OPAQUE — les cartes en pointilles de la fiche restee montee derriere transparaissaient sur le bord gauche (capture Blandine 12h01) */,
 '  font-family:Montserrat,-apple-system,system-ui,sans-serif;color:rgb(var(--tx))}',
 '.hi *{box-sizing:border-box}',
 '.hi sup{font-size:9px}',
