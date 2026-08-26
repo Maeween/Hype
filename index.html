@@ -31971,7 +31971,7 @@ function AlbumsCheval(props) {
   var cSt = React.useState({}); var coches = cSt[0], setCoches = cSt[1];
   var tSt = React.useState(null); var toastA = tSt[0], setToastA = tSt[1];
   var sSt = React.useState(null); var confSupA = sSt[0], setConfSupA = sSt[1];
-  function bip(m) { setToastA(m); setTimeout(function () { setToastA(null); }, 2400); }
+  function bip(m, ms) { setToastA(m); setTimeout(function () { setToastA(null); }, ms || 2400); }
   function portail(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP9) { } return el; }
   function cibleTag() {
     var c = String(props.cible || "");
@@ -32072,12 +32072,21 @@ function AlbumsCheval(props) {
     setEnvoiCours(true);
     var urls = (alb.photos || []).slice();
     var rate = 0;
+    var raisonRatee = null; /* 26/08 : la VRAIE raison de l'echec, plus un simple compte muet — un fichier trop lourd ou un type refuse doit se voir */
     for (var iF = 0; iF < fichiersUtiles.length; iF++) {
-      try { var rF = await envoyerPhoto(fichiersUtiles[iF]); if (rF && rF.url) urls.push(rF.url); else rate++; } catch (eF) { rate++; }
+      try {
+        var rF = await envoyerPhoto(fichiersUtiles[iF]);
+        if (rF && rF.url) { urls.push(rF.url); }
+        else { rate++; if (!raisonRatee) raisonRatee = { nom: fichiersUtiles[iF].name, msg: String((rF && rF.error && (rF.error.message || rF.error)) || "") }; }
+      } catch (eF) { rate++; if (!raisonRatee) raisonRatee = { nom: fichiersUtiles[iF].name, msg: String((eF && eF.message) || eF) }; }
     }
     var rM = await majAlbumCheval(albId, { photos: urls });
     setEnvoiCours(false);
-    if (rate) bip(rate + " " + T("envoi(s) impossible(s)", "upload(s) failed", "env\u00edo(s) fallido(s)", "invio non riuscito", "\u9001\u4fe1\u5931\u6557"));
+    if (rate) {
+      var msgErr = rate + " " + T("envoi(s) impossible(s)", "upload(s) failed", "env\u00edo(s) fallido(s)", "invio non riuscito", "\u9001\u4fe1\u5931\u6557");
+      if (raisonRatee && raisonRatee.msg) msgErr += " \u2014 " + raisonRatee.nom + " : " + raisonRatee.msg;
+      bip(msgErr, 6000);
+    }
     if (!(rM && rM.error)) charger();
   }
   /* 02/08 : une bascule public/prive avait ete ecrite ici puis RETIREE — le systeme existait
