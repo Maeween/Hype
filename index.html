@@ -20502,7 +20502,7 @@ function EcranChevalCommun() {
                 try {
                     /* limite large : tronquer fausserait les compteurs d'un cheval a 178 parcours */
                     var rR = await supa.from("resultats").select("*").eq("cheval_id", id).order("created_at", { ascending: false }).limit(400);
-                    ((rR && rR.data) || []).forEach(function (r) { var n = normRes(r, true); if (n) res.push(n); });
+                    ((rR && rR.data) || []).filter(function (rV2) { return rV2 && rV2.visible !== false; }).forEach(function (r) { var n = normRes(r, true); if (n) res.push(n); }); /* 26/08 : QUATRIEME porte fermee — la page seconde chargeait ses resultats par son propre circuit et ignorait la coche de l import (capture Blandine 11h25, compteurs faux) */
                 } catch (eR) { }
                 /* le palmares JSON s'AFFICHE mais ne COMPTE pas (decision du 24/08) */
                 try { (Array.isArray(ch.palmares) ? ch.palmares : []).forEach(function (r) { var n = normRes(r, false); if (n) res.push(n); }); } catch (eJ) { }
