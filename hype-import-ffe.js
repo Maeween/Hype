@@ -198,7 +198,7 @@
   }
   function lireFiches(texte) {
     var lignes = String(texte).split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
-    try { E.origines = extraireOrigines(lignes); } catch (eOx) { E.origines = null; } /* 26/08 : origines officielles transmises a l ecrivain */
+    try { if (typeof window !== "undefined") window.__hypeOriginesFFE = extraireOrigines(lignes); } catch (eOx) { try { window.__hypeOriginesFFE = null; } catch (eOx2) { } } /* 26/08 (corrige 12h05) : le lecteur vit dans le BLOC 1, sans la variable d etat E du bloc 2 — la premiere greffe y referencait E et cassait TOUTE lecture (« Can't find variable: E », capture Blandine 12h02). Pont par window. */
     var fiches = [], cour = null, derniere = null;
     for (var i = 0; i < lignes.length; i++) {
       var ligne = lignes[i];
@@ -682,12 +682,13 @@
         + "Ce n'est pas normal — signale-le.";
     }
     var blocOg = "";
+    var ogV = (typeof window !== "undefined" && window.__hypeOriginesFFE) || null;
     if (E.originesInfo && E.originesInfo.etat === "posees") {
       blocOg = '<div class="hi-aide" style="margin-top:12px">\u2713 <b>Origines officielles ajout\u00e9es \u00e0 sa fiche</b>'
-        + (E.origines && E.origines.pere ? "<br>P\u00e8re : <b>" + ech(E.origines.pere) + "</b> \u00b7 M\u00e8re : <b>" + ech(E.origines.mere || "\u2014") + "</b>" : "") + "</div>";
+        + (ogV && ogV.pere ? "<br>P\u00e8re : <b>" + ech(ogV.pere) + "</b> \u00b7 M\u00e8re : <b>" + ech(ogV.mere || "\u2014") + "</b>" : "") + "</div>";
     } else if (E.originesInfo && E.originesInfo.etat === "conflit") {
       blocOg = '<div class="hi-aide" style="margin-top:12px"><b>Les origines officielles diff\u00e8rent de ta saisie.</b>'
-        + "<br>Officiel : P\u00e8re <b>" + ech((E.origines && E.origines.pere) || "\u2014") + "</b> \u00b7 M\u00e8re <b>" + ech((E.origines && E.origines.mere) || "\u2014") + "</b>"
+        + "<br>Officiel : P\u00e8re <b>" + ech((ogV && ogV.pere) || "\u2014") + "</b> \u00b7 M\u00e8re <b>" + ech((ogV && ogV.mere) || "\u2014") + "</b>"
         + '<div style="display:flex;gap:8px;margin-top:10px">'
         + '<button class="hi-bt" data-hi="ogRemplacer" style="flex:1">Prendre l\'officiel</button>'
         + '<button class="hi-bt2" data-hi="ogGarder" style="flex:1">Garder ma saisie</button></div></div>';
@@ -810,10 +811,11 @@
       }
       if (act === "ogRemplacer" || act === "ogGarder") { /* 26/08 : le cavalier tranche le conflit d origines */
         if (act === "ogGarder") { E.originesInfo = { etat: "gardees" }; refaire(); return; }
-        if (typeof options.onOrigines !== "function" || !E.origines) { E.originesInfo = { etat: "gardees" }; refaire(); return; }
+        var ogP = (typeof window !== "undefined" && window.__hypeOriginesFFE) || null;
+        if (typeof options.onOrigines !== "function" || !ogP) { E.originesInfo = { etat: "gardees" }; refaire(); return; }
         E.originesInfo = { etat: "encours" };
         refaire();
-        Promise.resolve(options.onOrigines(E.origines)).then(function (rOk) {
+        Promise.resolve(options.onOrigines(ogP)).then(function (rOk) {
           E.originesInfo = { etat: (rOk && rOk.error) ? "conflit" : "remplacees" };
           if (rOk && rOk.error) E.err = String(rOk.error);
           refaire();
@@ -855,7 +857,7 @@
     }
     E.err = null; E.occupe = true; refaire();
     var p;
-    try { p = options.onEnregistrer(aGarder, E.origines || null); } /* 26/08 : les origines voyagent avec les resultats */
+    try { p = options.onEnregistrer(aGarder, ((typeof window !== "undefined" && window.__hypeOriginesFFE) || null)); } /* 26/08 : les origines voyagent avec les resultats (pont window, voir bloc 1) */
     catch (eS) {
       E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
       refaire(); return;
