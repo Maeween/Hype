@@ -14736,3 +14736,124 @@ Syntaxe 16/16 (17/17) ×3, marqueurs identiques ×3. À pousser : index.html (md
 # HYPE ▸ 26/08 ~10h10 (44e livraison) · « TOUT VOIR SI ON LE SOUHAITE » — BOUTON LIGNES MASQUÉES
 
 Souhait de Blandine (rassurée : RIEN n'est effacé, les décochées vivent en base avec visible=false). Ajout sur la page technique (« Voir tous ses résultats »), sous « ‹ Revenir au palmarès » : bouton ☐/☑ « Afficher aussi les N lignes masquées » — PROPRIÉTAIRE seulement, visible seulement s'il existe des lignes masquées. Activé : lignesPourModule et palmTous incluent tout (listes ET compteurs de la page technique) ; le palmarès ÉDITORIAL, lui, reste strictement fidèle à la coche. État voirMasques (non persistant, retombe à fermé). Syntaxe 16/16 (17/17) ×3, marqueurs ×3. À pousser : index.html (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~11h35 (45e livraison) · LA QUATRIÈME PORTE — LA PAGE SECONDE RESPECTAIT PAS LA COCHE
+
+« Tjs pas » de Blandine (capture 11h25) : la carte EN CONCOURS de la PAGE SECONDE affichait encore les lignes masquées — cette page charge ses résultats par SON PROPRE circuit (requête à elle + normRes, pos ~1840845), que les trois filtres de la 43e ne touchaient pas. L'avertissement « l'algo existe à DEUX endroits » du SUIVI se vérifie à la lettre : erreur de périmètre de ma part, consignée. Filtre `visible !== false` posé sur ce quatrième point. Balayage final EXACT (le premier décompte était faux, corrigé avant livraison) : 7 correspondances `cheval_id` dans l'index — 4 sur d'autres tables (chevaux_liens ×3, échanges_heybaby_epingles ×1, hors sujet), 1 lecture anti-doublons de l'import (technique, SANS filtre EXPRÈS : elle doit détecter aussi les doublons de lignes masquées), et les 2 seules sources d'AFFICHAGE des résultats : fiche resDb (filtrée en aval, 43e) et page seconde (filtrée ici). Aucune cinquième porte. Syntaxe 16/16 (17/17) ×3. À pousser : index.html (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~12h10 (46e livraison) · LES ORIGINES OFFICIELLES ENTRENT PAR L'IMPORT — RÈGLE DE BLANDINE
+
+Construit SUR PIÈCE (Vallieres_2024.pdf fourni par Blandine — l'en-tête telemat porte : « Selle Francais né le 15/03/2009 », « Robe : Bai | Sexe : Femelle | Taille : Catégorie F », « Père : → Nighthawk Mère : → Maelia Varennes », « Naisseur : LES VALLIERES »). Vérité consignée au passage : les origines de Rizotto n'ont JAMAIS été lues d'un PDF — elles sont écrites en dur dans CHEVAUX_FICHE (pedigree complet saisi à la main en session passée).
+
+**Règle de Blandine, implémentée telle quelle** : case vide → l'officiel remplit sans demander (donnée FFE) ; saisie manuelle différente → RIEN ne s'écrase, l'écran de fin montre l'officiel et le cavalier choisit (« Prendre l'officiel » / « Garder ma saisie »).
+
+Chaîne complète :
+1. Module : `extraireOrigines(lignes)` (motifs validés sur le PDF réel, → toléré, null si pas d'en-tête), stocké à la lecture, transmis à l'écrivain (`onEnregistrer(lignes, origines)`), écran de fin enrichi (posées ✓ / conflit avec 2 boutons / gardées / remplacées), dispatcher `ogRemplacer`/`ogGarder` → `options.onOrigines`.
+2. Index : `enregistrerImportFFE(chevalId, lignes, originesOff)` — lit `chevaux.origines` (garde 15 s), détecte le conflit sur père/mère (insensible casse, compatible forme `pedigree` ou plate), fusion qui ne remplit QUE les champs vides (pere, mere, robe, naissance, naisseur, sexe, taille), écrit le JSON ; un échec origines ne fait JAMAIS échouer l'import des résultats. + `appliquerOriginesOfficielles()` (global) pour le choix « remplacer ». Écriture au format que la carte ORIGINES lit déjà (`pere:{nom}` / compatible pedigree).
+3. Cache : `?v=9` posé dans l'index.
+
+Preuves : node --check OK partout (16/16, 17/17) ; test unitaire sur les lignes EXACTES du PDF réel → les 8 champs extraits ✓, telemat sans en-tête → null ✓. Chemin de test SANS RISQUE pour Blandine : réimporter le MÊME PDF de Vallieres — les 5 lignes partiront en doublons (rien d'ajouté), et les origines se poseront sur la fiche.
+À pousser ENSEMBLE : index.html + hype-import-ffe.js (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~12h10 (47e livraison) · 🟥 CORRECTIF D'URGENCE — MA GREFFE ORIGINES CASSAIT TOUTE LECTURE DE PDF
+
+Capture Blandine 12h02 : « Le fichier n'a pas pu être lu. Can't find variable: E ». FAUTE DE LA 46e, assumée : le module a DEUX blocs (lecteur / interface), la variable d'état `E` n'existe QUE dans le second — ma greffe la référençait dans `lireFiches` (bloc 1), et le `catch` de secours refaisait la même faute dedans. Toute lecture de PDF plantait.
+
+Correctif : PONT PAR WINDOW — le lecteur dépose `window.__hypeOriginesFFE`, le bloc interface le consomme partout (transmission à l'écrivain, écran de fin, boutons de conflit). Contrôle automatique : zéro référence résiduelle à `E.origines` hors `E.originesInfo`. Preuve : simulation de lecture SANS E dans la portée → aucun plantage, pont rempli (père Nighthawk, mère Maelia Varennes). node --check OK. Cache `?v=10` posé dans l'index.
+
+LEÇON (protocole) : toute greffe dans hype-import-ffe.js doit d'abord répondre à « dans QUEL bloc suis-je, et E y existe-t-elle ? » — les deux blocs partagent le fichier mais PAS leurs portées.
+À pousser ENSEMBLE : index.html + hype-import-ffe.js (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~12h45 (48e livraison) · 🟥 RÉGRESSION DE LA 39e RÉPARÉE — « LENT » NE VEUT PLUS JAMAIS DIRE « DÉCONNECTÉE »
+
+Captures Blandine 12h33-34 : écurie perso « Aucun cheval », amis vides, « comme si la page avait reset ». RIEN N'EST PERDU EN BASE. Cause, régression ASSUMÉE de ma 39e : la garde de 4 s sur utilisateurActuel transformait une session LENTE (réveil de PWA) en « pas connecté » → tous les écrans chargés à cet instant (effets une-fois, sans réessai) rendaient vides.
+
+Correctif (v3 d'utilisateurActuel, les 3 fichiers) : nouveau repli `utilisateurDepuisStockage()` — la session vit déjà dans localStorage (clé `sb-…-auth-token`, via stockageHype) ; lecture en 0 ms, sans réseau ni verrou. Chaîne : getSession (garde 4 s) → si LENT ou en erreur, stockage local (identité sûre, le jeton se rafraîchira tout seul aux requêtes) → getUser (garde 6 s) → stockage en dernier recours. La garde anti-gel reste, mais ne peut plus fabriquer de fausses déconnexions. Preuve node : session lente simulée → utilisateur retrouvé depuis le stockage ✓.
+
+Aussi dans cette livraison : fond OPAQUE pleine hauteur sur l'écran d'import (`.hi`) — piste pour les « carrés en pointillés » du bord gauche (capture 12h01) ; diagnostic non conclu au banc (l'environnement CSS du banc diffère), verdict attendu sur le téléphone de Blandine après poussée. Cache module `?v=11`.
+Geste immédiat pour Blandine en attendant la poussée : rouvrir l'écran Écurie (ou tuer/rouvrir l'app) fait revenir chevaux et amis — c'était un affichage, pas une perte.
+À pousser ENSEMBLE : index.html + hype-import-ffe.js (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~13h25 (49e livraison) · MOMENTS FORTS RECLASSÉS (règle Blandine) + CAVALIER EN BLANC GRAS + RIZOTTO RESTAURÉ
+
+1. **Rizotto restauré (donnée, pas code)** : sa vraie carrière = 93/49/81/166 (référence de Blandine — 94 sorties après re-import de la saison Vallieres… non : 94 vient du recalcul, à surveiller). Le SQL `update resultats set visible=true where cheval_id in (select id from chevaux where nom ilike 'rizotto%')` a été passé par Blandine (Success), carte revenue à 94/49/81/166. LEÇONS CONSIGNÉES : (a) mes filtres « coche » de la 43e ont rétro-masqué des lignes que Blandine n'avait jamais choisi de cacher en connaissance de cause (l'écran ignorait la coche à l'époque de ses imports) — toute nouvelle règle d'affichage doit être évaluée contre les DONNÉES HISTORIQUES, pas seulement les futures ; (b) NE JAMAIS déclarer des chiffres de concours « incohérents » sans Blandine : une sortie = une journée, PLUSIEURS épreuves par sortie (25 victoires en 25 sorties avec 38 podiums est normal).
+2. **Cavalier en BLANC GRAS** partout où le trio « épreuve · place · cavalier » s'affiche : carte EN CONCOURS (page seconde), moments forts, saisons dépliées, derniers résultats, lignes de la page commune (puce •). Parité ×3 vérifiée.
+3. **Moments forts, nouveau classement (règle dictée)** : pool = victoires (podiums en complément), TITRES d'abord (open de france/championnat/chp/finale/coupe/critérium = poids 2 ; internationaux/salons = poids 1), puis NIVEAU (Élite=5 > 1 > 2 > 3), puis PARTANTS, dédoublonnage par jeton année+mot-long (les deux « Bordeaux » ne font qu'un). Le palmarès écrit en dur ENTRE dans ce pool d'affichage (décision 24/08 respectée : il ne compte toujours pas dans les chiffres). Preuve banc : OPEN DE FRANCE 2021 en grande carte, puis Villiers P1D, puis SALON DE BORDEAUX ✓ (banc-16).
+Syntaxe 16/16 (17/17) ×3. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé depuis la 48e.
+
+---
+
+# HYPE ▸ 26/08 ~13h55 (50e livraison) · 🟥 RETOUR ARRIÈRE SUR L'AUTHENTIFICATION — DEMANDE DE BLANDINE, TOUT LE TRAVAIL CONSERVÉ
+
+Les pages qui se vident ONT RÉCIDIVÉ (écurie 13h53) malgré la 48e. Demande de Blandine : « revenir à une version avant que tout ce bordel n'arrive et remettre ton travail dessus ». Exécuté chirurgicalement : les TROIS modifications d'authentification de la nuit sont RETIRÉES à l'identique — (1) verrou passe-droit `auth.lock` retiré du client, (2) relance visibilitychange retirée, (3) `utilisateurActuel` restauré à la version session 152 (sans délais de garde ni repli stockage ; `utilisateurDepuisStockage` et `avecGarde` restent définis — avecGarde SERT toujours au panneau histoire). TOUT LE RESTE DU JOUR EST CONSERVÉ : import Unicode + origines + accents, coche visible respectée + bouton « tout voir », moments forts classés (règle Blandine), cavalier blanc gras, hero/photo palmarès, saisons/onglets, pont « Découvrir », rail 210×190.
+Conséquence assumée et dite : si le gel « panneau-prison » d'origine revient (verrou iOS), les protections LOCALES tiennent (histoire : garde 10 s + sortie toujours libre ; écrivain import : delaiDeGarde 15 s) — dégradation propre avec message, plus jamais de prison. Si les pages vides PERSISTENT sur ce build, la maladie est l'ancienne instabilité de session (antérieure à mes patchs — cf. mystère du fil du 25/08 22h34) et la prochaine étape sera un MOUCHARD de session à l'écran, pas une nouvelle couche aveugle.
+Alternative offerte à Blandine si elle préfère le reset dur : Netlify garde chaque déploiement (site → Deploys → choisir un ancien → « Publish deploy ») — mais ce build-ci EST déjà « l'avant + le travail remis dessus ».
+Banc : syntaxe 16/16 (17/17) ×3, boot DEV sans erreur, verrou×0/délais×0 vérifiés. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé (8c256d01…).
+
+---
+
+# HYPE ▸ 26/08 ~15h55 (51e livraison) · HYPE PRO DÉMÉNAGE SUR CRYSTAL, EN TEASER « PROCHAINEMENT » SANS PRIX
+
+Demande de Blandine (capture 15h44) : la carte Hype Pro quitte la page Galops (tarifs pas à jour — 9,99/79,99/16,99/15,90 —, liens Stripe pas créés) et devient un TEASER en pied de la page Crystal (EcranPremium) : badge doré « PROCHAINEMENT » (6 langues), 🎓, titre Hype Pro, description enseignants/moniteurs — AUCUN prix, aucune action cliquable. Le bloc découpé sur Galops était le conditionnel `profil.estPro` complet (style proTwinkle → tuile Duo Pro), bornes vérifiées avant coupe (les 4 prix présents dans le bloc, une seule occurrence). Le teaser Crystal est visible de toutes (plus de condition estPro) — à re-gater si Blandine préfère. Vérifs : plus AUCUNE occurrence de 9,99/15,90 dans l'index ✓, proTwinkle ×0 ✓, teaser ×3 fichiers ✓, syntaxe 16/16 (17/17) ×3, boot DEV sans erreur.
+RAPPEL EN ATTENTE : Proposition A « Respiration simple » (espacement page commune) choisie PUIS mise en pause par Blandine (« Pas vu attends ») — NE PAS coder sans son retour ; maquette dans les sorties (maquette-espacement.png).
+À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé (8c256d01…, ?v=11).
+
+⚠️ INCIDENT ÉVITÉ DE JUSTESSE (51e, consigné) : ma première version du teaser avait UNE PARENTHÈSE FERMANTE MANQUANTE — et `node --check` l'a laissée passer (16/16) alors que Chrome refusait tout le script (« missing ) after argument list », app morte au boot). Le fichier cassé (md5 642c5a75…) a brièvement existé dans les sorties — ÉCRASÉ, ne jamais pousser. Localisée par écouteur d'erreur en phase de capture (ligne:colonne), corrigée, équilibre vérifié par machine (solde 0). 🟥 RÈGLE DURCIE : le BOOT NAVIGATEUR Playwright (zéro pageerror + un écran clé rendu) est un contrôle OBLIGATOIRE avant toute livraison — node --check seul ne suffit PAS sur ce fichier. md5 final propre ci-dessous.
+
+---
+
+# HYPE ▸ 26/08 ~16h25 (52e livraison) · PAGE COMMUNE : PROPOSITION B « CHAPITRES » (choix Blandine)
+
+Maquettes refaites en 4 images séparées (aujourd'hui/A/B/C — la version « 3 empilées » était illisible pour Blandine, leçon retenue) → elle a choisi **B**. Appliqué sur la page commune : chapitres turquoise (`.hycc-chapT`, 10px, .26em, #14E2EF, margin-top 30px = respiration entre sections) + filet doré dégradé (`.hycc-chapF`) au-dessus de « En concours » et « Indices & partage » (rendus sous les mêmes conditions que leurs sections) ; cartes allégées (bordure .09→.06, padding 13→15) ; rangées de résultats 8→12px ; titre de carte marge 8→10. Preuve banc : le DEV commune n'embarque PAS de bouchon supabase (contrairement au DEV palmarès, 17e bloc) — deux erreurs de boot ENVIRONNEMENTALES (CDN coupé au banc), pas des régressions ; boot avec bouchon injecté → zéro erreur, données démo Orphée rendues, les 2 chapitres « EN CONCOURS » et « INDICES & PARTAGE » avec filet doré visibles, capture banc-17. Cavalier @luna en blanc gras confirmé au passage. Syntaxe 16/16 (17/17) ×3.
+À pousser : index.html (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~19h30 (53e livraison) · 🟥 LA RACINE DU CROISEMENT VALLIERES/RIZOTTO — RÉPARATION SYSTÉMIQUE (ordre de Blandine : « c'est l'outil qui doit le faire »)
+
+CONVERGENCE DES FILS D'ABORD : Blandine a rapporté un index d'une autre conversation (md5 f79ece53…) — TOUT mon travail 35e→52e dedans + 2 changements de l'autre fil (bouton « Sprint · 60 s » retiré de l'accueil, cache hype-video.js?v=26082026). Adoptés à l'octet près dans mes 3 fichiers (md5 convergés) AVANT de continuer. Règle confirmée : en cas de doute sur « le dernier index », comparer par MARQUEURS puis converger, jamais choisir à l'aveugle.
+
+LA RACINE DU BUG (72 lignes de Rizotto sur la fiche Vallieres) : la cible d'import était une MÉMOIRE COLLANTE — `localStorage("hype_cheval_import")`, posée à chaque ouverture d'import, survivait aux fermetures d'app ; à l'enregistrement, si `window.HYPE_CHEVAL_IMPORT` était vide (app relancée entre-temps — ce que Blandine fait sans cesse), l'écrivain retombait sur LE DERNIER CHEVAL D'UNE SESSION PASSÉE. Le correctif du 22/08 qui a introduit ce repli voulait éviter une erreur « cheval inconnu » ; il a créé bien pire : des rattachements croisés silencieux.
+
+RÉPARATION (les deux fichiers) :
+1. **Cible fraîche obligatoire** : le repli localStorage est SUPPRIMÉ (lecture ET écriture ; la porte purge même l'ancienne clé). App relancée entre l'ouverture et l'enregistrement → erreur claire « rouvre l'import depuis sa fiche », plus JAMAIS de devinette.
+2. **Verrou d'identité telemat ↔ fiche** : le lecteur extrait le NOM du cheval de l'en-tête du PDF (ligne au-dessus de « … né le JJ/MM/AAAA », pont `window.__hypeNomPdfFFE`) ; l'écrivain compare (normalisation accents/casse/ponctuation, tolérance d'inclusion « VALLIERES » ⊂ « Vallières ») et REFUSE tout telemat qui ne correspond pas, avec message nominatif au-dessus du bouton. Protège tous les cavaliers, pas que Blandine. Tests : nom extrait du PDF réel = « VALLIERES » ✓, 5 cas de correspondance ✓ (dont accents et refus Rizotto/Vallieres).
+3. **La cible s'AFFICHE** : « Rattaché à : VALLIERES » sur l'écran de choix, « Ces résultats iront sur la fiche de VALLIERES » sur la relecture (via `E.nomCheval` — PIÈGE ÉVITÉ AU BANC : `options` n'est pas dans la portée des vues, la première greffe aurait planté l'écran ; leçon bloc 1/bloc 2 encore vérifiée).
+4. Données : Blandine a remis SA Vallieres à zéro (delete passé, 19h14) — elle réimportera ses vrais telemat sur l'app réparée. Le doublon « Vallieres de Delphine » (935d8096…, 0 résultat) reste À FUSIONNER (lien) — CHANTIER NOTÉ : rapprochement par nom à la création d'un cheval + fusion des homonymes, à concevoir avec Blandine.
+Cache `?v=12`. Banc : node OK ×3 + module, boot navigateur propre, palmarès rendu ✓. À pousser ENSEMBLE : index.html + hype-import-ffe.js (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~20h10 (54e livraison) · UPLOAD VIDÉO SUR LES ALBUMS — L'ERREUR RÉELLE EST ENFIN VISIBLE
+
+Blandine : « une vidéo chargée, impossible de charger les autres ». Diagnostic sur pièce : `envoyerPhoto()`/`importerFichiers()` (les DEUX servent aussi aux vidéos, même bucket "photos", input `accept="image/*,video/*"`) échouaient en SILENCE — un seul compte muet « N envoi(s) impossible(s) », 2,4 s, aucune raison. Impossible de savoir si c'est un fichier trop lourd, un type refusé, ou autre chose SANS voir l'erreur réelle.
+
+Correctif (les 3 fichiers) : la première vraie erreur rencontrée (nom du fichier + message) s'affiche désormais dans le toast, 6 s au lieu de 2,4 s. `bip()` accepte une durée optionnelle sans casser ses autres appels.
+
+🟡 PISTE LA PLUS PROBABLE (à vérifier par Blandine, DONNÉE pas CODE — le bucket Supabase a ses propres limites, invisibles depuis le code) : le bucket "photos" a peut-être une limite de taille de fichier ou de types MIME qui bloque les vidéos après la première. SQL de diagnostic donné à Blandine :
+`select id, name, file_size_limit, allowed_mime_types from storage.buckets where name = 'photos';`
+Si `file_size_limit` est bas (souvent 50 Mo par défaut) ou `allowed_mime_types` exclut les vidéos → remonter/élargir dans Supabase (Dashboard → Storage → photos → Settings), pas de code à toucher.
+Syntaxe 16/16 (17/17) ×3, boot propre. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé depuis la 53e.
+
+---
+
+# HYPE ▸ 27/08 ~01h05 (55e livraison) · VIDÉOS D'ALBUM RÉSERVÉES PREMIUM + LISTE MAÎTRESSE DES AVANTAGES
+
+Suite du bug d'upload vidéo (54e) : Blandine a passé le SQL diagnostique — le tiroir "photos" plafonnait à 50 Mo (`52428800`), `allowed_mime_types` NULL (aucune restriction de type). Elle a choisi 100 Mo et l'a relevé elle-même côté Supabase (donnée, rien à pousser). Puis nouvelle demande : réserver l'envoi de VIDÉOS aux membres Premium.
+
+Codé (`importerFichiers`, les 3 fichiers) : `estFichierVideo()` (type MIME + repli sur l'extension pour les partages iOS qui laissent `.type` vide) ; en gratuit, les vidéos sont filtrées AVANT l'envoi (aucune tentative réseau inutile), comptées, message dédié « N vidéo(s) réservée(s) aux membres Premium — passe Premium pour les ajouter » (6 s) ; les photos restent libres sous la limite de 20/album, inchangée. Le message générique de limite 20 a été reformulé pour ne plus parler de « vidéos » qu'il ne gère plus lui-même.
+
+🆕 Nouveau fichier `AVANTAGES_PREMIUM.md` (liste maîtresse, séparée du SUIVI) : inventaire complet de tout ce qui est déjà réservé Premium dans l'app (chevaux, albums, photos, désormais vidéos, Galops, examens, articles, écoles d'équitation, Hey Baby) — pour que Blandine ou une prochaine session le retrouve d'un coup, sans re-fouiller le code. Découverte au passage : un objet de traduction `avantage_1` à `avantage_6` existe dans le code (Galops 1-7, vidéos premium, examens illimités…) mais n'est RENDU NULLE PART — paywall préparé jamais branché, noté dans le document pour ne pas le confondre avec un vrai verrou.
+
+⚠️ Question de Blandine restée sans réponse dans le code (posée, pas codée) : le TÉLÉCHARGEMENT DES RÉSULTATS n'existe pas du tout dans l'app aujourd'hui — rien à réserver tant que rien n'est construit. À trancher avec elle si elle veut qu'on le construise.
+Syntaxe 16/16 (17/17) ×3, boot navigateur propre. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.

@@ -32059,16 +32059,33 @@ function AlbumsCheval(props) {
     var r = await majAlbumCheval(alb.id, { photos: nouv });
     if (!(r && r.error)) charger();
   }
+  function estFichierVideo(fic) { /* 27/08 : detection video par type MIME, avec repli sur l extension (certains partages iOS laissent .type vide) */
+    var t = String((fic && fic.type) || "").toLowerCase();
+    if (t.indexOf("video/") === 0) return true;
+    var nF = String((fic && fic.name) || "").toLowerCase();
+    return /\.(mp4|mov|m4v|avi|webm|mkv|3gp)$/.test(nF);
+  }
   async function importerFichiers(albId, fichiers) {
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
     if (!alb || !fichiers || !fichiers.length) return;
     var dejaLa = (alb.photos || []).length;
     var fichiersUtiles = fichiers;
+    var videosBloquees = 0;
+    if (!premium) { /* 27/08 : les VIDEOS sont reservees aux membres Premium (demande Blandine) — les photos restent libres sous la limite 20/album */
+      fichiersUtiles = Array.prototype.filter.call(fichiers, function (ficV) {
+        if (estFichierVideo(ficV)) { videosBloquees++; return false; }
+        return true;
+      });
+    }
     if (!premium) {
       var placesRestantes = Math.max(0, 20 - dejaLa);
-      if (placesRestantes <= 0) { bip(T("20 photos/vid\u00e9os max par album en gratuit \u2014 passe Premium pour aller plus loin", "20 photos/videos max per album on the free plan \u2014 go Premium for more", "M\u00e1x. 20 fotos/v\u00eddeos por \u00e1lbum en el plan gratuito", "Massimo 20 foto/video per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306520\u679a\u307e\u3067")); return; }
-      if (fichiers.length > placesRestantes) { fichiersUtiles = Array.prototype.slice.call(fichiers, 0, placesRestantes); bip(T("Seules " + placesRestantes + " photo(s)/vid\u00e9o(s) ajout\u00e9e(s) \u2014 limite de 20 en gratuit", "Only " + placesRestantes + " added \u2014 free plan limit is 20", "Solo " + placesRestantes + " a\u00f1adida(s) \u2014 l\u00edmite gratuito 20", "Solo " + placesRestantes + " aggiunta/e \u2014 limite gratuito 20", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306820\u3067\u3059\u3002" + placesRestantes + "\u4ef6\u306e\u307f\u8ffd\u52a0")); }
+      if (placesRestantes <= 0) { fichiersUtiles = []; bip(T("20 photos/vid\u00e9os max par album en gratuit \u2014 passe Premium pour aller plus loin", "20 photos/videos max per album on the free plan \u2014 go Premium for more", "M\u00e1x. 20 fotos/v\u00eddeos por \u00e1lbum en el plan gratuito", "Massimo 20 foto/video per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306520\u679a\u307e\u3067")); }
+      else if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); bip(T("Seules " + placesRestantes + " photo(s) ajout\u00e9e(s) \u2014 limite de 20 en gratuit", "Only " + placesRestantes + " added \u2014 free plan limit is 20", "Solo " + placesRestantes + " a\u00f1adida(s) \u2014 l\u00edmite gratuito 20", "Solo " + placesRestantes + " aggiunta/e \u2014 limite gratuito 20", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306820\u3067\u3059\u3002" + placesRestantes + "\u4ef6\u306e\u307f\u8ffd\u52a0")); }
     }
+    if (videosBloquees > 0) {
+      bip(videosBloquees + " " + T("vid\u00e9o(s) r\u00e9serv\u00e9e(s) aux membres Premium \u2014 passe Premium pour les ajouter", "video(s) are Premium-only \u2014 go Premium to add them", "v\u00eddeo(s) exclusivo(s) de Premium \u2014 pasa a Premium para a\u00f1adirlos", "video riservati ai membri Premium \u2014 passa a Premium per aggiungerli", "\u30d7\u30ec\u30df\u30a2\u30e0\u4f1a\u54e1\u9650\u5b9a\u306e\u52d5\u753b\u3067\u3059"), 6000);
+    }
+    if (!fichiersUtiles.length) return; /* 27/08 : rien a envoyer — inutile d ouvrir un cycle d envoi pour rien */
     setEnvoiCours(true);
     var urls = (alb.photos || []).slice();
     var rate = 0;
