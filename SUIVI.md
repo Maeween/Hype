@@ -14653,3 +14653,86 @@ Brief dicté par Blandine en 4 points, tous livrés avec preuve RUNTIME (Playwri
 Banc : node --check 16/16 (17/17) ×3 ; marqueurs identiques ×3 ; preuves runtime — moment fort → saison 2021 dépliée ✓, filtre EVAN ROUX → seules 2026/2025 restent avec compteurs recalculés ✓, tap année → repli 3→0 lignes ✓, capture banc-11/12 jointes. Leçon de banc consignée : `:has-text` sans ancrage `#panneauCheval` attrape les éléments de la FICHE DERRIÈRE le panneau (deux fausses alertes d'interception ce soir avant diagnostic).
 
 À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~00h55 (38e livraison) · TOUTES LES PORTES « PERFORMANCES » MÈNENT À LA NOUVELLE PAGE
+
+Demande de Blandine : le lien « voir ses performances » et l'onglet Performances doivent mener à la NOUVELLE page (éditoriale), jamais à l'ancienne (technique). Diagnostic : les portes visaient déjà `panneau "palmares"`, mais `palmTech` restait COLLANT — après un passage par un CTA « Voir tous ses résultats/moments forts », l'ancienne page restait mémorisée et toute porte rouvrait dessus. Correctif : effet `[panneau]` → toute entrée dans "palmares" fait `setPalmTech(false)`. L'ancienne page reste accessible UNIQUEMENT par les CTA internes de la nouvelle. Preuve runtime : ouverture → NOUVELLE ; CTA → ANCIENNE ; onglet Souvenirs puis Performances → NOUVELLE ✓. Syntaxe 16/16 (17/17) ×3.
+
+À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 08h30 (39e livraison) · 🟥 LE PANNEAU « SON HISTOIRE » NE PEUT PLUS SE FIGER
+
+Rapport Blandine au matin (capture 08h15, Vallieres) : panneau histoire figé, impossible d'enregistrer NI DE SORTIR. Cause lue dans le code, double faute :
+1. `sauverHistoireCheval` : update supabase SANS limite de temps → si la requête pend (verrou iOS d'hier, réseau zombie), `histBusy` reste true à vie ;
+2. le bouton Annuler ET le tap sur le fond étaient conditionnés à `!histBusy` → panneau-prison.
+
+Correctifs (les 3 fichiers) :
+- Helper global `avecGarde(promesse, ms)` (Promise.race, sentinelle `__garde`) posé sous `utilisateurActuel` — à réutiliser progressivement sur TOUS les flux d'écriture (indices, photo palmarès, posts…) ;
+- L'enregistrement de l'histoire est gardé à 10 s → toast explicite « Réseau injoignable — rien n'a été enregistré », busy relâché ;
+- La sortie du panneau n'est JAMAIS verrouillée (fond + Annuler ferment toujours) — un enregistrement en cours continue en arrière-plan et son toast dit la vérité.
+
+⚠️ IMPORTANT : vérifier si Blandine avait poussé la 38e (`ba7fe9…`) avant son test de 08h15 — si non, son gel du matin était celui du build d'HIER (sans le correctif verrou). Le présent build cumule tout.
+Banc : node --check 16/16 (17/17) ×3, marqueurs `avecGarde/__garde` identiques ×3, boot DEV sans erreur. À pousser : `index.html` (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~09h00 (40e livraison) · hype-import-ffe.js v2 — L'IMPORT NE PEUT PLUS NI MENTIR NI SE FIGER
+
+Blandine a fourni hype-import-ffe.js (récupéré de GitHub — noter : le fichier n'était plus dans aucune conversation, SEUL LE DÉPÔT fait foi). Diagnostic sur pièce, la scène de 23h42 enfin comprise :
+- le bouton « Enregistrer » passait en « … » puis REVENAIT : l'écrivain (enregistrerImportFFE, côté index, déjà gardé à 15 s depuis la session 154) répondait par une ERREUR (« La connexion n'a pas répondu… » / « Pas connecté ») ;
+- mais le module affichait cette erreur SOUS le pied de page (margin-bottom 90px), hors écran → Blandine voyait « rien ne se passe » ;
+- et rien ne protégeait le module si l'écrivain ne répondait JAMAIS (occupe true à vie).
+
+Correctifs (hype-import-ffe.js uniquement, index INCHANGÉ — md5 courant 5e73687d…) :
+1. **L'erreur d'enregistrement s'affiche AU-DESSUS du bouton**, plus jamais enterrée.
+2. **Ceinture 35 s dans le module** (Promise.race, sentinelle __gardeModule) : si l'app ne répond jamais, l'écran se libère et le dit — occupe ne peut plus rester vrai à vie.
+3. **Accents réparés à la source** (reparerMojibake au point unique d'extraction PDF) : inversion octets Windows-1252 + décodage UTF-8 STRICT, ≤ 2 tours, ne touche que ce qu'elle peut prouver (« PrÃƒÂ©paratoire »→« Préparatoire » ✓, « Âge », « À bientôt », « ÉLIMINÉ » intacts ✓ — 7 cas unitaires passés sous node). Les sorties « annuler »/« fermer » du module étaient déjà sans verrou (vérifié).
+
+⚠️ 🟥 RÈGLE CACHE (déjà au SUIVI, répétée car c'est LE piège de ce fichier) : à la poussée, FAIT DANS CETTE LIVRAISON : l'inclusion passe ?v=6 → ?v=7 dans l'index (nouveau md5 ci-dessous) — Blandine pousse les DEUX fichiers, rien à retenir.
+Banc : node --check OK, tests unitaires accents 7/7 probants, pas de rendu runtime (PDF.js = CDN, réseau du banc coupé). Reste ouvert : re-test réel par Blandine (histoire + import) sur build 5e73… + ce fichier.
+
+---
+
+# HYPE ▸ 26/08 ~09h20 (41e livraison) · MOMENTS FORTS : UNE PHOTO DIFFÉRENTE PAR CARTE
+
+Suite du reproche de Blandine (« trois fois la même photo ») — le clic était réparé (37e), restaient les photos. Les moments forts piochent désormais dans les photos du cheval (chargeur global existant `chargerPhotosSouvenirs` : vedettes → fil → albums, vidéos écartées, 9 max), une différente par carte (`idx % n`), photo de tête en secours si le cheval n'a rien. Chargées une fois à l'ouverture du panneau (retente si vide), état `photosForts` au niveau EcranCheval. Preuve runtime : chargeur nourri de 3 pastilles → 3 cartes, 3 photos DISTINCTES ✓. Syntaxe 16/16 (17/17) ×3.
+
+Reste sur cette page, en attente d'arbitrage Blandine (aucun code sans son feu vert) :
+· des photos PAR CONCOURS (vraie colonne média sur `resultats` + choix admin) — chantier base+UI ;
+· le bandeau 4 chiffres filtré ou non par l'onglet cavalier (aujourd'hui : global).
+
+À pousser : `index.html` (md5 ci-dessous) — hype-import-ffe.js inchangé depuis la 40e (e9c4befb…).
+
+---
+
+# HYPE ▸ 26/08 ~09h45 (42e livraison) · 🟥 L'ERREUR POSTGRES ENFIN NOMMÉE ET TUÉE + ÉCRAN D'IMPORT RECENTRÉ
+
+VICTOIRE DE MÉTHODE : l'erreur rendue visible à la 40e a parlé sur l'iPhone de Blandine (capture 08h34) — **« unsupported Unicode escape sequence »**. C'était ÇA, l'échec d'enregistrement de l'import depuis le début : le texte extrait des telemat contient des caractères de contrôle invisibles (dont \u0000 et des C1 comme \u0083) que Postgres refuse en bloc. Le « PrÃÂ©paratoire » affiché cache un \u0083 invisible.
+
+Correctifs :
+1. **Module (hype-import-ffe.js)** : purge des caractères de contrôle (C0, DEL, C1) à l'extraction, APRÈS la réparation d'accents (elle a besoin des octets 80-9F) — au niveau fragment ET ligne assemblée ; réparation mojibake aussi sur la ligne assemblée (les mots arrivent parfois coupés en fragments).
+2. **Écrivain (index, enregistrerImportFFE)** : ceinture `netFFE()` — chaque champ texte (concours, épreuve, cavalier) purgé avant l'insert, QUELLE QUE SOIT la version du lecteur en cache. Preuve node : \u0000/\u0007/\u009c/\u0083 tous éliminés, textes sains intacts. L'insert ne peut plus être refusé pour ce motif.
+3. **Écran de choix recentré + vidéo réduite** (demande Blandine, « rollback design ») : en-tête text-align center, bloc d'aide centré, vidéo 76 % (max 340 px) centrée arrondie au lieu de pleine largeur.
+4. Cache : inclusion passée `?v=8` dans l'index (fait ici, rien à retenir).
+
+Limite honnête : le mojibake résiduel à l'AFFICHAGE de la relecture peut subsister sur certains PDF exotiques (fragments coupés en plein milieu d'une séquence) — mais il n'empêche PLUS l'enregistrement ; à raffiner si Blandine le revoit. À pousser ENSEMBLE : index.html + hype-import-ffe.js (md5 ci-dessous).
+
+---
+
+# HYPE ▸ 26/08 ~09h55 (43e livraison) · LA COCHE DE L'IMPORT EST ENFIN RESPECTÉE À L'AFFICHAGE
+
+🟢 D'ABORD : L'IMPORT MARCHE — capture Blandine 08h45, 32 résultats en base, saisons pleines (le correctif Unicode de la 42e a tué le blocage historique).
+
+Reproche suivant, fondé : « j'avais laissé coché les classements uniquement et il me sort des choses qui ne sont pas des classements ». Diagnostic : l'import écrivait bien `visible: false` sur les lignes décochées/hors niveau (promesse « gardée sans être affichée »), mais AUCUN des trois points d'affichage ne lisait cette coche. Filtre `visible !== false` posé aux trois constructions : palmarès éditorial (lignesBrutes → 4 chiffres, moments forts, saisons, derniers résultats suivent), lignesPourModule (résumé s154 + page technique), palmTous. Les lignes en dur (CHEVAUX_FICHE) et la décision du 24/08 sur les éliminés sont intactes. Effet immédiat SANS réimport : les décochées déjà en base disparaissent de l'affichage, les compteurs se recalculent.
+
+Syntaxe 16/16 (17/17) ×3, marqueurs identiques ×3. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé depuis la 42e (778d810c…).
+
+---
+
+# HYPE ▸ 26/08 ~10h10 (44e livraison) · « TOUT VOIR SI ON LE SOUHAITE » — BOUTON LIGNES MASQUÉES
+
+Souhait de Blandine (rassurée : RIEN n'est effacé, les décochées vivent en base avec visible=false). Ajout sur la page technique (« Voir tous ses résultats »), sous « ‹ Revenir au palmarès » : bouton ☐/☑ « Afficher aussi les N lignes masquées » — PROPRIÉTAIRE seulement, visible seulement s'il existe des lignes masquées. Activé : lignesPourModule et palmTous incluent tout (listes ET compteurs de la page technique) ; le palmarès ÉDITORIAL, lui, reste strictement fidèle à la coche. État voirMasques (non persistant, retombe à fermé). Syntaxe 16/16 (17/17) ×3, marqueurs ×3. À pousser : index.html (md5 ci-dessous).
