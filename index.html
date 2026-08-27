@@ -32295,7 +32295,20 @@ function AlbumsCheval(props) {
         h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
         h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
-          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } }))))) : null,
+          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } })),
+        /* 27/08 soir : BOUTON VIDEO SEPARE, ajoute A COTE — le bouton Ma phototheque ci-dessus
+           reste A L IDENTIQUE (multi-selection photos ET videos intacte, rien retire, rien
+           casse). Sur certains iPhones apres un passage en arriere-plan, le bouton de
+           validation du selecteur natif iOS reste inerte (bug WebKit connu des PWA,
+           bugs.webkit.org #238318 : popovers systeme -- select/date/fichier -- restent
+           bloques tant que l'app n'a pas ete fermee depuis le multitache). Ce bouton-ci,
+           en video/* SEUL et SANS multiple, evite ce bouton de validation : toucher la
+           video dans le selecteur la choisit et referme le selecteur tout de suite, sans
+           confirmation separee -- une video a la fois, a essayer quand le bouton
+           phototheque coince sur une video. */
+        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+          envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
+          h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "16px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", alignItems: "center", gap: 13 } }, /* 27/08 : la mascotte qui patiente EN VIDÉO (clip fourni par Blandine, boucle lissée au fondu — voir images/poney-patiente-boucle.mp4 dans le dépôt) — pour qu'on VOIE clairement qu'un envoi est en cours */
         h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 60, height: 60, flex: "0 0 auto", borderRadius: 12, objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", null,
