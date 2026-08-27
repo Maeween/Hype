@@ -1687,6 +1687,22 @@ async function listerCavaliers({ limite = 30 } = {}) {
 // Renvoie les résultats prêts à afficher.
 // options : { seulementSuivis: true } => "Ceux que je suis" ; sinon "Tous".
 // Chaque résultat renvoyé contient en plus : .auteur (pseudo, avatar), .nbLikes, .jeLike
+/* 28/08 : FILTRE PARTAGÉ — ce qu'un résultat doit valider pour apparaître
+   dans un fil PUBLIC (Communauté, Amis, Palmarès d'écurie). Corrige le spam
+   du 27/08 : après un import FFE, fil()/filAmis()/palmaresEcurie() lisaient
+   TOUTE la table resultats sans filtre — un import de plusieurs saisons
+   noyait le fil de dizaines de lignes non classées, y compris celles
+   décochées à la relecture (visible=false, qui ne devaient JAMAIS s'afficher
+   nulle part). Règle : `visible !== false` (respecte la coche de l'import ;
+   les saisies manuelles, sans cette colonne, restent affichées) ET
+   `quart == null` (saisie manuelle, pas de règle de quart) OU `quart === 1`
+   (classé — seul le premier quart compte, cf. règle FFE). Ne touche PAS la
+   fiche cheval elle-même (page Performances), qui a son propre affichage. */
+function estResultatAffichableEnFil(r) {
+  if (!r) return false;
+  if (r.visible === false) return false;
+  return (r.quart == null) || (Number(r.quart) === 1);
+}
 async function fil({ seulementSuivis = false } = {}) {
   const user = await utilisateurActuel();
 
@@ -1698,9 +1714,10 @@ async function fil({ seulementSuivis = false } = {}) {
     if (!ids.length) return { data: [], error: null };
     requete = requete.in("user_id", ids);
   }
-  const { data: resultats, error } = await requete;
+  const { data: brut, error } = await requete;
   if (error) return { data: [], error };
-  if (!resultats || !resultats.length) return { data: [], error: null };
+  const resultats = (brut || []).filter(estResultatAffichableEnFil);
+  if (!resultats.length) return { data: [], error: null };
 
   // 2) les profils des auteurs (une seule requête)
   const idsAuteurs = [...new Set(resultats.map(r => r.user_id))];
@@ -2030,7 +2047,7 @@ async function palmaresEcurie() {
   const ids = (membres || []).map(m => m.id);
   if (!ids.length) return { data: [], error: null };
   const { data: res, error } = await supa.from("resultats").select("*").in("user_id", ids).order("created_at", { ascending: false });
-  return { data: res || [], error };
+  return { data: (res || []).filter(estResultatAffichableEnFil), error };
 }
 
 /* --- 11. Commentaires (fils + pages perso) ----------------- */
@@ -2114,7 +2131,8 @@ async function filAmis() {
   const ids = (res.data || []).map(a => a.id);
   if (!ids.length) return { data: [], error: null };
   const parId = {}; (res.data || []).forEach(a => { parId[a.id] = a; });
-  const { data: rz } = await supa.from("resultats").select("*").in("user_id", ids).order("created_at", { ascending: false }).limit(40);
+  const { data: rzBrut } = await supa.from("resultats").select("*").in("user_id", ids).order("created_at", { ascending: false }).limit(40);
+  const rz = (rzBrut || []).filter(estResultatAffichableEnFil);
   const { data: hfz } = await supa.from("hauts_faits").select("*").in("user_id", ids).order("created_at", { ascending: false }).limit(40);
   const items = [];
   (rz || []).forEach(r => items.push(Object.assign({ type: "resultat", auteur: parId[r.user_id] || { pseudo: "Cavalier" }, nbLikes: 0, jeLike: false }, r)));
@@ -28117,9 +28135,9 @@ function EcranGuilde() {
          l inverse (rattacher un resultat de la table a un cheval precis). Ce point attend une
          decision de schema. */
       try {
-        var rs = await supa.from("resultats").select("id, user_id, concours, classement, photo_url, created_at").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24);
+        var rs = await supa.from("resultats").select("id, user_id, concours, classement, photo_url, created_at, visible, quart").in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24);
         var fusionR = [];
-        ((rs && rs.data) || []).forEach(function (rr) {
+        ((rs && rs.data) || []).filter(estResultatAffichableEnFil).forEach(function (rr) {
           var tps = 0; try { tps = new Date(rr.created_at).getTime() || 0; } catch (eT0) { }
           fusionR.push(Object.assign({}, rr, { __tri: tps }));
         });
