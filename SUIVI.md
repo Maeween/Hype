@@ -14857,3 +14857,252 @@ Codé (`importerFichiers`, les 3 fichiers) : `estFichierVideo()` (type MIME + re
 
 ⚠️ Question de Blandine restée sans réponse dans le code (posée, pas codée) : le TÉLÉCHARGEMENT DES RÉSULTATS n'existe pas du tout dans l'app aujourd'hui — rien à réserver tant que rien n'est construit. À trancher avec elle si elle veut qu'on le construise.
 Syntaxe 16/16 (17/17) ×3, boot navigateur propre. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~01h25 (56e livraison) · 🟥 LA VRAIE FAILLE DES CADENAS GALOPS, ENFIN TROUVÉE — bug ouvert depuis la session 152 (22/08)
+
+Blandine, à raison, m'a renvoyé au SUIVI : « LES CADENAS S'AFFICHENT POUR UNE MODÉRATRICE » et « LE CADENAS N'EMPÊCHE RIEN » étaient déjà consignés comme non résolus depuis des semaines. Cette fois, diagnostic complet des TROIS écrans qui affichent les Galops (carrousel du tableau de bord, courbe « Mon évolution », liste en dépliants) :
+
+1. **`GalopDepliant` (liste en dépliants)** : déjà correctement gardé (bouton `onClick: inerte ? (aVenir ? onToggle : onPremium) : onOuvrirGalop`), confirmé sain.
+2. **La courbe (`allerVersGalop`)** : le CLIC était déjà correctement gardé (`verrouilleG` bloque bien la navigation). Le bug ici était uniquement VISUEL : l'icône cadenas (`etat === "locked"`) était calculée par PURE POSITION dans la progression (`p.id > galopActuel`), sans jamais consulter `premium` ni le statut de modératrice — d'où le cadenas affiché à Blandine sur des niveaux auxquels elle avait pourtant accès.
+3. **🎯 LA VRAIE FAILLE, jamais trouvée avant** : le **carrousel horizontal du tableau de bord** (`EcranDashboard`) calculait bien `verrou` pour l'affichage du badge « Premium requis », mais son `onClick` **ne le consultait jamais** — `() => { setGalopOuvert(g.id); setEcran("galop-detail"); }` ouvrait n'importe quel Galop, verrouillé ou non, pour n'importe qui. C'est exactement le « chemin sans contrôle » que le SUIVI du 22/08 décrivait sans l'avoir localisé.
+
+Correctifs (les 3 fichiers) :
+- Carrousel dashboard : `onClick: () => { if (verrou) { setEcran("premium"); return; } setGalopOuvert(g.id); setEcran("galop-detail"); }`.
+- Courbe : le cadenas visuel ne s'affiche plus que si l'accès est VRAIMENT refusé (`accesReelP = !!(gP && gP.debloque) || premium || estModGal`) — le numéro du Galop reste affiché dans son médaillon existant, seul le pictogramme 🔒 disparaît pour qui a réellement accès. Aucune nouvelle classe CSS inventée : la maquette « piste D v3 validée par Blandine » n'est pas retouchée.
+
+🟡 Suite de la demande vidéos-Premium (55e) : Blandine a aussi resserré le plafond gratuit **20 → 10 photos par album**, sur les DEUX flux (envoi direct + sélection depuis « Ma photothèque »). ⚠️ Incident de méthode noté : ma première tentative a perdu ce changement pour `index.html` à cause d'une écriture groupée après trois remplacements — le script s'arrêtait sur une ancre fautive avant d'écrire, perdant les deux premiers remplacements déjà faits en mémoire. Repéré par recomptage systématique après coup (jamais fait confiance au seul message « OK »), réparé avec écriture immédiate après chaque fichier. 🟥 LEÇON DE PROTOCOLE : quand plusieurs remplacements visent le même fichier, écrire après CHAQUE remplacement réussi, jamais attendre la fin d'une boucle groupée.
+
+Syntaxe 16/16 (17/17) ×3, boot navigateur propre, palmarès rendu. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~02h10 (57e livraison) · 4 DEMANDES DE BLANDINE + PISTE SUR LE CRASH « UN CAILLOU DANS LE SABOT »
+
+Message avec 7 captures + une vidéo d'écran (23h16-23h47). Convergence de fichiers : Blandine a redéposé un index d'une autre conversation — vérifié à l'octet près, c'était mon PROPRE état de la 56e (md5 6ed469d0…), aucune dérive, rien à réconcilier cette fois.
+
+**Crash « Un caillou dans le sabot » (EcranCheval)** : capture montrant `écran : cheval @…:34508:23`. Diagnostic honnête : ces numéros de ligne datent d'un ancien build ; le fichier a trop bougé depuis pour garantir une correspondance exacte. Piste la plus plausible trouvée par mapping (ligne 34508 = `panneau === "videos" ? (... + c.nom)`) : `c` a pourtant un filet de secours à sa définition (ligne 32931, jamais null) — je n'ai PAS pu prouver que c'était la vraie cause. Garde préventive posée quand même (coût nul) : le panneau (Souvenirs/Performances/Vidéos) refuse désormais de s'ouvrir si la fiche n'a pas de nom, plutôt que de planter. Dit clairement à Blandine : si ça revient sur CE build, les numéros correspondront enfin exactement à mon code et je pourrai trancher net.
+
+**Les 4 demandes, codées et prouvées au banc :**
+1. Espacement 24→40px entre le bloc « Par saison » et « Derniers résultats » ; fond des cartes de saison ramené au neutre EXACT de l'accueil (`#14161a`, celui de `html,body`), retiré la légère tinte blanche translucide.
+2. Rotation réelle des 3 photos des moments forts : l'ancien `idx % length` répétait la même photo quand le pool était petit (« 3 photos similaires », bug confirmé) — offset qui avance chaque jour (`Date.now()/86400000 % length`), donc dès qu'il y a plus de 3 photos disponibles, l'affichage change au fil des visites.
+3. Bouton « + Ajouter une vidéo » en tête de l'onglet Vidéos (renvoie vers Souvenirs, où vit le vrai bouton d'envoi — un upload direct depuis cet onglet demanderait de faire voyager `albums`/`importerFichiers` jusqu'à EcranCheval, qui ne les a pas aujourd'hui ; chantier à part si elle le veut).
+4. Onglets cavaliers triés : celui qui a le plus monté le cheval d'abord, puis les plus récents en cas d'égalité (`cavStats` : compte + date la plus récente par cavalier). Preuve banc : LIAM ROUX avant EVAN ROUX sur la démo.
+
+Syntaxe 16/16 (17/17) ×3, boot navigateur propre, palmarès rendu malgré la garde préventive. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~12h10 (58e livraison) · 🟥 L'ENVOI VERS LE STOCKAGE N'AVAIT AUCUNE LIMITE DE TEMPS — LA VIDÉO QUI « DISPARAÎT »
+
+Blandine, vidéo à l'appui (19 s, 11h31) : sélectionne une vidéo dans le sélecteur natif ("1 vidéo Liam Roux" cochée), retour à l'album — l'écran reste figé longuement (elle dit 30 s), puis « se ferme sans explication », rien n'apparaît. Frames extraites (ffmpeg, 6 img/s, 114 images) : AUCUN toast, AUCUNE alerte, AUCUN spinner visible sur toute la durée — l'écran de l'album reste statique.
+
+Diagnostic sur pièce (`envoyerPhoto`, la SEULE fonction d'écriture vers le tiroir "photos" — vérifié : un seul point d'appel réel `storage.from("photos").upload`, 12 appelants dont `importerFichiers` de la fiche cheval ET `ajouterSouvenir`/écurie, tous protégés d'un coup par ce correctif unique) : la requête d'upload n'avait **aucune limite de temps**. Sur une connexion faible (concours, vidéo lourde), l'attente pouvait durer indéfiniment — le code restait bloqué avant même d'atteindre sa ligne d'erreur, donc avant le `bip()` qui l'aurait montrée. D'où l'écran figé sans rien dire.
+
+Correctif : garde de 60 s (`Promise.race`, sentinelle `__gardeUp`) — passé ce délai, message clair « Envoi interrompu après 60 s (réseau trop lent ou coupé) — réessaie. », remonté via le mécanisme d'erreur posé en 54e. Preuve unitaire (node, upload simulé qui ne répond JAMAIS) : résolution exacte à 60 s avec le message attendu, plus de blocage possible.
+
+Nettoyage au passage : `estFichierVideo` existait en DOUBLE (une version globale ancienne, une version locale que j'avais ajoutée en 55e sans le savoir) — consolidées en une seule définition globale (avec le repli sur l'extension, plus robuste), le doublon retiré.
+Syntaxe 16/16 (17/17) ×3, boot navigateur propre. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~12h20 (59e livraison) · GARDE DE TEMPS PORTÉE À 2 MINUTES
+
+Blandine : 60 s ne suffisait pas pour ses vidéos de parcours (1'20-1'30 pour du cross). Remonté à 120 s (2 minutes), même mécanisme (58e), message adapté. Syntaxe 16/16 (17/17) ×3, boot propre. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~12h35 · CHANTIER NOTÉ (pas commencé) · COMPRESSION VIDÉO APRÈS ENVOI
+
+Blandine a demandé si on peut compresser les vidéos pour réduire leur poids sans trop perdre en qualité. Réponse donnée : PAS avant l'envoi, côté téléphone — Safari iOS/PWA n'a pas d'outil de compression fiable, et faire tourner un moteur vidéo dans la page recrée exactement le risque de gel qu'on vient de traquer toute la soirée (garde 60s→2min sur l'envoi, 58e/59e). La bonne architecture est APRÈS l'envoi, côté serveur : la vidéo arrive intacte (rapide, fiable, comme aujourd'hui), puis une tâche en arrière-plan la recompresse et remplace le fichier stocké par une version plus légère.
+
+Chantier réel à envisager, si Blandine confirme vouloir le poser un jour :
+- Une Supabase Edge Function (ou équivalent) déclenchée par l'upload (webhook sur le bucket "photos" ou appel explicite après `envoyerPhoto`), qui pousse la vidéo vers un service de transcodage (ex. Cloudflare Stream, Mux, ou ffmpeg dans un worker dédié — PAS dans le navigateur), reçoit la version compressée, la réécrit à la même URL (ou une nouvelle, avec mise à jour de la ligne concernée).
+- Implique un service tiers payant ou une fonction serverless avec ffmpeg embarqué (coût, latence de quelques dizaines de secondes à quelques minutes selon la longueur) — PAS instantané, la vidéo resterait "lourde" un moment après l'envoi puis s'allégerait.
+- Risque à peser : complexité + coût récurrent, à mettre en balance avec le problème réel (facture de stockage Supabase ? quota atteint ? lenteur de chargement pour les visiteurs de l'écurie ?) — pas encore mesuré.
+PROCHAINE ÉTAPE si Blandine veut avancer : clarifier le VRAI problème à résoudre (stockage cher ? chargement lent pour les autres cavaliers qui consultent l'écurie ?) avant de choisir l'outil — le choix technique dépend de ce qu'on optimise.
+
+---
+
+# HYPE ▸ 27/08 ~12h50 (60e livraison) · 🟥 LA VRAIE CAUSE DE LA VIDÉO « QUI N'ARRIVE JAMAIS » — LIMITE DE PLATEFORME iOS, PAS UN BUG DE CODE
+
+Nouvelle vidéo de Blandine (38 s, 11h58) : le bouton dit bien « Envoi en cours… » tout du long — pas de gel silencieux, la garde de temps (59e) fonctionne. Mais elle rapporte qu'À LA FIN, « la page se ferme et revient sur Cavalier comme si c'était chargé, sauf que la vidéo n'est pas là ». Question posée : avait-elle verrouillé l'écran ou changé d'appli pendant l'envoi ? Réponse : OUI.
+
+DIAGNOSTIC CONFIRMÉ, PAS DE MON CODE : iOS Safari/PWA tue les requêtes réseau en cours quand l'app passe en arrière-plan au-delà de quelques secondes (verrouillage d'écran ou changement d'appli). L'envoi meurt silencieusement, sans qu'AUCUN code JS ne puisse s'exécuter pour prévenir (le contexte lui-même est coupé). Au retour, l'app redémarre à froid et retombe sur l'onglet par défaut (« Cavalier ») — d'où l'impression de « ça a marché mais c'est pas là ». Aucune garde de temps ni aucun code d'erreur ne peut réparer ça : c'est une contrainte de plateforme, pas un bug applicatif.
+
+Correctif appliqué (le seul honnête ici) : un AVERTISSEMENT visible pendant tout envoi (`envoiCours`), sous le bouton, dans les 3 fichiers : « Reste sur l'app, écran allumé, jusqu'à la fin de l'envoi — sur iPhone, verrouiller l'écran ou changer d'appli interrompt l'envoi sans prévenir. » Fixe l'attente de Blandine AVANT que ça arrive, plutôt que de deviner un correctif technique qui n'existe pas au niveau JS pour ce problème précis.
+
+CHANTIER PLUS LOURD, noté mais PAS commencé (à envisager seulement si ça reste gênant en pratique) : un envoi réellement résilient à l'arrière-plan demanderait soit l'API Background Fetch (non supportée par Safari iOS à ce jour — vérifié, pas une option), soit un envoi par morceaux avec reprise (upload « resumable », architecture bien plus lourde côté client ET serveur). Pas de solution magique ici — le vrai levier reste : fichiers plus légers (compression, chantier déjà noté ce midi) et rester sur l'app pendant l'envoi.
+Syntaxe 16/16 (17/17) ×3, boot propre. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~13h20 (61e livraison) · 🟥 L'ANGLE MORT TROUVÉ : L'ENREGISTREMENT EN BASE POUVAIT ÉCHOUER EN SILENCE + LA MASCOTTE QUI PATIENTE
+
+Blandine a confirmé, après plusieurs allers-retours : « envoi terminé, la vidéo n'est toujours pas là ». Ni un blocage (la garde de 2 min marchait), ni une coupure iOS cette fois (elle est restée dessus). Diagnostic sur pièce : `importerFichiers` vérifiait déjà les échecs d'ENVOI vers le stockage (rate, bip — 54e), mais ne vérifiait JAMAIS `rM.error`, l'erreur de l'ÉCRITURE EN BASE qui suit (`majAlbumCheval`). Si le stockage réussissait (rate=0, aucun message) mais que l'enregistrement de la ligne dans `albums_cheval` échouait, RIEN ne le montrait — la vidéo montait bien sur le serveur mais ne rejoignait jamais l'album affiché. Angle mort de mon propre correctif du 54e, jamais couvert.
+
+Correctif (les 3 fichiers) : `rM.error` déclenche désormais son propre message, distinct de celui de l'envoi — « Envoyé, mais pas enregistré sur l'album : [raison] », 8 s. `albOuvert` lui-même n'est PAS en cause (vérifié : c'est une valeur dérivée de `albums` à chaque rendu, jamais une référence figée — pas de bug de fraîcheur là).
+
+⚠️ INCIDENT DE MÉTHODE (consigné) : ma première tentative de cette greffe a mal placé les bornes d'un `str_replace` et a AVALÉ l'accolade fermante de la fonction + le début du commentaire suivant, cassant la syntaxe sur `index.html`. Repéré immédiatement par relecture (jamais de confiance aveugle après une greffe), réparé dans la foulée, puis les deux fichiers DEV faits en UN SEUL bloc pour éviter de répéter l'erreur. Syntaxe et boot revérifiés après coup.
+
+Aussi : demande de Blandine (« un truc mignon avec la mascotte qui prévient ») — le bandeau d'avertissement texte devient une vraie carte avec PONEY_TASSE (« il patiente », asset déjà utilisé ailleurs dans l'app, réutilisé sans doublon), légère animation de balancement, le texte d'avertissement conservé à côté.
+Syntaxe 16/16 (17/17) ×3, boot propre sur DEV_PALMARES (bouchon supabase) ; boot direct sur index.html donne 2 erreurs ENVIRONNEMENTALES connues (CDN coupé au banc, déjà documentées 52e), sans rapport avec cette livraison. À pousser : index.html (md5 ci-dessous) — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~14h05 (62e livraison) · LA MASCOTTE DEVIENT UN VRAI CLIP — LE PONEY QUI COURT, S'ESSOUFFLE, PATIENTE
+
+Blandine a fourni un clip (poney bleu sur une roue, s'essouffle, s'écroule — 15,5 Mo, HEVC/.mov). Choisi par elle : boucle continue, effondrement inclus.
+
+Traité avant intégration :
+1. **Compression** : 15,5 Mo → 176 Ko (H.264 MP4, 220px de large, audio retiré — inutile pour une icône, et gagne encore du poids). 86× plus léger, adapté à un élément qui s'affiche à chaque envoi.
+2. **Raccord de boucle vérifié PUIS corrigé** : la dernière image (poney écroulé) enchaînée brutalement sur la première (poney frais, debout) créait un sursaut visuel toutes les 15 s. Construit un fondu de 0,6 s (ffmpeg xfade, fin du clip → début du clip rejoué) et rassemblé en un seul fichier de même durée (241 Ko). Vérifié image par image : transition fluide.
+3. Intégré à la place de l'image fixe posée en 61e (`<video autoPlay muted loop playsInline>`, 60×60, coins arrondis) dans la carte « Envoi en cours » des 3 fichiers.
+
+⚠️ ACTION REQUISE DE BLANDINE, hors code : le fichier fini (`poney-patiente.mp4` dans les sorties, à renommer `poney-patiente-boucle.mp4`) doit être déposé dans le dossier `images/` de son dépôt GitHub, au même niveau que les autres images statiques (`poney-tasse.webp` etc.) — je ne peux pas l'y déposer moi-même. Sans ce dépôt, la vidéo échoue silencieusement (`onError` masque l'élément, pas de casse visuelle, juste la carte sans clip).
+Syntaxe 16/16 (17/17) ×3, boot propre. À pousser : index.html (md5 ci-dessous) + le fichier vidéo dans `images/` — hype-import-ffe.js inchangé.
+
+---
+
+# HYPE ▸ 27/08 ~19h15 · 🟥🟥 PASSATION — VIDÉOS TOUJOURS BLOQUÉES, PISTE PRIORITAIRE POUR LA PROCHAINE SESSION
+
+Blandine arrête ici ce soir, épuisée par une soirée entière sur ce seul sujet. À reprendre dans une autre conversation. État exact, sans enjoliver :
+
+## Ce qui ne marche toujours pas
+1. **Aucune vidéo n'arrive à s'enregistrer sur un album**, quelle que soit sa taille — y compris un test de **7 secondes**, resté bloqué plus d'une minute sans réagir. Ceci ÉLIMINE l'hypothèse du poids/de la connexion lente (60e/59e livraisons) — un fichier aussi petit ne peut pas expliquer un blocage aussi long.
+2. Nettoyage cache + fermeture complète de l'app + réouverture : AUCUN changement. Donc ce n'est probablement pas un problème de version périmée en cache.
+3. **La mascotte vidéo (`images/poney-patiente-boucle.mp4`) est en 404** sur le site en ligne (vérifié : `https://2hype.netlify.app/images/poney-patiente-boucle.mp4` → « Page not found »), malgré TROIS dépôts déclarés par Blandine sur GitHub. Cause non trouvée — soit le dossier réel n'est pas `images/` à la racine, soit le déploiement Netlify ne s'est pas relancé après le commit, soit le fichier est dans un sous-dossier. AUCUNE capture GitHub obtenue pour trancher (demandée, jamais reçue).
+
+## 🎯 PISTE PRIORITAIRE À VÉRIFIER EN PREMIER (pas encore explorée ce soir)
+La 55e livraison a posé un verrou : **les vidéos sont filtrées AVANT tout envoi si `!premium`** (`importerFichiers`, fonction `estFichierVideo` + filtre). Un bip doit s'afficher (« vidéo(s) réservée(s) aux membres Premium ») — MAIS si ce message est passé inaperçu dans le chaos de la soirée, OU si le filtre échoue silencieusement pour une autre raison de code, **ça expliquerait TOUT** : aucune requête réseau ne part jamais, donc aucune des gardes de temps (58e/59e/60e/61e) ne peut jamais se déclencher, quelle que soit la taille du fichier — cohérent avec un blocage identique sur 7 secondes comme sur plusieurs minutes.
+Cette app appartient à Blandine (modératrice) : son statut `premium`/`ambassadeur` DOIT être vrai. Mais ce même fichier documente PLUS HAUT (chercher « LES CADENAS S'AFFICHENT POUR UNE MODÉRATRICE ») un bug ancien, jamais élucidé, où ce statut ne se charge pas de façon fiable pour elle. Fort soupçon de lien entre les deux.
+**Premier geste de la prochaine session** : demander à Blandine de vérifier IMMÉDIATEMENT après sélection d'une vidéo si un message doré apparaît en bas d'écran (même une fraction de seconde) disant « vidéo réservée aux membres Premium ». Si oui → le vrai bug est la résolution de `premium`/`ambassadeur` pour son compte, PAS l'envoi lui-même — chantier à rouvrir : pourquoi `ambassadeur` ne se charge pas de façon fiable (voir l'historique de ce même bug, jamais résolu). Si non (aucun message, même furtif) → le filtre lui-même a un bug distinct à traquer dans `importerFichiers`/`estFichierVideo`.
+
+## Fichiers actuels (tout est cohérent, rien à recoller)
+`index.html` md5 le plus récent : `cbdc80d610530964e11eb5ccbfbb1bf6` (62e livraison — mascotte vidéo intégrée). `hype-import-ffe.js` inchangé depuis la 53e (md5 `017b30de13db60e898601db33af274c3`, cache `?v=12`). Tout le travail de la soirée (garde 2 min, message d'échec DB, avertissement iOS) est bien dans ce fichier — VÉRIFIÉ par grep de tous les marqueurs avant cette note.
+
+## Ne pas refaire ce qui a déjà été exploré et écarté ce soir
+- Poids du fichier / limite du tiroir (déjà à 500 Mo) — écarté par le test 7 secondes.
+- Verrouillage iOS en arrière-plan — écarté, elle est restée dessus.
+- Cache navigateur périmé — écarté, nettoyage complet fait, aucun changement.
+- Erreur d'enregistrement en base silencieuse (61e) — corrigée en théorie, mais AUCUN message vu du tout sur le test de 7 s, ce qui est étrange si l'envoi partait vraiment (même un échec aurait dû finir par afficher quelque chose).
+
+---
+
+# 27/08/2026 — SOIRÉE · LES VIDÉOS PASSENT ENFIN (cause trouvée après deux soirées)
+
+`index.html` livré : md5 **`57400e63a186142ac4f43f4a95a97bba`** (63e livraison).
+`hype-import-ffe.js` et `hype-video.js` **inchangés** — pousser `index.html` seul.
+
+## ⚠️ CORRECTION DE LA NOTE PRÉCÉDENTE — la piste écartée était LA BONNE
+
+La section du 27/08 après-midi dit : *« Poids du fichier / limite du tiroir (déjà à
+500 Mo) — écarté par le test 7 secondes »*. **C'était faux, et c'est ce qui a coûté
+deux soirées.** Le bucket `photos` était bien à 500 MB, mais une **deuxième limite,
+globale au projet**, plafonnait tout à **50 MB** : Supabase → Storage → onglet
+*Settings* → `Global file size limit`. Un bucket réglé à 500 MB ne sert à rien tant
+que celle-là est basse.
+
+Le test « 7 secondes » n'écartait rien : une vidéo de 7 s filmée en iPhone dépasse
+déjà 50 Mo selon la qualité.
+
+**Message d'erreur, enfin lu en clair le 27/08 à 23h13 :**
+`1 envoi(s) impossible(s) — <fichier>.mov : The object exceeded the maximum allowed size`
+
+Limite globale portée à **500 MB** par Blandine à 23h25 → l'envoi passe (vérifié
+sur une vidéo de 1 min 23, présente dans l'album à 23h34).
+
+L'encart *« Reduced max upload file size limit due to spend cap »* reste affiché dans
+Supabase, mais la valeur 500 est bien appliquée. **Le spend cap n'a PAS été désactivé**
+— décision volontaire de ne pas s'exposer à une facturation hors forfait.
+
+## Leçon de méthode, à ne pas reperdre
+
+1. **Un message d'erreur qui s'efface en 3 s n'est jamais lu au bon moment.** Blandine
+   l'a dit : « il apparaît, il disparaît, si t'es pas en train de regarder tu vois rien ».
+   Deux soirées de diagnostic à l'aveugle pour ça. Toute erreur d'envoi doit désormais
+   RESTER à l'écran jusqu'à fermeture explicite.
+2. **Vérifier qu'elle teste bien le fichier livré AVANT d'enchaîner les tests.** Une
+   partie de la soirée s'est passée à tester une version en ligne qui ne contenait
+   aucun correctif. Repère simple et visible à l'écran (ici : le bouton « + Vidéo »
+   doit apparaître) → si absent, le fichier n'est pas déployé, inutile de tester.
+3. **Ne pas rayer une piste sur un test indirect.** Écarter « le poids » parce qu'une
+   petite vidéo échoue aussi supposait que la petite vidéo était sous la limite. Elle
+   ne l'était pas.
+
+## Correctifs de code livrés ce soir
+
+- **`estUrlVideo` (~ligne 511) : `#` ajouté aux séparateurs acceptés.** L'app suffixe
+  les URL d'un marqueur de cadre (`#cadre=spectral`, cf. `marquerCadre`). Une vidéo
+  ainsi marquée n'était plus reconnue comme vidéo → **absente de l'onglet Vidéos de la
+  fiche cheval alors qu'elle était bien dans son album** (constaté par Blandine : la
+  vidéo du soir absente, celle d'avant-hier — sans marqueur — présente). L'autre
+  définition de la même fonction (~ligne 20503) acceptait déjà le `#` : c'est la
+  version globale qui était en retard.
+- **Message d'erreur d'envoi persistant** : `alerte()` posé à côté de `bip()`, carte
+  rouge qui reste jusqu'à fermeture, texte sélectionnable, multi-lignes (le `bip` en
+  une ligne coupait les raisons longues). **C'est ce qui a permis de trouver la cause.**
+- **Bouton « + Vidéo » séparé** dans les albums : `video/*` seul, **sans** `multiple`,
+  pour contourner le bouton de validation du sélecteur natif iOS, planté sur son
+  iPhone (bug WebKit PWA connu, bugs.webkit.org #238318 : les popovers système
+  restent inertes après un passage en arrière-plan ; le redémarrage du téléphone n'y
+  a rien changé). **« Ma photothèque » est resté STRICTEMENT inchangé** — multi-sélection
+  photos et vidéos intacte (exigence explicite de Blandine, vérifiée au diff).
+- **Garde de temps sur `utilisateurActuel()`** dans `envoyerPhoto` (8 s, `avecGarde`) :
+  `supa.auth.getSession()` n'en avait aucune, donc la garde de 2 min sur l'upload
+  n'était jamais atteinte si la session pendait.
+- **Mascotte d'attente** agrandie 60 → 104 px.
+- **Croix de retrait supprimée des vignettes d'album.** Elle occupait le coin
+  haut-droit : même place, même forme, même geste que l'étoile « à la une » des cartes
+  d'album juste au-dessus **sur la même page**, mais l'une met en avant et l'autre
+  efface. Elle faisait 21 px (minimum tactile recommandé : 44 px) — Blandine ne
+  l'avait jamais vue. Le retrait se fait désormais depuis la **photo ouverte en grand**,
+  où l'on voit ce qu'on supprime. Confirmation obligatoire (`confRetrait`), z-index
+  porté 8750 → 9500 pour passer au-dessus de la visionneuse (9100), sans quoi la
+  confirmation se serait affichée derrière la photo. La visionneuse se referme après
+  le retrait.
+- **Bouton « Couv. » agrandi** : hauteur 20 → 30 px, texte 8,5 → 11 px.
+
+## À FAIRE — ordre convenu avec Blandine
+
+1. **Compression vidéo avant envoi.** Demandée par elle **dès le départ**, écartée à
+   tort par moi. Reste la vraie solution de fond : même avec la limite relevée,
+   envoyer 300 Mo en 5G est lent et fragile. Sa phrase : « t'as toi-même la réponse
+   de comment font les autres, alors fais la même chose » — les apps natives
+   compressent sur l'appareil avant l'envoi.
+2. **Étoile « en vedette » à la place de la croix sur les vignettes d'album.** Validé
+   par Blandine, NON FAIT ce soir : `AlbumsPromus` n'a pas accès au système de
+   vedettes (`vedettes` / `basculerVedette` vivent dans le composant de la fiche
+   cheval, ~ligne 33639). Demande un branchement propre par props, pas un bricolage
+   de fin de soirée. Elle a dit : « on reverra plus tard si on veut remettre les croix
+   sur petite icône, pour l'instant je préfère comme ça ».
+3. **Identifications visibles sous la photo.** Quand on identifie une personne ou un
+   lieu, rien ne l'affiche — impossible même de vérifier que c'est enregistré.
+4. **Parcours d'envoi** : écran d'attente franc + progression (« 1 sur 2 », %) + retour
+   automatique à l'album quand le sélecteur se referme. Blandine est restée coincée sur
+   l'écran de sélection pendant qu'un envoi réussissait sans qu'elle le sache.
+
+## SIGNALÉ à 23h49 — page Performances / Moments forts (non traité)
+
+- **« Moments forts » : trois fois la même photo.** Devaient être trois photos
+  différentes, et surtout **la photo correspondant au lieu du concours concerné**.
+- **Couleurs non accordées au thème de la page** : bloc « Par saison » en doré alors
+  que le reste de la page est en rose/corail.
+- **Encodage cassé : « PrÃ©paratoire » au lieu de « Préparatoire »** sur toutes les
+  lignes. Mojibake UTF-8 lu en latin-1, vient très probablement de l'import FFE.
+  À corriger **à la source** (`hype-import-ffe.js`) **et** sur les lignes déjà en base.
+- **Compteurs incohérents** : 12 sorties mais 17 podiums et 18 classés — un podium ne
+  peut pas dépasser le nombre de sorties. Double comptage probable, peut-être lié aux
+  doublons Vallieres déjà consignés plus haut.
+
+## État des fichiers après cette soirée
+
+`index.html` md5 **`57400e63a186142ac4f43f4a95a97bba`** = dernière livraison, identique
+à la copie de travail. Contient TOUT le travail de la soirée (garde session, bouton
++ Vidéo, alerte persistante, `estUrlVideo` avec `#`, mascotte 104 px, croix retirée,
+Couv. agrandi, retrait depuis la visionneuse) — vérifié par contrôle syntaxique des
+149 blocs `<script>` : 0 erreur.
+`hype-import-ffe.js` inchangé (md5 `017b30de13db60e898601db33af274c3`).
+`hype-video.js` inchangé (md5 `075330cf3d1b70b09ec94a57a47a8693`) — vérifié ce soir :
+l'onglet Vidéos de la fiche cheval ne vit PAS dans ce fichier mais dans `index.html`.
