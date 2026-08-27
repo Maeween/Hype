@@ -32001,6 +32001,13 @@ function AlbumsCheval(props) {
   var tSt = React.useState(null); var toastA = tSt[0], setToastA = tSt[1];
   var sSt = React.useState(null); var confSupA = sSt[0], setConfSupA = sSt[1];
   function bip(m, ms) { setToastA(m); setTimeout(function () { setToastA(null); }, ms || 2400); }
+  /* 27/08 soir : MESSAGE QUI RESTE. Les erreurs d'envoi passaient par bip(), qui s'efface tout
+     seul en quelques secondes : Blandine regardait ailleurs au moment precis et ne voyait donc
+     JAMAIS la raison de l'echec — on a diagnostique a l'aveugle pendant deux soirees. Les erreurs
+     d'envoi de medias utilisent desormais alerte() : le message reste a l'ecran jusqu'a ce qu'elle
+     le ferme elle-meme. Le reste de l'app garde bip() (messages de confirmation, sans enjeu). */
+  var alSt = React.useState(null); var alerteA = alSt[0], setAlerteA = alSt[1];
+  function alerte(m) { setAlerteA(String(m || "")); }
   function portail(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP9) { } return el; }
   function cibleTag() {
     var c = String(props.cible || "");
@@ -32126,9 +32133,12 @@ function AlbumsCheval(props) {
       var msgErr = rate + " " + T("envoi(s) impossible(s)", "upload(s) failed", "env\u00edo(s) fallido(s)", "invio non riuscito", "\u9001\u4fe1\u5931\u6557");
       if (raisonRatee && raisonRatee.msg) msgErr += " \u2014 " + raisonRatee.nom + " : " + raisonRatee.msg;
       bip(msgErr, 6000);
+      alerte(msgErr); /* 27/08 soir : la meme raison, mais qui RESTE affichee jusqu'a fermeture */
     }
     if (rM && rM.error) { /* 27/08 : ANGLE MORT trouvé — l'envoi vers le stockage réussissait (rate=0, aucun message) mais l'ENREGISTREMENT en base pouvait échouer en silence : rien n'était montré, la vidéo "disparaissait" (rapporté par Blandine : "envoi terminé, la vidéo n'est toujours pas là"). Désormais montré, distinctement du message d'envoi. */
-      bip(T("Envoyé, mais pas enregistré sur l'album : ", "Uploaded, but not saved to the album: ", "Enviado, pero no guardado en el álbum: ", "Inviato, ma non salvato nell'album: ", "送信済みですが、アルバムに保存されませんでした：") + String((rM.error && rM.error.message) || rM.error), 8000);
+      var msgDb = T("Envoyé, mais pas enregistré sur l'album : ", "Uploaded, but not saved to the album: ", "Enviado, pero no guardado en el álbum: ", "Inviato, ma non salvato nell'album: ", "送信済みですが、アルバムに保存されませんでした：") + String((rM.error && rM.error.message) || rM.error);
+      bip(msgDb, 8000);
+      alerte(msgDb); /* 27/08 soir : reste affiche jusqu'a fermeture */
     }
     if (!(rM && rM.error)) charger();
   }
@@ -32310,7 +32320,7 @@ function AlbumsCheval(props) {
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
           h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "16px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", alignItems: "center", gap: 13 } }, /* 27/08 : la mascotte qui patiente EN VIDÉO (clip fourni par Blandine, boucle lissée au fondu — voir images/poney-patiente-boucle.mp4 dans le dépôt) — pour qu'on VOIE clairement qu'un envoi est en cours */
-        h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 60, height: 60, flex: "0 0 auto", borderRadius: 12, objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
+        h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 104, height: 104, flex: "0 0 auto", borderRadius: 16, objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", null,
           h("div", { style: { fontSize: 13, fontWeight: 700, color: "#F4E9D2", fontFamily: M9 } }, T("Envoi en cours…", "Uploading…", "Enviando…", "Invio…", "送信中…")),
           h("div", { style: { fontSize: 10.5, color: "#D8C7A0", lineHeight: 1.5, marginTop: 3, fontFamily: M9 } }, T("Reste sur l'app, écran allumé, jusqu'à la fin — sur iPhone, verrouiller l'écran interrompt l'envoi sans prévenir.", "Stay on the app with the screen on until it finishes — on iPhone, locking the screen interrupts it without warning.", "Permanece en la app con la pantalla encendida — en iPhone, bloquear la pantalla lo interrumpe.", "Resta sull'app con lo schermo acceso — su iPhone, bloccare lo schermo lo interrompe.", "終わるまでアプリを開いたままにしてください。画面ロックで中断されます。")))) : null,
@@ -32418,7 +32428,14 @@ function AlbumsCheval(props) {
             h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, tagCiblesA.amis.map(function (a, iA) { return h("button", { key: "a" + iA, onClick: function () { poserTagA("cavalier", a.id, a.nom); }, style: { padding: "9px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: M9 } }, "\ud83d\udc64 " + a.nom); }))) : null,
           (!(tagCiblesA.ecuries || []).length && !(tagCiblesA.chevaux || []).length && !(tagCiblesA.amis || []).length) ? h("div", { style: { textAlign: "center", color: "#8A99A1", fontSize: 11.5, padding: "10px 0", lineHeight: 1.5 } }, T("Aucune cible disponible.", "Nothing to tag yet.", "", "", "")) : null),
         h("button", { onClick: function () { setTagVisu(false); }, style: { marginTop: 16, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"))))) : null,
-    toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 999, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, whiteSpace: "nowrap" } }, toastA)) : null);
+    toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 999, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, whiteSpace: "nowrap" } }, toastA)) : null,
+    /* 27/08 soir : LE MESSAGE QUI RESTE — carte d'erreur d'envoi, visible jusqu'a fermeture
+       explicite. Texte selectionnable (pour pouvoir le recopier), sur plusieurs lignes si besoin
+       (contrairement au bip en une ligne qui coupait les raisons longues). */
+    alerteA ? portail(h("div", { style: { position: "fixed", left: 14, right: 14, bottom: "calc(env(safe-area-inset-bottom) + 96px)", zIndex: 8850, padding: "14px 14px 12px", borderRadius: 16, background: "rgba(12,16,20,0.98)", border: "1px solid rgba(240,92,116,0.55)", color: "#EDF2F5", fontFamily: M9, fontSize: 12.5, lineHeight: 1.55, boxShadow: "0 10px 34px rgba(0,0,0,0.5)" } },
+      h("div", { style: { fontSize: 11, fontWeight: 800, letterSpacing: 0.6, color: "#F05C74", textTransform: "uppercase", marginBottom: 6 } }, T("L'envoi a échoué", "Upload failed", "Fallo el envio", "Invio non riuscito", "送信に失敗しました")),
+      h("div", { style: { WebkitUserSelect: "text", userSelect: "text", wordBreak: "break-word" } }, alerteA),
+      h("button", { onClick: function () { setAlerteA(null); }, style: { marginTop: 11, width: "100%", padding: "10px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる")))) : null);
 }
 
 function AlbumsPromus(props) {
