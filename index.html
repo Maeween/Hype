@@ -32544,10 +32544,12 @@ function AlbumsPromus(props) {
           h("div", { style: { marginTop: 4, fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 600, color: "#F4F7FA" } }, T("Le voir en mouvement", "Watch it move", "Verlo en movimiento", "Guardalo in movimento", "\u52d5\u304f\u59ff\u3092\u898b\u308b", "In Bewegung sehen"))));
     })(),
     (function () { /* 25/08 (2e passe) : retour aux PHOTOS qui defilent sous « Le voir en mouvement » — cartes bien plus grandes et surtout plus larges (210x190 au lieu de 108x132), et piochage TOUR DE TABLE dans TOUS les albums (1re photo de chaque album, puis 2e de chaque, etc.) + la galerie libre, au lieu d'epuiser une seule source (demande Blandine) */
+      /* 28/08 : PHOTOS UNIQUEMENT — les videos sont retirees du rail (filtre estUrlVideo). Deux raisons : (1) demande explicite de Blandine ; (2) chaque video du rail chargeait ses metadonnees des l affichage, plusieurs a la fois, ce qui contribuait au lag signale sur cette fiche. */
+      var estVideoR = function (u) { return typeof estUrlVideo === "function" && estUrlVideo(u); };
       var srcR = [];
-      var galR = []; ((galeriePh) || []).forEach(function (uG) { if (uG && galR.indexOf(uG) < 0) galR.push(uG); });
+      var galR = []; ((galeriePh) || []).forEach(function (uG) { if (uG && !estVideoR(uG) && galR.indexOf(uG) < 0) galR.push(uG); });
       if (galR.length) srcR.push(galR);
-      (albums || []).forEach(function (aR) { var phL = ((aR && aR.photos) || []).filter(Boolean); if (phL.length) srcR.push(phL); });
+      (albums || []).forEach(function (aR) { var phL = ((aR && aR.photos) || []).filter(function (uA) { return uA && !estVideoR(uA); }); if (phL.length) srcR.push(phL); });
       var phsR = [];
       var rangR = 0, resteR = srcR.length > 0;
       while (resteR && phsR.length < 14) {
@@ -32569,16 +32571,14 @@ function AlbumsPromus(props) {
             if (pauseD) return;
             var maxD = elC.scrollWidth - elC.clientWidth;
             if (maxD <= 0) return;
-            elC.scrollLeft += 1.4;
+            elC.scrollLeft += 2.5; /* 28/08 : minuteur 28ms -> 50ms, increment 1.4 -> 2.5 (meme vitesse visuelle, ~44% de reflows en moins pendant que la fiche reste ouverte) */
             if (elC.getAttribute("data-boucle") === "1") { var moitR = elC.scrollWidth / 2; if (elC.scrollLeft >= moitR) elC.scrollLeft -= moitR; }
             else if (elC.scrollLeft >= maxD - 1) { elC.scrollLeft = 0; }
-          }, 28);
+          }, 50);
         }, "data-hscroll": "1", "data-boucle": (phsR.length >= 4 ? "1" : "0"), style: { display: "flex", gap: 15, overflowX: "auto", WebkitOverflowScrolling: "touch", touchAction: "pan-x pan-y", marginTop: 26, paddingBottom: 2 } },
         (phsR.length >= 4 ? phsR.concat(phsR) : phsR).map(function (uP, iP) {
-          var vP = (typeof estUrlVideo === "function" && estUrlVideo(uP));
           return h("div", { key: "strip" + iP, onClick: function () { if (props.onOuvrirMedia) props.onOuvrirMedia(uP); else if (props.onTout) props.onTout(); }, role: "button", style: { flex: "0 0 auto", width: 210, height: 190, borderRadius: 12, overflow: "hidden", border: "1px solid " + tA(0.3), cursor: "pointer" } },
-            vP ? h("video", { src: uP + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
-               : h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(uP, 420, 380) : uP), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uP); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+            h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(uP, 420, 380) : uP), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uP); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
         })));
     })());
 }
