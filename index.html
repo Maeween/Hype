@@ -453,7 +453,17 @@ async function signalerCommentairePhoto(commentaireId, motif) {
 
 // Envoie un fichier photo, renvoie { url, error }
 async function envoyerPhoto(fichier) {
-  const user = await utilisateurActuel();
+  /* 27/08 (suite) : GARDE DE TEMPS AJOUTEE ICI AUSSI — utilisateurActuel() (donc
+     supa.auth.getSession()) n'avait, lui, AUCUNE garde : c'est le point de blocage
+     historiquement suspecte (deadlock de rafraichissement de session iOS PWA). Si ce
+     seul appel restait bloque, la garde de 2 minutes posee plus bas sur l'upload
+     n'etait JAMAIS atteinte : l'envoi restait fige sans aucun message, meme pour un
+     fichier de quelques secondes (rapporte par Blandine). Meme mecanisme avecGarde()
+     que le reste du fichier, 8 secondes : une lecture de session ne devrait jamais
+     prendre plus longtemps en usage normal. */
+  const rUser = await avecGarde(utilisateurActuel(), 8000);
+  if (rUser && rUser.__garde) return { url: null, error: { message: "La session met trop de temps à répondre — réessaie." } };
+  const user = rUser;
   if (!user) return { url: null, error: "Pas connecté" };
   const extension = (fichier.name.split(".").pop() || "jpg").toLowerCase();
   const chemin = user.id + "/" + Date.now() + "." + extension;
