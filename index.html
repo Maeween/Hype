@@ -508,7 +508,7 @@ function estFichierVideo(f) { /* 27/08 : repli sur l extension ajoute — certai
     return /\.(mp4|mov|m4v|avi|webm|mkv|3gp)$/.test(nF);
   } catch (e) { return false; }
 }
-function estUrlVideo(u) { try { return /\.(mp4|mov|webm|m4v|ogv)(\?|$)/i.test(String(u || "")); } catch (e) { return false; } }
+function estUrlVideo(u) { /* 27/08 soir : le "#" AJOUTE aux separateurs acceptes. L app suffixe les URL d un marqueur de cadre (#cadre=spectral, cf. marquerCadre plus bas) : une video ainsi marquee n etait plus reconnue comme video et disparaissait de l onglet Videos de la fiche cheval, alors qu elle restait bien presente dans son album (constate par Blandine : la video du jour absente, celle d avant-hier — sans marqueur — presente). L autre definition de cette meme fonction, plus bas dans le fichier, acceptait deja le "#" : c est bien CELLE-CI qui etait en retard. */ try { return /\.(mp4|mov|webm|m4v|ogv)(\?|#|$)/i.test(String(u || "")); } catch (e) { return false; } }
 
 /* ===== VIGNETTES SUPABASE (02/08) =====
    Le rail de la fiche cheval chargeait CHAQUE photo en resolution d origine dans une case de
@@ -32290,8 +32290,16 @@ function AlbumsCheval(props) {
           return h("div", { key: iU, onClick: function () { ouvrirVisu(lPh, u); }, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)", background: "#0B1116", cursor: "pointer" } },
             estV ? h("video", { src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }) : h("img", { src: u, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }),
             estV ? h("span", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#FFFFFF", zIndex: 1 } }, "\u25b6") : null,
-            h("button", { onClick: function (eRc) { if (eRc && eRc.stopPropagation) eRc.stopPropagation(); setConfRetrait(u); }, "aria-label": "Retirer", style: { position: "absolute", top: 4, right: 4, width: 21, height: 21, borderRadius: "50%", background: "rgba(7,8,10,0.65)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 10, cursor: "pointer", padding: 0, zIndex: 2 } }, "\u00d7"),
-            h("button", { onClick: function (eCv) { if (eCv && eCv.stopPropagation) eCv.stopPropagation(); if (!estCouv) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 4, right: 4, height: 20, padding: "0 8px", borderRadius: 999, background: "rgba(7,8,10,0.7)", border: "1px solid " + tA(estCouv ? 0.85 : 0.4), color: estCouv ? tnT : "rgba(237,242,245,0.75)", fontSize: 8.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, (estCouv ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
+            /* 27/08 soir : LA CROIX DE RETRAIT EST RETIREE D ICI (demande Blandine). Elle occupait
+               le coin haut-droit de la vignette — exactement la place et la forme que l etoile
+               « a la une » occupe sur les cartes d album, JUSTE AU-DESSUS sur la meme page : meme
+               rond sombre, meme taille, meme geste, mais l une met en avant et l autre efface.
+               Elle ne faisait de plus que 21 px, sous le minimum tactile recommande (44 px) :
+               Blandine ne l avait meme jamais vue. Le retrait d une photo se fait desormais depuis
+               la photo OUVERTE EN GRAND, ou l on voit ce qu on supprime, avec la meme confirmation
+               qu avant (confRetrait, inchangee plus bas). Le coin haut-droit ne signifie donc plus
+               jamais « supprimer » nulle part dans l app. */
+            h("button", { onClick: function (eCv) { if (eCv && eCv.stopPropagation) eCv.stopPropagation(); if (!estCouv) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 5, right: 5, height: 30, padding: "0 12px", borderRadius: 999, background: "rgba(7,8,10,0.78)", border: "1px solid " + tA(estCouv ? 0.85 : 0.45), color: estCouv ? tnT : "rgba(237,242,245,0.85)", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3, zIndex: 2 } }, (estCouv ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
         });
         if (!albDeplie && lPh.length > 6) {
           cel.push(h("div", { key: "plus", onClick: function () { setAlbDeplie(true); }, role: "button", style: { aspectRatio: "1 / 1", borderRadius: 11, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer" } },
@@ -32351,13 +32359,16 @@ function AlbumsCheval(props) {
         h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
           h("button", { onClick: function () { setSelPhotos(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
           h("button", { onClick: function () { validerSelection(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")))))) : null,
-    confRetrait ? portail(h("div", { onClick: function () { setConfRetrait(null); }, style: { position: "fixed", inset: 0, zIndex: 8750, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
+    /* 27/08 soir : z-index porte de 8750 a 9500. Le retrait se declenche desormais AUSSI depuis la
+       photo plein ecran (z-index 9100) : a 8750 la confirmation se serait affichee DERRIERE la photo,
+       donc invisible, et le retrait aurait paru ne rien faire. */
+    confRetrait ? portail(h("div", { onClick: function () { setConfRetrait(null); }, style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "82%", maxWidth: 330, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(12,18,24,0.98), rgba(7,10,13,0.99))", padding: "20px 18px", textAlign: "center" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, color: "#F4F7FA", marginBottom: 8 } }, T("Retirer ce souvenir de l'album ?", "Remove from album?", "\u00bfQuitar del \u00e1lbum?", "Rimuovere dall'album?", "\u30a2\u30eb\u30d0\u30e0\u304b\u3089\u5916\u3059\uff1f")),
         h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#9AA5AC", marginBottom: 14, lineHeight: 1.5 } }, T("Il restera dans la galerie et les autres albums.", "It will stay in the gallery and other albums.", "Permanecer\u00e1 en la galer\u00eda.", "Rester\u00e0 nella galleria.", "\u30ae\u30e3\u30e9\u30ea\u30fc\u306b\u306f\u6b8b\u308a\u307e\u3059")),
         h("div", { style: { display: "flex", gap: 10 } },
           h("button", { onClick: function () { setConfRetrait(null); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
-          h("button", { onClick: function () { var uR = confRetrait; setConfRetrait(null); if (albOuvert) retirerPhoto(albOuvert, uR); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059")))))) : null,
+          h("button", { onClick: function () { var uR = confRetrait; setConfRetrait(null); /* 27/08 soir : si la photo retiree est celle affichee en grand, on referme la visionneuse — elle ne fait plus partie de l album, la laisser ouverte serait trompeur. */ try { if (visu && uR === visu) { setVisu(null); setTagVisu(false); setPanneauCommentaires(false); } } catch (eFv) { } if (albOuvert) retirerPhoto(albOuvert, uR); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059")))))) : null,
     confSupA ? portail(h("div", { onClick: function () { setConfSupA(null); }, style: { position: "fixed", inset: 0, zIndex: 8750, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "82%", maxWidth: 330, borderRadius: 20, border: "1px solid rgba(226,138,146,0.4)", background: "linear-gradient(180deg, rgba(20,12,14,0.98), rgba(10,7,8,0.99))", padding: "20px 18px", textAlign: "center" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, color: "#F4F7FA", marginBottom: 8 } }, T("Supprimer cet album ?", "Delete this album?", "\u00bfEliminar?", "Eliminare?", "\u524a\u9664\u3057\u307e\u3059\u304b\uff1f")),
@@ -32384,7 +32395,15 @@ function AlbumsCheval(props) {
           h("span", null, String(likesVisu.count || 0))),
         h("button", { onClick: function () { setPanneauCommentaires(!panneauCommentaires); }, "aria-label": "Commentaires", style: { display: "flex", alignItems: "center", gap: 7, padding: "9px 15px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.3)", background: "rgba(7,8,10,0.55)", color: "#EDF2F5", fontSize: 13, fontWeight: 700, fontFamily: M9, cursor: "pointer" } },
           h("span", { style: { fontSize: 15 } }, "\ud83d\udcac"),
-          h("span", null, String((commentairesVisu || []).length))))), document.body) : null,
+          h("span", null, String((commentairesVisu || []).length))),
+        /* 27/08 soir : RETIRER DE L ALBUM, deplace ICI depuis la vignette (demande Blandine). Sur
+           la photo ouverte en grand on voit ce qu on retire avant de le faire, contrairement a une
+           vignette de 21 px. Bouton en retrait visuel (rouge, discret, a droite) pour ne pas rivaliser
+           avec J aime et Commentaires, et la confirmation existante (confRetrait) reste obligatoire.
+           Ne s affiche que dans un album ouvert et pour qui peut le gerer. */
+        (albOuvert && !(albOuvert.__auto || albOuvert.__lecture) && ((albOuvert.photos || []).indexOf(visu) >= 0)) ? h("button", { onClick: function (eRv) { eRv.stopPropagation(); setConfRetrait(visu); }, "aria-label": T("Retirer de l'album", "Remove from album", "Quitar del \u00e1lbum", "Rimuovi dall'album", "\u30a2\u30eb\u30d0\u30e0\u304b\u3089\u5916\u3059"), style: { marginLeft: "auto", display: "flex", alignItems: "center", gap: 7, padding: "9px 15px", borderRadius: 999, border: "1px solid rgba(240,92,116,0.55)", background: "rgba(7,8,10,0.55)", color: "#F05C74", fontSize: 12.5, fontWeight: 700, fontFamily: M9, cursor: "pointer" } },
+          h("span", { style: { fontSize: 14 } }, "\u00d7"),
+          h("span", null, T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059"))) : null)), document.body) : null,
     panneauCommentaires ? portail(h("div", { onClick: function (eB) { eB.stopPropagation(); setPanneauCommentaires(false); }, style: { position: "fixed", inset: 0, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 9400 } },
       h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "70vh", display: "flex", flexDirection: "column", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))" } },
         h("div", { style: { fontFamily: C9, fontSize: 14, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", padding: "16px 16px 10px" } }, T("Commentaires", "Comments", "Comentarios", "Commenti", "\u30b3\u30e1\u30f3\u30c8")),
