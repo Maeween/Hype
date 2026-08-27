@@ -1,0 +1,498 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Linguae · contrôle arabe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fond:#060709; --carte:#0D131A; --carte2:#111820;
+  --blanc:#F4F7FA; --gris:#8996A2; --grisombre:#5B6672;
+  --turquoise:#20D9F5; --or:#D4AF37; --orTexte:#F6E3AC;
+  --vert:#4FD18B; --ambre:#E8B84B; --rouge:#E8637A;
+  --trait:rgba(255,255,255,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--fond);color:var(--blanc);font-family:'Montserrat',system-ui,sans-serif}
+body{padding:28px 18px 80px;max-width:980px;margin:0 auto;line-height:1.5}
+a{color:var(--turquoise)}
+h1,h2,h3{font-family:'Cinzel',serif;font-weight:600;margin:0}
+.mono{font-family:'IBM Plex Mono',ui-monospace,monospace}
+
+/* ---- entete ---- */
+header{margin-bottom:28px}
+header .eyebrow{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.28em;text-transform:uppercase;
+  color:var(--turquoise);margin-bottom:10px}
+header h1{font-size:26px;letter-spacing:.02em;color:var(--blanc)}
+header .sub{color:var(--gris);font-size:13.5px;margin-top:8px;max-width:60ch}
+#ver{color:var(--or);font-size:12px;margin-top:10px}
+
+/* ---- etat de chargement ---- */
+#etat{padding:40px 0;color:var(--gris);font-size:14px}
+#etat .pt{color:var(--turquoise)}
+#erreur{display:none;background:rgba(232,99,122,.08);border:1px solid rgba(232,99,122,.35);
+  border-radius:10px;padding:16px 18px;color:var(--rouge);font-size:13.5px;margin:20px 0}
+
+/* ---- resume ---- */
+#resume{display:none}
+.grille-chiffres{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;
+  background:var(--trait);border:1px solid var(--trait);border-radius:12px;overflow:hidden;margin:18px 0 8px}
+.chiffre{background:var(--carte);padding:16px 14px}
+.chiffre b{display:block;font-family:'Cinzel',serif;font-size:26px;font-weight:600;color:var(--blanc)}
+.chiffre span{font-size:11px;color:var(--gris);letter-spacing:.03em}
+.chiffre.accent b{color:var(--turquoise)}
+.chiffre.warn b{color:var(--ambre)}
+
+/* ---- section generique ---- */
+section{margin-top:38px}
+section > h2{font-size:16px;letter-spacing:.04em;color:var(--blanc);margin-bottom:4px}
+section > .desc{color:var(--gris);font-size:12.5px;margin-bottom:14px;max-width:65ch}
+
+/* ---- table des villes ---- */
+.table-villes{display:flex;flex-direction:column;gap:1px;background:var(--trait);
+  border:1px solid var(--trait);border-radius:12px;overflow:hidden}
+.rv{background:var(--carte);display:grid;grid-template-columns:1fr auto auto;gap:10px 16px;
+  align-items:center;padding:12px 14px;cursor:pointer}
+.rv:hover{background:var(--carte2)}
+.rv .nom{font-family:'Cinzel',serif;font-size:14px}
+.rv .nom small{display:block;font-family:'Montserrat';font-weight:400;font-size:11px;color:var(--grisombre);margin-top:2px}
+.rv .pct{font-family:'IBM Plex Mono';font-size:12px;color:var(--gris);text-align:right;min-width:44px}
+.rv .pct.full{color:var(--vert)}
+.rv .pct.zero{color:var(--grisombre)}
+.puces{display:flex;gap:5px}
+.puce{width:9px;height:9px;border-radius:2px;background:var(--grisombre)}
+.puce.ok{background:var(--turquoise)}
+.puce.bad{background:var(--rouge)}
+.puce.na{background:transparent;border:1px solid var(--trait)}
+.detail{display:none;background:var(--carte2);padding:14px 16px 16px;font-size:12.5px;color:var(--gris);
+  border-top:1px solid var(--trait)}
+.detail.ouvert{display:block}
+.detail dl{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;margin:0}
+.detail dt{color:var(--grisombre)}
+.detail dt::after{content:""}
+.detail .anomalie{color:var(--ambre)}
+.detail ul{margin:4px 0 0;padding-left:18px}
+
+/* ---- filtre ---- */
+.filtres{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.filtres button{font-family:'Montserrat';font-size:11.5px;letter-spacing:.04em;color:var(--gris);
+  background:var(--carte);border:1px solid var(--trait);border-radius:99px;padding:6px 13px;cursor:pointer}
+.filtres button.actif{color:var(--fond);background:var(--turquoise);border-color:var(--turquoise)}
+
+/* ---- anomalies ---- */
+.anom-liste{display:flex;flex-direction:column;gap:1px;background:var(--trait);
+  border:1px solid var(--trait);border-radius:12px;overflow:hidden}
+.anom{background:var(--carte);padding:12px 14px;font-size:13px}
+.anom b{color:var(--ambre);font-family:'Cinzel',serif;font-weight:600;font-size:12px;letter-spacing:.03em;
+  display:block;margin-bottom:3px}
+.anom span{color:var(--gris)}
+.anom .mono{color:var(--blanc)}
+
+footer{margin-top:50px;color:var(--grisombre);font-size:11px;text-align:center}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Linguae — hors application</div>
+  <h1>Où en est l'arabe</h1>
+  <p class="sub">Lit les fichiers réellement déployés — pas un journal tenu à la main.
+     Neuf points par ville, à partir de ce que le moteur sert vraiment.</p>
+  <div id="ver" class="mono"></div>
+</header>
+
+<div id="etat"><span class="pt">▸</span> lecture de lingo.html…</div>
+<div id="erreur"></div>
+
+<div id="resume">
+  <div class="grille-chiffres" id="chiffres"></div>
+
+  <section>
+    <h2>Les 38 villes</h2>
+    <p class="desc">Chaque puce = un des neuf points du protocole. Touche une ligne pour le détail.</p>
+    <div class="filtres" id="filtres"></div>
+    <div class="table-villes" id="tableVilles"></div>
+  </section>
+
+  <section>
+    <h2>Anomalies trouvées en direct</h2>
+    <p class="desc">Pas déclarées — détectées en relisant les fichiers à l'instant.</p>
+    <div class="anom-liste" id="anomalies"></div>
+  </section>
+</div>
+
+<footer>lingo-controle-arabe.html · lit lingo.html, les lexiques et villes*.js du même dossier</footer>
+
+<script>
+(function(){
+
+  "use strict";
+
+  const REG_VOC = /[\u064B-\u0652\u0670]/;   // signes vocaliques interdits (pas le tatweel U+0640, legitime en connecteur)
+  const REG_CYR = /[\u0400-\u04FF]/;
+
+  function extractVar(text, name){
+    const re = new RegExp("var\\s+" + name + "\\s*=\\s*");
+    const m = re.exec(text);
+    if (!m) return null;
+    let start = m.index + m[0].length;
+    while (/\s/.test(text[start])) start++;
+    if (text[start] !== "{") return null;
+    let depth = 0, j = start;
+    for (; j < text.length; j++){
+      const c = text[j];
+      if (c === "/" && text[j+1] === "*"){ j = text.indexOf("*/", j+2) + 1; continue; }
+      if (c === "/" && text[j+1] === "/"){ j = text.indexOf("\n", j+2); if (j < 0) break; continue; }
+      if (c === '"' || c === "'"){
+        const q = c; j++;
+        while (j < text.length && text[j] !== q){ if (text[j] === "\\") j++; j++; }
+        continue;
+      }
+      if (c === "{") depth++;
+      else if (c === "}"){ depth--; if (depth === 0){ j++; break; } }
+    }
+    const literal = text.slice(start, j);
+    try { return new Function("return (" + literal + ")")(); }
+    catch(e){ return null; }
+  }
+
+  function extractVER(text){
+    const m = text.match(/var VER = "([^"]+)"/);
+    return m ? m[1] : "?";
+  }
+
+  function extractScriptSrcs(text){
+    const re = /<script src="([^"]*hype-lingo[^"]*\.js[^"]*)"><\/script>/g;
+    const out = []; let m;
+    while ((m = re.exec(text))) out.push(m[1]);
+    return out;
+  }
+
+  function chargerScript(src){
+    return new Promise((resolve) => {
+      const s = document.createElement("script");
+      s.src = src;
+      s.onload = () => resolve({ src, ok: true });
+      s.onerror = () => resolve({ src, ok: false });
+      document.head.appendChild(s);
+    });
+  }
+
+  const NOMS_VILLES = {
+    labaule:"La Baule", maurice:"Le Morne", connemara:"Connemara", newmarket:"Newmarket",
+    lambourn:"Lambourn", walsall:"Walsall", aberystwyth:"Aberystwyth", windsor:"Windsor",
+    wellington:"Wellington", hickstead:"Hickstead", burghley:"Burghley", badminton:"Badminton",
+    kildare:"Kildare", edimbourg:"Édimbourg", versailles:"Versailles", saumur:"Saumur",
+    lamotte:"Lamotte-Beuvron", golega:"Golegã", fontainebleau:"Fontainebleau", jerez:"Jerez",
+    seville:"Séville", vejer:"Vejer", barcelone:"Barcelone", oliva:"Oliva Nova", rome:"Rome",
+    verone:"Vérone", warendorf:"Warendorf", aachen:"Aix-la-Chapelle", dubai:"Dubaï",
+    tokyo:"Tokyo", tamworth:"Tamworth", taupo:"Taupō", buenos:"Buenos Aires",
+    lexington:"Lexington", santaynez:"Santa Ynez", spruce:"Spruce Meadows",
+    flyinge:"Flyinge", clonbinane:"Clonbinane"
+  };
+
+  async function demarrer(){
+    let html;
+    try {
+      const r = await fetch("lingo.html", { cache: "no-store" });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      html = await r.text();
+    } catch(e){
+      basculerErreur("Impossible de lire lingo.html à côté de cette page (" + e.message + "). " +
+        "Cette page doit être déposée dans le même dossier que lingo.html sur Netlify.");
+      return;
+    }
+
+    document.getElementById("ver").textContent = "VER " + extractVER(html);
+
+    const ETAPE_SRC     = extractVar(html, "ETAPE_SRC");
+    const ACCUEIL_VILLE = extractVar(html, "ACCUEIL_VILLE") || {};
+    const ACCUEIL_CHAP  = extractVar(html, "ACCUEIL_CHAP")  || {};
+    const COLL_NOM      = extractVar(html, "COLL_NOM")      || {};
+    const ETAPES_I18N   = extractVar(html, "ETAPES_I18N")   || {};
+
+    if (!ETAPE_SRC){
+      basculerErreur("La table ETAPE_SRC n'a pas pu être lue dans lingo.html — sa structure a peut-être changé.");
+      return;
+    }
+
+    const srcs = extractScriptSrcs(html);
+    document.getElementById("etat").innerHTML =
+      '<span class="pt">▸</span> chargement de ' + srcs.length + ' fichiers…';
+    const resultats = await Promise.all(srcs.map(chargerScript));
+    const echoues = resultats.filter(r => !r.ok);
+
+    const LEX    = (window.HYPE_LINGO_LEX || {});
+    const VILLES = (window.HYPE_LINGO_VILLES || {});
+
+    // ---- verif brute des fichiers ar (vocalisation / cyrillique) sur le texte source ----
+    const alertesFichiers = [];
+    await Promise.all(srcs.filter(s => /hype-lingo-lex-|villes/.test(s)).map(async (s) => {
+      try {
+        const t = await (await fetch(s, { cache:"no-store" })).text();
+        if (REG_VOC.test(t)) alertesFichiers.push({ type:"vocalisation", fichier:s });
+        if (REG_CYR.test(t)) alertesFichiers.push({ type:"cyrillique", fichier:s });
+      } catch(e){ /* tant pis, pas bloquant */ }
+    }));
+
+    // ---- analyse par ville ----
+    const villes = Object.keys(ETAPE_SRC).map(ville => analyserVille(ville));
+
+    function analyserVille(ville){
+      const paires = ETAPE_SRC[ville] || [];
+      const parRef = {};
+      for (const [ref, lecon] of paires){
+        parRef[ref] = parRef[ref] || new Set();
+        parRef[ref].add(lecon);
+      }
+      const refs = Object.keys(parRef);
+      const out = { ville, refs, concepts:0, conceptsOK:0, phrases:0, phrasesOK:0,
+                     dialogue:null, collsManquantes:[], fichiersManquants:[] };
+
+      for (const ref of refs){
+        const lex = LEX[ref];
+        if (!lex){ out.fichiersManquants.push(ref); continue; }
+        const lecons = parRef[ref];
+        const concepts = (lex.concepts || []).filter(c => lecons.has(c.lecon));
+        out.concepts += concepts.length;
+        out.conceptsOK += concepts.filter(c => c.mots && c.mots.ar && c.mots.ar.m && c.def && c.def.ar).length;
+
+        const phrases = (lex.phrases || []).filter(p => lecons.has(p.lecon));
+        out.phrases += phrases.length;
+        out.phrasesOK += phrases.filter(p => p.ar).length;
+
+        const collsUsed = new Set(concepts.map(c => c.coll).filter(Boolean));
+        for (const coll of collsUsed){
+          const ok = COLL_NOM[coll] && COLL_NOM[coll].ar;
+          if (!ok) out.collsManquantes.push(coll);
+        }
+
+        if (lex.dialogue && lex.dialogue.ville === ville &&
+            (lex.dialogue.lecon === undefined || lecons.has(lex.dialogue.lecon))){
+          const dp = lex.dialogue.phrases || [];
+          out.dialogue = {
+            total: dp.length,
+            ok: dp.filter(p => p.ar).length,
+            langueOK: (lex.dialogue.langues || []).includes("ar")
+          };
+        }
+      }
+
+      const vd = VILLES[ville];
+      if (vd){
+        out.lettreOK = !!(vd.lettre && vd.lettre.ar && vd.lettre.ar.length === (vd.lettre.fr || []).length);
+        out.volets = (vd.volets || []).map(v => !!(v.t && v.t.ar) && !!(v.c && v.c.ar));
+      } else {
+        out.lettreOK = null; out.volets = [];
+      }
+
+      const et = ETAPES_I18N[ville];
+      out.etapes = et ? {
+        ch: !!(et.ch && et.ch.ar), v: !!(et.v && et.v.ar), souv: !!(et.souv && et.souv.ar)
+      } : null;
+
+      const accKey = ACCUEIL_VILLE[ville] || refs[0];
+      out.accueilKey = accKey;
+      out.accueilOK = !!(ACCUEIL_CHAP[accKey] && ACCUEIL_CHAP[accKey].ar);
+
+      // etat global du lexique
+      out.lexiqueTotal = out.concepts + out.phrases + (out.dialogue ? out.dialogue.total : 0);
+      out.lexiqueFait  = out.conceptsOK + out.phrasesOK + (out.dialogue ? out.dialogue.ok : 0);
+
+      return out;
+    }
+
+    // ---- anomalies transversales ----
+    const anomalies = [];
+
+    // ETAPES_I18N avec arabe mais lexique vide -> traduction fantome
+    for (const v of villes){
+      const arSansLexique = v.etapes && (v.etapes.ch || v.etapes.v || v.etapes.souv) && v.lexiqueTotal === 0;
+      if (arSansLexique){
+        anomalies.push({
+          titre: "Arabe orphelin dans ETAPES_I18N",
+          texte: NOMS_VILLES[v.ville] + " a du texte arabe dans le nom de chapitre / le lieu / le souvenir, " +
+                 "mais aucun concept traduit dans son lexique. Traduction faite hors suivi, ou lexique non commencé."
+        });
+      }
+    }
+
+    // familles COLL_NOM utilisees par au moins une ville traduite et sans ar
+    const collsVues = {};
+    for (const v of villes){
+      for (const c of v.collsManquantes) (collsVues[c] = collsVues[c] || []).push(v.ville);
+    }
+    for (const c in collsVues){
+      anomalies.push({
+        titre: "Famille COLL_NOM sans arabe : " + c,
+        texte: "Utilisée par " + collsVues[c].map(x => NOMS_VILLES[x]||x).join(", ") + "."
+      });
+    }
+
+    // fichiers manquants
+    for (const v of villes){
+      if (v.fichiersManquants.length){
+        anomalies.push({
+          titre: "Fichier introuvable pour " + NOMS_VILLES[v.ville],
+          texte: "ETAPE_SRC réclame " + v.fichiersManquants.join(", ") + ", absent(s) du chargement."
+        });
+      }
+    }
+
+    // scripts non charges
+    if (echoues.length){
+      anomalies.push({
+        titre: echoues.length + " fichier(s) non chargé(s)",
+        texte: echoues.map(e => e.src).join(", ")
+      });
+    }
+
+    // vocalisation / cyrillique
+    for (const a of alertesFichiers){
+      anomalies.push({
+        titre: (a.type === "vocalisation" ? "Signe vocalique" : "Caractère cyrillique") + " détecté",
+        texte: a.fichier
+      });
+    }
+
+    // ---- rendu ----
+    afficherResume(villes, anomalies, alertesFichiers, echoues);
+  }
+
+  function basculerErreur(msg){
+    document.getElementById("etat").style.display = "none";
+    const e = document.getElementById("erreur");
+    e.style.display = "block";
+    e.textContent = msg;
+  }
+
+  function pct(v){
+    return v.lexiqueTotal ? Math.round(100 * v.lexiqueFait / v.lexiqueTotal) : 0;
+  }
+
+  function afficherResume(villes, anomalies, alertesFichiers, echoues){
+    document.getElementById("etat").style.display = "none";
+    document.getElementById("resume").style.display = "block";
+
+    const villesAvecLexique   = villes.filter(v => v.lexiqueTotal > 0);
+    const villesCompletes     = villesAvecLexique.filter(v => pct(v) === 100 &&
+      v.lettreOK !== false && v.volets.every(Boolean) &&
+      v.etapes && v.etapes.ch && v.etapes.v && v.etapes.souv && v.accueilOK);
+    const totalConcepts   = villes.reduce((s,v)=>s+v.concepts,0);
+    const totalConceptsOK = villes.reduce((s,v)=>s+v.conceptsOK,0);
+
+    const chiffres = [
+      { n: villesAvecLexique.length + "/38", l: "villes avec un lexique entamé" },
+      { n: villesCompletes.length + "/38", l: "villes complètes sur les 9 points", accent:true },
+      { n: totalConceptsOK + "/" + totalConcepts, l: "concepts traduits (leçons servies)" },
+      { n: anomalies.length, l: "anomalies détectées", warn: anomalies.length>0 },
+    ];
+    document.getElementById("chiffres").innerHTML = chiffres.map(c =>
+      '<div class="chiffre' + (c.accent?' accent':'') + (c.warn?' warn':'') + '">' +
+      '<b>' + c.n + '</b><span>' + c.l + '</span></div>'
+    ).join("");
+
+    // tri : incomplet d'abord
+    villes.sort((a,b) => pct(a) - pct(b) || (a.ville < b.ville ? -1 : 1));
+
+    const filtres = [
+      { id:"tous", label:"Toutes" },
+      { id:"encours", label:"En cours" },
+      { id:"vide", label:"Non commencées" },
+      { id:"completes", label:"Complètes" },
+    ];
+    document.getElementById("filtres").innerHTML = filtres.map((f,i) =>
+      '<button data-f="' + f.id + '" class="' + (i===0?'actif':'') + '">' + f.label + '</button>'
+    ).join("");
+
+    function estComplete(v){
+      return pct(v) === 100 && v.lettreOK !== false && v.volets.every(Boolean) &&
+        v.etapes && v.etapes.ch && v.etapes.v && v.etapes.souv && v.accueilOK;
+    }
+
+    function rendreTable(filtre){
+      const liste = villes.filter(v => {
+        if (filtre === "vide") return v.lexiqueTotal === 0;
+        if (filtre === "completes") return estComplete(v);
+        if (filtre === "encours") return v.lexiqueTotal > 0 && !estComplete(v);
+        return true;
+      });
+      document.getElementById("tableVilles").innerHTML = liste.map(v => ligneVille(v)).join("");
+      document.querySelectorAll(".rv").forEach(el => {
+        el.addEventListener("click", () => {
+          const d = el.nextElementSibling;
+          d.classList.toggle("ouvert");
+        });
+      });
+    }
+
+    document.querySelectorAll(".filtres button").forEach(b => {
+      b.addEventListener("click", () => {
+        document.querySelectorAll(".filtres button").forEach(x=>x.classList.remove("actif"));
+        b.classList.add("actif");
+        rendreTable(b.dataset.f);
+      });
+    });
+
+    rendreTable("tous");
+
+    document.getElementById("anomalies").innerHTML = anomalies.length
+      ? anomalies.map(a => '<div class="anom"><b>' + a.titre + '</b><span>' + a.texte + '</span></div>').join("")
+      : '<div class="anom"><span>Aucune anomalie détectée dans cette lecture.</span></div>';
+  }
+
+  function puce(ok){
+    if (ok === null || ok === undefined) return '<span class="puce na"></span>';
+    return '<span class="puce ' + (ok ? 'ok' : 'bad') + '"></span>';
+  }
+
+  function ligneVille(v){
+    const p = pct(v);
+    const pClasse = p === 100 ? "full" : (p === 0 ? "zero" : "");
+    const points = [
+      v.lexiqueTotal > 0 && v.conceptsOK === v.concepts,   // 1-2 mots+def
+      v.dialogue ? v.dialogue.ok === v.dialogue.total : null,   // 3 dialogue
+      v.phrases ? v.phrasesOK === v.phrases : null,        // 4 phrases isolees
+      v.dialogue ? v.dialogue.langueOK : null,             // 5 langues[]
+      v.etapes ? (v.etapes.ch && v.etapes.v && v.etapes.souv) : (v.lexiqueTotal>0 ? false : null), // 6+9 etapes/recit
+      v.lettreOK,                                          // 7 lettre
+      v.volets.length ? v.volets.every(Boolean) : (v.lexiqueTotal>0 ? false : null), // 7 volets
+      v.collsManquantes.length === 0 && v.lexiqueTotal>0 ? true : (v.lexiqueTotal>0 ? false : null), // 8 coll_nom
+      v.accueilOK                                          // accueil_chap
+    ];
+    const detailAnomalies = [];
+    if (v.fichiersManquants.length) detailAnomalies.push("fichier manquant : " + v.fichiersManquants.join(", "));
+    if (v.collsManquantes.length) detailAnomalies.push("COLL_NOM sans ar : " + [...new Set(v.collsManquantes)].join(", "));
+
+    return (
+      '<div class="rv">' +
+        '<div class="nom">' + (NOMS_VILLES_G[v.ville]||v.ville) +
+          '<small>' + v.refs.join(", ") + '</small></div>' +
+        '<div class="puces">' + points.map(puce).join("") + '</div>' +
+        '<div class="pct ' + pClasse + ' mono">' + p + '%</div>' +
+      '</div>' +
+      '<div class="detail">' +
+        '<dl>' +
+          '<dt>Concepts</dt><dd>' + v.conceptsOK + ' / ' + v.concepts + '</dd>' +
+          '<dt>Phrases isolées</dt><dd>' + v.phrasesOK + ' / ' + v.phrases + '</dd>' +
+          '<dt>Dialogue</dt><dd>' + (v.dialogue ? v.dialogue.ok + ' / ' + v.dialogue.total + (v.dialogue.langueOK?'':' — "ar" absent de langues[]') : '—') + '</dd>' +
+          '<dt>Lettre</dt><dd>' + (v.lettreOK===null?'ville absente de villes*.js':(v.lettreOK?'ok':'manquante')) + '</dd>' +
+          '<dt>Volets</dt><dd>' + (v.volets.length ? v.volets.filter(Boolean).length + ' / ' + v.volets.length : '—') + '</dd>' +
+          '<dt>Étapes (récit)</dt><dd>' + (v.etapes ? ['ch','v','souv'].filter(k=>v.etapes[k]).join(', ') || 'aucun' : '—') + '</dd>' +
+          '<dt>Accueil</dt><dd>' + (v.accueilOK ? 'ok (' + v.accueilKey + ')' : 'manquant (' + v.accueilKey + ')') + '</dd>' +
+        '</dl>' +
+        (detailAnomalies.length ? '<ul>' + detailAnomalies.map(a=>'<li class="anomalie">'+a+'</li>').join('') + '</ul>' : '') +
+      '</div>'
+    );
+  }
+
+  const NOMS_VILLES_G = NOMS_VILLES;
+
+  demarrer();
+
+})();
+</script>
+</body>
+</html>
