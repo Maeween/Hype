@@ -25496,7 +25496,7 @@ function EcranDashboard() {
             const estEnCours = g.id === profil.galopActuel;
             const img = PHOTOS[`galop_${g.id}`]; // toutes les photos de galop sont en paysage 3:2 -> cheval entier visible
             const topLabel = verrou ? t("premium_requis") : estEnCours ? t("en_cours") : pctG > 0 ? `${pctG}%` : "";
-            return (React.createElement("button", { key: g.id, onClick: () => { setGalopOuvert(g.id); setEcran("galop-detail"); }, style: { flex: "0 0 calc(100% - 16px)", scrollSnapAlign: "start", textAlign: "left", borderRadius: 22, overflow: "hidden", position: "relative", border: `1px solid ${estEnCours ? COLORS.turquoise + "66" : COLORS.nuitBordure}` } },
+            return (React.createElement("button", { key: g.id, onClick: () => { if (verrou) { setEcran("premium"); return; } setGalopOuvert(g.id); setEcran("galop-detail"); }, style: { flex: "0 0 calc(100% - 16px)", scrollSnapAlign: "start", textAlign: "left", borderRadius: 22, overflow: "hidden", position: "relative", border: `1px solid ${estEnCours ? COLORS.turquoise + "66" : COLORS.nuitBordure}` } },
                 React.createElement("div", { style: { aspectRatio: "3 / 2", position: "relative", background: img ? `${COLORS.nuit} url(${img}) center/cover no-repeat` : `linear-gradient(135deg, ${g.couleur}, ${shadeColor(g.couleur, -25)})` } },
                     React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(to bottom, ${COLORS.nuit}06 0%, ${COLORS.nuit}3C 92%)` } }),
                     !img && React.createElement("div", { style: { position: "absolute", right: -6, top: -6, fontSize: 76, opacity: 0.16 } }, g.icone),
@@ -32040,8 +32040,8 @@ function AlbumsCheval(props) {
     var nouv = (alb.photos || []).slice();
     var aAjouter = Object.keys(coches).filter(function (u) { return coches[u] && nouv.indexOf(u) < 0; });
     if (!premium) {
-      var placesRestantes2 = Math.max(0, 20 - nouv.length);
-      if (aAjouter.length > placesRestantes2) { aAjouter = aAjouter.slice(0, placesRestantes2); bip(T("Limite de 20 photos/vid\u00e9os par album en gratuit \u2014 passe Premium pour aller plus loin", "20 photos/videos max per album on the free plan \u2014 go Premium for more", "M\u00e1ximo 20 por \u00e1lbum en el plan gratuito", "Massimo 20 per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306820\u3067\u3059")); }
+      var placesRestantes2 = Math.max(0, 10 - nouv.length); /* 27/08 : plafond gratuit resserre a 10 (demande Blandine) — meme regle que l'envoi direct */
+      if (aAjouter.length > placesRestantes2) { aAjouter = aAjouter.slice(0, placesRestantes2); bip(T("Limite de 10 photos par album en gratuit \u2014 passe Premium pour aller plus loin", "10 photos max per album on the free plan \u2014 go Premium for more", "M\u00e1ximo 10 por \u00e1lbum en el plan gratuito", "Massimo 10 per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306510\u3067\u3059")); }
     }
     aAjouter.forEach(function (u) { nouv.push(u); });
     setSelPhotos(false);
@@ -32078,9 +32078,9 @@ function AlbumsCheval(props) {
       });
     }
     if (!premium) {
-      var placesRestantes = Math.max(0, 20 - dejaLa);
-      if (placesRestantes <= 0) { fichiersUtiles = []; bip(T("20 photos/vid\u00e9os max par album en gratuit \u2014 passe Premium pour aller plus loin", "20 photos/videos max per album on the free plan \u2014 go Premium for more", "M\u00e1x. 20 fotos/v\u00eddeos por \u00e1lbum en el plan gratuito", "Massimo 20 foto/video per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306520\u679a\u307e\u3067")); }
-      else if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); bip(T("Seules " + placesRestantes + " photo(s) ajout\u00e9e(s) \u2014 limite de 20 en gratuit", "Only " + placesRestantes + " added \u2014 free plan limit is 20", "Solo " + placesRestantes + " a\u00f1adida(s) \u2014 l\u00edmite gratuito 20", "Solo " + placesRestantes + " aggiunta/e \u2014 limite gratuito 20", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306820\u3067\u3059\u3002" + placesRestantes + "\u4ef6\u306e\u307f\u8ffd\u52a0")); }
+      var placesRestantes = Math.max(0, 10 - dejaLa); /* 27/08 : plafond gratuit resserre a 10 (demande Blandine) */
+      if (placesRestantes <= 0) { fichiersUtiles = []; bip(T("10 photos max par album en gratuit \u2014 passe Premium pour aller plus loin", "10 photos max per album on the free plan \u2014 go Premium for more", "M\u00e1x. 10 fotos por \u00e1lbum en el plan gratuito", "Massimo 10 foto per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306510\u679a\u307e\u3067")); }
+      else if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); bip(T("Seules " + placesRestantes + " photo(s) ajout\u00e9e(s) \u2014 limite de 10 en gratuit", "Only " + placesRestantes + " added \u2014 free plan limit is 10", "Solo " + placesRestantes + " a\u00f1adida(s) \u2014 l\u00edmite gratuito 10", "Solo " + placesRestantes + " aggiunta/e \u2014 limite gratuito 10", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306810\u3067\u3059\u3002" + placesRestantes + "\u4ef6\u306e\u307f\u8ffd\u52a0")); }
     }
     if (videosBloquees > 0) {
       bip(videosBloquees + " " + T("vid\u00e9o(s) r\u00e9serv\u00e9e(s) aux membres Premium \u2014 passe Premium pour les ajouter", "video(s) are Premium-only \u2014 go Premium to add them", "v\u00eddeo(s) exclusivo(s) de Premium \u2014 pasa a Premium para a\u00f1adirlos", "video riservati ai membri Premium \u2014 passa a Premium per aggiungerli", "\u30d7\u30ec\u30df\u30a2\u30e0\u4f1a\u54e1\u9650\u5b9a\u306e\u52d5\u753b\u3067\u3059"), 6000);
@@ -36581,11 +36581,13 @@ function EcranBibliothequeGalops() {
                 { id: 4, left: 50.5, top: 6 }, { id: 5, left: 71.7, top: 17 }, { id: 6, left: 87.3, top: 47 }, { id: 7, left: 93, top: 88 }
             ];
             var medaillons = POS_MEVO.map(function(p){
+                var gP = GALOPS_I18N.find(function(gg){ return gg.id === p.id; });
+                var accesReelP = !!(gP && gP.debloque) || premium || estModGal; /* 27/08 : le cadenas ne doit s'afficher QUE si l'acces est vraiment refuse (reproche Blandine : elle le voyait meme en Premium) */
                 var etat = p.id < gAct ? "done" : (p.id === gAct ? "current" : "locked");
                 return React.createElement("div", { key: "mevo-niv-" + p.id, className: "mevo-niv mevo-" + etat, style: { left: p.left + "%", top: p.top + "%", cursor: "pointer" }, onClick: function(){ allerVersGalop(p.id); } },
                     React.createElement("div", { className: "mevo-dot" },
                         etat === "locked"
-                            ? [React.createElement("span", { key: "gl", className: "glabel" }, "GALOP"), String(p.id), React.createElement("span", { key: "l", className: "mevo-lock" }, "\uD83D\uDD12")]
+                            ? [React.createElement("span", { key: "gl", className: "glabel" }, "GALOP"), String(p.id), accesReelP ? null : React.createElement("span", { key: "l", className: "mevo-lock" }, "\uD83D\uDD12")]
                             : React.createElement("div", { className: "mevo-num" }, React.createElement("span", { className: "glabel" }, "GALOP"), String(p.id))),
                     etat === "done" ? React.createElement("span", { className: "mevo-check" }, React.createElement("svg", { viewBox: "0 0 24 24", width: 11, height: 11, fill: "none", stroke: "#04252A", strokeWidth: 3 }, React.createElement("path", { d: "M4 12l6 6L20 6" }))) : null);
             });
