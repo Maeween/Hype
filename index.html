@@ -457,7 +457,20 @@ async function envoyerPhoto(fichier) {
   if (!user) return { url: null, error: "Pas connecté" };
   const extension = (fichier.name.split(".").pop() || "jpg").toLowerCase();
   const chemin = user.id + "/" + Date.now() + "." + extension;
-  const { error } = await supa.storage.from("photos").upload(chemin, fichier);
+  /* 27/08 : GARDE DE TEMPS — cet envoi n'avait AUCUNE limite. Sur une connexion faible (très
+     plausible en concours, avec une vidéo lourde), la requête pouvait rester en attente pour
+     toujours : le code ne quittait jamais ce await, jamais la ligne d'erreur plus bas, jamais
+     le bip() qui l'affiche. L'écran restait figé sans aucune explication (rapporté par Blandine :
+     « ça passe pendant 30 secondes, puis la page se ferme sans rien dire »). 27/08 après-midi :
+     60 s jugé trop court par Blandine pour une vidéo de parcours complet (1 min 20-25 réelles) —
+     porté à 2 min, large marge au-dessus. */
+  const courseUp = Promise.race([
+    supa.storage.from("photos").upload(chemin, fichier),
+    new Promise(function (resUp) { setTimeout(function () { resUp({ __gardeUp: true }); }, 120000); })
+  ]);
+  const rUp = await courseUp;
+  if (rUp && rUp.__gardeUp) return { url: null, error: { message: "Envoi interrompu après 2 minutes (réseau trop lent ou coupé) — réessaie." } };
+  const error = rUp.error;
   if (error) return { url: null, error };
   const { data } = supa.storage.from("photos").getPublicUrl(chemin);
   return { url: data.publicUrl, error: null };
@@ -478,7 +491,13 @@ function cadreDeUrl(url) {
 function urlNue(url) {
   try { return String(url || "").split("#cadre=")[0]; } catch (eUn) { return url; }
 }
-function estFichierVideo(f) { try { return !!(f && f.type && f.type.indexOf("video") === 0); } catch (e) { return false; } }
+function estFichierVideo(f) { /* 27/08 : repli sur l extension ajoute — certains partages iOS laissent .type vide */
+  try {
+    if (f && f.type && f.type.indexOf("video") === 0) return true;
+    var nF = String((f && f.name) || "").toLowerCase();
+    return /\.(mp4|mov|m4v|avi|webm|mkv|3gp)$/.test(nF);
+  } catch (e) { return false; }
+}
 function estUrlVideo(u) { try { return /\.(mp4|mov|webm|m4v|ogv)(\?|$)/i.test(String(u || "")); } catch (e) { return false; } }
 
 /* ===== VIGNETTES SUPABASE (02/08) =====
@@ -32059,13 +32078,7 @@ function AlbumsCheval(props) {
     var r = await majAlbumCheval(alb.id, { photos: nouv });
     if (!(r && r.error)) charger();
   }
-  function estFichierVideo(fic) { /* 27/08 : detection video par type MIME, avec repli sur l extension (certains partages iOS laissent .type vide) */
-    var t = String((fic && fic.type) || "").toLowerCase();
-    if (t.indexOf("video/") === 0) return true;
-    var nF = String((fic && fic.name) || "").toLowerCase();
-    return /\.(mp4|mov|m4v|avi|webm|mkv|3gp)$/.test(nF);
-  }
-  async function importerFichiers(albId, fichiers) {
+  async function importerFichiers(albId, fichiers) { /* 27/08 : le doublon local d estFichierVideo est retire — une seule definition desormais, globale, plus haut dans le fichier */
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
     if (!alb || !fichiers || !fichiers.length) return;
     var dejaLa = (alb.photos || []).length;
@@ -34496,7 +34509,8 @@ function EcranCheval() {
 
         h("div", { style: { height: "40px" } }))),
 
-    panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true", onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwX = (t0 && t0.clientX <= 28) ? t0.clientX : null; window.__panSwY = t0 ? t0.clientY : null; } catch (eS1) { } }, onTouchEnd: function (eTe) { try { if (window.__panSwX == null) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - window.__panSwX, dy = Math.abs(t1.clientY - (window.__panSwY || 0)); window.__panSwX = null; if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } }, /* 31/07 : fermeture au geste depuis le bord gauche (bug signale par Blandine) */
+    (panneau && !(c && c.nom)) ? null : /* 27/08 : garde preventive — le panneau ne s'ouvre jamais sur une fiche sans nom (piste explorée après un crash rapporté par Blandine sur ce panneau, cause exacte non confirmée) */
+      panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true", onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwX = (t0 && t0.clientX <= 28) ? t0.clientX : null; window.__panSwY = t0 ? t0.clientY : null; } catch (eS1) { } }, onTouchEnd: function (eTe) { try { if (window.__panSwX == null) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - window.__panSwX, dy = Math.abs(t1.clientY - (window.__panSwY || 0)); window.__panSwX = null; if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } }, /* 31/07 : fermeture au geste depuis le bord gauche (bug signale par Blandine) */
       onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwipe = (t0 && t0.clientX <= 28) ? { x: t0.clientX, y: t0.clientY } : null; } catch (eS1) { window.__panSwipe = null; } },
       onTouchEnd: function (eTe) { try { var d0 = window.__panSwipe; if (!d0) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - d0.x, dy = Math.abs(t1.clientY - d0.y); if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } window.__panSwipe = null; }, /* 30/07 : swipe droit depuis le bord gauche = retour (bug signale par Blandine) */
       style: { position: "fixed", inset: 0, zIndex: 6500, background: "#060709", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
@@ -34517,6 +34531,7 @@ function EcranCheval() {
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
       panneau === "videos" ? h("div", { style: { padding: "8px 16px 24px" } },
+        h("div", { role: "button", onClick: function () { setPanneau("souvenirs"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", padding: "10px", borderRadius: 12, border: "1px dashed " + tA(0.4), color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen")), /* 27/08 : option d'ajout directe sur l'onglet Vidéos (demande Blandine) — ouvre Souvenirs, où vit déjà le vrai bouton d'envoi */
         (chVids && chVids.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
           chVids.map(function (vU, iV) {
             /* 02/08 : la vignette ouvre la visionneuse au lieu de lire la video dans sa case de
@@ -34527,7 +34542,7 @@ function EcranCheval() {
               h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
                 h("div", { style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.65), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6")));
           }))
-        : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant — ajoute-en une depuis Souvenirs.", "No videos yet — add one from Memories.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
+        : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant.", "No videos yet.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
       panneau === "palmares" ? (palmTech ? h(React.Fragment, null, h("div", { role: "button", onClick: function () { setPalmTech(false); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, "\u2039 " + T("Revenir au palmar\u00e8s", "Back to the record", "Volver al palmar\u00e9s", "Torna al palmar\u00e8s", "\u623b\u308b", "Zur\u00fcck")),
         (function () { /* 26/08 : rien n est jamais efface — bouton pour TOUT revoir, proprietaire seulement */
           var nMq = ((resDb) || []).filter(function (rM) { return rM && rM.visible === false; }).length;
@@ -34790,7 +34805,8 @@ function EcranCheval() {
           vics.forEach(function (fV) { if (forts.length >= 3) return; var jV = jetonFort(fV); if (jetonsVus[jV]) return; jetonsVus[jV] = 1; forts.push(fV); });
           var ans = {}; tousF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
           var listeAns = Object.keys(ans).sort().reverse();
-          var cavsPalm = []; tousF.forEach(function (fC) { if (fC.cav && cavsPalm.indexOf(fC.cav) < 0) cavsPalm.push(fC.cav); }); /* 26/08 : onglets cavaliers */
+          var cavStats = {}; tousF.forEach(function (fC) { if (!fC.cav) return; if (!cavStats[fC.cav]) cavStats[fC.cav] = { n: 0, d: "" }; cavStats[fC.cav].n++; if ((fC.d || "") > cavStats[fC.cav].d) cavStats[fC.cav].d = fC.d || ""; });
+          var cavsPalm = Object.keys(cavStats).sort(function (cA, cB) { return (cavStats[cB].n - cavStats[cA].n) || cavStats[cB].d.localeCompare(cavStats[cA].d); }); /* 27/08 : onglets cavaliers TRIES — celui qui a le plus monte d abord, puis les plus recents (demande Blandine) */
           function filtreCav(lF) { return (cavFiltre && cavFiltre !== "tous") ? lF.filter(function (fF) { return fF.cav === cavFiltre; }) : lF; }
           var recents = tousF.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
@@ -34798,9 +34814,10 @@ function EcranCheval() {
           var OR9 = "#D9A85C";
           var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
+          var offsetPhF = (photosForts && photosForts.length) ? (Math.floor(Date.now() / 86400000) % photosForts.length) : 0; /* 27/08 : ROTATION reelle — l offset avance chaque jour, donc a plus de 3 photos disponibles, les cartes changent au fil des visites au lieu de rester figees (reproche Blandine : « toujours les 3 memes ») */
           function carteFort(f, grande, idx) {
             if (!f) return null;
-            var phF = (photosForts && photosForts.length) ? photosForts[idx % photosForts.length] : photoCh; /* 26/08 : une photo differente par carte */
+            var phF = (photosForts && photosForts.length) ? photosForts[(idx + offsetPhF) % photosForts.length] : photoCh;
             return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", height: grande ? 198 : 148, flex: grande ? null : 1, minWidth: 0 } },
               phF ? h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
@@ -34852,7 +34869,7 @@ function EcranCheval() {
                 var cA = fsA.length;
                 var pct = Math.max(6, Math.min(100, Math.round(100 * (vA + pA) / Math.max(1, cA))));
                 var ouvA = (saisonOuv === anK);
-                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "rgba(255,255,255,0.025)", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 26/08 : la saison se DEPLIE au tap et montre ses classements (demande Blandine) */
+                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "#14161a", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
                   h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
                     h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
                     h("span", { style: { fontSize: 10.3, color: "#8A929C", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start"))),
@@ -34875,7 +34892,7 @@ function EcranCheval() {
               })) : null,
             /* — 5 · DERNIERS RÉSULTATS — */
             recents.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "24px 16px 9px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 9px" } }, /* 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e", "Letzte Ergebnisse").toUpperCase()), filetOr()),
               h("div", { style: { margin: "0 16px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)", overflow: "hidden" } },
                 recents.map(function (rD, iD) {
