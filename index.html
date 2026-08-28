@@ -20690,9 +20690,9 @@ function EcranChevalCommun() {
     }
 
     var visibles = st.cavs.slice(0, 4);
-    var POS4 = [{ x: 16, y: 21 }, { x: 84, y: 17 }, { x: 15, y: 76 }, { x: 85, y: 72 }];
+    var POS4 = [{ x: 11, y: 17 }, { x: 89, y: 13 }, { x: 10, y: 80 }, { x: 90, y: 76 }];
     /* disposition par effectif : 2-3 cavalieres ne doivent pas flotter dans les coins vides */
-    var DISPOS = { 1: [{ x: 50, y: 13 }], 2: [{ x: 17, y: 37 }, { x: 83, y: 33 }], 3: [{ x: 16, y: 25 }, { x: 84, y: 23 }, { x: 50, y: 88 }], 4: POS4 };
+    var DISPOS = { 1: [{ x: 50, y: 8 }], 2: [{ x: 12, y: 35 }, { x: 88, y: 31 }], 3: [{ x: 11, y: 22 }, { x: 89, y: 19 }, { x: 50, y: 95 }], 4: POS4 };
     var POS = DISPOS[Math.min(Math.max(visibles.length, 1), 4)];
     var hConst = visibles.length <= 1 ? 208 : visibles.length === 2 ? 222 : visibles.length === 3 ? 258 : 274;
     var restantes = st.cavs.slice(4);
