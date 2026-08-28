@@ -21967,6 +21967,23 @@ function hypeEtatSansImages(data) {
   } catch (e) { return data; }
 }
 
+/* 28/08 (demande Blandine : « je quitte l app 10 secondes, je reviens, je me
+   suis fait sortir et je dois refaire tout le chemin ») — ce n est pas une
+   deconnexion (la session est intacte, comme elle l a precise elle-meme),
+   c est que l app redemarre a l ecran "intro" a CHAQUE relance JS (iOS
+   recharge frequemment une PWA mise en arriere-plan). Rien a voir avec
+   l authentification, donc rien a voir avec les patchs retires le 26/08 --
+   c est un chantier de NAVIGATION, independant.
+   Correctif : on reutilise l infrastructure de sauvegarde DEJA EN PLACE
+   (ETAT_CLE/localStorage, qui persiste deja profil/langue/planAbo) plutot que
+   d en inventer une nouvelle. Seuls les ecrans de cette liste peuvent etre
+   restaures directement au demarrage -- des ecrans "racine" qui n ont besoin
+   d aucun identifiant complementaire (cheval ouvert, cours ouvert...) pour
+   s afficher correctement. Un ecran de contenu (fiche cheval, cours, quiz...)
+   n est jamais restaure tel quel : on retombe sur "dashboard", ce qui reste
+   bien plus court que de repartir de "intro". */
+var ECRANS_RESTAURABLES = { dashboard: 1, galops: 1, communaute: 1, cavalier: 1, moncavalier: 1, guilde: 1, moncompte: 1, profil: 1, premium: 1, assistant: 1, classement: 1, quetes: 1, sellerie: 1, articles: 1 };
+
 function HypeApp() {
     // ----- Reprise de session : on relit la progression sauvegardée -----
     const ETAT_CLE = "augalop_etat_v1";
@@ -21979,7 +21996,7 @@ function HypeApp() {
             return null;
         }
     })();
-    const [ecran, setEcran] = useState(CIBLE_DIRECTE ? (CIBLE_DIRECTE.ecran || "cours") : "intro"); // Parcours d'entr\u00e9e Hype \u00e0 chaque ouverture
+    const [ecran, setEcran] = useState(CIBLE_DIRECTE ? (CIBLE_DIRECTE.ecran || "cours") : ((sauve && sauve.ecran && ECRANS_RESTAURABLES[sauve.ecran]) ? sauve.ecran : "intro")); // Parcours d'entr\u00e9e Hype \u00e0 chaque ouverture, SAUF reprise directe sur le dernier ecran "racine" visite (28/08)
     const [historiqueEcrans, setHistoriqueEcrans] = useState([]);
     const [pileAvant, setPileAvant] = useState([]);
     const [langue, setLangue] = useState(sauve && sauve.langue ? sauve.langue : "fr");
@@ -22438,7 +22455,7 @@ function HypeApp() {
         return () => { annule = true; try { if (abo) abo.unsubscribe(); } catch (e) { } };
     }, []);
     useEffect(() => {
-        const data = { profil, xp, serie, coursTermines, quizResultats, planAbo, langue, chevaux };
+        const data = { profil, xp, serie, coursTermines, quizResultats, planAbo, langue, chevaux, ecran: ECRANS_RESTAURABLES[ecran] ? ecran : "dashboard" };
         try { hypeSyncProgressionDifferee(data); } catch (eSync) { }
         /* Deux corrections dans ce seul bloc.
            1. Les images ne partent PLUS JAMAIS dans le localStorage : hypeEtatSansImages
@@ -28351,7 +28368,9 @@ function EcranGuilde() {
       h("div", { style: { position: "absolute", inset: 0, background: (banniere ? ("url(" + banniere + ")") : ("url(" + ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2) + ")")) + " center/cover no-repeat" } }),
       h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.25) 0%, rgba(7,8,10,0.05) 45%, rgba(7,8,10,0.92) 100%)" } }),
       h("div", { style: { position: "absolute", left: 18, right: 18, bottom: 14 } },
-        h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9", textShadow: "0 2px 14px rgba(0,0,0,0.7)" } }, monClub),
+        h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 } },
+          h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9", textShadow: "0 2px 14px rgba(0,0,0,0.7)", minWidth: 0 } }, monClub),
+          h("div", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", textShadow: "0 1px 8px rgba(0,0,0,0.7)", whiteSpace: "nowrap" } }, maG.membres + " " + T("membres", "members", "miembros", "membri", "\u30e1\u30f3\u30d0\u30fc"))),
         villeClub ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 600, letterSpacing: 0.8, color: "rgba(234,247,250,0.82)", marginTop: 3, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, "\uD83D\uDCCD " + villeClub) : null,
         revendique ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 7, padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(9,13,17,0.6)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
           h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: 1 } }, "\u2713"),
@@ -28389,12 +28408,16 @@ function EcranGuilde() {
             h("div", { style: { height: "100%", width: niv.pct + "%", background: "linear-gradient(90deg,#4DEAD8,#20D9F5)", borderRadius: 6 } })),
           h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, maG.xp + " XP \u00b7 " + niv.reste + "/" + niv.besoin + " " + T("vers niv.", "to lvl", "a niv.", "a liv.", "\u6b21") + " " + (niv.niveau + 1))))) : null,
     AFFICHER_GAMIF_CLUB ? h("button", { onClick: function () { setEcran("quetes"); }, style: { display: "flex", alignItems: "center", gap: 6, margin: "10px 16px 0", padding: "7px 13px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 11, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, "\ud83c\udfc6 " + T("Voir les qu\u00eates du club", "See club quests", "Ver misiones del club", "Vedi le missioni del club", "\u30ad\u30fc\u30af\u30b9\u3092\u898b\u308b") + " \u203a") : null,
-    h("div", { style: { padding: "14px 16px 0" } },
+    /* 28/08 : le compteur MEMBRES est retire d ici, deplace a droite du nom du club
+       dans le bandeau du haut (demande Blandine : « retire le au milieu, affiche-le
+       a droite de l ecurie »). Le bloc restait ici uniquement pour lui tant que
+       AFFICHER_GAMIF_CLUB est false ; plus rien a afficher a cet endroit desormais. */
+    AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "14px 16px 0" } },
       h("div", { style: { display: "flex", gap: 6, padding: "14px 8px", borderRadius: 16, background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" } },
         statMini(maG.membres, T("Membres", "Members", "Miembros", "Membri", "\u30e1\u30f3\u30d0\u30fc")),
-        AFFICHER_GAMIF_CLUB ? statMini(maG.hf, T("Hauts faits", "Feats", "Logros", "Imprese", "\u5b9f\u7e3e")) : null,
-        AFFICHER_GAMIF_CLUB ? statMini(maG.res, T("R\u00e9sultats", "Results", "Result.", "Risult.", "\u6210\u7e3e")) : null,
-        AFFICHER_GAMIF_CLUB ? statMini(maG.pod, T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0"), "#E8C887") : null)),
+        statMini(maG.hf, T("Hauts faits", "Feats", "Logros", "Imprese", "\u5b9f\u7e3e")),
+        statMini(maG.res, T("R\u00e9sultats", "Results", "Result.", "Risult.", "\u6210\u7e3e")),
+        statMini(maG.pod, T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0"), "#E8C887"))) : null,
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "8px 20px 0", fontSize: 10.5, color: "#6B7580", fontFamily: M, fontStyle: "italic", textAlign: "center" } }, T("XP = membres\u00d710 + hauts faits\u00d75 + r\u00e9sultats\u00d73 + podiums\u00d78", "XP = members\u00d710 + feats\u00d75 + results\u00d73 + podiums\u00d78", "", "", "")) : null,
     h("div", { style: { padding: "26px 16px 0" } },
       h(TableauxSpectralHype, { mode: "club", nomClub: monClub, titreCourt: { fr: "La philosophie du club", en: "The club's philosophy", es: "La filosofía del club", it: "La filosofia del club", ja: "クラブの哲学", de: "Die Philosophie des Vereins" }, titreLong: { fr: "L'histoire du club", en: "The club's story", es: "La historia del club", it: "La storia del club", ja: "クラブの物語", de: "Die Geschichte des Vereins" }, defautVoix: { fr: "Rassembler des cavaliers autour d'une même passion : le cheval, le progrès et le plaisir de monter ensemble.", en: "Bringing riders together around one shared passion: the horse, progress and the joy of riding together.", es: "Reunir a jinetes en torno a una misma pasión: el caballo, el progreso y el placer de montar juntos.", it: "Riunire i cavalieri attorno a una stessa passione: il cavallo, il progresso e il piacere di cavalcare insieme.", ja: "馬、上達、そして共に乗る喜び — ひとつの情熱のもとに騎手が集う場所。", de: "Reiter um eine gemeinsame Leidenschaft versammeln: das Pferd, den Fortschritt und die Freude, zusammen zu reiten." }, defautHist: { fr: "L'histoire de ce club s'écrit à chaque foulée, concours après concours, amitié après amitié.", en: "This club's story is written stride after stride, show after show, friendship after friendship.", es: "La historia de este club se escribe a cada tranco, concurso tras concurso, amistad tras amistad.", it: "La storia di questo club si scrive falcata dopo falcata, concorso dopo concorso, amicizia dopo amicizia.", ja: "このクラブの物語は、一歩ごとに、大会ごとに、友情ごとに紡がれていく。", de: "Die Geschichte dieses Vereins schreibt sich Tritt für Tritt, Turnier für Turnier, Freundschaft für Freundschaft." }, editable: (typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)), noteModale: { fr: "Visible par tous les membres du club.", en: "Visible to all club members.", es: "Visible para todos los miembros del club.", it: "Visibile a tutti i membri del club.", ja: "クラブの全メンバーに表示されます。", de: "Für alle Vereinsmitglieder sichtbar." } }),
@@ -47078,6 +47101,18 @@ function EcranProfil() {
                 onClick: () => setEcran("journal-session"),
                 ico: [React.createElement("circle", { key: "a", cx: "12", cy: "12", r: "8.5" }), React.createElement("path", { key: "b", d: "M12 7.5V12l3 2" })],
             }),
+            /* 28/08 (demande Blandine, generalisee a tous les outils de verification
+               crees en session) : plus de lien tape a la main dans la barre d adresse
+               -- une tuile ici suffit. Reservee aux moderateurs (estModAdmin) : c est
+               un outil de relecture interne, pas quelque chose qu une cavaliere doit
+               croiser sur son compte. */
+            estModAdmin ? tuile({
+                cle: "ancienneecurie",
+                titre: "Ancienne écurie perso (aperçu)",
+                sous: "Page retirée de la navigation, à revoir avant suppression",
+                onClick: () => setEcran("ecurie"),
+                ico: [React.createElement("path", { key: "a", d: "M4 21V10l8-6 8 6v11" }), React.createElement("path", { key: "b", d: "M9 21v-7h6v7" })],
+            }) : null,
             tuile({
                 cle: "deco", couleur: COLORS.corail,
                 titre: t("se_deconnecter"),
