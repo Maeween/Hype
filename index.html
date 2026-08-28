@@ -24649,6 +24649,36 @@ function EcranAuth() {
     const [enCours, setEnCours] = useState(false);
     const [erreur, setErreur] = useState("");
     const [voirMdp, setVoirMdp] = useState(false);
+    /* 28/08 (demande de Blandine) : le lien « mot de passe oublie » recu par email
+       renvoyait vers l ecran de creation de compte (EcranAuth, mode "inscription")
+       sans jamais etre reconnu -- le detecteur du flag HYPE_RECUP_MDP (pose tres tot
+       dans le fichier, voir supa.auth.onAuthStateChange PASSWORD_RECOVERY) n etait
+       lu QUE par EcranConnexionSpectral, un ecran jamais atteint depuis la navigation
+       normale (onboarding -> "auth", pas "connexion"). On branche donc le meme
+       detecteur ici, sur l ecran reellement affiche. */
+    const [modeRecup, setModeRecup] = useState(false);
+    const [nouveauMdp, setNouveauMdp] = useState("");
+    React.useEffect(function () {
+        function activerRecup() { try { window.HYPE_RECUP_MDP = false; } catch (eAR) { } setModeRecup(true); setErreur(""); }
+        try { if (window.HYPE_RECUP_MDP) activerRecup(); } catch (eAR2) { }
+        try { window.addEventListener("hype-recup-mdp", activerRecup); } catch (eAR3) { }
+        return function () { try { window.removeEventListener("hype-recup-mdp", activerRecup); } catch (eAR4) { } };
+    }, []);
+    const validerNouveauMdp = async () => {
+        if (enCours) return;
+        if (!nouveauMdp || nouveauMdp.length < 6) { setErreur("Mot de passe : 6 caract\u00e8res minimum."); return; }
+        setEnCours(true); setErreur("");
+        try {
+            const rU = await supa.auth.updateUser({ password: nouveauMdp });
+            if (rU && rU.error) { setErreur("Un souci est survenu. R\u00e9essaie."); setEnCours(false); return; }
+            setModeRecup(false); setNouveauMdp("");
+            const r3u = await monProfil();
+            const profilSupabaseU = r3u.data;
+            setProfil((p) => ({ ...p, pseudo: (profilSupabaseU && profilSupabaseU.pseudo) || p.pseudo, avatar_url: (profilSupabaseU && profilSupabaseU.avatar_url) || p.avatar_url }));
+            setEcran("dashboard");
+        } catch (eVN) { setErreur("Connexion impossible. V\u00e9rifie ta connexion internet."); }
+        setEnCours(false);
+    };
     const mdpOublie = async () => {
         if (enCours) return;
         const em = email.trim();
@@ -24724,9 +24754,17 @@ function EcranAuth() {
             React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, padding: "30px 16px 0" } },
                 
                 React.createElement("div", { style: { borderRadius: "50%", boxShadow: `0 16px 44px ${COLORS.turquoise}33` } }, React.createElement(LogoMark, { size: 200 })),
-                React.createElement("h1", { style: { fontSize: 22, fontWeight: 800, color: COLORS.blanc, margin: 0, textShadow: "0 1px 10px rgba(10,26,36,0.176)" } }, mode === "inscription" ? t("creer_compte") : t("content_revoir")),
-                React.createElement("p", { style: { color: COLORS.grisDoux, fontSize: 13.5, margin: 0, textAlign: "center", textShadow: "0 1px 8px rgba(10,26,36,0.165)" } }, mode === "inscription" ? t("rejoindre_cavaliers") : t("connecte_continuer")))),
+                React.createElement("h1", { style: { fontSize: 22, fontWeight: 800, color: COLORS.blanc, margin: 0, textShadow: "0 1px 10px rgba(10,26,36,0.176)" } }, modeRecup ? "Nouveau mot de passe" : (mode === "inscription" ? t("creer_compte") : t("content_revoir"))),
+                React.createElement("p", { style: { color: COLORS.grisDoux, fontSize: 13.5, margin: 0, textAlign: "center", textShadow: "0 1px 8px rgba(10,26,36,0.165)" } }, modeRecup ? "Choisis un nouveau mot de passe pour ton compte." : (mode === "inscription" ? t("rejoindre_cavaliers") : t("connecte_continuer"))))),
         React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", padding: "24px 28px 32px" } },
+            modeRecup ? React.createElement(React.Fragment, null,
+                React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 } },
+                    React.createElement("div", { style: { position: "relative" } },
+                        React.createElement(ChampTexte, { placeholder: "Nouveau mot de passe", value: nouveauMdp, onChange: setNouveauMdp, type: voirMdp ? "text" : "password", fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
+                        React.createElement("button", { onClick: () => setVoirMdp(!voirMdp), "aria-label": "Afficher le mot de passe", style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 17, cursor: "pointer", opacity: voirMdp ? 1 : 0.5, padding: 4 } }, "\ud83d\udc41"))),
+                erreur ? React.createElement("p", { style: { color: erreur.indexOf("OK::") === 0 ? COLORS.turquoise : "#FF6B6B", fontSize: 12.5, margin: "0 0 12px", textAlign: "center", lineHeight: 1.45 } }, erreur.replace("OK::", "")) : React.createElement("div", { style: { marginBottom: 16 } }),
+                React.createElement(BoutonPrincipal, { texte: enCours ? "..." : "Valider le nouveau mot de passe", couleur: COLORS.turquoise, onClick: validerNouveauMdp }))
+            : React.createElement(React.Fragment, null,
             React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 } },
                 React.createElement(ChampTexte, { placeholder: t("email_placeholder"), value: email, onChange: setEmail, type: "email", fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
                 React.createElement("div", { style: { position: "relative" } },
@@ -24739,7 +24777,7 @@ function EcranAuth() {
                 React.createElement(CaseACocher, { checked: infolettre, onChange: setInfolettre }, t("consent_infolettre")),
                 React.createElement(CaseACocher, { checked: partenaires, onChange: setPartenaires }, t("consent_partenaires")))),
             React.createElement(BoutonPrincipal, { texte: enCours ? "..." : (mode === "inscription" ? t("creer_mon_compte") : t("se_connecter")), couleur: COLORS.turquoise, onClick: valider }),
-            React.createElement("button", { onClick: () => { setErreur(""); setMode(mode === "inscription" ? "connexion" : "inscription"); }, style: { marginTop: 20, color: COLORS.turquoise, fontSize: 14, fontWeight: 600, textAlign: "center" } }, mode === "inscription" ? t("deja_compte") : t("pas_compte")),
+            React.createElement("button", { onClick: () => { setErreur(""); setMode(mode === "inscription" ? "connexion" : "inscription"); }, style: { marginTop: 20, color: COLORS.turquoise, fontSize: 14, fontWeight: 600, textAlign: "center" } }, mode === "inscription" ? t("deja_compte") : t("pas_compte"))),
             React.createElement("p", { style: { marginTop: "auto", paddingTop: 24, fontSize: 11.5, color: COLORS.grisDoux, textAlign: "center", lineHeight: 1.5 } }, t("conditions_texte")))));
 }
 function BoutonSocial({ texte, icone, couleurIcone }) {
