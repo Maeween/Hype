@@ -28159,6 +28159,7 @@ function EcranGuilde() {
   function ouvrirCavalierClub(p) { try { window.__cavalierPublic = { id: (p.id || p.user_id || null), pseudo: p.pseudo || "Cavalier", photo: ((typeof avSrc === "function") ? avSrc(p.avatar_url) : p.avatar_url) || null, ecurie: monClub, club: (p.club || monClub || ""), ville: p.ville || "" }; window.__cavalierOuvert = "__public"; } catch (eC) { } setEcran("cavalier"); }
   /* --- Communauté idéale : cavaliers choisis par le propriétaire de l'écurie --- */
   var _mo = React.useState(null), moiG = _mo[0], setMoiG = _mo[1];
+  var _mcc = React.useState(null), mesChevauxClub = _mcc[0], setMesChevauxClub = _mcc[1];
   var _cx = React.useState(null), choisis = _cx[0], setChoisis = _cx[1];
   var _so = React.useState(false), selCav = _so[0], setSelCav = _so[1];
   var _rq = React.useState(""), rechQ = _rq[0], setRechQ = _rq[1];
@@ -28168,6 +28169,7 @@ function EcranGuilde() {
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       setMoiG(u || null);
+      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
       if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
       else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
@@ -28349,6 +28351,30 @@ function EcranGuilde() {
             (cv.race || cv.discipline) ? h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, cv.race || cv.discipline) : null);
         }))
         : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Les chevaux des cavaliers du club appara\u00eetront ici.", "Horses of the club's riders will appear here.", "Los caballos de los jinetes del club aparecer\u00e1n aqu\u00ed.", "I cavalli dei cavalieri del club appariranno qui.", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc\u306e\u99ac\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002"))),
+
+    moiG ? h("div", { style: { padding: "22px 16px 0" } },
+      /* Repere visuel entre "tous les chevaux de l'ecurie" (au-dessus, vue commune)
+         et "mes chevaux" (ci-dessous, gestion perso) : liseré dore + libelle, meme
+         codage que le chapitre "En concours" plus bas sur la page. */
+      h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 14px" } },
+        h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(244,196,85,0), rgba(244,196,85,0.4))" } }),
+        h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 800, letterSpacing: 2, color: "#F4C455", textTransform: "uppercase", whiteSpace: "nowrap" } }, T("Ma gestion", "My management", "Mi gesti\u00f3n", "La mia gestione", "\u81ea\u5206\u306e\u7ba1\u7406")),
+        h("div", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(244,196,85,0.4), rgba(244,196,85,0))" } })),
+      h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
+        h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac")),
+        h("div", { style: { display: "flex", alignItems: "baseline", gap: 12 } },
+          (mesChevauxClub && mesChevauxClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, mesChevauxClub.length) : null,
+          h("button", { onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer", padding: 0 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")))),
+      (mesChevauxClub && mesChevauxClub.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, paddingBottom: 4 } },
+        mesChevauxClub.map(function (cv, i) {
+          return h("button", { key: cv.id || i, onClick: function () { try { if (typeof window !== "undefined" && cv && cv.id) { window.__chevalOuvert = cv.id; } setEcran("cheval"); } catch (eOm) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
+            h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
+              cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
+              cv.__lien ? h("div", { style: { position: "absolute", top: 6, right: 6, padding: "2px 7px", borderRadius: 999, background: "rgba(6,7,9,0.62)", backdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.14)", fontFamily: M, fontSize: 9, fontWeight: 700, color: "#9AA6AE" } }, T("Li\u00e9", "Linked", "Vinculado", "Collegato", "\u9023\u643a")) : null),
+            h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval"),
+            (cv.race || cv.discipline) ? h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, cv.race || cv.discipline) : null);
+        }))
+        : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun cheval pour le moment.", "No horses yet.", "Ning\u00fan caballo por ahora.", "Nessun cavallo per ora.", "\u307e\u3060\u99ac\u304c\u3044\u307e\u305b\u3093\u3002"))) : null,
 
     h("div", { style: { padding: "26px 16px 0" } }, h(AgendaClubHype, { nomClub: monClub, moiG: moiG })),
 
