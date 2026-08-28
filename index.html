@@ -28279,7 +28279,7 @@ function EcranGuilde() {
          Meme action, meme apparence : seule la position change.
          NB : l autre bouton retour au code identique (ecran de gestion de l ecurie) est
          volontairement laisse tel quel — son conteneur est bien en haut de page. */
-      h("button", { onClick: function () { setEcran("ecurie"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, zIndex: 60, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039")),
+      h("button", { onClick: function () { setEcran("moncavalier"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "fixed", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, zIndex: 60, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039")),
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "12px 16px 0" } },
       h("div", { style: { background: "linear-gradient(135deg, rgba(32,217,245,0.222), rgba(7,9,12,0.92))", border: "1px solid rgba(32,217,245,0.555)", borderRadius: 20, padding: "18px", display: "flex", alignItems: "center", gap: 16 } },
         cristal(niv.niveau),
@@ -28711,7 +28711,7 @@ function EcranGererEcurie() {
   function champ(val, onCh, ph) { return h("input", { value: val, onChange: onCh, placeholder: ph, style: { width: "100%", padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: M, outline: "none", marginBottom: 9, boxSizing: "border-box" } }); }
   function btnAjout(txt, onClick) { return h("button", { onClick: onClick, disabled: busy, style: { padding: "11px 18px", borderRadius: 12, background: busy ? "rgba(32,217,245,0.555)" : TURQ, border: "none", color: "#04252a", fontWeight: 800, fontSize: 13.5, fontFamily: M, cursor: "pointer" } }, txt); }
   var head = h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 54px) 18px 8px", textAlign: "center" } },
-    h("button", { onClick: function () { setEcran("ecurie"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039"),
+    h("button", { onClick: function () { setEcran("moncavalier"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.12)", color: "#fff", fontSize: 20, cursor: "pointer" } }, "\u2039"),
     h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TURQL, fontFamily: M } }, T("G\u00e9rer mon \u00e9curie", "Manage my stable", "Gestionar", "Gestisci", "\u53a9\u820e\u7ba1\u7406")),
     h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" } }, ((profil.club || "").trim()) || "Mon \u00e9curie"));
   if (user === undefined) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#8A929C", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026"));
@@ -30063,7 +30063,7 @@ function EcranCliniqueEquine() {
   var tr = ctx.tr, setEcran = ctx.setEcran, retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var img = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.cliniqueApercu) ? HYPE_IMGS.cliniqueApercu : "";
-  function retourCl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("ecurie"); } }
+  function retourCl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("moncavalier"); } }
   return h("div", { style: { minHeight: "100vh", background: "#060709", paddingBottom: 120 } },
     h("div", { style: { position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 12px", background: "linear-gradient(180deg,#060709 62%,rgba(6,7,9,0))" } },
       h("button", { onClick: retourCl, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zurück"), style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", flexShrink: 0 } }, "\u2039"),
@@ -30099,7 +30099,7 @@ function EcranSellerie() {
   var ctx = useApp();
   var tr = ctx.tr, setEcran = ctx.setEcran, retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
-  function retourSl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("ecurie"); } }
+  function retourSl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("moncavalier"); } }
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 120 } },
     h("div", { style: { position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 12px", background: "linear-gradient(180deg,#060709 62%,rgba(6,7,9,0))" } },
       h("button", { onClick: retourSl, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zurück"), style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", flexShrink: 0 } }, "\u2039"),
@@ -30146,7 +30146,7 @@ function EcranAlbumEcurie() {
      Desormais un identifiant stable et propre a chaque cavalier : profil.id. */
   var idEcurieAl = (ctx.profil && ctx.profil.id) || null;
   var img = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.albumEcurieApercu) ? HYPE_IMGS.albumEcurieApercu : "";
-  function retourAl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("ecurie"); } }
+  function retourAl() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("guilde"); } }
   return h("div", { style: { minHeight: "100vh", background: "#060709", paddingBottom: 120 } },
     h("div", { style: { position: "sticky", top: 0, zIndex: 10, display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 12px", background: "linear-gradient(180deg,#060709 62%,rgba(6,7,9,0))" } },
       h("button", { onClick: retourAl, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zurück"), style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", flexShrink: 0 } }, "\u2039"),
@@ -33380,7 +33380,7 @@ function EcranCheval() {
     if (!c.dbId || busyFiche) return;
     if (!confSupprFiche) { setConfSupprFiche(true); return; }
     setBusyFiche(true);
-    try { await supprimerCheval(c.dbId); setEcran("ecurie"); } catch (eSf) { }
+    try { await supprimerCheval(c.dbId); setEcran("moncavalier"); } catch (eSf) { }
     setBusyFiche(false);
   }
   var pehSt = React.useState(false); var partageEH = pehSt[0], setPartageEH = pehSt[1];
@@ -33980,7 +33980,7 @@ function EcranCheval() {
         h("div", { style: { position: "absolute", top: 12, left: 12, right: 12, bottom: 12, borderRadius: 18, border: "1px solid " + tA(0.55), boxShadow: "inset 0 0 0 3px rgba(6,7,9,0.75), inset 0 0 0 4px " + tA(0.22), pointerEvents: "none", zIndex: 3 } }), /* 31/07 : cadre spectral en overlay — il suit la teinte (demande Blandine) */
         h("div", { className: "hh" }), h("div", { className: "hv" }),
         h("div", { className: "htop" },
-          h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { className: "ic", onClick: function () { setEcran("ecurie"); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m15 18-6-6 6-6" })))),
+          h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { className: "ic", onClick: function () { setEcran("moncavalier"); } }, h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "m15 18-6-6 6-6" })))),
           h("div", { className: "r" },
             h(SelecteurLangue, { compact: true }))),
         null,
