@@ -28346,7 +28346,7 @@ function EcranGuilde() {
           return h("button", { key: cv.id || i, onClick: function () { try { if (typeof window !== "undefined" && cv && cv.id) { window.__chevalCommunOuvert = cv.id; window.__hyccRetour = "guilde"; setEcran("cheval-commun"); } } catch (eOc) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
               cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
-              (liensClub && liensClub[cv.id] > 1) ? h("div", { style: { position: "absolute", top: 6, right: 6, width: 26, height: 30, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", display: "grid", placeItems: "center", fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: "#7FF0FF", filter: "drop-shadow(0 0 8px rgba(32,217,245,.65))" } }, String(liensClub[cv.id])) : null),
+              (liensClub && liensClub[cv.id] > 1) ? h("div", { style: { position: "absolute", bottom: 6, right: 6, width: 26, height: 30, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", display: "grid", placeItems: "center", fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: "#7FF0FF", filter: "drop-shadow(0 0 8px rgba(32,217,245,.65))" } }, String(liensClub[cv.id])) : null),
             h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval"),
             (cv.race || cv.discipline) ? h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, cv.race || cv.discipline) : null);
         }))
@@ -28519,7 +28519,16 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
     return function () { actifM = false; };
   }, []);
   var nomTrim = (nom || "").trim().toLowerCase();
-  var doublonEc = nomTrim ? (listeEc || []).find(function (cD) { return (cD.nom || "").trim().toLowerCase() === nomTrim; }) : null;
+  function sansAccents(s) { try { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); } catch (eAcc) { return String(s || ""); } }
+  var nomNorm = sansAccents(nomTrim);
+  var doublonEc = nomNorm ? (listeEc || []).find(function (cD) {
+    var cNorm = sansAccents((cD.nom || "").trim().toLowerCase());
+    if (!cNorm) return false;
+    /* egal, ou l un des deux noms commence par l autre (ex. "Elfe" / "Elfe de Feinn",
+       "Daphne" / "Daphnee velleda" une fois les accents retires) : signale le doublon
+       potentiel plutot que de laisser passer une fiche separee. */
+    return cNorm === nomNorm || cNorm.indexOf(nomNorm) === 0 || nomNorm.indexOf(cNorm) === 0;
+  }) : null;
   async function rattacher(chR) {
     if (lienBusy) return;
     setLienBusy(chR.id); setErr(null);
