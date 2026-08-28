@@ -28498,6 +28498,20 @@ function SectionCommentaires({ cible }) {
           h("input", { value: texte, onChange: function (e) { setTexte(e.target.value); }, placeholder: T("\u00c9crire un commentaire\u2026", "Write a comment\u2026", "Escribe\u2026", "Scrivi\u2026", "\u30b3\u30e1\u30f3\u30c8\u2026"), style: { flex: 1, minWidth: 0, padding: "9px 12px", borderRadius: 10, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 13, fontFamily: M, outline: "none" } }),
           h("button", { onClick: envoyer, disabled: busy, style: { background: busy ? "rgba(32,217,245,0.555)" : TURQ, border: "none", borderRadius: 10, color: "#04252a", fontWeight: 800, fontSize: 13, fontFamily: M, padding: "9px 14px", cursor: "pointer", flex: "0 0 auto" } }, busy ? "\u2026" : T("Envoyer", "Send", "Enviar", "Invia", "\u9001\u4fe1")))) ) : null);
 }
+/* 28/08 (demande de Blandine) : Evan et Liam gardent temporairement un quota
+   de chevaux gratuits illimite (30, comme elle), les autres cavaliers non-Premium
+   restent limites a 1 cheval. Exception nominative par user_id (pas par email,
+   plus fiable) -- A COMPLETER avec les vrais user_id d'Evan et de Liam. */
+var QUOTA_CHEVAUX_EXCEPTIONS = {
+  "fb616495-f533-461d-aa5b-537437a7b185": 30, /* Evan */
+  "2f6eeb8b-37ef-4ce5-9639-f2a267498d4b": 30, /* Liam (fiche 1) */
+  "fa2875ae-f740-4774-ad79-4726477add5e": 30  /* Liam (fiche 2) */
+};
+function quotaGratuit(userId) {
+  if (userId && QUOTA_CHEVAUX_EXCEPTIONS[userId] != null) return QUOTA_CHEVAUX_EXCEPTIONS[userId];
+  return 1;
+}
+
 function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche }) {
   var h = React.createElement;
   var _n = React.useState(""), nom = _n[0], setNom = _n[1];
@@ -28548,7 +28562,7 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
     try {
       if (!premium && typeof mesChevaux === "function") {
         var rq = await mesChevaux();
-        if (rq && rq.data && rq.data.length >= 1) { setBusy(false); allerPremium(); return; }
+        if (rq && rq.data && rq.data.length >= quotaGratuit(profilM.id)) { setBusy(false); allerPremium(); return; }
       }
       var r = await ajouterCheval({ nom: n });
       if (r && r.error) { setBusy(false); setErr(typeof r.error === "string" ? r.error : (r.error.message || String(r.error))); return; }
@@ -28742,7 +28756,7 @@ function EcranGererEcurie() {
     } catch (e) { setUser(null); }
   }
   React.useEffect(function () { charger(); }, []);
-  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= 1) { setEcran("premium"); return; } setBusy(true); var errCh = null; try { var rCh = await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0] }); if (rCh && rCh.error) errCh = rCh.error; } catch (e) { errCh = e; } setBusy(false); if (errCh) { alert(T("Impossible d\u2019ajouter le cheval : ", "Could not add the horse: ", "No se pudo a\u00f1adir el caballo: ", "Impossibile aggiungere il cavallo: ", "\u99ac\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCh.message || String(errCh))); return; } setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
+  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } setBusy(true); var errCh = null; try { var rCh = await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0] }); if (rCh && rCh.error) errCh = rCh.error; } catch (e) { errCh = e; } setBusy(false); if (errCh) { alert(T("Impossible d\u2019ajouter le cheval : ", "Could not add the horse: ", "No se pudo a\u00f1adir el caballo: ", "Impossibile aggiungere il cavallo: ", "\u99ac\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCh.message || String(errCh))); return; } setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
   async function soumettreCavalier() { if (!champsCv.nom.trim()) return; setBusy(true); var errCv = null; try { var rCv = await ajouterCavalier({ nom: champsCv.nom, niveau: champsCv.niveau, fichierPhoto: cvFile.current && cvFile.current.files[0] }); if (rCv && rCv.error) errCv = rCv.error; } catch (e) { errCv = e; } setBusy(false); if (errCv) { alert(T("Impossible d\u2019ajouter le cavalier : ", "Could not add the rider: ", "No se pudo a\u00f1adir el jinete: ", "Impossibile aggiungere il cavaliere: ", "\u9a0e\u624b\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCv.message || String(errCv))); return; } setFormOuvert(null); setChampsCv({ nom: "", niveau: "" }); if (cvFile.current) cvFile.current.value = ""; charger(); }
   async function soumettreSouvenir(e) { var f = e.target.files && e.target.files[0]; if (!f) return; setBusy(true); var errSv = null; try { var rSv = await ajouterSouvenir(f); if (rSv && rSv.error) errSv = rSv.error; } catch (er) { errSv = er; } setBusy(false); if (errSv) { alert(T("Impossible d\u2019ajouter la photo : ", "Could not add the photo: ", "No se pudo a\u00f1adir la foto: ", "Impossibile aggiungere la foto: ", "\u5199\u771f\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errSv.message || String(errSv))); if (svFile.current) svFile.current.value = ""; return; } if (svFile.current) svFile.current.value = ""; charger(); }
   async function suppr(type, id) { try { if (type === "cheval") await supprimerCheval(id); else await supprimerCavalier(id); } catch (e) {} charger(); }
@@ -28760,7 +28774,7 @@ function EcranGererEcurie() {
     h("input", { ref: svFile, type: "file", accept: "image/*,video/*", onChange: soumettreSouvenir, style: { display: "none" } }),
     head,
     h("div", { style: { padding: "16px 16px 0" } },
-      eyb(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), function () { if (!premium && chevaux.length >= 1) { setEcran("premium"); return; } if (window.__ouvrirCreationCheval) { window.__ouvrirCreationCheval(); return; } setFormOuvert(formOuvert === "cheval" ? null : "cheval"); }, formOuvert === "cheval" ? T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen") : "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")),
+      eyb(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), function () { if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } if (window.__ouvrirCreationCheval) { window.__ouvrirCreationCheval(); return; } setFormOuvert(formOuvert === "cheval" ? null : "cheval"); }, formOuvert === "cheval" ? T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen") : "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")),
       formOuvert === "cheval" ? h("div", { style: { padding: "14px", borderRadius: 16, background: "rgba(255,255,255,0.03)", border: "1px solid rgba(32,217,245,0.37)", marginBottom: 12 } },
         champ(champsCh.nom, function (e) { setChampsCh(Object.assign({}, champsCh, { nom: e.target.value })); }, T("Nom du cheval", "Horse name", "Nombre", "Nome", "\u99ac\u306e\u540d\u524d")),
         h("div", { style: { display: "flex", gap: 9 } }, h("div", { style: { flex: 1 } }, champ(champsCh.race, function (e) { setChampsCh(Object.assign({}, champsCh, { race: e.target.value })); }, T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e"))), h("div", { style: { flex: 1 } }, champ(champsCh.age, function (e) { setChampsCh(Object.assign({}, champsCh, { age: e.target.value })); }, T("\u00c2ge", "Age", "Edad", "Et\u00e0", "\u5e74\u9f62")))),
