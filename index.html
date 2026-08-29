@@ -34958,7 +34958,12 @@ function EcranCheval() {
         (function () { /* 31/07 soir : les 3 raccourcis remontent sous le badge, en grille compacte de 3 (demande Blandine) */
           var nbR = ((palmTous && palmTous.length) || 0) + ((c.flots && c.flots.length) || 0);
           function carteR(img3, ic3, ti3, cta3, act3, kR) {
-            return h("div", { key: kR, role: "button", onClick: act3, style: { position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid " + tA(0.3), background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: "pointer", height: 104, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "9px 4px 7px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)" } },
+            /* 29/08 : une carte sans action (act3 absent) est une carte « Prochainement » :
+               grisee, non cliquable, mais toujours lisible. La PHOTO n'est pas filtree
+               (regle Hype : aucun filtre sur les photos de chevaux) — seul l'habillage
+               s'attenue. */
+            var ferme3 = !act3;
+            return h("div", { key: kR, role: ferme3 ? null : "button", onClick: act3 || null, style: { position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid " + (ferme3 ? "rgba(255,255,255,0.10)" : tA(0.3)), background: "linear-gradient(170deg, rgba(255,255,255,0.045), rgba(255,255,255,0.012))", cursor: ferme3 ? "default" : "pointer", height: 104, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-start", padding: "9px 4px 7px", boxShadow: "0 8px 22px rgba(0,0,0,0.35)", opacity: ferme3 ? 0.5 : 1 } },
               img3 ? h("img", { src: img3, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 24%", filter: "brightness(0.42) saturate(0.92)" } }) : h("div", { style: { position: "absolute", inset: 0, background: "radial-gradient(90% 90% at 50% 0%, " + tA(0.13) + ", transparent 70%)" } }),
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.25), rgba(6,7,9,0.72))" } }),
               h("div", { style: { position: "relative", zIndex: 2, width: 36, height: 36, borderRadius: "50%", border: "1.5px solid " + tA(0.7), background: "rgba(8,12,16,0.6)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 13px " + tA(0.3) } },
@@ -34992,8 +34997,8 @@ function EcranCheval() {
               function () { setPanneau("videos"); }, "rv"),
             carteR(null, h("g", null, h("path", { d: "M4 5h13a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V5z", strokeLinejoin: "round" }), h("path", { d: "M7 9h7M7 12.5h7M7 16h4" })),
               T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles"),
-              T("Voir", "View", "Ver", "Vedi", "\u898b\u308b", "Ansehen"),
-              function () { setPanneau("souvenirs"); }, "rn"));
+              T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst"),
+              null, "rn")); /* 29/08 : carte grisee et non cliquable (demande Blandine) — la page existe deja (panneau "actualite") mais reste fermee le temps de decider qui publie et ce qu'est un post */
         })(),
         
         
@@ -35931,6 +35936,13 @@ function EcranCheval() {
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
           } })),) : null,
+      /* 29/08 (demande Blandine) : PAGE ACTUALITE. Le fil du cheval (MurHype) y est
+         desormais rendu, en pleine page et non plus en rail compact. La carte de la
+         grille est volontairement GRISEE « Prochainement » pour l'instant : la page
+         est prete, mais Blandine veut d'abord decider qui peut publier et ce qu'est
+         un post. Retirer la condition sur la carte pour l'ouvrir. */
+      panneau === "actualite" ? h("div", { style: { padding: "4px 0 24px" } },
+        h(MurHype, { cible: cibleCh, teinte: teinte })) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中", "Der Pass kommt bald")),
