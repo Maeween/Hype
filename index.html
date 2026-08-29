@@ -1286,6 +1286,9 @@ function estCompteFeinnHype(u) { try { return !!(u && u.email && String(u.email)
 // Team Ambassadeurs Hype : les modérateurs en font partie automatiquement + membres nommés
 const HYPE_AMBASSADEURS = ["liamroux0@gmail.com", "evanroux569@gmail.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr", "neliafrance.auboin@gmail.com"];
 function estAmbassadeurHype(u) { try { if (estModerateurHype(u)) return true; return !!(u && u.email && HYPE_AMBASSADEURS.indexOf(String(u.email).toLowerCase().trim()) !== -1); } catch (e) { return false; } }
+/* 29/08 : interrupteur unique du Fond Studio. false = bouton d'acces masque partout,
+   le code du filtre reste intact. Repasser a true pour le rallumer. */
+var AFFICHER_FOND_STUDIO = false;
 // Fond Studio Premium : palette de teintes (noir actif pour tous, le reste réservé aux ambassadeurs pour l'instant)
 const TEINTES_FOND_STUDIO = [
   { id: "noir", nom: { fr: "Noir", en: "Black", es: "Negro", it: "Nero", ja: "黒" , de: "Rappe"}, rgb: { r: 5, g: 6, b: 8 }, ambassadeur: false },
@@ -31908,7 +31911,14 @@ function RecadrageHype() {
         var on = filtre === fo[0];
         return React.createElement("button", { key: fo[0], onClick: function () { setFiltre(fo[0]); if (fo[0] !== "fondstudio") setFsParams(null); }, style: { padding: "7px 14px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, border: "1px solid " + (on ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: on ? "rgba(32,217,245,0.15)" : "transparent", color: on ? "#5FE9F0" : "rgba(237,242,245,0.7)" } }, fo[1]);
       }),
-      React.createElement("button", { key: "fondstudio", onClick: function () { if (!premiumR && !estModerateurHype(fsUser)) { var fin0 = job.fin; setJob(null); fin0(null); setEcranR("premium"); return; } setFsOuvert(true); }, style: { padding: "7px 14px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, border: "1px solid " + (filtre === "fondstudio" ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: filtre === "fondstudio" ? "rgba(32,217,245,0.15)" : "transparent", color: filtre === "fondstudio" ? "#5FE9F0" : "rgba(237,242,245,0.7)" } }, "\u2728 " + TR("Fond Studio", "Studio Background", "Fondo Studio", "Sfondo Studio", "スタジオ背景"))),
+      /* 29/08 : FOND STUDIO MASQUE (demande Blandine : « il marche pas, on peut le virer
+         pour l'instant, il fait que beuguer »). Rien n'est supprime — tout le code du
+         filtre reste en place, seul son bouton d'acces est retire. Repasser
+         AFFICHER_FOND_STUDIO a true pour le rallumer quand il sera repare.
+         Effet de bord favorable : Fond Studio repasse la photo par un canvas, ce qui
+         DETRUIT l'EXIF — le masquer preserve la date de prise de vue des nouvelles
+         photos (cf. chantier des dates du 29/08). */
+      AFFICHER_FOND_STUDIO ? (React.createElement("button", { key: "fondstudio", onClick: function () { if (!premiumR && !estModerateurHype(fsUser)) { var fin0 = job.fin; setJob(null); fin0(null); setEcranR("premium"); return; } setFsOuvert(true); }, style: { padding: "7px 14px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, border: "1px solid " + (filtre === "fondstudio" ? "rgba(32,217,245,0.8)" : "rgba(255,255,255,0.2)"), background: filtre === "fondstudio" ? "rgba(32,217,245,0.15)" : "transparent", color: filtre === "fondstudio" ? "#5FE9F0" : "rgba(237,242,245,0.7)" } }, "\u2728 " + TR("Fond Studio", "Studio Background", "Fondo Studio", "Sfondo Studio", "スタジオ背景"))) : null),
     React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, width: FW } },
       React.createElement("button", { onClick: function () { setPos(clampP(pos.x, pos.y, Math.max(ZMIN, pos.z / 1.18))); }, style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.08)", color: "#5FE9F0", fontSize: 18, fontWeight: 700, cursor: "pointer", flexShrink: 0, lineHeight: 1 } }, "\u2212"),
       React.createElement("input", { type: "range", min: ZMIN, max: 3, step: 0.01, value: pos.z, onChange: function (e) { setPos(clampP(pos.x, pos.y, parseFloat(e.target.value))); }, style: { flex: 1, accentColor: "#20D9F5" } }),
