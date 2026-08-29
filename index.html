@@ -36499,7 +36499,7 @@ function EcranEcurieHype() {
             try { var rmEH1 = await supa.from("profiles").select("id").ilike("ecurie", motifEH).limit(200); if (rmEH1 && rmEH1.data) mmEH = mmEH.concat(rmEH1.data); } catch (eMEH1) { }
             try { var rmEH2 = await supa.from("profiles").select("id").ilike("ecurie2", motifEH).limit(200); if (rmEH2 && rmEH2.data) mmEH = mmEH.concat(rmEH2.data); } catch (eMEH2) { }
             var vuEH = {}; idsMembresEH = mmEH.filter(function (p) { if (!p || !p.id || vuEH[p.id]) return false; vuEH[p.id] = true; return true; }).map(function (p) { return p.id; });
-            rc = idsMembresEH.length ? await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").in("user_id", idsMembresEH).is("supprime_le", null).limit(500) : { data: [] };
+            rc = idsMembresEH.length ? await supa.from("chevaux").select("id, nom, race, photo_url, user_id").in("user_id", idsMembresEH).is("supprime_le", null).limit(500) : { data: [] };
           } else {
             /* 29/08 (demande Blandine : « il en manque plein ») -- sans contexte club,
                cet ecran chargeait la galerie GLOBALE : uniquement les chevaux ayant
@@ -36519,7 +36519,7 @@ function EcranEcurieHype() {
               try { var rm1 = await supa.from("profiles").select("id").ilike("ecurie", motifMoi).limit(200); if (rm1 && rm1.data) mmMoi = mmMoi.concat(rm1.data); } catch (eM1) { }
               try { var rm2 = await supa.from("profiles").select("id").ilike("ecurie2", motifMoi).limit(200); if (rm2 && rm2.data) mmMoi = mmMoi.concat(rm2.data); } catch (eM2) { }
               var vuMoi = {}; var idsMoi = mmMoi.filter(function (p) { if (!p || !p.id || vuMoi[p.id]) return false; vuMoi[p.id] = true; return true; }).map(function (p) { return p.id; });
-              rc = idsMoi.length ? await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").in("user_id", idsMoi).is("supprime_le", null).limit(500) : { data: [] };
+              rc = idsMoi.length ? await supa.from("chevaux").select("id, nom, race, photo_url, user_id").in("user_id", idsMoi).is("supprime_le", null).limit(500) : { data: [] };
             } else {
               rc = { data: [] };
             }
@@ -36534,13 +36534,13 @@ function EcranEcurieHype() {
           if (!rc || !rc.data || !rc.data.length) {
             try {
               if (u) {
-                var rMiens2 = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("user_id", u.id).is("supprime_le", null).limit(500);
+                var rMiens2 = await supa.from("chevaux").select("id, nom, race, photo_url, user_id").eq("user_id", u.id).is("supprime_le", null).limit(500);
                 if (rMiens2 && rMiens2.data && rMiens2.data.length) rc = rMiens2;
               }
             } catch (eMi2) { }
           }
           if (!rc || !rc.data || !rc.data.length) {
-            try { rc = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("partage_ecurie_hype", true).is("supprime_le", null).limit(60); } catch (ePg) { }
+            try { rc = await supa.from("chevaux").select("id, nom, race, photo_url, user_id").eq("partage_ecurie_hype", true).is("supprime_le", null).limit(60); } catch (ePg) { }
           }
           if (ok) setCommList((rc && rc.data) || []);
           /* 29/08 : albums PUBLICS des chevaux qu'on vient de charger. La cible d'un
@@ -36612,7 +36612,7 @@ function EcranEcurieHype() {
       h("div", { className: "ombre" }),
       h("div", { className: "txt" },
         h("div", { className: "ehyComNom" }, cv.nom || T("Cheval", "Horse", "Caballo", "Cavallo", "馬")),
-        (cv.race || cv.robe) ? h("div", { className: "ehyComSous" }, [cv.race, cv.robe].filter(Boolean).join(" · ")) : null,
+        cv.race ? h("div", { className: "ehyComSous" }, String(cv.race)) : null,
         p ? h("div", { className: "ehyProprio" },
           h("div", { className: "av" }, p.avatar_url ? h("img", { src: p.avatar_url, alt: "" }) : null),
           h("span", null, p.pseudo || "")) : null));
@@ -36671,7 +36671,6 @@ function EcranEcurieHype() {
   var chevauxFeinnEH = ((commList || [])).map(function (cEH) {
     var detEH = [];
     if (cEH.race) detEH.push(String(cEH.race));
-    if (cEH.robe) detEH.push(String(cEH.robe));
     return {
       img: cEH.photo_url || CHEVAL_DEFAUT,
       nom: cEH.nom || T("Sans nom", "Unnamed", "Sin nombre", "Senza nome", "名前なし", "Ohne Namen"),
