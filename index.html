@@ -32280,7 +32280,13 @@ function ChronologieSouvenirs(props) {
   var _st = React.useState({ souvenirs: 0, saisons: 0, concours: 0 }), stats = _st[0], setStats = _st[1];
   var _ch = React.useState(true), chargeCh = _ch[0], setChargeCh = _ch[1];
   var _ou = React.useState({}), ouvertes = _ou[0], setOuvertes = _ou[1];
-  var _ed = React.useState(null), editAlbum = _ed[0], setEditAlbum = _ed[1];
+  /* 30/08 (demande Blandine : « les notes on comprend rien et ça soûle ») — les
+     encarts « Corriger l'annee de X » sont RETIRES. A la place, un lien discret
+     par annee ouvre un mode selection : on tape UNE photo, on donne son annee.
+     modeAn = l'annee dont la grille est en mode selection (null = navigation
+     normale) ; photoSel = la photo choisie, en attente de son annee. */
+  var _ma = React.useState(null), modeAn = _ma[0], setModeAn = _ma[1];
+  var _ps = React.useState(null), photoSel = _ps[0], setPhotoSel = _ps[1];
   var _rf = React.useState(0), rafraichir = _rf[0], setRafraichir = _rf[1];
 
   React.useEffect(function () {
@@ -32339,20 +32345,18 @@ function ChronologieSouvenirs(props) {
     return function () { actif = false; };
   }, [chevalId, rafraichir]);
 
-  /* Corriger l'annee d'un album entier : une sortie = un album = une periode. */
-  async function appliquerAnneeAlbum(albumId, an) {
+  /* 30/08 : corriger l'annee d'UNE SEULE photo. Ecrit la meme table que la
+     correction par album, mais sur une seule URL. Milieu d'annee : aucune
+     fausse precision de jour. */
+  async function appliquerAnneePhoto(url, an) {
     try {
       var n = parseInt(an, 10);
       if (!(n >= 1990 && n <= (new Date()).getFullYear() + 1)) return false;
-      var ra = await supa.from("albums_cheval").select("photos").eq("id", albumId).maybeSingle();
-      var lst = ((ra && ra.data && ra.data.photos) || []).filter(function (u) { return u && !(typeof estUrlVideo === "function" && estUrlVideo(u)); });
       var u = await utilisateurActuel(); if (!u) return false;
-      var quand = new Date(n + "-06-15T12:00:00"); /* milieu d'annee : aucune fausse precision de jour */
-      for (var i = 0; i < lst.length; i++) {
-        await supa.from("photo_dates").upsert({ photo_url: lst[i], prise_le: quand.toISOString(), source: "manuel", user_id: u.id }, { onConflict: "photo_url" });
-      }
-      return true;
-    } catch (eA) { return false; }
+      var quand = new Date(n + "-06-15T12:00:00");
+      var r = await supa.from("photo_dates").upsert({ photo_url: url, prise_le: quand.toISOString(), source: "manuel", user_id: u.id }, { onConflict: "photo_url" });
+      return !(r && r.error);
+    } catch (eP) { return false; }
   }
 
   if (chargeCh) return h("div", { style: { padding: "18px 16px", fontSize: 12, color: "#8A929C" } }, T("Chargement des souvenirs…", "Loading memories…", "Cargando recuerdos…", "Caricamento ricordi…", "読み込み中…", "Lädt…"));
@@ -32389,29 +32393,35 @@ function ChronologieSouvenirs(props) {
             grp.approx ? h("span", { style: { fontSize: 9.5, color: "#7B848C", fontStyle: "italic" } }, "· " + grp.approx + " " + T("approx.", "approx.", "aprox.", "circa", "概算", "ca.")) : null),
           h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 } },
             visibles.map(function (p, iP) {
-              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (props.onOuvrir) props.onOuvrir(p.url); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013" } },
+              var enSel = (modeAn === grp.an);
+              var choisie = enSel && photoSel === p.url;
+              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (enSel) { setPhotoSel(p.url); return; } if (props.onOuvrir) props.onOuvrir(p.url); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisie ? ("2px solid " + teinte) : "none", outlineOffset: choisie ? -2 : 0, opacity: (enSel && !choisie) ? .55 : 1 } },
                 h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(p.url, 420, 315) : p.url), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
             })),
           reste > 0 ? h("button", { onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n[grp.an] = true; return n; }); }, style: { marginTop: 8, background: "none", border: "none", color: teinteCl, fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif" } }, "+ " + reste + " " + T("voir tout", "view all", "ver todo", "vedi tutto", "すべて見る", "alle ansehen")) : null,
-          /* Correction de l'annee, par album : reservee au proprietaire */
-          (props.proprio && grp.approx) ? h("div", { style: { marginTop: 8 } },
-            (function () {
-              var albums = {}; grp.photos.forEach(function (p) { if (p.src !== "exif" && p.albumId) albums[p.albumId] = p.albumNom || T("Album", "Album", "Álbum", "Album", "アルバム", "Album"); });
-              return Object.keys(albums).map(function (aid) {
-                var enCours = editAlbum === aid;
-                return h("div", { key: "cor" + aid, style: { marginTop: 5 } },
-                  !enCours ? h("button", { onClick: function () { setEditAlbum(aid); }, style: { background: "none", border: "1px dashed rgba(255,255,255,0.18)", borderRadius: 9, color: "#8A929C", fontSize: 10.5, cursor: "pointer", padding: "8px 11px", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textAlign: "left" } }, T("Corriger l'année de « ", "Set the year of “", "Corregir el año de « ", "Correggi l'anno di « ", "年を修正: ", "Jahr korrigieren: ") + albums[aid] + " »")
-                    : h("div", { style: { display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
-                      h("input", { type: "number", inputMode: "numeric", placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anIn" + aid, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 16, padding: "0 10px", fontFamily: "'Montserrat',sans-serif" } }),
-                      h("button", { onClick: async function () {
-                        var el = document.getElementById("anIn" + aid);
-                        var ok = await appliquerAnneeAlbum(aid, el && el.value);
-                        setEditAlbum(null);
-                        if (ok) setRafraichir(function (r) { return r + 1; });
-                      }, style: { minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid " + teinte, background: teinte + "22", color: teinteCl, fontSize: 11.5, fontWeight: 800, cursor: "pointer" } }, T("Valider", "Apply", "Aplicar", "Applica", "適用", "Anwenden")),
-                      h("button", { onClick: function () { setEditAlbum(null); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "取消", "Abbrechen"))));
-              });
-            })()) : null);
+          /* 30/08 — CHANGER L'ANNEE D'UNE PHOTO (proprietaire seulement).
+             Un seul lien discret par annee. Tant qu'on ne l'a pas tape, la
+             grille se comporte exactement comme avant : un tap ouvre la photo. */
+          props.proprio ? h("div", { style: { marginTop: 8 } },
+            (modeAn !== grp.an)
+              ? h("button", { onClick: function () { setPhotoSel(null); setModeAn(grp.an); }, style: { background: "none", border: "none", color: "#7B848C", fontSize: 10.5, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textDecoration: "underline", textUnderlineOffset: 3 } },
+                  T("Changer l'année d'une photo", "Change a photo's year", "Cambiar el año de una foto", "Cambiare l'anno di una foto", "写真の年を変更", "Jahr eines Fotos ändern"))
+              : h("div", null,
+                  h("div", { style: { fontSize: 10.5, color: teinteCl, marginBottom: 6 } },
+                    photoSel
+                      ? T("Donne son année, puis valide.", "Give its year, then apply.", "Indica su año y aplica.", "Indica l'anno e applica.", "年を入力して適用。", "Jahr eingeben und anwenden.")
+                      : T("Tape la photo à corriger.", "Tap the photo to fix.", "Toca la foto a corregir.", "Tocca la foto da correggere.", "修正する写真をタップ。", "Tippe das Foto an.")),
+                  h("div", { style: { display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
+                    photoSel ? h("input", { type: "number", inputMode: "numeric", placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 15, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
+                    photoSel ? h("button", { onClick: async function () {
+                      var el = document.getElementById("anPh" + grp.an);
+                      var ok = await appliquerAnneePhoto(photoSel, el && el.value);
+                      setPhotoSel(null); setModeAn(null);
+                      if (ok) setRafraichir(function (r) { return r + 1; });
+                    }, style: { minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid " + teinte, background: teinte + "22", color: teinteCl, fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
+                      T("Valider", "Apply", "Aplicar", "Applica", "適用", "Anwenden")) : null,
+                    h("button", { onClick: function () { setPhotoSel(null); setModeAn(null); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
+                      T("Annuler", "Cancel", "Cancelar", "Annulla", "取消", "Abbrechen"))))) : null);
       })),
 
     props.onAjouter ? h("button", { onClick: props.onAjouter, style: { display: "block", margin: "6px auto 4px", minHeight: 48, padding: "0 26px", borderRadius: 999, border: "1px solid " + teinte + "88", background: "transparent", color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "▧  " + T("Ajouter un souvenir", "Add a memory", "Añadir un recuerdo", "Aggiungi un ricordo", "思い出を追加", "Erinnerung hinzufügen")) : null);
@@ -33097,11 +33107,14 @@ function AlbumsCheval(props) {
       h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("\u2605 = \u00e0 la une sur la fiche (3 max)", "\u2605 = featured on the profile (3 max)", "\u2605 = destacado (3 m\u00e1x)", "\u2605 = in evidenza (max 3)", "\u2605 = \u6ce8\u76ee (3\u3064\u307e\u3067)")),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
     h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", padding: "2px 16px 4px" } },
-      (albums || []).map(carteAlbum),
-      h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { flex: "0 0 auto", width: 112, cursor: "pointer" } },
-        h("div", { style: { width: 112, height: 112, borderRadius: 16, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6 } },
-          h("span", { style: { width: 30, height: 30, borderRadius: "50%", border: "1.5px solid " + tnT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: tnT } }, "+"),
-          h("span", { style: { fontFamily: M9, fontSize: 9, fontWeight: 700, color: tnT, letterSpacing: 0.5, textAlign: "center" } }, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0"))))),
+      (albums || []).map(carteAlbum)),
+    /* 30/08 (choix de Blandine, option 1) : le grand carre pointille « Nouvel
+       album » est remplace par une PASTILLE discrete, centree sous la rangee.
+       Moins de place, rien de vide a l'ecran, meme geste. */
+    h("div", { style: { display: "flex", justifyContent: "center", padding: "4px 16px 2px" } },
+      h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid " + tA(0.55), background: tA(0.06), color: tnT, fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
+        h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
+        h("span", null, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0")))),
     albOuvert ? h("div", { style: { margin: "12px 16px 0", padding: "13px 12px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(255,255,255,0.02)" } },
       (function () {
         if (!albOuvert) return null;
@@ -33696,9 +33709,9 @@ function GrilleSouvenirs(props) {
   if (prec) { for (var iN = 0; iN < photos.length; iN++) { if (prec.indexOf(photos[iN]) < 0) nouveaux[photos[iN]] = true; } }
   precRef.current = photos.slice();
   var cellules = [];
-  cellules.push(h("div", { key: "plus", onClick: props.onAjouter, style: { aspectRatio: "1 / 1", borderRadius: 16, border: "1.5px dashed " + tA(0.5) + "", background: "" + tA(0.05) + "", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, cursor: "pointer", animation: premierePose ? "souvPose .8s var(--cm-ease-out) both" : "none" } },
-    h("span", { style: { width: 40, height: 40, borderRadius: "50%", border: "1px solid " + tA(0.6) + "", background: "" + tA(0.12) + "", display: "flex", alignItems: "center", justifyContent: "center", color: tnCl, fontSize: 20, fontWeight: 700 } }, "+"),
-    h("span", { style: { fontSize: 10.5, letterSpacing: "0.1em", color: tnCl, fontWeight: 700, textTransform: "uppercase" } }, T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0"))));
+  /* 30/08 (choix de Blandine, option 1) : la case pointillee « Ajouter » ne fait
+     plus partie de la grille — la galerie commence par de VRAIES photos. Le geste
+     est repris par une pastille centree posee sous la grille (voir le retour). */
   var LIM_SOUV = 6;
   var trop = !toutVu && photos.length > LIM_SOUV;
   var aRendre = trop ? photos.slice(0, LIM_SOUV - 1) : photos;
@@ -33727,8 +33740,16 @@ function GrilleSouvenirs(props) {
       h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 22, fontWeight: 800, color: tnCl } }, "+" + (photos.length - (LIM_SOUV - 1))),
       h("span", { style: { fontSize: 9.5, letterSpacing: "0.12em", color: tnCl, fontWeight: 700, textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"))));
   }
+  var galerieVide = !photos || photos.length === 0;
   return h("div", null,
-    h("div", { ref: grilleRef, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules),
+    galerieVide ? null : h("div", { ref: grilleRef, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules),
+    h("div", { style: { display: "flex", justifyContent: "center", padding: "10px 16px 2px" } },
+      h("div", { onClick: props.onAjouter, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid " + tA(0.55), background: tA(0.06), color: tnCl, fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
+        h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
+        h("span", null, T("Ajouter une photo", "Add a photo", "A\u00f1adir una foto", "Aggiungi una foto", "\u5199\u771f\u3092\u8ffd\u52a0", "Foto hinzuf\u00fcgen")))),
+    /* 30/08 : cheval sans aucune photo -> la mascotte prend la place de l'ecran
+       vide, juste sous la galerie (emplacement decide par Blandine). */
+    galerieVide ? h(BlocSouvenirsVide, { teinteCl: tnCl, onAjouter: props.onAjouter }) : null,
     (toutVu && photos.length > LIM_SOUV) ? h("button", { onClick: function () { setToutVu(false); try { if (grilleRef.current && grilleRef.current.scrollIntoView) grilleRef.current.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }, style: { display: "block", margin: "12px auto 0", padding: "9px 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("R\u00e9duire", "Collapse", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null);
 }
 
@@ -35887,7 +35908,7 @@ function EcranCheval() {
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — */
             h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
-              photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 172, objectFit: "cover", objectPosition: "center 25%", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
+              photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 190, objectFit: "contain", objectPosition: "center", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
               (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
               (moi && typeof estModerateurHype === "function" && estModerateurHype(moi) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: changerPhotoPalm, title: "Changer la photo (admin)", style: { position: "absolute", top: 9, right: 45, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u270E") : null, /* 25/08 : admins — changer la photo en ligne */
