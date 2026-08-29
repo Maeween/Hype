@@ -1967,7 +1967,19 @@ function BandeauStories(props) {
                    0.14 en disque = retenu le 17/08 · 0.09 en disque = ici.
                  ⚠️ La couleur venait DEJA de tA(), donc de la teinte du cavalier :
                  Blandine la croyait figee en turquoise, elle ne l a jamais ete. */
-                background: "radial-gradient(circle closest-side, " + tA(0.032) + " 0%, " + tA(0.09) + " 76%, " + tA(0.038) + " 88%, " + tA(0) + " 100%)"
+                /* 28/08 (demande Blandine, capture Ecurie Feinn) : « le halo des stories
+                   en bleu plus fonce et plus discret ». Deux changements distincts cette
+                   fois, pas seulement l opacite comme les passes precedentes :
+                   1. COULEUR : passe d une couleur qui SUIT la teinte du cavalier (tA/tn,
+                      turquoise vif par defaut) a un bleu fonce FIXE (rgb 10,42,58 -- un
+                      bleu nuit desature, pas le turquoise clair de l app). Ce halo-ci
+                      seul est concerne ; les autres usages de tA()/teinteHypeActive()
+                      dans ce fichier (anneaux À la une, etc.) suivent toujours le theme
+                      du cavalier, inchanges.
+                   2. OPACITE : encore baissee (regle du 17/08 gardee : jamais toucher a
+                      la geometrie, etendue 1,32x et pic a 76% INCHANGES) -- 0.09 -> 0.055
+                      au pic, les deux appuis proportionnellement. */
+                background: "radial-gradient(circle closest-side, rgba(10,42,58,0.02) 0%, rgba(10,42,58,0.055) 76%, rgba(10,42,58,0.024) 88%, rgba(10,42,58,0) 100%)"
             }
           }),
           h("div", {
