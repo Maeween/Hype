@@ -23,6 +23,27 @@
 //   3. Elle répondait « c'est fait » à Stripe même quand rien n'avait été
 //      écrit. Stripe considérait le travail accompli et n'insistait jamais.
 //      Elle dit maintenant la vérité : en cas d'échec, Stripe réessaie seul.
+//
+// ─────────────────────────────────────────────────────────────────────────────
+// RÉVISION DU 28/08/2026 — Violaine, Aurélie et Laurène avaient bien payé
+// (confirmé dans Stripe par Blandine) mais aucune des trois n'a jamais reçu
+// sa ligne côté base, MALGRÉ les réessais automatiques de Stripe pendant
+// plusieurs jours. Un échec permanent, pas aléatoire : la piste du 21/08
+// (userIdParEmail) était la bonne direction mais avait elle-même un défaut.
+//
+// LE BUG : `/auth/v1/admin/users?filter=<email>` ne fait PAS une recherche
+// filtrée par email côté serveur — cet endpoint ignore silencieusement ce
+// paramètre et renvoie simplement les 200 premiers comptes de la base (par
+// défaut de création), dans un ordre non garanti. Le code cherchait ensuite
+// l'adresse dans cette liste tronquée. L'app ayant largement plus de 200
+// comptes au total tous clubs confondus, toute cavalière dont le compte
+// n'est pas dans ce lot de 200 n'est JAMAIS trouvée — et ça reste vrai à
+// CHAQUE nouvelle tentative de Stripe, d'où l'échec permanent.
+//
+// LE CORRECTIF : chercher dans la table `profiles` (colonne email, déjà
+// utilisée ailleurs dans l'app pour ce genre de recherche) via une vraie
+// recherche filtrée côté base (PostgREST `email=ilike.<email>`), au lieu de
+// trier à la main un lot fixe et incomplet de comptes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
@@ -62,22 +83,24 @@ function entetesSupabase(service) {
 }
 
 /* ── Retrouver la cavalière par son adresse ───────────────────────────────────
-   Utilisé quand Stripe ne fournit pas client_reference_id. Cherche dans
-   auth.users, sans tenir compte de la casse. Rend l'identifiant ou null.      */
+   Utilisé quand Stripe ne fournit pas client_reference_id.
+   28/08 : cherche désormais dans `profiles` via une VRAIE recherche filtrée
+   côté base (ilike, insensible à la casse, correspondance exacte puisqu'on
+   ne passe aucun joker %). L'ancienne version interrogeait l'API admin avec
+   un paramètre "filter" qu'elle ignore silencieusement, et ne regardait donc
+   jamais que les 200 premiers comptes de toute la base — la vraie cause du
+   blocage permanent de Violaine, Aurélie et Laurène. Rend l'identifiant ou
+   null.                                                                      */
 async function userIdParEmail(service, email) {
     if (!email) return null;
     try {
         const r = await fetch(
-            SUPABASE_URL + "/auth/v1/admin/users?per_page=200&filter=" + encodeURIComponent(email),
+            SUPABASE_URL + "/rest/v1/profiles?email=ilike." + encodeURIComponent(String(email).trim()) + "&select=id&limit=1",
             { headers: entetesSupabase(service) }
         );
         if (!r.ok) { log("recherche email KO", r.status); return null; }
         const data = await r.json();
-        const liste = (data && (data.users || data)) || [];
-        const cible = String(email).toLowerCase();
-        for (const u of liste) {
-            if (u && u.email && String(u.email).toLowerCase() === cible) return u.id;
-        }
+        if (data && data.length && data[0] && data[0].id) return data[0].id;
         log("aucun compte pour l'adresse", email);
         return null;
     } catch (e) {
