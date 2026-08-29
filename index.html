@@ -28878,7 +28878,24 @@ function EcranGuilde() {
          l'envoyer. Aucune autre fonctionnalite de la page touchee. */
       (chevauxClub && chevauxClub.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, paddingBottom: 4 } },
         chevauxClub.slice(0, 9).map(function (cv, i) {
-          return h("button", { key: cv.id || i, onClick: function () { try { if (typeof window !== "undefined" && cv && cv.id) { window.__chevalCommunOuvert = cv.id; window.__hyccRetour = "guilde"; setEcran("cheval-commun"); } } catch (eOc) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
+          return h("button", { key: cv.id || i, onClick: function () {
+            /* 29/08 (demande Blandine : « quand je clique sur une fiche cheval dans
+               l'ecurie je m'attends a voir SA fiche, pas la fiche communautaire ») —
+               cette grille ouvrait TOUJOURS la page publique, ce qui se defendait quand
+               elle ne montrait que les chevaux des autres membres. Pour SES PROPRES
+               chevaux, c'est la vraie fiche qu'on attend (celle qui permet de gerer
+               photos, histoire, palmares). On aiguille donc selon le proprietaire ;
+               les chevaux des autres membres gardent la page publique. */
+            /* 29/08 (regle posee par Blandine) : depuis la page Ecurie / Club, TOUS les
+               chevaux ouvrent LEUR FICHE — la sienne comme celle des autres membres.
+               La page communautaire ne s'atteint QUE par le lien « Decouvrir l'histoire
+               de X a travers N autres aventures » en bas d'une fiche (PontChevalCommun),
+               qui lui est deja branche correctement. Cette grille l'ouvrait pour tout le
+               monde : c'etait la porte d'entree en trop. */
+            try {
+              if (typeof window === "undefined" || !cv || !cv.id) return;
+              window.__chevalOuvert = cv.id; setEcran("cheval");
+            } catch (eOc) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
               cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
               (liensClub && liensClub[cv.id] > 1) ? h("div", { style: { position: "absolute", bottom: 6, right: 6, width: 26, height: 30, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", display: "grid", placeItems: "center", fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: "#7FF0FF", filter: "drop-shadow(0 0 8px rgba(32,217,245,.65))" } }, String(liensClub[cv.id])) : null),
@@ -36487,24 +36504,24 @@ function EcranEcurieHype() {
             } else {
               rc = { data: [] };
             }
-            /* 29/08 (page trouvee VIDE par Blandine) : cascade de replis. Arriver par
-               l'onglet ne transmet aucun club — on le cherche alors dans le profil, et
-               si ce champ est vide ou ne correspond a aucun membre, l'ancien code
-               retombait sur la galerie « partage_ecurie_hype » qui, elle, est vide :
-               page blanche avec des compteurs a zero. Desormais on se rabat d'abord sur
-               SES PROPRES chevaux (il y en a toujours), et seulement en tout dernier
-               recours sur la galerie d'origine. La page n'est plus jamais vide. */
-            if (!rc || !rc.data || !rc.data.length) {
-              try {
-                if (u) {
-                  var rMiens = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("user_id", u.id).is("supprime_le", null).limit(500);
-                  if (rMiens && rMiens.data && rMiens.data.length) rc = rMiens;
-                }
-              } catch (eMi) { }
-            }
-            if (!rc || !rc.data || !rc.data.length) {
-              rc = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("partage_ecurie_hype", true).is("supprime_le", null).limit(60);
-            }
+          }
+          /* 29/08 (2e passe — page ENCORE trouvee vide par Blandine) : la cascade
+             etait enfermee dans le cas « sans contexte club ». Arriver par le BOUTON
+             de la page Club transmet bien un club : si sa recherche ne ramenait aucun
+             cheval, aucun repli ne se declenchait et la page restait vide. Elle est
+             desormais AU MEME NIVEAU que les deux branches, donc appliquee dans tous
+             les cas. Ordre : club transmis -> club du profil -> MES chevaux -> galerie
+             d'origine. */
+          if (!rc || !rc.data || !rc.data.length) {
+            try {
+              if (u) {
+                var rMiens2 = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("user_id", u.id).is("supprime_le", null).limit(500);
+                if (rMiens2 && rMiens2.data && rMiens2.data.length) rc = rMiens2;
+              }
+            } catch (eMi2) { }
+          }
+          if (!rc || !rc.data || !rc.data.length) {
+            try { rc = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("partage_ecurie_hype", true).is("supprime_le", null).limit(60); } catch (ePg) { }
           }
           if (ok) setCommList((rc && rc.data) || []);
           /* 29/08 : albums PUBLICS des chevaux qu'on vient de charger. La cible d'un
