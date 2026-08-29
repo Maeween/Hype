@@ -22433,7 +22433,19 @@ function HypeApp() {
         peutReculer: historiqueEcrans.length > 0, peutAvancer: pileAvant.length > 0,
         langue, setLangue,
         t, tr,
-        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!profil.vip || ambassadeur), estAbonne, planAbo, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
+        /* 28/08 (urgence Blandine : Violaine, Aurelie, Lorraine bloquees --
+           « Cannot read properties of null (reading 'vip') », ecran de crash
+           "Un caillou dans le sabot"). CAUSE REELLE : ce bloc `value` est
+           recalcule a CHAQUE rendu de HypeApp. Les 3 boutons "Se deconnecter"
+           de l'app appellent setProfil(null) AVANT de rediriger vers l'ecran
+           de connexion -- la lecture directe de profil.vip (sans verifier
+           que profil existe encore) faisait planter l'app a L'INSTANT MEME
+           du clic sur deconnexion, avant meme que la redirection ait lieu.
+           D'ou le blocage total : impossible de se deconnecter, puisque
+           deconnexion = crash immediat, et rien d'accessible ensuite (l'app
+           reste sur l'ecran de crash). Corrige en verifiant que profil
+           existe avant de lire .vip. */
+        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!(profil && profil.vip) || ambassadeur), estAbonne, planAbo, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
         appareils,
         profil, setProfil,
         xp, setXp,
@@ -25727,7 +25739,7 @@ function EcranDashboard() {
                             React.createElement("stop", { offset: "100%", stopColor: "#CFF7F4", stopOpacity: 0.95 }))),
                     React.createElement("path", { d: "M -14 116 C 42 98, 88 126, 144 102 C 194 80, 220 104, 252 78", stroke: "url(#vagueBody)", strokeWidth: 16, strokeLinecap: "round", fill: "none" }),
                     React.createElement("path", { d: "M -10 107 C 44 89, 90 117, 146 93 C 196 71, 220 95, 252 69", stroke: "url(#vagueHi)", strokeWidth: 4.5, strokeLinecap: "round", fill: "none", opacity: 0.95 }))),
-            React.createElement("button", { onClick: () => setEcran("profil"), style: { position: "absolute", right: 2, top: 4, width: 114, height: 114, borderRadius: "50%", overflow: "hidden", border: "2px solid " + COLORS.turquoise, background: COLORS.nuitClaire, padding: 0, zIndex: 2, boxShadow: profil.vip && profil.cercleVIP ? "0 0 0 3px " + COLORS.or + ", 0 0 16px " + COLORS.or + "66" : "0 10px 26px " + COLORS.turquoise + "33" } },
+            React.createElement("button", { onClick: () => setEcran("profil"), style: { position: "absolute", right: 2, top: 4, width: 114, height: 114, borderRadius: "50%", overflow: "hidden", border: "2px solid " + COLORS.turquoise, background: COLORS.nuitClaire, padding: 0, zIndex: 2, boxShadow: profil && profil.vip && profil.cercleVIP ? "0 0 0 3px " + COLORS.or + ", 0 0 16px " + COLORS.or + "66" : "0 10px 26px " + COLORS.turquoise + "33" } },
                 profil.avatar ? React.createElement("img", { src: profil.avatar, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : React.createElement(AvatarRond), React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, borderRadius: "50%", pointerEvents: "none", background: "radial-gradient(118% 95% at 50% 15%, rgba(255,255,255,0.24) 0%, rgba(255,255,255,0) 45%), radial-gradient(100% 100% at 50% 52%, rgba(2,8,12,0) 55%, rgba(10,26,36,0.136) 100%)" } }), userSupa ? React.createElement("div", { style: { position: "absolute", right: 10, bottom: 16, width: 13, height: 13, borderRadius: "50%", background: "#20D9F5", border: "2px solid #0a1014", boxShadow: "0 0 10px rgba(32,217,245,0.9)", zIndex: 3 } }) : null),
             React.createElement("div", { style: { position: "relative", zIndex: 1, paddingRight: 116 } },
                 React.createElement("p", { onClick: () => setEcran("moncavalier"), style: { margin: 0, cursor: "pointer", color: COLORS.turquoise, fontSize: 13, fontWeight: 600, letterSpacing: 0.3 } }, t("bonjour"), " ", profil.prenom || t("cavalier_defaut")),
@@ -25824,8 +25836,8 @@ function EcranDashboard() {
                 React.createElement("p", { style: { margin: 0, color: COLORS.blanc, fontWeight: 700, fontSize: 15 } }, t("passer_premium")),
                 React.createElement("p", { style: { margin: 0, color: "rgba(255,255,255,0.7)", fontSize: 12.5 } }, t("premium_avantage_court"))),
             React.createElement("span", { style: { color: COLORS.soleil, fontSize: 18 } }, "\u2192"))),
-        !profil.vip && React.createElement(CarteDonVIP, null),
-        !profil.vip && React.createElement("div", { style: { height: 12 } }),
+        !(profil && profil.vip) && React.createElement(CarteDonVIP, null),
+        !(profil && profil.vip) && React.createElement("div", { style: { height: 12 } }),
         prochainCours && (React.createElement(CarteAction, { titre: t("continue_apprentissage"), sousTitre: prochainCours.titre, icone: prochainCours.icone, boutonTexte: t("reprendre"), couleur: COLORS.turquoise, onClick: () => { setGalopOuvert(galopActuel.id); setEcran("galop-detail"); } })),
         React.createElement(CarteAssistantHero, null),
         
@@ -48290,7 +48302,7 @@ function EcranClassement() {
                 : planAbo === "mensuel"
                     ? React.createElement(LigneScore, { icone: "\u2B50", libelle: t("bonus_mensuel"), valeur: `+${POINTS_MENSUEL}`, actif: true })
                     : React.createElement(LigneScore, { icone: "\u2B50", libelle: t("bonus_abonne_hint"), valeur: `+${POINTS_ANNUEL}`, onClick: () => setEcran("premium") }),
-            profil.vip
+            (profil && profil.vip)
                 ? React.createElement(LigneScore, { icone: "\uD83D\uDC9C", libelle: t("bonus_vip"), valeur: `+${POINTS_Crystal}`, actif: true, or: true })
                 : React.createElement(LigneScore, { icone: "\uD83D\uDC9C", libelle: t("bonus_vip_hint"), valeur: `+${POINTS_Crystal}`, onClick: () => setEcran("premium"), or: true })),
         React.createElement("button", { onClick: () => setEcran("badges"), style: { width: "100%", display: "flex", alignItems: "center", gap: 10, background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 14, padding: "12px 14px", marginBottom: 18 } },
