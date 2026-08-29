@@ -211,6 +211,7 @@ try {
    inventee, et la source reste lisible pour retrier plus tard.
    ========================================================== */
 function EcranDatesPhotos() {
+  var h = React.createElement; /* 29/08 : OUBLI CORRIGE — sans cette ligne, `h` n'existe pas a cet endroit du fichier et l'ecran plantait des l'ouverture (« Un caillou dans le sabot »). EcranJournalSession, juste en dessous, la declare aussi. */
   var ctx = useApp(); var setEcran = ctx.setEcran;
   var _mo = React.useState(null), moiDP = _mo[0], setMoiDP = _mo[1];
   var _ch = React.useState([]), chevauxDP = _ch[0], setChevauxDP = _ch[1];
