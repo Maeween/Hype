@@ -10,6 +10,67 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 28/08/2026 — PANNEAU « SON HISTOIRE » + HISTOIRE PAR DÉFAUT
+
+## Bouton de validation inaccessible
+
+> Blandine a passé **trois heures** à écrire l'histoire d'une jument sans
+> pouvoir l'enregistrer. Ce n'était pas la première fois.
+
+Le bouton de validation était **caché derrière la barre de navigation du bas**
+(Accueil / Galops / Cavalier…). On voyait « Coller » et le compteur, mais les
+boutons Annuler/Enregistrer passaient dessous, hors d'atteinte. On cliquait,
+il ne se passait rien — parce qu'on ne pouvait pas les atteindre.
+
+**Fausse piste écartée :** j'avais d'abord soupçonné la limite de 4000
+caractères (coupure silencieuse). La capture montrait **847/4000** — rien à
+voir. Vérifier avant d'affirmer.
+
+### Corrigé dans index.html
+
+1. ✅ **Marge basse** : 84 px (hauteur de la barre de nav) réservés EN PLUS de
+   `env(safe-area-inset-bottom)` ; `maxHeight` passe de `92svh` à
+   `calc(92svh - 84px)`.
+2. ✅ **Brouillon automatique** : chaque frappe est enregistrée en local, par
+   cheval (`hype_brouillon_histoire:<id>`). À la réouverture, un brouillon
+   plus long que ce qui est en base est proposé. Effacé après enregistrement
+   réussi. Un texte ne peut plus s'évaporer, quelle que soit la cause.
+3. ✅ **Échecs impossibles à rater** : les messages d'erreur ne disparaissent
+   plus tout seuls (avant : 2,4 à 3,2 s, jamais lus au bon moment). Seul le
+   succès s'efface automatiquement.
+
+⚠️ **Reste à faire** : appliquer les mêmes correctifs aux autres panneaux
+d'édition du même type (philosophie du club, histoire du club, histoire de
+profil) — même défaut de marge probable, **non vérifié**.
+
+### Texte de la jument — SAUVEGARDÉ
+
+Umea Borderie. Texte intégral conservé dans la conversation du 28/08.
+Coquilles à corriger en le recollant : « poux votre confiance » → « pour »,
+et un « j » isolé en fin de texte.
+
+## Histoire par défaut — plus de « monté par »
+
+Sur un nouveau cheval, on lisait « Cheval de l'écurie Feinn monté par
+Blandine ». Le correctif du 27/08 était pourtant toujours en place (le repli
+sur `profil.prenom` avait bien été retiré) — le nom venait cette fois de
+`proprioNom`, c'est-à-dire du **propriétaire réellement enregistré**. Logique
+quand c'est Blandine qui crée la fiche, mais faux et trompeur : le
+propriétaire enregistré n'est pas forcément celui qui monte le cheval.
+
+✅ La mention du cavalier est **retirée tout court** du texte par défaut
+(« dis juste l'écurie, sinon ça peut porter à confusion »). Le texte
+automatique ne dit plus que la race et l'écurie. Un nom de cavalier ne peut
+désormais venir que d'une histoire écrite à la main.
+
+## Mise à jour automatique — réinsérée
+
+La balise `<meta name="hype-build">` et son script étaient **absents** de la
+copie d'index.html renvoyée par Blandine (codée ailleurs entre-temps).
+Réinsérés. Valeur actuelle : **`20260828-2`**.
+
+---
+
 # 📦 OÙ POUSSER QUOI — règle permanente (posée le 28/08/2026)
 
 > Demande de Blandine : à **chaque** livraison, préciser explicitement quels
@@ -15458,3 +15519,34 @@ sous la photo, parcours d'envoi avec progression), ainsi que les 4 points signal
 23h49 sur la page Performances / Moments forts (photos identiques, couleurs non
 accordées, mojibake « PrÃ©paratoire » à corriger dans `hype-import-ffe.js` ET en base,
 compteurs incohérents 12 sorties / 17 podiums / 18 classés).
+
+---
+
+## CORRECTIF DU 29/08 (fin de session) — trois retouches perdues, deux réappliquées
+
+**Erreur de ma part, signalée après vérification à la demande de Blandine.**
+En cours de session elle m'a envoyé un `index.html` plus récent pour le chantier
+Écurie ; j'ai repris le travail à partir de ce nouveau fichier et **trois retouches
+faites plus tôt sur la version précédente sont restées sur l'ancienne copie**. Je ne
+l'ai pas vu et ne l'ai pas signalé — c'est elle qui a demandé la vérification.
+
+Ce que disait la section précédente du 29/08 au §3 était donc **faux sur ces trois
+points** : ils n'étaient PAS dans le fichier livré (md5 `92f380d2…`).
+
+État réel et action :
+- **Icônes de l'album** (Renommer / Public / Supprimer / Fermer) : étaient restées à
+  34 px → **réappliqué à 44 px**, police 13 → 16 (seuil tactile minimum Apple, la
+  croix était difficile à viser).
+- **Grille à l'intérieur d'un album ouvert** : était restée à 3 colonnes →
+  **réappliqué à 2 colonnes**.
+- **Mascotte vidéo d'attente** : **rien à faire**, Blandine l'avait déjà agrandie
+  elle-même à **220 px** et arrondie en cercle dans sa version — plus grande que les
+  200 px que j'avais posés. Non touchée.
+
+Fichier après ce correctif : md5 **`b2128cc3696ff08964ba806f74c98428`**.
+Contrôle syntaxique : **150 blocs `<script>`, 0 erreur.**
+
+**Leçon à retenir pour les prochaines sessions** : quand Blandine renvoie un
+`index.html` à jour en cours de session, **repartir de son fichier ET reporter
+explicitement les modifications déjà faites sur la copie précédente**, en vérifiant
+marqueur par marqueur avant de livrer.

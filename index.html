@@ -32611,7 +32611,7 @@ function AlbumsCheval(props) {
         function boutonE(contenu, libelle, onClick, opts) {
           opts = opts || {};
           return h("button", { onClick: onClick, "aria-label": libelle, style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 4, background: "none", border: "none", cursor: "pointer", padding: 0 } },
-            h("span", { style: { width: 34, height: 34, borderRadius: "50%", background: opts.actif ? tA(0.9) : "rgba(7,8,10,0.55)", border: "1px solid " + (opts.actif ? tnT : (opts.danger ? "rgba(226,138,146,0.5)" : "rgba(255,255,255,0.22)")), color: opts.actif ? "#04252A" : (opts.danger ? "rgba(226,138,146,0.95)" : "#C9D3D8"), fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" } }, contenu),
+            h("span", { style: { width: 44, height: 44, borderRadius: "50%", background: opts.actif ? tA(0.9) : "rgba(7,8,10,0.55)", border: "1px solid " + (opts.actif ? tnT : (opts.danger ? "rgba(226,138,146,0.5)" : "rgba(255,255,255,0.22)")), color: opts.actif ? "#04252A" : (opts.danger ? "rgba(226,138,146,0.95)" : "#C9D3D8"), fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" } }, contenu), /* 29/08 : 34 -> 44px et police 13 -> 16, seuil tactile minimum Apple (croix difficile a viser) */
             h("span", { style: { fontFamily: M9, fontSize: 8.5, fontWeight: 700, letterSpacing: "0.04em", color: opts.danger ? "rgba(226,138,146,0.85)" : "#9AA5AC" } }, libelle));
         }
         var iconeTag = h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: "currentColor", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" }));
@@ -32715,7 +32715,7 @@ function AlbumsCheval(props) {
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "78vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 14px calc(env(safe-area-inset-bottom) + 16px)" } },
         h("div", { style: { fontFamily: C9, fontSize: 14.5, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, T("Choisis les souvenirs", "Pick memories", "Elige recuerdos", "Scegli i ricordi", "\u601d\u3044\u51fa\u3092\u9078\u3076")),
         (dispo === null) ? h("div", { style: { textAlign: "center", color: "#8A99A1", fontFamily: M9, fontSize: 12, padding: "18px 0" } }, "\u2026")
-          : (dispo.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7 } },
+          : (dispo.length ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 7 } }, /* 29/08 : 3 -> 2 colonnes, vignettes plus grandes (demande Blandine) */
               dispo.map(function (u, iD) {
                 var actifD = !!coches[u];
                 var estVD = !!(typeof estUrlVideo === "function" && estUrlVideo(u));
