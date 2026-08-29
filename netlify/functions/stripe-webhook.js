@@ -40,10 +40,29 @@
 // n'est pas dans ce lot de 200 n'est JAMAIS trouvée — et ça reste vrai à
 // CHAQUE nouvelle tentative de Stripe, d'où l'échec permanent.
 //
-// LE CORRECTIF : chercher dans la table `profiles` (colonne email, déjà
-// utilisée ailleurs dans l'app pour ce genre de recherche) via une vraie
-// recherche filtrée côté base (PostgREST `email=ilike.<email>`), au lieu de
-// trier à la main un lot fixe et incomplet de comptes.
+// LE CORRECTIF : une fonction SQL dédiée côté base, `hype_user_id_par_email`,
+// qui fait une VRAIE recherche filtrée dans auth.users et n'est appelable que
+// par le rôle service_role (la clé secrète du webhook).
+//
+// ⚠️ PREMIÈRE TENTATIVE ÉCARTÉE, notée ici pour que personne n'y revienne :
+// j'avais d'abord voulu chercher dans la table `profiles`. VÉRIFIÉ EN BASE le
+// 28/08 : `profiles` n'a AUCUNE colonne email (33 colonnes, aucune ne stocke
+// l'adresse) — ce correctif-là aurait échoué en silence, exactement comme le
+// bug qu'il prétendait réparer. auth.users est la seule source fiable, et
+// elle n'est pas exposée directement à l'API REST, d'où la fonction SQL.
+//
+// PRÉREQUIS EN BASE (déjà exécuté par Blandine le 28/08, testé : renvoie bien
+// l'identifiant de Violaine) :
+//
+//   create or replace function public.hype_user_id_par_email(p_email text)
+//   returns uuid language sql security definer
+//   set search_path = auth, public as $$
+//     select id from auth.users
+//     where lower(email) = lower(trim(p_email)) limit 1;
+//   $$;
+//   revoke all on function public.hype_user_id_par_email(text)
+//     from public, anon, authenticated;
+//   grant execute on function public.hype_user_id_par_email(text) to service_role;
 // ─────────────────────────────────────────────────────────────────────────────
 
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
@@ -94,13 +113,16 @@ function entetesSupabase(service) {
 async function userIdParEmail(service, email) {
     if (!email) return null;
     try {
-        const r = await fetch(
-            SUPABASE_URL + "/rest/v1/profiles?email=ilike." + encodeURIComponent(String(email).trim()) + "&select=id&limit=1",
-            { headers: entetesSupabase(service) }
-        );
-        if (!r.ok) { log("recherche email KO", r.status); return null; }
+        const r = await fetch(SUPABASE_URL + "/rest/v1/rpc/hype_user_id_par_email", {
+            method: "POST",
+            headers: entetesSupabase(service),
+            body: JSON.stringify({ p_email: String(email).trim() }),
+        });
+        if (!r.ok) { log("recherche email KO", r.status, (await r.text().catch(() => "")).slice(0, 300)); return null; }
         const data = await r.json();
-        if (data && data.length && data[0] && data[0].id) return data[0].id;
+        // La fonction renvoie l'identifiant seul, ou null si aucun compte.
+        if (data && typeof data === "string") return data;
+        if (data && data.id) return data.id;
         log("aucun compte pour l'adresse", email);
         return null;
     } catch (e) {
