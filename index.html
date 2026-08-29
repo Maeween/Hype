@@ -35818,6 +35818,16 @@ function EcranCheval() {
           var lignesBrutes = (resDb || []).filter(function (r) { return r && r.visible !== false && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
           function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
           var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
+          /* 30/08 — BARRE EMPILEE PAR SAISON. Liste PARALLELE a tousF qui GARDE les
+             parcours SANS place (eliminations, abandons : place vide, classement
+             "El." / "Ab."), volontairement ecartes de tousF par le .filter ci-dessus.
+             Ces lignes SONT en base (decision 24/08 : « elimines et abandons comptent
+             dans le palmares »), elles n etaient simplement jamais affichees.
+             ⚠️ tousR ne sert QU A la barre. Ne jamais la brancher sur les 4 chiffres
+             du bandeau, les moments forts, les onglets cavaliers ni sortiesDe : ces
+             compteurs bougeraient tous d un coup. */
+          var tousR = lignesBrutes.map(function (r) { return { pl: pl9(r), cav: r.cavalier || "", an: String(r.date_epreuve || "").slice(0, 4) }; });
+          var ansR = {}; tousR.forEach(function (f) { if (f.an) (ansR[f.an] = ansR[f.an] || []).push(f); });
           var nV = tousF.filter(function (f) { return f.pl === 1; }).length;
           var nP = tousF.filter(function (f) { return f.pl <= 3; }).length;
           var nC = tousF.length;
@@ -35913,8 +35923,14 @@ function EcranCheval() {
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
                 var pA = fsA.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).length;
                 var cA = fsA.length;
-                var pct = Math.max(6, Math.min(100, Math.round(100 * (vA + pA) / Math.max(1, cA))));
-                var ouvA = (saisonOuv === anK);
+                var fsR = filtreCav(ansR[anK] || []); var totR = fsR.length;
+                function nPlR(tR) { return fsR.filter(tR).length; }
+                var s1 = nPlR(function (f) { return f.pl === 1; });
+                var s2 = nPlR(function (f) { return f.pl === 2; });
+                var s3 = nPlR(function (f) { return f.pl === 3; });
+                var s4 = nPlR(function (f) { return f.pl != null && f.pl > 3; });
+                var sVide = Math.max(0, totR - s1 - s2 - s3 - s4);
+                                var ouvA = (saisonOuv === anK);
                 return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "#14161a", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
                   h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
                     h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
@@ -35924,8 +35940,11 @@ function EcranCheval() {
                       h("span", { style: { color: "#B9BEC4" } }, "\uD83E\uDD48 " + pA), "\u2003",
                       h("span", { style: { color: "#8A929C" } }, "\uD83C\uDFC5 " + cA)),
                     h("span", { style: { marginLeft: 7, color: ouvA ? OR9 : "#5B646E", fontSize: 12, display: "inline-block", transition: "transform .25s ease", transform: ouvA ? "rotate(180deg)" : "none" } }, "\u02c5")),
-                  h("div", { style: { marginTop: 8, height: 2, borderRadius: 2, background: "rgba(255,255,255,.06)", overflow: "hidden" } },
-                    h("div", { style: { width: pct + "%", height: "100%", background: "linear-gradient(90deg,#8A5A2B," + OR9 + ")" } })),
+                  h("div", { style: { marginTop: 9, height: 6, borderRadius: 3, background: "rgba(255,255,255,.05)", overflow: "hidden", display: "flex" } }, /* 30/08 : l ancienne barre etait un TAUX DE PODIUM non libelle (victoires+podiums / total) — illisible, prise pour un separateur, et fausse : denominateur deja purge des non-classes, donc 100 % sur une saison a 1 sortie et 0 victoire. Remplacee par une barre EMPILEE dont le tout = les parcours de la saison, El./Ab. compris. Le fond qui reste nu EST l information : ce qui n a pas ete classe. */
+                    [[s1, OR9], [s2, "#B9BEC4"], [s3, "#A9713C"], [s4, "#2E5A78"]].map(function (sg, ig) {
+                      return sg[0] ? h("div", { key: "sg" + ig, style: { flex: sg[0], minWidth: 5, background: sg[1] } }) : null;
+                    }),
+                    sVide ? h("div", { key: "sgv", style: { flex: sVide } }) : null),
                   ouvA ? h("div", { onClick: function (eDp) { try { eDp.stopPropagation(); } catch (eS9) { } }, style: { marginTop: 9, borderTop: "1px solid rgba(255,255,255,0.06)", cursor: "default" } },
                     fsA.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).map(function (rS, iS) {
                       return h("div", { key: "sr" + iS, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 2px", borderTop: iS ? "1px solid rgba(255,255,255,0.045)" : "none", minWidth: 0 } },
