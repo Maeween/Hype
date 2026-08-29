@@ -35832,12 +35832,19 @@ function EcranEcurieHype() {
   var refHeroEH = React.useRef(null);
   React.useEffect(function () {
     var t0 = null, brut = null;
-    function tick(t) { if (t0 === null) t0 = t; var p = Math.min(1, (t - t0 - 900) / 1100); if (p >= 0) { var e2 = 1 - Math.pow(1 - p, 3); setCptEH([Math.round(7 * e2), Math.round(1 * e2)]); } if (p < 1) brut = requestAnimationFrame(tick); }
+    /* 29/08 : les compteurs animaient vers 7 et 1 CODES EN DUR, en accord avec
+       l'ancienne vitrine figee. Ils comptent desormais les vrais chevaux charges.
+       Un poney est identifie par sa race (contient « poney » / « pony »), a defaut
+       de champ dedie en base. */
+    var listeCpt = commList || [];
+    var nbPoneyEH = listeCpt.filter(function (c) { return /pon(e)?y/i.test(String((c && c.race) || "")); }).length;
+    var nbChevalEH = listeCpt.length - nbPoneyEH;
+    function tick(t) { if (t0 === null) t0 = t; var p = Math.min(1, (t - t0 - 900) / 1100); if (p >= 0) { var e2 = 1 - Math.pow(1 - p, 3); setCptEH([Math.round(nbChevalEH * e2), Math.round(nbPoneyEH * e2)]); } if (p < 1) brut = requestAnimationFrame(tick); }
     brut = requestAnimationFrame(tick);
     function surScrollEH() { try { var y = window.scrollY || 0; if (refHeroEH.current) refHeroEH.current.style.transform = "scale(1.12) translateY(" + Math.min(60, y * 0.28) + "px)"; } catch (eS) { } }
     window.addEventListener("scroll", surScrollEH, { passive: true });
     return function () { if (brut) cancelAnimationFrame(brut); window.removeEventListener("scroll", surScrollEH); };
-  }, []);
+  }, [commList]);
   function hexAEH(hx, a) { var n = parseInt(hx.slice(1), 16); return "rgba(" + (n >> 16 & 255) + "," + (n >> 8 & 255) + "," + (n & 255) + "," + a + ")"; }
   function flashEH(msg) { setToastEH(msg); setTimeout(function () { setToastEH(null); }, 2200); }
 
@@ -36008,14 +36015,26 @@ function EcranEcurieHype() {
   }
 
   var ansEH = T("ans", "yo", "años", "anni", "歳");
-  var chevauxFeinnEH = [
-    { img: UV3_H3, nom: "Rizotto", l2: "PFS · 21 " + ansEH, l3: "IPO 161", id: "rizotto", halo: "#D9B56C" },
-    { img: UV3_H2, nom: "Elfe de Feinn", l2: "SF · 7 " + ansEH, l3: "IPO 128", id: "elfe", fav: true },
-    { img: ECURIE_H4, nom: "Cooltax", l2: "SF · 7 " + ansEH, l3: T("Élite", "Elite", "Élite", "Élite", "エリート"), id: "venus" },
-    { img: ECURIE_H5, nom: "Boréalis de Feinn", l2: "SF · 15 " + ansEH, l3: T("Élite", "Elite", "Élite", "Élite", "エリート"), id: "idao" },
-    { img: IMG_TULLY, nom: "Tully Blue Moon", l2: "SF · 15 " + ansEH, l3: T("Champion", "Champion", "Campeón", "Campione", "チャンピオン"), id: "tully", halo: "#D9B56C" },
-    { img: IMG_HEYBABY_CHEVAL, nom: "Hey Baby", l2: T("Jument", "Mare", "Yegua", "Giumenta", "牝馬") + " · CSO", l3: T("Élite", "Elite", "Élite", "Élite", "エリート"), id: "heybaby" }
-  ];
+  /* 29/08 : VITRINE CODEE EN DUR SUPPRIMEE (demande Blandine). Cette grille affichait
+     six entrees ecrites a la main (Rizotto, Elfe, Cooltax, Borealis, Tully, Hey Baby)
+     avec des images fixes et des identifiants factices — jamais les vrais chevaux.
+     C'est pourquoi la page montrait toujours les six memes quoi qu'on change dans la
+     requete : `commList` etait bien chargee depuis la base mais n'etait affichee nulle
+     part. On construit desormais les cartes a partir de `commList` (chevaux du club,
+     cf. le chargement plus haut). Repli portrait spectral par defaut pour un cheval
+     sans photo. Les identifiants sont les vrais : le tap ouvre la bonne fiche. */
+  var chevauxFeinnEH = ((commList || [])).map(function (cEH) {
+    var detEH = [];
+    if (cEH.race) detEH.push(String(cEH.race));
+    if (cEH.robe) detEH.push(String(cEH.robe));
+    return {
+      img: cEH.photo_url || CHEVAL_DEFAUT,
+      nom: cEH.nom || T("Sans nom", "Unnamed", "Sin nombre", "Senza nome", "名前なし", "Ohne Namen"),
+      l2: detEH.join(" · "),
+      l3: "",
+      id: cEH.id
+    };
+  });
   function bientotEH() { flashEH(T("Bientôt disponible ✨", "Coming soon ✨", "Próximamente ✨", "Presto disponibile ✨", "近日公開 ✨")); }
   return h("div", { className: "ecv", style: { minHeight: "100vh", background: "#07080A" } },
     h("style", { dangerouslySetInnerHTML: { __html: EC2_CSS } }),
