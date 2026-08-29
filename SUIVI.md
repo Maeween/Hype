@@ -15550,3 +15550,384 @@ Contrôle syntaxique : **150 blocs `<script>`, 0 erreur.**
 `index.html` à jour en cours de session, **repartir de son fichier ET reporter
 explicitement les modifications déjà faites sur la copie précédente**, en vérifiant
 marqueur par marqueur avant de livrer.
+
+---
+
+## 29/08 (suite) — ÉCURIE HYPE : la vraie cause enfin trouvée
+
+Après livraison des correctifs précédents, Blandine : « ça marche toujours pas »,
+capture identique, toujours les 6 mêmes chevaux.
+
+**MES DEUX PREMIERS DIAGNOSTICS ÉTAIENT FAUX.** J'ai corrigé la requête de
+chargement (`commList`) en croyant au filtre `partage_ecurie_hype`. La requête
+était bien corrigée — mais **elle n'alimentait rien à l'écran**.
+
+**VRAIE CAUSE** : la grille d'`EcranEcurieHype` affichait `chevauxFeinnEH`, un
+**tableau écrit EN DUR dans le code** — six entrées à la main (Rizotto, Elfe de
+Feinn, Cooltax, Boréalis, Tully Blue Moon, Hey Baby) avec des images fixes
+(`UV3_H3`, `UV3_H2`, `ECURIE_H4`, `ECURIE_H5`, `IMG_TULLY`, `IMG_HEYBABY_CHEVAL`) et
+des **identifiants factices** (`"rizotto"`, `"elfe"`, `"venus"`, `"idao"`, `"tully"`,
+`"heybaby"`). Une vitrine décorative, jamais les vrais chevaux.
+`commList` était chargée depuis la base **et affichée nulle part**.
+
+D'où : les 6 mêmes chevaux quoi qu'on change dans la requête.
+
+**Correctif** :
+- **Vitrine supprimée.** `chevauxFeinnEH` est désormais construit depuis `commList`
+  (chevaux du club, requête corrigée plus tôt). Identifiants réels → le tap ouvre
+  la bonne fiche, ce qui n'était pas le cas avant (ids factices).
+- Photo manquante → repli sur `CHEVAL_DEFAUT` (portrait spectral).
+- Ligne de détail = race · robe depuis la base (au lieu des « IPO 161 » codés).
+- **Compteurs Chevaux / Poneys** : animaient vers **7 et 1 codés en dur**, accordés à
+  la vitrine. Comptent maintenant la vraie liste (poney détecté par la race, faute
+  de champ dédié en base). `useEffect` dépend désormais de `[commList]`.
+
+Fichier : md5 **`694d8e8a20fefc21d96bfaec0f406078`** — 150 blocs `<script>`, 0 erreur.
+
+**LEÇON — à appliquer systématiquement** : avant de corriger une requête parce qu'un
+écran affiche de mauvaises données, **vérifier d'abord que la variable corrigée est
+bien celle qui est rendue à l'écran**. Ici trois livraisons ont été perdues faute de
+cette vérification en dix secondes. Hype contient d'autres vitrines décoratives
+codées en dur (carrousel d'accueil `manegeCartesAcc`, `CHEVAUX_FICHE`) : **se méfier
+de tout écran qui montre toujours exactement le même contenu.**
+
+---
+
+## 29/08 (suite) — Chevaux rattachés : détacher au lieu de reproposer l'ajout
+
+Blandine : « dans les chevaux perso j'ai des chevaux pas à moi et ça me propose en
+plus de les ajouter à mon écurie alors qu'ils sont déjà dans mes chevaux ».
+
+**Mécanique en place (rappel)** : deux listes cohabitent dans « Mes chevaux » — les
+chevaux dont elle est propriétaire (`chevaux.user_id`) et les chevaux **rattachés**
+d'autres cavaliers (table `chevaux_liens`, marqués `__lien`). Ce n'est pas une fuite
+entre comptes : c'est le rattachement qui fonctionne.
+
+**BUG** : le bandeau doré « Ajouter à mon écurie » de la fiche cheval ne se cachait
+que pour **la propriétaire**. Il ignorait totalement `chevaux_liens` — donc un cheval
+déjà rattaché reproposait l'ajout, et taper dessus répondait « Déjà dans ton
+écurie ✓ ». Aucun moyen de faire l'inverse : `delierCheval()` existait dans le code
+**mais n'était appelée nulle part**.
+
+**Correctif** :
+- Nouvel état `estLieFiche` sur `EcranCheval`, chargé depuis `chevaux_liens`
+  (cheval courant + utilisateur courant).
+- Le bandeau devient **« Retirer de mon écurie »** quand le cheval est déjà rattaché :
+  appelle `delierCheval()`, retire le lien, confirme « Retiré de ton écurie ✓ » et
+  rebascule le bouton. Teinte rosée au lieu du doré, signe « − » au lieu de « + »,
+  halo pulsant désactivé (ce n'est plus une invitation).
+- Comportement inchangé pour un cheval non rattaché (ajout) et pour la propriétaire
+  (aucun bandeau).
+
+Fichier : md5 **`9104ef778d65b2cdc350e679787104b3`** — 150 blocs, 0 erreur.
+
+**Reste à trancher (non fait)** : rien ne distingue visuellement, dans la grille
+« Mes chevaux », un cheval à elle d'un cheval rattaché. Une mention discrète sur les
+cartes rattachées avait été proposée — pas retenue pour l'instant.
+
+**À noter aussi** : Blandine signale que « la page Mon écurie n'existe plus ». Les
+libellés « Ajouter/Retirer de mon écurie » et le message « retrouve-le dans Mes
+chevaux » renvoient donc à une page supprimée — **vocabulaire à revoir** dans une
+prochaine passe (cohérence avec la nouvelle architecture Club / Écurie Hype).
+
+---
+
+## 29/08 (suite) — Fiche cheval : grille de 6 cartes + carré jaune supprimé
+
+### Carré jaune — le bug 16 n'avait été corrigé qu'à MOITIÉ
+
+Blandine : « vire le carré jaune depuis la photo, il est supposé avoir été retiré il y
+a une éternité, lis le suivi ».
+
+Vérification faite : le SUIVI dit bien **BUG 16 FERMÉ** (md5 `e8d7131c`) — bouton
+conditionné à un historique non vide, libellé « Album » → « Anciennes bannières ».
+**Mais ce correctif n'a été appliqué qu'à UNE des deux copies du bouton.**
+
+- Page **Écurie** (bannière) : corrigée, conditionnée à `moiIdEc2 && nbAlbEc > 0`. OK.
+- **Fiche cheval** (au-dessus de la photo de couverture) : **jamais touchée**. Elle
+  s'affichait toujours, sans condition, et gardait le libellé « Album » — celui-là
+  même qui avait produit le malentendu d'origine.
+
+→ **Bouton supprimé** de la fiche cheval. Celui de la page Écurie est conservé tel
+qu'il avait été corrigé.
+
+**Leçon (même famille que celle du soir) :** quand un correctif porte sur un élément
+d'interface, **vérifier s'il en existe d'autres copies** (`grep` sur l'emoji ou le
+libellé) avant de fermer le point. Ici deux copies, une seule corrigée, six mois de
+survie pour la seconde.
+
+### Grille de 6 cartes (demande Blandine)
+
+Les trois cartes portails sous les origines (Histoire / Carrière / Santé) passent
+à **six**, sur deux rangées de trois :
+
+| Carte | Sous-titre | Ouvre |
+|---|---|---|
+| Histoire | Souvenirs | panneau `souvenirs` |
+| **Performances** (ex-« Carrière ») | nb résultats / Ouvrir | panneau `palmares` |
+| Santé | Passeport | écran `clinique` |
+| **Photos** | Voir | `souvenirs` *(provisoire)* |
+| **Vidéos** | nb vidéos / Voir | panneau `videos` |
+| **Actualité** | Voir | `souvenirs` *(provisoire)* |
+
+- « Carrière » renommée **« Performances »** : le libellé colle enfin à celui de
+  l'onglet correspondant (6 langues).
+- **Vidéos** pointe sur le panneau `videos` qui existe déjà, et affiche le compte.
+
+**⚠️ À FAIRE — les deux pages n'existent pas encore.** Photos et Actualité pointent
+provisoirement sur le panneau Souvenirs. Ce sont des cartes en place, pas des pages
+livrées :
+1. **Page Photos** — à construire sur le modèle de la page Vidéos existante.
+2. **Page Actualité** — destinée à accueillir les posts (le fil d'actualité y sera
+   basculé, selon l'intention de Blandine).
+
+Fichier : md5 **`970e24f5d7e546518cd2e53ba6179479`** — 150 blocs, 0 erreur.
+
+---
+
+## 29/08 (suite) — DATE DE PRISE DE VUE DES PHOTOS · étape 1/3
+
+### Le blocage trouvé avant de coder la page Souvenirs
+
+Blandine a fourni un brief complet de refonte de la page Souvenirs (chronologie
+verticale par année : 2025 / 2024 / 2023…). **Inspection faite avant de coder, comme
+le brief le demandait — et un point bloquant est apparu :**
+
+Les photos d'un cheval sont stockées comme un **simple tableau d'URLs** dans
+`albums_cheval.photos`. Une photo n'a donc **pas de ligne à elle en base**, et
+**aucune date attachée**. Seul l'album porte un `created_at` = date de création dans
+Hype, pas date de prise de vue.
+
+→ Conséquence : une photo de concours 2021 ajoutée aujourd'hui atterrirait en 2026.
+**La timeline raconterait l'usage de l'app, pas la vie du cheval** — l'inverse exact
+de l'intention du brief.
+
+**Blandine :** « les dates, quand on te donne une photo de notre galerie, t'as pas
+moyen de savoir de quelle année elle date ? » → Oui : l'**EXIF**.
+Vérification faite : `envoyerPhoto` envoie le **fichier original tel quel**, sans
+repasser par un canvas → **l'EXIF est intact** sur ce chemin.
+
+**Plan en 3 étapes validé :**
+1. **Capturer la date à l'envoi** (fait, ci-dessous).
+2. **Passe de rattrapage** sur les photos déjà en ligne (à faire).
+3. **Page Souvenirs** avec la vraie timeline (à faire — *ne pas coder avant l'étape 2,
+   sinon la timeline naît déjà fausse*).
+
+### Étape 1 livrée
+
+**SQL — `photo-dates.sql` À EXÉCUTER DANS SUPABASE** (idempotent) :
+table `photo_dates` indexée par `photo_url` — même schéma que `photo_likes` /
+`photo_comments`, seul motif possible puisqu'une photo n'a pas de ligne propre.
+Colonnes : `photo_url` (clé), `prise_le`, `source` (`exif` | `album` | `manuel`),
+`user_id`. RLS : lecture publique, écriture réservée au propriétaire.
+
+**Code :**
+- `lireDateExif(fichier)` — parseur EXIF **écrit à la main, sans bibliothèque**
+  (segment APP1, `DateTimeOriginal` 0x9003, repli `DateTime` 0x0132). Ne lit que les
+  128 premiers Ko. Garde-fou d'année (1990 → année courante + 1) contre les appareils
+  mal réglés.
+- `enregistrerDatePhoto(url, date, source)` — upsert dans `photo_dates`.
+- Branché dans `envoyerPhoto` : lecture **avant** l'envoi (sur le fichier d'origine),
+  écriture **après** obtention de l'URL, **non attendue** — un échec ne retarde ni ne
+  fait échouer un envoi.
+
+**TESTÉ, pas seulement écrit** — JPEG fabriqué avec `DateTimeOriginal =
+2021:06:14 15:32:08` → lecteur renvoie bien **2021**. Cas dégradés vérifiés (JPEG sans
+EXIF, PNG, entrée vide) : `null` partout, aucun plantage → repli sur la date d'album.
+
+**⚠️ LIMITES CONNUES à ne pas oublier à l'étape 2 :**
+- Capture d'écran : pas d'EXIF.
+- Image reçue par WhatsApp / Messenger : EXIF supprimé par la messagerie.
+- PNG : pas de segment EXIF.
+- **Toute image repassée par un canvas (recadreur, Fond Studio) PERD son EXIF** —
+  d'où la lecture sur le fichier d'origine. Les photos envoyées par ces chemins-là
+  n'auront pas de date : à traiter à l'étape 2.
+
+Fichier : md5 ci-dessous — 150 blocs `<script>`, 0 erreur.
+
+### En attente (non tranché par Blandine)
+
+Page **Actualité** : qui peut publier (propriétaire / club / tout le monde) et
+qu'est-ce qu'un post (texte, texte+photo, texte+photo+vidéo). Les cartes Photos et
+Actualité pointent toujours provisoirement sur le panneau Souvenirs.
+
+---
+
+## 29/08 (suite) — REPRISE DES DATES SUR LES PHOTOS EXISTANTES · étape 2/3
+
+Nouvel écran **`EcranDatesPhotos`**, réservé aux modérateurs, accessible par
+**`#dates-photos`** (raccourci ajouté à `CIBLE_DIRECTE`, écran branché au routeur).
+
+### Ce qu'il fait
+Blandine choisit un cheval → l'outil rassemble ses photos (tous ses albums + son
+portrait), écarte celles déjà datées, puis relit les autres **une par une** pour en
+extraire l'EXIF et remplir `photo_dates`.
+
+### Trois choix techniques à retenir
+
+1. **Téléchargement partiel** — en-tête HTTP `Range: bytes=0-131071` : on ne récupère
+   que les **128 premiers Ko**, là où vit l'EXIF. Sur des photos de 3-5 Mo c'est
+   ~30× moins de données. Si le serveur ignore `Range`, le fichier entier arrive :
+   ça fonctionne quand même, c'est juste plus lourd.
+2. **Séquentiel et interruptible** — une photo à la fois, pause de 120 ms entre
+   chaque, bouton **Arrêter** actif à tout moment. On ne sature ni l'iPhone ni
+   Supabase. Barre de progression + journal détaillé ligne à ligne.
+3. **Relançable** — les photos déjà présentes dans `photo_dates` sont sautées
+   (lecture par lots de 100). On peut donc arrêter et reprendre sans tout refaire.
+
+### Repli et honnêteté des données
+- EXIF trouvé → `source = 'exif'` (date réelle de prise de vue).
+- EXIF absent → **date de l'album**, `source = 'album'`.
+- Ni l'un ni l'autre → **rien n'est écrit**. Jamais d'année inventée.
+
+La colonne `source` reste lisible : on pourra plus tard retrier ou corriger à la main
+les photos datées « à l'album ». Dédoublonnage par URL (une même photo peut vivre
+dans deux albums).
+
+### Vérifié, pas seulement écrit
+Logique de classement rejouée hors navigateur sur 4 cas :
+photo 2021 avec EXIF → 2021 (exif) · capture d'écran, album 2024 → 2024 (album) ·
+photo recadrée EXIF perdu, album 2026 → 2026 (album) · photo isolée sans rien →
+aucune date écrite. Dédoublonnage : 3 entrées → 2 photos uniques. Tout conforme.
+
+### Attention au résultat attendu
+Beaucoup de photos ressortiront probablement en `source = 'album'` : le recadreur et
+Fond Studio détruisent l'EXIF (canvas), et les messageries le suppriment. **C'est
+attendu, pas un échec** — et c'est précisément pourquoi la colonne `source` existe.
+Le compte-rendu de fin donne la répartition exacte (exif / album / déjà / sans date),
+ce qui dira si la timeline par année est fiable ou s'il faut prévoir une correction
+manuelle par album.
+
+### Reste : étape 3
+La page Souvenirs (brief maquette de Blandine) — **à faire après avoir regardé les
+chiffres de la reprise**, pas avant.
+
+**CORRECTIF IMMÉDIAT (même soir)** — l'écran `#dates-photos` plantait dès l'ouverture
+(« Un caillou dans le sabot », trace `EcranDatesPhotos@…:310:11`).
+**Cause : `var h = React.createElement;` manquant en tête du composant.** À cet
+endroit du fichier `h` n'est pas défini globalement — `EcranJournalSession`, le
+composant voisin, le déclare bien, moi non. Ligne ajoutée.
+Vérification faite ensuite sur **toutes** les fonctions utilisées par l'écran
+(`useApp`, `supa`, `utilisateurActuel`, `estModerateurHype`, `urlNue`,
+`estUrlVideo`, `lireDateExif`, `enregistrerDatePhoto`, `CHEVAL_DEFAUT`) : toutes
+définies et accessibles au moment du rendu.
+Fichier corrigé : md5 **`30625c30be5d7e4a7d778140dd3efc18`** — 150 blocs, 0 erreur.
+
+---
+
+## 29/08 (suite) — FOND STUDIO MASQUÉ
+
+Blandine : « Fond Studio il marche pas, on peut le virer pour l'instant, il fait que
+beuguer. »
+
+**Masqué, pas supprimé.** Nouvelle constante unique **`AFFICHER_FOND_STUDIO = false`**
+(posée juste avant la palette de teintes Premium). Le bouton d'accès dans le recadreur
+est le **seul point d'entrée** (vérifié : une seule occurrence de `setFsOuvert(true)`
+dans tout le fichier) ; il est désormais conditionné à cette constante.
+
+Tout le reste est intact : `FondStudioPanel`, la palette, le rendu du filtre, la
+gestion Premium/ambassadeurs. **Une ligne à repasser à `true` pour le rallumer** quand
+il sera réparé.
+
+**Effet de bord favorable** : Fond Studio repasse la photo par un canvas, ce qui
+**détruit l'EXIF**. Le masquer préserve la date de prise de vue des nouvelles photos
+(cf. chantier des dates ci-dessus). Le recadreur, lui, reste actif et a le même défaut
+— à traiter séparément si on veut fiabiliser complètement les dates.
+
+**Incident de découpage à noter (corrigé)** : en isolant le bouton j'ai d'abord emporté
+une parenthèse fermante qui appartenait au **conteneur parent**, puis j'en ai retiré
+une de trop. Deux erreurs de syntaxe successives, toutes deux **rattrapées par le
+contrôle des 150 blocs `<script>` avant livraison** — rien n'est parti cassé. Rappel
+de l'utilité du contrôle systématique.
+
+Fichier : md5 **`bc48783e3873aa74be732194becd45ea`** — 150 blocs, 0 erreur.
+
+### Bilan de la reprise des dates (3 chevaux relevés)
+| Cheval | Vraie date | Date album | Sans date |
+|---|---|---|---|
+| 1 | 11 | 7 | 1 |
+| 2 | 10 | 11 | 1 |
+| 3 | 6 | 0 | 1 |
+| **Total** | **27** | **18** | **3** |
+
+~56 % des photos ont leur **vraie** date de prise de vue. Les 3 « sans date » sont
+probablement des captures d'écran (hypothèse de Blandine, cohérente).
+**Conclusion : la timeline par année est viable**, à condition de signaler
+discrètement les années approximatives et de permettre une correction **par album**.
+Un 4e cheval avait déjà été traité (32 déjà datées) sans relevé de sa répartition.
+
+---
+
+## 29/08 (suite) — SOUVENIRS RECENTRÉE + PAGE PHOTOS · étape 3/3
+
+### Décision de Blandine (après discussion)
+La page Souvenirs **reste**, avec sa photo d'arrivée, mais **s'arrête sous
+l'histoire**. Les photos partent sur la carte **Photos** de la grille de 6 (créée plus
+tôt dans la journée), qui ne pointait jusqu'ici sur rien de propre.
+
+### Page SOUVENIRS — ce qu'il en reste
+Photo d'arrivée → le récit → **les conseils Hey Baby épinglés pour CE cheval**. Fin.
+
+**Rien n'a été construit pour Hey Baby** : le composant `EncartConseilsHB` existait
+déjà, avec la table `echanges_heybaby_epingles` et un `cheval_id` — il savait déjà
+filtrer par cheval. Il a suffi de le poser sous l'histoire (position demandée par
+Blandine : *en dessous*). Il porte déjà sa propre précaution : en visite sur le profil
+d'un autre cavalier, il n'affiche rien plutôt que les conversations privées du
+visiteur (correctif du 15/08).
+
+**À VENIR** : Blandine fournira une **vidéo** à afficher à la place du récit quand
+celui-ci est vide.
+
+### Page PHOTOS (nouveau panneau `photos`)
+1. **Chronologie par année** — nouveau composant `ChronologieSouvenirs` (brief maquette).
+2. **Albums** + **Galerie** — déplacés tels quels depuis Souvenirs, **mise en vedette
+   comprise** (décision Blandine : les étoiles suivent les photos).
+
+Branchements : carte Photos → `setPanneau("photos")` ; onglet « Photos » ajouté à la
+barre (Souvenirs · Photos · Performances · Vidéos) ; titre d'en-tête.
+
+### Le composant `ChronologieSouvenirs`
+- **Statistiques calculées, jamais codées en dur** : souvenirs = nb de photos ;
+  saisons = nb d'années distinctes ; concours = lignes de `resultats` du cheval.
+- **Ligne verticale + un point par année**, année courante en turquoise avec halo.
+- **Mosaïque 4 colonnes**, 8 miniatures par année puis « voir tout ».
+- **HONNÊTETÉ DES ANNÉES** — une année issue de l'EXIF s'affiche normalement ; une
+  année déduite de l'album est comptée à part, avec la mention « approx. ». On ne fait
+  jamais passer une approximation pour une certitude.
+- **Correction par ALBUM** (propriétaire seulement) : saisir une année l'applique à
+  **toutes** les photos de l'album, `source = 'manuel'`. Une sortie = un album = une
+  période : une seule correction rattrape des dizaines de photos. Date posée au
+  15 juin (milieu d'année) pour n'inventer aucune précision de jour.
+- **Performance** : `vignetteHype`, chargement paresseux, lecture des dates par lots
+  de 100, dédoublonnage par URL.
+- **Aucune duplication** : la visionneuse (`setVisionneuse`) et l'ajout
+  (`__murPhotoOuvrir`) sont ceux de la fiche, passés en props — conformément au brief.
+
+### Ce qui n'a PAS été touché
+Le « fil » du panneau Souvenirs était **déjà vide depuis le 31/07** (contenu `null`) :
+rien à déplacer vers Actualité. La carte **Actualité** pointe donc toujours
+provisoirement sur Souvenirs — page à construire, et **les deux questions posées le
+29/08 restent sans réponse** : qui peut publier, et qu'est-ce qu'un post.
+
+Fichier : md5 **`3e62c95de03b7fd39eb085397070bac8`** — 150 blocs, 0 erreur.
+Contrôles de non-perte passés : Galerie, albums, mise en vedette, Hey Baby, tous
+présents une fois chacun.
+
+**CORRECTIF — Écurie Hype trouvée VIDE (0 chevaux, 0 poneys).**
+Le fait d'afficher **0** et non les 6 anciens chevaux prouvait que le nouveau code
+tournait bien : c'était la requête qui ne ramenait rien.
+
+**Cause :** arriver par **l'onglet** ne transmet aucun club (contrairement au bouton
+de la page Club, chemin par lequel Blandine était passée le matin — d'où la page
+pleine à ce moment-là). Sans contexte, le code cherche le club dans
+`profiles.ecurie` / `ecurie2` ; si ce champ est vide ou ne correspond à aucun membre,
+l'ancien repli était la galerie `partage_ecurie_hype`, elle-même vide → page blanche.
+
+**Correctif : cascade de replis.**
+1. contexte club transmis → chevaux du club ;
+2. sinon club du profil → chevaux du club ;
+3. **sinon → SES PROPRES chevaux** (il y en a toujours) ← *le maillon qui manquait* ;
+4. en tout dernier recours → ancienne galerie `partage_ecurie_hype`.
+
+La page ne peut plus être vide. md5 **`46986556ca764d172cc498f7bc6389db`** — 150 blocs,
+0 erreur.

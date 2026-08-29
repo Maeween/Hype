@@ -36406,6 +36406,24 @@ function EcranEcurieHype() {
               var vuMoi = {}; var idsMoi = mmMoi.filter(function (p) { if (!p || !p.id || vuMoi[p.id]) return false; vuMoi[p.id] = true; return true; }).map(function (p) { return p.id; });
               rc = idsMoi.length ? await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").in("user_id", idsMoi).is("supprime_le", null).limit(500) : { data: [] };
             } else {
+              rc = { data: [] };
+            }
+            /* 29/08 (page trouvee VIDE par Blandine) : cascade de replis. Arriver par
+               l'onglet ne transmet aucun club — on le cherche alors dans le profil, et
+               si ce champ est vide ou ne correspond a aucun membre, l'ancien code
+               retombait sur la galerie « partage_ecurie_hype » qui, elle, est vide :
+               page blanche avec des compteurs a zero. Desormais on se rabat d'abord sur
+               SES PROPRES chevaux (il y en a toujours), et seulement en tout dernier
+               recours sur la galerie d'origine. La page n'est plus jamais vide. */
+            if (!rc || !rc.data || !rc.data.length) {
+              try {
+                if (u) {
+                  var rMiens = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("user_id", u.id).is("supprime_le", null).limit(500);
+                  if (rMiens && rMiens.data && rMiens.data.length) rc = rMiens;
+                }
+              } catch (eMi) { }
+            }
+            if (!rc || !rc.data || !rc.data.length) {
               rc = await supa.from("chevaux").select("id, nom, race, robe, photo_url, user_id").eq("partage_ecurie_hype", true).is("supprime_le", null).limit(60);
             }
           }
