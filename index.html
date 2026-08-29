@@ -34535,10 +34535,16 @@ function EcranCheval() {
           var recit = c.histoire || (function () {
             var estMien = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
             var ecu = (chevalDyn && chevalDyn.proprioEcurie) || ((estMien && typeof profil !== "undefined" && profil && profil.ecurie) ? String(profil.ecurie).trim() : "");
-            var cav = (chevalDyn && chevalDyn.proprioNom) || ""; /* 27/08 : repli sur profil.prenom/pseudo retire — affichait "monte par Blandine" sur tout cheval sans proprioNom renseigne, meme quand elle ne le monte pas. Le cavalier ne s'affiche desormais que si proprioNom est reellement renseigne sur le cheval. */
+            var cav = ""; /* 27/08 : repli sur profil.prenom/pseudo retire — affichait "monte par Blandine" sur tout cheval sans proprioNom renseigne, meme quand elle ne le monte pas. 28/08 : la mention du cavalier est RETIREE TOUT COURT du texte par defaut (demande Blandine : « dis juste l'ecurie, sinon ca peut porter a confusion »). Le proprietaire enregistre en base n'est pas forcement celui qui monte le cheval — sur un cheval cree par Blandine pour une cavaliere, on lisait « monte par Blandine », ce qui est faux et trompeur pour qui le lit. Le texte par defaut ne dit donc plus que la race et l'ecurie ; le nom du cavalier ne peut venir que de l'histoire ecrite a la main. */
+            /* 28/08 (demande Blandine) : la mention du cavalier est RETIREE du texte
+               par defaut. Elle venait de proprioNom (le proprietaire reellement
+               enregistre sur le cheval) : tout cheval qu'elle cree affichait donc
+               « monte par Blandine », meme quand elle ne le monte pas. Le correctif
+               du 27/08 avait deja retire le repli sur profil.prenom, mais pas cette
+               source-ci. Le texte par defaut ne cite plus que l'ECURIE ; le cavalier
+               n'apparait que si quelqu'un ecrit l'histoire a la main. */
             var rc = String(c.nom || "") + T(" est un ", " is a ", " es un ", " \u00e8 un ", "\u306f", " ist ein ") + (raceTxt || T("cheval", "horse", "caballo", "cavallo", "\u99ac", "Pferd"));
             if (ecu) rc += T(" de l'\u00e9curie ", " from the ", " de la cuadra ", " della scuderia ", "\u3001\u6240\u5c5e\uff1a", " aus dem Stall ") + ecu + (T("", " stable", "", "", "", "") || "");
-            if (cav) rc += T(", mont\u00e9(e) par ", ", ridden by ", ", montado por ", ", montato da ", "\u3001\u9a0e\u624b\uff1a", ", geritten von ") + cav;
             if (estMien) { rc += T(". Touche le crayon pour \u00e9crire son histoire.", ". Tap the pencil to write its story.", ". Toca el l\u00e1piz para escribir su historia.", ". Tocca la matita per scrivere la sua storia.", "\u3002\u925b\u7b46\u3067\u7269\u8a9e\u3092\u66f8\u3053\u3046\u3002", ". Tippe auf den Stift, um seine Geschichte zu schreiben."); } else { rc += "."; }
             return rc;
           })();
