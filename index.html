@@ -607,6 +607,105 @@ async function signalerCommentairePhoto(commentaireId, motif) {
 }
 
 // Envoie un fichier photo, renvoie { url, error }
+/* ==========================================================
+   29/08 — DATE DE PRISE DE VUE DES PHOTOS (etape 1/3)
+   Objectif : ranger les souvenirs par ANNEE REELLE et non par date
+   d'ajout dans l'app. Sans ca, une photo de concours 2021 envoyee
+   aujourd'hui atterrit en 2026 et la timeline raconte l'usage de
+   Hype au lieu de la vie du cheval.
+
+   Lecture EXIF faite ICI, a la main, sans bibliotheque : on parcourt
+   le segment APP1 du JPEG et on lit DateTimeOriginal (0x9003), a
+   defaut DateTime (0x0132). Format EXIF : "AAAA:MM:JJ HH:MM:SS".
+
+   LIMITES CONNUES, a garder en tete :
+   - Une capture d'ecran n'a pas d'EXIF.
+   - Les images recues par messagerie (WhatsApp, Messenger) sont
+     generalement depouillees de leur EXIF a l'envoi.
+   - Un PNG n'a pas ce segment.
+   - Toute image repassee par un canvas (recadreur, Fond Studio)
+     PERD son EXIF : c'est pourquoi on lit ici, sur le fichier
+     d'origine, avant tout traitement.
+   Dans tous ces cas on ne renvoie rien, et l'appelant se rabattra
+   sur la date de l'album — jamais d'annee inventee.
+   ========================================================== */
+async function lireDateExif(fichier) {
+  try {
+    if (!fichier || !fichier.slice) return null;
+    var type = String(fichier.type || "").toLowerCase();
+    if (type && type.indexOf("jpeg") < 0 && type.indexOf("jpg") < 0) return null;
+    /* Les 128 premiers Ko suffisent tres largement : l'EXIF vit en tete de fichier. */
+    var buf = await fichier.slice(0, 131072).arrayBuffer();
+    var vue = new DataView(buf);
+    if (vue.byteLength < 4 || vue.getUint16(0, false) !== 0xFFD8) return null; /* pas un JPEG */
+    var pos = 2;
+    while (pos + 4 < vue.byteLength) {
+      if (vue.getUint16(pos, false) !== 0xFFE1) { /* pas APP1 : on saute au segment suivant */
+        if (vue.getUint8(pos) !== 0xFF) return null;
+        var taille = vue.getUint16(pos + 2, false);
+        if (!taille) return null;
+        pos += 2 + taille;
+        continue;
+      }
+      var debutTiff = pos + 10; /* APP1 : 2 marqueur + 2 taille + 6 "Exif\0\0" */
+      if (debutTiff + 8 > vue.byteLength) return null;
+      var boutisme = vue.getUint16(debutTiff, false);
+      var petit = (boutisme === 0x4949); /* II = petit-boutiste, MM = gros-boutiste */
+      var offsetIFD = vue.getUint32(debutTiff + 4, petit);
+      var lireIFD = function (dep, profondeur) {
+        if (dep + 2 > vue.byteLength || profondeur > 2) return null;
+        var n = vue.getUint16(dep, petit);
+        var trouve = null, sousIFD = null;
+        for (var i = 0; i < n; i++) {
+          var e = dep + 2 + i * 12;
+          if (e + 12 > vue.byteLength) break;
+          var tag = vue.getUint16(e, petit);
+          if (tag === 0x8769) { sousIFD = debutTiff + vue.getUint32(e + 8, petit); continue; } /* pointeur ExifIFD */
+          if (tag !== 0x9003 && tag !== 0x0132) continue; /* DateTimeOriginal / DateTime */
+          var dep2 = debutTiff + vue.getUint32(e + 8, petit);
+          if (dep2 + 19 > vue.byteLength) continue;
+          var s = "";
+          for (var k = 0; k < 19; k++) s += String.fromCharCode(vue.getUint8(dep2 + k));
+          if (/^\d{4}:\d{2}:\d{2} \d{2}:\d{2}:\d{2}$/.test(s)) {
+            var iso = s.slice(0, 4) + "-" + s.slice(5, 7) + "-" + s.slice(8, 10) + "T" + s.slice(11);
+            var d = new Date(iso);
+            if (!isNaN(d.getTime())) {
+              var an = d.getFullYear();
+              /* Garde-fou : un appareil mal regle peut sortir 1970 ou 2098. */
+              if (an >= 1990 && an <= (new Date()).getFullYear() + 1) {
+                if (tag === 0x9003) return d;   /* prise de vue : on s'arrete la */
+                trouve = trouve || d;           /* DateTime : on garde en repli */
+              }
+            }
+          }
+        }
+        if (sousIFD) { var r = lireIFD(sousIFD, profondeur + 1); if (r) return r; }
+        return trouve;
+      };
+      return lireIFD(debutTiff + offsetIFD, 0);
+    }
+    return null;
+  } catch (eEx) { return null; }
+}
+
+/* Enregistre la date de prise de vue d'une photo (table photo_dates).
+   Jamais bloquant : si la table n'existe pas encore ou si l'ecriture
+   echoue, la photo est envoyee normalement, elle n'aura simplement
+   pas d'annee et retombera sur la date de son album. */
+async function enregistrerDatePhoto(url, date, source) {
+  try {
+    if (!url || !date || typeof supa === "undefined" || !supa) return;
+    var u = await utilisateurActuel();
+    if (!u) return;
+    await supa.from("photo_dates").upsert({
+      photo_url: url,
+      prise_le: date.toISOString(),
+      source: source || "exif",
+      user_id: u.id
+    }, { onConflict: "photo_url" });
+  } catch (eDp) { }
+}
+
 async function envoyerPhoto(fichier) {
   /* 27/08 (suite) : GARDE DE TEMPS AJOUTEE ICI AUSSI — utilisateurActuel() (donc
      supa.auth.getSession()) n'avait, lui, AUCUNE garde : c'est le point de blocage
@@ -621,6 +720,10 @@ async function envoyerPhoto(fichier) {
   const user = rUser;
   if (!user) return { url: null, error: "Pas connecté" };
   const extension = (fichier.name.split(".").pop() || "jpg").toLowerCase();
+  /* 29/08 : lecture de la date de prise de vue AVANT l'envoi (cf. lireDateExif).
+     Elle est enregistree plus bas, une fois l'URL publique connue. */
+  var dateExifPh = null;
+  try { dateExifPh = await lireDateExif(fichier); } catch (eLe) { dateExifPh = null; }
   const chemin = user.id + "/" + Date.now() + "." + extension;
   /* 27/08 : GARDE DE TEMPS — cet envoi n'avait AUCUNE limite. Sur une connexion faible (très
      plausible en concours, avec une vidéo lourde), la requête pouvait rester en attente pour
@@ -638,6 +741,10 @@ async function envoyerPhoto(fichier) {
   const error = rUp.error;
   if (error) return { url: null, error };
   const { data } = supa.storage.from("photos").getPublicUrl(chemin);
+  /* 29/08 : date de prise de vue lue sur le fichier D'ORIGINE (avant tout
+     canvas, qui la detruirait) et enregistree une fois l'URL connue. Volontairement
+     NON attendu : un echec ici ne doit jamais retarder ni faire echouer un envoi. */
+  try { if (dateExifPh) enregistrerDatePhoto(data.publicUrl, dateExifPh, "exif"); } catch (eDe) { }
   return { url: data.publicUrl, error: null };
 }
 /* ===== 02/08 : MARQUEUR DE CADRE DANS L URL =====
@@ -34521,19 +34628,34 @@ function EcranCheval() {
               h("div", { style: { position: "relative", zIndex: 2, fontFamily: "'Cinzel',serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.5, color: "#F4F6F7", marginTop: 9, whiteSpace: "nowrap" } }, ti3),
               h("div", { style: { position: "relative", zIndex: 2, marginTop: "auto", paddingTop: 5, borderTop: "1px solid " + tA(0.22), width: "86%", textAlign: "center", fontSize: 8, letterSpacing: "0.08em", fontWeight: 800, color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cta3 + " \u2192"));
           }
-          return h("div", { className: "rise", style: { animationDelay: ".05s", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 9, margin: "18px 16px 2px" } },
+          return h("div", { className: "rise", style: { animationDelay: ".05s", display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 9, margin: "18px 16px 2px" } }, /* 29/08 : passe de 3 a 6 cartes (demande Blandine) — Photos / Videos / Actualite ajoutees sur une 2e rangee, « Carriere » renommee « Performances » pour coller au libelle de l'onglet correspondant */
             carteR(photoCh, h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" }),
               T("Histoire", "Story", "Historia", "Storia", "\u7269\u8a9e", "Geschichte"),
               T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa", "Erinnerungen"),
               function () { setPanneau("souvenirs"); }, "rh"),
             carteR(IMG_LABAULE, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" }),
-              T("Carri\u00e8re", "Career", "Carrera", "Carriera", "\u30ad\u30e3\u30ea\u30a2", "Karriere"),
+              T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u5b9f\u7e3e", "Leistungen"),
               nbR ? (nbR + " " + T("r\u00e9s.", "res.", "res.", "ris.", "\u4ef6", "Erg.")) : T("Ouvrir", "Open", "Abrir", "Apri", "\u958b\u304f", "\u00d6ffnen"),
               function () { setPanneau("palmares"); }, "rc"),
             carteR(null, h("g", null, h("path", { d: "M6 3v6a4 4 0 0 0 8 0V3M10 13v3.5a4.5 4.5 0 0 0 9 0V14" }), h("circle", { cx: 19, cy: 11.5, r: 2.2 })),
               T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit"),
               T("Passeport", "Passport", "Pasaporte", "Passaporto", "\u30d1\u30b9\u30dd\u30fc\u30c8", "Pass"),
-              function () { setEcran("clinique"); }, "rs"));
+              function () { setEcran("clinique"); }, "rs"),
+            /* 29/08 : 2e rangee. Photos et Actualite ouvrent des panneaux qui n'existent
+               pas encore (pages a construire) : elles pointent pour l'instant sur le
+               panneau Souvenirs, le temps que les vraies pages soient faites. */
+            carteR(photoCh, h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2.5 }), h("circle", { cx: 8.5, cy: 10, r: 1.6 }), h("path", { d: "M21 16l-5-5-4 4-2-2-4 4" })),
+              T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos"),
+              T("Voir", "View", "Ver", "Vedi", "\u898b\u308b", "Ansehen"),
+              function () { setPanneau("souvenirs"); }, "rp"),
+            carteR(null, h("g", null, h("rect", { x: 3, y: 6, width: 12, height: 12, rx: 2.5 }), h("path", { d: "M15 10.5l6-3.5v10l-6-3.5z", strokeLinejoin: "round" })),
+              T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos"),
+              (chVids && chVids.length) ? String(chVids.length) : T("Voir", "View", "Ver", "Vedi", "\u898b\u308b", "Ansehen"),
+              function () { setPanneau("videos"); }, "rv"),
+            carteR(null, h("g", null, h("path", { d: "M4 5h13a2 2 0 0 1 2 2v10a2 2 0 0 0 2 2H6a2 2 0 0 1-2-2V5z", strokeLinejoin: "round" }), h("path", { d: "M7 9h7M7 12.5h7M7 16h4" })),
+              T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles"),
+              T("Voir", "View", "Ver", "Vedi", "\u898b\u308b", "Ansehen"),
+              function () { setPanneau("souvenirs"); }, "rn"));
         })(),
         
         
@@ -35414,7 +35536,11 @@ function EcranCheval() {
           h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0) 55%, rgba(7,8,10,0.72) 100%)" } }),
           h("button", { onClick: function (eA) { if (eA && eA.stopPropagation) eA.stopPropagation(); ajusterPhotoCheval(); }, "aria-label": "Ajuster la photo", title: "Ajuster la photo", style: { position: "absolute", top: 10, right: 52, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(32,217,245,0.55)", color: "#5FE9F0", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2922"),
           h("button", { onClick: function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); if (refPhotoCh.current) refPhotoCh.current.click(); }, "aria-label": "Changer la photo", style: { position: "absolute", top: 10, right: 10, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u270E"),
-          h("button", { onClick: function (eAl) { if (eAl && eAl.stopPropagation) eAl.stopPropagation(); setAlbumChOuvert(true); }, "aria-label": "Album", title: "Album", style: { position: "absolute", top: 10, right: 94, width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\uD83D\uDDBC\uFE0F"),
+          /* 29/08 : CARRÉ JAUNE SUPPRIMÉ (demande Blandine). Le bug 16 avait été fermé
+             sur la page Écurie (bouton conditionné à un historique non vide, libellé
+             « Album » → « Anciennes bannières »), mais cette SECONDE COPIE sur la fiche
+             cheval n'avait jamais reçu le correctif : elle s'affichait toujours et
+             gardait le libellé « Album » qui prêtait à confusion. */
           h("div", { style: { position: "absolute", left: 16, bottom: 12 } },
             h("div", { className: "souvshim", style: { fontSize: 9, letterSpacing: "0.26em", textTransform: "uppercase", fontWeight: 800 } }, "Hype Memories"),
             h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 23, fontWeight: 700, color: "#F4F6F7", marginTop: 3, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, c.nom))),
