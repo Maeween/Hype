@@ -10,6 +10,197 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 📦 OÙ POUSSER QUOI — règle permanente (posée le 28/08/2026)
+
+> Demande de Blandine : à **chaque** livraison, préciser explicitement quels
+> fichiers pousser et à quel endroit. Rappel des destinations :
+
+| Fichier | Destination dans le dépôt `Maeween/Hype` |
+|---|---|
+| `index.html` | racine du dépôt |
+| `hype-stories.js`, `hype-images-N.js`, autres `hype-*.js` | racine du dépôt |
+| `stripe-webhook.js` | `netlify/functions/` |
+| `sw.js`, `manifest.json` | racine du dépôt |
+| fichiers `.sql` | **jamais poussés** — à lancer dans Supabase → SQL Editor |
+| `SUIVI.md` | pas nécessaire au fonctionnement, à garder où tu veux |
+
+⚠️ Netlify redéploie à chaque poussée. Retour arrière d'urgence : onglet
+*Deploys* → « Publish deploy » sur une version précédente.
+
+⚠️ Si `index.html` est poussé, **changer aussi `<meta name="hype-build">`**
+dans son `<head>` (voir section mise à jour automatique) — sinon les
+cavalières déjà installées ne verront pas la nouvelle version.
+
+---
+
+# 28/08/2026 — SESSION APP (index.html + hype-stories.js)
+
+## 🔴 Crash bloquant à la déconnexion — CORRIGÉ
+
+Écran « Un caillou dans le sabot » · `Cannot read properties of null
+(reading 'vip')`. Comptes vus comme connectés mais plus aucun accès, et
+**impossible de se déconnecter** (Violaine, et même symptôme signalé pour
+Aurélie et Lauren).
+
+**Cause** : les 3 boutons « Se déconnecter » vident le profil
+(`setProfil(null)`) **avant** de rediriger. Une ligne lisait `profil.vip`
+sans vérifier que `profil` existe encore → l'app plantait **à l'instant du
+clic sur déconnexion**. Se déconnecter, c'était donc déclencher le crash.
+Corrigé là et sur 4 autres lectures du même type.
+
+## Mise à jour automatique — plus de « videz le cache »
+
+Blandine : « ils savent pas vider le cache, si on avait 100 000 abonnés ? ».
+`sw.js` est déjà bien conçu (service worker de retrait du 26/07, se
+désinstalle seul, ne bloque plus rien) — rien à y changer. Ajouté en
+complément dans `index.html` : à chaque ouverture et retour au premier plan,
+comparaison d'une balise `<meta name="hype-build">` avec la page réellement
+en ligne ; si écart → désinscription des service workers, purge des caches,
+rechargement. Sans aucune action de la cavalière.
+
+🔴 **À CHAQUE LIVRAISON : changer la valeur de `<meta name="hype-build">`
+dans le `<head>`**, sinon la mise à jour automatique ne se déclenche pas.
+Valeur actuelle : `20260828-1`.
+
+## Reprise sur le dernier écran
+
+« Je quitte l'app 10 secondes, je reviens, je dois refaire tout le chemin ».
+Ce n'était pas une déconnexion (session intacte) : iOS recharge la PWA et
+l'app repartait de `intro`. L'écran courant est désormais mémorisé dans la
+sauvegarde existante (`ETAT_CLE`) pour les écrans « racine » ; les écrans de
+contenu retombent sur `dashboard`.
+
+## Correctifs et ajouts
+
+- **Mot de passe oublié** : la détection du lien de récupération était posée
+  sur `EcranConnexionSpectral`, écran jamais atteint depuis la navigation
+  normale → le lien ouvrait le formulaire de **création de compte**.
+  Rebranchée sur `EcranAuth`, avec écran « Nouveau mot de passe » dédié.
+- **Déconnexion** : renvoyait vers l'écran de choix neutre au lieu du
+  formulaire de connexion direct (d'où « on se retape tout le bordel »).
+- **Quota chevaux** : Evan + Liam (2 comptes, la bonne inconnue) à 30
+  gratuits. Exception nominative par `user_id` — les autres restent à 1.
+- **Galops débloqués** : G2 « La vie sociale et l'alimentation » et « Le
+  filet et la selle » ; G4 « Sortir en extérieur » et « Le départ au galop
+  de qualité ». G4 « La santé du cheval » était déjà débloqué avant.
+- **Écran « Envoi en cours »** : mascotte 148px → 220px ronde centrée,
+  texte en blanc dessous.
+- **Halo des stories** (`hype-stories.js`) : bleu foncé fixe et plus
+  discret, au lieu de suivre la teinte du cavalier.
+- **Page club** : compteur membres déplacé à droite du nom ; « Chevaux du
+  club » en grille 3×3 (9 max) + bouton « Voir les X chevaux » vers Écurie
+  Hype, titrée « Les chevaux de l'écurie » (jamais le nom du club, pour
+  éviter tout reproche d'usurpation) ; « Mes chevaux » en grille 2 colonnes
+  (6 max, triés par nombre de photos/vidéos) + « Voir mon fil » ;
+  espacements revus ; podium en 3 cartes or/argent/bronze + carte du club +
+  bouton vers Communauté.
+- **Classement des clubs** : ajouté sur Communauté avec les **vraies**
+  données (`classementEcuries()`, même source que la page club). L'autre
+  écran de classement existant tourne sur des données de démo.
+- **Palmarès du club** : or/argent/bronze/turquoise (classé)/gris.
+- **Likes** : existaient déjà sur les photos (`photo_likes`, 31/07) mais
+  étaient désactivés sur les vidéos → activés.
+- **Grille d'un album ouvert** : 3 → 2 colonnes, repli à 8 lignes.
+- **Bannière de club** : erreur RLS 42501 corrigée — les policies INSERT
+  n'autorisaient que `club-philo:` et `club-histoire:`, pas
+  `club-banniere:`. Nouvelle policy additive `tableaux_clubs_insert_banniere`.
+- **Outils internes** (réservés modérateurs, dans Mon compte) : « Journal de
+  session » (diagnostic des déconnexions) · « Score vitrine des chevaux »
+  (classement interne : remplissage du profil, photos/vidéos, likes réels,
+  lignes de palmarès — invisible des cavalières, sans effet sur aucun tri) ·
+  « Ancienne écurie perso (aperçu) ».
+
+## En attente
+
+- **Visuels du podium** : Blandine envoie 6 images (trophées or/blanc/rose/
+  bleu + médailles argent/bronze). En attendant : icônes emoji. À trancher :
+  variantes par thème de couleur, ou par position ?
+- **Idée notée** : album de profil accessible depuis la page du cheval,
+  réunissant toutes les photos de profil de tous les cavaliers, passées et
+  actuelles.
+- **Écrans prénom/âge/écurie qui « poppent » parfois** : `EcranProfilSetup`
+  et `EcranParcours` existent mais aucun appel ne les déclenche (orphelins).
+  Non résolu, en attente d'une capture d'une cavalière au moment où ça
+  arrive.
+
+---
+
+# 🔴 28/08/2026 — CAUSE RACINE DES ABONNEMENTS TROUVÉE ET CORRIGÉE
+
+> Complète (et explique) le rappel du 22/08 juste en dessous. Violaine avait
+> payé sans recevoir son Premium, comme Aurélie et Lauren avant elle — et
+> comme elles, malgré les réessais automatiques de Stripe pendant des jours.
+> Échec **permanent**, pas aléatoire : ce n'était donc pas de la malchance,
+> il y avait bien un bug de fond.
+
+## Ce qui n'allait pas
+
+Quand Stripe ne fournit pas `client_reference_id`, le webhook doit retrouver
+la cavalière par son email. Il appelait pour ça
+`/auth/v1/admin/users?filter=<email>`.
+
+**Cet endpoint ignore silencieusement le paramètre `filter`.** Il renvoie
+simplement les 200 premiers comptes de la base, dans un ordre non garanti.
+Le code cherchait ensuite l'adresse dans cette liste tronquée. L'app ayant
+bien plus de 200 comptes, toute cavalière hors de ce lot n'était **jamais**
+trouvée — à chaque tentative, d'où le blocage définitif.
+
+## Fausse piste écartée (notée pour ne pas y revenir)
+
+J'ai d'abord proposé de chercher dans la table `profiles`. Blandine a lancé
+la vérification : **`profiles` n'a aucune colonne email** (33 colonnes,
+aucune ne stocke l'adresse). Ce correctif aurait échoué en silence,
+exactement comme le bug d'origine. Un fichier basé sur cette erreur a été
+poussé puis remplacé — sans dommage, le comportement restait celui d'avant.
+
+## Correctif retenu, vérifié en base
+
+`auth.users` est la seule source fiable, mais n'est pas exposée à l'API
+REST. D'où une fonction SQL dédiée, appelable uniquement par le webhook :
+
+```sql
+create or replace function public.hype_user_id_par_email(p_email text)
+returns uuid language sql security definer
+set search_path = auth, public as $$
+  select id from auth.users
+  where lower(email) = lower(trim(p_email)) limit 1;
+$$;
+revoke all on function public.hype_user_id_par_email(text)
+  from public, anon, authenticated;
+grant execute on function public.hype_user_id_par_email(text) to service_role;
+```
+
+✅ Créée et **testée** le 28/08 : renvoie bien l'identifiant de Violaine.
+✅ `stripe-webhook.js` mis à jour pour l'appeler — poussé dans
+`netlify/functions/`.
+
+## 🔴 À VÉRIFIER au prochain paiement réel
+
+Netlify → Functions → `stripe-webhook` → logs :
+- « Premium activé » ou « rattachée par email » = **ça marche**
+- « ALERTE : paiement non rattachable » = **me transmettre la ligne complète**
+
+Le rendez-vous du **23/09** ci-dessous (Aurélie et Lauren) reste le vrai
+test grandeur nature : c'est exactement ce cas de figure.
+
+## Violaine — rattrapée à la main le 28/08
+
+`vyolene@gmail.com` · id `bec15a94-a871-4d5a-8647-2e888cb8e74b` · annuel,
+actif, expire le 17/07/2027. ⚠️ Date calculée sur la création de son compte
+(17/07), **pas sur la date réelle de son paiement Stripe** — à corriger si
+elle diffère. Ligne incomplète comme celles d'Aurélie et Lauren (pas de
+`stripe_subscription`) : le rattrapage propre par renvoi d'événement Stripe
+décrit plus bas s'applique aussi à elle.
+
+## Elisa Buzzi — en attente
+
+`buzzi.elisa3101@gmail.com` : Blandine voulait lui offrir un mois jusqu'au
+01/10. **Aucun compte trouvé** avec cette adresse dans `auth.users` →
+l'insertion n'a rien créé. À vérifier avec elle (faute de frappe ? compte
+pas encore créé ?).
+
+---
+
 # 🔴 À FAIRE — ABONNEMENTS · rappel posé le 22/08/2026 (22h20)
 
 > **À traiter à tête reposée. Rien n'est urgent, rien n'est perdu, personne n'est bloqué.**
@@ -15106,3 +15297,164 @@ Couv. agrandi, retrait depuis la visionneuse) — vérifié par contrôle syntax
 `hype-import-ffe.js` inchangé (md5 `017b30de13db60e898601db33af274c3`).
 `hype-video.js` inchangé (md5 `075330cf3d1b70b09ec94a57a47a8693`) — vérifié ce soir :
 l'onglet Vidéos de la fiche cheval ne vit PAS dans ce fichier mais dans `index.html`.
+
+---
+
+# SESSION 29/08/2026 — Fil communauté, lag, Écurie/Écurie Hype
+
+Base de départ : `index.html` md5 `6f201ce59a3cab3cc6a8233d45bfca41`
+Fichier livré : md5 **`92f380d27f2a631a2209c9568ffd0afc`** (9 523 058 octets).
+Contrôle syntaxique des 149 blocs `<script>` : **0 erreur**.
+`hype-video.js` et `hype-import-ffe.js` NON touchés, inutile de les repousser.
+
+## 1. Fil communauté — SPAM DES RÉSULTATS D'IMPORT (corrigé)
+
+Constaté par Blandine sur enregistrement d'écran : le fil affichait une carte par
+ligne d'import FFE, **y compris les lignes non classées** (16e/19, 20e/33, 31e/56,
+36e/78…) **et celles décochées à la relecture**.
+
+**Cause** : quatre fonctions lisaient la table `resultats` en brut, sans jamais
+respecter ni la coche de l'import (`visible`) ni la règle du premier quart
+(`quart`) : `fil()`, `filAmis()`, `palmaresEcurie()`, et le palmarès de la page club.
+
+**Correctif** : nouvelle fonction partagée `estResultatAffichableEnFil(r)` —
+`visible !== false` ET (`quart == null` = saisie manuelle OU `quart === 1` = classé).
+Appliquée aux 4 endroits. Lecture seule, **rien n'est supprimé en base** : une coche
+remise réaffiche la ligne immédiatement. Ne touche pas la fiche cheval elle-même
+(page Performances, affichage propre).
+
+## 2. Lag et chargement — fiche cheval
+
+Signalé « gros soucis de lag », soupçon d'une régression de ma part. **Diff vérifié
+ligne par ligne : aucune de mes modifications ne touchait le chargement d'images,
+la pagination ou le réseau.** Cause probable trouvée ailleurs, dans le rail sous
+« Le voir en mouvement » :
+- Minuteur de défilement automatique toutes les **28 ms** (~36 fois/seconde), en
+  continu tant que la fiche reste ouverte → passé à **50 ms**, incrément 1,4 → 2,5
+  (vitesse visuelle identique, ~44 % de reflows en moins).
+- **Vidéos retirées du rail** (demande Blandine) : chaque vidéo chargeait ses
+  métadonnées dès l'affichage, plusieurs à la fois. Rail en photos uniquement.
+
+## 3. Retouches d'interface (demandes directes)
+
+- **« Monté par Blandine » sur des chevaux qu'elle ne monte pas** — le texte de la
+  fiche retombait sur `profil.prenom` quand `proprioNom` était vide et que le cheval
+  lui appartenait. Repli retiré : le cavalier n'est affiché que si `proprioNom` est
+  réellement renseigné.
+- **Histoire du cheval, bouton Enregistrer hors écran** : le textarea était à
+  `fontSize 13.5`. Sous 16 px, **iOS Safari zoome la page au focus du clavier** →
+  passé à 16.
+- **Icônes de l'album (Renommer / Public / Supprimer / Fermer)** : 34 → **44 px**,
+  seuil tactile minimum Apple. Police 13 → 16.
+- **Grille à l'intérieur d'un album ouvert** : 3 → **2 colonnes**.
+- **Mascotte vidéo d'attente** (`poney-patiente-boucle.mp4`) : 104 → 148 → **200 px**.
+
+## 4. Chantier ÉCURIE / ÉCURIE HYPE (le gros morceau)
+
+Point de départ : « on a renvoyé vers la page Écurie Hype les chevaux de l'écurie
+mais ils n'y sont pas à jour », capture montrant 6 chevaux seulement.
+
+**CAUSE TROUVÉE** — `EcranEcurieHype` a deux modes de chargement :
+1. **avec** contexte club (`window.__ecurieHypeClub`, posé par le bouton de la page
+   Club) → tous les chevaux du club ;
+2. **sans** contexte (encart Accueil, onglet, raccourci `#ecurie-hype`) → galerie
+   GLOBALE filtrée sur `partage_ecurie_hype = true`, **plafonnée à 60**.
+
+Blandine arrivait toujours par le mode 2 : elle ne voyait donc que les chevaux dont
+la case de partage individuel avait été cochée. **Ce n'était pas un problème de
+photos manquantes.**
+
+### Les 5 correctifs livrés
+
+1. **Onglet « Écurie »** — il redirigeait DÉJÀ vers le club (`guilde`), mais ne
+   **s'allumait pas** une fois dessus. `"guilde"` ajouté à la condition d'onglet actif.
+2. **Écurie Hype, chevaux** — sans contexte club, résout désormais le club du
+   cavalier connecté (`profiles.ecurie` / `ecurie2`, même logique `ilike` que la page
+   Club) et charge **tous ses chevaux**. Repli sur l'ancienne galerie globale si le
+   cavalier n'a aucun club renseigné.
+3. **Écurie Hype, nouvelle section « Les albums de l'écurie »** — en bas de page,
+   grille 2 colonnes (couverture + nom + nombre de souvenirs). Albums **publics
+   uniquement**, **des chevaux du club uniquement** (cible `cheval:<id>` dans
+   `albums_cheval`), **16 max**, tri par date. Un tap ouvre la fiche du cheval.
+   Section masquée s'il n'y a aucun album public.
+4. **Page Club** — seuil « > 9 chevaux » retiré sur le bouton d'accès à Écurie Hype :
+   un club plus petit n'y avait **aucun accès**. Bouton affiché dès 1 cheval.
+5. **Raccourci `ancienne-ecurie`** — **CONSERVÉ intact** sur demande explicite de
+   Blandine (« ne le supprime pas, je le garde, il n'est que pour moi »).
+
+### Décisions de Blandine prises en cours de route
+
+- **Ne PAS remettre les chevaux du club sur l'ancienne page écurie perso** : elle est
+  décidée supprimée, y remettre du contenu recréerait le doublon que la décision
+  voulait éliminer. Écurie Hype est le bon endroit.
+- **Albums : chevaux de l'écurie SEULEMENT**, pas de galerie inter-clubs.
+- **Onglets de navigation : ne pas les masquer.** L'encart « Mon écurie » de
+  l'Accueil : **conservé**.
+- La bascule « Visible sur l'Écurie Hype » de la fiche cheval : **rien à masquer**,
+  elle avait déjà été retirée du rendu lors d'une session précédente. La fonction
+  `basculerPartageEH` subsiste en code mort inoffensif, plus rien ne l'appelle.
+
+### Conséquence à connaître
+
+La **galerie globale « tous clubs »** (chevaux ayant coché `partage_ecurie_hype`)
+n'est plus la vue par défaut d'Écurie Hype. Le code et la colonne restent en place :
+une seule branche `else` à réactiver si Blandine veut la remettre quelque part.
+
+## 5. COMPRESSION VIDÉO — chantier instruit, PAS CODÉ, décision en attente
+
+Reprise du point 1 de la liste « à faire ». **Comparaison qualité faite sur une vraie
+vidéo de Blandine** (IMG_8233.mov, 6,43 s, 1080p, HEVC, 11,6 Mbps, 9,0 Mo) :
+
+| Version | Poids | Débit |
+|---|---|---|
+| Original | 9,0 Mo | 11,6 Mbps |
+| Léger | 6,6 Mo | 8 Mbps |
+| **Recommandé** | **4,2 Mo** | **5 Mbps** |
+| Agressif | 2,2 Mo | 2,5 Mbps |
+
+**Réglage retenu par Blandine : 5 Mbps, H.264, 1080p** (« ok pour le recommandé, je
+te redirai si trop agressif »).
+
+**Les deux méthodes navigateur ont été instruites et TOUTES DEUX ÉCARTÉES :**
+- **ffmpeg.wasm** — fiable, respecte vraiment le débit, pas de risque de vidéo muette.
+  Mais **mesuré : 29,65 s pour 6,43 s de vidéo** avec le même moteur en natif
+  mono-cœur, soit ~4,6× la durée réelle — et le WebAssembly dans Safari iOS est plus
+  lent encore. Pour une vidéo de concours d'1 min 20-25 : **10 à 20 minutes**, écran
+  allumé. Réaction de Blandine : « sur vidéo de 1 mn 30 c'est pas possible ça ».
+- **MediaRecorder + canvas** — rapide (~temps réel, soit 1 min 30-2 min pour 1 min 30)
+  mais fragile : audio peu fiable sur iOS (risque de vidéo muette), et surtout **si
+  iOS tue l'onglet pendant l'opération, le filet de sécurité « en cas d'échec, envoie
+  l'original » ne peut PAS se déclencher** — rien ne part du tout. Un seuil de
+  sécurité (ne compresser que jusqu'à 45-60 s) écarterait justement les vidéos de
+  concours, donc ne servirait à rien : « du coup ça sert pas à grand-chose ».
+
+**CONCLUSION : le téléphone n'est pas le bon endroit.** La vraie solution est la
+compression **côté serveur**, après l'envoi de l'original.
+
+**MAIS Supabase seul ne peut pas le faire** (vérifié, pas supposé) : les Edge
+Functions n'ont pas ffmpeg et sont limitées à **2 secondes de CPU par appel**.
+
+**Deux pistes restantes, à trancher à froid :**
+1. **Cloudflare Stream** — stockage + transcodage + lecture, éprouvé, quelques euros
+   par mois au volume actuel. Mais c'est un **changement d'architecture** pour les
+   vidéos (envoi et lecture à réécrire), pas un correctif.
+2. **Service tiers de transcodage** branché sur Supabase Storage — changement plus
+   léger côté app, mais fiabilité et coût réel **à vérifier avant de construire
+   dessus**.
+
+En attendant, l'envoi fonctionne avec la limite de 500 Mo déjà relevée.
+
+## 6. Erreur de ma part signalée
+
+J'ai livré le fichier sous le nom `index_livre.html` (reliquat de mes copies de
+travail `index_new` / `work`). Contenu identique, seul le nom était faux — relivré
+en `index.html`. **À ne pas refaire : livrer toujours sous le nom final.**
+
+## Reste à faire (inchangé, plus les nouveaux)
+
+Les 4 points de la liste précédente restent valables (compression vidéo → voir §5
+ci-dessus, étoile « en vedette » sur les vignettes d'album, identifications visibles
+sous la photo, parcours d'envoi avec progression), ainsi que les 4 points signalés à
+23h49 sur la page Performances / Moments forts (photos identiques, couleurs non
+accordées, mojibake « PrÃ©paratoire » à corriger dans `hype-import-ffe.js` ET en base,
+compteurs incohérents 12 sorties / 17 podiums / 18 classés).
