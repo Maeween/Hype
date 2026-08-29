@@ -186,6 +186,162 @@ try {
   });
 } catch (eJG) { }
 
+/* ==========================================================
+   29/08 — REPRISE DES DATES DE PRISE DE VUE (etape 2/3)
+   Reservee aux moderateurs, accessible par #dates-photos.
+
+   Les photos deja en ligne n'ont pas de date : elles ont ete
+   envoyees avant l'etape 1. Cet ecran les relit une par une pour
+   en extraire l'EXIF et remplir photo_dates.
+
+   ECONOMIE DE DONNEES : on ne telecharge PAS la photo entiere. Un
+   en-tete Range demande les 128 premiers Ko, ou vit l'EXIF. Sur des
+   photos de 3-5 Mo, c'est ~30 fois moins de donnees. Si le serveur
+   ignore Range, le navigateur renvoie tout le fichier : ca marche
+   quand meme, c'est juste plus lourd.
+
+   PRUDENCE ASSUMEE : traitement sequentiel (une photo a la fois),
+   petite pause entre chaque, arret possible a tout moment. On ne
+   sature ni le telephone ni Supabase. Une photo deja datee est
+   sautee : l'outil peut donc etre relance sans tout refaire.
+
+   REPLI : quand l'EXIF est absent (capture d'ecran, image recue par
+   messagerie, photo passee par le recadreur ou Fond Studio), on
+   ecrit la date de l'ALBUM avec source='album' — jamais une annee
+   inventee, et la source reste lisible pour retrier plus tard.
+   ========================================================== */
+function EcranDatesPhotos() {
+  var ctx = useApp(); var setEcran = ctx.setEcran;
+  var _mo = React.useState(null), moiDP = _mo[0], setMoiDP = _mo[1];
+  var _ch = React.useState([]), chevauxDP = _ch[0], setChevauxDP = _ch[1];
+  var _et = React.useState("pret"), etatDP = _et[0], setEtatDP = _et[1]; /* pret | scan | fini */
+  var _pr = React.useState({ total: 0, faits: 0, exif: 0, album: 0, deja: 0, rates: 0 }), progDP = _pr[0], setProgDP = _pr[1];
+  var _jr = React.useState([]), journalDP = _jr[0], setJournalDP = _jr[1];
+  var stopDP = React.useRef(false);
+
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      try {
+        var u = await utilisateurActuel(); if (!actif) return;
+        setMoiDP(u || null);
+        if (!u) return;
+        var rc = await supa.from("chevaux").select("id, nom, photo_url").eq("user_id", u.id).is("supprime_le", null).order("nom");
+        if (actif && rc && rc.data) setChevauxDP(rc.data);
+      } catch (eIn) { }
+    })();
+    return function () { actif = false; };
+  }, []);
+
+  function noter(txt) { setJournalDP(function (j) { return [txt].concat(j).slice(0, 60); }); }
+
+  /* Recupere la date d'une photo deja en ligne : Range sur les 128 premiers Ko. */
+  async function dateDeLUrl(url) {
+    try {
+      var propre = (typeof urlNue === "function") ? urlNue(url) : url;
+      var rep = await fetch(propre, { headers: { Range: "bytes=0-131071" } });
+      if (!rep || !rep.ok) return null;
+      var blob = await rep.blob();
+      return await lireDateExif(new File([blob], "p.jpg", { type: blob.type || "image/jpeg" }));
+    } catch (eDu) { return null; }
+  }
+
+  async function lancer(cheval) {
+    if (etatDP === "scan") return;
+    stopDP.current = false;
+    setEtatDP("scan"); setJournalDP([]);
+    setProgDP({ total: 0, faits: 0, exif: 0, album: 0, deja: 0, rates: 0 });
+    try {
+      /* 1. Rassembler les photos du cheval, avec la date de leur album en repli. */
+      var ra = await supa.from("albums_cheval").select("id, nom, photos, created_at").eq("cible", "cheval:" + cheval.id);
+      var lot = [];
+      ((ra && ra.data) || []).forEach(function (al) {
+        ((al.photos) || []).forEach(function (u) {
+          if (u && !(typeof estUrlVideo === "function" && estUrlVideo(u))) lot.push({ url: u, dateAlbum: al.created_at, album: al.nom });
+        });
+      });
+      if (cheval.photo_url) lot.push({ url: cheval.photo_url, dateAlbum: null, album: "portrait" });
+      /* Dedoublonnage : une meme photo peut vivre dans deux albums. */
+      var vus = {}; lot = lot.filter(function (p) { var c = (typeof urlNue === "function") ? urlNue(p.url) : p.url; if (vus[c]) return false; vus[c] = true; return true; });
+
+      if (!lot.length) { noter("Aucune photo trouvée pour " + cheval.nom + "."); setEtatDP("fini"); return; }
+      setProgDP(function (p) { return Object.assign({}, p, { total: lot.length }); });
+      noter(lot.length + " photo(s) à examiner pour " + cheval.nom + ".");
+
+      /* 2. Ecarter celles qui ont deja une date : l'outil est relancable. */
+      var urls = lot.map(function (p) { return p.url; });
+      var dejaSet = {};
+      for (var d = 0; d < urls.length; d += 100) {
+        try {
+          var rd = await supa.from("photo_dates").select("photo_url").in("photo_url", urls.slice(d, d + 100));
+          ((rd && rd.data) || []).forEach(function (l) { dejaSet[l.photo_url] = true; });
+        } catch (eDs) { }
+      }
+
+      /* 3. Une photo a la fois. */
+      for (var i = 0; i < lot.length; i++) {
+        if (stopDP.current) { noter("Arrêté à la demande."); break; }
+        var ph = lot[i];
+        if (dejaSet[ph.url]) {
+          setProgDP(function (p) { return Object.assign({}, p, { faits: p.faits + 1, deja: p.deja + 1 }); });
+          continue;
+        }
+        var dt = await dateDeLUrl(ph.url);
+        var src = "exif";
+        if (!dt && ph.dateAlbum) { dt = new Date(ph.dateAlbum); src = "album"; }
+        if (dt && !isNaN(dt.getTime())) {
+          await enregistrerDatePhoto(ph.url, dt, src);
+          if (src === "exif") { noter("✓ " + dt.getFullYear() + " — date de prise de vue trouvée"); setProgDP(function (p) { return Object.assign({}, p, { faits: p.faits + 1, exif: p.exif + 1 }); }); }
+          else { noter("~ " + dt.getFullYear() + " — pas de date dans la photo, date de l'album « " + (ph.album || "?") + " » utilisée"); setProgDP(function (p) { return Object.assign({}, p, { faits: p.faits + 1, album: p.album + 1 }); }); }
+        } else {
+          noter("× aucune date trouvée (photo laissée sans année)");
+          setProgDP(function (p) { return Object.assign({}, p, { faits: p.faits + 1, rates: p.rates + 1 }); });
+        }
+        await new Promise(function (r) { setTimeout(r, 120); }); /* respiration : ni le tel ni Supabase ne sont brusques */
+      }
+      setEtatDP("fini");
+    } catch (eLa) { noter("Erreur : " + String(eLa)); setEtatDP("fini"); }
+  }
+
+  var estMod = moiDP && typeof estModerateurHype === "function" && estModerateurHype(moiDP);
+  var T2 = function (s) { return s; };
+  var pct = progDP.total ? Math.round((progDP.faits / progDP.total) * 100) : 0;
+
+  return h("div", { style: { minHeight: "100svh", background: "#06070A", color: "#EDF2F5", padding: "calc(env(safe-area-inset-top) + 18px) 16px calc(120px + env(safe-area-inset-bottom))", fontFamily: "'Montserrat',sans-serif" } },
+    h("button", { onClick: function () { setEcran("dashboard"); }, style: { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.16)", color: "#EDF2F5", borderRadius: 999, padding: "9px 16px", fontSize: 12.5, fontWeight: 700, cursor: "pointer", minHeight: 44 } }, "‹ Retour"),
+    h("h1", { style: { fontFamily: "'Cinzel',serif", fontSize: 21, fontWeight: 700, margin: "18px 0 6px" } }, "Dater les photos"),
+    h("p", { style: { fontSize: 12.5, lineHeight: 1.6, color: "#9AA5AC", margin: "0 0 18px" } },
+      "Retrouve l'année de prise de vue des photos déjà en ligne, pour que la chronologie des souvenirs affiche les vraies années. Choisis un cheval : ses photos sont examinées une par une, sans être téléchargées en entier."),
+    !estMod ? h("div", { style: { padding: 14, borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", fontSize: 12.5, color: "#9AA5AC" } }, "Outil réservé.") :
+    h("div", null,
+      etatDP === "scan" ? h("div", { style: { marginBottom: 16 } },
+        h("div", { style: { height: 8, borderRadius: 999, background: "rgba(255,255,255,0.08)", overflow: "hidden" } },
+          h("div", { style: { height: "100%", width: pct + "%", background: "#20D9F5", transition: "width .3s" } })),
+        h("div", { style: { fontSize: 12.5, marginTop: 9, color: "#DCE7EA" } }, progDP.faits + " / " + progDP.total + " photos"),
+        h("button", { onClick: function () { stopDP.current = true; }, style: { marginTop: 12, width: "100%", minHeight: 46, borderRadius: 14, border: "1px solid rgba(226,138,146,0.5)", background: "rgba(226,138,146,0.08)", color: "rgba(240,190,196,0.95)", fontSize: 12.5, fontWeight: 800, cursor: "pointer" } }, "Arrêter")) : null,
+
+      (etatDP === "fini") ? h("div", { style: { marginBottom: 16, padding: 14, borderRadius: 14, border: "1px solid rgba(32,217,245,0.28)", background: "rgba(32,217,245,0.05)", fontSize: 12.5, lineHeight: 1.8 } },
+        h("div", { style: { fontWeight: 800, marginBottom: 6, fontFamily: "'Cinzel',serif", fontSize: 14 } }, "Terminé"),
+        h("div", null, "Date de prise de vue trouvée : " + progDP.exif),
+        h("div", null, "Date de l'album utilisée : " + progDP.album),
+        h("div", null, "Déjà datées auparavant : " + progDP.deja),
+        h("div", null, "Sans aucune date : " + progDP.rates)) : null,
+
+      etatDP !== "scan" ? h("div", null,
+        chevauxDP.length ? chevauxDP.map(function (c) {
+          return h("button", { key: "dp" + c.id, onClick: function () { lancer(c); }, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", minHeight: 56, marginBottom: 9, padding: "10px 12px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.03)", color: "#EDF2F5", cursor: "pointer", textAlign: "left" } },
+            h("img", { src: c.photo_url || CHEVAL_DEFAUT, alt: "", loading: "lazy", style: { width: 40, height: 40, borderRadius: 10, objectFit: "cover", flex: "0 0 auto" } }),
+            h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 14, fontWeight: 700 } }, c.nom),
+            h("span", { style: { marginLeft: "auto", fontSize: 11, color: "#20D9F5", fontWeight: 800 } }, "Examiner"));
+        }) : h("div", { style: { fontSize: 12.5, color: "#9AA5AC" } }, "Aucun cheval trouvé sur ce compte.")) : null,
+
+      journalDP.length ? h("div", { style: { marginTop: 20 } },
+        h("div", { style: { fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A929C", fontWeight: 800, marginBottom: 8 } }, "Détail"),
+        journalDP.map(function (l, i) {
+          return h("div", { key: "jd" + i, style: { fontSize: 11.5, color: "#9AA5AC", padding: "5px 0", borderBottom: "1px solid rgba(255,255,255,0.05)", lineHeight: 1.5 } }, l);
+        })) : null));
+}
+
 function EcranJournalSession() {
   var h = React.createElement;
   var ctx = useApp(); var setEcran = ctx.setEcran;
@@ -20617,7 +20773,7 @@ const CIBLE_DIRECTE = (function () {
             }
         }
         if (h) cle = h;
-        const MAP = { "monecurie": { ecran: "guilde" }, "monclub": { ecran: "guilde" }, "contact": { galop: 4, cours: "g4-contact", page: 0 }, "aides": { galop: 4, cours: "g4-aides", page: 0 }, "transitions": { galop: 4, cours: "g4-transitions", page: 0 }, "incurvation": { galop: 4, cours: "g4-incurvation", page: 0 }, "vitesse": { galop: 4, cours: "g4-vitesse", page: 0 }, "epaules-hanches": { galop: 4, cours: "g4-epaules-hanches", page: 0 }, "protections": { galop: 4, cours: "g4-protections", page: 0 }, "obstacles-equilibre": { galop: 4, cours: "g4-obstacles-equilibre", page: 0 }, "soins-travail": { galop: 4, cours: "g4-soins-travail", page: 0 }, "identite": { galop: 4, cours: "g4-identite", page: 0 }, "nourrir": { galop: 4, cours: "g4-nourrir", page: 0 }, "exterieur": { galop: 4, cours: "g4-exterieur", page: 0 }, "abord": { galop: 3, cours: "g3-c3", page: 0 }, "phases": { galop: 3, cours: "g3-saut", page: 0 }, "sante": { galop: 4, cours: "g4-c5", page: 0 }, "impulsion": { galop: 6, cours: "g6-c2", page: 0 }, "biomeca": { galop: 4, cours: "g4-biomeca", page: 0 }, "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "phases-saut": { ecran: "phases-saut" }, phasessaut: { ecran: "phases-saut" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "guilde", galop: null, cours: null, page: null }, "ancienne-ecurie": { ecran: "ecurie", galop: null, cours: null, page: null }, "journal-session": { ecran: "journal-session" }, /* 28/08 : raccourci d'apercu TEMPORAIRE demande par Blandine pour revoir l'ancienne page ecurie perso (EcranEcurie) avant de decider quoi en recuperer -- ce lien contourne volontairement la redirection normale vers le club. A retirer si plus utile. */ monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, /* 06/08 : deux cibles pour les cours issus de la scission. Les libelles
+        const MAP = { "monecurie": { ecran: "guilde" }, "monclub": { ecran: "guilde" }, "contact": { galop: 4, cours: "g4-contact", page: 0 }, "aides": { galop: 4, cours: "g4-aides", page: 0 }, "transitions": { galop: 4, cours: "g4-transitions", page: 0 }, "incurvation": { galop: 4, cours: "g4-incurvation", page: 0 }, "vitesse": { galop: 4, cours: "g4-vitesse", page: 0 }, "epaules-hanches": { galop: 4, cours: "g4-epaules-hanches", page: 0 }, "protections": { galop: 4, cours: "g4-protections", page: 0 }, "obstacles-equilibre": { galop: 4, cours: "g4-obstacles-equilibre", page: 0 }, "soins-travail": { galop: 4, cours: "g4-soins-travail", page: 0 }, "identite": { galop: 4, cours: "g4-identite", page: 0 }, "nourrir": { galop: 4, cours: "g4-nourrir", page: 0 }, "exterieur": { galop: 4, cours: "g4-exterieur", page: 0 }, "abord": { galop: 3, cours: "g3-c3", page: 0 }, "phases": { galop: 3, cours: "g3-saut", page: 0 }, "sante": { galop: 4, cours: "g4-c5", page: 0 }, "impulsion": { galop: 6, cours: "g6-c2", page: 0 }, "biomeca": { galop: 4, cours: "g4-biomeca", page: 0 }, "trace-anime": { ecran: "trace-anime" }, trace: { ecran: "trace-anime" }, "phases-saut": { ecran: "phases-saut" }, phasessaut: { ecran: "phases-saut" }, "entrainer-tracer": { ecran: "entrainer-tracer" }, tracer: { ecran: "entrainer-tracer" }, "challenge-reprise": { ecran: "challenge-reprise" }, challenge: { ecran: "challenge-reprise" }, reprises: { ecran: "reprises" }, "quoi-de-neuf": { ecran: "quoi-de-neuf" }, quoidneuf: { ecran: "quoi-de-neuf" }, "ecurie-hype": { ecran: "ecurie-hype" }, "album-ecurie": { ecran: "album-ecurie" }, albumecurie: { ecran: "album-ecurie" }, sellerie: { ecran: "sellerie" }, sante: { ecran: "sante" }, clinique: { ecran: "clinique" }, profil: { ecran: "profil" }, premium: { ecran: "premium" }, classement: { ecran: "classement" }, quetes: { ecran: "quetes" }, memory: { ecran: "jeu-galop" }, moncavalier: { ecran: "moncavalier" }, guilde: { ecran: "guilde" }, "gerer-ecurie": { ecran: "gerer-ecurie" }, cheval: { ecran: "cheval", galop: null, cours: null, page: null }, fichecheval: { ecran: "cheval", galop: null, cours: null, page: null }, souvenirs: { ecran: "cheval", galop: null, cours: null, page: null }, articles: { ecran: "articles" }, cadrenoir: { ecran: "cadre-noir" }, ecoleportugaise: { ecran: "ecole-portugaise" }, ecolevienne: { ecran: "ecole-vienne" }, ecolejerez: { ecran: "ecole-jerez" }, galops: { ecran: "galops" }, ecurie: { ecran: "guilde", galop: null, cours: null, page: null }, "ancienne-ecurie": { ecran: "ecurie", galop: null, cours: null, page: null }, "journal-session": { ecran: "journal-session" }, "dates-photos": { ecran: "dates-photos" }, /* 28/08 : raccourci d'apercu TEMPORAIRE demande par Blandine pour revoir l'ancienne page ecurie perso (EcranEcurie) avant de decider quoi en recuperer -- ce lien contourne volontairement la redirection normale vers le club. A retirer si plus utile. */ monde: { ecran: "monde", galop: null, cours: null, page: null }, lamotte: { ecran: "evenement" }, accueil: { ecran: "dashboard" }, "cheval-elfe": { ecran: "cheval" }, "cheval-rizotto": { ecran: "cheval" }, "cheval-venus": { ecran: "cheval" }, "cheval-idao": { ecran: "cheval" }, communaute: { ecran: "communaute" }, communaute: { ecran: "communaute" }, g1: { ecran: "galop-detail", galop: 1 }, baby: { galop: "baby", cours: "baby-c1", page: 0 }, babypansage: { galop: "baby", cours: "baby-c2", page: 0 }, babybesoins: { galop: "baby", cours: "baby-c3", page: 0 }, babylicol: { galop: "baby", cours: "baby-c10", page: 0 }, babyprepare: { galop: "baby", cours: "baby-c9", page: 0 }, babyinstalle: { galop: "baby", cours: "baby-c11", page: 0 }, babydirige: { galop: "baby", cours: "baby-c12", page: 0 }, babytrot: { galop: "baby", cours: "baby-c13", page: 0 }, babygalop: { galop: "baby", cours: "baby-c14", page: 0 }, babydescend: { galop: "baby", cours: "baby-c15", page: 0 }, /* 06/08 : deux cibles pour les cours issus de la scission. Les libelles
        babypaille, babydescend, etc. ne correspondent plus aux titres reels
        depuis longtemps — decalage anterieur, non corrige ici. */
       babyarret: { galop: "baby", cours: "baby-c16", page: 0 },
@@ -23020,6 +23176,7 @@ function Router() {
                 ecran === "profil" && React.createElement(EcranProfil, null),
                 ecran === "ecurie" && React.createElement(EcranEcurie, null),
                 ecran === "journal-session" && React.createElement(EcranJournalSession, null),
+                ecran === "dates-photos" && React.createElement(EcranDatesPhotos, null), /* 29/08 : reprise des dates de prise de vue (etape 2/3) */
                 ecran === "score-vitrine" && React.createElement(EcranScoreVitrine, null),
                 ecran === "import-resultats" && React.createElement(HypeImportEcran, {
                   /* 🟥 22/08 — AUCUNE FONCTION DE TRADUCTION ICI.
