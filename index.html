@@ -32400,6 +32400,42 @@ function ChronologieSouvenirs(props) {
     props.onAjouter ? h("button", { onClick: props.onAjouter, style: { display: "block", margin: "6px auto 4px", minHeight: 48, padding: "0 26px", borderRadius: 999, border: "1px solid " + teinte + "88", background: "transparent", color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "▧  " + T("Ajouter un souvenir", "Add a memory", "Añadir un recuerdo", "Aggiungi un ricordo", "思い出を追加", "Erinnerung hinzufügen")) : null);
 }
 
+/* ==========================================================
+   29/08 — BLOC « PAS ENCORE DE SOUVENIRS » (video fournie par Blandine)
+   S'affiche a la place d'une page vide quand un cheval n'a aucune
+   photo (ou seulement sa photo de couverture).
+
+   Fichier : images/hype-souvenirs-vide.mp4 — 15 s, muette, bouclee.
+   La source d'origine faisait 20 Mo (HEVC 1112x834) : trop lourd pour
+   un ecran d'attente qui se charge a chaque fiche vide. Recompressee
+   en H.264 900x676 sans piste audio -> 2,4 Mo, lisible par Safari.
+
+   `muted` + `playsInline` sont indispensables : sans eux iOS refuse la
+   lecture automatique. `onError` masque le bloc si le fichier n'a pas
+   ete pousse, plutot que d'afficher un cadre noir.
+
+   EMPLACEMENT : composant autonome, a poser la ou Blandine le decidera.
+   ========================================================== */
+function BlocSouvenirsVide(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var teinteCl = props.teinteCl || "#5FE9F0";
+  var _e = React.useState(false), rate = _e[0], setRate = _e[1];
+  if (rate) return null;
+  return h("div", { style: { margin: "8px 16px 18px", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)", background: "#04070A", position: "relative" } },
+    h("video", {
+      src: "images/hype-souvenirs-vide.mp4",
+      autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto",
+      onError: function () { setRate(true); },
+      style: { width: "100%", height: "auto", display: "block" }
+    }),
+    h("div", { style: { pointerEvents: "none", position: "absolute", left: 0, right: 0, bottom: 0, padding: "38px 16px 16px", background: "linear-gradient(180deg, rgba(4,7,10,0), rgba(4,7,10,0.88))" } },
+      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: "#F4F7FA" } }, props.titre || T("Son histoire commence ici", "Their story starts here", "Su historia empieza aquí", "La sua storia inizia qui", "物語はここから", "Seine Geschichte beginnt hier")),
+      h("div", { style: { fontSize: 11.5, color: "rgba(237,242,245,0.7)", marginTop: 4, lineHeight: 1.5 } }, props.sous || T("Ajoute une première photo pour ouvrir sa chronologie.", "Add a first photo to open their timeline.", "Añade una primera foto para abrir su cronología.", "Aggiungi una prima foto per aprire la sua cronologia.", "最初の写真を追加してください。", "Füge ein erstes Foto hinzu."))),
+    props.onAjouter ? h("button", { onClick: props.onAjouter, style: { position: "absolute", right: 14, top: 14, minHeight: 44, padding: "0 16px", borderRadius: 999, border: "1px solid " + teinteCl + "99", background: "rgba(4,7,10,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: teinteCl, fontSize: 12, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "+ " + T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen")) : null);
+}
+
 /* ===== MUR DE PUBLICATIONS (Hype) ===== */
 var __murPhotoOuvrir = {};
 function MurHype(props) {
@@ -35440,7 +35476,7 @@ function EcranCheval() {
         h("div", { id: "chapMedias", style: { position: "relative" } },
           h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien"))),
-          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("souvenirs"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("souvenirs"); } })),
+          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("photos"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("photos"); } })) /* 29/08 : les medias renvoyaient sur Souvenirs, qui n'a plus de photos depuis le decoupage — ils ouvrent desormais la page Photos */,
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
@@ -35472,9 +35508,40 @@ function EcranCheval() {
         h("div", { style: { height: "40px" } }))),
 
     (panneau && !(c && c.nom)) ? null : /* 27/08 : garde preventive — le panneau ne s'ouvre jamais sur une fiche sans nom (piste explorée après un crash rapporté par Blandine sur ce panneau, cause exacte non confirmée) */
-      panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true", onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwX = (t0 && t0.clientX <= 28) ? t0.clientX : null; window.__panSwY = t0 ? t0.clientY : null; } catch (eS1) { } }, onTouchEnd: function (eTe) { try { if (window.__panSwX == null) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - window.__panSwX, dy = Math.abs(t1.clientY - (window.__panSwY || 0)); window.__panSwX = null; if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } }, /* 31/07 : fermeture au geste depuis le bord gauche (bug signale par Blandine) */
-      onTouchStart: function (eTs) { try { var t0 = eTs.touches && eTs.touches[0]; window.__panSwipe = (t0 && t0.clientX <= 28) ? { x: t0.clientX, y: t0.clientY } : null; } catch (eS1) { window.__panSwipe = null; } },
-      onTouchEnd: function (eTe) { try { var d0 = window.__panSwipe; if (!d0) return; var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return; var dx = t1.clientX - d0.x, dy = Math.abs(t1.clientY - d0.y); if (dx > 70 && dy < 60) setPanneau(null); } catch (eS2) { } window.__panSwipe = null; }, /* 30/07 : swipe droit depuis le bord gauche = retour (bug signale par Blandine) */
+      panneau ? h("div", { id: "panneauCheval", "data-noswipe": "true",
+      /* 29/08 (demande Blandine : « mets le swipe retour et avant, sur la page
+         Souvenirs il n'y a rien ») — le geste existait mais ne servait qu'a FERMER,
+         et uniquement depuis le bord gauche. Desormais :
+           · glisser depuis le BORD GAUCHE  -> ferme la page (comportement d'origine) ;
+           · glisser n'importe ou ailleurs  -> page precedente / suivante dans l'ordre
+             des onglets (Souvenirs · Photos · Performances · Videos).
+         Les bandes qui defilent horizontalement (data-hscroll) sont ignorees, sinon
+         faire defiler un rail changerait de page. */
+      onTouchStart: function (eTs) {
+        try {
+          var t0 = eTs.touches && eTs.touches[0];
+          var dansRail = false;
+          try { dansRail = !!(eTs.target && eTs.target.closest && eTs.target.closest("[data-hscroll]")); } catch (eR) { }
+          window.__panSwipe = t0 ? { x: t0.clientX, y: t0.clientY, bord: t0.clientX <= 28, rail: dansRail } : null;
+        } catch (eS1) { window.__panSwipe = null; }
+      },
+      onTouchEnd: function (eTe) {
+        try {
+          var d0 = window.__panSwipe; window.__panSwipe = null;
+          if (!d0 || d0.rail) return;
+          var t1 = eTe.changedTouches && eTe.changedTouches[0]; if (!t1) return;
+          var dx = t1.clientX - d0.x, dy = Math.abs(t1.clientY - d0.y);
+          if (dy > 60 || Math.abs(dx) < 70) return;   /* geste vertical ou trop court */
+          if (d0.bord && dx > 70) { setPanneau(null); return; }
+          var ordre = ["souvenirs", "photos", "palmares", "videos"];
+          var iP = ordre.indexOf(panneau);
+          if (iP < 0) { if (dx > 0) setPanneau(null); return; }
+          var suiv = dx < 0 ? iP + 1 : iP - 1;
+          if (suiv < 0) { setPanneau(null); return; }   /* avant le premier : on ferme */
+          if (suiv >= ordre.length) return;
+          setPanneau(ordre[suiv]);
+        } catch (eS2) { }
+      },
       style: { position: "fixed", inset: 0, zIndex: 6500, background: "#060709", overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 8px" } },
         h("button", { onClick: function () { setPanneau(null); }, style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, flexShrink: 0 } }, "‹"),
@@ -35493,7 +35560,7 @@ function EcranCheval() {
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
       panneau === "videos" ? h("div", { style: { padding: "8px 16px 24px" } },
-        h("div", { role: "button", onClick: function () { setPanneau("souvenirs"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", padding: "10px", borderRadius: 12, border: "1px dashed " + tA(0.4), color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen")), /* 27/08 : option d'ajout directe sur l'onglet Vidéos (demande Blandine) — ouvre Souvenirs, où vit déjà le vrai bouton d'envoi */
+        h("div", { role: "button", onClick: function () { setPanneau("photos"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", padding: "10px", borderRadius: 12, border: "1px dashed " + tA(0.4), color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen")), /* 27/08 : option d'ajout directe sur l'onglet Vidéos (demande Blandine) — ouvre Souvenirs, où vit déjà le vrai bouton d'envoi */
         (chVids && chVids.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
           chVids.map(function (vU, iV) {
             /* 02/08 : la vignette ouvre la visionneuse au lieu de lire la video dans sa case de
