@@ -10,6 +10,322 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (01h05) — PHOTOS LENTES PARTOUT : MESURÉ, PUIS CORRIGÉ EN UN SEUL BLOC
+
+> Blandine : « depuis plus tôt dans la soirée je recommence à ramer pour charger
+> les photos ». Puis : « on tourne en rond depuis des heures ». Elle avait raison
+> une deuxième fois — **la mesure était déjà dans ses captures**, je continuais à
+> réclamer un outil de diagnostic au lieu de lire ce qu'elle m'avait envoyé.
+
+## LA MESURE (ses captures `storage.objects`, bucket `photos`)
+
+| Envoyées le | Poids |
+|---|---|
+| 27/08 au soir | 1,84 · 2,76 · 2,77 · 2,87 · 3,38 · 3,63 · **4,47 Mo** |
+| 26/08 | 0,32 · 0,37 · 0,38 · 1,06 Mo |
+
+Facteur ~8. Entre les deux, **la limite de taille du bucket a été relevée** (décision
+prise pour l'envoi des vidéos). Rien n'a ralenti en soi : le bucket a simplement
+cessé de refuser les gros fichiers, et l'iPhone envoie ses photos en pleine
+définition.
+
+Le même bucket contient aussi des `.mov` de **137, 139 et 159 Mo**.
+
+## POURQUOI ÇA SE VOYAIT PARTOUT
+
+`vignetteHype()` (qui demande une version redimensionnée à Supabase) n'était
+appelée que **3 fois** sur les **97 balises `<img>`** du fichier. Les 94 autres
+téléchargeaient le fichier d'origine, taille réelle, sur tous les écrans.
+
+## LE CORRECTIF — UN BLOC, ZÉRO COMPOSANT TOUCHÉ
+
+Plutôt que 94 modifications à 1h du matin, **un bloc `<script>` autonome ajouté
+avant `</body>`**. Il observe le DOM et réécrit la source des `<img>` qui pointent
+vers le stockage public Supabase :
+
+`/storage/v1/object/public/` → `/storage/v1/render/image/public/?width=900&quality=70`
+
+900 px couvre le plein écran d'un iPhone en 2x. Une photo de 3,5 Mo tombe à
+quelques centaines de Ko. **Vaut aussi pour les photos déjà en ligne**, sans rien
+réenvoyer.
+
+**Garde-fous** : jamais les vidéos · jamais une URL déjà transformée · jamais autre
+chose qu'une URL publique Supabase (donc ni les `data:`, ni les `hype-images-*.js`) ·
+le fragment `#cadre=` est retiré de la requête (il ne part jamais au serveur, et
+les composants lisent l'URL stockée en base, pas l'attribut de la balise) · repli
+sur la photo d'origine UNE fois en cas d'échec, sans boucle · `data-hype-brut="1"`
+laisse une balise intacte.
+
+**Pour annuler** : supprimer le bloc. Rien d'autre n'en dépend.
+
+## CE QUI N'EST PAS FAIT
+
+**La compression à l'envoi.** Le bloc allège l'affichage, pas le stockage : les
+prochaines photos partiront toujours à 3-4 Mo et mangeront le quota. Chantier
+séparé, à décider à tête reposée.
+
+## LEÇON
+
+J'ai demandé un outil de mesure alors que **la mesure était déjà arrivée**. Avant
+de réclamer une vérification de plus, relire ce que Blandine vient d'envoyer.
+
+---
+
+# ✅ 30/08/2026 (00h55) — ÉCURIE HYPE VIDE : **RÉSOLU** · UNE COLONNE QUI N'EXISTE PAS
+
+> Quatrième passe sur cette page. Les trois précédentes ont réorganisé la
+> **cascade** des sources sans jamais toucher la **requête**. La requête était
+> la cause.
+
+## LA CAUSE
+
+Les **quatre** sources d'`EcranEcurieHype` (lignes 36502, 36522, 36537, 36543)
+demandaient la même chose :
+
+```
+select("id, nom, race, robe, photo_url, user_id")
+```
+
+**La colonne `robe` n'existe pas sur `chevaux`.** Vérifié par Blandine dans
+`information_schema.columns` : la liste alphabétique enchaîne `race` →
+`restaure_le` → `supprime_le`, sans `robe`. Il y a bien `teinte`, mais c'est la
+couleur de thème de la fiche (un hex `#20D9F5`), pas la robe du cheval — la vraie
+robe vit dans le JSON `origines`.
+
+Postgrest refuse alors la requête **entière** : `data` revient à `null`, pas à
+zéro ligne. Les quatre sources tombent **ensemble**, quel que soit le club, la
+session ou le partage. Sortie : 0 cheval, 0 poney, seule la tuile d'ajout.
+
+**Pourquoi seule cette page.** Le `select` fautif était confiné à
+`EcranEcurieHype`. La page Club, qui affiche bien les chevaux, demande
+`id, user_id, nom, race, discipline, photo_url` — sans `robe`.
+
+**Pourquoi personne ne l'a vue.** `rc.error` n'était lu nulle part. L'erreur
+existait depuis le premier jour, elle n'a jamais été affichée.
+
+## L'HYPOTHÈSE DE LA VEILLE ÉTAIT FAUSSE
+
+La « course à la session » (`u` null au montage, dépendances `[]`) était une
+4e hypothèse non mesurée. Elle est **abandonnée** : `u` n'y est pour rien, la
+requête était refusée avant même que la session compte. Ne pas la reprendre.
+
+## CE QUI A ÉTÉ LIVRÉ
+
+`index.html` seul, 6 endroits :
+
+- 4 × `select` : `robe` retiré → `id, nom, race, photo_url, user_id`
+- `chevauxFeinnEH` : la ligne `if (cEH.robe) detEH.push(...)` supprimée
+- `carteCommunaute` : `[cv.race, cv.robe]` → `cv.race` seul
+
+Aucun SQL, aucune image, aucun `hype-images-*.js`.
+
+**Attendu à l'écran** : la source « club du profil » (identique à celle du bouton
+« Voir les N chevaux » de la page Club : `profiles` ilike `ecurie`/`ecurie2` via
+`motifEcurie`, puis `chevaux .in(user_id)`) devient la première à répondre →
+**tous les chevaux du club**, pas les 9 de son seul `user_id`. La source « mes
+chevaux » ne sert plus que de dernier recours.
+
+## CONTRÔLES AVANT LIVRAISON
+
+- Marqueurs : `overflow-x: clip !important` **1** · `html { overscroll-behavior: none }` **1** · `hypeVerrouScroll` **5** · `hypeLibererPuitsTactiles` **4** → les quatre au vert
+- `overflow-x: hidden` sans `clip` sur `html`/`body` : **0** · `overscroll-behavior` sur `body` : **0**
+- `node --check` sur les **17 blocs inline** : **0 erreur**
+- `robe` restant comme colonne `chevaux` : **0**
+
+## LEÇON
+
+Trois correctifs successifs ont déplacé des branches autour d'une requête cassée.
+**Quand les quatre sources d'un écran tombent en même temps, ce n'est pas la
+cascade, c'est ce qu'elles ont en commun.** Et un `error` jamais lu coûte trois
+sessions.
+
+---
+
+# 🟠 30/08/2026 (nuit) — ÉCURIE HYPE VIDE · ENQUÊTE (hypothèse finale FAUSSE, voir l'entrée ci-dessus)
+
+> Blandine : « L'écurie Hype n'a tjs pas les chevaux de mon écurie !!! » puis
+> « on brasse du vent encore et encore ». Elle a raison : **rien n'a été corrigé
+> cette nuit**, trois hypothèses de ma part ont été démolies l'une après l'autre
+> par ses captures. Cette entrée existe pour que la prochaine session ne
+> recommence pas les mêmes tests.
+
+## ✅ CE QUI EST PROUVÉ (ne pas retester)
+
+| Vérification | Résultat | Conclusion |
+|---|---|---|
+| `chevaux` sous son `user_id` | **9 chevaux** | La donnée existe |
+| Compte connecté dans l'app | `feinn@live.fr` | C'est le bon compte |
+| Politiques RLS SELECT sur `chevaux` | 2 politiques à `qual = true` | **Lecture ouverte, sans condition** |
+| 3e politique SELECT | `COALESCE(visibilite,'public') <> 'prive'` | N'exclut rien ici |
+
+→ Ce n'est **ni la donnée, ni le compte, ni la RLS**. La requête `chevaux`
+renvoie bien ses 9 lignes. Le problème est dans le code de l'écran, ou dans la
+version réellement servie au téléphone.
+
+## ❌ MES TROIS ERREURS DE CETTE NUIT (méthode, à ne pas répéter)
+
+1. **`auth.uid()` dans l'éditeur SQL Supabase** — vaut toujours NULL, l'éditeur
+   tourne en tant que postgres. Les deux premières requêtes que j'ai données
+   étaient donc **impossibles à satisfaire**, et leur « 0 rows » ne prouvait rien.
+   Toujours passer par l'email dans l'éditeur.
+2. **Lecture d'une capture scrollée** — j'ai lu 0 partout sur un tri décroissant
+   et conclu qu'aucun cheval n'était rattaché. La capture montrait le bas du tri.
+   Ne jamais conclure sur une capture dont on ne voit pas la première ligne.
+3. **Hypothèse RLS** posée sans la vérifier d'abord. Démolie en une requête.
+
+## ✅ CACHE PWA ÉLIMINÉ AUSSI
+
+Testé par Blandine dans **Safari**, hors app installée, chargement neuf :
+**les chevaux ne se chargent toujours pas**. Ce n'est donc pas une version
+périmée servie au téléphone. Ne pas refaire ce test.
+
+## 🎯 HYPOTHÈSE PRINCIPALE POUR LA SUITE — COURSE À LA SESSION
+
+Toutes les causes externes étant éliminées, il ne reste que le code. Une seule
+explication colle à l'ensemble des faits :
+
+Le `useEffect` d'`EcranEcurieHype` commence par `var u = await utilisateurActuel()`
+et se déclare avec des dépendances **`[]`** — une seule exécution au montage,
+jamais rejouée. **Si la session Supabase n'est pas encore restaurée à cet
+instant, `u` vaut `null`** et la cascade s'effondre entièrement :
+
+- sans `u`, pas de résolution du club du profil → source 2 vide ;
+- la source 3 (« mes chevaux ») est gardée par `if (u)` → **purement sautée**,
+  alors que c'est elle qui aurait sauvé la page ;
+- reste la galerie globale `partage_ecurie_hype = true` → vraisemblablement 0 ligne.
+
+Résultat attendu : **0 cheval, 0 poney, seule la tuile « Ajouter un cheval »** —
+exactement la capture de Blandine.
+
+Cohérent aussi avec le fait que « Mon compte » affiche correctement
+`feinn@live.fr` : cet écran lit l'utilisateur par un autre chemin, plus tard.
+
+→ **À VÉRIFIER AVANT DE CORRIGER** (journaliser la valeur de `u` au montage,
+ou l'afficher temporairement à l'écran). Si confirmé, le correctif est petit :
+rejouer le chargement quand l'utilisateur devient disponible, au lieu d'une
+tentative unique au montage. ⚠️ Hypothèse posée après trois hypothèses fausses
+dans la même session — **la mesurer, ne pas la croire sur parole**.
+
+## 🔧 SI CE N'EST PAS LE CACHE — POSER UN MOUCHARD, PAS UN 4e CORRECTIF
+
+`EcranEcurieHype` essaie **quatre sources** dans l'ordre : club transmis → club
+du profil → **mes chevaux** (`eq user_id`) → galerie globale
+(`partage_ecurie_hype = true`). Les quatre reviennent vides.
+
+La 3e ne peut pas échouer au vu des faits ci-dessus. Il faut donc savoir
+**laquelle s'exécute réellement et ce qu'elle renvoie** — même principe que le
+Journal de session posé le 28/08 pour l'auth : mesurer avant de patcher.
+
+⚠️ Cette page a déjà été « corrigée » **trois fois** (29/08 en deux passes, puis
+cette nuit) sans que la cause soit jamais établie. Ne pas en ajouter une
+quatrième à l'aveugle.
+
+## 🟠 TROUVAILLES ANNEXES (non traitées)
+
+1. **DEUX COMPTES au pseudo Blandine** : `feinn@live.fr` (le bon, 9 chevaux) et
+   `fzinn@live.fr` — probable faute de frappe à l'inscription. À décider :
+   fusionner, supprimer, ou laisser.
+2. **Politiques RLS en doublon sur `chevaux`** : 2 SELECT, 2 INSERT, 2 UPDATE,
+   3 DELETE, posées à des moments différents avec des noms différents
+   (`chevaux lecture` / `chevaux_lecture`, `chevaux insertion` / `chevaux_ajout`,
+   `chevaux maj` / `chevaux_modif`…). Inoffensif ici (SELECT à `true`), mais à
+   nettoyer un jour — sur des politiques restrictives, ce genre d'empilement
+   devient très difficile à raisonner.
+3. **`profiles.ecurie2` est NULL** sur sa ligne. La colonne `ecurie` n'a pas été
+   lue (hors champ des captures). À vérifier : si les deux sont vides, la
+   résolution du club ne peut rien ramener, et seule la 3e source peut sauver
+   la page.
+
+---
+
+# ✅ 30/08/2026 — PALMARÈS · LA BARRE DORÉE PAR SAISON
+
+## Ce qu'elle était vraiment
+
+Blandine : « c'est vomitif », puis « je pensais que c'était juste un séparateur ».
+Elle avait raison sur les deux points, et le second est le vrai diagnostic : un
+séparateur ne change pas de longueur d'une ligne à l'autre.
+
+La barre était un **taux de podium non libellé** : `(victoires + podiums) ÷ total`.
+Trois défauts cumulés :
+
+1. **Rien ne l'annonçait.** Aucun libellé, aucune légende.
+2. **Le dénominateur était déjà purgé.** Les sorties sans classement étant
+   écartées en amont, le taux ne pouvait que flatter.
+3. **Elle mentait à l'œil.** 2025 (1 sortie, 0 victoire, 1 podium) affichait une
+   barre PLEINE en or vif — l'élément le plus lumineux de la page pour la saison
+   la plus vide. Idem 2021 (6/6).
+
+## Ce qui la remplace — barre empilée, idée de Blandine
+
+Le tout = **les parcours de la saison, El./Ab. compris**. Quatre segments :
+
+| Segment | Règle | Couleur |
+|---|---|---|
+| Victoires | `pl === 1` | or `OR9` |
+| 2es places | `pl === 2` | argent `#B9BEC4` |
+| 3es places | `pl === 3` | bronze `#A9713C` |
+| Classés hors podium | `pl > 3` | bleu sombre `#2E5A78` |
+| **Le reste** | ni classé (El./Ab.) | **fond nu — le vide EST l'information** |
+
+Pas de 5e couleur : ce qui reste non peint est ce qui n'a rien donné.
+
+## La découverte qui rendait ça possible
+
+Les éliminations et abandons **sont en base**. L'import FFE les écrit
+(décision du 24/08 : « éliminés et abandons comptent dans le palmarès », 12
+parcours de Rizotto avaient disparu avec l'ancienne règle). Ils arrivent avec
+`place` vide et `classement` = « El. » / « Ab. ».
+
+Le problème était **à l'affichage** : le palmarès applique deux filtres, le second
+(`f.pl != null`) les jetait. Écrits, conservés, invisibles.
+
+→ **Aucun SQL, aucune migration.** La donnée était déjà là.
+
+## Choix d'implémentation
+
+- **`pl > 3` plutôt que la colonne `quart`** pour le segment bleu. `quart` est
+  fourni par la FFE et déjà rempli, mais ses valeurs exactes n'ont pas été
+  vérifiées ; `pl` est sûr. Le segment signifie donc « classé hors podium », pas
+  « premier quart ». Réversible.
+- **`tousF` n'est PAS touchée.** Elle alimente les 4 chiffres du bandeau, les
+  moments forts, les onglets cavaliers, `sortiesDe` et le tri. Y verser les
+  El./Ab. aurait fait bouger toute la page d'un coup. Une liste **parallèle**
+  `tousR` (+ `ansR`) est créée, utilisée **uniquement** par la barre.
+  ⚠️ Ne jamais la brancher ailleurs sans décision explicite.
+- **Hauteur 2 px → 6 px.** En dessous, quatre couleurs ne se distinguent pas.
+- **`minWidth: 5`** par segment non nul : une victoire isolée sur 40 sorties
+  reste visible. La barre n'est donc plus rigoureusement à l'échelle sur les
+  grosses saisons — volontaire.
+- `var pct` supprimée, devenue morte.
+
+## 🟠 Restes connus, NON corrigés (diff volontairement confiné)
+
+1. **Deux définitions de « podium » sur la même page.** Le bandeau des 4 chiffres
+   compte `pl <= 3` (victoires **incluses**) ; les lignes par saison comptent
+   `pl > 1 && pl <= 3` (victoires **exclues**). Le commentaire du code de s154
+   disait déjà que les deux endroits devaient évoluer ensemble — ils ont divergé.
+2. **Le 3e compteur 🏅 des lignes de saison vaut `fsA.length`**, donc le total des
+   résultats — le même nombre que « X sorties » juste à côté. Ce n'est pas « les
+   classés ». 2021 affiche 🏆 6 et 🏅 6 : les mêmes six résultats comptés deux fois.
+   Piste retenue si on y revient : le passer en « 4e et plus ».
+3. **« Sorties » ne compte pas les sorties sans classement** (même cause que la
+   barre, filtre `pl != null`). `sortiesDe` lui-même est juste : il regroupe les
+   épreuves d'un même concours sur un même week-end en une seule sortie.
+4. **Pas de légende des couleurs.** Personne ne devinera or/argent/bronze/bleu
+   seul. À poser sous le titre « PAR SAISON » si Blandine la veut.
+5. **Encodage** : la carte « BOISSY LE CHATEL » affiche « PrÃÂ©paratoire » —
+   double encodage UTF-8, côté donnée, pas côté affichage.
+
+## À pousser
+
+**`index.html` seul.** Aucun SQL, aucune image, aucun `hype-images-*.js`.
+
+Contrôle des marqueurs fait avant livraison : 4 ancres, **1 occurrence chacune**.
+Syntaxe du bloc script vérifiée (`node --check`) : **0 erreur**.
+
+---
+
 # ✅ 28/08/2026 — PANNEAU « SON HISTOIRE » + HISTOIRE PAR DÉFAUT
 
 ## Bouton de validation inaccessible

@@ -49555,4 +49555,92 @@ if (__boot)
   try { document.addEventListener("visibilitychange", function () { if (!document.hidden) setTimeout(verifier, 800); }); } catch (e) { }
   try { window.addEventListener("focus", function () { setTimeout(verifier, 800); }); } catch (e) { }
 })();
-</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script></body></html>
+</script><script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('/sw.js').catch(function(){});});}</script><script>
+/* ══════════════════════════════════════════════════════════════════════
+   30/08/2026 — RÉDUCTION AUTOMATIQUE DES PHOTOS (demande Blandine :
+   « ça rame pour charger les photos »).
+
+   MESURE QUI A DÉCIDÉ DE CE BLOC (captures Supabase du 30/08, bucket
+   `photos`) : les photos envoyées le 27/08 au soir pèsent 1,84 · 2,76 ·
+   2,77 · 2,87 · 3,38 · 3,63 · 4,47 Mo. Celles du 26/08 : 0,32 · 0,37 ·
+   0,38 · 1,06 Mo. La limite de taille du bucket a été relevée entre les
+   deux. Or l'app téléchargait la photo D'ORIGINE dans 94 de ses 97
+   balises <img> : `vignetteHype()` n'était appelée que 3 fois.
+
+   CE QUE FAIT CE BLOC — il ne touche AUCUN composant. Il observe le DOM
+   et réécrit la source des <img> qui pointent vers le stockage public
+   Supabase : `/storage/v1/object/public/` → `/storage/v1/render/image/public/`
+   avec `width=900&quality=70`. 900 px couvre le plein écran d'un iPhone
+   en 2x. Une photo de 3,5 Mo tombe à quelques centaines de Ko.
+
+   GARDE-FOUS :
+   - jamais les vidéos, jamais une URL déjà transformée, jamais autre
+     chose qu'une URL publique Supabase (donc jamais les images locales,
+     les `data:` ni les `hype-images-*.js`) ;
+   - le fragment `#cadre=...` est retiré de la requête (il ne part jamais
+     au serveur) — rien d'autre ne lit la source de la balise, les
+     composants lisent l'URL stockée en base ;
+   - si la transformation échoue (format non géré, coupure), la photo
+     d'origine est reposée UNE fois, sans boucle ;
+   - `data-hype-brut="1"` sur une balise la laisse intacte.
+
+   POUR ANNULER : supprimer ce bloc entier. Rien d'autre n'en dépend.
+   ══════════════════════════════════════════════════════════════════════ */
+(function () {
+  var PUB = "/storage/v1/object/public/";
+  var REN = "/storage/v1/render/image/public/";
+  var LARGEUR = 900, QUALITE = 70;
+
+  function estVideoV(u) { return /\.(mp4|mov|m4v|webm|avi|mkv)(\?|#|$)/i.test(u); }
+
+  function reduireV(el) {
+    try {
+      if (!el || el.__hypeVig) return;
+      if (el.getAttribute && el.getAttribute("data-hype-brut") === "1") return;
+      var src = (el.getAttribute && el.getAttribute("src")) || "";
+      if (!src || src.indexOf(PUB) < 0) return;
+      if (src.indexOf("/render/image/") >= 0) return;
+      if (estVideoV(src)) return;
+      el.__hypeVig = 1;
+      var orig = src;
+      var base = src.split("#")[0].split("?")[0].replace(PUB, REN);
+      try {
+        el.addEventListener("error", function () {
+          if (el.__hypeRepli) return;
+          el.__hypeRepli = 1;
+          try { el.setAttribute("src", orig); } catch (e1) { }
+        });
+      } catch (e2) { }
+      el.setAttribute("src", base + "?width=" + LARGEUR + "&quality=" + QUALITE);
+    } catch (e) { }
+  }
+
+  function balayerV(n) {
+    try {
+      if (!n || n.nodeType !== 1) return;
+      if (n.tagName === "IMG") { reduireV(n); return; }
+      if (!n.querySelectorAll) return;
+      var l = n.querySelectorAll("img");
+      for (var i = 0; i < l.length; i++) reduireV(l[i]);
+    } catch (e) { }
+  }
+
+  function tout() { try { balayerV(document.body); } catch (e) { } }
+
+  try {
+    var obs = new MutationObserver(function (muts) {
+      for (var i = 0; i < muts.length; i++) {
+        var m = muts[i];
+        if (m.type === "attributes") { if (m.target && m.target.tagName === "IMG") reduireV(m.target); continue; }
+        for (var j = 0; j < m.addedNodes.length; j++) balayerV(m.addedNodes[j]);
+      }
+    });
+    if (document.body) obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["src"] });
+    else document.addEventListener("DOMContentLoaded", function () { try { obs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["src"] }); } catch (e) { } });
+  } catch (e) { }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", tout);
+  else tout();
+})();
+</script>
+</body></html>
