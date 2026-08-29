@@ -206,6 +206,86 @@ function EcranJournalSession() {
     }));
 }
 
+/* 28/08 (demande Blandine : « decompte invisible pour classer les chevaux
+   selon leur popularite et le remplissage de leur profil ») — score interne,
+   jamais affiche aux cavalieres. Reserve aux moderateurs, pour l'instant sans
+   effet sur le tri visible ailleurs (elle a choisi "juste le consulter" avant
+   de decider si/ou il doit influencer un affichage).
+   HONNETETE SUR LES DONNEES DISPONIBLES : la seule vraie donnee de
+   "popularite" deja en base (suivis_chevaux) ne concerne PAS les chevaux
+   ordinaires -- elle est reservee a une liste figee de "legendes" (Ecurie
+   Hype). Aucune infrastructure de vues/likes n'existe pour un cheval
+   quelconque. Le score ci-dessous compte donc, honnetement :
+   1. COMPLETUDE DU PROFIL (le vrai levier qui peut motiver a remplir) :
+      photo de couverture, race, discipline, histoire (texte), palmares.
+   2. PHOTOS/VIDEOS (albums_cheval).
+   3. CAVALIERS LIES (chevaux_liens) comme SEUL proxy actuel d'interet partage
+      -- etiquete honnetement comme tel, pas presente comme de la "popularite". */
+function scoreVitrineCheval(cv, nbMedia, nbLies) {
+  var pts = 0; var detail = [];
+  if (cv.photo_url) { pts += 8; detail.push(["Photo de couverture", 8]); }
+  if (cv.race && String(cv.race).trim()) { pts += 8; detail.push(["Race renseign\u00e9e", 8]); }
+  if (cv.discipline && String(cv.discipline).trim()) { pts += 8; detail.push(["Discipline renseign\u00e9e", 8]); }
+  if (cv.histoire && String(cv.histoire).trim().length > 20) { pts += 10; detail.push(["Histoire r\u00e9dig\u00e9e", 10]); }
+  if (cv.palmares && String(cv.palmares).trim()) { pts += 10; detail.push(["Palmar\u00e8s renseign\u00e9", 10]); }
+  var ptsMedia = Math.min(nbMedia || 0, 10) * 3;
+  if (ptsMedia) detail.push(["Photos/vid\u00e9os (" + (nbMedia || 0) + ")", ptsMedia]);
+  pts += ptsMedia;
+  var ptsLies = Math.max((nbLies || 1) - 1, 0) * 4;
+  if (ptsLies) detail.push(["Cavaliers li\u00e9s suppl\u00e9mentaires", ptsLies]);
+  pts += ptsLies;
+  return { total: pts, detail: detail };
+}
+
+function EcranScoreVitrine() {
+  var h = React.createElement;
+  var ctx = useApp(); var setEcran = ctx.setEcran; var profilSV = ctx.profil;
+  var _l = React.useState(null), liste = _l[0], setListe = _l[1];
+  var _o = React.useState(null), ouvert = _o[0], setOuvert = _o[1];
+  React.useEffect(function () { var ok = true; (async function () {
+    try {
+      if (typeof supa === "undefined" || !supa) { setListe([]); return; }
+      var motif = (typeof motifEcurie === "function") ? motifEcurie(profilSV.ecurie) : ("%" + profilSV.ecurie + "%");
+      var mm = [];
+      try { var r1 = await supa.from("profiles").select("id").ilike("ecurie", motif).limit(200); if (r1 && r1.data) mm = mm.concat(r1.data); } catch (e1) { }
+      try { var r2 = await supa.from("profiles").select("id").ilike("ecurie2", motif).limit(200); if (r2 && r2.data) mm = mm.concat(r2.data); } catch (e2) { }
+      var vu = {}; var ids = mm.filter(function (p) { if (!p || !p.id || vu[p.id]) return false; vu[p.id] = true; return true; }).map(function (p) { return p.id; });
+      if (!ids.length) { if (ok) setListe([]); return; }
+      var rc = await supa.from("chevaux").select("id, nom, photo_url, race, discipline, histoire, palmares").in("user_id", ids).is("supprime_le", null).limit(500);
+      var chx = (rc && rc.data) || [];
+      if (!chx.length) { if (ok) setListe([]); return; }
+      var cibles = chx.map(function (c) { return "cheval:" + c.id; });
+      var rAlb = await supa.from("albums_cheval").select("cible, photos").in("cible", cibles);
+      var cptMedia = {};
+      ((rAlb && rAlb.data) || []).forEach(function (a) { var n = (a.photos && a.photos.length) || 0; cptMedia[a.cible] = (cptMedia[a.cible] || 0) + n; });
+      var rLi = await supa.from("chevaux_liens").select("cheval_id").in("cheval_id", chx.map(function (c) { return c.id; }));
+      var cptLies = {}; chx.forEach(function (c) { cptLies[c.id] = 1; });
+      ((rLi && rLi.data) || []).forEach(function (l) { if (cptLies[l.cheval_id] != null) cptLies[l.cheval_id] += 1; });
+      var classes = chx.map(function (c) { var s = scoreVitrineCheval(c, cptMedia["cheval:" + c.id] || 0, cptLies[c.id] || 1); return Object.assign({}, c, { __score: s.total, __detail: s.detail }); });
+      classes.sort(function (a, b) { return b.__score - a.__score; });
+      if (ok) setListe(classes);
+    } catch (e) { if (ok) setListe([]); }
+  })(); return function () { ok = false; }; }, []);
+  return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", padding: "calc(env(safe-area-inset-top) + 18px) 16px 40px", fontFamily: "'Montserrat',sans-serif" } },
+    h("button", { onClick: function () { setEcran("moncompte"); }, style: { background: "none", border: "none", color: "#20D9F5", fontSize: 14, fontWeight: 700, marginBottom: 18, cursor: "pointer" } }, "‹ Retour"),
+    h("h1", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, marginBottom: 6 } }, "Score vitrine des chevaux"),
+    h("p", { style: { fontSize: 12, color: "#8A99A1", marginBottom: 18, lineHeight: 1.5 } }, "Classement interne, jamais montré aux cavalières. Basé sur le remplissage du profil et les photos/vidéos — il n'existe pas encore de vraie mesure de popularité (vues, likes) pour un cheval quelconque, donc ce chiffre ne reflète pas ça pour l'instant."),
+    liste === null ? h("p", { style: { fontSize: 13, color: "#8A99A1" } }, "…") :
+    liste.length === 0 ? h("p", { style: { fontSize: 13, color: "#8A99A1" } }, "Aucun cheval trouvé pour ton écurie.") :
+    liste.map(function (cv, i) {
+      var ouv = ouvert === cv.id;
+      return h("div", { key: cv.id, style: { borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", marginBottom: 8, overflow: "hidden" } },
+        h("button", { onClick: function () { setOuvert(ouv ? null : cv.id); }, style: { width: "100%", background: "none", border: "none", padding: "10px 12px", display: "flex", alignItems: "center", gap: 10, cursor: "pointer", textAlign: "left" } },
+          h("div", { style: { width: 22, textAlign: "center", fontFamily: "'Cinzel',serif", fontSize: 13, color: "#8A99A1" } }, i + 1),
+          h("div", { style: { width: 36, height: 36, borderRadius: 9, overflow: "hidden", flexShrink: 0, background: "#10161C" } }, cv.photo_url ? h("img", { src: cv.photo_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }) : null),
+          h("div", { style: { flex: 1, minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval")),
+          h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: "#20D9F5" } }, cv.__score)),
+        ouv ? h("div", { style: { padding: "0 12px 12px 44px" } },
+          cv.__detail.length === 0 ? h("div", { style: { fontSize: 11.5, color: "#6B7580", fontStyle: "italic" } }, "Profil vide, aucun point.") :
+          cv.__detail.map(function (d, j) { return h("div", { key: j, style: { fontSize: 11.5, color: "#8A99A1", display: "flex", justifyContent: "space-between", padding: "2px 0" } }, h("span", null, d[0]), h("span", null, "+" + d[1])); })) : null);
+    }));
+}
+
 function surChangementConnexion(callback) {
   return supa.auth.onAuthStateChange((_event, session) => callback(session?.user ?? null));
 }
@@ -22774,6 +22854,7 @@ function Router() {
                 ecran === "profil" && React.createElement(EcranProfil, null),
                 ecran === "ecurie" && React.createElement(EcranEcurie, null),
                 ecran === "journal-session" && React.createElement(EcranJournalSession, null),
+                ecran === "score-vitrine" && React.createElement(EcranScoreVitrine, null),
                 ecran === "import-resultats" && React.createElement(HypeImportEcran, {
                   /* 🟥 22/08 — AUCUNE FONCTION DE TRADUCTION ICI.
                      Le Router ne demande pas `tr` dans son useApp(), et cet
@@ -28282,7 +28363,7 @@ function EcranGuilde() {
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       setMoiG(u || null);
-      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
+      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } /* 28/08 (demande Blandine) : "Mes chevaux" trie desormais par richesse en photos/videos (le plus fourni en tete), pas par date de creation. Compte les elements de albums_cheval.photos pour chaque cheval, via cible = "cheval:<id>" (meme convention que la fiche cheval). */ try { if (tousMc.length && typeof supa !== "undefined" && supa) { var ciblesMc = tousMc.map(function (c) { return "cheval:" + c.id; }); var rAlb = await supa.from("albums_cheval").select("cible, photos").in("cible", ciblesMc); var cptMedia = {}; ((rAlb && rAlb.data) || []).forEach(function (a) { var n = (a.photos && a.photos.length) || 0; cptMedia[a.cible] = (cptMedia[a.cible] || 0) + n; }); tousMc.sort(function (a, b) { return (cptMedia["cheval:" + b.id] || 0) - (cptMedia["cheval:" + a.id] || 0); }); } } catch (eAlbMc) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
       if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
       else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
@@ -28493,8 +28574,8 @@ function EcranGuilde() {
         h("div", { style: { display: "flex", alignItems: "baseline", gap: 12 } },
           (mesChevauxClub && mesChevauxClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, mesChevauxClub.length) : null,
           h("button", { onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer", padding: 0 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0")))),
-      (mesChevauxClub && mesChevauxClub.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, paddingBottom: 4 } },
-        mesChevauxClub.map(function (cv, i) {
+      (mesChevauxClub && mesChevauxClub.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10, paddingBottom: 4 } },
+        mesChevauxClub.slice(0, 6).map(function (cv, i) {
           return h("button", { key: cv.id || i, onClick: function () { try { if (typeof window !== "undefined" && cv && cv.id) { window.__chevalOuvert = cv.id; } setEcran("cheval"); } catch (eOm) { } }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(32,217,245,0.28)", background: "#10161C", display: "flex", alignItems: "center", justifyContent: "center" } },
               cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
@@ -28502,7 +28583,9 @@ function EcranGuilde() {
             h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval"),
             (cv.race || cv.discipline) ? h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", marginTop: 1 } }, cv.race || cv.discipline) : null);
         }))
-        : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun cheval pour le moment.", "No horses yet.", "Ning\u00fan caballo por ahora.", "Nessun cavallo per ora.", "\u307e\u3060\u99ac\u304c\u3044\u307e\u305b\u3093\u3002"))) : null,
+        : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun cheval pour le moment.", "No horses yet.", "Ning\u00fan caballo por ahora.", "Nessun cavallo per ora.", "\u307e\u3060\u99ac\u304c\u3044\u307e\u305b\u3093\u3002")),
+      (mesChevauxClub && mesChevauxClub.length > 6) ? h("button", { onClick: function () { setEcran("cavalier"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", marginTop: 12, padding: "13px 0", borderRadius: 14, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.06)", color: TURQL, fontSize: 12.5, fontWeight: 800, fontFamily: M, letterSpacing: 0.6, textTransform: "uppercase", cursor: "pointer" } },
+        T("Voir mon fil", "See my feed", "Ver mi muro", "Vedi il mio muro", "\u81ea\u5206\u306e\u30d5\u30a3\u30fc\u30c9\u3092\u898b\u308b") + " \u2192") : null) : null,
 
     h("div", { style: { padding: "26px 16px 0" } }, h(AgendaClubHype, { nomClub: monClub, moiG: moiG })),
 
@@ -47143,6 +47226,13 @@ function EcranProfil() {
                 sous: "Page retirée de la navigation, à revoir avant suppression",
                 onClick: () => setEcran("ecurie"),
                 ico: [React.createElement("path", { key: "a", d: "M4 21V10l8-6 8 6v11" }), React.createElement("path", { key: "b", d: "M9 21v-7h6v7" })],
+            }) : null,
+            estModAdmin ? tuile({
+                cle: "scorevitrine",
+                titre: "Score vitrine des chevaux",
+                sous: "Classement interne (remplissage du profil, photos/vidéos) — jamais visible des cavalières",
+                onClick: () => setEcran("score-vitrine"),
+                ico: [React.createElement("path", { key: "a", d: "M4 20V10M12 20V4M20 20v-7" })],
             }) : null,
             tuile({
                 cle: "deco", couleur: COLORS.corail,
