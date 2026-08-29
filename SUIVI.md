@@ -15931,3 +15931,145 @@ l'ancien repli était la galerie `partage_ecurie_hype`, elle-même vide → page
 
 La page ne peut plus être vide. md5 **`46986556ca764d172cc498f7bc6389db`** — 150 blocs,
 0 erreur.
+
+---
+
+## 29/08 (suite) — PAGE ACTUALITÉ créée mais FERMÉE
+
+Demande de Blandine : « mets la page actualité en grisé avec prochainement et on
+avisera après, passe juste le fil dessus ».
+
+- **Nouveau panneau `actualite`** : le fil du cheval (`MurHype`) y est rendu en
+  **pleine page**, et non plus en rail compact.
+- **Carte Actualité grisée** : libellé « Prochainement » (6 langues), opacité 0,5,
+  bordure atténuée, **non cliquable**. `carteR` gère désormais cet état : une carte
+  sans action est automatiquement fermée. La photo n'est pas filtrée (règle Hype).
+
+**⚠️ POINT IMPORTANT — le fil est VOLONTAIREMENT resté aussi sur la fiche.**
+La carte étant grisée, la page Actualité n'est **pas atteignable**. Retirer l'aperçu
+de la fiche aurait rendu le fil **invisible partout** : plus aucun moyen de lire ni
+d'écrire les moments racontés. L'aperçu de la fiche est donc conservé tel quel.
+**Le jour où la carte s'ouvre, retirer l'aperçu de la fiche** (ligne `className:
+"panFil"`, `MurHype` en mode rail compact) — sinon doublon.
+
+**Pour ouvrir la page** : redonner une action à la carte
+(`function () { setPanneau("actualite"); }` à la place du `null`) et remettre son
+libellé « Voir ». Reste à trancher avant : **qui peut publier** (propriétaire / club /
+tout le monde) et **qu'est-ce qu'un post** (texte, +photo, +vidéo).
+
+---
+
+## 29/08 (suite) — Vidéo « pas encore de souvenirs », swipe, renvois corrigés
+
+### 1. Vidéo fournie par Blandine
+Fichier livré : **`images/hype-souvenirs-vide.mp4`** — À POUSSER DANS `images/`.
+Source d'origine : 20 Mo, HEVC 1112×834, 15 s, avec audio. **Recompressée en H.264
+900×676, sans piste audio → 2,4 Mo** (÷8) : c'est un écran d'attente qui se charge à
+chaque fiche vide, 20 Mo était intenable. Qualité inchangée à cette taille d'écran.
+
+Composant **`BlocSouvenirsVide`** : vidéo en boucle + dégradé + titre/sous-titre
+(6 langues) + bouton « Ajouter » optionnel. `muted` + `playsInline` obligatoires
+(sans eux iOS refuse la lecture auto) ; `onError` masque le bloc si le fichier n'est
+pas poussé, plutôt qu'un cadre noir.
+**⚠️ PAS ENCORE PLACÉ** — composant autonome, en attente de la décision de Blandine
+sur son emplacement (« je vais te dire où la mettre ensuite »).
+
+### 2. Renvois corrigés — les médias ouvraient la mauvaise page
+Depuis le découpage Souvenirs/Photos, trois boutons envoyaient encore sur Souvenirs,
+qui n'a plus de photos : « voir tout » du chapitre Médias de la fiche, l'ouverture
+d'un album, et le bouton d'ajout de l'onglet Vidéos. **Les trois pointent désormais
+sur `photos`.**
+
+### 3. Swipe avant / arrière entre les pages
+Le geste existait mais ne servait qu'à **fermer**, et seulement depuis le bord gauche.
+Désormais :
+- bord gauche → ferme (comportement d'origine conservé) ;
+- ailleurs → page précédente / suivante dans l'ordre **Souvenirs · Photos ·
+  Performances · Vidéos** ;
+- vers la droite depuis la première page → ferme ;
+- **les bandes qui défilent horizontalement (`data-hscroll`) sont ignorées**, sinon
+  faire défiler un rail changerait de page ;
+- gestes verticaux (dy > 60) ou trop courts (< 70 px) ignorés.
+
+**Logique testée hors navigateur sur 9 cas** (chaque sens depuis chaque page, bords,
+rail, gestes courts/verticaux) : tous conformes.
+
+Fichier : md5 ci-dessous — 150 blocs, 0 erreur.
+
+---
+
+## 29/08 (fin de session) — deux correctifs après tests de Blandine
+
+### 1. Écurie Hype ENCORE vide — ma cascade était au mauvais niveau
+Le premier correctif n'avait pas suffi : **la cascade de replis était enfermée dans le
+cas « sans contexte club »**. Or arriver par le BOUTON de la page Club transmet bien un
+club — si sa recherche ne ramenait aucun cheval, **aucun repli ne se déclenchait** et la
+page restait vide. Erreur de placement de ma part, pas de logique.
+
+La cascade est désormais **au même niveau que les deux branches**, donc appliquée dans
+tous les cas : club transmis → club du profil → **mes chevaux** → galerie d'origine.
+
+*Diagnostic confirmé par un test discriminant : le swipe entre onglets fonctionnait,
+donc le dernier fichier était bien en ligne — le bug était réel, pas un problème de
+déploiement.*
+
+### 2. Un cheval de l'écurie ouvrait la page COMMUNAUTAIRE
+Blandine : « quand je clique sur une fiche cheval dans l'écurie je m'attends à voir
+apparaître sa fiche, pas la fiche communautaire ».
+
+Sur la page Club (`EcranGuilde`), la grille des chevaux appelait **toujours**
+`setEcran("cheval-commun")` → `EcranChevalCommun`, la page publique (« Légende Hype »,
+« Ses histoires », « Le mur des souvenirs »). Défendable quand cette grille ne montrait
+que les chevaux des autres membres ; faux pour ses propres chevaux, où l'on attend la
+fiche qui permet de gérer photos, histoire et palmarès.
+
+**Correctif : aiguillage selon le propriétaire.** `cv.user_id === moiG.id` → vraie fiche
+(`setEcran("cheval")`) ; sinon page publique, inchangée. Vérifié que la requête des
+chevaux du club sélectionne bien `user_id` (c'est le cas) et que `moiG` est accessible
+dans ce composant (même `EcranGuilde`).
+
+Fichier : md5 ci-dessous — 150 blocs, 0 erreur.
+
+### Toujours en attente
+- **Emplacement de la vidéo** `BlocSouvenirsVide` (composant prêt, non placé).
+- **Page Actualité** : qui publie, qu'est-ce qu'un post.
+- **Page Photos** : Blandine juge le rendu très éloigné de sa maquette. À reprendre —
+  la chronologie ne s'affiche que si le cheval a des photos datées, et l'ancien contenu
+  (albums + galerie) a été empilé dessous au lieu d'être intégré au design.
+
+### 3. RÈGLE POSÉE — qui ouvre quoi (fin de session)
+Blandine, après une soirée de liens mal branchés (« rien n'est branché où il faut,
+c'est un enfer ») :
+
+> « Quand je clique "Découvre l'histoire de Yum dans d'autres aventures" en bas d'une
+> fiche cheval, ça devrait mener vers la page communautaire. Mais les fiches chevaux
+> doivent rester elles-mêmes sur la page Écurie. »
+
+**RÈGLE À RESPECTER DÉSORMAIS :**
+- **Page Écurie / Club** → la **fiche du cheval** (`EcranCheval`), pour TOUS les
+  chevaux, les siens comme ceux des autres membres.
+- **Page communautaire** (`EcranChevalCommun`) → atteinte **UNIQUEMENT** par le lien
+  « Découvrir l'histoire de X à travers N autres aventures » (composant
+  `PontChevalCommun`, bas de fiche, visible seulement si le cheval a ≥ 1 cavalier
+  rattaché — d'où son apparente rareté). Ce lien était **déjà correctement branché**.
+
+**Correctif :** la grille des chevaux de la page Club ouvrait `cheval-commun` pour tout
+le monde — c'était **la porte d'entrée en trop**. Retirée. Vérifié après coup :
+**une seule** occurrence de `setEcran("cheval-commun")` subsiste dans tout le fichier,
+celle du pont. *(Un aiguillage selon le propriétaire avait été codé juste avant, puis
+abandonné sur précision de Blandine : « non, tous en fait ».)*
+
+### 4. HISTOIRE DE RIZOTTO — FAUSSE ALERTE, rien n'a été perdu
+Blandine avait signalé que l'histoire de Rizotto semblait modifiée (le passage sur le
+don du poney et le remerciement à l'ancienne propriétaire avait disparu).
+
+**Vérifié : aucune écriture automatique n'existe sur `chevaux.histoire`** — le seul
+code qui écrit ce champ est le bouton « Écrire son histoire ».
+
+**Ce qu'elle a lu venait de `CHEVAUX_FICHE`** : les fiches de DÉMONSTRATION codées en
+dur dans le fichier (`rizotto: { nom: "Rizotto d'Emery", histoire: "Rizotto est un
+poney d'exception…" }`) — les mêmes que celles retirées d'Écurie Hype le matin.
+**Son vrai texte est intact en base.** Son intuition (« il y a un seul Rizotto ? »)
+était la bonne : il y en a deux, un réel et un de démonstration.
+
+Fichier : md5 ci-dessous — 150 blocs, 0 erreur.
