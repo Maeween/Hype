@@ -32230,6 +32230,176 @@ function EcranAlbumPhotos(props) {
       h("button", { onClick: function () { setVue(null); }, style: { padding: "8px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 12, cursor: "pointer" } }, TR("Fermer", "Close", "Cerrar", "Chiudi", "閉じる"))) : null);
 }
 
+/* ==========================================================
+   29/08 — CHRONOLOGIE DES SOUVENIRS (etape 3/3, brief maquette Blandine)
+   Les photos du cheval rangees par ANNEE REELLE de prise de vue,
+   lue dans photo_dates (remplie par l'etape 1 a l'envoi et par la
+   reprise de l'etape 2).
+
+   HONNETETE DES ANNEES : une annee issue de l'EXIF est affichee en
+   clair ; une annee deduite de la date de l'ALBUM est affichee en
+   grise avec la mention « approx. ». On ne fait jamais passer une
+   approximation pour une certitude. Le proprietaire peut corriger
+   l'annee d'un album entier d'un seul geste (une sortie = un album
+   = une periode), ce qui rattrape des dizaines de photos a la fois.
+
+   PERFORMANCE : vignettes via vignetteHype, chargement paresseux,
+   seules les 8 premieres miniatures d'une annee sont montrees (le
+   reste derriere « voir tout »). Tient sur des centaines de photos.
+
+   REUTILISATION : aucune visionneuse ni aucun mecanisme d'ajout
+   n'est recree — on appelle ceux de la fiche (props onOuvrir /
+   onAjouter), conformement au brief.
+   ========================================================== */
+function ChronologieSouvenirs(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var teinte = props.teinte || "#20D9F5";
+  var teinteCl = props.teinteCl || "#5FE9F0";
+  var chevalId = props.chevalId;
+
+  var _an = React.useState([]), annees = _an[0], setAnnees = _an[1];
+  var _st = React.useState({ souvenirs: 0, saisons: 0, concours: 0 }), stats = _st[0], setStats = _st[1];
+  var _ch = React.useState(true), chargeCh = _ch[0], setChargeCh = _ch[1];
+  var _ou = React.useState({}), ouvertes = _ou[0], setOuvertes = _ou[1];
+  var _ed = React.useState(null), editAlbum = _ed[0], setEditAlbum = _ed[1];
+  var _rf = React.useState(0), rafraichir = _rf[0], setRafraichir = _rf[1];
+
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      try {
+        if (!chevalId || typeof supa === "undefined" || !supa) { if (actif) setChargeCh(false); return; }
+        var ra = await supa.from("albums_cheval").select("id, nom, photos, created_at").eq("cible", "cheval:" + chevalId);
+        var photos = [];
+        ((ra && ra.data) || []).forEach(function (al) {
+          ((al.photos) || []).forEach(function (u) {
+            if (u && !(typeof estUrlVideo === "function" && estUrlVideo(u))) {
+              photos.push({ url: u, albumId: al.id, albumNom: al.nom, dateAlbum: al.created_at });
+            }
+          });
+        });
+        var vus = {}; photos = photos.filter(function (p) { var c = (typeof urlNue === "function") ? urlNue(p.url) : p.url; if (vus[c]) return false; vus[c] = true; return true; });
+
+        /* Dates connues (par lots de 100 : une requete .in trop longue est refusee) */
+        var mapDates = {};
+        var urls = photos.map(function (p) { return p.url; });
+        for (var d = 0; d < urls.length; d += 100) {
+          try {
+            var rd = await supa.from("photo_dates").select("photo_url, prise_le, source").in("photo_url", urls.slice(d, d + 100));
+            ((rd && rd.data) || []).forEach(function (l) { mapDates[l.photo_url] = l; });
+          } catch (eD) { }
+        }
+
+        /* Regroupement par annee. Sans date connue -> repli sur l'album. */
+        var parAn = {};
+        photos.forEach(function (p) {
+          var info = mapDates[p.url];
+          var dt = info ? new Date(info.prise_le) : (p.dateAlbum ? new Date(p.dateAlbum) : null);
+          var src = info ? (info.source || "exif") : (p.dateAlbum ? "album" : null);
+          if (!dt || isNaN(dt.getTime())) return;
+          var an = dt.getFullYear();
+          if (!parAn[an]) parAn[an] = { an: an, photos: [], approx: 0 };
+          parAn[an].photos.push(Object.assign({}, p, { src: src }));
+          if (src !== "exif") parAn[an].approx++;
+        });
+        var liste = Object.keys(parAn).map(function (k) { return parAn[k]; }).sort(function (a, b) { return b.an - a.an; });
+
+        /* Concours : nombre de resultats du cheval (source distincte, deja fiable). */
+        var nbConcours = 0;
+        try {
+          var rr = await supa.from("resultats").select("id", { count: "exact", head: true }).eq("cheval_id", chevalId);
+          nbConcours = (rr && rr.count) || 0;
+        } catch (eR) { }
+
+        if (!actif) return;
+        setAnnees(liste);
+        setStats({ souvenirs: photos.length, saisons: liste.length, concours: nbConcours });
+        setChargeCh(false);
+      } catch (eCh) { if (actif) setChargeCh(false); }
+    })();
+    return function () { actif = false; };
+  }, [chevalId, rafraichir]);
+
+  /* Corriger l'annee d'un album entier : une sortie = un album = une periode. */
+  async function appliquerAnneeAlbum(albumId, an) {
+    try {
+      var n = parseInt(an, 10);
+      if (!(n >= 1990 && n <= (new Date()).getFullYear() + 1)) return false;
+      var ra = await supa.from("albums_cheval").select("photos").eq("id", albumId).maybeSingle();
+      var lst = ((ra && ra.data && ra.data.photos) || []).filter(function (u) { return u && !(typeof estUrlVideo === "function" && estUrlVideo(u)); });
+      var u = await utilisateurActuel(); if (!u) return false;
+      var quand = new Date(n + "-06-15T12:00:00"); /* milieu d'annee : aucune fausse precision de jour */
+      for (var i = 0; i < lst.length; i++) {
+        await supa.from("photo_dates").upsert({ photo_url: lst[i], prise_le: quand.toISOString(), source: "manuel", user_id: u.id }, { onConflict: "photo_url" });
+      }
+      return true;
+    } catch (eA) { return false; }
+  }
+
+  if (chargeCh) return h("div", { style: { padding: "18px 16px", fontSize: 12, color: "#8A929C" } }, T("Chargement des souvenirs…", "Loading memories…", "Cargando recuerdos…", "Caricamento ricordi…", "読み込み中…", "Lädt…"));
+  if (!annees.length) return null;
+
+  function statBloc(val, lbl) {
+    return h("div", { style: { flex: 1, textAlign: "center" } },
+      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F7FA", lineHeight: 1.1 } }, String(val)),
+      h("div", { style: { fontSize: 10, color: "#8A929C", marginTop: 3, letterSpacing: "0.04em" } }, lbl));
+  }
+
+  return h("div", { style: { margin: "4px 0 0" } },
+    /* Statistiques, toutes calculees depuis les vraies donnees */
+    h("div", { style: { display: "flex", alignItems: "flex-start", gap: 6, margin: "0 16px 6px", paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.08)" } },
+      statBloc(stats.souvenirs, T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen")),
+      statBloc(stats.saisons, T("saisons", "seasons", "temporadas", "stagioni", "シーズン", "Saisons")),
+      statBloc(stats.concours, T("concours", "shows", "concursos", "concorsi", "大会", "Turniere"))),
+
+    /* Chronologie : une ligne verticale, un point par annee */
+    h("div", { style: { position: "relative", padding: "18px 16px 0" } },
+      h("div", { style: { position: "absolute", left: 22, top: 26, bottom: 10, width: 1, background: "linear-gradient(180deg, " + teinte + "55, rgba(255,255,255,0.07))" } }),
+      annees.map(function (grp, iG) {
+        var actif = iG === 0;
+        var tout = !!ouvertes[grp.an];
+        var visibles = tout ? grp.photos : grp.photos.slice(0, 8);
+        var reste = grp.photos.length - visibles.length;
+        return h("div", { key: "an" + grp.an, style: { position: "relative", paddingLeft: 26, marginBottom: 26 } },
+          /* point de la ligne */
+          h("span", { style: { position: "absolute", left: 2, top: 5, width: 11, height: 11, borderRadius: "50%", background: actif ? teinte : "transparent", border: "1.5px solid " + (actif ? teinte : "rgba(255,255,255,0.3)"), boxShadow: actif ? ("0 0 12px " + teinte + "88") : "none" } }),
+          h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginBottom: 9 } },
+            h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: actif ? teinteCl : "#EDF2F5" } }, String(grp.an)),
+            h("span", { style: { fontSize: 10.5, color: "#8A929C" } }, grp.photos.length + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen")),
+            /* Mention honnete : combien d'annees sont approximatives */
+            grp.approx ? h("span", { style: { fontSize: 9.5, color: "#7B848C", fontStyle: "italic" } }, "· " + grp.approx + " " + T("approx.", "approx.", "aprox.", "circa", "概算", "ca.")) : null),
+          h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 3 } },
+            visibles.map(function (p, iP) {
+              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (props.onOuvrir) props.onOuvrir(p.url); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013" } },
+                h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(p.url, 260, 195) : p.url), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
+            })),
+          reste > 0 ? h("button", { onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n[grp.an] = true; return n; }); }, style: { marginTop: 8, background: "none", border: "none", color: teinteCl, fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif" } }, "+ " + reste + " " + T("voir tout", "view all", "ver todo", "vedi tutto", "すべて見る", "alle ansehen")) : null,
+          /* Correction de l'annee, par album : reservee au proprietaire */
+          (props.proprio && grp.approx) ? h("div", { style: { marginTop: 8 } },
+            (function () {
+              var albums = {}; grp.photos.forEach(function (p) { if (p.src !== "exif" && p.albumId) albums[p.albumId] = p.albumNom || T("Album", "Album", "Álbum", "Album", "アルバム", "Album"); });
+              return Object.keys(albums).map(function (aid) {
+                var enCours = editAlbum === aid;
+                return h("div", { key: "cor" + aid, style: { marginTop: 5 } },
+                  !enCours ? h("button", { onClick: function () { setEditAlbum(aid); }, style: { background: "none", border: "1px dashed rgba(255,255,255,0.18)", borderRadius: 9, color: "#8A929C", fontSize: 10.5, cursor: "pointer", padding: "8px 11px", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textAlign: "left" } }, T("Corriger l'année de « ", "Set the year of “", "Corregir el año de « ", "Correggi l'anno di « ", "年を修正: ", "Jahr korrigieren: ") + albums[aid] + " »")
+                    : h("div", { style: { display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
+                      h("input", { type: "number", inputMode: "numeric", placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anIn" + aid, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 16, padding: "0 10px", fontFamily: "'Montserrat',sans-serif" } }),
+                      h("button", { onClick: async function () {
+                        var el = document.getElementById("anIn" + aid);
+                        var ok = await appliquerAnneeAlbum(aid, el && el.value);
+                        setEditAlbum(null);
+                        if (ok) setRafraichir(function (r) { return r + 1; });
+                      }, style: { minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid " + teinte, background: teinte + "22", color: teinteCl, fontSize: 11.5, fontWeight: 800, cursor: "pointer" } }, T("Valider", "Apply", "Aplicar", "Applica", "適用", "Anwenden")),
+                      h("button", { onClick: function () { setEditAlbum(null); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "取消", "Abbrechen"))));
+              });
+            })()) : null);
+      })),
+
+    props.onAjouter ? h("button", { onClick: props.onAjouter, style: { display: "block", margin: "6px auto 4px", minHeight: 48, padding: "0 26px", borderRadius: 999, border: "1px solid " + teinte + "88", background: "transparent", color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "▧  " + T("Ajouter un souvenir", "Add a memory", "Añadir un recuerdo", "Aggiungi un ricordo", "思い出を追加", "Erinnerung hinzufügen")) : null);
+}
+
 /* ===== MUR DE PUBLICATIONS (Hype) ===== */
 var __murPhotoOuvrir = {};
 function MurHype(props) {
@@ -34815,7 +34985,7 @@ function EcranCheval() {
             carteR(photoCh, h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2.5 }), h("circle", { cx: 8.5, cy: 10, r: 1.6 }), h("path", { d: "M21 16l-5-5-4 4-2-2-4 4" })),
               T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos"),
               T("Voir", "View", "Ver", "Vedi", "\u898b\u308b", "Ansehen"),
-              function () { setPanneau("souvenirs"); }, "rp"),
+              function () { setPanneau("photos"); }, "rp"), /* 29/08 : pointe enfin sur sa vraie page */
             carteR(null, h("g", null, h("rect", { x: 3, y: 6, width: 12, height: 12, rx: 2.5 }), h("path", { d: "M15 10.5l6-3.5v10l-6-3.5z", strokeLinejoin: "round" })),
               T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos"),
               (chVids && chVids.length) ? String(chVids.length) : T("Voir", "View", "Ver", "Vedi", "\u898b\u308b", "Ansehen"),
@@ -35306,11 +35476,11 @@ function EcranCheval() {
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
           panneau === "flots" ? T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット", "Flots")
           : panneau === "palmares" ? T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen")
-          : panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen") + " · " + c.nom)
+          : panneau === "photos" ? (T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos") + " · " + c.nom): panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen") + " · " + c.nom)
           : T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート", "Gesundheitspass")),
         h("div", { style: { marginLeft: "auto" } }, h(SelecteurLangue, { compact: true }))),
-      (["souvenirs", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", gap: 8, padding: "2px 16px 12px" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
-        [["souvenirs", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen")], ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos")]].map(function (tb) {
+      (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", gap: 8, padding: "2px 16px 12px" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
+        [["souvenirs", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen")], ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos")], ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos")]].map(function (tb) {
           var onTb = panneau === tb[0];
           return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { padding: "8px 15px", borderRadius: 999, border: "1px solid " + (onTb ? tA(0.7) : "rgba(255,255,255,0.14)"), background: onTb ? tA(0.14) : "rgba(255,255,255,0.04)", color: onTb ? teinteCl : "rgba(237,242,245,0.65)", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, tb[1]);
         })) : null,
@@ -35725,6 +35895,30 @@ function EcranCheval() {
               h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: teinteCl, fill: "none", strokeWidth: 2 } }, h("path", { d: "M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" }), h("rect", { x: 8, y: 2, width: 8, height: 4, rx: 1 })),
               T("\u00c9crire son histoire", "Write their story", "Escribir su historia", "Scrivi la sua storia", "\u7269\u8a9e\u3092\u66f8\u304f", "Seine Geschichte schreiben")) : null);
         })(),
+        /* 29/08 (decision Blandine) : la page Souvenirs s'arrete SOUS L'HISTOIRE.
+           Les albums et la Galerie (avec la mise en vedette) partent sur la page
+           PHOTOS ; le fil etait deja vide ici depuis le 31/07. Ne restent que la
+           photo d'arrivee, le recit, puis les conseils Hey Baby epingles pour CE
+           cheval — le composant existait deja et sait filtrer par cheval, rien de
+           nouveau n'a ete construit. (Une video remplacera le recit vide plus tard,
+           quand Blandine l'aura fournie.) */
+        h("div", { style: { margin: "0 16px 20px" } },
+          h(EncartConseilsHB, { chevalId: (chevalDyn && chevalDyn.dbId) || null, teinte: teinte, visite: false }))) : null,
+      /* 29/08 (decision Blandine) : PAGE PHOTOS. Recoit la chronologie par annee
+         (brief maquette) puis les albums et la Galerie — mise en vedette comprise —
+         qui vivaient jusqu'ici sur la page Souvenirs. Rien n'est perdu : le bloc
+         deplace est repris tel quel, memes composants, memes reglages. */
+      panneau === "photos" ? h("div", null,
+        h(ChronologieSouvenirs, {
+          chevalId: (chevalDyn && chevalDyn.dbId) || null,
+          teinte: teinte, teinteCl: teinteCl,
+          proprio: !!(chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id),
+          onOuvrir: function (uV) { setVisionneuse(uV); },
+          onAjouter: function () {
+            var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
+            if (fA) { fA(); }
+          }
+        }),
         h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte })),
         h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "0 16px 10px", animationDelay: ".08s" } },
           h("span", { style: { width: 7, height: 7, background: teinte, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8) + "", flexShrink: 0 } }),
@@ -35736,14 +35930,7 @@ function EcranCheval() {
             var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
-          } })),
-        h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "26px 16px 2px", animationDelay: ".26s" } },
-          h("span", { style: { width: 7, height: 7, background: teinte, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8) + "", flexShrink: 0 } }),
-          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed")),
-          h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("les moments racontés", "the moments you tell", "los momentos contados", "i momenti raccontati", "語られた瞬間", "die erzählten Momente")),
-          h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
-        h("div", { className: "souvin", style: { animationDelay: ".3s" } },
-          null /* 31/07 : fil doublon retire du panneau souvenirs (le fil vit sur la fiche, la page seconde aura sa grille) */)) : null,
+          } })),) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
         h("div", { style: { fontSize: 42, marginTop: 26 } }, "🩺"),
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F6F7", marginTop: 14 } }, T("Le passeport arrive", "The passport is coming", "El pasaporte llega pronto", "Il passaporto sta arrivando", "パスポートは準備中", "Der Pass kommt bald")),
