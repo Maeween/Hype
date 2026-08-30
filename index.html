@@ -33701,6 +33701,15 @@ function GrilleSouvenirs(props) {
     var t0 = setTimeout(focus, 350);
     return function () { support.removeEventListener("scroll", auScroll); clearTimeout(t0); };
   }, [photos]);
+  /* 30/08 02h30 — 🟥 CE HOOK DOIT RESTER AU-DESSUS DE TOUT `return` ANTICIPE.
+     Pose apres le `return` de chargement, il n'etait pas appele au premier rendu
+     et l'etait au suivant : le nombre de hooks changeait -> React plantait
+     (« Un caillou dans le sabot », signale par Blandine). Un hook ne se met
+     JAMAIS apres une sortie conditionnelle. */
+  React.useEffect(function () {
+    if (typeof props.onVide !== "function") return;
+    props.onVide(Array.isArray(photos) && photos.length === 0);
+  }, [photos]);
   if (photos === null) return h("div", { style: { textAlign: "center", color: "#5B646E", fontSize: 13, padding: "14px 0" } }, "\u2026");
   /* nouveaux souvenirs : ils glissent doucement se poser dans l'album */
   var prec = precRef.current;
@@ -33741,11 +33750,6 @@ function GrilleSouvenirs(props) {
       h("span", { style: { fontSize: 9.5, letterSpacing: "0.12em", color: tnCl, fontWeight: 700, textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"))));
   }
   var galerieVide = !photos || photos.length === 0;
-  /* 30/08 02h20 (demande Blandine : « mets la video plutot au-dessus ») : le bloc
-     mascotte n'est plus rendu ici. GrilleSouvenirs se contente de PREVENIR le
-     parent que la galerie est vide ; c'est l'ecran de la fiche qui pose le bloc,
-     tout en haut de l'onglet Photos. */
-  React.useEffect(function () { if (typeof props.onVide === "function") props.onVide(galerieVide); }, [galerieVide]);
   return h("div", null,
     galerieVide ? null : h("div", { ref: grilleRef, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules),
     h("div", { style: { display: "flex", justifyContent: "center", padding: "16px 16px 8px" } },
