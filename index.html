@@ -28152,6 +28152,29 @@ function TableauxSpectralHype(props) {
   }, [estClub, clef]);
 
   var editable = props.editable !== false;
+  /* 30/08 (Blandine : « mets-moi un outil en ligne pour tester les couleurs, comme
+     pour le mur immersif ») — PANNEAU DE REGLAGE DE LA TEINTE DE L'ENCART.
+     Meme principe que le mur immersif : garde SUR CET APPAREIL (localStorage),
+     visible seulement par la personne qui peut editer, sans effet pour les autres.
+     Aucune couleur d'accent dans les dix palettes : que des gris. */
+  var HYPE_PAL_CIT = [
+    { id: "nuit", nom: "Nuit", f: "linear-gradient(160deg,#0A0C0E,#06080A)", b: "rgba(255,255,255,0.07)", t: "#7C868E", x: "#E9EEF2", g: "rgba(124,134,142,0.22)", mc: "#B9C3C9", mb: "rgba(185,195,201,0.26)", mf: "rgba(185,195,201,0.04)" },
+    { id: "ardoise", nom: "Ardoise", f: "linear-gradient(160deg,#191C1F,#121417)", b: "rgba(255,255,255,0.09)", t: "#8E979D", x: "#EDF0F2", g: "rgba(142,151,157,0.24)", mc: "#C6CED3", mb: "rgba(198,206,211,0.28)", mf: "rgba(198,206,211,0.05)" },
+    { id: "anthracite", nom: "Anthracite bleut\u00e9", f: "linear-gradient(160deg,#22272C,#191D22)", b: "rgba(255,255,255,0.11)", t: "#9AA7B0", x: "#EDF1F4", g: "rgba(150,168,180,0.26)", mc: "#C3CDD2", mb: "rgba(195,205,210,0.30)", mf: "rgba(195,205,210,0.05)" },
+    { id: "lagune", nom: "Lagune", f: "linear-gradient(160deg,#152227,#0D171B)", b: "rgba(120,180,190,0.16)", t: "#8FB4BC", x: "#E7F1F3", g: "rgba(143,180,188,0.24)", mc: "#B7D5DB", mb: "rgba(183,213,219,0.28)", mf: "rgba(183,213,219,0.05)" },
+    { id: "lagune2", nom: "Lagune profonde", f: "linear-gradient(160deg,#0E1A1F,#081114)", b: "rgba(110,175,190,0.14)", t: "#7FA8B2", x: "#E3EFF2", g: "rgba(127,168,178,0.20)", mc: "#A9CBD3", mb: "rgba(169,203,211,0.26)", mf: "rgba(169,203,211,0.04)" },
+    { id: "acier", nom: "Acier", f: "linear-gradient(160deg,#2A2F35,#20242A)", b: "rgba(255,255,255,0.13)", t: "#A8B2BA", x: "#F1F4F6", g: "rgba(168,178,186,0.26)", mc: "#D2DAE0", mb: "rgba(210,218,224,0.32)", mf: "rgba(210,218,224,0.06)" },
+    { id: "encre", nom: "Encre", f: "linear-gradient(160deg,#12161D,#0B0E13)", b: "rgba(255,255,255,0.08)", t: "#848FA0", x: "#E9ECF3", g: "rgba(132,143,160,0.22)", mc: "#B8C2D2", mb: "rgba(184,194,210,0.28)", mf: "rgba(184,194,210,0.04)" },
+    { id: "fumee", nom: "Fum\u00e9e", f: "linear-gradient(100deg,rgba(30,34,38,0.92) 40%,rgba(52,62,70,0.75) 100%)", b: "rgba(255,255,255,0.10)", t: "#98A2AA", x: "#EFF2F4", g: "rgba(152,162,170,0.24)", mc: "#C9D1D7", mb: "rgba(201,209,215,0.30)", mf: "rgba(201,209,215,0.05)" },
+    { id: "basalte", nom: "Basalte", f: "linear-gradient(160deg,#1C1E20,#141618)", b: "rgba(255,255,255,0.08)", t: "#8C9296", x: "#EEF0F1", g: "rgba(140,146,150,0.22)", mc: "#C4C9CC", mb: "rgba(196,201,204,0.28)", mf: "rgba(196,201,204,0.05)" },
+    { id: "claire", nom: "Ardoise claire", f: "linear-gradient(160deg,#31383F,#262C33)", b: "rgba(255,255,255,0.15)", t: "#B3BDC5", x: "#F5F7F9", g: "rgba(179,189,197,0.28)", mc: "#DDE4E9", mb: "rgba(221,228,233,0.34)", mf: "rgba(221,228,233,0.07)" }
+  ];
+  function palCitLue() { try { var v = window.localStorage.getItem("hype_teinte_citation"); return v || "anthracite"; } catch (ePc) { return "anthracite"; } }
+  var _pc = React.useState(palCitLue()), palCitId = _pc[0], setPalCitId = _pc[1];
+  var _pcp = React.useState(false), panPalCit = _pcp[0], setPanPalCit = _pcp[1];
+  function palCit() { for (var iP = 0; iP < HYPE_PAL_CIT.length; iP++) { if (HYPE_PAL_CIT[iP].id === palCitId) return HYPE_PAL_CIT[iP]; } return HYPE_PAL_CIT[2]; }
+  function choisirPalCit(idP) { setPalCitId(idP); try { window.localStorage.setItem("hype_teinte_citation", idP); } catch (eSp) { } }
+  var PC = palCit();
   var voixTxt = estClub ? (clubVoix || "") : ((prof && prof[champVoix]) || "");
   var histTxt = estClub ? (clubHist || "") : ((prof && prof[champHist]) || "");
   var titC = L(props.titreCourt), titL = L(props.titreLong);
@@ -28187,9 +28210,9 @@ function TableauxSpectralHype(props) {
   var noteMod = props.noteModale ? L(props.noteModale) : "";
 
   var voixNode = voixTxt
-    ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.45, color: "#EDF1F4" } }, h(EncreLumineuse, { text: voixTxt }) /* 30/08 (Blandine) : citation 20,5 -> 17 px */)
+    ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.45, color: PC.x } }, h(EncreLumineuse, { text: voixTxt }) /* 30/08 (Blandine) : citation 20,5 -> 17 px */)
     : (defV
-      ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 16.5, lineHeight: 1.45, color: "#C3CDD2" } }, defV /* 30/08 : citation par défaut 19,5 -> 16,5 px */)
+      ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 16.5, lineHeight: 1.45, color: PC.mc } }, defV /* 30/08 : citation par défaut 19,5 -> 16,5 px */)
       : (editable ? h("div", { style: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.55, color: "rgba(234,242,244,.34)" } }, phVoix) : null));
   var histNode = histTxt
     ? h("div", { style: { fontSize: 14, lineHeight: 1.85, color: "#DCE3E8", whiteSpace: "pre-line", fontFamily: M } }, histTxt)
@@ -28207,11 +28230,28 @@ function TableauxSpectralHype(props) {
   return h("div", { style: { margin: "4px 0 0" } },
     coachTableaux,
     h("style", null, "@keyframes hycSpin{to{transform:rotate(1turn)}}.hyc-cristal{position:relative;border-radius:20px;padding:1.6px;overflow:hidden;isolation:isolate}.hyc-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + thC.principal + " 82%,#BFF4F8 90%,transparent 100%);animation:hycSpin 4.5s linear infinite}.hyc-cristal>.hyc-cristal-cc{position:relative;z-index:1;border-radius:18px;overflow:hidden}@keyframes hycBlink{50%{opacity:0}}.hyc-caret{display:inline-block;width:2px;height:1.05em;background:" + thC.principal + ";box-shadow:0 0 8px " + thC.principal + ";vertical-align:-2px;margin-left:1px;animation:hycBlink 1s step-end infinite}"),
-    h("div", { style: { position: "relative", margin: "0 16px 22px", padding: "20px 18px 18px", borderRadius: 20, background: "linear-gradient(160deg,#22272C,#191D22)", border: "1px solid rgba(255,255,255,0.11)", overflow: "hidden" } }, /* 30/08 (choix final de Blandine) : encart en ANTHRACITE BLEUTE sur fond de page noir. Aucune couleur d'accent ajoutee — le gris est tire vers le bleu de l'app, pas vers le brun. Sept teintes proposees, puis trois anthracites : celle-ci retenue */
-      h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: "rgba(150,168,180,0.26)", lineHeight: 1, pointerEvents: "none" } }, "\u201c"), /* 30/08 : guillemet en or sourd, plus en teinte de l'app */
-      h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: "#9AA7B0", textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + titC), /* 30/08 : titre en gris ardoise, plus en turquoise */
+    h("div", { style: { position: "relative", margin: "0 16px 22px", padding: "20px 18px 18px", borderRadius: 20, background: PC.f, border: "1px solid " + PC.b, overflow: "hidden" } }, /* 30/08 (choix final de Blandine) : encart en ANTHRACITE BLEUTE sur fond de page noir. Aucune couleur d'accent ajoutee — le gris est tire vers le bleu de l'app, pas vers le brun. Sept teintes proposees, puis trois anthracites : celle-ci retenue */
+      h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: PC.g, lineHeight: 1, pointerEvents: "none" } }, "\u201c"), /* 30/08 : guillemet en or sourd, plus en teinte de l'app */
+      h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: PC.t, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + titC), /* 30/08 : titre en gris ardoise, plus en turquoise */
       h("div", { style: { position: "relative", minHeight: 54 } }, voixNode),
-      editable ? h("button", { onClick: function () { setVoixLocal(voixTxt || ""); setEditVoix(true); }, style: Object.assign({ position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M }, dark) }, "\u270e " + (voixTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"))) : null),
+      editable ? h("button", { onClick: function () { setVoixLocal(voixTxt || ""); setEditVoix(true); }, style: Object.assign({ position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M }, dark) }, "\u270e " + (voixTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"))) : null,
+      /* 30/08 — LE PANNEAU DE TEINTE. Un lien discret, seulement pour qui peut
+         editer. Le choix est garde sur CET APPAREIL et ne change rien pour les
+         autres membres du club. Rendu en ligne, pas en portail : la lecon du
+         19at de hype-stories.js (ReactDOM.createPortal absent a l'execution). */
+      editable ? h("div", { style: { position: "relative", marginTop: 12 } },
+        h("span", { role: "button", onClick: function () { setPanPalCit(!panPalCit); }, style: { fontSize: 11, color: PC.t, fontFamily: M, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 } },
+          T("Teinte de l'encart", "Card shade", "Tono del recuadro", "Tinta del riquadro", "\u30ab\u30fc\u30c9\u306e\u8272", "Farbton der Karte")),
+        panPalCit ? h("div", { style: { marginTop: 11, padding: "12px 12px 10px", borderRadius: 14, background: "rgba(255,255,255,0.035)", border: "1px solid rgba(255,255,255,0.09)" } },
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            HYPE_PAL_CIT.map(function (pp) {
+              var actif = pp.id === palCitId;
+              return h("div", { key: pp.id, role: "button", onClick: function () { choisirPalCit(pp.id); }, style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 40, padding: "0 12px", borderRadius: 999, cursor: "pointer", background: actif ? "rgba(255,255,255,0.08)" : "transparent", border: "1px solid " + (actif ? "rgba(255,255,255,0.30)" : "rgba(255,255,255,0.12)") } },
+                h("span", { style: { width: 16, height: 16, borderRadius: 5, flex: "0 0 auto", background: pp.f, border: "1px solid " + pp.b } }),
+                h("span", { style: { fontSize: 11, fontFamily: M, color: actif ? "#EDF2F5" : "#A8B2BA", fontWeight: actif ? 700 : 500 } }, pp.nom));
+            })),
+          h("div", { style: { fontSize: 10, color: "#7B848C", fontFamily: M, marginTop: 10, lineHeight: 1.5 } },
+            T("Le r\u00e9glage est gard\u00e9 sur cet appareil et ne change rien pour les autres membres.", "This setting stays on this device and changes nothing for other members.", "El ajuste se guarda en este dispositivo y no cambia nada para los dem\u00e1s.", "L'impostazione resta su questo dispositivo e non cambia nulla per gli altri.", "\u3053\u306e\u8a2d\u5b9a\u306f\u3053\u306e\u7aef\u672b\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002", "Die Einstellung bleibt auf diesem Ger\u00e4t."))) : null) : null),
     h("div", { className: "hyc-cristal", style: { margin: "0 16px 28px" } },
       h("div", { className: "hyc-cristal-cc", style: { padding: "18px 17px 16px", background: "linear-gradient(180deg,#0b1219,#080c11)" } },
         h("div", { style: { fontSize: 10, letterSpacing: "0.28em", color: thC.principal, textTransform: "uppercase", fontWeight: 700, fontFamily: M } }, "\u2726 " + titL),
@@ -28927,14 +28967,17 @@ function EcranGuilde() {
         /* 30/08 (Blandine) : la pastille « Club officiel » quitte le bas du bloc et
            devient un petit badge pose EN HAUT A DROITE de la photo. Decale vers la
            gauche quand le bouton appareil photo est la, pour ne pas le recouvrir. */
-        revendique ? h("img", { src: "images/hype-club-officiel.png", alt: "Club officiel", style: { position: "absolute", top: "calc(26px + env(safe-area-inset-top))", right: peutEditerBanniere ? 68 : 26, width: 104, height: "auto", zIndex: 3, pointerEvents: "none", filter: "drop-shadow(0 2px 10px rgba(0,0,0,0.65))" } }) : null, /* 30/08 (Blandine : « agrandis plus que ca ») : marges 34 -> 16 px */ /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
+ /* 30/08 (Blandine : « agrandis plus que ca ») : marges 34 -> 16 px */ /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
         h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 620, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
       h("div", { style: { padding: "16px 22px 14px", textAlign: "center" } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9" } }, monClub),
         h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
           (villeClub ? ("\ud83d\udccd " + villeClub + " \u00b7 ") : "") + maG.membres + " " + T("membres", "members", "miembros", "membri", "\u30e1\u30f3\u30d0\u30fc", "Mitglieder")),
-        /* 30/08 : la pastille « Club officiel » est remontee sur la photo, voir plus haut */
-        null),
+        /* 30/08 (Blandine : « on ne voit pas le club officiel, mets-le là où l'autre
+           était avant ») — pose en haut a droite de la photo, le badge se perdait sur
+           une image chargee. Il reprend EXACTEMENT la place de l'ancienne pastille :
+           sous le nom et la ville, centre. */
+        revendique ? h("img", { src: "images/hype-club-officiel.png", alt: "Club officiel", style: { display: "block", width: 150, height: "auto", margin: "11px auto 0" } }) : null),
       peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", right: 14, top: "calc(14px + env(safe-area-inset-top))", width: 42, height: 42, borderRadius: "50%", border: "none", background: "rgba(6,7,9,0.6)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 4 } }, "\ud83d\udcf7") : null,
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     /* 12/08 (114) : bandeau des stories. */
