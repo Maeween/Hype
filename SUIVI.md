@@ -10,6 +10,35 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (23h00) — LA CITATION DU CLUB : PLUS PETITE, REMONTÉE, EN « NUIT PROFONDE »
+
+- **Taille** : 20,5 → **17 px** (et 19,5 → 16,5 pour le texte par défaut d'un club qui n'a
+  rien écrit), interligne 1,5 → 1,45.
+- **Position** : marge haute de 10 px retirée + `marginTop: -18` — l'encart remonte de 28 px.
+- **Couleur** : **anthracite bleuté sur fond de page noir**. Sept teintes proposées
+  (vert écurie, bordeaux, or sombre, ardoise, nuit profonde, parme), puis trois anthracites
+  en second tour ; Blandine a retenu le bleuté.
+
+| | Avant | Après |
+|---|---|---|
+| Fond | `linear-gradient(180deg,#0b1219,#080c11)` | `linear-gradient(160deg,#22272C,#191D22)` |
+| Bordure | blanc 8 % | blanc **11 %** |
+| Titre | teinte de l'app (turquoise) | **`#9AA7B0`** |
+| Citation | `#E9F1F3` | **`#EDF1F4`** |
+| Guillemet | teinte de l'app | **`rgba(150,168,180,.26)`** |
+
+**Raison du choix, discutée avec Blandine** : cet encart n'est pas que le sien, chaque club
+a le sien. Une couleur d'accent nouvelle créerait une deuxième identité dans une app qui
+n'en a que deux (turquoise, Crimson premium). L'anthracite bleuté **n'ajoute aucune
+couleur** — c'est un gris, tiré vers le bleu de l'app plutôt que vers le brun — et il
+**détache** l'encart du fond noir au lieu de l'y fondre, ce qui était le reproche fait à
+« nuit profonde ».
+
+`TableauxSpectralHype` n'a **qu'un seul usage** dans tout le fichier (`mode: "club"`) —
+vérifié avant de toucher aux couleurs, aucun autre écran n'est affecté.
+
+---
+
 # ✅ 30/08/2026 (22h45) — HALO SUPPRIMÉ · LISTE RETIRÉE SOUS LE RAIL
 
 ## Halo : plus rien
@@ -47,8 +76,8 @@ apparaîtront ici » est conservée dans ce cas, pour ne jamais laisser une sect
 2. le fil groupé par épreuve, tel qu'il vient d'être retiré de la page club — le code
    existe dans l'historique de ce fichier, il n'est pas à réinventer ;
 3. un lien depuis le rail vers cette page ;
-4. la pagination : le vivier est plafonné à 200 lignes côté requête, ce sera insuffisant
-   pour un club actif.
+4. la pagination : le vivier est plafonné à **300** lignes côté requête (porté de 200 à
+   300 le 30/08 à la demande de Blandine), ce sera encore insuffisant pour un club actif.
 
 **Point de vigilance** : `resultatsClub` est toujours calculé et limité à 5 groupes
 (`slice(0, 5)`). Pour la page complète il faudra lever cette limite, pas la contourner.

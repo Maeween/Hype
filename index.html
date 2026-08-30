@@ -28187,7 +28187,7 @@ function TableauxSpectralHype(props) {
   var noteMod = props.noteModale ? L(props.noteModale) : "";
 
   var voixNode = voixTxt
-    ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.45, color: "#E9F1F3" } }, h(EncreLumineuse, { text: voixTxt }) /* 30/08 (Blandine) : citation 20,5 -> 17 px */)
+    ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.45, color: "#EDF1F4" } }, h(EncreLumineuse, { text: voixTxt }) /* 30/08 (Blandine) : citation 20,5 -> 17 px */)
     : (defV
       ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 16.5, lineHeight: 1.45, color: "#C3CDD2" } }, defV /* 30/08 : citation par défaut 19,5 -> 16,5 px */)
       : (editable ? h("div", { style: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.55, color: "rgba(234,242,244,.34)" } }, phVoix) : null));
@@ -28207,9 +28207,9 @@ function TableauxSpectralHype(props) {
   return h("div", { style: { margin: "4px 0 0" } },
     coachTableaux,
     h("style", null, "@keyframes hycSpin{to{transform:rotate(1turn)}}.hyc-cristal{position:relative;border-radius:20px;padding:1.6px;overflow:hidden;isolation:isolate}.hyc-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + thC.principal + " 82%,#BFF4F8 90%,transparent 100%);animation:hycSpin 4.5s linear infinite}.hyc-cristal>.hyc-cristal-cc{position:relative;z-index:1;border-radius:18px;overflow:hidden}@keyframes hycBlink{50%{opacity:0}}.hyc-caret{display:inline-block;width:2px;height:1.05em;background:" + thC.principal + ";box-shadow:0 0 8px " + thC.principal + ";vertical-align:-2px;margin-left:1px;animation:hycBlink 1s step-end infinite}"),
-    h("div", { style: { position: "relative", margin: "0 16px 22px", padding: "20px 18px 18px", borderRadius: 20, background: "linear-gradient(180deg,#0b1219,#080c11)", border: "1px solid rgba(255,255,255,0.08)", overflow: "hidden" } },
-      h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: rgb(0.08), lineHeight: 1, pointerEvents: "none" } }, "\u201c"),
-      h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: thC.principal, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + titC),
+    h("div", { style: { position: "relative", margin: "0 16px 22px", padding: "20px 18px 18px", borderRadius: 20, background: "linear-gradient(160deg,#22272C,#191D22)", border: "1px solid rgba(255,255,255,0.11)", overflow: "hidden" } }, /* 30/08 (choix final de Blandine) : encart en ANTHRACITE BLEUTE sur fond de page noir. Aucune couleur d'accent ajoutee — le gris est tire vers le bleu de l'app, pas vers le brun. Sept teintes proposees, puis trois anthracites : celle-ci retenue */
+      h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: "rgba(150,168,180,0.26)", lineHeight: 1, pointerEvents: "none" } }, "\u201c"), /* 30/08 : guillemet en or sourd, plus en teinte de l'app */
+      h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: "#9AA7B0", textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + titC), /* 30/08 : titre en gris ardoise, plus en turquoise */
       h("div", { style: { position: "relative", minHeight: 54 } }, voixNode),
       editable ? h("button", { onClick: function () { setVoixLocal(voixTxt || ""); setEditVoix(true); }, style: Object.assign({ position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M }, dark) }, "\u270e " + (voixTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"))) : null),
     h("div", { className: "hyc-cristal", style: { margin: "0 16px 28px" } },
