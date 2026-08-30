@@ -1870,14 +1870,44 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
       var nomCible = (rNo && rNo.data && rNo.data.nom) || "";
       var nrmN = function (x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, " ").replace(/\s+/g, " ").trim(); };
       var nP = nrmN(nomPdf), nC = nrmN(nomCible);
-      /* 30/08 (signale par Blandine) : le telemat de CRUIBHIN etait extrait
-         « CRUIBHI N » — le PDF avait glisse un espace avant la derniere lettre.
-         La comparaison espacee echouait donc sur un cheval pourtant identique.
-         On compare AUSSI les deux noms sans aucun espace. Rizotto contre
-         Vallieres reste refuse : le verrou garde tout son sens. */
+      /* 30/08 — L'EXTRACTION DES PDF TELEMAT ABIME LES NOMS. Deux cas rencontres :
+           · CRUIBHIN  -> « CRUIBHI N »        (un espace insere)
+           · DAPHNEE   -> « DAPH N E VELLEDA » (un espace insere ET un E perdu)
+         Une comparaison stricte, meme sans espaces, ne suffit donc pas : il faut
+         tolerer le BRUIT d'extraction. On garde d'abord les tests exacts, puis on
+         accepte une distance d'edition <= 2 sur les noms compacts d'au moins 6
+         caracteres. Rizotto contre Vallieres reste tres loin : le verrou tient. */
       var sansEsp = function (x) { return String(x || "").replace(/\s+/g, ""); };
       var cP = sansEsp(nP), cC = sansEsp(nC);
-      var concorde = (nP.indexOf(nC) >= 0 || nC.indexOf(nP) >= 0 || (cP && cC && (cP.indexOf(cC) >= 0 || cC.indexOf(cP) >= 0)));
+      function distEdit(a1, b1) {
+        var m = a1.length, n1 = b1.length;
+        if (!m) return n1; if (!n1) return m;
+        var prec = [], cour = [], i1, j1;
+        for (j1 = 0; j1 <= n1; j1++) prec[j1] = j1;
+        for (i1 = 1; i1 <= m; i1++) {
+          cour[0] = i1;
+          for (j1 = 1; j1 <= n1; j1++) {
+            var co = (a1.charAt(i1 - 1) === b1.charAt(j1 - 1)) ? 0 : 1;
+            cour[j1] = Math.min(cour[j1 - 1] + 1, prec[j1] + 1, prec[j1 - 1] + co);
+          }
+          prec = cour.slice();
+        }
+        return prec[n1];
+      }
+      var procheAssez = false;
+      try {
+        if (cP.length >= 6 && cC.length >= 6) {
+          if (distEdit(cP, cC) <= 2) procheAssez = true;
+          else {
+            /* la fiche peut porter « X alias Y » : on tente chaque partie */
+            var partsC = nC.split(" ").filter(function (w) { return w.length >= 4 && w !== "ALIAS"; });
+            for (var iQ = 0; iQ < partsC.length && !procheAssez; iQ++) {
+              if (distEdit(cP, partsC[iQ]) <= 2) procheAssez = true;
+            }
+          }
+        }
+      } catch (eD) { }
+      var concorde = (nP.indexOf(nC) >= 0 || nC.indexOf(nP) >= 0 || (cP && cC && (cP.indexOf(cC) >= 0 || cC.indexOf(cP) >= 0)) || procheAssez);
       if (nP && nC && !concorde) {
         return { error: "Ce telemat est celui de \u00ab " + nomPdf + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour prot\u00e9ger les deux fiches — rouvre l'import depuis la fiche de \u00ab " + nomPdf + " \u00bb." };
       }
