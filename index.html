@@ -33111,7 +33111,7 @@ function AlbumsCheval(props) {
     /* 30/08 (choix de Blandine, option 1) : le grand carre pointille « Nouvel
        album » est remplace par une PASTILLE discrete, centree sous la rangee.
        Moins de place, rien de vide a l'ecran, meme geste. */
-    h("div", { style: { display: "flex", justifyContent: "center", padding: "4px 16px 2px" } },
+    h("div", { style: { display: "flex", justifyContent: "center", padding: "12px 16px 6px" } },
       h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid " + tA(0.55), background: tA(0.06), color: tnT, fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
         h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
         h("span", null, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0")))),
@@ -33741,15 +33741,17 @@ function GrilleSouvenirs(props) {
       h("span", { style: { fontSize: 9.5, letterSpacing: "0.12em", color: tnCl, fontWeight: 700, textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"))));
   }
   var galerieVide = !photos || photos.length === 0;
+  /* 30/08 02h20 (demande Blandine : « mets la video plutot au-dessus ») : le bloc
+     mascotte n'est plus rendu ici. GrilleSouvenirs se contente de PREVENIR le
+     parent que la galerie est vide ; c'est l'ecran de la fiche qui pose le bloc,
+     tout en haut de l'onglet Photos. */
+  React.useEffect(function () { if (typeof props.onVide === "function") props.onVide(galerieVide); }, [galerieVide]);
   return h("div", null,
     galerieVide ? null : h("div", { ref: grilleRef, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules),
-    h("div", { style: { display: "flex", justifyContent: "center", padding: "10px 16px 2px" } },
+    h("div", { style: { display: "flex", justifyContent: "center", padding: "16px 16px 8px" } },
       h("div", { onClick: props.onAjouter, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid " + tA(0.55), background: tA(0.06), color: tnCl, fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
         h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
         h("span", null, T("Ajouter une photo", "Add a photo", "A\u00f1adir una foto", "Aggiungi una foto", "\u5199\u771f\u3092\u8ffd\u52a0", "Foto hinzuf\u00fcgen")))),
-    /* 30/08 : cheval sans aucune photo -> la mascotte prend la place de l'ecran
-       vide, juste sous la galerie (emplacement decide par Blandine). */
-    galerieVide ? h(BlocSouvenirsVide, { teinteCl: tnCl, onAjouter: props.onAjouter }) : null,
     (toutVu && photos.length > LIM_SOUV) ? h("button", { onClick: function () { setToutVu(false); try { if (grilleRef.current && grilleRef.current.scrollIntoView) grilleRef.current.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }, style: { display: "block", margin: "12px auto 0", padding: "9px 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("R\u00e9duire", "Collapse", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null);
 }
 
@@ -34737,6 +34739,9 @@ function EcranCheval() {
     try { chargerVedettesSouvenirs(cibleCh).then(function (r) { if (aV) setVedettes((r && r.data && r.data.urls) || []); }).catch(function () { if (aV) setVedettes([]); }); } catch (eV) { setVedettes([]); }
     return function () { aV = false; };
   }, [id]);
+  /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
+     s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
+  var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
   function basculerVedette(url) {
     var lV = (vedettes || []).slice();
     var iV = lV.indexOf(url);
@@ -36038,6 +36043,11 @@ function EcranCheval() {
          qui vivaient jusqu'ici sur la page Souvenirs. Rien n'est perdu : le bloc
          deplace est repris tel quel, memes composants, memes reglages. */
       panneau === "photos" ? h("div", null,
+        galVideCh ? h("div", { style: { margin: "0 0 6px" } },
+          h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () {
+            var fV = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
+            if (fV) { fV(); }
+          } })) : null,
         h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
@@ -36055,7 +36065,7 @@ function EcranCheval() {
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("★ = en vedette sur la fiche (6 max)", "★ = featured on the profile (6 max)", "★ = destacada en la ficha (6 máx.)", "★ = in evidenza sulla scheda (max 6)", "★ = プロフィール掲載（6枚まで）", "★ = auf dem Profil hervorgehoben (max. 6)")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".12s" } },
-          h(GrilleSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: cibleCh, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
+          h(GrilleSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: cibleCh, onVide: setGalVideCh, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
             var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
