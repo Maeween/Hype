@@ -1998,12 +1998,12 @@ function BandeauStories(props) {
           style: {
             position: "relative", width: CL, height: CH_, borderRadius: 16, overflow: "hidden", flex: "0 0 auto",
             background: "#111417", display: "flex", alignItems: "center", justifyContent: "center",
-            border: "1px solid " + (g.toutesVues ? "rgba(255,255,255,0.14)" : tA(0.72)),
-            boxShadow: g.toutesVues ? "none" : ("0 0 16px " + tA(0.26) + ", inset 0 0 0 1px " + tA(0.18))
+            border: "1px solid " + (g.toutesVues ? "rgba(255,255,255,0.14)" : tA(0.34)), /* 30/08 : liseré adouci avec le halo */
+            boxShadow: g.toutesVues ? "none" : ("0 0 5px " + tA(0.09) + ", inset 0 0 0 1px " + tA(0.10)) /* 30/08 : meme reduction que la vignette ronde */
           }
         }, photo);
       }
-      return h("div", { key: cle, style: { position: "relative", width: T, height: T, borderRadius: "50%", flex: "0 0 auto", padding: 3, background: g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")"), boxShadow: g.toutesVues ? "none" : ("0 0 18px " + tA(0.32)) } },
+      return h("div", { key: cle, style: { position: "relative", width: T, height: T, borderRadius: "50%", flex: "0 0 auto", padding: 3, background: g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")"), boxShadow: g.toutesVues ? "none" : ("0 0 6px " + tA(0.10)) /* 30/08 (Blandine : « diminue le halo des ronds des story, limite invisible ») : 18px/0.32 -> 6px/0.10 */ } },
         h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2.5px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } }, photo));
     }
 
@@ -2097,7 +2097,7 @@ function BandeauStories(props) {
 
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
-    h("div", { "data-hscroll": "1", style: { display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
+    h("div", { "data-hscroll": "1", style: { background: "#030405", display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */
