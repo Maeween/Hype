@@ -10,6 +10,438 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🔴 30/08/2026 (20h15) — LE PALMARÈS DU CLUB ATTRIBUAIT DE FAUX RÉSULTATS À BLANDINE
+
+> « Les résultats, que je sois première en épreuve poney c'est impossible, je suis la coach
+> pas la cavalière poney. »
+
+## La cause — une erreur de ma part, livrée à 20h00
+
+Les résultats **saisis à la main** sur une fiche cheval (colonne JSON `chevaux.palmares`)
+ne contiennent **aucun nom de cavalier** : seulement l'épreuve, l'année et le rang. Dans
+mon rendu groupé, je me rabattais alors sur le **propriétaire du cheval** — donc Blandine.
+
+Résultat à l'écran : « Prépa 75 · 1er Blandine », « Poney 3 · 1er Blandine », « Poney 4 ·
+1er Blandine ». **Des résultats faux, affichés publiquement sur la page du club.**
+
+Je n'aurais jamais dû inventer un cavalier par défaut. Un champ vide devait rester vide.
+
+## Le correctif
+
+Les entrées venant du JSON sont marquées `__saisi`. Pour celles-là : on affiche le
+**cheval**, ou **rien**. Jamais le propriétaire.
+
+Le repli sur le pseudo du membre est conservé **uniquement pour les résultats importés**
+de la table `resultats`, où le `user_id` désigne bien la personne qui a couru.
+
+## Deux autres demandes, livrées avec
+
+- **5 derniers résultats** au lieu de 8.
+- **Le bloc de partage avec code de parrainage** (`BlocParrainage`), jusqu'ici réservé à la
+  page Mes quêtes, est ajouté **en bas de Mon compte**. C'est le **même composant**, pas une
+  copie : une seule source à maintenir, deux emplacements.
+
+## Question restée ouverte
+
+Blandine évoque « un rail pour mettre en avant un résultat en cliquant dessus, comme sur la
+page de Rizotto ». **Demande pas comprise, non traitée** — à lui faire préciser avant de
+coder quoi que ce soit.
+
+---
+
+# 🔎 30/08/2026 (20h10) — LE GARDE-FOU DESCEND JUSQU'À LA SÉLECTION DU FICHIER
+
+Enregistrement d'écran (20 s) : Blandine choisit une vidéo de **1:09** dans le sélecteur
+iOS, valide, revient sur l'onglet Vidéos. Le bouton **n'affiche jamais « Envoi en cours… »**
+et aucun message d'erreur n'apparaît. « Aucune vidéo pour l'instant » reste affiché.
+
+**Donc l'envoi direct livré à 19h30 n'a pas échoué : il n'a pas démarré.** Le `onChange` de
+l'input a été appelé sans fichier, ou pas appelé du tout. Cas connu sur iOS : la vidéo doit
+être transcodée avant d'être remise au navigateur, et l'opération peut rendre une liste vide.
+
+## Ce qui est ajouté
+
+- **Aucun fichier reçu** → message rouge persistant qui le dit explicitement : « Le sélecteur
+  s'est refermé sans transmettre de fichier. Rien n'a été envoyé. » Plus jamais de silence.
+- **Fichier reçu** → bandeau turquoise avec **nom · poids en Mo · type MIME**, affiché avant
+  même l'envoi.
+
+À partir de là, trois cas se distinguent enfin sans ambiguïté :
+1. rien ne s'affiche → le `onChange` n'est pas appelé, problème navigateur en amont ;
+2. « le sélecteur s'est refermé sans fichier » → iOS n'a pas rendu la vidéo ;
+3. « Fichier reçu : … » puis une erreur → c'est bien l'envoi, avec sa raison.
+
+**Toujours pas de correctif d'envoi.** C'est de l'instrumentation. Mesurer avant de patcher.
+
+---
+
+# ✅ 30/08/2026 (20h00) — PALMARÈS DU CLUB : FIL GROUPÉ PAR ÉPREUVE, ARDOISE FUMÉ TURQUOISE
+
+Choisi par Blandine après **trois séries de maquettes** (6 dispositions, puis 6 variantes du
+fil groupé, puis la reprise en fumé turquoise). Retenu : **l'ardoise, variante G**, dans la
+couleur des boutons d'inscription.
+
+## Ce qui change
+
+**La requête.** `resultats` était lue avec `concours, classement, quart, created_at, photo_url`.
+Ajout de **`epreuve`, `partants`, `date_epreuve`, `cavalier`**.
+
+**Le regroupement.** Au lieu de 8 lignes plates, les résultats sont groupés par
+`concours | epreuve | date_epreuve`. Quand le club place trois cavaliers sur la même
+épreuve, on lit une seule carte avec 1er, 2e et 3e alignés, au lieu de trois lignes qui
+répètent le nom du concours.
+
+⚠️ **L'épreuve est indispensable dans la clé** : sans elle, deux épreuves du même jour au
+même concours se retrouveraient mélangées sur la même carte — un résultat faux, pas
+seulement laid. C'est pourquoi la colonne a été ajoutée.
+
+Les places sont triées par rang, dédoublonnées sur (rang + cavalier).
+
+**L'apparence.** Une carte par épreuve en **verre fumé turquoise** — valeurs reprises à
+l'identique du style d'inscription. Année en turquoise, concours en Cinzel, épreuve et
+partants en dessous, filet turquoise pâle, puis les rangs.
+
+**Les rangs gardent leurs couleurs de métal** (or, argent, bronze, turquoise pour un classé
+hors podium via `quart`). Décision assumée : le fond est décoratif, le rang porte une
+information. Règle « classé = premier quart » toujours lue dans la colonne, **jamais
+recalculée**.
+
+## Ce qui n'est PAS fait
+
+**Le bouton « Voir tous les résultats du club » n'existe pas** — il n'y a aucune page
+résultats de club dans l'app, donc rien où l'envoyer. À créer si Blandine le veut.
+
+Les entrées venant du JSON `chevaux.palmares` n'ont ni épreuve ni partants : elles forment
+chacune leur propre carte. Normal, pas un défaut.
+
+---
+
+# ✅ 30/08/2026 (19h30) — ENVOI DE VIDÉO : LE CHEMIN ÉTAIT LE PROBLÈME, PAS L'ENVOI
+
+> « Le chemin est pas intuitif : on clique pour charger une vidéo depuis Vidéos et on se
+> retrouve sur une autre page qui nous propose de re-cliquer pour mettre une image. Et je
+> croyais que t'avais mis un outil pour que ça puisse plus foirer en silence ? »
+
+## Ce que montre l'enregistrement d'écran (36 s, dépouillé image par image)
+
+Onglet Vidéos → « Ajouter une vidéo » → **bascule sur l'onglet Photos** → « Ajouter une
+photo » → sélecteur iOS → choix d'une vidéo → validation → retour sur une page identique,
+galerie vide, mascotte. **Aucun message.**
+
+## La cause
+
+**La vidéo n'a jamais été envoyée. Rien n'a échoué : rien n'a été tenté.**
+
+Le bouton déclenchait bien le sélecteur, mais le fichier était déposé dans le **composeur
+de souvenirs**, qui est monté sur l'onglet *Souvenirs*. L'aperçu et le bouton « Publier »
+s'affichaient donc sur un onglet non regardé. `publier()` n'a jamais tourné.
+
+**Mon garde-fou de 13h10 n'était pas inutile — il était au mauvais endroit.** Il surveille
+l'envoi ; le problème était en amont, dans le chemin. Leçon : instrumenter là où l'action
+se produit, pas là où on croit qu'elle se produit.
+
+## Ce qui est livré
+
+L'onglet Vidéos a désormais **son propre envoi, sur place** :
+
+- un `input file` dédié (`accept="video/*"`) monté **dans le panneau Vidéos**
+- le bouton ouvre directement le sélecteur — **plus aucun changement d'onglet**
+  (`setPanneau("photos")` : 0 occurrence restante)
+- envoi immédiat via `posterCommentaire`, sans passer par le composeur
+- le bouton affiche « Envoi en cours… » et se verrouille pendant l'opération
+- en cas d'échec : nom du fichier, **poids en Mo**, raison brute de Supabase, message qui
+  **reste** jusqu'au bouton « Fermer »
+- style Fumé Turquoise, 6 langues
+
+## Ce que ça ne règle toujours pas
+
+**La compression avant envoi.** Décision de Blandine du 28/08 : faire les DEUX (relever la
+limite du bucket ET compresser). Seule la limite a été relevée. Si la vidéo est trop
+lourde, elle sera maintenant **refusée avec un message lisible** au lieu d'échouer en
+silence — mais elle sera refusée.
+
+---
+
+# 🔴 30/08/2026 (18h45) — VERROU D'IMPORT : MON CORRECTIF DE 12h45 ÉTAIT TROP ÉTROIT
+
+> « Ce telemat est celui de "DAPH N E VELLEDA", mais la fiche ouverte est "Daphnee
+> velleda". » · Blandine : « ça aurait pas dû être déjà réglé ça ? » — **oui.**
+
+## Ce que j'avais mal fait
+
+À 12h45 j'ai corrigé **le symptôme vu**, pas la famille de problèmes. Pour CRUIBHIN, le
+PDF avait inséré un espace : comparer sans espaces suffisait. Ici :
+
+| PDF telemat | Fiche | Compact |
+|---|---|---|
+| DAPH N E VELLEDA | Daphnee velleda | `DAPHNEVELLEDA` vs `DAPHNEEVELLEDA` |
+
+**Il manque un E.** L'extraction des PDF telemat ne se contente pas de découper les mots :
+elle **perd des caractères**. Aucune comparaison stricte ne peut y résister.
+
+## Le vrai correctif
+
+Distance d'édition (Levenshtein) sur les noms compacts, tolérance **≤ 2**, uniquement
+au-delà de **6 caractères** pour éviter les collisions de noms courts. Les tests exacts
+(inclusion, avec et sans espaces) restent en première ligne ; la distance n'est qu'un
+dernier recours. Si la fiche porte « X alias Y », chaque partie est tentée séparément.
+
+Jeu d'essai sur les vrais chevaux de l'écurie :
+
+| Telemat | Fiche | Verdict |
+|---|---|---|
+| DAPH N E VELLEDA | Daphnee velleda | ✅ |
+| CRUIBHI N | Cruibhin alias CRUMBLE | ✅ |
+| YUM ALIAS UMEA BORDERIE | Yum alias Umea Borderie | ✅ |
+| COOLTAX DE VIRCHEL Z | Cooltax de Virchel Z | ✅ |
+| TULLY BLUE MOON | Tully Blue moon | ✅ |
+| RIZOTTO | Vallieres | ⛔ |
+| CRUMBLE | Rizotto | ⛔ |
+| ONE DREAM DE FEINN | Boréalis de Feinn | ⛔ |
+| APY DE REVE | Quarla | ⛔ |
+
+Le croisement qui avait motivé le verrou reste bloqué.
+
+## Leçon
+
+**Un correctif taillé sur un seul échantillon retombe au suivant.** Quand la cause est un
+procédé bruité (ici l'extraction PDF), corriger la classe de bruit, pas l'occurrence.
+
+---
+
+# ✅ 30/08/2026 (13h20) — ONGLET SOUVENIRS : PLUS DE PHOTO EN DOUBLE
+
+> « Sur la page souvenir faut pas mettre deux fois la photo en haut, choisis-en un et
+> garde-le. »
+
+Depuis que l'encart d'identité a été posé en tête des quatre onglets (02h30), l'onglet
+Souvenirs affichait **la même photo deux fois de suite** : l'encart, puis son grand visuel
+de tête historique (`souvin`, 4/5, effet Ken Burns).
+
+**Gardé : l'encart d'identité.** C'est celui que Blandine a demandé sur les quatre onglets
+et qualifié de « parfait » ; le garder préserve la cohérence entre Souvenirs, Photos,
+Performances et Vidéos.
+
+**Retiré : le grand visuel** (13 lignes).
+
+⚠️ **Ce qu'il portait** : les boutons « Ajuster la photo » et « Changer la photo » du
+cheval — à ne pas confondre avec le crayon de l'encart, qui change la photo du *palmarès*
+et n'est ouvert qu'aux modératrices. **Les deux restent accessibles par le MENU de la
+fiche**, vérifié. Rien n'est perdu, mais le chemin est plus long : si Blandine s'en sert
+souvent, il faudra les remettre sur l'encart.
+
+---
+
+# 🔴 30/08/2026 (13h10) — POURQUOI L'ENVOI DE VIDÉOS « BUGUE » DEPUIS DES SEMAINES : LE CHEMIN ÉTAIT MUET
+
+> « On la sélectionne, il se passe rien, ça ferme d'un coup sans raison en silence et
+> elle a pas été chargée. » — enregistrement d'écran fourni, dépouillé image par image :
+> sélection d'une vidéo de **1 min 42** depuis le sélecteur iOS, retour dans l'app, puis
+> **rien**. Aucune progression, aucun message, aucune erreur.
+
+## La cause — lue dans le code, pas devinée
+
+Le composeur de souvenirs (bouton « + Ajouter un souvenir » de la fiche cheval)
+publiait ainsi :
+
+```
+try {
+  var r = await posterCommentaire({...});
+  if (!r || !r.error) { ...succès... }
+} catch (e) { }          ← VIDE
+setEnvoi(false);
+```
+
+**Le cas d'erreur n'existait pas.** Quand `r.error` est renseigné, aucune branche ne
+s'exécute. Et une exception tombait dans un `catch` littéralement vide. Dans les deux cas :
+panneau refermé, `setEnvoi(false)`, écran silencieux.
+
+## Le point important
+
+Tout ce travail avait DÉJÀ été fait — **sur le chemin des albums**, les 26 et 27/08 :
+nom du fichier, raison réelle renvoyée par Supabase, message qui reste jusqu'à fermeture,
+et même la détection de l'angle mort « envoyé vers le stockage mais pas enregistré en base ».
+**Il n'a jamais été reporté sur le composeur de souvenirs.** D'où l'impression que le bug
+« revient » : ce chemin-là n'a jamais parlé.
+
+## Ce qui est livré
+
+- `r.error` traité, `catch` renseigné — plus aucun échec muet
+- message d'échec avec **nom du fichier et son poids en Mo**, et la raison brute de Supabase
+- il **RESTE à l'écran** jusqu'au bouton « Fermer » (règle du 28/08 : un bip de 3 s n'est
+  jamais lu au bon moment)
+- **le composeur n'est plus vidé** en cas d'échec : réessai sans tout refaire
+- 6 langues
+
+**Ce n'est pas un correctif de l'envoi.** La cause de l'échec de la vidéo de 1 min 42
+(poids, type, session) n'est PAS établie — je ne l'ai pas devinée. L'app la dira
+elle-même au prochain essai. Mesurer avant de patcher.
+
+## À FAIRE ENSUITE
+
+1. Blandine réessaie et envoie le message affiché → cause établie.
+2. **La compression avant envoi n'a toujours pas été codée** (décision du 28/08 : faire
+   les DEUX, relever la limite du bucket ET compresser). Seule la limite a été relevée —
+   c'est ce qui a fait exploser le poids des photos dans la nuit du 29 au 30.
+3. Bouton « + Ajouter une vidéo » de l'onglet Vidéos : il ne fait que basculer sur
+   l'onglet Photos (posé le 27/08 comme raccourci). Blandine veut un envoi **sur place**.
+4. Visionneuse : les boutons supprimer et vedette disparaissent pour une photo ouverte
+   depuis un ALBUM — `mediasInfo` n'est rempli que par la grille Galerie. Correctif
+   proposé (étendre `mediasInfo` aux albums), **en attente de validation**.
+
+---
+
+# ✅ 30/08/2026 (12h45) — IMPORT DE CRUMBLE REFUSÉ À TORT · VERROU D'IDENTITÉ CORRIGÉ
+
+> « Ce telemat est celui de "CRUIBHI N", mais la fiche ouverte est "Cruibhin alias
+> CRUMBLE". Import refusé. » — 25 résultats bloqués.
+
+## La cause
+
+Le verrou d'identité (posé le 26/08 après l'affaire Rizotto/Vallieres) normalise les deux
+noms puis vérifie que l'un contient l'autre. La normalisation remplace la ponctuation par
+des **espaces** et les conserve.
+
+Or **le PDF telemat avait extrait « CRUIBHI N »** — un espace parasite glissé avant la
+dernière lettre. La comparaison portait donc sur `"CRUIBHI N"` contre
+`"CRUIBHIN ALIAS CRUMBLE"` : aucune correspondance, alors que c'est le même cheval.
+
+Ce n'est pas le verrou qui était faux, c'est l'extraction du PDF qui est bruitée — même
+famille de problème que les caractères de contrôle refusés par Postgres le 28/08.
+
+## Le correctif
+
+La comparaison se fait maintenant **aussi sans aucun espace** : `CRUIBHIN` est bien
+contenu dans `CRUIBHINALIASCRUMBLE`. Le test espacé est conservé, on ajoute seulement une
+seconde chance.
+
+**Le verrou garde tout son sens** — vérifié par jeu d'essai :
+
+| Telemat | Fiche ouverte | Verdict |
+|---|---|---|
+| CRUIBHI N | Cruibhin alias CRUMBLE | ✅ accepté |
+| VALLIERES | Vallieres | ✅ accepté |
+| YUM ALIAS UMEA BORDERIE | Yum alias Umea Borderie | ✅ accepté |
+| RIZOTTO | Vallieres | ⛔ refusé |
+| CRUMBLE | Rizotto | ⛔ refusé |
+
+Le croisement qui avait motivé le verrou reste bloqué.
+
+---
+
+# ✅ 30/08/2026 (10h40) — ÉCURIE HYPE : PAGE DÉCALÉE, PASTILLES BLEUES, PROPRIÉTAIRE · ET LE MOT « CHEVAL »
+
+## 1. 🔴 La page arrivait zoomée et décalée à droite
+
+**Cause trouvée** : l'image du hero est en `transform: scale(1.12)` (effet de respiration),
+dans un conteneur `.ec2imgw` qui n'avait **aucun `overflow`**. L'image agrandie de 12 %
+débordait de 6 % à droite, ce débordement élargissait le document entier, et le navigateur
+affichait une page plus large que l'écran — d'où l'impression de zoom et le décalage. Les
+poussières lumineuses, animées en `translate3d`, ajoutaient au même débordement.
+
+**Correctif : `overflow: hidden` sur `.ec2imgw`.** C'est un conteneur ordinaire, pas
+`html`/`body` — la règle maison (« jamais `overflow-x: hidden` seul sur html/body ») n'est
+pas concernée. Vérifié : 0 `hidden` sans `clip` sur html/body.
+
+## 2. Les pastilles « + » bleues sur les photos sont retirées
+
+> « Les + en bleu dessus sur les photos des chevaux c'est quoi ? On peut les retirer ? »
+
+C'était un appel à une fonctionnalité **non ouverte** : au tap, il n'affichait que
+« Bientôt — ajoute-le à ton écurie 💎 ». Un bouton qui ne fait rien n'a rien à faire sur
+toutes les photos. Retiré. La règle CSS `.ec2plus` reste en place, inutilisée (0 usage).
+
+## 3. Le propriétaire s'affiche sur la carte
+
+> « Quand un cheval est créé on devrait voir le nom du cavalier propriétaire, par exemple
+> Crumble by Evan. »
+
+La ligne `l3` des cartes était vide. Elle affiche maintenant **« by <pseudo> »**. Les
+pseudos sont résolus en **une seule requête** `profiles(id, pseudo)` sur les `user_id`
+déjà présents dans `commList`, rejouée uniquement quand la liste change. Si le pseudo
+manque, la ligne reste vide — jamais de « by undefined ».
+
+## 4. Le texte d'histoire par défaut disait « est un — »
+
+> « C'est bien d'avoir retiré "monté par Blandine" mais fallait quand même laisser le mot
+> cheval. »
+
+Le repli sur « cheval » existait déjà… mais ne se déclenchait **jamais** : `raceTxt` vaut
+`—` (tiret cadratin) quand la race est inconnue, pas une chaîne vide — c'est la convention
+d'affichage du reste de la fiche. Le `||` ne voyait donc jamais une valeur fausse.
+Corrigé : le tiret est traité comme une absence.
+
+## Contrôles
+
+Hook de `GrilleSouvenirs` avant sortie anticipée ✓ · marqueurs (clip 1 · overscroll html 1 ·
+`hypeVerrouScroll` 5 · `hypeLibererPuitsTactiles` 4) · 0 `hidden` sans `clip` sur html/body ·
+`node --check` 18 blocs, 0 erreur.
+
+---
+
+# ✅ 30/08/2026 (09h15) — LA VIDÉO N'EST PLUS COUPÉE
+
+> « La vidéo est coupée en format, normalement je crois qu'elle est carrée non ? Tu peux
+> la descendre un peu, mets le titre au milieu, plus d'espace au-dessus et en dessous. »
+
+**Précision** : elle n'est pas carrée, elle fait **750 × 676** (recadrage anti-filigrane
+de cette nuit). Ce qui la coupait, c'était **ma** limite de 190 px de haut en
+`objectFit: cover`, posée à 02h45 pour respecter « pas plus grand que l'encart titre ».
+
+**Cette consigne est annulée** — elle produisait exactement le défaut signalé. La vidéo
+reprend le modèle de l'invitation du palmarès, déjà validé : centrée, `maxWidth: 280`,
+`height: auto`, **proportions d'origine respectées, plus rien de recadré**. Plus haute
+que l'encart titre, mais nettement plus étroite.
+
+- Titre **et** sous-titre centrés (le titre seul centré au-dessus d'un sous-titre à
+  gauche aurait été bancal).
+- Air : marge du bloc `38px / 40px`, 8 px sous le titre, **26 px** entre le sous-titre et
+  la vidéo — c'est ce qui la « descend ».
+
+**Titre changé** : « Son histoire commence ici » → **« Retrouve ses souvenirs ici »**
+(6 langues). Motif de Blandine : le mot « histoire » est déjà pris par la page Histoire
+du cheval, la confusion était réelle.
+
+## 🟠 À TRANCHER — le titre ne colle pas aux deux situations
+
+Le bloc mascotte s'affiche dans **deux cas opposés**, avec le même titre :
+
+| Situation | Ce qu'on voit | « Retrouve ses souvenirs ici » |
+|---|---|---|
+| Galerie **vide** | la vidéo s'affiche d'office | ❌ il n'y a encore **aucun** souvenir à retrouver |
+| Galerie **remplie** | la vidéo revient sur tap de « Revoir la petite vidéo ↻ » | ✅ juste |
+
+Le cas le plus fréquent est le premier, et c'est celui où le titre tombe à côté.
+
+**Piste proposée à Blandine (en attente de sa décision)** : deux titres selon l'état —
+un texte d'invitation quand la galerie est vide, « Retrouve ses souvenirs ici » quand elle
+est remplie. Le composant reçoit déjà `props.titre` et `props.sous`, donc **aucune
+refonte** : il suffit de les passer depuis l'écran fiche, qui connaît déjà `galVideCh`.
+Une dizaine de lignes, traductions comprises.
+
+**Ne rien coder avant son arbitrage.**
+
+---
+
+# ✅ 30/08/2026 (03h00) — BOUTON RETIRÉ DE LA VIDÉO · PASTILLES EN VERRE FUMÉ
+
+> « Le bouton ajouter, c'est pareil, rien à faire sur la vidéo. » · « Pour les boutons
+> nouvel album etc, on peut pas partir sur le bleu foncé fumé qu'on avait déjà utilisé
+> pour les comptes ? »
+
+- **`+ Ajouter` retiré du bloc mascotte.** La pastille sous la galerie fait déjà le
+  travail ; deux gestes pour la même chose sur le même écran, c'était un de trop.
+- **Les deux pastilles passent au « Fumé Turquoise »**, le style déjà défini pour les
+  écrans de compte : `linear-gradient(100deg, rgba(16,21,24,.86) 40%, rgba(32,217,245,.20) 100%)`,
+  bord `rgba(32,217,245,.32)`, `inset 0 1px 0 rgba(255,255,255,.09)` + ombre portée,
+  `backdrop-filter: blur(9px)`, texte `#E4F3F7`. Valeurs reprises **à l'identique** de
+  `styleFume`, pas réinventées. Padding 20 → 22 px pour compenser le fond plus dense.
+
+Contrôles : hook avant sortie anticipée ✓ · marqueurs (1 · 1 · 5 · 4) · `node --check`
+18 blocs, 0 erreur.
+
+---
+
 # ✅ 30/08/2026 (02h55) — LA MASCOTTE S'EFFACE QUAND SA MISSION EST FAITE
 
 > « Fais comme la vidéo des résultats : une fois que les gens ont mis des photos on la
