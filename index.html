@@ -34843,7 +34843,33 @@ function EcranCheval() {
   /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
      s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
   var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
-  var mmSt = React.useState(false); var revoirMascotte = mmSt[0], setRevoirMascotte = mmSt[1]; /* 30/08 02h55 : meme regle que la video d'import du palmares — l'invitation part quand sa mission est accomplie, une phrase discrete permet de la revoir */
+  var mmSt = React.useState(false); var revoirMascotte = mmSt[0], setRevoirMascotte = mmSt[1];
+  /* 30/08 19h30 — CHEMIN DIRECT D'ENVOI DEPUIS L'ONGLET VIDEOS (demande Blandine :
+     « le chemin est pas intuitif, on se retrouve sur une autre page qui propose de
+     re-cliquer »). Diagnostic de l'enregistrement d'ecran : l'ancien bouton
+     basculait sur l'onglet Photos et deposait le fichier dans le COMPOSEUR, qui vit
+     sur l'onglet Souvenirs — l'apercu et « Publier » s'affichaient sur un onglet
+     non regarde. Rien n'echouait : rien n'etait tente. Ici on envoie sur place. */
+  var vdIn = React.useRef(null);
+  var vdSt = React.useState(false); var vidEnvoi = vdSt[0], setVidEnvoi = vdSt[1];
+  var veSt = React.useState(null); var vidErr = veSt[0], setVidErr = veSt[1];
+  async function envoyerVideoDirecte(f) {
+    if (!f) return;
+    setVidErr(null); setVidEnvoi(true);
+    var poids = f.size ? (Math.round(f.size / 104857.6) / 10) + " Mo" : "";
+    try {
+      var r = await posterCommentaire({ cible: cibleCh, texte: null, fichierPhoto: f });
+      if (r && r.error) {
+        var m = String((r.error && (r.error.message || r.error.error_description)) || r.error || "");
+        setVidErr({ nom: f.name || "", poids: poids, msg: m || "raison inconnue" });
+      } else {
+        try { window.dispatchEvent(new Event("hype-souvenirs-maj")); } catch (eEv) { }
+      }
+    } catch (eV) {
+      setVidErr({ nom: f.name || "", poids: poids, msg: String((eV && eV.message) || eV || "raison inconnue") });
+    }
+    setVidEnvoi(false);
+  } /* 30/08 02h55 : meme regle que la video d'import du palmares — l'invitation part quand sa mission est accomplie, une phrase discrete permet de la revoir */
   function basculerVedette(url) {
     var lV = (vedettes || []).slice();
     var iV = lV.indexOf(url);
@@ -35707,7 +35733,21 @@ function EcranCheval() {
       panneau === "videos" ? h("div", null,
         encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos")),
         h("div", { style: { padding: "8px 16px 24px" } },
-        h("div", { role: "button", onClick: function () { setPanneau("photos"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", padding: "10px", borderRadius: 12, border: "1px dashed " + tA(0.4), color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen")), /* 27/08 : option d'ajout directe sur l'onglet Vidéos (demande Blandine) — ouvre Souvenirs, où vit déjà le vrai bouton d'envoi */
+        h("input", { ref: vdIn, type: "file", accept: "video/*", style: { display: "none" }, onChange: function (eVi) {
+          var fV2 = (eVi.target && eVi.target.files && eVi.target.files[0]) || null;
+          try { eVi.target.value = ""; } catch (eR2) { }
+          envoyerVideoDirecte(fV2);
+        } }),
+        h("div", { role: "button", onClick: function () { if (!vidEnvoi && vdIn.current) vdIn.current.click(); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", minHeight: 48, padding: "0 18px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: vidEnvoi ? "default" : "pointer", opacity: vidEnvoi ? 0.65 : 1 } },
+          vidEnvoi ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio in corso\u2026", "\u9001\u4fe1\u4e2d\u2026", "Wird gesendet\u2026")
+                   : ("+ " + T("Ajouter une vid\u00e9o", "Add a video", "A\u00f1adir un v\u00eddeo", "Aggiungi un video", "\u52d5\u753b\u3092\u8ffd\u52a0", "Video hinzuf\u00fcgen"))),
+        vidErr ? h("div", { style: { margin: "0 0 12px", padding: "12px 14px", borderRadius: 14, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.55)" } },
+          h("div", { style: { fontSize: 12.5, fontWeight: 800, color: "#FF9AA8", marginBottom: 5 } },
+            T("L'envoi a \u00e9chou\u00e9 :", "Upload failed:", "El env\u00edo ha fallado:", "Invio non riuscito:", "\u9001\u4fe1\u306b\u5931\u6557\u3057\u307e\u3057\u305f\uff1a", "Senden fehlgeschlagen:")),
+          h("div", { style: { fontSize: 12, color: "#FFD3D9", lineHeight: 1.55, wordBreak: "break-word" } },
+            (vidErr.nom ? (vidErr.nom + (vidErr.poids ? (" \u00b7 " + vidErr.poids) : "") + " \u2014 ") : "") + vidErr.msg),
+          h("div", { role: "button", onClick: function () { setVidErr(null); }, style: { marginTop: 9, display: "inline-block", padding: "7px 15px", borderRadius: 999, border: "1px solid rgba(255,154,168,0.5)", color: "#FF9AA8", fontSize: 11.5, fontWeight: 700, cursor: "pointer" } },
+            T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))) : null,
         (chVids && chVids.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
           chVids.map(function (vU, iV) {
             /* 02/08 : la vignette ouvre la visionneuse au lieu de lire la video dans sa case de
