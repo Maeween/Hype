@@ -10,6 +10,55 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (02h55) — LA MASCOTTE S'EFFACE QUAND SA MISSION EST FAITE
+
+> « Fais comme la vidéo des résultats : une fois que les gens ont mis des photos on la
+> retire, on laisse juste une petite phrase discrète pour la revoir si le cavalier le
+> souhaite. »
+
+**Application directe de la règle produit déjà validée** (globe depuis l'accueil, vidéo
+d'import du palmarès) : une invitation disparaît quand sa mission est accomplie, et la
+condition porte sur **LA DONNÉE** — ici « la galerie contient des photos » — **jamais sur
+"déjà vu"**.
+
+- Galerie vide → la vidéo s'affiche.
+- Galerie remplie → la vidéo disparaît, remplacée par une ligne centrée, discrète, en
+  Cormorant italique gris 45 % : **« Revoir la petite vidéo ↻ »**. Un tap la ramène.
+- Même style typographique que la ligne « Revoir la petite vidéo » du palmarès, pour que
+  les deux invitations se comportent pareil. Traduite en 6 langues (celle du palmarès est
+  restée en français en dur — **à harmoniser un jour**).
+
+Nouvel état `revoirMascotte` dans l'écran fiche. Aucun stockage : la phrase revient à
+chaque ouverture, elle ne « se souvient » de rien, conformément à la règle.
+
+---
+
+# ✅ 30/08/2026 (02h50) — MASCOTTE SOUS LA GALERIE, TEXTE AU-DESSUS, HAUTEUR BRIDÉE
+
+> « Remets la vidéo en dessous maintenant qu'on a la photo de Yum, et ne fais pas
+> l'encart de la vidéo plus grand que l'encart titre. Écris "son histoire commence
+> ici" plutôt au-dessus de la vidéo, pas dedans. Laisse bien de l'espace entre chaque
+> partie et chaque texte. »
+
+L'encart d'identité posé en tête de l'onglet donne déjà la photo du cheval : la
+mascotte n'a plus à ouvrir l'écran. Elle **redescend sous la galerie**.
+
+- **Texte sorti de la vidéo** : titre et sous-titre sont maintenant au-dessus, en clair,
+  plus d'incrustation ni de dégradé de lisibilité.
+- **Hauteur bridée à 190 px**, exactement celle de l'encart d'identité, comme demandé.
+  La vidéo est en `objectFit: cover` : elle remplit la largeur et se recadre en bandeau.
+  ⚠️ **Si Blandine préfère voir la vidéo entière**, il faut passer en `contain` — mais
+  elle deviendra alors étroite (190 × ~211 px). Un seul mot à changer.
+- **Traductions** : les deux phrases étaient DÉJÀ dans les 6 langues (fr/en/es/it/ja/de),
+  rien ne manquait. Le bouton « + Ajouter » l'est aussi désormais.
+- **Air** : marge du bloc `26px / 22px`, 6 px sous le titre, 14 px sous le sous-titre,
+  et l'encart d'identité gagne 18 px de marge basse.
+
+Contrôles : hook de `GrilleSouvenirs` toujours avant la première sortie anticipée
+(3651 < 3812) · marqueurs (1 · 1 · 5 · 4) · `node --check` 18 blocs, 0 erreur.
+
+---
+
 # ✅ 30/08/2026 (02h40) — VIDÉO DE LA MASCOTTE : FILIGRANE RETIRÉ
 
 > « Sur le fichier vidéo tu as laissé les chiffres des séquences qui auraient dû

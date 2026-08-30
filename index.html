@@ -32450,17 +32450,24 @@ function BlocSouvenirsVide(props) {
   var teinteCl = props.teinteCl || "#5FE9F0";
   var _e = React.useState(false), rate = _e[0], setRate = _e[1];
   if (rate) return null;
-  return h("div", { style: { margin: "8px 16px 18px", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)", background: "#04070A", position: "relative" } },
-    h("video", {
-      src: "images/hype-souvenirs-vide.mp4",
-      autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto",
-      onError: function () { setRate(true); },
-      style: { width: "100%", height: "auto", display: "block" }
-    }),
-    h("div", { style: { pointerEvents: "none", position: "absolute", left: 0, right: 0, bottom: 0, padding: "38px 16px 16px", background: "linear-gradient(180deg, rgba(4,7,10,0), rgba(4,7,10,0.88))" } },
-      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: "#F4F7FA" } }, props.titre || T("Son histoire commence ici", "Their story starts here", "Su historia empieza aquí", "La sua storia inizia qui", "物語はここから", "Seine Geschichte beginnt hier")),
-      h("div", { style: { fontSize: 11.5, color: "rgba(237,242,245,0.7)", marginTop: 4, lineHeight: 1.5 } }, props.sous || T("Ajoute une première photo pour ouvrir sa chronologie.", "Add a first photo to open their timeline.", "Añade una primera foto para abrir su cronología.", "Aggiungi una prima foto per aprire la sua cronologia.", "最初の写真を追加してください。", "Füge ein erstes Foto hinzu."))),
-    props.onAjouter ? h("button", { onClick: props.onAjouter, style: { position: "absolute", right: 14, top: 14, minHeight: 44, padding: "0 16px", borderRadius: 999, border: "1px solid " + teinteCl + "99", background: "rgba(4,7,10,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: teinteCl, fontSize: 12, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "+ " + T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen")) : null);
+  /* 30/08 02h45 (demande Blandine) : le TEXTE passe AU-DESSUS de la video, il
+     n'est plus incruste dedans. La video ne doit jamais etre plus haute que
+     l'encart d'identite de la page, d'ou HAUTEUR = 190, la meme. Espacement
+     genereux entre chaque partie. Les deux phrases sont dans les 6 langues. */
+  return h("div", { style: { margin: "26px 16px 22px" } },
+    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: "#F4F7FA", marginBottom: 6 } },
+      props.titre || T("Son histoire commence ici", "Their story starts here", "Su historia empieza aqu\u00ed", "La sua storia inizia qui", "\u7269\u8a9e\u306f\u3053\u3053\u304b\u3089", "Seine Geschichte beginnt hier")),
+    h("div", { style: { fontSize: 11.5, color: "rgba(237,242,245,0.7)", lineHeight: 1.55, marginBottom: 14 } },
+      props.sous || T("Ajoute une premi\u00e8re photo pour ouvrir sa chronologie.", "Add a first photo to open their timeline.", "A\u00f1ade una primera foto para abrir su cronolog\u00eda.", "Aggiungi una prima foto per aprire la sua cronologia.", "\u6700\u521d\u306e\u5199\u771f\u3092\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "F\u00fcge ein erstes Foto hinzu.")),
+    h("div", { style: { position: "relative", height: 190, borderRadius: 20, overflow: "hidden", border: "1px solid rgba(255,255,255,0.10)", background: "#04070A" } },
+      h("video", {
+        src: "images/hype-souvenirs-vide.mp4",
+        autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto",
+        onError: function () { setRate(true); },
+        style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }
+      }),
+      props.onAjouter ? h("button", { onClick: props.onAjouter, style: { position: "absolute", right: 14, top: 14, minHeight: 44, padding: "0 16px", borderRadius: 999, border: "1px solid " + teinteCl + "99", background: "rgba(4,7,10,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: teinteCl, fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
+        "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")) : null));
 }
 
 /* ===== MUR DE PUBLICATIONS (Hype) ===== */
@@ -34751,7 +34758,7 @@ function EcranCheval() {
   function encartIdentiteCh(titrePage) {
     var OR9 = "#D9A85C";
     var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh;
-            return h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
+            return h("div", { style: { position: "relative", margin: "4px 16px 18px", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
               photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 190, objectFit: "contain", objectPosition: "center", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
               (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
@@ -34764,6 +34771,7 @@ function EcranCheval() {
   /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
      s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
   var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
+  var mmSt = React.useState(false); var revoirMascotte = mmSt[0], setRevoirMascotte = mmSt[1]; /* 30/08 02h55 : meme regle que la video d'import du palmares — l'invitation part quand sa mission est accomplie, une phrase discrete permet de la revoir */
   function basculerVedette(url) {
     var lV = (vedettes || []).slice();
     var iV = lV.indexOf(url);
@@ -36061,11 +36069,6 @@ function EcranCheval() {
          deplace est repris tel quel, memes composants, memes reglages. */
       panneau === "photos" ? h("div", null,
         encartIdentiteCh(T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos")),
-        galVideCh ? h("div", { style: { margin: "0 0 6px" } },
-          h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () {
-            var fV = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
-            if (fV) { fV(); }
-          } })) : null,
         h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
@@ -36087,7 +36090,18 @@ function EcranCheval() {
             var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
-          } })),) : null,
+          } })),
+        /* 30/08 02h55 — L'INVITATION PART QUAND SA MISSION EST ACCOMPLIE.
+           Meme regle produit que la video d'import du palmares : la condition est
+           sur LA DONNEE (la galerie a des photos), jamais sur « deja vu ». Une
+           phrase discrete permet de la revoir. */
+        (galVideCh || revoirMascotte) ? h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () {
+          var fV = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
+          if (fV) { fV(); }
+        } })
+          : h("div", { style: { textAlign: "center", padding: "18px 16px 8px" } },
+              h("span", { onClick: function () { setRevoirMascotte(true); }, style: { fontSize: 12.5, color: "rgba(237,242,245,.45)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer", letterSpacing: ".02em" } },
+                T("Revoir la petite vid\u00e9o", "Watch the little video again", "Volver a ver el v\u00eddeo", "Rivedi il piccolo video", "\u3082\u3046\u4e00\u5ea6\u52d5\u753b\u3092\u898b\u308b", "Das kleine Video nochmal ansehen") + " \u21bb"))) : null,
       /* 29/08 (demande Blandine) : PAGE ACTUALITE. Le fil du cheval (MurHype) y est
          desormais rendu, en pleine page et non plus en rail compact. La carte de la
          grille est volontairement GRISEE « Prochainement » pour l'instant : la page
