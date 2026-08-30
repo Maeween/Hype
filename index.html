@@ -28916,8 +28916,8 @@ function EcranGuilde() {
        le nom du club reste lisible quelle que soit la photo envoyee.
        maxHeight 460 px pour qu'une photo verticale ne fasse pas un bandeau sans fin. */
     h("div", { style: { position: "relative", margin: "0 0 4px", background: "#000" } },
-      h("div", { style: { padding: "26px 34px 0" } },
-        h("img", { src: (banniere ? ("url(" + banniere + ")") : ("url(" + ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2) + ")")), alt: "", style: { display: "block", width: "100%", height: "auto", maxHeight: 460, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
+      h("div", { style: { padding: "calc(26px + env(safe-area-inset-top)) 34px 0" } }, /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
+        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 460, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
       h("div", { style: { padding: "16px 22px 14px", textAlign: "center" } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9" } }, monClub),
         h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
@@ -28925,7 +28925,7 @@ function EcranGuilde() {
         revendique ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 9, padding: "4px 12px", borderRadius: 999, border: "1px solid " + TURQ + "8C", background: "rgba(6,7,9,0.5)" } },
           h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2713"),
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6", "Offizieller Club"))) : null),
-      peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", right: 14, top: 14, width: 42, height: 42, borderRadius: "50%", border: "none", background: "rgba(6,7,9,0.6)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 4 } }, "\ud83d\udcf7") : null,
+      peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", right: 14, top: "calc(14px + env(safe-area-inset-top))", width: 42, height: 42, borderRadius: "50%", border: "none", background: "rgba(6,7,9,0.6)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 4 } }, "\ud83d\udcf7") : null,
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     /* 12/08 (114) : bandeau des stories. */
     (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "libre" }) : null,

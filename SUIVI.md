@@ -10,6 +10,191 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (22h00) — HALOS DES STORIES ATTÉNUÉS · `hype-stories.js`
+
+> « Diminue le halo, rends-le beaucoup plus discret, limite invisible, et plus sombre
+> autour des story. » Puis, après une première méprise de ma part : « pas sur les story à
+> la une, les halos des ronds des story. »
+
+**Ma méprise** : j'avais d'abord retouché l'IMAGE `Hype_mur_immersif_encarts_transparents.png`,
+croyant que le halo était celui des encarts du mur immersif. Ce n'était pas ça. Les trois
+variantes d'image produites ne servent pas — à jeter.
+
+## Ce qui a été fait, dans `hype-stories.js`
+
+Ces halos ne sont pas dans l'`index.html` : `BandeauStories`, `RailALaUne` et `MurImmersif`
+y sont seulement appelés. **Blandine a fourni le fichier depuis le dépôt** — même méthode
+que pour `hype-import-ffe.js` le 28/08. Seul le dépôt fait foi.
+
+| Élément | Avant | Après |
+|---|---|---|
+| Vignette **ronde** | `0 0 18px` opacité 0,32 | `0 0 6px` opacité **0,10** |
+| Vignette rectangulaire du même bandeau | `0 0 16px` 0,26 + inset 0,18 | `0 0 5px` **0,09** + inset **0,10** |
+| Liseré de la carte | `tA(0.72)` | `tA(0.34)` |
+| Fond du bandeau | (aucun) | `#030405`, plus sombre que le fond de page |
+
+Les vignettes déjà vues (`toutesVues`) n'avaient aucun halo : inchangé.
+
+🟥 **`RailALaUne` — le rail des à la une — n'est PAS touché**, conformément à sa précision.
+
+`node --check hype-stories.js` : 0 erreur.
+
+---
+
+# 🔴 30/08/2026 (21h45) — BANNIÈRE DU CLUB VIDE : `url(...)` DANS UN `src` D'IMAGE
+
+En passant la bannière en maquette B, j'ai recopié l'expression du fond CSS telle quelle
+dans le `src` d'une balise `img`. Elle produit `url(https://…)` — la syntaxe d'un **fond
+CSS**, pas l'adresse nue qu'attend une image. Résultat : carré vide avec un point
+d'interrogation.
+
+**Le plus grave n'est pas l'erreur, c'est la suite.** Je l'avais repérée moi-même, j'avais
+lancé la correction — et elle a **échoué en silence** (chaîne recherchée non trouvée, le
+message d'erreur noyé dans une sortie tronquée). J'ai enchaîné sans vérifier, et j'ai livré
+le fichier cassé.
+
+**Règle : après une correction, relire le résultat dans le fichier, pas la sortie de la
+commande.** Vérification faite ici : plus aucun `url(" + banniere` dans le code, le `src`
+vaut bien `banniere || <image par défaut>`.
+
+---
+
+# 🔴 30/08/2026 (21h40) — « POURQUOI QUE DES RÉSULTATS DE 2023 » — LE TRI CLIENT NE RÉPARAIT RIEN
+
+## La cause
+
+```
+.order("created_at", { ascending: false }).limit(24)
+```
+
+La requête demandait les **24 lignes importées le plus récemment**. Les derniers imports
+de Blandine portaient sur des concours de 2023 : le vivier entier était donc en 2023.
+
+Mon correctif de 20h55 triait bien par `date_epreuve` — **mais en JavaScript, après coup**.
+Il réorganisait un paquet déjà mal choisi.
+
+**Leçon : un tri côté client ne répare jamais un mauvais tri côté serveur. Il ne
+réorganise que ce que le serveur a bien voulu envoyer.**
+
+## Le correctif
+
+- tri **à la base** : `.order("date_epreuve", { ascending: false, nullsFirst: false })`,
+  puis `created_at` en second critère pour les lignes sans date ;
+- vivier porté de **24 à 200** lignes — nécessaire car le regroupement par épreuve réduit
+  beaucoup : 200 résultats peuvent ne donner qu'une trentaine de cartes.
+
+## Aussi
+
+Rail porté de **6 à 10 cartes** (demande de Blandine). Au-delà, le défilement horizontal
+devient interminable et le rail perd son rôle de vitrine.
+
+## Rappel de ce qui reste en attente
+
+Retirer la liste sous le rail et la remplacer par un lien suppose de **créer la page
+« tous les résultats du club »**, qui n'existe pas. Signalé à Blandine, non tranché.
+
+---
+
+# 🔴 30/08/2026 (21h00) — PAGE CLUB MORTE : J'AI ÉCRIT `moi` DANS UN ÉCRAN QUI NE L'A PAS
+
+Pile : `EcranGuilde@…:29102` → `map` → `@…:29119:19`. Ligne 29119, colonne 19 : le mot
+**`moi`**, dans le bouton d'épinglage livré à 20h40.
+
+**`EcranGuilde` n'a pas de variable `moi`.** Cette page utilise **`moiBanniere`**.
+ReferenceError au rendu, page entière morte.
+
+## Comment je me suis trompé
+
+J'ai « vérifié » la disponibilité de `moi` avec une recherche approximative — un
+`'var moi' in <fenêtre de 9000 caractères>` autour d'un autre repère, qui a répondu vrai
+parce que la fenêtre débordait sur un composant voisin. **Je n'ai pas délimité le
+composant.** `node --check` ne voit rien : la syntaxe est parfaite, c'est la portée qui est
+fausse.
+
+C'est la **troisième** fois en 24 h que je livre une régression qu'un contrôle syntaxique ne
+pouvait pas attraper (photos zoomées, hook après un `return`, et celle-ci).
+
+## Contrôle ajouté à la procédure de livraison
+
+Avant toute livraison touchant un composant : **délimiter le composant par comptage
+d'accolades**, puis compter chaque identifiant que le nouveau code référence à l'intérieur
+de ces bornes. Fait ici : `moiBanniere` 5 · `membres` 29 · `railClub` 5 · `epErr` 3 ·
+`basculerEpingle` 2 · `TURQL` 20 · `supa` 19. Aucun `moi` isolé restant (la seule
+occurrence est dans un commentaire).
+
+---
+
+# 🔴 30/08/2026 (20h55) — « ÇA C'EST PAS LES DERNIERS RÉSULTATS » — TRI FAUX, CORRIGÉ
+
+## Deux défauts cumulés
+
+**1. On triait sur la date d'IMPORT, pas sur la date du concours.** `__tri` valait
+`created_at` : deux résultats de 2019 importés hier passaient devant un concours de 2024
+importé l'an dernier. Corrigé : tri sur **`date_epreuve`**, repli sur `created_at` seulement
+si elle manque.
+
+**2. Les saisies manuelles étaient datées du 31 décembre de leur année.** Une entrée
+« 2026 » se retrouvait donc au **31/12/2026 — dans le futur** — et écrasait tout. C'est ce
+qui mettait « Prépa 75 », « Poney 3 » et « Poney 4 » en tête. Corrigé : la date est
+**plafonnée à aujourd'hui**.
+
+## Règle produit ajoutée par Blandine
+
+> « Les données rentrées à la main ne s'affichent que si pas de résultat officiel rentré. »
+
+Dès qu'**un seul** résultat importé existe pour le club, les saisies manuelles disparaissent
+du palmarès. Elles n'ont ni épreuve, ni partants, ni cavalier : elles faisaient des cartes
+pauvres au milieu des vraies. Elles restent affichées pour un club qui n'a encore rien
+importé.
+
+**Rien n'est supprimé en base** : filtrage à l'affichage, lecture seule.
+
+---
+
+# ✅ 30/08/2026 (20h40) — LE RAIL AUX COUPES SUR LE PALMARÈS DU CLUB
+
+> « Automatique, mais ajoute épinglage et mise en avant. »
+
+## Le rail
+
+Bande horizontale au-dessus du fil, une carte par résultat marquant, en verre fumé
+turquoise. Coupe 🏆🥈🥉 selon le rang, concours, épreuve, rang sur partants, et le
+cavalier — ou le cheval pour les résultats saisis à la main.
+
+**Rempli automatiquement**, avec les règles déjà dictées par Blandine pour les moments
+forts de la fiche cheval, réécrites ici à l'identique :
+titres (Open de France, championnats, finales) **>** niveau d'épreuve (Élite > 1 > 2 > 3)
+**>** partants **>** rang.
+
+Filtré au **podium seulement** : un rail de coupes qui montre des 12es n'a pas de sens.
+6 cartes maximum.
+
+## L'épinglage
+
+Une punaise 📌 sur chaque carte du fil, discrète quand elle est inactive. Un tap épingle,
+un autre désépingle. **Un résultat épinglé passe devant tout le reste** dans le tri — il ne
+remplace pas l'automatique, il le devance.
+
+🟥 **SQL À PASSER** : fichier `hype-epinglage.sql` livré avec. Il ajoute
+`resultats.epingle` (booléen, défaut false) et un index partiel.
+
+**Sans ce SQL, rien ne casse** : le rail reste entièrement automatique et le bouton
+affiche une erreur lisible. C'est délibéré — la lecture des épingles se fait par une
+**requête séparée et gardée**, jamais mêlée au select principal.
+
+⚠️ **Leçon appliquée** : ajouter `epingle` au select principal aurait fait échouer
+**toute** la requête tant que la colonne n'existe pas — exactement l'affaire `robe` qui a
+vidé l'Écurie Hype pendant trois jours. Vérifié à la livraison : le select principal est
+inchangé, `epingle` n'y figure pas.
+
+## Limite connue
+
+Les résultats **saisis à la main** (JSON `chevaux.palmares`) n'ont pas d'identifiant en
+base : ils ne peuvent pas être épinglés. Le bouton le dit clairement au lieu d'échouer en
+silence. Ils apparaissent quand même dans le rail si leur rang le justifie.
+
+---
+
 # 🔴 30/08/2026 (20h15) — LE PALMARÈS DU CLUB ATTRIBUAIT DE FAUX RÉSULTATS À BLANDINE
 
 > « Les résultats, que je sois première en épreuve poney c'est impossible, je suis la coach
