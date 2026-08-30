@@ -28712,7 +28712,7 @@ function EcranGuilde() {
          l inverse (rattacher un resultat de la table a un cheval precis). Ce point attend une
          decision de schema. */
       try {
-        var rs = await supa.from("resultats").select("id, user_id, cheval_id, concours, epreuve, partants, date_epreuve, cavalier, classement, photo_url, created_at, visible, quart") /* 30/08 : epreuve + partants + date ajoutes pour REGROUPER les classes du club sur une meme epreuve (choix de Blandine sur maquette) */.in("user_id", idsMembres).order("date_epreuve", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(200);
+        var rs = await supa.from("resultats").select("id, user_id, cheval_id, concours, epreuve, partants, date_epreuve, cavalier, classement, photo_url, created_at, visible, quart") /* 30/08 : epreuve + partants + date ajoutes pour REGROUPER les classes du club sur une meme epreuve (choix de Blandine sur maquette) */.in("user_id", idsMembres).order("date_epreuve", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(300); /* 30/08 : vivier 200 -> 300 (demande Blandine) */
         /* 30/08 (Blandine : « pourquoi que des resultats de 2023 ») — LA CAUSE ETAIT ICI.
            La requete triait par created_at (date d'IMPORT) et ne prenait que 24 lignes :
            la base renvoyait donc les 24 derniers IMPORTS, tous portant sur des concours
