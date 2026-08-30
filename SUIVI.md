@@ -10,6 +10,246 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (02h30) — L'ENCART D'IDENTITÉ SUR LES QUATRE ONGLETS
+
+> « Reproduis exactement l'encart que tu as sur la page performance pour les autres,
+> il est parfait. » Puis : « ajoute ton titre en bas de l'encart dans la même couleur
+> et type que Légende Hype », « retire Légende Hype », « les autres ont pas
+> forcément besoin de chiffre ».
+
+L'encart (photo entière à gauche en `contain`, couronne, nom en Cinzel, libellé
+turquoise en bas) était écrit **en dur** dans le panneau palmarès. Il devient une
+fonction de l'écran fiche : **`encartIdentiteCh(titrePage)`**.
+
+- `— LÉGENDE HYPE` **supprimé** de l'encart. À sa place, exactement au même endroit
+  et dans le même style (8,6 px, `letterSpacing .16em`, `teinteCl`, majuscules) :
+  **le titre de la page** — Performances · Souvenirs · Photos · Vidéos, traduit en 6
+  langues.
+- Encart posé en tête des onglets **Souvenirs**, **Photos** et **Vidéos**. Le panneau
+  Vidéos a gagné un `div` englobant : sa parenthèse de fermeture a été ajustée.
+- **Aucun chiffre ajouté** sur les trois autres onglets, comme demandé. Les quatre
+  chiffres (sorties/victoires/podiums/classés) restent propres à Performances ; les
+  statistiques de l'onglet Photos (souvenirs/saisons/concours) sont inchangées, elles
+  viennent de `ChronologieSouvenirs`.
+
+Le `✦ LÉGENDE HYPE` de la page Écurie Hype (badge des légendes) n'est pas touché —
+c'est un autre objet, il reste.
+
+## Contrôles
+
+Marqueurs au vert (1 · 1 · 5 · 4) · `node --check` sur les **18 blocs inline** : 0 erreur.
+
+---
+
+# 🔴 30/08/2026 (02h15) — RÉGRESSION DE MA PART : TOUTES LES PHOTOS DE CHEVAL ZOOMÉES · CORRIGÉE
+
+> Blandine : « toutes les photos de profil de chevaux ont été zoomées et sortent du
+> cadre maintenant ». **C'était mon bloc de réduction des photos, posé une heure plus tôt.**
+
+## La cause
+
+Ma réécriture demandait `?width=900&quality=70` — **sans hauteur et sans `resize`**.
+Supabase applique alors son mode par défaut, `cover`, et **recadre** au lieu de mettre
+à l'échelle. La photo revenait déjà rognée, puis le `objectFit: cover` de l'app
+recadrait une seconde fois par-dessus.
+
+`vignetteHype()` ne tombait pas dans le piège : elle passe TOUJOURS largeur **et**
+hauteur avec `resize=cover`, accordées à la boîte d'affichage. La mienne n'avait
+qu'une largeur.
+
+**Correctif : `&resize=contain` ajouté.** Mise à l'échelle sur la largeur, proportions
+conservées, aucun recadrage. L'allègement reste acquis. ⚠️ Un avertissement est posé
+dans le commentaire du bloc : **ne jamais retirer ce paramètre.**
+
+**Leçon** : une transformation d'image sans dimension complète n'est pas neutre — le
+défaut du prestataire décide à ta place. Toujours fournir `resize` explicitement.
+
+---
+
+# ✅ 30/08/2026 (02h20) — MASCOTTE EN HAUT · RESPIRATION
+
+> « Mets la vidéo plutôt au-dessus, espace tout plus, laisse respirer. »
+
+- `BlocSouvenirsVide` n'est plus rendu par `GrilleSouvenirs`. Celle-ci se contente de
+  **prévenir le parent** via une nouvelle prop `onVide` ; c'est l'écran de la fiche qui
+  pose le bloc **tout en haut de l'onglet Photos**, avant la chronologie.
+- Pastilles aérées : albums `4px 16px 2px` → `12px 16px 6px` · galerie `10px 16px 2px`
+  → `16px 16px 8px`.
+
+## Demandes NON traitées, à reprendre
+
+1. **Portrait de la tête du cheval à côté du titre** (page Photos et pages similaires :
+   Résultats, Vidéos…). Blandine : « t'as moyen d'extraire juste le portrait avec la
+   tête du cheval à chaque fois ? » **Réponse donnée : non, pas de façon fiable** — il
+   n'y a aucun détecteur de tête de cheval dans l'app. Piste réaliste proposée : une
+   vignette ronde en `objectPosition: center 25%` (cadrage haut, la tête est presque
+   toujours dans le tiers supérieur) + correction manuelle possible, comme pour
+   `photo_palmares`. **À valider avant de coder.**
+2. **Moments forts : trois fois la même photo.** Le vivier vient de
+   `chargerPhotosSouvenirs` (vedettes + mur + albums, 48 max, puis 9 gardés) et la carte
+   pioche en `(idx + offsetDuJour) % vivier.length` : **si le vivier a moins de 3 photos
+   distinctes, la rotation n'a rien à faire tourner** et la même image sort trois fois.
+   Demande de Blandine : ne jamais répéter, et **prioriser les photos des albums à la une
+   et de l'année du résultat**. L'année est disponible (`photo_dates`), l'album aussi.
+   ⚠️ **Le LIEU n'existe nulle part** : aucune colonne, aucun EXIF lu. Associer une photo
+   au concours par le lieu est impossible en l'état. **Chantier à part.**
+
+---
+
+# ✅ 30/08/2026 (02h00) — FIN DES CARRÉS POINTILLÉS · LA MASCOTTE PREND L'ÉCRAN VIDE
+
+> Blandine : « plutôt que de laisser des encarts vides à remplir, on pourrait pas
+> avoir juste un petit onglet avec + ajouter une photo ? Ça serait moins choquant
+> visuellement et ça prendrait moins de place. »
+
+Deux maquettes lui ont été montrées (page isolée `maquette-encarts.html`, NON
+poussée) : **option 1 — la pastille**, et **option 2 — l'encart rempli par la
+mascotte estompée**. Elle a choisi l'**option 1**.
+
+Argument qui a tranché : avec la vidéo de la mascotte juste en dessous, l'option 2
+faisait apparaître la mascotte **deux fois sur le même écran**.
+
+## Ce qui change — onglet Photos de la fiche cheval
+
+**Albums.** Le carré pointillé 112×112 « Nouvel album » est retiré de la rangée.
+Remplacé par une **pastille centrée** sous la rangée (`+ Nouvel album`, 44 px de
+haut, bord turquoise). Le `onClick` d'origine est repris tel quel — quota gratuit
+(1 album par cheval hors Premium) et ouverture du formulaire inchangés.
+
+**Galerie.** La case pointillée « Ajouter » ne fait **plus partie de la grille** :
+la galerie commence désormais par de vraies photos. Même pastille centrée sous la
+grille (`+ Ajouter une photo`).
+
+**Décision prise sans validation explicite, à confirmer** : la pastille remplace le
+carré **partout**, pas seulement quand c'est vide. La question avait été posée,
+Blandine a répondu « Option 1 » sans trancher ce point. Garder deux affordances
+différentes selon le remplissage aurait été pire. **Si elle veut le carré quand il
+y a déjà des photos, c'est une ligne à changer.**
+
+## La mascotte est enfin branchée
+
+`BlocSouvenirsVide` existait depuis le 29/08, complet, mais **appelé nulle part** —
+son commentaire disait « à poser là où Blandine le décidera ». Décidé : il s'affiche
+**sous la galerie quand le cheval n'a aucune photo** (`galerieVide`). Quand c'est
+vide, la grille elle-même n'est plus rendue du tout : il reste le titre, la
+pastille, et la mascotte.
+
+🟥 **FICHIER À POUSSER AVEC L'INDEX** : `images/hype-souvenirs-vide.mp4` (2,4 Mo,
+H.264 900×676, 15 s, muette). Vérifié ce soir : le fichier renvoyé par Blandine est
+**bit pour bit celui déjà recompressé** (md5 `99e67d90214839ed3fad9a6420956d0b`),
+rien à refaire. **Sans lui, le bloc se masque tout seul** (`onError`) et l'écran
+vide redevient vide — ce n'est pas un bug.
+
+## Contrôles
+
+Marqueurs au vert (clip !important 1 · html overscroll 1 · `hypeVerrouScroll` 5 ·
+`hypeLibererPuitsTactiles` 4) · 0 `hidden` sans `clip` · 0 `overscroll` sur `body` ·
+`node --check` sur les **18 blocs inline** : 0 erreur.
+
+---
+
+# ✅ 30/08/2026 (01h40) — LES NOTES D'ANNÉE DÉGAGENT · CORRECTION À LA PHOTO · HERO DU PALMARÈS EN ENTIER
+
+## 1. Les encarts « Corriger l'année de … » sont SUPPRIMÉS
+
+> Blandine : « les notes on peut s'éviter ça, on comprend rien et ça soûle ? Tant
+> pis pour les anciennes photos. »
+
+Ces boutons pointillés s'affichaient sous chaque année dès que le groupe contenait
+des dates approximatives — un par album, sans une ligne d'explication. Bloc retiré.
+Avec lui : l'état `editAlbum` et la fonction `appliquerAnneeAlbum()`, devenus morts
+(0 référence restante, vérifié).
+
+Les années approximatives ne sont plus rattrapées en masse. **Assumé** : « tant pis
+pour les anciennes ». La mention discrète `· N approx.` à côté du nombre de
+souvenirs est CONSERVÉE (elle n'a pas été remise en cause).
+
+## 2. À la place : « Changer l'année d'une photo »
+
+Demande : « prévois la possibilité de changer une image d'année si besoin ».
+
+**Un seul lien souligné, discret, par année, visible uniquement pour la
+propriétaire** (`props.proprio`). Tant qu'il n'est pas tapé, la grille se comporte
+exactement comme avant : un tap ouvre la photo.
+
+Une fois tapé, l'année passe en mode sélection : les photos non choisies passent à
+55 % d'opacité, un tap en désigne une (liseré turquoise), un champ année s'ouvre,
+`Valider` écrit `photo_dates` **pour cette seule URL** (`upsert`, `source: "manuel"`,
+15 juin — aucune fausse précision de jour). `Annuler` sort du mode.
+
+Nouveaux états : `modeAn` (l'année dont la grille est en sélection) et `photoSel`.
+Nouvelle fonction : `appliquerAnneePhoto(url, an)` — même table que l'ancienne
+correction par album, mais sur une photo.
+
+## 3. Page palmarès — la photo du haut n'est plus coupée
+
+> « laisse plus de place pour la photo du haut elle est coupée ou alors assure-toi
+> de la garder en entier et de la réduire »
+
+L'en-tête était en `objectFit: cover` sur un cadre de 58 % × 172 px : la photo
+remplissait et tout ce qui dépassait était perdu. **Option 1 choisie par Blandine** :
+`cover` → **`contain`**, hauteur 172 → **190 px**, `objectPosition` → `center`.
+
+Conséquence assumée, signalée avant le choix : une photo verticale s'affichera plus
+petite, avec du noir de part et d'autre. Plus rien n'est jamais coupé.
+
+## Contrôles
+
+Marqueurs au vert (clip !important 1 · html overscroll 1 · `hypeVerrouScroll` 5 ·
+`hypeLibererPuitsTactiles` 4) · 0 `hidden` sans `clip` · 0 `overscroll` sur `body` ·
+`node --check` sur les **18 blocs inline** : 0 erreur · `editAlbum` et
+`appliquerAnneeAlbum` : 0 occurrence.
+
+---
+
+# ✅ 30/08/2026 (01h20) — ÉCURIE HYPE : RESPIRATION · SOUVENIRS : GRILLE À 3 COLONNES
+
+Deux demandes de Blandine après vérification à l'écran que les 17 chevaux sont bien
+revenus (**15 chevaux + 2 poneys**).
+
+## 1. Écurie Hype — de l'air sous le bandeau de chiffres
+
+« tout est un peu entassé ». Il n'y avait que **18 px** entre les chiffres et la
+première rangée de chevaux (`.ec2stats` fermait à `padding: 4px 12px 2px`,
+`.ec2grid` ouvrait à `padding: 16px 14px 0`).
+
+Porté à **34 px** : bas du bandeau 2 → **10 px**, haut de la grille 16 → **24 px**.
+L'air est mis SOUS les chiffres, pas entre eux. Les deux classes ne servent nulle
+part ailleurs dans le fichier (vérifié : 1 seul usage chacune).
+
+## 2. Fiche cheval ▸ onglet Photos — vignettes trop petites
+
+« on voit rien, mets-les en minimum 3 par ligne ». La chronologie par année
+affichait **4 par ligne** en `gap: 3`.
+
+- grille : `repeat(4, 1fr)` → **`repeat(3, 1fr)`**, `gap` 3 → **5**
+- repli avant « voir tout » : `slice(0, 8)` → **`slice(0, 9)`** — 8 photos sur 3
+  colonnes donnaient une dernière rangée bancale (3+3+2) ; 9 font trois rangées pleines
+- vignette demandée à Supabase : `vignetteHype(p.url, 260, 195)` → **`(420, 315)`**,
+  sinon les images plus grandes seraient floues
+
+Le compteur « + N voir tout » se recalcule tout seul.
+
+## Question restée SANS RÉPONSE (à traiter)
+
+Blandine : « c'est quoi les trucs écrits ». Il s'agit des encarts pointillés
+**« Corriger l'année de "…" »**, sous les années. Réponse donnée à l'oral, pas de
+code touché : ils n'apparaissent que pour **la propriétaire** et seulement quand
+l'année du groupe est **approximative** (`grp.approx`) — c'est-à-dire quand la date
+n'a pas été lue dans l'EXIF de la photo mais déduite. Un tap ouvre un champ année
+qui écrit `photo_dates` pour **tout l'album** d'un coup (une sortie = un album =
+une période). **Ils ne sont pas expliqués à l'écran** : rien ne dit à quoi ils
+servent ni pourquoi ils sont là. À reprendre — leur libellé mérite une phrase
+d'introduction.
+
+## Contrôles
+
+Marqueurs au vert (clip !important 1 · html overscroll 1 · `hypeVerrouScroll` 5 ·
+`hypeLibererPuitsTactiles` 4) · 0 `hidden` sans `clip` · 0 `overscroll` sur `body` ·
+`node --check` sur les **18 blocs inline** : 0 erreur.
+
+---
+
 # ✅ 30/08/2026 (01h05) — PHOTOS LENTES PARTOUT : MESURÉ, PUIS CORRIGÉ EN UN SEUL BLOC
 
 > Blandine : « depuis plus tôt dans la soirée je recommence à ramer pour charger

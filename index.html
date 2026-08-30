@@ -34739,6 +34739,24 @@ function EcranCheval() {
     try { chargerVedettesSouvenirs(cibleCh).then(function (r) { if (aV) setVedettes((r && r.data && r.data.urls) || []); }).catch(function () { if (aV) setVedettes([]); }); } catch (eV) { setVedettes([]); }
     return function () { aV = false; };
   }, [id]);
+  /* 30/08 02h25 (demande Blandine : « reproduis exactement l'encart de la page
+     performance pour les autres ») — l'encart d'identite du palmares devient une
+     fonction reutilisable. Le libelle du bas n'est plus « Legende Hype » mais le
+     TITRE DE LA PAGE, meme couleur et meme graisse. Pas de chiffres ajoutes sur
+     les autres onglets : « les autres ont pas forcement besoin de chiffre ». */
+  function encartIdentiteCh(titrePage) {
+    var OR9 = "#D9A85C";
+    var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh;
+            return h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
+              photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 190, objectFit: "contain", objectPosition: "center", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
+              h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
+              (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
+              (moi && typeof estModerateurHype === "function" && estModerateurHype(moi) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: changerPhotoPalm, title: "Changer la photo (admin)", style: { position: "absolute", top: 9, right: 45, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u270E") : null, /* 25/08 : admins — changer la photo en ligne */
+              h("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", width: "52%" } },
+                h("div", { style: { color: OR9, fontSize: 13, lineHeight: 1, marginBottom: 5 } }, "\u265B"),
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 18, lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase" } }, c.nom),
+                h("div", { style: { marginTop: 6, fontSize: 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titrePage)));
+  }
   /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
      s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
   var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
@@ -35602,7 +35620,9 @@ function EcranCheval() {
       panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
-      panneau === "videos" ? h("div", { style: { padding: "8px 16px 24px" } },
+      panneau === "videos" ? h("div", null,
+        encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos")),
+        h("div", { style: { padding: "8px 16px 24px" } },
         h("div", { role: "button", onClick: function () { setPanneau("photos"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", padding: "10px", borderRadius: 12, border: "1px dashed " + tA(0.4), color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter une vidéo", "Add a video", "Añadir un vídeo", "Aggiungi un video", "動画を追加", "Video hinzufügen")), /* 27/08 : option d'ajout directe sur l'onglet Vidéos (demande Blandine) — ouvre Souvenirs, où vit déjà le vrai bouton d'envoi */
         (chVids && chVids.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } },
           chVids.map(function (vU, iV) {
@@ -35614,7 +35634,7 @@ function EcranCheval() {
               h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
                 h("div", { style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.65), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6")));
           }))
-        : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant.", "No videos yet.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos."))) : null,
+        : h("div", { className: "empty" }, T("Aucune vidéo pour l'instant.", "No videos yet.", "Aún sin vídeos.", "Ancora nessun video.", "まだ動画はありません。", "Noch keine Videos.")))) : null,
       panneau === "palmares" ? (palmTech ? h(React.Fragment, null, h("div", { role: "button", onClick: function () { setPalmTech(false); }, style: { margin: "6px 16px 2px", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, "\u2039 " + T("Revenir au palmar\u00e8s", "Back to the record", "Volver al palmar\u00e9s", "Torna al palmar\u00e8s", "\u623b\u308b", "Zur\u00fcck")),
         (function () { /* 26/08 : rien n est jamais efface — bouton pour TOUT revoir, proprietaire seulement */
           var nMq = ((resDb) || []).filter(function (rM) { return rM && rM.visible === false; }).length;
@@ -35911,16 +35931,8 @@ function EcranCheval() {
                   h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?"), f.cav ? " \u00b7 " : null, f.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, f.cav) : null)));
           }
           return h(React.Fragment, null,
-            /* — 1 · IDENTITÉ — */
-            h("div", { style: { position: "relative", margin: "4px 16px 0", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)" } },
-              photoPalmId ? h("img", { src: photoPalmId, style: { width: "58%", height: 190, objectFit: "contain", objectPosition: "center", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
-              h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 26%, rgba(4,7,10,.78) 55%, rgba(4,7,10,.96) 78%)" } }),
-              (typeof navigator !== "undefined" && navigator.share) ? h("button", { onClick: function () { try { navigator.share({ title: c.nom, url: (typeof location !== "undefined" ? location.href : "") }); } catch (e9s) { } }, style: { position: "absolute", top: 9, right: 9, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u2934\uFE0E") : null,
-              (moi && typeof estModerateurHype === "function" && estModerateurHype(moi) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: changerPhotoPalm, title: "Changer la photo (admin)", style: { position: "absolute", top: 9, right: 45, width: 30, height: 30, borderRadius: 10, border: "1px solid rgba(255,255,255,.14)", background: "rgba(6,9,12,.5)", color: "#C8CDD3", fontSize: 13, cursor: "pointer" } }, "\u270E") : null, /* 25/08 : admins — changer la photo en ligne */
-              h("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", width: "52%" } },
-                h("div", { style: { color: OR9, fontSize: 13, lineHeight: 1, marginBottom: 5 } }, "\u265B"),
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 18, lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase" } }, c.nom),
-                h("div", { style: { marginTop: 6, fontSize: 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "\u2014 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "HYPE\u30ec\u30b8\u30a7\u30f3\u30c9", "HYPE-LEGENDE")))),
+            /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
+            encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen")),
             /* — 2 · LE BANDEAU DES QUATRE CHIFFRES — */
             h("div", { style: { display: "flex", margin: "12px 16px 0", padding: "12px 6px 11px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
               [[nS, T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts")], [nV, T("victoires", "wins", "victorias", "vittorie", "\u512a\u52dd", "Siege")], [nP, T("podiums", "podiums", "podios", "podi", "\u8868\u5f70\u53f0", "Podien")], [nC, T("class\u00e9s", "placings", "clasificados", "piazzamenti", "\u5165\u8cde", "Platzierungen")]].map(function (cq, iq) {
@@ -35999,6 +36011,7 @@ function EcranCheval() {
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse")));
         })()))  : null,
       panneau === "souvenirs" ? h("div", null,
+        encartIdentiteCh(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa", "Erinnerungen")),
         h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
         h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
         h("i", { className: "souvLuciole", style: { left: "66%", top: "50%", animationDelay: "9s" } }),
@@ -36043,6 +36056,7 @@ function EcranCheval() {
          qui vivaient jusqu'ici sur la page Souvenirs. Rien n'est perdu : le bloc
          deplace est repris tel quel, memes composants, memes reglages. */
       panneau === "photos" ? h("div", null,
+        encartIdentiteCh(T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos")),
         galVideCh ? h("div", { style: { margin: "0 0 6px" } },
           h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () {
             var fV = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
