@@ -118,7 +118,7 @@ var HS_LIEU_MAX = 60;
    demandé « le plus gros possible » ; au-delà de 104 on ne voit plus qu'un
    rond et demi et le bandeau cesse d'être un bandeau.
    DÉDUCTION DE CLAUDE sur la valeur exacte — À VALIDER. */
-var HS_TAILLE_ROND = 132;
+var HS_TAILLE_ROND = 104 /* 30/08 (Blandine) : 132 -> 104 */;
 /* Sur MA COMMUNAUTÉ, le bandeau passe en RECTANGLES VERTICAUX (décision de
    Blandine du 12/08). Deux raisons, dans cet ordre :
    1. Un rond rogne énormément — encolure, cheval de profil, cavalier en pied :
@@ -131,8 +131,8 @@ var HS_TAILLE_ROND = 132;
       l'agenda du club. La page garde un seul rythme visuel au lieu d'en
       inventer un.
    Un seul composant, un réglage de forme : aucune divergence possible. */
-var HS_CARTE_L = 116;
-var HS_CARTE_H = 145;
+var HS_CARTE_L = 96 /* 30/08 : 116 -> 96 */;
+var HS_CARTE_H = 120 /* 30/08 : 145 -> 120 */;
 /* Nom de l'album de destination des souvenirs (DÉDUCTION DE CLAUDE — À VALIDER). */
 var HS_ALBUM_NOM = "Mes stories";
 
@@ -1999,11 +1999,11 @@ function BandeauStories(props) {
             position: "relative", width: CL, height: CH_, borderRadius: 16, overflow: "hidden", flex: "0 0 auto",
             background: "#111417", display: "flex", alignItems: "center", justifyContent: "center",
             border: "1px solid " + (g.toutesVues ? "rgba(255,255,255,0.14)" : tA(0.34)), /* 30/08 : liseré adouci avec le halo */
-            boxShadow: g.toutesVues ? "none" : ("0 0 5px " + tA(0.09) + ", inset 0 0 0 1px " + tA(0.10)) /* 30/08 : meme reduction que la vignette ronde */
+            boxShadow: g.toutesVues ? "none" : ("inset 0 0 0 1px " + tA(0.07)) /* 30/08 : halo externe supprimé, seul le liseré intérieur reste */ /* 30/08 : meme reduction que la vignette ronde */
           }
         }, photo);
       }
-      return h("div", { key: cle, style: { position: "relative", width: T, height: T, borderRadius: "50%", flex: "0 0 auto", padding: 3, background: g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")"), boxShadow: g.toutesVues ? "none" : ("0 0 6px " + tA(0.10)) /* 30/08 (Blandine : « diminue le halo des ronds des story, limite invisible ») : 18px/0.32 -> 6px/0.10 */ } },
+      return h("div", { key: cle, style: { position: "relative", width: T, height: T, borderRadius: "50%", flex: "0 0 auto", padding: 3, background: g.toutesVues ? "rgba(255,255,255,0.16)" : ("linear-gradient(135deg," + tn + "," + tnL + ")"), boxShadow: "none" /* 30/08 (Blandine : « finis, baisse le halo ») : plus AUCUN halo sur la vignette ronde. Le liseré en dégradé continue de distinguer une story non vue d'une story déjà vue — le signal n'est pas perdu. */ /* 30/08 (Blandine : « diminue le halo des ronds des story, limite invisible ») : 18px/0.32 -> 6px/0.10 */ } },
         h("div", { style: { width: "100%", height: "100%", borderRadius: "50%", overflow: "hidden", border: "2.5px solid #060709", background: "#111417", display: "flex", alignItems: "center", justifyContent: "center" } }, photo));
     }
 

@@ -10,6 +10,110 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (22h45) — HALO SUPPRIMÉ · LISTE RETIRÉE SOUS LE RAIL
+
+## Halo : plus rien
+
+> « Finis, baisse le halo. »
+
+| | Avant | Après |
+|---|---|---|
+| Vignette ronde | `0 0 3px` 0,05 | **aucun halo** |
+| Vignette carte | `0 0 3px` 0,05 + inset | **inset seul**, plus de halo externe |
+
+Le **liseré en dégradé** continue de distinguer une story non vue d'une story déjà vue :
+le signal n'est pas perdu, seul le rayonnement disparaît.
+
+`?v=` passé à **`20bo`** — obligatoire à chaque modification du module, cf. la règle du
+22h30.
+
+## La liste sous le rail est retirée
+
+> « Retire les résultats en dessous du rail, on fera la page plus tard, mets ça en suivi. »
+
+Il ne reste que le **rail aux coupes**. Le regroupement par épreuve, l'épinglage, le tri par
+date et le rattachement du cheval **restent calculés** : `railClub` alimente le rail,
+`resultatsClub` n'alimente plus rien à l'écran mais reste prêt pour la future page.
+
+⚠️ **Conséquence assumée** : le rail ne montre QUE les podiums. Un club sans podium n'a plus
+rien dans cette section — la phrase d'attente « les résultats des cavaliers du club
+apparaîtront ici » est conservée dans ce cas, pour ne jamais laisser une section nue.
+
+## 🟥 À FAIRE — LA PAGE « TOUS LES RÉSULTATS DU CLUB »
+
+**Décidé par Blandine, reporté volontairement.** Ce qu'elle suppose :
+
+1. un écran dédié listant TOUS les résultats du club, pas seulement les podiums ;
+2. le fil groupé par épreuve, tel qu'il vient d'être retiré de la page club — le code
+   existe dans l'historique de ce fichier, il n'est pas à réinventer ;
+3. un lien depuis le rail vers cette page ;
+4. la pagination : le vivier est plafonné à 200 lignes côté requête, ce sera insuffisant
+   pour un club actif.
+
+**Point de vigilance** : `resultatsClub` est toujours calculé et limité à 5 groupes
+(`slice(0, 5)`). Pour la page complète il faudra lever cette limite, pas la contourner.
+
+---
+
+# ✅ 30/08/2026 (22h30) — MUR IMMERSIF SUR LA PAGE CLUB · VIGNETTES RÉDUITES · CACHE FORCÉ
+
+## 🟥 Pourquoi le halo n'avait pas bougé
+
+L'index charge `hype-stories.js?v=20bm`. **Tant que ce numéro ne change pas, le navigateur
+ressert le fichier en cache** : le nouveau `hype-stories.js` était en ligne mais jamais
+téléchargé. Je l'avais annoncé sans le faire. Numéro passé à **`?v=20bn`**.
+
+**Règle : toute modification d'un fichier `.js` externe doit s'accompagner du changement
+de son `?v=` dans l'index. Sinon la livraison est invisible.**
+
+## Mur immersif sur la page club
+
+Vérifié dans le module avant de brancher : `MurImmersif` n'accepte que `userId`, et
+`hsListerALaUne` construit **toujours** une cible `cavalier:<id>` — **aucun mode club
+n'existe**. Or `RailALaUne` était appelé ici **sans aucun paramètre**, donc il affichait
+déjà les à la une du cavalier connecté. Le contenu est donc identique : seul l'habillage
+change. Repli sur le rail si le module n'est pas chargé.
+
+⚠️ **À savoir** : l'« À la une » de la page club n'a jamais été celle du club — c'est celle
+de la personne connectée. Un commentaire du 12/08 le signalait déjà comme « déduction à
+valider ». **Toujours pas tranché.**
+
+## Vignettes et halos
+
+| | Avant | Après |
+|---|---|---|
+| Rond | 132 px | **104 px** |
+| Carte (l × h) | 116 × 145 | **96 × 120** |
+| Halo rond | `0 0 6px` 0,10 | `0 0 3px` **0,05** |
+| Halo carte | `0 0 5px` 0,09 | `0 0 3px` **0,05** |
+
+## Toujours pas fait, et toujours pas tranché
+
+Retirer la liste sous le rail suppose la page « tous les résultats du club », qui n'existe
+pas. Signalé trois fois, jamais décidé.
+
+---
+
+# ✅ 30/08/2026 (22h15) — LE CHEVAL S'AFFICHE ENFIN SUR LES RÉSULTATS DU CLUB
+
+À l'écran : « HDL Jump Milly Platinium · **5e Evan Roux** · **9e Evan Roux** ». Ce n'était
+pas un doublon — Evan avait couru l'épreuve avec **deux chevaux**. Juste, mais illisible.
+
+**`resultats.cheval_id` existe.** La note du 02/08 (« la table resultats n'a pas de colonne
+cheval_id ») est **périmée** : la colonne a été ajoutée depuis, et d'autres requêtes de
+l'app la lisent déjà en production. Aucun changement de schéma nécessaire.
+
+Les chevaux du club sont **déjà chargés** plus haut dans la même fonction (`cv`) : on en
+tire une table `id → nom`, **sans requête supplémentaire**.
+
+Affichage : `Cavalier · Cheval` pour les résultats importés. Si le cheval est inconnu (fiche
+supprimée, cheval hors club), la ligne reste comme avant — jamais de séparateur orphelin.
+Les résultats saisis à la main continuent d'afficher le cheval seul, faute de cavalier.
+
+⚠️ La note du 02/08 dans ce même fichier reste à corriger : elle induit en erreur.
+
+---
+
 # ✅ 30/08/2026 (22h00) — HALOS DES STORIES ATTÉNUÉS · `hype-stories.js`
 
 > « Diminue le halo, rends-le beaucoup plus discret, limite invisible, et plus sombre
