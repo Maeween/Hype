@@ -28916,8 +28916,8 @@ function EcranGuilde() {
        le nom du club reste lisible quelle que soit la photo envoyee.
        maxHeight 460 px pour qu'une photo verticale ne fasse pas un bandeau sans fin. */
     h("div", { style: { position: "relative", margin: "0 0 4px", background: "#000" } },
-      h("div", { style: { padding: "calc(26px + env(safe-area-inset-top)) 34px 0" } }, /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
-        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 460, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
+      h("div", { style: { padding: "calc(16px + env(safe-area-inset-top)) 16px 0" } }, /* 30/08 (Blandine : « agrandis plus que ca ») : marges 34 -> 16 px */ /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
+        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 620, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
       h("div", { style: { padding: "16px 22px 14px", textAlign: "center" } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9" } }, monClub),
         h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
