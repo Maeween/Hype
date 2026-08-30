@@ -32466,8 +32466,9 @@ function BlocSouvenirsVide(props) {
         onError: function () { setRate(true); },
         style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center", display: "block" }
       }),
-      props.onAjouter ? h("button", { onClick: props.onAjouter, style: { position: "absolute", right: 14, top: 14, minHeight: 44, padding: "0 16px", borderRadius: 999, border: "1px solid " + teinteCl + "99", background: "rgba(4,7,10,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: teinteCl, fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
-        "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")) : null));
+      /* 30/08 03h00 (Blandine) : « le bouton ajouter, rien a faire sur la video ».
+         Retire — la pastille sous la galerie suffit. */
+      null));
 }
 
 /* ===== MUR DE PUBLICATIONS (Hype) ===== */
@@ -33119,7 +33120,7 @@ function AlbumsCheval(props) {
        album » est remplace par une PASTILLE discrete, centree sous la rangee.
        Moins de place, rien de vide a l'ecran, meme geste. */
     h("div", { style: { display: "flex", justifyContent: "center", padding: "12px 16px 6px" } },
-      h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid " + tA(0.55), background: tA(0.06), color: tnT, fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
+      h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
         h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
         h("span", null, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0")))),
     albOuvert ? h("div", { style: { margin: "12px 16px 0", padding: "13px 12px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(255,255,255,0.02)" } },
@@ -33760,7 +33761,7 @@ function GrilleSouvenirs(props) {
   return h("div", null,
     galerieVide ? null : h("div", { ref: grilleRef, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules),
     h("div", { style: { display: "flex", justifyContent: "center", padding: "16px 16px 8px" } },
-      h("div", { onClick: props.onAjouter, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid " + tA(0.55), background: tA(0.06), color: tnCl, fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
+      h("div", { onClick: props.onAjouter, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
         h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
         h("span", null, T("Ajouter une photo", "Add a photo", "A\u00f1adir una foto", "Aggiungi una foto", "\u5199\u771f\u3092\u8ffd\u52a0", "Foto hinzuf\u00fcgen")))),
     (toutVu && photos.length > LIM_SOUV) ? h("button", { onClick: function () { setToutVu(false); try { if (grilleRef.current && grilleRef.current.scrollIntoView) grilleRef.current.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eS) { } }, style: { display: "block", margin: "12px auto 0", padding: "9px 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("R\u00e9duire", "Collapse", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null);
