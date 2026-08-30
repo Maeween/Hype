@@ -10,6 +10,64 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (02h40) — VIDÉO DE LA MASCOTTE : FILIGRANE RETIRÉ
+
+> « Sur le fichier vidéo tu as laissé les chiffres des séquences qui auraient dû
+> sauter à gauche, tu sais régler ça ? »
+
+Le générateur avait incrusté son logo « Ai » + le numéro de séquence en haut à gauche,
+entre x=40 et x=145, y=5 à 75.
+
+**Effacement par reconstruction (`delogo`) essayé et ÉCARTÉ** : invisible sur les plans
+sombres du début, mais il laissait une **trace grise nette** sur le plan clair du mur de
+polaroids. Deux réglages de zone testés, même résultat.
+
+**Retenu : recadrage de 150 px à gauche** (`crop=750:676:150:0`). Le filigrane disparaît
+complètement, sans aucune retouche de pixels, sur **toute** la durée — vérifié sur une
+planche de 18 images réparties sur les 15 secondes. Bonus : le poney est mieux centré et
+le miroir de la coiffeuse est conservé.
+
+Nouveau format **750×676** (au lieu de 900×676). Sans conséquence : le bloc affiche la
+vidéo en `width: 100%` / `height: auto`. **2,14 Mo**, H.264, muette.
+
+Fichier à poser dans `images/hype-souvenirs-vide.mp4` — il remplace le précédent.
+
+---
+
+# 🔴 30/08/2026 (02h35) — CRASH « UN CAILLOU DANS LE SABOT » SUR LA FICHE CHEVAL · CORRIGÉ
+
+Deuxième régression de ma part dans la même nuit. Pile d'appel envoyée par Blandine :
+`updateWorkInProgressHook` → `updateEffect` → **`GrilleSouvenirs`**.
+
+## La cause
+
+En remontant la mascotte en haut de l'onglet Photos (02h20), j'ai ajouté dans
+`GrilleSouvenirs` un `React.useEffect` qui prévient le parent que la galerie est vide.
+**Je l'ai posé APRÈS le `return` anticipé de chargement** (`if (photos === null) return
+h("div", …, "…")`).
+
+Conséquence : au premier rendu le composant sort avant le hook, au rendu suivant il
+l'exécute. **Le nombre de hooks change entre deux rendus, React refuse et plante.**
+
+## Le correctif
+
+Le hook est remonté **au-dessus de toute sortie conditionnelle**, avec un marqueur 🟥
+dans le code. Il calcule lui-même `Array.isArray(photos) && photos.length === 0`, donc
+il tolère l'état `null` du chargement.
+
+Contrôle ajouté à la livraison : position du premier `return` anticipé de
+`GrilleSouvenirs` comparée à celle du dernier hook → **le hook doit être avant**.
+Vérifié : dernier hook à 3651, premier return à 3812.
+
+## RÈGLE À TENIR
+
+**Un hook ne se met JAMAIS après une sortie conditionnelle.** Cette page a livré deux
+régressions cette nuit (photos zoomées, puis ce crash) parce que j'ai enchaîné les
+livraisons à 2h du matin sans rendu réel — `node --check` ne voit ni l'un ni l'autre :
+la syntaxe était valide dans les deux cas.
+
+---
+
 # ✅ 30/08/2026 (02h30) — L'ENCART D'IDENTITÉ SUR LES QUATRE ONGLETS
 
 > « Reproduis exactement l'encart que tu as sur la page performance pour les autres,
