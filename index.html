@@ -28669,6 +28669,20 @@ function EcranGuilde() {
   var _cvc = React.useState(null), chevauxClub = _cvc[0], setChevauxClub = _cvc[1];
   var _lcl = React.useState({}), liensClub = _lcl[0], setLiensClub = _lcl[1]; /* etape 2 : nb de cavalieres par cheval */
   var _rsc = React.useState(null), resultatsClub = _rsc[0], setResultatsClub = _rsc[1];
+  /* 30/08 — le rail aux coupes et l'etat d'epinglage. railClub est CALCULE, jamais
+     saisi : il vient du classement automatique, l'epinglage ne fait que le devancer. */
+  var _rl = React.useState(null), railClub = _rl[0], setRailClub = _rl[1];
+  var _epE = React.useState(null), epErr = _epE[0], setEpErr = _epE[1];
+  async function basculerEpingle(gg) {
+    try {
+      var cible = (gg.places || []).filter(function (pp) { return pp.id && !pp.saisi; })[0];
+      if (!cible) { setEpErr(T("Ce r\u00e9sultat a \u00e9t\u00e9 saisi \u00e0 la main : il ne peut pas encore \u00eatre \u00e9pingl\u00e9.", "This result was typed by hand: it can't be pinned yet.", "Este resultado fue escrito a mano: a\u00fan no puede fijarse.", "Questo risultato \u00e8 stato inserito a mano: non pu\u00f2 ancora essere fissato.", "\u624b\u5165\u529b\u306e\u7d50\u679c\u306f\u307e\u3060\u56fa\u5b9a\u3067\u304d\u307e\u305b\u3093\u3002", "Dieses Ergebnis wurde manuell erfasst und kann noch nicht angeheftet werden.")); return; }
+      var r5 = await supa.from("resultats").update({ epingle: !gg.epingle }).eq("id", cible.id);
+      if (r5 && r5.error) { setEpErr(String(r5.error.message || r5.error)); return; }
+      setEpErr(null);
+      try { window.dispatchEvent(new Event("hype-souvenirs-maj")); } catch (eEv2) { }
+    } catch (eB) { setEpErr(String((eB && eB.message) || eB)); }
+  }
   React.useEffect(function () { (async function () {
     var idsMembres = [];
     try { if (typeof supa !== "undefined" && supa) {
@@ -28700,8 +28714,13 @@ function EcranGuilde() {
       try {
         var rs = await supa.from("resultats").select("id, user_id, concours, epreuve, partants, date_epreuve, cavalier, classement, photo_url, created_at, visible, quart") /* 30/08 : epreuve + partants + date ajoutes pour REGROUPER les classes du club sur une meme epreuve (choix de Blandine sur maquette) */.in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24);
         var fusionR = [];
+        /* 30/08 (Blandine : « ca c'est pas les derniers resultats ») — le tri se faisait
+           sur created_at, la date d'IMPORT, pas sur la date du concours. On trie
+           desormais sur date_epreuve quand elle existe, created_at sinon. */
         ((rs && rs.data) || []).filter(estResultatAffichableEnFil).forEach(function (rr) {
-          var tps = 0; try { tps = new Date(rr.created_at).getTime() || 0; } catch (eT0) { }
+          var tps = 0;
+          try { if (rr.date_epreuve) tps = new Date(rr.date_epreuve).getTime() || 0; } catch (eT1) { }
+          if (!tps) { try { tps = new Date(rr.created_at).getTime() || 0; } catch (eT0) { } }
           fusionR.push(Object.assign({}, rr, { __tri: tps }));
         });
         try {
@@ -28710,10 +28729,17 @@ function EcranGuilde() {
             (((pl && pl.length) ? pl : [])).forEach(function (pr, iPr) {
               if (!pr || !pr.event) return;
               var an = parseInt(pr.annee, 10);
-              fusionR.push({ id: "pl-" + chC.id + "-" + iPr, user_id: chC.user_id, concours: pr.event, classement: pr.rang || "", photo_url: null, created_at: null, dateLabel: String(pr.annee || ""), cheval: chC.nom || "", __saisi: true, __tri: (an ? Date.UTC(an, 11, 31) : 0) }); /* 30/08 : __saisi marque les resultats ecrits a la main sur une fiche cheval — ils ne portent AUCUN nom de cavalier, on ne doit donc jamais leur en inventer un */
+              fusionR.push({ id: "pl-" + chC.id + "-" + iPr, user_id: chC.user_id, concours: pr.event, classement: pr.rang || "", photo_url: null, created_at: null, dateLabel: String(pr.annee || ""), cheval: chC.nom || "", __saisi: true, __tri: (an ? Math.min(Date.UTC(an, 11, 31), Date.now()) : 0) }); /* 30/08 : plafonne a aujourd hui — une saisie « 2026 » etait datee du 31/12/2026 et passait devant tous les vrais resultats */ /* 30/08 : __saisi marque les resultats ecrits a la main sur une fiche cheval — ils ne portent AUCUN nom de cavalier, on ne doit donc jamais leur en inventer un */
             });
           });
         } catch (ePl) { }
+        /* 30/08 (regle de Blandine) : « les donnees rentrees a la main ne s'affichent
+           que si pas de resultat officiel rentre ». Des qu'un seul resultat importe
+           existe pour le club, les saisies manuelles disparaissent du palmares — elles
+           n'ont ni epreuve, ni partants, ni cavalier, et faisaient des cartes pauvres
+           au milieu des vraies. Rien n'est supprime en base : lecture seule. */
+        var aOfficiel = fusionR.some(function (x9) { return !x9.__saisi; });
+        if (aOfficiel) fusionR = fusionR.filter(function (x9) { return !x9.__saisi; });
         fusionR.sort(function (aF, bF) { return (bF.__tri || 0) - (aF.__tri || 0); });
         /* 30/08 — REGROUPEMENT PAR EPREUVE (demande Blandine : « s'il y a plusieurs
            classes ça affiche tous les classements sur la meme ligne ? genre 1er Liam,
@@ -28733,13 +28759,48 @@ function EcranGuilde() {
           if (!gg.partants && rr.partants) gg.partants = rr.partants;
           if (!gg.photo_url && rr.photo_url) gg.photo_url = rr.photo_url;
           var rangG = parseInt(String(rr.classement || "").match(/\d+/), 10) || 0;
-          gg.places.push({ rang: rangG, brut: rr.classement || "", user_id: rr.user_id, cavalier: rr.cavalier || "", cheval: rr.cheval || "", saisi: !!rr.__saisi, quart: rr.quart });
+          gg.places.push({ id: rr.id, rang: rangG, brut: rr.classement || "", user_id: rr.user_id, cavalier: rr.cavalier || "", cheval: rr.cheval || "", saisi: !!rr.__saisi, quart: rr.quart });
         });
         var groupes = ordreG.map(function (k2) { return grp[k2]; });
         groupes.forEach(function (gg) {
           gg.places.sort(function (a2, b2) { return (a2.rang || 999) - (b2.rang || 999); });
           var vusP = {}; gg.places = gg.places.filter(function (pp) { var k3 = pp.rang + "|" + (pp.user_id || pp.cavalier); if (vusP[k3]) return false; vusP[k3] = true; return true; });
         });
+        /* 30/08 — LE RAIL AUX COUPES. Classement AUTOMATIQUE, memes regles que les
+           moments forts de la fiche cheval, dictees par Blandine : les concours a
+           TITRES d'abord, puis le NIVEAU d'epreuve, puis les PARTANTS, puis le rang.
+           L'EPINGLAGE passe devant tout le reste. */
+        function poidsTitreG(g2) {
+          var tT = ((g2.concours || "") + " " + (g2.epreuve || "")).toLowerCase();
+          if (/open de france|championnat|\bchpt?\b|finale|coupe de france|crit\u00e9rium|criterium/.test(tT)) return 3;
+          if (/international|salon|grand prix|gp\b/.test(tT)) return 2;
+          return 1;
+        }
+        function poidsNiveauG(g2) {
+          var eN = (g2.epreuve || "").toLowerCase();
+          if (/\u00e9lite|elite/.test(eN)) return 5;
+          var mN = eN.match(/\b([1-4])\b/);
+          return mN ? (5 - Number(mN[1])) : 0;
+        }
+        function meilleurRangG(g2) { var r2 = 99; (g2.places || []).forEach(function (pp) { if (pp.rang && pp.rang < r2) r2 = pp.rang; }); return r2; }
+        /* Les epingles vivent dans resultats.epingle. La colonne peut ne pas exister
+           encore : requete SEPAREE et gardee, jamais melangee au select principal —
+           une colonne absente ferait echouer TOUTE la requete (lecon du 30/08, cf.
+           l'affaire `robe` qui a vide l'Ecurie Hype pendant trois jours). */
+        var idsEpingles = {};
+        try {
+          var rEp = await supa.from("resultats").select("id").in("user_id", idsMembres).eq("epingle", true).limit(50);
+          if (rEp && rEp.data) rEp.data.forEach(function (x) { idsEpingles[x.id] = true; });
+        } catch (eEp) { }
+        groupes.forEach(function (g2) {
+          g2.epingle = (g2.places || []).some(function (pp) { return pp.id && idsEpingles[pp.id]; });
+          g2.__score = [g2.epingle ? 1 : 0, poidsTitreG(g2), poidsNiveauG(g2), Number(g2.partants || 0), 100 - meilleurRangG(g2)];
+        });
+        var railG = groupes.slice().sort(function (x2, y2) {
+          for (var k4 = 0; k4 < x2.__score.length; k4++) { if (y2.__score[k4] !== x2.__score[k4]) return y2.__score[k4] - x2.__score[k4]; }
+          return 0;
+        }).filter(function (g2) { return meilleurRangG(g2) <= 3; }).slice(0, 6);
+        setRailClub(railG);
         if (groupes.length) setResultatsClub(groupes.slice(0, 5)); /* 30/08 (Blandine) : 5 derniers, plus 8 */
       } catch (eRs) { }
     }
@@ -29010,6 +29071,28 @@ function EcranGuilde() {
       h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
         h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Palmar\u00e8s du club", "Club record", "Palmar\u00e9s del club", "Palmar\u00e8s del club", "\u30af\u30e9\u30d6\u306e\u6226\u7e3e")),
         (resultatsClub && resultatsClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, resultatsClub.length) : null),
+      /* 30/08 — LE RAIL AUX COUPES, au-dessus du fil. Rempli AUTOMATIQUEMENT par les
+         regles de Blandine (titres > niveau > partants > rang) ; un resultat epingle
+         passe devant. Podium seulement : un rail de coupes ne montre pas des 12es. */
+      (railClub && railClub.length) ? h("div", { style: { display: "flex", gap: 10, overflowX: "auto", padding: "0 0 10px", marginBottom: 4, WebkitOverflowScrolling: "touch" }, "data-hscroll": "1" },
+        railClub.map(function (gr, iR) {
+          var meilleur = (gr.places || []).slice().sort(function (a5, b5) { return (a5.rang || 99) - (b5.rang || 99); })[0] || {};
+          var coup = meilleur.rang === 1 ? "\ud83c\udfc6" : meilleur.rang === 2 ? "\ud83e\udd48" : "\ud83e\udd49";
+          var qui = meilleur.saisi ? (meilleur.cavalier || meilleur.cheval || "") : (meilleur.cavalier || (((membres || []).filter(function (p6) { return p6.id === meilleur.user_id; })[0] || {}).pseudo) || "");
+          return h("div", { key: "rl" + iR, style: { flex: "0 0 168px", padding: "13px 14px", borderRadius: 14, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)" } },
+            h("div", { style: { display: "flex", alignItems: "center", gap: 6 } },
+              h("span", { style: { fontSize: 19, lineHeight: 1 } }, coup),
+              gr.epingle ? h("span", { style: { fontSize: 11 } }, "\ud83d\udccc") : null,
+              gr.an ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: TURQL, letterSpacing: ".12em", fontFamily: M } }, gr.an) : null),
+            h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F1F6F8", marginTop: 8, lineHeight: 1.3 } }, gr.concours || "\u2014"),
+            gr.epreuve ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: M, marginTop: 2, lineHeight: 1.35 } }, gr.epreuve) : null,
+            h("div", { style: { fontSize: 10, color: "#E4EAEE", fontFamily: M, marginTop: 6 } },
+              (meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e") + (gr.partants ? (" / " + gr.partants) : "")) : "") + (qui ? (" \u00b7 " + qui) : "")));
+        })) : null,
+      epErr ? h("div", { style: { margin: "0 0 10px", padding: "10px 13px", borderRadius: 12, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.5)", fontSize: 11.5, color: "#FFD3D9", fontFamily: M, lineHeight: 1.5 } },
+        epErr,
+        h("div", { role: "button", onClick: function () { setEpErr(null); }, style: { marginTop: 7, display: "inline-block", padding: "6px 13px", borderRadius: 999, border: "1px solid rgba(255,154,168,0.5)", color: "#FF9AA8", fontSize: 11, fontWeight: 700, cursor: "pointer" } },
+          T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))) : null,
       /* 30/08 — PALMARES DU CLUB, FIL GROUPE PAR EPREUVE, ARDOISE EN FUME TURQUOISE.
          Maquette validee par Blandine. Une carte par epreuve, tous les classes du club
          alignes dessous. Le verre fume reprend a l'identique le style des boutons
@@ -29031,7 +29114,9 @@ function EcranGuilde() {
           if (gg.epreuve) sousG.push(String(gg.epreuve));
           if (gg.partants) sousG.push(gg.partants + " " + T("partants", "starters", "participantes", "partenti", "\u51fa\u5834", "Starter"));
           return h("div", { key: gg.cle || iG, style: { margin: "0 0 12px", padding: "15px 16px", borderRadius: 14, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)" } },
-            gg.an ? h("div", { style: { fontSize: 9, color: TURQL, letterSpacing: ".15em", fontFamily: M } }, gg.an) : null,
+            h("div", { style: { display: "flex", alignItems: "center", gap: 8 } },
+              gg.an ? h("div", { style: { fontSize: 9, color: TURQL, letterSpacing: ".15em", fontFamily: M } }, gg.an) : null,
+              (moi ? h("div", { role: "button", onClick: function () { basculerEpingle(gg); }, title: T("\u00c9pingler", "Pin", "Fijar", "Fissa", "\u56fa\u5b9a", "Anheften"), style: { marginLeft: "auto", minWidth: 44, minHeight: 44, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, opacity: gg.epingle ? 1 : 0.32, cursor: "pointer" } }, "\ud83d\udccc") : null)),
             h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 13.5, fontWeight: 700, color: "#F1F6F8", marginTop: 3, lineHeight: 1.3 } }, gg.concours || "\u2014"),
             sousG.length ? h("div", { style: { fontSize: 10.5, color: "#A9B2BA", fontFamily: M, marginTop: 2 } }, sousG.join(" \u00b7 ")) : null,
             h("div", { style: { height: 1, background: "rgba(32,217,245,0.18)", margin: "11px 0" } }),
