@@ -28712,7 +28712,15 @@ function EcranGuilde() {
          l inverse (rattacher un resultat de la table a un cheval precis). Ce point attend une
          decision de schema. */
       try {
-        var rs = await supa.from("resultats").select("id, user_id, concours, epreuve, partants, date_epreuve, cavalier, classement, photo_url, created_at, visible, quart") /* 30/08 : epreuve + partants + date ajoutes pour REGROUPER les classes du club sur une meme epreuve (choix de Blandine sur maquette) */.in("user_id", idsMembres).order("created_at", { ascending: false }).limit(24);
+        var rs = await supa.from("resultats").select("id, user_id, concours, epreuve, partants, date_epreuve, cavalier, classement, photo_url, created_at, visible, quart") /* 30/08 : epreuve + partants + date ajoutes pour REGROUPER les classes du club sur une meme epreuve (choix de Blandine sur maquette) */.in("user_id", idsMembres).order("date_epreuve", { ascending: false, nullsFirst: false }).order("created_at", { ascending: false }).limit(200);
+        /* 30/08 (Blandine : « pourquoi que des resultats de 2023 ») — LA CAUSE ETAIT ICI.
+           La requete triait par created_at (date d'IMPORT) et ne prenait que 24 lignes :
+           la base renvoyait donc les 24 derniers IMPORTS, tous portant sur des concours
+           2023. Mon tri par date reelle, fait ensuite en JavaScript, n'avait plus que du
+           2023 a classer. Desormais c'est la BASE qui trie par date_epreuve, et le vivier
+           passe a 200 lignes — necessaire car le regroupement par epreuve reduit beaucoup.
+           Lecon : un tri cote client ne repare jamais un mauvais tri cote serveur, il ne
+           reorganise que ce que le serveur a bien voulu envoyer. */
         var fusionR = [];
         /* 30/08 (Blandine : « ca c'est pas les derniers resultats ») — le tri se faisait
            sur created_at, la date d'IMPORT, pas sur la date du concours. On trie
@@ -28799,7 +28807,7 @@ function EcranGuilde() {
         var railG = groupes.slice().sort(function (x2, y2) {
           for (var k4 = 0; k4 < x2.__score.length; k4++) { if (y2.__score[k4] !== x2.__score[k4]) return y2.__score[k4] - x2.__score[k4]; }
           return 0;
-        }).filter(function (g2) { return meilleurRangG(g2) <= 3; }).slice(0, 6);
+        }).filter(function (g2) { return meilleurRangG(g2) <= 3; }).slice(0, 10); /* 30/08 : 10 cartes max dans le rail (etait 6) — au-dela le defilement horizontal devient interminable */
         setRailClub(railG);
         if (groupes.length) setResultatsClub(groupes.slice(0, 5)); /* 30/08 (Blandine) : 5 derniers, plus 8 */
       } catch (eRs) { }
@@ -28900,18 +28908,24 @@ function EcranGuilde() {
   }
   function statMini(v, l, col) { return h("div", { style: { flex: 1, textAlign: "center", minWidth: 0 } }, h("div", { style: { fontFamily: C, fontSize: 19, fontWeight: 700, color: col || "#EDF2F5" } }, v), h("div", { style: { fontSize: 9, letterSpacing: 0.8, textTransform: "uppercase", color: "#8A929C", marginTop: 3, fontFamily: M } }, l)); }
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
-    h("div", { style: { position: "relative", margin: "0 0 4px", height: "clamp(360px, 58vh, 500px)", overflow: "hidden" } },
-      h("div", { style: { position: "absolute", inset: 0, background: (banniere ? ("url(" + banniere + ")") : ("url(" + ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2) + ")")) + " center/cover no-repeat" } }),
-      h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,8,10,0.25) 0%, rgba(7,8,10,0.05) 45%, rgba(7,8,10,0.92) 100%)" } }),
-      h("div", { style: { position: "absolute", left: 18, right: 18, bottom: 14 } },
-        h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 10 } },
-          h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9", textShadow: "0 2px 14px rgba(0,0,0,0.7)", minWidth: 0 } }, monClub),
-          h("div", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", textShadow: "0 1px 8px rgba(0,0,0,0.7)", whiteSpace: "nowrap" } }, maG.membres + " " + T("membres", "members", "miembros", "membri", "\u30e1\u30f3\u30d0\u30fc"))),
-        villeClub ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 600, letterSpacing: 0.8, color: "rgba(234,247,250,0.82)", marginTop: 3, textShadow: "0 1px 8px rgba(0,0,0,0.7)" } }, "\uD83D\uDCCD " + villeClub) : null,
-        revendique ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 7, padding: "4px 12px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(9,13,17,0.6)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)" } },
-          h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "inline-flex", alignItems: "center", justifyContent: "center", lineHeight: 1 } }, "\u2713"),
-          h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6"))) : null),
-      peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", right: 12, width: 36, height: 36, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, "\uD83D\uDCF7") : null,
+    /* 30/08 (choix de Blandine, maquette B) — LA BANNIERE N'EST PLUS RECADREE.
+       Avant : un bloc de hauteur fixe en `center/cover`, donc la photo etait
+       rognee en haut, en bas et sur les cotes. Desormais la photo est affichee
+       ENTIERE, reduite, centree, avec du noir sur les QUATRE cotes (marges 34 px
+       laterales, 26 px en haut), coins arrondis 14 px. Le texte passe DESSOUS :
+       le nom du club reste lisible quelle que soit la photo envoyee.
+       maxHeight 460 px pour qu'une photo verticale ne fasse pas un bandeau sans fin. */
+    h("div", { style: { position: "relative", margin: "0 0 4px", background: "#000" } },
+      h("div", { style: { padding: "26px 34px 0" } },
+        h("img", { src: (banniere ? ("url(" + banniere + ")") : ("url(" + ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2) + ")")), alt: "", style: { display: "block", width: "100%", height: "auto", maxHeight: 460, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
+      h("div", { style: { padding: "16px 22px 14px", textAlign: "center" } },
+        h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9" } }, monClub),
+        h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
+          (villeClub ? ("\ud83d\udccd " + villeClub + " \u00b7 ") : "") + maG.membres + " " + T("membres", "members", "miembros", "membri", "\u30e1\u30f3\u30d0\u30fc", "Mitglieder")),
+        revendique ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 9, padding: "4px 12px", borderRadius: 999, border: "1px solid " + TURQ + "8C", background: "rgba(6,7,9,0.5)" } },
+          h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2713"),
+          h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6", "Offizieller Club"))) : null),
+      peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", right: 14, top: 14, width: 42, height: 42, borderRadius: "50%", border: "none", background: "rgba(6,7,9,0.6)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 4 } }, "\ud83d\udcf7") : null,
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     /* 12/08 (114) : bandeau des stories. */
     (typeof window !== "undefined" && window.BandeauStories) ? h(window.BandeauStories, { forme: "libre" }) : null,
