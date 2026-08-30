@@ -28639,7 +28639,17 @@ function EcranGuilde() {
        donc jamais reprise depuis sa source, seulement posee depuis un fichier
        neuf. On garde l original pour que le jour ou ce bouton existe, et pour
        l unification des six appels en une fonction commune, la brique soit la. */
-    hypeRecadrer(f, 16 / 10, { teinte: TURQ }).then(function (res) {
+    /* 30/08 (Blandine, option 2) — PLUS AUCUN RECADRAGE A L'ENVOI. La banniere
+       etait forcee en 16:10 par `hypeRecadrer(f, 16/10, …)` : une photo verticale
+       etait rognee AVANT enregistrement, et plus aucun reglage d'affichage ne
+       pouvait recuperer ce qui avait ete jete. Elle part desormais dans ses
+       proportions d'origine, comme les photos publiees depuis le 06/08.
+       L'affichage sait deja gerer n'importe quelle proportion (contain + plafond
+       de 720 px). Consequence assumee : chaque club aura une banniere de hauteur
+       differente, de la panoramique au portrait.
+       ⚠️ Les bannieres DEJA envoyees restent rognees en base — il faut les
+       renvoyer pour en profiter. */
+    hypePhotoDirecte(f).then(function (res) {
       if (!res) return;
       setBanniere(res.dataUrl);
       try { localStorage.setItem("hype_club_banniere", res.dataUrl); } catch (eB) { }
@@ -28963,12 +28973,12 @@ function EcranGuilde() {
        le nom du club reste lisible quelle que soit la photo envoyee.
        maxHeight 460 px pour qu'une photo verticale ne fasse pas un bandeau sans fin. */
     h("div", { style: { position: "relative", margin: "0 0 4px", background: "#000" } },
-      h("div", { style: { position: "relative", padding: "calc(16px + env(safe-area-inset-top)) 16px 0" } },
+      h("div", { style: { position: "relative", padding: "calc(12px + env(safe-area-inset-top)) 8px 0" } },
         /* 30/08 (Blandine) : la pastille « Club officiel » quitte le bas du bloc et
            devient un petit badge pose EN HAUT A DROITE de la photo. Decale vers la
            gauche quand le bouton appareil photo est la, pour ne pas le recouvrir. */
  /* 30/08 (Blandine : « agrandis plus que ca ») : marges 34 -> 16 px */ /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
-        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 620, objectFit: "contain", margin: "0 auto", borderRadius: 14 } })),
+        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 720, objectFit: "contain", margin: "0 auto", borderRadius: 14 } /* 30/08 : marges 16 -> 8 px, plafond 620 -> 720. La hauteur suit la largeur et les proportions de la photo : sans recadrage, l elargir est le seul moyen de la grandir. */ })),
       h("div", { style: { padding: "16px 22px 14px", textAlign: "center" } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9" } }, monClub),
         h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
