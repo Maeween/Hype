@@ -34888,6 +34888,13 @@ function EcranCheval() {
   var vdIn = React.useRef(null);
   var vdSt = React.useState(false); var vidEnvoi = vdSt[0], setVidEnvoi = vdSt[1];
   var veSt = React.useState(null); var vidErr = veSt[0], setVidErr = veSt[1];
+  /* 30/08 20h10 — LE GARDE-FOU DESCEND JUSQU'A LA SELECTION. Enregistrement d'ecran
+     de Blandine : elle choisit une video de 1:09, valide, et le bouton n'affiche
+     JAMAIS « Envoi en cours ». L'envoi n'a pas echoue : il n'a pas demarre — le
+     selecteur iOS s'est referme sans transmettre de fichier (cas connu quand la
+     video doit etre convertie avant d'etre remise au navigateur). On journalise
+     donc ce que l'app RECOIT, y compris quand elle ne recoit rien. */
+  var vjSt = React.useState(null); var vidJourn = vjSt[0], setVidJourn = vjSt[1];
   async function envoyerVideoDirecte(f) {
     if (!f) return;
     setVidErr(null); setVidEnvoi(true);
@@ -35769,13 +35776,22 @@ function EcranCheval() {
         encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos")),
         h("div", { style: { padding: "8px 16px 24px" } },
         h("input", { ref: vdIn, type: "file", accept: "video/*", style: { display: "none" }, onChange: function (eVi) {
-          var fV2 = (eVi.target && eVi.target.files && eVi.target.files[0]) || null;
+          var lst = (eVi.target && eVi.target.files) || null;
+          var fV2 = (lst && lst[0]) || null;
           try { eVi.target.value = ""; } catch (eR2) { }
+          if (!fV2) {
+            setVidJourn(null);
+            setVidErr({ nom: "", poids: "", msg: T("Le s\u00e9lecteur s'est referm\u00e9 sans transmettre de fichier. Rien n'a \u00e9t\u00e9 envoy\u00e9. Cela arrive quand iOS n'arrive pas \u00e0 convertir la vid\u00e9o : r\u00e9essaie, ou envoie une version plus courte.", "The picker closed without handing over a file. Nothing was uploaded.", "El selector se cerr\u00f3 sin entregar el archivo. No se envi\u00f3 nada.", "Il selettore si \u00e8 chiuso senza consegnare il file. Nulla \u00e8 stato inviato.", "\u30d5\u30a1\u30a4\u30eb\u304c\u6e21\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Die Auswahl wurde ohne Datei geschlossen.") });
+            return;
+          }
+          setVidJourn({ nom: fV2.name || "?", poids: fV2.size ? ((Math.round(fV2.size / 104857.6) / 10) + " Mo") : "?", type: fV2.type || "?" });
           envoyerVideoDirecte(fV2);
         } }),
         h("div", { role: "button", onClick: function () { if (!vidEnvoi && vdIn.current) vdIn.current.click(); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, margin: "0 0 12px", minHeight: 48, padding: "0 18px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: vidEnvoi ? "default" : "pointer", opacity: vidEnvoi ? 0.65 : 1 } },
           vidEnvoi ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio in corso\u2026", "\u9001\u4fe1\u4e2d\u2026", "Wird gesendet\u2026")
                    : ("+ " + T("Ajouter une vid\u00e9o", "Add a video", "A\u00f1adir un v\u00eddeo", "Aggiungi un video", "\u52d5\u753b\u3092\u8ffd\u52a0", "Video hinzuf\u00fcgen"))),
+        vidJourn ? h("div", { style: { margin: "0 0 12px", padding: "10px 13px", borderRadius: 12, border: "1px solid rgba(32,217,245,0.22)", background: "rgba(32,217,245,0.05)", fontSize: 11, color: "#9FD8E2", fontFamily: M, lineHeight: 1.5 } },
+          T("Fichier re\u00e7u", "File received", "Archivo recibido", "File ricevuto", "\u30d5\u30a1\u30a4\u30eb\u53d7\u9818", "Datei erhalten") + " : " + vidJourn.nom + " \u00b7 " + vidJourn.poids + " \u00b7 " + vidJourn.type) : null,
         vidErr ? h("div", { style: { margin: "0 0 12px", padding: "12px 14px", borderRadius: 14, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.55)" } },
           h("div", { style: { fontSize: 12.5, fontWeight: 800, color: "#FF9AA8", marginBottom: 5 } },
             T("L'envoi a \u00e9chou\u00e9 :", "Upload failed:", "El env\u00edo ha fallado:", "Invio non riuscito:", "\u9001\u4fe1\u306b\u5931\u6557\u3057\u307e\u3057\u305f\uff1a", "Senden fehlgeschlagen:")),
