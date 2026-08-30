@@ -49591,7 +49591,12 @@ if (__boot)
    CE QUE FAIT CE BLOC — il ne touche AUCUN composant. Il observe le DOM
    et réécrit la source des <img> qui pointent vers le stockage public
    Supabase : `/storage/v1/object/public/` → `/storage/v1/render/image/public/`
-   avec `width=900&quality=70`. 900 px couvre le plein écran d'un iPhone
+   avec `width=900&resize=contain&quality=70`.
+
+   ⚠️ 30/08 02h15 — `resize=contain` est INDISPENSABLE. Sans lui, Supabase applique
+   son mode par defaut `cover` : avec une seule dimension fournie, il RECADRE au
+   lieu de mettre a l echelle. Toutes les photos de cheval sont ressorties zoomees
+   et hors cadre (signale par Blandine). Ne jamais retirer ce parametre. 900 px couvre le plein écran d'un iPhone
    en 2x. Une photo de 3,5 Mo tombe à quelques centaines de Ko.
 
    GARDE-FOUS :
@@ -49632,7 +49637,7 @@ if (__boot)
           try { el.setAttribute("src", orig); } catch (e1) { }
         });
       } catch (e2) { }
-      el.setAttribute("src", base + "?width=" + LARGEUR + "&quality=" + QUALITE);
+      el.setAttribute("src", base + "?width=" + LARGEUR + "&resize=contain&quality=" + QUALITE);
     } catch (e) { }
   }
 
