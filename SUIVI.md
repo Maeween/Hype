@@ -10,6 +10,30 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 30/08/2026 (23h15) — BADGE « OFFICIAL » SUR LA PHOTO DU CLUB
+
+> « Tu peux mettre un petit "officiel" à droite, à la place de l'allonger en bas, sur la
+> grande photo ? »
+
+L'ancienne pastille turquoise « ✓ CLUB OFFICIEL », centrée sous le nom du club, est
+**retirée**. À sa place, l'image fournie par Blandine est posée **en haut à droite de la
+photo**, en 104 px de large, avec une ombre portée pour tenir sur une photo claire.
+
+Elle se décale à gauche (68 px au lieu de 26) quand le bouton appareil photo est présent,
+pour ne pas le recouvrir.
+
+🟥 **FICHIER À POUSSER : `images/hype-club-officiel.png`.** Sans lui, aucun badge ne
+s'affiche — l'image ne se remplace pas par du texte.
+
+Préparation : le PNG d'origine faisait 2129 × 739 avec de larges bords transparents.
+Recadré sur son contenu puis réduit à **440 × 150** — 37 Ko au lieu de plusieurs centaines.
+La transparence est conservée (vérifiée avant traitement : fond déjà en alpha 0).
+
+Le badge n'apparaît que si le club est **revendiqué** (`revendique`), comme l'ancienne
+pastille : rien ne change pour les clubs non officiels.
+
+---
+
 # ✅ 30/08/2026 (23h00) — LA CITATION DU CLUB : PLUS PETITE, REMONTÉE, EN « NUIT PROFONDE »
 
 - **Taille** : 20,5 → **17 px** (et 19,5 → 16,5 pour le texte par défaut d'un club qui n'a
