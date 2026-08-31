@@ -28179,7 +28179,19 @@ function TableauxSpectralHype(props) {
     { id: "lagune", nom: "Lagune", c: "#8FB4BC" },
     { id: "parme", nom: "Parme", c: "#A084C8" },
     { id: "creme", nom: "Cr\u00e8me", c: "#E8DFC9" },
-    { id: "blanc", nom: "Blanc", c: "#F2F6F8" }
+    { id: "blanc", nom: "Blanc", c: "#F2F6F8" },
+    /* 31/08 (demande Blandine) : davantage de gris, de blancs et de bleus. */
+    { id: "perle", nom: "Gris perle", c: "#C9D1D7" },
+    { id: "fumee_t", nom: "Gris fum\u00e9e", c: "#9AA2A8" },
+    { id: "acier_t", nom: "Gris acier", c: "#8792A0" },
+    { id: "etain", nom: "\u00c9tain", c: "#6F7A82" },
+    { id: "blanccasse", nom: "Blanc cass\u00e9", c: "#F0EDE6" },
+    { id: "glace", nom: "Blanc glac\u00e9", c: "#EAF4F8" },
+    { id: "givre", nom: "Bleu givr\u00e9", c: "#B4D2E6" },
+    { id: "ciel", nom: "Bleu ciel", c: "#9FC7E8" },
+    { id: "acierbleu", nom: "Bleu acier", c: "#7C9BC4" },
+    { id: "ardoisebleu", nom: "Bleu ardoise", c: "#6E86B8" },
+    { id: "nuitbleu", nom: "Bleu nuit", c: "#5A6E96" }
   ];
   function palCitLue() { try { var v = window.localStorage.getItem("hype_teinte_citation"); return v || "encre"; } catch (ePc) { return "encre"; } }
   function titCitLue() { try { var v = window.localStorage.getItem("hype_teinte_citation_titre"); return v || "auto"; } catch (eTc) { return "auto"; } }
@@ -29016,7 +29028,10 @@ function EcranGuilde() {
            était avant ») — pose en haut a droite de la photo, le badge se perdait sur
            une image chargee. Il reprend EXACTEMENT la place de l'ancienne pastille :
            sous le nom et la ville, centre. */
-        revendique ? h("img", { src: "images/hype-club-officiel.png", alt: "Club officiel", style: { display: "block", width: 150, height: "auto", margin: "11px auto 0" } }) : null),
+        (revendique && !badgeKo) ? h("img", { src: "images/hype-club-officiel.png", alt: "", onError: function () { setBadgeKo(true); }, style: { display: "block", width: 150, height: "auto", margin: "11px auto 0" } }) : null,
+        (revendique && badgeKo) ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 11, padding: "4px 12px", borderRadius: 999, border: "1px solid " + TURQ + "8C", background: "rgba(6,7,9,0.5)" } },
+          h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2713"),
+          h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6", "Offizieller Club"))) : null),
       peutEditerBanniere ? h("button", { onClick: function () { if (banRef.current) banRef.current.click(); }, "aria-label": "Changer la photo du club", style: { position: "absolute", right: 14, top: "calc(14px + env(safe-area-inset-top))", width: 42, height: 42, borderRadius: "50%", border: "none", background: "rgba(6,7,9,0.6)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 4 } }, "\ud83d\udcf7") : null,
       peutEditerBanniere ? h("input", { ref: banRef, type: "file", accept: "image/*", onChange: choisirBanniere, style: { display: "none" } }) : null),
     /* 12/08 (114) : bandeau des stories. */
@@ -35063,6 +35078,10 @@ function EcranCheval() {
      s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
   var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
   var mmSt = React.useState(false); var revoirMascotte = mmSt[0], setRevoirMascotte = mmSt[1];
+  /* 31/08 : si l'image du badge officiel ne se charge pas (fichier absent de
+     images/, nom different, cache), on ne laisse JAMAIS un cadre vide : on
+     retombe sur l'ancienne pastille turquoise en texte. */
+  var _bko = React.useState(false), badgeKo = _bko[0], setBadgeKo = _bko[1];
   /* 30/08 19h30 — CHEMIN DIRECT D'ENVOI DEPUIS L'ONGLET VIDEOS (demande Blandine :
      « le chemin est pas intuitif, on se retrouve sur une autre page qui propose de
      re-cliquer »). Diagnostic de l'enregistrement d'ecran : l'ancien bouton
