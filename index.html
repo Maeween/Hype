@@ -29094,7 +29094,7 @@ function EcranGuilde() {
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "8px 20px 0", fontSize: 10.5, color: "#6B7580", fontFamily: M, fontStyle: "italic", textAlign: "center" } }, T("XP = membres\u00d710 + hauts faits\u00d75 + r\u00e9sultats\u00d73 + podiums\u00d78", "XP = members\u00d710 + feats\u00d75 + results\u00d73 + podiums\u00d78", "", "", "")) : null,
     h("div", { style: { padding: "0 16px 0", marginTop: -18 } }, /* 30/08 (Blandine : « remonte un peu la citation ») */
       h(TableauxSpectralHype, { mode: "club", nomClub: monClub, titreCourt: { fr: "La philosophie du club", en: "The club's philosophy", es: "La filosofía del club", it: "La filosofia del club", ja: "クラブの哲学", de: "Die Philosophie des Vereins" }, titreLong: { fr: "L'histoire du club", en: "The club's story", es: "La historia del club", it: "La storia del club", ja: "クラブの物語", de: "Die Geschichte des Vereins" }, defautVoix: { fr: "Rassembler des cavaliers autour d'une même passion : le cheval, le progrès et le plaisir de monter ensemble.", en: "Bringing riders together around one shared passion: the horse, progress and the joy of riding together.", es: "Reunir a jinetes en torno a una misma pasión: el caballo, el progreso y el placer de montar juntos.", it: "Riunire i cavalieri attorno a una stessa passione: il cavallo, il progresso e il piacere di cavalcare insieme.", ja: "馬、上達、そして共に乗る喜び — ひとつの情熱のもとに騎手が集う場所。", de: "Reiter um eine gemeinsame Leidenschaft versammeln: das Pferd, den Fortschritt und die Freude, zusammen zu reiten." }, defautHist: { fr: "L'histoire de ce club s'écrit à chaque foulée, concours après concours, amitié après amitié.", en: "This club's story is written stride after stride, show after show, friendship after friendship.", es: "La historia de este club se escribe a cada tranco, concurso tras concurso, amistad tras amistad.", it: "La storia di questo club si scrive falcata dopo falcata, concorso dopo concorso, amicizia dopo amicizia.", ja: "このクラブの物語は、一歩ごとに、大会ごとに、友情ごとに紡がれていく。", de: "Die Geschichte dieses Vereins schreibt sich Tritt für Tritt, Turnier für Turnier, Freundschaft für Freundschaft." }, editable: (typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)), noteModale: { fr: "Visible par tous les membres du club.", en: "Visible to all club members.", es: "Visible para todos los miembros del club.", it: "Visibile a tutti i membri del club.", ja: "クラブの全メンバーに表示されます。", de: "Für alle Vereinsmitglieder sichtbar." } }),
-      h(EncartCavaliersSpectral, { titre: T("Cavaliers de l'\u00e9curie", "Riders of the stable", "Jinetes del club", "Cavalieri della scuderia", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc"), nomTeam: monClub || "", cavaliers: cavaliersAff || [], onOuvrir: ouvrirCavalierClub, onRetirer: moiG ? basculerChoisi : null, onAjouter: moiG ? ouvrirSelecteurCav : null }),
+      h(EncartCavaliersSpectral, { titre: T("Cavaliers de l'\u00e9curie", "Riders of the stable", "Jinetes del club", "Cavalieri della scuderia", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc"), nomTeam: monClub || "", cavaliers: cavaliersAff || [], reglable: (typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)), onOuvrir: ouvrirCavalierClub, onRetirer: moiG ? basculerChoisi : null, onAjouter: moiG ? ouvrirSelecteurCav : null }),
       selCav ? h("div", { style: { position: "fixed", inset: 0, zIndex: 8200, background: "rgba(4,6,9,0.72)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }, onClick: function () { setSelCav(false); } },
         h("div", { onClick: function (eSh) { eSh.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(32,217,245,0.3)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
           h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.8, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase" } }, T("Compose ton \u00e9curie", "Build your stable", "Compone tu cuadra", "Componi la tua scuderia", "\u53a9\u820e\u3092\u30c7\u30b6\u30a4\u30f3")),
@@ -29480,6 +29480,25 @@ function EncartCavaliersSpectral(props) {
   var ctxEc = useApp(); var trEc = ctxEc.tr;
   function T(fr, en, es, it, ja, de) { return trEc({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var fondCav = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.cavaliersClubFond) ? HYPE_IMGS.cavaliersClubFond : "";
+  /* 31/08 (Blandine) — OUTIL DE REGLAGE DE L'ENCART CAVALIERS. Deux rangees dans un
+     seul panneau : la TEINTE et la MISE EN PAGE. Meme principe que la citation :
+     garde sur cet appareil (localStorage), visible seulement par qui peut editer,
+     sans effet pour les autres membres. */
+  var HYPE_PAL_CAV = [
+    { id: "bleu", nom: "Bleu assombri", voile: "linear-gradient(160deg,rgba(10,22,32,0.82),rgba(6,13,20,0.92))", b: "rgba(63,224,234,0.14)", t: "#EAF6F8", s: "#5FE9F0", a: "rgba(63,224,234,0.55)" },
+    { id: "nuit", nom: "Nuit bleutee", voile: "linear-gradient(160deg,rgba(8,13,18,0.88),rgba(5,8,11,0.95))", b: "rgba(255,255,255,0.07)", t: "#EDF1F4", s: "#8FA8B4", a: "rgba(143,168,180,0.45)" },
+    { id: "lagune", nom: "Lagune profonde", voile: "linear-gradient(160deg,rgba(14,26,31,0.86),rgba(8,17,20,0.94))", b: "rgba(110,175,190,0.16)", t: "#E3EFF2", s: "#7FA8B2", a: "rgba(127,168,178,0.5)" },
+    { id: "ardoise", nom: "Ardoise", voile: "linear-gradient(160deg,rgba(25,28,31,0.86),rgba(18,20,23,0.94))", b: "rgba(255,255,255,0.09)", t: "#EDF0F2", s: "#9AA7B0", a: "rgba(154,167,176,0.45)" },
+    { id: "encre", nom: "Encre", voile: "linear-gradient(160deg,rgba(18,22,29,0.86),rgba(11,14,19,0.94))", b: "rgba(255,255,255,0.08)", t: "#E9ECF3", s: "#7C9BC4", a: "rgba(124,155,196,0.5)" },
+    { id: "nu", nom: "Sans cadre", voile: "linear-gradient(160deg,rgba(6,7,9,0.72),rgba(6,7,9,0.92))", b: "transparent", t: "#EDF1F4", s: "#8FA8B4", a: "rgba(143,168,180,0.4)" }
+  ];
+  function lireCav(cle, def) { try { return window.localStorage.getItem(cle) || def; } catch (eL) { return def; } }
+  var _pcv = React.useState(lireCav("hype_cav_teinte", "bleu")), palCavId = _pcv[0], setPalCavId = _pcv[1];
+  var _mcv = React.useState(lireCav("hype_cav_mise", "rond")), miseCav = _mcv[0], setMiseCav = _mcv[1];
+  var _pan = React.useState(false), panCav = _pan[0], setPanCav = _pan[1];
+  function choisirCav(cle, val, poser) { poser(val); try { window.localStorage.setItem(cle, val); } catch (eS) { } }
+  var PCV = (function () { for (var iC = 0; iC < HYPE_PAL_CAV.length; iC++) { if (HYPE_PAL_CAV[iC].id === palCavId) return HYPE_PAL_CAV[iC]; } return HYPE_PAL_CAV[0]; })();
+  var enPhoto = (miseCav === "photo");
   var AVA_DEF = [
     (typeof IMG_CAVALIER_DEFAUT !== "undefined") ? IMG_CAVALIER_DEFAUT : "",
     (typeof IMG_SANTE_PORTRAIT !== "undefined") ? IMG_SANTE_PORTRAIT : "",
@@ -29497,6 +29516,18 @@ function EncartCavaliersSpectral(props) {
   function medaillonEc(o) {
     var estOr = !!o.or;
     var cpt = !!props.compact;
+    /* 31/08 — MISE EN PAGE « PHOTO ENTIERE » : la photo occupe toute la carte
+       verticale (3/4), le prenom est pose sur un fondu en bas. Le medaillon rond
+       reste disponible dans le panneau de reglage. */
+    if (enPhoto) {
+      return h("div", { key: o.key, onClick: o.onClick || undefined, role: o.onClick ? "button" : undefined, style: { flex: "0 0 auto", width: cpt ? 88 : 104, aspectRatio: "3 / 4", borderRadius: 15, overflow: "hidden", position: "relative", cursor: o.onClick ? "pointer" : "default", background: "#0A0F14", border: "1px solid " + (o.attente ? "rgba(32,217,245,0.5)" : PCV.a), opacity: o.attente ? 0.72 : 1 } },
+        o.photo ? h("img", { src: o.photo, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 30, color: PCV.s } }, o.initiale || "?"),
+        h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "20px 5px 7px", background: "linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,0.88))" } },
+          h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: cpt ? 10.5 : 11.5, color: PCV.t, textAlign: "center", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o.nom || ""),
+          o.mention ? h("div", { style: { fontSize: 8, fontStyle: "italic", color: PCV.s, textAlign: "center", marginTop: 2, whiteSpace: "nowrap" } }, o.mention) : null),
+        o.surX ? h("div", { role: "button", onClick: o.surX, style: { position: "absolute", right: 4, top: 4, width: 22, height: 22, borderRadius: "50%", background: "rgba(6,8,10,0.75)", color: "#EDF2F5", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, "\u00d7") : null);
+    }
     var anneau = o.attente ? "none" : (estOr ? "linear-gradient(160deg,rgba(234,199,122,0.9),rgba(234,199,122,0.18))" : "linear-gradient(160deg,rgba(32,217,245,0.85),rgba(32,217,245,0.15))");
     return h("div", { key: o.key, onClick: o.onClick || undefined, role: o.onClick ? "button" : undefined, style: { flex: "0 0 auto", width: cpt ? 88 : 104, borderRadius: 17, padding: cpt ? "8px 6px 10px" : "10px 8px 12px", textAlign: "center", position: "relative", cursor: o.onClick ? "pointer" : "default", background: "rgba(8,13,17,0.52)", border: "1px solid rgba(32,217,245,0.2)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", opacity: o.attente ? 0.72 : 1 } },
       h("div", { style: { position: "relative", width: cpt ? 54 : 66, height: cpt ? 54 : 66, margin: "0 auto", borderRadius: "50%", padding: 2, background: anneau, border: o.attente ? "1.5px dashed rgba(32,217,245,0.55)" : "none", boxSizing: "border-box" } },
@@ -29562,8 +29593,9 @@ function EncartCavaliersSpectral(props) {
       surPlus: props.onSuivre ? function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); props.onSuivre(p, eP); } : null
     });
   });
-  return h("div", { style: { position: "relative", borderRadius: 26, overflow: "hidden", border: "1px solid rgba(32,217,245,0.26)", boxShadow: "0 24px 60px rgba(0,0,0,0.55)" } },
+  return h("div", { style: { position: "relative", borderRadius: 26, overflow: "hidden", border: "1px solid " + PCV.b, boxShadow: "0 24px 60px rgba(0,0,0,0.55)" } },
     h("div", { style: { position: "absolute", inset: 0, backgroundImage: fondCav ? ("url(" + fondCav + ")") : "none", backgroundColor: "#080D11", backgroundSize: "cover", backgroundPosition: "center" } }),
+    h("div", { style: { position: "absolute", inset: 0, background: PCV.voile } }), /* 31/08 : voile de teinte par-dessus l image de fond */
     h("div", { style: { position: "relative", zIndex: 2, padding: "18px 12px 16px" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
         h("div", { style: { flex: "0 0 auto", width: 42, height: 42, borderRadius: 13, border: "1px solid rgba(32,217,245,0.55)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(8,14,18,0.55)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)" } },
@@ -29573,8 +29605,8 @@ function EncartCavaliersSpectral(props) {
             h("circle", { cx: 16.8, cy: 9.2, r: 2.4 }),
             h("path", { d: "M15.4 14.6c2.6-.4 4.6 1 5.1 3.6" }))),
         h("div", { style: { minWidth: 0 } },
-          h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 17, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F4F7FA", textShadow: "0 2px 18px rgba(0,0,0,0.8)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, props.titre || T("Cavaliers du club", "Club riders", "Jinetes del club", "Cavalieri del club", "\u30af\u30e9\u30d6\u306e\u9a0e\u624b")),
-          nomTeam ? h("div", { style: { fontSize: 9.5, letterSpacing: "0.22em", textTransform: "uppercase", color: "#5FE9F0", fontWeight: 600, marginTop: 4, textShadow: "0 1px 10px rgba(0,0,0,0.8)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, T("La Team ", "Team ", "Team ", "Team ", "\u30c1\u30fc\u30e0 ") + nomTeam) : null)),
+          h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 17, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: PCV.t, textShadow: "0 2px 18px rgba(0,0,0,0.8)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, props.titre || T("Cavaliers du club", "Club riders", "Jinetes del club", "Cavalieri del club", "\u30af\u30e9\u30d6\u306e\u9a0e\u624b")),
+          nomTeam ? h("div", { style: { fontSize: 9.5, letterSpacing: "0.22em", textTransform: "uppercase", color: PCV.s, fontWeight: 600, marginTop: 4, textShadow: "0 1px 10px rgba(0,0,0,0.8)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, T("La Team ", "Team ", "Team ", "Team ", "\u30c1\u30fc\u30e0 ") + nomTeam) : null)),
       cells.length ? h("div", { style: { display: "flex", gap: 10, overflowX: "auto", marginTop: 18, padding: "4px 2px 6px", WebkitOverflowScrolling: "touch" } }, cells)
         : h("div", { style: { marginTop: 18, fontSize: 11.5, color: "#8A99A1", fontFamily: "'Montserrat',sans-serif", fontStyle: "italic", textAlign: "center" } }, props.videTxt || T("Les cavaliers inscrits avec ce club appara\u00eetront ici.", "Riders registered with this club will appear here.", "Los jinetes inscritos con este club aparecer\u00e1n aqu\u00ed.", "I cavalieri iscritti con questo club appariranno qui.", "\u3053\u306e\u30af\u30e9\u30d6\u306b\u767b\u9332\u3057\u305f\u30e9\u30a4\u30c0\u30fc\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")),
       cells2.length ? h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "16px 2px 0" } },
@@ -29585,7 +29617,32 @@ function EncartCavaliersSpectral(props) {
       props.onAjouter ? h("div", { style: { display: "flex", justifyContent: "center", marginTop: 18 } },
         h("button", { onClick: props.onAjouter, style: { display: "inline-flex", alignItems: "center", gap: 10, padding: "10px 18px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(8,14,18,0.55)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", color: "#7FF0F2", fontSize: 10, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
           h("span", { style: { width: 20, height: 20, borderRadius: "50%", border: "1.5px solid #5FE9F0", display: "inline-flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 600, color: "#5FE9F0" } }, "+"),
-          T("Ajouter un cavalier", "Add a rider", "A\u00f1adir un jinete", "Aggiungi un cavaliere", "\u9a0e\u624b\u3092\u8ffd\u52a0"))) : null));
+          T("Ajouter un cavalier", "Add a rider", "A\u00f1adir un jinete", "Aggiungi un cavaliere", "\u9a0e\u624b\u3092\u8ffd\u52a0"))) : null,
+      /* 31/08 — PANNEAU DE REGLAGE : teinte ET mise en page dans le meme endroit.
+         Visible seulement si le parent passe `reglable`. Garde sur cet appareil. */
+      props.reglable ? h("div", { style: { marginTop: 14, textAlign: "center" } },
+        h("span", { role: "button", onClick: function () { setPanCav(!panCav); }, style: { fontSize: 11, color: PCV.s, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 } },
+          T("Apparence de l'encart", "Card appearance", "Aspecto del recuadro", "Aspetto del riquadro", "\u30ab\u30fc\u30c9\u306e\u5916\u89b3", "Aussehen der Karte")),
+        panCav ? h("div", { style: { marginTop: 12, padding: "12px 12px 10px", borderRadius: 14, background: "rgba(0,0,0,0.42)", border: "1px solid rgba(255,255,255,0.10)", textAlign: "left" } },
+          h("div", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "#7B848C", fontFamily: "'Montserrat',sans-serif", marginBottom: 8, fontWeight: 700 } },
+            T("Teinte", "Shade", "Tono", "Tinta", "\u8272\u5408\u3044", "Farbton")),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            HYPE_PAL_CAV.map(function (pp) {
+              var act = pp.id === palCavId;
+              return h("div", { key: pp.id, role: "button", onClick: function () { choisirCav("hype_cav_teinte", pp.id, setPalCavId); }, style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 40, padding: "0 12px", borderRadius: 999, cursor: "pointer", background: act ? "rgba(255,255,255,0.09)" : "transparent", border: "1px solid " + (act ? "rgba(255,255,255,0.32)" : "rgba(255,255,255,0.13)") } },
+                h("span", { style: { width: 16, height: 16, borderRadius: 5, flex: "0 0 auto", background: pp.voile, border: "1px solid rgba(255,255,255,0.2)" } }),
+                h("span", { style: { fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: act ? "#EDF2F5" : "#A8B2BA", fontWeight: act ? 700 : 500 } }, pp.nom));
+            })),
+          h("div", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "#7B848C", fontFamily: "'Montserrat',sans-serif", margin: "14px 0 8px", fontWeight: 700 } },
+            T("Mise en page", "Layout", "Dise\u00f1o", "Impaginazione", "\u30ec\u30a4\u30a2\u30a6\u30c8", "Layout")),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            [{ id: "rond", nom: T("M\u00e9daillon rond", "Round medallion", "Medall\u00f3n redondo", "Medaglione rotondo", "\u4e38\u3044\u30e1\u30c0\u30eb", "Rundes Medaillon") },
+             { id: "photo", nom: T("Photo enti\u00e8re", "Full photo", "Foto completa", "Foto intera", "\u5199\u771f\u5168\u4f53", "Ganzes Foto") }].map(function (mm) {
+              var actM = mm.id === miseCav;
+              return h("div", { key: mm.id, role: "button", onClick: function () { choisirCav("hype_cav_mise", mm.id, setMiseCav); }, style: { display: "inline-flex", alignItems: "center", minHeight: 40, padding: "0 14px", borderRadius: 999, cursor: "pointer", background: actM ? "rgba(255,255,255,0.09)" : "transparent", border: "1px solid " + (actM ? "rgba(255,255,255,0.32)" : "rgba(255,255,255,0.13)"), fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: actM ? "#EDF2F5" : "#A8B2BA", fontWeight: actM ? 700 : 500 } }, mm.nom);
+            })),
+          h("div", { style: { fontSize: 10, color: "#7B848C", fontFamily: "'Montserrat',sans-serif", marginTop: 12, lineHeight: 1.5 } },
+            T("Le r\u00e9glage est gard\u00e9 sur cet appareil et ne change rien pour les autres membres.", "This setting stays on this device.", "El ajuste se guarda en este dispositivo.", "L'impostazione resta su questo dispositivo.", "\u3053\u306e\u8a2d\u5b9a\u306f\u3053\u306e\u7aef\u672b\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002", "Die Einstellung bleibt auf diesem Ger\u00e4t."))) : null) : null));
 }
 function EcranGererEcurie() {
   var h = React.createElement;
