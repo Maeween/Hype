@@ -28169,12 +28169,28 @@ function TableauxSpectralHype(props) {
     { id: "basalte", nom: "Basalte", f: "linear-gradient(160deg,#1C1E20,#141618)", b: "rgba(255,255,255,0.08)", t: "#8C9296", x: "#EEF0F1", g: "rgba(140,146,150,0.22)", mc: "#C4C9CC", mb: "rgba(196,201,204,0.28)", mf: "rgba(196,201,204,0.05)" },
     { id: "claire", nom: "Ardoise claire", f: "linear-gradient(160deg,#31383F,#262C33)", b: "rgba(255,255,255,0.15)", t: "#B3BDC5", x: "#F5F7F9", g: "rgba(179,189,197,0.28)", mc: "#DDE4E9", mb: "rgba(221,228,233,0.34)", mf: "rgba(221,228,233,0.07)" }
   ];
-  function palCitLue() { try { var v = window.localStorage.getItem("hype_teinte_citation"); return v || "anthracite"; } catch (ePc) { return "anthracite"; } }
+  /* 30/08 — COULEURS DE TITRE, reglables separement du fond (demande Blandine). */
+  var HYPE_TIT_CIT = [
+    { id: "auto", nom: "Automatique", c: null },
+    { id: "turquoise", nom: "Turquoise", c: "#5FE9F0" },
+    { id: "or", nom: "Or", c: "#D9A85C" },
+    { id: "argent", nom: "Argent", c: "#C7D0D6" },
+    { id: "cuivre", nom: "Cuivre", c: "#CD8A5C" },
+    { id: "lagune", nom: "Lagune", c: "#8FB4BC" },
+    { id: "parme", nom: "Parme", c: "#A084C8" },
+    { id: "creme", nom: "Cr\u00e8me", c: "#E8DFC9" },
+    { id: "blanc", nom: "Blanc", c: "#F2F6F8" }
+  ];
+  function palCitLue() { try { var v = window.localStorage.getItem("hype_teinte_citation"); return v || "encre"; } catch (ePc) { return "encre"; } }
+  function titCitLue() { try { var v = window.localStorage.getItem("hype_teinte_citation_titre"); return v || "auto"; } catch (eTc) { return "auto"; } }
   var _pc = React.useState(palCitLue()), palCitId = _pc[0], setPalCitId = _pc[1];
   var _pcp = React.useState(false), panPalCit = _pcp[0], setPanPalCit = _pcp[1];
+  var _tc = React.useState(titCitLue()), titCitId = _tc[0], setTitCitId = _tc[1];
+  function choisirTitCit(idT) { setTitCitId(idT); try { window.localStorage.setItem("hype_teinte_citation_titre", idT); } catch (eSt) { } }
   function palCit() { for (var iP = 0; iP < HYPE_PAL_CIT.length; iP++) { if (HYPE_PAL_CIT[iP].id === palCitId) return HYPE_PAL_CIT[iP]; } return HYPE_PAL_CIT[2]; }
   function choisirPalCit(idP) { setPalCitId(idP); try { window.localStorage.setItem("hype_teinte_citation", idP); } catch (eSp) { } }
   var PC = palCit();
+  var PT = (function () { for (var iT = 0; iT < HYPE_TIT_CIT.length; iT++) { if (HYPE_TIT_CIT[iT].id === titCitId) return HYPE_TIT_CIT[iT].c || PC.t; } return PC.t; })();
   var voixTxt = estClub ? (clubVoix || "") : ((prof && prof[champVoix]) || "");
   var histTxt = estClub ? (clubHist || "") : ((prof && prof[champHist]) || "");
   var titC = L(props.titreCourt), titL = L(props.titreLong);
@@ -28210,9 +28226,9 @@ function TableauxSpectralHype(props) {
   var noteMod = props.noteModale ? L(props.noteModale) : "";
 
   var voixNode = voixTxt
-    ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.45, color: PC.x } }, h(EncreLumineuse, { text: voixTxt }) /* 30/08 (Blandine) : citation 20,5 -> 17 px */)
+    ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 15, lineHeight: 1.4, color: PC.x } }, h(EncreLumineuse, { text: voixTxt }) /* 30/08 (Blandine) : citation 20,5 -> 17 px */)
     : (defV
-      ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 16.5, lineHeight: 1.45, color: PC.mc } }, defV /* 30/08 : citation par défaut 19,5 -> 16,5 px */)
+      ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 14.5, lineHeight: 1.4, color: PC.mc } }, defV /* 30/08 : citation par défaut 19,5 -> 16,5 px */)
       : (editable ? h("div", { style: { fontFamily: "Georgia, serif", fontStyle: "italic", fontSize: 15.5, lineHeight: 1.55, color: "rgba(234,242,244,.34)" } }, phVoix) : null));
   var histNode = histTxt
     ? h("div", { style: { fontSize: 14, lineHeight: 1.85, color: "#DCE3E8", whiteSpace: "pre-line", fontFamily: M } }, histTxt)
@@ -28232,9 +28248,12 @@ function TableauxSpectralHype(props) {
     h("style", null, "@keyframes hycSpin{to{transform:rotate(1turn)}}.hyc-cristal{position:relative;border-radius:20px;padding:1.6px;overflow:hidden;isolation:isolate}.hyc-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + thC.principal + " 82%,#BFF4F8 90%,transparent 100%);animation:hycSpin 4.5s linear infinite}.hyc-cristal>.hyc-cristal-cc{position:relative;z-index:1;border-radius:18px;overflow:hidden}@keyframes hycBlink{50%{opacity:0}}.hyc-caret{display:inline-block;width:2px;height:1.05em;background:" + thC.principal + ";box-shadow:0 0 8px " + thC.principal + ";vertical-align:-2px;margin-left:1px;animation:hycBlink 1s step-end infinite}"),
     h("div", { style: { position: "relative", margin: "0 16px 22px", padding: "20px 18px 18px", borderRadius: 20, background: PC.f, border: "1px solid " + PC.b, overflow: "hidden" } }, /* 30/08 (choix final de Blandine) : encart en ANTHRACITE BLEUTE sur fond de page noir. Aucune couleur d'accent ajoutee — le gris est tire vers le bleu de l'app, pas vers le brun. Sept teintes proposees, puis trois anthracites : celle-ci retenue */
       h("div", { style: { position: "absolute", right: 14, top: -8, fontFamily: "Georgia, serif", fontSize: 110, color: PC.g, lineHeight: 1, pointerEvents: "none" } }, "\u201c"), /* 30/08 : guillemet en or sourd, plus en teinte de l'app */
-      h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: PC.t, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + titC), /* 30/08 : titre en gris ardoise, plus en turquoise */
+      h("div", { style: { position: "relative", fontSize: 10, letterSpacing: "0.28em", color: PT, textTransform: "uppercase", fontWeight: 700, fontFamily: M, marginBottom: 12 } }, "\u2726 " + titC), /* 30/08 : titre en gris ardoise, plus en turquoise */
       h("div", { style: { position: "relative", minHeight: 54 } }, voixNode),
-      editable ? h("button", { onClick: function () { setVoixLocal(voixTxt || ""); setEditVoix(true); }, style: Object.assign({ position: "relative", marginTop: 14, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M }, dark) }, "\u270e " + (voixTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"))) : null,
+      /* 30/08 (Blandine : « retire le bouton Modifier, juste une icone discrete »)
+         — la pastille pleine largeur devient un petit crayon en bas a droite de
+         l'encart. Cible tactile 44 px conservee, aucun fond, aucun libelle. */
+      editable ? h("button", { onClick: function () { setVoixLocal(voixTxt || ""); setEditVoix(true); }, "aria-label": voixTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"), style: { position: "absolute", right: 6, bottom: 4, width: 44, height: 44, display: "flex", alignItems: "center", justifyContent: "center", border: "none", background: "transparent", color: PT, fontSize: 14, opacity: 0.55, cursor: "pointer", padding: 0 } }, "\u270e") : null,
       /* 30/08 — LE PANNEAU DE TEINTE. Un lien discret, seulement pour qui peut
          editer. Le choix est garde sur CET APPAREIL et ne change rien pour les
          autres membres du club. Rendu en ligne, pas en portail : la lecon du
@@ -28250,14 +28269,24 @@ function TableauxSpectralHype(props) {
                 h("span", { style: { width: 16, height: 16, borderRadius: 5, flex: "0 0 auto", background: pp.f, border: "1px solid " + pp.b } }),
                 h("span", { style: { fontSize: 11, fontFamily: M, color: actif ? "#EDF2F5" : "#A8B2BA", fontWeight: actif ? 700 : 500 } }, pp.nom));
             })),
-          h("div", { style: { fontSize: 10, color: "#7B848C", fontFamily: M, marginTop: 10, lineHeight: 1.5 } },
+          h("div", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "#7B848C", fontFamily: M, margin: "14px 0 8px", fontWeight: 700 } },
+            T("Couleur du titre", "Title colour", "Color del t\u00edtulo", "Colore del titolo", "\u30bf\u30a4\u30c8\u30eb\u306e\u8272", "Titelfarbe")),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            HYPE_TIT_CIT.map(function (tt) {
+              var actifT = tt.id === titCitId;
+              return h("div", { key: tt.id, role: "button", onClick: function () { choisirTitCit(tt.id); }, style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 40, padding: "0 12px", borderRadius: 999, cursor: "pointer", background: actifT ? "rgba(255,255,255,0.08)" : "transparent", border: "1px solid " + (actifT ? "rgba(255,255,255,0.30)" : "rgba(255,255,255,0.12)") } },
+                h("span", { style: { width: 12, height: 12, borderRadius: "50%", flex: "0 0 auto", background: tt.c || PC.t, border: "1px solid rgba(255,255,255,0.18)" } }),
+                h("span", { style: { fontSize: 11, fontFamily: M, color: actifT ? "#EDF2F5" : "#A8B2BA", fontWeight: actifT ? 700 : 500 } }, tt.nom));
+            })),
+          h("div", { style: { fontSize: 10, color: "#7B848C", fontFamily: M, marginTop: 12, lineHeight: 1.5 } },
             T("Le r\u00e9glage est gard\u00e9 sur cet appareil et ne change rien pour les autres membres.", "This setting stays on this device and changes nothing for other members.", "El ajuste se guarda en este dispositivo y no cambia nada para los dem\u00e1s.", "L'impostazione resta su questo dispositivo e non cambia nulla per gli altri.", "\u3053\u306e\u8a2d\u5b9a\u306f\u3053\u306e\u7aef\u672b\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002", "Die Einstellung bleibt auf diesem Ger\u00e4t."))) : null) : null),
     h("div", { className: "hyc-cristal", style: { margin: "0 16px 28px" } },
-      h("div", { className: "hyc-cristal-cc", style: { padding: "18px 17px 16px", background: "linear-gradient(180deg,#0b1219,#080c11)" } },
-        h("div", { style: { fontSize: 10, letterSpacing: "0.28em", color: thC.principal, textTransform: "uppercase", fontWeight: 700, fontFamily: M } }, "\u2726 " + titL),
-        h("div", { style: { height: 1, width: 64, background: "linear-gradient(90deg," + thC.principal + ",transparent)", margin: "10px 0 12px" } }),
+      h("div", { className: "hyc-cristal-cc", style: { position: "relative", padding: "18px 17px 16px", background: PC.f } }, /* 30/08 : l'histoire du club suit la meme teinte que la citation */
+        h("div", { style: { fontSize: 10, letterSpacing: "0.28em", color: PT, textTransform: "uppercase", fontWeight: 700, fontFamily: M } }, "\u2726 " + titL),
+        h("div", { style: { height: 1, width: 64, background: "linear-gradient(90deg," + PT + ",transparent)", margin: "10px 0 12px" } }),
         histNode,
-        editable ? h("button", { onClick: function () { setHistLocal(histTxt || ""); setEditHist(true); }, style: Object.assign({ marginTop: 13, padding: "9px 16px", borderRadius: 999, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M }, dark) }, "\u270e " + (histTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"))) : null)),
+        /* 30/08 : meme traitement que la citation — petit crayon, plus de pastille. */
+        editable ? h("button", { onClick: function () { setHistLocal(histTxt || ""); setEditHist(true); }, "aria-label": histTxt ? T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten") : T("\u00c9crire", "Write", "Escribir", "Scrivi", "\u66f8\u304f", "Schreiben"), style: { position: "absolute", right: 4, bottom: 2, width: 44, height: 44, display: "flex", alignItems: "center", justifyContent: "center", border: "none", background: "transparent", color: PT, fontSize: 14, opacity: 0.55, cursor: "pointer", padding: 0 } }, "\u270e") : null)),
     editVoix ? Portal(h("div", { onClick: function () { setEditVoix(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "90%", maxWidth: 420, borderRadius: 20, border: "1px solid " + rgb(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, titC),
