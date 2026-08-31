@@ -5301,6 +5301,44 @@ function CompositionStory(props) {
           });
         }),
         h("img", { src: story.disposition + ".webp", alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none" } })),
+      /* 31/08 (session 154, feu vert de Blandine) — LA LEGENDE REVIENT SUR LES
+         STORIES A MODELE.
+         CE QUI N ALLAIT PAS : `morceauxLegende` n existait QUE dans la sortie
+         H+D, plus bas. Cette sortie-ci — celle des decors a fenetres — rendait
+         le plan, le decor et la surcouche, et RIEN D AUTRE. Autrement dit :
+         depuis toujours, une story portant un `modele-*` n affichait jamais son
+         texte. Constate par Blandine le 31/08 sur sa story Orlena / Umberto EM
+         (modele-concours-4) : les quatre lignes portent bien `legende` en base,
+         verifie en SQL, mais l ecran n en montrait aucune. Ce n etait donc PAS
+         une perte de contenu : le texte etait intact, jamais dessine.
+         CE QUI EST POSE : le texte au-dessus du decor, centre, sans voile ni
+         cadre — il se pose sur le noir du haut. Sa decision : « la je veux
+         surtout que ca soit pas fait de facon delirante », « en visible
+         j aurais dit 4 lignes max ».
+         ⚠️ `pointerEvents: "none"` — LE POINT A NE JAMAIS TOUCHER. Ce bloc
+         couvre le haut de la zone story. S il capte le doigt, il avale le
+         glisse qui change de story et le tap qui ouvre une photo : c est
+         exactement la panne du 17/08 (les quatre stopPropagation aveugles qui
+         ont fait retirer la composition entiere). Comme il n y a aucun bouton
+         ici, rien n a besoin d etre cliquable — le doigt traverse.
+         ⚠️ AU-DELA DE 4 LIGNES la suite n est visible NULLE PART dans la story
+         (pas de « Voir plus » : Blandine n a pas tranche, on ne devine pas a sa
+         place). Le texte reste entier en base et part dans le partage.
+         ⚠️ LA PLACE LIBRE DEPEND DU DECOR. Verifie sur `concours-4` seulement,
+         sur sa capture du 31/08. Si `concours-2` ou `-3` commencent leur dessin
+         plus haut, le texte mordra dessus — a regarder sur une story de chaque. */
+      morceauxLegende
+        ? h("div", {
+          style: {
+            position: "absolute", top: 10, left: MARGE_COMPO + 6, right: MARGE_COMPO + 6,
+            zIndex: 3, pointerEvents: "none",
+            fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45,
+            textAlign: "center", overflowWrap: "break-word", whiteSpace: "pre-line",
+            display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden",
+            textShadow: "0 1px 6px rgba(6,7,9,0.85)"
+          }
+        }, morceauxLegende)
+        : null,
       surcouche);
   }
   /* H+D : la grande, le texte suspendu sous le fil de lumiere, la table.
