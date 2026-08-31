@@ -28763,6 +28763,13 @@ function EcranGuilde() {
   /* 30/08 — le rail aux coupes et l'etat d'epinglage. railClub est CALCULE, jamais
      saisi : il vient du classement automatique, l'epinglage ne fait que le devancer. */
   var _rl = React.useState(null), railClub = _rl[0], setRailClub = _rl[1];
+  /* 31/08 — declare ICI, dans EcranGuilde. Il etait par erreur dans EcranCheval :
+     ReferenceError au rendu de la page club. MEME FAUTE QUE `moi` le 30/08 —
+     verifier le composant reel avant d'ajouter un identifiant, pas la ligne
+     voisine qui a l'air proche. */
+  var BADGE_CHEMINS = ["images/hype-club-officiel.png", "hype-club-officiel.png"];
+  var _bi = React.useState(0), badgeIdx = _bi[0], setBadgeIdx = _bi[1];
+  var badgeKo = badgeIdx >= BADGE_CHEMINS.length;
   var _epE = React.useState(null), epErr = _epE[0], setEpErr = _epE[1];
   async function basculerEpingle(gg) {
     try {
@@ -29028,7 +29035,7 @@ function EcranGuilde() {
            était avant ») — pose en haut a droite de la photo, le badge se perdait sur
            une image chargee. Il reprend EXACTEMENT la place de l'ancienne pastille :
            sous le nom et la ville, centre. */
-        (revendique && !badgeKo) ? h("img", { src: "images/hype-club-officiel.png", alt: "", onError: function () { setBadgeKo(true); }, style: { display: "block", width: 150, height: "auto", margin: "11px auto 0" } }) : null,
+        (revendique && !badgeKo) ? h("img", { key: "badge" + badgeIdx, src: BADGE_CHEMINS[badgeIdx], alt: "", onError: function () { setBadgeIdx(badgeIdx + 1); }, style: { display: "block", width: 150, height: "auto", margin: "11px auto 0" } }) : null,
         (revendique && badgeKo) ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 11, padding: "4px 12px", borderRadius: 999, border: "1px solid " + TURQ + "8C", background: "rgba(6,7,9,0.5)" } },
           h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2713"),
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6", "Offizieller Club"))) : null),
@@ -35078,10 +35085,6 @@ function EcranCheval() {
      s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
   var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
   var mmSt = React.useState(false); var revoirMascotte = mmSt[0], setRevoirMascotte = mmSt[1];
-  /* 31/08 : si l'image du badge officiel ne se charge pas (fichier absent de
-     images/, nom different, cache), on ne laisse JAMAIS un cadre vide : on
-     retombe sur l'ancienne pastille turquoise en texte. */
-  var _bko = React.useState(false), badgeKo = _bko[0], setBadgeKo = _bko[1];
   /* 30/08 19h30 — CHEMIN DIRECT D'ENVOI DEPUIS L'ONGLET VIDEOS (demande Blandine :
      « le chemin est pas intuitif, on se retrouve sur une autre page qui propose de
      re-cliquer »). Diagnostic de l'enregistrement d'ecran : l'ancien bouton
