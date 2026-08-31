@@ -14,7 +14,17 @@
      plutot que rien. Attend un fichier /partage-apercu.jpg a la racine du
      site (1200x630, format attendu par WhatsApp/Facebook) — tant qu'il
      n'existe pas, la carte s'affiche juste sans image, pas casse pour
-     autant. */ -->
+     autant.
+
+     31/08 — VERIFICATION DEMANDEE PAR BLANDINE, RIEN N'EST TOUCHE ICI.
+     og:title, og:description et og:image sont bien presents et corrects.
+     og:url est VOLONTAIREMENT ABSENT : sa valeur devrait etre l'adresse
+     exacte de CETTE story (…/story.html?id=xxxx), or une balise statique
+     ne peut porter qu'une seule adresse pour toutes les stories — un
+     og:url en dur ferait pointer l'apercu vers la mauvaise page. Il n'a
+     de sens que le jour ou ces balises seront ecrites cote serveur.
+     La vraie premiere photo en og:image demande la meme chose : voir la
+     note « APERCU DYNAMIQUE » plus bas dans le fichier. -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Hype">
 <meta property="og:title" content="Une story sur Hype 🐎">
@@ -32,37 +42,47 @@
   ne va l'avoir ». Une story destinee a quelqu'un HORS de Hype (sa mere,
   au telephone, sans compte) doit s'ouvrir pour n'importe qui.
 
-  Ce fichier est volontairement SEPARE d'index.html : une seule requete
-  REST directe (pas le SDK Supabase complet), une seule photo, aucune
-  barre de navigation, aucun etat de connexion attendu. Si Supabase
-  refuse la lecture anonyme (regle RLS cote base, hors de portee du
-  code), la page le dit clairement plutot que de rester blanche —
-  c'est la seule chose que ce fichier NE PEUT PAS reparer seul.
-
-  Toujours brande Hype, avec un bouton « Decouvrir Hype » bien visible :
-  Blandine a confirme que le but reste de faire decouvrir l'app, pas
-  seulement d'afficher une photo nue.
+  Ce fichier est volontairement SEPARE d'index.html : des requetes REST
+  directes (pas le SDK Supabase complet), aucune barre de navigation,
+  aucun etat de connexion attendu. Si Supabase refuse la lecture anonyme
+  (regle RLS cote base, hors de portee du code), la page le dit
+  clairement plutot que de rester blanche — c'est la seule chose que ce
+  fichier NE PEUT PAS reparer seul.
 
   ─────────────────────────────────────────────────────────────────────
   20/08/2026 (session 142) — RECONSTRUCTION + VISIONNEUSE.
+  Les vignettes ouvrent une visionneuse plein ecran ; les 2 adresses de
+  l'ancien domaine corrigees.
 
-  ⚠️ INCIDENT A CONNAITRE : ce fichier a ete livre une premiere fois en
-  session 141 (visionneuse + domaine corrige) mais la livraison n'est
-  JAMAIS PARTIE sur GitHub — verifie le 20/08 sur le fichier en ligne,
-  qui portait encore l'ancien domaine deux fois et des vignettes muettes.
-  Refait ici. Deuxieme point : le fichier n'arrive pas sur le disque des
-  sessions (deja le cas en 141), il a donc ete reconstruit depuis la
-  copie passee dans la conversation — copie recuperee par Blandine
-  directement sur GitHub, donc fiable, mais AUCUNE comparaison md5 n'a
-  ete possible.
+  ─────────────────────────────────────────────────────────────────────
+  31/08/2026 — REFONTE DE LA PRESENTATION (brief de Blandine, 7 points
+  tranches un par un). LA DONNEE N'EST PAS TOUCHEE : memes requetes,
+  meme regle de couverture, memes messages d'erreur. Seule la mise en
+  scene change.
 
-  CE QUI A CHANGE :
-  - Les vignettes de 84 px etaient purement decoratives. Elles ouvrent
-    desormais une visionneuse plein ecran. La photo de couverture aussi.
-  - Les 2 adresses de l'ancien domaine corrigees (LIEN_APP + bouton
-    « Decouvrir Hype »).
-  Aucune requete supplementaire : les photos sont deja chargees, la
-  visionneuse ne fait que les afficher en grand.
+  Ce qui disparait volontairement :
+  - la CARTE anthracite qui enfermait tout (bordure, coins, ombre) ;
+  - le BANDEAU « HYPE » en haut de page : il poussait la photo vers le
+    bas et faisait passer Hype avant la story. Hype signe en bas ;
+  - la BANDE DE VIGNETTES 84 px sous la photo (et donc, mecaniquement,
+    la case vide qui gene Blandine) ;
+  - la phrase « Rejoins l'univers equestre… », jugee publicitaire.
+
+  Ce qui arrive :
+  - une PELLICULE horizontale : la grande photo se swipe comme dans
+    l'app, une photo par ecran, calage magnetique (scroll-snap). Aucun
+    emplacement n'est genere pour une photo qui n'existe pas ;
+  - des JAUGES tres fines en haut de l'image, exactement autant que de
+    medias reels ;
+  - l'auteur, le club et la date poses SUR le bas de la photo ;
+  - le texte replie au-dela de 4 lignes derriere « Voir plus » ;
+  - l'identite du club, avec ses vrais chiffres quand la base accepte de
+    les donner — SANS lien, voir « LE CLUB — IDENTITE SEULE » ;
+  - la signature Hype et le bouton, en fin de page seulement.
+
+  Sur iPhone, au premier ecran : la photo (60svh), l'auteur, et le
+  debut du texte. Le bouton Hype est sous la ligne de flottaison, par
+  construction — c'est demande.
   ───────────────────────────────────────────────────────────────────── -->
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
@@ -71,215 +91,209 @@
   body {
     font-family: 'Montserrat', sans-serif;
     color: #F4F7FA;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     min-height: 100vh;
-    padding: 0 0 40px;
+    padding: 0 0 42px;
+    overflow-x: hidden;
   }
-  .entete {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: calc(env(safe-area-inset-top) + 18px) 0 14px;
-  }
-  .marque {
-    font-family: 'Cinzel', serif;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 6px;
-    background: linear-gradient(180deg, #FFFFFF 0%, #C9D6DC 45%, #8FA6AF 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .scene { width: 100%; max-width: 460px; padding: 0 18px; }
+  /* Une seule colonne, bord a bord sur telephone, recentree au-dela :
+     sur un grand ecran une photo pleine largeur serait ridicule. */
+  .scene { width: 100%; max-width: 470px; margin: 0 auto; }
 
-  .carte {
-    position: relative;
-    width: 100%;
-    border-radius: 20px;
-    overflow: hidden;
-    background: #0c0f13;
-    border: 1px solid rgba(255,255,255,0.08);
-    box-shadow: 0 24px 60px rgba(0,0,0,0.5);
-  }
-  .carte img {
-    width: 100%;
-    display: block;
-    max-height: 78vh;
-    object-fit: contain;
-    background: #04070d;
-  }
-  /* La couverture s'ouvre aussi : le doigt doit sentir qu'elle est tapable. */
-  .carte img.ouvrable { cursor: zoom-in; -webkit-tap-highlight-color: transparent; }
-  .auteur-bandeau {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 13px 15px;
-  }
-  .av {
-    width: 34px; height: 34px; border-radius: 50%;
-    background: rgba(32,217,245,0.14);
-    border: 1px solid rgba(32,217,245,0.35);
-    background-size: cover; background-position: center;
-    flex-shrink: 0;
-  }
-  .nom-auteur { font-size: 13.5px; font-weight: 700; color: #F4F7FA; line-height: 1.2; }
-  .sous-ligne { font-size: 11.5px; color: #8A929C; margin-top: 1px; }
+  /* ── LA PHOTO ──────────────────────────────────────────────────────
+     Le hero occupe 60svh (svh et non vh : sur iOS, vh compte la barre
+     d'adresse retractee et la photo depasserait au chargement).
+     `cover` remplit sans jamais deformer ; le cadrage est legerement
+     remonte (50% 45%) car sur une photo de concours le sujet — cavalier,
+     tete du cheval — est presque toujours au-dessus du milieu. */
+  .photo-zone { position: relative; width: 100%; height: 60svh; min-height: 340px; background: #04070d; }
+  @supports not (height: 60svh) { .photo-zone { height: 60vh; } }
 
-  .legende {
-    padding: 0 15px 16px;
-    font-size: 14px;
-    line-height: 1.55;
-    color: #D6DCE1;
-    white-space: pre-wrap;
-  }
-  .lieu {
-    display: flex; align-items: center; gap: 5px;
-    padding: 0 15px 16px;
-    font-size: 12.5px;
-    color: #7FCBD6;
-  }
-
-  .tirages {
+  .pellicule {
     display: flex;
-    gap: 8px;
-    margin-top: 10px;
-    overflow-x: auto;
+    width: 100%; height: 100%;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
-    padding-bottom: 2px;
+    scrollbar-width: none;
   }
-  .tirage {
-    flex: 0 0 auto;
-    width: 84px;
-    height: 84px;
-    border-radius: 10px;
-    overflow: hidden;
-    border: 2px solid rgba(255,255,255,0.9);
-    box-shadow: 0 4px 14px rgba(0,0,0,0.4);
-    cursor: zoom-in;
+  .pellicule::-webkit-scrollbar { display: none; }
+  .vue { flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; }
+  .vue img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    object-position: 50% 45%;
+    display: block;
     -webkit-tap-highlight-color: transparent;
   }
-  .tirage img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .cta {
-    margin-top: 28px;
-    width: 100%;
-    max-width: 340px;
-    text-align: center;
-  }
-  .cta-phrase {
-    font-size: 12.5px;
-    color: #8A929C;
-    margin-bottom: 14px;
-    line-height: 1.5;
-  }
-  .cta a {
-    display: block;
-    width: 100%;
-    padding: 15px 0;
-    border-radius: 999px;
-    background: linear-gradient(90deg, #1FB8C4, #5FE9F0);
-    color: #04252A;
-    font-size: 14.5px;
-    font-weight: 800;
-    text-decoration: none;
-    box-shadow: 0 8px 28px rgba(32,217,245,0.22);
-  }
-
-  .etat {
-    display: flex; flex-direction: column; align-items: center;
-    padding: 90px 30px 0;
-    text-align: center;
-  }
-  .etat .titre { font-family: 'Cinzel', serif; font-size: 17px; color: #F4F7FA; margin-bottom: 10px; }
-  .etat .texte { font-size: 13.5px; color: #8A929C; line-height: 1.6; max-width: 300px; }
-
-  .halo {
-    position: absolute; top: -60px; left: 50%; width: 320px; height: 320px;
-    transform: translateX(-50%);
-    background: radial-gradient(circle, rgba(32,217,245,0.14) 0%, rgba(32,217,245,0) 70%);
+  /* Le fondu qui rend l'identite lisible quelle que soit la photo. */
+  .voile {
+    position: absolute; left: 0; right: 0; bottom: 0; height: 46%;
+    background: linear-gradient(180deg, rgba(6,7,9,0) 0%, rgba(6,7,9,0.55) 55%, rgba(6,7,9,0.92) 100%);
     pointer-events: none;
   }
 
-  /* ── LA VISIONNEUSE ──────────────────────────────────────────────
-     Couche plein ecran, fond noir presque opaque, la photo au centre en
-     `contain` pour ne jamais rogner. Les commandes sont posees PAR-DESSUS
-     mais en dehors de la photo autant que possible : la croix en haut a
-     droite dans la zone de securite, le compteur en bas au centre, les
-     fleches sur les cotes verticalement centrees. Le fond entier ferme au
-     tap — c'est le geste attendu et il n'exige aucune precision. */
+  /* Jauges : une par media reel, jamais plus. Elles restent tres
+     discretes tant qu'il n'y a rien a compter (une seule photo -> pas
+     de jauge du tout, voir le JS). */
+  .jauges {
+    position: absolute; left: 12px; right: 12px;
+    top: calc(env(safe-area-inset-top) + 10px);
+    display: flex; gap: 4px;
+    pointer-events: none;
+  }
+  .jauge { flex: 1 1 0; height: 2px; border-radius: 2px; background: rgba(255,255,255,0.26); transition: background .25s ease; }
+  .jauge.active { background: rgba(255,255,255,0.92); }
+
+  /* Identite de l'auteur, posee SUR la photo. */
+  .signature {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; align-items: center; gap: 10px;
+    padding: 0 16px 14px;
+    pointer-events: none;
+  }
+  .av {
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(32,217,245,0.12);
+    border: 1px solid rgba(255,255,255,0.34);
+    background-size: cover; background-position: center;
+    flex-shrink: 0;
+  }
+  .nom-auteur { font-size: 14px; font-weight: 600; color: #FFFFFF; line-height: 1.2; text-shadow: 0 1px 10px rgba(0,0,0,0.55); }
+  .sous-ligne { font-size: 11.5px; font-weight: 400; color: rgba(233,240,244,0.72); margin-top: 2px; text-shadow: 0 1px 10px rgba(0,0,0,0.55); }
+
+  /* Fleches : uniquement la ou il y a une souris. Sur telephone, le
+     doigt suffit et deux pastilles de plus abimeraient la photo. */
+  .fleche { display: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .fleche {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      width: 34px; height: 34px; border-radius: 50%;
+      border: 1px solid rgba(255,255,255,0.16);
+      background: rgba(10,14,19,0.55);
+      color: #EDF2F5; font-size: 17px; line-height: 1;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; opacity: 0; transition: opacity .2s ease;
+    }
+    .photo-zone:hover .fleche { opacity: 0.82; }
+    .f-prec { left: 10px; }
+    .f-suiv { right: 10px; }
+  }
+
+  /* ── LE TEXTE ──────────────────────────────────────────────────────
+     Plus aucun encadre : le texte est pose sur le noir, comme dans
+     l'app. La tete de legende porte, la suite s'efface. */
+  .texte { padding: 16px 18px 0; }
+  .texte .corps {
+    font-size: 15px; line-height: 1.55; color: #E4EAEE;
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .texte .corps .suite { font-size: 13.5px; color: #98A2AB; }
+  .corps.replie {
+    display: -webkit-box; -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4; overflow: hidden;
+  }
+  .voir-plus {
+    display: inline-block; margin-top: 7px;
+    background: none; border: 0; padding: 0;
+    font-family: inherit; font-size: 12.5px; font-weight: 600;
+    color: #7FCBD6; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .lieu {
+    padding: 13px 18px 0;
+    font-size: 12.5px; color: #7FCBD6;
+    display: flex; align-items: center; gap: 5px;
+  }
+
+  /* ── LE CLUB ───────────────────────────────────────────────────────
+     Un filet, trois lignes, rien de plus : cet acces doit inviter, pas
+     concurrencer le bouton Hype. */
+  .club { margin: 26px 18px 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+  .club-nom { font-family: 'Cinzel', serif; font-size: 13.5px; letter-spacing: .06em; color: #E3EAEE; }
+  .club-nom .certif { color: #5FE9F0; font-size: 11.5px; margin-left: 4px; }
+  .club-chiffres { font-size: 11.5px; color: #7C858E; margin-top: 3px; }
+
+  /* ── HYPE, EN DERNIER ──────────────────────────────────────────── */
+  .fin { margin: 40px auto 0; padding: 0 18px; text-align: center; }
+  .marque {
+    font-family: 'Cinzel', serif;
+    font-size: 19px; font-weight: 600; letter-spacing: 7px;
+    background: linear-gradient(180deg, #FFFFFF 0%, #C9D6DC 45%, #8FA6AF 100%);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .baseline { font-size: 11px; color: #7C858E; letter-spacing: .1em; margin-top: 8px; }
+  .fin a {
+    display: inline-block; margin-top: 18px;
+    padding: 12px 26px; border-radius: 999px;
+    background: linear-gradient(90deg, #1FB8C4, #5FE9F0);
+    color: #04252A; font-size: 13.5px; font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 22px rgba(32,217,245,0.18);
+  }
+
+  .etat { display: flex; flex-direction: column; align-items: center; padding: 90px 30px 0; text-align: center; }
+  .etat .titre { font-family: 'Cinzel', serif; font-size: 17px; color: #F4F7FA; margin-bottom: 10px; }
+  .etat .texte-etat { font-size: 13.5px; color: #8A929C; line-height: 1.6; max-width: 300px; }
+
+  /* ── LA VISIONNEUSE ────────────────────────────────────────────────
+     Conservee telle quelle (elle date du 20/08) : le hero est en `cover`,
+     donc rogne ; un tap sur la photo la montre entiere. Elle ne s'ouvre
+     que sur un VRAI tap, jamais a la fin d'un swipe — voir `depart` dans
+     le JS. */
   .visio {
     position: fixed; inset: 0; z-index: 200;
     background: rgba(3,5,8,0.96);
-    display: none;
-    align-items: center; justify-content: center;
+    display: none; align-items: center; justify-content: center;
     -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
   }
   .visio.on { display: flex; }
   .visio img {
-    max-width: 100%;
-    max-height: calc(100vh - 140px);
-    object-fit: contain;
-    display: block;
-    border-radius: 8px;
+    max-width: 100%; max-height: calc(100vh - 140px);
+    object-fit: contain; display: block; border-radius: 8px;
     box-shadow: 0 20px 60px rgba(0,0,0,0.7);
   }
   .v-fermer {
-    position: absolute;
-    top: calc(env(safe-area-inset-top) + 12px);
-    right: 14px;
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(18,24,32,0.75);
-    color: #F4F7FA;
-    font-size: 20px; line-height: 1;
+    position: absolute; top: calc(env(safe-area-inset-top) + 12px); right: 14px;
+    width: 40px; height: 40px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.18); background: rgba(18,24,32,0.75);
+    color: #F4F7FA; font-size: 20px; line-height: 1;
     display: flex; align-items: center; justify-content: center;
     -webkit-tap-highlight-color: transparent;
   }
   .v-fleche {
-    position: absolute;
-    top: 50%; transform: translateY(-50%);
-    width: 44px; height: 44px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.18);
-    background: rgba(18,24,32,0.75);
-    color: #F4F7FA;
-    font-size: 22px; line-height: 1;
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 44px; height: 44px; border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.18); background: rgba(18,24,32,0.75);
+    color: #F4F7FA; font-size: 22px; line-height: 1;
     display: flex; align-items: center; justify-content: center;
     -webkit-tap-highlight-color: transparent;
   }
   .v-prec { left: 10px; }
   .v-suiv { right: 10px; }
   .v-compteur {
-    position: absolute;
-    bottom: calc(env(safe-area-inset-bottom) + 20px);
+    position: absolute; bottom: calc(env(safe-area-inset-bottom) + 20px);
     left: 50%; transform: translateX(-50%);
-    font-size: 12.5px; font-weight: 600;
-    color: #C9D6DC;
-    background: rgba(18,24,32,0.8);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 999px;
-    padding: 6px 14px;
+    font-size: 12.5px; font-weight: 600; color: #C9D6DC;
+    background: rgba(18,24,32,0.8); border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 999px; padding: 6px 14px;
   }
 </style>
 </head>
 <body>
 
-<div class="entete"><span class="marque">HYPE</span></div>
 <div class="scene" id="scene">
   <div class="etat" id="etatChargement">
     <div class="titre">Ouverture&hellip;</div>
   </div>
 </div>
 
-<div class="cta" id="zoneCta" style="display:none;">
-  <p class="cta-phrase">Rejoins l'univers équestre de Hype pour ne plus rien manquer.</p>
-  <a href="https://2hype.netlify.app">Découvrir Hype</a>
+<div class="fin" id="zoneCta" style="display:none;">
+  <div class="marque">HYPE</div>
+  <div class="baseline">Chevaux · Cavaliers · Clubs · Souvenirs</div>
+  <a href="https://2hype.netlify.app">Découvrir Hype →</a>
 </div>
 
 <!-- La visionneuse vit hors de #scene : #scene est reecrit entierement par
@@ -296,7 +310,6 @@
 (function () {
   var SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
   var CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
-  var LIEN_APP = "https://2hype.netlify.app";
 
   function param(nom) {
     try {
@@ -314,7 +327,7 @@
   function afficherEtat(titre, texte) {
     document.getElementById("scene").innerHTML =
       '<div class="etat"><div class="titre">' + echapper(titre) + '</div>' +
-      (texte ? '<div class="texte">' + echapper(texte) + '</div>' : '') + '</div>';
+      (texte ? '<div class="texte-etat">' + echapper(texte) + '</div>' : '') + '</div>';
     document.getElementById("zoneCta").style.display = "block";
   }
 
@@ -333,15 +346,40 @@
     return await r.json();
   }
 
+  /* ── LE POIDS DES PHOTOS ───────────────────────────────────────────
+     31/08 — la meme regle que l'app (bloc pose avant </body> dans
+     index.html) : les photos envoyees depuis le relevement de la limite
+     du bucket pesent 2 a 4,5 Mo, et cette page en affichait l'original.
+     Sur un lien ouvert en 4G par quelqu'un qui ne connait pas Hype,
+     c'est la premiere impression qui se joue.
+     ⚠️ `resize=contain` est INDISPENSABLE : sans lui, le point de
+     transformation Supabase recadre et toutes les photos ressortent
+     zoomees (erreur deja payee le 30/08).
+     Si la transformation est refusee (plan Free), `onerror` repose
+     l'adresse d'origine : on perd le gain, jamais la photo.
+
+     31/08 (retour de Blandine) — QUALITE D'ABORD, POIDS ENSUITE. Le
+     premier reglage (1080 px, qualite 72) etait un reglage de vignette :
+     sur un ecran Retina, ou un point CSS vaut 2 a 3 pixels reels, une
+     photo de 1080 px etiree sur toute la largeur devient molle. Le hero
+     passe donc a 1600 px et qualite 88 — net sur iPhone, sans revenir
+     aux 2 a 4,5 Mo de l'original. La visionneuse, elle, ne passe plus du
+     tout par la transformation : elle affiche l'ORIGINAL (voir
+     `galerie`), puisque c'est la qu'on veut tout voir. */
+  function urlRendu(u, largeur, qualite) {
+    try {
+      var s = String(u || "");
+      if (!s || s.indexOf("/storage/v1/object/public/") < 0) return s;
+      if (s.indexOf("/render/image/") >= 0) return s;
+      return s.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/")
+        + (s.indexOf("?") >= 0 ? "&" : "?") + "width=" + largeur + "&resize=contain&quality=" + (qualite || 88);
+    } catch (e) { return String(u || ""); }
+  }
+
   /* ── LA VISIONNEUSE ────────────────────────────────────────────────
-     20/08 (demande de Blandine : « fais en sorte que quand on partage une
-     story les images du bas puissent s'ouvrir en grand »).
-     `galerie` est rempli une fois la story affichee : couverture EN
-     PREMIER, puis les autres dans l'ordre chronologique — le meme ordre
-     que la bande de vignettes, pour que l'index d'une vignette soit
-     directement son rang dans la galerie.
-     Aucune requete : ces adresses sont deja celles des <img> de la page,
-     donc deja en cache du navigateur. */
+     `galerie` est rempli une fois la story affichee, dans l'ordre exact
+     de la pellicule : couverture d'abord. L'index d'une vue est donc
+     directement son rang dans la galerie. */
   var galerie = [];
   var iVisio = 0;
   var elVisio = document.getElementById("visio");
@@ -356,7 +394,6 @@
     if (iVisio >= galerie.length) iVisio = 0;
     elVImage.src = galerie[iVisio];
     elVCompteur.textContent = (iVisio + 1) + " / " + galerie.length;
-    /* Une seule photo : les fleches et le compteur n'ont rien a dire. */
     var multi = galerie.length > 1;
     elVPrec.style.display = multi ? "flex" : "none";
     elVSuiv.style.display = multi ? "flex" : "none";
@@ -368,7 +405,6 @@
     iVisio = i || 0;
     peindreVisio();
     elVisio.classList.add("on");
-    /* Le fond ne doit pas defiler derriere la couche plein ecran. */
     try { document.body.style.overflow = "hidden"; } catch (e) { }
   }
 
@@ -381,8 +417,6 @@
   document.getElementById("vFermer").addEventListener("click", function (ev) { ev.stopPropagation(); fermerVisio(); });
   elVPrec.addEventListener("click", function (ev) { ev.stopPropagation(); iVisio--; peindreVisio(); });
   elVSuiv.addEventListener("click", function (ev) { ev.stopPropagation(); iVisio++; peindreVisio(); });
-  /* Tap sur le fond = fermer. Le tap sur la photo elle-meme ne ferme pas :
-     on peut vouloir la regarder sans la perdre d'un doigt mal place. */
   elVisio.addEventListener("click", function (ev) { if (ev.target === elVisio) fermerVisio(); });
   elVImage.addEventListener("click", function (ev) { ev.stopPropagation(); });
   document.addEventListener("keydown", function (ev) {
@@ -391,6 +425,62 @@
     else if (ev.key === "ArrowLeft") { iVisio--; peindreVisio(); }
     else if (ev.key === "ArrowRight") { iVisio++; peindreVisio(); }
   });
+
+  /* ── LES CHIFFRES DU CLUB ──────────────────────────────────────────
+     31/08 — « utilise les vraies donnees si elles existent, ne hardcode
+     evidemment pas ». Recopie exacte de la methode de la page club
+     (EcranGuilde, index.html ~28786) : le nom d'ecurie est du texte
+     libre, on cherche donc par motif ILIKE construit sur le noyau du
+     nom, sur `ecurie` PUIS `ecurie2`, puis les chevaux des membres
+     trouves.
+     Ce que la page NE FAIT PAS : afficher un zero. Si une des deux
+     requetes echoue (politique RLS absente sur `chevaux` pour le role
+     anonyme, par exemple) ou renvoie vide, la ligne de chiffres ne
+     s'affiche pas du tout. Un « 0 cavalier » sur un club vivant serait
+     pire que pas de chiffre. */
+  function noyauEcurie(nom) {
+    try {
+      var s = String(nom || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+      s = s.replace(/[^a-z0-9 ]/g, " ").replace(/\b(ecurie|ecuries|centre|equestre|club|hippique|poney|les|le|la|de|du|des|d)\b/g, " ");
+      s = s.replace(/\s+/g, " ").trim();
+      return s;
+    } catch (e) { return ""; }
+  }
+  function motifEcurie(nom) {
+    /* Les caracteres speciaux sont retires avant d'entrer dans le filtre :
+       une virgule ou une parenthese dans un nom de club casserait la
+       syntaxe PostgREST. */
+    var n = noyauEcurie(nom);
+    if (!n) n = String(nom || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9 ]/g, " ").replace(/\s+/g, " ").trim().toLowerCase();
+    if (!n) return "";
+    return "%" + n.split(" ").join("%") + "%";
+  }
+
+  async function chiffresDuClub(nomClub) {
+    var out = { cavaliers: 0, chevaux: 0 };
+    var motif = motifEcurie(nomClub);
+    if (!motif) return out;
+    var mo = encodeURIComponent(motif);
+    var ids = {}, n = 0;
+    try {
+      var a = await requeteRest("profiles?ecurie=ilike." + mo + "&select=id&limit=200");
+      (a || []).forEach(function (p) { if (p && p.id && !ids[p.id]) { ids[p.id] = 1; n++; } });
+    } catch (e1) { }
+    try {
+      var b = await requeteRest("profiles?ecurie2=ilike." + mo + "&select=id&limit=200");
+      (b || []).forEach(function (p) { if (p && p.id && !ids[p.id]) { ids[p.id] = 1; n++; } });
+    } catch (e2) { }
+    out.cavaliers = n;
+    if (n) {
+      try {
+        var liste = Object.keys(ids).join(",");
+        var c = await requeteRest("chevaux?user_id=in.(" + liste + ")&supprime_le=is.null&select=id&limit=1000");
+        out.chevaux = (c || []).length;
+      } catch (e3) { }
+    }
+    return out;
+  }
+  function accord(n, singulier, pluriel) { return n + " " + (n > 1 ? pluriel : singulier); }
 
   async function demarrer() {
     var id = param("id");
@@ -418,16 +508,12 @@
       return;
     }
 
-    /* 19/08 (feu vert de Blandine, en direct : « on voit qu'une photo alors
-       qu'il y en a plein ») — LES STORIES COMPOSEES. Le partage n'attache
-       et ne pointe que vers UNE ligne (celle ouverte au moment du tap sur
-       Partager) ; les autres photos de la meme composition vivent dans
+    /* 19/08 — LES STORIES COMPOSEES. Le partage ne pointe que vers UNE
+       ligne ; les autres photos de la meme composition vivent dans
        d'autres lignes, reliees par `groupe`. Meme convention que
-       hsRegrouperCompos (hype-stories.js) : trie par date de creation, la
+       hsRegrouperCompos (hype-stories.js) : tri par date de creation, la
        couverture est celle qui porte une `disposition`, sinon la plus
-       ancienne — cette page ne decide de rien de nouveau, elle recopie la
-       regle deja en place pour que couverture et legende restent les memes
-       qu'affichees dans l'app. */
+       ancienne. Cette page ne decide de rien de nouveau. */
     var membres = [story];
     if (story.groupe) {
       try {
@@ -457,57 +543,198 @@
 
     var nomAuteur = (auteur && auteur.pseudo) ? auteur.pseudo : "Un cavalier Hype";
     var avatarUrl = auteur && auteur.avatar_url;
-    var sousLigne = (story.ecurie ? story.ecurie : "Hype") + " · " + dateLisible(story.created_at);
+    var nomClub = (story.ecurie && String(story.ecurie).trim() && String(story.ecurie).trim() !== "__perso__") ? String(story.ecurie).trim() : "";
+    var sousLigne = (nomClub ? nomClub : "Hype") + " · " + dateLisible(story.created_at);
 
-    /* Bande des autres photos : toutes SAUF la couverture deja affichee en
-       grand, dans leur ordre chronologique. Vide (donc invisible) pour une
-       story simple, sans composition — rien ne change pour ce cas, le plus
-       courant. */
+    /* LA PELLICULE : la couverture d'abord, puis les autres photos du
+       groupe dans l'ordre chronologique. Une seule vue est generee par
+       photo REELLE — c'est ce qui supprime definitivement la case vide. */
     var autres = membres.filter(function (m) { return m && m.id !== couverture.id; });
-    var bandeTirages = autres.length
-      ? '<div class="tirages">' + autres.map(function (m, k) {
-          return '<div class="tirage" data-i="' + (k + 1) + '"><img src="' + echapper(m.photo_url) + '" alt=""></div>';
+    var photos = [couverture.photo_url].concat(autres.map(function (m) { return m.photo_url; }))
+      .filter(function (u) { return !!u; });
+    if (!photos.length) photos = [story.photo_url];
+
+    /* La visionneuse recoit les adresses D'ORIGINE, sans transformation :
+       c'est le seul endroit ou l'on veut la photo entiere et intacte, et
+       elle ne se charge que sur un tap volontaire. */
+    galerie = photos.slice();
+
+    var vues = photos.map(function (u, k) {
+      return '<div class="vue"><img src="' + echapper(urlRendu(u, 1600, 88)) + '" data-orig="' + echapper(u) + '" data-i="' + k + '" alt=""></div>';
+    }).join('');
+
+    var jauges = photos.length > 1
+      ? '<div class="jauges" id="jauges">' + photos.map(function (u, k) {
+          return '<div class="jauge' + (k === 0 ? ' active' : '') + '"></div>';
         }).join('') + '</div>'
       : '';
 
-    /* La galerie de la visionneuse : couverture d'abord, puis les autres.
-       L'index 0 est donc la couverture, et `data-i` d'une vignette vaut
-       son rang + 1 — d'ou le (k + 1) ci-dessus. */
-    galerie = [couverture.photo_url].concat(autres.map(function (m) { return m.photo_url; }));
+    var fleches = photos.length > 1
+      ? '<button class="fleche f-prec" id="fPrec" aria-label="Photo précédente">&lsaquo;</button>'
+        + '<button class="fleche f-suiv" id="fSuiv" aria-label="Photo suivante">&rsaquo;</button>'
+      : '';
 
-    var html = ''
-      + '<div class="carte">'
-      +   '<img class="ouvrable" id="imgCouv" src="' + echapper(story.photo_url) + '" alt="">'
-      +   '<div class="auteur-bandeau">'
-      +     '<div class="av" style="' + (avatarUrl ? 'background-image:url(' + echapper(avatarUrl) + ')' : '') + '"></div>'
+    /* LE TEXTE : la premiere ligne porte, la suite s'efface. Le tout est
+       replie au-dela de 4 lignes — la mesure reelle est faite apres
+       l'insertion, le bouton n'apparait que s'il y a vraiment quelque
+       chose de cache. */
+    var blocTexte = '';
+    if (story.legende) {
+      var brut = String(story.legende).trim();
+      var coupe = brut.indexOf("\n");
+      var tete = coupe > 0 ? brut.slice(0, coupe).trim() : brut;
+      var suite = coupe > 0 ? brut.slice(coupe).replace(/^\s+/, "") : "";
+      blocTexte = '<div class="texte">'
+        + '<div class="corps replie" id="corps">' + echapper(tete)
+        + (suite ? '<span class="suite">' + "\n\n" + echapper(suite) + '</span>' : '')
+        + '</div>'
+        + '<button class="voir-plus" id="voirPlus" style="display:none;">Voir plus</button>'
+        + '</div>';
+    }
+
+    var blocLieu = story.lieu ? '<div class="lieu">📍 ' + echapper(story.lieu) + '</div>' : '';
+
+    /* LE CLUB — IDENTITE SEULE, PAS DE LIEN.
+       31/08, decision de Blandine : « je ne veux pas afficher Voir le
+       club si ce lien n'est pas capable d'ouvrir reellement le club
+       correspondant ». C'est le cas aujourd'hui : `#e=` est bien lu par
+       index.html, mais `window.__clubOuvert` n'est RELU NULLE PART —
+       le visiteur serait tombe sur la page club de l'app, pas sur celui
+       de la story. Le lien est donc retire, pas seulement masque.
+       A remettre le jour ou l'ouverture d'un club precis existera
+       vraiment dans Hype. */
+    var blocClub = nomClub
+      ? '<div class="club">'
+        + '<div class="club-nom">' + echapper(nomClub) + '<span class="certif">✓</span></div>'
+        + '<div class="club-chiffres" id="clubChiffres" style="display:none;"></div>'
+        + '</div>'
+      : '';
+
+    document.getElementById("scene").innerHTML = ''
+      + '<div class="photo-zone">'
+      +   '<div class="pellicule" id="pellicule">' + vues + '</div>'
+      +   '<div class="voile"></div>'
+      +   jauges
+      +   fleches
+      +   '<div class="signature">'
+      +     '<div class="av" style="' + (avatarUrl ? 'background-image:url(' + echapper(urlRendu(avatarUrl, 160, 90)) + ')' : '') + '"></div>'
       +     '<div><div class="nom-auteur">' + echapper(nomAuteur) + '</div><div class="sous-ligne">' + echapper(sousLigne) + '</div></div>'
       +   '</div>'
-      +   (story.legende ? '<div class="legende">' + echapper(story.legende) + '</div>' : '')
-      +   (story.lieu ? '<div class="lieu">📍 ' + echapper(story.lieu) + '</div>' : '')
       + '</div>'
-      + bandeTirages;
+      + blocTexte
+      + blocLieu
+      + blocClub;
 
-    document.getElementById("scene").innerHTML = html;
     document.getElementById("zoneCta").style.display = "block";
 
     /* Les gestionnaires sont poses APRES l'ecriture du innerHTML : avant,
        les elements n'existent pas encore. */
-    try {
-      var couv = document.getElementById("imgCouv");
-      if (couv) couv.addEventListener("click", function () { ouvrirVisio(0); });
-      var vign = document.querySelectorAll(".tirage");
-      for (var k = 0; k < vign.length; k++) {
-        (function (el) {
-          el.addEventListener("click", function () {
-            ouvrirVisio(parseInt(el.getAttribute("data-i"), 10) || 0);
-          });
-        })(vign[k]);
-      }
-    } catch (eH) { }
+    var pellicule = document.getElementById("pellicule");
 
+    /* Repli sur l'original si le point de transformation refuse. */
     try {
-      document.title = nomAuteur + " sur Hype";
+      var imgs = pellicule.querySelectorAll("img");
+      for (var q = 0; q < imgs.length; q++) {
+        (function (im) {
+          im.addEventListener("error", function () {
+            var o = im.getAttribute("data-orig");
+            if (o && im.src !== o) im.src = o;
+          });
+        })(imgs[q]);
+      }
+    } catch (eF) { }
+
+    /* TAP contre SWIPE : la visionneuse ne doit pas s'ouvrir a la fin
+       d'un balayage. On note ou le doigt s'est pose et on n'ouvre que si
+       il n'a presque pas bouge. */
+    try {
+      var depart = null;
+      pellicule.addEventListener("pointerdown", function (ev) { depart = { x: ev.clientX, y: ev.clientY }; });
+      pellicule.addEventListener("pointerup", function (ev) {
+        if (!depart) return;
+        var dx = Math.abs(ev.clientX - depart.x), dy = Math.abs(ev.clientY - depart.y);
+        depart = null;
+        if (dx > 8 || dy > 8) return;
+        var cible = ev.target;
+        var i = cible && cible.getAttribute ? parseInt(cible.getAttribute("data-i"), 10) : 0;
+        ouvrirVisio(isNaN(i) ? 0 : i);
+      });
     } catch (eT) { }
+
+    /* Les jauges suivent le doigt. Le calcul est volontairement simple :
+       le rang = position du defilement / largeur d'une vue. */
+    if (photos.length > 1) {
+      var lesJauges = document.querySelectorAll("#jauges .jauge");
+      var majJauges = function () {
+        var l = pellicule.clientWidth || 1;
+        var i = Math.round(pellicule.scrollLeft / l);
+        if (i < 0) i = 0;
+        if (i > lesJauges.length - 1) i = lesJauges.length - 1;
+        for (var k = 0; k < lesJauges.length; k++) {
+          if (k === i) lesJauges[k].classList.add("active");
+          else lesJauges[k].classList.remove("active");
+        }
+      };
+      pellicule.addEventListener("scroll", function () {
+        if (window.requestAnimationFrame) window.requestAnimationFrame(majJauges);
+        else majJauges();
+      }, { passive: true });
+
+      var glisser = function (sens) {
+        var l = pellicule.clientWidth || 1;
+        var i = Math.round(pellicule.scrollLeft / l) + sens;
+        if (i < 0) i = photos.length - 1;
+        if (i > photos.length - 1) i = 0;
+        try { pellicule.scrollTo({ left: i * l, behavior: "smooth" }); }
+        catch (e) { pellicule.scrollLeft = i * l; }
+      };
+      try {
+        document.getElementById("fPrec").addEventListener("click", function () { glisser(-1); });
+        document.getElementById("fSuiv").addEventListener("click", function () { glisser(1); });
+      } catch (eFl) { }
+      /* Clavier : seulement quand la visionneuse est fermee. */
+      document.addEventListener("keydown", function (ev) {
+        if (elVisio.classList.contains("on")) return;
+        if (ev.key === "ArrowLeft") glisser(-1);
+        else if (ev.key === "ArrowRight") glisser(1);
+      });
+    }
+
+    /* « Voir plus » : le bouton n'existe que si du texte est reellement
+       masque (mesure apres rendu, pas au nombre de caracteres). */
+    try {
+      var corps = document.getElementById("corps");
+      var bouton = document.getElementById("voirPlus");
+      if (corps && bouton) {
+        var verifier = function () {
+          if (corps.scrollHeight > corps.clientHeight + 2) bouton.style.display = "inline-block";
+        };
+        verifier();
+        setTimeout(verifier, 400);
+        bouton.addEventListener("click", function () {
+          var replie = corps.classList.toggle("replie");
+          bouton.textContent = replie ? "Voir plus" : "Voir moins";
+        });
+      }
+    } catch (eV) { }
+
+    /* Les chiffres du club arrivent apres : ils ne doivent jamais
+       retarder l'affichage de la story. */
+    if (nomClub) {
+      chiffresDuClub(nomClub).then(function (c) {
+        try {
+          if (!c || !c.cavaliers) return;
+          var el = document.getElementById("clubChiffres");
+          if (!el) return;
+          var bouts = [accord(c.cavaliers, "cavalier", "cavaliers")];
+          if (c.chevaux) bouts.push(accord(c.chevaux, "cheval", "chevaux"));
+          el.textContent = bouts.join(" · ");
+          el.style.display = "block";
+        } catch (eC) { }
+      }).catch(function () { });
+    }
+
+    try { document.title = nomAuteur + " sur Hype"; } catch (eT2) { }
   }
 
   demarrer();
