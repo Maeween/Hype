@@ -10,17 +10,261 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# ✅ 31/08/2026 (17h00) — LA PAGE PUBLIQUE D'UNE STORY, REFONDUE
+
+*(Page Hype. Livre `story.html` SEUL. `index.html` et `hype-stories.js` NON TOUCHÉS —
+consigne explicite de Blandine.)*
+
+## À pousser
+
+| Fichier | Où | md5 | Octets |
+|---|---|---|---|
+| `story.html` | **racine** | `7ab70c0d87751ec7a912105cb50353a9` | 34 669 |
+
+Base de départ : `0499769080190fa63de4f80e515fe7bf` · 20 689 o — envoyée par Blandine,
+md5 **identique** à celui inscrit dans ce SUIVI en session 143. Pour une fois, le fichier
+est arrivé sur le disque de la session : l'incident récurrent des sessions 141 et 143
+(« `story.html` n'arrive pas ») ne s'est PAS reproduit.
+
+Rien d'autre à pousser. Aucun `?v=` à changer : `story.html` n'a pas de fichier compagnon,
+tout est en ligne dans la page.
+
+## Ce qui change — la présentation, jamais la donnée
+
+Mêmes requêtes REST, même règle de couverture (`disposition`, sinon la plus ancienne),
+mêmes messages d'erreur, même gestion de l'expiration. Seule la mise en scène est refaite,
+sur un brief de Blandine tranché en 8 points.
+
+**Supprimé** : la carte anthracite qui enfermait tout · le bandeau `HYPE` du haut de page
+(il repoussait la photo vers le bas et faisait passer Hype avant la story) · la bande de
+vignettes 84 px — et donc, mécaniquement, la case vide · la phrase « Rejoins l'univers
+équestre… », jugée publicitaire.
+
+**Ajouté** :
+- **Pellicule swipable** : une vue par photo RÉELLE, `scroll-snap` magnétique, défilement
+  horizontal natif. Aucun emplacement n'est généré pour une photo qui n'existe pas.
+- **Jauges** très fines en haut de l'image, exactement au nombre de médias. Une seule
+  photo → aucune jauge.
+- **Flèches** uniquement sous `@media (hover:hover) and (pointer:fine)` : sur téléphone,
+  le doigt suffit.
+- **Hero 60svh** (`svh` et non `vh` : avec `vh`, iOS compte la barre d'adresse rétractée
+  et la photo dépasse au chargement), `object-fit: cover`, cadrage `50% 45%` — sur une
+  photo de concours le sujet est presque toujours au-dessus du milieu.
+- **Auteur / club / date** posés SUR le bas de la photo, sur un fondu.
+- **Texte** replié au-delà de 4 lignes. Le bouton « Voir plus » n'apparaît que si du texte
+  est réellement masqué — mesure `scrollHeight` vs `clientHeight` après rendu, jamais un
+  seuil de caractères.
+- **Signature Hype en fin de page** : `HYPE` / « Chevaux · Cavaliers · Clubs · Souvenirs » /
+  bouton `Découvrir Hype →`, plus petit que l'ancien bandeau pleine largeur.
+
+Au premier écran d'un iPhone : la photo, l'auteur, le début du texte. Le bouton Hype est
+sous la ligne de flottaison **par construction**.
+
+## Deux décisions de Blandine, prises en cours de livraison
+
+**1. « Voir le club → » RETIRÉ, pas masqué.** `index.html` lit bien `#e=` et pose
+`window.__clubOuvert` (ligne ~20814) — mais **cette variable n'est relue nulle part** :
+c'est du code mort. Le lien aurait donc mené à la page club de l'app, pas à celui de la
+story. Décision : « je ne veux pas afficher Voir le club si ce lien n'est pas capable
+d'ouvrir réellement le club correspondant ». Il ne reste que l'identité informative
+(nom + ✓ + chiffres). **À remettre le jour où l'ouverture d'un club précis existera.**
+
+**2. Qualité avant poids.** Premier réglage livré : 1080 px / qualité 72 — un réglage de
+vignette, mou sur Retina où un point CSS vaut 2 à 3 pixels réels. Corrigé sur retour de
+Blandine : **hero 1600 px / qualité 88**, avatar 160 px / qualité 90, et la **visionneuse
+plein écran affiche l'ORIGINAL** sans transformation (elle ne se charge que sur tap).
+⚠️ `resize=contain` conservé partout — sans lui le point de transformation recadre et tout
+ressort zoomé (leçon du 30/08).
+
+## Les chiffres du club — et la règle du zéro
+
+Recopie exacte de la méthode de `EcranGuilde` (~28786) : motif ILIKE construit sur
+`noyauEcurie`, cherché sur `ecurie` PUIS `ecurie2`, dédoublonnage par id, puis les chevaux
+des membres trouvés (`user_id=in.(…)`, `supprime_le is null`). **Rien n'est en dur.**
+
+🟥 **Règle posée par Blandine : ne JAMAIS afficher un zéro.** Si une requête échoue ou
+revient vide, la statistique concernée disparaît — `13 cavaliers · 27 chevaux`, ou
+`13 cavaliers` seul, ou le nom du club seul. Un « 0 cavalier » sur un club vivant serait
+pire que pas de chiffre.
+
+Lecture anonyme : `profiles` est couverte par la policy du 19/08
+(`profiles_lecture_publique_partage`, `using (true)`). `chevaux` repose sur les 2 policies
+SELECT à `qual = true` relevées plus bas dans ce SUIVI — **non vérifiées pour le rôle
+`anon` depuis la session**, d'où le repli silencieux.
+
+## Open Graph — vérifié, volontairement PAS élargi
+
+`og:title`, `og:description`, `og:image` présents et corrects. `partage-apercu.jpg`
+(1200×630) reste attendu à la racine, **toujours pas fourni** ; rien n'est cassé sans lui.
+
+**`og:url` reste absent, exprès** : en statique, une seule adresse pour toutes les stories
+ferait pointer l'aperçu vers la mauvaise page.
+
+**La vraie première photo en `og:image` est techniquement possible** — uniquement via une
+fonction Netlify (Edge Function sur `/story.html`) qui lit la ligne en base et injecte les
+balises avant de servir la page ; les robots WhatsApp/Facebook n'exécutent jamais le JS.
+Le site principal a déjà des fonctions (Hey Baby), donc c'est faisable.
+**Décision de Blandine : étape séparée, on n'y touche pas maintenant.**
+
+## Contrôles exécutés
+
+`node --check` sur le bloc script (1 seul dans le fichier) → 0 erreur · 0 occurrence de
+l'ancien domaine · `resize=contain` présent sur les 2 chemins de transformation ·
+0 reste de `tirage` / `carte` / `entete` / `club-lien` dans le rendu · `LIEN_APP` devenu
+inutile après le retrait du lien club → **supprimé** plutôt que laissé en code mort.
+
+## 🟠 Reste ouvert
+
+1. **Test visuel sur iPhone par Blandine** — cadrage, hauteur, marges, lisibilité, swipe,
+   texte, statistiques, CTA. C'est la seule étape suivante prévue.
+2. `partage-apercu.jpg` à créer et pousser à la racine.
+3. Aperçu WhatsApp dynamique (fonction Netlify) — étape séparée, non commencée.
+4. Ouverture d'un club précis depuis un lien (`__clubOuvert` est posé mais jamais lu) :
+   tant que ce n'est pas fait, pas de lien club sur la page publique.
+
+---
+
+# 🔴 31/08/2026 (10h50) — PAGE CLUB MORTE : LA MÊME FAUTE QUE `moi`, 12 HEURES PLUS TARD
+
+Pile : `EcranGuilde@…:29031:32`. Ligne 29031 : `BADGE_CHEMINS[badgeIdx]`.
+
+**J'ai déclaré `BADGE_CHEMINS`, `badgeIdx` et `badgeKo` dans `EcranCheval`** — parce que je
+me suis ancré sur la ligne du « Revoir la petite vidéo », qui est dans cet écran-là — **et
+je les utilise dans `EcranGuilde`.** ReferenceError au rendu.
+
+C'est **exactement** la faute du 30/08 à 21h00 avec `moi`. J'avais alors ajouté un contrôle
+à la procédure : *délimiter le composant par comptage d'accolades, puis compter chaque
+identifiant que le nouveau code référence à l'intérieur de ces bornes*. **Je ne l'ai pas
+appliqué.**
+
+## Correctif
+
+Déclarations déplacées dans `EcranGuilde`, à côté de `railClub`. Contrôle exécuté, cette
+fois, sur les DEUX composants :
+
+| | EcranGuilde | EcranCheval |
+|---|---|---|
+| `BADGE_CHEMINS` | 3 | **0** |
+| `badgeIdx` | 5 | **0** |
+| `badgeKo` | 3 | **0** |
+| `TURQ` / `TURQL` | 23 / 18 | 0 / 0 |
+| `revendique` | 8 | 0 |
+
+## 🟥 RÈGLE, À TENIR CETTE FOIS
+
+**Choisir le point d'insertion par le COMPOSANT, jamais par la ligne voisine qui a l'air
+proche.** Deux écrans peuvent avoir des lignes qui se ressemblent ; `node --check` ne voit
+rien, la syntaxe est parfaite dans les deux cas.
+
+C'est la **quatrième** régression en 36 h qu'un contrôle syntaxique ne pouvait pas attraper.
+
+---
+
+# ✅ 31/08/2026 (00h05) — CITATION EN « ENCRE », CRAYONS DISCRETS, COULEURS DE TITRE
+
+Cinq demandes de Blandine en une fois.
+
+1. **Teinte par défaut → `encre`** (bleu très sombre, presque noir). Elle remplace
+   `anthracite` comme valeur de départ.
+2. **Citation réduite** : 17 → **15 px** (défaut 16,5 → 14,5), interligne 1,45 → 1,4 —
+   pour tenir sur deux lignes.
+3. **Le bouton « Modifier » disparaît**, sur la citation ET sur l'histoire. Remplacé par un
+   **petit crayon en bas à droite** de chaque encart : pas de fond, pas de libellé, opacité
+   55 %. La cible tactile reste à **44 px**, seul le dessin est petit. `aria-label`
+   conservé en 6 langues.
+4. **L'histoire du club suit la même teinte** que la citation — fond, couleur de titre et
+   filet de séparation. Les deux encarts ne peuvent plus diverger.
+5. **Couleurs de titre réglables** : une seconde rangée dans le panneau, avec 9 choix —
+   Automatique (le gris de la teinte) · Turquoise · Or · Argent · Cuivre · Lagune · Parme ·
+   Crème · Blanc. Stockée à part (`hype_teinte_citation_titre`), toujours sur l'appareil.
+
+## Piège évité
+
+Il existe **deux** blocs `hyc-cristal` dans le fichier : celui du récit du cavalier
+(`margin: 22px 16px 0`) et celui de l'histoire du club (`margin: 0 16px 28px`). Une ancre
+sur `hyc-cristal-cc` seule aurait touché le mauvais. Ancre prise sur la marge.
+
+---
+
+# 🔴 30/08/2026 (23h50) — LA BANNIÈRE DE CLUB ÉTAIT ROGNÉE À L'ENVOI
+
+> Blandine, après trois réglages d'affichage successifs : « pourtant t'es pas en mode
+> portrait là ». **Elle avait raison de tiquer.**
+
+## La cause
+
+`choisirBanniere` appelait `hypeRecadrer(f, 16 / 10, { teinte: TURQ })` : **la photo était
+forcée en 16:10 AVANT d'être enregistrée**. Ce qui dépassait de ce format était jeté.
+
+Mes trois réglages d'affichage successifs (marges 34 → 16 → 8, plafond 460 → 620 → 720)
+travaillaient donc tous sur une image **déjà coupée**. Aucun d'eux ne pouvait rendre la
+photo « plus longue » : la hauteur manquante n'existait plus.
+
+**Leçon** : quand un réglage d'affichage ne produit pas l'effet attendu, vérifier ce qui est
+STOCKÉ avant de continuer à régler l'affichage. J'ai empilé trois ajustements sans jamais
+remonter à la source.
+
+## Le correctif — option 2, choisie par Blandine
+
+`hypeRecadrer(f, 16/10, …)` → **`hypePhotoDirecte(f)`**. La bannière part dans ses
+proportions d'origine, comme les photos publiées depuis le 06/08. Les deux fonctions
+rendent le même objet — `hypeRecadrer` appelle d'ailleurs `hypePhotoDirecte` en repli
+quand l'atelier n'est pas disponible.
+
+**Conséquence assumée** : chaque club aura une bannière de hauteur différente, de la
+panoramique au portrait. L'affichage sait déjà le gérer (`contain`, plafond 720 px).
+
+🟥 **Les bannières DÉJÀ envoyées restent rognées en base.** Il faut les **renvoyer** pour
+en profiter — celle de l'Écurie Feinn comprise.
+
+## Les deux options écartées
+
+1. Passer le recadrage en portrait 4:5 — imposait un format à tous les clubs.
+3. Laisser le choix du format dans l'atelier — plus juste, mais un vrai chantier.
+
+---
+
+# ✅ 30/08/2026 (23h35) — OUTIL DE TEINTE POUR L'ENCART DE LA CITATION
+
+> « Tu peux me mettre un outil en ligne pour pouvoir tester les couleurs, comme pour le mur
+> immersif ? »
+
+Un lien discret **« Teinte de l'encart »** sous le bouton Modifier, **visible seulement pour
+qui peut éditer** (`editable`). Il déplie dix pastilles — chacune montre un aperçu du fond et
+son nom. Un tap applique immédiatement.
+
+**Dix teintes, aucune couleur d'accent** : Nuit · Ardoise · Anthracite bleuté · Lagune ·
+Lagune profonde · Acier · Encre · Fumée · Basalte · Ardoise claire.
+
+**Même principe que le mur immersif** : le choix est gardé dans `localStorage`
+(`hype_teinte_citation`), donc **sur cet appareil**, et ne change rien pour les autres
+membres du club. La phrase le dit explicitement dans le panneau, en 6 langues.
+
+Défaut : `anthracite`, le choix précédent de Blandine.
+
+⚠️ **Rendu en ligne, pas en portail.** Leçon reprise de `hype-stories.js` (note 19at) :
+`ReactDOM.createPortal` n'existe pas à l'exécution dans cette app et faisait planter la page
+Cavalier. Aucun portail ici.
+
+## Badge « Official » — repositionné
+
+Premier essai en haut à droite de la photo : **abandonné**, Blandine ne le voyait pas — sur
+une image chargée, un badge de 104 px dans un coin se perd. Il reprend **exactement la place
+de l'ancienne pastille** : sous le nom et la ville, centré, 150 px.
+
+---
+
 # ✅ 30/08/2026 (23h15) — BADGE « OFFICIAL » SUR LA PHOTO DU CLUB
 
 > « Tu peux mettre un petit "officiel" à droite, à la place de l'allonger en bas, sur la
 > grande photo ? »
 
-L'ancienne pastille turquoise « ✓ CLUB OFFICIEL », centrée sous le nom du club, est
-**retirée**. À sa place, l'image fournie par Blandine est posée **en haut à droite de la
-photo**, en 104 px de large, avec une ombre portée pour tenir sur une photo claire.
+**Premier essai — en haut à droite de la photo : ABANDONNÉ.** Blandine : « on ne voit pas
+le club officiel ». Sur une photo chargée, un badge de 104 px dans un coin se perd.
 
-Elle se décale à gauche (68 px au lieu de 26) quand le bouton appareil photo est présent,
-pour ne pas le recouvrir.
+**Retenu** : le badge reprend **exactement la place de l'ancienne pastille** — sous le nom
+et la ville, centré, 150 px de large. L'image remplace simplement la pastille turquoise en
+texte.
 
 🟥 **FICHIER À POUSSER : `images/hype-club-officiel.png`.** Sans lui, aucun badge ne
 s'affiche — l'image ne se remplace pas par du texte.
