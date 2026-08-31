@@ -4452,7 +4452,7 @@ var HS_MUR_COULEURS = [
    l'applique par-dessus : un cavalier ayant déjà touché au panneau garde SON
    réglage. Écraser les réglages existants effacerait son choix — non fait,
    non demandé. */
-var HS_MUR_DEFAUTS = { voile: 22, desat: 0, nappe: 20, couleur: 4, fondu: 3, adapt: false };
+var HS_MUR_DEFAUTS = { voile: 15, desat: 0, nappe: 0, couleur: 3, fondu: 3, adapt: false } /* 31/08 (Blandine) : ses reglages deviennent le defaut vu par TOUS. voile 22 -> 15, nappe 20 -> 0, couleur 4 (Turquoise) -> 3 (Lagune). Le panneau reste en ligne ; un choix personnel deja en localStorage prime toujours sur ce defaut. */;
 var HS_MUR_CLE = "hype_mur_immersif_v1";
 
 function hsMurReglages() {
