@@ -118,11 +118,25 @@
     scrollbar-width: none;
   }
   .pellicule::-webkit-scrollbar { display: none; }
-  .vue { flex: 0 0 100%; width: 100%; height: 100%; scroll-snap-align: center; scroll-snap-stop: always; }
+  /* 31/08 (retour de Blandine sur iPhone : « toutes les photos sont
+     decoupees en haut ») — PLUS AUCUNE COUPE. `cover` remplissait le
+     cadre en rognant, et sur une photo verticale ou un cavalier cadre
+     haut, c'est la tete qui saute. La photo passe en `contain` : elle
+     est montree ENTIERE, quel que soit son format. Le vide autour est
+     comble par la meme photo, floutee et assombrie — le cadre reste
+     plein et immersif, mais plus rien n'est perdu. */
+  .vue { position: relative; flex: 0 0 100%; width: 100%; height: 100%; overflow: hidden; scroll-snap-align: center; scroll-snap-stop: always; }
+  .vue .flou {
+    position: absolute; inset: -10%;
+    background-size: cover; background-position: center;
+    filter: blur(26px) brightness(0.5) saturate(1.1);
+    transform: scale(1.12);
+    pointer-events: none;
+  }
   .vue img {
+    position: relative;
     width: 100%; height: 100%;
-    object-fit: cover;
-    object-position: 50% 45%;
+    object-fit: contain;
     display: block;
     -webkit-tap-highlight-color: transparent;
   }
@@ -146,11 +160,16 @@
   .jauge { flex: 1 1 0; height: 2px; border-radius: 2px; background: rgba(255,255,255,0.26); transition: background .25s ease; }
   .jauge.active { background: rgba(255,255,255,0.92); }
 
-  /* Identite de l'auteur, posee SUR la photo. */
+  /* Identite de l'auteur, posee SUR la photo.
+     31/08 — OPTION B, TOUT EST CENTRE. La page melangeait trois regimes
+     (photo bord a bord, texte en retrait de 18 px, HYPE centre) : aucun
+     axe vertical auquel se raccrocher. Un seul axe desormais, du bas de
+     la photo jusqu'au bouton. */
   .signature {
     position: absolute; left: 0; right: 0; bottom: 0;
-    display: flex; align-items: center; gap: 10px;
-    padding: 0 16px 14px;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    padding: 0 20px 14px;
+    text-align: center;
     pointer-events: none;
   }
   .av {
@@ -184,15 +203,21 @@
   /* ── LE TEXTE ──────────────────────────────────────────────────────
      Plus aucun encadre : le texte est pose sur le noir, comme dans
      l'app. La tete de legende porte, la suite s'efface. */
-  .texte { padding: 16px 18px 0; }
+  .texte { padding: 18px 20px 0; text-align: center; }
   .texte .corps {
-    font-size: 15px; line-height: 1.55; color: #E4EAEE;
+    font-size: 15px; line-height: 1.6; color: #E4EAEE;
     white-space: pre-wrap; word-break: break-word;
+    max-width: 30em; margin: 0 auto;
   }
   .texte .corps .suite { font-size: 13.5px; color: #98A2AB; }
+  /* 31/08 (retour de Blandine) : le repli a 4 lignes coupait un
+     remerciement de deux phrases — « je prefere largement voir les deux
+     paragraphes complets ». Le repli ne concerne plus que les textes
+     REELLEMENT longs : au-dela de 500 caracteres, et il en laisse alors
+     voir 8 lignes. */
   .corps.replie {
     display: -webkit-box; -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4; overflow: hidden;
+    -webkit-line-clamp: 8; overflow: hidden;
   }
   .voir-plus {
     display: inline-block; margin-top: 7px;
@@ -203,21 +228,21 @@
   }
 
   .lieu {
-    padding: 13px 18px 0;
+    padding: 15px 20px 0;
     font-size: 12.5px; color: #7FCBD6;
-    display: flex; align-items: center; gap: 5px;
+    display: flex; align-items: center; justify-content: center; gap: 5px;
   }
 
   /* ── LE CLUB ───────────────────────────────────────────────────────
      Un filet, trois lignes, rien de plus : cet acces doit inviter, pas
      concurrencer le bouton Hype. */
-  .club { margin: 26px 18px 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07); }
+  .club { margin: 28px 20px 0; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.07); text-align: center; }
   .club-nom { font-family: 'Cinzel', serif; font-size: 13.5px; letter-spacing: .06em; color: #E3EAEE; }
   .club-nom .certif { color: #5FE9F0; font-size: 11.5px; margin-left: 4px; }
   .club-chiffres { font-size: 11.5px; color: #7C858E; margin-top: 3px; }
 
   /* ── HYPE, EN DERNIER ──────────────────────────────────────────── */
-  .fin { margin: 40px auto 0; padding: 0 18px; text-align: center; }
+  .fin { margin: 40px auto 0; padding: 0 20px; text-align: center; }
   .marque {
     font-family: 'Cinzel', serif;
     font-size: 19px; font-weight: 600; letter-spacing: 7px;
@@ -560,7 +585,11 @@
     galerie = photos.slice();
 
     var vues = photos.map(function (u, k) {
-      return '<div class="vue"><img src="' + echapper(urlRendu(u, 1600, 88)) + '" data-orig="' + echapper(u) + '" data-i="' + k + '" alt=""></div>';
+      var src = echapper(urlRendu(u, 1600, 88));
+      return '<div class="vue">'
+        + '<div class="flou" style="background-image:url(' + src + ')"></div>'
+        + '<img src="' + src + '" data-orig="' + echapper(u) + '" data-i="' + k + '" alt="">'
+        + '</div>';
     }).join('');
 
     var jauges = photos.length > 1
@@ -584,11 +613,14 @@
       var coupe = brut.indexOf("\n");
       var tete = coupe > 0 ? brut.slice(0, coupe).trim() : brut;
       var suite = coupe > 0 ? brut.slice(coupe).replace(/^\s+/, "") : "";
+      /* Seuil de repli : 500 caracteres. En dessous, le texte s'affiche
+         ENTIER, sans bouton — cas de l'immense majorite des legendes. */
+      var replier = brut.length > 500;
       blocTexte = '<div class="texte">'
-        + '<div class="corps replie" id="corps">' + echapper(tete)
+        + '<div class="corps' + (replier ? ' replie' : '') + '" id="corps">' + echapper(tete)
         + (suite ? '<span class="suite">' + "\n\n" + echapper(suite) + '</span>' : '')
         + '</div>'
-        + '<button class="voir-plus" id="voirPlus" style="display:none;">Voir plus</button>'
+        + (replier ? '<button class="voir-plus" id="voirPlus" style="display:none;">Voir plus</button>' : '')
         + '</div>';
     }
 
