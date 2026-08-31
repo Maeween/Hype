@@ -29035,7 +29035,7 @@ function EcranGuilde() {
            était avant ») — pose en haut a droite de la photo, le badge se perdait sur
            une image chargee. Il reprend EXACTEMENT la place de l'ancienne pastille :
            sous le nom et la ville, centre. */
-        (revendique && !badgeKo) ? h("img", { key: "badge" + badgeIdx, src: BADGE_CHEMINS[badgeIdx], alt: "", onError: function () { setBadgeIdx(badgeIdx + 1); }, style: { display: "block", width: 150, height: "auto", margin: "11px auto 0" } }) : null,
+        (revendique && !badgeKo) ? h("img", { key: "badge" + badgeIdx, src: BADGE_CHEMINS[badgeIdx], alt: "", onError: function () { setBadgeIdx(badgeIdx + 1); }, style: { display: "block", width: 88, height: "auto", margin: "10px auto 0" } /* 31/08 (Blandine) : 150 -> 88 px */ }) : null,
         (revendique && badgeKo) ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 6, marginTop: 11, padding: "4px 12px", borderRadius: 999, border: "1px solid " + TURQ + "8C", background: "rgba(6,7,9,0.5)" } },
           h("span", { style: { width: 13, height: 13, borderRadius: "50%", background: TURQ, color: "#04252B", fontSize: 9, fontWeight: 900, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2713"),
           h("span", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: TURQL } }, T("Club officiel", "Official club", "Club oficial", "Club ufficiale", "\u516c\u5f0f\u30af\u30e9\u30d6", "Offizieller Club"))) : null),
