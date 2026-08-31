@@ -1,19 +1,4 @@
 /* ============================================================================
-   HYPE ▸ hype-stories.js — VERSION EN LIGNE : 154 (31/08/2026, soir)
-   Marqueur de version. Il est ICI, en tête, et nulle part ailleurs.
-   Le fichier fait 400 Ko : chercher un repère au milieu oblige à le charger
-   entier. Posé en première ligne, il suffit d'en lire le début pour savoir
-   quelle version tourne réellement sur https://2hype.netlify.app — c'est ma
-   vérification à faire, pas celle de Blandine.
-   ⚠️ A CHAQUE LIVRAISON DE CE FICHIER : incrémenter ce numéro. Sans ça le
-   repère ment, et un repère qui ment est pire que pas de repère.
-   154 = la légende s'affiche sur les stories à modèle (voir « session 154 »
-   plus bas, dans la branche modèle de CompositionStory).
-============================================================================ */
-var HS_VERSION = "154";
-try { if (typeof window !== "undefined") window.HS_VERSION = HS_VERSION; } catch (eV) { }
-
-/* ============================================================================
    HYPE ▸ hype-stories.js — v2 — SESSION 115 (12/08/2026)
 
    LES STORIES DES CAVALIERS.
@@ -57,7 +42,7 @@ try { if (typeof window !== "undefined") window.HS_VERSION = HS_VERSION; } catch
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "19bm";
+var HYPE_STORIES_VERSION = "19bn";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
