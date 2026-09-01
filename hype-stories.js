@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bt";
+var HYPE_STORIES_VERSION = "20bu";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -5783,6 +5783,47 @@ function ReglagesStyleLegende(props) {
   );
 }
 
+/* 20bu (01/09) — LA LEGENDE AGRANDIE NE MORD PLUS SUR LE DECOR.
+   Blandine, apres essai en production : « quand on agrandit le texte s'il est
+   trop pres du modele on se retrouve a empieter dessus ».
+   A l'ecran, le bloc de legende est pose a 10 px du haut, quatre lignes max.
+   En taille « grand » ces quatre lignes prennent 25 % de hauteur en plus et
+   viennent sur le dessin du decor. (L'image de partage, elle, n'a pas ce
+   defaut : sa bande se mesure sur le texte reel.)
+   LE CORRECTIF : le texte DESCEND dans le noir mort du haut du decor quand il
+   y en a. `hsVideHaut` le mesure deja pour l'image de partage -- on reutilise
+   la meme mesure, donc la meme verite. Sur `concours-1`, `-2` et `-4` il y a
+   de la place (14 a 16 % pour les deux premiers) : aucune ligne n'est perdue
+   et le decor ne bouge pas d'un pixel.
+   ⚠️ `concours-3` N'A PAS DE VIDE : son titre commence tout en haut. La, et la
+   seulement, on retombe a 3 lignes en taille « grand ». On ne rapetisse pas le
+   decor pour autant — choix de Blandine : ses photos ne doivent pas maigrir.
+   ⚠️ LA MESURE EST ASYNCHRONE et mise en cache par decor. Tant qu'elle n'est
+   pas revenue, le ratio vaut 0 : le texte reste exactement ou il est
+   aujourd'hui. Aucun saut visible, aucun rendu bloque. */
+var HS_VIDE_RATIO = {};
+function hsVideRatioDecor(disposition, quandPret) {
+  try {
+    var cle = String(disposition || "");
+    if (!cle) return 0;
+    if (HS_VIDE_RATIO[cle] !== undefined) return HS_VIDE_RATIO[cle];
+    HS_VIDE_RATIO[cle] = 0;
+    var im = new Image();
+    try { im.crossOrigin = "anonymous"; } catch (eC) { }
+    im.onload = function () {
+      try {
+        var ph = im.naturalHeight || 0;
+        var v = ph ? (hsVideHaut(im, cle + "-ecran") / ph) : 0;
+        HS_VIDE_RATIO[cle] = (v > 0 && v < 0.26) ? v : 0;
+      } catch (e) { HS_VIDE_RATIO[cle] = 0; }
+      try { if (quandPret) quandPret(HS_VIDE_RATIO[cle]); } catch (e2) { }
+    };
+    im.onerror = function () { HS_VIDE_RATIO[cle] = 0; };
+    im.src = cle + ".webp";
+    return 0;
+  } catch (e) { return 0; }
+}
+
 function CompositionStory(props) {
   /* 19e (14/08) — LA LIGNE QUI MANQUAIT DEPUIS LA SESSION 134.
      CompositionStory appelait `h(...)` sans jamais declarer `h`, et aucun `h`
@@ -5801,6 +5842,17 @@ function CompositionStory(props) {
      le plantage a hype-stories.js:2581:42 (colonne 42 = `fontFamily: M`). */
   var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
   var story = props.story || {}; var lg = props.langue || "fr";
+  /* 20bu : le ratio de noir mort du decor, mesure une fois puis garde. Le
+     `setState` ne sert qu'a redessiner quand la mesure revient. */
+  var _vd = React.useState(0), videRatio = _vd[0], setVideRatio = _vd[1];
+  React.useEffect(function () {
+    var dsp = story.disposition;
+    if (!dsp || String(dsp).indexOf("modele-") !== 0) { setVideRatio(0); return; }
+    var vivant = true;
+    var r0 = hsVideRatioDecor(dsp, function (r) { if (vivant) setVideRatio(r); });
+    setVideRatio(r0);
+    return function () { vivant = false; };
+  }, [story.disposition]);
   var membres = (story.compo && story.compo.length ? story.compo : [story]);
   var plS = React.useState(null), plein = plS[0], setPlein = plS[1];
   /* 19am (disposition « B ») : la legende vit desormais ICI, avec son propre
@@ -6044,11 +6096,20 @@ function CompositionStory(props) {
       morceauxLegende
         ? h("div", {
           style: Object.assign({
-            position: "absolute", top: 10, left: MARGE_COMPO + 6, right: MARGE_COMPO + 6,
+            /* 20bu : on descend DANS le noir mort du decor quand il y en a.
+               Le decor est ajuste en hauteur sur ce conteneur, donc un
+               pourcentage de sa hauteur vaut un pourcentage du vide. */
+            position: "absolute", top: "calc(10px + " + (videRatio * 100).toFixed(2) + "%)",
+            left: MARGE_COMPO + 6, right: MARGE_COMPO + 6,
             zIndex: 3, pointerEvents: "none",
             fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45,
             textAlign: "center", overflowWrap: "break-word", whiteSpace: "pre-line",
-            display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden",
+            /* Sans vide a recuperer (concours-3), une legende AGRANDIE tient sur
+               3 lignes au lieu de 4 : c'est la seule facon de ne pas mordre
+               sans rapetisser le decor. */
+            display: "-webkit-box",
+            WebkitLineClamp: ((videRatio < 0.04 && hsStyleLire(story.style_legende).t === "grand") ? 3 : 4),
+            WebkitBoxOrient: "vertical", overflow: "hidden",
             textShadow: "0 1px 6px rgba(6,7,9,0.85)"
           },
             /* 20bt : le style choisi par l'auteure se pose PAR-DESSUS le style
