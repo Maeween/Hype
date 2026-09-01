@@ -37552,7 +37552,19 @@ function EcranEcurieHype() {
      cavalier proprietaire de la fiche, par exemple Crumble by Evan ». On resout les
      pseudos a partir des user_id deja presents dans commList — une seule requete,
      rejouee uniquement quand la liste change. */
-  var _pr = React.useState({}), proprios = _pr[0], setProprios = _pr[1];
+  /* 01/09 — « BY [OBJECT OBJECT] » SUR LES CARTES DE L'ECURIE HYPE.
+     Ce composant declarait DEUX FOIS `var proprios` et `var setProprios` (ligne
+     ~37329 et ici). En JavaScript, deux `var` du meme nom dans une meme fonction
+     ne font QU'UNE variable : les deux etats se marchaient dessus.
+     Le premier remplit la table avec des PROFILS ENTIERS (pour l'avatar et le
+     pseudo de la carte communautaire), le second avec des PSEUDOS (des chaines).
+     Comme les effets s'executent apres le rendu, c'est le second setter qui
+     recevait les profils entiers du premier effet — d'ou `"by " + objet`, qui
+     s'ecrit « by [object Object] » a l'ecran. Les deux effets se volaient aussi
+     l'etat l'un a l'autre, au hasard de leur ordre d'arrivee.
+     ⚠️ RENOMMER, PAS FUSIONNER : les deux tables n'ont pas le meme contenu.
+     `proprios` garde les profils, `propriosNoms` porte les pseudos. */
+  var _pr = React.useState({}), propriosNoms = _pr[0], setPropriosNoms = _pr[1];
   React.useEffect(function () {
     var vivant = true;
     (async function () {
@@ -37565,7 +37577,7 @@ function EcranEcurieHype() {
         if (!vivant || !r || !r.data) return;
         var m = {};
         r.data.forEach(function (p) { if (p && p.id && p.pseudo) m[p.id] = p.pseudo; });
-        setProprios(m);
+        setPropriosNoms(m);
       } catch (eProp) { }
     })();
     return function () { vivant = false; };
@@ -37577,7 +37589,7 @@ function EcranEcurieHype() {
       img: cEH.photo_url || CHEVAL_DEFAUT,
       nom: cEH.nom || T("Sans nom", "Unnamed", "Sin nombre", "Senza nome", "名前なし", "Ohne Namen"),
       l2: detEH.join(" · "),
-      l3: (cEH.user_id && proprios[cEH.user_id]) ? ("by " + proprios[cEH.user_id]) : "",
+      l3: (cEH.user_id && propriosNoms[cEH.user_id]) ? ("by " + propriosNoms[cEH.user_id]) : "",
       id: cEH.id
     };
   });
