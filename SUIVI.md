@@ -10,6 +10,205 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 02/09/2026 (00 h 15) — 20bx : L'APPUI LONG COPIE ENFIN LA BONNE ADRESSE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `84a4932beda66a6606e58bff0ebcd14c` | **20bx** : l'adresse suit la story ouverte |
+| `index.html` | racine | `35656569387c169f5356ca046eda5306` | `?v=20bx` |
+
+⚠️ Remplace `95caf65d…` (index) et `01423d79…` (stories).
+
+## La cause — ce n'était PAS le bouton Partager
+
+Point ouvert depuis plusieurs jours : « l'appui long copie l'adresse d'accueil
+au lieu de celle de la story ».
+
+⚠️ **Le bouton Partager n'y était pour rien.** L'app est une page unique :
+l'adresse affichée par le navigateur **ne changeait jamais**. Un appui long puis
+« Copier le lien » rendait donc toujours `https://<site>/` — l'accueil, quelle
+que soit la story ouverte.
+
+## Le correctif
+
+L'adresse est réécrite pendant la lecture, avec **le même lien que le bouton
+Partager** : `/story.html?id=<id>`.
+
+⚠️ **`replaceState`, PAS `pushState`** : on n'empile pas une entrée d'historique
+par story feuilletée, sinon le bouton Retour du téléphone obligerait à revenir
+story par story.
+⚠️ **L'adresse d'avant est remise à la fermeture.** Sans ça, un rechargement
+après avoir fermé la visionneuse rouvrirait une story au lieu de l'app.
+⚠️ **Garde complète** : un navigateur qui refuse `replaceState` ne doit pas
+empêcher de lire ses stories.
+
+## Contrôles
+
+- `node --check` sur `hype-stories.js` et sur les **18 blocs inline** : 0 erreur.
+- Les deux clés de cache incrémentées : `HYPE_STORIES_VERSION = "20bx"` **et**
+  `hype-stories.js?v=20bx`.
+- ⚠️ **Contrôle à faire par Blandine** : ouvrir une story, appui long sur le
+  bouton Partager, coller — le lien doit finir par `story.html?id=…`. Puis
+  fermer et recharger : on doit retomber sur l'app, pas sur la story.
+
+**À l'écran : − l'adresse d'accueil copiée à la place de la story · + rien de
+visible.**
+
+## 🟠 Reste du chantier partage (WhatsApp)
+
+- **« Photo jointe ou lien seul » non tranché** : une image jointe empêche
+  WhatsApp de construire sa carte d'aperçu. Il faut choisir, on ne peut pas
+  avoir les deux.
+- **`partage-apercu.jpg` (1200×630) toujours attendu** — sans lui, la carte
+  WhatsApp sort sans visuel.
+- **Instagram ne lit aucune balise OG** : seule l'image unique fonctionne, elle
+  est déjà en production.
+
+## 🟠 Nouveau, signalé ce soir
+
+- **AUCUN CACHE HORS LIGNE.** Chaque page recharge tout depuis Supabase. Sans
+  réseau : cadres vides, compteurs faux (24 membres au lieu de 14), stories
+  absentes — et **aucun message** qui le dise. Blandine : « ça serait bien qu'on
+  les perde pas complètement dès qu'on a plus de réseau ». Chantier à part
+  entière : quoi mettre en cache, combien de temps, comment signaler qu'on voit
+  du vieux.
+- **PLANTAGE DE `EcranCheval`** (capture 20 h 43, écran « Un caillou dans le
+  sabot »). La pile montre `EcranCheval → renderWithHooks` : erreur **pendant le
+  rendu**, pas dans une requête. ⚠️ **Le message d'erreur manque** — il faut
+  taper « Détails techniques » et lire la première ligne. À reproduire sur le
+  dernier `index.html` avant de chercher : la capture est antérieure à trois
+  livraisons.
+
+---
+
+# 🟥 01/09/2026 (minuit) — À CLARIFIER : LES FICHES CHEVAUX PARTAGÉES
+
+*(Demande explicite de Blandine en fin de soirée : « note dans le suivi qu'il
+faudra clarifier tout ce bordel-là ». Rien n'est décidé ici. Ce chapitre existe
+pour qu'on reprenne demain sans repartir de zéro.)*
+
+## Ce qui EXISTE, vérifié dans le code
+
+- **`EcranCheval`** — la fiche du **propriétaire**. Photo, nom, histoire,
+  palmarès, albums. Tout est commun : aucun contenu n'est filtré par cavalier.
+- **`EcranChevalCommun`** (écran `cheval-commun`, ~21091) — la fiche
+  **communautaire**. Elle rassemble le propriétaire ET tous les cavaliers
+  rattachés (`chevaux_liens`), remonte les photos de **chacun** et garde qui les
+  a mises (`nomsPar[al.user_id]`, « par untel »). **Elle fait ce que Blandine
+  avait prévu.**
+
+## LE PROBLÈME : l'accès
+
+⚠️ **14 endroits ouvrent `setEcran("cheval")`. UN SEUL ouvre
+`setEcran("cheval-commun")`** (~21502) — et ce bouton est **en bas de la fiche
+du propriétaire**, libellé « Découvrir l'histoire de… / une autre aventure ».
+
+Autrement dit : la vue communautaire est complète, mais **enfouie**. Tous les
+chemins naturels — grille du club, mes chevaux, Écurie Hype, rail, cartes de
+résultats — mènent à la vue du propriétaire.
+
+⚠️ **C'est probablement la cause des doublons.** Un cavalier qui ne trouve pas
+la fiche commune ne voit pas que le cheval existe déjà : il le recrée. Cooltax,
+Crumble, et peut-être Yum sont nés comme ça.
+
+## LES QUESTIONS À TRANCHER (aucune ne l'est)
+
+1. **Un cavalier rattaché doit-il atterrir sur la vue commune** plutôt que sur
+   celle du propriétaire ? (Mon avis : oui, c'est le sens du rattachement. Mais
+   c'est une décision de conception.)
+2. **Faut-il une TROISIÈME vue, personnelle** — chacun sa page du même cheval,
+   avec ses photos et sa couverture ? C'est ce que Blandine croyait avoir. Ça
+   n'existe pas. ⚠️ **Je n'ai pas pu établir si ça avait été décidé un jour** :
+   aucune trace dans le code ni dans le SUIVI — mais je me suis trompé deux fois
+   ce soir en concluant d'une absence, donc je ne conclus pas.
+3. **Que devient une fusion ?** Aujourd'hui, fusionner = une seule fiche, celle
+   du propriétaire gardé. L'autre perd sa photo de couverture et son nom. Ses
+   albums, eux, remontent dans la fiche commune signés à son nom.
+
+## ÉTAT DE LA BASE CE SOIR — tout a été ANNULÉ
+
+Blandine : « on ferait mieux d'annuler tout ça tant que ce n'est pas plus
+clair. » Fait, et vérifié :
+
+- **Cooltax** : les 2 albums sont revenus sur la ligne de Blandine (0 album
+  restant côté Ilona, vérifié), et sa ligne est ressuscitée
+  (`supprime_le = null`). **Deux Cooltax vivants, comme ce matin.**
+- **Crumble** : jamais touché. Deux lignes (Blandine « CRUMBLE alias
+  Cruibhin », Evan « Crumble »).
+- **Yum** : le doublon d'affichage est corrigé dans le code (dédoublonnage à la
+  source), la ligne de `chevaux_liens` n'a pas été supprimée.
+
+⚠️ **CE QUI N'A PAS ÉTÉ ANNULÉ, ET QUI RESTE VRAI :** les 19 chevaux de Blandine
+portent `club = 'Ecurie Feinn'`, et son profil a `ecurie2 = 'Societe
+d''Equitation de Paris (SEP)'`. C'est volontaire — c'est ce qui empêche ses
+chevaux d'apparaître chez la SEP — mais c'est un changement de la journée.
+
+## ⚠️ MA FAUTE DU JOUR, À RETENIR
+
+**Trois fois j'ai conclu d'une absence après avoir regardé UN SEUL endroit** :
+le tri XP (branché sur une des trois instances), le partage des fiches (regardé
+`EcranCheval`, pas `EcranChevalCommun`), la vue communautaire (déclarée
+inexistante alors qu'elle est complète). À chaque fois Blandine avait raison et
+moi tort.
+
+**Règle : avant de dire qu'une chose n'existe pas, chercher le mécanisme, pas
+l'endroit.** Un `grep` sur le nom du concept, pas sur le composant qu'on a sous
+les yeux.
+
+---
+
+# 🟦 01/09/2026 (22 h 20) — CHANGER L'ÉCURIE D'UN CHEVAL DÉJÀ CRÉÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `95caf65df347a9fa9760092fdeec249e` | pastilles d'écurie dans « Gérer mon écurie » |
+
+⚠️ Remplace `4911a72f…`. `hype-resultats.js` (v2) reste requis.
+
+## Ce qui change
+
+`modifierCheval` savait écrire la colonne `club` depuis 18 h — **aucun bouton ne
+l'appelait**. C'est fait : sous chaque cheval de « Gérer mon écurie », une rangée
+de pastilles.
+
+⚠️ **N'APPARAÎT QUE SI LE CAVALIER A PLUSIEURS ÉCURIES.** Sinon la question n'a
+pas de sens et la liste ne bouge pas d'un pixel.
+⚠️ **« Aucune » est un choix valide** : il remet `club` à vide, donc le cheval
+redevient visible partout, comme avant la colonne. Ce n'est pas une absence de
+réponse, c'est une réponse.
+⚠️ **`stopPropagation` sur chaque pastille** : sans lui, le tap ouvrirait la
+fiche du cheval au lieu de changer l'écurie.
+⚠️ **Bascule immédiate, puis écriture** : la pastille change tout de suite. Si
+la base refuse, **on revient en arrière ET on le dit**, avec la raison. Pas de
+`.catch()` vide — la leçon de la deuxième écurie, ce soir même.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai, 9 cas, tous conformes** : une pastille par écurie plus
+  « Aucune », le club actuel coché, un cheval sans écurie qui coche « Aucune »,
+  un seul coché à la fois, rien avec un seul club, écriture réussie, **écriture
+  en échec → retour à l'ancienne écurie ET alerte**, « Aucune » qui remet à vide.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + les pastilles d'écurie sous chaque cheval (si plusieurs
+clubs) · − rien.**
+
+## 🟠 Reste ouvert
+
+- **L'à la une de l'écurie** (option A décidée ce matin, jamais commencée) —
+  aujourd'hui la page d'un club affiche « Ma story » et les stories du cavalier
+  connecté. ⚠️ **Question non tranchée : qui a le droit de composer l'à la une
+  d'une écurie — Blandine seule, ou tout membre ?**
+- La partie **« grands résultats passés »** en haut de Performances en concours.
+- La **page dédiée au classement des clubs**.
+- Les deux **vérifications en base** (`ecurie2` chez les autres cavalières ;
+  `classement_ecuries` regarde-t-il `ecurie2`).
+- Points anciens : « Voir plus » au-delà de 4 lignes, photos qui débordent,
+  appui long qui copie la mauvaise adresse, `partage-apercu.jpg`.
+
+---
+
 # 🟩 01/09/2026 (22 h) — LA PAGE CLUB MONTRE LES DERNIÈRES VICTOIRES
 
 | Fichier | Où | md5 | Quoi |
