@@ -29248,8 +29248,21 @@ function EcranGuilde() {
          PAS vers l'ancienne page ecurie perso (#ancienne-ecurie) : Blandine a
          explicitement corrige son propre document sur ce point avant de
          l'envoyer. Aucune autre fonctionnalite de la page touchee. */
+      /* 01/09 (Blandine, maquette a l'appui : « une presentation similaire avec
+         les encarts des chevaux autour et ecrit LES CHEVAUX DE L'ECURIE au
+         milieu ») — LA CARTE CENTRALE. Option A, son choix : la carte occupe la
+         CASE DU MILIEU de la grille 3x3, elle ne se pose PAS par-dessus. Aucun
+         cheval n'est masque ni rendu intapable : la grille montre 8 chevaux au
+         lieu de 9, et la 5e case est la carte.
+         ⚠️ La carte est inseree A L'INDEX 4 : en flux de grille, la 5e cellule
+         tombe exactement en ligne 2, colonne 2. Avec moins de 5 chevaux elle est
+         simplement ajoutee a la suite — pas de case vide fabriquee.
+         ⚠️ Elle porte le MEME gabarit que les cartes chevaux (rapport 4/5 + une
+         ligne de nom vide dessous), sinon la rangee du milieu serait plus courte
+         que les autres et la grille se decalerait. */
       (chevauxClub && chevauxClub.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, paddingBottom: 4 } },
-        chevauxClub.slice(0, 9).map(function (cv, i) {
+        (function () {
+          var cellules = chevauxClub.slice(0, 8).map(function (cv, i) {
           return h("button", { key: cv.id || i, onClick: function () {
             /* 29/08 (demande Blandine : « quand je clique sur une fiche cheval dans
                l'ecurie je m'attends a voir SA fiche, pas la fiche communautaire ») —
@@ -29272,7 +29285,17 @@ function EcranGuilde() {
               cv.photo_url ? h("img", { src: cv.photo_url, alt: cv.nom || "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h(PortraitChevalSpectral, { compact: true }),
               (liensClub && liensClub[cv.id] > 1) ? h("div", { style: { position: "absolute", bottom: 6, right: 6, width: 26, height: 30, clipPath: "polygon(50% 0%,93% 20%,100% 58%,74% 97%,50% 100%,26% 97%,0% 58%,7% 20%)", background: "linear-gradient(160deg,#16333B,#0A161B)", display: "grid", placeItems: "center", fontFamily: "'Cinzel',serif", fontSize: 12, fontWeight: 700, color: "#7FF0FF", filter: "drop-shadow(0 0 8px rgba(32,217,245,.65))" } }, String(liensClub[cv.id])) : null),
             h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom || "Cheval"));
-        }))
+          });
+          var carteCentre = h("button", { key: "__carteCentreChevaux", onClick: function () { try { window.__ecurieHypeClub = monClub; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0 } },
+            h("div", { style: { width: "100%", aspectRatio: "4 / 5", borderRadius: 14, overflow: "hidden", border: "1px solid rgba(32,217,245,0.34)", background: "linear-gradient(160deg, rgba(12,18,24,0.96), rgba(6,7,9,0.98))", boxShadow: "0 10px 26px rgba(0,0,0,0.5)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, padding: "8px 7px" } },
+              h("div", { style: { fontFamily: C, fontSize: 11, fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase", color: "#EDF2F5", textAlign: "center", lineHeight: 1.35 } },
+                T("Les chevaux de l'\u00e9curie", "The stable's horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u53a9\u820e\u306e\u99ac", "Die Pferde des Stalls")),
+              h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, color: TURQL, textAlign: "center" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen") + " \u2192")),
+            /* Ligne vide au gabarit du nom : garde les rangees alignees. */
+            h("div", { style: { marginTop: 6, fontSize: 12, fontFamily: C, fontWeight: 700, color: "transparent", whiteSpace: "nowrap" } }, "\u00a0"));
+          if (cellules.length >= 5) cellules.splice(4, 0, carteCentre); else cellules.push(carteCentre);
+          return cellules;
+        })())
         : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Les chevaux des cavaliers du club appara\u00eetront ici.", "Horses of the club's riders will appear here.", "Los caballos de los jinetes del club aparecer\u00e1n aqu\u00ed.", "I cavalli dei cavalieri del club appariranno qui.", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc\u306e\u99ac\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002")),
       /* 29/08 : seuil « > 9 chevaux » retire (demande Blandine) — un club plus petit
          n'avait aucun acces a l'Ecurie Hype depuis sa page. Le bouton s'affiche des
