@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bq";
+var HYPE_STORIES_VERSION = "20br";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -893,6 +893,330 @@ function hsImageFlou(u) {
     return vignetteHype(u, 220, 330);
   } catch (e) { return u; }
 }
+
+/* ============================================================================
+   20br (01/09) — L'IMAGE UNIQUE DE PARTAGE. hsImageStory(story).
+   Fabrique au canvas UNE image 1080x1920 qui montre TOUTE la story : le decor,
+   ses photos posees dans ses fenetres, la legende. Elle remplace la photo
+   seule dans le bouton Partager des stories composees.
+   POURQUOI : une cavaliere a invente le partage Instagram toute seule --
+   capture d'ecran de la page publique + sticker « Lien » par-dessus. Sur
+   Instagram le chemin naturel est l'IMAGE, pas le lien : l'app doit la fournir
+   toute prete au lieu de laisser bricoler une capture.
+
+   ⚠️ LA BANDE DE TEXTE EST RESERVEE, JAMAIS SUPERPOSEE. A l'ecran la legende
+   se pose sur le noir du haut du decor (voir CompositionStory). Ici c'est
+   impossible : sur `concours-1`, `-2` et `-3` le haut du decor porte deja
+   « JOUR DE CONCOURS » en dur dans l'image -- verifie a l'oeil sur les quatre
+   decors le 01/09. Seul `concours-4` a le haut libre. Donc quand il y a une
+   legende, on RESERVE 200 px en haut et le decor est dessine dessous, a
+   l'echelle. Rien ne mord sur rien, sur aucun des 28 modeles.
+
+   ⚠️ L'ECHELLE VIENT DE `taille` DE CHAQUE MODELE, jamais d'un nombre ecrit
+   ici. Le catalogue n'est PAS homogene : 20 decors en 941x1672, mais aussi
+   509x1016, 504x1015, 643x1161, 582x1139, 460x1672, 463x1672 et deux en
+   940x1672. Une valeur en dur ferait sortir les photos de leurs cadres sur
+   huit modeles.
+
+   ⚠️ LE DECOUPAGE EST LE MEME QU'A L'ECRAN. La sortie MODELE de
+   CompositionStory pose la photo dans la `bbox` et la decoupe au `contour`
+   (clip-path). Ici : meme bbox, meme contour, en chemin de canvas. Si un jour
+   l'un des deux change, changer l'autre -- sinon l'image partagee ne
+   ressemblera plus a ce que la cavaliere voit.
+
+   ⚠️ crossOrigin OBLIGATOIRE : sans lui le canvas est « teinte » et
+   toBlob leve une SecurityError. Les photos passent donc par
+   hsImagePartage, qui demande UNE taille dediee (1000x1500) : cette adresse
+   n'est jamais demandee ailleurs, elle est donc toujours servie avec les
+   en-tetes CORS, jamais reprise d'un cache pose sans eux.
+
+   ⚠️ CETTE FONCTION NE DECIDE DE RIEN ET NE CASSE RIEN. Elle renvoie une
+   adresse blob:, ou `null`. `null` = l'appelant partage la photo comme avant.
+   Tout echec (photo absente, reseau, canvas teinte, delai depasse) donne
+   `null`, jamais une image a moitie dessinee.
+
+   ⚠️ LE DELAI DE GARDE N'EST PAS UN CONFORT. navigator.share exige une
+   activation recente : au-dela de quelques secondes apres le doigt, iOS refuse
+   le partage. Si l'image n'est pas prete a temps on rend `null` et le partage
+   part quand meme, avec la photo. Mieux vaut l'ancien partage que pas de
+   partage du tout.
+============================================================================ */
+
+/* La taille dediee au partage : 1000x1500, absente des paliers de
+   hsImageEcran (640/800/960/1080 x 1440/1600) et de hsImageTirage (320x440).
+   ⚠️ NE PAS L'ALIGNER SUR CES PALIERS « pour reutiliser le cache » : c'est
+   justement le cache SANS CORS qu'on veut eviter (voir l'en-tete).
+   `resize=contain` comme partout ailleurs : en `cover` le serveur recadrerait
+   la photo, ce qui est interdit -- le recadrage se fait ici, au canvas, dans
+   la forme exacte de la fenetre. */
+function hsImagePartage(u) {
+  try {
+    if (typeof vignetteHype !== "function") return u;
+    var v = vignetteHype(u, 1000, 1500);
+    return String(v).replace("resize=cover", "resize=contain");
+  } catch (e) { return u; }
+}
+
+/* Une image chargee ne rejette JAMAIS : elle rend l'image ou null. Un seul
+   maillon casse ne doit pas faire tomber la composition entiere. */
+function hsChargerImagePartage(u) {
+  return new Promise(function (resolve) {
+    try {
+      if (!u) { resolve(null); return; }
+      var im = new Image();
+      try { im.crossOrigin = "anonymous"; } catch (eC) { }
+      im.onload = function () { resolve(im); };
+      im.onerror = function () { resolve(null); };
+      im.src = String(u);
+    } catch (e) { resolve(null); }
+  });
+}
+
+/* Recadrage « couvrant » fait ICI, jamais par le serveur : la photo remplit la
+   fenetre sans etre deformee, et c'est le trop-plein qui sort du cadre. */
+function hsPoserCouvrante(ctx, im, x, y, l, hh) {
+  try {
+    var pl = im.naturalWidth || im.width, ph = im.naturalHeight || im.height;
+    if (!pl || !ph || l <= 0 || hh <= 0) return;
+    var rp = pl / ph, rc = l / hh, sx, sy, sl, sh;
+    if (rp > rc) { sh = ph; sl = sh * rc; sx = (pl - sl) / 2; sy = 0; }
+    else { sl = pl; sh = sl / rc; sx = 0; sy = (ph - sh) / 2; }
+    ctx.drawImage(im, sx, sy, sl, sh, x, y, l, hh);
+  } catch (e) { }
+}
+
+/* Le texte coupe en lignes qui tiennent dans la largeur. Au-dela du nombre de
+   lignes permis, la derniere se termine par des points de suspension : le
+   texte entier reste en base et part dans le message du partage. */
+function hsLignesCanvas(ctx, t, large, max) {
+  var out = [], trop = false;
+  try {
+    var paras = String(t || "").replace(/\r/g, "").split("\n");
+    for (var p = 0; p < paras.length; p++) {
+      var brut = paras[p].trim(); if (!brut) continue;
+      var mots = brut.split(/\s+/), ligne = "";
+      for (var i = 0; i < mots.length; i++) {
+        var essai = ligne ? (ligne + " " + mots[i]) : mots[i];
+        if (!ligne || ctx.measureText(essai).width <= large) { ligne = essai; continue; }
+        if (out.length >= max) { trop = true; ligne = ""; break; }
+        out.push(ligne); ligne = mots[i];
+      }
+      if (ligne) { if (out.length >= max) { trop = true; } else { out.push(ligne); } }
+      if (out.length >= max && (p < paras.length - 1)) { trop = true; }
+    }
+    if (trop && out.length) {
+      var d = out[out.length - 1];
+      while (d.length > 1 && ctx.measureText(d + "\u2026").width > large) { d = d.slice(0, -1); }
+      out[out.length - 1] = d.replace(/[\s.,;:]+$/, "") + "\u2026";
+    }
+  } catch (e) { }
+  return out;
+}
+
+/* La signature du bas, uniquement sur les stories SANS decor : les decors
+   portent deja la leur, en dur dans l'image. */
+function hsSignatureCanvas(ctx, LARGE, y) {
+  try {
+    ctx.save();
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillStyle = "#F4F7FA";
+    ctx.font = "42px 'Cinzel', Georgia, serif";
+    ctx.fillText("H Y P E", LARGE / 2, y);
+    ctx.strokeStyle = "rgba(32,217,245,0.55)"; ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(LARGE / 2 - 250, y); ctx.lineTo(LARGE / 2 - 130, y);
+    ctx.moveTo(LARGE / 2 + 130, y); ctx.lineTo(LARGE / 2 + 250, y);
+    ctx.stroke();
+    ctx.restore();
+  } catch (e) { }
+}
+
+function hsImageStory(story, reglages) {
+  var o = reglages || {};
+  return new Promise(function (resolve) {
+    var fini = false;
+    function rendre(v) { if (fini) return; fini = true; resolve(v || null); }
+    var minuteur = null;
+    try { minuteur = setTimeout(function () { rendre(null); }, o.delai || 4000); } catch (eT) { }
+    function terminer(v) { try { if (minuteur) clearTimeout(minuteur); } catch (e) { } rendre(v); }
+
+    try {
+      if (!story) { terminer(null); return; }
+      if (typeof document === "undefined") { terminer(null); return; }
+
+      var LARGE = 1080, HAUT = 1920, MARGE = 70;
+      var d = (story.disposition && String(story.disposition).indexOf("modele-") === 0)
+        ? (hsModeles()[story.disposition] || null) : null;
+      if (d && !(d.fenetres && d.fenetres.length && d.taille && d.taille.length === 2)) d = null;
+      var membres = (story.compo && story.compo.length ? story.compo : [story]);
+      var legende = String(story.legende || "").trim();
+      var HAUT_LIGNE = 46, TAILLE_TEXTE = 34, MARGE_HAUT = 56, ECART_TEXTE = 26;
+
+      var aCharger = [];
+      if (d) {
+        aCharger.push(String(story.disposition) + ".webp");
+        for (var i = 0; i < d.fenetres.length; i++) {
+          var st = membres[i];
+          aCharger.push((st && st.photo_url) ? hsImagePartage(st.photo_url) : null);
+        }
+      } else {
+        /* SANS DECOR : on emporte jusqu'a QUATRE photos, pas seulement la
+           premiere. Une story « H+D » en montre plusieurs a l'ecran ; n'en
+           partager qu'une reviendrait a amputer la story sans le dire. */
+        var util = [];
+        for (var m = 0; m < membres.length && util.length < 4; m++) {
+          if (membres[m] && membres[m].photo_url) util.push(membres[m]);
+        }
+        if (!util.length && story.photo_url) util.push(story);
+        if (!util.length) { terminer(null); return; }
+        for (var n2 = 0; n2 < util.length; n2++) aCharger.push(hsImagePartage(util[n2].photo_url));
+      }
+
+      /* Les polices doivent etre pretes avant de mesurer le texte, sinon les
+         lignes sont calculees dans une police de repli et la coupe est fausse.
+         Jamais bloquant : si `document.fonts` n'existe pas, on avance. */
+      var polices = Promise.resolve();
+      try { if (document.fonts && document.fonts.ready) polices = document.fonts.ready; } catch (eF) { }
+
+      polices.catch(function () { }).then(function () {
+        return Promise.all(aCharger.map(hsChargerImagePartage));
+      }).then(function (ims) {
+        if (fini) return;
+        var cv = document.createElement("canvas");
+        cv.width = LARGE; cv.height = HAUT;
+        var ctx = cv.getContext("2d");
+        if (!ctx) { terminer(null); return; }
+        ctx.imageSmoothingEnabled = true;
+        try { ctx.imageSmoothingQuality = "high"; } catch (eQ) { }
+        ctx.fillStyle = "#060709"; ctx.fillRect(0, 0, LARGE, HAUT);
+
+        /* LA BANDE SE MESURE, ELLE N'EST PAS FIXE. Une bande de hauteur
+           constante gaspillait la place quand la legende tient sur une ligne
+           (le decor etait rapetisse pour rien) et collait le texte au bord
+           haut quand elle en prenait quatre -- ou il passe sous l'interface
+           d'Instagram. On coupe donc le texte d'abord, et la bande vaut ce que
+           les lignes obtenues demandent, marges comprises. */
+        ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
+        var lignes = legende ? hsLignesCanvas(ctx, legende, LARGE - 2 * MARGE, 4) : [];
+        var BANDE = lignes.length
+          ? (MARGE_HAUT + (lignes.length - 1) * HAUT_LIGNE + TAILLE_TEXTE + ECART_TEXTE)
+          : 0;
+
+        if (d) {
+          var decor = ims[0];
+          if (!decor) { terminer(null); return; }
+          var W = d.taille[0], H = d.taille[1];
+          var dispoH = HAUT - BANDE;
+          var k = Math.min(LARGE / W, dispoH / H);
+          var lD = W * k, hD = H * k;
+          var x0 = (LARGE - lD) / 2, y0 = BANDE + (dispoH - hD) / 2;
+          var posee = 0;
+          d.fenetres.forEach(function (f, ix) {
+            var im = ims[ix + 1]; if (!im || !f || !f.bbox) return;
+            var bx = x0 + f.bbox[0] * k, by = y0 + f.bbox[1] * k;
+            var bl = f.bbox[2] * k, bh = f.bbox[3] * k;
+            ctx.save();
+            var c = f.contour || [];
+            ctx.beginPath();
+            if (c.length > 2) {
+              ctx.moveTo(x0 + c[0][0] * k, y0 + c[0][1] * k);
+              for (var j = 1; j < c.length; j++) ctx.lineTo(x0 + c[j][0] * k, y0 + c[j][1] * k);
+              ctx.closePath();
+            } else { ctx.rect(bx, by, bl, bh); }
+            ctx.clip();
+            hsPoserCouvrante(ctx, im, bx, by, bl, bh);
+            ctx.restore();
+            posee++;
+          });
+          /* Aucune photo posee = une image qui ne montrerait que le decor vide.
+             On rend `null` : l'appelant partagera la photo, c'est plus honnete. */
+          if (!posee) { terminer(null); return; }
+          ctx.drawImage(decor, x0, y0, lD, hD);
+        } else {
+          var im0 = ims[0];
+          if (!im0) { terminer(null); return; }
+          /* LE FOND FLOUTE. Le flou vient d'une reduction suivie d'un
+             agrandissement : `ctx.filter` n'existe pas sur les anciens Safari,
+             cette methode-ci marche partout. Il s'applique au FOND seulement --
+             la photo, elle, est posee nue par-dessus (regle de la Design Bible :
+             aucun filtre ni voile sur une photo). */
+          try {
+            var pc = document.createElement("canvas");
+            pc.width = 48; pc.height = Math.max(1, Math.round(48 * HAUT / LARGE));
+            var pctx = pc.getContext("2d");
+            if (pctx) {
+              hsPoserCouvrante(pctx, im0, 0, 0, pc.width, pc.height);
+              try { ctx.filter = "blur(26px)"; } catch (eB) { }
+              ctx.drawImage(pc, 0, 0, LARGE, HAUT);
+              try { ctx.filter = "none"; } catch (eB2) { }
+              ctx.fillStyle = "rgba(6,7,9,0.55)"; ctx.fillRect(0, 0, LARGE, HAUT);
+            }
+            pc.width = 1; pc.height = 1;
+          } catch (eFd) { }
+          /* Les photos posees ENTIERES, jamais recadrees : chacune garde son
+             rapport et ce qui reste devient du vide, pas du rognage. C'est la
+             meme regle qu'a l'ecran (`resize=contain` partout). */
+          function poserEntiere(im, x, y, l, hh) {
+            try {
+              var a = im.naturalWidth || im.width, b = im.naturalHeight || im.height;
+              if (!a || !b || l <= 0 || hh <= 0) return;
+              var kk = Math.min(l / a, hh / b);
+              ctx.drawImage(im, x + (l - a * kk) / 2, y + (hh - b * kk) / 2, a * kk, b * kk);
+            } catch (e) { }
+          }
+          var suite = [];
+          for (var s2 = 1; s2 < ims.length; s2++) { if (ims[s2]) suite.push(ims[s2]); }
+          var zY = BANDE + 36, zH = HAUT - zY - 170;
+          if (zH > 0) {
+            if (!suite.length) {
+              poserEntiere(im0, MARGE, zY, LARGE - 2 * MARGE, zH);
+            } else {
+              /* La grande en haut, les autres en tirages dessous : la meme
+                 lecture qu'a l'ecran, ou la story « H+D » pose sa grande photo
+                 puis sa table de tirages. */
+              var ECART = 16;
+              var hG = Math.round(zH * 0.64) - ECART;
+              var hP = zH - hG - ECART;
+              poserEntiere(im0, MARGE, zY, LARGE - 2 * MARGE, hG);
+              var lC = (LARGE - 2 * MARGE - ECART * (suite.length - 1)) / suite.length;
+              for (var s3 = 0; s3 < suite.length; s3++) {
+                poserEntiere(suite[s3], MARGE + s3 * (lC + ECART), zY + hG + ECART, lC, hP);
+              }
+            }
+          }
+          hsSignatureCanvas(ctx, LARGE, HAUT - 92);
+        }
+
+        if (lignes.length) {
+          ctx.save();
+          ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
+          ctx.textAlign = "center"; ctx.textBaseline = "middle";
+          ctx.shadowColor = "rgba(6,7,9,0.85)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 2;
+          ctx.fillStyle = "#E8EEF1";
+          var yc = MARGE_HAUT + TAILLE_TEXTE / 2;
+          for (var q = 0; q < lignes.length; q++) ctx.fillText(lignes[q], LARGE / 2, yc + q * HAUT_LIGNE);
+          ctx.restore();
+        }
+
+        /* toBlob peut lever une SecurityError si UNE seule image a ete servie
+           sans en-tete CORS : le canvas est alors teinte et rien n'en sort.
+           C'est un echec propre -- on rend `null`, le partage part avec la
+           photo comme avant. */
+        try {
+          cv.toBlob(function (b) {
+            try {
+              if (!b || !b.size) { terminer(null); return; }
+              terminer(URL.createObjectURL(b));
+            } catch (eU) { terminer(null); }
+            try { cv.width = 1; cv.height = 1; } catch (eZ) { }
+          }, "image/jpeg", 0.92);
+        } catch (eTb) { terminer(null); }
+      }).catch(function () { terminer(null); });
+    } catch (e) { terminer(null); }
+  });
+}
+try { if (typeof window !== "undefined") window.hsImageStory = hsImageStory; } catch (eIS) { }
+
 
 /* 19f (14/08) — UNE VIGNETTE CASSEE NE LAISSE PLUS L'ICONE DE SAFARI.
    `replierVignette` reessaie deja l'original ; si celui-la tombe aussi, on
@@ -6190,7 +6514,42 @@ function VisionneuseStories(props) {
                 if (ev && ev.stopPropagation) ev.stopPropagation();
                 try {
                   var titP = (story.pseudo ? (story.pseudo + " \u2014 ") : "") + (story.lieu || "Story");
-                  window.hypePartager("s", story.id, titP, { image: story.photo_url || null, legende: story.legende || null });
+                  var regP = { image: story.photo_url || null, legende: story.legende || null };
+                  /* 20br (01/09, feu vert de Blandine) — L'IMAGE UNIQUE DE PARTAGE.
+                     Sur une story COMPOSEE (plusieurs photos, ou une seule dans un
+                     decor), on joint desormais une image 1080x1920 qui montre toute
+                     la story -- decor, photos, legende -- au lieu de la premiere
+                     photo nue. Origine : une cavaliere partageait deja ses stories
+                     sur Instagram en faisant une CAPTURE D'ECRAN de la page
+                     publique. Sur Instagram le chemin naturel est l'image, pas le
+                     lien : autant la lui donner toute prete.
+                     ⚠️ LE LIEN NE BOUGE PAS : hypePartager continue de le mettre
+                     dans le texte du message. L'image s'ajoute, elle ne remplace
+                     rien d'autre que la photo jointe.
+                     ⚠️ LES STORIES A PHOTO UNIQUE SANS DECOR NE CHANGENT PAS --
+                     decision de la session : on branche d'abord la ou l'image
+                     apporte quelque chose, on regarde le rendu, on etend ensuite.
+                     ⚠️ TOUT ECHEC RETOMBE SUR L'ANCIEN COMPORTEMENT. hsImageStory
+                     rend `null` des qu'une photo manque, que le reseau traine ou
+                     que le canvas est teinte : `regP.image` reste alors la photo,
+                     et le partage part quand meme. Il n'y a aucun cas ou le bouton
+                     ne fait plus rien.
+                     ⚠️ NE PAS AJOUTER D'ATTENTE ICI. navigator.share exige une
+                     activation recente du doigt ; hsImageStory a deja son propre
+                     delai de garde court pour cette raison. Toute seconde ajoutee
+                     avant le partage le fera refuser par iOS. */
+                  var apres = function () {
+                    try {
+                      var p = window.hypePartager("s", story.id, titP, regP);
+                      var nettoyer = function () {
+                        try { if (regP.image && String(regP.image).indexOf("blob:") === 0) URL.revokeObjectURL(regP.image); } catch (eR) { }
+                      };
+                      if (p && typeof p.then === "function") p.then(nettoyer, nettoyer); else nettoyer();
+                    } catch (eH) { }
+                  };
+                  if (typeof hsAvecDecor === "function" && hsAvecDecor(story) && typeof hsImageStory === "function") {
+                    hsImageStory(story).then(function (u) { if (u) regP.image = u; apres(); }, function () { apres(); });
+                  } else { apres(); }
                 } catch (eP) { }
               },
               onTouchStart: function (ev) { if (ev && ev.stopPropagation) ev.stopPropagation(); },
