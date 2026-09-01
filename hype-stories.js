@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20br";
+var HYPE_STORIES_VERSION = "20bs";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -957,6 +957,58 @@ function hsImagePartage(u) {
   } catch (e) { return u; }
 }
 
+/* 20bs — LE NOIR MORT EN HAUT D'UN DECOR, MESURE SUR L'IMAGE ELLE-MEME.
+   Blandine, au premier rendu en production : « l'ecriture est un peu haute ».
+   Le coupable n'etait pas le texte mais le decor : `concours-4` commence par
+   une grande zone de noir vide avant le cheval, `concours-1` aussi. La legende
+   etait donc collee au decor comme prevu, mais la MATIERE VISIBLE commencait
+   bien plus bas -- d'ou l'impression de texte qui flotte.
+   Ici on compte, sur une reduction de 60 px de large, les lignes du haut ou
+   RIEN ne se voit (luminance x opacite sous le seuil). Cette hauteur-la est
+   ensuite retiree du calcul d'echelle : le decor remonte sous le texte et le
+   trou se referme.
+   ⚠️ MESURE, PAS LISTE. Aucun tableau de valeurs par decor a tenir a jour :
+   les 28 modeles et ceux a venir passent par la meme mesure.
+   ⚠️ SEUIL 12 SUR 255, choisi sur les quatre decors reels : il laisse passer
+   le noir pur (3 a 6) et la premiere lueur turquoise (8 a 11) mais s'arrete
+   des le premier trait dessine (18 et plus). Un decor qui porte un titre en
+   haut -- `concours-2`, `-3` -- mesure donc un vide quasi nul et ne bouge pas.
+   ⚠️ PLAFOND A 25 % : garde-fou. Un decor volontairement tres sombre ne doit
+   pas se faire amputer du quart de sa hauteur sur une erreur de mesure.
+   ⚠️ On ARRONDIT VERS LE BAS : mieux vaut laisser un peu de vide que rogner
+   un pixel de dessin. */
+var HS_VIDE_CACHE = {};
+function hsVideHaut(im, cle) {
+  try {
+    if (cle && HS_VIDE_CACHE[cle] !== undefined) return HS_VIDE_CACHE[cle];
+    var pl = im.naturalWidth || im.width, ph = im.naturalHeight || im.height;
+    if (!pl || !ph) return 0;
+    var L = 60, H = Math.max(1, Math.round(L * ph / pl));
+    var c = document.createElement("canvas"); c.width = L; c.height = H;
+    var x = c.getContext("2d", { willReadFrequently: true });
+    if (!x) return 0;
+    x.drawImage(im, 0, 0, L, H);
+    var d = x.getImageData(0, 0, L, H).data;
+    var SEUIL = 12, lignes = 0;
+    for (var y = 0; y < H; y++) {
+      var vu = false;
+      for (var p = 0; p < L; p++) {
+        var i4 = (y * L + p) * 4, a = d[i4 + 3] / 255;
+        var lum = (0.299 * d[i4] + 0.587 * d[i4 + 1] + 0.114 * d[i4 + 2]) * a;
+        if (lum > SEUIL) { vu = true; break; }
+      }
+      if (vu) break;
+      lignes++;
+    }
+    c.width = 1; c.height = 1;
+    var vide = Math.floor(lignes * ph / H);
+    if (vide > ph * 0.25) vide = Math.floor(ph * 0.25);
+    if (vide < 0) vide = 0;
+    if (cle) HS_VIDE_CACHE[cle] = vide;
+    return vide;
+  } catch (e) { return 0; }
+}
+
 /* Une image chargee ne rejette JAMAIS : elle rend l'image ou null. Un seul
    maillon casse ne doit pas faire tomber la composition entiere. */
 function hsChargerImagePartage(u) {
@@ -1098,7 +1150,7 @@ function hsImageStory(story, reglages) {
            les lignes obtenues demandent, marges comprises. */
         ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
         var lignes = legende ? hsLignesCanvas(ctx, legende, LARGE - 2 * MARGE, 4) : [];
-        var BANDE = lignes.length
+        var BANDE = (d && lignes.length)
           ? (MARGE_HAUT + (lignes.length - 1) * HAUT_LIGNE + TAILLE_TEXTE + ECART_TEXTE)
           : 0;
 
@@ -1106,10 +1158,19 @@ function hsImageStory(story, reglages) {
           var decor = ims[0];
           if (!decor) { terminer(null); return; }
           var W = d.taille[0], H = d.taille[1];
+          /* Le noir mort du haut ne compte pas dans la place a occuper : le
+             decor est mis a l'echelle sur sa partie UTILE, puis remonte de la
+             hauteur du vide. Le vide glisse sous la bande de texte -- il n'y a
+             rien dedans a cacher -- et la matiere visible vient se placer juste
+             sous la legende. Rien n'est perdu en bas : la partie utile tient
+             toujours entre la bande et le bas de l'image. */
+          var vide = hsVideHaut(decor, String(story.disposition));
+          var utile = Math.max(1, H - vide);
           var dispoH = HAUT - BANDE;
-          var k = Math.min(LARGE / W, dispoH / H);
+          var k = Math.min(LARGE / W, dispoH / utile);
           var lD = W * k, hD = H * k;
-          var x0 = (LARGE - lD) / 2, y0 = BANDE + (dispoH - hD) / 2;
+          var x0 = (LARGE - lD) / 2;
+          var y0 = BANDE - vide * k + (dispoH - utile * k) / 2;
           var posee = 0;
           d.fenetres.forEach(function (f, ix) {
             var im = ims[ix + 1]; if (!im || !f || !f.bbox) return;
@@ -1133,61 +1194,119 @@ function hsImageStory(story, reglages) {
           if (!posee) { terminer(null); return; }
           ctx.drawImage(decor, x0, y0, lD, hD);
         } else {
+          /* ============================================================
+             LA STORY SANS DECOR — REFAITE LE 01/09 APRES ESSAI REEL.
+             Blandine, en voyant la premiere version en production : « elle
+             n'est plus elle-meme ». Elle avait raison, sur trois points :
+             1. LE FOND FLOUTE. C'etait la photo elle-meme, agrandie et
+                meconnaissable -- sur une photo de groupe, une bouillie de
+                couleurs. A l'ecran une story se pose sur du NOIR. Le flou est
+                retire, il ne reste que #060709. Ne pas le reintroduire.
+             2. LA LEGENDE AVAIT CHANGE DE PLACE. Je l'avais mise en haut
+                parce que les DECORS l'exigent (leur haut est occupe), et je
+                l'ai appliquee ici sans me redemander si ca avait un sens.
+                A l'ecran (sortie H+D, disposition « B » validee le 17/08) la
+                legende vit SOUS la grande photo, apres le fil de lumiere.
+                Elle y est revenue. « Laisse les ecritures ou elles etaient. »
+             3. LES PROPORTIONS. La grande photo etait ecrasee et les tirages
+                colles en bas. L'ordre de l'ecran est repris tel quel :
+                grande photo, fil turquoise, legende, table de tirages,
+                signature. Tout est centre sur l'axe vertical.
+             ⚠️ AUCUNE PHOTO N'EST RECADREE : chacune garde son rapport, ce qui
+             reste devient du vide (regle `resize=contain` du module).
+             ⚠️ LA BANDE DE TEXTE DU HAUT NE S'APPLIQUE PAS ICI : elle
+             n'existe que pour les decors. `BANDE` vaut 0 dans cette sortie. */
           var im0 = ims[0];
           if (!im0) { terminer(null); return; }
-          /* LE FOND FLOUTE. Le flou vient d'une reduction suivie d'un
-             agrandissement : `ctx.filter` n'existe pas sur les anciens Safari,
-             cette methode-ci marche partout. Il s'applique au FOND seulement --
-             la photo, elle, est posee nue par-dessus (regle de la Design Bible :
-             aucun filtre ni voile sur une photo). */
-          try {
-            var pc = document.createElement("canvas");
-            pc.width = 48; pc.height = Math.max(1, Math.round(48 * HAUT / LARGE));
-            var pctx = pc.getContext("2d");
-            if (pctx) {
-              hsPoserCouvrante(pctx, im0, 0, 0, pc.width, pc.height);
-              try { ctx.filter = "blur(26px)"; } catch (eB) { }
-              ctx.drawImage(pc, 0, 0, LARGE, HAUT);
-              try { ctx.filter = "none"; } catch (eB2) { }
-              ctx.fillStyle = "rgba(6,7,9,0.55)"; ctx.fillRect(0, 0, LARGE, HAUT);
-            }
-            pc.width = 1; pc.height = 1;
-          } catch (eFd) { }
-          /* Les photos posees ENTIERES, jamais recadrees : chacune garde son
-             rapport et ce qui reste devient du vide, pas du rognage. C'est la
-             meme regle qu'a l'ecran (`resize=contain` partout). */
           function poserEntiere(im, x, y, l, hh) {
             try {
               var a = im.naturalWidth || im.width, b = im.naturalHeight || im.height;
-              if (!a || !b || l <= 0 || hh <= 0) return;
+              if (!a || !b || l <= 0 || hh <= 0) return 0;
               var kk = Math.min(l / a, hh / b);
               ctx.drawImage(im, x + (l - a * kk) / 2, y + (hh - b * kk) / 2, a * kk, b * kk);
-            } catch (e) { }
+              return b * kk;
+            } catch (e) { return 0; }
           }
-          var suite = [];
-          for (var s2 = 1; s2 < ims.length; s2++) { if (ims[s2]) suite.push(ims[s2]); }
-          var zY = BANDE + 36, zH = HAUT - zY - 170;
-          if (zH > 0) {
-            if (!suite.length) {
-              poserEntiere(im0, MARGE, zY, LARGE - 2 * MARGE, zH);
-            } else {
-              /* La grande en haut, les autres en tirages dessous : la meme
-                 lecture qu'a l'ecran, ou la story « H+D » pose sa grande photo
-                 puis sa table de tirages. */
-              var ECART = 16;
-              var hG = Math.round(zH * 0.64) - ECART;
-              var hP = zH - hG - ECART;
-              poserEntiere(im0, MARGE, zY, LARGE - 2 * MARGE, hG);
-              var lC = (LARGE - 2 * MARGE - ECART * (suite.length - 1)) / suite.length;
-              for (var s3 = 0; s3 < suite.length; s3++) {
-                poserEntiere(suite[s3], MARGE + s3 * (lC + ECART), zY + hG + ECART, lC, hP);
-              }
+          var tirages = [];
+          for (var s2 = 1; s2 < ims.length; s2++) { if (ims[s2]) tirages.push(ims[s2]); }
+
+          var HAUT_SIGN = 150, MARGE_BAS = 40;
+          var hautZone = 90, basZone = HAUT - HAUT_SIGN;
+          var largeUtile = LARGE - 2 * MARGE;
+
+          /* Les hauteurs fixes d'abord ; la grande photo prend ce qui reste,
+             sans jamais depasser 58 % de la zone (meme esprit que le
+             `maxHeight: 62%` de l'ecran). */
+          var hFil = lignes.length ? 30 : 0;
+          var hTexte = lignes.length ? (lignes.length * HAUT_LIGNE) : 0;
+          var hApresTexte = lignes.length ? 28 : 0;
+          var hTirages = tirages.length ? 250 : 0;
+          var hApresGrande = 30;
+          var zone = basZone - hautZone;
+          var hGrandeMax = zone - hFil - hTexte - hApresTexte - hTirages - hApresGrande;
+          /* Le plafond de 58 % n'a de sens que s'il y a des tirages a
+             placer dessous (c'est le `maxHeight: 62%` de l'ecran). Une photo
+             seule prend toute la place disponible, sinon elle serait ratatinee
+             au milieu du noir pour rien. */
+          if (tirages.length && hGrandeMax > zone * 0.58) hGrandeMax = zone * 0.58;
+          if (hGrandeMax < 200) hGrandeMax = 200;
+
+          var pg = im0.naturalWidth || im0.width, hg = im0.naturalHeight || im0.height;
+          var kg = (pg && hg) ? Math.min(largeUtile / pg, hGrandeMax / hg) : 0;
+          var hGrande = hg * kg;
+
+          /* Le bloc entier est centre dans la zone : ce qui n'est pas pris ne
+             s'accumule pas en bas, il se repartit en haut et en bas. */
+          var hBloc = hGrande + hApresGrande + hFil + hTexte + hApresTexte + hTirages;
+          var cur = hautZone + Math.max(0, (zone - hBloc) / 2);
+
+          if (kg > 0) {
+            ctx.drawImage(im0, (LARGE - pg * kg) / 2, cur, pg * kg, hGrande);
+            cur += hGrande + hApresGrande;
+          }
+
+          if (lignes.length) {
+            /* LE FIL DE LUMIERE, comme a l'ecran : 120 px, turquoise, fondu
+               aux deux bouts. C'est lui qui separe la photo du texte. */
+            try {
+              var deg = ctx.createLinearGradient(LARGE / 2 - 60, 0, LARGE / 2 + 60, 0);
+              deg.addColorStop(0, "rgba(32,217,245,0)");
+              deg.addColorStop(0.5, "rgba(32,217,245,0.75)");
+              deg.addColorStop(1, "rgba(32,217,245,0)");
+              ctx.save();
+              ctx.fillStyle = deg;
+              ctx.shadowColor = "rgba(32,217,245,0.4)"; ctx.shadowBlur = 10;
+              ctx.fillRect(LARGE / 2 - 60, cur + 14, 120, 2);
+              ctx.restore();
+            } catch (eFil) { }
+            cur += hFil;
+
+            ctx.save();
+            ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
+            ctx.textAlign = "center"; ctx.textBaseline = "middle";
+            ctx.fillStyle = "#E8EEF1";
+            for (var q2 = 0; q2 < lignes.length; q2++) {
+              ctx.fillText(lignes[q2], LARGE / 2, cur + TAILLE_TEXTE / 2 + q2 * HAUT_LIGNE);
+            }
+            ctx.restore();
+            cur += hTexte + hApresTexte;
+          }
+
+          if (tirages.length) {
+            var ECART = 18;
+            var lC = (largeUtile - ECART * (tirages.length - 1)) / tirages.length;
+            for (var s3 = 0; s3 < tirages.length; s3++) {
+              poserEntiere(tirages[s3], MARGE + s3 * (lC + ECART), cur, lC, hTirages);
             }
           }
-          hsSignatureCanvas(ctx, LARGE, HAUT - 92);
+
+          hsSignatureCanvas(ctx, LARGE, HAUT - HAUT_SIGN / 2 - MARGE_BAS / 2);
         }
 
-        if (lignes.length) {
+        /* La legende EN HAUT n'existe que pour les decors : eux seuls ont
+           besoin d'une bande reservee. Sans decor, elle a deja ete dessinee
+           sous la grande photo, a sa place d'origine. */
+        if (d && lignes.length) {
           ctx.save();
           ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
           ctx.textAlign = "center"; ctx.textBaseline = "middle";
