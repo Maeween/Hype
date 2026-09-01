@@ -14,6 +14,12 @@
      · il n'écrit rien en base.
 
    Point d'entrée :  HYPE_RESULTATS.rendre(hote, options)
+
+   ⚠️ VERSION : 2  (01/09/2026)
+   index.html charge ce fichier avec une clé `?v=`. À CHAQUE livraison de ce
+   fichier, incrémenter le numéro ci-dessus ET le `?v=` de la balise dans
+   index.html — sinon le navigateur et la PWA servent l'ancienne version quoi
+   qu'on pousse. (Leçon de la soirée du 31/08, perdue sur hype-stories.js.)
    ========================================================================== */
 
 (function () {
@@ -192,6 +198,22 @@
 '.hr-nb{display:block;font-size:10.5px;color:rgba(var(--hr-tx),.4);margin-top:3px}',
 '.hr-nb b{color:rgba(var(--hr-tx),.72);font-weight:600}',
 
+/* 01/09 — LA PLUME DES SAISIES MANUELLES. Choix de Blandine : un signe, pas
+   un mot. Turquoise pale, pose devant le nom de l'epreuve et devant la date
+   quand TOUT le concours est manuel. Aucune ligne ajoutee a l'ecran. */
+'.hr-mn{font-size:9.5px;color:rgba(var(--hr-acc),.6);margin-right:5px}',
+
+/* 01/09 — LES PREPAS ENTRE PARENTHESES sur la case Victoires, et la note
+   qui l'explique AU TOUCHER (option C, choix de Blandine : « ils trouveront
+   par eux memes si curieux »). La note est fermee par defaut. */
+'.hr-par{font-family:Montserrat,sans-serif;font-size:12px;font-weight:600;',
+'  color:rgba(var(--hr-acc),.62);margin-left:3px;-webkit-text-fill-color:rgba(32,217,245,.62)}',
+'.hr-tot.hr-tap{cursor:pointer}',
+'.hr-note{display:none;margin:8px 16px 0;padding:9px 12px;border-radius:11px;',
+'  background:rgba(var(--hr-sf),.03);border:1px solid rgba(var(--hr-tx),.08);',
+'  font-size:11px;line-height:1.45;color:rgba(var(--hr-tx),.55)}',
+'.hr-note.hr-on{display:block}',
+
 '.hr-album{display:none;border-top:1px solid rgba(var(--hr-acc),.18);',
 '  background:radial-gradient(ellipse at 50% 0%,rgba(var(--hr-acc),.06),transparent 70%)}',
 '.hr-enc.hr-ouv .hr-album{display:block}',
@@ -351,15 +373,47 @@
   }
 
   function estPrepa(x) { return /pr[ée]pa/i.test(x.ep || ""); }
+  /* Saisie a la main = tout ce qui ne vient pas de l'import FFE. La colonne
+     `origine` existait deja et n'etait lue nulle part a l'ecran. */
+  function estMain(x) { return x.origine !== "import"; }
+  /* Une victoire en preparatoire n'est pas une victoire en epreuve : elle se
+     compte A PART, jamais dans le chiffre principal. */
+  function estVPrepa(x) { return estPrepa(x) && x.place === 1; }
   function estV(x) { return !estPrepa(x) && x.place === 1; }
   function estP(x) { return !estPrepa(x) && x.place !== null && x.place <= 3; }
   /* Classé = premier quart. Le quart est DONNÉ par la FFE. */
   function estClasse(x) { return !estPrepa(x) && x.quart === 1; }
 
+  /* 01/09 (regle de Blandine, rectifiee en seance) : UNE SORTIE = UN CONCOURS.
+     Le compteur additionnait les LIGNES : un week-end a cinq epreuves valait
+     cinq sorties. Il compte desormais les rendez-vous, par le meme regroupement
+     que la liste (meme lieu, jours qui se suivent a trois pres) — les prepas y
+     entrent comme les autres epreuves, elles n'ajoutent donc pas de sortie
+     quand elles tombent un jour deja compte.
+     ⚠️ VICTOIRES, PODIUMS, CLASSEMENTS restent comptes LIGNE PAR LIGNE :
+     trois victoires le meme week-end font trois victoires en une sortie.
+     ⚠️ CETTE FONCTION N'APPELLE PAS `concours()` : `concours()` appelle
+     `compte()`, l'appel croise ferait une recursion infinie. Le regroupement
+     est donc refait ici, en plus court, et SANS filtre — un concours ou l'on
+     n'a pas ete classe reste une sortie. */
+  function nbSorties(ls) {
+    var tri = ls.slice().sort(function (a, b) { return (a.date || "") < (b.date || "") ? -1 : 1; });
+    var nb = 0, ident = null, fin = null;
+    tri.forEach(function (x) {
+      var id = rdvNom(x.lieu) || lieuNormal(x.lieu);
+      if (ident !== null && id === ident && enJours(x.date) - enJours(fin) <= 3) { fin = x.date; return; }
+      ident = id; fin = x.date; nb++;
+    });
+    return nb;
+  }
+
   function compte(ls) {
-    var v = 0, p = 0, c = 0;
-    ls.forEach(function (x) { if (estV(x)) v++; if (estP(x)) p++; if (estClasse(x)) c++; });
-    return { s: ls.length, v: v, p: p, c: c };
+    var v = 0, p = 0, c = 0, vp = 0;
+    ls.forEach(function (x) {
+      if (estV(x)) v++; if (estP(x)) p++; if (estClasse(x)) c++;
+      if (estVPrepa(x)) vp++;
+    });
+    return { s: nbSorties(ls), v: v, p: p, c: c, vp: vp };
   }
 
   /* ==== 4. LES CONCOURS ==================================================
@@ -518,12 +572,20 @@
   /* ==== 7. LE DESSIN ===================================================== */
 
   function blocTotaux(t) {
-    function c(cl, n, l) {
-      return '<div class="hr-tot ' + cl + '"><div class="hr-n">' + n +
+    function c(cl, n, l, sup) {
+      return '<div class="hr-tot ' + cl + (sup ? " hr-tap\" data-hr-note=\"prepa" : "") +
+             '"><div class="hr-n">' + n + (sup || "") +
              '</div><div class="hr-l">' + l + "</div></div>";
     }
-    return '<div class="hr-totaux">' + c("hr-gris", t.s, "Sorties") + c("hr-or", t.v, "Victoires") +
-           c("", t.p, "Podiums") + c("", t.c, "Classements") + "</div>";
+    /* Les victoires en preparatoire s'affichent entre parentheses A COTE du
+       chiffre, jamais dedans. Rien n'apparait quand il n'y en a aucune. */
+    var par = t.vp ? '<span class="hr-par">(' + t.vp + ")</span>" : "";
+    return '<div class="hr-totaux">' + c("hr-gris", t.s, "Sorties") +
+           c("hr-or", t.v, "Victoires", par) +
+           c("", t.p, "Podiums") + c("", t.c, "Classements") + "</div>" +
+           (t.vp ? '<div class="hr-note" data-hr-note-corps="prepa">Entre parenth\u00e8ses : ' +
+                   'les victoires en \u00e9preuve pr\u00e9paratoire. Elles comptent \u00e0 part, ' +
+                   'jamais dans le chiffre des victoires.</div>' : "");
   }
 
   function blocMot(ls, titres, filtre) {
@@ -605,7 +667,8 @@
     var cl = estPrepa(r) ? "" : (estV(r) ? "hr-v" : (estP(r) ? "hr-p" : ""));
     return '<div class="hr-li"><span class="hr-rg ' + cl + '">' +
       (r.place === null ? "—" : r.place + suff(r.place)) + "</span>" +
-      '<span class="hr-e"><span class="hr-ep">' + ech(r.ep) +
+      '<span class="hr-e"><span class="hr-ep">' +
+      (estMain(r) ? '<span class="hr-mn">\u270E</span>' : "") + ech(r.ep) +
       (estPrepa(r) ? '<span class="hr-etq hr-pale">Préparatoire</span>' : "") + "</span>" +
       '<span class="hr-nb"><b>' +
       (r.partants ? (r.place === null ? "" : r.place + suff(r.place) + " sur ") + r.partants
@@ -653,7 +716,11 @@
     } else {
       h += '<div class="hr-nom">' + ech(g.ou) + "</div>";
     }
-    h += '<div class="hr-qd">' + ech(dateLongue(g.deb, g.fin)) +
+    /* Carte fermee : la plume n'apparait que si TOUT le concours est manuel.
+       Sinon elle mentirait sur les lignes officielles cachees dessous. */
+    var toutMain = g.l.length > 0 && g.l.every(estMain);
+    h += '<div class="hr-qd">' + (toutMain ? '<span class="hr-mn">\u270E</span>' : "") +
+      ech(dateLongue(g.deb, g.fin)) +
       (g.l.length > 1 ? " · " + g.l.length + " épreuves" : "") + "</div>";
     if (g.rdv) h += '<div class="hr-ets"><span class="hr-etq' +
       (g.rang === 2 ? " hr-pale" : "") + '">' + ech(g.rdv) + "</span></div>";
@@ -814,6 +881,15 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
         refaire();
       });
     });
+    /* La note des prepas s'ouvre au toucher de la case Victoires. Pas de
+       nouveau rendu : on bascule une classe, l'etat des autres blocs ne bouge
+       pas et rien ne clignote. */
+    hote.querySelectorAll("[data-hr-note]").forEach(function (el) {
+      el.addEventListener("click", function () {
+        var c = hote.querySelector('[data-hr-note-corps="' + el.getAttribute("data-hr-note") + '"]');
+        if (c) c.classList.toggle("hr-on");
+      });
+    });
     hote.querySelectorAll('[data-hr="import"]').forEach(function (el) {
       el.addEventListener("click", function () {
         if (typeof options.onImport === "function") options.onImport();
@@ -826,7 +902,16 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
     });
   }
 
-  function reinitialiser() { ETAT = { filtre: "", choisi: null, fermees: {}, ouverts: {}, tri: triRetenu() }; }
+  /* 01/09 — TRI IMPOSE A L'OUVERTURE. « Performances en concours » doit ouvrir
+     PAR DATE (decision de Blandine), alors que le tri est retenu dans le
+     localStorage et PARTAGE avec la page resultats d'un cheval. L'appelant
+     passe donc son tri ici : reinitialiser("date").
+     ⚠️ On n'ecrit PAS dans le localStorage : le choix de Blandine sur une fiche
+     cheval n'est pas ecrase, et la page club rouvrira toujours par date.
+     ⚠️ Le selecteur reste actif : elle peut changer de tri une fois entree. */
+  function reinitialiser(tri) {
+    ETAT = { filtre: "", choisi: null, fermees: {}, ouverts: {}, tri: tri || triRetenu() };
+  }
 
   /* ==== 9. CE QU'ON EXPOSE =============================================== */
   var API = {
@@ -837,6 +922,7 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
     grandsMoments: grandsMoments, force: force, hauteur: hauteur,
     rdvNom: rdvNom, rdvRang: rdvRang, lieuNormal: lieuNormal,
     estClasse: estClasse, aMontrer: aMontrer, estV: estV, estP: estP, estPrepa: estPrepa,
+    estMain: estMain, estVPrepa: estVPrepa, nbSorties: nbSorties,
     joli: joli, dateLongue: dateLongue,
     RDV: RDV, MEMES_LIEUX: MEMES_LIEUX, HAUTEURS: HAUTEURS
   };

@@ -10,6 +10,120 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 01/09/2026 (matinée, suite) — LE MODULE RÉSULTATS : PLUME, SORTIES, PRÉPAS, TRI
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-resultats.js` | racine | `11863b7c172cbfdfce51e65ba6aab5b0` | version **2** : plume des saisies manuelles · une sortie = un concours · prépas entre parenthèses · tri imposable |
+| `index.html` | racine | `b71713c9bdfaf72e1f0bf5f9cae4a8af` | `hype-resultats.js?v=2` **+ les deux bandes grises** (livraison précédente incluse) |
+
+⚠️ Cet `index.html` **remplace** celui de la livraison des bandes grises
+(`7896ea60…`) : il le contient. Ne pousser que celui-ci.
+`hype-stories.js` (20bu) et `story.html` (20bt) **n'ont pas bougé**.
+
+⚠️ **RÈGLE DE VERSION ÉTENDUE À CE FICHIER.** `hype-resultats.js` est chargé
+avec une clé `?v=`, exactement comme `hype-stories.js`. Un numéro de version est
+désormais écrit en tête du module : à chaque livraison, l'incrémenter **et**
+incrémenter le `?v=` de la balise dans `index.html`. Sans ça, la PWA sert
+l'ancien fichier quoi qu'on pousse.
+
+## 1. La plume des saisies manuelles
+
+Décision de Blandine : les résultats écrits à la main **restent affichés** (le
+« classés seulement » de ce matin est rectifié), mais doivent se distinguer.
+Choix : **un signe, pas un mot** — une plume `✎` turquoise pâle. Sur les deux
+pages, la fiche cheval comme la page club (« tu la mets partout »).
+
+- Sur la **ligne d'épreuve** : plume devant le nom de l'épreuve.
+- Sur la **carte fermée** : plume devant la date, **seulement si TOUT le
+  concours est manuel**. ⚠️ Sinon elle mentirait sur les lignes officielles
+  cachées dessous.
+- La colonne `origine` existait déjà en base et n'était **lue nulle part** à
+  l'écran. Manuel = tout ce qui ne vient pas de l'import FFE (`origine`
+  absente comprise).
+
+## 2. Une sortie = un concours
+
+Règle métier de Blandine, rectifiée en séance. Le compteur additionnait les
+**lignes** : un week-end à cinq épreuves valait cinq sorties. Il compte
+désormais les **rendez-vous**, par le même regroupement que la liste (même
+lieu, jours qui se suivent à trois près).
+
+⚠️ **VICTOIRES, PODIUMS, CLASSEMENTS restent comptés ligne par ligne** — trois
+victoires le même week-end font bien trois victoires en une sortie.
+⚠️ **Les chiffres des fiches chevaux vont baisser**, parfois beaucoup. C'est
+voulu et annoncé : rien n'est perdu, c'est l'ancien compte qui était faux.
+⚠️ **Un concours où l'on n'a pas été classé reste une sortie** — le comptage ne
+filtre rien, contrairement à la liste affichée. Un écart entre le chiffre et le
+nombre de cartes visibles est donc normal.
+⚠️ `nbSorties()` **n'appelle pas** `concours()` : `concours()` appelle
+`compte()`, l'appel croisé ferait une récursion infinie. Le regroupement est
+refait à part, en plus court.
+
+## 3. Les prépas comptent, entre parenthèses
+
+Les préparatoires entrent dans les sorties comme les autres épreuves (elles
+n'ajoutent pas de sortie quand elles tombent un jour déjà compté, elles en
+ajoutent une quand elles sont seules sur leur date).
+
+Une **victoire en préparatoire** s'affiche entre parenthèses **à côté** du
+chiffre des victoires, jamais dedans : « 12 (3) ». Sur les **victoires
+seulement** — choix de Blandine.
+
+Comment le cavalier comprend les parenthèses : **au toucher** (option C, son
+choix — « ils trouveront par eux-mêmes si curieux »). Taper la case Victoires
+ouvre une note d'explication sous le bandeau ; elle est fermée par défaut, et
+la bascule ne redessine rien.
+⚠️ **Rien n'apparaît quand il n'y a aucune victoire en prépa** : ni
+parenthèses, ni note, ni case tapable.
+⚠️ Réserve que j'avais signalée et qu'elle a tranchée : rien à l'écran
+n'indique que la case est tapable. Si personne ne trouve, la solution de repli
+est une mention discrète sous le bandeau — une ligne à écrire, rien de plus.
+
+## 4. Le tri imposable à l'ouverture
+
+`reinitialiser("date")` ouvre la page sur le tri par date. Le tri est retenu
+dans le `localStorage` et **partagé avec la page résultats d'un cheval** :
+sans ça, « Performances en concours » aurait hérité du dernier tri choisi sur
+une fiche.
+⚠️ **On n'écrit pas dans le `localStorage`** : le choix fait sur une fiche
+cheval n'est pas écrasé, et la page club rouvrira toujours par date.
+⚠️ Le sélecteur reste actif : on peut changer de tri une fois entré.
+Les appels existants `reinitialiser()` sans argument sont **inchangés**.
+
+## Contrôles
+
+- `node --check` sur `hype-resultats.js` : 0 erreur.
+- **Banc d'essai logique hors navigateur, 21 cas, tous conformes** : sorties
+  (week-end groupé, prépa isolée, concours non classé), comptage ligne à ligne
+  des victoires/podiums/classements, plume (import / manuel / origine absente),
+  rendu (plume dessinée, parenthèses, note fermée, case tapable, tri par date
+  actif) et **rendu sans prépa ni saisie manuelle** (aucune parenthèse, aucune
+  note, aucune plume, tri « les plus forts » par défaut).
+- `node --check` sur les **18 blocs inline** d'`index.html` : 0 erreur.
+- Marqueurs de lignée identiques : `overflow-x: clip !important` **1** ·
+  `html { overscroll-behavior: none }` **1** · `hypeVerrouScroll` **4** ·
+  `hypeLibererPuitsTactiles` **4**.
+
+**À l'écran : + la plume sur les saisies manuelles · + les parenthèses des
+prépas sur les victoires · + la note au toucher · − rien. Les chiffres de
+« Sorties » changent (baissent) sur toutes les fiches.**
+
+## Ce qui reste pour « Performances en concours »
+
+La page elle-même **n'est pas écrite**. Décisions acquises : nom
+« Performances en concours », tri par date, filtre = ce que fait déjà
+`aMontrer` (classés + prépas + saisies manuelles, donc **aucun filtre à
+écrire**), rendu par `HypeResultatsHote` en mode non-propriétaire, ouverture
+par le titre « Palmarès du club » **et** un lien « Voir tout », le `slice(0, 5)`
+d'`index.html` (~28954) qui saute.
+**Non tranché :** la source des lignes. Le chargeur actuel (~28840) transforme
+tout en groupes par épreuve et ne laisse aucune ligne unitaire ; ma proposition
+est une requête `resultats` **séparée et gardée** sur les membres du club, sur
+le modèle des épinglages — en attente de son accord.
+
+---
+
 # 🟦 01/09/2026 (matinée, suite) — LES BANDES GRISES AUTOUR DES STORIES
 
 | Fichier | Où | md5 | Quoi |
