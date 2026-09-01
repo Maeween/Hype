@@ -22231,7 +22231,7 @@ function EcranCommunaute() {
            la liste entiere est deja juste dessous. */
         (typeof PodiumClubsHype === "function" && classementClubs && classementClubs.length)
           ? h("div", { style: { margin: "0 -16px 6px" } },
-              h(PodiumClubsHype, { liste: classementClubs.map(function (g) { return { nom: g.ecurie, xp: g.xp }; }) }))
+              h(PodiumClubsHype, { sansSuite: true, liste: classementClubs.map(function (g) { return { nom: g.ecurie, xp: g.xp }; }) }))
           : null,
         titreSec(T("Classement des clubs","Club ranking","Ranking de clubes","Classifica club","\u30af\u30e9\u30d6\u30e9\u30f3\u30ad\u30f3\u30b0","Vereinsrangliste")),
         (classementClubs === null) ? h("div", { style:{ color:"#8A929C", fontSize:11.5, fontFamily:M } }, T("Chargement...","Loading...","Cargando...","Caricamento...","\u8aad\u307f\u8fbc\u307f\u4e2d...","Wird geladen...")) :
@@ -29031,8 +29031,11 @@ function PodiumClubsHype(props) {
   }
 
   return h("div", { style: { padding: "26px 16px 0" } },
-    /* ---- le titre, qui n'est PAS dans l'image ---- */
-    h("div", { style: { textAlign: "center", marginBottom: 6 } },
+    /* ---- le titre, qui n'est PAS dans l'image ----
+       ⚠️ `sansTitre` sur la page Communaute : la section y porte deja son propre
+       titre et la liste complete est juste dessous. Sans ca, « CLASSEMENT DES
+       CLUBS » etait ecrit deux fois et les places 4-6 apparaissaient en double. */
+    props.sansTitre ? null : h("div", { style: { textAlign: "center", marginBottom: 6 } },
       h("div", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: TURQ } },
         T("Classement", "Ranking", "Clasificaci\u00f3n", "Classifica", "\u30e9\u30f3\u30ad\u30f3\u30b0", "Rangliste")),
       h("div", { style: { fontFamily: C, fontSize: 25, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: BLANC, lineHeight: 1.15, marginTop: 2 } },
@@ -29049,7 +29052,7 @@ function PodiumClubsHype(props) {
       })),
 
     /* ---- les places suivantes, en vrai HTML ---- */
-    suite.length ? h("div", { style: { marginTop: 4 } },
+    (suite.length && !props.sansSuite) ? h("div", { style: { marginTop: 4 } },
       suite.map(function (g, i) {
         return h("div", { key: "s" + i, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 4px", borderTop: "1px solid rgba(255,255,255,0.06)" } },
           h("div", { style: { width: 18, textAlign: "center", fontFamily: C, fontSize: 13, color: "#8A929C" } }, i + 4),
@@ -29467,10 +29470,28 @@ function EcranGuilde() {
           g2.epingle = (g2.places || []).some(function (pp) { return pp.id && idsEpingles[pp.id]; });
           g2.__score = [g2.epingle ? 1 : 0, poidsTitreG(g2), poidsNiveauG(g2), Number(g2.partants || 0), 100 - meilleurRangG(g2)];
         });
-        var railG = groupes.slice().sort(function (x2, y2) {
-          for (var k4 = 0; k4 < x2.__score.length; k4++) { if (y2.__score[k4] !== x2.__score[k4]) return y2.__score[k4] - x2.__score[k4]; }
-          return 0;
-        }).filter(function (g2) { return meilleurRangG(g2) <= 3; }).slice(0, 10); /* 30/08 : 10 cartes max dans le rail (etait 6) — au-dela le defilement horizontal devient interminable */
+        /* 01/09 (Blandine, apres analyse de ses vraies donnees) — LA PAGE CLUB
+           MONTRE LES DERNIERES VICTOIRES, PAS LES PLUS BELLES.
+           Le rail classait par IMPORTANCE (titres > niveau > partants > rang) :
+           d'ou du 2024 en tete — « Chp des Territoires » pese plus lourd qu'un
+           1er sur 6 de mai 2026. Elle attendait les derniers resultats.
+           ⚠️ LE CLASSEMENT PAR IMPORTANCE N'EST PAS SUPPRIME : il reste tel quel
+           sur les FICHES CHEVAUX (page de Rizotto). Seule la page Club change.
+           ⚠️ VICTOIRES SEULEMENT (rang 1), son choix contre ma recommandation des
+           podiums : « au pire on pourra toujours modifier par la suite ». Pour
+           revenir aux podiums, remplacer `=== 1` par `<= 3` ci-dessous.
+           ⚠️ LES PREPARATOIRES SONT ECARTEES : un 1er en preparatoire n'est pas
+           une victoire en epreuve, meme regle que le compteur des victoires.
+           ⚠️ Les epingles restent devant : un resultat epingle a la main passe
+           avant la chronologie, c'est tout l'interet de l'epinglage.
+           ⚠️ Un club qui gagne peu verra ce bloc court, voire vide. C'est assume. */
+        function estPrepaG(g2) { return /pr[ée]pa/i.test(String(g2 && g2.epreuve || "")); }
+        var railG = groupes.slice()
+          .filter(function (g2) { return meilleurRangG(g2) === 1 && !estPrepaG(g2); })
+          .sort(function (x2, y2) {
+            if (!!y2.epingle !== !!x2.epingle) return (y2.epingle ? 1 : 0) - (x2.epingle ? 1 : 0);
+            return (y2.__tri || 0) - (x2.__tri || 0);
+          }).slice(0, 10);
         /* 01/09 — LES CHEVAUX HORS DU CLUB. Blandine : « si le cheval existe
            ailleurs tu peux quand meme mettre sa photo ou tu en mets rien tant
            pis si t'en as pas ». On ne cherche donc QUE les identifiants encore
@@ -29891,7 +29912,9 @@ function EcranGuilde() {
         /* 01/09 (decision de Blandine) : LE TITRE OUVRE LA PAGE, et un lien
            « Voir tout » a cote fait la meme chose. Les deux mènent au meme
            endroit — elle voulait les deux, pas l'un ou l'autre. */
-        h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc) { } setEcran("perf-concours"); }, style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } }, T("Palmar\u00e8s du club", "Club record", "Palmar\u00e9s del club", "Palmar\u00e8s del club", "\u30af\u30e9\u30d6\u306e\u6226\u7e3e")),
+        /* 01/09 : « Palmares » ne convient plus a un bloc trie par date — le mot
+           reste libre pour la partie « grands resultats passes » a venir. */
+        h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc) { } setEcran("perf-concours"); }, style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } }, T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u7d50\u679c", "Neueste Ergebnisse")),
         h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc2) { } setEcran("perf-concours"); }, style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: TURQL, cursor: "pointer", whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle") + " \u2192")),
       /* 30/08 — LE RAIL AUX COUPES, au-dessus du fil. Rempli AUTOMATIQUEMENT par les
          regles de Blandine (titres > niveau > partants > rang) ; un resultat epingle
@@ -29934,7 +29957,28 @@ function EcranGuilde() {
               nomCh ? h("span", { style: { color: TURQL, fontWeight: 600 } }, " sur " + nomCh) : null),
             h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3 } }, gr.concours || "\u2014"),
             gr.epreuve ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: M, marginTop: 3, lineHeight: 1.35 } }, gr.epreuve) : null,
-            gr.partants ? h("div", { style: { fontSize: 9, color: "#6F7A83", fontFamily: M, marginTop: 4 } }, "/ " + gr.partants) : null);
+            gr.partants ? h("div", { style: { fontSize: 9, color: "#6F7A83", fontFamily: M, marginTop: 4 } }, "/ " + gr.partants) : null,
+            /* 01/09 (Blandine) — LES AUTRES CLASSES DU CLUB SUR LA MEME EPREUVE.
+               « Victoire de Rizotto, et troisieme place de Crumble, c'est pas mal. »
+               Le regroupement les collectait DEJA (`gr.places`) ; les cartes
+               verticales du matin n'affichaient que le meilleur. Ils reviennent,
+               en petit, sous la ligne principale.
+               ⚠️ LE CHEVAL N'EST NOMME QU'UNE FOIS PAR LIGNE — la faute du matin
+               (« t'as ecrit Rizotto deux fois ») ne doit pas revenir par ici.
+               ⚠️ Trois de plus au maximum : au-dela, la carte s'allonge et la
+               victoire se noie dans la liste. */
+            (function () {
+              var autres = (gr.places || []).slice().sort(function (a7, b7) { return (a7.rang || 99) - (b7.rang || 99); }).slice(1, 4);
+              if (!autres.length) return null;
+              return h("div", { style: { marginTop: 8, paddingTop: 7, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                autres.map(function (pp, iA) {
+                  var rTxt = pp.rang ? (String(pp.rang) + (pp.rang === 1 ? "er" : "e")) : "";
+                  var chA = pp.cheval || "";
+                  return h("div", { key: "a" + iA, style: { fontSize: 9.5, color: "#98A2AA", fontFamily: M, marginTop: iA ? 3 : 0, lineHeight: 1.35 } },
+                    (rTxt ? (rTxt + " ") : "") + (pp.cavalier || ""),
+                    chA ? h("span", { style: { color: "rgba(32,217,245,0.62)" } }, " sur " + chA) : null);
+                }));
+            })());
         })) : null,
       epErr ? h("div", { style: { margin: "0 0 10px", padding: "10px 13px", borderRadius: 12, border: "1px solid rgba(255,107,129,0.45)", background: "rgba(60,10,20,0.5)", fontSize: 11.5, color: "#FFD3D9", fontFamily: M, lineHeight: 1.5 } },
         epErr,

@@ -10,6 +10,132 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 01/09/2026 (22 h) — LA PAGE CLUB MONTRE LES DERNIÈRES VICTOIRES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `4911a72f2e47bc3ad7919b0c1302a199` | bloc du club trié par date, victoires seules, autres classés affichés |
+
+⚠️ Remplace `900c9fbc…`. `hype-resultats.js` (v2) reste requis.
+
+## Le diagnostic — ce n'était PAS un défaut
+
+Blandine : « le palmarès du club c'est toujours pas les dernières victoires ».
+
+⚠️ **Le tri était juste.** Ce bloc n'a jamais été une liste chronologique : c'est
+le **rail aux coupes** du 30/08, qui classe par **importance** (épinglés >
+titres > niveau > partants > rang). D'où le 2024 : « Chp des Territoires » pèse
+plus lourd qu'un 1er sur 6 de mai 2026. Le code faisait exactement ce qu'on lui
+avait demandé.
+
+Ses données le confirment : elle a bien des classés récents et visibles en 2026
+(Evan, Liam, Ilona, Chloé). Rien n'était perdu ni filtré à tort.
+
+## Ce qui change, sur ses décisions
+
+**1. Tri par date décroissante, victoires seulement.**
+⚠️ Son choix **contre ma recommandation** des podiums : « au pire on pourra
+toujours modifier par la suite ». **Pour revenir aux podiums : remplacer
+`=== 1` par `<= 3`**, une ligne.
+⚠️ **Les préparatoires sont écartées** — un 1er en préparatoire n'est pas une
+victoire en épreuve, même règle que le compteur.
+⚠️ **Les épinglés restent devant** la chronologie : c'est tout l'intérêt de
+l'épinglage.
+⚠️ **Un club qui gagne peu verra ce bloc court, voire vide.** Assumé.
+
+**2. Le classement par importance N'EST PAS SUPPRIMÉ** : il reste tel quel sur
+les **fiches chevaux** (page de Rizotto). Seule la page Club change.
+
+**3. Le titre devient « Derniers résultats ».** « Palmarès » ne convient plus à
+un bloc trié par date, et le mot reste libre pour la partie « grands résultats
+passés » à venir.
+
+**4. Les autres classés du club sur la même épreuve sont affichés.** Blandine :
+« victoire de Rizotto, et troisième place de Crumble, c'est pas mal ». Le
+regroupement les collectait **déjà** ; les cartes verticales du matin
+n'affichaient que le meilleur. Ils reviennent en petit sous la ligne principale.
+⚠️ **Le cheval n'est nommé qu'une fois par ligne** — la faute du matin (« t'as
+écrit Rizotto deux fois ») ne doit pas revenir par là.
+⚠️ **Trois de plus au maximum** : au-delà, la victoire se noie dans la liste.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai sur ses VRAIES données, 10 cas, tous conformes** : le 2024
+  n'est plus en tête, la victoire la plus récente ouvre le bloc, les non gagnés
+  (10e, 5e) sont écartés, la préparatoire gagnée est écartée, ordre
+  chronologique, **le 2e classé de l'épreuve gagnée est affiché**, une victoire
+  seule n'ajoute aucune ligne, jamais plus de trois lignes en plus, un épinglé
+  passe devant, club sans victoire → bloc vide sans plantage.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + les dernières victoires par date · + les autres classés de la
+même épreuve · − le classement par importance sur la page Club (conservé sur
+les fiches chevaux) · − le titre « Palmarès du club ».**
+
+---
+
+# 🟦 01/09/2026 (21 h 50) — LE CLASSEMENT EN DOUBLE SUR LA COMMUNAUTÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `900c9fbce6ec7eb7195c92b5f983978c` | podium sans titre ni places 4-6 sur la Communauté |
+
+⚠️ Remplace `c35932a4…`. `hype-resultats.js` (v2) reste requis pour
+« Performances en concours ».
+
+## Le doublon
+
+En posant le podium sur la page Communauté, je lui ai laissé **son titre et sa
+liste des places 4-6** — alors que la section porte déjà son titre et que la
+**liste complète** est juste dessous. Résultat : « CLASSEMENT DES CLUBS » écrit
+deux fois, et les places 4, 5, 6 affichées deux fois.
+
+Le composant accepte désormais `sansTitre` et `sansSuite`. La page Communauté
+passe les deux : elle ne garde que **le podium lui-même**.
+⚠️ **La page Club ne change pas** : elle n'a ni titre de section ni liste
+complète, le podium doit y porter les deux.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran (Communauté) : − le titre en double · − les places 4-6 en double.**
+
+## 🟠 « Le palmarès du club, c'est toujours pas les dernières victoires »
+
+**Vérifié dans le code, et le tri semble juste** : la requête ordonne par
+`date_epreuve` décroissante (limite 300), `__tri` est calculé sur
+`date_epreuve` puis `created_at` en repli, et les groupes gardent cet ordre —
+c'était déjà le correctif du 30/08.
+
+Deux causes possibles restent, et je ne code pas avant de savoir laquelle :
+
+1. **Les résultats récents du club ne sont pas CLASSÉS.** Le fil ne garde que
+   `quart == 1` ou `quart` absent (`estResultatAffichableEnFil`). Un 12e de 2026
+   est écarté, un 1er de 2024 reste.
+2. **Les lignes saisies à la main sont écartées dès qu'il existe un résultat
+   officiel** (`aOfficiel`), ce qui peut masquer des palmarès récents écrits à
+   la main.
+
+Requête de contrôle à passer :
+
+```sql
+select date_epreuve, concours, epreuve, classement, quart, cavalier
+from resultats
+where user_id in (select id from profiles where ecurie ilike '%feinn%' or ecurie2 ilike '%feinn%')
+  and visible is not false
+order by date_epreuve desc nulls last
+limit 20;
+```
+
+Si les 20 dernières lignes sont récentes mais avec `quart` à 2, 3 ou 4, c'est la
+cause n° 1 — et c'est une **décision** à prendre : le palmarès montre-t-il les
+derniers **classés** ou les derniers **résultats** ?
+
+---
+
 # 🟩 01/09/2026 (21 h 40) — « PERFORMANCES EN CONCOURS » EST ÉCRITE
 
 | Fichier | Où | md5 | Quoi |
