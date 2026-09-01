@@ -19853,7 +19853,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bu"></script><script src="hype-resultats.js?v=2"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bv"></script><script src="hype-resultats.js?v=2"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -28972,6 +28972,49 @@ function EcranGuilde() {
   var _rq = React.useState(""), rechQ = _rq[0], setRechQ = _rq[1];
   var _rr = React.useState(null), rechRes = _rr[0], setRechRes = _rr[1];
   var _sg = React.useState(null), suggestions = _sg[0], setSuggestions = _sg[1];
+  /* 01/09 — LE TRI XP SUR LA PAGE CLUB. La 20bt l'avait branche sur
+     `EcranEcurie` (encart « Cavaliers du club »), PAS sur cette page-ci
+     (`EcranGuilde`, encart « Cavaliers de l'ecurie ») — celle que Blandine
+     regarde, et la seule atteignable depuis que « Mon ecurie » redirige vers
+     le club. D'ou « le tri des cavaliers ne marche pas » : il n'etait pas la.
+     Meme fonction, memes garanties que sur l'autre page :
+     ⚠️ LE TRI NE FILTRE RIEN — un cavalier absent de la reponse garde sa place
+     a la SUITE des classes, il ne disparait pas.
+     ⚠️ ECHEC = ORDRE D'AVANT, aucun ecran vide, aucun message.
+     ⚠️ Les FIGURANTS n'ont pas d'identifiant : ils ne sont jamais envoyes a la
+     fonction et restent en fin de liste, ou ils sont deja.
+     ⚠️ Hook pose ICI, avec les autres etats, AVANT toute sortie
+     conditionnelle du composant (regle du fichier). */
+  var _gXp = React.useState(null), ordreXpG = _gXp[0], setOrdreXpG = _gXp[1];
+  React.useEffect(function () {
+    var vivantXpG = true;
+    (async function () {
+      try {
+        var tousG = (membres || []).concat(choisis || []);
+        if (moiG && moiG.id) tousG = tousG.concat([{ id: moiG.id }]);
+        var vusG = {}, idsG = [];
+        tousG.forEach(function (p) {
+          var i = p && p.id ? String(p.id) : "";
+          if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(i)) return;
+          if (vusG[i]) return; vusG[i] = true; idsG.push(i);
+        });
+        if (idsG.length < 2 || typeof supa === "undefined" || !supa) { if (vivantXpG) setOrdreXpG(null); return; }
+        var rG = await supa.rpc("hype_ordre_cavaliers_xp", { ids: idsG });
+        if (!vivantXpG) return;
+        if (rG && rG.error) { setOrdreXpG(null); return; }
+        var carteG = {};
+        (rG && rG.data ? rG.data : []).forEach(function (l) {
+          if (l && l.user_id != null && l.rang != null) carteG[String(l.user_id)] = Number(l.rang);
+        });
+        setOrdreXpG(Object.keys(carteG).length ? carteG : null);
+      } catch (eXpG) { if (vivantXpG) setOrdreXpG(null); }
+    })();
+    return function () { vivantXpG = false; };
+  }, [
+    (membres || []).map(function (p) { return p && p.id; }).join(","),
+    (choisis || []).map(function (p) { return p && p.id; }).join(","),
+    (moiG && moiG.id) || ""
+  ]);
   React.useEffect(function () { (async function () {
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
@@ -29036,6 +29079,17 @@ function EcranGuilde() {
   var reelsEtChoisis = (membres || []).concat(choisisAff);
   var cavaliersAff = reelsEtChoisis.concat(figurantsFiltres.slice(0, Math.max(0, 8 - reelsEtChoisis.length)));
   if (moiG && moiG.id && !cavaliersAff.some(function (cMoi) { return cMoi && cMoi.id === moiG.id; })) { cavaliersAff = [{ id: moiG.id, pseudo: (profil && (profil.pseudo || profil.prenom)) || ((moiG.email || "").split("@")[0]) || "Moi", avatar_url: (profil && profil.avatar_url) || null, ville: (profil && profil.ville) || "" }].concat(cavaliersAff); }
+  /* 01/09 : le classement XP, quand il est arrive. `slice()` d'abord — `sort`
+     trie SUR PLACE et `cavaliersAff` est reconstruit a chaque rendu. */
+  if (ordreXpG) {
+    cavaliersAff = cavaliersAff.slice().sort(function (a, b) {
+      var ra = ordreXpG[a && a.id], rb = ordreXpG[b && b.id];
+      if (ra == null && rb == null) return 0;   /* non classes : ordre d'origine */
+      if (ra == null) return 1;
+      if (rb == null) return -1;
+      return ra - rb;
+    });
+  }
   var monRes = 0, monPod = 0;
   for (var hid in CHEVAUX_FICHE) { var ch = CHEVAUX_FICHE[hid]; if (ch && ch.palmares) { for (var k = 0; k < ch.palmares.length; k++) { monRes++; if (/^(1|2|3)/.test(ch.palmares[k].rang)) monPod++; } } }
   var liste;

@@ -10,6 +10,147 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟥 01/09/2026 (13 h) — LE TRI XP ÉTAIT BRANCHÉ SUR LA MAUVAISE PAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `6b18e868f0357141322d476eabc8a0f5` | tri XP branché sur la page **Club** (`EcranGuilde`) |
+
+⚠️ Cet `index.html` **remplace** `c56313ce…` : il contient tout ce qui précède
+(bandes grises, `?v=20bv`, `?v=2`). `hype-stories.js` (20bv, `243e19eb…`) et
+`hype-resultats.js` (`11863b7c…`) n'ont pas rebougé.
+
+## Ce qui n'allait pas
+
+Blandine : « le tri des cavaliers ne marche pas », capture de l'encart
+**CAVALIERS DE L'ÉCURIE / LA TEAM ECURIE FEINN** à l'appui.
+
+Ce n'était toujours pas une panne. `EncartCavaliersSpectral` est posé à **trois
+endroits** dans le fichier, et la 20bt avait branché le tri sur **un seul** :
+
+| Ligne | Page | Titre de l'encart | Tri XP en 20bt |
+|---|---|---|---|
+| ~28030 | Cavalier | « Mes amis » | non |
+| ~29150 | **Club** (`EcranGuilde`) | « Cavaliers de l'écurie » | **non** ← celui de la capture |
+| ~31650 | Écurie perso (`EcranEcurie`) | « Cavaliers du club » | oui |
+
+Le seul branché est celui de l'**écurie personnelle** — la page que Blandine a
+décidé de faire disparaître au profit du club. Le tri fonctionnait donc
+peut-être parfaitement, sur un écran que plus personne n'atteint.
+
+⚠️ **Leçon : un composant partagé se branche sur TOUTES ses instances, ou on
+dit lesquelles.** « Branché sur l'encart de l'écurie » dans la passation
+précédente était ambigu — « écurie » désignant tantôt le club, tantôt la page
+perso, exactement le glossaire que le chantier club/écurie doit trancher.
+
+## Le correctif
+
+Même appel, mêmes garanties, posé sur `EcranGuilde` :
+- ⚠️ **Le tri ne filtre rien** : un cavalier absent de la réponse garde sa place
+  à la **suite** des classés, il ne disparaît pas.
+- ⚠️ **Échec = ordre d'avant.** Aucun écran vide, aucun message.
+- ⚠️ **Les figurants n'ont pas d'identifiant** : jamais envoyés à la fonction,
+  ils restent en fin de liste — là où ils sont déjà.
+- ⚠️ Les identifiants sont **filtrés sur la forme d'un uuid** avant l'envoi, et
+  dédoublonnés. `moiG` est inclus dans le classement comme les autres.
+- ⚠️ Hook posé **avec les autres états, avant toute sortie conditionnelle** du
+  composant (règle du fichier).
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai de la logique de tri, 8 cas, tous conformes** : aucun
+  classement → ordre inchangé ; classement complet ; figurant maintenu en fin ;
+  classement partiel (le classé passe devant, les non classés ne disparaissent
+  pas et gardent leur ordre) ; figurants jamais envoyés ; doublons écartés.
+- Marqueurs de lignée identiques (clip 1 · overscroll html 1 · verrou 4 ·
+  puits 4). Les deux `?v=` inchangés (aucun fichier externe touché).
+
+**À l'écran : + les cavaliers du club classés par XP · − rien.**
+
+## Reste ouvert
+
+La **troisième instance**, sur la page Cavalier (encart « Mes amis », ~28030),
+n'est toujours pas triée — je ne l'ai pas touchée sans son accord : trier ses
+amis par XP n'a pas le même sens que classer les cavaliers d'un club.
+
+---
+
+# 🟥 01/09/2026 (midi) — 20bv : LA MESURE DU VIDE CORRIGÉE (RÉGRESSION 20bu)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `243e19eb1fb247cf7217bf23b18ad8a6` | **20bv** : la mesure du noir mort devient relative au décor |
+| `index.html` | racine | `c56313cecd9546ff396a15ddbcc6dcf9` | `?v=20bv` **+** `hype-resultats.js?v=2` **+** les bandes grises |
+
+⚠️ Cet `index.html` **remplace** `b71713c9…` et `7896ea60…` : il les contient.
+`hype-resultats.js` (`11863b7c…`) reste celui de la livraison précédente — le
+repousser seulement s'il ne l'a pas déjà été.
+
+## Ce qui s'est passé
+
+Blandine, capture à l'appui, sur une story à décor **têtes de cheval sombres** :
+« t'as fait quoi avec ma hauteur d'écriture pour la story là ». La légende était
+descendue **sur le dessin**.
+
+**Régression de la 20bu, de mon fait.** La 20bu fait descendre le texte dans le
+noir mort du haut du décor, mesuré avec un **seuil fixe de 12 sur 255**, calé sur
+les quatre décors « concours » où le premier trait dessiné est clair (18 et
+plus). Sur un décor dont le dessin est **plus noir que 12**, ce dessin était
+compté comme du vide : le texte descendait pile dessus. L'inverse du but.
+
+⚠️ **Et je l'avais confirmé « réglé » ce matin sur une simple lecture du code.**
+Le code faisait bien ce qu'il annonçait — mais je ne l'avais pas regardé sur un
+décor de cette famille. Une vérification qui ne sort pas du texte n'est pas une
+vérification.
+
+## Le correctif (option C, choix de Blandine)
+
+Le seuil fixe disparaît. Chaque ligne est désormais comparée au **noir du décor
+lui-même** :
+
+1. on relève la luminance **maximale** de chaque ligne ;
+2. on prend la plus basse de toute l'image — le vrai noir de ce décor-là, son
+   **plancher** ;
+3. une ligne n'est vide que si son maximum ne dépasse pas ce plancher de plus de
+   `HS_VIDE_MARGE` (3) ;
+4. ⚠️ **plafond absolu `HS_VIDE_MAX` (8)** : au-delà, c'est du dessin, jamais du
+   vide. Sans lui, un décor uniformément sombre prendrait sa propre pénombre
+   pour du vide.
+
+Le plafond des 25 % et l'arrondi vers le bas sont **inchangés**.
+Le calcul est **sorti du canvas** dans `hsLignesVides(d, L, H)` : il ne reçoit
+que des pixels, donc il est vérifiable hors navigateur.
+
+⚠️ **La mesure sert aux DEUX rendus** — écran et image de partage. Les décors
+concernés cesseront donc de remonter aussi dans l'image partagée. C'est
+cohérent : dans les deux cas le décor n'avait pas de vide.
+
+## Contrôles
+
+- `node --check` sur `hype-stories.js` : 0 erreur.
+- **Banc d'essai de la mesure, 8 cas fabriqués pixel par pixel, tous conformes** :
+  décor concours (15 lignes de noir pur → 15), **dessin sombre en haut → 0**
+  (le cas de Blandine, où la 20bu donnait 15), titre dès la première ligne → 0,
+  image toute noire → toutes les lignes, pénombre uniforme sans noir franc → 0,
+  lueur faible qui arrête le comptage, un seul pixel clair qui l'arrête.
+- `node --check` sur les **18 blocs inline** d'`index.html` : 0 erreur.
+- Marqueurs de lignée identiques (clip 1 · overscroll html 1 · verrou 4 ·
+  puits 4).
+- Les **deux** clés de cache incrémentées : `HYPE_STORIES_VERSION = "20bv"` **et**
+  `hype-stories.js?v=20bv` dans `index.html`.
+
+## ⚠️ Réserve honnête
+
+Je n'ai pas les fichiers `.webp` des décors : le banc d'essai tourne sur des
+pixels fabriqués, pas sur les vrais. Si le dessin de ce décor est en réalité
+**plus sombre que 8 partout** sur ses premières lignes, il sera encore compté
+comme du vide et le texte redescendra. Dans ce cas la sortie est immédiate :
+annuler la descente à l'écran (option A), une ligne. **À vérifier à l'œil sur
+cette story précise avant de considérer le sujet clos.**
+
+---
+
 # 🟦 01/09/2026 (matinée, suite) — LE MODULE RÉSULTATS : PLUME, SORTIES, PRÉPAS, TRI
 
 | Fichier | Où | md5 | Quoi |

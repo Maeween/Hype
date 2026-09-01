@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bu";
+var HYPE_STORIES_VERSION = "20bv";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1077,15 +1077,54 @@ function hsImagePartage(u) {
    trou se referme.
    ⚠️ MESURE, PAS LISTE. Aucun tableau de valeurs par decor a tenir a jour :
    les 28 modeles et ceux a venir passent par la meme mesure.
-   ⚠️ SEUIL 12 SUR 255, choisi sur les quatre decors reels : il laisse passer
-   le noir pur (3 a 6) et la premiere lueur turquoise (8 a 11) mais s'arrete
-   des le premier trait dessine (18 et plus). Un decor qui porte un titre en
-   haut -- `concours-2`, `-3` -- mesure donc un vide quasi nul et ne bouge pas.
+   ⚠️ 20bv (01/09) — LE SEUIL FIXE EST REMPLACE PAR UNE MESURE RELATIVE.
+   La 20bu comparait chaque ligne a un seuil de 12 sur 255, cale sur les quatre
+   decors « concours » ou le premier trait dessine est clair (18 et plus).
+   Blandine, sur un decor a TETES DE CHEVAL SOMBRES : « t'as fait quoi avec ma
+   hauteur d'ecriture ». Le dessin y est plus noir que 12 : il etait mesure
+   comme du vide, et le texte descendait PILE dessus -- l'inverse du but.
+   Desormais chaque ligne est comparee au NOIR DU DECOR LUI-MEME : on releve la
+   luminance maximale de chaque ligne, on prend la plus basse de toute l'image
+   (le vrai noir de ce decor-la, son « plancher »), et une ligne n'est vide que
+   si son maximum ne depasse pas ce plancher de plus de HS_VIDE_MARGE.
+   ⚠️ PLAFOND ABSOLU HS_VIDE_MAX : une ligne dont le maximum depasse cette
+   valeur n'est JAMAIS vide, meme si le decor n'a aucun noir franc. Sans lui,
+   un decor uniformement sombre prendrait sa propre penombre pour du vide.
+   Un decor qui porte un titre en haut -- `concours-2`, `-3` -- mesure toujours
+   un vide quasi nul et ne bouge pas.
    ⚠️ PLAFOND A 25 % : garde-fou. Un decor volontairement tres sombre ne doit
    pas se faire amputer du quart de sa hauteur sur une erreur de mesure.
    ⚠️ On ARRONDIT VERS LE BAS : mieux vaut laisser un peu de vide que rogner
    un pixel de dessin. */
 var HS_VIDE_CACHE = {};
+
+/* La mesure elle-meme, SEPAREE du canvas pour etre verifiable hors navigateur :
+   elle ne recoit que les pixels. `d` = donnees RGBA, `L` lignes de `L` pixels,
+   `H` lignes. Rend le NOMBRE DE LIGNES vides en haut. */
+var HS_VIDE_MARGE = 3;   /* tolerance au-dessus du noir propre au decor */
+var HS_VIDE_MAX = 8;     /* au-dela, c'est du dessin, jamais du vide       */
+function hsLignesVides(d, L, H) {
+  var maxi = new Array(H), plancher = 255;
+  for (var y = 0; y < H; y++) {
+    var m = 0;
+    for (var p = 0; p < L; p++) {
+      var i4 = (y * L + p) * 4, a = d[i4 + 3] / 255;
+      var lum = (0.299 * d[i4] + 0.587 * d[i4 + 1] + 0.114 * d[i4 + 2]) * a;
+      if (lum > m) m = lum;
+    }
+    maxi[y] = m;
+    if (m < plancher) plancher = m;
+  }
+  var seuil = Math.min(plancher + HS_VIDE_MARGE, HS_VIDE_MAX);
+  var lignes = 0;
+  for (var y2 = 0; y2 < H; y2++) {
+    if (maxi[y2] > seuil) break;
+    lignes++;
+  }
+  return lignes;
+}
+try { if (typeof window !== "undefined") window.hsLignesVides = hsLignesVides; } catch (eLV) { }
+
 function hsVideHaut(im, cle) {
   try {
     if (cle && HS_VIDE_CACHE[cle] !== undefined) return HS_VIDE_CACHE[cle];
@@ -1097,17 +1136,7 @@ function hsVideHaut(im, cle) {
     if (!x) return 0;
     x.drawImage(im, 0, 0, L, H);
     var d = x.getImageData(0, 0, L, H).data;
-    var SEUIL = 12, lignes = 0;
-    for (var y = 0; y < H; y++) {
-      var vu = false;
-      for (var p = 0; p < L; p++) {
-        var i4 = (y * L + p) * 4, a = d[i4 + 3] / 255;
-        var lum = (0.299 * d[i4] + 0.587 * d[i4 + 1] + 0.114 * d[i4 + 2]) * a;
-        if (lum > SEUIL) { vu = true; break; }
-      }
-      if (vu) break;
-      lignes++;
-    }
+    var lignes = hsLignesVides(d, L, H);
     c.width = 1; c.height = 1;
     var vide = Math.floor(lignes * ph / H);
     if (vide > ph * 0.25) vide = Math.floor(ph * 0.25);
