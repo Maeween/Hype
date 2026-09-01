@@ -10,6 +10,293 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 01/09/2026 (17 h 50) — L'ÉCURIE D'UN CHEVAL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `27d3289f7d84d0382847f0ac18dcf1e3` | colonne `club` : choix à la création + filtre des grilles |
+
+⚠️ Remplace `55b7f6e3…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+**SQL déjà passé par Blandine** (« Success. No rows returned ») :
+`alter table chevaux add column club text;`
+
+## Le problème
+
+Blandine est membre de **deux** clubs (Feinn et la SEP) : « si je crée un cheval
+comment je peux savoir si ça va sur l'une ou l'autre ». Réponse d'alors :
+**nulle part**. Un cheval n'a pas de club — il paraît sur la page d'un club
+parce que **son propriétaire** en est membre.
+
+Ses chevaux ne s'affichaient chez Feinn et pas chez la SEP **par accident
+d'orthographe** : la page cherche ses membres avec un motif tiré du nom
+affiché — `%societe%equitation%paris%sep%` — qui ne trouve pas un profil où il
+est écrit simplement « SEP ». ⚠️ **Le jour où l'un ou l'autre est corrigé, tous
+ses chevaux Feinn apparaîtraient d'un coup chez la SEP.**
+
+## Ce qui est fait
+
+**1. `club` est écrit à la création.** `ajouterCheval` accepte le club et le
+pose. ⚠️ **La colonne `ecurie` existe déjà mais ne sert pas à ça** : elle vaut
+« __perso__ » pour les chevaux persos et fige le nom du club au moment de la
+création. On ne s'en sert pas, on ne la touche pas.
+
+**2. Le choix dans le formulaire — seulement s'il y a plusieurs clubs.**
+Nouvelle fonction `mesClubs()` (lit `ecurie` et `ecurie2` du profil). ⚠️ **Un
+cavalier d'un seul club ne voit rien de nouveau** et son cheval part sans
+`club`, donc visible comme avant.
+
+**3. Le filtre de la grille du club.** Un cheval paraît si son `club` désigne ce
+club **ou s'il n'en a aucun**.
+⚠️ **LE VIDE PASSE TOUJOURS** : les 19 chevaux existants n'ont rien de renseigné
+et ne bougent pas d'un pixel. Ne jamais durcir ce filtre sans avoir renseigné
+toute la table.
+⚠️ **Comparaison par noyau**, comme la recherche des membres : « Feinn »,
+« Ecurie Feinn » et « Écurie Feinn » désignent le même club.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai du filtre, 10 cas, tous conformes** : les sans-club passent
+  toujours, les chevaux du club passent, « Écurie Feinn » = « Feinn », **le
+  cheval de la SEP ne paraît pas chez Feinn et réciproquement**, listes vides et
+  club de page vide.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + le choix de l'écurie à la création (uniquement si plusieurs
+clubs) · − les chevaux d'un autre club dans la grille · rien ne change pour les
+chevaux déjà créés.**
+
+## 🟠 RESTE À FAIRE
+
+- **Changer l'écurie d'un cheval déjà créé** : pas d'endroit pour le faire.
+  À ajouter sur la fiche du cheval.
+- **Assigner les 19 chevaux existants.** Quand Blandine le voudra :
+  `update chevaux set club = 'Écurie Feinn' where user_id = 'bc7c52ee-…' and club is null;`
+- **Mon propre défaut, signalé et non corrigé** : le repli du podium qui cherche
+  le cheval le plus populaire d'un club interroge `profiles` sur `ecurie` seul,
+  en égalité stricte — ni `ecurie2`, ni la recherche tolérante. Il rate donc des
+  membres. Sans gravité (au pire l'image par défaut), mais incohérent.
+
+---
+
+# 🟥 01/09/2026 (17 h 40) — LA BANNIÈRE DE FEINN S'AFFICHAIT SUR LES AUTRES CLUBS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `55b7f6e3a0bca1ed1fa242e5b53e3d5d` | bannière de club cloisonnée par club |
+
+⚠️ Remplace `45b0936e…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## Le défaut
+
+Blandine, capture de la page **Société d'Équitation de Paris (SEP)** : sa propre
+photo d'Écurie Feinn s'y affichait en bannière.
+
+**Défaut ancien, pas une régression du jour.** Deux causes qui se cumulaient :
+
+1. La bannière était gardée sur l'appareil sous **une seule clé**,
+   `hype_club_banniere`, **sans le nom du club**. L'état initial la lisait
+   directement : la dernière bannière chargée s'affichait donc sur la page de
+   n'importe quel club.
+2. L'effet qui va chercher la vraie bannière ne remplaçait l'image **que s'il en
+   trouvait une** (`if (contenuB)`). Un club sans bannière gardait donc celle du
+   club regardé juste avant — et l'écrasait même dans le cache partagé.
+
+⚠️ **C'est une fuite d'image entre comptes** : la photo d'un club apparaissait
+sur la page d'un autre. À traiter comme tel, pas comme un défaut d'affichage.
+
+## Le correctif
+
+- L'état démarre à **`null`**. C'est l'effet, qui connaît le club, qui le
+  remplit : d'abord le cache **propre à ce club**
+  (`hype_club_banniere:<clef>`), puis la base.
+- ⚠️ **Le résultat est posé MÊME QUAND IL EST VIDE** : un club sans bannière
+  n'en a aucune, jamais celle du club précédent.
+- Les deux écritures à l'envoi d'une nouvelle bannière passent à la clé
+  nommée.
+- L'ancienne clé globale est **effacée au chargement** : sans ça elle resterait
+  sur les téléphones qui l'ont déjà, sans plus jamais servir.
+- ⚠️ **NE JAMAIS REVENIR À UNE CLÉ SANS LE NOM DU CLUB.**
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai, 10 cas, tous conformes** : bannière de son club, club sans
+  bannière (aucune image, **et surtout pas celle du club précédent**), retour
+  sur son club, rangement sous le nom du club, **aucune clé globale écrite**,
+  aperçu instantané limité au club demandé, bannière retirée en base qui
+  disparaît aussi du cache, club sans nom.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : − la bannière d'un club sur la page d'un autre · + rien.**
+
+## ⚠️ Reste à regarder
+
+Sur la même capture, la page de SEP affiche **« Ma story »** et les stories de
+Feinn. C'est le défaut déjà consigné le 01/09 au matin : `RailALaUne` et le
+bandeau des stories sont appelés **sans paramètre de club** et montrent donc
+ceux du cavalier connecté. Non corrigé ici — chantier « à la une de l'écurie »,
+option A déjà décidée.
+
+---
+
+# 🟥 01/09/2026 (15 h 45) — LES CHEVAUX QUI DISPARAISSENT PUIS REVIENNENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `45b0936e43765de6cffeb1528712fa67` | afficher d'abord, classer ensuite + podium des clubs (asset) |
+
+⚠️ Remplace `6c1b82e4…`. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+⚠️ **UN FICHIER IMAGE EST À POUSSER AVEC** : `hype-podium-clubs.png` (l'asset du
+podium, 1224×1285, PNG à trous). Sans lui, le podium s'affiche sans décor.
+
+## 1. 🟥 RÉGRESSION DE MA LIVRAISON DE 14 H 30 — corrigée
+
+Blandine : « mes chevaux n'ont plus de photo »… puis « sur la page écurie tous
+les chevaux avaient disparu et ils sont revenus d'un coup ».
+
+⚠️ **Ce n'était PAS une perte de photos.** Ce que Blandine voyait, ce sont les
+**fiches de DÉMONSTRATION** (`CHEVAUX_FICHE`) : elles ne remontent que quand la
+liste des vrais chevaux est **vide**. La preuve tient dans les noms — « Hey
+Baby » au lieu de « Hey Baby **Please** », « Tully Blue **Moon** » au lieu de
+« Tully Blue moon ».
+
+**La cause : le classement XP livré à 14 h 30.** `classerChevauxParXp` lance
+**cinq requêtes** et la liste n'était posée qu'**après**. Pendant ces requêtes :
+grille du club vide, et page Cavalier envahie par les fiches de démonstration.
+Puis tout apparaissait d'un coup.
+
+**Le correctif : AFFICHER D'ABORD, CLASSER ENSUITE**, sur les quatre grilles.
+La liste est posée immédiatement dans l'ordre de la base, puis reposée classée
+quand le classement revient. Le réordonnancement est silencieux.
+⚠️ **NE JAMAIS REMETTRE LE TRI AVANT LE PREMIER AFFICHAGE.**
+⚠️ La liste classée n'est reposée que si elle est **non vide** : un classement
+qui échouerait ne peut plus vider une grille déjà remplie.
+
+**Leçon** : un tri qui demande des données distantes ne doit jamais retarder
+l'affichage de ce qu'on a déjà. Ce n'est pas visible sur un banc d'essai —
+seulement sur un téléphone, en 3G.
+
+## 2. Le podium des clubs
+
+Nouveau composant `PodiumClubsHype`, posé sur la page **Club** (il remplace les
+3 cartes à emojis du 28/08, son titre et sa pilule) et sur la page
+**Communauté**, au-dessus de la liste complète qui reste inchangée.
+
+⚠️ **L'ASSET EST UN PNG À TROUS** : les trois emplacements sont transparents.
+Les photos se posent **derrière**, les anneaux or/argent/bronze passent
+par-dessus tout seuls. Ne pas redessiner le podium en CSS, ne pas ajouter de
+cadre autour des photos.
+⚠️ **POSITIONS MESURÉES AU PIXEL** sur l'asset (1224×1285), en pourcentages :
+trou 1 (centre) 35,46 % / 26,61 % / 28,35 × 27,00 · trou 2 (gauche) 6,94 % /
+42,72 % / 19,44 × 18,91 · trou 3 (droite) 73,94 % / 43,58 % / 19,36 × 18,91.
+Le conteneur porte le **même rapport** (1224 / 1285). **Si l'asset est
+régénéré, remesurer ces six valeurs.**
+⚠️ **Aucun calcul d'XP ni de classement touché** : le composant reçoit une liste
+déjà classée.
+⚠️ **L'image d'un club n'existe pas** dans le classement : la seule est sa
+**bannière**, dans `tableaux_clubs` sous la clé `club-banniere:<clef>`. Requête
+séparée et gardée ; un club sans bannière laisse voir le fond à travers le trou.
+
+## 3. Les images des cercles — TRANCHÉ, une cascade à trois étages
+
+⚠️ **Je m'étais mal exprimé** en disant que les photos n'étaient « pas
+branchées » : la recherche des bannières était déjà écrite. Ce qui manquait,
+c'était le repli quand un club n'en a pas.
+
+Décisions de Blandine, dans l'ordre d'application :
+
+1. **La bannière du club** (`tableaux_clubs`, clé `club-banniere:<clef>`).
+2. Sinon, **le portrait du cheval le plus populaire du club** — « populaire » au
+   sens de `scoreVitrineCheval` (likes, résultats, photos, cavaliers rattachés),
+   la seule définition qui existe déjà : on n'en invente pas une deuxième.
+3. Sinon, **`CHEVAL_DEFAUT`**, l'image cheval déjà utilisée partout ailleurs.
+   Aucun nouvel asset, jamais de trou noir.
+
+⚠️ **UN SEUL PASSAGE POUR TOUS LES CLUBS** : on classe une fois tous les chevaux
+des clubs affichés, puis chaque club reçoit le premier de SES chevaux dans ce
+classement. Trois appels séparés auraient triplé le coût pour le même résultat.
+⚠️ **Tout est gardé séparément** — bannières, membres, chevaux, classement. Au
+pire on retombe sur l'image par défaut, jamais sur un podium absent.
+⚠️ **Le repli n'écrase JAMAIS une bannière.**
+- **UNE PAGE DÉDIÉE AU CLASSEMENT est à créer** (demande de Blandine, notée ici
+  et pas faite). Aujourd'hui « Voir le classement complet » renvoie sur la
+  section de la page Communauté.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai de la cascade de replis, 7 cas, tous conformes** : la bannière
+  prime, sinon le cheval le mieux classé DU club, chaque club prenant le sien,
+  club sans rien → image par défaut, chevaux sans photo ignorés, et **le repli
+  n'écrase jamais une bannière**.
+- Marqueurs de lignée identiques (clip 1 · verrou 4 · puits 4). Les deux `?v=`
+  inchangés.
+- Contrôle visuel du podium à faire par Blandine : un placement en pourcentages
+  ne se mesure pas hors navigateur.
+
+**À l'écran : + le podium sur 2 pages · − les 3 cartes à emojis · − la fenêtre
+vide au chargement des chevaux.**
+
+---
+
+# 🟥 01/09/2026 (15 h 30) — « BY [OBJECT OBJECT] » SUR L'ÉCURIE HYPE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `6c1b82e4f3fc4b905c6f672984dad07e` | collision de noms dans `EcranEcurieHype` |
+
+⚠️ Remplace `452bc1ae…`. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## La cause
+
+`EcranEcurieHype` déclarait **deux fois** `var proprios` et `var setProprios` —
+une fois vers la ligne 37329, une fois vers 37555. En JavaScript, deux `var` du
+même nom dans une même fonction ne font **qu'une seule variable** : les deux
+états se marchaient dessus.
+
+- Le premier remplit la table avec des **profils entiers** (avatar + pseudo de la
+  carte communautaire).
+- Le second avec des **pseudos**, de simples chaînes.
+
+Les effets s'exécutant après le rendu, c'est le **second** setter qui recevait
+les profils entiers du premier effet. D'où `"by " + objet`, qui s'écrit
+**« by [object Object] »**. Les deux effets se volaient aussi l'état l'un à
+l'autre, au hasard de leur ordre d'arrivée — la carte communautaire pouvait
+perdre son avatar sans raison visible.
+
+## Le correctif
+
+⚠️ **Renommer, pas fusionner** : les deux tables n'ont pas le même contenu.
+`proprios` garde les profils entiers, **`propriosNoms`** porte les pseudos. Trois
+lignes touchées : la déclaration, le setter de son effet, et la lecture de `l3`.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai, 7 cas, tous conformes** : reproduction du défaut avant
+  correctif, affichage du pseudo après, **la carte communautaire garde son profil
+  complet**, propriétaire inconnu (ligne vide, jamais « by undefined »), sans
+  identifiant, table pas encore chargée, pseudo vide non retenu.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : − « by [object Object] » · + le pseudo du propriétaire.**
+
+## Leçon
+
+Une variable déclarée deux fois dans un même composant ne fait pas d'erreur à
+l'exécution : elle produit un affichage faux et une course entre deux effets.
+`node --check` ne l'attrape pas — seul un œil sur l'écran l'a vue.
+
+---
+
 # 🟥 01/09/2026 (15 h) — LE DOUBLON DE YUM : DÉDOUBLONNAGE À LA SOURCE
 
 | Fichier | Où | md5 | Quoi |

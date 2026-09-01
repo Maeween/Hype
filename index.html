@@ -2459,15 +2459,39 @@ async function monEcurieNom() {
 }
 
 // CHEVAUX de l'ecurie
-async function ajouterCheval({ nom, race, age, discipline, fichierPhoto } = {}) {
+/* 01/09 — LA COLONNE `club` DE `chevaux` (ALTER TABLE passe par Blandine).
+   Un cheval n'avait aucun rattachement a une ecurie : il apparaissait dans la
+   grille d'un club parce que SON PROPRIETAIRE en est membre. Blandine, membre
+   de Feinn ET de la SEP, ne pouvait donc pas dire ou creer un cheval.
+   ⚠️ LA COLONNE `ecurie` EXISTE DEJA mais ne sert pas a ca : elle vaut
+   « __perso__ » pour les chevaux persos et fige le nom du club AU MOMENT DE LA
+   CREATION. On ne s'en sert pas, on ne la touche pas non plus.
+   ⚠️ `club` VIDE = COMPORTEMENT D'AVANT. Les 19 chevaux existants n'ont rien de
+   renseigne et doivent continuer de paraitre partout ou ils paraissaient. Le
+   filtre des grilles laisse donc toujours passer les vides. */
+async function ajouterCheval({ nom, race, age, discipline, fichierPhoto, club } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
   let photo_url = null;
   if (fichierPhoto) { const r = await envoyerPhoto(fichierPhoto); if (r.error) return { data: null, error: r.error }; photo_url = r.url; }
   const ecurie = await monEcurieNom();
-  const rCh = await supa.from("chevaux").insert({ user_id: user.id, ecurie, nom, race: race || null, age: age || null, discipline: discipline || null, photo_url }).select().single();
+  const rCh = await supa.from("chevaux").insert({ user_id: user.id, ecurie, nom, race: race || null, age: age || null, discipline: discipline || null, photo_url, club: club || null }).select().single();
   try { if (rCh && !rCh.error && ecurie && ecurie !== "__perso__") hypeNotifier({ type: "cheval", contexte: ecurie, extrait: nom, cible: (rCh.data && rCh.data.id) ? ("cheval:" + rCh.data.id) : null }); } catch (eN) { }
   return rCh;
+}
+/* Les clubs du cavalier connecte : `ecurie` et `ecurie2` de son profil. Rend un
+   tableau vide, a un ou a deux noms — c'est lui qui decide si la question du
+   club est posee a la creation. */
+async function mesClubs() {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return [];
+    const r = await supa.from("profiles").select("ecurie, ecurie2").eq("id", user.id).maybeSingle();
+    const p = (r && r.data) || {};
+    return [p.ecurie, p.ecurie2].map(function (x) { return String(x || "").trim(); })
+      .filter(function (x) { return x && x !== "__perso__"; })
+      .filter(function (x, i, t) { return t.indexOf(x) === i; });
+  } catch (e) { return []; }
 }
 async function mesChevaux() {
   const user = await utilisateurActuel();
@@ -28834,11 +28858,52 @@ function PodiumClubsHype(props) {
           var c = (typeof clefClubG === "function") ? clefClubG(n) : String(n || "").toLowerCase().trim();
           parCle["club-banniere:" + c] = n; return "club-banniere:" + c;
         });
-        var r = await supa.from("tableaux_clubs").select("cle, contenu").in("cle", cles);
-        if (!vivant || !r || !r.data) return;
         var m = {};
-        r.data.forEach(function (l) { if (l && l.cle && l.contenu && parCle[l.cle]) m[parCle[l.cle]] = l.contenu; });
-        setPhotos(m);
+        try {
+          var r = await supa.from("tableaux_clubs").select("cle, contenu").in("cle", cles);
+          ((r && r.data) || []).forEach(function (l) { if (l && l.cle && l.contenu && parCle[l.cle]) m[parCle[l.cle]] = l.contenu; });
+        } catch (eBan) { }
+        if (!vivant) return;
+        if (Object.keys(m).length) setPhotos(m);
+
+        /* 01/09 (Blandine) — REPLI : « si pas de photo de club, prends le portrait
+           du cheval le plus populaire du club concerne ». « Populaire » = le mieux
+           classe au sens de `scoreVitrineCheval` (likes, resultats, photos,
+           cavaliers rattaches) — la seule definition qui existe deja, on n'en
+           invente pas une deuxieme.
+           ⚠️ UN SEUL PASSAGE POUR TOUS LES CLUBS : on classe une fois tous les
+           chevaux des clubs affiches, puis on donne a chaque club le premier de
+           SES chevaux dans ce classement. Trois appels separes auraient triple
+           le cout pour le meme resultat.
+           ⚠️ TOUT EST GARDE : membres, chevaux et classement echouent
+           independamment. Au pire on retombe sur `CHEVAL_DEFAUT`, jamais sur un
+           trou noir, et jamais sur un podium qui ne s'affiche pas.
+           ⚠️ CE REPLI NE REMPLACE JAMAIS UNE BANNIERE : il ne comble que les
+           clubs qui n'en ont pas. */
+        var manquants = noms.filter(function (nm) { return !m[nm]; });
+        if (!manquants.length) return;
+        var clubDe = {}, idsMembres = [];
+        try {
+          var rMb = await supa.from("profiles").select("id, ecurie").in("ecurie", manquants);
+          ((rMb && rMb.data) || []).forEach(function (p) { if (p && p.id && p.ecurie) { clubDe[p.id] = p.ecurie; idsMembres.push(p.id); } });
+        } catch (eMb) { }
+        if (!vivant || !idsMembres.length) return;
+        var chx = [];
+        try {
+          var rCx = await supa.from("chevaux").select("id, user_id, nom, photo_url, race, discipline, palmares")
+            .in("user_id", idsMembres).is("supprime_le", null).limit(300);
+          chx = ((rCx && rCx.data) || []).filter(function (c) { return c && c.photo_url; });
+        } catch (eCx) { }
+        if (!vivant || !chx.length) return;
+        var classes = chx;
+        try { if (typeof classerChevauxParXp === "function") classes = await classerChevauxParXp(chx) || chx; } catch (eCl) { }
+        if (!vivant) return;
+        var m2 = Object.assign({}, m);
+        classes.forEach(function (c) {
+          var club = c && clubDe[c.user_id];
+          if (club && !m2[club]) m2[club] = c.photo_url;
+        });
+        setPhotos(m2);
       } catch (ePh) { }
     })();
     return function () { vivant = false; };
@@ -28867,7 +28932,11 @@ function PodiumClubsHype(props) {
   function bloc(i) {
     var g = top3[i]; if (!g) return null;
     var tr3 = TROUS[i], tx = TEXTES[i];
-    var photo = photos[g.nom] || null;
+    /* 01/09 (Blandine : « par defaut laisse le cheval sur la photo ») : un club
+       sans banniere recoit l'image cheval par defaut de l'app plutot qu'un trou
+       noir. Aucun nouvel asset : c'est `CHEVAL_DEFAUT`, deja utilise partout
+       ailleurs quand un cheval n'a pas de photo. */
+    var photo = photos[g.nom] || ((typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || null);
     return [
       photo ? h("div", {
         key: "ph" + i,
@@ -28922,7 +28991,7 @@ function PodiumClubsHype(props) {
         return h("div", { key: "s" + i, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 4px", borderTop: "1px solid rgba(255,255,255,0.06)" } },
           h("div", { style: { width: 18, textAlign: "center", fontFamily: C, fontSize: 13, color: "#8A929C" } }, i + 4),
           h("div", { style: { width: 26, height: 26, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" } },
-            photos[g.nom] ? h("img", { src: photos[g.nom], alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+            h("img", { src: photos[g.nom] || ((typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || ""), alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })),
           h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 13, color: BLANC, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.nom || ""),
           h("div", { style: { fontFamily: M, fontSize: 12.5, fontWeight: 700, color: TURQ } }, (g.xp || 0) + " XP"));
       })) : null,
@@ -28940,7 +29009,16 @@ function PodiumClubsHype(props) {
 function EcranGuilde() {
   var h = React.createElement;
   var ctx = useApp();
-  var banSt = React.useState(function () { try { return localStorage.getItem("hype_club_banniere") || null; } catch (e) { return null; } });
+  /* 01/09 (Blandine : « ma photo d'écurie Feinn apparaît sur les autres
+     écuries ») — LA BANNIERE N'EST PLUS GARDEE SOUS UNE CLE GLOBALE.
+     Elle l'etait sous `hype_club_banniere`, SANS le nom du club : la derniere
+     banniere chargee s'affichait donc sur la page de n'importe quel club. Et
+     l'effet ne remplacait l'image QUE s'il en trouvait une — un club sans
+     banniere gardait donc celle du club precedent.
+     ⚠️ L'ETAT DEMARRE A NULL et c'est l'effet, qui connait le club, qui le
+     remplit — depuis le cache PROPRE A CE CLUB puis depuis la base.
+     ⚠️ NE JAMAIS REVENIR A UNE CLE SANS LE NOM DU CLUB. */
+  var banSt = React.useState(null);
   var banniere = banSt[0], setBanniere = banSt[1];
   var banRef = React.useRef(null);
   function choisirBanniere(e) {
@@ -28970,13 +29048,13 @@ function EcranGuilde() {
     hypePhotoDirecte(f).then(function (res) {
       if (!res) return;
       setBanniere(res.dataUrl);
-      try { localStorage.setItem("hype_club_banniere", res.dataUrl); } catch (eB) { }
+      try { localStorage.setItem("hype_club_banniere:" + clefBanniereClub, res.dataUrl); } catch (eB) { }
       /* 17/08 : original conserve, sur le modele exact des trois autres ecrans. */
       try { if (res.original) localStorage.setItem("hype_club_banniere_orig", res.original); if (res.dataUrl) localStorage.setItem("hype_club_banniere_orig_pour", String(res.dataUrl).slice(0, 100)); } catch (eBo) { }
       if (typeof hypeEnregistrerPhoto === "function") {
         hypeEnregistrerPhoto("club", clefBanniereClub, res, ancienneBan).then(function (urlFinale) {
           setBanniere(urlFinale);
-          try { localStorage.setItem("hype_club_banniere", urlFinale); } catch (eB3) { }
+          try { localStorage.setItem("hype_club_banniere:" + clefBanniereClub, urlFinale); } catch (eB3) { }
         }).catch(function (err) {
           console.error("Echec enregistrement banniere de club", err);
           /* 14/08 : dire CE QUI a echoue. Le message passe-partout envoyait
@@ -29015,20 +29093,32 @@ function EcranGuilde() {
   var clubForce = _mcG[0], setClubForce = _mcG[1];
   var monClub = clubForce || ecuriePrincipale;
   var clefBanniereClub = (typeof clefClubG === "function") ? clefClubG(monClub) : (monClub || "").toLowerCase().trim();
+  /* Nettoyage de l'ancienne cle globale : sans ca, elle resterait sur les
+     telephones qui l'ont deja, sans plus jamais servir. */
+  React.useEffect(function () { try { localStorage.removeItem("hype_club_banniere"); } catch (eOld) { } }, []);
   var _moiBan = React.useState(null); var moiBanniere = _moiBan[0], setMoiBanniere = _moiBan[1];
   React.useEffect(function () { (async function () { try { var u = await utilisateurActuel(); setMoiBanniere(u || null); } catch (e) { } })(); }, []);
   var peutEditerBanniere = !!(moiBanniere && typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiBanniere));
   React.useEffect(function () {
     (async function () {
       try {
-        if (typeof supa === "undefined" || !supa || !clefBanniereClub) return;
+        if (!clefBanniereClub) { setBanniere(null); return; }
+        /* Cache propre a ce club : affichage immediat, sans attendre la base. */
+        try { setBanniere(localStorage.getItem("hype_club_banniere:" + clefBanniereClub) || null); } catch (eCache) { setBanniere(null); }
+        if (typeof supa === "undefined" || !supa) return;
         var rB = await supa.from("tableaux_clubs").select("contenu").eq("cle", "club-banniere:" + clefBanniereClub).maybeSingle();
         var contenuB = (rB && rB.data && rB.data.contenu) || null;
         if (!contenuB && typeof noyauEcurie === "function") { /* 06/08 : la banniere posee sous une autre variante du nom ("Ecurie Feinn" vs "Feinn") est retrouvee par noyau */
           try { var nyB = noyauEcurie(monClub); var rB2 = await supa.from("tableaux_clubs").select("cle, contenu").ilike("cle", "club-banniere:%").limit(50);
             (((rB2 && rB2.data) || [])).some(function (lB) { if (lB && lB.contenu && noyauEcurie(String(lB.cle || "").slice("club-banniere:".length)) === nyB) { contenuB = lB.contenu; return true; } return false; });
           } catch (eBn) { } }
-        if (contenuB) { setBanniere(contenuB); try { localStorage.setItem("hype_club_banniere", contenuB); } catch (eB2) { } }
+        /* ⚠️ ON POSE LE RESULTAT MEME QUAND IL EST VIDE : un club sans banniere
+           doit en avoir AUCUNE, pas celle du club regarde juste avant. */
+        setBanniere(contenuB || null);
+        try {
+          if (contenuB) localStorage.setItem("hype_club_banniere:" + clefBanniereClub, contenuB);
+          else localStorage.removeItem("hype_club_banniere:" + clefBanniereClub);
+        } catch (eB2) { }
       } catch (eBc) { }
     })();
   }, [clefBanniereClub]);
@@ -29072,7 +29162,23 @@ function EcranGuilde() {
     } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
     if (idsMembres.length) {
-      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(500); if (cv && cv.data && cv.data.length) { /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxClub(cv.data); try { var cvTri = await classerChevauxParXp(cv.data); if (cvTri && cvTri.length) setChevauxClub(cvTri); } catch (eXg) { } /* 28/08 : plafond 24 -> 500 (demande Blandine, "tous les chevaux de l'ecurie") -- l'ecurie Feinn a deja 27 chevaux, 3 etaient invisibles */
+      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares, club").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(500);
+      /* 01/09 — LE FILTRE PAR ECURIE. Un cheval paraît sur cette page si son
+         `club` designe CE club, ou s'il n'en a AUCUN.
+         ⚠️ LE VIDE PASSE TOUJOURS : les chevaux crees avant cette colonne ne
+         doivent pas disparaitre le jour de la livraison. Ne jamais durcir ce
+         filtre sans avoir renseigne toute la table.
+         ⚠️ COMPARAISON PAR NOYAU, comme la recherche des membres : « Feinn »,
+         « Ecurie Feinn » et « Écurie Feinn » designent le meme club. */
+      try {
+        var nyClub = (typeof noyauEcurie === "function") ? noyauEcurie(monClub) : String(monClub || "").toLowerCase().trim();
+        if (cv && cv.data) cv = { data: cv.data.filter(function (cc) {
+          var cl = cc && cc.club ? String(cc.club).trim() : "";
+          if (!cl) return true;
+          var ny = (typeof noyauEcurie === "function") ? noyauEcurie(cl) : cl.toLowerCase();
+          return ny === nyClub;
+        }), error: cv.error };
+      } catch (eFc) { } if (cv && cv.data && cv.data.length) { /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxClub(cv.data); try { var cvTri = await classerChevauxParXp(cv.data); if (cvTri && cvTri.length) setChevauxClub(cvTri); } catch (eXg) { } /* 28/08 : plafond 24 -> 500 (demande Blandine, "tous les chevaux de l'ecurie") -- l'ecurie Feinn a deja 27 chevaux, 3 etaient invisibles */
         try { /* etape 2 : proprietaire (1) + liens — meme table que la page commune */
           var idsCv = cv.data.map(function (c) { return c.id; });
           var rLi = await supa.from("chevaux_liens").select("cheval_id").in("cheval_id", idsCv);
@@ -30130,6 +30236,13 @@ function EcranGererEcurie() {
   var _bz = React.useState(false), busy = _bz[0], setBusy = _bz[1];
   var chFile = React.useRef(null), cvFile = React.useRef(null), svFile = React.useRef(null);
   var _fch = React.useState({ nom: "", race: "", age: "", discipline: "" }), champsCh = _fch[0], setChampsCh = _fch[1];
+  /* 01/09 : les clubs du cavalier, pour le choix a la creation. ⚠️ LA QUESTION
+     N'EST POSEE QUE S'IL Y EN A PLUSIEURS : un cavalier d'un seul club ne voit
+     rien de nouveau, et son cheval part sans `club` — donc visible partout,
+     comme avant. */
+  var _mcl = React.useState([]), mesClubsL = _mcl[0], setMesClubsL = _mcl[1];
+  var _cch = React.useState(""), clubCheval = _cch[0], setClubCheval = _cch[1];
+  React.useEffect(function () { (async function () { try { if (typeof mesClubs === "function") setMesClubsL(await mesClubs()); } catch (e) { } })(); }, []);
   var _fcv = React.useState({ nom: "", niveau: "" }), champsCv = _fcv[0], setChampsCv = _fcv[1];
   async function charger() {
     try {
@@ -30143,7 +30256,7 @@ function EcranGererEcurie() {
     } catch (e) { setUser(null); }
   }
   React.useEffect(function () { charger(); }, []);
-  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } setBusy(true); var errCh = null; try { var rCh = await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0] }); if (rCh && rCh.error) errCh = rCh.error; } catch (e) { errCh = e; } setBusy(false); if (errCh) { alert(T("Impossible d\u2019ajouter le cheval : ", "Could not add the horse: ", "No se pudo a\u00f1adir el caballo: ", "Impossibile aggiungere il cavallo: ", "\u99ac\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCh.message || String(errCh))); return; } setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
+  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } setBusy(true); var errCh = null; try { var rCh = await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0], club: (mesClubsL.length > 1 ? (clubCheval || mesClubsL[0]) : null) }); if (rCh && rCh.error) errCh = rCh.error; } catch (e) { errCh = e; } setBusy(false); if (errCh) { alert(T("Impossible d\u2019ajouter le cheval : ", "Could not add the horse: ", "No se pudo a\u00f1adir el caballo: ", "Impossibile aggiungere il cavallo: ", "\u99ac\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCh.message || String(errCh))); return; } setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
   async function soumettreCavalier() { if (!champsCv.nom.trim()) return; setBusy(true); var errCv = null; try { var rCv = await ajouterCavalier({ nom: champsCv.nom, niveau: champsCv.niveau, fichierPhoto: cvFile.current && cvFile.current.files[0] }); if (rCv && rCv.error) errCv = rCv.error; } catch (e) { errCv = e; } setBusy(false); if (errCv) { alert(T("Impossible d\u2019ajouter le cavalier : ", "Could not add the rider: ", "No se pudo a\u00f1adir el jinete: ", "Impossibile aggiungere il cavaliere: ", "\u9a0e\u624b\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCv.message || String(errCv))); return; } setFormOuvert(null); setChampsCv({ nom: "", niveau: "" }); if (cvFile.current) cvFile.current.value = ""; charger(); }
   async function soumettreSouvenir(e) { var f = e.target.files && e.target.files[0]; if (!f) return; setBusy(true); var errSv = null; try { var rSv = await ajouterSouvenir(f); if (rSv && rSv.error) errSv = rSv.error; } catch (er) { errSv = er; } setBusy(false); if (errSv) { alert(T("Impossible d\u2019ajouter la photo : ", "Could not add the photo: ", "No se pudo a\u00f1adir la foto: ", "Impossibile aggiungere la foto: ", "\u5199\u771f\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errSv.message || String(errSv))); if (svFile.current) svFile.current.value = ""; return; } if (svFile.current) svFile.current.value = ""; charger(); }
   async function suppr(type, id) { try { if (type === "cheval") await supprimerCheval(id); else await supprimerCavalier(id); } catch (e) {} charger(); }
@@ -30166,6 +30279,21 @@ function EcranGererEcurie() {
         champ(champsCh.nom, function (e) { setChampsCh(Object.assign({}, champsCh, { nom: e.target.value })); }, T("Nom du cheval", "Horse name", "Nombre", "Nome", "\u99ac\u306e\u540d\u524d")),
         h("div", { style: { display: "flex", gap: 9 } }, h("div", { style: { flex: 1 } }, champ(champsCh.race, function (e) { setChampsCh(Object.assign({}, champsCh, { race: e.target.value })); }, T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e"))), h("div", { style: { flex: 1 } }, champ(champsCh.age, function (e) { setChampsCh(Object.assign({}, champsCh, { age: e.target.value })); }, T("\u00c2ge", "Age", "Edad", "Et\u00e0", "\u5e74\u9f62")))),
         champ(champsCh.discipline, function (e) { setChampsCh(Object.assign({}, champsCh, { discipline: e.target.value })); }, T("Discipline", "Discipline", "Disciplina", "Disciplina", "\u7a2e\u76ee")),
+        /* 01/09 (Blandine, membre de Feinn ET de la SEP : « si je cree un cheval
+           comment je peux savoir si ca va sur l'une ou l'autre ») — LE CHOIX DE
+           L'ECURIE. ⚠️ N'APPARAIT QUE S'IL Y A PLUSIEURS CLUBS : sinon la
+           question n'a pas de sens et le formulaire ne bouge pas d'un pixel. */
+        (mesClubsL.length > 1) ? h("div", { style: { marginTop: 2 } },
+          h("div", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, letterSpacing: ".12em", textTransform: "uppercase", color: "#7B848C", margin: "2px 0 7px" } },
+            T("\u00c9curie de ce cheval", "This horse's stable", "Cuadra de este caballo", "Scuderia di questo cavallo", "\u3053\u306e\u99ac\u306e\u53a9\u820e", "Stall dieses Pferds")),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            mesClubsL.map(function (cl) {
+              var act = (clubCheval || mesClubsL[0]) === cl;
+              return h("div", { key: cl, role: "button", onClick: function () { setClubCheval(cl); },
+                style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: act ? 700 : 500,
+                  color: act ? "#EDF2F5" : "#A8B2BA", background: act ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)",
+                  border: "1px solid " + (act ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.10)") } }, cl);
+            }))) : null,
         h("input", { ref: chFile, type: "file", accept: "image/*", style: { color: "#8A929C", fontSize: 12, fontFamily: M, marginBottom: 11, display: "block" } }),
         btnAjout(busy ? "\u2026" : T("Ajouter le cheval", "Add horse", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0"), soumettreCheval)) : null,
       chevaux.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 9 } }, chevaux.map(function (c) { return ligne(c, "cheval", [c.race, c.age, c.discipline].filter(Boolean).join(" \u00b7 ")); })) : (formOuvert !== "cheval" ? h("div", { style: { fontSize: 12.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Aucun cheval ajout\u00e9.", "No horse yet.", "", "", "")) : null)),
