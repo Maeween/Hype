@@ -22196,6 +22196,14 @@ function EcranCommunaute() {
         titreSec(T("Carte des clubs","Clubs map","Mapa de clubs","Mappa dei club","\u30af\u30e9\u30d6\u5730\u56f3","Vereinskarte")),
         h("div", { style:{ borderRadius:20, overflow:"hidden", border:"1px solid rgba(32,217,245,0.407)", background:"#05070c" } }, h("iframe", { srcDoc:FRANCE_MAP_HTML, title:"Carte des clubs", style:{ width:"100%", height:"350px", border:"none", display:"block" } })),
         h("div", { style: { marginTop: 22 } }),
+        /* 01/09 (Blandine : « tu peux faire pareil sur la page communaute ») :
+           le PODIUM est pose au-dessus de la liste complete, qui reste en
+           dessous, inchangee. Pas de lien « Voir le classement complet » ici :
+           la liste entiere est deja juste dessous. */
+        (typeof PodiumClubsHype === "function" && classementClubs && classementClubs.length)
+          ? h("div", { style: { margin: "0 -16px 6px" } },
+              h(PodiumClubsHype, { liste: classementClubs.map(function (g) { return { nom: g.ecurie, xp: g.xp }; }) }))
+          : null,
         titreSec(T("Classement des clubs","Club ranking","Ranking de clubes","Classifica club","\u30af\u30e9\u30d6\u30e9\u30f3\u30ad\u30f3\u30b0","Vereinsrangliste")),
         (classementClubs === null) ? h("div", { style:{ color:"#8A929C", fontSize:11.5, fontFamily:M } }, T("Chargement...","Loading...","Cargando...","Caricamento...","\u8aad\u307f\u8fbc\u307f\u4e2d...","Wird geladen...")) :
         (!classementClubs.length ? h("div", { style:{ borderRadius:16, border:"1px solid rgba(255,255,255,0.08)", padding:"18px", background:"#0c0e12", color:"#8A929C", fontSize:13, lineHeight:1.5, fontFamily:M } }, T("Aucun club class\u00e9 pour l'instant.","No ranked clubs yet.","A\u00fan ning\u00fan club clasificado.","Ancora nessun club in classifica.","\u307e\u3060\u30e9\u30f3\u30ad\u30f3\u30b0\u3055\u308c\u305f\u30af\u30e9\u30d6\u306f\u3042\u308a\u307e\u305b\u3093\u3002","Noch keine gerankten Vereine.")) :
@@ -27685,7 +27693,7 @@ function EcranMonCavalier() {
   React.useEffect(function () { (async function () {
     try {
       var u = await utilisateurActuel(); setMoiCav(u || null);
-      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); var tousCh = (rc && rc.data) ? rc.data.slice() : []; try { if (typeof mesChevauxLies === "function") { var rln = await mesChevauxLies(); if (rln && rln.data && rln.data.length) tousCh = tousCh.concat(rln.data); } } catch (eLn) { } try { tousCh = await classerChevauxParXp(tousCh); } catch (eXc) { } setChevauxReels(tousCh); }
+      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); var tousCh = (rc && rc.data) ? rc.data.slice() : []; try { if (typeof mesChevauxLies === "function") { var rln = await mesChevauxLies(); if (rln && rln.data && rln.data.length) tousCh = tousCh.concat(rln.data); } } catch (eLn) { } /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxReels(tousCh); try { var triCh = await classerChevauxParXp(tousCh); if (triCh && triCh.length) setChevauxReels(triCh); } catch (eXc) { } }
     } catch (e) {}
   })(); }, []);
   var estCompteFeinn = estCompteFeinnHype(moiCav);
@@ -28775,6 +28783,160 @@ function AgendaClubHype(props) {
    les cavaliers sont classes par XP decroissant, et les chevaux passent du rail defilant a une
    grille — les trois dans la meme passe, sinon on refait deux fois le meme travail. */
 var AFFICHER_GAMIF_CLUB = false;
+/* ===================================================================
+   01/09 — PODIUM DES CLUBS (asset fourni par Blandine).
+   L'image `hype-podium-clubs.png` est un PNG A TROUS : les trois
+   emplacements des photos sont TRANSPARENTS. Les photos se posent donc
+   DERRIERE l'image, et les anneaux or/argent/bronze passent par-dessus
+   tout seuls.
+   ⚠️ NE PAS REDESSINER LE PODIUM EN CSS, ne pas ajouter de cadre autour
+   des photos : le decor est entierement dans l'asset.
+   ⚠️ POSITIONS MESUREES AU PIXEL sur l'asset (1224x1285), exprimees en
+   POURCENTAGE — le placement suit donc la largeur de l'ecran.
+       trou 1 (centre, or)     : gauche 35.46% haut 26.61% 28.35x27.00
+       trou 2 (gauche, argent) : gauche  6.94% haut 42.72% 19.44x18.91
+       trou 3 (droite, bronze) : gauche 73.94% haut 43.58% 19.36x18.91
+   Si l'asset est regenere, REMESURER ces six valeurs.
+   ⚠️ LE CONTENEUR PORTE LE MEME RAPPORT que l'image (1224 / 1285) :
+   sans lui, les pourcentages tomberaient a cote des cercles.
+   ⚠️ AUCUN CALCUL D'XP NI DE CLASSEMENT ICI : le composant recoit une
+   liste deja classee et se contente de l'afficher.
+   ⚠️ L'IMAGE DU CLUB N'EXISTE PAS DANS LE CLASSEMENT. La seule image
+   d'un club est sa BANNIERE, rangee dans `tableaux_clubs` sous la cle
+   « club-banniere:<clef> ». Requete SEPAREE ET GARDEE (lecon du 30/08,
+   l'affaire `robe`) : si elle echoue, le podium s'affiche sans photos
+   au lieu de disparaitre. Un club sans banniere laisse voir le fond
+   sombre a travers le trou — sobre, et aucun visuel generique invente. */
+function PodiumClubsHype(props) {
+  var h = React.createElement;
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var tr = app.tr || function (o) { return o.fr; };
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
+  var TURQ = "#20D9F5", BLANC = "#F4F7FA";
+
+  var liste = (props.liste || []).slice().sort(function (a, b) { return (b.xp || 0) - (a.xp || 0); });
+  var top3 = liste.slice(0, 3);
+  var suite = liste.slice(3, 6);
+
+  /* Les bannieres des clubs affiches, cherchees une fois. */
+  var _ph = React.useState({}), photos = _ph[0], setPhotos = _ph[1];
+  var clesTop = top3.map(function (g) { return g && g.nom; }).join("|");
+  React.useEffect(function () {
+    var vivant = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) return;
+        var noms = liste.slice(0, 6).map(function (g) { return g && g.nom; }).filter(Boolean);
+        if (!noms.length) return;
+        var parCle = {};
+        var cles = noms.map(function (n) {
+          var c = (typeof clefClubG === "function") ? clefClubG(n) : String(n || "").toLowerCase().trim();
+          parCle["club-banniere:" + c] = n; return "club-banniere:" + c;
+        });
+        var r = await supa.from("tableaux_clubs").select("cle, contenu").in("cle", cles);
+        if (!vivant || !r || !r.data) return;
+        var m = {};
+        r.data.forEach(function (l) { if (l && l.cle && l.contenu && parCle[l.cle]) m[parCle[l.cle]] = l.contenu; });
+        setPhotos(m);
+      } catch (ePh) { }
+    })();
+    return function () { vivant = false; };
+  }, [clesTop]);
+
+  if (!top3.length) return null;
+
+  /* gauche / haut / largeur / hauteur, en % de l'asset */
+  var TROUS = [
+    { l: 35.46, t: 26.61, w: 28.35, hh: 27.00 },   /* 1er, au centre */
+    { l: 6.94, t: 42.72, w: 19.44, hh: 18.91 },    /* 2e, a gauche   */
+    { l: 73.94, t: 43.58, w: 19.36, hh: 18.91 }    /* 3e, a droite   */
+  ];
+  /* Le nom et l'XP sont ancres par le BAS, juste au-dessus de la marche :
+     entre le bas du cercle et le haut de la marche il n'y a qu'un point de
+     pourcentage — le texte deborde donc legerement sur le bas de la photo,
+     comme sur la maquette de Blandine, jamais sur la marche ni sur le
+     chiffre imprime (le « 1 » commence a 61,2 %). */
+  var TEXTES = [
+    { l: 26, w: 48, b: 47.0, ta: 15, tx: 12.5 },
+    { l: 1, w: 32, b: 39.0, ta: 12.5, tx: 11 },
+    { l: 67, w: 32, b: 38.2, ta: 12.5, tx: 11 }
+  ];
+  /* ordre d'affichage : 2 a gauche, 1 au centre, 3 a droite — c'est l'asset
+     qui impose la place, pas le rang dans la liste. */
+  function bloc(i) {
+    var g = top3[i]; if (!g) return null;
+    var tr3 = TROUS[i], tx = TEXTES[i];
+    var photo = photos[g.nom] || null;
+    return [
+      photo ? h("div", {
+        key: "ph" + i,
+        style: {
+          position: "absolute", left: tr3.l + "%", top: tr3.t + "%",
+          width: tr3.w + "%", height: tr3.hh + "%",
+          borderRadius: "50%", overflow: "hidden", zIndex: 1
+        }
+      }, h("img", { src: photo, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : null,
+      h("div", {
+        key: "tx" + i,
+        style: {
+          position: "absolute", left: tx.l + "%", bottom: tx.b + "%", width: tx.w + "%",
+          zIndex: 3, textAlign: "center", pointerEvents: "none"
+        }
+      },
+        h("div", {
+          style: {
+            fontFamily: C, fontSize: tx.ta, fontWeight: 600, color: BLANC, lineHeight: 1.2,
+            textShadow: "0 2px 10px rgba(0,0,0,0.9)",
+            display: "-webkit-box", WebkitBoxOrient: "vertical", WebkitLineClamp: 2,
+            overflow: "hidden"
+          }
+        }, g.nom || ""),
+        h("div", {
+          style: { fontFamily: M, fontSize: tx.tx, fontWeight: 700, color: TURQ, marginTop: 2, textShadow: "0 2px 10px rgba(0,0,0,0.9)" }
+        }, (g.xp || 0) + " XP"))
+    ];
+  }
+
+  return h("div", { style: { padding: "26px 16px 0" } },
+    /* ---- le titre, qui n'est PAS dans l'image ---- */
+    h("div", { style: { textAlign: "center", marginBottom: 6 } },
+      h("div", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.28em", textTransform: "uppercase", color: TURQ } },
+        T("Classement", "Ranking", "Clasificaci\u00f3n", "Classifica", "\u30e9\u30f3\u30ad\u30f3\u30b0", "Rangliste")),
+      h("div", { style: { fontFamily: C, fontSize: 25, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: BLANC, lineHeight: 1.15, marginTop: 2 } },
+        T("Des clubs", "Of clubs", "De clubes", "Dei club", "\u30af\u30e9\u30d6", "Der Vereine")),
+      h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#8A929C", marginTop: 3 } },
+        T("Cette saison", "This season", "Esta temporada", "Questa stagione", "\u4eca\u30b7\u30fc\u30ba\u30f3", "Diese Saison"))),
+
+    /* ---- le podium : photos DERRIERE, asset PAR-DESSUS ---- */
+    h("div", { style: { position: "relative", width: "100%", aspectRatio: "1224 / 1285" } },
+      bloc(0), bloc(1), bloc(2),
+      h("img", {
+        src: "hype-podium-clubs.png", alt: "",
+        style: { position: "absolute", inset: 0, width: "100%", height: "100%", display: "block", zIndex: 2, pointerEvents: "none" }
+      })),
+
+    /* ---- les places suivantes, en vrai HTML ---- */
+    suite.length ? h("div", { style: { marginTop: 4 } },
+      suite.map(function (g, i) {
+        return h("div", { key: "s" + i, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 4px", borderTop: "1px solid rgba(255,255,255,0.06)" } },
+          h("div", { style: { width: 18, textAlign: "center", fontFamily: C, fontSize: 13, color: "#8A929C" } }, i + 4),
+          h("div", { style: { width: 26, height: 26, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" } },
+            photos[g.nom] ? h("img", { src: photos[g.nom], alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null),
+          h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 13, color: BLANC, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.nom || ""),
+          h("div", { style: { fontFamily: M, fontSize: 12.5, fontWeight: 700, color: TURQ } }, (g.xp || 0) + " XP"));
+      })) : null,
+
+    props.onVoirTout ? h("button", {
+      onClick: props.onVoirTout,
+      style: {
+        display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%",
+        marginTop: 12, padding: "13px 0", borderRadius: 14, border: "1px solid rgba(32,217,245,0.3)",
+        background: "none", color: TURQ, fontSize: 13, fontWeight: 700, fontFamily: M, cursor: "pointer"
+      }
+    }, T("Voir le classement complet", "See full ranking", "Ver la clasificaci\u00f3n completa", "Vedi la classifica completa", "\u5168\u4f53\u30e9\u30f3\u30ad\u30f3\u30b0\u3092\u898b\u308b", "Vollst\u00e4ndige Rangliste") + " \u2192") : null);
+}
+
 function EcranGuilde() {
   var h = React.createElement;
   var ctx = useApp();
@@ -28910,7 +29072,7 @@ function EcranGuilde() {
     } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
     if (idsMembres.length) {
-      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(500); if (cv && cv.data && cv.data.length) { var cvTri = cv.data; try { cvTri = await classerChevauxParXp(cv.data); } catch (eXg) { } setChevauxClub(cvTri); /* 28/08 : plafond 24 -> 500 (demande Blandine, "tous les chevaux de l'ecurie") -- l'ecurie Feinn a deja 27 chevaux, 3 etaient invisibles */
+      try { var cv = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, palmares").in("user_id", idsMembres).is("supprime_le", null).order("created_at", { ascending: false }).limit(500); if (cv && cv.data && cv.data.length) { /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxClub(cv.data); try { var cvTri = await classerChevauxParXp(cv.data); if (cvTri && cvTri.length) setChevauxClub(cvTri); } catch (eXg) { } /* 28/08 : plafond 24 -> 500 (demande Blandine, "tous les chevaux de l'ecurie") -- l'ecurie Feinn a deja 27 chevaux, 3 etaient invisibles */
         try { /* etape 2 : proprietaire (1) + liens — meme table que la page commune */
           var idsCv = cv.data.map(function (c) { return c.id; });
           var rLi = await supa.from("chevaux_liens").select("cheval_id").in("cheval_id", idsCv);
@@ -29126,7 +29288,7 @@ function EcranGuilde() {
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       setMoiG(u || null);
-      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } /* 01/09 : garde par identifiant, comme sur la page Cavalier depuis le 02/08 — c'est CETTE liste qui montrait Yum en double. */ var vusMc = {}; tousMc = tousMc.filter(function (cM) { if (!cM || !cM.id || vusMc[cM.id]) return false; vusMc[cM.id] = true; return true; }); /* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ try { tousMc = await classerChevauxParXp(tousMc); } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
+      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } /* 01/09 : garde par identifiant, comme sur la page Cavalier depuis le 02/08 — c'est CETTE liste qui montrait Yum en double. */ var vusMc = {}; tousMc = tousMc.filter(function (cM) { if (!cM || !cM.id || vusMc[cM.id]) return false; vusMc[cM.id] = true; return true; }); /* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setMesChevauxClub(tousMc); try { var triMc = await classerChevauxParXp(tousMc); if (triMc && triMc.length) tousMc = triMc; } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
       if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
       else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
@@ -29532,26 +29694,13 @@ function EcranGuilde() {
             h("img", { src: p.photo_url, alt: "", style: { width: "100%", height: "100%", objectFit: "cover" } }));
         }))
         : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Partage une photo sur le mur du club : elle appara\u00eetra ici.", "Share a photo on the club wall: it will appear here.", "Comparte una foto en el muro del club: aparecer\u00e1 aqu\u00ed.", "Condividi una foto sul muro del club: apparir\u00e0 qui.", "\u30af\u30e9\u30d6\u306e\u30a6\u30a9\u30fc\u30eb\u306b\u5199\u771f\u3092\u30b7\u30a7\u30a2\u3059\u308b\u3068\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002"))),
-    h("div", { style: { padding: "26px 16px 0" } },
-      h("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 } },
-        h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Les clubs les plus repr\u00e9sent\u00e9s", "Most represented clubs", "Los clubes m\u00e1s representados", "I club pi\u00f9 rappresentati", "\u6700\u3082\u591a\u304f\u4ee3\u8868\u3055\u308c\u3066\u3044\u308b\u30af\u30e9\u30d6")),
-        h("button", { onClick: function () { setEcran("communaute"); }, style: { flexShrink: 0, display: "flex", alignItems: "center", gap: 4, background: "none", border: "1px solid rgba(32,217,245,0.35)", borderRadius: 999, padding: "6px 12px", color: TURQL, fontSize: 11, fontWeight: 700, fontFamily: M, cursor: "pointer" } }, T("Voir le classement", "See ranking", "Ver ranking", "Vedi classifica", "\u30e9\u30f3\u30ad\u30f3\u30b0\u3092\u898b\u308b") + " \u203a")),
-      /* 28/08 (demande Blandine) : 3 cartes cote a cote pour le podium (or/argent/
-         bronze -- ICONES PLACEHOLDER pour l'instant, elle envoie les vrais visuels
-         a inserer plus tard a la place de medOr/medArgent/medBronze) + une carte
-         pleine largeur pour le club de la page (Ecurie Feinn), toujours affichee,
-         quel que soit son rang. Bouton "Voir le classement" -> page Communaute,
-         qui affiche desormais le VRAI classement complet (meme source de donnees,
-         classementEcuries(), pour que les deux pages soient toujours d'accord). */
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginBottom: 10 } },
-        liste.slice(0, 3).map(function (g, i) {
-          var medIco = ["\ud83c\udfc6", "\ud83e\udd48", "\ud83e\udd49"][i];
-          var medCol = ["#E8C887", "#C7D0D6", "#CD8A5C"][i];
-          return h("div", { key: i, style: { borderRadius: 16, border: "1px solid " + medCol + "40", background: "linear-gradient(180deg, " + medCol + "1A, #0c0e12 70%)", padding: "16px 8px 12px", textAlign: "center" } },
-            h("div", { style: { fontSize: 26, marginBottom: 6 } }, medIco),
-            h("div", { style: { fontFamily: C, fontSize: 12, fontWeight: 700, color: "#EDF2F5", lineHeight: 1.25, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.nom),
-            h("div", { style: { fontSize: 10, color: medCol, fontFamily: M, fontWeight: 700, marginTop: 4 } }, g.xp + " XP"));
-        })),
+    /* 01/09 (Blandine, asset fourni) : les 3 cartes a emojis placeholder du
+       28/08 sont remplacees par le PODIUM. Le titre et la pilule « Voir le
+       classement » disparaissent aussi : le composant porte les deux. La carte
+       pleine largeur du club de la page, juste dessous, est CONSERVEE — elle
+       n'etait pas dans la demande. */
+    h(PodiumClubsHype, { liste: liste, onVoirTout: function () { setEcran("communaute"); } }),
+    h("div", { style: { padding: "14px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderRadius: 14, background: "rgba(32,217,245,0.148)", border: "1px solid rgba(32,217,245,0.3)" } },
         h("div", { style: { width: 26, textAlign: "center", fontFamily: C, fontSize: 15, fontWeight: 700, color: TURQL } }, monRang),
         h("div", { style: { minWidth: 0, flex: 1 } }, h("div", { style: { fontSize: 13.5, fontWeight: 700, color: "#EAFBFD", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, monClub), h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: M, marginTop: 1 } }, T("Niv.", "Lvl", "Niv.", "Liv.", "Lv") + " " + niv.niveau + " \u00b7 " + maG.membres + " " + T("membres", "members", "miembros", "membri", "\u4eba"))),
@@ -31549,7 +31698,7 @@ function EcranEcurie() {
   React.useEffect(function () { (async function () {
     try {
       var u = await utilisateurActuel(); setMoiEc(u || null);
-      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); if (rc && rc.data) { var ecTri = rc.data; try { ecTri = await classerChevauxParXp(rc.data); } catch (eXe) { } setChevauxEc(ecTri); } }
+      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ if (rc && rc.data) { setChevauxEc(rc.data); try { var ecTri = await classerChevauxParXp(rc.data); if (ecTri && ecTri.length) setChevauxEc(ecTri); } catch (eXe) { } } }
     } catch (e) {}
   })(); }, []);
   var estCompteFeinnEc = estCompteFeinnHype(moiEc);
