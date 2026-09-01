@@ -10,116 +10,375 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
-# 🟦 01/09/2026 — L'IMAGE UNIQUE DE PARTAGE (20br)
-
-*(Chantier ouvert par la passation du 31/08, feu vert de Blandine. Livré, **poussée
-non confirmée** au moment où j'écris : rien de ce bloc n'est encore en ligne.)*
-
-## Livré — à pousser à la racine
+# 🟦 01/09/2026 (matinée, suite) — LES BANDES GRISES AUTOUR DES STORIES
 
 | Fichier | Où | md5 | Quoi |
 |---|---|---|---|
-| `hype-stories.js` | racine | `2827525a635c6804d31730cd11ce84b2` · 421 047 o | `hsImageStory` + branchement du bouton Partager + version `20br` |
-| `index.html` | racine | `91322637245d3b237d97a9380b99d477` | UNE ligne : `?v=20bq` → `?v=20br` |
+| `index.html` | racine | `7896ea60d3e6b6d9192a4075666f4413` | deux bandes grises autour du bandeau des stories sur Écurie, Club et Communauté |
 
-`hype-modeles-db.js` **n'a pas bougé** — ne pas le repousser. Les décors sont déjà
-en ligne. **À l'écran : + rien / − rien** — aucun bouton, aucun texte, aucune
-couleur ne change. Seul le contenu de la feuille de partage change.
+`hype-stories.js` (20bu), `story.html` (20bt) et le reste **n'ont pas bougé** —
+ne pas les repousser.
+⚠️ Cet `index.html` **cumule toujours** les trois livraisons du matin (le `?v=`,
+le tri XP, les cartes du palmarès) **plus** celle-ci. Ne jamais repousser un
+`index.html` plus ancien par-dessus.
 
-## Ce que ça fait
+## Ce qui change
 
-`hsImageStory(story)` fabrique au canvas une image **1080×1920** qui montre TOUTE
-la story — le décor, ses photos posées dans ses fenêtres et découpées à leur
-contour, la légende — et cette image remplace la photo seule dans le bouton
-Partager des stories **composées**. Le lien continue de partir dans le texte du
-message, inchangé.
+Blandine, capture de la page Cavalier à l'appui : « ajouter deux bandes grises
+comme sur la page cavalier au-dessus et en dessous des story pour couper un peu
+la page du reste ».
 
-Origine du chantier : une cavalière avait inventé le partage Instagram toute
-seule, en faisant une **capture d'écran** de la page publique avec un sticker
-« Lien » par-dessus. Sur Instagram le chemin naturel est l'image, pas le lien :
-l'app la fournit désormais toute prête.
+Les bandes existaient **déjà** sur la page Cavalier (~27917) : un bloc gris
+`#15181C`, 18 px de haut, arrondi 6, marge latérale 16, posé au-dessus et en
+dessous de `BandeauStories`. Le même bloc est désormais posé sur les **trois
+autres pages** qui portent ce bandeau — décision de Blandine : les trois.
 
-## Les décisions posées dans le code
+| Page | Ligne (après) | Forme du rail |
+|---|---|---|
+| Communauté | ~22079 | `libre-carte` (cartes verticales) |
+| Club | ~29090 | `libre` |
+| Écurie | ~31538 | `libre` |
 
-- **La bande de texte est RÉSERVÉE en haut, jamais superposée.** À l'écran la
-  légende se pose sur le noir du décor ; ici c'est impossible.
-- **Sa hauteur se mesure**, elle n'est pas fixe : elle vaut ce que demandent les
-  lignes réellement obtenues (1 à 4). Une légende courte ne rapetisse plus le
-  décor pour rien, et une légende de 4 lignes n'est plus collée au bord haut —
-  où elle passait sous l'interface d'Instagram.
-- **L'échelle vient du `taille` de chaque modèle**, jamais d'un nombre écrit dans
-  le code (voir §« corrections » ci-dessous).
-- **Le découpage est le même qu'à l'écran** : même `bbox`, même `contour`, en
-  chemin de canvas au lieu d'un `clip-path`. Si l'un des deux change un jour,
-  changer l'autre — sinon l'image partagée ne ressemblera plus à ce que la
-  cavalière voit.
-- **Les photos passent par `hsImagePartage` (1000×1500, `resize=contain`)**,
-  taille absente des paliers de `hsImageEcran` (640/800/960/1080 × 1440/1600) et
-  de `hsImageTirage` (320×440). ⚠️ NE PAS L'ALIGNER SUR CES PALIERS « pour
-  réutiliser le cache » : c'est justement une image déjà mise en cache SANS
-  en-têtes CORS qu'on veut éviter — elle teinterait le canvas et `toBlob`
-  échouerait.
-- **Tout échec rend `null`** (photo absente, réseau, canvas teinté, délai
-  dépassé) : `regP.image` reste alors la photo et le partage part quand même.
-  Il n'existe aucun cas où le bouton ne fait plus rien.
-- **Stories sans décor** : photo entière sur fond flouté + légende + signature.
-  Le flou vient d'une réduction suivie d'un agrandissement — `ctx.filter`
-  n'existe pas sur les anciens Safari. Il s'applique au FOND seulement, la photo
-  est posée nue par-dessus (Design Bible : aucun filtre ni voile sur une photo).
+⚠️ **Le `padding` du bandeau change aussi**, et c'est voulu : le motif de la page
+Cavalier passe `padding: "10px 0 10px"` là où le défaut de `BandeauStories` est
+`"16px 0 8px"`. Les trois pages adoptent donc l'espacement du Cavalier — c'est ce
+qui fait que les bandes serrent le rail au lieu de flotter. Le retirer casserait
+la ressemblance demandée.
 
-## Trois corrections à la passation, constatées en séance
+**À l'écran : + deux bandes grises sur trois pages · − rien.**
 
-1. **Ce n'est pas `concours-3` seul qui porte un titre en haut du décor.**
-   `concours-1`, `-2` ET `-3` portent tous « JOUR DE CONCOURS » en dur dans
-   l'image — vérifié à l'œil sur les quatre décors. Seul `concours-4` a le haut
-   libre. La bande réservée n'est donc pas un cas particulier : c'est la règle
-   pour trois décors sur quatre.
-2. **Les décors ne font pas tous 941 × 1672.** Vingt oui, mais le catalogue
-   contient aussi 509×1016, 504×1015, 643×1161, 582×1139, 460×1672, 463×1672 et
-   deux 940×1672. Une valeur écrite en dur aurait fait sortir les photos de leurs
-   cadres sur huit modèles.
-3. **ERREUR DE CLAUDE, consignée.** J'avais annoncé à Blandine qu'`index.html`
-   recevrait une vraie modification, « parce que le bouton Partager y est codé ».
-   Faux deux fois : le bouton est dans `hype-stories.js` (ligne 6193), et
-   `hypePartager` accepte déjà une adresse `blob:` sans rien changer.
-   `index.html` ne prend que le `?v=`, exactement comme le disait la passation.
+## Contrôles
 
-## Vérifications faites avant livraison
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée **identiques avant/après** : `overflow-x: clip !important`
+  **1** · `html { overscroll-behavior: none }` **1** · `hypeVerrouScroll` **4** ·
+  `hypeLibererPuitsTactiles` **4**.
+- Aucun interdit CSS introduit (0 `overflow-x: hidden` nu, 0
+  `overscroll-behavior: none` sur `body`).
+- `?v=20bu` **inchangé** : aucun fichier JS externe n'est touché, rien à
+  incrémenter.
 
-- `node --check` sur le fichier entier : OK.
-- **Balayage des 28 modèles × 2 cas** (avec et sans légende) : aucune fenêtre ne
-  déborde du décor, aucun contour hors décor, aucune valeur invalide.
-- **Rendu réel dans Chromium sur 11 cas** (les 4 décors, une story H+D, une photo
-  seule, un modèle inconnu, une story sans photo) : 10 images produites de 60 à
-  200 Ko en 35 à 270 ms, 1 `null` volontaire, zéro erreur console. Images
-  regardées une à une : sur `concours-1`, `-2` et `-3`, le titre du décor reste
-  intact et la légende est au-dessus.
-- Deux défauts vus au premier rendu et corrigés avant livraison : le texte collé
-  au bord haut (→ bande calculée), et une story à plusieurs photos **sans** décor
-  qui ne montrait que la première (→ jusqu'à quatre photos, la grande en haut et
-  les tirages dessous, comme à l'écran).
+---
 
-## ⚠️ Le point à surveiller au premier essai réel
+# 🟦 01/09/2026 (matin, suite) — 20bu, CARTES DU PALMARÈS, ET CE QUI RESTE OUVERT
 
-iOS exige que `navigator.share` parte **juste après le doigt**. Fabriquer l'image
-demande du temps réseau (les photos viennent de Supabase). D'où un **délai de
-garde de 4 secondes** dans `hsImageStory` : au-delà, on rend `null` et on partage
-la photo comme avant, plutôt que de risquer un refus d'iOS. Si le symptôme est
-« rien ne se passe » au lieu de la feuille de partage, c'est là qu'il faut
-regarder — pas ailleurs, et aucun correctif à l'aveugle.
+*(Rattrapage de suivi : trois livraisons faites et non encore consignées.
+**Poussées non confirmées.**)*
 
-## Ouvert après ce chantier
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `c30223ace9a1f4607b07e9a4ef87d4d7` | 20bu : la légende agrandie ne mord plus sur le décor |
+| `index.html` | racine | `1172a97dd2e1b6efec3f7ca9c6bd326f` | `?v=20bu` + tri XP + cartes verticales du palmarès |
 
-- Les stories à **photo unique sans décor** ne sont pas branchées (décision :
-  regarder le rendu d'abord, étendre ensuite).
-- Reste du chantier partage : l'appui long copie l'adresse d'accueil au lieu de
-  celle de la story ; « photo jointe ou lien seul » (une image jointe empêche
-  WhatsApp de construire sa carte) ; `partage-apercu.jpg` (1200×630) toujours
-  attendu ; Instagram ne lit aucune balise OG.
-- Points ouverts du 31/08 inchangés : « Voir plus » au-delà de 4 lignes, repère à
-  l'écriture, photos qui débordent de leurs cadres à l'écran, encart
-  « Propositions de photos » de la fiche cheval, story sur la page du cheval
-  identifié.
+`story.html` de la 20bt reste valable. ⚠️ Cet `index.html` **cumule** trois
+livraisons : ne pas repousser un `index.html` plus ancien par-dessus.
+
+## 1. 20bu — la légende agrandie qui empiétait
+
+Blandine, après essai réel : « quand on agrandit le texte s'il est trop près du
+modèle on se retrouve à empiéter dessus ». À l'écran le bloc est posé à 10 px du
+haut, 4 lignes max ; en taille « grand » ces 4 lignes prennent 25 % de plus et
+viennent sur le dessin. L'image de partage n'avait pas ce défaut — sa bande se
+mesure sur le texte réel.
+
+**Le correctif :** le texte descend dans le noir mort du haut du décor, mesuré
+par `hsVideHaut` — la même fonction que l'image de partage, donc la même vérité
+des deux côtés. Sur `concours-1`, `-2`, `-4` : 14 à 16 % récupérés, aucune ligne
+perdue, le décor ne bouge pas.
+⚠️ **`concours-3` n'a aucun vide.** Là, et là seulement, une légende **en grand**
+passe à 3 lignes. Décision de Blandine : ne pas rapetisser le décor, ses photos
+ne doivent pas maigrir.
+⚠️ La mesure est **asynchrone et mise en cache**. Tant qu'elle n'est pas revenue,
+le ratio vaut 0 et le texte reste où il est — aucun saut à l'affichage.
+
+## 2. Les cartes verticales du palmarès du club
+
+Maquette choisie par Blandine (variante « médaillon rond », sur deux proposées).
+Ordre **corrigé en séance** : médaille et année, **portrait**, puis
+« 1er LIAM ROUX sur Rizotto », puis concours, épreuve, partants.
+⚠️ **Le cheval n'est nommé qu'une fois.** La première version portait son nom
+sous le portrait ET dans la phrase : « t'as écrit Rizotto deux fois ». Ne pas
+remettre un titre avec le nom du cheval.
+⚠️ **Sans photo, pas de trou** : le médaillon n'est pas dessiné, le reste
+remonte. Pas de portrait générique — c'est ce qui a fait écarter l'autre
+maquette. « Si le cheval existe ailleurs tu peux quand même mettre sa photo ou
+tu en mets rien tant pis si t'en as pas. »
+Les chevaux hors du club sont cherchés dans `chevaux` par une **requête séparée
+et gardée**, plafonnée à 20 (leçon du 30/08, l'affaire `robe`) : si elle échoue,
+la carte s'affiche sans portrait au lieu de vider le rail.
+Cartes à 158 px, rail toujours horizontal. Médaillon 66 px — à ajuster si
+Blandine le veut plus gros.
+
+## 3. 🟠 LA PAGE « TOUS LES RÉSULTATS DU CLUB » — décidée, PAS ÉCRITE
+
+- **Tri par date**, du plus récent au plus ancien. Le rail au-dessus fait déjà
+  le tri par importance ; refaire le même classement n'apporterait rien.
+- **Seulement les résultats CLASSÉS** — décision de Blandine : « garde que les
+  résultats que la page club, on aura déjà assez de données à traiter ». Les
+  lignes de préparation et les saisies non classées restent sur les fiches.
+  ⚠️ C'est une décision, pas un oubli : `aMontrer` dans `hype-resultats.js` les
+  laisse passer par défaut, il faudra les filtrer explicitement.
+- **S'aligner sur `hype-resultats.js`**, le module de la page résultats cheval,
+  via `HypeResultatsHote`. Lecture faite : `rendre()` attend **une ligne par
+  résultat** (`date`, `lieu`, `place`, `quart`, `origine`), pas des groupes — il
+  regroupe lui-même par lieu à moins de 3 jours d'écart et trie par place. Le
+  cas « plusieurs classés du club sur la même épreuve » se règle donc tout seul.
+- Mode **non-propriétaire** (pas d'ajout ni d'import : ce sont les résultats des
+  autres).
+- Le `slice(0, 5)` (ligne ~28917) saute.
+- Blandine : « on verra après pour aménager la page, on fera des pêle-mêles etc.
+  en haut avec les résultats importants ». Première version volontairement
+  simple, à affiner ensuite.
+
+## 4. 🟠 L'À LA UNE DE L'ÉCURIE — le doublon, et la décision
+
+**Le doublon est réel et était déjà consigné dans le code** (commentaire du
+30/08) : `MurImmersif` n'accepte que `userId`, `hsListerALaUne` construit
+toujours une cible `cavalier:<id>`, et `RailALaUne` était appelé **sans
+paramètre** sur la page Écurie. Elle affiche donc les à la une du cavalier
+connecté. La notion « à la une d'une écurie » **n'existe pas** dans le système.
+Constaté le 30/08, jamais traité comme un problème — Blandine le signale le
+01/09 : « ce sont deux choses distinctes ».
+
+**Décision : option A.** Une à la une propre à l'écurie, composée à la main,
+cible `ecurie:<clé>` à côté de `cavalier:<id>`. **L'habillage ne change pas** —
+`MurImmersif` reste sur les deux pages, seul son contenu change.
+
+À faire ce jour-là :
+- apprendre la cible `ecurie:` à `hsListerALaUne`
+- donner un second paramètre à `MurImmersif`, en gardant le comportement actuel
+  sans paramètre pour que la page Cavalier ne bouge pas
+- reprendre le mécanisme de composition existant, ne pas en inventer un deuxième
+- ⚠️ **QUESTION NON TRANCHÉE** : qui a le droit de composer l'à la une de
+  l'écurie — Blandine seule, ou tout membre ? À demander avant de livrer.
+
+---
+
+# 🟦 01/09/2026 — LE TRI XP DES CAVALIERS, BRANCHÉ
+
+*(Livré, **poussée non confirmée**. Un seul fichier.)*
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `5a603a341061f0684a5ea88d8ee402d1` | appel de `hype_ordre_cavaliers_xp` + tri de l'encart Cavaliers du club |
+
+⚠️ Cette livraison **remplace** l'`index.html` de la 20bt : elle en contient
+déjà le `?v=20bt`. Ne pas pousser l'ancien par-dessus.
+`hype-stories.js` et `story.html` n'ont pas bougé.
+
+## Ce que c'était
+
+Blandine : « le tri des cavaliers n'a pas fonctionné ». Vérifié le 01/09 :
+`hype_ordre_cavaliers_xp` n'était appelée **nulle part** — zéro occurrence dans
+`index.html` comme dans `hype-stories.js`. Ce n'était pas une panne, c'était le
+branchement jamais fait. La fonction était en base depuis plusieurs jours.
+
+Signature relevée en base ce jour-là :
+
+```
+entrées : ids uuid[]
+sortie  : TABLE(user_id uuid, rang integer)
+```
+
+## Ce qui est posé
+
+Un état `ordreXpEc` et un effet dans l'écran Écurie : une fois les membres
+chargés, on envoie la liste des identifiants affichés (membres **plus** les
+cavaliers ajoutés à la main — ils sont dans l'encart, ils doivent être dans
+l'ordre) et on trie avec le rang reçu.
+
+- ⚠️ **Le tri ne filtre rien.** Un cavalier absent de la réponse (pas d'XP,
+  fonction indisponible) garde sa place **à la suite** des classés. Un encart
+  qui perdrait des cavaliers en silence serait pire que pas de tri.
+- ⚠️ **Échec = ordre d'avant.** Aucun écran vide, aucun message : si l'appel
+  tombe, `ordreXpEc` reste `null` et la liste s'affiche comme aujourd'hui.
+- Aucune requête en dessous de deux cavaliers.
+- Garde `vivantXp` : quitter l'écran pendant la requête ne laisse pas un
+  `setState` sur un composant démonté.
+- `slice()` avant `sort` : `sort` trie sur place, et `reels` est reconstruit à
+  chaque rendu à partir de l'état.
+
+## Vérification
+
+Contrôle syntaxique des 18 blocs de script inline d'`index.html` : aucun en
+erreur. Le comportement réel ne peut être vu qu'en ligne — la fonction vit dans
+la base.
+
+## Ouvert
+
+- Couleurs des écritures des encarts et des onglets : remis à plus tard par
+  Blandine, elle s'en occupe.
+- L'autre encart Cavaliers (ligne ~27981, `cavaliers: listeAmis`) n'est **pas**
+  trié : ce n'est pas celui de l'écurie, et il n'a pas été demandé.
+
+---
+
+# 🟦 01/09/2026 — 20bt : LE STYLE DE LA LÉGENDE (couleur, taille, gras, police)
+
+*(Demande de Blandine : « ça serait sympa d'avoir la possibilité de modifier les
+textes en couleur taille style etc dans les story ». Livré, **poussée non
+confirmée**.)*
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `138aef590837e8217251ab5a9881db10` · 442 841 o | vocabulaire de style, réglages, base, écran, image de partage, version `20bt` |
+| `story.html` | racine | `3c38b2af6f16fecc221dc64e89a23d21` | 4 polices ajoutées, `style_legende` dans les 2 requêtes, style appliqué |
+| `index.html` | racine | `1425c6a4fe5e841214fd7da69fb02b30` | UNE ligne : `?v=20bs` → `?v=20bt` |
+
+**SQL déjà passé par Blandine le 01/09** (« Success. No rows returned ») :
+`ALTER TABLE hype_stories ADD COLUMN style_legende text;`
+
+## Le format
+
+Une seule colonne, un petit JSON : `{"c":"#20D9F5","t":"grand","g":true,"p":"cinzel"}`.
+Une colonne et non six : un réglage de plus ne touchera pas la base. Absente ou
+vide = l'affichage d'avant, au pixel — aucune story publiée avant ce jour ne
+change.
+
+## Les décisions de Blandine
+
+- **Portée** : couleur + taille + gras + police. Pas de déplacement du texte au
+  doigt pour cette version.
+- **Couleur libre** (« nuancier libre, je veux tout »). Quatre couleurs de la
+  charte en accès rapide, le sélecteur natif du téléphone à côté.
+- ⚠️ **L'ombre portée reste active dans les trois rendus.** C'est la seule
+  chose qui empêche un texte foncé de disparaître sur le noir de la story.
+  Ne pas la retirer au motif qu'on ne la voit pas.
+
+## ⚠️ Les trois rendus doivent s'accorder
+
+écran (`CompositionStory` × 2 sorties + panneau du bas) · image de partage
+(`hsImageStory`) · page publique (`story.html`). Si l'un change, les trois
+changent — une story qui change d'allure en sortant de l'app, c'est la faute du
+01/09 au matin, ne pas la refaire.
+
+- **Les tailles sont des MULTIPLICATEURS** (0,85 / 1 / 1,25), pas des pixels :
+  chaque rendu a sa base (13,5 px écran, 34 px canvas, 15 px page publique).
+  ⚠️ `story.html` porte la MÊME table, recopiée — il ne peut pas lire le
+  module. Si les trois nombres bougent d'un côté, les bouger de l'autre.
+- **Les six polices sont limitées à ce que l'app charge déjà** (Montserrat,
+  Cinzel, Anton, Oswald, Cormorant Garamond, Baloo 2). En ajouter une exige de
+  la déclarer aux TROIS endroits (`index.html`, `story.html`, et le canvas qui
+  attend `document.fonts.ready`), sinon police de repli au partage.
+- `story.html` ne chargeait que Montserrat et Cinzel : son `@import` a reçu les
+  quatre autres.
+
+## Ce qui a été touché
+
+- `hsPublierStory` : 10e argument. Le style est rangé **avec** `lieu`,
+  `musique` et `fond` dans le repli du 19c — une base non migrée fait tomber
+  ces colonnes et la story part quand même, sans style.
+- `hsModifierStory` : 6e argument, `null` explicite pour retirer le style.
+- Le style part sur **toutes les lignes du groupe**, comme la légende depuis la
+  147 : sinon seule la couverture serait colorée.
+- `ReglagesStyleLegende`, un seul composant monté à deux endroits (composeur et
+  feuille de modification), avec aperçu du rendu réel.
+  ⚠️ Chaque bouton arrête la propagation du clic (règle 19ai, « je me fais
+  sortir »).
+
+## Vérifications
+
+`node --check` sur `hype-stories.js`, syntaxe du bloc script de `story.html`
+validée. Rendu réel dans Chromium sur 16 cas, dont 5 nouveaux : style complet,
+couleur foncée, sans décor, **JSON corrompu** et **valeurs inconnues** — les
+deux derniers retombent proprement sur le défaut, aucune erreur console.
+
+## Ouvert
+
+- **Le tri XP des cavaliers ne fonctionne pas** : vérifié le 01/09,
+  `hype_ordre_cavaliers_xp` n'est appelée NULLE PART (0 occurrence dans
+  `index.html` et `hype-stories.js`). Ce n'est pas une panne, c'est le
+  branchement jamais fait. La fonction est en base, prête.
+- **Couleurs des écritures des encarts et des onglets** : demandé par Blandine
+  le 01/09, explicitement remis à plus tard par elle (« laisse je le ferai plus
+  tard »). Autre composant (`EncartCavaliersSpectral`, « Apparence de
+  l'encart », ligne ~29625), autre chantier.
+- Stories à photo unique sans décor toujours pas branchées sur l'image de
+  partage. Reste du chantier partage : appui long, photo jointe vs lien seul,
+  `partage-apercu.jpg`.
+
+---
+
+# 🟦 01/09/2026 (matin) — 20bs : LE DÉCOR REMONTÉ, ET LA STORY SANS DÉCOR REFAITE
+
+*(Correctif de `20br`, testé en production par Blandine le matin même. Livré,
+**poussée non confirmée**.)*
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `1bd4d90d080c3e7c79e87b0c8a854f22` · `427 400` o | mesure du noir mort + sortie sans décor refaite + version `20bs` |
+| `index.html` | racine | `1a411cc725436497f788408a44f99657` | UNE ligne : `?v=20br` → `?v=20bs` |
+
+## 1. Ce que la production a montré (20br)
+
+- **Les stories À DÉCOR : ça marche.** Confirmé par Blandine sur deux stories,
+  captures WhatsApp à l'appui. Composition entière, légende au-dessus du décor
+  sans mordre sur « JOUR DE CONCOURS », lien resté dans le texte. Le découpage
+  aux contours ronds (`modele-25`) tient aussi.
+- **Les stories SANS DÉCOR : ratées.** Mots de Blandine : « elle n'est plus
+  elle-même ». Trois fautes, toutes de moi.
+
+## 2. Option A — le décor remonte sous le texte
+
+Blandine : « l'écriture est un peu haute ». Le coupable n'était PAS le texte,
+c'était le décor : `concours-4` commence par une grande zone de noir vide avant
+le cheval, `concours-1` aussi. Mesuré sur les quatre décors (profil de luminance
+ligne par ligne) : `-4` ≈ 14 % de vide en haut, `-1` ≈ 16 %, `-2` ≈ 3 %,
+`-3` aucun.
+
+`hsVideHaut(im)` compte, sur une réduction à 60 px de large, les lignes du haut
+où rien ne se voit (luminance × opacité < 12/255). Cette hauteur est retirée du
+calcul d'échelle : le décor est mis à l'échelle sur sa partie utile et remonte,
+le vide glisse sous la bande de texte.
+
+- **Mesure, pas liste** : aucun tableau par décor à tenir à jour, les 28 modèles
+  et les suivants passent par le même calcul.
+- **Seuil 12/255**, choisi sur les décors réels : laisse passer le noir pur
+  (3-6) et la première lueur turquoise (8-11), s'arrête au premier trait dessiné
+  (18+). Un décor qui porte un titre en haut mesure donc un vide quasi nul.
+- **Plafond à 25 %** de la hauteur, garde-fou contre une mesure aberrante.
+- Effet mesuré sur `concours-4` + légende de 4 lignes : le décor passe de 968 à
+  1080 px de large et le trou se referme.
+
+## 3. La story sans décor, refaite
+
+Instruction de Blandine : « si on a choisi fond noir laisse lui fond noir et
+laisse les écritures où elles étaient ».
+
+- **Le fond flouté est SUPPRIMÉ.** C'était la photo elle-même agrandie —
+  méconnaissable, et sur une photo de groupe une bouillie de couleurs. Fond
+  `#060709` uni, comme à l'écran. ⚠️ NE PAS LE RÉINTRODUIRE.
+- **La légende revient SOUS la grande photo**, après le fil de lumière
+  turquoise, comme la sortie H+D à l'écran (disposition « B », 17/08). Je
+  l'avais mise en haut parce que les DÉCORS l'exigent, et je l'ai appliqué ici
+  sans me redemander si ça avait un sens. Ça n'en avait pas.
+- **L'ordre de l'écran est repris tel quel** : grande photo, fil, légende, table
+  de tirages, signature Hype. Tout centré sur l'axe vertical, bloc centré dans
+  la zone.
+- Le plafond de 58 % sur la grande photo ne s'applique que s'il y a des tirages
+  dessous (c'est le `maxHeight: 62%` de l'écran) : une photo seule prend toute
+  la place.
+- Toutes les photos de la story sont emportées (jusqu'à 4), pas seulement la
+  première.
+
+## 4. Vérifications
+
+`node --check` OK. Rendu réel dans Chromium sur les 11 mêmes cas : 10 images
+(44 à 219 Ko, 20 à 265 ms), 1 `null` volontaire, zéro erreur console. Images
+regardées une à une.
+
+## 5. Ouvert
+
+- **Textes en couleur / taille / style dans les stories** — idée de Blandine du
+  01/09, chantier à part. À trancher ce jour-là : où vit le style (une colonne
+  JSON plutôt que six colonnes) ; où il s'applique (écran + image de partage +
+  page publique `story.html`, sinon la story ne se ressemble plus dès qu'elle
+  sort de l'app — exactement le piège du 01/09) ; jusqu'où on va (couleur +
+  taille + gras, ou aussi déplacement au doigt et choix de police, qui se
+  heurte à la typographie des décors).
+- Les stories à photo unique **sans** décor ne sont toujours pas branchées.
+- Reste du chantier partage : appui long qui copie l'accueil ; photo jointe vs
+  lien seul ; `partage-apercu.jpg` (1200×630) toujours attendu.
 
 ---
 
