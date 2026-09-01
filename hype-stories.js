@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bs";
+var HYPE_STORIES_VERSION = "20bt";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -98,6 +98,114 @@ var HS_DUREE_VUE_MS = 6000;
    colonne `legende` est un `text` Postgres, sans limite ; les 140 étaient un
    plafond posé côté application, et rien d'autre. */
 var HS_LEGENDE_MAX = 1000;
+
+/* ============================================================================
+   20bt (01/09) — LE STYLE DE LA LEGENDE. Couleur, taille, gras, police.
+   Demande de Blandine : « ca serait sympa d'avoir la possibilite de modifier
+   les textes en couleur taille style etc dans les story ».
+
+   OU IL VIT : une seule colonne, `style_legende` (text) sur `hype_stories`,
+   ajoutee en SQL par Blandine le 01/09 :
+       ALTER TABLE hype_stories ADD COLUMN style_legende text;
+   Elle contient un petit JSON : {"c":"#20D9F5","t":"grand","g":true,"p":"cinzel"}
+   ⚠️ UNE COLONNE, PAS SIX. Six colonnes separees, c'est six migrations le jour
+   ou un reglage s'ajoute. Ici, un reglage de plus ne touche pas la base.
+   ⚠️ ABSENTE OU VIDE = l'affichage d'avant, au pixel. Aucune story publiee
+   avant ce jour ne change d'apparence.
+
+   LES TROIS RENDUS QUI DOIVENT S'ACCORDER :
+     1. l'ecran          (ce fichier : CompositionStory + le panneau du bas)
+     2. l'image de partage (ce fichier : hsImageStory)
+     3. la page publique  (story.html, hors de ce module)
+   ⚠️ SI L'UN CHANGE, LES TROIS CHANGENT. Une story qui change d'allure en
+   sortant de l'app, c'est la faute du 01/09 au matin -- le fond floute et la
+   legende deplacee. Ne pas la refaire.
+
+   ⚠️ LES TAILLES SONT DES MULTIPLICATEURS, PAS DES PIXELS. Chaque rendu a sa
+   taille de base (13,5 px a l'ecran, 34 px sur le canvas 1080x1920, 15 px sur
+   la page publique). Un nombre de pixels ecrit en dur donnerait un texte
+   minuscule sur l'image et enorme a l'ecran. Le multiplicateur, lui, se
+   transporte. `story.html` porte la MEME table, recopiee -- elle ne peut pas
+   lire ce module. Si ces trois nombres bougent ici, les bouger la-bas aussi.
+
+   ⚠️ LES POLICES SONT LIMITEES A CE QUE L'APP CHARGE DEJA (Google Fonts, en
+   tete d'index.html) : Montserrat, Cinzel, Anton, Oswald, Cormorant Garamond,
+   Baloo 2. En proposer une autre ne couterait rien a l'ecran mais donnerait
+   une police de repli dans l'image de partage et sur la page publique -- donc
+   une story qui ne se ressemble plus. NE PAS ALLONGER CETTE LISTE sans
+   ajouter la police AUX TROIS endroits (index.html, story.html, et le canvas
+   qui attend `document.fonts.ready`).
+
+   ⚠️ LA COULEUR EST LIBRE (choix de Blandine, nuancier complet). L'OMBRE
+   PORTEE reste donc active dans les trois rendus : c'est elle, et elle seule,
+   qui empeche un texte fonce de disparaitre sur le noir de la story. Ne pas
+   la retirer au motif qu'on ne la voit pas.
+============================================================================ */
+var HS_STYLE_TAILLES = { petit: 0.85, normal: 1, grand: 1.25 };
+var HS_STYLE_POLICES = {
+  montserrat: "'Montserrat',sans-serif",
+  cinzel: "'Cinzel',Georgia,serif",
+  anton: "'Anton',sans-serif",
+  oswald: "'Oswald',sans-serif",
+  cormorant: "'Cormorant Garamond',Georgia,serif",
+  baloo: "'Baloo 2',cursive,sans-serif"
+};
+/* Les quatre couleurs de la charte, proposees en acces rapide. Elles ne
+   BORNENT rien : le nuancier reste libre a cote (decision de Blandine,
+   « nuancier libre, je veux tout »). */
+var HS_STYLE_COULEURS = ["#F4F7FA", "#20D9F5", "#C9D3DA", "#E8C77A"];
+var HS_STYLE_DEFAUT = { c: "", t: "normal", g: false, p: "montserrat" };
+
+/* Lit la colonne et rend TOUJOURS un objet complet. Une valeur inconnue
+   (colonne bricolee a la main, version future) retombe sur le defaut plutot
+   que de casser le rendu. */
+function hsStyleLire(source) {
+  var s = { c: "", t: "normal", g: false, p: "montserrat" };
+  try {
+    var brut = source;
+    if (brut && typeof brut === "object" && brut.style_legende !== undefined) brut = brut.style_legende;
+    if (!brut) return s;
+    var o = (typeof brut === "string") ? JSON.parse(brut) : brut;
+    if (!o || typeof o !== "object") return s;
+    if (typeof o.c === "string" && /^#[0-9a-fA-F]{3,8}$/.test(o.c)) s.c = o.c;
+    if (o.t && HS_STYLE_TAILLES[o.t]) s.t = o.t;
+    s.g = !!o.g;
+    if (o.p && HS_STYLE_POLICES[o.p]) s.p = o.p;
+  } catch (e) { }
+  return s;
+}
+
+/* Rend le style CSS a fusionner par-dessus celui d'origine. `base` est la
+   taille en pixels du rendu appelant -- c'est elle que le multiplicateur
+   etire. Sans style enregistre, on ne renvoie RIEN : le bloc garde exactement
+   son apparence d'avant, y compris sa police et sa couleur. */
+function hsStyleCss(source, base) {
+  try {
+    var s = hsStyleLire(source);
+    var vide = (!s.c && s.t === "normal" && !s.g && s.p === "montserrat");
+    if (vide) return {};
+    var css = {};
+    if (s.c) css.color = s.c;
+    if (s.t !== "normal" && base) css.fontSize = Math.round(base * HS_STYLE_TAILLES[s.t] * 10) / 10;
+    if (s.g) css.fontWeight = 700;
+    if (s.p !== "montserrat") css.fontFamily = HS_STYLE_POLICES[s.p];
+    return css;
+  } catch (e) { return {}; }
+}
+
+/* Ce qui part en base. Rend `null` quand rien ne s'ecarte du defaut : une
+   story sans style ne porte pas de colonne remplie pour rien. */
+function hsStyleEcrire(s) {
+  try {
+    if (!s) return null;
+    var c = (typeof s.c === "string" && /^#[0-9a-fA-F]{3,8}$/.test(s.c)) ? s.c : "";
+    var t = HS_STYLE_TAILLES[s.t] ? s.t : "normal";
+    var g = !!s.g;
+    var p = HS_STYLE_POLICES[s.p] ? s.p : "montserrat";
+    if (!c && t === "normal" && !g && p === "montserrat") return null;
+    return JSON.stringify({ c: c, t: t, g: g, p: p });
+  } catch (e) { return null; }
+}
 /* Au-delà de ce nombre de caractères, la légende est repliée sur 3 lignes
    derrière un « voir plus », et la durée d'affichage s'allonge. */
 var HS_LEGENDE_REPLI = 180;
@@ -1148,10 +1256,25 @@ function hsImageStory(story, reglages) {
            haut quand elle en prenait quatre -- ou il passe sous l'interface
            d'Instagram. On coupe donc le texte d'abord, et la bande vaut ce que
            les lignes obtenues demandent, marges comprises. */
-        ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
+        /* 20bt — LE STYLE DE LA LEGENDE S'APPLIQUE AUSSI ICI. C'est le point
+           qui compte : si l'image partagee ignorait la couleur ou la police,
+           la story changerait d'allure en sortant de l'app -- exactement le
+           defaut du 01/09 au matin. La taille est un MULTIPLICATEUR de la base
+           du canvas (34 px), pas un nombre de pixels venu de l'ecran.
+           ⚠️ Les polices sont deja chargees par index.html et l'attente de
+           `document.fonts.ready` est faite plus haut : sans elle, le canvas
+           mesurerait et dessinerait dans une police de repli. */
+        var stL = hsStyleLire(story.style_legende);
+        var mulL = HS_STYLE_TAILLES[stL.t] || 1;
+        var TXT_PX = Math.round(TAILLE_TEXTE * mulL);
+        var LIGNE_PX = Math.round(HAUT_LIGNE * mulL);
+        var FONTE_LG = (stL.g ? 700 : 500) + " " + TXT_PX + "px " + HS_STYLE_POLICES[stL.p];
+        var COUL_LG = stL.c || "#E8EEF1";
+
+        ctx.font = FONTE_LG;
         var lignes = legende ? hsLignesCanvas(ctx, legende, LARGE - 2 * MARGE, 4) : [];
         var BANDE = (d && lignes.length)
-          ? (MARGE_HAUT + (lignes.length - 1) * HAUT_LIGNE + TAILLE_TEXTE + ECART_TEXTE)
+          ? (MARGE_HAUT + (lignes.length - 1) * LIGNE_PX + TXT_PX + ECART_TEXTE)
           : 0;
 
         if (d) {
@@ -1238,7 +1361,7 @@ function hsImageStory(story, reglages) {
              sans jamais depasser 58 % de la zone (meme esprit que le
              `maxHeight: 62%` de l'ecran). */
           var hFil = lignes.length ? 30 : 0;
-          var hTexte = lignes.length ? (lignes.length * HAUT_LIGNE) : 0;
+          var hTexte = lignes.length ? (lignes.length * LIGNE_PX) : 0;
           var hApresTexte = lignes.length ? 28 : 0;
           var hTirages = tirages.length ? 250 : 0;
           var hApresGrande = 30;
@@ -1282,11 +1405,14 @@ function hsImageStory(story, reglages) {
             cur += hFil;
 
             ctx.save();
-            ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
+            ctx.font = FONTE_LG;
             ctx.textAlign = "center"; ctx.textBaseline = "middle";
-            ctx.fillStyle = "#E8EEF1";
+            /* L'ombre reste, meme sans couleur choisie : c'est elle qui tient
+               un texte fonce lisible sur le noir (nuancier libre, 01/09). */
+            ctx.shadowColor = "rgba(6,7,9,0.85)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 2;
+            ctx.fillStyle = COUL_LG;
             for (var q2 = 0; q2 < lignes.length; q2++) {
-              ctx.fillText(lignes[q2], LARGE / 2, cur + TAILLE_TEXTE / 2 + q2 * HAUT_LIGNE);
+              ctx.fillText(lignes[q2], LARGE / 2, cur + TXT_PX / 2 + q2 * LIGNE_PX);
             }
             ctx.restore();
             cur += hTexte + hApresTexte;
@@ -1308,12 +1434,12 @@ function hsImageStory(story, reglages) {
            sous la grande photo, a sa place d'origine. */
         if (d && lignes.length) {
           ctx.save();
-          ctx.font = "500 " + TAILLE_TEXTE + "px 'Montserrat', system-ui, sans-serif";
+          ctx.font = FONTE_LG;
           ctx.textAlign = "center"; ctx.textBaseline = "middle";
           ctx.shadowColor = "rgba(6,7,9,0.85)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 2;
-          ctx.fillStyle = "#E8EEF1";
-          var yc = MARGE_HAUT + TAILLE_TEXTE / 2;
-          for (var q = 0; q < lignes.length; q++) ctx.fillText(lignes[q], LARGE / 2, yc + q * HAUT_LIGNE);
+          ctx.fillStyle = COUL_LG;
+          var yc = MARGE_HAUT + TXT_PX / 2;
+          for (var q = 0; q < lignes.length; q++) ctx.fillText(lignes[q], LARGE / 2, yc + q * LIGNE_PX);
           ctx.restore();
         }
 
@@ -1403,7 +1529,7 @@ function hsMarquerVue(id) {
    via le système d'identifications existant. Un tag qui échoue ne fait pas
    échouer la publication : la story est déjà en ligne, on ne la perd pas
    pour un nom mal enregistré. */
-async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, groupe, disposition, dureeMs) {
+async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, groupe, disposition, dureeMs, styleLegende) {
   try {
     if (typeof supa === "undefined" || !supa) return { data: null, error: "indisponible" };
     var user = await utilisateurActuel();
@@ -1433,6 +1559,13 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
        story — "immersif" ou rien. Absent = noir, comme toutes les stories
        d'avant : aucune story existante ne change. */
     if (fond === "immersif") ligne.fond = "immersif";
+    /* 20bt : le style de la legende voyage avec la story. Range AVEC les
+       colonnes de confort (lieu, musique, fond) : si la base n'a pas encore
+       recu son ALTER TABLE, l'insertion echoue une fois, ces colonnes tombent,
+       et la story part quand meme -- sans style, mais elle part. C'est le
+       repli deja en place depuis le 19c, on n'en invente pas un deuxieme. */
+    var styleNet = (typeof styleLegende === "string" && styleLegende) ? styleLegende : null;
+    if (styleNet) ligne.style_legende = styleNet;
     /* Story composee : le groupe relie les photos, la disposition ne va que
        sur la couverture (la premiere publiee). */
     if (groupe) ligne.groupe = String(groupe);
@@ -1453,10 +1586,11 @@ async function hsPublierStory(fichier, legende, lieu, tags, musique, fond, group
       /* 19d : un DECOR sur une photo seule est une disposition sans groupe —
          il ne doit pas davantage etre jete en silence. */
       if (ligne.disposition) return { data: null, error: res.error, decorRefuse: true };
-      if (lieuNet || ligne.musique || ligne.fond) {
+      if (lieuNet || ligne.musique || ligne.fond || ligne.style_legende) {
         delete ligne.lieu;
         delete ligne.musique;
         delete ligne.fond;
+        delete ligne.style_legende;
         var res2 = await supa.from("hype_stories").insert(ligne).select().single();
         if (res2 && !res2.error) return { data: res2.data, error: null, lieuIgnore: true };
       }
@@ -1513,7 +1647,7 @@ async function hsRattacherAuGroupe(ids, groupe, disposition) {
    La politique RLS de mise à jour existait déjà (elle sert au marquage
    « gardée ») : AUCUN SQL. Même repli que la publication si la colonne
    `lieu` manquait en base. */
-async function hsModifierStory(id, legende, lieu, musique, fond) {
+async function hsModifierStory(id, legende, lieu, musique, fond, styleLegende) {
   try {
     if (typeof supa === "undefined" || !supa) return { error: "indisponible" };
     var user = await utilisateurActuel();
@@ -1524,13 +1658,18 @@ async function hsModifierStory(id, legende, lieu, musique, fond) {
       /* 13/08 : la musique se modifie aussi (décision de Blandine). null =
          retirer la musique — un champ explicite, pas une absence. */
       musique: (musique && hsUrlMusique(musique)) ? musique : null,
-      fond: (fond === "immersif") ? "immersif" : null
+      fond: (fond === "immersif") ? "immersif" : null,
+      /* 20bt : `null` explicite = retirer le style, comme la musique juste
+         au-dessus. Une absence ne suffirait pas : on ne saurait pas si
+         l'auteure a enleve la couleur ou si l'ecran ne l'a pas transmise. */
+      style_legende: (typeof styleLegende === "string" && styleLegende) ? styleLegende : null
     };
     var r = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
     if (r && r.error) {
       delete champs.lieu;
       delete champs.musique;
       delete champs.fond;
+      delete champs.style_legende;
       var r2 = await supa.from("hype_stories").update(champs).eq("id", id).eq("user_id", user.id);
       if (r2 && !r2.error) return { error: null, lieuIgnore: true };
       return { error: r.error };
@@ -2992,6 +3131,8 @@ function ComposeurStory(props) {
   function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
 
   var lS = React.useState(""), legende = lS[0], setLegende = lS[1];
+  /* 20bt : le style de la legende, choisi avant publication. */
+  var stS = React.useState({ c: "", t: "normal", g: false, p: "montserrat" }), styleLg = stS[0], setStyleLg = stS[1];
   var liS = React.useState(props.lieuInitial || ""), lieu = liS[0], setLieu = liS[1];
   var bS = React.useState(false), busy = bS[0], setBusy = bS[1];
   var aS = React.useState(null), apercu = aS[0], setApercu = aS[1];
@@ -3646,7 +3787,12 @@ function ComposeurStory(props) {
           /* 19an : la durée choisie. Le mois n'est retenu que si l'abonnement
              est bien là — un état d'interface ne suffit pas à décider d'un
              droit. */
-          (dureeLongue && props.premium) ? HS_DUREE_LONG_MS : HS_DUREE_MS
+          (dureeLongue && props.premium) ? HS_DUREE_LONG_MS : HS_DUREE_MS,
+          /* 20bt : le style suit la legende. Sur une composition, la legende
+             part sur TOUTES les lignes du groupe depuis la 147 -- le style
+             doit faire exactement pareil, sinon la couverture serait la seule
+             coloree et l'apparence dependrait de quelle ligne est lue. */
+          hsStyleEcrire(styleLg)
         );
         dernierR = rI;
         /* 19c : une composition refusee ARRETE TOUT, immediatement et par son
@@ -4166,6 +4312,8 @@ function ComposeurStory(props) {
           (legende.length > 800)
             ? h("div", { style: { fontSize: 10, fontFamily: M, fontWeight: 700, color: (legende.length >= HS_LEGENDE_MAX ? "#E8A6A6" : tA(0.9)), flex: "0 0 auto" } }, legende.length + "/" + HS_LEGENDE_MAX)
             : null),
+
+        h(ReglagesStyleLegende, { valeur: styleLg, onChange: setStyleLg, langue: lg }),
 
         /* Les cavaliers proposés pendant la frappe d'une mention. Toucher un
            nom insère « @pseudo » dans le texte ET pose le tag. */
@@ -5312,6 +5460,9 @@ function ModifierStory(props) {
 
   var st = props.story || {};
   var lS = React.useState(st.legende || ""), legende = lS[0], setLegende = lS[1];
+  /* 20bt : le style deja enregistre est relu ici, sinon une modification de
+     legende effacerait la couleur choisie a la publication. */
+  var stS2 = React.useState(hsStyleLire(st.style_legende)), styleLg = stS2[0], setStyleLg = stS2[1];
   var liS = React.useState(st.lieu || ""), lieu = liS[0], setLieu = liS[1];
   var muS = React.useState(st.musique || null), musique = muS[0], setMusique = muS[1];
   var ecS = React.useState(null), ecoute = ecS[0], setEcoute = ecS[1];
@@ -5374,10 +5525,10 @@ function ModifierStory(props) {
     if (busy) return;
     setBusy(true);
     try { if (audioRef.current) { audioRef.current.pause(); audioRef.current = null; } } catch (eA) { }
-    var r = await hsModifierStory(st.id, legende, lieu, musique, fond);
+    var r = await hsModifierStory(st.id, legende, lieu, musique, fond, hsStyleEcrire(styleLg));
     setBusy(false);
     if (r && r.error) { if (props.onEchec) props.onEchec(); return; }
-    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, musique: musique, fond: fond, lieuIgnore: !!(r && r.lieuIgnore) });
+    if (props.onFait) props.onFait({ legende: legende, lieu: lieu, musique: musique, fond: fond, style_legende: hsStyleEcrire(styleLg), lieuIgnore: !!(r && r.lieuIgnore) });
   }
 
   var portail = (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; };
@@ -5427,6 +5578,8 @@ function ModifierStory(props) {
         (legende.length > 800)
           ? h("div", { style: { fontSize: 10, fontFamily: M, fontWeight: 700, color: (legende.length >= HS_LEGENDE_MAX ? "#E8A6A6" : tA(0.9)), textAlign: "right", marginTop: 5 } }, legende.length + "/" + HS_LEGENDE_MAX)
           : null,
+
+        h(ReglagesStyleLegende, { valeur: styleLg, onChange: setStyleLg, langue: lg }),
 
         h("div", { style: { fontSize: 9.5, fontFamily: M, fontWeight: 800, letterSpacing: 1.7, textTransform: "uppercase", color: tA(0.92), margin: "16px 0 8px" } }, "\uD83D\uDCCD " + hsT("lieuTitre", lg)),
         h("input", {
@@ -5510,6 +5663,124 @@ function hsAvecDecor(st) {
     if (st.compo && st.compo.length > 1) return true;
     return !!(st.disposition && String(st.disposition).indexOf("modele-") === 0);
   } catch (e) { return false; }
+}
+
+
+/* 20bt — LES REGLAGES DU STYLE, sous le champ de legende.
+   Monte a DEUX endroits : le composeur (a la publication) et la feuille de
+   modification (apres coup). Un seul composant pour les deux -- si le jour
+   vient d'ajouter un reglage, il n'y a qu'un endroit a toucher.
+   ⚠️ CHAQUE BOUTON ARRETE LE CLIC. Le fond du composeur ferme la feuille au
+   moindre clic qui lui remonte (voir la 19ai, « je me fais sortir ») : tout
+   ce qui est monte ici doit arreter la propagation, sans exception.
+   ⚠️ L'APERCU MONTRE LE RENDU REEL, pas une approximation : il applique
+   `hsStyleCss` sur la meme base de 13,5 px que l'ecran. Ce que Blandine voit
+   ici est ce qu'elle aura dans la story. */
+function ReglagesStyleLegende(props) {
+  var h = React.createElement;
+  var M = "'Montserrat',sans-serif";
+  var v = props.valeur || { c: "", t: "normal", g: false, p: "montserrat" };
+  var lg = props.langue || "fr";
+  function poser(champ, val) {
+    var n = { c: v.c, t: v.t, g: v.g, p: v.p };
+    n[champ] = val;
+    if (props.onChange) props.onChange(n);
+  }
+  function arret(ev) { try { if (ev && ev.stopPropagation) ev.stopPropagation(); } catch (e) { } }
+  function pastille(contenu, actif, surClic, styleSup) {
+    return h("button", {
+      onClick: function (ev) { arret(ev); surClic(); },
+      onTouchStart: arret,
+      style: Object.assign({
+        minWidth: 34, height: 32, padding: "0 10px", borderRadius: 10, cursor: "pointer",
+        background: actif ? "rgba(32,217,245,0.16)" : "rgba(255,255,255,0.05)",
+        border: "1px solid " + (actif ? "rgba(32,217,245,0.65)" : "rgba(255,255,255,0.14)"),
+        color: "#E8EEF1", fontSize: 12, fontFamily: M, lineHeight: 1
+      }, styleSup || {})
+    }, contenu);
+  }
+  var T = {
+    titre: { fr: "Style du texte", en: "Text style", es: "Estilo del texto", it: "Stile del testo", de: "Textstil", ja: "\u6587\u5b57\u306e\u30b9\u30bf\u30a4\u30eb" },
+    petit: { fr: "Petit", en: "Small", es: "Peque\u00f1o", it: "Piccolo", de: "Klein", ja: "\u5c0f" },
+    normal: { fr: "Normal", en: "Normal", es: "Normal", it: "Normale", de: "Normal", ja: "\u4e2d" },
+    grand: { fr: "Grand", en: "Large", es: "Grande", it: "Grande", de: "Gro\u00df", ja: "\u5927" },
+    libre: { fr: "Autre couleur", en: "Other colour", es: "Otro color", it: "Altro colore", de: "Andere Farbe", ja: "\u4ed6\u306e\u8272" },
+    apercu: { fr: "Votre l\u00e9gende", en: "Your caption", es: "Tu pie de foto", it: "La tua didascalia", de: "Deine Bildunterschrift", ja: "\u30ad\u30e3\u30d7\u30b7\u30e7\u30f3" }
+  };
+  function t(k) { return (T[k] && (T[k][lg] || T[k].fr)) || ""; }
+  var apercu = Object.assign(
+    { fontSize: 13.5, lineHeight: 1.6, fontFamily: M, color: "#DCE3E8" },
+    hsStyleCss(hsStyleEcrire(v), 13.5)
+  );
+  return h("div", {
+    onClick: arret,
+    style: {
+      marginTop: 10, padding: "11px 12px", borderRadius: 14,
+      border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.03)"
+    }
+  },
+    h("div", { style: { fontSize: 10, fontFamily: M, color: "#8A929C", letterSpacing: 0.6, textTransform: "uppercase", marginBottom: 9 } }, t("titre")),
+
+    h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 7, marginBottom: 9 } },
+      HS_STYLE_COULEURS.map(function (c) {
+        return h("button", {
+          key: "co" + c,
+          onClick: function (ev) { arret(ev); poser("c", v.c === c ? "" : c); },
+          onTouchStart: arret,
+          "aria-label": c,
+          style: {
+            width: 30, height: 30, borderRadius: "50%", cursor: "pointer", background: c,
+            border: "2px solid " + (v.c === c ? "#20D9F5" : "rgba(255,255,255,0.18)")
+          }
+        });
+      }),
+      /* Le nuancier complet, choix de Blandine. Le champ natif ouvre le
+         selecteur du telephone -- aucun nuancier maison a maintenir. */
+      h("label", {
+        style: {
+          display: "inline-flex", alignItems: "center", gap: 6, height: 32, padding: "0 10px",
+          borderRadius: 10, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.05)",
+          color: "#E8EEF1", fontSize: 12, fontFamily: M, cursor: "pointer"
+        }
+      },
+        h("span", { style: { width: 14, height: 14, borderRadius: 4, background: v.c || "#F4F7FA", border: "1px solid rgba(255,255,255,0.25)" } }),
+        t("libre"),
+        h("input", {
+          type: "color", value: v.c || "#F4F7FA",
+          onClick: arret,
+          onChange: function (ev) { arret(ev); poser("c", ev.target.value); },
+          style: { position: "absolute", opacity: 0, width: 1, height: 1, pointerEvents: "none" }
+        })
+      )
+    ),
+
+    h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", gap: 7, marginBottom: 9 } },
+      pastille(t("petit"), v.t === "petit", function () { poser("t", "petit"); }),
+      pastille(t("normal"), v.t === "normal", function () { poser("t", "normal"); }),
+      pastille(t("grand"), v.t === "grand", function () { poser("t", "grand"); }),
+      pastille("G", !!v.g, function () { poser("g", !v.g); }, { fontWeight: 800 })
+    ),
+
+    h("select", {
+      value: v.p,
+      onClick: arret,
+      onChange: function (ev) { arret(ev); poser("p", ev.target.value); },
+      style: {
+        width: "100%", boxSizing: "border-box", height: 34, padding: "0 10px", borderRadius: 10,
+        background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.14)",
+        color: "#E8EEF1", fontSize: 13, fontFamily: M
+      }
+    },
+      h("option", { value: "montserrat", style: { color: "#111" } }, "Montserrat"),
+      h("option", { value: "cinzel", style: { color: "#111" } }, "Cinzel"),
+      h("option", { value: "anton", style: { color: "#111" } }, "Anton"),
+      h("option", { value: "oswald", style: { color: "#111" } }, "Oswald"),
+      h("option", { value: "cormorant", style: { color: "#111" } }, "Cormorant Garamond"),
+      h("option", { value: "baloo", style: { color: "#111" } }, "Baloo 2")
+    ),
+
+    h("div", { style: Object.assign({ marginTop: 10, paddingTop: 9, borderTop: "1px solid rgba(255,255,255,0.08)" }, apercu) }, t("apercu"))
+  );
 }
 
 function CompositionStory(props) {
@@ -5772,14 +6043,18 @@ function CompositionStory(props) {
          plus haut, le texte mordra dessus — a regarder sur une story de chaque. */
       morceauxLegende
         ? h("div", {
-          style: {
+          style: Object.assign({
             position: "absolute", top: 10, left: MARGE_COMPO + 6, right: MARGE_COMPO + 6,
             zIndex: 3, pointerEvents: "none",
             fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45,
             textAlign: "center", overflowWrap: "break-word", whiteSpace: "pre-line",
             display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden",
             textShadow: "0 1px 6px rgba(6,7,9,0.85)"
-          }
+          },
+            /* 20bt : le style choisi par l'auteure se pose PAR-DESSUS le style
+               d'origine. Sans style enregistre, `hsStyleCss` rend un objet
+               vide et ce bloc garde exactement l'apparence d'avant. */
+            hsStyleCss(story.style_legende, 12.5))
         }, morceauxLegende)
         : null,
       surcouche);
@@ -5895,6 +6170,10 @@ function CompositionStory(props) {
         h("div", {
           style: Object.assign(
             { fontFamily: M, fontSize: 12.5, color: "#E8EEF1", lineHeight: 1.45, padding: "0 8px", overflowWrap: "break-word", textAlign: "left" },
+            /* 20bt : le style choisi par l'auteure se pose PAR-DESSUS le style
+               d'origine. Sans style enregistre, `hsStyleCss` rend un objet
+               vide et ce bloc garde exactement l'apparence d'avant. */
+            hsStyleCss(story.style_legende, 12.5),
             deplie
               ? { whiteSpace: "pre-wrap", flex: "0 0 auto" }
               : { whiteSpace: "pre-line", display: "-webkit-box", WebkitLineClamp: 4, WebkitBoxOrient: "vertical", overflow: "hidden" })
@@ -6093,7 +6372,7 @@ function VisionneuseStories(props) {
   var groupe = groupes[ig] || null;
   var story = groupe ? (groupe.stories[is] || null) : null;
   if (story && localMod && localMod.id === story.id) {
-    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique, fond: localMod.fond });
+    story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique, fond: localMod.fond, style_legende: localMod.style_legende });
   }
   var estMoi = !!(groupe && props.moiId && groupe.user_id === props.moiId);
   /* 19b : en veille = un composeur d'ajout est ouvert par-dessus. */
@@ -6822,6 +7101,10 @@ function VisionneuseStories(props) {
                      que Blandine a demande : « des espaces des retours a la
                      ligne etc ». */
                   { fontSize: 13.5, lineHeight: 1.75, fontFamily: M, color: "#DCE3E8", whiteSpace: "pre-wrap", wordBreak: "break-word" },
+            /* 20bt : le style choisi par l'auteure se pose PAR-DESSUS le style
+               d'origine. Sans style enregistre, `hsStyleCss` rend un objet
+               vide et ce bloc garde exactement l'apparence d'avant. */
+                  hsStyleCss(story.style_legende, 13.5),
                   replie ? { display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" } : {})
               },
                 morceaux.map(function (mo, i) {
@@ -7023,7 +7306,7 @@ function VisionneuseStories(props) {
         onEchec: function () { setEnEdition(false); pauseRef.current = false; setRelance(function (r) { return r + 1; }); setAction("echec"); },
         onFait: function (mod) {
           setEnEdition(false); pauseRef.current = false;
-          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu, musique: mod.musique, fond: mod.fond });
+          setLocalMod({ id: story.id, legende: mod.legende, lieu: mod.lieu, musique: mod.musique, fond: mod.fond, style_legende: mod.style_legende });
           setRelance(function (r) { return r + 1; });
           setAction("modifiee");
         }

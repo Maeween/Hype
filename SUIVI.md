@@ -10,6 +10,312 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 01/09/2026 — L'IMAGE UNIQUE DE PARTAGE (20br)
+
+*(Chantier ouvert par la passation du 31/08, feu vert de Blandine. Livré, **poussée
+non confirmée** au moment où j'écris : rien de ce bloc n'est encore en ligne.)*
+
+## Livré — à pousser à la racine
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `2827525a635c6804d31730cd11ce84b2` · 421 047 o | `hsImageStory` + branchement du bouton Partager + version `20br` |
+| `index.html` | racine | `91322637245d3b237d97a9380b99d477` | UNE ligne : `?v=20bq` → `?v=20br` |
+
+`hype-modeles-db.js` **n'a pas bougé** — ne pas le repousser. Les décors sont déjà
+en ligne. **À l'écran : + rien / − rien** — aucun bouton, aucun texte, aucune
+couleur ne change. Seul le contenu de la feuille de partage change.
+
+## Ce que ça fait
+
+`hsImageStory(story)` fabrique au canvas une image **1080×1920** qui montre TOUTE
+la story — le décor, ses photos posées dans ses fenêtres et découpées à leur
+contour, la légende — et cette image remplace la photo seule dans le bouton
+Partager des stories **composées**. Le lien continue de partir dans le texte du
+message, inchangé.
+
+Origine du chantier : une cavalière avait inventé le partage Instagram toute
+seule, en faisant une **capture d'écran** de la page publique avec un sticker
+« Lien » par-dessus. Sur Instagram le chemin naturel est l'image, pas le lien :
+l'app la fournit désormais toute prête.
+
+## Les décisions posées dans le code
+
+- **La bande de texte est RÉSERVÉE en haut, jamais superposée.** À l'écran la
+  légende se pose sur le noir du décor ; ici c'est impossible.
+- **Sa hauteur se mesure**, elle n'est pas fixe : elle vaut ce que demandent les
+  lignes réellement obtenues (1 à 4). Une légende courte ne rapetisse plus le
+  décor pour rien, et une légende de 4 lignes n'est plus collée au bord haut —
+  où elle passait sous l'interface d'Instagram.
+- **L'échelle vient du `taille` de chaque modèle**, jamais d'un nombre écrit dans
+  le code (voir §« corrections » ci-dessous).
+- **Le découpage est le même qu'à l'écran** : même `bbox`, même `contour`, en
+  chemin de canvas au lieu d'un `clip-path`. Si l'un des deux change un jour,
+  changer l'autre — sinon l'image partagée ne ressemblera plus à ce que la
+  cavalière voit.
+- **Les photos passent par `hsImagePartage` (1000×1500, `resize=contain`)**,
+  taille absente des paliers de `hsImageEcran` (640/800/960/1080 × 1440/1600) et
+  de `hsImageTirage` (320×440). ⚠️ NE PAS L'ALIGNER SUR CES PALIERS « pour
+  réutiliser le cache » : c'est justement une image déjà mise en cache SANS
+  en-têtes CORS qu'on veut éviter — elle teinterait le canvas et `toBlob`
+  échouerait.
+- **Tout échec rend `null`** (photo absente, réseau, canvas teinté, délai
+  dépassé) : `regP.image` reste alors la photo et le partage part quand même.
+  Il n'existe aucun cas où le bouton ne fait plus rien.
+- **Stories sans décor** : photo entière sur fond flouté + légende + signature.
+  Le flou vient d'une réduction suivie d'un agrandissement — `ctx.filter`
+  n'existe pas sur les anciens Safari. Il s'applique au FOND seulement, la photo
+  est posée nue par-dessus (Design Bible : aucun filtre ni voile sur une photo).
+
+## Trois corrections à la passation, constatées en séance
+
+1. **Ce n'est pas `concours-3` seul qui porte un titre en haut du décor.**
+   `concours-1`, `-2` ET `-3` portent tous « JOUR DE CONCOURS » en dur dans
+   l'image — vérifié à l'œil sur les quatre décors. Seul `concours-4` a le haut
+   libre. La bande réservée n'est donc pas un cas particulier : c'est la règle
+   pour trois décors sur quatre.
+2. **Les décors ne font pas tous 941 × 1672.** Vingt oui, mais le catalogue
+   contient aussi 509×1016, 504×1015, 643×1161, 582×1139, 460×1672, 463×1672 et
+   deux 940×1672. Une valeur écrite en dur aurait fait sortir les photos de leurs
+   cadres sur huit modèles.
+3. **ERREUR DE CLAUDE, consignée.** J'avais annoncé à Blandine qu'`index.html`
+   recevrait une vraie modification, « parce que le bouton Partager y est codé ».
+   Faux deux fois : le bouton est dans `hype-stories.js` (ligne 6193), et
+   `hypePartager` accepte déjà une adresse `blob:` sans rien changer.
+   `index.html` ne prend que le `?v=`, exactement comme le disait la passation.
+
+## Vérifications faites avant livraison
+
+- `node --check` sur le fichier entier : OK.
+- **Balayage des 28 modèles × 2 cas** (avec et sans légende) : aucune fenêtre ne
+  déborde du décor, aucun contour hors décor, aucune valeur invalide.
+- **Rendu réel dans Chromium sur 11 cas** (les 4 décors, une story H+D, une photo
+  seule, un modèle inconnu, une story sans photo) : 10 images produites de 60 à
+  200 Ko en 35 à 270 ms, 1 `null` volontaire, zéro erreur console. Images
+  regardées une à une : sur `concours-1`, `-2` et `-3`, le titre du décor reste
+  intact et la légende est au-dessus.
+- Deux défauts vus au premier rendu et corrigés avant livraison : le texte collé
+  au bord haut (→ bande calculée), et une story à plusieurs photos **sans** décor
+  qui ne montrait que la première (→ jusqu'à quatre photos, la grande en haut et
+  les tirages dessous, comme à l'écran).
+
+## ⚠️ Le point à surveiller au premier essai réel
+
+iOS exige que `navigator.share` parte **juste après le doigt**. Fabriquer l'image
+demande du temps réseau (les photos viennent de Supabase). D'où un **délai de
+garde de 4 secondes** dans `hsImageStory` : au-delà, on rend `null` et on partage
+la photo comme avant, plutôt que de risquer un refus d'iOS. Si le symptôme est
+« rien ne se passe » au lieu de la feuille de partage, c'est là qu'il faut
+regarder — pas ailleurs, et aucun correctif à l'aveugle.
+
+## Ouvert après ce chantier
+
+- Les stories à **photo unique sans décor** ne sont pas branchées (décision :
+  regarder le rendu d'abord, étendre ensuite).
+- Reste du chantier partage : l'appui long copie l'adresse d'accueil au lieu de
+  celle de la story ; « photo jointe ou lien seul » (une image jointe empêche
+  WhatsApp de construire sa carte) ; `partage-apercu.jpg` (1200×630) toujours
+  attendu ; Instagram ne lit aucune balise OG.
+- Points ouverts du 31/08 inchangés : « Voir plus » au-delà de 4 lignes, repère à
+  l'écriture, photos qui débordent de leurs cadres à l'écran, encart
+  « Propositions de photos » de la fiche cheval, story sur la page du cheval
+  identifié.
+
+---
+
+# ✅ 31/08/2026 (22h15) — NUIT : LA LÉGENDE SUR LES STORIES À MODÈLE, ET LE DÉPLOIEMENT DÉBLOQUÉ
+
+*(Ce bloc complète celui de 21h00. Tout ce qui suit est EN LIGNE : déploiement
+`main@c6260ff` vert à 22h03, confirmé à l'écran sur deux stories à modèle.)*
+
+## Poussé et vérifié en ligne
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `e3533eee44de3913c32d53de5892ed9e` · 402 668 o | légende sur les stories à modèle + version `20bq` |
+| `index.html` | racine | `950651c834aded4852731eb4357f6bed` | UN caractère : `?v=20bp` → `?v=20bq` |
+| `story-apercu.ts` | `netlify/edge-functions/` | — | fichier COMPLET re-uploadé par Blandine (voir §2) |
+
+## 1. Le bug du jour : la légende n'était JAMAIS dessinée sur les stories à modèle
+
+Base vérifiée d'abord (SQL, captures) : les 4 lignes de la story test portaient
+`groupe`, `disposition = modele-concours-4` et la légende. **Rien ne se perdait
+à la publication** — le §2 de la passation de 21h00 est résolu : c'était l'affichage.
+
+La cause, dans `hype-stories.js` : `CompositionStory` a deux sorties, et
+`morceauxLegende` n'existait que dans la sortie H+D. La sortie MODÈLE rendait le
+plan, le décor, la surcouche — pas le texte. Et le panneau du bas s'efface
+volontairement dès `hsAvecDecor(story)` (disposition « B », 19am). Résultat :
+depuis toujours, une story à `modele-*` n'affichait aucun texte, nulle part.
+
+**Le correctif (« session 154 » dans le fichier)** : la légende au-dessus du
+décor, centrée, sans voile ni cadre, **4 lignes max** (mots de Blandine : « pas
+fait de façon délirante », « 4 lignes max »). `pointerEvents: "none"`
+obligatoire — le bloc couvre le haut de la zone story, s'il captait le doigt on
+retrouverait la panne des gestes du 17/08. Au-delà de 4 lignes : la suite n'est
+visible nulle part (« Voir plus » NON tranché, volontairement pas deviné).
+
+## 2. Le trou de la soirée : AUCUN déploiement ne passait depuis hier 20h08
+
+`story-apercu.ts` avait été commité **réduit à sa dernière ligne**
+(`export const config…`) : le collage iPhone n'avait gardé que la fin du
+presse-papier. Edge Function sans `export default` = « Failed during stage
+'building site' » — 4 échecs identiques ce soir, et donc :
+- **rien** de ce qui a été poussé depuis hier soir n'était en ligne ;
+- les tests d'aperçu WhatsApp d'hier portaient sur du vide ;
+- le site servait la dernière version d'avant l'incident (les cavaliers n'ont rien vu).
+
+Réparé par **upload** du fichier complet (pas un collage), renommé exactement
+`story-apercu.ts` (iOS avait créé un « story-apercu 2 »). L'Edge Function est
+en ligne pour la **première fois** — le test « lien seul dans WhatsApp » reste à faire.
+
+## 3. Règle de version — redécouverte, à ne plus jamais perdre
+
+En tête de `hype-stories.js` : à chaque livraison, incrémenter
+`HYPE_STORIES_VERSION` **ET** le `?v=` de la balise dans `index.html`. Les deux
+avaient divergé (`19bm` dans le fichier, `20bp` dans l'URL) ; réalignés sur
+**`20bq`**. Sans le `?v=`, le navigateur et la PWA servent l'ancien fichier
+quoi qu'on pousse — la moitié de la soirée est partie là-dedans.
+
+## 4. Fautes de Claude, consignées
+
+1. Inventé un `HS_VERSION` en doublon d'un mécanisme existant, sans lire l'en-tête
+   du fichier. Retiré à la livraison suivante.
+2. Affirmé que la légende de Blandine dépassait 4 lignes sans l'avoir lue (la
+   requête ne renvoyait qu'un vrai/faux). Trois mots, en réalité.
+
+## 5. Ouvert (nouveau ce soir)
+
+1. **« Voir plus » au-delà de 4 lignes** sur les stories à modèle : non tranché.
+2. **Repère à l'écriture** (idée de Blandine, validée dans l'esprit) : le texte
+   change de couleur au caractère où il cessera d'être visible + petite ligne
+   d'explication. Approximatif (~140 car.) ou mesuré au décor choisi : à trancher.
+3. **Décors `concours-2` et `-3`** : la place au-dessus du dessin n'a été
+   vérifiée que sur `concours-4`. À regarder sur une story de chaque.
+4. **Photos qui débordent de leurs cadres** dans les modèles (bandes floutées
+   visibles, photo par-dessus le liseré) : cosmétique, signalé, non traité.
+5. **Encart « Propositions de photos » de la fiche cheval** : il ne semble PAS
+   filtré par la propriété du cheval (contrairement à `ChronologieSouvenirs` qui
+   reçoit `proprio`). À vérifier, et à restreindre si confirmé. C'est là que se
+   valident les tags « en attente » (réponse à la question de Blandine).
+6. **Idée de Blandine** : la story apparaît automatiquement sur la page du cheval
+   identifié. Trois questions posées, aucune tranchée : au tag ou après
+   validation ? que devient-elle à l'expiration de la story ? la photo seule ou
+   la composition entière ?
+7. Les « 3 emplacements sur 4 vides » de 20h20 : **plus reproduits** — la story
+   affichait ses 4 photos avant même le correctif. À garder à l'œil, sans patch.
+
+Les points ouverts du bloc de 21h00 (photo/lien du partage, chantier Instagram,
+`partage-apercu.jpg`, page « tous les résultats », tri XP à brancher) restent
+inchangés.
+
+---
+
+# ✅ 31/08/2026 (21h00) — SOIRÉE : PAGE PUBLIQUE CORRIGÉE, TRI XP EN BASE, APERÇU WHATSAPP
+
+*(Page Hype. `index.html` et `hype-stories.js` NON TOUCHÉS — consigne de Blandine tenue de
+bout en bout. Ce bloc complète et **remplace les md5** du bloc de 17h00 plus bas.)*
+
+## À pousser
+
+| Fichier | Où | md5 | État |
+|---|---|---|---|
+| `story.html` | racine | `7584e7ea046c9cb5739ad264646801de` · 36 474 o | livré, poussée non confirmée |
+| `story-apercu.ts` | `netlify/edge-functions/` | — | ✅ commité par Blandine à 20h08 |
+
+SQL **passé et vérifié** : `hype_ordre_cavaliers_xp(ids uuid[])`, `security_definer = true`,
+droits `postgres` + `authenticated` + `service_role`, **`anon` absent**. Aucune table,
+aucune RLS modifiée.
+
+## Trois corrections sur retour iPhone
+
+1. **Texte** — le repli à 4 lignes coupait un remerciement (« je préfère largement voir les
+   deux paragraphes complets »). Seuil porté à **500 caractères** : en dessous, texte
+   entier sans bouton ; au-delà, 8 lignes puis « Voir plus ».
+2. **Alignement — OPTION B, TOUT CENTRÉ**, choisie par Blandine contre l'option A (tout à
+   gauche). La page mélangeait trois régimes — photo bord à bord, texte en retrait de
+   18 px, HYPE centré — donc aucun axe vertical. Un seul axe désormais, texte limité à
+   30 em pour que les lignes centrées restent lisibles.
+3. **Photos coupées en haut** → `cover` remplacé par **`contain` + fond flouté** de la même
+   photo. Plus rien n'est rogné ni déformé.
+   ⚠️ Cette modification a été **retrouvée dans le fichier de travail sans traçabilité** :
+   elle n'était dans aucun md5 annoncé avant. Signalée telle quelle à Blandine, qui l'a
+   acceptée. Alternative écartée : garder `cover` et remonter `object-position`.
+
+Aussi : qualité Retina (hero 1600 px / q88, avatar 160 px / q90), **visionneuse sur
+l'ORIGINAL** sans transformation, `resize=contain` partout.
+
+## Aperçu WhatsApp — Edge Function
+
+`netlify/edge-functions/story-apercu.ts` s'intercale devant `/story.html`, lit la story en
+base **avant** de servir la page et réécrit `og:title` / `og:description` / `og:image`,
+plus `og:url` et les `twitter:*`. Route déclarée **dans le fichier**
+(`export const config`) : **aucun `netlify.toml`** créé ni modifié — le site en a déjà un
+usage pour `netlify/functions/` (Hey Baby, Stripe, purge, suppression de compte), on n'y a
+pas touché.
+
+Garde-fous : délai 2,5 s · clone de secours avant lecture du corps · toute erreur rend la
+page inchangée · story expirée ignorée. Elle ne peut pas casser le partage existant.
+
+🟥 **MAIS elle ne se déclenchera pas sur le partage normal :** `hypePartager` joint la
+photo quand elle pèse moins de 8 Mo, et **une image jointe empêche WhatsApp de construire
+la carte du lien**. Le lien collé seul, lui, fonctionne. Arbitrage à faire (voir plus bas).
+
+## Tri des cavaliers par XP — SQL seulement
+
+Décisions de Blandine : **les six** emplacements de `EncartCavaliersSpectral` · membre
+connecté **toujours en tête** · **photo de profil prioritaire**, l'XP départage à
+l'intérieur de chaque groupe · « c'est un tri invisible », aucune valeur d'XP ne circule.
+
+La RLS de `progression` (« chacun ne lit que la sienne ») interdit un tri côté navigateur :
+il devrait recevoir les XP pour les ranger, même sans les afficher. La fonction lit à
+l'intérieur de la base et **ne renvoie que des identifiants ordonnés**. Limite dite
+franchement à Blandine : l'ordre révèle le classement relatif des ids fournis — inhérent à
+tout tri, aucune valeur n'est lisible.
+
+**Reste** : appeler `supa.rpc("hype_ordre_cavaliers_xp", { ids })` dans l'encart,
+réordonner, appliquer les deux règles. Échec ou fonction absente → ordre actuel conservé.
+
+## 🟥 PERTE DE CONTENU À LA PUBLICATION — À TRAITER EN PREMIER
+
+Story publiée à 20h20 avec une légende : dans l'app, **3 emplacements sur 4 vides, plus de
+légende**, décoration perdue. Ce n'est ni `story.html` ni l'Edge Function — les deux
+LISENT, n'écrivent jamais. Et la légende **existe** : le texte composé par `hypePartager`
+la reprend.
+
+Test qui départage, avant tout correctif :
+`https://2hype.netlify.app/story.html?id=181b920c-b86e-43a4-a9a3-0b3752866c6c`
+→ légende + 4 photos = la base est bonne, bug d'**affichage** (`hype-stories.js`) ;
+→ même chose que l'app = la **publication** a mal enregistré (`hsPublierStory`, `groupe`).
+
+## Instagram — ce qui est techniquement impossible
+
+Instagram **ne lit aucune balise Open Graph**, ni en story ni en publication, et n'accepte
+pas de lien cliquable dans une légende. L'Edge Function n'y aura **jamais** d'effet. Seuls
+existent le sticker « Lien » (geste manuel, hors de portée de toute API) et le lien en bio.
+Le chantier Instagram est donc un **chantier d'image** (visuel 1080×1920 portant photo,
+identité et adresse), pas un chantier de balises. Non commencé.
+
+⚠️ **Erreur de ma part, corrigée** : j'avais dit qu'on pourrait joindre la photo pour
+Instagram et envoyer le lien seul pour WhatsApp « puisque `navigator.share` connaît la
+cible ». **C'est faux** — l'API Web Share ne révèle jamais la destination. Le choix est
+global, ou il faut deux boutons distincts.
+
+## ⚠️ Méthode — trois tests faussés dans la même soirée
+
+1. Refonte jugée « invisible » : Blandine regardait la **story dans l'app** (croix ✕, ···,
+   « encore 7 jours », ♡, Hype Beat, tags « en attente ») — 0 occurrence de ces éléments
+   dans `story.html`, vérifié dans le fichier.
+2. Test de l'aperçu : le message contenait la **photo en pièce jointe**, donc aucune carte
+   à construire.
+3. Test « lien copié » : c'était **l'image** dans le presse-papier, pas l'adresse.
+
+**Règle : exiger la barre d'adresse Safari avant d'analyser une capture**, et confirmer que
+le fichier testé est bien le dernier livré. Et ne jamais refaire un design en réponse à un
+jugement dont la cible n'est pas vérifiée.
+
+---
+
 # ✅ 31/08/2026 (17h00) — LA PAGE PUBLIQUE D'UNE STORY, REFONDUE
 
 *(Page Hype. Livre `story.html` SEUL. `index.html` et `hype-stories.js` NON TOUCHÉS —

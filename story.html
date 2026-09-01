@@ -85,7 +85,7 @@
   construction — c'est demande.
   ───────────────────────────────────────────────────────────────────── -->
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Anton&family=Baloo+2:wght@500;700&family=Cinzel:wght@500;600;700&family=Cormorant+Garamond:wght@500;700&family=Montserrat:wght@300;400;500;600;700&family=Oswald:wght@500;700&display=swap');
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; background: #060709; min-height: 100%; }
   body {
@@ -515,7 +515,7 @@
     try {
       var lignes = await requeteRest(
         "hype_stories?id=eq." + encodeURIComponent(id) +
-        "&select=id,user_id,photo_url,legende,lieu,ecurie,expire_le,created_at,groupe,disposition"
+        "&select=id,user_id,photo_url,legende,style_legende,lieu,ecurie,expire_le,created_at,groupe,disposition"
       );
       story = lignes && lignes[0];
     } catch (eReq) {
@@ -544,7 +544,7 @@
       try {
         var groupe = await requeteRest(
           "hype_stories?groupe=eq." + encodeURIComponent(story.groupe) +
-          "&select=id,photo_url,legende,lieu,ecurie,created_at,disposition,expire_le" +
+          "&select=id,photo_url,legende,style_legende,lieu,ecurie,created_at,disposition,expire_le" +
           "&order=created_at.asc"
         );
         if (groupe && groupe.length) {
@@ -603,6 +603,48 @@
         + '<button class="fleche f-suiv" id="fSuiv" aria-label="Photo suivante">&rsaquo;</button>'
       : '';
 
+    /* ========================================================================
+       20bt (01/09) — LE STYLE DE LA LEGENDE SUR LA PAGE PUBLIQUE.
+       La colonne `style_legende` de `hype_stories` porte un petit JSON :
+       {"c":"#20D9F5","t":"grand","g":true,"p":"cinzel"}. Il est ecrit par
+       l'app (hype-stories.js, vocabulaire 20bt) et doit etre rendu ICI A
+       L'IDENTIQUE : c'est cette page que voient les gens hors de Hype, et une
+       story qui change d'allure en sortant de l'app est le defaut qu'on a
+       corrige le 01/09 au matin.
+       ⚠️ CES TROIS NOMBRES SONT RECOPIES DE hype-stories.js (HS_STYLE_TAILLES).
+       Cette page ne peut pas lire le module. Si les multiplicateurs bougent
+       la-bas, les bouger ici -- sinon la meme story n'aura pas la meme taille
+       de texte selon l'endroit ou on la regarde.
+       ⚠️ LES SIX POLICES DOIVENT ETRE DANS L'@import EN TETE DE FICHIER.
+       Une police absente de l'import s'afficherait en repli : meme faute.
+       ⚠️ L'OMBRE PORTEE EST TOUJOURS POSEE quand un style existe : la couleur
+       est libre (choix de Blandine), et c'est elle qui empeche un texte fonce
+       de disparaitre sur le noir. */
+    var ST_TAILLES = { petit: 0.85, normal: 1, grand: 1.25 };
+    var ST_POLICES = {
+      montserrat: "'Montserrat',sans-serif",
+      cinzel: "'Cinzel',Georgia,serif",
+      anton: "'Anton',sans-serif",
+      oswald: "'Oswald',sans-serif",
+      cormorant: "'Cormorant Garamond',Georgia,serif",
+      baloo: "'Baloo 2',cursive,sans-serif"
+    };
+    function styleLegende(brut) {
+      try {
+        if (!brut) return '';
+        var o = (typeof brut === "string") ? JSON.parse(brut) : brut;
+        if (!o || typeof o !== "object") return '';
+        var css = [];
+        if (typeof o.c === "string" && /^#[0-9a-fA-F]{3,8}$/.test(o.c)) css.push("color:" + o.c);
+        if (o.t && ST_TAILLES[o.t] && o.t !== "normal") css.push("font-size:" + (Math.round(15 * ST_TAILLES[o.t] * 10) / 10) + "px");
+        if (o.g) css.push("font-weight:700");
+        if (o.p && ST_POLICES[o.p] && o.p !== "montserrat") css.push("font-family:" + ST_POLICES[o.p]);
+        if (!css.length) return '';
+        css.push("text-shadow:0 1px 6px rgba(6,7,9,0.85)");
+        return ' style="' + css.join(";").replace(/"/g, "") + '"';
+      } catch (e) { return ''; }
+    }
+
     /* LE TEXTE : la premiere ligne porte, la suite s'efface. Le tout est
        replie au-dela de 4 lignes — la mesure reelle est faite apres
        l'insertion, le bouton n'apparait que s'il y a vraiment quelque
@@ -617,7 +659,7 @@
          ENTIER, sans bouton — cas de l'immense majorite des legendes. */
       var replier = brut.length > 500;
       blocTexte = '<div class="texte">'
-        + '<div class="corps' + (replier ? ' replie' : '') + '" id="corps">' + echapper(tete)
+        + '<div class="corps' + (replier ? ' replie' : '') + '" id="corps"' + styleLegende(story.style_legende) + '>' + echapper(tete)
         + (suite ? '<span class="suite">' + "\n\n" + echapper(suite) + '</span>' : '')
         + '</div>'
         + (replier ? '<button class="voir-plus" id="voirPlus" style="display:none;">Voir plus</button>' : '')
