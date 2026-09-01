@@ -19986,7 +19986,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bw"></script><script src="hype-resultats.js?v=2"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=2"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -30484,7 +30484,45 @@ function EcranGererEcurie() {
     h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" } }, ((profil.club || "").trim()) || "Mon \u00e9curie"));
   if (user === undefined) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#8A929C", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026"));
   if (user === null) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } }, head, h("div", { style: { padding: "56px 30px", textAlign: "center" } }, h("div", { style: { fontSize: 14, color: "#B9C6CC", fontFamily: M, lineHeight: 1.5, marginBottom: 22 } }, T("Connecte-toi pour ajouter tes chevaux, tes cavaliers et tes photos.", "Sign in to add your horses, riders and photos.", "", "", "")), h("button", { onClick: function () { setEcran("auth"); }, style: { padding: "13px 26px", borderRadius: 14, background: TURQ, border: "none", color: "#04252a", fontWeight: 800, fontSize: 14, fontFamily: M, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3"))));
-  function ligne(item, type, sub) { return h("div", { key: item.id, onClick: function () { if (type === "cheval") { window.__chevalOuvert = item.id; setEcran("cheval"); } }, style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)", cursor: type === "cheval" ? "pointer" : "default" } }, h("div", { style: { width: 44, height: 44, borderRadius: 10, flex: "0 0 auto", overflow: "hidden", backgroundImage: item.photo_url ? ("url(" + item.photo_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#12242b" } }, item.photo_url ? null : h(PortraitChevalSpectral, { compact: true })), h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 14, fontWeight: 600 } }, item.nom), sub ? h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, sub) : null), h("button", { onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); suppr(type, item.id); }, style: { background: "none", border: "none", color: "#6B7580", fontSize: 20, cursor: "pointer", lineHeight: 1 } }, "\u00d7")); }
+  function ligne(item, type, sub) { return h("div", { key: item.id, onClick: function () { if (type === "cheval") { window.__chevalOuvert = item.id; setEcran("cheval"); } }, style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)", cursor: type === "cheval" ? "pointer" : "default" } }, h("div", { style: { width: 44, height: 44, borderRadius: 10, flex: "0 0 auto", overflow: "hidden", backgroundImage: item.photo_url ? ("url(" + item.photo_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#12242b" } }, item.photo_url ? null : h(PortraitChevalSpectral, { compact: true })), h("div", { style: { minWidth: 0, flex: 1 } }, h("div", { style: { fontSize: 14, fontWeight: 600 } }, item.nom), sub ? h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, sub) : null,
+      /* 01/09 (Blandine) — CHANGER L'ECURIE D'UN CHEVAL DEJA CREE. `modifierCheval`
+         savait le faire depuis 18 h, aucun bouton ne l'appelait.
+         ⚠️ N'APPARAIT QUE SI LE CAVALIER A PLUSIEURS ECURIES — sinon la question
+         n'a pas de sens et la liste ne bouge pas d'un pixel.
+         ⚠️ « Aucune » EST UN CHOIX VALIDE : il remet `club` a vide, donc le cheval
+         redevient visible partout, comme avant la colonne. Ce n'est pas une
+         absence de reponse, c'est une reponse.
+         ⚠️ `stopPropagation` sur chaque pastille : sans lui, le tap ouvrirait la
+         fiche du cheval au lieu de changer l'ecurie.
+         ⚠️ ON N'ATTEND PAS LA BASE pour redessiner : la pastille bascule tout de
+         suite, et si l'ecriture echoue on le DIT et on revient en arriere. Pas de
+         `.catch()` vide — la lecon de la deuxieme ecurie, ce soir meme. */
+      (type === "cheval" && mesClubsL.length > 1) ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 5, marginTop: 6 } },
+        mesClubsL.concat([""]).map(function (cl) {
+          var actC = String(item.club || "") === cl;
+          var lib = cl || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine");
+          return h("div", { key: cl || "__aucune", role: "button",
+            onClick: function (eCl) {
+              if (eCl && eCl.stopPropagation) eCl.stopPropagation();
+              if (actC) return;
+              var avant = item.club || null;
+              item.club = cl || null;
+              setChevaux(function (lst) { return (lst || []).map(function (c9) { return c9.id === item.id ? Object.assign({}, c9, { club: cl || null }) : c9; }); });
+              (async function () {
+                try {
+                  var rM = await modifierCheval(item.id, { club: cl || null });
+                  if (rM && rM.error) throw rM.error;
+                } catch (eM) {
+                  item.club = avant;
+                  setChevaux(function (lst) { return (lst || []).map(function (c9) { return c9.id === item.id ? Object.assign({}, c9, { club: avant }) : c9; }); });
+                  try { window.alert(T("L'\u00e9curie n'a pas pu \u00eatre chang\u00e9e.", "The stable could not be changed.", "No se pudo cambiar la cuadra.", "Impossibile cambiare la scuderia.", "\u53a9\u820e\u3092\u5909\u66f4\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Der Stall konnte nicht ge\u00e4ndert werden.") + "\n\n" + String((eM && (eM.message || eM)) || "")); } catch (eA) { }
+                }
+              })();
+            },
+            style: { padding: "4px 9px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 10, fontWeight: actC ? 700 : 500,
+              color: actC ? "#EDF2F5" : "#7B848C", background: actC ? "rgba(255,255,255,0.09)" : "transparent",
+              border: "1px solid " + (actC ? "rgba(32,217,245,0.5)" : "rgba(255,255,255,0.09)") } }, lib);
+        })) : null), h("button", { onClick: function (e) { if (e && e.stopPropagation) e.stopPropagation(); suppr(type, item.id); }, style: { background: "none", border: "none", color: "#6B7580", fontSize: 20, cursor: "pointer", lineHeight: 1 } }, "\u00d7")); }
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
     h("input", { ref: svFile, type: "file", accept: "image/*,video/*", onChange: soumettreSouvenir, style: { display: "none" } }),
     head,

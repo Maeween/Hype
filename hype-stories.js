@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bw";
+var HYPE_STORIES_VERSION = "20bx";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -6476,6 +6476,30 @@ function VisionneuseStories(props) {
 
   var groupe = groupes[ig] || null;
   var story = groupe ? (groupe.stories[is] || null) : null;
+
+  /* 01/09 (Blandine) — L'APPUI LONG COPIAIT L'ADRESSE D'ACCUEIL.
+     La cause n'etait pas le bouton Partager : l'app est une page unique, et
+     l'adresse affichee par le navigateur ne changeait JAMAIS. Un appui long
+     puis « Copier le lien » rendait donc toujours https://<site>/ — l'accueil,
+     jamais la story ouverte.
+     L'adresse est desormais reecrite pendant la lecture, avec le MEME lien que
+     le bouton Partager : `/story.html?id=<id>`.
+     ⚠️ `replaceState`, PAS `pushState` : on n'empile pas une entree d'historique
+     par story feuilletee, sinon le bouton Retour du telephone obligerait a
+     revenir story par story.
+     ⚠️ L'ADRESSE D'AVANT EST REMISE A LA FERMETURE. Sans ca, un rechargement
+     apres avoir ferme la visionneuse rouvrirait une story au lieu de l'app.
+     ⚠️ GARDE COMPLETE : un navigateur qui refuse `replaceState` (fichier local,
+     origine differente) ne doit pas empecher de lire ses stories. */
+  React.useEffect(function () {
+    if (!story || !story.id) return;
+    var avant = null;
+    try { avant = location.pathname + location.search; } catch (eA) { return; }
+    try { history.replaceState(null, "", "/story.html?id=" + encodeURIComponent(story.id)); } catch (eB) { return; }
+    return function () {
+      try { history.replaceState(null, "", avant); } catch (eC) { }
+    };
+  }, [story && story.id]);
   if (story && localMod && localMod.id === story.id) {
     story = Object.assign({}, story, { legende: localMod.legende, lieu: localMod.lieu, musique: localMod.musique, fond: localMod.fond, style_legende: localMod.style_legende });
   }
