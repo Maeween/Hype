@@ -29617,19 +29617,52 @@ function EncartCavaliersSpectral(props) {
      garde sur cet appareil (localStorage), visible seulement par qui peut editer,
      sans effet pour les autres membres. */
   var HYPE_PAL_CAV = [
-    { id: "bleu", nom: "Bleu assombri", voile: "linear-gradient(160deg,rgba(10,22,32,0.82),rgba(6,13,20,0.92))", b: "rgba(63,224,234,0.14)", t: "#EAF6F8", s: "#5FE9F0", a: "rgba(63,224,234,0.55)" },
+    /* 01/09 (Blandine) — LE FOND ACTUEL EST PROPOSE COMME UNE OPTION A PART
+       ENTIERE : il s'appelait « Bleu assombri » et rien ne disait que c'etait
+       celui d'origine, donc rien ne permettait d'y revenir en connaissance de
+       cause. Meme `id` qu'avant (`bleu`) : les reglages deja gardes sur les
+       appareils ne bougent pas. */
+    { id: "bleu", nom: "Fond actuel", voile: "linear-gradient(160deg,rgba(10,22,32,0.82),rgba(6,13,20,0.92))", b: "rgba(63,224,234,0.14)", t: "#EAF6F8", s: "#5FE9F0", a: "rgba(63,224,234,0.55)" },
     { id: "nuit", nom: "Nuit bleutee", voile: "linear-gradient(160deg,rgba(8,13,18,0.88),rgba(5,8,11,0.95))", b: "rgba(255,255,255,0.07)", t: "#EDF1F4", s: "#8FA8B4", a: "rgba(143,168,180,0.45)" },
     { id: "lagune", nom: "Lagune profonde", voile: "linear-gradient(160deg,rgba(14,26,31,0.86),rgba(8,17,20,0.94))", b: "rgba(110,175,190,0.16)", t: "#E3EFF2", s: "#7FA8B2", a: "rgba(127,168,178,0.5)" },
     { id: "ardoise", nom: "Ardoise", voile: "linear-gradient(160deg,rgba(25,28,31,0.86),rgba(18,20,23,0.94))", b: "rgba(255,255,255,0.09)", t: "#EDF0F2", s: "#9AA7B0", a: "rgba(154,167,176,0.45)" },
     { id: "encre", nom: "Encre", voile: "linear-gradient(160deg,rgba(18,22,29,0.86),rgba(11,14,19,0.94))", b: "rgba(255,255,255,0.08)", t: "#E9ECF3", s: "#7C9BC4", a: "rgba(124,155,196,0.5)" },
-    { id: "nu", nom: "Sans cadre", voile: "linear-gradient(160deg,rgba(6,7,9,0.72),rgba(6,7,9,0.92))", b: "transparent", t: "#EDF1F4", s: "#8FA8B4", a: "rgba(143,168,180,0.4)" }
+    { id: "nu", nom: "Sans cadre", voile: "linear-gradient(160deg,rgba(6,7,9,0.72),rgba(6,7,9,0.92))", b: "transparent", t: "#EDF1F4", s: "#8FA8B4", a: "rgba(143,168,180,0.4)" },
+    /* 01/09 — LES FONDS UNIS. Les six premiers posent un voile SUR l'image de
+       constellation, qui reste visible dessous. Ceux-ci sont de vraies couleurs
+       pleines : `uni` retire l'image, sinon on ne verrait qu'un voile de plus.
+       ⚠️ Le `t`/`s` de chaque fond reste sa couleur d'ecriture PAR DEFAUT : le
+       reglage d'ecriture ci-dessous passe devant quand il est choisi. */
+    { id: "uni-noir", nom: "Noir", uni: true, fond: "#060709", voile: "none", b: "rgba(255,255,255,0.07)", t: "#EDF1F4", s: "#8FA8B4", a: "rgba(143,168,180,0.4)" },
+    { id: "uni-ardoise", nom: "Ardoise unie", uni: true, fond: "#1A1D21", voile: "none", b: "rgba(255,255,255,0.09)", t: "#EDF0F2", s: "#9AA7B0", a: "rgba(154,167,176,0.45)" },
+    { id: "uni-encre", nom: "Encre unie", uni: true, fond: "#12161D", voile: "none", b: "rgba(255,255,255,0.08)", t: "#E9ECF3", s: "#7C9BC4", a: "rgba(124,155,196,0.5)" },
+    { id: "uni-lagune", nom: "Lagune unie", uni: true, fond: "#0E1A1F", voile: "none", b: "rgba(110,175,190,0.16)", t: "#E3EFF2", s: "#7FA8B2", a: "rgba(127,168,178,0.5)" },
+    { id: "uni-prune", nom: "Prune", uni: true, fond: "#170B12", voile: "none", b: "rgba(230,140,160,0.16)", t: "#F4E7EB", s: "#E68CA0", a: "rgba(230,140,160,0.45)" }
+  ];
+  /* 01/09 (Blandine) — LES COULEURS D'ECRITURE, SEPAREES DU FOND. Jusqu'ici la
+     « teinte » changeait le fond ET les ecritures d'un seul geste : impossible
+     de garder un fond et de changer le texte. « Suit le fond » garde le
+     comportement d'avant, et reste la valeur par defaut — personne ne voit son
+     encart changer sans l'avoir demande. */
+  var HYPE_ECR_CAV = [
+    { id: "auto", nom: "Suit le fond" },
+    { id: "blanc", nom: "Blanc", t: "#F2F6F8", s: "#C7D2D8" },
+    { id: "turquoise", nom: "Turquoise", t: "#EAF6F8", s: "#5FE9F0" },
+    { id: "or", nom: "Or", t: "#F3E6C8", s: "#E8C887" },
+    { id: "gris", nom: "Gris doux", t: "#DCE3E8", s: "#93A0A8" },
+    { id: "rose", nom: "Rose", t: "#F6E7EB", s: "#E68CA0" }
   ];
   function lireCav(cle, def) { try { return window.localStorage.getItem(cle) || def; } catch (eL) { return def; } }
   var _pcv = React.useState(lireCav("hype_cav_teinte", "bleu")), palCavId = _pcv[0], setPalCavId = _pcv[1];
   var _mcv = React.useState(lireCav("hype_cav_mise", "rond")), miseCav = _mcv[0], setMiseCav = _mcv[1];
+  var _ecv = React.useState(lireCav("hype_cav_ecriture", "auto")), ecrCavId = _ecv[0], setEcrCavId = _ecv[1];
   var _pan = React.useState(false), panCav = _pan[0], setPanCav = _pan[1];
   function choisirCav(cle, val, poser) { poser(val); try { window.localStorage.setItem(cle, val); } catch (eS) { } }
-  var PCV = (function () { for (var iC = 0; iC < HYPE_PAL_CAV.length; iC++) { if (HYPE_PAL_CAV[iC].id === palCavId) return HYPE_PAL_CAV[iC]; } return HYPE_PAL_CAV[0]; })();
+  var PCV_FOND = (function () { for (var iC = 0; iC < HYPE_PAL_CAV.length; iC++) { if (HYPE_PAL_CAV[iC].id === palCavId) return HYPE_PAL_CAV[iC]; } return HYPE_PAL_CAV[0]; })();
+  /* La couleur d'ecriture choisie passe PAR-DESSUS celle du fond. Tout le reste
+     du composant continue de lire `PCV.t` et `PCV.s` : rien d'autre a changer. */
+  var PCV_ECR = (function () { for (var iE = 0; iE < HYPE_ECR_CAV.length; iE++) { if (HYPE_ECR_CAV[iE].id === ecrCavId && HYPE_ECR_CAV[iE].t) return HYPE_ECR_CAV[iE]; } return null; })();
+  var PCV = PCV_ECR ? Object.assign({}, PCV_FOND, { t: PCV_ECR.t, s: PCV_ECR.s }) : PCV_FOND;
   var enPhoto = (miseCav === "photo");
   var AVA_DEF = [
     (typeof IMG_CAVALIER_DEFAUT !== "undefined") ? IMG_CAVALIER_DEFAUT : "",
@@ -29726,8 +29759,8 @@ function EncartCavaliersSpectral(props) {
     });
   });
   return h("div", { style: { position: "relative", borderRadius: 26, overflow: "hidden", border: "1px solid " + PCV.b, boxShadow: "0 24px 60px rgba(0,0,0,0.55)" } },
-    h("div", { style: { position: "absolute", inset: 0, backgroundImage: fondCav ? ("url(" + fondCav + ")") : "none", backgroundColor: "#080D11", backgroundSize: "cover", backgroundPosition: "center" } }),
-    h("div", { style: { position: "absolute", inset: 0, background: PCV.voile } }), /* 31/08 : voile de teinte par-dessus l image de fond */
+    h("div", { style: { position: "absolute", inset: 0, backgroundImage: (PCV.uni || !fondCav) ? "none" : ("url(" + fondCav + ")"), backgroundColor: PCV.uni ? PCV.fond : "#080D11", backgroundSize: "cover", backgroundPosition: "center" } }),
+    PCV.uni ? null : h("div", { style: { position: "absolute", inset: 0, background: PCV.voile } }), /* 31/08 : voile de teinte par-dessus l image de fond ; 01/09 : inutile sur un fond uni */
     h("div", { style: { position: "relative", zIndex: 2, padding: "18px 12px 16px" } },
       h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
         h("div", { style: { flex: "0 0 auto", width: 42, height: 42, borderRadius: 13, border: "1px solid rgba(32,217,245,0.55)", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(8,14,18,0.55)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)" } },
@@ -29757,13 +29790,25 @@ function EncartCavaliersSpectral(props) {
           T("Apparence de l'encart", "Card appearance", "Aspecto del recuadro", "Aspetto del riquadro", "\u30ab\u30fc\u30c9\u306e\u5916\u89b3", "Aussehen der Karte")),
         panCav ? h("div", { style: { marginTop: 12, padding: "12px 12px 10px", borderRadius: 14, background: "rgba(0,0,0,0.42)", border: "1px solid rgba(255,255,255,0.10)", textAlign: "left" } },
           h("div", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "#7B848C", fontFamily: "'Montserrat',sans-serif", marginBottom: 8, fontWeight: 700 } },
-            T("Teinte", "Shade", "Tono", "Tinta", "\u8272\u5408\u3044", "Farbton")),
+            T("Fond", "Background", "Fondo", "Sfondo", "\u80cc\u666f", "Hintergrund")),
           h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
             HYPE_PAL_CAV.map(function (pp) {
               var act = pp.id === palCavId;
               return h("div", { key: pp.id, role: "button", onClick: function () { choisirCav("hype_cav_teinte", pp.id, setPalCavId); }, style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 40, padding: "0 12px", borderRadius: 999, cursor: "pointer", background: act ? "rgba(255,255,255,0.09)" : "transparent", border: "1px solid " + (act ? "rgba(255,255,255,0.32)" : "rgba(255,255,255,0.13)") } },
                 h("span", { style: { width: 16, height: 16, borderRadius: 5, flex: "0 0 auto", background: pp.voile, border: "1px solid rgba(255,255,255,0.2)" } }),
                 h("span", { style: { fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: act ? "#EDF2F5" : "#A8B2BA", fontWeight: act ? 700 : 500 } }, pp.nom));
+            })),
+          h("div", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "#7B848C", fontFamily: "'Montserrat',sans-serif", margin: "14px 0 8px", fontWeight: 700 } },
+            T("\u00c9critures", "Text", "Textos", "Testi", "\u6587\u5b57", "Schrift")),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            HYPE_ECR_CAV.map(function (ee) {
+              var actE = ee.id === ecrCavId;
+              /* La pastille montre la couleur du titre ; « Suit le fond » montre
+                 celle que le fond choisi appliquerait. */
+              var pastille = ee.t || PCV_FOND.t;
+              return h("div", { key: ee.id, role: "button", onClick: function () { choisirCav("hype_cav_ecriture", ee.id, setEcrCavId); }, style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 40, padding: "0 12px", borderRadius: 999, cursor: "pointer", background: actE ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)", border: "1px solid " + (actE ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.10)") } },
+                h("span", { style: { width: 16, height: 16, borderRadius: 5, flex: "0 0 auto", background: pastille, border: "1px solid rgba(255,255,255,0.2)" } }),
+                h("span", { style: { fontSize: 11, fontFamily: "'Montserrat',sans-serif", color: actE ? "#EDF2F5" : "#A8B2BA", fontWeight: actE ? 700 : 500 } }, ee.nom));
             })),
           h("div", { style: { fontSize: 10, letterSpacing: ".14em", textTransform: "uppercase", color: "#7B848C", fontFamily: "'Montserrat',sans-serif", margin: "14px 0 8px", fontWeight: 700 } },
             T("Mise en page", "Layout", "Dise\u00f1o", "Impaginazione", "\u30ec\u30a4\u30a2\u30a6\u30c8", "Layout")),

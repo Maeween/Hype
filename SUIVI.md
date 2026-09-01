@@ -10,6 +10,71 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 01/09/2026 (13 h 30) — L'OUTIL « APPARENCE DE L'ENCART » AMÉLIORÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `253805246f9b87948f21b7039f40948a` | fond et écritures séparés dans l'outil Apparence + fonds unis |
+
+⚠️ Remplace `6b18e868…`. `hype-stories.js` (20bv) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qui n'allait pas
+
+L'outil existait déjà en ligne (`EncartCavaliersSpectral`, panneau « Apparence
+de l'encart », visible pour qui revendique le club). Son seul réglage de couleur
+s'appelait **« Teinte »** et changeait **d'un même geste le voile de fond ET la
+couleur des écritures** : impossible de garder un fond en changeant le texte.
+Et rien n'indiquait lequel des six était celui d'origine.
+
+## Trois changements
+
+**1. Le fond actuel est nommé comme tel.** « Bleu assombri » devient « **Fond
+actuel** ». ⚠️ **Même `id` (`bleu`)** : les réglages déjà gardés sur les
+appareils ne bougent pas.
+
+**2. Cinq fonds unis** ajoutés à la suite des six voiles : Noir `#060709`,
+Ardoise unie, Encre unie, Lagune unie, Prune.
+⚠️ Les six premiers posent un voile **sur** l'image de constellation, qui reste
+visible dessous. Les unis portent `uni: true` : **l'image est retirée** et le
+voile n'est pas posé — sinon on n'aurait qu'un voile de plus, pas une couleur.
+
+**3. Une section « Écritures » distincte**, six choix : **Suit le fond**
+(défaut), Blanc, Turquoise, Or, Gris doux, Rose.
+⚠️ **« Suit le fond » reproduit exactement le comportement d'avant** : personne
+ne voit son encart changer sans l'avoir demandé.
+⚠️ La couleur choisie passe **par-dessus** celle du fond, en recomposant `PCV` —
+tout le reste du composant continue de lire `PCV.t` et `PCV.s`, aucune autre
+ligne touchée.
+⚠️ **L'ombre portée des textes est conservée** : c'est elle qui tient la
+lisibilité quand une écriture claire tombe sur une zone claire de l'image.
+
+Nouvelle clé gardée sur l'appareil : `hype_cav_ecriture` (à côté de
+`hype_cav_teinte` et `hype_cav_mise`). Le réglage reste local, il ne change rien
+pour les autres membres — comme avant.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai de la logique fond/écritures, 10 cas, tous conformes** : défaut
+  (image gardée, voile posé) ; fond uni (image retirée, couleur pleine, aucun
+  voile) ; écriture choisie qui passe devant sans toucher au fond ; fond uni +
+  écriture qui cohabitent ; réglage inconnu qui retombe sur le fond actuel ;
+  absence d'image de fond sans plantage ; « Suit le fond » sur un fond uni.
+- Marqueurs de lignée identiques (clip 1 · overscroll html 1 · verrou 4 ·
+  puits 4). Les deux `?v=` inchangés.
+
+**À l'écran : + 5 fonds unis · + une section Écritures (6 choix) · − rien
+(« Teinte » devient « Fond », même liste, premier élément renommé).**
+
+## Non fait, volontairement
+
+Le tri XP de l'encart « Mes amis » (page Cavalier) et l'ajout de l'outil
+Apparence sur une autre page : **abandonnés sur sa demande** (« oublie idem,
+fais juste l'outil cavaliers »).
+
+---
+
 # 🟥 01/09/2026 (13 h) — LE TRI XP ÉTAIT BRANCHÉ SUR LA MAUVAISE PAGE
 
 | Fichier | Où | md5 | Quoi |
