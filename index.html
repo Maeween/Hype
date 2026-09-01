@@ -2577,7 +2577,7 @@ function restaurationOfferte(ch) {
     return j <= 30;
   } catch (e) { return false; }
 }
-async function modifierCheval(id, { nom, race, age, discipline, teinte, fichierPhoto } = {}) {
+async function modifierCheval(id, { nom, race, age, discipline, teinte, fichierPhoto, club } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
   const maj = {};
@@ -2586,6 +2586,11 @@ async function modifierCheval(id, { nom, race, age, discipline, teinte, fichierP
   if (age !== undefined) maj.age = age || null;
   if (discipline !== undefined) maj.discipline = discipline || null;
   if (teinte !== undefined) maj.teinte = teinte || null; /* 30/07: teinte de la fiche, colonne chevaux.teinte */
+  /* 01/09 : l'ecurie du cheval (colonne `club`). ⚠️ `club: null` est une valeur
+     VOULUE — elle remet le cheval « sans ecurie », donc visible partout, comme
+     les chevaux d'avant la colonne. Ne pas confondre avec « ne rien changer »,
+     qui s'exprime en ne passant pas le champ du tout. */
+  if (club !== undefined) maj.club = club || null;
   if (fichierPhoto) { const r = await envoyerPhoto(fichierPhoto); if (r.error) return { data: null, error: r.error }; maj.photo_url = r.url; }
   return await supa.from("chevaux").update(maj).eq("id", id).eq("user_id", user.id).select().single();
 }
@@ -27814,7 +27819,45 @@ function EcranMonCavalier() {
   function sauverClub2(nomForce) {
     var nom = (nomForce !== undefined ? nomForce : (club2Local.club || "")).trim();
     setProfil(function (pp) { return Object.assign({}, pp, { club2: nom, ecurie2: nom }); });
-    try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ ecurie2: nom || null }).catch(function () { }); } catch (eC2) { }
+    /* 01/09 (Blandine) — LE SILENCE EST SUPPRIME. Ce `.catch()` etait VIDE : si
+       l'enregistrement echouait, le nom restait dans le profil LOCAL et la
+       colonne `ecurie2` restait vide en base. C'est exactement ce qui lui est
+       arrive — sa deuxieme ecurie s'affichait sur son telephone alors que la
+       base ne la connaissait pas, donc la page de ce club ne la comptait pas
+       parmi ses membres et le choix d'ecurie ne lui etait jamais propose.
+       ⚠️ ON RELIT LA BASE APRES L'ECRITURE. Une reponse sans erreur ne prouve
+       pas que la valeur est posee ; seule la relecture le prouve.
+       ⚠️ ON DIT CE QUI A ECHOUE, avec la raison — meme regle que la banniere de
+       club le 14/08 : un message passe-partout envoie chercher une panne de
+       connexion qui n'existe pas.
+       ⚠️ L'AFFICHAGE LOCAL N'EST PAS ANNULE : le nom reste a l'ecran, elle
+       decide quoi faire. On l'avertit, on ne lui reprend rien. */
+    (async function () {
+      try {
+        if (typeof majProfil !== "function" || typeof supa === "undefined") return;
+        var rMaj = await majProfil({ ecurie2: nom || null });
+        var raison = (rMaj && rMaj.error) ? String((rMaj.error && (rMaj.error.message || rMaj.error)) || "") : "";
+        if (!raison) {
+          try {
+            var u2 = await utilisateurActuel();
+            if (u2) {
+              var rRelu = await supa.from("profiles").select("ecurie2").eq("id", u2.id).maybeSingle();
+              var pose = (rRelu && rRelu.data) ? String(rRelu.data.ecurie2 || "").trim() : "";
+              if (pose !== nom) raison = "la base a rendu \u00ab " + (pose || "rien") + " \u00bb au lieu de \u00ab " + (nom || "rien") + " \u00bb";
+            }
+          } catch (eRelu) { }
+        }
+        if (raison) {
+          try {
+            window.alert("Ta deuxi\u00e8me \u00e9curie s'affiche bien ici, mais elle n'a PAS \u00e9t\u00e9 enregistr\u00e9e."
+              + "\n\nRaison : " + raison
+              + "\n\nTant qu'elle n'est pas enregistr\u00e9e, ce club ne te compte pas parmi ses membres.");
+          } catch (eAl) { }
+        }
+      } catch (eC2) {
+        try { window.alert("Ta deuxi\u00e8me \u00e9curie s'affiche bien ici, mais elle n'a PAS \u00e9t\u00e9 enregistr\u00e9e.\n\nRaison : " + String((eC2 && eC2.message) || eC2)); } catch (eAl2) { }
+      }
+    })();
     setEditClub2(false);
   }
   /* 15/08 (demande de Blandine) : « la phrase qui a popé en dur sur la photo
@@ -28884,8 +28927,26 @@ function PodiumClubsHype(props) {
         if (!manquants.length) return;
         var clubDe = {}, idsMembres = [];
         try {
-          var rMb = await supa.from("profiles").select("id, ecurie").in("ecurie", manquants);
-          ((rMb && rMb.data) || []).forEach(function (p) { if (p && p.id && p.ecurie) { clubDe[p.id] = p.ecurie; idsMembres.push(p.id); } });
+          /* 01/09 — DEFAUT DE MON PROPRE CODE, corrige : cette recherche
+             n'interrogeait que `ecurie`, en egalite stricte. Elle ratait donc
+             les cavaliers rattaches par `ecurie2` et tous les clubs dont le nom
+             s'ecrit avec une variante (« Feinn » / « Écurie Feinn »). Elle suit
+             desormais la MEME regle que la recherche des membres d'un club :
+             les deux colonnes, et la comparaison par noyau. */
+          var parNoyau = {};
+          manquants.forEach(function (nm) {
+            var ny = (typeof noyauEcurie === "function") ? noyauEcurie(nm) : String(nm || "").toLowerCase().trim();
+            if (ny) parNoyau[ny] = nm;
+          });
+          var rMb = await supa.from("profiles").select("id, ecurie, ecurie2").limit(400);
+          ((rMb && rMb.data) || []).forEach(function (p) {
+            if (!p || !p.id) return;
+            [p.ecurie, p.ecurie2].forEach(function (e) {
+              if (!e || clubDe[p.id]) return;
+              var ny = (typeof noyauEcurie === "function") ? noyauEcurie(e) : String(e).toLowerCase().trim();
+              if (ny && parNoyau[ny]) { clubDe[p.id] = parNoyau[ny]; idsMembres.push(p.id); }
+            });
+          });
         } catch (eMb) { }
         if (!vivant || !idsMembres.length) return;
         var chx = [];
@@ -30256,7 +30317,13 @@ function EcranGererEcurie() {
     } catch (e) { setUser(null); }
   }
   React.useEffect(function () { charger(); }, []);
-  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } setBusy(true); var errCh = null; try { var rCh = await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0], club: (mesClubsL.length > 1 ? (clubCheval || mesClubsL[0]) : null) }); if (rCh && rCh.error) errCh = rCh.error; } catch (e) { errCh = e; } setBusy(false); if (errCh) { alert(T("Impossible d\u2019ajouter le cheval : ", "Could not add the horse: ", "No se pudo a\u00f1adir el caballo: ", "Impossibile aggiungere il cavallo: ", "\u99ac\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCh.message || String(errCh))); return; } setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
+  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } setBusy(true); var errCh = null; /* ⚠️ LE CHOIX EST OBLIGATOIRE quand le cavalier a plusieurs ecuries : sans lui,
+       le cheval partirait sans rattachement et paraitrait dans TOUTES les
+       grilles. On refuse la creation plutot que de deviner a sa place.
+       ⚠️ UN SEUL CLUB = AUCUNE QUESTION, et `club` reste vide : rien ne change
+       pour l'immense majorite des cavaliers. */
+    if (mesClubsL.length > 1 && !clubCheval) { setBusy(false); alert(T("Choisis l\u2019\u00e9curie de ce cheval.", "Choose this horse\u2019s stable.", "Elige la cuadra de este caballo.", "Scegli la scuderia di questo cavallo.", "\u3053\u306e\u99ac\u306e\u53a9\u820e\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle den Stall dieses Pferds.")); return; }
+    try { var rCh = await ajouterCheval({ nom: champsCh.nom, race: champsCh.race, age: champsCh.age, discipline: champsCh.discipline, fichierPhoto: chFile.current && chFile.current.files[0], club: (mesClubsL.length > 1 ? clubCheval : null) }); if (rCh && rCh.error) errCh = rCh.error; } catch (e) { errCh = e; } setBusy(false); if (errCh) { alert(T("Impossible d\u2019ajouter le cheval : ", "Could not add the horse: ", "No se pudo a\u00f1adir el caballo: ", "Impossibile aggiungere il cavallo: ", "\u99ac\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCh.message || String(errCh))); return; } setFormOuvert(null); setChampsCh({ nom: "", race: "", age: "", discipline: "" }); if (chFile.current) chFile.current.value = ""; charger(); }
   async function soumettreCavalier() { if (!champsCv.nom.trim()) return; setBusy(true); var errCv = null; try { var rCv = await ajouterCavalier({ nom: champsCv.nom, niveau: champsCv.niveau, fichierPhoto: cvFile.current && cvFile.current.files[0] }); if (rCv && rCv.error) errCv = rCv.error; } catch (e) { errCv = e; } setBusy(false); if (errCv) { alert(T("Impossible d\u2019ajouter le cavalier : ", "Could not add the rider: ", "No se pudo a\u00f1adir el jinete: ", "Impossibile aggiungere il cavaliere: ", "\u9a0e\u624b\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errCv.message || String(errCv))); return; } setFormOuvert(null); setChampsCv({ nom: "", niveau: "" }); if (cvFile.current) cvFile.current.value = ""; charger(); }
   async function soumettreSouvenir(e) { var f = e.target.files && e.target.files[0]; if (!f) return; setBusy(true); var errSv = null; try { var rSv = await ajouterSouvenir(f); if (rSv && rSv.error) errSv = rSv.error; } catch (er) { errSv = er; } setBusy(false); if (errSv) { alert(T("Impossible d\u2019ajouter la photo : ", "Could not add the photo: ", "No se pudo a\u00f1adir la foto: ", "Impossibile aggiungere la foto: ", "\u5199\u771f\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a") + (errSv.message || String(errSv))); if (svFile.current) svFile.current.value = ""; return; } if (svFile.current) svFile.current.value = ""; charger(); }
   async function suppr(type, id) { try { if (type === "cheval") await supprimerCheval(id); else await supprimerCavalier(id); } catch (e) {} charger(); }
@@ -30288,7 +30355,11 @@ function EcranGererEcurie() {
             T("\u00c9curie de ce cheval", "This horse's stable", "Cuadra de este caballo", "Scuderia di questo cavallo", "\u3053\u306e\u99ac\u306e\u53a9\u820e", "Stall dieses Pferds")),
           h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
             mesClubsL.map(function (cl) {
-              var act = (clubCheval || mesClubsL[0]) === cl;
+              /* 01/09 (Blandine : « on ne peut pas les obliger a choisir quand
+                 ils creent ? ») — AUCUNE PASTILLE PRE-COCHEE. Pre-selectionner
+                 la premiere ecurie faisait valider un rattachement SUBI par qui
+                 ne regarde pas. Le choix est desormais explicite. */
+              var act = clubCheval === cl;
               return h("div", { key: cl, role: "button", onClick: function () { setClubCheval(cl); },
                 style: { padding: "9px 13px", borderRadius: 999, cursor: "pointer", fontFamily: M, fontSize: 12, fontWeight: act ? 700 : 500,
                   color: act ? "#EDF2F5" : "#A8B2BA", background: act ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.03)",

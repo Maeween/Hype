@@ -10,6 +10,190 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 01/09/2026 (19 h 25) — LE CHOIX DE L'ÉCURIE DEVIENT OBLIGATOIRE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `07a674f44ce4a0a5fe4ab4a1dca300ca` | plus de pré-sélection, création refusée sans choix |
+
+⚠️ Remplace `2177f3de…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qui change
+
+Blandine : « on ne peut pas les obliger à choisir quand ils créent ? » — et elle
+a raison contre ma première version.
+
+Je pré-sélectionnais la **première** écurie. Un cavalier qui ne regarde pas
+validait donc un rattachement **subi**, exactement le problème qu'on cherchait à
+supprimer. Désormais :
+
+- ⚠️ **Aucune pastille n'est cochée au départ.**
+- ⚠️ **La création est refusée** tant qu'aucune écurie n'est choisie, avec un
+  message clair. On refuse plutôt que de deviner à sa place — sans choix, le
+  cheval partirait sans rattachement et paraîtrait dans **toutes** les grilles.
+- ⚠️ **UN SEUL CLUB = AUCUNE QUESTION** et `club` reste vide. Rien ne change pour
+  l'immense majorité des cavaliers, et surtout rien ne les bloque.
+
+## L'état de la base après les réparations de Blandine
+
+Les deux `update` sont passés et vérifiés :
+`ecurie2` = « Societe d'Equitation de Paris (SEP) » · **0 cheval sans écurie**.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai, 7 cas, tous conformes** : deux écuries sans choix → création
+  refusée ; avec choix → club posé ; une seule écurie → aucune question, club
+  vide ; aucune écurie → idem ; aucune pastille cochée au départ ; une seule
+  après choix ; **la première écurie n'est pas privilégiée**.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + le refus de créer sans écurie · − la pré-sélection silencieuse.**
+
+## 🟠 À VÉRIFIER, PAS FAIT
+
+- **Combien de cavalières ont une deuxième écurie réellement enregistrée** :
+  `select pseudo, ecurie, ecurie2 from profiles where ecurie2 is not null order by ecurie2;`
+  Si la liste est quasi vide alors que plusieurs l'ont saisie, l'écriture
+  échouait pour tout le monde — probablement une règle RLS sur `profiles`. Le
+  correctif de 18 h 10 rend l'échec visible, **il ne répare pas le passé**.
+- **`classement_ecuries` regarde-t-il `ecurie2` ?** Si le calcul d'XP ne compte
+  que la première écurie, les XP d'un club et sa liste de membres ne diraient
+  pas la même chose. Signalé, non ouvert.
+- **Changer l'écurie d'un cheval déjà créé** : `modifierCheval` sait le faire,
+  aucun bouton ne l'appelle encore.
+
+---
+
+# 🟥 01/09/2026 (18 h 10) — LA DEUXIÈME ÉCURIE QUI N'EXISTAIT QUE SUR LE TÉLÉPHONE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2177f3deda110f9835238a7be7991362` | fin du silence sur l'enregistrement de la 2ᵉ écurie |
+
+⚠️ Remplace `d53804aa…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qu'on a découvert, en trois temps
+
+1. L'app affichait « Ma deuxième écurie : Société d'Équitation de Paris (SEP) ».
+2. La base disait `ecurie2 = NULL`.
+3. ⚠️ **`club2` N'EXISTE PAS EN BASE** (`ERROR 42703: column "club2" does not
+   exist`). C'est un champ **purement local** du profil client, alimenté par
+   `d.ecurie2 || p.club2`.
+
+**Sa deuxième écurie n'existait donc que sur son téléphone.**
+
+**La cause : un `.catch()` VIDE** dans `sauverClub2`. Le nom était posé dans le
+profil local, puis envoyé à la base — et si l'envoi échouait, **personne ne le
+savait**. L'affichage restait juste, la base restait vide.
+
+⚠️ **Les conséquences étaient invisibles et lourdes** : la page de ce club ne la
+comptait pas parmi ses membres, ses chevaux n'apparaissaient pas dans sa grille,
+et le choix d'écurie à la création (livré à 17 h 50) ne lui aurait **jamais** été
+proposé, puisqu'il compte les clubs **de la base**.
+
+## Le correctif
+
+- Le `.catch()` vide disparaît. L'écriture est attendue et son erreur lue.
+- ⚠️ **ON RELIT LA BASE APRÈS L'ÉCRITURE.** Une réponse sans erreur ne prouve pas
+  que la valeur est posée ; seule la relecture le prouve.
+- ⚠️ **ON DIT CE QUI A ÉCHOUÉ, avec la raison** — même règle que la bannière de
+  club le 14/08 : un message passe-partout envoie chercher une panne de connexion
+  qui n'existe pas.
+- ⚠️ **L'affichage local n'est pas annulé** : le nom reste à l'écran, elle décide
+  quoi faire. On l'avertit, on ne lui reprend rien.
+
+## Réparation de la donnée — À FAIRE PAR BLANDINE, DANS CET ORDRE
+
+```sql
+-- 1) D'ABORD : ses chevaux restent chez Feinn
+update chevaux set club = 'Ecurie Feinn'
+where user_id = 'bc7c52ee-7a42-4162-97dd-50ff5885941e' and club is null;
+
+-- 2) ENSUITE seulement : la deuxième écurie devient réelle
+update profiles set ecurie2 = 'Societe d''Equitation de Paris (SEP)'
+where id = 'bc7c52ee-7a42-4162-97dd-50ff5885941e';
+```
+
+⚠️ **L'ordre compte.** Dans l'autre sens, ses 19 chevaux ont `club` vide, passent
+donc le filtre partout, et apparaîtraient d'un coup sur la page de la SEP.
+
+## ⚠️ À VÉRIFIER — le même écart ailleurs
+
+`club2` est lu à **quatre endroits** (`profil.club2 || profil.ecurie2`). Tant que
+la base est juste, le repli est inoffensif. Mais **d'autres cavalières peuvent
+avoir le même écart** : une deuxième écurie affichée chez elles, inconnue de la
+base, donc invisible pour leur club. Requête de contrôle :
+
+```sql
+select id, pseudo, ecurie, ecurie2 from profiles where ecurie2 is not null;
+```
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + un avertissement quand l'enregistrement échoue · − le silence.**
+
+---
+
+# 🟦 01/09/2026 (18 h) — SUITE : MODIFICATION DE L'ÉCURIE + CORRECTIF DU REPLI DU PODIUM
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d53804aa7df411f13ca11662bd788dd4` | `modifierCheval` accepte `club` + repli du podium corrigé |
+
+⚠️ Remplace `27d3289f…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## 1. `modifierCheval` sait changer l'écurie
+
+La plomberie est posée : `modifierCheval(id, { club })` écrit la colonne.
+⚠️ **`club: null` est une valeur VOULUE** — elle remet le cheval « sans
+écurie », donc visible partout, comme avant la colonne. À ne pas confondre avec
+« ne rien changer », qui s'exprime en ne passant pas le champ du tout.
+
+## 2. 🟥 Mon propre défaut du podium, corrigé
+
+Le repli qui cherche le cheval le plus populaire d'un club interrogeait
+`profiles` sur **`ecurie` seul, en égalité stricte**. Il ratait donc :
+- les cavaliers rattachés par **`ecurie2`** (le cas de Blandine sur la SEP) ;
+- tous les clubs dont le nom s'écrit avec une variante (« Feinn » vs « Écurie
+  Feinn »).
+
+Il suit désormais **la même règle que la recherche des membres d'un club** : les
+deux colonnes, et la comparaison **par noyau**.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + rien de visible (plomberie) · le repli du podium trouve
+désormais les clubs qu'il ratait.**
+
+## 🟠 LE MORCEAU QUI MANQUE
+
+**Il n'y a toujours aucun endroit pour changer l'écurie d'un cheval déjà créé.**
+La fonction existe, le bouton n'existe pas. C'est le prochain travail : une
+rangée de pastilles sur la fiche du cheval (ou dans « Gérer mon écurie »),
+visible seulement quand le cavalier appartient à plusieurs clubs, avec un choix
+« Aucune » qui remet `club` à `null`.
+
+En attendant, l'assignation en masse se fait en SQL :
+```sql
+update chevaux set club = 'Écurie Feinn'
+where user_id = 'bc7c52ee-7a42-4162-97dd-50ff5885941e' and club is null;
+```
+
+---
+
 # 🟦 01/09/2026 (17 h 50) — L'ÉCURIE D'UN CHEVAL
 
 | Fichier | Où | md5 | Quoi |
