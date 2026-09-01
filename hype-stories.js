@@ -42,7 +42,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bv";
+var HYPE_STORIES_VERSION = "20bw";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -5873,15 +5873,30 @@ function CompositionStory(props) {
   var story = props.story || {}; var lg = props.langue || "fr";
   /* 20bu : le ratio de noir mort du decor, mesure une fois puis garde. Le
      `setState` ne sert qu'a redessiner quand la mesure revient. */
-  var _vd = React.useState(0), videRatio = _vd[0], setVideRatio = _vd[1];
-  React.useEffect(function () {
-    var dsp = story.disposition;
-    if (!dsp || String(dsp).indexOf("modele-") !== 0) { setVideRatio(0); return; }
-    var vivant = true;
-    var r0 = hsVideRatioDecor(dsp, function (r) { if (vivant) setVideRatio(r); });
-    setVideRatio(r0);
-    return function () { vivant = false; };
-  }, [story.disposition]);
+  /* 20bw (01/09) — LA DESCENTE DU TEXTE A L'ECRAN EST ANNULEE.
+     Historique, pour ne pas y revenir une quatrieme fois :
+       20bu : le texte descend dans le noir mort du haut du decor, mesure avec
+              un seuil fixe de 12/255. Sur un decor a tetes de cheval SOMBRES le
+              dessin passait sous le seuil : le texte descendait dessus.
+       20bv : seuil fixe remplace par une mesure relative au noir du decor.
+              Blandine, apres poussee des deux fichiers : « le probleme
+              d'ecriture est pas regle sur les story ».
+       20bw : ON ARRETE DE MESURER A L'ECRAN. `videRatio` reste a 0, donc le
+              bloc de legende revient exactement ou il etait avant la 20bu
+              (10 px du haut). Deux tentatives de mesure ont echoue sur ce
+              decor : une troisieme serait du bricolage a l'aveugle.
+     ⚠️ L'IMAGE DE PARTAGE N'EST PAS TOUCHEE. `hsVideHaut` continue de servir a
+     `hsImageStory`, ou la mesure a fait ses preuves (gain de 14 a 16 % sur
+     concours-1, -2, -4, confirme en production le 01/09). Ne pas la retirer.
+     ⚠️ LA GARDE DES 3 LIGNES EN TAILLE « GRAND » EST CONSERVEE. Avec un ratio
+     nul, la condition ci-dessous est toujours vraie : une legende agrandie tient
+     en 3 lignes au lieu de 4. C'est ce qui empeche le retour du defaut signale
+     ce matin (« quand on agrandit le texte on empiete sur le modele »). La
+     remettre a 4 lignes ramenerait ce defaut.
+     ⚠️ `hsVideRatioDecor` n'est plus appelee ici — elle est GARDEE volontairement,
+     prete si l'on reprend le sujet un jour avec les vrais fichiers de decor sous
+     les yeux. */
+  var _vd = React.useState(0), videRatio = _vd[0];
   var membres = (story.compo && story.compo.length ? story.compo : [story]);
   var plS = React.useState(null), plein = plS[0], setPlein = plS[1];
   /* 19am (disposition « B ») : la legende vit desormais ICI, avec son propre

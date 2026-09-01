@@ -10,6 +10,195 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟥 01/09/2026 (15 h) — LE DOUBLON DE YUM : DÉDOUBLONNAGE À LA SOURCE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `452bc1aef8f5b2f703c2efc094ff6159` | un cheval possédé n'est plus aussi listé comme rattaché |
+
+⚠️ Remplace `d2efaa0c…`. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## Le diagnostic — et ma première hypothèse était FAUSSE
+
+J'avais annoncé « deux lignes distinctes dans `chevaux`, même famille que
+Vallieres ». **La requête de Blandine dit le contraire : une seule ligne.**
+
+- `088c1e30-f416-4f6f-a879-be4e03b7ee21` · propriétaire `bc7c52ee-…` ·
+  créé le 28/08 · **53 résultats** · **1 lien**
+
+Le coupable est ce **1 dans `liens`** : une ligne de `chevaux_liens` rattache ce
+cheval à sa propre propriétaire. Or trois listes additionnent « possédés » et
+« rattachés » — le même cheval, le même identifiant, sortait deux fois : une
+fois nu, une fois avec le badge « Lié ». Le compteur à 14 comptait double lui
+aussi.
+
+⚠️ **Le correctif du 02/08 n'avait été posé que sur UNE des trois listes**
+(page Cavalier, `chevauxPerso`). Les deux autres — profil visité
+(`chevauxVisite`) et page Club (`mesChevauxClub`) — ne l'ont jamais eu. Même
+erreur que le tri XP ce matin : un défaut corrigé à un seul endroit d'un
+mécanisme partagé.
+*(Blandine a signalé le doublon sur sa page Cavalier puis s'est reprise : il n'y
+est plus. Le trou existe pourtant toujours dans le code du profil visité — il ne
+se voit pas parce qu'on ne visite pas son propre profil en visiteuse.)*
+
+## Le correctif : à la source, pas page par page
+
+**1. `mesChevauxLies()`** écarte les chevaux dont **le demandeur est déjà
+propriétaire**. **2. `chevauxLiesDe(userId)`** applique la même règle côté profil
+visité. Un cheval qu'on possède n'est pas un cheval « rattaché » : la question ne
+se pose plus dans aucune page, présente ou future.
+
+**3. `lierCheval()`** refuse désormais de rattacher un cheval qu'on possède déjà,
+avec un message clair. C'est ce geste qui a créé la situation.
+⚠️ **La vérification est gardée** : si la lecture du propriétaire échoue, le
+rattachement passe. Mieux vaut un lien de trop qu'un bouton qui ne marche plus.
+
+**4. Ceinture et bretelles** : garde par identifiant ajoutée sur les deux listes
+qui ne l'avaient pas. Un cheval rattaché par deux voies différentes resterait
+sinon possible.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai, 12 cas, tous conformes** : le cas Yum (plus de doublon, aucun
+  cheval perdu), **un cheval rattaché d'un autre compte reste affiché** (le
+  correctif ne mange pas les vrais rattachements), double rattachement attrapé
+  par l'identifiant, profil visité, listes vides, ligne sans identifiant, et les
+  trois cas du garde-fou de `lierCheval` (son cheval refusé, celui d'un autre
+  accepté, propriétaire inconnu accepté).
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : − le doublon de Yum et le compteur faussé · + rien.**
+
+## ⚠️ Reste en base
+
+La ligne de `chevaux_liens` inutile **n'est pas supprimée** — l'affichage est
+juste sans y toucher. Pour la retirer proprement, vérifier d'abord à qui elle
+appartient :
+
+```sql
+select l.cheval_id, l.user_id, c.user_id as proprietaire
+from chevaux_liens l join chevaux c on c.id = l.cheval_id
+where l.cheval_id = '088c1e30-f416-4f6f-a879-be4e03b7ee21';
+```
+
+---
+
+# 🟥 01/09/2026 (14 h) — 20bw : LA DESCENTE DU TEXTE À L'ÉCRAN EST ANNULÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `hype-stories.js` | racine | `01423d7982af853f34ef324eb6fd9f8a` | **20bw** : `videRatio` figé à 0, le texte revient en haut |
+| `index.html` | racine | `d2efaa0c88b79f3a6580cb059b808192` | `?v=20bw` (+ tout ce qui précède) |
+
+⚠️ `index.html` remplace `33b4fdf2…`. `hype-resultats.js` (v2) inchangé.
+
+## L'historique, pour ne pas y revenir une quatrième fois
+
+| Version | Ce qu'elle fait | Résultat |
+|---|---|---|
+| **20bu** | le texte descend dans le noir mort du haut, **seuil fixe 12/255** | sur un décor à têtes de cheval **sombres**, le dessin passe sous le seuil : le texte descend **dessus** |
+| **20bv** | seuil fixe → **mesure relative** au noir propre du décor | Blandine, les deux fichiers poussés : « le problème d'écriture est pas réglé sur les story » |
+| **20bw** | **on arrête de mesurer à l'écran** | le texte revient exactement où il était avant la 20bu (10 px du haut) |
+
+Diagnostic de la capture avant correctif : le texte n'était pas collé en haut, il
+était descendu d'environ 10 % — la signature de la 20bu. Deux tentatives de
+mesure ont échoué sur ce décor ; une troisième aurait été du bricolage à
+l'aveugle, sans les fichiers `.webp` sous les yeux.
+
+## Ce qui est fait
+
+`videRatio` reste à **0** : l'effet qui appelait la mesure est retiré,
+l'état devient une constante.
+
+⚠️ **L'IMAGE DE PARTAGE N'EST PAS TOUCHÉE.** `hsVideHaut` continue de servir à
+`hsImageStory`, où la mesure a fait ses preuves — 14 à 16 % récupérés sur
+`concours-1`, `-2`, `-4`, confirmé en production le 01/09. **Ne pas la retirer.**
+⚠️ **LA GARDE DES 3 LIGNES EN TAILLE « GRAND » EST CONSERVÉE.** Avec un ratio
+nul, la condition est toujours vraie : une légende agrandie tient en 3 lignes au
+lieu de 4. C'est ce qui empêche le retour du défaut signalé ce matin (« quand on
+agrandit le texte on empiète sur le modèle »). **La remettre à 4 lignes
+ramènerait ce défaut.**
+⚠️ `hsVideRatioDecor` n'est plus appelée, mais **gardée volontairement** : prête
+si le sujet est repris un jour avec les vrais décors.
+
+## Leçon
+
+**Deux corrections livrées sur une mesure que je ne pouvais pas éprouver.** Les
+bancs d'essai tournaient sur des pixels fabriqués par moi : ils validaient ma
+théorie du décor, pas le décor. Quand la matière n'est pas disponible, le
+correctif juste est celui qui **retire** le mécanisme, pas celui qui le règle
+une fois de plus.
+
+## Contrôles
+
+- `node --check` sur `hype-stories.js` : 0 erreur.
+- `node --check` sur les **18 blocs inline** d'`index.html` : 0 erreur.
+- Marqueurs de lignée identiques (clip 1 · verrou 4 · puits 4).
+- Les deux clés de cache incrémentées : `HYPE_STORIES_VERSION = "20bw"` **et**
+  `hype-stories.js?v=20bw`.
+
+**À l'écran : − la descente du texte sur les décors · + rien. L'image de partage
+est inchangée.**
+
+---
+
+# 🟦 01/09/2026 (15 h) — « MES CHEVAUX » PASSE EN RAIL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `33b4fdf2b8148873d94987eec83be5a5` | « Mes chevaux » (page Club) en bande horizontale, classée XP |
+
+⚠️ Remplace `7d998a9c…`. `hype-stories.js` (20bv) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qui change
+
+Blandine : « mes chevaux perso sur la page Écurie, on avait dit qu'on les
+passait sur un rail comme sur l'ancienne page Écurie ? »… « fais-le »… « mais en
+gardant en prio les plus gros en XP ».
+
+⚠️ **Je n'ai pas retrouvé cette décision dans le SUIVI, et je le lui ai dit.**
+Ce qui y figure va dans l'autre sens (02/08 : « ne pas les laisser sur le rail
+défilant » ; 14/08 : la grille 3 colonnes qui remplace le rail des chevaux du
+club). Et l'ancienne page Écurie n'a pas de rail non plus : ses chevaux sont en
+`.chgrid`, une grille 3 colonnes. Elle a tranché en connaissance de cause.
+
+**Section touchée : « Mes chevaux » de la page Club** (`EcranGuilde`,
+`mesChevauxClub`), sous le liseré doré « Ma gestion » — c'est celle qu'elle voit,
+puisque l'onglet « Mon écurie » redirige vers le club.
+⚠️ **L'ancienne page `EcranEcurie` n'est pas touchée** : sa grille `.chgrid`
+reste telle quelle. Elle n'est plus atteignable par le menu ; la reprendre le
+jour où on tranchera son sort.
+
+- Grille 2 colonnes plafonnée à 6 → **bande horizontale montrant TOUS les
+  chevaux**. Cartes 130 px, rapport 4/5, accroche au défilement.
+- ⚠️ **`data-hscroll="1"` est obligatoire** : sans lui le geste horizontal est
+  capté par la navigation par swipe de l'app et le rail ne défile pas — bug
+  déjà payé sur la bande des nouveaux cavaliers en Communauté.
+- ⚠️ **L'ordre est celui du classement XP**, appliqué en amont par
+  `classerChevauxParXp` (livraison précédente) : les mieux fournis ouvrent le
+  rail. Aucun tri local, qui l'écraserait.
+- ⚠️ **Le `slice(0, 6)` est retiré.** Un rail n'a pas besoin de plafond, et
+  couper à 6 aurait caché les moins bien classés sans qu'aucun bouton ne les
+  rende accessibles.
+- Le bouton « Voir mon fil → » (au-delà de 6 chevaux) est **conservé** : il mène
+  ailleurs, il n'est pas un « voir plus ».
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée identiques (clip 1 · overscroll html 1 · verrou 4 ·
+  puits 4). Les deux `?v=` inchangés.
+- Contrôle visuel à faire par Blandine : un rail ne se mesure pas hors
+  navigateur.
+
+**À l'écran : + tous les chevaux perso accessibles au défilement · − la grille 2
+colonnes et son plafond à 6.**
+
+---
+
 # 🟦 01/09/2026 (14 h 30) — LES CHEVAUX CLASSÉS PAR XP, PARTOUT
 
 | Fichier | Où | md5 | Quoi |

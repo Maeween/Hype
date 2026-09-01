@@ -1422,7 +1422,11 @@ async function chevauxLiesDe(userId) {
     var rl = await supa.from("chevaux_liens").select("cheval_id").eq("user_id", userId);
     var idsL = ((rl && rl.data) || []).map(function (l) { return l.cheval_id; });
     if (!idsL.length) return { data: [], error: null };
-    return await supa.from("chevaux").select("*").in("id", idsL).is("supprime_le", null);
+    /* 01/09 — meme regle que `mesChevauxLies` : un cheval que la personne
+       possede deja n'est pas un cheval « rattache ». La liste du profil visite
+       (« Ses chevaux ») concatene les deux sans dedoublonner. */
+    var rcL = await supa.from("chevaux").select("*").in("id", idsL).is("supprime_le", null);
+    return { data: ((rcL && rcL.data) || []).filter(function (ch) { return ch && ch.user_id !== userId; }), error: (rcL && rcL.error) || null };
   } catch (eCLD) { return { data: [], error: null }; }
 }
 async function resultatsDe(userId) {
@@ -2471,9 +2475,23 @@ async function mesChevaux() {
   return await supa.from("chevaux").select("*").eq("user_id", user.id).is("supprime_le", null).order("created_at", { ascending: false });
 }
 /* --- Chevaux rattaches (liens ecurie) ---------------------- */
+/* 01/09 — ON NE SE RATTACHE PAS UN CHEVAL QU'ON POSSEDE DEJA. C'est ce lien-la
+   qui a fait apparaitre Yum en double dans « Mes chevaux » de la page Club :
+   une seule ligne dans `chevaux`, mais une ligne de `chevaux_liens` pointant sur
+   elle et posee par sa propre proprietaire. La liste additionnait possedes et
+   rattaches, le meme cheval sortait deux fois.
+   ⚠️ LA VERIFICATION EST GARDEE : si la lecture du proprietaire echoue, on
+   laisse passer le rattachement. Mieux vaut un lien de trop qu'un bouton qui ne
+   marche plus. */
 async function lierCheval(chevalId) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: { message: "Pas connect\u00e9" } };
+  try {
+    var rProp = await supa.from("chevaux").select("user_id").eq("id", chevalId).maybeSingle();
+    if (rProp && rProp.data && rProp.data.user_id === user.id) {
+      return { data: null, error: { message: "Ce cheval est deja le tien : inutile de le rattacher." } };
+    }
+  } catch (eProp) { }
   return await supa.from("chevaux_liens").insert({ cheval_id: chevalId, user_id: user.id }).select().single();
 }
 async function delierCheval(chevalId) {
@@ -2489,7 +2507,14 @@ async function mesChevauxLies() {
     var idsL = ((rl && rl.data) || []).map(function (l) { return l.cheval_id; });
     if (!idsL.length) return { data: [], error: null };
     var rc = await supa.from("chevaux").select("*").in("id", idsL).is("supprime_le", null).order("created_at", { ascending: false });
-    return { data: ((rc && rc.data) || []).map(function (ch) { return Object.assign({}, ch, { __lien: true }); }), error: (rc && rc.error) || null };
+    /* 01/09 — LE DEDOUBLONNAGE EST FAIT ICI, A LA SOURCE, ET PAS DANS CHAQUE
+       PAGE. Trois listes concatenent possedes + rattaches ; le correctif du
+       02/08 n'avait ete pose que sur UNE d'entre elles (page Cavalier), les
+       deux autres montraient le doublon. En ecartant ici les chevaux dont le
+       demandeur est deja proprietaire, aucune liste future ne peut retomber
+       dans le piege — les pages n'ont rien a savoir. */
+    var propres = ((rc && rc.data) || []).filter(function (ch) { return ch && ch.user_id !== user.id; });
+    return { data: propres.map(function (ch) { return Object.assign({}, ch, { __lien: true }); }), error: (rc && rc.error) || null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
 /* 22/08 — SUPPRESSION DOUCE. Le cheval n est plus effacé : il attend a la porte
@@ -19932,7 +19957,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bv"></script><script src="hype-resultats.js?v=2"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bw"></script><script src="hype-resultats.js?v=2"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -27523,7 +27548,10 @@ function EcranMonCavalier() {
         if (uid && typeof chevauxDe === "function") {
           var rc = await chevauxDe(uid);
           var tousChV = (rc && rc.data) ? rc.data.slice() : [];
+          /* 01/09 : garde par identifiant en plus du filtre de la source — un
+             cheval rattache par deux voies differentes resterait sinon possible. */
           try { if (uid && typeof chevauxLiesDe === "function") { var rln = await chevauxLiesDe(uid); if (rln && rln.data && rln.data.length) tousChV = tousChV.concat(rln.data); } } catch (eLnV) { }
+          var vusChV = {}; tousChV = tousChV.filter(function (cV) { if (!cV || !cV.id || vusChV[cV.id]) return false; vusChV[cV.id] = true; return true; });
           setVisiteChevaux(tousChV);
         } else { setVisiteChevaux([]); }
       } catch (eCh) { setVisiteChevaux([]); }
@@ -29098,7 +29126,7 @@ function EcranGuilde() {
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       setMoiG(u || null);
-      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } /* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ try { tousMc = await classerChevauxParXp(tousMc); } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
+      if (u) { try { var rMc = await mesChevaux(); var tousMc = (rMc && rMc.data) ? rMc.data.slice() : []; try { var rMl = await mesChevauxLies(); if (rMl && rMl.data && rMl.data.length) tousMc = tousMc.concat(rMl.data); } catch (eMl) { } /* 01/09 : garde par identifiant, comme sur la page Cavalier depuis le 02/08 — c'est CETTE liste qui montrait Yum en double. */ var vusMc = {}; tousMc = tousMc.filter(function (cM) { if (!cM || !cM.id || vusMc[cM.id]) return false; vusMc[cM.id] = true; return true; }); /* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ try { tousMc = await classerChevauxParXp(tousMc); } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
       if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
       else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
