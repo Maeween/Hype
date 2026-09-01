@@ -10,6 +10,130 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟦 01/09/2026 (14 h 30) — LES CHEVAUX CLASSÉS PAR XP, PARTOUT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7d998a9ca9539a8bac0b859e743e3dbd` | titre « Chevaux du club » retiré + classement XP des chevaux sur les 4 grilles |
+
+⚠️ Remplace `69d01dfb…`. `hype-stories.js` (20bv) et `hype-resultats.js` (v2)
+inchangés.
+
+## 1. Le titre « CHEVAUX DU CLUB » est retiré
+
+Demandé par Blandine : la carte centrale de la mosaïque le porte désormais, il
+était écrit deux fois. **La rangée est conservée** pour le compteur et
+« + Ajouter », qui restent à droite comme avant.
+
+## 2. Le classement XP des chevaux
+
+Blandine : « trie les chevaux en fonction de leur XP aussi, que ceux les plus
+gros en XP soient affichés en premier »… **« partout »**.
+
+Le score existait **déjà** (`scoreVitrineCheval`, ~ligne 385) et ne servait
+**que** sur l'écran « Score vitrine » : photo de couverture 8 · race 8 ·
+discipline 8 · histoire 10 · palmarès texte 10 · photos/vidéos ×3 (max 10) ·
+likes ×2 (max 20) · lignes de résultats ×2 (max 20) · cavaliers rattachés ×4.
+
+Nouveau `classerChevauxParXp(chx)`, branché sur les **quatre** grilles :
+page **Cavalier**, page **Écurie**, page **Club** (chevaux du club) et
+**« Mes chevaux »**.
+
+⚠️ **UNE SEULE FONCTION POUR LES QUATRE.** Le même cheval doit sortir au même
+rang partout ; quatre copies du calcul auraient dérivé à la première retouche.
+⚠️ **LES CHAMPS SONT RELUS DANS LA FONCTION.** Les pages ne sélectionnent pas
+les mêmes colonnes — celle du club ne demande pas `histoire`. Sans cette
+relecture, un cheval aurait un score différent selon la page qui l'affiche.
+Requête séparée et gardée ; si elle tombe, on retombe sur les champs déjà
+chargés.
+⚠️ **CHAQUE REQUÊTE EST GARDÉE SÉPARÉMENT** (leçon du 30/08, l'affaire `robe`) :
+une table absente coûte des points, jamais la grille.
+⚠️ **ÉCHEC COMPLET = ORDRE D'AVANT**, jamais une liste vide.
+⚠️ **À SCORE ÉGAL, L'ORDRE D'ORIGINE EST GARDÉ** (`__rang0`) : sans ça deux
+chevaux vides s'échangeaient de place à chaque chargement.
+
+**L'ancien tri de « Mes chevaux » est supprimé.** Depuis le 28/08 il comptait
+les **photos d'albums seulement** — ni vidéos, ni résultats, ni cavaliers. Il
+faisait double emploi et donnait un ordre différent des autres pages.
+
+## Ce que Blandine va voir changer
+
+⚠️ **La grille du club montre les 8 mieux documentés, plus les 8 derniers
+créés.** Un cheval tout neuf, sans photo ni résultat, n'est plus en tête. C'est
+le but, mais c'est visible pour ses cavalières.
+⚠️ **Cinq requêtes de plus** au chargement de chaque page portant une grille de
+chevaux. Elles sont gardées et ne bloquent jamais l'affichage, mais le
+classement peut arriver une fraction de seconde après la grille.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai du classement, 11 cas, tous conformes** : le mieux fourni
+  devant, le cheval vide dernier, aucun cheval perdu, une liste sans colonnes
+  qui donne le **même** classement qu'une liste complète (la relecture marche),
+  albums indisponibles sans plantage, **tout indisponible → ordre d'origine**,
+  égalité qui garde l'ordre d'origine, un seul cheval, liste vide, liste
+  absente.
+- Marqueurs de lignée identiques (clip 1 · overscroll html 1 · verrou 4 ·
+  puits 4). Les deux `?v=` inchangés.
+
+**À l'écran : + les chevaux classés par XP sur 4 pages · − le titre
+« Chevaux du club » (doublon de la carte centrale).**
+
+---
+
+# 🟦 01/09/2026 (14 h) — LA CARTE CENTRALE DES CHEVAUX DU CLUB
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `69d01dfb696aa05aaae608b1aa6fd3c8` | carte « Les chevaux de l'écurie » au centre de la mosaïque |
+
+⚠️ Remplace `25380524…`. `hype-stories.js` (20bv) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qui change
+
+Blandine, maquette à l'appui : « une présentation similaire avec les encarts des
+chevaux autour et écrit *les chevaux de l'écurie* au milieu ».
+
+**Option A, son choix** entre les deux proposées : la carte occupe la **case du
+milieu** de la grille 3 × 3, elle ne se pose pas par-dessus.
+⚠️ **Aucun cheval n'est masqué ni rendu intapable** — c'était le défaut de
+l'option B (carte large façon maquette, un cheval dessous). La grille montre
+donc **8 chevaux au lieu de 9**, et la 5ᵉ case est la carte.
+
+Détails d'exécution :
+- La carte est insérée **à l'index 4** : en flux de grille, la 5ᵉ cellule tombe
+  exactement en ligne 2, colonne 2. Aucun positionnement absolu, rien à
+  recalculer si la largeur change.
+- ⚠️ **Même gabarit que les cartes chevaux** (rapport 4/5 + une ligne de nom
+  vide dessous) : sans ça la rangée du milieu serait plus courte et toute la
+  grille se décalerait.
+- Avec **moins de 5 chevaux**, la carte est simplement ajoutée à la suite — on
+  ne fabrique pas de cases vides pour la forcer au centre.
+- Le tap ouvre l'**Écurie Hype**, la même destination que le bouton « Voir les X
+  chevaux » juste en dessous. Ce bouton est conservé : il porte le compte réel,
+  la carte non.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai du placement, 8 cas, tous conformes** : 19 chevaux (carte en
+  ligne 2 colonne 2, 9 cellules, aucun doublon ni cheval masqué), 8, 5, 3, 1 et
+  0 cheval.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + la carte centrale · − un cheval dans la grille (9 → 8).**
+
+## ⚠️ Signalé, non fait
+
+Le titre **« CHEVAUX DU CLUB »** reste au-dessus de la grille, alors que la carte
+dit désormais la même chose. Je proposais de le retirer en gardant « + Ajouter »
+à sa place — **elle n'a pas tranché, je n'ai rien supprimé.** Une ligne le jour
+où elle le dit.
+
+---
+
 # 🟦 01/09/2026 (13 h 30) — L'OUTIL « APPARENCE DE L'ENCART » AMÉLIORÉ
 
 | Fichier | Où | md5 | Quoi |
