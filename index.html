@@ -23423,6 +23423,8 @@ function Router() {
                 ecran === "memoirescavalier" && React.createElement(EcranMemoiresCavalier, null),
                 ecran === "album-invite" && React.createElement(EcranAlbumInvite, null),
                 ecran === "guilde" && React.createElement(EcranGuilde, null),
+                /* 01/09 : « Performances en concours » — tous les resultats du club. */
+                ecran === "perf-concours" && React.createElement(EcranPerfConcours, null),
                 ecran === "gerer-ecurie" && React.createElement(EcranGererEcurie, null),
                 ecran === "moncompte" && React.createElement(EcranMonCompte, null),
                 ecran === "quoi-de-neuf" && React.createElement(EcranQuoiDeNeuf, null),
@@ -29067,6 +29069,105 @@ function PodiumClubsHype(props) {
     }, T("Voir le classement complet", "See full ranking", "Ver la clasificaci\u00f3n completa", "Vedi la classifica completa", "\u5168\u4f53\u30e9\u30f3\u30ad\u30f3\u30b0\u3092\u898b\u308b", "Vollst\u00e4ndige Rangliste") + " \u2192") : null);
 }
 
+/* ===================================================================
+   01/09 — « PERFORMANCES EN CONCOURS » : tous les resultats du club.
+   Decisions de Blandine, toutes prises avant d'ecrire une ligne :
+     · nom de la page : « Performances en concours » ;
+     · TRI PAR DATE a l'ouverture (les meilleurs resultats viendront
+       plus tard, dans une partie separee en haut) ;
+     · les resultats SAISIS A LA MAIN restent affiches, avec la plume ;
+     · les PREPARATOIRES restent affichees aussi.
+   ⚠️ AUCUN FILTRE A ECRIRE : « classes + prepas + saisies manuelles »
+   est exactement ce que fait deja `aMontrer` dans hype-resultats.js.
+   On passe donc les lignes telles quelles.
+   ⚠️ `rendre()` ATTEND DES LIGNES BRUTES de la table `resultats`, PAS
+   des lignes normalisees : il normalise lui-meme. Lui donner la sortie
+   de `normaliser` donnerait une page vide.
+   ⚠️ LA COLONNE `origine` EST INDISPENSABLE : sans elle, `normaliser`
+   la remplace par « main » et TOUS les resultats porteraient la plume
+   des saisies manuelles.
+   ⚠️ REQUETE SEPAREE ET GARDEE (lecon du 30/08, l'affaire `robe`) : le
+   chargeur de la page Club ne laisse que des groupes par epreuve, sans
+   ligne unitaire. Si elle echoue, la page le dit ; elle ne casse rien
+   d'autre.
+   ⚠️ MODE NON-PROPRIETAIRE : ni bouton d'ajout, ni import. Ce sont les
+   resultats des autres. */
+function EcranPerfConcours() {
+  var h = React.createElement;
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var setEcran = app.setEcran || function () { };
+  var tr = app.tr || function (o) { return o.fr; };
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif", TURQ = "#20D9F5";
+
+  var club = "";
+  try { club = String(window.__perfClub || "").trim(); } catch (eC) { }
+
+  var _et = React.useState("chargement"), etat = _et[0], setEtat = _et[1];
+  var hote = React.useRef(null);
+
+  React.useEffect(function () {
+    var vivant = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa || !club) { if (vivant) setEtat("vide"); return; }
+        /* Les membres du club : les DEUX colonnes, recherche tolerante — la
+           meme regle que la page Club, pour que les deux montrent le meme monde. */
+        var motif = (typeof motifEcurie === "function") ? motifEcurie(club) : ("%" + club + "%");
+        var mm = [];
+        try { var r1 = await supa.from("profiles").select("id").ilike("ecurie", motif).limit(300); if (r1 && r1.data) mm = mm.concat(r1.data); } catch (e1) { }
+        try { var r2 = await supa.from("profiles").select("id").ilike("ecurie2", motif).limit(300); if (r2 && r2.data) mm = mm.concat(r2.data); } catch (e2) { }
+        var vus = {}, ids = [];
+        mm.forEach(function (p) { if (p && p.id && !vus[p.id]) { vus[p.id] = true; ids.push(p.id); } });
+        if (!ids.length) { if (vivant) setEtat("vide"); return; }
+
+        var lignes = [];
+        try {
+          var rs = await supa.from("resultats")
+            .select("id, user_id, cheval_id, concours, epreuve, partants, date_epreuve, cavalier, place, classement, quart, origine, photo_url, media_url, visible, created_at")
+            .in("user_id", ids).limit(1200);
+          lignes = ((rs && rs.data) || []).filter(function (x) { return x && x.visible !== false; });
+        } catch (eRs) { if (vivant) setEtat("panne"); return; }
+
+        if (!vivant) return;
+        if (!lignes.length) { setEtat("vide"); return; }
+        setEtat("ok");
+        /* Le rendu doit venir APRES que le conteneur existe a l'ecran. */
+        setTimeout(function () {
+          try {
+            if (!vivant || !hote.current || !window.HYPE_RESULTATS) return;
+            /* ⚠️ `reinitialiser("date")` : la page ouvre TOUJOURS par date, sans
+               ecraser le tri choisi sur une fiche cheval (il n'est pas ecrit
+               dans le localStorage). */
+            if (window.HYPE_RESULTATS.reinitialiser) window.HYPE_RESULTATS.reinitialiser("date");
+            window.HYPE_RESULTATS.rendre(hote.current, { lignes: lignes });
+          } catch (eR) { }
+        }, 0);
+      } catch (e) { if (vivant) setEtat("panne"); }
+    })();
+    return function () { vivant = false; };
+  }, [club]);
+
+  var tete = h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 54px) 18px 10px", textAlign: "center" } },
+    h("button", { onClick: function () { setEcran("guilde"); }, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
+    h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TURQ, fontFamily: M } },
+      T("Performances", "Performances", "Resultados", "Prestazioni", "\u6210\u7e3e", "Leistungen")),
+    h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" } },
+      T("En concours", "In competition", "En concurso", "In concorso", "\u5927\u4f1a", "Im Turnier")),
+    club ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#8A929C", marginTop: 5 } }, club) : null);
+
+  function mot(txt) {
+    return h("div", { style: { padding: "60px 30px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#6B7580", fontStyle: "italic" } }, txt);
+  }
+
+  return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } },
+    tete,
+    etat === "chargement" ? mot(T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026")) : null,
+    etat === "vide" ? mot(T("Aucun r\u00e9sultat pour ce club pour l'instant.", "No results for this club yet.", "A\u00fan no hay resultados para este club.", "Nessun risultato per questo club.", "\u307e\u3060\u7d50\u679c\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Ergebnisse.")) : null,
+    etat === "panne" ? mot(T("Les r\u00e9sultats n'ont pas pu \u00eatre charg\u00e9s. R\u00e9essaie plus tard.", "Results could not be loaded. Try again later.", "No se pudieron cargar los resultados.", "Impossibile caricare i risultati.", "\u7d50\u679c\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Ergebnisse konnten nicht geladen werden.")) : null,
+    h("div", { ref: hote, style: { display: etat === "ok" ? "block" : "none" } }));
+}
+
 function EcranGuilde() {
   var h = React.createElement;
   var ctx = useApp();
@@ -29787,8 +29888,11 @@ function EcranGuilde() {
         h("div", { style: { padding: "34px 16px 0" } }, h(EncartAlbumEcurie, null)),
     h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
-        h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Palmar\u00e8s du club", "Club record", "Palmar\u00e9s del club", "Palmar\u00e8s del club", "\u30af\u30e9\u30d6\u306e\u6226\u7e3e")),
-        (resultatsClub && resultatsClub.length) ? h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 700, color: TURQL } }, resultatsClub.length) : null),
+        /* 01/09 (decision de Blandine) : LE TITRE OUVRE LA PAGE, et un lien
+           « Voir tout » a cote fait la meme chose. Les deux mènent au meme
+           endroit — elle voulait les deux, pas l'un ou l'autre. */
+        h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc) { } setEcran("perf-concours"); }, style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase", cursor: "pointer" } }, T("Palmar\u00e8s du club", "Club record", "Palmar\u00e9s del club", "Palmar\u00e8s del club", "\u30af\u30e9\u30d6\u306e\u6226\u7e3e")),
+        h("div", { role: "button", onClick: function () { try { window.__perfClub = monClub; } catch (ePc2) { } setEcran("perf-concours"); }, style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: TURQL, cursor: "pointer", whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle") + " \u2192")),
       /* 30/08 — LE RAIL AUX COUPES, au-dessus du fil. Rempli AUTOMATIQUEMENT par les
          regles de Blandine (titres > niveau > partants > rang) ; un resultat epingle
          passe devant. Podium seulement : un rail de coupes ne montre pas des 12es. */

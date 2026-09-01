@@ -10,6 +10,173 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 01/09/2026 (21 h 40) — « PERFORMANCES EN CONCOURS » EST ÉCRITE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c35932a4f8c982e6aeea02c5ef90df98` | nouvel écran `perf-concours` + son ouverture |
+
+⚠️ Remplace `f2282679…`. `hype-resultats.js` (v2, `11863b7c…`) est **requis** —
+la page ne fonctionne pas sans lui. `hype-stories.js` (20bw) et
+`hype-podium-clubs.png` inchangés.
+
+## La page
+
+Le chantier ouvert depuis ce matin est livré. Toutes les décisions de Blandine
+sont appliquées telles quelles :
+
+- nom : **« Performances en concours »** ;
+- **tri par date à l'ouverture** (les meilleurs résultats viendront plus tard,
+  dans une partie séparée en haut) ;
+- les **saisies manuelles** restent affichées, avec la plume ;
+- les **préparatoires** restent affichées aussi.
+
+⚠️ **AUCUN FILTRE À ÉCRIRE.** « Classés + prépas + saisies manuelles » est
+exactement ce que fait déjà `aMontrer` dans `hype-resultats.js`. Les lignes sont
+passées telles quelles. Ce qui reste dehors : les **importés non classés**.
+
+⚠️ **`rendre()` attend des lignes BRUTES**, pas des lignes normalisées : il
+normalise lui-même. Lui donner la sortie de `normaliser` donne une page vide —
+c'est le piège que la passation d'hier décrivait à l'envers, et il est
+maintenant couvert par un cas de test.
+
+⚠️ **LA COLONNE `origine` EST INDISPENSABLE** dans le `select`. Sans elle,
+`normaliser` la remplace par « main » et **tous** les résultats porteraient la
+plume des saisies manuelles. Vérifié par un test dédié.
+
+⚠️ **Requête séparée et gardée** : le chargeur de la page Club ne laisse que des
+groupes par épreuve, sans ligne unitaire. Si elle échoue, la page le dit ; elle
+ne casse rien d'autre. Trois états distincts : chargement, vide, panne.
+
+⚠️ **`reinitialiser("date")`** ouvre toujours par date **sans écrire dans le
+`localStorage`** : le tri choisi sur une fiche cheval n'est pas écrasé.
+
+⚠️ **Mode non-propriétaire** : ni bouton d'ajout, ni import. Ce sont les
+résultats des autres.
+
+⚠️ **Les membres sont cherchés sur `ecurie` ET `ecurie2`**, en recherche
+tolérante — la même règle que la page Club, pour que les deux montrent le même
+monde.
+
+## L'ouverture
+
+Le **titre « Palmarès du club »** est devenu cliquable **et** un lien
+« Voir tout → » a été posé à côté. Les deux mènent à la page — Blandine voulait
+les deux, pas l'un ou l'autre. Le compteur qui occupait cette place est
+remplacé par le lien.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- **Banc d'essai de la page, 11 cas, tous conformes** : page non vide, classé
+  présent, **prépa présente**, saisie manuelle présente **et porteuse de la
+  plume**, **non classé importé écarté**, tri par date actif à l'ouverture,
+  aucun bouton d'import ni d'ajout, **le piège des lignes normalisées** (page
+  vide) et **la nécessité de `origine`** (plus de plumes sans elle qu'avec).
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + la page « Performances en concours » · + « Voir tout » à côté du
+palmarès · − le compteur qui occupait cette place.**
+
+## 🟠 Reste ouvert
+
+- La **partie « meilleurs résultats » en haut de page** — décidée pour plus
+  tard, pas commencée.
+- La **page dédiée au classement des clubs**.
+- Le **bouton pour changer l'écurie d'un cheval déjà créé**.
+- Les deux **vérifications en base** (`ecurie2` réellement enregistrée chez les
+  autres cavalières ; `classement_ecuries` regarde-t-il `ecurie2`).
+
+---
+
+# 🟦 01/09/2026 (21 h 20) — LA CARTE DU CLUB SOUS LE PODIUM EST RETIRÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f22826798d37ab8578ee70949ebd6dd3` | suppression de la carte pleine largeur redondante |
+
+⚠️ Remplace `6d7a199f…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qui change
+
+Blandine, capture annotée à l'appui : « on peut retirer la première place ».
+
+La carte pleine largeur sous « Voir le classement complet » — *1 · Écurie
+Feinn · Niv. 8 · 14 membres · 6291 XP* — répétait exactement ce que le podium
+montre déjà au-dessus. Elle est supprimée.
+
+Elle avait été **conservée volontairement** lors de la pose du podium (elle
+n'était pas dans la demande d'alors). Blandine tranche : elle part.
+
+⚠️ Le rang, le niveau et le nombre de membres restent lisibles ailleurs sur la
+page (en-tête du club, encart cavaliers). Rien n'est perdu.
+⚠️ `monRang` et `maG.xp` restent utilisés ailleurs — vérifié, aucune variable
+orpheline.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : − la carte du club sous le podium · + rien.**
+
+---
+
+# 🟦 01/09/2026 (20 h) — L'ÉCURIE HYPE CLASSÉE PAR XP
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `6d7a199f1911b9220ed13660903fd351` | 5ᵉ grille classée par XP (page Écurie Hype) |
+
+⚠️ Remplace `07a674f4…`. `hype-podium-clubs.png` (`56b39132…`) reste à pousser
+s'il ne l'a pas été. `hype-stories.js` (20bw) et `hype-resultats.js` (v2)
+inchangés.
+
+## Ce qui change
+
+Blandine : « pareil sur cette page-là, trie les chevaux en mettant ceux avec le
+plus d'XP en premier ». C'est la **cinquième** grille à recevoir
+`classerChevauxParXp`, après Cavalier, Écurie, Club et « Mes chevaux ».
+
+⚠️ **AFFICHER D'ABORD, CLASSER ENSUITE**, comme les quatre autres (leçon de
+15 h 45) : la liste est posée tout de suite, puis reposée classée. Sans ça, la
+page resterait vide pendant les cinq requêtes du classement.
+⚠️ **On ne repose que si le classement rend quelque chose** : un échec ne doit
+pas vider une page déjà remplie.
+
+## Le doublon de Cooltax — PAS le même défaut que Yum
+
+Sur les captures du 01/09, une carte s'appelle « **Cooltax** » et l'autre
+« **Cooltax de Virchel z** ». Deux noms différents = **deux lignes distinctes**
+dans `chevaux`. Ce n'est donc ni un défaut d'affichage ni un lien parasite : un
+vrai doublon de saisie, à traiter comme Vallieres.
+
+⚠️ **Ne pas le « corriger » par du dédoublonnage sur le nom** : deux cavaliers
+peuvent légitimement avoir deux chevaux au nom proche. La requête de contrôle :
+
+```sql
+select c.id, c.nom, c.user_id, c.created_at, c.club,
+       (select count(*) from resultats r where r.cheval_id = c.id) as resultats
+from chevaux c
+where c.nom ilike '%cooltax%' and c.supprime_le is null
+order by c.created_at;
+```
+
+Garder la ligne qui porte les résultats, rapatrier ce qui manque, supprimer la
+coquille.
+
+## Contrôles
+
+- `node --check` sur les **18 blocs inline** : 0 erreur.
+- Marqueurs de lignée identiques. Les deux `?v=` inchangés.
+
+**À l'écran : + les chevaux les mieux fournis en tête sur l'Écurie Hype ·
+− rien.**
+
+---
+
 # 🟦 01/09/2026 (19 h 25) — LE CHOIX DE L'ÉCURIE DEVIENT OBLIGATOIRE
 
 | Fichier | Où | md5 | Quoi |
