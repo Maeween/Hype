@@ -31234,6 +31234,24 @@ function EcranEcurie() {
   /* --- Cavaliers de l'écurie : membres réels + invités --- */
   var _ecCx = React.useState(null), choisisEc = _ecCx[0], setChoisisEc = _ecCx[1];
   var _ecMb = React.useState(null), membresEc = _ecMb[0], setMembresEc = _ecMb[1];
+  /* 20bt (01/09) — LE TRI XP DES CAVALIERS, ENFIN BRANCHE.
+     La fonction `hype_ordre_cavaliers_xp(ids uuid[])` etait en base depuis
+     plusieurs jours, prete, et n'etait appelee NULLE PART : verifie le 01/09,
+     zero occurrence dans index.html comme dans hype-stories.js. L'encart
+     affichait donc l'ordre d'arrivee de la requete. Ce n'etait pas une panne,
+     c'etait un branchement jamais fait -- Blandine : « le tri des cavaliers
+     n'a pas fonctionne ».
+     Signature relevee en base le 01/09 :
+       entrees : ids uuid[]
+       sortie  : TABLE(user_id uuid, rang integer)
+     ⚠️ LE TRI NE FILTRE RIEN. Un cavalier absent de la reponse (jamais
+     d'XP, fonction indisponible) garde sa place a la SUITE de ceux qui sont
+     classes, il ne disparait pas. Un encart qui perdrait des cavaliers en
+     silence serait pire que pas de tri du tout.
+     ⚠️ ECHEC = ORDRE D'AVANT. Aucun ecran vide, aucun message : si l'appel
+     tombe, `ordreXpEc` reste null et la liste s'affiche exactement comme
+     aujourd'hui. */
+  var _ecXp = React.useState(null), ordreXpEc = _ecXp[0], setOrdreXpEc = _ecXp[1];
   var _ecSo = React.useState(false), selCavEc = _ecSo[0], setSelCavEc = _ecSo[1];
   var _ecRq = React.useState(""), rechQEc = _ecRq[0], setRechQEc = _ecRq[1];
   var _ecRr = React.useState(null), rechResEc = _ecRr[0], setRechResEc = _ecRr[1];
@@ -31252,6 +31270,43 @@ function EcranEcurie() {
       try { var uMoi = await utilisateurActuel(); var rCh = await chevauxDeLEcurie(monClubEc, uMoi ? uMoi.id : null); setChevauxMembres((rCh && rCh.data) || []); } catch (eCh) { setChevauxMembres([]); }
     } else setMembresEc([]); } catch (e2) { setMembresEc([]); }
   })(); }, [monClubEc, (ctx.profil && ctx.profil.id) || ""]);
+
+  /* 20bt — LE CLASSEMENT XP EST DEMANDE APRES les membres, jamais avant :
+     la fonction prend la liste des identifiants a classer, il faut donc
+     d'abord savoir qui est affiche. Les cavaliers ajoutes a la main
+     (`choisisEc`) sont classes avec les autres — ils sont dans l'encart, ils
+     doivent etre dans l'ordre.
+     ⚠️ AUCUNE REQUETE QUAND IL N'Y A RIEN A CLASSER : moins de deux
+     cavaliers, ou pas de session, on ne demande rien.
+     ⚠️ LE GARDE `vivantXp` : l'ecran Ecurie peut etre quitte pendant la
+     requete. Sans lui, `setOrdreXpEc` s'executerait sur un composant demonte
+     — l'avertissement React devient une fuite quand on change d'ecran vite. */
+  React.useEffect(function () {
+    var vivantXp = true;
+    (async function () {
+      try {
+        var tous = (membresEc || []).concat(choisisEc || []);
+        var vus = {}, ids = [];
+        tous.forEach(function (p) {
+          if (p && p.id && !vus[p.id]) { vus[p.id] = true; ids.push(String(p.id)); }
+        });
+        if (ids.length < 2 || typeof supa === "undefined" || !supa) { if (vivantXp) setOrdreXpEc(null); return; }
+        var r = await supa.rpc("hype_ordre_cavaliers_xp", { ids: ids });
+        if (!vivantXp) return;
+        if (r && r.error) { setOrdreXpEc(null); return; }
+        var carte = {};
+        (r && r.data ? r.data : []).forEach(function (l) {
+          if (l && l.user_id != null && l.rang != null) carte[String(l.user_id)] = Number(l.rang);
+        });
+        setOrdreXpEc(Object.keys(carte).length ? carte : null);
+      } catch (eXp) { if (vivantXp) setOrdreXpEc(null); }
+    })();
+    return function () { vivantXp = false; };
+  }, [
+    (membresEc || []).map(function (p) { return p && p.id; }).join(","),
+    (choisisEc || []).map(function (p) { return p && p.id; }).join(",")
+  ]);
+
   function ouvrirSelecteurCavEc() {
     setSelCavEc(true);
     if (suggestionsEc === null) {
@@ -31445,6 +31500,19 @@ function EcranEcurie() {
           var idsR = {}; (membresEc || []).forEach(function (p) { idsR[p.id] = true; });
           var chAff = (choisisEc || []).filter(function (p) { return p && !idsR[p.id]; });
           var reels = (membresEc || []).concat(chAff.map(function (p) { return Object.assign({}, p, { __choisi: true }); }));
+          /* 20bt : le classement XP, quand il est arrive. `slice()` d'abord —
+             `sort` trie SUR PLACE, et trier `reels` reviendrait a modifier un
+             tableau construit a partir de l'etat a chaque rendu. */
+          if (ordreXpEc) {
+            reels = reels.slice().sort(function (a, b) {
+              var ra = ordreXpEc[a && a.id], rb = ordreXpEc[b && b.id];
+              /* Non classe = a la fin, dans son ordre d'origine. */
+              if (ra == null && rb == null) return 0;
+              if (ra == null) return 1;
+              if (rb == null) return -1;
+              return ra - rb;
+            });
+          }
           var figsM = [["Camille D.", CELEB_F, "CSO", 7], ["Mathis B.", CELEB_M, "Dressage", 6], ["In\u00e8s L.", PHOTO_CAVALIERE, "CSO", 5]];
           var figsAff = figsM.slice(0, Math.max(0, 3 - reels.length)).map(function (cvm) { return { nom: cvm[0], photo: cvm[1], sousTitre: cvm[2], galop: "Galop " + cvm[3] }; });
           return h("div", { style: { margin: "30px 0 0" } }, h(EncartCavaliersSpectral, {
