@@ -23703,6 +23703,7 @@ function Router() {
                 ecran === "guilde" && React.createElement(EcranGuilde, null),
                 /* 01/09 : « Performances en concours » — tous les resultats du club. */
                 ecran === "perf-concours" && React.createElement(EcranPerfConcours, null),
+                ecran === "agenda-club" && React.createElement(EcranAgendaClub, null),
                 ecran === "gerer-ecurie" && React.createElement(EcranGererEcurie, null),
                 ecran === "moncompte" && React.createElement(EcranMonCompte, null),
                 ecran === "quoi-de-neuf" && React.createElement(EcranQuoiDeNeuf, null),
@@ -28918,14 +28919,24 @@ function AgendaClubHype(props) {
   var stFiche = React.useState(null); var fiche = stFiche[0], setFiche = stFiche[1];
   var stUpload = React.useState(false); var uploadEnCours = stUpload[0], setUploadEnCours = stUpload[1];
   var refImgAgc = React.useRef(null);
+  /* 02/09 : retour depuis la page agenda avec une demande d ajout. Lu a chaque
+     rendu, comme window.__ouvrirPalmares — la page Club peut deja etre montee. */
+  React.useEffect(function () {
+    try {
+      if (typeof window !== "undefined" && window.__agendaOuvrirAjout) {
+        window.__agendaOuvrirAjout = false;
+        setModal(true);
+      }
+    } catch (eOa) { }
+  });
   /* 02/09 — carrousel (brief Blandine, modele n°6). ⚠️ AUCUNE donnee nouvelle :
      `club_agenda` porte id, type, titre, date_jour, heure, lieu, description,
      image_url — rien sur les cavaliers ni les chevaux, les avatars de la
      reference ne sont donc PAS reproduits. La liste arrive deja filtree sur les
      dates a venir et triee par date croissante (chargerAgendaClub). */
+  var ctxAgc = (typeof useApp === "function") ? useApp() : {};
   var refCar = React.useRef(null);
   var stActif = React.useState(0); var actif = stActif[0], setActif = stActif[1];
-  var stTout = React.useState(false); var toutVu = stTout[0], setToutVu = stTout[1];
   var refGlisse = React.useRef(0);
   function auDefilement() {
     try {
@@ -29098,23 +29109,20 @@ function AgendaClubHype(props) {
     })) : null,
     /* 02/09 : « Voir tout l agenda » n ouvre PAS un ecran qui n existe pas — il
        deroule la liste complete deja chargee sous le carrousel. */
-    (evs.length && toutVu) ? h("div", { style: { padding: "0 4px 12px" } }, evs.map(function (ev, iL) {
-      var meta = META[ev.type] || META.stage; var dm = jourMois(ev.date_jour);
-      return h("div", { key: "l" + iL, role: "button", onClick: function () { setFiche(ev); },
-        style: { display: "flex", alignItems: "baseline", gap: 12, padding: "11px 4px", cursor: "pointer",
-                 borderTop: "1px solid rgba(255,255,255,0.06)", fontFamily: "'Montserrat',sans-serif" } },
-        h("div", { style: { flex: "0 0 auto", width: 46, fontFamily: "'Cinzel',serif", fontSize: 15, color: "#D9C7A3" } }, dm.j + " " + dm.m),
-        h("div", { style: { flex: 1, minWidth: 0 } },
-          h("div", { style: { fontSize: 13, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ev.titre),
-          h("div", { style: { fontSize: 10.5, letterSpacing: 1.6, color: "#9AA3AB", textTransform: "uppercase", marginTop: 2 } }, meta.label)),
-        ev.heure ? h("div", { style: { fontSize: 11.5, color: "rgba(244,247,250,0.45)" } }, ev.heure) : null);
-    })) : null,
+    /* 02/09 : le depliage sous le carrousel est RETIRE — il remplacait la page
+       agenda qui n existait pas encore. « Voir tout l agenda » ouvre desormais
+       l ecran « agenda-club ». */
     (evs.length || estProprio) ? h("div", { className: "agc-act" },
       estProprio ? h("button", { className: "agc-btn", onClick: function () { setModal(true); } },
         "\uFF0B " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")) : null,
-      (evs.length > 1) ? h("button", { className: "agc-btn", onClick: function () { setToutVu(!toutVu); } },
-        (toutVu ? T("Replier", "Collapse", "Plegar", "Chiudi", "\u9589\u3058\u308b", "Einklappen")
-                : T("Voir tout l'agenda", "See the whole agenda", "Ver toda la agenda", "Vedi tutta l'agenda", "\u3059\u3079\u3066\u898b\u308b", "Ganzen Kalender")) + " \u2192") : null) : null,
+      /* 02/09 : ouvre la PAGE agenda (ecran « agenda-club »), au lieu de derouler
+         la liste sous le carrousel — ce depliage n etait qu un pis-aller faute de
+         page dediee. Le club vise passe par window.__agendaClub. */
+      (evs.length > 1) ? h("button", { className: "agc-btn", onClick: function () {
+          try { window.__agendaClub = props.nomClub || ""; } catch (eAg) { }
+          if (ctxAgc && ctxAgc.setEcran) ctxAgc.setEcran("agenda-club");
+        } },
+        T("Voir tout l'agenda", "See the whole agenda", "Ver toda la agenda", "Vedi tutta l'agenda", "\u3059\u3079\u3066\u898b\u308b", "Ganzen Kalender") + " \u2192") : null) : null,
     modalEl),
    fiche ? h(FicheEvenementClub, { ev: fiche, onClose: function () { setFiche(null); } }) : null);
 }
@@ -29414,6 +29422,150 @@ function PodiumClubsHype(props) {
    d'autre.
    ⚠️ MODE NON-PROPRIETAIRE : ni bouton d'ajout, ni import. Ce sont les
    resultats des autres. */
+
+/* ─────────────────────────────────────────────────────────────────
+   ECRAN AGENDA DU CLUB — 02/09/2026 (Blandine)
+   La page que « Voir tout l'agenda » ouvre depuis le carrousel de la
+   page Club. Elle montre l'agenda COMPLET, groupe par mois.
+   ⚠️ MEMES DONNEES, MEME LOGIQUE : `chargerAgendaClub(clef)` — deja
+   filtree sur les dates a venir et triee par date croissante. Aucune
+   requete nouvelle, aucun champ invente.
+   ⚠️ L en-tete est calque sur EcranPerfConcours (page Performances du
+   club) : il n existe pas de barre d onglets cote club, contrairement
+   a la fiche cheval.
+   ⚠️ Le club vise arrive par `window.__agendaClub`, sur le modele de
+   `window.__perfClub`. Sans lui, on retombe sur l ecurie du profil. */
+function EcranAgendaClub() {
+  var h = React.createElement;
+  var app = (typeof useApp === "function") ? useApp() : {};
+  var setEcran = app.setEcran || function () { };
+  var lg = app.langue || "fr";
+  var profil = (app.profil || {});
+  var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
+  var OR = "#D9C7A3";
+
+  var club = "";
+  try { club = String(window.__agendaClub || "").trim(); } catch (eC) { }
+  if (!club) club = String((profil.club || profil.ecurie || "")).trim();
+
+  var _ev = React.useState(null); var evs = _ev[0], setEvs = _ev[1];
+  var _er = React.useState(""); var err = _er[0], setErr = _er[1];
+
+  function recharger() {
+    (async function () {
+      try {
+        var clef = (typeof clefClubG === "function") ? clefClubG(club) : String(club || "").toLowerCase().trim();
+        if (!clef) { setEvs([]); return; }
+        var r = await chargerAgendaClub(clef);
+        /* ⚠️ l echec se DIT, il ne s avale pas (lecon du .catch() vide du 01/09) */
+        if (r && r.error) { setErr(String(r.error.message || r.error)); setEvs([]); return; }
+        setErr("");
+        setEvs((r && r.data) || []);
+      } catch (eR) { setErr(String(eR)); setEvs([]); }
+    })();
+  }
+  React.useEffect(function () { recharger(); }, [club]);
+
+  var estProprio = false;
+  try { estProprio = (typeof clubRevendiquePar === "function") && clubRevendiquePar(club); } catch (eP) { }
+
+  var META2 = {
+    stage: { emoji: "\uD83C\uDF93", label: T("Stage", "Clinic", "Cursillo", "Stage", "\u8B1B\u7FD2", "Lehrgang") },
+    concours: { emoji: "\uD83C\uDFC6", label: T("Concours", "Show", "Concurso", "Concorso", "\u7AF6\u6280\u4F1A", "Turnier") },
+    sortie: { emoji: "\uD83C\uDF3F", label: T("Sortie", "Outing", "Salida", "Uscita", "\u5916\u51FA", "Ausflug") }
+  };
+  var MOIS2 = ({
+    fr: ["janvier", "f\u00e9vrier", "mars", "avril", "mai", "juin", "juillet", "ao\u00fbt", "septembre", "octobre", "novembre", "d\u00e9cembre"],
+    en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+    es: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+    it: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"]
+  })[lg] || ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  var JOURS2 = ({
+    fr: ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"],
+    en: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    es: ["domingo", "lunes", "martes", "mi\u00e9rcoles", "jueves", "viernes", "s\u00e1bado"],
+    it: ["domenica", "luned\u00ec", "marted\u00ec", "mercoled\u00ec", "gioved\u00ec", "venerd\u00ec", "sabato"]
+  })[lg] || null;
+
+  function dateDe(iso) { try { return new Date(String(iso) + "T00:00:00"); } catch (eD) { return null; } }
+
+  var tete = h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 54px) 18px 10px", textAlign: "center" } },
+    h("button", {
+      onClick: function () { setEcran("guilde"); },
+      "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"),
+      style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", color: "#EDF2F5", fontSize: 17, cursor: "pointer" }
+    }, "\u2039"),
+    h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: OR, fontFamily: M } },
+      T("L'agenda du club", "The club's calendar", "La agenda del club", "L'agenda del club", "\u30af\u30e9\u30d6\u306e\u4e88\u5b9a", "Der Vereinskalender")),
+    h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" } },
+      T("Tous les rendez-vous", "All events", "Todas las citas", "Tutti gli eventi", "\u3059\u3079\u3066\u306e\u4e88\u5b9a", "Alle Termine")),
+    club ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#8A929C", marginTop: 5 } }, club) : null);
+
+  function mot2(txt) {
+    return h("div", { style: { padding: "60px 30px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#6B7580", fontStyle: "italic" } }, txt);
+  }
+
+  var corps;
+  if (err) {
+    corps = h("div", { style: { margin: "20px 16px", padding: "13px 15px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5 } },
+      T("L'agenda n'a pas pu \u00eatre charg\u00e9 : ", "The calendar could not load: ", "No se pudo cargar: ", "Impossibile caricare: ", "\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Nicht geladen: ") + err);
+  } else if (evs === null) {
+    corps = mot2("\u2026");
+  } else if (!evs.length) {
+    corps = mot2(T("Rien de pr\u00e9vu pour le moment.", "Nothing planned yet.", "Nada previsto por ahora.", "Niente in programma.", "\u4e88\u5b9a\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Nichts geplant."));
+  } else {
+    /* groupement par mois — la liste arrive deja triee par date croissante */
+    var groupes = []; var vus = {};
+    evs.forEach(function (ev) {
+      var d = dateDe(ev.date_jour); if (!d || isNaN(d.getTime())) return;
+      var cle = d.getFullYear() + "-" + d.getMonth();
+      if (!vus[cle]) { vus[cle] = { cle: cle, an: d.getFullYear(), mois: d.getMonth(), lignes: [] }; groupes.push(vus[cle]); }
+      vus[cle].lignes.push(ev);
+    });
+    corps = h("div", { style: { padding: "4px 16px 30px" } },
+      groupes.map(function (g) {
+        return h("div", { key: g.cle, style: { marginBottom: 26 } },
+          h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px" } },
+            h("div", { style: { fontFamily: C, fontSize: 15, fontWeight: 700, color: OR, textTransform: "capitalize" } },
+              MOIS2[g.mois] + " " + g.an),
+            h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.35), transparent)" } })),
+          g.lignes.map(function (ev) {
+            var meta = META2[ev.type] || META2.stage;
+            var d = dateDe(ev.date_jour);
+            var jourTxt = (d && JOURS2) ? JOURS2[d.getDay()] : "";
+            var secondaire = (ev.lieu && String(ev.lieu).trim()) || (ev.description && String(ev.description).trim()) || "";
+            return h("div", {
+              key: ev.id, role: "button",
+              onClick: function () { try { window.__agendaFiche = ev.id; } catch (eF) { } setEcran("guilde"); },
+              style: { display: "flex", gap: 13, padding: "12px 2px", borderTop: "1px solid rgba(255,255,255,0.06)", cursor: "pointer", alignItems: "flex-start" }
+            },
+              h("div", { style: { flex: "0 0 46px", textAlign: "center" } },
+                h("div", { style: { fontFamily: C, fontSize: 21, fontWeight: 700, color: "#F4F7FA", lineHeight: 1 } }, d ? d.getDate() : "\u2014"),
+                jourTxt ? h("div", { style: { fontSize: 8.5, letterSpacing: 1.1, color: "#7A838D", textTransform: "uppercase", marginTop: 3 } }, jourTxt.slice(0, 3)) : null),
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { fontSize: 9.5, letterSpacing: 2, fontWeight: 700, color: OR, textTransform: "uppercase" } }, meta.label),
+                h("div", { style: { fontFamily: C, fontSize: 16, color: "#F4F7FA", marginTop: 2, lineHeight: 1.25 } }, ev.titre || ""),
+                secondaire ? h("div", { style: { fontSize: 11.5, color: "#8A929C", marginTop: 3, fontFamily: M } }, secondaire) : null),
+              ev.heure ? h("div", { style: { flex: "0 0 auto", fontSize: 11.5, color: "rgba(244,247,250,0.45)", fontFamily: M, paddingTop: 2 } }, ev.heure) : null);
+          }));
+      }),
+      h("div", { style: { textAlign: "center", fontSize: 11, color: "#5B646E", fontFamily: M, marginTop: 6 } },
+        evs.length + " " + T("rendez-vous", "events", "citas", "eventi", "\u4ef6", "Termine")));
+  }
+
+  return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: "calc(env(safe-area-inset-bottom) + 110px)" } },
+    tete,
+    corps,
+    /* ⚠️ L ajout renvoie sur la page Club, ou vit la modale de creation :
+       on ne duplique PAS le formulaire, il n aurait pas pu rester en phase. */
+    estProprio ? h("div", { style: { padding: "0 16px" } },
+      h("div", {
+        role: "button",
+        onClick: function () { try { window.__agendaOuvrirAjout = true; } catch (eA) { } setEcran("guilde"); },
+        style: { textAlign: "center", padding: "12px 8px", borderRadius: 13, border: "1px solid rgba(217,199,163,0.30)", color: OR, fontSize: 11, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", cursor: "pointer", fontFamily: M }
+      }, "\uFF0B " + T("Ajouter un rendez-vous", "Add an event", "A\u00f1adir una cita", "Aggiungi un evento", "\u4e88\u5b9a\u3092\u8ffd\u52a0", "Termin hinzuf\u00fcgen"))) : null);
+}
+
 function EcranPerfConcours() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -30436,6 +30588,19 @@ function quotaGratuit(userId) {
 }
 
 function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche }) {
+  /* 02/09 : le choix de l ecurie, absent jusqu ici de cette modale — seul
+     « Gerer mon ecurie » le proposait. ⚠️ N apparait que si le cavalier a
+     PLUSIEURS ecuries ; avec une seule, la question n a pas de sens et le
+     cheval reste sans club, donc visible partout, comme avant. */
+  var _ccr = React.useState([]); var clubsCr = _ccr[0], setClubsCr = _ccr[1];
+  var _cse = React.useState(""); var clubCr = _cse[0], setClubCr = _cse[1];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try { if (typeof mesClubs === "function") { var l = await mesClubs(); if (vif) setClubsCr(l || []); } } catch (eCc) { }
+    })();
+    return function () { vif = false; };
+  }, []);
   var h = React.createElement;
   var _n = React.useState(""), nom = _n[0], setNom = _n[1];
   var _b = React.useState(false), busy = _b[0], setBusy = _b[1];
@@ -30487,7 +30652,10 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
         var rq = await mesChevaux();
         if (rq && rq.data && rq.data.length >= quotaGratuit(profilM.id)) { setBusy(false); allerPremium(); return; }
       }
-      var r = await ajouterCheval({ nom: n });
+      /* 02/09 : l ecurie est demandee A LA CREATION des qu il y a plusieurs clubs.
+         Sans ca, le cheval naissait sans club et n apparaissait nulle part comme
+         appartenant a une ecurie — ou pire, la fiche annoncait la mauvaise. */
+      var r = await ajouterCheval({ nom: n, club: (clubsCr.length > 1 ? (clubCr || null) : null) });
       if (r && r.error) { setBusy(false); setErr(typeof r.error === "string" ? r.error : (r.error.message || String(r.error))); return; }
       var idNv = r && r.data && r.data.id;
       setBusy(false);
@@ -30500,6 +30668,23 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
       h("div", { style: { marginTop: 9, fontFamily: "'Cinzel',Georgia,serif", fontSize: 20, fontWeight: 700, letterSpacing: "1.5px", color: "#F4FEFF", textShadow: "0 0 24px rgba(32,217,245,0.35)" } }, tr({ fr: "UN NOUVEAU CHEVAL", en: "A NEW HORSE", es: "UN NUEVO CABALLO", it: "UN NUOVO CAVALLO", ja: "\u65b0\u3057\u3044\u99ac", de: "EIN NEUES PFERD" })),
       h("p", { style: { margin: "10px 0 18px", fontSize: 12.5, lineHeight: 1.55, color: "rgba(234,241,244,0.68)", fontFamily: "'Montserrat',sans-serif" } }, tr({ fr: "Donne-lui son nom \u2014 sa fiche t\u2019attend, pr\u00eate \u00e0 recevoir sa photo et son histoire.", en: "Give it a name \u2014 its page awaits, ready for its photo and story.", es: "Dale su nombre \u2014 su ficha te espera, lista para su foto y su historia.", it: "Dagli il suo nome \u2014 la sua scheda ti aspetta, pronta per foto e storia.", ja: "\u540d\u524d\u3092\u4ed8\u3051\u3066\u304f\u3060\u3055\u3044 \u2014 \u5c02\u7528\u30da\u30fc\u30b8\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002", de: "Gib ihm seinen Namen \u2013 seine Seite wartet schon, bereit f\u00fcr sein Foto und seine Geschichte." })),
       h("input", { value: nom, onChange: function (e) { setNom(e.target.value); }, onKeyDown: function (e) { if (e.key === "Enter") creer(); }, placeholder: tr({ fr: "Son nom\u2026", en: "Its name\u2026", es: "Su nombre\u2026", it: "Il suo nome\u2026", ja: "\u540d\u524d\u2026", de: "Sein Name\u2026" }), autoFocus: true, style: { width: "100%", boxSizing: "border-box", padding: "13px 16px", borderRadius: 14, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(32,217,245,0.4)", color: "#F4FEFF", fontSize: 16, fontFamily: "'Cinzel',Georgia,serif", letterSpacing: "0.5px", textAlign: "center", outline: "none" } }),
+      /* 02/09 — L ECURIE, DEMANDEE A LA CREATION. ⚠️ Seulement si le cavalier a
+         plusieurs ecuries. « Aucune » reste possible : le cheval est alors visible
+         partout, comme les chevaux crees avant l existence de la colonne. */
+      (clubsCr.length > 1) ? h("div", { style: { marginTop: 14, textAlign: "left" } },
+        h("div", { style: { fontSize: 10.5, letterSpacing: 1.8, color: "#8A929C", textTransform: "uppercase", marginBottom: 7, fontFamily: "'Montserrat',sans-serif" } },
+          T("Dans quelle \u00e9curie ?", "In which stable?", "\u00bfEn qu\u00e9 cuadra?", "In quale scuderia?", "\u3069\u306e\u99ac\u5c4b\uff1f", "In welchem Stall?")),
+        h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } },
+          clubsCr.concat([""]).map(function (cl) {
+            var onCl = (String(clubCr || "") === cl);
+            return h("div", { key: "cr" + (cl || "__aucune__"), role: "button", onClick: function () { setClubCr(cl); },
+              style: { padding: "7px 13px", borderRadius: 999, cursor: "pointer",
+                border: "1px solid " + (onCl ? "rgba(32,217,245,0.7)" : "rgba(255,255,255,0.14)"),
+                background: onCl ? "rgba(32,217,245,0.12)" : "rgba(255,255,255,0.03)",
+                color: onCl ? "#7FEAF2" : "rgba(237,242,245,0.7)",
+                fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+              cl || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine"));
+          }))) : null,
       doublonEc ? h("div", { style: { marginTop: 12, padding: "12px 14px", borderRadius: 14, background: "rgba(255,193,7,0.10)", border: "1px solid rgba(255,193,7,0.4)", textAlign: "left" } },
         h("p", { style: { margin: "0 0 8px", fontSize: 12, lineHeight: 1.55, color: "#F2D48A" } }, tr({ fr: "Un cheval nomm\u00e9 \u00ab\u00a0" + (doublonEc.nom || "") + "\u00a0\u00bb existe d\u00e9j\u00e0 dans l\u2019\u00e9curie" + (doublonEc.__prop ? " (\u00e0 " + doublonEc.__prop + ")" : "") + ". Cr\u00e9er une nouvelle fiche s\u00e9par\u00e9e ferait un doublon \u2014 pr\u00e9f\u00e8re rattacher son cheval si c\u2019est le m\u00eame.", en: "A horse named \u00ab " + (doublonEc.nom || "") + " \u00bb already exists in the stable" + (doublonEc.__prop ? " (" + doublonEc.__prop + "\u2019s)" : "") + ". Creating a new page would duplicate it \u2014 link to their horse instead if it\u2019s the same one.", es: "Ya existe un caballo llamado \u00ab " + (doublonEc.nom || "") + " \u00bb en la cuadra" + (doublonEc.__prop ? " (de " + doublonEc.__prop + ")" : "") + ". Crear una nueva ficha lo duplicar\u00eda \u2014 vincula su caballo si es el mismo.", it: "Esiste gi\u00e0 un cavallo chiamato \u00ab " + (doublonEc.nom || "") + " \u00bb nella scuderia" + (doublonEc.__prop ? " (di " + doublonEc.__prop + ")" : "") + ". Creare una nuova scheda lo duplicherebbe \u2014 collega il suo cavallo se \u00e8 lo stesso.", ja: "\u300c" + (doublonEc.nom || "") + "\u300d\u3068\u3044\u3046\u540d\u524d\u306e\u99ac\u306f\u3059\u3067\u306b\u5395\u820e\u306b\u5b58\u5728\u3057\u307e\u3059" + (doublonEc.__prop ? "\uff08" + doublonEc.__prop + "\uff09" : "") + "\u3002\u65b0\u3057\u304f\u4f5c\u6210\u3059\u308b\u3068\u91cd\u8907\u3057\u3066\u3057\u307e\u3046\u306e\u3067\u3001\u540c\u3058\u99ac\u306a\u3089\u9023\u643a\u3057\u3066\u304f\u3060\u3055\u3044\u3002", de: "Ein Pferd namens \u00ab\u00a0" + (doublonEc.nom || "") + "\u00a0\u00bb gibt es bereits im Stall" + (doublonEc.__prop ? " (von " + doublonEc.__prop + ")" : "") + ". Eine neue Seite anzulegen w\u00fcrde ein Duplikat erzeugen \u2014 verkn\u00fcpfe lieber sein Pferd, wenn es dasselbe ist." })),
         h("button", { onClick: function () { rattacher(doublonEc); }, disabled: lienBusy === doublonEc.id, style: { width: "100%", border: "1px solid rgba(255,193,7,0.5)", borderRadius: 999, padding: "9px 0", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", background: "rgba(255,193,7,0.14)", color: "#F2D48A", cursor: "pointer" } }, lienBusy === doublonEc.id ? tr({ fr: "Rattachement\u2026", en: "Linking\u2026", es: "Vinculando\u2026", it: "Collegamento\u2026", ja: "\u9023\u643a\u4e2d\u2026", de: "Wird verkn\u00fcpft\u2026" }) : tr({ fr: "Rattacher ce cheval plut\u00f4t", en: "Link this horse instead", es: "Vincular este caballo", it: "Collega questo cavallo", ja: "\u3053\u306e\u99ac\u3092\u9023\u643a\u3059\u308b", de: "Lieber dieses Pferd verkn\u00fcpfen" }))) : null,
@@ -36851,7 +37036,15 @@ function EcranCheval() {
           var ageTxt = infoP.filter(function (x) { return /^\d+\s*ans?\b/i.test(x); })[0] || "";
           var recit = c.histoire || (function () {
             var estMien = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
-            var ecu = (chevalDyn && chevalDyn.proprioEcurie) || ((estMien && typeof profil !== "undefined" && profil && profil.ecurie) ? String(profil.ecurie).trim() : "");
+            /* 02/09 (Blandine) : « quand je regarde son histoire ça dit que c'est
+               une jument de l'Ecurie Feinn » — alors que le cheval avait ete cree
+               depuis la SEP. La phrase lisait `profil.ecurie`, l ecurie PRINCIPALE
+               du compte, sans jamais regarder le club du cheval.
+               ⚠️ Regle posee par Blandine : « si on n est pas capable de reconnaitre
+               l ecurie, ne rien mettre ». On ne devine plus. */
+            var ecu = (chevalDyn && String(chevalDyn.club || "").trim())
+                   || (chevalDyn && chevalDyn.proprioEcurie)
+                   || "";
             var cav = ""; /* 27/08 : repli sur profil.prenom/pseudo retire — affichait "monte par Blandine" sur tout cheval sans proprioNom renseigne, meme quand elle ne le monte pas. 28/08 : la mention du cavalier est RETIREE TOUT COURT du texte par defaut (demande Blandine : « dis juste l'ecurie, sinon ca peut porter a confusion »). Le proprietaire enregistre en base n'est pas forcement celui qui monte le cheval — sur un cheval cree par Blandine pour une cavaliere, on lisait « monte par Blandine », ce qui est faux et trompeur pour qui le lit. Le texte par defaut ne dit donc plus que la race et l'ecurie ; le nom du cavalier ne peut venir que de l'histoire ecrite a la main. */
             /* 28/08 (demande Blandine) : la mention du cavalier est RETIREE du texte
                par defaut. Elle venait de proprioNom (le proprietaire reellement
