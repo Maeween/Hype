@@ -10,6 +10,86 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 02/09/2026 (matin) — LE FIL NE SPAMME PLUS · LA PAGE PERF NE RENVOIE PLUS AILLEURS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `88576b021819c626f01e6781531cc03f` | fil : cartes d'import · page Performances : portes retirées |
+
+⚠️ Remplace `35656569387c169f5356ca046eda5306`. **Aucun autre fichier n'a bougé** :
+`hype-stories.js` (20bx), `hype-resultats.js` (v2), `hype-podium-clubs.png` et
+`story.html` sont ceux d'hier, à pousser s'ils ne l'ont pas été.
+Pas de `?v=` à toucher : aucun fichier JS externe n'est modifié.
+
+## SQL passé par Blandine ce matin, confirmé
+
+Le premier jet a échoué : `resultat_id` fait partie de la **clé primaire** de
+`likes`, impossible de la rendre nullable. Table séparée à la place :
+
+```sql
+create table likes_cartes (cible text not null, user_id uuid not null
+  references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now(), primary key (cible, user_id));
+```
++ RLS activé et trois policies (lecture publique, insert et delete pour soi).
+⚠️ **À vérifier** : si `alter table likes add column cible` était passé avant
+l'échec, la colonne est orpheline — `alter table likes drop column cible`.
+
+## 1 · Le fil ne se remplit plus ligne par ligne
+
+Cause : le fil ne lit pas une table de publications, il lit **`resultats`**
+directement (50 dernières lignes). L'import telemat partait donc au fil ligne
+par ligne. La colonne `origine = "import"`, déjà écrite par l'import,
+distinguait les deux depuis le début.
+
+- `estResultatAffichableEnFil` refuse les lignes `origine = "import"`.
+- La requête du fil les exclut aussi côté SQL (`origine.is.null,origine.neq.import`),
+  sinon 30 imports mangeaient les 50 places.
+- Nouvelle fonction **`cartesDImport`** : un lot = même cavalier + même cheval +
+  lignes écrites à moins de 10 min. Une carte par lot, **rétroactif**.
+- Texte : « X a rendu son palmarès à Y » + « 32 résultats · 18 classements ·
+  7 victoires (+2 en préparatoire) », en six langues.
+- Chiffres : la coche de relecture gouverne (`visible === false` = hors compte) ;
+  classés = `quart === 1` lu de la FFE ; prépa = `/pr[ée]pa/i` sur `epreuve`,
+  **la même règle que la page Club**, pour que les deux ne divergent jamais.
+- Likable via `likes_cartes`, commentable via `commentaires.cible`
+  (colonne texte libre, aucun SQL nécessaire).
+- Le lien ouvre la page Performances du cheval : `window.__ouvrirPalmares`
+  existait déjà et est relu à chaque rendu.
+- ⚠️ `togglerLike` **dit** l'échec d'écriture à l'écran (leçon du `.catch()` vide).
+- ⚠️ Une carte dont le cheval est illisible (RLS) n'est **pas** affichée : on
+  n'invente pas de nom.
+
+## 2 · La page Performances ne renvoie plus vers la page technique
+
+Deux portes menaient à `palmTech`, toutes deux retirées : « Voir tous ses
+moments forts » (sous les moments forts) et le CTA « VOIR TOUS SES RÉSULTATS »
+en bas. Blandine : « la page résultats, elle a pas à envoyer encore ailleurs ».
+
+⚠️ La seule chose qui vivait derrière était l'accès de la propriétaire aux
+lignes décochées. Elle est **remontée sur la page Performances** à la place du
+CTA, et le filtre de la page écoute désormais `voirMasques` — sans ça, la case
+n'aurait rien changé à l'écran.
+
+⚠️ `palmTech` reste dans le code, **sans porte**. `setPalmTech(true)` : 0
+occurrence. À supprimer pour de bon quand la vérification aura confirmé que rien
+d'autre n'y vivait.
+
+## Non vérifié, à surveiller
+
+- ⚠️ **Aucun rendu réel n'a pu être fait** (pas de réseau dans l'atelier :
+  supabase-js vient d'un CDN). Contrôle effectué : `node --check` sur les
+  18 blocs JS du fichier, tous valides. Le reste se voit à l'écran.
+- ⚠️ **RLS de `likes_cartes` non testée en vrai.** Si un like ne s'enregistre
+  pas, le message apparaît maintenant à l'écran — le lire et le renvoyer.
+- ⚠️ Le plantage d'`EcranCheval` déclenché par le CTA n'est **pas diagnostiqué**,
+  seulement rendu inatteignable en retirant la porte. Le bug dort toujours.
+- ⚠️ Accent en double encodage vu sur une carte : « PrÃÂ©paratoire (1,00 m) »
+  (Vallieres, Haras de Jardy 2022). Écrit tel quel en base par un import.
+  Non corrigé.
+
+---
+
 # 🟦 02/09/2026 (00 h 15) — 20bx : L'APPUI LONG COPIE ENFIN LA BONNE ADRESSE
 
 | Fichier | Où | md5 | Quoi |

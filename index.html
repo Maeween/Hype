@@ -2244,51 +2244,164 @@ async function listerCavaliers({ limite = 30 } = {}) {
 function estResultatAffichableEnFil(r) {
   if (!r) return false;
   if (r.visible === false) return false;
+  /* 02/09 : une ligne importee ne fait plus un poste. Elle est comptee dans la
+     carte d import (cartesDImport). Elle reste en base, intacte. */
+  if (String(r.origine || "") === "import") return false;
   return (r.quart == null) || (Number(r.quart) === 1);
 }
+/* --- 7 bis. Les cartes d'import ------------------------------------------
+   02/09 (Blandine) : « vire moi le spam a chaque fois qu un resultat est
+   rentre ». Un import ne fait plus trente postes : il fait UNE carte par
+   cheval, « X a rendu son palmares a Y ». Rien n est supprime en base — les
+   lignes vivent toujours, elles ne passent simplement plus par le fil.
+   Les chiffres respectent la coche de relecture (visible === false = hors
+   compte), comme partout ailleurs. */
+function hsEstPrepa(ep) { return /pr[ée]pa/i.test(String(ep || "")); }
+async function cartesDImport(user, idsSuivis) {
+  let req = supa.from("resultats")
+    .select("id, user_id, cheval_id, created_at, place, quart, epreuve, visible")
+    .eq("origine", "import").order("created_at", { ascending: false }).limit(400);
+  if (idsSuivis) req = req.in("user_id", idsSuivis);
+  const { data: brut, error } = await req;
+  if (error) { try { console.warn("[fil] imports illisibles :", error.message || error); } catch (e0) { } return []; }
+  if (!brut || !brut.length) return [];
+
+  /* un lot = meme cavalier, meme cheval, lignes ecrites a moins de 10 min */
+  const paires = {};
+  brut.forEach(function (r) {
+    if (!r.cheval_id) return;
+    const k = String(r.user_id) + "|" + String(r.cheval_id);
+    (paires[k] = paires[k] || []).push(r);
+  });
+  const lots = [];
+  Object.keys(paires).forEach(function (k) {
+    const lignes = paires[k].slice().sort(function (a, b) { return new Date(b.created_at) - new Date(a.created_at); });
+    let courant = null;
+    lignes.forEach(function (r) {
+      const t = new Date(r.created_at).getTime();
+      if (courant && Math.abs(courant.t - t) <= 600000) { courant.lignes.push(r); courant.t = t; }
+      else { courant = { user_id: r.user_id, cheval_id: r.cheval_id, t: t, created_at: r.created_at, lignes: [r] }; lots.push(courant); }
+    });
+  });
+
+  const idsChevaux = [...new Set(lots.map(function (l) { return l.cheval_id; }))];
+  const nomCheval = {};
+  if (idsChevaux.length) {
+    const { data: chx, error: eCh } = await supa.from("chevaux").select("id, nom").in("id", idsChevaux);
+    if (eCh) { try { console.warn("[fil] noms de chevaux illisibles :", eCh.message || eCh); } catch (e1) { } }
+    (chx || []).forEach(function (c) { nomCheval[c.id] = c.nom; });
+  }
+
+  const out = [];
+  lots.forEach(function (l) {
+    const vis = l.lignes.filter(function (r) { return r.visible !== false; });
+    if (!vis.length) return;                 /* tout decoche = pas de carte */
+    if (!nomCheval[l.cheval_id]) return;     /* cheval illisible : on n invente pas de nom */
+    out.push({
+      type: "import",
+      id: "imp_" + l.cheval_id + "_" + l.t,
+      cible: "import:" + l.cheval_id + ":" + l.t,
+      user_id: l.user_id,
+      cheval_id: l.cheval_id,
+      chevalNom: nomCheval[l.cheval_id],
+      created_at: l.created_at,
+      nb: vis.length,
+      classes: vis.filter(function (r) { return Number(r.quart) === 1; }).length,
+      victoires: vis.filter(function (r) { return Number(r.place) === 1 && !hsEstPrepa(r.epreuve); }).length,
+      victPrepa: vis.filter(function (r) { return Number(r.place) === 1 && hsEstPrepa(r.epreuve); }).length
+    });
+  });
+  return out;
+}
+
 async function fil({ seulementSuivis = false } = {}) {
   const user = await utilisateurActuel();
 
-  // 1) les résultats
-  let requete = supa.from("resultats").select("*").order("created_at", { ascending: false }).limit(50);
+  let idsSuivis = null;
   if (seulementSuivis) {
     if (!user) return { data: [], error: "Pas connecté" };
     const { data: ids } = await listeDesSuivis();
-    if (!ids.length) return { data: [], error: null };
-    requete = requete.in("user_id", ids);
+    idsSuivis = ids || [];
+    if (!idsSuivis.length) return { data: [], error: null };
   }
+
+  // 1) les résultats publiés à la main (l'import donne une carte, plus des postes)
+  let requete = supa.from("resultats").select("*").or("origine.is.null,origine.neq.import").order("created_at", { ascending: false }).limit(50);
+  if (idsSuivis) requete = requete.in("user_id", idsSuivis);
   const { data: brut, error } = await requete;
   if (error) return { data: [], error };
   const resultats = (brut || []).filter(estResultatAffichableEnFil);
-  if (!resultats.length) return { data: [], error: null };
 
-  // 2) les profils des auteurs (une seule requête)
-  const idsAuteurs = [...new Set(resultats.map(r => r.user_id))];
-  const { data: profils } = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", idsAuteurs);
+  // 2) les cartes d'import
+  let cartes = [];
+  try { cartes = await cartesDImport(user, idsSuivis); } catch (eCI) { cartes = []; }
+
+  if (!resultats.length && !cartes.length) return { data: [], error: null };
+
+  // 3) les profils des auteurs (une seule requête pour les deux familles)
+  const idsAuteurs = [...new Set(resultats.map(r => r.user_id).concat(cartes.map(c => c.user_id)))];
+  let profils = [];
+  if (idsAuteurs.length) {
+    const rp = await supa.from("profiles").select("id, pseudo, avatar_url, handle").in("id", idsAuteurs);
+    profils = rp.data || [];
+  }
   const parId = {};
-  (profils || []).forEach(p => { parId[p.id] = p; });
+  profils.forEach(p => { parId[p.id] = p; });
 
-  // 3) les likes (nombre + est-ce que MOI j'ai liké)
+  // 4) les likes des résultats (nombre + est-ce que MOI j'ai liké)
   const idsResultats = resultats.map(r => r.id);
-  const { data: likes } = await supa.from("likes").select("resultat_id, user_id").in("resultat_id", idsResultats);
   const nb = {}, moi = {};
-  (likes || []).forEach(l => {
-    nb[l.resultat_id] = (nb[l.resultat_id] || 0) + 1;
-    if (user && l.user_id === user.id) moi[l.resultat_id] = true;
-  });
+  if (idsResultats.length) {
+    const { data: likes } = await supa.from("likes").select("resultat_id, user_id").in("resultat_id", idsResultats);
+    (likes || []).forEach(l => {
+      nb[l.resultat_id] = (nb[l.resultat_id] || 0) + 1;
+      if (user && l.user_id === user.id) moi[l.resultat_id] = true;
+    });
+  }
 
-  // 4) on assemble tout
+  // 5) les likes des cartes (table likes_cartes, créée le 02/09)
+  const nbC = {}, moiC = {};
+  if (cartes.length) {
+    const { data: lkc, error: eLkc } = await supa.from("likes_cartes").select("cible, user_id").in("cible", cartes.map(c => c.cible));
+    if (eLkc) { try { console.warn("[fil] likes_cartes illisible :", eLkc.message || eLkc); } catch (e2) { } }
+    (lkc || []).forEach(l => {
+      nbC[l.cible] = (nbC[l.cible] || 0) + 1;
+      if (user && l.user_id === user.id) moiC[l.cible] = true;
+    });
+  }
+
+  // 6) on assemble et on trie par date
   const liste = resultats.map(r => ({
     ...r,
     auteur:  parId[r.user_id] || { pseudo: "Cavalier", avatar_url: null },
     nbLikes: nb[r.id] || 0,
     jeLike:  !!moi[r.id]
-  }));
-  return { data: liste, error: null };
+  })).concat(cartes.map(c => ({
+    ...c,
+    auteur:  parId[c.user_id] || { pseudo: "Cavalier", avatar_url: null },
+    nbLikes: nbC[c.cible] || 0,
+    jeLike:  !!moiC[c.cible]
+  })));
+  liste.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+  return { data: liste.slice(0, 50), error: null };
 }
 
 
 /* --- 8. Aimer (like) --------------------------------------- */
+
+/* 02/09 : les cartes d import ne sont pas des lignes de `resultats`, elles ont
+   donc leur propre table (likes_cartes, cle = cible + user_id). La cle primaire
+   de `likes` porte resultat_id : impossible d y loger une cible sans la casser. */
+async function aimerCarte(cible) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connect\u00e9" };
+  return await supa.from("likes_cartes").insert({ user_id: user.id, cible: String(cible) });
+}
+async function retirerLikeCarte(cible) {
+  const user = await utilisateurActuel();
+  if (!user) return { error: "Pas connect\u00e9" };
+  return await supa.from("likes_cartes").delete().eq("user_id", user.id).eq("cible", String(cible));
+}
 
 async function aimer(idResultat) {
   const user = await utilisateurActuel();
@@ -22111,8 +22224,17 @@ function EcranCommunaute() {
       });
     }
     function togglerLike(post){
-      var action = post.jeLike ? retirerLike(post.id) : aimer(post.id);
-      action.then(function(){ chargerFil(); });
+      var estCarte = (post && post.type === "import");
+      var action = estCarte
+        ? (post.jeLike ? retirerLikeCarte(post.cible) : aimerCarte(post.cible))
+        : (post.jeLike ? retirerLike(post.id) : aimer(post.id));
+      action.then(function(r){
+        /* 02/09 : l echec d ecriture se DIT (lecon du .catch() vide du 01/09) */
+        if (r && r.error) {
+          try { setFilErreur(T("Le j'aime n'a pas pu \u00eatre enregistr\u00e9 : ","Could not save the like: ","No se pudo guardar: ","Impossibile salvare: ","\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\uff1a","Gef\u00e4llt-mir nicht gespeichert: ") + (r.error.message || r.error)); } catch (eL) { }
+        }
+        chargerFil();
+      });
     }
     function afficherPublication(){
       if (!formOuvert) {
@@ -22143,6 +22265,36 @@ function EcranCommunaute() {
       var enTete = h("div", { style:{ display:"flex", alignItems:"baseline", gap:8, paddingRight:40 } },
         h("div", { style:{ fontSize:12.5, fontWeight:700, color:"#EDF2F5", fontFamily:M } }, nom),
         tps ? h("div", { style:{ fontSize:10, color:"rgba(234,242,244,0.32)", fontFamily:M } }, tps) : null);
+      if (post.type === "import") {
+        /* 02/09 : la carte d un lot importe. Elle ouvre la page Performances du
+           cheval (window.__ouvrirPalmares existe deja et est lu a chaque rendu). */
+        var ouvrirPalm = function(e){
+          if (e) e.stopPropagation();
+          try { window.__chevalOuvert = post.cheval_id; window.__ouvrirPalmares = true; } catch (eOP) { }
+          setEcran("cheval");
+        };
+        var phrase = T(nom + " a rendu son palmar\u00e8s \u00e0 " + post.chevalNom,
+                       nom + " gave " + post.chevalNom + " their record back",
+                       nom + " le devolvi\u00f3 su palmar\u00e9s a " + post.chevalNom,
+                       nom + " ha restituito il palmar\u00e8s a " + post.chevalNom,
+                       post.chevalNom + " \u306e\u6210\u7e3e\u304c " + nom + " \u306b\u3088\u3063\u3066\u623b\u308a\u307e\u3057\u305f",
+                       nom + " hat " + post.chevalNom + " die Erfolgsliste zur\u00fcckgegeben");
+        var motRes = T("r\u00e9sultats","results","resultados","risultati","\u4ef6","Ergebnisse");
+        var motCla = T("classements","placings","clasificaciones","piazzamenti","\u5165\u8cde","Platzierungen");
+        var motVic = T("victoires","wins","victorias","vittorie","\u512a\u52dd","Siege");
+        var motPre = T("en pr\u00e9paratoire","in warm-up classes","en preparatoria","in preparatoria","\u6e96\u5099\u8a66\u5408","in Vorbereitungspr\u00fcfungen");
+        var chiffres = post.nb + " " + motRes + " \u00b7 " + post.classes + " " + motCla + " \u00b7 " + post.victoires + " " + motVic
+                     + (post.victPrepa ? (" (+" + post.victPrepa + " " + motPre + ")") : "");
+        return h("div", { key:post.id, style:{ display:"flex", gap:11, marginBottom:2 } }, av,
+          h("div", { style:{ flex:1, minWidth:0, position:"relative", background:"linear-gradient(180deg, rgba(32,217,245,0.085), rgba(255,255,255,0.02))", border:"1px solid rgba(32,217,245,0.28)", borderRadius:"5px 16px 16px 16px", padding:"11px 13px" } },
+            enTete,
+            h("div", { role:"button", onClick:ouvrirPalm, style:{ marginTop:5, fontSize:12.5, color:"#EDF2F5", fontFamily:M, lineHeight:1.45, cursor:"pointer" } }, phrase),
+            h("div", { style:{ marginTop:4, fontSize:11.5, color:"rgba(234,242,244,0.62)", fontFamily:M } }, chiffres),
+            h("div", { style:{ marginTop:9, display:"flex", alignItems:"center", gap:12 } },
+              h("button", { onClick:function(e){ e.stopPropagation(); togglerLike(post); }, style:{ background:"rgba(32,217,245,0.09)", border:"1px solid rgba(32,217,245,0.35)", borderRadius:14, color: post.jeLike ? "#E8C887" : "#7FEAF2", fontFamily:M, fontSize:11.5, fontWeight:700, cursor:"pointer", padding:"5px 11px" } }, (post.jeLike ? "\u2665 " : "\u2661 ") + post.nbLikes),
+              h("div", { role:"button", onClick:ouvrirPalm, style:{ color:"#5FE9F0", fontFamily:M, fontSize:12, fontWeight:600, cursor:"pointer" } }, T("Voir ses r\u00e9sultats \u203a","See the results \u203a","Ver los resultados \u203a","Vedi i risultati \u203a","\u6210\u7e3e\u3092\u898b\u308b \u203a","Ergebnisse ansehen \u203a"))),
+            h("div", { style:{ marginTop:9 } }, h(SectionCommentaires, { cible: post.cible }))));
+      }
       if (post.type === "hautfait") {
         return h("div", { key:post.id, style:{ display:"flex", gap:11, marginBottom:2 } }, av,
           h("div", { style:{ flex:1, minWidth:0, position:"relative", background:"linear-gradient(180deg, rgba(232,200,135,0.10), rgba(255,255,255,0.02))", border:"1px solid rgba(232,200,135,0.30)", borderRadius:"5px 16px 16px 16px", padding:"11px 13px" } },
@@ -37231,7 +37383,7 @@ function EcranCheval() {
            reprennent l ALGO EXACT du résumé (s154) : toute évolution doit se faire
            AUX DEUX ENDROITS. */
         (function () {
-          var lignesBrutes = (resDb || []).filter(function (r) { return r && r.visible !== false && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
+          var lignesBrutes = (resDb || []).filter(function (r) { return r && (voirMasques || r.visible !== false) && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
           function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
           var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
           /* 30/08 — BARRE EMPILEE PAR SAISON. Liste PARALLELE a tousF qui GARDE les
@@ -37316,7 +37468,9 @@ function EcranCheval() {
               h("div", { style: { margin: "0 16px" } },
                 carteFort(forts[0], true, 0),
                 (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 10, marginTop: 10 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null),
-              h("div", { role: "button", onClick: function () { setPalmTech(true); }, style: { textAlign: "center", margin: "13px 0 0", fontSize: 11.5, color: teinteCl, cursor: "pointer" } }, T("Voir tous ses moments forts", "See all highlights", "Ver todos sus momentos", "Vedi tutti i momenti", "\u3059\u3079\u3066\u898b\u308b", "Alle Highlights") + " \u2192")) : null,
+              /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
+                 resultats, elle a pas a envoyer encore ailleurs »). */
+              null) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
@@ -37377,7 +37531,18 @@ function EcranCheval() {
                     h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rD.pl + "/" + (rD.part || "?")));
                 }))) : null,
             /* — 6 · CTA — */
-            h("div", { role: "button", onClick: function () { setPalmTech(true); }, style: { margin: "22px 16px 0", padding: "13px 10px", textAlign: "center", borderRadius: 13, border: "1px solid " + tA(0.4), color: teinteCl, fontSize: 12, letterSpacing: ".12em", fontWeight: 700, cursor: "pointer" } }, T("Voir tous ses r\u00e9sultats", "See all results", "Ver todos los resultados", "Vedi tutti i risultati", "\u5168\u3066\u306e\u6210\u7e3e", "Alle Ergebnisse").toUpperCase() + " \u2192"),
+            /* 02/09 : le CTA vers la page technique est RETIRE. A sa place, la seule
+               chose qui vivait derriere : l acces de la proprietaire aux lignes
+               qu elle a decochees a la relecture de l import. */
+            (function () {
+              var proprioP = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              var nMq = ((resDb) || []).filter(function (rM) { return rM && rM.visible === false; }).length;
+              if (!proprioP || !nMq) return null;
+              return h("div", { role: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { textAlign: "center", margin: "22px 16px 0", fontSize: 11.5, color: voirMasques ? teinteCl : "#8A929C", cursor: "pointer" } },
+                (voirMasques ? "\u2611 " : "\u2610 ") + (voirMasques
+                  ? T("Les lignes masqu\u00e9es sont affich\u00e9es", "Hidden lines are shown", "L\u00edneas ocultas visibles", "Righe nascoste visibili", "\u975e\u8868\u793a\u306e\u884c\u3092\u8868\u793a\u4e2d", "Ausgeblendete Zeilen sichtbar")
+                  : T("Afficher aussi les " + nMq + " lignes masqu\u00e9es", "Also show the " + nMq + " hidden lines", "Mostrar tambi\u00e9n las " + nMq + " l\u00edneas ocultas", "Mostra anche le " + nMq + " righe nascoste", nMq + " \u4ef6\u306e\u975e\u8868\u793a\u884c\u3082\u8868\u793a", "Auch die " + nMq + " ausgeblendeten Zeilen zeigen")));
+            })(),
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse")));
         })()))  : null,
       panneau === "souvenirs" ? h("div", null,
