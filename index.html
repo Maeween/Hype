@@ -37824,14 +37824,62 @@ function EcranCheval() {
             h("span", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: teinteCl, fontWeight: 400 } }, "\u2192")) : null),
 
         (ongletPerf === "resultats" && palmTous && palmTous.length) ? h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, animationDelay: ".17s", marginBottom: 16 } },
-          ((c.flots && c.flots.length) ? palmTous.filter(function (pF) { return pF && pF.auth === "perso"; }) : palmTous).slice(0, 6).map(function (rP, iR) {
-            var rgP = parseInt(rP.rang, 10);
-            var medP = rgP === 1 ? ["linear-gradient(140deg,#F0CE8E,#B8975A)", "#141005"] : rgP === 2 ? ["linear-gradient(140deg,#E8ECEF,#9AA4AC)", "#101214"] : rgP === 3 ? ["linear-gradient(140deg,#D9A375,#8A5A38)", "#170D06"] : [tA(0.25), teinteCl];
-            return h("div", { key: "pmed" + iR, role: "button", onClick: function () { setPanneau("palmares"); }, style: { flex: "0 0 auto", width: 118, border: "1px solid " + tA(0.3), borderRadius: 16, padding: "13px 10px 11px", background: "rgba(0,0,0,0.35)", textAlign: "center", cursor: "pointer" } },
-              h("div", { style: { width: 40, height: 40, borderRadius: "50%", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, background: medP[0], color: medP[1] } }, String(rP.rang)),
-              h("div", { style: { marginTop: 8, fontFamily: "'Cinzel',serif", fontSize: 10.5, color: "#EEF3F5", lineHeight: 1.25, height: 27, overflow: "hidden" } }, rP.event),
-              h("div", { style: { marginTop: 3, fontSize: 8, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9AA2AC", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rP.ds + " \u00b7 " + rP.annee));
-          }).concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addres", role: "button", onClick: ouvrirAjoutResultat, style: { flex: "0 0 auto", width: 64, border: "1.5px dashed " + tA(0.45), borderRadius: 16, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : []))
+          /* 02/09 (Blandine : « je veux la meme chose que sur l ecurie ») — LA CARTE DU
+             RAIL REPREND CELLE DE LA PAGE ECURIE, maquette qu elle a validee le 01/09 :
+             medaille + annee, PUIS le portrait rond, PUIS « 1er CAVALIER sur CHEVAL »,
+             PUIS le concours, l epreuve et le nombre de partants, PUIS les autres
+             classes de la meme epreuve, en petit.
+             ⚠️ L ancienne carte affichait « concours · annee » avec une epreuve
+             TOUJOURS VIDE : `ds` etait ecrit en dur a "" dans palmTous alors que la
+             colonne `epreuve` existe en base. On repart donc de resDb, pas de palmTous.
+             ⚠️ LE CHEVAL N EST NOMME QU UNE FOIS (« t as ecrit Rizotto deux fois »).
+             ⚠️ SANS PHOTO, PAS DE TROU : le medaillon n est pas dessine du tout. */
+          (function () {
+            var grpF = {}, ordreF = [];
+            ((resDb) || []).forEach(function (rr) {
+              if (!rr) return;
+              if (rr.visible === false && !voirMasques) return;
+              var cle = String(rr.concours || "") + "|" + String(rr.epreuve || "") + "|" + String(rr.date_epreuve || rr.annee || "");
+              if (!grpF[cle]) {
+                var anF = rr.annee ? String(rr.annee) : (function () { try { return String(new Date(rr.date_epreuve || rr.created_at).getFullYear()); } catch (eA) { return ""; } })();
+                grpF[cle] = { concours: rr.concours || "", epreuve: rr.epreuve || "", an: anF, partants: rr.partants || null, places: [] };
+                ordreF.push(cle);
+              }
+              grpF[cle].places.push({ rang: parseInt(rr.classement, 10) || null, cavalier: rr.cavalier || "" });
+              if (!grpF[cle].partants && rr.partants) grpF[cle].partants = rr.partants;
+            });
+            return ordreF.slice(0, 8).map(function (cle, iR) {
+              var gr = grpF[cle];
+              var tries = (gr.places || []).slice().sort(function (a5, b5) { return (a5.rang || 99) - (b5.rang || 99); });
+              var meilleur = tries[0] || {};
+              var coup = meilleur.rang === 1 ? "\ud83c\udfc6" : meilleur.rang === 2 ? "\ud83e\udd48" : meilleur.rang === 3 ? "\ud83e\udd49" : "\ud83c\udf96\ufe0f";
+              var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
+              var nomChF = (chevalDyn && chevalDyn.nom) || c.nom || "";
+              return h("div", { key: "rf" + iR, role: "button", onClick: function () { setPanneau("palmares"); },
+                style: { flex: "0 0 158px", padding: "12px 13px 14px", borderRadius: 14, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", cursor: "pointer" } },
+                h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
+                  h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
+                  gr.an ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl, letterSpacing: ".12em", fontFamily: "'Montserrat',sans-serif" } }, gr.an) : null),
+                photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 66, height: 66, borderRadius: "50%", objectFit: "cover", marginTop: 10, border: "1px solid rgba(255,255,255,0.16)" } }) : null,
+                h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F1F6F8", marginTop: 10, lineHeight: 1.35 } },
+                  (rangTxt ? (rangTxt + " ") : "") + (meilleur.cavalier || ""),
+                  nomChF ? h("span", { style: { color: teinteCl, fontWeight: 600 } }, " sur " + nomChF) : null),
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3 } }, gr.concours || "\u2014"),
+                gr.epreuve ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35 } }, gr.epreuve) : null,
+                gr.partants ? h("div", { style: { fontSize: 9, color: "#6F7A83", fontFamily: "'Montserrat',sans-serif", marginTop: 4 } }, "/ " + gr.partants) : null,
+                (function () {
+                  var autres = tries.slice(1, 4);
+                  if (!autres.length) return null;
+                  return h("div", { style: { marginTop: 8, paddingTop: 7, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                    autres.map(function (pp, iA) {
+                      var rTxt = pp.rang ? (String(pp.rang) + (pp.rang === 1 ? "er" : "e")) : "";
+                      return h("div", { key: "af" + iA, style: { fontSize: 9.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", marginTop: iA ? 3 : 0, lineHeight: 1.35 } },
+                        (rTxt ? (rTxt + " ") : "") + (pp.cavalier || ""));
+                    }));
+                })());
+            });
+          })()
+          .concat((chevalDyn && moi && chevalDyn.ownerId === moi.id) ? [h("div", { key: "addresF", role: "button", onClick: function (eAj) { try { eAj.stopPropagation(); } catch (eS2) { } ouvrirAjoutResultat(); }, style: { flex: "0 0 auto", width: 64, border: "1.5px dashed " + tA(0.45), borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, color: teinteCl, cursor: "pointer" } }, "+")] : []))
         : ((palmTous && palmTous.length) || (c.flots && c.flots.length)) ? null : h("div", { className: "rise", role: "button", onClick: function () { if (chevalDyn && moi && chevalDyn.ownerId === moi.id) ouvrirAjoutResultat(); else setPanneau("palmares"); }, style: { border: "1.5px dashed " + tA(0.4), borderRadius: 16, padding: "20px 16px", textAlign: "center", cursor: "pointer", animationDelay: ".17s", marginBottom: 16 } },
             h("div", { style: { fontStyle: "italic", fontSize: 12.5, color: "#C9CFD4", lineHeight: 1.55 } }, T("Ses premiers r\u00e9sultats l'attendent. Ajoute son premier concours, sa premi\u00e8re sortie\u2026 ou ses exploits.", "Their first results are waiting. Add a first show, a first outing\u2026 or their feats.", "Sus primeros resultados le esperan. A\u00f1ade su primer concurso, su primera salida\u2026 o sus haza\u00f1as.", "I suoi primi risultati lo aspettano. Aggiungi il primo concorso, la prima uscita\u2026 o le sue imprese.", "\u521d\u3081\u3066\u306e\u7d50\u679c\u304c\u5f85\u3063\u3066\u3044\u307e\u3059\u3002\u521d\u3081\u3066\u306e\u5927\u4f1a\u3084\u304a\u51fa\u304b\u3051\u3092\u8ffd\u52a0\u3057\u3088\u3046\u3002", "Seine ersten Ergebnisse warten. F\u00fcge den ersten Wettkampf, den ersten Ausritt\u2026 oder seine Heldentaten hinzu.")),
             h("div", { style: { marginTop: 10, fontSize: 8.5, letterSpacing: "0.14em", textTransform: "uppercase", color: teinteCl, fontWeight: 700 } }, "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ein Ergebnis hinzuf\u00fcgen"))),
