@@ -30015,7 +30015,23 @@ function EcranGuilde() {
         /* 30/08 (Blandine : « ca c'est pas les derniers resultats ») — le tri se faisait
            sur created_at, la date d'IMPORT, pas sur la date du concours. On trie
            desormais sur date_epreuve quand elle existe, created_at sinon. */
-        hypeReparerLignes(((rs && rs.data) || []).filter(estResultatAffichableEnFil)).forEach(function (rr) { /* 02/09 : accents FFE */
+        /* 02/09 (Blandine : « sur la page de la SEP les derniers resultats sont ceux des
+           cavaliers Feinn ») — CAUSE ETABLIE, requete de controle a l'appui : la liste des
+           membres est JUSTE (15 profils, tous reellement SEP). Mais Blandine appartient aux
+           DEUX clubs, donc TOUS ses resultats remontaient ici, y compris ceux de ses chevaux
+           de Feinn — avec le nom du cavalier ecrit sur la ligne FFE, d'ou « Evan Roux » et
+           « Ilona Hugot » sur la page SEP.
+           Les CHEVAUX etaient deja filtres par club depuis le 01/09 ; les RESULTATS, non.
+           On applique le meme filtre : une ligne rattachee a un cheval d'un AUTRE club est
+           ecartee. ⚠️ Une ligne sans cheval identifie passe toujours — on ne fait pas
+           disparaitre une saisie qu'on ne sait pas rattacher. */
+        var chevauxDuClubR = {};
+        try { ((cv && cv.data) || []).forEach(function (cR) { if (cR && cR.id) chevauxDuClubR[cR.id] = 1; }); } catch (eCr) { }
+        var filtreClubR = function (rr) {
+          if (!rr || !rr.cheval_id) return true;
+          return !!chevauxDuClubR[rr.cheval_id];
+        };
+        hypeReparerLignes(((rs && rs.data) || []).filter(estResultatAffichableEnFil).filter(filtreClubR)).forEach(function (rr) { /* 02/09 : accents FFE */
           var tps = 0;
           try { if (rr.date_epreuve) tps = new Date(rr.date_epreuve).getTime() || 0; } catch (eT1) { }
           if (!tps) { try { tps = new Date(rr.created_at).getTime() || 0; } catch (eT0) { } }
