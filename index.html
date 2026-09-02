@@ -1571,9 +1571,27 @@ async function supprimerAlbumCheval(id) {
    user_id. Table a creer : voir le SQL livre avec ce fichier. */
 async function histoirePersoCheval(chevalId) {
   try { const user = await utilisateurActuel(); if (!user || !chevalId) return { data: null, error: null };
-    var r = await supa.from("chevaux_histoires").select("texte").eq("cheval_id", chevalId).eq("user_id", user.id).maybeSingle();
+    var r = await supa.from("chevaux_histoires").select("texte, photo_url").eq("cheval_id", chevalId).eq("user_id", user.id).maybeSingle();
     return { data: (r && r.data) || null, error: r && r.error };
   } catch (e) { return { data: null, error: String(e) }; }
+}
+/* 02/09 (Blandine) : la PHOTO PERSO du cheval. Meme principe que l'histoire — sur SA
+   page, chacune peut poser sa propre photo de Dakota ; la fiche commune cote ecurie
+   garde celle de la proprietaire. Elle vivait deja dans le telephone (localStorage),
+   donc perdue au changement d'appareil et invisible ailleurs : elle est desormais
+   rangee a cote de l'histoire, dans chevaux_histoires.photo_url. */
+async function enregistrerPhotoPersoCheval(chevalId, url) {
+  try { const user = await utilisateurActuel(); if (!user || !chevalId) return { error: "Pas connecté" };
+    return await supa.from("chevaux_histoires").upsert({ cheval_id: chevalId, user_id: user.id, photo_url: url || null, updated_at: new Date().toISOString() }, { onConflict: "cheval_id,user_id" });
+  } catch (e) { return { error: String(e) }; }
+}
+async function envoyerDataUrlCommePhoto(dataUrl, nom) {
+  /* Le recadreur rend une image en base64 ; l'envoi attend un fichier. */
+  try {
+    var rep = await fetch(dataUrl); var blob = await rep.blob();
+    var fic = new File([blob], (nom || "photo") + ".jpg", { type: blob.type || "image/jpeg" });
+    return await envoyerPhoto(fic);
+  } catch (e) { return { error: String(e) }; }
 }
 async function enregistrerHistoirePerso(chevalId, texte) {
   try { const user = await utilisateurActuel(); if (!user) return { error: "Pas connecté" };
@@ -36045,6 +36063,8 @@ function EcranCheval() {
     try { histoirePersoCheval(chevalDyn.dbId).then(function (rHp) {
       if (!actifHp) return;
       setHistPerso((rHp && rHp.data && rHp.data.texte) ? String(rHp.data.texte) : "");
+      var uPh = (rHp && rHp.data && rHp.data.photo_url) ? String(rHp.data.photo_url) : "";
+      if (uPh) setPhotoPerso(uPh);
     }).catch(function () { if (actifHp) setHistPerso(""); }); } catch (eHp) { setHistPerso(""); }
     return function () { actifHp = false; };
   }, [moi && moi.id, chevalDyn && chevalDyn.dbId, estMonChevalFiche]);
@@ -36812,7 +36832,19 @@ function EcranCheval() {
         try { localStorage.setItem("hype_cheval_photo_" + id, d2); } catch (eq) { }
         try { if (res.original) localStorage.setItem("hype_cheval_photo_orig_" + id, res.original); if (res.dataUrl) localStorage.setItem("hype_cheval_photo_orig_pour_" + id, String(res.dataUrl).slice(0, 100)); } catch (eqO) { }
         try {
-          if (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) {
+          if (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId !== moi.id) {
+            /* 02/09 : cheval d'une autre — la photo est MIENNE, elle reste sur ma page et
+               ne touche jamais la fiche commune. Sans ce chemin elle ne vivait que dans
+               le telephone : perdue au changement d'appareil, invisible partout ailleurs. */
+            envoyerDataUrlCommePhoto(d2, "cheval-" + chevalDyn.dbId).then(function (rEnv) {
+              var urlP = rEnv && rEnv.url;
+              if (!urlP) { try { window.alert("La photo n'a pas pu être envoyée. Vérifie ta connexion et réessaie."); } catch (eA1) { } return; }
+              setPhotoPerso(urlP);
+              enregistrerPhotoPersoCheval(chevalDyn.dbId, urlP).then(function (rP) {
+                if (rP && rP.error) { try { window.alert("La photo n'a pas pu être enregistrée. Réessaie."); } catch (eA2) { } }
+              });
+            });
+          } else if (chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id) {
             /* 07/08 : la quete « photo-cheval » lit l'etat GLOBAL ctx.chevaux, qui n'etait
                jamais mis a jour ici — seuls l'etat local du composant, le localStorage et
                la base l'etaient. La quete ne pouvait donc se valider qu'apres un
