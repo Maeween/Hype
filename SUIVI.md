@@ -20775,3 +20775,199 @@ individuelle par auteur, quotas par uploader), il faudra migrer la colonne
 tableau `photos` vers une vraie table `album_medias` (id, album_id, user_id,
 url, type, created_at). Aujourd'hui un album appartient a UNE seule utilisatrice,
 donc la colonne tableau suffit : ne pas faire cette migration sans necessite.
+
+
+## 02/09/2026 (nuit, suite) — PHOTO PERSO + CE QUI RESTE A FAIRE
+
+**LIVRE : la photo perso du cheval.** Sur SA page, chaque cavaliere rattachee peut
+poser sa propre photo de Dakota ; la fiche commune cote ecurie garde celle de la
+proprietaire (`chevaux.photo_url`, inchangee). Elle existait deja a moitie :
+l'etat `photoPerso` vivait uniquement dans le localStorage du telephone — perdue
+au changement d'appareil ou au vidage du cache, et invisible partout ailleurs.
+Elle est desormais rangee a cote de l'histoire perso, dans
+`chevaux_histoires.photo_url` (SQL : `photo-perso-cheval.sql`, une ligne).
+L'entree « Changer la photo » du menu de la fiche n'avait deja aucun verrou de
+propriete : rien a ouvrir cote interface.
+
+**ALBUMS : ce qui a ete confirme.** Une cavaliere rattachee CREE ses propres
+albums, elle n'ecrit jamais dans celui d'une autre (verrouille par la correction
+de securite de ce soir). Cote ecurie on verra donc « Cso (Blandine) », « Cso
+(Ambre) », « Cso (Elias) » — plusieurs albums de plusieurs comptes sur une seule
+fiche, aucune duplication de fichier. Si ca devient encombrant, on pourra les
+REGROUPER A L'AFFICHAGE sans rien changer en base. Un album reellement commun
+(plusieurs personnes deposant dans la meme boite) reste impossible tant que les
+photos vivent dans une colonne tableau sans auteur — voir la migration
+`album_medias` notee plus haut.
+
+---
+
+## A FAIRE — chantiers ouverts par cette soiree, dans l'ordre
+
+**1. RESULTATS : ouvrir la saisie aux cavalieres rattachees.** Aujourd'hui le
+bouton « + Ajouter un resultat » est reserve a la PROPRIETAIRE du cheval, a CINQ
+endroits de la fiche (deux rails, la carte vide, l'hote du module, le panneau
+palmares) ; ailleurs il repond « Bientot ». Demande de Blandine : une cavaliere
+rattachee doit pouvoir ajouter SES resultats.
+⚠️ Point de conception a ne pas rater : un resultat appartient au COUPLE
+cavalier + cheval. Le parcours de Blandine sur Dakota et celui de son eleve ne
+sont PAS le meme resultat, les deux doivent coexister. Le doublon a eviter est
+le meme resultat saisi deux fois pour la MEME cavaliere (saisie manuelle puis
+import FFE du meme concours). Le garde-fou anti-doublons existe deja cote import,
+il faut le brancher sur la saisie manuelle.
+
+**2. ANTI-DOUBLON A LA CREATION DE CHEVAL — la fuite jamais bouchee.**
+`soumettreCheval` verifie le quota et l'ecurie, puis cree. AUCUNE comparaison de
+nom, aucune recherche de cheval existant. C'est le point exact d'ou sont sortis
+Crumble/Cruibhin et les deux Cooltax, et il est toujours ouvert. Le suivi porte
+deja l'analyse : les PDF de cavalerie FFE ne contiennent AUCUN numero SIRE, donc
+la signature fiable est **pere + mere + date de naissance** (deux poneys du meme
+nom n'ont pas les memes parents). Le rapprochement etait note « V2 » a la
+livraison de la fiche commune, jamais commence.
+Forme convenue, volontairement inoffensive : a la frappe du nom, on CHERCHE et on
+PROPOSE — « Dakota existe deja chez Ecurie Feinn, tu veux t'y rattacher ? » avec
+la photo. Le bouton « creer quand meme » reste toujours la : aucune creation
+n'est jamais refusee.
+⚠️ Limite : sans origines renseignees sur la fiche existante, on retombe sur le
+nom seul, qui rate les alias (« DAKOTA CA alias LUCENA SH » — la source exacte de
+Crumble/Cruibhin).
+Deux points restes sans reponse : la recherche porte-t-elle sur les clubs de la
+cavaliere ou sur toute la base ? et previent-on quand le nom entre en conflit
+avec un de SES propres chevaux (vrai homonyme) ?
+
+**3. COMPRESSION VIDEO AVANT ENVOI** (decidee le 27/08, toujours pas faite).
+C'est le levier le plus rentable de tous : divise la facture de trafic par six.
+Non livree volontairement — le reencodage dans Safari iOS est instable et
+intestable sans reseau cote atelier. A faire avec Blandine devant l'ecran, sur
+une vraie video de concours.
+
+**4. VIDEO EXTERNALISEE (idee de Blandine, rien de decide).** Coller un lien
+YouTube au lieu d'heberger : stockage ET trafic a zero, et la video fait des vues
+sur la plateforme. YouTube s'integre proprement ; TikTok beaucoup moins
+(integration capricieuse en application, contenu qui peut disparaitre). Piste
+retenue : lien externe pour les longues videos que l'on veut faire tourner,
+envoi direct compresse reserve a Hype+ pour les souvenirs prives.
+
+**5. PLAFOND PREMIUM.** Le Premium n'a aucune limite hormis la duree video posee
+ce soir. A terme il en faut une, generuse mais existante.
+
+**6. LE PRIVE N'EST PAS VRAIMENT PRIVE.** La policy SELECT de `albums_cheval`
+est `true` : un album prive reste lisible par l'API. Le filtre n'existe qu'a
+l'affichage. A reprendre, ca touche aussi les pages publiques.
+
+## 02/09/2026 (nuit) — LES DEUX MARGOT : EN-TETE DE COLONNE COLLE AU NOM
+
+Signale par Blandine : deux pastilles « Margot N. » et « Margot K. » dans le
+filtre par cavalier, pour UNE SEULE personne. Requete de controle :
+`MARGOT KHOURY Note/Score` (15 lignes) et `MARGOT KHOURY` (14 lignes).
+
+**Deux causes qui s'additionnent.** (1) La lecture du PDF telemat absorbe parfois
+un EN-TETE DE COLONNE dans le nom — meme defaut deja consigne sur
+« THELMA VANDEVILLE Note/Score ». (2) Le nom court prend l'initiale du DERNIER
+mot : « Note/Score » donnait « Margot N. », d'ou deux pastilles sans rapport
+visible.
+
+**Repare en base** (passe et confirme) : `update resultats set cavalier =
+trim(regexp_replace(cavalier, '\s*Note/Score\s*$', '')) where cavalier like
+'%Note/Score'` — 15 lignes.
+
+**Repare a la SOURCE D'ECRITURE** (leçon du 02/09 matin : reparer a l'affichage
+masque le probleme sans l'empecher). Nouvelle fonction `netNomCavalierFFE`,
+appliquee au SEUL point d'ecriture des lignes importees (`cavalier:` dans
+`enregistrerImportFFE`) et aussi en tete de `hypeNomCourt` pour l'ancien stock
+non nettoye. Elle retire les en-tetes connus en fin de nom (Note/Score, Note,
+Score, Quart, Points, Classement, Gains, Rang, Place(s), Partants, Dossard),
+jusqu'a 4 de suite. GARDE-FOU : ne retire rien s'il resterait moins de deux mots,
+pour ne jamais amputer un vrai patronyme.
+Teste : 9 cas passent, dont « JEAN DE LA NOTE » (ampute a juste titre le dernier
+mot mais garde 3 mots) et « NOTE » seul (intact).
+
+⚠️ **Le lecteur lui-meme n'est pas corrige** : il vit dans `hype-import-ffe.js`,
+fichier externe, le meme qui rate la MERE d'Ecolo Louvo (« origine constatee »,
+`Pere : -> Qif Elmy Mere : -> Garanse` sur une seule ligne, seul le pere est lu).
+Les deux corrections vont ensemble, a la prochaine session sur ce fichier. La
+garde posee ici protege la base en attendant.
+
+## 02/09/2026 (nuit) — LE LECTEUR D'IMPORT FFE CORRIGE A LA SOURCE
+
+Blandine a fourni `hype-import-ffe.js` (il n'etait dans aucune conversation).
+Les deux defauts consignes sont corriges DANS LE LECTEUR, plus seulement filtres
+en aval.
+
+**1. L'en-tete de colonne colle au nom du monteur.** CAUSE TROUVEE : « Note/Score »
+n'est pas dans `ETIQUETTES`. Il tombe donc dans la regle de continuation (« ce qui
+suit prolonge le dernier champ ») et se colle a « Monte par ». D'ou
+« MARGOT KHOURY Note/Score ». Correctif : liste `ENTETES_COLONNE`, ces lignes sont
+SAUTEES dans `lireFiches` — ni etiquette ni valeur. Plus une ceinture au moment ou
+le nom est pose, qui ne coupe jamais s'il resterait moins de deux mots.
+⚠️ La continuation LEGITIME est preservee : un nom ecrit sur deux lignes
+(« MARGOT » + « KHOURY NGUYEN ») se recolle toujours. Verifie par test.
+
+**2. La mere d'Ecolo Louvo (« origine CONSTATEE »).** L'app affichait
+« Qif Elmy × — ». Le motif d'origine exigeait que le pere ET la mere tiennent sur
+UNE SEULE ligne, fleche a sa place. Des que le telemat coupe la ligne ou glisse un
+separateur, la mere etait perdue EN SILENCE. Ajout de deux motifs de secours, l'un
+pour le pere seul, l'autre pour la mere seule, lus dans n'importe quel ordre.
+Teste sur 5 formes : une ligne, deux lignes, sans fleche, mere seule, pere seul.
+⚠️ Rappel a ne pas confondre : « origine NON constatee » = filiation inconnue,
+rien a recuperer (Dakota CA, l'app est juste) ; « origine constatee » = filiation
+connue, un manque est un vrai defaut.
+
+**A POUSSER : `hype-import-ffe.js` ET `index.html` ENSEMBLE.** Le `?v=` de la
+balise passe de 12 a **13** — sans ca le navigateur sert l'ancien module quoi
+qu'on pousse (soiree du 31/08 perdue exactement la-dessus).
+
+⚠️ Ces corrections ne sont pas verifiees sur un VRAI PDF : pas de reseau cote
+atelier. Chemin de test sans risque : reimporter le PDF d'Ecolo Louvo (origine
+constatee) — la mere doit apparaitre — et un PDF portant « Note/Score » — le nom
+du cavalier doit etre propre a l'ecran de relecture, AVANT enregistrement.
+
+## 02/09/2026 (nuit) — DAKOTA « SANS ECURIE » A CHAQUE RECHARGEMENT
+
+Signale par Blandine, capture a l'appui : l'ecurie choisie sur la fiche de Dakota
+revient a « Aucune ecurie » des qu'elle se reconnecte.
+
+**Ce n'etait PAS un probleme d'ecriture.** `set_cheval_club` fonctionne, la valeur
+est bien en base, rien n'a jamais ete perdu. C'est la LECTURE qui etait fautive :
+la requete fait bien `select("*")`, mais l'objet reconstruit pour l'affichage
+(`setChevalDyn({...})`) ne reprenait pas la colonne `club`. Elle etait chargee
+puis jetee. D'ou le comportement trompeur : on choisit l'ecurie, l'ecriture
+reussit, l'affichage se met a jour LOCALEMENT et tient toute la session — et le
+rechargement suivant repart sans club.
+
+Correctif : `club: r.data.club || null` ajoute a la reconstruction. Une ligne.
+
+**LEÇON, la meme que ce matin sur les accents : chercher le MECANISME, pas
+l'endroit.** J'aurais pu passer la nuit a soupconner la fonction SQL, les droits
+d'administratrice ou la session. Le defaut etait a l'autre bout de la chaine, dans
+un objet d'affichage qui oubliait un champ.
+
+## 02/09/2026 (nuit) — MOMENTS FORTS : PLUS JAMAIS TROIS FOIS LA MEME PHOTO
+
+Reproche deja fait le 26/08, toujours vrai a l'ecran (capture Dakota) : les trois
+cartes de « Ses moments forts » portaient la meme image. Le mecanisme existait
+(`photosForts` + rotation journaliere), mais il retombait sur le PORTRAIT du cheval
+des que la reserve etait vide — et il la repetait sur les trois cartes.
+
+**Nouvelle regle, dans l'ordre :**
+1. un album dont le NOM evoque le concours (mots de 4 lettres et plus, accents et
+   ponctuation neutralises) -> photo vraiment liee au moment ;
+2. sinon, tirage au hasard dans toutes ses photos, **sans repetition** entre les
+   trois cartes (melange mulberry32 seme sur l'identifiant du cheval + le jour :
+   stable dans la journee, renouvele le lendemain) ;
+3. s'il n'y a AUCUNE photo d'album, **seule la premiere carte** reprend le portrait
+   du cheval ; les deux autres gardent leur degrade. Mieux vaut une carte sobre que
+   la meme image trois fois — c'etait exactement le reproche.
+
+Le chargement recupere desormais aussi les albums AVEC LEUR NOM (`listerAlbumsCheval`),
+la simple liste d'URL ne permettait pas de relier une photo a un concours.
+Reserve portee de 9 a 24 photos.
+
+Teste sur 4 situations : aucune photo (portrait une seule fois, 2 cartes sobres) ·
+5 photos sans album nomme (3 distinctes) · 2 photos seulement (2 distinctes,
+1 sobre) · album « Paris Etrier 2025 » (sa photo va bien sur la carte Paris Etrier).
+
+Retouche au passage, meme capture : le bouton « Importer mes resultats officiels »
+chevauchait le rail des resultats — ecriture CENTREE, remonte de 26 a 16 px,
+marge basse de 22 px. La fleche passe en position absolue (en float elle decalait
+le centrage).
+
