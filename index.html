@@ -30025,8 +30025,21 @@ function EcranGuilde() {
            On applique le meme filtre : une ligne rattachee a un cheval d'un AUTRE club est
            ecartee. ⚠️ Une ligne sans cheval identifie passe toujours — on ne fait pas
            disparaitre une saisie qu'on ne sait pas rattacher. */
+        /* 02/09 (corrige apres retour de Blandine : « s'ils n'avaient pas de club ils
+           s'afficheraient non ») — elle a raison, et ma premiere version s'appuyait sur
+           `cv` en SUPPOSANT qu'il etait deja filtre par club. On ne suppose plus : la
+           regle est appliquee ICI, explicitement, cheval par cheval. */
         var chevauxDuClubR = {};
-        try { ((cv && cv.data) || []).forEach(function (cR) { if (cR && cR.id) chevauxDuClubR[cR.id] = 1; }); } catch (eCr) { }
+        try {
+          var noyauClubR = String((typeof noyauEcurie === "function" ? (noyauEcurie(monClub) || monClub) : monClub) || "").toLowerCase();
+          ((cv && cv.data) || []).forEach(function (cR) {
+            if (!cR || !cR.id) return;
+            var clubR = String(cR.club || "").trim();
+            if (!clubR) { chevauxDuClubR[cR.id] = 1; return; }   /* sans club : partout */
+            var nyR = String((typeof noyauEcurie === "function" ? (noyauEcurie(clubR) || clubR) : clubR)).toLowerCase();
+            if (!noyauClubR || nyR.indexOf(noyauClubR) >= 0 || noyauClubR.indexOf(nyR) >= 0) chevauxDuClubR[cR.id] = 1;
+          });
+        } catch (eCr) { }
         var filtreClubR = function (rr) {
           if (!rr || !rr.cheval_id) return true;
           return !!chevauxDuClubR[rr.cheval_id];
