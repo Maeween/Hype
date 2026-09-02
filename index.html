@@ -30065,11 +30065,9 @@ function EcranGuilde() {
       (mesChevauxClub && mesChevauxClub.length > 6) ? h("button", { onClick: function () { setEcran("cavalier"); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", marginTop: 12, padding: "13px 0", borderRadius: 14, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.06)", color: TURQL, fontSize: 12.5, fontWeight: 800, fontFamily: M, letterSpacing: 0.6, textTransform: "uppercase", cursor: "pointer" } },
         T("Voir mon fil", "See my feed", "Ver mi muro", "Vedi il mio muro", "\u81ea\u5206\u306e\u30d5\u30a3\u30fc\u30c9\u3092\u898b\u308b") + " \u2192") : null) : null,
 
-    h("div", { style: { padding: "26px 16px 0" } }, h(AgendaClubHype, { nomClub: monClub, moiG: moiG })),
-
-    h("div", { style: { padding: "26px 16px 0" } }, h(EncartCliniqueVeto, null)),
-    h("div", { style: { padding: "26px 16px 0" } }, h(EncartSellerie, null)),
-        h("div", { style: { padding: "34px 16px 0" } }, h(EncartAlbumEcurie, null)),
+            /* 02/09 (Blandine) : le bloc des derniers resultats REMONTE juste sous
+               « Mes chevaux ». L agenda, la clinique, la sellerie et l album de
+               l ecurie descendent chacun d un cran. */
     h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
         /* 01/09 (decision de Blandine) : LE TITRE OUVRE LA PAGE, et un lien
@@ -30162,6 +30160,12 @@ function EcranGuilde() {
       (railClub && railClub.length)
         ? null
         : h("div", { style: { fontSize: 11.5, color: "#6B7580", fontFamily: M, fontStyle: "italic" } }, T("Les r\u00e9sultats des cavaliers du club appara\u00eetront ici.", "Results from the club's riders will appear here.", "Los resultados de los jinetes del club aparecer\u00e1n aqu\u00ed.", "I risultati dei cavalieri del club appariranno qui.", "\u30af\u30e9\u30d6\u306e\u9a0e\u624b\u306e\u7d50\u679c\u304c\u3053\u3053\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002", "Die Ergebnisse der Reiter des Clubs erscheinen hier."))),
+
+    h("div", { style: { padding: "26px 16px 0" } }, h(AgendaClubHype, { nomClub: monClub, moiG: moiG })),
+
+    h("div", { style: { padding: "26px 16px 0" } }, h(EncartCliniqueVeto, null)),
+    h("div", { style: { padding: "26px 16px 0" } }, h(EncartSellerie, null)),
+        h("div", { style: { padding: "34px 16px 0" } }, h(EncartAlbumEcurie, null)),
     h("div", { style: { padding: "26px 16px 0" } },
       h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", marginBottom: 12 } },
         h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, textTransform: "uppercase" } }, T("Souvenirs du club", "Club memories", "Recuerdos del club", "Ricordi del club", "\u30af\u30e9\u30d6\u306e\u601d\u3044\u51fa")),
@@ -35118,6 +35122,24 @@ function GalerieSouvenirs(props) {
 
 function GrilleSouvenirs(props) {
   var h = React.createElement;
+  /* 02/09 (Blandine : « que je puisse tester les deux ») : interrupteur d'essai
+     du cadrage des vignettes, sur SES photos et pas sur des images fabriquees.
+     · entier  = l'image tient dans la case, deux bandes noires (object-fit: contain)
+     · recadre = l'image remplit la case et deborde hors champ (cover, l'ancien)
+     · auto    = recadre, SAUF les images nettement plus hautes que larges
+     Le choix vit en localStorage : il ne change que cet ecran, sur ce telephone. */
+  var _mv = React.useState(function () { try { return localStorage.getItem("hype_vignettes") || "entier"; } catch (eMV) { return "entier"; } });
+  var modeVig = _mv[0], setModeVig = _mv[1];
+  function poserMode(m) { try { localStorage.setItem("hype_vignettes", m); } catch (eSM) { } setModeVig(m); }
+  var ajustVig = (modeVig === "recadre") ? "cover" : (modeVig === "entier" ? "contain" : "cover");
+  /* en mode auto : c'est la forme reelle du fichier qui tranche, au chargement */
+  function auAffichage(ev) {
+    try {
+      if (modeVig !== "auto") return;
+      var el = ev && ev.target; if (!el || !el.naturalWidth) return;
+      el.style.objectFit = (el.naturalHeight > el.naturalWidth * 1.25) ? "contain" : "cover";
+    } catch (eAA) { }
+  }
   var tnT = props.teinte || "#20D9F5"; var tnCl = props.teinteCl || "#5FE9F0";
   var tA = function (aT) { return teinteRGBA(tnT, aT); };
   var tACl = function (aT) { return teinteRGBA(tnCl, aT); };
@@ -35210,8 +35232,8 @@ function GrilleSouvenirs(props) {
     cellules.push(h("div", { key: "p" + i9, className: "souvCell", style: { aspectRatio: "1 / 1", animation: entree } },
       h("div", { className: "souvFlot", style: { "--fx": fx + "px", "--fy": fy + "px", animationDuration: duree + "s", animationDelay: depart + "s", border: enVedette ? "1.5px solid " + tA(0.75) + "" : "1px solid " + tA(0.38) + "", boxShadow: enVedette ? "0 0 18px " + tA(0.25) + ", inset 0 0 0 1px rgba(255,255,255,0.06)" : "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 10px " + tA(0.08) + "", cursor: "pointer" } },
         estVid
-          ? h("video", { className: "souvImg", src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", onClick: function () { try { window.__visListe = photos.slice(); } catch (eL3) { } if (props.onOuvrir) props.onOuvrir(u); }, style: { objectFit: "cover", background: "#000" } })
-          : h("img", { className: "souvImg", src: u, alt: "", onClick: function () { try { window.__visListe = photos.slice(); } catch (eL4) { } if (props.onOuvrir) props.onOuvrir(u); } }),
+          ? h("video", { className: "souvImg", src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", onClick: function () { try { window.__visListe = photos.slice(); } catch (eL3) { } if (props.onOuvrir) props.onOuvrir(u); }, style: { objectFit: ajustVig, background: "#000" } })
+          : h("img", { className: "souvImg", src: u, alt: "", onLoad: auAffichage, style: { objectFit: ajustVig, background: "#0A0D11" }, onClick: function () { try { window.__visListe = photos.slice(); } catch (eL4) { } if (props.onOuvrir) props.onOuvrir(u); } }),
         estVid ? h("span", { style: { position: "absolute", left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.35)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(5px)", pointerEvents: "none" } }, "\u25B6") : null,
         h("span", { className: "souvHaloCell", style: { animationDelay: ((i9 % 5) * 1.4) + "s" } }),
         props.onToggleVedette ? h("button", { onClick: function (e9) { if (e9 && e9.stopPropagation) e9.stopPropagation(); props.onToggleVedette(u); }, "aria-label": "Vedette", style: { position: "absolute", top: 7, right: 7, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", background: enVedette ? "" + tA(0.9) + "" : "rgba(7,8,10,0.55)", color: enVedette ? "#04252a" : "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2605") : null)));
@@ -35223,6 +35245,13 @@ function GrilleSouvenirs(props) {
   }
   var galerieVide = !photos || photos.length === 0;
   return h("div", null,
+    (galerieVide || !props.reglable) ? null : h("div", { style: { display: "flex", alignItems: "center", gap: 7, padding: "0 16px 9px", flexWrap: "wrap" } },
+      h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.4)", fontFamily: "'Montserrat',sans-serif" } }, "Vignettes"),
+      [["entier", "enti\u00e8res"], ["recadre", "recadr\u00e9es"], ["auto", "auto"]].map(function (o) {
+        var actif = (modeVig === o[0]);
+        return h("button", { key: o[0], onClick: function () { poserMode(o[0]); },
+          style: { background: actif ? tA(0.16) : "transparent", border: "1px solid " + tA(actif ? 0.6 : 0.22), color: actif ? tnCl : "rgba(237,242,245,0.55)", borderRadius: 11, padding: "3px 10px", fontSize: 10.5, fontFamily: "'Montserrat',sans-serif", fontWeight: actif ? 700 : 500, cursor: "pointer" } }, o[1]);
+      })),
     galerieVide ? null : h("div", { ref: grilleRef, style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, padding: "0 16px" } }, cellules),
     h("div", { style: { display: "flex", justifyContent: "center", padding: "16px 16px 8px" } },
       h("div", { onClick: props.onAjouter, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
@@ -37558,7 +37587,7 @@ function EcranCheval() {
         })()))  : null,
       panneau === "souvenirs" ? h("div", null,
         encartIdentiteCh(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa", "Erinnerungen")),
-        h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative;overflow:hidden;border-radius:16px;min-height:0;background:#0A0D11} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:contain;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
+        h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative;overflow:hidden;border-radius:16px;min-height:0;background:#0A0D11} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
         h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
         h("i", { className: "souvLuciole", style: { left: "66%", top: "50%", animationDelay: "9s" } }),
         h("i", { className: "souvLuciole", style: { left: "40%", top: "72%", animationDelay: "17s" } }),
@@ -37613,7 +37642,7 @@ function EcranCheval() {
           h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("★ = en vedette sur la fiche (6 max)", "★ = featured on the profile (6 max)", "★ = destacada en la ficha (6 máx.)", "★ = in evidenza sulla scheda (max 6)", "★ = プロフィール掲載（6枚まで）", "★ = auf dem Profil hervorgehoben (max. 6)")),
           h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
         h("div", { className: "souvin", style: { animationDelay: ".12s" } },
-          h(GrilleSouvenirs, { teinte: teinte, teinteCl: teinteCl, cible: cibleCh, onVide: setGalVideCh, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
+          h(GrilleSouvenirs, { reglable: !!(chevalDyn && moi && chevalDyn.ownerId === moi.id), /* 02/09 : l interrupteur d essai n apparait que pour la proprietaire */ teinte: teinte, teinteCl: teinteCl, cible: cibleCh, onVide: setGalVideCh, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
             var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
             setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
