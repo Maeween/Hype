@@ -2437,6 +2437,34 @@ function hypeReparerFFE(t) {
 /* Applique la reparation aux champs texte d une ligne de resultat, a la lecture.
    ⚠️ Ne corrige PAS la base : les lignes restent cassees en Postgres tant que
    l UPDATE du 02/09 n a pas ete passe (voir SUIVI). */
+/* 02/09 (Blandine) — NOM COURT SUR LA PAGE PERFORMANCES DU CHEVAL.
+   « EVAN ROUX » devient « Evan R. ». Motif principal : ce sont des mineurs, et
+   leur nom complet s affichait sur une page consultable par n importe qui.
+   ⚠️ PORTEE VOLONTAIREMENT LIMITEE a la page Performances du cheval — « le reste
+   on le laisse tel quel pour l instant » : le rail du club, le fil et la page
+   Performances du club gardent le nom entier. Chantier transversal en attente
+   (voir « MIS DE COTE LE 02/09 »).
+   ⚠️ N ABREGE QU A L AFFICHAGE : les comparaisons (filtre par cavalier,
+   regroupements) continuent de porter sur le nom complet, sinon deux cavaliers
+   de meme prenom seraient confondus.
+   Regle : premier mot = prenom, initiale du DERNIER mot. « EMMA VICTOIRE DURAND »
+   donne « Emma D. » — les prenoms composes perdent leur second prenom, c est
+   assume : la FFE ne dit pas ou s arrete le prenom. */
+function hypeNomCourt(nom) {
+  var t = String(nom == null ? "" : nom).trim().replace(/\s+/g, " ");
+  if (!t) return "";
+  function cap(mot) {
+    return mot.split("-").map(function (p) {
+      if (!p) return p;
+      return p.charAt(0).toUpperCase() + p.slice(1).toLowerCase();
+    }).join("-");
+  }
+  var mots = t.split(" ");
+  if (mots.length < 2) return cap(mots[0]);
+  var dernier = mots[mots.length - 1];
+  return cap(mots[0]) + " " + dernier.charAt(0).toUpperCase() + ".";
+}
+
 function hypeReparerLignes(lignes) {
   return (lignes || []).map(function (r) {
     if (!r) return r;
@@ -37650,7 +37678,7 @@ function EcranCheval() {
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grande ? 14.5 : 10.8, color: "#F2EDE2", letterSpacing: ".03em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom + (f.an ? " " + f.an : "")),
                 f.ep ? h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.ep) : null,
                 h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-                  h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?"), f.cav ? " \u00b7 " : null, f.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, f.cav) : null)));
+                  h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?"), f.cav ? " \u00b7 " : null, f.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, hypeNomCourt(f.cav)) : null)));
           }
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
@@ -37678,7 +37706,7 @@ function EcranCheval() {
               (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
                 [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
                   var onC = (cavFiltre === oC[0]);
-                  return h("button", { key: "cav" + oC[0], onClick: function () { setCavFiltre(oC[0]); }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, oC[1]);
+                  return h("button", { key: "cav" + oC[0], onClick: function () { setCavFiltre(oC[0]); }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
                 })) : null,
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
@@ -37713,7 +37741,7 @@ function EcranCheval() {
                         h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, rS.d ? dateFr(rS.d) : anK),
                         h("div", { style: { flex: 1, minWidth: 0 } },
                           h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
-                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rS.cav) : null)),
+                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, hypeNomCourt(rS.cav)) : null)),
                         h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")));
                     })) : null);
               })) : null,
@@ -37727,7 +37755,7 @@ function EcranCheval() {
                     h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, dateFr(rD.d)),
                     h("div", { style: { flex: 1, minWidth: 0 } },
                       h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.nom),
-                      h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.ep || "", (rD.ep && rD.cav) ? " \u00b7 " : null, rD.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rD.cav) : null)),
+                      h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.ep || "", (rD.ep && rD.cav) ? " \u00b7 " : null, rD.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, hypeNomCourt(rD.cav)) : null)),
                     h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rD.pl + "/" + (rD.part || "?")));
                 }))) : null,
             /* — 6 · CTA — */
