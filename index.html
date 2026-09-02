@@ -2685,6 +2685,24 @@ async function ajouterCheval({ nom, race, age, discipline, fichierPhoto, club } 
 /* Les clubs du cavalier connecte : `ecurie` et `ecurie2` de son profil. Rend un
    tableau vide, a un ou a deux noms — c'est lui qui decide si la question du
    club est posee a la creation. */
+/* 02/09 — CHANGER L ECURIE D UN CHEVAL, y compris celui de quelqu un d autre.
+   ⚠️ `modifierCheval` finit par `.eq("user_id", user.id)` : Postgres refuse
+   l ecriture des que le cheval n est pas le sien, meme pour une administratrice.
+   On passe donc par la fonction `set_cheval_club` (creee en base le 02/09,
+   SECURITY DEFINER) qui verifie elle-meme l appelant — proprietaire OU
+   administratrice — et n ecrit QUE la colonne `club`. Aucun autre champ n est
+   atteignable par cette porte.
+   ⚠️ La liste des administratrices est ECRITE EN DUR DANS LA FONCTION SQL :
+   ajouter une moderatrice cote code ne suffit pas, il faut repasser la fonction. */
+async function changerClubCheval(chevalId, club) {
+  try {
+    if (typeof supa === "undefined" || !supa) return { error: { message: "Base indisponible" } };
+    var r = await supa.rpc("set_cheval_club", { p_cheval: chevalId, p_club: club || null });
+    if (r && r.error) return { error: r.error };
+    return { error: null };
+  } catch (e) { return { error: { message: String(e) } }; }
+}
+
 async function mesClubs() {
   try {
     const user = await utilisateurActuel();
@@ -30866,7 +30884,7 @@ function EcranGererEcurie() {
               setChevaux(function (lst) { return (lst || []).map(function (c9) { return c9.id === item.id ? Object.assign({}, c9, { club: cl || null }) : c9; }); });
               (async function () {
                 try {
-                  var rM = await modifierCheval(item.id, { club: cl || null });
+                  var rM = await changerClubCheval(item.id, cl || null); /* 02/09 : meme porte que la fiche cheval */
                   if (rM && rM.error) throw rM.error;
                 } catch (eM) {
                   item.club = avant;
@@ -35896,7 +35914,19 @@ function EcranCheval() {
   var confSupprFicheSt = React.useState(false); var confSupprFiche = confSupprFicheSt[0], setConfSupprFiche = confSupprFicheSt[1];
   var busyFicheSt = React.useState(false); var busyFiche = busyFicheSt[0], setBusyFiche = busyFicheSt[1];
   var champsFicheSt = React.useState(null); var champsFiche = champsFicheSt[0], setChampsFiche = champsFicheSt[1];
-  function ouvrirEditFiche() { setChampsFiche({ nom: c.nom || "", race: c.race || "", age: c.age || "", discipline: c.discipline || "", teinte: (chevalDyn && chevalDyn.teinte) || "" }); setEditFiche(true); setMenuFiche(false); }
+  /* 02/09 : le choix de l ecurie du cheval, dans le formulaire de la fiche.
+     Il existait deja dans « Gerer mon ecurie » — Blandine ne l y avait pas
+     trouve. Meme porte en base (changerClubCheval). */
+  var _mcl = React.useState([]); var mesClubsFiche = _mcl[0], setMesClubsFiche = _mcl[1];
+  var _errCl = React.useState(""); var erreurClub = _errCl[0], setErreurClub = _errCl[1];
+  React.useEffect(function () {
+    var vivant = true;
+    (async function () {
+      try { if (typeof mesClubs === "function") { var l = await mesClubs(); if (vivant) setMesClubsFiche(l || []); } } catch (eMc) { }
+    })();
+    return function () { vivant = false; };
+  }, []);
+  function ouvrirEditFiche() { setChampsFiche({ nom: c.nom || "", race: c.race || "", age: c.age || "", discipline: c.discipline || "", teinte: (chevalDyn && chevalDyn.teinte) || "", club: (chevalDyn && chevalDyn.club) || "" }); setEditFiche(true); setMenuFiche(false); }
   async function changerPhotoPalm() { /* 25/08 : ADMINS SEULEMENT (estModerateurHype) — changer en ligne la photo d'en-tete du palmares editorial ; stockee dans chevaux.photo_palmares (SQL a passer). Droit a elargir plus tard sur decision de Blandine. */
     try {
       var uA = await utilisateurActuel();
@@ -35927,6 +35957,19 @@ function EcranCheval() {
     setBusyFiche(true);
     try {
       var rEd = await modifierCheval(c.dbId, { nom: champsFiche.nom, race: champsFiche.race, age: champsFiche.age, discipline: champsFiche.discipline, teinte: champsFiche.teinte || null });
+      /* 02/09 : l ecurie passe par set_cheval_club — proprietaire OU administratrice.
+         ⚠️ On RELIT le resultat et on DIT l echec, on ne l avale pas. */
+      var clubAvant = (chevalDyn && chevalDyn.club) || "";
+      var clubVoulu = (champsFiche.club || "");
+      if (clubVoulu !== clubAvant) {
+        var rCl = await changerClubCheval(c.dbId, clubVoulu || null);
+        if (rCl && rCl.error) {
+          setErreurClub(T("L'\u00e9curie n'a pas pu \u00eatre chang\u00e9e : ", "The stable could not be changed: ", "No se pudo cambiar: ", "Impossibile cambiare: ", "\u5909\u66f4\u3067\u304d\u307e\u305b\u3093\uff1a", "Stall nicht ge\u00e4ndert: ") + (rCl.error.message || rCl.error));
+          setBusyFiche(false);
+          return;
+        }
+        try { setChevalDyn(function (av) { return Object.assign({}, av || {}, { club: clubVoulu || null }); }); } catch (eSc) { }
+      }
       if (!rEd || !rEd.error) {
         setChevalDyn(Object.assign({}, chevalDyn, { teinte: champsFiche.teinte || null, nom: champsFiche.nom, race: champsFiche.race, age: champsFiche.age, discipline: champsFiche.discipline, info: [champsFiche.race, champsFiche.age, champsFiche.discipline].filter(Boolean).join(" · ") }));
         setEditFiche(false);
@@ -37920,6 +37963,27 @@ function EcranCheval() {
             h("input", { value: champsFiche.race, onChange: function (eR) { setChampsFiche(Object.assign({}, champsFiche, { race: eR.target.value })); }, placeholder: T("Race", "Breed", "Raza", "Razza", "品種", "Rasse"), style: { flex: 1, padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none", marginBottom: 9, boxSizing: "border-box" } }),
             h("input", { value: champsFiche.age, onChange: function (eA) { setChampsFiche(Object.assign({}, champsFiche, { age: eA.target.value })); }, placeholder: T("Âge", "Age", "Edad", "Età", "年齢", "Alter"), style: { flex: 1, padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none", marginBottom: 9, boxSizing: "border-box" } })),
           h("input", { value: champsFiche.discipline, onChange: function (eDi) { setChampsFiche(Object.assign({}, champsFiche, { discipline: eDi.target.value })); }, placeholder: T("Discipline", "Discipline", "Disciplina", "Disciplina", "種目", "Disziplin"), style: { width: "100%", padding: "11px 14px", borderRadius: 12, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none", marginBottom: 16, boxSizing: "border-box" } }),
+          /* 02/09 — L ECURIE DU CHEVAL. ⚠️ N apparait que si le cavalier a
+             PLUSIEURS ecuries : avec une seule, la question n a pas de sens.
+             ⚠️ « Aucune » est un CHOIX VALIDE — il remet `club` a vide, donc le
+             cheval reparait partout, comme les chevaux d avant la colonne.
+             ⚠️ L echec se DIT a l ecran (lecon du .catch() vide du 01/09). */
+          (mesClubsFiche.length > 1) ? h("div", { style: { marginBottom: 10 } },
+            h("div", { style: { fontSize: 10.5, letterSpacing: 1.8, color: "#8A929C", textTransform: "uppercase", marginBottom: 6, fontFamily: "'Montserrat',sans-serif" } },
+              T("\u00c9curie du cheval", "Horse's stable", "Cuadra del caballo", "Scuderia del cavallo", "\u6240\u5c5e", "Stall des Pferds")),
+            h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6 } },
+              mesClubsFiche.concat([""]).map(function (cl) {
+                var actC = String(champsFiche.club || "") === cl;
+                return h("div", { key: "cl" + (cl || "__aucune__"), role: "button",
+                  onClick: function () { setErreurClub(""); setChampsFiche(Object.assign({}, champsFiche, { club: cl })); },
+                  style: { padding: "7px 13px", borderRadius: 999, cursor: "pointer",
+                    border: "1px solid " + (actC ? "rgba(217,199,163,0.7)" : "rgba(255,255,255,0.14)"),
+                    background: actC ? "rgba(217,199,163,0.14)" : "rgba(255,255,255,0.03)",
+                    color: actC ? "#D9C7A3" : "rgba(237,242,245,0.7)",
+                    fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+                  cl || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine"));
+              })),
+            erreurClub ? h("div", { style: { marginTop: 6, fontSize: 11.5, color: "#FF6B6B", fontFamily: "'Montserrat',sans-serif" } }, erreurClub) : null) : null,
           h("div", { style: { display: "flex", gap: 10 } },
             h("button", { onClick: function () { setEditFiche(false); }, style: { flex: 1, padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "none", color: "#B9C6CC", fontSize: 13.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen")),
             h("button", { onClick: soumettreEditFiche, disabled: busyFiche, style: { flex: 1, padding: "12px", borderRadius: 12, background: "#20D9F5", border: "none", color: "#04252a", fontSize: 13.5, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, busyFiche ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern")))

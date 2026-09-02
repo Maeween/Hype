@@ -14,7 +14,7 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 | Fichier | Où | md5 | Quoi |
 |---|---|---|---|
-| `index.html` | racine | `88576b021819c626f01e6781531cc03f` | fil : cartes d'import · page Performances : portes retirées |
+| `index.html` | racine | `02f2dc2bad5bddbdc96a94ef2b904378` | fil · Performances · podium · galerie · fond · accents · modale · aération · carrousel agenda · nom court |
 
 ⚠️ Remplace `35656569387c169f5356ca046eda5306`. **Aucun autre fichier n'a bougé** :
 `hype-stories.js` (20bx), `hype-resultats.js` (v2), `hype-podium-clubs.png` et
@@ -74,6 +74,374 @@ n'aurait rien changé à l'écran.
 ⚠️ `palmTech` reste dans le code, **sans porte**. `setPalmTech(true)` : 0
 occurrence. À supprimer pour de bon quand la vérification aura confirmé que rien
 d'autre n'y vivait.
+
+## 3 · Podium des clubs — l'écriture descend, le ciel se fond
+
+Blandine : « l'écriture est trop haute » et « ça prend beaucoup de place pour
+pas grand-chose ».
+
+- `TEXTES[].b` (ancrage par le bas, en % de l'asset) : 47,0 / 39,0 / 38,2 →
+  **44,0 / 36,0 / 35,2**. Le « 1 » imprimé commence à 61,2 %, la marge tient.
+- Le haut de l'asset n'est que du ciel. ⚠️ **L'image n'est PAS recadrée** : les
+  trous sont mesurés en % de sa hauteur, tout serait tombé à côté. À la place,
+  un `mask-image` en dégradé (transparent jusqu'à 4 %, opaque à 18 %) et
+  `marginTop: -9%` pour reprendre la place gagnée.
+- ⚠️ Le 1er médaillon commence à 26,6 % : le fondu s'éteint bien avant, il n'est
+  pas touché. Couper plus haut ferait pâlir sa photo.
+- `hype-podium-clubs.png` n'est pas modifié. Tout est en CSS.
+
+## 4 · Galerie du cheval — les photos ne débordent plus
+
+Point qui traînait dans « anciens inchangés » (« photos qui débordent de leurs
+cadres »). Vu en vrai sur la page Photos de Rizotto : une affiche verticale
+(Fontainebleau, GRANDPRIX) étirait sa case sur toute la hauteur de l'écran.
+
+**Cause** : les cases sont carrées par `aspect-ratio: 1 / 1`, mais
+`.souvCell` n'avait que `position: relative`. ⚠️ `aspect-ratio` **cède** quand
+le contenu est plus grand — il ne force rien. Et une case de grille refuse de
+descendre sous la hauteur de son contenu sans `min-height: 0`.
+
+- `.souvCell` : `+ overflow:hidden; border-radius:16px; min-height:0; background:#0A0D11`
+- `.souvImg` : `object-fit: cover` → **`contain`** (choix de Blandine : « entier
+  avec bandes »).
+
+### L'interrupteur d'essai (Blandine : « que je puisse tester les deux »)
+
+Pas de maquette : le banc d'essai tournerait sur des images fabriquées, et c'est
+exactement ce qui a coûté deux livraisons le 01/09. Le réglage est **dans l'app**,
+sur ses vraies photos, au-dessus de la Galerie de la page Photos :
+
+| Mode | Effet |
+|---|---|
+| **entières** (défaut) | l'image tient dans la case, deux bandes noires |
+| **recadrées** | l'image remplit la case et déborde hors champ (l'ancien) |
+| **auto** | recadré, sauf les images plus hautes que larges (rapport > 1,25) |
+
+- Clé `localStorage` : `hype_vignettes`. ⚠️ **Local à son téléphone**, comme les
+  quatre réglages d'apparence du club — même chantier de bascule en base le jour venu.
+- ⚠️ L'interrupteur n'apparaît **que pour la propriétaire** du cheval
+  (`reglable`), les autres voient le mode par défaut.
+- En mode auto, c'est la forme réelle du fichier qui tranche, au chargement
+  (`naturalHeight > naturalWidth × 1.25`) — pas une devinette sur le nom.
+- ⚠️ Une fois le mode choisi, **le dire** : il faudra figer le gagnant et retirer
+  l'interrupteur, sinon il reste un réglage de plus à maintenir.
+⚠️ Les coins arrondis venaient de l'image ; ils sont passés sur le cadre, sinon
+le recadrage les aurait rendus carrés.
+
+## 5 · Page Club — les derniers résultats remontent sous « Mes chevaux »
+
+⚠️ **Demandé hier, jamais fait.** Blandine avait dit « Attends » juste après ma
+question sur le périmètre du bloc, la conversation est partie ailleurs, et je ne
+l'ai pas signalé comme resté en plan. Elle l'a découvert à l'écran ce matin.
+→ Leçon : un chantier interrompu par « attends » doit être **redit** à la reprise,
+pas laissé au fil de la conversation.
+
+Le bloc entier (titre + « Voir tout » + rail aux coupes + message d'attente,
+92 lignes) passe juste après « Mes chevaux ». Nouvel ordre : Les chevaux de
+l'écurie → Ma gestion / Mes chevaux → **Derniers résultats** → Agenda du club →
+Clinique véto → Sellerie → Album de l'écurie → Souvenirs du club.
+
+⚠️ « Mes chevaux » est conditionné par `moiG` : pour un visiteur non connecté, le
+bloc n'existe pas et les résultats remontent alors sous « Les chevaux de
+l'écurie ». Blandine ne voit donc pas la page comme un visiteur.
+
+## 6 · Page Écurie — le fond de l'en-tête n'était pas celui de l'app
+
+Blandine : « je veux cette couleur de fond exactement, celle de l'accueil ».
+
+⚠️ Piège : les deux fonds de page étaient **déjà identiques** (`#060709`,
+`COLORS.nuit` pour l'accueil, valeur écrite en dur pour `EcranGuilde`). La
+différence venait d'un **calque** : le bloc d'en-tête de la page Écurie
+(bannière + nom + lieu + OFFICIAL, ligne 29843) portait `background: "#000"`,
+noir pur. Sur OLED le noir absolu s'éteint et la cassure se voyait franchement
+sous le badge OFFICIAL.
+
+→ `#000` remplacé par `#060709`. Une ligne.
+→ Leçon : quand une couleur « paraît » différente, comparer les **calques**
+avant de repeindre la valeur de fond — elle était déjà bonne.
+
+## 7 · Accents cassés — la cause était dans le correctif du 26/08
+
+« PrÃÂ©paratoire (1,00 m) » sur la fiche de Vallieres.
+
+**Cause trouvée, et elle est en boucle avec un correctif précédent.** Une table
+de réparation existait (`ACCENTS_CASSES`, dans `EcranCheval`) et attendait la
+séquence `Ã` + caractère de contrôle + `Â` + `©`. Or **l'import purge les
+caractères de contrôle avant d'écrire** — c'est le correctif du 26/08 contre le
+refus Postgres (« unsupported Unicode escape sequence »). La séquence en base
+est donc `ÃÂ©`, trois caractères, et la table ne la trouvait jamais.
+⚠️ Un correctif peut invalider un autre correctif sans que rien ne casse
+visiblement : la réparation tournait à vide depuis le 26/08.
+
+- Nouvelle fonction **globale** `hypeReparerFFE` + `hypeReparerLignes`
+  (l'ancienne était locale à un composant et ne servait qu'à raccourcir un libellé).
+- Les contrôles résiduels sont purgés, puis les paires appliquées **en boucle**
+  (4 passes max) : un double encodage laisse plusieurs couches.
+- Appliqué **à la lecture**, sur les quatre points d'entrée : fiche cheval,
+  fiche commune, page Performances du club, rail aux coupes.
+- Vérifié en exécutant la fonction du fichier livré :
+  `PrÃÂ©paratoire (1,00 m)` → `Préparatoire (1,00 m)` ; un texte propre est intact.
+
+⚠️ **La base reste sale** : la réparation est à l'affichage. Pour assainir :
+
+```sql
+update resultats set
+  epreuve  = replace(replace(epreuve,  'ÃÂ©','é'), 'Ã©','é'),
+  concours = replace(replace(concours, 'ÃÂ©','é'), 'Ã©','é'),
+  cavalier = replace(replace(cavalier, 'ÃÂ©','é'), 'Ã©','é')
+where epreuve like '%Ã%' or concours like '%Ã%' or cavalier like '%Ã%';
+```
+⚠️ À passer seulement après un `select` de contrôle, et ça ne couvre que le `é` —
+les autres accents suivent le même motif si besoin.
+
+## 8 · Plantage d'EcranCheval — pourquoi il n'a jamais pu être diagnostiqué
+
+⚠️ **Le message d'erreur n'était pas affichable.** Le bloc « Détails techniques »
+de `BarriereEcran` montrait `stack` **OU** `message` — la pile existant toujours,
+le message n'apparaissait jamais. La note du 01/09 (« taper Détails techniques et
+lire la première ligne ») était donc impossible à suivre : la première ligne
+était déjà la pile.
+
+→ Corrigé : **message d'abord, pile ensuite**, séparés par une ligne vide.
+
+⚠️ **Le bug lui-même n'est pas corrigé** et n'est plus atteignable (les deux
+portes vers `palmTech` ont été retirées ce matin). Je n'ai pas cherché de cause
+au jugé : sans le message, tout correctif aurait été une devinette — exactement
+l'erreur des deux livraisons du 01/09 sur la hauteur du texte des stories.
+→ Si le plantage réapparaît ailleurs, le message sera maintenant lisible.
+
+## 9 · Modale « Nouveau rendez-vous » — le doigt scrollait la page derrière
+
+Vu sur l'enregistrement d'écran de Blandine : dans la modale de l'agenda du club,
+le geste faisait défiler l'arrière-plan et le bouton d'envoi restait inatteignable.
+
+**Deux causes, pas une :**
+1. `.agc-modal` avait bien `overflow-y:auto`, mais **pas `overscroll-behavior:contain`** :
+   arrivé en bout de course, iOS passe le geste au parent. Ajouté, avec
+   `-webkit-overflow-scrolling:touch` et `touch-action:pan-y`.
+2. Le `padding-bottom` valait `safe-area + 20px`, alors que **la barre de
+   navigation fait ~96 px et passe par-dessus**. Le bouton était donc dessous,
+   physiquement hors d'atteinte. Passé à `safe-area + 124px`.
+   `max-height` 88vh → 86vh.
++ `.agc-mbg` (le fond) reçoit `overscroll-behavior:contain` et `touch-action:none`
+  pour ne plus transmettre le geste à la page.
+
+## 10 · Page Écurie — tout était trop collé
+
+Blandine : « mets plus d'espace entre chaque partie ». Espacement vertical des
+blocs de premier niveau d'`EcranGuilde` uniquement : 26px → **46px**,
+22px → **42px**, 34px → **52px**. 8 blocs concernés.
+⚠️ Seule la page Écurie/Club est touchée — les mêmes valeurs existent ailleurs
+dans l'app et n'ont pas bougé. Les deux petits paddings de la zone gamification
+(12 et 14px) sont volontairement laissés : ce sont des sous-blocs, pas des parties.
+
+## 11 · Agenda du club — carrousel de cartes (brief « modèle n°6 »)
+
+### Inventaire fait AVANT d'écrire (exigé par le brief)
+
+Table `club_agenda`, via `chargerAgendaClub(clef)` : `select("*")` filtré sur
+`date_jour >= aujourd'hui`, **trié par date croissante**, limite 50. La liste
+arrive donc déjà chronologique — aucun tri ajouté.
+
+Champs réellement disponibles : `id`, `type` (stage/concours/sortie), `titre`,
+`date_jour`, `heure`, `lieu`, `description`, `image_url`.
+
+⚠️ **Aucun lien vers des cavaliers ou des chevaux.** Les avatars de la référence
+ne sont donc PAS reproduits — rien n'a été inventé pour ressembler à la maquette.
+⚠️ **Aucun écran « agenda complet » n'existe.** « Voir tout l'agenda » ne peut
+donc pas ouvrir une page : il déroule sous le carrousel la liste complète **déjà
+chargée**, en vue verticale sobre. C'est un ajout, pas un écran fictif — à
+remplacer le jour où une vraie page agenda existera.
+
+### Ce qui a été fait
+
+- Carrousel horizontal `scroll-snap-type: x mandatory`, scrollbar masquée.
+- ⚠️ **RÉVISÉ dans la foulée par Blandine** : « fais les carrés un peu plus petits
+  qu'on en voie deux par ligne ». Le brief initial demandait une carte dominante à
+  70–78 % avec les voisines qui dépassent ; on est passé à **deux cartes par
+  ligne**. Conséquences assumées : `scroll-snap-align` **center → start**, plus de
+  carte centrale dominante, et **l'atténuation des voisines est retirée** (réduire
+  l'une des deux cartes visibles n'avait plus de sens). Il ne reste de la carte
+  active que la bordure champagne, pour les pastilles.
+- **Mesuré dans un navigateur réel** (Playwright) à 375 / 390 / 430 px :
+  carte à **46 %** dans les trois cas — deux cartes entières + un filet de la
+  troisième (~19 px à 375 px). Hauteur de carte 295 → **217 px**.
+- Typo et visuel resserrés en proportion : visuel 186 → 124 px, date 40 → 29 px,
+  nom 18 → 14 px, écart entre cartes 14 → 10 px (le pas du calcul de pastille
+  suit, sinon l'index actif se décale).
+- Palette : `#111417` anthracite, `#F4F7FA` blanc cassé, **champagne `#D9C7A3`**
+  pour les accents. ⚠️ Plus une seule trace de turquoise dans cette section.
+- Date sur le visuel : jour en Cinzel 40 px, mois et jour de la semaine en
+  capitales espacées. Bas de carte : catégorie champagne, nom en Cinzel,
+  secondaire en gris, heure discrète.
+- Sans `image_url` : dégradé anthracite + pictogramme du type en filigrane.
+  ⚠️ Aucune image distante inventée.
+- Pastilles `● ○ ○` sous les cartes, active en champagne (barre de 16 px).
+- ⚠️ **La grande carte pointillée est supprimée.** Section vide = une phrase
+  « Rien de prévu pour le moment. » + un petit bouton. Très peu de hauteur.
+- Le glissement n'ouvre plus la fiche par accident : le déplacement du doigt est
+  mesuré, au-delà de 10 px le clic est ignoré.
+- ⚠️ **Rien d'autre n'a bougé** : `setModal`, `ajouterAgendaClub`, `supprimer`,
+  `FicheEvenementClub` et le chargement sont intacts.
+- ⚠️ L'ancien rendu de carte est **conservé** dans le code (`__ancienRendu`,
+  non appelé) — le brief interdisait de supprimer des fonctions. À retirer
+  quand le carrousel sera validé, avec les classes `.agc-rail/.agc-card/.agc-add`
+  devenues inutiles.
+
+## 12 · MIS DE CÔTÉ LE 02/09 — à reprendre à froid, rien n'est codé
+
+Deux idées de Blandine, écartées pour l'instant (« c'est compliqué, on verra ça
+plus tard »). Elles touchent les **mêmes cartes**, à traiter ensemble.
+
+### a) La photo des cartes « Derniers résultats »
+
+Idée : photo du **cavalier** si elle existe, sinon celle du cheval.
+Aujourd'hui : photo du cheval seule (`chevauxRail[cheval_id].photo`), et
+**aucun repli** quand elle manque — la vignette disparaît.
+
+⚠️ **Le piège, et c'est lui qui a fait reculer** : sur une ligne de résultat,
+`cavalier` est un TEXTE venu de la FFE (« EVAN ROUX ») tandis que `user_id` est
+le compte qui a **importé** la ligne — c'est-à-dire Blandine pour presque tout.
+Prendre « la photo du cavalier » au sens `user_id` afficherait **son avatar à
+elle** sur les cartes d'Evan et d'Ilona. Pire que l'existant.
+→ Pour avoir la vraie photo, il faut rapprocher le texte FFE d'un membre par son
+pseudo (normalisation casse/accents). Faisable — la liste des membres est déjà
+chargée pour ce rail — mais faillible : « EVAN ROUX » vs « Evan », « evan.roux ».
+→ Trois options restées ouvertes : (1) cavalier reconnu sinon cheval,
+(2) cheval d'abord et cavalier en repli, (3) cheval seul + corriger l'absence
+de repli. **Aucune tranchée.**
+
+### b) Anonymat des noms de cavaliers
+
+Idée : n'afficher que **prénom + initiale** (« Evan R. ») sur les cartes.
+Motif principal, et il vaut indépendamment de la place : **ce sont des mineurs**,
+et leur nom complet s'affiche sur une page de club consultable par n'importe qui.
+Bénéfice second : la ligne « 1er EVAN ROUX sur Rizotto d'Emery » cesse d'être
+tronquée.
+
+Avis donné : abréger **partout**, y compris à l'ouverture — abréger sur la carte
+puis afficher le nom entier au clic ne protège rien. Prénom seul déconseillé
+(deux Emma dans un club, et les résultats deviennent indistinguables).
+Exception proposée : la **page technique**, réservée à la propriétaire, garde le
+nom complet — c'est là qu'on vérifie une ligne contre la FFE.
+⚠️ Chantier transversal : rail du club, page Performances, moments forts, fil.
+Si un seul endroit est oublié, le nom complet ressort et l'effort est perdu.
+⚠️ La FFE envoie « EVAN ROUX » : il faut aussi reprendre la casse.
+⚠️ À dire honnêtement : les résultats FFE sont **déjà publics** sur telemat. On
+ne rend rien secret, on cesse seulement de le mettre en avant.
+
+## 13 · Nom court sur la page Performances du cheval
+
+Blandine, après réflexion : « prénom et première lettre du nom sur l'onglet des
+résultats, le reste on le laisse tel quel pour l'instant ».
+
+Motif principal, indépendant de la place : **ce sont des mineurs**, et leur nom
+complet s'affichait sur une page consultable par n'importe qui. Bénéfice second :
+les troncatures (« EMMA VICTOIRE DUR… ») disparaissent.
+
+Nouvelle fonction globale `hypeNomCourt`. Vérifié en exécutant la fonction du
+fichier livré :
+
+| Entrée | Sortie |
+|---|---|
+| EVAN ROUX | Evan R. |
+| DELPHINE BELSEUR | Delphine B. |
+| EMMA VICTOIRE DURAND | Emma D. |
+| JEAN-MARC DE LA TOUR | Jean-Marc T. |
+| Blandine | Blandine |
+
+⚠️ **N'abrège QU'À L'AFFICHAGE.** Le filtre compare toujours le nom complet
+(`oC[0]` inchangé, seul le libellé `oC[1]` est abrégé) — sinon deux cavaliers de
+même prénom seraient confondus.
+⚠️ **PORTÉE CORRIGÉE : les boutons de filtre par cavalier, et rien d'autre.**
+Première livraison trop large (quatre points de la page Performances) ; Blandine :
+« en fait je voulais juste changer sur le filtre par cavalier ». Les moments
+forts, la liste par saison, les derniers résultats, le rail du club et le fil ont
+retrouvé le **nom entier**.
+→ Leçon : « sur l'onglet des résultats » désignait la rangée de filtres, pas la
+page. Faire préciser l'élément avant d'étendre à toute une page.
+Le chantier transversal reste au point « MIS DE CÔTÉ ».
+⚠️ Les prénoms composés perdent leur second prénom (« Emma Victoire » → « Emma »).
+Assumé : la FFE ne dit pas où s'arrête le prénom.
+
+## 14 · ⚠️ CHANTIER PRIORITAIRE NON COMMENCÉ — L'ENTRÉE DANS L'APP
+
+Rappelé par Blandine le 02/09 (« ce qui est très important »), et **absent du
+SUIVI jusqu'ici** — il ne tenait qu'à ce qu'on s'en souvienne. Deux points liés,
+à faire ensemble :
+
+1. **La connexion doit arriver juste après la toute première page**, avant les
+   questions prénom / âge / écurie / galop souhaité. Problème vécu : à chaque
+   déconnexion, elle se retape tout le parcours d'inscription alors qu'elle veut
+   seulement se reconnecter.
+2. **Le lien « mot de passe oublié »** renvoie vers l'onboarding complet au lieu
+   de l'écran de réinitialisation.
+
+Précision de Blandine : l'onboarding ne doit se déclencher que pour un compte
+**réellement neuf**.
+
+⚠️ **À FAIRE À FROID, EN DÉBUT DE SESSION — JAMAIS EN FIN DE JOURNÉE.** C'est le
+chemin d'entrée de toute l'application : `EcranConnexionSpectral` porte **six
+modes** (seuil, connexion, inscription, confirmation, oubli, reset) et le routage
+traverse `EcranOnboarding`, `EcranProfilSetup`, `EcranVoyage`, `EcranParcours`.
+Si ça casse, **plus personne ne rentre dans Hype** — ni Blandine ni ses
+cavalières — et on ne s'en aperçoit qu'au moment où quelqu'un essaie.
+→ Tester les quatre chemins avant de livrer : compte neuf, compte existant,
+mot de passe oublié, retour après déconnexion.
+
+⚠️ Reste à trancher : déconnectée, elle arrive **directement** sur l'écran de
+connexion, ou sur la page d'accueil avec un bouton « Me connecter » ?
+
+## 15 · Choisir et changer l'écurie d'un cheval
+
+Déclencheur : **Ecolo Louvo, créé depuis la liste du club SEP, n'apparaissait pas
+dans « Mes chevaux »**.
+
+⚠️ **Cause — et j'avais d'abord conclu à tort.** `mesChevaux()` ne filtre que sur
+`user_id` : j'en ai déduit que le club n'y était pour rien. Faux. Le filtre par
+club est appliqué **après**, sur la grille (ligne ~29692) : un cheval dont `club`
+est renseigné n'apparaît que sur la page du club correspondant ; `club` vide
+passe partout. Les 19 chevaux ont ce champ vide, d'où l'absence de symptôme
+jusqu'ici. **La théorie de Blandine était la bonne dès le départ.**
+→ Encore une conclusion tirée d'un seul endroit. Le filtre n'était pas dans la
+requête mais dans le rendu.
+
+### SQL passé par Blandine le 02/09, confirmé
+
+```sql
+create or replace function set_cheval_club(p_cheval uuid, p_club text)
+returns void language plpgsql security definer set search_path = public as $$ ... $$;
+grant execute on function set_cheval_club(uuid, text) to authenticated;
+```
+La fonction vérifie elle-même l'appelant — **propriétaire du cheval OU
+administratrice** — et n'écrit **que** la colonne `club`.
+⚠️ Pourquoi une fonction et pas une policy : **RLS ne sait pas restreindre une
+colonne**. Une policy UPDATE aurait ouvert la ligne entière (nom, photo…).
+⚠️ **La liste des administratrices est écrite en dur DANS LA FONCTION SQL**
+(`feinn@live.fr`, `malicia2008@hotmail.fr`). Ajouter une modératrice côté code
+ne suffira pas : il faudra repasser la fonction.
+
+### Côté app
+
+- `changerClubCheval(id, club)` appelle la fonction. ⚠️ `modifierCheval` reste
+  inutilisable pour ça : son `.eq("user_id", user.id)` bloque une administratrice
+  sur le cheval d'autrui.
+- ⚠️ **Le sélecteur existait déjà** dans `EcranGererEcurie` — Blandine ne l'y
+  avait pas trouvé. Il est **rebranché sur la même porte**, et le même sélecteur
+  est ajouté au formulaire d'édition de la fiche cheval.
+- N'apparaît que si le cavalier a **plusieurs écuries**. « Aucune » est un choix
+  valide : `club` repasse à vide, le cheval reparaît partout.
+- ⚠️ L'échec s'affiche **en rouge dans le formulaire** et l'enregistrement
+  s'arrête — pas de succès menteur (leçon du `.catch()` vide du 01/09).
+
+### Reste ouvert
+
+⚠️ **Le basculement de club sur la page Cavalier n'est PAS fait.** Décidé avec
+Blandine : onglet « Tous » par défaut, puis un onglet par club, et **les chevaux
+sans club apparaissent dans tous les onglets** — « même s'il n'appartient pas à
+un club, il n'y a pas de raison qu'il n'apparaisse pas sur la page profil ».
+⚠️ Tant que les 19 ne sont pas marqués, basculer sur la SEP les montrera aussi.
+Blandine le fera **depuis l'app**, cheval par cheval — pas de `update` en masse.
 
 ## Non vérifié, à surveiller
 
