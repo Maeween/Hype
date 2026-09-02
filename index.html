@@ -2706,6 +2706,18 @@ async function changerClubCheval(chevalId, club) {
     if (typeof supa === "undefined" || !supa) return { error: { message: "Base indisponible" } };
     var r = await supa.rpc("set_cheval_club", { p_cheval: chevalId, p_club: club || null });
     if (r && r.error) return { error: r.error };
+    /* ⚠️ 02/09 (2e passe) : Blandine posait l ecurie, changeait de page, et le
+       cheval etait revenu « sans ecurie » — trois fois de suite, sans le moindre
+       message. L appel ne rendait pourtant aucune erreur. On RELIT donc la base
+       apres ecriture et on compare : si la valeur n est pas celle demandee, on le
+       DIT au lieu de laisser croire que c est enregistre. */
+    var apres = await supa.from("chevaux").select("club").eq("id", chevalId).maybeSingle();
+    if (apres && apres.error) return { error: apres.error };
+    var lu = (apres && apres.data) ? String(apres.data.club || "").trim() : "";
+    var voulu = String(club || "").trim();
+    if (lu !== voulu) {
+      return { error: { message: "l'\u00e9criture n'a pas pris (la base contient " + (lu ? ("\u00ab " + lu + " \u00bb") : "vide") + ")" } };
+    }
     return { error: null };
   } catch (e) { return { error: { message: String(e) } }; }
 }
@@ -37085,9 +37097,12 @@ function EcranCheval() {
                du compte, sans jamais regarder le club du cheval.
                ⚠️ Regle posee par Blandine : « si on n est pas capable de reconnaitre
                l ecurie, ne rien mettre ». On ne devine plus. */
-            var ecu = (chevalDyn && String(chevalDyn.club || "").trim())
-                   || (chevalDyn && chevalDyn.proprioEcurie)
-                   || "";
+            /* 02/09 (2e passe) : le repli sur `proprioEcurie` — l ecurie du
+               PROPRIETAIRE, lue sur son profil — ramenait « Ecurie Feinn » des que
+               le cheval n avait pas de club. C est ce repli qui faisait mentir la
+               phrase, pas la lecture du club. Blandine : « si on n est pas capable
+               de reconnaitre l ecurie, ne rien mettre ». Plus de repli du tout. */
+            var ecu = (chevalDyn && String(chevalDyn.club || "").trim()) || "";
             var cav = ""; /* 27/08 : repli sur profil.prenom/pseudo retire — affichait "monte par Blandine" sur tout cheval sans proprioNom renseigne, meme quand elle ne le monte pas. 28/08 : la mention du cavalier est RETIREE TOUT COURT du texte par defaut (demande Blandine : « dis juste l'ecurie, sinon ca peut porter a confusion »). Le proprietaire enregistre en base n'est pas forcement celui qui monte le cheval — sur un cheval cree par Blandine pour une cavaliere, on lisait « monte par Blandine », ce qui est faux et trompeur pour qui le lit. Le texte par defaut ne dit donc plus que la race et l'ecurie ; le nom du cavalier ne peut venir que de l'histoire ecrite a la main. */
             /* 28/08 (demande Blandine) : la mention du cavalier est RETIREE du texte
                par defaut. Elle venait de proprioNom (le proprietaire reellement
