@@ -35876,12 +35876,14 @@ function EcranCheval() {
      ⚠️ Reglage LOCAL (localStorage) : il ne suit pas sur un autre telephone et
      les visiteurs voient toujours tout. Le passer en base demanderait une
      colonne — non tranche. */
-  var _rcl = React.useState(function () { try { return localStorage.getItem("hype_res_classes") === "1"; } catch (eRc) { return false; } });
-  var classesSeuls = _rcl[0], setClassesSeuls = _rcl[1];
-  function basculerClasses() {
-    var v = !classesSeuls;
-    try { localStorage.setItem("hype_res_classes", v ? "1" : "0"); } catch (eSc2) { }
-    setClassesSeuls(v);
+  var _rcl = React.useState(function () {
+    try { var v = localStorage.getItem("hype_res_vue"); return (v === "classes" || v === "podiums") ? v : "tous"; }
+    catch (eRc) { return "tous"; }
+  });
+  var vueRes = _rcl[0], setVueRes = _rcl[1];
+  function poserVueRes(v) {
+    try { localStorage.setItem("hype_res_vue", v); } catch (eSc2) { }
+    setVueRes(v);
   }
   React.useEffect(function () {
     var vivant = true;
@@ -37649,13 +37651,21 @@ function EcranCheval() {
              sur TOUTES les lignes : un bandeau qui dirait « 18 sorties » alors que
              le cheval en a 12 serait faux, et Blandine lirait ses propres chiffres
              comme incoherents. Le filtre ne concerne que les LISTES. */
-          /* ⚠️ Une preparatoire n a PAS de quart : un filtre strict sur `q === 1`
-             la ferait disparaitre. Or la regle est qu une victoire en preparatoire
-             compte — a part, entre parentheses, mais elle compte. On la garde donc. */
-          var vueF = classesSeuls ? tousF.filter(function (fQ) {
-            if (fQ.q === 1) return true;
-            return (fQ.pl === 1) && /pr[ée]pa/i.test(String(fQ.ep || ""));
-          }) : tousF;
+          /* ⚠️ REGLE DES PREPARATOIRES (Blandine, 02/09) : en preparatoire le
+             classement n est pas un rang face aux autres, c est un verdict sur le
+             parcours. 1er = sans faute ; toute autre place = il y a eu des fautes.
+             On ne garde donc QUE la victoire, jamais une 2e ou 3e place — ni en
+             « classes », ni en « podiums ».
+             ⚠️ Une preparatoire n a pas de quart : sans cette regle explicite, un
+             filtre sur `q === 1` la ferait disparaitre entierement. */
+          function gardePrepa(fP) { return (fP.pl === 1) && /pr[ée]pa/i.test(String(fP.ep || "")); }
+          function estPrepaLigne(fP) { return /pr[ée]pa/i.test(String(fP.ep || "")); }
+          var vueF = tousF;
+          if (vueRes === "classes") {
+            vueF = tousF.filter(function (fQ) { return estPrepaLigne(fQ) ? gardePrepa(fQ) : (fQ.q === 1); });
+          } else if (vueRes === "podiums") {
+            vueF = tousF.filter(function (fQ) { return estPrepaLigne(fQ) ? gardePrepa(fQ) : ((fQ.pl || 99) <= 3); });
+          }
           var fortsPool = vueF.slice();
           try {
             (((typeof c !== "undefined" && c) && c.palmares) || []).forEach(function (rJ) {
@@ -37713,6 +37723,40 @@ function EcranCheval() {
                 return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: teinteCl } }, String(cq[0])),
                   h("div", { style: { marginTop: 2, fontSize: 8.2, letterSpacing: ".13em", color: "#8A929C", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1])); })),
+            /* 02/09 — LE MENU D AFFICHAGE, sous les quatre chiffres.
+               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
+               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
+               c est la que la question se pose.
+               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
+               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
+            (function () {
+              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              if (!proprioF) return null;
+              var choix = [
+                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle")],
+                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert")],
+                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien")]
+              ];
+              var nMasq = tousF.length - vueF.length;
+              return h("div", { style: { margin: "10px 16px 0" } },
+                h("div", { style: { display: "flex", gap: 7 } },
+                  choix.map(function (cH) {
+                    var onV = (vueRes === cH[0]);
+                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
+                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
+                        border: "1px solid " + (onV ? "rgba(217,199,163,0.7)" : "rgba(255,255,255,0.13)"),
+                        background: onV ? "rgba(217,199,163,0.14)" : "rgba(255,255,255,0.03)",
+                        color: onV ? "#D9C7A3" : "rgba(237,242,245,0.62)",
+                        fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } }, cH[1]);
+                  })),
+                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "#6F7883", fontFamily: "'Montserrat',sans-serif" } },
+                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
+                                  "results hidden \u00b7 the counters above stay complete",
+                                  "resultados ocultos \u00b7 los contadores siguen completos",
+                                  "risultati nascosti \u00b7 i contatori restano completi",
+                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
+                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig")) : null);
+            })(),
             /* — 3 · SES MOMENTS FORTS — */
             forts.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "24px 22px 12px" } }, filetOr(),
@@ -37724,18 +37768,6 @@ function EcranCheval() {
                  resultats, elle a pas a envoyer encore ailleurs »). */
               null) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
-            /* 02/09 — « n'afficher que les classements ». Discret, et reserve a la
-               proprietaire du cheval : les visiteurs ne le voient pas. */
-            (function () {
-              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-              if (!proprioF) return null;
-              var nMasq = tousF.length - vueF.length;
-              return h("div", { role: "button", onClick: basculerClasses,
-                style: { margin: "18px 16px 0", fontSize: 11.5, cursor: "pointer",
-                         color: classesSeuls ? teinteCl : "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
-                (classesSeuls ? "\u2611 " : "\u2610 ") + T("N'afficher que les class\u00e9s", "Show placings only", "Solo clasificados", "Solo piazzamenti", "\u5165\u8cde\u306e\u307f\u8868\u793a", "Nur Platzierungen")
-                + (classesSeuls && nMasq > 0 ? (" \u00b7 " + nMasq + " " + T("masqu\u00e9s", "hidden", "ocultos", "nascosti", "\u975e\u8868\u793a", "ausgeblendet")) : ""));
-            })(),
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison").toUpperCase()), filetOr()),
