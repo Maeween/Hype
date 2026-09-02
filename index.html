@@ -39102,7 +39102,24 @@ function EcranEcurieHype() {
             try { var rmEH1 = await supa.from("profiles").select("id").ilike("ecurie", motifEH).limit(200); if (rmEH1 && rmEH1.data) mmEH = mmEH.concat(rmEH1.data); } catch (eMEH1) { }
             try { var rmEH2 = await supa.from("profiles").select("id").ilike("ecurie2", motifEH).limit(200); if (rmEH2 && rmEH2.data) mmEH = mmEH.concat(rmEH2.data); } catch (eMEH2) { }
             var vuEH = {}; idsMembresEH = mmEH.filter(function (p) { if (!p || !p.id || vuEH[p.id]) return false; vuEH[p.id] = true; return true; }).map(function (p) { return p.id; });
-            rc = idsMembresEH.length ? await supa.from("chevaux").select("id, nom, race, photo_url, user_id").in("user_id", idsMembresEH).is("supprime_le", null).limit(500) : { data: [] };
+            rc = idsMembresEH.length ? await supa.from("chevaux").select("id, nom, race, photo_url, user_id, club").in("user_id", idsMembresEH).is("supprime_le", null).limit(500) : { data: [] };
+            /* 02/09 (Blandine : « je vais sur les chevaux de la SEP et TOUS les chevaux
+               y sont, y compris ceux de Feinn ») — CINQUIEME ecran a poser la meme
+               question par un chemin different. Comme les quatre autres, il partait des
+               MEMBRES du club et prenait tous leurs chevaux, sans jamais regarder le club
+               DU CHEVAL. Meme regle que partout : sans club -> partout ; club d'un autre
+               club -> ecarte. Comparaison par noyau, comme la recherche des membres.
+               ⚠️ A UNIFIER : cette regle est desormais ecrite en CINQ endroits. Une seule
+               fonction « chevaux de ce club » doit les remplacer (chantier au SUIVI). */
+            try {
+              var nyClubEH = String((typeof noyauEcurie === "function" ? (noyauEcurie(clubCtxEH) || clubCtxEH) : clubCtxEH) || "").toLowerCase();
+              if (nyClubEH && rc && rc.data) rc = { data: rc.data.filter(function (chEH) {
+                var clEH = String((chEH && chEH.club) || "").trim();
+                if (!clEH) return true;
+                var nyEH = String((typeof noyauEcurie === "function" ? (noyauEcurie(clEH) || clEH) : clEH)).toLowerCase();
+                return nyEH.indexOf(nyClubEH) >= 0 || nyClubEH.indexOf(nyEH) >= 0;
+              }), error: rc.error };
+            } catch (eFEH) { }
           } else {
             /* 29/08 (demande Blandine : « il en manque plein ») -- sans contexte club,
                cet ecran chargeait la galerie GLOBALE : uniquement les chevaux ayant
@@ -39342,7 +39359,7 @@ function EcranEcurieHype() {
             h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 5v14M5 12h14" }))),
           h("div", { className: "ec2btn", onClick: bientotEH, role: "button", "aria-label": "Menu" },
             h("svg", { viewBox: "0 0 24 24", className: "pts" }, h("circle", { cx: 12, cy: 5, r: 1.7 }), h("circle", { cx: 12, cy: 12, r: 1.7 }), h("circle", { cx: 12, cy: 19, r: 1.7 })))),
-        h("h1", { className: "ec2titre", style: { fontSize: 19, letterSpacing: "0.06em", padding: "0 100px", lineHeight: 1.25 } }, clubCtxEH ? T("Les chevaux de l'\u00e9curie", "The stable's horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u53a0\u820e\u306e\u99ac") : "L'Écurie Hype"),
+        h("h1", { className: "ec2titre", style: { fontSize: 19, letterSpacing: "0.06em", padding: "0 100px", lineHeight: 1.25 } }, clubCtxEH ? (T("Les chevaux de", "The horses of", "Los caballos de", "I cavalli di", "\u306e\u99ac") + " " + clubCtxEH) : "L'Écurie Hype"),
         h("div", { className: "ec2sous", style: { fontStyle: "italic", textTransform: "none", letterSpacing: "0.05em", fontSize: 11.5, fontWeight: 300, padding: "0 84px", lineHeight: 1.55 } }, T("Agrandis ton écurie et découvre les chevaux des autres", "Grow your stable and discover other riders' horses", "Amplía tu cuadra y descubre los caballos de los demás", "Amplia la tua scuderia e scopri i cavalli degli altri", "厩舎を大きくして、みんなの馬を見つけよう")),
         h("div", { className: "ec2orn" }, h("span", { className: "li" }), h("svg", { viewBox: "0 0 24 24" }, h("path", { d: "M12 2l3 8 7 2-7 2-3 8-3-8-7-2 7-2 3-8z" })), h("span", { className: "li r" })),
         h("div", { className: "ec2imgw" },
