@@ -37649,7 +37649,13 @@ function EcranCheval() {
              sur TOUTES les lignes : un bandeau qui dirait « 18 sorties » alors que
              le cheval en a 12 serait faux, et Blandine lirait ses propres chiffres
              comme incoherents. Le filtre ne concerne que les LISTES. */
-          var vueF = classesSeuls ? tousF.filter(function (fQ) { return fQ.q === 1; }) : tousF;
+          /* ⚠️ Une preparatoire n a PAS de quart : un filtre strict sur `q === 1`
+             la ferait disparaitre. Or la regle est qu une victoire en preparatoire
+             compte — a part, entre parentheses, mais elle compte. On la garde donc. */
+          var vueF = classesSeuls ? tousF.filter(function (fQ) {
+            if (fQ.q === 1) return true;
+            return (fQ.pl === 1) && /pr[ée]pa/i.test(String(fQ.ep || ""));
+          }) : tousF;
           var fortsPool = vueF.slice();
           try {
             (((typeof c !== "undefined" && c) && c.palmares) || []).forEach(function (rJ) {
@@ -37663,7 +37669,12 @@ function EcranCheval() {
           function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); if (/open de france|championnat|\bchp\b|finale|coupe de france|crit\u00e9rium|criterium|grand tournoi/.test(tT)) return 2; if (/internation|\bint\b|salon du cheval|salon internat/.test(tT)) return 1; return 0; }
           function poidsNiveau(f) { var eN = (f.ep || "").toLowerCase(); if (/\u00e9lite|elite/.test(eN)) return 5; var mN = eN.match(/\b([1-4])\b/); return mN ? (5 - Number(mN[1])) : 0; }
           function jetonFort(f) { var ts = String(f.nom || "").toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g, "").split(/\s+/).filter(function (w) { return w.length > 5; }).sort(function (a, b) { return b.length - a.length; }); return (f.an || "") + "|" + (ts[0] || String(f.nom || "").toLowerCase()); }
-          function triFort(a, b) { return (poidsTitre(b) - poidsTitre(a)) || (poidsNiveau(b) - poidsNiveau(a)) || ((b.part || 0) - (a.part || 0)) || ((a.pl || 99) - (b.pl || 99)); }
+          /* 02/09 (Blandine) : « pas prioritaire en tant que moment fort ». Une
+             victoire en preparatoire reste affichable, mais elle passe APRES les
+             epreuves classantes — c est le premier critere du tri, avant meme le
+             titre. Elle ne remonte donc en vitrine que faute de mieux. */
+          function estPrepaF(f) { return /pr[ée]pa/i.test(String(f && f.ep || "")); }
+          function triFort(a, b) { return ((estPrepaF(a) ? 1 : 0) - (estPrepaF(b) ? 1 : 0)) || (poidsTitre(b) - poidsTitre(a)) || (poidsNiveau(b) - poidsNiveau(a)) || ((b.part || 0) - (a.part || 0)) || ((a.pl || 99) - (b.pl || 99)); }
           var vics = fortsPool.filter(function (f) { return f.pl === 1; }).slice().sort(triFort);
           if (vics.length < 3) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
           var forts = []; var jetonsVus = {};
