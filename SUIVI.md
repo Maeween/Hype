@@ -10,6 +10,61 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 02/09/2026 (après-midi) — LA PORTE D'ENTRÉE EST REFAITE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e0d85f62d66801296591743273b73778` | nouvel ordre d'entrée · écran sobre supprimé · âge déplacé |
+
+⚠️ Remplace `02f2dc2bad5bddbdc96a94ef2b904378`. **Aucun autre fichier n'a bougé** :
+`hype-stories.js` (20bx), `hype-resultats.js` (v2), `hype-podium-clubs.png` et `story.html`
+restent ceux d'hier. Pas de `?v=` à toucher : aucun fichier JS externe n'est modifié.
+Les six images de la session 151 (`poney-bonjour.webp`, `poney-barre.webp`, `poney-mail.webp`,
+`poney-mascotte.png`, `poney-tasse.webp`, `cheval-fond-connexion-620.jpg`) doivent être
+présentes dans `images/` — sans elles, l'écran de connexion s'affiche sur fond noir.
+
+## Le nouvel ordre, décidé par Blandine
+
+**Accueil (hero seul) → écran de connexion à poneys → questions → globe.**
+
+Avant, l'accueil demandait le prénom et l'âge, puis on glissait vers les questions et on
+arrivait au globe **sans jamais créer de compte**. Le petit lien « Se connecter » menait à
+`EcranAuth`, l'écran sobre — jamais au bel écran.
+
+- **Compte obligatoire.** Plus de porte visiteur ; `story.html` reste la vitrine publique.
+- **Inscription réussie → les questions**, puis le globe. **Connexion d'un compte existant
+  → dashboard direct** : on ne redemande jamais ce qui a déjà été répondu.
+- **Le prénom** est demandé sur le formulaire d'inscription (il y était déjà, et il alimente
+  le pseudo). **L'âge** a quitté l'accueil et rejoint les questions : quatre cartes
+  désormais (âge, langue, niveau, objectif), l'anneau de progression compte sur 4.
+
+## `EcranAuth` supprimé
+
+Le doublon est parti. Trois boutons qui y menaient encore ont été rebranchés sur l'écran à
+poneys : la page d'onboarding héritée, « Connecte-toi pour commenter » (fil) et
+« Connecte-toi pour ajouter tes chevaux » (écurie vide) — ces deux-là ouvrent directement le
+mode *connexion*. Le détecteur du lien « mot de passe oublié » (`HYPE_RECUP_MDP`) n'a plus
+qu'un seul endroit à surveiller : c'est ce doublon qui avait causé le bug du 28/08.
+`BoutonSocial`, `CaseACocher` et `ChampTexte` sont conservés — `ChampTexte` sert ailleurs.
+
+## Détails d'exécution
+
+- L'accueil garde son animation de lancement (`hu-launch`) : elle sert maintenant de
+  transition vers l'écran de connexion (2,9 s, fondu au noir).
+- Le drapeau `window.HYPE_QUESTIONS`, posé à l'inscription, fait revenir sur `"intro"` pour
+  n'y afficher **que** les questions, sans rejouer l'animation d'ouverture.
+- Le retour du seuil sort toujours vers l'accueil (`revenir()` inchangé).
+- Écran défilant neuf → `scrollTop = 0` à l'ouverture, comme la règle l'exige.
+
+### Réserves signalées
+
+- **Confirmation par email** : si `HYPE_CONFIRMATION_EMAIL` passait un jour à `true`, la
+  cavalière reviendrait par *connexion* et sauterait les questions. À traiter ce jour-là.
+- **Vérification** : `node --check` sur les 18 blocs JS, 0 erreur. Pas de rendu Playwright
+  (pas de navigateur disponible dans l'atelier) — le parcours est à tester à l'écran.
+
+---
+
 # 🟩 02/09/2026 (matin) — LE FIL NE SPAMME PLUS · LA PAGE PERF NE RENVOIE PLUS AILLEURS
 
 | Fichier | Où | md5 | Quoi |

@@ -23543,7 +23543,7 @@ function Router() {
         return () => window.removeEventListener("hype-aller-compte", versCompte);
     }, []);
     const toucheNavRef = useRef(null);
-    const ecransSansNav = ["intro", "splash", "onboarding-1", "onboarding-2", "auth", "connexion", "profil-setup", "voyage", "monde", "partager", "moncompte", "installer", "messagerie-fil"];
+    const ecransSansNav = ["intro", "splash", "onboarding-1", "onboarding-2", "connexion", "profil-setup", "voyage", "monde", "partager", "moncompte", "installer", "messagerie-fil"];
     const showNav = !ecransSansNav.includes(ecran) || (ecran === "monde" && !GLOBE_ONBOARDING);
     const dansScrollHorizontal = (el) => {
         try {
@@ -23607,8 +23607,7 @@ function Router() {
                 ecran === "intro" && React.createElement(EcranIntro, null),
                 ecran === "splash" && React.createElement(EcranSplash, null),
                 ecran === "onboarding-1" && React.createElement(EcranOnboarding, null),
-                ecran === "auth" && React.createElement(EcranAuth, null),
-                ecran === "connexion" && React.createElement(EcranConnexionSpectral, null),
+                    ecran === "connexion" && React.createElement(EcranConnexionSpectral, null),
                 ecran === "profil-setup" && React.createElement(EcranProfilSetup, null),
                 ecran === "voyage" && React.createElement(EcranVoyage, null),
                 ecran === "dashboard" && React.createElement(EcranUnivers, null),
@@ -25075,6 +25074,22 @@ function EcranIntro() {
     };
     const dejaLa = !!(profil && profil.prenom);
     const finRetour = () => { LMAG_WELCOME = true; GLOBE_ONBOARDING = true; setEcran("monde"); };
+    /* 02/09 (decision de Blandine) — NOUVEL ORDRE D'ENTREE.
+       Accueil (hero seul) -> ecran de connexion a poneys -> questions -> globe.
+       L'accueil ne pose plus AUCUNE question : le prenom est demande sur le
+       formulaire d'inscription, l'age a rejoint les autres questions. Le
+       compte est obligatoire, il n'y a plus de porte visiteur.
+       versConnexion(mode) ouvre EcranConnexionSpectral (route "connexion") :
+       "seuil" quand on part du grand bouton, "connexion" quand on vient du
+       lien « Tu as deja un compte ? ». */
+    const versConnexion = (m) => { try { AUTH_MODE_SPECTRAL = (typeof m === "string" ? m : "seuil"); } catch (e) { } setEcran("connexion"); };
+    /* Drapeau pose par l'ecran d'inscription juste apres la creation du compte :
+       on revient sur "intro" mais pour n'y afficher QUE la page des questions,
+       sans rejouer l'animation d'ouverture. */
+    const [questions] = useState(() => { try { const q = !!window.HYPE_QUESTIONS; window.HYPE_QUESTIONS = false; return q; } catch (e) { return false; } });
+    /* Regle maison : tout ecran defilant s'ouvre en haut. */
+    const refQuestions = useRef(null);
+    useEffect(() => { if (!questions) return; try { window.scrollTo(0, 0); if (refQuestions.current) refQuestions.current.scrollTop = 0; } catch (e) { } }, [questions]);
     const [entre, setEntre] = useState(false);
     const [sortie, setSortie] = useState(false);
     useEffect(function(){
@@ -25090,13 +25105,16 @@ function EcranIntro() {
     const onScroll = () => { const el = refDeck.current; if (el) setPage(Math.round(el.scrollLeft / el.clientWidth)); };
     const allerA = (i) => { const el = refDeck.current; if (el) el.scrollTo({ left: el.clientWidth * i, behavior: "smooth" }); };
     const pageStyle = { flex: "0 0 100%", width: "100%", height: "100%", scrollSnapAlign: "start", overflowY: "auto", overflowX: "hidden", position: "relative", WebkitOverflowScrolling: "touch", touchAction: "pan-y" };
+    /* Retour d'inscription : uniquement les questions, plein ecran, sans deck
+       ni animation d'ouverture (elle vient d'etre vue il y a une minute). */
+    if (questions) {
+        return (React.createElement("div", { ref: refQuestions, style: { position: "relative", height: "100vh", width: "100%", background: COLORS.nuit, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" } },
+            React.createElement(EcranPersonnalisation, { local: setup, setLocal: setSetup, onSuivant: validerSetup })));
+    }
     return (React.createElement("div", { className: (!entre && !sortie) ? "hu-hold" : "", style: { position: "relative", height: "100vh", width: "100%", background: COLORS.nuit, overflow: "hidden" } },
         React.createElement("style", null, ".intro-deck::-webkit-scrollbar{display:none}.hu-hold .intro-deck *{animation-play-state:paused!important}"),
         React.createElement("div", { className: "intro-deck", ref: refDeck, onScroll: onScroll, style: { display: "flex", height: "100%", width: "100%", overflowX: "auto", overflowY: "hidden", scrollSnapType: "x mandatory", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
-            React.createElement("div", { style: pageStyle }, React.createElement(EcranHypeUniverse, { local: setup, setLocal: setSetup, retour: dejaLa, onSuivant: dejaLa ? finRetour : (() => allerA(1)), onConnexion: () => setEcran("auth") })),
-            (dejaLa ? null : React.createElement("div", { style: pageStyle }, React.createElement(EcranPersonnalisation, { local: setup, setLocal: setSetup, onSuivant: validerSetup })))),
-        React.createElement("div", { style: { position: "absolute", bottom: 13, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 8, pointerEvents: "none", zIndex: 40 } },
-            (dejaLa ? [] : [0, 1]).map((i) => React.createElement("span", { key: i, style: { width: page === i ? 22 : 8, height: 8, borderRadius: 999, background: page === i ? COLORS.turquoise : "rgba(255,255,255,0.32)", transition: "all 0.3s ease", boxShadow: page === i ? `0 0 10px ${COLORS.turquoise}` : "none" } }))),
+            React.createElement("div", { style: pageStyle }, React.createElement(EcranHypeUniverse, { local: setup, setLocal: setSetup, retour: dejaLa, onSuivant: dejaLa ? finRetour : versConnexion, onConnexion: versConnexion }))),
         !entre && React.createElement("iframe", { srcDoc: ANIM_HTML_HYPE, title: "Bienvenue sur Hype", style: { position: "absolute", inset: 0, width: "100%", height: "100%", border: "none", background: "#050D14", zIndex: 60, opacity: sortie ? 0 : 1, transition: "opacity 1.2s ease", pointerEvents: sortie ? "none" : "auto" } }),
         moiIntro ? React.createElement("button", { onClick: () => setEcran("dashboard"), "aria-label": "Aller à l'accueil", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 8px)", right: 10, zIndex: 70, background: "rgba(10,17,23,0.55)", border: "1px solid rgba(32,217,245,0.34)", color: "rgba(234,245,247,0.9)", fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 700, letterSpacing: 0.8, padding: "8px 16px", borderRadius: 999, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", cursor: "pointer" } }, "Accueil") : null));
 }
@@ -25124,7 +25142,7 @@ function EcranOnboarding() {
         const tmr = setTimeout(() => setIndice(true), 1200);
         return () => clearTimeout(tmr);
     }, []);
-    const continuer = () => setEcran("auth");
+    const continuer = () => { try { AUTH_MODE_SPECTRAL = "seuil"; } catch (e) { } setEcran("connexion"); };
     return (React.createElement("div", { onClick: continuer, style: { height: "100vh", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", background: FOND_BIENVENUE, cursor: "pointer", overflow: "hidden", position: "relative" } },
         React.createElement("img", { src: VISUEL_BIENVENUE, alt: "Hype \u2014 votre voyage \u00e9questre continue", draggable: false, style: { maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", display: "block", objectFit: "contain", userSelect: "none", WebkitUserSelect: "none" } }),
         React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 12, display: "flex", justifyContent: "center", pointerEvents: "none", opacity: indice ? 0.5 : 0, transition: "opacity 0.9s ease" } },
@@ -25335,6 +25353,15 @@ function EcranConnexionSpectral() {
            l'ecran 4. Avant le 21/08 la cavaliere ne voyait qu'une ligne de
            texte et se retrouvait sur l'ecran de connexion sans comprendre. */
         if (!r1.data || !r1.data.session) { setEmailEnAttente(em); setRenvoiMsg(""); setErreur(""); setMode("confirmation"); setEnCours(false); return; }
+        /* 02/09 (nouvel ordre d'entree, decision de Blandine) : apres une
+           INSCRIPTION reussie on ne file plus au dashboard — on enchaine sur
+           les questions (age, langue, niveau, objectif), puis le globe. Une
+           CONNEXION de compte existant, elle, va toujours droit au dashboard :
+           on ne redemande jamais ce qui a deja ete repondu. */
+        try { setProfil(function (pp) { return Object.assign({}, pp || {}, { prenom: pseudoDep, pseudo: pseudoDep, email: em }); }); } catch (ePr) { }
+        try { var uI = await utilisateurActuel(); if (uI) localStorage.setItem("hype_uid", uI.id); } catch (eUi) { }
+        try { window.HYPE_QUESTIONS = true; } catch (eQ) { }
+        setEnCours(false); setEcran("intro"); return;
       } else {
         var r2 = await connexion(em, mdp);
         if (r2.error) { setErreur(traduireErr(r2.error)); setEnCours(false); return; }
@@ -25574,148 +25601,16 @@ function EcranConnexionSpectral() {
     h("div", { style: { position: "relative", zIndex: 3, minHeight: "100dvh", display: "flex", flexDirection: "column", maxWidth: 430, margin: "0 auto", padding: "calc(env(safe-area-inset-top) + 62px) 24px calc(22px + env(safe-area-inset-bottom))" } },
       contenu))
 }
-/* ---------- AUTHENTIFICATION ---------- */
-function EcranAuth() {
-    const { setEcran, setProfil, t } = useApp();
-    const [mode, setMode] = useState("inscription");
-    const [email, setEmail] = useState("");
-    const [motDePasse, setMotDePasse] = useState("");
-    const [infolettre, setInfolettre] = useState(false);
-    const [partenaires, setPartenaires] = useState(false);
-    const [enCours, setEnCours] = useState(false);
-    const [erreur, setErreur] = useState("");
-    const [voirMdp, setVoirMdp] = useState(false);
-    /* 28/08 (demande de Blandine) : le lien « mot de passe oublie » recu par email
-       renvoyait vers l ecran de creation de compte (EcranAuth, mode "inscription")
-       sans jamais etre reconnu -- le detecteur du flag HYPE_RECUP_MDP (pose tres tot
-       dans le fichier, voir supa.auth.onAuthStateChange PASSWORD_RECOVERY) n etait
-       lu QUE par EcranConnexionSpectral, un ecran jamais atteint depuis la navigation
-       normale (onboarding -> "auth", pas "connexion"). On branche donc le meme
-       detecteur ici, sur l ecran reellement affiche. */
-    const [modeRecup, setModeRecup] = useState(false);
-    const [nouveauMdp, setNouveauMdp] = useState("");
-    React.useEffect(function () {
-        function activerRecup() { try { window.HYPE_RECUP_MDP = false; } catch (eAR) { } setModeRecup(true); setErreur(""); }
-        try { if (window.HYPE_RECUP_MDP) activerRecup(); } catch (eAR2) { }
-        try { window.addEventListener("hype-recup-mdp", activerRecup); } catch (eAR3) { }
-        return function () { try { window.removeEventListener("hype-recup-mdp", activerRecup); } catch (eAR4) { } };
-    }, []);
-    const validerNouveauMdp = async () => {
-        if (enCours) return;
-        if (!nouveauMdp || nouveauMdp.length < 6) { setErreur("Mot de passe : 6 caract\u00e8res minimum."); return; }
-        setEnCours(true); setErreur("");
-        try {
-            const rU = await supa.auth.updateUser({ password: nouveauMdp });
-            if (rU && rU.error) { setErreur("Un souci est survenu. R\u00e9essaie."); setEnCours(false); return; }
-            setModeRecup(false); setNouveauMdp("");
-            const r3u = await monProfil();
-            const profilSupabaseU = r3u.data;
-            setProfil((p) => ({ ...p, pseudo: (profilSupabaseU && profilSupabaseU.pseudo) || p.pseudo, avatar_url: (profilSupabaseU && profilSupabaseU.avatar_url) || p.avatar_url }));
-            setEcran("dashboard");
-        } catch (eVN) { setErreur("Connexion impossible. V\u00e9rifie ta connexion internet."); }
-        setEnCours(false);
-    };
-    const mdpOublie = async () => {
-        if (enCours) return;
-        const em = email.trim();
-        if (!em) { setErreur(t("mdp_oublie_email")); return; }
-        setEnCours(true); setErreur("");
-        try {
-            const dest = (typeof LIEN_APP !== "undefined" && LIEN_APP) ? LIEN_APP : window.location.origin;
-            await supa.auth.resetPasswordForEmail(em, { redirectTo: dest });
-        } catch (eRM) { }
-        setErreur("OK::" + t("mdp_oublie_envoye"));
-        setEnCours(false);
-    };
-    const valider = async () => {
-        if (enCours) return;
-        setErreur("");
-        setEnCours(true);
-        const traduire = (err) => {
-            const m = String((err && err.message) || err || "").toLowerCase();
-            if (m.includes("invalid login")) return "Email ou mot de passe incorrect.";
-            if (m.includes("already registered") || m.includes("already exists")) return "Un compte existe d\u00e9j\u00e0 avec cet email. Connecte-toi.";
-            if (m.includes("at least 6") || m.includes("password should")) return "Mot de passe : 6 caract\u00e8res minimum.";
-            if (m.includes("valid email") || m.includes("invalid format") || m.includes("unable to validate email")) return "Adresse email invalide.";
-            if (m.includes("not confirmed")) return "Confirme d'abord ton email (regarde ta bo\u00eete mail), puis reviens te connecter.";
-            return "Un souci est survenu. R\u00e9essaie.";
-        };
-        try {
-            const em = email.trim();
-            if (!em || !motDePasse) { setErreur("Remplis email et mot de passe."); setEnCours(false); return; }
-            if (mode === "inscription") {
-                let pseudoDepart = "";
-                try {
-                    const etatA = (typeof ETAT_CLE !== "undefined") ? JSON.parse(localStorage.getItem(ETAT_CLE) || "null") : null;
-                    if (etatA && etatA.profil && etatA.profil.prenom) pseudoDepart = String(etatA.profil.prenom).slice(0, 30);
-                } catch (ePA) { }
-                if (!pseudoDepart) pseudoDepart = em.split("@")[0];
-                const r1 = await inscription(em, motDePasse, pseudoDepart);
-                if (r1.error) { setErreur(traduire(r1.error)); setEnCours(false); return; }
-                if (!r1.data || !r1.data.session) {
-                    setErreur("OK::Compte cr\u00e9\u00e9 ! V\u00e9rifie tes emails pour l'activer, puis reviens te connecter.");
-                    setMode("connexion");
-                    setEnCours(false);
-                    return;
-                }
-            } else {
-                const r2 = await connexion(em, motDePasse);
-                if (r2.error) { setErreur(traduire(r2.error)); setEnCours(false); return; }
-            }
-            const r3 = await monProfil();
-            const profilSupabase = r3.data;
-            setProfil((p) => ({
-                ...p,
-                email: em,
-                infolettre: infolettre,
-                partenaires: partenaires,
-                pseudo: (profilSupabase && profilSupabase.pseudo) || p.pseudo,
-                avatar_url: (profilSupabase && profilSupabase.avatar_url) || p.avatar_url
-            }));
-            setEcran("dashboard");
-        } catch (e) {
-            setErreur("Connexion impossible. V\u00e9rifie ta connexion internet.");
-        }
-        setEnCours(false);
-    };
-    return (React.createElement("div", { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
-        React.createElement("div", { style: { height: 300, position: "relative", overflow: "hidden", background: `linear-gradient(160deg, ${COLORS.nuitElevee} 0%, ${COLORS.nuit} 100%)` } },
-            React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, overflow: "hidden", pointerEvents: "none" } },
-                React.createElement("div", { style: { position: "absolute", top: "-45%", left: "-25%", width: "72%", height: "160%", borderRadius: "50%", background: `radial-gradient(circle, ${COLORS.turquoise}40 0%, ${COLORS.turquoise}1A 38%, transparent 70%)`, filter: "blur(26px)", animation: "brume 13s ease-in-out infinite", willChange: "transform, opacity" } }),
-                React.createElement("div", { style: { position: "absolute", top: "-35%", right: "-30%", width: "76%", height: "160%", borderRadius: "50%", background: `radial-gradient(circle, ${COLORS.turquoise}33 0%, ${COLORS.turquoise}12 42%, transparent 72%)`, filter: "blur(30px)", animation: "brume 17s ease-in-out -5s infinite reverse", willChange: "transform, opacity" } }),
-                React.createElement("div", { style: { position: "absolute", bottom: "-60%", left: "8%", width: "82%", height: "150%", borderRadius: "50%", background: `radial-gradient(circle, ${COLORS.turquoise}26 0%, transparent 66%)`, filter: "blur(34px)", animation: "brume 10s ease-in-out -3s infinite", willChange: "transform, opacity" } })),
-            React.createElement("div", { style: { position: "absolute", inset: 0, background: `linear-gradient(to bottom, ${COLORS.nuit}06 0%, ${COLORS.nuit}0C 42%, ${COLORS.nuit}2C 78%, ${COLORS.nuit} 100%)` } }),
-            React.createElement("div", { style: { position: "absolute", top: 0, right: 0, padding: "20px 24px 0", zIndex: 2 } },
-                React.createElement(SelecteurLangue, { compact: true })),
-            React.createElement("div", { style: { position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 12, padding: "30px 16px 0" } },
-                
-                React.createElement("div", { style: { borderRadius: "50%", boxShadow: `0 16px 44px ${COLORS.turquoise}33` } }, React.createElement(LogoMark, { size: 200 })),
-                React.createElement("h1", { style: { fontSize: 22, fontWeight: 800, color: COLORS.blanc, margin: 0, textShadow: "0 1px 10px rgba(10,26,36,0.176)" } }, modeRecup ? "Nouveau mot de passe" : (mode === "inscription" ? t("creer_compte") : t("content_revoir"))),
-                React.createElement("p", { style: { color: COLORS.grisDoux, fontSize: 13.5, margin: 0, textAlign: "center", textShadow: "0 1px 8px rgba(10,26,36,0.165)" } }, modeRecup ? "Choisis un nouveau mot de passe pour ton compte." : (mode === "inscription" ? t("rejoindre_cavaliers") : t("connecte_continuer"))))),
-        React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", padding: "24px 28px 32px" } },
-            modeRecup ? React.createElement(React.Fragment, null,
-                React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 } },
-                    React.createElement("div", { style: { position: "relative" } },
-                        React.createElement(ChampTexte, { placeholder: "Nouveau mot de passe", value: nouveauMdp, onChange: setNouveauMdp, type: voirMdp ? "text" : "password", fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
-                        React.createElement("button", { onClick: () => setVoirMdp(!voirMdp), "aria-label": "Afficher le mot de passe", style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 17, cursor: "pointer", opacity: voirMdp ? 1 : 0.5, padding: 4 } }, "\ud83d\udc41"))),
-                erreur ? React.createElement("p", { style: { color: erreur.indexOf("OK::") === 0 ? COLORS.turquoise : "#FF6B6B", fontSize: 12.5, margin: "0 0 12px", textAlign: "center", lineHeight: 1.45 } }, erreur.replace("OK::", "")) : React.createElement("div", { style: { marginBottom: 16 } }),
-                React.createElement(BoutonPrincipal, { texte: enCours ? "..." : "Valider le nouveau mot de passe", couleur: COLORS.turquoise, onClick: validerNouveauMdp }))
-            : React.createElement(React.Fragment, null,
-            React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, marginBottom: 8 } },
-                React.createElement(ChampTexte, { placeholder: t("email_placeholder"), value: email, onChange: setEmail, type: "email", fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
-                React.createElement("div", { style: { position: "relative" } },
-                    React.createElement(ChampTexte, { placeholder: t("mdp_placeholder"), value: motDePasse, onChange: setMotDePasse, type: voirMdp ? "text" : "password", fond: "rgba(255,255,255,0.07)", bordure: "rgba(255,255,255,0.22)" }),
-                    React.createElement("button", { onClick: () => setVoirMdp(!voirMdp), "aria-label": "Afficher le mot de passe", style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", fontSize: 17, cursor: "pointer", opacity: voirMdp ? 1 : 0.5, padding: 4 } }, "\ud83d\udc41"))),
-            mode === "connexion" ? React.createElement("div", { style: { textAlign: "right", margin: "-4px 0 10px" } },
-                React.createElement("button", { onClick: mdpOublie, style: { background: "none", border: "none", color: COLORS.turquoise, fontSize: 12.5, fontWeight: 600, cursor: "pointer", padding: 0, opacity: 0.9 } }, t("mdp_oublie"))) : null,
-            erreur ? React.createElement("p", { style: { color: erreur.indexOf("OK::") === 0 ? COLORS.turquoise : "#FF6B6B", fontSize: 12.5, margin: "0 0 12px", textAlign: "center", lineHeight: 1.45 } }, erreur.replace("OK::", "")) : React.createElement("div", { style: { marginBottom: 16 } }),
-            mode === "inscription" && (React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, marginBottom: 22 } },
-                React.createElement(CaseACocher, { checked: infolettre, onChange: setInfolettre }, t("consent_infolettre")),
-                React.createElement(CaseACocher, { checked: partenaires, onChange: setPartenaires }, t("consent_partenaires")))),
-            React.createElement(BoutonPrincipal, { texte: enCours ? "..." : (mode === "inscription" ? t("creer_mon_compte") : t("se_connecter")), couleur: COLORS.turquoise, onClick: valider }),
-            React.createElement("button", { onClick: () => { setErreur(""); setMode(mode === "inscription" ? "connexion" : "inscription"); }, style: { marginTop: 20, color: COLORS.turquoise, fontSize: 14, fontWeight: 600, textAlign: "center" } }, mode === "inscription" ? t("deja_compte") : t("pas_compte"))),
-            React.createElement("p", { style: { marginTop: "auto", paddingTop: 24, fontSize: 11.5, color: COLORS.grisDoux, textAlign: "center", lineHeight: 1.5 } }, t("conditions_texte")))));
-}
+/* ---------- AUTHENTIFICATION ----------
+   02/09/2026 (decision de Blandine) : l ecran sobre EcranAuth a ete SUPPRIME.
+   Il faisait double emploi avec l ecran a poneys (EcranConnexionSpectral,
+   route "connexion"), qui porte le parcours complet : seuil, connexion,
+   inscription, confirmation, mot de passe oublie, nouveau mot de passe.
+   C est desormais la SEULE porte : plus rien ne route vers "auth", et le
+   detecteur du lien de recuperation (HYPE_RECUP_MDP) n a plus qu un seul
+   endroit a surveiller — c est ce doublon qui avait cause le bug du 28/08.
+   Les briques BoutonSocial / CaseACocher / ChampTexte sont conservees :
+   ChampTexte sert ailleurs dans le fichier. ---------- */
 function BoutonSocial({ texte, icone, couleurIcone }) {
     return (React.createElement("button", { style: { width: "100%", padding: "14px 20px", borderRadius: 16, background: COLORS.nuitClaire, border: `2px solid ${COLORS.nuitBordure}`, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, fontSize: 15, fontWeight: 600, color: COLORS.blanc } },
         React.createElement("span", { style: { color: couleurIcone, fontWeight: 800, fontSize: 16 } }, icone),
@@ -25781,13 +25676,25 @@ function EcranHypeUniverse(props){
   var wSt = React.useState(0); var waveN = wSt[0], setWaveN = wSt[1];
   var lSt = React.useState(false); var lance = lSt[0], setLance = lSt[1];
   function playCristal(){ try { var A = window.__hyAC || (window.__hyAC = new (window.AudioContext || window.webkitAudioContext)()); if (A.state === "suspended") { A.resume(); } var t = A.currentTime + 0.02; [[1318.5, 0], [1975.5, 0.14]].forEach(function(p){ var o = A.createOscillator(), gn = A.createGain(); o.type = "sine"; o.frequency.value = p[0]; gn.gain.setValueAtTime(0.0001, t + p[1]); gn.gain.exponentialRampToValueAtTime(0.11, t + p[1] + 0.03); gn.gain.exponentialRampToValueAtTime(0.0001, t + p[1] + 1.0); o.connect(gn); gn.connect(A.destination); o.start(t + p[1]); o.stop(t + p[1] + 1.1); }); } catch(e) {} }
-  React.useEffect(function(){ if (retour || lance) return; var ok = local.prenom && String(local.prenom).trim().length >= 2 && (local.majeur === true || local.majeur === false); if (!ok) return; var t1 = setTimeout(function(){ setLance(true); try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch(e) {} playCristal(); setTimeout(function(){ onSuivant(); }, 3000); }, 900); return function(){ clearTimeout(t1); }; }, [local.prenom, local.majeur, lance]);
+  /* 02/09 : l'accueil ne porte plus le prenom ni l'age, donc plus de lancement
+     automatique « des que les deux champs sont remplis ». C'est le grand bouton
+     qui declenche l'animation, puis ouvre l'ecran de connexion. */
   React.useEffect(function(){ if (!retour || lance) return; var t = setTimeout(function(){ setLance(true); playCristal(); setTimeout(function(){ onSuivant(); }, 3000); }, 6800); return function(){ clearTimeout(t); }; }, [retour, lance]);
   var fer = h("svg", { viewBox: "0 0 24 24", width: 24, height: 24, fill: "none", stroke: TQ, strokeWidth: 2, strokeLinecap: "round", style: { display: "block", margin: "0 auto", filter: "drop-shadow(0 0 6px rgba(32,217,245,0.82))" } },
     h("path", { d: "M7 20v-6a5 5 0 0 1 10 0v6" }), h("path", { d: "M5.2 20h3.2M15.6 20h3.2" }));
   var userIc = h("svg", { viewBox: "0 0 24 24", width: 19, height: 19, fill: "none", stroke: TQ, strokeWidth: 1.8, strokeLinecap: "round", style: { flex: "0 0 auto" } },
     h("circle", { cx: 12, cy: 8, r: 3.6 }), h("path", { d: "M5 19.6c1.6-3.6 4.5-5.4 7-5.4s5.4 1.8 7 5.4" }));
   var onConnexion = props.onConnexion || null;
+  /* L'animation de lancement (hu-launch : le fond avance, l'ecran fond au noir
+     a 2,65 s) est CONSERVEE — elle sert maintenant de transition vers l'ecran
+     de connexion au lieu de la page des questions. */
+  function ouvrirPorte(m){
+    if (lance) return;
+    setLance(true);
+    try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch(e) {}
+    playCristal();
+    setTimeout(function(){ if (onConnexion) onConnexion(m); }, 2900);
+  }
   return h("div", { className: "hu-root" + (fFoc ? " hu-slow" : "") + (lance ? " hu-launch" : "") + (retour ? " hu-retour" : ""), onClick: (retour && !lance) ? function(){ setLance(true); playCristal(); setTimeout(function(){ onSuivant(); }, 3000); } : undefined, style: { position: "relative", /* 14/08 (reapplique, session 134) : height:"100%" RETIRE — il figeait la boite a la hauteur de l ecran alors que le contenu la depasse (97px sequestres, boutons inatteignables, et plus rien a faire defiler pour le deck intro qui porte l overflowY:auto). minHeight garde le plein ecran ; la boite grandit avec le contenu et c est la page du deck qui defile. */ minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
     h("div", { style: { position: "absolute", inset: "-6%", backgroundImage: "url(" + IMG_HYPE_UNIVERSE_BG + ")", backgroundSize: "cover", backgroundPosition: "center 30%", filter: "blur(24px) brightness(.72)", transform: "scale(1.12)" } }),
     h("div", { className: "hu-bg", style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_HYPE_UNIVERSE_BG + ")", backgroundSize: "auto 62%", backgroundPosition: "center 50%", backgroundRepeat: "no-repeat", backgroundColor: "#04070d", WebkitMaskImage: "linear-gradient(180deg, transparent 15%, #000 30%, #000 75%, transparent 89%)", maskImage: "linear-gradient(180deg, transparent 15%, #000 30%, #000 75%, transparent 89%)" } }),
@@ -25805,13 +25712,10 @@ function EcranHypeUniverse(props){
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: "calc(env(safe-area-inset-bottom) + 4px)", padding: "0 26px", textAlign: "center" } },
       h("div", { className: "hu-slogan", style: { fontFamily: M, fontSize: 11.5, fontWeight: 600, letterSpacing: 3.2, color: "rgba(233,239,242,.8)", marginBottom: 12 } }, retour ? ("BON RETOUR, " + String(local.prenom || "").toUpperCase() + ".") : "LE VOYAGE NE FAIT QUE COMMENCER."),
       (retour ? h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 3, color: "rgba(210,224,228,.6)", marginTop: 2, marginBottom: 6, animation: "huFadeUp .9s 2.7s cubic-bezier(.2,.7,.2,1) both" } }, "LE VOYAGE CONTINUE.") : null),
-      h("div", { className: "hu-field", style: { display: "flex", alignItems: "center", gap: 11, background: "rgba(10,26,36,0.114)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", border: "1px solid rgba(32,217,245,0.481)", borderRadius: 999, padding: "14px 19px", marginBottom: 14, textAlign: "left" } },
-        userIc,
-        (local.prenom ? null : h("span", { className: "hu-caret" })),
-        h("input", { value: (local.prenom || ""), onChange: function(e){ var v = e.target.value; setLocal(Object.assign({}, local, { prenom: v })); }, placeholder: "Ton pr\u00e9nom", autoComplete: "given-name", onFocus: function(){ setFFoc(true); setWaveN(function(n){ return (n || 0) + 1; }); }, onBlur: function(){ setFFoc(false); }, style: { flex: 1, background: "none", border: "none", outline: "none", color: "#EFF5F7", fontFamily: M, fontSize: 15, minWidth: 0 } })),
-      h("div", { className: "hu-age", style: { display: "flex", gap: 10, marginBottom: 14 } },
-        [[false, "- de 18 ans"], [true, "+ de 18 ans"]].map(function(ag){ var sel = local.majeur === ag[0]; return h("button", { key: ag[0] ? "maj" : "min", onClick: function(){ setLocal(Object.assign({}, local, { majeur: ag[0] })); }, style: { flex: 1, padding: "10px 8px", borderRadius: 999, fontFamily: M, fontSize: 12.5, fontWeight: 600, letterSpacing: 0.5, cursor: "pointer", background: sel ? "rgba(32,217,245,0.278)" : "rgba(10,26,36,0.092)", border: "1px solid " + (sel ? "rgba(32,217,245,0.6)" : "rgba(255,255,255,0.13)"), color: sel ? "#CFF6F9" : "#93A6AC", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", boxShadow: sel ? "0 0 14px rgba(32,217,245,0.37)" : "none" } }, ag[1]); })),
-      (onConnexion && !retour) ? h("button", { onClick: function(e){ try { e.stopPropagation(); } catch(eSt) {} onConnexion(); }, style: { display: "block", width: "100%", background: "none", border: "none", padding: "6px 0 2px", fontFamily: M, fontSize: 12.5, fontWeight: 600, color: "rgba(233,239,242,.72)", cursor: "pointer" } }, "Tu as d\u00e9j\u00e0 un compte\u00a0? ", h("span", { style: { color: TQ, textDecoration: "underline" } }, "Se connecter")) : null));
+      (retour ? null : h("div", { className: "hu-field", style: { marginBottom: 10 } },
+        h("button", { onClick: function(e){ try { e.stopPropagation(); } catch(eSt) {} ouvrirPorte("seuil"); }, style: { width: "100%", padding: "15px", borderRadius: 16, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M, fontSize: 15, fontWeight: 600, letterSpacing: 0.9, cursor: "pointer" } },
+          h("span", { style: { display: "inline-flex", alignItems: "center", gap: 9, justifyContent: "center" } }, userIc, "Entrer dans Hype")))),
+      (onConnexion && !retour) ? h("button", { className: "hu-age", onClick: function(e){ try { e.stopPropagation(); } catch(eSt) {} ouvrirPorte("connexion"); }, style: { display: "block", width: "100%", background: "none", border: "none", padding: "6px 0 2px", fontFamily: M, fontSize: 12.5, fontWeight: 600, color: "rgba(233,239,242,.72)", cursor: "pointer" } }, "Tu as d\u00e9j\u00e0 un compte\u00a0? ", h("span", { style: { color: TQ, textDecoration: "underline" } }, "Se connecter")) : null));
 }
 var IMG_PERSONNALISATION_BG = HYPE_IMGS["k290"];
 function EcranPersonnalisation(props){
@@ -25824,9 +25728,21 @@ function EcranPersonnalisation(props){
   var st5 = S(false); var charge = st5[0], setCharge = st5[1];
   var st6 = S(null); var onde = st6[0], setOnde = st6[1];
   var rootRef = R(null), btnRef = R(null), chargeRef = R(false);
-  var nCh = Object.keys(charged).length; var plein = nCh >= 3;
+  var nCh = Object.keys(charged).length; var plein = nCh >= 4; /* 02/09 : quatre cartes desormais (age, langue, niveau, objectif) */
   var PT = {fr:{t1:"Dis-nous",niveauPro:"Professionnel / Autre",niveauEns:"Enseignant",proInfo:"Hype propose des abonnements \u00e0 tarif pro. Tu en sauras plus dans Mon compte.",t2:"qui tu es",lLangue:"Langue",lNiveau:"Niveau",lObjectif:"Objectif",q1:"\u201CChaque cavalier a son histoire.\u201D",q2:"\u00C9crivons la tienne.",cont:"Continuer",objectifs:[["progresser","Progresser et me d\u00e9passer"],["galop","Pr\u00e9parer mon prochain Galop"],["reviser","R\u00e9viser mes Galops"],["decouvrir","D\u00e9couvrir l\u2019\u00e9quitation"],["ecurie","Suivre mon \u00e9curie et mes chevaux"]]},en:{t1:"Tell us",niveauPro:"Professional / Other",niveauEns:"Instructor",proInfo:"Hype offers pro-rate subscriptions. You\u2019ll find more in My account.",t2:"who you are",lLangue:"Language",lNiveau:"Level",lObjectif:"Goal",q1:"\u201CEvery rider has a story.\u201D",q2:"Let\u2019s write yours.",cont:"Continue",objectifs:[["progresser","Progress and push my limits"],["galop","Prepare my next Galop"],["reviser","Review my Galops"],["decouvrir","Discover horse riding"],["ecurie","Follow my stable and horses"]]},es:{t1:"Dinos",niveauPro:"Profesional / Otro",niveauEns:"Instructor",proInfo:"Hype ofrece suscripciones a tarifa profesional. M\u00e1s informaci\u00f3n en Mi cuenta.",t2:"qui\u00e9n eres",lLangue:"Idioma",lNiveau:"Nivel",lObjectif:"Objetivo",q1:"\u201CCada jinete tiene su historia.\u201D",q2:"Escribamos la tuya.",cont:"Continuar",objectifs:[["progresser","Progresar y superarme"],["galop","Preparar mi pr\u00f3ximo Galop"],["reviser","Repasar mis Galops"],["decouvrir","Descubrir la equitaci\u00f3n"],["ecurie","Seguir mi cuadra y mis caballos"]]},it:{t1:"Dicci",niveauPro:"Professionale / Altro",niveauEns:"Istruttore",proInfo:"Hype offre abbonamenti a tariffa pro. Ne saprai di pi\u00f9 in Il mio account.",t2:"chi sei",lLangue:"Lingua",lNiveau:"Livello",lObjectif:"Obiettivo",q1:"\u201COgni cavaliere ha la sua storia.\u201D",q2:"Scriviamo la tua.",cont:"Continua",objectifs:[["progresser","Progredire e superarmi"],["galop","Preparare il mio prossimo Galop"],["reviser","Ripassare i miei Galop"],["decouvrir","Scoprire l\u2019equitazione"],["ecurie","Seguire la mia scuderia e i miei cavalli"]]},ja:{t1:"\u3042\u306a\u305f\u306e\u3053\u3068\u3092",niveauPro:"\u30d7\u30ed\u30d5\u30a7\u30c3\u30b7\u30e7\u30ca\u30eb/\u305d\u306e\u4ed6",niveauEns:"\u6559\u5e2b",proInfo:"Hype\u306b\u306f\u30d7\u30ed\u5411\u3051\u306e\u6599\u91d1\u30d7\u30e9\u30f3\u304c\u3042\u308a\u307e\u3059\u3002\u8a73\u3057\u304f\u306f\u30de\u30a4\u30a2\u30ab\u30a6\u30f3\u30c8\u3067\u3002",t2:"\u6559\u3048\u3066",lLangue:"\u8a00\u8a9e",lNiveau:"\u30ec\u30d9\u30eb",lObjectif:"\u76ee\u6a19",q1:"\u300c\u9a0e\u624b\u306b\u306f\u305d\u308c\u305e\u308c\u306e\u7269\u8a9e\u304c\u3042\u308b\u3002\u300d",q2:"\u3042\u306a\u305f\u306e\u7269\u8a9e\u3092\u66f8\u3053\u3046\u3002",cont:"\u7d9a\u3051\u308b",objectifs:[["progresser","\u4e0a\u9054\u3057\u3066\u81ea\u5206\u3092\u8d85\u3048\u308b"],["galop","\u6b21\u306eGalop\u306e\u6e96\u5099"],["reviser","Galop\u306e\u5fa9\u7fd2"],["decouvrir","\u4e57\u99ac\u3092\u77e5\u308b"],["ecurie","\u81ea\u5206\u306e\u53a9\u820e\u3068\u99ac\u3092\u898b\u5b88\u308b"]]},de:{t1:"Erz\u00e4hl uns",t2:"wer du bist",lLangue:"Sprache",lNiveau:"Stufe",lObjectif:"Ziel",niveauPro:"Professionell / Sonstiges",niveauEns:"Ausbilder",proInfo:"Hype bietet Profi-Tarife an. Mehr dazu findest du in Mein Konto.",q1:"\u201eJeder Reiter hat seine eigene Geschichte.\u201c",q2:"Schreiben wir deine.",cont:"Weiter",objectifs:[["progresser","Mich verbessern und \u00fcber mich hinauswachsen"],["galop","Meinen n\u00e4chsten Galop vorbereiten"],["reviser","Meine Galops wiederholen"],["decouvrir","Reiten entdecken"],["ecurie","Meinen Stall und meine Pferde im Blick behalten"]]}};
   var TX = PT[langue] || PT.fr;
+  /* 02/09 (nouvel ordre d'entree) : l'age etait pose sur l'accueil, qui ne
+     demande plus rien. Il rejoint les autres questions. Libelles a part pour
+     ne pas toucher au grand dictionnaire ci-dessus. */
+  var PTA = {
+    fr: { lAge: "\u00c2ge", min: "- de 18 ans", maj: "+ de 18 ans", vide: "\u00c0 choisir" },
+    en: { lAge: "Age", min: "Under 18", maj: "18 and over", vide: "To choose" },
+    es: { lAge: "Edad", min: "Menos de 18", maj: "18 o m\u00e1s", vide: "Por elegir" },
+    it: { lAge: "Et\u00e0", min: "Meno di 18", maj: "18 o pi\u00f9", vide: "Da scegliere" },
+    ja: { lAge: "\u5e74\u9f62", min: "18\u6b73\u672a\u6e80", maj: "18\u6b73\u4ee5\u4e0a", vide: "\u672a\u9078\u629e" },
+    de: { lAge: "Alter", min: "Unter 18", maj: "18 und \u00e4lter", vide: "Zu w\u00e4hlen" }
+  };
+  var TXA = PTA[langue] || PTA.fr;
   var LANGUES = [["fr","Fran\u00e7ais"],["en","English"],["es","Espa\u00f1ol"],["it","Italiano"],["ja","\u65e5\u672c\u8a9e"],["de","Deutsch"]];
   var OBJECTIFS = TX.objectifs;
   function libelle(liste, val){ for (var i = 0; i < liste.length; i++){ if (liste[i][0] === val) return liste[i][1]; } return liste[0][1]; }
@@ -25867,6 +25783,7 @@ function EcranPersonnalisation(props){
   var icoGlobe = icoSvg([h("circle", { key: 1, cx: 12, cy: 12, r: 8.6 }), h("path", { key: 2, d: "M3.4 12h17.2" }), h("path", { key: 3, d: "M12 3.4a13.5 13.5 0 0 1 0 17.2a13.5 13.5 0 0 1 0-17.2" })]);
   var icoMedaille = icoSvg([h("circle", { key: 1, cx: 12, cy: 9, r: 5.2 }), h("path", { key: 2, d: "M9.4 13.5L7.7 20l4.3-2.5L16.3 20l-1.7-6.5" }), h("path", { key: 3, d: "M12 6.9l.8 1.5 1.6.3-1.2 1.1.3 1.6-1.5-.8-1.5.8.3-1.6-1.2-1.1 1.6-.3z", fill: TQL, stroke: "none", opacity: .95 })]);
   var icoCible = icoSvg([h("circle", { key: 1, cx: 10.6, cy: 13.4, r: 7.4 }), h("circle", { key: 2, cx: 10.6, cy: 13.4, r: 3.6 }), h("circle", { key: 3, cx: 10.6, cy: 13.4, r: 1, fill: TQL, stroke: "none" }), h("path", { key: 4, d: "M21.2 2.8l-9.6 9.6" }), h("path", { key: 5, d: "M21.2 2.8l-3.4.6M21.2 2.8l-.6 3.4" })]);
+  var icoCavalier = icoSvg([h("circle", { key: 1, cx: 12, cy: 8, r: 3.6 }), h("path", { key: 2, d: "M5 19.6c1.6-3.6 4.5-5.4 7-5.4s5.4 1.8 7 5.4" })]);
   var fer = h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: TQ, strokeWidth: 2, strokeLinecap: "round", style: { display: "block", margin: "0 auto", animation: "ferP 8s ease-in-out infinite" } },
     h("path", { d: "M7 20v-6a5 5 0 0 1 10 0v6" }), h("path", { d: "M5.2 20h3.2M15.6 20h3.2" }));
   function lettres(txt, base){
@@ -25932,6 +25849,9 @@ function EcranPersonnalisation(props){
       h("div", { style: { fontFamily: G, fontSize: 33, lineHeight: 1.16, fontWeight: 400, color: "#EDF3F5", textAlign: "center", marginTop: 22, textShadow: "0 2px 12px rgba(10,26,36,0.121)", animation: "persUp .9s .45s both" } }, TX.t1, h("br"), TX.t2),
       separ(.7),
       h("div", { style: { marginTop: 8 } },
+        carte("age", icoCavalier, TXA.lAge, (local.majeur === true ? TXA.maj : (local.majeur === false ? TXA.min : TXA.vide)), .84, 0.6,
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, paddingTop: 13, paddingBottom: 2 } },
+            [[false, TXA.min], [true, TXA.maj]].map(function(ag){ return pilule("age", local.majeur === ag[0], ag[1], function(){ setLocal(Object.assign({}, local, { majeur: ag[0] })); }); }))),
         carte("langue", icoGlobe, TX.lLangue, libelle(LANGUES, langue), .9, 0,
           h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, paddingTop: 13, paddingBottom: 2 } },
             LANGUES.map(function(l){ return pilule("langue", langue === l[0], l[1], function(){ setLangue(l[0]); }); }))),
@@ -25962,7 +25882,7 @@ function EcranPersonnalisation(props){
             }))),
         h("svg", { viewBox: "0 0 116 116", style: { position: "absolute", inset: 0, transform: "rotate(-90deg)" } },
           h("circle", { cx: 58, cy: 58, r: 45, fill: "none", stroke: "rgba(255,255,255,.09)", strokeWidth: 2 }),
-          h("circle", { cx: 58, cy: 58, r: 45, fill: "none", stroke: TQL, strokeWidth: 2, strokeLinecap: "round", strokeDasharray: 283, strokeDashoffset: 283 * (1 - nCh / 3), style: { transition: "stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)", filter: plein ? "drop-shadow(0 0 7px rgba(95,233,240,.85))" : "drop-shadow(0 0 3px rgba(95,233,240,.4))" } })),
+          h("circle", { cx: 58, cy: 58, r: 45, fill: "none", stroke: TQL, strokeWidth: 2, strokeLinecap: "round", strokeDasharray: 283, strokeDashoffset: 283 * (1 - nCh / 4), style: { transition: "stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)", filter: plein ? "drop-shadow(0 0 7px rgba(95,233,240,.85))" : "drop-shadow(0 0 3px rgba(95,233,240,.4))" } })),
         h("button", { ref: btnRef, onPointerDown: partir, onClick: partir, "aria-label": TX.cont, style: { position: "absolute", left: 20, top: 20, width: 76, height: 76, borderRadius: "50%", border: "1px solid rgba(95,233,240," + (plein ? ".7" : ".4") + ")", background: "radial-gradient(circle at 32% 28%, rgba(95,233,240,.3), rgba(10,20,26,.92) 55%, #05090d 100%)", cursor: "pointer", padding: 0, boxShadow: plein ? "0 0 34px rgba(95,233,240,.45), inset 0 0 16px rgba(95,233,240,.25)" : "0 0 18px rgba(95,233,240,.2), inset 0 0 12px rgba(95,233,240,.12)", transition: "box-shadow .8s ease, border-color .8s ease", overflow: "hidden" } },
           h("div", { style: { position: "absolute", inset: 3, borderRadius: "50%", background: "conic-gradient(from 0deg, transparent 0deg, rgba(95,233,240,.4) 55deg, transparent 140deg)", animation: "orbite 9s linear infinite", WebkitMaskImage: "radial-gradient(circle, transparent 55%, #000 62%)", maskImage: "radial-gradient(circle, transparent 55%, #000 62%)" } }),
           h("div", { style: { position: "absolute", inset: 3, borderRadius: "50%", background: "radial-gradient(circle at 50% 50%, rgba(147,238,244,.95), rgba(87,220,230,.9) 60%)", transform: "scale(" + (charge ? 1 : 0) + ")", transition: "transform .55s cubic-bezier(.3,.8,.3,1)" } })))),
@@ -30465,7 +30385,7 @@ function SectionCommentaires({ cible }) {
               ? h("video", { src: c.photo_url, controls: true, playsInline: true, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block", border: "1px solid rgba(32,217,245,0.3)" } })
               : h("img", { src: c.photo_url, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block", border: "1px solid rgba(32,217,245,0.3)" } })) : null)); }),
         (coms.length === 0) ? h("div", { style: { color: "#6B7580", fontSize: 12, fontFamily: M, marginBottom: 8 } }, T("Sois le premier \u00e0 commenter.", "Be the first to comment.", "S\u00e9 el primero.", "Sii il primo.", "\u6700\u521d\u306e\u30b3\u30e1\u30f3\u30c8\u3092")) : null,
-        (user === null) ? h("button", { onClick: function () { setEcran("auth"); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12.5, fontFamily: M, cursor: "pointer", padding: 0 } }, T("Connecte-toi pour commenter", "Sign in to comment", "Inicia sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3")) :
+        (user === null) ? h("button", { onClick: function () { try { AUTH_MODE_SPECTRAL = "connexion"; } catch (eAM) { } setEcran("connexion"); }, style: { background: "none", border: "none", color: TURQL, fontSize: 12.5, fontFamily: M, cursor: "pointer", padding: 0 } }, T("Connecte-toi pour commenter", "Sign in to comment", "Inicia sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3")) :
         h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginTop: 4 } },
           h("input", { ref: fileRef, type: "file", accept: "image/*", style: { display: "none" } }),
           h("button", { onClick: function () { fileRef.current && fileRef.current.click(); }, style: { background: "none", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 10, color: "#8A929C", width: 34, height: 34, cursor: "pointer", flex: "0 0 auto", fontSize: 18 } }, "+"),
@@ -30857,7 +30777,7 @@ function EcranGererEcurie() {
     h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TURQL, fontFamily: M } }, T("G\u00e9rer mon \u00e9curie", "Manage my stable", "Gestionar", "Gestisci", "\u53a9\u820e\u7ba1\u7406")),
     h("div", { style: { fontFamily: C, fontSize: 22, fontWeight: 700, letterSpacing: 1, marginTop: 4, textTransform: "uppercase" } }, ((profil.club || "").trim()) || "Mon \u00e9curie"));
   if (user === undefined) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#8A929C", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026"));
-  if (user === null) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } }, head, h("div", { style: { padding: "56px 30px", textAlign: "center" } }, h("div", { style: { fontSize: 14, color: "#B9C6CC", fontFamily: M, lineHeight: 1.5, marginBottom: 22 } }, T("Connecte-toi pour ajouter tes chevaux, tes cavaliers et tes photos.", "Sign in to add your horses, riders and photos.", "", "", "")), h("button", { onClick: function () { setEcran("auth"); }, style: { padding: "13px 26px", borderRadius: 14, background: TURQ, border: "none", color: "#04252a", fontWeight: 800, fontSize: 14, fontFamily: M, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3"))));
+  if (user === null) return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 96 } }, head, h("div", { style: { padding: "56px 30px", textAlign: "center" } }, h("div", { style: { fontSize: 14, color: "#B9C6CC", fontFamily: M, lineHeight: 1.5, marginBottom: 22 } }, T("Connecte-toi pour ajouter tes chevaux, tes cavaliers et tes photos.", "Sign in to add your horses, riders and photos.", "", "", "")), h("button", { onClick: function () { try { AUTH_MODE_SPECTRAL = "connexion"; } catch (eAM2) { } setEcran("connexion"); }, style: { padding: "13px 26px", borderRadius: 14, background: TURQ, border: "none", color: "#04252a", fontWeight: 800, fontSize: 14, fontFamily: M, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3"))));
   function ligne(item, type, sub) { return h("div", { key: item.id, onClick: function () { if (type === "cheval") { window.__chevalOuvert = item.id; setEcran("cheval"); } }, style: { display: "flex", alignItems: "center", gap: 12, padding: "10px 12px", borderRadius: 12, background: "#0c0e12", border: "1px solid rgba(255,255,255,0.06)", cursor: type === "cheval" ? "pointer" : "default" } }, h("div", { style: { width: 44, height: 44, borderRadius: 10, flex: "0 0 auto", overflow: "hidden", backgroundImage: item.photo_url ? ("url(" + item.photo_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#12242b" } }, item.photo_url ? null : h(PortraitChevalSpectral, { compact: true })), h("div", { style: { minWidth: 0, flex: 1 } }, h("div", { style: { fontSize: 14, fontWeight: 600 } }, item.nom), sub ? h("div", { style: { fontSize: 11.5, color: "#8A929C", fontFamily: M } }, sub) : null,
       /* 01/09 (Blandine) — CHANGER L'ECURIE D'UN CHEVAL DEJA CREE. `modifierCheval`
          savait le faire depuis 18 h, aucun bouton ne l'appelait.
