@@ -135,6 +135,15 @@
     { cle: "quart",      lib: "Quart" }
   ];
 
+  /* 02/09 (Blandine) : « pourquoi plusieurs Margot apparaissent alors que c'est la
+     meme ? » — constate en base : « MARGOT KHOURY Note/Score » (15 lignes) a cote de
+     « MARGOT KHOURY » (14 lignes). CAUSE TROUVEE ICI : « Note/Score » est un EN-TETE
+     DE COLONNE du telemat. Il n'est pas dans ETIQUETTES, il tombe donc dans la regle
+     de continuation (« ce qui suit prolonge le dernier champ ») et se colle au nom du
+     monteur. Meme defaut deja consigne sur « THELMA VANDEVILLE Note/Score ».
+     Ces lignes ne sont ni une etiquette ni une valeur : on les saute purement. */
+  var ENTETES_COLONNE = /^(Note\s*\/\s*Score|Note|Score|Pts|Points|Gains|Rang|Dossard|Partants|Places?)$/i;
+
   function etiquetteDe(ligne) {
     for (var i = 0; i < ETIQUETTES.length; i++) {
       var lib = ETIQUETTES[i].lib;
@@ -190,6 +199,17 @@
     (lignes || []).forEach(function (t) {
       var mR;
       if (!o.pere && (mR = t.match(/^P[e\u00e8]re\s*:\s*\u2192?\s*(.+?)\s+M[e\u00e8]re\s*:\s*\u2192?\s*(.+)$/i))) { o.pere = mR[1].trim(); o.mere = mR[2].trim(); }
+      /* 02/09 (Ecolo Louvo, « origine CONSTATEE ») : l'app affichait « Qif Elmy × — ».
+         Le motif ci-dessus exige que le pere ET la mere tiennent sur UNE SEULE ligne,
+         avec la fleche exactement a sa place. Des que le telemat coupe la ligne en
+         deux, ou glisse un separateur, la mere est perdue en silence. Deux motifs
+         separes en secours : chacun se lit tout seul, dans n'importe quel ordre.
+         ⚠️ Ne pas confondre les deux mentions FFE : « origine NON constatee » =
+         filiation inconnue, il n'y a rien a recuperer (cas de Dakota CA, l'app est
+         alors juste) ; « origine constatee » = filiation connue, un manque est un
+         vrai defaut. */
+      else if (!o.pere && (mR = t.match(/^P[e\u00e8]re\s*:\s*\u2192?\s*([^|]+?)\s*$/i))) { o.pere = mR[1].trim(); }
+      else if (!o.mere && (mR = t.match(/^M[e\u00e8]re\s*:\s*\u2192?\s*([^|]+?)\s*$/i))) { o.mere = mR[1].trim(); }
       else if (!o.robe && (mR = t.match(/^Robe\s*:\s*([^|]+)\|\s*Sexe\s*:\s*([^|]+)\|\s*Taille\s*:\s*(.+)$/i))) { o.robe = mR[1].trim(); o.sexe = mR[2].trim(); o.taille = mR[3].trim(); }
       else if (!o.naissance && (mR = t.match(/^([A-Za-z\u00c0-\u00ff' -]{3,40})\s+n[e\u00e9]e?\s+le\s+(\d{2}\/\d{2}\/\d{4})$/i))) { o.race = mR[1].trim(); o.naissance = mR[2]; }
       else if (!o.naisseur && (mR = t.match(/^Naisseur\s*:\s*(.+)$/i))) { o.naisseur = mR[1].trim(); }
@@ -210,6 +230,7 @@
     for (var i = 0; i < lignes.length; i++) {
       var ligne = lignes[i];
       if (ligne === "+") continue;
+      if (ENTETES_COLONNE.test(ligne)) continue; /* 02/09 : en-tete de colonne, jamais une valeur */
       var e = etiquetteDe(ligne);
       if (e && e.cle === "date" && /\d{2}\/\d{2}\/\d{4}/.test(e.valeur)) {
         if (cour) fiches.push(cour);
@@ -250,7 +271,15 @@
            restait collé au nom du concours (« MAGNANVILLE er »).      */
         concours: (f.concours || "").replace(/\s+/g, " ").trim()
                     .replace(/\s+(er|ère|e)$/i, "").trim(),
-        cavalier: (f.monteur || "").replace(/\s+/g, " ").trim(),
+        cavalier: (f.monteur || "").replace(/\s+/g, " ").trim()
+                    /* 02/09 : ceinture. Meme si un en-tete inconnu se collait au nom,
+                       il ne part plus en base. On ne coupe jamais s'il resterait moins
+                       de deux mots, pour ne pas amputer un vrai patronyme. */
+                    .replace(/\s+(Note\s*\/\s*Score|Note|Score|Pts|Points|Gains|Rang|Dossard|Partants|Places?)$/i,
+                             function (tout, mot, pos, chaine) {
+                               var reste = chaine.slice(0, pos).trim();
+                               return reste.split(" ").filter(Boolean).length >= 2 ? "" : tout;
+                             }).trim(),
         place: c.place || null,
         partants: c.partants || null,
         quart: q,
