@@ -2066,7 +2066,14 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
     if (vues[k] || seen[k]) { doublons++; return; }
     seen[k] = true;
     var netFFE = function (tN) { /* 26/08 : Postgres refuse les caracteres de controle (« unsupported Unicode escape sequence », erreur reelle de Blandine 08h34) — on purge chaque champ texte avant l ecriture, quelle que soit la version du lecteur en cache */
-      return String(tN || "").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "").replace(/\s+/g, " ").trim();
+      /* 02/09 : ON REPARE AVANT D ECRIRE. Jusqu ici la purge des caracteres de
+         controle laissait passer le double encodage (« PrÃÂ©paratoire ») et il
+         partait tel quel en base. La reparation d affichage posee ce matin
+         masquait le probleme sans l empecher : desormais aucune ligne NEUVE ne
+         peut plus arriver cassee. Les anciennes restent a assainir en SQL. */
+      var brut = String(tN || "");
+      try { if (typeof hypeReparerFFE === "function") brut = hypeReparerFFE(brut); } catch (eRf) { }
+      return brut.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "").replace(/\s+/g, " ").trim();
     };
     neufs.push({
       user_id: user.id,
@@ -22499,7 +22506,7 @@ function EcranCommunaute() {
         h("div", { style: { borderRadius: 16, overflow: "hidden", border: "1px solid rgba(255,255,255,0.07)" } },
           classementClubs.slice().sort(function (a, b) { return (b.xp || 0) - (a.xp || 0); }).map(function (g, i) {
             var medEmoji = ["\ud83c\udfc6", "\ud83e\udd48", "\ud83e\udd49"][i] || null;
-            return h("div", { key: i, style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: (i < classementClubs.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: "#0c0e12" } },
+            return h("div", { key: i, role: (g.ecurie ? "button" : null), onClick: (g.ecurie ? function () { try { if (typeof window !== "undefined") window.__guildeEcurie = String(g.ecurie).trim(); } catch (eW) { } try { setEcran("guilde"); } catch (eE) { } } : null), style: { cursor: (g.ecurie ? "pointer" : "default"), display: "flex", alignItems: "center", gap: 12, padding: "12px 14px", borderBottom: (i < classementClubs.length - 1 ? "1px solid rgba(255,255,255,0.05)" : "none"), background: "#0c0e12" } },
               h("div", { style: { width: 26, textAlign: "center", fontSize: medEmoji ? 17 : 14, fontFamily: C, fontWeight: 700, color: (i === 0 ? "#E8C887" : (i === 1 ? "#C7D0D6" : (i === 2 ? "#CD8A5C" : "#8A929C"))) } }, medEmoji || (i + 1)),
               h("div", { style: { minWidth: 0 } }, h("div", { style: { fontSize: 13.5, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, g.ecurie), h("div", { style: { fontSize: 10.5, color: "#8A929C", fontFamily: M, marginTop: 1 } }, (g.membres || 0) + " " + T("membres", "members", "miembros", "membri", "\u4eba", "Mitglieder"))),
               h("div", { style: { fontFamily: M, fontSize: 13, fontWeight: 800, color: "#DDE6EA" } }, (g.xp || 0) + " XP"));
@@ -29163,6 +29170,21 @@ function PodiumClubsHype(props) {
   var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
   var TURQ = "#20D9F5", BLANC = "#F4F7FA";
 
+  /* 02/09 (Blandine) : un club du podium ou de la liste OUVRE sa page.
+     ⚠️ Le mecanisme existait deja — `window.__guildeEcurie` puis l ecran
+     « guilde » — il n etait simplement branche nulle part ici. Rien d invente.
+     ⚠️ Un club sans nom n est pas cliquable : on n ouvre pas une page vide. */
+  var ctxP = (typeof useApp === "function") ? useApp() : {};
+  function ouvrirClub(nomClub) {
+    return function (eOc) {
+      try { if (eOc && eOc.stopPropagation) eOc.stopPropagation(); } catch (eS) { }
+      var nc = String(nomClub || "").trim();
+      if (!nc) return;
+      try { if (typeof window !== "undefined") window.__guildeEcurie = nc; } catch (eW) { }
+      try { if (ctxP && ctxP.setEcran) ctxP.setEcran("guilde"); } catch (eE) { }
+    };
+  }
+
   var liste = (props.liste || []).slice().sort(function (a, b) { return (b.xp || 0) - (a.xp || 0); });
   var top3 = liste.slice(0, 3);
   var suite = liste.slice(3, 6);
@@ -29285,17 +29307,23 @@ function PodiumClubsHype(props) {
     return [
       photo ? h("div", {
         key: "ph" + i,
+        role: g.nom ? "button" : null,
+        onClick: g.nom ? ouvrirClub(g.nom) : null,
         style: {
           position: "absolute", left: tr3.l + "%", top: tr3.t + "%",
           width: tr3.w + "%", height: tr3.hh + "%",
-          borderRadius: "50%", overflow: "hidden", zIndex: 1
+          borderRadius: "50%", overflow: "hidden", zIndex: 1,
+          cursor: g.nom ? "pointer" : "default"
         }
       }, h("img", { src: photo, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : null,
       h("div", {
         key: "tx" + i,
+        role: g.nom ? "button" : null,
+        onClick: g.nom ? ouvrirClub(g.nom) : null,
         style: {
           position: "absolute", left: tx.l + "%", bottom: tx.b + "%", width: tx.w + "%",
-          zIndex: 3, textAlign: "center", pointerEvents: "none"
+          zIndex: 3, textAlign: "center",
+          pointerEvents: g.nom ? "auto" : "none", cursor: g.nom ? "pointer" : "default"
         }
       },
         h("div", {
@@ -29344,7 +29372,8 @@ function PodiumClubsHype(props) {
     /* ---- les places suivantes, en vrai HTML ---- */
     (suite.length && !props.sansSuite) ? h("div", { style: { marginTop: 4 } },
       suite.map(function (g, i) {
-        return h("div", { key: "s" + i, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 4px", borderTop: "1px solid rgba(255,255,255,0.06)" } },
+        return h("div", { key: "s" + i, role: g.nom ? "button" : null, onClick: g.nom ? ouvrirClub(g.nom) : null,
+          style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 4px", borderTop: "1px solid rgba(255,255,255,0.06)", cursor: g.nom ? "pointer" : "default" } },
           h("div", { style: { width: 18, textAlign: "center", fontFamily: C, fontSize: 13, color: "#8A929C" } }, i + 4),
           h("div", { style: { width: 26, height: 26, borderRadius: "50%", overflow: "hidden", flex: "0 0 auto", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)" } },
             h("img", { src: photos[g.nom] || ((typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || ""), alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })),
