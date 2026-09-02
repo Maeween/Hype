@@ -1508,6 +1508,28 @@ async function majAlbumCheval(id, champs) {
 async function supprimerAlbumCheval(id) {
   try { return await supa.from("albums_cheval").delete().eq("id", id); } catch (e) { return { error: String(e) }; }
 }
+/* --- 02/09 (Blandine) : L'HISTOIRE PAR CAVALIERE ---------------------------------
+   Regle dictee : « elle ajoute un cheval dans ses chevaux perso, elle devrait pouvoir
+   ecrire son histoire si elle veut, mais elle restera sur sa page perso et elle ne
+   remontera pas sur l'ecurie ; sur l'ecurie on garde l'histoire ecrite par la
+   proprietaire de la fiche. »
+   La colonne chevaux.histoire reste donc L'HISTOIRE OFFICIELLE (celle de la
+   proprietaire, la seule visible cote ecurie / fiche commune). Les autres cavalieres
+   ecrivent dans chevaux_histoires, une ligne par (cheval, cavaliere), lue uniquement
+   sur leur propre page. Aucune ecriture croisee possible : la cle primaire porte le
+   user_id. Table a creer : voir le SQL livre avec ce fichier. */
+async function histoirePersoCheval(chevalId) {
+  try { const user = await utilisateurActuel(); if (!user || !chevalId) return { data: null, error: null };
+    var r = await supa.from("chevaux_histoires").select("texte").eq("cheval_id", chevalId).eq("user_id", user.id).maybeSingle();
+    return { data: (r && r.data) || null, error: r && r.error };
+  } catch (e) { return { data: null, error: String(e) }; }
+}
+async function enregistrerHistoirePerso(chevalId, texte) {
+  try { const user = await utilisateurActuel(); if (!user) return { error: "Pas connecté" };
+    if (!chevalId) return { error: "Cheval inconnu" };
+    return await supa.from("chevaux_histoires").upsert({ cheval_id: chevalId, user_id: user.id, texte: texte || null, updated_at: new Date().toISOString() }, { onConflict: "cheval_id,user_id" });
+  } catch (e) { return { error: String(e) }; }
+}
 function jetonAlbum() { try { return (Date.now().toString(36) + Math.random().toString(36).slice(2, 8)); } catch (e) { return String(Date.now()); } }
 async function partagerAlbum(id, actif) {
   try { const user = await utilisateurActuel(); if (!user) return { error: "Pas connecté" };
@@ -21414,7 +21436,13 @@ function EcranChevalCommun() {
                 } catch (eP) { }
                 var photos = [], videos = [], dernier = null;
                 try {
-                    var rA = await supa.from("albums_cheval").select("*").eq("cible", "cheval:" + id).order("created_at", { ascending: true });
+                    /* 02/09 : cote ecurie / fiche commune on montre les albums de TOUT LE MONDE,
+                       mais uniquement les PUBLICS — un album garde en prive reste sur la page
+                       perso de son auteur. listerAlbumsCheval porte deja ce filtre, la requete
+                       directe ne le portait pas. */
+                    var rA = (typeof listerAlbumsCheval === "function")
+                      ? await listerAlbumsCheval("cheval:" + id)
+                      : await supa.from("albums_cheval").select("*").eq("cible", "cheval:" + id).order("created_at", { ascending: true });
                     ((rA && rA.data) || []).forEach(function (al) {
                         if (al.visibilite !== "public") return; /* mur commun = PUBLIC uniquement */
                         var tous = (al.photos || []).concat(al.videos || []);
@@ -34600,6 +34628,19 @@ function AlbumsCheval(props) {
   var tnT = props.teinte || "#20D9F5";
   var tA = function (aT) { return teinteRGBA(tnT, aT); };
   var C9 = "'Cinzel',serif", M9 = "'Montserrat',sans-serif";
+  /* 02/09 (Blandine) : deux vues sur un seul cheval. Sur SA page (fiche perso) chaque
+     cavaliere ne voit QUE ses albums a elle (prop mesAlbumsSeulement) ; cote ecurie /
+     fiche commune, tous les albums publics restent visibles. Un seul cheval en base,
+     jamais de duplication de fiche. */
+  var moiAcSt = React.useState(null); var moiAc = moiAcSt[0], setMoiAc = moiAcSt[1];
+  var modAcSt = React.useState(false); var modAc = modAcSt[0], setModAc = modAcSt[1];
+  var avertAcSt = React.useState(null); var avertAc = avertAcSt[0], setAvertAc = avertAcSt[1];
+  React.useEffect(function () { var actifAc = true;
+    try { utilisateurActuel().then(function (uAc) { if (!actifAc) return; setMoiAc(uAc || null);
+      try { setModAc(!!(uAc && typeof estModerateurHype === "function" && estModerateurHype(uAc))); } catch (eMd) { setModAc(false); }
+    }).catch(function () { if (actifAc) { setMoiAc(null); setModAc(false); } }); } catch (eUa9) { }
+    return function () { actifAc = false; };
+  }, []);
   var aSt = React.useState(null); var albums = aSt[0], setAlbums = aSt[1];
   var oSt = React.useState(null); var ouvert = oSt[0], setOuvert = oSt[1];
   var nSt = React.useState(null); var editNom = nSt[0], setEditNom = nSt[1];
@@ -34794,9 +34835,14 @@ function AlbumsCheval(props) {
       try { var ct = cibleTag(); if (ct) { var ri = await identificationsPour(ct.type, ct.id, "accepte"); var found = ((ri && ri.data) || []).filter(function (x) { return x.photo_url === u; })[0]; if (found && typeof repondreIdentification === "function") { await repondreIdentification(found.id, false); } } } catch (e) { }
       charger(); return;
     }
-    var nouv = (alb.photos || []).filter(function (x) { return x !== u; });
-    var r = await majAlbumCheval(alb.id, { photos: nouv });
-    if (!(r && r.error)) charger();
+    gardeModeratrice(alb, true, async function () {
+      var nouv = (alb.photos || []).filter(function (x) { return x !== u; });
+      var r = await majAlbumCheval(alb.id, { photos: nouv });
+      /* 02/09 : ce retrait echouait EN SILENCE sur l album d une autre personne — le bouton
+         etait affiche, on tapait, rien ne se passait, aucun message. Desormais il parle. */
+      if (r && r.error) { bip(T("Retrait impossible — cet album ne t'appartient pas.", "Could not remove — this album isn't yours.", "Imposible retirar — este álbum no es tuyo.", "Rimozione impossibile — questo album non è tuo.", "削除できません — このアルバムはあなたのものではありません。", "Entfernen nicht möglich — dieses Album gehört dir nicht."), 4200); return; }
+      charger();
+    });
   }
   async function importerFichiers(albId, fichiers) { /* 27/08 : le doublon local d estFichierVideo est retire — une seule definition desormais, globale, plus haut dans le fichier */
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
@@ -34887,11 +34933,51 @@ function AlbumsCheval(props) {
       if (r && r.error) { setEditNom(null); bip(T("Cr\u00e9ation impossible \u2014 table \u00e0 ajouter c\u00f4t\u00e9 base", "Could not create \u2014 missing table", "No se pudo crear", "Creazione non riuscita", "\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093")); return; }
       setEditNom(null); charger(); if (r && r.data) setOuvert(r.data.id);
     } else {
-      var r2 = await majAlbumCheval(editNom, { nom: nm });
-      setEditNom(null); if (!(r2 && r2.error)) charger();
+      var albR = (albums || []).filter(function (x) { return x.id === editNom; })[0];
+      setEditNom(null);
+      gardeModeratrice(albR, false, async function () {
+        var r2 = await majAlbumCheval(editNom, { nom: nm });
+        if (r2 && r2.error) { bip(T("Renommage impossible — cet album ne t'appartient pas.", "Could not rename — this album isn't yours.", "Imposible renombrar — no es tuyo.", "Impossibile rinominare — non è tuo.", "名前を変更できません。", "Umbenennen nicht möglich."), 4200); return; }
+        charger();
+      });
     }
   }
-  var albOuvert = (albums || []).filter(function (x) { return x.id === ouvert; })[0] || null;
+  /* 02/09 : la liste AFFICHEE. Sur la fiche perso d un cheval rattache, on ne montre que
+     les albums dont on est l auteur — chacune chez soi. Ailleurs (ecurie, fiche commune,
+     cavalier), rien ne change : la liste complete. Tant que l utilisateur n est pas charge
+     on n affiche rien plutot que les albums des autres. */
+  function estAMoiAlb(albM) { try { return !!(albM && moiAc && albM.user_id === moiAc.id); } catch (eAm) { return false; } }
+  var albumsAff = albums;
+  if (props.mesAlbumsSeulement) {
+    albumsAff = (albums === null) ? null : (albums || []).filter(function (aF) { return aF && (aF.__auto || aF.__lecture || estAMoiAlb(aF)); });
+  }
+  /* 02/09 (Blandine) : garde-fou moderatrice. Quand elle agit sur un album qui n est pas le
+     sien, elle doit COMPRENDRE qu elle intervient chez quelqu un d autre — avec le prenom.
+     Simple avertissement pour les gestes anodins, confirmation pour ce qui detruit. */
+  function auteurAlb(albA) {
+    try {
+      var mL = (membres || []).filter(function (mm) { return mm && mm.user_id === albA.user_id; })[0];
+      var p = mL && mL.profil; var n = p && (p.pseudo || p.handle);
+      return n ? String(n) : "";
+    } catch (eAu) { return ""; }
+  }
+  function gardeModeratrice(albG, destructif, suite) {
+    if (!albG || estAMoiAlb(albG) || !moiAc) { suite(); return; }
+    var qui = auteurAlb(albG);
+    var phrase = qui
+      ? T("Cet album appartient à " + qui + " — tu interviens en modératrice.", "This album belongs to " + qui + " — you are acting as a moderator.", "Este álbum pertenece a " + qui + " — intervienes como moderadora.", "Questo album appartiene a " + qui + " — intervieni come moderatrice.", "このアルバムは " + qui + " のものです — 管理者として操作しています。", "Dieses Album gehört " + qui + " — du handelst als Moderatorin.")
+      : T("Cet album appartient à une autre cavalière — tu interviens en modératrice.", "This album belongs to another rider — you are acting as a moderator.", "Este álbum pertenece a otra jinete — intervienes como moderadora.", "Questo album appartiene a un'altra cavallerizza — intervieni come moderatrice.", "このアルバムは他の乗り手のものです — 管理者として操作しています。", "Dieses Album gehört einer anderen Reiterin — du handelst als Moderatorin.");
+    if (!modAc) {
+      /* Pas moderatrice : on n agit jamais dans l album d une autre. Chacune chez soi. */
+      setAvertAc({ phrase: qui
+        ? T("Cet album appartient à " + qui + ". Crée le tien pour y mettre tes photos.", "This album belongs to " + qui + ". Create your own to add your photos.", "Este álbum pertenece a " + qui + ". Crea el tuyo para añadir tus fotos.", "Questo album appartiene a " + qui + ". Crea il tuo per aggiungere le tue foto.", "このアルバムは " + qui + " のものです。自分のアルバムを作成してください。", "Dieses Album gehört " + qui + ". Erstelle dein eigenes für deine Fotos.")
+        : T("Cet album appartient à une autre cavalière. Crée le tien pour y mettre tes photos.", "This album belongs to another rider. Create your own to add your photos.", "Este álbum pertenece a otra jinete. Crea el tuyo para añadir tus fotos.", "Questo album appartiene a un'altra cavallerizza. Crea il tuo per aggiungere le tue foto.", "このアルバムは他の乗り手のものです。自分のアルバムを作成してください。", "Dieses Album gehört einer anderen Reiterin. Erstelle dein eigenes."),
+        suite: null, destructif: false });
+      return;
+    }
+    setAvertAc({ phrase: phrase, suite: suite, destructif: !!destructif });
+  }
+  var albOuvert = (albumsAff || []).filter(function (x) { return x.id === ouvert; })[0] || null;
   function carteAlbum(alb) {
     var cov = alb.couverture || (alb.photos || [])[0];
     var estVid = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
@@ -34936,7 +35022,7 @@ function AlbumsCheval(props) {
       h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("\u2605 = \u00e0 la une sur la fiche (3 max)", "\u2605 = featured on the profile (3 max)", "\u2605 = destacado (3 m\u00e1x)", "\u2605 = in evidenza (max 3)", "\u2605 = \u6ce8\u76ee (3\u3064\u307e\u3067)")),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
     h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", padding: "2px 16px 4px" } },
-      (albums || []).map(carteAlbum)),
+      (albumsAff || []).map(carteAlbum)),
     /* 30/08 (choix de Blandine, option 1) : le grand carre pointille « Nouvel
        album » est remplace par une PASTILLE discrete, centree sous la rangee.
        Moins de place, rien de vide a l'ecran, meme geste. */
@@ -35084,7 +35170,7 @@ function AlbumsCheval(props) {
         h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#9AA5AC", marginBottom: 14, lineHeight: 1.5 } }, T("Les souvenirs eux-m\u00eames ne seront pas supprim\u00e9s.", "The memories themselves won't be deleted.", "Los recuerdos no se eliminar\u00e1n.", "I ricordi non saranno eliminati.", "\u601d\u3044\u51fa\u81ea\u4f53\u306f\u524a\u9664\u3055\u308c\u307e\u305b\u3093")),
         h("div", { style: { display: "flex", gap: 10 } },
           h("button", { onClick: function () { setConfSupA(null); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
-          h("button", { onClick: function () { var idS = confSupA; setConfSupA(null); setOuvert(null); supprimerAlbumCheval(idS).then(function () { charger(); }); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "rgba(226,138,146,0.9)", color: "#1A0B0E", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664")))))) : null,
+          h("button", { onClick: function () { var idS = confSupA; var albS = (albums || []).filter(function (x) { return x.id === idS; })[0]; setConfSupA(null); gardeModeratrice(albS, true, function () { setOuvert(null); supprimerAlbumCheval(idS).then(function (rS) { if (rS && rS.error) { bip(T("Suppression impossible — cet album ne t'appartient pas.", "Could not delete — this album isn't yours.", "Imposible eliminar — no es tuyo.", "Impossibile eliminare — non è tuo.", "削除できません。", "Löschen nicht möglich."), 4200); return; } charger(); }); }); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "rgba(226,138,146,0.9)", color: "#1A0B0E", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664")))))) : null,
     visu ? portail(h("div", { onClick: function () { setVisu(null); setTagVisu(false); setPanneauCommentaires(false); }, onTouchStart: surToucheDebut, onTouchEnd: surToucheFin, style: { position: "fixed", inset: 0, zIndex: 9100, background: "#020304", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
       (function () { var estVv = !!(typeof estUrlVideo === "function" && estUrlVideo(visu));
         return estVv ? h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nodownload", /* 02/08 : « nofullscreen » retire — le plein ecran des videos etait desactive volontairement, d ou l impossibilite d agrandir signalee par Blandine. Le telechargement reste bloque. */ onClick: function (eV) { eV.stopPropagation(); }, style: { width: "100%", height: "100%", objectFit: "contain" } })
@@ -35157,6 +35243,19 @@ function AlbumsCheval(props) {
           (!(tagCiblesA.ecuries || []).length && !(tagCiblesA.chevaux || []).length && !(tagCiblesA.amis || []).length) ? h("div", { style: { textAlign: "center", color: "#8A99A1", fontSize: 11.5, padding: "10px 0", lineHeight: 1.5 } }, T("Aucune cible disponible.", "Nothing to tag yet.", "", "", "")) : null),
         h("button", { onClick: function () { setTagVisu(false); }, style: { marginTop: 16, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"))))) : null,
     toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 999, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, whiteSpace: "nowrap" } }, toastA)) : null,
+    /* 02/09 (Blandine) : « un petit message d'avertissement quand je touche un cheval perso
+       et que j'effectue quelque chose que je ne devrais pas toucher normalement » — de facon
+       a comprendre qu'on est en train de faire une connerie si ce n'est pas fait expres.
+       Le prenom de l'auteur est affiche : c'est lui qui fait realiser. */
+    avertAc ? portail(h("div", { onClick: function () { setAvertAc(null); }, style: { position: "fixed", inset: 0, zIndex: 9400, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22 } },
+      h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 340, borderRadius: 18, background: "linear-gradient(180deg, rgba(18,22,28,0.99), rgba(9,11,15,0.99))", border: "1px solid rgba(234,199,122,0.45)", padding: 20 } },
+        h("div", { style: { fontSize: 26, textAlign: "center", marginBottom: 10 } }, "\u26A0\uFE0F"),
+        h("div", { style: { fontFamily: C9, fontSize: 14.5, letterSpacing: 1, color: "#EAC77A", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, T("Ce n'est pas à toi", "Not yours", "No es tuyo", "Non è tuo", "あなたのものではありません", "Nicht deins")),
+        h("p", { style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#DCE6EA", fontFamily: M9, textAlign: "center" } }, avertAc.phrase),
+        avertAc.destructif ? h("p", { style: { margin: "10px 0 0", fontSize: 12, lineHeight: 1.5, color: "#B9C6CC", fontFamily: M9, textAlign: "center", fontStyle: "italic" } }, T("Ce retrait est définitif pour elle.", "This removal is permanent for her.", "Esta eliminación es definitiva para ella.", "Questa rimozione è definitiva per lei.", "この削除は取り消せません。", "Diese Entfernung ist endgültig.")) : null,
+        h("div", { style: { display: "flex", gap: 10, marginTop: 18 } },
+          h("button", { onClick: function () { setAvertAc(null); }, style: { flex: 1, padding: "12px 8px", borderRadius: 12, border: "none", background: "rgba(255,255,255,0.07)", color: "#B9C6CC", fontFamily: M9, fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen")),
+          h("button", { onClick: function () { var s = avertAc && avertAc.suite; setAvertAc(null); if (s) s(); }, style: { flex: 1, padding: "12px 8px", borderRadius: 12, border: "1px solid rgba(234,199,122,0.6)", background: "linear-gradient(90deg, rgba(234,199,122,0.2), rgba(234,199,122,0.07))", color: "#F2E4C4", fontFamily: M9, fontSize: 13, fontWeight: 700, cursor: "pointer" } }, avertAc.destructif ? T("Retirer quand même", "Remove anyway", "Retirar igualmente", "Rimuovi comunque", "それでも削除", "Trotzdem entfernen") : T("Continuer", "Continue", "Continuar", "Continua", "続ける", "Weiter"))))) ) : null,
     /* 27/08 soir : LE MESSAGE QUI RESTE — carte d'erreur d'envoi, visible jusqu'a fermeture
        explicite. Texte selectionnable (pour pouvoir le recopier), sur plusieurs lignes si besoin
        (contrairement au bip en une ligne qui coupait les raisons longues). */
@@ -35833,8 +35932,24 @@ function EcranCheval() {
      ignorait complètement la table chevaux_liens. On charge l'état de rattachement
      pour proposer plus bas le RETRAIT au lieu de l'ajout. */
   var lienSt = React.useState(false); var estLieFiche = lienSt[0], setEstLieFiche = lienSt[1];
+  /* 02/09 : histoire par cavaliere. Sur MA page, si le cheval n est pas le mien, c est MON
+     texte que je vois et que j ecris — jamais celui de la proprietaire, et le mien ne
+     remonte jamais cote ecurie. */
+  var hpSt = React.useState(null); var histPerso = hpSt[0], setHistPerso = hpSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   var medSt = React.useState({}); var mediasInfo = medSt[0], setMediasInfo = medSt[1];
+  /* 02/09 : on ne charge l histoire perso que si le cheval n est pas le mien. Sur mon
+     propre cheval, chevaux.histoire reste la seule source (rien ne change pour moi). */
+  var estMonChevalFiche = !!(moi && chevalDyn && chevalDyn.ownerId === moi.id);
+  React.useEffect(function () {
+    var actifHp = true;
+    if (!moi || !chevalDyn || !chevalDyn.dbId || estMonChevalFiche) { setHistPerso(null); return; }
+    try { histoirePersoCheval(chevalDyn.dbId).then(function (rHp) {
+      if (!actifHp) return;
+      setHistPerso((rHp && rHp.data && rHp.data.texte) ? String(rHp.data.texte) : "");
+    }).catch(function () { if (actifHp) setHistPerso(""); }); } catch (eHp) { setHistPerso(""); }
+    return function () { actifHp = false; };
+  }, [moi && moi.id, chevalDyn && chevalDyn.dbId, estMonChevalFiche]);
 
   /* ═══ 23/08 session 153 — LES ÉPINGLES DU PALMARÈS ════════════════════
      Un résultat épinglé quitte sa saison et ouvre la page ; c est lui, et
@@ -36249,7 +36364,7 @@ function EcranCheval() {
   function ecrireBrouillonHist(txt) { try { localStorage.setItem(cleBrouillonHist(), String(txt || "")); } catch (eB) { } }
   function effacerBrouillonHist() { try { localStorage.removeItem(cleBrouillonHist()); } catch (eB2) { } }
   function ouvrirEditHistoire() {
-    var enBase = String((chevalDyn && chevalDyn.histoire) || (c && c.histoire) || "");
+    var enBase = String((chevalDyn && chevalDyn.dbId && !estMonChevalFiche) ? (histPerso || "") : ((chevalDyn && chevalDyn.histoire) || (c && c.histoire) || ""));
     var brouillon = "";
     try { brouillon = String(localStorage.getItem(cleBrouillonHist()) || ""); } catch (eB3) { }
     /* On ne reprend le brouillon que s'il apporte vraiment quelque chose de plus :
@@ -36278,13 +36393,18 @@ function EcranCheval() {
     setHistBusy(true);
     var okHist = false;
     try {
-      var rH = await avecGarde(supa.from("chevaux").update({ histoire: txtH || null }).eq("id", chevalDyn.dbId), 10000);
+      /* 02/09 : aiguillage. Mon cheval -> chevaux.histoire (l officielle, visible partout).
+         Cheval d une autre -> chevaux_histoires, ma ligne a moi, jamais remontee cote ecurie. */
+      var rH = estMonChevalFiche
+        ? await avecGarde(supa.from("chevaux").update({ histoire: txtH || null }).eq("id", chevalDyn.dbId), 10000)
+        : await avecGarde(enregistrerHistoirePerso(chevalDyn.dbId, txtH), 10000);
       if (rH && rH.__garde) { setToast(T("R\u00e9seau injoignable \u2014 rien n'a \u00e9t\u00e9 enregistr\u00e9. R\u00e9essaie.", "Network unreachable \u2014 nothing was saved. Try again.", "Red inaccesible \u2014 no se guard\u00f3 nada.", "Rete irraggiungibile \u2014 nulla \u00e8 stato salvato.", "\u30cd\u30c3\u30c8\u30ef\u30fc\u30af\u306b\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002", "Netz nicht erreichbar \u2014 nichts gespeichert.")); setHistBusy(false); return; } /* 28/08 : message d'echec persistant, plus d'effacement automatique */
       if (rH && rH.error) { setToast(T("Enregistrement impossible pour le moment", "Could not save right now", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern derzeit nicht möglich")); }
       else {
         okHist = true;
         effacerBrouillonHist(); /* 28/08 : enregistre pour de vrai, le brouillon n'a plus lieu d'etre */
-        setChevalDyn(Object.assign({}, chevalDyn, { histoire: txtH || null }));
+        if (estMonChevalFiche) setChevalDyn(Object.assign({}, chevalDyn, { histoire: txtH || null }));
+        else setHistPerso(txtH || "");
         setEditHist(false);
         setToast(T("Histoire mise \u00e0 jour \u2728", "Story updated \u2728", "Historia actualizada \u2728", "Storia aggiornata \u2728", "\u7269\u8a9e\u3092\u66f4\u65b0 \u2728", "Geschichte aktualisiert \u2728"));
       }
@@ -37089,7 +37209,9 @@ function EcranCheval() {
           var raceTxt = infoP[0] || race || "";
           var abrv = raceTxt.split(/[\s-]+/).filter(function (w) { return w.length > 2; }).map(function (w) { return w[0]; }).join("").toUpperCase() || raceTxt.slice(0, 3).toUpperCase();
           var ageTxt = infoP.filter(function (x) { return /^\d+\s*ans?\b/i.test(x); })[0] || "";
-          var recit = c.histoire || (function () {
+          /* 02/09 : sur MA page, si le cheval n est pas le mien, c est MON histoire.
+             Celle de la proprietaire reste seule cote ecurie / fiche commune. */
+          var recit = ((chevalDyn && chevalDyn.dbId && !estMonChevalFiche) ? (histPerso || "") : (c.histoire || "")) || (function () {
             var estMien = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
             /* 02/09 (Blandine) : « quand je regarde son histoire ça dit que c'est
                une jument de l'Ecurie Feinn » — alors que le cheval avait ete cree
@@ -37123,7 +37245,7 @@ function EcranCheval() {
               h("style", null, "@keyframes hypeSpin{to{transform:rotate(1turn)}}.hype-cristal{position:relative;border-radius:18px;padding:1.6px;overflow:hidden;isolation:isolate}.hype-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + teinte + " 82%," + teinteCl + " 90%,transparent 100%);animation:hypeSpin 4.5s linear infinite}.hype-cristal>.hype-cristal-cc{position:relative;z-index:1;border-radius:16.5px;background:#070B10}"),
               h("div", { className: "hype-cristal-cc", style: { padding: "12px 14px" } },
             h("p", { className: "hbio", style: histoireDepliee ? { margin: 0, display: "block", overflow: "visible", maxWidth: "none" } : { margin: 0 } }, recit,
-              (c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id) ? h("span", { role: "button", onClick: ouvrirEditHistoire, title: "Modifier l'histoire", style: { marginLeft: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + tA(0.5), fontSize: 11, color: teinteCl, cursor: "pointer", verticalAlign: "middle" } }, "\u270e") : null))),
+              (c.dbId && moi && chevalDyn && (chevalDyn.ownerId === moi.id || (chevalDyn.dbId && estLieFiche))) ? h("span", { role: "button", onClick: ouvrirEditHistoire, title: "Modifier l'histoire", style: { marginLeft: 8, display: "inline-flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: "50%", border: "1px solid " + tA(0.5), fontSize: 11, color: teinteCl, cursor: "pointer", verticalAlign: "middle" } }, "\u270e") : null))),
             h("div", { className: "hcta", onClick: function () { setHistoireDepliee(!histoireDepliee); } }, histoireDepliee ? ("\u25B4 " + T("Replier son histoire", "Collapse the story", "Plegar su historia", "Richiudi la sua storia", "\u7269\u8a9e\u3092\u305f\u305f\u3080", "Geschichte einklappen")) : ("\u2728 " + T("D\u00e9couvrir son histoire", "Discover its story", "Descubrir su historia", "Scopri la sua storia", "\u7269\u8a9e\u3092\u898b\u308b", "Seine Geschichte entdecken"))));
         })(),
 
@@ -38142,7 +38264,7 @@ function EcranCheval() {
             if (fA) { fA(); }
           }
         }),
-        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte })),
+        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true })),
         h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "0 16px 10px", animationDelay: ".08s" } },
           h("span", { style: { width: 7, height: 7, background: teinte, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8) + "", flexShrink: 0 } }),
           h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Galerie", "Gallery", "Galería", "Galleria", "ギャラリー", "Galerie")),
@@ -38188,7 +38310,7 @@ function EcranCheval() {
         try {
           var rDf = await delierCheval(dbIdL);
           if (rDf && rDf.error) { setToast(T("Impossible pour l’instant — réessaie", "Not possible right now — try again", "No es posible ahora — reinténtalo", "Impossibile per ora — riprova", "今はできません — もう一度", "Derzeit nicht möglich — versuche es erneut")); }
-          else { setEstLieFiche(false); setToast(T("Retiré de ton écurie ✓", "Removed from your stable ✓", "Retirado de tu cuadra ✓", "Rimosso dalla tua scuderia ✓", "厩舎から削除しました ✓", "Aus deinem Stall entfernt ✓")); }
+          else { setEstLieFiche(false); setToast(T("Retiré de tes chevaux ✓", "Removed from your horses ✓", "Retirado de tus caballos ✓", "Rimosso dai tuoi cavalli ✓", "私の馬から削除しました ✓", "Aus deinen Pferden entfernt ✓")); }
         } catch (eDf) { setToast(T("Impossible pour l’instant — réessaie", "Not possible right now — try again", "No es posible ahora — reinténtalo", "Impossibile per ora — riprova", "今はできません — もう一度", "Derzeit nicht möglich — versuche es erneut")); }
         setTimeout(function () { setToast(null); }, 2600);
         return;
@@ -38199,10 +38321,10 @@ function EcranCheval() {
         var msgLf = rLf && rLf.error ? String((rLf.error && rLf.error.message) || rLf.error) : "";
         var dejaLf = rLf && rLf.error && /duplicate|23505|unique/i.test(msgLf);
         if (rLf && rLf.error && !dejaLf) { setToast(T("Impossible pour l’instant — réessaie 💎", "Not possible right now — try again 💎", "No es posible ahora — reinténtalo 💎", "Impossibile per ora — riprova 💎", "今はできません — もう一度 💎", "Derzeit nicht möglich — versuche es erneut 💎")); }
-        else { setEstLieFiche(true); setToast(dejaLf ? T("Déjà dans ton écurie ✓", "Already in your stable ✓", "Ya en tu cuadra ✓", "Già nella tua scuderia ✓", "すでに厩舎にいます ✓", "Bereits in deinem Stall ✓") : T("Dans ton écurie ✓ — retrouve-le dans « Mes chevaux »", "In your stable ✓ — see “My horses”", "En tu cuadra ✓ — míralo en « Mis caballos »", "Nella tua scuderia ✓ — vedi « I miei cavalli »", "厩舎に追加 ✓ —「私の馬」でチェック", "In deinem Stall ✓ — zu finden unter „Meine Pferde“")); }
+        else { setEstLieFiche(true); setToast(dejaLf ? T("Déjà dans tes chevaux ✓", "Already in your horses ✓", "Ya en tus caballos ✓", "Già nei tuoi cavalli ✓", "すでに私の馬にいます ✓", "Bereits bei deinen Pferden ✓") : T("Dans tes chevaux ✓ — retrouve-le dans « Mes chevaux »", "In your horses ✓ — see “My horses”", "En tus caballos ✓ — míralo en « Mis caballos »", "Nei tuoi cavalli ✓ — vedi « I miei cavalli »", "私の馬に追加 ✓ —「私の馬」でチェック", "Bei deinen Pferden ✓ — zu finden unter „Meine Pferde“")); }
       } catch (eLf) { setToast(T("Impossible pour l’instant — réessaie 💎", "Not possible right now — try again 💎", "No es posible ahora — reinténtalo 💎", "Impossibile per ora — riprova 💎", "今はできません — もう一度 💎", "Derzeit nicht möglich — versuche es erneut 💎")); }
       setTimeout(function () { setToast(null); }, 2600);
-    }, role: "button", "aria-label": estLieFiche ? "Retirer de mon écurie" : "Ajouter à mon écurie", style: { position: "fixed", left: 16, right: 16, bottom: "calc(104px + env(safe-area-inset-bottom))", zIndex: 60, height: 46, borderRadius: 999, border: "1px solid " + (estLieFiche ? "rgba(226,138,146,0.55)" : "rgba(234,199,122,0.6)"), background: estLieFiche ? "linear-gradient(90deg, rgba(226,138,146,0.14), rgba(226,138,146,0.05))" : "linear-gradient(90deg, rgba(234,199,122,0.16), rgba(234,199,122,0.06))", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontSize: 12.5, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: estLieFiche ? "rgba(240,190,196,0.95)" : "#F6E3B4", animation: estLieFiche ? "none" : "haloPlusFiche 3.2s ease-out infinite", cursor: "pointer", boxShadow: "0 10px 28px rgba(0,0,0,0.5)" } }, h("span", { style: { fontSize: 17, fontWeight: 600, lineHeight: 1, marginTop: -1 } }, estLieFiche ? "−" : "+"), estLieFiche ? T("Retirer de mon écurie", "Remove from my stable", "Retirar de mi cuadra", "Rimuovi dalla scuderia", "厩舎から削除", "Aus meinem Stall entfernen") : (T("Ajouter à mon écurie", "Add to my stable", "Añadir a mi cuadra", "Aggiungi alla scuderia", "厩舎に追加", "Zu meinem Stall hinzufügen") + " 💎")),
+    }, role: "button", "aria-label": estLieFiche ? "Retirer de mes chevaux" : "Ajouter à mes chevaux", style: { position: "fixed", left: 16, right: 16, bottom: "calc(104px + env(safe-area-inset-bottom))", zIndex: 60, height: 46, borderRadius: 999, border: "1px solid " + (estLieFiche ? "rgba(226,138,146,0.55)" : "rgba(234,199,122,0.6)"), background: estLieFiche ? "linear-gradient(90deg, rgba(226,138,146,0.14), rgba(226,138,146,0.05))" : "linear-gradient(90deg, rgba(234,199,122,0.16), rgba(234,199,122,0.06))", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", gap: 9, fontSize: 12.5, fontWeight: 800, letterSpacing: "0.1em", textTransform: "uppercase", color: estLieFiche ? "rgba(240,190,196,0.95)" : "#F6E3B4", animation: estLieFiche ? "none" : "haloPlusFiche 3.2s ease-out infinite", cursor: "pointer", boxShadow: "0 10px 28px rgba(0,0,0,0.5)" } }, h("span", { style: { fontSize: 17, fontWeight: 600, lineHeight: 1, marginTop: -1 } }, estLieFiche ? "−" : "+"), estLieFiche ? T("Retirer de mes chevaux", "Remove from my horses", "Retirar de mis caballos", "Rimuovi dai miei cavalli", "私の馬から削除", "Aus meinen Pferden entfernen") : (T("Ajouter à mes chevaux", "Add to my horses", "Añadir a mis caballos", "Aggiungi ai miei cavalli", "私の馬に追加", "Zu meinen Pferden hinzufügen") + " 💎")),
 
     h("input", { ref: refPhotoCh, type: "file", accept: "image/*", onChange: choisirPhotoCheval, style: { display: "none" } }),
     menuFiche ? h("div", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end" } },
