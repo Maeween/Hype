@@ -10,6 +10,250 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 02/09/2026 (soir) — LA PAGE AGENDA DU CLUB
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `8b964cda7a7b9ffee76cf60cdd8b728d` | écran `agenda-club` · écurie du cheval (phrase, création) |
+
+## La page
+
+Décidée par Blandine : la page Événements, c'est **l'agenda complet du club**.
+
+- Nouvel écran `EcranAgendaClub`, routé sur `agenda-club`.
+- ⚠️ **Mêmes données, même logique** : `chargerAgendaClub(clef)`, déjà filtrée sur
+  les dates à venir et triée par date croissante. Aucune requête nouvelle, aucun
+  champ inventé — la table `club_agenda` ne porte toujours ni cavaliers ni chevaux.
+- Groupement **par mois**, jour en Cinzel, type en capitales champagne, heure
+  discrète. Total en pied de page.
+- ⚠️ **En-tête calqué sur `EcranPerfConcours`** (page Performances du club), et non
+  sur les panneaux de la fiche cheval : il n'existe pas de barre d'onglets côté
+  club. Validé par Blandine.
+- Le club visé passe par `window.__agendaClub`, sur le modèle de `window.__perfClub`.
+  Sans lui, repli sur l'écurie du profil.
+- ⚠️ **Le formulaire de création n'est PAS dupliqué.** « Ajouter » repose
+  `window.__agendaOuvrirAjout` et renvoie sur la page Club, où vit la modale — un
+  second formulaire n'aurait pas pu rester en phase avec le premier.
+- ⚠️ L'échec de chargement s'affiche en rouge à l'écran, il ne s'avale pas.
+
+## L'écurie d'un cheval — trois trous bouchés
+
+Déclencheur : Dakota, créé depuis la page de la SEP, dont la fiche annonçait
+« un cheval de l'écurie Ecurie Feinn ».
+
+**1. La phrase par défaut mentait.** Elle lisait `profil.ecurie` — l'écurie
+**principale du compte** — sans jamais regarder le club du cheval. Tout cheval
+créé ailleurs était donc annoncé sous l'écurie principale.
+→ Elle lit maintenant `chevalDyn.club` d'abord. ⚠️ **Règle posée par Blandine :
+« si on n'est pas capable de reconnaître l'écurie, ne rien mettre ».** Plus
+aucune déduction : sans club sûr, la phrase ne mentionne pas d'écurie du tout.
+
+**2. La création ne demandait pas l'écurie.** `ModaleCreationCheval` appelait
+`ajouterCheval({ nom })` — **le nom seul**. Seul l'écran « Gérer mon écurie » la
+demandait. Un cheval créé depuis la modale naissait donc sans club.
+→ Le choix « Dans quelle écurie ? » est ajouté à la modale, avec « Aucune » comme
+option valide. ⚠️ Il n'apparaît que si le cavalier a **plusieurs** écuries : avec
+une seule, la question n'a pas de sens.
+
+**3. Où changer l'écurie ensuite — DÉPLACÉ.** Le sélecteur était dans
+« Modifier la fiche », derrière le menu de la photo. Blandine ne l'a pas trouvé,
+deux fois : « ce n'est pas du tout intuitif ».
+⚠️ **Première pose ratée, corrigée dans la foulée** : le bloc s'était inséré au
+niveau du conteneur en `display:flex` du titre, donc **à côté** du nom, qui se
+retrouvait comprimé (« DAKOT A CA » sur deux lignes). Il est maintenant à
+l'intérieur du bloc du nom, en dernier enfant, donc bien en dessous.
+
+→ Il est maintenant **sur la fiche, sous le nom du cheval** : une ligne
+« 📍 Écurie Feinn » (ou « Aucune écurie ») qu'on touche pour la changer.
+On lit l'écurie **sans rien ouvrir**, et on la modifie au même endroit.
+⚠️ Visible **pour la propriétaire seule**, et seulement si `mesClubs()` renvoie
+au moins deux entrées — donc si `ecurie` **et** `ecurie2` sont renseignées.
+⚠️ Si la ligne n'apparaît toujours pas, ce n'est plus une question d'endroit :
+vérifier `select ecurie, ecurie2 from profiles where id = auth.uid();`. La
+deuxième écurie s'affichait sur le téléphone alors qu'elle n'existait pas en base
+(constat du 01/09) — la lecture n'a jamais été vérifiée depuis l'`update`.
+Les deux autres accès (« Modifier la fiche », « Gérer mon écurie ») sont
+conservés : même porte en base, ils ne peuvent pas diverger.
+
+## 🟥 UNE ÉLÈVE NE PEUT PAS POSTER SUR L'ALBUM D'UN CHEVAL — À TRAITER EN PREMIER
+
+Vu ce soir 23 h 16 : une élève ajoute photos et vidéos à l'album « Cso » de
+**Dakota CA** → « Envoyé, mais pas enregistré sur l'album : **Cannot coerce the
+result to a single JSON object** ».
+
+**Diagnostic fait.** `majAlbumCheval` (~1504) fait
+`from("albums_cheval").update(...).eq("id", id).select().single()`. L'élève n'est
+pas propriétaire de l'album (Dakota est à Blandine) : la policy RLS d'UPDATE
+refuse, **zéro ligne modifiée, zéro ligne à relire**, et `.single()` renvoie ce
+message PostgREST.
+⚠️ **Les photos ne sont PAS perdues** : le stockage a des règles distinctes,
+l'envoi a réussi. Seul le rattachement à l'album a échoué.
+
+⚠️ **DROITS D'ÉCRITURE — à trancher à froid.** Trois décisions avant tout code :
+qui peut poster (tout le club ? les inscrits via `albums_membres`, table qui
+existe et n'est jamais consultée ici ?), qui peut retirer (sa photo ? celles des
+autres ?), et sur quel critère passe la limite (`chevaux_liens` ? le club du
+cheval ?).
+
+⚠️ **Piste à vérifier en premier** : un cavalier déjà rattaché par `chevaux_liens`
+a-t-il le droit d'écrire ? Si oui, rattacher l'élève suffit — aucun SQL.
+⚠️ **Ne pas faire recréer une fiche par l'élève** : c'est l'origine des doublons
+Crumble/Cruibhin et des deux Cooltax.
+
+## Origines FFE — le lecteur rate la mère
+
+Blandine : « pourquoi ces origines ne sont pas renseignées ».
+
+⚠️ **Deux cas distincts, ne pas les confondre** (j'ai eu tort une première fois) :
+- **« Origine non constatée »** = la filiation n'est PAS connue de la FFE. Rien à
+  récupérer. C'est le cas de **Dakota CA** : l'app est cohérente, il n'y a pas de bug.
+- **« Origine constatée »** = la filiation EST connue et vérifiée. C'est le cas
+  d'**Ecolo Louvo**, et là il y a bien un trou.
+
+Le PDF de cavalerie d'Ecolo Louvo porte, **sur une seule ligne** :
+`Père : → Qif Elmy Mère : → Garanse`
+L'app affiche `Qif Elmy × —`. **Le père est lu, la mère est ratée.**
+
+⚠️ **Le correctif n'est PAS dans `index.html`.** Le lecteur vit dans un module
+externe, `window.HYPE_IMPORT` (fichier non fourni ce soir). `enregistrerImportFFE`
+ne fait que recevoir `originesOff` déjà extraites — la fusion, elle, est correcte.
+→ **Pour la prochaine session : demander le fichier du lecteur d'import.**
+Piste : le motif du père s'arrête bien, celui de la mère ne trouve pas son point
+de départ sur la même ligne — ou l'accent de « Mère » n'est pas traité comme
+celui de « Père ».
+→ Cas de test réel disponible : le PDF d'Ecolo Louvo (saison 2020).
+
+## Champs FFE présents mais non exploités
+
+Vus sur les fiches de cavalerie, jamais repris par l'import :
+- **L'alias** — « DAKOTA CA (alias LUCENA SH) ». ⚠️ C'est exactement ce qui crée
+  les doublons : nom de concours ≠ nom d'écurie (cf. « CRUMBLE alias Cruibhin »).
+- **Le sexe** — « Femelle », « Hongre ». La phrase par défaut dit « un cheval »
+  là où elle pourrait dire « une jument ».
+- **Le propriétaire et le référent déclarés** — « SOCIETE D'EQUITATION DE PARIS ».
+  ⚠️ La FFE sait donc à quel club le cheval est rattaché : c'est l'information
+  qu'on vient de faire saisir à la main.
+- Robe, date de naissance, naisseur, taille (catégorie).
+
+## Petits points repérés, non traités
+
+- ⚠️ **La carte Origines s'étire sur toute la hauteur de l'écran** quand on la
+  retourne pour l'éditer (grand vide sous Père et Mère). Antérieur à ce soir.
+- ⚠️ Deux lignes de résultats portent `cavalier = "THELMA VANDEVILLE Note/Score"` :
+  un en-tête de colonne absorbé par le nom à la lecture FFE. Ressortira dans les
+  filtres par cavalier.
+- ⚠️ Sur une capture, le moment fort disait « ADELE CIZEAU » et l'onglet de filtre
+  « Adele N. ». À vérifier : soit une autre Adele existe dans les lignes, soit la
+  donnée FFE contient un mot de plus.
+
+## Ce qui disparaît
+
+⚠️ **Le dépliage sous le carrousel est retiré**, ainsi que son état `toutVu`.
+C'était un pis-aller posé le matin même faute de page dédiée ; le garder aurait
+laissé deux chemins vers la même liste. « Voir tout l'agenda » ouvre maintenant
+la page.
+
+---
+
+# 🟩 02/09/2026 (fin d'après-midi) — ACCENTS RÉPARÉS À LA SOURCE · CLUBS CLIQUABLES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7cb0d4598aa19c5278bdd33586e81b2e` | accents à l'écriture · podium cliquable · filtre « classés seulement » |
+
+⚠️ Part du fichier renvoyé par Blandine (`e0d85f62…`), qui contenait déjà la
+refonte de la porte d'entrée **et** tous les correctifs de la matinée. Rien
+n'a été écrasé — vérifié marqueur par marqueur avant de reprendre.
+
+## 1 · Les accents ne peuvent plus arriver cassés
+
+⚠️ **Ce matin la réparation était à l'AFFICHAGE seulement** : elle masquait le
+problème sans l'empêcher, et chaque nouvel import réécrivait du texte cassé en
+base. La cause de fond n'était donc pas traitée.
+
+→ `netFFE`, le nettoyage appliqué **avant l'écriture** de chaque ligne importée,
+applique désormais `hypeReparerFFE` avant sa purge des caractères de contrôle.
+**Aucune ligne neuve ne peut plus arriver cassée.**
+⚠️ Ordre important : on répare **puis** on purge. L'inverse redonnerait le bug du
+26/08 — c'est justement la purge des contrôles qui rendait la table de
+réparation d'origine inopérante.
+
+⚠️ **Les lignes déjà en base restent cassées.** L'affichage les corrige, la base
+non. SQL d'assainissement, à passer après un `select` de contrôle :
+
+```sql
+select id, epreuve, concours, cavalier from resultats
+where epreuve like '%Ã%' or concours like '%Ã%' or cavalier like '%Ã%';
+```
+
+## 2 · « N'afficher que les classés » sur la page Performances du cheval
+
+Demandé le matin, oublié entre deux chantiers, réclamé l'après-midi (« je croyais
+que c'était fait »). Fait avec les valeurs par défaut ci-dessous, faute de
+réponses — **toutes réversibles en une ligne**.
+
+- **Menu d'AFFICHAGE à trois entrées — Tous · Classés · Podiums.** Il ne touche
+  rien en base, à ne pas confondre avec la coche de relecture de l'import, qui
+  est définitive.
+- ⚠️ Première version : une case à cocher grise sous les moments forts. Blandine
+  ne l'a pas trouvée (« faut une bonne loupe »). Elle est **remontée sous le
+  bandeau des quatre chiffres**, en trois pastilles champagne — là où on lit
+  « 83 classés », donc là où la question se pose.
+- ⚠️ Le choix « comme à l'import » n'existait pas : **la relecture d'import se
+  fait ligne par ligne**, sans préréglage classés/podiums. Rien n'a été inventé
+  pour lui ressembler.
+- **« Classé » = `quart === 1`**, la valeur donnée par la FFE. Jamais recalculé.
+  **« Podium » = place 1 à 3.**
+
+### ⚠️ RÈGLE MÉTIER — LES PRÉPARATOIRES (Blandine, 02/09)
+
+En préparatoire, **le classement n'est pas un rang face aux autres : c'est un
+verdict sur le parcours.** 1er = sans faute. Toute autre place = il y a eu des
+fautes.
+→ **La victoire en préparatoire est gardée dans les DEUX modes**, « Classés »
+comme « Podiums ». Seules les 2e, 3e et suivantes sont écartées.
+⚠️ Ma première rédaction disait « jamais une 2e ni une 3e, ni en Classés ni en
+Podiums », ce qui se lisait comme si les préparatoires étaient exclues partout.
+Le code, lui, était juste (`gardePrepa` ne retient que `pl === 1`).
+⚠️ Sans cette règle explicite, un filtre sur `quart === 1` les ferait toutes
+disparaître (une préparatoire n'a pas de quart), et un filtre sur `pl <= 3` en
+laisserait passer de mauvaises.
+- ⚠️ **Les préparatoires n'ont pas de quart** — un filtre strict les aurait fait
+  disparaître. Blandine : « on avait dit qu'on gardait les prépa comme comptant
+  comme des victoires entre parenthèses ». Le filtre **garde donc les
+  préparatoires gagnées** (`pl === 1` + libellé « prépa »).
+- ⚠️ **Mais pas prioritaires en moment fort** (précision de Blandine) : la
+  préparatoire est devenue le **premier critère de `triFort`**, avant le titre et
+  le niveau. Elle ne remonte en vitrine que faute de mieux. Sur Vallieres,
+  « Senlisse 2024 · 1er sur 54 » reste visible mais cède la place aux épreuves
+  classantes.
+- ⚠️ **LE FILTRE NE TOUCHE PAS LES 4 CHIFFRES.** Sorties / victoires / podiums /
+  classés restent calculés sur toutes les lignes. Un bandeau annonçant
+  « 18 sorties » pour un cheval qui en a 12 aurait été faux, et aurait donné à
+  lire des chiffres incohérents. Le filtre ne concerne que les listes : moments
+  forts, saisons, derniers résultats.
+- Quand il est actif, il indique combien de lignes sont masquées.
+- ⚠️ **Réglage local** (`localStorage`, clé `hype_res_classes`) : il ne suit pas
+  d'un téléphone à l'autre et **les visiteurs voient toujours tout**. Le passer
+  en base demanderait une colonne sur `chevaux` — non tranché.
+- Visible **pour la propriétaire du cheval seule**, comme demandé.
+
+## 2 bis · Un club du classement ouvre sa page
+
+Blandine : « quand on clique sur un club qu'on atterrisse sur sa page ».
+
+⚠️ **Le mécanisme existait déjà** — `window.__guildeEcurie = "<nom>"` puis l'écran
+`guilde` — il n'était simplement branché nulle part dans le classement. Rien
+d'inventé, une seule fonction `ouvrirClub` partagée.
+
+Rendus cliquables : les trois médaillons du podium, les noms et XP du podium,
+les places 4 à 6, et la liste complète du classement sur la page Communauté.
+⚠️ Un club sans nom n'est pas cliquable — on n'ouvre pas une page vide.
+⚠️ Le `pointerEvents: "none"` du bloc texte du podium a dû être levé : il était
+là pour laisser passer les clics, il empêchait justement celui-ci.
+
+---
+
 # 🟩 02/09/2026 (après-midi) — LA PORTE D'ENTRÉE EST REFAITE
 
 | Fichier | Où | md5 | Quoi |
@@ -20418,3 +20662,116 @@ poney d'exception…" }`) — les mêmes que celles retirées d'Écurie Hype le 
 était la bonne : il y en a deux, un réel et un de démonstration.
 
 Fichier : md5 ci-dessous — 150 blocs, 0 erreur.
+
+
+## 02/09/2026 (soir) — CHEVAUX PARTAGES : LES DROITS D'ECRITURE
+
+Point de depart : une eleve n'arrivait pas a ajouter ses photos a l'album « Cso »
+de Dakota CA. Diagnostic : la fiche commune, le rattachement et le dedoublonnage
+faits cet ete portaient tous sur le fait de VOIR. Personne n'avait jamais pose
+les droits d'ECRITURE. La moitie « qui peut poser quelque chose sur un cheval
+qui n'est pas le sien » n'avait jamais ete commencee, et je ne l'avais pas
+signale au moment de livrer la fiche commune. C'est corrige ici.
+
+**Regle validee par Blandine — deux vues, un seul cheval, jamais de duplication.**
+- Une cavaliere tape « Ajouter a mes chevaux » (ex-« Ajouter a mon ecurie ») :
+  le cheval entre chez elle, une ligne dans `chevaux_liens`, aucune fiche creee.
+- Sur SA page : ses albums a elle seulement, elle en cree, elle y met ses photos.
+- Les albums qu'elle laisse PUBLICS remontent cote ecurie / fiche commune ;
+  les prives restent chez elle.
+- Histoire : chacune ecrit la sienne sur sa page perso, elle ne remonte JAMAIS
+  cote ecurie — la, on garde celle de la proprietaire de la fiche.
+- Retrait : chacune les siennes. Blandine, moderatrice, retire tout, partout,
+  avec un avertissement nomme avant chaque geste chez quelqu'un d'autre.
+
+**SQL (chevaux-partages.sql)** — additif, aucune regle existante effacee :
+fonction unique `hype_est_moderatrice()` (la liste existait en DEUX exemplaires
+divergents : le code et `set_cheval_club`) · ecriture des albums ouverte aux
+cavalieres rattachees et aux moderatrices · suppression d'album reservee a la
+creatrice et aux moderatrices · regles de `chevaux_liens` (se rattacher et se
+detacher soi-meme) · nouvelle table `chevaux_histoires`.
+
+**index.html** — albums filtres sur la fiche perso (`mesAlbumsSeulement`) ·
+fiche commune passee par `listerAlbumsCheval` (les albums prives y fuyaient) ·
+bouton renomme en 6 langues · histoire perso branchee (lecture, crayon,
+enregistrement aiguille) · carte d'avertissement moderatrice, avec confirmation
+sur ce qui detruit · les echecs d'ecriture parlent enfin (retrait, renommage,
+suppression echouaient EN SILENCE sur l'album d'une autre).
+
+**RESTE EN SUSPENS — le quota gratuit, volontairement pas touche.** Le
+« 1 album par cheval » et les « 10 photos par album » n'ont JAMAIS ete decides
+par Blandine : je les avais poses moi-meme au fil des livraisons. Le compte des
+albums porte de plus sur TOUS les albums du cheval, pas sur les siens — une
+cavaliere gratuite reste donc bloquee a la creation sur un cheval qui en porte
+deja. A trancher a froid : ou porte la gratuite (par compte, par cheval), et
+avec quel chiffre.
+
+**LECON.** Livrer une surface « commune » sans dire qui peut ECRIRE dessus
+laisse croire que le sujet est regle. Desormais, a chaque livraison touchant
+quelque chose de partage : dire explicitement qui peut y ecrire apres, pas
+seulement qui peut le voir.
+
+
+## 02/09/2026 (nuit) — QUOTAS REFAITS + PROTECTION DE LA FACTURE
+
+**CORRECTIF DE SECURITE (SQL, passe en base et confirme).** La policy
+`albums_modif_partage` livree plus tot donnait l'UPDATE sur N'IMPORTE QUEL album
+du cheval a toute personne rattachee : le garde-fou n'existait que dans
+l'interface, contournable par un appel Supabase direct. Repere par la relecture
+ChatGPT, corrige : policy remplacee par `albums_modif_moderation` (UPDATE =
+moderatrices seulement), fonction `hype_peut_ecrire_album(text)` droppee. Rien
+ne casse : la creation d'album a toujours ete ouverte a tous, et modifier son
+propre album passe par la policy d'origine.
+
+**QUOTAS — REGLE NOUVELLE, decidee par Blandine.** Ce qui existait n'avait jamais
+ete decide par elle (je l'avais pose moi-meme au fil des livraisons) :
+- « 1 album par cheval » : RETIRE. Il comptait en plus les albums DES AUTRES sur
+  le cheval, donc une cavaliere etait bloquee a cause de ceux de Blandine.
+- « 10 photos par album » : RETIRE. Contournable en creant des albums.
+
+Nouvelle regle : **le quota appartient au COMPTE.**
+- **12 photos** sur tout Hype, tous chevaux confondus, comptees sur les medias
+  reellement envoyes et dedoublonnees par URL (albums dont on est l'auteure +
+  photos postees en commentaire).
+- Creer un album, rattacher un cheval, passer un album public/prive : ne remet
+  jamais le compteur a zero.
+- **Rattachements de chevaux : LIBRES.** Une ligne de table ne coute rien, et
+  ce sont eux qui remplissent les pages d'ecurie au lancement, quand aucune
+  ecurie n'a de dirigeant inscrit. Le quota de chevaux CREES (1) est inchange.
+- **0 video en gratuit**, **2 min maximum** en Premium, duree verifiee AVANT
+  l'envoi : un fichier trop long n'est jamais stocke ni facture.
+- Les messages secs sont remplaces par une carte Hype+ (« Decouvrir Hype+ » /
+  « Plus tard »), et un compteur discret « N / 12 souvenirs gratuits » apparait a
+  partir de 9. Le contenu deja envoye n'est JAMAIS retire quand le quota tombe.
+
+**CE QUI COUTE VRAIMENT (chiffres verifies, Supabase Pro).** Le stockage est
+negligeable : 0,021 $/Go, 100 Go inclus dans les 25 $/mois. C'est le TRAFIC qui
+se paie : 250 Go inclus puis 0,09 $/Go, et chaque visionnage compte. Une video
+non compressee de 2 min pese ~250 Mo ; vue 20 fois, 5 Go. Compressee (~40 Mo),
+six fois moins. **La compression avant envoi divise la facture par six** — c'est
+de loin le levier le plus rentable, bien avant le nombre de videos.
+
+**LIMITES CONNUES, NON TRAITEES**
+- La compression video (decidee le 27/08) n'est TOUJOURS pas faite. Non livree
+  ce soir volontairement : le reencodage dans Safari iOS est instable et
+  intestable sans reseau ici — c'est le sujet qui a deja coute deux soirees de
+  diagnostic a l'aveugle. A faire a froid, avec Blandine devant l'ecran.
+- La policy SELECT de `albums_cheval` est `true` : un album prive reste lisible
+  par l'API. Le prive n'existe qu'a l'affichage. A reprendre, ca touche aussi
+  les pages publiques.
+- **Le Premium n'a AUCUN plafond** (chevaux, albums, photos, videos illimites).
+  Seul le nouveau plafond de duree video s'y applique. A terme il faudra une
+  limite generuse mais existante, sinon un abonne peut couter plus qu'il ne
+  rapporte.
+- Le compteur de photos ne compte que les albums et les commentaires. Une photo
+  posee ailleurs (fil, souvenirs) echappe encore au compte.
+- Idee notee, rien de code : externaliser les videos vers YouTube (integration
+  propre ; TikTok beaucoup moins fiable en application), ce qui met le stockage
+  ET le trafic a zero et fait des vues sur la plateforme.
+
+**SI ON VEUT PLUS TARD DE VRAIS ALBUMS COLLABORATIFS** (plusieurs personnes
+ajoutant des medias DANS le meme album, auteur par photo, suppression
+individuelle par auteur, quotas par uploader), il faudra migrer la colonne
+tableau `photos` vers une vraie table `album_medias` (id, album_id, user_id,
+url, type, created_at). Aujourd'hui un album appartient a UNE seule utilisatrice,
+donc la colonne tableau suffit : ne pas faire cette migration sans necessite.

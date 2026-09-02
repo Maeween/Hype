@@ -1505,6 +1505,57 @@ async function majAlbumCheval(id, champs) {
   try { return await supa.from("albums_cheval").update(champs).eq("id", id).select().single(); }
   catch (e) { return { error: String(e) }; }
 }
+/* --- 02/09 (Blandine) : LE QUOTA GRATUIT, REFAIT -------------------------------
+   Ce qui existait avant n'avait JAMAIS ete decide par elle : « 1 album par cheval »
+   (compte sur TOUS les albums du cheval, donc une cavaliere etait bloquee a cause
+   des albums des autres) et « 10 photos par album » (contournable en creant des
+   albums). Les deux sont retires.
+   La nouvelle regle : le quota appartient au COMPTE, pas au cheval ni a l'album.
+   12 photos sur tout Hype, tous chevaux confondus. Creer un album, rattacher un
+   cheval ou changer un album de public a prive ne remet jamais le compteur a zero.
+   Les rattachements de chevaux restent LIBRES : une ligne de table ne coute rien,
+   et ce sont eux qui remplissent les pages d'ecurie au lancement. */
+var QUOTA_PHOTOS_GRATUIT = 12;
+var DUREE_VIDEO_MAX_S = 120; /* 2 min — une video de concours fait ~1 min 30 (Blandine) */
+
+async function photosUtiliseesParMoi() {
+  /* Compte les medias REELLEMENT envoyes par le compte, dedoublonnes par URL : une
+     meme photo affichee a plusieurs endroits ne compte qu'une fois. Deux sources :
+     les albums dont je suis l'auteure, et mes photos postees en commentaire. */
+  try {
+    const user = await utilisateurActuel(); if (!user) return 0;
+    var vues = {};
+    try {
+      var rA = await supa.from("albums_cheval").select("photos").eq("user_id", user.id);
+      ((rA && rA.data) || []).forEach(function (a) {
+        ((a && a.photos) || []).forEach(function (u) { if (u) vues[String(u)] = 1; });
+      });
+    } catch (e1) { }
+    try {
+      var rC = await supa.from("commentaires").select("photo_url").eq("user_id", user.id).not("photo_url", "is", null);
+      ((rC && rC.data) || []).forEach(function (c) { if (c && c.photo_url) vues[String(c.photo_url)] = 1; });
+    } catch (e2) { }
+    return Object.keys(vues).length;
+  } catch (e) { return 0; }
+}
+
+function dureeVideoFichier(fichier) {
+  /* Lit la duree SANS envoyer le fichier : on refuse avant l'envoi, jamais apres. */
+  return new Promise(function (resoudre) {
+    try {
+      var url = URL.createObjectURL(fichier);
+      var v = document.createElement("video");
+      var fini = false;
+      var termine = function (d) { if (fini) return; fini = true; try { URL.revokeObjectURL(url); } catch (eR) { } resoudre(d); };
+      v.preload = "metadata";
+      v.onloadedmetadata = function () { termine(isFinite(v.duration) ? v.duration : 0); };
+      v.onerror = function () { termine(0); };
+      setTimeout(function () { termine(0); }, 6000); /* illisible : on laisse passer plutot que de bloquer a tort */
+      v.src = url;
+    } catch (e) { resoudre(0); }
+  });
+}
+
 async function supprimerAlbumCheval(id) {
   try { return await supa.from("albums_cheval").delete().eq("id", id); } catch (e) { return { error: String(e) }; }
 }
@@ -34635,6 +34686,12 @@ function AlbumsCheval(props) {
   var moiAcSt = React.useState(null); var moiAc = moiAcSt[0], setMoiAc = moiAcSt[1];
   var modAcSt = React.useState(false); var modAc = modAcSt[0], setModAc = modAcSt[1];
   var avertAcSt = React.useState(null); var avertAc = avertAcSt[0], setAvertAc = avertAcSt[1];
+  /* 02/09 : compteur de photos du COMPTE (12 en gratuit, tout Hype confondu) et carte
+     d'invitation Hype+ qui remplace les messages d'erreur secs. */
+  var qphSt = React.useState(null); var quotaPh = qphSt[0], setQuotaPh = qphSt[1];
+  var hypeplusSt = React.useState(null); var invitPlus = hypeplusSt[0], setInvitPlus = hypeplusSt[1];
+  function rafraichirQuota() { try { photosUtiliseesParMoi().then(function (n) { setQuotaPh(n); }).catch(function () { }); } catch (eQ) { } }
+  React.useEffect(function () { if (!premium) rafraichirQuota(); }, [premium]);
   React.useEffect(function () { var actifAc = true;
     try { utilisateurActuel().then(function (uAc) { if (!actifAc) return; setMoiAc(uAc || null);
       try { setModAc(!!(uAc && typeof estModerateurHype === "function" && estModerateurHype(uAc))); } catch (eMd) { setModAc(false); }
@@ -34820,14 +34877,18 @@ function AlbumsCheval(props) {
     var nouv = (alb.photos || []).slice();
     var aAjouter = Object.keys(coches).filter(function (u) { return coches[u] && nouv.indexOf(u) < 0; });
     if (!premium) {
-      var placesRestantes2 = Math.max(0, 10 - nouv.length); /* 27/08 : plafond gratuit resserre a 10 (demande Blandine) — meme regle que l'envoi direct */
-      if (aAjouter.length > placesRestantes2) { aAjouter = aAjouter.slice(0, placesRestantes2); bip(T("Limite de 10 photos par album en gratuit \u2014 passe Premium pour aller plus loin", "10 photos max per album on the free plan \u2014 go Premium for more", "M\u00e1ximo 10 por \u00e1lbum en el plan gratuito", "Massimo 10 per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306510\u3067\u3059")); }
+      /* 02/09 : ce n'est plus le nombre de photos DE L'ALBUM qui compte, mais le total
+         du COMPTE sur tout Hype. Creer un album de plus ne donne plus de places. */
+      var dejaCompte = (quotaPh === null) ? await photosUtiliseesParMoi() : quotaPh;
+      var placesRestantes2 = Math.max(0, QUOTA_PHOTOS_GRATUIT - dejaCompte);
+      if (placesRestantes2 <= 0) { setSelPhotos(false); setInvitPlus({ motif: "photos", utilisees: dejaCompte }); return; }
+      if (aAjouter.length > placesRestantes2) { aAjouter = aAjouter.slice(0, placesRestantes2); setInvitPlus({ motif: "photos", utilisees: dejaCompte, partiel: true }); }
     }
     aAjouter.forEach(function (u) { nouv.push(u); });
     setSelPhotos(false);
     var r = await majAlbumCheval(alb.id, { photos: nouv });
     if (r && r.error) { bip(T("Enregistrement impossible", "Could not save", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); return; }
-    charger();
+    charger(); if (!premium) rafraichirQuota();
   }
   async function retirerPhoto(alb, u) {
     if (alb && alb.__lecture) { return; }
@@ -34847,22 +34908,39 @@ function AlbumsCheval(props) {
   async function importerFichiers(albId, fichiers) { /* 27/08 : le doublon local d estFichierVideo est retire — une seule definition desormais, globale, plus haut dans le fichier */
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
     if (!alb || !fichiers || !fichiers.length) return;
-    var dejaLa = (alb.photos || []).length;
-    var fichiersUtiles = fichiers;
-    var videosBloquees = 0;
-    if (!premium) { /* 27/08 : les VIDEOS sont reservees aux membres Premium (demande Blandine) — les photos restent libres sous la limite 20/album */
-      fichiersUtiles = Array.prototype.filter.call(fichiers, function (ficV) {
+    var fichiersUtiles = Array.prototype.slice.call(fichiers);
+    /* --- 02/09 : LES VIDEOS ---------------------------------------------------
+       Gratuit : aucune video, mais plus jamais une erreur seche — une invitation
+       Hype+. Premium : plafond de duree (2 min), verifie AVANT l'envoi, donc un
+       fichier trop long n'est jamais stocke ni facture. */
+    var videosBloquees = 0, videosTropLongues = 0;
+    if (!premium) {
+      fichiersUtiles = fichiersUtiles.filter(function (ficV) {
         if (estFichierVideo(ficV)) { videosBloquees++; return false; }
         return true;
       });
+      if (videosBloquees > 0) { setInvitPlus({ motif: "video" }); }
+    } else {
+      var gardees = [];
+      for (var iV = 0; iV < fichiersUtiles.length; iV++) {
+        var fV = fichiersUtiles[iV];
+        if (estFichierVideo(fV)) {
+          var dV = await dureeVideoFichier(fV);
+          if (dV > DUREE_VIDEO_MAX_S + 1) { videosTropLongues++; continue; }
+        }
+        gardees.push(fV);
+      }
+      fichiersUtiles = gardees;
+      if (videosTropLongues > 0) {
+        bip(T("Vidéo trop longue — 2 minutes maximum.", "Video too long — 2 minutes max.", "Vídeo demasiado largo — 2 minutos máximo.", "Video troppo lungo — massimo 2 minuti.", "動画が長すぎます — 最大2分です。", "Video zu lang — maximal 2 Minuten."), 5000);
+      }
     }
+    /* --- LES PHOTOS : plafond du COMPTE, plus de l'album --- */
     if (!premium) {
-      var placesRestantes = Math.max(0, 10 - dejaLa); /* 27/08 : plafond gratuit resserre a 10 (demande Blandine) */
-      if (placesRestantes <= 0) { fichiersUtiles = []; bip(T("10 photos max par album en gratuit \u2014 passe Premium pour aller plus loin", "10 photos max per album on the free plan \u2014 go Premium for more", "M\u00e1x. 10 fotos por \u00e1lbum en el plan gratuito", "Massimo 10 foto per album nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u30a2\u30eb\u30d0\u30e0\u306510\u679a\u307e\u3067")); }
-      else if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); bip(T("Seules " + placesRestantes + " photo(s) ajout\u00e9e(s) \u2014 limite de 10 en gratuit", "Only " + placesRestantes + " added \u2014 free plan limit is 10", "Solo " + placesRestantes + " a\u00f1adida(s) \u2014 l\u00edmite gratuito 10", "Solo " + placesRestantes + " aggiunta/e \u2014 limite gratuito 10", "\u7121\u6599\u30d7\u30e9\u30f3\u306e\u4e0a\u9650\u306810\u3067\u3059\u3002" + placesRestantes + "\u4ef6\u306e\u307f\u8ffd\u52a0")); }
-    }
-    if (videosBloquees > 0) {
-      bip(videosBloquees + " " + T("vid\u00e9o(s) r\u00e9serv\u00e9e(s) aux membres Premium \u2014 passe Premium pour les ajouter", "video(s) are Premium-only \u2014 go Premium to add them", "v\u00eddeo(s) exclusivo(s) de Premium \u2014 pasa a Premium para a\u00f1adirlos", "video riservati ai membri Premium \u2014 passa a Premium per aggiungerli", "\u30d7\u30ec\u30df\u30a2\u30e0\u4f1a\u54e1\u9650\u5b9a\u306e\u52d5\u753b\u3067\u3059"), 6000);
+      var dejaCompteF = (quotaPh === null) ? await photosUtiliseesParMoi() : quotaPh;
+      var placesRestantes = Math.max(0, QUOTA_PHOTOS_GRATUIT - dejaCompteF);
+      if (placesRestantes <= 0) { setInvitPlus({ motif: "photos", utilisees: dejaCompteF }); return; }
+      if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); setInvitPlus({ motif: "photos", utilisees: dejaCompteF, partiel: true }); }
     }
     if (!fichiersUtiles.length) return; /* 27/08 : rien a envoyer — inutile d ouvrir un cycle d envoi pour rien */
     setEnvoiCours(true);
@@ -34877,7 +34955,7 @@ function AlbumsCheval(props) {
       } catch (eF) { rate++; if (!raisonRatee) raisonRatee = { nom: fichiersUtiles[iF].name, msg: String((eF && eF.message) || eF) }; }
     }
     var rM = await majAlbumCheval(albId, { photos: urls });
-    setEnvoiCours(false);
+    setEnvoiCours(false); if (!premium) rafraichirQuota();
     if (rate) {
       var msgErr = rate + " " + T("envoi(s) impossible(s)", "upload(s) failed", "env\u00edo(s) fallido(s)", "invio non riuscito", "\u9001\u4fe1\u5931\u6557");
       if (raisonRatee && raisonRatee.msg) msgErr += " \u2014 " + raisonRatee.nom + " : " + raisonRatee.msg;
@@ -35023,11 +35101,14 @@ function AlbumsCheval(props) {
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
     h("div", { "data-hscroll": "1", style: { display: "flex", gap: 11, overflowX: "auto", padding: "2px 16px 4px" } },
       (albumsAff || []).map(carteAlbum)),
+    /* 02/09 : le mur ne doit pas tomber sans prevenir — a partir de 9/12 on affiche
+       discretement ou on en est. Le contenu deja envoye n'est jamais retire. */
+    (!premium && quotaPh !== null && quotaPh >= Math.max(1, QUOTA_PHOTOS_GRATUIT - 3)) ? h("div", { style: { padding: "6px 16px 0", fontFamily: M9, fontSize: 10.5, color: "#8A929C", letterSpacing: 0.3 } }, Math.min(quotaPh, QUOTA_PHOTOS_GRATUIT) + " / " + QUOTA_PHOTOS_GRATUIT + " " + T("souvenirs gratuits", "free memories", "recuerdos gratuitos", "ricordi gratuiti", "無料の思い出", "kostenlose Erinnerungen")) : null,
     /* 30/08 (choix de Blandine, option 1) : le grand carre pointille « Nouvel
        album » est remplace par une PASTILLE discrete, centree sous la rangee.
        Moins de place, rien de vide a l'ecran, meme geste. */
     h("div", { style: { display: "flex", justifyContent: "center", padding: "12px 16px 6px" } },
-      h("div", { onClick: function () { var estCheval = String(props.cible || "").indexOf("cheval:") === 0; if (estCheval && !premium && (albums || []).filter(function (a) { return !a.__auto && !a.__lecture; }).length >= 1) { bip(T("1 album par cheval en gratuit \u2014 passe Premium pour en cr\u00e9er plus", "1 album per horse on the free plan \u2014 go Premium to create more", "1 \u00e1lbum por caballo en el plan gratuito", "1 album per cavallo nel piano gratuito", "\u7121\u6599\u30d7\u30e9\u30f3\u3067\u306f1\u99ac1\u30a2\u30eb\u30d0\u30e0\u307e\u3067")); return; } setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
+      h("div", { onClick: function () { /* 02/09 : le plafond « 1 album par cheval » est RETIRE — il n'avait jamais ete decide, et il comptait les albums DES AUTRES sur le cheval. Le quota vit desormais sur le compte, en photos. */ setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
         h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
         h("span", null, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0")))),
     albOuvert ? h("div", { style: { margin: "12px 16px 0", padding: "13px 12px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(255,255,255,0.02)" } },
@@ -35242,6 +35323,23 @@ function AlbumsCheval(props) {
             h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, tagCiblesA.amis.map(function (a, iA) { return h("button", { key: "a" + iA, onClick: function () { poserTagA("cavalier", a.id, a.nom); }, style: { padding: "9px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: M9 } }, "\ud83d\udc64 " + a.nom); }))) : null,
           (!(tagCiblesA.ecuries || []).length && !(tagCiblesA.chevaux || []).length && !(tagCiblesA.amis || []).length) ? h("div", { style: { textAlign: "center", color: "#8A99A1", fontSize: 11.5, padding: "10px 0", lineHeight: 1.5 } }, T("Aucune cible disponible.", "Nothing to tag yet.", "", "", "")) : null),
         h("button", { onClick: function () { setTagVisu(false); }, style: { marginTop: 16, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"))))) : null,
+    /* 02/09 (Blandine) : plus de message technique quand on bute sur une limite — une
+       invitation Hype+ elegante. Aucun paiement branche ici : le bouton mene a l'ecran
+       Premium existant. Le contenu deja envoye n'est jamais touche. */
+    invitPlus ? portail(h("div", { onClick: function () { setInvitPlus(null); }, style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22 } },
+      h("div", { onClick: function (eP) { eP.stopPropagation(); }, style: { width: "100%", maxWidth: 344, borderRadius: 20, background: "linear-gradient(170deg, rgba(18,24,30,0.99), rgba(8,10,14,0.99))", border: "1px solid " + tA(0.42), boxShadow: "0 0 40px " + tA(0.14), padding: "24px 20px" } },
+        h("div", { style: { fontSize: 22, textAlign: "center", color: tnT, marginBottom: 8 } }, "\u2726"),
+        h("div", { style: { fontFamily: C9, fontSize: 17, lineHeight: 1.3, color: "#F2F7F9", textAlign: "center", marginBottom: 12 } },
+          invitPlus.motif === "video"
+            ? T("Tes souvenirs prennent vie", "Your memories come alive", "Tus recuerdos cobran vida", "I tuoi ricordi prendono vita", "思い出が動き出す", "Deine Erinnerungen werden lebendig")
+            : T("Ton histoire ne fait que commencer", "Your story is just beginning", "Tu historia no ha hecho más que empezar", "La tua storia è appena iniziata", "物語はまだ始まったばかり", "Deine Geschichte fängt gerade erst an")),
+        h("p", { style: { margin: 0, fontSize: 13, lineHeight: 1.6, color: "rgba(224,235,240,0.78)", fontFamily: M9, textAlign: "center" } },
+          invitPlus.motif === "video"
+            ? T("Les vidéos font partie de Hype+. Passe à Hype+ pour conserver aussi tes parcours, tes séances et tes meilleurs moments.", "Videos are part of Hype+. Go Hype+ to keep your rounds, sessions and best moments too.", "Los vídeos forman parte de Hype+. Pasa a Hype+ para conservar también tus recorridos y tus mejores momentos.", "I video fanno parte di Hype+. Passa a Hype+ per conservare anche i tuoi percorsi e i tuoi momenti migliori.", "動画は Hype+ の機能です。走行やレッスン、最高の瞬間も残しましょう。", "Videos gehören zu Hype+. Mit Hype+ bewahrst du auch deine Parcours und besten Momente.")
+            : T("Tes " + QUOTA_PHOTOS_GRATUIT + " souvenirs photo gratuits sont déjà sur Hype. Avec Hype+, continue à construire l'histoire de tous tes chevaux et ajoute aussi tes vidéos.", "Your " + QUOTA_PHOTOS_GRATUIT + " free photo memories are already on Hype. With Hype+, keep building every horse's story and add your videos too.", "Tus " + QUOTA_PHOTOS_GRATUIT + " recuerdos gratuitos ya están en Hype. Con Hype+, sigue construyendo la historia de todos tus caballos.", "I tuoi " + QUOTA_PHOTOS_GRATUIT + " ricordi gratuiti sono già su Hype. Con Hype+, continua a costruire la storia di tutti i tuoi cavalli.", "無料の写真 " + QUOTA_PHOTOS_GRATUIT + " 枚はすでに Hype にあります。Hype+ でさらに続けましょう。", "Deine " + QUOTA_PHOTOS_GRATUIT + " kostenlosen Fotos sind schon auf Hype. Mit Hype+ geht die Geschichte weiter.")),
+        h("div", { style: { marginTop: 20, display: "flex", flexDirection: "column", gap: 9 } },
+          h("button", { onClick: function () { setInvitPlus(null); try { if (setEcranAC) setEcranAC("premium"); } catch (ePr) { } }, style: { width: "100%", padding: "13px 8px", borderRadius: 999, border: "1px solid " + tA(0.5), background: "linear-gradient(100deg, rgba(16,21,24,0.86) 40%, " + tA(0.24) + " 100%)", color: "#E9F7FA", fontFamily: M9, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, T("Découvrir Hype+", "Discover Hype+", "Descubrir Hype+", "Scopri Hype+", "Hype+ を見る", "Hype+ entdecken")),
+          h("button", { onClick: function () { setInvitPlus(null); }, style: { width: "100%", padding: "11px 8px", borderRadius: 999, border: "none", background: "transparent", color: "#8A929C", fontFamily: M9, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, T("Plus tard", "Later", "Más tarde", "Più tardi", "あとで", "Später"))))) ) : null,
     toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 999, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, whiteSpace: "nowrap" } }, toastA)) : null,
     /* 02/09 (Blandine) : « un petit message d'avertissement quand je touche un cheval perso
        et que j'effectue quelque chose que je ne devrais pas toucher normalement » — de facon
