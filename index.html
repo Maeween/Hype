@@ -2387,6 +2387,67 @@ async function fil({ seulementSuivis = false } = {}) {
 }
 
 
+/* --- 7 ter. Accents casses venus de la FFE ------------------------------
+   02/09 : « PrÃÂ©paratoire (1,00 m) » vu sur la fiche de Vallieres. C est de
+   l UTF-8 relu en latin1 DEUX fois. Une table de correspondances existait deja
+   (reparerAccents, dans EcranCheval) mais elle ne servait qu a raccourcir le
+   libelle d epreuve a un seul endroit : partout ailleurs le texte casse
+   passait tel quel. On repare donc A LA LECTURE, pour toutes les pages.
+   ⚠️ On repasse en boucle : un double encodage donne « Ã‚Â© », un triple
+   « ÃƒÂ‚Ã‚Â© ». Une seule passe n en enleve qu une couche. */
+var HYPE_ACC_PAIRES = [
+  /* ⚠️ CAUSE REELLE, trouvee le 02/09 : la table d origine (ACCENTS_CASSES)
+     attendait un caractere de controle entre « Ã » et « Â ». Or l import le
+     PURGE avant d ecrire (netFFE, correctif du 26/08 contre le refus Postgres).
+     La sequence en base est donc « ÃÂ© » — trois caracteres — et la table ne la
+     trouvait jamais. C est pour ca que « PrÃÂ©paratoire » restait a l ecran. */
+  ["\u00C3\u00C2\u00A9", "\u00E9"], ["\u00C3\u00C2\u00A8", "\u00E8"],
+  ["\u00C3\u00C2\u00AA", "\u00EA"], ["\u00C3\u00C2\u00A0", "\u00E0"],
+  ["\u00C3\u00C2\u00A7", "\u00E7"], ["\u00C3\u00C2\u00B4", "\u00F4"],
+  ["\u00C3\u00C2\u00B9", "\u00F9"], ["\u00C3\u00C2\u00AE", "\u00EE"],
+  ["\u00C3\u00C2\u00AF", "\u00EF"], ["\u00C3\u00C2\u00BB", "\u00FB"],
+  ["\u00C3\u00C2\u00AB", "\u00EB"], ["\u00C3\u00C2\u00A2", "\u00E2"],
+  ["\u00C3\u0083\u00C2\u00A9", "\u00C3\u00A9"], ["\u00C3\u0083\u00C2\u00A8", "\u00C3\u00A8"],
+  ["\u00C3\u0082\u00C2\u00A9", "\u00E9"], ["\u00C3\u0082\u00C2\u00A8", "\u00E8"],
+  ["\u00C3\u0082\u00C2\u00AA", "\u00EA"], ["\u00C3\u0082\u00C2\u00A0", "\u00E0"],
+  ["\u00C3\u0082\u00C2\u00A7", "\u00E7"], ["\u00C3\u0082\u00C2\u00B4", "\u00F4"],
+  ["\u00C3\u0082\u00C2\u00B9", "\u00F9"], ["\u00C3\u0082\u00C2\u00AE", "\u00EE"],
+  ["\u00C3\u0082\u00C2\u00AF", "\u00EF"], ["\u00C3\u0082\u00C2\u00BB", "\u00FB"],
+  ["\u00C3\u0082\u00C2\u00AB", "\u00EB"], ["\u00C3\u0082\u00C2\u00A2", "\u00E2"],
+  ["\u00C3\u00A9", "\u00E9"], ["\u00C3\u00A8", "\u00E8"], ["\u00C3\u00AA", "\u00EA"],
+  ["\u00C3\u00A0", "\u00E0"], ["\u00C3\u00A7", "\u00E7"], ["\u00C3\u00B4", "\u00F4"],
+  ["\u00C3\u00B9", "\u00F9"], ["\u00C3\u00AE", "\u00EE"], ["\u00C3\u00AF", "\u00EF"],
+  ["\u00C3\u00BB", "\u00FB"], ["\u00C3\u00AB", "\u00EB"], ["\u00C3\u00A2", "\u00E2"],
+  ["\u00C3\u0089", "\u00C9"], ["\u00C3\u0080", "\u00C0"], ["\u00C3\u0087", "\u00C7"],
+  ["\u00C2\u00A0", " "]
+];
+function hypeReparerFFE(t) {
+  var x = String(t == null ? "" : t);
+  /* les caracteres de controle sont deja purges a l ecriture, mais une ligne
+     ancienne peut encore en porter : on nettoie avant de comparer. */
+  x = x.replace(/[\u0080-\u009F]/g, "");
+  if (x.indexOf("\u00C3") < 0 && x.indexOf("\u00C2") < 0) return x;
+  for (var p = 0; p < 4; p++) {
+    var avant = x;
+    HYPE_ACC_PAIRES.forEach(function (pr) { x = x.split(pr[0]).join(pr[1]); });
+    if (x === avant) break;
+  }
+  return x;
+}
+/* Applique la reparation aux champs texte d une ligne de resultat, a la lecture.
+   ⚠️ Ne corrige PAS la base : les lignes restent cassees en Postgres tant que
+   l UPDATE du 02/09 n a pas ete passe (voir SUIVI). */
+function hypeReparerLignes(lignes) {
+  return (lignes || []).map(function (r) {
+    if (!r) return r;
+    var c = Object.assign({}, r);
+    ["epreuve", "concours", "cavalier"].forEach(function (k) {
+      if (typeof c[k] === "string") c[k] = hypeReparerFFE(c[k]);
+    });
+    return c;
+  });
+}
+
 /* --- 8. Aimer (like) --------------------------------------- */
 
 /* 02/09 : les cartes d import ne sont pas des lignes de `resultats`, elles ont
@@ -21305,7 +21366,7 @@ function EcranChevalCommun() {
                 try {
                     /* limite large : tronquer fausserait les compteurs d'un cheval a 178 parcours */
                     var rR = await supa.from("resultats").select("*").eq("cheval_id", id).order("created_at", { ascending: false }).limit(400);
-                    ((rR && rR.data) || []).filter(function (rV2) { return rV2 && rV2.visible !== false; }).forEach(function (r) { var n = normRes(r, true); if (n) res.push(n); }); /* 26/08 : QUATRIEME porte fermee — la page seconde chargeait ses resultats par son propre circuit et ignorait la coche de l import (capture Blandine 11h25, compteurs faux) */
+                    hypeReparerLignes(((rR && rR.data) || []).filter(function (rV2) { return rV2 && rV2.visible !== false; })).forEach( /* 02/09 : accents FFE */function (r) { var n = normRes(r, true); if (n) res.push(n); }); /* 26/08 : QUATRIEME porte fermee — la page seconde chargeait ses resultats par son propre circuit et ignorait la coche de l import (capture Blandine 11h25, compteurs faux) */
                 } catch (eR) { }
                 /* le palmares JSON s'AFFICHE mais ne COMPTE pas (decision du 24/08) */
                 try { (Array.isArray(ch.palmares) ? ch.palmares : []).forEach(function (r) { var n = normRes(r, false); if (n) res.push(n); }); } catch (eJ) { }
@@ -23332,8 +23393,20 @@ class BarriereEcran extends React.Component {
                     color: COLORS.grisTresDoux, background: "#0C1014",
                     border: "1px solid " + COLORS.nuitBordure, borderRadius: 10, padding: 10
                 }
-            }, "\u00e9cran : " + this.props.ecran + "\n" +
-               String((this.state.mort && (this.state.mort.stack || this.state.mort.message)) || this.state.mort)));
+            }, (function (er) {
+                /* 02/09 : le bloc affichait `stack` OU `message`. La pile existant
+                   toujours, le MESSAGE n etait jamais montre — c est pour ca que le
+                   plantage d EcranCheval est reste sans diagnostic depuis le 01/09
+                   (« il faut taper Details techniques et lire la premiere ligne » :
+                   la premiere ligne etait deja la pile). Message d abord, pile apres. */
+                var tete = "\u00e9cran : " + this.props.ecran;
+                var msg = "";
+                try { msg = (er && (er.name ? (er.name + " : ") : "") + (er.message || "")) || ""; } catch (eM) { }
+                if (!msg) { try { msg = String(er); } catch (eM2) { msg = ""; } }
+                var pile = "";
+                try { pile = (er && er.stack) ? String(er.stack) : ""; } catch (eP) { }
+                return tete + "\n\n" + (msg || "(aucun message)") + (pile ? ("\n\n" + pile) : "");
+            }).call(this, this.state.mort)));
     }
 }
 /* ── PUITS TACTILES HORIZONTAUX — correctif 09/08/2026, reapplique le 14/08 (session 134) ────
@@ -29292,7 +29365,7 @@ function EcranPerfConcours() {
           var rs = await supa.from("resultats")
             .select("id, user_id, cheval_id, concours, epreuve, partants, date_epreuve, cavalier, place, classement, quart, origine, photo_url, media_url, visible, created_at")
             .in("user_id", ids).limit(1200);
-          lignes = ((rs && rs.data) || []).filter(function (x) { return x && x.visible !== false; });
+          lignes = hypeReparerLignes(((rs && rs.data) || []).filter(function (x) { return x && x.visible !== false; })); /* 02/09 : accents FFE */
         } catch (eRs) { if (vivant) setEtat("panne"); return; }
 
         if (!vivant) return;
@@ -29554,7 +29627,7 @@ function EcranGuilde() {
         /* 30/08 (Blandine : « ca c'est pas les derniers resultats ») — le tri se faisait
            sur created_at, la date d'IMPORT, pas sur la date du concours. On trie
            desormais sur date_epreuve quand elle existe, created_at sinon. */
-        ((rs && rs.data) || []).filter(estResultatAffichableEnFil).forEach(function (rr) {
+        hypeReparerLignes(((rs && rs.data) || []).filter(estResultatAffichableEnFil)).forEach(function (rr) { /* 02/09 : accents FFE */
           var tps = 0;
           try { if (rr.date_epreuve) tps = new Date(rr.date_epreuve).getTime() || 0; } catch (eT1) { }
           if (!tps) { try { tps = new Date(rr.created_at).getTime() || 0; } catch (eT0) { } }
@@ -35433,7 +35506,7 @@ function EcranCheval() {
            dependait de l ordre ou Blandine avait importe ses saisons. */
         var rQ = await supa.from("resultats").select("*").eq("cheval_id", chevalDyn.dbId)
           .order("date_epreuve", { ascending: false, nullsFirst: false }).limit(500);
-        if (vif) setResDb(((rQ && rQ.data) || []));
+        if (vif) setResDb(hypeReparerLignes((rQ && rQ.data) || [])); /* 02/09 : accents FFE repares a la lecture */
       } catch (eRd) { if (vif) setResDb([]); }
     })();
     return function () { vif = false; };
