@@ -2175,7 +2175,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
       place: r.place,
       partants: r.partants,
       quart: r.quart,          /* donné par la FFE, jamais calculé */
-      cavalier: netFFE(r.cavalier),
+      cavalier: netNomCavalierFFE(netFFE(r.cavalier)),
       origine: "import",
       /* la coche ne décide QUE de l affichage, plus de l enregistrement */
       visible: (r.garder !== false),
@@ -2549,8 +2549,35 @@ function hypeReparerFFE(t) {
    Regle : premier mot = prenom, initiale du DERNIER mot. « EMMA VICTOIRE DURAND »
    donne « Emma D. » — les prenoms composes perdent leur second prenom, c est
    assume : la FFE ne dit pas ou s arrete le prenom. */
+/* 02/09 (Blandine) : L'EN-TETE DE COLONNE COLLE AU NOM — CORRIGE A LA SOURCE.
+   Constate en base : « MARGOT KHOURY Note/Score » (15 lignes) coexistait avec
+   « MARGOT KHOURY » (14 lignes) — deux pastilles dans le filtre par cavalier pour
+   une seule personne, d'autant plus meconnaissables que le nom court prend
+   l'initiale du DERNIER mot (« Margot N. » vs « Margot K. »). Meme defaut deja
+   consigne sur « THELMA VANDEVILLE Note/Score ».
+   La lecture du PDF telemat absorbe parfois un en-tete de colonne dans le nom.
+   Le lecteur vit dans hype-import-ffe.js (fichier externe, a reprendre) : on pose
+   donc la garde ICI, au SEUL point d'ecriture des lignes importees, pour qu'aucune
+   ligne NEUVE ne puisse plus arriver cassee — meme principe que la reparation des
+   accents du 02/09, qui masquait le probleme tant qu'elle n'agissait qu'a
+   l'affichage.
+   GARDE-FOU : on ne retire l'en-tete que s'il reste au moins deux mots, pour ne
+   jamais amputer un vrai patronyme. */
+var HYPE_ENTETES_FFE = /\s*(Note\s*\/\s*Score|Note|Score|Quart|Points|Classement|Gains|Rang|Place|Places|Partants|Dossard)\s*$/i;
+function netNomCavalierFFE(nom) {
+  var t = String(nom == null ? "" : nom).replace(/\s+/g, " ").trim();
+  if (!t) return "";
+  for (var i = 0; i < 4; i++) {
+    if (!HYPE_ENTETES_FFE.test(t)) break;
+    var reduit = t.replace(HYPE_ENTETES_FFE, "").trim();
+    if (reduit.split(" ").filter(Boolean).length < 2) break; /* ne jamais amputer un vrai nom */
+    t = reduit;
+  }
+  return t;
+}
+
 function hypeNomCourt(nom) {
-  var t = String(nom == null ? "" : nom).trim().replace(/\s+/g, " ");
+  var t = netNomCavalierFFE(nom);
   if (!t) return "";
   function cap(mot) {
     return mot.split("-").map(function (p) {
