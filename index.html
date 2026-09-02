@@ -35868,6 +35868,21 @@ function EcranCheval() {
      trouve. Meme porte en base (changerClubCheval). */
   var _mcl = React.useState([]); var mesClubsFiche = _mcl[0], setMesClubsFiche = _mcl[1];
   var _errCl = React.useState(""); var erreurClub = _errCl[0], setErreurClub = _errCl[1];
+  /* 02/09 (Blandine) : « n'afficher que les classements ». Interrupteur
+     D'AFFICHAGE — il ne touche RIEN en base, contrairement a la coche de
+     relecture. Reversible d un tap.
+     ⚠️ « Classe » = `quart === 1`, la valeur donnee par la FFE. Jamais recalcule.
+     ⚠️ Les preparatoires n ont pas de quart : elles disparaissent avec le filtre.
+     ⚠️ Reglage LOCAL (localStorage) : il ne suit pas sur un autre telephone et
+     les visiteurs voient toujours tout. Le passer en base demanderait une
+     colonne — non tranche. */
+  var _rcl = React.useState(function () { try { return localStorage.getItem("hype_res_classes") === "1"; } catch (eRc) { return false; } });
+  var classesSeuls = _rcl[0], setClassesSeuls = _rcl[1];
+  function basculerClasses() {
+    var v = !classesSeuls;
+    try { localStorage.setItem("hype_res_classes", v ? "1" : "0"); } catch (eSc2) { }
+    setClassesSeuls(v);
+  }
   React.useEffect(function () {
     var vivant = true;
     (async function () {
@@ -37606,7 +37621,7 @@ function EcranCheval() {
         (function () {
           var lignesBrutes = (resDb || []).filter(function (r) { return r && (voirMasques || r.visible !== false) && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
           function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
-          var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
+          var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", q: (r.quart == null ? null : Number(r.quart)), d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
           /* 30/08 — BARRE EMPILEE PAR SAISON. Liste PARALLELE a tousF qui GARDE les
              parcours SANS place (eliminations, abandons : place vide, classement
              "El." / "Ab."), volontairement ecartes de tousF par le .filter ci-dessus.
@@ -37630,7 +37645,12 @@ function EcranCheval() {
              tete de pool, podiums en complement s'il manque des cartes. Le palmares
              ecrit en dur (decision 24/08 : s'affiche, ne compte pas) entre dans CE
              pool d'affichage, avec dedoublonnage (les deux Bordeaux ne font qu'un). */
-          var fortsPool = tousF.slice();
+          /* ⚠️ LE FILTRE NE TOUCHE PAS LES 4 CHIFFRES. nS/nV/nP/nC restent calcules
+             sur TOUTES les lignes : un bandeau qui dirait « 18 sorties » alors que
+             le cheval en a 12 serait faux, et Blandine lirait ses propres chiffres
+             comme incoherents. Le filtre ne concerne que les LISTES. */
+          var vueF = classesSeuls ? tousF.filter(function (fQ) { return fQ.q === 1; }) : tousF;
+          var fortsPool = vueF.slice();
           try {
             (((typeof c !== "undefined" && c) && c.palmares) || []).forEach(function (rJ) {
               if (!rJ || !rJ.event) return;
@@ -37648,12 +37668,12 @@ function EcranCheval() {
           if (vics.length < 3) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
           var forts = []; var jetonsVus = {};
           vics.forEach(function (fV) { if (forts.length >= 3) return; var jV = jetonFort(fV); if (jetonsVus[jV]) return; jetonsVus[jV] = 1; forts.push(fV); });
-          var ans = {}; tousF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
+          var ans = {}; vueF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
           var listeAns = Object.keys(ans).sort().reverse();
           var cavStats = {}; tousF.forEach(function (fC) { if (!fC.cav) return; if (!cavStats[fC.cav]) cavStats[fC.cav] = { n: 0, d: "" }; cavStats[fC.cav].n++; if ((fC.d || "") > cavStats[fC.cav].d) cavStats[fC.cav].d = fC.d || ""; });
           var cavsPalm = Object.keys(cavStats).sort(function (cA, cB) { return (cavStats[cB].n - cavStats[cA].n) || cavStats[cB].d.localeCompare(cavStats[cA].d); }); /* 27/08 : onglets cavaliers TRIES — celui qui a le plus monte d abord, puis les plus recents (demande Blandine) */
           function filtreCav(lF) { return (cavFiltre && cavFiltre !== "tous") ? lF.filter(function (fF) { return fF.cav === cavFiltre; }) : lF; }
-          var recents = tousF.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
+          var recents = vueF.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
           function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
           var OR9 = "#D9A85C";
@@ -37693,6 +37713,18 @@ function EcranCheval() {
                  resultats, elle a pas a envoyer encore ailleurs »). */
               null) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
+            /* 02/09 — « n'afficher que les classements ». Discret, et reserve a la
+               proprietaire du cheval : les visiteurs ne le voient pas. */
+            (function () {
+              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              if (!proprioF) return null;
+              var nMasq = tousF.length - vueF.length;
+              return h("div", { role: "button", onClick: basculerClasses,
+                style: { margin: "18px 16px 0", fontSize: 11.5, cursor: "pointer",
+                         color: classesSeuls ? teinteCl : "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                (classesSeuls ? "\u2611 " : "\u2610 ") + T("N'afficher que les class\u00e9s", "Show placings only", "Solo clasificados", "Solo piazzamenti", "\u5165\u8cde\u306e\u307f\u8868\u793a", "Nur Platzierungen")
+                + (classesSeuls && nMasq > 0 ? (" \u00b7 " + nMasq + " " + T("masqu\u00e9s", "hidden", "ocultos", "nascosti", "\u975e\u8868\u793a", "ausgeblendet")) : ""));
+            })(),
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison").toUpperCase()), filetOr()),
