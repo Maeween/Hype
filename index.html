@@ -1791,9 +1791,26 @@ async function chevauxDeLEcurie(nomEcurie, exclureUserId) {
     var vus = {}, ids = [];
     mm.forEach(function (p) { if (p && p.id && !vus[p.id] && p.id !== exclureUserId) { vus[p.id] = true; ids.push(p.id); } });
     if (!ids.length) return { data: [], error: null };
-    var rc = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url").in("user_id", ids).is("supprime_le", null).order("created_at", { ascending: false }).limit(30);
+    var rc = await supa.from("chevaux").select("id, user_id, nom, race, discipline, photo_url, club").in("user_id", ids).is("supprime_le", null).order("created_at", { ascending: false }).limit(30);
     var parId = {}; mm.forEach(function (p) { parId[p.id] = p.pseudo; });
-    return { data: (rc.data || []).map(function (ch) { return Object.assign({}, ch, { __prop: parId[ch.user_id] || null }); }), error: rc.error || null };
+    /* 02/09 (Blandine : « Dakota continue d apparaitre dans l ecurie Feinn alors qu elle
+       est bien a la SEP ») — CHERCHER LE MECANISME, PAS L ENDROIT : cette liste part des
+       CAVALIERS de l ecurie, puis prend TOUS leurs chevaux. Elle n a jamais regarde la
+       colonne `club` du cheval. Un cheval de Blandine apparaissait donc a Feinn quel que
+       soit son club reel. On filtre desormais sur le club DU CHEVAL.
+       ⚠️ Regle deja tranchee par Blandine : un cheval SANS club apparait PARTOUT
+       (« il n y a pas de raison qu il n apparaisse pas »). Seul un cheval explicitement
+       rattache a un AUTRE club sort de la grille. */
+    var noyauE = (typeof noyauEcurie === "function") ? (noyauEcurie(nomE) || nomE) : nomE;
+    noyauE = String(noyauE).toLowerCase();
+    var gardees = (rc.data || []).filter(function (ch) {
+      var clubCh = String((ch && ch.club) || "").trim();
+      if (!clubCh) return true;                       /* sans club : partout */
+      var noyauC = (typeof noyauEcurie === "function") ? (noyauEcurie(clubCh) || clubCh) : clubCh;
+      noyauC = String(noyauC).toLowerCase();
+      return noyauC.indexOf(noyauE) >= 0 || noyauE.indexOf(noyauC) >= 0;
+    });
+    return { data: gardees.map(function (ch) { return Object.assign({}, ch, { __prop: parId[ch.user_id] || null }); }), error: rc.error || null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
 async function cavaliersChoisisEcurie() {
