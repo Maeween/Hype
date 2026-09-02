@@ -36053,6 +36053,7 @@ function EcranCheval() {
      trouve. Meme porte en base (changerClubCheval). */
   var _mcl = React.useState([]); var mesClubsFiche = _mcl[0], setMesClubsFiche = _mcl[1];
   var _errCl = React.useState(""); var erreurClub = _errCl[0], setErreurClub = _errCl[1];
+  var _oue = React.useState(false); var ouvrirEcu = _oue[0], setOuvrirEcu = _oue[1];
   /* 02/09 (Blandine) : « n'afficher que les classements ». Interrupteur
      D'AFFICHAGE — il ne touche RIEN en base, contrairement a la coche de
      relecture. Reversible d un tap.
@@ -36865,6 +36866,49 @@ function EcranCheval() {
                 h("b", { style: { color: teinteCl, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.14em" } }, "\u2726 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "\u4f1d\u8aac", "HYPE-LEGENDE")),
                 h("span", { style: { color: "rgba(244,247,250,0.75)", fontSize: 10.5, letterSpacing: "0.06em", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: 8 } }, lblT2)) : null);
           })(),
+
+          /* 02/09 (Blandine) — L ECURIE DU CHEVAL, SOUS SON NOM.
+             ⚠️ Le selecteur vivait dans « Modifier la fiche », derriere le menu de
+             la photo : « ce n est pas du tout intuitif ». Il remonte ici, visible
+             sans rien ouvrir — on lit l ecurie d un coup d oeil, et on la change au
+             meme endroit.
+             ⚠️ Ne s affiche QUE pour la proprietaire du cheval, et seulement si le
+             cavalier a PLUSIEURS ecuries : avec une seule, la question n a pas de
+             sens et la ligne encombrerait la fiche.
+             ⚠️ L echec d ecriture se DIT (lecon du .catch() vide du 01/09). */
+          (function () {
+            var proprioE = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+            if (!proprioE || mesClubsFiche.length < 2) return null;
+            var actuel = String((chevalDyn && chevalDyn.club) || "").trim();
+            return h("div", { style: { marginTop: 10 } },
+              h("div", { role: "button", onClick: function () { setOuvrirEcu(!ouvrirEcu); setErreurClub(""); },
+                style: { display: "inline-flex", alignItems: "center", gap: 7, cursor: "pointer",
+                  fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: actuel ? "#D9C7A3" : "#8A929C" } },
+                h("span", { style: { fontSize: 11 } }, "\uD83D\uDCCD"),
+                actuel || T("Aucune \u00e9curie", "No stable", "Sin cuadra", "Nessuna scuderia", "\u6240\u5c5e\u306a\u3057", "Kein Stall"),
+                h("span", { style: { fontSize: 9, opacity: .7 } }, ouvrirEcu ? "\u25b2" : "\u25bc")),
+              ouvrirEcu ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 } },
+                mesClubsFiche.concat([""]).map(function (cl) {
+                  var actC = (actuel === cl);
+                  return h("div", { key: "ec" + (cl || "__aucune__"), role: "button",
+                    onClick: function () {
+                      setErreurClub("");
+                      changerClubCheval(c.dbId, cl || null).then(function (rE) {
+                        if (rE && rE.error) { setErreurClub(String(rE.error.message || rE.error)); return; }
+                        try { setChevalDyn(function (av) { return Object.assign({}, av || {}, { club: cl || null }); }); } catch (eSd) { }
+                        setOuvrirEcu(false);
+                      });
+                    },
+                    style: { padding: "7px 13px", borderRadius: 999, cursor: "pointer",
+                      border: "1px solid " + (actC ? "rgba(217,199,163,0.7)" : "rgba(255,255,255,0.14)"),
+                      background: actC ? "rgba(217,199,163,0.14)" : "rgba(255,255,255,0.03)",
+                      color: actC ? "#D9C7A3" : "rgba(237,242,245,0.7)",
+                      fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+                    cl || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine"));
+                })) : null,
+              erreurClub ? h("div", { style: { marginTop: 6, fontSize: 11.5, color: "#FF6B6B", fontFamily: "'Montserrat',sans-serif" } }, erreurClub) : null);
+          })(),
+
           /* 22/08 session 152 : trois points de 1,4 px sans etiquette — personne ne
    trouvait le menu, donc ni « Modifier » ni « Supprimer ». Blandine
    elle-meme cherchait ou effacer un cheval. On lui donne un cadre. */
