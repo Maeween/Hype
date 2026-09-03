@@ -20971,3 +20971,108 @@ chevauchait le rail des resultats — ecriture CENTREE, remonte de 26 a 16 px,
 marge basse de 22 px. La fleche passe en position absolue (en float elle decalait
 le centrage).
 
+## 02/09/2026 (nuit) — DAKOTA RESTAIT DANS LA GRILLE DE L'ECURIE FEINN
+
+Le club du cheval s'enregistre et se relit maintenant correctement (Dakota affiche
+bien « Societe d'Equitation de Paris (SEP) » sous son nom), mais elle continuait
+d'apparaitre dans la grille des chevaux de l'Ecurie Feinn.
+
+**MECANISME, pas endroit** — meme leçon que ce matin. `chevauxDeLEcurie` ne part
+pas des chevaux : elle cherche d'abord les CAVALIERS dont le profil porte le nom
+de l'ecurie, puis prend TOUS leurs chevaux. Elle n'a jamais regarde la colonne
+`club` du cheval. Un cheval de Blandine apparaissait donc a Feinn quel que soit
+son club reel — ce n'etait pas un defaut d'enregistrement.
+
+Correctif : la requete lit desormais `club`, et un cheval explicitement rattache a
+un AUTRE club est ecarte de la grille.
+⚠️ Regle deja tranchee par Blandine et respectee : un cheval SANS club apparait
+PARTOUT (« il n'y a pas de raison qu'il n'apparaisse pas »). Comparaison tolerante
+via `noyauEcurie`, comme partout ailleurs, pour absorber les variantes de nom.
+
+## 02/09/2026 (nuit) — LE RAIL DE LA FICHE REPREND LA CARTE DE L'ECURIE
+
+Blandine : « il s'est passe quoi sur le rail de resultat ? normalement y'avait
+l'epreuve, le nom du cavalier, les autres cavaliers de l'ecurie classes dans la
+meme epreuve » puis « je veux la meme chose que sur l'ecurie ».
+
+**Verifie : ce n'etait PAS une regression de la nuit** (je n'avais touche qu'au
+bouton au-dessus). Deux choses distinctes :
+- **un vrai defaut** : la carte affichait « epreuve · annee » mais `palmTous`
+  ecrivait `ds: ""` EN DUR pour les lignes importees, alors que la colonne
+  `epreuve` existe en base. D'ou le point orphelin « OPEN DE FRANCE CLUB · 2026 ».
+  Meme famille que le club de Dakota : la donnee etait chargee puis jetee.
+- **un manque jamais comble** : la photo cavalier/cheval sur les cartes de
+  resultats figure dans le suivi comme point ancien JAMAIS FAIT. Elle avait ete
+  demandee, pas livree.
+
+**Correctif : la carte de la page ecurie (maquette validee le 01/09) est reprise
+telle quelle sur la fiche.** Medaille + annee, portrait rond, « 1er CAVALIER sur
+CHEVAL », concours, epreuve, nombre de partants, puis les autres classes de la
+MEME epreuve en petit (3 au maximum).
+Le rail repart de `resDb` et non de `palmTous` — c'est la seule source qui porte
+l'epreuve, le cavalier et les partants. Regroupement par concours + epreuve + date.
+Regles de la maquette respectees : le cheval n'est nomme QU'UNE FOIS ; sans photo,
+pas de medaillon du tout (pas de portrait generique) ; la coche de relecture reste
+respectee (`visible === false` ecarte, sauf « voir les lignes masquees »).
+La tuile « + » d'ajout de resultat est conservee en fin de rail.
+
+Teste : regroupement de 4 lignes -> 2 cartes, la ligne masquee ecartee, le 4e de la
+meme epreuve remonte bien sous le 1er.
+
+⚠️ **RESTE A FAIRE** : « les autres cavaliers DE L'ECURIE classes dans la meme
+epreuve ». Ici on affiche les autres classes SUR CE CHEVAL. Le croisement avec les
+resultats des AUTRES chevaux du club sur la meme epreuve demande la requete que
+fait deja `EcranGuilde` (railClub) et qui n'existe pas sur la fiche. A porter a
+froid.
+
+## 02/09/2026 (nuit) — ERREUR DE MA PART : J'AVAIS FILTRE LA MAUVAISE LISTE
+
+Blandine, apres livraison : « Ecolo et Dakota apparaissent toujours sur ecurie
+Feinn ». Elle a raison, et mon correctif precedent ne pouvait pas marcher.
+
+`chevauxDeLEcurie(nomEcurie, exclureUserId)` — la liste que j'avais filtree —
+EXCLUT volontairement le compte courant : elle sert a montrer les chevaux DES
+AUTRES membres. Les chevaux de Blandine arrivent par une TOUTE AUTRE liste,
+`mesChevauxClub`, alimentee par `mesChevaux()` + `mesChevauxLies()`, qui ne
+regardait pas davantage la colonne `club`.
+
+J'ai donc corrige un vrai defaut, mais pas celui qu'elle voyait. Le filtre est
+maintenant pose aux DEUX endroits, avec la meme regle et la meme comparaison
+tolerante (`noyauEcurie`) : un cheval SANS club apparait PARTOUT, seul un cheval
+explicitement rattache a un AUTRE club sort de la grille.
+
+**LEÇON, la troisieme de la nuit sur le meme motif** : verifier QUELLE liste
+alimente l'ecran qu'elle regarde, avant de corriger celle qui porte le nom le plus
+evocateur. « chevauxDeLEcurie » sonnait juste — et excluait precisement le compte
+concerne.
+
+## 02/09/2026 (nuit) — PAGE SEP : DES RESULTATS DE FEINN
+
+Blandine : « sur la page de la SEP les derniers resultats sont ceux des cavaliers
+Feinn ». Diagnostic fait AVEC UNE REQUETE, pas au jugé (j'avais deja corrige la
+mauvaise liste une fois cette nuit).
+
+**La liste des membres est JUSTE** : 15 profils, tous reellement SEP. Evan et Ilona
+n'y sont pas. Ce n'etait donc pas la recherche tolerante par noyau.
+
+**La vraie cause : Blandine appartient aux DEUX clubs** (Feinn en principale, SEP en
+seconde). Le rail prend les resultats de tous les membres, donc TOUS les siens — y
+compris ceux de Rizotto et Daphne, chevaux de Feinn. Le nom affiche est celui du
+cavalier ecrit sur la ligne FFE, d'ou « Evan Roux » et « Ilona Hugot » sur la page
+de la SEP.
+
+Les CHEVAUX etaient deja filtres par club depuis le 01/09 ; les RESULTATS, non.
+Meme filtre applique : une ligne rattachee a un cheval d'un AUTRE club est ecartee.
+⚠️ Une ligne SANS cheval identifie passe toujours — on ne fait pas disparaitre une
+saisie qu'on ne sait pas rattacher.
+
+**NON TRAITE, meme page** : les stories « a la une » de la SEP sont celles de Feinn.
+Meme famille (contenu d'un membre appartenant aux deux clubs, non rattache a un
+club), mais autre mecanisme — a diagnostiquer separement.
+
+**LE FOND, a traiter a froid** : quatre ecrans repondent a « quels chevaux / quels
+resultats appartiennent a ce club » par quatre chemins differents, et il a fallu
+quatre correctifs cette nuit pour la meme question. Il faut UNE fonction unique,
+appelee partout : le jour ou un cheval change d'ecurie, il bouge partout d'un coup,
+et il n'y a plus qu'un endroit a verifier.
+
