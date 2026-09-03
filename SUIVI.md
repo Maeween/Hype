@@ -10,6 +10,184 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 03/09/2026 (soir) — TROIS CHANTIERS EN UN SEUL ENVOI
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c7a7ce3f5ac8fc258c9684eb100b74a8` | galerie · agenda modifiable · séparation des deux écuries (+ correctif `T` du matin) |
+| `club-agenda-modif.sql` | à passer en base | — | policy UPDATE manquante sur `club_agenda` |
+
+⚠️ Cet `index.html` **remplace** celui livré plus tôt dans la journée : il contient
+aussi le correctif du plantage de la création de cheval (fonction `T` manquante).
+Une seule poussée couvre tout.
+
+---
+
+## 1. 🟥 LA GALERIE — LES PHOTOS EN PLEINE HAUTEUR
+
+**Cause trouvée** (enregistrement d'écran de Blandine, 03/09 21 h) : le bloc
+`<style>` qui définit `.souvCell`, `.souvFlot` et `.souvImg` n'était rendu que
+dans `panneau === "souvenirs"`. Or le **29/08 la Galerie a déménagé sur l'onglet
+Photos**. Sur cet onglet, le style n'existait pas : `.souvImg` sans
+`width/height/object-fit`, `.souvCell` sans `overflow:hidden`. Chaque photo
+s'affichait donc à sa **taille naturelle**, débordait de sa case, élargissait la
+colonne et poussait toute la page hors de l'écran — d'où le titre « GALERIE »
+coupé à gauche et les onglets du bas coupés à droite sur la capture.
+
+⚠️ **La passation avait audité le mauvais composant** : elle avait vérifié
+`GrilleSouvenirs` en croyant que c'était la page Médias. La page Médias, c'est
+`AlbumsPromus`. Les deux sont irréprochables ; c'est le CSS qui manquait.
+
+**Correctif, les deux ceintures :**
+- le bloc `<style>` **remonte hors de la branche** et sert les quatre onglets ;
+- les tailles sont en plus posées **en style direct** dans `GrilleSouvenirs`
+  (case, boîte flottante, photo et vidéo) — le composant survit désormais au
+  prochain déménagement.
+
+🟥 **Règle** : ne jamais redescendre ce bloc dans une branche d'onglet. Il porte
+aussi `souvin`, `souvHaloCell`, `souvFloat`, `souvPose` — absents de la page
+Photos depuis le 29/08 pour la même raison, revenus avec lui.
+
+## 2. 🟩 L'AGENDA DU CLUB DEVIENT MODIFIABLE
+
+Il n'existait que `ajouterAgendaClub` et `supprimerAgendaClub` : **aucune
+fonction de modification**. Un rendez-vous ne pouvait qu'être créé ou détruit.
+La fiche « Cso » de Blandine était vide parce que rien ne permettait de la
+remplir après coup.
+
+- Nouvelle fonction `modifierAgendaClub(id, champs)`.
+- Bouton **Modifier** dans l'en-tête de la fiche, réservé à la propriétaire du
+  club — même droit que créer et supprimer, et même chose que la base autorise.
+- Formulaire complet : type, titre, date, heure, **lieu**, **ce qu'il faut
+  savoir** (texte long), **affiche ou photo** (envoi, changement, retrait).
+- La fiche nue n'affiche plus un trou noir : une invitation à la compléter pour
+  la propriétaire, une phrase honnête pour les cavalières.
+
+🟥 **PIÈGE POSTGREST consigné** : sans policy UPDATE, la base ne renvoie
+**aucune erreur** — elle renvoie **zéro ligne**. `modifierAgendaClub` relit donc
+ce qui a réellement changé et le dit à l'écran plutôt que d'afficher un faux
+succès. Le message d'erreur RESTE affiché jusqu'à l'action suivante.
+
+⚠️ **À passer en base : `club-agenda-modif.sql`** (idempotent). Sans lui, la
+modification s'ouvre, s'enregistre… et ne change rien — avec le message
+explicite. Le fichier se termine par un SELECT de vérification.
+
+## 3. 🟩 LES DEUX ÉCURIES NE SE MÉLANGENT PLUS SUR LA PAGE CAVALIER
+
+La grille « Mes chevaux » concaténait `mesChevaux()` + `mesChevauxLies()` **sans
+jamais regarder le club du cheval**, alors que la page club passe par
+`hypeChevauxDuClub` depuis le 03/09. D'où les chevaux de Feinn et de la SEP en
+vrac.
+
+- Une **rangée de choix d'écurie** au-dessus de la grille, qui n'apparaît que si
+  le cavalier a **deux écuries** — même condition que la question posée à la
+  création d'un cheval le 02/09.
+- Par défaut : la première écurie. « Toutes » reste à un doigt.
+- Le filtrage passe par la **fonction unique** `hypeChevauxDuClub`. Aucune règle
+  de club réécrite ici. Règle de Blandine respectée : un cheval **sans club**
+  apparaît dans les deux écuries ; seul un cheval rattaché à l'autre club sort.
+
+## Vérifications
+
+- `node --check` sur les **18 blocs JS inline** : 0 échec.
+- Marqueurs relus après écriture : `ModaleCreationCheval` 1, `FicheEvenementClub`
+  1, `modifierAgendaClub` 1, `GrilleSouvenirs` 1, `doublonEc` 5, `quotaGratuit` 5,
+  `hype-import-ffe.js?v=13` 1, `mux-upload` 4.
+- Position du bloc `<style>` vérifiée : il précède les deux branches d'onglet.
+- 🟩 **Banc d'essai sur le vrai fichier, 25 vérifications, 0 échec** : les
+  composants sont réellement rendus avec React simulé.
+  - modale de création : 1 / 2 / 0 écuries → rendu OK (non-régression du matin) ;
+  - grille : 3 cases, chacune rogne ce qui déborde, chaque photo et vidéo bornée
+    à sa case, grille en deux colonnes ;
+  - fiche du rendez-vous : bouton Modifier pour la propriétaire, absent pour une
+    cavalière, invitation à la place du vide, formulaire complet avec un vrai
+    sélecteur de photo ;
+  - `hypeChevauxDuClub` sur ses vrais cas : Feinn ne voit pas Aceitunero, la SEP
+    ne voit pas Cooltax, le cheval sans club apparaît dans les deux.
+
+## Leçon
+
+🟥 **Le banc d'essai a attrapé une faute que j'avais moi-même introduite** : en
+réécrivant `FicheEvenementClub`, j'avais perdu `var onClose = props.onClose;`
+tout en continuant à appeler `onClose` — exactement le défaut du matin
+(`ReferenceError` au rendu), et `node --check` le trouvait parfait. Corrigé avant
+livraison. **Exécuter le rendu, ne pas se contenter de la syntaxe.**
+
+Et, deuxième fois dans la journée : **vérifier quel composant alimente l'écran
+regardé** avant de relire celui qui porte le plus beau nom.
+
+---
+
+# 🟥 03/09/2026 (nuit) — LE PLANTAGE DE LA CRÉATION DE CHEVAL : LA VRAIE CAUSE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `901756c746fb9ae5ba4159421338cbc2` | `ModaleCreationCheval` : fonction `T` manquante (1 ligne ajoutée) |
+
+## Ce qui plantait
+
+« Un caillou dans le sabot » à l'ouverture de la fenêtre de création de cheval.
+Pile lue sur la capture : `ModaleCreationCheval@…:30914:12`.
+
+**Cause** : ligne 30914, la modale appelait `T("Dans quelle écurie ?", …)` — et un
+second `T("Aucune", …)` ligne 30924. Or `T` n'est définie **que localement** dans
+une trentaine d'autres composants, **jamais au niveau global**. Donc
+`ReferenceError: T is not defined` **au rendu**, l'app tombe.
+
+Ces deux appels viennent de l'ajout du 02/09 (« dans quelle écurie ? » demandé à
+la création), pas de l'anti-doublon.
+
+⚠️ **Pourquoi ça passait pour intermittent** : le bloc fautif n'est rendu que si
+`clubsCr.length > 1`, donc **seulement pour un cavalier qui a plusieurs écuries**
+(Blandine : Écurie Feinn + SEP). Une cavalière à une seule écurie ne voyait rien.
+Et comme `clubsCr` part vide puis est rempli par `mesClubs()`, le premier rendu
+passe et c'est le second qui tombe : la fenêtre s'ouvre, puis l'app plante.
+
+🟥 **Correction d'une affirmation de la passation du 03/09** : il y était écrit que
+l'index.html livré contenait le correctif d'urgence et que le pousser réparerait la
+création de cheval. **C'était faux** — le retrait de l'anti-doublon n'a rien à voir
+avec ce plantage, et le fichier livré contenait encore les deux appels à `T`.
+
+## Le correctif
+
+Une seule ligne **ajoutée** dans `ModaleCreationCheval`, le même helper que les
+autres composants du fichier :
+
+```js
+function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+```
+
+Aucune autre ligne touchée (diff = un seul bloc, ajout uniquement). L'anti-doublon
+retiré la veille n'est pas remis : cette modale a déjà son propre rapprochement
+(`doublonEc` + `listeEc`).
+
+## Vérifications
+
+- `node --check` sur les **18 blocs JS inline** : 0 échec.
+- Marqueurs relus après écriture : `ModaleCreationCheval` 1, `doublonEc` 5,
+  `quotaGratuit` 5, `hype-import-ffe.js?v=13` 1, `mux-upload` 4 — inchangés.
+- 🟩 **Banc d'essai sur le vrai fichier** (pas sur une reconstitution) : la modale
+  est réellement rendue avec React simulé, dans les trois cas.
+  - Fichier **avant** correctif : 1 écurie → OK · **2 écuries → ReferenceError: T
+    is not defined** · 0 écurie → OK.
+  - Fichier **après** correctif : les trois cas → rendu OK.
+
+  La cause est donc démontrée dans les deux sens, pas seulement supposée.
+
+## Leçon
+
+`node --check` ne voit pas une variable qui n'existe pas : la syntaxe était
+parfaite dans les deux versions. Ce qui l'a vu, c'est d'**exécuter le rendu du
+composant avec la donnée qui déclenche le cas** (deux écuries). À refaire pour
+tout plantage dont la pile nomme un composant.
+
+Et un plantage qui ne touche qu'un profil (plusieurs écuries, compte modératrice,
+Premium…) ressemble exactement à un plantage intermittent. Avant de soupçonner le
+dernier code ajouté, chercher **quelle condition d'affichage** distingue le compte
+qui plante.
+
+---
+
 # 🟩 02/09/2026 (soir) — LA PAGE AGENDA DU CLUB
 
 | Fichier | Où | md5 | Quoi |
@@ -21526,4 +21704,30 @@ cote a cote. Rien a deplacer, rien a perdre.
 (en l'etat, qui connait l'adresse peut faire creer des envois sur le compte Mux) ;
 et retirer le bouton de test de l'ecran Premium quand le premier envoi reel aura
 ete valide.
+
+## 03/09 (soir) — 🟥 PLANTAGE A LA CREATION D'UN CHEVAL · CORRIGE
+
+Signale par Blandine avec la capture : « Un caillou dans le sabot » des qu'elle
+veut ajouter un cheval a l'ecurie de la SEP. La pile d'erreur nommait
+**ModaleCreationCheval**.
+
+**MA FAUTE, et elle est instructive.** J'avais declare les fonctions anti-doublon
+(`hypeNomCompare`, `hypeDistance`, `hypeMemeNomCheval`, `hypeChevauxHomonymes`,
+`hypeProposerRattachement`) **A L'INTERIEUR de `EcranGererEcurie`**, parce que je
+les avais inserees juste avant `soumettreCheval` — qui est une fonction IMBRIQUEE
+dans ce composant. La modale de creation, qui vit ailleurs dans le fichier, ne
+pouvait donc pas les voir : appel d'une fonction inexistante, plantage a
+l'affichage.
+Corrige : le bloc est remonte au NIVEAU GLOBAL, juste avant `EcranGererEcurie`.
+Verifie : indentation nulle, accolades equilibrees, les 18 blocs JS passent
+`node --check`.
+
+⚠️ **LEÇON, la deuxieme du meme genre aujourd'hui.** Inserer du code « juste avant
+une fonction » ne dit RIEN du niveau ou il atterrit : `soumettreCheval` et
+`creer` sont toutes deux imbriquees dans leur composant. Avant d'inserer une
+fonction destinee a etre appelee de PLUSIEURS endroits, verifier explicitement
+qu'elle est bien au niveau 0 — c'est exactement le meme motif que les cinq
+versions de la regle « chevaux de ce club ».
+⚠️ Et un rappel : `node --check` ne voit PAS ce defaut. Le fichier etait
+syntaxiquement parfait ; c'est la PORTEE qui etait fausse. Seul l'ecran le montre.
 

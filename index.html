@@ -2804,6 +2804,28 @@ async function ajouterAgendaClub(o) {
   } catch (eN) { }
   return r;
 }
+/* 03/09 (Blandine) : UN RENDEZ-VOUS SE CORRIGE. Il n existait que creer et
+   supprimer — d ou une fiche qu on ne pouvait jamais remplir apres coup.
+   ⚠️ PIEGE DE POSTGREST : sans policy UPDATE, la base ne renvoie AUCUNE erreur,
+   elle renvoie ZERO LIGNE. On lit donc ce que l update a reellement change et on
+   le DIT, plutot que d afficher un faux succes. */
+async function modifierAgendaClub(id, o) {
+  o = o || {};
+  const user = await utilisateurActuel();
+  if (!user) return { data: null, error: "Pas connecté" };
+  if (!id) return { data: null, error: "Rendez-vous inconnu" };
+  const champs = {};
+  ["type", "titre", "date_jour", "heure", "lieu", "description", "image_url"].forEach(function (k) {
+    if (Object.prototype.hasOwnProperty.call(o, k)) champs[k] = (o[k] === "" ? null : o[k]);
+  });
+  if (!Object.keys(champs).length) return { data: null, error: "Rien à modifier" };
+  const r = await supa.from("club_agenda").update(champs).eq("id", id).select();
+  if (r && r.error) return { data: null, error: r.error };
+  if (!r || !r.data || !r.data.length) {
+    return { data: null, error: "La base a refusé la modification : aucune ligne changée. Il manque probablement la policy UPDATE sur club_agenda (SQL club-agenda-modif.sql)." };
+  }
+  return { data: r.data[0], error: null };
+}
 async function supprimerAgendaClub(id) {
   const user = await utilisateurActuel();
   if (!user) return { error: "Pas connecté" };
@@ -28123,6 +28145,14 @@ function EcranMonCavalier() {
   var podiums = pal.filter(function (r) { return /^(1|2|3)/.test(r.rang); }).length;
   var _mc = React.useState(null), chevauxReels = _mc[0], setChevauxReels = _mc[1];
   var _mcU = React.useState(null), moiCav = _mcU[0], setMoiCav = _mcU[1];
+  /* 03/09 (Blandine : « tous les chevaux des deux ecuries se melangent sur ma
+     page perso au lieu d etre separes par ecurie selectionnee ») — cette grille
+     concatenait mesChevaux() + mesChevauxLies() SANS jamais regarder le club du
+     cheval, contrairement a la page club qui passe par hypeChevauxDuClub depuis
+     le 03/09. Un choix d ecurie est donc pose au-dessus de la grille, avec la
+     MEME fonction unique — jamais une regle de club reecrite ici.
+     ⚠️ Ce hook reste au-dessus de tout return anticipe. */
+  var _ecS = React.useState(""); var ecurieSel = _ecS[0], setEcurieSel = _ecS[1];
   React.useEffect(function () { (async function () {
     try {
       var u = await utilisateurActuel(); setMoiCav(u || null);
@@ -28141,7 +28171,24 @@ function EcranMonCavalier() {
   (chevauxReels || []).forEach(function (rN) { try { if (rN && rN.nom) nomsReels[String(rN.nom).trim().toLowerCase()] = true; } catch (eNr) { } });
   var chevauxDemo = estCompteFeinn ? Object.keys(CHEVAUX_FICHE).map(function (id) { return { id: id, ch: CHEVAUX_FICHE[id] }; }).filter(function (x) { return x.ch && !nomsReels[String((x.ch.nom || "")).trim().toLowerCase()]; }) : [];
   var vusPerso = {};
-  var chevauxPerso = (chevauxReels || []).filter(function (rP) { if (!rP || !rP.id || vusPerso[rP.id]) return false; vusPerso[rP.id] = true; return true; }).map(function (r) { return { id: r.id, lien: !!r.__lien, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" \u00b7 "), flots: [] } }; });
+  /* les ecuries du cavalier, dans l ordre : son club, puis sa deuxieme ecurie */
+  var mesEcuries = [];
+  try {
+    var _e1 = String((profil.club || profil.ecurie || "")).trim();
+    var _e2 = String((profil.club2 || profil.ecurie2 || "")).trim();
+    if (_e1) mesEcuries.push(_e1);
+    if (_e2 && _e2.toLowerCase() !== _e1.toLowerCase()) mesEcuries.push(_e2);
+  } catch (eMe) { }
+  /* par defaut : la premiere ecurie. « Toutes » reste a un doigt.
+     ⚠️ Regle de Blandine inchangee (hypeMemeClub) : un cheval SANS club
+     apparait dans les deux ecuries ; seul un cheval rattache a l AUTRE club
+     sort de la grille. */
+  var ecChoisie = ecurieSel || (mesEcuries.length > 1 ? mesEcuries[0] : "__toutes__");
+  var filtreEc = (!__estVisite && mesEcuries.length > 1 && ecChoisie !== "__toutes__");
+  var chevauxSource = filtreEc && typeof hypeChevauxDuClub === "function"
+    ? hypeChevauxDuClub(chevauxReels || [], ecChoisie)
+    : (chevauxReels || []);
+  var chevauxPerso = (chevauxSource || []).filter(function (rP) { if (!rP || !rP.id || vusPerso[rP.id]) return false; vusPerso[rP.id] = true; return true; }).map(function (r) { return { id: r.id, lien: !!r.__lien, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" \u00b7 "), flots: [] } }; });
   var chevaux = chevauxDemo.concat(chevauxPerso); var chevauxVisite = (visiteChevaux || []).map(function (r) { return { id: r.id, lien: false, ch: { nom: r.nom, photo: r.photo_url, info: [r.race, r.age, r.discipline].filter(Boolean).join(" · "), flots: [] } }; });
   var serie = (ctx.serie != null) ? ctx.serie : 0;
   function ouvrirCheval(id) { return function () { if (typeof window !== "undefined") { window.__chevalOuvert = id; } setEcran("cheval"); }; }
@@ -28600,6 +28647,20 @@ function EcranMonCavalier() {
         })()))) : null,
     h("div", { style: { padding: "26px 0 0" } },
       h("div", { style: { padding: "0 16px" } }, (__estVisite ? eyebrow(T("Ses chevaux", "Their horses", "Sus caballos", "I suoi cavalli", "彼の馬")) : eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), T("G\u00e9rer mon \u00e9curie", "Manage stable", "Gestionar", "Gestisci", "\u7ba1\u7406"), function () { setEcran("guilde"); }))),
+      /* 03/09 — LE CHOIX D ECURIE. N apparait que si le cavalier a DEUX ecuries
+         (meme condition que la question posee a la creation d un cheval le 02/09) :
+         avec une seule, la rangee n aurait rien a trancher. */
+      (!__estVisite && mesEcuries.length > 1) ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, padding: "0 16px 10px" } },
+        mesEcuries.concat(["__toutes__"]).map(function (ecP) {
+          var onEc = (String(ecChoisie) === ecP);
+          var libEc = (ecP === "__toutes__") ? T("Toutes", "All", "Todas", "Tutte", "\u3059\u3079\u3066", "Alle") : ecP;
+          return h("div", { key: "ecp" + ecP, role: "button", onClick: function () { setEcurieSel(ecP); },
+            style: { padding: "6px 13px", borderRadius: 999, cursor: "pointer", maxWidth: "100%", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              border: "1px solid " + (onEc ? "rgba(32,217,245,0.7)" : "rgba(255,255,255,0.14)"),
+              background: onEc ? "rgba(32,217,245,0.12)" : "rgba(255,255,255,0.03)",
+              color: onEc ? "#7FEAF2" : "rgba(237,242,245,0.7)",
+              fontSize: 11.5, fontWeight: 700, fontFamily: M } }, libEc);
+        })) : null,
       h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "2px 16px 4px" } }, (function () {
         var source = __estVisite ? chevauxVisite : chevaux; var slots = (__estVisite || premium) ? source.slice() : source.slice(0, 6); if (__estVisite && !slots.length) return h("div", { style: { gridColumn: "1 / -1", padding: "6px 4px 2px", color: "rgba(237,242,245,0.5)", fontSize: 12.5 } }, T("Aucun cheval pour le moment.", "No horses yet.", "Ningún caballo por ahora.", "Nessun cavallo per ora.", "まだ馬がいません。"));
         var cartes = slots.map(function (x, i) {
@@ -28921,8 +28982,25 @@ function FicheEvenementClub(props) {
   var h = React.createElement;
   var ctx = useApp(); var tr = ctx.tr;
   function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
-  var ev = props.ev;
+  /* 03/09 (Blandine : « quand on met un evenement a venir dans l agenda on peut
+     pas l editer ») — LA FICHE DEVIENT MODIFIABLE. Jusqu ici un rendez-vous ne
+     pouvait qu etre cree ou supprime : une faute de frappe, un lieu oublie ou
+     une affiche a ajouter obligeaient a tout refaire. Sa capture montrait une
+     fiche vide (« Cso ») : la fiche n affiche que ce qui est rempli, et rien ne
+     permettait de la remplir apres coup.
+     ⚠️ Ces hooks restent AU-DESSUS du `if (!ev)` : un hook ne se met jamais
+     apres une sortie conditionnelle (lecon du 30/08). */
+  var _maj = React.useState(null); var maj = _maj[0], setMaj = _maj[1];
+  var _ed = React.useState(false); var edite = _ed[0], setEdite = _ed[1];
+  var _fo = React.useState(null); var fo = _fo[0], setFo = _fo[1];
+  var _en = React.useState(false); var envoiF = _en[0], setEnvoiF = _en[1];
+  var _erF = React.useState(""); var errF = _erF[0], setErrF = _erF[1];
+  var _upF = React.useState(false); var upF = _upF[0], setUpF = _upF[1];
   var onClose = props.onClose;
+  var evBase = props.ev;
+  React.useEffect(function () { setMaj(null); setEdite(false); setErrF(""); }, [(evBase && evBase.id) || ""]);
+  var ev = maj || evBase;
+  var peutModifier = !!props.peutModifier;
   if (!ev) return null;
   var META = {
     stage: { emoji: "\uD83C\uDF93", label: T("Stage", "Clinic", "Cursillo", "Stage", "\u8B1B\u7FD2"), couleur: "#20D9F5", degrade: "linear-gradient(160deg,#0d2c33,#070a0d)" },
@@ -28931,16 +29009,133 @@ function FicheEvenementClub(props) {
   };
   var meta = META[ev.type] || META.stage;
   var dateAff = ""; try { dateAff = new Date(ev.date_jour + "T00:00:00").toLocaleDateString((ctx.langue || "fr"), { weekday: "long", day: "numeric", month: "long" }); } catch (e) { dateAff = ev.date_jour || ""; }
+  var M = "'Montserrat',sans-serif";
+
+  function ouvrirEdition() {
+    setFo({
+      type: ev.type || "stage", titre: ev.titre || "", date_jour: ev.date_jour || "",
+      heure: ev.heure || "", lieu: ev.lieu || "", description: ev.description || "", image_url: ev.image_url || ""
+    });
+    setErrF(""); setEdite(true);
+  }
+  function poser(k, v) { setFo(function (f) { return Object.assign({}, f || {}, (function () { var o = {}; o[k] = v; return o; })()); }); }
+  function choisirAffiche(e) {
+    var fichier = e && e.target && e.target.files && e.target.files[0];
+    if (!fichier) return;
+    setUpF(true); setErrF("");
+    try {
+      envoyerPhoto(fichier).then(function (res) {
+        setUpF(false);
+        if (res && res.url) poser("image_url", res.url);
+        /* ⚠️ un envoi qui echoue le DIT, et le message reste a l ecran */
+        else setErrF(T("L\u2019affiche n\u2019a pas pu \u00eatre envoy\u00e9e.", "The poster could not be uploaded.", "No se pudo enviar el cartel.", "Impossibile inviare la locandina.", "\u30dd\u30b9\u30bf\u30fc\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Das Poster konnte nicht gesendet werden."));
+      }).catch(function (eU) { setUpF(false); setErrF(String((eU && eU.message) || eU)); });
+    } catch (eU2) { setUpF(false); setErrF(String(eU2)); }
+  }
+  function enregistrerFiche() {
+    if (envoiF || !fo) return;
+    if (!String(fo.titre || "").trim()) { setErrF(T("Il faut un titre.", "A title is required.", "Hace falta un t\u00edtulo.", "Serve un titolo.", "\u30bf\u30a4\u30c8\u30eb\u304c\u5fc5\u8981\u3067\u3059\u3002", "Ein Titel ist erforderlich.")); return; }
+    if (!String(fo.date_jour || "").trim()) { setErrF(T("Il faut une date.", "A date is required.", "Hace falta una fecha.", "Serve una data.", "\u65e5\u4ed8\u304c\u5fc5\u8981\u3067\u3059\u3002", "Ein Datum ist erforderlich.")); return; }
+    setEnvoiF(true); setErrF("");
+    try {
+      modifierAgendaClub(ev.id, {
+        type: fo.type, titre: String(fo.titre).trim(), date_jour: fo.date_jour,
+        heure: String(fo.heure || "").trim(), lieu: String(fo.lieu || "").trim(),
+        description: String(fo.description || "").trim(), image_url: fo.image_url || ""
+      }).then(function (r) {
+        setEnvoiF(false);
+        if (r && r.error) { setErrF(String((r.error && r.error.message) || r.error)); return; }
+        var ligne = (r && r.data) || null;
+        setMaj(ligne || Object.assign({}, ev, fo));
+        setEdite(false);
+        try { if (props.onModifie) props.onModifie(ligne); } catch (eN) { }
+      }).catch(function (eE) { setEnvoiF(false); setErrF(String((eE && eE.message) || eE)); });
+    } catch (eE2) { setEnvoiF(false); setErrF(String(eE2)); }
+  }
+
+  function ligneChamp(label, val, on, ph, type) {
+    return h("label", { style: { display: "block", marginBottom: 13 } },
+      h("span", { style: { display: "block", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A929C", fontFamily: M, marginBottom: 6 } }, label),
+      h("input", {
+        value: val, type: type || "text", onChange: function (e) { on(e.target.value); }, placeholder: ph || "",
+        style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", color: "#F4F7FA", fontSize: 16, fontFamily: M, outline: "none" }
+      }));
+  }
+  function zoneChamp(label, val, on, ph) {
+    return h("label", { style: { display: "block", marginBottom: 13 } },
+      h("span", { style: { display: "block", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A929C", fontFamily: M, marginBottom: 6 } }, label),
+      h("textarea", {
+        value: val, rows: 6, onChange: function (e) { on(e.target.value); }, placeholder: ph || "",
+        style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", color: "#F4F7FA", fontSize: 16, lineHeight: 1.6, fontFamily: M, outline: "none", resize: "vertical" }
+      }));
+  }
+
+  var panneauEdition = (edite && fo) ? h("div", { style: { padding: "22px 22px 40px" } },
+    h("div", { style: { fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A929C", fontFamily: M, marginBottom: 7 } },
+      T("Type", "Type", "Tipo", "Tipo", "\u7a2e\u985e", "Art")),
+    h("div", { style: { display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 15 } },
+      ["stage", "concours", "sortie"].map(function (tp) {
+        var onT = (String(fo.type) === tp);
+        var mT = META[tp] || META.stage;
+        return h("div", { key: "tp" + tp, role: "button", onClick: function () { poser("type", tp); },
+          style: { padding: "7px 13px", borderRadius: 999, cursor: "pointer", fontSize: 11.5, fontWeight: 700, fontFamily: M,
+            border: "1px solid " + (onT ? mT.couleur + "aa" : "rgba(255,255,255,0.14)"),
+            background: onT ? "rgba(32,217,245,0.10)" : "rgba(255,255,255,0.03)",
+            color: onT ? mT.couleur : "rgba(237,242,245,0.7)" } }, mT.emoji + " " + mT.label);
+      })),
+    ligneChamp(T("Titre", "Title", "T\u00edtulo", "Titolo", "\u30bf\u30a4\u30c8\u30eb", "Titel"), fo.titre, function (v) { poser("titre", v); }, ""),
+    ligneChamp(T("Date", "Date", "Fecha", "Data", "\u65e5\u4ed8", "Datum"), fo.date_jour, function (v) { poser("date_jour", v); }, "", "date"),
+    ligneChamp(T("Heure", "Time", "Hora", "Ora", "\u6642\u9593", "Uhrzeit"), fo.heure, function (v) { poser("heure", v); }, "9h00"),
+    ligneChamp(T("Lieu", "Place", "Lugar", "Luogo", "\u5834\u6240", "Ort"), fo.lieu, function (v) { poser("lieu", v); }, T("O\u00f9 \u00e7a se passe", "Where it happens", "D\u00f3nde ocurre", "Dove si svolge", "\u958b\u50ac\u5834\u6240", "Wo es stattfindet")),
+    zoneChamp(T("Ce qu\u2019il faut savoir", "What to know", "Lo que hay que saber", "Cosa sapere", "\u8a73\u7d30", "Was man wissen muss"), fo.description, function (v) { poser("description", v); }, T("Le programme, ce qu\u2019il faut apporter, les horaires, le tarif\u2026", "The programme, what to bring, times, price\u2026", "El programa, qu\u00e9 llevar, horarios, precio\u2026", "Il programma, cosa portare, orari, prezzo\u2026", "\u30d7\u30ed\u30b0\u30e9\u30e0\u3001\u6301\u3061\u7269\u3001\u6642\u9593\u3001\u6599\u91d1\u2026", "Programm, was mitzubringen ist, Zeiten, Preis\u2026")),
+    h("div", { style: { marginBottom: 15 } },
+      h("span", { style: { display: "block", fontSize: 10, letterSpacing: "0.14em", textTransform: "uppercase", color: "#8A929C", fontFamily: M, marginBottom: 6 } },
+        T("Affiche ou photo", "Poster or photo", "Cartel o foto", "Locandina o foto", "\u30dd\u30b9\u30bf\u30fc\u30fb\u5199\u771f", "Poster oder Foto")),
+      fo.image_url ? h("img", { src: fo.image_url, alt: "", style: { display: "block", width: "100%", height: "auto", borderRadius: 14, border: "1px solid rgba(255,255,255,0.12)", marginBottom: 9 } }) : null,
+      h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, alignItems: "center" } },
+        h("label", { role: "button", style: { display: "inline-flex", alignItems: "center", gap: 7, minHeight: 40, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(32,217,245,0.35)", background: "rgba(32,217,245,0.08)", color: "#7FEAF2", fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer" } },
+          h("input", { type: "file", accept: "image/*", onChange: choisirAffiche, style: { display: "none" } }),
+          upF ? T("Envoi\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026", "Wird gesendet\u2026")
+              : (fo.image_url ? T("Changer l\u2019affiche", "Change poster", "Cambiar cartel", "Cambia locandina", "\u5dee\u3057\u66ff\u3048", "Poster \u00e4ndern")
+                              : T("Ajouter une affiche", "Add a poster", "A\u00f1adir un cartel", "Aggiungi locandina", "\u30dd\u30b9\u30bf\u30fc\u3092\u8ffd\u52a0", "Poster hinzuf\u00fcgen"))),
+        fo.image_url ? h("div", { role: "button", onClick: function () { poser("image_url", ""); }, style: { display: "inline-flex", alignItems: "center", minHeight: 40, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", color: "rgba(237,242,245,0.6)", fontSize: 12, fontFamily: M, cursor: "pointer" } },
+          T("Retirer", "Remove", "Quitar", "Rimuovi", "\u524a\u9664", "Entfernen")) : null)),
+    /* ⚠️ le message d erreur RESTE affiche jusqu a la prochaine action : un bip
+       de trois secondes n est jamais lu au bon moment (lecon du 27/08). */
+    errF ? h("div", { style: { margin: "0 0 14px", padding: "11px 13px", borderRadius: 12, background: "rgba(240,92,116,0.10)", border: "1px solid rgba(240,92,116,0.45)", color: "#F2A0B0", fontSize: 12.5, lineHeight: 1.55, fontFamily: M } }, errF) : null,
+    h("div", { style: { display: "flex", gap: 9 } },
+      h("button", { onClick: enregistrerFiche, disabled: envoiF || upF,
+        style: { flex: 1, minHeight: 46, borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: envoiF ? "rgba(32,217,245,0.12)" : "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", color: "#E4F3F7", fontSize: 13.5, fontWeight: 800, fontFamily: M, cursor: "pointer" } },
+        envoiF ? T("Enregistrement\u2026", "Saving\u2026", "Guardando\u2026", "Salvataggio\u2026", "\u4fdd\u5b58\u4e2d\u2026", "Wird gespeichert\u2026")
+               : T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern")),
+      h("button", { onClick: function () { setEdite(false); setErrF(""); },
+        style: { minHeight: 46, padding: "0 18px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "rgba(237,242,245,0.6)", fontSize: 13, fontFamily: M, cursor: "pointer" } },
+        T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")))) : null;
+
+  /* la fiche nue ne montre plus un trou noir : elle dit ce qui manque */
+  var ficheNue = !ev.image_url && !ev.description && !ev.lieu;
+  var invitation = (!edite && ficheNue) ? h("div", { style: { padding: "30px 22px 40px", textAlign: "center" } },
+    h("div", { style: { fontSize: 13.5, lineHeight: 1.6, color: "rgba(237,242,245,0.5)", fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic" } },
+      peutModifier
+        ? T("Cette fiche est encore vide. Ajoute le lieu, le programme, une affiche \u2014 les cavali\u00e8res verront tout \u00e7a.", "This page is still empty. Add the place, the programme, a poster \u2014 the riders will see it all.", "Esta ficha est\u00e1 vac\u00eda. A\u00f1ade el lugar, el programa, un cartel \u2014 los jinetes lo ver\u00e1n.", "Questa scheda \u00e8 ancora vuota. Aggiungi il luogo, il programma, una locandina.", "\u3053\u306e\u30da\u30fc\u30b8\u306f\u307e\u3060\u7a7a\u3067\u3059\u3002\u5834\u6240\u3084\u30d7\u30ed\u30b0\u30e9\u30e0\u3092\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Diese Seite ist noch leer. F\u00fcge Ort, Programm und ein Poster hinzu.")
+        : T("Rien de plus n\u2019a encore \u00e9t\u00e9 pr\u00e9cis\u00e9 pour ce rendez-vous.", "Nothing more has been added for this event yet.", "A\u00fan no se ha a\u00f1adido nada m\u00e1s.", "Non \u00e8 stato aggiunto altro per ora.", "\u3053\u306e\u4e88\u5b9a\u306e\u8a73\u7d30\u306f\u307e\u3060\u3042\u308a\u307e\u305b\u3093\u3002", "Zu diesem Termin gibt es noch keine weiteren Angaben.")),
+    peutModifier ? h("div", { role: "button", onClick: ouvrirEdition, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", marginTop: 16, borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", color: "#E4F3F7", fontSize: 13, fontWeight: 800, fontFamily: M, cursor: "pointer" } },
+      T("Compl\u00e9ter la fiche", "Complete this page", "Completar la ficha", "Completa la scheda", "\u30da\u30fc\u30b8\u3092\u57cb\u3081\u308b", "Seite vervollst\u00e4ndigen")) : null) : null;
+
   return h("div", { style: { position: "fixed", inset: 0, zIndex: 9600, background: "#060709", display: "flex", flexDirection: "column", overflowY: "auto" } },
     h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 40px) 22px 26px", background: meta.degrade, borderBottom: "1px solid rgba(255,255,255,0.08)" } },
       h("button", { onClick: onClose, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 18, width: 34, height: 34, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", color: "#EDF2F5", fontSize: 15, cursor: "pointer" } }, "\u2715"),
-      h("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, border: "1px solid " + meta.couleur + "88", background: "rgba(6,8,10,0.5)", color: meta.couleur, fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: "'Montserrat',sans-serif" } }, meta.emoji + " " + meta.label),
+      (peutModifier && !edite) ? h("button", { onClick: ouvrirEdition, style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 60, minHeight: 34, padding: "0 14px", borderRadius: 999, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.18)", color: "#EDF2F5", fontSize: 12, fontWeight: 700, fontFamily: M, cursor: "pointer" } },
+        T("Modifier", "Edit", "Editar", "Modifica", "\u7de8\u96c6", "Bearbeiten")) : null,
+      h("span", { style: { display: "inline-flex", alignItems: "center", gap: 6, padding: "6px 14px", borderRadius: 999, border: "1px solid " + meta.couleur + "88", background: "rgba(6,8,10,0.5)", color: meta.couleur, fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", fontFamily: M } }, meta.emoji + " " + meta.label),
       h("h1", { style: { margin: "16px 0 6px", fontFamily: "'Cinzel',serif", fontSize: 26, fontWeight: 600, color: "#F4F7FA", lineHeight: 1.2 } }, ev.titre),
-      h("div", { style: { fontSize: 13.5, color: "rgba(244,247,250,0.85)", fontFamily: "'Montserrat',sans-serif", textTransform: "capitalize" } }, dateAff + (ev.heure ? " \u00b7 " + ev.heure : "")),
-      ev.lieu ? h("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(244,247,250,0.7)", fontFamily: "'Montserrat',sans-serif", display: "flex", alignItems: "center", gap: 6 } },
+      h("div", { style: { fontSize: 13.5, color: "rgba(244,247,250,0.85)", fontFamily: M, textTransform: "capitalize" } }, dateAff + (ev.heure ? " \u00b7 " + ev.heure : "")),
+      ev.lieu ? h("div", { style: { marginTop: 6, fontSize: 13, color: "rgba(244,247,250,0.7)", fontFamily: M, display: "flex", alignItems: "center", gap: 6 } },
         h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "rgba(244,247,250,0.7)", strokeWidth: 1.8 }, h("path", { d: "M12 21s-7-5.7-7-11a7 7 0 0 1 14 0c0 5.3-7 11-7 11z" }), h("circle", { cx: 12, cy: 10, r: 2.5 })), ev.lieu) : null),
-    ev.image_url ? h("div", { style: { padding: "20px 20px 0" } }, h(PhotoZoomable, { src: ev.image_url, alt: ev.titre, style: { display: "block", width: "100%", height: "auto", borderRadius: 18, border: "1px solid rgba(255,255,255,0.1)" } })) : null,
-    ev.description ? h("div", { style: { padding: "22px 22px 40px", fontSize: 14.5, lineHeight: 1.7, color: "rgba(244,247,250,0.88)", fontFamily: "'Montserrat',sans-serif", whiteSpace: "pre-wrap" } }, ev.description) : h("div", { style: { padding: "22px 22px 40px" } }));
+    (!edite && ev.image_url) ? h("div", { style: { padding: "20px 20px 0" } }, h(PhotoZoomable, { src: ev.image_url, alt: ev.titre, style: { display: "block", width: "100%", height: "auto", borderRadius: 18, border: "1px solid rgba(255,255,255,0.1)" } })) : null,
+    (!edite && ev.description) ? h("div", { style: { padding: "22px 22px 40px", fontSize: 14.5, lineHeight: 1.7, color: "rgba(244,247,250,0.88)", fontFamily: M, whiteSpace: "pre-wrap" } }, ev.description) : null,
+    invitation,
+    panneauEdition);
 }
 
 /* ---------- COACHMARK (tuto contextuel léger, sans bouton) ---------- */
@@ -29326,7 +29521,13 @@ function AgendaClubHype(props) {
         } },
         T("Voir tout l'agenda", "See the whole agenda", "Ver toda la agenda", "Vedi tutta l'agenda", "\u3059\u3079\u3066\u898b\u308b", "Ganzen Kalender") + " \u2192") : null) : null,
     modalEl),
-   fiche ? h(FicheEvenementClub, { ev: fiche, onClose: function () { setFiche(null); } }) : null);
+   fiche ? h(FicheEvenementClub, {
+     ev: fiche, onClose: function () { setFiche(null); },
+     /* 03/09 : meme droit que creer et supprimer — la proprietaire du club.
+        C est aussi ce que la base autorise ; elargir demanderait un autre SQL. */
+     peutModifier: !!estProprio,
+     onModifie: function (ligne) { if (ligne) setFiche(ligne); recharger(); }
+   }) : null);
 }
 
 /* ===== 02/08 : PAGE MON CLUB — GAMIFICATION MASQUEE (demande Blandine) =====
@@ -36094,11 +36295,11 @@ function GrilleSouvenirs(props) {
     var entree = nouveaux[u] ? "souvPose 1.2s var(--cm-ease-out) both"
       : premierePose ? ("souvPose .9s var(--cm-ease-out) " + (0.06 + i9 * 0.06).toFixed(2) + "s both")
       : "none";
-    cellules.push(h("div", { key: "p" + i9, className: "souvCell", style: { aspectRatio: "1 / 1", animation: entree } },
-      h("div", { className: "souvFlot", style: { "--fx": fx + "px", "--fy": fy + "px", animationDuration: duree + "s", animationDelay: depart + "s", border: enVedette ? "1.5px solid " + tA(0.75) + "" : "1px solid " + tA(0.38) + "", boxShadow: enVedette ? "0 0 18px " + tA(0.25) + ", inset 0 0 0 1px rgba(255,255,255,0.06)" : "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 10px " + tA(0.08) + "", cursor: "pointer" } },
+    cellules.push(h("div", { key: "p" + i9, className: "souvCell", style: { aspectRatio: "1 / 1", animation: entree, position: "relative", overflow: "hidden", borderRadius: 16, minWidth: 0, background: "#0A0D11" } },
+      h("div", { className: "souvFlot", style: { position: "relative", width: "100%", height: "100%", overflow: "hidden", borderRadius: 16, "--fx": fx + "px", "--fy": fy + "px", animationDuration: duree + "s", animationDelay: depart + "s", border: enVedette ? "1.5px solid " + tA(0.75) + "" : "1px solid " + tA(0.38) + "", boxShadow: enVedette ? "0 0 18px " + tA(0.25) + ", inset 0 0 0 1px rgba(255,255,255,0.06)" : "inset 0 0 0 1px rgba(255,255,255,0.06), 0 0 10px " + tA(0.08) + "", cursor: "pointer" } },
         estVid
-          ? h("video", { className: "souvImg", src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", onClick: function () { try { window.__visListe = photos.slice(); } catch (eL3) { } if (props.onOuvrir) props.onOuvrir(u); }, style: { objectFit: ajustVig, background: "#000" } })
-          : h("img", { className: "souvImg", src: u, alt: "", onLoad: auAffichage, style: { objectFit: ajustVig, background: "#0A0D11" }, onClick: function () { try { window.__visListe = photos.slice(); } catch (eL4) { } if (props.onOuvrir) props.onOuvrir(u); } }),
+          ? h("video", { className: "souvImg", src: u + "#t=0.01", muted: true, playsInline: true, preload: "metadata", onClick: function () { try { window.__visListe = photos.slice(); } catch (eL3) { } if (props.onOuvrir) props.onOuvrir(u); }, style: { width: "100%", height: "100%", display: "block", objectFit: ajustVig, background: "#000" } })
+          : h("img", { className: "souvImg", src: u, alt: "", onLoad: auAffichage, style: { width: "100%", height: "100%", display: "block", objectFit: ajustVig, background: "#0A0D11" }, onClick: function () { try { window.__visListe = photos.slice(); } catch (eL4) { } if (props.onOuvrir) props.onOuvrir(u); } }),
         estVid ? h("span", { style: { position: "absolute", left: "50%", top: "50%", transform: "translate(-50%,-50%)", width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.35)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 13, backdropFilter: "blur(5px)", pointerEvents: "none" } }, "\u25B6") : null,
         h("span", { className: "souvHaloCell", style: { animationDelay: ((i9 % 5) * 1.4) + "s" } }),
         props.onToggleVedette ? h("button", { onClick: function (e9) { if (e9 && e9.stopPropagation) e9.stopPropagation(); props.onToggleVedette(u); }, "aria-label": "Vedette", style: { position: "absolute", top: 7, right: 7, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.3)", background: enVedette ? "" + tA(0.9) + "" : "rgba(7,8,10,0.55)", color: enVedette ? "#04252a" : "#EDF2F5", fontSize: 13, backdropFilter: "blur(6px)" } }, "\u2605") : null)));
@@ -38813,9 +39014,20 @@ function EcranCheval() {
             })(),
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse")));
         })()))  : null,
+      /* 03/09 — 🟥 CE BLOC DE STYLE EST REMONTE HORS DE L ONGLET SOUVENIRS.
+         Il y vivait depuis toujours ; le 29/08 la Galerie a demenage sur
+         l onglet PHOTOS, et le style est reste derriere. Resultat sur Photos :
+         `.souvImg` sans width/height/object-fit et `.souvCell` sans
+         overflow:hidden — chaque photo s affichait a sa TAILLE NATURELLE,
+         debordait de sa case, elargissait la colonne et poussait toute la page
+         hors de l ecran (signale par Blandine, enregistrement du 03/09 : titre
+         « GALERIE » coupe a gauche, onglets du bas coupes a droite). Rendu ici,
+         il sert LES QUATRE onglets. ⚠️ Ne jamais le redescendre dans une branche.
+         Il porte aussi souvin / souvHaloCell / souvFloat / souvPose, absents de
+         la page Photos pour la meme raison. */
+      h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative;overflow:hidden;border-radius:16px;min-height:0;background:#0A0D11} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
       panneau === "souvenirs" ? h("div", null,
         encartIdentiteCh(T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "\u601d\u3044\u51fa", "Erinnerungen")),
-        h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative;overflow:hidden;border-radius:16px;min-height:0;background:#0A0D11} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
         h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
         h("i", { className: "souvLuciole", style: { left: "66%", top: "50%", animationDelay: "9s" } }),
         h("i", { className: "souvLuciole", style: { left: "40%", top: "72%", animationDelay: "17s" } }),
