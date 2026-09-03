@@ -1682,6 +1682,45 @@ async function albumsIdentifiesPour(type, cibleId, statut) {
 }
 
 /* --- Écurie : communauté idéale (invitations de cavaliers) -- */
+/* ============================================================================
+   03/09 — LA FONCTION UNIQUE : « CE CHEVAL APPARTIENT-IL A CE CLUB ? »
+   ----------------------------------------------------------------------------
+   Dans la nuit du 02 au 03/09, CINQ ecrans repondaient a cette question par CINQ
+   chemins differents, et il a fallu CINQ correctifs successifs pour la meme
+   question — d'ou le « quel enfer, tout est melange » de Blandine. Les cinq
+   endroits etaient : chevauxDeLEcurie (qui EXCLUT le compte courant, ce qui m'a
+   fait corriger la mauvaise liste), mesChevauxClub (ses chevaux a elle), le rail
+   des resultats du club, la grille de la page club, et EcranEcurieHype.
+   Desormais UN SEUL endroit decide. Le jour ou un cheval change d'ecurie, il
+   bouge partout d'un coup, et il n'y a plus qu'un endroit a verifier.
+
+   LA REGLE, telle que Blandine l'a tranchee :
+   - un cheval SANS club apparait PARTOUT (« il n'y a pas de raison qu'il
+     n'apparaisse pas ») ;
+   - un cheval rattache a un AUTRE club est ecarte ;
+   - la comparaison passe par noyauEcurie, tolerante aux variantes de nom
+     (« Ecurie Feinn » / « feinn » / « Ecuries Feinn »).
+   ⚠️ NE PLUS JAMAIS reecrire cette regle ailleurs : appeler ces fonctions.
+   ============================================================================ */
+function hypeMemeClub(clubCheval, clubPage) {
+  try {
+    var cCh = String(clubCheval == null ? "" : clubCheval).trim();
+    if (!cCh) return true;                       /* sans club : partout */
+    var cPa = String(clubPage == null ? "" : clubPage).trim();
+    if (!cPa) return true;                       /* page sans club : on ne filtre pas */
+    var nCh = String((typeof noyauEcurie === "function" ? (noyauEcurie(cCh) || cCh) : cCh)).toLowerCase();
+    var nPa = String((typeof noyauEcurie === "function" ? (noyauEcurie(cPa) || cPa) : cPa)).toLowerCase();
+    if (!nCh || !nPa) return true;
+    return nCh.indexOf(nPa) >= 0 || nPa.indexOf(nCh) >= 0;
+  } catch (eMc) { return true; }                 /* en cas de doute, on n'efface rien */
+}
+function hypeChevauxDuClub(liste, clubPage) {
+  try {
+    if (!liste || !liste.length) return liste || [];
+    return liste.filter(function (ch) { return hypeMemeClub(ch && ch.club, clubPage); });
+  } catch (eCd) { return liste || []; }
+}
+
 function noyauEcurie(nom) {
   try {
     var s = String(nom || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -1801,15 +1840,7 @@ async function chevauxDeLEcurie(nomEcurie, exclureUserId) {
        ⚠️ Regle deja tranchee par Blandine : un cheval SANS club apparait PARTOUT
        (« il n y a pas de raison qu il n apparaisse pas »). Seul un cheval explicitement
        rattache a un AUTRE club sort de la grille. */
-    var noyauE = (typeof noyauEcurie === "function") ? (noyauEcurie(nomE) || nomE) : nomE;
-    noyauE = String(noyauE).toLowerCase();
-    var gardees = (rc.data || []).filter(function (ch) {
-      var clubCh = String((ch && ch.club) || "").trim();
-      if (!clubCh) return true;                       /* sans club : partout */
-      var noyauC = (typeof noyauEcurie === "function") ? (noyauEcurie(clubCh) || clubCh) : clubCh;
-      noyauC = String(noyauC).toLowerCase();
-      return noyauC.indexOf(noyauE) >= 0 || noyauE.indexOf(noyauC) >= 0;
-    });
+    var gardees = hypeChevauxDuClub(rc.data || [], nomE); /* 03/09 : fonction unique */
     return { data: gardees.map(function (ch) { return Object.assign({}, ch, { __prop: parId[ch.user_id] || null }); }), error: rc.error || null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
@@ -29959,15 +29990,10 @@ function EcranGuilde() {
          filtre sans avoir renseigne toute la table.
          ⚠️ COMPARAISON PAR NOYAU, comme la recherche des membres : « Feinn »,
          « Ecurie Feinn » et « Écurie Feinn » designent le meme club. */
-      try {
-        var nyClub = (typeof noyauEcurie === "function") ? noyauEcurie(monClub) : String(monClub || "").toLowerCase().trim();
-        if (cv && cv.data) cv = { data: cv.data.filter(function (cc) {
-          var cl = cc && cc.club ? String(cc.club).trim() : "";
-          if (!cl) return true;
-          var ny = (typeof noyauEcurie === "function") ? noyauEcurie(cl) : cl.toLowerCase();
-          return ny === nyClub;
-        }), error: cv.error };
-      } catch (eFc) { } if (cv && cv.data && cv.data.length) { /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxClub(cv.data); try { var cvTri = await classerChevauxParXp(cv.data); if (cvTri && cvTri.length) setChevauxClub(cvTri); } catch (eXg) { } /* 28/08 : plafond 24 -> 500 (demande Blandine, "tous les chevaux de l'ecurie") -- l'ecurie Feinn a deja 27 chevaux, 3 etaient invisibles */
+      /* 03/09 : fonction unique. ⚠️ Cette version-ci comparait les noyaux par EGALITE
+         STRICTE alors que les quatre autres ecrans toleraient l'inclusion — deux
+         regles differentes pour la meme question. hypeMemeClub tranche pour tous. */
+      try { if (cv && cv.data) cv = { data: hypeChevauxDuClub(cv.data, monClub), error: cv.error }; } catch (eFc) { } if (cv && cv.data && cv.data.length) { /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxClub(cv.data); try { var cvTri = await classerChevauxParXp(cv.data); if (cvTri && cvTri.length) setChevauxClub(cvTri); } catch (eXg) { } /* 28/08 : plafond 24 -> 500 (demande Blandine, "tous les chevaux de l'ecurie") -- l'ecurie Feinn a deja 27 chevaux, 3 etaient invisibles */
         try { /* etape 2 : proprietaire (1) + liens — meme table que la page commune */
           var idsCv = cv.data.map(function (c) { return c.id; });
           var rLi = await supa.from("chevaux_liens").select("cheval_id").in("cheval_id", idsCv);
@@ -30030,16 +30056,7 @@ function EcranGuilde() {
            `cv` en SUPPOSANT qu'il etait deja filtre par club. On ne suppose plus : la
            regle est appliquee ICI, explicitement, cheval par cheval. */
         var chevauxDuClubR = {};
-        try {
-          var noyauClubR = String((typeof noyauEcurie === "function" ? (noyauEcurie(monClub) || monClub) : monClub) || "").toLowerCase();
-          ((cv && cv.data) || []).forEach(function (cR) {
-            if (!cR || !cR.id) return;
-            var clubR = String(cR.club || "").trim();
-            if (!clubR) { chevauxDuClubR[cR.id] = 1; return; }   /* sans club : partout */
-            var nyR = String((typeof noyauEcurie === "function" ? (noyauEcurie(clubR) || clubR) : clubR)).toLowerCase();
-            if (!noyauClubR || nyR.indexOf(noyauClubR) >= 0 || noyauClubR.indexOf(nyR) >= 0) chevauxDuClubR[cR.id] = 1;
-          });
-        } catch (eCr) { }
+        try { hypeChevauxDuClub((cv && cv.data) || [], monClub).forEach(function (cR) { if (cR && cR.id) chevauxDuClubR[cR.id] = 1; }); } catch (eCr) { }
         var filtreClubR = function (rr) {
           if (!rr || !rr.cheval_id) return true;
           return !!chevauxDuClubR[rr.cheval_id];
@@ -30237,15 +30254,8 @@ function EcranGuilde() {
            volontairement le compte courant : il ne pouvait donc rien changer ici.)
            ⚠️ Regle de Blandine respectee : un cheval SANS club apparait PARTOUT ; seul un
            cheval explicitement rattache a un AUTRE club sort de la grille. */
-        try {
-          var noyauPage = String((typeof noyauEcurie === "function" ? (noyauEcurie(monClub) || monClub) : monClub) || "").toLowerCase();
-          if (noyauPage) tousMc = tousMc.filter(function (cM) {
-            var clubM = String((cM && cM.club) || "").trim();
-            if (!clubM) return true;
-            var noyauM = String((typeof noyauEcurie === "function" ? (noyauEcurie(clubM) || clubM) : clubM)).toLowerCase();
-            return noyauM.indexOf(noyauPage) >= 0 || noyauPage.indexOf(noyauM) >= 0;
-          });
-        } catch (eFc) { } /* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setMesChevauxClub(tousMc); try { var triMc = await classerChevauxParXp(tousMc); if (triMc && triMc.length) tousMc = triMc; } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
+        tousMc = hypeChevauxDuClub(tousMc, monClub); /* 03/09 : fonction unique */
+/* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setMesChevauxClub(tousMc); try { var triMc = await classerChevauxParXp(tousMc); if (triMc && triMc.length) tousMc = triMc; } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
       if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
       else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
@@ -39118,15 +39128,7 @@ function EcranEcurieHype() {
                club -> ecarte. Comparaison par noyau, comme la recherche des membres.
                ⚠️ A UNIFIER : cette regle est desormais ecrite en CINQ endroits. Une seule
                fonction « chevaux de ce club » doit les remplacer (chantier au SUIVI). */
-            try {
-              var nyClubEH = String((typeof noyauEcurie === "function" ? (noyauEcurie(clubCtxEH) || clubCtxEH) : clubCtxEH) || "").toLowerCase();
-              if (nyClubEH && rc && rc.data) rc = { data: rc.data.filter(function (chEH) {
-                var clEH = String((chEH && chEH.club) || "").trim();
-                if (!clEH) return true;
-                var nyEH = String((typeof noyauEcurie === "function" ? (noyauEcurie(clEH) || clEH) : clEH)).toLowerCase();
-                return nyEH.indexOf(nyClubEH) >= 0 || nyClubEH.indexOf(nyEH) >= 0;
-              }), error: rc.error };
-            } catch (eFEH) { }
+            try { if (rc && rc.data) rc = { data: hypeChevauxDuClub(rc.data, clubCtxEH), error: rc.error }; } catch (eFEH) { } /* 03/09 : fonction unique */
           } else {
             /* 29/08 (demande Blandine : « il en manque plein ») -- sans contexte club,
                cet ecran chargeait la galerie GLOBALE : uniquement les chevaux ayant
