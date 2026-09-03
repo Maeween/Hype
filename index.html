@@ -30878,12 +30878,14 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
     if (!n || busy) return;
     setBusy(true); setErr(null);
     try {
-      /* 03/09 : ON CHERCHE AVANT DE CREER. C'est LE point d'entree principal des
-         doublons — Crumble/Cruibhin, les deux Cooltax, les deux Vallieres sont
-         tous nes ici, faute de la moindre comparaison de nom. */
-      var suiteC = await hypeProposerRattachement(n, listeEc);
-      if (suiteC === "annuler") { setBusy(false); return; }
-      if (suiteC === "rattache") { setBusy(false); onClose && onClose(); return; }
+      /* 03/09 (URGENCE) : mon anti-doublon est RETIRE d'ici. Il a coincide avec un
+         plantage a l'ouverture de cette modale (« Un caillou dans le sabot »,
+         signale par Blandine), et surtout il FAISAIT DOUBLON : cette modale a
+         DEJA son propre rapprochement — `doublonEc` compare le nom saisi aux
+         chevaux de l'ecurie et propose le rattachement, avec la liste `listeEc`
+         juste en dessous. Je ne l'avais pas vu avant d'ajouter le mien.
+         ⚠️ L'anti-doublon reste actif sur l'AUTRE chemin de creation
+         (EcranGererEcurie.soumettreCheval), ou il n'existait pas. */
       if (!premium && typeof mesChevaux === "function") {
         var rq = await mesChevaux();
         if (rq && rq.data && rq.data.length >= quotaGratuit(profilM.id)) { setBusy(false); allerPremium(); return; }
