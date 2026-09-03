@@ -254,7 +254,10 @@ function EcranDatesPhotos() {
     setProgDP({ total: 0, faits: 0, exif: 0, album: 0, deja: 0, rates: 0 });
     try {
       /* 1. Rassembler les photos du cheval, avec la date de leur album en repli. */
-      var ra = await supa.from("albums_cheval").select("id, nom, photos, created_at").eq("cible", "cheval:" + cheval.id);
+      /* 03/09 : meme porte unique que partout, le prive reste chez son auteur. */
+      var ra = (typeof listerAlbumsCheval === "function")
+        ? await listerAlbumsCheval("cheval:" + cheval.id)
+        : await supa.from("albums_cheval").select("id, nom, photos, created_at").eq("cible", "cheval:" + cheval.id);
       var lot = [];
       ((ra && ra.data) || []).forEach(function (al) {
         ((al.photos) || []).forEach(function (u) {
@@ -34782,7 +34785,15 @@ function ChronologieSouvenirs(props) {
     (async function () {
       try {
         if (!chevalId || typeof supa === "undefined" || !supa) { if (actif) setChargeCh(false); return; }
-        var ra = await supa.from("albums_cheval").select("id, nom, photos, created_at").eq("cible", "cheval:" + chevalId);
+        /* 03/09 — 🟥 CETTE LECTURE CONTOURNAIT LE PRIVE. Le filtrage des albums
+           prives vit dans `listerAlbumsCheval` ; cette requete directe ne le
+           traversait pas, et la chronologie de l onglet Photos — visible par
+           TOUT LE MONDE — melangeait donc les photos des albums prives. On
+           passe par la porte unique. ⚠️ Toute lecture de `albums_cheval`
+           destinee a l affichage doit passer par `listerAlbumsCheval`. */
+        var ra = (typeof listerAlbumsCheval === "function")
+          ? await listerAlbumsCheval("cheval:" + chevalId)
+          : await supa.from("albums_cheval").select("id, nom, photos, created_at").eq("cible", "cheval:" + chevalId);
         var photos = [];
         ((ra && ra.data) || []).forEach(function (al) {
           ((al.photos) || []).forEach(function (u) {
