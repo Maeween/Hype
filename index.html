@@ -1593,6 +1593,17 @@ async function envoyerDataUrlCommePhoto(dataUrl, nom) {
     return await envoyerPhoto(fic);
   } catch (e) { return { error: String(e) }; }
 }
+async function hypeDeposerTermeRecherche(chevalId, terme) {
+  /* 03/09 : depose un terme dans la table PUBLIQUE de recherche. Elle ne porte
+     que cheval_id + terme : elle ne dit jamais QUI a pose le surnom. C'est ce
+     qui permet a une cavaliere de retrouver « Yum » sans que le surnom d'une
+     autre n'apparaisse nulle part sur les fiches. */
+  try {
+    var net = hypeNomCompare(terme);
+    if (!chevalId || !net) return { error: null };
+    return await supa.from("chevaux_recherche").insert({ cheval_id: chevalId, terme: net });
+  } catch (e) { return { error: String(e) }; }
+}
 async function enregistrerSurnomPerso(chevalId, surnom) {
   /* 03/09 : le surnom PERSONNEL. Il ne touche ni le nom officiel (cle du verrou
      d'identite FFE) ni l'alias commun : chacune le sien, sur sa page a elle. */
@@ -30867,6 +30878,12 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
     if (!n || busy) return;
     setBusy(true); setErr(null);
     try {
+      /* 03/09 : ON CHERCHE AVANT DE CREER. C'est LE point d'entree principal des
+         doublons — Crumble/Cruibhin, les deux Cooltax, les deux Vallieres sont
+         tous nes ici, faute de la moindre comparaison de nom. */
+      var suiteC = await hypeProposerRattachement(n, listeEc);
+      if (suiteC === "annuler") { setBusy(false); return; }
+      if (suiteC === "rattache") { setBusy(false); onClose && onClose(); return; }
       if (!premium && typeof mesChevaux === "function") {
         var rq = await mesChevaux();
         if (rq && rq.data && rq.data.length >= quotaGratuit(profilM.id)) { setBusy(false); allerPremium(); return; }
@@ -31192,7 +31209,121 @@ function EcranGererEcurie() {
     } catch (e) { setUser(null); }
   }
   React.useEffect(function () { charger(); }, []);
-  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; } setBusy(true); var errCh = null; /* ⚠️ LE CHOIX EST OBLIGATOIRE quand le cavalier a plusieurs ecuries : sans lui,
+/* ============================================================================
+   03/09 — ANTI-DOUBLON A LA CREATION D'UN CHEVAL
+   ----------------------------------------------------------------------------
+   La fuite jamais bouchee : `soumettreCheval` verifiait le quota et l'ecurie,
+   puis creait. AUCUNE comparaison du nom saisi. C'est de la que sont sortis
+   Crumble/Cruibhin et les deux Cooltax — quatre cavalieres qui montent Dakota
+   creaient quatre Dakota.
+   FORME VOLONTAIREMENT INOFFENSIVE : on CHERCHE et on PROPOSE. Aucune creation
+   n'est jamais refusee, le « creer quand meme » reste toujours la. Le pire cas
+   est une suggestion inutile qu'on ignore.
+   ⚠️ La recherche porte sur le NOM et l'ALIAS FFE, tous deux publics. Elle ne
+   peut PAS porter sur les surnoms personnels : la regle de lecture de
+   `chevaux_histoires` ne laisse chacune voir que sa propre ligne — c'est voulu.
+   Les surnoms entreront dans la recherche le jour ou une table publique de
+   rapprochement existera.
+   ⚠️ Tolerant au bruit : accents, casse et ponctuation neutralises, et distance
+   d'edition <= 2 sur les noms d'au moins 6 lettres — meme regle que le verrou
+   d'identite de l'import FFE, pour attraper « CRUIBHI N » face a « Cruibhin ». */
+function hypeNomCompare(t) {
+  return String(t || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+function hypeDistance(a, b) {
+  a = String(a || ""); b = String(b || "");
+  if (a === b) return 0;
+  if (!a.length || !b.length) return Math.max(a.length, b.length);
+  var prec = [], cour = [], i, j;
+  for (j = 0; j <= b.length; j++) prec[j] = j;
+  for (i = 1; i <= a.length; i++) {
+    cour[0] = i;
+    for (j = 1; j <= b.length; j++) {
+      cour[j] = Math.min(prec[j] + 1, cour[j - 1] + 1, prec[j - 1] + (a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1));
+    }
+    for (j = 0; j <= b.length; j++) prec[j] = cour[j];
+  }
+  return prec[b.length];
+}
+function hypeMemeNomCheval(saisi, existant) {
+  var a = hypeNomCompare(saisi), b = hypeNomCompare(existant);
+  if (!a || !b) return false;
+  if (a === b) return true;
+  if (a.length >= 6 && b.length >= 6 && hypeDistance(a, b) <= 2) return true;
+  return false;
+}
+async function hypeChevauxHomonymes(nomSaisi) {
+  /* Renvoie les chevaux existants qui portent ce nom (ou cet alias), tous
+     comptes confondus. Lecture seule, aucune ecriture. */
+  try {
+    var net = String(nomSaisi || "").trim();
+    if (net.length < 2) return [];
+    var debut = net.slice(0, 3);
+    var r = await supa.from("chevaux")
+      .select("id, nom, alias, photo_url, race, club, user_id")
+      .is("supprime_le", null)
+      .or("nom.ilike.%" + debut + "%,alias.ilike.%" + debut + "%")
+      .limit(200);
+    var lignes = (r && r.data) || [];
+    var trouves = lignes.filter(function (ch) {
+      return hypeMemeNomCheval(net, ch && ch.nom) || hypeMemeNomCheval(net, ch && ch.alias);
+    });
+    /* 03/09 : on interroge AUSSI la table publique des surnoms. Elle rattrape le
+       cas ou le cheval est connu de tous sous un nom d'usage qui ne figure ni
+       dans `nom` ni dans `alias` — « Yum » pour Umea Borderie. */
+    try {
+      var cle = hypeNomCompare(net);
+      if (cle) {
+        var rT = await supa.from("chevaux_recherche").select("cheval_id").eq("terme", cle).limit(50);
+        var ids = ((rT && rT.data) || []).map(function (x) { return x && x.cheval_id; }).filter(Boolean);
+        var deja = {}; trouves.forEach(function (c) { if (c && c.id) deja[c.id] = 1; });
+        var manquants = ids.filter(function (idT) { return !deja[idT]; });
+        if (manquants.length) {
+          var rC = await supa.from("chevaux").select("id, nom, alias, photo_url, race, club, user_id").in("id", manquants).is("supprime_le", null);
+          trouves = trouves.concat(((rC && rC.data) || []));
+        }
+      }
+    } catch (eTr) { }
+    return trouves;
+  } catch (e) { return []; }
+}
+
+async function hypeProposerRattachement(nomSaisi, chevauxAMoi) {
+  /* Renvoie "rattache" (on s'est rattache, plus rien a creer), "annuler" (la
+     personne renonce) ou "creer" (on continue la creation normale).
+     ⚠️ Aucune creation n'est jamais refusee : « creer quand meme » est toujours
+     un choix, deux chevaux peuvent legitimement porter le meme nom. */
+  try {
+    var candidats = await hypeChevauxHomonymes(nomSaisi);
+    var aMoi = {}; (chevauxAMoi || []).forEach(function (cM) { if (cM && cM.id) aMoi[cM.id] = 1; });
+    candidats = candidats.filter(function (cH) { return cH && cH.id && !aMoi[cH.id]; });
+    if (!candidats.length) return "creer";
+    var ch = candidats[0];
+    var ou = ch.club ? (" chez " + ch.club) : "";
+    var autre = candidats.length > 1 ? ("\n\n(" + candidats.length + " chevaux portent ce nom.)") : "";
+    var msg = "\u00ab " + (ch.nom || nomSaisi) + " \u00bb existe d\u00e9j\u00e0 sur Hype" + ou + "."
+      + "\n\nTu peux l'ajouter \u00e0 tes chevaux au lieu d'en cr\u00e9er un deuxi\u00e8me : sa fiche, ses origines et ses r\u00e9sultats sont d\u00e9j\u00e0 l\u00e0, et tu gardes tes albums et ton histoire \u00e0 toi."
+      + autre
+      + "\n\nOK = l'ajouter \u00e0 mes chevaux\nAnnuler = cr\u00e9er quand m\u00eame une nouvelle fiche";
+    var veut = false;
+    try { veut = window.confirm(msg); } catch (eC) { veut = false; }
+    if (!veut) return "creer";
+    var rL = await lierCheval(ch.id);
+    if (rL && rL.error) {
+      try { window.alert("Le rattachement n'a pas pu se faire. Tu peux r\u00e9essayer depuis sa fiche, avec le bouton \u00ab Ajouter \u00e0 mes chevaux \u00bb."); } catch (eA) { }
+      return "annuler";
+    }
+    try { window.alert("\u00ab " + (ch.nom || nomSaisi) + " \u00bb est dans tes chevaux \u2713"); } catch (eA2) { }
+    return "rattache";
+  } catch (e) { return "creer"; }
+}
+
+  async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; }
+    /* 03/09 : ON CHERCHE AVANT DE CREER (voir hypeProposerRattachement). */
+    var suiteS = await hypeProposerRattachement(champsCh.nom, chevaux);
+    if (suiteS === "annuler") return;
+    if (suiteS === "rattache") { setBusy(false); if (typeof rafraichir === "function") { try { rafraichir(); } catch (eRf) { } } return; }
+    setBusy(true); var errCh = null; /* ⚠️ LE CHOIX EST OBLIGATOIRE quand le cavalier a plusieurs ecuries : sans lui,
        le cheval partirait sans rattachement et paraitrait dans TOUTES les
        grilles. On refuse la creation plutot que de deviner a sa place.
        ⚠️ UN SEUL CLUB = AUCUNE QUESTION, et `club` reste vide : rien ne change
@@ -38755,7 +38886,9 @@ function EcranCheval() {
               var net = String(saisi).trim();
               setSurnomPerso(net);
               enregistrerSurnomPerso(chevalDyn.dbId, net).then(function (rS) {
-                if (rS && rS.error) { setSurnomPerso(actuel); try { window.alert("Le surnom n'a pas pu être enregistré. Réessaie."); } catch (eA) { } }
+                if (rS && rS.error) { setSurnomPerso(actuel); try { window.alert("Le surnom n'a pas pu être enregistré. Réessaie."); } catch (eA) { } return; }
+                /* le surnom rejoint la recherche publique — sans son auteur */
+                if (net) hypeDeposerTermeRecherche(chevalDyn.dbId, net);
               });
             } catch (eSp) { }
           }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", color: "#EDF2F5", fontSize: 13.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
