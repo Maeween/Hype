@@ -35584,7 +35584,8 @@ function AlbumsCheval(props) {
       var dV = await dureeVideoFichier(fV);
       if (dV > HYPE_MUX_DUREE_MAX_S + 1) { videosTropLongues++; continue; }
       if (!premium) {
-        if (dejaVids === null) dejaVids = await hypeMuxNombreVideos();
+        /* 03/09 : comptage qui inclut les albums des AUTRES sur ce cheval. */
+        if (dejaVids === null) dejaVids = await hypeVideosDejaEnvoyees(props.cible || (alb && alb.cible) || null);
         if (dejaVids + videosAEnvoyer.length >= HYPE_MUX_VIDEOS_GRATUIT) { videosAuDela++; continue; }
       }
       videosAEnvoyer.push(fV);
@@ -52593,6 +52594,45 @@ async function hypeMuxNombreVideos() {
     });
     return Object.keys(vues).length;
   } catch (e) { return 0; }
+}
+
+/* 03/09 (URGENCE, signalee par Blandine : une cavaliere non abonnee a pose 7 ou
+   8 videos malgre le plafond de 2) — 🟥 LE GARDE-FOU REGARDAIT AU MAUVAIS
+   ENDROIT. `hypeMuxNombreVideos` ne compte que les albums DONT ELLE EST
+   L AUTRICE (`albums_cheval.user_id`). Or depuis le 02/09 une cavaliere
+   rattachee peut poster dans un album cree par QUELQU UN D AUTRE : ces videos
+   n etaient comptees a personne, et le plafond ne se declenchait jamais. Elle
+   n a rien contourne volontairement.
+   Le comptage porte desormais sur le MAXIMUM entre ses propres albums et les
+   videos de l album vise. ⚠️ Il n existe aucune colonne d auteur par media :
+   c est la seule mesure fiable sans changer le schema. Consequence assumee et
+   voulue : sur un album partage, les videos posees par d autres comptent aussi
+   dans son plafond. Mieux vaut un plafond un peu strict qu un plafond qui ne
+   protege rien — le plan Mux gratuit s arrete a 10 videos AU TOTAL. */
+async function hypeVideosDejaEnvoyees(cible) {
+  try {
+    if (typeof supa === "undefined" || !supa) return 0;
+    var aMoi = 0;
+    try { aMoi = await hypeMuxNombreVideos(); } catch (eM) { aMoi = 0; }
+    var surCible = 0;
+    try {
+      if (cible) {
+        var rC = await supa.from("albums_cheval").select("photos").eq("cible", cible);
+        var vues = {};
+        ((rC && rC.data) || []).forEach(function (a) {
+          ((a && a.photos) || []).forEach(function (u) {
+            if (u && typeof estUrlVideo === "function" && estUrlVideo(u)) vues[String(u)] = 1;
+          });
+        });
+        surCible = Object.keys(vues).length;
+      }
+    } catch (eC2) { }
+    return Math.max(aMoi, surCible);
+  } catch (e) {
+    /* ⚠️ en cas de doute on ne LAISSE PAS passer : un comptage rate ne doit pas
+       ouvrir le robinet. On renvoie le plafond, l invitation Hype+ s affiche. */
+    return HYPE_MUX_VIDEOS_GRATUIT;
+  }
 }
 
 async function hypeTesterMux() {
