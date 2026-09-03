@@ -1739,6 +1739,47 @@ function hypeChevauxDuClub(liste, clubPage) {
   } catch (eCd) { return liste || []; }
 }
 
+/* ============================================================================
+   03/09 (Blandine : « des cavaliers de l ecurie completement melanges ») —
+   LES CAVALIERES D UN CLUB, UNE SEULE FONCTION.
+   🟥 LA CAUSE, MESUREE : `motifEcurie` fabrique son motif a partir du nom
+   DEBARRASSE DE SES ACCENTS (« Societe d Equitation de Paris (SEP) » ->
+   %societe%equitation%paris%sep%) et le compare en SQL au texte BRUT, qui a
+   garde les siens. « Societe » ne vaut pas « Société » pour Postgres : la page
+   SEP ne retrouvait meme pas la cavaliere ayant tape EXACTEMENT le nom du club.
+   Seules les variantes sans accents passaient — d ou une repartition qui
+   semblait aleatoire. Feinn marchait par chance : « feinn » n a pas d accent.
+   (Le correctif du 20/08 avait recolle les mots, jamais traite les accents.)
+   LA REPARATION : le SQL ne sert plus que de filet large, et c est
+   `hypeMemeClub` — qui normalise les DEUX cotes — qui tranche, comme pour les
+   chevaux depuis le 03/09. ⚠️ Ne plus jamais decider d une appartenance de
+   club avec un ILIKE. */
+async function hypeCavaliersDuClub(nomClub, champs) {
+  try {
+    var nomC = String(nomClub || "").trim();
+    if (!nomC || typeof supa === "undefined" || !supa) return [];
+    var cols = champs || "id, pseudo, avatar_url, ville, ecurie, ecurie2, galop";
+    var r = await supa.from("profiles").select(cols).or("ecurie.not.is.null,ecurie2.not.is.null").limit(2000);
+    var lignes = (r && r.data) || [];
+    var vus = {}, sortie = [];
+    lignes.forEach(function (pr) {
+      if (!pr || !pr.id || vus[pr.id]) return;
+      /* ⚠️ PIEGE : hypeMemeClub repond VRAI sur un champ VIDE (« sans club :
+         partout »), ce qui a du sens pour un cheval mais pas pour une
+         cavaliere — un profil sans ecurie n est membre de rien, et une
+         `ecurie2` vide ne doit pas faire entrer tout le monde. On ne teste que
+         les champs REELLEMENT remplis. (Attrape par le banc d essai : sans ca,
+         les cinq profils d essai appartenaient aux deux ecuries.) */
+      var e1 = String(pr.ecurie || "").trim();
+      var e2 = String(pr.ecurie2 || "").trim();
+      if (!e1 && !e2) return;
+      var dansLe = (!!e1 && hypeMemeClub(e1, nomC)) || (!!e2 && hypeMemeClub(e2, nomC));
+      if (!dansLe) return;
+      vus[pr.id] = true; sortie.push(pr);
+    });
+    return sortie;
+  } catch (e) { return []; }
+}
 function noyauEcurie(nom) {
   try {
     var s = String(nom || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -1862,16 +1903,31 @@ async function chevauxDeLEcurie(nomEcurie, exclureUserId) {
     return { data: gardees.map(function (ch) { return Object.assign({}, ch, { __prop: parId[ch.user_id] || null }); }), error: rc.error || null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
-async function cavaliersChoisisEcurie() {
+async function cavaliersChoisisEcurie(nomEcurie) {
+  /* 03/09 : cette liste etait GLOBALE — les memes cavalieres apparaissaient sur
+     les deux pages de club, quelle que soit l ecurie sous laquelle elles avaient
+     ete ajoutees. On filtre desormais sur la colonne `ecurie` de la ligne, avec
+     hypeMemeClub (tolerant aux accents et aux variantes de nom).
+     ⚠️ Une ligne SANS ecurie est une ligne d avant ce correctif : elle reste
+     visible partout plutot que de disparaitre. */
   try {
     const user = await utilisateurActuel();
     if (!user) return { data: [], error: null };
-    const { data, error } = await supa.from("ecurie_cavaliers_choisis").select("membre_id, statut").eq("user_id", user.id).neq("statut", "refuse").order("created_at", { ascending: true });
+    const { data, error } = await supa.from("ecurie_cavaliers_choisis").select("membre_id, statut, ecurie").eq("user_id", user.id).neq("statut", "refuse").order("created_at", { ascending: true });
     if (error || !data || !data.length) return { data: [], error: error || null };
-    const ids = data.map(function (r) { return r.membre_id; });
+    var lignes = data;
+    var filtreEc = String(nomEcurie || "").trim();
+    if (filtreEc && typeof hypeMemeClub === "function") {
+      lignes = data.filter(function (r) {
+        var e = String((r && r.ecurie) || "").trim();
+        return !e || hypeMemeClub(e, filtreEc);
+      });
+    }
+    if (!lignes.length) return { data: [], error: null };
+    const ids = lignes.map(function (r) { return r.membre_id; });
     const { data: profs } = await supa.from("profiles").select("id, pseudo, avatar_url, ville, ecurie").in("id", ids);
     const parId = {}; (profs || []).forEach(function (p) { parId[p.id] = p; });
-    return { data: data.map(function (r) { var p = parId[r.membre_id]; return p ? Object.assign({}, p, { statut: r.statut || "en_attente" }) : null; }).filter(Boolean), error: null };
+    return { data: lignes.map(function (r) { var p = parId[r.membre_id]; return p ? Object.assign({}, p, { statut: r.statut || "en_attente" }) : null; }).filter(Boolean), error: null };
   } catch (e) { return { data: [], error: String(e) }; }
 }
 async function ajouterCavalierChoisi(membreId, nomEcurie) {
@@ -30193,9 +30249,22 @@ function EcranGuilde() {
     var idsMembres = [];
     try { if (typeof supa !== "undefined" && supa) {
       var mm = [];
-      var motifClubG = (typeof motifEcurie === "function") ? motifEcurie(monClub) : ("%" + (((typeof noyauEcurie === "function") && noyauEcurie(monClub)) || monClub) + "%"); /* 06/08 : meme recherche tolerante que la page Ecurie \u2014 "Feinn", "Ecurie Feinn" et "\u00c9curie Feinn" designent le meme club *//* 20/08 : jokers entre les mots, voir motifEcurie */
-      try { var r = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie", motifClubG).limit(40); if (r && r.data) mm = mm.concat(r.data); } catch (eM1) { }
-      try { var r2b = await supa.from("profiles").select("id, pseudo, avatar_url, ville").ilike("ecurie2", motifClubG).limit(40); if (r2b && r2b.data) mm = mm.concat(r2b.data); } catch (eM2) { }
+      /* 03/09 : la fonction unique remplace les deux ILIKE, aveugles aux accents. */
+      try { mm = await hypeCavaliersDuClub(monClub, "id, pseudo, avatar_url, ville, ecurie, ecurie2"); } catch (eHc) { mm = []; }
+      /* Filet de secours si la requete large echoue (RLS, plafond) : les deux
+         anciens ILIKE, mais leur resultat passe MAINTENANT par hypeMemeClub —
+         un motif seul ne decide plus de rien. */
+      if (!mm.length) {
+        var motifClubG = (typeof motifEcurie === "function") ? motifEcurie(monClub) : ("%" + (((typeof noyauEcurie === "function") && noyauEcurie(monClub)) || monClub) + "%");
+        var brut = [];
+        try { var r = await supa.from("profiles").select("id, pseudo, avatar_url, ville, ecurie, ecurie2").ilike("ecurie", motifClubG).limit(40); if (r && r.data) brut = brut.concat(r.data); } catch (eM1) { }
+        try { var r2b = await supa.from("profiles").select("id, pseudo, avatar_url, ville, ecurie, ecurie2").ilike("ecurie2", motifClubG).limit(40); if (r2b && r2b.data) brut = brut.concat(r2b.data); } catch (eM2) { }
+        mm = brut.filter(function (pB) {
+          if (!pB) return false;
+          var b1 = String(pB.ecurie || "").trim(), b2 = String(pB.ecurie2 || "").trim();
+          return (!!b1 && hypeMemeClub(b1, monClub)) || (!!b2 && hypeMemeClub(b2, monClub));
+        });
+      }
       var vusM = {}; mm = mm.filter(function (p) { if (!p || !p.id || vusM[p.id]) return false; vusM[p.id] = true; return true; });
       if (mm.length) { setMembres(mm); idsMembres = mm.map(function (p) { return p.id; }); }
     } } catch (eM) { }
@@ -30475,8 +30544,8 @@ function EcranGuilde() {
            cheval explicitement rattache a un AUTRE club sort de la grille. */
         tousMc = hypeChevauxDuClub(tousMc, monClub); /* 03/09 : fonction unique */
 /* 28/08 : "Mes chevaux" etait trie par richesse en PHOTOS seulement (comptage de albums_cheval.photos). 01/09 (Blandine, « partout ») : ce tri partiel est remplace par le classement XP complet, le meme que les trois autres grilles — photos ET videos, likes, resultats, cavaliers rattaches, champs remplis. L'ancien comptage est retire : il faisait double emploi et donnait un ordre different des autres pages. */ /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setMesChevauxClub(tousMc); try { var triMc = await classerChevauxParXp(tousMc); if (triMc && triMc.length) tousMc = triMc; } catch (eXm) { } setMesChevauxClub(tousMc); } catch (eMc) { setMesChevauxClub([]); } }
-      if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(); setChoisis((rc && rc.data) || []); }
-      else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
+      if (u && typeof cavaliersChoisisEcurie === "function") { var rc = await cavaliersChoisisEcurie(monClub); setChoisis((rc && rc.data) || []); }
+      else if (!u) { setTimeout(async function () { try { var u2 = await utilisateurActuel(); if (u2) { var rc2 = await cavaliersChoisisEcurie(monClub); setChoisis((rc2 && rc2.data) || []); } } catch (eG2) { } }, 2500); }
       else setChoisis([]);
     } catch (eG) { setChoisis([]); }
   })(); }, [(ctx.profil && ctx.profil.id) || ""]);
@@ -30497,7 +30566,12 @@ function EcranGuilde() {
     if (deja) { setChoisis((choisis || []).filter(function (x) { return x.id !== p.id; })); try { retirerCavalierChoisi(p.id); } catch (e1) { } }
     else {
       setChoisis((choisis || []).concat([{ id: p.id, pseudo: p.pseudo, avatar_url: p.avatar_url || null, ville: p.ville || "", ecurie: p.ecurie || "", statut: "en_attente" }]));
-      try { ajouterCavalierChoisi(p.id).then(function (rA) { if (rA && rA.error) { setChoisis(function (cs) { return (cs || []).filter(function (x) { return x.id !== p.id; }); }); try { alert(T("Invitation non enregistr\u00e9e \u2014 v\u00e9rifie ta connexion.", "Invitation not saved \u2014 check your connection.", "Invitaci\u00f3n no guardada.", "Invito non salvato.", "\u62db\u5f85\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); } catch (eT) { } } }); } catch (e2) { }
+      /* 03/09 (Blandine : « on me propose d ajouter un cavalier a l ecurie quand
+         je suis sur la SEP et ca l ajoute a Feinn ») — LA CAUSE ETAIT CE PARAMETRE
+         MANQUANT : sans nom d ecurie, `ajouterCavalierChoisi` se rabat sur
+         `monEcurieNom()`, c est-a-dire la PREMIERE ecurie du profil. La page
+         Ecurie, elle, passait bien son club depuis toujours. */
+      try { ajouterCavalierChoisi(p.id, monClub).then(function (rA) { if (rA && rA.error) { setChoisis(function (cs) { return (cs || []).filter(function (x) { return x.id !== p.id; }); }); try { alert(T("Invitation non enregistr\u00e9e \u2014 v\u00e9rifie ta connexion.", "Invitation not saved \u2014 check your connection.", "Invitaci\u00f3n no guardada.", "Invito non salvato.", "\u62db\u5f85\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093")); } catch (eT) { } } }); } catch (e2) { }
     }
   }
   var FIGURANTS_CLUB = [
@@ -32630,16 +32704,13 @@ function L5acc(fr, en, es, it, ja, de) { return lg === "en" ? en : lg === "es" ?
       var moiA = null; try { moiA = await utilisateurActuel(); } catch (eU) { }
       var clubA = (((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "") + "").trim();
       var lst = [];
-      if (clubA) {
-        var motif = (typeof motifEcurie === "function") ? motifEcurie(clubA) : ("%" + ((typeof noyauEcurie === "function" ? noyauEcurie(clubA) : clubA) || clubA) + "%"); /* 20/08 */
-        for (var ch = 0; ch < 2; ch++) {
-          try {
-            var rq = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie, ecurie2, galop").ilike(ch === 0 ? "ecurie" : "ecurie2", motif).limit(20);
-            if (rq && rq.data) lst = lst.concat(rq.data);
-          } catch (eQ) { }
-        }
-      }
-      if (!lst.length) { try { var rd = await derniersCavaliers(10); lst = (rd && rd.data) || []; } catch (eD) { } }
+      /* 03/09 : la fonction unique (accents traites) remplace les deux ILIKE. */
+      if (clubA) { try { lst = await hypeCavaliersDuClub(clubA, "id, pseudo, avatar_url, ecurie, ecurie2, galop"); } catch (eHa) { lst = []; } }
+      /* 🟥 03/09 : LE REPLI SUR `derniersCavaliers(10)` EST RETIRE. Quand
+         l ecurie ne renvoyait personne, cette bande affichait DIX CAVALIERES AU
+         HASARD comme si elles etaient du club — un mensonge a l ecran, et une
+         des raisons pour lesquelles les cavalieres semblaient reparties n importe
+         comment. Une bande vide ne s affiche pas, c est tout. */
       var vus = {}; var out = [];
       lst.forEach(function (pr) {
         if (!pr || !pr.id || vus[pr.id]) return;
@@ -33265,7 +33336,7 @@ function EcranEcurie() {
   var monClubEc = (((ctx.profil && (ctx.profil.ecurie || ctx.profil.club)) || "").trim()) || T("Mon \u00e9curie", "My stable", "Mi cuadra", "La mia scuderia", "\u99ac\u5c4b", "Mein Stall");
   var titreEcuriePerso = (((ctx.profil && ctx.profil.ecurie_perso) || "").trim()) || monClubEc /* 06/08 : nom d'affichage libre de la page perso ; monClubEc reste le nom du CLUB pour toutes les requetes (membres, chevaux, notifications) */ /* 27/07 : le repli etait "\u00c9curie Feinn" : tout cavalier sans club renseigne voyait l'ecurie personnelle de Blandine. */;
   React.useEffect(function () { (async function () {
-    try { if (typeof cavaliersChoisisEcurie === "function" && typeof supa !== "undefined") { var rx = await cavaliersChoisisEcurie(); if (rx && rx.data && rx.data.length) setChoisisEc(rx.data); else { setChoisisEc([]); setTimeout(async function () { try { var rx2 = await cavaliersChoisisEcurie(); if (rx2 && rx2.data && rx2.data.length) setChoisisEc(rx2.data); } catch (eC2) { } }, 2500); } } else setChoisisEc([]); } catch (eC) { setChoisisEc([]); }
+    try { if (typeof cavaliersChoisisEcurie === "function" && typeof supa !== "undefined") { var rx = await cavaliersChoisisEcurie(monClubEc); if (rx && rx.data && rx.data.length) setChoisisEc(rx.data); else { setChoisisEc([]); setTimeout(async function () { try { var rx2 = await cavaliersChoisisEcurie(); if (rx2 && rx2.data && rx2.data.length) setChoisisEc(rx2.data); } catch (eC2) { } }, 2500); } } else setChoisisEc([]); } catch (eC) { setChoisisEc([]); }
     try { if (typeof supa !== "undefined" && supa) {
       var mmEc = [];
       var motifClubEc = (typeof motifEcurie === "function") ? motifEcurie(monClubEc) : ("%" + ((typeof noyauEcurie === "function" && noyauEcurie(monClubEc)) || monClubEc) + "%"); /* 20/08 */
