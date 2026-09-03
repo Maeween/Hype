@@ -31062,6 +31062,48 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
     })();
     return function () { actifM = false; };
   }, []);
+  /* 03/09 (etape 3 des alias, chantier des doublons) — ON CHERCHE DANS TOUT
+     HYPE, PAS SEULEMENT DANS L ECURIE. Le rapprochement d origine de cette
+     modale ne regardait que `chevauxDeLEcurie` : un cheval deja sur Hype dans
+     une AUTRE ecurie n etait jamais signale, et une deuxieme fiche naissait.
+     C est l origine des doublons Crumble, Cooltax et Vallieres.
+     ⚠️ AUCUN MECANISME NOUVEAU : on appelle `hypeChevauxHomonymes`, deja ecrite
+     le 03/09 (nom + alias FFE + table publique des surnoms), qui ne servait que
+     sur EcranGererEcurie — un ecran qu on n utilise quasiment pas. Les deux
+     sources sont fusionnees et dedoublonnees, jamais empilees.
+     ⚠️ Rien n est jamais refuse : le bouton « Creer sa fiche » reste actif. */
+  var _mi = React.useState(null); var miensIds = _mi[0], setMiensIds = _mi[1];
+  React.useEffect(function () {
+    var vivantMi = true;
+    (async function () {
+      var ids = {};
+      try {
+        if (typeof mesChevaux === "function") { var rM = await mesChevaux(); ((rM && rM.data) || []).forEach(function (cM) { if (cM && cM.id) ids[cM.id] = 1; }); }
+      } catch (eM1) { }
+      try {
+        if (typeof mesChevauxLies === "function") { var rL2 = await mesChevauxLies(); ((rL2 && rL2.data) || []).forEach(function (cL) { if (cL && cL.id) ids[cL.id] = 1; }); }
+      } catch (eM2) { }
+      if (vivantMi) setMiensIds(ids);
+    })();
+    return function () { vivantMi = false; };
+  }, []);
+  var _hom = React.useState([]); var homonymes = _hom[0], setHomonymes = _hom[1];
+  var _hoc = React.useState(false); var chercheHom = _hoc[0], setChercheHom = _hoc[1];
+  React.useEffect(function () {
+    var nH = (nom || "").trim();
+    if (nH.length < 2 || typeof hypeChevauxHomonymes !== "function") { setHomonymes([]); return; }
+    var vivantH = true;
+    setChercheHom(true);
+    /* on attend que la frappe s arrete : une requete par lettre serait absurde */
+    var minuteur = setTimeout(function () {
+      hypeChevauxHomonymes(nH).then(function (l) {
+        if (!vivantH) return;
+        setChercheHom(false);
+        setHomonymes((l || []).filter(function (cH) { return cH && cH.id && !(miensIds || {})[cH.id]; }));
+      }).catch(function () { if (vivantH) { setChercheHom(false); setHomonymes([]); } });
+    }, 450);
+    return function () { vivantH = false; clearTimeout(minuteur); };
+  }, [nom, miensIds]);
   var nomTrim = (nom || "").trim().toLowerCase();
   function sansAccents(s) { try { return String(s || "").normalize("NFD").replace(/[\u0300-\u036f]/g, ""); } catch (eAcc) { return String(s || ""); } }
   var nomNorm = sansAccents(nomTrim);
@@ -31133,9 +31175,46 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
                 fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
               cl || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine"));
           }))) : null,
-      doublonEc ? h("div", { style: { marginTop: 12, padding: "12px 14px", borderRadius: 14, background: "rgba(255,193,7,0.10)", border: "1px solid rgba(255,193,7,0.4)", textAlign: "left" } },
-        h("p", { style: { margin: "0 0 8px", fontSize: 12, lineHeight: 1.55, color: "#F2D48A" } }, tr({ fr: "Un cheval nomm\u00e9 \u00ab\u00a0" + (doublonEc.nom || "") + "\u00a0\u00bb existe d\u00e9j\u00e0 dans l\u2019\u00e9curie" + (doublonEc.__prop ? " (\u00e0 " + doublonEc.__prop + ")" : "") + ". Cr\u00e9er une nouvelle fiche s\u00e9par\u00e9e ferait un doublon \u2014 pr\u00e9f\u00e8re rattacher son cheval si c\u2019est le m\u00eame.", en: "A horse named \u00ab " + (doublonEc.nom || "") + " \u00bb already exists in the stable" + (doublonEc.__prop ? " (" + doublonEc.__prop + "\u2019s)" : "") + ". Creating a new page would duplicate it \u2014 link to their horse instead if it\u2019s the same one.", es: "Ya existe un caballo llamado \u00ab " + (doublonEc.nom || "") + " \u00bb en la cuadra" + (doublonEc.__prop ? " (de " + doublonEc.__prop + ")" : "") + ". Crear una nueva ficha lo duplicar\u00eda \u2014 vincula su caballo si es el mismo.", it: "Esiste gi\u00e0 un cavallo chiamato \u00ab " + (doublonEc.nom || "") + " \u00bb nella scuderia" + (doublonEc.__prop ? " (di " + doublonEc.__prop + ")" : "") + ". Creare una nuova scheda lo duplicherebbe \u2014 collega il suo cavallo se \u00e8 lo stesso.", ja: "\u300c" + (doublonEc.nom || "") + "\u300d\u3068\u3044\u3046\u540d\u524d\u306e\u99ac\u306f\u3059\u3067\u306b\u5395\u820e\u306b\u5b58\u5728\u3057\u307e\u3059" + (doublonEc.__prop ? "\uff08" + doublonEc.__prop + "\uff09" : "") + "\u3002\u65b0\u3057\u304f\u4f5c\u6210\u3059\u308b\u3068\u91cd\u8907\u3057\u3066\u3057\u307e\u3046\u306e\u3067\u3001\u540c\u3058\u99ac\u306a\u3089\u9023\u643a\u3057\u3066\u304f\u3060\u3055\u3044\u3002", de: "Ein Pferd namens \u00ab\u00a0" + (doublonEc.nom || "") + "\u00a0\u00bb gibt es bereits im Stall" + (doublonEc.__prop ? " (von " + doublonEc.__prop + ")" : "") + ". Eine neue Seite anzulegen w\u00fcrde ein Duplikat erzeugen \u2014 verkn\u00fcpfe lieber sein Pferd, wenn es dasselbe ist." })),
-        h("button", { onClick: function () { rattacher(doublonEc); }, disabled: lienBusy === doublonEc.id, style: { width: "100%", border: "1px solid rgba(255,193,7,0.5)", borderRadius: 999, padding: "9px 0", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", background: "rgba(255,193,7,0.14)", color: "#F2D48A", cursor: "pointer" } }, lienBusy === doublonEc.id ? tr({ fr: "Rattachement\u2026", en: "Linking\u2026", es: "Vinculando\u2026", it: "Collegamento\u2026", ja: "\u9023\u643a\u4e2d\u2026", de: "Wird verkn\u00fcpft\u2026" }) : tr({ fr: "Rattacher ce cheval plut\u00f4t", en: "Link this horse instead", es: "Vincular este caballo", it: "Collega questo cavallo", ja: "\u3053\u306e\u99ac\u3092\u9023\u643a\u3059\u308b", de: "Lieber dieses Pferd verkn\u00fcpfen" }))) : null,
+      /* 03/09 — LA PROPOSITION DE RATTACHEMENT. Deux sources fusionnees :
+         `doublonEc` (l ecurie, tolerant aux debuts de nom : « Elfe » /
+         « Elfe de Feinn ») et `homonymes` (tout Hype : nom, alias FFE, surnoms).
+         Dedoublonnees, trois au maximum. */
+      (function () {
+        var props = []; var vusP = {};
+        if (doublonEc && doublonEc.id) { props.push(doublonEc); vusP[doublonEc.id] = 1; }
+        (homonymes || []).forEach(function (cH) {
+          if (cH && cH.id && !vusP[cH.id] && props.length < 3) { props.push(cH); vusP[cH.id] = 1; }
+        });
+        if (!props.length) return null;
+        return h("div", { style: { marginTop: 12, padding: "12px 14px", borderRadius: 14, background: "rgba(255,193,7,0.10)", border: "1px solid rgba(255,193,7,0.4)", textAlign: "left" } },
+          h("p", { style: { margin: "0 0 10px", fontSize: 12, lineHeight: 1.55, color: "#F2D48A" } },
+            tr({
+              fr: props.length > 1 ? "Ces chevaux existent d\u00e9j\u00e0 sur Hype. Cr\u00e9er une nouvelle fiche en ferait un doublon \u2014 ajoute plut\u00f4t le bon \u00e0 tes chevaux : sa fiche, ses origines et ses r\u00e9sultats sont d\u00e9j\u00e0 l\u00e0, et tes albums restent \u00e0 toi."
+                                  : "Ce cheval existe d\u00e9j\u00e0 sur Hype. Cr\u00e9er une nouvelle fiche en ferait un doublon \u2014 ajoute-le plut\u00f4t \u00e0 tes chevaux : sa fiche, ses origines et ses r\u00e9sultats sont d\u00e9j\u00e0 l\u00e0, et tes albums restent \u00e0 toi.",
+              en: props.length > 1 ? "These horses are already on Hype. Creating a new page would duplicate one \u2014 add the right one to your horses instead: its page, pedigree and results are already there, and your albums stay yours."
+                                  : "This horse is already on Hype. Creating a new page would duplicate it \u2014 add it to your horses instead: its page, pedigree and results are already there, and your albums stay yours.",
+              es: "Este caballo ya existe en Hype. Crear una nueva ficha lo duplicar\u00eda \u2014 a\u00f1\u00e1delo a tus caballos: su ficha, sus or\u00edgenes y sus resultados ya est\u00e1n ah\u00ed.",
+              it: "Questo cavallo esiste gi\u00e0 su Hype. Creare una nuova scheda lo duplicherebbe \u2014 aggiungilo ai tuoi cavalli: scheda, origini e risultati ci sono gi\u00e0.",
+              ja: "\u3053\u306e\u99ac\u306f\u3059\u3067\u306b Hype \u306b\u3042\u308a\u307e\u3059\u3002\u65b0\u3057\u304f\u4f5c\u308b\u3068\u91cd\u8907\u3057\u307e\u3059 \u2014 \u81ea\u5206\u306e\u99ac\u306b\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002",
+              de: "Dieses Pferd gibt es schon auf Hype. Eine neue Seite w\u00e4re ein Duplikat \u2014 f\u00fcge es lieber zu deinen Pferden hinzu."
+            })),
+          props.map(function (cP, iP) {
+            var ouP = cP.__prop ? (" \u00b7 " + cP.__prop) : (cP.club ? (" \u00b7 " + cP.club) : "");
+            var nomP = (cP.nom || "") + (cP.alias ? (" (" + cP.alias + ")") : "");
+            return h("div", { key: "prop" + (cP.id || iP), style: { display: "flex", alignItems: "center", gap: 10, marginBottom: iP === props.length - 1 ? 0 : 8 } },
+              cP.photo_url ? h("img", { src: cP.photo_url, alt: "", style: { width: 38, height: 38, borderRadius: 10, objectFit: "cover", flexShrink: 0, display: "block" } })
+                           : h("div", { style: { width: 38, height: 38, borderRadius: 10, background: "rgba(255,193,7,0.14)", flexShrink: 0 } }),
+              h("div", { style: { minWidth: 0, flex: 1 } },
+                h("div", { style: { fontSize: 12.5, fontWeight: 700, color: "#F2D48A", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: "'Montserrat',sans-serif" } }, nomP),
+                ouP ? h("div", { style: { fontSize: 10.5, color: "rgba(242,212,138,0.65)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", fontFamily: "'Montserrat',sans-serif" } }, ouP.slice(3)) : null),
+              h("button", { onClick: function () { rattacher(cP); }, disabled: lienBusy === cP.id,
+                style: { flexShrink: 0, border: "1px solid rgba(255,193,7,0.5)", borderRadius: 999, padding: "8px 13px", fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", background: "rgba(255,193,7,0.14)", color: "#F2D48A", cursor: "pointer" } },
+                lienBusy === cP.id ? tr({ fr: "\u2026", en: "\u2026", es: "\u2026", it: "\u2026", ja: "\u2026", de: "\u2026" })
+                                   : tr({ fr: "C'est lui", en: "That's him", es: "Es \u00e9l", it: "\u00c8 lui", ja: "\u3053\u306e\u99ac", de: "Das ist es" })));
+          }));
+      })(),
+      chercheHom ? h("div", { style: { marginTop: 8, fontSize: 10.5, color: "rgba(237,242,245,0.35)", fontFamily: "'Montserrat',sans-serif" } },
+        tr({ fr: "Recherche sur Hype\u2026", en: "Searching Hype\u2026", es: "Buscando en Hype\u2026", it: "Ricerca su Hype\u2026", ja: "Hype \u3092\u691c\u7d22\u4e2d\u2026", de: "Suche auf Hype\u2026" })) : null,
       err ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#F2A0B0", lineHeight: 1.5 } }, tr({ fr: "Impossible de cr\u00e9er la fiche : ", en: "Could not create the page: ", es: "No se pudo crear la ficha: ", it: "Impossibile creare la scheda: ", ja: "\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", de: "Seite konnte nicht erstellt werden: " }) + err) : null,
       h("button", { onClick: creer, disabled: busy || !(nom || "").trim(), style: { width: "100%", marginTop: 18, border: "none", borderRadius: 999, padding: "14px 0", fontSize: 14, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", letterSpacing: "0.4px", background: busy ? "rgba(32,217,245,0.14)" : "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", cursor: "pointer", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)" } }, busy ? tr({ fr: "Cr\u00e9ation\u2026", en: "Creating\u2026", es: "Creando\u2026", it: "Creazione\u2026", ja: "\u4f5c\u6210\u4e2d\u2026", de: "Wird erstellt\u2026" }) : tr({ fr: "Cr\u00e9er sa fiche \u2726", en: "Create its page \u2726", es: "Crear su ficha \u2726", it: "Crea la scheda \u2726", ja: "\u30da\u30fc\u30b8\u3092\u4f5c\u6210 \u2726", de: "Seite erstellen \u2726" })),
       (listeEc && listeEc.length) ? h("div", { style: { marginTop: 20, textAlign: "left" } },
