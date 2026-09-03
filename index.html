@@ -23127,7 +23127,19 @@ function HypeApp() {
             return null;
         }
     })();
-    const [ecran, setEcran] = useState(CIBLE_DIRECTE ? (CIBLE_DIRECTE.ecran || "cours") : ((sauve && sauve.ecran && ECRANS_RESTAURABLES[sauve.ecran]) ? sauve.ecran : "intro")); // Parcours d'entr\u00e9e Hype \u00e0 chaque ouverture, SAUF reprise directe sur le dernier ecran "racine" visite (28/08)
+    /* 03/09 (Blandine, chantier en attente n°2) — LE LIEN « MOT DE PASSE
+       OUBLIE » MENAIT A TOUT L ONBOARDING. Le detecteur du lien de recuperation
+       (HYPE_RECUP_MDP, pose des le debut du fichier) est bien lu par
+       EcranConnexionSpectral — mais SEULEMENT QUAND CET ECRAN EST MONTE. Or au
+       demarrage l app ouvre « intro » : la cavaliere devait traverser l accueil
+       et les questions avant d atteindre le formulaire. Le drapeau est donc lu
+       ICI AUSSI, au choix de l ecran de depart, pour aller droit au but.
+       ⚠️ Il n est PAS consomme ici (pas de remise a false) : c est
+       EcranConnexionSpectral qui le consomme en basculant sur le mode « reset ».
+       Ne pas l effacer ici, sinon on arrive sur la connexion normale. */
+    var __recupMdp = false;
+    try { __recupMdp = !!(typeof window !== "undefined" && window.HYPE_RECUP_MDP); } catch (eRc) { }
+    const [ecran, setEcran] = useState(__recupMdp ? "connexion" : (CIBLE_DIRECTE ? (CIBLE_DIRECTE.ecran || "cours") : ((sauve && sauve.ecran && ECRANS_RESTAURABLES[sauve.ecran]) ? sauve.ecran : "intro"))); // Parcours d'entr\u00e9e Hype \u00e0 chaque ouverture, SAUF reprise directe sur le dernier ecran "racine" visite (28/08)
     const [historiqueEcrans, setHistoriqueEcrans] = useState([]);
     const [pileAvant, setPileAvant] = useState([]);
     const [langue, setLangue] = useState(sauve && sauve.langue ? sauve.langue : "fr");
@@ -23351,6 +23363,17 @@ function HypeApp() {
         setPileAvant([]);
         setEcran(cible);
     };
+    /* 03/09 : et si le lien de recuperation arrive APRES le montage (Supabase
+       traite l URL en differe), on route aussi sur l evenement. Sans ca, une
+       cavaliere restee sur l accueil n allait nulle part. Le drapeau reste pose
+       pour EcranConnexionSpectral, qui le consomme. */
+    useEffect(function () {
+        function versConnexion() {
+            try { setEcran(function (e) { return e === "connexion" ? e : "connexion"; }); } catch (eVc) { }
+        }
+        try { window.addEventListener("hype-recup-mdp", versConnexion); } catch (eAl) { }
+        return function () { try { window.removeEventListener("hype-recup-mdp", versConnexion); } catch (eRl) { } };
+    }, []);
     const dernierAvantRef = useRef(null);
     const __ecranPrec = useRef(ecran);
     useEffect(() => { if (ecran === "dashboard" && __ecranPrec.current !== "dashboard") dernierAvantRef.current = __ecranPrec.current; __ecranPrec.current = ecran; }, [ecran]);
@@ -52876,29 +52899,125 @@ function AdminArticles({ t }) {
             t("admin_rediger_article")),
         ARTICLES.map((a) => React.createElement(LigneAdmin, { key: a.id, icone: a.image, titre: a.titre, sousTitre: `${a.categorie} · ${a.duree}`, statut: a.premium ? t("premium_badge") : t("admin_gratuit"), statutCouleur: a.premium ? COLORS.soleilDark : COLORS.prairieDark }))));
 }
+/* 03/09 (Blandine : « j'ai pas vu d'abonnement passer ») — 🟥 CET ECRAN ETAIT
+   UNE MAQUETTE. « 412 abonnes actifs », Lea Marchand, Thomas Petit : des noms
+   inventes, ecrits en dur, qui ne lisaient RIEN. Blandine n'avait donc aucun
+   moyen de savoir qui s'etait abonne — et pouvait croire que personne ne
+   l'avait fait. Il lit desormais la vraie table `abonnements_premium`.
+   ⚠️ Il applique EXACTEMENT la meme regle que l'app pour dire « actif »
+   (l. ~23578) : statut « actif » ET (pas d'echeance OU echeance a venir). Ne
+   jamais recalculer cette regle autrement ici : deux verites differentes sur
+   le meme sujet, c'est ce qui a coute la soiree du 03/09.
+   ⚠️ Si la policy de lecture ne laisse voir que sa propre ligne, l'ecran le DIT
+   au lieu d'afficher un total faux. */
 function AdminAbonnements({ t }) {
-    const abonnes = [
-        { nom: "Léa Marchand", plan: t("plan_annuel"), depuis: "12/01/2026", statut: t("admin_actif") },
-        { nom: "Thomas Petit", plan: t("plan_mensuel"), depuis: "03/06/2026", statut: t("admin_actif") },
-        { nom: "Inès Dubois", plan: t("plan_annuel"), depuis: "28/02/2026", statut: t("admin_actif") },
-        { nom: "Maxence Roy", plan: t("plan_mensuel"), depuis: "15/05/2026", statut: t("admin_annule") },
-    ];
-    return (React.createElement("div", { style: { padding: 18 } },
-        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 18 } },
-            React.createElement(KpiCard, { valeur: "412", label: t("admin_abonnes_actifs"), couleur: COLORS.prairieDark }),
-            React.createElement(KpiCard, { valeur: "79,99 \u20AC/an \u00B7 9,99 \u20AC/mois", label: t("admin_plans_actifs") })),
-        React.createElement("p", { style: { fontSize: 13, fontWeight: 700, color: COLORS.encre, marginBottom: 10 } }, t("admin_derniers_abonnements")),
-        abonnes.map((a, i) => (React.createElement("div", { key: i, style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 14, padding: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 12 } },
-            React.createElement("div", { style: { width: 38, height: 38, borderRadius: "50%", background: COLORS.creme, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, color: COLORS.encre } }, a.nom[0]),
-            React.createElement("div", { style: { flex: 1 } },
-                React.createElement("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 700, color: COLORS.encre } }, a.nom),
-                React.createElement("p", { style: { margin: 0, fontSize: 11.5, color: COLORS.encreDoux } },
-                    a.plan,
-                    " \u00B7 ",
-                    t("admin_depuis"),
-                    " ",
-                    a.depuis)),
-            React.createElement("span", { style: { fontSize: 11, fontWeight: 700, color: a.statut === t("admin_actif") ? COLORS.prairieDark : COLORS.corail, background: a.statut === t("admin_actif") ? `${COLORS.prairie}1A` : `${COLORS.corail}1A`, padding: "4px 9px", borderRadius: 8 } }, a.statut))))));
+    const [lignes, setLignes] = useState(null);   // null = chargement
+    const [err, setErr] = useState("");
+    const [instant, setInstant] = useState(null);
+
+    async function charger() {
+        setErr("");
+        try {
+            if (typeof supa === "undefined" || !supa) { setLignes([]); setErr("Base indisponible."); return; }
+            const r = await supa.from("abonnements_premium").select("user_id, plan, statut, expire_le, created_at");
+            if (r && r.error) { setLignes([]); setErr(String(r.error.message || r.error)); return; }
+            const brut = (r && r.data) || [];
+            let parId = {};
+            try {
+                const ids = brut.map(function (a) { return a.user_id; }).filter(Boolean);
+                if (ids.length) {
+                    const rp = await supa.from("profiles").select("id, pseudo, ecurie").in("id", ids);
+                    ((rp && rp.data) || []).forEach(function (p) { parId[p.id] = p; });
+                }
+            } catch (eP) { }
+            const maintenant = Date.now();
+            const enrichies = brut.map(function (a) {
+                const p = parId[a.user_id] || {};
+                const finMs = a.expire_le ? new Date(a.expire_le).getTime() : null;
+                /* MEME REGLE QUE L'APP */
+                const actif = a.statut === "actif" && (!a.expire_le || finMs > maintenant);
+                const jours = finMs ? Math.ceil((finMs - maintenant) / 86400000) : null;
+                return Object.assign({}, a, {
+                    pseudo: (p.pseudo || "").trim() || "\u2014",
+                    ecurie: (p.ecurie || "").trim(),
+                    actif: actif,
+                    sansEcheance: !a.expire_le,
+                    joursRestants: jours,
+                    bientot: !!(actif && jours !== null && jours <= 30)
+                });
+            }).sort(function (a, b) {
+                if (a.actif !== b.actif) return a.actif ? -1 : 1;
+                return String(a.expire_le || "9999").localeCompare(String(b.expire_le || "9999"));
+            });
+            setLignes(enrichies);
+            setInstant(new Date());
+        } catch (e) { setLignes([]); setErr(String((e && e.message) || e)); }
+    }
+    useEffect(function () { charger(); }, []);
+
+    const D = { padding: 18 };
+    if (lignes === null) return React.createElement("div", { style: D },
+        React.createElement("p", { style: { fontSize: 13, color: COLORS.encreDoux } }, "\u2026"));
+
+    const actifs = lignes.filter(function (a) { return a.actif; });
+    const bientot = actifs.filter(function (a) { return a.bientot; });
+    const sansFin = actifs.filter(function (a) { return a.sansEcheance; });
+    const parPlan = {};
+    actifs.forEach(function (a) { parPlan[a.plan || "?"] = (parPlan[a.plan || "?"] || 0) + 1; });
+    const resumePlans = Object.keys(parPlan).sort().map(function (k) { return parPlan[k] + " " + k; }).join(" \u00b7 ") || "\u2014";
+
+    function pastille(txt, fond, couleur) {
+        return React.createElement("span", { style: { fontSize: 10.5, fontWeight: 700, color: couleur, background: fond, borderRadius: 999, padding: "3px 9px", whiteSpace: "nowrap" } }, txt);
+    }
+    function dateCourte(iso) {
+        try { return new Date(iso).toLocaleDateString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric" }); }
+        catch (e) { return String(iso || ""); }
+    }
+
+    return React.createElement("div", { style: D },
+        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 } },
+            React.createElement(KpiCard, { valeur: String(actifs.length), label: t("admin_abonnes_actifs"), couleur: COLORS.prairieDark }),
+            React.createElement(KpiCard, { valeur: resumePlans, label: t("admin_plans_actifs") })),
+
+        err ? React.createElement("div", { style: { background: "rgba(240,92,116,0.10)", border: "1px solid rgba(240,92,116,0.45)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, fontSize: 12.5, color: "#B04A5C", lineHeight: 1.5 } },
+            "La lecture a \u00e9chou\u00e9 : " + err) : null,
+
+        /* ⚠️ une seule ligne = la policy ne laisse probablement voir que la sienne.
+           On le DIT plutot que d'afficher « 1 abonne » comme si c'etait le total. */
+        (!err && lignes.length === 1) ? React.createElement("div", { style: { background: "rgba(232,200,135,0.12)", border: "1px solid rgba(232,200,135,0.5)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, fontSize: 12.5, color: "#8A6D2F", lineHeight: 1.5 } },
+            "Une seule ligne remonte : la r\u00e8gle de lecture de la base ne laisse probablement voir que ton propre abonnement. Le total ci-dessus n\u2019est donc pas celui de l\u2019app.") : null,
+
+        bientot.length ? React.createElement("div", { style: { background: "rgba(232,200,135,0.12)", border: "1px solid rgba(232,200,135,0.5)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, fontSize: 12.5, color: "#8A6D2F", lineHeight: 1.5 } },
+            bientot.length + (bientot.length > 1 ? " abonnements arrivent \u00e0 \u00e9ch\u00e9ance dans les 30 jours." : " abonnement arrive \u00e0 \u00e9ch\u00e9ance dans les 30 jours.")) : null,
+
+        sansFin.length ? React.createElement("div", { style: { fontSize: 12, color: COLORS.encreDoux, marginBottom: 12, lineHeight: 1.5 } },
+            sansFin.length + (sansFin.length > 1 ? " acc\u00e8s sans \u00e9ch\u00e9ance : ils ne s\u2019\u00e9teindront jamais d\u2019eux-m\u00eames." : " acc\u00e8s sans \u00e9ch\u00e9ance : il ne s\u2019\u00e9teindra jamais de lui-m\u00eame.")) : null,
+
+        React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 } },
+            React.createElement("p", { style: { margin: 0, fontSize: 13, fontWeight: 700, color: COLORS.encre } }, t("admin_derniers_abonnements")),
+            React.createElement("button", { onClick: charger, style: { fontSize: 12, fontWeight: 700, color: COLORS.prairieDark } }, "Rafra\u00eechir")),
+
+        instant ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11, color: COLORS.encreDoux } },
+            "\u00c0 jour \u00e0 " + instant.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })) : null,
+
+        lignes.length === 0 && !err ? React.createElement("p", { style: { fontSize: 13, color: COLORS.encreDoux, lineHeight: 1.6 } },
+            "Aucun abonnement enregistr\u00e9. Si tu en attends un, c\u2019est le webhook Stripe qu\u2019il faut regarder, pas cet \u00e9cran.") : null,
+
+        lignes.map(function (a, i) {
+            return React.createElement("div", { key: i, style: { background: COLORS.nuitClaire, border: "1px solid " + COLORS.ligne, borderRadius: 14, padding: 12, marginBottom: 8, display: "flex", alignItems: "center", gap: 10, opacity: a.actif ? 1 : 0.55 } },
+                React.createElement("div", { style: { width: 38, height: 38, borderRadius: "50%", background: COLORS.creme, display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 800, color: COLORS.encre, flexShrink: 0 } },
+                    (a.pseudo || "?").slice(0, 1).toUpperCase()),
+                React.createElement("div", { style: { flex: 1, minWidth: 0 } },
+                    React.createElement("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 700, color: COLORS.encre, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, a.pseudo),
+                    React.createElement("p", { style: { margin: 0, fontSize: 11.5, color: COLORS.encreDoux, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                        (a.plan || "?") + (a.ecurie ? (" \u00b7 " + a.ecurie) : "")),
+                    React.createElement("p", { style: { margin: 0, fontSize: 11, color: COLORS.encreDoux } },
+                        a.sansEcheance ? "sans \u00e9ch\u00e9ance"
+                            : (a.actif ? ("jusqu\u2019au " + dateCourte(a.expire_le) + (a.joursRestants !== null ? (" \u00b7 " + a.joursRestants + " j") : ""))
+                                       : ("\u00e9chu le " + dateCourte(a.expire_le))))),
+                a.actif ? pastille(t("admin_actif"), "rgba(74,155,110,0.14)", COLORS.prairieDark)
+                        : pastille(a.statut === "annule" ? t("admin_annule") : "Inactif", "rgba(240,92,116,0.12)", COLORS.corail));
+        }));
 }
 function AdminUtilisateurs({ t }) {
     const utilisateurs = [
