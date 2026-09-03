@@ -51941,10 +51941,24 @@ function EcranPremium() {
         estModMux ? React.createElement("div", { style: { padding: "22px 18px 40px", textAlign: "center" } },
             React.createElement("button", {
                 onClick: function () {
+                    /* 03/09 (Blandine : « j'appuie, il ne se passe rien et le bouton revient
+                       a la normale ») — le resultat s'affichait DANS la page ; si ce rendu
+                       ne se fait pas, on se retrouve sans aucune information. Desormais
+                       tout passe par une alerte iOS, impossible a manquer, ET le resultat
+                       reste affiche dans la page. Une premiere alerte confirme meme que le
+                       bouton a bien reagi : sans elle, on ne saurait pas distinguer « rien
+                       ne part » de « rien ne revient ». */
                     if (envMux) return;
                     setEnvMux(true); setResMux(null);
-                    hypeTesterMux().then(function (r) { setResMux(r); setEnvMux(false); })
-                        .catch(function (e) { setResMux({ ok: false, message: String(e) }); setEnvMux(false); });
+                    try { window.alert("Essai lancé — attends la réponse."); } catch (eA0) { }
+                    hypeTesterMux().then(function (r) {
+                        setResMux(r); setEnvMux(false);
+                        try { window.alert(r && r.message ? r.message : "Réponse vide."); } catch (eA1) { }
+                    }).catch(function (e) {
+                        var m = "❌ Erreur inattendue :\n" + String(e);
+                        setResMux({ ok: false, message: m }); setEnvMux(false);
+                        try { window.alert(m); } catch (eA2) { }
+                    });
                 },
                 style: { padding: "11px 20px", borderRadius: 999, border: "1px solid rgba(234,199,122,0.5)", background: "rgba(234,199,122,0.1)", color: "#EAC77A", fontFamily: "'Montserrat',sans-serif", fontSize: 12, fontWeight: 700, cursor: "pointer" }
             }, envMux ? "Essai en cours\u2026" : "Tester la connexion vid\u00e9o (Mux)"),
