@@ -30832,6 +30832,15 @@ function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche 
     return function () { vif = false; };
   }, []);
   var h = React.createElement;
+  /* 03/09 (CORRECTIF DU PLANTAGE) : cette modale appelait T(...) deux fois (le
+     choix de l ecurie ajoute le 02/09, lignes « Dans quelle ecurie ? » et
+     « Aucune ») alors que T n existe QUE localement dans d autres composants —
+     jamais au niveau global. Resultat : ReferenceError au rendu, donc
+     « Un caillou dans le sabot » a l ouverture. ⚠️ Le bloc fautif n est rendu
+     que si le cavalier a PLUSIEURS ecuries (clubsCr.length > 1) : le plantage
+     ne touchait que ces comptes-la, ce qui l a fait passer pour intermittent
+     et fait accuser a tort l anti-doublon. */
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
   var _n = React.useState(""), nom = _n[0], setNom = _n[1];
   var _b = React.useState(false), busy = _b[0], setBusy = _b[1];
   var _e = React.useState(null), err = _e[0], setErr = _e[1];
