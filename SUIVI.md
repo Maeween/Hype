@@ -21076,3 +21076,454 @@ quatre correctifs cette nuit pour la meme question. Il faut UNE fonction unique,
 appelee partout : le jour ou un cheval change d'ecurie, il bouge partout d'un coup,
 et il n'y a plus qu'un endroit a verifier.
 
+## 02/09/2026 (nuit) — CINQUIEME ECRAN, MEME QUESTION · ET LE CLUB ENFIN NOMME
+
+Blandine : « je vais sur les chevaux de la SEP et tous les chevaux y sont, y compris
+ceux de Feinn » — et, dans la meme phrase, la bonne idee : « ce serait bien que
+l'ecurie soit nommee quelque part ».
+
+**Le titre porte desormais le nom du club** : « Les chevaux de Societe d'Equitation
+de Paris (SEP) » au lieu de « Les chevaux de l'ecurie ». Sans ce nom, impossible de
+voir d'un coup d'oeil qu'on regarde la mauvaise liste — c'est exactement ce qui a
+masque le defaut jusqu'ici.
+
+**Le filtre manquant est pose**, meme regle que les quatre autres : la page partait
+des MEMBRES du club et prenait tous leurs chevaux, sans regarder le club DU CHEVAL.
+
+🟥 **CINQ ENDROITS ECRIVENT MAINTENANT LA MEME REGLE** (`chevauxDeLEcurie`,
+`mesChevauxClub`, les resultats du rail club, la grille de la page club,
+`EcranEcurieHype`). C'est intenable et c'est ce qui a produit le sentiment de
+Blandine — « quel enfer, tout est melange ». Il en a fallu cinq correctifs successifs
+dans la meme nuit pour une seule question : **quels chevaux appartiennent a ce club ?**
+
+**CHANTIER PRIORITAIRE, A FROID** : UNE fonction unique, appelee par les cinq
+ecrans. Le jour ou un cheval change d'ecurie, il bouge partout d'un coup, et il n'y
+a plus qu'un seul endroit a verifier. Tant que ce n'est pas fait, chaque nouvel
+ecran qui affiche des chevaux recreera le meme defaut.
+
+⚠️ Reste non fait, demande ce soir : sur la page club, remonter « Derniers resultats »
+AU-DESSUS de « Ma gestion » — ce qui est propre au club en haut, le perso en bas.
+Deplacement de bloc dans une zone dense, volontairement reporte a tete reposee.
+
+## 03/09/2026 (matin) — VIDEO : L'INFRASTRUCTURE MUX EST EN PLACE
+
+**DECISION.** Les videos ne sont plus hebergees chez Supabase mais chez **Mux**.
+La compression maison (decidee le 27/08, jamais faite) est ABANDONNEE : Mux
+encode, fabrique les vignettes, diffuse en qualite adaptee au mobile. Cela regle
+d'un coup la compression, l'absence de vignette et la facture de trafic.
+Choix de Mux plutot que Cloudflare Stream pour deux raisons : le plan gratuit
+(10 videos stockees, 100 000 min de diffusion par mois) couvre largement cette
+etape, et Mux permet de RECUPERER les fichiers d'origine — Cloudflare non
+(verrouillage H.264, pas de retour arriere). Cloudflare redeviendra meilleur au
+changement d'echelle.
+
+**CHIFFRES VERIFIES.** Supabase : le stockage est negligeable, c'est le TRAFIC qui
+se paie (250 Go inclus puis 0,09 $/Go) et chaque visionnage compte. Mux : encodage
+0,0075 $/min, stockage 0,003 $/min, diffusion 0,0008 a 0,0048 $/min.
+Une video de concours non compressee pese ~250 Mo ; vue 20 fois = 5 Go chez
+Supabase. Chez Mux, la meme charge coute quelques centimes.
+
+**FAIT ET VERIFIE CE MATIN**
+- Compte Mux cree, environnement **Production**.
+- Jeton d'acces « Hype », permission Video.
+- Edge Function **`mux-upload` deployee** sur le projet Supabase. ⚠️ Ecrite et
+  publiee par l'ASSISTANT IA du tableau de bord Supabase : l'editeur de code y est
+  inutilisable au doigt sur iPhone (le collage est intercepte par l'editeur). Le
+  chemin qui marche est donc : bouton « Chat » de l'editeur -> consigne -> « Deploy ».
+  Origine verrouillee cote serveur sur https://2hype.netlify.app, requetes
+  limitees a POST et OPTIONS.
+- Secrets `MUX_TOKEN_ID` et `MUX_TOKEN_SECRET` enregistres.
+- **Chaine testee de bout en bout et VALIDEE** : bouton « Tester la connexion
+  video (Mux) » en bas de l'ecran Premium, visible aux seules moderatrices. Mux a
+  rendu une adresse d'envoi. ⚠️ Leçon au passage : la premiere version affichait le
+  resultat DANS la page et ne rendait rien — Blandine tapait sans rien voir. Un
+  outil de diagnostic doit passer par une alerte, pas par un rendu qui peut echouer.
+
+**BLOQUANT IDENTIFIE, A FAIRE AVANT DE BRANCHER LES VRAIES VIDEOS**
+`mux-upload` sait creer un envoi, mais pas retrouver la video ensuite. L'identifiant
+de LECTURE n'est delivre par Mux qu'une fois l'encodage fini, et seulement a une
+demande authentifiee — l'app ne peut pas aller le chercher (la cle secrete n'y est
+pas, et ne doit pas y etre). Il faut donc AJOUTER une seconde action a la fonction :
+sur `{action:"status", upload_id}`, faire GET /video/v1/uploads/{id} puis, si un
+asset_id existe, GET /video/v1/assets/{asset_id}, et renvoyer
+`{status, playback_id}` (playback_ids[0].id). Une vingtaine de lignes, meme chemin
+via l'assistant Supabase. **Sans ca : on sait envoyer une video, pas l'afficher.**
+
+**ENSUITE, cote index.html** : envoi vers Mux au lieu du bucket, lecteur Mux avec
+vignette, 2 videos gratuites de 2 min par COMPTE (chiffre de Blandine : deux, pas
+trois — le mur doit tomber au deuxieme concours, pas au bout d'une saison), carte
+Hype+ a la troisieme, et retrait du bouton de test.
+Les videos deja en ligne chez Supabase RESTENT ou elles sont : aucune migration,
+les deux systemes cohabitent.
+
+⚠️ **Non fait, signale par l'assistant Supabase et juste** : la fonction ne verifie
+pas que l'appelant est authentifie. En l'etat, n'importe qui connaissant l'adresse
+peut faire creer des envois sur le compte Mux. A resserrer avant l'ouverture aux
+cavalieres.
+
+---
+
+## 03/09 — OBJECTIF DE FOND RAPPELE PAR BLANDINE : L'APP STORE
+
+« Depuis le debut le but c'est de la mettre sur l'App Store et on est suppose
+travailler dans ce sens-la. » A garder en tete a CHAQUE decision, technique comme
+produit. Point complet a faire avec elle apres le branchement video.
+
+Premiers elements a verser au point :
+- Apple refuse les sites web simplement encapsules : il faut des fonctions
+  natives reelles (notifications, appareil photo, hors-ligne).
+- **L'ABSENCE DE CACHE HORS LIGNE** (point ouvert depuis le 01/09) cesse d'etre un
+  confort : c'est un critere de recevabilite.
+- Les abonnements souscrits DANS l'app passent par le paiement Apple et sa
+  commission (15 % la premiere annee pour les petits editeurs, 30 % ensuite).
+  L'abonnement web y echappe, mais Apple encadre strictement ce qu'on a le droit
+  d'en dire dans l'app.
+- Le compte obligatoire (valide le 02/09) impose alors deux choses : un moyen de
+  tester sans creer de compte, et la suppression de compte DEPUIS l'app.
+- Mux va dans le bon sens : une PWA qui telecharge un fichier iPhone brut se
+  ferait allumer en revue.
+
+## 03/09 — UNE SEULE FONCTION POUR « LES CHEVAUX DE CE CLUB »
+
+Le chantier prioritaire issu de la nuit est fait. CINQ ecrans repondaient a la
+meme question par cinq chemins differents, et il a fallu cinq correctifs
+successifs pour la meme question — c'est ce qui a produit le « quel enfer, tout
+est melange » de Blandine.
+
+**Deux fonctions, un seul endroit qui decide** : `hypeMemeClub(clubCheval, clubPage)`
+et `hypeChevauxDuClub(liste, clubPage)`, posees a cote de `noyauEcurie`.
+
+Les cinq appelants sont branches dessus : `chevauxDeLEcurie` (⚠️ celle qui EXCLUT
+le compte courant — c'est elle que j'avais corrigee a tort en premier),
+`mesChevauxClub`, le rail des resultats du club, la grille de la page club, et
+`EcranEcurieHype`.
+
+**La regle, telle que Blandine l'a tranchee** : un cheval SANS club apparait
+PARTOUT ; un cheval rattache a un AUTRE club est ecarte ; comparaison tolerante
+via `noyauEcurie`.
+
+⚠️ **Une divergence trouvee en chemin** : la version du 01/09 (grille de la page
+club) comparait les noyaux par EGALITE STRICTE, la ou les quatre autres toleraient
+l'inclusion. Deux regles differentes pour la meme question, sans que rien ne le
+signale. C'est exactement le genre d'ecart que la fonction unique supprime.
+
+Teste sur les vrais chevaux : Dakota et Ecolo cote SEP, Rizotto et Daphne cote
+Feinn, un cheval sans club present partout, et les variantes de nom tolerees
+(accent, pluriel, espaces). 9 verifications, toutes passees.
+
+**A RETENIR** : ne plus jamais reecrire cette regle ailleurs. Tout nouvel ecran qui
+affiche des chevaux d'un club appelle `hypeChevauxDuClub`. Le jour ou un cheval
+change d'ecurie, il bouge partout d'un coup.
+
+## 03/09 — PAGE CLUB : LE COLLECTIF EN HAUT, LE PERSONNEL EN BAS
+
+Demande de Blandine, formulee cette nuit et reportee deux fois : « les derniers
+resultats devraient remonter avant la gestion de mes chevaux — on garde ce qui est
+propre a l'ecurie en haut et ce qui est plus perso en bas ».
+
+Le bloc « Derniers resultats » (titre, lien « Voir tout », rail aux coupes) passe
+AVANT le separateur « Ma gestion ». Nouvel ordre de la page club :
+identite du club · stories · a la une · les chevaux de l'ecurie ·
+**DERNIERS RESULTATS** · MA GESTION (mes chevaux) · agenda · clinique · sellerie ·
+album de l'ecurie.
+
+⚠️ Piege rencontre et evite : a la premiere tentative, le bloc s'est retrouve
+IMBRIQUE dans le conteneur « Ma gestion », donc soumis a la condition `moiG` — il
+aurait disparu pour un visiteur non connecte. Repose au bon niveau, en frere du
+conteneur, avec ses paddings d'origine.
+
+## 03/09 — LES RESULTATS OUVERTS AUX CAVALIERES RATTACHEES
+
+Demande de Blandine cette nuit : « elle doit egalement pouvoir ajouter ses
+resultats, si personne ne les a deja ajoutes ».
+
+**Une seule condition, `peutSaisirResultat`** (proprietaire OU rattachee), posee a
+cote de `ouvrirAjoutResultat` et appliquee aux CINQ portes qui reservaient la
+saisie a la proprietaire : les deux rails, la carte vide « Ses premiers resultats
+l'attendent », le bouton « + » du panneau palmares, et l'hote du module.
+⚠️ Ne plus reecrire cette condition ailleurs — meme leçon que pour les chevaux du
+club.
+
+⚠️ **Point de conception respecte** : un resultat appartient au COUPLE cavaliere +
+cheval. Le parcours de Blandine sur Dakota et celui de son eleve ne sont PAS le
+meme resultat : les deux coexistent, chaque ligne portant son `user_id`.
+
+**ANTI-DOUBLON A LA SAISIE MANUELLE.** Il existait cote import FFE, pas ici. Cas
+courant : on saisit un concours a la main, puis on importe le PDF du meme concours
+— la ligne apparait deux fois. La comparaison porte sur cavaliere + cheval +
+concours (+ annee si connue), avec accents et casse neutralises. En cas de
+correspondance, une confirmation propose d'ajouter quand meme : rien n'est jamais
+refuse, on previent seulement.
+Teste sur 6 situations, dont la plus importante : **le meme concours saisi par une
+AUTRE cavaliere sur le meme cheval n'est jamais signale comme doublon.**
+
+## 03/09 — CHANTIER ALIAS : ETAPE 1, LES COLONNES ET LE REPERAGE
+
+Fichier `alias-chevaux.sql`. Il n'ecrit AUCUNE donnee : il ajoute deux colonnes
+vides et propose un reperage a lire avant tout nettoyage.
+
+- `chevaux.alias` -> l'alias FFE, donnee officielle du cheval, la MEME pour tout
+  le monde, remplie a l'import. Vit sur la fiche commune.
+- `chevaux_histoires.surnom` -> le surnom PERSONNEL de chaque cavaliere, sur SA
+  page a elle, jamais sur celle des autres. Meme regle que l'histoire et la photo
+  perso, et il se range naturellement dans la table qui les porte deja.
+
+⚠️ Les deux ne doivent pas etre melanges : sans champ separe, le prochain import
+FFE ecraserait le surnom choisi par la cavaliere.
+
+Le nettoyage des noms ou l'alias est colle (« CRUMBLE alias Cruibhi n »,
+« Yum alias Umea borderie ») reste EN COMMENTAIRE dans le fichier : Blandine
+lance d'abord le reperage, on regarde ensemble ce qu'il sort, et on decommente
+seulement si les deux morceaux proposes sont corrects sur chaque ligne.
+⚠️ Cette coupure est irreversible — les deux morceaux ne se reconstituent pas.
+
+**ETAPES SUIVANTES** (pas encore codees, elles dependent des colonnes) :
+2. affichage — surnom en grand sur sa vue a elle, nom officiel en dessous ;
+   l'alias FFE sur la fiche commune ;
+3. recherche a la creation portant sur nom + alias FFE + tous les surnoms, qui
+   PROPOSE le rattachement au lieu de la creation. C'est ce point 3 qui bouche
+   enfin la fuite des doublons : `soumettreCheval` ne compare toujours RIEN
+   aujourd'hui, et c'est de la que sont sortis Crumble/Cruibhin et les deux
+   Cooltax.
+
+## 03/09 — ALIAS ETAPE 2 : LE SURNOM PASSE DEVANT
+
+⚠️ **CORRECTION IMPORTANTE A L'ETAPE 1.** J'avais ecrit qu'il fallait « nettoyer »
+les noms ou l'alias est colle. C'ETAIT FAUX ET DANGEREUX, pour une raison que
+Blandine a rappelee : le nom sert de CLE au VERROU D'IDENTITE de l'import FFE
+(`enregistrerImportFFE`, 26/08) — le nom lu dans le telemat doit correspondre a la
+fiche, sinon l'import est refuse.
+Et le contournement qu'elle avait demande existe bien, code le 30/08 : la
+comparaison TOLERE le bruit d'extraction des PDF. Les deux cas sont nommes dans le
+code — `CRUIBHIN` lu « CRUIBHI N », `DAPHNEE` lu « DAPH N E VELLEDA ». Accents,
+casse et ponctuation neutralises, puis distance d'edition <= 2 acceptee sur les
+noms d'au moins 6 lettres.
+→ Donc les noms propres passent le verrou, et le renommage fait par Blandine
+(`Cruibhin` + alias `Crumble`, `Umea Borderie` + alias `Yum`) ne casse rien.
+→ **REGLE A RETENIR : ne jamais toucher au `nom` d'un cheval pour des raisons
+d'affichage.** Seuls l'alias et le surnom sont libres.
+⚠️ Mon erreur de methode : j'ai d'abord regarde OU LES LIGNES SONT ECRITES
+(cheval_id explicite) et conclu que le nom ne servait a rien, au lieu de chercher
+OU L'IMPORT EST REFUSE. Blandine a du me le dire deux fois.
+
+**AFFICHAGE LIVRE.** Le surnom passe EN GRAND, le nom officiel en dessous, en
+petit et en gris. Ordre de priorite : surnom perso > alias FFE > nom officiel.
+Si le surnom est identique au nom, rien n'est repete.
+Teste sur 5 situations, dont « Yum » devant « Umea Borderie » et Dakota sans alias.
+
+**SAISIE.** Nouvelle entree dans le menu de la fiche : « Lui donner un surnom » /
+« Changer son surnom · <valeur> ». Ouverte a tous ceux qui ont le cheval chez eux.
+Ecrit dans `chevaux_histoires.surnom` — donc personnel, jamais visible chez les
+autres, et sans effet ni sur le nom officiel ni sur l'alias commun.
+
+**RESTE L'ETAPE 3**, la plus importante : la recherche a la creation portant sur
+nom + alias + tous les surnoms, qui PROPOSE le rattachement au lieu de la creation.
+`soumettreCheval` ne compare toujours RIEN aujourd'hui — c'est de la que sont
+sortis Crumble/Cruibhin et les deux Cooltax.
+
+## 03/09 — ALIAS ETAPE 3 : LA FUITE DES DOUBLONS EST BOUCHEE
+
+C'etait le trou le plus ancien du projet : `soumettreCheval` et `creer` (DEUX
+chemins de creation, pas un) verifiaient le quota et l'ecurie, puis creaient.
+AUCUNE comparaison du nom saisi. Crumble/Cruibhin, les deux Cooltax et les deux
+Vallieres sont tous nes la.
+
+**Forme volontairement inoffensive** : on CHERCHE et on PROPOSE. Si un cheval du
+meme nom existe, une question s'affiche — « OK = l'ajouter a mes chevaux /
+Annuler = creer quand meme ». ⚠️ Aucune creation n'est JAMAIS refusee : deux
+chevaux peuvent legitimement porter le meme nom. Le pire cas est une suggestion
+qu'on ignore.
+Si elle accepte, le rattachement se fait immediatement (`lierCheval`) et la
+modale se ferme : elle a le cheval, ses origines et ses resultats, et gardera ses
+albums et son histoire a elle.
+
+**Comparaison tolerante au bruit**, meme regle que le verrou d'identite FFE :
+accents, casse et ponctuation neutralises, puis distance d'edition <= 2 sur les
+noms d'au moins 6 lettres. Teste sur 10 cas reels : « Cruibhin » reconnait
+« CRUIBHI N », « Vallieres » reconnait « Vallières », mais « Crumble » ne se
+confond pas avec « Cruibhin » et « Elfe » pas avec « Elfe de Feinn ». Les noms
+courts (« Yum » / « Yumi ») n'ont pas de tolerance — trop risque.
+
+⚠️ **DEUX CHOIX QUE J'AI FAITS FAUTE DE REPONSE, a changer d'un mot si besoin :**
+1. La recherche porte sur TOUTE la base, pas seulement les clubs de la cavaliere.
+   Plus large, donc plus efficace contre les doublons, mais elle peut proposer le
+   cheval d'une inconnue.
+2. Les chevaux qu'elle a DEJA chez elle sont exclus des propositions — sinon on
+   lui proposerait de se rattacher a un cheval qu'elle possede.
+
+⚠️ **LIMITE ASSUMEE : la recherche ne porte PAS sur les surnoms personnels.** La
+regle de lecture de `chevaux_histoires` ne laisse chacune voir que sa propre
+ligne — c'est voulu et il ne faut pas la relacher. Une cavaliere qui tape « Yum »
+ne retrouvera donc pas un cheval surnomme ainsi par une autre. Elle retrouvera en
+revanche « Umea Borderie » par son nom et son alias FFE, qui sont publics.
+Pour aller plus loin il faudrait une table publique de rapprochement (cheval_id +
+terme), alimentee a l'enregistrement d'un surnom. Non fait, non urgent.
+
+⚠️ **Piege rencontre** : il existe DEUX points de creation (la modale
+`ModaleCreationCheval.creer` et `EcranGererEcurie.soumettreCheval`). Corriger un
+seul aurait laisse la fuite ouverte — encore le motif « plusieurs chemins pour la
+meme question ». Les deux appellent desormais `hypeProposerRattachement`.
+
+## 03/09 — LES SURNOMS ENTRENT DANS LA RECHERCHE
+
+La limite signalee a l'etape 3 est levee, sans toucher a la protection des
+donnees perso.
+
+**Le probleme** : la recherche anti-doublon portait sur le nom et l'alias, publics.
+Elle ne pouvait pas porter sur les surnoms, parce que la regle de lecture de
+`chevaux_histoires` ne laisse chacune voir que SA ligne — et il ne faut surtout
+pas la relacher, c'est elle qui protege les histoires et les photos perso.
+
+**La solution** : une table publique `chevaux_recherche` qui ne contient QUE
+`cheval_id` + `terme` normalise. ⚠️ **Elle ne dit jamais QUI a pose le surnom** :
+aucune colonne d'auteur. On sait que « YUM » designe ce cheval, jamais qui
+l'appelle ainsi. Le confort de recherche sans la fuite de vie privee.
+
+Regles : lecture publique (c'est son objet), ajout par tout cavalier connecte (il
+le fait en enregistrant SON surnom), suppression reservee aux moderatrices — sinon
+on pourrait faire disparaitre un cheval de la recherche.
+
+**Amorce** : le SQL depose aussi tous les noms et alias deja en base, qui sont
+deja publics. La recherche est donc utile immediatement, sans attendre que des
+surnoms soient saisis.
+
+**Cote app** : un surnom enregistre depose son terme dans la table, et la
+recherche a la creation interroge nom + alias + table des surnoms. Une cavaliere
+qui tape « Yum » retrouvera Umea Borderie meme si le surnom a ete pose par une
+autre — et sans voir ce surnom nulle part.
+
+⚠️ Menage assume : si quelqu'un change son surnom, l'ancien terme reste. Un terme
+orphelin ne montre rien et ne gene personne, il aide juste a retrouver le cheval.
+Les moderatrices peuvent nettoyer si besoin.
+
+## 03/09 — LE PRIVE DEVIENT VRAIMENT PRIVE (SQL a passer)
+
+Fichier `albums-prive.sql`.
+
+**Le probleme, ouvert depuis le 02/09** : la regle de lecture de `albums_cheval`
+etait `using (true)`. N'importe qui pouvait lire TOUS les albums via l'API, y
+compris ceux marques « prive ». Le filtre n'existait que dans l'app
+(`listerAlbumsCheval`), donc a l'ecran — pas en base. Un album prive n'etait
+prive que pour ceux qui passent par l'app.
+⚠️ Ce sont des photos de cavalieres, parfois mineures. C'est une promesse faite a
+l'utilisatrice qui n'etait pas tenue — et un point qu'un examinateur Apple
+regarde.
+
+**La regle posee** est exactement celle qu'appliquait deja l'app : album public
+(ou colonne vide) lisible par tous, y compris les visiteurs sans compte pour les
+pages publiques ; album prive reserve a son auteur et aux moderatrices. Le modele
+OPT-OUT decide le 02/08 est conserve.
+⚠️ Il fallait SUPPRIMER l'ancienne regle trop large : les regles RLS etant
+permissives, il suffit qu'UNE seule laisse passer.
+
+Le fichier commence par un comptage des albums prives, a lancer d'abord pour
+mesurer ce que la nouvelle regle va masquer.
+
+⚠️ **CE QUI RESTE OUVERT APRES CE SQL** : les FICHIERS eux-memes (bucket
+« photos ») restent publics. L'adresse d'une photo d'album prive est encore
+accessible a qui la connait. Fermer ca demande de passer le bucket en prive et de
+signer les adresses a la lecture — chantier a part, qui touche TOUTES les photos
+de l'app. Ici on ferme la LISTE ; le fichier reste devinable si on a son adresse.
+
+## 03/09 (soir) — VIDEO MUX : EN PAUSE, ET POURQUOI
+
+L'infrastructure est en place et VALIDEE (compte, jeton, fonction `mux-upload`
+deployee, secrets poses, chaine testee avec succes depuis l'ecran Premium).
+Il ne manque qu'UNE chose, et c'est elle qui bloque.
+
+**CE QUI MANQUE** : `mux-upload` sait creer un envoi, mais pas retrouver la video
+ensuite. L'identifiant de LECTURE n'est delivre par Mux qu'apres l'encodage, et
+seulement a une demande authentifiee — l'app ne peut pas aller le chercher, la cle
+secrete n'y est pas et ne doit pas y etre. Sans cette seconde action : on sait
+envoyer une video, pas l'afficher.
+
+**LA CONSIGNE A REDONNER A L'ASSISTANT SUPABASE** (elle a deja ete ecrite une fois
+et sa reponse a ete perdue) : sur `{action:"status", upload_id}`, faire
+GET /video/v1/uploads/{id}, puis si data.asset_id existe
+GET /video/v1/assets/{asset_id}, et renvoyer `{status, playback_id, duration}`
+(playback_id = data.playback_ids[0].id). Si l'asset n'est pas pret, renvoyer
+`{status}` seul, sans erreur. Garder le CORS et l'origine verrouillee.
+⚠️ AJOUTER A LA CONSIGNE : « deploie-la toi-meme quand tu as fini ».
+
+🟥 **DEUX PIEGES DE L'INTERFACE SUPABASE SUR IPHONE, A NE PAS REDECOUVRIR**
+1. L'editeur de code est INUTILISABLE au doigt : l'appui long est intercepte par
+   l'editeur, qui affiche ses propres raccourcis clavier au lieu du menu iOS. Le
+   collage est impossible. Le SEUL chemin qui marche est l'assistant IA
+   (bouton losange vert dans la barre flottante, onglet Code).
+2. **Le panneau de l'assistant NE GARDE RIEN.** Fermer par le ✕ perd le code
+   qu'il vient d'ecrire — l'horodatage de la fonction reste inchange et le bouton
+   « Deploy updates » disparait. ⚠️ TOUJOURS finir par Deploy, jamais par ✕.
+   Le bouton Deploy du panneau est de plus partiellement recouvert par la
+   pastille flottante ↓ : taper legerement a droite, ou faire defiler d'abord.
+
+**PISTE DE SECOURS, non verifiee** : se passer de cette seconde action en
+interrogeant Mux directement depuis l'app. Demanderait une cle de lecture
+publique cote Mux — a verifier avant de la promettre.
+
+**QUAND ON REPRENDRA**, l'ordre est : la consigne ci-dessus (avec le « deploie
+toi-meme »), verifier avec le bouton « Tester la connexion video (Mux) » en bas
+de l'ecran Premium que l'envoi n'a pas ete casse, puis je livre index.html
+(envoi vers Mux, attente d'encodage, lecteur, 2 videos gratuites de 2 min par
+compte) et je retire le bouton de test.
+⚠️ Et resserrer la fonction pour exiger un utilisateur authentifie : en l'etat,
+qui connait l'adresse peut faire creer des envois sur le compte Mux.
+
+## 03/09 (soir) — LES VIDEOS PASSENT PAR MUX · LIVRE
+
+La fonction `mux-upload` a ete redeployee avec sa SECONDE ACTION (`{action:"status",
+upload_id}` -> `{status, playback_id, duration}`) et le test de bout en bout
+repond ✅. Cote app, tout est branche.
+
+⚠️ **CINQ TENTATIVES POUR DEPLOYER, ET LES PIEGES A CONNAITRE**
+1. L'editeur de code Supabase est inutilisable au doigt (l'appui long est
+   intercepte). SEUL chemin : l'assistant IA, bouton losange vert.
+2. Fermer le panneau par le ✕ PERD le code ecrit.
+3. Le bouton « Deploy » du panneau est recouvert par la pastille flottante ↓ :
+   taper a droite, ou faire defiler.
+4. « Skipped Edge Function deployment » = le bouton n'a pas ete atteint. Relancer
+   avec « Deploie cette version maintenant, sans me demander confirmation ».
+5. La confirmation finale s'appelle **« Replace function »** (bouton rouge) :
+   c'est normal, la nouvelle version CONTIENT l'ancienne.
+
+⚠️ **DEUX DEFAUTS DE MON PROPRE CODE, corriges**
+- Le test n'avait AUCUNE limite de temps : si la reponse tardait, le bouton
+  tournait indefiniment sans rien afficher. Limite a 12 s avec message clair.
+- L'alerte « Essai lance » BLOQUAIT l'affichage de la reponse : celle-ci arrivait
+  tout de suite mais restait en file derriere, et Blandine a cru a trois minutes
+  de latence. **Une alerte de confort peut masquer le resultat qu'elle accompagne.**
+  Retiree.
+
+**CE QUI EST LIVRE**
+- Envoi direct chez Mux : l'app demande une adresse a la fonction (la cle ne quitte
+  jamais le serveur), envoie le fichier en PUT, puis demande l'identifiant de
+  lecture quand l'encodage est fini (3 s d'intervalle, 2 min au plus).
+- **DUREE : 3 MINUTES** (chiffre de Blandine : un parcours fait ~1 min 30, il faut
+  la marge de l'entree en piste et du tour d'honneur). Lue AVANT l'envoi : un
+  fichier trop long n'est jamais stocke ni facture.
+- **2 videos gratuites par COMPTE**, comptees sur les videos reellement envoyees,
+  Mux et anciennes Supabase confondues. Au-dela : carte Hype+.
+- **Progression en pourcentage** pendant l'envoi. Un envoi de 3 min sans barre
+  passe pour un plantage.
+- ⚠️ Si l'encodage n'est pas fini au bout de 2 min, ce n'est PAS traite comme un
+  echec : message « ta video est bien envoyee, elle finit d'etre preparee ». C'est
+  l'angle mort du 27/08 (« envoye, mais pas enregistre ») qu'il ne faut pas refaire.
+
+🟥 **CHOIX D'ARCHITECTURE QUI EVITE DIX MODIFICATIONS.** On stocke l'ADRESSE DE
+LECTURE (`https://stream.mux.com/<id>.m3u8`) dans le tableau `photos`, et non un
+jeton « mux:<id> ». Raison : les DIX endroits qui affichent une video posent
+simplement `src: <la valeur>`. En rangeant une vraie URL, tout le code existant la
+joue sans rien savoir de Mux — aucune de ces vues n'a ete touchee. Safari iOS lit
+le HLS nativement. Seule modification : `.m3u8` ajoute aux deux definitions de
+`estUrlVideo` (il y en a DEUX dans le fichier, l'une avait deja pris du retard sur
+l'autre le 27/08).
+Teste : 7 cas — m3u8 reconnue, avec marqueur de cadre, anciennes .mp4/.mov
+toujours reconnues, et les photos jamais prises pour des videos.
+
+⚠️ **AUCUNE MIGRATION** : les videos deja chez Supabase continuent de fonctionner
+cote a cote. Rien a deplacer, rien a perdre.
+
+⚠️ **RESTE A FAIRE** : resserrer la fonction pour exiger un utilisateur authentifie
+(en l'etat, qui connait l'adresse peut faire creer des envois sur le compte Mux) ;
+et retirer le bouton de test de l'ecran Premium quand le premier envoi reel aura
+ete valide.
+

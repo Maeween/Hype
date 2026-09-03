@@ -1006,7 +1006,7 @@ function estFichierVideo(f) { /* 27/08 : repli sur l extension ajoute — certai
     return /\.(mp4|mov|m4v|avi|webm|mkv|3gp)$/.test(nF);
   } catch (e) { return false; }
 }
-function estUrlVideo(u) { /* 27/08 soir : le "#" AJOUTE aux separateurs acceptes. L app suffixe les URL d un marqueur de cadre (#cadre=spectral, cf. marquerCadre plus bas) : une video ainsi marquee n etait plus reconnue comme video et disparaissait de l onglet Videos de la fiche cheval, alors qu elle restait bien presente dans son album (constate par Blandine : la video du jour absente, celle d avant-hier — sans marqueur — presente). L autre definition de cette meme fonction, plus bas dans le fichier, acceptait deja le "#" : c est bien CELLE-CI qui etait en retard. */ try { return /\.(mp4|mov|webm|m4v|ogv)(\?|#|$)/i.test(String(u || "")); } catch (e) { return false; } }
+function estUrlVideo(u) { /* 27/08 soir : le "#" AJOUTE aux separateurs acceptes. L app suffixe les URL d un marqueur de cadre (#cadre=spectral, cf. marquerCadre plus bas) : une video ainsi marquee n etait plus reconnue comme video et disparaissait de l onglet Videos de la fiche cheval, alors qu elle restait bien presente dans son album (constate par Blandine : la video du jour absente, celle d avant-hier — sans marqueur — presente). L autre definition de cette meme fonction, plus bas dans le fichier, acceptait deja le "#" : c est bien CELLE-CI qui etait en retard. */ try { return /\.(mp4|mov|webm|m4v|ogv|m3u8)(\?|#|$)/i.test(String(u || "")); } catch (e) { return false; } /* 03/09 : m3u8 ajoute — c est le format des videos servies par Mux */ }
 
 /* ===== VIGNETTES SUPABASE (02/08) =====
    Le rail de la fiche cheval chargeait CHAQUE photo en resolution d origine dans une case de
@@ -21535,7 +21535,7 @@ function EcranChevalCommun() {
                  date: String(r.date_epreuve || ""), compte: !!compte };
     }
     function urlDe(p) { if (!p) return ""; if (typeof p === "string") return p; return p.url || p.src || ""; }
-    function estUrlVideo(u) { return /\.(mp4|mov|webm|m4v)(\?|#|$)/i.test(String(u || "")); }
+    function estUrlVideo(u) { return /\.(mp4|mov|webm|m4v|m3u8)(\?|#|$)/i.test(String(u || "")); /* 03/09 : m3u8 = Mux */ }
     function fmtDur(sec) { if (!sec || !isFinite(sec)) return ""; var m = Math.floor(sec / 60), x = Math.round(sec % 60); return m + ":" + (x < 10 ? "0" : "") + x; }
     function fmtJour(iso) { try { var d = new Date(iso); if (isNaN(d)) return ""; return d.getDate() + " " + ["janv.","f\u00e9vr.","mars","avr.","mai","juin","juil.","ao\u00fbt","sept.","oct.","nov.","d\u00e9c."][d.getMonth()]; } catch (eD) { return ""; } }
 
@@ -31174,41 +31174,6 @@ function EncartCavaliersSpectral(props) {
           h("div", { style: { fontSize: 10, color: "#7B848C", fontFamily: "'Montserrat',sans-serif", marginTop: 12, lineHeight: 1.5 } },
             T("Le r\u00e9glage est gard\u00e9 sur cet appareil et ne change rien pour les autres membres.", "This setting stays on this device.", "El ajuste se guarda en este dispositivo.", "L'impostazione resta su questo dispositivo.", "\u3053\u306e\u8a2d\u5b9a\u306f\u3053\u306e\u7aef\u672b\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002", "Die Einstellung bleibt auf diesem Ger\u00e4t."))) : null) : null));
 }
-function EcranGererEcurie() {
-  var h = React.createElement;
-  var ctx = useApp();
-  var setEcran = ctx.setEcran, profil = ctx.profil, tr = ctx.tr, premium = ctx.premium;
-  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
-  var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif", TURQ = "#20D9F5", TURQL = "#5FE9F0";
-  var _u = React.useState(undefined), user = _u[0], setUser = _u[1];
-  var _ch = React.useState([]), chevaux = _ch[0], setChevaux = _ch[1];
-  var _cv = React.useState([]), cavaliers = _cv[0], setCavaliers = _cv[1];
-  var _sv = React.useState([]), souvenirs = _sv[0], setSouvenirs = _sv[1];
-  var _pl = React.useState([]), palmares = _pl[0], setPalmares = _pl[1];
-  var _fo = React.useState(null), formOuvert = _fo[0], setFormOuvert = _fo[1];
-  var _bz = React.useState(false), busy = _bz[0], setBusy = _bz[1];
-  var chFile = React.useRef(null), cvFile = React.useRef(null), svFile = React.useRef(null);
-  var _fch = React.useState({ nom: "", race: "", age: "", discipline: "" }), champsCh = _fch[0], setChampsCh = _fch[1];
-  /* 01/09 : les clubs du cavalier, pour le choix a la creation. ⚠️ LA QUESTION
-     N'EST POSEE QUE S'IL Y EN A PLUSIEURS : un cavalier d'un seul club ne voit
-     rien de nouveau, et son cheval part sans `club` — donc visible partout,
-     comme avant. */
-  var _mcl = React.useState([]), mesClubsL = _mcl[0], setMesClubsL = _mcl[1];
-  var _cch = React.useState(""), clubCheval = _cch[0], setClubCheval = _cch[1];
-  React.useEffect(function () { (async function () { try { if (typeof mesClubs === "function") setMesClubsL(await mesClubs()); } catch (e) { } })(); }, []);
-  var _fcv = React.useState({ nom: "", niveau: "" }), champsCv = _fcv[0], setChampsCv = _fcv[1];
-  async function charger() {
-    try {
-      var u = await utilisateurActuel(); setUser(u || null);
-      if (u) {
-        var a = await mesChevaux(); setChevaux((a && a.data) || []);
-        var b = await mesCavaliers(); setCavaliers((b && b.data) || []);
-        var c = await mesSouvenirs(); setSouvenirs((c && c.data) || []);
-        var d = await palmaresEcurie(); setPalmares((d && d.data) || []);
-      }
-    } catch (e) { setUser(null); }
-  }
-  React.useEffect(function () { charger(); }, []);
 /* ============================================================================
    03/09 — ANTI-DOUBLON A LA CREATION D'UN CHEVAL
    ----------------------------------------------------------------------------
@@ -31318,6 +31283,41 @@ async function hypeProposerRattachement(nomSaisi, chevauxAMoi) {
   } catch (e) { return "creer"; }
 }
 
+function EcranGererEcurie() {
+  var h = React.createElement;
+  var ctx = useApp();
+  var setEcran = ctx.setEcran, profil = ctx.profil, tr = ctx.tr, premium = ctx.premium;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif", TURQ = "#20D9F5", TURQL = "#5FE9F0";
+  var _u = React.useState(undefined), user = _u[0], setUser = _u[1];
+  var _ch = React.useState([]), chevaux = _ch[0], setChevaux = _ch[1];
+  var _cv = React.useState([]), cavaliers = _cv[0], setCavaliers = _cv[1];
+  var _sv = React.useState([]), souvenirs = _sv[0], setSouvenirs = _sv[1];
+  var _pl = React.useState([]), palmares = _pl[0], setPalmares = _pl[1];
+  var _fo = React.useState(null), formOuvert = _fo[0], setFormOuvert = _fo[1];
+  var _bz = React.useState(false), busy = _bz[0], setBusy = _bz[1];
+  var chFile = React.useRef(null), cvFile = React.useRef(null), svFile = React.useRef(null);
+  var _fch = React.useState({ nom: "", race: "", age: "", discipline: "" }), champsCh = _fch[0], setChampsCh = _fch[1];
+  /* 01/09 : les clubs du cavalier, pour le choix a la creation. ⚠️ LA QUESTION
+     N'EST POSEE QUE S'IL Y EN A PLUSIEURS : un cavalier d'un seul club ne voit
+     rien de nouveau, et son cheval part sans `club` — donc visible partout,
+     comme avant. */
+  var _mcl = React.useState([]), mesClubsL = _mcl[0], setMesClubsL = _mcl[1];
+  var _cch = React.useState(""), clubCheval = _cch[0], setClubCheval = _cch[1];
+  React.useEffect(function () { (async function () { try { if (typeof mesClubs === "function") setMesClubsL(await mesClubs()); } catch (e) { } })(); }, []);
+  var _fcv = React.useState({ nom: "", niveau: "" }), champsCv = _fcv[0], setChampsCv = _fcv[1];
+  async function charger() {
+    try {
+      var u = await utilisateurActuel(); setUser(u || null);
+      if (u) {
+        var a = await mesChevaux(); setChevaux((a && a.data) || []);
+        var b = await mesCavaliers(); setCavaliers((b && b.data) || []);
+        var c = await mesSouvenirs(); setSouvenirs((c && c.data) || []);
+        var d = await palmaresEcurie(); setPalmares((d && d.data) || []);
+      }
+    } catch (e) { setUser(null); }
+  }
+  React.useEffect(function () { charger(); }, []);
   async function soumettreCheval() { if (!champsCh.nom.trim()) return; if (!premium && chevaux.length >= quotaGratuit(user && user.id)) { setEcran("premium"); return; }
     /* 03/09 : ON CHERCHE AVANT DE CREER (voir hypeProposerRattachement). */
     var suiteS = await hypeProposerRattachement(champsCh.nom, chevaux);
@@ -34964,6 +34964,9 @@ function AlbumsCheval(props) {
   var pSt = React.useState(false); var selPhotos = pSt[0], setSelPhotos = pSt[1];
   var dSt = React.useState(null); var dispo = dSt[0], setDispo = dSt[1];
   var eSt = React.useState(false); var envoiCours = eSt[0], setEnvoiCours = eSt[1];
+  /* 03/09 : progression de l'envoi video. Un envoi de 3 min sans barre passe pour
+     un plantage — c'est le chemin par lequel une cavaliere abandonne. */
+  var epSt = React.useState(0); var envoiPct = epSt[0], setEnvoiPct = epSt[1];
   var xSt = React.useState(false); var albDeplie = xSt[0], setAlbDeplie = xSt[1];
   var rSt = React.useState(null); var confRetrait = rSt[0], setConfRetrait = rSt[1];
   var gSt = React.useState(false); var reglagesA = gSt[0], setReglagesA = gSt[1];
@@ -35172,28 +35175,29 @@ function AlbumsCheval(props) {
        Gratuit : aucune video, mais plus jamais une erreur seche — une invitation
        Hype+. Premium : plafond de duree (2 min), verifie AVANT l'envoi, donc un
        fichier trop long n'est jamais stocke ni facture. */
-    var videosBloquees = 0, videosTropLongues = 0;
-    if (!premium) {
-      fichiersUtiles = fichiersUtiles.filter(function (ficV) {
-        if (estFichierVideo(ficV)) { videosBloquees++; return false; }
-        return true;
-      });
-      if (videosBloquees > 0) { setInvitPlus({ motif: "video" }); }
-    } else {
-      var gardees = [];
-      for (var iV = 0; iV < fichiersUtiles.length; iV++) {
-        var fV = fichiersUtiles[iV];
-        if (estFichierVideo(fV)) {
-          var dV = await dureeVideoFichier(fV);
-          if (dV > DUREE_VIDEO_MAX_S + 1) { videosTropLongues++; continue; }
-        }
-        gardees.push(fV);
+    /* 03/09 : LES VIDEOS PARTENT CHEZ MUX, plus dans le bucket Supabase.
+       Regle validee : 2 videos gratuites par COMPTE, 3 MINUTES maximum, duree lue
+       AVANT l'envoi — un fichier trop long n'est jamais stocke ni facture. */
+    var videosAEnvoyer = [];
+    var gardees0 = [];
+    var videosTropLongues = 0, videosAuDela = 0;
+    var dejaVids = null;
+    for (var iV = 0; iV < fichiersUtiles.length; iV++) {
+      var fV = fichiersUtiles[iV];
+      if (!estFichierVideo(fV)) { gardees0.push(fV); continue; }
+      var dV = await dureeVideoFichier(fV);
+      if (dV > HYPE_MUX_DUREE_MAX_S + 1) { videosTropLongues++; continue; }
+      if (!premium) {
+        if (dejaVids === null) dejaVids = await hypeMuxNombreVideos();
+        if (dejaVids + videosAEnvoyer.length >= HYPE_MUX_VIDEOS_GRATUIT) { videosAuDela++; continue; }
       }
-      fichiersUtiles = gardees;
-      if (videosTropLongues > 0) {
-        bip(T("Vidéo trop longue — 2 minutes maximum.", "Video too long — 2 minutes max.", "Vídeo demasiado largo — 2 minutos máximo.", "Video troppo lungo — massimo 2 minuti.", "動画が長すぎます — 最大2分です。", "Video zu lang — maximal 2 Minuten."), 5000);
-      }
+      videosAEnvoyer.push(fV);
     }
+    fichiersUtiles = gardees0;
+    if (videosTropLongues > 0) {
+      bip(T("Vidéo trop longue — 3 minutes maximum.", "Video too long — 3 minutes max.", "Vídeo demasiado largo — 3 minutos máximo.", "Video troppo lungo — massimo 3 minuti.", "動画が長すぎます — 最大3分です。", "Video zu lang — maximal 3 Minuten."), 5000);
+    }
+    if (videosAuDela > 0) { setInvitPlus({ motif: "video" }); }
     /* --- LES PHOTOS : plafond du COMPTE, plus de l'album --- */
     if (!premium) {
       var dejaCompteF = (quotaPh === null) ? await photosUtiliseesParMoi() : quotaPh;
@@ -35201,12 +35205,51 @@ function AlbumsCheval(props) {
       if (placesRestantes <= 0) { setInvitPlus({ motif: "photos", utilisees: dejaCompteF }); return; }
       if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); setInvitPlus({ motif: "photos", utilisees: dejaCompteF, partiel: true }); }
     }
-    if (!fichiersUtiles.length) return; /* 27/08 : rien a envoyer — inutile d ouvrir un cycle d envoi pour rien */
+    if (!fichiersUtiles.length && !videosAEnvoyer.length) return; /* 27/08 : rien a envoyer — inutile d ouvrir un cycle d envoi pour rien */
     setEnvoiCours(true);
     var urls = (alb.photos || []).slice();
     var rate = 0;
     var raisonRatee = null; /* 26/08 : la VRAIE raison de l'echec, plus un simple compte muet — un fichier trop lourd ou un type refuse doit se voir */
-    for (var iF = 0; iF < fichiersUtiles.length; iF++) {
+
+    /* --- LES VIDEOS, CHEZ MUX --------------------------------------------------
+       Trois temps, chacun pouvant echouer distinctement : demander l'adresse,
+       envoyer le fichier, attendre l'encodage.
+       ⚠️ Si l'encodage n'est pas fini, ce n'est PAS un echec : la video est chez
+       Mux, elle apparaitra a la prochaine ouverture. Annoncer « rate » alors que
+       le fichier est bien parti serait le pire message possible — c'est l'angle
+       mort deja rencontre le 27/08 avec « envoye, mais pas enregistre ». */
+    var videosPasEncore = 0;
+    for (var iM = 0; iM < videosAEnvoyer.length; iM++) {
+      var ficM = videosAEnvoyer[iM];
+      try {
+        setEnvoiPct(0);
+        var rCr = await hypeMuxAppel({}, 25);
+        if (!rCr || rCr.error || !rCr.data || !rCr.data.url) {
+          rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + ((rCr && rCr.error) || "adresse d'envoi refusée") };
+          continue;
+        }
+        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, ficM, function (pc) { try { setEnvoiPct(pc); } catch (eSp) { } });
+        if (rUp && rUp.error) {
+          rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + rUp.error };
+          continue;
+        }
+        var rSt = await hypeMuxAttendrePret(rCr.data.upload_id);
+        /* 03/09 : on stocke l'ADRESSE DE LECTURE, pas un jeton « mux: ».
+           Raison : les dix endroits qui affichent une video posent simplement
+           `src: <la valeur>`. En rangeant une vraie URL, tout le code existant la
+           joue sans rien savoir de Mux — aucune de ces dix vues n'a besoin d'etre
+           touchee. Safari sur iOS lit le HLS nativement. */
+        if (rSt && rSt.playback_id) { urls.push("https://stream.mux.com/" + rSt.playback_id + ".m3u8"); }
+        else if (rSt && rSt.pasEncore) { videosPasEncore++; }
+        else { rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + ((rSt && rSt.error) || "encodage") }; }
+      } catch (eM) {
+        rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + String((eM && eM.message) || eM) };
+      }
+    }
+    setEnvoiPct(0);
+    if (videosPasEncore > 0) {
+      alerte(T("Ta vidéo est bien envoyée. Elle finit d'être préparée et apparaîtra dans l'album d'ici une minute.", "Your video is uploaded. It's finishing processing and will appear within a minute.", "Tu vídeo se ha enviado. Está terminando de procesarse y aparecerá en un minuto.", "Il tuo video è stato inviato. Sta finendo l'elaborazione e apparirà tra un minuto.", "動画は送信されました。処理後にアルバムに表示されます。", "Dein Video ist hochgeladen und wird noch verarbeitet."));
+    }    for (var iF = 0; iF < fichiersUtiles.length; iF++) {
       try {
         var rF = await envoyerPhoto(fichiersUtiles[iF]);
         if (rF && rF.url) { urls.push(rF.url); }
@@ -35447,7 +35490,9 @@ function AlbumsCheval(props) {
       albOuvert.__lecture ? null : (albOuvert.__auto ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", textAlign: "center", marginTop: 10, lineHeight: 1.5 } }, T("Photos o\u00f9 il/elle est identifi\u00e9(e).", "Photos where tagged.", "Fotos etiquetadas.", "Foto taggate.", "\u30bf\u30b0\u3055\u308c\u305f\u5199\u771f")) : h("div", { style: { display: "flex", gap: 9, marginTop: 11 } },
         h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
         h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
-          envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
+          /* 03/09 : le POURCENTAGE pendant l'envoi d'une video. Un envoi de trois
+             minutes sans progression passe pour un plantage. */
+          envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
           h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } })),
         /* 27/08 soir : BOUTON VIDEO SEPARE, ajoute A COTE — le bouton Ma phototheque ci-dessus
            reste A L IDENTIQUE (multi-selection photos ET videos intacte, rien retire, rien
@@ -52037,6 +52082,112 @@ const PV5_TXT = {"fr": {"T_OFFRE": "OFFRE SP\u00c9CIALE", "T_REJOINS": "REJOINS 
    travail), on l'essaie SEUL, sur un bouton reserve aux moderatrices.
    Ce test n'envoie AUCUN fichier : il demande juste une adresse d'envoi et
    affiche la reponse brute. Rien ne peut casser. */
+/* ============================================================================
+   03/09 — LES VIDEOS PASSENT PAR MUX
+   ----------------------------------------------------------------------------
+   Avant : la video partait telle quelle dans le bucket Supabase, sans encodage,
+   sans vignette, sans lecture adaptee au mobile — et c'est le TRAFIC qui se
+   paie, pas le stockage. Une video d'iPhone de 2 min pese ~250 Mo ; vue 20 fois,
+   5 Go. Chez Mux, la meme charge coute quelques centimes, et l'encodage, la
+   vignette et la diffusion sont inclus.
+   Le chemin : l'app demande une adresse d'envoi a la fonction `mux-upload` (la
+   cle Mux ne quitte jamais le serveur), envoie le fichier dessus, puis demande
+   l'identifiant de LECTURE quand l'encodage est fini.
+   ⚠️ On stocke `mux:<playback_id>` dans le tableau `photos` de l'album, au meme
+   endroit que les URL. Aucune autre table, aucune migration : les videos deja
+   presentes chez Supabase continuent de fonctionner cote a cote.
+   ⚠️ 3 MINUTES maximum (chiffre de Blandine : un parcours fait ~1 min 30, il faut
+   la marge de l'entree en piste et du tour d'honneur). Lu AVANT l'envoi. */
+var HYPE_MUX_DUREE_MAX_S = 180;
+var HYPE_MUX_VIDEOS_GRATUIT = 2;
+
+function hypeMuxAdresseFonction() {
+  try {
+    var base = (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL) ? SUPABASE_URL : null;
+    if (!base) { try { base = supa.supabaseUrl; } catch (eB) { } }
+    if (!base) return null;
+    return String(base).replace(/\/+$/, "") + "/functions/v1/mux-upload";
+  } catch (e) { return null; }
+}
+async function hypeMuxAppel(corps, secondes) {
+  var url = hypeMuxAdresseFonction();
+  if (!url) return { error: "Adresse Supabase introuvable." };
+  var jeton = null, cle = null;
+  try { var sess = await supa.auth.getSession(); jeton = sess && sess.data && sess.data.session && sess.data.session.access_token; } catch (eS) { }
+  try { cle = (typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY) ? SUPABASE_ANON_KEY : (supa.supabaseKey || null); } catch (eK) { }
+  var ctrl = null, tmr = null;
+  try { ctrl = new AbortController(); tmr = setTimeout(function () { try { ctrl.abort(); } catch (eA) { } }, (secondes || 20) * 1000); } catch (eC) { }
+  try {
+    var rep = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "apikey": cle || "", "Authorization": "Bearer " + (jeton || cle || "") },
+      body: JSON.stringify(corps || {}),
+      signal: ctrl ? ctrl.signal : undefined,
+    });
+    if (tmr) clearTimeout(tmr);
+    var txt = await rep.text();
+    var obj = null; try { obj = JSON.parse(txt); } catch (eJ) { }
+    if (!rep.ok) return { error: (obj && obj.error) ? JSON.stringify(obj.error) : ("code " + rep.status) };
+    return { data: obj || {} };
+  } catch (e) {
+    if (tmr) clearTimeout(tmr);
+    var coupe = e && (e.name === "AbortError" || String(e).indexOf("abort") >= 0);
+    return { error: coupe ? "Pas de réponse du serveur." : String(e) };
+  }
+}
+function hypeEstVideoMux(u) { try { return /^mux:/.test(String(u || "")); } catch (e) { return false; } }
+function hypeMuxLecture(u) { try { return "https://stream.mux.com/" + String(u).replace(/^mux:/, "") + ".m3u8"; } catch (e) { return ""; } }
+function hypeMuxVignette(u) { try { return "https://image.mux.com/" + String(u).replace(/^mux:/, "") + "/thumbnail.jpg?width=640&fit_mode=preserve"; } catch (e) { return ""; } }
+
+function hypeMuxEnvoyerFichier(adresse, fichier, surProgres) {
+  /* PUT direct chez Mux, avec la progression reelle — un envoi de video sans
+     barre est le meilleur moyen de faire croire a un plantage. */
+  return new Promise(function (resoudre) {
+    try {
+      var xhr = new XMLHttpRequest();
+      xhr.open("PUT", adresse, true);
+      if (xhr.upload && surProgres) {
+        xhr.upload.onprogress = function (ev) {
+          if (ev.lengthComputable) { try { surProgres(Math.round(ev.loaded / ev.total * 100)); } catch (eP) { } }
+        };
+      }
+      xhr.onload = function () { resoudre(xhr.status >= 200 && xhr.status < 300 ? { ok: true } : { error: "envoi refusé (code " + xhr.status + ")" }); };
+      xhr.onerror = function () { resoudre({ error: "réseau interrompu pendant l'envoi" }); };
+      xhr.ontimeout = function () { resoudre({ error: "envoi trop long" }); };
+      xhr.timeout = 15 * 60 * 1000;   /* une video de 3 min sur une 4G de carriere */
+      xhr.send(fichier);
+    } catch (e) { resoudre({ error: String(e) }); }
+  });
+}
+async function hypeMuxAttendrePret(uploadId, surAttente) {
+  /* Mux encode en arriere-plan. On demande l'etat toutes les 3 s, 2 min au plus.
+     ⚠️ Si l'encodage n'est pas fini, on rend la main SANS erreur : la video
+     existe, elle sera simplement visible un peu plus tard. */
+  for (var i = 0; i < 40; i++) {
+    try { if (surAttente) surAttente(i); } catch (eA) { }
+    var r = await hypeMuxAppel({ action: "status", upload_id: uploadId }, 20);
+    if (r && r.data && r.data.playback_id) return { playback_id: r.data.playback_id, duree: r.data.duration || null };
+    if (r && r.error) { if (i > 3) return { error: r.error }; }
+    await new Promise(function (ok) { setTimeout(ok, 3000); });
+  }
+  return { pasEncore: true };
+}
+async function hypeMuxNombreVideos() {
+  /* Compte les videos deja envoyees par le compte, Mux et anciennes confondues. */
+  try {
+    const user = await utilisateurActuel(); if (!user) return 0;
+    var vues = {};
+    var rA = await supa.from("albums_cheval").select("photos").eq("user_id", user.id);
+    ((rA && rA.data) || []).forEach(function (a) {
+      ((a && a.photos) || []).forEach(function (u) {
+        if (!u) return;
+        if (typeof estUrlVideo === "function" && estUrlVideo(u)) vues[String(u)] = 1;
+      });
+    });
+    return Object.keys(vues).length;
+  } catch (e) { return 0; }
+}
+
 async function hypeTesterMux() {
   try {
     var base = (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL) ? SUPABASE_URL : null;
@@ -52046,15 +52197,33 @@ async function hypeTesterMux() {
     try { var sess = await supa.auth.getSession(); jeton = sess && sess.data && sess.data.session && sess.data.session.access_token; } catch (eS) { }
     var cle = null;
     try { cle = (typeof SUPABASE_ANON_KEY !== "undefined" && SUPABASE_ANON_KEY) ? SUPABASE_ANON_KEY : (supa.supabaseKey || null); } catch (eK) { }
-    var rep = await fetch(String(base).replace(/\/+$/, "") + "/functions/v1/mux-upload", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "apikey": cle || "",
-        "Authorization": "Bearer " + (jeton || cle || ""),
-      },
-      body: JSON.stringify({}),
-    });
+    /* 03/09 (Blandine : « ça reste en attente de réponse ») — DEFAUT DE MON CODE,
+       pas de la fonction : l'appel n'avait AUCUNE limite de temps. Si la reponse
+       tardait, le bouton tournait indefiniment sans jamais rien afficher. Un outil
+       de diagnostic qui peut rester muet ne diagnostique rien.
+       Desormais : 12 secondes, puis un message clair. */
+    var ctrl = null, minuteur = null;
+    try { ctrl = new AbortController(); minuteur = setTimeout(function () { try { ctrl.abort(); } catch (eAb) { } }, 12000); } catch (eC0) { }
+    var rep;
+    try {
+      rep = await fetch(String(base).replace(/\/+$/, "") + "/functions/v1/mux-upload", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "apikey": cle || "",
+          "Authorization": "Bearer " + (jeton || cle || ""),
+        },
+        body: JSON.stringify({}),
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+    } catch (eF) {
+      if (minuteur) clearTimeout(minuteur);
+      var estCoupe = eF && (eF.name === "AbortError" || String(eF).indexOf("abort") >= 0);
+      return { ok: false, message: estCoupe
+        ? "\u23F1 Aucune r\u00e9ponse en 12 secondes.\n\nLa fonction ne r\u00e9pond pas. Soit elle est bloqu\u00e9e, soit elle n'a pas fini de se d\u00e9ployer \u2014 r\u00e9essaie dans une minute."
+        : "\u274C Appel impossible :\n" + String(eF) };
+    }
+    if (minuteur) clearTimeout(minuteur);
     var txt = await rep.text();
     var obj = null; try { obj = JSON.parse(txt); } catch (eJ) { }
     if (rep.ok && obj && obj.url) {
@@ -52165,7 +52334,11 @@ function EcranPremium() {
                        ne part » de « rien ne revient ». */
                     if (envMux) return;
                     setEnvMux(true); setResMux(null);
-                    try { window.alert("Essai lancé — attends la réponse."); } catch (eA0) { }
+                    /* 03/09 : l'alerte « Essai lance » est RETIREE. Elle bloquait
+                       l'affichage de la reponse : celle-ci arrivait tout de suite mais
+                       restait en file derriere, et Blandine a cru a trois minutes de
+                       latence. Une alerte de confort peut masquer le resultat qu'elle
+                       est censee accompagner. */
                     hypeTesterMux().then(function (r) {
                         setResMux(r); setEnvMux(false);
                         try { window.alert(r && r.message ? r.message : "Réponse vide."); } catch (eA1) { }
