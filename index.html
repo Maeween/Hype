@@ -424,6 +424,68 @@ function scoreVitrineCheval(cv, nbMedia, nbLies, nbLikes, nbResultats) {
    arrivee, jamais une liste vide.
    ⚠️ A SCORE EGAL, L'ORDRE D'ORIGINE EST CONSERVE (`__rang0`) : sans lui, deux
    chevaux vides s'echangeaient de place a chaque chargement. */
+/* ============================================================================
+   03/09 (Blandine : « a chaque fois que j arrive sur la page ecurie ou profil
+   toutes les images de chevaux changent au chargement, ca fait tres bizarre »)
+   — L ORDRE MEMORISE.
+   🟥 CE N ETAIT PAS LES PHOTOS, C ETAIT L ORDRE. La liste est posee DEUX fois :
+   d abord dans l ordre de la base (correctif du 01/09 « afficher d abord,
+   classer ensuite », pose parce que la grille restait vide pendant le calcul),
+   puis reposee classee par XP quand les cinq requetes reviennent. Les vignettes
+   ne changent pas, les chevaux se deplacent dessous — l oeil lit ca comme des
+   photos qui se remplacent.
+   LA REPARATION : le dernier ordre classe est garde sur le telephone et sert
+   des le premier rendu. Plus de saut, et jamais de liste vide.
+   ⚠️ REGLE DEMANDEE PAR BLANDINE : si UN SEUL cheval a change de place (elle
+   vient d ajouter des photos), il glisse a sa nouvelle place tout de suite —
+   un mouvement se comprend. Si l ordre change en profondeur, on ne bouge RIEN
+   a l ecran : le nouvel ordre est memorise et s appliquera au chargement
+   suivant. Un seul cheval qui avance, oui ; toute la grille qui se
+   reorganise, jamais. */
+function hypeOrdreMemoLire(cle) {
+  try {
+    var brut = localStorage.getItem("hype_ordre_" + cle);
+    if (!brut) return null;
+    var ids = JSON.parse(brut);
+    return (ids && ids.length) ? ids : null;
+  } catch (e) { return null; }
+}
+function hypeOrdreMemoPoser(cle, liste) {
+  try {
+    var ids = (liste || []).map(function (c) { return c && c.id; }).filter(Boolean);
+    if (ids.length) localStorage.setItem("hype_ordre_" + cle, JSON.stringify(ids));
+  } catch (e) { }
+}
+/* Remet la liste dans l ordre memorise. Un cheval inconnu de la memoire (une
+   fiche creee depuis) passe EN TETE : une nouveaute ne se cache pas en bas. */
+function hypeOrdreMemoAppliquer(liste, cle) {
+  try {
+    var ids = hypeOrdreMemoLire(cle);
+    if (!ids || !liste || liste.length < 2) return liste || [];
+    var rang = {}; ids.forEach(function (id, i) { rang[id] = i; });
+    var connus = [], nouveaux = [];
+    liste.forEach(function (c) {
+      if (c && rang[c.id] !== undefined) connus.push(c); else nouveaux.push(c);
+    });
+    connus.sort(function (a, b) { return rang[a.id] - rang[b.id]; });
+    return nouveaux.concat(connus);
+  } catch (e) { return liste || []; }
+}
+/* Combien de chevaux ont change de place entre deux ordres ?
+   0 = rien a faire · 1 ou 2 = un seul cheval a bouge (celui qui part et celui
+   qui se decale), on applique · au-dela = reorganisation, on garde l ecran
+   calme et on remet ca au prochain chargement. */
+function hypeOrdreDeplacements(avant, apres) {
+  try {
+    var a = (avant || []).map(function (c) { return c && c.id; });
+    var b = (apres || []).map(function (c) { return c && c.id; });
+    if (a.length !== b.length) return 99;
+    var n = 0;
+    for (var i = 0; i < a.length; i++) { if (a[i] !== b[i]) n++; }
+    return n;
+  } catch (e) { return 99; }
+}
+
 async function classerChevauxParXp(chx) {
   try {
     if (!chx || !chx.length) return chx || [];
@@ -28238,7 +28300,19 @@ function EcranMonCavalier() {
   React.useEffect(function () { (async function () {
     try {
       var u = await utilisateurActuel(); setMoiCav(u || null);
-      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); var tousCh = (rc && rc.data) ? rc.data.slice() : []; try { if (typeof mesChevauxLies === "function") { var rln = await mesChevauxLies(); if (rln && rln.data && rln.data.length) tousCh = tousCh.concat(rln.data); } } catch (eLn) { } /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ setChevauxReels(tousCh); try { var triCh = await classerChevauxParXp(tousCh); if (triCh && triCh.length) setChevauxReels(triCh); } catch (eXc) { } }
+      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); var tousCh = (rc && rc.data) ? rc.data.slice() : []; try { if (typeof mesChevauxLies === "function") { var rln = await mesChevauxLies(); if (rln && rln.data && rln.data.length) tousCh = tousCh.concat(rln.data); } } catch (eLn) { } /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ /* 03/09 : on affiche dans l ORDRE MEMORISE (plus de sautillement), puis le
+         classement frais est memorise — et applique tout de suite SEULEMENT si
+         un seul cheval a bouge. Voir hypeOrdreMemoAppliquer. */
+      var afficheCh = (typeof hypeOrdreMemoAppliquer === "function") ? hypeOrdreMemoAppliquer(tousCh, "mes-chevaux") : tousCh;
+      setChevauxReels(afficheCh);
+      try {
+        var triCh = await classerChevauxParXp(tousCh);
+        if (triCh && triCh.length) {
+          try { hypeOrdreMemoPoser("mes-chevaux", triCh); } catch (eOp) { }
+          var bouges = (typeof hypeOrdreDeplacements === "function") ? hypeOrdreDeplacements(afficheCh, triCh) : 99;
+          if (bouges > 0 && bouges <= 2) setChevauxReels(triCh);
+        }
+      } catch (eXc) { } }
     } catch (e) {}
   })(); }, []);
   var estCompteFeinn = estCompteFeinnHype(moiCav);
@@ -33329,7 +33403,19 @@ function EcranEcurie() {
   React.useEffect(function () { (async function () {
     try {
       var u = await utilisateurActuel(); setMoiEc(u || null);
-      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ if (rc && rc.data) { setChevauxEc(rc.data); try { var ecTri = await classerChevauxParXp(rc.data); if (ecTri && ecTri.length) setChevauxEc(ecTri); } catch (eXe) { } } }
+      if (typeof mesChevaux === "function" && typeof supa !== "undefined") { var rc = await mesChevaux(); /* 01/09 (Blandine : « les chevaux avaient disparu et ils sont revenus d'un coup ») — AFFICHER D'ABORD, CLASSER ENSUITE. Le classement XP lance cinq requetes : tant qu'elles tournaient, la liste restait vide — grille du club sans rien, et sur la page Cavalier le vide faisait remonter les fiches de DEMONSTRATION. La liste est donc posee immediatement dans l'ordre de la base, puis reposee classee quand le classement revient. Ne jamais remettre le tri AVANT le premier affichage. */ if (rc && rc.data) {
+        /* 03/09 : meme ordre memorise que la page Cavalier — la grille ne
+           sautille plus, et un seul cheval qui avance se voit avancer. */
+        var affEc = (typeof hypeOrdreMemoAppliquer === "function") ? hypeOrdreMemoAppliquer(rc.data, "mes-chevaux") : rc.data;
+        setChevauxEc(affEc);
+        try {
+          var ecTri = await classerChevauxParXp(rc.data);
+          if (ecTri && ecTri.length) {
+            try { hypeOrdreMemoPoser("mes-chevaux", ecTri); } catch (eOp2) { }
+            var bougesEc = (typeof hypeOrdreDeplacements === "function") ? hypeOrdreDeplacements(affEc, ecTri) : 99;
+            if (bougesEc > 0 && bougesEc <= 2) setChevauxEc(ecTri);
+          }
+        } catch (eXe) { } } }
     } catch (e) {}
   })(); }, []);
   var estCompteFeinnEc = estCompteFeinnHype(moiEc);
@@ -35345,7 +35431,19 @@ function AlbumsCheval(props) {
      d'invitation Hype+ qui remplace les messages d'erreur secs. */
   var qphSt = React.useState(null); var quotaPh = qphSt[0], setQuotaPh = qphSt[1];
   var hypeplusSt = React.useState(null); var invitPlus = hypeplusSt[0], setInvitPlus = hypeplusSt[1];
-  function rafraichirQuota() { try { photosUtiliseesParMoi().then(function (n) { setQuotaPh(n); }).catch(function () { }); } catch (eQ) { } }
+  /* 03/09 (Blandine : « faut prevenir quelque part pour les videos et les
+     photos et les limitations ») — LE MUR NE DOIT PLUS TOMBER SANS PREVENIR.
+     Une cavaliere decouvrait la limite APRES avoir choisi ses fichiers. On
+     affiche desormais ce qui reste AVANT le geste, calcule sur les vrais
+     compteurs, et seulement en gratuit. */
+  var qvdSt = React.useState(null); var quotaVid = qvdSt[0], setQuotaVid = qvdSt[1];
+  function rafraichirQuotaVid() {
+    try {
+      if (typeof hypeVideosDejaEnvoyees !== "function") return;
+      hypeVideosDejaEnvoyees(props.cible).then(function (n) { setQuotaVid(n); }).catch(function () { });
+    } catch (eQv) { }
+  }
+  function rafraichirQuota() { try { rafraichirQuotaVid(); } catch (eRv) { } try { photosUtiliseesParMoi().then(function (n) { setQuotaPh(n); }).catch(function () { }); } catch (eQ) { } }
   React.useEffect(function () { if (!premium) rafraichirQuota(); }, [premium]);
   React.useEffect(function () { var actifAc = true;
     try { utilisateurActuel().then(function (uAc) { if (!actifAc) return; setMoiAc(uAc || null);
@@ -35885,6 +35983,29 @@ function AlbumsCheval(props) {
       })()),
         (albDeplie && (albOuvert.photos || []).length > 6) ? h("button", { onClick: function () { setAlbDeplie(false); }, style: { display: "block", margin: "10px auto 0", padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("R\u00e9duire l'album", "Collapse album", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null) : h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", textAlign: "center", padding: "14px 0", lineHeight: 1.5 } }, T("Album vide \u2014 ajoute des souvenirs ci-dessous.", "Empty album \u2014 add memories below.", "\u00c1lbum vac\u00edo.", "Album vuoto.", "\u30a2\u30eb\u30d0\u30e0\u306f\u7a7a\u3067\u3059")),
       albOuvert.__lecture ? null : (albOuvert.__auto ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", textAlign: "center", marginTop: 10, lineHeight: 1.5 } }, T("Photos o\u00f9 il/elle est identifi\u00e9(e).", "Photos where tagged.", "Fotos etiquetadas.", "Foto taggate.", "\u30bf\u30b0\u3055\u308c\u305f\u5199\u771f")) : h("div", { style: { display: "flex", gap: 9, marginTop: 11 } },
+        /* 03/09 (Blandine) — PREVENIR AVANT LE GESTE, ET DIRE OU ALLER.
+           Une cavaliere decouvrait la limite APRES avoir choisi ses fichiers.
+           Le message le dit avant, avec la mascotte et un lien direct vers la
+           page d abonnement. ⚠️ Condition sur la DONNEE (gratuit), jamais sur
+           « deja vu » : il ne disparait pas parce qu il a ete lu une fois, il
+           disparait quand la cavaliere est abonnee. */
+        (!premium && !albOuvert.__lecture) ? h("div", {
+          role: "button",
+          onClick: function () { try { if (setEcranAC) setEcranAC("premium"); } catch (ePa) { } },
+          style: { display: "flex", alignItems: "center", gap: 11, margin: "0 0 11px", padding: "10px 12px", borderRadius: 16, border: "1px solid " + tA(0.32), background: "linear-gradient(120deg, rgba(16,21,24,0.7), " + tA(0.10) + ")", cursor: "pointer", textAlign: "left" }
+        },
+          h("img", { src: "images/poney-hype-plus.jpg", alt: "", style: { width: 46, height: 46, borderRadius: 12, flexShrink: 0, objectFit: "cover", display: "block" } }),
+          h("div", { style: { minWidth: 0, flex: 1 } },
+            h("div", { style: { fontFamily: M9, fontSize: 12, lineHeight: 1.5, color: "#E4F1F5" } },
+              T("Pour ajouter plus de photos et de vid\u00e9os, tu peux t\u2019abonner \u00e0 Hype+.",
+                "To add more photos and videos, you can subscribe to Hype+.",
+                "Para a\u00f1adir m\u00e1s fotos y v\u00eddeos, puedes suscribirte a Hype+.",
+                "Per aggiungere pi\u00f9 foto e video, puoi abbonarti a Hype+.",
+                "\u5199\u771f\u3068\u52d5\u753b\u3092\u3082\u3063\u3068\u8ffd\u52a0\u3059\u308b\u306b\u306f\u3001Hype+ \u306b\u767b\u9332\u3067\u304d\u307e\u3059\u3002",
+                "Um mehr Fotos und Videos hinzuzuf\u00fcgen, kannst du Hype+ abonnieren.")),
+            h("div", { style: { fontFamily: M9, fontSize: 11.5, fontWeight: 700, color: tnT, marginTop: 4 } },
+              T("D\u00e9couvrir Hype+ \u203a", "Discover Hype+ \u203a", "Descubrir Hype+ \u203a", "Scopri Hype+ \u203a", "Hype+ \u3092\u898b\u308b \u203a", "Hype+ entdecken \u203a"))))
+          : null,
         h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
         h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           /* 03/09 : le POURCENTAGE pendant l'envoi d'une video. Un envoi de trois
