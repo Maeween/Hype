@@ -1571,7 +1571,7 @@ async function supprimerAlbumCheval(id) {
    user_id. Table a creer : voir le SQL livre avec ce fichier. */
 async function histoirePersoCheval(chevalId) {
   try { const user = await utilisateurActuel(); if (!user || !chevalId) return { data: null, error: null };
-    var r = await supa.from("chevaux_histoires").select("texte, photo_url").eq("cheval_id", chevalId).eq("user_id", user.id).maybeSingle();
+    var r = await supa.from("chevaux_histoires").select("texte, photo_url, surnom").eq("cheval_id", chevalId).eq("user_id", user.id).maybeSingle();
     return { data: (r && r.data) || null, error: r && r.error };
   } catch (e) { return { data: null, error: String(e) }; }
 }
@@ -1591,6 +1591,13 @@ async function envoyerDataUrlCommePhoto(dataUrl, nom) {
     var rep = await fetch(dataUrl); var blob = await rep.blob();
     var fic = new File([blob], (nom || "photo") + ".jpg", { type: blob.type || "image/jpeg" });
     return await envoyerPhoto(fic);
+  } catch (e) { return { error: String(e) }; }
+}
+async function enregistrerSurnomPerso(chevalId, surnom) {
+  /* 03/09 : le surnom PERSONNEL. Il ne touche ni le nom officiel (cle du verrou
+     d'identite FFE) ni l'alias commun : chacune le sien, sur sa page a elle. */
+  try { const user = await utilisateurActuel(); if (!user || !chevalId) return { error: "Pas connecté" };
+    return await supa.from("chevaux_histoires").upsert({ cheval_id: chevalId, user_id: user.id, surnom: (surnom || "").trim() || null, updated_at: new Date().toISOString() }, { onConflict: "cheval_id,user_id" });
   } catch (e) { return { error: String(e) }; }
 }
 async function enregistrerHistoirePerso(chevalId, texte) {
@@ -36155,6 +36162,8 @@ function EcranCheval() {
      texte que je vois et que j ecris — jamais celui de la proprietaire, et le mien ne
      remonte jamais cote ecurie. */
   var hpSt = React.useState(null); var histPerso = hpSt[0], setHistPerso = hpSt[1];
+  /* 03/09 : mon surnom a moi pour ce cheval. Perso, jamais visible chez les autres. */
+  var snSt = React.useState(""); var surnomPerso = snSt[0], setSurnomPerso = snSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   var medSt = React.useState({}); var mediasInfo = medSt[0], setMediasInfo = medSt[1];
   /* 02/09 : on ne charge l histoire perso que si le cheval n est pas le mien. Sur mon
@@ -36168,6 +36177,7 @@ function EcranCheval() {
       setHistPerso((rHp && rHp.data && rHp.data.texte) ? String(rHp.data.texte) : "");
       var uPh = (rHp && rHp.data && rHp.data.photo_url) ? String(rHp.data.photo_url) : "";
       if (uPh) setPhotoPerso(uPh);
+      setSurnomPerso((rHp && rHp.data && rHp.data.surnom) ? String(rHp.data.surnom) : "");
     }).catch(function () { if (actifHp) setHistPerso(""); }); } catch (eHp) { setHistPerso(""); }
     return function () { actifHp = false; };
   }, [moi && moi.id, chevalDyn && chevalDyn.dbId, estMonChevalFiche]);
@@ -37266,12 +37276,28 @@ function EcranCheval() {
             var ixT2 = (ogT2.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
             var vT2 = ixT2 ? parseFloat(String(ixT2[1]).replace("\u2212", "-").replace("+", "")) : 0;
             var lblT2 = rareteIndice(vT2);
-            var nmC2 = String(c.nom || "");
+            /* 03/09 (Blandine) — LE SURNOM PASSE DEVANT.
+               « Un alias est souvent le surnom sous lequel les cavaliers connaissent
+               le cheval » : personne ne dit « Umea Borderie », tout le monde dit
+               « Yum ». C'est donc le surnom qui s'affiche EN GRAND, et le nom
+               officiel qui passe en dessous, en petit.
+               Ordre de priorite : mon surnom perso (chevaux_histoires.surnom) >
+               l'alias FFE commun (chevaux.alias) > le nom officiel.
+               ⚠️ Le nom officiel n'est JAMAIS modifie : il sert de cle au verrou
+               d'identite de l'import FFE, qui compare le telemat a la fiche avec
+               une tolerance au bruit d'extraction (« CRUIBHI N » pour CRUIBHIN).
+               On ne change que ce qui est AFFICHE. */
+            var nomOffi2 = String(c.nom || "");
+            var surnom2 = "";
+            try { surnom2 = String((surnomPerso || (chevalDyn && chevalDyn.alias) || "")).trim(); } catch (eSn) { surnom2 = ""; }
+            var nmC2 = surnom2 || nomOffi2;
+            var montrerOffi2 = !!(surnom2 && surnom2.toLowerCase() !== nomOffi2.toLowerCase());
             var mSp2 = nmC2.match(/^(.*?)\s+(de\s.+|d\'.+|du\s.+|des\s.+)$/i);
             return h("div", { style: { minWidth: 0 } },
               h("div", { style: { display: "flex", alignItems: "baseline", gap: 10, flexWrap: "wrap" } }, /* 31/07 : nom + affixe sur la meme ligne (demande Blandine) */
                 h("h1", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 31, lineHeight: 1.06, letterSpacing: 1, background: "linear-gradient(180deg,#FFFFFF,#C3CDD2)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } }, (mSp2 ? mSp2[1] : nmC2).toUpperCase()),
                 mSp2 ? h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, letterSpacing: "0.18em", textTransform: "uppercase", color: teinteCl, whiteSpace: "nowrap" } }, mSp2[2]) : null),
+              montrerOffi2 ? h("div", { style: { marginTop: 3, fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#7C858D" } }, nomOffi2) : null,
               lblT2 ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45) } },
                 h("b", { style: { color: teinteCl, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.14em" } }, "\u2726 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "\u4f1d\u8aac", "HYPE-LEGENDE")),
                 h("span", { style: { color: "rgba(244,247,250,0.75)", fontSize: 10.5, letterSpacing: "0.06em", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: 8 } }, lblT2)) : null,
@@ -38716,6 +38742,25 @@ function EcranCheval() {
     menuFiche ? h("div", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end" } },
       h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", background: "linear-gradient(180deg, rgba(16,20,26,0.98), rgba(9,11,15,0.99))", borderTop: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px 20px 0 0", padding: "10px 16px calc(20px + env(safe-area-inset-bottom))" } },
         h("div", { style: { width: 36, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)", margin: "6px auto 16px" } }),
+        /* 03/09 (Blandine) : « donner son surnom » — le nom d'usage sous lequel
+           ELLE connait ce cheval. Personnel : il ne touche ni le nom officiel (cle
+           du verrou d'identite FFE) ni l'alias commun, et n'apparait jamais chez
+           les autres. Ouvert a tous ceux qui ont le cheval chez eux. */
+        (chevalDyn && chevalDyn.dbId && moi) ? h("button", { onClick: function () {
+            setMenuFiche(false);
+            try {
+              var actuel = surnomPerso || "";
+              var saisi = window.prompt(T("Son surnom, celui que TU utilises. Vide pour l'enlever.", "Your own nickname for this horse. Empty to remove.", "Tu apodo para este caballo. Vacío para quitarlo.", "Il tuo soprannome per questo cavallo. Vuoto per toglierlo.", "この馬のあなたの愛称。空で削除。", "Dein eigener Spitzname. Leer zum Entfernen."), actuel);
+              if (saisi === null) return;
+              var net = String(saisi).trim();
+              setSurnomPerso(net);
+              enregistrerSurnomPerso(chevalDyn.dbId, net).then(function (rS) {
+                if (rS && rS.error) { setSurnomPerso(actuel); try { window.alert("Le surnom n'a pas pu être enregistré. Réessaie."); } catch (eA) { } }
+              });
+            } catch (eSp) { }
+          }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", color: "#EDF2F5", fontSize: 13.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
+          (surnomPerso ? T("Changer son surnom", "Change nickname", "Cambiar el apodo", "Cambia soprannome", "愛称を変更", "Spitzname ändern") : T("Lui donner un surnom", "Give a nickname", "Ponerle un apodo", "Dagli un soprannome", "愛称をつける", "Spitznamen geben"))
+            + (surnomPerso ? (" \u00b7 " + surnomPerso) : "")) : null,
         h("button", { onClick: function () { setMenuFiche(false); if (refPhotoCh.current) refPhotoCh.current.click(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83d\udcf7 " + T("Changer la photo", "Change photo", "Cambiar foto", "Cambia foto", "\u5199\u771f\u3092\u5909\u66f4", "Foto \u00e4ndern")),
           h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden")),
           h("button", { onClick: function () { setMenuFiche(false); ouvrirTag(photoCh); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udff7\ufe0f " + T("Identifier dans la photo", "Tag in the photo", "Etiquetar en la foto", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0", "Im Foto identifizieren")),
