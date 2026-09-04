@@ -52871,10 +52871,13 @@ var HYPE_MUX_VIDEOS_GRATUIT = 3;
    promesse ecrite.
    Le chiffre est une constante : le relever ne coute qu une ligne. */
 var HYPE_MUX_VIDEOS_PREMIUM = 15;
-/* Seuil d apparition du decompte. Repris de la regle des epingles du 19/08
-   (Blandine) : on previent a partir de 5 restantes, pas avant — un compteur
-   agite devant quelqu un qui en a poste trois ne sert a rien. */
-var HYPE_MUX_PREVENIR_A = 5;
+/* Seuil d apparition du decompte, en nombre de videos restantes.
+   04/09, decision de Blandine apres avoir vu le rendu : « retire et avertis
+   juste au plafond, ça gâche un peu le plaisir ». A ZERO, aucun decompte ne
+   s affiche pendant qu elle poste ; seul le message de plafond apparait quand
+   la place est prise. Le code du decompte reste en place : remettre 5 ici le
+   fait revenir tel qu il etait. */
+var HYPE_MUX_PREVENIR_A = 0;
 function hypeMuxPlafondVideos(estPremium) { return estPremium ? HYPE_MUX_VIDEOS_PREMIUM : HYPE_MUX_VIDEOS_GRATUIT; }
 
 function hypeMuxAdresseFonction() {
