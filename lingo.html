@@ -1360,6 +1360,19 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 .depli .corps{max-height:0;overflow:hidden;transition:max-height .42s ease}
 .depli.ouvert .corps{max-height:600px}
 .depli .corps p{font-size:15px;line-height:1.8;color:var(--blanc);margin:15px 4px 0}
+/* 🟡 VERROU PROGRESSIF DES VOLETS (v94) — ville non autorisee, non-Premium.
+   Le 1er volet reste normal : c'est l'avant-gout. Les deux suivants
+   s'estompent puis deviennent intouchables, avant #arrLockCta. */
+.depli.voletFondu1{opacity:.5}
+.depli.voletFondu2{opacity:.18}
+#arrLockCta{max-width:520px;margin:14px auto 0;padding:26px 28px;text-align:center;
+ background:rgba(6,7,9,.55);border:1px solid rgba(255,255,255,.08);border-radius:16px}
+#arrLockCta svg{width:22px;height:22px;display:block;margin:0 auto 12px}
+#arrLockCta .kick{font-family:'Cinzel',serif;font-size:12px;letter-spacing:.14em;
+ text-transform:uppercase;color:var(--or);margin:0 0 8px}
+#arrLockCta button{margin-top:18px;padding:13px 30px;border-radius:99px;border:0;cursor:pointer;
+ background:linear-gradient(120deg,#E8C980,#C8A96A);color:#100C04;font-family:'Montserrat',sans-serif;
+ font-size:12.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}
 /* ---------- LA CARTE POSTALE ---------- */
 #postal{max-width:520px;margin:26px auto 0;padding:0 22px}
 #postal .kick{font-size:9.5px;letter-spacing:.28em;text-transform:uppercase;color:var(--or);
@@ -2388,6 +2401,18 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
   <div class="depli" id="depli3" style="margin-top:9px">
     <button id="depliB3"><span id="depliT3"></span><span class="pl">+</span></button>
     <div class="corps"><p id="depliC3"></p></div>
+  </div>
+
+  <!-- 🟡 v94 : le bandeau Premium, affiche uniquement si !villeAutorisee().
+       Remplace #souvenir + #arrBas pour cette visite ; voir verrouArrivee(). -->
+  <div id="arrLockCta" style="display:none">
+    <svg viewBox="0 0 24 24" fill="none" stroke="var(--or)" stroke-width="1.6" aria-hidden="true">
+      <rect x="5" y="11" width="14" height="9" rx="2"></rect>
+      <path d="M8 11V7a4 4 0 0 1 8 0v4"></path>
+    </svg>
+    <p class="kick" data-t="villePremiumKick">Ville Premium</p>
+    <p class="pwTxt" data-t="pwTxt">Les villes suivantes font partie du voyage Premium. L'abonnement Hype Premium débloque toutes les leçons de Linguae — et toute l'application Hype avec.</p>
+    <button id="arrLockAller" type="button" data-t="pwCta">Découvrir l'abonnement</button>
   </div>
 
   <div id="souvenir">
@@ -3934,7 +3959,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=93";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=94";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -6884,6 +6909,11 @@ function ouvrirArrivee(i){
      à l'instant », pas « acquis ». On garde donc `_obj` comme condition —
      le bouton ne s'affiche qu'au moment du gain, ce qui est son sens. */
   S("arrSellerie").style.display = (estModeratrice() && _obj) ? "" : "none";
+  /* 🟡 v94 — LE VERROU PROGRESSIF, APRES la ligne ci-dessus : quand la
+     ville n'est pas autorisee, il ecrase sans condition ; sinon, il ne
+     touche a rien et laisse la logique normale (sellerie, phrases,
+     souvenir) telle qu'elle vient d'etre calculee. */
+  verrouArrivee(!villeAutorisee(e.ref));
   /* ⚠️ AJOUT DU 13/08 — le bouton des phrases n'apparait QUE si la ville
      en a. Pas de bouton mort : aujourd'hui La Baule et Le Morne. */
   (function(){
@@ -7867,6 +7897,7 @@ Array.prototype.forEach.call(S("points").children, function(n,k){
 S("depliB").addEventListener("click",function(){ S("depli").classList.toggle("ouvert"); });
 S("depliB2").addEventListener("click",function(){ S("depli2").classList.toggle("ouvert"); });
 S("depliB3").addEventListener("click",function(){ S("depli3").classList.toggle("ouvert"); });
+S("arrLockAller").addEventListener("click", ouvrirPaywall);   /* v94 */
 S("pcarte").addEventListener("click",function(){
   this.classList.toggle("dos");
   S("ptourne").textContent = this.classList.contains("dos") ? "" : "Touche pour lire";
@@ -8806,6 +8837,9 @@ var UI = {
  maCollection:{fr:"Ma collection", en:"My collection", es:"Mi colección",
    it:"La mia collezione", de:"Meine Sammlung", ja:"マイコレクション"},
  /* le verrou premium (v36) — la phrase est de Blandine, 9 aout */
+ /* v94 : le bandeau sur l'arrivee d'une ville verrouillee (voir arrLockCta). */
+ villePremiumKick:{fr:"Ville Premium", en:"Premium city", es:"Ciudad Premium",
+   it:"Città Premium", de:"Premium-Stadt", ja:"プレミアム都市"},
  pwTitre:{fr:"Le voyage Premium", en:"The Premium journey", es:"El viaje Premium",
    it:"Il viaggio Premium", de:"Die Premium-Reise", ja:"プレミアムの旅"},
  pwTxt:{fr:"Les villes suivantes font partie du voyage Premium. L'abonnement Hype Premium débloque toutes les leçons de Linguae — et toute l'application Hype avec.",
@@ -9357,6 +9391,26 @@ function estPremium(){
 var VILLE_OFFERTE = { labaule:1, kildare:1, maurice:1, edimbourg:1 };
 function villeAutorisee(refVille){
   return estPremium() || !!VILLE_OFFERTE[refVille];
+}
+/* 🟡 v94 — LE VERROU PROGRESSIF DE L'ARRIVEE. Appele depuis ouvrirArrivee().
+   `on` = la ville n'est PAS autorisee (non-Premium, hors VILLE_OFFERTE).
+   Doctrine : le 1er volet reste un avant-gout normal ; les deux suivants
+   s'estompent et deviennent intouchables ; #souvenir et #arrBas cedent la
+   place a #arrLockCta. Rien n'est retire du DOM : desactiver `on` (ville
+   suivante autorisee) remet tout en etat sans etat residuel. */
+function verrouArrivee(on){
+  var d2=S("depli2"), d3=S("depli3");
+  if(d2){ d2.classList.toggle("voletFondu1", on); d2.style.pointerEvents = on?"none":""; }
+  if(d3){ d3.classList.toggle("voletFondu2", on); d3.style.pointerEvents = on?"none":""; }
+  var souv=S("souvenir"); if(souv) souv.style.display = on ? "none" : "";
+  var bas=S("arrBas"); if(bas) bas.style.display = on ? "none" : "";
+  /* uniquement a la fermeture : a l'ouverture, on laisse la logique deja
+     executee plus haut dans ouvrirArrivee() (moderatrice, dialogue ecrit). */
+  if(on){
+    var sel=S("arrSellerie"); if(sel) sel.style.display="none";
+    var ph=S("arrPhrases"); if(ph) ph.style.display="none";
+  }
+  var lk=S("arrLockCta"); if(lk) lk.style.display = on ? "" : "none";
 }
 function ouvrirPaywall(){ S("paywall").classList.add("on"); }
 function fermerPaywall(){ S("paywall").classList.remove("on"); }
