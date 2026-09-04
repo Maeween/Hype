@@ -1,0 +1,26 @@
+name: Deployer les fonctions Supabase
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "supabase/functions/**"
+  workflow_dispatch:
+
+jobs:
+  deployer:
+    runs-on: ubuntu-latest
+
+    env:
+      SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+      PROJECT_ID: ldpjebgtskzdokrublfg
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - run: supabase functions deploy mux-upload --project-ref $PROJECT_ID
