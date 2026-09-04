@@ -3959,7 +3959,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=95";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=96";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -12341,6 +12341,16 @@ if(S("inOrigine")) S("inOrigine").addEventListener("click", function(ev){
   if(!b) return;
   var l = b.getAttribute("data-org");
   if(LANGUES_UI.indexOf(l) < 0) return;
+  /* 🟡 v96 — MEME GARDE-FOU QUE poserLecture() DANS LE CARNET, absent ici
+     jusque-la. « On ne lit pas la langue qu'on apprend » : sans cette
+     ligne, choisir ici la langue deja posee comme VOYAGE_LANGUE donnait
+     LECTURE = VOYAGE_LANGUE = meme langue des deux cotes (constat de
+     Blandine, capture d'ecran : « FR → FR »), et les blocs de l'ecran
+     construits hors data-t (les cartes de themes) restaient dans
+     l'ancienne langue puisque cette page ne recharge jamais.
+     echangerLangues() pose les deux langues correctement ET recharge —
+     seul CE cas precis recharge ici ; le changement normal reste instantane. */
+  if(l === VOYAGE_LANGUE){ echangerLangues(); return; }
   try{ localStorage.setItem("hype_lingua_lecture", l); }catch(e){}
   LECTURE = l;
   try{ appliquerLangue(); }catch(e){}
