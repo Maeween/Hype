@@ -52874,7 +52874,10 @@ var HYPE_MUX_VIDEOS_PREMIUM = 15;
 /* Seuil d apparition du decompte. Repris de la regle des epingles du 19/08
    (Blandine) : on previent a partir de 5 restantes, pas avant — un compteur
    agite devant quelqu un qui en a poste trois ne sert a rien. */
-var HYPE_MUX_PREVENIR_A = 5;
+/* ⚠️ 04/09 — VALEUR D'ESSAI, À REMETTRE À 5. Posée à 15 le temps que
+   Blandine voie le rendu du décompte : à 15, la ligne s'affiche dès la
+   première vidéo. La règle décidée reste 5 restantes. */
+var HYPE_MUX_PREVENIR_A = 15;
 function hypeMuxPlafondVideos(estPremium) { return estPremium ? HYPE_MUX_VIDEOS_PREMIUM : HYPE_MUX_VIDEOS_GRATUIT; }
 
 function hypeMuxAdresseFonction() {
