@@ -52874,10 +52874,7 @@ var HYPE_MUX_VIDEOS_PREMIUM = 15;
 /* Seuil d apparition du decompte. Repris de la regle des epingles du 19/08
    (Blandine) : on previent a partir de 5 restantes, pas avant — un compteur
    agite devant quelqu un qui en a poste trois ne sert a rien. */
-/* ⚠️ 04/09 — VALEUR D'ESSAI, À REMETTRE À 5. Posée à 15 le temps que
-   Blandine voie le rendu du décompte : à 15, la ligne s'affiche dès la
-   première vidéo. La règle décidée reste 5 restantes. */
-var HYPE_MUX_PREVENIR_A = 15;
+var HYPE_MUX_PREVENIR_A = 5;
 function hypeMuxPlafondVideos(estPremium) { return estPremium ? HYPE_MUX_VIDEOS_PREMIUM : HYPE_MUX_VIDEOS_GRATUIT; }
 
 function hypeMuxAdresseFonction() {
@@ -53453,14 +53450,99 @@ function AdminAbonnements({ t }) {
                         : pastille(a.statut === "annule" ? t("admin_annule") : "Inactif", "rgba(240,92,116,0.12)", COLORS.corail));
         }));
 }
+/* 04/09 (demande de Blandine) — LES VRAIES CAVALIERES, PLUS LA MAQUETTE.
+   Cet ecran affichait quatre noms ecrits en dur — Lea Marchand, Thomas Petit,
+   Ines Dubois, Maxence Roy — sans aucune requete derriere. Un decor.
+   Il lit desormais la table `profiles`, sur le meme modele qu AdminAbonnements
+   refait le 03/09. Colonnes reprises telles qu elles sont deja lues ailleurs
+   dans l app : id, pseudo, avatar_url, ville, galop, ecurie, ecurie2.
+   ⚠️ L age n est PAS affiche : la maquette en montrait un, la table n en a pas.
+   Mieux vaut un champ en moins qu un chiffre invente. */
 function AdminUtilisateurs({ t }) {
-    const utilisateurs = [
-        { nom: "Léa Marchand", age: 12, galop: 2, club: "Cheval Club du Lac" },
-        { nom: "Thomas Petit", age: 16, galop: 4, club: "Écuries de la Forêt" },
-        { nom: "Inès Dubois", age: 9, galop: 1, club: "—" },
-        { nom: "Maxence Roy", age: 34, galop: 5, club: "Centre Équestre des Tilleuls" },
-    ];
-    return (React.createElement("div", { style: { padding: 18 } }, utilisateurs.map((u, i) => React.createElement(LigneAdmin, { key: i, icone: "\uD83D\uDC64", titre: u.nom, sousTitre: `${u.age} · ${u.club} · ${t("nav_galops").replace(/s$/, "")} ${u.galop}`, statut: t("admin_actif"), statutCouleur: COLORS.prairieDark }))));
+    const [lignes, setLignes] = useState(null);   // null = chargement
+    const [err, setErr] = useState("");
+    const [instant, setInstant] = useState(null);
+
+    async function charger() {
+        setErr("");
+        try {
+            if (typeof supa === "undefined" || !supa) { setLignes([]); setErr("Base indisponible."); return; }
+            const r = await supa.from("profiles").select("id, pseudo, avatar_url, ville, galop, ecurie, ecurie2");
+            /* ⚠️ supabase-js renvoie son erreur, il ne la leve pas : sans ce test
+               une lecture refusee afficherait « 0 cavaliere » comme un fait. */
+            if (r && r.error) { setLignes([]); setErr(String(r.error.message || r.error)); return; }
+            const brut = (r && r.data) || [];
+            const enrichies = brut.map(function (u) {
+                const ec = [];
+                if ((u.ecurie || "").trim()) ec.push((u.ecurie || "").trim());
+                if ((u.ecurie2 || "").trim() && (u.ecurie2 || "").trim() !== (u.ecurie || "").trim()) ec.push((u.ecurie2 || "").trim());
+                return Object.assign({}, u, {
+                    pseudoAff: (u.pseudo || "").trim() || "\u2014",
+                    ecuries: ec,
+                    sansEcurie: ec.length === 0
+                });
+            }).sort(function (a, b) {
+                /* 04/09 : les profils SANS PSEUDO vont a la fin. Trie brut, le
+                   tiret cadratin passe avant les lettres et une ligne « — » se
+                   retrouvait en tete de liste, ce qui ressemble a un bug. */
+                const va = a.pseudoAff === "\u2014", vb = b.pseudoAff === "\u2014";
+                if (va !== vb) return va ? 1 : -1;
+                return a.pseudoAff.localeCompare(b.pseudoAff, "fr", { sensitivity: "base" });
+            });
+            setLignes(enrichies);
+            setInstant(new Date());
+        } catch (e) { setLignes([]); setErr(String((e && e.message) || e)); }
+    }
+    useEffect(function () { charger(); }, []);
+
+    const D = { padding: 18 };
+    if (lignes === null) return React.createElement("div", { style: D },
+        React.createElement("p", { style: { fontSize: 13, color: COLORS.encreDoux } }, "\u2026"));
+
+    const parEcurie = {};
+    lignes.forEach(function (u) { u.ecuries.forEach(function (e) { parEcurie[e] = (parEcurie[e] || 0) + 1; }); });
+    const clesEc = Object.keys(parEcurie).sort(function (a, b) { return parEcurie[b] - parEcurie[a]; });
+    const resumeEc = clesEc.slice(0, 3).map(function (k) { return parEcurie[k] + " " + k; }).join(" \u00b7 ") || "\u2014";
+    const sansEc = lignes.filter(function (u) { return u.sansEcurie; });
+
+    return React.createElement("div", { style: D },
+        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 } },
+            React.createElement(KpiCard, { valeur: String(lignes.length), label: "Cavali\u00e8res inscrites", couleur: COLORS.prairieDark }),
+            React.createElement(KpiCard, { valeur: resumeEc, label: "Par \u00e9curie" })),
+
+        err ? React.createElement("div", { style: { background: "rgba(240,92,116,0.10)", border: "1px solid rgba(240,92,116,0.45)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, fontSize: 12.5, color: "#B04A5C", lineHeight: 1.5 } },
+            "La lecture a \u00e9chou\u00e9 : " + err) : null,
+
+        /* ⚠️ meme garde que sur les abonnements : une seule ligne veut presque
+           toujours dire que la policy ne laisse voir que son propre profil. */
+        (!err && lignes.length === 1) ? React.createElement("div", { style: { background: "rgba(232,200,135,0.12)", border: "1px solid rgba(232,200,135,0.5)", borderRadius: 12, padding: "10px 12px", marginBottom: 12, fontSize: 12.5, color: "#8A6D2F", lineHeight: 1.5 } },
+            "Une seule ligne remonte : la r\u00e8gle de lecture de la base ne laisse probablement voir que ton propre profil. Le total ci-dessus n\u2019est donc pas celui de l\u2019app.") : null,
+
+        sansEc.length ? React.createElement("div", { style: { fontSize: 12, color: COLORS.encreDoux, marginBottom: 12, lineHeight: 1.5 } },
+            sansEc.length + (sansEc.length > 1 ? " cavali\u00e8res sans \u00e9curie renseign\u00e9e." : " cavali\u00e8re sans \u00e9curie renseign\u00e9e.")) : null,
+
+        React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 } },
+            React.createElement("p", { style: { margin: 0, fontSize: 13, fontWeight: 700, color: COLORS.encre } }, "Toutes les inscrites"),
+            React.createElement("button", { onClick: charger, style: { fontSize: 12, fontWeight: 700, color: COLORS.prairieDark } }, "Rafra\u00eechir")),
+
+        instant ? React.createElement("p", { style: { margin: "0 0 10px", fontSize: 11, color: COLORS.encreDoux } },
+            "\u00c0 jour \u00e0 " + instant.toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })) : null,
+
+        lignes.length === 0 && !err ? React.createElement("p", { style: { fontSize: 13, color: COLORS.encreDoux, lineHeight: 1.6 } },
+            "Aucun profil ne remonte. Si tu en attends, c\u2019est la r\u00e8gle de lecture de la table `profiles` qu\u2019il faut regarder, pas cet \u00e9cran.") : null,
+
+        lignes.map(function (u, i) {
+            const bas = [];
+            if (u.ecuries.length) bas.push(u.ecuries.join(" + "));
+            if ((u.ville || "").trim()) bas.push((u.ville || "").trim());
+            if (u.galop !== null && u.galop !== undefined && u.galop !== "") bas.push(t("nav_galops").replace(/s$/, "") + " " + u.galop);
+            return React.createElement(LigneAdmin, {
+                key: u.id || i,
+                icone: "\uD83D\uDC64",
+                titre: u.pseudoAff,
+                sousTitre: bas.join(" \u00b7 ") || "\u2014"
+            });
+        }));
 }
 function LigneAdmin({ icone, titre, sousTitre, statut, statutCouleur = COLORS.prairieDark }) {
     return (React.createElement("div", { style: { background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 14, padding: 13, marginBottom: 8, display: "flex", alignItems: "center", gap: 12 } },
