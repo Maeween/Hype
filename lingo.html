@@ -3959,7 +3959,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=94";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=95";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -6913,7 +6913,9 @@ function ouvrirArrivee(i){
      ville n'est pas autorisee, il ecrase sans condition ; sinon, il ne
      touche a rien et laisse la logique normale (sellerie, phrases,
      souvenir) telle qu'elle vient d'etre calculee. */
-  verrouArrivee(!villeAutorisee(e.ref));
+  /* 🟡 v95 — LA VILLE VISEE PAR LE LIEN QUI VIENT DE L'OUVRIR ECHAPPE AU
+     GRISAGE : doctrine vitrine d'origine, reservee a cette arrivee-la. */
+  verrouArrivee(!villeAutorisee(e.ref) && e.ref !== VILLE_LIEN_OUVERTE);
   /* ⚠️ AJOUT DU 13/08 — le bouton des phrases n'apparait QUE si la ville
      en a. Pas de bouton mort : aujourd'hui La Baule et Le Morne. */
   (function(){
@@ -11804,6 +11806,14 @@ var VILLE_EN_ATTENTE = null;
    ⚠️ Un drapeau, et pas un test sur `location.hash` : `lancer()` efface
    l'ancre en la consommant, un test sur l'ancre serait toujours faux. */
 var LIEN_DIRECT_LECON = false;
+/* 🟡 v95 — LA VILLE VISEE PAR UN LIEN #lecon=/#situation=, gardee de cote.
+   Doctrine VITRINE d'origine (14/08) restauree pour CETTE ville precise :
+   un lien partage (pub Instagram, etc.) doit montrer la page entiere,
+   volets compris — c'est le but du lien. Le grisage v94 reste la regle
+   pour toute autre ville non autorisee atteinte par navigation normale.
+   Non reinitialise apres coup : revoir la meme ville plus tard dans la
+   session la montre encore ouverte, ce qui est sans consequence. */
+var VILLE_LIEN_OUVERTE = null;
 
 function lireAncre(){
   var m=/^#duel=([a-z0-9]+)(?:-(\d+))?$/.exec(location.hash||"");
@@ -11914,6 +11924,7 @@ function lireAncre(){
 
        On leve donc un drapeau que le demarrage lira. */
     LIEN_DIRECT_LECON = true;
+    VILLE_LIEN_OUVERTE = ref;   /* v95 */
     /* 🟥 14/08 — LA LECON S'OUVRAIT SOUS L'ECRAN D'OUVERTURE.
        Blandine : « c'est juste ton lien qui ouvre pas la bonne page ou la
        page qui refuse de s'ouvrir ». C'etait la seconde : la ville
