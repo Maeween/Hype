@@ -1282,6 +1282,25 @@ function vignetteHype(u, largeur, hauteur) {
     return base + "?width=" + Math.round(largeur || 320) + "&height=" + Math.round(hauteur || 320) + "&resize=cover&quality=72";
   } catch (eV0) { return u; }
 }
+/* \ud83d\udfe5 05/09 (Blandine : « quand on veut passer d une photo a une autre, ca plante »).
+   LES DEUX VISIONNEUSES CHARGEAIENT L ORIGINAL. Une photo d iPhone fait 4032 px de large :
+   decodee, c est ~50 Mo de memoire. Trois ou quatre balayages et Safari tue la page.
+   Cette fonction demande au service d images de Supabase (plan Pro, actif depuis le
+   04/09) une version qui tient dans `cote` x `cote` SANS recadrage (resize=contain), a
+   qualite 82. 1600 px suffisent largement a un ecran de telephone, meme zoome.
+   Meme repli que les vignettes si le service ne repond pas : l original, une fois. */
+function grandeImageHype(u, cote) {
+  try {
+    var s0 = String(u || "");
+    if (!s0) return u;
+    s0 = (typeof urlNue === "function") ? urlNue(s0) : s0;
+    if (s0.indexOf("/storage/v1/object/public/") < 0) return u;
+    if (typeof estUrlVideo === "function" && estUrlVideo(s0)) return u;
+    var base = s0.split("?")[0].replace("/storage/v1/object/public/", "/storage/v1/render/image/public/");
+    var c = Math.round(cote || 1600);
+    return base + "?width=" + c + "&height=" + c + "&resize=contain&quality=82";
+  } catch (eG0) { return u; }
+}
 /* Repli : si la vignette transformee echoue (plan Free, format non gere, coupure), on repose
    l original UNE seule fois, sans jamais boucler. */
 function replierVignette(ev, original) {
@@ -1581,6 +1600,10 @@ async function majAlbumCheval(id, champs) {
    Les rattachements de chevaux restent LIBRES : une ligne de table ne coute rien,
    et ce sont eux qui remplissent les pages d'ecurie au lancement. */
 var QUOTA_PHOTOS_GRATUIT = 12;
+/* 05/09 (Blandine) : PLAFOND PAR ENVOI. Il n y en avait aucun : 60 photos cochees = 60
+   reductions en memoire puis 60 envois un par un, et au-dela d une cinquantaine Safari
+   peut fermer la page sans un mot. Dix a la fois, et un message pour les suivantes. */
+var HYPE_PHOTOS_PAR_ENVOI = 10;
 var DUREE_VIDEO_MAX_S = 120; /* 2 min — une video de concours fait ~1 min 30 (Blandine) */
 
 async function photosUtiliseesParMoi() {
@@ -33964,6 +33987,8 @@ function PhotoZoomHype(props) {
 
   return h("img", {
     ref: refImg, src: props.src, alt: "", className: props.className,
+    /* 05/09 : si la version reduite (grandeImageHype) echoue, repli sur l original, une fois. */
+    onError: function (eE) { try { if (props.original && typeof replierVignette === "function") replierVignette(eE, props.original); } catch (eR) { } },
     onLoad: calculerZoomMax,
     onTouchStart: debut, onTouchMove: bouge, onTouchEnd: fin,
     onTouchCancel: function () { var s = g.current; s.pinch = null; s.glisse = null; s.bal = null; s.multi = false; },
@@ -35542,6 +35567,20 @@ function AlbumsCheval(props) {
      les cavalieres ne croient pas l app cassee. Decision de Blandine. */
   var refRevenuVeille = React.useRef(false);
   React.useEffect(function () {
+    /* Un envoi etait en cours et la page a ete rechargee ou fermee au milieu :
+       on le dit, avec la cause probable, et on efface le temoin. */
+    try {
+      var brutTm = sessionStorage.getItem("hype_envoi_en_cours");
+      if (!brutTm) return;
+      sessionStorage.removeItem("hype_envoi_en_cours");
+      var tm = JSON.parse(brutTm) || {};
+      var nTm = tm.n || 0;
+      setTimeout(function () {
+        alerte(T("Ton dernier envoi a \u00e9t\u00e9 interrompu", "Your last upload was interrupted", "Tu \u00faltimo env\u00edo se interrumpi\u00f3", "Il tuo ultimo invio \u00e8 stato interrotto", "\u524d\u56de\u306e\u9001\u4fe1\u304c\u4e2d\u65ad\u3055\u308c\u307e\u3057\u305f", "Dein letzter Upload wurde unterbrochen") + " \u2014 " + T("La page s'est ferm\u00e9e pendant l'envoi de " + nTm + " fichier(s). Deux causes possibles : trop de photos d'un coup (Safari ferme la page faute de m\u00e9moire), ou tu as chang\u00e9 d'app pendant l'envoi (iOS suspend Hype). Ce qui \u00e9tait d\u00e9j\u00e0 parti est conserv\u00e9. Renvoie le reste par petits lots, sans quitter l'app.", "The page closed while uploading " + nTm + " file(s). Two likely causes: too many photos at once (Safari closes the page when memory runs out), or you switched apps during the upload (iOS suspends Hype). What was already sent is kept. Resend the rest in small batches, without leaving the app.", "La p\u00e1gina se cerr\u00f3 durante el env\u00edo de " + nTm + " archivo(s). Dos causas posibles: demasiadas fotos a la vez, o cambiaste de app durante el env\u00edo. Lo ya enviado se conserva. Reenv\u00eda el resto en lotes peque\u00f1os, sin salir de la app.", "La pagina si \u00e8 chiusa durante l'invio di " + nTm + " file. Due cause possibili: troppe foto insieme, o hai cambiato app durante l'invio. Ci\u00f2 che era gi\u00e0 partito \u00e8 conservato. Reinvia il resto a piccoli lotti, senza uscire dall'app.", nTm + " \u4ef6\u306e\u9001\u4fe1\u4e2d\u306b\u30da\u30fc\u30b8\u304c\u9589\u3058\u307e\u3057\u305f\u3002\u4e00\u5ea6\u306b\u9001\u308b\u5199\u771f\u304c\u591a\u3059\u304e\u305f\u304b\u3001\u9001\u4fe1\u4e2d\u306b\u30a2\u30d7\u30ea\u3092\u5207\u308a\u66ff\u3048\u305f\u53ef\u80fd\u6027\u304c\u3042\u308a\u307e\u3059\u3002\u9001\u4fe1\u6e08\u307f\u306e\u3082\u306e\u306f\u4fdd\u5b58\u3055\u308c\u3066\u3044\u307e\u3059\u3002\u6b8b\u308a\u306f\u5c11\u3057\u305a\u3064\u3001\u30a2\u30d7\u30ea\u3092\u96e2\u308c\u305a\u306b\u9001\u3063\u3066\u304f\u3060\u3055\u3044\u3002", "Die Seite wurde w\u00e4hrend des Uploads von " + nTm + " Datei(en) geschlossen. Zwei m\u00f6gliche Ursachen: zu viele Fotos auf einmal, oder du hast w\u00e4hrend des Uploads die App gewechselt. Was schon gesendet war, bleibt erhalten. Sende den Rest in kleinen Paketen, ohne die App zu verlassen."));
+      }, 600);
+    } catch (eTm3) { }
+  }, []);
+  React.useEffect(function () {
     var installe = false;
     try { installe = (window.navigator && window.navigator.standalone === true) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches); } catch (eSt) { }
     if (!installe || typeof document === "undefined") return;
@@ -35794,8 +35833,19 @@ function AlbumsCheval(props) {
       if (placesRestantes <= 0) { setInvitPlus({ motif: "photos", utilisees: dejaCompteF }); return; }
       if (fichiersUtiles.length > placesRestantes) { fichiersUtiles = fichiersUtiles.slice(0, placesRestantes); setInvitPlus({ motif: "photos", utilisees: dejaCompteF, partiel: true }); }
     }
+    if (fichiersUtiles.length > HYPE_PHOTOS_PAR_ENVOI) {
+      var nbEcartees = fichiersUtiles.length - HYPE_PHOTOS_PAR_ENVOI;
+      fichiersUtiles = fichiersUtiles.slice(0, HYPE_PHOTOS_PAR_ENVOI);
+      bip(HYPE_PHOTOS_PAR_ENVOI + " " + T("photos maximum par envoi \u2014 les " + nbEcartees + " suivantes partiront au prochain envoi.", "photos max per upload \u2014 the next " + nbEcartees + " will go in the next upload.", "fotos m\u00e1ximo por env\u00edo \u2014 las " + nbEcartees + " siguientes ir\u00e1n en el pr\u00f3ximo env\u00edo.", "foto al massimo per invio \u2014 le " + nbEcartees + " successive partiranno al prossimo invio.", "\u679a\u307e\u3067 \u2014 \u6b8b\u308a " + nbEcartees + " \u679a\u306f\u6b21\u56de\u306b\u9001\u4fe1\u3055\u308c\u307e\u3059\u3002", "Fotos maximal pro Upload \u2014 die n\u00e4chsten " + nbEcartees + " gehen beim n\u00e4chsten Upload."), 6000);
+    }
     if (!fichiersUtiles.length && !videosAEnvoyer.length) return; /* 27/08 : rien a envoyer — inutile d ouvrir un cycle d envoi pour rien */
     setEnvoiCours(true);
+    /* 05/09 (Blandine : « mettre une alerte quand ca plante ou charge pas, en expliquant
+       pourquoi ») \u2014 UN TEMOIN D ENVOI EN COURS, sur le telephone. Si la page meurt au milieu
+       (Safari qui ferme faute de memoire, iOS qui suspend l app passee en arriere-plan),
+       aucun code ne tourne plus pour prevenir. Alors on previent AU RETOUR : le temoin
+       est pose ici, retire dans le finally, et lu a l ouverture du composant. */
+    try { sessionStorage.setItem("hype_envoi_en_cours", JSON.stringify({ alb: albId, n: fichiersUtiles.length + videosAEnvoyer.length, t: Date.now() })); } catch (eTm) { }
     /* 🟥 05/09 (Blandine : « la j arrive plus du tout a selectionner une video,
        il se passe rien ») — L APPLI SE VERROUILLAIT TOUTE SEULE.
        `envoiCours` etait leve ici et abaisse a UN SEUL endroit, en fin de parcours.
@@ -35873,6 +35923,7 @@ function AlbumsCheval(props) {
       /* Quoi qu il arrive au-dessus : on rend la main. Un album verrouille est
          pire qu un envoi rate — l envoi rate se voit, le verrou ne se voit pas. */
       setEnvoiCours(false); setEnvoiPct(0);
+      try { sessionStorage.removeItem("hype_envoi_en_cours"); } catch (eTm2) { }
       try { if (!premium) rafraichirQuota(); } catch (eRq) { }
     }
   }
@@ -36351,7 +36402,7 @@ function AlbumsCheval(props) {
     visu ? portail(h("div", { onClick: function () { setVisu(null); setTagVisu(false); setPanneauCommentaires(false); }, onTouchStart: surToucheDebut, onTouchEnd: surToucheFin, style: { position: "fixed", inset: 0, zIndex: 9100, background: "#020304", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
       (function () { var estVv = !!(typeof estUrlVideo === "function" && estUrlVideo(visu));
         return estVv ? h("video", { src: visu, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nodownload", /* 02/08 : « nofullscreen » retire — le plein ecran des videos etait desactive volontairement, d ou l impossibilite d agrandir signalee par Blandine. Le telechargement reste bloque. */ onClick: function (eV) { eV.stopPropagation(); }, style: { width: "100%", height: "100%", objectFit: "contain" } })
-          : h("img", { src: visu, alt: "", onClick: function (eI) { eI.stopPropagation(); }, style: { width: "100%", height: "100%", objectFit: "contain" } }); })(),
+          : h("img", { src: (typeof grandeImageHype === "function") ? grandeImageHype(visu, 1600) : visu, onError: function (eE) { replierVignette(eE, visu); }, alt: "", onClick: function (eI) { eI.stopPropagation(); }, style: { width: "100%", height: "100%", objectFit: "contain" } }); })(),
       (visuListe && visuListe.length > 1) ? h("div", null,
         h("button", { onClick: function (eP) { eP.stopPropagation(); naviguerVisu(-1); }, "aria-label": "Pr\u00e9c\u00e9dent", style: { position: "absolute", top: "50%", left: 10, transform: "translateY(-50%)", width: 44, height: 44, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 20, cursor: "pointer", zIndex: 3 } }, "\u2039"),
         h("button", { onClick: function (eN) { eN.stopPropagation(); naviguerVisu(1); }, "aria-label": "Suivant", style: { position: "absolute", top: "50%", right: 10, transform: "translateY(-50%)", width: 44, height: 44, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.3)", color: "#EDF2F5", fontSize: 20, cursor: "pointer", zIndex: 3 } }, "\u203a"),
@@ -39834,7 +39885,7 @@ function EcranCheval() {
       h("div", { className: "souvGrandHalo" }),
       estUrlVideo(visionneuse)
         ? h("video", { src: visionneuse, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nodownload", /* 02/08 : « nofullscreen » retire — le plein ecran des videos etait desactive volontairement, d ou l impossibilite d agrandir signalee par Blandine. Le telechargement reste bloque. */ className: "souvVue" + (visFerme ? " souvQuitte" : ""), onClick: function (eV) { eV.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "82%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", background: "#000" } })
-        : h(PhotoZoomHype, { src: visionneuse, className: "souvVue" + (visFerme ? " souvQuitte" : ""), onFermer: fermerVisionneuse, onAller: function (pasV) { try { var lZ = (window.__visListe || []).slice(); if (lZ.length < 2) return; var iZ = lZ.indexOf(visionneuse); if (iZ < 0) return; var nZ = ((iZ + pasV) % lZ.length + lZ.length) % lZ.length; setVisFerme(false); setVisionneuse(lZ[nZ]); } catch (eZ) { } } }),
+        : h(PhotoZoomHype, { src: (typeof grandeImageHype === "function") ? grandeImageHype(visionneuse, 1600) : visionneuse, original: visionneuse, className: "souvVue" + (visFerme ? " souvQuitte" : ""), onFermer: fermerVisionneuse, onAller: function (pasV) { try { var lZ = (window.__visListe || []).slice(); if (lZ.length < 2) return; var iZ = lZ.indexOf(visionneuse); if (iZ < 0) return; var nZ = ((iZ + pasV) % lZ.length + lZ.length) % lZ.length; setVisFerme(false); setVisionneuse(lZ[nZ]); } catch (eZ) { } } }),
       /* 28/08 : la barre like/commentaires s'affiche desormais aussi sur les videos (photo_likes/photo_comments fonctionnent par URL, video ou photo). */
       h("div", { onClick: function (eB) { eB.stopPropagation(); }, style: { position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 5, padding: "12px 16px calc(16px + env(safe-area-inset-bottom))", background: "linear-gradient(180deg, rgba(4,6,9,0), rgba(4,6,9,0.92) 55%)" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
