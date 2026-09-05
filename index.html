@@ -33953,7 +33953,13 @@ function PhotoZoomHype(props) {
       return;
     }
     if (s.e > 1.03) { s.glisse = { x: e.touches[0].clientX, y: e.touches[0].clientY, x0: s.x, y0: s.y }; }
-    else if (!s.multi) { s.bal = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }
+    else if (!s.multi) {
+      s.bal = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+      /* 05/09 18 h 15 (Blandine : « on tape dessus une fois pour retirer le grisé et elle se ferme à
+         la place »). Sur une VIDEO, le bas de l'image porte la barre de lecture native : un glisser
+         qui y commence est un deplacement dans la video, jamais un balayage vers la photo suivante. */
+      try { if (props.tag === "video" && refImg.current) { var rB = refImg.current.getBoundingClientRect(); s.bal.commandes = (e.touches[0].clientY > rB.top + rB.height * 0.7); } } catch (eB) { }
+    }
   }
   function bouge(e) {
     var s = g.current;
@@ -33981,7 +33987,7 @@ function PhotoZoomHype(props) {
     if (s.bal && restants === 0 && !s.multi && s.e <= 1.03) {
       var t = e.changedTouches[0];
       var dxB = t.clientX - s.bal.x, dyB = Math.abs(t.clientY - s.bal.y);
-      if (Math.abs(dxB) > 50 && dyB < 70) { if (props.onAller) props.onAller(dxB < 0 ? 1 : -1); }
+      if (Math.abs(dxB) > 50 && dyB < 70) { if (props.onAller && !s.bal.commandes) props.onAller(dxB < 0 ? 1 : -1); }
       else if (Math.abs(dxB) < 12 && dyB < 12) { tap(t); }
     }
     s.bal = null;
@@ -34003,6 +34009,10 @@ function PhotoZoomHype(props) {
       return;
     }
     s.tap = now;
+    /* 05/09 18 h 15 : sur une VIDEO, le tap simple est celui des commandes natives d'iOS (afficher /
+       masquer le voile gris et les boutons). Il ne ferme plus la visionneuse — la croix reste, et un
+       tap a cote de la video (bandes noires) aussi. Le double tap (zoom) est conserve. */
+    if (props.tag === "video") return;
     setTimeout(function () {             /* tap simple confirme = fermeture, comme avant */
       try { if (g.current.tap && Date.now() - g.current.tap >= 290 && g.current.e <= 1.03 && props.onFermer) props.onFermer(); } catch (e2) { }
     }, 300);
