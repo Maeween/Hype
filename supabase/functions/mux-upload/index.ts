@@ -186,6 +186,18 @@ Deno.serve(async (req) => {
         new_asset_settings: {
           playback_policy: ["public"],
           video_quality: "basic",
+          /* 05/09 — EN PLUS DU FLUX HLS, UN MP4 CLASSIQUE.
+             Constaté par Blandine (enregistrement 11h37) : en app installée sur
+             iPhone, le plein écran natif d'une vidéo HLS est NOIR — commandes
+             présentes, temps qui avance, aucune image. Un MP4 n'a pas ce défaut.
+             capped-1080p est compatible avec la qualité basic (doc Mux : « MP4
+             support for basic assets »). Coût : l'encodage est gratuit, le
+             stockage du MP4 est facturé pour la qualité basic — quelques centimes
+             par vidéo. L'app propose le MP4 d'abord et retombe sur le HLS.
+             ⚠️ Ne vaut que pour les envois APRÈS ce déploiement. Pour les vidéos
+             déjà en ligne, Mux permet de l'activer après coup :
+             PUT /video/v1/assets/{ASSET_ID}/mp4-support {"mp4_support":"capped-1080p"}. */
+          mp4_support: "capped-1080p",
         },
       }),
     });
