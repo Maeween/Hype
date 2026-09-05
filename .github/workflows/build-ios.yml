@@ -1,0 +1,227 @@
+# HYPE — coque native iOS : construite sur un Mac de GitHub, envoyée sur TestFlight.
+#
+# UN SEUL FICHIER À POUSSER : celui-ci (.github/workflows/build-ios.yml).
+# Il fabrique lui-même le dossier natif/ (Capacitor, plugins, fastlane) sur le Mac de GitHub,
+# puis construit, signe et envoie l'app. Rien d'autre n'est à pousser.
+#   - si un jour un fichier existe dans le dépôt sous natif/ (ex. natif/resources/icon-only.png
+#     pour l'icône), il est gardé tel quel et remplace la version fabriquée ici.
+#   - tant que les 7 secrets Apple ne sont pas posés (PLAN-APP-NATIVE.md § 4 bis), le workflow
+#     s'arrête tout de suite, EN VERT, avec un mot dans le journal.
+# Se déclenche à la main (Actions → « iOS — build + TestFlight » → Run workflow) ou à chaque
+# poussée qui touche ce fichier ou natif/.
+# Rien de secret n'est écrit ici : le dépôt est public.
+
+name: iOS — build + TestFlight
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/build-ios.yml"
+      - "natif/**"
+
+concurrency:
+  group: ios-build
+  cancel-in-progress: false
+
+jobs:
+  ios:
+    runs-on: macos-15
+    timeout-minutes: 90
+    env:
+      # ---- Les deux seuls réglages à changer AVANT le premier build (définitifs chez Apple) :
+      HYPE_BUNDLE_ID: fr.ecuriefeinn.hype
+      HYPE_APP_NAME: Hype
+      HYPE_SITE: https://2hype.netlify.app
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Secrets Apple présents ?
+        id: pre
+        run: |
+          if [ -z "${{ secrets.ASC_KEY_ID }}" ]; then
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "Secrets Apple absents : rien a construire pour l'instant. Voir PLAN-APP-NATIVE.md, section 4 bis."
+          else
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # ------------------------------------------------------------------------------
+      # Fabrication du projet natif/ (chaque fichier n'est écrit que s'il n'existe pas déjà)
+      # ------------------------------------------------------------------------------
+      - name: Fabriquer le projet natif
+        if: steps.pre.outputs.ok == 'true'
+        run: |
+          set -e
+          mkdir -p natif/www natif/fastlane
+          ecrire() { if [ -f "$1" ]; then echo "garde : $1 (present dans le depot)"; cat > /dev/null; else cat > "$1"; echo "ecrit : $1"; fi; }
+
+          ecrire natif/package.json << 'EOF'
+          {
+            "name": "hype-natif",
+            "private": true,
+            "version": "1.0.0",
+            "description": "Coque native iOS de Hype (Capacitor). Elle affiche le site et lui prete ses briques natives : selecteur Photos en mode original, envoi natif avec progression.",
+            "dependencies": {
+              "@capacitor/core": "^8.0.0",
+              "@capacitor/ios": "^8.0.0",
+              "@capgo/capacitor-file-picker": "latest",
+              "@capgo/capacitor-uploader": "latest"
+            },
+            "devDependencies": {
+              "@capacitor/cli": "^8.0.0",
+              "@capacitor/assets": "^3.0.0"
+            }
+          }
+          EOF
+
+          ecrire natif/capacitor.config.json << EOF
+          {
+            "appId": "${HYPE_BUNDLE_ID}",
+            "appName": "${HYPE_APP_NAME}",
+            "webDir": "www",
+            "server": {
+              "url": "${HYPE_SITE}",
+              "errorPath": "erreur.html",
+              "allowNavigation": ["2hype.netlify.app", "*.supabase.co", "*.mux.com"]
+            },
+            "ios": {
+              "contentInset": "never",
+              "backgroundColor": "#060709",
+              "allowsLinkPreview": false
+            }
+          }
+          EOF
+
+          ecrire natif/www/index.html << EOF
+          <!doctype html>
+          <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Hype</title>
+          <style>html,body{margin:0;height:100%;background:#060709;color:#EDF2F5;font-family:-apple-system,Montserrat,sans-serif}.c{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}.h{font-family:Cinzel,Georgia,serif;letter-spacing:6px;color:#20D9F5;font-size:34px}</style></head>
+          <body><div class="c"><div class="h">HYPE</div><div style="color:#8A99A1;font-size:13px">Chargement…</div></div>
+          <script>setTimeout(function(){try{location.href="${HYPE_SITE}/";}catch(e){}},1500);</script>
+          </body></html>
+          EOF
+
+          ecrire natif/www/erreur.html << EOF
+          <!doctype html>
+          <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Hype</title>
+          <style>html,body{margin:0;height:100%;background:#060709;color:#EDF2F5;font-family:-apple-system,Montserrat,sans-serif}.c{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 28px;text-align:center}.h{font-family:Cinzel,Georgia,serif;letter-spacing:6px;color:#20D9F5;font-size:34px}p{color:#C9D3D8;font-size:14px;line-height:1.55;margin:0}button{margin-top:6px;padding:13px 26px;border-radius:999px;border:1px solid #20D9F5;background:rgba(32,217,245,.14);color:#EDF2F5;font-size:15px;font-weight:700}</style></head>
+          <body><div class="c"><div class="h">HYPE</div><p>Hype n'arrive pas à se connecter.<br>Vérifie ta connexion, puis réessaie.</p><button onclick="location.href='${HYPE_SITE}/'">Réessayer</button></div></body></html>
+          EOF
+
+          ecrire natif/Gemfile << 'EOF'
+          source "https://rubygems.org"
+          gem "fastlane"
+          EOF
+
+          ecrire natif/fastlane/Appfile << 'EOF'
+          app_identifier(ENV["HYPE_BUNDLE_ID"] || "fr.ecuriefeinn.hype")
+          team_id(ENV["APPLE_TEAM_ID"])
+          EOF
+
+          ecrire natif/fastlane/Matchfile << 'EOF'
+          git_url(ENV["MATCH_GIT_URL"])
+          storage_mode("git")
+          type("appstore")
+          app_identifier([ENV["HYPE_BUNDLE_ID"] || "fr.ecuriefeinn.hype"])
+          EOF
+
+          ecrire natif/fastlane/Fastfile << 'EOF'
+          # 1. produce : la fiche App Store Connect (creee une fois, ignoree ensuite)
+          # 2. match   : certificat + profil, chiffres dans le depot prive MATCH_GIT_URL
+          # 3. signature manuelle du projet Xcode genere par `cap add ios`
+          # 4. build_app, 5. upload_to_testflight
+          default_platform(:ios)
+          BUNDLE    = ENV["HYPE_BUNDLE_ID"] || "fr.ecuriefeinn.hype"
+          NOM_APP   = ENV["HYPE_APP_NAME"] || "Hype"
+          XCODEPROJ = "ios/App/App.xcodeproj"
+          WORKSPACE = "ios/App/App.xcworkspace"
+          platform :ios do
+            lane :beta do
+              setup_ci
+              cle = app_store_connect_api_key(
+                key_id: ENV["ASC_KEY_ID"], issuer_id: ENV["ASC_ISSUER_ID"],
+                key_content: ENV["ASC_KEY_P8"], is_key_content_base64: false, in_house: false)
+              options_produce = { api_key: cle, app_identifier: BUNDLE, app_name: NOM_APP, language: "fr-FR", sku: "hype-ios-1", skip_itc: false }
+              options_produce[:company_name] = ENV["HYPE_COMPANY_NAME"] if ENV["HYPE_COMPANY_NAME"].to_s != ""
+              produce(options_produce)
+              match(type: "appstore", app_identifier: BUNDLE, api_key: cle, readonly: false,
+                    git_url: ENV["MATCH_GIT_URL"], storage_mode: "git", team_id: ENV["APPLE_TEAM_ID"])
+              profil = ENV["sigh_#{BUNDLE}_appstore_profile-name"]
+              update_code_signing_settings(path: XCODEPROJ, use_automatic_signing: false, team_id: ENV["APPLE_TEAM_ID"],
+                bundle_identifier: BUNDLE, code_sign_identity: "Apple Distribution", profile_name: profil, targets: ["App"])
+              increment_build_number(xcodeproj: XCODEPROJ, build_number: (ENV["GITHUB_RUN_NUMBER"] || "1"))
+              build_app(workspace: WORKSPACE, scheme: "App", configuration: "Release", export_method: "app-store",
+                export_options: { provisioningProfiles: { BUNDLE => profil } }, output_directory: "build", output_name: "Hype.ipa")
+              upload_to_testflight(api_key: cle, skip_waiting_for_build_processing: true,
+                changelog: "Build #{ENV['GITHUB_RUN_NUMBER']} - #{ENV['GITHUB_SHA'].to_s[0, 7]}")
+            end
+          end
+          EOF
+          echo "--- natif/ ---"; find natif -type f | sort
+
+      - uses: actions/setup-node@v4
+        if: steps.pre.outputs.ok == 'true'
+        with:
+          node-version: 22
+
+      - uses: ruby/setup-ruby@v1
+        if: steps.pre.outputs.ok == 'true'
+        with:
+          ruby-version: "3.3"
+          bundler-cache: false
+
+      - name: Outils Ruby (fastlane)
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        run: bundle install
+
+      - name: Dépendances web (Capacitor + plugins)
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        run: npm install --no-audit --no-fund
+
+      - name: Projet iOS (généré s'il n'est pas dans le dépôt)
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        run: |
+          if [ ! -d ios ]; then npx cap add ios; fi
+
+      - name: Icône et écran de lancement (seulement si natif/resources/icon-only.png est dans le dépôt)
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        run: |
+          if [ -f resources/icon-only.png ]; then
+            npx capacitor-assets generate --ios --iconBackgroundColor '#060709' --iconBackgroundColorDark '#060709' --splashBackgroundColor '#060709' --splashBackgroundColorDark '#060709' || echo "assets ignores, icone par defaut"
+          else
+            echo "pas de natif/resources/icon-only.png dans le depot : icone par defaut"
+          fi
+
+      - name: Synchronisation Capacitor (plugins, Pods)
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        run: npx cap sync ios
+
+      - name: Build signé + TestFlight
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          HYPE_COMPANY_NAME: ${{ secrets.HYPE_COMPANY_NAME }}
+        run: bundle exec fastlane ios beta
+
+      - name: Garder l'ipa (téléchargeable 30 jours dans l'onglet Actions)
+        if: always() && steps.pre.outputs.ok == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: Hype-ipa
+          path: natif/build/*.ipa
+          if-no-files-found: ignore
