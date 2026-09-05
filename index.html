@@ -35766,6 +35766,13 @@ function AlbumsCheval(props) {
     setAlbums(liste);
   }
   function charger() {
+    /* 05/09 (Blandine : « la video etait en 4 exemplaires dans l album et nulle part
+       dans l onglet Videos ») \u2014 L ONGLET VIDEOS LIT LES ALBUMS UNE FOIS ET NE LES
+       RELIT JAMAIS. Il est alimente par AlbumsPromus, qui charge au montage sur
+       [props.cible] et ne rafraichit pas. Tout ce qui passe par ici (envoi, retrait,
+       creation, suppression, changement de couverture) le previent desormais par un
+       evenement de document. AlbumsPromus l ecoute et recharge. */
+    try { document.dispatchEvent(new CustomEvent("hype-albums-modifies", { detail: { cible: props.cible } })); } catch (eEv) { }
     try {
       var estCav = String(props.cible || "").indexOf("cavalier:") === 0;
       listerAlbumsCheval(props.cible).then(function (r) {
@@ -36563,11 +36570,45 @@ function AlbumsPromus(props) {
   var tA = function (aT) { return teinteRGBA(tnT, aT); };
   var aSt = React.useState(null); var albums = aSt[0], setAlbums = aSt[1];
   var gSt = React.useState(null); var galeriePh = gSt[0], setGaleriePh = gSt[1];
+  /* 05/09 (Blandine : « Liam ira sur sa fiche poney et va trouver des albums crees par
+     d autres ? ») \u2014 LE NOM DE L AUTEUR SUR LA CARTE. Cote Medias, tous les albums
+     publics du cheval s affichent, quel que soit leur auteur, et rien ne le disait :
+     un album orphelin sur la fiche de son propre poney. On lit les pseudos des
+     auteurs (une requete pour tous) et on ecrit « par Blandine » sous le titre,
+     seulement quand l album n est PAS a celle qui regarde. */
+  var pseuSt = React.useState({}); var pseudosAuteurs = pseuSt[0], setPseudosAuteurs = pseuSt[1];
+  var moiIdSt = React.useState(null); var moiIdAP = moiIdSt[0], setMoiIdAP = moiIdSt[1];
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      try { var u = await utilisateurActuel(); if (actif) setMoiIdAP(u && u.id ? u.id : null); } catch (eU) { }
+      try {
+        var ids = {}; (albums || []).forEach(function (al) { if (al && al.user_id) ids[al.user_id] = 1; });
+        var liste = Object.keys(ids); if (!liste.length || typeof supa === "undefined" || !supa) return;
+        var r = await supa.from("profiles").select("id, pseudo").in("id", liste);
+        if (r && r.error) return; /* on ne sait pas : on n ecrit rien, on ne bloque rien */
+        var m = {}; ((r && r.data) || []).forEach(function (p) { if (p && p.id) m[p.id] = p.pseudo || ""; });
+        if (actif) setPseudosAuteurs(m);
+      } catch (eP) { }
+    })();
+    return function () { actif = false; };
+  }, [albums]);
   React.useEffect(function () {
     var actif = true;
     try { listerAlbumsCheval(props.cible).then(function (r) { if (actif) setAlbums(((r && r.data) || [])); /* 30/07 fusion: tous les albums, plus seulement les promus */ }).catch(function () { if (actif) setAlbums([]); }); } catch (e) { setAlbums([]); }
     try { if (typeof chargerPhotosSouvenirs === "function") { chargerPhotosSouvenirs(props.cible).then(function (ph) { if (actif) setGaleriePh(ph || []); }).catch(function () { if (actif) setGaleriePh([]); }); } else { setGaleriePh([]); } } catch (e2) { setGaleriePh([]); }
-    return function () { actif = false; };
+    /* 05/09 : recharger quand un album de la meme cible change ailleurs (cf. charger()
+       dans AlbumsCheval). Sans ca, l onglet Videos et le rail Medias montraient l etat
+       du premier affichage jusqu au rechargement complet de la page. */
+    var surModif = function (ev) {
+      try {
+        var c = ev && ev.detail && ev.detail.cible;
+        if (c && String(c) !== String(props.cible)) return;
+        listerAlbumsCheval(props.cible).then(function (r) { if (actif) setAlbums(((r && r.data) || [])); }).catch(function () { });
+      } catch (eM) { }
+    };
+    try { document.addEventListener("hype-albums-modifies", surModif); } catch (eL) { }
+    return function () { actif = false; try { document.removeEventListener("hype-albums-modifies", surModif); } catch (eR) { } };
   }, [props.cible]);
   React.useEffect(function () { /* 31/07 : remonter les videos pour l onglet Videos de la page seconde */
     try {
@@ -36602,7 +36643,8 @@ function AlbumsPromus(props) {
             cov ? (estV ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, color: tA(0.6) } }, "\ud83d\udcf7"),
             estV && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
             h("div", { style: { pointerEvents: "none", position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 7px", background: "linear-gradient(180deg, transparent, rgba(4,6,9,0.88))" } },
-              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, alb.nom))));
+              h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11.5, fontWeight: 700, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textAlign: "center" } }, alb.nom),
+              (alb.user_id && moiIdAP && alb.user_id !== moiIdAP && pseudosAuteurs[alb.user_id]) ? h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 9, color: "rgba(237,242,245,0.72)", textAlign: "center", marginTop: 2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, T("par", "by", "por", "di", "\u6295\u7a3f\u8005\uff1a", "von") + " " + pseudosAuteurs[alb.user_id]) : null)));
       })).concat(albums.length === 0 ? [h("div", { key: "vide", role: "button", onClick: function () { var fN = props.onNouveau || props.onTout; if (fN) fN(); }, style: { cursor: "pointer", flex: "0 0 calc(50% - 5.5px)", scrollSnapAlign: "start" } },
         h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 20, border: "1.5px dashed " + tA(0.45), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 9, boxSizing: "border-box" } },
           h("div", { style: { width: 34, height: 34, borderRadius: "50%", border: "1px solid " + tA(0.55), display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 16, fontWeight: 300 } }, "+"),
