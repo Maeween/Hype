@@ -1298,6 +1298,22 @@ function vignetteHype(u, largeur, hauteur) {
    adresse du .m3u8 stocke. Les deux visionneuses proposent d abord le MP4, puis le
    flux HLS : si le MP4 n existe pas (videos envoyees avant ce changement, ou encore en
    cours de fabrication), iOS passe a la source suivante tout seul. */
+/* \ud83d\udfe5 05/09 (Blandine, capture 15h14 : « quand on like une photo, l ecran se fige,
+   oblige de relancer l app »). La visionneuse est un calque en position: fixed ;
+   sur iOS en app installee, l ouverture du clavier (champ « Ton commentaire… »)
+   reduit le viewport visuel et FAIT DEFILER la page derriere ; a la fermeture du
+   clavier, ce defilement reste, et le calque fixe apparait decale — la page de
+   dessous visible en haut, le bas recouvert. Ca ressemble a un gel. Meme mecanisme
+   que l espace blanc de 360 px de l import FFE (voir suivi). Cette fonction remet
+   la page a zero quand un champ de la visionneuse perd le focus. */
+function hypeRecalerApresClavier() {
+  try {
+    setTimeout(function () {
+      try { window.scrollTo(0, 0); } catch (e1) { }
+      try { document.documentElement.scrollTop = 0; document.body.scrollTop = 0; } catch (e2) { }
+    }, 80);
+  } catch (eK) { }
+}
 function hypeMuxMp4(u) {
   try {
     var s = String(u || "").split("#")[0];
@@ -36487,7 +36503,7 @@ function AlbumsCheval(props) {
                       h("button", { onClick: function () { setCommentaireASignaler(c.id); }, "aria-label": "Signaler", style: { background: "none", border: "none", color: "#8A99A1", fontSize: 11, cursor: "pointer", padding: 2 } }, T("Signaler", "Report", "Reportar", "Segnala", "\u5831\u544a"))));
               }))),
         h("div", { style: { display: "flex", gap: 9, padding: "12px 16px calc(env(safe-area-inset-bottom) + 14px)", borderTop: "1px solid rgba(255,255,255,0.08)" } },
-          h("input", { value: texteCommentaire, onChange: function (eI) { setTexteCommentaire(eI.target.value); }, onKeyDown: function (eK) { if (eK.key === "Enter") envoyerCommentaireVisu(); }, maxLength: 500, placeholder: T("\u00c9crire un commentaire\u2026", "Write a comment\u2026", "Escribe un comentario\u2026", "Scrivi un commento\u2026", "\u30b3\u30e1\u30f3\u30c8\u3092\u5165\u529b\u2026"), style: { flex: 1, boxSizing: "border-box", padding: "11px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 13.5, fontFamily: M9, outline: "none" } }),
+          h("input", { value: texteCommentaire, onBlur: function () { if (typeof hypeRecalerApresClavier === "function") hypeRecalerApresClavier(); }, onChange: function (eI) { setTexteCommentaire(eI.target.value); }, onKeyDown: function (eK) { if (eK.key === "Enter") envoyerCommentaireVisu(); }, maxLength: 500, placeholder: T("\u00c9crire un commentaire\u2026", "Write a comment\u2026", "Escribe un comentario\u2026", "Scrivi un commento\u2026", "\u30b3\u30e1\u30f3\u30c8\u3092\u5165\u529b\u2026"), style: { flex: 1, boxSizing: "border-box", padding: "11px 14px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 13.5, fontFamily: M9, outline: "none" } }),
           h("button", { onClick: envoyerCommentaireVisu, disabled: envoiCommentaire || !texteCommentaire.trim(), style: { padding: "0 18px", borderRadius: 999, border: "none", background: (envoiCommentaire || !texteCommentaire.trim()) ? "rgba(255,255,255,0.1)" : "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: (envoiCommentaire || !texteCommentaire.trim()) ? "#8A99A1" : "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M9, cursor: (envoiCommentaire || !texteCommentaire.trim()) ? "default" : "pointer" } }, T("Envoyer", "Send", "Enviar", "Invia", "\u9001\u4fe1"))))), document.body) : null,
     commentaireASignaler ? portail(h("div", { onClick: function () { setCommentaireASignaler(null); }, style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "center", justifyContent: "center" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "82%", maxWidth: 330, borderRadius: 20, border: "1px solid rgba(226,138,146,0.4)", background: "linear-gradient(180deg, rgba(20,12,14,0.98), rgba(10,7,8,0.99))", padding: "20px 18px", textAlign: "center" } },
@@ -39989,7 +40005,7 @@ function EcranCheval() {
                     h("div", { style: { fontSize: 13, color: "rgba(244,247,250,0.9)", marginTop: 2, lineHeight: 1.45 } }, cmm.texte || cmm.contenu || ""));
                 }))) : null,
         cmPanneau ? h("div", { style: { display: "flex", gap: 8, marginTop: 10 } },
-          h("input", { value: cmTexte, onChange: function (eI) { setCmTexte(eI.target.value); }, placeholder: T("Ton commentaire\u2026", "Your comment\u2026", "Tu comentario\u2026", "Il tuo commento\u2026", "\u30b3\u30e1\u30f3\u30c8\u2026", "Dein Kommentar\u2026"), maxLength: 300, style: { flex: 1, minWidth: 0, padding: "11px 13px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.06)", color: "#F4F7FA", fontSize: 13.5 } }),
+          h("input", { value: cmTexte, onBlur: function () { if (typeof hypeRecalerApresClavier === "function") hypeRecalerApresClavier(); }, onChange: function (eI) { setCmTexte(eI.target.value); }, placeholder: T("Ton commentaire\u2026", "Your comment\u2026", "Tu comentario\u2026", "Il tuo commento\u2026", "\u30b3\u30e1\u30f3\u30c8\u2026", "Dein Kommentar\u2026"), maxLength: 300, style: { flex: 1, minWidth: 0, padding: "11px 13px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.06)", color: "#F4F7FA", fontSize: 13.5 } }),
           h("button", { onClick: envoyerCm, style: { padding: "11px 16px", borderRadius: 13, border: "1px solid " + tA(0.5), background: tA(0.14), color: "#CFF6FA", fontSize: 13.5, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Envoyer", "Send", "Enviar", "Invia", "\u9001\u4fe1", "Senden"))) : null),
       h("button", { onClick: function (eX) { eX.stopPropagation(); fermerVisionneuse(); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 16, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.25)", color: "#EDF2F5", fontSize: 16, zIndex: 3 } }, "✕"),
           h("button", { onClick: function (eI) { eI.stopPropagation(); ouvrirTag(visionneuse); }, style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", left: 16, zIndex: 3, display: "inline-flex", alignItems: "center", gap: 7, padding: "8px 14px 8px 11px", borderRadius: 999, border: "1px solid rgba(45,212,222,0.55)", background: "rgba(10,40,46,0.55)", color: "#CFF6FA", fontSize: 12.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", backdropFilter: "blur(6px)" } }, "\ud83c\udff7\ufe0f ", T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0", "Identifizieren")) /* 30/07 : Identifier revient dans la visionneuse (demande Blandine) */,
