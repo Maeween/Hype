@@ -37480,6 +37480,30 @@ function EcranCheval() {
   var snSt = React.useState(""); var surnomPerso = snSt[0], setSurnomPerso = snSt[1];
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   var medSt = React.useState({}); var mediasInfo = medSt[0], setMediasInfo = medSt[1];
+  /* 🟥 05/09 (Blandine : retirer Galerie de l'onglet Photos) — `mediasInfo` (id + proprietaire
+     par photo, utilise par les boutons Supprimer/Vedette de la visionneuse) etait charge par
+     `GrilleSouvenirs` (l'ancienne Galerie). En le retirant, ce chargement disparaissait avec
+     lui, et Supprimer/Vedette auraient cesse de fonctionner sur les photos postees en
+     commentaire pour tout le monde sauf les moderatrices. Le meme chargement (listerCommentaires)
+     est repris ICI, independant de l'affichage de la galerie. */
+  React.useEffect(function () {
+    var actifMed = true;
+    function chargerMediasInfo() {
+      try {
+        if (typeof listerCommentaires !== "function" || typeof supa === "undefined") return;
+        listerCommentaires(cibleCh).then(function (r) {
+          if (!actifMed) return;
+          var monIdMed = moi && moi.id;
+          var postsMed = ((r && r.data) || []).filter(function (p) { return p.photo_url && (!p.prive || (monIdMed && p.user_id === monIdMed)); });
+          var infosMed = {}; postsMed.forEach(function (p) { infosMed[p.photo_url] = { id: p.id, user_id: p.user_id }; });
+          setMediasInfo(infosMed);
+        }).catch(function () { });
+      } catch (eCm) { }
+    }
+    chargerMediasInfo();
+    window.addEventListener("hype-souvenirs-maj", chargerMediasInfo);
+    return function () { actifMed = false; window.removeEventListener("hype-souvenirs-maj", chargerMediasInfo); };
+  }, [cibleCh, moi]);
   /* 02/09 : on ne charge l histoire perso que si le cheval n est pas le mien. Sur mon
      propre cheval, chevaux.histoire reste la seule source (rien ne change pour moi). */
   var estMonChevalFiche = !!(moi && chevalDyn && chevalDyn.ownerId === moi.id);
@@ -38382,8 +38406,8 @@ function EcranCheval() {
                 h("div", { style: { marginTop: 6, fontSize: 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titrePage)));
   }
   /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
-     s'affiche EN HAUT de l'onglet Photos (demande Blandine). */
-  var gvSt = React.useState(false); var galVideCh = gvSt[0], setGalVideCh = gvSt[1];
+     s'affiche EN HAUT de l'onglet Photos (demande Blandine). 🟥 05/09 : Galerie retiree ;
+     galVideCh n'a plus de source (personne ne l'active plus) et disparait avec elle. */
   var mmSt = React.useState(false); var revoirMascotte = mmSt[0], setRevoirMascotte = mmSt[1];
   /* 30/08 19h30 — CHEMIN DIRECT D'ENVOI DEPUIS L'ONGLET VIDEOS (demande Blandine :
      « le chemin est pas intuitif, on se retrouve sur une autre page qui propose de
@@ -39992,7 +40016,11 @@ function EcranCheval() {
          deplace est repris tel quel, memes composants, memes reglages. */
       panneau === "photos" ? h("div", null,
         encartIdentiteCh(T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos")),
-        h(ChronologieSouvenirs, {
+        /* 🟥 05/09 (Blandine : « on commence par les albums et ajouter en haut de la page,
+           et apres ca part sur la chronologie ») — Albums avant Chronologie, ordre inversé par
+           rapport a avant. */
+        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true })),
+h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
           proprio: !!(chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id),
@@ -40002,23 +40030,21 @@ function EcranCheval() {
             if (fA) { fA(); }
           }
         }),
-        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true })),
-        h("div", { className: "souvin", style: { display: "flex", alignItems: "center", gap: 9, margin: "0 16px 10px", animationDelay: ".08s" } },
-          h("span", { style: { width: 7, height: 7, background: teinte, transform: "rotate(45deg)", boxShadow: "0 0 10px " + tA(0.8) + "", flexShrink: 0 } }),
-          h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, color: "#EAF2F4", fontWeight: 700, letterSpacing: 1 } }, T("Galerie", "Gallery", "Galería", "Galleria", "ギャラリー", "Galerie")),
-          h("span", { style: { fontSize: 10.5, color: "rgba(237,242,245,0.45)", fontStyle: "italic" } }, T("★ = en vedette sur la fiche (6 max)", "★ = featured on the profile (6 max)", "★ = destacada en la ficha (6 máx.)", "★ = in evidenza sulla scheda (max 6)", "★ = プロフィール掲載（6枚まで）", "★ = auf dem Profil hervorgehoben (max. 6)")),
-          h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, " + tA(0.5) + ", transparent)" } })),
-        h("div", { className: "souvin", style: { animationDelay: ".12s" } },
-          h(GrilleSouvenirs, { reglable: !!(chevalDyn && moi && chevalDyn.ownerId === moi.id), /* 02/09 : l interrupteur d essai n apparait que pour la proprietaire */ teinte: teinte, teinteCl: teinteCl, cible: cibleCh, onVide: setGalVideCh, vedettes: vedettes || [], onToggleVedette: basculerVedette, onOuvrir: function (uV) { setVisionneuse(uV); }, onMedias: setMediasInfo, onAjouter: function () {
-            var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
-            if (fA) { fA(); }
-            setTimeout(function () { try { var pan = document.getElementById("panneauCheval"); if (pan) pan.scrollTo({ top: pan.scrollHeight, behavior: "smooth" }); } catch (eS) { } }, 900);
-          } })),
+                /* 🟥 05/09 (Blandine : « ca fait trop sur cette page ») — la Galerie (en-tete + grille
+           GrilleSouvenirs) est RETIREE d'ici. Ce qu'elle montrait vraiment : les photos
+           POSTEES EN COMMENTAIRE (listerCommentaires), PAS les photos d'album — explication
+           inexacte donnee plus tot dans la journee, corrigee ici. Rien n'est perdu en base :
+           ces photos restent visibles la ou le commentaire a ete poste. Le chargement
+           `mediasInfo` que GrilleSouvenirs faisait vivre (pour Supprimer/Vedette dans la
+           visionneuse) est repris plus haut, juste apres la declaration de `mediasInfo`,
+           independant de cet affichage. GrilleSouvenirs elle-meme reste dans le fichier,
+           inutilisee — utile si Blandine construit un jour un fil photo + commentaire
+           (« type post Facebook »), evoque le meme jour. */
         /* 30/08 02h55 — L'INVITATION PART QUAND SA MISSION EST ACCOMPLIE.
            Meme regle produit que la video d'import du palmares : la condition est
            sur LA DONNEE (la galerie a des photos), jamais sur « deja vu ». Une
            phrase discrete permet de la revoir. */
-        (galVideCh || revoirMascotte) ? h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () {
+        /* 05/09 : galVideCh retire avec Galerie, sa seule source. */ revoirMascotte ? h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () {
           var fV = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
           if (fV) { fV(); }
         } })
