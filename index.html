@@ -39213,7 +39213,7 @@ function EcranCheval() {
       panneau === "videos" ? h("div", null,
         encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos")),
         h("div", { style: { padding: "8px 16px 24px" } },
-        h("input", { ref: vdIn, type: "file", accept: "video/*", style: { display: "none" }, onChange: function (eVi) {
+        h("input", { ref: vdIn, type: "file", accept: "video/*", multiple: true, /* \ud83d\udfe5 05/09 (Blandine, capture 15h12) : troisieme champ video du fichier, oublie ce matin. Sans `multiple`, le selecteur iOS n a PAS de bouton de validation. Le traitement ne prend toujours que le premier fichier. */ style: { display: "none" }, onChange: function (eVi) {
           var lst = (eVi.target && eVi.target.files) || null;
           var fV2 = (lst && lst[0]) || null;
           try { eVi.target.value = ""; } catch (eR2) { }
