@@ -36605,6 +36605,7 @@ function AlbumsPromus(props) {
         var c = ev && ev.detail && ev.detail.cible;
         if (c && String(c) !== String(props.cible)) return;
         listerAlbumsCheval(props.cible).then(function (r) { if (actif) setAlbums(((r && r.data) || [])); }).catch(function () { });
+        if (typeof chargerPhotosSouvenirs === "function") chargerPhotosSouvenirs(props.cible).then(function (ph) { if (actif) setGaleriePh(ph || []); }).catch(function () { });
       } catch (eM) { }
     };
     try { document.addEventListener("hype-albums-modifies", surModif); } catch (eL) { }
@@ -36731,7 +36732,18 @@ async function chargerPhotosSouvenirs(cible) {
       });
     }
   } catch (eA) { }
-  return ph.slice(-48).reverse();
+  /* \ud83d\udfe5 05/09 (Blandine : « celles en ligne sur Photos pour Tully ne sont pas sur
+     Videos ») \u2014 LE PLAFOND DE 48 COUPAIT LES VIDEOS. La liste est construite dans
+     l ordre vedettes, puis souvenirs publies (posts), puis albums ; le .slice(-48) ne
+     gardait que les 48 DERNIERES entrees. Un album de 91 photos suffit a evincer tous
+     les souvenirs publies, dont la video qu elle venait d envoyer par « Ajouter une
+     photo » de la Galerie. L onglet Videos, qui lit cette liste, ne la voyait donc
+     jamais. Le plafond ne s applique plus qu aux PHOTOS ; toutes les videos restent. */
+  var estVidP = function (u) { try { return typeof estUrlVideo === "function" && estUrlVideo(u); } catch (eV) { return false; } };
+  var videosToutes = ph.filter(estVidP);
+  var photosSeules = ph.filter(function (u) { return !estVidP(u); }).slice(-48);
+  var garde = {}; videosToutes.concat(photosSeules).forEach(function (u) { garde[u] = 1; });
+  return ph.filter(function (u) { return garde[u]; }).reverse();
 }
 function GalerieSouvenirs(props) {
   var h = React.createElement;
