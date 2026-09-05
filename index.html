@@ -38061,6 +38061,18 @@ function EcranCheval() {
       pm: (ogE.pere && ogE.pere.mere && (ogE.pere.mere.nom || ogE.pere.mere)) || "",
       mp: (ogE.mere && ogE.mere.pere && (ogE.mere.pere.nom || ogE.mere.pere)) || "",
       mm: (ogE.mere && ogE.mere.mere && (ogE.mere.mere.nom || ogE.mere.mere)) || "",
+      /* 🟩 05/09 (Blandine : « plus développé que le père et le père de mère », puis « oui les 3 ») —
+         ARRIERE-GRANDS-PARENTS. La carte au dos de la fiche sait deja les afficher (aG3,
+         8 cases) ; seul ce formulaire s'arretait aux grands-parents. Meme principe de nommage :
+         ppp = pere du pere du pere, ppm = mere du pere du pere, etc. */
+      ppp: (ogE.pere && ogE.pere.pere && ogE.pere.pere.pere && (ogE.pere.pere.pere.nom || ogE.pere.pere.pere)) || "",
+      ppm: (ogE.pere && ogE.pere.pere && ogE.pere.pere.mere && (ogE.pere.pere.mere.nom || ogE.pere.pere.mere)) || "",
+      pmp: (ogE.pere && ogE.pere.mere && ogE.pere.mere.pere && (ogE.pere.mere.pere.nom || ogE.pere.mere.pere)) || "",
+      pmm: (ogE.pere && ogE.pere.mere && ogE.pere.mere.mere && (ogE.pere.mere.mere.nom || ogE.pere.mere.mere)) || "",
+      mpp: (ogE.mere && ogE.mere.pere && ogE.mere.pere.pere && (ogE.mere.pere.pere.nom || ogE.mere.pere.pere)) || "",
+      mpm: (ogE.mere && ogE.mere.pere && ogE.mere.pere.mere && (ogE.mere.pere.mere.nom || ogE.mere.pere.mere)) || "",
+      mmp: (ogE.mere && ogE.mere.mere && ogE.mere.mere.pere && (ogE.mere.mere.pere.nom || ogE.mere.mere.pere)) || "",
+      mmm: (ogE.mere && ogE.mere.mere && ogE.mere.mere.mere && (ogE.mere.mere.mere.nom || ogE.mere.mere.mere)) || "",
       naisseur: ogE.naisseur || ""
     });
     setEditOrig(true);
@@ -38087,15 +38099,39 @@ function EcranCheval() {
       }
       var ancP = (ogA.pere && typeof ogA.pere === "object") ? ogA.pere : null;
       var ancM = (ogA.mere && typeof ogA.mere === "object") ? ogA.mere : null;
+      /* 🟩 05/09 : meme principe étendu un cran plus loin — un arrière-grand-parent inchangé
+         garde son propre detail (rien a garder de plus profond, on s'arrete a 3 generations). */
       ogN.pere = noeud(pe, ancP);
       if (ogN.pere) {
-        var vPP = noeud(origLocal.pp, ancP && ancP.pere), vPM = noeud(origLocal.pm, ancP && ancP.mere);
+        var ancPP = ancP && ancP.pere, ancPM = ancP && ancP.mere;
+        var vPP = noeud(origLocal.pp, ancPP), vPM = noeud(origLocal.pm, ancPM);
+        if (vPP) {
+          var vPPP = noeud(origLocal.ppp, ancPP && ancPP.pere), vPPM = noeud(origLocal.ppm, ancPP && ancPP.mere);
+          if (vPPP) vPP.pere = vPPP; else delete vPP.pere;
+          if (vPPM) vPP.mere = vPPM; else delete vPP.mere;
+        }
+        if (vPM) {
+          var vPMP = noeud(origLocal.pmp, ancPM && ancPM.pere), vPMM = noeud(origLocal.pmm, ancPM && ancPM.mere);
+          if (vPMP) vPM.pere = vPMP; else delete vPM.pere;
+          if (vPMM) vPM.mere = vPMM; else delete vPM.mere;
+        }
         if (vPP) ogN.pere.pere = vPP; else delete ogN.pere.pere;
         if (vPM) ogN.pere.mere = vPM; else delete ogN.pere.mere;
       }
       ogN.mere = noeud(me, ancM);
       if (ogN.mere) {
-        var vMP = noeud(origLocal.mp, ancM && ancM.pere), vMM = noeud(origLocal.mm, ancM && ancM.mere);
+        var ancMP = ancM && ancM.pere, ancMM = ancM && ancM.mere;
+        var vMP = noeud(origLocal.mp, ancMP), vMM = noeud(origLocal.mm, ancMM);
+        if (vMP) {
+          var vMPP = noeud(origLocal.mpp, ancMP && ancMP.pere), vMPM = noeud(origLocal.mpm, ancMP && ancMP.mere);
+          if (vMPP) vMP.pere = vMPP; else delete vMP.pere;
+          if (vMPM) vMP.mere = vMPM; else delete vMP.mere;
+        }
+        if (vMM) {
+          var vMMP = noeud(origLocal.mmp, ancMM && ancMM.pere), vMMM = noeud(origLocal.mmm, ancMM && ancMM.mere);
+          if (vMMP) vMM.pere = vMMP; else delete vMM.pere;
+          if (vMMM) vMM.mere = vMMM; else delete vMM.mere;
+        }
         if (vMP) ogN.mere.pere = vMP; else delete ogN.mere.pere;
         if (vMM) ogN.mere.mere = vMM; else delete ogN.mere.mere;
       }
@@ -39470,15 +39506,36 @@ async function supprimerSouvenirOuvert() {
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
           panneau === "flots" ? T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット", "Flots")
           : panneau === "palmares" ? T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen")
-          : panneau === "photos" ? (T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos") + " · " + c.nom): panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Son histoire", "Their story", "Su historia", "La sua storia", "その物語", "Seine Geschichte") + " · " + c.nom)
+          : panneau === "photos" ? (T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos") + " · " + c.nom): panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Histoire", "Story", "Historia", "Storia", "物語", "Geschichte") + " · " + c.nom)
           : T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート", "Gesundheitspass")),
         h("div", { style: { marginLeft: "auto" } }, h(SelecteurLangue, { compact: true }))),
       (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", gap: 8, padding: "2px 16px 12px" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
-        [["souvenirs", T("Son histoire", "Their story", "Su historia", "La sua storia", "その物語", "Seine Geschichte")], ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos")], ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos")]].map(function (tb) {
+        [["souvenirs", T("Histoire", "Story", "Historia", "Storia", "物語", "Geschichte"),
+          h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" })],
+         ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos"),
+          h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2.5 }), h("circle", { cx: 8.5, cy: 10, r: 1.6 }), h("path", { d: "M21 16l-5-5-4 4-2-2-4 4" }))],
+         ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen"),
+          h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" })],
+         ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos"),
+          h("g", null, h("rect", { x: 3, y: 6, width: 12, height: 12, rx: 2.5 }), h("path", { d: "M15 10.5l6-3.5v10l-6-3.5z", strokeLinejoin: "round" }))]
+        /* 🟩 05/09 (Blandine : « on pourrait pas garder ceux qu'on avait sur la première page,
+           quitte à les mettre un peu plus petits ? ») — memes icones exactement que les 6 cartes de la
+           page d'accueil du cheval (meme trace SVG, copie depuis `carteR`), en version compacte : cercle
+           + libelle, au lieu des pilules de texte. Seuls les 4 qui ont un vrai onglet ici (Santé et
+           Actualité n'en ont pas, elles restent des cartes a part sur la page d'accueil). */
+        ].map(function (tb) {
           var onTb = panneau === tb[0];
-          return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { padding: "8px 15px", borderRadius: 999, border: "1px solid " + (onTb ? tA(0.7) : "rgba(255,255,255,0.14)"), background: onTb ? tA(0.14) : "rgba(255,255,255,0.04)", color: onTb ? teinteCl : "rgba(237,242,245,0.65)", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, tb[1]);
+          return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4, padding: "4px 2px 2px", border: "none", background: "none", cursor: "pointer" } },
+            h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1.3px solid " + (onTb ? tA(0.75) : "rgba(255,255,255,0.16)"), background: onTb ? tA(0.16) : "rgba(255,255,255,0.03)", display: "flex", alignItems: "center", justifyContent: "center" } },
+              h("svg", { viewBox: "0 0 24 24", style: { width: 16, height: 16, stroke: onTb ? teinteCl : "rgba(237,242,245,0.6)", fill: "none", strokeWidth: 1.7 } }, tb[2])),
+            h("span", { style: { fontSize: 9.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", color: onTb ? teinteCl : "rgba(237,242,245,0.6)", whiteSpace: "nowrap" } }, tb[1]));
         })) : null,
-      panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
+      /* 🟩 05/09 (Blandine : « c'est trop écrasé et compact, reproduis l'espace entre l'onglet
+   du haut et la suite comme sur la page Écurie ») — même bloc gris que les deux bandes de la
+   page Écurie/Guilde (`#15181C`, 18 px, arrondi 6, marge latérale 16), un seul trait ici pour
+   créer la respiration sous les 4 onglets, partagé par Histoire/Photos/Performances/Vidéos. */
+(["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "6px 16px 14px" } }) : null,
+panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
       panneau === "videos" ? h("div", null,
@@ -40067,8 +40124,12 @@ async function supprimerSouvenirOuvert() {
         /* 🟥 05/09 (Blandine : « on commence par les albums et ajouter en haut de la page,
            et apres ca part sur la chronologie ») — Albums avant Chronologie, ordre inversé par
            rapport a avant. */
+        /* 🟩 05/09 (Blandine : ajouter deux traits gris, identiques a ceux de la page Ecurie,
+   au-dessus et en dessous des Albums pour les separer du reste de la page) */
+        h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
         h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true })),
-h(ChronologieSouvenirs, {
+        h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
+        h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
           proprio: !!(chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id),
@@ -40343,6 +40404,19 @@ h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { 
             ["--cote-mere", ""],
             ["mp", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")],
             ["mm", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")],
+            [null, T("Arrière-grands-parents", "Great-grandparents", "Bisabuelos", "Bisnonni", "\u66fe\u7956\u7236\u6bcd", "Urgroßeltern")],
+            ["--cote-pp", ""],
+            ["ppp", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")],
+            ["ppm", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")],
+            ["--cote-pm", ""],
+            ["pmp", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")],
+            ["pmm", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")],
+            ["--cote-mp", ""],
+            ["mpp", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")],
+            ["mpm", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")],
+            ["--cote-mm", ""],
+            ["mmp", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")],
+            ["mmm", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")],
             ["naisseur", T("Naisseur / \u00e9leveur", "Breeder", "Criador", "Allevatore", "\u751f\u7523\u8005", "Züchter / Aufzüchter")]].map(function (chp, iC) {
           if (!chp[0]) { /* 20/08 : intertitre Grands-parents */
             return h("div", { key: "gt" + iC, style: { fontFamily: "'Cinzel',serif", fontSize: 11, letterSpacing: "0.22em", color: "#9BE8F2", textTransform: "uppercase", textAlign: "center", margin: "16px 0 10px", paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.08)" } }, chp[1]);
@@ -40352,17 +40426,27 @@ h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { 
              Avant : quatre lignes pleine largeur aux libelles quasi identiques (« Pere du pere »,
              « Mere du pere », « Pere de la mere »...) — illisible, et ca doublait la hauteur du
              panneau, qui debordait alors de l ecran. */
-          if (chp[0] === "--cote-pere" || chp[0] === "--cote-mere") {
-            var __estP = (chp[0] === "--cote-pere");
-            var __par = String((origLocal[__estP ? "pere" : "mere"] || "")).trim();
+          /* 🟩 05/09 : le meme intertitre « Du cote de X », generalise de 2 a 6 groupes pour
+             couvrir les 4 nouveaux arriere-grands-parents (pp/pm/mp/mm), meme mecanique. */
+          var COTES_GP = {
+            "--cote-pere": { champ: "pere", estP: true, fr: "Côté père", en: "Sire side", es: "Lado paterno", it: "Lato paterno", ja: "父系", de: "Vaterseite" },
+            "--cote-mere": { champ: "mere", estP: false, fr: "Côté mère", en: "Dam side", es: "Lado materno", it: "Lato materno", ja: "母系", de: "Mutterseite" },
+            "--cote-pp": { champ: "pp", estP: true, fr: "Père du père", en: "Sire's sire", es: "Padre del padre", it: "Padre del padre", ja: "父の父", de: "Vater des Vaters" },
+            "--cote-pm": { champ: "pm", estP: false, fr: "Mère du père", en: "Sire's dam", es: "Madre del padre", it: "Madre del padre", ja: "父の母", de: "Mutter des Vaters" },
+            "--cote-mp": { champ: "mp", estP: true, fr: "Père de la mère", en: "Dam's sire", es: "Padre de la madre", it: "Padre della madre", ja: "母の父", de: "Vater der Mutter" },
+            "--cote-mm": { champ: "mm", estP: false, fr: "Mère de la mère", en: "Dam's dam", es: "Madre de la madre", it: "Madre della madre", ja: "母の母", de: "Mutter der Mutter" }
+          };
+          if (COTES_GP[chp[0]]) {
+            var __cg = COTES_GP[chp[0]];
+            var __par = String((origLocal[__cg.champ] || "")).trim();
             var __lib = __par
-              ? T("Du c\u00f4t\u00e9 de ", "On ", "Por parte de ", "Lato ", "\u306e\u7cfb\u7d71 ", "Seite von ") + __par
-              : (__estP ? T("C\u00f4t\u00e9 p\u00e8re", "Sire side", "Lado paterno", "Lato paterno", "\u7236\u7cfb", "Vaterseite")
-                        : T("C\u00f4t\u00e9 m\u00e8re", "Dam side", "Lado materno", "Lato materno", "\u6bcd\u7cfb", "Mutterseite"));
-            return h("div", { key: chp[0], style: { fontSize: 10, letterSpacing: "0.14em", color: "#9BE8F2", textTransform: "uppercase", fontWeight: 700, fontFamily: "'Montserrat',sans-serif", margin: __estP ? "4px 0 8px" : "16px 0 8px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, __lib);
+              ? T("Du côté de ", "On ", "Por parte de ", "Lato ", "の系統 ", "Seite von ") + __par
+              : T(__cg.fr, __cg.en, __cg.es, __cg.it, __cg.ja, __cg.de);
+            return h("div", { key: chp[0], style: { fontSize: 10, letterSpacing: "0.14em", color: "#9BE8F2", textTransform: "uppercase", fontWeight: 700, fontFamily: "'Montserrat',sans-serif", margin: __cg.estP ? "4px 0 8px" : "16px 0 8px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, __lib);
           }
-          var __demi = (chp[0] === "pp" || chp[0] === "pm" || chp[0] === "mp" || chp[0] === "mm");
-          return h("div", { key: chp[0], style: __demi ? { marginBottom: 10, width: "calc(50% - 5px)", display: "inline-block", verticalAlign: "top", marginRight: (chp[0] === "pp" || chp[0] === "mp") ? 10 : 0 } : { marginBottom: 10 } },
+          var __demi = (["pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"].indexOf(chp[0]) >= 0);
+          var __gauche = (["pp", "mp", "ppp", "pmp", "mpp", "mmp"].indexOf(chp[0]) >= 0);
+          return h("div", { key: chp[0], style: __demi ? { marginBottom: 10, width: "calc(50% - 5px)", display: "inline-block", verticalAlign: "top", marginRight: __gauche ? 10 : 0 } : { marginBottom: 10 } },
             h("div", { style: { fontSize: 8.5, letterSpacing: "0.2em", color: "#7DDDE8", textTransform: "uppercase", fontWeight: 700, marginBottom: 5, fontFamily: "'Montserrat',sans-serif" } }, chp[1]),
             h("input", { value: origLocal[chp[0]] || "", onChange: function (eI) { var v = eI.target.value; setOrigLocal(function (oo) { var nn = Object.assign({}, oo); nn[chp[0]] = v; return nn; }); }, maxLength: 60, placeholder: "\u2014", style: { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14, fontFamily: "'Montserrat',sans-serif", outline: "none" } }));
         }),
