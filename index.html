@@ -1662,6 +1662,7 @@ async function photosUtiliseesParMoi() {
 
 function dureeVideoFichier(fichier) {
   /* Lit la duree SANS envoyer le fichier : on refuse avant l'envoi, jamais apres. */
+  if (fichier && fichier.__natif) return Promise.resolve(Number(fichier.duration) || 0); /* 05/09 17 h 40 : app native, la duree vient du selecteur */
   return new Promise(function (resoudre) {
     try {
       var url = URL.createObjectURL(fichier);
@@ -36453,7 +36454,22 @@ function AlbumsCheval(props) {
         /* 05/09 17 h : « + Vidéo » n'ouvre plus le sélecteur directement, il ouvre la carte
            feuilleVideo juste en dessous (voir son commentaire). Le champ fichier vidéo vit dans
            cette carte, dans un <label>, en video/* + multiple (le mode qui a le bouton ✓). */
-        h("button", { onClick: function () { if (envoiCours) return; setFeuilleVideo(function (v) { return !v; }); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(feuilleVideo ? 0.95 : 0.55), background: envoiCours ? tA(0.12) : (feuilleVideo ? tA(0.16) : "transparent"), color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+        h("button", { onClick: function () {
+            if (envoiCours) return;
+            /* 05/09 17 h 40 : dans l'app native, pas de carte ni de champ fichier \u2014 le selecteur
+               Photos en mode original, tout de suite. Sur le web, hypeNatif() est null. */
+            if (hypeNatif() && albOuvert) {
+              (async function () {
+                var pf = await hypeNatifChoisirVideo();
+                if (!pf) return;
+                if (pf.error) { bip(T("S\u00e9lecteur indisponible : ", "Picker unavailable: ", "Selector no disponible: ", "Selettore non disponibile: ", "\u30bb\u30ec\u30af\u30bf\u30fc\u3092\u5229\u7528\u3067\u304d\u307e\u305b\u3093\uff1a", "Auswahl nicht verf\u00fcgbar: ") + pf.error, 7000); return; }
+                direFichiersRecus([pf], "video");
+                importerFichiers(albOuvert.id, [pf]);
+              })();
+              return;
+            }
+            setFeuilleVideo(function (v) { return !v; });
+          }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(feuilleVideo ? 0.95 : 0.55), background: envoiCours ? tA(0.12) : (feuilleVideo ? tA(0.16) : "transparent"), color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"))))) : null,
       /* 🟥 05/09 17 h — LA CARTE « ENVOYER UNE VIDÉO » (voir feuilleVideo). Dans le flux du
          panneau : pas de position fixe, pas de portail, pas de .click() — un <label> qui
@@ -53400,6 +53416,80 @@ var HYPE_MUX_VIDEOS_PREMIUM = 15;
 var HYPE_MUX_PREVENIR_A = 1;
 function hypeMuxPlafondVideos(estPremium) { return estPremium ? HYPE_MUX_VIDEOS_PREMIUM : HYPE_MUX_VIDEOS_GRATUIT; }
 
+/* \ud83d\udfe5 05/09 17 h 40 \u2014 LA BRANCHE NATIVE (app Capacitor, voir PLAN-APP-NATIVE.md).
+   INERTE SUR LE WEB : sans window.Capacitor, hypeNatif() rend null et rien ne change.
+   Dans l'app native, deux plugins : FilePicker (selecteur Photos en mode ORIGINAL, sans
+   conversion iOS) et Uploader (PUT natif du fichier, avec la progression, meme en arriere-
+   plan). Les plugins ne sont pas importes (la page est distante) : on les prend sur le pont
+   Capacitor par registerPlugin. */
+function hypeNatif() {
+  try {
+    var C = (typeof window !== "undefined") ? window.Capacitor : null;
+    if (!C || typeof C.isNativePlatform !== "function" || !C.isNativePlatform()) return null;
+    if (typeof C.isPluginAvailable === "function" && (!C.isPluginAvailable("FilePicker") || !C.isPluginAvailable("Uploader"))) return null;
+    if (!window.__hypeNatifPlugins) {
+      var P = C.Plugins || {};
+      var FP = P.FilePicker || (typeof C.registerPlugin === "function" ? C.registerPlugin("FilePicker") : null);
+      var UP = P.Uploader || (typeof C.registerPlugin === "function" ? C.registerPlugin("Uploader") : null);
+      if (!FP || !UP) return null;
+      window.__hypeNatifPlugins = { FilePicker: FP, Uploader: UP };
+    }
+    return window.__hypeNatifPlugins;
+  } catch (e) { return null; }
+}
+/* Le selecteur natif : rend un PSEUDO-FICHIER { __natif, path, name, type, size, duration }
+   que estFichierVideo / dureeVideoFichier / hypeMuxEnvoyerFichier savent lire. null si
+   annule. { error } si le plugin a refuse. */
+async function hypeNatifChoisirVideo() {
+  var N = hypeNatif(); if (!N) return null;
+  var r = null;
+  try { r = await N.FilePicker.pickVideos({ limit: 1, skipTranscoding: true, readData: false }); }
+  catch (e) {
+    var msg = String((e && e.message) || e || "");
+    if (/cancel|annul/i.test(msg)) return null;
+    return { error: msg || "s\u00e9lecteur natif indisponible" };
+  }
+  var f = r && r.files && r.files[0];
+  if (!f || !f.path) return null;
+  var nom = f.name || "video.mov";
+  var type = f.mimeType || (/\.mp4$/i.test(nom) ? "video/mp4" : "video/quicktime");
+  return { __natif: true, path: f.path, name: nom, type: type, size: Number(f.size) || 0, duration: Number(f.duration) || 0 };
+}
+/* PUT natif chez Mux : meme contrat que hypeMuxEnvoyerFichier ({ ok } / { error }),
+   progression par les evenements du plugin. */
+function hypeMuxEnvoyerNatif(adresse, fichier, surProgres) {
+  return new Promise(function (resoudre) {
+    var N = hypeNatif();
+    if (!N) { resoudre({ error: "envoi natif indisponible" }); return; }
+    var monId = null, fini = false, poignee = null, tmr = null;
+    var terminer = function (res) {
+      if (fini) return; fini = true;
+      if (tmr) clearTimeout(tmr);
+      try {
+        if (poignee && typeof poignee.remove === "function") poignee.remove();
+        else if (poignee && typeof poignee.then === "function") poignee.then(function (h) { try { h.remove(); } catch (eH) { } });
+      } catch (eR) { }
+      resoudre(res);
+    };
+    try {
+      poignee = N.Uploader.addListener("events", function (ev) {
+        try {
+          if (!ev) return;
+          var idEv = ev.id || (ev.payload && ev.payload.id) || null;
+          if (monId && idEv && idEv !== monId) return;
+          var pl = ev.payload || {};
+          if (ev.name === "uploading") { if (surProgres) surProgres(Math.max(0, Math.min(100, Math.round(Number(pl.percent) || 0)))); }
+          else if (ev.name === "completed") { var sc = Number(pl.statusCode || 0); terminer((sc === 0 || (sc >= 200 && sc < 300)) ? { ok: true } : { error: "envoi refus\u00e9 (code " + sc + ")" }); }
+          else if (ev.name === "failed") { terminer({ error: String(pl.error || "envoi natif interrompu") }); }
+        } catch (eEv) { }
+      });
+      N.Uploader.startUpload({ filePath: fichier.path, serverUrl: adresse, method: "PUT", uploadType: "binary", mimeType: fichier.type || "video/quicktime", headers: { "Content-Type": fichier.type || "video/quicktime" }, maxRetries: 2, notificationTitle: "Hype \u2014 envoi de la vid\u00e9o" })
+        .then(function (r) { monId = (r && r.id) || null; })
+        .catch(function (e) { terminer({ error: String((e && e.message) || e) }); });
+      tmr = setTimeout(function () { terminer({ error: "envoi trop long" }); }, 15 * 60 * 1000);
+    } catch (e) { terminer({ error: String(e) }); }
+  });
+}
 function hypeMuxAdresseFonction() {
   try {
     var base = (typeof SUPABASE_URL !== "undefined" && SUPABASE_URL) ? SUPABASE_URL : null;
@@ -53439,6 +53529,7 @@ function hypeMuxLecture(u) { try { return "https://stream.mux.com/" + String(u).
 function hypeMuxVignette(u) { try { return "https://image.mux.com/" + String(u).replace(/^mux:/, "") + "/thumbnail.jpg?width=640&fit_mode=preserve"; } catch (e) { return ""; } }
 
 function hypeMuxEnvoyerFichier(adresse, fichier, surProgres) {
+  if (fichier && fichier.__natif) return hypeMuxEnvoyerNatif(adresse, fichier, surProgres); /* 05/09 17 h 40 : app native */
   /* PUT direct chez Mux, avec la progression reelle — un envoi de video sans
      barre est le meilleur moyen de faire croire a un plantage. */
   return new Promise(function (resoudre) {
