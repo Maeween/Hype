@@ -35504,6 +35504,23 @@ function AlbumsCheval(props) {
   var xSt = React.useState(false); var albDeplie = xSt[0], setAlbDeplie = xSt[1];
   var rSt = React.useState(null); var confRetrait = rSt[0], setConfRetrait = rSt[1];
   var gSt = React.useState(false); var reglagesA = gSt[0], setReglagesA = gSt[1];
+  /* 05/09 (maquette validee par Blandine, points 2 et 3) : deux feuilles qui
+     montent du bas. `menuA` = le « ... » du bandeau (Renommer / Visibilite /
+     Identifier / Supprimer). `feuilleAjout` = le choix de la source quand on
+     touche le bouton Ajouter (Souvenirs publies / Ma phototheque / Video).
+     Elles ne remplacent aucun mecanisme : chaque entree appelle EXACTEMENT
+     la meme fonction que le bouton qu elle remplace. */
+  var menuASt = React.useState(false); var menuA = menuASt[0], setMenuA = menuASt[1];
+  /* \u2500\u2500 05/09 (Blandine, album Equitalyon sur la fiche de Tully) \u2500\u2500
+     ELLE CROYAIT L ALBUM BLOQUE : « je peux ni y ajouter de photos ni l effacer ».
+     Rien ne l empechait. Le panneau de l album ouvert se dessine APRES le bouton
+     « + Nouvel album », donc tout en bas \u2014 hors ecran. On touche la vignette,
+     rien ne bouge la ou on regarde, on en conclut que ca ne repond pas. Creer
+     marchait parce que la boite de creation s ouvre PAR-DESSUS l ecran.
+     Le panneau se signale maintenant tout seul : a l ouverture, l ecran vient
+     jusqu a lui. Purement visuel, aucune donnee touchee. */
+  var refPanneauAlb = React.useRef(null);
+  var fajSt = React.useState(false); var feuilleAjout = fajSt[0], setFeuilleAjout = fajSt[1];
   var memSt = React.useState(null); var membres = memSt[0], setMembres = memSt[1];
   var lnSt = React.useState(false); var lienCopie = lnSt[0], setLienCopie = lnSt[1];
   var pdSt = React.useState(null); var propositions = pdSt[0], setPropositions = pdSt[1];
@@ -35897,6 +35914,17 @@ function AlbumsCheval(props) {
     setAvertAc({ phrase: phrase, suite: suite, destructif: !!destructif });
   }
   var albOuvert = (albumsAff || []).filter(function (x) { return x.id === ouvert; })[0] || null;
+  React.useEffect(function () {
+    if (!ouvert) return;
+    /* Deux images : le panneau doit avoir ete pose ET mesure avant de viser. */
+    var t = setTimeout(function () {
+      try {
+        var el = refPanneauAlb.current;
+        if (el && el.scrollIntoView) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (eSc) { }
+    }, 60);
+    return function () { clearTimeout(t); };
+  }, [ouvert]);
   function carteAlbum(alb) {
     var cov = alb.couverture || (alb.photos || [])[0];
     var estVid = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
@@ -35952,7 +35980,7 @@ function AlbumsCheval(props) {
       h("div", { onClick: function () { /* 02/09 : le plafond « 1 album par cheval » est RETIRE — il n'avait jamais ete decide, et il comptait les albums DES AUTRES sur le cheval. Le quota vit desormais sur le compte, en photos. */ setNomLocal(""); setEditNom("nouveau"); }, role: "button", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M9, fontSize: 12.5, fontWeight: 700, letterSpacing: 0.4, cursor: "pointer" } },
         h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
         h("span", null, T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0")))),
-    albOuvert ? h("div", { style: { margin: "12px 16px 0", padding: "13px 12px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(255,255,255,0.02)" } },
+    albOuvert ? h("div", { ref: refPanneauAlb, style: { margin: "12px 16px 0", padding: "13px 12px", borderRadius: 18, border: "1px solid " + tA(0.3), background: "rgba(255,255,255,0.02)" } },
       (function () {
         if (!albOuvert) return null;
         var estGere = !(albOuvert.__auto || albOuvert.__lecture);
@@ -35965,12 +35993,38 @@ function AlbumsCheval(props) {
         var iconeTag = h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: "currentColor", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" }));
         var iconePartage = (albOuvert.visibilite === "public") ? "\ud83c\udf10" : (albOuvert.visibilite === "partage" ? "\ud83d\udc65" : "\ud83d\udd12");
         var libPartage = (albOuvert.visibilite === "public") ? T("Public", "Public", "P\u00fablico", "Pubblico", "\u516c\u958b") : (albOuvert.visibilite === "partage" ? T("Partag\u00e9", "Shared", "Compartido", "Condiviso", "\u5171\u6709") : T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b"));
-        return h("div", { style: { display: "flex", alignItems: "flex-start", gap: 12, marginBottom: 12 } },
-          h("div", { style: { fontFamily: C9, fontSize: 15.5, fontWeight: 700, color: "#F4F7FA", flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", paddingTop: 6 } }, albOuvert.nom),
-          estGere ? boutonE("\u270E", T("Renommer", "Rename", "Renombrar", "Rinomina", "\u540d\u524d"), function () { setNomLocal(albOuvert.nom); setEditNom(albOuvert.id); }) : null,
-          estGere ? boutonE(iconePartage, libPartage, function () { var v = !reglagesA; setReglagesA(v); if (v) chargerMembres(albOuvert.id); }, { actif: (albOuvert.visibilite && albOuvert.visibilite !== "prive") }) : null,
-          estGere ? boutonE("\ud83d\uddd1", T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664"), function () { setConfSupA(albOuvert.id); }, { danger: true }) : null,
-          boutonE("\u00d7", T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"), function () { setOuvert(null); }));
+        /* \u2500\u2500 05/09 (maquette validee par Blandine, points 1 et 3) \u2500\u2500
+           LE BANDEAU DE COUVERTURE remplace la rangee « titre + 4 rondelles ».
+           Le titre s ecrit SUR la couverture, avec « N souvenirs \u00b7 Public »
+           dessous. Renommer / Visibilite / Identifier / Supprimer partent
+           derriere le « ... » a droite ; la croix de fermeture reste a cote.
+           Le bandeau deborde volontairement le padding du panneau (marges
+           negatives -13/-12) pour toucher les bords, et n arrondit que le haut,
+           au meme rayon que le panneau (18). AUCUNE action n a change : chaque
+           entree du menu appelle la meme fonction qu avant.
+           \u26a0\ufe0f MISE EN PAGE : non testable au banc d essai. A regarder sur
+           capture avant de considerer que c est bon. */
+        var couvB = albOuvert.couverture || (albOuvert.photos || [])[0];
+        var couvEstVidB = !!(couvB && typeof estUrlVideo === "function" && estUrlVideo(couvB));
+        var nbSouvB = (albOuvert.photos || []).length;
+        function rondB(contenu, libelle, onClick) {
+          return h("button", { onClick: onClick, "aria-label": libelle, style: { width: 40, height: 40, flex: "0 0 auto", borderRadius: "50%", background: "rgba(7,8,10,0.62)", border: "1px solid rgba(255,255,255,0.28)", color: "#EDF2F5", fontSize: 17, fontWeight: 700, lineHeight: 1, cursor: "pointer", padding: 0, display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } }, contenu);
+        }
+        return h("div", { style: { position: "relative", margin: "-13px -12px 12px", height: 132, borderRadius: "18px 18px 0 0", overflow: "hidden", background: "#0B1116" } },
+          couvB
+            ? (couvEstVidB
+                ? h("video", { src: couvB + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } })
+                : h("img", { src: couvB, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }))
+            : h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(140deg, " + tA(0.20) + ", rgba(11,17,22,0.9))" } }),
+          /* Voile de lisibilite : le titre doit rester lisible sur une photo claire. */
+          h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0.42) 0%, rgba(4,6,9,0.06) 38%, rgba(4,6,9,0.86) 100%)" } }),
+          h("div", { style: { position: "absolute", top: 10, right: 10, display: "flex", gap: 8, zIndex: 2 } },
+            estGere ? rondB("\u2026", T("Options de l'album", "Album options", "Opciones del \u00e1lbum", "Opzioni album", "\u30a2\u30eb\u30d0\u30e0\u306e\u8a2d\u5b9a", "Album-Optionen"), function () { setMenuA(true); }) : null,
+            rondB("\u00d7", T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"), function () { setOuvert(null); setMenuA(false); setFeuilleAjout(false); })),
+          h("div", { style: { position: "absolute", left: 14, right: 14, bottom: 11, zIndex: 2 } },
+            h("div", { style: { fontFamily: C9, fontSize: 18, fontWeight: 700, color: "#F7FAFC", letterSpacing: 0.3, lineHeight: 1.15, textShadow: "0 2px 12px rgba(0,0,0,0.6)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, albOuvert.nom),
+            h("div", { style: { fontFamily: M9, fontSize: 10.5, fontWeight: 600, color: "rgba(237,242,245,0.82)", marginTop: 4, letterSpacing: 0.2, textShadow: "0 1px 8px rgba(0,0,0,0.6)" } },
+              nbSouvB + " " + (nbSouvB === 1 ? T("souvenir", "memory", "recuerdo", "ricordo", "\u601d\u3044\u51fa", "Erinnerung") : T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa", "Erinnerungen")) + " \u00b7 " + libPartage)));
       })(),
       reglagesA ? h("div", { style: { margin: "0 0 14px", padding: "13px 12px", borderRadius: 14, border: "1px solid " + tA(0.28), background: "rgba(255,255,255,0.02)" } },
         h("div", { style: { fontFamily: M9, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: tnT, fontWeight: 700, marginBottom: 10 } }, T("Visibilit\u00e9 de l'album", "Album visibility", "Visibilidad", "Visibilit\u00e0", "\u516c\u958b\u7bc4\u56f2")),
@@ -36025,7 +36079,17 @@ function AlbumsCheval(props) {
         }
         return cel;
       })()),
-        (albDeplie && (albOuvert.photos || []).length > 6) ? h("button", { onClick: function () { setAlbDeplie(false); }, style: { display: "block", margin: "10px auto 0", padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("R\u00e9duire l'album", "Collapse album", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null) : h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", textAlign: "center", padding: "14px 0", lineHeight: 1.5 } }, T("Album vide \u2014 ajoute des souvenirs ci-dessous.", "Empty album \u2014 add memories below.", "\u00c1lbum vac\u00edo.", "Album vuoto.", "\u30a2\u30eb\u30d0\u30e0\u306f\u7a7a\u3067\u3059")),
+        (albDeplie && (albOuvert.photos || []).length > 6) ? h("button", { onClick: function () { setAlbDeplie(false); }, style: { display: "block", margin: "10px auto 0", padding: "8px 20px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("R\u00e9duire l'album", "Collapse album", "Reducir", "Riduci", "\u6298\u308a\u305f\u305f\u3080")) : null) : /* \u2500\u2500 05/09 (maquette validee, point 4) \u2500\u2500 L ALBUM VIDE INVITE.
+           A la place de la ligne grise sur fond noir : un cadre en pointilles qui
+           dit quoi faire et par ou. AJOUT PUR — des que l album a une photo, ce
+           bloc n est meme pas evalue, donc rien ne peut casser pour les albums
+           qui ont deja du contenu. Le bouton appelle la meme feuille du bas que
+           le bouton Ajouter juste en dessous. */
+        h("div", { style: { border: "1.5px dashed " + tA(0.42), borderRadius: 16, background: tA(0.04), padding: "26px 18px", textAlign: "center" } },
+          h("div", { style: { fontSize: 30, lineHeight: 1, marginBottom: 10, opacity: 0.85 } }, "\ud83d\udcf7"),
+          h("div", { style: { fontFamily: C9, fontSize: 15, fontWeight: 700, color: "#EDF2F5", letterSpacing: 0.3 } }, T("Ajoute tes premi\u00e8res photos", "Add your first photos", "A\u00f1ade tus primeras fotos", "Aggiungi le tue prime foto", "\u6700\u521d\u306e\u5199\u771f\u3092\u8ffd\u52a0", "F\u00fcge deine ersten Fotos hinzu")),
+          h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", lineHeight: 1.5, marginTop: 6 } }, T("Depuis ta pellicule, tes souvenirs publi\u00e9s, ou une vid\u00e9o.", "From your camera roll, your published memories, or a video.", "Desde tu carrete, tus recuerdos publicados o un v\u00eddeo.", "Dal tuo rullino, dai tuoi ricordi pubblicati o da un video.", "\u30ab\u30e1\u30e9\u30ed\u30fc\u30eb\u3001\u516c\u958b\u6e08\u307f\u306e\u601d\u3044\u51fa\u3001\u307e\u305f\u306f\u52d5\u753b\u304b\u3089\u3002", "Aus deiner Mediathek, deinen ver\u00f6ffentlichten Erinnerungen oder einem Video.")),
+          (albOuvert.__lecture || albOuvert.__auto) ? null : h("button", { onClick: function () { setFeuilleAjout(true); }, style: { marginTop: 16, padding: "12px 26px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen"))),
       albOuvert.__lecture ? null : (albOuvert.__auto ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", textAlign: "center", marginTop: 10, lineHeight: 1.5 } }, T("Photos o\u00f9 il/elle est identifi\u00e9(e).", "Photos where tagged.", "Fotos etiquetadas.", "Foto taggate.", "\u30bf\u30b0\u3055\u308c\u305f\u5199\u771f")) : h("div", { style: { display: "flex", flexWrap: premium ? "wrap" : "nowrap", gap: 9, marginTop: 11 } },
         /* ⚠️ 04/09 : le retour a la ligne n est active QUE pour les abonnees.
            La carte d invitation du plan gratuit occupe le meme emplacement ; en
@@ -36098,37 +36162,94 @@ function AlbumsCheval(props) {
             h("div", { style: { fontFamily: M9, fontSize: 11.5, fontWeight: 700, color: tnT, marginTop: 4 } },
               T("D\u00e9couvrir Hype+ \u203a", "Discover Hype+ \u203a", "Descubrir Hype+ \u203a", "Scopri Hype+ \u203a", "Hype+ \u3092\u898b\u308b \u203a", "Hype+ entdecken \u203a"))))
           : null,
-        h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
-        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
-          /* 03/09 : le POURCENTAGE pendant l'envoi d'une video. Un envoi de trois
-             minutes sans progression passe pour un plantage. */
-          envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
-          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } })),
-        /* 27/08 soir : BOUTON VIDEO SEPARE, ajoute A COTE — le bouton Ma phototheque ci-dessus
-           reste A L IDENTIQUE (multi-selection photos ET videos intacte, rien retire, rien
-           casse). Sur certains iPhones apres un passage en arriere-plan, le bouton de
-           validation du selecteur natif iOS reste inerte (bug WebKit connu des PWA,
-           bugs.webkit.org #238318 : popovers systeme -- select/date/fichier -- restent
-           bloques tant que l'app n'a pas ete fermee depuis le multitache). Ce bouton-ci,
-           en video/* SEUL et SANS multiple, evite ce bouton de validation : toucher la
-           video dans le selecteur la choisit et referme le selecteur tout de suite, sans
-           confirmation separee -- une video a la fois, a essayer quand le bouton
-           phototheque coince sur une video. */
-        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
-          envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
-          h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
+        /* \u2500\u2500 05/09 (maquette validee, point 2) \u2500\u2500 UN SEUL BOUTON AJOUTER.
+           Les trois boutons (Souvenirs publies / Ma phototheque / Video) tenaient
+           sur une seule rangee, serres, et se faisaient bousculer par le decompte
+           video. Ils passent dans une feuille qui monte du bas (plus bas dans ce
+           fichier), ou chacun garde EXACTEMENT son declencheur d origine.
+           \u26a0\ufe0f Le decompte Premium et la carte Hype+ juste au-dessus ne bougent
+           pas d un pixel : ils restent les premiers enfants de cette rangee. */
+        h("button", { onClick: function () { setFeuilleAjout(true); }, disabled: envoiCours, style: { width: "100%", padding: "14px 4px", borderRadius: 999, border: "none", background: envoiCours ? "rgba(255,255,255,0.10)" : "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: envoiCours ? "#8A99A1" : "#04252A", fontSize: 13.5, fontWeight: 800, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, letterSpacing: 0.3 } },
+          envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : ("+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")))))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "20px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", flexDirection: "column", alignItems: "center", gap: 13 } }, /* 28/08 : mascotte repassee en colonne, bien plus grosse (demande Blandine : \u00ab je l'aurais vue plus grosse, comme la taille du cercle violet, au milieu \u00bb) + texte en BLANC en dessous pour qu'on le voie bien */
         h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 220, height: 220, flex: "0 0 auto", borderRadius: "50%", objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", { style: { textAlign: "center" } },
           h("div", { style: { fontSize: 15, fontWeight: 700, color: "#FFFFFF", fontFamily: M9 } }, T("Envoi en cours…", "Uploading…", "Enviando…", "Invio…", "送信中…")),
           h("div", { style: { fontSize: 11, color: "#FFFFFF", lineHeight: 1.5, marginTop: 5, fontFamily: M9 } }, T("Reste sur l'app, écran allumé, jusqu'à la fin — sur iPhone, verrouiller l'écran interrompt l'envoi sans prévenir.", "Stay on the app with the screen on until it finishes — on iPhone, locking the screen interrupts it without warning.", "Permanece en la app con la pantalla encendida — en iPhone, bloquear la pantalla lo interrumpe.", "Resta sull'app con lo schermo acceso — su iPhone, bloccare lo schermo lo interrompe.", "終わるまでアプリを開いたままにしてください。画面ロックで中断されます。")))) : null,
-      (albOuvert && !albOuvert.__auto && !albOuvert.__lecture) ? h("button", { onClick: function () { ouvrirTagAlbum(); }, style: { marginTop: 9, marginLeft: "auto", display: "flex", alignItems: "center", gap: 7, padding: "9px 16px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: M9 } },
-        h("svg", { viewBox: "0 0 24 24", style: { width: 15, height: 15, stroke: tnT, strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" })),
-        T("Identifier l'album", "Tag album", "Etiquetar \u00e1lbum", "Tagga l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u30bf\u30b0")) : null,
+      /* 05/09 : « Identifier l'album » n'est plus un bouton isole en bas du
+         panneau \u2014 il est passe dans le menu « ... » du bandeau, avec Renommer,
+         Visibilite et Supprimer. Meme appel (ouvrirTagAlbum), meme feuille. */
+    /* \u2500\u2500 05/09 (maquette validee, points 2 et 3) \u2500\u2500 LES DEUX FEUILLES DU BAS.
+       Elles n inventent aucune action : chaque entree appelle EXACTEMENT la
+       fonction du bouton qu elle remplace. Les deux champs de fichier sont
+       ceux d avant, deplaces tels quels (memes `accept`, meme `multiple`,
+       meme `onChange`) \u2014 en particulier le champ Video reste en video/*
+       SEUL et SANS multiple : c est ce qui evite le bouton de validation du
+       selecteur iOS reste inerte apres un passage en arriere-plan
+       (bug WebKit #238318). Ne pas le fusionner avec la phototheque. */
+    (feuilleAjout && albOuvert && !albOuvert.__lecture && !albOuvert.__auto) ? portail(h("div", { onClick: function () { setFeuilleAjout(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
+        h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 4 } }, T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")),
+        h("div", { style: { fontFamily: M9, fontSize: 11, color: "#8A99A1", textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, albOuvert.nom),
+        h("div", { onClick: function () { setFeuilleAjout(false); ouvrirSelection(albOuvert); }, role: "button", style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: "pointer", marginBottom: 9 } },
+          h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\u2728"),
+          h("div", { style: { minWidth: 0, flex: 1 } },
+            h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f\u306e\u601d\u3044\u51fa", "Ver\u00f6ffentlichte Erinnerungen")),
+            h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("Ce que tu as d\u00e9j\u00e0 partag\u00e9 sur Hype.", "What you already shared on Hype.", "Lo que ya compartiste en Hype.", "Ci\u00f2 che hai gi\u00e0 condiviso su Hype.", "Hype \u3067\u5171\u6709\u6e08\u307f\u306e\u3082\u306e\u3002", "Was du bereits auf Hype geteilt hast."))),
+          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
+        h("label", { style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer", marginBottom: 9 } },
+          h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\ud83d\uddbc"),
+          h("div", { style: { minWidth: 0, flex: 1 } },
+            h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea", "Meine Mediathek")),
+            h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("Photos et vid\u00e9os de ton t\u00e9l\u00e9phone, plusieurs \u00e0 la fois.", "Photos and videos from your phone, several at once.", "Fotos y v\u00eddeos de tu tel\u00e9fono, varios a la vez.", "Foto e video dal telefono, anche pi\u00f9 insieme.", "\u7aef\u672b\u306e\u5199\u771f\u3068\u52d5\u753b\u3092\u307e\u3068\u3081\u3066\u3002", "Fotos und Videos von deinem Telefon, mehrere auf einmal."))),
+          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a"),
+          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } /* \ud83d\udfe5 05/09 matin (Blandine : « faut faire deux fois ») \u2014 ORDRE CORRIGE. La feuille etait refermee AVANT de passer les fichiers : fermer demonte le <label> et son <input> pendant que Safari finit encore de livrer la selection, et le premier essai se perdait. On remet d abord les fichiers, on referme au tour suivant. */ if (fs.length) importerFichiers(albOuvert.id, fs); setTimeout(function () { setFeuilleAjout(false); }, 0); } })),
+        h("label", { style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer" } },
+          h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\ud83c\udfac"),
+          h("div", { style: { minWidth: 0, flex: 1 } },
+            h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Une vid\u00e9o", "One video", "Un v\u00eddeo", "Un video", "\u52d5\u753b\u3092 1 \u672c", "Ein Video")),
+            h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("\u00c0 essayer si la phototh\u00e8que bloque sur une vid\u00e9o. 3 min max.", "Try this if the library gets stuck on a video. 3 min max.", "Prueba esto si la galer\u00eda se atasca con un v\u00eddeo. 3 min m\u00e1x.", "Prova qui se la galleria si blocca su un video. Max 3 min.", "\u30e9\u30a4\u30d6\u30e9\u30ea\u304c\u52d5\u753b\u3067\u6b62\u307e\u308b\u3068\u304d\u306b\u3002\u6700\u5927 3 \u5206\u3002", "Versuch das, wenn die Mediathek bei einem Video h\u00e4ngt. Max. 3 Min."))),
+          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a"),
+          h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } /* Meme correction que la phototheque ci-dessus : les fichiers d abord, la fermeture de la feuille ensuite. */ if (fsv.length) importerFichiers(albOuvert.id, fsv); setTimeout(function () { setFeuilleAjout(false); }, 0); } })),
+        h("button", { onClick: function () { setFeuilleAjout(false); }, style: { marginTop: 14, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen"))))) : null,
+    /* Le « ... » du bandeau : ce que portaient les rondelles d avant, plus
+       « Identifier l album » qui vivait tout en bas du panneau (demande de
+       Blandine, 05/09). Aucune de ces actions n a change. */
+    (menuA && albOuvert && !albOuvert.__lecture && !albOuvert.__auto) ? portail(h("div", { onClick: function () { setMenuA(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
+        h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 4 } }, T("L'album", "Album", "El \u00e1lbum", "L'album", "\u30a2\u30eb\u30d0\u30e0", "Das Album")),
+        h("div", { style: { fontFamily: M9, fontSize: 11, color: "#8A99A1", textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, albOuvert.nom),
+        (function () {
+          var entrees = [
+            { ic: "\u270E", lib: T("Renommer", "Rename", "Renombrar", "Rinomina", "\u540d\u524d\u3092\u5909\u66f4", "Umbenennen"), sous: null, act: function () { setMenuA(false); setNomLocal(albOuvert.nom); setEditNom(albOuvert.id); } },
+            { ic: ((albOuvert.visibilite === "public") ? "\ud83c\udf10" : (albOuvert.visibilite === "partage" ? "\ud83d\udc65" : "\ud83d\udd12")), lib: T("Visibilit\u00e9", "Visibility", "Visibilidad", "Visibilit\u00e0", "\u516c\u958b\u7bc4\u56f2", "Sichtbarkeit"), sous: ((albOuvert.visibilite === "public") ? T("Public", "Public", "P\u00fablico", "Pubblico", "\u516c\u958b", "\u00d6ffentlich") : (albOuvert.visibilite === "partage" ? T("Partag\u00e9", "Shared", "Compartido", "Condiviso", "\u5171\u6709", "Geteilt") : T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b", "Privat"))), act: function () { setMenuA(false); setReglagesA(true); chargerMembres(albOuvert.id); } },
+            { ic: "\ud83c\udff7\ufe0f", lib: T("Identifier l'album", "Tag album", "Etiquetar \u00e1lbum", "Tagga l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u30bf\u30b0", "Album identifizieren"), sous: null, act: function () { setMenuA(false); ouvrirTagAlbum(); } },
+            { ic: "\ud83d\uddd1", lib: T("Supprimer l'album", "Delete album", "Eliminar \u00e1lbum", "Elimina l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u524a\u9664", "Album l\u00f6schen"), sous: null, danger: true, act: function () { setMenuA(false); setConfSupA(albOuvert.id); } }
+          ];
+          return h("div", null, entrees.map(function (en, iEn) {
+            return h("div", { key: "men" + iEn, onClick: en.act, role: "button", style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + (en.danger ? "rgba(226,138,146,0.35)" : tA(0.3)), background: en.danger ? "rgba(226,138,146,0.06)" : tA(0.05), cursor: "pointer", marginBottom: iEn < entrees.length - 1 ? 9 : 0 } },
+              h("span", { style: { fontSize: 19, flexShrink: 0, width: 26, textAlign: "center" } }, en.ic),
+              h("div", { style: { minWidth: 0, flex: 1 } },
+                h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: en.danger ? "rgba(240,150,158,0.95)" : "#EDF2F5" } }, en.lib),
+                en.sous ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2 } }, en.sous) : null),
+              h("span", { style: { color: en.danger ? "rgba(226,138,146,0.7)" : tnT, fontSize: 17, flexShrink: 0 } }, "\u203a"));
+          }));
+        })(),
+        h("button", { onClick: function () { setMenuA(false); }, style: { marginTop: 14, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"))))) : null,
     editNom ? portail(h("div", { onClick: function () { setEditNom(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 90px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, editNom === "nouveau" ? T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0") : T("Renommer l'album", "Rename album", "Renombrar", "Rinomina", "\u540d\u524d\u3092\u5909\u66f4")),
         h("input", { value: nomLocal, onChange: function (eI) { setNomLocal(eI.target.value); }, maxLength: 33, placeholder: T("Nom de l'album\u2026", "Album name\u2026", "Nombre\u2026", "Nome\u2026", "\u30a2\u30eb\u30d0\u30e0\u540d\u2026"), style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14.5, fontFamily: M9, outline: "none" } }),
+        /* \ud83d\udfe5 05/09 (Blandine) : « quand on cree l album personne ne le sait,
+           c est pas clair tout ca ». Un album nait PUBLIC (choix du 02/08, modele
+           opt-out) et apparait dans les Medias du cheval, donc chez son
+           proprietaire \u2014 et rien ne le disait au moment du geste. Elle l a
+           decouvert elle-meme en posant la question, sur sa propre app.
+           La phrase ne change aucun comportement : elle dit ce qui va se passer.
+           Uniquement a la CREATION, pas au renommage. */
+        editNom === "nouveau" ? h("div", { style: { display: "flex", gap: 9, alignItems: "flex-start", marginTop: 12, padding: "11px 12px", borderRadius: 13, border: "1px solid " + tA(0.28), background: tA(0.05) } },
+          h("span", { style: { fontSize: 14, lineHeight: 1.3, flexShrink: 0 } }, "\ud83d\udc41\ufe0f"),
+          h("div", { style: { fontFamily: M9, fontSize: 11, color: "#9FB0B8", lineHeight: 1.5 } }, T("Cet album sera visible par les autres cavali\u00e8res de ce cheval. Tu pourras le passer en priv\u00e9 \u00e0 tout moment.", "This album will be visible to the other riders of this horse. You can make it private at any time.", "Este \u00e1lbum ser\u00e1 visible para las dem\u00e1s jinetes de este caballo. Puedes hacerlo privado cuando quieras.", "Questo album sar\u00e0 visibile alle altre cavallerizze di questo cavallo. Puoi renderlo privato quando vuoi.", "\u3053\u306e\u30a2\u30eb\u30d0\u30e0\u306f\u3053\u306e\u99ac\u306e\u4ed6\u306e\u4e57\u308a\u624b\u306b\u3082\u8868\u793a\u3055\u308c\u307e\u3059\u3002\u3044\u3064\u3067\u3082\u975e\u516c\u958b\u306b\u3067\u304d\u307e\u3059\u3002", "Dieses Album wird f\u00fcr die anderen Reiterinnen dieses Pferdes sichtbar sein. Du kannst es jederzeit privat stellen."))) : null,
         h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
           h("button", { onClick: function () { setEditNom(null); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
           h("button", { onClick: function () { sauverNom(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58")))))) : null,
@@ -36954,6 +37075,15 @@ function EcranCheval() {
      ignorait complètement la table chevaux_liens. On charge l'état de rattachement
      pour proposer plus bas le RETRAIT au lieu de l'ajout. */
   var lienSt = React.useState(false); var estLieFiche = lienSt[0], setEstLieFiche = lienSt[1];
+  /* \ud83d\udfe5 05/09 \u2014 MEME FAMILLE QUE LE FILET DE COMPTAGE MUX DU 03/09.
+     `supabase-js` NE LEVE PAS d exception sur une requete refusee : il renvoie
+     { data: null, error }. La lecture de `chevaux_liens` lisait `rL.data` et
+     ignorait `rL.error` \u2014 une requete ratee rendait donc « pas rattache », et le
+     bandeau reproposait « Ajouter a mes chevaux » pour un cheval deja dans
+     l ecurie, sans jamais offrir de le retirer.
+     Quand on ne SAIT pas, on ne propose rien : le bandeau disparait plutot que
+     de proposer le mauvais geste. */
+  var lienIndSt = React.useState(false); var lienIndetermine = lienIndSt[0], setLienIndetermine = lienIndSt[1];
   /* 02/09 : histoire par cavaliere. Sur MA page, si le cheval n est pas le mien, c est MON
      texte que je vois et que j ecris — jamais celui de la proprietaire, et le mien ne
      remonte jamais cote ecurie. */
@@ -37582,8 +37712,9 @@ function EcranCheval() {
         var dbIdL = chevalDyn && chevalDyn.dbId;
         if (!dbIdL || !moi || typeof supa === "undefined" || !supa) { if (aL) setEstLieFiche(false); return; }
         var rL = await supa.from("chevaux_liens").select("cheval_id").eq("cheval_id", dbIdL).eq("user_id", moi.id).limit(1);
-        if (aL) setEstLieFiche(!!(rL && rL.data && rL.data.length));
-      } catch (eL) { if (aL) setEstLieFiche(false); }
+        if (rL && rL.error) { if (aL) { setLienIndetermine(true); setEstLieFiche(false); } return; }
+        if (aL) { setLienIndetermine(false); setEstLieFiche(!!(rL && rL.data && rL.data.length)); }
+      } catch (eL) { if (aL) { setLienIndetermine(true); setEstLieFiche(false); } }
     })();
     return function () { aL = false; };
   }, [moi, chevalDyn && chevalDyn.dbId]);
@@ -39519,7 +39650,7 @@ function EcranCheval() {
         h("p", { style: { fontSize: 13, lineHeight: 1.65, color: "rgba(237,242,245,0.6)", margin: "12px auto 0", maxWidth: 300 } }, T("Bientôt, chaque cheval aura ici sa carte d'identité vivante : vaccins, soins, consignes permanentes, habitudes — et Hey Baby s'en souviendra à chaque analyse.", "Soon, every horse will have its living identity card here: vaccines, care, standing instructions, habits — and Hey Baby will remember it in every analysis.", "Pronto, cada caballo tendrá aquí su carné de identidad vivo: vacunas, cuidados, consignas, hábitos — y Hey Baby lo recordará en cada análisis.", "Presto ogni cavallo avrà qui la sua carta d'identità viva: vaccini, cure, consegne, abitudini — e Hey Baby se ne ricorderà a ogni analisi.", "まもなく、それぞれの馬の「生きたカルテ」がここに。ワクチン・ケア・注意事項・習慣をHey Babyが記憶し、すべての分析に活かします。", "Bald erhält jedes Pferd hier seinen lebendigen Ausweis: Impfungen, Pflege, feste Anweisungen, Gewohnheiten — und Hey Baby wird sich bei jeder Analyse daran erinnern."))) : null) : null,
 
     h("style", { dangerouslySetInnerHTML: { __html: "@keyframes haloPlusFiche{0%{box-shadow:0 0 0 0 rgba(234,199,122,0.35);}55%{box-shadow:0 0 0 9px rgba(234,199,122,0);}100%{box-shadow:0 0 0 0 rgba(234,199,122,0);}}" } }),
-    (!moi || (chevalDyn && chevalDyn.dbId && chevalDyn.ownerId === moi.id) || (CHEVAUX_FICHE[id] && typeof estModerateurHype === "function" && estModerateurHype(moi))) ? null : h("div", { onClick: async function () {
+    (!moi || lienIndetermine || (chevalDyn && chevalDyn.dbId && chevalDyn.ownerId === moi.id) || (CHEVAUX_FICHE[id] && typeof estModerateurHype === "function" && estModerateurHype(moi))) ? null : h("div", { onClick: async function () {
       var dbIdL = chevalDyn && chevalDyn.dbId;
       /* 29/08 : cheval DÉJÀ rattaché -> on le DÉTACHE (delierCheval existait mais
          n'était appelée nulle part). Avant, le bandeau reproposait l'ajout et
@@ -39625,7 +39756,20 @@ function EcranCheval() {
             h("button", { onClick: function () { setEditFiche(false); }, style: { flex: 1, padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.06)", border: "none", color: "#B9C6CC", fontSize: 13.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen")),
             h("button", { onClick: soumettreEditFiche, disabled: busyFiche, style: { flex: 1, padding: "12px", borderRadius: 12, background: "#20D9F5", border: "none", color: "#04252a", fontSize: 13.5, fontWeight: 800, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, busyFiche ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern")))
         ) : null)) : null,
-    visionneuse ? h("div", { onClick: fermerVisionneuse, "data-noswipe": "true", className: "souvVoile" + (visFerme ? " souvQuitte" : ""), style: { position: "fixed", inset: 0, zIndex: 8800, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center", padding: 10 } },
+    /* 🟥 05/09 (Blandine, capture 00h14) : LA BARRE COEURS / COMMENTAIRES
+       ETAIT RECOUVERTE PAR LA BARRE D ONGLETS. Ce calque a beau porter
+       zIndex 8800 et la barre d onglets seulement 50, il n etait pas
+       detache : son plan restait enferme dans le contexte d empilement de
+       la fiche, donc les onglets se dessinaient PAR-DESSUS. La barre du bas
+       (coeur, commentaires) tombait exactement dessous — invisible et
+       intouchable depuis Photos et depuis Medias. D ou les notifications
+       « a commente » sans aucun moyen d ouvrir les commentaires.
+       Detache vers document.body, comme la visionneuse des albums qui,
+       elle, l etait deja et n a jamais eu le probleme. Verifie avant :
+       .souvVoile / .souvVue sont des selecteurs SIMPLES (sans parent) et
+       les variables --cm-ease vivent sur :root — les deux survivent au
+       deplacement. */
+    visionneuse ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; })(h("div", { onClick: fermerVisionneuse, "data-noswipe": "true", className: "souvVoile" + (visFerme ? " souvQuitte" : ""), style: { position: "fixed", inset: 0, zIndex: 8800, background: "rgba(4,6,9,0.96)", display: "flex", alignItems: "center", justifyContent: "center", padding: 10 } },
       h("div", { className: "souvGrandHalo" }),
       estUrlVideo(visionneuse)
         ? h("video", { src: visionneuse, controls: true, autoPlay: true, playsInline: true, "webkit-playsinline": "true", "x-webkit-airplay": "deny", controlsList: "nodownload", /* 02/08 : « nofullscreen » retire — le plein ecran des videos etait desactive volontairement, d ou l impossibilite d agrandir signalee par Blandine. Le telechargement reste bloque. */ className: "souvVue" + (visFerme ? " souvQuitte" : ""), onClick: function (eV) { eV.stopPropagation(); }, style: { maxWidth: "100%", maxHeight: "82%", borderRadius: 12, boxShadow: "0 20px 80px rgba(0,0,0,0.6)", background: "#000" } })
@@ -39662,7 +39806,7 @@ function EcranCheval() {
           h("div", { style: { position: "absolute", top: "calc(22px + env(safe-area-inset-top))", left: "50%", transform: "translateX(-50%)", fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.12em", color: "rgba(237,242,245,0.75)", background: "rgba(7,8,10,0.45)", padding: "5px 12px", borderRadius: 999, zIndex: 4 } }, (ixV + 1) + " / " + lV.length));
       })(),
       (moi && mediasInfo[visionneuse] && (mediasInfo[visionneuse].user_id === moi.id || (typeof estModerateurHype === "function" && estModerateurHype(moi))))
-        ? h("button", { onClick: function (eS) { eS.stopPropagation(); if (!confSuppr) { setConfSuppr(true); return; } supprimerSouvenirOuvert(); }, "aria-label": T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"), style: { position: "absolute", top: "calc(16px + env(safe-area-inset-top))", left: 16, height: 40, minWidth: 40, padding: confSuppr ? "0 16px" : 0, borderRadius: confSuppr ? 999 : "50%", background: confSuppr ? "rgba(178,44,54,0.92)" : "rgba(7,8,10,0.6)", border: "1px solid " + (confSuppr ? "rgba(255,120,128,0.9)" : "rgba(255,255,255,0.25)"), color: "#F6E9EA", fontSize: confSuppr ? 12.5 : 15, fontWeight: 700, zIndex: 3, whiteSpace: "nowrap", transition: "all .25s ease" } }, confSuppr ? T("Confirmer la suppression", "Confirm deletion", "Confirmar eliminación", "Conferma eliminazione", "削除を確認", "Löschen bestätigen") : "🗑")
+        ? h("button", { onClick: function (eS) { eS.stopPropagation(); if (!confSuppr) { setConfSuppr(true); return; } supprimerSouvenirOuvert(); }, "aria-label": T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"), style: { /* 🟥 05/09 : LA POUBELLE ETAIT EXACTEMENT SUR « IDENTIFIER » — meme top, meme left, meme plan. Dessinee apres, elle le recouvrait : sur ses propres photos, Blandine ne pouvait pas identifier, le bouton etait dessous. Deplacee a DROITE, a cote de la croix de fermeture (croix : right 16, largeur 40 ; la poubelle se pose a right 66). En confirmation elle s allonge vers la gauche, sans jamais repasser sur Identifier. */ position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 66, height: 40, minWidth: 40, padding: confSuppr ? "0 16px" : 0, borderRadius: confSuppr ? 999 : "50%", background: confSuppr ? "rgba(178,44,54,0.92)" : "rgba(7,8,10,0.6)", border: "1px solid " + (confSuppr ? "rgba(255,120,128,0.9)" : "rgba(255,255,255,0.25)"), color: "#F6E9EA", fontSize: confSuppr ? 12.5 : 15, fontWeight: 700, zIndex: 3, whiteSpace: "nowrap", transition: "all .25s ease" } }, confSuppr ? T("Confirmer la suppression", "Confirm deletion", "Confirmar eliminación", "Conferma eliminazione", "削除を確認", "Löschen bestätigen") : "🗑")
         : null,
       h("button", { onClick: function (eY) {
         eY.stopPropagation();
@@ -39673,7 +39817,7 @@ function EcranCheval() {
         var okVedette = !!(moi && mediasInfo[visionneuse] && (mediasInfo[visionneuse].user_id === moi.id || (typeof estModerateurHype === "function" && estModerateurHype(moi))));
         if (!okVedette) { setToast(T("Seul le propriétaire peut mettre cette photo en vedette", "Only the owner can feature this photo", "Solo el propietario puede destacar esta foto", "Solo il proprietario può mettere in evidenza questa foto", "所有者のみがこの写真をお気に入りに追加できます", "Nur der Eigentümer kann dieses Foto hervorheben")); setTimeout(function () { setToast(null); }, 2000); return; }
         basculerVedette(visionneuse);
-      }, style: { position: "absolute", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", padding: "10px 20px", borderRadius: 999, border: "1px solid " + tA(0.6) + "", background: (vedettes || []).indexOf(visionneuse) >= 0 ? "" + tA(0.9) + "" : "rgba(7,8,10,0.7)", color: (vedettes || []).indexOf(visionneuse) >= 0 ? "#04252a" : "#EDF2F5", fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap" } }, "★ " + ((vedettes || []).indexOf(visionneuse) >= 0 ? T("En vedette", "Featured", "Destacada", "In evidenza", "お気に入り", "Hervorgehoben") : T("Mettre en vedette", "Feature this photo", "Destacar", "Metti in evidenza", "お気に入りに追加", "Hervorheben")))) : null,
+      }, style: { position: "absolute", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", padding: "10px 20px", borderRadius: 999, border: "1px solid " + tA(0.6) + "", background: (vedettes || []).indexOf(visionneuse) >= 0 ? "" + tA(0.9) + "" : "rgba(7,8,10,0.7)", color: (vedettes || []).indexOf(visionneuse) >= 0 ? "#04252a" : "#EDF2F5", fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap" } }, "★ " + ((vedettes || []).indexOf(visionneuse) >= 0 ? T("En vedette", "Featured", "Destacada", "In evidenza", "お気に入り", "Hervorgehoben") : T("Mettre en vedette", "Feature this photo", "Destacar", "Metti in evidenza", "お気に入りに追加", "Hervorheben")))), document.body) : null,
     tagOuvert ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal : function (x) { return x; })(h("div", { onClick: function () { setTagOuvert(null); }, style: { position: "fixed", inset: 0, zIndex: 9200, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "80vh", overflowY: "auto", borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4) + "", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Identifier dans la photo", "Tag in photo", "Etiquetar", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0", "Im Foto identifizieren")),
