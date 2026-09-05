@@ -35131,7 +35131,7 @@ function ChronologieSouvenirs(props) {
             visibles.map(function (p, iP) {
               var enSel = (modeAn === grp.an);
               var choisie = enSel && photosSel.indexOf(p.url) >= 0;
-              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (enSel) { setPhotosSel(function (l) { var iS = l.indexOf(p.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([p.url]); }); return; } if (props.onOuvrir) props.onOuvrir(p.url); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisie ? ("2px solid " + teinte) : "none", outlineOffset: choisie ? -2 : 0, opacity: (enSel && !choisie) ? .55 : 1 } },
+              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (enSel) { setPhotosSel(function (l) { var iS = l.indexOf(p.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([p.url]); }); return; } if (props.onOuvrir) props.onOuvrir(p.url, p.albumId); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisie ? ("2px solid " + teinte) : "none", outlineOffset: choisie ? -2 : 0, opacity: (enSel && !choisie) ? .55 : 1 } },
                 h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(p.url, 420, 315) : p.url), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
             })),
           reste > 0 ? h("button", { onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n[grp.an] = true; return n; }); }, style: { marginTop: 8, background: "none", border: "none", color: teinteCl, fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif" } }, "+ " + reste + " " + T("voir tout", "view all", "ver todo", "vedi tutto", "すべて見る", "alle ansehen")) : null,
@@ -38303,8 +38303,15 @@ function EcranCheval() {
   var ooSt = React.useState(false); var origOuv = ooSt[0], setOrigOuv = ooSt[1]; /* 31/07 : volet Origines */
   var cvSt = React.useState([]); var chVids = cvSt[0], setChVids = cvSt[1]; /* 31/07 : videos pour l onglet Videos */
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
+  /* 🟥 05/09 (Blandine : « j'efface les photos où ? ») — Supprimer et ★ Vedette dans cette
+     visionneuse ne marchaient que pour les photos postées en commentaire (`mediasInfo`).
+     Une photo de la chronologie ou d'un album n'avait jamais eu ni l'un ni l'autre ici —
+     ce n'est pas une regression du 05/09, ca n'a jamais marche. `visionneuseAlbumId` retient
+     l'album d'une photo ouverte depuis la chronologie (seule source qui le connait) ; null
+     partout ailleurs, remis a null a la fermeture. */
+  var visAlbSt = React.useState(null); var visionneuseAlbumId = visAlbSt[0], setVisionneuseAlbumId = visAlbSt[1];
   var visFmSt = React.useState(false); var visFerme = visFmSt[0], setVisFerme = visFmSt[1];
-  function fermerVisionneuse() { if (visFerme) return; setVisFerme(true); setConfSuppr(false); setTimeout(function () { setVisionneuse(null); setVisFerme(false); }, 620); }
+  function fermerVisionneuse() { if (visFerme) return; setVisFerme(true); setConfSuppr(false); setTimeout(function () { setVisionneuse(null); setVisionneuseAlbumId(null); setVisFerme(false); }, 620); }
   var refPhotoCh = React.useRef(null);
   var phSt = React.useState(function () { try { return localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (e) { return ""; } });
   var photoPerso = phSt[0], setPhotoPerso = phSt[1];
@@ -38453,7 +38460,48 @@ function EcranCheval() {
     setVedettes(lV);
     try { definirVedettesSouvenirs(cibleCh, lV); } catch (eV2) { }
   }
-  async function supprimerSouvenirOuvert() {
+  /* 🟥 05/09 (Blandine, suite de « j'efface les photos où ? ») — permission UNIQUE pour
+   Supprimer ET ★ Vedette dans cette visionneuse, quelle que soit la source de la photo :
+   proprietaire du commentaire (comme avant), OU proprietaire du CHEVAL si la photo vient
+   de la chronologie/d'un album (elle porte alors un `visionneuseAlbumId`), OU moderatrice
+   dans les deux cas. Une seule regle a lire, au lieu de deux copies qui auraient pu diverger. */
+function peutGererPhotoOuverte() {
+  var mod = !!(typeof estModerateurHype === "function" && estModerateurHype(moi));
+  if (!moi) return false;
+  if (mediasInfo[visionneuse]) return !!(mediasInfo[visionneuse].user_id === moi.id || mod);
+  if (visionneuseAlbumId) return !!((chevalDyn && chevalDyn.dbId && chevalDyn.ownerId === moi.id) || mod);
+  return false;
+}
+/* Retire la photo ouverte de SON album (chronologie ou albums nommes — meme donnee, la
+   chronologie l'affiche juste par annee). Meme squelette que `retirerPhoto` dans AlbumsCheval,
+   mais rejouable ici : cette visionneuse ne connait pas la liste d'albums deja chargee la-bas. */
+async function supprimerPhotoAlbumOuverte() {
+  var url = visionneuse, albId = visionneuseAlbumId;
+  if (!url || !albId || !moi) return;
+  try {
+    var ra = await listerAlbumsCheval(cibleCh);
+    var alb = ((ra && ra.data) || []).filter(function (aU) { return aU && aU.id === albId; })[0];
+    if (!alb) { setConfSuppr(false); return; }
+    var nouv = (alb.photos || []).filter(function (uF) { return uF !== url; });
+    var r = await majAlbumCheval(albId, { photos: nouv });
+    if (r && r.error) {
+      setConfSuppr(false);
+      setToast(T("Suppression impossible \u2014 r\u00e9essaie.", "Could not delete \u2014 try again.", "No se pudo eliminar \u2014 int\u00e9ntalo de nuevo.", "Eliminazione impossibile \u2014 riprova.", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "L\u00f6schen nicht m\u00f6glich \u2014 versuch es nochmal."));
+      setTimeout(function () { setToast(null); }, 2600);
+      return;
+    }
+    setConfSuppr(false); fermerVisionneuse();
+    try { window.dispatchEvent(new Event("hype-souvenirs-maj")); } catch (eM) { }
+    setToast(T("Photo supprim\u00e9e", "Photo deleted", "Foto eliminada", "Foto eliminata", "\u5199\u771f\u3092\u524a\u9664\u3057\u307e\u3057\u305f", "Foto gel\u00f6scht"));
+    setTimeout(function () { setToast(null); }, 2000);
+  } catch (eS) { setConfSuppr(false); }
+}
+/* Aiguillage : quelle suppression appeler selon d'ou vient la photo ouverte. */
+function supprimerPhotoOuverte() {
+  if (mediasInfo[visionneuse]) { supprimerSouvenirOuvert(); return; }
+  if (visionneuseAlbumId) { supprimerPhotoAlbumOuverte(); return; }
+}
+async function supprimerSouvenirOuvert() {
     var url = visionneuse; if (!url) return;
     var info = mediasInfo[url]; if (!info || !moi) return;
     try {
@@ -38996,7 +39044,7 @@ function EcranCheval() {
         null, /* 25/08 : pilule Coupes retiree (Blandine) — le rail reste ; l'onglet Resultats etait deja retire (s152) */
         (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 10 } },
           c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
-            return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") setVisionneuse(fl.img); else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
+            return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") { setVisionneuseAlbumId(null); setVisionneuse(fl.img); } else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
               fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
                 : h("div", { style: { width: 108, height: 132, borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "\ud83c\udfc6" : "\ud83c\udfc5"),
               fl.lab ? h("div", { style: { marginTop: 6, fontSize: 8.5, lineHeight: 1.3, color: "rgba(244,247,250,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
@@ -39350,7 +39398,7 @@ function EcranCheval() {
         h("div", { id: "chapMedias", style: { position: "relative" } },
           h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
             h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien"))),
-          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("photos"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("photos"); } })) /* 29/08 : les medias renvoyaient sur Souvenirs, qui n'a plus de photos depuis le decoupage — ils ouvrent desormais la page Photos */,
+          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuseAlbumId(null); setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("photos"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("photos"); } })) /* 29/08 : les medias renvoyaient sur Souvenirs, qui n'a plus de photos depuis le decoupage — ils ouvrent desormais la page Photos */,
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
@@ -39465,7 +39513,7 @@ function EcranCheval() {
             /* 02/08 : la vignette ouvre la visionneuse au lieu de lire la video dans sa case de
                grille. Objectif fixe par Blandine : toute video chargee par un utilisateur doit
                pouvoir s afficher en grand. */
-            return h("div", { key: "vtab" + iV, role: "button", onClick: function () { try { window.__visListe = (chVids || []).slice(); } catch (eVl) { } setVisFerme(false); setVisionneuse(vU); }, style: { position: "relative", width: "100%", aspectRatio: "3 / 4", borderRadius: 14, overflow: "hidden", border: "1px solid " + tA(0.3), background: "#04070A", cursor: "pointer" } },
+            return h("div", { key: "vtab" + iV, role: "button", onClick: function () { try { window.__visListe = (chVids || []).slice(); } catch (eVl) { } setVisFerme(false); setVisionneuseAlbumId(null); setVisionneuse(vU); }, style: { position: "relative", width: "100%", aspectRatio: "3 / 4", borderRadius: 14, overflow: "hidden", border: "1px solid " + tA(0.3), background: "#04070A", cursor: "pointer" } },
               h("video", { src: vU + "#t=0.01", muted: true, playsInline: true, preload: "metadata", tabIndex: -1, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }),
               h("div", { style: { position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" } },
                 h("div", { style: { width: 46, height: 46, borderRadius: "50%", border: "1px solid " + tA(0.65), background: "rgba(7,8,10,0.5)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontSize: 15 } }, "\u25b6")));
@@ -40024,7 +40072,7 @@ h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
           proprio: !!(chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id),
-          onOuvrir: function (uV) { setVisionneuse(uV); },
+          onOuvrir: function (uV, albIdV) { setVisionneuseAlbumId(albIdV || null); setVisionneuse(uV); },
           onAjouter: function () {
             var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
@@ -40219,8 +40267,8 @@ h(ChronologieSouvenirs, {
           null, /* 02/08 : calque de balayage retire — repris par PhotoZoomHype, qui compte les doigts */
           h("div", { style: { position: "absolute", top: "calc(22px + env(safe-area-inset-top))", left: "50%", transform: "translateX(-50%)", fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.12em", color: "rgba(237,242,245,0.75)", background: "rgba(7,8,10,0.45)", padding: "5px 12px", borderRadius: 999, zIndex: 4 } }, (ixV + 1) + " / " + lV.length));
       })(),
-      (moi && mediasInfo[visionneuse] && (mediasInfo[visionneuse].user_id === moi.id || (typeof estModerateurHype === "function" && estModerateurHype(moi))))
-        ? h("button", { onClick: function (eS) { eS.stopPropagation(); if (!confSuppr) { setConfSuppr(true); return; } supprimerSouvenirOuvert(); }, "aria-label": T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"), style: { /* 🟥 05/09 : LA POUBELLE ETAIT EXACTEMENT SUR « IDENTIFIER » — meme top, meme left, meme plan. Dessinee apres, elle le recouvrait : sur ses propres photos, Blandine ne pouvait pas identifier, le bouton etait dessous. Deplacee a DROITE, a cote de la croix de fermeture (croix : right 16, largeur 40 ; la poubelle se pose a right 66). En confirmation elle s allonge vers la gauche, sans jamais repasser sur Identifier. */ position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 66, height: 40, minWidth: 40, padding: confSuppr ? "0 16px" : 0, borderRadius: confSuppr ? 999 : "50%", background: confSuppr ? "rgba(178,44,54,0.92)" : "rgba(7,8,10,0.6)", border: "1px solid " + (confSuppr ? "rgba(255,120,128,0.9)" : "rgba(255,255,255,0.25)"), color: "#F6E9EA", fontSize: confSuppr ? 12.5 : 15, fontWeight: 700, zIndex: 3, whiteSpace: "nowrap", transition: "all .25s ease" } }, confSuppr ? T("Confirmer la suppression", "Confirm deletion", "Confirmar eliminación", "Conferma eliminazione", "削除を確認", "Löschen bestätigen") : "🗑")
+      peutGererPhotoOuverte()
+        ? h("button", { onClick: function (eS) { eS.stopPropagation(); if (!confSuppr) { setConfSuppr(true); return; } supprimerPhotoOuverte(); }, "aria-label": T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"), style: { /* 🟥 05/09 : LA POUBELLE ETAIT EXACTEMENT SUR « IDENTIFIER » — meme top, meme left, meme plan. Dessinee apres, elle le recouvrait : sur ses propres photos, Blandine ne pouvait pas identifier, le bouton etait dessous. Deplacee a DROITE, a cote de la croix de fermeture (croix : right 16, largeur 40 ; la poubelle se pose a right 66). En confirmation elle s allonge vers la gauche, sans jamais repasser sur Identifier. */ position: "absolute", top: "calc(16px + env(safe-area-inset-top))", right: 66, height: 40, minWidth: 40, padding: confSuppr ? "0 16px" : 0, borderRadius: confSuppr ? 999 : "50%", background: confSuppr ? "rgba(178,44,54,0.92)" : "rgba(7,8,10,0.6)", border: "1px solid " + (confSuppr ? "rgba(255,120,128,0.9)" : "rgba(255,255,255,0.25)"), color: "#F6E9EA", fontSize: confSuppr ? 12.5 : 15, fontWeight: 700, zIndex: 3, whiteSpace: "nowrap", transition: "all .25s ease" } }, confSuppr ? T("Confirmer la suppression", "Confirm deletion", "Confirmar eliminación", "Conferma eliminazione", "削除を確認", "Löschen bestätigen") : "🗑")
         : null,
       h("button", { onClick: function (eY) {
         eY.stopPropagation();
@@ -40228,7 +40276,7 @@ h(ChronologieSouvenirs, {
            mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie.
            Meme regle desormais que le bouton supprimer juste au-dessus : proprietaire de la photo,
            ou moderateur. */
-        var okVedette = !!(moi && mediasInfo[visionneuse] && (mediasInfo[visionneuse].user_id === moi.id || (typeof estModerateurHype === "function" && estModerateurHype(moi))));
+        var okVedette = peutGererPhotoOuverte();
         if (!okVedette) { setToast(T("Seul le propriétaire peut mettre cette photo en vedette", "Only the owner can feature this photo", "Solo el propietario puede destacar esta foto", "Solo il proprietario può mettere in evidenza questa foto", "所有者のみがこの写真をお気に入りに追加できます", "Nur der Eigentümer kann dieses Foto hervorheben")); setTimeout(function () { setToast(null); }, 2000); return; }
         basculerVedette(visionneuse);
       }, style: { position: "absolute", bottom: "calc(24px + env(safe-area-inset-bottom))", left: "50%", transform: "translateX(-50%)", padding: "10px 20px", borderRadius: 999, border: "1px solid " + tA(0.6) + "", background: (vedettes || []).indexOf(visionneuse) >= 0 ? "" + tA(0.9) + "" : "rgba(7,8,10,0.7)", color: (vedettes || []).indexOf(visionneuse) >= 0 ? "#04252a" : "#EDF2F5", fontSize: 12.5, fontWeight: 700, whiteSpace: "nowrap" } }, "★ " + ((vedettes || []).indexOf(visionneuse) >= 0 ? T("En vedette", "Featured", "Destacada", "In evidenza", "お気に入り", "Hervorgehoben") : T("Mettre en vedette", "Feature this photo", "Destacar", "Metti in evidenza", "お気に入りに追加", "Hervorheben")))), document.body) : null,
