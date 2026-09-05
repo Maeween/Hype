@@ -35654,24 +35654,46 @@ function AlbumsCheval(props) {
         return;
       }
       var f0 = fs[0]; var mo = f0 && f0.size ? (Math.round(f0.size / 1048576 * 10) / 10) + " Mo" : "";
-      bip(T("Fichier re\u00e7u", "File received", "Archivo recibido", "File ricevuto", "\u30d5\u30a1\u30a4\u30eb\u53d7\u9818", "Datei erhalten") + " : " + ((f0 && f0.name) || "?") + (mo ? (" \u00b7 " + mo) : "") + (fs.length > 1 ? (" (+" + (fs.length - 1) + ")") : "") + " \u2014 " + T("envoi en cours\u2026", "uploading\u2026", "enviando\u2026", "invio\u2026", "\u9001\u4fe1\u4e2d\u2026", "wird gesendet\u2026"), 4000);
+      /* 05/09 17 h : plus un toast de 4 s — une carte qui reste (voir infoA). */
+      var aVideo = (quoi === "video"); try { for (var iAv = 0; iAv < fs.length && !aVideo; iAv++) { if (estFichierVideo(fs[iAv])) aVideo = true; } } catch (eAv) { }
+      if (aVideo) { setInfoA({ nom: ((f0 && f0.name) || "?"), mo: mo, plus: (fs.length > 1 ? fs.length - 1 : 0), etat: "recu" }); return; }
+      /* photos seules : un toast bref suffit, la mascotte et le resultat se voient */
+      bip(T("Fichiers re\u00e7us", "Files received", "Archivos recibidos", "File ricevuti", "\u30d5\u30a1\u30a4\u30eb\u53d7\u9818", "Dateien erhalten") + " : " + fs.length + " \u2014 " + T("envoi en cours\u2026", "uploading\u2026", "enviando\u2026", "invio\u2026", "\u9001\u4fe1\u4e2d\u2026", "wird gesendet\u2026"), 2500);
     } catch (eDf) { }
   }
   function prevenirSelecteurIos() {
-    /* \ud83d\udfe5 05/09 15h46 \u2014 LA CLE DES QUATRE JOURS. Blandine : « au bout de 10 mn y en a
-       une qui vient de partir en silence d un coup ». L envoi MARCHE. Ce qui prenait dix
-       minutes sans rien dire, c est iOS AVANT de rendre le fichier : quand la photothèque
-       est en « Optimiser le stockage », la video est dans iCloud et doit etre
-       TELECHARGEE en entier a l appui sur « Ajouter » ; s y ajoute souvent une conversion
-       HEVC -> H.264. En app installee, iOS n affiche AUCUNE progression pour ca. L app,
-       elle, n a encore rien recu : l evenement `change` n arrive qu a la fin. Elle ne
-       peut donc rien afficher d elle-meme \u2014 sauf PREVENIR au moment ou le selecteur
-       s ouvre. C est ce que fait la ligne ci-dessous, pour tout le monde, a chaque fois. */
-    bip(T("Apr\u00e8s \u00ab Ajouter \u00bb, iOS pr\u00e9pare la vid\u00e9o (t\u00e9l\u00e9chargement iCloud, conversion). \u00c7a peut prendre plusieurs minutes SANS rien afficher. Ne quitte pas l'app : l'envoi d\u00e9marre tout seul ensuite.", "After \u201cAdd\u201d, iOS prepares the video (iCloud download, conversion). It can take several minutes with NO feedback. Stay in the app: the upload starts by itself afterwards.", "Tras \u00abA\u00f1adir\u00bb, iOS prepara el v\u00eddeo (descarga iCloud, conversi\u00f3n). Puede tardar varios minutos SIN mostrar nada. No salgas de la app.", "Dopo \u00abAggiungi\u00bb, iOS prepara il video (download iCloud, conversione). Pu\u00f2 volerci qualche minuto SENZA alcun segnale. Non uscire dall'app.", "\u300c\u8ffd\u52a0\u300d\u306e\u5f8c\u3001iOS \u304c\u52d5\u753b\u3092\u6e96\u5099\u3057\u307e\u3059\uff08iCloud \u304b\u3089\u306e\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3001\u5909\u63db\uff09\u3002\u4f55\u3082\u8868\u793a\u3055\u308c\u305a\u306b\u6570\u5206\u304b\u304b\u308b\u3053\u3068\u304c\u3042\u308a\u307e\u3059\u3002\u30a2\u30d7\u30ea\u3092\u96e2\u308c\u306a\u3044\u3067\u304f\u3060\u3055\u3044\u3002", "Nach \u201eHinzuf\u00fcgen\u201c bereitet iOS das Video vor (iCloud-Download, Konvertierung). Das kann mehrere Minuten OHNE Anzeige dauern. Bleib in der App: der Upload startet danach von selbst."), 12000);
-    if (!refRevenuVeille.current) return;
-    bip(T("Si le bouton \u00ab Ajouter \u00bb n'appara\u00eet pas dans le s\u00e9lecteur, c'est un bug d'iOS apr\u00e8s une mise en veille : ferme compl\u00e8tement Hype et relance-la.", "If the \u201cAdd\u201d button doesn't show in the picker, it's an iOS bug after standby: fully close Hype and relaunch it.", "Si el bot\u00f3n \u00abA\u00f1adir\u00bb no aparece en el selector, es un fallo de iOS tras el reposo: cierra Hype por completo y vuelve a abrirla.", "Se il pulsante \u00abAggiungi\u00bb non compare nel selettore, \u00e8 un bug di iOS dopo lo standby: chiudi del tutto Hype e riaprila.", "\u30bb\u30ec\u30af\u30bf\u30fc\u306b\u300c\u8ffd\u52a0\u300d\u304c\u8868\u793a\u3055\u308c\u306a\u3044\u5834\u5408\u306f\u3001\u30b9\u30ea\u30fc\u30d7\u5f8c\u306e iOS \u306e\u4e0d\u5177\u5408\u3067\u3059\u3002Hype \u3092\u5b8c\u5168\u306b\u7d42\u4e86\u3057\u3066\u518d\u8d77\u52d5\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Wenn im Auswahlfenster kein \u201eHinzuf\u00fcgen\u201c erscheint, ist das ein iOS-Fehler nach dem Standby: schlie\u00dfe Hype vollst\u00e4ndig und starte es neu."), 7000);
+    /* 05/09 17 h : reecrit COURT. L'ancien message de 12 s defilait coupe aux deux bouts
+       (enregistrement de 16 h 25) — et le toast sait maintenant revenir a la ligne.
+       Ne sert plus qu'a « Ma phototheque » (photos ET videos) : pour « + Video »,
+       c'est la carte feuilleVideo qui parle. Le rappel d'apres mise en veille est
+       accole au meme message (deux bip() a la suite s'ecrasaient). */
+    var m = T("Si tu choisis une vidéo : après ✓, le sélecteur reste ouvert pendant que ton iPhone la prépare — parfois plusieurs minutes, sans rien afficher. Ne le ferme pas.",
+      "If you pick a video: after ✓ the picker stays open while your iPhone prepares it — sometimes several minutes, with nothing shown. Don't close it.",
+      "Si eliges un vídeo: tras ✓ el selector sigue abierto mientras tu iPhone lo prepara — a veces varios minutos, sin mostrar nada. No lo cierres.",
+      "Se scegli un video: dopo ✓ il selettore resta aperto mentre il tuo iPhone lo prepara — a volte diversi minuti, senza mostrare nulla. Non chiuderlo.",
+      "動画を選ぶと、✓の後もiPhoneが準備する間セレクターは開いたままです（数分かかることがあり、表示は出ません）。閉じないでください。",
+      "Wenn du ein Video wählst: Nach ✓ bleibt die Auswahl offen, während dein iPhone es vorbereitet — manchmal mehrere Minuten, ohne Anzeige. Nicht schließen.");
+    if (refRevenuVeille.current) m += " " + T("Si le bouton ✓ n'apparaît pas : ferme complètement Hype et relance-la (bug iOS après une mise en veille).",
+      "If the ✓ button doesn't show: fully close Hype and relaunch it (iOS bug after standby).",
+      "Si el botón ✓ no aparece: cierra Hype por completo y vuelve a abrirla (fallo de iOS tras el reposo).",
+      "Se il pulsante ✓ non compare: chiudi del tutto Hype e riaprila (bug iOS dopo lo standby).",
+      "✓ボタンが出ない場合：Hypeを完全に終了してから再起動してください（スリープ後のiOSの不具合）。",
+      "Wenn ✓ nicht erscheint: Hype ganz schließen und neu starten (iOS-Fehler nach dem Standby).");
+    bip(m, 9000);
   }
   var fajSt = React.useState(false); var feuilleAjout = fajSt[0], setFeuilleAjout = fajSt[1];
+  /* 🟥 05/09 17 h — LA FEUILLE VIDÉO. Enregistrement de Blandine (16 h 25) : elle coche une
+     vidéo, tape ✓, le sélecteur reste ouvert sans rien afficher, elle ferme avec la croix
+     au bout de 15 s — et la croix annule tout. Le message de 12 s d'avant défilait coupé,
+     illisible. Le bouton « + Vidéo » ouvre donc d'abord CETTE carte (dans le flux du
+     panneau, jamais dans un calque détaché ni un portail) : l'explication, puis un
+     <label> qui enveloppe le champ fichier — le mécanisme éprouvé des deux autres boutons. */
+  var fvSt = React.useState(false); var feuilleVideo = fvSt[0], setFeuilleVideo = fvSt[1];
+  var refFeuilleVideo = React.useRef(null);
+  React.useEffect(function () {
+    if (!feuilleVideo) return;
+    try { if (refFeuilleVideo.current && refFeuilleVideo.current.scrollIntoView) refFeuilleVideo.current.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (eSv) { }
+  }, [feuilleVideo]);
   /* \ud83d\udfe5 05/09 (Blandine : « lieu sur photo et album, vas-y »). Un LIEU libre,
      texte court, sur un album (colonne albums_cheval.lieu) et sur une photo
      (colonne photo_dates.lieu, meme cle photo_url que l annee). SQL a passer AVANT
@@ -35809,7 +35831,14 @@ function AlbumsCheval(props) {
      d'envoi de medias utilisent desormais alerte() : le message reste a l'ecran jusqu'a ce qu'elle
      le ferme elle-meme. Le reste de l'app garde bip() (messages de confirmation, sans enjeu). */
   var alSt = React.useState(null); var alerteA = alSt[0], setAlerteA = alSt[1];
-  function alerte(m) { setAlerteA(String(m || "")); }
+  /* 05/09 17 h : la carte rouge « L'envoi a échoué » servait aussi au message de
+     succès « Ta vidéo est bien envoyée… » (encodage en cours). Second argument
+     `ok` : titre et couleur de réussite. Rien d'autre ne change. */
+  var alOkSt = React.useState(false); var alerteOk = alOkSt[0], setAlerteOk = alOkSt[1];
+  /* 05/09 17 h : « Fichier reçu » — carte qui RESTE affichée jusqu'à fermeture (le toast
+     de 4 s de 15 h 50 ne pouvait pas être lu au bon moment). Objet { nom, mo, plus, etat }. */
+  var infSt = React.useState(null); var infoA = infSt[0], setInfoA = infSt[1];
+  function alerte(m, ok) { setInfoA(null); setAlerteOk(!!ok); setAlerteA(String(m || "")); }
   function portail(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP9) { } return el; }
   function cibleTag() {
     var c = String(props.cible || "");
@@ -36020,7 +36049,7 @@ function AlbumsCheval(props) {
     }
     setEnvoiPct(0);
     if (videosPasEncore > 0) {
-      alerte(T("Ta vidéo est bien envoyée. Elle finit d'être préparée et apparaîtra dans l'album d'ici une minute.", "Your video is uploaded. It's finishing processing and will appear within a minute.", "Tu vídeo se ha enviado. Está terminando de procesarse y aparecerá en un minuto.", "Il tuo video è stato inviato. Sta finendo l'elaborazione e apparirà tra un minuto.", "動画は送信されました。処理後にアルバムに表示されます。", "Dein Video ist hochgeladen und wird noch verarbeitet."));
+      alerte(T("Ta vidéo est bien envoyée. Elle finit d'être préparée et apparaîtra dans l'album d'ici une minute.", "Your video is uploaded. It's finishing processing and will appear within a minute.", "Tu vídeo se ha enviado. Está terminando de procesarse y aparecerá en un minuto.", "Il tuo video è stato inviato. Sta finendo l'elaborazione e apparirà tra un minuto.", "動画は送信されました。処理後にアルバムに表示されます。", "Dein Video ist hochgeladen und wird noch verarbeitet."), true);
     }    for (var iF = 0; iF < fichiersUtiles.length; iF++) {
       try {
         var rF = await envoyerPhoto(fichiersUtiles[iF]);
@@ -36042,6 +36071,7 @@ function AlbumsCheval(props) {
       alerte(msgDb); /* 27/08 soir : reste affiche jusqu'a fermeture */
     }
     if (!(rM && rM.error)) charger();
+    if (!rate && !(rM && rM.error)) { try { setInfoA(function (p) { return p ? Object.assign({}, p, { etat: "fini" }) : p; }); } catch (eIa) { } } /* 05/09 17 h : la carte « Fichier reçu » devient « Envoyé », toujours jusqu'à fermeture */
     } finally {
       /* Quoi qu il arrive au-dessus : on rend la main. Un album verrouille est
          pire qu un envoi rate — l envoi rate se voit, le verrou ne se voit pas. */
@@ -36420,9 +36450,31 @@ function AlbumsCheval(props) {
            video dans le selecteur la choisit et referme le selecteur tout de suite, sans
            confirmation separee -- une video a la fois, a essayer quand le bouton
            phototheque coince sur une video. */
-        h("label", { onClick: prevenirSelecteurIos, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
-          envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
-          h("input", { type: "file", accept: "video/*", multiple: true, /* \ud83d\udfe5 05/09 (Blandine, captures 11h16-11h19) : le mode SIMPLE (sans multiple) ouvre un selecteur iOS SANS bouton de validation — on coche, rien ne confirme. Le mode MULTI (celui de « Ma phototheque ») l a, en haut a droite. Le 27/08 avait fait exactement l inverse en croyant que le multi coincait : c etait faux, et ca a coute une semaine. `importerFichiers` recoit deja une liste, rien d autre ne change. */ disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } direFichiersRecus(fsv, "video"); if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
+        /* 05/09 17 h : « + Vidéo » n'ouvre plus le sélecteur directement, il ouvre la carte
+           feuilleVideo juste en dessous (voir son commentaire). Le champ fichier vidéo vit dans
+           cette carte, dans un <label>, en video/* + multiple (le mode qui a le bouton ✓). */
+        h("button", { onClick: function () { if (envoiCours) return; setFeuilleVideo(function (v) { return !v; }); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(feuilleVideo ? 0.95 : 0.55), background: envoiCours ? tA(0.12) : (feuilleVideo ? tA(0.16) : "transparent"), color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+          envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"))))) : null,
+      /* 🟥 05/09 17 h — LA CARTE « ENVOYER UNE VIDÉO » (voir feuilleVideo). Dans le flux du
+         panneau : pas de position fixe, pas de portail, pas de .click() — un <label> qui
+         enveloppe le champ, comme « Ma photothèque ». Quand le sélecteur rend des fichiers,
+         la carte se referme ; si la cavalière annule le sélecteur, la carte reste (iOS ne
+         signale pas l'annulation) et elle a le bouton Annuler. */
+      (feuilleVideo && albOuvert && !albOuvert.__lecture && !albOuvert.__auto) ? h("div", { ref: refFeuilleVideo, style: { marginTop: 11, padding: "16px 14px 14px", borderRadius: 18, border: "1px solid " + tA(0.55), background: "linear-gradient(180deg, rgba(12,18,24,0.98), rgba(7,10,13,1))", boxShadow: "0 10px 30px rgba(0,0,0,0.35)" } },
+        h("div", { style: { fontFamily: C9, fontSize: 14, letterSpacing: 1.2, color: "#EDF2F5", textTransform: "uppercase", textAlign: "center", marginBottom: 8 } }, T("Envoyer une vid\u00e9o", "Send a video", "Enviar un v\u00eddeo", "Inviare un video", "\u52d5\u753b\u3092\u9001\u308b", "Ein Video senden")),
+        h("div", { style: { fontFamily: M9, fontSize: 12.5, lineHeight: 1.55, color: "#E4F1F5", textAlign: "center" } },
+          T("Après ✓, le sélecteur reste ouvert pendant que ton iPhone prépare la vidéo — parfois plusieurs minutes, sans rien afficher. Ne le ferme pas (la croix annule tout) : l'app reprend toute seule dès que la vidéo est prête.",
+            "After ✓, the picker stays open while your iPhone prepares the video — sometimes several minutes, with nothing shown. Don't close it (the cross cancels everything): the app carries on by itself once the video is ready.",
+            "Tras ✓, el selector sigue abierto mientras tu iPhone prepara el vídeo — a veces varios minutos, sin mostrar nada. No lo cierres (la cruz lo cancela todo): la app continúa sola cuando el vídeo está listo.",
+            "Dopo ✓, il selettore resta aperto mentre il tuo iPhone prepara il video — a volte diversi minuti, senza mostrare nulla. Non chiuderlo (la croce annulla tutto): l'app riprende da sola appena il video è pronto.",
+            "✓の後、iPhoneが動画を準備する間セレクターは開いたままです。数分かかることがあり、表示は出ません。閉じないでください（×は全て取り消します）。準備が終わるとアプリが自動で続きます。",
+            "Nach ✓ bleibt die Auswahl offen, während dein iPhone das Video vorbereitet — manchmal mehrere Minuten, ohne Anzeige. Nicht schließen (das Kreuz bricht alles ab): die App macht von selbst weiter, sobald das Video bereit ist.")),
+        refRevenuVeille.current ? h("div", { style: { fontFamily: M9, fontSize: 11, lineHeight: 1.5, color: "#F2D48A", textAlign: "center", marginTop: 8 } },
+          T("Si le bouton ✓ n'apparaît pas dans le sélecteur : ferme complètement Hype et relance-la (bug iOS après une mise en veille).", "If the ✓ button doesn't show in the picker: fully close Hype and relaunch it (iOS bug after standby).", "Si el botón ✓ no aparece en el selector: cierra Hype por completo y vuelve a abrirla (fallo de iOS tras el reposo).", "Se il pulsante ✓ non compare nel selettore: chiudi del tutto Hype e riaprila (bug iOS dopo lo standby).", "セレクターに✓ボタンが出ない場合：Hypeを完全に終了してから再起動してください。", "Wenn ✓ in der Auswahl nicht erscheint: Hype ganz schließen und neu starten (iOS-Fehler nach dem Standby).")) : null,
+        h("label", { style: { display: "block", marginTop: 14, padding: "13px 12px", borderRadius: 999, border: "1px solid " + tA(0.9), background: tA(0.16), color: "#EDF2F5", fontSize: 13, fontWeight: 800, fontFamily: M9, textAlign: "center", cursor: envoiCours ? "default" : "pointer", opacity: envoiCours ? 0.5 : 1 } },
+          T("Choisir dans ma phototh\u00e8que", "Choose from my library", "Elegir en mi galer\u00eda", "Scegli dalla mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea\u304b\u3089\u9078\u3076", "Aus meiner Mediathek w\u00e4hlen"),
+          h("input", { type: "file", accept: "video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } direFichiersRecus(fsv, "video"); if (fsv.length) { setFeuilleVideo(false); importerFichiers(albOuvert.id, fsv); } } })),
+        h("button", { onClick: function () { setFeuilleVideo(false); }, style: { marginTop: 9, width: "100%", padding: "10px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#C9D3D8", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen"))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "20px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", flexDirection: "column", alignItems: "center", gap: 13 } }, /* 28/08 : mascotte repassee en colonne, bien plus grosse (demande Blandine : \u00ab je l'aurais vue plus grosse, comme la taille du cercle violet, au milieu \u00bb) + texte en BLANC en dessous pour qu'on le voie bien */
         h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 220, height: 220, flex: "0 0 auto", borderRadius: "50%", objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", { style: { textAlign: "center" } },
@@ -36632,7 +36684,7 @@ function AlbumsCheval(props) {
           /* 04/09 : une abonnee au plafond ne se voit PAS proposer de s abonner. */
           invitPlus.motif === "video_premium" ? null : h("button", { onClick: function () { setInvitPlus(null); try { if (setEcranAC) setEcranAC("premium"); } catch (ePr) { } }, style: { width: "100%", padding: "13px 8px", borderRadius: 999, border: "1px solid " + tA(0.5), background: "linear-gradient(100deg, rgba(16,21,24,0.86) 40%, " + tA(0.24) + " 100%)", color: "#E9F7FA", fontFamily: M9, fontSize: 13.5, fontWeight: 800, cursor: "pointer" } }, T("Découvrir Hype+", "Discover Hype+", "Descubrir Hype+", "Scopri Hype+", "Hype+ を見る", "Hype+ entdecken")),
           h("button", { onClick: function () { setInvitPlus(null); }, style: { width: "100%", padding: "11px 8px", borderRadius: 999, border: "none", background: "transparent", color: "#8A929C", fontFamily: M9, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, invitPlus.motif === "video_premium" ? T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen") : T("Plus tard", "Later", "Más tarde", "Più tardi", "あとで", "Später"))))) ) : null,
-    toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 999, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, whiteSpace: "nowrap" } }, toastA)) : null,
+    toastA ? portail(h("div", { style: { position: "fixed", left: "50%", bottom: "calc(env(safe-area-inset-bottom) + 96px)", transform: "translateX(-50%)", zIndex: 8800, padding: "10px 18px", borderRadius: 18, background: "rgba(10,14,18,0.95)", border: "1px solid " + tA(0.5), color: "#EDF2F5", fontFamily: M9, fontSize: 12, maxWidth: "calc(100vw - 28px)", boxSizing: "border-box", textAlign: "center", whiteSpace: "normal", lineHeight: 1.45 } }, toastA)) : null, /* 05/09 17 h : plus de nowrap — un message long est lisible au lieu d'être coupé aux deux bouts */
     /* 02/09 (Blandine) : « un petit message d'avertissement quand je touche un cheval perso
        et que j'effectue quelque chose que je ne devrais pas toucher normalement » — de facon
        a comprendre qu'on est en train de faire une connerie si ce n'est pas fait expres.
@@ -36649,8 +36701,14 @@ function AlbumsCheval(props) {
     /* 27/08 soir : LE MESSAGE QUI RESTE — carte d'erreur d'envoi, visible jusqu'a fermeture
        explicite. Texte selectionnable (pour pouvoir le recopier), sur plusieurs lignes si besoin
        (contrairement au bip en une ligne qui coupait les raisons longues). */
-    alerteA ? portail(h("div", { style: { position: "fixed", left: 14, right: 14, bottom: "calc(env(safe-area-inset-bottom) + 96px)", zIndex: 8850, padding: "14px 14px 12px", borderRadius: 16, background: "rgba(12,16,20,0.98)", border: "1px solid rgba(240,92,116,0.55)", color: "#EDF2F5", fontFamily: M9, fontSize: 12.5, lineHeight: 1.55, boxShadow: "0 10px 34px rgba(0,0,0,0.5)" } },
-      h("div", { style: { fontSize: 11, fontWeight: 800, letterSpacing: 0.6, color: "#F05C74", textTransform: "uppercase", marginBottom: 6 } }, T("L'envoi a échoué", "Upload failed", "Fallo el envio", "Invio non riuscito", "送信に失敗しました")),
+    /* 05/09 17 h : « Fichier reçu » / « Envoyé » — reste jusqu'à Fermer. Même place que la
+       carte rouge ; alerte() efface cette carte pour ne jamais en superposer deux. */
+    infoA ? portail(h("div", { style: { position: "fixed", left: 14, right: 14, bottom: "calc(env(safe-area-inset-bottom) + 96px)", zIndex: 8850, padding: "12px 14px 10px", borderRadius: 16, background: "rgba(12,16,20,0.98)", border: "1px solid " + tA(0.6), color: "#EDF2F5", fontFamily: M9, fontSize: 12.5, lineHeight: 1.55, boxShadow: "0 10px 34px rgba(0,0,0,0.5)" } },
+      h("div", { style: { fontSize: 11, fontWeight: 800, letterSpacing: 0.6, color: tnT, textTransform: "uppercase", marginBottom: 4 } }, infoA.etat === "fini" ? T("Envoy\u00e9", "Sent", "Enviado", "Inviato", "\u9001\u4fe1\u6e08\u307f", "Gesendet") : T("Fichier re\u00e7u", "File received", "Archivo recibido", "File ricevuto", "\u30d5\u30a1\u30a4\u30eb\u53d7\u9818", "Datei erhalten")),
+      h("div", { style: { WebkitUserSelect: "text", userSelect: "text", wordBreak: "break-word" } }, String(infoA.nom || "?") + (infoA.mo ? (" \u00b7 " + infoA.mo) : "") + (infoA.plus > 0 ? (" (+" + infoA.plus + ")") : "") + ((infoA.etat !== "fini" && envoiCours) ? (" \u2014 " + T("envoi en cours\u2026", "uploading\u2026", "enviando\u2026", "invio\u2026", "\u9001\u4fe1\u4e2d\u2026", "wird gesendet\u2026")) : "")),
+      h("button", { onClick: function () { setInfoA(null); }, style: { marginTop: 9, width: "100%", padding: "9px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen")))) : null,
+    alerteA ? portail(h("div", { style: { position: "fixed", left: 14, right: 14, bottom: "calc(env(safe-area-inset-bottom) + 96px)", zIndex: 8850, padding: "14px 14px 12px", borderRadius: 16, background: "rgba(12,16,20,0.98)", border: "1px solid " + (alerteOk ? tA(0.6) : "rgba(240,92,116,0.55)"), color: "#EDF2F5", fontFamily: M9, fontSize: 12.5, lineHeight: 1.55, boxShadow: "0 10px 34px rgba(0,0,0,0.5)" } },
+      h("div", { style: { fontSize: 11, fontWeight: 800, letterSpacing: 0.6, color: alerteOk ? tnT : "#F05C74", textTransform: "uppercase", marginBottom: 6 } }, alerteOk ? T("Envoi termin\u00e9", "Upload complete", "Env\u00edo terminado", "Invio completato", "\u9001\u4fe1\u5b8c\u4e86", "Upload abgeschlossen") : T("L'envoi a échoué", "Upload failed", "Fallo el envio", "Invio non riuscito", "送信に失敗しました")),
       h("div", { style: { WebkitUserSelect: "text", userSelect: "text", wordBreak: "break-word" } }, alerteA),
       h("button", { onClick: function () { setAlerteA(null); }, style: { marginTop: 11, width: "100%", padding: "10px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる")))) : null);
 }
