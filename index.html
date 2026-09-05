@@ -35567,7 +35567,7 @@ function AlbumsCheval(props) {
     setEnvoiCommentaire(true);
     var r = await ajouterCommentairePhoto(visu, props.cible, texteCommentaire);
     setEnvoiCommentaire(false);
-    if (r && r.error) { bip(T("Commentaire impossible \u2014 table \u00e0 ajouter c\u00f4t\u00e9 base", "Could not comment", "No se pudo comentar", "Commento non riuscito", "\u30b3\u30e1\u30f3\u30c8\u3067\u304d\u307e\u305b\u3093")); return; }
+    if (r && r.error) { bip(T("Commentaire impossible pour l'instant \u2014 es-tu connect\u00e9e ?", "Could not comment \u2014 are you signed in?", "No se pudo comentar \u2014 \u00bfhas iniciado sesi\u00f3n?", "Commento non riuscito \u2014 hai effettuato l'accesso?", "\u30b3\u30e1\u30f3\u30c8\u3067\u304d\u307e\u305b\u3093 \u2014 \u30ed\u30b0\u30a4\u30f3\u3057\u3066\u3044\u307e\u3059\u304b\uff1f", "Kommentar nicht m\u00f6glich \u2014 bist du angemeldet?")); return; }
     setTexteCommentaire(""); chargerLikesEtCommentaires(visu);
   }
   async function supprimerCommentaireVisu(id) {
@@ -35893,7 +35893,7 @@ function AlbumsCheval(props) {
     if (!nm) { setEditNom(null); return; }
     if (editNom === "nouveau") {
       var r = await creerAlbumCheval(props.cible, nm);
-      if (r && r.error) { setEditNom(null); bip(T("Cr\u00e9ation impossible \u2014 table \u00e0 ajouter c\u00f4t\u00e9 base", "Could not create \u2014 missing table", "No se pudo crear", "Creazione non riuscita", "\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093")); return; }
+      if (r && r.error) { setEditNom(null); /* \ud83d\udfe5 05/09 (Blandine, test dans Safari sans session) : le message disait « table a ajouter cote base » sur N IMPORTE QUELLE erreur, y compris « pas connectee ». Il datait d une epoque ou la table n existait pas, et faisait croire a un probleme de base la ou il n y en avait aucun. `creerAlbumCheval` renvoie deja la vraie raison : on la lit. */ bip((String(r.error) === "Pas connect\u00e9") ? T("Tu n'es pas connect\u00e9e \u2014 connecte-toi pour cr\u00e9er un album.", "You're not signed in \u2014 sign in to create an album.", "No has iniciado sesi\u00f3n \u2014 inicia sesi\u00f3n para crear un \u00e1lbum.", "Non hai effettuato l'accesso \u2014 accedi per creare un album.", "\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u3044\u307e\u305b\u3093 \u2014 \u30a2\u30eb\u30d0\u30e0\u3092\u4f5c\u6210\u3059\u308b\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Du bist nicht angemeldet \u2014 melde dich an, um ein Album zu erstellen.") : T("Cr\u00e9ation impossible pour l'instant \u2014 r\u00e9essaie.", "Could not create right now \u2014 try again.", "No se pudo crear ahora \u2014 reint\u00e9ntalo.", "Creazione non riuscita \u2014 riprova.", "\u4eca\u306f\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093 \u2014 \u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Erstellen derzeit nicht m\u00f6glich \u2014 versuch es erneut.")); return; }
       setEditNom(null); charger(); if (r && r.data) setOuvert(r.data.id);
     } else {
       var albR = (albums || []).filter(function (x) { return x.id === editNom; })[0];
