@@ -36116,7 +36116,7 @@ function AlbumsCheval(props) {
           h("div", { style: { fontSize: 30, lineHeight: 1, marginBottom: 10, opacity: 0.85 } }, "\ud83d\udcf7"),
           h("div", { style: { fontFamily: C9, fontSize: 15, fontWeight: 700, color: "#EDF2F5", letterSpacing: 0.3 } }, T("Ajoute tes premi\u00e8res photos", "Add your first photos", "A\u00f1ade tus primeras fotos", "Aggiungi le tue prime foto", "\u6700\u521d\u306e\u5199\u771f\u3092\u8ffd\u52a0", "F\u00fcge deine ersten Fotos hinzu")),
           h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#8A99A1", lineHeight: 1.5, marginTop: 6 } }, T("Depuis ta pellicule, tes souvenirs publi\u00e9s, ou une vid\u00e9o.", "From your camera roll, your published memories, or a video.", "Desde tu carrete, tus recuerdos publicados o un v\u00eddeo.", "Dal tuo rullino, dai tuoi ricordi pubblicati o da un video.", "\u30ab\u30e1\u30e9\u30ed\u30fc\u30eb\u3001\u516c\u958b\u6e08\u307f\u306e\u601d\u3044\u51fa\u3001\u307e\u305f\u306f\u52d5\u753b\u304b\u3089\u3002", "Aus deiner Mediathek, deinen ver\u00f6ffentlichten Erinnerungen oder einem Video.")),
-          (albOuvert.__lecture || albOuvert.__auto) ? null : h("button", { onClick: function () { setFeuilleAjout(true); }, style: { marginTop: 16, padding: "12px 26px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen"))),
+          (albOuvert.__lecture || albOuvert.__auto) ? null : h("button", { onClick: function () { try { if (refChampPhotos.current) refChampPhotos.current.click(); } catch (eCv0) { } }, style: { marginTop: 16, padding: "12px 26px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3 } }, "+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen"))),
       albOuvert.__lecture ? null : (albOuvert.__auto ? h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", textAlign: "center", marginTop: 10, lineHeight: 1.5 } }, T("Photos o\u00f9 il/elle est identifi\u00e9(e).", "Photos where tagged.", "Fotos etiquetadas.", "Foto taggate.", "\u30bf\u30b0\u3055\u308c\u305f\u5199\u771f")) : h("div", { style: { display: "flex", flexWrap: premium ? "wrap" : "nowrap", gap: 9, marginTop: 11 } },
         /* ⚠️ 04/09 : le retour a la ligne n est active QUE pour les abonnees.
            La carte d invitation du plan gratuit occupe le meme emplacement ; en
@@ -36189,15 +36189,36 @@ function AlbumsCheval(props) {
             h("div", { style: { fontFamily: M9, fontSize: 11.5, fontWeight: 700, color: tnT, marginTop: 4 } },
               T("D\u00e9couvrir Hype+ \u203a", "Discover Hype+ \u203a", "Descubrir Hype+ \u203a", "Scopri Hype+ \u203a", "Hype+ \u3092\u898b\u308b \u203a", "Hype+ entdecken \u203a"))))
           : null,
-        /* \u2500\u2500 05/09 (maquette validee, point 2) \u2500\u2500 UN SEUL BOUTON AJOUTER.
-           Les trois boutons (Souvenirs publies / Ma phototheque / Video) tenaient
-           sur une seule rangee, serres, et se faisaient bousculer par le decompte
-           video. Ils passent dans une feuille qui monte du bas (plus bas dans ce
-           fichier), ou chacun garde EXACTEMENT son declencheur d origine.
-           \u26a0\ufe0f Le decompte Premium et la carte Hype+ juste au-dessus ne bougent
-           pas d un pixel : ils restent les premiers enfants de cette rangee. */
-        h("button", { onClick: function () { setFeuilleAjout(true); }, disabled: envoiCours, style: { width: "100%", padding: "14px 4px", borderRadius: 999, border: "none", background: envoiCours ? "rgba(255,255,255,0.10)" : "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: envoiCours ? "#8A99A1" : "#04252A", fontSize: 13.5, fontWeight: 800, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, letterSpacing: 0.3 } },
-          envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : ("+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")))))) : null,
+        /* \ud83d\udfe5 05/09 \u2014 RETOUR AUX TROIS BOUTONS D ORIGINE.
+           La feuille du bas a ete tentee TROIS FOIS dans la meme nuit (champ dans
+           un <label> a l interieur du calque, puis champ sorti du calque et
+           appele par .click()). A chaque fois, Blandine : « je ne peux toujours
+           pas selectionner de video ». Un <input type="file"> declenche depuis
+           un calque detache ne tient pas sur iOS, et je n ai aucun moyen de le
+           tester moi-meme. On revient au code EPROUVE, copie a l identique
+           depuis 9a658a63f537b777ecf6f56d929b46f5.
+           Tout le reste de la refonte est conserve : bandeau de couverture,
+           menu « ... », album vide, defilement, visionneuse detachee.
+           \u26a0\ufe0f NE PAS RETENTER la feuille sans pouvoir la tester en vrai. */
+        h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
+        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+          /* 03/09 : le POURCENTAGE pendant l'envoi d'une video. Un envoi de trois
+             minutes sans progression passe pour un plantage. */
+          envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
+          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } })),
+        /* 27/08 soir : BOUTON VIDEO SEPARE, ajoute A COTE — le bouton Ma phototheque ci-dessus
+           reste A L IDENTIQUE (multi-selection photos ET videos intacte, rien retire, rien
+           casse). Sur certains iPhones apres un passage en arriere-plan, le bouton de
+           validation du selecteur natif iOS reste inerte (bug WebKit connu des PWA,
+           bugs.webkit.org #238318 : popovers systeme -- select/date/fichier -- restent
+           bloques tant que l'app n'a pas ete fermee depuis le multitache). Ce bouton-ci,
+           en video/* SEUL et SANS multiple, evite ce bouton de validation : toucher la
+           video dans le selecteur la choisit et referme le selecteur tout de suite, sans
+           confirmation separee -- une video a la fois, a essayer quand le bouton
+           phototheque coince sur une video. */
+        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+          envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
+          h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "20px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", flexDirection: "column", alignItems: "center", gap: 13 } }, /* 28/08 : mascotte repassee en colonne, bien plus grosse (demande Blandine : \u00ab je l'aurais vue plus grosse, comme la taille du cercle violet, au milieu \u00bb) + texte en BLANC en dessous pour qu'on le voie bien */
         h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 220, height: 220, flex: "0 0 auto", borderRadius: "50%", objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", { style: { textAlign: "center" } },
@@ -36219,29 +36240,9 @@ function AlbumsCheval(props) {
        SEUL et SANS multiple : c est ce qui evite le bouton de validation du
        selecteur iOS reste inerte apres un passage en arriere-plan
        (bug WebKit #238318). Ne pas le fusionner avec la phototheque. */
-    (feuilleAjout && albOuvert && !albOuvert.__lecture && !albOuvert.__auto) ? portail(h("div", { onClick: function () { setFeuilleAjout(false); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
-      h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, borderRadius: "22px 22px 0 0", border: "1px solid " + tA(0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
-        h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 4 } }, T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen")),
-        h("div", { style: { fontFamily: M9, fontSize: 11, color: "#8A99A1", textAlign: "center", marginBottom: 14, lineHeight: 1.5 } }, albOuvert.nom),
-        h("div", { onClick: function () { setFeuilleAjout(false); ouvrirSelection(albOuvert); }, role: "button", style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: "pointer", marginBottom: 9 } },
-          h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\u2728"),
-          h("div", { style: { minWidth: 0, flex: 1 } },
-            h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f\u306e\u601d\u3044\u51fa", "Ver\u00f6ffentlichte Erinnerungen")),
-            h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("Ce que tu as d\u00e9j\u00e0 partag\u00e9 sur Hype.", "What you already shared on Hype.", "Lo que ya compartiste en Hype.", "Ci\u00f2 che hai gi\u00e0 condiviso su Hype.", "Hype \u3067\u5171\u6709\u6e08\u307f\u306e\u3082\u306e\u3002", "Was du bereits auf Hype geteilt hast."))),
-          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
-        h("div", { role: "button", onClick: function () { try { if (refChampPhotos.current) refChampPhotos.current.click(); } catch (eCl) { } }, style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer", marginBottom: 9 } },
-          h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\ud83d\uddbc"),
-          h("div", { style: { minWidth: 0, flex: 1 } },
-            h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea", "Meine Mediathek")),
-            h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("Photos et vid\u00e9os de ton t\u00e9l\u00e9phone, plusieurs \u00e0 la fois.", "Photos and videos from your phone, several at once.", "Fotos y v\u00eddeos de tu tel\u00e9fono, varios a la vez.", "Foto e video dal telefono, anche pi\u00f9 insieme.", "\u7aef\u672b\u306e\u5199\u771f\u3068\u52d5\u753b\u3092\u307e\u3068\u3081\u3066\u3002", "Fotos und Videos von deinem Telefon, mehrere auf einmal."))),
-          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
-        h("div", { role: "button", onClick: function () { try { if (refChampVideo.current) refChampVideo.current.click(); } catch (eCv) { } }, style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer" } },
-          h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\ud83c\udfac"),
-          h("div", { style: { minWidth: 0, flex: 1 } },
-            h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Une vid\u00e9o", "One video", "Un v\u00eddeo", "Un video", "\u52d5\u753b\u3092 1 \u672c", "Ein Video")),
-            h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("\u00c0 essayer si la phototh\u00e8que bloque sur une vid\u00e9o. 3 min max.", "Try this if the library gets stuck on a video. 3 min max.", "Prueba esto si la galer\u00eda se atasca con un v\u00eddeo. 3 min m\u00e1x.", "Prova qui se la galleria si blocca su un video. Max 3 min.", "\u30e9\u30a4\u30d6\u30e9\u30ea\u304c\u52d5\u753b\u3067\u6b62\u307e\u308b\u3068\u304d\u306b\u3002\u6700\u5927 3 \u5206\u3002", "Versuch das, wenn die Mediathek bei einem Video h\u00e4ngt. Max. 3 Min."))),
-          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
-        h("button", { onClick: function () { setFeuilleAjout(false); }, style: { marginTop: 14, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen"))))) : null,
+    /* La feuille « Ajouter » a ete retiree le 05/09 : voir le commentaire des trois
+       boutons plus haut. Les deux champs de fichier juste au-dessus restent, ils sont
+       ceux d origine. */
     /* Le « ... » du bandeau : ce que portaient les rondelles d avant, plus
        « Identifier l album » qui vivait tout en bas du panneau (demande de
        Blandine, 05/09). Aucune de ces actions n a change. */
