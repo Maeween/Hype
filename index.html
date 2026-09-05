@@ -35520,6 +35520,17 @@ function AlbumsCheval(props) {
      Le panneau se signale maintenant tout seul : a l ouverture, l ecran vient
      jusqu a lui. Purement visuel, aucune donnee touchee. */
   var refPanneauAlb = React.useRef(null);
+  /* \ud83d\udfe5 05/09 \u2014 LES CHAMPS DE FICHIER NE VIVENT PLUS DANS LA FEUILLE.
+     Un <input type="file"> cache dans un <label>, lui-meme dans un calque
+     DETACHE vers document.body, ne declenchait plus le selecteur sur iOS :
+     « la j arrive plus du tout a selectionner une video, il se passe rien ».
+     Les deux champs sont donc rendus dans l arbre normal du composant, et les
+     lignes de la feuille appellent `.click()` dessus \u2014 appel SYNCHRONE dans le
+     geste de l utilisatrice, ce qu iOS exige. Le <label> a disparu.
+     \u26a0\ufe0f Le champ Video reste separe, en video/* SEUL et SANS multiple
+     (bug WebKit #238318). Ne pas fusionner les deux. */
+  var refChampPhotos = React.useRef(null);
+  var refChampVideo = React.useRef(null);
   var fajSt = React.useState(false); var feuilleAjout = fajSt[0], setFeuilleAjout = fajSt[1];
   var memSt = React.useState(null); var membres = memSt[0], setMembres = memSt[1];
   var lnSt = React.useState(false); var lienCopie = lnSt[0], setLienCopie = lnSt[1];
@@ -35763,6 +35774,16 @@ function AlbumsCheval(props) {
     }
     if (!fichiersUtiles.length && !videosAEnvoyer.length) return; /* 27/08 : rien a envoyer — inutile d ouvrir un cycle d envoi pour rien */
     setEnvoiCours(true);
+    /* 🟥 05/09 (Blandine : « la j arrive plus du tout a selectionner une video,
+       il se passe rien ») — L APPLI SE VERROUILLAIT TOUTE SEULE.
+       `envoiCours` etait leve ici et abaisse a UN SEUL endroit, en fin de parcours.
+       Entre les deux : `alerte(...)`, la boucle des photos, et surtout
+       `await majAlbumCheval(...)`, AUCUN sous `finally`. La moindre exception sur
+       ce trajet laissait `envoiCours` a true POUR TOUJOURS — et comme les trois
+       boutons d ajout portent `disabled: envoiCours`, plus rien ne repondait
+       jusqu au rechargement de la page. Un envoi rate verrouillait l album.
+       Le `finally` ci-dessous garantit la fermeture, quoi qu il arrive. */
+    try {
     var urls = (alb.photos || []).slice();
     var rate = 0;
     var raisonRatee = null; /* 26/08 : la VRAIE raison de l'echec, plus un simple compte muet — un fichier trop lourd ou un type refuse doit se voir */
@@ -35826,6 +35847,12 @@ function AlbumsCheval(props) {
       alerte(msgDb); /* 27/08 soir : reste affiche jusqu'a fermeture */
     }
     if (!(rM && rM.error)) charger();
+    } finally {
+      /* Quoi qu il arrive au-dessus : on rend la main. Un album verrouille est
+         pire qu un envoi rate — l envoi rate se voit, le verrou ne se voit pas. */
+      setEnvoiCours(false); setEnvoiPct(0);
+      try { if (!premium) rafraichirQuota(); } catch (eRq) { }
+    }
   }
   /* 02/08 : une bascule public/prive avait ete ecrite ici puis RETIREE — le systeme existait
      deja (visibilite public / partage / prive, avec icone, libelle et panneau de membres dans
@@ -36176,7 +36203,12 @@ function AlbumsCheval(props) {
         h("div", { style: { textAlign: "center" } },
           h("div", { style: { fontSize: 15, fontWeight: 700, color: "#FFFFFF", fontFamily: M9 } }, T("Envoi en cours…", "Uploading…", "Enviando…", "Invio…", "送信中…")),
           h("div", { style: { fontSize: 11, color: "#FFFFFF", lineHeight: 1.5, marginTop: 5, fontFamily: M9 } }, T("Reste sur l'app, écran allumé, jusqu'à la fin — sur iPhone, verrouiller l'écran interrompt l'envoi sans prévenir.", "Stay on the app with the screen on until it finishes — on iPhone, locking the screen interrupts it without warning.", "Permanece en la app con la pantalla encendida — en iPhone, bloquear la pantalla lo interrumpe.", "Resta sull'app con lo schermo acceso — su iPhone, bloccare lo schermo lo interrompe.", "終わるまでアプリを開いたままにしてください。画面ロックで中断されます。")))) : null,
-      /* 05/09 : « Identifier l'album » n'est plus un bouton isole en bas du
+      /* Les deux champs de fichier, dans l arbre NORMAL du composant (jamais dans
+       un calque detache). Les lignes de la feuille les declenchent par .click().
+       Memes `accept`, meme `multiple`, memes `onChange` qu avant la refonte. */
+    h("input", { ref: refChampPhotos, type: "file", accept: "image/*,video/*", multiple: true, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length && albOuvert) importerFichiers(albOuvert.id, fs); setTimeout(function () { setFeuilleAjout(false); }, 0); } }),
+    h("input", { ref: refChampVideo, type: "file", accept: "video/*", style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length && albOuvert) importerFichiers(albOuvert.id, fsv); setTimeout(function () { setFeuilleAjout(false); }, 0); } }),
+    /* 05/09 : « Identifier l'album » n'est plus un bouton isole en bas du
          panneau \u2014 il est passe dans le menu « ... » du bandeau, avec Renommer,
          Visibilite et Supprimer. Meme appel (ouvrirTagAlbum), meme feuille. */
     /* \u2500\u2500 05/09 (maquette validee, points 2 et 3) \u2500\u2500 LES DEUX FEUILLES DU BAS.
@@ -36197,20 +36229,18 @@ function AlbumsCheval(props) {
             h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f\u306e\u601d\u3044\u51fa", "Ver\u00f6ffentlichte Erinnerungen")),
             h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("Ce que tu as d\u00e9j\u00e0 partag\u00e9 sur Hype.", "What you already shared on Hype.", "Lo que ya compartiste en Hype.", "Ci\u00f2 che hai gi\u00e0 condiviso su Hype.", "Hype \u3067\u5171\u6709\u6e08\u307f\u306e\u3082\u306e\u3002", "Was du bereits auf Hype geteilt hast."))),
           h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
-        h("label", { style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer", marginBottom: 9 } },
+        h("div", { role: "button", onClick: function () { try { if (refChampPhotos.current) refChampPhotos.current.click(); } catch (eCl) { } }, style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer", marginBottom: 9 } },
           h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\ud83d\uddbc"),
           h("div", { style: { minWidth: 0, flex: 1 } },
             h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea", "Meine Mediathek")),
             h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("Photos et vid\u00e9os de ton t\u00e9l\u00e9phone, plusieurs \u00e0 la fois.", "Photos and videos from your phone, several at once.", "Fotos y v\u00eddeos de tu tel\u00e9fono, varios a la vez.", "Foto e video dal telefono, anche pi\u00f9 insieme.", "\u7aef\u672b\u306e\u5199\u771f\u3068\u52d5\u753b\u3092\u307e\u3068\u3081\u3066\u3002", "Fotos und Videos von deinem Telefon, mehrere auf einmal."))),
-          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a"),
-          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } /* \ud83d\udfe5 05/09 matin (Blandine : « faut faire deux fois ») \u2014 ORDRE CORRIGE. La feuille etait refermee AVANT de passer les fichiers : fermer demonte le <label> et son <input> pendant que Safari finit encore de livrer la selection, et le premier essai se perdait. On remet d abord les fichiers, on referme au tour suivant. */ if (fs.length) importerFichiers(albOuvert.id, fs); setTimeout(function () { setFeuilleAjout(false); }, 0); } })),
-        h("label", { style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer" } },
+          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
+        h("div", { role: "button", onClick: function () { try { if (refChampVideo.current) refChampVideo.current.click(); } catch (eCv) { } }, style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + tA(0.3), background: tA(0.05), cursor: envoiCours ? "default" : "pointer" } },
           h("span", { style: { fontSize: 21, flexShrink: 0, width: 26, textAlign: "center" } }, "\ud83c\udfac"),
           h("div", { style: { minWidth: 0, flex: 1 } },
             h("div", { style: { fontFamily: M9, fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, T("Une vid\u00e9o", "One video", "Un v\u00eddeo", "Un video", "\u52d5\u753b\u3092 1 \u672c", "Ein Video")),
             h("div", { style: { fontFamily: M9, fontSize: 10.5, color: "#8A99A1", marginTop: 2, lineHeight: 1.4 } }, T("\u00c0 essayer si la phototh\u00e8que bloque sur une vid\u00e9o. 3 min max.", "Try this if the library gets stuck on a video. 3 min max.", "Prueba esto si la galer\u00eda se atasca con un v\u00eddeo. 3 min m\u00e1x.", "Prova qui se la galleria si blocca su un video. Max 3 min.", "\u30e9\u30a4\u30d6\u30e9\u30ea\u304c\u52d5\u753b\u3067\u6b62\u307e\u308b\u3068\u304d\u306b\u3002\u6700\u5927 3 \u5206\u3002", "Versuch das, wenn die Mediathek bei einem Video h\u00e4ngt. Max. 3 Min."))),
-          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a"),
-          h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } /* Meme correction que la phototheque ci-dessus : les fichiers d abord, la fermeture de la feuille ensuite. */ if (fsv.length) importerFichiers(albOuvert.id, fsv); setTimeout(function () { setFeuilleAjout(false); }, 0); } })),
+          h("span", { style: { color: tnT, fontSize: 17, flexShrink: 0 } }, "\u203a")),
         h("button", { onClick: function () { setFeuilleAjout(false); }, style: { marginTop: 14, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen"))))) : null,
     /* Le « ... » du bandeau : ce que portaient les rondelles d avant, plus
        « Identifier l album » qui vivait tout en bas du panneau (demande de
