@@ -35639,11 +35639,76 @@ function AlbumsCheval(props) {
     document.addEventListener("visibilitychange", surVisibilite);
     return function () { document.removeEventListener("visibilitychange", surVisibilite); };
   }, []);
+  /* \ud83d\udfe5 05/09 (Blandine, fin de journee : « aucun message d erreur, je les selectionne
+     et il se passe juste rien », « elles chargent meme pas »). Les gestionnaires de
+     fichiers de l album etaient MUETS quand le selecteur rendait zero fichier :
+     `if (fs.length) importerFichiers(...)`, et rien sinon. Sur iOS, apres « Ajouter »,
+     le selecteur peut se refermer sans transmettre (conversion HEVC echouee, coche
+     non prise) : c est exactement « il ne se passe rien ». Desormais on DIT ce qui
+     est arrive, dans les deux sens : zero fichier -> message ; N fichiers -> nom et
+     poids du premier, pour prouver que l app les a recus avant l envoi. */
+  function direFichiersRecus(fs, quoi) {
+    try {
+      if (!fs || !fs.length) {
+        bip(T("Le s\u00e9lecteur s'est referm\u00e9 sans transmettre de fichier. Rien n'a \u00e9t\u00e9 envoy\u00e9. Sur iOS \u00e7a arrive quand la conversion de la vid\u00e9o \u00e9choue : r\u00e9essaie, ou envoie-la depuis Ma phototh\u00e8que.", "The picker closed without handing over a file. Nothing was sent.", "El selector se cerr\u00f3 sin entregar el archivo. No se envi\u00f3 nada.", "Il selettore si \u00e8 chiuso senza consegnare il file. Nulla \u00e8 stato inviato.", "\u30d5\u30a1\u30a4\u30eb\u304c\u6e21\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Die Auswahl wurde ohne Datei geschlossen. Nichts gesendet."), 7000);
+        return;
+      }
+      var f0 = fs[0]; var mo = f0 && f0.size ? (Math.round(f0.size / 1048576 * 10) / 10) + " Mo" : "";
+      bip(T("Fichier re\u00e7u", "File received", "Archivo recibido", "File ricevuto", "\u30d5\u30a1\u30a4\u30eb\u53d7\u9818", "Datei erhalten") + " : " + ((f0 && f0.name) || "?") + (mo ? (" \u00b7 " + mo) : "") + (fs.length > 1 ? (" (+" + (fs.length - 1) + ")") : "") + " \u2014 " + T("envoi en cours\u2026", "uploading\u2026", "enviando\u2026", "invio\u2026", "\u9001\u4fe1\u4e2d\u2026", "wird gesendet\u2026"), 4000);
+    } catch (eDf) { }
+  }
   function prevenirSelecteurIos() {
+    /* \ud83d\udfe5 05/09 15h46 \u2014 LA CLE DES QUATRE JOURS. Blandine : « au bout de 10 mn y en a
+       une qui vient de partir en silence d un coup ». L envoi MARCHE. Ce qui prenait dix
+       minutes sans rien dire, c est iOS AVANT de rendre le fichier : quand la photothèque
+       est en « Optimiser le stockage », la video est dans iCloud et doit etre
+       TELECHARGEE en entier a l appui sur « Ajouter » ; s y ajoute souvent une conversion
+       HEVC -> H.264. En app installee, iOS n affiche AUCUNE progression pour ca. L app,
+       elle, n a encore rien recu : l evenement `change` n arrive qu a la fin. Elle ne
+       peut donc rien afficher d elle-meme \u2014 sauf PREVENIR au moment ou le selecteur
+       s ouvre. C est ce que fait la ligne ci-dessous, pour tout le monde, a chaque fois. */
+    bip(T("Apr\u00e8s \u00ab Ajouter \u00bb, iOS pr\u00e9pare la vid\u00e9o (t\u00e9l\u00e9chargement iCloud, conversion). \u00c7a peut prendre plusieurs minutes SANS rien afficher. Ne quitte pas l'app : l'envoi d\u00e9marre tout seul ensuite.", "After \u201cAdd\u201d, iOS prepares the video (iCloud download, conversion). It can take several minutes with NO feedback. Stay in the app: the upload starts by itself afterwards.", "Tras \u00abA\u00f1adir\u00bb, iOS prepara el v\u00eddeo (descarga iCloud, conversi\u00f3n). Puede tardar varios minutos SIN mostrar nada. No salgas de la app.", "Dopo \u00abAggiungi\u00bb, iOS prepara il video (download iCloud, conversione). Pu\u00f2 volerci qualche minuto SENZA alcun segnale. Non uscire dall'app.", "\u300c\u8ffd\u52a0\u300d\u306e\u5f8c\u3001iOS \u304c\u52d5\u753b\u3092\u6e96\u5099\u3057\u307e\u3059\uff08iCloud \u304b\u3089\u306e\u30c0\u30a6\u30f3\u30ed\u30fc\u30c9\u3001\u5909\u63db\uff09\u3002\u4f55\u3082\u8868\u793a\u3055\u308c\u305a\u306b\u6570\u5206\u304b\u304b\u308b\u3053\u3068\u304c\u3042\u308a\u307e\u3059\u3002\u30a2\u30d7\u30ea\u3092\u96e2\u308c\u306a\u3044\u3067\u304f\u3060\u3055\u3044\u3002", "Nach \u201eHinzuf\u00fcgen\u201c bereitet iOS das Video vor (iCloud-Download, Konvertierung). Das kann mehrere Minuten OHNE Anzeige dauern. Bleib in der App: der Upload startet danach von selbst."), 12000);
     if (!refRevenuVeille.current) return;
     bip(T("Si le bouton \u00ab Ajouter \u00bb n'appara\u00eet pas dans le s\u00e9lecteur, c'est un bug d'iOS apr\u00e8s une mise en veille : ferme compl\u00e8tement Hype et relance-la.", "If the \u201cAdd\u201d button doesn't show in the picker, it's an iOS bug after standby: fully close Hype and relaunch it.", "Si el bot\u00f3n \u00abA\u00f1adir\u00bb no aparece en el selector, es un fallo de iOS tras el reposo: cierra Hype por completo y vuelve a abrirla.", "Se il pulsante \u00abAggiungi\u00bb non compare nel selettore, \u00e8 un bug di iOS dopo lo standby: chiudi del tutto Hype e riaprila.", "\u30bb\u30ec\u30af\u30bf\u30fc\u306b\u300c\u8ffd\u52a0\u300d\u304c\u8868\u793a\u3055\u308c\u306a\u3044\u5834\u5408\u306f\u3001\u30b9\u30ea\u30fc\u30d7\u5f8c\u306e iOS \u306e\u4e0d\u5177\u5408\u3067\u3059\u3002Hype \u3092\u5b8c\u5168\u306b\u7d42\u4e86\u3057\u3066\u518d\u8d77\u52d5\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Wenn im Auswahlfenster kein \u201eHinzuf\u00fcgen\u201c erscheint, ist das ein iOS-Fehler nach dem Standby: schlie\u00dfe Hype vollst\u00e4ndig und starte es neu."), 7000);
   }
   var fajSt = React.useState(false); var feuilleAjout = fajSt[0], setFeuilleAjout = fajSt[1];
+  /* \ud83d\udfe5 05/09 (Blandine : « lieu sur photo et album, vas-y »). Un LIEU libre,
+     texte court, sur un album (colonne albums_cheval.lieu) et sur une photo
+     (colonne photo_dates.lieu, meme cle photo_url que l annee). SQL a passer AVANT
+     (fichier lieu.sql) : sans les colonnes, l ecriture rend une erreur qui s affiche,
+     rien ne casse. `editLieu` = { type: "album"|"photo", cle, valeur }. */
+  var elSt = React.useState(null); var editLieu = elSt[0], setEditLieu = elSt[1];
+  var lieuTxtSt = React.useState(""); var lieuTxt = lieuTxtSt[0], setLieuTxt = lieuTxtSt[1];
+  var lieuVisuSt = React.useState(""); var lieuVisu = lieuVisuSt[0], setLieuVisu = lieuVisuSt[1];
+  async function chargerLieuPhoto(url) {
+    try {
+      if (!url || typeof supa === "undefined" || !supa) { setLieuVisu(""); return; }
+      var r = await supa.from("photo_dates").select("lieu").eq("photo_url", String(url).split("#")[0]).limit(1);
+      if (r && r.error) { setLieuVisu(""); return; }
+      setLieuVisu((r && r.data && r.data[0] && r.data[0].lieu) || "");
+    } catch (eLp) { setLieuVisu(""); }
+  }
+  async function sauverLieu() {
+    if (!editLieu) return;
+    var v = (lieuTxt || "").trim().slice(0, 60);
+    try {
+      if (editLieu.type === "album") {
+        var rA = await majAlbumCheval(editLieu.cle, { lieu: v || null });
+        if (rA && rA.error) { bip(T("Lieu non enregistr\u00e9 \u2014 la colonne \u00ab lieu \u00bb manque peut-\u00eatre c\u00f4t\u00e9 base.", "Place not saved \u2014 the \u201clieu\u201d column may be missing.", "Lugar no guardado.", "Luogo non salvato.", "\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Ort nicht gespeichert."), 4500); return; }
+        charger();
+      } else {
+        var u = await utilisateurActuel(); if (!u) { bip(T("Tu n'es pas connect\u00e9e.", "You're not signed in.", "No has iniciado sesi\u00f3n.", "Non hai effettuato l'accesso.", "\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u3044\u307e\u305b\u3093\u3002", "Du bist nicht angemeldet.")); return; }
+        var cleP = String(editLieu.cle).split("#")[0];
+        var rE = await supa.from("photo_dates").select("photo_url").eq("photo_url", cleP).limit(1);
+        var rP = (rE && rE.data && rE.data.length)
+          ? await supa.from("photo_dates").update({ lieu: v || null }).eq("photo_url", cleP)
+          : await supa.from("photo_dates").insert({ photo_url: cleP, lieu: v || null, user_id: u.id, source: "manuel" });
+        if (rP && rP.error) { bip(T("Lieu non enregistr\u00e9 \u2014 la colonne \u00ab lieu \u00bb manque peut-\u00eatre c\u00f4t\u00e9 base.", "Place not saved \u2014 the \u201clieu\u201d column may be missing.", "Lugar no guardado.", "Luogo non salvato.", "\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Ort nicht gespeichert."), 4500); return; }
+        setLieuVisu(v);
+      }
+    } catch (eSl) { bip(String(eSl)); return; }
+    setEditLieu(null);
+  }
   var memSt = React.useState(null); var membres = memSt[0], setMembres = memSt[1];
   var lnSt = React.useState(false); var lienCopie = lnSt[0], setLienCopie = lnSt[1];
   var pdSt = React.useState(null); var propositions = pdSt[0], setPropositions = pdSt[1];
@@ -35661,11 +35726,11 @@ function AlbumsCheval(props) {
     chargerLikesPhoto(u).then(function (r) { setLikesVisu({ count: r.count || 0, jaiLike: !!r.jaiLike }); }).catch(function () { setLikesVisu({ count: 0, jaiLike: false }); });
     listerCommentairesPhoto(u).then(function (r) { setCommentairesVisu((r && r.data) || []); }).catch(function () { setCommentairesVisu([]); });
   }
-  function ouvrirVisu(liste, u) { setVisuListe((liste || []).slice()); setVisu(u); setPanneauCommentaires(false); setTexteCommentaire(""); chargerLikesEtCommentaires(u); }
+  function ouvrirVisu(liste, u) { setVisuListe((liste || []).slice()); setVisu(u); setPanneauCommentaires(false); setTexteCommentaire(""); chargerLikesEtCommentaires(u); chargerLieuPhoto(u); }
   function naviguerVisu(pas) {
     var l = visuListe || []; if (l.length < 2) return; var ix = l.indexOf(visu); if (ix < 0) return;
     var suivant = l[((ix + pas) % l.length + l.length) % l.length];
-    setVisu(suivant); setPanneauCommentaires(false); setTexteCommentaire(""); chargerLikesEtCommentaires(suivant);
+    setVisu(suivant); setPanneauCommentaires(false); setTexteCommentaire(""); chargerLikesEtCommentaires(suivant); chargerLieuPhoto(suivant);
   }
   async function basculerLikeVisu() {
     if (!visu) return;
@@ -36190,7 +36255,7 @@ function AlbumsCheval(props) {
           h("div", { style: { position: "absolute", left: 14, right: 14, bottom: 11, zIndex: 2 } },
             h("div", { style: { fontFamily: C9, fontSize: 18, fontWeight: 700, color: "#F7FAFC", letterSpacing: 0.3, lineHeight: 1.15, textShadow: "0 2px 12px rgba(0,0,0,0.6)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, albOuvert.nom),
             h("div", { style: { fontFamily: M9, fontSize: 10.5, fontWeight: 600, color: "rgba(237,242,245,0.82)", marginTop: 4, letterSpacing: 0.2, textShadow: "0 1px 8px rgba(0,0,0,0.6)" } },
-              nbSouvB + " " + (nbSouvB === 1 ? T("souvenir", "memory", "recuerdo", "ricordo", "\u601d\u3044\u51fa", "Erinnerung") : T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa", "Erinnerungen")) + " \u00b7 " + libPartage)));
+              nbSouvB + " " + (nbSouvB === 1 ? T("souvenir", "memory", "recuerdo", "ricordo", "\u601d\u3044\u51fa", "Erinnerung") : T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa", "Erinnerungen")) + " \u00b7 " + libPartage + (albOuvert.lieu ? (" \u00b7 \ud83d\udccd " + albOuvert.lieu) : ""))));
       })(),
       reglagesA ? h("div", { style: { margin: "0 0 14px", padding: "13px 12px", borderRadius: 14, border: "1px solid " + tA(0.28), background: "rgba(255,255,255,0.02)" } },
         h("div", { style: { fontFamily: M9, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: tnT, fontWeight: 700, marginBottom: 10 } }, T("Visibilit\u00e9 de l'album", "Album visibility", "Visibilidad", "Visibilit\u00e0", "\u516c\u958b\u7bc4\u56f2")),
@@ -36344,7 +36409,7 @@ function AlbumsCheval(props) {
           /* 03/09 : le POURCENTAGE pendant l'envoi d'une video. Un envoi de trois
              minutes sans progression passe pour un plantage. */
           envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
-          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length) importerFichiers(albOuvert.id, fs); } })),
+          h("input", { type: "file", accept: "image/*,video/*", multiple: true, disabled: envoiCours, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } direFichiersRecus(fs, "photos"); if (fs.length) importerFichiers(albOuvert.id, fs); } })),
         /* 27/08 soir : BOUTON VIDEO SEPARE, ajoute A COTE — le bouton Ma phototheque ci-dessus
            reste A L IDENTIQUE (multi-selection photos ET videos intacte, rien retire, rien
            casse). Sur certains iPhones apres un passage en arriere-plan, le bouton de
@@ -36357,7 +36422,7 @@ function AlbumsCheval(props) {
            phototheque coince sur une video. */
         h("label", { onClick: prevenirSelecteurIos, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
-          h("input", { type: "file", accept: "video/*", multiple: true, /* \ud83d\udfe5 05/09 (Blandine, captures 11h16-11h19) : le mode SIMPLE (sans multiple) ouvre un selecteur iOS SANS bouton de validation — on coche, rien ne confirme. Le mode MULTI (celui de « Ma phototheque ») l a, en haut a droite. Le 27/08 avait fait exactement l inverse en croyant que le multi coincait : c etait faux, et ca a coute une semaine. `importerFichiers` recoit deja une liste, rien d autre ne change. */ disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
+          h("input", { type: "file", accept: "video/*", multiple: true, /* \ud83d\udfe5 05/09 (Blandine, captures 11h16-11h19) : le mode SIMPLE (sans multiple) ouvre un selecteur iOS SANS bouton de validation — on coche, rien ne confirme. Le mode MULTI (celui de « Ma phototheque ») l a, en haut a droite. Le 27/08 avait fait exactement l inverse en croyant que le multi coincait : c etait faux, et ca a coute une semaine. `importerFichiers` recoit deja une liste, rien d autre ne change. */ disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } direFichiersRecus(fsv, "video"); if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "20px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", flexDirection: "column", alignItems: "center", gap: 13 } }, /* 28/08 : mascotte repassee en colonne, bien plus grosse (demande Blandine : \u00ab je l'aurais vue plus grosse, comme la taille du cercle violet, au milieu \u00bb) + texte en BLANC en dessous pour qu'on le voie bien */
         h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 220, height: 220, flex: "0 0 auto", borderRadius: "50%", objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", { style: { textAlign: "center" } },
@@ -36366,8 +36431,8 @@ function AlbumsCheval(props) {
       /* Les deux champs de fichier, dans l arbre NORMAL du composant (jamais dans
        un calque detache). Les lignes de la feuille les declenchent par .click().
        Memes `accept`, meme `multiple`, memes `onChange` qu avant la refonte. */
-    h("input", { ref: refChampPhotos, type: "file", accept: "image/*,video/*", multiple: true, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } if (fs.length && albOuvert) importerFichiers(albOuvert.id, fs); setTimeout(function () { setFeuilleAjout(false); }, 0); } }),
-    h("input", { ref: refChampVideo, type: "file", accept: "video/*", multiple: true, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length && albOuvert) importerFichiers(albOuvert.id, fsv); setTimeout(function () { setFeuilleAjout(false); }, 0); } }),
+    h("input", { ref: refChampPhotos, type: "file", accept: "image/*,video/*", multiple: true, style: { display: "none" }, onChange: function (eU) { var fs = Array.prototype.slice.call((eU.target && eU.target.files) || []); try { eU.target.value = ""; } catch (eV9) { } direFichiersRecus(fs, "photos"); if (fs.length && albOuvert) importerFichiers(albOuvert.id, fs); setTimeout(function () { setFeuilleAjout(false); }, 0); } }),
+    h("input", { ref: refChampVideo, type: "file", accept: "video/*", multiple: true, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } direFichiersRecus(fsv, "video"); if (fsv.length && albOuvert) importerFichiers(albOuvert.id, fsv); setTimeout(function () { setFeuilleAjout(false); }, 0); } }),
     /* 05/09 : « Identifier l'album » n'est plus un bouton isole en bas du
          panneau \u2014 il est passe dans le menu « ... » du bandeau, avec Renommer,
          Visibilite et Supprimer. Meme appel (ouvrirTagAlbum), meme feuille. */
@@ -36393,6 +36458,7 @@ function AlbumsCheval(props) {
           var entrees = [
             { ic: "\u270E", lib: T("Renommer", "Rename", "Renombrar", "Rinomina", "\u540d\u524d\u3092\u5909\u66f4", "Umbenennen"), sous: null, act: function () { setMenuA(false); setNomLocal(albOuvert.nom); setEditNom(albOuvert.id); } },
             { ic: ((albOuvert.visibilite === "public") ? "\ud83c\udf10" : (albOuvert.visibilite === "partage" ? "\ud83d\udc65" : "\ud83d\udd12")), lib: T("Visibilit\u00e9", "Visibility", "Visibilidad", "Visibilit\u00e0", "\u516c\u958b\u7bc4\u56f2", "Sichtbarkeit"), sous: ((albOuvert.visibilite === "public") ? T("Public", "Public", "P\u00fablico", "Pubblico", "\u516c\u958b", "\u00d6ffentlich") : (albOuvert.visibilite === "partage" ? T("Partag\u00e9", "Shared", "Compartido", "Condiviso", "\u5171\u6709", "Geteilt") : T("Priv\u00e9", "Private", "Privado", "Privato", "\u975e\u516c\u958b", "Privat"))), act: function () { setMenuA(false); setReglagesA(true); chargerMembres(albOuvert.id); } },
+            { ic: "\ud83d\udccd", lib: T("Lieu", "Place", "Lugar", "Luogo", "\u5834\u6240", "Ort"), sous: (albOuvert.lieu || T("Aucun lieu", "No place", "Sin lugar", "Nessun luogo", "\u672a\u8a2d\u5b9a", "Kein Ort")), act: function () { setMenuA(false); setLieuTxt(albOuvert.lieu || ""); setEditLieu({ type: "album", cle: albOuvert.id }); } },
             { ic: "\ud83c\udff7\ufe0f", lib: T("Identifier l'album", "Tag album", "Etiquetar \u00e1lbum", "Tagga l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u30bf\u30b0", "Album identifizieren"), sous: null, act: function () { setMenuA(false); ouvrirTagAlbum(); } },
             { ic: "\ud83d\uddd1", lib: T("Supprimer l'album", "Delete album", "Eliminar \u00e1lbum", "Elimina l'album", "\u30a2\u30eb\u30d0\u30e0\u3092\u524a\u9664", "Album l\u00f6schen"), sous: null, danger: true, act: function () { setMenuA(false); setConfSupA(albOuvert.id); } }
           ];
@@ -36406,6 +36472,13 @@ function AlbumsCheval(props) {
           }));
         })(),
         h("button", { onClick: function () { setMenuA(false); }, style: { marginTop: 14, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"))))) : null,
+    editLieu ? portail(h("div", { onClick: function () { setEditLieu(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 90px) 0 0" } },
+      h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
+        h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, editLieu.type === "album" ? T("Lieu de l'album", "Album place", "Lugar del \u00e1lbum", "Luogo dell'album", "\u30a2\u30eb\u30d0\u30e0\u306e\u5834\u6240", "Ort des Albums") : T("Lieu de la photo", "Photo place", "Lugar de la foto", "Luogo della foto", "\u5199\u771f\u306e\u5834\u6240", "Ort des Fotos")),
+        h("input", { value: lieuTxt, onChange: function (eI) { setLieuTxt(eI.target.value); }, onKeyDown: function (eK) { if (eK.key === "Enter") sauverLieu(); }, onBlur: function () { if (typeof hypeRecalerApresClavier === "function") hypeRecalerApresClavier(); }, maxLength: 60, placeholder: T("Ex. Fontainebleau, Grand Parquet\u2026", "e.g. Fontainebleau\u2026", "Ej. Fontainebleau\u2026", "Es. Fontainebleau\u2026", "\u4f8b\uff1a\u30d5\u30a9\u30f3\u30c6\u30fc\u30cc\u30d6\u30ed\u30fc", "z. B. Fontainebleau\u2026"), style: { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.16)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 14.5, fontFamily: M9, outline: "none" } }),
+        h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+          h("button", { onClick: function () { setEditLieu(null); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
+          h("button", { onClick: sauverLieu, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern")))))) : null,
     editNom ? portail(h("div", { onClick: function () { setEditNom(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 90px) 0 0" } },
       h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "88%", maxWidth: 360, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: C9, fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 12 } }, editNom === "nouveau" ? T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0") : T("Renommer l'album", "Rename album", "Renombrar", "Rinomina", "\u540d\u524d\u3092\u5909\u66f4")),
@@ -36469,7 +36542,11 @@ function AlbumsCheval(props) {
       h("div", { style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", left: 16, zIndex: 10 } },
         h("button", { onClick: function (eT) { eT.stopPropagation(); ouvrirTagA(); }, style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 16px 9px 12px", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, fontFamily: M9, cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.45)" } },
           h("svg", { viewBox: "0 0 24 24", style: { width: 17, height: 17, stroke: "#04252A", strokeWidth: 2, fill: "none", strokeLinecap: "round", strokeLinejoin: "round" } }, h("path", { d: "M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" }), h("line", { x1: "7", y1: "7", x2: "7.01", y2: "7" })),
-          T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0"))),
+          T("Identifier", "Tag", "Etiquetar", "Tagga", "\u30bf\u30b0")),
+        /* 05/09 : le LIEU de la photo, a cote d Identifier. Lecture pour tout le monde,
+           ecriture pour qui gere l album (memes droits que le retrait). */
+        (albOuvert && !(albOuvert.__auto || albOuvert.__lecture)) ? h("button", { onClick: function (eL) { eL.stopPropagation(); setLieuTxt(lieuVisu || ""); setEditLieu({ type: "photo", cle: visu }); }, style: { display: "inline-flex", alignItems: "center", gap: 6, marginLeft: 8, padding: "9px 13px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.28)", background: "rgba(7,8,10,0.55)", color: "#EDF2F5", fontSize: 12.5, fontWeight: 700, fontFamily: M9, cursor: "pointer", maxWidth: 150, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+          "\ud83d\udccd " + (lieuVisu || T("Lieu", "Place", "Lugar", "Luogo", "\u5834\u6240", "Ort"))) : (lieuVisu ? h("span", { style: { display: "inline-flex", alignItems: "center", marginLeft: 8, padding: "9px 13px", borderRadius: 999, background: "rgba(7,8,10,0.55)", color: "#EDF2F5", fontSize: 12.5, fontFamily: M9, maxWidth: 150, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, "\ud83d\udccd " + lieuVisu) : null)),
       h("div", { onClick: function (eB) { eB.stopPropagation(); }, style: { position: "absolute", left: 0, right: 0, bottom: "calc(env(safe-area-inset-bottom) + 18px)", display: "flex", alignItems: "center", gap: 14, padding: "0 18px", zIndex: 5 } },
         h("button", { onClick: basculerLikeVisu, "aria-label": "Like", style: { display: "flex", alignItems: "center", gap: 7, padding: "9px 15px", borderRadius: 999, border: "1px solid " + (likesVisu.jaiLike ? "rgba(240,92,116,0.85)" : "rgba(255,255,255,0.3)"), background: likesVisu.jaiLike ? "rgba(240,92,116,0.16)" : "rgba(7,8,10,0.55)", color: likesVisu.jaiLike ? "#F05C74" : "#EDF2F5", fontSize: 13, fontWeight: 700, fontFamily: M9, cursor: "pointer" } },
           h("span", { style: { fontSize: 16 } }, likesVisu.jaiLike ? "\u2665" : "\u2661"),
