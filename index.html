@@ -39323,15 +39323,15 @@ function EcranCheval() {
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
-        cristal("fil"),
-        h("div", { id: "chapFil", style: { position: "relative" } },
-          h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Le fil", "The feed", "El hilo", "Il filo", "フィード", "Der Feed"))),
-          h("div", { style: { minWidth: 0 }, className: "panFil" },  h("div", { id: "chapFil" }, h(MurHype, { cible: cibleCh, compact: true, rail: true, sansTitre: true, sansListe: true, teinte: teinte, onOuvrirMedia: function (uM2) /* 31/07 soir : momentsSeuls RETIRE — les moments s affichent aussi SANS texte (decision Blandine) */ { try { setVisionneuse(uM2); } catch (eOm2) { } }, onVoirTout: function () { setPanneau("souvenirs"); } })),
-
-
-        /* 30/07: bloc Recompenses (Elite/Exception/Ambassadeur/Crystal) retire a la demande de Blandine */
-        /* 30/07: encart Sellerie retire a la demande de Blandine */)),
+        /* 🟥 05/09 (Blandine : "retire le fil pour l'instant, il y en a un deuxieme sur la
+           page cheval elle-meme") — cet apercu compact du Fil (rail, sur la page d accueil du
+           cheval, AVANT tout onglet) est retire : il faisait doublon avec la page Actualite
+           (le 5e onglet, deja construit le 29/08, volontairement grise "Prochainement" tant que
+           Blandine n a pas decide qui peut publier). Signe qu il n avait plus sa place ici : son
+           lien "Tout le fil" rouvrait l onglet Souvenirs, qui ne montre plus le Fil depuis le
+           29/08 non plus. Rien d autre ne bouge : Souvenirs, Photos, Performances, Videos et la
+           carte Partager sa fiche restent identiques. Le Fil complet (MurHype) et l onglet
+           Actualite existent toujours dans le code, prets pour quand Blandine voudra les ouvrir. */
         /* 25/08 : chapitre Sante & sellerie RETIRE de la fiche (cartes Clinique veterinaire + Sellerie) — decision Blandine ; les ecrans clinique/sellerie restent atteignables depuis leurs autres portes */
         cristal("partage"), h("div", { style: { position: "relative" } }, /* 02/08 : conteneur positionne ajoute — le titre vertical s ancrait a un ancetre lointain et se posait par-dessus le titre d un autre chapitre (bug signale par Blandine) */
           h("div", { id: "chapPartage", style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } }, /* 31/07 soir : dernier titre horizontal passe a la verticale dans la marge, comme les autres chapitres */
