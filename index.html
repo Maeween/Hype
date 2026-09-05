@@ -35006,11 +35006,15 @@ function ChronologieSouvenirs(props) {
   var _ou = React.useState({}), ouvertes = _ou[0], setOuvertes = _ou[1];
   /* 30/08 (demande Blandine : « les notes on comprend rien et ça soûle ») — les
      encarts « Corriger l'annee de X » sont RETIRES. A la place, un lien discret
-     par annee ouvre un mode selection : on tape UNE photo, on donne son annee.
+     par annee ouvre un mode selection.
      modeAn = l'annee dont la grille est en mode selection (null = navigation
-     normale) ; photoSel = la photo choisie, en attente de son annee. */
+     normale) ; photosSel = les photos choisies (tableau), en attente de leur
+     annee. 🟩 05/09 (Blandine : « qu'on puisse en selectionner plusieurs et les
+     changer d'annee ») — photoSel (une valeur) devient photosSel (un tableau) : un
+     tap AJOUTE ou RETIRE une photo de la selection, Valider applique LA MEME
+     annee a toutes celles choisies en une fois. */
   var _ma = React.useState(null), modeAn = _ma[0], setModeAn = _ma[1];
-  var _ps = React.useState(null), photoSel = _ps[0], setPhotoSel = _ps[1];
+  var _ps = React.useState([]), photosSel = _ps[0], setPhotosSel = _ps[1];
   var _rf = React.useState(0), rafraichir = _rf[0], setRafraichir = _rf[1];
 
   React.useEffect(function () {
@@ -35126,8 +35130,8 @@ function ChronologieSouvenirs(props) {
           h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 } },
             visibles.map(function (p, iP) {
               var enSel = (modeAn === grp.an);
-              var choisie = enSel && photoSel === p.url;
-              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (enSel) { setPhotoSel(p.url); return; } if (props.onOuvrir) props.onOuvrir(p.url); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisie ? ("2px solid " + teinte) : "none", outlineOffset: choisie ? -2 : 0, opacity: (enSel && !choisie) ? .55 : 1 } },
+              var choisie = enSel && photosSel.indexOf(p.url) >= 0;
+              return h("div", { key: "ph" + iP, role: "button", onClick: function () { if (enSel) { setPhotosSel(function (l) { var iS = l.indexOf(p.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([p.url]); }); return; } if (props.onOuvrir) props.onOuvrir(p.url); }, style: { position: "relative", aspectRatio: "4 / 3", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisie ? ("2px solid " + teinte) : "none", outlineOffset: choisie ? -2 : 0, opacity: (enSel && !choisie) ? .55 : 1 } },
                 h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(p.url, 420, 315) : p.url), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }));
             })),
           reste > 0 ? h("button", { onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n[grp.an] = true; return n; }); }, style: { marginTop: 8, background: "none", border: "none", color: teinteCl, fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif" } }, "+ " + reste + " " + T("voir tout", "view all", "ver todo", "vedi tutto", "すべて見る", "alle ansehen")) : null,
@@ -35136,23 +35140,26 @@ function ChronologieSouvenirs(props) {
              grille se comporte exactement comme avant : un tap ouvre la photo. */
           props.proprio ? h("div", { style: { marginTop: 8 } },
             (modeAn !== grp.an)
-              ? h("button", { onClick: function () { setPhotoSel(null); setModeAn(grp.an); }, style: { background: "none", border: "none", color: "#7B848C", fontSize: 10.5, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textDecoration: "underline", textUnderlineOffset: 3 } },
+              ? h("button", { onClick: function () { setPhotosSel([]); setModeAn(grp.an); }, style: { background: "none", border: "none", color: "#7B848C", fontSize: 10.5, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textDecoration: "underline", textUnderlineOffset: 3 } },
                   T("Changer l'année d'une photo", "Change a photo's year", "Cambiar el año de una foto", "Cambiare l'anno di una foto", "写真の年を変更", "Jahr eines Fotos ändern"))
               : h("div", null,
                   h("div", { style: { fontSize: 10.5, color: teinteCl, marginBottom: 6 } },
-                    photoSel
-                      ? T("Donne son année, puis valide.", "Give its year, then apply.", "Indica su año y aplica.", "Indica l'anno e applica.", "年を入力して適用。", "Jahr eingeben und anwenden.")
-                      : T("Tape la photo à corriger.", "Tap the photo to fix.", "Toca la foto a corregir.", "Tocca la foto da correggere.", "修正する写真をタップ。", "Tippe das Foto an.")),
+                    photosSel.length
+                      ? T("Donne l'année, puis valide.", "Give the year, then apply.", "Indica el año y aplica.", "Indica l'anno e applica.", "年を入力して適用。", "Jahr eingeben und anwenden.")
+                      : T("Tape une ou plusieurs photos à corriger.", "Tap one or more photos to fix.", "Toca una o varias fotos a corregir.", "Tocca una o più foto da correggere.", "修正する写真を１枚以上タップ。", "Tippe ein oder mehrere Fotos an.")),
+                  photosSel.length > 1 ? h("div", { style: { fontSize: 10, color: "#7B848C", marginBottom: 6 } }, photosSel.length + " " + T("photos sélectionnées", "photos selected", "fotos seleccionadas", "foto selezionate", "枚選択中", "Fotos ausgewählt")) : null,
                   h("div", { style: { display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
-                    photoSel ? h("input", { type: "number", inputMode: "numeric", placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 15, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
-                    photoSel ? h("button", { onClick: async function () {
+                    photosSel.length ? h("input", { type: "number", inputMode: "numeric", placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 15, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
+                    photosSel.length ? h("button", { onClick: async function () {
                       var el = document.getElementById("anPh" + grp.an);
-                      var ok = await appliquerAnneePhoto(photoSel, el && el.value);
-                      setPhotoSel(null); setModeAn(null);
+                      var anV = el && el.value;
+                      var resultats = await Promise.all(photosSel.map(function (uSel) { return appliquerAnneePhoto(uSel, anV); }));
+                      var ok = resultats.indexOf(true) >= 0;
+                      setPhotosSel([]); setModeAn(null);
                       if (ok) setRafraichir(function (r) { return r + 1; });
                     }, style: { minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid " + teinte, background: teinte + "22", color: teinteCl, fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
                       T("Valider", "Apply", "Aplicar", "Applica", "適用", "Anwenden")) : null,
-                    h("button", { onClick: function () { setPhotoSel(null); setModeAn(null); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
+                    h("button", { onClick: function () { setPhotosSel([]); setModeAn(null); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
                       T("Annuler", "Cancel", "Cancelar", "Annulla", "取消", "Abbrechen"))))) : null);
       })),
 
@@ -39391,11 +39398,11 @@ function EcranCheval() {
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
           panneau === "flots" ? T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット", "Flots")
           : panneau === "palmares" ? T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen")
-          : panneau === "photos" ? (T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos") + " · " + c.nom): panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen") + " · " + c.nom)
+          : panneau === "photos" ? (T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos") + " · " + c.nom): panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos") + " · " + c.nom) : panneau === "souvenirs" ? (T("Son histoire", "Their story", "Su historia", "La sua storia", "その物語", "Seine Geschichte") + " · " + c.nom)
           : T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート", "Gesundheitspass")),
         h("div", { style: { marginLeft: "auto" } }, h(SelecteurLangue, { compact: true }))),
       (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", gap: 8, padding: "2px 16px 12px" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
-        [["souvenirs", T("Souvenirs", "Memories", "Recuerdos", "Ricordi", "思い出", "Erinnerungen")], ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos")], ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos")]].map(function (tb) {
+        [["souvenirs", T("Son histoire", "Their story", "Su historia", "La sua storia", "その物語", "Seine Geschichte")], ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos")], ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen")], ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos")]].map(function (tb) {
           var onTb = panneau === tb[0];
           return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { padding: "8px 15px", borderRadius: 999, border: "1px solid " + (onTb ? tA(0.7) : "rgba(255,255,255,0.14)"), background: onTb ? tA(0.14) : "rgba(255,255,255,0.04)", color: onTb ? teinteCl : "rgba(237,242,245,0.65)", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, tb[1]);
         })) : null,
