@@ -35531,6 +35531,28 @@ function AlbumsCheval(props) {
      (bug WebKit #238318). Ne pas fusionner les deux. */
   var refChampPhotos = React.useRef(null);
   var refChampVideo = React.useRef(null);
+  /* \ud83d\udfe5 05/09 \u2014 LE BUG iOS DU SELECTEUR, ENFIN VU (images fixes de l enregistrement
+     de Blandine) : le selecteur s ouvre, on coche, et le bouton « Ajouter » N EXISTE
+     PAS dans la barre du bas. WebKit #238318 : en mode application installee sur
+     l ecran d accueil, les fenetres systeme deviennent inertes apres un passage en
+     veille ou en arriere-plan, jusqu a ce que l app soit VRAIMENT fermee et relancee.
+     Ce n est pas notre code, et ca ne se repare pas d ici. Ce qu on peut faire :
+     PREVENIR. On note quand l app revient d arriere-plan (en mode installe), et au
+     prochain appui sur un bouton de fichier on affiche un mot d explication, pour que
+     les cavalieres ne croient pas l app cassee. Decision de Blandine. */
+  var refRevenuVeille = React.useRef(false);
+  React.useEffect(function () {
+    var installe = false;
+    try { installe = (window.navigator && window.navigator.standalone === true) || (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches); } catch (eSt) { }
+    if (!installe || typeof document === "undefined") return;
+    var surVisibilite = function () { try { if (document.visibilityState === "visible") refRevenuVeille.current = true; } catch (eVs) { } };
+    document.addEventListener("visibilitychange", surVisibilite);
+    return function () { document.removeEventListener("visibilitychange", surVisibilite); };
+  }, []);
+  function prevenirSelecteurIos() {
+    if (!refRevenuVeille.current) return;
+    bip(T("Si le bouton \u00ab Ajouter \u00bb n'appara\u00eet pas dans le s\u00e9lecteur, c'est un bug d'iOS apr\u00e8s une mise en veille : ferme compl\u00e8tement Hype et relance-la.", "If the \u201cAdd\u201d button doesn't show in the picker, it's an iOS bug after standby: fully close Hype and relaunch it.", "Si el bot\u00f3n \u00abA\u00f1adir\u00bb no aparece en el selector, es un fallo de iOS tras el reposo: cierra Hype por completo y vuelve a abrirla.", "Se il pulsante \u00abAggiungi\u00bb non compare nel selettore, \u00e8 un bug di iOS dopo lo standby: chiudi del tutto Hype e riaprila.", "\u30bb\u30ec\u30af\u30bf\u30fc\u306b\u300c\u8ffd\u52a0\u300d\u304c\u8868\u793a\u3055\u308c\u306a\u3044\u5834\u5408\u306f\u3001\u30b9\u30ea\u30fc\u30d7\u5f8c\u306e iOS \u306e\u4e0d\u5177\u5408\u3067\u3059\u3002Hype \u3092\u5b8c\u5168\u306b\u7d42\u4e86\u3057\u3066\u518d\u8d77\u52d5\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Wenn im Auswahlfenster kein \u201eHinzuf\u00fcgen\u201c erscheint, ist das ein iOS-Fehler nach dem Standby: schlie\u00dfe Hype vollst\u00e4ndig und starte es neu."), 7000);
+  }
   var fajSt = React.useState(false); var feuilleAjout = fajSt[0], setFeuilleAjout = fajSt[1];
   var memSt = React.useState(null); var membres = memSt[0], setMembres = memSt[1];
   var lnSt = React.useState(false); var lienCopie = lnSt[0], setLienCopie = lnSt[1];
@@ -35952,12 +35974,20 @@ function AlbumsCheval(props) {
     }, 60);
     return function () { clearTimeout(t); };
   }, [ouvert]);
-  function carteAlbum(alb) {
+  function carteAlbum(alb, iAlb, tousAlb) {
     var cov = alb.couverture || (alb.photos || [])[0];
     var estVid = !!(cov && typeof estUrlVideo === "function" && estUrlVideo(cov));
-    return h("div", { key: alb.id, onClick: function () { var v = (ouvert === alb.id ? null : alb.id); setOuvert(v); setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); if (v) chargerMembres(v); }, role: "button", style: { flex: "0 0 auto", width: 168, cursor: "pointer" } },
+    /* 05/09 (Blandine : « quand il n y a qu un seul album, que la carte fasse toute
+       la largeur ; que ca s adapte au nombre d albums pour qu il n y ait jamais de
+       trou »). Un album -> pleine largeur, format bandeau. Deux -> moitie chacune.
+       Trois et plus -> le rail de 168 px d avant, qui defile. */
+    var nAlb = (tousAlb && tousAlb.length) || 1;
+    var large = nAlb === 1, moitie = nAlb === 2;
+    var stCarte = large ? { flex: "1 1 auto", width: "100%", cursor: "pointer" } : (moitie ? { flex: "1 1 0", minWidth: 0, cursor: "pointer" } : { flex: "0 0 auto", width: 168, cursor: "pointer" });
+    var stCouv = large ? { width: "100%", aspectRatio: "1.55 / 1" } : (moitie ? { width: "100%", aspectRatio: "1 / 1" } : { width: 168, height: 168 });
+    return h("div", { key: alb.id, onClick: function () { var v = (ouvert === alb.id ? null : alb.id); setOuvert(v); setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); if (v) chargerMembres(v); }, role: "button", style: stCarte },
       /* 27/07 : couvertures d album nettement agrandies (112 -> 168 px) pour bien voir les images (demande Blandine). */
-      h("div", { style: { position: "relative", width: 168, height: 168, borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(alb.promu ? 0.65 : 0.25), background: "#0B1116", boxShadow: alb.promu ? "0 0 18px " + tA(0.22) : "none" } },
+      h("div", { style: { position: "relative", width: stCouv.width, height: stCouv.height, aspectRatio: stCouv.aspectRatio, borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(alb.promu ? 0.65 : 0.25), background: "#0B1116", boxShadow: alb.promu ? "0 0 18px " + tA(0.22) : "none" } },
         cov ? (estVid ? h("video", { src: cov + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : h("img", { src: cov, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : h("div", { style: { width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26, color: tA(0.6) } }, "\ud83d\udcf7"),
         estVid && cov ? h("span", { style: { position: "absolute", bottom: 6, left: 6, width: 20, height: 20, borderRadius: "50%", background: "rgba(7,8,10,0.6)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#EDF2F5", zIndex: 2 } }, "\u25b6") : null,
         (alb.__auto ? null : h("button", { onClick: function (eP) { if (eP && eP.stopPropagation) eP.stopPropagation(); basculerPromu(alb); }, "aria-label": "\u00c0 la une", style: { position: "absolute", top: 6, right: 6, width: 25, height: 25, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid " + tA(alb.promu ? 0.9 : 0.35), color: alb.promu ? tnT : "rgba(234,242,244,0.55)", fontSize: 11, cursor: "pointer", padding: 0, zIndex: 2 } }, alb.promu ? "\u2605" : "\u2606"))),
@@ -36102,7 +36132,7 @@ function AlbumsCheval(props) {
         if (!albDeplie && lPh.length > 16) {
           cel.push(h("div", { key: "plus", onClick: function () { setAlbDeplie(true); }, role: "button", style: { aspectRatio: "1 / 1", borderRadius: 11, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer" } },
             h("span", { style: { fontFamily: M9, fontSize: 17, fontWeight: 800, color: tnT } }, "+" + (lPh.length - 15)),
-            h("span", { style: { fontFamily: M9, fontSize: 8.5, fontWeight: 700, color: tA(0.9), letterSpacing: 0.4, textTransform: "uppercase" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066"))));
+            h("span", { style: { fontFamily: M9, fontSize: 8.5, fontWeight: 700, color: tA(0.9), letterSpacing: 0.3, textTransform: "uppercase", textAlign: "center", lineHeight: 1.3, padding: "0 6px" } }, T("Voir les photos suivantes", "See the next photos", "Ver las siguientes fotos", "Vedi le foto successive", "\u6b21\u306e\u5199\u771f\u3092\u898b\u308b", "N\u00e4chste Fotos ansehen"))));
         }
         return cel;
       })()),
@@ -36201,7 +36231,7 @@ function AlbumsCheval(props) {
            menu « ... », album vide, defilement, visionneuse detachee.
            \u26a0\ufe0f NE PAS RETENTER la feuille sans pouvoir la tester en vrai. */
         h("button", { onClick: function () { ouvrirSelection(albOuvert); }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9, whiteSpace: "nowrap" } }, "+ " + T("Souvenirs publi\u00e9s", "Published memories", "Recuerdos publicados", "Ricordi pubblicati", "\u516c\u958b\u6e08\u307f")),
-        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+        h("label", { onClick: prevenirSelecteurIos, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           /* 03/09 : le POURCENTAGE pendant l'envoi d'une video. Un envoi de trois
              minutes sans progression passe pour un plantage. */
           envoiCours ? ((envoiPct > 0 && envoiPct < 100) ? (T("Envoi", "Upload", "Env\u00edo", "Invio", "\u9001\u4fe1", "Upload") + " " + envoiPct + " %") : T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026")) : "+ " + T("Ma phototh\u00e8que", "My library", "Mi galer\u00eda", "La mia galleria", "\u30e9\u30a4\u30d6\u30e9\u30ea"),
@@ -36216,7 +36246,7 @@ function AlbumsCheval(props) {
            video dans le selecteur la choisit et referme le selecteur tout de suite, sans
            confirmation separee -- une video a la fois, a essayer quand le bouton
            phototheque coince sur une video. */
-        h("label", { style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
+        h("label", { onClick: prevenirSelecteurIos, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(0.55), background: envoiCours ? tA(0.12) : "transparent", color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"),
           h("input", { type: "file", accept: "video/*", disabled: envoiCours, style: { display: "none" }, onChange: function (eUv) { var fsv = Array.prototype.slice.call((eUv.target && eUv.target.files) || []); try { eUv.target.value = ""; } catch (eVv9) { } if (fsv.length) importerFichiers(albOuvert.id, fsv); } }))))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "20px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", flexDirection: "column", alignItems: "center", gap: 13 } }, /* 28/08 : mascotte repassee en colonne, bien plus grosse (demande Blandine : \u00ab je l'aurais vue plus grosse, comme la taille du cercle violet, au milieu \u00bb) + texte en BLANC en dessous pour qu'on le voie bien */
@@ -40243,12 +40273,29 @@ function EcranEcurieHype() {
              reste vide pendant les cinq requetes du classement.
              ⚠️ On ne repose QUE si le classement rend quelque chose : un echec
              ne doit pas vider une page deja remplie. */
-          if (ok) setCommList((rc && rc.data) || []);
+          /* \ud83d\udfe5 05/09 (Blandine : « c est quand je vais sur les chevaux de l ecurie,
+             sur la page speciale qui leur est dediee, que toutes les cartes s echangent
+             a la connexion ») \u2014 LA REGLE DU 03/09 N ETAIT PAS POSEE ICI.
+             L ordre memorise (un seul cheval glisse, une reorganisation profonde est
+             reportee au chargement suivant, seuil 2 ecarts) ne couvrait que les grilles
+             Cavalier et Ecurie, sous la cle « mes-chevaux ». Cette page-ci affichait
+             l ordre de la base puis reposait l ordre XP : toute la grille se
+             reorganisait sous les yeux. Meme regle, meme fonction, cle PROPRE a la
+             page (« chevaux-ecurie ») pour ne pas melanger avec la liste perso. */
+          var brutEH = (rc && rc.data) || [];
+          var afficheEH = (typeof hypeOrdreMemoAppliquer === "function") ? hypeOrdreMemoAppliquer(brutEH, "chevaux-ecurie") : brutEH;
+          if (ok) setCommList(afficheEH);
           try {
-            var brut = (rc && rc.data) || [];
-            if (brut.length > 1 && typeof classerChevauxParXp === "function") {
-              var triEH = await classerChevauxParXp(brut);
-              if (ok && triEH && triEH.length) setCommList(triEH);
+            if (brutEH.length > 1 && typeof classerChevauxParXp === "function") {
+              var triEH = await classerChevauxParXp(brutEH);
+              if (triEH && triEH.length) {
+                try { hypeOrdreMemoPoser("chevaux-ecurie", triEH); } catch (eOpEH) { }
+                /* Meme seuil que les deux autres grilles : 1 ou 2 ecarts = un seul
+                   cheval a bouge, il glisse ; au-dela, on ne touche pas a l ecran et
+                   le nouvel ordre servira au prochain chargement. */
+                var bougesEH = (typeof hypeOrdreDeplacements === "function") ? hypeOrdreDeplacements(afficheEH, triEH) : 99;
+                if (ok && bougesEH > 0 && bougesEH <= 2) setCommList(triEH);
+              }
             }
           } catch (eXeh) { }
           /* 29/08 : albums PUBLICS des chevaux qu'on vient de charger. La cible d'un
