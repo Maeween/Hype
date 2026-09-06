@@ -10,6 +10,3861 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 06/09/2026 (soir) — LE SANS-FAUTE ET LES POINTS ARRIVENT ENFIN EN BASE · CORBEILLE SUR LES SAISIES À LA MAIN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9685f4123c70100c4611937db6049f34` | import qui transporte SF + points · pastille « Sans faute » · corbeille sur les lignes saisies à la main |
+| `hype-import-ffe.js` | racine | `32d0492a6b4fdd34b05992d6fe08267a` | le lecteur ne jette plus la mention SF ni les points ; un sans-faute arrive coché |
+| `hype-resultats.js` | racine | `352e18f6ad84ea33519646f247baf538` | les sans-fautes sont affichés même hors du premier quart |
+| `sql-06-09-sansfaute-points.sql` | Supabase → SQL Editor (ne va PAS dans le dépôt) | — | colonnes `mention` + `points`, et retrait des deux doublons |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `2bb1b4930039a8b44851edce0f7e8ef3` (agenda). Il contient aussi la
+correction SEP et l'agenda : un seul index à pousser.
+⚠️ **ORDRE : le SQL D'ABORD**, puis les trois fichiers ensemble. L'app sait se débrouiller si les
+colonnes manquent (elle réécrit le paquet sans elles et le dit à l'écran), mais tant que le SQL
+n'est pas passé, ni la mention ni les points ne sont enregistrés.
+⚠️ **Deux `?v=` changent** : `hype-import-ffe.js?v=13 → 14` et `hype-resultats.js?v=2 → 3`. Sans
+ça le téléphone continue de servir les anciens fichiers (leçon du 31/08). Les 10 autres sont intacts.
+
+---
+
+## LA CAUSE, TROUVÉE DANS LE LECTEUR
+
+Le lecteur du télémat reconnaît « 12e / 26 - SF » depuis toujours et range le « SF » de côté ;
+la colonne « Pts qualif. Chpt » arrivait elle aussi jusqu'à lui. **Les deux étaient jetés à la
+ligne suivante** : la fiche construite pour l'écriture ne gardait que place, partants, quart et
+statut. Rien n'atteignait la base — qui n'avait d'ailleurs aucune colonne pour les recevoir.
+
+## CE QUI CHANGE
+
+1. **Le sans-faute voyage jusqu'en base** (colonne `mention`) et **les points aussi** (`points`).
+   Les points ne s'affichent nulle part pour l'instant : ils sont rangés, pour que les totaux de
+   saison demandés par Blandine ne coûtent pas un deuxième passage de tous ses télémats.
+2. **Un sans-faute arrive coché**, même hors du premier quart, quel que soit le niveau choisi à
+   l'écran d'import (« Ses podiums », « Son top 8 », « Ses classements »).
+3. **Les sans-fautes s'affichent** : `aMontrer` les ajoute aux classés, aux préparatoires et aux
+   saisies manuelles — page technique et page club.
+4. **Pastille « Sans faute »** à côté de Tous / Classés / Podiums, et un petit badge SF turquoise
+   sur la ligne concernée dans les saisons dépliées.
+5. **Corbeille sur les lignes saisies à la main** (saison dépliée, propriétaire ou modératrice
+   seulement) : confirmation nommant la ligne, puis suppression définitive. Une ligne officielle
+   importée n'est jamais supprimable là — elle se décoche à la relecture de l'import.
+
+## CE QUE ÇA NE FAIT PAS
+
+Les sans-fautes **déjà importés** n'ont pas de mention en base : elle a été jetée à l'époque. Il
+faut repasser les télémats concernés pour la récupérer. Les lignes elles-mêmes ne bougent pas,
+rien n'est perdu, aucun doublon créé (le garde-fou compare date + épreuve + concours + cavalier).
+
+Et l'import ne rapproche toujours pas « Prépa 75 » de « Paris 2026 » : il compare le NOM du
+concours. Pour qu'il voie le doublon il faudrait comparer la date et le cheval — chantier séparé,
+non commencé.
+
+## VÉRIFIÉ
+
+`node --check` : 18 blocs de l'index + les deux modules, 0 défaut. Banc d'essai du détecteur de
+sans-faute rejoué hors app, 13 cas sur 13 — « SF », « sf », « Sans faute », « sans-faute »,
+« - SF », « SF au barrage » reconnus ; « Barrage », « prof », « sfumato », vide, non reconnus
+(le piège du « sf » au milieu d'un mot est traité). Marqueurs : 0 écart inattendu.
+
+## À L'ÉCRAN : + / −
+
+**+** Une quatrième pastille « Sans faute » sur Performances. Un badge SF sur les lignes
+concernées. Une corbeille sur les lignes que tu as tapées toi-même. **−** Rien ne disparaît :
+les compteurs du bandeau restent calculés sur toutes les lignes, comme avant.
+
+## NON VU À L'ÉCRAN
+
+1. Après le SQL : le tableau de contrôle ne montre plus « Prépa 75 » ni « Poney 4 ».
+2. Fiche cheval → Performances → pastille « Sans faute ».
+3. Une saison dépliée : la corbeille sur une ligne à la plume, pas sur les autres.
+4. Un nouvel import d'un télémat contenant un « - SF » : la ligne arrive cochée, badge SF ensuite.
+
+## RESTE À FAIRE
+
+Les **points de la saison** par cavalier, par cheval et par type d'épreuve (demandé ce soir).
+La donnée est désormais collectée ; restent le calcul et l'affichage. ⚠️ Point à trancher avec
+Blandine : elle pense que la saison FFE va du 1er juillet au 30 juin. Le règlement des compétitions
+FFE dit **1er septembre → 31 août**. À vérifier avec elle avant de coder un total de saison :
+tout dépend de cette date.
+
+---
+
+# 🟩 06/09/2026 (18 h) — AGENDA DU CLUB : CARTES À LA MÊME HAUTEUR · ENREGISTRER SORTI DE SOUS LA BARRE DU MENU
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2bb1b4930039a8b44851edce0f7e8ef3` | cartes de l'agenda toutes à la même hauteur ; boutons Enregistrer/Annuler de la fiche d'un rendez-vous plus jamais sous la barre du menu |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `f273f28fbfcec89e1f18afee5ac9b971` (SEP / nom de club aligné, livré
+quelques minutes plus tôt — ce fichier-ci le CONTIENT, un seul index à pousser). Le SQL
+`sql-06-09-sep-rassembler.sql` est inchangé. Aucune image, les 12 `?v=` intacts.
+
+---
+
+## 1. TROIS RENDEZ-VOUS, TROIS TAILLES DE CARTE (capture de Blandine)
+
+Dans le carrousel « Prochains rendez-vous » de la page club, chaque carte prenait la hauteur de
+son propre contenu : un titre sur une ligne ou sur deux, un lieu renseigné ou non, une heure ou
+pas — trois rendez-vous, trois hauteurs. Désormais la cellule du carrousel étire sa carte à la
+hauteur de la plus haute de la rangée, et le titre réserve toujours ses deux lignes : catégorie,
+titre et lieu tombent au même endroit d'une carte à l'autre, l'affiche (ou la bande vide avec le
+trophée en filigrane) garde ses 124 px partout. Trois règles de style, aucune logique touchée.
+
+## 2. ENREGISTRER SOUS LA BARRE DU MENU (fiche d'un rendez-vous, « Affiche ou photo »)
+
+La fiche d'un rendez-vous est un calque plein écran qui défile, mais la barre d'onglets du bas
+reste posée PAR-DESSUS : le panneau d'édition finissait par 40 px de marge seulement, donc
+Enregistrer/Annuler (et « Changer l'affiche / Retirer » quand l'affiche est haute) passaient sous
+la barre. Une cale de fin de page à la hauteur de la barre + l'encoche est ajoutée au bas de la
+fiche, pour toutes ses vues (édition, description longue, fiche vide). C'est un élément réel et
+pas une marge sur le conteneur, parce que Safari ignore parfois une marge basse sur un conteneur
+qui défile.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut. Marqueurs : 0 écart inattendu (`.agc-cell{`,
+`.agc-c2{`, `.agc-nom{` 1 définition chacune comme avant, `safe-area-inset-bottom` +1 = la cale),
+les 12 `?v=` intacts, 165 balises script comme avant. Pas de rendu navigateur ici (retouches de
+style) : à contrôler à l'écran.
+
+## À L'ÉCRAN : + / −
+
+**+** Page club, « Prochains rendez-vous » : les trois cartes à la même hauteur, titre et lieu
+alignés. Fiche d'un rendez-vous → Modifier : Enregistrer et Annuler visibles au-dessus de la barre
+du menu, même avec une grande affiche. **−** Rien d'autre ne bouge.
+
+## NON VU À L'ÉCRAN
+
+1. Page club → carrousel : trois cartes de même hauteur (le Challenge de Folleville avec affiche
+   et lieu, le CSO du 27 sans lieu, le CSO du 25 octobre au titre sur deux lignes).
+2. Fiche du Challenge → Modifier → descendre tout en bas : Enregistrer / Annuler entièrement
+   visibles, au-dessus de la barre.
+
+---
+
+# 🟩 06/09/2026 (fin d'après-midi) — LA SEP RASSEMBLÉE AU CLASSEMENT DES CLUBS · LE NOM DU CLUB ALIGNÉ À L'ENREGISTREMENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f273f28fbfcec89e1f18afee5ac9b971` | option 2 : le nom de club tapé est aligné sur l'orthographe déjà portée par la majorité des cavalières |
+| `sql-06-09-sep-rassembler.sql` | Supabase → SQL Editor (ne va pas dans le dépôt) | — | option 1 : les deux fiches « Sep » et « Societe d'équitation de Paris » déjà en base rejoignent l'orthographe majoritaire |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `0569267c4ddd799a09fac43f3b469bf6` (visionneuses superposées). SQL et
+index sont indépendants : n'importe quel ordre. Aucune image, les 12 `?v=` intacts.
+
+---
+
+## LE PROBLÈME (capture de Blandine, classement des clubs sur Communauté)
+
+« Societe d'Equitation de Paris (SEP) » 17 membres, « Sep » 1 membre, « Societe d'équitation de
+Paris » 1 membre : trois lignes pour un seul club. Le classement est calculé côté base (fonction
+SQL `classement_ecuries`) et regroupe par le texte EXACT que chaque cavalière a tapé comme écurie.
+La page du club, elle, les rassemblait déjà (comparaison tolérante `hypeMemeClub`) — seul le
+classement les séparait.
+
+## OPTION 1 — LE SQL (à passer une fois)
+
+Aligne les variantes de la SEP sur l'orthographe la plus portée, LUE DANS LA BASE (on ne retape
+pas le nom à la main : une apostrophe droite contre une apostrophe courbe suffirait à créer une
+quatrième ligne). Colonnes `ecurie` et `ecurie2`. Rejouable sans risque ; ne peut jamais écrire
+un vide (garde `is not null`). Le tableau affiché à la fin doit montrer UNE ligne SEP.
+
+## OPTION 2 — L'APP (durable)
+
+`majProfil` est la SEULE porte d'écriture de `ecurie` / `ecurie2` (vérifié : aucun update ou
+upsert direct ailleurs). Désormais, au moment d'enregistrer un nom de club, l'app lit les noms
+déjà portés par les cavalières et prend l'orthographe la plus portée si le nom tapé en est une
+variante — nouvelle fonction `hypeNomClubCanonique`, rangée à côté de `hypeMemeClub` (un seul
+endroit décide, comme pour les chevaux) :
+
+- même noyau : « Feinn » → « Ecurie Feinn » ;
+- un seul mot, accepté SEULEMENT s'il est un sigle écrit en capitales dans le nom connu :
+  « Sep » → « Societe d'Equitation de Paris (SEP) » ; « Paris » seul ne rejoint rien, et « Sep »
+  ne rejoint pas « Saint-Joseph » ;
+- au moins deux mots, tous présents dans le nom connu : « Societe d'équitation de Paris » → la SEP,
+  « Haras de Jardy » → « Jardy Equitation (Haras de Jardy) ».
+
+C'est le NOMBRE de cavalières qui fait loi : on ne bascule jamais vers une orthographe portée par
+moins de cavalières que celle tapée (la majorité ne se fait pas absorber par une coquille). En cas
+de doute ou de panne de la lecture, le nom tapé passe tel quel. `__perso__` n'est jamais touché.
+
+Sur la page Cavalier, les deux éditeurs (Mon club / Ma deuxième écurie) reprennent à l'écran le nom
+réellement écrit en base — sans ça la cavalière voyait sa coquille jusqu'à la prochaine ouverture.
+Le contrôle de relecture de la deuxième écurie (01/09) compare désormais à ce que `majProfil` a
+réellement écrit : un alignement n'est plus pris pour un échec d'enregistrement.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut. Banc d'essai de la règle (`hypeNomClubCanonique`
+rejouée hors app sur les noms de la capture + pièges) : 18 cas sur 18 — « Sep », « SEP »,
+« Societe d'équitation de Paris », « Société d'Équitation de Paris » → la SEP ; « Feinn »,
+« Écurie Feinn » → « Ecurie Feinn » ; « Paris », « Etrier », « Jo », un nom inconnu, `__perso__`,
+vide → inchangés ; « Haras de Jardy », « Lichere », « L'Etrier de Paris » → leurs clubs.
+Marqueurs (27 repères) : 0 écart inattendu (les nouvelles fonctions et leurs mentions, `setClubLocal`
++1, `setClub2Local` +1, `__perso__` +5 en commentaires/gardes) ; les 12 `?v=` intacts, 165 balises
+script comme avant.
+
+## À L'ÉCRAN : + / −
+
+**+** Classement des clubs : une seule ligne SEP dès que le SQL est passé. Page Cavalier : une
+cavalière qui tape « Sep » voit son club devenir « Societe d'Equitation de Paris (SEP) » juste après
+avoir validé. **−** Rien ne bouge ailleurs : pages, grilles, chevaux, bandeau, tout est identique.
+
+## NON VU À L'ÉCRAN
+
+1. Après le SQL : Communauté → Classement des clubs → une seule ligne SEP (19 membres attendus).
+2. Page Cavalier → Mon club (ou Ma deuxième écurie) → taper « Sep » → le nom affiché devient
+   l'orthographe complète tout seul.
+
+## RESTE À TRANCHER (message de livraison)
+
+Photo du club plus haute (option 1 couper les côtés / option 2 changer de photo) ; maquette A, B
+ou C des chevaux par écurie ; chevaux sans écurie (groupe « Sans écurie » proposé) ; page visiteur
+« Ses chevaux » (même présentation ?).
+
+---
+
+# 🟩 06/09/2026 (03 h 55) — LES DEUX VISIONNEUSES DE PHOTOS QUI SE SUPERPOSAIENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0569267c4ddd799a09fac43f3b469bf6` | corrige les boutons qui se chevauchaient et sortaient de l'écran en ouvrant une photo |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `8ffda4a48fe2630e1116525233db66d3` (navigation ascendants).
+
+---
+
+## LA CAUSE (trouvée à partir de la capture)
+
+Sur l'onglet Photos d'une fiche cheval, il y a DEUX zones qui ouvrent chacune leur propre grande
+photo : les Albums (avec J'aime, Commentaires, Retirer de l'album) et Souvenirs juste en dessous
+(avec Identifier, corbeille, Mettre en vedette). Ce sont deux mécanismes totalement séparés, qui
+ne se parlaient pas : ouvrir une photo dans l'un sans avoir refermé l'autre laissait les deux
+superposées à l'écran en même temps — d'où Identifier/corbeille/croix en double et J'aime/
+Commentaires qui se mélangent avec Mettre en vedette, comme sur ta capture.
+
+## LE CORRECTIF
+
+Désormais, ouvrir une photo dans l'un des deux referme automatiquement l'autre s'il était
+ouvert — jamais les deux à la fois. Rien d'autre n'a changé : chaque visionneuse garde
+exactement ses propres boutons et son propre fonctionnement.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (même ligne « unknown
+error fetching the script » préexistante). Rejoué le scénario à la main dans le code : ouvrir une
+photo d'album referme bien la photo de Souvenirs si elle était ouverte, et inversement ; au tout
+premier affichage de la page (rien encore ouvert), le mécanisme ne se déclenche pas à tort.
+
+## NON VU À L'ÉCRAN
+
+Fiche d'un cheval, onglet Photos : ouvrir une photo dans un album, puis sans la fermer, ouvrir
+une photo dans Souvenirs (ou l'inverse) — une seule grande photo à la fois, plus de superposition.
+
+---
+
+# 🟩 06/09/2026 (03 h 30) — NAVIGATION CLIQUABLE VERS LES ASCENDANTS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `8ffda4a48fe2630e1116525233db66d3` | père/mère/grands-parents cliquables sur la carte Origines quand leur fiche existe déjà sur Hype |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `339ea3ec24b74edd1a04f311024467ef` (photo/vidéo des moments forts).
+
+---
+
+Première moitié de la demande de Blandine (« accéder à un cheval d'une fiche à l'autre quand ils
+sont de la même famille et apparaissent dans les descendants OU EN TANT QU'ASCENDANTS ») — le
+lien existait déjà pour les poulains (livré le 05/09), il manquait pour père/mère/grands-parents/
+arrière-grands-parents sur le pedigree. Même geste, même reconnaissance de nom (les légères
+variantes d'orthographe entre fiches sont tolérées, comme pour l'identité des imports FFE) :
+un nom du pedigree qui correspond à une fiche Hype existante devient cliquable et souligne en
+turquoise, et emmène directement sur cette fiche. Aucun appel base supplémentaire — la même
+liste déjà chargée pour les poulains sert aussi pour cette recherche.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (même ligne « unknown
+error fetching the script » préexistante).
+
+## NON VU À L'ÉCRAN
+
+Fiche d'un cheval dont un parent (ou grand-parent) a lui aussi une fiche sur Hype : retourner la
+carte Origines, le nom de ce parent apparaît souligne et emmène sur sa fiche au tap.
+
+## RESTE À FAIRE — EN ATTENTE D'UNE RÉPONSE DE BLANDINE
+
+L'outil pour INSÉRER un descendant (pas seulement le retrouver s'il a déjà sa propre fiche) :
+deux façons possibles de comprendre la demande, question posée dans le message de livraison.
+
+---
+
+# 🟩 06/09/2026 (03 h 10) — CHOISIR LA PHOTO/VIDÉO D'UN MOMENT FORT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `339ea3ec24b74edd1a04f311024467ef` | vrai bouton (crayon) sur chaque carte « moment fort » pour choisir sa photo ou sa vidéo à la main |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `63a562a39a2841b8ed7d645e11aa828c` (retirer un cavalier de
+l'écurie). À pousser APRÈS le SQL `sql-06-09-lieu-exclusions-moments.sql` déjà livré — sans la
+colonne `chevaux.moments_forts_medias`, le crayon apparaitra mais l'enregistrement échouera
+(message d'erreur affiché, rien ne casse).
+
+---
+
+## CE QUI CHANGE
+
+Sur chaque carte « moment fort » (page Résultats), un petit crayon en haut à droite — visible
+seulement pour la propriétaire du cheval ou une modératrice Hype. Il ouvre un panneau qui liste
+toutes les photos ET vidéos déjà envoyées sur ce cheval (ses albums, sa galerie) ; un tap en
+choisit une, et cette carte-là la garde définitivement — elle ne changera plus toute seule au
+prochain rechargement. Un bouton « revenir au choix automatique » annule le choix.
+
+**Pourquoi choisir DANS les photos existantes plutôt qu'un nouvel envoi** : les vidéos passent
+par Mux (hébergement, traitement, lien de lecture) et un simple bouton « envoyer un fichier »
+n'aurait pas pu produire un lien jouable immédiatement — il aurait fallu refaire tout le circuit
+Mux pour cet usage précis. En piochant dans ce qui est déjà en ligne, la photo/vidéo est
+utilisable tout de suite, sans y toucher.
+
+**Où c'est gardé** : une seule colonne JSON sur `chevaux` (`moments_forts_medias`), une entrée
+par moment fort — la clé est le même « jeton » qui sert déjà à ne jamais afficher deux fois le
+même moment (pas de doublon possible avec cette table).
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut (une parenthèse manquante a été repérée et corrigée
+avant livraison) ; démarrage headless : propre (même ligne « unknown error fetching the script »
+préexistante). Compteurs de cohérence : `carteFort(` 6 occurrences (1 définition + 5 cartes,
+inchangé), `jetonFort(` 3 (1 définition + 2 usages, dont le nouveau), les 12 `?v=` intacts.
+
+## NON VU À L'ÉCRAN (une fois le SQL passé)
+
+Fiche de Tully, onglet Performances : le crayon sur une carte « moment fort » ouvre le panneau,
+choisir une photo (ou une vidéo si le cheval en a) la met sur la carte, ferme et rouvre la page
+pour vérifier que ça reste ; « Revenir au choix automatique » annule.
+
+---
+
+# 🟩 06/09/2026 (02 h 35) — RETIRER UN CAVALIER DE L'ÉCURIE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `63a562a39a2841b8ed7d645e11aa828c` | le X discret sur une carte cavalier retire désormais ce cavalier de l'écurie, pour tout le monde |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `42b623eb0db8d848bb838badd0c7008e` (auto-dépli des saisons). À pousser
+APRÈS le SQL `sql-06-09-lieu-exclusions-moments.sql` livré juste avant — sans la table
+`ecurie_cavaliers_exclus`, le X ne fait plus rien pour personne (l'écriture échouera en silence,
+sans planter l'appli, mais rien ne sera gardé au rechargement).
+
+---
+
+Retirer un cavalier de l'écurie utilise maintenant la petite table `ecurie_cavaliers_exclus`
+préparée dans le SQL précédent — séparée de la liste personnelle « cavaliers choisis » pour ne
+jamais l'écraser. Réservé à la propriétaire de l'écurie ou aux modératrices Hype (même droit que
+pour d'autres actions d'écurie déjà en place). Le retrait est vu de TOUT LE MONDE qui regarde
+cette écurie — pas seulement de la personne qui a tapé le X. Le profil du cavalier retiré
+n'est jamais touché : seule sa présence dans cette liste-là disparaît, il garde son écurie
+écrite sur sa propre page.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (même ligne « unknown
+error fetching the script » préexistante).
+
+## NON VU À L'ÉCRAN
+
+Fiche Écurie, encart « Cavaliers de l'écurie » : le X discret sur une carte retire bien ce
+cavalier de la liste, et il reste absent après avoir quitté puis rouvert la page.
+
+---
+
+# 🟩 06/09/2026 (02 h 00) — CHOISIR UN CAVALIER DÉPLIE MAINTENANT SA SAISON
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `42b623eb0db8d848bb838badd0c7008e` | taper sur un onglet cavalier (Liam R. / Manon H. ...) déplie directement sa saison la plus récente |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `b25769978334b04decb9304cdd5410bc` (cartes + 5 moments forts). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « en fait c'est juste que ça ouvre l'année sans la dérouler, du coup on regarde les
+derniers résultats à la place ; faudrait quand ça ouvre l'année que ça déroule les résultats. »
+
+## LE CORRECTIF
+
+Avant, choisir un onglet cavalier changeait la carte de saison affichée (les 3 médailles, la
+barre), mais il fallait TAPER UNE DEUXIèME FOIS sur cette carte pour voir les lignes de résultat
+en dessous — sinon rien ne s'affichait là, et l'œil partait plus bas vers « Derniers résultats »
+(qui montre autre chose). Désormais, taper sur un onglet déroule tout de suite la saison la plus
+récente où ce cavalier a couru — plus besoin du deuxième tap.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (même ligne « unknown
+error fetching the script » préexistante). Logique rejouée hors du fichier sur 4 cas : « Tous »
+(toutes les saisons candidates, la plus récente en tête), un cavalier avec une seule saison
+(cette saison, et elle seule), un autre idem, un cavalier sans aucun résultat (rien ne se
+déplie, pas d'erreur). Les 4 passent. Le piège évité : `cavFiltre` (l'ancien onglet) aurait
+encore sa VIEILLE valeur au moment du calcul si le code avait lu cette variable au lieu de la
+cible du tap — `setCavFiltre` ne prend effet qu'au rendu suivant.
+
+## NON VU À L'ÉCRAN
+
+Fiche de Tully, onglet Performances, « Par saison » : taper sur Emma D. (ou tout autre onglet)
+déroule directement sa saison, sans deuxième tap.
+
+---
+
+# 🟩 06/09/2026 (01 h 45) — DERNIERS RÉSULTATS EN CARTES + 5 MOMENTS FORTS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b25769978334b04decb9304cdd5410bc` | « Derniers résultats » en cartes (même style que la page écurie) ; 5 moments forts au lieu de 3 |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `750103c1e5a7dbfa0d75bc9ac4c336ce` (grande carte plus haute). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+## 1. « DERNIERS RÉSULTATS » : CARTES + SUIT L'ONGLET CAVALIER
+
+Blandine : « présente-les comme sur la page Écurie, une grille de 6 cartes avec toutes les
+infos » — puis, avec les PDF FFE à l'appui : « 2021 n'est pas 2025, pas normal que ce soit les
+résultats de Liam qui apparaissent [sous l'onglet Elena C.] ».
+
+Les deux sont liés : la liste reprend maintenant EXACTEMENT le rendu déjà utilisé ailleurs sur la
+fiche cheval (médaille, année, portrait rond, « 1er CAVALIER sur CHEVAL », concours, épreuve,
+partants, autres classés de la même épreuve) — et surtout, elle suit désormais l'onglet cavalier
+choisi juste au-dessus (Liam R. / Manon H. / Emma D. / Elena C.). Avant, « Derniers résultats »
+restait toujours branchée sur les résultats les plus récents tous cavaliers confondus, quel que
+soit l'onglet ouvert : choisir Elena C. montrait bien sa saison 2021 juste au-dessus, mais la
+liste du dessous restait sur Liam 2025 — d'où l'impression de clic qui « ouvre sur les mauvais
+résultats ». Plafonnée à 6 cartes, comme demandé.
+
+Sur les PDF envoyés : Elena Corre, Manon Heau, Emma Victoire Durand et Eléa Brillard sont bien
+d'anciennes cavalières réelles de Tully (saisons FFE 2021 et 2022) — pas un mélange avec un autre
+cheval comme c'était arrivé avec Rizotto. Rien à corriger de ce côté.
+
+## 2. CINQ MOMENTS FORTS AU LIEU DE TROIS
+
+Une deuxième ligne de deux petites cartes s'ajoute sous la première (grande carte + 2 + 2 = 5).
+Même logique de classement qu'avant (titres, puis niveau d'épreuve, puis partants), juste étendue
+à 5 places au lieu de 3.
+
+## SUR L'AJOUT MANUEL DE PHOTOS/VIDÉOS DANS LES MOMENTS FORTS
+
+Pas encore fait — j'ai besoin d'un retour de Blandine avant de m'y mettre (voir message).
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (même ligne « unknown
+error fetching the script » préexistante). Les 12 `?v=`, `jetonFort`, `photoDAlbumPourF` —
+identiques. `filtreCav` : 2 nouveaux usages réels (la ligne `recents` + un commentaire), les 2
+usages préexistants (par saison) intacts. `carteFort` : 2 nouveaux appels (forts[3], forts[4]).
+
+## NON VU À L'ÉCRAN
+
+Fiche de Tully, onglet Performances : « Derniers résultats » en cartes qui défilent ; bascule
+sur l'onglet Elena C. (ou un autre) pour vérifier que la liste suit bien ; « Ses moments forts »
+avec 5 cartes au lieu de 3.
+
+---
+
+# 🟩 06/09/2026 (01 h 20) — LA GRANDE CARTE « MOMENTS FORTS » ENCORE PLUS HAUTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `750103c1e5a7dbfa0d75bc9ac4c336ce` | la grande carte (premier moment fort, pleine largeur) passe de 222 à 280 px de haut |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `d76aa8d10bc130efe8b8c672c22bcc03` (respiration précédente). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « On garde le format large de la page performance mais qu'il soit large ne veut pas
+dire qu'il ne doit pas être forcément très court en hauteur, rallonge un peu sa hauteur. » — la
+grande carte reste pleine largeur, seule sa hauteur bouge : 222 → 280 px. Les deux petites cartes
+côte à côte (178 px) et les vignettes d'album ne sont pas retouchées, elles ne sont pas concernées
+par cette demande.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (même ligne « unknown
+error fetching the script » préexistante, sans rapport). Les 12 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+La page Performances de Tully (ou de tout cheval avec des moments forts) : la grande carte du
+haut nettement plus haute.
+
+---
+
+# 🟩 06/09/2026 (01 h 05) — RESPIRATION : PHOTOS MOINS COUPÉES, PLUS D'ESPACE SUR PERFORMANCES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d76aa8d10bc130efe8b8c672c22bcc03` | cartes moments forts et vignettes d'album plus hautes ; un peu plus d'air sur la page Performances |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `8e59958520a8d4b585eca40975851852` (droits admin résultats). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine, sur une capture de la fiche de Tully (page Performances) : « Espace un peu plus tout ça,
+déjà quand tu mets les moments forts ou les albums, rallonge un peu la partie où y a la photo, à
+chaque fois tu la coupes en deux, ça gâche l'effet visuel. »
+
+## LES PHOTOS COUPÉES
+
+Les petites cartes « moments forts » (les deux côte à côte) ne faisaient que 148 px de haut —
+bien trop court pour une photo de saut, verticale par nature : le cheval ou la cavalière se
+retrouvait tranché. Passées à 178 px (la grande carte du dessus : 198 → 222 px, dans les mêmes
+proportions).
+
+Même chose sur les vignettes d'album : carrées (1:1 pour deux albums, 168×168 px pour trois et
+plus), elles coupaient tout autant. Rendues plus hautes que larges (4:5, et 168×202 px). La
+grande bannnière d'un album seul (1.55:1, très large) n'est PAS touchée — c'est un format que tu
+avais validé exprès le 05/09.
+
+## L'ESPACEMENT
+
+Un peu plus d'air à trois endroits de la page Performances : au-dessus du bandeau des 4 chiffres
+(sorties/victoires/podiums/classés), au-dessus du titre « Ses moments forts », et entre la grande
+carte et la rangée des deux petites.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre (la ligne « unknown
+error fetching the script » existait déjà avant cette livraison, rien à voir avec ce qui a
+changé). Les 12 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+La page Performances de n'importe quel cheval avec des moments forts et un album : cartes et
+vignettes plus hautes, un peu plus d'espace entre les blocs.
+
+---
+
+# 🟩 06/09/2026 (00 h 35) — DROITS ADMIN POUR AJOUTER DES RÉSULTATS SUR TOUS LES CHEVAUX
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `8e59958520a8d4b585eca40975851852` | Blandine peut ajouter/importer des résultats même sur un cheval qui n'est pas le sien |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `187258b3…` (00 h 15). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « oui je veux bien les droits pour ajouter les résultats sur tous les chevaux en tant
+qu'admin, pour l'instant on finalisera les détails plus tard » — après avoir confirmé que ni la
+saisie à la main ni l'import PDF n'apparaissaient sur la fiche de Tully (le cheval de Liam).
+
+## LE PRINCIPE
+
+`estModerateurHype(moi)` — déjà utilisé partout ailleurs dans le fichier pour ce genre de
+passage — s'ajoute comme alternative à « être propriétaire du cheval », aux 4 endroits qui
+verrouillaient l'ajout de résultats à la seule propriétaire :
+- l'ouverture de l'import PDF FFE elle-même,
+- la possibilité de saisir un résultat à la main (`peutSaisirResultat`),
+- les deux boutons « Importer mes résultats officiels » qui n'apparaissaient qu'au propriétaire.
+
+Ça couvre les DEUX outils à la fois (saisie manuelle et import PDF) — pas encore l'import par
+capture (importé aujourd'hui), qui n'a pas cette même porte à verrouiller : il vit dans la même
+fenêtre que la saisie manuelle, donc il en hérite déjà.
+
+## CE QUI N'EST PAS ENCORE COMPRIS
+
+Le « rien du tout, pas même la vidéo d'animation » sur la fiche de Tully reste, pour l'instant,
+sans explication trouvée côté code — cette vidéo est écrite pour être visible de tout le monde,
+propriétaire ou non. Il est possible que les nouveaux droits changent aussi ce qui s'affiche ;
+à re-vérifier sur la fiche de Tully une fois cette livraison poussée, avant de creuser plus loin
+à l'aveugle.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Logique rejouée hors du
+fichier sur 3 cas : Blandine sur le cheval de Liam (autorisée), une cavalière quelconque sur le
+même cheval (toujours refusée), Liam sur son propre cheval (inchangé, toujours via la
+propriété). Les 3 passent. `peutSaisirResultat`, `ouvrirImportFFE`, `estLieFiche`, les 12 `?v=`
+— identiques à l'exception exacte de ce qui a changé.
+
+## NON VU À L'ÉCRAN
+
+Sur la fiche de Tully : « + Ajouter un résultat » et « Importer mes résultats officiels »
+doivent maintenant apparaître pour Blandine.
+
+---
+
+# 🟩 06/09/2026 (00 h 15) — ONGLET PHOTOS : ESPACEMENT NETTEMENT RENFORCÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `187258b3c3531adc77e7e042964da9c8` | les 3 traits gris ajoutés hier sur l'onglet Photos sont plus épais et plus espacés |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `702dde55…` (00 h 05, le correctif du plantage — prioritaire,
+à pousser avant celui-ci si ce n'est pas déjà fait). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « mieux mais aère beaucoup beaucoup plus, laisse des espaces entre les différentes
+parties ».
+
+Les 3 traits ajoutés hier (sous la barre des 4 onglets, au-dessus et en dessous d'Albums) passent
+de 18 à 30 px de hauteur, arrondi plus prononcé (10 au lieu de 6), et surtout **des marges
+verticales**, là où il n'y en avait aucune avant (`margin: "0 16px"` → `"24px 16px"`) : c'est
+ça qui manquait le plus pour vraiment respirer, plus que l'épaisseur du trait lui-même. Seuls ces
+3 traits-là sont touchés ; les traits d'origine sur la page Écurie/Guilde, dont ils sont copiés,
+restent identiques.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Marqueurs : exactement
+3 traits passés de 18 à 30 px (les miens), les 8 autres traits de 18 px ailleurs dans l'app (Écurie,
+Guilde) — inchangés ; `AlbumsCheval`, `carteR`, les 12 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+L'onglet Photos, du haut en bas — les pauses entre les blocs doivent se voir nettement plus qu'hier.
+
+---
+
+# 🟥 06/09/2026 (00 h 05) — PLANTAGE CORRIGÉ EN URGENCE : LA FICHE D'UN CHEVAL NE S'OUVRAIT PLUS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `702dde555ffc757a1a38f11cbefacbe1` | corrige un plantage que j'ai introduit ce soir — toute fiche cheval refusait de s'ouvrir |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `2da4e8d2…` (23 h 35). À pousser en priorité absolue, avant tout le
+reste. Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+## MA FAUTE, DITE CLAIREMENT
+
+Blandine, capture de l'écran « Un caillou dans le sabot » : « ReferenceError : Can't find
+variable: NOMS_MIGRES », sur `EcranCheval`. **Plus aucune fiche cheval ne s'ouvrait, pour
+personne.**
+
+En corrigeant le bouton « Modifier les origines » pour Tully (22 h 05), j'ai lu `NOMS_MIGRES`
+depuis le corps du rendu de la fiche — sans vérifier où cette variable était réellement
+déclarée. Elle vivait en `var` **local**, à l'intérieur d'un effet de chargement, invisible
+partout ailleurs dans le fichier. Mon code la référençait depuis un tout autre endroit de la
+même fonction : ça plantait **au chargement de n'importe quelle fiche**, pas seulement celle de
+Tully — la première capture où ça s'est vu.
+
+**Comment ça m'a échappé** : `node --check` vérifie la syntaxe (le code est-il bien écrit), pas
+la portée des variables (cette variable existe-t-elle vraiment ici) — ce genre d'erreur ne se
+déclenche qu'à l'exécution réelle. Le démarrage headless que je fais à chaque livraison
+n'atteint que l'écran de connexion, jamais une vraie fiche cheval — il n'aurait pas vu celui-là
+non plus.
+
+## LE CORRECTIF
+
+`NOMS_MIGRES` déménage au niveau global, aux côtés de `CHEVAUX_FICHE` dont elle dépend déjà —
+accessible de partout, comme `QUOTA_CHEVAUX_EXCEPTIONS` ou `HYPE_MODERATEURS`. La déclaration
+locale, devenue inutile, est retirée ; le reste de l'effet qui la lisait déjà (chargement de la
+fiche, secours par nom) continue de fonctionner à l'identique, sans rien changer d'autre.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut. `NOMS_MIGRES` : **une seule** déclaration dans tout le
+fichier désormais (vérifié par comptage), au niveau global — accessible depuis les deux endroits
+qui en ont besoin. `CHEVAUX_FICHE[id]`, `ouvrirEditOrigines`, `parenteInfo`, `aMediasIllimites`,
+`nomsHippiquesProches`, les 34 `?v=` — identiques : correctif d'une ligne déplacée, rien d'autre
+ne bouge.
+
+## À TESTER EN PREMIER, AVANT TOUT LE RESTE
+
+Ouvrir n'importe quelle fiche cheval — doit s'afficher normalement, sans « caillou dans le
+sabot ».
+
+---
+
+# 🟩 05/09/2026 (23 h 35) — PHOTOS ET VIDÉOS ILLIMITÉES POUR BLANDINE, LIAM ET EVAN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2da4e8d2cfa64be843d4c7ab073e079e` | plus de plafond de photos ni de vidéos pour ces trois comptes |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `9c972416…` (23 h 10). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « il me limite à 15 vidéos, tu peux mettre vidéos illimitées pour Liam Evan et moi »,
+puis « et photos aussi ».
+
+## LE PRINCIPE, DÉJÀ UTILISÉ UNE FOIS
+
+Exactement la même recette que le 28/08 pour le nombre de chevaux gratuits (Evan et Liam à 30 au
+lieu de 1) : **une exception nominative, à un seul endroit, lisible en clair.** Les identifiants
+d'Evan et de Liam sont repris tels quels — déjà confirmés, déjà en service pour les chevaux, pas
+inventés pour l'occasion. Pour Blandine, pas d'identifiant sous la main ici : reconnue par son
+adresse, comme `estCompteFeinnHype` le fait déjà ailleurs dans le fichier.
+
+## CE QUE ÇA CHANGE
+
+- **Vidéos** : le plafond de 15 (même en Premium) ne s'applique plus à ces trois comptes.
+- **Photos** : le plafond de 12 (réservé aux comptes non-Premium) ne s'applique plus non plus — y
+  compris si l'un des trois n'est pas officiellement abonné Premium.
+- Rien ne change pour les autres cavalières : mêmes plafonds qu'avant, dans les deux sens
+  (Premium ou non).
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. La logique rejouée hors
+du fichier sur 10 cas : les identifiants d'Evan et de Liam, l'adresse de Blandine (telle quelle et
+avec majuscules/espaces en trop), une cavalière quelconque, un profil absent, le plafond vidéo
+appliqué à Evan et à une autre Premium, et **la compatibilité avec les appels existants qui
+n'envoient pas encore le profil** (aucun autre endroit du fichier n'est cassé par ce changement).
+Les 10 cas passent. `QUOTA_CHEVAUX_EXCEPTIONS`, `quotaGratuit`, `QUOTA_PHOTOS_GRATUIT`,
+`HYPE_MUX_VIDEOS_PREMIUM/GRATUIT`, les 12 `?v=` — identiques : rien de ce qui existait n'a bougé,
+seule une exception s'ajoute par-dessus.
+
+## NON VU À L'ÉCRAN
+
+Envoyer une 16e vidéo ou une 13e photo sur l'un de ces trois comptes — doit passer sans blocage
+ni message d'abonnement.
+
+---
+
+# 🟩 05/09/2026 (23 h 10) — GROSSE LIVRAISON : BOUTON DÉBLOQUÉ · RACE/ÂGE LUS · IDENTITÉ VÉRIFIÉE · DESCENDANTS + LIENS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9c972416a797c32814c71c7eaccfbd7d` | 5 chantiers, détaillés ci-dessous |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `f8b54b8c…` (21 h 15, le dernier index poussé connu). Si des livraisons
+plus récentes n'ont pas encore été poussées entre-temps, ce fichier les contient toutes. Aucun SQL,
+aucune image, aucun `?v=` touché.
+
+---
+
+## 1. LE BOUTON ENREGISTRER ÉTAIT BIEN COINCÉ — MÊME BUG QUE LE 28/08, DÉJÀ RÉSOLU UNE FOIS
+
+Blandine : « le bouton enregistrer est coincé en bas de la page, on n'arrive pas à y accéder à
+cause du menu ».
+
+Exactement le même problème déjà rencontré et corrigé le 28/08 sur la fenêtre « Écrire son
+histoire » : la barre de navigation du bas (84 px + zone sûre) est POSÉE PAR-DESSUS ces fenêtres,
+qui ne lui réservaient aucune place. La fenêtre Origines a grandi aujourd'hui (bouton d'import +
+8 champs arrière-grands-parents) : elle déborde désormais assez pour toucher la barre — ça
+n'arrivait pas avant. **Même correctif exact**, copié du 28/08 : 84 px + zone sûre ajoutés dans le
+padding bas, à l'intérieur de la zone qui défile. Appliqué à Origines, et par précaution à
+« Ajouter un résultat » (qui a aussi grandi aujourd'hui et pouvait déborder pareil avec plusieurs
+résultats trouvés).
+
+## 2. RACE ET ÂGE : LA CONSIGNE NE LES DEMANDAIT SIMPLEMENT JAMAIS
+
+Blandine, capture d'Orlena du Vert Vallon Z (page IFCE réelle) : race et âge restaient vides
+alors que la page les montre clairement (« Zangersheide », « né(e) en 2005 »). Pas un problème
+de lecture : la consigne envoyée à l'IA ne demandait que les noms du pedigree, jamais race ni
+âge. Ajoutés à la demande (race, année de naissance, naisseur) ; l'âge est **calculé côté app**
+depuis l'année trouvée (2026 − 2005 = 21), plus fiable que de demander un calcul à l'IA — avec un
+garde-fou si l'année lue est absurde (avant 1970 ou dans le futur).
+
+## 3. IDENTITÉ VÉRIFIÉE — REPRIS DE L'IMPORT FFE, MÊME ALGORITHME
+
+Blandine : « il vérifie pas que le cheval concerné est bien le bon — on lui met n'importe quel
+screen il change tout », puis « reprends le codage de l'ancien avec les subtilités d'espace
+d'accent etc ».
+
+Nouvelle fonction partagée `nomsHippiquesProches`, **extraite telle quelle** de
+`enregistrerImportFFE` (normalisation des accents, tolérance à la distance d'édition ≤ 2 sur les
+noms d'au moins 6 caractères — le même bruit d'extraction que « Cruibhin » devenu « Cruibhi n »).
+Les deux imports (origines et résultats) demandent maintenant à l'IA le nom du cheval concerné par
+la capture, et **refusent d'appliquer quoi que ce soit** si ce nom ne ressemble pas à celui de la
+fiche ouverte — message clair à l'appui (« Cette capture semble être celle de X, mais la fiche
+ouverte est Y »). Si la capture ne montre pas de nom clair, l'import continue comme avant (rien à
+vérifier).
+
+## 4. LES DESCENDANTS
+
+Blandine : « oui ajoute les descendants, on pourra les afficher quand on retourne la fiche des
+origines ».
+
+Sur le dos de la carte Origines, un nouveau bloc « Poulains » apparaît quand des poulains sont
+trouvés : au premier retournement de la carte (pas au chargement de la page, comme demandé), l'app
+regarde un lot de chevaux et retient ceux dont le père OU la mère **ressemble** au nom de ce
+cheval-ci (même `nomsHippiquesProches` que l'identité des imports). Rien ne s'affiche si aucun
+poulain n'est trouvé — comme le bloc Naisseur juste au-dessus, discret par défaut.
+
+## 5. LE LIEN DIRECT — FAIT POUR LES DESCENDANTS, PAS ENCORE POUR LES ASCENDANTS
+
+Blandine : « faire le lien direct dessus quand leur nom est bien confirmé et similaire ».
+
+Chaque poulain trouvé est déjà **cliquable** — même geste que partout ailleurs dans l'app, ça
+ouvre directement sa fiche. **Pas encore fait, sciemment laissé de côté cette fois** : le même lien
+sur les noms d'ascendants déjà affichés (père, mère, grands-parents dans la grille). Cette
+grille est un morceau de code dense et deja tres chargé, jamais retouché aujourd'hui : je préfère
+ne pas m'y aventurer dans la même livraison que tout le reste. Même principe prêt
+(`nomsHippiquesProches` existe déjà), à faire dans un prochain temps si tu veux.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Trois logiques
+rejouées hors du fichier : `nomsHippiquesProches` sur 6 cas (nom court/long, casse, bruit
+d'extraction type FFE, deux chevaux différents, nom vide) — les 6 passent ; le calcul d'âge
+(2005→2026 = 21 ; une année absurde → ignorée) ; la recherche de poulains sur un jeu de 4
+chevaux (père/mère en chaîne ou en objet, casse différente, exclusion du cheval lui-même) —
+trouve exactement les deux bons, aucun de trop. Marqueurs : `celPed`, `aG2`, `aG3`, `og.sire`,
+`carteR` (la grille de pedigree et les cartes d'accueil) — identiques, rien touché là ;
+`sauverOrigines`, `sauverResultat`, `enregistrerImportFFE` (le fichier a côté) — identiques ; les
+34 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+Le bouton Enregistrer atteignable en bas des deux fenêtres ; une capture d'Orlena — race et âge
+doivent se remplir ; une capture d'un AUTRE cheval que celui ouvert — doit être refusée avec le
+message d'avertissement ; la carte Origines retournée sur un cheval qui a des poulains dans l'app
+— le bloc « Poulains » doit apparaître, cliquable.
+
+---
+
+# 🟩 05/09/2026 (22 h 05) — TROUVÉ : LE BOUTON « MODIFIER LES ORIGINES » NE S'AFFICHAIT JAMAIS POUR TULLY
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b4eac13ba07f7a95de238fdceb7d26ec` | le bouton d'édition des origines (et donc l'outil d'import) s'affiche maintenant pour Tully |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `d1b3f7d4…` (21 h 40). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « je trouve pas l'outil, il serait où ? »
+
+## LA CAUSE
+
+Le crayon « Modifier les origines » ne s'affiche que si `!CHEVAUX_FICHE[id]` — « ce cheval n'est
+pas une fiche codée en dur ». Or **Tully EST une fiche codée en dur, historiquement** (avec 5
+autres chevaux de l'écurie : Rizotto, Elfe, Cooltax, Boréalis, Hey Baby Please) — migrée vers la
+vraie base depuis (`NOMS_MIGRES`), mais cette migration n'était vérifiée qu'à UN seul endroit du
+fichier (le chargement de la fiche elle-même), pas au bouton d'édition des origines. Rien à voir
+avec les livraisons d'aujourd'hui : **ce bouton n'a jamais marché pour ces 6 chevaux-là**, depuis
+qu'il existe.
+
+## LE CORRECTIF
+
+Le bouton suit maintenant la même exception que le reste du fichier : il s'affiche si le cheval
+n'est pas une fiche codée en dur, **OU** s'il l'est mais a été migré vers la vraie base. Vérifié
+avec les vraies données du fichier (`NOMS_MIGRES`, `CHEVAUX_FICHE`) sur 4 cas : Tully — apparaît
+maintenant ; une fiche démo jamais migrée — reste cachée (rien à y éditer) ; un cheval normal
+avec ou sans base — inchangé dans les deux cas. Les 4 passent.
+
+## SUR LES RÉSULTATS : PAS LE MÊME BUG
+
+Blandine a bien retrouvé « + Ajouter un résultat » (« c'était déjà fait dans tous les cas ») : sa
+condition d'affichage (`peutSaisirResultat`) ne regarde jamais `CHEVAUX_FICHE`, seulement la base
+et la propriété — ce bouton n'a jamais eu ce problème.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. `ouvrirEditOrigines`,
+`peutSaisirResultat`, `sauverResultat`, `importerOriginesDepuisCapture`, les 34 `?v=` —
+identiques : correctif d'une ligne, rien d'autre ne bouge.
+
+## NON VU À L'ÉCRAN
+
+Le crayon en haut à droite de la carte Origines, sur la fiche de Tully.
+
+---
+
+# 🟩 05/09/2026 (21 h 40) — L'OUTIL, DEUXIÈME MOITIÉ : IMPORTER LES RÉSULTATS DEPUIS UNE CAPTURE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d1b3f7d4fce428862b61bc8a1e83b6e8` | « Ajouter un résultat » sait maintenant aussi lire une capture et proposer plusieurs résultats à la fois |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `c06a89a2…` (21 h 15). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Suite de « un outil... qui saurait lire un screen de l'ifce ou de horsetelex pour remplir les
+origines et les performances » — « oui vas-y » pour la deuxième moitié.
+
+## LA DIFFÉRENCE AVEC L'IMPORT D'ORIGINES
+
+Un pedigree, c'est UN cheval à la fois — le formulaire d'origines se prête bien à être prérempli
+directement. Un historique de résultats, en revanche, montre souvent PLUSIEURS concours sur une
+seule capture. Ici, l'import ne remplit donc pas directement le formulaire « Ajouter un
+résultat » : il ouvre une **liste à cocher** (un résultat par ligne : année · concours ·
+discipline · classement), tout coché par défaut sauf ce qui existe déjà dans les résultats de
+Blandine (détecté automatiquement, comme pour la saisie manuelle depuis le 03/09, mais sans la
+question bloquante à chaque doublon — la ligne reste juste décochée). « Ajouter (N) » enregistre
+tout ce qui est coché, un par un, dans les vrais résultats du cheval.
+
+## OÙ LE TROUVER
+
+Même endroit que d'habitude : « + Ajouter un résultat » sur la fiche du cheval. Le nouveau bouton
+« Importer depuis une capture » est en haut de cette fenêtre ; la saisie à la main existante
+(année, classement, épreuve, discipline·cavalier) reste juste en dessous, inchangée, pour un
+résultat unique tapé à la main.
+
+## CE QUI N'A PAS BOUGÉ
+
+`sauverResultat` (la saisie manuelle) est **intacte, jamais touchée** — l'import utilise sa propre
+fonction (`validerImportResultats`), séparée, qui reprend la même logique d'enregistrement
+(même table, même repli si la colonne `annee` manque) sans passer par l'ancienne.
+
+## RESTE À FAIRE
+
+Les **descendants** (remplir les origines des poulains) : toujours pas commencé — ça demanderait
+de relier des fiches chevaux entre elles, un chantier à part entière.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. La logique de lecture
+et de détection des doublons (même code, isolé et rejoué hors du fichier) testée sur 3 cas :
+plusieurs résultats avec un doublon existant et une entrée vide à ignorer, un tableau vide, et le
+point délicat hérité de la règle du 03/09 — **le même concours saisi par une autre cavalière n'est
+jamais considéré comme un doublon**. Les 3 cas passent. `sauverResultat`, `resLocal`, les 12 `?v=`
+— identiques : rien ne change dans la saisie manuelle existante.
+
+## NON VU À L'ÉCRAN
+
+Le nouveau bouton, la liste à cocher sur une vraie capture avec plusieurs résultats, et le cas
+d'un concours déjà enregistré (doit apparaître décoché avec la mention « Déjà dans tes
+résultats »).
+
+---
+
+# 🟩 05/09/2026 (21 h 15) — L'OUTIL : IMPORTER LES ORIGINES DEPUIS UNE CAPTURE (IFCE, HORSETELEX)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c06a89a2879f490b60dce8c3d4025d42` | nouveau bouton dans la fiche Origines : lit une capture d'écran et préremplit le formulaire |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `ca19474e…` (20 h 45). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « un outil comme pour les performances, qui saurait lire un screen de l'ifce ou de
+horsetelex pour remplir les origines », puis « prépare l'outil ».
+
+## COMMENT ÇA MARCHE, EN SIMPLE
+
+Dans la fiche « Mon cheval » (le crayon sur la carte Origines) : un nouveau bouton « Importer
+depuis une capture (IFCE, Horsetelex…) ». Tu choisis une photo d'écran de pedigree depuis ta
+photothèque — l'app la lit et remplit toute seule les cases qu'elle a reconnues (père, mère,
+grands-parents, arrière-grands-parents). **Rien n'est enregistré tout seul** : les champs se
+remplissent, tu relis, tu corriges si besoin, et c'est le bouton Enregistrer habituel qui
+sauvegarde — exactement comme si tu avais tapé les noms toi-même. Une case déjà remplie à la
+main n'est écrasée que si la capture y trouve vraiment quelque chose ; sinon elle reste telle quelle.
+
+Si la capture ne ressemble à aucun pedigree, un message le dit (« Aucune origine reconnue dans
+cette capture ») et rien ne bouge.
+
+## COMMENT C'EST FAIT (pour la suite, si Blandine veut l'étendre)
+
+Aucune nouvelle brique technique : le bouton envoie la photo au même service que Hey Baby utilise
+déjà pour lire les vidéos de monte (`/.netlify/functions/assistant`), avec une consigne différente
+(« lis ce pedigree, renvoie du JSON » au lieu de « commente cette séance »). **Vérifié avant de
+commencer** : ce service a un quota de questions par jour côté Hey Baby (le chat), mais ce quota
+est compté uniquement PAR le chat lui-même — le fichier a déjà un autre exemple d'appel à ce même
+service qui ne passe pas par ce compteur (la synthèse silencieuse des fiches en fin de
+conversation). L'import d'origines suit ce second modèle : **aucun impact sur le quota Hey Baby**.
+
+## CE QUI N'EST PAS FAIT
+
+- **Les performances/résultats** (la deuxième moitié de la demande) : pas encore branchées. Le
+  formulaire « Ajouter un résultat » existe déjà (année, rang, épreuve, discipline·cavalier) ; le
+  même outil pourrait le remplir, avec sa propre consigne. À faire dans un second temps.
+- **Les descendants** (remplir les origines des poulains d'un étalon/d'une jument) : évoqué dans
+  la demande initiale, mais c'est un autre chantier — il faudrait pouvoir relier des fiches
+  chevaux entre elles, pas juste remplir un formulaire. Pas commencé.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. La logique de lecture
+JSON (même code, isolé et rejoué hors du fichier) testée sur 5 cas : réponse propre, réponse
+entourée de balises \`\`\`json, aucune origine trouvée, réponse invalide (panne du service), et le
+point important — **une case déjà remplie à la main n'est jamais effacée si l'IA ne trouve rien
+pour ce champ**. Les 5 cas passent. `sauverOrigines`, `ouvrirEditOrigines`, `COTES_GP`, les 12
+`?v=` — identiques : le formulaire lui-même n'a pas bougé, seul un nouveau bouton s'y ajoute.
+
+**Non testé ici** (pas d'accès réseau dans cet environnement) : le vrai appel au service depuis un
+iPhone, avec une vraie capture. À essayer en premier : une capture claire d'infochevaux.ifce.fr,
+puis une de Horsetelex, pour voir si les deux mises en page sont bien lues.
+
+## NON VU À L'ÉCRAN
+
+Le nouveau bouton dans la fiche Origines ; l'import sur une vraie capture, sur les deux sites.
+
+---
+
+# 🟩 05/09/2026 (20 h 45) — ORIGINES SUR 3 GÉNÉRATIONS · ONGLET « HISTOIRE » · RESPIRATION + TRAITS GRIS · ONGLETS EN ICÔNES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ca19474ee85ac33d78c7e02c18eb1d55` | 4 chantiers indépendants, détaillés ci-dessous |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `41b50a07…` (19 h 05). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+## 1. FORMULAIRE DES ORIGINES ÉTENDU AUX ARRIÈRE-GRANDS-PARENTS
+
+Blandine : « plus développé que le père et le père de mère », puis « oui les 3 ».
+
+La carte Origines (celle qui se retourne, en haut de la fiche) savait DÉJÀ afficher jusqu'aux
+arrière-grands-parents (8 chevaux) — ce n'était pas une limite du code. Le formulaire pour les
+saisir à la main, lui, s'arrêtait aux 4 grands-parents. **8 nouveaux champs ajoutés**
+(père.père.père, père.père.mère, père.mère.père, père.mère.mère, et pareil côté mère), groupés par
+grand-parent (« Père du père », « Mère du père », « Père de la mère », « Mère de la mère »),
+même présentation à deux colonnes que les grands-parents. Sauvegarde non destructrice étendue
+d'un cran : un arrière-grand-parent inchangé garde son propre détail (rien de plus profond,
+3 générations est la limite actuelle de la carte).
+
+## 2. ONGLET RENOMMÉ « HISTOIRE » (AU LIEU DE « SON HISTOIRE »)
+
+Blandine, capture à l'appui : « Son histoire » passait sur deux lignes dans l'onglet, cassant
+l'alignement avec les trois autres (Photos/Performances/Vidéos, tous un seul mot). Changé aux
+deux endroits qui doivent rester assortis (l'onglet ET le titre en haut de sa page) ; la fenêtre
+« Écrire son histoire » n'est pas touchée, ce n'est pas le même texte.
+
+## 3. RESPIRATION SOUS LES ONGLETS + TRAITS GRIS AUTOUR DES ALBUMS
+
+Blandine : « c'est trop écrasé et compact — reproduis l'espace entre l'onglet du haut et la
+suite comme sur la page Écurie, et ajoute deux traits gris comme sur la page Écurie au-dessus et
+en dessous des Albums ».
+
+Même bloc gris que la page Écurie/Guilde (`#15181C`, 18 px de haut, arrondi 6, marge latérale 16) :
+- Un trait sous la barre des 4 onglets, partagé par Histoire/Photos/Performances/Vidéos — la
+  respiration demandée, au même endroit pour les quatre.
+- Deux traits, au-dessus et en dessous de la section Albums, dans l'onglet Photos.
+
+## 4. ONGLETS EN ICÔNES (COMME LA PAGE D'ACCUEIL DU CHEVAL)
+
+Blandine, capture des 6 cartes de la page d'accueil (Histoire/Performances/Santé/Photos/
+Vidéos/Actualité) : « est-ce qu'on pourrait pas garder ceux qu'on avait sur la première page,
+quitte à les mettre un peu plus petits ? »
+
+Les 4 onglets qui ont un vrai panneau (Histoire, Photos, Performances, Vidéos) reprennent
+maintenant EXACTEMENT les mêmes icônes que les cartes de la page d'accueil (même tracé SVG,
+copié depuis `carteR`) — un petit cercle coloré quand actif, gris sinon, avec le libellé en
+dessous, à la place des pilules de texte. **Santé et Actualité restent hors de cette barre** :
+elles n'ont pas de panneau/onglet propre aujourd'hui (Santé ouvre un écran à part, Actualité est
+fermée) — seuls les 4 qui ont vraiment un onglet ici en ont repris l'icône.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Les 4 tracés SVG
+réutilisés apparaissent chacun exactement 2 fois (la carte d'origine + le nouvel onglet) — icones
+identiques garanties, pas redessinées à la main. `setPanneau`, `carteR(`, `peutGererPhotoOuverte`,
+`photosSel`, les 12 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+Les 4 onglets en icônes ; l'espace sous la barre des onglets ; les traits gris autour d'Albums ;
+le formulaire des origines jusqu'aux arrière-grands-parents (bouton crayon sur la carte Origines).
+
+## RESTE À FAIRE (« les 3 », suite)
+
+- L'outil qui lit une capture IFCE/Horsetelex pour préremplir origines + résultats — pas
+  commencé, plus gros chantier, une question de quota Hey Baby à vérifier avant.
+- Rendre la carte Origines plus visible dans Histoire — elle reste pour l'instant dans l'en-tête
+  (visible sur tous les onglets), pas dupliquée dans le corps de l'onglet Histoire.
+
+---
+
+# 🟩 05/09/2026 (20 h 05) — SUPPRIMER (ET ★ VEDETTE, QUI ÉTAIT AUSSI CASSÉE) DANS LA VISIONNEUSE, POUR TOUTE PHOTO
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f8b54b8c629409c1f3a66e7f41c204b4` | Supprimer et ★ Vedette marchent maintenant sur une photo de la chronologie ou d'un album, pas seulement sur une photo postée en commentaire |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `383e079c…` (19 h 40). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine, en voyant la visionneuse sans Supprimer sur une photo de concours : « j'efface les photos
+où ? », puis « oui » pour que je m'en occupe.
+
+## ⚠️ UNE DEUXIÈME CORRECTION SUR CETTE VISIONNEUSE
+
+En creusant Supprimer, j'ai trouvé que ★ Vedette avait **exactement le même trou** — et que je
+lui avais dit le contraire il y a une heure (« ★ Vedette et 💬 marchent partout »). C'était faux :
+sa vérification de propriété ne lisait, elle aussi, que `mediasInfo` (les photos-commentaires).
+Sur une photo de chronologie ou d'album, le bouton affichait toujours « Seul le propriétaire peut
+mettre cette photo en vedette » — même pour la propriétaire du cheval. Corrigé en même temps que
+Supprimer, avec la même règle : une seule fonction désormais (`peutGererPhotoOuverte`), au lieu de
+deux copies qui auraient pu diverger encore.
+
+## CE QUI ETAIT VRAI (ni invente ni casse aujourd'hui)
+
+Le bouton Supprimer de cette visionneuse n'a **jamais** su supprimer qu'une photo postée en
+commentaire isolé (`mediasInfo`, alimenté par `listerCommentaires`). Une photo de la chronologie ou
+d'un album ne s'y est jamais rattachée — ni Supprimer ni (on le sait maintenant) ★ Vedette n'y ont
+jamais marché. Ce n'est pas une régression du retrait de Galerie à 19 h 40 : c'était déjà le cas
+avant, la seule façon de retirer une photo d'album était (et reste) d'ouvrir cet album précis et
+d'utiliser le retrait directement sur sa vignette.
+
+## CE QUI EST FAIT
+
+1. **Une règle unique**, `peutGererPhotoOuverte()` : vraie si (photo-commentaire ET propriétaire du
+   commentaire) OU (photo de chronologie/album ET propriétaire DU CHEVAL) OU modératrice dans les
+   deux cas. Supprimer et ★ Vedette l'utilisent tous les deux — avant, chacun avait sa propre copie
+   de la vérification (dont une fausse).
+2. La chronologie transmet maintenant l'album d'origine de chaque photo à la visionneuse
+   (`visionneuseAlbumId`) ; remis à zéro à la fermeture et sur toutes les autres portes d'entrée de
+   la visionneuse (flots, aperçu de la page d'accueil, onglet Vidéos) pour qu'il ne s'accroche
+   jamais à la mauvaise photo.
+3. **Nouvelle suppression pour les photos d'album/chronologie** (`supprimerPhotoAlbumOuverte`) : reprend
+   le même geste que le retrait déjà existant dans un album ouvert (retire l'url de la liste des
+   photos de l'album, rien d'autre ne change dans cet album). Un aiguillage (`supprimerPhotoOuverte`)
+   choisit la bonne suppression selon la source de la photo ouverte ; l'ancienne suppression
+   (photos-commentaires) est **intacte**, jamais touchée.
+4. Retirer une photo d'un album depuis la visionneuse ne retire QUE cette photo-là de CET album —
+   les autres photos, les autres albums, rien d'autre ne bouge.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Marqueurs : les 4 endroits
+qui ouvrent la visionneuse en dehors de la chronologie remettent bien `visionneuseAlbumId` à zéro
+(vérifié un par un) ; `supprimerSouvenirOuvert` (l'ancienne suppression) — inchangée, toujours
+appelée ; `mediasInfo`, `basculerVedette`, `photosSel`, les 12 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+Ouvrir une photo de chronologie — Supprimer et ★ Vedette doivent apparaître pour la propriétaire
+du cheval ; supprimer une photo depuis là doit la faire disparaître aussi de son album et de la
+chronologie (même donnée). Sur une photo postée en commentaire : rien ne doit avoir changé.
+
+---
+
+# 🟩 05/09/2026 (19 h 40) — GALERIE RETIRÉE DE PHOTOS — ALBUMS AVANT CHRONOLOGIE — CORRECTION D'UNE EXPLICATION INEXACTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `383e079ce4206aff3a57f32a217fb444` | Galerie retirée de l'onglet Photos ; Albums avant Chronologie ; Supprimer/Vedette préservés |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `d4f905a1…` (19 h 20). Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « retire-le [Galerie], on verra plus tard pour un fil photo + commentaire type Facebook —
+on commence par les albums et ajouter en haut de la page, et après ça part sur la chronologie ».
+
+## ⚠️ CORRECTION D'UNE RÉPONSE DONNÉE PLUS TÔT DANS LA JOURNÉE
+
+En préparant ce retrait, j'ai découvert que ma réponse à « Galerie sert à quoi ? » (18 h 50 environ)
+était **inexacte**. J'avais décrit `chargerPhotosSouvenirs` (vedettes + commentaires + TOUS les albums)
+en pensant que c'était la source de la Galerie de l'onglet Photos. **Ce n'est pas elle** : cette Galerie
+utilisait `GrilleSouvenirs`, une fonction différente, qui ne lit QUE les photos postées en commentaire
+isolé (`listerCommentaires`) — jamais les photos d'album. Un commentaire dans le code lui-même, daté
+du 27/07, le dit noir sur blanc : deux galeries qui se ressemblent, deux sources totalement séparées.
+`chargerPhotosSouvenirs` existe bien et fusionne vraiment les trois — mais elle alimente l'aperçu
+compact de la page d'accueil du cheval (`AlbumsPromus`), pas l'onglet Photos. Pas touchée aujourd'hui.
+
+Ça ne change rien à la décision de retirer Galerie — au contraire, ça colle encore mieux à l'idée de
+Blandine : ces photos postées en commentaire sont déjà, de fait, une ébauche du « fil photo +
+commentaire » qu'elle envisage pour plus tard.
+
+## CE QUI EST FAIT
+
+1. **Albums avant Chronologie** dans l'onglet Photos (ordre inversé).
+2. **Galerie retirée** (en-tête + grille + le réglage « Vignettes entières/recadrées/auto », qui
+   vivait à l'intérieur de `GrilleSouvenirs`, disparaît avec elle). Rien n'est perdu en base : les
+   photos postées en commentaire restent visibles là où le commentaire a été posté.
+3. **Préservé, malgré le retrait** : les boutons Supprimer et ★ Vedette de la visionneuse, pour les
+   photos postées en commentaire, s'appuyaient sur des informations (qui a posté la photo) que
+   `GrilleSouvenirs` chargeait elle-même. Ce chargement est repris indépendamment, plus haut dans le
+   fichier — sans ça, Supprimer/Vedette auraient cessé de marcher sur ces photos pour tout le monde
+   sauf les modératrices, en silence.
+4. Les photos « vedette » (★, visibles sur la fiche même) ne dépendaient déjà pas de Galerie —
+   confirmé avant de retirer, rien à faire de ce côté.
+5. `GrilleSouvenirs` (la fonction) **reste dans le fichier, inutilisée** — pas supprimée : utile le
+   jour où Blandine construira le fil photo + commentaire.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Marqueurs : `setGalVideCh`
+2→0 (propre) ; `GrilleSouvenirs` 2→5 (fonction gardée + 4 mentions dans les commentaires
+explicatifs) ; `mediasInfo`/`listerCommentaires`/`basculerVedette`/`vedettes` — écarts examinés un par
+un, tous attendus (le retrait du seul appel à `GrilleSouvenirs`, rien d'autre) ; les deux vérifications
+de la visionneuse (Supprimer, ★ Vedette) toujours branchées sur `mediasInfo` ; `AlbumsCheval`,
+`ChronologieSouvenirs`, `chargerVedettesSouvenirs`, `panneau === "actualite"`, `chapPartage`, les 12
+`?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+L'onglet Photos dans le nouvel ordre (Albums puis Chronologie, sans Galerie) ; Supprimer et ★ Vedette
+depuis la visionneuse sur une photo postée en commentaire (pas juste sur une photo d'album).
+
+---
+
+# 🟩 05/09/2026 (19 h 20) — CHANGER L'ANNÉE : PLUSIEURS PHOTOS À LA FOIS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d4f905a17119fee1840742225bcf78fb` | « Changer l'année d'une photo » accepte maintenant plusieurs photos à la fois, même année pour toutes |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `41b50a07…` (19 h 05). Rien d'autre ne change. Aucun SQL, aucune image,
+aucun `?v=` touché.
+
+---
+
+Blandine : « ajoute le changement d'année aussi — qu'on puisse peut-être en sélectionner plusieurs
+et les changer d'année ».
+
+**Avant** : dans le mode « Changer l'année d'une photo » (page Photos, sous chaque année), taper une
+photo la choisissait — en taper une deuxième REMPLAÇAIT la première. Une seule à la fois.
+
+**Maintenant** : chaque tap sur une photo l'AJOUTE à la sélection (ou la retire si elle y était déjà)
+— le contour coloré existant marque chaque photo choisie, comme avant, juste sur plusieurs à la fois.
+Une année, tapée une fois, s'applique à TOUTES les photos sélectionnées dès « Valider ». Au-delà de
+1 photo choisie, un petit compteur (« 3 photos sélectionnées ») apparaît pour confirmer combien sont
+prises. Le texte d'aide s'adapte (« Tape une ou plusieurs photos à corriger » / « Donne l'année, puis
+valide »). Rien d'autre ne change : le bouton d'entrée, le contour de sélection, Annuler.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Marqueurs :
+`photoSel` (l'ancien, une seule valeur) 7→1 — le seul restant est mon propre commentaire
+d'explication, pas du code ; `photosSel` (le tableau) 0→10, `setPhotosSel` 0→5 ;
+`appliquerAnneePhoto`, `modeAn`, les 34 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+Choisir 2-3 photos dans une même année (page Photos), leur donner une nouvelle année, Valider —
+toutes doivent bouger ensemble.
+
+---
+
+# 🟩 05/09/2026 (19 h 05) — SOUVENIRS RENOMMÉ « SON HISTOIRE » (ONGLET + TITRE) — SUR FEU VERT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `41b50a078fe48dee24d221989d6a61f7` | l'onglet « Souvenirs » et le titre en haut de sa page s'appellent maintenant « Son histoire » |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `5feedaec…` (18 h 50). Rien d'autre ne change : Photos, Performances,
+Vidéos — identiques, comme demandé. Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « en gros Souvenirs ça devrait être Histoire, on y arrive par l'onglet nommé l'histoire
+— Photo, résultat et vidéos je préfère les garder tels quels », puis « feu vert ».
+
+Deux endroits changent, le mot exact — rien d'autre :
+- Le bouton de l'onglet, dans la barre des quatre (Souvenirs/Photos/Performances/Vidéos).
+- Le titre affiché en haut une fois dedans (« … · [nom du cheval] » après).
+
+Le mot choisi, **« Son histoire »**, n'est pas inventé : c'est exactement celui déjà utilisé pour le
+titre de la fenêtre « Écrire son histoire » (et ses traductions) — même mot partout, aucune
+incohérence nouvelle. Le contenu de l'onglet ne bouge pas : Histoire (le récit écrit) + les
+conseils Hey Baby, comme déjà décidé le 29/08.
+
+**Le Fil n'y a pas été touché** — Blandine a d'abord dit « éventuellement aussi le fil, je sais pas,
+tu en dis quoi ? » puis « t'emballe pas sans moi » avant le feu vert : la question reste ouverte,
+réponse donnée dans le chat, rien codé sur ce point.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut ; démarrage headless : propre. Marqueurs :
+`T("Souvenirs"` 8→6 (les deux remplacées), `T("Son histoire"` 2→4 (les deux ajoutées), la
+condition interne `panneau === "souvenirs"` et l'ordre de balayage entre onglets — identiques
+(seul le texte affiché change, pas l'identifiant technique) ; Photos/Performances/Vidéos,
+`chapFil` (0, la suppression du 18 h 50 tient), les 12 `?v=` — identiques.
+
+---
+
+# 🟩 05/09/2026 (18 h 50) — LE FIL RETIRE DE LA FICHE CHEVAL — IL Y EN AVAIT BIEN DEUX
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `5feedaec9bd10f4a381872770a724eee` | l'aperçu compact du Fil, sur la page d'accueil du cheval (avant tout onglet), est retiré |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `7b13f9fb…` (18 h 30). Rien d'autre ne change : Souvenirs, Photos,
+Performances, Vidéos, Partager sa fiche — identiques. Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine : « retire le fil pour l'instant, il y en a un deuxième sur la page cheval elle-même en
+plus ». Confirmé en lisant le code : il y avait bien DEUX Fils sur la fiche d'un cheval.
+
+**Le premier : la page ACTUALITÉ** (`panneau === "actualite"`). Déjà construite le 29/08, avec le
+Fil en entier — volontairement GRISÉE « Prochainement » en attendant que Blandine décide qui peut
+publier et ce qu'est un post. Elle n'apparaît dans AUCUN des 4 onglets visibles
+(Souvenirs/Photos/Performances/Vidéos) : c'est le « 5ème [onglet], pas encore ouvert » dont parle
+Blandine. **Rien touché ici : elle reste en l'état, prête pour quand Blandine voudra l'ouvrir.**
+
+**Le second, retiré aujourd'hui : un aperçu compact du Fil** (rail, « Partage un moment… » +
+« Tout le fil »), affiché sur la page d'accueil du cheval, AVANT même de choisir un onglet —
+c'est ça, « la page cheval elle-même ». Signe qu'il n'avait plus sa place : son lien « Tout le fil »
+rouvrait l'onglet Souvenirs — qui ne montre plus le Fil depuis le 29/08 (Souvenirs = uniquement
+l'Histoire du cheval depuis cette date-là).
+
+## VÉRIFIÉ
+
+Première tentative : la virgule qui séparait ce bloc du suivant (`chapPartage`) n'était pas
+retirée avec lui → `node --check` a immédiatement signalé la syntaxe cassée, corrigé avant
+tout envoi. Ensuite : `node --check` sur les 18 blocs — 0 défaut ; démarrage headless — propre.
+Marqueurs : `chapFil` 2→0 (les deux occurrences, dont l'id dupliqué), `setPanneau` 39→38
+(l'appel `onVoirTout` du Fil disparu avec lui) ; Souvenirs/Photos/Performances/Vidéos,
+Partager sa fiche et les 12 `?v=` — identiques.
+
+## NON VU À L'ÉCRAN
+
+La page d'accueil d'un cheval, sans le bandeau Fil entre les Médias et le Partage.
+
+---
+
+# 🟩 05/09/2026 (18 h 30) — LA VIDÉO MARCHE (captures 17 h 54) · LA CARTE « FICHIER REÇU » DESCEND DANS LE PANNEAU
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7b13f9fb170bf3180089a58838076738` | carte « Fichier reçu » / « Envoyé » dans le panneau (plus de calque fixe qui masque la mascotte) · « Vidéo » à la place du nom aléatoire iOS |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `ed075a25…` (18 h 15). Rien d'autre ne change. Aucun SQL, aucune image, aucun `?v=` touché.
+
+---
+
+**Blandine, 17 h 54, deux captures : « Top merci les vidéos marchent ».** Sur l'album « Vidéos CSO Liam » :
+« Envoi en cours… » dans les deux boutons, la mascotte, la carte « Fichier reçu : b81160a6-….mp4 · 18.2 Mo —
+envoi en cours… ». **Fin de quatre jours** : la chaîne complète tourne, et cette fois elle se voit.
+
+Sa remarque : « le petit texte est un peu haut, il masque l'animation ». La carte « Fichier reçu » était un
+calque fixe au bas de l'écran (même place que la carte rouge d'erreur, `+ 96 px` au-dessus des onglets) :
+elle recouvrait la mascotte et le message « Reste sur l'app… ».
+
+## CE QUI EST FAIT
+
+- La carte **quitte le calque fixe** et se pose **dans le panneau**, entre les boutons d'ajout et la carte de
+  la mascotte. Elle ne recouvre plus rien, elle pousse. Toujours jusqu'à Fermer, toujours « Envoyé » à la fin,
+  `alerte()` l'efface toujours (la carte rouge, elle, reste au bas de l'écran comme avant).
+- Le nom que donne iOS à une vidéo convertie (`b81160a6-04fc-….mp4`) n'apprend rien : la carte affiche
+  **« Vidéo · 18.2 Mo »** quand le nom est un identifiant aléatoire. Un vrai nom de fichier reste affiché.
+
+## CONTRÔLES
+
+`node --check` 18 blocs : 0 défaut ; démarrage headless identique ; les 12 `?v=` intacts ; carte rouge
+`alerteA` intacte (vérifié).
+
+## NON VU À L'ÉCRAN
+
+La carte dans le panneau, sous les boutons, au-dessus de la mascotte.
+
+---
+
+# 🟩 05/09/2026 (18 h 15) — LA VIDÉO « GRISÉE » QUI SE FERME AU TAP : LE TAP SIMPLE FERMAIT LA VISIONNEUSE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ed075a250430ecf89d0129baebc5aa6f` | sur une vidéo : le tap simple ne ferme plus la visionneuse ; un glisser sur la barre de lecture n'est plus un balayage |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `ab5356b0…` (17 h 45). Rien d'autre ne change (workflow, plan : inchangés). Aucun
+SQL, aucune image, aucun `?v=` touché.
+
+---
+
+Blandine, 18 h 10 : « quand on lance une vidéo elle est grisée, on tape dessus une fois pour retirer le grisé
+et elle se ferme à la place ».
+
+**Le « grisé », c'est iOS** : le voile des commandes natives de la vidéo (lecture, ± 10 s, barre), qui
+s'affiche au lancement et se masque d'un tap. Ce tap arrivait aussi à `PhotoZoomHype`, qui, depuis toujours
+pour les photos, ferme la visionneuse sur un tap simple confirmé (300 ms sans second tap). La vidéo a hérité
+de ce geste le 05/09 en entrant dans le même composant (« une vidéo, on devrait surtout pouvoir zoomer »).
+Résultat : masquer le voile = fermer.
+
+## CE QUI EST FAIT (`PhotoZoomHype`, branche `tag === "video"` seulement)
+
+1. **Le tap simple ne ferme plus** une vidéo : il appartient aux commandes natives. La croix ferme, et un tap
+   à côté de la vidéo (bandes noires) aussi. Le **double tap (zoom)** est conservé, le pincer et le glisser
+   en zoom aussi.
+2. **Un glisser qui commence sur la barre de lecture** (bas de la vidéo, 30 % inférieurs) n'est plus pris pour
+   un balayage vers la photo suivante — c'était l'autre piège du même héritage : avancer dans la vidéo
+   changeait de média. Un balayage qui part du haut de la vidéo passe toujours à la suivante.
+
+Les photos ne changent pas d'un poil : tap simple = fermer, comme avant.
+
+## VÉRIFIÉ (Chromium headless, écran tactile simulé, `PhotoZoomHype` monté seul)
+
+- vidéo, tap au centre → `onFermer` **0** fois ; glisser de 120 px depuis le bas → `onAller` **0** ; depuis le
+  haut → `onAller` **1** ; image, tap au centre → `onFermer` **1** (l'ancien comportement, intact).
+- `node --check` 18 blocs : 0 défaut ; démarrage headless identique ; marqueurs 0 écart, 12 `?v=` intacts.
+
+## NON VU À L'ÉCRAN
+
+Le vrai iPhone : le voile se masque au tap, la visionneuse reste ; la barre de lecture se manipule sans
+changer de média.
+
+---
+
+# 🟩 05/09/2026 (17 h 45, repris à 18 h) — LA COQUE NATIVE EST LIVRÉE (« vas-y oui ») · LE « VRAI SÉLECTEUR » · MUX RESTE · UN SEUL FICHIER À POUSSER
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ab5356b09a372fd70dabbf019b02898c` | tout ce qui est en 17 h 20 **+** la branche native (`hypeNatif`) — inerte sur le web |
+| `SUIVI.md` | racine | — | ce suivi |
+| `.github/workflows/build-ios.yml` | `.github/workflows/` | — | **le seul fichier natif à pousser** : il fabrique lui-même le projet (Capacitor, plugins, fastlane) sur le Mac de GitHub, puis construit, signe et envoie sur TestFlight ; **vert et muet tant que les secrets Apple manquent** |
+| `PLAN-APP-NATIVE.md` · `PASSATION.md` | où elle veut | — | plan à jour (§ 4 bis : les 7 secrets et l'ordre des gestes), passation à jour |
+
+⚠️ `index.html` **remplace** `5268ef80…` (17 h 20) — si celui-là n'est pas encore poussé, pousser directement
+celui-ci, il contient tout. Aucun SQL nouveau, aucune image de l'app, aucun `?v=` touché, `index.ts` intact.
+⚠️ **18 h — simplification** : Blandine (« toutes les images png, les erreur, icon… j'en fais quoi ? »). Une
+première version livrait un dossier `natif/` de 11 fichiers (dont 3 PNG) à recréer un par un sur GitHub
+depuis l'iPhone — irréaliste. **Retiré.** Le workflow écrit maintenant ces fichiers lui-même à chaque build
+(`package.json`, `capacitor.config.json`, `www/index.html`, `www/erreur.html`, `Gemfile`, `Fastfile`,
+`Appfile`, `Matchfile`) ; si un fichier existe déjà dans le dépôt sous `natif/`, il est gardé tel quel.
+L'icône : celle par défaut de Capacitor tant que `natif/resources/icon-only.png` n'est pas dans le dépôt
+(une seule image à déposer, plus tard). Les PNG et le zip de 17 h 45 : **à jeter.**
+⚠️ Pousser ce workflow déclenche un passage : **il s'arrête en vert** avec un mot dans le journal tant que
+`ASC_KEY_ID` n'existe pas. Rien ne casse, rien ne coûte.
+
+---
+
+## LA RÉPONSE À « PLUS BESOIN DE MUX ? »
+
+Non — et ce sont deux choses différentes. **Choisir** la vidéo : c'est là que l'app native change tout
+(le sélecteur rend l'original, tout de suite, sans la conversion iOS qui prenait des minutes en silence).
+**Héberger et lire** la vidéo : c'est Mux (stockage, encodage HLS, vignettes, lecture fluide chez toutes
+les cavalières, plafond de 15). Rien de tout ça n'est fait par l'app. Le seul candidat pour remplacer Mux
+serait Supabase Storage, et c'est exactement ce qui échouait avant le 03/09 (« The object exceeded the
+maximum allowed size », pas de lecture adaptée, pas de vignettes). Donc : **l'app native supprime l'attente,
+Mux reste la maison des vidéos.** Bonus : Mux avale le HEVC d'origine, plus petit que la version convertie —
+l'envoi est plus court aussi.
+
+## CE QUI EST LIVRÉ
+
+**`index.html` — la branche native, inerte sur le web** (`hypeNatif()` rend `null` sans `window.Capacitor`) :
+- `hypeNatif()` : le pont Capacitor, plugins `FilePicker` et `Uploader` pris par `registerPlugin`
+  (la page est distante, rien n'est importé).
+- `hypeNatifChoisirVideo()` : `pickVideos({ limit: 1, skipTranscoding: true })` → **pseudo-fichier**
+  `{ __natif, path, name, type, size, duration }` ; `null` si annulé ; `{ error }` si le plugin refuse.
+- `dureeVideoFichier` : pour un pseudo-fichier, la durée vient du sélecteur (pas de `<video>`).
+- `hypeMuxEnvoyerFichier` : pour un pseudo-fichier → `hypeMuxEnvoyerNatif` : `Uploader.startUpload`
+  (PUT binaire, `Content-Type` du fichier, 2 reprises), progression par les événements `uploading`,
+  fin sur `completed` (code 2xx) ou `failed`, écouteur retiré, garde 15 min. **Même contrat** `{ ok } / { error }`.
+- Le bouton « + Vidéo » : natif → sélecteur direct, `direFichiersRecus` + `importerFichiers` (compteur,
+  3 min, `mux-upload`, encodage, album : **le code d'aujourd'hui**) ; web → la carte de 17 h 20.
+- Vérifié sur un pont Capacitor **simulé** (Chromium headless) : web → `null` ; natif → options du
+  sélecteur, pseudo-fichier reconnu vidéo, durée 61,5 s, PUT avec 40 %, `{ ok }`, écouteur retiré,
+  annulation → `null`, échec → `{ error: "réseau" }`. Le vrai iPhone reste à voir (TestFlight).
+
+**La coque** (fabriquée par le workflow, étape « Fabriquer le projet natif ») : Capacitor 8, `server.url` =
+`https://2hype.netlify.app` (chaque poussée Netlify met l'app à jour, rien ne repasse par Apple),
+`errorPath` = `erreur.html`, `allowNavigation` (Netlify, Supabase, Mux). Plugins `@capgo/capacitor-file-picker`
+et `@capgo/capacitor-uploader` en `latest` (majeur aligné sur Capacitor 8 — si `npm install` refuse, c'est la
+première chose à lire dans Actions). Identifiant et nom : `env:` en tête du workflow, **avant** le premier build.
+
+**Fastlane** (`beta`) : `produce` (fiche App Store Connect, une fois) → `match` (certificat + profil dans le
+dépôt privé `MATCH_GIT_URL`, chiffrés par `MATCH_PASSWORD`, créés au premier passage) →
+`update_code_signing_settings` (signature manuelle du projet généré) → `build_app` → `upload_to_testflight`.
+Numéro de build = numéro du run GitHub.
+
+**Workflow** : `macos-15` ; garde des secrets ; fabrication de `natif/` ; Node 22, Ruby 3.3, `bundle install`,
+`npm install`, `cap add ios` (le projet Xcode n'est **jamais** dans le dépôt, il est regénéré à chaque build),
+`capacitor-assets` seulement si `natif/resources/icon-only.png` existe, `cap sync ios` (Pods),
+`fastlane ios beta`. Déclenché sur toute poussée touchant le workflow ou `natif/**`, ou à la main. L'étape
+« Fabriquer » a été **simulée ici** (bash) : les 8 fichiers sortent justes, JSON valides, site injecté.
+
+## CE QUE BLANDINE FAIT (PLAN § 4 bis)
+
+Apple Developer (99 $/an) → Team ID → clé API App Store Connect (Issuer ID, Key ID, fichier `.p8`) →
+dépôt privé `hype-certificats` → jeton fine-grained sur ce dépôt → les 7 secrets Actions → Run workflow →
+TestFlight, testeuse interne. Identifiant `fr.ecuriefeinn.hype` et nom « Hype » : à changer **avant** le
+premier build si elle veut autre chose (deux lignes `env:` en tête du workflow).
+
+## RISQUES DITS
+
+- Premier build à l'aveugle : `match` (accès au dépôt privé, mot de passe) et la signature sont les deux
+  endroits qui accrochent d'habitude. Lire l'étape rouge, m'envoyer la capture.
+- `convertFileSrc` est volontairement **évité** : avec un site distant en https, iOS ne peut pas
+  intercepter `_capacitor_file_` — d'où l'envoi natif par `Uploader` depuis le chemin du fichier.
+- Stripe : dans l'app, `window.open` / `location.href` vers Stripe sortira vers Safari
+  (`allowNavigation`). Acceptable pour TestFlight ; à trancher avant l'App Store (règle 3.1.1, plan § 6).
+- Liens des mails Supabase (réinitialisation) : ils ouvrent Safari, pas l'app (Universal Links, plus tard).
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : `node --check` sur les 18 blocs : 0 défaut ; démarrage headless identique ; pont
+  Capacitor simulé : 8 vérifications vertes. YAML du workflow et JSON de la coque validés.
+- **Marqueurs** (23 repères + `?v=`) : 0 écart inattendu (`hypeNatif` +11 nouveaux), les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (17 h 20) — L'ENREGISTREMENT DE 16 H 25 A TRANCHÉ : LE SÉLECTEUR NE REND RIEN TANT QU'iOS PRÉPARE LA VIDÉO · LA CARTE « ENVOYER UNE VIDÉO » · « FICHIER REÇU » QUI RESTE · LE TOAST ENFIN LISIBLE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `5268ef8061a60215c46470e061d9576c` | carte « Envoyer une vidéo » sous « + Vidéo » · carte « Fichier reçu » → « Envoyé » qui reste jusqu'à Fermer · toast multi-ligne · titre « Envoi terminé » pour le message de succès |
+| `SUIVI.md` | racine | — | ce suivi |
+| `PASSATION.md` | où elle veut (l'app ne s'en sert pas) | — | passation à jour : le bloc rouge « test à faire » est remplacé par le résultat |
+| `PLAN-APP-NATIVE.md` | où elle veut (l'app ne s'en sert pas) | — | le plan de l'app native — le « vrai sélecteur » |
+
+⚠️ `index.html` **remplace** `44b8b764c0f4fdd7811fc86db2101b5a`. Aucun SQL nouveau (`lieu.sql` reste à
+passer, sans rapport avec la vidéo), aucune image, aucun `?v=` touché. `supabase/functions/mux-upload/index.ts`
+inchangé : `409ddb7d…` en ligne ; `1912b9df…` (contrôle désactivé) **non poussé, sur décision de Blandine — on n'y touche pas**.
+
+---
+
+## CE QUE L'ENREGISTREMENT MONTRE (ScreenRecording 16-25-15, 69 s, lu image par image)
+
+- La version en ligne est bien `44b8b764` : le message d'ouverture du sélecteur y est — **illisible**,
+  coupé aux deux bouts (« …ud, conversion). Ça peut prendre plusieurs minutes SANS rien aff… »).
+- 16 h 26 : une vidéo cochée dans l'album Tully, ✓ tapé. Le sélecteur **reste ouvert**, aucune
+  progression, rien. ✓ retapé une dizaine de fois. Retour aux albums, puis la croix, 15 s après le ✓.
+- Pendant ces 15 s **l'app n'a rien reçu** : pas d'événement `change`, donc pas de « Fichier reçu »,
+  pas d'appel à `mux-upload`, pas d'envoi. La croix annule tout (iOS ne signale pas l'annulation).
+- **Le test A/B de la passation est donc fait** : « Fichier reçu » n'apparaît PAS tout de suite →
+  l'attente est **avant** que l'app ait le fichier. La fonction Supabase n'est pas dans le coup. Et le
+  fait du 15 h 46 (une vidéo partie dix minutes après) est le même mécanisme, vu jusqu'au bout.
+
+## LA SOURCE — CE N'EST PLUS UNE HYPOTHÈSE
+
+WebKit, `Source/WebKit/UIProcess/ios/forms/WKFileUploadPanel.mm`, méthode
+`_preferredAssetRepresentationMode` : le sélecteur Photos est ouvert en
+`PHPickerConfigurationAssetRepresentationModeCompatible` → **il convertit la vidéo avant de la rendre à
+la page**. Le commit WebKit `275726@main` (« Avoid transcoding images on file inputs unless… ») a
+arrêté la conversion des **images** selon `accept`, mais dit noir sur blanc : *« Videos remain exempted
+from this behavior change due to known compatibility issues »* et *« Continue to transcode video… for
+compatibility »*. Donc, sur iOS, **une page web reçoit toujours une vidéo convertie**, quel que soit
+`accept`, quel que soit le réglage de l'app. En app installée cette conversion **n'affiche rien**
+(l'enregistrement). Seul un sélecteur **natif** (mode `.current`) rend l'original sans conversion —
+c'est `PLAN-APP-NATIVE.md`.
+
+## CE QUI EST LIVRÉ
+
+1. **« + Vidéo » ouvre une carte** (`feuilleVideo`) dans le flux du panneau, sous les trois boutons —
+   pas de calque détaché, pas de portail, pas de `.click()`. Dedans : l'explication en 6 langues
+   (« Après ✓, le sélecteur reste ouvert pendant que ton iPhone prépare la vidéo — parfois plusieurs
+   minutes, sans rien afficher. Ne le ferme pas (la croix annule tout) »), un `<label>` « Choisir dans ma
+   photothèque » qui enveloppe le champ `video/*` + `multiple` (le mode qui a le ✓ — mécanisme
+   identique à « Ma photothèque »), un bouton Annuler. La carte se referme quand le sélecteur rend des
+   fichiers ; sinon elle reste (iOS ne signale pas l'annulation). Le rappel « après mise en veille »
+   s'y affiche quand `refRevenuVeille` est posé. `scrollIntoView({ block: "nearest" })` à l'ouverture.
+2. **« Fichier reçu : nom · poids » est une carte qui reste** (`infoA`) jusqu'à Fermer, et devient
+   « Envoyé » à la fin de l'envoi. Photos seules : un toast bref de 2,5 s suffit. `alerte()` efface
+   cette carte avant d'afficher la sienne : jamais deux cartes superposées.
+3. **Le toast (`toastA`) revient à la ligne** (max `100vw − 28px`, rayon 18) : plus aucun message coupé.
+4. **Le message d'ouverture de « Ma photothèque »** est réécrit court (9 s) ; le rappel de mise en
+   veille est accolé au même texte (deux `bip()` à la suite, le second effaçait le premier).
+5. **La carte rouge « L'envoi a échoué » servait aussi au message de succès** « Ta vidéo est bien
+   envoyée… » (encodage Mux en cours) : `alerte(m, true)` → titre « Envoi terminé », bordure turquoise.
+
+## NON VU À L'ÉCRAN — À REGARDER
+
+1. La carte vidéo sous les trois boutons ; le sélecteur qui s'ouvre bien depuis **son** label.
+2. La carte « Fichier reçu » puis « Envoyé ».
+3. **Le test des 30 secondes** : dans Tully, le clip de **4 s**, ✓, **ne pas fermer**, compter jusqu'à 30.
+   Il doit passer seul : carte « Fichier reçu », « Envoi … % », puis la vidéo dans l'album.
+
+## CE QUI RESTE VRAI
+
+- L'attente après ✓ est dans iOS. En web, on ne peut que la **dire** ; on ne peut ni l'écourter ni la
+  montrer. Fermer le sélecteur l'annule.
+- Les 4 copies de la vidéo dans l'album (tentatives du matin) : à retirer à la main.
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : `node --check` sur les 18 blocs inline : 0 défaut. Démarrage headless (Chromium,
+  scripts externes bouchonnés) : même écran, mêmes messages que le fichier de base.
+- **Marqueurs** (23 repères + `?v=`) : 0 écart inattendu (`envoiCours` +4, `prevenirSelecteurIos` −1,
+  `feuilleVideo` / `infoA` nouveaux), les 12 `?v=` intacts.
+
+🟥 **Leçon** : l'enregistrement de 16 h 25 a été ouvert **avant** d'écrire une ligne. Dix minutes, et la
+question de quatre jours était tranchée par ce qu'il montrait, pas par ce que je croyais.
+
+---
+
+# 🟥 05/09/2026 (15 h 50) — LA CLÉ DES QUATRE JOURS : L'ENVOI MARCHE, C'EST iOS QUI PREND DIX MINUTES EN SILENCE AVANT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `44b8b764c0f4fdd7811fc86db2101b5a` | avertissement à l'ouverture du sélecteur · « Fichier reçu » / « sélecteur refermé sans fichier » |
+| `SUIVI.md` | racine | — | ce suivi |
+| `PASSATION.md` | racine | — | passation à jour |
+
+⚠️ `index.html` **remplace** `a32d17f35f938c858ba4d9aafeafe4ca`. Le SQL `lieu.sql` reste à passer.
+
+---
+
+Blandine, 15 h 46, capture à l'appui (« Envoi 40 % » dans la rangée de l'album) :
+« au bout de 10 mn y en a une qui vient de partir en silence d'un coup, je sais même pas
+laquelle ». Juste avant : « aucun message d'erreur, je les sélectionne et il se passe juste
+rien », « elles chargent même pas ».
+
+## CE QUE ÇA VEUT DIRE
+
+**L'envoi fonctionne.** La chaîne complète — sélecteur, fonction `mux-upload`, PUT chez Mux,
+progression — a marché. Ce qui ne marchait pas, c'est **l'attente avant** : dix minutes entre
+« Ajouter » et le début de l'envoi, sans un mot.
+
+Ces dix minutes sont **iOS, pas l'app**. Quand la photothèque est en « Optimiser le stockage
+de l'iPhone », les vidéos ne sont pas sur le téléphone : elles sont dans iCloud. À l'appui sur
+« Ajouter », iOS doit **télécharger la vidéo entière** (plusieurs centaines de Mo en 5G),
+souvent la **convertir** (HEVC → H.264 pour le web), et **seulement ensuite** rendre le fichier
+à la page. En app installée, iOS n'affiche **aucune progression** pour cette phase. L'app,
+elle, n'a encore rien reçu : l'événement `change` n'arrive qu'à la fin. Elle ne peut rien
+afficher d'elle-même.
+
+Ça explique **tout** ce qui a été observé en quatre jours : « il ne se passe rien », « faut
+faire deux fois » (la seconde fois, la vidéo était déjà téléchargée), « ça marchait hier »
+(vidéo déjà locale), les tentatives abandonnées au bout de deux minutes, et la copie
+verticale apparue dans la photothèque (le fichier converti par iOS).
+
+## CE QUI EST LIVRÉ
+
+- **À l'ouverture du sélecteur** (Ma photothèque / Vidéo), un message de 12 s : « Après
+  “Ajouter”, iOS prépare la vidéo (téléchargement iCloud, conversion). Ça peut prendre
+  plusieurs minutes SANS rien afficher. Ne quitte pas l'app : l'envoi démarre tout seul
+  ensuite. » C'est le seul moment où l'app peut parler.
+- **À la réception** : « Fichier reçu : nom · poids — envoi en cours… » — la preuve que
+  l'app a le fichier. Et si le sélecteur se referme **sans** fichier (conversion iOS
+  échouée) : un message le dit, au lieu du silence d'avant.
+
+## CE QUI RESTE VRAI, ET QUE L'APP NE PEUT PAS CHANGER
+
+- Le téléchargement iCloud et la conversion se font **dans iOS**, hors de portée d'une app
+  web. Une app native aurait le même délai, mais pourrait afficher une progression.
+- **Le vrai remède est côté réglage** : Réglages → Photos → « Télécharger et conserver les
+  originaux » sur le téléphone de la cavalière, ou attendre le Wi-Fi. À dire aux
+  cavalières. Blandine peut le vérifier sur son propre iPhone.
+- Quitter l'app pendant cette phase l'interrompt : iOS suspend la page, le fichier ne sera
+  jamais rendu.
+
+🟥 **Leçon** : quatre jours de « il ne se passe rien » étaient un **temps d'attente**, pas une
+panne. Un « rien » qui dure dix minutes n'est pas un bug de code : c'est quelque chose qui
+travaille sans le dire. La première question aurait dû être « combien de temps as-tu
+attendu ? ».
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (16 h 30) — LE LIEU SUR LES ALBUMS ET LES PHOTOS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `a32d17f35f938c858ba4d9aafeafe4ca` | lieu d'album (menu « … », bandeau) · lieu de photo (visionneuse) |
+| `SUIVI.md` | racine | — | ce suivi |
+| `lieu.sql` | racine (ou nulle part — c'est à passer dans Supabase) | — | 2 colonnes + 1 contrainte |
+
+⚠️ `index.html` **remplace** `67a35a4aaf06f449f852e8039f5c8c58`.
+
+🟥 **LE SQL D'ABORD.** Sans les colonnes, l'app affiche « Lieu non enregistré — la colonne
+manque peut-être côté base » à chaque tentative, et n'enregistre rien. Rien ne casse, mais
+rien ne marche. Supabase → SQL Editor → coller `lieu.sql` → Run.
+
+---
+
+## CE QUI EST FAIT
+
+Blandine : « lieu sur photo et album, vas-y ».
+
+**Album** — colonne `albums_cheval.lieu`. Entrée **« 📍 Lieu »** dans le menu « … » du
+bandeau, entre Visibilité et Identifier, avec le lieu actuel en sous-titre. Boîte de saisie
+clonée de Renommer (60 caractères max, Entrée pour valider). Affiché dans le sous-titre du
+bandeau : « 91 souvenirs · Public · 📍 Fontainebleau ».
+
+**Photo** — colonne `photo_dates.lieu`, même clé `photo_url` que l'année. Bouton **« 📍
+Lieu »** à côté d'Identifier en haut de la visionneuse d'album, qui montre le lieu s'il
+existe. Écriture réservée à qui gère l'album (mêmes droits que le retrait) ; en lecture
+seule, le lieu s'affiche sans bouton. Chargé à chaque ouverture / balayage de photo
+(`chargerLieuPhoto`). Écriture : `update` si la ligne `photo_dates` existe, sinon `insert`
+avec `source: "manuel"` — d'où le `drop not null` sur `prise_le` dans le SQL.
+
+Le lieu **n'apparaît pas encore** sur la visionneuse de page (Photos / Médias), ni sur les
+cartes d'album côté Médias, ni dans la frise Souvenirs. Ajout pur, à décider.
+
+⚠️ **Non vu à l'écran.** À vérifier : le bouton 📍 tient à côté d'Identifier sans déborder
+(largeur max 150 px, points de suspension) ; le sous-titre du bandeau reste sur une ligne
+avec un lieu long.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (16 h) — LE RECALAGE APRÈS LE CLAVIER · LA PASSATION
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `67a35a4aaf06f449f852e8039f5c8c58` | `onBlur` des champs de commentaire → page remise à zéro |
+| `SUIVI.md` | racine | — | ce suivi |
+| `PASSATION.md` | racine | — | résumé de la session pour reprendre |
+
+⚠️ `index.html` **remplace** `9df336cc04772820f5f4ae2bb6173236`.
+
+---
+
+## LE GEL APRÈS UN COMMENTAIRE — HYPOTHÈSE CLAVIER, CORRECTIF DÉFENSIF
+
+Blandine a confirmé que le gel suit l'usage du champ de commentaire (« oui »). Sur iOS en
+app installée, l'ouverture du clavier réduit le viewport visuel et fait défiler la page
+derrière le calque `position: fixed` de la visionneuse ; à la fermeture, le défilement
+reste et le calque apparaît décalé — page de dessous visible en haut, bas recouvert. C'est
+la capture de 15 h 14.
+
+`hypeRecalerApresClavier()` : `window.scrollTo(0, 0)` + `scrollTop = 0` 80 ms après la perte
+de focus. Branché en `onBlur` sur les deux champs (visionneuse d'album `texteCommentaire`,
+visionneuse de page `cmTexte`).
+
+⚠️ **Hypothèse.** Si le gel persiste, la cause est ailleurs et il faudra un enregistrement
+du geste complet (like → commentaire → fermeture du clavier).
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟥 05/09/2026 (15 h 40) — LE PLAFOND DE 48 ÉVINÇAIT LES VIDÉOS DE L'ONGLET VIDÉOS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9df336cc04772820f5f4ae2bb6173236` | plafond de `chargerPhotosSouvenirs` sur les photos seules · galerie rafraîchie |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `29f516a074d1432b2b3dcf3e5284b3bc`.
+
+---
+
+## LA CAUSE, ENFIN
+
+Blandine, capture 15 h 26 (entourée en orange) : sa vidéo n'est pas dans un album. Elle est
+dans la **Galerie** de la fiche — envoyée par « Ajouter une photo » de la Galerie, donc
+stockée comme **souvenir publié** (`listerCommentaires`, `photo_url`), pas dans
+`albums_cheval`. Et la vidéo affichée dans l'onglet Vidéos est une ancienne, dans un album.
+
+L'onglet Vidéos lit `chargerPhotosSouvenirs(cible)`, qui construit une liste dans l'ordre
+**vedettes → souvenirs publiés → albums**, puis fait `ph.slice(-48)` : les 48 **dernières**
+entrées. L'album « CSO avec Liam » a 91 photos, ajoutées en dernier. À lui seul il remplit
+les 48 places. Les souvenirs publiés — dont la vidéo — étaient **coupés**. Toujours.
+
+Le plafond ne s'applique plus qu'aux **photos** ; toutes les vidéos sont conservées. L'ordre
+d'origine est préservé, puis inversé comme avant.
+
+Aussi : le rafraîchissement de 14 h ne rechargeait que les albums d'`AlbumsPromus`. Il
+recharge maintenant aussi la galerie (`chargerPhotosSouvenirs`), puisque c'est là que vont
+les envois de la Galerie.
+
+🟥 **Leçon** : « c'est public, c'est sur la bonne cible, ça devrait y être » — j'ai relu la
+chaîne trois fois sans regarder **le plafond au bout**. Un `.slice(-N)` sur une liste
+concaténée est un filtre déguisé : ce qui est ajouté en premier disparaît en premier.
+
+⚠️ `chargerPhotosSouvenirs` a **7 appelants** (rail Médias, bande de la fiche, etc.) : ils
+recevront désormais toutes les vidéos en plus des 48 photos. Sur un cheval avec beaucoup de
+vidéos, les rails s'allongent. **Non vu à l'écran.**
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (15 h 20) — LE TROISIÈME CHAMP VIDÉO (ONGLET VIDÉOS), OUBLIÉ CE MATIN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `29f516a074d1432b2b3dcf3e5284b3bc` | `multiple` sur le champ vidéo de l'onglet Vidéos |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `1f004d4dbbecfd58965cdc09aed1ed17`.
+
+---
+
+Blandine, capture 15 h 12 : depuis « + Ajouter une vidéo » de l'onglet Vidéos, le sélecteur
+iOS s'ouvre **sans bouton de validation** — le même symptôme que ce matin. Ce matin j'avais
+corrigé les deux champs d'`AlbumsCheval` ; il y en avait un **troisième** dans `EcranCheval`
+(`ref: vdIn`, ligne ~39216), oublié. `multiple: true` ajouté ; le traitement ne prend
+toujours que le premier fichier.
+
+🟥 **Leçon** : `grep accept: "video/*"` avant de dire « c'est corrigé partout ». Trois
+occurrences, pas deux.
+
+---
+
+## ⚠️ « QUAND ON LIKE UNE PHOTO, L'ÉCRAN SE FIGE, OBLIGÉ DE RELANCER L'APP » — NON RÉSOLU
+
+Capture 15 h 14 : visionneuse **d'album** (bouton « Mettre en vedette » visible), barre
+♥ 1 / 💬 0, champ « Ton commentaire… » ouvert, et **la page de dessous visible en haut**
+(« Identifier », la grille) — la visionneuse ne couvre plus tout l'écran. Le bas est
+recouvert : le champ de commentaire chevauche « Mettre en vedette ».
+
+Vérifié et **écarté** : le bouton like ne ferme pas la visionneuse (la barre fait
+`stopPropagation`, ligne 36457) ; `basculerLikeVisu` est trivial (état optimiste + une
+requête).
+
+Hypothèse non vérifiée : **le clavier**. Le champ « Ton commentaire… » est ouvert ; sur iOS
+en app installée, l'ouverture puis la fermeture du clavier décale les éléments en
+`position: fixed` (le voile de la visionneuse en est un) — c'est le même mécanisme que
+l'espace blanc de 360 px de l'import FFE, noté dans le suivi. La visionneuse « figée » serait
+en réalité déplacée hors de l'écran, avec la page de dessous qui réapparaît.
+
+**À savoir avant de coder :** le gel arrive-t-il **après avoir touché le champ de
+commentaire** (clavier ouvert puis fermé), ou en tapant seulement le ♥ sans jamais toucher
+le champ ? Ce n'est pas la même piste.
+
+## ⚠️ « LES VIDÉOS DE LA PAGE PHOTO N'APPARAISSENT PAS SUR LA PAGE VIDÉO »
+
+La capture 15 h 11 montre **une** vidéo dans l'onglet Vidéos. L'onglet dédoublonne (une
+même vidéo présente 4 fois dans l'album n'y apparaît qu'une fois) et, depuis la livraison de
+14 h, se rafraîchit après un envoi. Si d'autres vidéos manquent, il faut savoir lesquelles
+— anciennes (.mp4 Supabase) ou Mux (.m3u8) — et dans quel album elles sont.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (14 h 15) — « PAR BLANDINE » SOUS LES ALBUMS DES AUTRES, CÔTÉ MÉDIAS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1f004d4dbbecfd58965cdc09aed1ed17` | nom de l'auteur sur la carte d'album (Médias) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `dc8e74308e1b7511e03bf176b86406d7`.
+
+---
+
+Deuxième des trois points validés par Blandine sur la visibilité des albums (le premier —
+la phrase à la création — est livré depuis ce matin ; le troisième — la notification au
+propriétaire — reste à faire).
+
+Côté Médias (`AlbumsPromus`), tous les albums publics du cheval s'affichent quel que soit
+leur auteur, et rien ne le disait. Maintenant : une requête `profiles` pour tous les
+auteurs de la liste, et **« par <pseudo> »** en petit sous le titre — **seulement** quand
+l'album n'est pas à celle qui regarde. Ses propres albums restent sans mention.
+
+Si la lecture des pseudos échoue (`r.error`), on n'écrit rien et on ne bloque rien.
+
+⚠️ **Non vu à l'écran.** À vérifier : la ligne ne déborde pas de la carte de 168 px.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (14 h) — L'ONGLET VIDÉOS ET LE RAIL MÉDIAS SE METTENT À JOUR APRÈS UN ENVOI
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `dc8e74308e1b7511e03bf176b86406d7` | rafraîchissement d'`AlbumsPromus` sur événement |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `b8d1df991d3a50ee9193849777c02486`.
+
+---
+
+`AlbumsPromus` (rail Médias, et source de l'onglet Vidéos via `onVideosTrouvees`) chargeait
+les albums une fois au montage et ne les relisait jamais. Une vidéo envoyée après
+l'ouverture de la fiche n'apparaissait dans l'onglet qu'après rechargement complet.
+
+`charger()` dans `AlbumsCheval` — appelé après chaque envoi, retrait, création, suppression,
+changement de couverture — émet maintenant un événement de document
+`hype-albums-modifies` avec la cible. `AlbumsPromus` l'écoute et recharge si la cible
+correspond. Aucune autre logique touchée.
+
+---
+
+## 🔍 LA CROIX DE LA FICHE CHEVAL QUI RENVOIE AU PROFIL — CHERCHÉ, PAS TROUVÉ
+
+Blandine (05/09, 1 h 30) : « je suis sur l'écurie, j'ouvre une fiche cheval, je la ferme
+avec la croix, je reviens sur ma page profil cavalier ».
+
+Ce qui a été vérifié :
+- `EcranCheval` n'a **aucun bouton de retour à lui** : le retour est le geste global du
+  routeur (`retourEcran`, pile `historiqueEcrans`).
+- Il existe **deux fiches** : `cheval` (`EcranCheval`) et `cheval-commun`
+  (`EcranChevalCommun`). La seconde a son propre `retour()` qui va vers
+  `window.__hyccRetour || "dashboard"` — et `__hyccRetour` n'est posé qu'à **un seul**
+  endroit (`"cheval"`). Ouverte depuis ailleurs, la fiche commune renvoie au **dashboard**.
+- `EcranEcurie` ne redirige pas vers le profil au montage (vérifié sur son début).
+
+**Non résolu.** Pour aller plus loin il faut savoir **depuis quelle page exactement** : l'onglet
+« Écurie » de la barre, la page « chevaux de l'écurie » (`ecurie-hype`), ou la page du club —
+et si la fiche ouverte est la perso (`cheval`) ou la commune (`cheval-commun`, celle avec le
+socle partagé). La « croix » n'existe que sur la commune ; sur la perso c'est un chevron.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (13 h 40) — LA VIDÉO SE ZOOME COMME UNE PHOTO
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b8d1df991d3a50ee9193849777c02486` | `PhotoZoomHype` porte aussi les vidéos |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `9d30d703132bd8d1a340404cceb0d22b`. `index.ts` inchangé (déjà poussé,
+dossier `mux-upload` propre, un seul fichier).
+
+---
+
+Blandine : « une vidéo, on devrait surtout pouvoir zoomer ».
+
+`PhotoZoomHype` ne portait qu'un `<img>`. Ses gestes (pincer, glisser, double tap, balayage,
+plafond de couche GPU, cadrage neuf à chaque source) ne dépendaient pas de la balise : seul
+le rendu final était spécifique. Il accepte maintenant `tag: "video"` et rend alors une
+`<video>` avec les mêmes gestes, les commandes natives (les gestes ne font pas
+`preventDefault`, les commandes restent actives), et les deux sources MP4 puis HLS.
+
+Les deux visionneuses (page et album) passent leurs vidéos par ce composant. Le balayage
+entre médias vient de `PhotoZoomHype` (`onAller`) ; dans la visionneuse d'album, il appelle
+`naviguerVisu`. Le `stopPropagation` de `debut` empêche le balayage de la racine de se
+déclencher en double.
+
+⚠️ **Non vu à l'écran.** À vérifier : pincer zoome la vidéo ; les commandes lecture/pause
+répondent encore ; le double tap ne bloque pas le bouton lecture ; le plein écran natif
+n'est plus noir sur une vidéo dont le MP4 est prêt.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (12 h) — LA VIDÉO : PLEIN ÉCRAN NOIR, BANDE ÉTROITE, TAP QUI FERME
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9d30d703132bd8d1a340404cceb0d22b` | MP4 d'abord dans les deux visionneuses · tap inerte sur vidéo · pleine largeur |
+| `SUIVI.md` | racine | — | ce suivi |
+| `index.ts` | `supabase/functions/mux-upload/` | `409ddb7d110bcb20683812c8bc89ecb6` | `mp4_support: "capped-1080p"` |
+
+⚠️ `index.html` **remplace** `3e6c7bf0e7356b2c93bcf23afa08c71c`. `index.ts` remplace celui
+poussé ce matin (Actions doit repasser au vert).
+
+---
+
+## CE QUE LES IMAGES FIXES DE L'ENREGISTREMENT ONT MONTRÉ (11 h 37)
+
+Blandine : « impossible de la passer en plein écran, obligé de tourner le tel, et quand on
+clique dessus pour zoomer elle ferme la vidéo ». Extraction à 1 image/s, planche de 8 :
+
+1. **Le plein écran natif s'ouvre — et il est NOIR.** Commandes présentes (lecture, ±10 s),
+   temps qui avance (0:00 → 0:31), aucune image. C'est iOS en app installée avec un flux
+   HLS (`.m3u8`). Ce n'est pas « impossible de passer en plein écran » : on y est, il est vide.
+2. **Dans la visionneuse, la vidéo est une bande étroite** (horizontale sur écran vertical,
+   `maxHeight 82 %`, arrondi, ombre). Tout le tour est du voile, et **un tap sur le voile
+   ferme**. « Quand on clique pour zoomer, ça ferme » : elle touchait le noir, pas la vidéo.
+3. **Tourner le téléphone** étire la bande avec les boutons de l'app pivotés dessus. Ce
+   n'est pas un mode paysage.
+
+## LES TROIS CORRECTIONS
+
+- **MP4 d'abord.** `hypeMuxMp4(u)` dérive `stream.mux.com/<id>/capped-1080p.mp4` du `.m3u8`
+  stocké. Les deux visionneuses proposent `<source>` MP4 puis `<source>` HLS : si le MP4
+  n'existe pas, iOS passe au suivant tout seul. Côté fonction, `mp4_support: "capped-1080p"`
+  dans `new_asset_settings` — **compatible avec `video_quality: "basic"`** (vérifié dans la
+  doc Mux : encodage gratuit, stockage du MP4 facturé pour basic, quelques centimes).
+- **Sur une vidéo, seule la croix ferme.** Le tap sur le voile est inerte, dans les deux
+  visionneuses.
+- **Pleine largeur, voile noir plein, sans arrondi ni ombre**, dans la visionneuse de page.
+
+⚠️ **Correction de ce que j'ai dit à Blandine** : les vidéos déjà en ligne ne « resteront pas
+noires ». Mux permet d'activer le MP4 **après coup** sur un asset existant
+(`PUT /video/v1/assets/{ASSET_ID}/mp4-support`). Non fait — à faire depuis le tableau de bord
+Mux ou par un appel, si elle le veut pour la vidéo de Tully.
+⚠️ **Non vu à l'écran.** Le MP4 met plus longtemps à être prêt que le HLS : juste après un
+envoi, c'est le HLS qui jouera ; le MP4 prend le relais aux lectures suivantes.
+⚠️ Les vignettes et le rail Médias continuent d'utiliser le `.m3u8` avec `#t=0.01` — non
+touchés, ils n'ont pas le problème du plein écran.
+
+## AUSSI CONSTATÉ, NON CORRIGÉ
+
+- **L'onglet Vidéos lit les albums une fois au chargement** (`AlbumsPromus`,
+  `[props.cible]`) et ne les relit jamais. Une vidéo envoyée après l'ouverture de la fiche
+  n'y apparaît qu'après rechargement. Blandine a vu la vidéo « en 4 exemplaires » dans
+  l'album (ses tentatives du matin) et « nulle part » dans l'onglet — le premier est vrai,
+  le second est ce cache. À corriger : rafraîchir après un envoi.
+- **« Il la lit toujours pas »** depuis l'onglet Vidéos : non expliqué. La visionneuse
+  s'ouvre (capture 11 h 40 montre la tuile) ; ce qui se passe au tap n'a pas été vu.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟥 05/09/2026 (11 h 25) — LE SÉLECTEUR VIDÉO : C'ÉTAIT LE MODE SIMPLE, PAS iOS · ET UN CRASH « CAN'T FIND VARIABLE: M »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `3e6c7bf0e7356b2c93bcf23afa08c71c` | bouton Vidéo en mode multi · crash `M` corrigé |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `cce8b74236d7f0e57259aafe1b774fe3`.
+
+---
+
+## 🟥 LE SÉLECTEUR VIDÉO — UNE SEMAINE SUR UNE FAUSSE PISTE
+
+Blandine, capture à l'appui : dans le sélecteur ouvert par « **Vidéo** », il n'y a **pas de
+bouton de validation**. Dans celui ouvert par « **Ma photothèque** », il y est, en haut à
+droite — et elle a pu envoyer une vidéo par ce chemin.
+
+La différence entre les deux : `multiple`. Le bouton Vidéo avait été fabriqué le 27/08 **sans**
+`multiple`, en croyant que c'était le mode multi qui coinçait (bug WebKit #238318). **C'était
+l'inverse** : sur iOS, le mode simple pour `video/*` ouvre un sélecteur sans bouton de
+confirmation. On coche, rien ne valide. Le mode multi a le bouton.
+
+Corrigé : `multiple: true` sur le champ Vidéo (et sur le champ caché de l'album vide).
+`importerFichiers` recevait déjà une liste, rien d'autre ne change.
+
+🟥 **Leçons** :
+- Le contournement du 27/08 a été posé **sans vérification visuelle** du sélecteur. Une
+  capture du sélecteur aurait montré l'absence du bouton en dix secondes.
+- Cette nuit, trois hypothèses (feuille du bas, verrou `envoiCours`, calque détaché) ont été
+  codées et livrées avant de **regarder les images fixes de l'enregistrement** que Blandine
+  avait envoyé dès 00 h 38. Regarder d'abord.
+- Le bug WebKit #238318 existe bel et bien (menus déroulants, dates, fichiers après une mise
+  en veille) — mais il n'était **pas** la cause ici. L'avertissement au retour d'arrière-plan
+  livré ce matin reste utile pour ce cas-là ; il ne remplace pas ce correctif.
+
+Note de Blandine : « il se coche dans le vide » — la coche n'a pas l'air de se marquer, mais
+le bouton est là et l'envoi part. À surveiller.
+
+---
+
+## 🟥 CRASH « CAN'T FIND VARIABLE: M » SUR LA FICHE CHEVAL
+
+Écran « Un caillou dans le sabot » sur la fiche cheval, deux captures à 11 h 17 et 11 h 19.
+`ReferenceError: Can't find variable: M`, dans `EcranCheval`.
+
+`M` est une variable **locale** définie dans plusieurs autres composants
+(`var M = "'Montserrat',sans-serif"`), **jamais dans `EcranCheval`**. Une seule ligne y
+faisait `fontFamily: M` — le bloc d'affichage d'erreur `epErr` de la section Performances.
+Dès que ce bloc se rendait, la fiche entière tombait. **Préexistant** (présent dans le fichier
+de départ), révélé aujourd'hui.
+
+Remplacé par la police en clair, comme les 72 autres `fontFamily` du composant.
+
+⚠️ Il y a un `fontFamily: M, marginTop: iA` juste au-dessus dans la même zone — il est **dans
+un autre composant** (hors des bornes d'`EcranCheval`) où `M` est défini. Non touché.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (12 h 10) — LE BALAYAGE SUR LA PAGE PHOTOS NE MARCHAIT QUE SUR L'IMAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `cce8b74236d7f0e57259aafe1b774fe3` | balayage étendu à tout l'écran de la visionneuse de page |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `3d9762617d4484eca94122ea348fb684`.
+
+---
+
+## LA CAUSE
+
+Sur la page Photos, la visionneuse est `PhotoZoomHype`, et **ses écouteurs tactiles sont
+posés sur le `<img>` seulement**. Une photo en portrait laisse de larges bandes noires à
+gauche et à droite : un balayage qui part de là ne touche pas l'image, donc ne fait rien.
+La visionneuse des albums, elle, écoute sur tout l'écran — d'où l'impression que « ça
+marche dans les albums mais pas sur la page Photos ».
+
+Le mécanisme (liste `window.__visListe`, `onAller`) était intact. Seule la zone d'écoute
+était trop petite.
+
+## LA CORRECTION
+
+Le voile de la visionneuse de page écoute aussi (`onTouchStart` / `onTouchEnd`, seuil 50 px,
+dérive verticale < 70), avec la **même** navigation que `onAller`. Il **ignore** les touchers
+partis de l'image (`target.tagName === "IMG"`) : `PhotoZoomHype` s'en charge déjà, sinon on
+avancerait de deux photos par balayage.
+
+⚠️ **Non vu à l'écran.** À vérifier : un balayage sur la bande noire passe à la suivante ;
+un balayage sur l'image aussi, une seule fois ; un tap sur le noir ferme toujours.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (11 h 55) — « OU ÇA REVIENT SUR UNE AUTRE PAGE » : LA VISIONNEUSE D'ALBUM LAISSAIT PASSER LE BALAYAGE GLOBAL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `3d9762617d4484eca94122ea348fb684` | `data-noswipe` sur la visionneuse d'album |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `b4ca6e2d6af4bfb65d62566b77aedabf`.
+
+---
+
+## LA CAUSE, CELLE-LÀ EST SÛRE
+
+L'app a un **balayage global** (`onNavTouchStart` / `onNavTouchEnd`, ligne ~23958) : 65 px
+horizontaux changent d'écran. Il s'efface quand la cible du toucher est sous un élément
+marqué `[data-noswipe]`.
+
+La visionneuse **de la page** porte ce marqueur. Celle **des albums** ne l'avait pas. Un
+balayage pour passer à la photo suivante (seuil 60 px dans `surToucheFin`) déclenchait
+donc **aussi** le balayage global : la photo suivante s'affichait, et l'app changeait d'écran
+en dessous. À la fermeture de la visionneuse, on se retrouvait ailleurs.
+
+Un attribut ajouté : `"data-noswipe": "true"` sur la racine de la visionneuse d'album.
+
+Deux symptômes différents, deux causes différentes, livrées ensemble :
+- « ça plante » → mémoire, images réduites à 1600 px (livraison précédente, probable)
+- « ça revient sur une autre page » → balayage global, marqueur ajouté (celle-ci, certaine)
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (11 h 45) — « PASSER D'UNE PHOTO À L'AUTRE, ÇA PLANTE » : LES VISIONNEUSES CHARGEAIENT L'ORIGINAL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b4ca6e2d6af4bfb65d62566b77aedabf` | les deux visionneuses chargent une version réduite (1600 px) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `b0cfb4ec932a2b88eb212fbad1db9896`.
+
+---
+
+## LA CAUSE PROBABLE : LA MÉMOIRE
+
+Les deux visionneuses — celle des albums (`visu`) et celle de la page (`PhotoZoomHype`) —
+chargeaient **l'original** : `src: visu`, `src: visionneuse`. Une photo d'iPhone fait
+4032 px de large ; décodée, c'est ~50 Mo. Trois ou quatre balayages, et Safari tue la
+page sans un mot. C'est ce qui ressemble à « ça plante ».
+
+**Non prouvé** — Blandine n'a pas dit si l'app se ferme, se fige ou affiche du noir. Mais
+c'est la cause la plus probable, et la correction est utile dans tous les cas.
+
+## LA CORRECTION
+
+Nouvelle fonction `grandeImageHype(u, cote)` à côté de `vignetteHype` : elle demande au
+service d'images de Supabase (plan Pro, actif depuis le 04/09) une version qui tient dans
+`cote × cote` **sans recadrage** (`resize=contain`, qualité 82). 1600 px suffisent à un
+écran de téléphone, même zoomé.
+
+- Visionneuse d'album : `src: grandeImageHype(visu, 1600)`, repli sur l'original via
+  `replierVignette` si le service échoue.
+- Visionneuse de page : même chose, avec une prop `original` passée à `PhotoZoomHype` qui
+  gagne un `onError` de repli.
+
+⚠️ `vignetteHype` reste en `resize=cover` (recadrage carré) — c'est voulu pour les
+vignettes. Ne pas les fusionner.
+⚠️ **Non vu à l'écran.** À vérifier : que le zoom dans la visionneuse de page reste net à
+1600 px, et que le balayage entre photos ne plante plus.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (11 h 30) — 10 PHOTOS PAR ENVOI · L'ALERTE AU RETOUR D'UN ENVOI INTERROMPU
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b0cfb4ec932a2b88eb212fbad1db9896` | plafond de 10 par envoi · témoin d'envoi interrompu |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `abdbad29e7116342ab2d4e7ed02caf2d`.
+
+---
+
+## 10 PHOTOS MAXIMUM PAR ENVOI
+
+Il n'y avait **aucun plafond par envoi** — seulement par compte (12 en gratuit, illimité en
+Premium). Soixante photos cochées = soixante réductions en mémoire puis soixante envois un
+par un ; au-delà d'une cinquantaine, Safari peut fermer la page sans un mot.
+
+Décision de Blandine : **10 par envoi** (`HYPE_PHOTOS_PAR_ENVOI`, ligne ~1584). Au-delà, les
+10 premières partent et un message de 6 s dit : « 10 photos maximum par envoi — les N
+suivantes partiront au prochain envoi. » Les vidéos ne sont pas comptées dans ce plafond
+(elles ont le leur, par compte).
+
+---
+
+## L'ALERTE QUAND ÇA PLANTE — ON PRÉVIENT AU RETOUR
+
+Blandine : « mettre une alerte quand ça plante ou charge pas, en expliquant pourquoi ».
+
+Le problème : quand la page meurt au milieu d'un envoi (Safari qui ferme faute de mémoire,
+iOS qui suspend l'app passée en arrière-plan), **aucun code ne tourne plus** pour prévenir.
+Une alerte à ce moment-là est impossible.
+
+Donc on prévient **au retour** : un témoin `hype_envoi_en_cours` est posé dans
+`sessionStorage` au début de `importerFichiers` (album, nombre de fichiers, heure), retiré
+dans le `finally`. À l'ouverture d'`AlbumsCheval`, s'il est encore là, c'est que la page a
+été fermée en plein envoi : une alerte le dit, avec les deux causes probables et la
+consigne — ce qui est parti est conservé, renvoyer le reste par petits lots sans quitter
+l'app. Le témoin est effacé aussitôt pour ne pas se répéter.
+
+⚠️ `sessionStorage` survit à un rechargement de page mais **pas** à une fermeture complète
+de l'app. Une fermeture par Safari faute de mémoire recharge la page : le témoin est là.
+Un balayage hors du sélecteur d'apps l'efface : pas d'alerte dans ce cas, ce qui est
+acceptable — l'utilisatrice a fermé elle-même.
+⚠️ **Non vu à l'écran.**
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (11 h 10) — LES CARTES D'ALBUM S'ADAPTENT AU NOMBRE · « +7 VOIR LES PHOTOS SUIVANTES »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `abdbad29e7116342ab2d4e7ed02caf2d` | cartes d'album adaptatives · libellé de la tuile |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `19dccadda829c7277c36770b43f64d4b`.
+
+---
+
+## LES CARTES D'ALBUM — PLUS JAMAIS DE TROU
+
+Blandine : « quand il n'y a qu'un seul album, que la carte fasse toute la largeur ; que ça
+s'adapte au nombre d'albums pour qu'il n'y ait jamais de trou ».
+
+`carteAlbum` reçoit maintenant l'index et la liste (`.map` les passe déjà) :
+
+- **1 album** → pleine largeur, format bandeau (`aspectRatio 1.55 / 1`)
+- **2 albums** → moitié chacun, carrés
+- **3 et plus** → le rail de 168 px d'avant, qui défile
+
+⚠️ **Non vu à l'écran.** Le cas à regarder en premier : deux albums côte à côte — que les
+titres en dessous ne se chevauchent pas.
+
+---
+
+## LA TUILE « +7 VOIR TOUT »
+
+Elle existait déjà et faisait exactement ce que Blandine demandait — déplier l'album sur
+place — mais ne se lisait pas comme un bouton. Libellé changé : **« Voir les photos
+suivantes »**, en deux lignes centrées sous le « +7 ». Le comportement est inchangé.
+
+Le seuil de 16 photos (15 + la tuile) reste. Il avait été posé pour le poids des vignettes ;
+avec le redimensionnement Pro qui tourne, il pourrait sauter — **non tranché**.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (11 h) — LES CARTES QUI S'ÉCHANGENT SUR LA PAGE DES CHEVAUX DE L'ÉCURIE · L'AVERTISSEMENT iOS SUR LE SÉLECTEUR
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `19dccadda829c7277c36770b43f64d4b` | règle d'ordre mémorisé posée sur `EcranEcurieHype` · avertissement iOS sur les boutons de fichier |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `950611d165c5c9d0b2c2d8d343cf757b`.
+
+---
+
+## LES CARTES QUI S'ÉCHANGENT — LA RÈGLE DU 03/09 N'ÉTAIT PAS POSÉE SUR CETTE PAGE
+
+Blandine : « c'est quand je vais sur les chevaux de l'écurie, sur la page spéciale qui leur
+est dédiée, que toutes les cartes s'échangent à la connexion ».
+
+La règle du 03/09 (ordre mémorisé sur le téléphone, un seul cheval glisse, une réorganisation
+profonde est reportée au chargement suivant, seuil 2 écarts) ne couvrait que **deux** grilles
+— Cavalier et Écurie, sous la clé `mes-chevaux`. La page dédiée aux chevaux de l'écurie
+(`EcranEcurieHype`, ligne ~40250) faisait encore « afficher l'ordre de la base, puis reposer
+l'ordre XP » sans mémoire : toute la grille se réorganisait sous les yeux.
+
+Même règle, mêmes fonctions (`hypeOrdreMemoAppliquer` / `hypeOrdreMemoPoser` /
+`hypeOrdreDeplacements`), même seuil — sous une clé **propre à la page**, `chevaux-ecurie`,
+pour ne pas mélanger avec la liste perso.
+
+⚠️ **Au premier chargement après cette livraison**, la mémoire est vide : la grille se
+réorganisera une dernière fois. Ensuite, plus jamais en profondeur.
+
+---
+
+## L'AVERTISSEMENT iOS — ON NE RÉPARE PAS, ON PRÉVIENT
+
+Confirmé par le forum des développeurs Apple : le bug touche les menus déroulants, les
+champs de date **et le sélecteur de fichiers**, il apparaît **une fois l'appareil passé en
+veille**, et la seule issue connue est de **fermer complètement l'app et la relancer**. Ça
+explique tout : ça marchait avant-hier et hier (lancements propres), et ça s'est coincé
+pendant une nuit de dizaines d'allers-retours entre Hype, GitHub, Supabase et Mux.
+
+**Pourquoi les autres apps y arrivent :** les apps natives ont leur propre sélecteur, sans
+passer par le moteur web. Un site ouvert dans Safari n'a pas le problème non plus. Seules
+les apps web **installées sur l'écran d'accueil** sont touchées.
+
+Décision de Blandine (« ben pourquoi on fait pas ça ») : **prévenir**. Dans `AlbumsCheval`,
+un écouteur note quand l'app revient d'arrière-plan **en mode installé** ; au prochain appui
+sur « Ma photothèque » ou « Vidéo », un message de 7 s explique : « Si le bouton “Ajouter”
+n'apparaît pas dans le sélecteur, c'est un bug d'iOS après une mise en veille : ferme
+complètement Hype et relance-la. »
+
+⚠️ Ce n'est **pas** une réparation. Le sélecteur restera coincé jusqu'à la relance. Mais
+les cavalières sauront que ce n'est pas l'app.
+⚠️ **Non vu à l'écran.** Le message ne s'affiche que dans l'app installée, après un retour
+d'arrière-plan — pas dans Safari.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** (élargi à `EcranEcurieHype`) : 4 régions, 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (10 h 40) — « TABLE À AJOUTER CÔTÉ BASE » : LE MESSAGE MENTAIT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `950611d165c5c9d0b2c2d8d343cf757b` | messages d'erreur qui disent la vraie raison |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `0dadc0d3386e9a610699b0f0cbd2debd`.
+
+---
+
+## 🟥 LE SÉLECTEUR VIDÉO — ENFIN VU, GRÂCE AUX IMAGES FIXES DE L'ENREGISTREMENT
+
+Blandine avait envoyé deux enregistrements d'écran cette nuit. Je ne les avais pas ouverts —
+elle a rappelé qu'on pouvait en extraire des images fixes. Fait (`ffmpeg`, 2 images/s).
+
+**Ce qu'on voit :** le sélecteur iOS s'ouvre normalement, l'album « Tully », les vidéos avec
+leurs durées, une vidéo cochée avec la pastille bleue. **Ma feuille du bas fonctionnait** —
+la dernière image la montre ouverte, avec ses trois entrées. J'avais conclu à tort qu'elle ne
+déclenchait pas le sélecteur, et remis les trois boutons pour rien.
+
+**Ce qui manque : le bouton pour valider.** Barre du bas du sélecteur : « … » à gauche, « Le
+lieu est inclus » au centre, **rien à droite** — là où devrait être « Ajouter ». En haut : un
+chevron de retour et le nom de l'album, rien d'autre.
+
+On peut cocher, on ne peut pas confirmer. C'est le **bug WebKit #238318**, documenté dans ce
+suivi depuis le 27/08 : en mode application installée sur l'écran d'accueil, les fenêtres
+système d'iOS deviennent inertes après un passage en arrière-plan. **Rien à voir avec Mux,
+ni avec la refonte de l'album, ni avec les trois hypothèses de la nuit.**
+
+🟥 **Le test décisif reste à faire** : ouvrir `https://2hype.netlify.app` dans Safari (pas
+depuis l'icône), **se connecter**, puis Album → « + Vidéo » → cocher. Si « Ajouter »
+apparaît là, la cause est confirmée et il faut un contournement (pas une correction : ce
+n'est pas notre code).
+
+🟥 **Leçon** : un enregistrement d'écran se lit en images fixes. Ne plus jamais dire « je ne
+peux pas regarder » — extraire.
+
+---
+
+## 🟥 LE MESSAGE « TABLE À AJOUTER CÔTÉ BASE » MENTAIT
+
+Blandine a fait le test dans Safari **sans s'y connecter** (l'app installée et Safari n'ont
+pas la même session). Résultat : ses albums disparaissent, et créer un album affiche
+« Création impossible — table à ajouter côté base ».
+
+**Il n'y avait aucun problème de base.** `creerAlbumCheval` renvoie déjà la vraie raison —
+`{ error: "Pas connecté" }` — mais `sauverNom` la jetait et affichait ce message sur
+**n'importe quelle** erreur. Il datait d'une époque où la table n'existait pas encore.
+
+Blandine : « il faudrait qu'il le dise que je suis pas connectée au lieu de mettre ce
+message ». Fait :
+
+- création d'album : « Tu n'es pas connectée — connecte-toi pour créer un album. » quand
+  c'est la raison, sinon « Création impossible pour l'instant — réessaie. »
+- commentaire : « Commentaire impossible pour l'instant — es-tu connectée ? »
+
+Plus aucune mention de « table » nulle part.
+
+🟥 **Leçon** : un message d'erreur écrit pendant le développement survit au développement.
+Quand la fonction renvoie la raison, l'écran doit la lire, pas la remplacer.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (matin, 5) — « AJOUTER À MES CHEVAUX » : LE MOT ET LA TAILLE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0dadc0d3386e9a610699b0f0cbd2debd` | libellé « chevaux persos » + bandeau rendu discret |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `dc33c9e09d4e2496708fa45d710806a7`.
+
+---
+
+## LE VRAI PROBLÈME N'ÉTAIT PAS UN BUG, C'ÉTAIT UN MOT
+
+Blandine, après trois échanges sur Cooltax : « on comprend pas si c'est ajouter aux chevaux
+perso ou à l'écurie ».
+
+Les deux notions existent bien dans le code — `chevaux_liens` (la liste perso) et l'écurie —
+mais l'app les appelait pareil. Un cheval peut être **dans l'écurie sans être dans la liste
+perso** (parce que sa propriétaire est rattachée à l'écurie). Le bouton disait donc vrai, et
+personne ne pouvait le deviner. **Blandine comprise, sur sa propre app.**
+
+Le libellé devient **« Ajouter à mes chevaux persos »** / « Retirer de mes chevaux persos ».
+
+---
+
+## LE BANDEAU RESSEMBLAIT À UNE RÉCLAME
+
+Blandine : « ça devrait être plus discret, c'est tellement gros partout qu'on a l'impression
+que c'est une obligation ».
+
+Il faisait toute la largeur, en position fixe au-dessus des onglets, hauteur 46, texte en
+capitales espacées, **halo doré pulsant en boucle** (`haloPlusFiche`, animation infinie) et
+un 💎 en fin de libellé. Il ne quittait jamais l'écran tant que le cheval n'était pas ajouté.
+
+Choix de Blandine : **option 1 — enlever le halo et le losange, baisser la taille du texte,
+et le coller discrètement en bas à droite.**
+
+Fait : plus d'animation, plus de losange, texte en 10 px sans capitales, `inline-flex` calé à
+droite (`right: 14`, largeur max 72 %), fond et bordure très atténués, ombre réduite.
+
+⚠️ **Le geste et les droits sont rigoureusement inchangés** — seul l'habillage bouge.
+⚠️ **Non vu à l'écran.**
+
+---
+
+## 🟥 CE QUI RESTE OUVERT, ET CE QUI BLOQUE CHACUN
+
+- **Retirer un cheval de l'ÉCURIE** — n'existe nulle part. Règle donnée par Blandine : peuvent
+  le faire **la gérante qui a réclamé l'écurie officiellement** et **le propriétaire du
+  cheval**. Le cheval **continue d'exister sans écurie** (photos, albums, palmarès conservés).
+  **Deux points non tranchés :** le propriétaire est-il prévenu ? peut-il le remettre ensuite ?
+  **Inconnue technique à lever d'abord :** comment le code identifie « celle qui a réclamé
+  l'écurie officiellement », et si l'information est lisible depuis la fiche cheval. Même
+  inconnue que pour le filtrage des albums.
+- 🟥 **LA SÉLECTION DE VIDÉO** — Blandine : « on n'arrivait déjà pas à sélectionner avant
+  Mux », et « le problème vient pas de là, c'est plus ancien ». Donc ni la feuille du bas, ni
+  le contrôle de connexion, ni le bouton Vidéo du 27/08. **Aucune piste.** Ce qui débloquerait :
+  ce qu'elle voit exactement en appuyant — le sélecteur iOS s'ouvre-t-il, montre-t-il ses
+  vidéos, peut-elle en toucher une, à quel moment ça s'arrête.
+- **Les images du classement qui bougent.** La règle du 03/09 existe (ordre mémorisé, un seul
+  cheval glisse, une réorganisation profonde est reportée au chargement suivant, seuil 2
+  écarts, clé `hype_ordre_mes-chevaux`) et n'est posée que sur **Cavalier et Écurie**. À
+  savoir avant de coder : **sur quelle page** ça bouge, et **à chaque ouverture** ou seulement
+  après ajout de photos. Si c'est Club ou Communauté, la règle n'y a jamais été posée.
+- **La lenteur vidéo** : correctif de la fonction déployé (vérification de connexion réduite à
+  la création d'un envoi), **jamais mesuré**.
+- Reste du 04-05/09 : nom de l'auteur sur la carte d'album, notification au propriétaire,
+  filtrage des albums à deux vues, croix de la fiche cheval qui renvoie au profil, colonne
+  `lieu` sur `albums_cheval`.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟥 05/09/2026 (matin, 4) — RETOUR EN ARRIÈRE : LES TROIS BOUTONS D'ORIGINE REVIENNENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `dc33c9e09d4e2496708fa45d710806a7` | la feuille du bas est retirée, les 3 boutons éprouvés sont restaurés |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `84cc22e8eddadc5a09f9f60cd6509600`.
+
+`supabase/functions/mux-upload/index.ts` a été poussé séparément et déployé (Actions vert,
+51 s). Rien à y refaire.
+
+---
+
+## 🟥 TROIS TENTATIVES, TROIS ÉCHECS — ON REVIENT AU CODE ÉPROUVÉ
+
+La feuille du bas a été tentée trois fois dans la même nuit :
+
+1. champ `<input type="file">` dans un `<label>`, à l'intérieur du calque détaché ;
+2. même chose, en passant les fichiers avant de fermer la feuille ;
+3. champs sortis du calque, dans l'arbre normal, déclenchés par `.click()`.
+
+À chaque fois : « je ne peux toujours pas sélectionner de vidéo ».
+
+Un `<input type="file">` déclenché depuis un calque détaché ne tient pas sur iOS, et **je
+n'ai aucun moyen de le tester moi-même**. Continuer, c'était faire perdre du temps à
+Blandine sur un écran que ses cavalières utilisent tous les jours.
+
+**Les trois boutons d'origine sont restaurés**, copiés à l'identique depuis
+`9a658a63f537b777ecf6f56d929b46f5` : Souvenirs publiés / Ma photothèque / Vidéo, à leur place,
+avec leurs `accept`, leur `multiple` et leurs `onChange` d'origine. La feuille « Ajouter » est
+retirée.
+
+**Tout le reste de la refonte est conservé** : bandeau de couverture, menu « … » (Renommer /
+Visibilité / Identifier / Supprimer), album vide qui invite, défilement automatique vers le
+panneau, visionneuse détachée, poubelle décollée d'Identifier, `finally` sur l'envoi.
+
+🟥 **NE PAS RETENTER la feuille du bas sans pouvoir la tester en vrai.** Le point 2 de la
+maquette (un seul bouton Ajouter) reste donc **non réalisé**, et c'est volontaire.
+
+---
+
+## 🟥 CE QUE CETTE NUIT A APPRIS, EN PLUS DU RESTE
+
+🟥 **J'AI DIAGNOSTIQUÉ SUR UN FICHIER QUI NE TOURNAIT PAS.** Blandine signale « faut faire
+deux fois », j'accuse ma feuille, j'explique, je livre. Sa capture suivante montrait l'ancien
+écran : elle n'avait pas poussé. **Premier réflexe désormais : demander quel md5 tourne.**
+
+🟥 **TROIS TENTATIVES SUR UN POINT NON TESTABLE, C'EST DEUX DE TROP.** Dès la deuxième, il
+fallait proposer le retour en arrière. L'option A avait été proposée et écartée au profit de
+la recherche — c'était mon rôle de la reproposer plus fermement à la troisième.
+
+⚠️ **SUR LE TON.** Nuit blanche, réveil à 6 h, batterie à 4 %, un dossier supprimé par
+erreur, et la confusion entre `index.html` (racine) et `index.ts`
+(`supabase/functions/mux-upload/`). Quand elle dit « ça me casse l'envie de mettre en
+ligne », c'est le signal d'arrêter, pas d'insister.
+
+---
+
+## LA LENTEUR DES VIDÉOS — EN ATTENTE DE MESURE
+
+Blandine : « les premières par Mux ça allait, c'est depuis que t'as mis la connexion ». Le
+contrôle du 04/09 s'exécutait à chaque appel, donc aussi pendant l'attente de l'encodage
+(interrogation toutes les 3 s, jusqu'à 40 fois). Corrigé côté fonction : la vérification ne
+s'applique plus qu'à la **création** d'un envoi.
+
+**Non mesuré.** Le test n'a pas pu avoir lieu, la sélection de vidéo étant cassée. À refaire
+une fois ce fichier poussé, en notant deux durées : validation → 100 %, puis 100 % →
+apparition de la vidéo. C'est la seconde qui doit avoir fondu.
+
+Décision de Blandine : **la durée maximale reste à 3 minutes.**
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟥 05/09/2026 (matin, 3) — DEUX VERROUS TROUVÉS : L'ALBUM SE BLOQUAIT TOUT SEUL APRÈS UN ENVOI RATÉ, ET LE CHAMP DE FICHIER NE S'OUVRAIT PLUS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `84cc22e8eddadc5a09f9f60cd6509600` | `finally` sur l'envoi · champs de fichier sortis du calque détaché |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `4466cc9cee2a30b27afa3b0dc89922bd`. Un seul fichier à pousser.
+
+---
+
+## 🟥 J'AI ACCUSÉ MON PROPRE CODE SANS VÉRIFIER CE QUI TOURNAIT
+
+Blandine signale « faut faire deux fois ». J'attribue ça à ma feuille du bas, j'explique
+pourquoi, je livre un correctif. **Sa capture suivante montrait l'ANCIEN écran** — les quatre
+rondelles, les trois boutons, « Identifier l'album » en bas. Elle n'avait pas encore poussé.
+Ma feuille n'existait pas chez elle.
+
+🟥 **Même faute que la nuit du 04/09** (« j'ai parlé de ce qui était en ligne sans l'avoir
+vérifié »), à l'envers : cette fois j'ai attribué à mon code un symptôme observé sur un
+fichier que mon code ne touchait pas. **Avant tout diagnostic : demander quel md5 tourne.**
+
+---
+
+## 🟥 VERROU 1 — UN ENVOI RATÉ BLOQUAIT L'ALBUM POUR TOUJOURS
+
+`importerFichiers` levait `envoiCours` au début et ne l'abaissait qu'à **un seul endroit**,
+en fin de parcours. Entre les deux : `alerte(...)`, la boucle des photos, et surtout
+`await majAlbumCheval(...)` — **aucun sous `finally`**.
+
+La moindre exception sur ce trajet laissait `envoiCours` à `true` **définitivement**. Et
+comme les boutons d'ajout portent `disabled: envoiCours`, plus rien ne répondait jusqu'au
+rechargement de la page.
+
+C'est ce qui est arrivé après l'échec « Pas de réponse du serveur » : l'album s'est
+verrouillé tout seul, sans rien afficher. D'où « je n'arrive plus du tout à sélectionner une
+vidéo, il ne se passe rien ».
+
+Corrigé par un `try { ... } finally { setEnvoiCours(false); setEnvoiPct(0); ... }`.
+
+🟥 **La leçon** : un verrou levé à un endroit et abaissé à un autre doit être abaissé dans un
+`finally`, jamais sur le chemin nominal. Un album verrouillé est pire qu'un envoi raté —
+l'envoi raté se voit, le verrou ne se voit pas.
+
+---
+
+## 🟥 VERROU 2 — LE CHAMP DE FICHIER DANS UN CALQUE DÉTACHÉ
+
+La refonte avait déplacé les deux `<input type="file">` dans la feuille du bas, à l'intérieur
+d'un `<label>`, lui-même dans un calque **détaché vers `document.body`**. Sur iOS, cet
+enchaînement ne déclenche plus le sélecteur.
+
+Refait autrement : les deux champs sont rendus dans l'**arbre normal** du composant, jamais
+dans un calque détaché, et les lignes de la feuille appellent `.click()` dessus — appel
+**synchrone dans le geste de l'utilisatrice**, ce qu'iOS exige. Le `<label>` a disparu.
+
+⚠️ Le champ Vidéo reste **séparé**, en `video/*` seul et **sans `multiple`** (bug WebKit
+#238318). Ne pas fusionner les deux.
+
+⚠️ **Non vérifié à l'écran.** C'est la troisième tentative sur ce même point en une nuit. Si
+ça ne marche toujours pas, **remettre les trois boutons d'origine** (option A proposée à
+Blandine, refusée au profit de la recherche) : le code éprouvé est dans l'historique.
+
+---
+
+## L'ENVOI LENT — UNE PISTE ÉCARTÉE
+
+Sa vidéo faisait **1 min 20**, pas 3 minutes, et l'envoi a mis plusieurs minutes avant
+d'échouer sur « Pas de réponse du serveur ». **Le poids seul n'explique donc pas tout.**
+
+Décision de Blandine : **la durée maximale reste à 3 minutes**, on ne descend pas.
+
+Piste non explorée : `mux-upload` fait désormais un aller-retour vers `/auth/v1/user` avant
+de répondre (contrôle de connexion déployé le 04/09). Si cet appel traîne, toute la fonction
+traîne et l'app abandonne au bout de 25 s (`hypeMuxAppel`, second argument). **À regarder
+dans les journaux de la fonction avant de toucher au délai.**
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (matin, 2) — « FAUT FAIRE DEUX FOIS » : LA FEUILLE SE FERMAIT AVANT D'AVOIR PASSÉ LES FICHIERS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `4466cc9cee2a30b27afa3b0dc89922bd` | ordre corrigé dans les deux champs de fichier |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ **Remplace** `486847bd79d938e00e132fca8c649d5a`. Un seul fichier à pousser.
+
+---
+
+## 🟥 RÉGRESSION INTRODUITE PAR LA REFONTE DE L'ALBUM — ET CORRIGÉE
+
+Blandine, après la poussée : « ça sélectionne la vidéo et ça ne l'envoie pas », puis
+« faut faire deux fois ».
+
+**C'est ma faute, pas un bug ancien.** Les deux champs de fichier ont été déplacés dans la
+feuille du bas, et leur `onChange` était écrit ainsi :
+
+    setFeuilleAjout(false); if (fs.length) importerFichiers(albOuvert.id, fs);
+
+Fermer la feuille **démonte le `<label>` et son `<input>`**. Sur iOS la sélection se termine
+de façon asynchrone : le premier choix se perdait dans le démontage. D'où la deuxième
+tentative nécessaire.
+
+Corrigé : les fichiers partent d'abord, la feuille se ferme au tour suivant
+(`setTimeout(..., 0)`). Même correction dans les deux champs.
+
+🟥 **La leçon** : déplacer un `<input type="file">` dans un calque qui se démonte n'est pas
+un déplacement neutre. Le champ doit survivre à l'événement qu'il déclenche.
+
+---
+
+## L'ENVOI EST LENT — CE N'EST PAS UN BUG
+
+Blandine : « plusieurs secondes d'attente pour chaque % ».
+
+La vidéo part **telle quelle** chez Mux, sans compression : `hypeMuxEnvoyerFichier` fait un
+PUT direct du fichier d'origine. Une vidéo iPhone de 3 minutes pèse plusieurs centaines de
+Mo. Plusieurs secondes par pourcent, c'est le débit montant du téléphone, pas un défaut du
+code. La barre de progression dit la vérité.
+
+Les seuls leviers réels, **aucun tranché** :
+
+- **Réduire la durée maximale** (`HYPE_MUX_DUREE_MAX_S`, aujourd'hui 3 min). Une ligne.
+- **Compresser avant l'envoi** dans le navigateur. Gros chantier, peu fiable sur iOS, et le
+  ré-encodage sur le téléphone prend lui aussi plusieurs minutes.
+- **Ne rien changer** et l'assumer : une vidéo, c'est long à envoyer.
+
+---
+
+## ⚠️ NON EXPLIQUÉ — LA VIDÉO RETROUVÉE EN VERTICAL
+
+Blandine a retrouvé dans ses photos récentes une **copie verticale** d'une vidéo filmée à
+l'horizontale, apparue après la tentative d'envoi.
+
+**L'app n'écrit jamais dans la photothèque.** Elle lit le fichier choisi et le transmet à
+Mux sans le modifier. Cette copie ne vient donc pas du code de Hype — vraisemblablement d'un
+ré-encodage d'iOS au moment de la sélection. **Non vérifié, non expliqué.** À surveiller : si
+ça se reproduit, noter le modèle d'iPhone et la version d'iOS.
+
+---
+
+## LES DEUX CONTRÔLES
+
+- **Banc d'essai** : 0 défaut.
+- **Marqueurs** (23 repères) : 0 écart inattendu, les 12 `?v=` intacts.
+
+---
+
+# 🟩 05/09/2026 (matin) — LE PANNEAU D'ALBUM QUI S'OUVRAIT HORS ÉCRAN · LE FILET DU RATTACHEMENT · LA PHRASE À LA CRÉATION
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `486847bd79d938e00e132fca8c649d5a` | 3 correctifs, détaillés ci-dessous |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ Ce fichier **remplace** celui de la nuit (`fa396d14ce4c99f1f6d5a8f2924fb09d`). Il le
+contient en entier — album refait, visionneuse détachée, poubelle décollée — plus les trois
+correctifs ci-dessous. Un seul fichier à pousser, pas deux versions.
+
+Rien d'autre : aucune image, aucun SQL, aucun JS externe, aucun `?v=` touché.
+
+---
+
+## 🟥 « JE PEUX NI AJOUTER DE PHOTOS NI L'EFFACER » — RIEN N'ÉTAIT BLOQUÉ
+
+Blandine crée l'album *Equitalyon* sur la fiche de Tully Blue Moon (le poney de Liam), et
+ne peut ni y ajouter de photos ni le supprimer. Elle en déduit un problème de droits, et
+demande : « j'ai le droit ou pas ? »
+
+**Elle a tous les droits.** Un album appartient à celle qui l'a créé, pas au propriétaire du
+cheval. Aucun garde-fou ne se déclenchait.
+
+Le panneau de l'album ouvert — celui qui contient Ajouter, Renommer, Supprimer — se dessine
+**après** le bouton « + Nouvel album », donc tout en bas de la page. Sur son écran, il
+s'ouvrait **hors champ**. Elle touchait la vignette, rien ne bougeait là où elle regardait,
+elle en concluait que ça ne répondait pas.
+
+Créer marchait, parce que la boîte de création s'ouvre **par-dessus** l'écran. Impossible de
+la rater. Toute la différence entre les deux gestes est là.
+
+Corrigé : à l'ouverture d'un album, l'écran vient jusqu'au panneau (`scrollIntoView`, 60 ms
+d'attente pour que le panneau soit posé et mesuré). Purement visuel, aucune donnée touchée.
+
+Ça explique aussi pourquoi elle ne trouvait plus comment supprimer une photo la veille :
+**elle n'avait jamais vu ce panneau.**
+
+---
+
+## 🟥 LE FILET DU RATTACHEMENT — MÊME FAMILLE QUE LE COMPTAGE MUX DU 03/09
+
+Sur la fiche de Cooltax, le bandeau propose « Ajouter à mes chevaux » alors qu'il est déjà
+dans l'écurie — et n'offre jamais de le retirer.
+
+La lecture de `chevaux_liens` faisait :
+
+    if (aL) setEstLieFiche(!!(rL && rL.data && rL.data.length));
+
+`supabase-js` **ne lève pas** d'exception sur une requête refusée : il renvoie
+`{ data: null, error }`. `rL.error` n'était jamais lu. Une requête ratée rendait donc
+`data = null` → « pas rattaché » → le bandeau reproposait l'ajout.
+
+C'est **exactement** la faute du 03/09 sur le comptage Mux, à un autre endroit du fichier.
+Corrigé par un témoin `lienIndetermine` : quand la lecture échoue, **le bandeau disparaît**
+au lieu de proposer le mauvais geste. Quand on ne sait pas, on ne propose rien.
+
+⚠️ **CE N'EST PEUT-ÊTRE PAS LA CAUSE DE CE QU'ELLE A VU.** L'autre explication, au moins
+aussi probable : Cooltax appartient à Ilona, et se trouve dans l'écurie **parce que sa
+propriétaire y est rattachée** — pas parce que Blandine l'a lié. Dans ce cas le bandeau dit
+vrai (il n'est pas dans *ses* chevaux à elle), et ce qui manque est autre chose : **un moyen
+de retirer un cheval de l'ÉCURIE**, qui n'existe nulle part. Deux notions différentes, une
+seule action proposée. **Non tranché — décision de Blandine.**
+
+---
+
+## LA PHRASE À LA CRÉATION D'UN ALBUM
+
+Blandine : « quand on crée l'album personne ne le sait, c'est pas clair tout ça ».
+
+Elle a raison, et des deux côtés. Un album naît **public** (choix du 02/08, modèle opt-out)
+et apparaît dans les Médias du cheval, donc chez son propriétaire. Rien ne le disait au
+moment du geste — elle l'a découvert en posant la question, sur sa propre app. Et de l'autre
+côté, le propriétaire ne reçoit aucune notification et ne voit pas le nom de l'auteur.
+
+Ajouté : une ligne dans la boîte de création — « Cet album sera visible par les autres
+cavalières de ce cheval. Tu pourras le passer en privé à tout moment. » Uniquement à la
+**création**, pas au renommage. Ne change aucun comportement, dit seulement ce qui va se passer.
+
+---
+
+## ⚠️ CE QUI RESTE, ET POURQUOI CE N'EST PAS DANS CETTE LIVRAISON
+
+Blandine a validé quatre points sur la visibilité des albums, plus deux autres bugs. Trois
+sont faits ci-dessus. Les autres **ne sont pas de la retouche d'affichage** et ne pouvaient
+pas partir sans vérification :
+
+- **Le nom de l'auteur sur la carte d'album** (côté Médias). Demande le pseudo de l'auteur,
+  donc une lecture de `profiles` par album. Faisable, pas fait.
+- **Une notification au propriétaire du cheval** quand un album est créé sur sa fiche.
+  Touche aux notifications : autre chantier.
+- 🟥 **LE FILTRAGE À DEUX VUES.** La règle est écrite depuis le 02/09 — fiche perso : chacune
+  ne voit que ses albums ; côté écurie : tous les albums publics. Dans le code elle n'est
+  appliquée **qu'à moitié, et de travers des deux côtés** : l'onglet Photos porte
+  `mesAlbumsSeulement: true` **en dur** (donc côté écurie non plus on ne voit pas les albums
+  des autres, alors qu'on le devrait), et la section Médias n'a **aucun** filtre (donc sur sa
+  fiche perso, Liam verra Equitalyon). **Inconnue à lever d'abord :** la fiche cheval
+  sait-elle depuis où on la regarde — page perso ou page écurie ? Si l'information n'existe
+  pas dans le composant, il faut la faire descendre, et ça touche plusieurs points d'appel.
+  **Ne pas coder avant d'avoir vérifié ça.**
+- **La croix de la fiche cheval renvoie sur le profil cavalier** au lieu de revenir à
+  l'écurie d'où on venait. Signalé le 05/09 à 1 h 30. Pas ouvert.
+- **Le lieu sur les albums** : colonne `lieu` absente de `albums_cheval`. SQL requis avant
+  toute chose, sinon le champ se vide au rechargement sans message.
+
+---
+
+## ⚠️ MISE EN PAGE : TOUJOURS PAS VUE
+
+Le banc d'essai vérifie la syntaxe, pas le rendu. **Rien de ce qui a été livré depuis hier
+soir n'a été vu à l'écran** : ni le bandeau de couverture, ni les deux feuilles du bas, ni
+l'album vide, ni ce défilement. À regarder sur capture.
+
+---
+
+## LES DEUX CONTRÔLES PASSÉS AVANT LIVRAISON
+
+- **Banc d'essai** (`node --check` sur `AlbumsCheval`, `AlbumsPromus`, `EcranCheval`) : 0 défaut.
+- **Contrôle des marqueurs** (23 repères) : 0 écart inattendu. Les 12 `?v=` sont intacts.
+
+---
+
+# 🟩 05/09/2026 (nuit) — L'ÉCRAN D'UN ALBUM REFAIT · LA VISIONNEUSE DÉTACHÉE (CŒURS ET COMMENTAIRES ENFIN ATTEIGNABLES) · LA POUBELLE DÉCOLLÉE D'IDENTIFIER
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `fa396d14ce4c99f1f6d5a8f2924fb09d` | album refait (4 points) · visionneuse de page détachée · collision Identifier/poubelle |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ Part du fichier de la passation du 04/09 (`9a658a63f537b777ecf6f56d929b46f5`), **qui
+n'avait jamais été poussé**. Cette livraison contient donc AUSSI tout le travail du 04/09
+(plafond Premium à 15, filet de comptage, tuile Mon abonnement, écran Utilisateurs).
+
+Aucune image nouvelle, aucun SQL, aucun JS externe touché, aucun `?v=` modifié — les 12
+sont intacts (vérifié au contrôle des marqueurs).
+
+---
+
+## 🟥 CE QUI ÉTAIT CASSÉ SANS QU'ON LE SACHE — LA BARRE CŒURS / COMMENTAIRES
+
+Blandine : « je voyais plus les cœurs et les commentaires non plus », et des notifications
+« margot a commenté » qui n'amènent nulle part.
+
+L'app a **deux visionneuses distinctes**. Celle des albums (`AlbumsCheval`) était détachée
+vers `document.body` et fonctionnait. Celle de la page (`EcranCheval`, ouverte depuis Photos
+et depuis Médias) ne l'était pas : son `zIndex: 8800` restait enfermé dans le contexte
+d'empilement de la fiche, et **la barre d'onglets — pourtant au plan 50 — se dessinait
+par-dessus**. La barre ♥ / 💬, calée en bas du voile, tombait exactement dessous.
+
+Elle était là. Elle était intouchable. Aucun message d'erreur, rien dans la console.
+
+Corrigé en détachant ce calque vers `document.body`, comme l'autre. Vérifié avant :
+`.souvVoile` / `.souvVue` sont des sélecteurs **simples** (aucun parent), et `--cm-ease`
+vit sur `:root` — les deux survivent au déplacement, animations comprises.
+
+🟥 **La leçon** : un `zIndex` de 8800 ne veut rien dire tant qu'on n'a pas vérifié dans
+quel contexte d'empilement il vit. Un calque non détaché est plafonné par son ancêtre.
+Deux calques identiques dans le même fichier, l'un détaché et l'autre non, se comportent
+différemment sans que rien ne le signale.
+
+---
+
+## 🟥 IDENTIFIER ET LA POUBELLE ÉTAIENT AU MÊME ENDROIT
+
+Toujours dans la visionneuse de page : le bouton **Identifier** et le bouton **🗑** portaient
+`top: calc(16px + env(safe-area-inset-top))`, `left: 16` et le **même plan**. La poubelle
+étant dessinée après, elle recouvrait Identifier. Sur ses propres photos, Blandine ne pouvait
+pas identifier — le bouton était dessous.
+
+La poubelle passe à droite, à côté de la croix de fermeture (`right: 66` ; la croix est à
+`right: 16` sur 40 px de large). En confirmation elle s'allonge vers la gauche, sans jamais
+repasser sur Identifier.
+
+---
+
+## L'ÉCRAN D'UN ALBUM — LES 4 POINTS DE LA MAQUETTE
+
+Maquette validée par Blandine (combinaison 2 + 3 + 4), sans le crayon.
+
+1. **Bandeau de couverture** en tête du panneau. La couverture de l'album en fond (vidéo
+   gérée), voile de lisibilité, titre en Cinzel 18 écrit dessus, sous-titre
+   « N souvenirs · Public ». Le bandeau déborde le padding du panneau (marges négatives
+   -13 / -12) pour toucher les bords, et n'arrondit que le haut, au rayon du panneau (18).
+   La rangée « titre + 4 rondelles » disparaît.
+2. **Un seul bouton Ajouter**, pleine largeur. Les trois boutons (Souvenirs publiés /
+   Ma photothèque / Vidéo) passent dans une **feuille qui monte du bas**.
+3. **Renommer, Visibilité, Identifier l'album, Supprimer** derrière un **« … »** en haut à
+   droite du bandeau. « Identifier l'album », qui traînait en bas du panneau, y entre aussi.
+4. **L'album vide invite** : cadre en pointillés, « Ajoute tes premières photos »,
+   sous-titre, et le bouton Ajouter. À la place de la ligne grise.
+
+**Aucune action n'a changé.** Chaque entrée de feuille appelle exactement la fonction du
+bouton qu'elle remplace. Les deux champs de fichier sont **déplacés tels quels** — mêmes
+`accept`, même `multiple`, même `onChange`.
+
+⚠️ **Le champ Vidéo reste en `video/*` SEUL et SANS `multiple`.** C'est ce qui évite le
+bouton de validation du sélecteur iOS resté inerte après un passage en arrière-plan
+(bug WebKit #238318). **Ne jamais le fusionner avec la photothèque.**
+
+⚠️ **Le décompte vidéo Premium et la carte Hype+ du plan gratuit n'ont pas bougé d'un
+pixel** : ils restent les premiers enfants de la rangée, au-dessus du bouton Ajouter.
+C'est le travail du 04/09, il n'a pas été touché.
+
+### Ce qui a été écarté, et pourquoi
+
+Le point 3 de la maquette prévoyait un **crayon / mode Modifier** où « réapparaissent Couv.,
+les étoiles et la suppression par photo ». Vérification faite dans le code : **ces éléments
+n'existent pas dans cet écran**. La croix de suppression par vignette a été retirée le 27/08
+à la demande de Blandine (21 px, jamais vue, même coin que l'étoile juste au-dessus) ;
+l'étoile « à la une » est sur les **cartes d'album**, pas sur les photos. Le mode Modifier
+n'aurait donc contenu qu'un seul bouton.
+
+Décision de Blandine : **pas de crayon**. Le « ✓ Couv. » reste sur les vignettes, comme avant.
+
+---
+
+## ⚠️ MISE EN PAGE : NON TESTÉE
+
+🟥 Le banc d'essai vérifie la **syntaxe**, pas le rendu. Le bandeau, les deux feuilles et
+l'album vide n'ont **jamais été vus à l'écran**. Rappel de la nuit précédente : un décompte
+annoncé comme bien placé s'écrasait en six lignes contre le bord.
+
+**À regarder sur capture, dans cet ordre :** un album avec photos (le bandeau déborde-t-il
+proprement ?), le « … » (les quatre entrées), le bouton Ajouter (la feuille, et surtout que
+le sélecteur de fichiers s'ouvre bien depuis une feuille détachée), un album vide.
+
+---
+
+## LES VIDÉOS DE MARGOT — CE QU'ON A TROUVÉ, CE QU'ON N'A PAS TRANCHÉ
+
+Signalé cette nuit : les vidéos de Margot chargent lentement ou plantent en pleine lecture,
+alors qu'elles allaient bien la veille.
+
+**Ce n'est pas une régression de code** : rien n'avait été poussé, l'app en ligne était
+identique à la veille.
+
+**Le tableau de bord Mux a enfin été ouvert** (le point aveugle depuis trois jours) :
+**3 assets sur 10**, tous en `Ready`, du 3 et du 4 septembre. Durées : 8 s, 1 s, 5 s.
+Le stockage n'est donc pas le problème.
+
+⚠️ **Ces trois durées sont toutes sous 10 secondes** — c'est la signature d'un **asset de
+test** chez Mux (filigrané, coupé à 10 s, supprimé après 24 h). **Non vérifié** : il faut
+lire `supabase/functions/mux-upload/index.ts` (dans le dépôt GitHub, pas dans Supabase) pour
+savoir si les assets sont créés avec `test: true`. **À FAIRE EN PREMIER.**
+
+**Hypothèse de Blandine, probablement la bonne** : les vidéos de Margot sont sur
+l'**ancien système**. L'app gère deux chemins en parallèle — anciennes vidéos en `.mp4` /
+`.mov` sur le stockage Supabase, nouvelles en `.m3u8` via Mux (`estUrlVideo` accepte les
+deux). Un `.mp4` brut se télécharge en entier, sans adaptation au réseau : démarrage lent et
+coupure en pleine lecture, exactement le symptôme. Une vidéo Mux ne fait pas ça.
+
+Si c'est confirmé, **rien n'est cassé** : ces vidéos ont toujours été lourdes.
+
+---
+
+## LE DÉPÔT EST « PLEIN » — IL NE L'EST PAS
+
+GitHub refuse d'**afficher** plus de 1000 fichiers dans un dossier ; 2 entrées sont masquées.
+Rien n'est perdu, Netlify déploie tout, y compris les 2 masquées. Seul coût réel : ces 2-là
+ne sont pas ouvrables depuis le navigateur.
+
+Vérifié : les `.md` de documentation et les `apercu-*.html` ne sont référencés nulle part
+dans `index.html`. **Ne pas toucher** aux `arrivee-*.mp4` ni aux `apy-*.webp` : ce sont des
+ressources Linguae (`lingo.html`), non vérifiable sans ce fichier. Aucune suppression faite.
+
+---
+
+## LE LIEU SUR LES ALBUMS — DEMANDÉ, PAS FAIT
+
+Blandine : « on peut en profiter pour ajouter identifier ainsi que le lieu ». Identifier est
+fait (entrée du menu). **Le lieu ne l'est pas** : la table `albums_cheval` n'a pas de colonne
+`lieu` (le champ existe sur les concours, pas ici). C'est **une colonne à ajouter en SQL**
+avant que le champ serve à quoi que ce soit — sinon on tape un lieu et il disparaît au
+rechargement, sans message. Chantier séparé, non commencé.
+
+---
+
+## LES DEUX CONTRÔLES PASSÉS AVANT LIVRAISON
+
+- **Banc d'essai** (`node --check` sur `AlbumsCheval`, `AlbumsPromus`, `EcranCheval`) : 0 défaut.
+- **Contrôle des marqueurs** (23 repères comparés au fichier de départ) : 0 écart inattendu.
+  Les 3 écarts sont expliqués et voulus — `ouvrirTagAlbum` +1 (mention en commentaire),
+  `estUrlVideo` +2 (test de couverture vidéo du bandeau), `importerFichiers` inchangé
+  (les champs sont déplacés, pas supprimés). Les 12 `?v=` sont intacts.
+
+---
+
+# 🟩 04/09/2026 (soir) — PLAFOND VIDÉO PREMIUM À 15 · LE FILET DE COMPTAGE RÉPARÉ · MON ABONNEMENT DANS MON COMPTE · LES VRAIES CAVALIÈRES DANS LE BACK-OFFICE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9a658a63f537b777ecf6f56d929b46f5` | plafond Premium · filet de comptage · tuile Mon abonnement · écran Utilisateurs |
+| `index.ts` | Supabase → Edge Functions → `mux-upload` | — | authentification exigée (**ne va PAS dans le dépôt**) |
+
+⚠️ Part du fichier de la passation (`ae035441323d8ad07ec7149df923905c`). Aucune image
+nouvelle, aucun SQL, aucun `?v=` touché (les 12 sont inchangés).
+
+⚠️ **Écart relevé dans l'entrée précédente** : le tableau du 04/09 annonce
+`c85bbf1b9ec929d61ea7eb945dabdac1` pour `index.html`. C'est un md5 pris plus tôt
+dans la nuit ; le fichier réellement livré était `ae0354…`. Ligne laissée telle
+quelle pour ne pas réécrire l'historique, mais elle est fausse.
+
+## 1 · Le plafond Premium — décision de Blandine : 15 vidéos par compte
+
+Premium n'avait **aucun** plafond vidéo : le `if (!premium)` de `importerFichiers`
+sautait tout le comptage. Avec 14 abonnements et un plan Mux qui s'arrête à 10
+vidéos AU TOTAL, un seul compte pouvait vider la réserve commune.
+
+✅ **Vérifié avant de poser le chiffre** : rien dans l'app ne promet des vidéos
+illimitées aux abonnées. Les mentions « illimité » portent sur les examens
+blancs, l'assistant et les appareils. Le plafond ne revient sur aucune promesse
+écrite.
+
+- `HYPE_MUX_VIDEOS_PREMIUM = 15`, `hypeMuxPlafondVideos(estPremium)` — une
+  constante, la relever ne coûte qu'une ligne.
+- Le comptage vaut désormais pour tout le monde ; seul le chiffre change.
+- **Le décompte n'apparaît qu'à une vidéo restante.** `HYPE_MUX_PREVENIR_A` a
+  bougé quatre fois dans la soirée : 5 (règle des épingles du 19/08), puis 15 le
+  temps que Blandine voie le rendu, puis 0 (« ça gâche un peu le plaisir »), et
+  enfin **1** — « on laisse la limitation mais on affiche rien avant la
+  dernière ». Remettre 5 le fait revenir comme au départ.
+- ⚠️ **Le rendu était cassé, pas seulement mal réglé.** J'avais annoncé que la
+  ligne se placerait dans la rangée des boutons sans vérifier ce que ça donnait :
+  elle s'y plaçait et s'y faisait écraser, empilée en six lignes contre le bord
+  (capture de Blandine). Mettre le seuil à 0 ne l'avait que **cachée**.
+  Corrigé : la ligne prend `width: 100%` et le conteneur passe en `flexWrap`,
+  donc elle occupe sa propre ligne au-dessus des boutons.
+- ⚠️ Le retour à la ligne est activé **uniquement pour les abonnées**
+  (`flexWrap: premium ? "wrap" : "nowrap"`). La carte d'invitation du plan
+  gratuit occupe le même emplacement : en laissant son cas à `nowrap`, son rendu
+  reste rigoureusement celui d'avant.
+- Message au plafond distinct (`motif: "video_premium"`), **sans** le bouton
+  « Découvrir Hype+ » : proposer un abonnement à une abonnée n'a pas de sens.
+- Coût réel mesuré chez Mux : 14 abonnées saturées ≈ 2 $/mois de stockage. Le
+  chiffre n'est donc **pas** budgétaire, il est commercial.
+
+⚠️ Le comptage reste le `max` entre ses propres albums et l'album visé : sur un
+album partagé, les vidéos des autres comptent dans son plafond. Assumé depuis le
+03/09, inchangé.
+
+## 2 · 🟥 LE FILET DE COMPTAGE N'EN ÉTAIT PAS UN
+
+Le banc d'essai a attrapé ça, **et ce n'était pas une faute du jour** : le code
+datait de la nuit précédente, celle de l'incident Margot.
+
+Le commentaire disait « en cas de doute on ne LAISSE PAS passer ». Le code
+faisait l'inverse.
+
+⚠️ **`supabase-js` NE LÈVE PAS d'exception sur une requête refusée ou perdue** :
+il renvoie `{ data: null, error: {…} }`. Les deux fonctions de comptage lisaient
+`(r && r.data) || []` et ignoraient `r.error`. Une requête ratée rendait donc
+**zéro** — « cette cavalière n'a aucune vidéo » — et le plafond s'ouvrait en
+grand. Le `catch` censé refermer le robinet n'était jamais atteint, puisque rien
+n'était levé.
+
+Corrigé par un témoin `HYPE_MUX_COMPTAGE_RATE`, posé par `hypeMuxNombreVideos` et
+lu par `hypeVideosDejaEnvoyees` juste après l'appel, plus la lecture de
+`rC.error` sur la requête de l'album.
+
+⚠️ **CONSÉQUENCE ASSUMÉE, choix de Blandine (option 2)** : une cavalière dont la
+requête se perd (réseau de carrière) se verra refuser son envoi alors qu'elle est
+dans son droit. Avant, le même cas la laissait passer sans rien compter.
+
+## 3 · Mon abonnement, lisible depuis Mon compte
+
+Demande de Blandine : voir son abonnement sans passer par l'onglet Premium.
+Tuile pleine largeur en tête de la section COMPTE (`EcranProfil`).
+
+⚠️ Elle lit **la table**, pas l'état de l'application. Elle dit donc la vérité
+même quand l'interrupteur d'administratrice force le mode Premium — c'est
+justement son intérêt.
+
+Cinq états jamais confondus : lecture en cours, **lecture impossible** (on le dit,
+on n'affiche pas « aucun »), aucune ligne, actif avec sa date, terminé. Même
+règle d'« actif » que le reste de l'app : `statut === "actif"` **et** échéance
+non dépassée — une ligne « actif » dont la date est passée s'affiche Terminé.
+
+## 4 · L'écran Utilisateurs du back-office lit enfin la base
+
+Il affichait **quatre noms écrits en dur** — Léa Marchand, Thomas Petit, Inès
+Dubois, Maxence Roy — sans aucune requête derrière. Un décor. Blandine l'a vu
+en le regardant : « les comptes sont faux ».
+
+Il lit maintenant `profiles`, sur le modèle exact d'`AdminAbonnements` refait le
+03/09 : pseudo, écurie(s), ville, galop, bouton Rafraîchir, heure de dernière
+lecture, et un résumé en tête (nombre d'inscrites, répartition par écurie).
+
+- ⚠️ **L'âge n'est PAS affiché.** La maquette en montrait un, la table n'en a
+  pas. Un champ en moins vaut mieux qu'un chiffre inventé.
+- ⚠️ Même garde que sur les abonnements : **si une seule ligne remonte**, l'écran
+  le dit au lieu d'afficher « 1 cavalière » comme un total — c'est presque
+  toujours la policy qui ne laisse voir que son propre profil.
+- Colonnes reprises telles qu'elles sont **déjà lues ailleurs** dans l'app
+  (`id, pseudo, avatar_url, ville, galop, ecurie, ecurie2`), aucune devinée.
+- `ecurie2` s'affiche à côté d'`ecurie`, jamais deux fois quand les deux champs
+  portent le même nom.
+- **Choix que j'ai fait, à connaître** : les profils sans pseudo partent à la fin
+  de la liste. Le banc les avait placés en tête — le tiret cadratin passe avant
+  les lettres — et une ligne « — » en haut ressemble à un bug. Une ligne à
+  retirer si Blandine préfère l'inverse.
+
+Les sections **Signalements** de ce même écran n'ont pas été vérifiées.
+
+## 5 · 🟥 `mux-upload` n'exigeait personne
+
+La fonction acceptait l'en-tête `Authorization` que l'app lui envoie depuis
+toujours, **et ne le lisait jamais**. N'importe quel POST sur son adresse
+créait un envoi sur le compte Mux d'Écurie Feinn, sans avoir de compte Hype.
+
+⚠️ `ALLOWED_ORIGIN` ne protégeait pas de ça : le CORS n'est respecté que par
+les navigateurs, un appel direct l'ignore.
+
+Corrigé : le jeton est lu, envoyé à `/auth/v1/user`, et l'appel est refusé en
+401 s'il ne désigne personne. **Si `SUPABASE_URL` ou `SUPABASE_ANON_KEY`
+manquent, la fonction refuse aussi** (500) au lieu de laisser passer — même
+principe que le filet du § 2 : fermé quand on ne sait pas.
+
+Vérifié avant d'écrire : `hypeMuxAppel` **et** `hypeTesterMux` envoient tous
+deux `Bearer <jeton de session>`. Le bouton de test, conservé sur décision de
+Blandine, continue donc de fonctionner tant qu'elle est connectée.
+
+Ce que ça ne ferme PAS, et qui reste à faire :
+
+- **Le plafond des 15 vit dans le navigateur.** Une cavalière inscrite qui
+  appellerait l'adresse directement passerait à côté. Le seul plafond qui
+  tienne serait compté dans la fonction. Décidé, pas fait.
+- `playback_policy: "public"` : les adresses de lecture Mux sont publiques, qui
+  a le lien voit la vidéo sans compte. Question de vie privée pour des vidéos
+  de cavalières parfois mineures. Lectures signées possibles, décision de
+  Blandine, non tranchée.
+- `video_quality: "basic"` confirmé dans le fichier : l'encodage ne coûte rien.
+
+## Vérifications
+
+- `node --check` : **18 blocs, 0 échec**.
+- 🟥 Le banc a signalé deux échecs au changement de seuil : c'étaient **mes
+  attentes restées au réglage précédent**, pas le code. Assertions corrigées,
+  pas le fichier livré.
+- Banc d'essai vidéo : **28 vérifications, 0 échec**, exécutées sur le code découpé dans
+  le fichier livré (pas sur une copie retapée). Couvre le comptage normal, les
+  doublons, l'erreur *renvoyée* et l'exception *levée*, les seuils d'envoi
+  gratuit/Premium, les 7 états du décompte et les 5 états de la tuile.
+- 🟥 Trois de ces cas échouaient avant la correction du § 2. C'est le banc qui
+  les a trouvés, pas la relecture.
+- Banc d'essai Utilisateurs : **11 vérifications, 0 échec** — tri, pseudo vide,
+  double écurie, écurie faite d'espaces, comptage par écurie, lecture vide.
+  🟥 C'est lui qui a trouvé le tri fautif.
+- Marqueurs relus après écriture, aucune perte : `hypeVideosDejaEnvoyees` 5,
+  `hypeMuxNombreVideos` 6, `HYPE_MUX_VIDEOS_GRATUIT` 4, `setInvitPlus` 9,
+  `estUrlVideo` 53, `albums_cheval` 25, `styleTuile` 3, `?v=` 12.
+
+## Leçon
+
+🟥 **UN CLIENT QUI RENVOIE SON ERREUR AU LIEU DE LA LEVER REND TOUS LES
+`try/catch` DÉCORATIFS.** Le garde-fou du 03/09 avait été écrit avec la bonne
+intention et le bon commentaire, mais sur une hypothèse fausse quant à la façon
+dont la bibliothèque signale un échec. Lire ce que la fonction compte ne suffit
+pas : il faut lire **comment elle apprend qu'elle a raté**.
+
+🟥 **J'AI PARLÉ DE CE QUI ÉTAIT « EN LIGNE » SANS L'AVOIR VÉRIFIÉ.** Un
+index d'essai (seuil du décompte posé à 15 au lieu de 5, `da593060…`) a été
+livré pour que Blandine voie le rendu. J'ai ensuite confirmé que « le seuil
+est à 15 en ligne » alors qu'elle n'avait rien poussé. Cet index d'essai est
+**abandonné**, le seuil est revenu à 5 et le fichier livré retrouve exactement
+le md5 `fb382516…` — la preuve que le retour arrière est complet, octet pour
+octet. Même famille de faute que la nuit précédente : conclure sur ce que je
+crois déployé plutôt que sur ce qui l'est.
+
+## Reste à faire (inchangé depuis la passation)
+
+1. Regarder le tableau de bord Mux : combien de vidéos stockées sur 10.
+2. Les 500 $ du programme startup — le bouton de `mux.com/startups` ne répond pas
+   sur son téléphone ; email prêt pour `startups@mux.com`.
+3. Resserrer `mux-upload` (utilisateur authentifié exigé) + retirer le bouton de
+   test de l'écran Premium.
+4. `classement_ecuries` : `group by` sur le texte brut et `ecurie2` ignorée.
+5. Hauts faits reconnus par pseudo + écurie au lieu du `user_id`.
+
+Décidé et **non fait volontairement** : pas de complément d'abonnement « stockage »
+et **aucune annonce « prochainement »**. Personne n'approche du plafond ; le
+palier se construira le jour où une cavalière arrive à 12 ou 13, avec une vraie
+demande derrière.
+
+---
+
+# 🟩 04/09/2026 — « LAMOTTE 2026 » REMPLACÉ PAR L'OFFRE DE LANCEMENT DATÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c85bbf1b9ec929d61ea7eb945dabdac1` | page Premium : libellé de l'offre |
+| `poney-hype-plus.jpg` | **`images/`** | — | mascotte du message Hype+ |
+
+⚠️ Remplace le précédent. Contient toute la nuit du 03 au 04/09.
+
+## Ce qui n'allait pas
+
+Le bandeau de la page Premium affichait **`LAMOTTE<br>2026` écrit en dur** dans
+`PV5_TPL` : aucune date de fin, aucun drapeau, aucune condition. Il se serait
+affiché à l'identique en 2027.
+
+⚠️ Et les langues ne disaient pas la même chose : « OFFRE SPÉCIALE » en français
+mais « TARIFA FUNDADOR » en espagnol — un tarif fondateur sous-entend un prix
+réservé aux premières inscrites, à vie. Ça n'engage pas la même promesse.
+
+## Ce qui est posé
+
+Décision de Blandine : retirer Lamotte, annoncer une **offre de lancement
+jusqu'au 1er novembre 2026**.
+
+- Bandeau du haut : `T_OFFRE` = « OFFRE DE LANCEMENT » et un nouveau jeton
+  `T_LANCEMENT` = « JUSQU'AU 1ER NOV. 2026 », à la place du millésime en dur.
+- Pastille de la carte annuelle : `T_FONDATEUR` = « Tarif de lancement · jusqu'au
+  1er novembre 2026 ».
+- **Les 6 langues disent la même chose** (fr, en, es, it, ja, de).
+
+## ⚠️ CE QUI N'EST PAS AUTOMATIQUE
+
+La date est **affichée**, elle n'est pas **appliquée** : au 2 novembre, le
+bandeau annoncera toujours une offre terminée si personne ne le change. C'est le
+même piège que « LAMOTTE 2026 », en plus visible.
+
+À décider avant fin octobre : le prix d'après, et si le bandeau doit disparaître
+tout seul à la date. Le faire maintenant demanderait de fixer le tarif normal,
+que Blandine n'a pas tranché.
+
+Arithmétique vérifiée au passage, elle est juste : 12,99 × 12 = 155,88 ;
+99,99 ÷ 12 = 8,33 ; soit 36 % d'écart. ⚠️ Le prix barré est le **mensuel ramené
+à l'année**, pas un ancien tarif annuel — formulation ambiguë signalée à
+Blandine, non modifiée.
+
+---
+
+# 🟩 04/09/2026 (nuit) — LES HAUTS FAITS VIDÉO, LA PIONNIÈRE, ET L'ACTIVITÉ QUI COMPTE ENFIN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `956fef5c4c97e20ff2908e983a82eee4` | famille Vidéaste · distinction Pionnière · paliers raccordés au classement · 3 vidéos gratuites + décompte annoncé |
+| `poney-hype-plus.jpg` | **`images/`** | — | mascotte du message Hype+ |
+
+⚠️ Remplace le précédent. Contient toute la soirée.
+
+## 1. 🟥 LES PALIERS NE RAPPORTAIENT RIEN AU CLUB
+
+Définition de `classement_ecuries` lue le 03/09 (fournie par Blandine) :
+`xp = membres×10 + hauts_faits×5 + resultats×3 + podiums×8`, où `hauts_faits`
+compte la table **`hauts_faits`**. Or les familles écrivent dans
+**`hype_paliers`** : **aucun palier gagné depuis la refonte ne rapportait quoi
+que ce soit au club.** Une des raisons pour lesquelles la SEP restait à 150 XP
+avec dix abonnées.
+
+`hypeEnregistrerPalier` dépose désormais aussi une ligne dans `hauts_faits`
+(identifiant `famille:palier`). La clé unique `(user_id, badge_id)` rend
+l'écriture idempotente, et tout le passé se rattrape au prochain chargement
+puisque les paliers sont recalculés. ⚠️ L'échec de cette écriture n'annule pas
+le palier : le palier est acquis, l'XP du club n'en est qu'une conséquence.
+
+## 2. FAMILLE « VIDÉASTE » ET DISTINCTION « PIONNIÈRE »
+
+- **Vidéaste** (rayon Mes chevaux, 1/3/5/10/20 vidéos postées, badge « L'œil du
+  concours »). ⚠️ À ne pas confondre avec la famille **Vidéothèque** juste en
+  dessous, qui récompense le **visionnage** — elle est intacte.
+- **Pionnière** : un seul palier, 40 XP, badge « Pionnière de Hype ». La première
+  cavalière à avoir mis une vidéo en ligne, une seule fois, pour toujours.
+  Liste nominative `HYPE_PIONNIERE`, sur le modèle de `QUOTA_CHEVAUX_EXCEPTIONS`.
+  ⚠️ Blandine a désigné « Margot, dans la Société d'Équitation de Paris » : deux
+  comptes portent ce prénom (les deux « Margot » des imports), la reconnaissance
+  croise donc le **pseudo ET l'écurie**, via `hypeMemeClub` (donc « Sep » marche
+  aussi). **À remplacer par son `user_id` dès qu'on l'aura** — un pseudo change,
+  un identifiant non.
+
+## 3. TROIS VIDÉOS GRATUITES, ET LE DÉCOMPTE ANNONCÉ
+
+Plafond gratuit 2 → **3**, décidé par Blandine. Le message Hype+ de l'album
+annonce ce qui reste **avant** le geste : « Il te reste 5 photos et 2 vidéos ·
+3 min max par vidéo », puis l'invitation à s'abonner et le lien vers la page.
+
+## 🟥 CE QUI RESTE SUR LA FONCTION SQL (à froid, demain)
+
+Deux défauts dans `classement_ecuries`, non corrigés volontairement :
+- **`group by p.ecurie` sur le texte brut** : « Sep » et « Societe d'Equitation
+  de Paris (SEP) » sont deux clubs différents dans le classement. Même mal que
+  les cavalières mélangées. Explique les lignes à 10 XP (« Lardy », « Ecurie des
+  lichere »).
+- **`ecurie2` ignorée** : une cavalière dont la SEP est la deuxième écurie n'est
+  pas comptée comme membre.
+Les corriger fera beaucoup bouger les chiffres — à faire à froid, pas à 1 h du
+matin.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec.
+- Banc d'essai porté à **67 vérifications, 0 échec**. Neuf nouveaux cas : les
+  deux familles présentes, Vidéothèque intacte, le palier écrit bien dans
+  `hauts_faits`, son échec n'annule pas le palier, Margot de la SEP reconnue
+  (même écrite « Sep »), **l'autre Margot de Feinn NON reconnue**, une autre
+  cavalière non reconnue.
+
+---
+
+# 🟩 03/09/2026 (nuit, 8) — L'XP DU PODIUM DEVIENT LISIBLE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0c31a6a350c26e3ea45bd37c9824e99d` | pastille XP sur le podium des clubs |
+
+⚠️ Remplace le précédent. `poney-hype-plus.jpg` va toujours dans `images/`.
+
+## Le défaut
+
+Le chiffre d'XP tombait entre le bas du médaillon et le haut de la marche, en
+turquoise sur une photo claire : illisible (capture de Blandine, « 7627 XP » à
+moitié sur la marche, « 150 XP » et « 30 XP » sur le bord des médaillons).
+
+Il reçoit sa propre **pastille sombre** (fond rgba(6,8,10,0.82), liseré
+turquoise, coins ronds), qui se lit sur n'importe quel fond.
+
+⚠️ **Les ancrages TEXTES ne sont PAS touchés** : ils ont été réglés au point de
+pourcentage le 02/09 sur l'asset, et le « 1 » imprimé commence à 61,2 %. On ne
+déplace rien, on rend lisible.
+
+## ⚠️ CE QUI EST DIT À BLANDINE ET RESTE À TRANCHER
+
+Sa question : « Margot a dû prendre plein de points avec ses photos et vidéos,
+non ? » **Non.** La formule affichée par l'app elle-même est
+XP = membres×10 + hauts faits×5 + résultats×3 + podiums×8. Les photos et les
+vidéos n'y entrent **pas**, ni directement, ni par les hauts faits : la famille
+« Souvenirs » compte la table souvenirs, pas les médias des albums (déjà noté
+le 03/09 quand la famille « Vidéaste » a été proposée).
+
+Donc : le classement est **recalculé à chaque ouverture** (RPC
+classement_ecuries), il est donc à jour — mais poster des photos ou des vidéos
+ne fait monter aucun club aujourd'hui.
+
+La famille « Vidéaste » validée par Blandine (et la distinction « Pionnière »
+pour **Margot**) reste à faire : il manquait son identifiant, et le plafond
+gratuit à 2 limite de fait le premier palier aux abonnées.
+
+---
+
+# 🟩 03/09/2026 (nuit, 7) — LE MESSAGE HYPE+ ET LA FIN DU SAUTILLEMENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2b9c666b1cf41da05c61272ad1d343ad` | message Hype+ avec mascotte · ordre mémorisé des chevaux |
+| `poney-hype-plus.jpg` | **`images/`** | — | mascotte du message (fichier de Blandine) |
+
+⚠️ Remplace le précédent. L'image va dans `images/`, PAS à la racine.
+
+## 1. PRÉVENIR AVANT LE GESTE, ET DIRE OÙ ALLER
+
+Une cavalière découvrait la limite **après** avoir choisi ses fichiers. Dans
+l'album, au-dessus des boutons d'ajout, une carte tapable : la mascotte, « Pour
+ajouter plus de photos et de vidéos, tu peux t'abonner à Hype+ », et
+« Découvrir Hype+ › ». Elle ouvre la page d'abonnement. 6 langues.
+
+⚠️ Condition sur la DONNÉE (gratuit), jamais sur « déjà vu » : elle ne disparaît
+pas parce qu'elle a été lue, elle disparaît quand la cavalière est abonnée.
+
+Une première version affichait les compteurs (« il te reste 7 photos et
+1 vidéo »). Remplacée sur demande de Blandine par le message simple avec le lien.
+
+## 2. 🟥 « TOUTES LES IMAGES DE CHEVAUX CHANGENT AU CHARGEMENT »
+
+**Ce n'étaient pas les photos, c'était l'ORDRE.** Vérifié image par image sur son
+enregistrement : Cruibhin/Umea/Vallieres puis Rizotto/Apy/Vallieres. Les
+vignettes restent en place, les chevaux se déplacent dessous — l'œil lit ça
+comme des photos qui se remplacent.
+
+La liste est posée **deux fois** : l'ordre de la base d'abord (correctif du 01/09
+« afficher d'abord, classer ensuite », posé parce que la grille restait vide
+pendant le calcul), puis l'ordre XP quand les cinq requêtes reviennent.
+
+**Le dernier ordre classé est désormais gardé sur le téléphone** et sert dès le
+premier rendu. Plus de saut, et jamais de liste vide.
+
+🟥 **Règle dictée par Blandine** : si UN SEUL cheval a changé de place (elle
+vient d'ajouter des photos), il glisse à sa place tout de suite — un mouvement
+se comprend. Si l'ordre change en profondeur, **rien ne bouge à l'écran** : le
+nouvel ordre est mémorisé et s'applique au chargement suivant. Un cheval qui
+avance, oui ; toute la grille qui se réorganise, jamais. Seuil : 2 écarts ou
+moins (celui qui bouge et celui qui se décale).
+
+Un cheval inconnu de la mémoire (fiche créée depuis) passe **en tête** : une
+nouveauté ne se cache pas en bas.
+
+Appliqué aux deux grilles signalées : page Cavalier et page Écurie, même clé
+`hype_ordre_mes-chevaux`.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec.
+- Banc d'essai porté à **58 vérifications, 0 échec**. Six nouveaux cas : sans
+  mémoire l'ordre de la base est conservé, avec mémoire il est appliqué, un
+  cheval nouveau passe en tête, un cheval qui bouge donne 2 écarts (donc
+  appliqué), une grille réorganisée en donne 4 (donc reporté), un ordre
+  identique donne 0.
+
+---
+
+# 🟥 03/09/2026 (nuit, 6) — LE PLAFOND VIDÉO NE PROTÉGEAIT RIEN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `94019d3ae116bff6dd8836d16711e65b` | comptage des vidéos réparé |
+
+⚠️ Remplace le précédent. Contient tout ce qui a été livré aujourd'hui.
+
+## Le bug
+
+Une cavalière NON abonnée a posé **7 ou 8 vidéos** malgré le plafond de 2. Le
+plan Mux gratuit s'arrêtant à **10 vidéos au total**, tous comptes confondus,
+elle a rempli presque tout le quota à elle seule.
+
+🟥 **Le garde-fou regardait au mauvais endroit.** `hypeMuxNombreVideos` ne
+compte que les albums **dont elle est l'autrice** (`albums_cheval.user_id`). Or
+depuis le 02/09 une cavalière rattachée peut poster dans un album créé par
+**quelqu'un d'autre** : ces vidéos n'étaient comptées à personne, et le plafond
+ne se déclenchait jamais. Elle n'a rien contourné volontairement.
+
+## Le correctif
+
+`hypeVideosDejaEnvoyees(cible)` : le **maximum** entre ses propres albums et les
+vidéos de l'album visé. Il n'existe aucune colonne d'auteur par média — c'est la
+seule mesure fiable sans changer le schéma.
+
+⚠️ Conséquence assumée : sur un album partagé, les vidéos posées par d'autres
+comptent aussi dans son plafond. Un plafond un peu strict vaut mieux qu'un
+plafond qui ne protège rien.
+
+⚠️ Et si le comptage échoue, la fonction renvoie **le plafond**, pas zéro : un
+comptage raté ne doit jamais ouvrir le robinet.
+
+La carte Hype+ et le bouton vers la page d'abonnement existaient déjà : le
+message et la redirection demandés s'affichent maintenant qu'ils se déclenchent.
+
+## 🟥 CE QUI RESTE À FAIRE, ET QUI NE SE CODE PAS
+
+- **Vérifier le tableau de bord Mux** (section Video) : combien de vidéos sont
+  déjà stockées. À 8 ou 9 sur 10, la prochaine envoyée échoue côté Mux.
+- **Demander les 500 $ du programme startup Mux.** C'est ça qui achète la marge.
+- Le plafond Premium reste **illimité** : 14 abonnements actifs × quelques
+  vidéos dépassent les 10 places du plan gratuit. Chiffre à décider.
+
+## Leçon
+
+🟥 **J'ai affirmé avant de vérifier.** Quand Blandine a signalé la deuxième
+vidéo, j'ai parlé du plafond comme d'un mur qui allait la bloquer, sans avoir lu
+le comptage. Le même défaut que le matin sur le nom des chevaux. Un garde-fou
+n'est un garde-fou qu'après lecture de ce qu'il compte réellement.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec. Banc d'essai : **52 vérifications, 0 échec**,
+  dont les quatre du plafond : vidéos d'un album d'autrui désormais comptées, ses
+  propres vidéos toujours comptées, maximum des deux retenu, et comptage
+  impossible → on ferme.
+
+---
+
+# 🟩 03/09/2026 (nuit, 5) — L'ÉCRAN DES ABONNEMENTS LIT ENFIN LA VRAIE BASE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `30e0ef9b19e123f9822152d89ce95f8e` | Admin ▸ Abonnements sur données réelles (+ lien mot de passe oublié, albums privés) |
+
+⚠️ Remplace le précédent. Contient tout ce qui a été livré aujourd'hui.
+
+## Ce qui n'allait pas
+
+🟥 **L'écran était une maquette.** « 412 abonnés actifs », Léa Marchand, Thomas
+Petit, Inès Dubois : des noms inventés, écrits en dur, qui ne lisaient rien.
+Blandine n'avait donc **aucun** moyen de savoir qui s'était abonné — et pouvait
+croire que personne ne l'avait fait. (La section Utilisateurs est encore une
+maquette, elle, et le reste à ce jour.)
+
+La vraie donnée existait pourtant : `abonnements_premium`, alimentée par le
+webhook Stripe, déjà lue par l'app pour son propre Premium.
+
+## Ce que l'écran montre maintenant
+
+- Les abonnées réelles : pseudo, écurie, plan, échéance, statut.
+- Le compte des **actives** et la répartition par plan.
+- 🟥 **La même règle d'« actif » que l'app** (l. ~23578) : statut « actif » ET
+  (pas d'échéance OU échéance à venir). Ne jamais la recalculer autrement ici —
+  deux vérités sur le même sujet, c'est ce qui a coûté la soirée du 03/09.
+- Un avertissement quand des abonnements arrivent à échéance sous 30 jours.
+- Une ligne quand des accès sont **sans échéance** : ils ne s'éteindront jamais
+  d'eux-mêmes.
+- Un bouton **Rafraîchir** et l'heure de la dernière lecture.
+- ⚠️ Si une **seule** ligne remonte, l'écran dit que la règle de lecture de la
+  base ne laisse probablement voir que son propre abonnement, au lieu d'afficher
+  « 1 abonnée » comme si c'était le total. Un total faux est pire que pas de total.
+- Base vide : « c'est le webhook Stripe qu'il faut regarder, pas cet écran ».
+
+## Ce que la lecture du 03/09 a révélé (à traiter, non codé)
+
+- **Cinq mensuels expirent le 1er octobre**, à la même seconde (`23:59:59`) —
+  signature d'accès posés à la main, pas d'écritures Stripe (qui portent des
+  microsecondes). S'ils ne se renouvellent pas, cinq accès tombent d'un coup.
+- **Cinq accès sans échéance** : Evan, megane, Liam (ses deux comptes),
+  malicia2008 (sans écurie). Premium perpétuel tant que la ligne existe.
+- **Barbara** : statut `annule` avec une échéance en 2027. Le code respecte le
+  statut, elle n'a donc pas l'accès — mais la date est incohérente, à regarder
+  côté Stripe.
+- La cavalière aux deux vidéos **n'est pas** abonnée : elle est donc au plafond
+  gratuit de 2 vidéos.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec.
+- Banc d'essai porté à **48 vérifications, 0 échec**. La règle d'« actif » est
+  rejouée sur ses vraies lignes : Blandine active, Barbara inactive malgré sa
+  date, Evan actif sans échéance, une échéance passée inactive.
+
+---
+
+# 🟩 03/09/2026 (nuit, 4) — LE LIEN « MOT DE PASSE OUBLIÉ » VA DROIT AU BUT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `98a1ca5a0139b4cffb484efd0444564d` | routage du lien de réinitialisation (+ albums privés) |
+
+⚠️ Remplace le précédent. Contient tout ce qui a été livré aujourd'hui.
+
+## Ce qui n'allait pas
+
+Le détecteur du lien de récupération (`HYPE_RECUP_MDP`, posé dès le début du
+fichier) était bien lu par `EcranConnexionSpectral` — **mais seulement quand cet
+écran est monté**. Or au démarrage l'app ouvre `"intro"` : en cliquant le lien
+reçu par email, la cavalière tombait sur l'accueil puis les questions, et devait
+traverser tout l'onboarding avant d'atteindre le formulaire. Le correctif du
+28/08 avait branché le détecteur au bon endroit ; personne n'y **allait**.
+
+## Le correctif, aux deux moments possibles
+
+1. **Au choix de l'écran de départ** (l. 23142) : si le drapeau est posé, l'app
+   ouvre directement `"connexion"`. Il passe avant la reprise du dernier écran
+   visité.
+2. **Sur l'événement** `hype-recup-mdp`, si Supabase traite l'URL après le
+   montage : le routeur bascule sur `"connexion"`. Sans ça, une cavalière restée
+   sur l'accueil n'allait nulle part.
+
+⚠️ Le drapeau n'est **pas consommé** à ces deux endroits : c'est
+`EcranConnexionSpectral` qui le consomme en basculant sur le mode « reset ».
+L'effacer ici ferait arriver sur la connexion normale, pas sur le formulaire.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec.
+- Banc d'essai porté à **39 vérifications, 0 échec**. L'expression réelle de
+  l'écran de départ est extraite du fichier et évaluée : lien de réinitialisation
+  → `connexion` ; ouverture normale → `intro` ; reprise du dernier écran
+  conservée ; le lien passe avant la reprise.
+
+## Reste du chantier d'entrée (NON fait)
+
+La demande n°1 — « la page de connexion juste après l'accueil, avant les
+questions prénom/âge/écurie/galop » — n'est pas touchée. Elle attend une décision
+de Blandine restée ouverte le 02/09 : **de quelle page part le parcours** (l'
+animation d'ouverture, la page au titre Hype, ou `story.html`). Le reste de la
+refonte du 02/09 est déjà dans le fichier : `EcranAuth` supprimé,
+`EcranConnexionSpectral` seule porte.
+
+---
+
+# 🟩 03/09/2026 (nuit, 3) — LES ALBUMS PRIVÉS FUITAIENT DANS L'APP
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `12ceb48c1539068c52020170b6fc84b0` | deux lectures d'albums ramenées derrière le filtre du privé |
+
+⚠️ Remplace le précédent. Contient tout ce qui a été livré aujourd'hui.
+
+## Ce qui fuyait
+
+Le filtrage des albums privés vit **entièrement** dans `listerAlbumsCheval`
+(l. 1489) : la requête revient avec tout, et c'est le JavaScript qui écarte les
+albums privés dont on n'est pas l'auteur. Deux écrans ne passaient pas par cette
+porte et lisaient `albums_cheval` en direct :
+
+- 🟥 **`ChronologieSouvenirs`** — la chronologie par année de l'onglet **Photos**
+  d'une fiche cheval, **visible par tout le monde**. Elle mélangeait donc les
+  photos des albums privés à celles des albums publics.
+- `EcranDatesPhotos` — même motif, écran d'appoint.
+
+Les deux passent désormais par `listerAlbumsCheval`.
+
+🟥 **RÈGLE** : toute lecture de `albums_cheval` destinée à l'affichage passe par
+`listerAlbumsCheval`. Une règle de confidentialité posée à un seul endroit du
+code n'est une règle que si tout le monde emprunte cette porte.
+
+Deux autres lectures directes subsistent volontairement : `classerChevauxParXp`
+et `EcranScoreVitrine` ne font que **compter** des médias, ils n'affichent aucune
+photo. À reprendre si un jour un compteur devient public.
+
+## ✅ LA FUITE PAR L'API N'EXISTE PLUS — VÉRIFIÉ EN BASE
+
+Policy relue par Blandine le 03/09, elle est correcte :
+
+```
+albums_lecture_visibilite · SELECT ·
+  (COALESCE(visibilite,'public') <> 'prive') OR (auth.uid() = user_id) OR hype_est_moderatrice()
+```
+
+Donc `albums-prive.sql` EST passé. Aucun SQL à écrire — vérifié avant d'en
+livrer un, contrairement à la policy `club_agenda` du même soir.
+
+⚠️ **CORRECTION DE CE QUE J'AI ÉCRIT PLUS HAUT** : la base bloquant déjà la
+lecture, la chronologie ne recevait pas les albums privés des autres. La portée
+réelle du correctif de code est donc plus étroite :
+- pour une cavalière ordinaire, elle ne voyait que **ses propres** albums privés
+  dans sa chronologie — son contenu, sans gravité ;
+- 🟥 mais pour une **modératrice**, la policy renvoie TOUS les albums privés :
+  la chronologie de l'onglet Photos les lui affichait mélangés aux publics, sans
+  qu'elle sache lesquels étaient privés. C'est ce cas-là que le correctif ferme.
+
+La règle « toute lecture d'affichage passe par `listerAlbumsCheval` » reste
+valable : elle est ce qui garantit que le jour où une policy s'assouplit, l'écran
+ne se met pas à tout montrer.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec. Banc d'essai : 35 vérifications, 0 échec.
+- Repli conservé aux deux endroits si `listerAlbumsCheval` est absente : aucun
+  écran ne peut devenir blanc à cause de ce correctif.
+
+---
+
+# 🟩 03/09/2026 (nuit, 2) — LES CAVALIÈRES DANS LA BONNE ÉCURIE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7ee393ad3cd9aa3f94dd3c1b023ed014` | accents des noms d'écurie · ajout au bon club · repli retiré |
+| `cavaliers-ecurie-repair.sql` | à passer en base | — | remet les lignes déjà écrites sous la bonne écurie |
+
+⚠️ Cet `index.html` **remplace** le précédent : il contient tout ce qui a été
+livré aujourd'hui. Une seule poussée.
+
+## 1. 🟥 LES ACCENTS — la cause démontrée, pas supposée
+
+`motifEcurie` fabrique son motif à partir du nom **débarrassé de ses accents**
+(« Société d'Équitation de Paris (SEP) » → `%societe%equitation%paris%sep%`) et
+le compare en SQL au texte **brut**, qui a gardé les siens. Mesure faite en
+rejouant la vraie requête sur la page SEP :
+
+| Ce que la cavalière a tapé | ILIKE (avant) | `hypeMemeClub` |
+|---|---|---|
+| Société d'Équitation de Paris (SEP) | **absente** | vue |
+| Société d'Equitation de Paris | **absente** | vue |
+| SEP | **absente** | vue |
+| Societe d equitation de paris sep | vue | vue |
+
+La page SEP ne retrouvait donc même pas la cavalière ayant tapé **exactement**
+le nom du club. Feinn marchait par chance : « feinn » n'a pas d'accent. Le
+correctif du 20/08 avait recollé les mots, jamais traité les accents (son propre
+commentaire mesurait « 16 cavaliers sur 34 ne voyaient personne, SEP 12 »).
+
+**Réparé par une fonction unique**, `hypeCavaliersDuClub(nomClub)` : une requête
+large, puis `hypeMemeClub` — qui normalise les **deux** côtés — tranche. Même
+doctrine que `hypeChevauxDuClub` pour les chevaux. Le SQL n'est plus qu'un filet
+de secours, et son résultat passe lui aussi par la fonction.
+
+🟥 **Ne plus jamais décider d'une appartenance de club avec un ILIKE.**
+
+## 2. 🟥 L'AJOUT QUI ALLAIT DANS LA MAUVAISE ÉCURIE
+
+Sur la page club, `ajouterCavalierChoisi(p.id)` était appelée **sans le nom du
+club affiché**. La fonction se rabattait alors sur `monEcurieNom()`, c'est-à-dire
+la PREMIÈRE écurie du profil : ajouté depuis la SEP, le cavalier était rangé sous
+Feinn. La page Écurie, elle, passait son club depuis toujours. Un paramètre.
+
+Et la liste des cavalières choisies était **globale** : les mêmes apparaissaient
+sur les deux pages de club. Elle est désormais filtrée sur la colonne `ecurie` de
+la ligne, avec `hypeMemeClub`. Une ligne sans écurie (antérieure au correctif)
+reste visible partout plutôt que de disparaître.
+
+⚠️ **À passer en base : `cavaliers-ecurie-repair.sql`.** Il remet les lignes déjà
+écrites sous l'écurie que la cavalière a elle-même déclarée, quand elle n'en
+déclare qu'une — aucune ambiguïté possible. Les cavalières inscrites dans **deux**
+écuries ne sont pas touchées : personne ne peut deviner à leur place, et elles
+restent visibles des deux côtés, ce qui est correct. Le fichier montre l'état
+avant, corrige, liste les cas ambigus, puis montre la répartition finale.
+
+🟩 **Pas d'écran de rangement manuel** : le SQL traite les cas décidables, et
+retirer puis rajouter une cavalière depuis la bonne page fonctionne maintenant
+correctement — c'est le rattrapage manuel, sans code en plus.
+
+## 3. 🟥 LE REPLI QUI INVENTAIT DES MEMBRES
+
+La bande « Ma communauté équestre » de l'accueil se rabattait sur
+`derniersCavaliers(10)` quand la requête d'écurie ne renvoyait personne : dix
+cavalières **au hasard** affichées comme si elles étaient du club. Retiré. Une
+bande vide ne s'affiche pas, c'est tout.
+
+🟥 **Un repli qui invente de la donnée est un mensonge à l'écran.** Mieux vaut
+une bande vide qu'une bande fausse.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec.
+- Banc d'essai porté à **35 vérifications, 0 échec**. Nouveaux cas sur ses vrais
+  noms d'écurie : Feinn → Ambre + Blandine ; SEP (nom accentué) → Ilona + Evan +
+  Blandine ; un profil sans écurie n'est membre de rien ; Ambre n'apparaît pas à
+  la SEP.
+- Marqueurs relus : `hypeCavaliersDuClub` 3, l'ajout avec `monClub` 1,
+  `hype-import-ffe.js?v=13` 1.
+
+## Leçon
+
+🟥 **Le banc a attrapé un piège que j'avais introduit** : `hypeMemeClub` répond
+VRAI sur un champ vide (« sans club : partout », règle juste pour un cheval). Une
+`ecurie2` vide faisait donc entrer **tout le monde** dans toutes les écuries — mon
+correctif aurait été pire que le bug. On ne teste plus que les champs réellement
+remplis. Une règle écrite pour les chevaux ne se transpose pas telle quelle aux
+cavalières.
+
+---
+
+# 🟩 03/09/2026 (nuit) — LA CRÉATION DE CHEVAL PROPOSE LE RATTACHEMENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `087e2c674d498a82bd2011a92ef5f639` | recherche à la création (étape 3 des alias) |
+
+⚠️ Cet `index.html` **remplace** celui du soir : il contient aussi la galerie,
+l'agenda modifiable, la séparation des deux écuries et le correctif `T`.
+Une seule poussée.
+
+## Ce qui manquait
+
+La modale de création ne comparait le nom saisi qu'aux chevaux de **son écurie**
+(`chevauxDeLEcurie`). Un cheval déjà sur Hype dans une **autre** écurie n'était
+jamais signalé, et une deuxième fiche naissait. C'est l'origine des doublons
+Crumble, Cooltax et Vallieres.
+
+## Le correctif
+
+⚠️ **Aucun mécanisme nouveau.** `hypeChevauxHomonymes` existait déjà (écrite le
+03/09 : nom + alias FFE + table publique `chevaux_recherche` des surnoms) mais ne
+servait que sur `EcranGererEcurie`, un écran quasiment jamais ouvert. Elle est
+désormais appelée par la vraie porte, la modale.
+
+- Recherche lancée **450 ms après la fin de la frappe**, dès 2 lettres.
+- Les deux sources sont **fusionnées et dédoublonnées** : `doublonEc` (l'écurie,
+  tolérant aux débuts de nom — « Elfe » / « Elfe de Feinn ») et les homonymes de
+  tout Hype (nom, alias, surnoms). Trois propositions au maximum.
+- Un cheval **déjà chez elle** (possédé ou rattaché) n'est jamais proposé.
+- Chaque proposition montre la photo, le nom, l'alias et l'écurie, avec un bouton
+  **« C'est lui »** qui rattache et ouvre la fiche.
+- 🟥 **Rien n'est jamais refusé** : « Créer sa fiche » reste actif. Deux chevaux
+  peuvent légitimement porter le même nom.
+- La `window.confirm` de `EcranGererEcurie` n'est pas touchée.
+
+## Vérifications
+
+- `node --check` : 18 blocs, 0 échec.
+- Banc d'essai porté à **32 vérifications, 0 échec**. Nouveaux cas : homonyme
+  trouvé → le cheval est proposé, le bouton de rattachement est là, la création
+  reste possible ; aucun homonyme → aucune carte ; filtre des chevaux déjà miens
+  en place.
+
+## 🟥 DEUX SIGNALEMENTS DE BLANDINE, NON RÉSOLUS — DIAGNOSTIC SEUL
+
+**« Les cavaliers de l'écurie complètement mélangés. »** Pas corrigé : je ne sais
+pas de quelle page elle parle, et j'ai déjà corrigé la mauvaise liste deux fois
+aujourd'hui. Un suspect trouvé en attendant : la bande « Ma communauté équestre »
+de l'accueil (l. 32642) **se replie sur `derniersCavaliers(10)`** quand la requête
+d'écurie ne renvoie personne — elle affiche alors des cavaliers au hasard comme
+s'ils étaient du club. Un repli qui invente des membres est un mensonge à
+l'écran, à retirer quelle que soit la page visée.
+
+**« On revient en arrière depuis un cavalier et on se retrouve à l'accueil. »**
+Deux causes possibles, non tranchées :
+1. `naviguer` (l. 23285) **sort sans rien empiler quand la cible est l'écran
+   courant**. Un cavalier ouvert depuis la fiche d'un autre cavalier reste sur
+   l'écran `"cavalier"` : aucune entrée d'historique, donc le retour renvoie à
+   l'écran d'avant la première fiche — l'accueil, le plus souvent.
+2. Le **double recul** déjà connu du 25/08 (balayage maison + `popstate`), dont le
+   garde-fou ne dure que 450 ms : un swipe lent pourrait passer les deux.
+⚠️ **Rien n'a été touché au routeur.** Le corriger à l'aveugle ferait empiler des
+retours qui ré-affichent la même fiche (l'historique ne mémorise que l'écran, pas
+le cavalier visité) — et poser des couches à l'aveugle sur la navigation est
+exactement ce qui a coûté cher en août. À reprendre en sachant d'où elle appuie.
+
+---
+
 # 🟩 03/09/2026 (soir) — TROIS CHANTIERS EN UN SEUL ENVOI
 
 | Fichier | Où | md5 | Quoi |

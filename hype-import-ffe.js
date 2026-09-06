@@ -175,6 +175,14 @@
     return { statut: "illisible", brut: t };
   }
 
+  /* 06/09 : « SF », « sans faute », « sans-faute », « 0 pt » ne sont qu'une seule
+     et meme chose sur le telemat. Un seul endroit decide, ici. */
+  function estSansFauteFFE(mention) {
+    var t = String(mention || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (!t) return false;
+    return /(^|[^a-z])sf([^a-z]|$)/.test(t) || /sans\s*-?\s*faute/.test(t);
+  }
+
   function lireQuart(txt) { var m = String(txt || "").match(/(\d)\s*(?:er|ère|e)?/i); return m ? parseInt(m[1], 10) : null; }
   function lireDate(txt) {
     var m = String(txt || "").match(/(\d{2})\/(\d{2})\/(\d{4})/);
@@ -284,7 +292,18 @@
         partants: c.partants || null,
         quart: q,
         statut: c.statut,
-        garder: c.statut === "classe"
+        /* 06/09 (Blandine : « quand sans faute ou SF est mentionné il faut le
+           télécharger aussi » / « ça affiche les points quand on télécharge »).
+           Les deux valeurs étaient LUES puis JETÉES ici même : `lireClassement`
+           reconnaît « 12e / 26 - SF » depuis toujours et rangeait la mention,
+           et « Pts qualif. Chpt » arrivait dans f.points. Ni l'une ni l'autre
+           n'entrait dans la ligne écrite. Elles voyagent désormais jusqu'en base
+           (colonnes `mention` et `points`). */
+        mention: String(c.mention || "").trim(),
+        points: nb(f.points),
+        /* Un sans-faute est coché d'office, même hors du premier quart : c'est
+           un parcours réussi, il ne doit pas arriver décoché. */
+        garder: c.statut === "classe" || estSansFauteFFE(c.mention)
       };
       if (c.statut === "illisible") { r.doute = "classement illisible : « " + c.brut + " »"; r.garder = false; }
       if (c.deforme)                  r.doute = "classement lu en forme déformée";
@@ -310,9 +329,14 @@
      🟥 Eliminés et abandons COMPTENT dans le palmarès. On ne dit jamais
      l inverse a l ecran. Ils arrivent seulement decoches, en gris
      italique, pour qu elle decide.                                     */
-  function estPodium(r){ return r.statut === "classe" && r.place != null && r.place <= 3; }
-  function estTop8(r){ return r.statut === "classe" && r.place != null && r.place <= 8; }
-  function estClasse(r){ return r.statut === "classe" && r.quart === 1; }
+  function estPodium(r){ return r.statut === "classe" && (r.place != null && r.place <= 3 || estSansFauteFFE(r.mention)); }
+  function estTop8(r){ return r.statut === "classe" && (r.place != null && r.place <= 8 || estSansFauteFFE(r.mention)); }
+  /* 06/09 (Blandine) : « meme quand pas dans le premier quart, quand sans faute
+     ou SF est mentionne il faut le telecharger aussi ». Un sans-faute entre donc
+     dans TOUS les niveaux : quel que soit le choix fait a l'ecran, il arrive
+     coche. Rien n'est jamais jete de toute facon (regle du 23/08), `garder` ne
+     pilote que la colonne `visible`. */
+  function estClasse(r){ return r.statut === "classe" && (r.quart === 1 || estSansFauteFFE(r.mention)); }
   function aUnRang(r){ return r.statut === "classe" && r.place != null; }
 
   var NIVEAUX = [
@@ -355,7 +379,8 @@
     appliquer: appliquer,
     NIVEAUX: NIVEAUX,
     lireClassement: lireClassement,
-    quartAttendu: quartAttendu
+    quartAttendu: quartAttendu,
+    estSansFauteFFE: estSansFauteFFE
   };
   if (typeof window !== "undefined") window.HYPE_IMPORT = API;
   if (typeof module !== "undefined" && module.exports) module.exports = API;

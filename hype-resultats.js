@@ -363,6 +363,11 @@
       place: place,
       partants: partants,
       quart: nb(r.quart),
+      /* 06/09 : la mention du telemat (« SF ») et les points de qualification
+         voyagent desormais jusqu'ici. Colonnes neuves : absentes = null, rien
+         ne casse sur une base qui ne les a pas encore. */
+      mention: r.mention || "",
+      points: nb(r.points),
       cavalier: r.cavalier || "",
       origine: r.origine || "main",
       cheval_id: r.cheval_id || null,
@@ -383,6 +388,12 @@
   function estP(x) { return !estPrepa(x) && x.place !== null && x.place <= 3; }
   /* Classé = premier quart. Le quart est DONNÉ par la FFE. */
   function estClasse(x) { return !estPrepa(x) && x.quart === 1; }
+  /* 06/09 (Blandine) : un sans-faute compte, meme hors du premier quart. */
+  function estSansFaute(x) {
+    var t = String(x && x.mention || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    if (!t) return false;
+    return /(^|[^a-z])sf([^a-z]|$)/.test(t) || /sans\s*-?\s*faute/.test(t);
+  }
 
   /* 01/09 (regle de Blandine, rectifiee en seance) : UNE SORTIE = UN CONCOURS.
      Le compteur additionnait les LIGNES : un week-end a cinq epreuves valait
@@ -424,7 +435,7 @@
      Elle DOIT rester visible — sinon la cavalière l'enregistre et ne la
      revoit jamais. Elle ne compte pas dans les Classements pour autant. */
   function aMontrer(x) {
-    return estClasse(x) || estPrepa(x) || (x.origine !== "import" && x.quart === null);
+    return estClasse(x) || estSansFaute(x) || estPrepa(x) || (x.origine !== "import" && x.quart === null);
   }
 
   function concours(lignes, titres) {
@@ -922,6 +933,7 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
     grandsMoments: grandsMoments, force: force, hauteur: hauteur,
     rdvNom: rdvNom, rdvRang: rdvRang, lieuNormal: lieuNormal,
     estClasse: estClasse, aMontrer: aMontrer, estV: estV, estP: estP, estPrepa: estPrepa,
+    estSansFaute: estSansFaute,
     estMain: estMain, estVPrepa: estVPrepa, nbSorties: nbSorties,
     joli: joli, dateLongue: dateLongue,
     RDV: RDV, MEMES_LIEUX: MEMES_LIEUX, HAUTEURS: HAUTEURS

@@ -2569,6 +2569,13 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
       quart: r.quart,          /* donné par la FFE, jamais calculé */
       cavalier: netNomCavalierFFE(netFFE(r.cavalier)),
       origine: "import",
+      /* 06/09 (Blandine) : la mention du telemat (« 12e / 26 - SF ») et les points
+         de qualification etaient LUS par le lecteur puis jetes avant l'ecriture.
+         Ils partent desormais en base. ⚠️ Si les colonnes n'existent pas encore,
+         l'insert ENTIER serait refuse : le repli plus bas rejoue le paquet sans
+         ces deux champs et le dit, plutot que de perdre l'import. */
+      mention: netFFE(r.mention || "") || null,
+      points: (r.points == null ? null : r.points),
       /* la coche ne décide QUE de l affichage, plus de l enregistrement */
       visible: (r.garder !== false),
       classement: (r.place != null && r.partants != null)
@@ -2580,12 +2587,24 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
 
   /* par paquets de 50 : un import de sept saisons fait 166 lignes */
   let n = 0;
+  let manquePS = false;   /* 06/09 : vrai si la base n'a pas encore les colonnes mention/points */
   for (let i = 0; i < neufs.length; i += 50) {
     let r;
     try {
+      var paquet = neufs.slice(i, i + 50);
       r = await delaiDeGarde(
-        supa.from("resultats").insert(neufs.slice(i, i + 50)).select("id"),
+        supa.from("resultats").insert(paquet).select("id"),
         15, "ecriture");
+      /* 06/09 — REPLI SI `mention` / `points` N'EXISTENT PAS ENCORE EN BASE.
+         Postgres (via PostgREST) refuse le paquet ENTIER en nommant la colonne
+         inconnue. Sans ce repli, pousser l'app avant de passer le SQL casserait
+         tout import. On rejoue alors le meme paquet sans ces deux champs : les
+         resultats rentrent, seules la mention et les points manquent. */
+      if (r && r.error && /mention|points/i.test(String(r.error.message || r.error))) {
+        manquePS = true;
+        var sansPS = paquet.map(function (x) { var y = Object.assign({}, x); delete y.mention; delete y.points; return y; });
+        r = await delaiDeGarde(supa.from("resultats").insert(sansPS).select("id"), 15, "ecriture");
+      }
     } catch (eI) {
       /* 🟥 l'écriture peut être partielle : on rend ce qui est passé AVANT. */
       return { n: n, doublons: doublons, error: (String(eI && eI.message).indexOf("DELAI:") === 0)
@@ -2625,7 +2644,10 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
       }
     } catch (eOg) { infoOg = null; /* les origines ne doivent JAMAIS faire echouer l import des resultats */ }
   }
-  return { n: n, doublons: doublons, origines: infoOg };
+  /* 06/09 : on ne se tait pas si la mention SF et les points n'ont pas pu etre
+     ecrits — sinon Blandine croirait la nouvelle colonne remplie. */
+  return { n: n, doublons: doublons, origines: infoOg,
+    avertissement: manquePS ? "Les r\u00e9sultats sont enregistr\u00e9s, mais PAS la mention « sans faute » ni les points : la base n'a pas encore les colonnes. Passe le SQL sql-06-09-sansfaute-points.sql, puis relance cet import pour les r\u00e9cup\u00e9rer." : null };
 }
 async function appliquerOriginesOfficielles(chevalId, originesOff) { /* 26/08 : le cavalier a choisi « prendre l officiel » — on remplace pere/mere et on complete le reste */
   try {
@@ -20758,7 +20780,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=2"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=3"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -24252,6 +24274,10 @@ function Router() {
                            « 0 résultat enregistré » ne disait pas POURQUOI zéro —
                            tout était-il déjà en base, ou rien n était-il passé ?
                            Le module a besoin des doublons pour le dire. */
+                        /* 06/09 : si la base n'a pas encore les colonnes mention/points,
+                           on le DIT a l'ecran au lieu de laisser croire que le sans-faute
+                           est enregistre (le message reste jusqu'a fermeture). */
+                        if (r && r.avertissement) { try { window.alert(r.avertissement); } catch (eAv) { } }
                         return { n: (r && r.n) || 0, doublons: (r && r.doublons) || 0 };
                       });
                   }
@@ -37520,7 +37546,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=13";
+    sc.src = "hype-import-ffe.js?v=14";
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -37995,7 +38021,7 @@ function EcranCheval() {
      les visiteurs voient toujours tout. Le passer en base demanderait une
      colonne — non tranche. */
   var _rcl = React.useState(function () {
-    try { var v = localStorage.getItem("hype_res_vue"); return (v === "classes" || v === "podiums") ? v : "tous"; }
+    try { var v = localStorage.getItem("hype_res_vue"); return (v === "classes" || v === "podiums" || v === "sf") ? v : "tous"; }
     catch (eRc) { return "tous"; }
   });
   var vueRes = _rcl[0], setVueRes = _rcl[1];
@@ -40376,7 +40402,13 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         (function () {
           var lignesBrutes = (resDb || []).filter(function (r) { return r && (voirMasques || r.visible !== false) && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
           function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
-          var tousF = lignesBrutes.map(function (r) { return { pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", q: (r.quart == null ? null : Number(r.quart)), d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
+          /* 06/09 : la ligne porte desormais son IDENTIFIANT, son ORIGINE (import ou
+             saisie a la main) et la MENTION du telemat — necessaires pour la corbeille
+             des saisies manuelles et pour la pastille « Sans faute ».
+             ⚠️ Meme lecture du sans-faute que le lecteur d'import et hype-resultats.js :
+             trois endroits, faute de module partage. Si la regle change, la changer aux trois. */
+          function estSFf(f) { var t = String(f && f.mn || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); if (!t) return false; return /(^|[^a-z])sf([^a-z]|$)/.test(t) || /sans\s*-?\s*faute/.test(t); }
+          var tousF = lignesBrutes.map(function (r) { return { id: r.id, og: (r.origine || "main"), mn: String(r.mention || ""), pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", q: (r.quart == null ? null : Number(r.quart)), d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
           /* 30/08 — BARRE EMPILEE PAR SAISON. Liste PARALLELE a tousF qui GARDE les
              parcours SANS place (eliminations, abandons : place vide, classement
              "El." / "Ab."), volontairement ecartes de tousF par le .filter ci-dessus.
@@ -40418,6 +40450,8 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             vueF = tousF.filter(function (fQ) { return estPrepaLigne(fQ) ? gardePrepa(fQ) : (fQ.q === 1); });
           } else if (vueRes === "podiums") {
             vueF = tousF.filter(function (fQ) { return estPrepaLigne(fQ) ? gardePrepa(fQ) : ((fQ.pl || 99) <= 3); });
+          } else if (vueRes === "sf") {
+            vueF = tousF.filter(estSFf);
           }
           var fortsPool = vueF.slice();
           try {
@@ -40557,7 +40591,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               var choix = [
                 ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle")],
                 ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert")],
-                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien")]
+                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien")],
+                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
+                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei")]
               ];
               var nMasq = tousF.length - vueF.length;
               return h("div", { style: { margin: "10px 16px 0" } },
@@ -40569,7 +40605,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                         border: "1px solid " + (onV ? "rgba(217,199,163,0.7)" : "rgba(255,255,255,0.13)"),
                         background: onV ? "rgba(217,199,163,0.14)" : "rgba(255,255,255,0.03)",
                         color: onV ? "#D9C7A3" : "rgba(237,242,245,0.62)",
-                        fontSize: 11.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } }, cH[1]);
+                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
                   })),
                 (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "#6F7883", fontFamily: "'Montserrat',sans-serif" } },
                   nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
@@ -40669,7 +40705,30 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                         h("div", { style: { flex: 1, minWidth: 0 } },
                           h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
                           h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rS.cav) : null)),
-                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")));
+                        estSFf(rS) ? h("span", { style: { flex: "0 0 auto", fontSize: 9.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", color: "#7FEAF2", border: "1px solid rgba(32,217,245,0.45)", borderRadius: 999, padding: "2px 7px" } }, "SF") : null,
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")),
+                        /* 06/09 (Blandine : « je voudrais retirer a la main des resultats
+                           ajoutes a la main qui chevauchent avec ceux telecharges ») — la
+                           corbeille n'apparait QUE sur une ligne saisie a la main, et
+                           seulement pour la proprietaire du cheval ou une moderatrice.
+                           ⚠️ Une ligne officielle importee n'est jamais supprimable ici :
+                           elle se decoche a la relecture de l'import, elle ne se detruit pas. */
+                        (rS.og !== "import" && rS.id && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi)))
+                          ? h("button", { "aria-label": T("Retirer ce r\u00e9sultat", "Remove this result", "Quitar este resultado", "Rimuovi questo risultato", "\u3053\u306e\u7d50\u679c\u3092\u524a\u9664", "Dieses Ergebnis entfernen"),
+                              onClick: function (eSup) {
+                                try { eSup.stopPropagation(); } catch (eS8) { }
+                                var quoi = (rS.nom || "") + (rS.ep ? (" \u00b7 " + rS.ep) : "");
+                                if (!window.confirm(T("Retirer d\u00e9finitivement cette ligne saisie \u00e0 la main ?", "Permanently remove this hand-entered line?", "\u00bfQuitar definitivamente esta l\u00ednea escrita a mano?", "Rimuovere definitivamente questa riga inserita a mano?", "\u624b\u5165\u529b\u306e\u3053\u306e\u884c\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "Diese von Hand erfasste Zeile endg\u00fcltig entfernen?") + "\n\n" + quoi)) return;
+                                (async function () {
+                                  try {
+                                    var rSup = await supprimerResultat(rS.id);
+                                    if (rSup && rSup.error) { setToast(T("Suppression impossible : ", "Could not delete: ", "No se pudo eliminar: ", "Eliminazione impossibile: ", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a", "L\u00f6schen nicht m\u00f6glich: ") + String(rSup.error.message || rSup.error)); return; }
+                                    setResDb(function (av) { return (av || []).filter(function (x) { return x && x.id !== rS.id; }); });
+                                    setToast(T("R\u00e9sultat retir\u00e9.", "Result removed.", "Resultado eliminado.", "Risultato rimosso.", "\u7d50\u679c\u3092\u524a\u9664\u3057\u307e\u3057\u305f\u3002", "Ergebnis entfernt."));
+                                  } catch (eSp) { setToast(T("Suppression impossible : ", "Could not delete: ", "No se pudo eliminar: ", "Eliminazione impossibile: ", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a", "L\u00f6schen nicht m\u00f6glich: ") + String((eSp && eSp.message) || eSp)); }
+                                })();
+                              },
+                              style: { flex: "0 0 auto", marginLeft: 8, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.03)", color: "rgba(237,242,245,0.55)", fontSize: 13, lineHeight: 1, cursor: "pointer" } }, "\ud83d\uddd1") : null);
                     })) : null);
               })) : null,
             /* — 5 · DERNIERS RÉSULTATS — */
