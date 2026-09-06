@@ -34203,6 +34203,14 @@ var CHEVAUX_FICHE = {
   tully: { nom: "Tully Blue Moon", photo: IMG_TULLY, tag: "Champion", info: "Selle Français · 15 ans", flots: [], palmares: [] },
   heybaby: { nom: "Hey Baby", photo: IMG_HEYBABY_CHEVAL, tag: "Élite", info: "Jument · CSO", flots: [], palmares: [] }
 };
+/* 🟥 06/09 (Blandine, capture d'ecran d'un plantage : "ReferenceError: Can't find
+   variable: NOMS_MIGRES" en ouvrant une fiche cheval) — PROMU AU NIVEAU GLOBAL. Cette
+   liste vivait avant en `var` LOCAL a l'interieur d'un effet de EcranCheval : invisible
+   partout ailleurs dans le fichier. La correction du bouton Origines du 05/09 (22h05,
+   Tully) la referencait depuis le corps du rendu, hors de cette portee — plantage a
+   l'ouverture de CHAQUE fiche cheval. Deplacee ici, aux cotes de CHEVAUX_FICHE dont elle
+   depend, accessible de partout desormais. */
+var NOMS_MIGRES = { rizotto: "Rizotto d'Emery", elfe: "Elfe de Feinn", venus: "Cooltax", idao: "Bor\u00e9alis de Feinn", tully: "Tully Blue moon", heybaby: "Hey Baby Please" }; /* noms reels des chevaux de Liam en base */
 
 /* ===== Teinte par cheval : helpers ===== */
 function teinteRGBA(hex, aT) { try { var h9 = String(hex).replace("#", ""); return "rgba(" + parseInt(h9.substr(0, 2), 16) + "," + parseInt(h9.substr(2, 2), 16) + "," + parseInt(h9.substr(4, 2), 16) + "," + aT + ")"; } catch (e) { return "rgba(32,217,245," + aT + ")"; } }
@@ -37408,7 +37416,9 @@ function EcranCheval() {
   React.useEffect(function () {
     var actif = true;
     /* 30/07 bascule migration : les 7 fiches demo vivent desormais en base ; le code n'est plus qu'un secours. */
-    var NOMS_MIGRES = { rizotto: "Rizotto d'Emery", elfe: "Elfe de Feinn", venus: "Cooltax", idao: "Bor\u00e9alis de Feinn", tully: "Tully Blue moon", heybaby: "Hey Baby Please" }; /* noms reels des chevaux de Liam en base */
+    /* 🟥 06/09 : NOMS_MIGRES vit desormais au niveau global, a cote de CHEVAUX_FICHE
+       (voir sa declaration la-bas) — cette ligne locale, qui masquait la globale et cassait
+       tout ce qui la lisait hors de cet effet, est retiree. Rien d'autre ne change ici. */
     if (CHEVAUX_FICHE[id] && !NOMS_MIGRES[id]) { setChevalDyn(null); return; }
     (async function () {
       try {
@@ -38230,11 +38240,6 @@ function EcranCheval() {
       var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
       var donnees = b64.slice(virg + 1);
       var CHAMPS_PED = ["pere", "mere", "pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"];
-      /* 🟩 05/09 22h50 (Blandine, capture d'Orlena) — race et age restaient vides alors
-         que la page les montre clairement (\u00ab Zangersheide \u00bb, \u00ab n\u00e9(e) en 2005 \u00bb) : la
-         consigne ne les demandait tout simplement jamais. Ajout\u00e9s ici, plus `naisseur`
-         (d\u00e9j\u00e0 un champ du formulaire) et `nomCheval` (le sujet de la fiche lue, pour
-         v\u00e9rifier l'identit\u00e9 avant d'appliquer quoi que ce soit \u2014 voir plus bas). */
       var consigne = "Tu lis une capture d'ecran d'une fiche de pedigree equin (site IFCE / infochevaux, Horsetelex, "
         + "ou similaire). Retrouve : le nom du CHEVAL dont c'est la fiche (nomCheval), sa race/stud-book, "
         + "son annee de naissance (4 chiffres), son naisseur/eleveur si visible, le pere (sire), la mere (dam), "
@@ -38257,29 +38262,76 @@ function EcranCheval() {
         setImportOrigEnCours(false);
         return;
       }
-      /* 🟩 05/09 22h50 (Blandine : "il verifie pas que le cheval concerne est bien le
-         bon") — VERROU D'IDENTITE, meme principe que l'import FFE : si la capture donne
-         un nom de cheval ET que la fiche ouverte a un nom, ils doivent se ressembler
-         (nomsHippiquesProches). Sinon on refuse tout, pour ne jamais coller les origines
-         d'un cheval sur la fiche d'un autre. Si la capture ne montre pas de nom (cadrage
-         serre), on ne peut pas verifier : on applique quand meme, comme avant. */
       var nomCible = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
       var nomVu = (trouve && trouve.nomCheval) ? String(trouve.nomCheval).trim() : "";
-      if (nomVu && nomCible && !nomsHippiquesProches(nomVu, nomCible)) {
-        setImportOrigMsg({ ok: false, texte: T("Cette capture semble \u00eatre celle de \u00ab " + nomVu + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour ne pas m\u00e9langer les deux.", "This screenshot looks like it's about \u00ab " + nomVu + " \u00bb, but the profile open is \u00ab " + nomCible + " \u00bb. Import refused so the two don't get mixed up.", "Esta captura parece ser de \u00ab " + nomVu + " \u00bb, pero la ficha abierta es \u00ab " + nomCible + " \u00bb. Importaci\u00f3n rechazada para no mezclarlos.", "Questa schermata sembra riguardare \u00ab " + nomVu + " \u00bb, ma la scheda aperta \u00e8 \u00ab " + nomCible + " \u00bb. Importazione rifiutata per non mescolarli.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u306f\u300c" + nomVu + "\u300d\u306e\u3082\u306e\u306e\u3088\u3046\u3067\u3059\u304c\u3001\u958b\u3044\u3066\u3044\u308b\u30da\u30fc\u30b8\u306f\u300c" + nomCible + "\u300d\u3067\u3059\u3002\u6df7\u540c\u3092\u9632\u3050\u305f\u3081\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\u3002", "Dieser Screenshot scheint \u00ab " + nomVu + " \u00bb zu zeigen, aber das ge\u00f6ffnete Profil ist \u00ab " + nomCible + " \u00bb. Import abgelehnt, um beide nicht zu vermischen.") });
+      /* 🟩 06/09 (Blandine : "je veux que tu te mettes sur le decalage de l'ascendant" —
+         "il voit bien que c'est le meme nom non ?") — avant de refuser, on regarde si `nomVu`
+         correspond a un ASCENDANT DEJA TAPE dans le formulaire (pere, mere, ou un grand-parent).
+         Si oui : ce n'est pas le mauvais cheval, c'est SA PROPRE fiche, un ou deux crans plus haut
+         dans l'arbre — ce que la capture montre pour "pere"/"mere" devient alors les GRANDS-parents
+         (ou arriere-grands-parents) a la bonne place, au lieu d'ecraser le sommet de l'arbre. */
+      var NIVEAUX_ASCENDANTS = [
+        { prefixe: "p", champ: "pere" }, { prefixe: "m", champ: "mere" },
+        { prefixe: "pp", champ: "pp" }, { prefixe: "pm", champ: "pm" },
+        { prefixe: "mp", champ: "mp" }, { prefixe: "mm", champ: "mm" }
+        /* les champs de niveau 3 (ppp..mmm) ne sont pas testes : meme reconnus, il n'y aurait
+           nulle part ou caser un niveau 4, qui n'existe pas dans ce formulaire. */
+      ];
+      var decalage = null; /* null = pas de decalage (fiche du cheval lui-meme, ou rien a verifier) */
+      var correspondPourCible = !nomVu || !nomCible || nomsHippiquesProches(nomVu, nomCible);
+      if (!correspondPourCible) {
+        for (var iNa = 0; iNa < NIVEAUX_ASCENDANTS.length && !decalage; iNa++) {
+          var niv = NIVEAUX_ASCENDANTS[iNa];
+          var dejaTape = origLocal[niv.champ];
+          if (dejaTape && nomsHippiquesProches(nomVu, dejaTape)) decalage = niv.prefixe;
+        }
+        if (!decalage) {
+          setImportOrigMsg({ ok: false, texte: T("Cette capture semble \u00eatre celle de \u00ab " + nomVu + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb, et ce nom ne correspond \u00e0 aucun ascendant d\u00e9j\u00e0 tap\u00e9. Import refus\u00e9 pour ne pas m\u00e9langer les deux.", "This screenshot looks like it's about \u00ab " + nomVu + " \u00bb, but the profile open is \u00ab " + nomCible + " \u00bb, and this name doesn't match any ancestor already entered. Import refused so the two don't get mixed up.", "Esta captura parece ser de \u00ab " + nomVu + " \u00bb, pero la ficha abierta es \u00ab " + nomCible + " \u00bb, y este nombre no coincide con ning\u00fan ascendiente ya introducido. Importaci\u00f3n rechazada para no mezclarlos.", "Questa schermata sembra riguardare \u00ab " + nomVu + " \u00bb, ma la scheda aperta \u00e8 \u00ab " + nomCible + " \u00bb, e questo nome non corrisponde a nessun ascendente gi\u00e0 inserito. Importazione rifiutata per non mescolarli.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u306f\u300c" + nomVu + "\u300d\u306e\u3082\u306e\u306e\u3088\u3046\u3067\u3059\u304c\u3001\u958b\u3044\u3066\u3044\u308b\u30da\u30fc\u30b8\u306f\u300c" + nomCible + "\u300d\u3067\u3001\u3053\u306e\u540d\u524d\u306f\u65e2\u5165\u529b\u306e\u7956\u5148\u306e\u3069\u308c\u306b\u3082\u4e00\u81f4\u3057\u307e\u305b\u3093\u3002\u6df7\u540c\u3092\u9632\u3050\u305f\u3081\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\u3002", "Dieser Screenshot scheint \u00ab " + nomVu + " \u00bb zu zeigen, aber das ge\u00f6ffnete Profil ist \u00ab " + nomCible + " \u00bb, und dieser Name stimmt mit keinem bereits eingegebenen Vorfahren \u00fcberein. Import abgelehnt, um beide nicht zu vermischen.") });
+          setImportOrigEnCours(false);
+          return;
+        }
+      }
+      /* Construit le jeu de champs a appliquer, decale du bon nombre de crans si besoin. */
+      var aAppliquer = trouve;
+      if (decalage) {
+        aAppliquer = {};
+        var profondeurDispo = 3 - decalage.length; /* 3 generations max dans ce formulaire */
+        if (profondeurDispo >= 1) {
+          if (trouve.pere) aAppliquer[decalage + "p"] = trouve.pere;
+          if (trouve.mere) aAppliquer[decalage + "m"] = trouve.mere;
+        }
+        if (profondeurDispo >= 2) {
+          if (trouve.pp) aAppliquer[decalage + "pp"] = trouve.pp;
+          if (trouve.pm) aAppliquer[decalage + "pm"] = trouve.pm;
+          if (trouve.mp) aAppliquer[decalage + "mp"] = trouve.mp;
+          if (trouve.mm) aAppliquer[decalage + "mm"] = trouve.mm;
+        }
+        /* rien pour un profondeurDispo <= 0 : ca reconnait le cheval, mais il n'y a nulle
+           part ou ranger un niveau 4 ; on le dit clairement dans le message plus bas. */
+      }
+      var auMoinsUnDecale = !decalage || Object.keys(aAppliquer).length > 0;
+      if (!auMoinsUnDecale) {
+        setImportOrigMsg({ ok: false, texte: T("Reconnu comme \u00ab " + nomVu + " \u00bb, mais trop loin dans l'arbre pour trouver une place (ce formulaire s'arr\u00eate aux arri\u00e8re-grands-parents).", "Recognised as \u00ab " + nomVu + " \u00bb, but too deep in the tree to find a slot (this form stops at great-grandparents).", "Reconocido como \u00ab " + nomVu + " \u00bb, pero demasiado lejos en el \u00e1rbol para encontrar un lugar (este formulario llega hasta los bisabuelos).", "Riconosciuto come \u00ab " + nomVu + " \u00bb, ma troppo lontano nell'albero per trovare un posto (questo modulo arriva fino ai bisnonni).", "\u300c" + nomVu + "\u300d\u3068\u3057\u3066\u8a8d\u8b58\u3055\u308c\u307e\u3057\u305f\u304c\u3001\u7cfb\u56f3\u306e\u5965\u304c\u6df1\u3059\u304e\u307e\u3059\uff08\u3053\u306e\u30d5\u30a9\u30fc\u30e0\u306f\u66fe\u7956\u7236\u6bcd\u307e\u3067\u3067\u3059\uff09\u3002", "Als \u00ab " + nomVu + " \u00bb erkannt, aber zu tief im Stammbaum f\u00fcr einen freien Platz (dieses Formular reicht bis zu den Urgro\u00dfeltern).") });
         setImportOrigEnCours(false);
         return;
       }
       setOrigLocal(function (oo) {
         var nn = Object.assign({}, oo);
-        CHAMPS_PED.forEach(function (cle) { if (trouve[cle] && String(trouve[cle]).trim()) nn[cle] = String(trouve[cle]).trim(); });
-        if (trouve.race && String(trouve.race).trim()) nn.race = String(trouve.race).trim();
-        if (trouve.naisseur && String(trouve.naisseur).trim()) nn.naisseur = String(trouve.naisseur).trim();
-        var an = trouve.naissance ? parseInt(String(trouve.naissance).replace(/[^0-9]/g, ""), 10) : null;
-        if (an && an > 1970 && an <= (new Date()).getFullYear()) nn.age = String((new Date()).getFullYear() - an);
+        Object.keys(aAppliquer).forEach(function (cle) { if (CHAMPS_PED.indexOf(cle) >= 0 && aAppliquer[cle] && String(aAppliquer[cle]).trim()) nn[cle] = String(aAppliquer[cle]).trim(); });
+        if (!decalage) {
+          if (trouve.race && String(trouve.race).trim()) nn.race = String(trouve.race).trim();
+          if (trouve.naisseur && String(trouve.naisseur).trim()) nn.naisseur = String(trouve.naisseur).trim();
+          var an = trouve.naissance ? parseInt(String(trouve.naissance).replace(/[^0-9]/g, ""), 10) : null;
+          if (an && an > 1970 && an <= (new Date()).getFullYear()) nn.age = String((new Date()).getFullYear() - an);
+        }
         return nn;
       });
-      setImportOrigMsg({ ok: true, texte: T("Origines compl\u00e9t\u00e9es depuis la capture \u2014 v\u00e9rifie avant d'enregistrer.", "Bloodline filled in from the screenshot \u2014 check it before saving.", "Or\u00edgenes completados desde la captura \u2014 rev\u00edsalos antes de guardar.", "Origini completate dalla schermata \u2014 controlla prima di salvare.", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u3092\u5165\u529b\u3057\u307e\u3057\u305f\u3002\u4fdd\u5b58\u524d\u306b\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Abstammung aus dem Screenshot \u00fcbernommen \u2014 bitte vor dem Speichern pr\u00fcfen.") });
+      setImportOrigMsg({
+        ok: true,
+        texte: decalage
+          ? T("Reconnu comme \u00ab " + nomVu + " \u00bb, d\u00e9j\u00e0 dans l'arbre \u2014 origines d\u00e9cal\u00e9es au bon niveau. V\u00e9rifie avant d'enregistrer.", "Recognised as \u00ab " + nomVu + " \u00bb, already in the tree \u2014 bloodline shifted to the right level. Check it before saving.", "Reconocido como \u00ab " + nomVu + " \u00bb, ya en el \u00e1rbol \u2014 or\u00edgenes desplazados al nivel correcto. Rev\u00edsalos antes de guardar.", "Riconosciuto come \u00ab " + nomVu + " \u00bb, gi\u00e0 nell'albero \u2014 origini spostate al livello giusto. Controlla prima di salvare.", "\u300c" + nomVu + "\u300d\u3068\u3057\u3066\u8a8d\u8b58\u3055\u308c\u3001\u65e2\u306b\u7cfb\u56f3\u5185\u306b\u5b58\u5728 \u2014 \u6b63\u3057\u3044\u4e16\u4ee3\u306b\u8840\u7d71\u3092\u79fb\u52d5\u3057\u307e\u3057\u305f\u3002\u4fdd\u5b58\u524d\u306b\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Als \u00ab " + nomVu + " \u00bb erkannt, bereits im Stammbaum \u2014 Abstammung auf die richtige Ebene verschoben. Bitte vor dem Speichern pr\u00fcfen.")
+          : T("Origines compl\u00e9t\u00e9es depuis la capture \u2014 v\u00e9rifie avant d'enregistrer.", "Bloodline filled in from the screenshot \u2014 check it before saving.", "Or\u00edgenes completados desde la captura \u2014 rev\u00edsalos antes de guardar.", "Origini completate dalla schermata \u2014 controlla prima di salvare.", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u3092\u5165\u529b\u3057\u307e\u3057\u305f\u3002\u4fdd\u5b58\u524d\u306b\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Abstammung aus dem Screenshot \u00fcbernommen \u2014 bitte vor dem Speichern pr\u00fcfen.")
+      });
     } catch (eG) {
       setImportOrigMsg({ ok: false, texte: T("Lecture impossible \u2014 r\u00e9essaie.", "Could not read it \u2014 try again.", "No se pudo leer \u2014 int\u00e9ntalo de nuevo.", "Lettura impossibile \u2014 riprova.", "\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Konnte nicht gelesen werden \u2014 versuch es nochmal.") });
     }
@@ -39822,7 +39874,9 @@ async function supprimerSouvenirOuvert() {
    du haut et la suite comme sur la page Écurie ») — même bloc gris que les deux bandes de la
    page Écurie/Guilde (`#15181C`, 18 px, arrondi 6, marge latérale 16), un seul trait ici pour
    créer la respiration sous les 4 onglets, partagé par Histoire/Photos/Performances/Vidéos. */
-(["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "6px 16px 14px" } }) : null,
+/* 🟥 06/09 (Blandine : « aère beaucoup beaucoup plus, laisse des espaces entre les
+           différentes parties ») — trait plus épais (18 -> 30 px), marges doublées. */
+(["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("span", { style: { display: "block", height: 30, background: "#15181C", borderRadius: 10, margin: "14px 16px 26px" } }) : null,
 panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.")),
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen"))) : null,
@@ -40414,9 +40468,9 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
            rapport a avant. */
         /* 🟩 05/09 (Blandine : ajouter deux traits gris, identiques a ceux de la page Ecurie,
    au-dessus et en dessous des Albums pour les separer du reste de la page) */
-        h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
+        h("span", { style: { display: "block", height: 30, background: "#15181C", borderRadius: 10, margin: "24px 16px" } }),
         h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true })),
-        h("span", { style: { display: "block", height: 18, background: "#15181C", borderRadius: 6, margin: "0 16px" } }),
+        h("span", { style: { display: "block", height: 30, background: "#15181C", borderRadius: 10, margin: "24px 16px" } }),
         h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
@@ -40719,7 +40773,15 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
    sure ajoutes dans le padding bas, a l'INTERIEUR de la zone qui defile. */
 editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
       /* 20/08 (session 147) : le panneau n'avait NI maxHeight NI overflowY. Avec seulement pere et mere il tenait a l'ecran ; les quatre champs grands-parents ajoutes en 146 l'ont fait deborder, et le contenu du bas (Mere de la mere, boutons Annuler/Enregistrer) devenait INATTEIGNABLE — le doigt traversait le panneau et faisait defiler la fiche derriere. Verifie sur l'enregistrement de Blandine : le panneau ne bouge pas d'un pixel, seule la photo du cheval defile. Le panneau des tags (meme fichier) avait deja maxHeight+overflowY : c'est le meme reglage. */
-h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { if (el) { try { el.scrollTop = 0; } catch (eS) { } } }, style: { width: "92%", maxWidth: 420, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 110px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
+/* 🟥 06/09 (Blandine : "j'arrive tjs pas a acceder au bouton enregistrer, il est
+   masque sous la barre en bas") — CETTE REPARATION AVAIT DEJA ETE ECRITE UNE FOIS (05/09
+   22h50) ET A DISPARU ENTRE-TEMPS, sans que je sache encore expliquer comment. Remise ici,
+   verifiee CETTE FOIS par une relecture directe du resultat (pas seulement le message de
+   succes du script) : meme correctif exact que la fenetre "Ajouter un resultat" juste a
+   cote et que "Ecrire son histoire" le 28/08 — 84 px + zone sure ajoutes dans le padding
+   bas, a l'INTERIEUR de la zone qui defile, pour que le bouton Enregistrer reste toujours
+   au-dessus de la barre de navigation quand on defile jusqu'en bas. */
+h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { if (el) { try { el.scrollTop = 0; } catch (eS) { } } }, style: { width: "92%", maxWidth: 420, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 110px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px calc(20px + 84px + env(safe-area-inset-bottom))" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon cheval", "My horse", "Mi caballo", "Il mio cavallo", "\u79c1\u306e\u99ac", "Mein Pferd")),
         h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne sa race, son \u00e2ge et ses origines.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002", "Gib seine Rasse, sein Alter und seine Herkunft an.")),
         h("input", { ref: refImportOrig, type: "file", accept: "image/*", style: { display: "none" }, onChange: function (eIm) {
