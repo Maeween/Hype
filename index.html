@@ -37985,6 +37985,108 @@ function EcranCheval() {
   }
   var arSt = React.useState(false); var ajoutRes = arSt[0], setAjoutRes = arSt[1]; /* 30/07 : ajout de resultat fonctionnel (demande Blandine) */
   var rlSt = React.useState({ annee: "", event: "", ds: "", rang: "1" }); var resLocal = rlSt[0], setResLocal = rlSt[1];
+  /* 🟩 05/09 (Blandine : « et les performances des descendants et ascendants », puis
+     « oui vas-y ») — meme principe que l'import d'origines : une capture peut montrer PLUSIEURS
+     resultats (un historique), donc ce deuxieme outil ramene une LISTE a cocher plutot qu'un
+     formulaire unique. Rien n'est enregistre avant que Blandine ait coche puis valide. */
+  var irSt = React.useState(false); var importResEnCours = irSt[0], setImportResEnCours = irSt[1];
+  var itSt = React.useState(null); var importResTrouves = itSt[0], setImportResTrouves = itSt[1];
+  var imrSt = React.useState(null); var importResMsg = imrSt[0], setImportResMsg = imrSt[1];
+  var refImportRes = React.useRef(null);
+  function libelleRang(r) {
+    return r === "1" ? T("1\u1d49\u02b3", "1st", "1\u00ba", "1\u00b0", "1\u4f4d", "1.")
+      : r === "2" ? T("2\u1d49", "2nd", "2\u00ba", "2\u00b0", "2\u4f4d", "2.")
+      : r === "3" ? T("3\u1d49", "3rd", "3\u00ba", "3\u00b0", "3\u4f4d", "3.")
+      : r === "classe" ? T("Class\u00e9", "Placed", "Clasificado", "Classificato", "\u5165\u8ce3", "Platziert")
+      : (r || "\u2014");
+  }
+  async function importerResultatsDepuisCapture(fichier) {
+    if (!fichier) return;
+    setImportResEnCours(true); setImportResMsg(null); setImportResTrouves(null);
+    try {
+      var b64 = await new Promise(function (resoudre, rejeter) {
+        var lecteur = new FileReader();
+        lecteur.onload = function () { resoudre(String(lecteur.result || "")); };
+        lecteur.onerror = function () { rejeter(new Error("lecture")); };
+        lecteur.readAsDataURL(fichier);
+      });
+      var virg = b64.indexOf(",");
+      var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
+      var donnees = b64.slice(virg + 1);
+      var consigne = "Tu lis une capture d'ecran d'un historique de resultats de sport equestre "
+        + "(IFCE / infochevaux, Horsetelex, FFE, ou un site de concours). Retrouve CHAQUE resultat "
+        + "distinct visible sur l'image : son annee, le nom du concours/evenement, la discipline et/ou "
+        + "le nom du cavalier si visibles, et le classement obtenu. Reponds UNIQUEMENT par un tableau "
+        + "JSON valide, sans texte autour, sans balises markdown, de cette forme exacte : "
+        + '[{"annee":"","event":"","ds":"","rang":""}]. '
+        + 'rang doit valoir exactement "1", "2", "3", "classe" (classe = classe hors podium), ou "" si inconnu. '
+        + "Si l'image ne contient visiblement aucun resultat de concours, reponds exactement [].";
+      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://2hype.netlify.app/.netlify/functions/assistant";
+      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
+      texte = String(texte || "").replace(/```json|```/g, "").trim();
+      var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
+      if (!Array.isArray(trouve) || !trouve.length) {
+        setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.") });
+        setImportResEnCours(false);
+        return;
+      }
+      /* Meme detection de doublon que la saisie manuelle (03/09), sans la boite de confirmation
+         bloquante : ici on coche/decoche simplement, la case reste visible mais decochee par defaut. */
+      var normC = function (t) { try { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); } catch (eN) { return String(t || "").toLowerCase().trim(); } };
+      var monId = moi && moi.id;
+      var avecDoublon = trouve.map(function (r, iR) {
+        var evV = String((r && r.event) || "").trim();
+        var anV = String((r && r.annee) || "").trim();
+        var dejaLa = (resDb || []).some(function (rD) {
+          if (!rD || rD.user_id !== monId) return false;
+          if (normC(rD.concours) !== normC(evV)) return false;
+          if (anV && rD.annee && String(rD.annee).trim() !== anV) return false;
+          return true;
+        });
+        return { annee: anV, event: evV, ds: String((r && r.ds) || "").trim(), rang: String((r && r.rang) || ""), dejaLa: dejaLa, coche: !!evV && !dejaLa, cle: "ir" + iR };
+      }).filter(function (r) { return r.event; });
+      if (!avecDoublon.length) {
+        setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.") });
+      } else {
+        setImportResTrouves(avecDoublon);
+      }
+    } catch (eG) {
+      setImportResMsg({ ok: false, texte: T("Lecture impossible \u2014 r\u00e9essaie.", "Could not read it \u2014 try again.", "No se pudo leer \u2014 int\u00e9ntalo de nuevo.", "Lettura impossibile \u2014 riprova.", "\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Konnte nicht gelesen werden \u2014 versuch es nochmal.") });
+    }
+    setImportResEnCours(false);
+  }
+  async function validerImportResultats() {
+    var choisis = (importResTrouves || []).filter(function (r) { return r.coche; });
+    if (!choisis.length) { setImportResTrouves(null); setAjoutRes(false); return; }
+    if (!(chevalDyn && chevalDyn.dbId) || typeof supa === "undefined" || !supa) {
+      setToast(T("Fiche non enregistr\u00e9e en base \u2014 impossible d'ajouter un r\u00e9sultat.", "Profile not saved in the database \u2014 cannot add a result.", "Ficha no guardada en la base \u2014 imposible a\u00f1adir un resultado.", "Scheda non salvata nel database \u2014 impossibile aggiungere un risultato.", "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u306b\u4fdd\u5b58\u3055\u308c\u3066\u3044\u306a\u3044\u305f\u3081\u7d50\u679c\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3002", "Profil nicht in der Datenbank gespeichert \u2014 Ergebnis kann nicht hinzugef\u00fcgt werden."));
+      return;
+    }
+    var uR = moi; if (!uR) { try { uR = await utilisateurActuel(); } catch (eU) { } }
+    if (!uR) { setToast(T("Connecte-toi pour ajouter un r\u00e9sultat.", "Sign in to add a result.", "Con\u00e9ctate para a\u00f1adir un resultado.", "Accedi per aggiungere un risultato.", "\u7d50\u679c\u3092\u8ffd\u52a0\u3059\u308b\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u304f\u3060\u3055\u3044", "Melde dich an, um ein Ergebnis hinzuzuf\u00fcgen.")); return; }
+    var ajoutes = 0;
+    for (var i = 0; i < choisis.length; i++) {
+      var rEl = choisis[i];
+      var evV = (rEl.event || "").trim(); if (!evV) continue;
+      var rgV = rEl.rang === "1" ? "1\u1d49\u02b3" : rEl.rang === "2" ? "2\u1d49" : rEl.rang === "3" ? "3\u1d49" : rEl.rang === "classe" ? T("Class\u00e9", "Placed", "Clasificado", "Classificato", "\u5165\u8ce3", "Platziert") : "";
+      var anV = (rEl.annee || "").trim();
+      var base = { user_id: uR.id, cheval_id: chevalDyn.dbId, concours: evV, classement: rgV || null };
+      try {
+        var rR = await supa.from("resultats").insert(Object.assign({}, base, anV ? { annee: anV } : {})).select().single();
+        if (rR && rR.error && anV) rR = await supa.from("resultats").insert(base).select().single();
+        if (!(rR && rR.error)) {
+          var ligne = (rR && rR.data) || Object.assign({}, base, { created_at: new Date().toISOString() });
+          setResDb(function (av) { return [ligne].concat(av || []); });
+          ajoutes++;
+        }
+      } catch (eIns) { }
+    }
+    setImportResTrouves(null); setAjoutRes(false);
+    setToast(ajoutes ? (ajoutes + " " + T("r\u00e9sultat(s) ajout\u00e9(s) \ud83c\udfc6", "result(s) added \ud83c\udfc6", "resultado(s) a\u00f1adido(s) \ud83c\udfc6", "risultato/i aggiunto/i \ud83c\udfc6", "\u7d50\u679c\u3092\u8ffd\u52a0 \ud83c\udfc6", "Ergebnis(se) hinzugef\u00fcgt \ud83c\udfc6")) : T("Enregistrement impossible pour le moment", "Could not save right now", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern derzeit nicht m\u00f6glich"));
+    setTimeout(function () { setToast(null); }, 2400);
+  }
   /* 03/09 (Blandine) : « elle doit egalement pouvoir ajouter ses resultats ».
      La saisie etait reservee a la PROPRIETAIRE du cheval, a CINQ endroits de la
      fiche ; ailleurs le bouton repondait « Bientot ». Elle s'ouvre desormais aux
@@ -38876,7 +38978,13 @@ async function supprimerSouvenirOuvert() {
         return h("div", { className: "rise", style: { position: "relative", animationDelay: ".08s", margin: "0 16px", background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 16, overflow: "hidden" } },
 
 
-          (!CHEVAUX_FICHE[id] && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: ouvrirEditOrigines, "aria-label": "Modifier les origines", style: { position: "absolute", top: 8, right: 8, zIndex: 3, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.22)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E") : null,
+          /* 🟩 05/09 (Blandine : « je trouve pas l'outil, il serait où ? ») — BUG TROUVE : ce bouton
+           ne s'affichait JAMAIS pour les 6 chevaux migres de fiches codees en dur vers la vraie
+           base (dont Tully, NOMS_MIGRES) — la condition regardait CHEVAUX_FICHE[id] SANS jamais
+           verifier NOMS_MIGRES, contrairement a la ligne 37365 qui, elle, le fait deja pour ne
+           pas casser l'affichage de ces memes chevaux. Le bouton d'edition des origines suit
+           maintenant la meme exception. */
+          ((!CHEVAUX_FICHE[id] || NOMS_MIGRES[id]) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: ouvrirEditOrigines, "aria-label": "Modifier les origines", style: { position: "absolute", top: 8, right: 8, zIndex: 3, width: 26, height: 26, borderRadius: "50%", background: "rgba(7,8,10,0.55)", border: "1px solid rgba(255,255,255,0.22)", color: "#C9D3D8", fontSize: 11, cursor: "pointer" } }, "\u270E") : null,
           (function (pg) {
             function celPed(n, opts) {
               opts = opts || {};
@@ -40429,6 +40537,32 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
     ajoutRes ? h("div", { onClick: function () { setAjoutRes(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.82)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22 } },
       h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", maxWidth: 420, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(170deg, rgba(16,21,26,0.98), rgba(6,7,9,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, letterSpacing: 1, marginBottom: 14, color: "#F0F4F6" } }, "\ud83c\udfc6 " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen")),
+        h("input", { ref: refImportRes, type: "file", accept: "image/*", style: { display: "none" }, onChange: function (eIm) {
+          var fIm = (eIm.target && eIm.target.files && eIm.target.files[0]) || null;
+          try { eIm.target.value = ""; } catch (eRi) { }
+          if (fIm) importerResultatsDepuisCapture(fIm);
+        } }),
+        h("button", { onClick: function () { if (!importResEnCours && refImportRes.current) refImportRes.current.click(); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, width: "100%", minHeight: 44, padding: "0 14px", marginBottom: 14, borderRadius: 12, border: "1px solid rgba(32,217,245,0.4)", background: "rgba(32,217,245,0.08)", color: "#BFF2FA", fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: importResEnCours ? "default" : "pointer", opacity: importResEnCours ? 0.6 : 1 } },
+          importResEnCours
+            ? T("Lecture de la capture\u2026", "Reading the screenshot\u2026", "Leyendo la captura\u2026", "Lettura della schermata\u2026", "\u30ad\u30e3\u30d7\u30c1\u30e3\u3092\u8aad\u307f\u53d6\u308a\u4e2d\u2026", "Screenshot wird gelesen\u2026")
+            : ("\u2913 " + T("Importer depuis une capture (IFCE, Horsetelex\u2026)", "Import from a screenshot (IFCE, Horsetelex\u2026)", "Importar desde una captura (IFCE, Horsetelex\u2026)", "Importa da una schermata (IFCE, Horsetelex\u2026)", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u30a4\u30f3\u30dd\u30fc\u30c8\uff08IFCE\u3001Horsetelex\u2026\uff09", "Aus Screenshot importieren (IFCE, Horsetelex\u2026)"))),
+        importResMsg ? h("div", { style: { fontSize: 11, textAlign: "center", marginBottom: 12, padding: "8px 10px", borderRadius: 10, color: "#FF9AA8", background: "rgba(178,44,54,0.12)", lineHeight: 1.5 } }, importResMsg.texte) : null,
+        importResTrouves ? h(React.Fragment, null,
+          h("div", { style: { fontSize: 11.5, color: "#9BE8F2", textAlign: "center", marginBottom: 10, lineHeight: 1.5 } },
+            importResTrouves.length + " " + T("r\u00e9sultat(s) trouv\u00e9(s) \u2014 v\u00e9rifie puis coche ceux \u00e0 ajouter.", "result(s) found \u2014 check them, then tick the ones to add.", "resultado(s) encontrado(s) \u2014 rev\u00edsalos y marca los que quieras a\u00f1adir.", "risultato/i trovato/i \u2014 controlla e spunta quelli da aggiungere.", "\u4ef6\u898b\u3064\u304b\u308a\u307e\u3057\u305f\u3002\u78ba\u8a8d\u3057\u3066\u8ffd\u52a0\u3059\u308b\u3082\u306e\u306b\u30c1\u30a7\u30c3\u30af\u3092\u5165\u308c\u3066\u304f\u3060\u3055\u3044\u3002", "Ergebnis(se) gefunden \u2014 bitte pr\u00fcfen und die gew\u00fcnschten ankreuzen.")),
+          h("div", { style: { maxHeight: "38vh", overflowY: "auto", marginBottom: 14 } },
+            importResTrouves.map(function (rIt, iIt) {
+              return h("label", { key: rIt.cle, style: { display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 4px", borderBottom: iIt < importResTrouves.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none", opacity: rIt.dejaLa ? 0.55 : 1 } },
+                h("input", { type: "checkbox", checked: !!rIt.coche, onChange: function () { setImportResTrouves(function (li) { return (li || []).map(function (x, iX) { return iX === iIt ? Object.assign({}, x, { coche: !x.coche }) : x; }); }); }, style: { width: 18, height: 18, marginTop: 2, flexShrink: 0 } }),
+                h("div", { style: { flex: 1, minWidth: 0 } },
+                  h("div", { style: { color: "#F0F4F6", fontSize: 13, fontWeight: 600, wordBreak: "break-word" } }, (rIt.annee ? (rIt.annee + " \u00b7 ") : "") + rIt.event),
+                  h("div", { style: { color: "#9AA4AC", fontSize: 11.5, marginTop: 2 } }, [rIt.ds, libelleRang(rIt.rang)].filter(Boolean).join(" \u00b7 ") || "\u2014"),
+                  rIt.dejaLa ? h("div", { style: { color: "#F2D48A", fontSize: 10.5, marginTop: 2, fontStyle: "italic" } }, T("D\u00e9j\u00e0 dans tes r\u00e9sultats", "Already in your results", "Ya en tus resultados", "Gi\u00e0 nei tuoi risultati", "\u65e2\u306b\u767b\u9332\u6e08\u307f", "Bereits in deinen Ergebnissen")) : null));
+            })),
+          h("div", { style: { display: "flex", gap: 10 } },
+            h("button", { onClick: function () { setImportResTrouves(null); }, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.15)", background: "none", color: "#C9CFD4", fontSize: 14, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler l'import", "Cancel import", "Cancelar importaci\u00f3n", "Annulla importazione", "\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u30ad\u30e3\u30f3\u30bb\u30eb", "Import abbrechen")),
+            h("button", { onClick: validerImportResultats, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(32,217,245,0.14)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen") + " (" + importResTrouves.filter(function (x) { return x.coche; }).length + ")")))
+        : h(React.Fragment, null,
         h("div", { style: { display: "flex", gap: 8, marginBottom: 10 } },
           h("input", { value: resLocal.annee, onChange: function (eA) { var v = eA.target.value; setResLocal(function (rr) { return Object.assign({}, rr, { annee: v }); }); }, placeholder: T("Ann\u00e9e", "Year", "A\u00f1o", "Anno", "\u5e74", "Jahr"), maxLength: 4, inputMode: "numeric", style: { width: 86, padding: "11px 12px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "#F0F4F6", fontSize: 14 } }),
           h("div", { style: { display: "flex", gap: 6, alignItems: "center", flexWrap: "wrap" } }, ["1", "2", "3"].map(function (rgO) {
@@ -40442,7 +40576,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         h("input", { value: resLocal.ds, onChange: function (eD) { var v = eD.target.value; setResLocal(function (rr) { return Object.assign({}, rr, { ds: v }); }); }, placeholder: T("Discipline \u00b7 cavalier (ex. CSO \u00b7 avec Liam)", "Discipline \u00b7 rider", "Disciplina \u00b7 jinete", "Disciplina \u00b7 cavaliere", "\u7a2e\u76ee\u30fb\u9a0e\u624b", "Disziplin \u00b7 Reiter"), maxLength: 60, style: { width: "100%", padding: "11px 12px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "#F0F4F6", fontSize: 14, marginBottom: 16 } }),
         h("div", { style: { display: "flex", gap: 10 } },
           h("button", { onClick: function () { setAjoutRes(false); }, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.15)", background: "none", color: "#C9CFD4", fontSize: 14, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
-          h("button", { onClick: sauverResultat, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(32,217,245,0.14)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern"))))) : null,
+          h("button", { onClick: sauverResultat, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(32,217,245,0.14)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern")))))) : null,
     editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
       /* 20/08 (session 147) : le panneau n'avait NI maxHeight NI overflowY. Avec seulement pere et mere il tenait a l'ecran ; les quatre champs grands-parents ajoutes en 146 l'ont fait deborder, et le contenu du bas (Mere de la mere, boutons Annuler/Enregistrer) devenait INATTEIGNABLE — le doigt traversait le panneau et faisait defiler la fiche derriere. Verifie sur l'enregistrement de Blandine : le panneau ne bouge pas d'un pixel, seule la photo du cheval defile. Le panneau des tags (meme fichier) avait deja maxHeight+overflowY : c'est le meme reglage. */
 h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { if (el) { try { el.scrollTop = 0; } catch (eS) { } } }, style: { width: "92%", maxWidth: 420, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 110px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
