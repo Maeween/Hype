@@ -10,6 +10,214 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 06/09/2026 (nuit) — GALOPS 4 À 7 SORTIS DE L'INDEX → `hype-cours-galops-sup.js` (v1) · PROTOCOLE SUIVI POINT PAR POINT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `397d459ea7f429cf9c3da05cfd0ec53b` | bloc G4-G7 retiré (10,06 → 9,19 Mo ; GitHub affiche 8.76 MB) · balise `hype-cours-galops-sup.js?v=1` · repli si le fichier manque · témoin « galops-sup N » |
+| `hype-cours-galops-sup.js` | racine — **NOUVEAU** | `02f8593bd9243e1934a5c81894a4ddab` | les 4 tables (Galops 4, 5, 6, 7) copiées à l'identique + témoin 1 (872 225 octets, GitHub affiche 852 KB) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `958ea2f6cbb020b1d8bc56ed72324dc0` (points de qualification + photo du club).
+Si celui-là n'avait pas été poussé, ce fichier-ci le contient : un seul index à pousser.
+⚠️ **Les deux fichiers vont ENSEMBLE.** L'index sans le module = Galops 4-7 vides (l'appli tient
+debout, témoin « galops-sup ? ») ; le module sans l'index = fichier ignoré, rien ne casse. Dans les
+deux cas, pousser l'autre fichier répare.
+⚠️ **13 `?v=` désormais** (les 12 anciens intacts + `hype-cours-galops-sup.js?v=1`). Aucun SQL,
+aucune image, aucun autre module touché (`hype-import-ffe.js` 14, `hype-resultats.js` 3,
+`hype-stories.js` 20bx, `hype-cours-baby.js` 112, `hype-memory-poney.js` 4, `hype-modeles-db.js` 5).
+⚠️ **`_headers` : PAS livré, volontairement.** Le fichier envoyé par Blandine (4 451 octets) est la
+version du 10/08 (session 111) : il n'a pas les règles ajoutées le 11/08 (`memory-*.webp`,
+`decor-*.webp`, `hero-reprises.webp`, vidéos de la racine…) qui sont EN LIGNE et vérifiées depuis
+le 12/08. Le pousser aurait défait ces règles. Seul le dépôt fait foi (même leçon que pour
+`hype-import-ffe.js`). La règle à ajouter au VRAI `_headers`, sous celle de `hype-memory-poney.js` :
+```
+/hype-cours-galops-sup.js
+  Cache-Control: public, max-age=0, must-revalidate
+```
+En attendant, d'après ce que je connais de Netlify, un fichier sans règle est de toute façon
+revérifié à chaque visite (en-tête par défaut `max-age=0, must-revalidate`) — la règle est une
+ceinture, pas une réparation. Et le `?v=` reste le vrai levier (leçon du 11/08 : le cache disque de
+la PWA iOS ignore les en-têtes, seule une adresse neuve passe).
+
+---
+
+## LE PROTOCOLE DU 06/09 (en tête de l'entrée « fin de soirée » ci-dessous), POINT PAR POINT
+
+1. **Scan des dépendances AVANT de couper, sur le fichier réel, avec un vrai analyseur** (acorn,
+   pas `node --check` qui ne voit que la grammaire). Le bloc = lignes 24465-24824 de l'index
+   `958ea2f6…`, 870 059 octets, 4 tables : G4 15 chapitres · G5 6 · G6 7 · G7 6. **Un seul
+   identifiant extérieur : `HYPE_IMGS`, 16 fois** — 15 couvertures du Galop 4 (k609, k629 à
+   k642) et 1 du Galop 6 (k334, « Le départ au galop »). Zéro affiche, zéro constante des
+   G1-G3, zéro fonction. Exactement la mesure de la session 112 (15 + 1), reproduite.
+2. **Ordre de chargement.** `HYPE_IMGS` est créé ligne 20746 et rempli par les 122
+   `hype-images-*.js` puis par le filet de l'index (lignes 20749-20782) — tout AVANT la nouvelle
+   balise, posée ligne 20783 juste après `hype-cours-baby.js`. Vérifié : **aucune écriture dans
+   `HYPE_IMGS` après cette ligne** dans tout l'index. Le module lit `window.HYPE_IMGS || {}` :
+   même sans aucune image il s'exécute (couvertures absentes, jamais d'écran blanc).
+3. **Témoin à l'écran** : le libellé (accueil + Mon compte) devient
+   `reprise 1.8 · baby 112 · memo 4 · stories 20bx · galops-sup 1`.
+4. **`?v=1` sur la balise** ; `_headers` : voir ⚠️ plus haut.
+5. **Preuve de rendu** (Playwright, 393 px, hors ligne comme le banc habituel) : les cours des
+   **4 galops dans les 6 langues** (fr, en, es, it, ja, de) sortis par `obtenirCoursParGalop`
+   sur l'index de départ et sur l'index modifié + module : **24 empreintes sur 24 identiques**.
+   Erreurs de page : 2 sur les deux, les mêmes qu'à chaque banc (`window.supabase` absent hors
+   ligne, puis `TEINTES_HYPE`), aucune nouvelle. Le témoin, rendu par le vrai composant, affiche
+   « … · GALOPS-SUP 1 ». **Repli testé** en bloquant le fichier : 0 erreur nouvelle, les 4 tables
+   vides, témoin « … · GALOPS-SUP ? ».
+6. **Plan de retour** : Netlify → Deploys → « Publish deploy » de la version précédente (un clic).
+   L'index précédent (`958ea2f6…`, 10 057 336 octets, GitHub 9.59 MB) est celui que Blandine a
+   envoyé ce soir. Sur GitHub, le repère fiable reste la TAILLE : 8.76 MB = celui-ci.
+7. **Fait à froid**, en début de conversation, comme décidé.
+
+## CE QUI A CHANGÉ DANS L'INDEX — TROIS ENDROITS, RIEN D'AUTRE
+
+1. Ligne 20783 : `<script src="hype-cours-galops-sup.js?v=1">` ajoutée entre `hype-cours-baby.js`
+   et `hype-memory-poney.js`.
+2. Lignes 24465-24475 : à la place des 360 lignes du bloc, un commentaire et quatre lignes de repli
+   `const COURS_GALOPx_FR = window.COURS_GALOPx_FR || []` (même recette que `COURS_BABY_I18N`).
+   `obtenirCoursParGalop` n'a pas bougé : il lit les mêmes noms.
+3. Ligne 42554 : le témoin gagne « · galops-sup N ».
+
+## LE MODULE
+
+En-tête qui dit la règle (incrémenter `COURS_GALOPS_SUP_VERSION` ET le `?v=` à chaque livraison,
+ne jamais déplacer la balise avant les images, G1-G3 interdits), puis une enveloppe qui garde tout
+en local (rien ne fuit hors de `window.COURS_GALOP4_FR…7_FR` et `window.COURS_GALOPS_SUP_VERSION`),
+et entre deux repères « DÉBUT / FIN DU CONTENU COPIÉ » les 360 lignes de l'index **telles quelles**
+— comparaison octet par octet : md5 `e4a2135f765f353a6f8e74b8ae77628f` des deux côtés. Pour
+retoucher un cours, on édite entre les deux repères, rien d'autre.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs de l'index (0 défaut) + le module (0 défaut).
+- **Marqueurs (55 repères)** : 0 écart inattendu. Écarts attendus et seulement eux : `?v=` 12 → 13,
+  `<script` 165 → 166, `HYPE_IMGS[` 516 → 500 (−16 = les couvertures parties avec le bloc),
+  `couv-affiche` 90 → 74 (idem), `COURS_GALOP4…7_FR` +1 chacun (le `window.` du repli). Lignée
+  scroll intacte (`overflow-x: clip !important` 1, `overscroll-behavior: none` 1,
+  `hypeVerrouScroll` 5, `hypeLibererPuitsTactiles` 4), `allerVersGalop` 3, `hypeNatif` 11,
+  `DEV_OUVRIR_PAGE = ""`. Déclarations de premier niveau identiques (975 fonctions / 396 const /
+  176 var), le retour chariot isolé de la ligne 20499 préservé.
+- Module exécuté hors navigateur avec et sans `HYPE_IMGS` : 15 / 6 / 7 / 6 chapitres, témoin 1.
+
+## À L'ÉCRAN : + / −
+
+**+** « · galops-sup 1 » au bout du témoin de version (accueil et Mon compte). **−** Rien : les
+cours des Galops 4 à 7 sont strictement les mêmes, dans les six langues. Le téléchargement des
+cavalières ne baisse pas (le fichier est chargé quand même) — c'était annoncé : ce découpage
+allège l'ÉDITION et le RISQUE, le poids viendra avec le chargement à la demande (étape 3).
+
+## NON VU À L'ÉCRAN
+
+1. Accueil ou Mon compte → le témoin finit par « galops-sup 1 » (si « galops-sup ? » : le fichier
+   n'est pas chargé, les Galops 4-7 sont vides → pousser/vérifier le module).
+2. Galop 4 → un cours avec sa couverture (« Le contact » par exemple) ; Galop 6 → « Le départ au
+   galop » (couverture k334) ; un cours du Galop 5 et un du Galop 7.
+3. Galop 4 dans une autre langue que le français.
+
+## CONSTATÉ EN PASSANT, RIEN CHANGÉ
+
+Les Galops 5 et 7 sont en **français seul** : `obtenirCoursParGalop` les sert tels quels quelle que
+soit la langue (empreintes identiques dans les 6 langues au banc), là où G4 et G6 passent par la
+conversion i18n. Ce n'est pas nouveau et ce n'est pas l'objet de ce chantier — noté pour le jour où
+la traduction des cours reviendra sur la table.
+
+## RESTE À FAIRE (feuille de route inchangée, détail dans l'entrée « fin de soirée » ci-dessous)
+
+- `_headers` : ajouter la règle ci-dessus au vrai fichier du dépôt (Blandine me l'envoie, ou l'ajoute
+  elle-même sur GitHub).
+- Supprimer du dépôt le vieux `hype-galops.js` du 02/08 — une fois le nouveau fichier vu à l'écran,
+  pas avant.
+- Puis, dans l'ordre : (2) G1, G2, G3 un par un AVEC leurs constantes ; (3) chargement à la demande ;
+  (4) la mise à jour forcée (`sw.js` de retrait, rien ne se répare à distance).
+
+## CE QUE CETTE ÉTAPE A APPRIS
+
+🟩 **UN FICHIER DE CONFIGURATION REÇU SE VÉRIFIE AVANT D'Y ÉCRIRE.** Le `_headers` envoyé était
+une version d'avant les règles connues pour être en ligne. Le test est simple : chercher dedans
+une règle dont le suivi dit qu'elle est en production (`memory-*.webp`). Absente → ce n'est pas
+le fichier du dépôt, on ne le complète pas, on demande le bon.
+
+🟩 **LA MESURE DE DÉPENDANCES SE REJOUE, ELLE NE SE CITE PAS.** La session 112 avait compté 15 + 1
+`HYPE_IMGS` ; refaite ce soir avec un analyseur sur le fichier réel : 15 + 1. Deux mesures qui
+concordent valent une décision ; une mesure ancienne recopiée n'en vaut aucune.
+
+---
+
+# 🟨 06/09/2026 (fin de soirée) — PROCHAIN GROS CHANTIER : GALOPS 4 À 7 HORS DE L'INDEX · À FROID, NOUVELLE CONVERSATION
+
+→ **FAIT** le 06/09 (nuit), voir l'entrée 🟩 juste au-dessus. Le cadrage ci-dessous reste la référence pour les étapes suivantes.
+
+Aucun fichier de code dans cette entrée : c'est le cadrage, écrit à la demande de Blandine
+(« fais-moi passation et suivi et on lance à froid sur nouvelle conv »).
+
+## LE RAPPEL QUI A ÉVITÉ UNE RECHUTE
+
+J'ai proposé ce soir de commencer par le Galop 1 « le plus gros et le plus stable ». Blandine m'a
+arrêtée : « il y a longtemps tu avais essayé et ça avait tout cassé, relis bien le suivi ». Relu :
+**incident du 02/08, ~30 minutes d'appli hors service**, écran blanc. Le contenu des Galops fait
+appel à des constantes définies DANS l'index (`HYPE_IMGS` 159 fois, `GALOPS_HERO`, `GALOPS_I18N`,
+14 constantes d'affiches et d'infographies) et l'index se charge APRÈS le fichier sorti — au moment
+de l'exécution elles n'existaient pas. `node --check` ne pouvait pas le voir : il vérifie la
+grammaire, pas l'existence de ce qu'on appelle.
+
+Le plan validé ensuite (sessions 111-112) disait déjà tout : **Galops 4+5+6+7 d'abord**, parce
+que leurs dépendances mesurées sont quasi nulles, et **G1/G2/G3 : NE PAS Y TOUCHER** sans sortir
+leurs affiches avec eux. Le parcours Baby a été sorti avec succès sur cette recette (zéro
+dépendance, mesurée avant de couper). Mon ordre inversé était exactement la mauvaise idée.
+
+## LE POIDS, MESURÉ CE SOIR SUR L'INDEX `958ea2f…`
+
+Galop 1 : 1,11 Mo · Galop 2 : 0,58 · Galop 3 : 1,18 · Galop 4 : 0,78 · Galops 5/6/7 : 0,09 à eux
+trois. Total des cours ≈ 3,7 Mo sur 10,06. Le lot G4-G7 fait donc ≈ 0,87 Mo.
+
+## LE PROTOCOLE À SUIVRE, TEL QUEL (repris du suivi des sessions 71, 111 et 112)
+
+1. **Scanner les dépendances AVANT de couper**, sur le fichier réel : évaluer chaque table et
+   lister tout identifiant défini hors d'elle. Une seule dépendance non résolue = on ne coupe pas.
+2. **Ordre de chargement** : le fichier sorti doit se charger APRÈS tout ce qu'il référence, ou
+   les références doivent être résolues au rendu. Jamais « avant, on verra ».
+3. **Témoin de version visible à l'écran** (libellé « galops-sup 1 »), pour savoir quel fichier
+   est réellement chargé — leçon du 31/08, soirée perdue sur un correctif jamais chargé.
+4. **Clé `?v=` sur la balise + la règle `_headers`** de la session 112 (même recette que Baby).
+5. **Preuve de rendu dans les 6 langues** (Playwright) : c'est un changement majeur, pas une
+   retouche.
+6. **Plan de retour** : l'index précédent sous la main ; sur GitHub le repère fiable est la
+   TAILLE du fichier, pas l'horodatage.
+7. **Jamais en fin de session.** À froid, en début, avec du temps.
+
+Ce que ça apporte, pour ne pas se tromper d'objectif : un découpage statique n'allège PAS le
+téléchargement chez les cavalières (le fichier est chargé quand même), il allège l'ÉDITION et le
+RISQUE à chaque livraison. Le gain de poids réel viendra d'un chargement à la demande — étape
+d'après, pas celle-ci.
+
+## ET APRÈS — LA FEUILLE DE ROUTE, POUR NE PAS S'ARRÊTER AU MILIEU
+
+Le lot G4-G7 est le premier pas, pas le but. Dans l'ordre, chaque étape validée à l'écran
+avant la suivante :
+
+1. **G4-G7 → `hype-cours-galops-sup.js`** (cette prochaine conversation). Gain : ≈ 0,87 Mo hors
+   de l'index, édition des cours sans risque pour l'appli.
+2. **G1, G2, G3 — AVEC leurs constantes.** C'est là que le 02/08 a cassé. Elles font appel à 17
+   constantes de l'index (`HYPE_IMGS` 159 fois, `GALOPS_HERO`, `GALOPS_I18N`, les `INFOG_*`, les
+   `COUV_*`, `PHOTO_ROBES_G2`). Deux façons acceptables : sortir ces constantes dans le même
+   fichier que les cours, ou remplacer chaque référence par un chemin `images/…` résolu au rendu
+   (ce qui a été fait pour le Memory). Une par Galop, jamais les trois d'un coup. Gain : ≈ 2,9 Mo.
+3. **Chargement à la demande.** Tant que l'index charge les fichiers de cours au démarrage,
+   les cavalières téléchargent tout à chaque visite. Charger un Galop seulement quand on l'ouvre
+   est le vrai gain de poids — et un critère pour l'App Store (cache hors ligne, réactivité).
+4. **La mise à jour forcée.** Point révélé par l'incident du 02/08 et jamais traité : Blandine n'a
+   AUCUN moyen de pousser une version chez ses utilisatrices — le `sw.js` actuel est « de
+   retrait », il n'intercepte rien (voulu après l'incident du 26/07). Si une version casse, on
+   ne peut rien réparer à distance. À traiter AVANT de multiplier les fichiers chargés.
+
+Repères pratiques déjà notés dans le suivi : les bornes des tables ont bougé dans l'index depuis
+la mesure de la session 111 (à recalculer sur le fichier réel) ; sur GitHub, le repère fiable
+d'une poussée est la TAILLE du fichier ; `hype-galops.js` du 02/08 traîne encore sur le dépôt,
+ignoré — à supprimer le jour où le nouveau fichier existe, pour ne pas confondre.
+
+---
+
 # 🟩 06/09/2026 (soir, 2) — LES POINTS DE QUALIFICATION, ADDITIONNÉS PAR SAISON ET PAR TYPE D'ÉPREUVE
 
 | Fichier | Où | md5 | Quoi |
