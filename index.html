@@ -2281,6 +2281,37 @@ function delaiDeGarde(promesse, secondes, quoi) {
   });
 }
 
+/* 🟩 05/09 22h50 (Blandine : "reprends le codage de l'ancien avec les subtilites
+   d'espace d'accent etc, on se gagnera du temps") — EXTRAIT de enregistrerImportFFE
+   ci-dessous, meme algorithme exactement (normalisation des accents, tolerance a la
+   distance d'edition <=2 sur noms d'au moins 6 caracteres), rendu reutilisable :
+   sert a verifier l'identite du cheval sur les deux imports par capture, et servira
+   au rapprochement des noms pour les liens ascendants/descendants. */
+function nomsHippiquesProches(a, b) {
+  var nrmN = function (x) { try { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, " ").replace(/\s+/g, " ").trim(); } catch (eN) { return String(x || "").toUpperCase().trim(); } };
+  var sansEsp = function (x) { return String(x || "").replace(/\s+/g, ""); };
+  function distEdit(a1, b1) {
+    var m = a1.length, n1 = b1.length;
+    if (!m) return n1; if (!n1) return m;
+    var prec = [], cour = [], i1, j1;
+    for (j1 = 0; j1 <= n1; j1++) prec[j1] = j1;
+    for (i1 = 1; i1 <= m; i1++) {
+      cour[0] = i1;
+      for (j1 = 1; j1 <= n1; j1++) {
+        var co = (a1.charAt(i1 - 1) === b1.charAt(j1 - 1)) ? 0 : 1;
+        cour[j1] = Math.min(cour[j1 - 1] + 1, prec[j1] + 1, prec[j1 - 1] + co);
+      }
+      prec = cour.slice();
+    }
+    return prec[n1];
+  }
+  var nA = nrmN(a), nB = nrmN(b);
+  if (!nA || !nB) return false;
+  var cA = sansEsp(nA), cB = sansEsp(nB);
+  var procheAssez = false;
+  try { if (cA.length >= 6 && cB.length >= 6 && distEdit(cA, cB) <= 2) procheAssez = true; } catch (eD) { }
+  return (nA.indexOf(nB) >= 0 || nB.indexOf(nA) >= 0 || (cA && cB && (cA.indexOf(cB) >= 0 || cB.indexOf(cA) >= 0)) || procheAssez);
+}
 async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
   if (nomPdf) { /* 26/08 : VERROU D'IDENTITE — le nom lu dans le telemat doit correspondre a la fiche cible, sinon REFUS (aucun croisement possible, pour Blandine comme pour Delphine et tous les cavaliers) */
     try {
@@ -38013,22 +38044,35 @@ function EcranCheval() {
       var virg = b64.indexOf(",");
       var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
       var donnees = b64.slice(virg + 1);
+      /* 🟩 05/09 22h50 (Blandine : "il verifie pas que le cheval concerne est bien le
+         bon") — `nomCheval` s'ajoute a la demande, meme principe que l'import origines. */
       var consigne = "Tu lis une capture d'ecran d'un historique de resultats de sport equestre "
-        + "(IFCE / infochevaux, Horsetelex, FFE, ou un site de concours). Retrouve CHAQUE resultat "
-        + "distinct visible sur l'image : son annee, le nom du concours/evenement, la discipline et/ou "
-        + "le nom du cavalier si visibles, et le classement obtenu. Reponds UNIQUEMENT par un tableau "
-        + "JSON valide, sans texte autour, sans balises markdown, de cette forme exacte : "
-        + '[{"annee":"","event":"","ds":"","rang":""}]. '
+        + "(IFCE / infochevaux, Horsetelex, FFE, ou un site de concours). Retrouve d'abord le nom du "
+        + "CHEVAL concerne par ces resultats (nomCheval), puis CHAQUE resultat distinct visible sur "
+        + "l'image : son annee, le nom du concours/evenement, la discipline et/ou le nom du cavalier "
+        + "si visibles, et le classement obtenu. Reponds UNIQUEMENT par un objet JSON valide, sans texte "
+        + "autour, sans balises markdown, de cette forme exacte : "
+        + '{"nomCheval":"","resultats":[{"annee":"","event":"","ds":"","rang":""}]}. '
         + 'rang doit valoir exactement "1", "2", "3", "classe" (classe = classe hors podium), ou "" si inconnu. '
-        + "Si l'image ne contient visiblement aucun resultat de concours, reponds exactement [].";
+        + "Si l'image ne contient visiblement aucun resultat de concours, reponds exactement {\"nomCheval\":\"\",\"resultats\":[]}.";
       var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://2hype.netlify.app/.netlify/functions/assistant";
       var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
       var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
       var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
       texte = String(texte || "").replace(/```json|```/g, "").trim();
-      var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
+      var brut = null; try { brut = JSON.parse(texte); } catch (eP) { brut = null; }
+      /* 🟩 22h50 : repli si l'IA renvoie encore un simple tableau (ancienne forme) — on
+         continue de le lire correctement, juste sans nom a verifier dans ce cas-la. */
+      var nomVu = (brut && !Array.isArray(brut) && brut.nomCheval) ? String(brut.nomCheval).trim() : "";
+      var trouve = (brut && !Array.isArray(brut) && Array.isArray(brut.resultats)) ? brut.resultats : (Array.isArray(brut) ? brut : null);
       if (!Array.isArray(trouve) || !trouve.length) {
         setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.") });
+        setImportResEnCours(false);
+        return;
+      }
+      var nomCible = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
+      if (nomVu && nomCible && !nomsHippiquesProches(nomVu, nomCible)) {
+        setImportResMsg({ ok: false, texte: T("Cette capture semble \u00eatre celle de \u00ab " + nomVu + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour ne pas m\u00e9langer les deux.", "This screenshot looks like it's about \u00ab " + nomVu + " \u00bb, but the profile open is \u00ab " + nomCible + " \u00bb. Import refused so the two don't get mixed up.", "Esta captura parece ser de \u00ab " + nomVu + " \u00bb, pero la ficha abierta es \u00ab " + nomCible + " \u00bb. Importaci\u00f3n rechazada para no mezclarlos.", "Questa schermata sembra riguardare \u00ab " + nomVu + " \u00bb, ma la scheda aperta \u00e8 \u00ab " + nomCible + " \u00bb. Importazione rifiutata per non mescolarli.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u306f\u300c" + nomVu + "\u300d\u306e\u3082\u306e\u306e\u3088\u3046\u3067\u3059\u304c\u3001\u958b\u3044\u3066\u3044\u308b\u30da\u30fc\u30b8\u306f\u300c" + nomCible + "\u300d\u3067\u3059\u3002\u6df7\u540c\u3092\u9632\u3050\u305f\u3081\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\u3002", "Dieser Screenshot scheint \u00ab " + nomVu + " \u00bb zu zeigen, aber das ge\u00f6ffnete Profil ist \u00ab " + nomCible + " \u00bb. Import abgelehnt, um beide nicht zu vermischen.") });
         setImportResEnCours(false);
         return;
       }
@@ -38170,11 +38214,17 @@ function EcranCheval() {
       var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
       var donnees = b64.slice(virg + 1);
       var CHAMPS_PED = ["pere", "mere", "pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"];
+      /* 🟩 05/09 22h50 (Blandine, capture d'Orlena) — race et age restaient vides alors
+         que la page les montre clairement (\u00ab Zangersheide \u00bb, \u00ab n\u00e9(e) en 2005 \u00bb) : la
+         consigne ne les demandait tout simplement jamais. Ajout\u00e9s ici, plus `naisseur`
+         (d\u00e9j\u00e0 un champ du formulaire) et `nomCheval` (le sujet de la fiche lue, pour
+         v\u00e9rifier l'identit\u00e9 avant d'appliquer quoi que ce soit \u2014 voir plus bas). */
       var consigne = "Tu lis une capture d'ecran d'une fiche de pedigree equin (site IFCE / infochevaux, Horsetelex, "
-        + "ou similaire). Retrouve le pere (sire), la mere (dam), et si visibles les grands-parents et "
-        + "arriere-grands-parents du cheval concerne. Reponds UNIQUEMENT par un objet JSON valide, sans texte "
-        + "autour, sans balises markdown, de cette forme exacte (chaine vide \"\" si non trouve) : "
-        + '{"pere":"","mere":"","pp":"","pm":"","mp":"","mm":"","ppp":"","ppm":"","pmp":"","pmm":"","mpp":"","mpm":"","mmp":"","mmm":""}. '
+        + "ou similaire). Retrouve : le nom du CHEVAL dont c'est la fiche (nomCheval), sa race/stud-book, "
+        + "son annee de naissance (4 chiffres), son naisseur/eleveur si visible, le pere (sire), la mere (dam), "
+        + "et si visibles les grands-parents et arriere-grands-parents. Reponds UNIQUEMENT par un objet JSON "
+        + "valide, sans texte autour, sans balises markdown, de cette forme exacte (chaine vide \"\" si non trouve) : "
+        + '{"nomCheval":"","race":"","naissance":"","naisseur":"","pere":"","mere":"","pp":"","pm":"","mp":"","mm":"","ppp":"","ppm":"","pmp":"","pmm":"","mpp":"","mpm":"","mmp":"","mmm":""}. '
         + "pp = pere du pere, pm = mere du pere, mp = pere de la mere, mm = mere de la mere ; ppp/ppm/pmp/pmm/mpp/mpm/mmp/mmm "
         + "suivent la meme logique un cran plus loin (parents de pp, de pm, de mp, de mm dans cet ordre). "
         + "Si l'image ne contient visiblement aucune information de pedigree, reponds exactement {}.";
@@ -38184,17 +38234,36 @@ function EcranCheval() {
       var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
       texte = String(texte || "").replace(/```json|```/g, "").trim();
       var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
-      var auMoinsUn = !!(trouve && CHAMPS_PED.some(function (cle) { return trouve[cle] && String(trouve[cle]).trim(); }));
+      var TOUS_CHAMPS = CHAMPS_PED.concat(["race", "naissance", "naisseur"]);
+      var auMoinsUn = !!(trouve && TOUS_CHAMPS.some(function (cle) { return trouve[cle] && String(trouve[cle]).trim(); }));
       if (!auMoinsUn) {
         setImportOrigMsg({ ok: false, texte: T("Aucune origine reconnue dans cette capture.", "No bloodline recognised in this screenshot.", "No se han reconocido or\u00edgenes en esta captura.", "Nessuna origine riconosciuta in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u60c5\u5831\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde keine Abstammung erkannt.") });
-      } else {
-        setOrigLocal(function (oo) {
-          var nn = Object.assign({}, oo);
-          CHAMPS_PED.forEach(function (cle) { if (trouve[cle] && String(trouve[cle]).trim()) nn[cle] = String(trouve[cle]).trim(); });
-          return nn;
-        });
-        setImportOrigMsg({ ok: true, texte: T("Origines compl\u00e9t\u00e9es depuis la capture \u2014 v\u00e9rifie avant d'enregistrer.", "Bloodline filled in from the screenshot \u2014 check it before saving.", "Or\u00edgenes completados desde la captura \u2014 rev\u00edsalos antes de guardar.", "Origini completate dalla schermata \u2014 controlla prima di salvare.", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u3092\u5165\u529b\u3057\u307e\u3057\u305f\u3002\u4fdd\u5b58\u524d\u306b\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Abstammung aus dem Screenshot \u00fcbernommen \u2014 bitte vor dem Speichern pr\u00fcfen.") });
+        setImportOrigEnCours(false);
+        return;
       }
+      /* 🟩 05/09 22h50 (Blandine : "il verifie pas que le cheval concerne est bien le
+         bon") — VERROU D'IDENTITE, meme principe que l'import FFE : si la capture donne
+         un nom de cheval ET que la fiche ouverte a un nom, ils doivent se ressembler
+         (nomsHippiquesProches). Sinon on refuse tout, pour ne jamais coller les origines
+         d'un cheval sur la fiche d'un autre. Si la capture ne montre pas de nom (cadrage
+         serre), on ne peut pas verifier : on applique quand meme, comme avant. */
+      var nomCible = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
+      var nomVu = (trouve && trouve.nomCheval) ? String(trouve.nomCheval).trim() : "";
+      if (nomVu && nomCible && !nomsHippiquesProches(nomVu, nomCible)) {
+        setImportOrigMsg({ ok: false, texte: T("Cette capture semble \u00eatre celle de \u00ab " + nomVu + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour ne pas m\u00e9langer les deux.", "This screenshot looks like it's about \u00ab " + nomVu + " \u00bb, but the profile open is \u00ab " + nomCible + " \u00bb. Import refused so the two don't get mixed up.", "Esta captura parece ser de \u00ab " + nomVu + " \u00bb, pero la ficha abierta es \u00ab " + nomCible + " \u00bb. Importaci\u00f3n rechazada para no mezclarlos.", "Questa schermata sembra riguardare \u00ab " + nomVu + " \u00bb, ma la scheda aperta \u00e8 \u00ab " + nomCible + " \u00bb. Importazione rifiutata per non mescolarli.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u306f\u300c" + nomVu + "\u300d\u306e\u3082\u306e\u306e\u3088\u3046\u3067\u3059\u304c\u3001\u958b\u3044\u3066\u3044\u308b\u30da\u30fc\u30b8\u306f\u300c" + nomCible + "\u300d\u3067\u3059\u3002\u6df7\u540c\u3092\u9632\u3050\u305f\u3081\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\u3002", "Dieser Screenshot scheint \u00ab " + nomVu + " \u00bb zu zeigen, aber das ge\u00f6ffnete Profil ist \u00ab " + nomCible + " \u00bb. Import abgelehnt, um beide nicht zu vermischen.") });
+        setImportOrigEnCours(false);
+        return;
+      }
+      setOrigLocal(function (oo) {
+        var nn = Object.assign({}, oo);
+        CHAMPS_PED.forEach(function (cle) { if (trouve[cle] && String(trouve[cle]).trim()) nn[cle] = String(trouve[cle]).trim(); });
+        if (trouve.race && String(trouve.race).trim()) nn.race = String(trouve.race).trim();
+        if (trouve.naisseur && String(trouve.naisseur).trim()) nn.naisseur = String(trouve.naisseur).trim();
+        var an = trouve.naissance ? parseInt(String(trouve.naissance).replace(/[^0-9]/g, ""), 10) : null;
+        if (an && an > 1970 && an <= (new Date()).getFullYear()) nn.age = String((new Date()).getFullYear() - an);
+        return nn;
+      });
+      setImportOrigMsg({ ok: true, texte: T("Origines compl\u00e9t\u00e9es depuis la capture \u2014 v\u00e9rifie avant d'enregistrer.", "Bloodline filled in from the screenshot \u2014 check it before saving.", "Or\u00edgenes completados desde la captura \u2014 rev\u00edsalos antes de guardar.", "Origini completate dalla schermata \u2014 controlla prima di salvare.", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u3092\u5165\u529b\u3057\u307e\u3057\u305f\u3002\u4fdd\u5b58\u524d\u306b\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Abstammung aus dem Screenshot \u00fcbernommen \u2014 bitte vor dem Speichern pr\u00fcfen.") });
     } catch (eG) {
       setImportOrigMsg({ ok: false, texte: T("Lecture impossible \u2014 r\u00e9essaie.", "Could not read it \u2014 try again.", "No se pudo leer \u2014 int\u00e9ntalo de nuevo.", "Lettura impossibile \u2014 riprova.", "\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Konnte nicht gelesen werden \u2014 versuch es nochmal.") });
     }
@@ -38490,6 +38559,32 @@ function EcranCheval() {
     } catch (eOp2) { }
   }, [c && c.flots]);
   var ooSt = React.useState(false); var origOuv = ooSt[0], setOrigOuv = ooSt[1]; /* 31/07 : volet Origines */
+  /* 🟩 05/09 22h50 (Blandine : "oui ajoute les descendants, on pourra les afficher
+     quand on retourne la fiche des origines") — charge UNE fois, au premier retournement
+     de la carte (pas au chargement de la page, elle l'a demande ainsi). Cherche, parmi un
+     lot raisonnable de chevaux, ceux dont le pere OU la mere se rapproche du nom de CE
+     cheval (nomsHippiquesProches — meme algorithme que l'identite des imports). */
+  var pdSt = React.useState(null); var parenteInfo = pdSt[0], setParenteInfo = pdSt[1];
+  async function chargerDescendantsCheval() {
+    if (parenteInfo) return;
+    setParenteInfo({ enCours: true, descendants: [] });
+    var nomActuel = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
+    if (!nomActuel || typeof supa === "undefined" || !supa) { setParenteInfo({ enCours: false, descendants: [] }); return; }
+    try {
+      var rD = await supa.from("chevaux").select("id, nom, origines").is("supprime_le", null).limit(400);
+      var nomDe2 = function (x) { if (!x) return ""; if (typeof x === "string") return x; return String(x.nom || ""); };
+      var idActuel = (chevalDyn && chevalDyn.dbId) || (c && c.dbId) || null;
+      var trouves = ((rD && rD.data) || []).filter(function (h2) {
+        if (!h2 || !h2.nom || h2.id === idActuel) return false;
+        var og2 = h2.origines || {};
+        var pg2 = og2.pedigree || { pere: og2.pere || null, mere: og2.mere || null };
+        var nomP = nomDe2(pg2.pere), nomM = nomDe2(pg2.mere);
+        return (nomP && nomsHippiquesProches(nomP, nomActuel)) || (nomM && nomsHippiquesProches(nomM, nomActuel));
+      }).map(function (h2) { return { id: h2.id, nom: h2.nom }; });
+      setParenteInfo({ enCours: false, descendants: trouves });
+    } catch (eDsc) { setParenteInfo({ enCours: false, descendants: [] }); }
+  }
+  React.useEffect(function () { if (origOuv) chargerDescendantsCheval(); }, [origOuv]);
   var cvSt = React.useState([]); var chVids = cvSt[0], setChVids = cvSt[1]; /* 31/07 : videos pour l onglet Videos */
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
   /* 🟥 05/09 (Blandine : « j'efface les photos où ? ») — Supprimer et ★ Vedette dans cette
@@ -39032,6 +39127,24 @@ async function supprimerSouvenirOuvert() {
             h("span", { style: { letterSpacing: "0.16em", textTransform: "uppercase", fontWeight: 700, fontSize: 8, color: "#8A929C" } }, "SIRE"),
             h("span", { style: { fontSize: 11.5, color: "#DCE7EA", fontWeight: 600, letterSpacing: "0.06em" } }, og.sire),
             h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl || "#5FE9F0" } }, T("Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197", "Info Chevaux \u2197"))) : null); })(),
+
+        /* 🟩 05/09 22h50 (Blandine : "ajoute les descendants, on pourra les afficher
+           quand on retourne la fiche des origines" + "faire le lien direct dessus quand leur
+           nom est bien confirme et similaire") — les poulains trouves, chacun cliquable vers
+           sa propre fiche (meme geste que partout ailleurs dans l'app : window.__chevalOuvert
+           + setEcran("cheval")). Rien si la recherche n'a encore rien trouve : comme le bloc
+           Naisseur juste au-dessus, ce bloc reste discret quand il n'y a rien a dire. */
+        (parenteInfo && parenteInfo.descendants && parenteInfo.descendants.length) ? h("div", { style: { padding: "9px 14px 12px", borderTop: "1px solid rgba(255,255,255,0.07)" } },
+          h("div", { style: { fontSize: 8, letterSpacing: "0.2em", color: "#8A929C", textTransform: "uppercase", fontWeight: 700, marginBottom: 7 } },
+            T("Poulains", "Foals", "Potros", "Puledri", "\u5b50\u99ac", "F\u00f6hlen")),
+          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } },
+            parenteInfo.descendants.map(function (dsc) {
+              return h("span", { key: dsc.id, role: "button", onClick: function (eDs) {
+                try { if (eDs && eDs.stopPropagation) eDs.stopPropagation(); } catch (eDs2) { }
+                try { window.__chevalOuvert = dsc.id; } catch (eDs3) { }
+                setEcran("cheval");
+              }, style: { display: "inline-block", padding: "5px 11px", borderRadius: 999, border: "1px solid " + tA(0.4), background: tA(0.08), color: teinteCl, fontSize: 10.5, fontWeight: 600, fontFamily: "'Cinzel',serif", cursor: "pointer" } }, dsc.nom);
+            }))) : null,
 
         /* 30/07: encart Souvenirs (GalerieSouvenirs) retire de la fiche — remplace par la grille Ses photos ; la visionneuse/vedettes vivent desormais via le panneau souvenirs */
         null, null))))),
@@ -40535,7 +40648,11 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
       h("div", { className: "story empty" }, T("Ajoute ici l'histoire de cette victoire \u2014 le lieu, la date, ce que tu as ressenti.", "Add the story of this win here \u2014 place, date, how it felt.", "A\u00f1ade aqu\u00ed la historia de esta victoria.", "Aggiungi qui la storia di questa vittoria.", "\u3053\u3053\u306b\u3053\u306e\u52dd\u5229\u306e\u7269\u8a9e\u3092\u8ffd\u52a0\u3002", "Füge hier die Geschichte dieses Erfolgs hinzu — Ort, Datum, wie du dich gefühlt hast."))) : null,
 
     ajoutRes ? h("div", { onClick: function () { setAjoutRes(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.82)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22 } },
-      h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", maxWidth: 420, borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(170deg, rgba(16,21,26,0.98), rgba(6,7,9,0.99))", padding: "20px 18px" } },
+      /* 🟩 05/09 22h50 : par precaution, meme correctif que la fenetre Origines juste a
+           cote (bug du 28/08, meme cause) — cette fenetre a aussi grandi aujourd'hui
+           (import + liste a cocher) et pouvait deborder sous la barre du bas dans les
+           memes conditions, avec plusieurs resultats trouves. */
+      h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", maxWidth: 420, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 44px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid " + tA(0.4), background: "linear-gradient(170deg, rgba(16,21,26,0.98), rgba(6,7,9,0.99))", padding: "20px 18px calc(20px + 84px + env(safe-area-inset-bottom))" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 16, letterSpacing: 1, marginBottom: 14, color: "#F0F4F6" } }, "\ud83c\udfc6 " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir resultado", "Aggiungi risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen")),
         h("input", { ref: refImportRes, type: "file", accept: "image/*", style: { display: "none" }, onChange: function (eIm) {
           var fIm = (eIm.target && eIm.target.files && eIm.target.files[0]) || null;
@@ -40577,7 +40694,14 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         h("div", { style: { display: "flex", gap: 10 } },
           h("button", { onClick: function () { setAjoutRes(false); }, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.15)", background: "none", color: "#C9CFD4", fontSize: 14, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
           h("button", { onClick: sauverResultat, style: { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(32,217,245,0.5)", background: "rgba(32,217,245,0.14)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern")))))) : null,
-    editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
+    /* 🟩 05/09 22h50 (Blandine : "le bouton Enregistrer est coince en bas, on n'arrive pas a
+   y acceder a cause du menu") — MEME BUG que celui repare le 28/08 sur la fenetre Son
+   histoire : la barre de navigation du bas (84 px + zone sure) est posee PAR-DESSUS ce
+   panneau, qui ne lui reservait aucune place. La fenetre a grandi aujourd'hui (bouton
+   d'import + 8 champs arriere-grands-parents) : elle deborde desormais assez pour
+   toucher la barre, ce qui n'arrivait pas avant. Meme correctif exact : 84 px + zone
+   sure ajoutes dans le padding bas, a l'INTERIEUR de la zone qui defile. */
+editOrig ? h("div", { onClick: function () { setEditOrig(false); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,9,0.78)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 70px) 0 0" } },
       /* 20/08 (session 147) : le panneau n'avait NI maxHeight NI overflowY. Avec seulement pere et mere il tenait a l'ecran ; les quatre champs grands-parents ajoutes en 146 l'ont fait deborder, et le contenu du bas (Mere de la mere, boutons Annuler/Enregistrer) devenait INATTEIGNABLE — le doigt traversait le panneau et faisait defiler la fiche derriere. Verifie sur l'enregistrement de Blandine : le panneau ne bouge pas d'un pixel, seule la photo du cheval defile. Le panneau des tags (meme fichier) avait deja maxHeight+overflowY : c'est le meme reglage. */
 h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { if (el) { try { el.scrollTop = 0; } catch (eS) { } } }, style: { width: "92%", maxWidth: 420, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 110px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon cheval", "My horse", "Mi caballo", "Il mio cavallo", "\u79c1\u306e\u99ac", "Mein Pferd")),
