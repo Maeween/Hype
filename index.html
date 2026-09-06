@@ -40217,15 +40217,22 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
           function estPrepaF(f) { return /pr[ée]pa/i.test(String(f && f.ep || "")); }
           function triFort(a, b) { return ((estPrepaF(a) ? 1 : 0) - (estPrepaF(b) ? 1 : 0)) || (poidsTitre(b) - poidsTitre(a)) || (poidsNiveau(b) - poidsNiveau(a)) || ((b.part || 0) - (a.part || 0)) || ((a.pl || 99) - (b.pl || 99)); }
           var vics = fortsPool.filter(function (f) { return f.pl === 1; }).slice().sort(triFort);
-          if (vics.length < 3) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
+          /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ if (vics.length < 5) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
           var forts = []; var jetonsVus = {};
-          vics.forEach(function (fV) { if (forts.length >= 3) return; var jV = jetonFort(fV); if (jetonsVus[jV]) return; jetonsVus[jV] = 1; forts.push(fV); });
+          /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ vics.forEach(function (fV) { if (forts.length >= 5) return; var jV = jetonFort(fV); if (jetonsVus[jV]) return; jetonsVus[jV] = 1; forts.push(fV); });
           var ans = {}; vueF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
           var listeAns = Object.keys(ans).sort().reverse();
           var cavStats = {}; tousF.forEach(function (fC) { if (!fC.cav) return; if (!cavStats[fC.cav]) cavStats[fC.cav] = { n: 0, d: "" }; cavStats[fC.cav].n++; if ((fC.d || "") > cavStats[fC.cav].d) cavStats[fC.cav].d = fC.d || ""; });
           var cavsPalm = Object.keys(cavStats).sort(function (cA, cB) { return (cavStats[cB].n - cavStats[cA].n) || cavStats[cB].d.localeCompare(cavStats[cA].d); }); /* 27/08 : onglets cavaliers TRIES — celui qui a le plus monte d abord, puis les plus recents (demande Blandine) */
           function filtreCav(lF) { return (cavFiltre && cavFiltre !== "tous") ? lF.filter(function (fF) { return fF.cav === cavFiltre; }) : lF; }
-          var recents = vueF.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
+          /* 🟩 06/09 (Blandine) — "Derniers resultats" en cartes comme sur la page ecurie,
+   MEME rendu que le rail plus haut (medaille, annee, portrait rond, 1er CAVALIER sur
+   CHEVAL, concours, epreuve, partants, autres classes). Source : filtreCav(vueF), donc
+   suit desormais l'onglet cavalier choisi juste au-dessus — avant, cette section restait
+   toujours sur les resultats les plus recents TOUS cavaliers confondus, meme quand un
+   onglet (Elena C., Manon H....) etait choisi : "pas normal que ce soit les resultats de
+   Liam qui apparaissent a leur nom". Plafond a 6 cartes, choisi par elle. */
+var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
           function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
           var OR9 = "#D9A85C";
@@ -40340,9 +40347,10 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             forts.length ? h(React.Fragment, null,
               /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "32px 22px 14px" } }, filetOr(),
                 h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, letterSpacing: ".1em", color: "#EFE9DC", whiteSpace: "nowrap" } }, T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "\u30cf\u30a4\u30e9\u30a4\u30c8", "Seine Highlights").toUpperCase()), filetOr()),
-              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { margin: "0 16px" } },
+              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ h("div", { style: { margin: "0 16px" } },
                 carteFort(forts[0], true, 0),
-                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null),
+                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null,
+                (forts[3] || forts[4]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[3], false, 3), carteFort(forts[4], false, 4)) : null),
               /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
                  resultats, elle a pas a envoyer encore ailleurs »). */
               null) : null,
@@ -40395,16 +40403,48 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             /* — 5 · DERNIERS RÉSULTATS — */
             recents.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 9px" } }, /* 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
-                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e", "Letzte Ergebnisse").toUpperCase()), filetOr()),
-              h("div", { style: { margin: "0 16px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.06)", background: "rgba(255,255,255,0.02)", overflow: "hidden" } },
-                recents.map(function (rD, iD) {
-                  return h("div", { key: "dr" + iD, style: { display: "flex", alignItems: "center", gap: 10, padding: "9px 12px", borderTop: iD ? "1px solid rgba(255,255,255,0.05)" : "none", minWidth: 0 } },
-                    h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, dateFr(rD.d)),
-                    h("div", { style: { flex: 1, minWidth: 0 } },
-                      h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.nom),
-                      h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rD.ep || "", (rD.ep && rD.cav) ? " \u00b7 " : null, rD.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rD.cav) : null)),
-                    h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rD.pl + "/" + (rD.part || "?")));
-                }))) : null,
+                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse").toUpperCase()), filetOr()),
+              h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
+                (function () {
+                  var grpR = {}, ordreR = [];
+                  recents.forEach(function (rr) {
+                    if (!rr) return;
+                    var cle = String(rr.nom || "") + "|" + String(rr.ep || "") + "|" + String(rr.d || rr.an || "");
+                    if (!grpR[cle]) { grpR[cle] = { concours: rr.nom || "", epreuve: rr.ep || "", an: rr.an || "", partants: rr.part || null, places: [] }; ordreR.push(cle); }
+                    grpR[cle].places.push({ rang: rr.pl || null, cavalier: rr.cav || "" });
+                    if (!grpR[cle].partants && rr.part) grpR[cle].partants = rr.part;
+                  });
+                  var nomChR = (chevalDyn && chevalDyn.nom) || c.nom || "";
+                  return ordreR.slice(0, 6).map(function (cle, iR) {
+                    var gr = grpR[cle];
+                    var tries = (gr.places || []).slice().sort(function (a5, b5) { return (a5.rang || 99) - (b5.rang || 99); });
+                    var meilleur = tries[0] || {};
+                    var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
+                    var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
+                    return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
+                      style: { flex: "0 0 158px", padding: "12px 13px 14px", borderRadius: 14, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
+                        h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
+                        gr.an ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl, letterSpacing: ".12em", fontFamily: "'Montserrat',sans-serif" } }, gr.an) : null),
+                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 66, height: 66, borderRadius: "50%", objectFit: "cover", marginTop: 8, border: "1px solid " + tA(0.35) } }) : null,
+                      h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F1F6F8", marginTop: 10, lineHeight: 1.35 } },
+                        (rangTxt ? (rangTxt + " ") : "") + (meilleur.cavalier || ""),
+                        nomChR ? h("span", { style: { color: teinteCl, fontWeight: 600 } }, " sur " + nomChR) : null),
+                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3 } }, gr.concours || "—"),
+                      gr.epreuve ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35 } }, gr.epreuve) : null,
+                      gr.partants ? h("div", { style: { fontSize: 9, color: "#6F7A83", fontFamily: "'Montserrat',sans-serif", marginTop: 4 } }, "/ " + gr.partants) : null,
+                      (function () {
+                        var autres = tries.slice(1, 4);
+                        if (!autres.length) return null;
+                        return h("div", { style: { marginTop: 8, paddingTop: 7, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                          autres.map(function (pp, iA) {
+                            var rTxt = pp.rang ? (String(pp.rang) + (pp.rang === 1 ? "er" : "e")) : "";
+                            return h("div", { key: "adr" + iA, style: { fontSize: 9.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", marginTop: iA ? 3 : 0, lineHeight: 1.35 } },
+                              (rTxt ? (rTxt + " ") : "") + (pp.cavalier || ""));
+                          }));
+                      })());
+                  });
+                })())) : null,
             /* — 6 · CTA — */
             /* 02/09 : le CTA vers la page technique est RETIRE. A sa place, la seule
                chose qui vivait derriere : l acces de la proprietaire aux lignes
