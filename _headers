@@ -33,6 +33,26 @@
 /hype-memory-poney.js
   Cache-Control: public, max-age=0, must-revalidate
 
+# Galops 4 a 7, sortis de l'index le 06/09 (session galops-sup). Meme recette
+# que hype-cours-baby.js : jamais en cache, et une adresse neuve (?v=N) a
+# chaque livraison — c'est le ?v= qui compte pour l'app installee.
+/hype-cours-galops-sup.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+# Les quatre autres modules charges avec un ?v= (stories, resultats, import
+# FFE, modeles) : meme ceinture, ajoutee le 06/09 a la demande de Blandine.
+/hype-stories.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-resultats.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-import-ffe.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-modeles-db.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 
 # ---------------------------------------------------------------------
 #  CACHE UN AN, IMMUABLE — contenus adressés par clé, jamais réécrits :
