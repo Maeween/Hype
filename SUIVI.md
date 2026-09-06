@@ -10,6 +10,131 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 06/09/2026 (soir, 2) — LES POINTS DE QUALIFICATION, ADDITIONNÉS PAR SAISON ET PAR TYPE D'ÉPREUVE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `958ea2f6cbb020b1d8bc56ed72324dc0` | encart « Points de qualification » · photo du club plus profonde |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `9685f4123c70100c4611937db6049f34` (sans-faute + points en base). Les deux
+modules `hype-import-ffe.js` / `hype-resultats.js` sont INCHANGÉS depuis la livraison précédente :
+ne pas les repousser. Aucun SQL nouveau, les 12 `?v=` intacts.
+
+---
+
+## LE RÈGLEMENT, LU (et il a changé)
+
+Blandine : « lis le règlement FFE pour le calcul des points ». Fait, et elle avait raison de
+douter. Deux systèmes coexistent :
+
+- **Depuis le 1er janvier 2026** (toutes divisions sauf Pro) : points du sans-faute + points du
+  quart, puis coefficient d'épreuve. Un sans-faute vaut 10 points ; 1er quart 10, 2e quart 5.
+  En Club 1 vitesse un sans-faute dans le 1er quart fait (10 + 10) × 0,75 = 15 pts ; en
+  préparatoire (10 + 10) × 0,5 = 10 pts. **C'est ce qui relie ses deux demandes du soir : le
+  sans-faute n'est pas décoratif, il vaut 10 points.**
+- **L'ancien système**, toujours en vigueur pour les qualifications Amateur : points d'indice
+  par quart (Élite 20/10/5/0 · I1 16/8/4/0 · I2 12/6/3/0 · I3 8/4/2/0 · I4 4/2/1/0) × coefficient
+  d'épreuve, doublés aux championnats départementaux/interdépartementaux/régionaux, ×1,5 sur les
+  Tournées des As et les Grands Régionaux.
+
+## DÉCISION : ON NE RECALCULE RIEN
+
+Recalculer demanderait l'indice, le coefficient de l'épreuve, le circuit, la division et la date
+d'application du règlement — et tout cela change chaque année. On additionne la colonne
+« Pts qualif. Chpt » du télémat, calculée par la FFE elle-même avec le barème de l'année. Validé
+par Blandine (« on peut avoir un calcul de ceux fournis cumulés »).
+
+## CE QUI EST À L'ÉCRAN
+
+Encart doré sur Performances, entre les moments forts et « Par saison » : le total de la saison en
+gros, le nombre d'épreuves, la période écrite en toutes lettres, puis le détail par type d'épreuve
+(Club 1-4, Poney 1-4/Élite, Amateur 1-3, Préparatoire, Hunter, Dressage, Autres) avec le nombre
+d'épreuves et les points de chacun. Onglets de saison si plusieurs. Le tout **suit l'onglet
+cavalier** choisi au-dessus, comme les « Derniers résultats ».
+
+⚠️ **L'encart ne s'affiche pas du tout tant qu'aucune ligne ne porte de points** : inutile de
+montrer un tableau de zéros à qui n'a pas encore repassé ses télémats. Et les lignes sans points
+ne sont pas comptées pour zéro — leur nombre est annoncé sous le tableau, avec la phrase qui dit
+d'où viennent les points.
+
+## LA SAISON N'EST PAS GRAVÉE
+
+`SAISON_DEBUT_MOIS` / `SAISON_DEBUT_JOUR` en tête du bloc, réglés sur le **1er juillet** (son
+instinct). Deux lignes à changer le jour où les dates bougent. Rappel du règlement : la période de
+qualification est fixée chaque année ET par championnat (Critérium Amateur 2026 : 16 juin 2025 →
+14 juin 2026), il n'existe pas de saison unique.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 défaut. Banc d'essai des deux classements rejoué hors app sur
+les VRAIS noms d'épreuves de sa base (17 cas, 0 écart) : « Club 3 Grand Prix Circuit Dpt » → Club 3,
+« Poney Elite D Vitesse » → Poney Elite, « As Poney 2D Grand Prix TDA » → **As Poney 2** (correction de Blandine en séance : « As poney 2
+c'est pas poney 2 » — les As sont une catégorie à part, reconnue AVANT les poneys classiques,
+sinon elle tombait dans Poney 2 ; le suffixe de taille A/B/C/D n'entre pas dans le nom) ; et « As 1 » écrit
+sans « Poney » rejoint le même groupe que « As Poney 1 » (2e correction en séance, « As1 pareil » —
+le télémat écrit les deux formes pour un même circuit) ; le **W** est un niveau à part entière
+(3e correction, « en Amat tu comptes aussi W ? ») : « Amateur W » a sa ligne au lieu de tomber dans
+le fourre-tout « Amateur ». ⚠️ Piège attrapé au banc d'essai : le W exige une fin de mot, mais
+l'indice chiffré ne le peut PAS — « As Poney 2D » colle l'indice à la taille du poney, exiger une
+fin de mot après le 2 faisait disparaître la ligne. Les deux tests sont donc séparés, W d'abord.
+⚠️ Non traité faute d'exemple : les abréviations type « Am W » (sans « Amateur » en entier)
+tombent encore dans « Autres » — à ajouter si le télémat en contient, « Préparatoire
+(0,75 m) » et « Preparatoire 95 cm » → Préparatoire, « Hunter Club 1 » → Hunter (et non Club 1),
+« Dressage Enseignant 3 A » → Dressage. Bascule de saison testée au 30 juin / 1er juillet.
+
+## AUSSI DANS CETTE LIVRAISON — LA PHOTO DU CLUB PLUS PROFONDE
+
+Demande du 06/09 (« on peut faire l'image de l'écurie un peu plus profonde ? »), option 1 des deux
+présentées : le bandeau reçoit une hauteur MINIMALE (74 % de la largeur, plafonnée à 430 px) et la
+photo remplit en rognant les CÔTÉS. Depuis le 30/08 elle était affichée entière, donc une photo
+large donnait une bande fine qu'on ne pouvait grandir qu'en l'élargissant.
+
+⚠️ Ce choix revient sur la décision du 30/08 et vaut pour TOUS les clubs, pas seulement le sien.
+⚠️ Une photo très verticale est maintenant rognée en haut et en bas au-delà de 560 px, là où elle
+était entière. Retour en arrière en une ligne : retirer `minHeight`, repasser `objectFit` à
+`contain` et `maxHeight` à 720 (écrit dans le commentaire, à côté du code).
+
+## VÉRIFIÉ AUSSI — LE SECOND CHEMIN DE CRÉATION
+
+Contrôle demandé après le ménage des doublons : `EcranGererEcurie.soumettreCheval` appelle bien
+`hypeProposerRattachement` avant de créer, et la modale de création cherche déjà dans tout Hype
+(nom, alias FFE, surnoms) depuis le 03/09. Les trois fiches Crumble dataient des 13 juillet,
+14 juillet et 31 août — toutes créées AVANT cette protection. Rien à recoder de ce côté.
+
+## NON VU À L'ÉCRAN
+
+Fiche cheval → Performances : l'encart n'apparaîtra qu'après un nouvel import de télémat.
+Onglet Écurie : la photo du club, plus haute, côtés rognés.
+
+## DÉCIDÉ, PAS ENCORE CODÉ — LE PARTAGE PUBLIC, UNE SEULE PORTE
+
+Blandine, 06/09 : « page à part au cas où, mais je trouve que ça devrait être le cas de toutes les
+pages si on a besoin de partager ensuite ». Puis : « fais au plus simple ».
+
+**Le principe retenu** : PAS une page publique de plus par sujet. `story.html` est aujourd'hui un
+cas particulier écrit à part ; en refaire une pour les points, une pour le palmarès, une pour le
+club donnerait quatre pages qui divergent au premier changement de design. À la place, UNE page
+publique unique qui sait afficher plusieurs sujets, appelée avec un paramètre
+(`voir.html?p=points&id=…`, `?p=palmares&id=…`). Lecture seule, sans compte, même mise en page que
+dans l'app. Ajouter un sujet devient alors une petite affaire.
+
+**Les deux réponses manquantes ont été tranchées « au plus simple »**, c'est-à-dire sur ma
+recommandation, faute de réponse — À RECONFIRMER AVEC ELLE AVANT DE CODER :
+- qui peut partager : **elle seule** au début (pas chaque cavalière) ;
+- ce qu'on montre : **prénom + initiale** (« Liam R. »), pas le nom complet.
+On peut toujours ouvrir plus tard ; refermer une fois que des liens circulent est bien plus
+délicat, et il s'agit de résultats et de prénoms de cavalières parfois mineures.
+
+⚠️ **RÈGLE DE SÉCURITÉ À TENIR** quand ce sera codé : rien n'est public tant qu'elle n'a pas tapé
+« Partager ». Chaque page a son interrupteur et le lien est révocable. Le partage est un geste,
+jamais un état par défaut — sinon les résultats et les prénoms sont lisibles par qui devine une
+adresse.
+
+Premier sujet prévu quand le chantier démarrera : les points de qualification.
+
+---
+
 # 🟩 06/09/2026 (soir) — LE SANS-FAUTE ET LES POINTS ARRIVENT ENFIN EN BASE · CORBEILLE SUR LES SAISIES À LA MAIN
 
 | Fichier | Où | md5 | Quoi |

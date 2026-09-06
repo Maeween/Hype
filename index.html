@@ -31053,7 +31053,7 @@ function EcranGuilde() {
            devient un petit badge pose EN HAUT A DROITE de la photo. Decale vers la
            gauche quand le bouton appareil photo est la, pour ne pas le recouvrir. */
  /* 30/08 (Blandine : « agrandis plus que ca ») : marges 34 -> 16 px */ /* 30/08 : la marge etait fixe, la photo passait sous l'encoche */
-        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", maxHeight: 720, objectFit: "contain", margin: "0 auto", borderRadius: 14 } /* 30/08 : marges 16 -> 8 px, plafond 620 -> 720. La hauteur suit la largeur et les proportions de la photo : sans recadrage, l elargir est le seul moyen de la grandir. */ })),
+        h("img", { src: (banniere || ((__thh && __thh.id === "crimson" && typeof IMG_BANDEAU_CRIMSON !== "undefined") ? IMG_BANDEAU_CRIMSON : UV3_H2)), alt: "", /* 30/08 : l'ancienne expression produisait `url(https://...)` — la syntaxe d'un FOND CSS, pas l'adresse nue qu'attend une balise img. Image cassee. */ style: { display: "block", width: "100%", height: "auto", minHeight: "min(74vw, 430px)", maxHeight: 560, objectFit: "cover", objectPosition: "center", margin: "0 auto", borderRadius: 14 } /* 06/09 (Blandine : « l image de l ecurie un peu plus profonde ») — LE BANDEAU A DESORMAIS UNE HAUTEUR MINIMALE. Depuis le 30/08 la photo etait affichee ENTIERE (contain) : une photo large donnait une bande fine, impossible a grandir sans la recadrer. Elle revient donc sur ce choix : minHeight 74vw plafonne a 430 px, et `cover` rogne les COTES pour remplir. ⚠️ Vaut pour TOUS les clubs, pas seulement le sien. ⚠️ Une photo tres verticale est desormais rognee en haut et en bas au-dela de 560 px, la ou elle etait entiere avant. Pour revenir en arriere : minHeight retire, objectFit contain, maxHeight 720. */ })),
       h("div", { style: { padding: "16px 22px 14px", textAlign: "center" } },
         h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, letterSpacing: 1.4, color: "#F2F7F9" } }, monClub),
         h("div", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: "rgba(234,247,250,0.85)", marginTop: 5 } },
@@ -40444,9 +40444,20 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             /* 06/09, 2e correction de Blandine (« As1 pareil ») : le télémat écrit
                aussi bien « As Poney 2D » que « As 1 » — c'est le même circuit des As.
                Les deux formes tombent donc dans le même groupe, indice compris. */
+            /* 06/09, 3e correction (« en Amat tu comptes aussi W ? ») : le W est un
+               niveau comme Élite ou 1-4, il a donc sa propre ligne. Avant, « Amateur W »
+               tombait dans le fourre-tout « Amateur » et se mélangeait aux épreuves
+               dont on n'a pas su lire l'indice. */
+            /* ⚠️ Le W se teste AVANT le chiffre et avec une fin de mot, sinon il
+               s'attrape au milieu d'un mot. Le chiffre, lui, ne PEUT PAS exiger une
+               fin de mot : « As Poney 2D » colle l'indice à la taille du poney (D),
+               et « 2D » ne serait plus reconnu (piège vu au banc d'essai). */
+            if (/\bas\s*(?:poney\s*)?w\b/.test(t)) return "As Poney W";
             var mAs = /\bas\s*(?:poney\s*)?(elite|[1-4])/.exec(t);
             if (mAs) return "As Poney " + (mAs[1] === "elite" ? "Elite" : mAs[1]);
             if (/\bas\s*poney/.test(t)) return "As Poney";
+            var mW = /(poney|club|amateur|pro)\s*w\b/.exec(t);
+            if (mW) return mW[1].charAt(0).toUpperCase() + mW[1].slice(1) + " W";
             var mEl = /(poney|club|amateur|pro)\s*(elite|[1-4])/.exec(t);
             if (mEl) {
               var fam = mEl[1].charAt(0).toUpperCase() + mEl[1].slice(1);
