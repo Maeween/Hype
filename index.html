@@ -35867,7 +35867,20 @@ function AlbumsCheval(props) {
     chargerLikesPhoto(u).then(function (r) { setLikesVisu({ count: r.count || 0, jaiLike: !!r.jaiLike }); }).catch(function () { setLikesVisu({ count: 0, jaiLike: false }); });
     listerCommentairesPhoto(u).then(function (r) { setCommentairesVisu((r && r.data) || []); }).catch(function () { setCommentairesVisu([]); });
   }
-  function ouvrirVisu(liste, u) { setVisuListe((liste || []).slice()); setVisu(u); setPanneauCommentaires(false); setTexteCommentaire(""); chargerLikesEtCommentaires(u); chargerLieuPhoto(u); }
+  /* \U0001f7e9 06/09 (Blandine, capture) : "quand on ouvre une photo les propositions se
+     chevauchent et sortent de l'ecran" \u2014 cause trouvee : cette visionneuse (dans les
+     Albums) et celle de la fiche cheval (dans Souvenirs, juste en dessous sur la meme page)
+     sont DEUX etats totalement independants. Ouvrir une photo ici sans avoir referme l'autre
+     laissait les deux se superposer (Identifier/poubelle/croix en double, "Mettre en vedette"
+     de l'une par-dessus J'aime/Commentaires de l'autre). Chacune ferme desormais l'autre des
+     qu'elle s'ouvre \u2014 jamais les deux en meme temps. */
+  function ouvrirVisu(liste, u) { try { if (props.onOuvertureLocale) props.onOuvertureLocale(); } catch (eOl) { } setVisuListe((liste || []).slice()); setVisu(u); setPanneauCommentaires(false); setTexteCommentaire(""); chargerLikesEtCommentaires(u); chargerLieuPhoto(u); }
+  var fermerCleVu = React.useRef(props.fermerCle);
+  React.useEffect(function () {
+    if (props.fermerCle === fermerCleVu.current) return;
+    fermerCleVu.current = props.fermerCle;
+    setVisu(null);
+  }, [props.fermerCle]);
   function naviguerVisu(pas) {
     var l = visuListe || []; if (l.length < 2) return; var ix = l.indexOf(visu); if (ix < 0) return;
     var suivant = l[((ix + pas) % l.length + l.length) % l.length];
@@ -38717,13 +38730,14 @@ function EcranCheval() {
   var pdSt = React.useState(null); var parenteInfo = pdSt[0], setParenteInfo = pdSt[1];
   async function chargerDescendantsCheval() {
     if (parenteInfo) return;
-    setParenteInfo({ enCours: true, descendants: [] });
+    setParenteInfo({ enCours: true, descendants: [], tousChevaux: [] });
     var nomActuel = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
-    if (!nomActuel || typeof supa === "undefined" || !supa) { setParenteInfo({ enCours: false, descendants: [] }); return; }
+    if (!nomActuel || typeof supa === "undefined" || !supa) { setParenteInfo({ enCours: false, descendants: [], tousChevaux: [] }); return; }
     try {
       var rD = await supa.from("chevaux").select("id, nom, origines").is("supprime_le", null).limit(400);
       var nomDe2 = function (x) { if (!x) return ""; if (typeof x === "string") return x; return String(x.nom || ""); };
       var idActuel = (chevalDyn && chevalDyn.dbId) || (c && c.dbId) || null;
+      var tousCh = ((rD && rD.data) || []).filter(function (h2) { return h2 && h2.nom && h2.id !== idActuel; }).map(function (h2) { return { id: h2.id, nom: h2.nom }; });
       var trouves = ((rD && rD.data) || []).filter(function (h2) {
         if (!h2 || !h2.nom || h2.id === idActuel) return false;
         var og2 = h2.origines || {};
@@ -38731,12 +38745,27 @@ function EcranCheval() {
         var nomP = nomDe2(pg2.pere), nomM = nomDe2(pg2.mere);
         return (nomP && nomsHippiquesProches(nomP, nomActuel)) || (nomM && nomsHippiquesProches(nomM, nomActuel));
       }).map(function (h2) { return { id: h2.id, nom: h2.nom }; });
-      setParenteInfo({ enCours: false, descendants: trouves });
-    } catch (eDsc) { setParenteInfo({ enCours: false, descendants: [] }); }
+      setParenteInfo({ enCours: false, descendants: trouves, tousChevaux: tousCh });
+    } catch (eDsc) { setParenteInfo({ enCours: false, descendants: [], tousChevaux: [] }); }
+  }
+  /* \U0001f7e9 06/09 (Blandine : "acceder a un cheval d'une fiche a l'autre quand ils sont de
+     la meme famille et apparaissent... en tant qu'ascendants") \u2014 meme lot de chevaux deja
+     charge pour les poulains (aucun appel base en plus) : on y cherche si un pere/mere/grand-
+     parent affiche dans le pedigree correspond a une fiche Hype existante. */
+  function ascendantVersFiche(nom) {
+    if (!nom || !parenteInfo || !parenteInfo.tousChevaux) return null;
+    for (var iAs = 0; iAs < parenteInfo.tousChevaux.length; iAs++) {
+      if (nomsHippiquesProches(parenteInfo.tousChevaux[iAs].nom, nom)) return parenteInfo.tousChevaux[iAs].id;
+    }
+    return null;
   }
   React.useEffect(function () { if (origOuv) chargerDescendantsCheval(); }, [origOuv]);
   var cvSt = React.useState([]); var chVids = cvSt[0], setChVids = cvSt[1]; /* 31/07 : videos pour l onglet Videos */
   var visSt = React.useState(null); var visionneuse = visSt[0], setVisionneuse = visSt[1];
+  /* \U0001f7e9 06/09 (Blandine, capture) : compteur qui dit a AlbumsCheval de refermer SA
+     propre photo ouverte des que celle-ci (la visionneuse de la fiche) s'ouvre \u2014 evite les
+     deux superposees. Voir le commentaire jumeau dans AlbumsCheval. */
+  var acfSt = React.useState(0); var albumsChFermerCle = acfSt[0], setAlbumsChFermerCle = acfSt[1];
   /* 🟥 05/09 (Blandine : « j'efface les photos où ? ») — Supprimer et ★ Vedette dans cette
      visionneuse ne marchaient que pour les photos postées en commentaire (`mediasInfo`).
      Une photo de la chronologie ou d'un album n'avait jamais eu ni l'un ni l'autre ici —
@@ -39233,9 +39262,10 @@ async function supprimerSouvenirOuvert() {
           (function (pg) {
             function celPed(n, opts) {
               opts = opts || {};
-              return h("div", { style: { gridColumn: opts.col, gridRow: opts.row, padding: "9px 8px 9px 10px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, borderLeft: opts.col > 1 ? "1px solid rgba(32,217,245,0.2)" : "none", borderBottom: opts.bb === "fort" ? "1px solid rgba(32,217,245,0.25)" : (opts.bb ? "1px solid rgba(255,255,255,0.05)" : "none") } },
+              var idAsc = (n && n.nom) ? ascendantVersFiche(n.nom) : null; /* \U0001f7e9 06/09 : fiche Hype existante pour ce nom ? */
+              return h("div", { role: idAsc ? "button" : null, onClick: idAsc ? function (eAs) { try { if (eAs && eAs.stopPropagation) eAs.stopPropagation(); } catch (eAs2) { } try { window.__chevalOuvert = idAsc; } catch (eAs3) { } setEcran("cheval"); } : null, style: { gridColumn: opts.col, gridRow: opts.row, padding: "9px 8px 9px 10px", display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, borderLeft: opts.col > 1 ? "1px solid rgba(32,217,245,0.2)" : "none", borderBottom: opts.bb === "fort" ? "1px solid rgba(32,217,245,0.25)" : (opts.bb ? "1px solid rgba(255,255,255,0.05)" : "none"), cursor: idAsc ? "pointer" : "default" } },
                 opts.label ? h("div", { style: { fontSize: 7.5, letterSpacing: "0.22em", color: teinteCl, textTransform: "uppercase", fontWeight: 700, marginBottom: 4 } }, opts.label) : null,
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: opts.grand ? 14 : (opts.moyen ? 11.5 : 10), fontWeight: 700, color: "#EAF0F3", lineHeight: 1.28, overflowWrap: "break-word" } }, n ? n.nom : "\u2014"),
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: opts.grand ? 14 : (opts.moyen ? 11.5 : 10), fontWeight: 700, color: idAsc ? teinteCl : "#EAF0F3", lineHeight: 1.28, overflowWrap: "break-word", textDecoration: idAsc ? "underline" : "none", textDecorationColor: idAsc ? "rgba(32,217,245,0.35)" : "transparent", textUnderlineOffset: 2 } }, n ? n.nom : "\u2014"),
                 (n && n.detail) ? h("div", { style: { fontSize: 7.8, color: "#7B858E", marginTop: 2, lineHeight: 1.3 } }, n.detail) : null);
             }
             var lp = T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater"), lm = T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter");
@@ -40641,13 +40671,13 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         /* 🟩 05/09 (Blandine : ajouter deux traits gris, identiques a ceux de la page Ecurie,
    au-dessus et en dessous des Albums pour les separer du reste de la page) */
         h("span", { style: { display: "block", height: 30, background: "#15181C", borderRadius: 10, margin: "24px 16px" } }),
-        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true })),
+        h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, mesAlbumsSeulement: true, fermerCle: albumsChFermerCle, onOuvertureLocale: function () { setVisionneuse(null); } })),
         h("span", { style: { display: "block", height: 30, background: "#15181C", borderRadius: 10, margin: "24px 16px" } }),
         h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           teinte: teinte, teinteCl: teinteCl,
           proprio: !!(chevalDyn && chevalDyn.dbId && moi && chevalDyn.ownerId === moi.id),
-          onOuvrir: function (uV, albIdV) { setVisionneuseAlbumId(albIdV || null); setVisionneuse(uV); },
+          onOuvrir: function (uV, albIdV) { setAlbumsChFermerCle(function (nCl) { return nCl + 1; }); setVisionneuseAlbumId(albIdV || null); setVisionneuse(uV); },
           onAjouter: function () {
             var fA = (typeof __murPhotoOuvrir !== "undefined") && __murPhotoOuvrir[cibleCh];
             if (fA) { fA(); }
