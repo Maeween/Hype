@@ -36261,7 +36261,7 @@ function AlbumsCheval(props) {
     var nAlb = (tousAlb && tousAlb.length) || 1;
     var large = nAlb === 1, moitie = nAlb === 2;
     var stCarte = large ? { flex: "1 1 auto", width: "100%", cursor: "pointer" } : (moitie ? { flex: "1 1 0", minWidth: 0, cursor: "pointer" } : { flex: "0 0 auto", width: 168, cursor: "pointer" });
-    var stCouv = large ? { width: "100%", aspectRatio: "1.55 / 1" } : (moitie ? { width: "100%", aspectRatio: "1 / 1" } : { width: 168, height: 168 });
+    /* 🟩 06/09 (Blandine : "rallonge un peu la partie ou y a la photo, a chaque fois tu la coupes en deux, ca gache l'effet visuel") */ var stCouv = large ? { width: "100%", aspectRatio: "1.55 / 1" } : (moitie ? { width: "100%", aspectRatio: "4 / 5" } : { width: 168, height: 202 });
     return h("div", { key: alb.id, onClick: function () { var v = (ouvert === alb.id ? null : alb.id); setOuvert(v); setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); if (v) chargerMembres(v); }, role: "button", style: stCarte },
       /* 27/07 : couvertures d album nettement agrandies (112 -> 168 px) pour bien voir les images (demande Blandine). */
       h("div", { style: { position: "relative", width: stCouv.width, height: stCouv.height, aspectRatio: stCouv.aspectRatio, borderRadius: 20, overflow: "hidden", border: "1px solid " + tA(alb.promu ? 0.65 : 0.25), background: "#0B1116", boxShadow: alb.promu ? "0 0 18px " + tA(0.22) : "none" } },
@@ -40283,7 +40283,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             }
             if (!phF && idx === 0) phF = photoCh; /* le portrait, mais UNE seule fois */
             if (phF) dejaPrises[phF] = 1;
-            return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", height: grande ? 198 : 148, flex: grande ? null : 1, minWidth: 0 } },
+            return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", /* 🟩 06/09 (Blandine : "rallonge un peu la partie ou y a la photo, a chaque fois tu la coupes en deux, ca gache l'effet visuel") */ height: grande ? 222 : 178, flex: grande ? null : 1, minWidth: 0 } },
               phF ? h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
               h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.72)", color: grande ? "#241503" : teinteCl, border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid " + teinteCl } }, "1"),
@@ -40297,7 +40297,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
             encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen")),
             /* — 2 · LE BANDEAU DES QUATRE CHIFFRES — */
-            h("div", { style: { display: "flex", margin: "12px 16px 0", padding: "12px 6px 11px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
+            /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", margin: "18px 16px 0", padding: "15px 6px 14px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
               [[nS, T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts")], [nV, T("victoires", "wins", "victorias", "vittorie", "\u512a\u52dd", "Siege")], [nP, T("podiums", "podiums", "podios", "podi", "\u8868\u5f70\u53f0", "Podien")], [nC, T("class\u00e9s", "placings", "clasificados", "piazzamenti", "\u5165\u8cde", "Platzierungen")]].map(function (cq, iq) {
                 return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: teinteCl } }, String(cq[0])),
@@ -40338,11 +40338,11 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             })(),
             /* — 3 · SES MOMENTS FORTS — */
             forts.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "24px 22px 12px" } }, filetOr(),
+              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "32px 22px 14px" } }, filetOr(),
                 h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, letterSpacing: ".1em", color: "#EFE9DC", whiteSpace: "nowrap" } }, T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "\u30cf\u30a4\u30e9\u30a4\u30c8", "Seine Highlights").toUpperCase()), filetOr()),
-              h("div", { style: { margin: "0 16px" } },
+              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { margin: "0 16px" } },
                 carteFort(forts[0], true, 0),
-                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 10, marginTop: 10 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null),
+                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null),
               /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
                  resultats, elle a pas a envoyer encore ailleurs »). */
               null) : null,
