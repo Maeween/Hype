@@ -31317,6 +31317,20 @@ function quotaGratuit(userId) {
   return 1;
 }
 
+/* 🟩 05/09 23h30 (Blandine : "il me limite a 15 videos, tu peux mettre videos
+   illimitees pour Liam Evan et moi" + "et photos aussi") — MEME PRINCIPE exactement que
+   QUOTA_CHEVAUX_EXCEPTIONS juste au-dessus : reprend les MEMES user_id d'Evan et Liam,
+   deja confirmes et en usage. Pour Blandine, pas de user_id sous la main ici : memes
+   emails que estCompteFeinnHype (deja utilise ailleurs dans le fichier). */
+var QUOTA_MEDIAS_EXCEPTIONS = {
+  "fb616495-f533-461d-aa5b-537437a7b185": true, /* Evan */
+  "2f6eeb8b-37ef-4ce5-9639-f2a267498d4b": true, /* Liam (fiche 1) */
+  "fa2875ae-f740-4774-ad79-4726477add5e": true  /* Liam (fiche 2) */
+};
+function aMediasIllimites(p) {
+  return !!(p && ((p.id && QUOTA_MEDIAS_EXCEPTIONS[p.id]) || (typeof estCompteFeinnHype === "function" && estCompteFeinnHype(p))));
+}
+
 function ModaleCreationCheval({ onClose, tr, premium, allerPremium, ouvrirFiche }) {
   /* 02/09 : le choix de l ecurie, absent jusqu ici de cette modale — seul
      « Gerer mon ecurie » le proposait. ⚠️ N apparait que si le cavalier a
@@ -35602,7 +35616,7 @@ function AlbumsCheval(props) {
   function rafraichirQuotaVid() {
     try {
       if (typeof hypeVideosDejaEnvoyees !== "function") return;
-      hypeVideosDejaEnvoyees(props.cible, hypeMuxPlafondVideos(premium)).then(function (n) { setQuotaVid(n); }).catch(function () { });
+      hypeVideosDejaEnvoyees(props.cible, hypeMuxPlafondVideos(premium, ctx.profil)).then(function (n) { setQuotaVid(n); }).catch(function () { });
     } catch (eQv) { }
   }
   function rafraichirQuota() { try { rafraichirQuotaVid(); } catch (eRv) { } try { photosUtiliseesParMoi().then(function (n) { setQuotaPh(n); }).catch(function () { }); } catch (eQ) { } }
@@ -35962,9 +35976,10 @@ function AlbumsCheval(props) {
     if (!alb) { setSelPhotos(false); return; }
     var nouv = (alb.photos || []).slice();
     var aAjouter = Object.keys(coches).filter(function (u) { return coches[u] && nouv.indexOf(u) < 0; });
-    if (!premium) {
+    if (!premium && !aMediasIllimites(ctx.profil)) {
       /* 02/09 : ce n'est plus le nombre de photos DE L'ALBUM qui compte, mais le total
-         du COMPTE sur tout Hype. Creer un album de plus ne donne plus de places. */
+         du COMPTE sur tout Hype. Creer un album de plus ne donne plus de places.
+         🟩 05/09 23h30 : exception media (Evan/Liam/Blandine) ajoutee a la garde. */
       var dejaCompte = (quotaPh === null) ? await photosUtiliseesParMoi() : quotaPh;
       var placesRestantes2 = Math.max(0, QUOTA_PHOTOS_GRATUIT - dejaCompte);
       if (placesRestantes2 <= 0) { setSelPhotos(false); setInvitPlus({ motif: "photos", utilisees: dejaCompte }); return; }
@@ -36006,7 +36021,7 @@ function AlbumsCheval(props) {
     var gardees0 = [];
     var videosTropLongues = 0, videosAuDela = 0;
     var dejaVids = null;
-    var plafondVid = hypeMuxPlafondVideos(premium);
+    var plafondVid = hypeMuxPlafondVideos(premium, ctx.profil);
     for (var iV = 0; iV < fichiersUtiles.length; iV++) {
       var fV = fichiersUtiles[iV];
       if (!estFichierVideo(fV)) { gardees0.push(fV); continue; }
@@ -36028,7 +36043,8 @@ function AlbumsCheval(props) {
        Hype+ » — elle l est deja. Motif distinct, message distinct. */
     if (videosAuDela > 0) { setInvitPlus({ motif: premium ? "video_premium" : "video" }); }
     /* --- LES PHOTOS : plafond du COMPTE, plus de l'album --- */
-    if (!premium) {
+    if (!premium && !aMediasIllimites(ctx.profil)) {
+      /* 🟩 05/09 23h30 : meme exception media que juste au-dessus. */
       var dejaCompteF = (quotaPh === null) ? await photosUtiliseesParMoi() : quotaPh;
       var placesRestantes = Math.max(0, QUOTA_PHOTOS_GRATUIT - dejaCompteF);
       if (placesRestantes <= 0) { setInvitPlus({ motif: "photos", utilisees: dejaCompteF }); return; }
@@ -53911,7 +53927,9 @@ var HYPE_MUX_VIDEOS_PREMIUM = 15;
    derniere ». A UN, la ligne n apparait qu au moment ou il ne reste qu une
    seule video a poster. Remettre 5 la fait revenir comme au depart. */
 var HYPE_MUX_PREVENIR_A = 1;
-function hypeMuxPlafondVideos(estPremium) { return estPremium ? HYPE_MUX_VIDEOS_PREMIUM : HYPE_MUX_VIDEOS_GRATUIT; }
+/* 🟩 05/09 23h30 : `profilP` en second argument, optionnel (les appels existants
+   sans lui continuent de marcher a l'identique). */
+function hypeMuxPlafondVideos(estPremium, profilP) { if (aMediasIllimites(profilP)) return 999999; return estPremium ? HYPE_MUX_VIDEOS_PREMIUM : HYPE_MUX_VIDEOS_GRATUIT; }
 
 /* \ud83d\udfe5 05/09 17 h 40 \u2014 LA BRANCHE NATIVE (app Capacitor, voir PLAN-APP-NATIVE.md).
    INERTE SUR LE WEB : sans window.Capacitor, hypeNatif() rend null et rien ne change.
