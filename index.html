@@ -38589,6 +38589,32 @@ function EcranCheval() {
     } catch (ePF) { setPhotosForts([]); }
     return function () { actifPF = false; };
   }, [panneau, photosForts]);
+  /* \U0001f7e9 06/09 (Blandine : "vrai bouton pour choisir photo/video sur un moment fort")
+     Etat + fonctions du picker. `mediaTousMF` reprend le MEME chargement que photosForts/
+     albumsForts mais SANS filtrer les videos (chargerPhotosSouvenirs les renvoie deja) —
+     charge une seule fois, seulement quand le picker s'ouvre pour la premiere fois. */
+  var mtSt = React.useState(null); var mediaTousMF = mtSt[0], setMediaTousMF = mtSt[1];
+  var pkSt = React.useState(null); var pickerMomentF = pkSt[0], setPickerMomentF = pkSt[1]; /* jeton du moment fort en cours d'edition, ou null */
+  function ouvrirPickerMomentF(jeton) {
+    setPickerMomentF(jeton);
+    if (mediaTousMF) return;
+    try { chargerPhotosSouvenirs(cibleCh).then(function (r) { setMediaTousMF((r || []).slice(0, 40)); }).catch(function () { setMediaTousMF([]); }); } catch (eMT) { setMediaTousMF([]); }
+  }
+  async function definirMediaMomentFort(jeton, url) {
+    /* url = null retire la surcharge et revient au choix automatique */
+    try {
+      if (!chevalDyn || !chevalDyn.dbId) return;
+      var actuel = Object.assign({}, (chevalDyn.moments_forts_medias || {}));
+      if (url) { actuel[jeton] = { url: url, type: (typeof estUrlVideo === "function" && estUrlVideo(url)) ? "video" : "photo" }; }
+      else { delete actuel[jeton]; }
+      var rMF = await supa.from("chevaux").update({ moments_forts_medias: actuel }).eq("id", chevalDyn.dbId);
+      if (rMF && rMF.error) { setToast(T("Enregistrement indisponible \u2014 colonne moments_forts_medias \u00e0 ajouter c\u00f4t\u00e9 base", "Could not save \u2014 column missing in database", "No se pudo guardar \u2014 falta la columna", "Salvataggio non riuscito \u2014 colonna mancante", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern nicht m\u00f6glich \u2014 Spalte fehlt")); setTimeout(function () { setToast(null); }, 3400); return; }
+      setChevalDyn(Object.assign({}, chevalDyn, { moments_forts_medias: actuel }));
+      setPickerMomentF(null);
+      setToast(url ? T("Moment fort mis \u00e0 jour \u2728", "Highlight updated \u2728", "Momento actualizado \u2728", "Momento aggiornato \u2728", "\u66f4\u65b0\u3057\u307e\u3057\u305f \u2728", "Aktualisiert \u2728") : T("Photo automatique r\u00e9tablie", "Automatic photo restored", "Foto autom\u00e1tica restaurada", "Foto automatica ripristinata", "\u81ea\u52d5\u9078\u629e\u306b\u623b\u3057\u307e\u3057\u305f", "Automatisches Foto wiederhergestellt"));
+      setTimeout(function () { setToast(null); }, 2400);
+    } catch (eDM) { setToast(T("Enregistrement impossible", "Could not save", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern nicht m\u00f6glich")); setTimeout(function () { setToast(null); }, 2800); }
+  }
   var cavFSt = React.useState("tous"); var cavFiltre = cavFSt[0], setCavFiltre = cavFSt[1]; /* 26/08 : onglet cavalier du palmares editorial */
   var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1]; /* 26/08 : « qu on puisse tout voir si on le souhaite » (Blandine) — proprietaire seulement, page technique */
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
@@ -40327,21 +40353,35 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             for (var iP = pioche.length - 1; iP > 0; iP--) { var jP = Math.floor(rnd() * (iP + 1)); var tmp = pioche[iP]; pioche[iP] = pioche[jP]; pioche[jP] = tmp; }
           })();
           var dejaPrises = {};
+          /* \U0001f7e9 06/09 (Blandine) : qui peut choisir la photo/video d'un moment fort ?
+             la proprietaire du cheval, ou une moderatrice Hype — meme logique que le
+             changement de photo_palmares plus haut. */
+          var peutChoisirMediaF = !!((chevalDyn && moi && chevalDyn.ownerId === moi.id) || (typeof estModerateurHype === "function" && estModerateurHype(moi)));
           function carteFort(f, grande, idx) {
             if (!f) return null;
-            var phF = photoDAlbumPourF(f);
-            if (phF && dejaPrises[phF]) phF = null;
-            if (!phF) {
-              for (var iF2 = 0; iF2 < pioche.length; iF2++) {
-                if (!dejaPrises[pioche[iF2]]) { phF = pioche[iF2]; break; }
+            var jetonF = jetonFort(f);
+            var surchargeF = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonF]) || null;
+            var phF = surchargeF ? surchargeF.url : photoDAlbumPourF(f);
+            if (!surchargeF) {
+              if (phF && dejaPrises[phF]) phF = null;
+              if (!phF) {
+                for (var iF2 = 0; iF2 < pioche.length; iF2++) {
+                  if (!dejaPrises[pioche[iF2]]) { phF = pioche[iF2]; break; }
+                }
               }
+              if (!phF && idx === 0) phF = photoCh; /* le portrait, mais UNE seule fois */
+              if (phF) dejaPrises[phF] = 1;
             }
-            if (!phF && idx === 0) phF = photoCh; /* le portrait, mais UNE seule fois */
-            if (phF) dejaPrises[phF] = 1;
+            var estVidF = surchargeF && surchargeF.type === "video";
             return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", /* 🟩 06/09 (Blandine : "rallonge un peu la partie ou y a la photo, a chaque fois tu la coupes en deux, ca gache l'effet visuel") */ /* 🟩 06/09 (Blandine : "on garde le format large mais large ne veut pas dire tres court en hauteur, rallonge un peu sa hauteur") */ height: grande ? 280 : 178, flex: grande ? null : 1, minWidth: 0 } },
-              phF ? h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } }) : null,
+              phF ? (estVidF
+                ? h("video", { src: phF + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } })
+                : h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } })) : null,
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
               h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.72)", color: grande ? "#241503" : teinteCl, border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid " + teinteCl } }, "1"),
+              /* \U0001f7e9 06/09 : petit crayon discret, reserve a peutChoisirMediaF — n'empeche pas
+                 le clic sur la carte (stopPropagation) qui ouvrirait la saison a la place. */
+              peutChoisirMediaF ? h("button", { onClick: function (eEd) { eEd.stopPropagation(); ouvrirPickerMomentF(jetonF); }, "aria-label": T("Choisir la photo ou la vid\u00e9o", "Choose the photo or video", "Elegir foto o v\u00eddeo", "Scegli foto o video", "\u5199\u771f\u307e\u305f\u306f\u52d5\u753b\u3092\u9078\u3076", "Foto oder Video w\u00e4hlen"), style: { position: "absolute", top: 7, right: 7, width: grande ? 30 : 24, height: grande ? 30 : 24, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.6)", color: "#F2EDE2", fontSize: grande ? 13 : 11, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } }, "\u270e") : null,
               h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 12px 12px" : "0 9px 9px", textAlign: "center" } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grande ? 14.5 : 10.8, color: "#F2EDE2", letterSpacing: ".03em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom + (f.an ? " " + f.an : "")),
                 f.ep ? h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.ep) : null,
@@ -40402,6 +40442,28 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
                  resultats, elle a pas a envoyer encore ailleurs »). */
               null) : null,
+            /* \U0001f7e9 06/09 (Blandine : "vrai bouton pour choisir photo/video sur un moment
+               fort") \u2014 le picker s'ouvre en tapant le crayon d'une carte moment fort. Choix
+               fait DANS les photos/videos deja envoyees sur ce cheval (chargerPhotosSouvenirs) :
+               pas de nouvel envoi ici, la photo/video existe deja quelque part sur la fiche. */
+            pickerMomentF ? h("div", { onClick: function () { setPickerMomentF(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+              h("div", { onClick: function (ePk) { ePk.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(217,168,92,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Photo ou vid\u00e9o de ce moment", "Photo or video for this highlight", "Foto o v\u00eddeo de este momento", "Foto o video di questo momento", "\u3053\u306e\u77ac\u9593\u306e\u5199\u771f\u30fb\u52d5\u753b", "Foto oder Video f\u00fcr diesen Moment")),
+                h("div", { style: { fontSize: 11, color: "rgba(234,242,244,.45)", textAlign: "center", marginBottom: 14, fontFamily: "'Montserrat',sans-serif" } }, T("Choisis parmi les photos et vid\u00e9os d\u00e9j\u00e0 envoy\u00e9es sur ce cheval.", "Pick from the photos and videos already sent for this horse.", "Elige entre las fotos y v\u00eddeos ya enviados de este caballo.", "Scegli tra le foto e i video gi\u00e0 inviati per questo cavallo.", "\u3053\u306e\u99ac\u306b\u3059\u3067\u306b\u9001\u3089\u308c\u305f\u5199\u771f\u30fb\u52d5\u753b\u304b\u3089\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle aus den bereits gesendeten Fotos und Videos dieses Pferdes.")),
+                h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
+                  (mediaTousMF === null) ? h("div", { style: { color: "#5B646E", fontSize: 12.5, fontFamily: "'Montserrat',sans-serif", textAlign: "center", padding: "22px 0" } }, "\u2026")
+                    : (!mediaTousMF.length ? h("div", { style: { color: "#5B646E", fontSize: 12.5, fontFamily: "'Montserrat',sans-serif", fontStyle: "italic", textAlign: "center", padding: "22px 0" } }, T("Aucune photo ni vid\u00e9o pour l'instant.", "No photo or video yet.", "A\u00fan ninguna foto ni v\u00eddeo.", "Ancora nessuna foto o video.", "\u307e\u3060\u5199\u771f\u3082\u52d5\u753b\u3082\u3042\u308a\u307e\u305b\u3093\u3002", "Noch kein Foto oder Video."))
+                      : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7 } },
+                        mediaTousMF.map(function (uM, iM) {
+                          var vidM = typeof estUrlVideo === "function" && estUrlVideo(uM);
+                          return h("div", { key: "pmf" + iM, role: "button", onClick: function () { definirMediaMomentFort(pickerMomentF, uM); }, style: { position: "relative", paddingBottom: "100%", borderRadius: 10, overflow: "hidden", cursor: "pointer", background: "#12242b" } },
+                            vidM
+                              ? h("video", { src: uM + "#t=0.01", muted: true, playsInline: true, preload: "metadata", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } })
+                              : h("img", { src: uM, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
+                            vidM ? h("div", { style: { position: "absolute", right: 4, bottom: 4, fontSize: 13 } }, "\u25b6\ufe0f") : null);
+                        }))),
+                (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[pickerMomentF]) ? h("button", { onClick: function () { definirMediaMomentFort(pickerMomentF, null); }, style: { marginTop: 12, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(237,242,245,0.65)", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Revenir au choix automatique", "Go back to automatic choice", "Volver a la elecci\u00f3n autom\u00e1tica", "Torna alla scelta automatica", "\u81ea\u52d5\u9078\u629e\u306b\u623b\u3059", "Zur automatischen Auswahl zur\u00fcckkehren")) : null,
+                h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))))) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
