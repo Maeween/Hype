@@ -40361,7 +40361,21 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
                 [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
                   var onC = (cavFiltre === oC[0]);
-                  return h("button", { key: "cav" + oC[0], onClick: function () { setCavFiltre(oC[0]); }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
+                  return h("button", { key: "cav" + oC[0], /* 🟩 06/09 (Blandine : "ca ouvre l'annee sans la derouler, du coup on regarde les
+   derniers resultats a la place ; faudrait quand ca ouvre l'annee que ca deroule les
+   resultats") — choisir un onglet cavalier deplie desormais directement la saison la
+   plus recente ou ce cavalier a couru, sans taper une deuxieme fois dessus. `cible` est
+   utilise en dur (pas `cavFiltre`, qui n'aurait pas encore la nouvelle valeur au moment
+   de ce calcul — setCavFiltre est asynchrone). */
+                  onClick: function () {
+                    var cible = oC[0];
+                    setCavFiltre(cible);
+                    var candidats = listeAns.filter(function (anX) {
+                      var ligs = ans[anX] || [];
+                      return (cible === "tous") ? ligs.length > 0 : ligs.some(function (lg) { return lg.cav === cible; });
+                    });
+                    setSaisonOuv(candidats.length ? candidats[0] : null);
+                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
                 })) : null,
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
