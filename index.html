@@ -631,6 +631,17 @@ async function monProfil() {
 async function majProfil({ pseudo, avatar_url, ecurie, ecurie2, ecurie_perso, ville, teinte, histoire, ma_voix, ecurie_voix, ecurie_histoire, club_voix, club_histoire, ecurie_photo, est_mineur, handle_invitation_vue } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
+  /* 06/09 (Blandine) — le nom de club tape est aligne sur l'orthographe deja
+     portee par la majorite des cavalieres (voir hypeNomClubCanonique, a cote
+     de hypeMemeClub). Une seule requete, seulement quand un nom est fourni ;
+     en cas de doute ou de panne, le nom tape passe tel quel. */
+  if ((ecurie && ecurie !== "__perso__") || ecurie2) {
+    try {
+      const connusC = await hypeNomsClubsConnus();
+      if (ecurie && ecurie !== "__perso__") ecurie = hypeNomClubCanonique(ecurie, connusC);
+      if (ecurie2) ecurie2 = hypeNomClubCanonique(ecurie2, connusC);
+    } catch (eCanon) { }
+  }
   const champs = {};
   if (pseudo     !== undefined) champs.pseudo     = pseudo;
   if (avatar_url !== undefined) champs.avatar_url = avatar_url;
@@ -1859,6 +1870,91 @@ function hypeChevauxDuClub(liste, clubPage) {
     if (!liste || !liste.length) return liste || [];
     return liste.filter(function (ch) { return hypeMemeClub(ch && ch.club, clubPage); });
   } catch (eCd) { return liste || []; }
+}
+
+/* ============================================================================
+   06/09 (Blandine : « rassemble les cavaliers de la SEP », options 1 ET 2 —
+   « comme ca on sera tranquilles ») — LE NOM DU CLUB EST ALIGNE SUR
+   L'ORTHOGRAPHE MAJORITAIRE AU MOMENT OU IL EST ENREGISTRE.
+   LE PROBLEME MESURE sur sa capture du classement des clubs : « Societe
+   d'Equitation de Paris (SEP) » (17 cavalieres), « Sep » (1) et « Societe
+   d'équitation de Paris » (1) faisaient TROIS lignes. Le classement vient de
+   la fonction SQL `classement_ecuries`, qui regroupe par le texte EXACT tape
+   dans `profiles.ecurie` ; la page du club, elle, rassemblait deja les trois
+   (hypeMemeClub est tolerante). Seul le classement les separait.
+   LE CORRECTIF DURABLE (option 2) : au moment ou une cavaliere enregistre le
+   nom de son club (majProfil, SEULE porte d'ecriture de `ecurie`/`ecurie2` —
+   verifie : aucun update/upsert direct ailleurs), on compare ce qu'elle a
+   tape aux noms deja portes par les autres cavalieres et on prend
+   l'orthographe la plus portee si le nom tape en est une VARIANTE :
+   - meme noyau (noyauEcurie) : « Feinn » -> « Ecurie Feinn » ;
+   - un seul mot qui est un SIGLE ecrit en capitales dans le nom connu :
+     « Sep » -> « Societe d'Equitation de Paris (SEP) » ; un mot seul qui
+     n'est pas un sigle ne matche JAMAIS (« Paris » ne rejoint pas la SEP,
+     et « Sep » ne rejoint pas « Saint-Joseph ») ;
+   - au moins deux mots, TOUS presents dans le nom connu :
+     « Societe d'équitation de Paris » -> « Societe d'Equitation de Paris (SEP) »,
+     « Haras de Jardy » -> « Jardy Equitation (Haras de Jardy) ».
+   ⚠️ On ne bascule JAMAIS vers une orthographe portee par MOINS de cavalieres
+   que celle tapee (nMoi) : la majorite ne se fait pas absorber par une coquille.
+   ⚠️ « __perso__ » (valeur technique) n'est jamais touche.
+   L'option 1 (les deux fiches deja en base) est un SQL a part :
+   sql-06-09-sep-rassembler.sql.
+   ============================================================================ */
+function hypeMotsClub(nom) {
+  try { var n = (typeof noyauEcurie === "function") ? noyauEcurie(nom) : String(nom || "").toLowerCase().trim(); return n ? n.split(" ").filter(Boolean) : []; } catch (eMo) { return []; }
+}
+function hypeNomClubCanonique(nomTape, connus) {
+  try {
+    var t = String(nomTape == null ? "" : nomTape).trim();
+    if (!t || t === "__perso__") return t;
+    var liste = (connus || []).filter(function (c) { return c && c.nom && String(c.nom).trim(); });
+    if (!liste.length) return t;
+    var motsT = hypeMotsClub(t); if (!motsT.length) return t;
+    var noyT = motsT.join(" ");
+    var tBas = t.toLowerCase();
+    var nMoi = 0; liste.forEach(function (c) { if (String(c.nom).trim().toLowerCase() === tBas) nMoi += (c.n || 0); });
+    var meilleur = null;
+    liste.forEach(function (c) {
+      var nom = String(c.nom).trim(); if (nom.toLowerCase() === tBas) return;
+      var n = c.n || 0; if (n <= nMoi) return;                 /* jamais vers une orthographe moins portee */
+      var motsC = hypeMotsClub(nom); if (!motsC.length) return;
+      var force = 0;
+      if (motsC.join(" ") === noyT) force = 3;
+      else if (motsT.length === 1) {
+        var sigle = motsT[0];
+        var estSigle = String(nom).split(/[^A-Za-z0-9]+/).some(function (tok) {
+          return tok.length >= 2 && tok.length <= 6 && /[A-Z]/.test(tok) && tok === tok.toUpperCase() && tok.toLowerCase() === sigle;
+        });
+        if (estSigle) force = 2;
+      } else {
+        var tous = motsT.every(function (m) { return motsC.indexOf(m) >= 0; });
+        if (tous) force = 1;
+      }
+      if (!force) return;
+      /* d'abord le NOMBRE de cavalieres (c'est la majorite qui fait loi), la
+         solidite du rapprochement ne departage qu'a egalite, puis le nom le plus complet */
+      if (!meilleur || n > meilleur.n || (n === meilleur.n && force > meilleur.force) || (n === meilleur.n && force === meilleur.force && nom.length > meilleur.nom.length)) meilleur = { nom: nom, n: n, force: force };
+    });
+    return meilleur ? meilleur.nom : t;
+  } catch (eCan) { return String(nomTape == null ? "" : nomTape).trim(); }
+}
+/* Les noms de club deja portes par les cavalieres (ecurie + ecurie2), avec le
+   nombre de cavalieres par orthographe exacte. Lecture seule, meme requete que
+   hypeCavaliersDuClub. */
+async function hypeNomsClubsConnus() {
+  try {
+    if (typeof supa === "undefined" || !supa) return [];
+    var r = await supa.from("profiles").select("ecurie, ecurie2").or("ecurie.not.is.null,ecurie2.not.is.null").limit(2000);
+    var comptes = {}, ordre = [];
+    (((r && r.data) || [])).forEach(function (p) {
+      [p && p.ecurie, p && p.ecurie2].forEach(function (v) {
+        var sv = String(v || "").trim(); if (!sv || sv === "__perso__") return;
+        var k = sv.toLowerCase(); if (!comptes[k]) { comptes[k] = { nom: sv, n: 0 }; ordre.push(k); } comptes[k].n += 1;
+      });
+    });
+    return ordre.map(function (k) { return comptes[k]; });
+  } catch (eNc) { return []; }
 }
 
 /* ============================================================================
@@ -28550,7 +28646,10 @@ function EcranMonCavalier() {
   function sauverClub(nomForce) {
     var nom = (nomForce !== undefined ? nomForce : (clubLocal.club || "")).trim();
     setProfil(function (pp) { return Object.assign({}, pp, { club: nom, ecurie: nom }); });
-    try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ ecurie: nom || null }).catch(function () { }); } catch (eC) { }
+    /* 06/09 : si la base a aligne le nom sur l'orthographe majoritaire (« Sep » ->
+       « Societe d'Equitation de Paris (SEP) »), l'ecran reprend CE nom-la, sinon la
+       cavaliere verrait sa coquille jusqu'a la prochaine ouverture de l'app. */
+    try { if (typeof majProfil === "function" && typeof supa !== "undefined") majProfil({ ecurie: nom || null }).then(function (rC) { try { var poseC = (rC && rC.data && rC.data.ecurie != null) ? String(rC.data.ecurie).trim() : ""; if (poseC && poseC !== nom) { setProfil(function (pp) { return Object.assign({}, pp, { club: poseC, ecurie: poseC }); }); setClubLocal({ club: poseC }); } } catch (ePc) { } }).catch(function () { }); } catch (eC) { }
     setEditClub(false);
   }
   var ec2St = React.useState(false); var editClub2 = ec2St[0], setEditClub2 = ec2St[1];
@@ -28582,7 +28681,12 @@ function EcranMonCavalier() {
             if (u2) {
               var rRelu = await supa.from("profiles").select("ecurie2").eq("id", u2.id).maybeSingle();
               var pose = (rRelu && rRelu.data) ? String(rRelu.data.ecurie2 || "").trim() : "";
-              if (pose !== nom) raison = "la base a rendu \u00ab " + (pose || "rien") + " \u00bb au lieu de \u00ab " + (nom || "rien") + " \u00bb";
+              /* 06/09 : la base peut avoir ALIGNE le nom sur l'orthographe majoritaire
+                 (hypeNomClubCanonique) — ce n'est pas un echec : on attend ce que
+                 majProfil a reellement ecrit, et l'ecran reprend ce nom-la. */
+              var attendu = (rMaj && rMaj.data && rMaj.data.ecurie2 != null) ? String(rMaj.data.ecurie2).trim() : nom;
+              if (pose !== attendu) raison = "la base a rendu \u00ab " + (pose || "rien") + " \u00bb au lieu de \u00ab " + (attendu || "rien") + " \u00bb";
+              else if (pose && pose !== nom) { try { setProfil(function (pp) { return Object.assign({}, pp, { club2: pose, ecurie2: pose }); }); setClub2Local({ club: pose }); } catch (ePc2) { } }
             }
           } catch (eRelu) { }
         }
@@ -29264,7 +29368,12 @@ function TableauxSpectralHype(props) {
 }
 
 /* ===== AGENDA DU CLUB (stages / concours / sorties) ===== */
-var AGENDA_CSS = ".agc-wrap{padding:24px 0 2px;}.agc-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-behavior:smooth;padding:4px 0 16px;scrollbar-width:none;-ms-overflow-style:none;}.agc-car::-webkit-scrollbar{display:none;}.agc-cell{flex:0 0 46%;scroll-snap-align:start;scroll-snap-stop:always;}.agc-cell:first-child{margin-left:4px;}.agc-cell:last-child{margin-right:4px;}.agc-c2{position:relative;border-radius:20px;overflow:hidden;background:#111417;border:1px solid rgba(217,199,163,0.16);display:flex;flex-direction:column;transform:none;opacity:1;filter:none;transition:transform .28s ease,opacity .28s ease,filter .28s ease,border-color .28s ease;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-cell.on .agc-c2{border-color:rgba(217,199,163,0.42);box-shadow:0 10px 26px rgba(0,0,0,0.5);}.agc-v{position:relative;height:124px;flex:0 0 auto;overflow:hidden;background:#0A0D11;}.agc-v img{width:100%;height:100%;object-fit:cover;display:block;}.agc-vf{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0.10) 0%,rgba(6,7,9,0.30) 46%,rgba(17,20,23,0.94) 100%);}.agc-sil{position:absolute;right:-4px;bottom:-6px;font-size:54px;line-height:1;opacity:.10;transform:rotate(-7deg);pointer-events:none;}.agc-d2{position:absolute;left:12px;top:11px;text-align:left;text-shadow:0 2px 12px rgba(0,0,0,0.8);}.agc-dj{font-family:'Cinzel',serif;font-size:29px;font-weight:700;color:#F4F7FA;line-height:0.92;}.agc-dm{font-size:9.5px;letter-spacing:1.8px;color:#F4F7FA;text-transform:uppercase;margin-top:5px;font-weight:600;}.agc-ds{font-size:9px;letter-spacing:1.6px;color:rgba(244,247,250,0.62);text-transform:uppercase;margin-top:2px;}.agc-mk{position:absolute;right:14px;top:13px;font-size:19px;opacity:.85;}.agc-b2{padding:11px 12px 13px;display:flex;flex-direction:column;gap:4px;}.agc-cat{font-size:8.5px;letter-spacing:1.9px;font-weight:700;color:#D9C7A3;text-transform:uppercase;}.agc-nom{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#F4F7FA;line-height:1.2;margin:1px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.agc-sec2{font-size:10.5px;color:#9AA3AB;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}.agc-hr{font-size:10px;color:rgba(244,247,250,0.45);letter-spacing:.4px;margin-top:2px;}.agc-x{position:absolute;top:12px;right:12px;z-index:3;width:24px;height:24px;border-radius:50%;background:rgba(6,8,10,0.62);border:1px solid rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;cursor:pointer;}.agc-dots{display:flex;justify-content:center;gap:6px;padding:2px 0 14px;}.agc-dot{width:5px;height:5px;border-radius:50%;background:rgba(244,247,250,0.20);transition:all .25s ease;}.agc-dot.on{background:#D9C7A3;width:16px;border-radius:3px;}.agc-act{display:flex;gap:10px;padding:0 4px 4px;}.agc-btn{flex:1;text-align:center;padding:12px 8px;border-radius:13px;border:1px solid rgba(217,199,163,0.30);background:transparent;color:#D9C7A3;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-v0{display:flex;align-items:center;gap:12px;padding:2px 4px 14px;flex-wrap:wrap;}.agc-v0 p{margin:0;font-size:12.5px;color:#8B959D;font-family:'Montserrat',sans-serif;}.agc-v0 button{padding:9px 15px;border-radius:11px;border:1px solid rgba(217,199,163,0.32);background:transparent;color:#D9C7A3;font-size:11.5px;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;letter-spacing:.4px;}.agc-kicker{font-size:11px;letter-spacing:3.2px;font-weight:600;color:#5FE9F0;text-transform:uppercase;margin:0 0 6px 4px;font-family:'Montserrat',sans-serif;}.agc-h{font-family:'Cinzel',serif;font-weight:600;font-size:22px;color:#F4F7FA;margin:0 0 13px 4px;}.agc-vide{font-size:12.5px;color:#8B959D;margin:0 4px 12px;font-family:'Montserrat',sans-serif;line-height:1.5;}.agc-rail{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:2px 4px 14px;}.agc-card{position:relative;border-radius:16px;overflow:hidden;height:188px;background:linear-gradient(165deg,rgba(22,27,32,0.92),rgba(9,12,16,0.96));border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 18px rgba(0,0,0,0.4);display:flex;flex-direction:column;}.agc-top{position:relative;height:66px;flex:0 0 auto;overflow:hidden;border-bottom:1px solid rgba(32,217,245,0.18);}.agc-glow{position:absolute;inset:0;background:radial-gradient(120% 90% at 60% 15%,rgba(32,217,245,0.24),rgba(32,217,245,0) 60%),linear-gradient(160deg,#0c2a30,#070a0d);}.agc-glow[data-t=stage]{background:radial-gradient(120% 90% at 78% 18%,rgba(32,217,245,0.28),rgba(32,217,245,0) 60%),linear-gradient(160deg,#0d2c33,#070a0d);}.agc-glow[data-t=concours]{background:radial-gradient(120% 90% at 22% 20%,rgba(32,217,245,0.22),rgba(32,217,245,0) 58%),linear-gradient(160deg,#0a2026,#070a0d);}.agc-glow[data-t=sortie]{background:radial-gradient(120% 90% at 60% 12%,rgba(32,217,245,0.24),rgba(32,217,245,0) 60%),linear-gradient(160deg,#0c2a2f,#070a0d);}.agc-emoji{position:absolute;right:-4px;bottom:-10px;font-size:46px;line-height:1;opacity:.16;transform:rotate(-8deg);}.agc-date{position:absolute;top:6px;left:6px;background:rgba(6,8,10,0.55);border:1px solid rgba(32,217,245,0.30);border-radius:9px;padding:3px 6px 2px;text-align:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}.agc-j{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#EAF7FA;line-height:1;}.agc-m{font-size:7px;letter-spacing:1px;color:#6FCFDA;margin-top:1px;text-transform:uppercase;font-family:'Montserrat',sans-serif;}.agc-del{position:absolute;top:6px;right:6px;z-index:3;width:19px;height:19px;border-radius:50%;background:rgba(6,8,10,0.5);border:1px solid rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}.agc-bot{flex:1;display:flex;flex-direction:column;padding:8px 8px 9px;min-height:0;font-family:'Montserrat',sans-serif;}.agc-pill{align-self:flex-start;font-size:7.5px;font-weight:600;letter-spacing:.3px;color:#9FE9F1;background:rgba(32,217,245,0.10);border:1px solid rgba(32,217,245,0.22);padding:1.5px 6px 2px;border-radius:999px;text-transform:uppercase;margin-bottom:5px;}.agc-titre{font-family:'Cinzel',serif;font-weight:600;font-size:11px;line-height:1.2;margin:0 0 3px;color:#F4F7FA;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.agc-meta{font-size:8.5px;color:#8B959D;display:flex;align-items:center;gap:4px;margin-bottom:3px;}.agc-desc{display:none;}.agc-add{height:188px;border-radius:16px;border:1.5px dashed rgba(32,217,245,0.35);background:rgba(32,217,245,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-addc{width:30px;height:30px;border-radius:50%;background:linear-gradient(90deg,#0C5763,#38E2F8);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(32,217,245,0.30);}.agc-add span{font-size:9px;font-weight:600;color:#BEE9EF;text-align:center;padding:0 8px;line-height:1.3;}.agc-mbg{position:fixed;inset:0;z-index:9700;background:rgba(4,6,9,0.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;overscroll-behavior:contain;touch-action:none;}.agc-modal{width:100%;max-width:460px;max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:linear-gradient(180deg,#0e1216,#080a0d);border:1px solid rgba(255,255,255,0.09);border-radius:24px 24px 0 0;padding:22px 18px calc(env(safe-area-inset-bottom) + 124px);font-family:'Montserrat',sans-serif;}.agc-mt{font-family:'Cinzel',serif;font-size:16px;letter-spacing:1.5px;color:#F4F7FA;text-align:center;margin-bottom:16px;}.agc-types{display:flex;gap:8px;margin-bottom:14px;}.agc-type{flex:1;text-align:center;font-size:12.5px;font-weight:600;color:#9AA6AE;padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.03);cursor:pointer;}.agc-type.on{color:#04252A;background:linear-gradient(90deg,#0C5763,#38E2F8);border-color:transparent;}.agc-field{display:block;margin-bottom:12px;}.agc-field>span{display:block;font-size:11px;letter-spacing:.4px;color:#7E8890;margin-bottom:5px;text-transform:uppercase;}.agc-field input,.agc-field textarea{width:100%;box-sizing:border-box;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 12px;color:#F4F7FA;font-size:14px;font-family:'Montserrat',sans-serif;outline:none;}.agc-field textarea{resize:vertical;}.agc-actions{display:flex;gap:10px;margin-top:8px;}.agc-annuler{flex:0 0 auto;padding:13px 18px;border-radius:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#C6D0D6;font-size:14px;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-ok{flex:1;padding:13px;border-radius:14px;background:linear-gradient(90deg,#0C5763,#38E2F8);border:none;color:#04252A;font-size:14px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;box-shadow:0 8px 22px rgba(32,217,245,0.22);}.agc-ok.off{opacity:.4;box-shadow:none;}";
+/* 06/09 (Blandine : « trois evenements, trois tailles ») — les cartes du carrousel
+   ont TOUTES la meme hauteur : la cellule est un flex qui etire la carte a la
+   hauteur de la plus haute de la rangee (.agc-cell display:flex + .agc-c2 flex:1),
+   et le titre reserve toujours ses deux lignes (min-height 2.4em) pour que
+   categorie / titre / lieu tombent au meme endroit d'une carte a l'autre. */
+var AGENDA_CSS = ".agc-wrap{padding:24px 0 2px;}.agc-car{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scroll-behavior:smooth;padding:4px 0 16px;scrollbar-width:none;-ms-overflow-style:none;}.agc-car::-webkit-scrollbar{display:none;}.agc-cell{flex:0 0 46%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;}.agc-cell:first-child{margin-left:4px;}.agc-cell:last-child{margin-right:4px;}.agc-c2{position:relative;flex:1 1 auto;width:100%;min-width:0;border-radius:20px;overflow:hidden;background:#111417;border:1px solid rgba(217,199,163,0.16);display:flex;flex-direction:column;transform:none;opacity:1;filter:none;transition:transform .28s ease,opacity .28s ease,filter .28s ease,border-color .28s ease;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-cell.on .agc-c2{border-color:rgba(217,199,163,0.42);box-shadow:0 10px 26px rgba(0,0,0,0.5);}.agc-v{position:relative;height:124px;flex:0 0 auto;overflow:hidden;background:#0A0D11;}.agc-v img{width:100%;height:100%;object-fit:cover;display:block;}.agc-vf{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0.10) 0%,rgba(6,7,9,0.30) 46%,rgba(17,20,23,0.94) 100%);}.agc-sil{position:absolute;right:-4px;bottom:-6px;font-size:54px;line-height:1;opacity:.10;transform:rotate(-7deg);pointer-events:none;}.agc-d2{position:absolute;left:12px;top:11px;text-align:left;text-shadow:0 2px 12px rgba(0,0,0,0.8);}.agc-dj{font-family:'Cinzel',serif;font-size:29px;font-weight:700;color:#F4F7FA;line-height:0.92;}.agc-dm{font-size:9.5px;letter-spacing:1.8px;color:#F4F7FA;text-transform:uppercase;margin-top:5px;font-weight:600;}.agc-ds{font-size:9px;letter-spacing:1.6px;color:rgba(244,247,250,0.62);text-transform:uppercase;margin-top:2px;}.agc-mk{position:absolute;right:14px;top:13px;font-size:19px;opacity:.85;}.agc-b2{padding:11px 12px 13px;display:flex;flex-direction:column;gap:4px;}.agc-cat{font-size:8.5px;letter-spacing:1.9px;font-weight:700;color:#D9C7A3;text-transform:uppercase;}.agc-nom{font-family:'Cinzel',serif;font-size:14px;font-weight:600;color:#F4F7FA;line-height:1.2;min-height:2.4em;margin:1px 0 0;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.agc-sec2{font-size:10.5px;color:#9AA3AB;line-height:1.35;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden;}.agc-hr{font-size:10px;color:rgba(244,247,250,0.45);letter-spacing:.4px;margin-top:2px;}.agc-x{position:absolute;top:12px;right:12px;z-index:3;width:24px;height:24px;border-radius:50%;background:rgba(6,8,10,0.62);border:1px solid rgba(255,255,255,0.16);display:flex;align-items:center;justify-content:center;cursor:pointer;}.agc-dots{display:flex;justify-content:center;gap:6px;padding:2px 0 14px;}.agc-dot{width:5px;height:5px;border-radius:50%;background:rgba(244,247,250,0.20);transition:all .25s ease;}.agc-dot.on{background:#D9C7A3;width:16px;border-radius:3px;}.agc-act{display:flex;gap:10px;padding:0 4px 4px;}.agc-btn{flex:1;text-align:center;padding:12px 8px;border-radius:13px;border:1px solid rgba(217,199,163,0.30);background:transparent;color:#D9C7A3;font-size:11px;font-weight:700;letter-spacing:1.6px;text-transform:uppercase;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-v0{display:flex;align-items:center;gap:12px;padding:2px 4px 14px;flex-wrap:wrap;}.agc-v0 p{margin:0;font-size:12.5px;color:#8B959D;font-family:'Montserrat',sans-serif;}.agc-v0 button{padding:9px 15px;border-radius:11px;border:1px solid rgba(217,199,163,0.32);background:transparent;color:#D9C7A3;font-size:11.5px;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;letter-spacing:.4px;}.agc-kicker{font-size:11px;letter-spacing:3.2px;font-weight:600;color:#5FE9F0;text-transform:uppercase;margin:0 0 6px 4px;font-family:'Montserrat',sans-serif;}.agc-h{font-family:'Cinzel',serif;font-weight:600;font-size:22px;color:#F4F7FA;margin:0 0 13px 4px;}.agc-vide{font-size:12.5px;color:#8B959D;margin:0 4px 12px;font-family:'Montserrat',sans-serif;line-height:1.5;}.agc-rail{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:2px 4px 14px;}.agc-card{position:relative;border-radius:16px;overflow:hidden;height:188px;background:linear-gradient(165deg,rgba(22,27,32,0.92),rgba(9,12,16,0.96));border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 18px rgba(0,0,0,0.4);display:flex;flex-direction:column;}.agc-top{position:relative;height:66px;flex:0 0 auto;overflow:hidden;border-bottom:1px solid rgba(32,217,245,0.18);}.agc-glow{position:absolute;inset:0;background:radial-gradient(120% 90% at 60% 15%,rgba(32,217,245,0.24),rgba(32,217,245,0) 60%),linear-gradient(160deg,#0c2a30,#070a0d);}.agc-glow[data-t=stage]{background:radial-gradient(120% 90% at 78% 18%,rgba(32,217,245,0.28),rgba(32,217,245,0) 60%),linear-gradient(160deg,#0d2c33,#070a0d);}.agc-glow[data-t=concours]{background:radial-gradient(120% 90% at 22% 20%,rgba(32,217,245,0.22),rgba(32,217,245,0) 58%),linear-gradient(160deg,#0a2026,#070a0d);}.agc-glow[data-t=sortie]{background:radial-gradient(120% 90% at 60% 12%,rgba(32,217,245,0.24),rgba(32,217,245,0) 60%),linear-gradient(160deg,#0c2a2f,#070a0d);}.agc-emoji{position:absolute;right:-4px;bottom:-10px;font-size:46px;line-height:1;opacity:.16;transform:rotate(-8deg);}.agc-date{position:absolute;top:6px;left:6px;background:rgba(6,8,10,0.55);border:1px solid rgba(32,217,245,0.30);border-radius:9px;padding:3px 6px 2px;text-align:center;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}.agc-j{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:#EAF7FA;line-height:1;}.agc-m{font-size:7px;letter-spacing:1px;color:#6FCFDA;margin-top:1px;text-transform:uppercase;font-family:'Montserrat',sans-serif;}.agc-del{position:absolute;top:6px;right:6px;z-index:3;width:19px;height:19px;border-radius:50%;background:rgba(6,8,10,0.5);border:1px solid rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);}.agc-bot{flex:1;display:flex;flex-direction:column;padding:8px 8px 9px;min-height:0;font-family:'Montserrat',sans-serif;}.agc-pill{align-self:flex-start;font-size:7.5px;font-weight:600;letter-spacing:.3px;color:#9FE9F1;background:rgba(32,217,245,0.10);border:1px solid rgba(32,217,245,0.22);padding:1.5px 6px 2px;border-radius:999px;text-transform:uppercase;margin-bottom:5px;}.agc-titre{font-family:'Cinzel',serif;font-weight:600;font-size:11px;line-height:1.2;margin:0 0 3px;color:#F4F7FA;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}.agc-meta{font-size:8.5px;color:#8B959D;display:flex;align-items:center;gap:4px;margin-bottom:3px;}.agc-desc{display:none;}.agc-add{height:188px;border-radius:16px;border:1.5px dashed rgba(32,217,245,0.35);background:rgba(32,217,245,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-addc{width:30px;height:30px;border-radius:50%;background:linear-gradient(90deg,#0C5763,#38E2F8);display:flex;align-items:center;justify-content:center;box-shadow:0 6px 14px rgba(32,217,245,0.30);}.agc-add span{font-size:9px;font-weight:600;color:#BEE9EF;text-align:center;padding:0 8px;line-height:1.3;}.agc-mbg{position:fixed;inset:0;z-index:9700;background:rgba(4,6,9,0.74);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);display:flex;align-items:flex-end;justify-content:center;overscroll-behavior:contain;touch-action:none;}.agc-modal{width:100%;max-width:460px;max-height:86vh;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;background:linear-gradient(180deg,#0e1216,#080a0d);border:1px solid rgba(255,255,255,0.09);border-radius:24px 24px 0 0;padding:22px 18px calc(env(safe-area-inset-bottom) + 124px);font-family:'Montserrat',sans-serif;}.agc-mt{font-family:'Cinzel',serif;font-size:16px;letter-spacing:1.5px;color:#F4F7FA;text-align:center;margin-bottom:16px;}.agc-types{display:flex;gap:8px;margin-bottom:14px;}.agc-type{flex:1;text-align:center;font-size:12.5px;font-weight:600;color:#9AA6AE;padding:10px 4px;border-radius:12px;border:1px solid rgba(255,255,255,0.10);background:rgba(255,255,255,0.03);cursor:pointer;}.agc-type.on{color:#04252A;background:linear-gradient(90deg,#0C5763,#38E2F8);border-color:transparent;}.agc-field{display:block;margin-bottom:12px;}.agc-field>span{display:block;font-size:11px;letter-spacing:.4px;color:#7E8890;margin-bottom:5px;text-transform:uppercase;}.agc-field input,.agc-field textarea{width:100%;box-sizing:border-box;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:11px 12px;color:#F4F7FA;font-size:14px;font-family:'Montserrat',sans-serif;outline:none;}.agc-field textarea{resize:vertical;}.agc-actions{display:flex;gap:10px;margin-top:8px;}.agc-annuler{flex:0 0 auto;padding:13px 18px;border-radius:14px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.12);color:#C6D0D6;font-size:14px;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif;}.agc-ok{flex:1;padding:13px;border-radius:14px;background:linear-gradient(90deg,#0C5763,#38E2F8);border:none;color:#04252A;font-size:14px;font-weight:700;cursor:pointer;font-family:'Montserrat',sans-serif;box-shadow:0 8px 22px rgba(32,217,245,0.22);}.agc-ok.off{opacity:.4;box-shadow:none;}";
 
 function FicheEvenementClub(props) {
   var h = React.createElement;
@@ -29423,7 +29532,16 @@ function FicheEvenementClub(props) {
     (!edite && ev.image_url) ? h("div", { style: { padding: "20px 20px 0" } }, h(PhotoZoomable, { src: ev.image_url, alt: ev.titre, style: { display: "block", width: "100%", height: "auto", borderRadius: 18, border: "1px solid rgba(255,255,255,0.1)" } })) : null,
     (!edite && ev.description) ? h("div", { style: { padding: "22px 22px 40px", fontSize: 14.5, lineHeight: 1.7, color: "rgba(244,247,250,0.88)", fontFamily: M, whiteSpace: "pre-wrap" } }, ev.description) : null,
     invitation,
-    panneauEdition);
+    panneauEdition,
+    /* 06/09 (Blandine : « le bouton Enregistrer est encore masqué par la barre du
+       menu en bas ») — la fiche est un calque plein ecran qui defile, mais la barre
+       d onglets reste posee PAR-DESSUS son bas : les 40 px de marge du panneau
+       ne suffisaient pas, Enregistrer/Annuler finissaient sous la barre. Cale de
+       fin de page a la hauteur de la barre + encoche, sur TOUTES les vues de la
+       fiche (edition, description, invitation). Element reel plutot qu'un
+       padding-bottom sur le conteneur : Safari ignore parfois ce padding sur un
+       conteneur flex qui defile. */
+    h("div", { "aria-hidden": "true", style: { flex: "0 0 auto", height: "calc(env(safe-area-inset-bottom) + 110px)" } }));
 }
 
 /* ---------- COACHMARK (tuto contextuel léger, sans bouton) ---------- */
