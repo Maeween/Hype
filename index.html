@@ -2068,6 +2068,27 @@ async function retirerCavalierChoisi(membreId) {
     return await supa.from("ecurie_cavaliers_choisis").delete().eq("user_id", user.id).eq("membre_id", membreId);
   } catch (e) { return { error: String(e) }; }
 }
+async function exclureCavalierEcurie(membreId, ecurie) {
+  /* 🟩 06/09 (Blandine) — retirer un cavalier de l'ecurie. Table SEPAREE de
+     ecurie_cavaliers_choisis (liste personnelle), pour ne jamais ecraser un choix perso.
+     `exclu_par` = qui a fait le geste, mais l'effet (disparition de la liste) est GLOBAL,
+     pour tout le monde qui regarde cette ecurie — le verrou (proprietaire/moderatrice)
+     est verifie cote ecran avant d'appeler cette fonction. */
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { error: "Pas connecté" };
+    if (!membreId || !ecurie) return { error: "Cavalier ou écurie manquant" };
+    return await supa.from("ecurie_cavaliers_exclus").upsert({ ecurie: ecurie, membre_id: membreId, exclu_par: user.id }, { onConflict: "ecurie,membre_id" });
+  } catch (e) { return { error: String(e) }; }
+}
+async function cavaliersExclusEcurie(ecurie) {
+  try {
+    if (!ecurie) return { data: [] };
+    const { data, error } = await supa.from("ecurie_cavaliers_exclus").select("membre_id").eq("ecurie", ecurie);
+    if (error) return { data: [], error: error };
+    return { data: (data || []).map(function (r) { return r.membre_id; }) };
+  } catch (e) { return { data: [], error: String(e) }; }
+}
 async function mesInvitationsEcurie() {
   try {
     const user = await utilisateurActuel();
@@ -30491,6 +30512,15 @@ function EcranGuilde() {
         });
       }
       var vusM = {}; mm = mm.filter(function (p) { if (!p || !p.id || vusM[p.id]) return false; vusM[p.id] = true; return true; });
+      /* 🟩 06/09 (Blandine) — les cavaliers retires de cette ecurie disparaissent ici,
+   AVANT tout le monde (setMembres alimente aussi bien la grille des membres que la liste
+   qui sert de source aux chevaux affiches). Aucun profil n'est modifie, seule la presence
+   dans CETTE liste change. */
+      try {
+        var exclusR = await cavaliersExclusEcurie(monClub);
+        var idsExclus = {}; ((exclusR && exclusR.data) || []).forEach(function (idX) { idsExclus[idX] = true; });
+        mm = mm.filter(function (pX) { return pX && !idsExclus[pX.id]; });
+      } catch (eExR) { }
       if (mm.length) { setMembres(mm); idsMembres = mm.map(function (p) { return p.id; }); }
     } } catch (eM) { }
     try { if (typeof supa !== "undefined" && supa) { var m = await supa.from("mur_evenement").select("photo_url, auteur, created_at").eq("evenement", "club:" + monClub).order("created_at", { ascending: false }).limit(60); if (m && m.data) { var ph = m.data.filter(function (p) { return p && p.photo_url; }).slice(0, 12); if (ph.length) setPhotosClub(ph); } } } catch (eP) { }
@@ -30955,7 +30985,16 @@ function EcranGuilde() {
     AFFICHER_GAMIF_CLUB ? h("div", { style: { padding: "8px 20px 0", fontSize: 10.5, color: "#6B7580", fontFamily: M, fontStyle: "italic", textAlign: "center" } }, T("XP = membres\u00d710 + hauts faits\u00d75 + r\u00e9sultats\u00d73 + podiums\u00d78", "XP = members\u00d710 + feats\u00d75 + results\u00d73 + podiums\u00d78", "", "", "")) : null,
     h("div", { style: { padding: "0 16px 0", marginTop: -18 } }, /* 30/08 (Blandine : « remonte un peu la citation ») */
       h(TableauxSpectralHype, { mode: "club", nomClub: monClub, titreCourt: { fr: "La philosophie du club", en: "The club's philosophy", es: "La filosofía del club", it: "La filosofia del club", ja: "クラブの哲学", de: "Die Philosophie des Vereins" }, titreLong: { fr: "L'histoire du club", en: "The club's story", es: "La historia del club", it: "La storia del club", ja: "クラブの物語", de: "Die Geschichte des Vereins" }, defautVoix: { fr: "Rassembler des cavaliers autour d'une même passion : le cheval, le progrès et le plaisir de monter ensemble.", en: "Bringing riders together around one shared passion: the horse, progress and the joy of riding together.", es: "Reunir a jinetes en torno a una misma pasión: el caballo, el progreso y el placer de montar juntos.", it: "Riunire i cavalieri attorno a una stessa passione: il cavallo, il progresso e il piacere di cavalcare insieme.", ja: "馬、上達、そして共に乗る喜び — ひとつの情熱のもとに騎手が集う場所。", de: "Reiter um eine gemeinsame Leidenschaft versammeln: das Pferd, den Fortschritt und die Freude, zusammen zu reiten." }, defautHist: { fr: "L'histoire de ce club s'écrit à chaque foulée, concours après concours, amitié après amitié.", en: "This club's story is written stride after stride, show after show, friendship after friendship.", es: "La historia de este club se escribe a cada tranco, concurso tras concurso, amistad tras amistad.", it: "La storia di questo club si scrive falcata dopo falcata, concorso dopo concorso, amicizia dopo amicizia.", ja: "このクラブの物語は、一歩ごとに、大会ごとに、友情ごとに紡がれていく。", de: "Die Geschichte dieses Vereins schreibt sich Tritt für Tritt, Turnier für Turnier, Freundschaft für Freundschaft." }, editable: (typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)), noteModale: { fr: "Visible par tous les membres du club.", en: "Visible to all club members.", es: "Visible para todos los miembros del club.", it: "Visibile a tutti i membri del club.", ja: "クラブの全メンバーに表示されます。", de: "Für alle Vereinsmitglieder sichtbar." } }),
-      h(EncartCavaliersSpectral, { titre: T("Cavaliers de l'\u00e9curie", "Riders of the stable", "Jinetes del club", "Cavalieri della scuderia", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc"), nomTeam: monClub || "", cavaliers: cavaliersAff || [], reglable: (typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)), onOuvrir: ouvrirCavalierClub, onRetirer: moiG ? basculerChoisi : null, onAjouter: moiG ? ouvrirSelecteurCav : null }),
+      h(EncartCavaliersSpectral, { titre: T("Cavaliers de l'\u00e9curie", "Riders of the stable", "Jinetes del club", "Cavalieri della scuderia", "\u30af\u30e9\u30d6\u306e\u30e9\u30a4\u30c0\u30fc"), nomTeam: monClub || "", cavaliers: cavaliersAff || [], reglable: (typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)), onOuvrir: ouvrirCavalierClub, onRetirer: moiG ? basculerChoisi : null, onAjouter: moiG ? ouvrirSelecteurCav : null,
+        /* \U0001f7e9 06/09 (Blandine) \u2014 retirer un cavalier de l'ecurie : reserve a la
+           proprietaire de l'ecurie (clubRevendiquePar) ou aux moderatrices Hype. Le retrait
+           est global (visible de tout le monde), pas juste un retrait de sa liste perso. */
+        onExclure: ((typeof clubRevendiquePar === "function" && clubRevendiquePar(monClub, moiG)) || estModerateurHype(moiG)) ? function (p) {
+          if (!p || !p.id) return;
+          setMembres(function (mm) { return (mm || []).filter(function (m) { return m && m.id !== p.id; }); });
+          setChoisis(function (cs) { return (cs || []).filter(function (c) { return c && c.id !== p.id; }); });
+          try { exclureCavalierEcurie(p.id, monClub); } catch (eEx) { }
+        } : null }),
       selCav ? h("div", { style: { position: "fixed", inset: 0, zIndex: 8200, background: "rgba(4,6,9,0.72)", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }, onClick: function () { setSelCav(false); } },
         h("div", { onClick: function (eSh) { eSh.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(32,217,245,0.3)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
           h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.8, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase" } }, T("Compose ton \u00e9curie", "Build your stable", "Compone tu cuadra", "Componi la tua scuderia", "\u53a9\u820e\u3092\u30c7\u30b6\u30a4\u30f3")),
@@ -31695,7 +31734,16 @@ function EncartCavaliersSpectral(props) {
       or: estOr,
       attente: enAtt,
       mention: enAtt ? T("invitation envoy\u00e9e", "invite sent", "invitaci\u00f3n enviada", "invito inviato", "\u62db\u5f85\u6e08\u307f") : "",
-      surX: (p.__choisi && props.onRetirer) ? function (eX) { if (eX && eX.stopPropagation) eX.stopPropagation(); props.onRetirer(p); } : null
+      /* 🟩 06/09 (Blandine) — retirer un cavalier de l'ecurie : le X discret marche
+   maintenant pour TOUT cavalier affiche (pas seulement ceux "choisis" par la propre liste
+   perso de qui regarde) des lors que `onExclure` est fourni par l'appelant (reserve au
+   proprietaire de l'ecurie / aux moderatrices, verifie plus bas). Priorite a onExclure :
+   c'est une action d'ecurie, plus consequente qu'un simple retrait de sa liste perso, et les
+   deux ne se produisent jamais en meme temps sur le meme bouton. Quand onExclure n'est PAS
+   fourni (les cinq autres ecrans qui utilisent ce composant), rien ne change. */
+surX: props.onExclure
+        ? function (eX) { if (eX && eX.stopPropagation) eX.stopPropagation(); props.onExclure(p); }
+        : (p.__choisi && props.onRetirer) ? function (eX) { if (eX && eX.stopPropagation) eX.stopPropagation(); props.onRetirer(p); } : null
     });
   });
   (props.figurants || []).forEach(function (fg, fi) {
