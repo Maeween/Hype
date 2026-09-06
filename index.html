@@ -38047,6 +38047,57 @@ function EcranCheval() {
      plus grand ») — le bouton Decouvrir son histoire ne route plus vers le panneau Souvenirs. */
   var vhSt = React.useState(false); var histoireDepliee = vhSt[0], setHistoireDepliee = vhSt[1];
   var olSt = React.useState({ pere: "", mere: "", naisseur: "" }); var origLocal = olSt[0], setOrigLocal = olSt[1];
+  /* 🟩 05/09 (Blandine : « un outil qui lit un screen de l'ifce ou de horsetelex pour
+     remplir les origines ») — importées depuis une capture, jamais enregistrees toutes seules :
+     ca remplit `origLocal` (les memes champs que la saisie a la main), Blandine relit et tape
+     Enregistrer elle-meme, comme pour toute autre modification de ce formulaire. */
+  var ioSt = React.useState(false); var importOrigEnCours = ioSt[0], setImportOrigEnCours = ioSt[1];
+  var imSt = React.useState(null); var importOrigMsg = imSt[0], setImportOrigMsg = imSt[1];
+  var refImportOrig = React.useRef(null);
+  async function importerOriginesDepuisCapture(fichier) {
+    if (!fichier) return;
+    setImportOrigEnCours(true); setImportOrigMsg(null);
+    try {
+      var b64 = await new Promise(function (resoudre, rejeter) {
+        var lecteur = new FileReader();
+        lecteur.onload = function () { resoudre(String(lecteur.result || "")); };
+        lecteur.onerror = function () { rejeter(new Error("lecture")); };
+        lecteur.readAsDataURL(fichier);
+      });
+      var virg = b64.indexOf(",");
+      var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
+      var donnees = b64.slice(virg + 1);
+      var CHAMPS_PED = ["pere", "mere", "pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"];
+      var consigne = "Tu lis une capture d'ecran d'une fiche de pedigree equin (site IFCE / infochevaux, Horsetelex, "
+        + "ou similaire). Retrouve le pere (sire), la mere (dam), et si visibles les grands-parents et "
+        + "arriere-grands-parents du cheval concerne. Reponds UNIQUEMENT par un objet JSON valide, sans texte "
+        + "autour, sans balises markdown, de cette forme exacte (chaine vide \"\" si non trouve) : "
+        + '{"pere":"","mere":"","pp":"","pm":"","mp":"","mm":"","ppp":"","ppm":"","pmp":"","pmm":"","mpp":"","mpm":"","mmp":"","mmm":""}. '
+        + "pp = pere du pere, pm = mere du pere, mp = pere de la mere, mm = mere de la mere ; ppp/ppm/pmp/pmm/mpp/mpm/mmp/mmm "
+        + "suivent la meme logique un cran plus loin (parents de pp, de pm, de mp, de mm dans cet ordre). "
+        + "Si l'image ne contient visiblement aucune information de pedigree, reponds exactement {}.";
+      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "https://2hype.netlify.app/.netlify/functions/assistant";
+      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
+      texte = String(texte || "").replace(/```json|```/g, "").trim();
+      var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
+      var auMoinsUn = !!(trouve && CHAMPS_PED.some(function (cle) { return trouve[cle] && String(trouve[cle]).trim(); }));
+      if (!auMoinsUn) {
+        setImportOrigMsg({ ok: false, texte: T("Aucune origine reconnue dans cette capture.", "No bloodline recognised in this screenshot.", "No se han reconocido or\u00edgenes en esta captura.", "Nessuna origine riconosciuta in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u60c5\u5831\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde keine Abstammung erkannt.") });
+      } else {
+        setOrigLocal(function (oo) {
+          var nn = Object.assign({}, oo);
+          CHAMPS_PED.forEach(function (cle) { if (trouve[cle] && String(trouve[cle]).trim()) nn[cle] = String(trouve[cle]).trim(); });
+          return nn;
+        });
+        setImportOrigMsg({ ok: true, texte: T("Origines compl\u00e9t\u00e9es depuis la capture \u2014 v\u00e9rifie avant d'enregistrer.", "Bloodline filled in from the screenshot \u2014 check it before saving.", "Or\u00edgenes completados desde la captura \u2014 rev\u00edsalos antes de guardar.", "Origini completate dalla schermata \u2014 controlla prima di salvare.", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u8840\u7d71\u3092\u5165\u529b\u3057\u307e\u3057\u305f\u3002\u4fdd\u5b58\u524d\u306b\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002", "Abstammung aus dem Screenshot \u00fcbernommen \u2014 bitte vor dem Speichern pr\u00fcfen.") });
+      }
+    } catch (eG) {
+      setImportOrigMsg({ ok: false, texte: T("Lecture impossible \u2014 r\u00e9essaie.", "Could not read it \u2014 try again.", "No se pudo leer \u2014 int\u00e9ntalo de nuevo.", "Lettura impossibile \u2014 riprova.", "\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Konnte nicht gelesen werden \u2014 versuch es nochmal.") });
+    }
+    setImportOrigEnCours(false);
+  }
   function ouvrirEditOrigines() {
     var ogE = (c && c.origines) || {};
     setOrigLocal({
@@ -40397,6 +40448,16 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
 h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { if (el) { try { el.scrollTop = 0; } catch (eS) { } } }, style: { width: "92%", maxWidth: 420, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 110px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid rgba(32,217,245,0.4)", background: "linear-gradient(180deg, rgba(14,22,30,0.98), rgba(8,11,15,0.99))", padding: "20px 18px" } },
         h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Mon cheval", "My horse", "Mi caballo", "Il mio cavallo", "\u79c1\u306e\u99ac", "Mein Pferd")),
         h("p", { style: { color: "#8A929C", fontSize: 12, textAlign: "center", margin: "0 0 14px", lineHeight: 1.5 } }, T("Renseigne sa race, son \u00e2ge et ses origines.", "Fill in your horse's bloodline.", "Completa los or\u00edgenes de tu caballo.", "Inserisci le origini del tuo cavallo.", "\u99ac\u306e\u8840\u7d71\u3092\u5165\u529b\u3057\u3088\u3046\u3002", "Gib seine Rasse, sein Alter und seine Herkunft an.")),
+        h("input", { ref: refImportOrig, type: "file", accept: "image/*", style: { display: "none" }, onChange: function (eIm) {
+          var fIm = (eIm.target && eIm.target.files && eIm.target.files[0]) || null;
+          try { eIm.target.value = ""; } catch (eRi) { }
+          if (fIm) importerOriginesDepuisCapture(fIm);
+        } }),
+        h("button", { onClick: function () { if (!importOrigEnCours && refImportOrig.current) refImportOrig.current.click(); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 7, width: "100%", minHeight: 44, padding: "0 14px", marginBottom: 14, borderRadius: 12, border: "1px solid " + tA(0.4), background: tA(0.08), color: teinteCl, fontSize: 12, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: importOrigEnCours ? "default" : "pointer", opacity: importOrigEnCours ? 0.6 : 1 } },
+          importOrigEnCours
+            ? T("Lecture de la capture\u2026", "Reading the screenshot\u2026", "Leyendo la captura\u2026", "Lettura della schermata\u2026", "\u30ad\u30e3\u30d7\u30c1\u30e3\u3092\u8aad\u307f\u53d6\u308a\u4e2d\u2026", "Screenshot wird gelesen\u2026")
+            : ("\u2913 " + T("Importer depuis une capture (IFCE, Horsetelex\u2026)", "Import from a screenshot (IFCE, Horsetelex\u2026)", "Importar desde una captura (IFCE, Horsetelex\u2026)", "Importa da una schermata (IFCE, Horsetelex\u2026)", "\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u30a4\u30f3\u30dd\u30fc\u30c8\uff08IFCE\u3001Horsetelex\u2026\uff09", "Aus Screenshot importieren (IFCE, Horsetelex\u2026)"))),
+        importOrigMsg ? h("div", { style: { fontSize: 11, textAlign: "center", marginBottom: 12, padding: "8px 10px", borderRadius: 10, color: importOrigMsg.ok ? teinteCl : "#FF9AA8", background: importOrigMsg.ok ? tA(0.08) : "rgba(178,44,54,0.12)", lineHeight: 1.5 } }, importOrigMsg.texte) : null,
         [["sire", "N\u00b0 SIRE"], ["race", T("Race", "Breed", "Raza", "Razza", "\u54c1\u7a2e", "Rasse")], ["age", T("\u00c2ge (ans)", "Age (years)", "Edad (a\u00f1os)", "Et\u00e0 (anni)", "\u5e74\u9f62", "Alter (Jahre)")], ["pere", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")], ["mere", T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter")], [null, T("Grands-parents", "Grandparents", "Abuelos", "Nonni", "\u7956\u7236\u6bcd", "Gro\u00dfeltern")],
           ["--cote-pere", ""],
             ["pp", T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater")],
