@@ -43527,18 +43527,56 @@ function CouvAffiche({ data, hero, logo, chapitre, onRetour, onContinuer, langue
   var heroSur = hero;
   try { if (!heroSur && typeof GALOPS_HERO !== "undefined") heroSur = GALOPS_HERO; } catch (eHero) { }
   if (!heroSur) heroSur = "";
+  /* 06/09 — FILET .jpg/.jpeg SUR LA GRANDE COUVERTURE. Le filet du 30/07 ne rattrape que les
+     balises <img> ; ici la photo est un FOND CSS, donc une extension fausse donnait un écran
+     noir (test de Blandine : images/k640.jpg → « Page not found », images/k640.jpeg → la photo).
+     On teste l'adresse déclarée ; si elle échoue on retente l'autre extension ; si les deux
+     échouent on retombe sur GALOPS_HERO (jamais d'écran noir, même pour une clé jamais fournie). */
+  const [heroPret, setHeroPret] = useState(heroSur);
+  useEffect(function () {
+    var annule = false;
+    setHeroPret(heroSur);
+    if (!heroSur || /^data:/i.test(heroSur) || /^blob:/i.test(heroSur)) return;
+    var m = heroSur.match(/^(.*)\.(jpe?g)(\?.*)?$/i);
+    var repli = (typeof GALOPS_HERO !== "undefined" && GALOPS_HERO) ? GALOPS_HERO : "";
+    function essayer(src, sinon) {
+      var im = new Image();
+      im.onload = function () { if (!annule) setHeroPret(src); };
+      im.onerror = function () { if (!annule) sinon(); };
+      im.src = src;
+    }
+    essayer(heroSur, function () {
+      if (m) {
+        var autre = m[1] + (m[2].toLowerCase() === "jpg" ? ".jpeg" : ".jpg") + (m[3] || "");
+        essayer(autre, function () { if (repli) setHeroPret(repli); });
+      } else if (repli) setHeroPret(repli);
+    });
+    return function () { annule = true; };
+  }, [heroSur]);
     const L = (v) => (v && typeof v === "object" && !Array.isArray(v)) ? (v[langue] || v.fr || "") : (v == null ? "" : v);
     const [msgPartage, setMsgPartage] = useState("");
     const C = data || {};
     const ACC = (C && C.accent) || COLORS.turquoise;
+    /* 06/09 — TEXTE EN BAS (choix de Blandine, « texte descendu en bas », sur « Le contact » où le
+       titre tombait sur la cavalière). Le bloc de texte est posé au ras du bouton, le bouton
+       descend, et le voile sombre commence à mi-hauteur au lieu des deux tiers : le titre et la
+       citation tombent sur du sombre quelle que soit la hauteur de la photo, la moitié haute de la
+       photo reste sans voile. Les marges écrites par couverture (basTexte 74 / basBouton 92 des
+       Galop 4) sont PLAFONNÉES tant que COUV_TEXTE_BAS vaut true. Retour arrière : false. */
+    const COUV_TEXTE_BAS = true;
+    const basTexte = COUV_TEXTE_BAS ? Math.min(C.basTexte != null ? C.basTexte : 16, 12) : (C.basTexte != null ? C.basTexte : 16);
+    const basBouton = COUV_TEXTE_BAS ? Math.min(C.basBouton != null ? C.basBouton : 28, 34) : (C.basBouton != null ? C.basBouton : 28);
+    const voile = COUV_TEXTE_BAS
+      ? "linear-gradient(180deg, rgba(1,6,15,0.32) 0%, rgba(1,6,15,0) 14%, rgba(1,6,15,0) 36%, rgba(1,6,15,0.62) 52%, rgba(1,6,15,0.9) 66%, #01060f 86%)"
+      : "linear-gradient(180deg, rgba(1,6,15,0.32) 0%, rgba(1,6,15,0) 15%, rgba(1,6,15,0) 46%, rgba(1,6,15,0.42) 64%, rgba(1,6,15,0.9) 82%, #01060f 94%)";
     return React.createElement("div", { style: { position: "relative", minHeight: "calc(100dvh - 84px)", display: "flex", flexDirection: "column", overflow: "hidden", background: "#01060f" } },
-        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "url(" + heroSur + ") " + (C.pos || "center top") + "/contain no-repeat" } }),
-        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 1, background: "linear-gradient(180deg, rgba(1,6,15,0.32) 0%, rgba(1,6,15,0) 15%, rgba(1,6,15,0) 46%, rgba(1,6,15,0.42) 64%, rgba(1,6,15,0.9) 82%, #01060f 94%)" } }),
+        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "url(" + heroPret + ") " + (C.pos || "center top") + "/contain no-repeat" } }),
+        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 1, background: voile } }),
         React.createElement("div", { style: { position: "relative", zIndex: 4, display: "flex", alignItems: "flex-start", justifyContent: "space-between", padding: "14px 16px 0" } },
             React.createElement("button", { onClick: onRetour, "aria-label": (langue==="ja"?"\u623b\u308b":langue==="en"?"Back":langue==="es"?"Volver":langue==="it"?"Indietro":langue==="de"?"Zur\u00fcck":"Retour"), style: { width: 40, height: 40, borderRadius: "50%", background: "rgba(8,10,13,0.5)", border: "1px solid rgba(255,255,255,0.16)", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 } },
                 React.createElement("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement("path", { d: "M15 5 L8 12 L15 19" }))),
             React.createElement(SelecteurLangue, { compact: true })),
-        React.createElement("div", { style: { position: "relative", zIndex: 3, flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", textAlign: "center", padding: "0 30px " + ((C.basTexte != null ? C.basTexte : 16) + "px") } },
+        React.createElement("div", { style: { position: "relative", zIndex: 3, flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", textAlign: "center", padding: "0 30px " + (basTexte + "px") } },
             logo ? React.createElement("img", { src: logo, alt: "", style: { width: 74, height: 74, marginBottom: 18 } }) : null,
             L(C.titre1) ? React.createElement(React.Fragment, null, (typeof chapitre !== "undefined" && L(chapitre)) ? React.createElement("div", { style: { marginBottom: 13, fontFamily: "'Montserrat', sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: "2.6px", textTransform: "uppercase", color: "rgba(244,247,250,0.55)" } }, L(chapitre)) : null, React.createElement("h1", { style: { margin: 0, fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: "clamp(34px, 11vw, 50px)", letterSpacing: "3px", color: COLORS.blanc, lineHeight: 1.05 } }, L(C.titre1)),
             React.createElement("div", { style: { marginTop: 9, fontFamily: "'Cinzel', serif", fontWeight: 500, fontSize: "clamp(13px, 4.2vw, 18px)", letterSpacing: "5px", color: ACC } }, L(C.titre2)),
@@ -43548,7 +43586,7 @@ function CouvAffiche({ data, hero, logo, chapitre, onRetour, onContinuer, langue
                 React.createElement("div", { style: { width: 44, height: 1, background: ACC + "88" } }))) : null,
             L(C.citation) ? React.createElement("p", { style: { margin: "16px 0 0", fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", maxWidth: 300 } }, "\u201C", L(C.citation), "\u201D") : null,
             L(C.auteur) ? React.createElement("div", { style: { marginTop: 10, fontSize: 13.5, letterSpacing: 0.5, color: ACC } }, L(C.auteur)) : null),
-        onContinuer ? React.createElement("div", { style: { position: "relative", zIndex: 4, padding: "6px 22px " + ((C.basBouton != null ? C.basBouton : 28) + "px"), display: "flex", flexDirection: "column", alignItems: "center", gap: 10 } },
+        onContinuer ? React.createElement("div", { style: { position: "relative", zIndex: 4, padding: "6px 22px " + (basBouton + "px"), display: "flex", flexDirection: "column", alignItems: "center", gap: 10 } },
             React.createElement("button", { onClick: onContinuer, style: { padding: "12px 28px", borderRadius: 13, background: "rgba(32,217,245,0.296)", border: "1px solid " + ACC + "66", color: ACC, fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
                 L(C.cta) || "Commencer", React.createElement("span", { style: { fontSize: 16 } }, "\u2192")),
             C.partage ? React.createElement("button", { onClick: function () {

@@ -10,6 +10,89 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 06/09/2026 (nuit, 2) — COUVERTURES NOIRES DU GALOP 4 : LE FILET .jpg/.jpeg ÉTENDU À LA GRANDE COUVERTURE · TEXTE DESCENDU EN BAS · `_headers` LIVRÉ (5 RÈGLES)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `fcc4768174ff39d0ad6929b247e82218` | CouvAffiche seule : filet d'extension + repli GALOPS_HERO sur la grande couverture · texte posé en bas, voile remonté à mi-hauteur |
+| `_headers` | racine | `6334f267e0647a8540055a709849b821` | reconstruit depuis le fichier EN LIGNE (collé par Blandine, 8 079 octets) + 5 règles `max-age=0, must-revalidate` : `hype-cours-galops-sup.js`, `hype-stories.js`, `hype-resultats.js`, `hype-import-ffe.js`, `hype-modeles-db.js` — déjà poussé |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `397d459ea7f429cf9c3da05cfd0ec53b` (la coupe des Galops 4-7, vue à l'écran :
+témoin « galops-sup 1 » confirmé par capture). `hype-cours-galops-sup.js` (v1) est **INCHANGÉ** : ne pas
+le repousser. Les 13 `?v=` intacts. Aucun SQL, aucune image.
+
+## LE DIAGNOSTIC, FAIT PAR BLANDINE EN DEUX ADRESSES
+
+Après la coupe, la plupart des grandes couvertures du Galop 4 étaient noires (Nourrir, Identité,
+Transitions, Incurvation, Vitesse, Épaules, Obstacles, Protections, Soins, Santé, Dehors) ; Le
+contact, L'accord des aides, Biomécanique et Le départ de qualité avaient leur photo. Les données
+qui arrivent à l'écran étant identiques à celles d'avant la coupe (preuve de l'entrée précédente,
+24 empreintes sur 24), la cause était forcément ailleurs. Test dans Safari : `images/k640.jpg` →
+« Page not found » ; `images/k640.jpeg` → la photo. **Le fichier est en `.jpeg` sur le dépôt, le code
+déclare `.jpg`** (ligne 20749 : k630 et suivantes en `.jpg`, seule k630 existe vraiment ainsi). Le
+filet du 30/07 ne rattrape que les balises `<img>` (vignettes de la liste) ; la grande couverture est
+un FOND CSS, qui n'émet aucun événement d'erreur → noir. **Ça datait d'avant ce soir** (points
+ouverts des sessions 56-60), la coupe a seulement amené Blandine à ouvrir ces pages.
+
+## CE QUI CHANGE (CouvAffiche, composant commun à toutes les couvertures — 68 au total)
+
+1. **Filet d'extension sur la grande couverture** : l'adresse déclarée est testée avec une `Image` ;
+   si elle échoue, l'autre extension (`.jpg` ↔ `.jpeg`) est essayée ; si les deux échouent, repli sur
+   `GALOPS_HERO`. Plus jamais d'écran noir, y compris pour **Dehors (k642), dont la photo n'a jamais
+   été fournie** : elle montre le fond commun des Galops en attendant `images/k642.jpg`. Coût : un
+   aller-retour de plus (une 404) sur les couvertures mal nommées, le temps d'un clignement.
+2. **Texte descendu en bas** (choix de Blandine sur « Le contact », où le titre tombait sur la
+   cavalière : « on lit rien ») : le bloc de texte est posé au ras du bouton, le bouton descend, et le
+   voile sombre commence à mi-hauteur au lieu des deux tiers (transparent jusqu'à 36 %, 0,62 à 52 %,
+   0,9 à 66 %, plein à 86 %). La moitié haute de la photo reste sans voile. Mesuré sur 393×852 : titre
+   à 54-60 % de la hauteur, citation à 69-79 %, bouton à 85-91 % (avant : 38-44 %, 54-64 %, 77-83 %).
+   Les marges écrites dans les données des 15 couvertures du Galop 4 (`basTexte` 74, `basBouton` 92)
+   sont **plafonnées** à 12 et 34 par le composant — les données ne sont pas touchées (le module
+   reste v1). Les couvertures des Galops 1-3 (marges par défaut) ne bougent presque pas en position ;
+   elles gagnent seulement le voile plus haut sous leur texte.
+   **Retour arrière en une ligne** : `COUV_TEXTE_BAS = false` dans CouvAffiche rend exactement l'ancien
+   voile et les anciennes marges. Les trois paliers du voile sont dans la même ligne, à régler à l'œil.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 défaut. Marqueurs de lignée identiques à l'index précédent, 13 `?v=`,
+  déclarations de premier niveau identiques (975 / 396 / 176). Diff avec l'index de 23 h : 4 lignes
+  remplacées + 42 ajoutées, toutes dans CouvAffiche.
+- **Rendu réel de CouvAffiche** (Playwright, 393×852, images d'essai fabriquées — géométrie seulement,
+  pas un jugement de photo) : `images/kportrait.jpg` absente → le fond finit sur `kportrait.jpeg` ;
+  `images/k999.jpg` inexistante dans les deux extensions → le fond finit sur `GALOPS_HERO` ; une
+  adresse existante reste telle quelle. Avant : le fond restait sur l'adresse en 404 (noir).
+- `_headers` : diff avec le fichier collé = strictement les 5 règles ajoutées, 0 ligne retirée.
+
+## À L'ÉCRAN : + / −
+
+**+** Les couvertures du Galop 4 ont leur photo (celles dont le fichier est en `.jpeg`) ; Dehors montre
+le fond commun au lieu du noir ; sur toutes les couvertures, le titre et la citation sont plus bas,
+sur du sombre, la photo dégagée en haut. **−** Le bas de chaque photo est plus voilé qu'avant (là où
+le texte se pose). Les couvertures des Galops 1-3 changent aussi (voile), pas seulement le 4.
+
+## NON VU À L'ÉCRAN
+
+1. Galop 4 → Nourrir, Identité, Santé… : la photo apparaît (après un court noir, le temps de l'essai).
+2. Galop 4 → Dehors : le fond commun des Galops, pas du noir.
+3. Le contact : titre et citation lisibles sous la cavalière ; juger le voile (trop / pas assez).
+4. Une couverture de Galop 2 ou 3 : rien de cassé, texte à la même place, voile plus présent en bas.
+
+## RESTE À FAIRE
+
+- **Le vrai remède reste de nommer les fichiers comme le code les attend** (ou l'inverse) : le jour
+  où Blandine renomme `k631…k641.jpeg` en `.jpg` sur le dépôt — ou me donne la liste réelle du
+  dossier `images/` — on aligne la ligne 20749 et le filet ne sert plus qu'aux accidents.
+- Le fond du quiz de chapitre (`fondQuizChapitre`, ligne ~48502) lit la même adresse de couverture en
+  fond CSS : probablement noir sur ces mêmes chapitres, non traité ce soir.
+- La photo de Dehors (`images/k642.jpg`), toujours à fournir.
+- `SUIVI.md` de l'entrée précédente disait « `_headers` : pas livré » : c'est corrigé dans cette entrée,
+  la ligne d'origine porte un renvoi.
+- Galop 3 → `hype-cours-galop3.js` : scan fait (voir l'entrée « nuit »), coupe reportée à demain, à froid.
+
+---
+
 # 🟩 06/09/2026 (nuit) — GALOPS 4 À 7 SORTIS DE L'INDEX → `hype-cours-galops-sup.js` (v1) · PROTOCOLE SUIVI POINT PAR POINT
 
 | Fichier | Où | md5 | Quoi |
@@ -26,7 +109,8 @@ deux cas, pousser l'autre fichier répare.
 ⚠️ **13 `?v=` désormais** (les 12 anciens intacts + `hype-cours-galops-sup.js?v=1`). Aucun SQL,
 aucune image, aucun autre module touché (`hype-import-ffe.js` 14, `hype-resultats.js` 3,
 `hype-stories.js` 20bx, `hype-cours-baby.js` 112, `hype-memory-poney.js` 4, `hype-modeles-db.js` 5).
-⚠️ **`_headers` : PAS livré, volontairement.** Le fichier envoyé par Blandine (4 451 octets) est la
+⚠️ **`_headers` : PAS livré à ce moment-là** (→ livré plus tard dans la soirée avec 5 règles, voir l'entrée
+« nuit, 2 » au-dessus). Le fichier envoyé d'abord par Blandine (4 451 octets) était la
 version du 10/08 (session 111) : il n'a pas les règles ajoutées le 11/08 (`memory-*.webp`,
 `decor-*.webp`, `hero-reprises.webp`, vidéos de la racine…) qui sont EN LIGNE et vérifiées depuis
 le 12/08. Le pousser aurait défait ces règles. Seul le dépôt fait foi (même leçon que pour
