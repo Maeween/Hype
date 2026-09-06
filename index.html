@@ -37885,7 +37885,11 @@ function EcranCheval() {
   /* 22/08 session 152 : on retient le cheval visé avant d ouvrir l import,
      l ecran d import ne sait pas de quelle fiche il vient.            */
   function ouvrirImportFFE() {
-    if (!(chevalDyn && moi && chevalDyn.ownerId === moi.id)) { bientot(); return; }
+/* 🟩 06/09 (Blandine : "je veux bien les droits pour ajouter les resultats sur
+     tous les chevaux en tant qu'admin, pour l'instant on finalisera les details plus
+     tard") — `estModerateurHype(moi)` en plus de la propriete, meme principe que
+     partout ailleurs dans le fichier ou un statut de moderatrice ouvre un passage. */
+    if (!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi)))) { bientot(); return; }
     try {
       window.HYPE_CHEVAL_IMPORT = c.dbId || null;
       window.HYPE_CHEVAL_IMPORT_NOM = (c && c.nom) || null;
@@ -38165,7 +38169,11 @@ function EcranCheval() {
      Blandine sur Dakota et celui de son eleve ne sont PAS le meme resultat, les
      deux doivent coexister. La ligne porte user_id, donc chacune ecrit la sienne.
      ⚠️ NE PLUS reecrire cette condition ailleurs : utiliser peutSaisirResultat. */
-  var peutSaisirResultat = !!(chevalDyn && chevalDyn.dbId && moi && (chevalDyn.ownerId === moi.id || estLieFiche));
+/* 🟩 06/09 (Blandine : "je veux bien les droits pour ajouter les resultats sur
+     tous les chevaux en tant qu'admin, pour l'instant on finalisera les details plus
+     tard") — `estModerateurHype(moi)` en plus de la propriete, meme principe que
+     partout ailleurs dans le fichier ou un statut de moderatrice ouvre un passage. */
+  var peutSaisirResultat = !!(chevalDyn && chevalDyn.dbId && moi && (chevalDyn.ownerId === moi.id || estLieFiche || estModerateurHype(moi)));
   function ouvrirAjoutResultat() { setResLocal({ annee: String(new Date().getFullYear()), event: "", ds: "", rang: "1" }); setAjoutRes(true); }
   async function sauverResultat() {
     function echec() { setToast(T("Enregistrement impossible pour le moment", "Could not save right now", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern derzeit nicht m\u00f6glich")); setTimeout(function () { setToast(null); }, 2400); }
@@ -39684,7 +39692,7 @@ async function supprimerSouvenirOuvert() {
                 "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.")),
             h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%",
                                 height: 1, background: "#2A323D" } })))),
-          (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", {
+          (chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h("button", {
             onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } ouvrirImportFFE(); },
             /* 02/09 (Blandine, capture) : le bouton chevauchait le rail des resultats
                juste en dessous. Ecriture CENTREE, remontee de 26 a 16 px, et une vraie
@@ -40136,7 +40144,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
               jouera sur l écran d import, avec la seconde vidéo.
            ⚠️ La vidéo porte une IMAGE DE COUVERTURE : si iOS refuse la
               lecture automatique, on voit la mascotte, pas un carré noir. */
-        (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren")) : null,
+        (chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren")) : null,
         h("button", { className: "addbtn", onClick: function () { if (peutSaisirResultat) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen")))) : h("div", { style: { padding: "0 0 28px" } },
         /* ═══ 25/08 s165 — PALMARÈS ÉDITORIAL (Proposition B, référence IMG_8514) ═══
            Le corps historique (vidéo + cartes par année) devient la « page technique »
