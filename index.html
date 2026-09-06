@@ -38773,6 +38773,7 @@ function EcranCheval() {
     } catch (eDM) { setToast(T("Enregistrement impossible", "Could not save", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern nicht m\u00f6glich")); setTimeout(function () { setToast(null); }, 2800); }
   }
   var cavFSt = React.useState("tous"); var cavFiltre = cavFSt[0], setCavFiltre = cavFSt[1]; /* 26/08 : onglet cavalier du palmares editorial */
+  var spSt = React.useState(null); var saisonPts = spSt[0], setSaisonPts = spSt[1]; /* 06/09 : saison choisie pour les points de qualification */
   var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1]; /* 26/08 : « qu on puisse tout voir si on le souhaite » (Blandine) — proprietaire seulement, page technique */
   var galSt = React.useState(0); var galTab = galSt[0], setGalTab = galSt[1];
   var panSt = React.useState(function () { try { var cD = (typeof DEV_OUVRIR_PAGE !== "undefined" && DEV_OUVRIR_PAGE === "souvenirs"); var cH = (typeof location !== "undefined" && (location.hash || "").indexOf("souvenirs") >= 0); return (cD || cH) ? "souvenirs" : ((typeof window !== "undefined" && window.__ouvrirPalmares) ? (function () { try { window.__ouvrirPalmares = false; } catch (eF) { } return "palmares"; })() : null); } catch (eP0) { return null; } }); var panneau = panSt[0], setPanneau = panSt[1]; React.useEffect(function () { try { if (typeof window !== "undefined" && window.__ouvrirPalmares) { window.__ouvrirPalmares = false; setPanneau("palmares"); } } catch (eOPf) { } }); /* 25/08 : lu a CHAQUE rendu — la fiche peut etre deja montee quand on arrive de la page commune */
@@ -40407,8 +40408,57 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
              des saisies manuelles et pour la pastille « Sans faute ».
              ⚠️ Meme lecture du sans-faute que le lecteur d'import et hype-resultats.js :
              trois endroits, faute de module partage. Si la regle change, la changer aux trois. */
+          /* 06/09 (Blandine) — LES POINTS DE QUALIFICATION, ADDITIONNES.
+             ⚠️ ON NE RECALCULE RIEN. Le barème FFE dépend de l'indice, du quart,
+             du coefficient d'épreuve, du circuit, de la division — et il a changé
+             au 1er janvier 2026 (10 pts pour un sans-faute + points de quart, le
+             tout coefficienté). Recalculer, ce serait produire des chiffres faux
+             à chaque évolution du règlement. On additionne donc la colonne
+             « Pts qualif. Chpt » que la FFE a elle-même calculée, telle qu'elle
+             arrive du télémat. Une ligne sans points ne compte pas — elle n'est
+             pas comptée comme zéro, elle est signalée à l'écran.
+             ⚠️ La saison n'est PAS gravée : SAISON_DEBUT_MOIS/JOUR se changent en
+             une ligne le jour où la FFE bouge ses dates (période de qualification
+             fixée chaque année, et par championnat). */
+          var SAISON_DEBUT_MOIS = 7, SAISON_DEBUT_JOUR = 1;   /* 1er juillet, choix de Blandine */
+          function saisonDe(d) {
+            try {
+              var p = String(d || "").split("-"); if (p.length < 3) return null;
+              var an = Number(p[0]), mo = Number(p[1]), jo = Number(p[2]);
+              var apres = (mo > SAISON_DEBUT_MOIS) || (mo === SAISON_DEBUT_MOIS && jo >= SAISON_DEBUT_JOUR);
+              return apres ? an : (an - 1);
+            } catch (eSa) { return null; }
+          }
+          /* Le type d'épreuve est lu dans son nom, tel que la FFE l'écrit. */
+          function familleEp(ep) {
+            var t = String(ep || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (!t) return "Autres";
+            if (/pr[e]?para/.test(t)) return "Preparatoire";
+            if (/hunter/.test(t)) return "Hunter";
+            if (/dressage/.test(t)) return "Dressage";
+            /* 06/09 (Blandine : « As poney 2 c'est pas poney 2 ») — les As sont une
+               CATÉGORIE À PART, pas un Poney 2 : le circuit des As ne se mélange pas
+               avec les épreuves poney classiques. On les reconnaît AVANT, sinon
+               « As Poney 2D » tombait dans Poney 2. Le suffixe de taille (A/B/C/D)
+               n'entre pas dans le nom : c'est l'indice qui compte. */
+            /* 06/09, 2e correction de Blandine (« As1 pareil ») : le télémat écrit
+               aussi bien « As Poney 2D » que « As 1 » — c'est le même circuit des As.
+               Les deux formes tombent donc dans le même groupe, indice compris. */
+            var mAs = /\bas\s*(?:poney\s*)?(elite|[1-4])/.exec(t);
+            if (mAs) return "As Poney " + (mAs[1] === "elite" ? "Elite" : mAs[1]);
+            if (/\bas\s*poney/.test(t)) return "As Poney";
+            var mEl = /(poney|club|amateur|pro)\s*(elite|[1-4])/.exec(t);
+            if (mEl) {
+              var fam = mEl[1].charAt(0).toUpperCase() + mEl[1].slice(1);
+              return fam + " " + (mEl[2] === "elite" ? "Elite" : mEl[2]);
+            }
+            if (/poney/.test(t)) return "Poney";
+            if (/club/.test(t)) return "Club";
+            if (/amateur/.test(t)) return "Amateur";
+            return "Autres";
+          }
           function estSFf(f) { var t = String(f && f.mn || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); if (!t) return false; return /(^|[^a-z])sf([^a-z]|$)/.test(t) || /sans\s*-?\s*faute/.test(t); }
-          var tousF = lignesBrutes.map(function (r) { return { id: r.id, og: (r.origine || "main"), mn: String(r.mention || ""), pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", q: (r.quart == null ? null : Number(r.quart)), d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
+          var tousF = lignesBrutes.map(function (r) { return { id: r.id, og: (r.origine || "main"), mn: String(r.mention || ""), pts: ((r.points == null || r.points === "") ? null : Number(r.points)), pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", q: (r.quart == null ? null : Number(r.quart)), d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
           /* 30/08 — BARRE EMPILEE PAR SAISON. Liste PARALLELE a tousF qui GARDE les
              parcours SANS place (eliminations, abandons : place vide, classement
              "El." / "Ab."), volontairement ecartes de tousF par le .filter ci-dessus.
@@ -40648,6 +40698,70 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                         }))),
                 (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[pickerMomentF]) ? h("button", { onClick: function () { definirMediaMomentFort(pickerMomentF, null); }, style: { marginTop: 12, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(237,242,245,0.65)", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Revenir au choix automatique", "Go back to automatic choice", "Volver a la elecci\u00f3n autom\u00e1tica", "Torna alla scelta automatica", "\u81ea\u52d5\u9078\u629e\u306b\u623b\u3059", "Zur automatischen Auswahl zur\u00fcckkehren")) : null,
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))))) : null,
+            /* — 3bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) —
+               Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
+               « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
+               porte de points : inutile de montrer un tableau de zéros à qui n'a
+               pas encore repassé ses télémats. */
+            (function () {
+              var avecPts = filtreCav(tousF).filter(function (fP) { return fP.pts != null && !isNaN(fP.pts); });
+              if (!avecPts.length) return null;
+              var saisons = {};
+              avecPts.forEach(function (fP) { var sA = saisonDe(fP.d); if (sA == null) return; if (!saisons[sA]) saisons[sA] = []; saisons[sA].push(fP); });
+              var clesS = Object.keys(saisons).sort().reverse();
+              if (!clesS.length) return null;
+              var sCour = (saisonPts != null && saisons[saisonPts]) ? saisonPts : clesS[0];
+              var lignesS = saisons[sCour] || [];
+              var totalS = lignesS.reduce(function (acc, fP) { return acc + (fP.pts || 0); }, 0);
+              var parFam = {};
+              lignesS.forEach(function (fP) { var k = familleEp(fP.ep); if (!parFam[k]) parFam[k] = { n: 0, p: 0 }; parFam[k].n++; parFam[k].p += (fP.pts || 0); });
+              var famTri = Object.keys(parFam).sort(function (a1, b1) { return parFam[b1].p - parFam[a1].p; });
+              var sansPts = filtreCav(tousF).length - avecPts.length;
+              var arrondi = function (x) { return Math.round(x * 100) / 100; };
+              return h(React.Fragment, null,
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
+                  h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
+                    T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte").toUpperCase()), filetOr()),
+                (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
+                  clesS.map(function (sK) {
+                    var onS = (String(sK) === String(sCour));
+                    return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
+                      style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
+                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
+                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
+                        color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+                      sK + " / " + (Number(sK) + 1));
+                  })) : null,
+                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
+                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
+                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
+                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
+                      T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ") + lignesS.length + " " +
+                      T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen"))),
+                  h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    T("Saison du 1er juillet " + sCour + " au 30 juin " + (Number(sCour) + 1),
+                      "Season from 1 July " + sCour + " to 30 June " + (Number(sCour) + 1),
+                      "Temporada del 1 de julio " + sCour + " al 30 de junio " + (Number(sCour) + 1),
+                      "Stagione dal 1\u00ba luglio " + sCour + " al 30 giugno " + (Number(sCour) + 1),
+                      sCour + "\u5e747\u67081\u65e5\u301c" + (Number(sCour) + 1) + "\u5e746\u670830\u65e5",
+                      "Saison vom 1. Juli " + sCour + " bis 30. Juni " + (Number(sCour) + 1))),
+                  h("div", { style: { marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                    famTri.map(function (kF, iF) {
+                      return h("div", { key: "fam" + kF, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: iF ? "1px solid rgba(255,255,255,0.045)" : "none" } },
+                        h("div", { style: { flex: 1, minWidth: 0, fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, kF),
+                        h("div", { style: { flex: "0 0 auto", fontSize: 10.5, color: "#8A929C" } }, parFam[kF].n + " \u00d7"),
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: OR9, minWidth: 42, textAlign: "right" } }, arrondi(parFam[kF].p)));
+                    })),
+                  /* ⚠️ ON DIT CE QU'ON NE SAIT PAS : une ligne sans points n'est pas
+                     comptée pour zéro, elle est annoncée. */
+                  sansPts > 0 ? h("div", { style: { marginTop: 11, fontSize: 10.5, lineHeight: 1.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    sansPts + " " + T("r\u00e9sultat" + (sansPts > 1 ? "s" : "") + " sans points connus \u2014 repasse son t\u00e9l\u00e9mat pour les r\u00e9cup\u00e9rer. Les points sont ceux calcul\u00e9s par la FFE, jamais recalcul\u00e9s ici.",
+                                       "result" + (sansPts > 1 ? "s" : "") + " with no known points \u2014 re-import its telemat. Points come from the FFE, never recomputed here.",
+                                       "resultado" + (sansPts > 1 ? "s" : "") + " sin puntos conocidos \u2014 vuelve a importar su telemat.",
+                                       "risultat" + (sansPts > 1 ? "i" : "o") + " senza punti noti \u2014 reimporta il suo telemat.",
+                                       "\u30dd\u30a4\u30f3\u30c8\u4e0d\u660e\u306e\u7d50\u679c\u304c\u3042\u308a\u307e\u3059\u3002",
+                                       "Ergebnis(se) ohne bekannte Punkte \u2014 Telemat erneut importieren.")) : null));
+            })(),
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
