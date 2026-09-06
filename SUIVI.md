@@ -10,6 +10,91 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 06/09/2026 (nuit, 3) — LE GALOP 3 SORT DE L'INDEX → `hype-cours-galop3.js` (v1), AVEC SES 5 AFFICHES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7b417103ac02c1516c7f8315ac01800a` | Galop 3 retiré (9,19 → 8,00 Mo ; GitHub affiche 7.63 MB) · balise `hype-cours-galop3.js?v=1` · repli · témoin « g3 N » |
+| `hype-cours-galop3.js` | racine — **NOUVEAU** | `7ea2dc6351c2ca50b913e28e41539bc8` | 16 chapitres + QCM global (30 questions) + sa carte + les 5 affiches, copiés à l'identique (1 194 057 octets, GitHub 1.14 MB) |
+| `_headers` | racine | `fe7a452b7104ead2c6f486ed008ac842` | + 1 règle `max-age=0, must-revalidate` pour `hype-cours-galop3.js` (seule différence avec le fichier poussé à 23 h) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `fcc4768174ff39d0ad6929b247e82218` (couvertures + texte en bas — s'il n'a pas été poussé,
+celui-ci le contient). `hype-cours-galops-sup.js` (v1) **INCHANGÉ**, ne pas le repousser. **14 `?v=`** désormais.
+Aucun SQL, aucune image. Décidé par Blandine à 23 h 25 (« Non on enchaîne galop 3 ») après le rappel de la règle
+« jamais en fin de session » : elle est là pour pousser et tester dans la foulée.
+⚠️ **Les deux fichiers vont ensemble** : index sans module = Galop 3 vide (appli debout, témoin « g3 ? »,
+examen blanc 3 sur son questionnaire de secours, carte du QCM global absente) ; module sans index = ignoré.
+Si tu pousses séparément : le module d'abord.
+
+## LE PROTOCOLE, POINT PAR POINT
+
+1. **Scan** (acorn, sur le fichier réel) du bloc lignes 24413-24463 (1 190 841 octets : `COURS_GALOP3_FR`
+   16 chapitres, `QCM_GLOBAL_GALOP3_FR`, `COURS_QCM_GLOBAL_G3`) : 7 identifiants extérieurs — `HYPE_IMGS` ×12,
+   `GALOPS_HERO` ×6, et 5 affiches `INFOG_BONPIED_G3` / `INFOG_TROTENLEVE_G3` / `INFOG_TRAVAILAPIED_G3` /
+   `INFOG_PANSAGE_G3` / `INFOG_COMPORTEMENT_G3` ×1 chacune. **C'est exactement le cas qui a cassé le 02/08**
+   (des constantes de l'index appelées par un fichier chargé avant elles) — traité ainsi :
+   - les 5 affiches ne sont que des dictionnaires de clés d'images (170 caractères chacune, 30 lectures de
+     `HYPE_IMGS`), utilisées par le Galop 3 seul (vérifié : aucune autre référence dans l'index hors le journal
+     en commentaire de la ligne 15) → **elles partent dans le module**, copiées telles quelles (848 octets, md5
+     `5eb7767e…`), et sont retirées de l'index (une ligne de commentaire les remplace). `INFOG_SAUT_G3`,
+     utilisée par personne (le type de bloc `image` n'existe plus, point ouvert depuis juillet), reste dans l'index ;
+   - `GALOPS_HERO` sert aussi au Galop 1 et à d'autres écrans : **il reste dans l'index**, le module en prend une
+     copie locale (`HYPE_IMGS["k66"]`, écrite par un fichier d'images, donc disponible avant la balise ; l'index
+     n'écrit jamais k66 lui-même).
+   Après cela, le module rescané n'a **aucun** identifiant extérieur : tout se résout depuis `window.HYPE_IMGS`.
+2. **Ordre de chargement** : balise posée juste après `hype-cours-galops-sup.js` (ligne 20783), donc après les
+   122 `hype-images-*.js` et le filet de l'index. Rien n'écrit dans `HYPE_IMGS` après cette ligne (vérifié).
+3. **Témoin** : le libellé devient `reprise 1.8 · baby 112 · memo 4 · stories 20bx · galops-sup 1 · g3 1`.
+4. `?v=1` sur la balise, règle `_headers` livrée.
+5. **Preuve de rendu** (Playwright, hors ligne) — 35 empreintes comparées entre l'index de départ `958ea2f6…`
+   et l'index modifié + 2 modules : Galop 3 dans les 6 langues, le QCM global, sa carte, l'examen blanc 3
+   (`EXAMENS_BLANCS[3]`, construit à partir du QCM), plus Galops 4-7 ×6 langues, Galop 1 fr et Galop 2 de :
+   **35 sur 35 identiques**. 2 erreurs de page, les mêmes qu'à chaque banc, aucune nouvelle. Témoin rendu
+   « … · GALOPS-SUP 1 · G3 1 ». **Repli testé** (fichier bloqué) : 0 erreur nouvelle, Galop 3 à 0 chapitre,
+   examen blanc 3 sur son questionnaire de secours, carte absente, témoin « … · G3 ? ».
+6. **Plan de retour** : Netlify → Deploys → « Publish deploy » de la version précédente. L'index précédent
+   (`fcc47681…`, 9 191 020 octets, GitHub 8.76 MB) est celui de l'entrée « nuit, 2 ».
+7. Fait tard, sur sa décision explicite.
+
+## CE QUI A CHANGÉ DANS L'INDEX — QUATRE ENDROITS
+
+1. Ligne 20783 : `<script src="hype-cours-galop3.js?v=1">` après `hype-cours-galops-sup.js`.
+2. Ligne 24387 : les 5 `const INFOG_…_G3` remplacées par un commentaire (`INFOG_SAUT_G2`, `INFOG_SAUT_G3`… intactes).
+3. Lignes 24409-24418 : à la place des 51 lignes du bloc, un commentaire et trois lignes de repli
+   (`COURS_GALOP3_FR` / `QCM_GLOBAL_GALOP3_FR` = `window.X || []`, `COURS_QCM_GLOBAL_G3` = `window.X || undefined`,
+   parce que ses trois lecteurs (lignes ~43469, ~48752, ~48850) testent `typeof` et la longueur — vérifié avant
+   de couper).
+4. Ligne 42509 : le témoin gagne « · g3 N ».
+
+## VÉRIFIÉ
+
+`node --check` 18 blocs + module : 0 défaut. Copie octet pour octet : bloc md5 `2497b2da…` et affiches
+`5eb7767e…` des deux côtés. Marqueurs : écarts attendus seulement (`?v=` 13 → 14, `<script` 166 → 167,
+`HYPE_IMGS[` 500 → 458 = −12 du bloc −30 des affiches, `couv-affiche` 74 → 58, `const` de premier niveau
+396 → 391 = les 5 affiches ; fonctions 975 et `var` 176 inchangés ; lignée scroll, `allerVersGalop` 3,
+`hypeNatif` 11, `DEV_OUVRIR_PAGE = ""` intacts). `_headers` : diff = la règle ajoutée, rien retiré.
+
+## À L'ÉCRAN : + / −
+
+**+** « · g3 1 » au bout du témoin. **−** Rien : Galop 3, QCM global, examen blanc 3 strictement identiques.
+
+## NON VU À L'ÉCRAN
+
+1. Accueil → témoin « … · galops-sup 1 · g3 1 ».
+2. Galop 3 → un chapitre avec affiche (« Le bon pied », « Le trot enlevé », « Le pansage ») : l'affiche s'affiche.
+3. Galop 3 → la carte « QCM Global — Galop 3 » présente, et un examen blanc niveau 3 qui pose ses 30 questions.
+
+## RESTE À FAIRE (feuille de route)
+
+- **Galop 2** (0,58 Mo) puis **Galop 1** (1,11 Mo + `GALOPS_I18N`, `GALOPS_HERO`, `PHOTO_ROBES_G2`, les `COUV_*`
+  et `INFOG_*_G1/G2`), un par un, même protocole, chacun à froid — scanner d'abord, jamais sur la mémoire.
+- Puis le chargement à la demande (le vrai gain de poids, désormais 3 fichiers de cours à charger à l'ouverture
+  d'un Galop et non au démarrage), puis la mise à jour forcée.
+- Supprimer `hype-galops.js` du 02/08 si ce n'est pas déjà fait.
+
+---
+
 # 🟩 06/09/2026 (nuit, 2) — COUVERTURES NOIRES DU GALOP 4 : LE FILET .jpg/.jpeg ÉTENDU À LA GRANDE COUVERTURE · TEXTE DESCENDU EN BAS · `_headers` LIVRÉ (5 RÈGLES)
 
 | Fichier | Où | md5 | Quoi |
@@ -89,7 +174,7 @@ le texte se pose). Les couvertures des Galops 1-3 changent aussi (voile), pas se
 - La photo de Dehors (`images/k642.jpg`), toujours à fournir.
 - `SUIVI.md` de l'entrée précédente disait « `_headers` : pas livré » : c'est corrigé dans cette entrée,
   la ligne d'origine porte un renvoi.
-- Galop 3 → `hype-cours-galop3.js` : scan fait (voir l'entrée « nuit »), coupe reportée à demain, à froid.
+- Galop 3 → `hype-cours-galop3.js` : finalement FAIT le soir même sur sa décision, voir l'entrée « nuit, 3 » au-dessus.
 
 ---
 
