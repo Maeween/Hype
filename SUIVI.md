@@ -10,6 +10,80 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 06/09/2026 (nuit, 4) — LE GALOP 2 SORT DE L'INDEX → `hype-cours-galop2.js` (v1), AVEC SES 13 CONSTANTES D'IMAGES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ae22a192f715a58675855cbe6d7b091a` | Galop 2 retiré (8,00 → 7,42 Mo ; GitHub affiche 7.08 MB) · balise `hype-cours-galop2.js?v=1` · repli · témoin « g2 N » |
+| `hype-cours-galop2.js` | racine — **NOUVEAU** | `fd362687709a088606d53c6047ba98a5` | 15 chapitres + 13 constantes d'images, copiés à l'identique (584 691 octets, GitHub 571 KB) |
+| `_headers` | racine | `c64e91889aee321c1b66b7444969a525` | + 1 règle pour `hype-cours-galop2.js` (seule différence avec le précédent) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `7b417103ac02c1516c7f8315ac01800a` (Galop 3 — s'il n'est pas poussé, celui-ci le contient).
+`hype-cours-galop3.js` et `hype-cours-galops-sup.js` (v1 tous les deux) **INCHANGÉS**. **15 `?v=`** désormais. Aucun SQL.
+Décidé par Blandine (« On tente g2 ? » → scan → « Ok »), après que le Galop 3 et les couvertures ont été vus à l'écran
+(Nourrir avec sa photo et le texte en bas, capture de 23 h 29).
+⚠️ Les deux fichiers vont ensemble ; séparément, le module d'abord. Index sans module = Galop 2 vide, appli debout, « g2 ? ».
+
+## LE PROTOCOLE, POINT PAR POINT
+
+1. **Scan** (acorn, fichier réel) du bloc lignes 24391-24408 (581 633 octets, `COURS_GALOP2_FR`, 15 chapitres) :
+   8 identifiants extérieurs — `HYPE_IMGS` ×3 et 7 constantes : `COUV_AIDES_G2`, `COUV_SELLER_G2`, `INFOG_AIDES_G2`
+   (elle-même faite de `INFOG_AIDES_G2_FR/EN/JA/ES/IT`), `INFOG_DEPART_G2`, `INFOG_SAUT_G2`, `INFOG_TRACE_G2`,
+   `PHOTO_ROBES_G2`. Toutes sont des lectures de `HYPE_IMGS` (34 clés en tout) et **aucune n'est utilisée
+   ailleurs** (vérifié une par une : seules références = leur définition, le bloc, et le journal en commentaire
+   de la ligne 15). → **Les 13 lignes partent dans le module**, copiées telles quelles (1 130 octets, md5
+   `9ce9eed5…`), dans l'ordre de l'index (`INFOG_AIDES_G2` après ses cinq langues). `COUV_GALOP_G2`, définie à
+   côté et utilisée par personne, part avec elles pour garder la famille ensemble. Le Galop 2 n'utilise ni
+   `GALOPS_HERO` ni `GALOPS_I18N` : rien de partagé avec le Galop 1. Module rescané : **aucun** identifiant extérieur.
+   Restent dans l'index, intactes : `INFOG_SAUT_G3` (orpheline), `PHOTO_G2_TROT` et `PHOTO_GALOP` (orphelines,
+   non touchées — pas l'objet de ce soir).
+2. **Ordre** : balise juste après `hype-cours-galop3.js` (ligne 20783), après les images et le filet.
+3. **Témoin** : `… · galops-sup 1 · g3 1 · g2 1`.
+4. `?v=1` + règle `_headers`.
+5. **Preuve de rendu** : **47 empreintes sur 47 identiques** entre l'index de départ `958ea2f6…` et l'index
+   modifié + 3 modules — Galops 1 à 7 dans les 6 langues (42), QCM global 3, sa carte, examen blanc 3, et deux
+   contrôles croisés. 2 erreurs de page, les mêmes que toujours. Témoin rendu « … · GALOPS-SUP 1 · G3 1 · G2 1 ».
+   **Repli testé** (galop2 bloqué) : Galop 2 à 0 chapitre, Galops 3-7 intacts, 0 erreur nouvelle, témoin « G2 ? ».
+6. **Plan de retour** : Netlify → Deploys → « Publish deploy ». Index précédent : `7b417103…` (8 000 790 octets,
+   GitHub 7.63 MB).
+
+## CE QUI A CHANGÉ DANS L'INDEX — CINQ ENDROITS
+
+1. Ligne 20783 : `<script src="hype-cours-galop2.js?v=1">` après `hype-cours-galop3.js`.
+2. Ligne 21578 : `PHOTO_ROBES_G2` → un commentaire.
+3. Ligne 24377 : les 10 constantes `COUV_*_G2` / `INFOG_AIDES_G2*` / `INFOG_DEPART_G2` → un commentaire ;
+   `INFOG_SAUT_G2` et `INFOG_TRACE_G2` retirées ; le commentaire des affiches G3 et `INFOG_SAUT_G3` restent.
+4. Lignes 24380-24385 : le bloc → un commentaire et `const COURS_GALOP2_FR = window.COURS_GALOP2_FR || []`.
+5. Ligne 42486 : le témoin gagne « · g2 N ».
+
+## VÉRIFIÉ
+
+`node --check` 18 blocs + module : 0 défaut. Copie octet pour octet (bloc `2fb28606…`, constantes `9ce9eed5…`).
+Marqueurs : écarts attendus seulement (`?v=` 14 → 15, `<script` 167 → 168, `HYPE_IMGS[` 458 → 424 = −34,
+`couv-affiche` 58 → 43, `const` de premier niveau 391 → 379 = les 12 constantes en colonne 0, `INFOG_TRACE_G2`
+étant indentée ; fonctions 975 / `var` 176 inchangés ; lignée scroll, `allerVersGalop` 3, `hypeNatif` 11 intacts).
+
+## À L'ÉCRAN : + / −
+
+**+** « · g2 1 » au bout du témoin. **−** Rien : Galop 2 identique dans les 6 langues.
+
+## NON VU À L'ÉCRAN
+
+1. Accueil → témoin « … · galops-sup 1 · g3 1 · g2 1 ».
+2. Galop 2 → « Les aides » (couverture + affiche), « Le départ au galop », « Le tracé » (g2-c3), « Les robes » : photos présentes.
+
+## OÙ ON EN EST DU DÉCOUPAGE (fin de soirée)
+
+Index : 10,06 → 7,42 Mo. Sortis : Galops 4-7 (0,87), Galop 3 (1,19), Galop 2 (0,58), chacun dans son fichier
+avec son témoin. **Reste le Galop 1** (1,11 Mo) : il tient à `GALOPS_I18N` (7 381 caractères, la liste des
+Galops elle-même), `GALOPS_HERO` (partagé avec trois autres écrans), `COURS_GALOP1_I18N`, et ses affiches
+`INFOG_SELLERBRIDER_G1` / `INFOG_MONTERDESCENDRE_G1` / `INFOG_SECURITE_G1` — **à scanner d'abord, à froid, pas ce soir.**
+Puis : chargement à la demande (les 3 fichiers de cours pèsent 2,6 Mo à chaque démarrage tant qu'ils sont dans
+l'index sous forme de balises), et la mise à jour forcée.
+
+---
+
 # 🟩 06/09/2026 (nuit, 3) — LE GALOP 3 SORT DE L'INDEX → `hype-cours-galop3.js` (v1), AVEC SES 5 AFFICHES
 
 | Fichier | Où | md5 | Quoi |
