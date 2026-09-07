@@ -10,6 +10,98 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 07/09/2026 (matin) — LE GALOP 1 SORT DE L'INDEX → `hype-cours-galop1.js` (v1), AVEC SES 3 AFFICHES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `5a2b01bbb55bb3092164cd03c987de69` | Galop 1 retiré (7,42 → 6,44 Mo ; GitHub affiche 6.14 MB) · balise `hype-cours-galop1.js?v=1` · repli · témoin « g1 N » · tuile Lamotte protégée |
+| `hype-cours-galop1.js` | racine — **NOUVEAU** | `5a27969b3f6cac81e53abb65f48d11ff` | 19 chapitres + 3 affiches, copiés à l'identique + copie locale de GALOPS_HERO (985 442 octets, GitHub 962 KB) |
+| `_headers` | racine | `2f75cb94a28df21ab2a237cd219b4027` | + 1 règle pour `hype-cours-galop1.js` (seule différence avec `c64e9188…`) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `ae22a192f715a58675855cbe6d7b091a` (Galop 2, la nuit dernière). `hype-cours-galops-sup.js`,
+`hype-cours-galop3.js` et `hype-cours-galop2.js` (v1 tous les trois) **INCHANGÉS**, ne pas les repousser. **16 `?v=`** désormais.
+Aucun SQL, aucune image. Décidé par Blandine (« Vas y ») à froid, en début de session, après son rappel de l'incident du 02/08
+(« Attention c'est elle qui avait fait planter tout le site … relis bien le suivi ») et la relecture des entrées 02/08 et 06/09 (soir).
+⚠️ **Les deux fichiers vont ensemble** ; séparément, le module d'abord. Index sans module = Galop 1 vide, appli debout, témoin
+« g1 ? », tuile Lamotte avec sa photo quand même. Module sans index = ignoré.
+
+## LE PROTOCOLE, POINT PAR POINT
+
+1. **Scan** (acorn, fichier réel) de la ligne 21627 (982 619 octets, `COURS_GALOP1_I18N`, 19 chapitres) : 4 identifiants
+   extérieurs — `HYPE_IMGS` ×132, `GALOPS_HERO` ×4, `INFOG_SELLERBRIDER_G1` ×1, `INFOG_SECURITE_G1` ×1. Les affiches
+   (lignes 21620-21622, 514 octets, 18 lectures de `HYPE_IMGS`) ne servent qu'au Galop 1 → **elles partent dans le module**,
+   copiées telles quelles ; `INFOG_MONTERDESCENDRE_G1`, utilisée par personne, part avec ses deux sœurs. `GALOPS_HERO` sert
+   à 13 lignes de l'index : **il reste**, le module en prend une copie locale (`HYPE_IMGS["k66"]`, recette du Galop 3).
+   `GALOPS_I18N` n'est pas appelée par la table : reste. **Contrôle de position** : les 146 images distinctes lues par le
+   Galop 1 ne sont écrites par l'index nulle part (ses 41 écritures inline sont lignes 20749 et 20775, toutes avant la
+   balise) ; elles viennent des `hype-images-*.js`, tous avant. Module rescané : **aucun** identifiant extérieur (hors
+   `window`). Exécuté en bac à sable **sans `HYPE_IMGS` du tout** : 19 chapitres, pas de plantage.
+   ⚠️ **UN DEUXIÈME LECTEUR, absent de la passation** : ligne 25085, `LAMOTTE_PHOTO = COURS_GALOP1_I18N.find(g1-c13).blocs[0].src`
+   (la tuile de l'article Lamotte). Avec le seul repli `|| []`, `.find()` rend `undefined` et `.blocs` fait planter le bloc
+   entier au chargement → appli hors service, la mécanique du 02/08 par une autre porte. Réécrit avec repli sur
+   `HYPE_IMGS["k218"]` — la même image, celle de la couverture du chapitre.
+2. **Ordre** : balise juste après `hype-cours-galop2.js` (ligne 20783), après les 122 images et le filet.
+3. **Témoin** : `… · galops-sup 1 · g3 1 · g2 1 · g1 1`.
+4. `?v=1` + règle `_headers`.
+5. **Preuve de rendu** (Playwright, 393 px, hors ligne) : **48 empreintes sur 48 identiques** entre `ae22a192…` et l'index
+   modifié + module — Baby et Galops 1 à 7 dans les 6 langues, sortis par `obtenirCoursParGalop`, avec un `HYPE_IMGS` factice
+   qui rend la clé de chaque image (les images comptent donc dans l'empreinte). `LAMOTTE_PHOTO` = k218 et `GALOPS_HERO` = k66
+   des deux côtés. Témoin rendu par le vrai composant : « … · G2 1 · G1 1 ». **Repli testé** (fichier bloqué) : Galop 1 à
+   0 chapitre, Galop 2 intact, `LAMOTTE_PHOTO` toujours k218, 0 erreur nouvelle, témoin « … · G1 ? ». Erreurs de page hors
+   ligne : 2, les mêmes que toujours (`window.supabase`, `TEINTES_HYPE`) ; avec un faux Supabase, **0 erreur** et l'écran
+   d'entrée s'affiche, sur les trois configurations. Limite du banc : `hype-cours-galops-sup.js` et `hype-cours-galop3.js`
+   n'étaient pas dans le dossier (non envoyés, pas nécessaires) → Galops 3-7 vides des deux côtés ; leur code n'est pas touché.
+6. **Plan de retour** : Netlify → Deploys → « Publish deploy ». Index précédent : `ae22a192…` (7 419 224 octets, GitHub 7.08 MB).
+
+## CE QUI A CHANGÉ DANS L'INDEX — SEPT ENDROITS
+
+1. Ligne 20783 : `<script src="hype-cours-galop1.js?v=1">` après `hype-cours-galop2.js`.
+2. Ligne 21620 : les 3 affiches `INFOG_*_G1` → un commentaire.
+3. Lignes 21625-21632 : la table → un commentaire et `const COURS_GALOP1_I18N = window.COURS_GALOP1_I18N || []`.
+4. Ligne 24389 : le commentaire du Galop 2 (« Galop 1 : reste ici ») corrigé.
+5. Ligne 24397 : le commentaire du Galop 3 (« Galops 1 et 2 : restent ici ») corrigé.
+6. Lignes 25090-25093 : `LAMOTTE_PHOTO` avec son repli.
+7. Ligne 42494 : le témoin gagne « · g1 N ».
+
+## VÉRIFIÉ
+
+`node --check` 18 blocs + module : 0 défaut. Copie octet pour octet (affiches `e05e52ed…`, table `fd67658c…`, les deux à la
+suite dans le module `41b13240…`). Marqueurs : écarts attendus seulement (`?v=` 15 → 16, `<script` 168 → 169, `HYPE_IMGS[`
+424 → 275 = −150 sorties +1 repli Lamotte, `couv-affiche` 43 → 25, `const` de premier niveau 381 → 378 = les 3 affiches,
+`function` +1 et `var` +1 = le repli Lamotte, `let` 302 → 290 = douze « let » dans les textes anglais de la table,
+`"id": "g1-` 19 → 0 ; `allerVersGalop` 3, `hypeNatif` 11, `scrollTop` 16, `obtenirCoursParGalop` 22, `GALOPS_I18N` 16 inchangés).
+
+## À L'ÉCRAN : + / −
+
+**+** « · g1 1 » au bout du témoin. **−** Rien : Galop 1 identique dans les 6 langues, tuile Lamotte inchangée.
+
+## NON VU À L'ÉCRAN
+
+1. Accueil → témoin « … · galops-sup 1 · g3 1 · g2 1 · g1 1 ».
+2. Galop 1 → un chapitre avec couverture (Le parc équestre fédéral), « Seller et brider » et « La sécurité » (affiches).
+3. Articles → la tuile Lamotte avec sa photo.
+4. Toujours non vus depuis la nuit : Galop 3 (un chapitre avec affiche, carte QCM global, examen blanc 3), Galop 2 (Les aides,
+   Le tracé, Les robes), Galop 4 → Dehors (fond commun), une couverture de Galop 1 (voile plus haut).
+
+## OÙ ON EN EST DU DÉCOUPAGE
+
+Index : 10,06 → **6,44 Mo**. Sortis : Galops 4-7 (0,87), Galop 3 (1,19), Galop 2 (0,58), Galop 1 (0,99), chacun dans son
+fichier avec son témoin. **Le découpage des cours est terminé.** Les 4 fichiers de cours pèsent ≈ 3,6 Mo, téléchargés à chaque
+démarrage tant qu'ils sont des balises de l'index : la prochaine étape est le **chargement à la demande** (seul vrai gain de
+poids, critère App Store), puis la mise à jour forcée (`sw.js` de retrait), puis supprimer `hype-galops.js` du 02/08 du dépôt.
+Orphelines restantes dans l'index, à personne : `PHOTO_G2_TROT`, `PHOTO_GALOP`, `PHOTO_G1_PAS`, `INFOG_SAUT_G3`.
+
+## CE QUE CETTE SESSION A APPRIS
+
+🟩 **SCANNER CE QUE LA TABLE APPELLE NE SUFFIT PAS : SCANNER AUSSI QUI LIT LA TABLE.** La passation disait « un seul lecteur,
+`obtenirCoursParGalop` » ; rejoué, il y en avait deux, et le second (`LAMOTTE_PHOTO`, ligne 25085) plantait tout au premier
+fichier manquant. Le repli `|| []` protège les lecteurs qui tolèrent une liste vide ; une constante de premier niveau qui
+descend dans la table (`.find(…).blocs[0]`) n'en fait pas partie. Avant chaque coupe : `grep` du nom de la table dans tout
+l'index, et chaque lecteur lu à la main.
+
+---
+
 # 🟩 06/09/2026 (nuit, 4) — LE GALOP 2 SORT DE L'INDEX → `hype-cours-galop2.js` (v1), AVEC SES 13 CONSTANTES D'IMAGES
 
 | Fichier | Où | md5 | Quoi |

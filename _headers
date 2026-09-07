@@ -47,6 +47,10 @@
 /hype-cours-galop2.js
   Cache-Control: public, max-age=0, must-revalidate
 
+# Galop 1, sorti de l'index le 07/09 — meme regle.
+/hype-cours-galop1.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 # Les quatre autres modules charges avec un ?v= (stories, resultats, import
 # FFE, modeles) : meme ceinture, ajoutee le 06/09 a la demande de Blandine.
 /hype-stories.js
