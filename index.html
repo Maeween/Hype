@@ -1,4 +1,5 @@
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260828-2"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-1"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -35705,6 +35706,7 @@ function AlbumsCheval(props) {
   /* 05/09 17 h : « Fichier reçu » — carte qui RESTE affichée jusqu'à fermeture (le toast
      de 4 s de 15 h 50 ne pouvait pas être lu au bon moment). Objet { nom, mo, plus, etat }. */
   var infSt = React.useState(null); var infoA = infSt[0], setInfoA = infSt[1];
+  var retSt = React.useState(null); var aRetenter = retSt[0], setARetenter = retSt[1]; /* 08/09 ACTION 1 : { alb, fichiers } des vidéos qui n'ont pas pu partir (trace refusée ou PUT rate) — réessai sans re-sélectionner */
   function alerte(m, ok) { setInfoA(null); setAlerteOk(!!ok); setAlerteA(String(m || "")); }
   function portail(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP9) { } return el; }
   function cibleTag() {
@@ -35742,7 +35744,33 @@ function AlbumsCheval(props) {
     } catch (e) { }
     setAlbums(liste);
   }
-  function charger() {
+  /* 08/09 — ACTION 1 (Blandine, option B) : RÉCONCILIATION DES VIDÉOS EN ATTENTE À L'OUVERTURE.
+     charger() interroge d'abord les lignes videos_mux uploading/processing de cette cible
+     (hypeMuxReconcilier) : une vidéo devenue prête chez Mux est rattachée à l'album par
+     album_ajouter_media (atomique, idempotente) AVANT la lecture des albums, pour que la liste
+     lue soit complète. Garde de 12 s : au-delà, les albums sont lus quand même et, si la
+     réconciliation ajoute quelque chose ensuite, on relit sans réconcilier.
+     charger(true) = lecture seule, exactement comme avant. */
+  function charger(sansReconc) {
+    if (!sansReconc && typeof hypeMuxReconcilier === "function" && typeof avecGarde === "function") {
+      var finiR = false;
+      var pR = hypeMuxReconcilier(props.cible);
+      pR.then(function (b) { try { annoncerReconc(b); } catch (eAn) { } if (finiR && b && b.ajoutes > 0) chargerSuite(); }).catch(function () { });
+      avecGarde(pR, 12000).then(function () { finiR = true; chargerSuite(); }).catch(function () { finiR = true; chargerSuite(); });
+      return;
+    }
+    chargerSuite();
+  }
+  function annoncerReconc(b) {
+    if (!b) return;
+    if (b.ajoutes > 0) bip(String(b.ajoutes) + " " + T("vidéo(s) finie(s) de préparer, ajoutée(s) à l'album", "video(s) finished processing, added to the album", "vídeo(s) procesado(s), añadido(s) al álbum", "video pronti, aggiunti all'album", "動画の準備が完了し、アルバムに追加されました", "Video(s) fertig verarbeitet, zum Album hinzugefügt"), 5000);
+    if (b.erreurs && b.erreurs.length) {
+      var lignesE = b.erreurs.map(function (e) { var nm = (!e.nom || /^[0-9a-f]{8}-/i.test(String(e.nom))) ? T("Vidéo", "Video", "Vídeo", "Video", "動画", "Video") : String(e.nom); return nm + " : " + String(e.msg || "?"); });
+      alerte(T("Vidéo(s) non abouties chez Mux — à renvoyer : ", "Video(s) not completed at Mux — please resend: ", "Vídeo(s) no completado(s) en Mux — vuelve a enviar: ", "Video non completati su Mux — da rinviare: ", "Muxで完了しなかった動画 — 再送してください：", "Video(s) bei Mux nicht abgeschlossen — bitte erneut senden: ") + lignesE.join(" · "));
+      try { var idsE = b.erreurs.map(function (e) { return e.id; }).filter(Boolean); if (idsE.length && typeof supa !== "undefined" && supa) { supa.from("videos_mux").update({ signale_le: new Date().toISOString() }).in("id", idsE).then(function () { }, function () { }); } } catch (eSg) { }
+    }
+  }
+  function chargerSuite() {
     /* 05/09 (Blandine : « la video etait en 4 exemplaires dans l album et nulle part
        dans l onglet Videos ») \u2014 L ONGLET VIDEOS LIT LES ALBUMS UNE FOIS ET NE LES
        RELIT JAMAIS. Il est alimente par AlbumsPromus, qui charge au montage sur
@@ -35814,6 +35842,7 @@ function AlbumsCheval(props) {
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
     if (!alb || !fichiers || !fichiers.length) return;
     var fichiersUtiles = Array.prototype.slice.call(fichiers);
+    setARetenter(null); /* 08/09 ACTION 1 : un nouvel envoi efface la liste « à réessayer » */
     /* --- 02/09 : LES VIDEOS ---------------------------------------------------
        Gratuit : aucune video, mais plus jamais une erreur seche — une invitation
        Hype+. Premium : plafond de duree (2 min), verifie AVANT l'envoi, donc un
@@ -35822,6 +35851,7 @@ function AlbumsCheval(props) {
        Regle validee : 2 videos gratuites par COMPTE, 3 MINUTES maximum, duree lue
        AVANT l'envoi — un fichier trop long n'est jamais stocke ni facture. */
     var videosAEnvoyer = [];
+    var dureesVideos = []; /* 08/09 ACTION 1 : durée lue une seule fois, rangée dans la trace */
     var gardees0 = [];
     var videosTropLongues = 0, videosAuDela = 0;
     var dejaVids = null;
@@ -35837,7 +35867,7 @@ function AlbumsCheval(props) {
       /* 03/09 : comptage qui inclut les albums des AUTRES sur ce cheval. */
       if (dejaVids === null) dejaVids = await hypeVideosDejaEnvoyees(props.cible || (alb && alb.cible) || null, plafondVid);
       if (dejaVids + videosAEnvoyer.length >= plafondVid) { videosAuDela++; continue; }
-      videosAEnvoyer.push(fV);
+      videosAEnvoyer.push(fV); dureesVideos.push(dV);
     }
     fichiersUtiles = gardees0;
     if (videosTropLongues > 0) {
@@ -35881,52 +35911,86 @@ function AlbumsCheval(props) {
     var rate = 0;
     var raisonRatee = null; /* 26/08 : la VRAIE raison de l'echec, plus un simple compte muet — un fichier trop lourd ou un type refuse doit se voir */
 
-    /* --- LES VIDEOS, CHEZ MUX --------------------------------------------------
-       Trois temps, chacun pouvant echouer distinctement : demander l'adresse,
-       envoyer le fichier, attendre l'encodage.
-       ⚠️ Si l'encodage n'est pas fini, ce n'est PAS un echec : la video est chez
-       Mux, elle apparaitra a la prochaine ouverture. Annoncer « rate » alors que
-       le fichier est bien parti serait le pire message possible — c'est l'angle
-       mort deja rencontre le 27/08 avec « envoye, mais pas enregistre ». */
-    var videosPasEncore = 0;
-    for (var iM = 0; iM < videosAEnvoyer.length; iM++) {
-      var ficM = videosAEnvoyer[iM];
-      try {
-        setEnvoiPct(0);
-        var rCr = await hypeMuxAppel({}, 25);
-        if (!rCr || rCr.error || !rCr.data || !rCr.data.url) {
-          rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + ((rCr && rCr.error) || "adresse d'envoi refusée") };
-          continue;
-        }
-        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, ficM, function (pc) { try { setEnvoiPct(pc); } catch (eSp) { } });
-        if (rUp && rUp.error) {
-          rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + rUp.error };
-          continue;
-        }
-        var rSt = await hypeMuxAttendrePret(rCr.data.upload_id);
-        /* 03/09 : on stocke l'ADRESSE DE LECTURE, pas un jeton « mux: ».
-           Raison : les dix endroits qui affichent une video posent simplement
-           `src: <la valeur>`. En rangeant une vraie URL, tout le code existant la
-           joue sans rien savoir de Mux — aucune de ces dix vues n'a besoin d'etre
-           touchee. Safari sur iOS lit le HLS nativement. */
-        if (rSt && rSt.playback_id) { urls.push("https://stream.mux.com/" + rSt.playback_id + ".m3u8"); }
-        else if (rSt && rSt.pasEncore) { videosPasEncore++; }
-        else { rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + ((rSt && rSt.error) || "encodage") }; }
-      } catch (eM) {
-        rate++; if (!raisonRatee) raisonRatee = { nom: ficM.name, msg: "vidéo : " + String((eM && eM.message) || eM) };
-      }
-    }
-    setEnvoiPct(0);
-    if (videosPasEncore > 0) {
-      alerte(T("Ta vidéo est bien envoyée. Elle finit d'être préparée et apparaîtra dans l'album d'ici une minute.", "Your video is uploaded. It's finishing processing and will appear within a minute.", "Tu vídeo se ha enviado. Está terminando de procesarse y aparecerá en un minuto.", "Il tuo video è stato inviato. Sta finendo l'elaborazione e apparirà tra un minuto.", "動画は送信されました。処理後にアルバムに表示されます。", "Dein Video ist hochgeladen und wird noch verarbeitet."), true);
-    }    for (var iF = 0; iF < fichiersUtiles.length; iF++) {
+    /* ═══ 08/09 — ACTION 1, OPTION B (décision de Blandine) : LES PHOTOS D'ABORD, INCHANGÉES. ═══
+       La boucle ci-dessous et la réécriture du tableau `photos` sont celles d'avant, à un détail
+       près : le tableau n'est réécrit QUE s'il y a eu des photos à envoyer. Sans photos, aucune
+       réécriture — c'est elle qui, placée après les vidéos, effacerait les URL que
+       album_ajouter_media vient de poser. Le risque de concurrence du chemin photo (tableau lu à
+       l'ouverture, réécrit en entier) reste tel quel : dette notée, hors périmètre. */
+    for (var iF = 0; iF < fichiersUtiles.length; iF++) {
       try {
         var rF = await envoyerPhoto(fichiersUtiles[iF]);
         if (rF && rF.url) { urls.push(rF.url); }
         else { rate++; if (!raisonRatee) raisonRatee = { nom: fichiersUtiles[iF].name, msg: String((rF && rF.error && (rF.error.message || rF.error)) || "") }; }
       } catch (eF) { rate++; if (!raisonRatee) raisonRatee = { nom: fichiersUtiles[iF].name, msg: String((eF && eF.message) || eF) }; }
     }
-    var rM = await majAlbumCheval(albId, { photos: urls });
+    var rM = null;
+    if (fichiersUtiles.length) rM = await majAlbumCheval(albId, { photos: urls });
+
+    /* --- LES VIDEOS, CHEZ MUX — APRÈS les photos (option B) --------------------------------
+       Quatre temps, chacun pouvant échouer distinctement : 1) demander l'adresse d'envoi,
+       2) ÉCRIRE LA TRACE videos_mux (sans elle : pas d'envoi, l'adresse expire seule, sans
+       asset), 3) envoyer le fichier (PUT), 4) attendre l'encodage.
+       ⚠️ Si l'encodage n'est pas fini après 2 min, ce n'est PAS un échec ET la vidéo n'est
+       plus perdue : sa ligne reste `processing`, l'ouverture suivante de l'album la rattache
+       (hypeMuxReconcilier). Le rattachement passe par album_ajouter_media — atomique et
+       idempotent — jamais par une réécriture du tableau entier. */
+    var videosPasEncore = 0, videosAjoutees = 0;
+    var videosARetenter = [];
+    for (var iM = 0; iM < videosAEnvoyer.length; iM++) {
+      var ficM = videosAEnvoyer[iM];
+      var nomM = (ficM && ficM.name) || "video";
+      var upIdM = null, putFaitM = false;
+      try {
+        setEnvoiPct(0);
+        var rCr = await hypeMuxAppel({}, 25);
+        if (!rCr || rCr.error || !rCr.data || !rCr.data.url || !rCr.data.upload_id) {
+          rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : " + ((rCr && rCr.error) || "adresse d'envoi refusée") };
+          videosARetenter.push(ficM);
+          continue;
+        }
+        upIdM = String(rCr.data.upload_id);
+        /* 2) LA TRACE, AVANT LE PUT. Refusée = rien ne part. */
+        var rTr = await hypeVideoTraceCreer({ cible: props.cible || (alb && alb.cible) || null, album_id: albId, upload_id: upIdM, nom: nomM, duree: dureesVideos[iM] });
+        if (!rTr || rTr.error) {
+          rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : trace impossible, rien n'a été envoyé (" + ((rTr && rTr.error) || "?") + ")" };
+          videosARetenter.push(ficM);
+          continue;
+        }
+        /* 3) LE PUT (web : XHR avec progression ; natif : Uploader). */
+        var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, ficM, function (pc) { try { setEnvoiPct(pc); } catch (eSp) { } });
+        if (rUp && rUp.error) {
+          try { await hypeVideoTraceMaj(upIdM, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (eTe) { }
+          rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : " + rUp.error };
+          videosARetenter.push(ficM);
+          continue;
+        }
+        putFaitM = true;
+        try { var rPr = await hypeVideoTraceMaj(upIdM, { statut: "processing" }, "pasReady"); if (rPr && rPr.error) console.warn("videos_mux → processing :", rPr.error); } catch (ePr) { }
+        /* 4) L'ATTENTE, puis le passage READY dans l'ordre : album (atomique) → ligne. */
+        var rSt = await hypeMuxAttendrePret(upIdM);
+        if (rSt && rSt.playback_id) {
+          var rRd = await hypeVideoPasserReady(upIdM, albId, rSt.playback_id, rSt.duree);
+          if (rRd && rRd.ok) { videosAjoutees++; if (rRd.traceErreur) console.warn("videos_mux → ready :", rRd.traceErreur); }
+          else if (rRd && rRd.refuse) { rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : " + rRd.error }; }
+          else { videosPasEncore++; console.warn("rattachement différé :", (rRd && rRd.error) || "?"); } /* réseau : la ligne reste processing, l'ouverture suivante rattache */
+        }
+        else if (rSt && rSt.errored) {
+          try { await hypeVideoTraceMaj(upIdM, { statut: "errored", erreur: String(rSt.error || "Mux : errored") }, "pasReady"); } catch (eTe2) { }
+          rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : " + String(rSt.error || "encodage refusé par Mux") };
+        }
+        else { videosPasEncore++; } /* pasEncore, ou interrogation en panne : la ligne reste processing */
+      } catch (eM) {
+        if (upIdM && !putFaitM) { try { await hypeVideoTraceMaj(upIdM, { statut: "errored", erreur: hypeErreurTexte(eM) }, "pasReady"); } catch (eTe3) { } }
+        rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : " + hypeErreurTexte(eM) };
+        if (!putFaitM) videosARetenter.push(ficM);
+      }
+    }
+    setEnvoiPct(0);
+    if (videosARetenter.length) setARetenter({ alb: albId, fichiers: videosARetenter });
+    if (videosPasEncore > 0) {
+      alerte(T("Ta vidéo est bien envoyée et Hype la garde en mémoire. Elle finit d'être préparée : elle apparaîtra dans l'album à ta prochaine ouverture (parfois d'ici une minute).", "Your video is uploaded and Hype keeps track of it. It's finishing processing: it will appear in the album next time you open it (sometimes within a minute).", "Tu vídeo se ha enviado y Hype lo tiene registrado. Está terminando de procesarse: aparecerá en el álbum la próxima vez que lo abras (a veces en un minuto).", "Il tuo video è stato inviato e Hype lo tiene in memoria. Sta finendo l'elaborazione: apparirà nell'album alla prossima apertura (a volte entro un minuto).", "動画は送信され、Hypeが記録しています。処理が終わり次第、次にアルバムを開いたときに表示されます（1分以内のこともあります）。", "Dein Video ist hochgeladen und Hype behält es im Blick. Es wird noch verarbeitet: beim nächsten Öffnen des Albums erscheint es (manchmal schon nach einer Minute)."), true);
+    }
     setEnvoiCours(false); if (!premium) rafraichirQuota();
     if (rate) {
       var msgErr = rate + " " + T("envoi(s) impossible(s)", "upload(s) failed", "env\u00edo(s) fallido(s)", "invio non riuscito", "\u9001\u4fe1\u5931\u6557");
@@ -35939,7 +36003,7 @@ function AlbumsCheval(props) {
       bip(msgDb, 8000);
       alerte(msgDb); /* 27/08 soir : reste affiche jusqu'a fermeture */
     }
-    if (!(rM && rM.error)) charger();
+    if (!(rM && rM.error)) charger(videosPasEncore > 0 ? false : true); /* 08/09 ACTION 1 : relecture ; avec réconciliation seulement si une vidéo est restée en préparation */
     if (!rate && !(rM && rM.error)) { try { setInfoA(function (p) { return p ? Object.assign({}, p, { etat: "fini" }) : p; }); } catch (eIa) { } } /* 05/09 17 h : la carte « Fichier reçu » devient « Envoyé », toujours jusqu'à fermeture */
     } finally {
       /* Quoi qu il arrive au-dessus : on rend la main. Un album verrouille est
@@ -36368,6 +36432,14 @@ function AlbumsCheval(props) {
         h("div", { style: { fontSize: 10.5, fontWeight: 800, letterSpacing: 0.6, color: tnT, textTransform: "uppercase", marginBottom: 3 } }, infoA.etat === "fini" ? T("Envoy\u00e9", "Sent", "Enviado", "Inviato", "\u9001\u4fe1\u6e08\u307f", "Gesendet") : T("Fichier re\u00e7u", "File received", "Archivo recibido", "File ricevuto", "\u30d5\u30a1\u30a4\u30eb\u53d7\u9818", "Datei erhalten")),
         h("div", { style: { wordBreak: "break-word" } }, (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}/i.test(String(infoA.nom || "")) ? T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b", "Video") : String(infoA.nom || "?")) + (infoA.mo ? (" \u00b7 " + infoA.mo) : "") + (infoA.plus > 0 ? (" (+" + infoA.plus + ")") : "") + ((infoA.etat !== "fini" && envoiCours) ? (" \u2014 " + T("envoi en cours\u2026", "uploading\u2026", "enviando\u2026", "invio\u2026", "\u9001\u4fe1\u4e2d\u2026", "wird gesendet\u2026")) : "")),
         h("button", { onClick: function () { setInfoA(null); }, style: { marginTop: 8, padding: "7px 16px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 11.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))) : null,
+      /* 08/09 ACTION 1 : vidéos qui n'ont PAS pu partir (trace refusée ou envoi raté) — rien
+         n'est chez Mux, les fichiers choisis sont encore en mémoire : réessai sans re-sélectionner.
+         Carte à part : alerte() efface la carte « Fichier reçu », celle-ci doit rester. */
+      (aRetenter && aRetenter.fichiers && aRetenter.fichiers.length && !envoiCours) ? h("div", { style: { marginTop: 11, padding: "12px 14px", borderRadius: 16, border: "1px solid rgba(255,154,168,0.45)", background: "rgba(60,10,20,0.45)", color: "#FFD3D9", fontFamily: M9, fontSize: 12.5, lineHeight: 1.5 } },
+        h("div", null, String(aRetenter.fichiers.length) + " " + T("vidéo(s) non envoyée(s) — rien n'est parti chez Mux. Les fichiers sont encore là.", "video(s) not sent — nothing reached Mux. The files are still here.", "vídeo(s) no enviado(s) — nada llegó a Mux. Los archivos siguen aquí.", "video non inviati — nulla è arrivato a Mux. I file sono ancora qui.", "動画は送信されていません — Muxには何も届いていません。ファイルはまだあります。", "Video(s) nicht gesendet — nichts kam bei Mux an. Die Dateien sind noch da.")),
+        h("div", { style: { display: "flex", gap: 8, marginTop: 9 } },
+          h("button", { onClick: function () { var rt = aRetenter; setARetenter(null); if (rt && rt.alb && rt.fichiers && rt.fichiers.length) importerFichiers(rt.alb, rt.fichiers); }, style: { flex: 1, padding: "9px 0", borderRadius: 999, border: "1px solid rgba(255,154,168,0.6)", background: "rgba(255,154,168,0.12)", color: "#FF9AA8", fontSize: 12, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Réessayer l'envoi", "Retry upload", "Reintentar", "Riprova", "再送する", "Erneut senden")),
+          h("button", { onClick: function () { setARetenter(null); }, style: { flex: 1, padding: "9px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.2)", background: "transparent", color: "#C9D3D8", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Abandonner", "Give up", "Abandonar", "Lascia perdere", "やめる", "Verwerfen")))) : null,
       envoiCours ? h("div", { style: { margin: "12px 0 0", padding: "20px 14px", borderRadius: 16, background: "rgba(232,200,135,0.06)", border: "1px solid rgba(232,200,135,0.32)", display: "flex", flexDirection: "column", alignItems: "center", gap: 13 } }, /* 28/08 : mascotte repassee en colonne, bien plus grosse (demande Blandine : \u00ab je l'aurais vue plus grosse, comme la taille du cercle violet, au milieu \u00bb) + texte en BLANC en dessous pour qu'on le voie bien */
         h("video", { src: "images/poney-patiente-boucle.mp4", autoPlay: true, muted: true, loop: true, playsInline: true, preload: "auto", style: { width: 220, height: 220, flex: "0 0 auto", borderRadius: "50%", objectFit: "cover", background: "#04070A" }, onError: function (eVdT) { try { eVdT.target.style.display = "none"; } catch (eIt2) { } } }),
         h("div", { style: { textAlign: "center" } },
@@ -54308,10 +54380,153 @@ async function hypeMuxAttendrePret(uploadId, surAttente) {
     try { if (surAttente) surAttente(i); } catch (eA) { }
     var r = await hypeMuxAppel({ action: "status", upload_id: uploadId }, 20);
     if (r && r.data && r.data.playback_id) return { playback_id: r.data.playback_id, duree: r.data.duration || null };
+    /* 08/09 ACTION 1 : un envoi errored / cancelled / timed_out est une VRAIE erreur, dite comme telle (avant : ignoree, message rassurant faux). */
+    if (r && r.data && typeof hypeMuxStatutTermine === "function" && hypeMuxStatutTermine(r.data.status)) return { errored: true, error: "Mux : " + String(r.data.status) };
     if (r && r.error) { if (i > 3) return { error: r.error }; }
     await new Promise(function (ok) { setTimeout(ok, 3000); });
   }
   return { pasEncore: true };
+}
+/* ═══════════════════════════════════════════════════════════════════════════
+   08/09/2026 — ACTION 1 (Blandine, option B) : TRACE PERSISTANTE DES VIDÉOS
+   ---------------------------------------------------------------------------
+   AVANT : l'app demandait une adresse à Mux, envoyait le fichier, puis
+   interrogeait l'état 40 fois (2 min). Au-delà, ou si Mux disait « errored »
+   (jamais lu), elle annonçait « ta vidéo apparaîtra d'ici une minute » sans
+   RIEN écrire en base et sans garder l'upload_id : vidéo chez Mux (comptée,
+   facturée), invisible dans Hype.
+   APRÈS : une ligne de la table `videos_mux` (SQL livré avec ce fichier)
+   existe AVANT le PUT — sans ligne, pas d'envoi (l'asset Mux naît au PUT ;
+   une adresse d'envoi inutilisée expire seule, sans asset). États :
+   uploading → processing → ready | errored.
+   Le passage READY se fait TOUJOURS dans cet ordre : 1) album_ajouter_media
+   (fonction SQL, atomique et idempotente — jamais de réécriture du tableau
+   entier pour une vidéo) 2) la ligne passe ready (seulement si pas déjà
+   ready). Si l'app meurt entre les deux, la prochaine ouverture refait le 1
+   (sans effet) puis le 2.
+   hypeMuxReconcilier(cible) tourne à l'ouverture de l'album : lignes
+   uploading/processing de la cavalière → état demandé à mux-upload → prête :
+   rattachée ; en cours : rien ; errored/cancelled/timed_out/introuvable :
+   errored, dit une fois (signale_le). Abandon : `uploading` sans asset après
+   2 h = envoi jamais terminé (l'envoi natif en arrière-plan a eu le temps) ;
+   `processing` après 7 jours = garde-fou.
+   ⚠️ Le tableau `photos` n'est réécrit en entier que par le chemin PHOTO,
+   inchangé (option B : photos d'abord, vidéos ensuite). asset_id reste vide :
+   mux-upload ne le renvoie pas (à remplir le jour du webhook).
+   ═══════════════════════════════════════════════════════════════════════════ */
+var HYPE_VIDEO_STATUTS_MUX_FINIS = { errored: 1, cancelled: 1, timed_out: 1 };
+var HYPE_VIDEO_UPLOADING_ABANDON_MS = 2 * 60 * 60 * 1000;
+var HYPE_VIDEO_PROCESSING_ABANDON_MS = 7 * 24 * 60 * 60 * 1000;
+var __hypeReconcEnCours = {};
+function hypeMuxStatutTermine(s) { try { return !!(s && HYPE_VIDEO_STATUTS_MUX_FINIS[String(s)]); } catch (e) { return false; } }
+function hypeMuxUrlLecture(playbackId) { return "https://stream.mux.com/" + String(playbackId) + ".m3u8"; }
+function hypeErreurTexte(e) { try { return String((e && (e.message || e.error_description || e.details)) || e || "?"); } catch (e2) { return "?"; } }
+/* La ligne est créée AVANT le PUT. user_id vient du défaut SQL auth.uid() : sans session,
+   l'insertion est refusée — et donc l'envoi aussi. Rend { data } ou { error }. */
+async function hypeVideoTraceCreer(champs) {
+  try {
+    if (typeof supa === "undefined" || !supa) return { error: "Supabase indisponible" };
+    var ligne = {
+      cible: (champs && champs.cible) ? String(champs.cible) : null,
+      album_id: (champs && champs.album_id != null) ? String(champs.album_id) : null,
+      upload_id: String(champs.upload_id),
+      statut: "uploading",
+      nom: (champs && champs.nom) ? String(champs.nom).slice(0, 200) : null,
+      duree: (champs && typeof champs.duree === "number" && isFinite(champs.duree) && champs.duree > 0) ? Math.round(champs.duree * 10) / 10 : null
+    };
+    var r = await supa.from("videos_mux").insert(ligne).select("id").single();
+    if (r && r.error) return { error: hypeErreurTexte(r.error) };
+    if (!r || !r.data || !r.data.id) return { error: "trace non confirmée" };
+    return { data: r.data };
+  } catch (e) { return { error: hypeErreurTexte(e) }; }
+}
+/* Mise à jour de MA ligne (RLS). seulementSi = "pasReady" : ne touche jamais une ligne déjà ready. */
+async function hypeVideoTraceMaj(uploadId, champs, seulementSi) {
+  try {
+    if (!uploadId || typeof supa === "undefined" || !supa) return { error: "indisponible" };
+    var maj = Object.assign({}, champs || {}, { updated_at: new Date().toISOString() });
+    var q = supa.from("videos_mux").update(maj).eq("upload_id", String(uploadId));
+    if (seulementSi === "pasReady") q = q.neq("statut", "ready");
+    var r = await q.select("id, statut");
+    if (r && r.error) return { error: hypeErreurTexte(r.error) };
+    return { data: (r && r.data) || [], touche: !!(r && r.data && r.data.length) };
+  } catch (e) { return { error: hypeErreurTexte(e) }; }
+}
+/* L'ajout atomique : fonction SQL album_ajouter_media (security invoker : les droits actuels
+   d'albums_cheval s'appliquent tels quels). Rend { resultat: "ajoute" | "deja" | "refuse" } ou { error }. */
+async function hypeAlbumAjouterMedia(albumId, url) {
+  try {
+    if (albumId == null || !url || typeof supa === "undefined" || !supa) return { error: "indisponible" };
+    var r = await supa.rpc("album_ajouter_media", { p_album: String(albumId), p_url: String(url) });
+    if (r && r.error) return { error: hypeErreurTexte(r.error) };
+    var res = (r && typeof r.data === "string") ? r.data : "";
+    return { resultat: (res === "ajoute" || res === "deja") ? res : "refuse" };
+  } catch (e) { return { error: hypeErreurTexte(e) }; }
+}
+/* ORDRE VOULU : 1) album (atomique, idempotent) 2) ligne ready. Jamais l'inverse. */
+async function hypeVideoPasserReady(uploadId, albumId, playbackId, duree) {
+  var url = hypeMuxUrlLecture(playbackId);
+  var rA = await hypeAlbumAjouterMedia(albumId, url);
+  if (rA.error) return { error: "album : " + rA.error };
+  if (rA.resultat === "refuse") {
+    /* Pas le droit d'écrire dans cet album (ou album disparu) : ça ne changera pas tout seul,
+       la ligne est fermée plutôt que réconciliée sans fin. La vidéo existe chez Mux. */
+    try { await hypeVideoTraceMaj(uploadId, { statut: "errored", erreur: "écriture refusée dans l'album", playback_id: String(playbackId) }, "pasReady"); } catch (eR) { }
+    return { error: "écriture refusée dans l'album", refuse: true };
+  }
+  var rT = await hypeVideoTraceMaj(uploadId, { statut: "ready", playback_id: String(playbackId), duree: (typeof duree === "number" && isFinite(duree)) ? Math.round(duree * 10) / 10 : null, erreur: null }, "pasReady");
+  return { ok: true, url: url, ajoute: (rA.resultat === "ajoute"), traceErreur: (rT && rT.error) || null };
+}
+async function hypeMuxReconcilier(cible) {
+  var cle = String(cible || "");
+  var bilan = { ajoutes: 0, erreurs: [], enCours: 0 };
+  if (!cle || typeof supa === "undefined" || !supa) return bilan;
+  if (__hypeReconcEnCours[cle]) return bilan;
+  __hypeReconcEnCours[cle] = true;
+  try {
+    var r = await supa.from("videos_mux").select("id, album_id, upload_id, statut, nom, created_at").eq("cible", cle).in("statut", ["uploading", "processing"]).order("created_at", { ascending: true }).limit(20);
+    /* Table absente ou lecture refusée : silence ici (l'envoi lui-même, lui, parle). */
+    if (!r || r.error || !r.data || !r.data.length) return bilan;
+    var maintenant = Date.now();
+    for (var i = 0; i < r.data.length; i++) {
+      var l = r.data[i];
+      var age = maintenant - (Date.parse(l.created_at) || maintenant);
+      var st = await hypeMuxAppel({ action: "status", upload_id: l.upload_id }, 20);
+      var d = (st && st.data) || null;
+      if (d && d.playback_id) {
+        var rp = await hypeVideoPasserReady(l.upload_id, l.album_id, d.playback_id, d.duration);
+        if (rp && rp.ok) { if (rp.ajoute) bilan.ajoutes++; }
+        else bilan.erreurs.push({ id: l.id, nom: l.nom, msg: (rp && rp.error) || "?" });
+        continue;
+      }
+      var statutMux = d ? String(d.status || "") : "";
+      var introuvable = !!(st && st.error && /not_found|404|introuvable/i.test(String(st.error)));
+      if (hypeMuxStatutTermine(statutMux) || introuvable) {
+        var msgFin = introuvable ? "envoi introuvable chez Mux" : ("Mux : " + statutMux);
+        await hypeVideoTraceMaj(l.upload_id, { statut: "errored", erreur: msgFin }, "pasReady");
+        bilan.erreurs.push({ id: l.id, nom: l.nom, msg: msgFin });
+        continue;
+      }
+      if (l.statut === "uploading") {
+        if (statutMux === "asset_created" || statutMux === "preparing") { await hypeVideoTraceMaj(l.upload_id, { statut: "processing" }, "pasReady"); bilan.enCours++; continue; }
+        if (age > HYPE_VIDEO_UPLOADING_ABANDON_MS) {
+          var msgAb = "envoi jamais terminé (abandonné après 2 h)";
+          await hypeVideoTraceMaj(l.upload_id, { statut: "errored", erreur: msgAb }, "pasReady");
+          bilan.erreurs.push({ id: l.id, nom: l.nom, msg: msgAb });
+          continue;
+        }
+        bilan.enCours++; continue;
+      }
+      if (age > HYPE_VIDEO_PROCESSING_ABANDON_MS) {
+        var msgPr = "préparation jamais terminée (7 jours)";
+        await hypeVideoTraceMaj(l.upload_id, { statut: "errored", erreur: msgPr }, "pasReady");
+        bilan.erreurs.push({ id: l.id, nom: l.nom, msg: msgPr });
+        continue;
+      }
+      bilan.enCours++;
+    }
+  } catch (e) { } finally { __hypeReconcEnCours[cle] = false; }
+  return bilan;
 }
 /* 04/09 — TEMOIN DE COMPTAGE RATE.
    ⚠️ supabase-js NE LEVE PAS d exception sur une requete refusee ou perdue :
