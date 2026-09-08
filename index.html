@@ -1,3 +1,4 @@
+<!-- HYPE ▸ 09/09/2026 · CONVERGENCE VIDÉO LEGACY VERS MUX — CHEMIN COMMENTAIRES (onglet Vidéos + fil, via posterCommentaire) : une vidéo passe desormais par le meme pipeline Mux persistant que les albums (trace videos_mux AVANT le PUT, destination_type='commentaire'/destination_id generiques, colonne commentaires.statut). Ligne creee immediatement (statut uploading), placeholder "Video en preparation"/"Video non envoyee" dans MurHype (fil, rail + carte), SectionCommentaires, et exclue du bandeau useAnnonces. Reconciliation etendue (reparation des divergences de statut) + declenchee a l'ouverture du fil et de l'onglet Videos. Souvenirs ecurie NON touche (action separee). Rien change sur le chemin album ni sur les photos. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION DÉDIÉE (« Ok oui ») — AJOUT PHOTO ATOMIQUE : chaque photo réussie est désormais ajoutée à l'album immédiatement (hypeAlbumAjouterMedia, la même fonction SQL atomique/idempotente que les vidéos depuis l'action 1) au lieu d'accumuler puis réécrire le tableau entier en fin d'envoi. Dette de concurrence sur albums_cheval.photos fermée côté PHOTO. Rien d'autre touché : videos_mux, quotas, vignettes, base64/localStorage fiche, RLS. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 4b (chemin ALBUM PHOTO uniquement, decision du mini-test 4a) — MASTER PHOTO : reduction UNIQUE avant envoi, grand cote max 2560 px, JPEG q0,90, jamais d'agrandissement ; un fichier deja <= 2560 px part tel quel (aucun reencodage). Constantes centralisees PHOTO_MASTER_MAX_EDGE / PHOTO_MASTER_JPEG_QUALITY, fonction preparerPhotoMaster (a cote de envoyerPhoto). PNG (transparence) jamais converti en JPEG. Decodage impossible -> fichier original envoye tel quel, jamais bloque. Vise UNIQUEMENT envoyerPhoto ; videos, fiche cheval, avatar, base64 localStorage, quotas, RLS, album_ajouter_media, videos_mux : rien touche. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 3c-4 — CARTE PHOTO DU RAIL 'FIL' (Moments encadres) : vignette 420x380 (comme le rail Le voir en mouvement, deja optimise depuis le 28/08), loading lazy, repli original. C'etait le seul emplacement des 9 recenses en action 2 encore sur l'original brut. Rien d'autre touche. -->
@@ -9,7 +10,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-12"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-14"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -1456,6 +1457,17 @@ function hypeMuxVignetteUrl(url, largeur) {
   var w = Math.max(160, Math.min(1280, Math.round(largeur || 400)));
   return "https://image.mux.com/" + id + "/thumbnail.jpg?width=" + w + "&fit_mode=preserve";
 }
+/* 09/09 — CONVERGENCE VIDÉO LEGACY VERS MUX : placeholder partagé pour toute ligne
+   commentaires/souvenirs dont le statut n'est pas "ready" (uploading/processing/errored).
+   Le texte est fourni par l'appelante (T() n'existe que dans les composants, pas ici),
+   pour rester dans les 6 langues sans dupliquer les traductions. */
+function hypeCartePlaceholderMedia(statut, texteLabel, compact) {
+  var h = React.createElement;
+  var erreur = statut === "errored";
+  return h("div", { style: { height: compact ? 178 : 56, borderRadius: 10, border: "1px dashed " + (erreur ? "rgba(255,107,129,0.45)" : "rgba(255,255,255,0.16)"), background: erreur ? "rgba(60,10,20,0.32)" : "rgba(255,255,255,0.03)", display: "flex", alignItems: "center", justifyContent: "center", padding: "0 12px", textAlign: "center" } },
+    h("div", { style: { fontSize: compact ? 12 : 12.5, color: erreur ? "#FF9AA8" : "rgba(244,247,250,0.65)", fontFamily: "'Montserrat',system-ui,sans-serif" } }, texteLabel));
+}
+
 function hypeMiniatureVideo(url, opts) {
   opts = opts || {};
   var hE = React.createElement;
@@ -3592,6 +3604,13 @@ async function palmaresEcurie() {
 async function posterCommentaire({ cible, texte, fichierPhoto, prive } = {}) {
   const user = await utilisateurActuel();
   if (!user) return { data: null, error: "Pas connecté" };
+  /* 09/09 — CONVERGENCE VIDÉO LEGACY VERS MUX (onglet Vidéos + fil, décision de Blandine).
+     Une vidéo ne passe plus par envoyerPhoto (Storage brut) : elle part par le même pipeline
+     Mux persistant que les albums, via hypePosterVideoCommentaire. Une photo suit exactement
+     le chemin d'avant, inchangé. */
+  if (fichierPhoto && typeof estFichierVideo === "function" && estFichierVideo(fichierPhoto)) {
+    return await hypePosterVideoCommentaire({ cible: cible, texte: texte, fichier: fichierPhoto, prive: prive, user: user });
+  }
   let photo_url = null;
   if (fichierPhoto) { const r = await envoyerPhoto(fichierPhoto); if (r.error) return { data: null, error: r.error }; photo_url = r.url; }
   const ligneC = { user_id: user.id, cible: String(cible), texte: texte || null, photo_url };
@@ -3599,6 +3618,60 @@ async function posterCommentaire({ cible, texte, fichierPhoto, prive } = {}) {
   const resCom = await supa.from("commentaires").insert(ligneC).select().single();
   try { if (!resCom || !resCom.error) hypeNotifierCommentaire(String(cible), texte, user); } catch (eN) { }
   return resCom;
+}
+/* Ordre imposé (Blandine) : ligne "uploading" créée D'ABORD (apparaît tout de suite, option A)
+   → trace videos_mux ensuite. Si la trace échoue, la ligne déjà créée est aussitôt marquée
+   "errored" plutôt que laissée bloquée sans espoir de réconciliation. Le PUT + l'attente Mux
+   tournent en arrière-plan : posterCommentaire rend la main dès que l'envoi est confirmé
+   lancé, sans attendre la fin de l'encodage (comme le veut l'option A). */
+async function hypePosterVideoCommentaire({ cible, texte, fichier, prive, user }) {
+  var dureeV = null;
+  try { if (typeof dureeVideoFichier === "function") dureeV = await dureeVideoFichier(fichier); } catch (eDu) { }
+
+  var ligneDep = { user_id: user.id, cible: String(cible), texte: texte || null, photo_url: null, statut: "uploading" };
+  if (typeof prive === "boolean") ligneDep.prive = prive;
+  var resDep = await supa.from("commentaires").insert(ligneDep).select().single();
+  if (!resDep || resDep.error || !resDep.data || !resDep.data.id) {
+    return { data: null, error: (resDep && resDep.error) || "impossible de créer la ligne" };
+  }
+  var destId = String(resDep.data.id);
+
+  var rCr = await hypeMuxAppel({}, 25);
+  if (!rCr || rCr.error || !rCr.data || !rCr.data.url || !rCr.data.upload_id) {
+    try { await supa.from("commentaires").update({ statut: "errored" }).eq("id", destId).neq("statut", "ready"); } catch (e0) { }
+    return { data: null, error: "vidéo : " + ((rCr && rCr.error) || "adresse d'envoi refusée") };
+  }
+  var upIdV = String(rCr.data.upload_id);
+
+  var rTr = await hypeVideoTraceCreer({ cible: String(cible), destination_type: "commentaire", destination_id: destId, upload_id: upIdV, nom: fichier.name, duree: dureeV });
+  if (!rTr || rTr.error) {
+    try { await supa.from("commentaires").update({ statut: "errored" }).eq("id", destId).neq("statut", "ready"); } catch (e1) { }
+    return { data: null, error: "vidéo : trace impossible, rien n'a été envoyé (" + ((rTr && rTr.error) || "?") + ")" };
+  }
+
+  (async function () {
+    try {
+      var rUp = await hypeMuxEnvoyerFichier(rCr.data.url, fichier, function () { });
+      if (rUp && rUp.error) {
+        try { await hypeVideoTraceMaj(upIdV, { statut: "errored", erreur: "envoi : " + rUp.error }, "pasReady"); } catch (e2) { }
+        try { await hypeLigneMediaMarquerErreur("commentaire", destId, rUp.error); } catch (e3) { }
+        return;
+      }
+      try { await hypeVideoTraceMaj(upIdV, { statut: "processing" }, "pasReady"); } catch (e4) { }
+      try { await hypeLigneMediaAlignerStatut("commentaire", destId, "processing"); } catch (e5) { }
+      var rSt = await hypeMuxAttendrePret(upIdV);
+      if (rSt && rSt.playback_id) {
+        await hypeLigneMediaPasserReady(upIdV, "commentaire", destId, rSt.playback_id, rSt.duree);
+      } else if (rSt && rSt.errored) {
+        try { await hypeVideoTraceMaj(upIdV, { statut: "errored", erreur: String(rSt.error || "Mux : errored") }, "pasReady"); } catch (e6) { }
+        try { await hypeLigneMediaMarquerErreur("commentaire", destId, rSt.error); } catch (e7) { }
+      }
+      /* pasEncore (>2 min) : la ligne reste processing, la réconciliation la reprendra. */
+    } catch (eBg) { }
+  })();
+
+  try { hypeNotifierCommentaire(String(cible), texte, user); } catch (eN2) { }
+  return { data: resDep.data, error: null };
 }
 async function listerCommentaires(cible) {
   const { data, error } = await supa.from("commentaires").select("*").eq("cible", String(cible)).order("created_at", { ascending: true });
@@ -31215,7 +31288,9 @@ function SectionCommentaires({ cible }) {
           h("div", { style: { width: 30, height: 30, borderRadius: "50%", flex: "0 0 auto", backgroundImage: c.auteur && c.auteur.avatar_url ? ("url(" + c.auteur.avatar_url + ")") : "none", backgroundSize: "cover", backgroundPosition: "center", backgroundColor: "#1a2a30" } }),
           h("div", { style: { minWidth: 0 } },
             h("div", { style: { fontSize: 12, fontWeight: 700, color: "#EDF2F5", fontFamily: M } }, (c.auteur && c.auteur.pseudo) || "Cavalier"),
-            c.texte ? h("div", { style: { fontSize: 12.5, color: "#C7D0D6", fontFamily: M, marginTop: 1, wordBreak: "break-word" } }, c.texte) : null,
+            (c.statut && c.statut !== "ready")
+              ? hypeCartePlaceholderMedia(c.statut, c.statut === "errored" ? T("Vidéo non envoyée", "Video not sent", "Vídeo no enviado", "Video non inviato", "動画が送信されていません", "Video nicht gesendet") : T("Vidéo en préparation…", "Video preparing…", "Vídeo en preparación…", "Video in preparazione…", "動画準備中…", "Video wird vorbereitet…"), false)
+              : c.texte ? h("div", { style: { fontSize: 12.5, color: "#C7D0D6", fontFamily: M, marginTop: 1, wordBreak: "break-word" } }, c.texte) : null,
             c.photo_url ? (estUrlVideo(c.photo_url)
               ? h("video", { src: c.photo_url, controls: true, playsInline: true, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block", border: "1px solid rgba(32,217,245,0.3)" } })
               : h("img", { src: c.photo_url, style: { maxWidth: "70%", borderRadius: 10, marginTop: 6, display: "block", border: "1px solid rgba(32,217,245,0.3)" } })) : null)); }),
@@ -35279,6 +35354,7 @@ function MurHype(props) {
             postsC.sort(function (a, b) { return new Date(a.created_at) - new Date(b.created_at); });
           }
           if (actif) setPosts(filtrerPrivesM(postsC, u));
+          if (c && typeof hypeMuxReconcilier === "function") { hypeMuxReconcilier(c).then(function (b) { if (actif && b && b.ajoutes) recharger(); }).catch(function () { }); } /* 09/09 : reprise des videos-commentaires en preparation */
         }
       } catch (e) { }
       if (actif) setCharge(false);
@@ -35374,7 +35450,9 @@ function MurHype(props) {
     enfants.push(h("div", { key: "rail3", ref: function (elR) { try { if (elR && !elR.__r3init) { elR.__r3init = 1; if (listeR.length > 3) elR.scrollLeft = [0, 118, 236][Math.floor(Math.random() * 3)]; } } catch (eR3) { } }, style: { display: "flex", gap: 13, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 2px 10px", scrollbarWidth: "none" } },
       listeR.map(function (pR) {
         var aR = pR.auteur || {}; var annR = !!pR.estAnnonce;
-        var media = pR.photo_url
+        var enPrepR = pR.statut && pR.statut !== "ready";
+        var labelPrepR = pR.statut === "errored" ? T("Vidéo non envoyée", "Video not sent", "Vídeo no enviado", "Video non inviato", "動画が送信されていません", "Video nicht gesendet") : T("Vidéo en préparation…", "Video preparing…", "Vídeo en preparación…", "Video in preparazione…", "動画準備中…", "Video wird vorbereitet…");
+        var media = enPrepR ? hypeCartePlaceholderMedia(pR.statut, labelPrepR, true) : pR.photo_url
           ? (estUrlVideo(pR.photo_url)
             ? h("div", { style: { position: "relative", height: 178, borderRadius: 10, overflow: "hidden" } },
                 hypeMiniatureVideo(pR.photo_url, { largeur: 500, picto: false }),
@@ -35417,7 +35495,9 @@ function MurHype(props) {
             })(),
             h("span", null, datePost(p.created_at)))),
         (moi && !estAnn && (p.user_id === moi.id || estModerateurHype(moi))) ? h("button", { onClick: function () { suppr(p); }, "aria-label": T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"), style: { background: "none", border: "none", color: "#5B646E", fontSize: 14, cursor: "pointer", padding: 4 } }, "\uD83D\uDDD1") : null),
-      p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, estAnn ? hypeTexteMulti(p.texte, langue) : p.texte) : null,
+      (p.statut && p.statut !== "ready")
+        ? hypeCartePlaceholderMedia(p.statut, p.statut === "errored" ? T("Vidéo non envoyée", "Video not sent", "Vídeo no enviado", "Video non inviato", "動画が送信されていません", "Video nicht gesendet") : T("Vidéo en préparation…", "Video preparing…", "Vídeo en preparación…", "Video in preparazione…", "動画準備中…", "Video wird vorbereitet…"), false)
+        : p.texte ? h("div", { style: { fontSize: 13.5, color: "#DCE3E8", lineHeight: 1.5, fontFamily: M2, whiteSpace: "pre-wrap" } }, estAnn ? hypeTexteMulti(p.texte, langue) : p.texte) : null,
       p.photo_url ? (estUrlVideo(p.photo_url)
         ? h("video", { src: p.photo_url, controls: true, playsInline: true, style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid " + tAm(0.35) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px " + tAm(0.08) + "" } })
         : h("img", { src: p.photo_url, alt: "", style: { width: "62%", maxWidth: 230, marginTop: 8, borderRadius: 12, display: "block", border: "1px solid " + tAm(0.35) + "", boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.05), 0 0 10px " + tAm(0.08) + "" } })) : null));
@@ -37622,6 +37702,7 @@ function EcranCheval() {
       } catch (eCm) { }
     }
     chargerMediasInfo();
+    if (cibleCh && typeof hypeMuxReconcilier === "function") { hypeMuxReconcilier(cibleCh).then(function (b) { if (actifMed && b && b.ajoutes) chargerMediasInfo(); }).catch(function () { }); } /* 09/09 : reprise des videos-commentaires en preparation pour ce cheval */
     window.addEventListener("hype-souvenirs-maj", chargerMediasInfo);
     return function () { actifMed = false; window.removeEventListener("hype-souvenirs-maj", chargerMediasInfo); };
   }, [cibleCh, moi]);
@@ -42300,6 +42381,7 @@ function useAnnonces(langue, cible){
       try {
         var seuil = Date.now() - 30*24*3600*1000;
         liste = liste.filter(function(c){ var d = new Date(c.created_at).getTime(); return !(d > 0) || d >= seuil; });
+      liste = liste.filter(function(c){ return !c.statut || c.statut === "ready"; }); /* 09/09 : jamais une video en preparation/echouee dans le bandeau */
       } catch(eF) { }
       liste.sort(function(a,b){ return new Date(b.created_at)-new Date(a.created_at); });
       setAnn(liste.map(function(c){ return parseAnnonce(c.texte, langue); }));
@@ -54625,6 +54707,8 @@ async function hypeVideoTraceCreer(champs) {
     var ligne = {
       cible: (champs && champs.cible) ? String(champs.cible) : null,
       album_id: (champs && champs.album_id != null) ? String(champs.album_id) : null,
+      destination_type: (champs && champs.destination_type) ? String(champs.destination_type) : undefined,
+      destination_id: (champs && champs.destination_id != null) ? String(champs.destination_id) : undefined,
       upload_id: String(champs.upload_id),
       statut: "uploading",
       nom: (champs && champs.nom) ? String(champs.nom).slice(0, 200) : null,
@@ -54673,6 +54757,48 @@ async function hypeVideoPasserReady(uploadId, albumId, playbackId, duree) {
   var rT = await hypeVideoTraceMaj(uploadId, { statut: "ready", playback_id: String(playbackId), duree: (typeof duree === "number" && isFinite(duree)) ? Math.round(duree * 10) / 10 : null, erreur: null }, "pasReady");
   return { ok: true, url: url, ajoute: (rA.resultat === "ajoute"), traceErreur: (rT && rT.error) || null };
 }
+/* ═══ 09/09/2026 — CONVERGENCE VIDÉO LEGACY VERS MUX (Blandine) ═══
+   Pendant de hypeVideoPasserReady, mais pour commentaires/souvenirs : une vidéo y est SA
+   PROPRE LIGNE (pas un tableau partagé), donc pas de risque de concurrence à gérer — un simple
+   UPDATE conditionnel suffit, pas de RPC (décision validée après audit RLS du 09/09). */
+function hypeLigneMediaTable(destType) { return destType === "souvenir" ? "souvenirs" : "commentaires"; }
+async function hypeLigneMediaMarquerErreur(destType, destId, msg) {
+  try {
+    if (!destId || typeof supa === "undefined" || !supa) return;
+    await supa.from(hypeLigneMediaTable(destType)).update({ statut: "errored" }).eq("id", destId).neq("statut", "ready");
+  } catch (e) { }
+}
+/* Réparation de divergence (garde-fou demandé) : n'écrit que si la ligne est encore
+   uploading/processing ET différente de la cible — jamais de retour en arrière depuis ready/errored. */
+async function hypeLigneMediaAlignerStatut(destType, destId, statutVoulu) {
+  try {
+    if (!destId || typeof supa === "undefined" || !supa) return;
+    await supa.from(hypeLigneMediaTable(destType)).update({ statut: statutVoulu }).eq("id", destId).in("statut", ["uploading", "processing"]).neq("statut", statutVoulu);
+  } catch (e) { }
+}
+async function hypeLigneMediaPasserReady(uploadId, destType, destId, playbackId, duree) {
+  var url = hypeMuxUrlLecture(playbackId);
+  var table = hypeLigneMediaTable(destType);
+  try {
+    var r = await supa.from(table).update({ photo_url: url, statut: "ready" }).eq("id", destId).neq("statut", "ready").select("id");
+    if (r && r.error) { try { await hypeVideoTraceMaj(uploadId, { erreur: "ligne : " + hypeErreurTexte(r.error) }, "pasReady"); } catch (eT) { } return { error: hypeErreurTexte(r.error) }; }
+    var touche = !!(r && r.data && r.data.length);
+    if (!touche) {
+      /* 0 ligne : soit déjà ready (une autre réconciliation est passée avant — rien à dupliquer),
+         soit la ligne a été supprimée par son auteur pendant que Mux encodait encore. */
+      var chk = await supa.from(table).select("id, statut").eq("id", destId).maybeSingle();
+      if (chk && chk.data && chk.data.statut === "ready") {
+        var rT2 = await hypeVideoTraceMaj(uploadId, { statut: "ready", playback_id: String(playbackId), duree: (typeof duree === "number" && isFinite(duree)) ? Math.round(duree * 10) / 10 : null, erreur: null }, "pasReady");
+        return { ok: true, url: url, ajoute: false, traceErreur: (rT2 && rT2.error) || null };
+      }
+      try { await hypeVideoTraceMaj(uploadId, { statut: "errored", erreur: "ligne " + table + " supprimée avant la fin de l'encodage" }, "pasReady"); } catch (eT2) { }
+      return { error: "ligne supprimée", refuse: true };
+    }
+    var rT = await hypeVideoTraceMaj(uploadId, { statut: "ready", playback_id: String(playbackId), duree: (typeof duree === "number" && isFinite(duree)) ? Math.round(duree * 10) / 10 : null, erreur: null }, "pasReady");
+    return { ok: true, url: url, ajoute: true, traceErreur: (rT && rT.error) || null };
+  } catch (e) { return { error: hypeErreurTexte(e) }; }
+}
+
 async function hypeMuxReconcilier(cible) {
   var cle = String(cible || "");
   var bilan = { ajoutes: 0, erreurs: [], enCours: 0 };
@@ -54680,7 +54806,7 @@ async function hypeMuxReconcilier(cible) {
   if (__hypeReconcEnCours[cle]) return bilan;
   __hypeReconcEnCours[cle] = true;
   try {
-    var r = await supa.from("videos_mux").select("id, album_id, upload_id, statut, nom, created_at").eq("cible", cle).in("statut", ["uploading", "processing"]).order("created_at", { ascending: true }).limit(20);
+    var r = await supa.from("videos_mux").select("id, album_id, upload_id, statut, nom, created_at, destination_type, destination_id").eq("cible", cle).in("statut", ["uploading", "processing"]).order("created_at", { ascending: true }).limit(20);
     /* Table absente ou lecture refusée : silence ici (l'envoi lui-même, lui, parle). */
     if (!r || r.error || !r.data || !r.data.length) return bilan;
     var maintenant = Date.now();
@@ -54690,7 +54816,9 @@ async function hypeMuxReconcilier(cible) {
       var st = await hypeMuxAppel({ action: "status", upload_id: l.upload_id }, 20);
       var d = (st && st.data) || null;
       if (d && d.playback_id) {
-        var rp = await hypeVideoPasserReady(l.upload_id, l.album_id, d.playback_id, d.duration);
+        var rp = (!l.destination_type || l.destination_type === "album")
+          ? await hypeVideoPasserReady(l.upload_id, l.album_id, d.playback_id, d.duration)
+          : await hypeLigneMediaPasserReady(l.upload_id, l.destination_type, l.destination_id, d.playback_id, d.duration);
         if (rp && rp.ok) { if (rp.ajoute) bilan.ajoutes++; }
         else bilan.erreurs.push({ id: l.id, nom: l.nom, msg: (rp && rp.error) || "?" });
         continue;
@@ -54700,14 +54828,20 @@ async function hypeMuxReconcilier(cible) {
       if (hypeMuxStatutTermine(statutMux) || introuvable) {
         var msgFin = introuvable ? "envoi introuvable chez Mux" : ("Mux : " + statutMux);
         await hypeVideoTraceMaj(l.upload_id, { statut: "errored", erreur: msgFin }, "pasReady");
+        if (l.destination_type && l.destination_type !== "album") { try { await hypeLigneMediaMarquerErreur(l.destination_type, l.destination_id, msgFin); } catch (eDF) { } }
         bilan.erreurs.push({ id: l.id, nom: l.nom, msg: msgFin });
         continue;
       }
       if (l.statut === "uploading") {
-        if (statutMux === "asset_created" || statutMux === "preparing") { await hypeVideoTraceMaj(l.upload_id, { statut: "processing" }, "pasReady"); bilan.enCours++; continue; }
+        if (statutMux === "asset_created" || statutMux === "preparing") {
+          await hypeVideoTraceMaj(l.upload_id, { statut: "processing" }, "pasReady");
+          if (l.destination_type && l.destination_type !== "album") { try { await hypeLigneMediaAlignerStatut(l.destination_type, l.destination_id, "processing"); } catch (eDP) { } }
+          bilan.enCours++; continue;
+        }
         if (age > HYPE_VIDEO_UPLOADING_ABANDON_MS) {
           var msgAb = "envoi jamais terminé (abandonné après 2 h)";
           await hypeVideoTraceMaj(l.upload_id, { statut: "errored", erreur: msgAb }, "pasReady");
+          if (l.destination_type && l.destination_type !== "album") { try { await hypeLigneMediaMarquerErreur(l.destination_type, l.destination_id, msgAb); } catch (eDA) { } }
           bilan.erreurs.push({ id: l.id, nom: l.nom, msg: msgAb });
           continue;
         }
@@ -54716,6 +54850,7 @@ async function hypeMuxReconcilier(cible) {
       if (age > HYPE_VIDEO_PROCESSING_ABANDON_MS) {
         var msgPr = "préparation jamais terminée (7 jours)";
         await hypeVideoTraceMaj(l.upload_id, { statut: "errored", erreur: msgPr }, "pasReady");
+      if (l.destination_type && l.destination_type !== "album") { try { await hypeLigneMediaMarquerErreur(l.destination_type, l.destination_id, msgPr); } catch (eDPr) { } }
         bilan.erreurs.push({ id: l.id, nom: l.nom, msg: msgPr });
         continue;
       }
