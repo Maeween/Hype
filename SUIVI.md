@@ -10,6 +10,151 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 08/09/2026 (14 h) — CHANTIER MÉDIAS : AUDIT, ACTION 1 (TRACE VIDÉO), JOURNAL D'ENVOI, ACTION 2 (MINIATURES) — 🟥 MUX PLEIN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `baa863a05e3e7e817cabc72d4d0b2ad3` | build **20260908-3** : action 1 (trace vidéo, option B) + journal d'envoi + version visible + action 2 (miniatures sans lecteur) |
+| `sql-08-09-videos-mux.sql` | éditeur SQL Supabase | `2dfdcbd513687cf1fe1ce66f0fd3831f` | **PASSÉ EN BASE** le 08/09 à 10 h 16 (« Success ») : table `videos_mux` + fonction `album_ajouter_media` |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Trois builds dans la journée, chacun remplaçant le précédent : `20260908-1` (action 1), `20260908-2` (`0cfe775e5faab6303d29c247f10080b9`, journal + version), `20260908-3` (action 2, ci-dessus). Modules `hype-*.js` inchangés, aucune image. Règle posée par Blandine pour tout le chantier : **1 action → 1 modification atomique → test iPhone → validation → action suivante**, aucun nettoyage opportuniste, aucun périmètre voisin.
+
+## L'AUDIT (07/09, lecture seule, validé)
+
+Photo : album = original envoyé tel quel (3–4 Mo) dans le bucket `photos` ; fiche = recadreur ≤ 1360 px q0,92 puis 2e canvas q0,9 en base64 `localStorage`, prioritaire à l'affichage sur le téléphone ; affichage = observateur global qui réécrit toutes les `<img>` Supabase en 900 px q70. Vidéo : chaîne Mux propre (PUT direct, progression) mais **rien en base tant que le `playback_id` n'est pas revenu dans les 2 min** → vidéo chez Mux, invisible dans Hype ; `status: errored` jamais lu ; vignettes = vrais lecteurs HLS ; 3 boutons envoient encore des vidéos brutes dans Supabase. Le rapport complet (9 sections, plan P0→P3) est dans la conversation du 07/09.
+
+## ACTION 1 — TRACE PERSISTANTE DES VIDÉOS (option B choisie par Blandine) — LIVRÉE, NON TESTÉE EN RÉEL
+
+- **SQL** : `videos_mux` (`uploading` → `processing` → `ready` | `errored` ; `upload_id` unique ; `asset_id`/`playback_id` uniques partiels ; `album_id` en texte ; `signale_le` ; RLS propriétaire seule, rien pour `anon`) + `album_ajouter_media(p_album, p_url)` → `'ajoute' | 'deja' | 'refuse'` : UNE instruction `UPDATE … array_append … WHERE NOT (url = ANY(photos))`, atomique et idempotente, `SECURITY INVOKER`. Le script lit le type réel de `albums_cheval.photos` (text[] ou jsonb) et crée la bonne variante. Policies d'`albums_cheval` relues le jour même (`pg_policies`) : UPDATE = `auth.uid() = user_id` ou `hype_est_moderatrice()` ; SELECT = non privé, propriétaire ou modératrice — la fonction en hérite sans rien élargir.
+- **index.html** — `importerFichiers` : **photos d'abord, inchangées** (le tableau n'est réécrit que s'il y a eu des photos — sans photos, aucune réécriture, c'est elle qui effacerait une vidéo ajoutée atomiquement) ; puis vidéos : adresse Mux → **INSERT trace AVANT le PUT** (trace refusée = rien ne part, l'adresse Mux expire seule sans asset) → PUT → `processing` → attente → **ajout atomique dans l'album PUIS ligne `ready`** (jamais l'inverse). `hypeMuxAttendrePret` lit `errored/cancelled/timed_out`. `charger()` scindée : réconciliation `hypeMuxReconcilier(cible)` avant la lecture des albums (garde 12 s, verrou par cible) — lignes en attente de la cavalière : prête → rattachée ; erreur Mux ou envoi introuvable → `errored`, dit une fois ; `uploading` sans asset après **2 h** → abandonnée ; `processing` après **7 jours** → garde-fou. Carte **« Réessayer »** (fichiers gardés en mémoire), séparée de « Fichier reçu » que `alerte()` efface. Marqueur `hype-build` remis en route (il dormait au `20260828-2` : c'est lui qui force la mise à jour des PWA).
+- Écarts assumés : `asset_id` reste vide (`mux-upload` ne le renvoie pas) ; une modératrice ne réconcilie pas les lignes des autres ; sans le SQL, plus aucune vidéo ne part (voulu).
+
+## LE JOURNAL D'ENVOI ET LA VERSION VISIBLE (build -2, sur « j'en ai marre de deviner »)
+
+Carte **« Journal d'envoi · Hype <build> »** dans le panneau de l'album : chaque étape horodatée (sélecteur ouvert → fichier reçu → durée → refus éventuel → adresse Mux → trace → envoi % → préparation n/40 → rattachée / en préparation / refusée), vert/rouge, **Copier** / **Effacer**, survit à un rechargement (`sessionStorage`). Le numéro de build s'affiche dans la ligne « Quoi de neuf » (accueil, Mon compte) : `… index 20260908-3 …`.
+
+## 🟥 LE BLOCAGE, TROUVÉ PAR LE JOURNAL (13 h 07)
+
+`Adresse Mux refusée : {"type":"invalid_parameters","messages":["Free plan is limited to 10 assets, you cannot create direct uploads while exceeding this limit"]}`. **Le plan gratuit Mux est plein** (10 vidéos stockées au total) ; les envois du matin l'ont rempli. Ni iOS ni l'app. Aucun envoi possible tant que : crédits startup (mail du 04/09, à relancer) **ou** plan *Pay as you go* (Settings → Billing, carte) **ou** suppression d'assets (retire aussi la vidéo de Hype). Les envois ratés n'ont rien créé chez Mux. **Consigne de Blandine : ne plus toucher l'action 1 tant que Mux n'a pas rouvert** ; ses tests réels restent à faire (vidéo 20 s → `ready` ; vidéo 2 min 50 puis fermer/rouvrir → rattachée ; rouvrir 3 fois → une seule occurrence ; photos + vidéo ; mode avion → « Réessayer » et rien chez Mux ; deuxième compte sans droit → refusé, modératrice → accepté). Fausse piste de ma part, retirée : la ligne « 15 vidéos » n'était pas la cause (Blandine est en illimité — voir dettes).
+
+## ACTION 2 — MINIATURES VIDÉO SANS LECTEUR — LIVRÉE (build -3), À TESTER SUR iPHONE
+
+- **Recompte réel** : 25 `h("video")` ; **12 servaient de vignettes** (toutes les `#t=0.01 preload="metadata"`) → 12 remplacées par `hypeMiniatureVideo(url, opts)` : `<img>` vignette Mux (`image.mux.com/<id>/thumbnail.jpg?width=400…900&fit_mode=preserve`, `loading="lazy"`) sur fond Hype fixe + pictogramme ▶ ; **ancienne vidéo Supabase = fond + pictogramme, zéro chargement (option A validée)** ; vignette en échec = le fond reste, **jamais de repli vers un `<video>`**. Endroits : fil (miniature d'un post), couvertures d'albums ×4, grille « souvenirs publiés », grille de l'album ouvert, feuille de sélection, onglet Photos, onglet Vidéos, moments forts ×2 (fond de carte, choix du média).
+- **13 `<video>` conservés volontairement** : le lecteur de la visionneuse (le seul vrai) ; 3 lecteurs inline **avec commandes** hors périmètre (écurie perso : grille souvenirs + commentaire ; fil : lecteur d'un post — pas de visionneuse derrière) ; l'aperçu local du composer (fichier du téléphone) ; 6 vidéos décoratives/tutoriels ; le composant orphelin `GalerieSouvenirs` (code mort, non touché sur consigne).
+- **Libération du lecteur** (`PhotoZoomHype`, branche vidéo) : clé = source (un élément par vidéo) + ref-callback stable → à la détache (fermeture ou vidéo suivante) : `pause()`, `<source>` vidées, `load()` (`hypeLibererVideo`).
+- Aides globales ajoutées à côté de `vignetteHype` (niveau 0 vérifié) : `hypeMuxPlaybackId`, `hypeMuxVignetteUrl`, `hypeMiniatureVideo`, `hypeLibererVideo`, `hypeBuildIndex`.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` sur les 18 blocs JS à chaque build (0 erreur) ; diff relu ligne à ligne ; test unitaire Node des aides (URL Mux → vignette correcte même avec `#cadre=`, URL Supabase → aucune vignette, `hypeLibererVideo` → pause + source vidée + `load()`) ; 0 `#t=0.01` restant dans le code ; SQL relu, pas exécuté ici (pas de Postgres) — passé en base par Blandine, `pg_policies` relu.
+
+## NON VU À L'ÉCRAN
+
+Action 1 entière (Mux plein). Action 2 : checklist iPhone — onglet Vidéos (vignettes Mux, vieille vidéo = fond + ▶, défilement fluide) ; tap Mux → lecture ; tap Supabase → lecture ; fermeture → plus aucun son, 5 ouvertures/fermetures ; album / sélection / moments forts / fil intacts, photos intactes.
+
+## À VENIR (ordre validé) — ne pas commencer sans « vas-y »
+
+**Action 3** (affichage photo, une livraison par point) : 3a visionneuse d'album via `PhotoZoomHype` + blocage du pincement sur tout le voile — le « tout saute » de la capture du 08/09 (boutons gauche coupés, barre du bas chevauchée) est un **zoom de page** (`maximum-scale=3`) ; 3b `hypeRecalerApresClavier` revient à la position mémorisée, pas à 0 ; 3c grilles en `vignetteHype` 320 px, clés stables (URL), lazy, l'observateur reste jusqu'au bout ; 3d animations de la grille Photos (design, son choix). Tailles : 320 / 900 q80 / 1600 q85. Photos de fiche plafonnées à 1200–1360 px par le recadreur : le plein écran ne gagnera qu'après l'action 4. **Action 4** (décrite, pas codée) : une seule réduction avant envoi (~2048 px q0,85, à mesurer), fin de la double compression et du base64 prioritaire ; vérifier `createImageBitmap` + HEIC. **Anciens chemins vidéo** : les 3 boutons Supabase → pipeline Mux commun, nettoyage du legacy après.
+
+## DETTES NOTÉES CE JOUR
+
+- Quota vidéo compté côté navigateur seulement (contournable) ; avec `videos_mux`, un plafond exact par compte devient possible.
+- Ligne « Tu as atteint 15 vidéos » affichée même en illimité (compare le compteur sans regarder `aMediasIllimites`) — affichage seul.
+- Journal : « Sélecteur ouvert » écrit deux fois (cosmétique).
+- `albums_cheval.photos` réécrit en entier par le chemin **photo** (perte d'écriture possible sur un album partagé) — confirmé dans le code, hors périmètre.
+- Deux versions de `mux-upload` (avec / sans `mp4_support`) : vérifier laquelle est déployée (onglet Actions) — le plein écran PWA noir en dépend.
+- Code mort recensé : `GalerieSouvenirs`, helpers `mux:`, `DUREE_VIDEO_MAX_S`, `refChampVideo`, `feuilleAjout`, doublons `estUrlVideo` / réducteur 2048 — nettoyage en dernier, sur ordre.
+
+## LEÇONS
+
+- **Un outil qui dit où ça bloque vaut mieux que quatre hypothèses** : le journal a tranché en une capture ce que trois échanges de devinettes n'avaient pas tranché (et m'a évité une fausse piste de plus).
+- Le marqueur `hype-build` n'avait pas bougé depuis le 28/08 : sans lui, une PWA peut garder l'ancien index des jours. À changer à **chaque** livraison d'index, et à vérifier à l'écran (« index … » dans Quoi de neuf).
+- Une fonction SQL `SECURITY INVOKER` est la bonne manière d'ajouter un geste atomique sans toucher aux droits : elle hérite exactement des policies — et `pg_policies` se relit en une requête avant de l'affirmer.
+
+---
+
+# 🟩 07/09/2026 (midi) — QUIZ ET EXAMEN BLANC : LE PANNEAU « QUITTER » PASSE AU-DESSUS DE LA BARRE, LES RÉPONSES NE SONT PLUS CACHÉES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `47f59f4ee19615d90a369a384e0b43ba` | quiz de chapitre + examen blanc : page qui défile, cale de la barre, panneau Quitter en portail (6 441 090 octets, GitHub 6.14 MB) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ `index.html` **remplace** `5a2b01bbb55bb3092164cd03c987de69` (Galop 1 sorti, ce matin) — **il contient la coupe du Galop 1** :
+s'il n'a pas encore été poussé, pousser `hype-cours-galop1.js` et `_headers` (livrés ce matin) avec celui-ci. Modules inchangés.
+Aucun SQL, aucune image. Décidé par Blandine (« Oui ok vas y ») sur ses deux captures du QCM global du Galop 3 (10 h 49-10 h 50) :
+« on a toujours le problème du décalage des boutons sur les pages avec le menu du bas … là on peut pas quitter le quiz du galop 3
+… et en plus ça masque une des réponses du quiz à chaque fois ». Option « cacher la barre pendant les quiz » proposée, non retenue.
+
+## LES DEUX CAUSES
+
+1. **Le panneau « Quitter le quiz ? » passait sous la barre.** La barre d'onglets est un portail vers `<body>` (session 160,
+   z-index 50) posé au-dessus de TOUTE l'appli ; le wrapper de l'appli est un contexte d'empilement (`position: relative;
+   z-index: 1`) et la racine du quiz en est un autre (`isolation: isolate`). Un panneau `position: fixed` ouvert DANS une page,
+   même avec `zIndex: 220`, ne peut donc jamais passer devant la barre : son second bouton (« Quitter », rouge) finissait dessous.
+   Même famille que le bouton Enregistrer de la fiche rendez-vous (06/09), réglé là par une cale.
+2. **Une réponse cachée à chaque question.** La racine du quiz était en `height: calc(100dvh - 84px)` FIXE (08/08) : image
+   37 %, question, puis les réponses serrées dans une boîte `overflowY: auto` entre la question et le bloc explication + bouton
+   collé en bas. Question de trois lignes + explication affichée = deux réponses visibles, les autres dans une boîte qui défile
+   sans rien le signaler — et la bonne réponse surlignée justement là. L'examen blanc, lui, tenait sur `100dvh` SANS déduire la
+   barre : son bouton du bas passait dessous.
+
+## CE QUI A ÉTÉ FAIT (lignes 48382-48736, rien d'autre)
+
+- **Quatre aides** posées avant `EcranExamenBlanc` : `hypePortailBody(el)` (portail vers `<body>` avec repli sur place si
+  `createPortal` manque, même recette que la barre), `caleBarreHype()` (cale de fin de page, `env(safe-area-inset-bottom) + 84px`,
+  élément réel et non padding, règle du 06/09), `hypeDefilerHaut()` / `hypeDefilerBas()`.
+- **Quiz de chapitre (`EcranQuiz`, mode page unique)** : racine en `minHeight: 100dvh` (plus de hauteur fixe), image à
+  `calc((100dvh - 84px) * 0.37)` (même hauteur qu'avant, à l'œil identique), boîte des réponses sans `overflowY`, bloc
+  explication + bouton en flux avec 18 px sous lui, puis la cale. Trois effets : haut de page à chaque question (`idx`),
+  descente en douceur quand l'explication apparaît (`valide`), et descente si besoin au choix d'une réponse (`reponse`) pour
+  que Vérifier soit en vue. Panneau Quitter → `hypePortailBody(...)`, largeur bornée à 480 comme l'appli.
+- **Examen blanc (`EcranExamenBlanc`)** : même recette (mêmes trois effets, boîte des réponses libérée, cale), panneau Quitter
+  en portail et `zIndex` 40 → 220, et l'écran de résultat reçoit la cale aussi (ses deux boutons passaient sous la barre).
+- Quand tout tient sur l'écran, rien ne bouge par rapport à avant : le bouton reste au même endroit (18 + 84 + encoche du bas
+  de l'écran). Quand ça déborde, la page défile au lieu de cacher.
+
+## VÉRIFIÉ
+
+`node --check` 18 blocs : 0 défaut. Diff confiné aux lignes 48381-48695 de l'index du matin (17 zones). Marqueurs : écarts
+attendus seulement (`function` +10 = 4 aides + 6 effets, `useEffect(` +6, `createPortal` +3, `zIndex: 40` −1 / `zIndex: 220` +1,
+`overflowY: "auto"` −2 ; `?v=` 16, `<script` 169, `HYPE_IMGS[` 275, `data-noswipe` 26, `COURS_GALOP1_I18N` 4 inchangés).
+**Banc de rendu Playwright (390 × 844, tactile, barre montée par son portail vers `<body>`, page dans un wrapper
+`position: relative; z-index: 1` comme en prod, faux contexte d'appli, faux Supabase, 0 erreur de page) :**
+- Quiz de chapitre g1-c15 (4 réponses) : les 4 réponses visibles au premier écran (408-716, barre à 765) ; page 894 px → Vérifier
+  vient en vue au choix d'une réponse ; validation → page 1 004 px, défilement auto à 160, bouton Continuer bas 742 < barre 765,
+  **4 réponses encore visibles**, explication présente. Panneau : monté dans `<body>`, z-index 220, bouton Quitter atteint par
+  `elementFromPoint`, la barre sous le voile ; « Continuer le quiz » referme, « Quitter » appelle `setEcran("galop-detail")`
+  et referme (les clics traversent bien le portail).
+- Examen blanc Galop 1 : 4 réponses 393-666, Vérifier 742 < 765 ; validation → 899 px, défilement 55, Continuer 742,
+  4 réponses visibles ; panneau idem, « Continuer l'examen » / « Quitter » OK.
+- g1-c2 (vrai/faux) : tout tient sur 844 px, rien ne défile, bouton à 742 comme avant.
+
+## À L'ÉCRAN : + / −
+
+**+** Panneau Quitter : les deux boutons visibles, la barre grisée sous le voile (quiz et examen). Les 4 réponses toujours
+visibles ; la page descend d'elle-même à la validation. Écran de résultat de l'examen : boutons au-dessus de la barre.
+**−** Le bouton Vérifier / Continuer n'est plus vissé en bas : sur une question longue, il vient après les réponses (la page
+glisse vers lui au choix d'une réponse).
+
+## NON VU À L'ÉCRAN
+
+1. Galop 3 → QCM global : 4 réponses visibles ; choisir → Vérifier en vue ; Vérifier → explication + Continuer avec les
+   réponses encore en vue ; Continuer → haut de page, question suivante.
+2. Croix → « Quitter le quiz ? » : deux boutons visibles, barre sous le voile ; « Continuer le quiz » referme, « Quitter » sort.
+3. Un examen blanc (onglet Examen d'un Galop) : pareil, + l'écran de résultat avec ses deux boutons au-dessus de la barre.
+4. Un quiz de chapitre du Galop 1 (vrai/faux et QCM).
+
+## À GARDER EN TÊTE
+
+🟩 **TOUT PANNEAU DU BAS OUVERT DANS UNE PAGE PASSE SOUS LA BARRE** depuis que la barre vit dans `<body>` (23/08). Deux
+remèdes seulement : le porter dans `<body>` par `hypePortailBody` (panneau modal : la barre passe sous le voile), ou lui poser
+`caleBarreHype()` (calque qui défile : la barre reste visible). Les autres panneaux du bas de l'appli n'ont pas été inventoriés
+ce jour — à faire si Blandine en signale d'autres.
+
+---
+
 # 🟩 07/09/2026 (matin) — LE GALOP 1 SORT DE L'INDEX → `hype-cours-galop1.js` (v1), AVEC SES 3 AFFICHES
 
 | Fichier | Où | md5 | Quoi |
