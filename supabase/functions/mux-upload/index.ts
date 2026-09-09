@@ -43,7 +43,7 @@ const jsonHeaders = {
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL");
 const SUPABASE_ANON_KEY = Deno.env.get("SUPABASE_ANON_KEY");
 
-async function utilisateurDuJeton(req: Request): Promise<{ id: string } | "config" | null> {
+async function utilisateurDuJeton(req: Request): Promise<{ id: string; jeton: string } | "config" | null> {
   /* ⚠️ Si les variables d'environnement manquent, on REFUSE au lieu de laisser
      passer. Une vérification qui s'efface quand elle échoue n'en est pas une. */
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY) return "config";
@@ -62,10 +62,37 @@ async function utilisateurDuJeton(req: Request): Promise<{ id: string } | "confi
     });
     if (!rep.ok) return null;
     const utilisateur = await rep.json();
-    return utilisateur && utilisateur.id ? utilisateur : null;
+    return utilisateur && utilisateur.id ? { id: utilisateur.id, jeton } : null;
   } catch (_error) {
     /* Réseau ou Supabase injoignable : on refuse. Fermé quand on ne sait pas. */
     return null;
+  }
+}
+
+/* 09/09/2026 — QUOTA VIDÉO SERVEUR.
+   Appelle la fonction SQL hype_reserver_place_video EN TANT QUE L'UTILISATRICE ELLE-MÊME —
+   on transmet SON JETON déjà validé ci-dessus (jamais une clé service, jamais un identifiant
+   fourni dans le corps de la requête). C'est PostgREST qui vérifie ce jeton et en déduit
+   auth.uid() côté SQL : aucune identité ne peut être falsifiée depuis le client.
+   Rend { autorise: true, jeton } ou { autorise: false } ou { erreur } en cas de problème
+   technique (dans ce dernier cas, on refuse — fermé quand on ne sait pas, même principe que
+   le reste de cette fonction depuis le 04/09). */
+async function reserverPlaceVideo(jetonUtilisateur: string, cible: string): Promise<{ autorise: boolean; jeton?: string; erreur?: string }> {
+  try {
+    const rep = await fetch(`${SUPABASE_URL}/rest/v1/rpc/hype_reserver_place_video`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        apikey: SUPABASE_ANON_KEY!,
+        Authorization: `Bearer ${jetonUtilisateur}`,
+      },
+      body: JSON.stringify({ p_cible: cible }),
+    });
+    const payload = await rep.json();
+    if (!rep.ok) return { autorise: false, erreur: (payload && payload.message) || "réservation refusée" };
+    return { autorise: !!payload.autorise, jeton: payload.jeton };
+  } catch (error) {
+    return { autorise: false, erreur: String(error) };
   }
 }
 
@@ -92,7 +119,7 @@ Deno.serve(async (req) => {
 
     /* 05/09 : le corps est lu AVANT toute vérification, pour savoir de quel
        geste il s'agit. Corps vide ou invalide = création d'envoi, comme avant. */
-    let body: { action?: unknown; upload_id?: unknown } | null = null;
+    let body: { action?: unknown; upload_id?: unknown; cible?: unknown } | null = null;
     try {
       body = await req.json();
     } catch (_error) {
@@ -175,6 +202,30 @@ Deno.serve(async (req) => {
       }), { status: 401, headers: jsonHeaders });
     }
 
+    /* 09/09/2026 — QUOTA SERVEUR, AVANT TOUT APPEL MUX.
+       Sans cible envoyée par le client (ancien client pas encore mis à jour), on refuse plutôt
+       que de deviner — fermé quand on ne sait pas. */
+    const cible = typeof body?.cible === "string" && body.cible ? body.cible : null;
+    if (!cible) {
+      return new Response(JSON.stringify({
+        error: { code: "QUOTA_CIBLE_MANQUANTE", message: "Cible manquante pour la réservation de quota." },
+      }), { status: 400, headers: jsonHeaders });
+    }
+
+    const reservation = await reserverPlaceVideo(utilisateur.jeton, cible);
+    if (reservation.erreur) {
+      return new Response(JSON.stringify({
+        error: { code: "QUOTA_INDETERMINE", message: "Impossible de vérifier le quota, réessaie." },
+      }), { status: 500, headers: jsonHeaders });
+    }
+    if (!reservation.autorise) {
+      /* IMPORTANT : aucun appel Mux n'a lieu au-delà de ce point si le quota est atteint. */
+      return new Response(JSON.stringify({
+        error: { code: "QUOTA_REACHED", message: "Plafond de vidéos atteint pour ton compte." },
+      }), { status: 403, headers: jsonHeaders });
+    }
+    const jetonReservation = reservation.jeton!;
+
     const rep = await fetch("https://api.mux.com/video/v1/uploads", {
       method: "POST",
       headers: {
@@ -196,7 +247,10 @@ Deno.serve(async (req) => {
              par vidéo. L'app propose le MP4 d'abord et retombe sur le HLS.
              ⚠️ Ne vaut que pour les envois APRÈS ce déploiement. Pour les vidéos
              déjà en ligne, Mux permet de l'activer après coup :
-             PUT /video/v1/assets/{ASSET_ID}/mp4-support {"mp4_support":"capped-1080p"}. */
+             PUT /video/v1/assets/{ASSET_ID}/mp4-support {"mp4_support":"capped-1080p"}.
+             09/09 — CONFIRMÉ COMME DÉPLOYÉ (lu directement dans le code réel de la fonction
+             par Blandine, onglet Code du tableau de bord) : conservé tel quel, aucun autre
+             paramètre de ce bloc n'a été touché pour le quota. */
           mp4_support: "capped-1080p",
         },
       }),
@@ -204,10 +258,43 @@ Deno.serve(async (req) => {
 
     const data = await rep.json();
     if (!rep.ok) {
+      /* Mux refuse EXPLICITEMENT après une réservation réussie : on libère la place tout de
+         suite, sans attendre les 2h d'abandon — règle explicite de Blandine. */
+      try {
+        await fetch(`${SUPABASE_URL}/rest/v1/videos_mux?upload_id=eq.${encodeURIComponent(jetonReservation)}`, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            apikey: SUPABASE_ANON_KEY!,
+            Authorization: `Bearer ${utilisateur.jeton}`,
+            Prefer: "return=minimal",
+          },
+          body: JSON.stringify({ statut: "errored", erreur: "Mux : " + JSON.stringify(data) }),
+        });
+      } catch (_e) { /* la réconciliation (2h) reste le filet si cette libération immédiate échoue */ }
       return new Response(JSON.stringify({ error: data }), {
         status: rep.status,
         headers: jsonHeaders,
       });
+    }
+
+    /* Remplace le jeton de réservation par le vrai upload_id Mux, sur la MÊME ligne. */
+    try {
+      await fetch(`${SUPABASE_URL}/rest/v1/videos_mux?upload_id=eq.${encodeURIComponent(jetonReservation)}`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          apikey: SUPABASE_ANON_KEY!,
+          Authorization: `Bearer ${utilisateur.jeton}`,
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify({ upload_id: data.data.id }),
+      });
+    } catch (_e) {
+      /* Si cette mise à jour échoue : la ligne reste sous le jeton de réservation, Mux a bien
+         créé l'upload (aucun asset créé tant qu'aucun contenu n'est reçu — vérifié dans la doc
+         Mux, aucun coût), et le filet de 2h referme proprement la réservation. Dette connue
+         (cas B/C de l'audit du 09/09), pas traitée ici. */
     }
 
     return new Response(JSON.stringify({
