@@ -10,6 +10,537 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 09/09/2026 (14 h 30) — QUOTA_INDETERMINE AU PREMIER TEST : CAUSE TROUVÉE, CORRIGÉE
+
+Premier essai réel : Blandine envoie une vidéo depuis l'onglet Vidéos (`IMG_2895.mov`, 87,7 Mo). **Bon signe** : la réservation s'est bien déclenchée avant tout contact Mux (le mécanisme tourne). **Mauvais signe** : refus avec `QUOTA_INDETERMINE` — pas un plafond atteint, un échec de calcul côté serveur.
+
+## Cause trouvée par une lecture seule, avant toute correction
+
+```sql
+select column_name, data_type from information_schema.columns
+where table_schema='public' and table_name='albums_cheval' and column_name='photos';
+-- -> photos | jsonb
+```
+
+`albums_cheval.photos` est du **jsonb**, pas un tableau Postgres (`text[]`) comme je l'avais supposé en écrivant `hype_reserver_place_video`. La fonction utilisait `unnest(photos)` et `= any(a.photos)` — deux opérations qui n'existent que sur un vrai tableau. Sur du jsonb, Postgres lève une erreur ; la fonction plante ; l'Edge Function intercepte ça comme un échec technique et répond `QUOTA_INDETERMINE` (le filet « fermé quand on ne sait pas » a fonctionné comme prévu, mais masquait la vraie cause).
+
+## Correctif — 2 lignes seulement, tout le reste de la fonction inchangé
+
+- `unnest(photos)` → `jsonb_array_elements_text(photos)` (équivalent jsonb de unnest sur un tableau) pour le balayage des vidéos anciennes.
+- `= any(a.photos)` → `coalesce(a.photos, '[]'::jsonb) ? (...)` (opérateur de présence jsonb) pour vérifier qu'une vidéo `ready` est toujours dans l'album.
+
+**`sql-09-09-quota-video.sql` mis à jour en place** avec ces 2 corrections, commentées `CORRIGÉ 09/09`. À repasser : uniquement le bloc `CREATE OR REPLACE FUNCTION hype_reserver_place_video(...)` jusqu'aux 3 lignes de `grant`/`revoke` juste après — pas besoin de rejouer la colonne `quota_video_illimite` ni son `REVOKE`, déjà en place et inchangés.
+
+## Non touché
+
+`mux-upload` (déjà poussée, correcte) ; `index.html` (déjà poussé, correct) ; le reste de la fonction SQL (verrou, plafond, insertion) — identique.
+
+## Prochain test, une fois ce correctif repassé
+
+Reprendre le test 1 (vidéo courte depuis un album) — sachant que le plan gratuit Mux reste plafonné à 10 vidéos (carte bancaire toujours bloquée sur mobile, cf. entrée précédente) : un nouvel échec de type « Free plan is limited to 10 assets » serait cette fois un **bon** signe (ça voudrait dire que le quota serveur a laissé passer la demande jusqu'à Mux, sans erreur).
+
+---
+
+# 🟩 09/09/2026 (14 h) — FONCTION MUX POUSSÉE ; CARTE MUX TOUJOURS BLOQUÉE (bug confirmé côté Mux, pas côté Blandine)
+
+Fonction `mux-upload` finale poussée sur GitHub (commit confirmé, « Maeween · now » sur `supabase/functions/mux-upload/index.ts`). Reste à confirmer le passage au vert dans l'onglet Actions avant le premier test réel.
+
+## Blocage MUX — carte bancaire / passage en Pay as you go, toujours pas réglé
+
+Plusieurs tentatives infructueuses (menu ≡, Data Overview par erreur, essai de « demander le site pour ordinateur »). **Cause confirmée par le support Mux lui-même** (mail de « Ben », Mux Support, réponse à la candidature au programme startup) : *« I was able to confirm the issue you're describing. Right now I don't have any workaround for you, and you'll unfortunately need to perform this step on a PC for now. »* — **bug reconnu par Mux, changement de plan impossible depuis un mobile actuellement**, remonté par eux en interne pour correction. Rien à chercher de plus côté Hype ni côté réglages du téléphone.
+
+**Conséquence tant que ce n'est pas réglé** : le plan gratuit Mux reste plafonné à 10 vidéos stockées au total — un envoi peut donc encore échouer avec « Free plan is limited to 10 assets », **sans aucun rapport avec le quota serveur qu'on vient de déployer**. Un tel échec à ce stade serait même une information utile : il confirmerait que la réservation serveur a laissé passer la demande jusqu'à Mux, et que c'est Mux seul qui refuse ensuite.
+
+**À faire dès qu'un ordinateur est accessible** : dashboard.mux.com → Settings → Billing → passer en Pay as you go (carte bancaire). Sur mobile, ne pas réessayer tant que Mux n'a pas confirmé un correctif.
+
+Décision de Blandine : on ne bloque pas le premier test du quota vidéo serveur là-dessus — on avance quand même, ce point reste juste noté comme non résolu, indépendant du chantier en cours.
+
+---
+
+# 🟩 09/09/2026 — QUOTA VIDÉO SERVEUR : IMPLÉMENTÉ (SQL + fonction Mux à passer, index.html livré)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `059b302940924796080305d1e9c5a896` | build **20260908-17** : la cible est envoyée à la création, réconciliation protégée contre les jetons de réservation |
+| `sql-09-09-quota-video.sql` | éditeur SQL Supabase | — | **À PASSER AVANT** de pousser la fonction Mux ci-dessous |
+| `mux-upload-index-quota.ts` | `supabase/functions/mux-upload/index.ts` | — | **À POUSSER APRÈS** le SQL |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `1a82b922…` (20260908-16, garde-fou vidéo). Chantier en 4 tours d'audit (RLS, schéma/concurrence, ordre de création, invariants de sécurité) avant tout code — détail complet dans la conversation du 09/09.
+
+## LES DEUX INVARIANTS VÉRIFIÉS AVANT DE CODER
+
+1. **Identité fiable** : la fonction SQL ne prend qu'une étiquette de portée (`p_cible`) en paramètre — verrou, comptage et réservation reposent exclusivement sur `auth.uid()`. Côté fonction Mux, le jeton de connexion déjà validé de l'appelante est transmis tel quel à PostgREST — jamais la clé service, jamais un identifiant venu du corps de la requête.
+2. **`profiles.quota_video_illimite` protégée** : `majProfil()` écrit librement dans `profiles` pour son propriétaire (confirmé dans le code) — une policy RLS s'applique par ligne, pas par colonne, donc rien n'empêchait structurellement cette nouvelle colonne de passer par la même porte. Corrigé par un `REVOKE UPDATE` ciblé sur cette seule colonne, indépendant du texte exact de la policy existante, sans toucher aux mises à jour normales du profil.
+
+## CE QUI A ÉTÉ LIVRÉ
+
+**SQL** (`sql-09-09-quota-video.sql`) : colonne `profiles.quota_video_illimite` + son `REVOKE` ; fonction `hype_reserver_place_video(p_cible)` — verrou consultatif par utilisateur, plafond (illimité > Premium via `abonnements_premium` > gratuit), comptage du reliquat legacy sur les **3** destinations (album/commentaires/souvenirs, exclusion structurelle des URL déjà tracées par Mux), comptage des traces actives (`ready` compté **seulement si sa destination existe encore** — vérifié que rien ne nettoie `videos_mux` à la suppression, sur aucune des 4 surfaces), réservation atomique si une place existe.
+
+**Fonction `mux-upload`** (`mux-upload-index-quota.ts`) : appelle `hype_reserver_place_video` avant tout contact avec Mux ; refuse `QUOTA_REACHED` (403) sans jamais appeler Mux si la place manque ; refuse `QUOTA_CIBLE_MANQUANTE` (400) si un vieux client n'envoie pas encore de cible ; remplace le jeton de réservation par le vrai `upload_id` une fois Mux répondu ; **si Mux refuse explicitement après une réservation réussie, la place est libérée tout de suite** (pas d'attente de 2 h). ⚠️ **Le support MP4 (`mp4_support`) n'a pas été réintégré** — toujours pas confirmé quelle version est en ligne (audit resté sans réponse) ; commentaire laissé dans le fichier pour ne pas l'oublier au moment de pousser.
+
+**`index.html`** (build 20260908-17) — 4 lignes, aucune autre touchée : les 3 endroits qui créent un envoi Mux (album, commentaire/fil, souvenir) transmettent désormais la cible, nécessaire à la réservation serveur ; `hypeMuxReconcilier` ne ferme plus jamais un jeton `reservation:` sur un simple « introuvable » — seule l'expiration à 2 h le peut, pour éviter qu'une réservation saine se fasse fermer par erreur si la réconciliation tombe dans les toutes premières secondes.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` sur les 18 blocs (0 erreur). Fonction Mux vérifiée avec `tsc` (un vrai contrôle de typage, pas un simple comptage) : une seule alerte, sur une ligne **héritée intacte du fichier original**, sans rapport avec cette livraison, laissée telle quelle. Diff d'`index.html` relu : 4 lignes exactement.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Envoi normal, sous le plafond → comme toujours.
+2. Vidéo depuis album / fil-onglet Vidéos / souvenirs → chacune passe par la réservation.
+3. Compte au plafond → refus **avant** tout appel Mux (vérifiable : aucune nouvelle vidéo sur le tableau de bord Mux).
+4. Une vidéo en échec → sa place redevient disponible immédiatement.
+5. Compte illimité (`quota_video_illimite = true`) → jamais bloqué.
+6. Fermeture/réouverture pendant l'encodage → réconciliation normale une fois le vrai `upload_id` en place.
+7. Si possible : plusieurs envois quasi simultanés proche du plafond → un seul passe.
+
+## DETTES CONFIRMÉES, NON TRAITÉES (comme convenu)
+
+Nettoyage des assets Mux orphelins (réservation jamais transformée en vrai upload + destination supprimée pendant l'encodage — un seul chantier, regroupé) ; version de `mux-upload` réellement déployée toujours pas confirmée ; nettoyage du code mort recensé au 07-08/09 ; asymétrie de policy DELETE souvenirs/commentaires ; SELECT public sur commentaires/souvenirs.
+
+---
+
+# 🟩 09/09/2026 — TESTS iPHONE CONFIRMÉS PAR BLANDINE, chVids REFERMÉ
+
+Blandine a testé la convergence Mux (commentaires + souvenirs) sur iPhone : « Elle marche bien ». Confirme en particulier qu'une vidéo postée depuis le bouton propre de l'onglet Vidéos apparaît bien dans sa grille — la question laissée ouverte sur `chVids` (qui ne regarde techniquement que les albums et la galerie souvenirs, jamais les commentaires) n'est donc pas gênante en pratique. **Point refermé, aucune modification nécessaire.**
+
+Chantier « convergence vidéo legacy vers Mux » (3 chemins + garde-fou) : **validé sur iPhone, terminé.**
+
+---
+
+# 🟩 09/09/2026 — GARDE-FOU VIDÉO DANS envoyerPhoto
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1a82b9223421d8cb354a45c8a8ab6fb6` | build **20260908-16** : `envoyerPhoto` refuse explicitement les fichiers vidéo |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `bff95fd1…` (20260908-15, chemin souvenirs). Seul point de la dette listée après la livraison souvenirs qui ne dépendait pas des tests iPhone de Blandine — traité seul, sur « Vas y ».
+
+## CE QUI A ÉTÉ FAIT
+
+`envoyerPhoto` refuse désormais explicitement un fichier vidéo (`{ url: null, error: "envoyerPhoto : fichier vidéo refusé (routage vers Mux attendu avant cet appel)" }`) au lieu de compter sur l'échec silencieux de `preparerPhotoMaster` (qui fonctionnait par accident depuis l'action 4b). Les **11 appelants** d'`envoyerPhoto` vérifiés un par un avant modification : `ajouterCheval`, `ajouterCavalier`, `modifierCheval`, avatar/bannière (×2), la fiche cheval (×2) — tous alimentés par des sélecteurs `accept="image/*"`, jamais de vidéo possible ; le chemin album (déjà filtré en amont) ; `posterCommentaire` et `ajouterSouvenir` (déjà routés vers Mux avant tout appel à `envoyerPhoto` depuis les deux livraisons précédentes). Aucun des 11 n'a besoin d'envoyer une vidéo par ce chemin — le garde-fou ne devrait donc jamais se déclencher en usage normal, c'est un filet de sécurité, pas un cas à couvrir.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; diff : 1 ligne modifiée (ajout du garde-fou).
+
+## DETTE RESTANTE, NON TRAITÉE
+
+`chVids` (onglet Vidéos) qui ne regarde pas les commentaires — en attente de confirmation sur iPhone. Nettoyage du code Storage vidéo désormais inutilisé — explicitement différé après validation complète des 3 chemins convergés. Quota vidéo côté serveur — action séparée, pas encore planifiée en détail.
+
+---
+
+# 🟩 09/09/2026 (suite) — CONVERGENCE VIDÉO LEGACY VERS MUX : CHEMIN SOUVENIRS ÉCURIE LIVRÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `bff95fd14ae9310ba3f87ef0f4d2bfdf` | build **20260908-15** : `ajouterSouvenir` converge vers Mux |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `dbdadf17…` (20260908-14, chemin commentaires). Dernière brique du chantier « convergence vidéo legacy vers Mux » — les 3 anciens chemins Supabase Storage brut sont maintenant tous sur Mux.
+
+## RECENSEMENT AVANT CODE (bien plus simple que commentaires)
+
+Un seul écrivain (`ajouterSouvenir`, appelée par `soumettreSouvenir` dans `EcranGererEcurie`), un seul lecteur/rendu (la grille 3 colonnes de la même page, `souvenirs.map(...)`). Pas d'équivalent de `MurHype`/`SectionCommentaires`/`useAnnonces` à couvrir ici. Vérifié : aucune tuile de cette grille n'était cliquable ni supprimable avant ce jour (ni pour une photo, ni pour une vidéo) — pas de régression à ce niveau.
+
+## CE QUI A ÉTÉ LIVRÉ
+
+- **`ajouterSouvenir`** : branche au début, vidéo → `hypePosterVideoSouvenir` (nouveau), photo → **chemin strictement inchangé**.
+- **`hypePosterVideoSouvenir`** : même séquence que `hypePosterVideoCommentaire` (ligne `souvenirs` créée `uploading` avant la trace, `errored` immédiat si la trace échoue, PUT + attente en arrière-plan) — mais sans `cible`-cheval : `souvenirs` n'a que `user_id`/`ecurie`. Reconciliation par le namespace `"ecurie:" + user_id`, **déjà utilisé ailleurs dans le code pour « mon mur »** (trouvé dans un commentaire du code lors de l'audit du 09/09, repris tel quel plutôt qu'inventé) — jamais parsé pour le routage, qui reste toujours `destination_type`/`destination_id` (garde-fou validé).
+- **Réconciliation** appelée dans `charger()` de `EcranGererEcurie`, juste après le chargement des souvenirs.
+- **Rendu** : la tuile de la grille affiche « En préparation… » ou « Vidéo non envoyée » avec un bouton Supprimer **uniquement pour le cas en échec** — capacité ajoutée pour ce seul cas précis (aucune autre tuile n'était supprimable avant, aucune ne l'est devenue).
+- **Fonctions réutilisées telles quelles**, sans modification : `hypeVideoTraceCreer`, `hypeLigneMediaPasserReady`, `hypeLigneMediaMarquerErreur`, `hypeLigneMediaAlignerStatut`, `hypeMuxReconcilier` — toutes déjà génériques depuis la livraison du chemin commentaires, aucune n'a eu besoin d'être touchée pour souvenirs.
+
+## NON TOUCHÉ
+
+Commentaires (fil, onglet Vidéos) ; albums ; `envoyerPhoto`/`preparerPhotoMaster` ; quotas.
+
+## VÉRIFIÉ (sans iPhone)
+
+Premier essai du patch de la tuile de grille **rejeté par l'ancre** (recherche de ligne non unique) — cause identifiée immédiatement : ce point précis du fichier stocke un accent (« ajoutée ») en séquence d'échappement JS littérale (`\u00e9`) plutôt qu'en caractère UTF-8 direct, contrairement à la majorité du fichier ; mon texte de remplacement avait été tapé avec un caractère réel. Corrigé en reconstruisant le remplacement à partir du texte exact déjà présent dans le fichier plutôt qu'en le retapant — aucune tentative à l'aveugle, rien poussé entre-temps. `node --check` sur les 18 blocs après chaque étape ; diff relu ; chaque fonction confirmée définie exactement une fois.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Ajouter une vidéo depuis « Gérer mon écurie » → « En préparation… » tout de suite dans la grille, se complète toute seule.
+2. Fermer/rouvrir Hype pendant l'encodage, revenir sur cet écran → se complète à la réouverture.
+3. Mode avion juste après avoir choisi la vidéo → « Vidéo non envoyée » + bouton Supprimer, qui la retire bien de la grille.
+4. Ajouter une photo → comportement strictement identique à avant.
+
+## CHANTIER « CONVERGENCE VIDÉO LEGACY VERS MUX » — BILAN
+
+Les 3 chemins identifiés le 08/09 (onglet Vidéos, composer du fil, souvenirs écurie) sont maintenant tous sur le pipeline Mux persistant, avec trace avant tout envoi, réconciliation après fermeture, et affichage honnête des échecs. Reste en dette, non traité : le garde-fou vidéo dans `envoyerPhoto` (une vidéo ne devrait plus jamais pouvoir l'atteindre, mais rien ne l'empêche formellement) ; `chVids` (onglet Vidéos) qui ne regarde pas les commentaires, à confirmer gênant ou non sur iPhone ; le nettoyage du code Storage désormais inutilisé pour les vidéos ; le quota vidéo toujours côté navigateur uniquement.
+
+---
+
+# 🟩 09/09/2026 — CONVERGENCE VIDÉO LEGACY VERS MUX : CHEMIN COMMENTAIRES LIVRÉ (onglet Vidéos + fil)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `dbdadf176da117256f0e1f996fe1ff5e` | build **20260908-14** : posterCommentaire (onglet Vidéos + fil) converge vers Mux |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `eacb0791…` (20260908-12, action dédiée ajout photo atomique). SQL déjà passé le 09/09 (audit RLS, voir plus bas).
+
+## AUDIT RLS FAIT AVANT TOUT CODE (09/09)
+
+`commentaires` et `souvenirs` n'avaient **aucune policy UPDATE** — les GRANT bruts existaient mais sans policy, un `UPDATE` aurait modifié 0 ligne, jamais d'erreur. SQL passé avec succès : `videos_mux` + `destination_type` (défaut `'album'`, donc les lignes de l'action 1 restent valides sans migration) + `destination_id` ; `commentaires` et `souvenirs` + colonne `statut` (mêmes 4 états que `videos_mux`, défaut `'ready'`, vérifié qu'aucun affichage existant ne la lit) ; + 1 policy `UPDATE` par table (auteur seul, même principe que les policies INSERT/DELETE déjà en place — pas de RPC dédiée, une vidéo = une ligne indépendante, pas de risque de concurrence comme pour les albums). Point de sécurité trouvé en marge, **non traité, hors périmètre** : la policy SELECT de ces deux tables est `true` pour tout le monde y compris non connecté.
+
+## INCIDENT ÉVITÉ — chVids (09/09, avant la livraison ci-dessus)
+
+Diagnostic erroné de ma part sur l'onglet Vidéos : j'ai cru `chVids` mort depuis le 05/09 (recherche textuelle de `setChVids(` qui ne trouvait rien), et corrigé en le dérivant de `mediasInfo`. **Faux** : `chVids` est en réalité alimenté via `onVideosTrouvees: setChVids`, une référence passée à `AlbumsPromus` (pas un appel direct, donc invisible à ma recherche) — `AlbumsPromus` scanne les vidéos des albums + de la galerie souvenirs et les remonte par ce biais. Le patch fautif (qui aurait provoqué un `ReferenceError` en cassant potentiellement le rendu de la fiche cheval) a été détecté et **annulé avant présentation** — jamais poussé, jamais livré. Le fichier était revenu strictement identique au build 20260908-12. Aucune ligne changée sur `chVids` dans la livraison finale de ce jour.
+
+**Dette notée, non traitée** : `chVids` (onglet Vidéos) ne regarde que les albums et la galerie souvenirs, **jamais** les `commentaires` — une vidéo postée par le bouton « + Ajouter une vidéo » de ce même onglet pourrait ne pas apparaître dans sa propre grille. Comportement préexistant, inchangé par cette livraison (le transport passe par Mux, l'affichage dans cet onglet précis reste ce qu'il était). À vérifier sur iPhone.
+
+## CE QUI A ÉTÉ LIVRÉ
+
+**Fonctions ajoutées** (bloc Mux, à côté des fonctions de l'action 1) :
+- `hypeLigneMediaTable(destType)`, `hypeLigneMediaMarquerErreur`, `hypeLigneMediaAlignerStatut`, `hypeLigneMediaPasserReady` — le pendant de `hypeVideoPasserReady` (action 1) pour `commentaires`/`souvenirs` : `UPDATE` conditionnel simple (`WHERE statut <> 'ready'`), pas de RPC. Distingue « déjà ready, rien à dupliquer » de « ligne supprimée pendant l'encodage » (garde-fou 3).
+- `hypeCartePlaceholderMedia(statut, texteLabel, compact)` — rendu partagé « Vidéo en préparation… » / « Vidéo non envoyée ».
+- `hypePosterVideoCommentaire` — le nouveau chemin vidéo : ligne `commentaires` créée `uploading` **avant** la trace (apparaît tout de suite, option A) → trace `videos_mux` (`destination_type: 'commentaire'`) → si la trace échoue, la ligne déjà créée est aussitôt `errored` (jamais bloquée sans espoir) → PUT + attente en arrière-plan, sans bloquer le retour de la fonction.
+
+**Fonctions modifiées** :
+- `hypeVideoTraceCreer` : accepte `destination_type`/`destination_id` (le chemin album ne change pas une ligne : il ne les passe jamais, la colonne reste à son défaut `'album'`).
+- `hypeMuxReconcilier` : lit les nouvelles colonnes ; branche sur `hypeVideoPasserReady` (album, inchangé) ou `hypeLigneMediaPasserReady` (commentaire) selon le cas ; **garde-fou 1 (réparation des divergences)** : à chaque transition `uploading→processing` et à chaque passage en erreur, la ligne destination est désormais réalignée (`hypeLigneMediaAlignerStatut` / `hypeLigneMediaMarquerErreur`), pas seulement la trace.
+- `posterCommentaire` : branche au tout début — fichier vidéo → `hypePosterVideoCommentaire` ; photo → chemin **strictement inchangé**.
+
+**Rendus** (« et tous ses rendus réutilisés », recensement complet du 09/09) :
+- `MurHype` (fil — horse/club/communauté/annonces) : carte du rail (208 px) et carte complète du fil, toutes deux affichent le placeholder si `statut !== 'ready'`. Le bouton Supprimer déjà présent dans l'en-tête de la carte (proprio ou modératrice) couvre déjà une vidéo en échec — rien ajouté pour ça.
+- `SectionCommentaires` (widget de commentaires générique, réutilisé ailleurs) : même placeholder, sans bouton supprimer (ce composant n'en a pour aucun commentaire aujourd'hui — pas de régression).
+- `useAnnonces` (bandeau d'annonces) : lignes non `ready` **exclues** (pas de placeholder dans un bandeau).
+- 3 endroits confirmés **déjà protégés sans rien changer** (filtrent tous sur `photo_url` vrai, donc une ligne `photo_url: null` en est naturellement exclue) : le picker « Choisis les souvenirs », le rail de l'onglet Photos, `mediasInfo`.
+
+**Réconciliation déclenchée en plus** (en plus de l'ouverture d'un album, inchangée) : à l'ouverture du fil (`MurHype`, sur sa `cible`) et de l'onglet Vidéos (`HypeResultatsHote`, sur `cibleCh`) — même mécanisme, même verrou anti-double-exécution déjà en place.
+
+## NON TOUCHÉ
+
+Souvenirs écurie (action séparée, plus tard) ; le chemin album en entier ; `envoyerPhoto`/`preparerPhotoMaster` ; les quotas (aucune vérification de durée ni de plafond ajoutée à ce nouveau chemin — dette identique aux 3 chemins legacy avant convergence, non aggravée, non traitée) ; le garde-fou vidéo dans `envoyerPhoto` (toujours en dette).
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` sur les 18 blocs après CHAQUE étape du patch (4 passes), pas seulement à la fin — leçon tirée de l'incident chVids du même jour. Diff relu ligne à ligne et confirmé contre le contenu réel (pas seulement le compte de lignes, qui peut être trompeur sur un diff textuel). Chaque nouvelle fonction vérifiée présente exactement une fois. Aucune ligne perdue.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Poster une vidéo via le fil (composer) sur la fiche d'un cheval → apparaît tout de suite « Vidéo en préparation… », se complète toute seule après l'encodage.
+2. Poster une vidéo via l'onglet Vidéos (« + Ajouter une vidéo ») → même chose ; **et noter si elle apparaît aussi dans la grille de cet onglet** (dette `chVids` ci-dessus, à confirmer).
+3. Fermer Hype pendant l'encodage, rouvrir, aller sur le fil ou l'onglet Vidéos → la vidéo se complète toute seule.
+4. Simuler un échec (mode avion juste après avoir choisi la vidéo) → « Vidéo non envoyée » visible, supprimable (fil) depuis le bouton habituel.
+5. Poster une photo (fil, onglet Vidéos, `SectionCommentaires` si trouvable ailleurs) → comportement strictement identique à avant.
+6. Bandeau d'annonces : vérifier qu'aucune ligne vide n'apparaît pendant qu'une vidéo est en préparation ailleurs.
+
+## À VENIR — NE PAS COMMENCER SANS « VAS-Y »
+
+Souvenirs écurie (même schéma, action séparée) ; nettoyage du dossier « chVids ne regarde pas les commentaires » si confirmé gênant ; garde-fou vidéo dans `envoyerPhoto` ; quota vidéo côté serveur ; nettoyage du code legacy. Action 1 (tests réels albums) toujours bloquée par Mux plein.
+
+---
+
+# 🟩 08/09/2026 (23 h) — AJOUT PHOTO ATOMIQUE : LA DETTE DE CONCURRENCE FERMÉE CÔTÉ PHOTO
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `eacb07913f0f10ed1826e9c571064e74` | build **20260908-12** : chaque photo ajoutée à l'album immédiatement, plus de réécriture en bloc |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `abd6b009…` (20260908-11, action 4b). 4b confirmée sur iPhone par Blandine avant cette livraison. Aucun SQL nouveau, aucun module `hype-*.js`.
+
+## LE PROBLÈME FERMÉ ICI (point 5 de l'ordre de travail validé)
+
+Depuis l'option B de l'action 1, la boucle photo accumulait les URL envoyées dans une variable (`urls`, partie du tableau `alb.photos` lu à l'ouverture), puis réécrivait le tableau ENTIER de l'album en une seule fois à la fin (`majAlbumCheval(albId, { photos: urls })`). C'était le schéma « lire → modifier → écrire » identifié comme risque de perte d'écriture (deux cavalières postant dans le même album partagé au même moment) — confirmé dans le code le 07/09, volontairement laissé en dette à l'époque.
+
+## CE QUI A ÉTÉ FAIT
+
+Chaque photo réussie est désormais ajoutée à l'album **immédiatement**, une par une, via `hypeAlbumAjouterMedia` — exactement la même fonction SQL atomique et idempotente (`album_ajouter_media`, une seule instruction `UPDATE … array_append … WHERE NOT déjà présente`, `SECURITY INVOKER`) qui sert déjà les vidéos depuis l'action 1. Plus de variable `urls`, plus de `majAlbumCheval(albId, { photos: … })` dans le chemin photo, plus de tableau réécrit en bloc pour les photos. Toujours photos d'abord, vidéos ensuite (option B inchangée) — mais chacune s'écrit désormais pour son propre compte. Erreur d'écriture (refus RLS, album disparu) traitée comme pour les vidéos : la photo est comptée en échec avec la raison, jamais silencieuse.
+
+## NON TOUCHÉ, VÉRIFIÉ
+
+`videos_mux`, le bloc Mux entier, `envoyerPhoto`/`preparerPhotoMaster` (action 4b), les quotas, les vignettes (action 3c), le viewer, RLS.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; `var urls = (alb.photos…` : 0 occurrence restante ; `{ photos: urls }` : absent du chemin photo ; `hypeAlbumAjouterMedia` : 3 appels (1 nouveau pour les photos, 2 déjà existants côté vidéo) ; diff relu.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Envoyer plusieurs photos d'un coup dans un album → toutes apparaissent, comme avant.
+2. Si possible : deux comptes ajoutant chacun une photo au même album partagé presque en même temps → les deux présentes, aucune écrasée (même esprit que le test vidéo prévu pour l'action 1, non encore fait faute de Mux débloqué).
+3. Photo + vidéo dans le même envoi → les deux arrivent, rien de cassé.
+
+## À VENIR — NE PAS COMMENCER SANS « VAS-Y »
+
+Photo de fiche cheval / avatar (double compression + base64 localStorage) ; convergence des 3 anciens chemins vidéo Supabase vers Mux ; quota vidéo côté serveur ; vérification des deux versions de `mux-upload` ; nettoyage du code mort. Action 1 (tests réels vidéo) toujours bloquée par Mux plein.
+
+---
+
+# 🟩 08/09/2026 (22 h) — ACTION 4a CLOSE (DÉCISION MASTER PHOTO) + ACTION 4b LIVRÉE (chemin album)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `abd6b009d0cf581dbfe68aa1e2f7f2c4` | build **20260908-11** : réduction unique du master photo, chemin album uniquement |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `b27789d3…` (20260908-10, action 3c-4). Aucun SQL, aucun module `hype-*.js`.
+
+## ACTION 4a — CLOSE. DÉCISION VALIDÉE PAR BLANDINE
+
+Benchmark sur 6 vraies photos iPhone puis mini-test final sur les 2 cas les plus durs (texture fine du museau, blanc sur blanc des rubans), comparant Original / 2048px-q85 / 2048px-q90 / 2560px-q90. Constat : à 2048 px, passer q85→q90 coûte +24,6 % de poids pour un gain quasi invisible à l'œil ; le vrai gain de netteté vient du nombre de pixels conservés. **Réglage retenu pour le futur master photo Hype : grand côté max 2560 px, JPEG q0,90, jamais d'agrandissement ; un fichier déjà ≤ 2560 px n'est ni redimensionné ni réencodé.** Point non résolu et assumé : aucune vraie photo pleine résolution de cheval à robe noire obtenue malgré 3 séries d'envois (captures d'écran de l'app, exports déjà réduits par des photographes, extraits de vidéo) — dette notée, n'a pas bloqué la décision (robes bai/alezan foncé incluses dans les 6 cas).
+
+## ACTION 4b — CHEMIN ALBUM PHOTO UNIQUEMENT — LIVRÉE, À TESTER SUR iPHONE
+
+**Mini-audit fait avant de coder** : `envoyerPhoto` (fonction globale, appelée par `importerFichiers`) uploadait le `File` reçu tel quel, sans transformation, chemin `user.id/Date.now().ext`, pas de `contentType` explicite. Aucune trace de HEIC/HEIF dans tout le fichier — pas un oubli : Safari convertit déjà en JPEG avant que la page ne reçoive le fichier (`accept="image/*"`). Aucun code de rotation n'existait, n'en avait pas besoin (EXIF intact tant qu'il n'y a pas de canvas). **Trouvaille** : `traiterPhotoHeyBaby` (Hey Baby, plus bas dans le fichier) fait déjà exactement ce qu'il fallait — `createImageBitmap(fichier, { imageOrientation: "from-image" })` avec repli sans option — motif repris à l'identique plutôt qu'inventé.
+
+- **Constantes centralisées** (juste avant `envoyerPhoto`) : `PHOTO_MASTER_MAX_EDGE = 2560`, `PHOTO_MASTER_JPEG_QUALITY = 0.90` — prêtes à être réutilisées par les prochaines actions (fiche cheval, avatar) sans dupliquer les valeurs.
+- **Fonction ajoutée** `preparerPhotoMaster(fichier)` : lit les dimensions réelles via `createImageBitmap` ; si grand côté ≤ 2560 → **aucune transformation**, le fichier original part tel quel (`transformee: false`) ; sinon → réduction proportionnelle en une seule passe (`echelle` toujours < 1, jamais d'agrandissement), export JPEG q0,90 — **sauf PNG** (capture, transparence), gardé en PNG pour ne pas écraser la transparence en noir. Décodage impossible (format imprévu, fichier corrompu) → fichier original envoyé tel quel, jamais bloqué, jamais corrompu.
+- **`envoyerPhoto` modifiée** : extension/chemin/upload passent désormais par `master` ; `contentType` explicite ajouté à l'upload ; la valeur de retour gagne un `master: {...}` diagnostique (transformee, dimensions, poids avant/après), rien retiré.
+- **`importerFichiers`** : une seule ligne ajoutée dans la boucle photo — un log dans le journal d'envoi déjà existant (action 1), **uniquement si le décodage a échoué** (pas sur le chemin normal, pour respecter « messages utilisateur inchangés sauf erreur réelle »).
+- **Non touché, vérifié** : `majAlbumCheval`, tout le bloc vidéo/Mux, `album_ajouter_media`, `videos_mux`, quotas, RLS, viewer, vignettes (action 3c), base64/localStorage de la fiche.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; diff : 5 lignes modifiées dans `envoyerPhoto`/`importerFichiers`, exactement celles prévues ; `videos_mux`/`album_ajouter_media` : même nombre d'occurrences avant/après à un près chacun (l'écart vient de mes commentaires, pas du code) ; arithmétique de redimensionnement testée en isolation (2576×1932 → 2560×1920, identique au chiffre du benchmark ; jamais d'agrandissement ; limite 2560 inclusive).
+
+## NON VU À L'ÉCRAN — checklist iPhone (après avoir poussé le 20260908-11)
+
+1. Grande photo portrait (>2560 px) → album normal ; dans Supabase Storage, fichier stocké ≤ 2560 px de haut, quelques centaines de Ko.
+2. Grande photo paysage → même vérif, ≤ 2560 px de large.
+3. Photo déjà petite (<2560 px, ex. téléchargée) → poids identique à l'original dans Supabase (pas réencodée).
+4. Photo sombre/difficile → rendu correct en plein écran.
+5. Sélection photo + vidéo ensemble → la vidéo suit exactement le chemin Mux habituel.
+6. Chaque photo ouverte en plein écran → orientation correcte (pas de travers).
+
+## RISQUES OUVERTS
+
+Aucun test réel exécuté (impossible depuis ici) — checklist ci-dessus à faire par Blandine avant de considérer 4b close. `preparerPhotoMaster` décode en mémoire avant l'envoi : sur une très grosse photo et un vieil iPhone, potentiellement 1-2 s de plus qu'avant, non mesuré en réel.
+
+## À VENIR — NE PAS COMMENCER SANS « VAS-Y »
+
+Photo de fiche cheval / avatar (double compression + base64 localStorage prioritaire, décrit dans l'audit du 07/09, pas encore repris) ; ajout photo atomique sur `albums_cheval.photos` (dette de concurrence confirmée, action dédiée sur le même principe que `album_ajouter_media`) ; convergence des 3 anciens chemins vidéo Supabase vers Mux ; quota vidéo côté serveur ; vérification des deux versions de `mux-upload` ; nettoyage du code mort recensé. Action 1 (tests réels vidéo) toujours bloquée par Mux plein.
+
+---
+
+# 🟩 08/09/2026 (19 h 30) — ACTION 3c-4 : LA CARTE PHOTO DU FIL — 3c TERMINÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b27789d36ce99c40ab7427904a954dfe` | build **20260908-10** : carte photo du rail « fil » → `vignetteHype(pR.photo_url, 420, 380)`, lazy, repli original |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `01feac2b…` (20260908-9, action 3c-3). Modules et SQL inchangés.
+
+## CORRECTION SUR MOI-MÊME AVANT DE FAIRE
+
+En relisant le code pour ce 4e point, deux choses que j'avais mal nommées dans le compte rendu de l'action 2 :
+- **« Grille souvenirs publiés »** n'existe pas en tant que grille : c'était en fait la liste « Propositions de photos » (icônes 46×46, déjà minuscules, rien à optimiser) et le texte d'état vide « tes souvenirs publiés » de la carte « Ajoute tes premières photos ». Étiquette fautive de ma part, retirée.
+- **Le rail « Le voir en mouvement »** (bande sous la vidéo, cartes 210×190) est **déjà** en vignettes depuis le **28/08** (`vignetteHype(uP, 420, 380)`, lazy) : rien à faire, il n'avait pas besoin de cette action.
+- En cherchant ces deux-là, j'ai trouvé le vrai point manquant : dans le rail **« fil » (Moments encadrés)**, la branche **vidéo** de chaque carte avait été traitée en action 2 (`hypeMiniatureVideo`), mais la branche **photo** de la même carte (`pR.photo_url`, cartes 208×178) était restée sur l'original brut. C'est elle qui a été corrigée ici.
+
+## CE QUI A ÉTÉ FAIT (1 ligne)
+
+`<img>` de la carte photo du rail fil : `src = vignetteHype(pR.photo_url, 420, 380)` — même convention que le rail « Le voir en mouvement » juste au-dessus dans la fiche — `loading="lazy"` + `decoding="async"`, `onError` → l'original une fois.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; diff : 1 ligne + marqueur.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Fiche d'un cheval actif : le rail sous le composer (cartes qui défilent) charge plus vite, y compris les cartes photo (texte + vidéo l'étaient déjà).
+
+## ACTION 3c TERMINÉE — bilan des 4 livraisons (20260908-6 à -10)
+
+Grille album ouvert, onglet Photos, feuille de sélection, carte photo du fil : toutes en vignette explicite (`vignetteHype`), lazy, repli original, clé stable par URL. Reste dans l'action 3 : **3d** — l'animation flottante permanente et le recalcul de netteté au scroll de la grille de l'onglet Photos (`souvFlot`/`souvNet`/`souvDoux`) — décision de design qui revient à Blandine, pas un bug technique. Sans 3d, l'action 3 peut être considérée close côté correctifs ; **action 4** (une seule réduction photo à l'envoi) reste la suite proposée si Blandine le souhaite.
+
+---
+
+# 🟩 08/09/2026 (19 h) — ACTION 3c-3 : LA FEUILLE « CHOISIS LES SOUVENIRS » EN VRAIES VIGNETTES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `01feac2b723b2caa8eed8b99b9e44cb3` | build **20260908-9** : feuille de sélection → `vignetteHype(u, 500, 500)`, lazy, repli original, clé URL+position |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `1813f8cc…` (20260908-8, action 3c-2). Modules et SQL inchangés. Troisième et avant-dernière grille du plan 3c.
+
+## CE QUI A ÉTÉ FAIT (2 lignes)
+
+- `<img>` de chaque case : `src = vignetteHype(u, 500, 500)` — 500 px et non 320, cette feuille n'a que **2 colonnes** (choix de Blandine du 29/08 pour de plus grandes vignettes), les cases sont sensiblement plus grandes que dans les autres grilles. `loading="lazy"` + `decoding="async"`, `onError` → l'original une fois.
+- Clé de la case : `u + "@" + iD` au lieu de l'index seul.
+- Non touché : la case cochée/décochée, l'opacité 0,82 au repos, le pictogramme lecture des vidéos (action 2).
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; diff : 2 lignes + marqueur.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Ouvrir « Choisis les souvenirs » sur un cheval avec beaucoup de photos publiées : vignettes nettes malgré les grandes cases, apparition plus rapide.
+2. Cocher/décocher : rien de cassé (l'opacité et le contour changent toujours).
+
+Reste : **3c-4** (rail « Le voir en mouvement » + grille « souvenirs publiés »), dernière grille de 3c, puis **3d** (animations, sur sa décision) pour clore l'action 3.
+
+---
+
+# 🟩 08/09/2026 (18 h 30) — ACTION 3c-2 : L'ONGLET PHOTOS (CHRONOLOGIE) EN VRAIES VIGNETTES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1813f8ccef7d53160eca6177e1b86a4f` | build **20260908-8** : grille de l'onglet Photos → `vignetteHype(u, 320, 320)`, lazy, repli original, clé URL+position |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `64e7be69…` (20260908-7, correctif 16 px). Modules et SQL inchangés. Suite de 3c-1 (grille de l'album ouvert), même traitement appliqué à la deuxième grille.
+
+## CE QUI A ÉTÉ FAIT (2 lignes, même geste que 3c-1)
+
+- `<img>` de chaque case (`souvImg`) : `src = vignetteHype(u, 320, 320)` au lieu de l'original réécrit en 900 px par l'observateur, `loading="lazy"` + `decoding="async"`, `onError` → l'original une fois. `onLoad: auAffichage` conservé (l'effet d'apparition en fondu n'est pas touché).
+- Clé de la case : `u + "@" + i9` au lieu de `"p" + i9` — même correctif qu'en 3c-1, pour qu'une case ne se retrouve jamais réutilisée pour une autre photo.
+- **Non touché, volontairement** : l'animation flottante (`souvFlot`) et le recalcul de netteté au défilement (`souvNet`/`souvDoux`, `getBoundingClientRect` sur toutes les cases à chaque frame de scroll) — c'est **3d**, une décision de design qui revient à Blandine, pas un bug.
+- Vidéos de la grille : déjà en `hypeMiniatureVideo` (action 2), inchangées.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; diff : 2 lignes + marqueur.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Onglet Photos d'une fiche bien fournie : vignettes plus rapides, nettes.
+2. Défiler : l'effet de mise au point au centre fonctionne toujours (3d n'a rien changé ici).
+3. Tap sur une case → visionneuse normale.
+
+Reste dans l'action 3 : **3c-3** (feuille de sélection), **3c-4** (rail « Le voir en mouvement » + grille « souvenirs publiés »), **3d** (animations de la grille Photos, sur sa décision).
+
+---
+
+# 🟩 08/09/2026 (18 h) — 3 CHAMPS PASSÉS À 16 px : LA PAGE NE RESTE PLUS ZOOMÉE APRÈS UN COMMENTAIRE — SUR sa capture (« ça rame »)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `64e7be69a4621771294c1cf4545707b6` | build **20260908-7** : champ lieu + 2 champs commentaire passés de 13,5/14,5 px à 16 px |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `28098ace…` (20260908-6, action 3c-1). Modules et SQL inchangés. Trouvé sur sa capture (« pb d'affichage des écritures qui se chevauchent », « Identifier » et la barre du bas coupés APRÈS avoir commenté) : ni 3a ni 3b, un mécanisme différent.
+
+## LA VRAIE CAUSE (règle déjà écrite dans Hype le 20/08, pas suivie par 3 champs)
+
+Le code lui-même documente la règle depuis le 20/08 : *« iOS Safari zoome automatiquement sur tout champ de saisie dont la police est inférieure à 16 px, et ne dézoome jamais seul. 16 px est le seuil exact. »* Trois champs y échappaient : le champ **lieu** (14,5 px) et les champs **commentaire** des deux visionneuses (13,5 px chacun). Toucher l'un d'eux → iOS zoome la page pour le montrer → fermer le clavier → **iOS ne redézoome pas de lui-même** → la page reste zoomée en permanence : boutons du haut coupés, barre du bas chevauchée, et le rendu ralentit (Safari repeint une page plus grande que l'écran). Rien à voir avec le pincement (3a, déjà bloqué) ni la position de défilement (3b, déjà corrigée) : celui-ci ne dépendait d'aucun geste, seulement de la taille de police au focus.
+
+## CE QUI A ÉTÉ FAIT (3 lignes)
+
+`fontSize` des trois champs (lieu, commentaire album, commentaire fiche) passé à **16 px**, comme partout ailleurs dans l'app où la règle est déjà respectée. Aucun autre champ ni aucune autre taille de texte touchée (les occurrences de 13,5/14,5 px restantes dans le fichier sont des textes d'affichage, pas des champs de saisie — vérifié ligne par ligne).
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; les 3 lignes ciblées relues une par une après patch (`fontSize: 16` confirmé sur chacune) ; diff : 4 lignes (3 champs + marqueur).
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Album → commenter une photo → fermer le clavier → fermer la visionneuse : la page **ne reste pas zoomée**, rien ne dépasse.
+2. Fiche → même test sur le champ commentaire.
+3. Album → champ **lieu** → même test.
+4. Une fois écrit dans l'un de ces champs, l'app reste fluide (plus de ralentissement après).
+
+Reste dans l'action 3 : **3c-2/3/4** (grilles restantes), **3d** (animations de la grille Photos, design). Action 2 (miniatures) et 3a/3b restent aussi à confirmer.
+
+---
+
+# 🟩 08/09/2026 (16 h) — ACTION 3c-1 : LA GRILLE DE L'ALBUM OUVERT EN VRAIES VIGNETTES 320 px — SUR « Ok tout est push continue »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `28098ace73315df101484b5f9cd3feea` | build **20260908-6** : grille de l'album ouvert → `vignetteHype(u, 320, 320)` explicite, lazy, repli original, clé URL+position |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `b6fb6724…` (20260908-5, action 3b). Modules et SQL inchangés. Blandine a poussé 2, 3a et 3b (« tout est push ») — leurs checklists iPhone restent à confirmer.
+
+## POURQUOI CETTE GRILLE D'ABORD
+
+C'est la grille qu'elle ouvre le plus (album de 76+ photos). Jusqu'ici chaque case de ~110 px chargeait une image de **900 px** (l'observateur global réécrit toute `<img>` Supabase en 900 px q70), sans `loading="lazy"` : 15 puis 90 images de 100–200 Ko d'un coup à l'ouverture, et à chaque changement de liste la case réutilisée pouvait retomber sur l'**original** de plusieurs Mo (l'observateur refuse de retraiter une balise déjà marquée).
+
+## CE QUI A ÉTÉ FAIT (2 lignes)
+
+- `<img>` de la case : `src = vignetteHype(u, 320, 320)` (service d'images Supabase, `resize=cover`, q72, `#cadre` retiré) — l'observateur ignore les URL déjà en `/render/image/` ; `loading="lazy"` + `decoding="async"` ; `onError` → `replierVignette` (l'original, une fois). Vidéos : déjà en `hypeMiniatureVideo` (action 2), inchangées.
+- Clé de la case : `u + "@" + iU` (URL + position) au lieu de l'index seul — stable à l'ajout, unique même si une URL figure deux fois. L'index seul faisait réutiliser une balise pour une autre photo.
+- Grille par grille, comme prévu : **3c-2** onglet Photos (chronologie, 48 images, animations), **3c-3** feuille de sélection, **3c-4** rail « Le voir en mouvement » et grille « souvenirs publiés » — chacune sur « vas-y ».
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; test Node de `vignetteHype` (URL Supabase avec `#cadre` → `render/image …?width=320&height=320&resize=cover&quality=72` ; URL Mux et chemin local → inchangés) ; diff : 2 lignes.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Ouvrir un gros album : les vignettes apparaissent plus vite, nettes dans leur case ; « +76 » → tout se déplie sans blocage.
+2. Retirer une photo de l'album : les autres restent nettes (pas d'original qui se recharge lourdement).
+3. Tap sur une case → visionneuse plein écran normale (1600 px), inchangée.
+
+---
+
+# 🟩 08/09/2026 (15 h 30) — ACTION 3b : APRÈS LE CLAVIER, LA PAGE REVIENT OÙ ELLE ÉTAIT — SUR « Ok continue »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b6fb672473151db1a27a82f128f72481` | build **20260908-5** : `hypeRecalerApresClavier` ramène à la position mémorisée au focus, plus à zéro |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `804438c0…` (20260908-4, action 3a). Modules et SQL inchangés. Actions 2, 3a et 3b **à valider sur iPhone** (Blandine enchaîne sur son ordre) ; action 1 toujours bloquée par Mux plein.
+
+## LA CAUSE
+
+Le recalage du 05/09 (`hypeRecalerApresClavier`, appelé au blur du champ commentaire des deux visionneuses et du champ lieu de l'album) faisait `scrollTo(0, 0)` : utile contre le calque fixe décalé après le clavier, mais la page derrière remontait en haut — en fermant la visionneuse, on n'était plus où on était (album, chronologie).
+
+## CE QUI A ÉTÉ FAIT (3 lignes + un écouteur global)
+
+- Un écouteur `focusin` global (posé une seule fois, capture) mémorise la position de la page **au moment où un champ prend le focus**, avant que iOS ne fasse défiler pour montrer le clavier.
+- `hypeRecalerApresClavier` revient à **cette** position (`scrollTo(0, y)` + `scrollTop = y`) ; sans mémoire, à zéro comme avant. Les trois points d'appel sont inchangés.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs ; test Node : page à 1234, focus, iOS défile à 1900, blur → retour à 1234 ; sans mémoire → 0. Diff : 3 lignes.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Fiche → défiler bas dans la chronologie → agrandir une photo → écrire un commentaire → fermer le clavier → fermer la visionneuse : la page est **au même endroit**, pas en haut.
+2. Idem dans un album (commentaire, et le champ « lieu »).
+3. Le calque fixe n'est pas décalé après le clavier (le correctif du 05/09 tient toujours).
+
+Reste dans l'action 3 : **3c** (grilles en vignettes 320 px explicites, clés stables, lazy — grille par grille) et **3d** (animations de la grille Photos, design).
+
+---
+
+# 🟩 08/09/2026 (15 h) — ACTION 3a : PINCER ZOOME LA PHOTO, PLUS JAMAIS LA PAGE (les deux visionneuses) — SUR « Vas y là oui »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `804438c03332862e01a62725f6af2356` | build **20260908-4** : visionneuse d'album via `PhotoZoomHype` + blocage du pincement sur les deux voiles |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `baa863a0…` (20260908-3, action 2). Modules et SQL inchangés. Action 2 **toujours à valider sur iPhone** (Blandine a enchaîné sur son ordre) ; action 1 toujours bloquée par Mux plein.
+
+## LA CAUSE (audit du 08/09, confirmée par sa capture)
+
+Le viewport autorise le zoom de page (`maximum-scale=3`). Dans la visionneuse **d'album**, la photo agrandie était une simple `<img>` sans gestion du pincement ; sur la **fiche**, `PhotoZoomHype` bloquait le geste sur l'image seulement. Un pincement parti de la `<img>` nue ou des bandes noires zoomait **toute la page** derrière, et iOS la laissait ainsi : boutons de gauche coupés (« Identifier », « ❤️ 1 »), barre du bas chevauchée. Ce n'était pas la barre qui était mal faite.
+
+## CE QUI A ÉTÉ FAIT (4 lignes touchées + une aide globale)
+
+- Visionneuse d'album : la photo passe par `PhotoZoomHype` (`src` = version 1600, `original` = repli, `onAller` = `naviguerVisu`) — mêmes gestes que sur la fiche : pincer, glisser, double-tap, balayage. **Sans `onFermer`** : un tap sur la photo ne ferme toujours pas ici (le voile, si). Rendu : photo centrée, coins arrondis, 90 % de hauteur max, comme sur la fiche.
+- Les deux voiles (album `visu`, fiche `souvVoile`) portent `ref: hypeRefBloquerPincement` → écouteurs **non passifs** `gesturestart/gesturechange/gestureend` + `touchmove` à deux doigts → `preventDefault`. React enregistre `touchmove` en passif : un `preventDefault` dans un `onTouchMove` React n'aurait eu aucun effet, d'où le `ref`. Un doigt n'est jamais gêné (défilement des commentaires intact). `touchAction: "manipulation"` sur les voiles contre le double-tap zoom de Safari.
+- Aide globale `hypeBloquerPincement(el)` / `hypeRefBloquerPincement`, niveau 0, à côté de `hypeLibererVideo`.
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur) ; test unitaire Node de l'aide (4 écouteurs posés une seule fois, non passifs ; deux doigts et geste → `preventDefault`, un doigt → jamais) ; diff : 4 lignes modifiées.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Album → photo agrandie → pincer : la **photo** zoome, la page derrière ne bouge pas ; relâcher → rien ne reste zoomé.
+2. Pincer en partant des bandes noires (album et fiche) : idem.
+3. Tap sur la photo d'album : ne ferme pas ; tap sur le noir : ferme. Balayage gauche/droite : photo suivante.
+4. Fiche → photo agrandie → commentaire → défilement du panneau au doigt : toujours possible.
+5. Après fermeture : la barre du bas et « Identifier » ne sont plus coupés.
+
+Reste dans l'action 3 : **3b** (recalage après clavier à la position mémorisée, pas à 0 — la page revient en haut quand on ferme), **3c** (grilles en vignettes 320 px, clés stables, lazy), **3d** (animations de la grille Photos, design).
+
+---
+
 # 🟩 08/09/2026 (14 h) — CHANTIER MÉDIAS : AUDIT, ACTION 1 (TRACE VIDÉO), JOURNAL D'ENVOI, ACTION 2 (MINIATURES) — 🟥 MUX PLEIN
 
 | Fichier | Où | md5 | Quoi |
