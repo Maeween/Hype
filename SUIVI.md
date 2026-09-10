@@ -10,6 +10,487 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 10/09/2026 (23 h 45) — ONGLET VIDÉOS VIDE : LA VRAIE VIDÉO MASCOTTE FOURNIE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9c4f5682ba4ff591b05b40e3aa2bd57f` | **inchangé**, toujours build 20260908-37 (md5 revérifié — l'entrée précédente en donnait un faux, cité de mémoire au lieu d'être remesuré) |
+| `titi-onglet-vide.mp4` | **NOUVEAU FICHIER** — à ajouter dans `images/`, même dossier que les deux autres vidéos mascotte | — | vidéo mascotte, fournie par Blandine ce soir |
+
+## CONTEXTE
+
+En vérifiant le symptôme 4 signalé par Blandine (une carte menant vers l'onglet Vidéos qui
+semblait disparaître), découvert que **le code de cet écran vide existait déjà** — mascotte +
+phrase personnalisée avec le nom du cheval (« [nom] attend ses vidéos souvenirs ici… »),
+écrit lors d'un passage antérieur de cette même session, jamais documenté ici à l'époque.
+Le code référence `images/titi-onglet-vide.mp4` — un fichier qui n'existait pas encore
+réellement.
+
+Blandine a fourni ce soir la vraie vidéo (poney qui roule sur le dos, esprit inactif/patient,
+1080×1080, 13,7 s) — remuxée sans perte, exactement sous le nom attendu par le code déjà en
+place. **Aucun code modifié** : uniquement le fichier manquant, maintenant livré.
+
+Confirmé avec Blandine : la carte qui semblait disparaître n'est pas un bug séparé — elle suit
+simplement le nombre de vidéos disponibles, et réapparaît dès qu'une vidéo existe. Symptôme 4
+de l'audit précédent : clos, comportement normal.
+
+## ACTION REQUISE
+
+Ajouter `titi-onglet-vide.mp4` dans `images/`, à côté de `poney-patiente-boucle.mp4` et
+`titi-envoi-video.mp4`.
+
+---
+
+# 🟩 10/09/2026 (23 h 15) — CORRECTIF DOUBLON VIDÉO (onglet Vidéos)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9c4f5682ba4ff591b05b40e3aa2bd57f` | build **20260908-37** (md5 corrigé après coup, voir l'entrée plus récente) |
+
+Remplace le `85026674b…` (20260908-36, galerie cinématique étape A).
+
+## CE QUI A ÉTÉ CORRIGÉ — symptômes 1+2 de l'audit précédent
+
+Confirmé par traçage réel : `chVids` (rail Médias, via `chargerPhotosSouvenirs`) et
+`chVidsCom` lisaient **tous les deux** la table `commentaires` pour les vidéos déjà prêtes,
+par deux chemins totalement indépendants, jamais dédoublonnés entre eux une fois combinés
+dans la même grille. Une vidéo prête pouvait donc s'afficher deux fois, et supprimer l'une
+des deux faisait disparaître les deux — une seule ligne existait réellement en base.
+
+`chVidsCom` ne garde désormais que les vidéos **pas encore prêtes** (en préparation ou en
+échec) — sa vraie raison d'être depuis le début. Les vidéos prêtes restent visibles comme
+avant, via `chVids` uniquement.
+
+## ⚠️ CORRECTION D'UN AUDIT PRÉCÉDENT — symptôme 3 (vidéo d'album perdue)
+
+**Ma conclusion de tout à l'heure était fausse.** J'avais accusé `hypeLigneMediaTable` de
+n'avoir aucun cas pour les albums. En vérifiant plus loin (ne pas se fier aux noms de
+fonctions) : cette fonction n'est **jamais appelée** pour un album — il existe une fonction
+dédiée et déjà correcte, `hypeVideoPasserReady`, réellement utilisée à cet endroit, qui
+écrit bien dans l'album via le mécanisme atomique déjà éprouvé. La réconciliation à la
+réouverture d'un album est elle aussi déjà correctement câblée (délai de grâce de 12 s avant
+lecture, relecture automatique si quelque chose est ajouté après coup).
+
+**Aucun bug précis prouvé pour ce symptôme à ce stade — pas corrigé.** Besoin du vrai journal
+d'un essai raté (visible uniquement par Blandine depuis le correctif du 09/09) pour identifier
+la vraie cause plutôt que de deviner un deuxième correctif faux à la suite.
+
+## VÉRIFIÉ
+
+`node --check` propre. Diff : 3 lignes changées, rien d'autre.
+
+## À FAIRE
+
+Le journal complet d'un prochain essai de vidéo envoyée depuis un album qui échoue à
+apparaître — pour trancher le symptôme 3 avec preuve, pas hypothèse.
+
+---
+
+# 🟩 10/09/2026 (22 h 50) — GALERIE CINÉMATIQUE, ÉTAPE A (composition automatique)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `85026674b9794d0cf7d800db9cf3f067` | build **20260908-36** |
+
+Remplace le `d83812d73…` (20260908-35, correctif M9). Premier vrai chantier "galerie
+cinématique" — étape A uniquement, comme validé : normal / grand / pleine largeur, composition
+automatique déterministe, **aucun stockage, aucun bouton manuel, aucune modification RLS.**
+
+## CE QUI A ÉTÉ FAIT
+
+Seul `ChronologieSouvenirs` touché. Une nouvelle fonction de hachage (aucune équivalente
+n'existait dans le projet) transforme l'adresse d'une photo en nombre stable. Un seul passage,
+**continu sur toute la galerie** (jamais remis à zéro entre deux années, comme explicitement
+demandé), attribue à chaque photo, dans l'ordre où elle sera affichée : normal, grand, ou
+pleine largeur.
+
+**Paramètres de test, pas définitifs** : environ 1 photo candidate sur 6, au moins 5 photos
+d'écart minimum entre deux mises en valeur réelles.
+
+- **Grand** : occupe 2 colonnes sur 3, garde sa propre proportion — volontairement PAS de
+  fusion de lignes de grille (span de lignes), pour éviter les problèmes classiques de hauteur
+  de ligne implicite en CSS Grid quand une tuile plus haute côtoie des tuiles normales.
+- **Pleine largeur** : occupe les 3 colonnes, hauteur plafonnée à 60% de la hauteur d'écran,
+  jamais de recadrage destructif (`object-fit: contain`, pas `cover`).
+- **Repli automatique** : si une photo destinée à "pleine largeur" se révèle verticale une fois
+  chargée, elle devient "grand" à la place — silencieusement, sans jamais forcer un mauvais
+  rendu. Détecté via la vraie taille de l'image une fois chargée (`naturalWidth`/
+  `naturalHeight`), la même lecture déjà utilisée ailleurs dans Hype (vignettes vidéo, mode
+  "auto") — jamais stocké nulle part, un simple ajustement d'affichage.
+
+Le bouton vedette déjà existant continue de fonctionner à l'identique sur les trois formes.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Diff relu : exactement 4 lignes réellement remplacées,
+tout le reste est un ajout pur — rien d'autre dans le composant n'a été touché.
+
+## À TESTER SUR IPHONE (vraie galerie, assez de photos pour juger)
+
+Aucune mise en valeur collée à une autre · pas de trou visible dans la grille (point le plus
+probable à devoir ajuster, la limite technique la plus honnête de cette V1) · pas de saut
+étrange entre deux années · pleine largeur agréable aussi bien en portrait qu'en paysage ·
+clic pour ouvrir la visionneuse inchangé · défilement fluide.
+
+## NON FAIT DANS CETTE ÉTAPE
+
+Traitement immersif "pleine hauteur" (prochaine étape, prototype isolé sur une seule photo
+forcée). Aucune personnalisation manuelle. Aucun SQL, aucune nouvelle colonne, aucun droit
+modifié.
+
+---
+
+# 🟩 10/09/2026 (20 h 35) — PHRASES MASCOTTE ALBUM : LES 12 DE BLANDINE, MÉLANGÉES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `dec0a9ed7944c2e7bfe5c075afb6e3f5` | build **20260908-34** |
+
+Remplace le `82157459c…` (20260908-33, base viewer 2048). Dernier point du chantier « envoi
+photo album ».
+
+Les 6 phrases proposées initialement remplacées par les **12 écrites par Blandine elle-même**
+(esprit Titi, plus mordant/drôle) :
+« Attends, j'ai que quatre sabots. », « Je fais aussi vite que je peux 😤 », « Deux secondes,
+je range tout ça. », « Mais vous en avez mis combien ?! », « Ça arrive… enfin normalement. »,
+« Je suis un poney, pas la fibre. », « J'avais dit UNE photo. », « Toujours là. Toujours
+vivant. », « Bon… celle-là, elle est canon. », « Je trie, tu admires après. », « Ça bosse, ça
+bosse… », « Ne touche à rien, je gère. »
+
+Et, à sa demande : **mélangées à chaque nouvel envoi** — un tirage aléatoire une fois au
+début de chaque envoi, suivi jusqu'à la fin de celui-ci. Jamais deux fois exactement le même
+enchaînement.
+
+## VÉRIFIÉ
+
+`node --check` propre, 12 phrases comptées dans le tableau.
+
+## CHANTIER « ENVOI PHOTO ALBUM » — CONSIDÉRÉ CLOS
+
+Compteur réel, affichage progressif, mascotte repositionnée, journal restreint, estimation de
+temps, phrases définitives et mélangées : tous les points de ce chantier sont maintenant
+traités.
+
+---
+
+# 🟩 10/09/2026 (20 h 15) — VISIONNEUSE : BASE RELEVÉE 1600 → 2048 PX
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `82157459cf9b2cd5cfc34683b42bd713` | build **20260908-33** |
+
+Remplace le `2c274cc4e…` (20260908-32, Titi). Dernier point en attente du chantier qualité
+photo.
+
+La visionneuse plein écran multipliait une base de 1600 par la densité d'écran (plafonnée à
+2×) — n'atteignait donc que 3200 en pratique, pas les 4096 complets malgré le plafond relevé
+la veille. Base changée à 2048 : 2048 × 2 = 4096 pile, plein potentiel du nouveau plafond.
+Deux appels changés (visionneuse fiche cheval + visionneuse album), même valeur, rien d'autre
+touché.
+
+## VÉRIFIÉ
+
+`node --check` propre. Diff : exactement 2 lignes changées, rien d'autre.
+
+## NON TESTÉ
+
+L'effet réel sur iPhone — à voir avec le test ordinateur déjà prévu (demain/week-end) pour
+la qualité photo en général.
+
+---
+
+# 🟩 10/09/2026 (19 h 50) — TITI, MASCOTTE PONEY, PENDANT L'ENVOI D'UNE VIDÉO
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2c274cc4e4e631081a5737cd594782c` | build **20260908-32** |
+| `titi-envoi-video.mp4` | **NOUVEAU FICHIER** — à ajouter dans le dépôt à `images/titi-envoi-video.mp4`, même dossier que le poney d'attente déjà en place | — | vidéo mascotte, fournie par Blandine (déjà produite avant cette entrée) |
+
+Remplace le `14e0a80d9…` (20260908-31, plafond photo à 4096).
+
+Même principe que la mascotte déjà en place côté album (remontée en premier, juste après le
+bouton d'ajout) — mais **sans boucle** cette fois : Titi joue avec des photos et négatifs entre
+ses sabots, s'épuise, puis s'endort sur un album ouvert. Une vraie petite histoire de 12
+secondes, pas une boucle courte comme le poney des albums — la relancer en boucle aurait cassé
+l'effet. Si l'envoi dure plus longtemps que la vidéo, elle reste simplement sur la dernière
+image (Titi endormi, « Z Z Z ») — comportement natif d'une balise vidéo sans `loop`, rien de
+plus à coder pour ça.
+
+Phrase retenue (décidée lors de la passation avec ChatGPT) : *« Les plus belles histoires
+méritent quelques secondes. »* — affichée une fois, pas de rotation comme côté photos.
+
+**⚠️ ACTION REQUISE DE BLANDINE** : le fichier vidéo doit être ajouté dans son dépôt GitHub, au
+même endroit que l'image du poney d'attente déjà utilisée pour les albums, sous le nom exact
+`titi-envoi-video.mp4`. Sans ce fichier au bon endroit, seul le texte s'affichera (le code a un
+repli silencieux si la vidéo ne charge pas — pas de plantage, juste pas d'image).
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Diff : entièrement additif, aucune ligne existante
+retirée ni modifiée.
+
+## NON TESTÉ SUR IPHONE
+
+L'apparition réelle de la bannière pendant un envoi vidéo, une fois le fichier ajouté au dépôt.
+
+---
+
+# 🟩 10/09/2026 (16 h 55) — PLAFOND PHOTO RELEVÉ : 2560 → 4096 PX
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `14e0a80d93f91e39f0be38e4736f2348` | build **20260908-31** |
+
+Remplace le `be3852e87…` (20260908-30, phrases mascotte). Suite directe de l'audit qualité
+photo — décision prise dans l'entrée précédente, appliquée ici.
+
+Une seule constante changée (`PHOTO_MASTER_MAX_EDGE`, 2560 → 4096) : « les photos c'est super
+important, on les achète des fortunes, on y tient » — netteté prioritaire sur la vitesse
+d'envoi. Même qualité JPEG (0,90), même mécanisme, rien d'autre modifié dans le pipeline
+d'envoi.
+
+⚠️ Rappel de méthode (voir la correction dans l'entrée précédente) : ce changement repose sur
+une préférence assumée par Blandine (netteté prioritaire), pas sur une preuve établie que le
+plafond 2560 était LA cause de l'écart qu'elle observait. Ce lien de cause à effet reste à
+vérifier par un vrai test sur une nouvelle photo (grille / plein écran sans zoom / zoom) — voir
+plus bas dans le suivi une fois ce test fait.
+
+## CORRECTIF DE COHÉRENCE TROUVÉ EN VÉRIFIANT AUTOUR
+
+`grandeImageHype()` (la visionneuse plein écran) avait **son propre plafond de 2560, codé
+séparément**, avec un commentaire expliquant que c'était justement la taille max que le
+pipeline produisait — cette justification devenait fausse dès que le plafond d'envoi changeait
+ailleurs. Sans ce correctif, relever à 4096 n'aurait servi à rien pour l'endroit où le flou se
+voit le plus. Corrigé : la visionneuse référence désormais directement
+`PHOTO_MASTER_MAX_EDGE`, ne peut plus jamais se désynchroniser d'un futur changement de ce
+plafond.
+
+## NUANCE SIGNALÉE À BLANDINE, PAS ENCORE TRANCHÉE
+
+La visionneuse multiplie une base de 1600 par la densité d'écran (plafonnée à 2×) — elle va
+donc chercher jusqu'à 3200 maintenant (contre 2560 avant), pas encore les 4096 complets en vue
+normale. Le plein gain de 4096 se voit surtout au stockage, et servira pleinement le jour où le
+zoom rechargera une vraie version plus grande (chantier repéré le 10/09 au soir, pas commencé).
+Question posée : faut-il aussi relever cette base de 1600 pour profiter tout de suite du plein
+potentiel ? Pas de réponse à la fin de cette session.
+
+## NON RATTRAPÉ
+
+Les photos déjà envoyées avant ce build restent à leur ancienne résolution — ce changement ne
+concerne que les prochaines. Pas de plan de renvoi en masse évoqué.
+
+---
+
+# 🟩 10/09/2026 (16 h 45) — ENVOI PHOTO ALBUM : QUATRE CORRECTIFS + PHRASES MASCOTTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `be3852e87f6161309a5017aa77c7e41f` | build **20260908-30** |
+
+Remplace le `1f097122…` (20260908-26, retrait du diagnostic vidéo de la veille). Deux
+livraisons groupées ici (29 puis 30), même chantier continu.
+
+## BUILD 29 — « on dirait qu'il se passe rien » (Blandine)
+
+Cause trouvée : le journal technique existant (créé le 08/09) n'a jamais eu de compteur pour
+les PHOTOS (seulement les vidéos) — un lot de 20 photos laissait le bouton figé sur « Envoi en
+cours… » plusieurs minutes sans le moindre changement visible.
+
+- **Compteur réel** : le bouton affiche désormais « Envoi X / Y » pendant l'envoi de photos.
+- **Affichage progressif** : chaque photo apparaît dans la grille dès qu'elle est réellement
+  enregistrée (mise à jour locale légère de `albums`), au lieu d'attendre la fin du lot entier.
+  `charger()` en fin de lot reste le filet de sécurité, inchangé.
+- **La mascotte (déjà existante, `poney-patiente-boucle.mp4`, jamais touchée avant ce jour-là)
+  remonte en premier** : elle était la dernière des 4 cartes (info / journal / à-retenter /
+  mascotte) — le journal pouvant accumuler jusqu'à 40 lignes, il pouvait la pousser hors écran
+  sans qu'on ait à scroller pour le savoir (trouvé par Blandine elle-même). Elle est désormais
+  toujours la première chose vue après avoir lancé un envoi.
+- **Le journal technique (log brut, bouton Copier) n'avait JAMAIS été restreint depuis sa
+  création le 08/09** — visible par toute cavalière, sans exception. Réservé désormais à
+  `estCompteFeinnHype(moiAc)`, même mécanisme que les tests A/B qualité image.
+
+## BUILD 30 — estimation de temps réelle + phrases mascotte (idée de Blandine)
+
+Vérifié avant de coder : iOS/Safari ne donne JAMAIS la vitesse de connexion aux applications
+(contrairement à Android/Chrome) — impossible de la demander au téléphone. Mesurée en vrai à
+la place : durée réelle de chaque photo (préparation + envoi), moyenne glissante sur les 5
+dernières, extrapolée sur les photos restantes.
+
+- Affiché sous la mascotte, à partir de la 2ᵉ photo : « Tu devrais pouvoir admirer le résultat
+  d'ici X secondes. »
+- Six phrases qui tournent toutes les 3,2 s pendant l'attente (liste `HYPE_PHRASES_ENVOI`,
+  facile à ajuster si le ton ne convient pas) : « Le poney galope pour ramener tes photos… »,
+  « Petite pause carottes, et ça repart… », etc.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs à chaque étape. Diffs relus : uniquement des lignes
+ajoutées + 4 lignes réellement modifiées au total sur les deux builds.
+
+## NON VU À L'ÉCRAN
+
+Le ton des phrases mascotte (à valider) ; le comportement réel de l'estimation sur un vrai lot
+de plusieurs photos, connexion faible incluse.
+
+---
+
+# 🟩 10/09/2026 (11 h 30) — TEST A/B QUALITÉ IMAGE (Brut vs Transformé), DEUX VISIONNEUSES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c3441fcb3e518330eda95352000b3822` | build **20260908-28** |
+
+Remplace le `8984b8605…` (20260908-27, même test mais une seule visionneuse). Suite du
+chantier qualité photo — voir l'entrée suivante pour les conclusions de ces tests.
+
+Petit bouton 🔍 « Transformé / Brut » dans les DEUX visionneuses (fiche cheval ET album ouvert
+— ce sont deux composants séparés, pas un seul, confirmé ce jour-là). Bascule entre la version
+actuellement affichée et le fichier brut déjà stocké (`props.original`, déjà présent sur les
+deux composants). Réservé strictement à `estCompteFeinnHype` — `moi` sur la fiche cheval,
+`moiAc` sur la visionneuse album (noms différents selon le composant, vérifié avant d'écrire
+pour ne pas répéter le bug de portée du 09/09).
+
+## CE QUE CE TEST A MONTRÉ
+
+Résultat : aucune différence significative entre Brut et Transformé sur les photos testées —
+confirmé à l'œil par Blandine et par une mesure de netteté objective (variance laplacienne,
+19,96 vs 21,24 sur un recadrage identique). **La visionneuse n'est pas la cause du flou
+signalé** — ça, c'est prouvé par la mesure.
+
+Deux séries de photos mesurées en parallèle : des photos de photographes professionnels
+(Les Garennes, HM Photographie) faisaient toutes deux exactement 2576×1717 px — très
+probablement un format d'aperçu standard de ces sites de vente, à peine plus grand que le
+plafond Hype (2560 px), donc quasiment aucune compression appliquée par Hype sur celles-là.
+
+**Confirmé ensuite par Blandine (comparaison directe sur ordinateur, ~20 photos) : un écart
+réel et important existe entre l'original et le résultat dans Hype.**
+
+⚠️ **CORRECTIF DE FORMULATION (10/09, relecture critique)** : la suite avait été écrite de
+façon trop affirmative — « cause confirmée » alors que ce n'était pas prouvé. Ce qui est
+réellement établi : le plafond de compression à l'envoi (2560 px / qualité 0,90) est une
+source **potentielle et démontrable** de perte de détails, pour toute photo dont l'original
+dépasse 2560 px — c'est un fait mathématique, une vraie réduction a lieu dans ce cas précis.
+Ce qui n'est **PAS prouvé** : que ce plafond soit LA cause de l'écart que Blandine a observé
+sur ses 20 photos. Aucun test propre (une photo connue, envoyée dans Hype, comparée
+directement) n'a été fait pour établir ce lien de cause à effet — seulement une déduction
+plausible. Le chantier « origine exacte de la perte de qualité » reste **ouvert**.
+
+**Décision prise avec Blandine, indépendamment de cette preuve manquante** : les photos sont
+des souvenirs achetés chers, la netteté prime sur la vitesse d'envoi — le plafond a été relevé
+sur cette base (préférence assumée), pas parce que la cause du flou était démontrée.
+
+## NON FAIT (à la fin de CETTE session précise — le plafond a depuis été relevé, voir l'entrée
+plus haut dans ce suivi, build 20260908-31)
+
+Le changement du plafond 2560/q90 lui-même n'était pas encore appliqué au moment de cette
+entrée — décision prise, implémentation faite juste après.
+
+## SUITE — TEST DE CONFIRMATION (10/09, après coup)
+
+Premier test fait par Blandine **sur iPhone** avec une nouvelle photo (grille + plein écran +
+zoom serré sur la tête du cheval) : résultat net, pas de flou visible, encourageant.
+
+Mais **ce test ne suffit pas encore** : c'est sur ordinateur, grand écran, que l'écart se
+voyait le plus au départ — un bon résultat sur téléphone n'est pas la même preuve. Blandine
+refera le même test (grille / plein écran / zoom) sur ordinateur, **prévu demain ou ce
+week-end, pas avant**. Chantier « origine exacte de la perte de qualité » toujours ouvert
+jusqu'à ce retour.
+
+**Statut retenu pour avancer sur autre chose en attendant (10/09)** : considéré comme *bon
+signe temporaire, non confirmé* — Blandine choisit de passer à d'autres chantiers pendant
+que le test ordinateur attend son tour, pas de valider la cause pour autant. Si le test
+ordinateur revient mauvais, ce statut retombe et le chantier redevient prioritaire.
+
+---
+
+# 🟥 09/09/2026 (20 h 30) — INCIDENT : PLANTAGE TOTAL DE LA FICHE CHEVAL, CORRIGÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `92b3a46429b35df399ee9cfb9821c8ed` | build **20260908-19** : correctif du plantage |
+
+Remplace le `12fcfcb9…` (20260908-18, action B1 vedette). **Ce build-là était cassé en production** dès sa mise en ligne — corrigé le plus vite possible dès le signalement.
+
+## CE QUI S'EST PASSÉ
+
+Le patch de l'action B1 (photo vedette) référençait `peutChoisirMediaF` dans les props passées à `ChronologieSouvenirs` — une variable qui n'existe en réalité que dans la portée d'une fonction complètement différente (la section « moments forts », plus haut dans le même composant). `node --check` ne peut pas détecter ce genre d'erreur : la syntaxe est valide, seule l'exécution réelle révèle qu'une variable n'est pas accessible à cet endroit. Résultat : **toute la fiche cheval plantait** (`ReferenceError: Can't find variable: peutChoisirMediaF`, capturé par l'écran d'erreur « Un caillou dans le sabot »), onglet Photos compris, pour toutes les cavalières.
+
+**Découverte par Blandine** en essayant le vrai test vidéo prévu — un envoi qui « ne faisait rien du tout, rien dans le journal ». Très probablement **le même incident**, pas un problème de vidéo ou de quota : la page étant cassée, l'interaction du bouton d'envoi ne pouvait plus fonctionner correctement, sans qu'aucune trace n'apparaisse (le crash empêchait même le journal de s'écrire). **Le vrai test vidéo n'a donc probablement jamais eu lieu — à refaire intégralement maintenant que c'est corrigé.**
+
+## CORRECTIF
+
+Une seule ligne : l'expression `(chevalDyn.ownerId === moi.id) || estModerateurHype(moi)` est désormais recalculée directement à l'endroit où elle sert, au lieu de référencer la variable mal placée — les mêmes `chevalDyn`/`moi` étaient déjà utilisés juste au-dessus (`proprio`), donc leur disponibilité à cet endroit était déjà prouvée.
+
+## VÉRIFIÉ
+
+`node --check` 18 blocs (0 erreur). Diff : 1 ligne modifiée. **Correction validée sur iPhone par Blandine** après ce déploiement (à confirmer une fois le déploiement terminé).
+
+## LEÇON POUR LA SUITE
+
+`node --check` garantit la syntaxe, jamais qu'une variable référencée existe réellement à l'endroit où elle est utilisée dans un fichier de cette taille (55 000+ lignes, des dizaines de portées imbriquées). Pour toute future prop passée à un composant enfant, vérifier explicitement que chaque variable utilisée est bien déclarée **dans la portée du bloc où l'appel se trouve** — pas seulement « quelque part plus haut dans le fichier ».
+
+---
+
+# 🟩 09/09/2026 (19 h) — GALERIE CHEVAL PERSONNALISABLE : ACTION B1 LIVRÉE (photo vedette)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `12fcfcb9af160489e27903baa13f498f` | build **20260908-18** : bouton vedette dans la chronologie photo du cheval |
+| `SUIVI.md` | racine | — | ce suivi |
+
+Remplace le `059b3029…` (20260908-17, quota vidéo serveur). SQL déjà passé par Blandine (colonne `chevaux.galerie_vedette_url` + fonction `hype_definir_vedette_galerie`).
+
+## AUDIT RLS FAIT AVANT CE CODE — un vrai écart trouvé
+
+`chevaux` n'a **aucune clause modératrice** dans sa policy `UPDATE` (`auth.uid() = user_id` uniquement, deux fois de suite en doublon) — alors que le geste client existant pour `moments_forts_medias` (une fonctionnalité proche, préexistante) autorise déjà propriétaire **ou** modératrice. Le bouton fonctionnait donc probablement déjà en trompe-l'œil pour les modératrices sur ce précédent, sans que quiconque s'en rende compte (0 ligne modifiée en base, pas forcément d'erreur visible). Corrigé pour ce nouveau geste par une fonction SQL dédiée `SECURITY DEFINER` qui vérifie elle-même propriétaire-ou-modératrice avant d'écrire, plutôt que d'élargir la policy générale de toute la table (qui aurait donné aux modératrices le droit de modifier n'importe quel champ de n'importe quel cheval).
+
+## CE QUI A ÉTÉ LIVRÉ
+
+- **`hypeDefinirVedetteGalerie(chevalId, url)`** — nouvelle fonction globale, appelle `hype_definir_vedette_galerie` en RPC. `url = null` retire la vedette.
+- **`ChronologieSouvenirs`** : 3 nouvelles props (`peutVedette`, `vedetteUrl`, `onDefinirVedette`), un bouton étoile discret (☆/★) ajouté dans chaque tuile, visible **uniquement** si `peutVedette`. Retaper sur la vedette actuelle la retire. **Aucune autre modification de la grille** — mêmes tailles, mêmes colonnes, même disposition qu'avant.
+- **`HypeResultatsHote`** : passe `peutChoisirMediaF` (déjà existant, propriétaire ou modératrice) tel quel à la nouvelle prop `peutVedette` — aucune nouvelle règle de droit inventée côté affichage, réutilisation stricte.
+- **Identité de la photo** : `urlNue()`, la seule fonction de normalisation du projet, réutilisée telle quelle — confirmée unique avant d'écrire une ligne de code.
+
+## NON TOUCHÉ
+
+Pipeline photo, upload, vidéos, quota serveur, mur cavalier (laissé de côté, bug de ciblage en mode visite toujours non corrigé, hors périmètre de cette action), `moments_forts_medias` (colonne différente, non réutilisée comme demandé).
+
+## VÉRIFIÉ (sans iPhone)
+
+`node --check` 18 blocs (0 erreur). Diff relu : exactement 3 blocs ajoutés (fonction globale, props + gestionnaire, bouton dans la tuile), rien retiré, rien d'autre déplacé.
+
+## NON VU À L'ÉCRAN — checklist iPhone
+
+1. Cheval sans vedette → grille identique à avant, aucune étoile visible pour un compte non autorisé.
+2. Propriétaire → étoile visible sur chaque photo, tap sur une photo la met en vedette (étoile pleine).
+3. Retaper sur la même photo → retire la vedette.
+4. Choisir une autre photo → l'ancienne étoile redevient vide, la nouvelle se remplit.
+5. Fermer/rouvrir la fiche → la vedette est toujours reconnue.
+6. Modératrice (pas propriétaire) → même comportement que le point 2 (c'est précisément ce que l'écart RLS aurait empêché sans le correctif SQL).
+7. Compte simplement rattaché, sans droit → aucune étoile nulle part sur la page.
+
+## À VENIR — NE PAS COMMENCER SANS « VAS-Y »
+
+Effet visuel réel de la vedette (pleine largeur en tête de la chronologie — action B2, pas encore commencée) ; mur cavalier (personnalisation + correction du bug de ciblage en mode visite, action séparée) ; déplacement tactile (repoussé, complexe, pas de brique réutilisable trouvée).
+
+---
+
+# 🟩 09/09/2026 (14 h 30) — TEST RÉUSSI : LE QUOTA VIDÉO SERVEUR FONCTIONNE
+
+Après le correctif jsonb, nouvel essai réel : Blandine envoie une vidéo. Résultat cette fois : **`QUOTA_REACHED`**, plus `QUOTA_INDETERMINE` — le vrai message, celui conçu pour ce cas exact. Journal d'envoi confirmé : « Adresse Mux refusée : {"code":"QUOTA_REACHED","message":"Plafond de vidéos atteint pour ton compte."} » — **le refus a bien eu lieu avant tout contact Mux**, exactement l'objectif de sécurité du chantier. Blandine est réellement à 15 vidéos actives sur ce compte (cohérent avec tous les tests des derniers jours) — pas un bug, un vrai plafond atteint.
+
+**Le chantier « quota vidéo serveur » est fonctionnellement validé** : réservation atomique, verrou par utilisateur, comptage legacy + traces actives sans doublon (corrigé pour jsonb), refus avant tout appel Mux, code d'erreur identifiable. Reste à valider en conditions réelles (vidéo qui aboutit, plafond libéré après suppression, etc.) une fois la carte Mux réglée sur ordinateur — cf. entrée du blocage carte, toujours en attente.
+
+## Point soulevé par Blandine — affichage brut du JSON
+
+Le message vu à l'écran (« L'envoi a échoué : {"code":"QUOTA_REACHED",...} ») est le JSON brut, non habillé — Blandine le remarque, en riant (« tout droit sorti de Matrix »). **Attendu, pas un bug** : décision explicite de Blandine plus tôt dans le chantier (« préserve un code identifiable, même si l'interface utilise encore son traitement générique des erreurs »). Amélioration cosmétique proposée, non faite : traduire `QUOTA_REACHED`/`QUOTA_CIBLE_MANQUANTE`/`QUOTA_INDETERMINE` en messages lisibles dans l'affichage existant (carte d'échec + journal) — petite action, sans rapport avec la sécurité déjà validée. En attente de son feu vert.
+
+## Deuxième point soulevé par Blandine — la mascotte de chargement, peu visible
+
+Pendant les envois vidéo testés aujourd'hui, la petite vidéo mascotte (`poney-patiente-boucle.mp4`, affichée pendant `envoiCours`) ne se voit quasiment pas. **Hypothèse à vérifier, pas encore creusée** : la plupart des essais du jour échouaient au contrôle de quota — un aller-retour rapide vers Supabase, réglé avant même de contacter Mux — donc la fenêtre où `envoiCours` est vrai est très courte pour un envoi refusé. Reste à observer sur un envoi qui aboutit réellement (une fois la carte Mux réglée) pour savoir si la mascotte s'affiche normalement pendant tout le transfert du fichier, ou si le problème est ailleurs.
+
+---
+
 # 🟩 09/09/2026 (14 h 30) — QUOTA_INDETERMINE AU PREMIER TEST : CAUSE TROUVÉE, CORRIGÉE
 
 Premier essai réel : Blandine envoie une vidéo depuis l'onglet Vidéos (`IMG_2895.mov`, 87,7 Mo). **Bon signe** : la réservation s'est bien déclenchée avant tout contact Mux (le mécanisme tourne). **Mauvais signe** : refus avec `QUOTA_INDETERMINE` — pas un plafond atteint, un échec de calcul côté serveur.
