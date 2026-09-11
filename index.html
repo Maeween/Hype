@@ -4,7 +4,7 @@
 <!-- HYPE ▸ 10/09/2026 · PHRASES MASCOTTE ALBUM : remplacees par les 12 phrases ecrites par Blandine (esprit Titi, plus mordant que les 6 precedentes), et MELANGEES A CHAQUE NOUVEL ENVOI (tirage aleatoire une fois au debut, suivi jusqu'a la fin de cet envoi -- jamais deux fois le meme enchainement). Rien d'autre touche. -->
 <!-- HYPE ▸ 10/09/2026 · BASE DE LA VISIONNEUSE RELEVEE 1600 -> 2048 (decision Blandine) -- atteint desormais pile 4096 a densite d'ecran 2x (2048*2=4096), plein potentiel du plafond photo relevee la veille. Deux appels changes, un par visionneuse (fiche cheval + album). Meme mecanisme, aucun autre parametre touche. -->
 <!-- HYPE ▸ 10/09/2026 (nuit, 2) · LA CARTE « LE VOIR EN MOUVEMENT » (fiche cheval, rail Medias, composant AlbumsPromus) RESTE VISIBLE MEME SANS VIDEO (Blandine : « rends visible tout le temps la video sur la page d'accueil d'un cheval meme quand l'onglet video est vide », puis « je prefere garder la video avec le cheval noir »). Avant : `if (!toutesV.length) return null;` la faisait disparaitre a zero video (symptome 4 de l'audit du 10/09, alors juge normal). Apres : la carte est toujours la, cheval noir + play + tap vers l'onglet Videos ; le compteur « (N) » n'est ecrit que s'il y a au moins une video. L'onglet Videos vide garde sa mascotte (titi-onglet-vide.mp4) et sa phrase « [nom] attend ses videos souvenirs ici… », qui disparaissent des qu'une video existe (prete ou en preparation) — deja en place, rien touche. Diff : 2 lignes changees + commentaire. Rien d'autre touche. -->
-<!-- HYPE ▸ 11/09/2026 (14) · « AJOUTER UN SOUVENIR » PASSE PAR LES ALBUMS (EcranCheval + AlbumsCheval) -- Decision de Blandine : option 2, « proposer de l'ajouter a un album deja existant ou d'en creer un autre ». AVANT (build 52) : le secours publiait la photo dans le FIL du cheval (posterCommentaire) ; l'onglet Photos ne lit que les albums, la photo n'y apparaissait jamais (seulement dans le carrousel de la page du cheval), et la confirmation etait cachee sous la barre d'onglets. MAINTENANT : le bouton (chronologie + mascotte de fiche vide) incremente un compteur passe a AlbumsCheval (prop ajoutCle, meme motif que fermerCle) ; AlbumsCheval ouvre une feuille « Dans quel album ? » (albums reels de la cavaliere connectee + « Nouvel album »), detachee vers body, SANS champ de fichier. Toucher un album l'ouvre (memes appels que sa vignette) ; l'ajout se fait par le bouton eprouve « + Ma photothèque ». Defilement vers l'album ouvert : l'id de l'album reellement affiche entre dans la condition (un album tout juste cree n'etait jamais vise). refPhotoSouvenir / envoyerPhotoSouvenirDirecte conserves, plus appeles. Aucun SQL, aucun droit, aucun ?v= touche. --><!-- HYPE ▸ 11/09/2026 (13) · FUITE ENTRE CHEVAUX DANS LA CHRONOLOGIE (ChronologieSouvenirs) -- 3e et DERNIER composant de la meme famille de defaut, apres AlbumsPromus et EcranCheval corriges le 10/09 au soir. Defaut CONFIRME par lecture du code : `setAnnees` n'etait appele qu'une seule fois, a la fin du chargement -- jamais remis a zero au changement de cheval. En arrivant sur une fiche depuis une AUTRE fiche (lien ascendant/descendant, notification), la chronologie continuait donc d'afficher les photos ET les chiffres du cheval PRECEDENT, sous le nom du nouveau, jusqu'a ce que le nouveau chargement aboutisse -- et si le nouveau cheval n'a aucun album, tout disparaissait d'un coup a l'arrivee des vraies donnees. ⚠️ HONNETETE : j'ai avance ce defaut comme LA cause de la disparition des photos de One Dream, en m'appuyant sur un compteur incoherent vu a l'ecran ; Blandine l'a formellement contredit (elle avait bien ajoute ces photos sur ce cheval) et j'avais presente un indice comme une preuve. Ce defaut est REEL et corrige ici pour lui-meme -- il n'est PAS retenu comme cause de l'incident, qui reste inexpliquee. CORRIGE : annees, stats et etat de chargement sont vides de facon synchrone au changement de cheval, avant le rechargement -- meme motif exact que celui deja pose dans les deux autres composants. Aucun SQL, aucun droit. -->
+<!-- HYPE ▸ 11/09/2026 (18) · CONTAMINATION D'ETAT ENTRE DEUX CHEVAUX — AlbumsCheval SEUL (diagnostic One Dream / Orlena valide) -- (1) remise a zero immediate, dans le rendu meme ou la cible change : liste, album ouvert, visionneuse, selections, feuilles, confirmations, reessai ; (2) jeton { numero, cible } sur toute la chaine de charger() (reconciliation Mux, listerAlbumsCheval, albums rejoints, identifications, finaliser) et sur les propositions : une reponse perimee ne fait plus aucun setState ; charger() relit toujours la cible COURANTE ; (3) albumAutorise() avant toute ecriture par id d'album (envoi photos/videos/reessai, retrait, renommage, couverture, visibilite, a la une, suppression, Souvenirs publies, lieu, identification d'album) : album absent de la liste chargee pour la cible courante, ou d'une autre cible (hors album partage rejoint) = refus, rien n'est ecrit, message persistant, liste rechargee ; cas video : « album de A / cible de B » refuse avant la reservation Mux. Aucun SQL, aucune RLS, rien d'autre touche. --><!-- HYPE ▸ 11/09/2026 (15-17) · TROIS ACTIONS ENCHAINEES SUR DEMANDE DE BLANDINE (« enchaine sans attendre de retour de ma part ») -- (15) ZEUS : ligne « Écurie du cheval » directement dans le menu ⋮ (proprietaire OU moderatrice) -> nouvelle feuille FeuilleEcurieCheval (detachee vers body) qui propose les ecuries de la PROPRIETAIRE (nouvelle aide clubsDuProfil) + l'actuelle + « Aucune », ecrit par changerClubCheval/set_cheval_club (relecture, echec dit). Avant : choix cache dans « Modifier la fiche », conditionne aux ecuries de la personne CONNECTEE et proposant les siennes. (16) EcranCheval : le petit message (toast) remonte au-dessus de la barre d'onglets (il etait dessous) ; le bas du menu ⋮ recoit une cale de la hauteur de la barre (Supprimer/Annuler etaient dessous) -- pas de portail pour ce menu (champ fichier de « Changer la photo », lecon iOS du 05/09). (17) ChronologieSouvenirs : « Changer l'annee » = rangee d'annees a toucher (l'actuelle inactive) + « Autre annee… » (saisie libre VIDE) ; une seule porte appliquerAnneeSelection ; appliquerAnneePhoto ecrit desormais sous urlNue(url), la cle relue depuis le build 47 (defaut prouve au banc : une photo a cadre ne changeait jamais d'annee). NB : une tentative precedente interrompue avait laisse dans le fichier de travail une autre version de (15) (pastilles dans le menu) : RETIREE avant livraison, une seule version reste. Aucun SQL, aucun droit, aucun ?v= touche. --><!-- HYPE ▸ 11/09/2026 (14) · « AJOUTER UN SOUVENIR » PASSE PAR LES ALBUMS (EcranCheval + AlbumsCheval) -- Decision de Blandine : option 2, « proposer de l'ajouter a un album deja existant ou d'en creer un autre ». AVANT (build 52) : le secours publiait la photo dans le FIL du cheval (posterCommentaire) ; l'onglet Photos ne lit que les albums, la photo n'y apparaissait jamais (seulement dans le carrousel de la page du cheval), et la confirmation etait cachee sous la barre d'onglets. MAINTENANT : le bouton (chronologie + mascotte de fiche vide) incremente un compteur passe a AlbumsCheval (prop ajoutCle, meme motif que fermerCle) ; AlbumsCheval ouvre une feuille « Dans quel album ? » (albums reels de la cavaliere connectee + « Nouvel album »), detachee vers body, SANS champ de fichier. Toucher un album l'ouvre (memes appels que sa vignette) ; l'ajout se fait par le bouton eprouve « + Ma photothèque ». Defilement vers l'album ouvert : l'id de l'album reellement affiche entre dans la condition (un album tout juste cree n'etait jamais vise). refPhotoSouvenir / envoyerPhotoSouvenirDirecte conserves, plus appeles. Aucun SQL, aucun droit, aucun ?v= touche. --><!-- HYPE ▸ 11/09/2026 (13) · FUITE ENTRE CHEVAUX DANS LA CHRONOLOGIE (ChronologieSouvenirs) -- 3e et DERNIER composant de la meme famille de defaut, apres AlbumsPromus et EcranCheval corriges le 10/09 au soir. Defaut CONFIRME par lecture du code : `setAnnees` n'etait appele qu'une seule fois, a la fin du chargement -- jamais remis a zero au changement de cheval. En arrivant sur une fiche depuis une AUTRE fiche (lien ascendant/descendant, notification), la chronologie continuait donc d'afficher les photos ET les chiffres du cheval PRECEDENT, sous le nom du nouveau, jusqu'a ce que le nouveau chargement aboutisse -- et si le nouveau cheval n'a aucun album, tout disparaissait d'un coup a l'arrivee des vraies donnees. ⚠️ HONNETETE : j'ai avance ce defaut comme LA cause de la disparition des photos de One Dream, en m'appuyant sur un compteur incoherent vu a l'ecran ; Blandine l'a formellement contredit (elle avait bien ajoute ces photos sur ce cheval) et j'avais presente un indice comme une preuve. Ce defaut est REEL et corrige ici pour lui-meme -- il n'est PAS retenu comme cause de l'incident, qui reste inexpliquee. CORRIGE : annees, stats et etat de chargement sont vides de facon synchrone au changement de cheval, avant le rechargement -- meme motif exact que celui deja pose dans les deux autres composants. Aucun SQL, aucun droit. -->
 <!-- HYPE ▸ 11/09/2026 (12) · « AJOUTER UN SOUVENIR » QUI NE FAISAIT RIEN (EcranCheval) -- Blandine : « il est la mais ne fait rien quand je le touche », apres avoir mis des photos en pleine largeur. CAUSE TROUVEE, et elle n'a RIEN a voir avec le format (verifie : le code de format n'ecrit que dans photo_formats, et la composition ne touche aucun bouton) : ce bouton ne fait rien par lui-meme, il DELEGUE a un autre composant (le composer du fil, MurHype) via un registre global `__murPhotoOuvrir[cible]` que ce composant remplit a son montage et EFFACE a son demontage. Si MurHype n'est pas monte sur la page a cet instant (ou vient d'etre demonte/remonte, ce qui arrive quand la page se rafraichit -- et le build 49 a justement ajoute un rafraichissement de la chronologie), le registre est vide : `if (fA) { fA(); }` ne trouve rien et le tap ne fait STRICTEMENT RIEN, sans le moindre message. Deux boutons dependaient de ce registre (« Ajouter un souvenir » de la chronologie, et celui de la mascotte d'onglet vide). CORRIGE : les deux ouvrent desormais eux-memes le selecteur de photos quand le registre est vide -- un champ fichier propre a EcranCheval, qui envoie par le meme chemin que le composer (posterCommentaire, deja utilise et eprouve ici pour les videos), avec message d'erreur en cas d'echec. Plus aucun tap muet. Aucun autre comportement change, aucun SQL, aucun droit. -->
 <!-- HYPE ▸ 11/09/2026 (11) · URGENCE : PLUS AUCUN RATTACHEMENT DE PHOTO SILENCIEUX (AlbumsCheval, importerFichiers) -- Blandine a perdu de vue 3 photos sur One Dream et l'envoi de 2 autres n'a rien rattache ; cause introuvable apres avoir ELIMINE par lecture directe : la fonction SQL album_ajouter_media (un simple update d'ajout, aucune suppression possible), la fonction hype_definir_vedette_galerie (n'ecrit que chevaux.galerie_vedette_url), le code du choix de format (n'ecrit que dans photo_formats), retirerPhoto (ne supprime jamais la ligne d'album). TROU REEL TROUVE ICI, independamment de la cause d'origine : apres l'envoi d'un fichier, le resultat du rattachement n'etait traite que dans 3 cas (error / refuse / ajoute). Le 4e cas -- reponse nulle, vide ou inattendue (fonction injoignable, reseau coupe au mauvais moment, retour non conforme) -- ne declenchait AUCUNE branche : ni rate++, ni raisonRatee, ni ligne de journal. La photo etait donc comptee comme REUSSIE alors qu'elle n'etait dans aucun album : fichier bien depose dans le stockage, jamais rattache, et l'ecran n'en disait rien. C'est exactement le symptome vecu. CORRIGE : (1) un cas par defaut compte l'echec et le nomme ; (2) CHAQUE rattachement ecrit desormais une ligne dans le journal d'envoi -- vert quand la photo est reellement dans l'album (avec le compte de photos de l'album apres ajout), rouge avec la raison exacte sinon ; (3) le message d'erreur de fin distingue « photo deposee mais NON rattachee » des autres echecs, pour qu'une cavaliere sache que son fichier existe et peut etre recupere. Aucune donnee touchee, aucun SQL, aucun droit : uniquement du comptage, du journal et des messages. -->
 <!-- HYPE ▸ 11/09/2026 (10) · CHANGER L'ANNEE ET LE FORMAT SUR UN CHEVAL QUI N'EST PAS LE SIEN (moderatrices) -- EcranCheval, UNE seule expression changee. Blandine : « ajoute-moi les droits sur les chevaux qui ne sont pas a moi pour les changements d'annees ou de design ». VERIFIE AVANT DE CODER, et AUCUN SQL N'A ETE NECESSAIRE : les droits en base etaient deja complets -- photo_dates UPDATE elargi aux moderatrices ce matin meme, et les 4 policies de photo_formats (livrees hier soir) autorisent deja `auth.uid() = user_id or hype_est_moderatrice()` en insertion/maj/suppression. Le blocage etait donc UNIQUEMENT a l'ecran : la prop `proprio` de ChronologieSouvenirs, qui gouverne l'affichage des deux liens discrets (« Changer l'annee d'une photo » et « Choisir le format d'une photo »), exigeait chevalDyn.ownerId === moi.id -- sur un cheval d'une autre cavaliere, les liens n'apparaissaient donc pas du tout, alors que le bouton ★ Vedette juste a cote acceptait deja les moderatrices depuis le 09/09 (prop peutVedette, ligne voisine). CORRIGE : `proprio` accepte desormais proprietaire OU moderatrice, avec EXACTEMENT la meme expression que peutVedette (copiee telle quelle, pas reinventee) -- les deux props sont maintenant coherentes. Consequence : une moderatrice peut corriger l'annee et imposer un format sur n'importe quel cheval ; une cavaliere ordinaire ne voit toujours ces liens que sur SES chevaux, inchange. RIEN D'AUTRE TOUCHE. -->
@@ -48,7 +48,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-54"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-56"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -3571,6 +3571,20 @@ async function mesClubs() {
     const user = await utilisateurActuel();
     if (!user) return [];
     const r = await supa.from("profiles").select("ecurie, ecurie2").eq("id", user.id).maybeSingle();
+    const p = (r && r.data) || {};
+    return [p.ecurie, p.ecurie2].map(function (x) { return String(x || "").trim(); })
+      .filter(function (x) { return x && x !== "__perso__"; })
+      .filter(function (x, i, t) { return t.indexOf(x) === i; });
+  } catch (e) { return []; }
+}
+/* 11/09 (15) — ZEUS. Les ecuries d'UN profil donne : celui de la PROPRIETAIRE du cheval, et non
+   de la personne connectee (mesClubs ci-dessus lit le compte connecte : une moderatrice qui
+   corrige le cheval d'une autre se voyait proposer SES propres ecuries). Meme filtrage que
+   mesClubs : vides et `__perso__` exclus, doublons retires. Lecture seule. */
+async function clubsDuProfil(userId) {
+  try {
+    if (!userId) return [];
+    const r = await supa.from("profiles").select("ecurie, ecurie2").eq("id", userId).maybeSingle();
     const p = (r && r.data) || {};
     return [p.ecurie, p.ecurie2].map(function (x) { return String(x || "").trim(); })
       .filter(function (x) { return x && x !== "__perso__"; })
@@ -35314,6 +35328,33 @@ function ChronologieSouvenirs(props) {
      bouton Valider ne verifiait jamais si l'ecriture avait reellement echoue, il refermait le
      panneau en silence dans tous les cas. erreurAnnee porte le message a afficher si ca echoue. */
   var _ea = React.useState(null), erreurAnnee = _ea[0], setErreurAnnee = _ea[1];
+  /* 11/09 (17) — autreAnnee : la saisie libre est repliee derriere « Autre annee… » ;
+     anneeEnCours : un seul envoi a la fois (pas de double tap pendant l'ecriture). */
+  var _aa = React.useState(false), autreAnnee = _aa[0], setAutreAnnee = _aa[1];
+  var _ae = React.useState(false), anneeEnCours = _ae[0], setAnneeEnCours = _ae[1];
+  /* 11/09 (17) — UNE SEULE porte pour appliquer une annee aux photos choisies (rangee d'annees ET
+     saisie libre). Reprend EXACTEMENT les controles du bouton Valider d'avant : bornes, message
+     distinct si l'annee manque, message clair si rien n'a pu etre ecrit, panneau laisse ouvert. */
+  async function appliquerAnneeSelection(anV) {
+    if (anneeEnCours) return;
+    var anNum = parseInt(anV, 10);
+    var anMaxV = (new Date()).getFullYear() + 1;
+    if (!(anNum >= 1990 && anNum <= anMaxV)) {
+      setErreurAnnee(T("Donne une année entre 1990 et " + anMaxV + ".", "Enter a year between 1990 and " + anMaxV + ".", "Indica un año entre 1990 y " + anMaxV + ".", "Indica un anno tra 1990 e " + anMaxV + ".", "1990〜" + anMaxV + " の年を入力してください。", "Gib ein Jahr zwischen 1990 und " + anMaxV + " ein."));
+      return;
+    }
+    setAnneeEnCours(true);
+    var resultats = [];
+    try { resultats = await Promise.all(photosSel.map(function (uSel) { return appliquerAnneePhoto(uSel, anNum); })); } catch (eAs) { resultats = []; }
+    setAnneeEnCours(false);
+    var nbOkV = resultats.filter(function (rV) { return rV; }).length;
+    if (nbOkV === 0) {
+      setErreurAnnee(T("Ça n'a pas marché — réessaie.", "That didn't work — try again.", "No funcionó — inténtalo de nuevo.", "Non ha funzionato — riprova.", "うまくいきませんでした。もう一度お試しください。", "Hat nicht geklappt — versuch's noch mal."));
+      return;
+    }
+    setPhotosSel([]); setErreurAnnee(null); setAutreAnnee(false); setModeAn(null);
+    setRafraichir(function (r) { return r + 1; });
+  }
   /* 11/09 (8) — CHOIX MANUEL DU FORMAT. formatsManuels : adresse (urlNue) -> "grand" /
      "pleine_largeur" / "pleine_hauteur", lu depuis la table photo_formats. Une photo absente de
      cette table est en "Automatique" : la composition editoriale decide, comme avant.
@@ -35528,7 +35569,12 @@ function ChronologieSouvenirs(props) {
       if (!(n >= 1990 && n <= (new Date()).getFullYear() + 1)) return false;
       var u = await utilisateurActuel(); if (!u) return false;
       var quand = new Date(n + "-06-15T12:00:00");
-      var r = await supa.from("photo_dates").upsert({ photo_url: url, prise_le: quand.toISOString(), source: "manuel", user_id: u.id }, { onConflict: "photo_url" });
+      /* 11/09 (17) — DEFAUT PROUVE : on ecrivait l'adresse BRUTE (avec le suffixe #cadre= quand la photo
+         a un cadre) alors que la chronologie relit via urlNue() depuis le build 47 : pour ces photos-la,
+         l'annee corrigee etait enregistree mais jamais relue, sans message. On ecrit desormais sous la
+         MEME cle que celle qui est relue. */
+      var cleAn = (typeof urlNue === "function") ? urlNue(url) : url;
+      var r = await supa.from("photo_dates").upsert({ photo_url: cleAn, prise_le: quand.toISOString(), source: "manuel", user_id: u.id }, { onConflict: "photo_url" });
       return !(r && r.error);
     } catch (eP) { return false; }
   }
@@ -35737,50 +35783,40 @@ function ChronologieSouvenirs(props) {
                     T("Terminé", "Done", "Hecho", "Fatto", "\u5b8c\u4e86", "Fertig")))) : null,
           props.proprio ? h("div", { style: { marginTop: 8 } },
             (modeAn !== grp.an)
-              ? h("button", { onClick: function () { setPhotosSel([]); setErreurAnnee(null); setModeAn(grp.an); }, style: { background: "none", border: "none", color: "#7B848C", fontSize: 10.5, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textDecoration: "underline", textUnderlineOffset: 3 } },
+              ? h("button", { onClick: function () { setPhotosSel([]); setErreurAnnee(null); setAutreAnnee(false); setModeAn(grp.an); }, style: { background: "none", border: "none", color: "#7B848C", fontSize: 10.5, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif", textDecoration: "underline", textUnderlineOffset: 3 } },
                   T("Changer l'année d'une photo", "Change a photo's year", "Cambiar el año de una foto", "Cambiare l'anno di una foto", "写真の年を変更", "Jahr eines Fotos ändern"))
               : h("div", null,
                   h("div", { style: { fontSize: 10.5, color: teinteCl, marginBottom: 6 } },
                     photosSel.length
-                      ? T("Donne l'année, puis valide.", "Give the year, then apply.", "Indica el año y aplica.", "Indica l'anno e applica.", "年を入力して適用。", "Jahr eingeben und anwenden.")
+                      ? T("Touche la bonne année.", "Tap the right year.", "Toca el año correcto.", "Tocca l'anno giusto.", "正しい年をタップ。", "Tippe das richtige Jahr an.")
                       : T("Tape une ou plusieurs photos à corriger.", "Tap one or more photos to fix.", "Toca una o varias fotos a corregir.", "Tocca una o più foto da correggere.", "修正する写真を１枚以上タップ。", "Tippe ein oder mehrere Fotos an.")),
                   photosSel.length > 1 ? h("div", { style: { fontSize: 10, color: "#7B848C", marginBottom: 6 } }, photosSel.length + " " + T("photos sélectionnées", "photos selected", "fotos seleccionadas", "foto selezionate", "枚選択中", "Fotos ausgewählt")) : null,
                   /* 11/09 (4) — message affiché seulement si Valider a réellement échoué (voir
                      bouton ci-dessous) ; jamais affiché quand tout se passe bien. */
                   erreurAnnee ? h("div", { style: { fontSize: 10.5, color: "#F0A05F", marginBottom: 6 } }, erreurAnnee) : null,
+                  /* 11/09 (17) — UNE RANGEE D'ANNEES A TOUCHER (Blandine : « ne propose toujours que sa propre annee »).
+                     La case du build 47 etait pre-remplie avec l'annee OU LA PHOTO EST DEJA : valider sans rien taper
+                     ne changeait rien. Un tap sur une annee l'applique aux photos choisies ; l'annee actuelle du groupe
+                     est marquee et inactive. De l'annee en cours jusqu'a un an avant la plus ancienne de la chronologie
+                     (12 au plus). « Autre annee… » garde la saisie libre, VIDE, pour ce qui sort de la rangee. */
+                  photosSel.length ? (function () {
+                    var anCourantR = (new Date()).getFullYear();
+                    var anMinCh = (annees || []).reduce(function (mA, gA) { return (gA && gA.an < mA) ? gA.an : mA; }, anCourantR);
+                    var anBasR = Math.max(1990, anCourantR - 11, Math.min(anMinCh - 1, anCourantR - 1));
+                    var listeAnsR = []; for (var yR = anCourantR; yR >= anBasR; yR--) listeAnsR.push(yR);
+                    return h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 4, marginBottom: 8 } },
+                      listeAnsR.map(function (yR2) {
+                        var estIciR = yR2 === grp.an;
+                        return h("button", { key: "anR" + yR2, disabled: estIciR || anneeEnCours, onClick: function () { appliquerAnneeSelection(yR2); }, style: { flex: "0 0 auto", minHeight: 44, minWidth: 64, padding: "0 12px", borderRadius: 9, border: "1px solid " + (estIciR ? "rgba(255,255,255,0.12)" : teinte), background: estIciR ? "transparent" : teinte + "22", color: estIciR ? "#5E666E" : teinteCl, fontSize: 13, fontWeight: 800, cursor: estIciR ? "default" : "pointer", fontFamily: "'Montserrat',sans-serif", opacity: (anneeEnCours && !estIciR) ? 0.6 : 1 } }, String(yR2));
+                      }));
+                  })() : null,
                   h("div", { style: { display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
-                    /* 11/09 (7) — PRE-REMPLI (defaultValue) et plus seulement suggere en gris :
-                       le « 2026 » affiche etait un placeholder, donc valider sans rien taper
-                       envoyait une valeur VIDE, rejetee -> le faux « ca n'a pas marche ». */
-                    photosSel.length ? h("input", { type: "number", inputMode: "numeric", defaultValue: String(grp.an), placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 15, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
-                    photosSel.length ? h("button", { onClick: async function () {
-                      var el = document.getElementById("anPh" + grp.an);
-                      var anV = el && el.value;
-                      /* 11/09 (7) — message DISTINCT quand l'annee est vide ou hors bornes : avant,
-                         ce cas tombait dans le meme « ca n'a pas marche » qu'un vrai echec
-                         d'ecriture, ce qui envoyait chercher un bug de droits inexistant. */
-                      var anNum = parseInt(anV, 10);
-                      var anMaxV = (new Date()).getFullYear() + 1;
-                      if (!(anNum >= 1990 && anNum <= anMaxV)) {
-                        setErreurAnnee(T("Donne une année entre 1990 et " + anMaxV + ".", "Enter a year between 1990 and " + anMaxV + ".", "Indica un año entre 1990 y " + anMaxV + ".", "Indica un anno tra 1990 e " + anMaxV + ".", "1990〜" + anMaxV + " の年を入力してください。", "Gib ein Jahr zwischen 1990 und " + anMaxV + " ein."));
-                        return;
-                      }
-                      var resultats = await Promise.all(photosSel.map(function (uSel) { return appliquerAnneePhoto(uSel, anV); }));
-                      var nbOkV = resultats.filter(function (rV) { return rV; }).length;
-                      /* 11/09 (4) — Blandine : « déplacer une photo ne l'emmenait nulle part ». Avant :
-                         le panneau se refermait dans tous les cas, sans jamais dire si ça avait
-                         vraiment marché. Maintenant : 0 réussite -> message clair, le panneau reste
-                         ouvert pour réessayer, rien d'autre ne change. Au moins 1 réussite -> comme
-                         avant, silencieux (le rafraîchissement affiche ce qui a réellement bougé). */
-                      if (nbOkV === 0) {
-                        setErreurAnnee(T("Ça n'a pas marché — réessaie.", "That didn't work — try again.", "No funcionó — inténtalo de nuevo.", "Non ha funzionato — riprova.", "うまくいきませんでした。もう一度お試しください。", "Hat nicht geklappt — versuch's noch mal."));
-                        return;
-                      }
-                      setPhotosSel([]); setErreurAnnee(null); setModeAn(null);
-                      setRafraichir(function (r) { return r + 1; });
-                    }, style: { minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid " + teinte, background: teinte + "22", color: teinteCl, fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
+                    (photosSel.length && autreAnnee) ? h("input", { type: "number", inputMode: "numeric", placeholder: T("Année", "Year", "Año", "Anno", "年", "Jahr"), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 16, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
+                    (photosSel.length && autreAnnee) ? h("button", { disabled: anneeEnCours, onClick: function () { var elA = document.getElementById("anPh" + grp.an); appliquerAnneeSelection(elA && elA.value); }, style: { minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid " + teinte, background: teinte + "22", color: teinteCl, fontSize: 11.5, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
                       T("Valider", "Apply", "Aplicar", "Applica", "適用", "Anwenden")) : null,
-                    h("button", { onClick: function () { setPhotosSel([]); setErreurAnnee(null); setModeAn(null); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
+                    (photosSel.length && !autreAnnee) ? h("button", { onClick: function () { setAutreAnnee(true); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#B9C2C9", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
+                      T("Autre année…", "Other year…", "Otro año…", "Altro anno…", "他の年…", "Anderes Jahr…")) : null,
+                    h("button", { onClick: function () { setPhotosSel([]); setErreurAnnee(null); setModeAn(null); setAutreAnnee(false); }, style: { minHeight: 44, padding: "0 12px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
                       T("Annuler", "Cancel", "Cancelar", "Annulla", "取消", "Abbrechen"))))) : null);
       })),
 
@@ -36414,6 +36450,7 @@ function AlbumsCheval(props) {
     var v = (lieuTxt || "").trim().slice(0, 60);
     try {
       if (editLieu.type === "album") {
+        if (!albumAutorise(editLieu.cle)) { setEditLieu(null); return; } /* 11/09 (18) : protection (3) */
         var rA = await majAlbumCheval(editLieu.cle, { lieu: v || null });
         if (rA && rA.error) { bip(T("Lieu non enregistr\u00e9 \u2014 la colonne \u00ab lieu \u00bb manque peut-\u00eatre c\u00f4t\u00e9 base.", "Place not saved \u2014 the \u201clieu\u201d column may be missing.", "Lugar no guardado.", "Luogo non salvato.", "\u5834\u6240\u3092\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Ort nicht gespeichert."), 4500); return; }
         charger();
@@ -36525,7 +36562,7 @@ function AlbumsCheval(props) {
   function ouvrirTagA() { setTagVisu(true); if (!tagCiblesA) chargerTagCiblesA(); }
   async function poserTagA(type, cid, cnom) {
     try {
-      if (tagMode === "album" && albOuvert) { await identifierAlbum(albOuvert.id, albOuvert.nom, type, cid, cnom); bip(T("Album propos\u00e9", "Album suggested", "\u00c1lbum propuesto", "Album proposto", "\u30a2\u30eb\u30d0\u30e0\u3092\u63d0\u6848")); }
+      if (tagMode === "album" && albOuvert) { if (!albumAutorise(albOuvert)) return; /* 11/09 (18) : protection (3) */ await identifierAlbum(albOuvert.id, albOuvert.nom, type, cid, cnom); bip(T("Album propos\u00e9", "Album suggested", "\u00c1lbum propuesto", "Album proposto", "\u30a2\u30eb\u30d0\u30e0\u3092\u63d0\u6848")); }
       else { await identifierSouvenir(visu, type, cid, cnom); bip((type === "ecurie") ? T("Ajout\u00e9 \u00e0 l'\u00e9curie", "Added to stable", "A\u00f1adido", "Aggiunto", "\u8ffd\u52a0") : T("Proposition envoy\u00e9e", "Request sent", "Enviado", "Inviato", "\u9001\u4fe1")); }
     } catch (e) { }
     setTagVisu(false); setTagMode("photo");
@@ -36533,11 +36570,12 @@ function AlbumsCheval(props) {
   function ouvrirTagAlbum() { setTagMode("album"); setTagVisu(true); if (!tagCiblesA) chargerTagCiblesA(); }
   function chargerPropositions() {
     try {
-      var c = String(props.cible || "");
+      var cPr = cibleRefAC.current; /* 11/09 (18) : cible courante, relue a l'arrivee de chaque reponse */
+      var c = String(cPr || "");
       var ct = (c.indexOf("cavalier:") === 0) ? { type: "cavalier", id: c.slice(9) } : (c.indexOf("cheval:") === 0 ? { type: "cheval", id: c.slice(7) } : null);
       if (!ct || typeof identificationsPour !== "function") { setPropositions([]); return; }
-      identificationsPour(ct.type, ct.id, "attente").then(function (r) { setPropositions(((r && r.data) || []).filter(function (x) { return !x.album_id; })); }).catch(function () { setPropositions([]); });
-      try { if (typeof albumsIdentifiesPour === "function") albumsIdentifiesPour(ct.type, ct.id, "attente").then(function (ra) { setPropAlbums((ra && ra.data) || []); }).catch(function () { setPropAlbums([]); }); } catch (ePA) { setPropAlbums([]); }
+      identificationsPour(ct.type, ct.id, "attente").then(function (r) { if (cPr !== cibleRefAC.current) return; setPropositions(((r && r.data) || []).filter(function (x) { return !x.album_id; })); }).catch(function () { if (cPr === cibleRefAC.current) setPropositions([]); });
+      try { if (typeof albumsIdentifiesPour === "function") albumsIdentifiesPour(ct.type, ct.id, "attente").then(function (ra) { if (cPr !== cibleRefAC.current) return; setPropAlbums((ra && ra.data) || []); }).catch(function () { if (cPr === cibleRefAC.current) setPropAlbums([]); }); } catch (ePA) { setPropAlbums([]); }
     } catch (e) { setPropositions([]); }
   }
   async function repondreProp(id, ok) {
@@ -36568,6 +36606,57 @@ function AlbumsCheval(props) {
      page au milieu, le journal dit jusqu'où on était allé. « Effacer » le vide. */
   var jvSt = React.useState(function () { try { var b = sessionStorage.getItem("hype_journal_video"); var l = b ? JSON.parse(b) : null; return (l && l.length) ? l : null; } catch (eJ0) { return null; } }); var journalV = jvSt[0], setJournalV = jvSt[1];
   var jvRef = React.useRef(journalV || []);
+  /* 11/09 (18) — CONTAMINATION D'ETAT ENTRE DEUX CHEVAUX (diagnostic One Dream / Orlena, valide).
+     Au passage d'une cible A a une cible B, ce composant gardait les albums de A et l'album ouvert de A,
+     et une reponse tardive du chargement de A pouvait ecraser la liste de B : une ecriture pouvait alors
+     partir vers l'id d'un album de A alors que la fiche affichait B. TROIS PROTECTIONS :
+     (1) remise a zero IMMEDIATE, dans le rendu meme ou la cible change (React rejoue le rendu avant de
+         peindre : aucune image n'est jamais affichee avec l'ancien etat) — liste, album ouvert,
+         visionneuse, selections, feuilles, confirmations, reessai video ;
+     (2) chaque chargement porte un jeton { numero, cible } : a chaque etape asynchrone, et avant tout
+         setState, le jeton doit etre le DERNIER lance ET viser la cible COURANTE (cibleRefAC) ;
+     (3) albumAutorise() avant toute ecriture par id d'album : l'album doit figurer dans la liste chargee
+         pour la cible courante et appartenir a cette cible (ou etre un album partage REJOINT, legitime
+         sur la page cavalier). Sinon : rien n'est ecrit, message qui reste a l'ecran, liste rechargee.
+     L'envoi en cours au moment d'un changement de fiche continue vers SON album (choisi sur sa fiche). */
+  var cibleRefAC = React.useRef(props.cible); cibleRefAC.current = props.cible;
+  var seqChargeAC = React.useRef(0);
+  var listeCibleAC = React.useRef(null);
+  var albumsRefAC = React.useRef(null); albumsRefAC.current = albums;
+  var cvAcSt = React.useState(props.cible); var cibleVueAC = cvAcSt[0], setCibleVueAC = cvAcSt[1];
+  if (cibleVueAC !== props.cible) {
+    setCibleVueAC(props.cible);
+    listeCibleAC.current = null; albumsRefAC.current = null;
+    setAlbums(null); setOuvert(null); setEditNom(null); setNomLocal("");
+    setSelPhotos(false); setDispo(null); setCoches({});
+    setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); setMenuA(false);
+    setFeuilleAjout(false); setFeuilleVideo(false); setChoixAjout(false);
+    setEditLieu(null); setLieuTxt(""); setLieuVisu("");
+    setMembres(null); setLienCopie(false); setPropositions(null); setPropAlbums(null);
+    setVisu(null); setVisuListe([]); setLikesVisu({ count: 0, jaiLike: false }); setCommentairesVisu(null);
+    setTexteCommentaire(""); setPanneauCommentaires(false); setCommentaireASignaler(null);
+    setTagVisu(false); setTagMode("photo"); setConfSupA(null); setARetenter(null);
+  }
+  function jetonChargeAC() { seqChargeAC.current += 1; return { seq: seqChargeAC.current, cible: cibleRefAC.current }; }
+  function jetonValideAC(j) { return !!j && j.seq === seqChargeAC.current && j.cible === cibleRefAC.current; }
+  function poserAlbumsAC(l, j) {
+    if (!jetonValideAC(j)) return;
+    listeCibleAC.current = j.cible;
+    setAlbums(l);
+  }
+  function albumAutorise(albOuId) {
+    var idG = (albOuId && typeof albOuId === "object") ? albOuId.id : albOuId;
+    var cibleG = String(cibleRefAC.current || "");
+    var albG = (albumsRefAC.current || []).filter(function (x) { return x && x.id === idG; })[0] || null;
+    var okG = !!albG && !albG.__auto && !albG.__lecture && listeCibleAC.current === cibleRefAC.current
+      && (String(albG.cible || "") === cibleG || albG.__rejoint === true);
+    if (!okG) {
+      alerte(T("Action refusée : cet album n'appartient pas à la fiche affichée. Rien n'a été enregistré. La liste des albums est rechargée.", "Action refused: this album doesn't belong to the page shown. Nothing was saved. The album list is reloading.", "Acción rechazada: este álbum no pertenece a la ficha mostrada. No se ha guardado nada. La lista de álbumes se está recargando.", "Azione rifiutata: questo album non appartiene alla scheda mostrata. Non è stato salvato nulla. L'elenco degli album viene ricaricato.", "\u64cd\u4f5c\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\uff1a\u3053\u306e\u30a2\u30eb\u30d0\u30e0\u306f\u8868\u793a\u4e2d\u306e\u30da\u30fc\u30b8\u306e\u3082\u306e\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002\u4f55\u3082\u4fdd\u5b58\u3055\u308c\u3066\u3044\u307e\u305b\u3093\u3002", "Aktion abgelehnt: Dieses Album gehört nicht zur angezeigten Seite. Nichts wurde gespeichert. Die Albenliste wird neu geladen."));
+      setOuvert(null);
+      try { charger(true); } catch (eRg) { }
+    }
+    return okG;
+  }
   function jvEcrire(l) { jvRef.current = l; try { sessionStorage.setItem("hype_journal_video", JSON.stringify(l)); } catch (eJ1) { } setJournalV(l); }
   function jvHeure() { try { return new Date().toTimeString().slice(0, 8); } catch (e) { return ""; } }
   function jv(m, e) { var l = (jvRef.current || []).concat([{ t: jvHeure(), e: e || "info", m: String(m) }]); if (l.length > 40) l = l.slice(l.length - 40); jvEcrire(l); }
@@ -36575,40 +36664,44 @@ function AlbumsCheval(props) {
   function jvVider() { jvEcrire([]); try { sessionStorage.removeItem("hype_journal_video"); } catch (eJ2) { } setJournalV(null); }
   function alerte(m, ok) { setInfoA(null); setAlerteOk(!!ok); setAlerteA(String(m || "")); }
   function portail(el) { try { if (el && typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) return ReactDOM.createPortal(el, document.body); } catch (eP9) { } return el; }
-  function cibleTag() {
-    var c = String(props.cible || "");
+  function cibleTag(cibleForcee) { /* 11/09 (18) : cibleForcee = la cible du chargement en cours (jeton) */
+    var c = String((cibleForcee != null ? cibleForcee : props.cible) || "");
     if (c.indexOf("cavalier:") === 0) return { type: "cavalier", id: c.slice(9) };
     if (c.indexOf("cheval:") === 0) return { type: "cheval", id: c.slice(7) };
     if (c.indexOf("ecurie:") === 0) return { type: "ecurie", id: c.slice(7) };
     return null;
   }
-  function chargerTags(base) {
+  function chargerTags(base, j) {
     try {
-      var ct = cibleTag();
-      if (!ct || typeof identificationsPour !== "function") { finaliser(base, null); return; }
+      if (!jetonValideAC(j)) return;
+      var ct = cibleTag(j.cible);
+      if (!ct || typeof identificationsPour !== "function") { finaliser(base, null, j); return; }
       identificationsPour(ct.type, ct.id, "accepte").then(function (ri) {
+        if (!jetonValideAC(j)) return;
         var ph = ((ri && ri.data) || []).map(function (x) { return x.photo_url; }).filter(Boolean);
-        finaliser(base, ph);
-      }).catch(function () { finaliser(base, null); });
-    } catch (e) { finaliser(base, null); }
+        finaliser(base, ph, j);
+      }).catch(function () { finaliser(base, null, j); });
+    } catch (e) { finaliser(base, null, j); }
   }
-  function finaliser(base, tagPhotos) {
+  function finaliser(base, tagPhotos, j) {
+    if (!jetonValideAC(j)) return;
     var liste = base.slice();
     if (tagPhotos && tagPhotos.length) {
       liste.push({ id: "__autres", nom: T("Autres moments", "Other moments", "Otros momentos", "Altri momenti", "\u305d\u306e\u4ed6"), photos: tagPhotos, __auto: true });
     }
     try {
-      var ct = cibleTag();
+      var ct = cibleTag(j.cible);
       if (ct && typeof albumsIdentifiesPour === "function") {
         albumsIdentifiesPour(ct.type, ct.id, "accepte").then(function (ra) {
+          if (!jetonValideAC(j)) return;
           var vus = {}; liste.forEach(function (a) { vus[a.id] = 1; });
           ((ra && ra.data) || []).forEach(function (o) { if (o.album && !vus[o.album.id]) liste.push(Object.assign({}, o.album, { __lecture: true, __identId: o.ident.id })); });
-          setAlbums(liste.slice());
-        }).catch(function () { setAlbums(liste); });
+          poserAlbumsAC(liste.slice(), j);
+        }).catch(function () { poserAlbumsAC(liste, j); });
         return;
       }
     } catch (e) { }
-    setAlbums(liste);
+    poserAlbumsAC(liste, j);
   }
   /* 08/09 — ACTION 1 (Blandine, option B) : RÉCONCILIATION DES VIDÉOS EN ATTENTE À L'OUVERTURE.
      charger() interroge d'abord les lignes videos_mux uploading/processing de cette cible
@@ -36618,14 +36711,21 @@ function AlbumsCheval(props) {
      réconciliation ajoute quelque chose ensuite, on relit sans réconcilier.
      charger(true) = lecture seule, exactement comme avant. */
   function charger(sansReconc) {
+    /* 11/09 (18) — protection (2) : un jeton par chargement, pris sur la cible COURANTE (meme si
+       charger() est appele depuis une ancienne fermeture, il relit la fiche affichee). */
+    var jC = jetonChargeAC();
     if (!sansReconc && typeof hypeMuxReconcilier === "function" && typeof avecGarde === "function") {
       var finiR = false;
-      var pR = hypeMuxReconcilier(props.cible);
-      pR.then(function (b) { try { annoncerReconc(b); } catch (eAn) { } if (finiR && b && b.ajoutes > 0) chargerSuite(); }).catch(function () { });
-      avecGarde(pR, 12000).then(function () { finiR = true; chargerSuite(); }).catch(function () { finiR = true; chargerSuite(); });
+      var pR = hypeMuxReconcilier(jC.cible);
+      pR.then(function (b) {
+        if (jC.cible !== cibleRefAC.current) return; /* la fiche a change : rien a annoncer ni a relire ici */
+        try { annoncerReconc(b); } catch (eAn) { }
+        if (finiR && b && b.ajoutes > 0) chargerSuite(jetonChargeAC());
+      }).catch(function () { });
+      avecGarde(pR, 12000).then(function () { finiR = true; chargerSuite(jC); }).catch(function () { finiR = true; chargerSuite(jC); });
       return;
     }
-    chargerSuite();
+    chargerSuite(jC);
   }
   function annoncerReconc(b) {
     try { if (b && (b.ajoutes || b.enCours || (b.erreurs && b.erreurs.length))) jv("Reprise à l'ouverture : " + b.ajoutes + " rattachée(s), " + b.enCours + " en cours, " + ((b.erreurs && b.erreurs.length) || 0) + " en erreur", "info"); } catch (eJr) { }
@@ -36637,28 +36737,32 @@ function AlbumsCheval(props) {
       try { var idsE = b.erreurs.map(function (e) { return e.id; }).filter(Boolean); if (idsE.length && typeof supa !== "undefined" && supa) { supa.from("videos_mux").update({ signale_le: new Date().toISOString() }).in("id", idsE).then(function () { }, function () { }); } } catch (eSg) { }
     }
   }
-  function chargerSuite() {
+  function chargerSuite(j) {
+    if (!j) j = jetonChargeAC();
+    if (!jetonValideAC(j)) return; /* 11/09 (18) : chargement perime (autre fiche, ou un plus recent est lance) */
     /* 05/09 (Blandine : « la video etait en 4 exemplaires dans l album et nulle part
        dans l onglet Videos ») \u2014 L ONGLET VIDEOS LIT LES ALBUMS UNE FOIS ET NE LES
        RELIT JAMAIS. Il est alimente par AlbumsPromus, qui charge au montage sur
        [props.cible] et ne rafraichit pas. Tout ce qui passe par ici (envoi, retrait,
        creation, suppression, changement de couverture) le previent desormais par un
        evenement de document. AlbumsPromus l ecoute et recharge. */
-    try { document.dispatchEvent(new CustomEvent("hype-albums-modifies", { detail: { cible: props.cible } })); } catch (eEv) { }
+    try { document.dispatchEvent(new CustomEvent("hype-albums-modifies", { detail: { cible: j.cible } })); } catch (eEv) { }
     try {
-      var estCav = String(props.cible || "").indexOf("cavalier:") === 0;
-      listerAlbumsCheval(props.cible).then(function (r) {
+      var estCav = String(j.cible || "").indexOf("cavalier:") === 0;
+      listerAlbumsCheval(j.cible).then(function (r) {
+        if (!jetonValideAC(j)) return;
         var base = (r && r.data) || [];
-        if (!estCav) { chargerTags(base); return; }
-        var cibleUid = String(props.cible || "").slice(9);
+        if (!estCav) { chargerTags(base, j); return; }
+        var cibleUid = String(j.cible || "").slice(9);
         (typeof albumsPartagesRejointsDe === "function" ? albumsPartagesRejointsDe(cibleUid) : albumsPartagesRejoints()).then(function (rr) {
+          if (!jetonValideAC(j)) return;
           var rej = (rr && rr.data) || [];
           var vus = {}; base.forEach(function (a) { vus[a.id] = 1; });
           var extra = rej.filter(function (a) { return !vus[a.id]; }).map(function (a) { return Object.assign({}, a, { __rejoint: true }); });
-          chargerTags(base.concat(extra));
-        }).catch(function () { chargerTags(base); });
-      }).catch(function () { setAlbums([]); });
-    } catch (e) { setAlbums([]); }
+          chargerTags(base.concat(extra), j);
+        }).catch(function () { chargerTags(base, j); });
+      }).catch(function () { poserAlbumsAC([], j); });
+    } catch (e) { poserAlbumsAC([], j); }
   }
   React.useEffect(function () { charger(); chargerPropositions();
     try { if (typeof window !== "undefined" && window.__albumOuvert) { setOuvert(window.__albumOuvert); window.__albumOuvert = null; } } catch (e) { }
@@ -36673,6 +36777,7 @@ function AlbumsCheval(props) {
   async function validerSelection() {
     var alb = (albums || []).filter(function (x) { return x.id === selPhotos; })[0];
     if (!alb) { setSelPhotos(false); return; }
+    if (!albumAutorise(alb)) { setSelPhotos(false); return; } /* 11/09 (18) : protection (3) */
     var nouv = (alb.photos || []).slice();
     var aAjouter = Object.keys(coches).filter(function (u) { return coches[u] && nouv.indexOf(u) < 0; });
     if (!premium && !aMediasIllimites(ctx.profil)) {
@@ -36696,6 +36801,7 @@ function AlbumsCheval(props) {
       try { var ct = cibleTag(); if (ct) { var ri = await identificationsPour(ct.type, ct.id, "accepte"); var found = ((ri && ri.data) || []).filter(function (x) { return x.photo_url === u; })[0]; if (found && typeof repondreIdentification === "function") { await repondreIdentification(found.id, false); } } } catch (e) { }
       charger(); return;
     }
+    if (!albumAutorise(alb)) return; /* 11/09 (18) : protection (3) */
     gardeModeratrice(alb, true, async function () {
       var nouv = (alb.photos || []).filter(function (x) { return x !== u; });
       var r = await majAlbumCheval(alb.id, { photos: nouv });
@@ -36706,6 +36812,7 @@ function AlbumsCheval(props) {
     });
   }
   async function importerFichiers(albId, fichiers) { /* 27/08 : le doublon local d estFichierVideo est retire — une seule definition desormais, globale, plus haut dans le fichier */
+    if (!albumAutorise(albId)) return; /* 11/09 (18) : protection (3) — photos, vidéos et réessai passent tous ici */
     var alb = (albums || []).filter(function (x) { return x.id === albId; })[0];
     if (!alb || !fichiers || !fichiers.length) return;
     var fichiersUtiles = Array.prototype.slice.call(fichiers);
@@ -36857,6 +36964,14 @@ function AlbumsCheval(props) {
       jv("Vidéo " + (iM + 1) + "/" + videosAEnvoyer.length + " — adresse d'envoi Mux…", "cours");
       try {
         setEnvoiPct(0);
+        /* 11/09 (18) — CAS VIDEO : l'album (albId) et la cible transmise a la reservation Mux doivent
+           etre ceux de la MEME fiche. « Album de A / cible de B » est refuse ici, avant tout appel.
+           (Album partage rejoint : legitime sur la page cavalier, laisse tel quel.) */
+        if (alb && !alb.__rejoint && String(alb.cible || "") !== String(props.cible || "")) {
+          rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : l'album n'appartient pas à la fiche affichée — refusée" };
+          jvMaj("Refusée : l'album n'appartient pas à la fiche affichée (rien n'est parti)", "ko");
+          continue;
+        }
         var rCr = await hypeMuxAppel({ cible: props.cible || (alb && alb.cible) || null }, 25); /* 09/09 QUOTA SERVEUR */
         if (!rCr || rCr.error || !rCr.data || !rCr.data.url || !rCr.data.upload_id) {
           rate++; if (!raisonRatee) raisonRatee = { nom: nomM, msg: "vidéo : " + ((rCr && rCr.error) || "adresse d'envoi refusée") };
@@ -36960,6 +37075,7 @@ function AlbumsCheval(props) {
      l en-tete de l album ouvert). Seul le FILTRAGE A LA LECTURE manquait : voir
      listerAlbumsCheval. Note laissee pour eviter qu une prochaine session recree le doublon. */
   async function definirCouverture(alb, u) {
+    if (!albumAutorise(alb)) return; /* 11/09 (18) : protection (3) */
     var r = await majAlbumCheval(alb.id, { couverture: u });
     if (r && r.error) { var nouv = [u].concat((alb.photos || []).filter(function (x) { return x !== u; })); r = await majAlbumCheval(alb.id, { photos: nouv }); }
     if (!(r && r.error)) { bip(T("Couverture d\u00e9finie", "Cover set", "Portada definida", "Copertina impostata", "\u8868\u7d19\u3092\u8a2d\u5b9a")); charger(); }
@@ -36968,6 +37084,7 @@ function AlbumsCheval(props) {
     try { membresAlbum(albId).then(function (r) { setMembres((r && r.data) || []); }).catch(function () { setMembres([]); }); } catch (e) { setMembres([]); }
   }
   async function definirVisibilite(alb, niveau) {
+    if (!albumAutorise(alb)) return; /* 11/09 (18) : protection (3) */
     var champs = { visibilite: niveau };
     if ((niveau === "partage" || niveau === "public") && !alb.jeton) champs.jeton = jetonAlbum();
     var r = await majAlbumCheval(alb.id, champs);
@@ -36985,6 +37102,7 @@ function AlbumsCheval(props) {
     bip(lien);
   }
   async function basculerPromu(alb) {
+    if (!albumAutorise(alb)) return; /* 11/09 (18) : protection (3) */
     if (!alb.promu && (albums || []).filter(function (x) { return x.promu; }).length >= 3) { bip(T("3 albums \u00e0 la une maximum", "3 featured albums max", "M\u00e1x. 3 \u00e1lbumes destacados", "Max 3 album in evidenza", "\u6ce8\u76ee\u30a2\u30eb\u30d0\u30e0\u306f3\u3064\u307e\u3067")); return; }
     var r = await majAlbumCheval(alb.id, { promu: !alb.promu });
     if (!(r && r.error)) charger();
@@ -36999,6 +37117,7 @@ function AlbumsCheval(props) {
     } else {
       var albR = (albums || []).filter(function (x) { return x.id === editNom; })[0];
       setEditNom(null);
+      if (!albumAutorise(albR || editNom)) return; /* 11/09 (18) : protection (3) */
       gardeModeratrice(albR, false, async function () {
         var r2 = await majAlbumCheval(editNom, { nom: nm });
         if (r2 && r2.error) { bip(T("Renommage impossible — cet album ne t'appartient pas.", "Could not rename — this album isn't yours.", "Imposible renombrar — no es tuyo.", "Impossibile rinominare — non è tuo.", "名前を変更できません。", "Umbenennen nicht möglich."), 4200); return; }
@@ -37436,7 +37555,7 @@ function AlbumsCheval(props) {
           var mesAlbsAj = (albumsAff || []).filter(function (aAj) { return aAj && !aAj.__auto && !aAj.__lecture && estAMoiAlb(aAj); });
           var lignesAj = mesAlbsAj.map(function (aAj) {
             var nbAj = (aAj.photos || []).length;
-            return { cle: "aj" + aAj.id, ic: "\u25A7", lib: aAj.nom || T("Album", "Album", "\u00c1lbum", "Album", "\u30a2\u30eb\u30d0\u30e0", "Album"), sous: nbAj + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa", "Erinnerungen"),
+            return { cle: "aj" + aAj.id, ic: "\u25A7", lib: aAj.nom || T("Album", "Album", "\u00c1lbum", "Album", "\u30a2\u30eb\u30d0\u30e0", "Album"), sous: nbAj + " " + (nbAj === 1 ? T("souvenir", "memory", "recuerdo", "ricordo", "\u601d\u3044\u51fa", "Erinnerung") : T("souvenirs", "memories", "recuerdos", "ricordi", "\u601d\u3044\u51fa", "Erinnerungen")),
               act: function () { setChoixAjout(false); setOuvert(aAj.id); setAlbDeplie(false); setConfRetrait(null); setReglagesA(false); chargerMembres(aAj.id); } };
           });
           lignesAj.push({ cle: "ajNouveau", ic: "+", lib: T("Nouvel album", "New album", "Nuevo \u00e1lbum", "Nuovo album", "\u65b0\u898f\u30a2\u30eb\u30d0\u30e0", "Neues Album"),
@@ -37534,7 +37653,7 @@ function AlbumsCheval(props) {
         h("div", { style: { fontFamily: M9, fontSize: 11.5, color: "#9AA5AC", marginBottom: 14, lineHeight: 1.5 } }, T("Les souvenirs eux-m\u00eames ne seront pas supprim\u00e9s.", "The memories themselves won't be deleted.", "Los recuerdos no se eliminar\u00e1n.", "I ricordi non saranno eliminati.", "\u601d\u3044\u51fa\u81ea\u4f53\u306f\u524a\u9664\u3055\u308c\u307e\u305b\u3093")),
         h("div", { style: { display: "flex", gap: 10 } },
           h("button", { onClick: function () { setConfSupA(null); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: M9 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
-          h("button", { onClick: function () { var idS = confSupA; var albS = (albums || []).filter(function (x) { return x.id === idS; })[0]; setConfSupA(null); gardeModeratrice(albS, true, function () { setOuvert(null); supprimerAlbumCheval(idS).then(function (rS) { if (rS && rS.error) { bip(T("Suppression impossible — cet album ne t'appartient pas.", "Could not delete — this album isn't yours.", "Imposible eliminar — no es tuyo.", "Impossibile eliminare — non è tuo.", "削除できません。", "Löschen nicht möglich."), 4200); return; } charger(); }); }); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "rgba(226,138,146,0.9)", color: "#1A0B0E", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664")))))) : null,
+          h("button", { onClick: function () { var idS = confSupA; var albS = (albums || []).filter(function (x) { return x.id === idS; })[0]; setConfSupA(null); if (!albumAutorise(idS)) return; /* 11/09 (18) : protection (3) */ gardeModeratrice(albS, true, function () { setOuvert(null); supprimerAlbumCheval(idS).then(function (rS) { if (rS && rS.error) { bip(T("Suppression impossible — cet album ne t'appartient pas.", "Could not delete — this album isn't yours.", "Imposible eliminar — no es tuyo.", "Impossibile eliminare — non è tuo.", "削除できません。", "Löschen nicht möglich."), 4200); return; } charger(); }); }); }, style: { flex: 1, padding: "11px 0", borderRadius: 999, border: "none", background: "rgba(226,138,146,0.9)", color: "#1A0B0E", fontSize: 12.5, fontWeight: 800, cursor: "pointer", fontFamily: M9 } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664")))))) : null,
     visu ? portail(h("div", { /* \ud83d\udfe5 05/09 (Blandine : « ou ca revient sur une autre page ») : cette visionneuse n avait PAS le marqueur data-noswipe, contrairement a celle de la page. Un balayage horizontal pour passer a la photo suivante (seuil 60 px) declenchait AUSSI le balayage global de l app (seuil 65 px), qui change d ecran. Les deux partaient en meme temps : la photo suivante s affichait et l app changeait de page dessous. Le marqueur bloque le balayage global tant que la visionneuse est ouverte. */ "data-noswipe": "true", onClick: function () { /* 05/09 : sur une VIDEO, un tap a cote ne ferme plus (elle est etroite en portrait, tout le tour est du voile, et « quand on clique pour zoomer, ca ferme »). Seule la croix ferme. */ if (visu && typeof estUrlVideo === "function" && estUrlVideo(visu)) return; setVisu(null); setTagVisu(false); setPanneauCommentaires(false); }, onTouchStart: surToucheDebut, onTouchEnd: surToucheFin, ref: hypeRefBloquerPincement, style: { touchAction: "manipulation", position: "fixed", inset: 0, zIndex: 9100, background: "#020304", display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
       (function () { var estVv = !!(typeof estUrlVideo === "function" && estUrlVideo(visu));
         return estVv ? h(PhotoZoomHype, { tag: "video", src: visu, mp4: (typeof hypeMuxMp4 === "function") ? hypeMuxMp4(visu) : null, onFermer: function () { setVisu(null); setTagVisu(false); setPanneauCommentaires(false); }, onAller: function (pasV) { naviguerVisu(pasV); } })
@@ -38270,6 +38389,75 @@ function HypeResultatsHote(props) {
   return React.createElement("div", { ref: ref });
 }
 
+/* ==========================================================
+   11/09 (15) — ZEUS : « ÉCURIE DU CHEVAL », DIRECTEMENT DEPUIS LE MENU ⋮
+   Blandine (3e signalement) : impossible de sortir Zeus (cheval d'Aurelie, SEP) de l'Ecurie Feinn.
+   FAIT PROUVE (lecture du code) : le seul choix existant etait cache dans ⋮ → « Modifier la fiche »,
+   n'apparaissait que si la PERSONNE CONNECTEE avait deux ecuries dans son profil, et proposait SES
+   ecuries a elle -- jamais celles de la proprietaire du cheval.
+   Cette feuille : ouverte depuis une ligne du menu ⋮ (proprietaire OU moderatrice), elle propose les
+   ecuries de la PROPRIETAIRE (clubsDuProfil), l'ecurie actuelle si elle n'y figure pas, et
+   « Aucune ». L'ecriture passe par changerClubCheval → set_cheval_club (deja autorisee en base a la
+   proprietaire ou a une moderatrice), qui RELIT la base et dit l'echec. Rien n'est ecrit sans tap.
+   Detachee vers <body> (hypePortailBody) : au-dessus de la barre d'onglets. Aucun champ de fichier.
+   ========================================================== */
+function FeuilleEcurieCheval(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var tnF = props.teinte || "#20D9F5";
+  var actuel = String(props.clubActuel || "").trim();
+  var _op = React.useState(null); var options = _op[0], setOptions = _op[1];
+  var _bz = React.useState(false); var busy = _bz[0], setBusy = _bz[1];
+  var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+  React.useEffect(function () {
+    var vivant = true;
+    (async function () {
+      var liste = [];
+      try { liste = await clubsDuProfil(props.ownerId); } catch (eCp) { liste = []; }
+      /* Proprietaire sans ecurie lisible : repli sur les ecuries de la personne connectee. */
+      if (!liste.length && props.clubsSecours && props.clubsSecours.length) liste = props.clubsSecours.slice();
+      if (actuel && liste.indexOf(actuel) < 0) liste.push(actuel);
+      liste = liste.filter(function (x, i, t) { return x && t.indexOf(x) === i; });
+      if (vivant) setOptions(liste.concat([""]));
+    })();
+    return function () { vivant = false; };
+  }, [props.ownerId]);
+  async function choisir(val) {
+    if (busy) return;
+    if (String(val || "") === actuel) { if (props.onFermer) props.onFermer(); return; }
+    setBusy(true); setErreur("");
+    var r = null;
+    try { r = await changerClubCheval(props.chevalId, val || null); } catch (eCc) { r = { error: eCc }; }
+    setBusy(false);
+    if (r && r.error) {
+      setErreur(T("L'écurie n'a pas pu être changée : ", "The stable could not be changed: ", "No se pudo cambiar la cuadra: ", "Impossibile cambiare la scuderia: ", "\u53a9\u820e\u3092\u5909\u66f4\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", "Stall konnte nicht geändert werden: ") + String((r.error && (r.error.message || r.error)) || "?"));
+      return;
+    }
+    if (props.onChange) props.onChange(val || "");
+    if (props.onFermer) props.onFermer();
+  }
+  var voile = h("div", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+    h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "82vh", overflowY: "auto", WebkitOverflowScrolling: "touch", borderRadius: "22px 22px 0 0", border: "1px solid " + teinteRGBA(tnF, 0.4), borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
+      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 4 } }, T("Écurie du cheval", "Horse's stable", "Cuadra del caballo", "Scuderia del cavallo", "\u6240\u5c5e\u53a9\u820e", "Stall des Pferds")),
+      h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 11, color: "#8A99A1", textAlign: "center", marginBottom: 14, lineHeight: 1.5 } },
+        T("Où " + (props.nomCheval || "ce cheval") + " apparaît-il ?", "Where does " + (props.nomCheval || "this horse") + " appear?", "¿Dónde aparece " + (props.nomCheval || "este caballo") + "?", "Dove appare " + (props.nomCheval || "questo cavallo") + "?", (props.nomCheval || "\u3053\u306e\u99ac") + "\u306f\u3069\u3053\u306b\u8868\u793a\uff1f", "Wo erscheint " + (props.nomCheval || "dieses Pferd") + "?")),
+      options === null
+        ? h("div", { style: { textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "#8A99A1", padding: "10px 0" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "Lädt…"))
+        : h("div", null, options.map(function (op, iOp) {
+            var estActuel = String(op || "") === actuel;
+            return h("div", { key: "ec" + (op || "__aucune__"), onClick: function () { choisir(op); }, role: "button", style: { display: "flex", alignItems: "center", gap: 13, padding: "14px 14px", borderRadius: 15, border: "1px solid " + (estActuel ? teinteRGBA(tnF, 0.75) : teinteRGBA(tnF, 0.3)), background: estActuel ? teinteRGBA(tnF, 0.14) : teinteRGBA(tnF, 0.05), cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1, marginBottom: iOp < options.length - 1 ? 9 : 0 } },
+              h("span", { style: { fontSize: 18, flexShrink: 0, width: 26, textAlign: "center" } }, op ? "\ud83c\udfe0" : "\u2205"),
+              h("div", { style: { minWidth: 0, flex: 1 } },
+                h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 700, color: "#EDF2F5" } }, op || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine")),
+                op ? null : h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "#8A99A1", marginTop: 2 } }, T("Il apparaît alors dans toutes les écuries.", "It then appears in every stable.", "Aparece entonces en todas las cuadras.", "Appare allora in tutte le scuderie.", "\u3059\u3079\u3066\u306e\u53a9\u820e\u306b\u8868\u793a\u3055\u308c\u307e\u3059\u3002", "Es erscheint dann in allen Ställen."))),
+              estActuel ? h("span", { style: { color: tnF, fontSize: 15, fontWeight: 800, flexShrink: 0 } }, "\u2713") : null);
+          })),
+      erreur ? h("div", { style: { marginTop: 10, fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, color: "#FF8A93", lineHeight: 1.5 } }, erreur) : null,
+      h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { marginTop: 14, width: "100%", padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, busy ? "\u2026" : T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schließen"))));
+  return (typeof hypePortailBody === "function") ? hypePortailBody(voile) : voile;
+}
+
 function EcranCheval() {
   function rareteIndice(v) {
     if (!(v >= 120)) return null;
@@ -38695,6 +38883,7 @@ function EcranCheval() {
   var csSt = React.useState(false); var confSuppr = csSt[0], setConfSuppr = csSt[1];
   var menuFicheSt = React.useState(false); var menuFiche = menuFicheSt[0], setMenuFiche = menuFicheSt[1];
   var editFicheSt = React.useState(false); var editFiche = editFicheSt[0], setEditFiche = editFicheSt[1];
+  var efoSt = React.useState(false); var ecurieFicheOuverte = efoSt[0], setEcurieFicheOuverte = efoSt[1]; /* 11/09 (15) : feuille FeuilleEcurieCheval (Zeus) */
   var confSupprFicheSt = React.useState(false); var confSupprFiche = confSupprFicheSt[0], setConfSupprFiche = confSupprFicheSt[1];
   var busyFicheSt = React.useState(false); var busyFiche = busyFicheSt[0], setBusyFiche = busyFicheSt[1];
   var champsFicheSt = React.useState(null); var champsFiche = champsFicheSt[0], setChampsFiche = champsFicheSt[1];
@@ -41892,8 +42081,19 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
        donc toujours disponible tant que la fiche est ouverte, contrairement au registre global
        rempli par le composer du fil. */
     h("input", { ref: refPhotoSouvenir, type: "file", accept: "image/*", onChange: function (eSv) { var fSv = eSv.target.files && eSv.target.files[0]; eSv.target.value = ""; if (fSv) envoyerPhotoSouvenirDirecte(fSv); }, style: { display: "none" } }),
+    /* 11/09 (15) — feuille « Écurie du cheval » (Zeus), ouverte depuis le menu ⋮. */
+    (ecurieFicheOuverte && c.dbId && chevalDyn) ? h(FeuilleEcurieCheval, {
+      chevalId: c.dbId, ownerId: chevalDyn.ownerId, nomCheval: (chevalDyn && chevalDyn.nom) || c.nom || "",
+      clubActuel: (chevalDyn && chevalDyn.club) || "", clubsSecours: mesClubsFiche, teinte: teinte,
+      onFermer: function () { setEcurieFicheOuverte(false); },
+      onChange: function (vEc) {
+        setChevalDyn(function (avEc) { return Object.assign({}, avEc || {}, { club: vEc || null }); });
+        setToast(T("Écurie enregistrée ✓", "Stable saved ✓", "Cuadra guardada ✓", "Scuderia salvata ✓", "\u53a9\u820e\u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f \u2713", "Stall gespeichert ✓") + (vEc ? (" \u00b7 " + vEc) : ""));
+        setTimeout(function () { setToast(null); }, 2800);
+      }
+    }) : null,
     menuFiche ? h("div", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); }, style: { position: "fixed", inset: 0, zIndex: 9000, background: "rgba(4,6,9,0.72)", display: "flex", alignItems: "flex-end" } },
-      h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", background: "linear-gradient(180deg, rgba(16,20,26,0.98), rgba(9,11,15,0.99))", borderTop: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px 20px 0 0", padding: "10px 16px calc(20px + env(safe-area-inset-bottom))" } },
+      h("div", { onClick: function (eM) { eM.stopPropagation(); }, style: { width: "100%", background: "linear-gradient(180deg, rgba(16,20,26,0.98), rgba(9,11,15,0.99))", borderTop: "1px solid rgba(255,255,255,0.1)", borderRadius: "20px 20px 0 0", padding: "10px 16px calc(104px + env(safe-area-inset-bottom))", maxHeight: "94vh", overflowY: "auto", WebkitOverflowScrolling: "touch" /* 11/09 (16) : le bas du menu (« Supprimer », « Annuler ») passait SOUS la barre d onglets -- cale de la hauteur de la barre (84 px) + la marge d avant. Pas de portail ici : « Changer la photo » y declenche un champ fichier (lecon iOS du 05/09). */ } },
         h("div", { style: { width: 36, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.2)", margin: "6px auto 16px" } }),
         /* 03/09 (Blandine) : « donner son surnom » — le nom d'usage sous lequel
            ELLE connait ce cheval. Personnel : il ne touche ni le nom officiel (cle
@@ -41916,6 +42116,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", color: "#EDF2F5", fontSize: 13.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
           (surnomPerso ? T("Changer son surnom", "Change nickname", "Cambiar el apodo", "Cambia soprannome", "愛称を変更", "Spitzname ändern") : T("Lui donner un surnom", "Give a nickname", "Ponerle un apodo", "Dagli un soprannome", "愛称をつける", "Spitznamen geben"))
             + (surnomPerso ? (" \u00b7 " + surnomPerso) : "")) : null,
+        /* 11/09 (15) — ZEUS : l'ecurie du cheval, en UN tap depuis ce menu (avant : cachee dans
+           « Modifier la fiche », et seulement si la personne connectee avait deux ecuries).
+           Proprietaire OU moderatrice, comme set_cheval_club en base. Ouvre FeuilleEcurieCheval. */
+        (c.dbId && moi && chevalDyn && (chevalDyn.ownerId === moi.id || (typeof estModerateurHype === "function" && estModerateurHype(moi)))) ? h("button", { onClick: function () { setMenuFiche(false); setConfSupprFiche(false); setEcurieFicheOuverte(true); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.06)", color: "#EDF2F5", fontSize: 13.5, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
+          "\ud83c\udfe0 " + T("\u00c9curie du cheval", "Horse's stable", "Cuadra del caballo", "Scuderia del cavallo", "\u6240\u5c5e\u53a9\u820e", "Stall des Pferds") + " \u00b7 " + ((chevalDyn && chevalDyn.club) ? String(chevalDyn.club) : T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine"))) : null,
         h("button", { onClick: function () { setMenuFiche(false); if (refPhotoCh.current) refPhotoCh.current.click(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83d\udcf7 " + T("Changer la photo", "Change photo", "Cambiar foto", "Cambia foto", "\u5199\u771f\u3092\u5909\u66f4", "Foto \u00e4ndern")),
           h("button", { onClick: function () { setMenuFiche(false); ajusterPhotoCheval(); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\u2702\ufe0f " + T("Ajuster / recadrer la photo", "Adjust / crop photo", "Ajustar / recortar la foto", "Regola / ritaglia la foto", "\u5199\u771f\u3092\u8abf\u6574", "Foto anpassen / zuschneiden")),
           h("button", { onClick: function () { setMenuFiche(false); ouvrirTag(photoCh); }, style: { width: "100%", textAlign: "left", padding: "14px 8px", background: "none", border: "none", borderBottom: "1px solid rgba(255,255,255,0.07)", color: "#EDF2F5", fontSize: 15, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } }, "\ud83c\udff7\ufe0f " + T("Identifier dans la photo", "Tag in the photo", "Etiquetar en la foto", "Tagga nella foto", "\u5199\u771f\u306b\u30bf\u30b0", "Im Foto identifizieren")),
@@ -42202,7 +42407,10 @@ h("div", { onClick: function (e) { e.stopPropagation(); }, ref: function (el) { 
         h("div", { style: { display: "flex", gap: 10, marginTop: 14 } },
           h("button", { onClick: function () { setEditOrig(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")),
           h("button", { onClick: function () { sauverOrigines(); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "none", background: "linear-gradient(90deg,#1FB8C4,#5FE9F0)", color: "#04252A", fontSize: 13, fontWeight: 800, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern"))))) : null,
-    toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(40px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 90, background: "rgba(20,26,33,0.96)", color: "#EDF2F5", border: "1px solid " + tA(0.74) + "", borderRadius: 999, padding: "10px 18px", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", boxShadow: "0 10px 30px rgba(10,26,36,0.11)" } }, toast) : null,
+    /* 11/09 (16) — LE PETIT MESSAGE DE LA FICHE ETAIT CACHE SOUS LA BARRE D ONGLETS (fait prouve : pose a
+       40 px du bas DANS l enveloppe de l appli, zIndex 1, alors que la barre -- portail vers body, zIndex 50 --
+       occupe ~80 px + l encoche). Remonte au-dessus de la barre. Vaut pour TOUS les messages de ce toast. */
+    toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(96px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 90, background: "rgba(20,26,33,0.96)", color: "#EDF2F5", border: "1px solid " + tA(0.74) + "", borderRadius: 999, padding: "10px 18px", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", boxShadow: "0 10px 30px rgba(10,26,36,0.11)" } }, toast) : null,
     albumChOuvert ? h(EcranAlbumPhotos, { userId: chevalDyn && chevalDyn.ownerId, cible: "cheval", cibleId: chevalDyn && chevalDyn.dbId, tr: tr, onClose: function () { setAlbumChOuvert(false); }, onRepublier: function (url) { appliquerPhotoCheval({ dataUrl: url, fichier: null, original: null }); } }) : null,
     h(PontChevalCommun, { chevalId: (chevalDyn && chevalDyn.dbId) || (typeof window !== "undefined" ? window.__chevalOuvert : null) || null, nom: (chevalDyn && chevalDyn.nom) || "", teinte: teinte }));
 }
