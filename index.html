@@ -4,6 +4,9 @@
 <!-- HYPE ▸ 10/09/2026 · PHRASES MASCOTTE ALBUM : remplacees par les 12 phrases ecrites par Blandine (esprit Titi, plus mordant que les 6 precedentes), et MELANGEES A CHAQUE NOUVEL ENVOI (tirage aleatoire une fois au debut, suivi jusqu'a la fin de cet envoi -- jamais deux fois le meme enchainement). Rien d'autre touche. -->
 <!-- HYPE ▸ 10/09/2026 · BASE DE LA VISIONNEUSE RELEVEE 1600 -> 2048 (decision Blandine) -- atteint desormais pile 4096 a densite d'ecran 2x (2048*2=4096), plein potentiel du plafond photo relevee la veille. Deux appels changes, un par visionneuse (fiche cheval + album). Meme mecanisme, aucun autre parametre touche. -->
 <!-- HYPE ▸ 10/09/2026 (nuit, 2) · LA CARTE « LE VOIR EN MOUVEMENT » (fiche cheval, rail Medias, composant AlbumsPromus) RESTE VISIBLE MEME SANS VIDEO (Blandine : « rends visible tout le temps la video sur la page d'accueil d'un cheval meme quand l'onglet video est vide », puis « je prefere garder la video avec le cheval noir »). Avant : `if (!toutesV.length) return null;` la faisait disparaitre a zero video (symptome 4 de l'audit du 10/09, alors juge normal). Apres : la carte est toujours la, cheval noir + play + tap vers l'onglet Videos ; le compteur « (N) » n'est ecrit que s'il y a au moins une video. L'onglet Videos vide garde sa mascotte (titi-onglet-vide.mp4) et sa phrase « [nom] attend ses videos souvenirs ici… », qui disparaissent des qu'une video existe (prete ou en preparation) — deja en place, rien touche. Diff : 2 lignes changees + commentaire. Rien d'autre touche. -->
+<!-- HYPE ▸ 11/09/2026 (7) · CHANGER L'ANNEE D'UNE PHOTO : LES 2 VRAIES CAUSES, TROUVEES DANS LE CODE -- ChronologieSouvenirs seul composant touche. (A) « Ca n'a pas marche » alors que Blandine est proprietaire ET moderatrice : le champ annee etait VIDE (le « 2026 » affiche etait un placeholder gris, pas une valeur) -- appliquerAnneePhoto rejette donc la saisie (parseInt("") = NaN, hors 1990..annee+1) et renvoie false, sans jamais dire POURQUOI. Verifie en base au prealable, contre mon propre diagnostic precedent : la policy UPDATE de photo_dates n'etait PAS le blocage (elle a ete elargie aux moderatrices quand meme, c'etait utile mais ce n'etait pas ca). CORRIGE : le champ est desormais PRE-REMPLI avec l'annee courante du groupe (defaultValue), et un message distinct « Donne une annee entre 1990 et N » s'affiche si la saisie est vide/hors bornes -- plus jamais un « ca n'a pas marche » trompeur pour une simple saisie manquante. (B) Annees fantaisistes (2012, 1970 vues a l'ecran) : AUCUNE date bidon en base -- ni photo_dates (0 ligne avant 2000), ni albums_cheval (0 album avant 2000), verifie par requetes. La vraie cause est ici : la recherche des dates comparait l'adresse BRUTE de la photo (p.url) alors que les adresses portent parfois un suffixe de marqueur de cadre -- la date existante n'etait donc pas retrouvee et la photo retombait sur la date de son album (repli prevu, mais declenche a tort). Tout le reste de l'app compare deja les adresses via urlNue() ; c'est desormais le cas ici aussi, des deux cotes (requete .in et lecture du resultat). Consequence : des photos qui affichaient l'annee de leur album retrouvent leur vraie annee de prise de vue. RIEN D'AUTRE TOUCHE : composition de la galerie (build 46 inchange), clic/visionneuse, Vedette, uploads, videos/Mux, Supabase/RLS. -->
+<!-- HYPE ▸ 11/09/2026 (6) · GALERIE CINEMATIQUE, BIBLIOTHEQUE DE COMPOSITIONS EDITORIALES (chantier termine) -- ChronologieSouvenirs seul composant touche. Remplace le rythme regulier du build precedent (deja mieux, mais encore trop pres d'une grille uniforme sur retour terrain) par les 8 COMPOSITIONS ecrites par Blandine elle-meme (sequences de motifs T/GL/GR/PC/PG/PD/PL), une choisie par annee (hachage stable sur l'annee + sa premiere photo -- meme contenu = toujours la meme composition, deux annees differentes ont des chances raisonnables d'en recevoir des differentes), suivie pas a pas et en boucle si l'annee a plus de 8 etapes de photos. NOUVEAUX MOTIFS : PC (portrait encadre au centre, 4 lignes x 3 colonnes, le portrait en 1 colonne x 2 lignes completement entoure de 10 petites) et PG/PD (portrait sur le cote, 4 petites en 2x2 de l'autre cote). PORTRAIT : jamais un pari a l'aveugle sur une photo pas encore chargee -- recherche parmi les prochaines photos une vraie portrait DEJA CONNUE (orientationsConnues, alimentee desormais par CHAQUE tuile qui charge, pas seulement Pleine largeur comme avant) ; trouvee -> extraite par splice (jamais dupliquee) et utilisee comme point focal ; sinon repli propre vers GL/GR/PL selon ce qui reste, jamais un bloc a moitie rempli. PL : sur demande explicite, remplit desormais reellement le bandeau (cover, leger crop accepte) au lieu de contain/bandes comme avant. PH (pleine hauteur) : conservee dans le code (le rendu existe toujours, atteignable si un bloc de ce type existait) mais n'est PLUS JAMAIS choisie automatiquement par la composition -- reservee a un futur choix manuel. La galerie ne consomme plus un compteur continu sur toute l'annee/le cheval : chaque ANNEE choisit et suit sa propre composition independamment, ce qui est le sens meme de « deux annees differentes peuvent recevoir des compositions differentes ». RIEN D'AUTRE TOUCHE : clic/visionneuse, selection multi-annee, Vedette (stockage/droits intacts, toujours independante du format), Supabase/RLS, uploads, videos/Mux, qualite/compression photo. -->
+<!-- HYPE ▸ 11/09/2026 (5) · PLAFOND VIDEO PREMIUM : RETRAIT DU BANDEAU PERMANENT (AlbumsCheval) -- Blandine, apres avoir elle-meme atteint 15/15 videos, demande le retrait du rappel affiche en continu dans la grille media (« ca gache le moment partout ») -- ce bandeau venait pourtant de sa propre demande du 04/09 (« decompte visible »), decision retournee maintenant sur experience reelle. Retire : la branche premium de la rangee de boutons d'ajout renvoie desormais null au lieu du compteur/message permanent (« il te reste N videos » / « tu as atteint N videos »). Le popup contextuel (invitPlus, motif video_premium) n'est PAS touche : il existait deja, se declenche deja uniquement au moment ou une video est reellement envoyee au-dela du plafond (videosAuDela dans le pipeline d'envoi), et n'offre deja pas de bouton d'abonnement superieur pour une abonnee deja au plafond (decision du 04/09, confirmee par Blandine : rien a vendre au-dessus pour l'instant). RIEN D'AUTRE TOUCHE. -->
 <!-- HYPE ▸ 11/09/2026 (4) · GALERIE : RYTHME EDITORIAL (fin du chantier composition) + CHANGER L'ANNEE QUI NE DISAIT JAMAIS QUAND CA ECHOUAIT -- ChronologieSouvenirs seul composant touche. Retour de Blandine apres test reel du build 42 : la composition restait une grille uniforme sur une annee de 31 photos -- cause EXACTE, ecrite noir sur blanc par elle : « double hasard » pour Pleine hauteur (fallait d'abord tirer Pleine largeur au 1/3, PUIS tomber sur une photo portrait) et candidature des blocs forts beaucoup trop rare (modulo 6 + espacement 5, sur 15-18 photos a peine 1-2 occasions). REFONTE : la composition n'est plus une loterie a faible probabilite, elle avance par un RYTHME REGULIER -- un bloc fort (Grand-gauche / Grand-droite / « creneau pleine largeur ») declenche des que HYPE_GALERIE_ESPACEMENT_MIN (desormais 3, donc apres CHAQUE Trio de 3 photos) est atteint, plus de tirage « candidat » separe -- seul le TYPE du bloc fort reste tire au hachage, avec une regle anti-repetition immediate (jamais deux fois le meme type de suite). Resultat trace a la main : Trio, Fort, Trio, Fort, Trio, Fort... en continu, la variete du type venant du hachage. Le « creneau pleine largeur » lui-meme N'A PAS CHANGE : toujours 1 seule photo, toujours le meme mecanisme de bascule vers Pleine hauteur si elle se revele portrait au chargement (deja en place, non retouche) -- mais comme ce creneau revient desormais 1 fois sur 3 a CHAQUE bloc fort (bien plus frequent qu'avant), Pleine hauteur a beaucoup plus souvent une vraie photo a saisir. Le double hasard devient un seul hasard (le type de bloc fort n'est plus une loterie a part, juste une rotation) : exactement ce qui etait demande. HYPE_GALERIE_CANDIDATE_MODULO est retire (n'a plus de role). Rien touche dans le rendu des blocs (rendreBloc/tuileHype, deja bons) : seule la composition qui decide QUELS blocs et QUAND change. Par ailleurs, Blandine a signale que « mettre en vedette » et « deplacer une photo » semblaient ne rien faire sur le meme enregistrement. Vedette : `hypeDefinirVedetteGalerie` et son appelant verifies dans le code, deja corrects (erreur remontee, rien en silence) -- tres probablement la meme cause que le correctif precedent (menu natif au lieu du bouton), a reverifier sur ce build. Deplacer une photo (« Changer l'annee ») : bug REEL trouve et corrige -- le bouton Valider ne disait jamais si l'ecriture avait reellement echoue, il refermait juste le panneau en silence (meme categorie que le correctif suppression de tout a l'heure). Corrige : message clair si rien n'a pu changer, message different si une partie seulement a marche, aucun changement si tout va bien. RIEN D'AUTRE TOUCHE : chargement des donnees, uploads, Supabase/RLS, videos/Mux, suppression, visionneuse, autres composants de la fiche, stockage/droits de la Vedette. -->
 <!-- HYPE ▸ 11/09/2026 (3) · GALERIE : LE MENU NATIF IOS (Partager/Enregistrer/Copier) BLOQUAIT LE TAP SUR LES PHOTOS -- confirme sur l'enregistrement d'ecran de Blandine : en mode « Changer l'annee d'une photo », taper une tuile n'importe ou dans la grille (Trio, Grand, Pleine largeur) faisait apparaitre ce menu systeme au lieu de selectionner la photo. CAUSE : aucune tuile de la grille (ChronologieSouvenirs) n'empeche le menu contextuel natif sur appui -- alors que la VISIONNEUSE plein ecran (PhotoZoomHype) le fait deja depuis longtemps (WebkitTouchCallout:"none"), jamais reporte sur les tuiles de grille. Pas une regression de ce chantier : le clic/onClick de chaque tuile est identique a avant mes patchs precedents, seul le manque de cette ligne CSS, present partout ailleurs dans la grille depuis toujours, n'avait jamais ete remarque avant ce test repete sur plusieurs tuiles d'affilee. CORRECTIF : WebkitTouchCallout:"none" ajoute sur les 3 <img> de la grille (tuileHype, Pleine largeur, Pleine hauteur), meme motif que la visionneuse. RESULTAT CONFIRME PAR CETTE MEME VIDEO (sans lien avec ce correctif, deja vrai avant) : la composition par blocs fonctionne parfaitement sur le cheval teste -- Trio/Grand-gauche corrects, zero trou, 14/14 photos, aucun doublon. Pleine hauteur n'etait simplement pas apparue sur ce cheval precis (aucun bloc Pleine largeur tire au hasard sur ses 14 photos -- 1 seul grand bloc tire au total, cf. SUIVI) : pas un bug, la probabilite est basse sur un petit nombre de photos. -->
 <!-- HYPE ▸ 11/09/2026 (2) · GALERIE CINEMATIQUE, PLEINE HAUTEUR (prototype 2/2) -- ChronologieSouvenirs seul composant touche, sur la base du prototype par blocs precedent (1/2, inchange : Trio / Grand-gauche / Grand-droite toujours identiques, aucun trou, Vedette toujours independante). DECOUVERTE EN LISANT LE CODE REEL (pas supposee) : vignetteHype() demande TOUJOURS resize=cover a Supabase, y compris pour Pleine largeur -- la photo est donc recadree cote SERVEUR avant meme d'arriver dans le navigateur ; le contain applique ensuite cote ecran ne peut pas recuperer un bord deja coupe. Comme Blandine demande explicitement et a plusieurs reprises un vrai ratio sans recadrage pour ce nouveau format, AJOUT d'une petite fonction jumelle dediee vignetteHypeContain() (copie de vignetteHype, resize=contain au lieu de cover, sinon strictement identique -- meme plafond 1600px, meme prise en compte de la densite d'ecran) : jamais de recadrage possible, quel que soit le vrai ratio de la photo. Pleine largeur n'est PAS touchee (hors perimetre demande). CE QUE FAIT LE BLOC PLEINE LARGEUR MAINTENANT : l'orientation reelle n'est connue qu'une fois la photo chargee (naturalWidth/naturalHeight, mecanisme deja existant dans Hype, orientationsConnues deja declare depuis le build precedent, jusqu'ici inutilise) -- tant qu'elle est inconnue ou paysage, le bloc s'affiche exactement comme avant (Pleine largeur, 16/9, contain, vignetteHype). Des qu'une photo se revele portrait, CE MEME bloc (toujours 1 seule photo, rien a inventer, donc aucune restructuration de la composition/selection des blocs necessaire) bascule sur la presentation Pleine hauteur : toute la largeur disponible, hauteur tiree du vrai ratio de la photo (maxWidth/maxHeight/auto/auto, jamais de crop), plafonnee a 78vh pour une vraie presence verticale sans jamais atteindre 100vh. Limite connue et acceptee (composant remonte a chaque visite de fiche) : l'orientation redecouverte a chaque nouvelle visite de la fiche, pas de sursaut visuel si la photo a deja ete vue dans la session, un leger changement de hauteur au premier chargement sinon -- aucun trou ni doublon genere par ce sursaut, verifie. RIEN D'AUTRE TOUCHE : uploads, qualite/compression photo, videos/Mux, visionneuses, Supabase/RLS, systeme Vedette (stockage et droits intacts). -->
@@ -39,7 +42,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-44"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-47"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -1088,16 +1091,9 @@ function hypeHacherTexte(s) {
   for (var iH = 0; iH < t.length; iH++) { h = ((h << 5) - h + t.charCodeAt(iH)) | 0; }
   return Math.abs(h);
 }
-/* Parametres de rythme -- valeurs de TEST, pas des seuils definitifs (a ajuster apres usage reel).
-   11/09 (4) — RYTHME REGULIER (retour de Blandine : l'ancien systeme, base sur un tirage "candidat"
-   rare, redonnait une grille quasi uniforme). Il n'y a plus de tirage "candidat" separe : un bloc
-   fort demarre DES QUE HYPE_GALERIE_ESPACEMENT_MIN photos normales sont passees depuis le precedent
-   -- avec 3, cela tombe juste apres CHAQUE Trio (3 photos), donnant Trio/Fort/Trio/Fort en continu.
-   Seul le TYPE du bloc fort (Grand-gauche / Grand-droite / creneau Pleine largeur-ou-hauteur) reste
-   tire au hachage stable, avec anti-repetition (jamais deux fois le meme type de suite) pour eviter
-   la monotonie inverse. Compteur continu sur toute la galerie, jamais remis a zero entre deux
-   annees, comme deja decide. */
-var HYPE_GALERIE_ESPACEMENT_MIN = 3;     /* declenche un bloc fort apres ce nombre de photos normales -- 3 = juste apres chaque Trio */
+/* Parametres de galerie -- valeurs de TEST, pas des seuils definitifs (a ajuster apres usage reel).
+   11/09 (6) — BIBLIOTHEQUE DE COMPOSITIONS (voir HYPE_GALERIE_COMPOSITIONS plus bas, pres de son
+   utilisation) : plus de compteur/tirage ici, chaque annee choisit et suit une composition fixe. */
 var HYPE_GALERIE_PREVIEW_MIN = 15;       /* apercu d'une annee : au moins 15 photos, toujours un bloc ENTIER -- jamais coupe en deux (~15 a 18 affichees en pratique) */
 var PHOTO_MASTER_JPEG_QUALITY = 0.90;
 function hypeExtensionFichier(fichier) {
@@ -35337,20 +35333,27 @@ function ChronologieSouvenirs(props) {
         });
         var vus = {}; photos = photos.filter(function (p) { var c = (typeof urlNue === "function") ? urlNue(p.url) : p.url; if (vus[c]) return false; vus[c] = true; return true; });
 
-        /* Dates connues (par lots de 100 : une requete .in trop longue est refusee) */
+        /* Dates connues (par lots de 100 : une requete .in trop longue est refusee).
+           11/09 (7) — LES DEUX COTES COMPAREES VIA urlNue(). Avant, la recherche partait de
+           l'adresse BRUTE (p.url) : une adresse portant un suffixe de marqueur de cadre ne
+           retrouvait jamais sa ligne dans photo_dates, et la photo retombait sur la date de son
+           album -- d'ou des annees fausses a l'ecran (2012, 1970) alors que la base est saine
+           (verifie : aucune date avant 2000 ni dans photo_dates ni dans albums_cheval). Tout le
+           reste de l'app compare deja les adresses ainsi. */
         var mapDates = {};
-        var urls = photos.map(function (p) { return p.url; });
+        function cleDateMEV(u) { return (typeof urlNue === "function") ? urlNue(u) : u; }
+        var urls = photos.map(function (p) { return cleDateMEV(p.url); });
         for (var d = 0; d < urls.length; d += 100) {
           try {
             var rd = await supa.from("photo_dates").select("photo_url, prise_le, source").in("photo_url", urls.slice(d, d + 100));
-            ((rd && rd.data) || []).forEach(function (l) { mapDates[l.photo_url] = l; });
+            ((rd && rd.data) || []).forEach(function (l) { mapDates[cleDateMEV(l.photo_url)] = l; });
           } catch (eD) { }
         }
 
         /* Regroupement par annee. Sans date connue -> repli sur l'album. */
         var parAn = {};
         photos.forEach(function (p) {
-          var info = mapDates[p.url];
+          var info = mapDates[cleDateMEV(p.url)];
           var dt = info ? new Date(info.prise_le) : (p.dateAlbum ? new Date(p.dateAlbum) : null);
           var src = info ? (info.source || "exif") : (p.dateAlbum ? "album" : null);
           if (!dt || isNaN(dt.getTime())) return;
@@ -35361,45 +35364,58 @@ function ChronologieSouvenirs(props) {
         });
         var liste = Object.keys(parAn).map(function (k) { return parAn[k]; }).sort(function (a, b) { return b.an - a.an; });
 
-        /* 11/09 (4) — GALERIE CINEMATIQUE, RYTHME REGULIER. Chaque photo n'a plus son propre
-           traitement independant : la galerie avance par BLOCS FERMES qui reservent exactement les
-           cellules qu'ils utilisent, donc plus aucun trou possible. Un bloc fort declenche DES QUE
-           l'espacement minimum est atteint (plus de tirage "candidat" separe, trop rare) ; seul son
-           TYPE varie par hachage, avec anti-repetition. Un seul passage, meme ordre d'affichage,
-           MEME compteur continu sur toute la galerie (jamais remis a zero entre deux annees,
-           decision deja actee). Vedette reste totalement independante : aucune ligne ci-dessous ne
-           lit ni n'ecrit galerie_vedette_url, le badge ★ fonctionne pareil sur n'importe quelle
-           tuile, quel que soit son bloc. */
-        var depuisGrandMEV = 0; /* demarre par un Trio (ouverture douce), premier bloc fort apres HYPE_GALERIE_ESPACEMENT_MIN photos */
-        var dernierTypeMEV = -1; /* -1 = aucun bloc fort encore vu ; sinon 0/1/2, pour ne jamais repeter le meme type de suite */
+        /* 11/09 (6) — GALERIE CINEMATIQUE, BIBLIOTHEQUE DE COMPOSITIONS EDITORIALES (8 sequences
+           ecrites par Blandine). Chaque annee choisit UNE composition (hachage stable sur l'annee +
+           sa premiere photo) et la suit pas a pas, en boucle si l'annee a plus de 8 etapes. Chaque
+           motif consomme un nombre FIXE de photos (T/GL/GR=3, PC/PG/PD=11, PL=1) : encore une fois,
+           plus aucun trou possible. */
+        var HYPE_GALERIE_COMPOSITIONS = [
+          ["T", "GL", "T", "PL", "T", "PC", "T", "GR"],
+          ["T", "GR", "T", "PC", "T", "GL", "PL", "T"],
+          ["GL", "T", "PL", "T", "PD", "T", "GR", "T"],
+          ["T", "PC", "T", "GR", "T", "PL", "GL", "T"],
+          ["T", "GL", "T", "PG", "T", "PL", "T", "GR"],
+          ["GR", "T", "PL", "T", "PC", "T", "GL", "T"],
+          ["T", "PD", "T", "GL", "T", "PL", "T", "GR"],
+          ["T", "PL", "T", "GR", "T", "PG", "T", "GL"]
+        ];
+        var HYPE_GALERIE_PORTRAIT_FENETRE = 15; /* nombre de prochaines photos regardees pour trouver une vraie portrait deja connue */
         liste.forEach(function (grpMEV) {
-          var photosMEV = grpMEV.photos, iMEV = 0, blocsMEV = [];
-          while (iMEV < photosMEV.length) {
-            var resteMEV = photosMEV.length - iMEV;
-            if (depuisGrandMEV >= HYPE_GALERIE_ESPACEMENT_MIN && resteMEV >= 1) {
-              var hMEV = hypeHacherTexte((typeof urlNue === "function") ? urlNue(photosMEV[iMEV].url) : photosMEV[iMEV].url);
-              var typeMEV = hMEV % 3; /* 0 = grand_gauche, 1 = grand_droite, 2 = creneau pleine largeur/hauteur */
-              if (typeMEV === dernierTypeMEV) typeMEV = (typeMEV + 1) % 3; /* jamais deux fois le meme type de bloc fort d'affilee */
-              /* si Grand+duo est choisi mais qu'il ne reste pas 3 photos dans l'annee pour le
-                 completer, repli sur le creneau pleine largeur/hauteur -- jamais un bloc a moitie
-                 rempli, jamais de photo inventee pour combler. Le creneau lui-meme (1 seule photo,
-                 bascule vers Pleine hauteur si elle se revele portrait au chargement) est inchange
-                 depuis le build precedent. */
-              if (typeMEV !== 2 && resteMEV >= 3) {
-                blocsMEV.push({ type: (typeMEV === 0) ? "grand_gauche" : "grand_droite", photos: photosMEV.slice(iMEV, iMEV + 3) });
-                iMEV += 3;
-              } else {
-                blocsMEV.push({ type: "pleine_largeur", photos: [photosMEV[iMEV]] });
-                typeMEV = 2;
-                iMEV += 1;
+          var photosMEV = grpMEV.photos.slice(); /* copie locale consommee par splice -- grpMEV.photos, la vraie liste, n'est jamais modifiee */
+          var clePremiereMEV = (photosMEV[0] && typeof urlNue === "function") ? urlNue(photosMEV[0].url) : ((photosMEV[0] && photosMEV[0].url) || "");
+          var sequenceMEV = HYPE_GALERIE_COMPOSITIONS[hypeHacherTexte(String(grpMEV.an) + ":" + clePremiereMEV) % HYPE_GALERIE_COMPOSITIONS.length];
+          var pasMEV = 0, blocsMEV = [];
+          while (photosMEV.length > 0) {
+            var motifMEV = sequenceMEV[pasMEV % sequenceMEV.length];
+            pasMEV++;
+            var resteMEV = photosMEV.length;
+            if (motifMEV === "PC" || motifMEV === "PG" || motifMEV === "PD") {
+              /* Cherche une vraie portrait DEJA CONNUE (chargee au moins une fois dans la session)
+                 parmi les prochaines photos -- jamais un pari a l'aveugle sur une photo pas encore
+                 chargee, jamais de reconstruction du bloc apres coup. Trouvee -> extraite de sa
+                 place chronologique par splice (donc jamais dupliquee) et utilisee comme point
+                 focal ; les 10 petites qui l'entourent restent dans l'ordre chronologique normal. */
+              var jTrouveMEV = -1;
+              for (var jMEV = 0; jMEV < Math.min(HYPE_GALERIE_PORTRAIT_FENETRE, photosMEV.length); jMEV++) {
+                var clePortraitMEV = (typeof urlNue === "function") ? urlNue(photosMEV[jMEV].url) : photosMEV[jMEV].url;
+                if (orientationsConnues[clePortraitMEV] === "portrait") { jTrouveMEV = jMEV; break; }
               }
-              dernierTypeMEV = typeMEV;
-              depuisGrandMEV = 0;
+              if (jTrouveMEV >= 0 && resteMEV >= 11) {
+                var portraitTrouveeMEV = photosMEV.splice(jTrouveMEV, 1)[0];
+                blocsMEV.push({ type: motifMEV, photoPortrait: portraitTrouveeMEV, photos: photosMEV.splice(0, 10) });
+                continue;
+              }
+              /* repli propre : aucune portrait connue a proximite, ou pas assez de photos pour
+                 completer le motif -- jamais un bloc a moitie rempli, jamais de photo inventee. */
+              motifMEV = (resteMEV >= 3) ? ((hypeHacherTexte(clePremiereMEV + String(pasMEV)) % 2 === 0) ? "GL" : "GR") : "PL";
+            }
+            if (motifMEV === "PL") {
+              blocsMEV.push({ type: "PL", photos: photosMEV.splice(0, 1) });
+            } else if (motifMEV === "GL" || motifMEV === "GR") {
+              if (resteMEV >= 3) { blocsMEV.push({ type: motifMEV, photos: photosMEV.splice(0, 3) }); }
+              else { blocsMEV.push({ type: "T", photos: photosMEV.splice(0, resteMEV) }); }
             } else {
-              var nMEV = Math.min(3, resteMEV);
-              blocsMEV.push({ type: "trio", photos: photosMEV.slice(iMEV, iMEV + nMEV) });
-              depuisGrandMEV += nMEV;
-              iMEV += nMEV;
+              blocsMEV.push({ type: "T", photos: photosMEV.splice(0, Math.min(3, resteMEV)) });
             }
           }
           grpMEV.blocs = blocsMEV;
@@ -35463,21 +35479,40 @@ function ChronologieSouvenirs(props) {
            avant. Une petite annee (moins que le seuil) n'a pas de bouton "voir tout" : elle montre
            deja tout ce qu'elle a. */
         var blocsVisibles = grp.blocs || [];
+        /* 11/09 (6) — un bloc portrait (PC/PG/PD) vaut 11 photos (10 petites + 1 portrait, comptee
+           a part) : compterBlocMEV les compte toutes les deux pour l'apercu/le "voir tout". */
+        function compterBlocMEV(bAp) { return (bAp.photos ? bAp.photos.length : 0) + (bAp.photoPortrait ? 1 : 0); }
         if (!tout) {
           var compteApercu = 0, iBlocApercu = 0;
           blocsVisibles = [];
           while (iBlocApercu < (grp.blocs || []).length && compteApercu < HYPE_GALERIE_PREVIEW_MIN) {
             var blocApercu = grp.blocs[iBlocApercu];
             blocsVisibles.push(blocApercu);
-            compteApercu += blocApercu.photos.length;
+            compteApercu += compterBlocMEV(blocApercu);
             iBlocApercu++;
           }
         }
-        var comptePhotosVisibles = blocsVisibles.reduce(function (sAp, bAp) { return sAp + bAp.photos.length; }, 0);
+        var comptePhotosVisibles = blocsVisibles.reduce(function (sAp, bAp) { return sAp + compterBlocMEV(bAp); }, 0);
         var reste = grp.photos.length - comptePhotosVisibles;
-        /* Une seule tuile "photo" (couvre Normal, Grand et les 2 cases du duo) : meme ouverture de
-           la visionneuse, meme selection multi-annee, meme badge ★ Vedette partout -- rien de tout
-           ca ne change entre le prototype et l'ancien code. */
+        /* 11/09 (6) — connait l'orientation reelle d'une photo une fois chargee (meme mecanisme
+           que deja utilise ailleurs) et la memorise pour TOUTE tuile, pas seulement Pleine largeur
+           comme avant : plus de donnees connues -> les motifs portrait (PC/PG/PD) trouvent plus
+           souvent une vraie portrait a saisir des la composition suivante. */
+        function detecterOrientation(cleOrientDet) {
+          return function (evCh) {
+            try {
+              var elCh = evCh && evCh.target; if (!elCh || !elCh.naturalWidth) return;
+              var portraitCh = elCh.naturalHeight > elCh.naturalWidth * 1.15;
+              if (portraitCh && orientationsConnues[cleOrientDet] !== "portrait") {
+                setOrientationsConnues(function (oPrev) { var oNext = Object.assign({}, oPrev); oNext[cleOrientDet] = "portrait"; return oNext; });
+              }
+            } catch (eDet) { }
+          };
+        }
+        /* Une seule tuile "photo" (Normal, Grand, petites d'un motif portrait, ou le portrait
+           lui-meme via cfg.contain) : meme ouverture de la visionneuse, meme selection multi-annee,
+           meme badge ★ Vedette partout. cfg.contain=true -> jamais de recadrage (vignetteHypeContain
+           + objectFit contain) au lieu du cover habituel -- reserve au portrait de PC/PG/PD. */
         function tuileHype(p, cleTuile, cfg) {
           var enSel = (modeAn === grp.an);
           var choisie = enSel && photosSel.indexOf(p.url) >= 0;
@@ -35487,67 +35522,91 @@ function ChronologieSouvenirs(props) {
           if (cfg.aspectRatio) styleTuile.aspectRatio = cfg.aspectRatio;
           if (cfg.gridColumn) styleTuile.gridColumn = cfg.gridColumn;
           if (cfg.gridRow) styleTuile.gridRow = cfg.gridRow;
+          var srcTuile = cfg.contain
+            ? (typeof vignetteHypeContain === "function" ? vignetteHypeContain(p.url, cfg.imgW, cfg.imgH) : p.url)
+            : (typeof vignetteHype === "function" ? vignetteHype(p.url, cfg.imgW, cfg.imgH) : p.url);
           return h("div", { key: cleTuile, role: "button", onClick: onClicTuile, style: styleTuile },
-            h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(p.url, cfg.imgW, cfg.imgH) : p.url), alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", WebkitTouchCallout: "none" } }),
+            h("img", { src: srcTuile, alt: "", loading: "lazy", decoding: "async", onLoad: detecterOrientation(cleOrient), onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: cfg.contain ? "contain" : "cover", display: "block", WebkitTouchCallout: "none" } }),
             (props.peutVedette ? (function () {
               var estVed = props.vedetteUrl && cleOrient === props.vedetteUrl;
               return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(p.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVed ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVed ? "\u2605" : "\u2606");
             })() : null));
         }
-        /* Un bloc = une petite grille FERMEE (3 colonnes, ses propres lignes) : Grand reserve
-           desormais reellement 2 lignes, donc plus aucune tuile voisine ne peut etre plus courte
-           que lui -- le trou disparait par construction. Pleine largeur garde sa presentation
-           actuelle (contain, jamais de crop), juste deplacee dans ce nouveau systeme. */
+        /* Chaque motif est une petite grille FERMEE (3 colonnes) qui consomme exactement le nombre
+           de photos qu'elle affiche -- aucun trou possible. PL remplit reellement le bandeau (cover,
+           leger zoom/crop accepte, jamais de bande, jamais deforme -- demande explicite). PC/PG/PD :
+           le portrait n'est JAMAIS recadre (contain), completement entoure de 10 petites (cover,
+           4/3 comme partout ailleurs). PH reste rendue ici si un bloc de ce type existe, mais n'est
+           plus choisie automatiquement par la composition -- reservee a un futur choix manuel. */
         function rendreBloc(bloc, iBloc) {
-          if (bloc.type === "pleine_largeur") {
+          if (bloc.type === "PL") {
             var pPL = bloc.photos[0];
             var enSelPL = (modeAn === grp.an), choisiePL = enSelPL && photosSel.indexOf(pPL.url) >= 0;
             var cleOrientPL = (typeof urlNue === "function") ? urlNue(pPL.url) : pPL.url;
             var onClicPL = function () { if (enSelPL) { setPhotosSel(function (l) { var iS = l.indexOf(pPL.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([pPL.url]); }); return; } if (props.onOuvrir) props.onOuvrir(pPL.url, pPL.albumId); };
-            var badgePL = props.peutVedette ? (function () {
-              var estVedPL = props.vedetteUrl && cleOrientPL === props.vedetteUrl;
-              return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(pPL.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVedPL ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVedPL ? "\u2605" : "\u2606");
-            })() : null;
-            /* 11/09 — PLEINE HAUTEUR (prototype 2/2). Orientation connue seulement apres chargement
-               (meme mecanisme que deja utilise ailleurs dans Hype) : tant qu'elle est inconnue ou
-               paysage, ce bloc reste Pleine largeur, inchange. Des qu'une photo se revele portrait,
-               ce MEME bloc (1 seule photo, rien a inventer) bascule sur la presentation immersive --
-               aucune restructuration de la composition/selection des blocs necessaire. */
-            var estPortraitPL = orientationsConnues[cleOrientPL] === "portrait";
-            function onImgChargeePL(evCh) {
-              try {
-                var elCh = evCh && evCh.target; if (!elCh || !elCh.naturalWidth) return;
-                var portraitCh = elCh.naturalHeight > elCh.naturalWidth * 1.15;
-                if (portraitCh && orientationsConnues[cleOrientPL] !== "portrait") {
-                  setOrientationsConnues(function (oPrev) { var oNext = Object.assign({}, oPrev); oNext[cleOrientPL] = "portrait"; return oNext; });
-                }
-              } catch (eChPL) { }
-            }
-            if (estPortraitPL) {
-              return h("div", { key: "bl" + iBloc, role: "button", onClick: onClicPL, style: { position: "relative", width: "100%", display: "flex", justifyContent: "center", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisiePL ? ("2px solid " + teinte) : "none", outlineOffset: choisiePL ? -2 : 0, opacity: (enSelPL && !choisiePL) ? .55 : 1 } },
-                h("img", { src: (typeof vignetteHypeContain === "function" ? vignetteHypeContain(pPL.url, 1000, 1600) : pPL.url), alt: "", loading: "lazy", decoding: "async", onLoad: onImgChargeePL, onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, pPL.url); }, style: { maxWidth: "100%", maxHeight: "78vh", width: "auto", height: "auto", display: "block", objectFit: "contain", WebkitTouchCallout: "none" /* jamais de recadrage destructif -- ratio original conserve */ } }),
-                badgePL);
-            }
             return h("div", { key: "bl" + iBloc, role: "button", onClick: onClicPL, style: { position: "relative", width: "100%", maxHeight: "60vh", aspectRatio: "16 / 9", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisiePL ? ("2px solid " + teinte) : "none", outlineOffset: choisiePL ? -2 : 0, opacity: (enSelPL && !choisiePL) ? .55 : 1 } },
-              h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(pPL.url, 1400, 788) : pPL.url), alt: "", loading: "lazy", decoding: "async", onLoad: onImgChargeePL, onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, pPL.url); }, style: { width: "100%", height: "100%", objectFit: "contain", display: "block", WebkitTouchCallout: "none" } }),
-              badgePL);
+              h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(pPL.url, 1400, 788) : pPL.url), alt: "", loading: "lazy", decoding: "async", onLoad: detecterOrientation(cleOrientPL), onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, pPL.url); }, style: { width: "100%", height: "100%", objectFit: "cover" /* 11/09 (6) : remplit reellement le bandeau, leger crop accepte -- demande explicite, plus de contain/bandes ici */, display: "block", WebkitTouchCallout: "none" } }),
+              (props.peutVedette ? (function () {
+                var estVedPL = props.vedetteUrl && cleOrientPL === props.vedetteUrl;
+                return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(pPL.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVedPL ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVedPL ? "\u2605" : "\u2606");
+              })() : null));
           }
-          if (bloc.type === "trio") {
+          if (bloc.type === "PH") {
+            var pPH = bloc.photos[0];
+            var enSelPH = (modeAn === grp.an), choisiePH = enSelPH && photosSel.indexOf(pPH.url) >= 0;
+            var cleOrientPH = (typeof urlNue === "function") ? urlNue(pPH.url) : pPH.url;
+            var onClicPH = function () { if (enSelPH) { setPhotosSel(function (l) { var iS = l.indexOf(pPH.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([pPH.url]); }); return; } if (props.onOuvrir) props.onOuvrir(pPH.url, pPH.albumId); };
+            return h("div", { key: "bl" + iBloc, role: "button", onClick: onClicPH, style: { position: "relative", width: "100%", display: "flex", justifyContent: "center", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisiePH ? ("2px solid " + teinte) : "none", outlineOffset: choisiePH ? -2 : 0, opacity: (enSelPH && !choisiePH) ? .55 : 1 } },
+              h("img", { src: (typeof vignetteHypeContain === "function" ? vignetteHypeContain(pPH.url, 1000, 1600) : pPH.url), alt: "", loading: "lazy", decoding: "async", onLoad: detecterOrientation(cleOrientPH), onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, pPH.url); }, style: { maxWidth: "100%", maxHeight: "78vh", width: "auto", height: "auto", display: "block", objectFit: "contain", WebkitTouchCallout: "none" } }),
+              (props.peutVedette ? (function () {
+                var estVedPH = props.vedetteUrl && cleOrientPH === props.vedetteUrl;
+                return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(pPH.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVedPH ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVedPH ? "\u2605" : "\u2606");
+              })() : null));
+          }
+          if (bloc.type === "T") {
             return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 } },
               bloc.photos.map(function (p, iP) { return tuileHype(p, "t" + iP, { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }); }));
           }
-          /* grand_gauche / grand_droite : Grand vaut reellement 2 colonnes x 2 lignes (pas de
-             aspectRatio sur lui -- il s'etire sur la grille jusqu'a la hauteur du duo, sa propre
-             image reste en cover comme avant), les 2 duo gardent 4/3 normal, empiles dans la
-             colonne restante. Miroir gauche/droite pour que 100 photos ne repetent pas toujours
-             exactement le meme dessin. */
-          var pG = bloc.photos[0], pD1 = bloc.photos[1], pD2 = bloc.photos[2];
-          var colG = (bloc.type === "grand_gauche") ? "1 / 3" : "2 / 4";
-          var colD = (bloc.type === "grand_gauche") ? "3 / 4" : "1 / 2";
-          return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "auto auto", gap: 5 } },
-            tuileHype(pG, "g", { gridColumn: colG, gridRow: "1 / 3", imgW: 840, imgH: 630 }),
-            tuileHype(pD1, "d1", { aspectRatio: "4 / 3", gridColumn: colD, gridRow: "1", imgW: 420, imgH: 315 }),
-            tuileHype(pD2, "d2", { aspectRatio: "4 / 3", gridColumn: colD, gridRow: "2", imgW: 420, imgH: 315 }));
+          if (bloc.type === "GL" || bloc.type === "GR") {
+            var pG = bloc.photos[0], pD1 = bloc.photos[1], pD2 = bloc.photos[2];
+            var colG = (bloc.type === "GL") ? "1 / 3" : "2 / 4";
+            var colD = (bloc.type === "GL") ? "3 / 4" : "1 / 2";
+            return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "auto auto", gap: 5 } },
+              tuileHype(pG, "g", { gridColumn: colG, gridRow: "1 / 3", imgW: 840, imgH: 630 }),
+              tuileHype(pD1, "d1", { aspectRatio: "4 / 3", gridColumn: colD, gridRow: "1", imgW: 420, imgH: 315 }),
+              tuileHype(pD2, "d2", { aspectRatio: "4 / 3", gridColumn: colD, gridRow: "2", imgW: 420, imgH: 315 }));
+          }
+          /* PC / PG / PD : 4 lignes x 3 colonnes fermees, 11 photos (10 petites + 1 portrait). Le
+             portrait vaut exactement 1 colonne x 2 lignes (jamais recadre -- contain), completement
+             entoure. PC = portrait au centre (colonne 2), une petite de chaque cote sur les 2 lignes
+             du milieu. PG/PD = portrait sur le cote (colonne 1 ou 3), un bloc de 4 petites (2x2)
+             occupe les 2 colonnes restantes sur ces memes 2 lignes. */
+          var pet = bloc.photos;
+          var col1 = "1 / 2", col2 = "2 / 3", col3 = "3 / 4";
+          var enfants = [
+            tuileHype(pet[0], "p0", { aspectRatio: "4 / 3", gridRow: "1", gridColumn: col1, imgW: 420, imgH: 315 }),
+            tuileHype(pet[1], "p1", { aspectRatio: "4 / 3", gridRow: "1", gridColumn: col2, imgW: 420, imgH: 315 }),
+            tuileHype(pet[2], "p2", { aspectRatio: "4 / 3", gridRow: "1", gridColumn: col3, imgW: 420, imgH: 315 }),
+            tuileHype(pet[7], "p7", { aspectRatio: "4 / 3", gridRow: "4", gridColumn: col1, imgW: 420, imgH: 315 }),
+            tuileHype(pet[8], "p8", { aspectRatio: "4 / 3", gridRow: "4", gridColumn: col2, imgW: 420, imgH: 315 }),
+            tuileHype(pet[9], "p9", { aspectRatio: "4 / 3", gridRow: "4", gridColumn: col3, imgW: 420, imgH: 315 })
+          ];
+          var colPortraitBloc = (bloc.type === "PC") ? col2 : (bloc.type === "PG") ? col1 : col3;
+          enfants.push(tuileHype(bloc.photoPortrait, "pp", { gridRow: "2 / 4", gridColumn: colPortraitBloc, contain: true, imgW: 600, imgH: 1000 }));
+          if (bloc.type === "PC") {
+            enfants.push(tuileHype(pet[3], "p3", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: col1, imgW: 420, imgH: 315 }));
+            enfants.push(tuileHype(pet[4], "p4", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: col3, imgW: 420, imgH: 315 }));
+            enfants.push(tuileHype(pet[5], "p5", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: col1, imgW: 420, imgH: 315 }));
+            enfants.push(tuileHype(pet[6], "p6", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: col3, imgW: 420, imgH: 315 }));
+          } else {
+            var colA = (bloc.type === "PG") ? col2 : col1;
+            var colB = (bloc.type === "PG") ? col3 : col2;
+            enfants.push(tuileHype(pet[3], "p3", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: colA, imgW: 420, imgH: 315 }));
+            enfants.push(tuileHype(pet[4], "p4", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: colB, imgW: 420, imgH: 315 }));
+            enfants.push(tuileHype(pet[5], "p5", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: colA, imgW: 420, imgH: 315 }));
+            enfants.push(tuileHype(pet[6], "p6", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: colB, imgW: 420, imgH: 315 }));
+          }
+          return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "auto auto auto auto", gap: 5 } }, enfants);
         }
         return h("div", { key: "an" + grp.an, style: { position: "relative", paddingLeft: 26, marginBottom: 26 } },
           /* point de la ligne */
@@ -35577,10 +35636,22 @@ function ChronologieSouvenirs(props) {
                      bouton ci-dessous) ; jamais affiché quand tout se passe bien. */
                   erreurAnnee ? h("div", { style: { fontSize: 10.5, color: "#F0A05F", marginBottom: 6 } }, erreurAnnee) : null,
                   h("div", { style: { display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
-                    photosSel.length ? h("input", { type: "number", inputMode: "numeric", placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 15, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
+                    /* 11/09 (7) — PRE-REMPLI (defaultValue) et plus seulement suggere en gris :
+                       le « 2026 » affiche etait un placeholder, donc valider sans rien taper
+                       envoyait une valeur VIDE, rejetee -> le faux « ca n'a pas marche ». */
+                    photosSel.length ? h("input", { type: "number", inputMode: "numeric", defaultValue: String(grp.an), placeholder: String(grp.an), min: 1990, max: (new Date()).getFullYear() + 1, id: "anPh" + grp.an, style: { width: 92, minHeight: 44, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.16)", borderRadius: 9, color: "#EDF2F5", fontSize: 15, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }) : null,
                     photosSel.length ? h("button", { onClick: async function () {
                       var el = document.getElementById("anPh" + grp.an);
                       var anV = el && el.value;
+                      /* 11/09 (7) — message DISTINCT quand l'annee est vide ou hors bornes : avant,
+                         ce cas tombait dans le meme « ca n'a pas marche » qu'un vrai echec
+                         d'ecriture, ce qui envoyait chercher un bug de droits inexistant. */
+                      var anNum = parseInt(anV, 10);
+                      var anMaxV = (new Date()).getFullYear() + 1;
+                      if (!(anNum >= 1990 && anNum <= anMaxV)) {
+                        setErreurAnnee(T("Donne une année entre 1990 et " + anMaxV + ".", "Enter a year between 1990 and " + anMaxV + ".", "Indica un año entre 1990 y " + anMaxV + ".", "Indica un anno tra 1990 e " + anMaxV + ".", "1990〜" + anMaxV + " の年を入力してください。", "Gib ein Jahr zwischen 1990 und " + anMaxV + " ein."));
+                        return;
+                      }
                       var resultats = await Promise.all(photosSel.map(function (uSel) { return appliquerAnneePhoto(uSel, anV); }));
                       var nbOkV = resultats.filter(function (rV) { return rV; }).length;
                       /* 11/09 (4) — Blandine : « déplacer une photo ne l'emmenait nulle part ». Avant :
@@ -37020,29 +37091,15 @@ function AlbumsCheval(props) {
            exactement le meme nombre d elements qu avant. Ni mascotte ni lien
            vers l abonnement — elle est deja abonnee.
            ⚠️ Il n apparait qu a partir de HYPE_MUX_PREVENIR_A restantes. */
-        (premium && !albOuvert.__lecture) ? (function () {
-          if (quotaVid === null) return null;
-          var restV = Math.max(0, HYPE_MUX_VIDEOS_PREMIUM - quotaVid);
-          if (restV > HYPE_MUX_PREVENIR_A) return null;
-          /* 04/09 : LARGEUR PLEINE + retour a la ligne du conteneur (juste
-             au-dessus) = la ligne occupe SA PROPRE ligne au lieu d etre
-             comprimee entre les trois boutons d ajout. C est ce qui la faisait
-             s empiler en six lignes contre le bord sur la capture de Blandine. */
-          return h("div", { style: { width: "100%", fontFamily: M9, fontSize: 11.5, fontWeight: 700, color: "#F2D48A", margin: "0 0 9px", lineHeight: 1.5 } },
-            restV <= 0
-              ? T("Tu as atteint " + HYPE_MUX_VIDEOS_PREMIUM + " vidéos, le maximum de ton abonnement.",
-                  "You've reached " + HYPE_MUX_VIDEOS_PREMIUM + " videos, the maximum for your plan.",
-                  "Has alcanzado " + HYPE_MUX_VIDEOS_PREMIUM + " vídeos, el máximo de tu suscripción.",
-                  "Hai raggiunto " + HYPE_MUX_VIDEOS_PREMIUM + " video, il massimo del tuo abbonamento.",
-                  "動画は " + HYPE_MUX_VIDEOS_PREMIUM + " 本に達しました。ご契約の上限です。",
-                  "Du hast " + HYPE_MUX_VIDEOS_PREMIUM + " Videos erreicht, das Maximum deines Abos.")
-              : T("Il te reste " + restV + (restV === 1 ? " vidéo sur " : " vidéos sur ") + HYPE_MUX_VIDEOS_PREMIUM,
-                  "You have " + restV + (restV === 1 ? " video left of " : " videos left of ") + HYPE_MUX_VIDEOS_PREMIUM,
-                  "Te queda" + (restV === 1 ? " " : "n ") + restV + (restV === 1 ? " vídeo de " : " vídeos de ") + HYPE_MUX_VIDEOS_PREMIUM,
-                  "Ti resta" + (restV === 1 ? " " : "no ") + restV + " video su " + HYPE_MUX_VIDEOS_PREMIUM,
-                  "残り " + restV + " 本 / " + HYPE_MUX_VIDEOS_PREMIUM,
-                  "Dir bleib" + (restV === 1 ? "t " : "en ") + restV + " Video" + (restV === 1 ? " von " : "s von ") + HYPE_MUX_VIDEOS_PREMIUM));
-        })() :
+        /* 11/09 (5) — Blandine, après avoir vécu le plafond elle-même : « vire-moi ça partout,
+           ça gâche le moment » (ce bandeau permanent venait pourtant de sa propre demande du
+           04/09). Retiré : plus aucun rappel de quota affiché en continu dans la grille. Le
+           popup contextuel existe déjà et n'est pas touché ici — il se déclenche déjà au bon
+           moment (quand on essaie réellement d'envoyer une vidéo au-delà du plafond, voir
+           `videosAuDela`/`setInvitPlus({motif:"video_premium"})` plus bas dans ce fichier) et
+           n'offre déjà pas de bouton d'abonnement supérieur pour une abonnée déjà au plafond
+           (décision du 04/09, toujours valable : rien à vendre au-dessus pour l'instant). */
+        (premium && !albOuvert.__lecture) ? null :
         (!premium && !albOuvert.__lecture) ? h("div", {
           role: "button",
           onClick: function () { try { if (setEcranAC) setEcranAC("premium"); } catch (ePa) { } },
