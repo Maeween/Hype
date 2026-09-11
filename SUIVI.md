@@ -10,6 +10,1481 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 11/09/2026 (nuit, suite) — JOURNAL DES ALBUMS EN SERVICE · « MODIFIER LA FICHE » : ÉCURIES DE LA PROPRIÉTAIRE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `dcdcdc560ed6aa8667b4ed9bbdd27ea7` | build **20260908-59** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `2b04adba…` (20260908-58). Sur « Ok continue » de Blandine, pour les trois petits points
+ouverts. Aucun nouveau SQL.
+
+**À l'écran : + dans « Modifier la fiche », le choix « Écurie du cheval » propose les écuries de la
+propriétaire du cheval · − celles de la personne connectée.**
+
+## JOURNAL DES ALBUMS — PASSÉ EN BASE ET VÉRIFIÉ (`sql-11-09-journal-albums.sql`)
+
+- Le contrôle affiche les deux déclencheurs : `trg_journal_album` et `trg_sauver_album_avant`.
+- Juste après l'installation, le journal était vide : aucun album n'avait encore bougé.
+- Test réel de Blandine, un renommage dans l'appli : une ligne `modification`, `{nom}`,
+  `authenticated` / `authenticator`, à 19:42:44 UTC. **Le journal fonctionne et reconnaît l'origine.**
+  Un changement fait depuis l'éditeur SQL apparaîtra avec `role_jeton` vide et `postgres` comme
+  connexion.
+
+## LES TROIS POINTS
+
+1. **Corrections d'année enregistrées sous une clé `#cadre=`** : requête de lecture donnée à
+   Blandine (une seule), résultat attendu avant tout rapatriement.
+2. **Plafond vidéo gratuit à 3 : FAUSSE ALERTE de ma part.** Blandine a décidé « 2 → 3 » le 04/09
+   (nuit), voir l'entrée de ce jour-là. Le code (`HYPE_MUX_VIDEOS_GRATUIT = 3`) et la base
+   (`hype_reserver_place_video`, `else 3`) sont conformes. Je m'appuyais sur une note plus
+   ancienne (03/09). Rien à changer, point fermé.
+3. **Choix d'écurie de « Modifier la fiche »** — ACTION 23 (`EcranCheval`) :
+   - la liste vient de `clubsDuProfil(ownerId)`, même source que la ligne du menu ⋮ ;
+   - l'écurie actuelle est ajoutée si elle n'y figure pas ;
+   - si la propriétaire est la personne connectée, la liste est inchangée ;
+   - la liste est rechargée à chaque changement de cheval, et une réponse tardive est ignorée.
+   Banc sur la fiche entière (cheval d'Aurélie, écurie SEP, actuellement « Ecurie Feinn » ;
+   personne connectée : Feinn + « Club X ») :
+   - build 58 : `Ecurie Feinn · Club X · Aucune` ;
+   - build 59 : `SEP · Ecurie Feinn · Aucune`.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts identiques. Diff limité à `EcranCheval`
+  (état + chargement + liste calculée), au sélecteur, au commentaire de tête et au marqueur.
+- Non-régression, 0 erreur de page : fiche entière, Zeus, année, galerie (motif 8), scénario de
+  l'incident.
+
+## RESTE OUVERT
+
+1. Tests iPhone des builds 54 à 59.
+2. Résultat de la requête `#cadre=` → rapatriement éventuel (à valider).
+3. Place du motif 8 si la maquette le prévoit ailleurs.
+
+---
+
+# 🟩 11/09/2026 (nuit) — GALERIE : MOTIF 8 + PLUSIEURS COMPOSITIONS PAR ANNÉE · JOURNAL COMPLET DES ALBUMS (SQL)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2b04adba2add9aec5df88de669044e65` | build **20260908-58** |
+| `sql-11-09-journal-albums.sql` | à passer dans Supabase (SQL Editor), **indépendant de l'index** | — | table `albums_cheval_journal` + déclencheur `trg_journal_album` |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e9d3b117…` (20260908-57). Sur les deux « Top continue » de Blandine. Elle gérera
+elle-même l'album « Orlena x One dream » : aucun script de déplacement n'est préparé.
+
+**À l'écran :**
+- \+ le motif « grande horizontale encadrée » (3 petites, 1 grande pleine largeur, 3 petites) ;
+- \+ une grande année enchaîne plusieurs compositions au lieu de répéter la même.
+
+## ACTION 22 — GALERIE : LES DEUX ÉCARTS AVEC LA MAQUETTE (`ChronologieSouvenirs` seul)
+
+- **Motif 8 « Grande horizontale encadrée »** (7 photos, toutes rendues par `tuileHype` : visionneuse,
+  sélection, format et vedette identiques aux autres tuiles). **Choix de conception, à valider sur
+  l'écran** : il prend la place des motifs « photo verticale entourée » (PC/PG/PD), qui ne peuvent
+  plus se former depuis l'option A. C'est le même rôle, un moment fort encadré, sans dépendre du
+  sens des photos. Avec moins de 7 photos restantes, le repli d'avant est inchangé. Si la maquette
+  place ce motif ailleurs, il suffit de l'ajouter aux séquences.
+- **Plusieurs compositions dans une même année** : au bout d'une composition complète, la suivante
+  est choisie par le même hachage stable (année + première photo + numéro de cycle), jamais
+  identique à la précédente. Même contenu = même mise en page. Les formats imposés à la main
+  gardent la priorité.
+- Banc, une année de 60 vraies images :
+  - build 57 : `GR T3 PL T3 GR T3 GL T3 | GR T3 PL T3 GL T3 …` (la même composition en boucle,
+    pas de motif 8) ;
+  - build 58 : `GR T3 PL T3 GH7 T3 GL T3 | GL T3 PL T3 GH7 T3 GR T3 | T3 GR T2` (trois compositions
+    différentes, motif 8 présent) ;
+  - identique après une action, 60 photos affichées sur 60 ;
+  - « Choisir le format » sur la grande photo du motif 8 ouvre bien le choix.
+
+## SQL — JOURNAL COMPLET DES ALBUMS (non passé : à faire par Blandine)
+
+Réponse au trou de traçabilité confirmé pendant le diagnostic : un changement de cible ne
+laissait aucune trace. **Additif** : la sauvegarde `trg_sauver_album_avant` reste en place.
+- Nouvelle table `albums_cheval_journal`. Une ligne par création, modification (cible, photos,
+  auteur, nom, visibilité) ou suppression, avec :
+  - l'état avant ET après, l'heure ;
+  - `fait_par` (le compte), `role_jeton` (authenticated = l'appli, service_role = serveur, vide =
+    éditeur SQL), `connexion`, `application`.
+- Déclencheur **APRÈS** écriture : il ne peut ni modifier ni annuler une écriture. S'il échoue
+  lui-même, l'écriture de l'album passe quand même (simple avertissement).
+- Lecture : modératrices seulement. Aucune écriture possible depuis l'appli.
+- **Non exécutable ici** (pas de base locale) : écrit avec soin et rejouable. Le contrôle en fin de
+  script doit afficher deux déclencheurs, `trg_journal_album` et `trg_sauver_album_avant`.
+- **À passer avant de réorganiser les albums d'Orlena et de One Dream**, pour que ces déplacements
+  soient eux-mêmes tracés.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts identiques. Diff limité à la composition,
+  au rendu du motif 8, au commentaire de tête et au marqueur.
+- Non-régression, 0 erreur de page : feuille « Dans quel album ? », Zeus, année, fiche entière,
+  protections du build 56 (dont le scénario de l'incident), fin d'envoi et formats du build 57.
+
+## À TESTER SUR IPHONE
+
+1. Une année bien remplie : un motif « 3 petites, 1 grande, 3 petites », et plus de répétition du
+   même dessin sur toute l'année.
+2. Toucher les photos du motif : la visionneuse s'ouvre ; en mode « Choisir le format », le choix
+   s'ouvre.
+3. Passer le SQL : le contrôle affiche les deux déclencheurs. Ensuite, n'importe quel ajout de photo
+   laisse une ligne dans `albums_cheval_journal`.
+
+## RESTE OUVERT
+
+1. Tests iPhone des builds 54 à 58.
+2. Place du motif 8 dans les séquences, si la maquette le prévoit ailleurs (une image de la
+   maquette suffit).
+3. Corrections d'année sous une clé `#cadre=` ; plafond vidéo gratuit à 3 (décision notée : 2) ;
+   choix d'écurie de « Modifier la fiche ».
+
+---
+
+# 🟩 11/09/2026 (soir, suite) — FIN D'ENVOI RÉPARÉE · FORMAT DES PHOTOS AGRANDIES · GALERIE STABLE (option A)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e9d3b1171dda45267066068ac17d8db0` | build **20260908-57** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `27a99939…` (20260908-56). Sur le « Super continue » de Blandine, qui répondait à
+« ok pour la ligne du défaut d'envoi, et A ou B pour la galerie ». **Option A appliquée : c'était
+la recommandation, et elle se défait en une ligne.** Trois actions distinctes. Aucun SQL, aucun
+droit, aucun `?v=`.
+
+**À l'écran :**
+- \+ en mode « Choisir le format », une photo en Pleine largeur ou Pleine hauteur ouvre son choix
+  de format ;
+- \+ la galerie garde la même mise en page d'une visite à l'autre et après une action ;
+- \+ après un envoi dans un album, la chronologie se met à jour ;
+- − les motifs automatiques « photo verticale entourée » (PC/PG/PD).
+
+## ACTION 19 — LA FIN DE L'ENVOI NE PLANTE PLUS (`AlbumsCheval.importerFichiers`)
+
+`rM`, supprimée le 08/09 mais encore lue en fin d'envoi, est déclarée à `null` en tête de la
+fonction : les deux lectures deviennent sans effet.
+Banc :
+- build 56 : erreur « rM is not defined », liste non relue, chronologie non prévenue ;
+- build 57 : aucune erreur, liste relue, chronologie prévenue.
+La carte « Envoyé » n'a pas pu être observée au banc (ni sur le 56 ni sur le 57) : elle est à
+voir sur l'iPhone.
+
+## ACTION 20 — CHOISIR LE FORMAT D'UNE PHOTO AGRANDIE (`ChronologieSouvenirs`)
+
+Les blocs Pleine largeur et Pleine hauteur avaient leur propre code de toucher, sans le mode
+format : ils ouvraient la visionneuse. Ils ouvrent désormais le choix de format, comme les autres
+tuiles.
+Banc :
+- build 56 : ni l'un ni l'autre n'ouvre le choix ;
+- build 57 : les deux l'ouvrent, et la visionneuse n'est pas appelée.
+
+## ACTION 21 — « LE CÔTÉ ALÉATOIRE » : OPTION A (`ChronologieSouvenirs`)
+
+Cause (prouvée par le code, puis reproduite au banc) : la composition dépendait des orientations
+apprises pendant la session (état vidé à chaque montage, relu à chaque rechargement). Le même
+contenu donnait donc des mises en page différentes.
+Correctif : `HYPE_GALERIE_MOTIFS_PORTRAIT_AUTO = false`. Les motifs PC/PG/PD prennent toujours
+leur repli (Grande + 2 petites, ou Pleine largeur), c'est-à-dire ce qui s'affichait déjà à la
+première ouverture. Une photo verticale se met en valeur à la main (« Pleine hauteur »).
+Repasser à `true` rétablit l'ancien comportement. L'option B (mémoriser l'orientation en base)
+reste possible.
+Banc (40 vraies images, dont des verticales), mise en page d'une année :
+- build 56, 1re ouverture : `2L3 T3 PL1 T3 2L3 T3 2L3 …` ;
+- build 56, après une action : `2L3 T3 PL1 T3 4L11 T3 …` — un motif vertical apparaît et tout le
+  reste se décale ;
+- build 57 : identique avant et après.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts identiques. Diff limité aux trois
+  endroits, au commentaire de tête et au marqueur.
+- Non-régression, 0 erreur de page : feuille « Dans quel album ? », Zeus, année, fiche entière,
+  les 6 tests du build 56, scénario de l'incident rejoué sur la fiche entière (jamais « One Dream »
+  avec l'album d'Orlena).
+
+## À TESTER SUR IPHONE
+
+1. Envoyer une photo dans un album : elle apparaît aussi dans la chronologie sans ressortir de
+   l'onglet.
+2. « Choisir le format d'une photo » → toucher une photo en Pleine largeur (ou Pleine hauteur) : le
+   choix s'ouvre → « Automatique » la remet à sa place.
+3. Ouvrir une année bien remplie, changer un format ou une année, revenir : la mise en page ne
+   bouge plus d'elle-même.
+
+## RESTE OUVERT
+
+1. Tests iPhone des builds 54 à 57.
+2. Traçabilité complète des albums (avant/après, cible, heure, appelant) : à valider.
+3. Données, décision de Blandine : l'album « Orlena x One dream » reste sur Orlena ou part sur
+   One Dream (écriture SQL, seulement sur son « ok »).
+4. Corrections d'année sous une clé `#cadre=` ; plafond vidéo gratuit à 3 (décision notée : 2) ;
+   choix d'écurie de « Modifier la fiche ».
+5. Galerie (écarts avec sa maquette) : motif 8 absent, une seule composition par année.
+
+---
+
+# 🟩 11/09/2026 (soir) — CORRECTIF : CONTAMINATION D'ÉTAT ENTRE DEUX CHEVAUX (AlbumsCheval)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `27a99939c9cca0709e634eedba9b1a74` | build **20260908-56** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `83b1e4a1…` (20260908-55). **Un seul composant touché : `AlbumsCheval`.** Aucun SQL,
+aucune RLS, rien d'autre (photo_formats, galerie, vedette, qualité photo, Mux : intacts).
+
+**À l'écran : − les albums et l'album ouvert du cheval précédent, qui restaient affichés et
+utilisables après être passé à un autre cheval · + un message « Action refusée… » si jamais une
+écriture visait un album d'une autre fiche.**
+
+## DIAGNOSTIC « ALBUM DISPARU » DE ONE DREAM — CONCLUSION (validée avec ChatGPT)
+
+Diagnostic mené en SELECT uniquement, une requête à la fois :
+- L'album n'a **jamais** été supprimé. Les 3 photos de 08:59 UTC sont dans l'album `81659b0a`
+  « Orlena x One dream », créé le 05/09 à 18:14 sur la fiche d'**Orlena du Vert Vallon Z**
+  (`12fe4e52…`), 3 min après la création de cette fiche.
+- Les 2 photos envoyées à 09:00 sont **aussi** dans cet album. Le fait n°3 de la passation était
+  faux : la vérification ne regardait que la cible de One Dream.
+- One Dream (`c10ad77a…`) n'a qu'une fiche. À 09:03 elle n'avait réellement aucun album.
+  « Photos pouliche » est l'album de récupération, créé à la main à 09:09 (la passation disait
+  « Photos récupérées »).
+- Côté base, tout est écarté : aucune règle, aucun déclencheur antérieur, aucune fonction ne peut
+  changer une cible ou supprimer un album, et pg_cron est absent.
+- `pg_stat_statements` est complet depuis le 02/07 (dealloc = 0). **L'appli n'a jamais changé la
+  cible d'un album.** Seules 5 requêtes manuelles l'ont fait ; la seule qui reste invérifiable est
+  la requête générique du 28/07, avec 2 exécutions sans date.
+- **Mécanisme retenu, compatible avec toutes les données** : l'état périmé d'`AlbumsCheval`. Il a
+  été **reproduit au banc sur la fiche entière** avec le build 55 : après être passé d'Orlena à
+  One Dream, onglet Photos ouvert, la fiche affiche « ONE DREAM » **avec** l'album d'Orlena et son
+  bouton « + Ma photothèque » pendant tout le chargement (900 ms de latence simulée). Qu'il se soit
+  produit exactement à 09:00 n'est pas prouvé.
+
+## LES 3 PROTECTIONS
+
+1. **Remise à zéro immédiate**, dans le rendu même où la cible change (React rejoue le rendu avant
+   de peindre, donc aucune image n'est affichée avec l'ancien état). Elle couvre : liste, album
+   ouvert, visionneuse, sélections, feuilles, confirmations, réessai vidéo, propositions.
+2. **Jeton `{ numéro, cible }`** sur toute la chaîne de `charger()` (réconciliation Mux,
+   `listerAlbumsCheval`, albums rejoints, identifications, `finaliser`) et sur les propositions.
+   Une réponse périmée ne fait plus aucun `setState`. `charger()` relit toujours la cible
+   **courante**, même appelé depuis une ancienne fermeture.
+3. **`albumAutorise()` avant toute écriture par id d'album** : envoi de photos, de vidéos et
+   réessai, retrait, renommage, couverture, visibilité, « à la une », suppression, « Souvenirs
+   publiés », lieu, identification d'album.
+   - Condition : l'album doit être dans la liste chargée pour la cible courante, et appartenir à
+     cette cible (ou être un album partagé **rejoint**, légitime sur la page cavalier).
+   - Sinon : rien n'est écrit, le message reste à l'écran, la liste se recharge.
+   - Vidéo : « album de A / cible de B » est refusé **avant** la réservation Mux.
+   - Un envoi déjà lancé sur une fiche continue vers son album si on change de fiche en cours de
+     route (l'intention est prise au moment du choix).
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques. Diff limité à
+  `AlbumsCheval` + commentaire de tête + marqueur.
+- Banc réel Chromium, fausse base, les 6 tests demandés :
+  1. Album d'Orlena ouvert → One Dream : dès le rendu suivant (liste de One Dream pas encore
+     arrivée), plus de bouton d'ajout, album d'Orlena absent. Ensuite, One Dream s'affiche seul.
+  2. Réponse d'Orlena retardée de 1,5 s, arrivée **après** celle de One Dream : elle n'écrase
+     rien, One Dream reste intact.
+  3. Écriture artificielle (album d'Orlena injecté dans la liste de One Dream, puis envoi d'une
+     photo) : « Action refusée », **aucun** envoi au stockage, **aucun** rattachement, album
+     d'Orlena inchangé.
+  4. One Dream → photo dans son album : seul son album prend +1 (rattachement visé : `albB`).
+  5. Vidéo vers l'album injecté : refusée, rien en base. Vraie vidéo (webm fabriqué par le
+     navigateur) vers l'album de la fiche : la garde laisse passer jusqu'à l'appel Mux.
+  6. Navigation A → B → A → B rapide : liste finale = B ; la feuille « Dans quel album ? » ne
+     propose que B.
+- **Scénario de l'incident rejoué sur la fiche entière**, échantillonné toutes les 150 ms :
+  - build 55 : « ONE DREAM » + album d'Orlena + bouton d'ajout pendant 900 ms ;
+  - build 56 : jamais.
+- Non-régression : feuille « Dans quel album ? », Zeus, année, fiche entière : 0 erreur.
+
+## ⚠️ DÉFAUT ANCIEN TROUVÉ PENDANT LES TESTS — NON CORRIGÉ (hors périmètre, attend un « ok »)
+
+Fin d'`importerFichiers` : `if (rM && rM.error)` et `!(rM && rM.error)` lisent une variable `rM`
+**supprimée le 08/09** (« plus de rM »). Chaque envoi d'album finit donc par une erreur
+« rM is not defined », **juste après** le rattachement des photos (rien n'est perdu).
+Conséquences depuis le 08/09 :
+- la liste n'est pas relue, et la chronologie n'est donc pas prévenue ;
+- la carte « Fichier reçu » ne passe pas à « Envoyé ».
+
+Correctif d'une ligne prêt (déclarer `rM` à `null`, ou retirer les deux lectures mortes).
+
+## À TESTER SUR IPHONE
+
+1. Orlena → onglet Photos → ouvrir son album → passer à One Dream (par un lien direct, onglet
+   Photos resté ouvert) : l'album d'Orlena disparaît aussitôt, rien n'est touchable pendant le
+   chargement, puis les albums de One Dream arrivent.
+2. One Dream → son album → « + Ma photothèque » → la photo va dans son album (voir la chronologie
+   après être revenue sur l'onglet, à cause du défaut `rM` ci-dessus).
+3. Même chose avec une vidéo.
+4. Navigation habituelle entre plusieurs chevaux : rien de cassé.
+
+## RESTE OUVERT
+
+1. Défaut `rM` (ci-dessus) : 1 ligne, sur « ok ».
+2. Galerie : le mode format ne réagit pas sur les photos Pleine largeur / Pleine hauteur, et le
+   « côté aléatoire » attend le choix A ou B.
+3. Traçabilité complète des albums (avant/après, cible, heure, appelant) : après validation.
+4. Données, décision de Blandine : l'album « Orlena x One dream » reste sur Orlena, ou est déplacé
+   (écriture SQL, seulement sur son « ok »).
+5. Corrections d'année sous une clé `#cadre=` ; plafond vidéo gratuit à 3 (décision notée : 2).
+
+## LEÇONS
+
+- Un banc à réponses instantanées **cache** les états périmés. Le scénario n'est apparu qu'avec
+  une latence réaliste : toujours tester les changements de fiche avec du retard simulé.
+- « Zéro album » ne veut pas dire « album supprimé » : chercher d'abord où est la ligne, sans
+  filtrer sur la fiche.
+
+---
+
+# 🟩 11/09/2026 (après-midi) — ZEUS · MESSAGES SOUS LA BARRE · CHANGER L'ANNÉE (3 actions enchaînées)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `83b1e4a1c46970b04fe04123104faf7a` | build **20260908-55** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `ea09ad24…` (20260908-54, qui contient 49 à 53). Enchaîné **sans attendre de retour**,
+à la demande explicite de Blandine (« tu peux enchaîner sans attendre de retour de ma part »).
+Trois actions distinctes dans ce même fichier, chacune testée à part au banc. **Aucun SQL, aucun
+droit, aucun `?v=` touché.**
+
+**À l'écran : + la ligne « 🏠 Écurie du cheval » dans le menu ⋮ · + une rangée d'années dans
+« Changer l'année » · + les petits messages de la fiche redeviennent visibles · + le bas du menu ⋮
+(Supprimer, Annuler) dégagé · − la case d'année pré-remplie avec l'année où la photo est déjà.**
+
+## ACTION 15 — ZEUS : L'ÉCURIE DU CHEVAL EN UN TAP DEPUIS LE MENU ⋮
+
+Cause (FAIT PROUVÉ, lecture du code) : le seul choix existant était caché dans ⋮ → « Modifier la
+fiche », n'apparaissait que si **la personne connectée** avait deux écuries dans son profil
+(`mesClubs()`), et proposait **ses** écuries, jamais celles de la propriétaire du cheval.
+
+Fait :
+- nouvelle aide `clubsDuProfil(userId)` (à côté de `mesClubs`, même filtrage, lecture seule) ;
+- nouveau composant `FeuilleEcurieCheval` (détaché vers `<body>`, donc au-dessus de la barre) :
+  écuries de la **propriétaire** + l'écurie actuelle si elle n'y figure pas + « Aucune » (« il
+  apparaît alors dans toutes les écuries ») ; repli sur les écuries de la personne connectée si
+  celles de la propriétaire sont illisibles ; écriture par `changerClubCheval` → `set_cheval_club`
+  (propriétaire OU modératrice en base), qui relit et **dit l'échec dans la feuille** ;
+- ligne « 🏠 Écurie du cheval · <écurie actuelle> » en tête du menu ⋮, pour la propriétaire ou une
+  modératrice ; confirmation « Écurie enregistrée ✓ · <écurie> ».
+- L'ancien choix dans « Modifier la fiche » est laissé tel quel (dette : il lit toujours les
+  écuries de la personne connectée).
+- Effet attendu (règle unique `hypeMemeClub`, appliquée par toutes les pages d'écurie) : un cheval
+  rattaché à la SEP n'apparaît plus chez Feinn ; « Aucune » le rend visible partout.
+
+## ACTION 16 — CE QUI ÉTAIT CACHÉ SOUS LA BARRE D'ONGLETS, SUR LA FICHE
+
+FAIT PROUVÉ : le petit message de la fiche était posé à 40 px du bas dans l'enveloppe de l'appli
+(`zIndex: 1`) alors que la barre (portail vers `<body>`, `zIndex: 50`) occupe ≈ 80 px + encoche ;
+idem pour le bas du menu ⋮ (« Supprimer », « Annuler »).
+Fait : message remonté à `calc(96px + encoche)` ; menu ⋮ avec une cale de 84 px en bas + défilement
+s'il est trop haut. **Pas de portail pour ce menu** : « Changer la photo » y déclenche un champ
+fichier (leçon iOS du 05/09).
+
+## ACTION 17 — CHANGER L'ANNÉE
+
+(a) La case (build 47) était pré-remplie avec l'année **où la photo est déjà** : valider sans taper
+ne changeait rien (« ne propose toujours que sa propre année »). Remplacée par une **rangée
+d'années à toucher** (de l'année en cours jusqu'à un an avant la plus ancienne de la chronologie,
+12 au plus ; l'actuelle marquée et inactive) ; un tap applique l'année aux photos choisies.
+« Autre année… » garde une saisie libre, **vide**. Une seule porte `appliquerAnneeSelection`
+(mêmes contrôles qu'avant : bornes, message distinct si l'année manque, message clair si rien
+n'a pu être écrit, pas de double tap).
+(b) **DÉFAUT PROUVÉ ET REPRODUIT AU BANC** : `appliquerAnneePhoto` écrivait l'adresse brute (avec
+`#cadre=` quand la photo a un cadre) ; depuis le build 47, la chronologie relit via `urlNue()`.
+Rejoué sur le build 54 avec deux photos dont une à cadre : la photo sans cadre passe en 2026, celle
+à cadre **reste en 2025** et une ligne `p2.jpg#cadre=halo` est créée, jamais relue. Corrigé : on
+écrit sous `urlNue(url)`. Même scénario sur le 55 : les deux passent en 2026, aucune clé à cadre.
+⚠️ Données : les corrections faites depuis le build 47 sur des photos à cadre sont en base sous une
+clé avec `#cadre=` et restent invisibles. À compter puis rapatrier par une requête courte, **à
+valider** (non faite).
+
+## ⚠️ HONNÊTETÉ — NETTOYAGE AVANT LIVRAISON
+
+Deux réponses de cette session ont été coupées avant d'arriver à Blandine. L'une avait déjà écrit
+dans le fichier de travail une **autre version** de l'action 15 (pastilles dans le menu ⋮, états
+`clubsProprio` / `etatClubMenu`), remplacé le commentaire de tête du build 54 et passé le marqueur
+à 55. Repéré par comparaison ligne à ligne avec le 54 **réellement livré** (md5 `ea09ad24…`) :
+cette version a été **retirée**, le commentaire du 54 restauré. Il ne reste qu'une version de
+chaque action. Rien de cela n'avait été livré.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Marqueurs contre le 54 livré : seuls écarts attendus.
+  Balises de scripts et `?v=` : identiques au 53.
+- Portée : chaque nom utilisé par le nouveau code est déclaré dans son propre composant.
+- Bancs réels dans Chromium avec une fausse base :
+  - `FeuilleEcurieCheval` seule : contenu exact (SEP · Ecurie Feinn ✓ · Aucune) ; tap SEP →
+    `set_cheval_club` appelé, base à SEP, feuille fermée ; serveur qui refuse → message avec la
+    raison, feuille ouverte, rien de changé.
+  - `ChronologieSouvenirs` seule : rangée 2026 · 2025 · 2024, 2025 inactive, pas de case
+    pré-remplie ; tap 2026 → les deux photos (dont celle à cadre) passent en 2026, clés sans
+    cadre ; « Autre année… » → case vide ; Valider à vide → message « Donne une année… ».
+  - **Fiche cheval entière** (`EcranCheval`) : rendu sans « caillou » ; menu ⋮ → « 🏠 Écurie du
+    cheval · Ecurie Feinn » → feuille → SEP enregistré → message « Écurie enregistrée ✓ » posé à
+    96 px ; onglet Photos → « Ajouter un souvenir » → feuille « Dans quel album ? » (build 54) ;
+    **0 erreur de page**.
+
+## NON VU À L'ÉCRAN
+
+L'iPhone réel : aspect des feuilles, défilement de la rangée d'années, sélecteur iOS.
+
+## À TESTER SUR IPHONE
+
+1. Zeus → ⋮ → « 🏠 Écurie du cheval · … » → SEP → « Écurie enregistrée ✓ » visible ; puis la page
+   de l'Écurie Feinn : Zeus n'y est plus ; celle de la SEP : il y est.
+2. ⋮ sur n'importe quelle fiche : « Annuler » visible en bas, au-dessus de la barre.
+3. Une photo : ★ ou autre action qui affiche un petit message → il est lisible.
+4. Photos → « Changer l'année d'une photo » → toucher 1 ou 2 photos → toucher une année → elles
+   changent de groupe. Tester aussi « Autre année… ».
+5. Le build 54 (« Ajouter un souvenir » → « Dans quel album ? ») s'il n'a pas encore été testé.
+
+## AUDIT « ALBUM DISPARU » DE ONE DREAM — CE QUI SE LIT DANS LE CODE (fait, lecture seule)
+
+- **Suppressions côté appli** : un seul `delete` sur `albums_cheval` (`supprimerAlbumCheval`, par
+  identifiant, derrière une confirmation). **Aucun** `delete` ni `upsert` sur `chevaux` ni
+  `profiles` depuis l'appli (la suppression d'un cheval est « douce » : `supprime_le`).
+  `chevaux_liens` : `delete` = se détacher soi-même.
+- **Fonctions SQL appelées par l'appli** (7) : `album_ajouter_media`, `hype_definir_vedette_galerie`
+  (lues le 11/09 : aucun DELETE), `set_cheval_club`, `classement_ecuries`,
+  `demarrer_conversation_dm`, `hype_ordre_cavaliers_xp`, `hype_signaler_appareil` (définitions
+  **non lues**).
+- **Fonctions serveur appelées** : Netlify `assistant` (Hey Baby), **Netlify `supprimer-compte`**
+  (suppression de compte, jeton de la cavalière — la seule capable, par cascade, d'effacer des
+  lignes d'un compte), Supabase `mux-upload`. Plus `stripe-webhook` (appelée par Stripe). Sources
+  **non fournies**.
+- **Non audité** : les modules externes (`hype-stories.js` écrit dans `albums_cheval` pour les « à
+  la une », cible `cavalier:`), et tout ce qui vit en base (clés étrangères, déclencheurs,
+  fonctions SECURITY DEFINER, pg_cron).
+- **Fait de schéma** (colonnes relevées en base, SUIVI) : le lien d'un album à son cheval est la
+  colonne **texte** `cible` (« cheval:<uuid> »). Une clé étrangère vers `chevaux` y est
+  impossible : supprimer ou recréer un cheval ne peut **pas** effacer ses albums par cascade — il
+  les laisserait orphelins, toujours présents. La seule colonne candidate à une cascade est
+  `user_id` (l'autrice de l'album).
+- **Conséquence pour l'hypothèse de la passation** (« cascade sur la propriétaire ») : si l'album
+  perdu avait la même autrice que les albums de My Dream (intacts), elle est **contredite** par les
+  faits ; elle ne tient que si l'album avait été créé par un **autre** compte, supprimé vers 11 h.
+- Hypothèses restantes, **aucune prouvée** : (1) cascade depuis la suppression du compte de
+  l'autrice (`supprimer-compte`) ; (2) suppression par une fonction serveur ou une tâche planifiée
+  inconnue ; (3) album toujours présent mais sous une autre `cible` (fiche One Dream en double ou
+  recréée) — le fait n°3 (envoi de 2 photos sans aucune ligne modifiée) la rend moins probable,
+  selon la façon dont il a été vérifié.
+- **Vérifications décisives, une à la fois** : clés étrangères de `albums_cheval` ; fiches « One
+  Dream » et albums par fiche ; albums orphelins ; journal Netlify de `supprimer-compte` le 11/09
+  entre 10 h 55 et 11 h 05 (sans SQL : Netlify → Functions → supprimer-compte).
+
+## RESTE OUVERT (ordre proposé)
+
+1. Tests iPhone des builds 49 à 55.
+2. Audit album disparu : les vérifications ci-dessus, une par une.
+3. Corrections d'année enregistrées sous une clé `#cadre=` : compter, puis rapatrier (à valider).
+4. Galerie : motif 8 « Grande horizontale encadrée » absent ; plusieurs compositions dans une même
+   année (écarts avec la maquette de Blandine).
+5. Choix d'écurie de « Modifier la fiche » qui lit encore les écuries de la personne connectée.
+6. Dettes inchangées : vidéo d'album introuvable (10/09), test qualité photo sur ordinateur, app
+   iOS native (7 secrets), deux `mux-upload`, adresses vidéo publiques, `albums_cheval.photos`
+   réécrit en entier au retrait, deux projets Netlify, onboarding + « mot de passe oublié ».
+
+## LEÇONS
+
+- Avant toute livraison : comparer le fichier de travail au **dernier fichier réellement livré**
+  (md5), pas seulement au précédent de la session. C'est ce qui a attrapé la version fantôme de
+  l'action 15.
+- Un défaut « on enregistre / l'écran relit ailleurs » se prouve en le **rejouant** sur l'ancien
+  code : c'est ce qui a transformé le doute sur l'année en fait.
+
+---
+
+# 🟩 11/09/2026 (12 h 50) — « AJOUTER UN SOUVENIR » PASSE PAR LES ALBUMS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ea09ad2403aaca140cd77a46eb035819` | build **20260908-54** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `ebb6666b…` (20260908-53, qui contient aussi les builds 49 à 52). Composants touchés :
+`EcranCheval` et `AlbumsCheval`. **Aucun SQL, aucun droit, aucun `?v=` touché.**
+
+**À l'écran : + la feuille « Dans quel album ? » quand on touche « Ajouter un souvenir » · − la photo
+qui partait dans le fil du cheval.**
+
+## CE QUI N'ALLAIT PAS (FAIT PROUVÉ, lecture du code + captures de Blandine 11:47 / 11:48)
+
+- Le secours du build 52 publiait la photo dans le **fil** du cheval (`posterCommentaire` →
+  `commentaires`). L'onglet Photos (`ChronologieSouvenirs`) ne lit **que** `albums_cheval` : la
+  photo n'y apparaissait jamais. Le carrousel de la page du cheval (`AlbumsPromus`, via
+  `chargerPhotosSouvenirs`) lit fil + albums : c'est là que Blandine l'a vue tourner.
+- Ce bouton a **toujours** envoyé vers le fil (depuis le 29/08, il déléguait au composer de
+  `MurHype`). Du 29/08 au 05/09, ces photos se voyaient dans la Galerie de la page Photos, retirée
+  le 05/09 à sa demande. Avant le build 52, sur la page Photos, le bouton ne faisait plus rien :
+  le registre n'est rempli que quand la page Actualité est montée.
+- Le petit message de confirmation de la fiche est **caché sous la barre d'onglets** : toast
+  d'`EcranCheval` en `position: fixed; bottom: calc(40px + encoche)` dans l'enveloppe de l'appli
+  (`position: relative; zIndex: 1`), barre d'onglets en portail vers `<body>` (zIndex 50, ≈ 80 px
+  + encoche). Vrai pour **tous** les messages de ce toast (★, « Dans tes chevaux ✓ », etc.).
+  **Non corrigé ici** — prochaine action, séparée.
+
+## DÉCISION DE BLANDINE
+
+Option 2 : la photo va dans un album, en proposant **un album déjà existant ou d'en créer un
+autre**. (Option écartée : remettre la Galerie retirée le 05/09.)
+
+## CE QUI A ÉTÉ FAIT
+
+1. `EcranCheval` : `ouvrirAjoutSouvenir` n'utilise plus ni le registre du fil ni le champ de
+   secours ; il incrémente un compteur `albumsChAjoutCle`, passé à `AlbumsCheval` (prop
+   `ajoutCle`) — même motif que `fermerCle`, déjà en place entre ces deux composants. Vaut pour
+   les deux boutons (chronologie et mascotte de fiche vide). `refPhotoSouvenir` et
+   `envoyerPhotoSouvenirDirecte` restent dans le fichier, plus appelés.
+2. `AlbumsCheval` : feuille « Dans quel album ? » (même habit que le menu « … », détachée vers
+   `<body>`, donc au-dessus de la barre). Elle liste les albums **réels de la cavalière connectée**
+   (jamais « Autres moments » ni les albums en lecture seule) + « Nouvel album ». **Aucun champ de
+   fichier dedans** (leçon du 05/09 sur iOS) : toucher un album l'ouvre avec exactement les appels
+   de sa vignette ; l'envoi se fait par le bouton éprouvé « + Ma photothèque » du panneau (quota,
+   journal, rattachement non silencieux du build 51 : tout est celui des albums). « Nouvel album »
+   ouvre la boîte de création déjà en place.
+3. `AlbumsCheval` : le défilement automatique vers l'album ouvert prend aussi en compte l'album
+   **réellement affiché**. Avant, un album tout juste créé n'était jamais visé (il n'était pas
+   encore dans la liste rechargée au moment de viser). Conséquence, partout où il y a des
+   albums : après une création, l'écran descend jusqu'au nouvel album — c'était déjà le but du code.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur (identique au 53).
+- Contrôle des marqueurs contre le 53 : seuls écarts, ceux attendus (registre du fil retiré de
+  `ouvrirAjoutSouvenir`, nouveaux noms `ajoutCle` / `choixAjout` / `albumsChAjoutCle`, mentions en
+  commentaire). Balises de scripts et leurs `?v=` : strictement identiques.
+- Portée : chaque nom utilisé par le nouveau code est défini dans son propre composant.
+- **Banc d'essai réel dans Chromium** (`AlbumsCheval` monté seul, données simulées : un album à
+  elle, un album d'une autre) : pas d'ouverture au montage ; ouverture au +1 du compteur ; contenu
+  exact « Photos récupérées · 2 souvenirs » + « Nouvel album », l'album de l'autre **absent** ;
+  toucher l'album → feuille fermée + panneau ouvert avec « + Ma photothèque » ; « Nouvel album » →
+  feuille fermée + boîte de création ouverte ; pas de réouverture sans nouveau +1 ; **0 erreur de
+  page**. Démarrage réseau coupé : mêmes 2 erreurs hors ligne qu'au 53, rien de nouveau.
+
+## NON VU À L'ÉCRAN
+
+Le vrai sélecteur iOS n'est pas testable au banc : seul l'iPhone le dira (le chemin est celui,
+inchangé, de « + Ma photothèque »).
+
+## À TESTER SUR IPHONE
+
+1. One Dream → Photos → tout en bas « Ajouter un souvenir » : la feuille « Dans quel album ? »
+   s'ouvre avec ses albums + « Nouvel album ».
+2. Toucher un album : l'écran remonte jusqu'à l'album ouvert → « + Ma photothèque » → la photo
+   apparaît dans l'album **et** dans la chronologie.
+3. « Nouvel album » → un nom → Créer : l'écran va jusqu'au nouvel album → « + Ma photothèque ».
+4. Photos de ce matin parties dans le fil : dans un album ouvert, **« + Souvenirs publiés »** →
+   les cocher → elles rejoignent l'album (fonction existante, aucun SQL).
+
+## RESTE OUVERT, DANS L'ORDRE PROPOSÉ (une action à la fois)
+
+1. **Le message caché sous la barre** (fait prouvé ci-dessus) : le remonter au-dessus de la barre.
+2. **Changer l'année** — (a) la case est pré-remplie avec l'année où la photo est déjà (build 47) :
+   elle ne propose aucune autre année ; lecture de Blandine « ne propose toujours que sa propre
+   année » ; proposition non validée : une rangée d'années à toucher. (b) **Défaut prouvé** :
+   `appliquerAnneePhoto` écrit l'adresse **brute** (avec `#cadre=` quand la photo a un cadre),
+   la chronologie relit via `urlNue()` depuis le build 47 → pour une photo qui porte un cadre, la
+   correction est enregistrée mais jamais relue, sans message. Inconnu : si les photos de Blandine
+   portent ce marqueur.
+3. **Zeus dans la mauvaise écurie** (voir ci-dessous).
+4. Audit de la base sur la disparition de l'album de One Dream : en pause. Constat de départ : le
+   SUIVI ne contient pas la définition de `albums_cheval` (clés étrangères, cascades) — elle ne se
+   lit qu'en base.
+
+## ZEUS — CE QUE DIT LE CODE (FAIT PROUVÉ), SIGNALÉ PAR BLANDINE POUR LA 3ᵉ FOIS
+
+- Le choix de l'écurie **n'est pas** dans le menu ⋮ lui-même : il est dans ⋮ → « Modifier la
+  fiche », tout en bas du formulaire.
+- Il n'apparaît que si **la personne connectée** a au moins deux écuries dans **son** profil
+  (`mesClubs()` lit `ecurie` / `ecurie2` du compte connecté, `__perso__` exclu).
+- Il propose **ses** écuries à elle, pas celles de la propriétaire du cheval (Aurélie).
+- L'enregistrement passe par `set_cheval_club`, qui autorise déjà propriétaire **ou**
+  modératrice. La règle d'affichage (`hypeMemeClub`) écarte un cheval rattaché à un autre club ;
+  un cheval **sans** club apparaît partout.
+- Inconnu (données) : la valeur de `chevaux.club` de Zeus et les deux écuries du profil de
+  Blandine — donc laquelle des conditions l'a bloquée.
+- Correctif proposé, **non codé** (en attente de son « ok ») : une ligne « Écurie du cheval »
+  directement dans le menu ⋮, pour la propriétaire et les modératrices, sans condition sur le
+  profil de la personne connectée, avec les écuries **de la propriétaire** + « Aucune ».
+
+## LEÇONS
+
+- Même erreur de fond trois fois dans la journée : **ce qu'on enregistre n'est pas ce que l'écran
+  relit** (★ Vedette au build 49, ce bouton au build 52, l'année au build 47 pour les photos à
+  cadre). Avant chaque livraison : vérifier que l'écran réparé relit exactement là où le code écrit.
+- Un indicateur « la photo est partie » ne suffit pas : il faut vérifier **où** elle arrive et
+  **quel écran** la montre.
+- Quand Blandine dit « comme avant », vérifier ce que faisait réellement « avant » : ici, remettre
+  à l'identique aurait redonné un bouton muet.
+
+---
+
+# 🟩 11/09/2026 (12 h 15) — FUITE ENTRE CHEVAUX DANS LA CHRONOLOGIE (3ᵉ et dernier composant)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ebb6666b6606f6623318e78955244dc1` | build **20260908-53** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `954b445b…` (20260908-52). Composant touché : `ChronologieSouvenirs`. Aucun SQL.
+
+## LE DÉFAUT (confirmé par lecture du code)
+
+`setAnnees` n'était appelé **qu'une seule fois**, à la fin du chargement — jamais remis à zéro au
+changement de cheval. En arrivant sur une fiche depuis une **autre** fiche (lien
+ascendant/descendant, notification), la chronologie continuait donc d'afficher les photos **et les
+chiffres** du cheval précédent, sous le nom du nouveau, jusqu'à ce que le nouveau chargement
+aboutisse. Et si le nouveau cheval n'a aucun album, tout disparaissait d'un coup à l'arrivée des
+vraies données.
+
+C'est le 3ᵉ et dernier composant de la même famille de défaut, après `AlbumsPromus` et
+`EcranCheval` corrigés le 10/09 au soir. Celui-ci avait été oublié.
+
+## ⚠️ HONNÊTETÉ SUR CE POINT
+
+J'ai avancé ce défaut comme **la** cause de la disparition des photos de One Dream, en m'appuyant
+sur un compteur incohérent vu à l'écran. Blandine l'a formellement contredit — elle avait bien
+ajouté ces photos sur ce cheval — et j'avais présenté un indice comme une preuve. Le défaut est
+réel et corrigé ici **pour lui-même**. Il n'est **pas** retenu comme cause de l'incident, qui
+reste inexpliquée.
+
+## CORRIGÉ
+
+`annees`, `stats` et l'état de chargement sont vidés de façon synchrone au changement de cheval,
+avant le rechargement — même motif exact que celui déjà posé dans les deux autres composants. La
+page revient à « en chargement » plutôt que de montrer des données fausses.
+
+## À TESTER SUR IPHONE
+
+Ouvrir un cheval avec beaucoup de photos, puis passer à un autre cheval **par un lien direct**
+(carte Origines, poulain, notification) sans repasser par l'écurie : l'onglet Photos doit afficher
+« Chargement des souvenirs… » puis les bonnes photos, jamais celles du cheval précédent.
+
+## ÉTAT DE L'INCIDENT ONE DREAM
+
+- Cause : **toujours inconnue.** Six chemins éliminés par lecture directe du code et des fonctions
+  serveur (rattachement, vedette, format, retrait de photo, suppression d'album, fuite ci-dessus).
+- Aucun fichier détruit : tout est intact dans le stockage.
+- 2 photos récupérées et rerattachées ; 3 photos toujours introuvables côté affichage.
+- Protections en place depuis : rattachement plus jamais silencieux (build 51), bouton « Ajouter un
+  souvenir » autonome (build 52), sauvegarde automatique des albums active en base (déclencheur
+  `trg_sauver_album_avant` confirmé) — si cela se reproduit, on aura l'horodatage et l'auteur.
+- Résumé complet du problème transmis à ChatGPT pour un autre angle d'analyse.
+
+---
+
+# 🟥 11/09/2026 (11 h 45) — « AJOUTER UN SOUVENIR » QUI NE FAISAIT RIEN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `954b445baf9524fe3a0f47a586c5647f` | build **20260908-52** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `9283fbe8…` (20260908-51). Composant touché : `EcranCheval`. Aucun SQL, aucun droit.
+
+## CAUSE — ET ELLE N'A RIEN À VOIR AVEC LE FORMAT
+
+Blandine : « il est là mais ne fait rien quand je le touche », après avoir mis des photos en pleine
+largeur. Vérifié : le code de format n'écrit que dans `photo_formats`, la composition ne touche
+aucun bouton. La corrélation était trompeuse.
+
+Le vrai mécanisme : **ce bouton ne fait rien par lui-même**. Il délègue à un autre composant
+(le composer du fil, `MurHype`) via un registre global `__murPhotoOuvrir[cible]`, que ce composant
+remplit à son montage et **effface à son démontage**. Si `MurHype` n'est pas monté à cet instant —
+ou vient d'être démonté/remonté, ce qui arrive quand la page se rafraîchit, et le build 49 a
+justement ajouté un rafraîchissement de la chronologie — le registre est vide,
+`if (fA) { fA(); }` ne trouve rien, et le tap ne fait **strictement rien, sans le moindre
+message**.
+
+Deux boutons en dépendaient : « Ajouter un souvenir » de la chronologie, et celui de la mascotte
+d'onglet vide.
+
+## CORRIGÉ
+
+Les deux passent par une fonction unique qui tente d'abord le composer (comportement d'origine,
+inchangé quand il est là) puis, s'il est absent, **ouvre son propre sélecteur de photos** — un
+champ fichier appartenant à `EcranCheval`, donc toujours disponible tant que la fiche est ouverte.
+L'envoi passe par le même chemin déjà éprouvé ici pour les vidéos (`posterCommentaire`), avec
+confirmation ou message d'erreur. Si même ça échoue, un message le dit. Plus aucun tap muet.
+
+## À TESTER SUR IPHONE
+
+Sur One Dream (photos en pleine largeur) : taper « Ajouter un souvenir » → le sélecteur de photos
+doit s'ouvrir. Choisir une photo → « Souvenir ajouté ✓ » et elle apparaît sans quitter la page.
+
+## RESTE OUVERT
+
+- Les 3 photos d'origine de One Dream : toujours introuvables côté affichage. La sauvegarde
+  automatique des albums est désormais active (SQL passé, déclencheur `trg_sauver_album_avant`
+  confirmé), donc toute perte future est récupérable — mais elle ne couvre pas rétroactivement ces
+  3 photos.
+- Cause de la disparition initiale : toujours inconnue. Cinq chemins éliminés par lecture directe.
+
+---
+
+# 🟥 11/09/2026 (11 h 30) — URGENCE : PLUS AUCUN RATTACHEMENT DE PHOTO SILENCIEUX
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9283fbe866acc03deec2e3832e0725ed` | build **20260908-51** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `8aac46bb…` (20260908-50). Composant touché : `AlbumsCheval` (`importerFichiers`).
+**Aucun SQL, aucune donnée touchée, aucun droit modifié** — uniquement du comptage, du journal et
+des messages.
+
+## CONTEXTE
+
+Blandine a vu 3 photos disparaître de One Dream, et un envoi de 2 photos n'a rien rattaché
+(fichiers bien présents dans le stockage, aucun album créé ni modifié à cette heure-là).
+Elle a raison sur le fond : « ça peut arriver à n'importe qui ».
+
+## CAUSE D'ORIGINE : TOUJOURS INCONNUE — CE QUI A ÉTÉ ÉLIMINÉ PAR LECTURE DIRECTE
+
+- `album_ajouter_media` (SQL, lue) : un simple `update` qui ajoute une URL. **Aucune suppression
+  possible.**
+- `hype_definir_vedette_galerie` (SQL, lue) : n'écrit que `chevaux.galerie_vedette_url`. Correcte,
+  et autorise déjà propriétaire ou modératrice.
+- Choix manuel du format (build 48) : n'écrit que dans `photo_formats`.
+- `retirerPhoto` : ne supprime jamais la ligne d'album.
+- Suppression d'album : exige un panneau de confirmation, absent de l'enregistrement d'écran.
+
+⚠️ Trois diagnostics successifs sur la Vedette se sont révélés faux (droits serveur, menu natif
+iOS, fonction SQL manquante). Ne pas les reformuler comme des causes.
+
+## TROU RÉEL TROUVÉ, INDÉPENDAMMENT DE LA CAUSE D'ORIGINE
+
+Après l'envoi d'un fichier, le résultat du rattachement n'était traité que dans **3** cas
+(`error` / `refuse` / `ajoute`). Le 4ᵉ — réponse nulle, vide ou inattendue (fonction injoignable,
+réseau coupé au mauvais moment, retour non conforme) — ne déclenchait **aucune** branche : ni
+comptage d'échec, ni raison, ni ligne de journal. **La photo était donc comptée comme réussie
+alors qu'elle n'était dans aucun album.** Fichier déposé, jamais rattaché, écran muet. C'est
+exactement le symptôme vécu.
+
+## CORRIGÉ
+
+1. Un cas par défaut compte l'échec et le nomme — plus aucun retour ne passe inaperçu.
+2. **Chaque** rattachement écrit une ligne au journal d'envoi : rouge avec la raison exacte quand
+   il échoue, mention « déjà présente » le cas échéant.
+3. Un message distinct, qui reste à l'écran, pour le cas le plus grave : « X photo(s) bien
+   envoyée(s) mais pas rattachée(s) à l'album. Rien n'est perdu : le fichier est conservé. Ouvre
+   le journal d'envoi et envoie-le pour qu'on la récupère. » — 6 langues.
+
+## RÉCUPÉRATION FAITE
+
+Les 2 photos du 11/09 09:00 UTC ont été retrouvées dans le stockage et rerattachées à One Dream
+par SQL (album « Photos récupérées »). Fichiers de tous les envois : intacts, rien détruit.
+
+## À FAIRE ENSUITE (proposé, non fait)
+
+Sauvegarde automatique des albums (table de copies), pour qu'une ligne perdue soit toujours
+récupérable en une requête quelle qu'en soit la cause — la bonne réponse quand le coupable reste
+introuvable.
+
+---
+
+# 🟩 11/09/2026 (12 h) — CHANGER L'ANNÉE ET LE FORMAT SUR UN CHEVAL QUI N'EST PAS LE SIEN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `8aac46bb7bf15ef5457c8cf7b1fc456b` | build **20260908-50** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e9ee8fc8…` (20260908-49). `EcranCheval`, une seule expression changée. **Aucun SQL.**
+
+## VÉRIFIÉ AVANT DE CODER : LES DROITS EN BASE ÉTAIENT DÉJÀ COMPLETS
+
+- `photo_dates` UPDATE : élargi aux modératrices ce matin même.
+- `photo_formats` : ses 4 policies autorisent déjà `auth.uid() = user_id or hype_est_moderatrice()`
+  en insertion / maj / suppression, depuis leur création.
+
+Le blocage était donc **uniquement à l'écran** : la prop `proprio`, qui gouverne l'affichage des
+deux liens discrets (« Changer l'année d'une photo » et « Choisir le format d'une photo »),
+exigeait d'être le propriétaire. Sur le cheval d'une autre cavalière, les liens n'apparaissaient
+pas du tout — alors que le bouton ★ Vedette juste à côté accepte les modératrices depuis le 09/09.
+
+## CORRIGÉ
+
+`proprio` accepte désormais propriétaire **ou** modératrice, avec exactement la même expression que
+`peutVedette` (copiée telle quelle, pas réinventée) — les deux props sont enfin cohérentes.
+Une cavalière ordinaire ne voit toujours ces liens que sur ses propres chevaux, inchangé.
+
+## À TESTER SUR IPHONE
+
+Sur Zeus (cheval d'Aurélie), onglet Photos, bas d'une année : les deux liens « Changer l'année
+d'une photo » et « Choisir le format d'une photo » doivent maintenant apparaître, et fonctionner.
+
+## RESTE OUVERT
+
+Zeus dans la mauvaise écurie — c'est un autre mécanisme (sélecteur « Écurie du cheval » du menu ⋮,
+conditionné au fait d'avoir plusieurs écuries dans SON profil). En attente des deux réponses :
+la ligne apparaît-elle dans le menu de Zeus, et les deux écuries sont-elles renseignées dans le
+profil.
+
+---
+
+# 🟩 11/09/2026 (11 h 45) — ★ VEDETTE : CAUSE ENFIN TROUVÉE (même bug que l'écurie du 02/09)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e9ee8fc85b5b79b56badf060f6b9fa99` | build **20260908-49** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `fd6cc79b…` (20260908-48). Composant touché : `EcranCheval` (+ un écouteur ajouté dans
+`ChronologieSouvenirs`). Aucun SQL.
+
+## 1. ★ VEDETTE — LA VRAIE CAUSE
+
+L'indice décisif était dans le 3ᵉ signalement de Blandine : **« elle ne s'affiche pas sur les
+photos qui y sont »**. Ce n'est donc pas l'écriture qui échoue, c'est la **lecture**.
+
+Cause : le `select("*")` de la fiche charge bien `galerie_vedette_url` depuis la base, mais la
+reconstruction de l'objet `chevalDyn` juste après **ne recopie pas ce champ**. Il valait donc
+toujours `undefined` au chargement → `vedetteUrl` toujours `null` → aucune ★ ne pouvait s'afficher
+pleine. L'écriture, elle, **réussissait depuis le début** : elle ne tenait que dans l'état local, le
+temps de la session, et disparaissait au rechargement.
+
+⚠️ **C'est exactement le même bug que celui corrigé le 02/09 sur `club`** — dont le commentaire est
+écrit sur cette même ligne (« la colonne était CHARGÉE par le select("*") puis JETÉE à la
+reconstruction de l'objet »). La leçon de l'époque n'avait pas été appliquée aux colonnes ajoutées
+depuis. Colonnes de `chevaux` revérifiées une par une à cette occasion :
+`moments_forts_medias` (ajoutée le 06/09) manquait aussi et était exposée au même symptôme sur les
+cartes de moments forts — recopiée également.
+
+⚠️ Mes deux diagnostics précédents sur la Vedette étaient **faux** : ni les droits serveur, ni le
+menu natif iOS. Ne pas les reformuler comme des causes.
+
+## 2. SUPPRESSION D'UNE PHOTO QUI RESTE À L'ÉCRAN
+
+La ligne était bien supprimée en base et la visionneuse se fermait, mais la chronologie ne se
+relisait jamais — d'où la photo encore visible jusqu'à ce qu'on quitte la page. Corrigé :
+l'événement de rafraîchissement déjà utilisé par le rail Médias (`hype-albums-modifies`) est émis
+après une suppression réussie, et `ChronologieSouvenirs` l'écoute désormais.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Rien d'autre touché : composition de la galerie, choix
+manuel du format (build 48), changer l'année, uploads, vidéos/Mux, Supabase/RLS.
+
+## À TESTER SUR IPHONE
+
+1. Mettre une photo en vedette → la ★ doit devenir pleine et dorée **immédiatement**, et **rester**
+   après avoir quitté et rouvert la fiche.
+2. Retaper la ★ de la vedette actuelle → elle se retire (comportement d'origine).
+3. Supprimer une photo depuis la visionneuse → elle doit disparaître de la galerie tout de suite,
+   sans quitter la page.
+
+## RESTE OUVERT
+
+- **Zeus dans la mauvaise écurie** : le sélecteur « Écurie du cheval » du menu ⋮ ne s'affiche que
+  si le cavalier connecté a **plusieurs** écuries dans son profil, et lit `ecurie`/`ecurie2` de
+  SON profil — pas celui du cheval. Deux points à confirmer avec Blandine avant de coder : voit-elle
+  la ligne « Écurie du cheval » dans le menu de Zeus, et a-t-elle bien ses deux écuries renseignées.
+  La fonction serveur `set_cheval_club` autorise déjà propriétaire **ou** administratrice, donc le
+  blocage est côté affichage.
+- Valeur exacte de `chevaux.club` sur Zeus toujours pas relevée.
+
+# 🟩 11/09/2026 (11 h 15) — CHOIX MANUEL DU FORMAT D'UNE PHOTO + PHRASE D'ATTENTE DE L'HISTOIRE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `sql-11-09-photo-formats.sql` | à passer dans Supabase **avant** de pousser l'index | — | nouvelle table `photo_formats` + ses 4 policies |
+| `index.html` | racine | `fd6cc79b41da161a4002ed2d1de417b4` | build **20260908-48** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `0e585245…` (20260908-47). Composants touchés : `ChronologieSouvenirs` (format) et
+`EcranCheval` (phrase). Dernier point du chantier galerie.
+
+## 1. CHOIX MANUEL DU FORMAT (demande ChatGPT, feu vert de Blandine)
+
+Une photo peut désormais porter **Grand**, **Pleine largeur** ou **Pleine hauteur**. Aucune ligne
+en base = **Automatique** : la composition éditoriale décide, comme avant (cas par défaut, rien
+n'est écrit). Un lien discret par année — « Choisir le format d'une photo », même emplacement et
+même condition que « Changer l'année », donc propriétaire/modératrice seulement — ouvre un mode où
+taper une photo affiche les 4 boutons.
+
+**La Vedette n'est pas touchée** : `chevaux.galerie_vedette_url`, son bouton ★ et ses droits sont
+inchangés, et aucune ligne de ce livrable ne lie le statut vedette à un format. Une vedette peut
+être en Automatique, Grand, Pleine largeur ou Pleine hauteur — comme demandé depuis le début.
+
+**Composition** : un choix manuel prime sur les 8 séquences. En parcourant les photos, une photo
+portant un format imposé ouvre immédiatement son propre bloc, et la séquence automatique reprend
+ensuite pour les suivantes. Grand consomme ses 2 petites compagnes comme d'habitude ; si l'année
+n'a pas assez de photos, repli sur Pleine largeur — jamais un bloc à moitié rempli, jamais de trou.
+**Pleine hauteur redevient atteignable, mais uniquement par choix manuel** (l'automatique ne la
+choisit toujours pas).
+
+## 2. PHRASE D'ATTENTE (Blandine : « Zeus est un cheval… on peut mieux faire lol »)
+
+Quand on ne connaît **ni la race ni l'écurie**, l'ancienne phrase ne disait littéralement rien.
+Dans ce seul cas, elle devient « X n'a pas encore raconté son histoire. » (+ « Touche le crayon
+pour la commencer. » pour le propriétaire). Dès qu'une race **ou** une écurie est connue, la phrase
+informative d'origine est conservée telle quelle — les 6 langues sont faites.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Table absente ou lecture en échec → la galerie reste 100 %
+automatique, jamais bloquant. Une suppression qui ne touche aucune ligne est traitée comme normale
+(la photo était déjà en Automatique) ; un enregistrement qui n'en touche aucune est traité comme un
+échec et le dit.
+
+## À TESTER SUR IPHONE
+
+1. Passer le SQL **d'abord** (le contrôle en fin de script doit afficher 4 policies).
+2. Onglet Photos → « Choisir le format d'une photo » → taper une photo → choisir Grand : elle doit
+   devenir grande au rechargement, avec 2 petites à côté.
+3. Choisir Pleine hauteur sur une photo verticale : elle doit occuper toute la largeur, sans crop.
+4. Remettre Automatique sur la même photo : elle doit reprendre sa place normale.
+5. Vérifier que ★ Vedette fonctionne indépendamment (une vedette peut rester en Automatique).
+6. Sur Zeus (sans race ni écurie) : la nouvelle phrase doit remplacer « Zeus HS est un cheval. »
+
+## RESTE OUVERT
+
+- **Zeus dans la mauvaise écurie** : non corrigé. Propriétaire réel (Aurélie) confirmé à la SEP,
+  donc le « Feinn » affiché vient probablement de `chevaux.club` sur sa fiche — la valeur exacte
+  n'a pas encore été relevée (`select id, nom, club from chevaux where nom ilike '%zeus%'`). Rien
+  écrit en base sans l'avoir vue.
+- **★ Vedette** : toujours pas reproduit ni expliqué. Manque toujours la définition de
+  `hype_definir_vedette_galerie` et les policies de `chevaux`.
+
+# 🟩 11/09/2026 (10 h 45) — CHANGER L'ANNÉE : LES 2 VRAIES CAUSES, TROUVÉES DANS LE CODE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0e58524528d07c7e60eb456f52e6282e` | build **20260908-47** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `eb685316…` (20260908-46). Composant touché : `ChronologieSouvenirs` uniquement.
+
+## A. « ÇA N'A PAS MARCHÉ » ALORS QUE BLANDINE EST PROPRIÉTAIRE
+
+Cause réelle : **le champ année était vide.** Le « 2026 » affiché était un simple exemple gris
+(placeholder), pas une valeur — valider sans rien taper envoyait donc une saisie vide, rejetée
+par la validation (1990 → année+1), d'où le message d'échec. Rien n'était cassé côté droits.
+
+⚠️ Point de méthode : mon diagnostic précédent accusait la policy UPDATE de `photo_dates` de
+bloquer les modératrices. **Vérifié en base, c'était faux** — l'élargissement passé ce matin était
+utile sur le fond, mais ce n'était pas le blocage. Ne pas reformuler ça comme la cause.
+
+Corrigé : le champ est **pré-rempli** avec l'année du groupe, et un message distinct
+(« Donne une année entre 1990 et N ») s'affiche si la saisie est vide ou hors bornes — plus jamais
+un faux « ça n'a pas marché » pour une saisie manquante.
+
+## B. ANNÉES FANTAISISTES (2012, 1970)
+
+**Aucune date bidon en base**, vérifié par requêtes : 0 ligne avant 2000 dans `photo_dates`,
+0 album avant 2000 dans `albums_cheval`. La cause est dans le code : la recherche des dates
+comparait l'adresse **brute** de la photo, alors que certaines adresses portent un suffixe de
+marqueur de cadre — la date existante n'était donc pas retrouvée, et la photo retombait sur la
+date de son album (repli prévu, mais déclenché à tort).
+
+Corrigé : les deux côtés comparent désormais les adresses via `urlNue()` (comme tout le reste de
+l'app le fait déjà). Conséquence attendue : des photos qui affichaient l'année de leur album
+retrouvent leur vraie année de prise de vue — donc le nombre de souvenirs par année peut bouger
+au premier chargement, ce n'est pas une perte.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Composition de la galerie (build 46) non touchée.
+Clic/visionneuse, ★ Vedette, uploads, vidéos/Mux, Supabase/RLS : non touchés.
+
+## À TESTER SUR IPHONE
+
+1. « Changer l'année d'une photo » : le champ doit déjà contenir une année. Taper une autre année
+   → Valider → la photo change de groupe pour de vrai.
+2. Vider le champ puis Valider → message « Donne une année entre 1990 et 2027 », et non plus
+   « ça n'a pas marché ».
+3. Regarder si 1970 / 2012 ont disparu et si les photos concernées ont rejoint leur vraie année.
+
+## RESTE OUVERT
+
+★ Vedette : toujours pas reproduit ni expliqué. Le code écran et la fonction serveur ont été
+relus, rien d'anormal trouvé. Il manque toujours deux résultats demandés en base (définition de
+`hype_definir_vedette_galerie`, policies de `chevaux`) pour trancher avec preuve au lieu
+d'hypothèses.
+
+# 🟩 11/09/2026 (4 h) — GALERIE CINÉMATIQUE : BIBLIOTHÈQUE DE COMPOSITIONS ÉDITORIALES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `eb6853167101fab713e551a023b426a2` | build **20260908-46** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `a25c19a3…` (20260908-45). Composant touché : `ChronologieSouvenirs` uniquement.
+Implémente telle quelle la bibliothèque de 8 compositions que Blandine a écrite (motifs T / GL /
+GR / PC / PG / PD / PL, PH conservée mais plus choisie seule).
+
+## CE QUI A CHANGÉ
+
+- Une année choisit désormais UNE des 8 compositions (hachage stable sur l'année + sa première
+  photo — même contenu = toujours la même composition) et la suit pas à pas, en boucle si l'année
+  dépasse les 8 étapes.
+- Nouveaux motifs **PC** (portrait encadré au centre, 4 lignes × 3 colonnes, le portrait en
+  1 colonne × 2 lignes complètement entouré de 10 petites) et **PG/PD** (portrait sur le côté, un
+  bloc de 4 petites en 2×2 de l'autre côté).
+- Portrait jamais deviné à l'aveugle : recherche parmi les prochaines photos une vraie portrait
+  déjà confirmée par chargement (mémorisée maintenant pour **chaque** tuile, pas seulement Pleine
+  largeur comme avant) ; trouvée → extraite proprement (jamais dupliquée) ; sinon repli net vers
+  GL/GR/PL selon ce qu'il reste.
+- **PL** remplit réellement le bandeau désormais (léger crop accepté, plus de bandes/contain) —
+  changement demandé explicitement, à l'inverse de la règle "jamais de crop" qui reste pour les
+  portraits.
+- **PH** reste dans le code (rendu disponible) mais n'est plus jamais choisie automatiquement.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Aucune référence restante à l'ancien système (types
+`trio`/`grand_gauche`/`pleine_largeur`, `estPortraitPL`) — confirmé par recherche dans tout le
+fichier. Comptage des blocs portrait (11 photos) pris en compte dans l'aperçu 15-18 et "voir
+tout". Clic/visionneuse, sélection multi-année, ★ Vedette (stockage/droits) : non touchés.
+
+## LIMITE HONNÊTE
+
+Sur une fiche jamais visitée, aucune orientation n'est encore connue au premier chargement : les
+motifs PC/PG/PD replient donc vers GL/GR/PL à la toute première visite. Ils captent une vraie
+portrait dès qu'assez de photos ont été vues dans la session (le repli se reproduit tant qu'aucune
+n'est encore connue — pas de bug, juste la contrainte réelle : l'orientation n'existe qu'une fois
+la photo chargée).
+
+## À TESTER SUR IPHONE
+
+Sur une année de 25-30 photos : au premier coup d'œil, plusieurs tailles et au moins deux moments
+forts différents. Repérer un PC ou PG/PD si des portraits ont déjà été vus dans la session (sinon,
+naviguer un peu dans la galerie d'abord pour "apprendre" des orientations, puis rouvrir l'année).
+Vérifier qu'un Pleine largeur remplit vraiment son bandeau (plus de bandes). Zéro trou, clic/★
+inchangés, "voir tout" cohérent.
+
+# 🟩 11/09/2026 (3 h 30) — PLAFOND VIDÉO PREMIUM : RETRAIT DU BANDEAU PERMANENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `a25c19a30550fca36241d570209fedf3` | build **20260908-45** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `9a0a394d…` (20260908-44). Composant touché : `AlbumsCheval` uniquement (grille
+médias d'un cheval, rangée des boutons d'ajout).
+
+## CONTEXTE
+
+Blandine a elle-même atteint 15/15 vidéos et vu, en vrai, le bandeau qu'elle avait demandé le
+04/09 (« oui décompte visible ») — sur l'usage réel, elle le trouve envahissant (« ça gâche le
+moment partout ») et demande son retrait, remplacé par un rappel uniquement au moment d'essayer
+d'envoyer une vidéo.
+
+## FAIT
+
+Le bandeau permanent (« Il te reste N vidéos sur 15 » / « Tu as atteint 15 vidéos, le maximum de
+ton abonnement. »), affiché en continu dans la grille dès qu'on approche ou atteint le plafond,
+est retiré. **Le popup contextuel existait déjà et n'a pas été touché** : `invitPlus` (motif
+`video_premium`) se déclenche déjà uniquement quand une vidéo est réellement envoyée au-delà du
+plafond (`videosAuDela` dans le pipeline d'envoi), et n'offre déjà pas de bouton d'abonnement
+supérieur pour une abonnée au plafond — décision du 04/09, confirmée valable : rien à vendre
+au-dessus pour l'instant.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Les variables utilisées par l'ancien bandeau
+(`quotaVid`, `HYPE_MUX_PREVENIR_A`) restent utilisées ailleurs, rien de mort laissé derrière.
+Structure de la rangée de boutons inchangée (le bandeau devient `null`, rien d'autre ne bouge).
+
+## À TESTER SUR IPHONE
+
+Un cheval avec 15/15 vidéos (compte Premium) : la grille ne doit plus jamais afficher de rappel
+de quota au repos. Essayer d'envoyer une nouvelle vidéo sur ce cheval : le popup « Tes vidéos
+sont au complet » doit apparaître à ce moment précis, sans bouton d'abonnement.
+
+# 🟩 11/09/2026 (3 h) — GALERIE : RYTHME ÉDITORIAL (fin composition) + CHANGER L'ANNÉE CORRIGÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9a0a394d202dcbced4d61b8378c5dc83` | build **20260908-44** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `062c401d…` (20260908-43). Composant touché : `ChronologieSouvenirs` uniquement.
+
+## 1. RYTHME ÉDITORIAL — plus de « double hasard »
+
+Cause exacte du problème que tu as décrit : un bloc fort ne se déclenchait qu'à ~1 chance sur 6,
+puis Pleine hauteur exigeait EN PLUS de tomber sur le tiers "Pleine largeur" de ce tirage rare —
+d'où la grille quasi uniforme. Remplacé : plus de tirage "candidat" séparé — un bloc fort démarre
+**dès que** 3 photos normales se sont écoulées depuis le précédent (donc juste après chaque Trio).
+Seul son TYPE (Grand-gauche / Grand-droite / créneau Pleine largeur-ou-hauteur) reste tiré, avec
+interdiction de répéter deux fois le même type de suite. Résultat : Trio, Fort, Trio, Fort, Trio,
+Fort… en continu — variété dans le type, régularité dans le rythme. Le créneau "Pleine largeur"
+revient désormais 1 fois sur 3 à *chaque* bloc fort (bien plus souvent) : Pleine hauteur a
+beaucoup plus d'occasions réelles de se déclencher. Le mécanisme de bascule lui-même (portrait
+détecté au chargement → Pleine hauteur, sinon Pleine largeur) n'a pas changé, déjà bon.
+
+## 2. CHANGER L'ANNÉE D'UNE PHOTO — bug réel trouvé et corrigé
+
+Le bouton Valider ne vérifiait jamais si l'écriture avait réellement réussi : il refermait le
+panneau en silence dans tous les cas, même sur un échec complet. Corrigé : si aucune photo n'a pu
+changer d'année, un message reste affiché et le panneau reste ouvert pour réessayer ; dès qu'au
+moins une a marché, comportement inchangé (silencieux).
+
+## 3. VEDETTE — vérifié dans le code, rien trouvé à corriger
+
+`hypeDefinirVedetteGalerie` et son appelant remontent déjà correctement une erreur (rien en
+silence). Très probablement la même cause que le correctif du build 43 (le menu natif iOS qui
+happait le tap au lieu du petit bouton ★) — à revérifier directement sur ce build plutôt que
+deviner plus loin.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. `HYPE_GALERIE_CANDIDATE_MODULO` retiré (plus de rôle).
+Rendu des blocs (`rendreBloc`/`tuileHype`) non touché — seule la composition change. Rien
+d'autre : chargement des données, uploads, Supabase/RLS, vidéos/Mux, suppression, visionneuse,
+autres composants de la fiche, stockage/droits Vedette.
+
+## À TESTER SUR IPHONE
+
+1. Une année bien fournie (25-30 photos) : au premier écran déjà, plusieurs tailles visibles —
+   plus une longue suite de petites cases identiques.
+2. Repérer au moins un Grand-gauche, un Grand-droite et une Pleine largeur dans les 15-18
+   premières photos.
+3. Chercher une Pleine hauteur (photo verticale en pleine largeur, sans bande blanche forcée).
+4. « Changer l'année » : sélectionner, taper Valider — la photo doit changer d'année pour de
+   vrai ; en cas d'échec, un message doit maintenant apparaître au lieu de rien.
+5. ★ Vedette : confirmer si ça marche maintenant que le menu natif ne happe plus le tap.
+# 🟩 11/09/2026 (2 h 30) — GALERIE : LE MENU NATIF IOS BLOQUAIT LE TAP SUR LES PHOTOS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `062c401df6b78fdfa03a904a6309f863` | build **20260908-43** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `590a57d4…` (20260908-42). Composant touché : `ChronologieSouvenirs` uniquement.
+Diagnostiqué sur ton enregistrement d'écran de ce soir — pas deviné.
+
+## CE QUE TA VIDÉO A CONFIRMÉ (bonne nouvelle, avant le bug)
+
+La composition par blocs marche parfaitement sur Rizotto d'Emery : Trio, Grand-gauche, zéro
+trou, 14/14 photos, aucun doublon. **Pleine hauteur n'était simplement pas apparue sur ce
+cheval** : un seul grand bloc a été tiré sur ses 14 photos, et il est tombé sur Grand-gauche —
+pas un bug, juste pas de chance sur un petit nombre de photos.
+
+## LE VRAI BUG, TROUVÉ DANS LA MÊME VIDÉO
+
+En mode « Changer l'année d'une photo », taper une tuile (Trio, Grand, Pleine largeur — n'importe
+laquelle) faisait apparaître le menu natif iOS (Partager / Enregistrer dans Photos / Copier /
+Chercher) **au lieu de** sélectionner la photo. Reproduit plusieurs fois de suite dans ta vidéo,
+sur des tuiles différentes.
+
+**Cause** : aucune tuile de la grille photo n'empêche le menu contextuel natif au toucher — alors
+que la visionneuse plein écran le fait déjà depuis longtemps. Cette ligne n'avait simplement
+jamais été reportée sur les tuiles de la grille. Pas une régression de ce soir : le clic de
+chaque tuile est identique à avant mes derniers correctifs, seul ce manque, présent partout dans
+la grille depuis toujours, n'avait jamais été remarqué avant un test qui tape plusieurs photos
+d'affilée.
+
+**Corrigé** : même ligne que la visionneuse (`WebkitTouchCallout:"none"`) ajoutée sur les 3
+`<img>` de la grille (tuiles normales/Grand, Pleine largeur, Pleine hauteur).
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Les 3 ajouts confirmés en place, rien d'autre changé.
+
+## À TESTER SUR IPHONE
+
+« Changer l'année d'une photo » sur 2026 (Rizotto) : taper plusieurs tuiles d'affilée — chacune
+doit se sélectionner (contour visible) sans jamais faire apparaître le menu Partager/Enregistrer.
+Tap normal hors sélection : ouvre toujours la visionneuse comme avant.
+
+# 🟩 11/09/2026 (2 h) — GALERIE CINÉMATIQUE : PLEINE HAUTEUR (prototype 2/2) — CHANTIER TERMINÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `590a57d46d02cbc5328cfd9c31042bde` | build **20260908-42** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `83465f03…` (20260908-41). Composant touché : `ChronologieSouvenirs` uniquement.
+Base : le prototype par blocs (1/2) du build 41, inchangé — Trio / Grand-gauche / Grand-droite,
+zéro trou, Vedette indépendante. Ce build ajoute Pleine hauteur, dernier point du chantier.
+
+## DÉCOUVERTE EN LISANT LE CODE (pas supposée)
+
+`vignetteHype()` demande **toujours** `resize=cover` à Supabase — y compris pour Pleine
+largeur. La photo est donc recadrée **côté serveur** avant même d'arriver dans le navigateur ;
+le `contain` appliqué ensuite à l'écran ne peut pas récupérer un bord déjà coupé. Comme le ratio
+sans recadrage est une exigence explicite et répétée pour Pleine hauteur, une petite fonction
+jumelle `vignetteHypeContain()` a été ajoutée (copie stricte, `resize=contain` au lieu de
+`cover`, sinon identique). Pleine largeur n'est pas touchée — hors périmètre demandé.
+
+## CE QUI A ÉTÉ FAIT
+
+L'orientation réelle d'une photo n'est connue qu'une fois chargée (`naturalWidth`/
+`naturalHeight` — mécanisme déjà existant dans Hype, `orientationsConnues` déjà déclaré depuis
+le build 41, jusqu'ici inutilisé). Le bloc Pleine largeur (1 seule photo, rien à inventer,
+aucune restructuration de la composition/sélection nécessaire) bascule automatiquement :
+- inconnue ou paysage → reste Pleine largeur, strictement inchangée ;
+- portrait confirmée → devient Pleine hauteur : toute la largeur disponible, hauteur tirée du
+  vrai ratio de la photo, plafonnée à 78vh (vraie présence verticale, jamais 100vh), jamais de
+  recadrage (`vignetteHypeContain` + `objectFit:"contain"`).
+
+## VÉRIFICATIONS FAITES (une par une)
+
+- **Variables/scope** : `node --check` propre sur les 18 blocs ; tout le nouveau code est local
+  à `ChronologieSouvenirs`, aucune variable empruntée à un autre composant.
+- **Aucun trou** : bloc seul dans sa ligne (pile verticale), sa hauteur ne déplace que les blocs
+  suivants, jamais de grille partagée avec des voisins.
+- **Ordre chronologique** : composition/sélection des blocs non touchée dans ce build.
+- **Aucune photo perdue/dupliquée** : toujours `bloc.photos[0]`, comptage inchangé.
+- **Clic → visionneuse** : même `onClicPL` unique, câblé identique sur les deux présentations.
+- **Changement d'année, "voir tout", petites années** : code non touché par ce build.
+- **Aucun outil/debug** : recherché, rien trouvé.
+
+## LIMITE CONNUE ET ACCEPTÉE
+
+`orientationsConnues` vit dans le composant : à chaque nouvelle visite de la fiche, l'orientation
+est redécouverte (léger changement de hauteur au premier chargement si la photo est portrait,
+rien si déjà vue dans la session). Aucun trou ni doublon généré par ce sursaut. Rien d'autre
+touché : uploads, qualité/compression photo, vidéos/Mux, visionneuses, Supabase/RLS, système
+Vedette (stockage et droits intacts).
+
+## À TESTER SUR IPHONE
+
+Ouvrir la fiche testée au build 41. Chercher un bloc Pleine largeur contenant une photo
+clairement verticale (portrait) : au chargement, il doit s'agrandir en un bloc haut occupant
+toute la largeur, sans bande blanche au-dessus/en dessous forcée à 100vh, sans photo coupée sur
+les bords. Les autres blocs (Trio, Grand-gauche/droite, Pleine largeur en paysage) doivent rester
+identiques au build précédent. Clic et ★ Vedette inchangés partout.
+
+---
+
+# 🟩 11/09/2026 (1 h 10) — GALERIE CINÉMATIQUE : PROTOTYPE PAR BLOCS (1/2, sans pleine hauteur)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `83465f034a924d92ea08fc3de978b9d9` | build **20260908-41** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `17216facb…` (20260908-40). Composant touché : `ChronologieSouvenirs` (onglet
+Photos, fiche cheval) — rien d'autre. Suite du retour détaillé de Blandine sur la maquette
+présentée : principe par blocs validé, deux corrections demandées avant tout code, prises en
+compte ci-dessous.
+
+## CE QUI CHANGE
+
+Chaque photo n'a plus son propre format décidé isolément (cause du trou : "Grand" ne réservait
+qu'une seule ligne de grille alors qu'il est deux fois plus haut qu'une photo normale). La
+galerie avance désormais par **blocs fermés**, chacun réservant exactement les cellules qu'il
+utilise :
+
+- **Trio** — 3 photos normales.
+- **Grand-gauche** — 1 grande (2 colonnes × 2 lignes, réservées pour de vrai cette fois) + 2
+  petites empilées à droite.
+- **Grand-droite** — le miroir : les 2 petites à gauche, la grande à droite. Le choix entre les
+  deux est tiré par le hachage (stable, jamais aléatoire d'un rechargement à l'autre), pour
+  qu'une grande galerie ne répète pas toujours le même dessin.
+- **Pleine largeur** — inchangée (contient toute la photo, jamais de recadrage), simplement
+  déplacée dans ce nouveau système.
+
+L'empilement dense (`gridAutoFlow: "row dense"`, responsable de l'effet Tetris) est retiré :
+devenu inutile, chaque bloc étant gap-free par construction.
+
+**Aperçu d'une année** : affiche désormais des blocs entiers jusqu'à ~15-18 photos, jamais coupé
+au milieu d'un bloc (avant : 9 photos fixes, systématiquement trop peu pour une grosse année).
+Une petite année n'a pas de bouton "voir tout" forcé si elle a déjà tout montré.
+
+## LES DEUX CORRECTIONS DEMANDÉES, PRISES EN COMPTE
+
+- **Vedette et format sont indépendants** : aucune ligne de ce livrable ne touche
+  `galerie_vedette_url` ni ne force une photo vedette dans un bloc en particulier. Le badge ★
+  fonctionne à l'identique sur n'importe quelle tuile, quel que soit son bloc — exactement comme
+  avant.
+- **Pleine hauteur n'est pas dans ce build.** Elle attend un prototype isolé, juste après
+  celui-ci si ce rendu est propre.
+
+## CE QUI NE CHANGE PAS
+
+Le clic sur chaque photo, l'ouverture de la visionneuse, la sélection multi-photos pour changer
+l'année, le bouton "voir tout", les vidéos/uploads/Mux/qualité photo : rien touché. Aucun SQL,
+aucun droit, aucun stockage nouveau.
+
+## LIMITE CONNUE, ASSUMÉE POUR CE BUILD
+
+Le repli automatique "portrait devient grand" (ajouté le 10/09) n'a plus de sens tel quel :
+Grand a maintenant besoin de 2 photos compagnes que ce repli ne peut pas inventer. **Une photo
+portrait qui tombe sur un bloc Pleine largeur s'affichera donc en letterbox** (l'image entière,
+avec des bandes de chaque côté — jamais rognée, juste pas encore à sa vraie place). C'est
+exactement ce que Pleine hauteur, le prototype suivant, doit corriger. `orientationsConnues`
+reste en place dans le code, volontairement inutilisé ici, réservé à ce prochain prototype.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Aucune référence restante à l'ancien système
+(`p.traitement`, `depuisMEV`) — confirmé par recherche dans tout le fichier.
+
+## À TESTER SUR IPHONE
+
+Ouvrir la fiche d'un cheval bien fourni en photos, onglet Photos. Vérifier sur l'année testée :
+- aucun trou visible, aucun réarrangement qui semble aléatoire ;
+- au moins un Trio, un Grand-gauche, un Grand-droite et une Pleine largeur visibles dans
+  l'aperçu ;
+- entre 15 et 18 photos affichées avant "voir tout" (le chiffre exact dépend du bloc qui
+  complète le seuil) ;
+- le tap sur une photo ouvre bien la visionneuse comme avant, le bouton ★ Vedette fonctionne
+  pareil sur toutes les formes.
+
+---
+
+# 🟩 11/09/2026 (0 h 20) — CARTE « LE VOIR EN MOUVEMENT » TOUJOURS VISIBLE · FUITE D'AFFICHAGE ENTRE CHEVAUX CORRIGÉE · LA SUPPRESSION NE MENT PLUS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `17216facb4b640b2b737db9e77d2cc62` | build **20260908-40** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `9c4f5682b…` (20260908-37, dernier confirmé chez toi). Trois correctifs livrés
+ensemble sur ta demande (« règle ça en même temps qu'on avance sur le reste » / « Ça stp ») —
+tous côté écran uniquement, aucun SQL, aucun droit, aucun Mux touché.
+
+## 1. LA CARTE « LE VOIR EN MOUVEMENT » RESTE TOUJOURS VISIBLE
+
+Comme demandé : sur la page du cheval, la carte ne disparaît plus quand il n'y a aucune vidéo
+(avant : `if (!toutesV.length) return null;`). Cheval noir, ▶ et tap vers l'onglet Vidéos
+inchangés. Le compteur « (N) » n'est écrit que s'il y a au moins une vidéo. Sur un cheval sans
+vidéo, l'onglet Vidéos garde sa mascotte (celle que tu as poussée) et « [nom] attend ses vidéos
+souvenirs ici… », qui disparaissent dès qu'une vidéo existe — déjà en place depuis le 10/09,
+rien retouché ici.
+
+## 2. LES VIDÉOS/PHOTOS D'UN AUTRE CHEVAL NE S'AFFICHENT PLUS EN PASSANT D'UNE FICHE À L'AUTRE
+
+**Vérifié d'abord en base (lecture seule) : rien n'est mélangé côté serveur.** Les 5 vidéos sur
+Dakota sont bien de Margot (03/09) + ton album « Mode Farniente » ; toutes les vidéos sur My
+Dream sont les tiennes — tes propres essais des deux derniers soirs (IMG_1720.mov ×3,
+IMG_7773.mov ×2, copy_…mov, ScreenRecording…mp4). Aucune trace de Margot/Dakota sur My Dream en
+base. Le problème était donc uniquement à l'écran.
+
+**Cause tracée** : le composant de la fiche cheval (et celui du rail Médias/Photos) n'a pas de
+`key` par cheval — en changeant de fiche SANS repasser par l'écurie (lien ascendant/descendant
+sur la carte Origines, notification, etc.), React réutilise la même instance. Les listes de
+vidéos/photos gardaient donc les données du CHEVAL PRÉCÉDENT jusqu'à ce que le nouveau
+chargement arrive — plus ou moins long selon le réseau — et pendant ce temps la carte « Le voir
+en mouvement » et le rail Photos montraient l'ancien cheval sous le nom du nouveau.
+
+**Correctif** : `albums`/`galeriePh` (rail Médias) et `chVidsCom`/`mediasInfo` (onglet Vidéos)
+sont vidés **tout de suite** au changement de cheval, avant même de lancer le rechargement — la
+carte peut disparaître un court instant plutôt que montrer le mauvais cheval (même principe que
+l'état « en chargement » déjà utilisé dans ce composant). `window.__visListe` (utilisée par
+Précédent/Suivant dans la visionneuse) est purgée par précaution au même moment.
+
+## 3. LA SUPPRESSION D'UNE VIDÉO/PHOTO NE MENT PLUS
+
+Cause tracée : la fonction ne vérifiait jamais si la suppression avait réellement eu lieu — elle
+affichait « Supprimé » et fermait la visionneuse même quand la ligne n'avait pas bougé. Une
+suppression qui touche 0 ligne (par exemple une policy RLS qui refuse) ne renvoie **pas**
+d'erreur côté Supabase, donc rien ne le signalait. `supprimerCommentaire` et
+`supprimerPostModeration` demandent désormais confirmation (`.select("id")`) que la ligne a
+vraiment disparu ; si ce n'est pas le cas, un message « Suppression impossible — réessaie. »
+s'affiche à la place, et la visionneuse ne se ferme pas.
+
+**Reste à voir au test** : si ce message d'erreur apparaît sur une vidéo de Margot (toi en
+modératrice), la cause précise sera une policy RLS à ajuster côté base — pas encore vérifié,
+rien codé pour ça à ce stade.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Diff : 54 lignes (commentaires compris), rien retiré
+ailleurs. Le point qui t'as fait perdre du temps ce soir n'a rien à voir avec Mux/Supabase — la
+base était saine depuis le début.
+
+## À TESTER SUR IPHONE
+
+- Ouvrir un cheval avec vidéos, puis passer à un autre cheval **via un lien direct** (carte
+  Origines, notification) sans repasser par l'écurie : les vidéos/photos affichées doivent être
+  celles du nouveau cheval dès l'arrivée, jamais celles d'avant.
+- Sur Dakota : ouvrir une vidéo de Margot, Supprimer → soit elle disparaît vraiment, soit un
+  message d'erreur apparaît (dis-moi lequel).
+- Fiche sans vidéo : la carte reste visible avec la mascotte.
+
+---
+
+# 🟩 10/09/2026 (23 h 50) — TITI RESTE JUSQU'À LA FIN RÉELLE DE L'ENVOI VIDÉO (onglet Vidéos)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e9d18f425f6b141fa45f8f9ab877fe03` | build **20260908-38** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `9c4f5682b…` (20260908-37, correctif doublon vidéo). Point 1 de la passation du
+10/09, sur « gère déjà le problème des vidéos ». Aucun autre fichier à pousser.
+
+## CAUSE (tracée, pas déduite)
+
+La mascotte Titi était reliée à `vidEnvoi`, qui n'est vrai que pendant la **réservation** de
+l'envoi (ligne « uploading » créée, adresse Mux obtenue, trace écrite — quelques secondes).
+`posterCommentaire` rend la main à ce moment-là (option A validée le 09/09) ; l'envoi du
+fichier et la préparation chez Mux continuent **en arrière-plan** (`hypePosterVideoCommentaire`),
+parfois plusieurs minutes, sans jamais prévenir l'écran. Deux effets, tous deux vérifiés dans le
+code : Titi disparaissait au bout de quelques secondes ; et la carte « Vidéo en préparation… »
+ne se transformait jamais d'elle-même en vraie vidéo (les lignes en préparation ne sont relues que
+sur `hype-souvenirs-maj`, les vidéos prêtes que sur `hype-albums-modifies` — aucun des deux
+n'était émis à la fin).
+
+## CE QUI A ÉTÉ FAIT
+
+- `hypePosterVideoCommentaire` accepte un rappel optionnel `surFin` et l'appelle **une fois, à la
+  fin réelle** de l'arrière-plan, quel que soit le chemin de sortie (prête / échec d'envoi /
+  refus Mux / toujours en préparation après 2 min / erreur inattendue — `finally`). Au même
+  moment elle émet les deux événements de rafraîchissement déjà utilisés ailleurs
+  (`hype-albums-modifies` puis `hype-souvenirs-maj`). Sa réponse porte `enArrierePlan: true`.
+- `posterCommentaire` transmet `surFin`. Les 3 autres appelants (fil, commentaires, souvenirs) ne
+  le passent pas : rien ne change pour eux.
+- `EcranCheval` : nouveau compteur `vidMascotteNb` (+1 au lancement, −1 à `surFin` ; −1 immédiat
+  si aucun arrière-plan n'a été lancé — refus avant l'envoi ou fichier non vidéo). Titi est relié
+  à ce compteur. Le bouton « + Ajouter une vidéo » reste sur `vidEnvoi` : disponible à nouveau
+  après quelques secondes, comme avant. Une 2e vidéo lancée pendant la 1re garde Titi jusqu'à la
+  fin des deux.
+
+## CE QUE ÇA CHANGE À L'ÉCRAN
+
++ Titi reste affiché du lancement jusqu'à ce que la vidéo soit prête ou en échec.
++ Quand c'est fini, la carte grise « en préparation » devient la vraie vidéo (ou « non envoyée »)
+  sans recharger la page.
+− Rien retiré.
+
+## LIMITES CONNUES (dites à Blandine avant livraison)
+
+- Titi s'arrête au plus tard après l'envoi du fichier + 2 min de préparation Mux (durée maximale
+  surveillée par `hypeMuxAttendrePret`). Au-delà, la carte reste « en préparation » jusqu'à la
+  prochaine ouverture (réconciliation), comme avant.
+- Si on quitte la fiche du cheval pendant l'envoi, Titi n'est plus là au retour ; l'envoi continue.
+- Le fil (`MurHype`) n'écoute pas ces événements : sa carte « en préparation » se met à jour comme
+  avant (à la relecture), ni mieux ni moins bien.
+
+## VÉRIFIÉ
+
+`node --check` propre sur les 18 blocs. Diff : 11 lignes remplacées, 48 ajoutées (commentaires
+compris), rien retiré ailleurs. Règle du plantage du 09/09 appliquée : aucune variable d'un autre
+composant utilisée dans `EcranCheval` (`cibleCh`, `setVid*`, `T` sont locaux). Rien d'autre
+touché : Mux, quota, photos, albums, visionneuses, galerie cinématique.
+
+## À TESTER SUR IPHONE
+
+Pré-requis : `images/titi-envoi-video.mp4` bien poussé (sinon seul le texte s'affiche).
+Onglet Vidéos → + Ajouter une vidéo → Titi visible pendant tout l'envoi → il disparaît au moment
+où la vidéo devient lisible → la carte grise est devenue la vraie vidéo, sans recharger. Puis un
+2e essai avec une vidéo refusée si possible (Titi doit disparaître aussi sur un échec).
+
+## NOTÉ (décisions de Blandine ce soir)
+
+- Galerie cinématique (étape A) : vue, « pas idéale », à revoir plus tard — sur son ordre, on
+  traite d'abord les vidéos.
+- Prochaine action demandée : la carte « Le voir en mouvement » de la fiche cheval doit rester
+  visible même sans vidéo, avec la vidéo mascotte `titi-onglet-vide.mp4` (poussée par elle ce
+  soir) et une phrase de repli du type « [nom] attend ses souvenirs en vidéo 😎 ». Pas encore codé.
+
+---
+
 # 🟩 10/09/2026 (23 h 45) — ONGLET VIDÉOS VIDE : LA VRAIE VIDÉO MASCOTTE FOURNIE
 
 | Fichier | Où | md5 | Quoi |
