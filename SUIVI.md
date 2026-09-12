@@ -10,6 +10,405 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (matin, suite) — LES TROUS DE LA GALERIE SONT COMBLÉS (option A, jusqu'à 3)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `a72c6fc3fd2a5afdcbf70b457c783120` | build **20260908-69** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 68 (`6d46f374…`), non poussé : ce fichier contient les builds 66 à 69.
+Un seul composant touché : `ChronologieSouvenirs`. Aucun SQL. Le réordonnancement du 67 et la
+taille « Petite » du 68 sont intacts.
+
+**À l'écran : + plus de case vide au milieu d'une année · − l'ordre strictement chronologique,
+une photo peut avancer ou reculer de 3 places au maximum.**
+
+## DÉCISION DE BLANDINE
+
+« A, tu peux laisser en déplacer jusqu'à 3 » — après lui avoir dit noir sur blanc que l'option A
+revient sur sa règle du 11/09 (« je préfère un petit espace vide à photo 12 avant photo 11 »).
+
+## FAIT
+
+Quand la photo qui vient ne rentre pas dans la place libre (une grande ou un bandeau en fin de
+ligne), les **3 photos suivantes au maximum** sont examinées : la première qui rentre prend la
+place, et la photo trop large passe juste après. Une photo ne peut donc **avancer que de 3 places
+au plus**, et le curseur ne recule jamais.
+Les tailles restent décidées **avant** le placement (format manuel, sinon rythme sur le rang) :
+marquer une photo ne change donc toujours **jamais** la taille d'une autre. Le curseur saute aussi
+les cases déjà prises par une grande case des lignes précédentes.
+
+## TESTS (banc Chromium)
+
+Cinq années de volumes différents, dont une avec quatre formats manuels (grand, pleine largeur,
+pleine hauteur, petite) :
+
+| année | photos | trous avant (69) | trous après | décalage max |
+|---|---|---|---|---|
+| 2021 | 9 | 0 | 0 | 0 |
+| 2022 | 24 | 2 | 2 (fin d'année) | 1 |
+| 2023 | 40 | 8 dont 6 au milieu | 2 (fin d'année) | 2 |
+| 2024 | 31 | 10 dont 9 au milieu | 1 (fin d'année) | 3 |
+| 2025 | 60 | 11 dont 9 au milieu | 2 (fin d'année) | 2 |
+
+- **Plus aucun trou au milieu d'une année** ; il ne reste que la fin de la dernière ligne.
+- **Décalage maximal observé : 3**, jamais plus. Aucune photo perdue ni dupliquée dans aucun essai.
+- Formats manuels respectés à 100 % dans les cinq essais (2×2, 3×2, 1×2, 1×1 selon le choix).
+- Tests du build 66 rejoués : photo 5 en Grand c'est bien elle, retour à l'identique en Automatique,
+  photo 8 en bandeau, photo 13 portrait 1×2, fermeture/réouverture identique, visionneuse, ★ Vedette
+  et lien d'année intacts.
+- Build 68 : « Petite » sur une photo agrandie par l'automatique → 1×1 et base `3=normal` ; retour
+  à « Automatique » → elle redevient grande.
+- Build 67 rejoué : A E B C D, aucune écriture au relâché sur place ni au défilement ni au
+  changement de cheval, ajout concurrent conservé, ordre persistant, visionneuse hors mode.
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques.
+
+## POINT À SA MAIN, non tranché
+
+Une photo qu'elle a **marquée elle-même** peut être dépassée par les suivantes (elle recule de 1 à
+3 places) quand sa taille ne rentre pas en fin de ligne. On pourrait la protéger — elle garderait sa
+place exacte et laisserait un petit vide — mais uniquement sur sa demande.
+
+## À TESTER SUR IPHONE
+
+1. Une année bien remplie : plus de case vide au milieu, et l'ordre reste très proche de l'ordre des
+   dates (une photo peut avancer de 1 à 3 places).
+2. La photo qui te bloquait : « Petite » (build 68).
+3. Le réordonnancement au doigt dans un album (build 67, SQL déjà passé).
+
+---
+
+# 🟩 12/09/2026 (matin) — UNE TAILLE « PETITE » À LA MAIN · SQL D'ORDRE PASSÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `6d46f374cfcf4135edd51e94c9c0d0b2` | build **20260908-68** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 67 (`15571732…`), non poussé : ce fichier contient les builds 66, 67 et 68.
+`sql-12-09-ordre-photos.sql` est **PASSÉ EN BASE** et vérifié par sa capture de 08:27 :
+`album_deplacer_media`, `security_definer = false`. Rien d'autre à passer.
+
+**À l'écran : + un bouton « Petite » dans le choix de format · + une ligne qui dit quelle taille
+l'automatique donne à cette photo.**
+
+## CE QUI LA BLOQUAIT (son mot : « il considère qu'elle y est déjà »)
+
+Une photo agrandie par le **rythme automatique** n'a aucun format manuel : le panneau affichait donc
+« Automatique » comme choix actif, et toucher « Automatique » ne changeait rien. **C'était exact**,
+et pourtant sans issue : il n'existait aucun moyen de dire « celle-là, petite ». Elle l'a d'ailleurs
+décrit précisément : « je la passe en pleine largeur, mais quand elle revient en automatique elle
+reprend la grande taille ».
+
+## FAIT
+
+- Nouveau format manuel `normal` (1×1), bouton **« ▫ Petite »** entre « Automatique » et « Grand ».
+  Comme tout format manuel, il prime sur le rythme automatique.
+- Le panneau nomme désormais la taille réellement calculée quand aucun format n'est imposé :
+  « Pour l'instant, Hype l'affiche en grande. « Petite » la remet en petit. »
+
+## TESTS (banc Chromium, 20 photos numérotées)
+
+- La photo agrandie par l'automatique (la 3 dans le jeu d'essai) : le panneau dit bien « Hype
+  l'affiche en grande », le bouton « Petite » est là, un tap → elle passe en 1×1, base = `3=normal`,
+  ordre chronologique intact.
+- Retour à « Automatique » sur cette même photo → elle redevient grande, comme attendu.
+- Non-régression : formats 5/8/13 du build 66, réordonnancement (A E B C D, ajout concurrent, ordre
+  persistant, changement de cheval sans écriture), formats conservés après déplacement.
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques.
+
+## SA DEMANDE EN ATTENTE — COMBLER LES TROUS
+
+« Ça serait bien de combler les trous automatiquement avec les petites photos. » Deux façons, et
+elles s'opposent à ses propres règles de façons différentes :
+- **A.** Faire remonter une petite photo plus tardive dans le trou → **permute l'ordre**
+  chronologique (elle avait tranché : « je préfère un petit espace vide à photo 12 avant photo 11 »).
+- **B.** Ne jamais permuter : une photo que l'**automatique** voulait agrandir reste petite si elle
+  ne rentre pas en fin de ligne. Plus aucun trou dû à l'automatique ; il n'en reste qu'autour d'une
+  photo qu'elle a marquée elle-même. Contrepartie : la taille automatique d'une photo dépend alors
+  de l'endroit où elle tombe, donc marquer une photo peut changer la taille d'une autre — ce qu'elle
+  reprochait au build 65. Avec « Petite » et « Grand » sous la main, c'est rattrapable à la main.
+**Rien n'est codé, en attente de son choix.**
+
+## À TESTER SUR IPHONE
+
+1. La photo du milieu qui te bloquait : tape-la → « Petite ». Elle redevient petite et le reste.
+2. Sur cette même photo, « Automatique » : elle reprend la taille que Hype lui donne.
+3. Le réordonnancement du build 67 (SQL déjà passé) : « Réorganiser les photos », doigt maintenu,
+   déplacement, puis fermeture/réouverture de l'album.
+
+---
+
+# 🟩 12/09/2026 (suite) — RÉORGANISER LES PHOTOS D'UN ALBUM AU DOIGT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `15571732437d126c1cab18d92ebb4327` | build **20260908-67** |
+| `sql-12-09-ordre-photos.sql` | à passer dans Supabase (SQL Editor) | — | fonction `album_deplacer_media(p_album, p_url, p_nouvel_index)` |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 66 (`9bbeb1e4…`), qui n'a pas été poussé : ce fichier contient les deux chantiers.
+Un seul composant touché : `AlbumsCheval`. **Le moteur de formats du build 66 n'est pas modifié**,
+ni `photo_formats`, vedette, années, zoom, vidéos, Mux, qualité photo, écuries.
+**L'ordre de passage ne casse rien** : sans le SQL, le geste refuse d'écrire et le dit.
+
+**À l'écran : + un lien « Réorganiser les photos » sous les boutons d'un album · + la photo se
+soulève sous le doigt et se repose où on la lâche.**
+
+## MÉCANISME TACTILE
+
+- **Pointer Events uniquement.** Aucun drag HTML5 : pas de `draggable=true`, pas de `onDragStart`,
+  pas de `onDrop`. Les images passent en `draggable: false`, le menu contextuel est coupé, la
+  sélection désactivée, `touchAction: none` sur les cases — c'est le drag natif de Safari qui
+  produisait la photo qui suit le doigt puis revient.
+- **Appui intentionnel de 260 ms** avant que la photo se soulève. Un mouvement de plus de 12 px
+  avant la fin du délai annule le geste et laisse le défilement se faire : **un scroll ne déplace
+  jamais une photo**.
+- Pendant le geste : la photo est soulevée (ombre, 1,06×) et suit le doigt, la case visée
+  s'éclaircit, un petit numéro de position s'affiche sur chaque case (dis-moi si tu le veux en
+  moins), et l'écran défile tout seul quand le doigt approche du haut ou du bas.
+- En mode Réorganiser, **toutes** les photos sont affichées (on ne range pas ce qu'on ne voit pas)
+  et un tap n'ouvre plus la visionneuse. « Terminé » quitte le mode.
+
+## PERSISTANCE — NOUVELLE FONCTION SQL
+
+`album_deplacer_media(p_album text, p_url text, p_nouvel_index integer)` :
+`SECURITY INVOKER` (mêmes droits qu'une modification d'album : propriétaire ou modératrice),
+`FOR UPDATE` sur la ligne, travail sur la version **actuelle** du tableau `photos`, retrait puis
+réinsertion à l'index voulu, filet qui refuse l'écriture si le nombre de photos changerait, et
+relecture de ce qui est **réellement** enregistré.
+Rend `deplace` / `inchange` / `absente` / `refuse` avec l'ordre final.
+L'ordre affiché bouge tout de suite, mais **c'est l'ordre rendu par la base qui fait loi**.
+
+## PROTECTIONS
+
+- `albumAutorise()` avant toute écriture (garde du build 56).
+- Changement de fiche ou d'album pendant le geste → geste annulé, **aucune écriture**. La
+  comparaison se fait sur `cibleRefAC` (remise à jour à chaque rendu) et non sur `props.cible` lu
+  depuis la fermeture, qui pouvait être la valeur d'un rendu précédent.
+- Relâché au même endroit → **aucune écriture**.
+- Échec de la fonction → ordre du serveur rétabli, message qui reste à l'écran.
+- Fonction absente → rien n'est écrit, message dédié qui dit de passer le SQL.
+- Le geste ne touche **que l'ordre** : ni format, ni vedette, ni année, ni cible, ni couverture.
+
+## TESTS PASSÉS (banc Chromium, album A B C D E, gestes Pointer Events réels)
+
+1. E entre A et B → **A E B C D** (écran et base).
+2. A en dernier → B C D E A. 3. Dernière en première → E A B C D. 4. Une seule position → A C B D E.
+5. Pris puis relâché au même endroit → **0 appel**, base inchangée.
+6. Défilement (mouvement avant la fin du délai) → **0 appel**, base inchangée.
+7. Changement de cheval pendant le geste → **0 appel**, base inchangée.
+8. Ajout concurrent d'une photo F pendant le geste → base **C A B D E F** : F est conservée, et
+   l'écran affiche l'ordre rendu par la base.
+9. Fonction en erreur → base inchangée, écran remis sur l'ordre serveur, message affiché.
+   Fonction absente → base inchangée, message dédié.
+10. Fermeture puis réouverture → même ordre.
+11. Deux formats manuels (photo 3 grand, photo 6 pleine largeur) puis déplacement de la 6 en tête :
+    ordre album `6,1,2,3,4,5,7,8`, formats en base inchangés, et dans la galerie du build 66 la 6
+    est bien en 3×2 et la 3 en 2×2. **Chaque photo garde son propre format.**
+12. Hors mode Réorganiser : un tap ouvre la visionneuse, aucun bouton « Terminé » visible.
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques. Aucun `console.log`,
+  aucun affichage de mise au point. Bancs du build 66 et des builds précédents relancés (galerie,
+  protections d'albums, écritures concurrentes, zoom, fiche entière) : 0 erreur.
+
+## ⚠️ HONNÊTETÉ — INCIDENT DANS MON BANC D'ESSAI
+
+Mes premiers résultats donnaient « E A B C D » au lieu de « A E B C D ». Cause : **ma fausse base
+contenait deux versions de la fonction de déplacement**, dont une laissée par une réponse
+interrompue, qui lisait un paramètre inexistant (`p_index`) et insérait donc toujours en tête.
+Le code livré envoyait la bonne valeur depuis le début. Branche fautive retirée, tests rejoués.
+Même classe d'incident que la version fantôme du 11/09 : comparer aussi les outils de test, pas
+seulement le produit.
+
+## À TESTER SUR IPHONE (4 gestes)
+
+1. Passe le SQL, puis ouvre un album → « Réorganiser les photos » → garde le doigt sur une photo et
+   déplace-la : elle se repose où tu la lâches.
+2. Ferme l'album, rouvre-le : l'ordre est conservé.
+3. Fais défiler la page en mode Réorganiser : aucune photo ne bouge.
+4. « Terminé », puis tape une photo : la visionneuse s'ouvre normalement.
+
+---
+
+# 🟩 12/09/2026 — GALERIE : LES BLOCS LAISSENT PLACE À UNE GRILLE DE CASES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9bbeb1e45405841bbbed1cbe783e10ab` | build **20260908-66** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Base de départ : son `index.html` du 12/09 (`2633fb45…`, build 65 + arabe + Galop 2 en `?v=2`).
+`hype-cours-galop2.js` et tous les autres fichiers : **INCHANGÉS**, ne pas les repousser.
+Chantier unique. Aucun SQL, aucun `?v=` touché, aucun nettoyage opportuniste.
+
+**À l'écran : + une photo marquée garde sa place et sa taille, et aucune voisine ne change de
+taille · − les motifs éditoriaux en blocs (grande à gauche/à droite, rangée encadrée) · + un petit
+vide possible en bout de ligne, assumé.**
+
+## ANCIEN MÉCANISME REMPLACÉ
+
+`HYPE_GALERIE_COMPOSITIONS` (8 séquences éditoriales) et la boucle qui consommait les photos par
+blocs entiers (T, GL, GR, GH, PL, PH, PC/PG/PD) pour remplir `grpMEV.blocs`. Défaut de fond :
+dès qu'une photo recevait un format imposé, elle sortait du bloc, toutes les suivantes se
+décalaient d'une place et la composition était reconstruite — d'où « ça applique des formats à des
+photos non choisies » et l'impossibilité de retoucher LA photo voulue.
+
+## MODÈLE RETENU
+
+Une grille de 3 colonnes par année. Une case par photo, dans l'ordre chronologique :
+
+| format | place occupée |
+|---|---|
+| normal | 1 colonne × 1 unité |
+| grand | 2 colonnes × 2 unités |
+| pleine hauteur | 1 colonne × 2 unités (portrait intégré, jamais recadré) |
+| pleine largeur | 3 colonnes × 2 unités (bandeau, remplit vraiment la largeur) |
+
+- **Taille automatique** : assise sur le **rang chronologique** de la photo dans son année, décalé
+  par un hachage de l'année. Un bandeau toutes les ~13 photos, une grande toutes les ~7. Le rang ne
+  change pas quand une autre photo reçoit un format manuel : **la taille d'une photo ne dépend
+  jamais de ses voisines**, et elle est identique d'une visite à l'autre.
+- **Jamais de pleine hauteur automatique** : l'orientation réelle n'est pas connue avant
+  l'affichage, et une photo paysage mise en 1×2 serait laide. Ce format reste un choix manuel.
+- **Un format manuel prime toujours** sur l'automatique.
+- **Hauteur d'une ligne** mesurée sur la grille elle-même (ResizeObserver + repli 90 px) pour
+  qu'une petite case reste en 4/3, et une grande 2×2 aussi.
+
+## DENSE : NON
+
+Le placement est calculé en JS et écrit **en dur** sur chaque tuile (`gridColumn` / `gridRow`) :
+aucun auto-placement CSS, donc aucun `dense`. Le curseur ne recule jamais ; une case trop large
+pour la fin d'une ligne passe à la ligne suivante et laisse un petit vide. L'ordre visuel est
+chronologique **par construction**, et vérifié au banc en lisant les positions réelles à l'écran.
+Sur 20 photos : 5 cases vides sur 39, dont 2 en fin d'année. Choix assumé de Blandine (« je préfère
+un petit espace vide à photo 12 avant photo 11 »).
+
+## TESTS PASSÉS (banc Chromium, 20 photos numérotées 1 à 20, la 13 vraiment portrait)
+
+1. Ordre visuel lu sur l'écran (position réelle de chaque tuile) = 1→20, sans permutation. Idem
+   dans l'aperçu (15 photos) et après « Voir tout ».
+2. Photo 5 → Grand : c'est bien la 5 qui passe en 2×2 ; ordre intact ; **aucune voisine ne change
+   de taille** ; base = `5=grand`.
+3. Photo 5 → Automatique : ligne effacée en base, et **le placement revient exactement à celui du
+   départ**, case par case.
+4. Photo 8 → Pleine largeur : la 8 occupe les 3 colonnes, aucune voisine ne reçoit son format.
+5. Photo 13 (vraie portrait) → Pleine hauteur : 1 colonne × 2 unités, sans recadrage.
+6. Deux formats manuels la même année (8 et 13) : base = `8=pleine_largeur`, `13=pleine_hauteur`,
+   chacun sur la bonne photo, ordre intact.
+7. Fermeture / réouverture du composant : placement **identique** au caractère près, ordre intact.
+8. « Voir tout » : aucune rupture, aucune permutation ; l'aperçu coupe après la case la plus basse,
+   donc jamais une grande case à moitié visible.
+9. Aucune régression : hors mode format, un tap ouvre la visionneuse (photo 4 → visionneuse), le
+   bouton ★ Vedette est là, le lien « Changer l'année d'une photo » est là. `node --check` : 18
+   blocs, 0 erreur. Balises de scripts et `?v=` identiques. Bancs des builds précédents relancés
+   (albums, envoi, année, années à cadre, zoom, fiche entière) : 0 erreur.
+
+## CODE MORT LAISSÉ EN PLACE (à supprimer dans un build dédié)
+
+- `rendreBloc` et tout ce qu'elle rendait (motifs PC/PG/PD, GH, GL/GR) : plus aucun appel.
+- `detecterOrientation` : neutralisée (elle rend `undefined`). Elle écrivait dans l'état à chaque
+  image chargée, ce qui re-rendait toute la chronologie pour rien puisque plus personne ne lit
+  l'orientation. Son corps est conservé sous le nom `detecterOrientationInutilisee`, si
+  l'orientation redevient utile (option B : la mémoriser en base).
+
+## À VÉRIFIER SUR SON IPHONE (4 points)
+
+1. Une année bien remplie : l'ordre est chronologique, les petites photos sont carrées-4/3, le
+   rythme reste agréable.
+2. Marque une photo précise en « Grand » : c'est elle qui grandit, et aucune autre ne change de
+   taille.
+3. Remets-la en « Automatique » : elle reprend exactement sa place d'avant.
+4. Une vraie photo verticale en « Pleine hauteur » : elle est intégrée parmi les petites, sans
+   bandes ni recadrage.
+
+## APRÈS SA VALIDATION SEULEMENT
+
+Chantier séparé : réordonnancement manuel par vrai glisser-déposer. Rien n'a été commencé.
+
+---
+
+# 🟩 12/09/2026 (suite) — LE GALOP 2 COMPLET EN ARABE : 15/15 CHAPITRES, EN ARABE COMME LE GALOP 1
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2633fb45a8a8a2322c5ccd64e2b1fccf` | 1 seule modification : balise `hype-cours-galop2.js?v=1` → `?v=2` (6 674 063 octets) |
+| `hype-cours-galop2.js` | racine | `f3f68fc080db9b6fa0ab89c01428dab0` | **v2** : 413 clés `"ar"`, les **15 chapitres à 100 %**, rien d'autre touché (700 645 octets) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ Les deux fichiers vont ensemble : la balise du Galop 2 passe à `?v=2`. Base de départ de cette
+livraison : ton `index.html` du 12/09 (déjà en `?v=2` pour le Galop 1, l'arabe du G1 était donc
+déjà dedans — rien retouché ici) et ton `hype-cours-galop2.js` remonté aujourd'hui, identique au
+fichier utilisé pour préparer les traductions (même md5 `fd362687709a088606d53c6047ba98a5`).
+`hype-cours-galop1.js`, `hype-cours-galop3.js`, `hype-cours-galops-sup.js`, `hype-cours-baby.js`,
+`_headers` et tout le reste de l'appli : **INCHANGÉS**, ne pas les repousser. Aucun SQL, aucune image.
+
+## CE QUI A ÉTÉ FAIT
+
+**Le module du Galop 2 est désormais traduit à 100 % en arabe** — les 15 chapitres, dans l'ordre
+d'affichage du module : les aides naturelles et artificielles · le départ au galop · seller, brider
+et panser seul · diriger sur un tracé · la découverte du saut · mener et placer son cheval ·
+connaître le cheval (sens, robes, aliments) · l'anatomie du cheval · les robes · les cinq sens ·
+la vie sociale et l'alimentation · le pansage complet · le filet et la selle · les grandes familles
+de l'équitation · héberger, nourrir, circuler. **413 clés `"ar"`** au total, ajout pur : aucune
+valeur des 6 autres langues touchée, aucun `correct` de quiz changé, aucun ordre d'option modifié,
+aucune image touchée. Les QCM de chaque chapitre sont traduits. `COURS_GALOP2_VERSION` passe de 1 à 2.
+
+**L'index ne reçoit qu'une seule modification** : la balise `?v=1` → `?v=2` du Galop 2. Les 9
+modifications de fond (langue `ar`, `dir`/`lang`, `textAlign`…) sont déjà en place depuis la
+livraison du Galop 1 et n'ont pas été retouchées.
+
+**Glossaire complété au fil des 15 chapitres** — avant-main مقدمة الحصان, arrière-main مؤخرة الحصان,
+chanfrein قصبة الأنف, ganache اللحي, toupet خصلة الناصية, mقعد السرج (siège de selle, distinct de
+l'assiette), concours complet المسابقة الشاملة, cross الكروس, voltige الفولتيج, écurie active
+الإسطبل النشط (Paddock Paradise), en plus du glossaire déjà posé pour le Galop 1.
+
+## MOTS À FAIRE VALIDER (liste ouverte, cumulée avec le Galop 1)
+
+poney → البوني · assiette → المقعد (alt. الجلسة) · épis → دوامات الشعر · garrot → الحارك ·
+amortisseur (sous la selle) → بطانة واقية · maréchal-ferrant → الحداد البيطري · fourrage/foin →
+علف خشن / دريس · chambrière → سوط اللنج · avant-main/arrière-main → مقدمة/مؤخرة الحصان · ganache →
+اللحي · chanfrein → قصبة الأنف · toupet → خصلة الناصية · vibrisses → الشعيرات الحسية · cross →
+الكروس (translittéré) · voltige → الفولتيج (translittéré) · écurie active → الإسطبل النشط
+(Paddock Paradise).
+
+## VÉRIFIÉ
+
+- **Intégrité du module** : contenu identique hors clés `"ar"` → OUI. 89 questions avant / 89 après,
+  `correct` et options françaises intactes → OUI. **15/15 chapitres complets** (forme arabe = forme
+  française, champ par champ), 0 chapitre sans arabe, 0 champ vide alors que le français existe.
+- **Banc de données** (sur les 413 champs du Galop 2) : **413 champs sortent en arabe**, 0 en repli
+  français, 0 vide.
+- **`node --check`** : 18 blocs de l'index sans défaut, module sans défaut.
+- **Contrôle des marqueurs** (14 repères comparés à ton index de ce matin) : tous inchangés — seul
+  `?v=` reste à 19 (une balise remplacée par une autre de même forme, pas un ajout).
+
+## À L'ÉCRAN : + / −
+
+**+** *Mon compte* → langue → **العربية** : désormais **le Galop 1 ET le Galop 2** s'affichent
+entièrement en arabe, texte à droite, QCM compris.
+**−** Toujours pareil : interface en français, affiches en français, police système iOS.
+
+## NON VU À L'ÉCRAN — à tester sur l'iPhone
+
+1. Galop 2 en arabe, plusieurs chapitres : texte à droite, QCM traduits.
+2. Un chapitre du Galop 1 en arabe pour confirmer que rien n'a bougé depuis la dernière livraison.
+3. Retour en français : les deux galops redeviennent identiques à avant.
+
+## À GARDER EN TÊTE — ce qui reste
+
+- **Galop 1 et Galop 2 sont finis.** La suite : **Galop 3** (16 chapitres + le QCM global de
+  30 questions, aujourd'hui en français seul), **Galop 4** (15, dont *La santé du cheval*).
+  G5, G7 et une partie de G6 sont en français seul.
+- **16 compléments `COMPL_*_I18N` encore DANS l'index** (≈11 700 mots) : à traduire aussi, dans
+  l'index cette fois.
+- **Interface : ≈1 400 textes**, **RTL global** pas touché, **police arabe** (Cairo/Tajawal/Amiri)
+  à proposer, **affiches multilingues, aucune en arabe**.
+- **Défaut dans le français d'origine** (g1-c15, « [SUITE ATTENDUE] ») : toujours pas corrigé,
+  à écrire par toi.
+
+---
+
 # 🟩 12/09/2026 (matin) — SUIVI REMIS À JOUR · CONSTAT SUR L'INDEX FUSIONNÉ (ARABE)
 
 | Fichier | Où | md5 | Quoi |
