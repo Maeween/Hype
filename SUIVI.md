@@ -10,6 +10,92 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (soir) — LE GALOP 3 ET LE GALOP 4 COMPLETS EN ARABE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `355ac05ab106a91bba09f8286c5dd11f` | 2 modifications : balises `hype-cours-galop3.js?v=1→2` et `hype-cours-galops-sup.js?v=1→2` (6 695 767 octets) |
+| `hype-cours-galop3.js` | racine | `dcdf870d52c6052db91b6927784ac8f3` | **v2** : 728 clés `"ar"`, les **16 chapitres à 100 %** (1 427 402 octets) |
+| `hype-cours-galops-sup.js` | racine | `9ba0f9ddae68037602906ad372eaec29` | **v2** : 616 clés `"ar"` sur **COURS_GALOP4_FR uniquement**, les **15 chapitres à 100 %** ; G5/G6/G7 intacts, vérifiés identiques au fichier d'origine caractère par caractère (1 032 108 octets) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ Base de départ : les fichiers que tu as remontés aujourd'hui (`hype-cours-galop3.js` md5
+`7ea2dc6351c2ca50b913e28e41539bc8`, `hype-cours-galops-sup.js` md5 `02f8593bd9243e1934a5c81894a4ddab`,
+tous deux en v1, jamais retouchés depuis le 07/09) et ton `index.html` du 12/09 (déjà en `?v=2`
+pour G1 et G2). `hype-cours-galop1.js`, `hype-cours-galop2.js`, `hype-cours-baby.js`, `_headers`
+et le reste de l'appli : **INCHANGÉS**, ne pas les repousser. Aucun SQL, aucune image.
+
+## CE QUI A ÉTÉ FAIT
+
+**Galop 3 (16 chapitres) et Galop 4 (15 chapitres) sont désormais traduits à 100 % en arabe**,
+comme Galop 1 et Galop 2 avant eux. **Les quatre premiers galops sont donc entièrement en
+arabe.** Ajout pur dans les deux fichiers : aucune valeur des 6 autres langues touchée, aucun
+`correct` de quiz changé, aucune image touchée. `COURS_GALOP3_VERSION` passe de 1 à 2 ;
+`COURS_GALOPS_SUP_VERSION` passe de 1 à 2.
+
+**Point d'attention sur `hype-cours-galops-sup.js`** : ce fichier contient aussi les Galops 5,
+6 et 7. Je n'ai touché QUE `COURS_GALOP4_FR` — **vérifié caractère par caractère** que les
+segments `COURS_GALOP5_FR`, `COURS_GALOP6_FR` et `COURS_GALOP7_FR` sont strictement identiques
+au fichier que tu m'as donné. Leur traduction est préparée à part (voir plus bas) et attend une
+prochaine livraison sur ce même fichier.
+
+## VÉRIFIÉ
+
+- **Intégrité des deux modules** : contenu identique hors clés `"ar"` → OUI dans les deux cas.
+  Galop 3 : 160 questions avant/après, `correct` et options FR intacts. Galop 4 : 150
+  questions avant/après, `correct` et options FR intacts. **31/31 chapitres complets** au total
+  (16 + 15), 0 chapitre sans arabe, 0 champ vide alors que le français existe.
+- **`node --check`** : les deux modules sans défaut ; 18 blocs de l'index sans défaut.
+- **Contrôle des marqueurs** de l'index (14 repères) : tous inchangés — seules les 2 balises
+  `?v=` remplacées, aucun autre écart.
+
+## ANOMALIE CONFIRMÉE PAR TOI — LE QCM GLOBAL DU GALOP 3
+
+Le QCM global (30 questions, `QCM_GLOBAL_GALOP3_FR`, dans `hype-cours-galop3.js`) reste en
+**français seul** : il n'a pas la structure multilingue `{fr,en,es,it,ja,de}` du reste de
+l'appli. Tu as confirmé que ce n'est pas normal — ça a dû se perdre à un moment. **Je n'ai rien
+changé ici.** J'ai préparé à part les 30 questions dans les 7 langues (fr/en/es/it/ja/de/ar),
+vérifiées (mêmes `correct`, mêmes options). Reste à faire, ensemble : (1) transformer la
+structure de données de ce QCM en dictionnaires multilingues, (2) adapter le petit bout de code
+qui le lit dans l'index (aujourd'hui il attend du texte brut). C'est un changement de code, pas
+un simple ajout — on le fera comme une action à part, avec ton feu vert.
+
+## À L'ÉCRAN : + / −
+
+**+** *Mon compte* → langue → **العربية** : **Galop 1, 2, 3 et 4** s'affichent maintenant
+entièrement en arabe, QCM de chapitre compris.
+**−** Le QCM global du Galop 3 reste en français, quelle que soit la langue choisie (voir
+anomalie ci-dessus). Toujours pareil par ailleurs : interface en français, affiches en français,
+police système iOS.
+
+## NON VU À L'ÉCRAN — à tester sur l'iPhone
+
+1. Galop 3 en arabe, plusieurs chapitres dont g3-saut (les 6 phases du saut) et le chapitre sur
+   le pied (g3-c11, glossaire technique dense).
+2. Galop 4 en arabe, plusieurs chapitres.
+3. Un chapitre de G1 ou G2 pour confirmer que rien n'a bougé.
+4. Le QCM global du Galop 3 : toujours en français, c'est normal pour l'instant.
+
+## À GARDER EN TÊTE — ce qui reste
+
+- **Galop 1, 2, 3, 4 sont finis.** Restent **Galop 5** (6 chapitres, contenu court, ~1 000 mots),
+  **Galop 6** (7 chapitres, ~6 800 mots), **Galop 7** (6 chapitres, ~1 000 mots) — **tous les
+  trois en français seul**, comme le QCM global du G3. Leur traduction (6 langues + arabe) est
+  en préparation ; G5 est déjà bien avancé (5/6 chapitres prêts). Contrairement à G1-G4, ce
+  n'est pas un simple ajout d'arabe : c'est recréer la structure multilingue ET adapter le code
+  de lecture, comme pour le QCM global.
+- **16 compléments `COMPL_*_I18N` encore DANS l'index** (≈11 700 mots) : à traduire aussi.
+- **Interface : ≈1 400 textes**, **RTL global** pas touché, **police arabe** à proposer,
+  **affiches multilingues, aucune en arabe**.
+- **Défaut dans le français d'origine** (g1-c15, « [SUITE ATTENDUE] ») : toujours pas corrigé.
+- **Mots à valider** (liste cumulée, dans les fichiers de travail) : poney, assiette, épis,
+  garrot, amortisseur, maréchal-ferrant, fourrage/foin, chambrière, avant-main/arrière-main,
+  ganache, chanfrein, toupet, vibrisses, cross, voltige, écurie active, hunter, TREC, meneur,
+  longeur, mamelles/barres du sabot, ischions, incurvation/pli/bascule (3 mots proches à
+  distinguer), maréchal-ferrant, enrubanné, guêtres/protège-boulets/cloches, entier/hongre/jument.
+
+---
+
 # 🟩 12/09/2026 (matin, suite) — LES TROUS DE LA GALERIE SONT COMBLÉS (option A, jusqu'à 3)
 
 | Fichier | Où | md5 | Quoi |
