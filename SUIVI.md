@@ -10,6 +10,68 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (nuit) — PLUS DE NOTIFICATION ORPHELINE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7ea64fe68c9037795e602e98b0cd6105` | build **20260908-76** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 75 (`7ff51ca4…`), non poussé : ce fichier contient les deux.
+Touché : `hypeNotifierCommentaire`, `MurHype`, plus une aide `hypeNettoyerNotifsMessage`.
+**Aucun SQL, aucune colonne ajoutée.**
+
+**À l'écran : − les notifications qui annoncent une publication qui n'existe plus.**
+
+## LE DÉFAUT
+
+Blandine avait deux notifications (« Cours terminés », « Les 7 Galops ») dont le message était
+introuvable. Vérifié en base : **0 ligne**, ces messages ont été supprimés. Une notification ne
+gardait que **le fil** et une copie du texte, **jamais l'identifiant du message** : impossible de la
+relier au message, donc impossible de la supprimer avec lui.
+
+## FAIT
+
+- L'identifiant du message est désormais écrit dans `contexte`, sous la forme
+  `<clé du fil>|post:<id>`. Aucune colonne à ajouter, et les anciennes notifications (sans cette
+  marque) continuent de fonctionner exactement comme avant.
+- Supprimer un message du fil supprime ses notifications (`hypeNettoyerNotifsMessage`). Silencieux :
+  si ce ménage échoue, le message reste supprimé.
+- Les anciennes notifications, sans la marque, ne peuvent pas être reliées à leur message : elles
+  partiront avec le nettoyage automatique déjà en place.
+
+## TESTS (banc Chromium)
+
+| | build 75 | build 76 |
+|---|---|---|
+| la notification retient l'identifiant | non (`ecurie feinn`) | oui (`ecurie feinn\|post:…`) |
+| supprimer le message efface sa notification | — | oui |
+| une ancienne notification reste intacte | — | oui |
+
+Non-régression, 0 erreur : fil unique sur les deux écrans (build 75), likes et réponses, modification
+d'un message, suppression d'une photo depuis la galerie. `node --check` : 18 blocs. Balises et
+`?v=` identiques au sien.
+
+## ⚠️ INCIDENT DANS MON BANC (pour mémoire)
+
+Premier résultat : l'ancienne notification était supprimée elle aussi. Cause trouvée en dix
+minutes : **ma fausse base avait deux fois le filtre `like`**, dont un qui ne filtrait rien et qui
+gagnait — la suppression partait donc sans condition. Le code livré était juste. Même classe
+d'incident que le doublon de la fonction de déplacement le 12/09 : vérifier aussi les outils de
+test, pas seulement le produit.
+
+## À TESTER SUR IPHONE
+
+Publie un message sur le fil, vérifie la notification depuis un autre compte, puis supprime le
+message : la notification doit disparaître.
+
+## RESTE OUVERT
+
+Ses quatre demandes sur le fil : identifier les cavalières, identifier les chevaux, indiquer un
+lieu, plusieurs photos ou vidéos par message (celui-là demande une décision de structure).
+
+---
+
 # 🟩 12/09/2026 (nuit) — UN SEUL FIL POUR L'ÉCURIE
 
 | Fichier | Où | md5 | Quoi |
