@@ -10,6 +10,69 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (nuit) — UN SEUL FIL POUR L'ÉCURIE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7ff51ca45c1f3d51ab7ff4166ef4d9a2` | build **20260908-75** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Base : son index du 12/09 (`9fb7c537…`, build 74 + Galop 3 en `?v=3`). **Une ligne changée**, dans
+`EcranGuilde`. Aucun nouveau SQL : `sql-12-09-un-seul-fil.sql` est **passé et vérifié**.
+
+**À l'écran : + la page du club et la page Écurie montrent le même fil.**
+
+## CE QUI N'ALLAIT PAS — DEUX FILS, LE MÊME NOM
+
+Elle ne voyait pas les publications des autres. Diagnostic mené par requêtes courtes :
+1. Un comptage donnait **1 seul message** sur une cible d'écurie → les messages des autres n'y
+   étaient pas.
+2. Recherche des textes des notifications (« Cours terminés », « Les 7 Galops ») : **0 ligne**. Ces
+   messages **n'existent plus** : ils ont été supprimés, et seules les notifications ont survécu.
+3. Recensement des fils : `club:Ecurie Feinn` (1 message, ce soir 19:33) **et**
+   `ecurie:ecurie feinn` (1 message, du 16 juillet). **Deux fils portant le même nom à l'écran** :
+   la page du club (classement + PUBLICATIONS) avait sa propre cible, la page Écurie une autre.
+   On publiait dans l'un ou dans l'autre sans le savoir.
+
+## DÉCISION DE BLANDINE
+
+« Oui oui un seul fil bien sûr. » Le fil reste visible **aux deux endroits** : même fil, deux
+portes d'entrée.
+
+## FAIT
+
+- `EcranGuilde` lit désormais `ecurie:<nom en minuscules>`, exactement la clé du build 72.
+- `sql-12-09-un-seul-fil.sql` (contrôle avant, fusion, contrôle après) : passé, résultat vérifié —
+  plus aucune cible `club:`, **2 messages** sous `ecurie:ecurie feinn`.
+- La notification « a publié dans ta communauté » menait **déjà** à cette page : elle tombe donc
+  sur le bon fil, sans changement de code.
+
+## TESTS (banc Chromium, les deux écrans montés avec les 2 messages en base)
+
+| | build 74 | build 75 |
+|---|---|---|
+| page du club | ne voit **aucun** des deux messages | voit les deux |
+| page Écurie | voit les deux | voit les deux |
+
+Non-régression, 0 erreur : likes et réponses (build 73), modification d'un message (build 74).
+`node --check` : 18 blocs. Balises de scripts et `?v=` identiques au sien.
+
+## RESTE OUVERT
+
+1. **Notification orpheline** : une notification survit à la suppression de son message. Elle ne
+   garde que le fil et une copie du texte, **jamais l'identifiant du message** — impossible de
+   faire le lien pour la supprimer ou la barrer. Il faudrait enregistrer cet identifiant
+   (`post:<id>` dans la cible, ou une colonne) : décision à prendre, petit SQL.
+2. Ses quatre demandes sur le fil : identifier les cavalières, identifier les chevaux, indiquer un
+   lieu, plusieurs photos ou vidéos par message (celui-là demande une décision de structure).
+
+## À TESTER SUR IPHONE
+
+Communauté → page du club, et onglet Écurie : les **deux** doivent montrer les deux mêmes messages,
+dont le tien de ce soir.
+
+---
+
 # 🟩 12/09/2026 (nuit, suite) — LE QCM GLOBAL DU GALOP 3 EST RÉPARÉ : 7 LANGUES, ET LU PAR L'APPLI
 
 | Fichier | Où | md5 | Quoi |
