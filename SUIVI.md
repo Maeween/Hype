@@ -10,6 +10,61 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (nuit) — IDENTIFIER DES CAVALIÈRES, DES CHEVAUX, ET INDIQUER UN LIEU
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `3ce1f8c676ca15e8cbb6c1850caf5f30` | build **20260908-77** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 76 (`7ea64fe6…`), non poussé : ce fichier contient les builds 75, 76 et 77.
+Un seul composant touché : `MurHype`. **Aucun SQL.**
+
+**À l'écran : + « Identifier » et « Ajouter un lieu » sous le champ de publication · + le lieu et
+les personnes ou chevaux identifiés sous chaque message.**
+
+Trois des quatre demandes de Blandine sur le fil sont faites. Reste la quatrième, plusieurs photos
+ou vidéos par message, qui demande une décision de structure.
+
+## OÙ C'EST RANGÉ — AUCUNE TABLE NI COLONNE AJOUTÉE
+
+- Une identification = une ligne de `identifications`, avec `photo_url = "post:<id>"`, `type`
+  « cavalier » ou « cheval », `cible_id` l'identifiant de la personne ou du cheval. C'est
+  exactement le procédé de `identifierAlbum`, qui écrit `"album:<id>"` dans cette même colonne :
+  elle accepte donc une référence libre.
+- Statut **« accepte » d'emblée** : ce n'est pas une demande d'identification sur la fiche de
+  quelqu'un, c'est une mention dans un message. L'autrice l'enlève en modifiant son message.
+- Un lieu = une ligne de `photo_dates` (colonne `lieu`, déjà utilisée pour les photos et les
+  albums) avec la même référence.
+- Les deux sont écrits **après** la publication, une fois l'identifiant du message connu : un échec
+  d'écriture ne perd jamais le message, il est déjà publié.
+
+## DÉTAILS
+
+- Les deux liens n'apparaissent que sur le fil d'une écurie et quand on a le droit d'y écrire.
+- La liste propose les **cavalières de l'écurie**, puis **ses chevaux**, chargée à la première
+  ouverture. Tout est dans le flux, aucun calque (leçon iOS du 05/09).
+- Le lieu est un champ libre.
+- Les champs se remettent à zéro après la publication.
+
+## TESTS (banc Chromium, écurie de 3 cavalières + 1 étrangère, 2 chevaux dont 1 d'une autre écurie)
+
+- Propositions : `Blandine`, `Liam`, `Evan`, `Elfe de Feinn`. **La cavalière et le cheval d'une
+  autre écurie sont exclus.**
+- Deux coches (Liam + Elfe) : le lien affiche « Identifier · 2 ».
+- Lieu saisi « Guénange », message publié : en base,
+  `cavalier:Liam/accepte` et `cheval:Elfe de Feinn/accepte`, lieu `Guénange`.
+- À l'écran : le lieu et les deux noms s'affichent sous le message, et les champs sont remis à zéro.
+- Non-régression, 0 erreur : notifications (build 76), fil unique (75), likes et réponses (73),
+  modification d'un message (74). `node --check` : 18 blocs. Balises et `?v=` identiques au sien.
+
+## À TESTER SUR IPHONE
+
+Sur le fil : « Identifier » → coche une cavalière et un cheval, « Ajouter un lieu », écris un
+message, publie. Le lieu et les noms doivent apparaître sous le message.
+
+---
+
 # 🟩 12/09/2026 (nuit) — PLUS DE NOTIFICATION ORPHELINE
 
 | Fichier | Où | md5 | Quoi |
