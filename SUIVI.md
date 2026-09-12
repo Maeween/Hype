@@ -10,6 +10,344 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (nuit) — MODIFIER SON PROPRE MESSAGE DU FIL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9440bd7455a5e4de3dfc2a7ba38b63e0` | build **20260908-74** |
+| `sql-12-09-modifier-message.sql` | à passer dans Supabase (SQL Editor) | — | colonne `modifie_le` + policy UPDATE |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 73 (`85f0c16b…`), non poussé : ce fichier contient les builds 70 à 74.
+Composant touché : `MurHype`, plus une aide globale `modifierTexteCommentaire`.
+⚠️ Deux SQL en attente : `sql-12-09-fil-ecurie.sql` (étape 4 surtout) et celui-ci.
+
+**À l'écran : + « Modifier » sur ses propres messages du fil · + la mention « modifié ».**
+
+## DÉCISIONS DE BLANDINE
+
+« On peut pas modifier ce qu'on a posté ? » → **le texte seul** (jamais la photo : changer l'image
+d'un message déjà aimé et commenté crée plus de confusion que de service), et **une mention
+« modifié »**.
+
+## POURQUOI IL FALLAIT DU SQL
+
+L'audit du 09/09 l'avait déjà constaté : `commentaires` n'a **aucune policy UPDATE** pour le texte
+(celle ajoutée ce jour-là ne couvre que le statut des vidéos). Sans le script, une modification
+touche **0 ligne sans remonter d'erreur** — le faux succès déjà rencontré avec l'année des photos
+et avec la vidéo de Dakota.
+Le script ajoute la colonne `modifie_le` et une policy UPDATE (autrice **ou** modératrice). Une
+policy ne sait pas restreindre les colonnes : c'est l'appli qui n'envoie que le texte et la date.
+
+## FAIT
+
+- `modifierTexteCommentaire(id, texte)` : n'envoie **que** le texte et la date, avec
+  `.select(...)` pour distinguer « vraiment enregistré » de « 0 ligne ». Rend `aucuneLigne` dans ce
+  cas, et l'écran le dit au lieu d'annoncer un succès.
+- Repli automatique : si la colonne `modifie_le` manque encore, le texte est quand même enregistré,
+  sans la mention.
+- Bouton « Modifier » à côté de la croix, pour l'autrice ou une modératrice, seulement sur un
+  message qui a du texte. Le texte devient modifiable **sur place**, avec « Enregistrer » et
+  « Annuler ».
+- La mention « · modifié » s'affiche à la suite du texte.
+
+## TESTS (banc Chromium, 5 cas)
+
+| cas | résultat |
+|---|---|
+| modification normale | base et écran à jour, `modifie_le` écrit, mention affichée, champ refermé |
+| message vidé | refusé avec un message, base intacte |
+| **SQL non passé** (0 ligne, aucune erreur) | « La modification n'a pas été enregistrée », base intacte, champ **laissé ouvert** |
+| colonne `modifie_le` absente | texte enregistré quand même, sans la mention |
+| « Annuler » | base intacte, champ refermé |
+
+Non-régression, 0 erreur : likes et réponses du build 73, fil commun, suppression depuis la
+galerie. `node --check` : 18 blocs. Balises et `?v=` identiques.
+
+## À TESTER SUR IPHONE
+
+1. Passe les deux SQL (celui de l'écurie, étape 4 comprise, et celui-ci).
+2. Écurie → un de tes messages → « Modifier » → change le texte → « Enregistrer ». La mention
+   « modifié » apparaît.
+3. Refais-le et touche « Annuler » : rien ne change.
+
+---
+
+# 🟩 12/09/2026 (nuit) — AIMER ET RÉPONDRE DANS LE FIL · CARTE « PHOTO D'ABORD »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `85f0c16b8fb5d279a84f2e72f059f94f` | build **20260908-73** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 72 (`b0ef77e2…`), non poussé : ce fichier contient les builds 70 à 73.
+Un seul composant touché : `MurHype`. **Aucun nouveau SQL.**
+⚠️ `sql-12-09-fil-ecurie.sql` reste à passer — voir « Ce qu'il reste à faire en base » ci-dessous.
+
+**À l'écran : + la photo en grand, en haut de la carte · + « Aimer » et un compteur · + « Voir les
+N réponses » et un champ pour répondre · − la photo à 62 % de large sous le texte.**
+
+## MAQUETTES PROPOSÉES, SES CHOIX
+
+Trois cartes (sobre / photo d'abord / compacte) et trois façons de gérer les réponses (dépliées /
+repliées / champ toujours ouvert) lui ont été montrées en maquette. Elle a choisi **la carte
+« photo d'abord » avec les likes**, et **les réponses repliées**. Likes et réponses **ouverts à
+tous ceux qui peuvent lire le fil** (son choix explicite), pas seulement aux cavalières rattachées.
+
+## OÙ C'EST RANGÉ — AUCUN SQL
+
+- Un like = une ligne de `likes_cartes` (table du 02/09, clé cible + user_id) avec
+  cible = `post:<id du message>`.
+- Une réponse = une ligne de `commentaires` avec la **même** cible. C'est exactement le procédé
+  déjà utilisé pour les commentaires d'une photo (cible = adresse de la photo), ce qui prouve que
+  les policies acceptent une cible libre.
+- Une colonne « répond à » serait plus propre (elle permettrait de compter les réponses dans la
+  même lecture que les messages) : à faire si le fil grossit, sans rien casser de ce qui est écrit
+  maintenant.
+
+## DÉTAILS
+
+- Le like s'affiche tout de suite et **revient en place si la base refuse**.
+- Les réponses sont chargées en une lecture pour tous les messages affichés, avec les pseudos.
+- Les annonces Hype n'ont ni like ni réponse (ce ne sont pas des messages de l'écurie).
+- Un envoi de réponse qui échoue affiche un message sous le champ ; la réponse envoyée apparaît
+  immédiatement sans attendre un rechargement.
+
+## TESTS (banc Chromium, fil de l'écurie, 2 messages dont un avec photo, 1 réponse existante)
+
+- Carte : la photo est bien **avant** le nom de l'auteur et occupe **100 %** de la largeur.
+- Compteur de like du message existant : 1. Un tap sur « Aimer » ajoute une ligne en base, cible
+  `post:p2`.
+- « Voir la réponse » déplie et affiche « Bravo à toutes », avec le champ de réponse.
+- Une réponse écrite et envoyée : 2 lignes en base sur `post:p1`, et elle s'affiche aussitôt.
+- Non-régression, 0 erreur : fil commun (qui voit quoi, qui peut écrire), suppression depuis la
+  galerie, aperçu et formats. `node --check` : 18 blocs. Balises et `?v=` identiques.
+
+## CE QU'IL RESTE À FAIRE EN BASE (son résultat de contrôle)
+
+Son contrôle donne `ecurie:Ecurie Feinn` → 1 message, donc en **casse mélangée**, alors que
+l'appli écrit désormais la clé en minuscules. **L'étape 4 du SQL n'a pas encore été passée** : sans
+elle, ce message reste invisible dans le fil commun. À lancer.
+
+## SA DEMANDE SUIVANTE — MODIFIER UN MESSAGE (validée, non commencée)
+
+« On peut pas modifier ce qu'on a posté ? » Non, ça n'existe nulle part. Et l'audit du 09/09 avait
+constaté que `commentaires` n'a **aucune policy UPDATE** pour le texte (celle ajoutée ce jour-là ne
+couvre que le statut des vidéos) : une modification renverrait 0 ligne **sans erreur**, exactement
+le faux succès déjà rencontré avec l'année des photos.
+Décisions prises avec elle : **le texte seul** (pas la photo), et **une mention « modifié »**.
+Il faut donc : une policy UPDATE (autrice ou modératrice) + une colonne de date de modification,
+puis le bouton et le champ. À faire au prochain tour.
+
+## À TESTER SUR IPHONE
+
+1. Passe l'étape 4 du SQL de l'écurie, puis va dans Écurie : « Cours terminés » apparaît.
+2. Sur un message : « Aimer », puis re-tape pour retirer.
+3. « Répondre », écris, envoie : ta réponse s'affiche ; referme et rouvre avec « Voir la réponse ».
+
+---
+
+# 🟩 12/09/2026 (nuit) — LE FIL DE L'ÉCURIE DEVIENT COMMUN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b0ef77e2f0a3af97d4cc1ca40d2d1cad` | build **20260908-72** |
+| `sql-12-09-fil-ecurie.sql` | à passer dans Supabase (SQL Editor) | — | rapatriement des messages sur le fil commun |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 71 (`a6f5d95e…`), non poussé : ce fichier contient les builds 70, 71 et 72.
+Un seul composant touché : `MurHype`. L'ordre index / SQL n'a pas d'importance.
+
+**À l'écran : + les messages de toutes les cavalières de l'écurie s'affichent au même endroit ·
+− le mur personnel déguisé en « communauté ».**
+
+## CE QUI N'ALLAIT PAS (constat du 12/09, en partant de ses notifications)
+
+« megane a publié dans ta communauté : Cours terminés », et le message introuvable. Cause : depuis
+le 27/07, le fil de l'écran Écurie visait `ecurie:<identifiant du compte>` — **un mur personnel par
+cavalière**. Chacune écrivait chez elle, personne ne voyait les autres, et la notification renvoyait
+sur son propre mur. Ses mots : « donc elle publie dans la communauté mais il n'y a qu'elle qui
+voit ? », « c'est ridicule ».
+⚠️ Je lui ai d'abord dit qu'il n'existait aucun fil commun : **c'était faux**, le fil du club en est
+un depuis toujours. Vérification faite ensuite : 4 fils en tout (cavalier, club, écurie, cheval),
+et seul celui de l'écurie était personnel.
+
+## DÉCISION DE BLANDINE
+
+« 1 fil commun à l'écurie », messages « rapatriés sur le mur commun », lecture ouverte à tout le
+monde, écriture réservée aux cavalières rattachées.
+
+## FAIT
+
+- La cible du fil devient **le nom de l'écurie**, comme le fil du club.
+- **Clé = `lower(trim(nom))`.** Trouvé au banc : sans ça, « Ecurie Feinn » et « ecurie feinn »
+  donnaient deux fils séparés. `hypeNomClubCanonique` ne peut pas servir ici (elle a besoin de la
+  liste des écuries connues avec leur nombre de comptes, indisponible à cet endroit). Règle
+  volontairement simple pour être **exactement reproductible en SQL**.
+  Restent séparées deux écritures vraiment différentes (« Feinn » et « Ecurie Feinn ») : à régler
+  en corrigeant les profils si le cas se présente.
+- Une cavalière **sans écurie** renseignée garde son mur personnel — c'est ce que le correctif du
+  27/07 voulait protéger, et ça reste vrai.
+- Écriture réservée aux membres par le contrôle **déjà en place pour le club** ; la lecture reste
+  ouverte, seul le champ d'écriture est remplacé par l'encart « Un fil réservé aux membres ».
+
+## SQL DE RAPATRIEMENT (`sql-12-09-fil-ecurie.sql`)
+
+4 étapes : contrôle avant (aucune écriture), déplacement des murs personnels vers
+`ecurie:<nom en minuscules>`, contrôle après, puis regroupement des clés déjà écrites en casse
+mélangée. **Ne touche que la table `commentaires`** : ni les albums (qui portent aussi des cibles
+`ecurie:`), ni les comptes sans écurie.
+Comptage fait avant, sur ses données : **un seul message** concerné, écurie « Ecurie Feinn ».
+
+## TESTS (banc Chromium, 3 profils, messages de deux cavalières)
+
+| qui | voit les messages de l'écurie | peut écrire |
+|---|---|---|
+| Blandine, « Ecurie Feinn » | oui (les deux) | oui |
+| megane, « ecurie feinn » (minuscules) | oui (les deux) | oui |
+| cavalière sans écurie | non — son mur personnel seul | oui (chez elle) |
+| visiteuse d'une autre écurie | non | non, encart « réservé aux membres » |
+
+Build 71 : Blandine ne voyait **aucun** des deux messages, et n'importe qui pouvait écrire.
+Non-régression, 0 erreur : suppression depuis la galerie (build 71), section Albums qui se relit
+sans boucle, aperçu et formats (builds 68 à 70), réordonnancement en album (build 67).
+
+## SES QUATRE DEMANDES SUR CE FIL, À FAIRE ENSUITE
+
+1. identifier les cavalières de l'écurie · 2. identifier les chevaux · 3. indiquer un lieu ·
+4. plusieurs photos ou vidéos dans un message.
+État du code : le fil n'accepte **qu'une** photo par message (`posterCommentaire`, `fichierPhoto`)
+et ne connaît ni identification ni lieu. Briques existantes : table `identifications`
+(cavalier / cheval / écurie), déjà utilisée pour les photos et les albums, et `photo_dates.lieu`.
+Le point 4 demande une décision de structure (une ligne par message aujourd'hui).
+
+## À TESTER SUR IPHONE
+
+1. Passe le SQL (étapes 1 à 4), puis Écurie : le message « Cours terminés » apparaît dans le fil.
+2. Écris un message sur ce fil, et vérifie depuis un autre compte de l'écurie qu'il est visible.
+
+---
+
+# 🟩 12/09/2026 (soir) — SUPPRIMER UNE PHOTO DEPUIS LA GALERIE : LE CHEMIN OUBLIÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `a6f5d95efdedf89c3cbb6f7f7847d7fb` | build **20260908-71** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 70 (`3a6b6ab5…`), non poussé : ce fichier contient les deux. Composants touchés :
+`EcranCheval` (la suppression) et `AlbumsCheval` (l'écoute). Aucun SQL — `album_retirer_media` est
+déjà en base depuis hier.
+
+**À l'écran : + la photo supprimée depuis la galerie disparaît aussi de la section Albums, sans
+quitter la page.**
+
+## LES TROIS DÉFAUTS DE CE SEUL CHEMIN (Photos → une photo → Supprimer)
+
+`supprimerPhotoAlbumOuverte` n'avait jamais été touchée : mes correctifs des builds 61 et 65
+portaient sur « Retirer de l'album », dans le panneau d'album — un autre code pour le même geste.
+1. Elle renvoyait **toute la liste** des photos recopiée depuis l'écran : une photo ajoutée
+   entre-temps par quelqu'un d'autre était effacée. Elle passe désormais par `album_retirer_media`
+   (repli sur l'ancien chemin si la fonction manque).
+2. Elle **n'émettait pas** `hype-albums-modifies` : ni la chronologie ni le rail ne se relisaient.
+3. `AlbumsCheval` **n'écoutait pas** ce signal, contrairement à `AlbumsPromus` et à la chronologie
+   depuis le 05/09 : la photo restait visible dans la section Albums jusqu'à quitter la fiche.
+
+## ⚠️ BOUCLE INFINIE ATTRAPÉE AU BANC
+
+La première version de l'écoute rappelait `charger()`, qui **émet lui-même** ce signal : boucle
+infinie, « Maximum call stack size exceeded » dans le banc de la fiche entière. Corrigé : les
+événements émis par `AlbumsCheval` portent `origine: "albums-cheval"` et son écoute les ignore.
+Les autres composants les reçoivent comme avant.
+
+## TESTS (banc Chromium)
+
+- **Fiche cheval entière** : Photos → photo 3 → Supprimer → base `1,2,4,5,6`, `album_retirer_media`
+  appelé, galerie relue sans la photo 3, message affiché, **0 erreur de page** (build 70 : la
+  galerie continuait d'afficher la photo 3).
+- **Section Albums seule**, photo retirée en base puis signal émis : grille `1,2,3,4,5` →
+  `1,2,4,5`, **une seule** relecture, **aucune** relecture supplémentaire après 2 s (pas de
+  boucle), et un signal pour une autre fiche ne déclenche rien. Build 70 : aucune relecture.
+- Non-régression : aperçu du build 70 (dernière ligne complète), formats, décalage ≤ 3, « Petite »,
+  réordonnancement en album. `node --check` : 18 blocs, 0 erreur. Balises et `?v=` identiques.
+
+## SES DEMANDES DU SOIR, NON COMMENCÉES — fil de l'écurie
+
+1. Identifier les **cavalières** de l'écurie dans un message.
+2. Identifier les **chevaux** de l'écurie.
+3. Indiquer un **lieu**.
+4. Mettre **plusieurs photos ou vidéos** dans un même message.
+État du code : le fil (`MurHype`) n'accepte aujourd'hui **qu'une seule** photo par message
+(`posterCommentaire`, `fichierPhoto`), et ne connaît ni identification ni lieu. Les briques
+existent ailleurs : la table `identifications` (type cavalier / cheval / écurie) sert déjà aux
+photos et aux albums, et `photo_dates.lieu` porte déjà un lieu par photo. Il faudra décider où
+ranger ces informations pour un **message** (pas une photo), et le cas des plusieurs médias
+demande une décision de structure. À chiffrer avec elle, après le fil commun de l'écurie.
+
+## À TESTER SUR IPHONE
+
+Photos → une photo → Supprimer : elle disparaît de la galerie **et** de la section Albums, sans
+quitter la page.
+
+---
+
+# 🟩 12/09/2026 (soir) — APERÇU D'UNE ANNÉE : LA COUPE TOMBE SUR UNE LIGNE COMPLÈTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `3a6b6ab554c43fd4ab9eed034b4841d0` | build **20260908-70** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Base : son index du 12/09 (`355ac05a…`, build 69 + Galops 3 et sup en arabe). Un seul composant
+touché : `ChronologieSouvenirs`. Aucun SQL.
+
+**À l'écran : − la photo seule au milieu de sa ligne juste avant « + N voir tout ».**
+
+## SA REMARQUE
+
+« Pourquoi arrêter l'album après juste une photo seule sur sa ligne ? » — visible sur sa capture de
+18:59 : une petite photo seule, puis « + 18 voir tout ».
+
+## FAIT
+
+L'aperçu s'arrêtait après la première photo la plus basse placée (`coupeOk`), ce qui pouvait
+tomber au milieu d'une ligne. Nouveau critère `coupeNette` : la dernière ligne doit être
+**complète** (ses 3 colonnes prises). Repli sur l'ancien critère si aucune coupe nette n'existe,
+pour ne jamais couper une grande case en deux.
+
+Banc, cinq années : dernière ligne de l'aperçu complète **5 fois sur 5** (avant : 3 sur 5 ; 2023
+s'arrêtait sur 2 colonnes, 2025 sur **1 seule**). Non-régression : formats manuels respectés,
+décalage maximal ≤ 3, aucune photo perdue, aucun trou hors fin d'année, « Petite » et retour à
+« Automatique » intacts.
+
+## ⚠️ CE QUE JE N'AI PAS COMPRIS PENDANT PLUSIEURS ÉCHANGES
+
+Quand Blandine dit « l'album », elle parle de **la galerie par année de l'onglet Photos**, pas du
+panneau d'un album de la section Albums. Or mes trois livraisons portaient sur le panneau d'album :
+- le retrait immédiat d'une photo (build 65) → bouton « Retirer de l'album », panneau d'album ;
+- le réordonnancement au doigt (build 67) → lien « Réorganiser les photos », panneau d'album ;
+- « Petite » (build 68) → celui-là est bien dans la galerie, et fonctionne.
+D'où ses trois « ça ne marche toujours pas » sur un build qui contenait bien les correctifs.
+
+## CE QUI RESTE VRAIMENT CASSÉ POUR ELLE, NON CORRIGÉ
+
+1. **Supprimer une photo depuis la galerie** (Photos → une photo → Supprimer). Ce chemin,
+   `supprimerPhotoAlbumOuverte`, n'a jamais été touché : il réécrit toute la liste des photos
+   recopiée depuis l'écran (perte d'écriture possible, corrigée ailleurs au build 61), **n'émet pas**
+   le signal `hype-albums-modifies`, et surtout `AlbumsCheval` **n'écoute pas** ce signal — d'où la
+   photo qui reste visible dans la section Albums jusqu'à ce qu'elle quitte la page. Correctif
+   évident : passer par `album_retirer_media`, émettre le signal, et faire écouter `AlbumsCheval`.
+2. **Déplacer une photo dans la galerie par année** : impossible par construction, l'ordre y vient
+   des dates. Le réordonnancement livré ne vaut que dans un album. Chantier à part, avec un ordre
+   manuel à stocker par cheval.
+
+## À TESTER SUR IPHONE
+
+Une année bien remplie : l'aperçu se termine sur une ligne pleine, plus de photo seule avant
+« + N voir tout ».
+
+---
+
 # 🟩 12/09/2026 (soir) — LE GALOP 3 ET LE GALOP 4 COMPLETS EN ARABE
 
 | Fichier | Où | md5 | Quoi |
