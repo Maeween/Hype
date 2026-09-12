@@ -21225,7 +21225,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-cours-galops-sup.js?v=1"></script><script src="hype-cours-galop3.js?v=1"></script><script src="hype-cours-galop2.js?v=1"></script><script src="hype-cours-galop1.js?v=1"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=3"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-cours-galops-sup.js?v=1"></script><script src="hype-cours-galop3.js?v=1"></script><script src="hype-cours-galop2.js?v=1"></script><script src="hype-cours-galop1.js?v=2"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=3"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -21475,6 +21475,7 @@ const LANGUES = [
     { code: "es", label: "Español", drapeau: "🇪🇸" },
     { code: "it", label: "Italiano", drapeau: "🇮🇹" },
     { code: "de", label: "Deutsch", drapeau: "🇩🇪" },
+    { code: "ar", label: "\u0627\u0644\u0639\u0631\u0628\u064a\u0629", drapeau: "🇸🇦" },
 ];
 const I18N = {
     app_tagline: { fr: "Apprends et révise les Galops", en: "Learn and review riding levels", ja: "騎馬資格を学び、復習する", es: "Aprende y repasa los Galops", it: "Impara e ripassa i Galops", de: "Lerne und wiederhole die Galops" },
@@ -26409,7 +26410,7 @@ function EcranPersonnalisation(props){
     de: { lAge: "Alter", min: "Unter 18", maj: "18 und \u00e4lter", vide: "Zu w\u00e4hlen" }
   };
   var TXA = PTA[langue] || PTA.fr;
-  var LANGUES = [["fr","Fran\u00e7ais"],["en","English"],["es","Espa\u00f1ol"],["it","Italiano"],["ja","\u65e5\u672c\u8a9e"],["de","Deutsch"]];
+  var LANGUES = [["fr","Fran\u00e7ais"],["en","English"],["es","Espa\u00f1ol"],["it","Italiano"],["ja","\u65e5\u672c\u8a9e"],["de","Deutsch"],["ar","\u0627\u0644\u0639\u0631\u0628\u064a\u0629"]];
   var OBJECTIFS = TX.objectifs;
   function libelle(liste, val){ for (var i = 0; i < liste.length; i++){ if (liste[i][0] === val) return liste[i][1]; } return liste[0][1]; }
   var CSS = "@keyframes persUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}" +
@@ -45379,7 +45380,7 @@ function EcranCours() {
                 React.createElement("div", { style: { flex: 1, height: 8, borderRadius: 4, background: COLORS.ligne } },
                     React.createElement("div", { style: { height: "100%", width: `${((blocIdx + 1) / total) * 100}%`, background: COLORS.turquoise, borderRadius: 4, transition: "width 0.3s" } })),
                 React.createElement(SelecteurLangue, { compact: true }))),
-        React.createElement("div", { style: { flex: 1, padding: "8px 24px 24px", display: "flex", flexDirection: "column" } },
+        React.createElement("div", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { flex: 1, padding: "8px 24px 24px", display: "flex", flexDirection: "column" } },
             React.createElement("h2", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontStyle: "italic", fontWeight: 600, fontSize: 20, color: COLORS.encre, textAlign: "center", marginBottom: modeEnseignantCours && cours.level ? 4 : 18 } }, cours.titre),
             modeEnseignantCours && cours.level && typeof AccesEnseignantCours === "function" && React.createElement("div", { style: { textAlign: "center", marginBottom: 14 } },
                 React.createElement(AccesEnseignantCours, { niveauId: cours.level, coursCompetencesRef: null, modeEnseignant: true })),
@@ -45593,7 +45594,7 @@ function rendreSegmentRiche(seg, i) {
     }
     if (seg.k === "para") {
         return (React.createElement("p", { key: i, style: { margin: 0, fontSize: 16.5, color: COLORS.encre, lineHeight: 1.75 } },
-            seg.gras ? React.createElement("strong", { style: { color: COLORS.turquoise, fontStyle: (["grands cavaliers", "great riders", "grandes jinetes", "grandi cavalieri", "großen Reiter", "騎手の秘訣"].some(function (kk) { return (seg.gras || "").indexOf(kk) >= 0; }) ? "italic" : "normal") } },
+            seg.gras ? React.createElement("strong", { style: { color: COLORS.turquoise, fontStyle: (["grands cavaliers", "great riders", "grandes jinetes", "grandi cavalieri", "großen Reiter", "騎手の秘訣", "\u0643\u0628\u0627\u0631 \u0627\u0644\u0641\u0631\u0633\u0627\u0646"].some(function (kk) { return (seg.gras || "").indexOf(kk) >= 0; }) ? "italic" : "normal") } },
                 seg.gras,
                 " ") : null,
             seg.texte));
@@ -50016,7 +50017,7 @@ function hypeDefilerBas() {
 }
 /* ---------- ÉCRAN EXAMEN BLANC (par niveau, moteur autonome) ---------- */
 function EcranExamenBlanc() {
-    const { galopOuvert, setEcran, tr } = useApp();
+    const { galopOuvert, setEcran, tr, langue } = useApp();
     const T = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
     const galopNum = (typeof galopOuvert === "number") ? galopOuvert : (parseInt(String(galopOuvert || "").replace(/[^0-9]/g, ""), 10) || 1);
     const banque = (typeof EXAMENS_BLANCS !== "undefined" && EXAMENS_BLANCS[galopNum]) ? EXAMENS_BLANCS[galopNum] : [];
@@ -50084,7 +50085,7 @@ function EcranExamenBlanc() {
             React.createElement("div", { style: { position: "absolute", left: 16, right: 16, bottom: 0, transform: "translateY(50%)" } },
                 React.createElement("div", { style: { height: 5, borderRadius: 99, background: "rgba(10,14,18,0.7)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.06)" } },
                     React.createElement("div", { style: { height: "100%", width: progPct + "%", borderRadius: 99, background: "linear-gradient(90deg,#0C5763," + TQ + ")", boxShadow: "0 0 16px rgba(34,218,245,0.75)", transition: "width .5s cubic-bezier(.4,0,.15,1)" } })))),
-        React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", padding: "26px 22px 0" } },
+        React.createElement("div", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { flex: 1, display: "flex", flexDirection: "column", padding: "26px 22px 0" } },
             React.createElement("div", { style: { fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7f8894", fontWeight: 500 } }, T("Question", "Question", "Pregunta", "Domanda", "\u8cea\u554f") + " " + (idx + 1) + " / " + total),
             React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, lineHeight: 1.34, margin: "12px 0 18px", color: "#F4F7FA" } }, question.question),
             React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 11, paddingBottom: 8 } },
@@ -50093,7 +50094,7 @@ function EcranExamenBlanc() {
                     let borderColor = "rgba(255,255,255,0.08)", bg = "linear-gradient(180deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))", chipBorder = "rgba(255,255,255,0.16)", chipBg = "rgba(255,255,255,0.04)", chipColor = "#aab2bd", opacity = 1;
                     if (!valide) { if (sel) { borderColor = "rgba(34,218,245,0.6)"; bg = "linear-gradient(180deg,rgba(34,218,245,0.11),rgba(34,218,245,0.03))"; chipBorder = TQ; chipBg = TQ; chipColor = "#04222a"; } }
                     else { if (k === question.correct) { borderColor = TQ; bg = "linear-gradient(180deg,rgba(34,218,245,0.15),rgba(34,218,245,0.04))"; chipBorder = TQ; chipBg = TQ; chipColor = "#04222a"; } else if (k === reponse) { borderColor = "rgba(240,92,116,0.6)"; bg = "linear-gradient(180deg,rgba(240,92,116,0.12),rgba(240,92,116,0.03))"; chipBorder = KO; chipBg = KO; chipColor = "#2a060c"; } else { opacity = 0.35; } }
-                    return React.createElement("button", { key: k, onClick: function () { if (!valide) setReponse(k); }, style: { position: "relative", textAlign: "left", padding: "15px 16px", borderRadius: 16, cursor: valide ? "default" : "pointer", border: "1px solid " + borderColor, color: "#F4F7FA", fontSize: 15, fontWeight: 500, lineHeight: 1.4, background: bg, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", gap: 14, opacity: opacity, boxShadow: "0 8px 22px rgba(0,0,0,0.35)", transition: "border-color .22s, background .22s, opacity .22s" } },
+                    return React.createElement("button", { key: k, onClick: function () { if (!valide) setReponse(k); }, style: { position: "relative", textAlign: "start", padding: "15px 16px", borderRadius: 16, cursor: valide ? "default" : "pointer", border: "1px solid " + borderColor, color: "#F4F7FA", fontSize: 15, fontWeight: 500, lineHeight: 1.4, background: bg, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", gap: 14, opacity: opacity, boxShadow: "0 8px 22px rgba(0,0,0,0.35)", transition: "border-color .22s, background .22s, opacity .22s" } },
                         React.createElement("span", { style: { width: 28, height: 28, flex: "none", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 12, color: chipColor, border: "1px solid " + chipBorder, background: chipBg } }, LAB[k]),
                         React.createElement("span", null, o));
                 }))),
@@ -50103,7 +50104,7 @@ function EcranExamenBlanc() {
                 React.createElement("div", { style: { margin: "0 0 5px", fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 9, color: estCorrect(reponse) ? "#8BEDFB" : "#ff9aab" } },
                     React.createElement("span", { style: { width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, background: estCorrect(reponse) ? TQ : KO, color: estCorrect(reponse) ? "#04222a" : "#2a060c" } }, estCorrect(reponse) ? "\u2713" : "\u2715"),
                     estCorrect(reponse) ? T("Bravo !", "Well done!", "\u00a1Bravo!", "Bravo!", "\u6b63\u89e3\uff01", "Bravo!") : T("Pas tout \u00e0 fait", "Not quite", "Casi", "Non proprio", "\u60dc\u3057\u3044")),
-                React.createElement("p", { style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
+                React.createElement("p", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
             React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
                 valide ? (dernier ? T("Voir mon r\u00e9sultat", "See my result", "Ver mi resultado", "Vedi il risultato", "\u7d50\u679c\u3092\u898b\u308b") : T("Continuer", "Continue", "Continuar", "Continua", "\u7d9a\u3051\u308b", "Weiter")) : T("V\u00e9rifier", "Check", "Verificar", "Verifica", "\u78ba\u8a8d"))),
         caleBarreHype(),
@@ -50309,7 +50310,7 @@ function EcranQuiz() {
                 React.createElement("div", { style: { position: "absolute", left: 16, right: 16, bottom: 0, transform: "translateY(50%)" } },
                     React.createElement("div", { style: { height: 5, borderRadius: 99, background: "rgba(10,14,18,0.7)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.06)" } },
                         React.createElement("div", { style: { height: "100%", width: progPct + "%", borderRadius: 99, background: "linear-gradient(90deg,#0C5763," + TQ + ")", boxShadow: "0 0 16px rgba(34,218,245,0.75)", transition: "width .5s cubic-bezier(.4,0,.15,1)" } })))),
-            React.createElement("div", { style: { flex: 1, display: "flex", flexDirection: "column", padding: "26px 22px 0" } },
+            React.createElement("div", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { flex: 1, display: "flex", flexDirection: "column", padding: "26px 22px 0" } },
                 React.createElement("div", { style: { fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7f8894", fontWeight: 500 } }, T("Question", "Question", "Pregunta", "Domanda", "\u8cea\u554f") + " " + (idx + 1) + " / " + total),
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 21, lineHeight: 1.34, margin: "12px 0 20px", color: "#F4F7FA" } }, question.question),
                 React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 11, paddingBottom: 8 } },
@@ -50324,7 +50325,7 @@ function EcranQuiz() {
                             else if (val === reponse) { borderColor = "rgba(240,92,116,0.6)"; bg = "linear-gradient(180deg,rgba(240,92,116,0.12),rgba(240,92,116,0.03))"; chipBorder = KO; chipBg = KO; chipColor = "#2a060c"; }
                             else { opacity = 0.35; }
                         }
-                        return React.createElement("button", { key: i, onClick: function () { if (!valide) setReponse(val); }, style: { position: "relative", textAlign: "left", padding: "15px 16px", borderRadius: 16, cursor: valide ? "default" : "pointer", border: "1px solid " + borderColor, color: "#F4F7FA", fontSize: 15, fontWeight: 500, lineHeight: 1.4, background: bg, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", gap: 14, opacity: opacity, boxShadow: "0 8px 22px rgba(0,0,0,0.35)", transition: "border-color .22s, background .22s, opacity .22s" } },
+                        return React.createElement("button", { key: i, onClick: function () { if (!valide) setReponse(val); }, style: { position: "relative", textAlign: "start", padding: "15px 16px", borderRadius: 16, cursor: valide ? "default" : "pointer", border: "1px solid " + borderColor, color: "#F4F7FA", fontSize: 15, fontWeight: 500, lineHeight: 1.4, background: bg, backdropFilter: "blur(12px)", display: "flex", alignItems: "center", gap: 14, opacity: opacity, boxShadow: "0 8px 22px rgba(0,0,0,0.35)", transition: "border-color .22s, background .22s, opacity .22s" } },
                             React.createElement("span", { style: { width: 28, height: 28, flex: "none", borderRadius: 9, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 12, color: chipColor, border: "1px solid " + chipBorder, background: chipBg } }, L[i]),
                             React.createElement("span", null, opt));
                     }))),
@@ -50334,7 +50335,7 @@ function EcranQuiz() {
                     React.createElement("div", { style: { margin: "0 0 5px", fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 14, display: "flex", alignItems: "center", gap: 9, color: estCorrect(reponse) ? "#8BEDFB" : "#ff9aab" } },
                         React.createElement("span", { style: { width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, background: estCorrect(reponse) ? TQ : KO, color: estCorrect(reponse) ? "#04222a" : "#2a060c" } }, estCorrect(reponse) ? "\u2713" : "\u2715"),
                         estCorrect(reponse) ? T("Bravo !", "Well done!", "\u00a1Bravo!", "Bravo!", "\u6b63\u89e3\uff01", "Bravo!") : T("Pas tout \u00e0 fait", "Not quite", "Casi", "Non proprio", "\u60dc\u3057\u3044")),
-                    React.createElement("p", { style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
+                    React.createElement("p", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
                 React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
                     valide ? (dernier ? T("Voir mon r\u00e9sultat", "See my result", "Ver mi resultado", "Vedi il risultato", "\u7d50\u679c\u3092\u898b\u308b") : T("Continuer", "Continue", "Continuar", "Continua", "\u7d9a\u3051\u308b", "Weiter")) : T("V\u00e9rifier", "Check", "Verificar", "Verifica", "\u78ba\u8a8d"))),
             caleBarreHype(),

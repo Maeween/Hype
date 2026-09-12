@@ -10,6 +10,279 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (matin) — SUIVI REMIS À JOUR · CONSTAT SUR L'INDEX FUSIONNÉ (ARABE)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `480cbbb541db6281596ee53922bffa78` | **INCHANGÉ** — exactement celui fourni par Blandine (build 20260908-65 + arabe). Repoussé uniquement pour ne jamais livrer SUIVI.md seul (ça fait buguer son appli) |
+| `SUIVI.md` | racine | — | son fichier + les 3 entrées qui y manquaient, replacées en tête |
+
+## CE QUI MANQUAIT DANS SON SUIVI.md
+
+Le fichier qu'elle a fourni s'arrêtait à l'entrée « 11/09 (nuit, suite) » (build 59). Les trois
+entrées suivantes, livrées avec les builds 60, 61 et 65, étaient absentes — 12 667 caractères :
+- 12/09 (nuit) — le format suit la photo · le zoom revient · Zeus · retrait visible aussitôt ;
+- 11/09 (nuit, fin 2) — albums partagés : plus de perte d'écriture ;
+- 11/09 (nuit, fin) — anciennes corrections d'année « à cadre » de nouveau lues.
+Elles sont réinsérées **à l'identique**, en tête, sans toucher au reste du fichier (comparaison
+faite : à partir de « 11/09 (nuit, suite) », son fichier et le mien étaient déjà identiques).
+
+## CONSTAT SUR L'INDEX (comparaison ligne à ligne, pas mon travail)
+
+Son `index.html` = mon build 20260908-65 **plus** le chantier arabe mené dans une autre
+conversation. Rien du build 65 n'a été perdu à la fusion. Ce que la comparaison montre, et rien de
+plus :
+- 7ᵉ langue `ar` ajoutée dans les deux listes de langues (sélecteur avec drapeau, et `LANGUES`) ;
+- `dir="rtl"` + `lang` posés quand la langue est l'arabe sur : le corps d'un chapitre de cours, la
+  page de quiz, l'explication d'une question, l'examen blanc ;
+- `textAlign` passé de `left` à `start` sur les boutons de réponse (quiz et examen blanc) ;
+- un mot arabe ajouté à la liste qui déclenche l'italique du mot en gras ;
+- `hype-cours-galop1.js` passé de `?v=1` à `?v=2` (le module a donc été relivré de son côté).
+⚠️ Aucune entrée de suivi n'a été écrite pour ce chantier : ce paragraphe est un simple constat de
+comparaison, il ne remplace pas le compte rendu de la conversation qui l'a mené.
+
+---
+
+# 🟩 12/09/2026 (nuit) — LE FORMAT SUIT LA PHOTO · LE ZOOM REVIENT · ZEUS · RETRAIT VISIBLE AUSSITÔT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `3b5200bb8d08c07fd6129aa62aefd924` | build **20260908-65** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `2f341a4c…` (20260908-61, **confirmé en ligne** par sa capture « INDEX 20260908-61 »).
+Les builds 62 à 64 n'ont jamais été livrés seuls : tout est dans ce fichier.
+
+**À l'écran : + le format choisi suit la photo marquée · + le zoom au pincement fonctionne de
+nouveau · + la feuille « Écurie du cheval » propose aussi ses écuries à elle · + une photo retirée
+disparaît aussitôt de l'album · − une photo non marquée agrandie sans raison.**
+
+## SQL PASSÉ EN BASE ET VÉRIFIÉ PAR BLANDINE (11/09 au soir)
+
+- `sql-11-09-journal-albums.sql` : les deux déclencheurs sont là ; un renommage réel a écrit une
+  ligne (modification / {nom} / authenticated / authenticator, 19:42:44 UTC). Le journal marche.
+- `sql-11-09-retrait-atomique.sql` : `album_retirer_media` installée, `security_definer = false`.
+
+## ACTION 26 — LE FORMAT NE SUIVAIT PAS LA PHOTO (`ChronologieSouvenirs`)
+
+Sa phrase : « si je choisis des photos en particulier à mettre grand, c'est pas pour que la suivante
+ou la précédente soit agrandie à sa place — leur format doit les suivre. »
+
+CAUSE PROUVÉE AU BANC : le format manuel n'était lu que sur la photo **en tête** d'un bloc. Une
+photo marquée qui tombait au milieu d'un bloc automatique (compagne d'un Grand, 2e ou 3e d'une
+rangée) était avalée et son format ignoré en silence — d'où « des fois ça marche, des fois pas du
+tout », et la photo en tête agrandie à sa place.
+
+Fait : un bloc automatique ne prend plus que des photos **sans** format imposé (`libreMEV`). Tous
+les replis (Grand, motif 8, motifs verticaux) sont bornés de la même façon. Moins de 3 photos
+libres devant une photo marquée → petites tuiles, **jamais** une pleine largeur : une photo non
+marquée n'est plus agrandie sans raison.
+
+Banc, 12 photos numérotées :
+- build 61, 5e marquée « grand » → `T(1,2,3) GH(4..10) T(11,12)` : **identique à sans format** ;
+- build 64 → `T(1,2,3) T(4) G(5,6,7)[grande=5] T(8,9,10) T(11,12)` : **la 5e est la grande**.
+- Idem vérifié pour « pleine largeur » et « pleine hauteur », en 1re, 5e et 9e position.
+- Mise en page toujours identique après une action (stabilité du build 57 conservée).
+
+⚠️ Reste inhérent, dit à Blandine : les blocs situés **avant** la photo marquée ne bougent plus,
+ceux d'**après** glissent d'une place, puisque la photo quitte le flux automatique.
+
+## ACTION 27 — LE ZOOM (`PhotoZoomHype`) — DÉFAUT ANTÉRIEUR À LA SESSION
+
+« On peut plus zoomer sur les photos. » CAUSE PROUVÉE EN NAVIGATEUR : la photo de la visionneuse
+porte la classe `souvVue`, dont l'animation d'ouverture est en fill `both`. Une animation CSS dont
+l'état final est conservé **écrase le `transform` posé en style en ligne** (les animations passent
+devant le style en ligne dans la cascade). Le pincement calculait donc l'échelle, la posait, et le
+navigateur continuait de dessiner scale(1).
+
+Fait : `poser()` écrit la transformation en `!important` — la seule déclaration qui passe devant une
+animation — et la **retire** au retour à l'échelle 1, pour ne pas abîmer l'animation de fermeture.
+
+Banc, vrai pincement à deux doigts simulé (`Touch` + `TouchEvent`) :
+- build 61 : `matrix(1, 0, 0, 1, 0, 0)` — aucun zoom dessiné ;
+- build 64 : `matrix(4, 0, 0, 4, 0, 0)`, puis retour à 1 au dézoom, style en ligne retiré.
+Présent dans le build 53 de ce matin : **ce n'est pas un effet des builds 54 à 61**.
+
+## ACTION 28 — ZEUS : LES DEUX ÉCURIES AU CHOIX
+
+« En tant qu'admin, je dois pouvoir le mettre dans une écurie ou une autre. » La feuille ne
+proposait que les écuries de la **propriétaire** (action 15) : pour Zeus (Aurélie, SEP), il n'y
+avait aucun moyen de le ranger dans l'Écurie Feinn.
+Fait : la feuille ajoute les écuries de la personne connectée (`clubsSecours`), ouvertes à la
+propriétaire ou à une modératrice — exactement qui peut ouvrir cette feuille. Propriétaire =
+personne connectée : les deux listes sont identiques, le doublon est retiré, rien ne change.
+Banc (Zeus, écurie vide, Aurélie = SEP, Blandine = Feinn + SEP) :
+- build 61 : `SEP · Aucune` ;
+- build 64 : `SEP · Ecurie Feinn · Aucune`, et un tap sur Feinn écrit bien `Ecurie Feinn` en base.
+
+## ACTION 29 — LA PHOTO RETIRÉE DISPARAÎT AUSSITÔT (`AlbumsCheval`)
+
+Demande de Blandine : « quand on supprime une photo, ça serait bien qu'elle se supprime
+visuellement aussitôt dans l'album. »
+Avant, l'écran attendait `charger()` en entier : réconciliation Mux (garde jusqu'à 12 s) puis
+relecture complète des albums. La photo restait visible tout ce temps — d'où son « elle reste dans
+l'album ».
+Fait : dès que la base a confirmé, la photo est retirée de la grille affichée, de la visionneuse et
+de la liste de balayage. `charger()` suit quand même, il reste la source de vérité. **En cas
+d'échec, rien n'est retiré de l'écran** et le message d'erreur s'affiche comme avant.
+Banc avec une réconciliation lente, comme en vrai (2 s) : 350 ms après la confirmation, la photo
+est encore affichée 3 fois au build 64, et 0 fois au build 65.
+
+## DONNÉE RELEVÉE AU PASSAGE
+
+`chevaux.club` de Zeus = **NULL**, Aurélie a la SEP. Ce n'est donc pas un bug d'affichage : la règle
+« un cheval sans écurie apparaît partout » le montre chez Blandine. Un tap sur « Ecurie Feinn » (ou
+sur SEP) le range définitivement.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques au 53.
+- Non-régression, 0 erreur de page : protections du 56 (dont le scénario de l'incident), fin
+  d'envoi, formats Pleine largeur / hauteur, galerie (motif 8, stabilité), écritures concurrentes
+  d'albums, corrections d'année à cadre, fiche entière, « Modifier la fiche ».
+
+## POINT DE MÉTHODE — CE QUI N'ÉTAIT PAS UN BUG
+
+« Je n'arrive même plus à ouvrir les photos » : **réseau coupé**, pas l'appli. Et « on peut bouger
+les photos mais on peut les lâcher nulle part » : le glisser-déposer n'a jamais été codé, c'est le
+navigateur qui traîne l'image puis la remet. À décider si elle veut ranger ses photos à la main.
+
+## À TESTER SUR IPHONE
+
+1. Retire une photo d'un album : elle disparaît tout de suite.
+2. Marque une photo **au milieu** d'une année en « Grand » : c'est bien elle qui devient grande.
+3. Ouvre une photo, pince : elle zoome.
+4. Zeus → ⋮ → « Écurie du cheval » : « Ecurie Feinn » est proposée.
+5. Les 6 gestes des builds 54 à 61 (voir l'entrée du 11/09 soir), toujours non testés.
+
+---
+
+# 🟩 11/09/2026 (nuit, fin 2) — ALBUMS PARTAGÉS : PLUS DE PERTE D'ÉCRITURE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2f341a4c007620fdf6f93048a06c443a` | build **20260908-61** |
+| `sql-11-09-retrait-atomique.sql` | à passer dans Supabase (SQL Editor), **quand elle veut** | — | fonction `album_retirer_media(p_album text, p_url text)` |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `30cb62a3…` (20260908-60). Sur « Ok continue » de Blandine. **L'index fonctionne avant
+ET après le SQL** : tant que la fonction n'est pas en base, le retrait garde l'ancien chemin, à
+l'identique.
+
+**À l'écran : rien de visible.** Sur un album partagé, une photo ajoutée par quelqu'un d'autre ne
+peut plus être effacée par un retrait ou par « Souvenirs publiés ».
+
+## CE QUI N'ALLAIT PAS (dette connue depuis le 08/09)
+
+Retirer une photo, et ajouter des photos par « Souvenirs publiés », renvoyaient à la base **toute
+la liste recopiée depuis l'écran**. Une photo ajoutée entre-temps par une autre personne
+disparaissait donc sans bruit.
+
+## ACTION 25 — `AlbumsCheval` + une fonction SQL
+
+- **Retrait** : nouvelle aide `hypeAlbumRetirerMedia` → fonction `album_retirer_media`.
+  - Elle retire UNE adresse, directement dans la liste actuelle en base, en une instruction, et
+    l'ordre des autres photos est conservé.
+  - Elle est `SECURITY INVOKER` : mêmes droits qu'une modification d'album aujourd'hui, rien n'est
+    élargi.
+  - Elle rend `retire` / `absent` / `refuse`.
+  - Fonction absente (SQL non passé) : l'ancien chemin est appliqué à l'identique.
+- **« Souvenirs publiés »** : une adresse à la fois par `album_ajouter_media`, déjà en base et déjà
+  utilisée par l'envoi de photos, donc idempotente. Un échec partiel est dit par un message qui
+  reste à l'écran (« Certaines photos n'ont pas pu être ajoutées (n sur N) »).
+- Le journal et la sauvegarde des albums enregistrent ces écritures comme les autres.
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts identiques. Diff limité à l'aide, à
+  `retirerPhoto`, à `validerSelection`, au commentaire de tête et au marqueur.
+- **Banc des écritures concurrentes** : pendant le geste, une photo `b3` est ajoutée en base comme
+  par une autre personne.
+
+  | Geste | build 60 | build 61 |
+  |---|---|---|
+  | retirer `b1` | `[b2]` — **`b3` perdue** | `[b2, b3]` |
+  | Souvenirs publiés (`f1`, `f2`) | `[b1, b2, f2, f1]` — **`b3` perdue** | `[b1, b2, b3, f2, f1]` |
+
+  Avec la fonction SQL absente, le retrait marche toujours (ancien chemin) : `[b2]`.
+- **La fausse base des bancs rend désormais des COPIES.** Avant, l'écran partageait les objets de la
+  fausse base, ce qui masquait justement ce genre de course. Tous les bancs précédents ont été
+  relancés avec cette fausse base plus fidèle : protections du 56, incident, fin d'envoi, formats,
+  galerie, Zeus, année, fiche entière, corrections à cadre. **0 erreur**.
+- **SQL non exécutable ici.** Le contrôle en fin de script doit afficher une ligne
+  `album_retirer_media` avec `security_definer = false`.
+
+## À TESTER SUR IPHONE (après le SQL)
+
+Retirer une photo d'un album : elle part, les autres restent dans le même ordre, et une ligne
+`modification` `{photos}` apparaît dans `albums_cheval_journal`.
+
+## RESTE OUVERT
+
+1. Tests iPhone des builds 54 à 61, et essai réel du lien « mot de passe oublié » (corrigé le
+   03/09, jamais confirmé).
+2. SQL `sql-11-09-retrait-atomique.sql` à passer.
+3. Place du motif 8 si la maquette le prévoit ailleurs.
+
+## LEÇON
+
+Une fausse base qui partage ses objets avec l'écran ne peut pas révéler une perte d'écriture. Les
+bancs doivent recevoir des copies, comme avec une vraie base.
+
+---
+
+# 🟩 11/09/2026 (nuit, fin) — ANCIENNES CORRECTIONS D'ANNÉE « À CADRE » DE NOUVEAU LUES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `30cb62a33dbfe579eec46b357ecdf721` | build **20260908-60** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `dcdcdc56…` (20260908-59). Sur « Continue » de Blandine, sans le résultat de la requête
+de lecture `#cadre=`. **Choix fait pour ne pas avoir besoin de ce résultat** : corriger à la
+**lecture**, pas dans les données. Aucun SQL, aucune donnée modifiée. La requête de lecture n'est
+plus nécessaire.
+
+**À l'écran : + les photos à cadre dont l'année avait été corrigée entre le build 47 et le build 55
+reprennent l'année corrigée.**
+
+## ACTION 24 — `ChronologieSouvenirs`, lecture des dates
+
+La chronologie relit aussi les adresses **brutes** (avec `#cadre=`). Pour chaque photo (clé sans
+cadre), elle garde la date la plus légitime, dans cet ordre :
+1. une correction manuelle sous la clé sans cadre (la plus récente, écrite depuis le build 55) ;
+2. une correction manuelle sous l'adresse à cadre (l'ancienne, restée invisible) ;
+3. la date de prise de vue.
+La liste sans cadre (`urls`) reste la seule utilisée pour les formats.
+
+Banc, 3 photos :
+- `p1` sans cadre, prise de vue 2025 ;
+- `p2#cadre=halo`, prise de vue 2025 + ancienne correction 2021 ;
+- `p3#cadre=spectral`, correction récente 2023 sans cadre + ancienne correction 2019 à cadre.
+
+Résultat :
+- build 59 : `2025 (2) · 2023 (1)` — l'ancienne correction de `p2` est invisible ;
+- build 60 : `2025 (1) · 2023 (1) · 2021 (1)` — `p2` reprend 2021, et `p3` garde sa correction la
+  plus récente (2023).
+
+## VÉRIFIÉ
+
+- `node --check` : 18 blocs, 0 erreur. Balises de scripts identiques. Diff limité à la lecture des
+  dates, au commentaire de tête et au marqueur.
+- Non-régression, 0 erreur de page : « Changer l'année » (les photos passent bien en 2026, clés sans
+  cadre), galerie (motif 8, stabilité), fiche entière, écuries de « Modifier la fiche ».
+
+## RESTE OUVERT
+
+1. Tests iPhone des builds 54 à 60.
+2. Place du motif 8 si la maquette le prévoit ailleurs.
+3. Dettes anciennes inchangées (voir la passation du 11/09) : vidéo d'album introuvable, test qualité
+   photo sur ordinateur, app iOS native, deux `mux-upload`, adresses vidéo publiques,
+   `albums_cheval.photos` réécrit en entier au retrait, deux projets Netlify, onboarding + « mot de
+   passe oublié ».
+
+---
+
 # 🟩 11/09/2026 (nuit, suite) — JOURNAL DES ALBUMS EN SERVICE · « MODIFIER LA FICHE » : ÉCURIES DE LA PROPRIÉTAIRE
 
 | Fichier | Où | md5 | Quoi |
