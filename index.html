@@ -21257,7 +21257,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-cours-galops-sup.js?v=2"></script><script src="hype-cours-galop3.js?v=2"></script><script src="hype-cours-galop2.js?v=2"></script><script src="hype-cours-galop1.js?v=2"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=3"></script><script>
+</script><script src="hype-cours-baby.js?v=112"></script><script src="hype-cours-galops-sup.js?v=2"></script><script src="hype-cours-galop3.js?v=3"></script><script src="hype-cours-galop2.js?v=2"></script><script src="hype-cours-galop1.js?v=2"></script><script src="hype-memory-poney.js?v=4"></script><script src="hype-modeles-db.js?v=5"></script><script src="hype-stories.js?v=20bx"></script><script src="hype-resultats.js?v=3"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -45168,7 +45168,7 @@ function EcranGalopDetail() {
                     React.createElement("p", { style: { margin: "1px 0 0", fontSize: 11.5, color: COLORS.encreDoux } }, t("impr_sous"))),
                 React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 16 } }, "\u2192"))),
             tab === "quiz" && coursListe.filter((cours) => coursEstPret(galop.id, cours.id) || estModGD).map((cours) => (React.createElement(CarteQuizApercu, { key: cours.id, cours: cours, resultat: quizResultats[cours.id], meilleurScoreLabel: t("meilleur_score"), pasTenteLabel: t("pas_encore_tente"), onClick: () => { setCoursOuvert(cours.id); setEcran("quiz"); } }))),
-            tab === "quiz" && galop.id === 3 && typeof COURS_QCM_GLOBAL_G3 !== "undefined" && (React.createElement(CarteQuizApercu, { key: "g3-qcm-global", cours: COURS_QCM_GLOBAL_G3, resultat: quizResultats["g3-qcm-global"], meilleurScoreLabel: t("meilleur_score"), pasTenteLabel: t("pas_encore_tente"), onClick: () => { setCoursOuvert("g3-qcm-global"); setEcran("quiz"); } })),
+            tab === "quiz" && galop.id === 3 && typeof COURS_QCM_GLOBAL_G3 !== "undefined" && (React.createElement(CarteQuizApercu, { key: "g3-qcm-global", cours: Object.assign({}, COURS_QCM_GLOBAL_G3, { titre: tr(COURS_QCM_GLOBAL_G3.titre) }), resultat: quizResultats["g3-qcm-global"], meilleurScoreLabel: t("meilleur_score"), pasTenteLabel: t("pas_encore_tente"), onClick: () => { setCoursOuvert("g3-qcm-global"); setEcran("quiz"); } })),
             coursListe.length === 0 && tab !== "examen" && (React.createElement("div", { style: { background: COLORS.nuitClaire, borderRadius: 20, padding: "34px 22px", textAlign: "center", border: "1px solid " + COLORS.ligne } }, React.createElement("div", { style: { fontSize: 40, marginBottom: 12, opacity: 0.9 } }, "\uD83D\uDD12"), React.createElement("h3", { style: { margin: "0 0 6px", color: COLORS.encre, fontSize: 17 } }, tr({ fr: "Bient\u00f4t disponible", en: "Coming soon", es: "Pr\u00f3ximamente", it: "Presto disponibile", ja: "\u8fd1\u65e5\u516c\u958b", de: "Bald verf\u00fcgbar" })), React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 13.5, margin: 0, lineHeight: 1.5 } }, tr({ fr: "Ce galop arrive prochainement.", en: "This level is coming soon.", es: "Este galop llegar\u00e1 pronto.", it: "Questo livello arriver\u00e0 presto.", ja: "\u3053\u306e\u30ec\u30d9\u30eb\u306f\u8fd1\u65e5\u516c\u958b\u4e88\u5b9a\u3067\u3059\u3002", de: "Dieser Galop kommt bald." })))),
             tab === "examen" && (React.createElement("div", { style: { background: COLORS.nuitClaire, borderRadius: 20, padding: 22, textAlign: "center", border: `1px solid ${COLORS.ligne}` } },
                 React.createElement("div", { style: { fontSize: 38, marginBottom: 10 } }, "\u23F1"),
@@ -50520,7 +50520,8 @@ function EcranExamenBlanc() {
     const T = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
     const galopNum = (typeof galopOuvert === "number") ? galopOuvert : (parseInt(String(galopOuvert || "").replace(/[^0-9]/g, ""), 10) || 1);
     const banque = (typeof EXAMENS_BLANCS !== "undefined" && EXAMENS_BLANCS[galopNum]) ? EXAMENS_BLANCS[galopNum] : [];
-    const [questions, setQuestions] = useState(() => melangerQuiz(banque));
+    const banqueTraduite = banque.map(function (q) { return Object.assign({}, q, { question: (q.question && typeof q.question === "object") ? tr(q.question) : q.question, options: (q.options || []).map(function (o) { return (o && typeof o === "object") ? tr(o) : o; }), explication: (q.explication && typeof q.explication === "object") ? tr(q.explication) : q.explication }); });
+    const [questions, setQuestions] = useState(() => melangerQuiz(banqueTraduite));
     const [idx, setIdx] = useState(0);
     const [reponse, setReponse] = useState(null);
     const [valide, setValide] = useState(false);
@@ -50619,7 +50620,7 @@ function EcranExamenBlanc() {
 function EcranQuiz() {
     const { coursOuvert, galopOuvert, setEcran, setCoursOuvert, quizResultats, setQuizResultats, setXp, t, tr, langue, chevaux, setImpression, setCoursImpression } = useApp();
     const coursListe = obtenirCoursParGalop(galopOuvert, langue);
-    const cours = coursListe.find((c) => c.id === coursOuvert) || ((coursOuvert === "g3-qcm-global" && typeof COURS_QCM_GLOBAL_G3 !== "undefined") ? COURS_QCM_GLOBAL_G3 : undefined);
+    const cours = coursListe.find((c) => c.id === coursOuvert) || ((coursOuvert === "g3-qcm-global" && typeof COURS_QCM_GLOBAL_G3 !== "undefined") ? Object.assign({}, COURS_QCM_GLOBAL_G3, { titre: tr(COURS_QCM_GLOBAL_G3.titre), quiz: (COURS_QCM_GLOBAL_G3.quiz || []).map(function (q) { return Object.assign({}, q, { question: (q.question && typeof q.question === "object") ? tr(q.question) : q.question, options: (q.options || []).map(function (o) { return (o && typeof o === "object") ? tr(o) : o; }), explication: (q.explication && typeof q.explication === "object") ? tr(q.explication) : q.explication }); }) }) : undefined);
     const fondQuizChapitre = (function(){ try { if (cours && cours.blocs) { const cv = cours.blocs.find(function(b){ return b && b.type === "couv-affiche" && b.src; }); if (cv) { var s = cv.src; if (s && typeof s === "object") s = s[langue] || s.fr || Object.values(s)[0]; if (typeof s === "string") return s; } } } catch(e){} return (typeof IMG_HEYBABY_FOND !== "undefined" ? IMG_HEYBABY_FOND : ""); })();
     const [questions, setQuestions] = useState(() => melangerQuiz((cours === null || cours === void 0 ? void 0 : cours.quiz) || []));
     // Aperçu admin : ouverture directe sur la page de résultat avec un score de démo (window.__quizPreviewResultat = pourcentage)

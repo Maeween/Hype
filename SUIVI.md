@@ -10,6 +10,82 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (nuit, suite) — LE QCM GLOBAL DU GALOP 3 EST RÉPARÉ : 7 LANGUES, ET LU PAR L'APPLI
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9fb7c5371c9cde30eaaecc7f87bb9f8b` | 3 modifications de lecture + balise `hype-cours-galop3.js?v=2→3` (6 722 193 octets) |
+| `hype-cours-galop3.js` | racine | `27baf4a766c96c0962c69cf7cf1788a1` | **v3** : les 30 questions du QCM global passent de texte brut à `{fr,en,es,it,ja,de,ar}` (1 478 082 octets) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ Base de départ : ton `index.html` d'aujourd'hui (déjà à jour côté fil de l'écurie, Galop 3 et
+Galop 4 déjà en `?v=2` avec l'arabe). Le module `hype-cours-galop3.js` n'avait pas été
+reremonté depuis ta dernière poussée : je suis reparti de **mon propre livrable v2** (celui que
+tu as déjà en ligne, arabe sur les 16 chapitres) pour ne rien perdre, et j'ai ajouté la
+réparation du QCM par-dessus. `hype-cours-galop1.js`, `hype-cours-galop2.js`,
+`hype-cours-galops-sup.js`, `hype-cours-baby.js`, `_headers` : **INCHANGÉS**, ne pas les
+repousser. Aucun SQL, aucune image.
+
+## CE QUI A ÉTÉ FAIT
+
+**1. La donnée** — les 30 questions de `QCM_GLOBAL_GALOP3_FR` (question, 4 options, explication)
+sont passées de texte français brut à des dictionnaires à 7 langues, comme tout le reste de
+l'appli. Le titre de la carte (`COURS_QCM_GLOBAL_G3.titre`) aussi. **Vérifié avant/après** :
+30 questions, mêmes `correct`, même nombre d'options par question, français identique au mot
+près — et tout le reste du fichier (les 16 chapitres arabes) strictement inchangé.
+
+**2. Le code de lecture** — 3 petits ajustements, aucun nouveau comportement, juste faire lire
+la langue là où l'appli ne le faisait pas encore :
+- **L'écran du QCM Global** (`EcranQuiz`) : quand on ouvre le QCM Global, ses questions et son
+  titre sont désormais traduits dans la langue active avant affichage — exactement comme pour
+  tous les autres quiz de chapitre.
+- **La carte « QCM Global »** dans l'onglet Quiz du Galop 3 : son titre s'affiche aussi traduit.
+- **L'examen blanc du Galop 3** : il réutilise les mêmes 30 questions (`EXAMENS_BLANCS[3]`) —
+  elles sont maintenant traduites avant d'être mélangées et affichées. Les examens blancs des
+  autres galops (1, 2, 4 à 7), qui restent en français brut dans l'index, ne sont pas affectés :
+  le code détecte automatiquement si une question est un dictionnaire multilingue ou du texte
+  simple, et s'adapte sans rien casser.
+
+## VÉRIFIÉ
+
+- **Intégrité de la donnée** : 30 questions avant/après, `correct` et options identiques,
+  français identique au mot près (comparaison automatique, pas à l'œil).
+- **Simulation de bout en bout en arabe** : les 30 questions sortent bien en arabe, `correct`
+  reste un nombre (jamais touché), les options aussi ; titre traduit.
+- **`node --check`** : les 18 blocs de l'index sans défaut, le module sans défaut.
+- **Contrôle des marqueurs** : tous les repères habituels inchangés ; seul `function` monte de
+  +4 (les 4 petites fonctions de traduction ajoutées), cohérent avec les 3 patchs.
+
+## À L'ÉCRAN : + / −
+
+**+** En arabe : le QCM Global du Galop 3 (30 questions) ET l'examen blanc du Galop 3
+s'affichent maintenant entièrement en arabe, comme le reste de l'appli.
+**−** Les examens blancs des Galops 1, 2, 4, 5, 6, 7 restent en français, quelle que soit la
+langue choisie — c'est normal, ils n'ont jamais eu d'autre langue (chantier à part, comme G5/6/7).
+
+## NON VU À L'ÉCRAN — à tester sur l'iPhone
+
+1. *Mon compte* → langue → العربية → Galop 3 → onglet Quiz → carte **QCM Global** : titre en
+   arabe, les 30 questions en arabe en l'ouvrant.
+2. Galop 3 → onglet Examen → l'examen blanc : questions en arabe aussi (mêmes 30 questions).
+3. Un examen blanc d'un autre galop (ex. Galop 1) : doit rester en français, comme avant.
+4. Retour en français : les 30 questions redeviennent identiques à avant sur les deux écrans.
+
+## À GARDER EN TÊTE — ce qui reste
+
+- **Les 4 premiers galops sont finis, QCM global du G3 compris.**
+- **G5 (5/6 chapitres prêts), G6, G7** : toujours en pause à ta demande — la plupart de leur
+  contenu est temporaire, on ne les traduit pas pour l'instant, hormis les vrais chapitres déjà
+  faits (mis de côté, non livrés).
+- **Les banques d'examen blanc des Galops 1, 2, 4, 5, 6, 7** (dans l'index, `EXAMENS_BLANCS`) :
+  découvertes en creusant le QCM — elles aussi en français seul. Pas touchées, pas demandées.
+- **16 compléments `COMPL_*_I18N` encore DANS l'index** (≈11 700 mots) : à traduire.
+- **Interface : ≈1 400 textes**, **RTL global** pas touché, **police arabe** à proposer,
+  **affiches multilingues, aucune en arabe**.
+- **Défaut dans le français d'origine** (g1-c15, « [SUITE ATTENDUE] ») : toujours pas corrigé.
+
+---
+
 # 🟩 12/09/2026 (nuit) — MODIFIER SON PROPRE MESSAGE DU FIL
 
 | Fichier | Où | md5 | Quoi |
