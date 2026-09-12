@@ -10,6 +10,138 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 12/09/2026 (nuit) — LES PAGES NE RESTENT PLUS ZOOMÉES · SUPPRESSION D'UN MESSAGE RÉPARÉE · MÉDIAS EN COLONNE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b6b0073ba9a34832b8f44236947b0fd9` | build **20260908-81** |
+| `sql-12-09-medias-message.sql` | à passer dans Supabase (SQL Editor) | — | colonne `medias` + reprise des médias existants |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 78 (`ef709ec7…`), non poussé : ce fichier contient les builds 75 à 81.
+Touché : `MurHype` et la feuille de style globale. L'ordre index / SQL n'a pas d'importance.
+
+**À l'écran : − les pages qui restent zoomées après avoir touché un champ · + une confirmation
+avant de supprimer un message · + le texte des champs de saisie un peu plus grand.**
+
+## 46 — LES PAGES QUI RESTENT ZOOMÉES : CAUSE TROUVÉE
+
+Elle : « les pages recommencent à apparaître en zoomées, c'est pas la première fois. » Capture du
+classement des clubs, à moitié hors écran.
+**Cause : iOS agrandit TOUTE la page dès qu'on touche un champ de saisie dont le texte fait moins
+de 16 px, et ne redescend pas toujours en sortant.** Relevé avant correction : **44 champs sur 51**
+étaient sous la limite — publication du fil, réponses, modification, lieu, pseudo, résultats de
+concours, etc. Le réglage d'affichage autorise un agrandissement jusqu'à 3, donc rien ne l'empêchait.
+Fait, son choix (option A) :
+- les tailles écrites en style en ligne portées à 16 (**22 champs**) ;
+- **plus une règle globale** `input:not([type=file]), textarea, select { font-size: 16px !important }`
+  qui couvre ceux qui n'en déclaraient aucune et tous les futurs.
+Le réglage `maximum-scale=3` est laissé tel quel : le pincement pour agrandir une page reste possible.
+Banc : tous les champs du fil sont à 16 px après application des styles (avant : non).
+
+## 45 — SUPPRIMER UN MESSAGE : DÉFAUT PROUVÉ CHEZ LA MODÉRATRICE
+
+Elle demandait « un bouton de suppression par l'admin et par l'auteur ». Le bouton existait déjà,
+mais pour un message qui n'était **pas le sien**, il appelait
+`supprimerPostModeration("mur_evenement", id)` — **la table des événements du mur, pas
+`commentaires`**. Aucune ligne touchée, aucune erreur affichée, le message restait là.
+Fait : table `commentaires` dans les deux cas, résultat **réellement vérifié** (`aucuneLigne`),
+confirmation en deux temps (« Supprimer ? »), message d'échec sous la carte, et le ménage des
+notifications n'a lieu qu'après une suppression réussie.
+Banc (modératrice supprimant le message d'une autre) : build 78 → message toujours en base et à
+l'écran, aucune confirmation ; build 81 → confirmation, message supprimé de `commentaires` puis ses
+notifications.
+
+## 44 — LES MÉDIAS D'UN MESSAGE DANS UNE VRAIE COLONNE
+
+Sa demande « plutôt liste de photos », comme les albums. Les médias en plus sont désormais écrits
+dans `commentaires.medias` (jsonb), en une seule fois, après envoi des fichiers.
+**Repli automatique** : si la colonne n'existe pas encore, l'appli retombe exactement sur l'ancien
+rangement (une ligne rattachée par média). Rien ne casse dans un sens ni dans l'autre.
+À la lecture, la colonne prime ; les messages publiés avant le SQL affichent toujours leurs lignes
+rattachées.
+`sql-12-09-medias-message.sql` : colonne, contrôle avant, reprise des médias existants, ménage des
+lignes devenues inutiles (seulement celles qui portent une photo et **aucun** texte — jamais une
+réponse), contrôles après.
+Banc : 4 photos publiées → `medias` contient 3 adresses, **0 ligne rattachée**, 4 images affichées.
+
+## VÉRIFIÉ
+
+`node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques au sien.
+Non-régression, 0 erreur : identifications et lieu, likes et réponses, modification d'un message,
+galerie (formats, « Petite », retour à « Automatique »), suppression d'une photo depuis la galerie.
+
+## À TESTER SUR IPHONE
+
+1. Touche le champ de publication, écris, sors : la page ne doit plus rester agrandie.
+2. Supprime un message d'une autre cavalière : confirmation, puis il disparaît vraiment.
+3. Quatre photos dans un message, après avoir passé le SQL.
+
+---
+
+# 🟩 12/09/2026 (nuit) — JUSQU'À 4 PHOTOS OU VIDÉOS DANS UN MESSAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ef709ec706af472769a5973bf69da329` | build **20260908-78** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 77 (`3ce1f8c6…`), non poussé : ce fichier contient les builds 75 à 78.
+Un seul composant touché : `MurHype`. **Aucun SQL.**
+**Les quatre demandes de Blandine sur le fil sont faites.**
+
+**À l'écran : + jusqu'à 4 photos ou vidéos par message, une grande et trois carrées.**
+
+## LE GESTE
+
+**Pas d'attribut `multiple`** sur le champ de fichier : la leçon iOS du 05/09 tient toujours (un
+champ mixte image + vidéo avec `multiple` laisse le bouton de validation du sélecteur inerte).
+On **accumule** donc un média à chaque appui sur « Photo », jusqu'à 4, avec des vignettes
+retirables sous le champ. Retirer la première fait remonter la suivante à sa place.
+
+## MISE EN PAGE — SON CHOIX
+
+Trois variantes lui ont été montrées en maquette : une pleine largeur + trois **verticales**, une
+pleine hauteur + trois **horizontales** à côté, ou une grande + trois **carrées**. Elle a choisi
+**les carrées** — le recadrage le plus neutre, qui ne trahit ni un portrait ni un paysage.
+Un seul média : pleine largeur, exactement comme avant.
+
+## OÙ C'EST RANGÉ — AUCUNE TABLE NI COLONNE
+
+- Le **premier** média reste dans la colonne `photo_url` du message, comme avant.
+- Chaque média **en plus** est une ligne de `commentaires` avec cible `post:<id du message>`, une
+  photo et **sans texte**. Les réponses ont toujours un texte : c'est ce qui les distingue, et le
+  compteur de réponses ne compte donc jamais les médias.
+- Écrits **après** la publication, un par un : un échec n'emporte ni le message ni les autres
+  médias.
+⚠️ Elle avait d'abord dit « plutôt liste de photos » (une colonne `photos` sur le message, comme les
+albums). Ce serait plus propre, mais demande un SQL et une reprise des messages existants. Le
+procédé ci-dessus donne le même résultat à l'écran, sans SQL, et reste convertible plus tard sans
+rien casser. **À lui confirmer** si elle veut la vraie colonne.
+
+## TESTS (banc Chromium)
+
+- Le champ de fichier : `accept="image/*,video/*"`, **pas** de `multiple`.
+- Cinq photos déposées à la suite : **4 retenues**, la cinquième refusée.
+- Publication : le message porte 1 photo, **3 lignes rattachées** sans texte.
+- À l'écran : 4 images dans la carte, la première en pleine largeur, les trois autres en grille de
+  3 colonnes, carrées. Champs remis à zéro.
+- Non-régression, 0 erreur : identifications et lieu (build 77), notifications (76), fil unique
+  (75), likes et réponses (73), modification d'un message (74). `node --check` : 18 blocs.
+  Balises et `?v=` identiques au sien.
+
+## À TESTER SUR IPHONE
+
+Sur le fil : touche « Photo » quatre fois de suite en choisissant quatre photos, écris un mot,
+publie. La première doit être en grand et les trois autres en carrés dessous.
+
+## RESTE OUVERT
+
+- Confirmer le rangement des médias (lignes rattachées, déjà en place, ou vraie colonne `photos`).
+- Les tests iPhone des builds 75 à 78.
+
+---
+
 # 🟩 12/09/2026 (nuit) — IDENTIFIER DES CAVALIÈRES, DES CHEVAUX, ET INDIQUER UN LIEU
 
 | Fichier | Où | md5 | Quoi |
