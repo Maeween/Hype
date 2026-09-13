@@ -10,6 +10,95 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 13/09/2026 — DEUX AMBASSADEURS EN PLUS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c1d084c0bf24ee4120dfaab31411ba1a` | build **20260908-84** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 83 (`d50fe864…`), non poussé : ce fichier contient les builds 75 à 84.
+**Une seule ligne changée** (`HYPE_AMBASSADEURS`). Aucun SQL.
+
+**À l'écran : + `clementine.savin@gmail.com` et `david.arlin20@gmail.com` ont les avantages
+ambassadeur.**
+
+La liste passe de 5 à 7. Les modératrices en font partie automatiquement, comme avant.
+Ce que cela ouvre pour elles, d'après le code : les teintes du Fond Studio réservées aux
+ambassadeurs (turquoise, anthracite, crimson, doré, bleu foncé, British Racing… seul le noir est
+ouvert à tout le monde).
+
+Banc : les deux adresses sont reconnues, y compris en MAJUSCULES et avec des espaces autour
+(la comparaison passe par `toLowerCase().trim()`). Une adresse inconnue reste refusée, et les
+anciens ambassadeurs sont intacts.
+`node --check` : 18 blocs, 0 erreur. Diff limité à cette ligne, au commentaire de tête et au
+marqueur.
+
+---
+
+# 🟥 13/09/2026 — « PETITE » ÉTAIT INATTEIGNABLE : LA RANGÉE DE BOUTONS BOUGEAIT SOUS LE DOIGT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d50fe864c6d9735e1c2baa0099b6d8fb` | build **20260908-83** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 82 (`012d7385…`), non poussé : ce fichier contient les builds 75 à 83.
+Un seul composant touché : `ChronologieSouvenirs`. Aucun SQL.
+
+**À l'écran : + les boutons de format ne bougent plus quand le panneau s'ouvre · + ils sont plus
+grands (48 px) · + « Format appliqué ✓ » et le panneau reste ouvert sur la photo.**
+
+## LA CAUSE, TROUVÉE DANS SA VIDÉO IMAGE PAR IMAGE
+
+Trois jours qu'elle n'arrive pas à remettre une photo agrandie en petit. Ses mots : « rien ne se
+ferme, c'est comme si on n'arrivait pas à sélectionner la photo. »
+Dans l'enregistrement du 13/09 à 08:09 : à l'ouverture du panneau, la rangée est
+« Automatique · Petite · Grand ». Puis **la phrase d'explication ajoutée au build 32** (« Pour
+l'instant, Hype l'affiche en pleine largeur ») apparaît **AU-DESSUS** de cette rangée et la pousse
+d'une vingtaine de pixels. Le doigt tombe donc à côté, très souvent sur **« Automatique »** — qui
+ne change rien, puisque la photo y était déjà. Le panneau se referme (`setPhotoFormat(null)`), aucune
+erreur, aucune taille modifiée : exactement ce qu'elle décrivait. La dernière image de sa vidéo
+montre le panneau revenu à « Tape la photo à mettre en valeur », preuve qu'un bouton a bien été
+touché — mais pas le bon.
+**C'est moi qui ai introduit cette phrase au build 32, en croyant aider.**
+
+## FAIT
+
+- La rangée de boutons passe **en premier** : elle ne bouge plus jamais. La phrase est en dessous.
+- Boutons à **48 px** de haut (au lieu de 44) et plus larges.
+- Le panneau **reste ouvert sur la photo** après un choix, et affiche **« Format appliqué ✓ »**
+  pendant deux secondes. Avant, il se refermait aussitôt : un tap qui tombait sur « Automatique »
+  ne changeait rien **et ne disait rien**.
+
+## TESTS (banc Chromium)
+
+- Hauteur du bouton « Petite » : **48 px**.
+- Position de la rangée mesurée à l'ouverture du panneau puis 600 ms plus tard : **identique**
+  (elle bougeait avant).
+- Un tap sur « Petite » : « Format appliqué ✓ » affiché, panneau toujours ouvert, photo passée en
+  1×1, base = `3=normal`, puis retour à « Automatique » → elle redevient grande.
+- Non-régression, 0 erreur : agenda du club, champs à 16 px, suppression d'un message, médias en
+  colonne, likes. `node --check` : 18 blocs. Balises et `?v=` identiques.
+
+## SA DEMANDE SUIVANTE, NON COMMENCÉE
+
+« Je ne vois toujours pas où déplacer une image pour changer l'ordre » → le lien « Réorganiser les
+photos » du build 67 est dans le panneau d'un **album**, sous trois boutons : introuvable. Elle
+demande un **petit menu** là où sont déjà « Changer l'année » et « Choisir le format », et
+**idéalement un glisser-déposer** dans la galerie par année.
+⚠️ Contrainte dite : dans la galerie, l'ordre vient des **dates**, il n'existe aucun ordre
+enregistré. Un glisser-déposer y demande donc d'abord une colonne de rang (par exemple `rang` sur
+`photo_dates`, déjà clé par `photo_url`), puis le geste — réutilisable depuis celui de l'album
+(Pointer Events, appui de 260 ms, défilement automatique).
+
+## À TESTER SUR IPHONE
+
+La photo à la rosette : Photos → « Choisir le format d'une photo » → tape-la → **« Petite »**.
+« Format appliqué ✓ » doit s'afficher et la photo rétrécir.
+
+---
+
 # 🟥 12/09/2026 (nuit) — L'AGENDA DU CLUB PLANTAIT À COUP SÛR
 
 | Fichier | Où | md5 | Quoi |
