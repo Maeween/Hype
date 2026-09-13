@@ -10,6 +10,1913 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 13/09/2026 (21 h 30) — SES RÉSULTATS SUR LA PAGE CAVALIÈRE, ET LE CHOIX DE CE QU'ELLE MONTRE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `sql-13-09-masquage-cavaliere.sql` | éditeur SQL Supabase | — | PASSÉ, vérifié : `false / 932` |
+| `index.html` | racine | `67c72c3c…` | build **20260908-119** |
+
+Remplace le `6bffd9d7…` (20260908-118).
+
+## LE POINT DE DÉPART
+
+Blandine : « je me suis reliée avec le nom à la FFE, j'ai validé depuis mon écurie, mais je
+vois rien nulle part sur ma page cavalier ». **Rien n'était cassé : le bloc n'existait pas.**
+Relier remplit la base, l'affichage était la livraison 4, jamais faite. Puis : « faut laisser
+aussi le choix de les afficher tout ou partie par les cavaliers concernés ».
+
+⚠️ **Sa demande « comme pour les performances des chevaux » n'était pas copiable** : vérifié
+dans le code, il n'existe AUCUN bouton pour masquer un résultat après coup sur une fiche
+cheval. Le seul choix se fait aux cases de l'écran d'import, par elle ; la fiche ne propose
+ensuite que « Afficher aussi les N lignes masquées », qui sert à *revoir*, pas à changer.
+Copier ce fonctionnement aurait donné zéro contrôle à la cavalière. Dit, puis redéfini avec elle.
+
+## CE QUE LES REQUÊTES ONT PROUVÉ (ne pas re-vérifier)
+
+- Policies de `resultats` : la SEULE règle d'écriture est « resultats modification perso » =
+  `auth.uid() = user_id`. Une cavalière n'est PAS la créatrice de ses lignes (elle est
+  désignée par `cavalier_id`) → son UPDATE serait refusé **en silence**.
+- Propriétaires réels des 932 lignes : **929 sur un seul compte** (celui qui importe), 3 sur un
+  autre. Aucune cavalière ne pouvait donc rien écrire.
+- ⚠️ DETTE RELEVÉE : la policy DELETE de `resultats` porte **les deux adresses e-mail en dur**,
+  même défaut que `photo_comments`. Toujours non traité.
+
+## SQL PASSÉ
+
+- Colonne `masque_cavaliere` sur `resultats`, défaut `false` — **séparée de `visible`**, la coche
+  de l'import : les deux choix ne s'écrasent jamais.
+- `hype_masquer_resultats(p_ids text[], p_masquer boolean)` : la cavalière ne touche que les
+  lignes rattachées à son compte, une modératrice peut aider partout, et la fonction rend le
+  nombre de lignes réellement modifiées. `p_ids` en **texte** à dessein : le type réel de
+  `resultats.id` n'a jamais été relevé, `id::text` marche quel qu'il soit.
+
+## L'ÉCRAN LIVRÉ
+
+Nouveau composant **`BlocResultatsCavaliere`**, appelé dans `EcranMonCavalier` juste avant ses
+chevaux. **Composant autonome avec ses propres états** : les hooks React ne peuvent pas vivre
+dans une fonction de rendu intérieure, et un bloc ne part jamais sans ses variables (leçon du
+16/08). Deux props seulement : l'identifiant de la cavalière **affichée** (visite comprise) et
+si la page est la sienne.
+
+- **Affichage public** (sa décision) : un rail de cartes — médaille, année, rang, concours,
+  épreuve, partants — 8 au plus, les plus récentes d'abord.
+- **« Choisir »**, sur SA page seulement : feuille plein cadre, ses résultats groupés par
+  année, une case par ligne, plus « Tout masquer / Tout afficher » par année (indispensable :
+  376 lignes pour Liam).
+- **Les deux coches ne se mélangent jamais** : une ligne écartée à l'import n'apparaît nulle
+  part ici, pas même dans la liste de choix.
+- Un résultat masqué disparaît de SA page mais **reste sur la fiche du cheval et dans les
+  classements**. Une cavalière sans résultat n'affiche **rien**.
+- `0` ligne modifiée → « Rien n'a changé », jamais un faux succès.
+
+## VÉRIFIÉ
+
+🟥 **`node --check` a ARRÊTÉ cette livraison une première fois** : une parenthèse en trop à la
+fermeture de la feuille de choix (`Unexpected token ')'`, bloc 12). Corrigée, puis 18 blocs à
+0 erreur. **Cinquième livraison sauvée par ce contrôle depuis le 13/09.** Balises
+`<script src=>` identiques au 112, clés `?v=` inchangées.
+
+## NON TESTÉ
+
+Builds 113 à 119, tous en attente de test iPhone.
+
+## SUITE
+
+(5) onglet Compétition sur Communauté, le podium bascule avec l'onglet — (6) notification
+d'une demande de revendication à la modératrice.
+
+---
+
+# 🟥 13/09/2026 (21 h) — LA FEUILLE DE CHOIX D'UN COMPTE : TROIS DÉFAUTS, CORRIGÉS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `6bffd9d7…` | build **20260908-118** (contient le 117) |
+
+Remplace le `0d29fd93…` (20260908-116).
+
+## CE QUE LES TESTS DE BLANDINE ONT PROUVÉ (builds 113/114 en ligne)
+
+**Ce qui marche** : la tuile « Mes résultats de concours », la recherche d'un nom libre, la
+revendication. Sa capture de 20:59 montre « EN ATTENTE · BLANDINE PRONOST · Ta demande attend
+la validation de ton écurie » — toute la chaîne du 114 fonctionne.
+
+⚠️ **RECTIFICATION D'UNE LIGNE DU SUIVI** : j'avais noté « Blandine n'a aucun résultat à son
+nom ». **Faux.** BLANDINE PRONOST existe bien dans `resultats` ; ma requête ne montrait que les
+dix plus gros palmarès (le 10e était à 15 résultats), elle était donc sous le seuil.
+**Un `limit 10` n'est pas un inventaire.**
+
+## LES TROIS DÉFAUTS (tous dans la feuille de choix d'un compte, livrée au 113)
+
+1. **La recherche ne filtrait pas.** « il me propose pas Liam », puis « il propose un nombre
+   aléatoire de cavaliers sans rapport avec le nom qu'on tape ». Cause : le texte tapé
+   **ajoutait** les comptes trouvés à la suite des cavalières des écuries au lieu de réduire
+   la liste — le compte cherché se retrouvait donc plus bas que tous les autres. La liste est
+   désormais filtrée sur le pseudo, et le message de liste vide nomme le texte cherché.
+2. **Fond translucide** : la feuille était sur `rgba(4,6,10,0.92)`, on lisait l'écran du
+   dessous à travers (visible sur ses deux captures). Passée en fond opaque `#06080b`.
+3. **Impossible de défiler jusqu'en bas** : les derniers comptes étaient sous le clavier iOS.
+   La zone de liste reçoit 180 px de marge basse et `-webkit-overflow-scrolling: touch`, la
+   feuille respecte `env(safe-area-inset-bottom)`.
+
+## ET UNE DEMANDE D'ELLE, JUSTE
+
+« un seul clic et c'est fait, aucune demande de vérification ou validation, c'est light. »
+Elle a raison : relier déplaçait jusqu'à 376 résultats d'un seul geste. **Toucher un compte
+n'écrit plus rien** : un panneau de confirmation nomme le nom FFE, le nombre exact de
+résultats, le compte visé, et rappelle qu'un nom FFE ne peut être relié qu'à un seul compte
+à la fois. Deux boutons de 46 px, Relier / Annuler. L'écriture ne part qu'au second geste.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 erreur. Balises `<script src=>` identiques au 112,
+clés `?v=` inchangées. Rien touché hors de `EcranRattacherFFE` : ni les fonctions SQL, ni
+l'écran cavalière du 114, ni le rail du 116.
+
+## LEÇON
+
+Une liste qui **ajoute** au lieu de **filtrer** ne se voit pas à la relecture du code : elle
+se voit à l'écran, quand le résultat cherché est le 12e. Et un fond à 0,92 d'opacité n'est
+pas un fond : sur ses deux captures, deux écrans se lisaient l'un sur l'autre.
+
+---
+
+# 🟩 13/09/2026 (soir) — LE RAIL « DERNIERS RÉSULTATS » ARRIVE SUR LA FICHE DU CHEVAL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0d29fd93…` | build **20260908-116** |
+
+Remplace le `4177254a…` (20260908-115).
+
+## CE QUI A ÉTÉ ÉTABLI AVANT DE CODER (lecture du code, pas une hypothèse)
+
+Blandine : « je vois plus les résultats récents sur la page de Rizotto », puis « c'est
+peut-être plus là depuis des jours », puis « il me semblait qu'elle apparaissait sur la page
+cheval aussi ». **Ce n'était pas une régression** : le rail « Derniers résultats » n'a jamais
+existé sur la fiche d'un cheval. Il vit à deux endroits :
+
+- **dans le panneau Performances** d'un cheval (cartes qui défilent, 06/09) ;
+- **sur la page du club**, sous « Mes chevaux » (remonté là le 02/09).
+
+Son souvenir venait donc d'un autre écran. Le bloc « Dernières performances » de la page
+cavalier, lui, est un encart « Prochainement » vide, masqué depuis le 02/08.
+
+## CE QUI A ÉTÉ FAIT
+
+Le rail est posé sur la fiche du cheval, **sous les six boutons**, avant le cristal d'aperçu.
+
+⚠️ **LE BLOC N'A PAS ÉTÉ DÉPLACÉ, IL A ÉTÉ RECONSTRUIT.** Celui du panneau Performances
+s'appuie sur `recents`, calculé dans une fonction locale à ce panneau, et sur `cavFiltre` /
+`setSaisonOuv`, qui n'existent pas à cette portée (leçon du 16/08 : un bloc de rendu ne part
+jamais sans ses variables — 24 h de page Communauté hors service). Ici on repart de `resDb`,
+la source réelle au niveau du composant, avec les **mêmes noms de champs que `tousF`**
+(`concours`, `epreuve`, `cavalier`, `place`, `classement`, `partants`, `date_epreuve`).
+
+- Dessin de carte **copié à l'identique** : médaille, année, portrait rond, rang + cavalière
+  « sur » le cheval, concours, épreuve, partants, autres classés.
+- 6 cartes au plus, tri par date décroissante ; un concours + une épreuve + une date = une
+  carte, plusieurs cavalières dedans.
+- **La coche de l'import est respectée** (`visible !== false`), et `voirMasques` la lève pour
+  la propriétaire — comme partout depuis le 26/08.
+- Au toucher d'une carte, du titre ou de « Voir tout » : le panneau Performances s'ouvre.
+  Pas de saut vers une saison précise, `setSaisonOuv` n'existe pas à cette portée.
+- Un cheval sans résultat classé n'affiche **rien** (pas de bloc vide).
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 erreur. Balises `<script src=>` identiques au 112.
+Clés `?v=` inchangées. Diff : 1 insertion, plus le numéro de build et la note de tête.
+
+## NON TESTÉ
+
+Les builds 113, 114, 115 et 116 sont tous en attente de test iPhone.
+
+---
+
+# 🟩 13/09/2026 (soir) — DE L'AIR ENTRE LA CARTE ORIGINES ET LES SIX BOUTONS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `4177254a…` | build **20260908-115** |
+
+Remplace le `d9afe924…` (20260908-114).
+
+Demande de Blandine sur capture : « laisse plus d'espace entre le trait du bas de l'onglet des
+origines et les boutons qui mènent aux autres pages ». ⚠️ Elle a dit « page cavalier », la
+capture montre la **fiche cheval** (carte Origines + les six cartes) — c'est là que la
+modification a été faite. Habitude relevée au suivi : demander l'écran, ou se fier à la capture.
+
+## CE QUI A ÉTÉ FAIT
+
+**Une seule valeur** : la marge du haut de la grille des six cartes (Histoire / Performances /
+Santé / Photos / Vidéos / Actualité) passe de **18 à 32 px**. Marges latérales (16) et du bas
+(2) inchangées. La carte Origines n'est pas touchée, ni l'espacement interne des cartes.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 erreur. Diff : 1 ligne de style, plus le numéro de build
+et la note de tête.
+
+## NON TESTÉ
+
+Les builds 113, 114 et 115 sont tous en attente de test iPhone.
+
+---
+
+# 🟩 13/09/2026 (soir, suite) — « C'EST MOI » : UNE CAVALIÈRE REVENDIQUE SON NOM FFE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d9afe924…` | build **20260908-114** |
+
+Remplace le `e58e013a…` (20260908-113, écran de rattachement modératrice).
+⚠️ Livré sur « Ok continue », **sans retour de test du 113** — les deux builds se testent
+donc ensemble. Conséquence signalée avant livraison.
+
+## LES DEUX COMPTES DE LIAM — TRANCHÉ, ET LA BASE CORRIGÉE
+
+Le doublon traînait depuis le 28/08 (deux fiches mises dans les exceptions de quota
+« par prudence », la bonne inconnue). **Tranché ce soir par les chevaux :**
+
+- `fa2875ae-f740-4774-ad79-4726477add5e` = **le bon compte** — porte « Hey Baby Please »
+  et « Tully Blue moon ». Pseudo laissé à « Liam ». C'est à lui que LIAM ROUX (376
+  résultats) doit être relié.
+- `2f6eeb8b-37ef-4ce5-9639-f2a267498d4b` = le compte de test Android (volontaire, à ne pas
+  supprimer, cf. entrée du 03/09). **Pseudo renommé « Liam 2 »** par Blandine
+  (`update profiles set pseudo` ciblé sur l'identifiant), vérifié par relecture : les deux
+  lignes rendent bien « Liam » et « Liam 2 ».
+
+⚠️ **ERREUR DE CLAUDE, corrigée** : j'ai d'abord affirmé que « personne n'avait jamais
+tranché » quel était le bon compte. Faux — c'était dans SUIVI.md à plusieurs endroits
+(compte principal `liamroux0@gmail.com`, ses fiches réelles créées le 26/07). Blandine
+m'a renvoyé au suivi, elle avait raison. **Lire le suivi avant d'affirmer qu'une
+décision n'existe pas.**
+
+## POURQUOI UN NOM NE PEUT PAS ÊTRE RELIÉ À DEUX COMPTES (dit à Blandine)
+
+`cavaliers_ffe.nom` est unique et chaque résultat ne porte qu'un `cavalier_id` : relier deux
+fois **déplace** les 376 résultats, ça n'en crée pas deux jeux. Et un nom compté sur deux
+comptes fausserait le total du club (376 résultats comptés deux fois).
+
+## L'ÉCRAN LIVRÉ (build 114)
+
+Nouveau composant `EcranMesResultatsFFE`, route `ecran === "mes-resultats-ffe"`, et une tuile
+**« Mes résultats de concours »** dans Mon compte — **ouverte à tout le monde**, contrairement
+à celle du 113 (la fonction SQL accepte toute personne connectée, et le rattachement réel
+reste soumis à l'accord d'une modératrice).
+
+- Si elle a déjà un nom : l'écran affiche **Relié** (turquoise, avec le nom) ou
+  **En attente** (or). Aucune action possible, rien à comprendre de plus.
+- Sinon : recherche à partir de 2 lettres parmi les noms **encore libres**
+  (`hype_noms_ffe_libres`), chaque nom avec son nombre de résultats.
+- Une confirmation nomme l'enjeu avant d'envoyer (« ces 376 résultats apparaîtront sur ta
+  fiche »), puis `hype_revendiquer_cavalier`.
+- **Aucune ligne de `resultats` n'est touchée par ce geste** : c'est la fonction SQL qui
+  l'impose, pas l'écran.
+- Les trois refus de la base sont **traduits en clair** : nom déjà relié à un autre compte,
+  demande déjà en cours, nom absent des résultats. 6 langues.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+`node --check` sur les **18 blocs** : 0 erreur. Balises `<script src=>` identiques au 112
+(md5 du relevé inchangé). Clés `?v=` inchangées. Diff : 4 insertions, aucune suppression.
+
+## NON TESTÉ SUR IPHONE
+
+Les builds 113 ET 114. Parcours complet possible seule : Mon compte → « Relier les résultats
+FFE » → relier LIAM ROUX au compte **Liam** (pas Liam 2) → 376 résultats annoncés. Puis
+Mon compte → « Mes résultats de concours » : comme Blandine n'a **aucun** résultat à son nom,
+elle doit voir la recherche, et LIAM ROUX ne doit **plus** y apparaître une fois relié.
+
+## SUITE, UNE LIVRAISON À LA FOIS
+
+(3) notification d'une demande à la modératrice — (4) bloc de points public sur la fiche
+d'une cavalière (points, rang, détail par type d'épreuve) — (5) onglet Compétition sur
+Communauté, le podium bascule avec l'onglet.
+
+## TOUJOURS EN DETTE
+
+- Aucun bouton « Détacher » : signature de `hype_detacher_cavalier` jamais relevée.
+- Policies `delete` et `update` de `photo_comments` : demandées par Blandine, NON FAITES.
+
+---
+
+# 🟩 13/09/2026 (soir) — REVENDIQUER SON NOM FFE : LA BASE, PUIS L'ÉCRAN DE RATTACHEMENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `sql-13-09-revendication-cavaliere.sql` | éditeur SQL Supabase | — | PASSÉ, « Success » confirmé par capture |
+| `index.html` | racine | à relever | build **20260908-113** |
+
+Remplace le `fba958a4…` (20260908-112, médias d'un message en modification).
+
+## LES DÉCISIONS DE BLANDINE DE CETTE SESSION
+
+- Classement Compétition : **en 2e onglet sur Communauté seulement**, PAS de second cristal
+  sur la page du club / Écurie pour l'instant.
+- Total d'un club : **tout additionné** — c'est déjà ce que fait
+  `hype_classement_clubs_sportif`, rien à changer.
+- Hauts faits : rien à coder, restent éteints, laissés au suivi.
+- Points FFE manquants : **elle repassera les télémats**.
+- Rattachement : **LES DEUX portes** (elle à l'import, et la cavalière elle-même).
+- Bloc de points d'une cavalière : **public**, comme le palmarès d'un cheval.
+- Refonte écurie / club : **déjà réglée**, retirée de la liste.
+- Points de qualification championnat : plus tard, quand les points des télémats seront
+  comptés par cavalière ; il suffira de mentionner les points par type d'épreuve.
+- Policies `delete` et `update` de `photo_comments` : à régler — **NON FAIT dans cette
+  livraison**, toujours en attente.
+
+## CE QUE LES REQUÊTES ONT PROUVÉ (ne pas re-vérifier, ne pas contredire)
+
+- `hype_rattacher_cavalier` exige `hype_est_moderatrice()` dès sa première ligne
+  → « les deux portes » était IMPOSSIBLE avec cette seule fonction.
+- Elle ÉCRASE l'ancien rattachement sans rien demander (`on conflict (nom) do update`)
+  → l'ouvrir aux cavalières aurait permis de prendre le palmarès d'une autre.
+- `cavaliers_ffe` = (nom, user_id, maj_le, maj_par), AUCUNE colonne d'état, `user_id` NOT NULL
+  → un nom non relié n'a aucune ligne, une revendication n'avait nulle part où se ranger.
+- Policies de `cavaliers_ffe` : **une seule**, « cavaliers_ffe lecture publique » (SELECT, true)
+  → l'écran peut lire la table directement, aucune fonction de lecture nécessaire.
+- `cavaliers_ffe` est **VIDE** (`select statut, count(*)` → 0 ligne) : aucune cavalière n'est
+  reliée à ce jour, cohérent avec les 932 résultats tous en « attente ».
+- Noms FFE réels, par volume : **LIAM ROUX 376**, EVAN ROUX 68, VALENTINE LANGLOIS DEPOIX 62,
+  EMMA VICTOIRE DURAND 57, MARGOT KHOURY 29, ADELE CIZEAU 26, SALOME DEROIDE 23,
+  QUENTIN STERIN 18, PAULINE GILLES 17, EVA OLIVEIRA 15. Blandine n'a **aucun** résultat à son nom.
+- `resultats.points` = la colonne « **Pts qualif. Chpt** » du télémat (relevé dans
+  `hype-import-ffe.js`, tableau ETIQUETTES) : c'est déjà lu et écrit depuis le 06/09.
+- `hype-import-ffe.js` **n'écrit rien en base** : il rend les lignes à `options.onEnregistrer`,
+  qui vit dans `index.html` → l'écran de rattachement se fait dans l'index, pas dans ce fichier.
+  Le fichier sait en revanche déjà lister les cavalières d'un PDF (`HYPE_IMPORT.cavaliers`).
+
+## SQL PASSÉ (colonne + 5 fonctions, `resultats` jamais touchée par le script)
+
+- Colonne `statut` sur `cavaliers_ffe`, défaut `'rattache'` (donc AUCUNE reprise de données :
+  les lignes existantes viennent toutes de `hype_rattacher_cavalier`), CHECK avec les DEUX
+  valeurs (leçon du 12/09 : un CHECK trop étroit refuse en silence).
+- `hype_revendiquer_cavalier(nom)` : toute personne connectée. Refuse un nom inconnu des
+  résultats, un nom déjà rattaché, une demande déjà en cours. N'ÉCRIT RIEN dans `resultats`.
+- `hype_noms_ffe_libres(recherche)` : les noms sans ligne dans `cavaliers_ffe`.
+- `hype_revendications()` : les demandes en attente (modératrice).
+- `hype_accepter_cavalier(nom)` : SEUL endroit où une revendication touche `resultats`.
+- `hype_refuser_cavalier(nom)` : efface la demande, ne peut pas défaire un rattachement acquis.
+
+## L'ÉCRAN LIVRÉ (build 113)
+
+Nouveau composant `EcranRattacherFFE`, route `ecran === "rattacher-ffe"`, et une **tuile dans
+Mon compte** (emplacement choisi par Blandine), réservée aux modératrices (`estModAdmin`) —
+cohérent avec la fonction SQL, qui refuse tout le monde d'autre de toute façon.
+
+- La liste des noms FFE tirés de `resultats.cavalier`, avec leur nombre de résultats et leur
+  état : **Libre** / **Relié à X** / **Demande de X**. Demandes en attente en tête, puis le
+  plus gros palmarès. Recherche par nom, 12 visibles puis « Voir les N autres noms ».
+- « Relier à un compte » ouvre une feuille plein cadre : les comptes de ses deux écuries
+  (`hypeCavaliersDuClub`, fonction existante) + recherche par pseudo
+  (`rechercherCavaliersHype`, existante aussi — ⚠️ elle exclut le compte connecté, donc
+  Blandine ne peut pas se relier elle-même par la recherche ; sans objet, elle n'a aucun résultat).
+- Une demande en attente porte **Accepter** / **Refuser** au même endroit.
+- Toute écriture passe par les fonctions SQL, **jamais un UPDATE direct**, et chaque appel LIT
+  son erreur et l'AFFICHE là où le geste a eu lieu (règle du 13/09, payée trois fois).
+- Le nombre de résultats réellement rattachés est annoncé : « LIAM ROUX est relié à Liam
+  — 376 résultats rattachés ».
+
+## VOLONTAIREMENT PAS DANS CE BUILD
+
+- **Aucun bouton « Détacher »** : la signature de `hype_detacher_cavalier` n'a jamais été
+  relevée en base. À relever (`pg_get_functiondef`) avant de l'appeler.
+- Le bouton « C'est moi » côté cavalière, la notification d'une demande, le bloc de points
+  public sur la fiche d'une cavalière, l'onglet Compétition sur Communauté.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+`node --check` sur les **18 blocs** : 0 erreur. Balises `<script src=>` identiques au 112
+(md5 du relevé inchangé), clés `?v=` inchangées. Diff : 4 insertions, aucune suppression.
+
+## NON TESTÉ SUR IPHONE
+
+Tout. À faire dans cet ordre : ouvrir Mon compte → tuile « Relier les résultats FFE » →
+LIAM ROUX doit apparaître en tête avec 376 résultats et « Libre » → « Relier à un compte » →
+choisir le compte de Liam → le message doit annoncer 376 résultats rattachés, et la ligne
+repasser en « Relié à Liam ». Si le compte de Liam n'apparaît pas dans la liste de ses
+écuries, le chercher par pseudo.
+
+## SUITE, UNE LIVRAISON À LA FOIS
+
+(2) bouton « C'est moi » côté cavalière — (3) notification d'une demande à la modératrice —
+(4) bloc de points public sur la fiche d'une cavalière (points, rang, détail par type
+d'épreuve) — (5) onglet Compétition sur Communauté, le podium bascule avec l'onglet.
+
+---
+
+# 🟦 13/09/2026 (20 h 45) — BILAN DE LA JOURNÉE · PASSATION DU SOIR
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `fba958a48abc01c90f6ba7aa96687504` | build **20260908-112** — **inchangé** depuis la livraison de 20 h 30 |
+| `SUIVI.md` | racine | — | cette entrée |
+| `PASSATION-13-09-SOIR.md` | document de travail, **pas à pousser** | — | remplace la passation du matin |
+| `hype-badge-xp.png` | racine | — | à pousser s'il ne l'a pas été avec le 107 |
+
+Aucun code modifié dans cette livraison : `index.html` est le 112 tel quel, joint parce que le
+suivi ne se livre jamais seul.
+
+## LA JOURNÉE EN CHIFFRES
+
+- **25 builds** livrés (88 → 112), tous bâtis sur l'index qu'elle a fourni (le dernier à 14 h 17,
+  avec le travail arabe fusionné).
+- **6 scripts SQL** passés en base et confirmés par capture : ordre + cadenas des années ;
+  modification des commentaires de photo ; contrainte des formats (« Petite ») ; classement
+  sportif (version finale) ; indice « Préparatoire 80 » ; plus le relevé de 9 requêtes de
+  diagnostic, une à la fois.
+- **4 retours de test réels** : « Petite » remarche ✅ ; le cristal arrivait en haut de Communauté
+  (corrigé au 109) ; le composer pendant une modification (111) ; les médias alignés (111).
+- **4 livraisons arrêtées par `node --check`** avant de partir.
+- **1 maquette** (trois variantes), choisie en un message.
+
+## CE QUI A CHANGÉ POUR ELLE, EN UNE PHRASE CHACUN
+
+- Les photos d'une année se rangent au doigt, la taille et l'année se changent depuis un seul
+  écran, et le résultat se voit en direct — plus de page qui se vide ni d'album qui se rouvre.
+- Une année peut être verrouillée.
+- Sur un commentaire de photo : le vrai prénom, modifier, supprimer, identifier quelqu'un — et la
+  notification mène à la photo.
+- « Petite » marche.
+- Communauté : podium, puis 4-5-6, puis « Voir les autres clubs » ; son club toujours visible.
+- Page du club : son cristal XP à droite du nom, qui mène droit au classement.
+- Le fil : une seule chose à la fois, médias alignés, photos modifiables après coup.
+- En base, sans écran encore : le classement sportif complet (points FFE exacts, saison
+  fédérale, détail par indice, hauts faits en sommeil).
+
+## CE QUI ATTEND SA DÉCISION (voir la passation, § 4)
+
+Afficher le classement Compétition · mode de calcul du club · hauts faits · points FFE manquants
+sur 14 résultats · rattachement des cavalières à l'import · ouvrir le mode Ranger aux cavalières
+rattachées · aligner la policy DELETE de `photo_comments`.
+
+## POUR LA PROCHAINE CONVERSATION
+
+Lire `PASSATION-13-09-SOIR.md` en entier. **Commencer par lui demander le numéro d'index affiché
+sur « Quoi de neuf » et dix minutes de test** — onglet Photos d'un cheval, Communauté, page du
+club, fil — avant de livrer quoi que ce soit. Vingt-cinq builds, quatre retours : c'est le risque
+principal de la journée, pas un correctif.
+
+---
+
+# 🟩 13/09/2026 (20 h 30) — RETIRER OU AJOUTER DES PHOTOS PENDANT LA MODIFICATION D'UN MESSAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `fba958a48abc01c90f6ba7aa96687504` | build **20260908-112** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 111 (`ad86f6df…`). `MurHype` seul. **Aucun SQL** (colonne `medias` et policy
+UPDATE de `commentaires` passées le 13/09 au matin).
+
+**À l'écran : + sous le champ de modification, les médias du message en vignettes (la principale
+marquée), une croix pour retirer, un « + » pour ajouter · − rien.**
+
+Sa demande : « quand on modifie on devrait pouvoir retirer ou ajouter des photos ».
+
+- Les médias d'un message = `photo_url` (principale) + `medias` (les suivantes). Pendant la
+  modification, une seule liste, la principale en tête.
+- Ajouter : le fichier part **tout de suite** au stockage par le même chemin que le composer
+  (`hypePhotoDirecte` puis `envoyerPhoto`), son adresse rejoint la liste.
+- Enregistrer : `photo_url` = la première, `medias` = les suivantes, écrits d'un coup avec le
+  texte et `modifie_le`, avec `.select()` (0 ligne = refus affiché, jamais un faux succès).
+- Un message sans texte **et** sans média est refusé ; des photos sans texte restent valides.
+- Plafond : 4 médias, comme à la publication.
+
+Limite connue, non traitée : une photo retirée reste dans le stockage (rien ne la supprime du
+bucket) — même comportement que la suppression d'un message.
+
+---
+
+# 🟩 13/09/2026 (20 h) — LE FIL : UNE SEULE CHOSE À LA FOIS, ET LES MÉDIAS ALIGNÉS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ad86f6dfe88a0abf098f4f8ba43f81de` | build **20260908-111** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 110 (`363ff619…`). `MurHype` seul. **Aucun SQL.**
+
+**À l'écran : + pendant la modification d'un message, le composer s'efface (ligne discrète à la
+place) · + un message à 2 ou 3 médias les affiche à égalité, toute la largeur · − le trou noir.**
+
+## SES RETOURS (captures du fil, 18 h 49)
+
+1. « On s'y perd entre la possibilité de publier et le fait de vouloir modifier un autre post, on
+   ne devrait pas avoir tout en même temps. » → Pendant une modification, le composer « Partage un
+   moment… » laisse place à « Modification en cours — enregistre ou annule pour publier ». Il
+   revient dès la fin de la modification ; le texte déjà tapé est conservé.
+2. « Si t'en as que 2 ou 3, essaye de les aligner de même taille. » → Sa capture : un message à
+   deux médias, la seconde photo en petit carré à gauche et **deux tiers de ligne vides en noir**.
+   La grille « une grande + trois carrées » (build 43) s'appliquait quel que soit le nombre.
+   Maintenant les médias en plus se partagent toute la largeur : 1 → pleine largeur (3:2), 2 → deux
+   moitiés (4:3), 3 → trois carrés.
+3. **Non fait, demandé** : « quand on modifie on devrait pouvoir retirer ou ajouter des photos ».
+   C'est un morceau à part : la colonne `medias` de `commentaires` existe (13/09) et la policy
+   UPDATE aussi, il faut l'écran (retirer une vignette, ajouter par le même chemin que le composer)
+   et l'écriture de `medias` dans la modification. Prochain morceau si elle dit « continue ».
+
+---
+
+# 🟩 13/09/2026 (19 h 45) — COMMUNAUTÉ : 4e, 5e, 6e VISIBLES · « VOIR LES AUTRES CLUBS »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `363ff6192eb8e5094ccd830379877f01` | build **20260908-110** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 109 (`b3171e68…`). `EcranCommunaute` seul, trois lignes. **Aucun SQL.**
+
+Ses mots : « laisse quand même les trois suivantes jusqu'à la 6e incluse » · « dis juste voir les
+autres clubs ». `LIMITE` passe de 5 à 6 ; le lien n'affiche plus le nombre. Son club reste visible
+à sa place au-delà du 6e.
+
+**État final de la liste Communauté :** podium 1-2-3 → lignes 4, 5, 6 → « Voir les autres clubs »
+/ « Replier » → son club détaché s'il est plus loin.
+
+---
+
+# 🟩 13/09/2026 (19 h 30) — LE CRISTAL AMÈNE SUR LE CLASSEMENT, PAS EN HAUT DE COMMUNAUTÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b3171e684e32a47aa93c87a47c99d15c` | build **20260908-109** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 108 (`9cfeaa34…`). Page du club + `EcranCommunaute`. **Aucun SQL.**
+
+**À l'écran : le cristal ouvre Communauté directement sur le podium du classement.**
+
+Son retour (premier test réel des builds du soir) : « quand on clique là ça amène en haut de la
+page communauté, on comprend pas ce qu'on y fait ». Le cristal pose un signal
+(`window.__communauteCible = "classement"`), Communauté le lit une fois, l'efface et descend au
+podium — deux essais (150 ms, 700 ms) parce que le podium charge une image et la page grandit après
+le premier rendu. Même motif que `window.__ouvrirPalmares`. Un accès direct par l'onglet du bas ne
+descend pas.
+
+---
+
+# 🟩 13/09/2026 (19 h 15) — LE CRISTAL XP, PETIT, SUR LA LIGNE DU NOM, À DROITE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9cfeaa34a2b55cd989bcc1c0fdc2af9b` | build **20260908-108** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 107 (`bd917f56…`). Page du club seule. **Aucun SQL.** `hype-badge-xp.png`
+inchangé (à pousser s'il ne l'a pas été avec le 107).
+
+**À l'écran : − le gros cristal centré · + un cristal de 44 px à droite du nom de l'écurie, avec
+le rang au centre ; le total d'XP en info-bulle ; ouvre Communauté.**
+
+Sa demande : « pas trop grosse, sur la ligne avec le nom de l'écurie à droite ». Une colonne
+fantôme de même largeur à gauche garde le nom centré.
+
+---
+
+# 🟩 13/09/2026 (19 h) — SA MARQUE SUR LA PAGE DU CLUB : LE CRISTAL « XP »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `bd917f56595017e588a5a94a8311f3d5` | build **20260908-107** |
+| `hype-badge-xp.png` | racine | — | **NOUVEAU** — son cristal, fond détouré, 480 px, 280 Ko |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 106 (`e54d89b6…`). Page du club seule. **Aucun SQL.**
+
+**À l'écran : − la pastille texte du build 106 · + son cristal hexagonal avec le rang au centre
+(« #4 »), le total d'XP dessous, « Classement des clubs › » ; le tout ouvre Communauté.**
+
+## L'ASSET
+
+Fourni par Blandine (PNG 1254 px, fond noir). Préparé : fond **extérieur** détouré par
+remplissage depuis les bords (un seuil global crevait aussi le marbre sombre à l'intérieur du
+cristal — corrigé avant livraison), réduit à 480 px. Le rang s'inscrit dans la zone libre, entre la
+couronne (~33 %) et le filet (~63 %).
+
+## DÉCISIONS DU 13/09 (soir)
+
+- **Le classement Compétition existe en base mais ne s'affiche pas encore** — ni second cristal
+  sur la page du club, ni onglets sur Communauté. « Pour l'instant on n'affichera pas le résultat
+  pour compétition, mets-le dans le suivi. »
+- Sa maquette « Les deux couronnes » (deux médaillons #4 XP / #5 Compétition sur la page du club,
+  onglets « Classement XP / Classement Compétition » sur Communauté) est la cible du jour où il
+  s'affiche. Règle déjà fixée : **le podium bascule avec l'onglet**. La liste démarre au 4e, se
+  replie après le 5e, son club toujours visible — vaut pour les deux.
+- À prévoir ce jour-là : le classement Compétition sera presque vide au début (saison commencée
+  le 01/09, aucun résultat importé depuis n'a de points FFE) → afficher « Aucun point cette
+  saison pour l'instant » plutôt que des zéros.
+
+## SUJETS OUVERTS (récapitulatif, tous à sa demande)
+
+1. Afficher le classement Compétition (onglets Communauté + second cristal) — quand elle décide.
+2. Mode de calcul du club : total brut provisoire (5 meilleures ? 3 ? moyenne ?).
+3. Hauts faits : barème et activation (codés, éteints).
+4. Points FFE manquants sur les 14 résultats depuis juin 2026.
+5. Rattachement des cavalières à l'import (fonction SQL prête, écran à faire).
+
+## NON VU À L'ÉCRAN
+
+Les builds 103 à 107.
+
+---
+
+# 🟩 13/09/2026 (18 h 30) — LE CLASSEMENT QUITTE LA PAGE DU CLUB, UNE MARQUE DISCRÈTE À LA PLACE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e54d89b60ca1b35aad5fdfa2916c1876` | build **20260908-106** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 105 (`77fae802…`). Page du club seule, un bloc. **Aucun SQL.**
+
+**À l'écran : − le podium, sa suite et « Voir le classement complet » sur la page du club · + une
+pastille centrée « 2e · 260 XP › » qui ouvre Communauté.**
+
+## SES MOTS
+
+« Que ce classement soit retiré tel qu'il est actuellement depuis la page du club, je vais regarder
+pour faire juste une icône avec l'ordre de classement du club sur sa page, discrète » — cliquable,
+avec les points (confirmé).
+
+## CE QUI EST LIVRÉ
+
+Le podium et sa suite quittent la page du club : ils vivent sur Communauté, où la liste se replie
+désormais. À la place, **une** pastille : la place du club (or / argent / bronze pour le podium,
+turquoise au-delà) et ses XP, qui ouvre Communauté. `monRang` et `maG` existaient déjà (calculés
+pour le cristal) : rien de nouveau à lire. **Elle dessinera la marque** : le texte est dans un seul
+endroit, facile à remplacer par son dessin.
+
+## SUITE
+
+1. Le classement sportif à l'écran (à côté des XP) — base en place depuis 16 h 53.
+2. Le rattachement des cavalières à l'import.
+
+## NON VU À L'ÉCRAN
+
+Les builds 103 à 106.
+
+---
+
+# 🟩 13/09/2026 (18 h 15) — LA LISTE DES CLUBS DÉMARRE AU 4e
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `77fae8026d5392a310962018f8bb821d` | build **20260908-105** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 104 (`123311a5…`). `EcranCommunaute` seul, trois lignes. **Aucun SQL.**
+
+**À l'écran : − les 3 premiers en tête de liste (déjà sur le podium) · la liste repliée montre le
+4e et le 5e, puis « Voir les N autres clubs ».**
+
+Décision de Blandine : « Non, la liste démarre au 4e ». Deux constantes, `DEBUT = 3` et
+`LIMITE = 5` ; chaque ligne porte son **vrai** rang (index dans le classement complet). Son club
+reste affiché à sa place s'il est au-delà du 5e.
+
+Suite : la page du club (retirer le classement, poser la marque discrète cliquable).
+
+---
+
+# 🟩 13/09/2026 (18 h) — LE CLASSEMENT DES CLUBS SE REPLIE APRÈS LE 5e SUR COMMUNAUTÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `123311a521cb507a9368425406638ebd` | build **20260908-104** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 103 (`b9e5f9d4…`). Un seul composant touché : `EcranCommunaute`. **Aucun SQL.**
+Balises et `?v=` inchangées.
+
+**À l'écran : + les 5 premiers clubs, puis « Voir les N autres clubs » / « Replier » · + son club
+toujours visible en dessous, à sa vraie place, s'il est au-delà du 5e · − rien.**
+
+## SES CHOIX (13/09)
+
+« Replier et déplier le classement des clubs sur la page communauté après le 5e » · « laisse le
+tien visible » · lien en texte qui dit combien il en reste (recommandé, accepté).
+
+## CE QUI EST LIVRÉ
+
+Cinq premiers visibles ; en dessous, « Voir les N autres clubs », puis « Replier ». Son club, s'il
+est au-delà du 5e, reste affiché sous un filet pointillé avec **sa vraie place** et un fond
+légèrement teinté — comme dans les classements sportifs. Reconnu par `hypeMemeClub` (tolérante),
+à défaut par égalité stricte. Le podium au-dessus ne change pas. Rien n'est retiré du classement :
+seul l'affichage se replie, et les lignes sont rendues par la même fonction qu'avant.
+
+**Question laissée ouverte** (posée, non tranchée) : faire démarrer la liste au 4e, puisque le
+podium montre déjà les 3 premiers.
+
+## ERREUR RATTRAPÉE AVANT LIVRAISON
+
+Une parenthèse de fermeture manquante (le bloc remplacé fermait aussi un ternaire enveloppant) —
+refusée par `node --check`, corrigée, 18 blocs verts. Troisième fois aujourd'hui que le contrôle
+arrête une livraison.
+
+## SUITE, DANS L'ORDRE
+
+1. Page du club : retirer le classement tel qu'il est (podium + suite + « Voir le classement
+   complet » via `PodiumClubsHype`, ligne ~31565), poser une marque discrète cliquable (place +
+   points) — **elle dessine la marque** ; en attendant, texte.
+2. Le classement sportif à l'écran (à côté des XP) : base en place.
+3. Le rattachement des cavalières à l'import.
+
+## NON VU À L'ÉCRAN
+
+Les builds 103 et 104.
+
+---
+
+# 🟩 13/09/2026 (17 h 30) — LES CHANGEMENTS SE VOIENT EN DIRECT · PLUS AUCUN RECHARGEMENT · LA BASE DU CLASSEMENT SPORTIF
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b9e5f9d407a977ea0e9a50ee1ca645da` | build **20260908-103** |
+| `SUIVI.md` | racine | — | cette entrée |
+| `sql-13-09-classement-sportif.sql` | Supabase → SQL Editor | — | **PASSÉ EN BASE** (version finale, contrôle 12.5 OK) |
+| `sql-13-09-indice-prepa.sql` | Supabase → SQL Editor | — | **PASSÉ EN BASE** (contrôle « Préparatoire 80 » OK) |
+
+Base de départ : l'index qu'elle a fourni à 14 h 17 (`ebb2d392…`), = build 102 **avec le travail
+arabe fusionné** (319 textes, `?v=` des cours changés de leur côté). Jamais ma copie. Un seul
+composant touché : `ChronologieSouvenirs` + une fonction globale posée juste au-dessus. Balises et
+`?v=` inchangées.
+
+**À l'écran : + un changement de taille, d'année ou d'ordre se voit tout de suite · + l'écran
+dédié montre la vraie composition (Taille, Année) et un aperçu (Ranger) · − la page qui se vide,
+remonte et se repose dans un album.**
+
+## SA DEMANDE
+
+« On arrive toujours au milieu d'un album après avoir effectué des changements, et ça serait bien
+de les voir en instantané, pas tous d'un coup une fois que la fenêtre est fermée, sinon on peut
+pas s'adapter. »
+
+## LA CAUSE, ENFIN TRAITÉE
+
+Le placement des cases (`gridColumn`/`gridRow`) n'était calculé **que dans l'effet qui relit les
+albums**. Changer un format, une année ou l'ordre obligeait donc à recharger toute la chronologie
+(`setRafraichir`) : `annees` vidé, `chargeCh` à true, page remontée, puis reposée n'importe où —
+souvent au milieu d'un album. C'était la cause de « ça remonte en haut » (signalé au build 101) et
+très probablement de « ça me remet dans un album ». Et l'écran dédié du build 102 ne pouvait rien
+montrer en direct.
+
+## CE QUI EST FAIT
+
+1. **Le moteur de cases sort de l'effet**, mot pour mot (déplacé, pas réécrit), dans
+   `hypeComposerAnneeGalerie(grp, formats)` — fonction pure au-dessus du composant. L'effet de
+   chargement l'appelle comme avant.
+2. **Format, année et ordre recomposent dans l'état**, sans rechargement :
+   - format → nouvelle carte des formats construite puis passée telle quelle à la recomposition
+     (pas la valeur de fermeture, qui peut être en retard d'un rendu) ;
+   - année → les photos sont retirées de leur année et ajoutées à la nouvelle (créée si absente),
+     tout est recomposé et retrié ;
+   - ordre → l'année est recomposée à chaque dépôt enregistré ; plus de rechargement à la sortie.
+   **Trois `setRafraichir` retirés** ; il n'en reste qu'un, légitime (photo supprimée ailleurs).
+3. **L'écran dédié montre la vraie composition** dans les vues Taille et Année (mêmes cases, mêmes
+   coordonnées que la galerie, unité mesurée sur sa propre largeur), recomposée à chaque
+   changement ; la vue Ranger garde ses cases égales pour le geste, avec un **aperçu** dessous.
+   Une photo au format choisi à la main porte une petite coche.
+
+## LA BASE DU CLASSEMENT SPORTIF (chantier suivant, base terminée)
+
+Décisions de Blandine, toutes prises le 13/09 :
+- **Classement séparé des XP** de l'appli (les XP ne bougent pas). « XP » = activité dans Hype ;
+  « points de concours » = résultats réels. Deux mots, tenus partout.
+- **Les points sont exactement ceux du télémat** (`resultats.points`, « Pts qualif. Chpt »). Le
+  barème maison 15/5 a été écrit puis **abandonné** sur son idée — officiel, tient compte du
+  niveau, indiscutable. Un résultat sans points FFE vaut 0 (saisi à la main, ou importé avant le
+  06/09 sans repasser le télémat) : « ça commence à partir de là ». Les 14 résultats depuis juin
+  2026 sont à 0 (vérifié).
+- **Préparatoires incluses**, avec leurs points.
+- **Saison fédérale 1er septembre → 31 août** (vérifié : licence et règlements FFE ; les périodes de
+  qualification, elles, tournent de juin à juin — Critérium Amateur 2026 : 16/06/2025 → 14/06/2026 ;
+  championnats à Lamotte en juillet). Choix motivé : une saison qui finit sur Lamotte raconte mieux
+  qu'une saison qui s'arrête juste avant. Réglable dans la table `saisons_sportives`.
+- **Chaque point porte sa saison, rien n'est jamais effacé** : les saisons passées restent
+  consultables (« garder classement 2025, 2024 »).
+- **Points portés par la cavalière**, le club = la somme de ses cavalières. Mode de calcul du club
+  : **total brut, provisoire** (« additionne tout et j'y réfléchirai ») — isolé dans
+  `hype_classement_clubs_sportif`, une ligne à changer.
+- **Détail par indice** (« 150 points dont 48 en Poney 3 ») : indice lu dans l'intitulé, règle
+  validée par elle sur les 30 intitulés les plus fréquents — le « D » (taille du poney) regroupé,
+  Grand Prix / Vitesse / Circuit / TDA ignorés (formats, pas niveaux), préparatoires par hauteur.
+- **Hauts faits** : détectés (victoire, double journée, multi-concours, week-end 2 à 8) mais
+  **éteints** — `hype_hauts_faits_actifs()` à `false`, aucun point rattaché. Elle y réfléchit.
+
+Ce que la base a prouvé, une requête à la fois : `cavalier` est un nom FFE normalisé sans doublon ;
+`cavalier_id` / `cavalier_statut` **existaient déjà, vides** (932 « attente », 0 compte) et **rien
+dans le code ne les lisait** → réutilisées pour le rattachement au lieu d'une table de lien ;
+`place` et `quart` sont des entiers (le texte `classement` n'est jamais décortiqué).
+
+Mécanique : `points_concours_v` (points calculés à la lecture, jamais stockés — un résultat corrigé
+ou décoché, les points suivent), `hype_classement_cavalieres(saison)`,
+`hype_classement_clubs_sportif(saison)`, `hype_points_par_indice(cavalier, saison)`,
+`hype_rattacher_cavalier(nom, compte)` (modératrices ; rattache toutes les lignes passées) + un
+déclencheur qui rattache seul les imports futurs d'un nom connu. Une cavalière non rattachée garde
+ses points sur son nom mais **ne compte pour aucun club**.
+
+Trois erreurs de script rattrapées en séance : la première version passée était l'ancienne (barème
+15/5 — repéré aux contrôles en bas de sa capture) ; Postgres a refusé le changement de type de
+retour (`points` entier → décimal) sans `drop function` préalable ; « Préparatoire 080 » (zéro de
+« 0,80 » resté collé) corrigé par un cast.
+
+## SUJETS OUVERTS (à sa demande, laissés dans le suivi)
+
+- **Mode de calcul du club** : total brut provisoire ; alternatives discutées — 5 meilleures
+  (« on peut dire les 5 meilleures ? » puis « je sais pas, attends »), 3 meilleures, moyenne.
+- **Hauts faits** : barème et activation.
+- **Points FFE manquants** sur les 14 résultats depuis juin 2026 : repasser les télémats ou
+  laisser.
+- **Rattachement des cavalières à l'import** : l'écran n'existe pas encore (la fonction SQL, si).
+- **Classement des clubs sur Communauté** (replié après le 5e, son club toujours visible, lien qui
+  dit combien il en reste ; question posée : faire démarrer la liste au 4e puisque le podium
+  montre déjà les 3 premiers ?) et **marque discrète cliquable** (place + points) sur la page du
+  club à la place du classement actuel — **elle dessine la marque**.
+
+## NON VU À L'ÉCRAN
+
+Le build 103. Ses retours du jour sur les builds précédents : « Petite » ✅ ; le tournis, l'album
+qui se rouvre, la remontée, « on ne voit pas en direct » → tous visés par les builds 101 à 103.
+
+## LEÇON
+
+**Un calcul enfermé dans un effet de chargement coûte un rechargement à chaque fois qu'on en a
+besoin ailleurs.** Deux jours de « ça remonte », « ça me remet dans un album », « je ne vois rien en
+direct » pour un algorithme qu'il suffisait de sortir dans une fonction — sans en changer une ligne.
+
+---
+
+# 🟩 13/09/2026 (nuit) — L'INTERFACE PASSE EN ARABE (319 TEXTES) · LES 16 COMPLÉMENTS RÉAPPLIQUÉS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ebb2d392719bc25b9de0867bbae07a53` | 16 compléments réappliqués + 319 clés `"ar"` ajoutées dans `I18N` (6 961 989 octets) |
+| `SUIVI.md` | racine | — | ce suivi |
+
+⚠️ Base de départ : ton `index.html` d'aujourd'hui (13/09, chantier albums photo). **Ce dernier n'avait
+pas les 16 compléments en arabe** livrés précédemment — ils avaient dû partir d'une version antérieure.
+Je les ai réappliqués par-dessus, puis j'ai ajouté l'arabe de l'interface. `hype-cours-galop1.js`,
+`2.js`, `3.js`, `hype-cours-galops-sup.js`, `hype-cours-baby.js`, `_headers` : **INCHANGÉS**. Aucun SQL,
+aucune image.
+
+## CE QUI A ÉTÉ FAIT
+
+**1. Les 16 compléments** (contact, aides, transitions, incurvation, vitesse, épaules-hanches,
+protections, obstacles-équilibre, soins-travail, identité, nourrir, extérieur, abord, saut,
+impulsion) : réappliqués à l'identique — mêmes clés `"ar"` que la dernière fois, vérifiées de
+nouveau une par une.
+
+**2. L'interface de l'appli, 319 textes** : le dictionnaire `I18N` (menus, boutons, écrans
+d'inscription, tableau de bord, classement, quiz, examen blanc, profil, abonnement, back-office…)
+a reçu une clé `"ar"` sur chacune de ses 319 entrées, avec exactement les mêmes clés que le
+français partout. **Aucun changement de code n'a été nécessaire** : la fonction `t()` qui lit
+l'interface (`entree[langue] || entree.fr`) fonctionnait déjà pour n'importe quelle langue — il
+suffisait que la donnée existe. C'est la bonne nouvelle de cette livraison.
+
+## VÉRIFIÉ
+
+- **16/16 compléments valides** (7 langues, clés identiques au français).
+- **319/319 clés de l'interface enrichies**, mêmes clés arabes que françaises partout.
+- **Simulation complète de `t()` en arabe** sur les 319 clés : 313 sortent en arabe ; les 6
+  restantes sont normales — une chaîne vide (`pret_progresser`, vide en français aussi) et 5
+  noms de marque volontairement laissés en latin (« Hey Baby », « Premium »), comme partout
+  ailleurs dans l'appli.
+- **`node --check`** : 18 blocs sans défaut.
+- **Contrôle des marqueurs** (14 repères) : tous inchangés.
+
+## À L'ÉCRAN : + / −
+
+**+** En arabe, **toute l'interface** de l'appli s'affiche maintenant en arabe : accueil, menus
+du bas, profil, classement, quiz, examen blanc, abonnement — plus les 16 compléments des
+chapitres concernés.
+**−** Les fonctions `T(fr,en,es,it,ja,de)` éparpillées dans le code (une quarantaine, avec leurs
+appels) ne sont pas concernées par cette livraison — c'est un chantier séparé, plus délicat,
+qui touche au code lui-même et pas seulement aux données. Ce que couvrent ces `T()` reste en
+français en attendant.
+
+## NON VU À L'ÉCRAN — à tester sur l'iPhone
+
+1. *Mon compte* → langue → **العربية** : dès l'écran suivant, vérifier que les menus du bas, le
+   tableau de bord, les titres d'écran sont en arabe.
+2. Parcourir : classement, quiz, examen blanc, profil, abonnement — tout doit être en arabe.
+3. Un chapitre du Galop 4 avec son complément (ex. *Le contact*) → dérouler jusqu'en bas.
+4. Retour en français : tout redevient identique à avant.
+
+## À GARDER EN TÊTE — ce qui reste
+
+- **Galop 1, 2, 3, 4 finis, QCM global réparé, 16 compléments et l'interface en arabe.**
+  C'est le chantier arabe le plus avancé possible sans toucher à G5/G6/G7 ni au code des `T()`.
+- **Les fonctions `T(fr,en,es,it,ja,de)` positionnelles** (~40 définitions + leurs appels) :
+  chantier de code à part, plus risqué (il faut ajouter un 7e argument partout, définitions et
+  appels, sans rien décaler).
+- **G5 (5/6 chapitres prêts), G6, G7** : toujours en pause à ta demande.
+- **RTL global** pas touché (menus, barre du bas restent en LTR même en arabe), **police arabe**
+  à proposer, **affiches multilingues, aucune en arabe**.
+- **Défaut dans le français d'origine** (g1-c15, « [SUITE ATTENDUE] ») : toujours pas corrigé.
+- **SUIVI-ARABE.md reçu aujourd'hui concerne Linguae** (lexiques par ville), pas Hype — non
+  traité ici, aucun fichier Linguae dans cette conversation.
+
+---
+
+# 🟩 13/09/2026 (20 h) — CHEMIN « A » : UN ÉCRAN DÉDIÉ POUR MODIFIER LES PHOTOS D'UNE ANNÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e8aa508d8a60910cbc97ff88f4242928` | build **20260908-102** |
+| `SUIVI.md` | racine | — | cette entrée |
+| `maquette-photos.html` | racine (facultatif) | — | maquette des 3 chemins, A choisi — supprimable après |
+
+Remplace le build 101 (`0720405a…`). Un seul composant touché : `ChronologieSouvenirs`.
+**Aucun SQL.** Balises et `?v=` inchangées.
+
+**À l'écran : + un bouton « Modifier » par année · + un écran plein cadre à quatre choix ·
+− le menu « Modifier les photos ⋯ » et ses quatre entrées dépliables, entièrement retirés.**
+
+## SON CHOIX
+
+Trois maquettes proposées (A : un écran à part · B : un seul mode à la fois sur la galerie ·
+C : le geste direct par appui long). Réponse : **« Ok A »**. Recommandation donnée : A, parce que
+son problème n'était pas « où est le bouton » mais « trop de choses à l'écran en même temps ».
+
+## CE QUI EST RETIRÉ
+
+Le menu du build 53 et ses quatre entrées dépliables (taille, année, ranger, cadenas).
+**La galerie ne porte plus aucun mode** — donc plus rien à refermer, plus rien qui se superpose à
+un album ouvert. C'est le premier build de la journée qui **enlève** au lieu d'ajouter.
+
+## CE QUI EST AJOUTÉ
+
+Un bouton « Modifier » par année → un écran plein cadre, en **portail vers `<body>`** (donc
+au-dessus de la barre d'onglets, elle-même un portail en z-index 50 : contrainte du 07/09). Quatre
+choix, **un seul visible à la fois**, « ‹ » revient au choix, « ✕ » sort. L'écran couvre la galerie,
+les autres années **et** l'album ouvert.
+
+Deux décisions structurelles :
+- **Rendu à la racine du composant**, pas dans la boucle des années : un `setRafraichir` (déclenché
+  par un changement d'année ou de format) vide `annees` un instant, et l'écran ne doit pas se fermer
+  sous les doigts — il affiche « … » et reste ouvert.
+- **L'écouteur « toucher ailleurs referme » du build 101 est neutralisé** pendant l'écran dédié :
+  le portail est hors du bloc de l'année, donc sans cette sortie chaque toucher dedans refermerait
+  tout. Défaut évité avant livraison, pas après.
+
+Toute la logique existante est réutilisée telle quelle : le geste du build 90, l'écriture du 91, le
+cadenas du 92, `appliquerFormatPhoto` avec ses messages du 98, `appliquerAnneeSelection`.
+
+## ⚠️ TOUJOURS PAS CORRIGÉ (dit, pas caché)
+
+1. **La remontée en haut de page** après un changement de format : `appliquerFormatPhoto` appelle
+   `setRafraichir`, qui relit tout pour recalculer le placement des cases. Dans l'écran dédié, elle
+   se voit moins (l'écran reste ouvert), mais elle est toujours là.
+2. **« À chaque fois ça remet dans un autre album ouvert »** (son mot du 13/09 au soir) : non
+   diagnostiqué, aucune hypothèse donnée. À chercher avec sa méthode — une chose à la fois, prouvée
+   avant d'être corrigée.
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 102. **Le seul retour de test reçu aujourd'hui est positif** : « j'ai pu repasser
+en petit une photo après l'avoir agrandie » (correctif SQL de 14 h 15 confirmé). Les trois autres
+retours étaient des symptômes, dont deux résolus depuis (la sélection invisible, les modes qui
+restaient ouverts) et un non diagnostiqué (l'album qui se rouvre).
+
+## LEÇON DE LA JOURNÉE
+
+**Quinze livraisons sur le même écran en un jour, et c'est la seizième — celle qui retire — qui
+règle le vrai problème.** Chaque mode ajouté était correct seul ; l'empilement était le défaut, et
+aucun test unitaire ne l'aurait montré. Seule sa phrase « ça file le tournis » l'a montré. Quand
+elle décrit une sensation plutôt qu'un bug, chercher la structure de l'écran, pas la ligne de code.
+
+---
+
+# 🟩 13/09/2026 (19 h) — TOUCHER AILLEURS REFERME LE MODE + RETOURS DE TEST DE BLANDINE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0720405a77878a1f450f8c32bdd6a6bb` | build **20260908-101** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 100 (`801fa5e2…`). Un seul composant touché : `ChronologieSouvenirs`.
+**Aucun SQL.** Balises et `?v=` inchangées.
+
+**À l'écran : + le menu et les modes se referment quand on touche ailleurs · − rien.**
+
+## SES RETOURS DE TEST (premiers de la journée)
+
+1. ✅ **« J'ai pu repasser en petit une photo après l'avoir agrandie. »** → le correctif en base de
+   14 h 15 (valeur `normal` autorisée) est **confirmé**. Point clos.
+2. ❌ « Je n'ai pas réussi à déplacer de photo en la déplaçant. » → **build en ligne inconnu**
+   (numéro d'index non relevé, 13 livraisons d'écart possibles). Autre explication probable : le
+   geste n'existe QUE dans le mode « Ranger les photos », pas dans la galerie normale. À trancher
+   par le numéro d'index avant tout diagnostic.
+3. ❌ « Je n'ai pas vu où on verrouillait un album. » → le cadenas porte sur une **ANNÉE**, 4e
+   entrée du menu. **Question posée, non résolue : voulait-elle verrouiller une année de la galerie
+   ou un ALBUM nommé ?** Le piège déjà noté dans la passation (« elle appelle "l'album" la galerie
+   par année ») joue peut-être en sens inverse cette fois.
+4. ❌ « C'est le bordel, on se mélange les pinceaux entre les photos des années, les albums
+   ouverts… quand on fait des modifs sur les photos des années on ne devrait pas avoir d'album
+   ouvert. » → **critique d'ensemble, reconnue.** Quatre modes empilés sur le même écran (format,
+   année, ranger, cadenas) pendant qu'un album peut être ouvert dessous avec SON mode
+   « Réorganiser » qui fait presque la même chose. Ajouté couche par couche sans jamais regarder
+   l'ensemble. À reprendre par des maquettes (2-3 variantes), pas par une décision solitaire.
+5. ❌ « On modifie le format d'une photo et ça nous ramène en haut de la page. »
+
+## CE QUI EST LIVRÉ (point 5, moitié sûre)
+
+Le menu « Modifier les photos ⋯ », le mode Choisir le format (avec sa photo sélectionnée et son
+message) et le mode Changer l'année se referment dès qu'on touche **en dehors** de l'année active.
+Écouteur sur `pointerdown` **en phase de capture** (sur iOS un `click` peut ne jamais arriver si le
+doigt bouge un peu) ; une référence sur le bloc de l'année active garantit qu'un toucher **dedans**
+ne ferme rien (choisir une photo, appuyer sur un bouton de format).
+
+Le mode **Ranger n'est pas refermé** par un toucher extérieur : mode plein, avec son propre
+« Terminé », et le quitter déclenche un rechargement — un toucher mal placé ne doit pas provoquer ça.
+
+## ⚠️ CE QUI N'EST PAS CORRIGÉ, ET POURQUOI
+
+**La remontée en haut de page reste.** Cause identifiée : `appliquerFormatPhoto` appelle
+`setRafraichir`, qui relance l'effet de chargement (vidage de `annees`, `setChargeCh(true)`, relecture
+des albums) uniquement pour **recalculer le placement des cases**, lequel est calculé dans cet effet
+et nulle part ailleurs. Le remède est de sortir ce calcul de l'effet pour ne recomposer que l'année
+touchée. C'est un changement dans le chemin de chargement — **volontairement pas empilé** sur 13
+livraisons sans retour de test.
+
+## LEÇON
+
+**Ajouter un mode à un écran qui en a déjà trois, c'est ajouter un problème, pas une fonction.**
+Le format, l'année, le rangement et le cadenas ont été livrés séparément, chacun correct, et
+l'ensemble est devenu illisible. Le prochain geste sur cet écran doit commencer par retirer, pas
+par ajouter.
+
+---
+
+# 🟩 13/09/2026 (18 h 30) — IDENTIFIER DANS UN COMMENTAIRE AUSSI DEPUIS UN ALBUM — DERNIER ÉCART FERMÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `801fa5e212a5194d130243cfdc821bbb` | build **20260908-100** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 99 (`ae308c72…`). Un seul composant touché : `AlbumsCheval`. **Aucun SQL.**
+Balises et `?v=` inchangées.
+
+**À l'écran : + « 🏷️ Identifier » sous ses propres commentaires dans la visionneuse d'un album ·
++ les identifiés en puces · − rien.**
+
+## CE QUI EST LIVRÉ
+
+Mêmes fonctions globales (`hypeIdentifierCommentaire`, `hypeIdentificationsCommentaires`), mêmes
+droits (son propre commentaire seulement), même notification, même affichage, même liste **en
+ligne** et non flottante. Les candidats viennent de `chargerTagCiblesA`, **déjà en place dans ce
+composant** (amis + chevaux) — rien de nouveau à charger. Identifications relues en **une** requête,
+au même endroit que la liste des commentaires.
+
+Non touché : l'identification d'une **photo** ou d'un **album**, qui restent des propositions en
+attente (`statut: attente`) — seuls les commentaires et les messages du fil sont en `accepte`.
+
+## ÉTAT DE LA JOURNÉE — LES TROIS POINTS DU MATIN SONT CLOS
+
+| Point | État |
+|---|---|
+| a. Nom d'auteur « Cavalier » | ✅ build 93 |
+| b. Supprimer son commentaire (fiche) | ✅ build 94 |
+| b. Modifier son commentaire (fiche) | ✅ SQL + build 95 |
+| b. Modifier (album) | ✅ build 96 |
+| c. Identifier dans un commentaire (fiche) | ✅ build 97 |
+| c. Notification qui mène quelque part | ✅ build 99 |
+| c. Identifier (album) | ✅ build 100 |
+
+Plus le chantier glisser-déposer complet (pièces 1 à 4, builds 88 à 92) et deux défauts trouvés en
+route : la sélection invisible du mode format (89) et la valeur `normal` refusée en base (SQL 14 h 15,
+message rendu visible au build 98).
+
+## NON VU À L'ÉCRAN
+
+**Les builds 88 à 100, entièrement.** Treize livraisons sans un seul retour de test iPhone — c'est
+le risque réel de la journée, plus que n'importe lequel des correctifs. Les deux seules preuves
+reçues sont ses captures SQL (« Success ») et ses deux enregistrements d'écran du mode format.
+
+## CE QUI RESTE OUVERT (hors périmètre de la journée)
+
+- Ouvrir le mode Ranger aux cavalières rattachées (décision produit, la base est prête).
+- Aligner la policy DELETE de `photo_comments` sur `hype_est_moderatrice()` (deux adresses en dur).
+- Les dettes de la passation : versions de `mux-upload`, policy SELECT d'`albums_cheval`, lectures
+  Mux publiques, points de qualification, app iOS native.
+
+---
+
+# 🟩 13/09/2026 (18 h) — LA NOTIFICATION D'IDENTIFICATION MÈNE ENFIN QUELQUE PART
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ae308c722bb61a0aae040810f927efaa` | build **20260908-99** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 98 (`799e25dd…`). Touché : l'écran des notifications + `EcranCheval`.
+**Aucun SQL.** Balises et `?v=` inchangées.
+
+**À l'écran : + le texte « t'a identifiée dans un commentaire » · + le tap qui ouvre la fiche du
+cheval, la photo et ses commentaires · − le tap qui ne faisait rien.**
+
+## LE DÉFAUT, CRÉÉ PAR LE BUILD 63 LUI-MÊME
+
+Depuis le build 63 on peut identifier quelqu'un dans un commentaire, et la notification part bien.
+Mais elle portait la cible `photocom:<id du commentaire>`, qu'**aucune branche de `naviguerVers`
+ne connaissait** : le tap fermait le panneau et n'ouvrait rien. Et son texte tombait sur le repli
+« a commenté », qui ne disait pas ce qui venait de se passer. C'était signalé en clair à la fin du
+build 63 — corrigé avant que des cavalières commencent à s'identifier entre elles.
+
+## CE QUI EST LIVRÉ
+
+1. Texte propre « t'a identifiée dans un commentaire », 6 langues.
+2. **Résolution en base** : un identifiant de commentaire ne dit à lui seul ni la photo ni le
+   cheval. On lit `photo_comments` (`photo_url` + `cible`, de la forme `cheval:<id>`), puis on
+   ouvre la fiche de ce cheval.
+3. L'adresse de la photo passe par `window.__chevalPhotoOuvrir`, **lu une seule fois puis effacé**
+   par `EcranCheval` — même motif que `window.__ouvrirPalmares` (26/08). Portail inter-composants
+   toujours proscrit (leçon du 23e). La visionneuse s'ouvre sur la photo, **panneau des
+   commentaires déployé** : la notification parle d'un commentaire, on arrive dessus.
+4. Si la photo n'existe plus, rien ne s'ouvre et la fiche reste affichée — **jamais d'écran vide**.
+
+## RESTE
+
+Le bouton « Identifier » dans la visionneuse d'**album** (le seul écart jumeau encore ouvert).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 99. Le correctif de « Petite » (SQL de 14 h 15) n'a pas non plus de retour de test.
+
+---
+
+# 🟩 13/09/2026 (14 h 15) — « PETITE » : LA VALEUR `normal` N'ÉTAIT PAS AUTORISÉE EN BASE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `sql-13-09-format-petite.sql` | Supabase → SQL Editor | — | **PASSÉ EN BASE** le 13/09 (capture « Success », 14 h 15) |
+
+Aucun fichier poussé : le correctif est entièrement en base, le code du bouton était juste.
+
+## LA CAUSE, PROUVÉE PAR TROIS REQUÊTES SUCCESSIVES
+
+1. `pg_policies` sur `photo_formats` : INSERT, UPDATE et DELETE ouverts à la propriétaire de la
+   ligne OU `hype_est_moderatrice()`. → Ce n'était PAS un droit manquant (contrairement à
+   `photo_comments` le même jour).
+2. Les 5 dernières lignes de `photo_formats` : toutes au nom de Blandine, formats présents
+   `pleine_largeur`, `pleine_hauteur`, `grand` — **aucun `normal`**. → Ce n'était pas une ligne
+   appartenant à une autre cavalière ; et l'absence totale de `normal` a mis sur la piste.
+3. `pg_constraint` : `photo_formats_format_check CHECK (format = ANY (ARRAY['grand',
+   'pleine_largeur', 'pleine_hauteur']))` → **`normal` ABSENT de la liste autorisée.**
+
+La table a été créée le 11/09 avec trois valeurs. Le bouton « Petite » est arrivé le **12/09**
+(build 32) avec la valeur `normal`. Depuis, chaque tap sur « Petite » était rejeté par la base.
+
+## POURQUOI DEUX JOURS
+
+Le message d'échec de `appliquerFormatPhoto` partait dans `erreurAnnee`, affiché uniquement dans
+le bloc « Changer l'année ». Invisible tant que ce mode n'est pas ouvert. Corrigé au build 98
+(message propre au panneau de format, photo qui reste sélectionnée). Les builds 83 et 89 avaient
+corrigé de vrais défauts voisins (la rangée qui bougeait, la sélection invisible) sans jamais
+atteindre celui-ci.
+
+## UN SEUL DÉFAUT, DEUX SYMPTÔMES
+
+« On peut pas passer petit » et « il la détecte en automatique même quand en grand » sont la même
+chose : une photo agrandie par le rythme automatique affiche bien « Automatique » comme choix
+actif (c'est juste, elle n'a aucun format manuel) ; ce qui manquait était la possibilité de la
+forcer en petit — la valeur refusée.
+
+## CE QUI A ÉTÉ PASSÉ
+
+`photo_formats_format_check` remplacée par la liste des QUATRE valeurs (`normal`, `grand`,
+`pleine_largeur`, `pleine_hauteur`). Aucune donnée touchée : tous les formats déjà enregistrés
+restent valides.
+
+## LEÇON — TROIS FOIS DANS LA MÊME JOURNÉE
+
+Trois défauts, une seule famille : la base refuse, et l'écran ne dit rien.
+- `photo_comments` : aucune policy UPDATE → un UPDATE modifiait 0 ligne sans erreur.
+- `annees_photos` : refus prévus dès la conception, donc dits à l'écran (build 91).
+- `photo_formats` : une valeur hors de la liste autorisée → rejet muet pendant deux jours.
+**Règle à appliquer partout : toute écriture soumise à RLS ou à une contrainte doit être forcée à
+répondre (`.select()`), et son échec doit s'afficher LÀ OÙ LE GESTE A EU LIEU.**
+
+---
+
+# 🟥 13/09/2026 (17 h 30) — « ON SÉLECTIONNE MAIS ON PEUT PAS PASSER PETIT » : L'ÉCHEC ÉTAIT INVISIBLE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `799e25ddabbc47095cb25d5d5817bda3` | build **20260908-98** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 97 (`4b6c05c2…`). Un seul composant touché : `ChronologieSouvenirs`, mode
+« Choisir le format ». **Aucun SQL.** Balises et `?v=` inchangées.
+
+**À l'écran : + le message d'échec sous les boutons de format · + la photo reste sélectionnée
+après un échec · − plus rien qui parte dans le bloc du changement d'année.**
+
+## CE QUE SA VIDÉO PROUVE (14 h 00, lue image par image)
+
+- **La sélection marche.** Le liséré turquoise du build 89 apparaît bien sur la photo touchée, la
+  vignette « Cette photo » s'affiche, et le panneau montre « Pleine largeur » comme choix actif.
+  **Donc le tap sur une grande photo n'a jamais été perdu** — c'était l'affichage qui ne disait
+  rien. La question ouverte depuis ce matin est répondue, et le build 89 a fait son travail de
+  diagnostic.
+- **Ce qui échoue, c'est l'écriture du format.** Après le tap sur « Petite », la photo est
+  **désélectionnée** et le panneau retombe sur « Tape la photo à mettre en valeur » — c'est
+  exactement la branche d'échec de `appliquerFormatPhoto`.
+
+## LES DEUX DÉFAUTS TROUVÉS DANS CETTE BRANCHE D'ÉCHEC
+
+1. **Le message partait dans `erreurAnnee`**, qui n'est affiché que dans le bloc « Changer
+   l'année ». Tant que ce mode n'est pas ouvert, l'échec est **totalement muet**.
+2. **L'échec désélectionnait la photo** (`setPhotoFormat(null)`) : impossible même de réessayer.
+
+## CE QUI EST LIVRÉ
+
+- Un état d'erreur propre au panneau de format, affiché **sous la rangée de boutons** (la rangée ne
+  bouge pas : leçon du build 83).
+- La photo **reste sélectionnée** après un échec.
+- Les deux causes possibles sont **distinguées**, parce qu'elles n'ont pas le même remède :
+  - une erreur rendue par la base → message affiché tel quel ;
+  - un upsert qui ne modifie **aucune ligne** → « la base a refusé ce changement », ce qui arrive
+    typiquement quand la ligne de format de cette photo **appartient à un autre compte** (RLS).
+
+## CE QUE JE NE SAIS PAS ENCORE
+
+**Laquelle des deux.** Le prochain tap sur « Petite » le dira à l'écran. En parallèle, relevé des
+policies de `photo_formats` demandé à Blandine — une requête, pas d'hypothèse.
+
+## À VÉRIFIER ENSUITE, PAS ENCORE EXPLIQUÉ
+
+Son autre phrase : « il la détecte en automatique même quand en grand ». Sur la vidéo, la photo
+sélectionnée montrait « Pleine largeur » actif, donc pas ce cas-là. À reprendre sur une photo
+précise, une fois le message d'erreur visible.
+
+## ERREUR DE MA PART, CORRIGÉE AVANT LIVRAISON
+
+Ma première passe a tronqué la ligne du bouton de format (remplacement jusqu'à la fin de ligne
+alors que la ligne portait aussi la fermeture du bouton). `node --check` l'a refusée, la ligne a été
+reconstruite depuis le build 97 et les 18 blocs repassent verts. **Deuxième fois aujourd'hui que le
+contrôle de syntaxe rattrape une livraison** (la première : un `await` sans `async` au build 91).
+
+---
+
+# 🟩 13/09/2026 (17 h) — IDENTIFIER DES CAVALIÈRES ET DES CHEVAUX DANS UN COMMENTAIRE (point c)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `4b6c05c2d8db122b22d04023860c26ab` | build **20260908-97** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 96 (`79e718e5…`). Touché : `EcranCheval` + deux fonctions globales ajoutées à
+côté de `identifierSouvenir`. **Aucun SQL.** Balises et `?v=` inchangées.
+
+**À l'écran : + un bouton « 🏷️ Identifier » sous ses propres commentaires · + les personnes et
+chevaux identifiés, en puces sous le commentaire · − rien.**
+
+## SON CADRAGE (13/09)
+
+« 1 les deux 2 oui » — réponse à mes deux questions : la personne identifiée est **notifiée** ET
+apparaît sous le commentaire ; on peut identifier **des cavalières et des chevaux**, comme sur le
+fil.
+
+## POURQUOI AUCUN SQL
+
+`identifications` porte déjà des cibles qui ne sont pas des photos : `album:<id>` depuis juillet,
+`post:<id>` depuis le build 77. On ajoute la forme **`photocom:<id du commentaire>`** — même
+colonne, même lecture, rien à migrer. Trouvé, pas inventé.
+
+Statut **`accepte`**, comme pour les messages du fil : identifier dans un commentaire n'est pas une
+**proposition à valider** (ça, c'est l'identification sur une photo, qui reste `attente`).
+
+## CE QUI EST LIVRÉ
+
+- « 🏷️ Identifier » **sous son propre commentaire seulement**.
+- La liste des candidats (amis + chevaux, via `chargerTagCibles` déjà en place) s'ouvre **en ligne**
+  sous le commentaire, **jamais en panneau flottant** : rien à caler contre la barre d'onglets, rien
+  qui puisse pousser un bouton sous le doigt (défauts payés les 06 et 12/09).
+- Déjà identifiés retirés de la liste ; puces sous le commentaire, cheval marqué d'un pictogramme.
+- Notification via `hypeNotifier` (qui refuse déjà de se notifier soi-même) ; **un cheval ne reçoit
+  rien**.
+- Les identifications des commentaires affichés sont relues **en une seule requête**, au même
+  endroit que la liste.
+
+## RESTE
+
+- Le même bouton dans la visionneuse d'**album**.
+- L'écran d'arrivée quand on touche la notification d'identification (elle mène au contexte
+  `photocom:<id>`, que rien ne sait encore ouvrir).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 97.
+
+## INCIDENT D'OUTIL, SANS CONSÉQUENCE
+
+Mon script de modification a écrasé ma copie de travail de l'index en cours de route (un caractère
+emoji mal échappé a fait échouer l'écriture après troncature). **Rien de livré n'a été touché** :
+la copie du build 96 déjà produite a servi de base, les modifications ont été refaites, et les
+contrôles (18 blocs `node --check`, balises, périmètre du diff) sont passés sur le fichier final.
+À retenir : **toujours repartir du dernier fichier livré, jamais de la copie de travail**, et ne
+jamais écrire d'emoji dans un script d'édition.
+
+---
+
+# 🟩 13/09/2026 (16 h 30) — « MODIFIER » AUSSI DANS LA VISIONNEUSE D'UN ALBUM
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `79e718e53fd445d3b6f846f0e95334ae` | build **20260908-96** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 95 (`d9d9f2cd…`). Un seul composant touché : `AlbumsCheval`. **Aucun SQL** (la
+policy est passée au build 95). Balises et `?v=` inchangées.
+
+**À l'écran : + « Modifier » au-dessus de « Suppr. » sur ses propres commentaires, dans la
+visionneuse d'un album · + la mention « · modifié » · − rien.**
+
+## POURQUOI TOUT DE SUITE
+
+Le build 95 n'avait posé le bouton que dans la visionneuse de la **fiche**. Deux écrans jumeaux,
+deux gestes différents sur la **même** donnée — c'est mot pour mot la leçon que le suivi venait
+d'écrire deux fois dans la journée (le « Cavalier » du build 93, le « Supprimer » du build 94).
+Laisser l'écart une nuit, c'était le retrouver dans une semaine comme un bug.
+
+## CE QUI EST LIVRÉ
+
+Même fonction globale `modifierCommentairePhoto` (avec son `.select("id")` qui interdit les faux
+succès), mêmes droits (**son propre commentaire seulement**), même mention « · modifié », même bloc
+de texte 3 lignes en 16 px. Le bouton se range dans la colonne de boutons existante, au-dessus de
+« Suppr. » ; « Signaler » sur les commentaires des autres reste inchangé.
+
+## RESTE DES TROIS POINTS DU MATIN
+
+Seul le point **c** reste : mentionner quelqu'un dans un commentaire. Le mécanisme existe pour les
+messages du fil depuis le build 77 (table `identifications`, cible `post:<id>`) et est extensible
+aux commentaires — à cadrer avec elle avant de coder (quelle cible, et faut-il notifier).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 96.
+
+---
+
+# 🟩 13/09/2026 (16 h) — MODIFIER SON COMMENTAIRE D'UNE PHOTO (fin du point b)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d9d9f2cd4070abab2d75e622fc17f6ed` | build **20260908-95** |
+| `SUIVI.md` | racine | — | cette entrée |
+| `sql-13-09-photo-comments-modifier.sql` | Supabase → SQL Editor | — | **PASSÉ EN BASE** le 13/09 (capture « Success », 13 h 47) |
+
+Remplace le build 94 (`4c0552e4…`). Un seul composant touché : `EcranCheval` (+ une fonction
+globale ajoutée à côté de `supprimerCommentairePhoto`). Balises et `?v=` inchangées.
+
+**À l'écran : + « Modifier » à côté de « Supprimer » sur ses propres commentaires · + la mention
+« · modifié » · − rien.**
+
+## CE QUE LE RELEVÉ DES POLICIES A PROUVÉ (une requête, exécutée par elle)
+
+`photo_comments` : INSERT autrice · SELECT `true` · DELETE autrice **ou deux adresses écrites en
+dur** (`feinn@live.fr`, `malicia2008@hotmail.fr`) · **AUCUNE policy UPDATE**. Donc un UPDATE
+modifiait **0 ligne sans erreur** — le piège exact payé le 09/09 sur `commentaires` et `souvenirs`.
+
+**Vérifié au passage, pas supposé** : ces deux adresses sont exactement `HYPE_MODERATEURS` côté
+écran, donc le bouton « Supprimer » du build 94 ne promet rien que la base refuse.
+
+## SQL PASSÉ
+
+Colonne `modifie_le` (même nom que sur les messages du fil, pour que la mention s'écrive pareil
+partout) + policy « photo_comments maj » : **autrice ou `hype_est_moderatrice()`** — la liste
+unique, plutôt qu'une troisième liste d'adresses en dur.
+
+## DETTE SIGNALÉE, NON MODIFIÉE (sa décision)
+
+La policy DELETE porte deux adresses en dur au lieu d'appeler `hype_est_moderatrice()`. Aujourd'hui
+les deux listes coïncident. **Le jour où une modératrice sera ajoutée, elle pourra MODIFIER sans
+pouvoir SUPPRIMER.** À aligner un jour, sur décision, pas en douce.
+
+## CE QUI EST LIVRÉ
+
+- « Modifier » à côté de « Supprimer », **sur ses propres commentaires seulement**. Une modératrice
+  peut tout supprimer (règle du 02/09) mais l'écran ne propose pas de réécrire les mots d'une autre,
+  même si la base l'autorise désormais.
+- Le commentaire devient un bloc de texte de 3 lignes, **16 px** (sinon iOS zoome toute la page,
+  leçon du build 81), retours à la ligne conservés à l'affichage. Enregistrer / Annuler.
+- Mention « · modifié » à côté du prénom, même forme que sur le fil.
+- `modifierCommentairePhoto` fait `.select("id")` **à dessein** : sans lui, un refus de la base
+  (0 ligne touchée, aucune erreur) ressortirait comme un succès et l'écran mentirait. 0 ligne →
+  message affiché.
+
+## RESTE
+
+- Le même bouton dans la visionneuse d'**album** (autre composant, autre livraison).
+- c. Mentionner quelqu'un dans un commentaire (mécanisme du fil, table `identifications`).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 95.
+
+## LEÇON
+
+**Une écriture qui ne peut pas échouer bruyamment doit être forcée à répondre.** Sur Supabase, un
+UPDATE ou un DELETE refusé par RLS ne lève rien : il touche 0 ligne. Sans `.select()`, l'écran
+affiche un succès et la donnée n'a pas bougé. Troisième fois ce mois-ci (fil le 09/09, commentaires
+aujourd'hui) — à faire systématiquement sur toute écriture soumise à RLS.
+
+---
+
+# 🟩 13/09/2026 (15 h 30) — SUPPRIMER SON COMMENTAIRE DEPUIS LA VISIONNEUSE DE LA FICHE (point b)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `4c0552e483a1d81aa692de5ace7a26dc` | build **20260908-94** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 93 (`83c6e983…`). Un seul composant touché : `EcranCheval`. **Aucun SQL.**
+Balises et `?v=` inchangées.
+
+**À l'écran : + un bouton « Supprimer » sous les commentaires qu'on peut retirer · − rien.**
+
+## LE MANQUE
+
+Le bouton n'existait **que** dans la visionneuse d'un album. Un commentaire écrit depuis la fiche
+cheval ne pouvait donc plus être retiré du tout, par personne.
+
+## CE QUI EST LIVRÉ
+
+- « Supprimer » sous chaque commentaire dont on est l'autrice, et sous **tous** pour une
+  modératrice (règle du 02/09 : « je dois pouvoir tout retirer partout »).
+- `supprimerCommentairePhoto` existe depuis l'origine : rien en base, aucune policy à changer.
+- La ligne disparaît de la liste **sans rechargement** ; un échec est **dit** par un toast, jamais
+  silencieux ; le bouton se désactive le temps de l'appel (pas de double suppression).
+
+## POURQUOI « MODIFIER » N'EST PAS DANS CE BUILD
+
+Les messages du **fil** ont reçu le 13/09 la colonne `modifie_le` et une policy UPDATE (build 74).
+La table **`photo_comments`**, elle, n'a **ni l'une ni l'autre** : modifier un commentaire de photo
+demande un script SQL, et d'abord de relever ses policies — requête posée à Blandine, réponse
+attendue. Rien n'a été tenté à l'aveugle.
+
+## RESTE
+
+- b (suite). Modifier son commentaire de photo → SQL à écrire après lecture des policies.
+- c. Mentionner quelqu'un dans un commentaire (mécanisme du fil, table `identifications`,
+  extensible).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 94.
+
+## LEÇON
+
+**Deux surfaces qui affichent la même donnée doivent offrir les mêmes gestes.** La visionneuse
+d'album savait supprimer, celle de la fiche non — même table, même autrice, deux droits différents
+à l'écran. Même famille que le « Cavalier » du build 93 : ce sont les écrans jumeaux qui divergent.
+
+---
+
+# 🟩 13/09/2026 (15 h) — « CAVALIER » À LA PLACE DU PRÉNOM SUR LES COMMENTAIRES D'UNE PHOTO
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `83c6e983427e3066d7f86e6c906b96e3` | build **20260908-93** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 92 (`268ebbf8…`). Un seul composant touché : `EcranCheval`, visionneuse de la
+fiche. **Une seule expression changée.** Aucun SQL, aucune requête ajoutée.
+
+**À l'écran : + le vrai prénom de l'autrice sous chaque commentaire d'une photo · − « Cavalier ».**
+
+## LA CAUSE
+
+La liste des commentaires de cette visionneuse lisait `cmm.auteur` — **un nom qui n'existe nulle
+part**. `listerCommentairesPhoto` fait la jointure elle-même (par lots de 100) et range le profil
+de l'autrice sous **`profil`**. Le repli « Cavalier » s'affichait donc **toujours, pour tout le
+monde**, depuis l'origine.
+
+Ce qui a mis sur la voie : la visionneuse d'**album**, qui lit bien `c.profil`, affichait le bon
+prénom au même instant, sur les mêmes commentaires. Deux écrans, deux lectures, un seul juste.
+
+## CE QUI EST LIVRÉ
+
+`cmm.profil` d'abord, `cmm.auteur` conservé en repli (au cas où un autre appelant fournirait cette
+forme), et le dernier repli passe au féminin et aux 6 langues (« Cavalière ») au lieu du
+« Cavalier » écrit en dur en français.
+
+## RESTE DES TROIS POINTS DU MATIN
+
+- b. Modifier ou supprimer son commentaire depuis la visionneuse de la fiche (le bouton
+  « Supprimer » n'existe que dans la visionneuse d'album).
+- c. Mentionner quelqu'un dans un commentaire (le mécanisme du fil, table `identifications`, cible
+  `post:<id>`, est extensible aux commentaires).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 93. Toujours aucune réponse sur le liséré de sélection du format (89).
+
+## LEÇON
+
+**Un nom de champ faux ne casse rien : il affiche le repli.** C'est le pire des cas, parce que rien
+ne signale l'erreur — ni plantage, ni requête en échec, juste un mot générique que tout le monde
+finit par croire normal. Même famille que le `moi`/`moiAc` du build 85. Quand deux écrans affichent
+la même donnée différemment, c'est presque toujours un nom de champ qui diverge.
+
+---
+
+# 🟩 13/09/2026 (14 h 30) — PIÈCE 4b/4 : LE CADENAS D'UNE ANNÉE — CHANTIER GLISSER-DÉPOSER TERMINÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `268ebbf83eaa61e3e3effde0abd06a1d` | build **20260908-92** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 91 (`0cf52781…`). Un seul composant touché : `ChronologieSouvenirs`.
+**Aucun SQL** (`photos_annee_verrou` est en base depuis ce matin). Balises et `?v=` inchangées.
+
+**À l'écran : + une 4e entrée « Verrouiller / Déverrouiller cette année » dans le menu · + un
+cadenas 🔒 à côté du titre d'une année verrouillée · − rien.**
+
+## CE QUI EST LIVRÉ
+
+- 4e entrée du menu, avec une phrase qui dit ce que le cadenas fait, et son état actuel.
+- Le cadenas de chaque année est relu au chargement, au même endroit que l'ordre (une requête,
+  pas deux).
+- Droits vérifiés **en base** (responsable du cheval ou modératrice) ; l'écran affiche le refus.
+- Une année verrouillée **reste rangeable par la responsable et les modératrices** sans retirer le
+  cadenas — son choix explicite du 13/09.
+
+## ⚠️ LIMITE À DIRE, TROUVÉE EN ÉCRIVANT CETTE PIÈCE
+
+Les **quatre** entrées du menu « Modifier les photos ⋯ » sont gardées par `props.proprio`, qui vaut
+`chevaux.user_id === moi` **ou** modératrice (vérifié ligne 43298). Donc **aujourd'hui, personne
+d'autre que la responsable et les modératrices ne peut changer l'ordre, le format ou l'année depuis
+l'écran** — le cadenas n'a donc pas d'effet visible pour Blandine : il protège contre un appel
+direct à l'API, et prendra tout son sens le jour où le menu s'ouvrira aux cavalières rattachées.
+
+La règle construite en base (« une cavalière peut ranger une année dont TOUTES les photos sont les
+siennes ») est donc, pour l'instant, plus large que ce que l'écran propose. Ce n'est pas un défaut :
+la base est du bon côté. **Décision en attente** (posée à Blandine, non tranchée) : ouvrir ou non
+le mode Ranger aux cavalières rattachées.
+
+## ÉTAT DU CHANTIER
+
+| Pièce | État |
+|---|---|
+| 1 — l'ordre enregistré (SQL) | ✅ passé en base le 13/09 |
+| 2 — le tri (build 88) | ✅ livré |
+| 3 — le geste (build 90) | ✅ livré |
+| 4a — l'écriture (build 91) | ✅ livré |
+| 4b — le cadenas (build 92) | ✅ livré |
+
+Chantier « glisser-déposer dans la galerie par année » **terminé côté code**. Aucune pièce n'a de
+retour de test iPhone.
+
+## RESTE DU MATIN, NON TRAITÉ (les trois points de la passation)
+
+- a. Le nom d'auteur d'un commentaire affiche « Cavalier » — cause trouvée et écrite dans la
+  passation (`cmm.auteur` lu alors que `listerCommentairesPhoto` range le profil sous `profil`,
+  visionneuse de la fiche, autour de la ligne 43225). **Un seul nom à corriger, rien en base.**
+- b. On ne peut ni modifier ni supprimer son commentaire dans cette visionneuse.
+- c. Mentionner quelqu'un dans un commentaire n'existe pas (le mécanisme du fil, table
+  `identifications`, est extensible).
+
+## NON VU À L'ÉCRAN
+
+Les builds 88 à 92, entièrement. Plus le liséré de sélection du format (89), livré pour trancher si
+le tap sur une grande photo est perdu — **réponse toujours attendue**.
+
+## LEÇON
+
+**Avant d'ajouter un garde-fou, vérifier qui peut déjà franchir la porte.** Le cadenas a été conçu
+contre « les autres cavalières », alors que l'écran ne leur avait jamais ouvert le menu. Le
+garde-fou reste juste, mais son utilité réelle dépend d'une décision produit qui n'est pas prise.
+
+---
+
+# 🟩 13/09/2026 (14 h) — GLISSER-DÉPOSER, PIÈCE 4a/4 : L'ORDRE S'ENREGISTRE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0cf52781b58c9e714dcf9d2eedf42a90` | build **20260908-91** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 90 (`472bfcf0…`). Un seul composant touché : `ChronologieSouvenirs`.
+**Aucun SQL** (`photos_annee_ranger` est en base depuis ce matin). Balises de scripts et `?v=`
+inchangées.
+
+**À l'écran : + « Ordre enregistré ✓ » après chaque dépôt · + un message qui reste affiché en cas
+de refus ou d'échec · − la ligne orange « pas encore enregistré ».**
+
+## CE QUI EST LIVRÉ
+
+Chaque dépôt appelle `photos_annee_ranger` avec l'ordre **complet** de l'année. Le mouvement est
+immédiat à l'écran, mais **l'ordre rendu par la base fait loi** :
+
+- **Refus** (l'année contient des photos d'autres cavalières) ou **année verrouillée** ou **échec**
+  → l'ordre du serveur est **relu pour cette année seule** et appliqué, avec un message qui
+  **reste affiché** jusqu'au geste suivant (jamais un bip de 3 s, leçon du 27/08).
+- **Fonction absente en base** → dit à l'écran, rien n'est touché (même filet que
+  `album_deplacer_media` au build 67).
+- Les droits sont vérifiés **en base**, jamais à l'écran : l'écran affiche le refus, il ne le
+  décide pas.
+
+## DEUX CHOIX D'IMPLÉMENTATION QUI ÉVITENT DES PIÈGES CONNUS
+
+1. **Aucun rechargement complet pendant le mode Ranger.** Un `setRafraichir` à chaque dépôt vidait
+   `annees` et faisait disparaître la grille sous le doigt. Le rechargement a lieu **à la sortie**
+   du mode, et seulement si quelque chose a été écrit (`ordEcritRef`) — c'est lui qui fait revenir
+   la vraie composition (formats, grandes cases, bandeaux) dans le nouvel ordre.
+2. **En cas d'échec, relecture ciblée d'une seule année** au lieu d'un retour à l'ordre du
+   chargement : sinon plusieurs déplacements réussis avant un échec auraient été effacés de
+   l'écran alors qu'ils sont bien en base.
+
+## ERREUR TROUVÉE PAR LE CONTRÔLE, AVANT LIVRAISON
+
+`node --check` a refusé le bloc principal : `await` dans `ordPointerUp` resté non `async`.
+Corrigé, tous les 18 blocs repassent verts. **Le contrôle a fait exactement son travail** — sans
+lui, le fichier partait avec une erreur de syntaxe qui aurait mis toute l'appli hors service.
+
+## RESTE — PIÈCE 4b (le cadenas)
+
+Les fonctions SQL existent déjà (`photos_annee_verrou`, `photos_annee_verrouillee`). À faire côté
+écran : le bouton « Verrouiller cette année » (responsable du cheval + modératrices), le cadenas
+affiché sur l'année, et le blocage du **changement de format** et du **changement d'année** pour
+les autres quand l'année est verrouillée.
+
+## NON VU À L'ÉCRAN
+
+Tout, depuis le build 88 inclus : aucun retour de test sur le tri (88), le liséré de sélection du
+format (89), le geste (90) et cette écriture (91) — livrés sur ses « Ok continue » successifs.
+
+## LEÇON
+
+**Un ordre enregistré au fil du geste ne doit jamais provoquer un rechargement de l'écran où se
+passe le geste.** Écrire au fur et à mesure, relire à la sortie.
+
+---
+
+# 🟩 13/09/2026 (13 h 30) — GLISSER-DÉPOSER, PIÈCE 3/4 : LE GESTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `472bfcf068b8177982271909b4b60da5` | build **20260908-90** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 89 (`42f0f507…`). Un seul composant touché : `ChronologieSouvenirs`. **Aucun SQL**
+(la table et les fonctions sont en base depuis ce matin). Balises de scripts et clés `?v=`
+inchangées (139, identiques).
+
+**À l'écran : + une 3e entrée « Ranger les photos (glisser-déposer) » dans le menu · + une grille
+de rangement (petites cases numérotées) pendant le mode · − le « + N voir tout » et les deux autres
+entrées du menu, le temps du rangement.**
+
+## CE QUI EST LIVRÉ
+
+3e entrée du menu « Modifier les photos ⋯ », à la place annoncée au build 53. Le mode remplace la
+composition de l'année par une **grille uniforme de petites cases numérotées** (toutes les photos
+de l'année, l'aperçu est déplié). Appui intentionnel de 260 ms → la photo se soulève, suit le
+doigt, la case visée s'éclaircit ; défilement automatique près des bords ; au-delà de 12 px avant
+la fin du délai, c'est un défilement et le geste est abandonné. Pointer Events seuls,
+`draggable:false`, `touchAction:none`, **aucun drag HTML5** — geste repris à l'identique du
+build 67 (albums), déjà éprouvé sur son iPhone. Changer de cheval quitte le mode.
+
+## POURQUOI UNE GRILLE UNIFORME ET PAS LA COMPOSITION RÉELLE
+
+La galerie écrit les coordonnées de chaque tuile **en dur** (`gridColumn`/`gridRow`, cases de 1×1 à
+3×2) et les calcule **une seule fois**, au chargement, dans l'effet qui lit les albums. Recalculer
+tout ce placement à chaque pixel du doigt était la voie risquée (et celle que la passation
+suggérait). Le mode Ranger contourne le problème : cible simple pour le doigt, case visée lisible,
+et la composition se recalcule une fois, à la sortie du mode.
+
+## ⚠️ CE QUE CE BUILD NE FAIT PAS
+
+**Rien n'est enregistré.** L'ordre ne vit que dans l'écran et repart comme avant en quittant le
+mode — une ligne orange le dit à l'écran, dans les 6 langues. L'écriture en base
+(`photos_annee_ranger`) et le cadenas sont la **pièce 4**. Le point d'écriture est déjà marqué dans
+le code, dans `ordPointerUp`.
+
+## VÉRIFIÉ
+
+- `node --check` sur les **18 blocs JS** : tous OK.
+- Diff confiné à `ChronologieSouvenirs` + l'en-tête + le marqueur de build (89 → 90).
+- Les **139 balises de scripts** et leurs `?v=` identiques — travail arabe en parallèle non touché.
+- `refGrilleAn` (mesure de la largeur) : l'effet sort sans rien écrire si la grille n'est pas
+  montée (`if (!el) return`), donc `uniteGalerie` ne peut pas tomber à zéro pendant le mode Ranger.
+
+## NON VU À L'ÉCRAN
+
+Tout ce build. Et toujours aucun retour de test sur le 88 (le tri) ni sur le 89 (le liséré de
+sélection du format) — livrés sur ses « Ok continue » successifs.
+
+## LEÇON
+
+**Quand un placement est calculé une fois et écrit en dur, ne pas le rejouer pendant un geste :
+changer d'écran le temps du geste.** Le mode dédié coûte une vue de plus et supprime toute une
+classe de bugs de recalcul.
+
+---
+
+# 🟥 13/09/2026 (13 h) — « ON NE PEUT PLUS CHANGER LE FORMAT DES GRANDES PHOTOS » : LE PANNEAU NE DISAIT PAS SUR QUELLE PHOTO IL TRAVAILLE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `42f0f507ce4bb10a1e4e0691447f3725` | build **20260908-89** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 88 (`a8ade27e…`). Un seul composant touché : `ChronologieSouvenirs`, mode
+« Choisir le format ». **Aucun SQL.** Le tri de la pièce 2 (build 88) est conservé intact.
+Balises de scripts et clés `?v=` inchangées (139, identiques).
+
+**À l'écran : + un liséré turquoise sur la photo touchée · + une vignette de cette photo au-dessus
+des boutons de format · + les autres photos de l'année s'estompent une fois qu'une est choisie
+· − rien.**
+
+## SA DEMANDE (vidéo du 13/09, 12 h 41)
+
+« On peut pas sélectionner les photos quand elles ont changé de format. Sur la vidéo quand je
+clique sur les petites on voit qu'il se passe quelque chose, j'ai alterné chaque clic sur une
+petite photo avec des clics sur les grandes photos, et sur les grandes ça fait rien. Du coup comme
+on peut pas les sélectionner on peut plus changer leur format. »
+
+## CE QUE L'ENREGISTREMENT PROUVE (lu image par image, 3 images/seconde)
+
+- Le panneau du bas **ne change JAMAIS** pendant les 7 secondes : « Automatique » reste actif et
+  **aucune phrase d'explication** n'apparaît sous la rangée. La photo visée par le panneau n'a donc
+  pas changé de toute la vidéo.
+- Ce qu'il ne prouve pas : que le tap sur une grande photo soit perdu. Dans le code, le clic est
+  écrit **une seule fois** pour toutes les tuiles (`tuileHype`), petites comme grandes — même
+  fonction, même condition. Aucune raison évidente qu'une grande ne réponde pas.
+
+## LE DÉFAUT TROUVÉ, VISIBLE SUR LES IMAGES
+
+En mode « Choisir le format », **rien n'indiquait sur quelle photo le panneau travaille** : pas de
+liséré sur la photo touchée, pas de vignette dans le panneau. Le mode « Changer l'année », lui,
+marque les photos choisies d'un liséré depuis toujours. Conséquence directe : quand la photo
+touchée est déjà en « Automatique » — ce qui est le cas de la plupart —, l'affichage après le tap
+est **identique** à l'affichage avant. Impossible de distinguer « mon tap n'a pas été pris » de
+« il a été pris et il n'y a rien de neuf à montrer ».
+
+## CE QUI EST LIVRÉ
+
+- Liséré turquoise sur la photo touchée, **même convention que le mode année** (déjà comprise).
+- Les autres photos de l'année s'estompent dès qu'une est choisie, comme dans le mode année.
+- Une vignette 44 px de la photo concernée au-dessus de la rangée de boutons, en **hauteur fixe** :
+  elle ne peut pas pousser la rangée vers le bas au moment où le doigt arrive (défaut payé le 12/09,
+  build 83 — la phrase d'explication déplaçait les boutons et le doigt tombait sur « Automatique »).
+
+## POURQUOI CE CORRECTIF EST AUSSI LE DIAGNOSTIC
+
+Il rend l'état observable. Au prochain test : si le liséré **n'apparaît pas** en touchant une grande
+photo, le tap est réellement perdu et la cause est dans la réception du clic sur les grandes tuiles
+(placement en dur `gridColumn`/`gridRow`, recouvrement éventuel) — piste à suivre alors. S'il
+**apparaît**, le tap passait depuis le début et seul l'affichage mentait : le sujet est clos.
+
+## NON VU À L'ÉCRAN
+
+Tout : livré sans test iPhone. Le build 88 (pièce 2 du glisser-déposer) n'a pas non plus de retour
+de test.
+
+## CHANTIER MIS EN PAUSE
+
+**Pièce 3 du glisser-déposer (le geste), commencée puis retirée avant livraison** sur décision de
+Blandine (« Ok A » : traiter ce blocage d'abord). Rien n'a été poussé, rien n'est perdu. Le plan
+retenu pour la reprise, à garder : le mode « Ranger » remplace l'année par une **grille uniforme de
+petites cases numérotées** plutôt que de recalculer le placement en dur à chaque pixel du doigt —
+geste repris du build 67 (Pointer Events, appui 260 ms, tolérance 12 px, défilement automatique,
+aucun drag HTML5), et la composition (formats, bandeaux) se recalcule une fois, à la sortie du mode.
+
+## LEÇONS
+
+- **Un mode de sélection sans marque de sélection n'est pas un mode.** Le mode année posait un
+  liséré ; celui du format, livré plus tard sur le même écran, ne l'a jamais fait — et personne ne
+  l'a vu tant que toutes les photos testées réagissaient visiblement.
+- **« Ça fait rien » peut vouloir dire « ça ne me dit rien ».** Avant de chercher un tap perdu,
+  vérifier qu'un tap réussi produirait quelque chose de visible.
+- Ses enregistrements d'écran tiennent leur promesse : c'est l'absence de changement dans le
+  panneau, image après image, qui a orienté le diagnostic — pas une hypothèse sur le clic.
+
+---
+
+# 🟩 13/09/2026 (12 h 30) — GLISSER-DÉPOSER DANS LA GALERIE PAR ANNÉE : PIÈCES 1 ET 2 (BASE + TRI) + CADENAS D'UNE ANNÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `a8ade27e7fbdf44858c11544b996f193` | build **20260908-88** |
+| `SUIVI.md` | racine | — | cette entrée |
+| `sql-13-09-annees-photos.sql` | Supabase → SQL Editor | — | **PASSÉ EN BASE** le 13/09 (capture « Success. No rows returned », 12 h 29) — rien à pousser |
+
+Remplace le build 87 (`100b93de…`, en ligne et confirmé). Un seul composant touché :
+`ChronologieSouvenirs`. Balises de scripts et clés `?v=` inchangées (139 balises, identiques).
+
+**À l'écran : rien (+ 0 / − 0).** Volontaire : aucune année n'a encore d'ordre enregistré, donc
+la galerie s'affiche exactement comme avant. Le test attendu est une **non-régression**.
+
+## CHANTIER, TEL QUE VALIDÉ PAR BLANDINE LE 13/09
+
+Glisser-déposer pour changer l'ordre des photos dans la galerie par année, en 3e entrée du menu
+« Modifier les photos ⋯ ». Quatre pièces : **1) l'ordre enregistré · 2) le tri · 3) le geste ·
+4) l'écriture + le cadenas.** Une pièce à la fois, testée avant la suivante.
+
+**Décisions prises en séance (ses mots : « seules celles qui ont mis les photos, la responsable du
+cheval, et l'admin peuvent changer les photos ? » puis « Ordre format etc ») :**
+
+- **Ranger une année** : la responsable du cheval (`chevaux.user_id`), les modératrices, ou une
+  cavalière **seulement si toutes les photos de l'année sont les siennes**. Le droit se calcule
+  sur l'ANNÉE ENTIÈRE, jamais photo par photo — déplacer une photo décale toutes les autres, un
+  droit photo par photo produirait des déplacements réussis à moitié.
+- **Cadenas d'une année** : posé et retiré par la responsable du cheval et les modératrices. Il
+  gouverne **tout l'arrangement** — ordre, format ET changement d'année (choix 2 sur 2 : le choix 1,
+  l'ordre seul, laissait défaire une année en changeant la date d'une photo).
+- **Ce que le cadenas n'empêche pas** : l'arrivée de nouvelles photos (elles se posent en dernier,
+  jamais rejetées — bloquer l'envoi serait une autre décision, non demandée) et le retrait par une
+  cavalière de sa propre photo.
+- Années **déverrouillées par défaut**, et une année verrouillée reste modifiable par la
+  responsable et les modératrices sans retirer le cadenas.
+
+## PIÈCE 1 — LA BASE (`sql-13-09-annees-photos.sql`, passé)
+
+- Table `annees_photos` (`cheval_id`, `annee`, `ordre` jsonb, `verrouille`, `maj_le`, `maj_par`,
+  PK composite). **Une ligne par cheval et par année** : l'ordre s'écrit en entier, d'un seul coup,
+  sur une ligne verrouillée (`for update`) — un déplacement est donc atomique, jamais à moitié.
+- RLS activée. **SELECT public** (il faut pouvoir afficher une galerie rangée) et **AUCUNE policy
+  d'écriture** : on n'écrit que par les fonctions, donc un appel direct à la table depuis l'API est
+  refusé même pour une cavalière connectée. Le garde-fou n'est pas seulement à l'écran.
+- `photos_annee_ranger(cheval, annee, urls[])` → `range` / `inchange` / `verrouille` / `refuse`.
+  SECURITY DEFINER, `search_path` fixé, droits vérifiés dedans. Nettoie le fragment `#cadre=…` et
+  écarte les doublons (première place gardée).
+- `photos_annee_verrou(cheval, annee, bool)` → `verrouille` / `ouvert` / `refuse`.
+- `photos_annee_verrouillee(cheval, annee)` → booléen, lisible par tout le monde (affichage, et
+  plus tard le blocage du format et de l'année en pièce 4).
+- EXECUTE retiré de `public`, accordé à `authenticated` pour les deux écritures.
+- **Rien touché** dans `photo_dates` (années) ni `photo_formats` (tailles) : droits identiques.
+
+## DIAGNOSTIC EN BASE — CE QUI A ÉTÉ PROUVÉ, UNE REQUÊTE À LA FOIS
+
+1. `pg_policies` sur `photo_dates` : SELECT `true` ; INSERT propriétaire ; **UPDATE propriétaire OU
+   `hype_est_moderatrice()`** ; DELETE propriétaire. **Conséquence qui a fait abandonner le plan de
+   la passation** (ranger l'ordre DANS `photo_dates`) : une photo sans ligne de date en aurait reçu
+   une **au nom de celle qui fait glisser**, et la vraie propriétaire n'aurait plus pu changer
+   l'année de sa propre photo. D'où la table à part.
+2. `select photo_url, user_id from photo_dates limit 5` : le dossier de l'adresse porte bien
+   l'identifiant de l'expéditrice (`/object/public/photos/<uid>/…`, 5 lignes sur 5, cohérent avec
+   `envoyerPhoto` qui écrit `user.id + "/" + Date.now()`). **C'est ce qui rend la règle de Blandine
+   vérifiable en base** — sans ça, le droit de la cavalière était inapplicable.
+
+## PIÈCE 2 — LE TRI (build 88, un seul bloc ajouté)
+
+Au chargement de l'onglet Photos, `annees_photos` est relue pour le cheval (une requête, après les
+dates et les formats). Si une année a un ordre enregistré, **il fait loi** ; les photos qu'il ne
+mentionne pas (arrivées depuis) restent **à la fin**, dans l'ordre actuel. Table absente ou lecture
+en échec : on continue sans aucun ordre enregistré — jamais bloquant, même règle que `photo_formats`.
+
+## ⚠️ RECTIFICATION DE LA PASSATION DU 13/09
+
+La passation affirmait : « dans la galerie par année, l'ordre vient des DATES ». **C'est faux.**
+Vérifié dans ce fichier : après le regroupement par année, **il n'y a AUCUN tri interne** — les
+photos sortent dans l'ordre des albums, et dans l'ordre de chaque album (`liste` n'est triée que
+par année décroissante). Le « rang chronologique » nommé dans les commentaires du build 66 n'est
+que l'indice dans ce tableau. C'est donc cet ordre-là, inchangé, qui reste le repli d'une année
+jamais rangée — et c'est lui que le geste de la pièce 3 devra réécrire.
+
+## VÉRIFIÉ
+
+- `node --check` sur les **18 blocs JS** en ligne : tous OK.
+- Diff confiné à **3 zones** : l'en-tête de livraison, le marqueur de build (87 → 88, seul
+  caractère changé de la ligne), le bloc ajouté dans `ChronologieSouvenirs`.
+- Les **139 balises de scripts** et leurs clés `?v=` sont identiques octet pour octet — le travail
+  arabe mené en parallèle n'est pas touché.
+- Script SQL passé en base, contrôle `count(*)` sur `annees_photos` = table neuve.
+
+## NON VU À L'ÉCRAN
+
+Le tri lui-même : aucune année n'ayant d'ordre enregistré, le nouveau chemin de code ne s'exécute
+sur aucune donnée réelle. Il ne sera vraiment éprouvé qu'avec la pièce 3 (le geste) et la pièce 4
+(l'écriture). Test demandé à Blandine sur ce build : **l'onglet Photos est-il intact ?**
+
+## CONSTAT DE CÔTÉ, NON TRAITÉ
+
+Une adresse de `photo_dates` ouverte dans Safari rend `404 NoSuchKey` (« Object not found »,
+capture 12 h 25). Prouve seulement que **ce** fichier n'est plus dans le stockage (ou que l'adresse
+ouverte était tronquée) ; ne dit rien des autres. Piste si le sujet revient : compter les lignes de
+`photo_dates` qui pointent dans le vide. Sans effet sur ce chantier — une adresse morte disparaît
+de la galerie comme aujourd'hui.
+
+## LEÇONS
+
+- **Une passation peut se tromper sur la cause, pas seulement sur l'état.** Celle du 13/09 donnait
+  les dates comme source de l'ordre ; il n'y avait pas de tri du tout. Vérifier dans le fichier
+  avant de bâtir dessus, même quand la passation est de ma main.
+- **Lire les policies AVANT de choisir où ranger une donnée.** Le plan « une colonne sur
+  `photo_dates` » était plus court à écrire et aurait abîmé les droits sur les années. Deux minutes
+  de `pg_policies` ont changé l'architecture.
+- **Un droit qui porte sur un arrangement porte sur l'ensemble, pas sur l'élément.** Ranger n'est
+  pas une action sur une photo : c'est une action sur une année.
+
+---
+
 # 🟩 13/09/2026 — UN PETIT MENU « MODIFIER LES PHOTOS » AU LIEU DE DEUX LIENS PERDUS
 
 | Fichier | Où | md5 | Quoi |
