@@ -10,6 +10,167 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 13/09/2026 — UN PETIT MENU « MODIFIER LES PHOTOS » AU LIEU DE DEUX LIENS PERDUS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `100b93de50beac626fe7d9f330dd3c3d` | build **20260908-87** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 86 (`30e0bdcd…`), non poussé : ce fichier contient les builds 75 à 87.
+Un seul composant touché : `ChronologieSouvenirs`. Aucun SQL.
+
+**À l'écran : + un bouton visible « Modifier les photos ⋯ » en bas de chaque année · − les deux
+liens gris posés l'un sous l'autre.**
+
+## SA DEMANDE
+
+« C'est pas intuitif, je le cherche partout depuis deux jours. Propose un autre chemin plus
+évident, notamment là où on a mis le changement d'année et le changement de taille. On peut faire
+un petit menu ? »
+
+## FAIT
+
+Les deux liens « Choisir le format d'une photo » et « Changer l'année d'une photo » étaient posés
+l'un sous l'autre, en gris, en bas de chaque année. Ils sont maintenant derrière **un seul bouton
+visible**, encadré à la teinte du cheval : **« Modifier les photos ⋯ »**, qui les déplie, avec un
+« Fermer ». Le menu se referme de lui-même dès qu'un mode démarre, et les deux modes fonctionnent
+exactement comme avant.
+C'est là que viendra la **3e entrée, « Réorganiser les photos »**, avec le glisser-déposer.
+
+## TESTS (banc Chromium)
+
+- Avant l'ouverture : le bouton est là, et **aucun** des deux liens n'est visible.
+- Après l'ouverture : les deux liens sont là, plus « Fermer ».
+- Dès qu'un mode démarre : le bouton du menu disparaît (le menu s'est refermé).
+- Le changement d'année fonctionne toujours de bout en bout (bancs du 11/09 rejoués, adaptés au
+  menu) : la photo change d'année, aucune clé écrite sous `#cadre=`, champ vide au départ.
+- « Petite », la confirmation « Format appliqué ✓ », le décalage maximal de 3, les commentaires
+  multilignes et l'agenda du club : intacts. `node --check` : 18 blocs. Balises et `?v=` identiques.
+
+## ⚠️ ELLE EST ENCORE SUR LE BUILD 84
+
+Ses captures de 09:42 montrent **le plantage `moi`** de la fiche cheval, corrigé au build 85. Les
+builds 85, 86 et 87 ne sont pas poussés. À dire à chaque fois : la correction existe, elle n'est
+pas en ligne.
+
+## LE CHANTIER SUIVANT, TEL QU'IL EST CADRÉ
+
+Glisser-déposer pour changer l'ordre des photos **dans la galerie par année**, en 3e entrée du
+menu. Ce qu'il faut, dans l'ordre :
+1. **Un ordre enregistré** : la galerie classe aujourd'hui par dates, rien n'est stocké. Une
+   colonne `rang` (entier) sur `photo_dates`, déjà clé par `photo_url`, suffit — plus une fonction
+   d'écriture par lot pour une année entière.
+2. **Le tri** : dans chaque année, `rang` s'il existe, sinon la date, comme aujourd'hui.
+3. **Le geste** : reprendre celui de l'album (build 67), déjà éprouvé — Pointer Events, appui
+   intentionnel de 260 ms, défilement automatique près des bords, aucun drag HTML5 — et l'adapter à
+   la grille de cases (placement en dur `gridColumn` / `gridRow`, donc recalcul des positions
+   pendant le geste).
+4. **L'écriture** : atomique, sur le modèle d'`album_deplacer_media`.
+
+---
+
+# 🟩 13/09/2026 — COMMENTAIRES D'UNE PHOTO : PLUS DE PLACE, ET LES RETOURS À LA LIGNE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `30e0bdcd64192a84e6f25ec53618aecb` | build **20260908-86** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 85 (`b1b918db…`), non poussé : ce fichier contient les builds 75 à 86.
+Un seul composant touché : `AlbumsCheval`. Aucun SQL.
+
+**À l'écran : + un vrai bloc de texte qui grandit avec ce qu'on écrit · + les retours à la ligne,
+à l'écriture comme à la lecture · + 1500 caractères au lieu de 500.**
+
+## CE QUI N'ALLAIT PAS
+
+Le champ était un champ d'**une seule ligne**. Impossible d'aller à la ligne, la touche Entrée
+envoyait le commentaire, et au-delà d'une ligne on ne voyait plus que la fin de son texte. Limite
+à 500 caractères.
+
+## FAIT
+
+- Bloc de texte de deux lignes au départ, qui **grandit avec le contenu** jusqu'à six lignes
+  environ (44 → 132 px), puis défile.
+- **Entrée fait un retour à la ligne** ; l'envoi se fait par le bouton, qui reste aligné en bas.
+- Les commentaires déjà publiés **respectent les retours à la ligne** (`pre-wrap`) au lieu de tout
+  aplatir sur une ligne.
+- Limite portée à **1500 caractères**.
+- Hauteur remise à sa valeur de départ après l'envoi.
+- Police à 16 px, comme tous les champs depuis le build 46 (sinon iOS agrandit la page).
+
+## TESTS (banc Chromium, une photo et un commentaire déjà écrit sur deux lignes)
+
+| | build 85 | build 86 |
+|---|---|---|
+| type de champ | une ligne | bloc de texte |
+| cinq lignes saisies | impossible | conservées, hauteur 68 → 132 px, plafond respecté |
+| commentaire sur deux lignes | aplati | affiché sur deux lignes |
+| limite | 500 | 1500 |
+
+Non-régression, 0 erreur : commentaires d'une photo (le plantage du build 85 reste corrigé), format
+« Petite », réponses du fil, agenda du club. `node --check` : 18 blocs. Balises et `?v=` identiques.
+
+## À TESTER SUR IPHONE
+
+Ouvre une photo d'album → ses commentaires → écris sur plusieurs lignes avec Entrée, puis envoie.
+
+---
+
+# 🟥 13/09/2026 — LA FICHE CHEVAL PLANTAIT DÈS QU'UNE PHOTO AVAIT UN COMMENTAIRE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b1b918db0b02894b5579f0d82ec0a107` | build **20260908-85** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 84 (`c1d084c0…`), non poussé : ce fichier contient les builds 75 à 85.
+Touché : `AlbumsCheval` (deux corrections). Aucun SQL.
+
+**À l'écran : + la fiche cheval ne plante plus · + le temps restant d'un envoi s'affiche en minutes
+quand c'est long.**
+
+## 50 — LE PLANTAGE (captures de 09:12, écran `cheval`)
+
+`ReferenceError : Can't find variable: moi`, dans `AlbumsCheval`. La liste des commentaires d'une
+photo lisait **`moi`**, qui n'existe pas dans ce composant : il s'appelle **`moiAc`**. Le plus
+gênant : **un commentaire du code le disait déjà**, quinze lignes plus haut — « moiAc, PAS moi, qui
+n'existe pas dans ce composant ». La ligne fautive est passée à travers malgré l'avertissement.
+Conséquence : dès qu'une photo d'album avait **un seul** commentaire, ouvrir ses commentaires
+arrêtait **toute la fiche du cheval**.
+Banc (une photo avec un commentaire, ouverture du panneau des commentaires) : build 84 → « moi is
+not defined », commentaire jamais affiché ; build 85 → le commentaire s'affiche, **0 erreur**.
+
+⚠️ Pourquoi mon balayage de 118 écrans ne l'a pas vu : il monte chaque écran **au premier
+affichage**, sans données ni interaction. Ce plantage-là demande une photo **qui a un commentaire**
+et un tap sur le bouton. C'est exactement la limite que j'avais annoncée, et elle vient de coûter un
+écran cassé.
+
+## 51 — LE TEMPS RESTANT D'UN ENVOI
+
+Elle : « c'est bien d'annoncer le résultat dans 6 secondes, mais pas quand ça dure trois minutes ».
+L'estimation était **toujours** donnée en secondes : « d'ici 174 secondes » ne veut rien dire.
+Désormais : en dessous de 90 s, les secondes comme avant ; au-delà, des minutes arrondies, avec un
+rappel utile — « tu peux poser le téléphone, mais laisse l'écran allumé », puisque verrouiller
+l'iPhone interrompt l'envoi.
+Vérifié : 6 s et 89 s → secondes ; 90 s → 2 minutes ; 174 s → 3 minutes ; 300 s → 5 minutes.
+Seul l'appel de texte a été remplacé, **aucune parenthèse de structure touchée** (une première
+tentative avait cassé la syntaxe, attrapée par `node --check` avant livraison).
+
+## VÉRIFIÉ
+
+`node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques.
+Non-régression, 0 erreur : agenda du club, format « Petite » et sa confirmation, likes du fil, les
+7 ambassadeurs.
+
+## À TESTER SUR IPHONE
+
+1. Une photo d'album qui a un commentaire : ouvre-la, puis ses commentaires. La fiche doit tenir.
+2. Un envoi long : le temps restant doit s'afficher en minutes.
+
+---
+
 # 🟩 13/09/2026 — DEUX AMBASSADEURS EN PLUS
 
 | Fichier | Où | md5 | Quoi |
