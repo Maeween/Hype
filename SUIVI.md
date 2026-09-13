@@ -10,6 +10,59 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟥 12/09/2026 (nuit) — L'AGENDA DU CLUB PLANTAIT À COUP SÛR
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `012d73858ecd6f39d885d7c539eacd6f` | build **20260908-82** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le build 81 (`b6b0073b…`), non poussé : ce fichier contient les builds 75 à 82.
+**Deux lignes ajoutées**, dans `EcranAgendaClub`. Aucun SQL.
+
+**À l'écran : + l'agenda du club s'ouvre au lieu d'afficher « Un caillou dans le sabot ».**
+
+## LE DÉFAUT (capture de Blandine, 21:12)
+
+« Un caillou dans le sabot », écran `agenda-club`, `ReferenceError : Can't find variable: T`.
+`EcranAgendaClub` appelle `T(...)` **dix fois** sans jamais définir `T` ni `tr` : le composant levait
+donc une erreur **dès le premier rendu**. L'agenda du club était **totalement inaccessible**, quelle
+que soit la langue.
+**Défaut antérieur à cette session** : présent à l'identique dans son index du 12/09 et dans les
+précédents (vérifié sur trois fichiers). Ce n'est pas une conséquence des builds de ce soir.
+
+Fait : ajout de `tr` (repli sur le français si `useApp` ne le fournit pas) et de `T`, exactement
+comme tous les autres écrans.
+
+Banc : build 81 → « T is not defined », écran **vide** ; build 82 → l'écran s'affiche
+(« L'AGENDA DU CLUB · TOUS LES RENDEZ-VOUS · Ecurie Feinn · Rien de prévu pour le moment »),
+**0 erreur de page**.
+
+## CHASSE À LA MÊME CLASSE DE DÉFAUT
+
+Recherche systématique de toutes les fonctions qui appellent `T(` sans le définir :
+**`EcranAgendaClub` était la seule vraie**. Trois autres détections sont fausses (un mot dans une
+chaîne, une mention dans un commentaire, et deux fonctions imbriquées dans `EcranCheval`, qui
+définit bien `T`).
+
+## SQL DES MÉDIAS : PASSÉ ET PROPRE
+
+Son contrôle final donne `lignes_photo_restantes = 0` : la colonne `medias` est en place, les
+médias existants ont été recopiés, et il ne reste **aucune** ligne-photo rattachée.
+
+## VÉRIFIÉ
+
+`node --check` : 18 blocs, 0 erreur. Balises de scripts et `?v=` identiques au sien.
+Non-régression, 0 erreur : champs à 16 px, suppression d'un message par une modératrice, médias en
+colonne, identifications et lieu, likes et réponses, modification d'un message, fil unique, fiche
+cheval entière.
+
+## À TESTER SUR IPHONE
+
+Communauté → l'agenda du club : il doit s'ouvrir.
+
+---
+
 # 🟩 12/09/2026 (nuit) — LES PAGES NE RESTENT PLUS ZOOMÉES · SUPPRESSION D'UN MESSAGE RÉPARÉE · MÉDIAS EN COLONNE
 
 | Fichier | Où | md5 | Quoi |
