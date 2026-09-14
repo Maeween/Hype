@@ -10,6 +10,73 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (23 h 20) — LA PAGE DU CLUB SE NETTOIE : « MA GESTION » PART, LA SELLERIE DESCEND
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e9fa5fb1…` | build **20260908-174** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `79514823…` (20260908-173).
+
+## 1. LE BLOC « MA GESTION / MES CHEVAUX » QUITTE LA PAGE DU CLUB
+
+« Au final je pense qu'on peut retirer mes chevaux de la page de l'écurie non ? Ça fait
+doublon » → puis **option 1** : tout le bloc, titre + rail + « + Ajouter » + « Voir mon fil ».
+
+**C'est bien un doublon depuis le build 143** : le carré « Chevaux » de la grille ouvre le roster
+de l'écurie, ce rail faisait la même chose juste en dessous — et le mot « Ma gestion » n'a plus
+de sens maintenant que les six carrés **sont** la gestion.
+
+## ⚠️ VÉRIFIÉ AVANT DE RETIRER — LE PIÈGE DU 22/08
+
+Un bloc retiré peut emporter **le seul chemin** vers une action. C'était arrivé le 22/08 avec
+l'import des résultats.
+
+- **« + Ajouter »** appelle `window.__ouvrirCreationCheval`, présent à **sept autres endroits**
+  — dont la page des chevaux de l'écurie et l'onglet Cavalier. La création d'un cheval reste
+  atteignable.
+- **« Voir mon fil »** n'apparaissait qu'**au-delà de 6 chevaux**, alors que l'onglet Cavalier
+  mène au même endroit.
+
+**Conséquence dite et acceptée :** le rail montrait **ses** chevaux, le carré Chevaux montre ceux
+de l'**écurie**. Ses chevaux perso hors écurie ne sont plus visibles depuis cette page ; ils
+restent sur l'onglet Cavalier.
+
+`mesChevauxClub` et son chargement restent en place, non nettoyés — remettre ce bloc serait un
+copier-coller depuis l'historique.
+
+## 2. LA SELLERIE DESCEND EN BAS DE PAGE
+
+« Passe l'onglet sellerie en bas de la page. » Elle était au milieu ; elle est désormais juste
+avant les mentions. C'est un encart **partenaire** : il n'a rien à faire au milieu de ce qui
+concerne le club.
+
+## L'ORDRE DE LA PAGE DU CLUB, MAINTENANT
+
+Bandeau et nom · les **six carrés** (tous ouverts depuis le 170) · la philosophie du club ·
+l'agenda · les actualités de l'écurie · **la sellerie** · les mentions.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Plus aucun rendu de `mesChevauxClub` (compté), un seul `EncartSellerie` sur cette page.
+- Périmètre : **35 lignes remplacées, 24 ajoutées** — un retrait net.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE EN ATTENTE D'ELLE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Photos lentes** — le diagnostic est prêt (build 168+), réservé à son compte.
+3. **Barre du bas** — verdict.
+4. **« Voir pas ce que j'ai écrit une fois refermé »** — à préciser.
+5. **Le numéro d'index affiché sur son accueil** — à demander avant d'analyser une capture.
+
+**La suite du carnet, prête à coder :** H3 et H4 dans le même écran contextuel — consulter une
+séance et en créer une. C'est H4 qui allumera le gros bouton « + Nouvelle séance ».
+
+---
+
 # 🟩 15/09/2026 (22 h 45) — MON CARNET, ÉTAPE H2 : LA PAGE EN LECTURE SEULE
 
 | Fichier | Où | md5 | Quoi |
