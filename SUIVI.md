@@ -10,6 +10,56 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (13 h 30) — PAGE SANTÉ · LISIBILITÉ : CARTES OPAQUES ET GROS CARRÉS DE DATES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `175a7019…` | build **20260908-132** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Blandine, capture de 13 h 15 : « on peut faire une présentation par cartes ou gros carrés
+qui soit plus lisible ? Là tout se mélange un peu », puis elle renvoie l'ANCIENNE maquette
+de l'écran « Prochainement » : « initialement c'était un peu pour ressembler à ça ».
+
+## 🟥 LA CAUSE : MES CARTES ÉTAIENT TRANSLUCIDES
+
+Le fond passait **sous** le texte : `rgba(10,14,17,0.46)` + `backdrop-filter`. Sur la
+maquette qu'elle vise, les cartes sont **opaques** sur du noir franc — c'est exactement ce
+qui la rend lisible. Et son propre brief le disait : *« le fond doit rester visible ENTRE
+les modules »* — entre, pas dessous.
+
+Cartes, lignes du Carnet et état vide passent à `#0B1014` **opaque**, bordure à 7 %, avec
+une ombre portée (`0 10px 30px rgba(0,0,0,0.45)`) qui les décolle du fond. Le
+`backdrop-filter` est **retiré** : inutile sur un fond opaque, et coûteux sur iPhone.
+
+## « À SURVEILLER » : GROS CARRÉS DE DATES
+
+Repris du bloc « Prochains rendez-vous » de sa maquette : un carré **56 px** avec le jour
+en grand et le mois dessous, le type, l'intitulé, et la pastille d'état à droite. Dans une
+carte opaque, une ligne par échéance (5 max), chaque ligne ouvrable.
+
+⚠️ **Les tuiles horizontales sont retirées.** À 390 px, une rangée qui défile cache la
+moitié de ce qu'elle contient : c'était une partie du « tout se mélange ».
+⚠️ Quand `precision_prochaine` = **mois**, le carré porte le **mois et l'année**, pas un
+jour : on n'invente pas une date qui n'a pas été saisie.
+
+Les modules passent dans la même gouttière de 16 px que la carte : plus de décalage.
+
+## CE QUE JE N'AI PAS PRIS DANS CETTE MAQUETTE
+
+- Le bloc **« ÉTAT DE SANTÉ »** (Général / Respiratoire / Digestif / Locomoteur, tous
+  « Bon ») : ce sont des **appréciations médicales inventées**. Rien en base ne les porte,
+  et son brief interdit d'inventer un diagnostic. À reprendre seulement si elle décide
+  qui les saisit.
+- **Notes cliniques**, **Documents récents**, **Dernières interventions** : elle les a
+  **barrés en orange** sur la capture. Documents = V2 déjà décidée ; les notes cliniques
+  n'existent pas en base ; les interventions, c'est le Carnet actuel.
+- Les **onglets** (Vue d'ensemble / Historique médical / Traitements / Vaccinations /
+  Examens / Documents) : non repris — pas de logique derrière aujourd'hui, et son brief
+  disait de ne conserver des onglets que si la logique existe déjà.
+
+---
+
 # 🟩 14/09/2026 (13 h) — PAGE « SANTÉ & SOINS » DU CHEVAL · CHANTIER COMPLET A1 → A6
 
 | Fichier | Où | md5 | Quoi |
