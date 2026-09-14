@@ -10,6 +10,74 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (23 h 55) — LES DERNIERS RÉSULTATS N'ATTENDENT PLUS LA FICHE DU CHEVAL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1ce26716…` | build **20260908-178** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `7110cdf5…` (20260908-176).
+
+## SA DEMANDE
+
+« Derniers résultats met tjs trop de temps à charger, ils arrivent plusieurs secondes après le
+chargement de la page, tu peux régler ça ? »
+
+## LA CAUSE, TROUVÉE DANS LE CODE ET NON SUPPOSÉE
+
+La requête des résultats attendait `chevalDyn.dbId` — c'est-à-dire **la fin** de la requête qui
+charge la fiche du cheval. **Deux allers-retours en file**, alors qu'ils pouvaient partir
+ensemble : l'identifiant était **déjà connu**.
+
+En effet `id` (`window.__chevalOuvert`) **est** l'identifiant en base — la requête de la fiche
+fait `.eq("id", id)`.
+
+**Seule exception, conservée :** les **sept fiches de démonstration migrées** (`NOMS_MIGRES`), où
+`id` est un slug et où il faut vraiment attendre `dbId`. Les deux chemins coexistent.
+
+La dépendance de l'effet est cette valeur, donc un cheval normal ne déclenche **qu'une** requête
+— elle ne change pas quand la fiche finit d'arriver.
+
+## ⚠️ CE QUE CE BUILD NE FAIT PAS
+
+**Le `select("*")` est conservé.** La page lit une quinzaine de colonnes de `resultats` (place,
+partants, concours, epreuve, date_epreuve, cavalier, classement, visible, masque_cavaliere,
+photo_url, media_url, origine…) et en énumérer une partie **casserait quelque chose en silence**
+ailleurs dans la page.
+
+Ce build supprime une **attente**, pas un volume. **Si c'est encore lent**, alors c'est la
+requête elle-même — 500 lignes, toutes colonnes — et il faudra **mesurer avant de décider**,
+comme pour les photos. Je ne toucherai pas au volume au hasard.
+
+## ⚠️ CONTENU INERTE DANS CE BUILD
+
+Le panneau des conseils (`PanneauConseilsHB`) et la fonction de titre `hypeTitreConseil`, étapes
+**H5-H6** du carnet, en cours d'écriture. **Le panneau n'est branché nulle part** : rien de
+visible, rien ne change pour elle. Il sera relié au build suivant, avec l'écran d'un conseil.
+
+⚠️ Une parenthèse manquante dans ce panneau a été **attrapée par `node --check`** avant toute
+livraison, et corrigée.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- `idRes` est bien déclaré **après** `id` et `chevalDyn`, et `NOMS_MIGRES` est global (vérifié —
+  une note du 06/09 rappelle qu'une version locale avait déjà cassé tout ce qui la lisait).
+- Une seule dépendance `[idRes]`.
+- Périmètre : **5 lignes remplacées, 163 ajoutées** (dont le panneau inerte).
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE EN ATTENTE D'ELLE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Photos lentes** — le diagnostic est prêt, réservé à son compte.
+3. **Barre du bas** — verdict.
+4. **Les derniers résultats** — est-ce réglé, ou encore lent ? Si encore lent, on mesure.
+5. **« Voir pas ce que j'ai écrit une fois refermé »** — à préciser.
+
+---
+
 # 🟩 15/09/2026 (23 h 40) — MON CARNET H3+H4 · DEUX MESSAGES SUR LA PAGE DU CLUB, PUBLICATION EN BAS
 
 | Fichier | Où | md5 | Quoi |
