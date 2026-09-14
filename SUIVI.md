@@ -10,6 +10,212 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (18 h) — UN RENDEZ-VOUS PASSÉ S'OUVRE SUR PLACE, AVEC SES PHOTOS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c0afc44e…` | build **20260908-139** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `c6d593b1…` (20260908-138).
+
+## SA DEMANDE
+
+« Pour rdv passés une page ou un petit post s'il y a pas grand chose à dire dedans ; faudrait
+que ça fasse comme pour les publi peut-être ? »
+
+Donc le **même geste** que les vignettes du fil : on touche, ça s'ouvre en dessous, on retouche,
+ça se ferme. Un seul ouvert à la fois. Pas de page dédiée pour trois photos.
+
+## ⚠️ LE MUR D'UN RENDEZ-VOUS EXISTAIT DÉJÀ À MOITIÉ
+
+La cible **« agenda:&lt;identifiant&gt; »** est le même format d'adresse que tous les autres murs
+de l'app, et elle était **déjà employée** par la notification d'agenda depuis le 02/09
+(`hypeNotifier`, `cible: "agenda:" + id`).
+
+Il n'y avait donc rien à créer : un `MurHype` posé sur cette cible donne au rendez-vous son mur,
+et **publier depuis là rattache la photo au rendez-vous tout seul**. **Aucun SQL, aucune
+colonne, aucune table.**
+
+## RELEVÉ FAIT AVANT DE BÂTIR
+
+`select conname, pg_get_constraintdef(oid) from pg_constraint where conrelid =
+'public.identifications'::regclass;` → **une seule ligne, la clé primaire.** Aucune contrainte
+sur `type`.
+
+Conséquence acquise pour la suite : rattacher une photo **déjà publiée** à un concours se fera
+avec une ligne `type = "agenda"` dans `identifications` — le même mécanisme que l'identification
+d'un cheval — **sans migration**. ⚠️ Une policy pourrait encore restreindre les types à
+l'écriture ; ça se verra au premier essai, et tout échec s'affiche en clair. Ce n'est pas cette
+tranche.
+
+## CE QU'ELLE VOIT
+
+- Dans l'agenda, section **« Voir ce qui est déjà passé »** : toucher un rendez-vous l'ouvre en
+  dessous — son lieu, sa description, puis ses **photos et vidéos** en vignettes, et le champ
+  pour en ajouter. Un « Replier » en bas.
+- Publier depuis là **rattache au rendez-vous**, rien à choisir.
+- Les rendez-vous **à venir** ne changent pas : ils ouvrent toujours leur fiche sur la page du
+  club (correctif du 128).
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **4 lignes remplacées, 33 ajoutées**, dans `EcranAgendaClub` seul, plus l'en-tête
+  et le build.
+- `OR` vaut bien `#D9C7A3` : la teinte passée à `MurHype` est un hexadécimal valide, sinon sa
+  fonction de transparence aurait produit du `NaN` (vérifié).
+- `MurHype` et `EcranAgendaClub` sont dans le **même bloc de script** (vérifié).
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LES TRANCHES SUIVANTES DE CE CHANTIER
+
+1. **Les résultats FFE des dates du rendez-vous**, affichés dans la carte ouverte. Présentés
+   comme « résultats de ces journées » et non « les résultats de ce concours » : c'est la date
+   qui fait le lien, pas une certitude.
+2. **Choisir le rendez-vous dans le composer** du mur du club (son « 1c »), via
+   `identifications` avec `type = "agenda"`.
+3. **Rattacher les photos déjà publiées** (« ok pour celles déjà oubliées »), même mécanisme.
+
+Et hors de ce chantier : les pages **Chevaux du club**, **Cavaliers**, **Santé du club** (trois
+carrés encore grisés), plus les deux anciens blocs de souvenirs à retirer de la page du club.
+Décision acquise : pas d'onglet « Par cheval » dans les souvenirs — « ça sera sa fiche cheval
+déjà en ligne ».
+
+---
+
+# 🟩 14/09/2026 (17 h) — LES SIX RACCOURCIS : DESSIN DE LA FICHE CHEVAL, ET REMONTÉS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c6d593b1…` | build **20260908-138** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `f85de8ef…` (20260908-137). Contient aussi la mosaïque des souvenirs du 137, qu'elle
+n'avait pas encore poussée (sa capture affiche le 136).
+
+## SES DEUX REMARQUES
+
+« Le visuel des mosaïques est pas du tout le même que sur la page cheval, reprends le même ! Et
+il est très mal placé là. »
+
+## 1. LA PLACE — LE GRAND VIDE EXPLIQUÉ
+
+La grille était posée **après** un bloc qui ne contient **que la flèche de retour**, avec un
+padding « safe-area + 24 px » pour un bouton en `position: absolute`. D'où l'énorme zone noire
+juste au-dessus des cartes sur sa capture : ce n'était pas un espace décoratif, c'était le
+conteneur d'un bouton flottant.
+
+La grille est maintenant **juste sous le nom du club**, avant ce bloc.
+
+## 2. LE DESSIN — CELUI DE `carteR`, TRAIT POUR TRAIT
+
+Repris de la fiche cheval : hauteur **104**, pastille ronde de **36 px** à bord teinté avec un
+pictogramme **tracé en SVG** (plus **aucun emoji**), titre en **Cinzel 12.5**, et en pied un
+libellé en petites capitales de 8 px avec sa flèche, séparé par un filet. Une carte sans page
+garde le même dessin à **50 % d'opacité**, exactement comme la fiche traite ses cartes
+« Prochainement ».
+
+⚠️ **Aucune image n'est passée aux cartes.** Sur la fiche, une carte sans photo (« Santé »)
+retombe sur un dégradé radial teinté : c'est ce cas-là qui sert pour les six. La même bannière
+répétée six fois aurait été illisible. Si elle veut des photos, il faudra six visuels
+distincts.
+
+## L'ÉTAT DES SIX
+
+**Ouvrent :** Agenda · Actualités · Souvenirs.
+**Grisées :** Cavaliers · Chevaux · Santé.
+
+⚠️ Rappel : **ne pas** pointer « Santé » vers l'écran `sante` — celui-là est le **magazine**
+santé et ses six articles.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **55 lignes retirées, 59 ajoutées** — l'ancienne grille supprimée de son
+  emplacement, la nouvelle posée plus haut, plus l'en-tête et le build. `carteClub` n'existe
+  plus dans le fichier (vérifié).
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## TOUJOURS EN SUSPENS
+
+- Les **trois blocs** qui parlent des souvenirs sur la page du club : la nouvelle page, l'encart
+  « L'album de l'écurie » (grisé, n'ouvre rien) et le bloc « Souvenirs du club » (mosaïque
+  jamais remplie). À trancher : retirer les deux anciens.
+- Pages restantes : **Chevaux du club**, **Cavaliers**, **Santé du club** (avec le déménagement
+  de l'encart Véto, et les deux questions ouvertes : quels chevaux, et quoi par cheval).
+
+---
+
+# 🟩 14/09/2026 (16 h 30) — SOUVENIRS DU CLUB : LA MOSAÏQUE PAR ANNÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f85de8ef…` | build **20260908-137** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e9575438…` (20260908-136).
+
+## LA FORME, VALIDÉE SUR MAQUETTE
+
+Une **bande d'années** en haut, puis une **mosaïque serrée** : pas de couverture, pas de titre,
+rien à créer. C'est l'**inverse** des albums d'un cheval, qui sont des objets fabriqués à la
+main (couverture, nom, visibilité) — exactement ce qu'elle demandait : « faudrait présenter
+différemment de celles des chevaux que ça porte pas à confusion ».
+
+La carte **Souvenirs** de la grille du 136 s'allume et ouvre cette page.
+
+## LA SOURCE
+
+Le **mur du club**, cible « ecurie:&lt;nom en minuscules&gt; » — la même que le fil.
+**Aucune table nouvelle, aucun SQL** : rien de plus que ce que le fil lit déjà.
+
+- ⚠️ Les **photos supplémentaires** des posts à plusieurs médias (colonne `medias`) sont prises
+  aussi. Sans elles, **deux photos sur trois manqueraient** sur un post à trois images — comme
+  les siens de ce matin.
+- Les **vidéos** sont gardées, avec leur pictogramme.
+- ⚠️ Les publications **privées** sont écartées, comme dans le fil : une privée ne reste
+  visible que pour son autrice.
+- La bande d'années porte `data-hscroll="1"`, sans quoi le geste horizontal serait capté par la
+  navigation par balayage de l'app (piège déjà payé sur d'autres rails).
+- Échec de lecture → bandeau rouge, jamais une mosaïque vide sans explication.
+
+## TOUCHER UNE PHOTO
+
+Elle s'ouvre **en grand** dans la visionneuse existante (`PhotoZoomHype`, avec zoom), pas le
+post : sur une mosaïque, c'est la photo qu'on vient voir. Choix annoncé, réversible en une
+ligne.
+
+## ⚠️ À LUI PROPOSER ENSUITE, VOLONTAIREMENT PAS FAIT ICI
+
+Cette page rend **redondants deux blocs** de la page du club :
+- l'encart **« L'album de l'écurie »** (grisé « Prochainement », non cliquable, n'a jamais rien
+  ouvert) ;
+- le bloc **« Souvenirs du club »**, dont la mosaïque **n'a jamais été remplie** — dessinée,
+  aucun chargement écrit.
+
+Ils n'ont pas été retirés : elle a demandé qu'on ne touche pas au déroulé de sa page. À
+trancher avec elle.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **3 lignes remplacées, 141 ajoutées** — le nouvel écran, une ligne de route, la
+  carte de la grille, l'en-tête et le build.
+- `EcranSouvenirsClub`, `PhotoZoomHype` et `EcranSanteCheval` sont bien dans le **même bloc de
+  script** (vérifié) : la visionneuse est donc déclarée quand la page s'en sert.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LES TROIS CARTES ENCORE GRISÉES
+
+**Chevaux du club** · **Cavaliers** · **Santé du club**. Pour la dernière, deux questions
+restent ouvertes : quels chevaux y figurent (tous ceux de l'écurie ou seulement les siens — sa
+base décide déjà qui a le droit de voir les soins), et ce qu'on voit par cheval (photo + nom +
+prochaine échéance colorée, ou un simple point de couleur). L'encart Véto y déménage, décision
+d'elle.
+
+---
+
 # 🟩 14/09/2026 (16 h) — LES SIX RACCOURCIS EN HAUT DE LA PAGE DU CLUB
 
 | Fichier | Où | md5 | Quoi |
