@@ -34799,6 +34799,112 @@ function EncartCliniqueVeto() {
    NON AFFICHE DANS CETTE TRANCHE, volontairement : le nom du professionnel
    (professionnel_id -> table professionnels = tranche 3) et le contenu de `details`, dont la
    forme n a pas encore ete relevee. Aucun mock, aucun champ invente. */
+/* ==========================================================
+   EXPORT CALENDRIER D'UNE ECHEANCE DE SOIN (.ics)
+   Decisions de Blandine des 13 et 14/09 :
+   - titre « \ud83d\udc34 HYPE \u2014 <soin> \u2014 <nom affiche du cheval> » ;
+   - deux VALARM a declencheurs RELATIFS (J-N et jour J) : elles suivent donc
+     automatiquement un decalage d'echeance ;
+   - UID STABLE « <id_soin>@hype » + SEQUENCE croissant : sans eux, un reexport
+     apres changement de date CREE un deuxieme rendez-vous au lieu de remplacer
+     le premier ;
+   - la base Hype reste la SOURCE DE VERITE ; le calendrier n'est qu'un rappel
+     exporte. Rien ici ne sert a calculer un affichage.
+   \u26a0 On ne PROMET jamais que les deux alarmes seront declenchees : Apple les
+   respecte a l'import, Google les ignore souvent. Le texte a l'ecran le dit.
+   ========================================================== */
+function hypeIcsEchapper(v) {
+  return String(v == null ? "" : v).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\r?\n/g, "\\n");
+}
+/* RFC 5545 : une ligne depasse 75 octets -> pliage avec une espace en tete.
+   \u26a0 On parcourt par POINTS DE CODE, pas par charAt : l'emoji \ud83d\udc34 du titre est une
+   paire de substitution, la couper en deux fabriquait un caractere invalide (et
+   encodeURIComponent levait URIError sur ce demi-caractere : l'export plantait a
+   chaque fois, le titre commencant TOUJOURS par cet emoji). Le poids en octets se
+   calcule ici, sans encodage intermediaire. */
+function hypeIcsOctets(ch) {
+  var c = ch.codePointAt(0);
+  return (c < 0x80) ? 1 : ((c < 0x800) ? 2 : ((c < 0x10000) ? 3 : 4));
+}
+function hypeIcsPlier(ligne) {
+  var pts = [];
+  try { pts = Array.from(String(ligne)); } catch (eA) { pts = String(ligne).split(""); }
+  var out = "", cur = "", n = 0;
+  for (var i = 0; i < pts.length; i++) {
+    var ch = pts[i];
+    var poids = 1;
+    try { poids = hypeIcsOctets(ch); } catch (eO) { poids = 1; }
+    if (n + poids > 73) { out += (out ? "\r\n " : "") + cur; cur = ch; n = poids; }
+    else { cur += ch; n += poids; }
+  }
+  out += (out ? "\r\n " : "") + cur;
+  return out;
+}
+function hypeIcsJour(iso) { var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? (m[1] + m[2] + m[3]) : ""; }
+function hypeIcsLendemain(iso) {
+  var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return "";
+  var d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]) + 1);
+  return d.getFullYear() + ("0" + (d.getMonth() + 1)).slice(-2) + ("0" + d.getDate()).slice(-2);
+}
+function hypeIcsTexte(o) {
+  var L = [];
+  L.push("BEGIN:VCALENDAR");
+  L.push("VERSION:2.0");
+  L.push("PRODID:-//Hype//Sante & soins//FR");
+  L.push("CALSCALE:GREGORIAN");
+  L.push("METHOD:PUBLISH");
+  L.push("BEGIN:VEVENT");
+  L.push("UID:" + o.uid);
+  L.push("SEQUENCE:" + String(o.sequence || 0));
+  L.push("DTSTAMP:" + new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, ""));
+  L.push("DTSTART;VALUE=DATE:" + hypeIcsJour(o.date));
+  L.push("DTEND;VALUE=DATE:" + hypeIcsLendemain(o.date));
+  L.push(hypeIcsPlier("SUMMARY:" + hypeIcsEchapper(o.titre)));
+  if (o.description) L.push(hypeIcsPlier("DESCRIPTION:" + hypeIcsEchapper(o.description)));
+  L.push("TRANSP:TRANSPARENT");
+  if (o.joursAvant > 0) {
+    L.push("BEGIN:VALARM");
+    L.push("TRIGGER:-P" + o.joursAvant + "D");
+    L.push("ACTION:DISPLAY");
+    L.push(hypeIcsPlier("DESCRIPTION:" + hypeIcsEchapper(o.titre)));
+    L.push("END:VALARM");
+  }
+  if (o.jourJ) {
+    L.push("BEGIN:VALARM");
+    L.push("TRIGGER:PT0S");
+    L.push("ACTION:DISPLAY");
+    L.push(hypeIcsPlier("DESCRIPTION:" + hypeIcsEchapper(o.titre)));
+    L.push("END:VALARM");
+  }
+  L.push("END:VEVENT");
+  L.push("END:VCALENDAR");
+  return L.join("\r\n") + "\r\n";
+}
+/* Remise du fichier. Sur iPhone en appli installee, un telechargement est
+   fragile : le PARTAGE natif d'un fichier marche, lui, et la feuille de partage
+   propose Calendrier. Le telechargement reste en secours pour le navigateur de
+   bureau. Rend "partage" | "telecharge" | "" (echec). */
+async function hypeIcsRemettre(nomFichier, texte) {
+  try {
+    if (typeof File === "function" && navigator.share && navigator.canShare) {
+      var f = new File([texte], nomFichier, { type: "text/calendar" });
+      if (navigator.canShare({ files: [f] })) { await navigator.share({ files: [f] }); return "partage"; }
+    }
+  } catch (eP) {
+    /* L'utilisatrice a ferme la feuille de partage : ce n'est pas une panne. */
+    if (eP && String(eP.name) === "AbortError") return "";
+  }
+  try {
+    var b = new Blob([texte], { type: "text/calendar" });
+    var u = URL.createObjectURL(b);
+    var a = document.createElement("a");
+    a.href = u; a.download = nomFichier; a.rel = "noopener";
+    document.body.appendChild(a); a.click();
+    setTimeout(function () { try { document.body.removeChild(a); URL.revokeObjectURL(u); } catch (eR) { } }, 4000);
+    return "telecharge";
+  } catch (eT) { return ""; }
+}
+
 /* Libelles des types de soins — SOURCE UNIQUE, partagee par la page et la feuille.
    Les cles sont EXACTEMENT les valeurs acceptees par la contrainte de soins_cheval. */
 function hypeSoinsLibelles(T) {
@@ -34877,6 +34983,11 @@ function FeuilleSoin(props) {
     if (type === "vaccin" && e !== null && e >= 330 && e <= 400) { setRAvant(true); setRJours("15"); setRJourJ(true); }
   }, [type, dProch, dInt, rappelTouche]);
 
+  /* Zone des pieds, rangee dans details.zone. Valeurs fermees : avant / arriere /
+     quatre. Un deuxieme appui sur la meme pastille efface le choix. */
+  var _zo = React.useState(String((s0 && s0.details && s0.details.zone) || "")); var zone = _zo[0], setZone = _zo[1];
+  var estPieds = (type === "ferrure" || type === "parage");
+
   function placeholderTitre() {
     if (type === "vaccin") return T("Grippe, t\u00e9tanos\u2026", "Flu, tetanus\u2026", "Gripe, t\u00e9tanos\u2026", "Influenza, tetano\u2026", "\u30a4\u30f3\u30d5\u30eb\u30a8\u30f3\u30b6\u306a\u3069", "Grippe, Tetanus\u2026");
     if (type === "vermifuge") return T("Produit utilis\u00e9", "Product used", "Producto usado", "Prodotto usato", "\u4f7f\u7528\u3057\u305f\u85ac", "Verwendetes Mittel");
@@ -34916,6 +35027,13 @@ function FeuilleSoin(props) {
       date_prochaine: dProch || null,
       precision_prochaine: dProch ? prec : "jour",
       notes: String(notes || "").trim() || null,
+      details: (function () {
+        var d = {};
+        try { if (s0 && s0.details && typeof s0.details === "object") { for (var k in s0.details) { if (Object.prototype.hasOwnProperty.call(s0.details, k)) d[k] = s0.details[k]; } } } catch (eDt) { d = {}; }
+        if (estPieds && zone) { d.zone = zone; } else { delete d.zone; }
+        var vide = true; for (var k2 in d) { if (Object.prototype.hasOwnProperty.call(d, k2)) { vide = false; break; } }
+        return vide ? null : d;
+      })(),
       rappel_avant_actif: !!(dProch && rAvant),
       rappel_jours_avant: (dProch && rAvant) ? Math.max(1, Math.min(365, parseInt(rJours, 10) || 15)) : null,
       rappel_jour_j: !!(dProch && rJourJ)
@@ -34935,6 +35053,39 @@ function FeuilleSoin(props) {
       return;
     }
     if (props.onEnregistre) props.onEnregistre();
+  }
+
+  var _ic = React.useState(""); var icsMot = _ic[0], setIcsMot = _ic[1];
+
+  async function ajouterAuCalendrier() {
+    if (busy || !(s0 && s0.id) || !dProch) return;
+    setBusy(true); setErreur(""); setIcsMot("");
+    var seq = (Number(s0.ics_sequence) || 0) + 1;
+    var lib = LIBS[String(type)] || String(type);
+    var sommaire = "\ud83d\udc34 HYPE \u2014 " + lib + (String(titre || "").trim() ? (" " + String(titre).trim()) : "") + " \u2014 " + String(props.nomCheval || "");
+    var texte = hypeIcsTexte({
+      uid: String(s0.id) + "@hype",
+      sequence: seq,
+      date: dProch,
+      titre: sommaire,
+      description: String(notes || "").trim(),
+      joursAvant: (rAvant ? Math.max(1, Math.min(365, parseInt(rJours, 10) || 15)) : 0),
+      jourJ: !!rJourJ
+    });
+    var nomF = "hype-" + String(type) + "-" + String(dProch) + ".ics";
+    var res = await hypeIcsRemettre(nomF, texte);
+    if (!res) { setBusy(false); setIcsMot(""); return; }
+    /* La base garde la trace de l'export : c'est elle qui saura dire plus tard
+       « echeance modifiee depuis ton export ». Une cavaliere en lecture seule ne
+       peut pas ecrire cette trace : son evenement est quand meme parti, on ne lui
+       montre donc pas d'erreur pour autant. */
+    var w = null;
+    try { w = await supa.from("soins_cheval").update({ ics_sequence: seq, ics_exporte_le: new Date().toISOString() }).eq("id", s0.id).select(); } catch (eW) { w = null; }
+    setBusy(false);
+    setIcsMot((res === "partage")
+      ? T("\u00c9v\u00e9nement transmis \u00e0 ton t\u00e9l\u00e9phone.", "Event handed to your phone.", "Evento enviado a tu tel\u00e9fono.", "Evento passato al telefono.", "\u7aef\u672b\u306b\u6e21\u3057\u307e\u3057\u305f\u3002", "Termin an dein Handy \u00fcbergeben.")
+      : T("Fichier .ics t\u00e9l\u00e9charg\u00e9 : ouvre-le pour l'ajouter.", "The .ics file was downloaded: open it to add the event.", "Archivo .ics descargado: \u00e1brelo para a\u00f1adirlo.", "File .ics scaricato: aprilo per aggiungerlo.", ".ics \u3092\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002\u958b\u3044\u3066\u8ffd\u52a0\u3057\u3066\u304f\u3060\u3055\u3044\u3002", ".ics heruntergeladen: zum Hinzuf\u00fcgen \u00f6ffnen."));
+    if (w && w.data && w.data.length && props.onExporte) props.onExporte();
   }
 
   async function supprimer() {
@@ -34970,6 +35121,15 @@ function FeuilleSoin(props) {
       etiquette(T("Intitul\u00e9", "Label", "T\u00edtulo", "Titolo", "\u898b\u51fa\u3057", "Bezeichnung")),
       h("input", { value: titre, onChange: function (e) { setTitre(e.target.value); }, placeholder: placeholderTitre(), style: styleChamp }),
 
+      estPieds ? h("div", null,
+        etiquette(T("Quels pieds", "Which feet", "Qu\u00e9 pies", "Quali piedi", "\u3069\u306e\u8e44", "Welche Hufe")),
+        h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, marginTop: 7 } },
+          pastille(T("Avant seulement", "Front only", "Solo delante", "Solo anteriori", "\u524d\u306e\u307f", "Nur vorne"), zone === "avant", function () { setZone(zone === "avant" ? "" : "avant"); }, "zav"),
+          pastille(T("Arri\u00e8re seulement", "Hind only", "Solo detr\u00e1s", "Solo posteriori", "\u5f8c\u306e\u307f", "Nur hinten"), zone === "arriere", function () { setZone(zone === "arriere" ? "" : "arriere"); }, "zar"),
+          pastille(T("Les quatre", "All four", "Los cuatro", "Tutti e quattro", "\u56db\u672c", "Alle vier"), zone === "quatre", function () { setZone(zone === "quatre" ? "" : "quatre"); }, "zq4")),
+        h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 5, lineHeight: 1.5 } },
+          T("Ferr\u00e9 ou par\u00e9 est d\u00e9j\u00e0 dit par le type choisi plus haut.", "Shod or trimmed is already said by the type above.", "Herrado o recortado ya lo dice el tipo de arriba.", "Ferrato o pareggiato \u00e8 gi\u00e0 detto dal tipo sopra.", "\u8e44\u9244\u304b\u524a\u8e44\u304b\u306f\u4e0a\u306e\u7a2e\u985e\u3067\u6307\u5b9a\u6e08\u307f\u3067\u3059\u3002", "Beschlagen oder barhuf sagt bereits die Art oben."))) : null,
+
       etiquette(T("Fait le", "Done on", "Hecho el", "Fatto il", "\u5b9f\u65bd\u65e5", "Erledigt am")),
       h("input", { type: "date", value: dInt, onChange: function (e) { setDInt(e.target.value); }, style: styleChamp }),
       h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 5, lineHeight: 1.5 } },
@@ -34996,8 +35156,19 @@ function FeuilleSoin(props) {
           h("input", { type: "number", inputMode: "numeric", min: 1, max: 365, value: rJours, onChange: function (e) { setRappelTouche(true); setRJours(e.target.value); }, style: Object.assign({}, styleChamp, { marginTop: 0, width: 92, flex: "0 0 auto", textAlign: "center" }) }),
           h("span", { style: { fontFamily: M, fontSize: 12.5, color: "#A8B2BA" } }, T("jours avant", "days before", "d\u00edas antes", "giorni prima", "\u65e5\u524d", "Tage vorher"))) : null,
         interrupteur(T("Me pr\u00e9venir le jour m\u00eame", "Remind me on the day", "Avisarme el mismo d\u00eda", "Avvisami il giorno stesso", "\u5f53\u65e5\u306b\u77e5\u3089\u305b\u308b", "Am Tag erinnern"), rJourJ, function () { setRappelTouche(true); setRJourJ(!rJourJ); }, "rj"),
-        h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 7, lineHeight: 1.5 } },
-          T("Ces rappels servent \u00e0 l'ajout au calendrier, qui arrive bient\u00f4t.", "These reminders feed the calendar export, coming soon.", "Sirven para el calendario, que llega pronto.", "Serviranno all'esportazione nel calendario, in arrivo.", "\u30ab\u30ec\u30f3\u30c0\u30fc\u9023\u643a\u7528\u3067\u3059\uff08\u6e96\u5099\u4e2d\uff09\u3002", "F\u00fcr den Kalender-Export, kommt bald."))) : null,
+        (s0 && s0.id) ? h("div", { style: { marginTop: 12, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+          h("div", { role: "button", onClick: ajouterAuCalendrier, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 9, minHeight: 46, borderRadius: 13, border: "1px solid rgba(32,217,245,0.32)", background: "rgba(32,217,245,0.07)", color: "#9CEDF8", fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer", opacity: busy ? 0.6 : 1 } },
+            h("span", { style: { fontSize: 15 } }, "\ud83d\udcc5"),
+            h("span", null, (s0.ics_exporte_le
+              ? T("R\u00e9exporter vers mon calendrier", "Re-export to my calendar", "Reexportar a mi calendario", "Riesporta nel calendario", "\u30ab\u30ec\u30f3\u30c0\u30fc\u306b\u518d\u51fa\u529b", "Erneut in den Kalender")
+              : T("Ajouter \u00e0 mon calendrier", "Add to my calendar", "A\u00f1adir a mi calendario", "Aggiungi al calendario", "\u30ab\u30ec\u30f3\u30c0\u30fc\u306b\u8ffd\u52a0", "Zum Kalender hinzuf\u00fcgen"))),
+          icsMot ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#9CEDF8", marginTop: 8, lineHeight: 1.5 } }, icsMot) : null,
+          h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 8, lineHeight: 1.55 } },
+            (rAvant && rJourJ)
+              ? T("Deux rappels sont pos\u00e9s dans l'\u00e9v\u00e9nement : " + (parseInt(rJours, 10) || 15) + " jours avant, et le jour m\u00eame. Selon ton application de calendrier, elle peut n'en garder qu'un.", "Two reminders are set in the event: " + (parseInt(rJours, 10) || 15) + " days before, and on the day. Depending on your calendar app, it may keep only one.", "Se ponen dos recordatorios: " + (parseInt(rJours, 10) || 15) + " d\u00edas antes y el mismo d\u00eda. Seg\u00fan tu app, puede guardar solo uno.", "Due promemoria: " + (parseInt(rJours, 10) || 15) + " giorni prima e il giorno stesso. La tua app potrebbe tenerne uno solo.", "\u30ea\u30de\u30a4\u30f3\u30c9\u306f2\u3064\uff08" + (parseInt(rJours, 10) || 15) + "\u65e5\u524d\u3068\u5f53\u65e5\uff09\u3002\u30a2\u30d7\u30ea\u306b\u3088\u308a1\u3064\u3057\u304b\u6b8b\u3089\u306a\u3044\u3053\u3068\u304c\u3042\u308a\u307e\u3059\u3002", "Zwei Erinnerungen: " + (parseInt(rJours, 10) || 15) + " Tage vorher und am Tag. Je nach App bleibt evtl. nur eine.")
+              : T("Ton calendrier peut ignorer les rappels selon l'application utilis\u00e9e.", "Your calendar may ignore the reminders depending on the app.", "Tu calendario puede ignorar los recordatorios seg\u00fan la app.", "Il calendario pu\u00f2 ignorare i promemoria secondo l'app.", "\u30a2\u30d7\u30ea\u306b\u3088\u3063\u3066\u306f\u30ea\u30de\u30a4\u30f3\u30c9\u304c\u7121\u8996\u3055\u308c\u307e\u3059\u3002", "Je nach App werden Erinnerungen ignoriert."))))
+          : h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 7, lineHeight: 1.5 } },
+              T("Enregistre d'abord : le calendrier a besoin d'une ligne existante pour ne jamais cr\u00e9er de doublon.", "Save first: the calendar needs an existing entry so it never creates a duplicate.", "Guarda primero: el calendario necesita una l\u00ednea existente para no duplicar.", "Salva prima: il calendario ha bisogno di una riga esistente per non duplicare.", "\u5148\u306b\u4fdd\u5b58\u3057\u3066\u304f\u3060\u3055\u3044\uff08\u91cd\u8907\u9632\u6b62\u306e\u305f\u3081\uff09\u3002", "Zuerst speichern: sonst k\u00f6nnten Duplikate entstehen."))) : null,
 
       etiquette(T("Notes", "Notes", "Notas", "Note", "\u30e1\u30e2", "Notizen")),
       h("textarea", { value: notes, rows: 3, onChange: function (e) { setNotes(e.target.value); }, style: Object.assign({}, styleChamp, { resize: "vertical", lineHeight: 1.5 }) }),
@@ -35197,12 +35368,29 @@ function EcranSanteCheval() {
           h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: TQ, fontWeight: 700 } }, libelle(s.type)),
           h("div", { style: { marginLeft: "auto", fontFamily: M, fontSize: 10.5, color: "#6D7681", whiteSpace: "nowrap" } }, enClair(s.date_intervention)),
           peutEcrire ? h("span", { style: { fontFamily: M, fontSize: 11, color: "rgba(32,217,245,0.55)", flexShrink: 0 } }, "\u270e") : null),
-        s.titre ? h("div", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#EDF2F5", marginTop: 4, lineHeight: 1.35 } }, s.titre) : null,
+        (s.titre || zoneEnClair(s)) ? h("div", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#EDF2F5", marginTop: 4, lineHeight: 1.35 } },
+          [zoneEnClair(s), s.titre || ""].filter(function (x) { return !!x; }).join(" \u00b7 ")) : null,
         s.notes ? h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(220,227,232,0.62)", marginTop: 3, lineHeight: 1.5, whiteSpace: "pre-wrap" } }, s.notes) : null,
         s.date_prochaine ? h("div", { style: { marginTop: 8, display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
           h("span", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: coul } },
             T("Prochain", "Next", "Pr\u00f3ximo", "Prossimo", "\u6b21\u56de", "N\u00e4chste") + " \u00b7 " + enClairP(s.date_prochaine, s.precision_prochaine)),
-          mot ? h("span", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, color: coul, padding: "3px 9px", borderRadius: 999, border: "1px solid " + coul, background: (etat === "rouge" ? "rgba(255,107,129,0.10)" : "rgba(232,200,135,0.10)") } }, mot) : null) : null));
+          mot ? h("span", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, color: coul, padding: "3px 9px", borderRadius: 999, border: "1px solid " + coul, background: (etat === "rouge" ? "rgba(255,107,129,0.10)" : "rgba(232,200,135,0.10)") } }, mot) : null) : null,
+        /* La base est la source de verite : si la ligne a bouge depuis l'export,
+           on le dit d'une ligne grise, sans bandeau d'alerte. */
+        (s.ics_exporte_le && s.updated_at && String(s.updated_at) > String(s.ics_exporte_le))
+          ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", marginTop: 6, lineHeight: 1.5 } },
+              T("\u00c9ch\u00e9ance modifi\u00e9e depuis ton export \u00b7 \u00e0 r\u00e9exporter", "Due date changed since your export \u00b7 re-export", "Fecha cambiada desde tu exportaci\u00f3n \u00b7 reexportar", "Scadenza modificata dopo l'export \u00b7 da riesportare", "\u66f8\u304d\u51fa\u3057\u5f8c\u306b\u5909\u66f4\u3055\u308c\u307e\u3057\u305f\u30fb\u518d\u51fa\u529b", "Seit dem Export ge\u00e4ndert \u00b7 erneut exportieren")) : null));
+  }
+
+  /* Zone des pieds telle qu'elle a ete enregistree ; une valeur inconnue n'est
+     pas devinee, elle ne s'affiche pas. */
+  function zoneEnClair(soin) {
+    var z = "";
+    try { z = String((soin && soin.details && soin.details.zone) || ""); } catch (eZ) { z = ""; }
+    if (z === "avant") return T("Avant seulement", "Front only", "Solo delante", "Solo anteriori", "\u524d\u306e\u307f", "Nur vorne");
+    if (z === "arriere") return T("Arri\u00e8re seulement", "Hind only", "Solo detr\u00e1s", "Solo posteriori", "\u5f8c\u306e\u307f", "Nur hinten");
+    if (z === "quatre") return T("Les quatre", "All four", "Los cuatro", "Tutti e quattro", "\u56db\u672c", "Alle vier");
+    return "";
   }
 
   function delaiCourt(j) {
@@ -35292,7 +35480,7 @@ function EcranSanteCheval() {
               T("Derni\u00e8re intervention", "Last visit", "\u00daltima intervenci\u00f3n", "Ultimo intervento", "\u524d\u56de", "Letzter Termin")),
             h("div", { style: { fontFamily: C, fontSize: 18, fontWeight: 700, color: "#EDF2F5", marginTop: 3 } }, enClair(d.date_intervention)),
             h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(220,227,232,0.72)", marginTop: 2 } },
-              (LIB[String(d.type)] || d.type) + (d.titre ? (" \u00b7 " + d.titre) : "")),
+              [(LIB[String(d.type)] || d.type), zoneEnClair(d), d.titre || ""].filter(function (x) { return !!x; }).join(" \u00b7 ")),
             d.notes ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(220,227,232,0.55)", marginTop: 5, lineHeight: 1.5, whiteSpace: "pre-wrap" } }, d.notes) : null)
         : h("div", { key: "f1" }, vide(T("Aucune ferrure ni parage enregistr\u00e9.", "No shoeing or trimming recorded.", "Sin herrado ni recorte registrado.", "Nessuna ferratura n\u00e9 pareggio registrato.", "\u8a18\u9332\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Kein Beschlag erfasst."))),
       p ? h("div", { key: "f2", style: { display: "flex", alignItems: "center", gap: 10, marginTop: 12, paddingTop: 11, borderTop: "1px solid rgba(255,255,255,0.07)" } },
@@ -35374,22 +35562,39 @@ function EcranSanteCheval() {
   return h("div", { style: { position: "relative", minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 120 } },
     fond,
     h("div", { style: { position: "relative", zIndex: 1 } },
-      /* ---------- EN-TETE CHEVAL ---------- */
-      h("div", { style: { padding: "calc(env(safe-area-inset-top) + 14px) 16px 12px" } },
-        h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-          h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { flex: "0 0 auto", width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-          photoVue ? h("img", { src: photoVue, alt: "", style: { flex: "0 0 auto", width: 54, height: 54, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "0 0 18px rgba(32,217,245,0.16)" } }) : null,
-          h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { style: { fontFamily: C, fontSize: 23, fontWeight: 700, letterSpacing: 0.8, lineHeight: 1.08, overflowWrap: "anywhere" } }, nomCourt.toUpperCase()),
-            affixe ? h("div", { style: { fontFamily: C, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: TQ, marginTop: 2, overflowWrap: "anywhere" } }, affixe) : null,
-            montrerOffi ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#7C858D", marginTop: 2 } }, nomOffi) : null,
-            identite ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(220,227,232,0.66)", marginTop: 3 } }, identite) : null)),
-        h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TQ, marginTop: 14, paddingLeft: 2 } },
-          T("Sant\u00e9 & soins", "Health & care", "Salud y cuidados", "Salute e cure", "\u5065\u5eb7\u3068\u30b1\u30a2", "Gesundheit & Pflege")),
-        /* Citation choisie par Blandine, en TEXTE (jamais dans l'image) donc traduite.
-           Aucun pronom ni possessif : es/it/de genrent, la phrase serait fausse une fois sur deux. */
-        h("div", { style: { marginTop: 8, textAlign: "right", fontFamily: "'Snell Roundhand','Brush Script MT',cursive", fontWeight: 600, fontSize: 19, lineHeight: 1.2, color: "#7FE8F2", textShadow: "0 0 14px rgba(32,217,245,0.42)", opacity: 0.92 } },
-          T("Prendre soin, c\u2019est d\u00e9j\u00e0 aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura \u00e8 gi\u00e0 amare.", "\u6c17\u3065\u304b\u3046\u3053\u3068\u306f\u3001\u611b\u3059\u308b\u3053\u3068\u3002", "F\u00fcrsorge ist schon Liebe."))),
+      /* ---------- EN-TETE CHEVAL : PORTRAIT FONDU DANS LE NOIR ----------
+         Demande de Blandine (« la photo en portrait fondu dans le noir, un peu
+         comme sur la page de Rizotto »). On reprend EXACTEMENT le principe du
+         degrade .hv de l'en-tete de la fiche cheval, mais eteint sur le noir
+         #060709 du fond de page : la photo n'a ni cadre ni bord franc, elle se
+         dissout dans la page.
+         \u26a0 La photo est CADREE ici (object-fit cover, meme cadrage 50% 22% que
+         la fiche) : c'est ce qu'impose un bandeau. La regle « photo jamais
+         rognee » continue de valoir sur la FICHE, qui elle epouse le format reel.
+         Sans photo, l'en-tete redevient compact plutot que de montrer un trou. */
+      (function () {
+        var blocNom = h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TQ } },
+            T("Sant\u00e9 & soins", "Health & care", "Salud y cuidados", "Salute e cure", "\u5065\u5eb7\u3068\u30b1\u30a2", "Gesundheit & Pflege")),
+          h("div", { style: { fontFamily: C, fontSize: 27, fontWeight: 700, letterSpacing: 0.8, lineHeight: 1.06, marginTop: 5, overflowWrap: "anywhere", textShadow: "0 2px 18px rgba(0,0,0,0.55)" } }, nomCourt.toUpperCase()),
+          affixe ? h("div", { style: { fontFamily: C, fontSize: 13, letterSpacing: "0.16em", textTransform: "uppercase", color: TQ, marginTop: 2, overflowWrap: "anywhere", textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, affixe) : null,
+          montrerOffi ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#9AA3AB", marginTop: 3 } }, nomOffi) : null,
+          identite ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(226,233,238,0.78)", marginTop: 4, textShadow: "0 1px 10px rgba(0,0,0,0.6)" } }, identite) : null);
+        var retourFlottant = h("button", { key: "ret", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", zIndex: 3, top: "calc(env(safe-area-inset-top) + 10px)", left: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(6,7,9,0.52)", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039");
+        if (!photoVue) {
+          return h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 62px) 16px 2px" } }, retourFlottant, blocNom);
+        }
+        return h("div", { style: { position: "relative", width: "100%", height: "46svh", minHeight: 264, maxHeight: 430, overflow: "hidden" } },
+          h("img", { src: photoVue, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%", display: "block" } }),
+          h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0.42) 0%, rgba(6,7,9,0) 17%, rgba(6,7,9,0) 44%, rgba(6,7,9,0.68) 76%, rgba(6,7,9,1) 100%)" } }),
+          retourFlottant,
+          h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 2, padding: "0 16px 8px" } }, blocNom));
+      })(),
+      /* Citation choisie par Blandine, en TEXTE (jamais dans l'image) donc traduite.
+         Aucun pronom ni possessif : es/it/de genrent, la phrase serait fausse une fois sur deux. */
+      h("div", { style: { padding: "8px 16px 0", textAlign: "right", fontFamily: "'Snell Roundhand','Brush Script MT',cursive", fontWeight: 600, fontSize: 19, lineHeight: 1.2, color: "#7FE8F2", textShadow: "0 0 14px rgba(32,217,245,0.42)", opacity: 0.92 } },
+        T("Prendre soin, c\u2019est d\u00e9j\u00e0 aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura \u00e8 gi\u00e0 amare.", "\u6c17\u3065\u304b\u3046\u3053\u3068\u306f\u3001\u611b\u3059\u308b\u3053\u3068\u3002", "F\u00fcrsorge ist schon Liebe.")),
+
       /* ---------- GESTE PRINCIPAL — inactif en A1, il s'allume avec le formulaire ---------- */
       peutEcrire ? h("div", { style: { display: "flex", justifyContent: "center", padding: "2px 16px 10px" } },
         h("div", { role: "button", onClick: function () { setFeuille({ soin: null }); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M, fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
@@ -35405,7 +35610,8 @@ function EcranSanteCheval() {
       soin: feuille.soin,
       typeInitial: feuille.type || null,
       onFermer: function () { setFeuille(null); },
-      onEnregistre: function () { setFeuille(null); setMaj(maj + 1); }
+      onEnregistre: function () { setFeuille(null); setMaj(maj + 1); },
+      onExporte: function () { setMaj(maj + 1); }
     }) : null);
 }
 
