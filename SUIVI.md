@@ -10,6 +10,124 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (15 h) — PAGE SANTÉ · L'ÉQUIPE DE SOINS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `83889327…` | build **20260908-141** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Les tables `professionnels` et `cheval_professionnels` étaient en base depuis ce matin sans
+rien de branché. C'est fait.
+
+## QUATRE CARRÉS, COMME LES FAMILLES DE SOINS
+
+Vétérinaire · Maréchal-ferrant · Ostéopathe · Dentiste équin, deux par ligne. Chaque carré :
+icône, rôle, nom, établissement, et deux boutons ronds **Appeler** et **Écrire**.
+
+**Aucune coordonnée n'est inventée** : un rôle sans professionnel affiche « + Ajouter »
+pour qui peut écrire, « Non renseigné » pour les autres.
+
+⚠️ **Appeler et écrire restent ouverts à TOUT LE MONDE** — une cavalière rattachée doit
+pouvoir joindre le véto. Seule la **modification** demande le droit d'écriture. Les liens
+`tel:` et `mailto:` arrêtent la propagation du toucher, ils n'ouvrent donc pas la feuille
+en même temps.
+
+## LA MUTUALISATION EST LE CŒUR DU TRUC
+
+En mode « ajouter », la feuille propose **d'abord les professionnels déjà connus** pour ce
+rôle — les miens et ceux de mon écurie, filtrés par les policies, en excluant ceux déjà
+rattachés à ce cheval. Créer un nouveau vient **après**. C'est ce qui évite de recréer
+quinze fois le même vétérinaire, ce qui était la demande explicite du brief (§12).
+
+Case **« Partager avec <mon écurie> »** : remplit `professionnels.club` avec le nom du club
+du profil. L'écran dit franchement ce que ça implique : *« ses coordonnées deviennent
+visibles par elles »*.
+
+⚠️ **Une écurie n'a AUCUN identifiant dans Hype** : elle est reconnue par le **nom** écrit
+dans le profil (`profil.club || profil.ecurie`). Un nom retapé autrement fait perdre
+l'accès au pro partagé jusqu'à réalignement. Limite connue et assumée, déjà consignée
+le 13/09.
+
+## DÉTAILS D'IMPLÉMENTATION
+
+- **Deux requêtes plutôt qu'une jointure** (`cheval_professionnels` puis `professionnels`
+  par `in(id)`) : les colonnes nommées d'une jointure échouent en silence si l'une manque —
+  doctrine Supabase de la maison — et on veut pouvoir **dire** l'échec. Un échec de lecture
+  de l'équipe s'affiche en rouge dans le bloc, il ne se traduit pas par quatre carrés vides.
+- Un refus RLS se reconnaît toujours à un enregistrement qui **ne rend aucune ligne** :
+  c'est dit tel quel.
+- « Retirer de ce cheval » supprime **le lien**, pas la fiche du professionnel : elle reste
+  disponible pour les autres chevaux. L'écran le dit.
+- L'équipe s'affiche **aussi quand aucun soin n'est enregistré** (la branche « état vide »
+  a été rouverte pour ça) : sinon on ne pouvait pas saisir son véto avant son premier soin.
+
+## RESTE À FAIRE SUR LA PAGE SANTÉ
+
+- **Hey Baby épinglées** : ⚠️ `echanges_heybaby_epingles.cheval_id` est du **`text`**
+  (nullable), pas un `uuid` — une requête à passer **avant** de coder, sinon la section
+  s'affiche vide. Ni vignette ni titre court dans cette table.
+- **Section « À lire »** : les 6 vrais articles d'`EcranSante`, aucun mock.
+- Documents médicaux : V2. Le `•••` et l'ancien écran « clinique » : laissés tranquilles.
+- Question posée et sans réponse : « RIZOTTO / D'EMERY » passait sous l'heure du téléphone
+  sur sa capture de 13 h 38 — défaut de zone sûre, ou simple défilement ?
+- Question posée et sans réponse : une **modératrice** doit-elle pouvoir poser la photo
+  OFFICIELLE d'un cheval qui n'est pas le sien ?
+
+---
+
+# 🟩 14/09/2026 (14 h 30) — PAGE SANTÉ · LA GRILLE DE QUATRE CARRÉS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1c4e04e0…` | build **20260908-140** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Base de départ : `c0afc44e…` (build **139**), pris sur le dépôt. Marqueurs vérifiés avant
+greffe : `EcranSanteCheval`, `FeuilleSoin`, `hypeIcsTexte`, `FOND_SANTE.webp`, `liensClub`,
+`chevalCommunDemoData`, `palmTech` — et `heybaby` bien absente de `CHEVAUX_FICHE`. Son
+chantier « rendez-vous passé » (build 141 du journal) est intact.
+
+Blandine, capture de 13 h 38 : « la page véto est tjs pas en carrés ».
+
+## CE QUI CHANGE
+
+Les deux cartes larges (Ferrure / Vaccins & vermifuges) sont remplacées par **quatre
+carrés, deux par ligne** : Ferrure/pieds · Vaccins · Vermifuges · Interventions.
+
+Chaque carré porte **une seule information** : icône, titre, la dernière date en grand,
+l'année dessous, et une pastille d'état. C'est ce qui permet de tenir à deux par ligne sur
+390 px — les cartes larges échouaient parce qu'elles contenaient des **listes**.
+
+Un **+** dans le coin de chaque carré ouvre la feuille avec le bon type déjà choisi ; il
+arrête la propagation du toucher, donc il n'ouvre pas le panneau en même temps.
+
+**Toucher un carré ouvre le panneau de sa famille** : la liste complète de ses lignes,
+détachée vers `<body>` (au-dessus de la barre d'onglets), `z-index` **9400** — sous la
+feuille de saisie (9500), pour qu'une ligne touchée depuis ce panneau s'ouvre par-dessus et
+non dessous. Les lignes y sont **les mêmes** que celles du Carnet, aucune deuxième
+présentation à maintenir.
+
+⚠️ **PRIX ASSUMÉ DU FORMAT, dit à Blandine avant de coder** : le détail passe derrière un
+toucher. Avant, les trois derniers vaccins se lisaient directement sur la page ; maintenant
+il faut toucher « Vaccins ».
+
+⚠️ `moduleFerrure` et `moduleVaccins` **ne sont plus appelées mais restent dans le
+fichier** (règle : aucun nettoyage opportuniste). Revenir aux cartes larges = remettre deux
+appels dans `corps`.
+
+## RELEVÉ AU PASSAGE, NON TRAITÉ
+
+Sur sa capture, « RIZOTTO / D'EMERY » passe **sous l'heure du téléphone**. Si c'est en haut
+de page dès l'ouverture, c'est un défaut de zone sûre à corriger ; si elle avait fait
+défiler, c'est normal. **Question posée, pas de réponse, rien touché.**
+
+Rizotto est l'une des cinq fiches restantes de `CHEVAUX_FICHE` : ses « 21 ans · Poney
+Français de Selle » peuvent encore venir du code et non de la base. Sans conséquence sur la
+page Santé.
+
+---
+
 # 🟩 14/09/2026 (18 h) — UN RENDEZ-VOUS PASSÉ S'OUVRE SUR PLACE, AVEC SES PHOTOS
 
 | Fichier | Où | md5 | Quoi |

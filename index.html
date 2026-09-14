@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-140"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-141"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -34994,6 +34994,183 @@ async function hypeIcsRemettre(nomFichier, texte) {
   } catch (eT) { return ""; }
 }
 
+/* Les quatre roles de l'equipe de soins. Cles = valeurs acceptees par la
+   contrainte de `professionnels.role`. */
+function hypeRolesSoins(T) {
+  return {
+    veterinaire: T("V\u00e9t\u00e9rinaire", "Vet", "Veterinario", "Veterinario", "\u7363\u533b", "Tierarzt"),
+    marechal: T("Mar\u00e9chal-ferrant", "Farrier", "Herrador", "Maniscalco", "\u8e44\u9244\u5de5", "Hufschmied"),
+    osteopathe: T("Ost\u00e9opathe", "Osteopath", "Oste\u00f3pata", "Osteopata", "\u6574\u9aa8\u5e2b", "Osteopath"),
+    dentiste: T("Dentiste \u00e9quin", "Equine dentist", "Dentista equino", "Dentista equino", "\u99ac\u306e\u6b6f\u79d1\u533b", "Pferdezahnarzt")
+  };
+}
+var HYPE_ROLES_ORDRE = ["veterinaire", "marechal", "osteopathe", "dentiste"];
+var HYPE_ROLES_ICONES = { veterinaire: "\ud83e\ude7a", marechal: "\ud83d\udd28", osteopathe: "\ud83d\ude4c", dentiste: "\ud83e\uddb7" };
+
+/* ==========================================================
+   FEUILLE « PROFESSIONNEL » — rattacher un pro a un cheval, ou en creer un.
+   Detachee vers <body>. LE POINT DE LA MUTUALISATION : en mode « ajouter », la
+   feuille propose D'ABORD les pros deja connus pour ce role (les miens et ceux
+   de mon ecurie, filtres par les policies) — c'est ce qui evite de recreer
+   quinze fois le meme veterinaire. Creer un nouveau vient apres.
+   \u26a0 Une ecurie n'a AUCUN identifiant dans Hype : elle est reconnue par le NOM
+   ecrit dans le profil. Un nom retape autrement fait perdre l'acces au pro
+   partage, jusqu'a realignement.
+   ========================================================== */
+function FeuillePro(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var M = "'Montserrat',sans-serif", C = "'Cinzel',serif", TQ = "#20D9F5";
+  var ROLES = hypeRolesSoins(T);
+  var p0 = props.pro || null;
+  var role = String(props.role || "veterinaire");
+
+  var _nom = React.useState(String((p0 && p0.nom) || "")); var nom = _nom[0], setNom = _nom[1];
+  var _str = React.useState(String((p0 && p0.structure) || "")); var structure = _str[0], setStructure = _str[1];
+  var _tel = React.useState(String((p0 && p0.tel) || "")); var tel = _tel[0], setTel = _tel[1];
+  var _ema = React.useState(String((p0 && p0.email) || "")); var email = _ema[0], setEmail = _ema[1];
+  var _not = React.useState(String((p0 && p0.notes) || "")); var notes = _not[0], setNotes = _not[1];
+  var _par = React.useState(!!(p0 && p0.club)); var partage = _par[0], setPartage = _par[1];
+  var _bz = React.useState(false); var busy = _bz[0], setBusy = _bz[1];
+  var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+  var _cnd = React.useState(null); var candidats = _cnd[0], setCandidats = _cnd[1];
+  var _crer = React.useState(!!p0); var enCreation = _crer[0], setEnCreation = _crer[1];
+
+  /* Les pros deja connus pour ce role. Ce que les policies laissent passer fait
+     loi : les miens, ceux de mon ecurie, ceux vus par un cheval visible. */
+  React.useEffect(function () {
+    if (p0) return;
+    var vivant = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) { if (vivant) setCandidats([]); return; }
+        var r = await supa.from("professionnels").select("*").eq("role", role).order("nom", { ascending: true }).limit(60);
+        if (!vivant) return;
+        if (r && r.error) { setCandidats([]); return; }
+        var deja = props.dejaLies || [];
+        setCandidats(((r && r.data) || []).filter(function (x) { return deja.indexOf(String(x.id)) < 0; }));
+      } catch (eC) { if (vivant) setCandidats([]); }
+    })();
+    return function () { vivant = false; };
+  }, [role]);
+
+  var styleChamp = { width: "100%", boxSizing: "border-box", marginTop: 6, padding: "12px 13px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", fontFamily: M, fontSize: 16, outline: "none" };
+  function etiquette(txt) { return h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#8A929C", marginTop: 16 } }, txt); }
+
+  async function rattacher(idPro) {
+    if (busy) return;
+    setBusy(true); setErreur("");
+    var r = null;
+    try { r = await supa.from("cheval_professionnels").insert({ cheval_id: props.chevalId, professionnel_id: idPro }).select(); } catch (eR) { r = { error: eR }; }
+    setBusy(false);
+    if (r && r.error) { setErreur(T("Le rattachement a \u00e9chou\u00e9 : ", "Linking failed: ", "El enlace ha fallado: ", "Collegamento fallito: ", "\u7d10\u4ed8\u3051\u306b\u5931\u6557\uff1a", "Verkn\u00fcpfung fehlgeschlagen: ") + String((r.error && (r.error.message || r.error)) || "?")); return; }
+    if (!r || !r.data || !r.data.length) { setErreur(T("La base n'a renvoy\u00e9 aucune ligne : l'\u00e9criture a \u00e9t\u00e9 refus\u00e9e (droits).", "The database returned no row: the write was refused (permissions).", "La base no devolvi\u00f3 ninguna fila: escritura rechazada (permisos).", "Nessuna riga restituita: scrittura rifiutata (permessi).", "\u884c\u304c\u8fd4\u3055\u308c\u307e\u305b\u3093\uff1a\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\u3002", "Keine Zeile zur\u00fcck: verweigert (Rechte).")); return; }
+    if (props.onChange) props.onChange();
+  }
+
+  async function enregistrer() {
+    if (busy) return;
+    setErreur("");
+    if (!String(nom || "").trim()) { setErreur(T("Il faut au moins un nom.", "A name is required.", "Hace falta un nombre.", "Serve almeno un nome.", "\u540d\u524d\u304c\u5fc5\u8981\u3067\u3059\u3002", "Ein Name ist n\u00f6tig.")); return; }
+    setBusy(true);
+    var champs = {
+      nom: String(nom).trim(), role: role,
+      structure: String(structure || "").trim() || null,
+      tel: String(tel || "").trim() || null,
+      email: String(email || "").trim() || null,
+      notes: String(notes || "").trim() || null,
+      club: partage ? (String(props.club || "").trim() || null) : null
+    };
+    var r = null;
+    try {
+      if (p0 && p0.id) { r = await supa.from("professionnels").update(champs).eq("id", p0.id).select(); }
+      else { r = await supa.from("professionnels").insert(champs).select(); }
+    } catch (eE) { r = { error: eE }; }
+    if (r && r.error) { setBusy(false); setErreur(T("Le professionnel n'a pas pu \u00eatre enregistr\u00e9 : ", "Could not save: ", "No se pudo guardar: ", "Impossibile salvare: ", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", "Konnte nicht gespeichert werden: ") + String((r.error && (r.error.message || r.error)) || "?")); return; }
+    if (!r || !r.data || !r.data.length) { setBusy(false); setErreur(T("La base n'a renvoy\u00e9 aucune ligne : l'\u00e9criture a \u00e9t\u00e9 refus\u00e9e (droits).", "The database returned no row: the write was refused (permissions).", "La base no devolvi\u00f3 ninguna fila: escritura rechazada (permisos).", "Nessuna riga restituita: scrittura rifiutata (permessi).", "\u884c\u304c\u8fd4\u3055\u308c\u307e\u305b\u3093\uff1a\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\u3002", "Keine Zeile zur\u00fcck: verweigert (Rechte).")); return; }
+    /* Un pro tout neuf n'est encore rattache a rien : on pose le lien. */
+    if (!(p0 && p0.id)) {
+      var idNeuf = r.data[0] && r.data[0].id;
+      if (idNeuf) { await rattacher(idNeuf); setBusy(false); return; }
+    }
+    setBusy(false);
+    if (props.onChange) props.onChange();
+  }
+
+  async function detacher() {
+    if (busy || !(p0 && p0.id)) return;
+    setBusy(true); setErreur("");
+    var r = null;
+    try { r = await supa.from("cheval_professionnels").delete().eq("cheval_id", props.chevalId).eq("professionnel_id", p0.id).select(); } catch (eD) { r = { error: eD }; }
+    setBusy(false);
+    if (r && r.error) { setErreur(T("Le retrait a \u00e9chou\u00e9 : ", "Removal failed: ", "La retirada ha fallado: ", "Rimozione fallita: ", "\u89e3\u9664\u306b\u5931\u6557\uff1a", "Entfernen fehlgeschlagen: ") + String((r.error && (r.error.message || r.error)) || "?")); return; }
+    if (!r || !r.data || !r.data.length) { setErreur(T("Rien n'a \u00e9t\u00e9 retir\u00e9 : la base a refus\u00e9 (droits).", "Nothing removed: refused by the database (permissions).", "Nada retirado: rechazado (permisos).", "Nulla rimosso: rifiutato (permessi).", "\u89e3\u9664\u3055\u308c\u307e\u305b\u3093\uff1a\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\u3002", "Nichts entfernt: verweigert (Rechte).")); return; }
+    if (props.onChange) props.onChange();
+  }
+
+  var voile = h("div", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+    h("div", { onClick: function (eS) { try { eS.stopPropagation(); } catch (e0) { } }, style: { width: "100%", maxWidth: 560, maxHeight: "88vh", overflowY: "auto", WebkitOverflowScrolling: "touch", borderRadius: "22px 22px 0 0", border: "1px solid rgba(32,217,245,0.34)", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 20px)" } },
+      h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.3, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase" } }, ROLES[role] || role),
+      props.nomCheval ? h("div", { style: { fontFamily: M, fontSize: 11, color: "#8A99A1", textAlign: "center", marginTop: 4 } }, props.nomCheval) : null,
+
+      /* --- mode AJOUTER : d'abord reutiliser, ensuite creer --- */
+      (!p0 && !enCreation) ? h("div", null,
+        (candidats === null)
+          ? h("div", { style: { textAlign: "center", fontFamily: M, fontSize: 12, color: "#8A99A1", padding: "18px 0" } }, "\u2026")
+          : (candidats.length
+            ? h("div", null,
+                etiquette(T("D\u00e9j\u00e0 connus", "Already known", "Ya conocidos", "Gi\u00e0 noti", "\u767b\u9332\u6e08\u307f", "Bereits bekannt")),
+                h("div", { style: { marginTop: 8 } }, candidats.map(function (cd) {
+                  return h("div", { key: "cd" + cd.id, role: "button", onClick: function () { rattacher(cd.id); }, style: { display: "flex", alignItems: "center", gap: 11, padding: "13px 13px", borderRadius: 14, border: "1px solid rgba(32,217,245,0.28)", background: "rgba(32,217,245,0.06)", marginBottom: 9, cursor: "pointer", opacity: busy ? 0.6 : 1 } },
+                    h("div", { style: { minWidth: 0, flex: 1 } },
+                      h("div", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#EDF2F5" } }, cd.nom),
+                      (cd.structure || cd.club) ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#8A99A1", marginTop: 2 } }, [cd.structure || "", cd.club ? ("\u00b7 " + cd.club) : ""].filter(function (x) { return !!x; }).join(" ")) : null),
+                    h("span", { style: { color: TQ, fontSize: 17, fontWeight: 700, flexShrink: 0 } }, "+"));
+                })),
+                h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 2, lineHeight: 1.55 } },
+                  T("Rattacher plut\u00f4t que recr\u00e9er \u00e9vite d'avoir le m\u00eame professionnel en dix exemplaires.", "Linking instead of recreating avoids having the same professional ten times over.", "Enlazar en vez de recrear evita tener al mismo profesional diez veces.", "Collegare invece di ricreare evita dieci copie dello stesso professionista.", "\u518d\u767b\u9332\u3067\u306f\u306a\u304f\u7d10\u4ed8\u3051\u308b\u3068\u91cd\u8907\u3092\u9632\u3052\u307e\u3059\u3002", "Verkn\u00fcpfen statt neu anlegen verhindert Dubletten.")))
+            : null),
+        h("button", { onClick: function () { setEnCreation(true); }, style: { width: "100%", marginTop: 16, padding: "14px 0", borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", color: "#E4F3F7", fontFamily: M, fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
+          "+ " + T("Nouveau professionnel", "New professional", "Nuevo profesional", "Nuovo professionista", "\u65b0\u898f\u767b\u9332", "Neue Fachperson"))) : null,
+
+      /* --- mode FICHE : creation ou modification --- */
+      (p0 || enCreation) ? h("div", null,
+        etiquette(T("Nom", "Name", "Nombre", "Nome", "\u540d\u524d", "Name")),
+        h("input", { value: nom, onChange: function (e) { setNom(e.target.value); }, style: styleChamp }),
+        etiquette(T("\u00c9tablissement", "Practice", "Establecimiento", "Struttura", "\u6240\u5c5e", "Praxis")),
+        h("input", { value: structure, onChange: function (e) { setStructure(e.target.value); }, style: styleChamp }),
+        etiquette(T("T\u00e9l\u00e9phone", "Phone", "Tel\u00e9fono", "Telefono", "\u96fb\u8a71", "Telefon")),
+        h("input", { value: tel, type: "tel", inputMode: "tel", onChange: function (e) { setTel(e.target.value); }, style: styleChamp }),
+        etiquette(T("E-mail", "Email", "Correo", "E-mail", "\u30e1\u30fc\u30eb", "E-Mail")),
+        h("input", { value: email, type: "email", inputMode: "email", autoCapitalize: "none", onChange: function (e) { setEmail(e.target.value); }, style: styleChamp }),
+        etiquette(T("Notes", "Notes", "Notas", "Note", "\u30e1\u30e2", "Notizen")),
+        h("textarea", { value: notes, rows: 2, onChange: function (e) { setNotes(e.target.value); }, style: Object.assign({}, styleChamp, { resize: "vertical", lineHeight: 1.5 }) }),
+        String(props.club || "").trim()
+          ? h("div", { role: "button", onClick: function () { setPartage(!partage); }, style: { display: "flex", alignItems: "center", gap: 11, minHeight: 46, padding: "0 13px", marginTop: 16, borderRadius: 13, border: "1px solid " + (partage ? "rgba(32,217,245,0.5)" : "rgba(255,255,255,0.12)"), background: partage ? "rgba(32,217,245,0.08)" : "rgba(255,255,255,0.02)", cursor: "pointer" } },
+              h("span", { style: { flex: "0 0 auto", width: 20, height: 20, borderRadius: 6, border: "1px solid " + (partage ? TQ : "rgba(255,255,255,0.3)"), background: partage ? "rgba(32,217,245,0.22)" : "transparent", color: TQ, fontSize: 13, fontWeight: 800, lineHeight: "19px", textAlign: "center" } }, partage ? "\u2713" : ""),
+              h("span", { style: { fontFamily: M, fontSize: 12.5, color: partage ? "#EDF2F5" : "#A8B2BA", lineHeight: 1.4 } },
+                T("Partager avec ", "Share with ", "Compartir con ", "Condividi con ", "\u5171\u6709\uff1a", "Teilen mit ") + String(props.club || "").trim()))
+          : null,
+        String(props.club || "").trim() ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 7, lineHeight: 1.55 } },
+          T("Partag\u00e9, il sera propos\u00e9 aux cavali\u00e8res de l'\u00e9curie pour leurs propres chevaux. Ses coordonn\u00e9es deviennent visibles par elles.", "Once shared, it will be offered to the stable's riders for their own horses. Its contact details become visible to them.", "Compartido, se ofrecer\u00e1 a las jinetes de la cuadra para sus caballos. Sus datos pasan a ser visibles.", "Condiviso, sar\u00e0 proposto alle cavaliere della scuderia per i loro cavalli. I contatti diventano visibili.", "\u5171\u6709\u3059\u308b\u3068\u53a9\u820e\u306e\u4ed6\u306e\u4eba\u306b\u9023\u7d61\u5148\u304c\u898b\u3048\u307e\u3059\u3002", "Geteilt wird der Kontakt f\u00fcr die anderen im Stall sichtbar.")) : null,
+
+        erreur ? h("div", { style: { marginTop: 14, padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.38)", background: "rgba(255,107,107,0.08)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } }, erreur) : null,
+
+        h("button", { onClick: enregistrer, disabled: busy, style: { width: "100%", marginTop: 18, padding: "15px 0", borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", color: "#E4F3F7", fontFamily: M, fontSize: 14.5, fontWeight: 700, cursor: "pointer", opacity: busy ? 0.6 : 1 } },
+          busy ? "\u2026" : T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern")),
+        (p0 && p0.id) ? h("button", { onClick: detacher, disabled: busy, style: { width: "100%", marginTop: 10, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(240,92,116,0.35)", background: "transparent", color: "#F0A0AE", fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } },
+          T("Retirer de ce cheval", "Remove from this horse", "Quitar de este caballo", "Rimuovi da questo cavallo", "\u3053\u306e\u99ac\u304b\u3089\u5916\u3059", "Von diesem Pferd entfernen")) : null,
+        (p0 && p0.id) ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 7, lineHeight: 1.5 } },
+          T("Sa fiche reste disponible pour tes autres chevaux.", "Their card stays available for your other horses.", "Su ficha sigue disponible para tus otros caballos.", "La sua scheda resta disponibile per gli altri cavalli.", "\u4ed6\u306e\u99ac\u3067\u306f\u305d\u306e\u307e\u307e\u4f7f\u3048\u307e\u3059\u3002", "Der Eintrag bleibt f\u00fcr andere Pferde verf\u00fcgbar.")) : null) : null,
+
+      (!p0 && !enCreation && erreur) ? h("div", { style: { marginTop: 14, padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.38)", background: "rgba(255,107,107,0.08)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } }, erreur) : null,
+
+      h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { width: "100%", marginTop: 10, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.20)", background: "transparent", color: "#C9D3D8", fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } },
+        T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))));
+  return (typeof hypePortailBody === "function") ? hypePortailBody(voile) : voile;
+}
+
 /* Libelles des types de soins — SOURCE UNIQUE, partagee par la page et la feuille.
    Les cles sont EXACTEMENT les valeurs acceptees par la contrainte de soins_cheval. */
 function hypeSoinsLibelles(T) {
@@ -35453,6 +35630,11 @@ function EcranSanteCheval() {
   /* 14/09 (Blandine : « la page veto est tjs pas en carres ») — la famille de
      soins ouverte en plein ecran depuis un carre. null = aucune. */
   var stFa = React.useState(null); var famille = stFa[0], setFamille = stFa[1];
+  /* L'equipe de soins : les pros rattaches a ce cheval. null = pas encore lu. */
+  var stPr = React.useState(null); var pros = stPr[0], setPros = stPr[1];
+  var stEp = React.useState(""); var errPro = stEp[0], setErrPro = stEp[1];
+  /* null = fermee ; { role: "...", pro: <ligne>|null } */
+  var stFp = React.useState(null); var feuillePro = stFp[0], setFeuillePro = stFp[1];
 
   React.useEffect(function () {
     var actif = true;
@@ -35488,6 +35670,28 @@ function EcranSanteCheval() {
     })();
     return function () { actif = false; };
   }, [chId]);
+
+  /* L'equipe de soins. DEUX requetes plutot qu'une jointure : les colonnes
+     nommees d'une jointure echouent en silence si l'une manque (doctrine
+     Supabase de la maison), et on veut pouvoir DIRE l'echec. */
+  React.useEffect(function () {
+    var actif = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa || !chId) { if (actif) setPros([]); return; }
+        var rl = await supa.from("cheval_professionnels").select("*").eq("cheval_id", chId).limit(50);
+        if (!actif) return;
+        if (rl && rl.error) { setErrPro(String((rl.error && rl.error.message) || rl.error)); setPros([]); return; }
+        var ids = ((rl && rl.data) || []).map(function (x) { return x.professionnel_id; }).filter(Boolean);
+        if (!ids.length) { setErrPro(""); setPros([]); return; }
+        var rp = await supa.from("professionnels").select("*").in("id", ids);
+        if (!actif) return;
+        if (rp && rp.error) { setErrPro(String((rp.error && rp.error.message) || rp.error)); setPros([]); return; }
+        setErrPro(""); setPros((rp && rp.data) || []);
+      } catch (eEq) { if (actif) { setErrPro(String(eEq)); setPros([]); } }
+    })();
+    return function () { actif = false; };
+  }, [chId, maj]);
 
   /* Regle maison : tout ecran qui defile s'ouvre en haut. */
   React.useEffect(function () { try { if (typeof hypeDefilerHaut === "function") hypeDefilerHaut(); } catch (eD) { } }, []);
@@ -35841,14 +36045,64 @@ function EcranSanteCheval() {
     return (typeof hypePortailBody === "function") ? hypePortailBody(voile) : voile;
   }
 
+  /* ---------- L'EQUIPE DE SOINS ----------
+     Quatre carres, deux par ligne, comme les familles de soins. Appeler et
+     ecrire restent ouverts a tout le monde (une cavaliere rattachee doit pouvoir
+     joindre le veto) ; seule la MODIFICATION demande le droit d'ecriture.
+     AUCUNE coordonnee n'est inventee : un role sans pro affiche « Ajouter ». */
+  var ROLES_EQ = hypeRolesSoins(T);
+  function proDuRole(r) {
+    var l = (pros || []).filter(function (x) { return String(x.role) === r; });
+    return l.length ? l[0] : null;
+  }
+  function boutonRond(ico, href, cle, aria) {
+    return h("a", { key: cle, href: href, "aria-label": aria, onClick: function (e) { try { e.stopPropagation(); } catch (e0) { } },
+      style: { flex: "0 0 auto", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.34)", background: "rgba(32,217,245,0.08)", color: "#9CEDF8", fontSize: 13, lineHeight: "30px", textAlign: "center", textDecoration: "none" } }, ico);
+  }
+  function carreRole(r) {
+    var p = proDuRole(r);
+    var vide = !p;
+    return h("div", { key: "cr" + r, onClick: peutEcrire ? function () { setFeuillePro({ role: r, pro: p }); } : null, role: peutEcrire ? "button" : null,
+      style: { minWidth: 0, minHeight: 150, padding: "13px 13px 14px", borderRadius: 18, border: "1px solid rgba(255,255,255,0.07)", background: FOND_CARTE, boxShadow: "0 10px 30px rgba(0,0,0,0.45)", display: "flex", flexDirection: "column", cursor: peutEcrire ? "pointer" : "default" } },
+      h("div", { style: { fontSize: 17, lineHeight: 1 } }, HYPE_ROLES_ICONES[r] || "\ud83e\ude7a"),
+      h("div", { style: { fontFamily: C, fontSize: 10.5, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "#D9C7A3", marginTop: 9, lineHeight: 1.25 } }, ROLES_EQ[r] || r),
+      vide
+        ? h("div", { style: { flex: 1, display: "flex", alignItems: "flex-end" } },
+            h("div", { style: { fontFamily: M, fontSize: 12.5, fontWeight: 700, color: peutEcrire ? TQ : "#6D7681" } },
+              peutEcrire ? ("+ " + T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen"))
+                         : T("Non renseign\u00e9", "Not set", "Sin datos", "Non indicato", "\u672a\u8a2d\u5b9a", "Nicht angegeben")))
+        : h("div", { style: { flex: 1, display: "flex", flexDirection: "column" } },
+            h("div", { style: { fontFamily: M, fontSize: 13, fontWeight: 700, color: "#EDF2F5", marginTop: 6, lineHeight: 1.3, overflowWrap: "anywhere" } }, p.nom),
+            p.structure ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#7C858D", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, p.structure) : null,
+            h("div", { style: { flex: 1 } }),
+            (p.tel || p.email) ? h("div", { style: { display: "flex", gap: 8, marginTop: 9 } },
+              p.tel ? boutonRond("\ud83d\udcde", "tel:" + String(p.tel).replace(/\s+/g, ""), "t", T("Appeler", "Call", "Llamar", "Chiama", "\u96fb\u8a71", "Anrufen")) : null,
+              p.email ? boutonRond("\u2709", "mailto:" + String(p.email).trim(), "m", T("\u00c9crire", "Email", "Escribir", "Scrivi", "\u30e1\u30fc\u30eb", "E-Mail")) : null) : null));
+  }
+  function grilleEquipe() {
+    return h("div", { style: { marginBottom: 16 } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 9, marginBottom: 11 } },
+        h("span", { style: { fontSize: 13 } }, "\ud83d\udc65"),
+        h("div", { style: { fontFamily: C, fontSize: 13, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#D9C7A3" } },
+          T("L'\u00e9quipe de soins", "The care team", "El equipo de cuidados", "L'\u00e9quipe di cura", "\u30b1\u30a2\u30c1\u30fc\u30e0", "Das Pflegeteam")),
+        h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.28), transparent)" } })),
+      errPro ? h("div", { style: { marginBottom: 10, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } },
+        T("L'\u00e9quipe n'a pas pu \u00eatre lue : ", "The team could not load: ", "No se pudo cargar el equipo: ", "Impossibile caricare l'\u00e9quipe: ", "\u30c1\u30fc\u30e0\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Team nicht geladen: ") + errPro) : null,
+      h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 } },
+        HYPE_ROLES_ORDRE.map(function (r) { return carreRole(r); })));
+  }
+
   var corps;
   if (soins === null) {
     corps = h("div", { style: { padding: "40px 20px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#6D7681" } }, "\u2026");
   } else if (!soins.length) {
-    corps = h("div", { style: { margin: "0 16px", padding: "22px 20px 24px", textAlign: "center", borderRadius: 18, border: "1px solid rgba(255,255,255,0.07)", background: "#0B1014", boxShadow: "0 10px 30px rgba(0,0,0,0.45)" } },
+    corps = h("div", { style: { padding: "0 16px 30px" } },
+      grilleCarres(),
+      grilleEquipe(),
+      h("div", { style: { margin: "0 0 4px", padding: "22px 20px 24px", textAlign: "center", borderRadius: 18, border: "1px solid rgba(255,255,255,0.07)", background: "#0B1014", boxShadow: "0 10px 30px rgba(0,0,0,0.45)" } },
       h("div", { style: { fontSize: 30 } }, "\ud83e\ude7a"),
       h("div", { style: { fontFamily: M, fontSize: 13, color: "#8A929C", marginTop: 10, lineHeight: 1.6 } },
-        T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.")));
+        T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge."))));
   } else {
     var titreSec = function (txt) {
       return h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 11px" } },
@@ -35857,6 +36111,7 @@ function EcranSanteCheval() {
     };
     corps = h("div", { style: { padding: "0 16px 30px" } },
       grilleCarres(),
+      grilleEquipe(),
       h("div", { style: { marginTop: 6 } },
         titreSec(T("Carnet", "Record", "Historial", "Libretto", "\u8a18\u9332", "Verlauf")),
         soins.map(function (s, i) { return ligne(s, "c" + (s.id || i)); })),
@@ -35926,6 +36181,16 @@ function EcranSanteCheval() {
       T("Les soins n\u2019ont pas pu \u00eatre lus : ", "Care records could not load: ", "No se pudieron cargar los cuidados: ", "Impossibile caricare le cure: ", "\u8a18\u9332\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Eintr\u00e4ge nicht geladen: ") + err) : null,
       corps),
     panneauFamille(),
+    feuillePro ? h(FeuillePro, {
+      chevalId: chId,
+      nomCheval: nomVu,
+      role: feuillePro.role,
+      pro: feuillePro.pro,
+      club: (function () { try { var pf = ctx.profil || {}; return String(pf.club || pf.ecurie || "").trim(); } catch (ePf) { return ""; } })(),
+      dejaLies: (pros || []).map(function (x) { return String(x.id); }),
+      onFermer: function () { setFeuillePro(null); },
+      onChange: function () { setFeuillePro(null); setMaj(maj + 1); }
+    }) : null,
     feuille ? h(FeuilleSoin, {
       chevalId: chId,
       nomCheval: nomVu,
