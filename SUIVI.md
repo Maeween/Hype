@@ -10,6 +10,863 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (11 h 45) — UN RENDEZ-VOUS PEUT DURER PLUSIEURS JOURS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `684845be…` | build **20260908-130** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `f95609a2…` (20260908-129).
+
+## LE SQL, DÉJÀ PASSÉ PAR ELLE
+
+`alter table public.club_agenda add column if not exists date_fin date;` — passé le 14/09,
+« Success. No rows returned » confirmé par capture. **C'était la seule requête de ce
+chantier.** Rien d'autre à passer.
+
+## LA FIN EST FACULTATIVE PARTOUT
+
+Vide = un seul jour, comportement d'avant **à l'identique**. Rien ne change pour les
+rendez-vous déjà enregistrés.
+
+## ⚠️ LE POINT IMPORTANT : LA LECTURE ÉTAIT À CORRIGER
+
+Le tri passé / futur se faisait sur la date de **début**. Un stage du 12 au 14 aurait donc
+**disparu dès le 13**, alors qu'il était encore en cours. `chargerAgendaClub` et
+`chargerAgendaClubPasse` décident maintenant sur la date de **fin** quand elle existe, via
+`.or("date_fin.gte.X,and(date_fin.is.null,date_jour.gte.X)")`. Sans date de fin, on retombe
+sur `date_jour`.
+
+## CE QU'ELLE VOIT
+
+- **Formulaires** (création sur la page du club **et** édition de la fiche) : « Date » devient
+  **« Début »**, avec **« Fin (facultatif) »** à côté. L'heure passe sur sa propre ligne :
+  trois champs ne tiennent pas côte à côte sur un téléphone.
+- Une fin **antérieure** au début est **refusée et dite**, jamais corrigée en douce — et le
+  message s'affiche **dans la fenêtre**, pas dans le bandeau de la page qui serait caché
+  derrière (sinon le bouton aurait l'air mort).
+- **Fiche** : « du 12 au 14 octobre », et « du 30 septembre au 2 octobre » à cheval sur deux
+  mois. Le jour de la semaine n'étant pas parlant sur une plage, il n'est gardé que pour un
+  rendez-vous d'un seul jour.
+- **Cartes et liste de l'écran agenda** : la ligne du jour de la semaine porte « → 14 oct. ».
+  Même emplacement, même style, **aucune CSS nouvelle**.
+
+## CHOIX ASSUMÉ, SIGNALÉ AVANT D'AGIR
+
+Un rendez-vous sur plusieurs jours n'apparaît **qu'une fois**, à sa date de début, pas une
+fois par jour. Elle n'a pas demandé l'autre comportement.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **16 lignes remplacées, 59 ajoutées** — deux lecteurs, deux écritures, deux
+  formulaires, trois affichages, le bandeau de la fenêtre, l'en-tête et le build.
+- Non touché : le passé du 126, le clic vers la fiche du 128, les droits de modification, les
+  notifications d'agenda.
+- Balises `<script src=>` et clés `?v=` : **identiques**.
+
+## CE QUI RESTE
+
+- **Santé & soins**, tranches 2 à 5 : ajouter/modifier/supprimer un soin · les professionnels
+  · l'export calendrier · la section « À lire » avec les 6 vrais articles.
+- Qui peut publier sur l'actualité d'un cheval : non tranché.
+- Les identifications en attente sur la page du cheval : non, pour l'instant.
+- La forme exacte de `details` (jsonb) dans `soins_cheval` : à relever avant de l'afficher.
+
+---
+
+# 🟩 14/09/2026 (02 h 40) — SANTÉ & SOINS D'UN CHEVAL, TRANCHE 1 : LA PAGE EN LECTURE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f95609a2…` | build **20260908-129** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e724dcf2…` (20260908-128). Le SQL était passé en base le 14/09 et **rien
+n'existait encore dans `index.html`**.
+
+## LE RELEVÉ EN BASE, AVANT D'ÉCRIRE UNE LIGNE
+
+Une requête, comme convenu. `soins_cheval` porte : `id`, `cheval_id`, `type`, `titre`,
+`date_intervention`, `date_prochaine`, `precision_prochaine`, `professionnel_id`, `notes`,
+`details` (jsonb), `rappel_avant_actif`, `rappel_jours_avant`, `rappel_jour_j`,
+`ics_sequence`, `ics_exporte_le`, `created_by`, `created_at`, `updated_at`.
+**Rien n'est deviné dans cette page.**
+
+## CE QU'ELLE VOIT
+
+- **Entrée :** la carte **Santé** de la grille de la fiche d'un cheval. Elle disait
+  « Passeport » et ouvrait l'ancien écran `clinique` (une simple **image d'aperçu**) ; elle dit
+  maintenant **« Soins »** et ouvre la vraie page, **pour ce cheval**.
+- **Deux sections :** « ÉCHÉANCES » (les soins qui ont une `date_prochaine`, la plus proche
+  d'abord) puis « CARNET » (tout, du plus récent au plus ancien).
+- Par soin : le **type**, le **titre**, les **notes**, et la prochaine échéance avec sa
+  `precision_prochaine`.
+- **Seuils validés par elle :** **ambre à 15 jours**, **rouge dès que c'est dépassé**, avec le
+  retard écrit en clair (« en retard de 12 jours », « aujourd'hui », « demain »).
+- Liste vide → « Aucun soin enregistré pour l'instant. »
+- Échec de lecture → **bandeau rouge**, jamais une liste vide muette.
+
+## ⚠️ LES DROITS SONT TENUS PAR LA BASE, PAS PAR CETTE PAGE
+
+Les policies et `hype_peut_voir_sante(uuid)` décident. La page **ne recalcule aucun droit** de
+son côté : elle ne peut donc pas en inventer un. Une lecture interdite rend une liste vide.
+
+## NON AFFICHÉ DANS CETTE TRANCHE, VOLONTAIREMENT
+
+- Le **nom du professionnel** (`professionnel_id` → table `professionnels`) : c'est la
+  tranche 3.
+- Le contenu de **`details`** (jsonb) : sa forme n'a pas été relevée, donc rien n'est inventé.
+- **Aucun mock**, aucun champ fabriqué.
+
+## OÙ ÇA VIT
+
+Nouveau composant `EcranSanteCheval`, posé juste avant `EcranCliniqueEquine` ; nouvelle route
+`ecran === "sante-cheval"`. Le cheval visé passe par `window.__santeCheval`, sur le modèle de
+`window.__agendaClub`. L'ancien écran `clinique` **reste en place** (toujours ouvert par
+l'encart Véto) et n'a **pas** été nettoyé.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **4 lignes remplacées, 165 ajoutées** — le nouvel écran, une ligne de route, la
+  carte de la grille, l'en-tête et le build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL à passer.**
+
+## LES TRANCHES SUIVANTES
+
+**(2)** ajouter / modifier / supprimer un soin · **(3)** les professionnels · **(4)** l'export
+vers son calendrier · **(5)** la section « À lire » avec les **6 vrais articles** du magazine
+(`EcranSante`), aucun mock.
+
+Reste aussi en suspens : qui peut publier sur l'actualité d'un cheval, et les identifications
+en attente sur cette page (non, pour l'instant).
+
+---
+
+# 🟩 14/09/2026 (02 h 10) — LE CLIC SUR UN RENDEZ-VOUS OUVRE ENFIN SA FICHE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e724dcf2…` | build **20260908-128** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `27e04b9f…` (20260908-127).
+
+## LE DÉFAUT, RELEVÉ AU 126
+
+`window.__agendaFiche` était **écrit** par la page agenda depuis le 02/09, mais **lu nulle
+part** dans le fichier. Toucher un rendez-vous ramenait donc à la page du club **sans rien
+ouvrir**. Vrai pour les rendez-vous à venir comme pour ceux du passé.
+
+## LE CORRECTIF
+
+Dans l'encart agenda de la page du club, sur le **même motif** que
+`window.__agendaOuvrirAjout` qui vit juste au-dessus depuis le 02/09 : lecture à chaque rendu,
+drapeau remis à zéro aussitôt, puis ouverture de la fiche.
+
+⚠️ **Le rendez-vous est relu en base par son identifiant** (`chargerAgendaEvenement`) au lieu
+d'être cherché dans la liste affichée. Raison : cet encart ne charge que les dates **à
+venir**, donc un rendez-vous **passé** — désormais atteignable depuis le 126 — n'y serait pas
+trouvé. Une seule requête, sur la même table, déclenchée uniquement au retour d'un clic.
+
+Un échec de lecture, ou un rendez-vous supprimé entre-temps, s'affiche en **bandeau rouge**
+(« Ce rendez-vous n'existe plus. ») au lieu de laisser un clic muet.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **2 lignes remplacées, 37 ajoutées** — un lecteur, un effet, un état, un
+  bandeau, plus l'en-tête et le build.
+- `T` bien en portée dans ce composant (vérifié).
+- Non touché : le dessin de l'agenda, `chargerAgendaClub`, `chargerAgendaClubPasse`,
+  `FicheEvenementClub` et ses droits de modification.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+- **Le gros morceau : la page Santé & soins par cheval.** Le SQL est passé en base le 14/09
+  (`soins_cheval`, `professionnels`, `cheval_professionnels`, les fonctions de droits, le
+  déclencheur, les policies) et **rien n'est encore codé dans `index.html`**. Toutes les
+  décisions sont prises (modèle des rappels, seuils ambre/rouge, droits, export calendrier,
+  articles réels de la section « À lire »). À découper en tranches testables, pas en une
+  livraison.
+- Qui peut publier sur l'actualité d'un cheval : non tranché.
+- Les identifications **en attente** sur la page du cheval : non, pour l'instant.
+- **Aucun retour de test depuis le 113**, hors l'index lu sur sa capture (124) et la
+  correction de l'écran mort (125).
+
+---
+
+# 🟩 14/09/2026 (01 h 45) — LA PAGE ACTUALITÉ D'UN CHEVAL S'OUVRE (option 4)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `27e04b9f…` | build **20260908-127** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `9d13a546…` (20260908-126).
+
+## LE POINT DE DÉPART : LA PAGE EXISTAIT DÉJÀ
+
+Le panneau `"actualite"` de la fiche cheval est en place depuis le **29/08**, avec le fil du
+cheval dedans. Sa carte dans la grille était **grisée « Prochainement »** en attendant qu'elle
+décide **ce qu'est un post** ici. Sa réponse du 14/09 : **« 4 »** — le fil de sa fiche **et**
+les publications où il est identifié, mélangés et triés par date.
+
+## CE QUI A ÉTÉ FAIT
+
+**1. Lire les publications où le cheval est identifié** (`hypePostsIdentifiesCheval`).
+`identifications` avec `type = "cheval"`, `cible_id = chevaux.id`, `statut = "accepte"`, en ne
+gardant que les lignes dont `photo_url` commence par **`post:`** — une identification sur une
+photo ou un album n'est pas une publication. Les publications sont ensuite relues dans
+`commentaires` et leur auteur rattaché exactement comme dans `listerCommentaires`.
+**Aucune table nouvelle, aucun SQL.**
+
+⚠️ **Seulement les identifications acceptées.** Une identification en attente n'est pas
+validée : la montrer reviendrait à publier sur la page du cheval sans l'accord de sa
+propriétaire. Elle n'a pas répondu à cette question (son « Ok continue » ne la tranchait pas),
+c'est donc le choix le plus prudent, et il est réversible : **un mot à changer**
+(`"accepte"`) dans cette fonction.
+
+**2. `MurHype` sait désormais recevoir des publications venues d'ailleurs** (prop
+`chargerEnPlus`, qui rend `{ data, error }`). Il les fusionne avec celles de sa cible,
+**dédoublonne par identifiant**, retrie par date, et les **mémorise** pour que le rechargement
+(après un envoi ou une suppression) ne les fasse pas disparaître. Même motif que
+`avecAnnonces` (les annonces Hype) depuis juillet.
+
+⚠️ **Elles passent par `filtrerPrivesM` comme les autres** : une publication **privée** venue
+d'un autre mur **ne fuite pas** sur la page du cheval.
+
+Un échec de cette lecture s'affiche en **bandeau rouge en tête de fil** plutôt que de laisser
+un fil incomplet et muet.
+
+**3. Le panneau** reçoit ce mélange, avec le **dessin en vignettes** du 122 — donc les cartes,
+les « j'aime », les réponses et les vidéos fonctionnent ici comme partout ailleurs, **sans une
+deuxième copie du code**.
+
+**4. La carte « Actualité »** de la grille de la fiche n'est plus grisée : elle dit « Ouvrir »
+et ouvre la page.
+
+## ⚠️ CE QUI N'A PAS ÉTÉ TRANCHÉ
+
+**Qui peut publier** sur l'actualité d'un cheval : inchangé, ce sont les règles déjà en place
+sur le mur du cheval. C'était l'autre moitié de la question du 29/08 ; seule celle du contenu
+a été répondue.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **6 lignes remplacées, 87 ajoutées** — la nouvelle fonction de lecture, trois
+  points dans `MurHype`, le panneau, et la carte de la grille.
+- `T` et `M2` bien en portée à l'endroit du bandeau d'erreur (vérifié dans `MurHype`).
+- Les **quatre autres appels de `MurHype`** ne passent pas `chargerEnPlus` : le fil de
+  l'écurie, le club, le mur perso et les annonces sont inchangés.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE EN SUSPENS
+
+- Qui peut publier sur l'actualité d'un cheval (ci-dessus).
+- Les identifications **en attente** sur cette page : non, pour l'instant.
+- Le clic sur un rendez-vous de l'agenda qui n'ouvre pas sa fiche (`window.__agendaFiche`
+  écrit, jamais lu) — trouvé au 126, non touché.
+- **Aucun retour de test depuis le 113**, sauf l'index lu sur sa capture (124 en ligne à
+  23 h 34) et le constat que le dessin était sur du code mort (corrigé au 125).
+
+---
+
+# 🟩 14/09/2026 (01 h 10) — L'AGENDA DU CLUB GARDE SON PASSÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9d13a546…` | build **20260908-126** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `51d34360…` (20260908-125).
+
+## LE RELEVÉ EN BASE, AVANT D'ÉCRIRE UNE LIGNE
+
+Une seule requête, comme convenu. `club_agenda` porte : `id`, `club_clef`, `type`, `titre`,
+`date_jour` (date), `heure` (text), `lieu`, `description`, `auteur`, `created_at`,
+`image_url`.
+
+**Aucune colonne d'archivage, aucun statut.** Donc **rien n'a jamais été perdu** : c'est la
+**lecture** qui écartait le passé — `chargerAgendaClub` filtrait
+`.gte("date_jour", aujourd'hui)`. Tout le passé du club est intact en base depuis toujours.
+
+## CE QUI A ÉTÉ FAIT
+
+- **Nouveau lecteur** `chargerAgendaClubPasse` : même table, `.lt("date_jour", aujourd'hui)`,
+  le plus récent d'abord, limite 50.
+- `chargerAgendaClub` **n'est pas modifiée** → tout ce qui affiche « ce qui vient », dont
+  l'encart agenda de la page du club, est **inchangé**.
+- Dans l'écran agenda : un bouton **« Voir ce qui est déjà passé (N) »** sous la liste,
+  **replié par défaut**, et la base n'est interrogée **qu'au premier clic** — pas une requête
+  de plus à chaque visite.
+- Le passé s'affiche avec le **même dessin**, groupé par mois, légèrement estompé.
+- Le compteur du bas dit maintenant « rendez-vous **à venir** », le passé ayant son propre
+  compte.
+- L'échec de lecture du passé **se dit** dans son propre bandeau rouge (leçon du `.catch()`
+  vide du 01/09).
+
+**Un petit remaniement, dans le seul écran agenda :** pour afficher le passé sans dupliquer
+30 lignes de dessin, le groupement par mois et la ligne d'un rendez-vous ont été sortis en
+trois fonctions (`groupesDe`, `ligneEv`, `blocMois`). Le dessin n'a **pas changé d'un pixel** —
+seule l'estompe est nouvelle, et elle ne s'applique qu'au passé.
+
+## ⚠️ DÉFAUT TROUVÉ, VOLONTAIREMENT NON TOUCHÉ
+
+`window.__agendaFiche` est **écrit** au clic sur un rendez-vous, mais **n'est lu nulle part**
+dans le fichier. Cliquer un rendez-vous dans l'écran agenda ramène donc à la page du club
+**sans ouvrir sa fiche**. C'était déjà vrai avant ce build, et c'est vrai pour le passé comme
+pour le futur : **aucune régression**. À traiter comme une action à part, quand elle voudra.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : l'en-tête + le build, et **un seul écran** (`EcranAgendaClub`) plus le nouveau
+  lecteur. 37 lignes remplacées, 95 ajoutées.
+- Balises `<script src=>` et clés `?v=` : **identiques**.
+- **Aucun SQL à passer.**
+
+## CE QUI RESTE
+
+La page **Actualité d'un cheval**, pour laquelle elle a tranché : **option 4** — le fil de la
+fiche du cheval **et** les publications où il est identifié, mélangés et triés par date.
+Relevé utile déjà fait : les identifications vivent dans la table `identifications`
+(`type` = `cheval`, `cible_id` = l'id du cheval, `photo_url` portant `post:<id>`,
+`album:<id>`, `photocom:<id>` ou l'URL d'une photo), avec un `statut`
+(`accepte` / `attente`) — il faudra décider si les identifications **en attente** comptent.
+C'est la prochaine action.
+
+---
+
+# 🟥 14/09/2026 (00 h 40) — LE DESSIN ÉTAIT SUR DU CODE MORT DEPUIS LE BUILD 120
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `51d34360…` | build **20260908-125** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `38c7e118…` (20260908-124, confirmé en ligne sur sa capture de 23 h 34 :
+« INDEX 20260908-124 »).
+
+## CE QUI S'EST PASSÉ
+
+Ses captures de 23 h 34 : « tjs rien de passé ? », puis « c'est elle que t'es censée toucher
+depuis le début », puis « oublie la page sur laquelle tu as codé, c'est du code mort, et
+applique ce que tu as fait là-bas sur la page club ».
+
+**Preuve dans le code, pas une hypothèse :** `NavBar` fait
+`setEcran(item.id === "ecurie" ? "guilde" : item.id)`. **L'onglet « Écurie » de la barre du bas
+ouvre `EcranGuilde`** — la page de ses captures (encart « L'album de l'écurie », « Souvenirs du
+club », puis le fil).
+
+`EcranEcurie`, l'écran modifié aux builds **120** (en-tête + limite + dépliage), **122**
+(vignettes) et **123** (« Tout voir › »), est l'**ancienne écurie perso** : retirée de la
+navigation, atteignable seulement par la tuile « Ancienne écurie perso (aperçu) » de Mon
+compte, gardée le temps d'être effacée. Son propre code le disait :
+« Page retirée de la navigation, à revoir avant suppression ».
+
+**Trois livraisons invisibles pour elle.** Et le défaut vient du 120, pas du 122 : personne ne
+l'a vu parce qu'aucun test n'est remonté entre le 113 et le 124.
+
+⚠️ **RÈGLE À GARDER :** avant de modifier un écran, **vérifier par où on y arrive**
+(`NavBar`, `setEcran`, les tuiles de Mon compte). « Page Écurie » ne veut pas dire
+`EcranEcurie` : ça veut dire `EcranGuilde`.
+
+## LE CORRECTIF
+
+Les **mêmes props** qu'aux builds 120/122/123 sont posées sur l'appel de `MurHype` de
+`EcranGuilde` : `vignette: true`, `limite: 3`, l'en-tête « Actualités de l'écurie » avec son
+médaillon 🐎, et `onVoirTout`. L'en-tête **remplace** le titre doré « PUBLICATIONS », comme
+prévu au 120.
+
+⚠️ **Un piège propre à cette page :** elle peut montrer **une autre écurie que la sienne**
+(`clubForce`). Le « Tout voir › » transmet donc la **cible réellement affichée**
+(`window.__filEcurieCible` / `__filEcurieNom` — même motif que `window.__agendaClub`), et la
+page Actualités l'utilise telle quelle au lieu de recalculer la sienne. Son retour « ‹ »
+revient désormais à la page du club, plus à l'écran mort.
+
+**Aucun nettoyage** de l'ancienne page : les props y restent, elles partiront avec elle.
+
+## ⚠️ UNE ERREUR D'OUTIL, DITE ET RÉPARÉE
+
+Pendant ce correctif, une écriture de fichier a échoué en cours de route (caractère emoji
+invalide dans le script) et a **vidé le fichier de travail**. Aucun fichier livré n'a été
+touché : le `38c7e118…` qu'elle a en ligne était intact, le correctif a été **refait depuis
+ce fichier livré** et recontrôlé. Leçon : pas d'emoji en échappement dans les scripts
+d'édition, et **toujours repartir du dernier fichier livré** — ce qui a été fait.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre du diff : **4 zones** — en-tête + build, l'appel de `MurHype` de la page du club,
+  et deux petits blocs de la page Actualités (cible reçue, retour).
+- Balises `<script src=>` et clés `?v=` : **identiques**. Aucun SQL.
+
+## CE QU'ELLE DOIT VOIR
+
+Onglet **Écurie**, en descendant : le filet avec le médaillon 🐎 et **ACTUALITÉS DE L'ÉCURIE**
+à la place de « PUBLICATIONS », un **« Tout voir › »** à droite, puis **3 publications en
+vignettes** (photo à gauche, titre, une ligne, auteur + temps + compteurs) et « Voir la
+suite (N) ».
+
+---
+
+# 🟩 13/09/2026 (00 h 15) — LE FIL DE LA PAGE COMMUNAUTÉ : VIGNETTES, ET PLUS DE SAISIE DE CLASSEMENT (étape d)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `38c7e118…` | build **20260908-124** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `43bdeec8…` (20260908-123). Deux décisions d'elle dans le même message : « vire le
+fait de pouvoir rentrer des classements là, t'as pas de lieu pas d'épreuve pas de classement
+rien, c'est sans queue ni tête » et « Ok pour la vignette ».
+
+## ⚠️ CE FIL N'EST PAS CELUI DE L'ÉCURIE — LEÇON À GARDER
+
+La section « Le fil » de la page Communauté **ne passe pas par `MurHype`**. Elle a son propre
+code : `fil()` / `filAmis()`, qui lit les lignes de `resultats` publiées **à la main** (hors
+import) plus les **cartes d'import** de palmarès. Le dessin du 122 a donc été **refait** ici,
+il n'est pas partagé : les builds 122 et 123 ne sont pas touchés, et l'inverse est vrai.
+
+C'est ce qui a justifié la question posée avant de coder — mais elle a été posée en noyant
+l'essentiel sous d'autres fils, ce qui était inutile et brouillon. Sa réponse : « pas compris
+pourquoi tu me parles des autres fils ». **Poser la question sur l'écran, une phrase, et
+rien d'autre.**
+
+## 1. RETRAIT DE LA SAISIE À LA MAIN
+
+- Le gros bouton « Publier un résultat » et son formulaire (concours, classement, photo, lien
+  vidéo) **ne sont plus rendus**.
+- Le **crayon** de modification disparaît des cartes : il ouvrait ce formulaire, il n'aurait
+  plus rien ouvert. Le **bouton Supprimer reste**.
+- `afficherPublication`, `publierUnResultat`, `ouvrirEdition`, `publierResultat`,
+  `modifierResultat` **restent dans le fichier, non appelées** — aucun nettoyage
+  opportuniste, rien touché en base, rallumable en une ligne.
+
+**Conséquence dite avant d'agir :** ce fil ne recevra **plus aucun nouveau post à la main**.
+Il n'y arrivera plus que les cartes d'import de palmarès (et les hauts faits, aujourd'hui
+éteints). Les posts déjà publiés restent affichés.
+
+## 2. LA VIGNETTE
+
+Photo (ou pictogramme si le post n'en a pas) à gauche sur 108 px, titre et **une** ligne de
+description à droite, puis en bas l'auteur avec son pictogramme, le temps relatif, et à droite
+le compteur d'aimes et le pictogramme de réponse.
+
+Titre / description selon la nature du post : **concours + classement**, ou **« a rendu son
+palmarès à X » + les chiffres**, ou le **haut fait**. Ce fil ne porte **qu'une photo par
+post** : jamais de moitiés ni de tiers à découper ici, contrairement à la page Écurie.
+
+⚠️ Le pictogramme de réponse est **sans chiffre** : ce fil ne charge pas le nombre de
+commentaires avec le post (c'est `SectionCommentaires` qui le demande, une fois ouvert).
+Afficher « 0 » serait faux.
+
+## 3. LE DÉPLIAGE, ET L'OUVERTURE D'UN POST
+
+- **3 posts**, puis « Voir la suite (N) » / « Replier » — même règle que la page Écurie au 120.
+- **Toucher une vignette ouvre le post entier** : c'est la carte d'origine, **mot pour mot**,
+  devenue l'état ouvert (`carteResultatOuverte`) — grande photo, lien vidéo, bouton d'aime,
+  commentaires et Supprimer y sont inchangés. Un « Replier » dessous, et **une seule carte
+  ouverte à la fois**.
+- Le cœur se touche directement depuis la vignette, sans l'ouvrir.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre du diff : **6 zones** — en-tête + build, 2 états ajoutés, la nouvelle fonction de
+  vignette, la ligne du crayon, la liste du fil, l'appel du formulaire. Le corps de la carte
+  d'origine n'a **qu'une seule ligne** modifiée (le crayon), vérifié ligne par ligne.
+- ⚠️ **Collision de noms évitée de justesse** : `var ofS` existait déjà dans cet écran (c'est
+  l'onglet Tous/Amis). Le nouvel état a été renommé `oCarteS`. À surveiller dans ce composant :
+  il est long et ses variables sont très courtes.
+- Balises `<script src=>` et clés `?v=` : **identiques**. Aucun SQL.
+
+## RESTE
+
+(e) page **Actualité d'un cheval** — ⚠️ sources toujours non tranchées (le fil de sa fiche ?
+les messages où il est identifié ? ses résultats ?). Puis l'**agenda du club qui garde son
+passé** (relever d'abord les colonnes de `club_agenda`).
+Toujours **aucun retour de test depuis le 113** ; dernier index confirmé en ligne : **120**.
+
+---
+
+# 🟩 13/09/2026 (23 h 50) — LA PAGE ACTUALITÉS DE L'ÉCURIE (étape c)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `43bdeec8…` | build **20260908-123** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `ac859640…` (20260908-122). Étape (c) du chantier du fil. Toujours **aucun retour
+de test depuis le 113** — dernier index confirmé en ligne : **20260908-120**.
+
+## CE QUI CHANGE À L'ÉCRAN
+
+- Sur la page **Écurie**, dans l'en-tête « ACTUALITÉS DE L'ÉCURIE », un **« Tout voir › »**
+  apparaît à droite du titre.
+- Il ouvre une **nouvelle page** : bandeau « LE FIL DE L'ÉCURIE / ACTUALITÉS » + le nom de
+  l'écurie, un « ‹ » en haut à gauche qui revient à la page Écurie, et **tout le fil** en
+  dessous — même cible, **même dessin de vignette** que le 122, mais **sans limite** : plus
+  de « Voir la suite (N) », tout est là.
+- Le champ pour publier reste disponible sur cette page, avec le **même droit d'écriture**
+  que sur la page Écurie (membres de l'écurie seulement). **Dis-moi si tu préfères une page
+  en lecture seule** : c'est un mot à enlever.
+
+## ⚠️ LE « TOUT VOIR › » N'A PAS ÉTÉ AJOUTÉ — IL EXISTAIT DÉJÀ
+
+Il était codé au build 120 et ne se posait pas **faute de destination** : `MurHype` ne le rend
+que si la page fournit `onVoirTout`, précisément pour ne jamais afficher un lien qui ne mène
+nulle part. La page Écurie fournit maintenant cette destination → le lien apparaît tout seul,
+**sans une ligne de plus dans `MurHype`**.
+
+## OÙ ÇA VIT
+
+- Nouveau composant `EcranActualitesEcurie`, posé juste avant `EcranEcurie` (même bloc de
+  script, donc pas de souci d'ordre de déclaration).
+- Nouvelle route `ecran === "actualites-ecurie"`, ajoutée à côté de `"ecurie"` dans le
+  routeur.
+- Le fil est rendu par le **même** `MurHype` avec `vignette: true` et `sansTitre: true` (le
+  titre est dans le bandeau de la page) : **aucune requête nouvelle, aucun SQL**, c'est le
+  composant du fil qui charge comme partout ailleurs.
+- Le nom de l'écurie affiché suit le **même repli** que la page Écurie (`profil.ecurie` puis
+  `profil.club`, rien si vide) : jamais « Écurie Feinn » pour une cavalière sans écurie.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre du diff : **4 zones** — commentaire d'en-tête + numéro de build (ligne 51), une
+  ligne de route, le nouveau composant (38 lignes), et l'appel de la page Écurie (ajout de
+  `onVoirTout`). Rien d'autre touché, aucune ligne retirée.
+- Balises `<script src=>` et clés `?v=` : **identiques**.
+- `setEcran` bien en portée à l'endroit de l'appel (vérifié dans `EcranEcurie`).
+
+## ENSUITE
+
+(d) même dessin et même dépliage sur le fil **Communauté** ; (e) page **Actualité d'un
+cheval** — ⚠️ sources toujours **non tranchées** (les messages du fil de sa fiche ? ceux où il
+est identifié ? ses résultats de concours ? les deux premiers mélangés ?) : c'est la seule
+question qui bloque (e). Puis l'**agenda du club qui garde son passé** (relever d'abord les
+colonnes de `club_agenda`).
+
+---
+
+# 🟩 13/09/2026 (23 h 30) — LE DESSIN DES CARTES DU FIL, PAGE ÉCURIE SEULEMENT (étape b)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ac859640…` | build **20260908-122** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `2cad6bd0…` (20260908-121). Étape (b) du chantier du fil, cadrée sur sa maquette
+à sept sections. ⚠️ Le 121 n'a jamais été confirmé en ligne : le dernier numéro lu sur une
+capture est **20260908-120** (accueil, 22 h 46).
+
+## CE QUI CHANGE À L'ÉCRAN
+
+Sur la page **Écurie**, sous l'en-tête « ACTUALITÉS DE L'ÉCURIE », chaque publication devient
+une vignette :
+
+- la **photo à gauche** (108 px de large, toute la hauteur de la carte, 96 px au minimum) ;
+- à droite le **titre**, puis **UNE ligne** de description ;
+- sous le texte, **l'auteur avec son pictogramme** (son avatar, sinon son initiale) et le
+  **temps relatif** (« il y a 2 h ») ;
+- à droite **sur la même ligne**, le compteur de ♡ et le compteur de réponses ▭.
+
+**Plusieurs photos dans la même vignette de gauche** : 1 = toute la case, 2 = deux moitiés,
+3 = trois tiers (comme sur « Moments d'automne » dans sa maquette). Rien à ajouter en base :
+le nombre de médias était déjà connu du fil (colonne `medias` en jsonb + `photo_url` pour le
+premier, depuis le 12/09). Au-delà de 3, les médias en plus ne sont pas montrés dans la
+vignette — ils restent dans le message.
+
+## TITRE ET DESCRIPTION : CE QUI A ÉTÉ DÉCIDÉ FAUTE DE CHAMP
+
+Un message du fil **n'a pas de champ titre** : il n'y a qu'un texte. Donc, aujourd'hui :
+
+- titre = la **première ligne** du message, description = la suite ;
+- texte d'un seul bloc un peu long (> 44 caractères) : coupe **à la fin de la première
+  phrase** (`.`, `!`, `?`, `…`) ;
+- aucune ponctuation de fin : tout reste dans le titre, sur 2 lignes au plus ;
+- message sans texte (photo seule) : le titre affiche **« Photo »**.
+
+**À trancher avec elle** si ça ne lui va pas : c'est une seule règle, changeable en une
+ligne. L'autre voie serait un vrai champ titre à la publication (nouvelle colonne + composer
+modifié) — plus lourd, non fait.
+
+## ⚠️ COMMENT ÇA A ÉTÉ FAIT SANS TOUCHER AUX QUATRE AUTRES ÉCRANS
+
+`MurHype` est **un seul composant partagé par cinq écrans** : page Écurie (`cibleEcurie`, dans
+`EcranEcurie`), page du club (`cible: "ecurie:"+monClub`, `EcranGuilde`), mur personnel
+(`cibleMoi`), fiche cheval (`cible: cibleCh`), annonces Hype (`cible: "annonces-hype"`).
+
+Le dessin passe donc par une **prop que SEULE la page Écurie demande** (`vignette: true`) —
+exactement le motif du build 120 pour `limite` et `entete`. Les quatre autres appels ne la
+passent pas : ils rendent **comme avant**, au pixel.
+
+**Le rendu d'origine n'est pas remplacé** : il reste en place juste en dessous, et trois cas
+y retombent volontairement — une **annonce Hype** (son habit doré), un message **en cours de
+modification** (tout le bloc d'édition du 78 reste celui d'origine), une **vidéo encore en
+préparation** (placeholder existant).
+
+## CE QUI A ÉTÉ CONSERVÉ, POUR NE RIEN PERDRE SUR CETTE PAGE
+
+- **Modifier** et **×** (suppression) restent accessibles sur la vignette, plus discrets, en
+  haut à droite du texte : mêmes droits (autrice ou modératrice) et même **confirmation en
+  deux temps** qu'ailleurs. Le message d'échec de suppression s'affiche toujours sous la
+  carte (règle du refus silencieux).
+- **♡** appelle la même fonction qu'avant (`basculerLikePost`), **▭** ouvre et referme les
+  réponses au même endroit, et le bloc de réponses (avec le champ pour répondre) s'affiche
+  sous la vignette, inchangé.
+- L'en-tête du 120, la limite à 3 et le « Voir la suite (N) / Replier » : inchangés.
+
+**Toucher la carte elle-même ne fait rien pour l'instant** : il n'y a pas encore de page où
+aller. C'est l'étape (c), la page Actualités — et le « Tout voir › » apparaîtra tout seul
+quand cette page fournira `onVoirTout`.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre du diff : **3 zones** — le commentaire d'en-tête + le numéro de build (ligne 51),
+  l'appel de la page Écurie (1 mot ajouté), et le bloc de dessin inséré avant le rendu
+  d'origine. Aucune ligne du rendu d'origine modifiée.
+- Balises `<script src=>` et clés `?v=` : **identiques** (vérifié par comparaison).
+- Aucun SQL.
+- Découpage titre/description testé à part sur 7 cas (dont texte vide, une seule ligne,
+  ponctuation absente).
+
+## AUCUN RETOUR DE TEST DEPUIS LE 113
+
+Dix builds d'affilée sans test (113 → 122). Si un défaut apparaît, il peut venir de
+n'importe lequel : demander **le numéro d'index affiché** (accueil, ligne « Quoi de neuf »)
+avant tout diagnostic. Le « version 14.07 · 16h40 » vu ailleurs est un texte fixe, ce n'est
+pas le build.
+
+## ENSUITE, DANS CET ORDRE (inchangé)
+
+(c) page **Actualités** (« Tout voir › ») ; (d) même dessin et même dépliage sur le fil
+**Communauté** ; (e) page **Actualité d'un cheval** — sources toujours non tranchées ; puis
+l'**agenda du club qui garde son passé** (relever d'abord les colonnes de `club_agenda`).
+
+---
+
+# 🟦 13/09/2026 (23 h) — IDÉE DE BLANDINE : L'AGENDA DU CLUB GARDE SON PASSÉ
+
+Rien livré : demande à cadrer. Sa phrase, sur une capture de « TOUS LES RENDEZ-VOUS »
+(Écurie Feinn, 4 rendez-vous à venir) : « sur l'agenda on peut voir l'agenda des dates
+passées avec les résultats ou piste ayant été en rapport ? »
+
+## CE QU'ELLE VEUT
+
+Une section des rendez-vous **passés** dans l'agenda du club, et sur chacun, ce qui s'est
+passé ce jour-là : les résultats de concours correspondants, et/ou les publications liées.
+
+## ⚠️ OBSTACLE CONNU, À TRAITER D'ABORD
+
+`chargerAgendaClub` **écarte les rendez-vous passés** (filtre `date >= aujourd'hui`, posé le
+17/07 à la création de l'agenda). Il faut donc les conserver et les afficher dans une
+section à part, sans changer l'affichage à venir.
+
+## APPARIEMENT : PAR DATE, PAS PAR NOM
+
+Le rapprochement solide est **par date** : un rendez-vous du 13/09 au Haras de Folleville
+↔ les lignes de `resultats` dont `date_epreuve` tombe ce jour-là. L'appariement par nom de
+concours serait fragile : « Cso » côté agenda ne ressemble pas aux intitulés du télémat
+(« CSO étrier de Paris », « CSO 2 eme manche challenge » sont saisis à la main).
+À vérifier avant de coder : les colonnes de `club_agenda` (nom de la colonne de date, type)
+— jamais relevées.
+
+## PRÉCISÉ PAR ELLE (23 h 05)
+
+- **Garder les rendez-vous passés** : « oui garde les ». Ils ne s'effacent plus de l'agenda.
+- **Les résultats : certain** (« en tous cas les résultats pour sûr »).
+- **Les publications : peut-être** (« les deux peut-être ? »). → DÉCISION REPORTÉE au moment
+  de coder : il faudra alors choisir quel fil on regarde (écurie ? club ?) et sur quelle
+  fenêtre de temps autour de la date. **Faire les résultats d'abord**, les publications
+  ensuite si elle les veut encore — c'est un ajout séparable, pas un préalable.
+
+## OÙ ÇA S'INSÈRE DANS L'ORDRE
+
+Après le chantier du fil (b → e). À ne pas empiler dessus : l'agenda est un autre écran
+(`EcranAgendaClub`, le même qui plantait le 12/09 faute de fonction de traduction).
+
+---
+
+# 🟥 13/09/2026 (22 h 50) — LE BLOC DES RÉSULTATS NE S'AFFICHAIT PAS SUR SA PROPRE PAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2cad6bd0…` | build **20260908-121** |
+
+Remplace le `f9a76f5d…` (20260908-120). Corrige un défaut du 119.
+
+## CAUSE, TROUVÉE PAR SES REQUÊTES — PAS PAR HYPOTHÈSE
+
+Sur SA page, `profil` vient du contexte de l'app et est un objet **construit à la main**
+(`setProfil({ prenom: "", age: "", club: "", galopActuel: 1, ... })`) : **il ne porte pas
+d'`id`**. `props.userId` arrivait donc vide, la requête cherchait les résultats d'un
+identifiant absent, ne trouvait rien, et le bloc se cachait — comportement voulu pour une
+cavalière sans résultat, donc **aucune erreur à l'écran**. Encore un refus silencieux, cette
+fois côté code et non côté base.
+
+⚠️ **RÈGLE : ne jamais supposer que `ctx.profil` porte un identifiant.** En visite,
+`__visitePub.id` est bien réel — c'est uniquement le cas « ma propre page » qui était faux.
+
+## CE QUE LES REQUÊTES ONT PROUVÉ EN CHEMIN (ne pas re-vérifier)
+
+- `cavalier_statut` : **rattache 385** (376 LIAM ROUX + 9 BLANDINE PRONOST), attente 547.
+  Le rattachement direct ET la validation d'une revendication fonctionnent tous les deux.
+- Pour BLANDINE PRONOST : `visible` **true 6 / false 3** — 6 lignes devaient donc s'afficher.
+- Index réellement en ligne : **20260908-120**, lu sur sa capture de l'accueil (« WHAT'S UP ·
+  REPRISE 1.8 · INDEX 20260908-120 »). Première fois de la soirée que ce numéro est connu —
+  il avait été demandé cinq fois.
+
+## CORRECTIF
+
+Le composant résout lui-même l'identifiant par `utilisateurActuel()` quand la prop est vide,
+et la requête filtre sur cet identifiant résolu. Une seule fonction touchée.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 erreur. Diff : 1 fonction + le numéro de build.
+
+## À REVOIR AVEC ELLE
+
+Sa question reste ouverte : « où je souhaite les afficher ». Aujourd'hui le masquage est
+global à sa page. Un réglage PAR ENDROIT (sa page / fiche du cheval / rail du cheval /
+derniers résultats du club / futur classement Compétition) est possible mais demande une case
+par endroit — lourd pour la cavalière. Liste des endroits fournie, choix non fait.
+
+---
+
+# 🟩 13/09/2026 (22 h 45) — PAGE ÉCURIE : 3 PUBLICATIONS, ET ÇA SE DÉPLIE (étape a)
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f9a76f5d…` | build **20260908-120** |
+
+Remplace le `67c72c3c…` (20260908-119). Étape (a) du découpage décidé à 22 h.
+
+## OÙ ÇA SE PASSE, VÉRIFIÉ DANS LE CODE
+
+L'onglet Écurie de la barre du bas pose `ecran = "ecurie"` → **`EcranEcurie`** (routé ligne
+24853, la note du 28/08 sur une redirection vers `guilde` ne concerne pas cet onglet). Son fil
+est `h(MurHype, { cibleEcurie: true, membresSeuls: true })`. La page du club, elle, est
+`EcranGuilde` avec `cible: "ecurie:"+monClub` — **deux appels distincts**, ce qui permet de
+ne toucher qu'une page.
+
+## CE QUI A ÉTÉ FAIT, ET POURQUOI RIEN D'AUTRE NE BOUGE
+
+`MurHype` est partagé par cinq écrans. Les trois ajouts passent donc par des **props que
+seule la page Écurie demande** — les quatre autres appels ne les passent pas et rendent
+exactement comme avant :
+
+- **`limite`** : `var listeAffichee = (limiteM && !plusOuvert) ? liste.slice(0, limiteM) : liste`.
+  Le mode `compact` existant (2 messages) devient un cas particulier de cette limite, son
+  comportement est inchangé. La page Écurie passe `limite: 3`.
+- **dépliage sur place** : nouvel état `plusOuvert` dans MurHype + un bouton « Voir la suite
+  (N) » / « Replier » sous la liste, 44 px de haut. Il n'apparaît que si une limite a été
+  demandée. L'ancien bouton « Voir tout le fil » du mode `compact` est conservé tel quel.
+- **`entete`** : l'en-tête de sa maquette — filet turquoise dégradé, médaillon rond de 40 px
+  avec pictogramme, titre en petites capitales espacées. Quand elle est posée, elle REMPLACE
+  le titre doré d'origine (pas de doublon). Titre : « Actualités de l'écurie », 6 langues.
+
+## ⚠️ PAS DE « TOUT VOIR › » POUR L'INSTANT — CHOIX ASSUMÉ
+
+La page **Actualités** est l'étape (c), elle n'existe pas encore. Le « Tout voir › » n'est
+donc rendu **que si la page fournit une destination** (`onVoirTout`) : jamais un lien qui ne
+mène nulle part. Il apparaîtra tout seul à l'étape (c), sans retoucher MurHype.
+
+## CE QUI RESTE DES ÉTAPES
+
+(b) dessin des cartes (photo à gauche, 1/2/3 photos, compteurs à droite) — (c) page
+Actualités — (d) même traitement sur Communauté — (e) page Actualité d'un cheval, sources
+encore à trancher.
+
+## VÉRIFIÉ
+
+`node --check` sur les 18 blocs : 0 erreur. Balises `<script src=>` identiques au 112, clés
+`?v=` inchangées. Diff : 4 insertions dans MurHype + 2 props au seul appel de la page Écurie.
+
+## NON TESTÉ
+
+Builds 113 à 120. ⚠️ Aucun retour de test depuis le 112 : huit builds d'affilée, très loin
+de sa règle « une modification, un test ». Elle a demandé de continuer à chaque fois,
+conséquence signalée.
+
+## AU PASSAGE
+
+Elle dit « je vois toujours pas où accepter les résultats ». C'est **Mon compte → Relier les
+résultats FFE**, la demande en attente passant en tête avec Accepter / Refuser. Si elle ne la
+voit pas, l'index en ligne n'est pas le 119 — le numéro affiché sur « Quoi de neuf » n'a
+jamais été donné de toute la soirée.
+
+---
+
+# 🟦 13/09/2026 (22 h) — DÉCIDÉ POUR LE FIL : STRUCTURE, DESSIN, ET UNE PAGE ACTUALITÉ PAR CHEVAL
+
+Rien livré dans cette entrée : ce sont des décisions de Blandine, à coder ensuite, dans
+l'ordre indiqué en bas. Maquette fournie par elle (page Écurie Feinn à sept sections avec
+séparateurs à médaillon).
+
+## CE QU'ELLE A DÉCIDÉ
+
+- **Page Écurie** : 3 publications visibles au plus, chacune se DÉROULE SUR PLACE au toucher
+  (texte complet + photos + commentaires, sans quitter la page). Choix explicite après que les
+  deux options lui ont été expliquées — **pas** d'ouverture en plein écran.
+- Au-delà de 3 : « Tout voir › » mène à une nouvelle page **Actualités** qui montre tout le
+  fil, même dessin.
+- **Dessin** (sa maquette) : séparateur = filet turquoise dégradé + médaillon rond avec
+  pictogramme + titre en petites capitales espacées + « Tout voir › » à droite ; cartes
+  larges, photo à gauche, titre, une ligne de description, auteur + temps relatif, likes et
+  commentaires à droite.
+- **Plusieurs photos à gauche** : oui. 1 photo = toute la case, 2 = deux moitiés, 3 = trois
+  tiers (sa maquette le fait déjà sur « Moments d'automne »).
+- **Même dessin et même dépliage sur le fil Communauté**, après la page Écurie.
+
+## PAGE ACTUALITÉ D'UN CHEVAL — DÉCISION NON PRISE, À TRANCHER
+
+Elle la veut, « qui reçoive également de son côté les posts quand les chevaux y sont
+mentionnés ». ⚠️ Un cheval n'écrit pas : cette page ne peut se remplir que de ce que les
+autres publient à son sujet. TROIS sources possibles, question posée, sans réponse :
+
+1. les messages du **fil de sa fiche** (existent déjà, `cible: cibleCh`) ;
+2. les messages où **il est identifié** (identification d'un cheval dans un message en place
+   depuis le 12/09, table `identifications`, forme « post:<id> ») ;
+3. ses **résultats de concours** — faut-il les y faire apparaître comme actualités ?
+
+À décider : 1+2 mélangées en un fil chronologique, ou les mentions seules, et le sort des
+résultats. La carte « Actualité » de la fiche cheval EXISTE déjà, grisée et marquée
+« Prochainement » (29/08) : elle reste fermée jusque-là.
+
+## LE PIÈGE TECHNIQUE RELEVÉ AVANT DE CODER
+
+`MurHype` est **UN SEUL composant partagé par CINQ écrans** : page Écurie (`cibleEcurie`),
+page du club (`cible: "ecurie:"+monClub`), mur personnel (`cibleMoi`), fiche cheval
+(`cible: cibleCh`), annonces Hype (`cible: "annonces-hype"`). Le redessiner touche les cinq
+d'un coup. ⚠️ Toute consigne nouvelle (limite à 3, dessin) doit passer par une **prop
+demandée uniquement par la page concernée** — les quatre autres ne la passent pas et ne
+changent pas. Point d'accroche repéré : `var liste = (posts || []).slice().reverse();`.
+
+## DÉCOUPAGE RETENU, UNE LIVRAISON À LA FOIS
+
+(a) structure sur la page Écurie : séparateur, titre, « Tout voir », limite à 3 + « Voir la
+suite » — cartes inchangées ; (b) dessin des cartes ; (c) page Actualités ; (d) même
+traitement sur Communauté ; (e) page Actualité d'un cheval, une fois les sources tranchées.
+
+## INCIDENT SANS CONSÉQUENCE (22 h 36)
+
+Cette entrée lui avait été donnée comme un bloc de texte à coller ; elle l'a collée dans
+l'éditeur SQL de Supabase, qui a rendu `ERROR 42601: syntax error at or near "#"`. **Rien
+n'a été écrit en base.** Sa remarque est juste : le fichier SUIVI.md était fourni, l'entrée
+devait être écrite dedans et livrée avec l'index, pas recopiée à la main. **Règle : quand
+SUIVI.md est fourni, on écrit dedans.**
+
+---
+
 # 🟩 13/09/2026 (21 h 30) — SES RÉSULTATS SUR LA PAGE CAVALIÈRE, ET LE CHOIX DE CE QU'ELLE MONTRE
 
 | Fichier | Où | md5 | Quoi |
