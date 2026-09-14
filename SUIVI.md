@@ -10,6 +10,84 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (23 h 40) — MON CARNET H3+H4 · DEUX MESSAGES SUR LA PAGE DU CLUB, PUBLICATION EN BAS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `7110cdf5…` | build **20260908-176** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e9fa5fb1…` (20260908-174). Contient les builds 175 et 176.
+
+## 1. MON CARNET, ÉTAPES H3 ET H4 : L'ÉCRAN D'UNE SÉANCE
+
+**Un seul écran** pour consulter, créer **et** modifier — la règle d'UX qu'elle a verrouillée :
+« 1 page principale + 1 écran contextuel seulement », « utiliser le **même** écran contextuel
+que la consultation d'une séance, mais vide/éditable ».
+
+**La création est volontairement courte** : la date (pré-remplie à aujourd'hui), le cheval en
+pastilles avec « Aucun », le type de travail en six pastilles plus un champ libre, et la note.
+
+⚠️ **Seule la date est obligatoire** — sa décision 5d : « une séance peut exister avec seulement
+date + note ». Le cheval, la discipline et la note portent la mention **« facultatif »** en
+clair, pour qu'on sache qu'on peut les ignorer.
+
+⚠️ **La note en cours est gardée sur l'appareil à chaque frappe** (`hype_brouillon_carnet`),
+comme le composer du mur depuis le 162. **Elle a perdu un texte une fois, ça ne doit pas se
+reproduire.** Effacé après un enregistrement réussi.
+
+⚠️ **L'échec s'affiche en clair et la saisie n'est pas vidée** : on peut réessayer. La
+suppression demande une confirmation, en deux touchers.
+
+**Et le gros bouton « + Nouvelle séance » s'allume enfin** — il était éteint au 173 parce que son
+écran n'existait pas. Les conseils travaillés (H5-H6) et les médias (H7) ne sont pas là, et
+**aucun bouton ne les promet**.
+
+## 2. LA PAGE DU CLUB : DEUX MESSAGES, ET LE CHAMP DE PUBLICATION EN BAS
+
+« Pour l'endroit où on met les publications on peut limiter juste à deux messages et passer en
+troisième en bas la partie où publier plutôt que la laisser là-haut ? »
+
+Fait : `limite: 2` et nouvelle prop `composerEnBas` sur le **seul** mur du club.
+
+⚠️ **Fait par un tri final, pas en réorganisant l'assemblage.** Le composer est poussé dans le
+fil par **plusieurs branches** (composer normal, ligne « modification en cours », variantes hors
+ligne) — déplacer ces `push` aurait demandé de toucher chacune, donc trois occasions de casser
+quelque chose. Ici tout s'assemble comme avant, et **un seul bloc final** déplace les éléments
+dont la clé est celle du composer.
+
+⚠️ **Rien n'est caché** : le « Tout voir » de l'en-tête mène toujours à la page Actualités de
+l'écurie. On montre moins **ici**, pas moins en tout.
+
+Les autres murs ne passent pas la prop et gardent le composer en haut.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Portées : `EcranCarnetDetail` en bloc **13**, `mesChevaux`, `mesChevauxLies`,
+  `utilisateurActuel` en bloc **1**.
+- Les deux clés du composer existent bien une fois chacune (comptées) — sans elles le tri ne
+  déplacerait rien, en silence.
+- Périmètre : **7 lignes remplacées, 264 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LA SUITE DU CARNET
+
+- **H5** — le panneau des conseils, qui allumera la ligne grisée du haut.
+- **H6** — l'écran d'un conseil : texte Hey Baby, les trois états, la timeline des séances.
+- **H7** — les médias d'une séance. ⚠️ **Pipeline existant, mêmes quotas, même stockage, aucun
+  système parallèle.**
+- **H8** — les trois priorités modifiables.
+
+## CE QUI RESTE EN ATTENTE D'ELLE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Photos lentes** — le diagnostic est prêt, réservé à son compte.
+3. **Barre du bas** — verdict.
+4. **« Voir pas ce que j'ai écrit une fois refermé »** — à préciser.
+
+---
+
 # 🟩 15/09/2026 (23 h 20) — LA PAGE DU CLUB SE NETTOIE : « MA GESTION » PART, LA SELLERIE DESCEND
 
 | Fichier | Où | md5 | Quoi |
