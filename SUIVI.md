@@ -10,6 +10,158 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (19 h 45) — LA SORTIE PENDANT LE ZOOM · LE FAUX « ENVOI A ÉCHOUÉ »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f75c86c0…` | build **20260908-165** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `d35773aa…` (20260908-164). **Deux erreurs de ma part, corrigées.**
+
+## 1. 🟥 ELLE SE FAISAIT SORTIR EN ZOOMANT UNE PHOTO
+
+« J'ai zoomé sur les photos de l'agenda et je me suis fait sortir, j'ai atterri sur la page de
+l'écurie. »
+
+La navigation par balayage entre onglets n'est bloquée que sur les éléments portant
+**`[data-hscroll]`**, **`[data-noswipe]`** ou un champ de saisie — c'est le test `bloque` du
+routeur. **Mon calque de photo du build 153 ne portait ni l'un ni l'autre.** Un geste horizontal
+ou une pince sur la photo ouverte était donc lu comme un balayage, et changeait de page.
+
+Les deux marqueurs sont posés.
+
+## 2. 🟥 « L'ENVOI A ÉCHOUÉ : UNDEFINED » — RIEN N'AVAIT ÉCHOUÉ
+
+C'était mon avertissement **« 4 médias au maximum »** du build 162, envoyé **dans le mauvais
+canal**. `setErrEnvoi` attend un **objet** `{ nom, poids, msg }` et s'affiche sous le titre
+« L'envoi a échoué ». En lui passant du **texte**, le bandeau lisait `errEnvoi.msg` =
+`undefined`.
+
+Donc : elle avait seulement choisi **plus de 4 photos**, les 4 premières sont bien entrées, et
+mon message d'information s'est déguisé en panne. Ces avis ont maintenant leur propre canal, en
+**ambre** et non en rouge.
+
+**Leçon :** ne jamais réutiliser un canal d'erreur pour un simple avis, et **vérifier la forme
+que l'état attend**, pas seulement son nom.
+
+## ⚠️ CE QUI RESTE À ÉLUCIDER, NON TOUCHÉ
+
+« Beaucoup de mal à charger les photos, certaines ne passent pas. » Une partie s'explique par le
+faux message ci-dessus. Mais **la lenteur de chargement n'est pas expliquée** et n'a pas été
+traitée dans ce build. Pistes à vérifier ensemble, aucune n'est établie :
+
+- quatre médias envoyés **un par un en série** dans `publier()` — c'est lent par construction ;
+- des photos lourdes venant directement de l'iPhone ;
+- le réseau au moment de l'envoi.
+
+Il me faudrait savoir : est-ce lent à **choisir** les photos (l'aperçu qui tarde) ou à
+**publier** ?
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **5 lignes remplacées, 25 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+- 🟥 **Les abonnements Stripe** : il me faut `dashboard.stripe.com/webhooks`. **Seul point qui
+  touche de l'argent.**
+- **La barre du bas** : le correctif du 164 (centrage sans transform) attend son verdict.
+- **MON CARNET** : relevé et proposition rendus, cinq décisions en attente.
+- La carte **Santé du club**, laissée grisée à sa demande.
+- L'encart album encore présent sur l'onglet **Cavalier**.
+
+---
+
+# 🟩 15/09/2026 (19 h 30) — LA BARRE DU BAS · LE CARRÉ « CHEVAUX » OUVRAIT LA MAUVAISE PAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d35773aa…` | build **20260908-164** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `2afc371c…` (20260908-163).
+
+## 1. 🟥 LA BARRE DU BAS QUI SE PROMÈNE
+
+« En retour du bug de la barre du menu en bas qui au lieu d'être figée se promène sur toute la
+page. »
+
+**Relevé fait avant de toucher quoi que ce soit** — les deux hypothèses faciles sont écartées :
+
+- il n'y a **qu'une** barre dans le fichier : une seule définition (`NavBar`), un seul rendu.
+  Ce n'est donc pas un doublon rendu dans le flux.
+- elle est **déjà sortie en portail** vers le `<body>` depuis le 23/08 session 160, précisément
+  pour ce bug. Ce n'est donc pas un ancêtre rogné.
+
+**Ce qui restait :** la barre portait **elle-même** `left: 50%` + `transform:
+translateX(-50%)`. Un élément `position: fixed` **qui porte un transform** est promu dans sa
+propre couche de composition — et c'est le cas où iOS oublie le plus souvent de le repositionner
+pendant le défilement : il reste planté là où il était. Exactement ce qu'elle voit.
+
+Le centrage est refait **sans transform** : `left: 0` / `right: 0` / `margin: auto`. Rendu
+identique au pixel, aucune couche promue.
+
+⚠️ **Ce n'est pas une certitude, et il faut le dire :** c'est la **dernière cause connue encore
+présente**, pas un diagnostic prouvé. Si la barre se promène toujours, la piste suivante est le
+recalcul de hauteur du *visual viewport* (la barre d'URL d'iOS), et il faudra l'observer en
+direct — le code ne suffira pas.
+
+Les deux autres `translateX(-50%)` du fichier sont des bandeaux du **haut** : non touchés.
+
+## 2. LE CARRÉ « CHEVAUX » OUVRAIT LA GALERIE GLOBALE
+
+« Pourquoi Écurie a été reliée à Écurie Hype ? Normalement on avait abandonné ce projet et la
+page avait été renommée au nom de l'écurie concernée avec ses chevaux à chaque fois. »
+
+**C'est mon erreur du build 143.** `EcranEcurieHype` a **deux modes** :
+
+- **sans contexte** → galerie **globale** « L'écurie Hype » : les chevaux ayant accepté le
+  partage, **tous clubs confondus** (28 sur sa capture) ;
+- **avec `window.__ecurieHypeClub`** posé **avant** la navigation → le **roster du club**
+  (appartenance par `profiles.ecurie` / `ecurie2`, indépendamment du partage individuel), et la
+  page prend le nom de l'écurie.
+
+C'est le second mode que le bouton « Voir les X chevaux » de la page Club utilise depuis le
+28/08. Mon lien ne posait pas ce contexte. **Corrigé** : le carré pose le club affiché avant
+d'ouvrir l'écran. La page elle-même n'est pas modifiée, ses autres points d'entrée gardent leur
+comportement.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Une seule `NavBar` dans le fichier (compté), un seul rendu, portail intact.
+- Périmètre : **8 lignes remplacées, 31 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## ⚠️ DEUX ERREURS DE RAISONNEMENT À CORRIGER DANS CE SUIVI
+
+1. **Les « doublons de résultats en base » des entrées 156 et 162 n'existent pas.** Deux lignes
+   identiques à l'écran = **deux victoires réelles**, même concours, même épreuve, **à 24 h
+   d'intervalle** (son explication). La requête de suppression proposée dans l'entrée du 156
+   aurait **effacé une vraie victoire de son cheval** : **ne jamais la passer.** La bonne réponse
+   était sa demande d'origine — la date entière, livrée au 155.
+2. **Règle qui en découle :** ne jamais proposer une requête qui **supprime** des lignes avant
+   d'avoir compris la donnée. J'avais l'explication sous les yeux — deux cartes strictement
+   identiques — et j'en ai conclu « la base est en double » au lieu de « il manque une
+   information à l'écran pour les distinguer ».
+
+## CE QUI RESTE
+
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Il me faut `dashboard.stripe.com/webhooks`. **Seul point qui touche de
+  l'argent.**
+- **MON CARNET** : relevé et proposition rendus (document séparé). Cinq décisions attendent,
+  dont le titre et le thème d'un conseil — les épingles n'en ont pas en base.
+- La carte **Santé du club**, laissée grisée à sa demande. Acquis : tous les chevaux de
+  l'écurie, l'encart Véto y déménage avec sa photo et ses mots.
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil.
+
+---
+
 # 🟩 15/09/2026 (02 h 20) — LA PAGE CAVALIERS DU CLUB
 
 | Fichier | Où | md5 | Quoi |
