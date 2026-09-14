@@ -10,6 +10,536 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (22 h) — UNE RÉPONSE PEUT PORTER UNE PHOTO · TITRE DES RÉSULTATS RACCOURCI
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c53baa0d…` | build **20260908-149** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `614c4928…` (20260908-148).
+
+## 1. LES MÉDIAS DANS LES COMMENTAIRES
+
+« Les gens peuvent commenter en dessous aussi en rajoutant des médias s'ils le souhaitent. »
+C'était le dernier morceau de sa phrase sur les rendez-vous passés.
+
+Jusqu'ici `envoyerReponse` n'envoyait **que du texte**, alors que `posterCommentaire` sait
+depuis toujours prendre un fichier — c'est ce que fait le composer juste au-dessus. Une réponse
+est une ligne de `commentaires` comme une autre, avec sa colonne `photo_url` : **rien de nouveau
+en base, aucun SQL.**
+
+- Le choix du fichier passe par les **mêmes fonctions que la publication** (`hypePhotoDirecte`
+  pour une photo, le fichier tel quel pour une vidéo) : même traitement, même absence de
+  recadrage, même compression.
+- **Un média par réponse**, comme un commentaire.
+- **Une photo seule suffit** désormais — avant, sans texte, rien ne partait.
+- Aperçu avec une croix pour le retirer avant d'envoyer.
+- Le média d'une réponse s'affiche en carré de 132 px et s'ouvre **en grand** au toucher.
+
+⚠️ **`MurHype` n'avait aucune visionneuse** : les médias d'un post y sont affichés en place,
+sans agrandissement. Elle a été ajoutée pour cela, avec le même composant que partout ailleurs
+(`PhotoZoomHype`, avec son zoom). Utile au-delà des réponses, le jour où elle voudra agrandir la
+photo d'un post.
+
+Marche partout où le fil est utilisé : mur de l'écurie, page du club, Actualités, fiche cheval,
+et les rendez-vous passés.
+
+## 2. LE TITRE DES RÉSULTATS
+
+« Sinon mets juste résultats c'est plus court et tlm a compris. » → **« Résultats »** tout
+court, au lieu de « Résultats de ces journées ».
+
+⚠️ **La réserve reste vraie et reste écrite dans le code** : rien en base ne relie un résultat
+FFE à un rendez-vous, c'est la **date** de l'épreuve qui le place dans ces journées. Une
+cavalière du club ayant couru **ailleurs** le même jour apparaîtra là. Le titre ne le dit plus,
+le code le dit — à ressortir si un jour un résultat surprenant apparaît dans un concours.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Toutes les fonctions appelées existent et sont en portée : `estFichierVideo`,
+  `grandeImageHype`, `hypeMuxMp4` (bloc 1), `hypePhotoDirecte`, `PhotoZoomHype`, `MurHype`
+  (bloc 13) — vérifié bloc par bloc.
+- 🟥 **Une erreur attrapée en route** : le média d'une réponse appelait `setVisu`, qui **n'existe
+  pas** dans `MurHype` — le toucher aurait plante. C'est ce qui a révélé que ce composant n'avait
+  aucune visionneuse. D'où l'ajout de `setVuRep` et du rendu de `PhotoZoomHype`.
+  **Règle : toute fonction ou état appelé dans un composant doit être vérifié comme existant
+  DANS ce composant**, pas ailleurs dans le fichier — `grep` sur tout `index.html` ne prouve rien.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+- Le **choix du rendez-vous dans le composer** du mur du club et le **rattachement des photos
+  déjà publiées** (`identifications`, `type = "agenda"`, sans migration) — son « 1c ».
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés ; photo et mots de l'ancien
+  encart véto en réserve pour le bandeau de Santé).
+- Le dernier doublon : le bloc « Souvenirs du club » de la page du club.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée.
+  Soraya débloquée à la main. Rien dans `index.html` n'écrit cette table : le chaînon est un
+  webhook Stripe ou une fonction serveur, à voir sur `dashboard.stripe.com/webhooks`. Au moins
+  deux occurrences.
+
+---
+
+# 🟩 14/09/2026 (21 h 30) — LES RÉSULTATS FFE DES JOURNÉES D'UN RENDEZ-VOUS PASSÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `614c4928…` | build **20260908-148** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `1fe1f086…` (20260908-147).
+
+## SA DEMANDE
+
+« Je voudrais qu'on implémente le rapport entre les concours par exemple et les photos et
+résultats, on voulait remplir dans l'agenda passé avec les photos vidéos et résultats », et
+« photos et résultats visibles tout de suite ».
+
+## ⚠️ LE LIEN EST LA DATE, PAS UNE CERTITUDE — ET C'EST ÉCRIT À L'ÉCRAN
+
+**Rien en base ne relie un résultat FFE à un rendez-vous.** Les résultats portent
+`date_epreuve`, les rendez-vous `date_jour` et `date_fin`. On remonte donc les résultats **des
+cavalières du club** dont la date tombe dans les journées du rendez-vous, sous le titre
+**« Résultats de ces journées »** — et non « les résultats de ce concours ».
+
+Une cavalière qui a couru **ailleurs** le même jour apparaîtra. C'est un **faux positif assumé
+et visible**, jamais un mensonge caché. Le jour où elle voudra un lien sûr, il faudra un champ
+à la publication du résultat.
+
+## COLONNES RELEVÉES DANS LE CODE, RIEN DE DEVINÉ
+
+L'import FFE écrit : `user_id`, `cheval_id`, `concours`, `epreuve`, `date_epreuve`, `place`,
+`partants`, `quart`, `cavalier`, `origine`. Les cavalières du club viennent de
+`hypeCavaliersDuClub`, le helper déjà employé ailleurs.
+
+## CE QU'ELLE VOIT
+
+Dans la carte d'un rendez-vous passé, sous le bandeau des photos et **sans rien toucher** : la
+**place sur les partants** (« 3/26 »), l'**épreuve**, la **cavalière**. Huit lignes au plus,
+puis « + N autres ». Et le **compte des résultats** à côté du compte des médias dans la ligne de
+la carte.
+
+## ⚠️ UNE SEULE REQUÊTE POUR TOUT LE PASSÉ
+
+Bornée aux dates extrêmes des rendez-vous affichés, puis répartie carte par carte en mémoire —
+pas une requête par carte.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- **Composant conteneur vérifié** : le chargement et le rendu sont bien dans `EcranAgendaClub`.
+- Périmètre : **3 lignes remplacées, 72 ajoutées**, dans la page agenda seule, plus l'en-tête et
+  le build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL, aucune colonne nouvelle.**
+
+## CE QUI RESTE SUR CE CHANTIER
+
+1. **Les médias dans les commentaires** : `envoyerReponse` n'envoie aucun fichier aujourd'hui,
+   alors que la fonction de publication sait le faire. C'est le dernier morceau de sa phrase
+   « les gens peuvent commenter en dessous aussi en rajoutant des médias ».
+2. Le **choix du rendez-vous dans le composer** du mur du club, et le **rattachement des photos
+   déjà publiées** — `identifications`, `type = "agenda"`, sans migration.
+
+## ET HORS CHANTIER, EN ATTENTE
+
+- 🟥 **Les abonnements Stripe** : le paiement passe, la ligne dans `abonnements_premium` n'est
+  jamais créée. Soraya a été débloquée à la main (`plan = annuel`, `actif`, expire en septembre
+  2027). Rien dans `index.html` n'écrit dans cette table : le chaînon manquant est un webhook
+  Stripe ou une fonction serveur. À voir sur `dashboard.stripe.com/webhooks`. **Au moins deux
+  occurrences**, donc pas un accident.
+- Les pages **Cavaliers** et **Santé du club** (deux carrés encore grisés), avec la photo et les
+  mots de l'ancien encart véto en réserve pour le bandeau de Santé.
+- Le dernier doublon de souvenirs : le bloc « Souvenirs du club » de la page du club.
+
+---
+
+# 🟩 14/09/2026 (21 h) — LES RENDEZ-VOUS PASSÉS DEVIENNENT DES CARTES, AFFICHÉES DIRECTEMENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1fe1f086…` | build **20260908-147** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `38ce6001…` (20260908-146). ⚠️ Vérifié avant de commencer : le fichier de l'autre
+conversation était le **141**, plus ancien, et mon 146 le contient intégralement (page Santé,
+équipe de soins, professionnels, retrait de « Hey Baby » — occurrences comptées une à une).
+
+## SA DEMANDE
+
+« En bas on garde les événements passés sans avoir forcément besoin de les dérouler ou alors on
+propose de dérouler au bout d'un nombre d'événements donnés, par exemple au-delà de 4 ou 5, et
+tu les présentes comme sur les publications du mur, même système mais en laissant plus de place
+et de hauteur, où pourront s'insérer quelques photos vidéos résultats, et les gens peuvent
+commenter en dessous. » Puis : « photos et résultats visibles tout de suite ».
+
+## CE QU'ELLE VOIT
+
+- Le passé est **chargé au démarrage** : plus de section à ouvrir.
+- Les **5 plus récents** affichés, « Voir les précédents (N) » au-delà.
+- Carte **plus haute** que les vignettes du mur : couverture à gauche sur 124 px (l'affiche du
+  rendez-vous, sinon sa première photo), à droite le type, le nom, le lieu, la date — ou « du 12
+  au 14 octobre » — et le nombre de médias.
+- **Le bandeau de ses médias est visible sans rien toucher**, qui défile horizontalement ; une
+  vignette s'ouvre en grand dans la visionneuse existante, avec le zoom.
+- **Le dépliage ne sert plus qu'aux commentaires** et à publier.
+
+## TROIS DÉFAUTS DE SA CAPTURE DE 14 H 11, RÉGLÉS D'UN COUP
+
+- **« Replier » en triple** → il n'en reste **qu'un**, dans la carte.
+- **Le titre doré « PUBLICATIONS » à l'intérieur d'un rendez-vous** → éteint par `sansTitre`.
+- **Suppression d'un post inaccessible** → les vignettes du fil portent leur croix, et depuis le
+  135 elles ne déclenchent plus l'ouverture de la carte par ricochet. C'était probablement ça :
+  la croix était là, mais le tap ouvrait le post.
+
+## ⚠️ UNE SEULE REQUÊTE POUR TOUS LES MÉDIAS
+
+Les murs des rendez-vous passés sont lus **d'un coup** (`cible IN ("agenda:<id>"…)`), pas un par
+carte — sinon dix rendez-vous auraient fait dix requêtes. Les photos supplémentaires des posts à
+plusieurs médias (colonne `medias`) sont prises aussi, et les publications **privées** écartées.
+
+## ⚠️ DÉFAUT CORRIGÉ AU PASSAGE
+
+Le bloc du passé était **enfermé dans la branche « il y a des rendez-vous à venir »** : un club
+sans rendez-vous à venir ne voyait **pas** son passé. Déjà vrai avant ce build, mais devenu
+grave maintenant que le passé est une rubrique à part entière. Le bloc est sorti au niveau du
+composant et s'affiche dans les deux cas.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- **Composant conteneur vérifié** : `carteEvPasse` et `blocPasse` sont bien dans
+  `EcranAgendaClub` (leçon du 146, où une ancre générique avait envoyé le calendrier dans la
+  page Souvenirs).
+- Périmètre : **18 lignes remplacées, 147 ajoutées**, dans la page agenda seule, plus l'en-tête
+  et le build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE SUR CE CHANTIER
+
+1. **Les résultats FFE** dans la carte, rattachés par la **date** (un résultat dont la date
+   tombe entre `date_jour` et `date_fin`), présentés comme « résultats de ces journées » et non
+   « les résultats de ce concours » : c'est la date qui fait le lien, pas une certitude.
+2. **Les médias dans les commentaires** : `envoyerReponse` n'envoie aucun fichier aujourd'hui,
+   alors que la fonction de publication sait le faire.
+3. Le **choix du rendez-vous dans le composer** du mur du club, et le **rattachement des photos
+   déjà publiées** — `identifications`, `type = "agenda"`, **sans migration** (relevé confirmé :
+   la table ne porte que sa clé primaire).
+4. Les groupes par mois (`groupesDe`, `ligneEv`, `blocMois`) ne servent plus à rien depuis que
+   la liste à venir a laissé place au calendrier et que le passé est en cartes. **Non nettoyés**,
+   comme toujours.
+
+## ⚠️ RÈGLE DE TRAVAIL À DEUX CONVERSATIONS
+
+Le même `index.html` est édité depuis deux fils. Celle qui reprend doit **toujours** demander le
+dernier fichier poussé, et le numéro de build en haut de l'accueil dit lequel est en ligne. Sinon
+cinq livraisons disparaissent d'un coup sans que personne le voie.
+
+---
+
+# 🟩 14/09/2026 (20 h 40) — LE CALENDRIER DU MOIS SUR LA PAGE AGENDA, PASSÉ COMPRIS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `38ce6001…` | build **20260908-146** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `ff57a191…` (20260908-145).
+
+## CE QU'ELLE VOIT
+
+Sous le carrousel, une grille mensuelle. **Semaine du lundi au dimanche.** Les jours qui portent
+un rendez-vous ont une **pastille colorée** :
+
+- **concours en or**, **stage en turquoise**, **sortie en vert** — les couleurs déjà en place
+- **deux types le même jour** → pastille partagée en deux couleurs
+- une **légende** sous la grille
+- aujourd'hui est **cerclé en or** quand il ne porte rien
+
+Flèches pour changer de mois. **Toucher un jour** ouvre ses rendez-vous **juste sous le
+calendrier** ; toucher l'un d'eux ouvre sa fiche sur la page du club, comme partout ailleurs.
+
+## ⚠️ UNE REQUÊTE PAR MOIS VISITÉ, ASSUMÉE
+
+Un calendrier ne peut marquer que ce qui est chargé, et les deux lecteurs existants ne prennent
+que « à venir » et « passé », 50 chacun. Ce calendrier lit donc **le mois affiché** et relit à
+chaque changement de mois. C'est le prix pour que mars dernier soit marqué — elle a demandé le
+passé.
+
+## ⚠️ UN RENDEZ-VOUS DE PLUSIEURS JOURS MARQUE TOUS SES JOURS
+
+La lecture prend les rendez-vous qui **chevauchent** le mois (`date_jour <=` fin du mois **et**
+date de fin `>=` début du mois), et chaque jour entre le début et la fin porte la pastille. Un
+stage du 30 septembre au 2 octobre est donc marqué **dans les deux mois**. Sans ça, il aurait
+disparu du calendrier d'octobre.
+
+## LA LISTE PAR MOIS DES RENDEZ-VOUS À VENIR EST RETIRÉE
+
+Comme prévu : le carrousel les montre tous en haut, le calendrier les marque, et le compte
+« N rendez-vous à venir » reste. Les groupes par mois servent **encore au passé**, inchangé.
+
+## 🟥 UNE ERREUR DE MA PART, RATTRAPÉE AVANT LIVRAISON
+
+Le calendrier a d'abord été inséré dans **`EcranSouvenirsClub`** au lieu de `EcranAgendaClub` :
+mon ancre (`function retour()`) existait dans les deux composants. Détecté par un contrôle du
+composant conteneur, retiré, et le fichier est revenu **au md5 exact du 145** avant d'être
+réécrit au bon endroit.
+
+**Règle à garder :** pour insérer dans un composant précis, prendre une ancre **propre à ce
+composant** (ici `function dateDe(iso)`), jamais une ligne générique comme `function retour()`,
+et **vérifier après insertion dans quelle fonction le code a atterri**.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Composant conteneur vérifié : le calendrier est bien dans `EcranAgendaClub`.
+- Périmètre : **3 lignes remplacées, 148 ajoutées**, dans la page agenda seule, plus l'en-tête
+  et le build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## PROCHAINES TRANCHES
+
+1. **Les cartes des rendez-vous passés** : affichées directement (plus de section à ouvrir),
+   « Voir les précédents » au-delà de 5, cartes plus hautes que les vignettes du mur avec
+   **photos, vidéos et résultats visibles tout de suite** (sa décision) — le dépliage ne servira
+   plus qu'aux commentaires, ce qui règle le « Replier » en triple.
+2. **Les résultats FFE** rattachés par la date, présentés comme « résultats de ces journées ».
+3. **Les médias dans les commentaires** : aujourd'hui `envoyerReponse` n'envoie aucun fichier.
+4. Le **choix du rendez-vous dans le composer** du mur du club et le **rattachement des photos
+   déjà publiées** (`identifications`, `type = "agenda"`, sans migration).
+
+---
+
+# 🟩 14/09/2026 (20 h) — LES DEUX ENCARTS QUITTENT LA PAGE DU CLUB, LEUR HABILLAGE DEVIENT UN EN-TÊTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `ff57a191…` | build **20260908-145** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `f2d0cd2e…` (20260908-144).
+
+## SA DEMANDE
+
+Deux croix sur ses captures : « tu peux retirer les onglets clinique vétérinaire et album
+souvenir de l'écurie et tu peux réutiliser par contre leurs photos et écritures pour l'entête
+des pages concernées ».
+
+## 1. L'ALBUM DE L'ÉCURIE → L'EN-TÊTE DE LA PAGE SOUVENIRS
+
+Son habillage devient le bandeau de la page Souvenirs du club : **même image**
+(`HYPE_IMGS.albumEcurieEncart`), **même sur-titre** « SOUVENIRS », **même titre** « L'album de
+l'écurie », **même phrase** « Notre histoire. Nos chevaux. Nos souvenirs. ». Le nom de l'écurie
+passe dessous. **Rien n'est réinventé**, et l'encart retiré ne laisse pas de trou : son
+habillage a simplement changé de place.
+
+La photo n'est **pas filtrée** (règle Hype : aucun filtre sur les photos de chevaux) ; seul un
+voile sombre assure la lisibilité du texte.
+
+L'encart était grisé « Prochainement » et **n'ouvrait rien depuis le 26/07**, tout en promettant
+la même chose que la page Souvenirs livrée au 137. **Un doublon de moins** — il en restait deux,
+il en reste un.
+
+## 2. LA CLINIQUE VÉTÉRINAIRE → RÉSERVÉE À LA FUTURE PAGE SANTÉ DU CLUB
+
+L'encart est retiré de la page du club. Sa photo (`HYPE_IMGS.encartVeto`, sinon
+`cliniqueEncart`) et ses mots — sur-titre « Santé », titre « Clinique vétérinaire », sous-titre
+« Soins & conseils » — sont **notés ici pour servir de bandeau à la page Santé du club**, selon
+sa décision : « le véto, laisse-le dans santé, on aura toutes les fiches des chevaux rassemblées
+dedans ».
+
+⚠️ **Conséquence dite : plus rien n'ouvre l'écran `clinique`** (`EcranCliniqueEquine`, une simple
+image d'aperçu). Il devient inatteignable, comme l'ancienne écurie perso.
+
+Les deux composants d'encart **restent dans le fichier**, non nettoyés.
+
+## ⚠️ CE QUI RESTE, ET QU'ELLE N'A PAS VU
+
+`EncartAlbumEcurie` est **aussi rendu sur l'onglet Cavalier** (`EcranCavalier`) — même encart
+grisé qui n'ouvre rien. Il n'a **pas** été touché : elle a désigné la page du club, et rien
+d'autre. À lui demander. (Les deux occurrences dans `EcranEcurie` partiront avec cette page
+morte.)
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **9 lignes remplacées, 37 ajoutées** — les deux rendus retirés de la page du club,
+  le bandeau de la page Souvenirs, l'en-tête et le build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## L'ÉTAT DES DOUBLONS DE SOUVENIRS
+
+Reste **un** bloc à traiter : « Souvenirs du club » sur la page du club, dont la mosaïque n'a
+jamais été remplie (dessinée, aucun chargement écrit). La page Souvenirs fait désormais ce
+travail, avec en plus les albums.
+
+## PROCHAINE TRANCHE
+
+Le **calendrier** de la page agenda : passé compris, pastille colorée par type (concours en or,
+stage en turquoise, sortie en vert), pastille partagée si deux rendez-vous le même jour, et le
+rendez-vous qui s'ouvre juste sous le calendrier. Puis les **cartes des rendez-vous passés**
+(photos, vidéos et résultats visibles tout de suite) et les **médias dans les commentaires**.
+
+---
+
+# 🟩 14/09/2026 (19 h 30) — LA CARTE « CHEVAUX » S'ALLUME · LES ALBUMS DÉMÉNAGENT DANS SOUVENIRS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f2d0cd2e…` | build **20260908-144** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `c5c0b0fc…` (20260908-142). Deux demandes d'elle, sur la même capture.
+
+## 1. LA CARTE « CHEVAUX » DE LA GRILLE DU CLUB
+
+« On a déjà la page les chevaux de l'écurie Feinn, tu peux envoyer dessus. »
+
+La page existait en effet : `EcranEcurieHype`, écran `ecurie-hype`, avec son bandeau, ses
+compteurs (chevaux, poneys, à venir, favori) et la grille des chevaux. **Rien n'a été écrit,
+juste relié** : un `setEcran` et le « Bientôt » qui devient « Ouvrir ».
+
+Restent grisées : **Cavaliers** et **Santé**.
+
+## 2. LES ALBUMS DE L'ÉCURIE PARTENT DANS LA PAGE SOUVENIRS
+
+« En dessous on a tous les albums de l'écurie, on pourrait déplacer ça sur une partie de la page
+photos de l'écurie ? »
+
+Ils vivaient en bas de « Les chevaux de &lt;écurie&gt; ». **Même lecture que là-bas, mot pour
+mot** : les albums **publics** (`visibilite = "public"`) des chevaux du club, table
+`albums_cheval`, cible « cheval:&lt;id&gt; », plafonnés à 16 ; les chevaux du club sont
+retrouvés par `hypeChevauxDuClub`, comme partout ailleurs. **Aucun SQL.** Un album ouvre la
+fiche du cheval concerné, comme avant.
+
+⚠️ **Section à part, sous la mosaïque par année, et non mélangée avec elle.** Un album est un
+**objet** (couverture, nom, nombre de souvenirs) ; la mosaïque est un **flux par année**. C'est
+exactement la distinction validée sur maquette pour que les deux ne se confondent pas — les
+mélanger aurait ramené la confusion qu'elle voulait éviter.
+
+⚠️ Sur la page des chevaux, **seul le rendu est retiré**. Le chargement (`albumsEH`) reste en
+place, non nettoyé : remplacer le `false` par `(albumsEH && albumsEH.length)` rallume la section
+là-bas. Conséquence assumée : cette page fait encore sa requête d'albums pour rien.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **8 lignes remplacées, 63 ajoutées** — la carte Chevaux, le chargement et la
+  section des albums dans `EcranSouvenirsClub`, le rendu neutralisé dans `EcranEcurieHype`, plus
+  deux en-têtes et le build.
+- `hypeChevauxDuClub` et `vignetteHype` sont dans le bloc de script **1**, la page dans le
+  **13** : déclarées bien avant son rendu (vérifié).
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LA PAGE SOUVENIRS RASSEMBLE MAINTENANT
+
+La mosaïque par année (mur du club) **plus** les albums publics des chevaux. Ce qui règle une
+partie du chantier des doublons : restent à retirer de la page du club l'encart « L'album de
+l'écurie » (grisé, n'ouvre rien) et le bloc « Souvenirs du club » (mosaïque jamais remplie).
+
+## PROCHAINE TRANCHE
+
+Le **calendrier** de la page agenda : passé compris, pastille colorée par type (concours en or,
+stage en turquoise, sortie en vert), pastille partagée si deux rendez-vous le même jour, et le
+rendez-vous qui s'ouvre juste sous le calendrier. Puis les **cartes des rendez-vous passés** et
+les **médias dans les commentaires**.
+
+---
+
+# 🟩 14/09/2026 (19 h) — LE CARROUSEL EN HAUT DE LA PAGE AGENDA, ET LE DROIT D'AJOUT RÉPARÉ
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c5c0b0fc…` | build **20260908-142** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Part du `83889327…` (20260908-141). Les builds 140 et 141 (page Santé) sont intacts, et mes
+builds 135 à 139 sont bien présents dans le fichier reçu (vérifié avant de toucher quoi que ce
+soit).
+
+## SA DEMANDE
+
+« Déjà en haut sur l'agenda je préfère qu'on garde le carrousel qu'on avait déjà avec les cartes
+et les affiches, il était nickel et avait toutes les infos. »
+
+Constat juste : la page « Tous les rendez-vous » montrait **moins** que l'encart de la page du
+club. L'inverse de ce qu'on attend d'une page « tout voir ».
+
+## 1. LE MÊME COMPOSANT, PAS UN SECOND CARROUSEL
+
+`AgendaClubHype` est réutilisé tel quel : affiches en fond, gros jour, type, titre, lieu, croix
+de suppression, bouton d'ajout. Deux props nouvelles l'ajustent à cette page :
+
+- `sansTitre` — le bandeau de la page dit déjà « L'AGENDA DU CLUB / TOUS LES RENDEZ-VOUS »
+- `sansVoirTout` — jamais un bouton qui ramène là où on est
+
+Sur la page du club, **rien ne change** : elle ne passe ni l'une ni l'autre.
+
+## 2. 🟥 DÉFAUT TROUVÉ ET CORRIGÉ : LE BOUTON D'AJOUT NE POUVAIT JAMAIS S'AFFICHER
+
+`clubRevendiquePar` était appelé **sans l'utilisatrice** sur cette page. Sa signature est
+`(nomEcurie, user)` et elle compare l'e-mail de `user` à celui de la propriétaire déclarée du
+club. Sans second argument, l'e-mail lu vaut `""` → la fonction répond **toujours non**.
+
+Le bouton « + Ajouter un rendez-vous » de la page agenda ne pouvait donc **jamais** apparaître,
+ce que sa capture confirme. L'utilisatrice est maintenant chargée ici.
+
+## 3. L'ANCIEN BOUTON D'AJOUT DU BAS EST RETIRÉ
+
+Il faisait **quitter la page** pour aller ouvrir la fenêtre de création sur la page du club,
+faute de fenêtre ici. Le carrousel apporte la sienne : son bouton d'ajout ouvre la fenêtre **sur
+place**. Garder les deux aurait fait un doublon, dont un qui fait sortir de la page.
+
+## 4. LA LISTE PAR MOIS RESTE EN DESSOUS
+
+Elle ne partira qu'avec l'arrivée du **calendrier**, pour qu'aucune information ne disparaisse
+entre deux livraisons.
+
+## ⚠️ UNE ERREUR D'OUTIL, LA MÊME QUE CETTE NUIT
+
+Un emoji en échappement dans mon script d'édition a fait échouer l'écriture **en cours de
+route** et vidé mon fichier de travail. Aucun fichier livré n'a été touché ; le correctif a été
+refait depuis le `83889327…` reçu et recontrôlé. C'est la **deuxième fois** (déjà noté au build
+125) : **aucun emoji en échappement dans les scripts d'édition**, jamais.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **8 lignes remplacées, 43 ajoutées** — deux props dans le carrousel, la charge de
+  l'utilisatrice, le carrousel posé, l'ancien bouton neutralisé, l'en-tête et le build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LA PAGE AGENDA VISÉE, ET CE QUI RESTE À ÉCRIRE
+
+Décidé avec elle, de haut en bas : **carrousel** (fait) · **calendrier mensuel** ·
+**rendez-vous passés en cartes**.
+
+**Le calendrier :** passé compris, donc une lecture en base par mois visité. Marque = une
+**pastille colorée** autour du chiffre, couleurs par type (concours en or, stage en turquoise,
+sortie en vert) ; deux rendez-vous le même jour = pastille partagée en deux couleurs. Toucher un
+jour **ouvre le rendez-vous juste sous le calendrier** (lecture de sa demande d'origine : « ça
+ouvre l'événement de la journée concernée » — à confirmer par elle si elle voulait un
+défilement).
+
+**Les rendez-vous passés :** affichés **directement**, sans section à ouvrir ; au-delà de **5**,
+un « Voir les précédents (N) ». Cartes **plus hautes** que les vignettes du mur : photo à gauche,
+nom du concours à droite, et **photos, vidéos et résultats visibles tout de suite** (sa
+décision) — le dépliage ne sert donc plus qu'aux **commentaires**. Ce qui règle du même coup le
+« Replier » qui apparaissait trois fois.
+
+**Les quatre défauts relevés sur sa capture de 14 h 11, à traiter dans ces tranches :**
+impossible de supprimer un post depuis là · « Replier » en triple · le titre doré
+« PUBLICATIONS » qui n'a rien à faire dans un rendez-vous · rien qui dise que ce qu'on publie
+sera rattaché à ce rendez-vous.
+
+**Et un ajout réel repéré :** une **réponse ne peut porter que du texte** aujourd'hui
+(`envoyerReponse` n'envoie aucun fichier, alors que la fonction de publication sait le faire).
+« Les gens peuvent commenter en rajoutant des médias » demande donc un champ photo dans la
+réponse et son affichage.
+
+---
+
 # 🟩 14/09/2026 (15 h) — PAGE SANTÉ · L'ÉQUIPE DE SOINS
 
 | Fichier | Où | md5 | Quoi |
