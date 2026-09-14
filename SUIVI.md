@@ -10,6 +10,291 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (13 h) — PAGE « SANTÉ & SOINS » DU CHEVAL · CHANTIER COMPLET A1 → A6
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `0a88a88a…` | build **20260908-131** |
+| `images/FOND_SANTE.webp` | `images/` | — | fond de la page, **déjà poussé** par Blandine |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `684845be…` (20260908-130), qui portait son chantier « agenda sur plusieurs
+jours ». **Celui-ci est intact, rien n'a été touché en dehors de la page Santé.**
++59 448 octets. Les 18 blocs JS passent `node --check`. Marqueurs de garde vérifiés avant
+greffe : `EcranSanteCheval`, `liensClub`, `chevalCommunDemoData`, `palmTech`.
+
+---
+
+## LE SQL, DÉJÀ PASSÉ PAR ELLE LE 14/09
+
+Confirmé par capture (« Success. No rows returned ») **et vérifié ensuite** : RLS active
+sur les trois tables, **4 / 4 / 3 policies** (`soins_cheval` / `professionnels` /
+`cheval_professionnels`).
+
+- tables : `soins_cheval`, `professionnels`, `cheval_professionnels`
+- fonctions de droits : `hype_peut_voir_sante(uuid)`, `hype_peut_ecrire_sante(uuid)`
+- déclencheur `hype_soins_touch`, policies, `revoke ... from anon`
+
+**Relevé `pg_proc` du 13/09** : `hype_est_moderatrice` prend **0 argument**, rend un
+`boolean`, et est **security definer** — donc appelable depuis une policy sans refus
+silencieux. `hype_peut_ecrire_album` est bien **absente** de la base : la faille du 02/09
+est réellement supprimée, pas seulement retirée du code. `chevaux.id` et
+`chevaux_liens.cheval_id` sont des `uuid` (prouvé, pas supposé).
+
+⚠️ **`hype_soins_touch` — le piège que j'avais moi-même créé.** Noter l'heure d'un export
+comptait comme une modification de la ligne : la mention « échéance modifiée · réexporter »
+se serait affichée **immédiatement après chaque export, définitivement**. Le déclencheur
+compare la ligne **hors** `ics_sequence` / `ics_exporte_le` / `updated_at` : exporter n'est
+pas modifier.
+
+⚠️ **`created_by` n'a AUCUN lien vers la table des comptes**, volontairement : avec un lien,
+supprimer un compte effacerait en cascade le carnet de santé d'un cheval, ou bloquerait la
+suppression du compte. Un carnet doit survivre au départ d'une cavalière.
+
+---
+
+## LES DROITS, TENUS PAR LA BASE
+
+| | Lire | Créer / modifier | Supprimer |
+|---|---|---|---|
+| `soins_cheval` | propriétaire + **rattachées** + modératrices | propriétaire + modératrices | auteur + propriétaire + modératrices |
+| `professionnels` | créatrice, même écurie si `club` rempli, ou via un cheval visible | tout compte connecté, pour lui-même | créatrice + modératrices |
+| `cheval_professionnels` | `hype_peut_voir_sante` | `hype_peut_ecrire_sante` | `hype_peut_ecrire_sante` |
+
+**Aucun `true` nulle part** — c'est la faute d'`albums_cheval` à ne pas refaire.
+L'écran ne recalcule aucun droit : il se contente de **ne pas proposer** le geste à qui ne
+peut pas écrire. Blandine étant modératrice, elle écrit sur tous les chevaux, y compris la
+fiche de Liam (« je leur remplis »).
+
+⚠️ **Conséquence assumée du choix « rattachées en lecture seule »** : une rattachée peut
+quand même envoyer un rappel dans **son** calendrier (le fichier se fabrique dans le
+téléphone, aucune écriture en base) ; elle n'a simplement pas la mention « Réexporter »,
+qui est celle de la propriétaire.
+
+---
+
+## CE QUI EXISTAIT AVANT (travail fait dans une autre conversation, par erreur)
+
+`EcranSanteCheval`, la route `ecran === "sante-cheval"`, `window.__santeCheval = {id, nom}`,
+la carte de la fiche renommée « Soins », et les deux listes **en lecture seule**.
+Blandine leur a demandé d'arrêter. **Rien n'a été recodé.**
+
+🟥 **LA LISTE « ÉCHÉANCES » DE CE TRAVAIL EST RETIRÉE** : elle disait exactement la même
+chose que les tuiles « À surveiller », deux fois de suite sur le même écran. Le détail de
+chaque soin reste dans le Carnet juste dessous. **Réversible en une ligne** si elle la
+préfère.
+
+🟩 **TROIS DÉFAUTS DE CE TRAVAIL RÉPARÉS**
+
+1. Les clés des libellés étaient `marechal` / `osteo` / `veto` — qui **n'existent pas**
+   dans la contrainte de `soins_cheval`. « veterinaire », « ferrure » et « osteopathe »
+   retombaient donc sur le repli et restaient **en français dans les 5 autres langues**.
+   Source unique créée : `hypeSoinsLibelles(T)`, partagée par la page et la feuille.
+2. `precision_prochaine` s'écrivait **brut** à côté de chaque date (le mot « jour »).
+   Remplacé par `enClairP()` : « oct. 2027 » quand la précision est le mois.
+3. `window.__santeCheval` ne portait que `{id, nom}` : insuffisant pour l'en-tête. La
+   fiche est désormais **lue en base** (`chevaux` + `chevaux_histoires`) — la page doit
+   pouvoir s'ouvrir d'ailleurs que de la fiche cheval.
+
+---
+
+## A1 — LE VISUEL
+
+**Fond** : `images/FOND_SANTE.webp` (941 × 1672, **115 Ko**, converti du PNG de 1,5 Mo) en
+**UN SEUL** calque fixe — image + deux voiles dans le **même** `background`. Pas de
+parallaxe, pas d'empilement de couches fixes : Safari iOS prioritaire. Voile horizontal
+pour garder la colonne de texte lisible, le cheval du fond reste à droite.
+⚠️ **Le fond n'a JAMAIS contenu la citation** : elle n'était que dans la maquette.
+
+**Portrait fondu** (sa demande : « comme sur la page de Rizotto ») : bandeau `46svh`
+(min 264, max 430) avec la photo du cheval et le dégradé repris du `.hv` de la fiche, mais
+**éteint sur `#060709`** : ni cadre ni bord franc, la photo se dissout dans la page. Nom,
+affixe et identité posés dans le noir du fondu, retour flottant en haut à gauche. Sans
+photo : en-tête compact, pas de trou.
+⚠️ **La photo est CADRÉE ici** (`object-fit: cover`, cadrage 50 % 22 % comme la fiche) :
+c'est ce qu'impose un bandeau. **La règle « photo jamais rognée » reste vraie sur la
+FICHE**, qui épouse le format réel — cette page ne la remplace pas.
+
+**Nom + affixe** : « BORÉALIS DE FEI… » se coupait (j'avais forcé une seule ligne). Coupe
+reprise de la fiche (`de` / `d'` / `du` / `des`) : nom en grand, affixe en turquoise
+dessous.
+
+**Citation** choisie par Blandine parmi trois propositions : **« Prendre soin, c'est déjà
+aimer. »** En **texte** par-dessus le fond, donc traduite, police
+`'Snell Roundhand','Brush Script MT',cursive` — la même que le « des poneys » de l'app,
+**native iOS, aucune police à télécharger**.
+⚠️ **Règle posée : aucun pronom ni possessif pour le cheval dans les citations.** L'espagnol,
+l'italien et l'allemand genrent le pronom — la phrase serait fausse une fois sur deux.
+Traductions : *Caring is already loving* / *Cuidar ya es querer* / *Prendersi cura è già
+amare* / 気づかうことは、愛すること。 / *Fürsorge ist schon Liebe.*
+
+**Tuiles « À surveiller »** : rangée horizontale, 6 maximum, seuil **ambre à 15 jours**
+(aligné sur le J-15 des vaccins : la tuile passe en ambre au moment exact où la première
+alerte se déclenche), **rouge dès le dépassement**, délai court (En retard / Aujourd'hui /
+Demain / Dans N j).
+
+**Remise en haut** à chaque ouverture (`hypeDefilerHaut`), règle maison.
+
+**Le `•••` n'est PAS posé** : un bouton sans menu derrière est pire qu'un bouton absent.
+Il viendra quand il aura un contenu. Les **deux crayons** de la maquette étaient un doublon :
+remplacés par un seul geste principal, « + Ajouter un soin ».
+
+---
+
+## A3 — LA FEUILLE DE SAISIE (`FeuilleSoin`)
+
+Ajouter / modifier / supprimer une ligne de `soins_cheval`. Détachée vers `<body>`
+(`hypePortailBody`) donc **au-dessus de la barre d'onglets**, avec la cale de l'encoche
+basse. Champs à **16 px** (pas de zoom iOS). 11 types, intitulé, date du soin, prochaine
+échéance (raccourcis 6 mois / 1 an / Aucune + date libre), précision jour|mois, notes.
+
+⚠️ **LE DÉFAUT J-15 + JOUR J VIT DANS LE FORMULAIRE, JAMAIS EN BASE.** Un vaccin dont
+l'échéance tombe à un an (bouton « 1 an », ou **330 à 400 jours** saisis à la main) propose
+les deux rappels. **Dès le premier interrupteur touché, plus rien n'est imposé.** Les
+colonnes restent à `false` par défaut en base : sinon la base déciderait selon le type de
+soin, exactement ce qui est interdit. **Hype ne décide jamais la date médicale.**
+
+⚠️ `ics_sequence` et `ics_exporte_le` ne sont **jamais** écrits ici : ils appartiennent à
+l'export calendrier, et `hype_soins_touch` en dépend.
+
+⚠️ **Un refus RLS se reconnaît à un enregistrement qui ne rend AUCUNE ligne** : c'est dit
+tel quel à l'écran, pas un échec muet. Les erreurs **restent** affichées.
+
+**Suppression** : confirmation qui **nomme** la ligne, plus un avertissement si
+`ics_exporte_le` est rempli — l'événement peut rester dans le calendrier et devra y être
+retiré à la main. L'`.ics` d'annulation (`METHOD:CANCEL`) n'est **pas** fiable par import de
+fichier : une phrase honnête plutôt qu'un mécanisme qui fait semblant.
+
+---
+
+## A4 — LES DEUX MODULES
+
+**FERRURE / PIEDS** : dernière intervention **faite** (les lignes sans date d'intervention
+sont des échéances, pas des interventions — elles sont écartées), date, type, zone,
+intitulé, notes, prochaine échéance + pastille, nombre d'interventions.
+
+**VACCINS & VERMIFUGES** : 5 derniers de chaque, séparés par un filet ; pastille
+« À jour » turquoise / délai ambre / retard rouge ; ligne ouvrable.
+
+Chaque module porte un **+** qui ouvre la feuille avec le **bon type déjà choisi** :
+« le maréchal est passé » se fait en deux touchers.
+
+⚠️ **Empilés en pleine largeur, pas côte à côte comme la maquette** : à 390 px, deux
+colonnes ne tiennent pas (« Rhinopneumonie · 12 oct. · Dans 18 j › » demande ~200 px dans
+une carte de 170). Écart signalé et assumé.
+
+**Zone des pieds** (sa demande : « précise aussi parage ou ferrure, avant uniquement ») :
+`details.zone`, valeurs **fermées** `avant` | `arriere` | `quatre`. Trois pastilles visibles
+seulement si le type est `ferrure` ou `parage` ; deuxième appui = effacement. L'écriture
+**fusionne** le `details` existant au lieu de l'écraser ; `details` vide → `null`.
+
+🟥 **PAS de champ « ferré / paré » créé, CONTRE la liste de clés du 13/09** : c'est déjà le
+**type** de la ligne (`ferrure` vs `parage`). Le stocker deux fois, c'est risquer qu'ils se
+contredisent un jour. **Clés de `details` désormais : `zone`, `produit`, `lot`.**
+
+---
+
+## A6 — L'EXPORT CALENDRIER
+
+`hypeIcsTexte` / `hypeIcsRemettre` / `hypeIcsPlier` / `hypeIcsEchapper` / `hypeIcsOctets` :
+fonctions **globales**, donc testables seules — **exécutées pour de vrai sous node avant
+livraison**, sortie relue ligne par ligne (0 ligne > 75 octets, échappement des `,` et `;`
+correct, emoji intact).
+
+- Titre **« 🐴 HYPE — <libellé> <intitulé> — <nom affiché> »**, nom affiché = surnom perso
+  > alias FFE > nom officiel.
+- Journée entière : `DTSTART` / `DTEND;VALUE=DATE` (fin = lendemain), `TRANSP:TRANSPARENT`.
+- **Deux `VALARM` à déclencheurs RELATIFS** (`TRIGGER:-PnD` et `PT0S`) : ils suivent
+  automatiquement un décalage d'échéance, sans être réécrits.
+- **`UID:<id_soin>@hype` + `SEQUENCE` croissant** : le réexport **remplace** l'événement.
+  Le bouton n'apparaît **que** sur une ligne déjà enregistrée — sans identifiant, un doublon
+  serait garanti.
+- Remise du fichier : **partage natif** (`navigator.share` avec un `File`) d'abord, car en
+  PWA installée sur iPhone un téléchargement est fragile ; téléchargement `Blob` en secours
+  pour le bureau. `AbortError` = feuille de partage fermée par l'utilisatrice : ce n'est pas
+  une panne et **rien n'est écrit**.
+- Texte validé par elle, jamais une promesse : « Deux rappels sont posés dans l'événement :
+  15 jours avant, et le jour même. Selon ton application de calendrier, elle peut n'en
+  garder qu'un. » (Apple respecte les `VALARM` à l'import, **Google les ignore souvent**.)
+- **La base reste la source de vérité** : la page lit toujours `soins_cheval`, le calendrier
+  n'entre dans aucun calcul. Si `updated_at > ics_exporte_le`, la ligne du Carnet affiche
+  **en gris** « Échéance modifiée depuis ton export · à réexporter ». Pas de bandeau
+  d'alerte.
+
+🟥 **BUG ATTRAPÉ AVANT LIVRAISON — il aurait cassé 100 % des exports.** `hypeIcsPlier`
+parcourait la ligne avec `charAt` : l'emoji 🐴 est une **paire de substitution**, la couper
+en deux fabriquait un demi-caractère et `encodeURIComponent` levait `URIError`. Comme
+**tous** les titres commencent par cet emoji, l'export aurait planté à chaque fois. Parcours
+par **points de code** (`Array.from`) et poids en octets calculé sans encodage
+intermédiaire.
+⚠️ **LEÇON** : toute fabrique de fichier texte doit être **exécutée** sous node avant
+livraison, pas seulement passer `node --check`. Le fichier était syntaxiquement parfait.
+
+---
+
+## 🟥 SIGNALEMENT DE BLANDINE — LA PHOTO DE HEY BABY DANS LA GRILLE
+
+« Hey Baby ne se met pas à jour avec sa photo de profil dans l'affichage des chevaux de
+l'écurie. »
+
+**Requête passée par elle, résultat** : `nom` = « Hey Baby Please », `alias` = `null`,
+`user_id` = `fa2875ae-f740-4774-ad79-4726477add5e`, **`taille_photo` = 0**.
+
+**Donc `chevaux.photo_url` est VIDE.** La belle photo de saut visible sur la fiche vient de
+`photoPerso` — `localStorage hype_cheval_photo_<id>` et/ou `chevaux_histoires.photo_url` —
+et **jamais de la fiche commune**.
+
+**Mécanique établie, en lecture de code :**
+- Les quatre grilles (Cavalier, Écurie, Club, « Mes chevaux ») affichent `x.ch.photo`,
+  c'est-à-dire `chevaux.photo_url` — la photo **officielle**.
+- L'en-tête de la **fiche** affiche `photoPerso || c.photo` : la photo **perso** d'abord.
+- Pour un cheval qui n'est **pas** à soi, `appliquerPhotoCheval` écrit volontairement dans
+  `chevaux_histoires` et **jamais** dans `chevaux.photo_url` (règle du 02/09 : « la photo est
+  MIENNE, elle reste sur ma page »).
+
+⚠️ **MÊME ÉCART SUR LE NOM, relevé au passage** : la grille affiche `x.ch.nom` **brut**, donc
+ni le surnom perso ni l'alias FFE. D'où « Hey Baby » dans la grille et « HEY BABY PLEASE »
+sur la fiche. **Chantier à part, non commencé.**
+
+**Reste à vérifier avant de toucher quoi que ce soit** : d'où sort l'affiche spectrale
+visible sur la vignette alors que `photo_url` est vide (piste : une entrée héritée de
+`CHEVAUX_SPECTRAL` ou `PortraitChevalSpectral`), et si `fa2875ae…` est bien le compte de
+Blandine. **Rien n'a été modifié sur ce sujet.**
+
+---
+
+## RESTE À FAIRE SUR LA PAGE SANTÉ
+
+- **Équipe de soins + professionnels** : les deux tables sont en base, rien n'est branché.
+- **Hey Baby épinglées** : ⚠️ `echanges_heybaby_epingles.cheval_id` est du **`text`**
+  (nullable), pas un `uuid` — à vérifier par une requête **avant** de coder, sinon la section
+  s'affichera vide. Et il n'y a **ni vignette ni titre court** dans cette table.
+- **Section « À lire »** : les **6 vrais articles** d'`EcranSante` (bien-être, chaleur,
+  coliques, boiteries, plaies, vermifuges), aucun mock. ⚠️ L'article « Soins des pieds :
+  parage ou ferrure ? » de la maquette **n'existe pas**.
+- **Le signet / favori sur les articles** n'existe pas dans Hype : fonction à décider.
+- **Documents médicaux** : V2 assumée (bucket **privé**, RLS stricte, URLs signées).
+- L'ancien écran **« clinique »** n'est pas nettoyé et reste ouvert par l'encart Véto.
+- Le **`•••`** quand il aura un menu.
+
+---
+
+## TESTS DEMANDÉS SUR IPHONE
+
+1. Fiche cheval → carte **Soins**. Ouverture **en haut**.
+2. Fond visible, texte lisible, tête du cheval à droite derrière le vide.
+3. Défilement des tuiles **sans** que la page glisse latéralement.
+4. « + Ajouter un soin » → Vaccin, « Grippe », **1 an** → les deux rappels s'allument seuls.
+5. Le **+** du module Ferrure ouvre la feuille avec « Ferrure » déjà choisi.
+6. Bouton Enregistrer **au-dessus** de la barre du menu, clavier ouvert compris.
+7. Suppression : la confirmation **nomme** la ligne.
+8. Export calendrier → titre 🐴 HYPE, bonne date, deux alertes. Changer la date → mention
+   grise. Réexporter → **un seul** rendez-vous dans l'agenda.
+9. Un cheval **avec** photo et un cheval **sans** photo.
+10. Un soin **sans** échéance et un **avec** « le mois seulement ».
+
+---
+
 # 🟩 14/09/2026 (11 h 45) — UN RENDEZ-VOUS PEUT DURER PLUSIEURS JOURS
 
 | Fichier | Où | md5 | Quoi |
