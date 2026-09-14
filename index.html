@@ -34852,7 +34852,7 @@ function FeuilleSoin(props) {
     return Math.round((db.getTime() - da.getTime()) / 86400000);
   }
 
-  var _ty = React.useState(String((s0 && s0.type) || "vaccin")); var type = _ty[0], setType = _ty[1];
+  var _ty = React.useState(String((s0 && s0.type) || props.typeInitial || "vaccin")); var type = _ty[0], setType = _ty[1];
   var _ti = React.useState(String((s0 && s0.titre) || "")); var titre = _ti[0], setTitre = _ti[1];
   var _di = React.useState(String((s0 && s0.date_intervention) || isoAuj())); var dInt = _di[0], setDInt = _di[1];
   var _dp = React.useState(String((s0 && s0.date_prochaine) || "")); var dProch = _dp[0], setDProch = _dp[1];
@@ -35239,6 +35239,98 @@ function EcranSanteCheval() {
         })));
   }
 
+  /* ---------- BRIQUES COMMUNES AUX MODULES ---------- */
+  function titreModule(icone, txt, typePlus) {
+    return h("div", { style: { display: "flex", alignItems: "center", gap: 9, marginBottom: 11 } },
+      h("span", { style: { fontSize: 13 } }, icone),
+      h("div", { style: { fontFamily: C, fontSize: 12.5, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#D9C7A3" } }, txt),
+      h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.28), transparent)" } }),
+      (peutEcrire && typePlus) ? h("span", { role: "button", onClick: function () { setFeuille({ soin: null, type: typePlus }); }, "aria-label": T("Ajouter", "Add", "A\u00f1adir", "Aggiungi", "\u8ffd\u52a0", "Hinzuf\u00fcgen"), style: { flex: "0 0 auto", width: 28, height: 28, borderRadius: "50%", border: "1px solid rgba(32,217,245,0.34)", background: "rgba(32,217,245,0.08)", color: "#9CEDF8", fontSize: 15, lineHeight: "26px", textAlign: "center", cursor: "pointer" } }, "+") : null);
+  }
+  function carte(contenu, cle) {
+    return h("div", { key: cle, style: { padding: "14px 15px 15px", borderRadius: 18, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(10,14,17,0.46)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", marginBottom: 13 } }, contenu);
+  }
+  function pastilleEtat(iso) {
+    if (!iso) return null;
+    var j = joursAvant(iso);
+    var etat = (j === null) ? null : (j < 0 ? "rouge" : (j <= 15 ? "ambre" : "vert"));
+    var coul = (etat === "rouge") ? "#FF6B81" : ((etat === "ambre") ? "#E8C887" : TQ);
+    return h("span", { style: { display: "inline-flex", alignItems: "center", gap: 5, flexShrink: 0, fontFamily: M, fontSize: 10.5, fontWeight: 700, color: coul, whiteSpace: "nowrap" } },
+      h("span", { style: { width: 7, height: 7, borderRadius: "50%", background: coul, flexShrink: 0 } }),
+      (etat === "vert")
+        ? T("\u00c0 jour", "Up to date", "Al d\u00eda", "In regola", "\u6700\u65b0", "Aktuell")
+        : delaiCourt(j));
+  }
+  function vide(txt) {
+    return h("div", { style: { fontFamily: M, fontSize: 12, color: "#6D7681", lineHeight: 1.55, paddingBottom: 2 } }, txt);
+  }
+  /* Le dernier soin FAIT d'un type : on ignore les lignes sans date d'intervention,
+     qui sont des echeances a prevoir et non des interventions passees. */
+  function dernierFait(types) {
+    var l = (soins || []).filter(function (x) { return types.indexOf(String(x.type)) >= 0 && x.date_intervention; })
+      .sort(function (a, b) { return String(b.date_intervention).localeCompare(String(a.date_intervention)); });
+    return l.length ? l[0] : null;
+  }
+  function prochaineDe(types) {
+    var l = (soins || []).filter(function (x) { return types.indexOf(String(x.type)) >= 0 && x.date_prochaine; })
+      .sort(function (a, b) { return String(a.date_prochaine).localeCompare(String(b.date_prochaine)); });
+    return l.length ? l[0] : null;
+  }
+
+  /* ---------- MODULE FERRURE / PIEDS ----------
+     Alimente par soins_cheval (types ferrure + parage) : AUCUNE table dediee, comme
+     demande. « Avant + arriere » et « ferre / pare » vivent pour l'instant dans
+     l'intitule de la ligne ; des champs dedies (details jsonb) restent a decider. */
+  function moduleFerrure() {
+    var TY = ["ferrure", "parage"];
+    var d = dernierFait(TY), p = prochaineDe(TY);
+    var nb = (soins || []).filter(function (x) { return TY.indexOf(String(x.type)) >= 0; }).length;
+    return carte([
+      titreModule("\ud83d\udc0e", T("Ferrure / pieds", "Shoeing / feet", "Herrado / pies", "Ferratura / piedi", "\u8e44\u9244\u30fb\u8e44", "Beschlag / Hufe"), "ferrure"),
+      d ? h("div", { key: "f1" },
+            h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#7C858D" } },
+              T("Derni\u00e8re intervention", "Last visit", "\u00daltima intervenci\u00f3n", "Ultimo intervento", "\u524d\u56de", "Letzter Termin")),
+            h("div", { style: { fontFamily: C, fontSize: 18, fontWeight: 700, color: "#EDF2F5", marginTop: 3 } }, enClair(d.date_intervention)),
+            h("div", { style: { fontFamily: M, fontSize: 12.5, color: "rgba(220,227,232,0.72)", marginTop: 2 } },
+              (LIB[String(d.type)] || d.type) + (d.titre ? (" \u00b7 " + d.titre) : "")),
+            d.notes ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(220,227,232,0.55)", marginTop: 5, lineHeight: 1.5, whiteSpace: "pre-wrap" } }, d.notes) : null)
+        : h("div", { key: "f1" }, vide(T("Aucune ferrure ni parage enregistr\u00e9.", "No shoeing or trimming recorded.", "Sin herrado ni recorte registrado.", "Nessuna ferratura n\u00e9 pareggio registrato.", "\u8a18\u9332\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Kein Beschlag erfasst."))),
+      p ? h("div", { key: "f2", style: { display: "flex", alignItems: "center", gap: 10, marginTop: 12, paddingTop: 11, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+            h("div", { style: { minWidth: 0, flex: 1 } },
+              h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#7C858D" } },
+                T("Prochaine \u00e9ch\u00e9ance", "Next due", "Pr\u00f3xima", "Prossima", "\u6b21\u56de", "N\u00e4chste")),
+              h("div", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#EDF2F5", marginTop: 2 } }, enClairP(p.date_prochaine, p.precision_prochaine))),
+            pastilleEtat(p.date_prochaine)) : null,
+      nb > 1 ? h("div", { key: "f3", style: { fontFamily: M, fontSize: 10.5, color: "#5B646E", marginTop: 10 } },
+        nb + " " + T("interventions au carnet ci-dessous", "entries in the record below", "intervenciones en el historial", "interventi nel libretto qui sotto", "\u4ef6\u306e\u8a18\u9332\uff08\u4e0b\u8a18\uff09", "Eintr\u00e4ge im Verlauf unten")) : null
+    ], "mferrure");
+  }
+
+  /* ---------- MODULE VACCINS & VERMIFUGES ----------
+     Hype affiche ce qui a ete enregistre. Aucun protocole, aucun rappel impose. */
+  function moduleVaccins() {
+    function bloc(ty, titreTxt) {
+      var l = (soins || []).filter(function (x) { return String(x.type) === ty; })
+        .sort(function (a, b) { return String(b.date_intervention || b.date_prochaine || "").localeCompare(String(a.date_intervention || a.date_prochaine || "")); })
+        .slice(0, 5);
+      return h("div", { key: "b" + ty, style: { marginTop: ty === "vermifuge" ? 13 : 0, paddingTop: ty === "vermifuge" ? 12 : 0, borderTop: ty === "vermifuge" ? "1px solid rgba(255,255,255,0.07)" : "none" } },
+        h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: "#7C858D", marginBottom: 8 } }, titreTxt),
+        l.length ? h("div", null, l.map(function (x, i) {
+          return h("div", { key: "v" + (x.id || i), onClick: peutEcrire ? function () { setFeuille({ soin: x }); } : null, role: peutEcrire ? "button" : null, style: { display: "flex", alignItems: "center", gap: 9, padding: "7px 0", borderTop: i ? "1px solid rgba(255,255,255,0.05)" : "none", cursor: peutEcrire ? "pointer" : "default" } },
+            h("div", { style: { minWidth: 0, flex: 1, fontFamily: M, fontSize: 13, fontWeight: 600, color: "#EDF2F5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, x.titre || (LIB[String(x.type)] || x.type)),
+            h("div", { style: { flex: "0 0 auto", fontFamily: M, fontSize: 10.5, color: "#7C858D", whiteSpace: "nowrap" } }, enClair(x.date_intervention)),
+            pastilleEtat(x.date_prochaine));
+        })) : vide(ty === "vaccin"
+          ? T("Aucun vaccin enregistr\u00e9.", "No vaccine recorded.", "Sin vacunas registradas.", "Nessun vaccino registrato.", "\u8a18\u9332\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Keine Impfung erfasst.")
+          : T("Aucun vermifuge enregistr\u00e9.", "No deworming recorded.", "Sin verm\u00edfugos registrados.", "Nessun vermifugo registrato.", "\u8a18\u9332\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Keine Wurmkur erfasst.")));
+    }
+    return carte([
+      titreModule("\ud83d\udc89", T("Vaccins & vermifuges", "Vaccines & deworming", "Vacunas y verm\u00edfugos", "Vaccini e vermifughi", "\u30ef\u30af\u30c1\u30f3\u30fb\u99c6\u866b", "Impfungen & Wurmkuren"), "vaccin"),
+      bloc("vaccin", T("Vaccins", "Vaccines", "Vacunas", "Vaccini", "\u30ef\u30af\u30c1\u30f3", "Impfungen")),
+      bloc("vermifuge", T("Vermifuges", "Deworming", "Verm\u00edfugos", "Vermifughi", "\u99c6\u866b", "Wurmkuren"))
+    ], "mvaccins");
+  }
+
   var corps;
   if (soins === null) {
     corps = h("div", { style: { padding: "40px 20px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#6D7681" } }, "\u2026");
@@ -35254,7 +35346,9 @@ function EcranSanteCheval() {
         h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.35), transparent)" } }));
     };
     corps = h("div", { style: { padding: "4px 16px 30px" } },
-      h("div", null,
+      moduleFerrure(),
+      moduleVaccins(),
+      h("div", { style: { marginTop: 6 } },
         titreSec(T("Carnet", "Record", "Historial", "Libretto", "\u8a18\u9332", "Verlauf")),
         soins.map(function (s, i) { return ligne(s, "c" + (s.id || i)); })),
       h("div", { style: { textAlign: "center", fontSize: 11, color: "#5B646E", fontFamily: M, marginTop: 8 } },
@@ -35309,6 +35403,7 @@ function EcranSanteCheval() {
       chevalId: chId,
       nomCheval: nomVu,
       soin: feuille.soin,
+      typeInitial: feuille.type || null,
       onFermer: function () { setFeuille(null); },
       onEnregistre: function () { setFeuille(null); setMaj(maj + 1); }
     }) : null);
