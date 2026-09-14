@@ -10,6 +10,71 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (02 h 20) — LA PAGE CAVALIERS DU CLUB
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `2afc371c…` | build **20260908-163** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `c41d0b2c…` (20260908-162).
+
+## CE QUI CHANGE
+
+La carte **« Cavaliers »** de la grille du club s'allume. Elle ouvre la liste des cavalières de
+l'écurie : avatar, pseudo, puis identifiant, ville et galop quand ils existent, et le compte en
+bas. Un toucher ouvre le profil public de la cavalière.
+
+## RIEN DE NOUVEAU À INVENTER
+
+- La liste vient de **`hypeCavaliersDuClub`**, le helper déjà employé par la page du club et par
+  les résultats des rendez-vous passés.
+- L'ouverture d'un profil suit le **même chemin** que la page du club
+  (`window.__cavalierPublic` + `window.__cavalierOuvert = "__public"`, puis écran
+  « cavalier »).
+- **Aucun SQL, aucune requête nouvelle** : c'est la même lecture de `profiles`.
+- Le club visé passe par `window.__cavaliersClub`, sur le modèle de `window.__agendaClub`.
+
+⚠️ **Un piège déjà traité en amont, à ne pas refaire ici :** `hypeCavaliersDuClub` écarte déjà
+les profils **sans écurie**. Son propre code le note : `hypeMemeClub` répond **vrai** sur un
+champ vide (« sans club : partout »), ce qui a du sens pour un cheval mais pas pour une
+cavalière. La page ne refiltre donc rien.
+
+L'échec de lecture s'affiche en bandeau rouge, comme partout.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Portées : `hypeCavaliersDuClub` en bloc **1**, la page et `avSrc` / `avatarHypeDefaut` en bloc
+  **13** — déclarés avant usage. Helper bien **`async`** (vérifié : son corps utilise `await`).
+- Périmètre : **3 lignes remplacées, 113 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**.
+
+## IL NE RESTE QU'UNE CARTE GRISÉE : SANTÉ DU CLUB
+
+Et pour celle-là, **deux questions attendent toujours sa réponse** :
+
+1. **Quels chevaux y figurent ?** Tous ceux rattachés à l'écurie, ou seulement les siens ?
+   ⚠️ Sa base décide déjà qui a le droit de voir les soins d'un cheval : une cavalière ouvrant
+   cette page ne verra que ceux auxquels elle a droit. La page sera donc plus ou moins remplie
+   selon qui regarde — c'est sain, mais il faut le savoir.
+2. **Ce qu'on voit par cheval :** photo + nom + prochaine échéance colorée (ambre à 15 jours,
+   rouge si dépassé), ou juste un point de couleur ?
+
+Acquis : l'encart Véto y déménage, avec sa photo et ses mots gardés en réserve depuis le 145
+(`HYPE_IMGS.encartVeto`, sur-titre « Santé », titre « Clinique vétérinaire », sous-titre
+« Soins & conseils »).
+
+## CE QUI RESTE AUSSI
+
+- 🟥 **Les abonnements Stripe** : il me faut `dashboard.stripe.com/webhooks`. **Seul point qui
+  touche de l'argent.**
+- 🟥 **Les doublons de résultats en base** (requête dans l'entrée du 156).
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil.
+
+---
+
 # 🟩 15/09/2026 (02 h) — PLUSIEURS PHOTOS D'UN COUP · LE TEXTE EN COURS PLUS JAMAIS PERDU
 
 | Fichier | Où | md5 | Quoi |
