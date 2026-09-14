@@ -10,6 +10,556 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (00 h 55) — UN SEUL RAIL DE DERNIERS RÉSULTATS : C'EST CELUI DU HAUT QUI PART
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `b584742d…` | build **20260908-157** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Part du **155** (`e090553a…`), son index réellement en ligne — lu sur sa capture de 16 h 53 :
+« INDEX 20260908-155 ».
+
+## ⚠️ LE BUILD 156 EST ANNULÉ, NE PAS LE RESSORTIR
+
+Le 156 retirait le rail **du bas**. Elle a vérifié et tranché l'inverse : « je suis bien sur la
+page cheval, sinon vire plutôt le rail du haut ». Comme elle ne l'avait **pas poussé**, il n'a
+jamais existé en ligne. Le 157 repart donc du 155.
+
+**Leçon :** demander quel index est en ligne **avant** de corriger sur la base d'une capture.
+Deux builds d'écart entre ce qu'elle voit et ce que je crois livré, et on corrige un écran qui
+n'existe pas encore chez elle.
+
+## CE QUI CHANGE
+
+La page cheval rendait bien **deux rails identiques** :
+- l'un **sous la grille** des six cartes (titre « DERNIERS RÉSULTATS » + « Voir tout ») ;
+- l'autre **plus bas** (« — 5 · DERNIERS RÉSULTATS — »), après « Importer mes résultats
+  officiels ».
+
+Le rail du **haut** est neutralisé, **avec son titre** (vérifié : aucun titre orphelin ne
+reste). Le rail du **bas** reste, à sa place — celle qu'elle voulait : sous la vidéo, au-dessus
+des principaux résultats.
+
+La **date entière** du 155 est conservée : le rail restant porte bien `date` dans son
+regroupement (`grpR`) et l'affichage en clair (« 12 sept. 2026 »). Vérifié après coup, c'est ce
+qui aurait pu sauter en retirant l'autre.
+
+Rien n'est supprimé, seulement neutralisé.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Titres « DERNIERS RÉSULTATS » du rail retiré : **0 restant**. Rail du bas : **actif**.
+- `date: rr.d` et l'affichage en clair : **présents** sur le rail conservé.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## 🟥 UNE TENTATIVE CASSÉE, ATTRAPÉE AVANT LIVRAISON
+
+Avant sa correction, j'avais tenté de **déplacer** le rail du haut dans le panneau Performances.
+Le déplacement a cassé un bloc (`node --check` l'a attrapé) et **rien n'a été livré**. Le
+fichier est reparti du 156 puis du 155. Déplacer un bloc de 90 lignes entre deux niveaux
+d'imbrication demande de recalculer l'indentation ET les virgules de séparation : à ne pas faire
+par substitution de texte.
+
+## CE QUI RESTE
+
+- 🟥 **Les doublons de résultats en base** : « CHALLENGE DE FOLLEVILLE · Amateur 3 Vitesse ·
+  1er sur 1 » existe en **deux lignes** dans `resultats`. Requête de constat dans l'entrée du
+  156 (elle reste valable).
+- **Sa demande suivante, pas encore faite** : retirer la page des nouveautés pour les gens qui
+  viennent de s'inscrire, et à la déconnexion.
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés).
+- Le bloc « Souvenirs du club » de la page du club ; l'encart album sur l'onglet Cavalier.
+- Agrandir les photos d'un post dans le fil.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée.
+  **Seul point qui touche de l'argent.**
+
+---
+
+# 🟩 15/09/2026 (00 h 25) — LES DERNIERS RÉSULTATS N'APPARAISSENT PLUS DEUX FOIS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `bda0e94f…` | build **20260908-156** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e090553a…` (20260908-155). Contient donc aussi la date entière du 155, qu'elle
+n'avait pas encore poussée (ses captures affichent encore « 2026 »).
+
+## SA REMARQUE
+
+« Sur la page cheval on a l'impression de voir les derniers résultats en double. »
+
+**Ce n'était pas une impression.** La page rendait **deux rails identiques** :
+
+- l'un **sous la grille** des six cartes, avec son titre « DERNIERS RÉSULTATS » et son
+  « Voir tout » ;
+- l'autre **plus bas**, après « Importer mes résultats officiels », hérité de l'ancienne mise en
+  page numérotée (« — 5 · DERNIERS RÉSULTATS — »).
+
+C'est aussi ce qui avait obligé à corriger **deux fois** l'affichage de la date au build 155 —
+le signe était là, je ne l'ai pas lu comme un doublon d'affichage.
+
+**Le rail du bas est retiré.** Son chargement (`recents`) alimente encore celui du haut, donc
+rien d'autre ne change ; remplacer son `false` par `recents.length` le rallumerait.
+
+## ⚠️ UN AUTRE DOUBLON, EN BASE CELUI-LÀ, NON TOUCHÉ
+
+Sur ses captures, **« CHALLENGE DE FOLLEVILLE · Amateur 3 Vitesse (0,95 m) · 1er sur 1 »
+apparaît deux fois** — dans la liste du palmarès **et** en deux cartes identiques dans le rail.
+Ce ne sont pas deux affichages du même résultat : ce sont **deux lignes distinctes** dans
+`resultats`.
+
+Ça se traite par une **requête**, pas par du code — et il faut d'abord voir combien il y en a et
+d'où elles viennent (deux imports FFE du même jour ?). Requête de constat quand elle voudra :
+
+```sql
+select concours, epreuve, date_epreuve, place, partants, cavalier, count(*) as combien
+from public.resultats
+where origine = 'import'
+group by concours, epreuve, date_epreuve, place, partants, cavalier
+having count(*) > 1
+order by combien desc, date_epreuve desc
+limit 50;
+```
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **4 lignes remplacées, 11 ajoutées**, un seul endroit.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL dans ce build.**
+
+## CE QUI RESTE
+
+- 🟥 **Les doublons de résultats en base** (requête ci-dessus).
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés).
+- Le bloc « Souvenirs du club » de la page du club.
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. **Seul point qui touche de l'argent.**
+
+---
+
+# 🟩 15/09/2026 (00 h 10) — LA DATE ENTIÈRE SUR LES CARTES « DERNIERS RÉSULTATS »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e090553a…` | build **20260908-155** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `9cc8c340…` (20260908-154).
+
+## SA DEMANDE
+
+« Sur les derniers résultats faut la date entière. »
+
+Les cartes n'affichaient que l'**année** (« 2026 ») alors que la donnée complète était **déjà
+chargée** : le regroupement lisait `rr.d` (= `date_epreuve`) pour construire sa clé, mais ne
+gardait que `rr.an` dans le groupe. Rien à aller chercher, juste à ne plus jeter.
+
+La carte écrit maintenant la date en clair — **« 12 sept. 2026 »** — avec repli sur la seule
+année si la date est absente ou illisible.
+
+## ⚠️ LE FICHIER CONTIENT DEUX RAILS IDENTIQUES
+
+Les mêmes vingt lignes, à deux endroits, avec deux regroupements distincts (`grp` et `grpR`).
+**Les deux sont corrigés** — sinon la même remarque serait revenue sur le second dans deux
+jours.
+
+Le regroupement lui-même n'a pas changé : deux résultats du même concours le même jour restent
+groupés sur une seule carte.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Les **deux** regroupements portent `date` (compté), et les **deux** affichages l'utilisent.
+- Périmètre : **5 lignes remplacées, 34 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL, aucune requête de plus.**
+
+## CE QUI RESTE
+
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés ; photo et mots de l'ancien
+  encart véto en réserve pour le bandeau de Santé).
+- Le bloc « Souvenirs du club » de la page du club, dernier doublon.
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil (la visionneuse et son calque existent depuis
+  le 153).
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Soraya débloquée à la main (annuel, actif, expire en septembre 2027). Rien
+  dans `index.html` n'écrit cette table : le chaînon est un webhook Stripe ou une fonction
+  serveur, à voir sur `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+
+---
+
+# 🟩 14/09/2026 (23 h 55) — LA CARTE PORTE SA PUBLICATION · TEINTE DES CARRÉS · CROIX VISIBLE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9cc8c340…` | build **20260908-154** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `f5d08918…` (20260908-153).
+
+## SES QUATRE REMARQUES, DANS L'ORDRE
+
+« Pourquoi la photo apparaît en double du stage ? Et pourquoi le contenu de la phrase n'apparaît
+pas à côté ? » · « Les autres publications apparaissent comme des commentaires et se déplient
+comme une publi » · « T'as tjs pas viré la deuxième photo ni mis le texte » · « On lit rien on
+voit rien, je serais bien incapable de te dire où on efface une photo ».
+
+## 1. LA PHOTO EN DOUBLE
+
+La même photo servait de **couverture** à gauche **et** réapparaissait dans le bandeau. Le
+bandeau ne montre plus que les médias **en plus** de la couverture — donc **rien** quand il n'y
+en a qu'un. C'était tout le problème.
+
+## 2. LE TEXTE
+
+Le texte de la première publication s'affiche dans la carte, sous le lieu, **deux lignes au
+plus**. La carte tient à l'écran, plus besoin de déplier pour si peu.
+
+## 3. LES DEUX « REPLIER » EMPILÉS
+
+La première publication étant désormais **dans** la carte, elle est **écartée du fil déplié**
+(prop `exclure`, posée au 153). Elle s'y affichait une seconde fois, en grand, avec **son
+propre** « Replier » sous celui de la carte — les deux boutons identiques de sa capture de
+16 h 27. Les autres publications restent dans le fil et se déplient comme des publications,
+exactement ce qu'elle avait demandé.
+
+## 4. LA TEINTE DES SIX CARRÉS, ET LEUR PLACE
+
+Ils lisent la **même palette** que l'encart « philosophie du club » (`HYPE_PAL_CIT` via
+`localStorage` `hype_teinte_citation`). **Même source, pas une couleur copiée** : si elle change
+la teinte de la citation, les carrés suivent tout seuls. Marge du haut **10 → 34 px** pour
+dégager le mur immersif.
+
+## 5. 🟥 LA CROIX QUI EFFACE UNE PHOTO ÉTAIT INVISIBLE
+
+Elle existait depuis le build 78, mais faisait **22 px, sans bord ni fond marqué**, dans le coin
+d'une vignette de 64 — donc invisible en pratique, et **sous la cible tactile de 44 px**. Elle a
+raison : personne ne pouvait la trouver.
+
+Vignette portée à **78 px**, croix à **30 px cerclée de rouge**. Elle est en mode
+**Modification** : une croix par photo, la première portant « Principale ».
+
+## ⚠️ CE BUILD A ÉTÉ REFAIT DEPUIS LE 153 LIVRÉ
+
+Une erreur d'édition de ma part — un remplacement « de cette position jusqu'à la fin de la
+ligne » alors que plusieurs éléments partageaient la même ligne — a cassé un bloc. **Attrapé par
+`node --check` avant toute livraison.** Le fichier est reparti du `f5d08918…` livré et tout a été
+réappliqué.
+
+**Règle : ne jamais remplacer jusqu'à la fin d'une ligne dans ce fichier.** Les lignes y portent
+plusieurs éléments ; l'ancre doit être le texte exact et complet de ce qu'on remplace.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **14 lignes remplacées, 60 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés).
+- Le bloc « Souvenirs du club » de la page du club, dernier doublon.
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil (la visionneuse et son calque existent depuis
+  le 153).
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Soraya débloquée à la main. Le chaînon est un webhook ou une fonction
+  serveur : `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+
+---
+
+# 🟥 14/09/2026 (23 h 40) — CORRECTIF BLOQUANT : LA PHOTO OUVERTE EN GRAND FIGEAIT LA PAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f5d08918…` | build **20260908-153** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `e1c035fd…` (20260908-152). **À pousser en priorité : l'app est bloquante dans cet
+état.**
+
+## CE QU'ELLE A VÉCU
+
+Capture de 16 h 17 : « une fois replié en plus ça m'a tout fait planter, je suis bloquée sur la
+page comme ça, je peux plus scroll ou fermer et ça m'a laissé la photo grande ouverte ».
+
+## 🟥 LA CAUSE, ET C'EST DE MA FAUTE
+
+**`PhotoZoomHype` ne rend qu'une image** (ou un `<video>`). C'est **l'appelant** qui doit
+fournir le calque plein écran et la croix — ce que font les appels d'origine : un conteneur en
+`position: fixed`, fond sombre, `z-index` élevé.
+
+Mes **trois** usages l'appelaient **sans calque** :
+- build **137**, la mosaïque de la page Souvenirs,
+- build **147**, le bandeau d'un rendez-vous passé,
+- build **149**, le média d'une réponse.
+
+L'image se posait donc **dans le flux de la page**, en pleine largeur, sans rien pour la fermer
+— d'où la page figée.
+
+## LE CORRECTIF
+
+Un helper unique, `hypeCalquePhoto` : calque en `position: fixed`, fond sombre, **croix en haut
+à droite**, fermeture aussi au toucher du fond. Les **trois** usages passent par lui. Un seul
+endroit à corriger la prochaine fois.
+
+⚠️ **Pas de `className`** : la classe « souvVue » utilisée par les appels d'origine n'existe que
+dans la CSS d'un seul écran, et `PhotoZoomHype` porte déjà ses dimensions (`maxWidth: 100%`,
+`maxHeight: 90%`). S'appuyer sur une classe absente ailleurs est exactement le genre de
+dépendance invisible qui a causé ce bug.
+
+## LA LEÇON, À GARDER
+
+**Un composant qui ne rend qu'un élément nu ne s'appelle jamais sans lire ce que ses appelants
+d'origine mettent autour.** J'ai réutilisé `PhotoZoomHype` en supposant qu'il gérait son propre
+plein écran, sans vérifier ses appels existants — trois fois de suite. Le contrôle « la fonction
+existe-t-elle et est-elle en portée » ne suffit pas : il faut aussi **ce qu'elle attend de son
+contexte**.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- **Plus aucun appel nu** à `PhotoZoomHype` en dehors du helper (compté).
+- Portées : `hypeCalquePhoto` en bloc **1**, `PhotoZoomHype` en bloc **13** — la fonction n'est
+  appelée qu'au rendu, donc bien après la déclaration.
+- Périmètre : **15 lignes remplacées, 51 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CONTIENT AUSSI, INACTIF
+
+La préparation de la tranche suivante : la prop `exclure` de `MurHype` et la mémorisation des
+publications par rendez-vous. Rien de visible tant que la carte ne s'en sert pas.
+
+## LA TRANCHE SUIVANTE, D'APRÈS SES TROIS REMARQUES DE 16 H 14
+
+1. **La photo en double** : la même photo sert de couverture à gauche **et** réapparaît dans le
+   bandeau. Le bandeau ne montrera plus que les médias **en plus** de la couverture — donc rien
+   quand il n'y en a qu'un.
+2. **Le texte de la publication** doit apparaître dans la carte, à droite, sous la date.
+3. **Plus besoin de déplier pour si peu** : la **première publication** devient le contenu de la
+   carte (photo + texte), et **« les autres publications apparaissent comme des commentaires et
+   se déplient comme une publi »** (ses mots). D'où la prop `exclure` : sans elle, la première
+   s'afficherait deux fois.
+
+**Et déjà vérifié, rien à faire :** supprimer une photo d'une publication **existe déjà** — en
+modification, chaque photo porte une croix et l'enregistrement réécrit la liste, y compris si on
+retire la première.
+
+---
+
+# 🟩 14/09/2026 (23 h 10) — CHOISIR LE RENDEZ-VOUS AU MOMENT DE PUBLIER · CHANTIER COMPLET
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e1c035fd…` | build **20260908-152** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `21c4b3cd…` (20260908-151).
+
+## LA DERNIÈRE PIÈCE DE SON « 1c »
+
+Au build 150 on publiait **puis** on rattachait. Désormais le rendez-vous se choisit **avant
+l'envoi**.
+
+- Un troisième lien **« Un rendez-vous ? »** sous le champ de saisie, au **même endroit** et
+  dans le **même style** que « Identifier » et « Ajouter un lieu ».
+- Il ouvre la liste **dans le flux** — aucun calque, aucun portail, comme la liste des
+  identifications du 12/09 — le **passé d'abord**.
+- Le rendez-vous retenu s'affiche en **pastille avec une croix** pour le retirer avant d'envoyer.
+- Rendu **seulement** si la page demande le rattachement (prop `rattachementAgenda`), donc sur
+  le **seul mur du club**.
+
+## LA LIGNE S'ÉCRIT APRÈS L'ENVOI, AU BON ENDROIT
+
+Au même endroit que les identifications de chevaux et le lieu (`enregistrerTagsEtLieu`, motif du
+12/09) : donc **une fois l'identifiant du message connu**, et un échec **ne perd jamais le
+message** — il est déjà publié à ce moment-là.
+
+## ⚠️ AUCUNE DEUXIÈME MÉCANIQUE
+
+C'est la **même liste** (`chargerAgendaClub` / `chargerAgendaClubPasse`, chargée à la demande) et
+la **même écriture** (`hypeRattacherPostAgenda`, idempotente) que le rattachement après coup du
+150. Rien à maintenir en double.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Variables et fonctions appelées vérifiées **dans `MurHype`** : `ratChoix`, `ratOuvert`,
+  `ouvrirChoixAgenda`, `estFilEcurie`, `tAm` — toutes définies là (leçon du 149).
+- Périmètre : **3 lignes remplacées, 59 ajoutées**, dans `MurHype` seul, plus l'en-tête et le
+  build.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## 🟩 LE CHANTIER « CONCOURS ↔ PHOTOS, VIDÉOS, RÉSULTATS » EST COMPLET
+
+Quatre chemins, tous en place et tous lus par la carte du rendez-vous :
+
+1. **publier depuis le rendez-vous** → rattaché par la cible « agenda:&lt;id&gt; », rien à
+   choisir ;
+2. **choisir le rendez-vous en publiant** depuis le mur du club (ce build) ;
+3. **rattacher après coup** une photo déjà publiée (150) ;
+4. **les résultats FFE** des journées, par la date (148).
+
+Et tout apparaît à la fois dans le **fil** du rendez-vous et dans son **bandeau de photos**
+(151), avec les vidéos, les photos supplémentaires des posts multi-médias, sans doublon, et sans
+une seule migration en base.
+
+## CE QUI RESTE, HORS CHANTIER
+
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés ; photo et mots de l'ancien
+  encart véto en réserve pour le bandeau de Santé).
+- Le dernier doublon : le bloc « Souvenirs du club » de la page du club, dont la mosaïque n'a
+  jamais rien affiché.
+- Agrandir les photos d'un post : la visionneuse existe dans le fil depuis le 149, il reste à la
+  brancher.
+- L'encart « L'album de l'écurie » encore présent sur l'onglet **Cavalier**.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Soraya débloquée à la main (annuel, actif, expire en septembre 2027). Rien
+  dans `index.html` n'écrit cette table : le chaînon est un webhook Stripe ou une fonction
+  serveur, à voir sur `dashboard.stripe.com/webhooks`. **C'est le seul point qui touche de
+  l'argent : à traiter avant le reste.**
+
+---
+
+# 🟩 14/09/2026 (22 h 50) — LES PHOTOS RATTACHÉES APRÈS COUP ENTRENT DANS LE BANDEAU DE LA CARTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `21c4b3cd…` | build **20260908-151** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `946715c9…` (20260908-150).
+
+## LE DÉFAUT, LAISSÉ OUVERT PAR LE 150 ET SIGNALÉ DANS LA MÊME LIVRAISON
+
+Une photo rattachée par le lien « Rattacher » apparaissait dans le **fil** du rendez-vous mais
+**pas dans son bandeau du haut** : ce chargement ne lisait que la cible « agenda:&lt;id&gt; ».
+
+Il lit désormais **les deux chemins**, exactement comme la carte :
+- la **cible** pour ce qui a été publié depuis le rendez-vous,
+- les **identifications** (`type = "agenda"`, `statut = "accepte"`) pour ce qui a été rattaché
+  après coup.
+
+Donc : tu rattaches une photo, elle apparaît **tout de suite dans la bande**, là où elle doit
+être.
+
+## ⚠️ DEUX REQUÊTES DE PLUS AU TOTAL, PAS DEUX PAR RENDEZ-VOUS
+
+Les identifications de tous les rendez-vous affichés sont lues d'un coup, puis les publications
+correspondantes. Dix rendez-vous passés ne font donc pas vingt requêtes.
+
+- Les photos supplémentaires (colonne `medias`) sont prises aussi.
+- Les publications **privées** écartées.
+- **Doublons évités** : une photo publiée depuis le rendez-vous **puis** rattachée n'apparaît
+  qu'une fois.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **2 lignes remplacées, 31 ajoutées**, dans le seul chargement des médias du passé.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+**Sur ce chantier, un seul morceau :** choisir le rendez-vous **au moment de publier** — l'autre
+moitié de son « 1c ». Aujourd'hui on publie puis on rattache ; ce sera un choix dans le composer
+du mur du club, qui écrira la même ligne d'identification juste après l'envoi.
+
+**Hors chantier :**
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés ; photo et mots de l'ancien
+  encart véto en réserve pour le bandeau de Santé).
+- Le dernier doublon : le bloc « Souvenirs du club » de la page du club.
+- Agrandir les photos d'un post : la visionneuse existe dans le fil depuis le 149, il ne reste
+  qu'à la brancher.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Soraya débloquée à la main (annuel, actif, expire en septembre 2027). Rien
+  dans `index.html` n'écrit cette table : le chaînon est un webhook Stripe ou une fonction
+  serveur, à voir sur `dashboard.stripe.com/webhooks`.
+
+---
+
+# 🟩 14/09/2026 (22 h 30) — RATTACHER UNE PUBLICATION DÉJÀ PUBLIÉE À UN RENDEZ-VOUS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `946715c9…` | build **20260908-150** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `c53baa0d…` (20260908-149).
+
+## SA DEMANDE
+
+Elle avait choisi **« 1c »** (publier depuis le rendez-vous **et** pouvoir choisir le rendez-vous
+depuis le mur du club), puis **« ok pour celles déjà oubliées »** — les photos déjà publiées.
+
+## AUCUNE MIGRATION, ET C'ÉTAIT VÉRIFIÉ AVANT DE BÂTIR
+
+`identifications` porte déjà un `type` **libre** et la forme « post:&lt;id&gt; » dans
+`photo_url` — exactement comme l'identification d'un cheval. Un rattachement est donc une ligne
+`type = "agenda"`, `cible_id` = l'identifiant du rendez-vous.
+
+Relevé fait **avant** : la table ne porte **que sa clé primaire**, aucune contrainte sur `type`
+(requête sur `pg_constraint`, 14/09). **Aucun SQL.**
+
+## ⚠️ DEUX CHEMINS DE RATTACHEMENT COEXISTENT, ET C'EST VOULU
+
+- la **cible** « agenda:&lt;id&gt; » pour ce qui est publié **depuis** le rendez-vous : rien à
+  choisir, rien à stocker en plus ;
+- l'**identification** pour ce qui est rattaché **après coup**.
+
+La carte du rendez-vous lit **les deux** et dédoublonne, via la prop `chargerEnPlus` déjà posée
+au build 127 pour la page Actualité d'un cheval. Un mécanisme réutilisé, pas un deuxième à
+maintenir.
+
+## CE QU'ELLE VOIT
+
+Un lien **« Rattacher »** dans la vignette, à côté de « Modifier ». Il ouvre la liste des
+rendez-vous du club — **le passé d'abord**, puisqu'on rattache presque toujours une photo à
+quelque chose qui a eu lieu. Un toucher, et c'est fait : « Rattaché à &lt;nom&gt; ».
+
+- Rendu **seulement** si la page le demande (prop `rattachementAgenda`, passée par le **seul**
+  mur du club) et **seulement** pour qui peut déjà gérer ce post. Les autres murs — perso, fiche
+  cheval, annonces — ne le voient pas.
+- La liste est chargée **à la demande**, au premier toucher, jamais à chaque affichage du fil.
+- Le rattachement est **idempotent** : pas de doublon si la ligne existe déjà.
+- Statut **« accepté » d'emblée** : c'est l'autrice du post ou une modératrice qui rattache, il
+  n'y a personne à qui demander l'accord — contrairement à l'identification d'un cheval.
+- Tout échec s'affiche en clair.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Portées vérifiées **bloc par bloc** : `hypePostsAgenda`, `hypeRattacherPostAgenda`,
+  `chargerAgendaClub`, `chargerAgendaClubPasse` sont dans le bloc **1**, `MurHype` et
+  `EcranAgendaClub` dans le **13** — déclarées bien avant usage. (Leçon du 149, où un appel à
+  une fonction absente du composant aurait planté au premier toucher.)
+- Périmètre : **5 lignes remplacées, 126 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**.
+
+## CE QUI RESTE SUR CE CHANTIER
+
+1. **Choisir le rendez-vous au moment de publier** (l'autre moitié de son « 1c »).
+2. Faire entrer les publications **rattachées après coup** dans le **bandeau de médias** de la
+   carte : il ne lit que la cible aujourd'hui, donc une photo rattachée apparaît dans le fil du
+   rendez-vous mais pas encore dans son bandeau.
+
+## ET HORS CHANTIER
+
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés ; photo et mots de l'ancien
+  encart véto en réserve pour le bandeau de Santé).
+- Le dernier doublon : le bloc « Souvenirs du club » de la page du club.
+- Agrandir les photos d'un post : la visionneuse existe désormais dans le fil depuis le 149, il
+  ne reste qu'à la brancher sur les médias d'un post.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée,
+  au moins deux fois. Soraya débloquée à la main. À voir sur `dashboard.stripe.com/webhooks`.
+
+---
+
 # 🟩 14/09/2026 (22 h) — UNE RÉPONSE PEUT PORTER UNE PHOTO · TITRE DES RÉSULTATS RACCOURCI
 
 | Fichier | Où | md5 | Quoi |
