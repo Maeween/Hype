@@ -10,6 +10,259 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (02 h) — PLUSIEURS PHOTOS D'UN COUP · LE TEXTE EN COURS PLUS JAMAIS PERDU
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `c41d0b2c…` | build **20260908-162** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Part du **161** (`762f9d81…`) reçu d'elle. ⚠️ Vérifié avant de commencer : ce 161 contient
+**tout** mon travail (calque des photos, rattachement aux rendez-vous, médias dans les réponses,
+cartes du passé, teinte des carrés, rail unique, gardes sur les nouveautés) — l'autre
+conversation est bien partie de mon 158. Rien n'a été écrasé.
+
+## 1. PLUSIEURS PHOTOS D'UN COUP
+
+« Il faudrait aussi que sur l'agenda quand on veut écrire sur un événement passé on puisse
+ajouter plusieurs photos d'un coup ou des vidéos. »
+
+Plusieurs médias par message existaient **déjà** depuis le 12/09 (jusqu'à 4), mais **un par
+appui**.
+
+⚠️ **La leçon iOS du 05/09 est respectée** : un champ **mixte** image+vidéo avec `multiple`
+laisse le bouton de validation du sélecteur **inerte** sur iPhone. On ne met donc pas `multiple`
+sur un champ mixte — on **sépare** :
+
+- bouton **« Photos »** → champ `image/*` **avec `multiple`** (plusieurs d'un coup, ce qui
+  fonctionne sur iOS) ;
+- bouton **« Vidéo »** → champ `video/*` simple.
+
+La fonction traite toute la sélection **dans l'ordre choisi** et s'arrête à 4. Si on en
+sélectionne plus, elle prend ce qui rentre **et le dit**, au lieu d'ignorer en silence.
+
+## 2. 🟥 LE TEXTE EN COURS N'EST PLUS PERDU
+
+« Quand j'ai voulu écrire dedans tout à l'heure ça a lâché en pleine écriture, tout s'est
+refermé comme si c'était fini, j'ai dû tout refaire, ça m'a soûlée, alors qu'il y avait déjà une
+photo dedans et plusieurs lignes écrites. »
+
+**Je n'ai pas pu établir la cause exacte** du repliage : remontage du composant, rechargement de
+la PWA après une mise en ligne, ou toucher involontaire sur l'en-tête de la carte. Plutôt que de
+chercher le déclencheur en la faisant réessayer, j'ai rendu **la perte impossible** :
+
+- le texte en cours est écrit sur l'appareil **à chaque frappe**, par mur
+  (`hype_brouillon_<cible>`), relu au montage, effacé après une publication réussie ;
+- une carte de rendez-vous **ouverte ne se referme plus** au toucher de son en-tête : seul
+  « Replier » ferme. C'était l'une des causes possibles.
+
+⚠️ **Ce que ça ne sauve pas, et il faut le dire :** les **photos déjà choisies**. Un fichier
+sélectionné n'existe qu'en mémoire, il n'est pas enregistrable dans le navigateur. Si le
+composant est remonté, les photos sont à reprendre — seul le texte revient.
+
+## 3. LE DERNIER DOUBLON DES SOUVENIRS
+
+Le bloc « Souvenirs du club » quitte la page du club. C'était le dernier des **trois** endroits
+qui promettaient la même chose (les deux encarts sont partis au 145).
+
+⚠️ **Correction d'une affirmation fausse de ma part au build 137** : j'avais écrit que ce bloc
+n'avait « aucun chargement écrit ». **C'était faux.** Son chargement existe — mais il lit la
+table `mur_evenement` avec la clé « club:&lt;nom&gt; », et **rien n'écrit jamais cette clé** :
+les deux seuls appels de `publierMurEvenement` utilisent l'identifiant d'un événement et
+« ecole:&lt;slug&gt; ». Il était donc vide **par construction**, pas « jamais chargé ». La
+conclusion tenait, le raisonnement était mauvais.
+
+Aucune donnée perdue : les photos sont dans `commentaires` et s'affichent dans la page
+Souvenirs.
+
+## 🟥 TROISIÈME FOIS QUE LE MÊME PIÈGE ME COÛTE UN FICHIER
+
+Un emoji en échappement dans un script d'édition a **encore** fait échouer l'écriture en cours
+de route et vidé mon fichier de travail (builds 125, 142, et ici). **Rien n'est jamais sorti
+d'ici dans cet état**, mais j'ai perdu trois fois le travail en cours.
+
+**Règle définitive : aucun emoji, sous aucune forme, dans un script d'édition.** Les emojis du
+code applicatif s'écrivent en `\uXXXX` **depuis le fichier**, jamais depuis mes scripts.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **17 lignes remplacées, 100 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Il me faut `dashboard.stripe.com/webhooks`. **Seul point qui touche de
+  l'argent.**
+- 🟥 **Les doublons de résultats en base** (requête de constat dans l'entrée du 156).
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés).
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil.
+
+---
+
+# 🟩 14/09/2026 (16 h 30) — HEY BABY ÉPINGLÉES · LA CAUSE RÉPARÉE, LA SECTION POSÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `762f9d81…` | build **20260908-161** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Blandine : « Ok. Continue et règle ça » — accord donné pour toucher l'écran Hey Baby.
+
+## 🟥 LA CAUSE : LA LISTE PROPOSÉE À L'ÉPINGLAGE ÉTAIT CELLE DES CHEVAUX DE DÉMO
+
+`chevauxCibles`, dans l'écran Hey Baby, était construite sur **`CHEVAUX_FICHE`** — la
+vieille liste en dur. **Les vrais chevaux n'ont jamais été proposés.** `cheval_id` a donc
+enregistré des surnoms de démo pendant des mois : relevé en base le 14/09,
+`heybaby` 44 · `rizotto` 3 · `idao` 3 · `null` 5. **Aucun identifiant réel.**
+
+Réparé : on propose désormais `chevaux`, les lignes réelles de la table servies par
+`useApp()` — donc avec leur `id` uuid.
+
+⚠️ **Le repli sur `CHEVAUX_FICHE` est SUPPRIMÉ et non remplacé.** Si la liste n'est pas
+encore chargée, on ne propose **aucun** cheval plutôt que de réécrire un faux
+identifiant. Le bouton « épingler sans cheval » existe déjà à côté, rien n'est bloqué.
+
+## LA SECTION SUR LA PAGE SANTÉ
+
+Jusqu'à 4 observations, la date, la question en titre, le début de la réponse en résumé,
+et un panneau qui ouvre l'échange complet (portail vers `<body>`, `z-index` 9400).
+
+⚠️ **Aucune vignette, aucun titre court inventé en base.** La table n'en a pas : le titre
+est la **première ligne de la question**, le résumé le **début de la réponse**. De vraies
+colonnes demanderaient une décision de Blandine.
+
+Le **disclaimer** est présent aux deux endroits, dans la carte et dans le panneau :
+« Hey Baby fournit des observations assistées par IA et ne remplace pas l'avis d'un
+vétérinaire. » Aucun diagnostic n'est jamais présenté comme certain.
+
+`cheval_id` étant du **`text`**, la comparaison se fait en texte (`String(chId)`).
+
+## ⚠️ IL RESTE LE RAPATRIEMENT DES 50 ANCIENNES ÉPINGLES
+
+Les épingles posées **avant** aujourd'hui portent un surnom de démo : elles ne
+remonteront pas tant qu'un `UPDATE` ne les aura pas rattachées. Correspondance donnée par
+`NOMS_MIGRES` : `heybaby → Hey Baby Please`, `rizotto → Rizotto d'Emery`,
+`idao → Boréalis de Feinn`.
+
+**Requête de contrôle à passer d'abord** (lecture seule) — il faut EXACTEMENT une fiche
+par nom, sinon l'`UPDATE` choisirait au hasard :
+
+```sql
+select 'heybaby' as slug, count(*) as fiches from chevaux where nom = 'Hey Baby Please'
+union all select 'rizotto', count(*) from chevaux where nom = 'Rizotto d''Emery'
+union all select 'idao',    count(*) from chevaux where nom = 'Boréalis de Feinn';
+```
+
+Les 44 épingles d'août montrent un usage réel : ça vaut le rapatriement plutôt que de
+repartir de zéro.
+
+---
+
+# 🟩 14/09/2026 (16 h) — PAGE SANTÉ · LA SECTION « À LIRE »
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `9aa52999…` | build **20260908-160** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Une carte en bas de page qui ouvre le **magazine Santé existant** (route `"sante"`, ses
+6 vrais articles). **Aucun mock, aucun titre recopié.** Image : `IMG_SANTE_SIGNAUX`, déjà
+globale. Présente dans les deux états de la page, avec ou sans soins enregistrés.
+
+## 🟥 POURQUOI PAS TROIS CARTES, UNE PAR ARTICLE
+
+Le tableau des articles est déclaré **à l'intérieur** d'`EcranSante` : **78 845 octets,
+254 lignes**, et il dépend de 6 constantes d'images locales. Il n'est pas lisible depuis
+la page Santé. Le sortir au niveau global est faisable — c'est la méthode des découpes de
+cours du 06/09 — mais c'est **un chantier à part**, hors périmètre, et risqué tant qu'une
+autre conversation travaille sur le même fichier.
+
+⚠️ **ET IL Y A UN PIÈGE MORTEL, À NE PAS OUBLIER LE JOUR OÙ ON LE FERA** : un
+`const ARTICLES` **global existe déjà** (les actualités — CSIO5\* La Baule, ligne ~26054).
+Promouvoir le tableau santé sous le même nom = **redéclaration d'un `const` au niveau
+global = SyntaxError = application entièrement morte**. Nom réservé pour ce jour-là :
+**`HYPE_ARTICLES_SANTE`**.
+
+⚠️ Autre chose relevée : le magazine Santé est écrit avec une fonction `L()` à **5 langues
+seulement** (fr, en, es, it, ja) — **pas d'allemand**. Une Allemande lit donc ces articles
+en français. Défaut préexistant, pas introduit ici.
+
+## RESTE À FAIRE
+
+- **Hey Baby épinglées — BLOQUÉ, et pas par un choix de style.** La requête du 14/09 montre
+  que `echanges_heybaby_epingles.cheval_id` contient des **surnoms de la liste de démo** :
+  `heybaby` (44), `rizotto` (3), `idao` (3), et 5 à `null`. **Aucun identifiant réel.**
+  Cause trouvée : `chevauxCibles`, la liste proposée au moment d'épingler, est construite
+  sur `CHEVAUX_FICHE`. Les vrais chevaux n'ont jamais été proposés. Coder la section
+  maintenant donnerait une section **vide sur tous les chevaux, définitivement**.
+  Trois étapes, dans l'ordre : 1) réparer `chevauxCibles` (⚠️ écran Hey Baby, **hors
+  périmètre, accord non donné**) ; 2) un `UPDATE` de rapatriement des 50 épingles — il
+  manque les **trois identifiants** de Hey Baby Please, Rizotto et Boréalis ; 3) alors la
+  section. Ni vignette ni titre court dans la table : le titre pourra être la première
+  ligne de la question, la vignette demanderait une colonne.
+  ⚠️ **Conséquence de mon retrait de `heybaby` ce matin** : « Hey Baby » a disparu des
+  chevaux proposés à l'épinglage. Les 44 épingles existantes sont intactes.
+- Documents médicaux : V2. Le `•••` et l'ancien écran « clinique » : laissés tranquilles.
+- Questions posées et sans réponse : « RIZOTTO / D'EMERY » sous l'heure du téléphone
+  (zone sûre ou simple défilement ?) ; et une **modératrice** doit-elle pouvoir poser la
+  photo OFFICIELLE d'un cheval qui n'est pas le sien ?
+
+---
+
+# 🟩 14/09/2026 (15 h 30) — PAGE SANTÉ · AÉRATION
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `5da63fc0…` | build **20260908-159** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Base : `99c8a747…` (build **158**), pris sur le dépôt. Marqueurs vérifiés :
+`EcranSanteCheval`, `FeuillePro`, `grilleEquipe`, `grilleCarres`, `panneauFamille`,
+`liensClub`, `chevalCommunDemoData`, `palmTech`.
+
+Blandine, captures de 16 h 08 : « aère-moi ça et rends ça mieux visuellement ».
+
+## 🟥 LA CAUSE DU VIDE : `minHeight` + UN RESSORT
+
+Les carrés avaient une **hauteur imposée** (158 px pour les soins, 150 pour l'équipe) et
+un `flex: 1` qui poussait le texte **en bas**. Un carré vide faisait donc exactement la
+hauteur d'un carré plein, avec un trou au milieu — et quatre carrés vides d'affilée
+donnaient une page à moitié creuse.
+
+**Plus de hauteur imposée, plus de ressort** : la hauteur suit le contenu. Un carré vide
+tient en trois lignes, un carré plein garde sa taille.
+
+## UN SEUL BOUTON D'AJOUT POUR TOUTE LA PAGE
+
+Avant : un **+** rond dans les carrés de soins, un gros **« + Ajouter »** turquoise dans
+ceux de l'équipe. Même geste, deux apparences. `bouttonPlus()` est désormais la seule
+fabrique, en haut à droite du carré. Les carrés vides ne disent plus qu'une chose, en
+gris : « Rien d'enregistré » — **la même phrase pour les soins et pour l'équipe**.
+
+## « DEMAIN » NE S'AFFICHE PLUS QU'UNE FOIS
+
+Il apparaissait **trois fois sur le même écran** : dans « À surveiller », dans le carré
+Vaccins, et sur la ligne du Carnet. « À surveiller » garde la pastille — c'est son rôle.
+Le carré ne porte plus qu'un **point de couleur** (avec le délai en `aria-label`, donc
+toujours lu à voix haute). Le Carnet reste factuel.
+
+## UN TITRE AU-DESSUS DES QUATRE CARRÉS
+
+Ils débarquaient sans rien entre « À surveiller » et « L'équipe de soins », qui en ont
+un : l'œil ne voyait pas un groupe. Titre **« En un coup d'œil »**, même style doré,
+fabriqué par `titreGroupe()` que l'équipe partage désormais.
+
+## DE L'AIR
+
+Écarts entre groupes portés de 16 à **24**. La citation gagne 22 px à droite (elle
+touchait le bord sur sa capture) et 12 px au-dessus. Le bouton « + Ajouter un soin » a
+20 px sous lui au lieu de 10. « À surveiller » se détache de 24 px.
+
+---
+
 # 🟩 15/09/2026 (01 h 15) — PLUS DE PAGE DES NOUVEAUTÉS POUR UNE NOUVELLE INSCRITE NI HORS SESSION
 
 | Fichier | Où | md5 | Quoi |
