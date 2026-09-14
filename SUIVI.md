@@ -10,6 +10,299 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (22 h 45) — MON CARNET, ÉTAPE H2 : LA PAGE EN LECTURE SEULE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `79514823…` | build **20260908-173** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `1235f2f1…` (20260908-172). **Aucun SQL dans ce build** — celui des tables est déjà
+passé.
+
+## LE SQL EST PASSÉ EN BASE LE 15/09
+
+« Success. No rows returned. » Trois tables, RLS activée, **douze policies** réservant tout à
+`auth.uid() = user_id`, rôle `authenticated`, `anon` révoqué.
+
+Deux protections **en base**, pas dans le code : on ne peut pas rattacher à sa séance le conseil
+de quelqu'un d'autre (deux `exists` dans la policy d'insertion), et les doublons sont impossibles
+(unicité sur séance+conseil, et sur cavalière+conseil).
+
+⚠️ **Pas de porte modératrice**, contrairement à `albums_cheval` : elle a écrit « personnel /
+privé par défaut ».
+
+## ⚠️ UN RELEVÉ QUI A CONFIRMÉ SON CHOIX 5a, POUR UNE RAISON QUE JE N'AVAIS PAS VUE
+
+`echanges_heybaby_epingles` n'a **aucune policy `UPDATE`**. Personne ne peut modifier une
+épingle, pas même sa propriétaire.
+
+Donc mettre le titre court **dans** cette table aurait exigé d'**ouvrir une écriture sur la table
+de Hey Baby** — exactement ce qu'elle voulait éviter. Sa décision était la bonne, et pour une
+raison plus forte que celle que j'avais avancée.
+
+## CE QUE LA PAGE FAIT — ET NE FAIT PAS
+
+**Elle lit et affiche**, rien de plus : la ligne des conseils avec son **compteur réel**, les
+**priorités du moment** (trois au plus), **la dernière séance**, puis **la liste des séances**
+(huit, puis « Voir tout »).
+
+⚠️ **Pas de bouton « + Nouvelle séance ».** La création est l'étape **H4**, et un bouton qui ne
+mène nulle part est proscrit dans ce projet. La ligne des conseils est pour la même raison
+**grisée et marquée « Bientôt »** : son panneau est l'étape H5.
+
+## DEUX POINTS TECHNIQUES QUI COMPTENT
+
+**Le titre d'un conseil** suit sa décision 4 : `titre_court` s'il est saisi, sinon **les premiers
+mots de la réponse Hey Baby**, coupés au dernier espace. **Aucune génération IA**, comme
+demandé.
+
+**Le compteur** vient de `compterEpinglesHB`, qui compte **toutes** les épingles — alors que
+`chargerEpinglesHB` **partitionne par cheval** (sans cheval il ne rend que celles sans cheval).
+C'est pourquoi la lecture « toutes mes épingles » est faite ici directement, conformément à sa
+décision 5c.
+
+## L'ACCÈS
+
+Une entrée en tête de l'onglet **Cavalier** — la place que sa maquette montre, où la barre du bas
+affiche « Cavalier » allumé quand on est dans le carnet.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- L'accès est bien dans `EcranMonCavalier`, et `tr` y est disponible (vérifié).
+- Périmètre : **2 lignes remplacées, 199 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**.
+
+## LA SUITE DU CARNET
+
+- **H3** — l'écran contextuel, cas « séance » (consultation).
+- **H4** — la création d'une séance : c'est elle qui allumera le gros bouton.
+- **H5** — le panneau des conseils, qui allumera la ligne du haut.
+- **H6** — l'écran d'un conseil : texte Hey Baby, les trois états, la timeline des séances.
+- **H7** — les médias d'une séance. ⚠️ **Pipeline existant, mêmes quotas, même stockage, aucun
+  système parallèle** (sa consigne).
+- **H8** — les trois priorités modifiables.
+
+## CE QUI RESTE EN ATTENTE D'ELLE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Photos lentes** — le diagnostic est prêt, et silencieux quand il n'a rien à mesurer.
+3. **Barre du bas** — verdict.
+4. **« Voir pas ce que j'ai écrit une fois refermé »** — à préciser.
+5. **Le numéro d'index affiché sur son accueil**, que je dois demander avant d'analyser une
+   capture.
+
+---
+
+# 🟩 15/09/2026 (22 h 15) — LE DIAGNOSTIC NE S'AFFICHE PLUS SANS MÉDIA
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1235f2f1…` | build **20260908-172** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `af92fc87…` (20260908-171).
+
+## SES TROIS REMARQUES DE 19 H 59, TRAITÉES SÉPARÉMENT
+
+### 1. 🟥 « Ça me met un diagnostic d'envoi alors que j'ai rien chargé » — CORRIGÉ
+
+**Mon erreur du build 167.** La branche « pas de média en plus » posait le diagnostic dès qu'une
+publication partait — donc **aussi pour un message de texte seul**, où il n'y a rien à mesurer
+et où les chiffres ne veulent rien dire.
+
+Le diagnostic sert à comprendre la lenteur des **photos**. Sans photo, il n'a aucune raison
+d'exister. Il est désormais effacé dans ce cas.
+
+### 2. « Bouton en double de nouveau » — PART AVEC LE 171, RIEN À CORRIGER
+
+Les deux « Replier » viennent de l'**empilement carte dépliée + post ouvert**. Le build 171
+supprime le dépliage de la carte : toucher un rendez-vous ouvre sa page. Le doublon disparaît
+donc de lui-même.
+
+⚠️ **Ses captures montrent un build antérieur au 171** — le toucher y déplie encore la carte.
+C'est ce qui explique les deux boutons, et aussi le post affiché en grand format d'origine.
+
+### 3. ⚠️ « Voir pas ce que j'ai écrit une fois refermé » — NON ÉLUCIDÉ, NON TOUCHÉ
+
+Sa vignette montre bien son texte (« 8 victoires sur le week… / Un grand bravo à Liam et… »),
+coupé à deux lignes, mais avec le **pictogramme de message sans média** à gauche — alors que le
+rendez-vous, lui, porte 4 médias.
+
+Deux lectures possibles, et je ne veux pas choisir au hasard :
+- elle veut **voir son texte en entier** une fois la carte refermée (la vignette le coupe à deux
+  lignes, par construction) ;
+- ou elle s'attendait à **voir une photo** sur sa publication, et il n'y en a pas — les 4 médias
+  appartiennent au rendez-vous, pas à son message.
+
+**À vérifier avec elle avant de toucher quoi que ce soit.**
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **3 lignes remplacées, 10 ajoutées**, un seul endroit.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## ⚠️ UNE HABITUDE À CORRIGER DE MON CÔTÉ
+
+Trois de ses quatre dernières remarques portaient sur des builds qu'elle **n'avait pas encore
+poussés**. **Demander le numéro d'index affiché sur l'accueil avant d'analyser une capture** —
+c'était déjà la leçon du 157, elle n'a pas été appliquée.
+
+## CE QUI RESTE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Photos lentes** — le diagnostic est prêt et désormais silencieux quand il n'a rien à dire.
+3. **Barre du bas** — verdict attendu.
+4. **« Voir pas ce que j'ai écrit »** — à préciser (ci-dessus).
+5. **MON CARNET** — prêt, H0 d'abord (relevé des policies, avant tout SQL).
+
+---
+
+# 🟩 15/09/2026 (22 h) — UN RENDEZ-VOUS PASSÉ S'OUVRE EN GRAND
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `af92fc87…` | build **20260908-171** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `90855c2e…` (20260908-170).
+
+## SA DEMANDE
+
+« Quand on clique sur un événement passé c'est possible qu'il s'ouvre en grand et pas juste une
+photo. »
+
+Le dépliage sur place du build 147 convenait quand un rendez-vous ne portait qu'une photo ou
+deux. Depuis, une carte peut porter **un bandeau de médias, des résultats FFE et des
+commentaires** : ça ne tient plus dans une carte.
+
+## LA PAGE
+
+Bandeau avec l'**affiche** du rendez-vous (sinon sa première photo), le type, le titre, le lieu,
+les dates — « du 12 au 14 octobre » quand il dure —, la description, les **résultats**, puis
+**les photos en grand** et enfin le **fil des commentaires**.
+
+⚠️ **Les photos respectent leurs proportions d'origine** : deux colonnes, `object-fit: contain`,
+**aucun recadrage carré imposé**. C'est sa règle sur les photos, et c'est tout l'objet de sa
+demande. Toucher une photo l'ouvre en plein écran par le calque existant, avec ses marqueurs
+anti-balayage du 165.
+
+## ⚠️ AUCUNE REQUÊTE NOUVELLE
+
+La page reçoit ce que la page agenda a **déjà chargé d'un coup** pour tous les rendez-vous — le
+rendez-vous, ses médias, ses résultats (`window.__evPasse`). Seul le fil est relu, par `MurHype`,
+comme partout ailleurs.
+
+Si le paquet manque (arrivée directe sur la route), la page **le dit** et propose de retourner à
+l'agenda, au lieu d'afficher une page vide.
+
+## ⚠️ LE DÉPLIAGE SUR PLACE N'EST PAS SUPPRIMÉ
+
+L'état `ouvertEv` et son bloc restent en place, **inutilisés**. Rien n'est perdu si elle veut
+revenir en arrière — il suffit de rebrancher le toucher.
+
+## UN PIÈGE ÉVITÉ, NOTÉ DANS LE CODE
+
+`listeRes` est déclarée **plus bas** que le gestionnaire de toucher qui l'utilise. Ce n'est pas
+un bug : ce gestionnaire ne s'exécute qu'**au toucher**, donc après le rendu, quand la variable
+est assignée. Le commentaire le dit sur place, pour qu'on ne « corrige » pas un faux problème.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Ordre des variables vérifié (`meds` avant, `listeRes` après mais lue au clic).
+- Périmètre : **6 lignes remplacées, 136 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE, ET QUI DÉPEND D'ELLE
+
+1. 🟥 **Stripe** — dashboard en mode live : webhook présent ou non, domaine, événements écoutés,
+   état des dernières tentatives. **Seul point qui touche de l'argent**, deux occurrences.
+2. **Photos lentes** — publier avec 3 ou 4 photos, envoyer la capture du bandeau de diagnostic
+   (build **168** minimum), plus le ressenti sur le moment où ça ralentit.
+3. **Barre du bas** — se déplace-t-elle encore, et quand ?
+
+**Prêt à coder : MON CARNET**, plan H0 à H8. ⚠️ **H0 d'abord** — relever les policies existantes
+sur `echanges_heybaby_epingles`, `albums_cheval` et `videos_mux` avant tout SQL. Ses cinq
+décisions sont verrouillées dans l'entrée du 169.
+
+---
+
+# 🟩 15/09/2026 (21 h 30) — LA PAGE SANTÉ DU CLUB : LES SIX CARRÉS SONT TOUS ALLUMÉS
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `90855c2e…` | build **20260908-170** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `1f4500e7…` (20260908-169). **La dernière carte grisée de la grille posée au build
+136 s'allume : les six carrés du club sont désormais tous ouverts.**
+
+## SES DÉCISIONS, APPLIQUÉES À LA LETTRE
+
+- « Tous ceux rattachés à l'écurie quand on ouvre de l'écurie oui. »
+- « **Photo du cheval + nom + prochaine échéance colorée.** Le simple point de couleur seul est
+  trop abstrait. Je veux comprendre immédiatement quel cheval est concerné et quelle échéance
+  arrive. »
+- « Le véto, laisse-le dans Santé » → le bandeau reprend **la photo et les mots** de l'ancien
+  encart Clinique vétérinaire, gardés en réserve depuis le build 145. L'encart retiré ne laisse
+  pas de trou : son habillage a changé de place.
+
+## CE QU'ELLE VOIT
+
+Un cheval par ligne : sa **photo** (58 px), son **nom** en Cinzel, et sa **prochaine échéance**
+— type de soin, date en clair, et la pastille de retard (« en retard de 12 jours »,
+« aujourd'hui », « demain »). Le cadre de la ligne prend la couleur de l'urgence.
+
+Tri **par urgence** : les plus pressés en tête, les chevaux sans échéance à la fin. Toucher un
+cheval ouvre **sa** page Santé, celle qu'on atteint déjà depuis sa fiche.
+
+Seuils identiques à la page d'un cheval : **ambre à 15 jours, rouge dès que c'est dépassé.**
+
+## RIEN DE NOUVEAU EN BASE, AUCUN SQL
+
+Les chevaux viennent de `hypeChevauxDuClub` (le helper déjà employé par les albums et le fil),
+les soins de `soins_cheval`, passée en base le 14/09 et déjà lue par la page Santé d'un cheval.
+
+⚠️ **Une seule requête de soins pour tous les chevaux**, pas une par cheval. Une seule échéance
+par cheval : la plus proche.
+
+## ⚠️ LES DROITS SONT TENUS PAR LA BASE, ET IL FAUT EN CONNAÎTRE L'EFFET
+
+Les policies et `hype_peut_voir_sante` décident. Un cheval dont les soins ne sont **pas**
+visibles apparaît donc **sans échéance**.
+
+**Choix assumé : il n'est pas masqué.** Le masquer reviendrait à mentir sur la composition de
+l'écurie, et ses soins ne fuitent pas pour autant. Conséquence à connaître : **la page est plus
+ou moins remplie selon qui regarde** — c'est sain, mais ça surprend si on ne le sait pas.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Portées : `hypeChevauxDuClub` et `vignetteHype` en bloc **1**, la page et `EcranSanteCheval`
+  en bloc **13**.
+- **Plus aucune carte « Bientôt »** dans la grille du club (compté).
+- Périmètre : **3 lignes remplacées, 183 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+**Elle s'en occupe :**
+1. 🟥 **Stripe** — dashboard en mode live : webhook présent ou non, domaine, événements écoutés,
+   état des dernières tentatives. **Seul point qui touche de l'argent.**
+2. **Photos lentes** — publier avec 3 ou 4 photos et envoyer la capture du bandeau de
+   diagnostic (build **168** minimum), plus le ressenti sur le moment où ça ralentit.
+3. **Barre du bas** — se déplace-t-elle encore, et dans quelles circonstances ?
+
+**Prêt à coder dès qu'elle le dit : MON CARNET**, plan en neuf étapes dans le document de
+relevé. ⚠️ **H0 d'abord** : relever les policies existantes sur `echanges_heybaby_epingles`,
+`albums_cheval` et `videos_mux` **avant** d'écrire le moindre SQL. Ses cinq décisions sont
+verrouillées dans l'entrée du 169.
+
+---
+
 # 🟩 15/09/2026 (21 h) — L'ENCART ALBUM QUITTE L'ONGLET CAVALIER · LES PHOTOS D'UN POST S'OUVRENT
 
 | Fichier | Où | md5 | Quoi |
