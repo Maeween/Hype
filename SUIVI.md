@@ -10,6 +10,62 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (01 h 15) — PLUS DE PAGE DES NOUVEAUTÉS POUR UNE NOUVELLE INSCRITE NI HORS SESSION
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `99c8a747…` | build **20260908-158** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `b584742d…` (20260908-157). Contient donc aussi le retrait du rail du haut.
+
+## SA DEMANDE
+
+« Retire la page des nouveautés pour les gens qui viennent de s'inscrire ou à la déconnexion. »
+
+## LA CAUSE
+
+`OverlayQuoiDeNeuf` ne regardait **que** « on est sur l'accueil » — ni **qui** est connecté, ni
+**depuis quand**. Il se déclenchait donc dès qu'aucune version n'était marquée comme vue dans
+`localStorage`, c'est-à-dire :
+
+- pour une cavalière qui **vient de créer son compte** : elle recevait la liste des nouveautés
+  d'une version qu'elle n'a jamais connue ;
+- **hors session** : une déconnectée revoyait le pop-up en arrivant sur l'accueil.
+
+## LES DEUX GARDES, ET RIEN D'AUTRE
+
+1. **Aucune session** → on ne montre rien **et on n'enregistre rien**. Ce second point compte :
+   enregistrer la version aurait mangé l'annonce pour la vraie utilisatrice qui se connectera
+   ensuite sur cet appareil.
+2. **Compte créé il y a moins de 24 h** → la version est enregistrée comme **vue sans être
+   montrée**. Une nouvelle découvre l'app, elle n'a rien à rattraper — et elle ne l'aura pas
+   davantage demain.
+
+Le reste est inchangé : une seule fois par version, après 1,1 s, sur l'accueil ; `fermer()`
+écrit toujours la même valeur.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- L'ancien déclenchement a été **supprimé** et non mis en commentaire : il portait déjà un
+  `/* … */` qui aurait **fermé le commentaire trop tôt** et laissé du code orphelin. Piège
+  attrapé par le contrôle. **Règle : ne jamais commenter un bloc qui contient déjà un
+  commentaire.**
+- Périmètre : **4 lignes remplacées, 29 ajoutées**, dans `OverlayQuoiDeNeuf` seul.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE
+
+- 🟥 **Les doublons de résultats en base** (requête de constat dans l'entrée du 156).
+- Les pages **Cavaliers** et **Santé du club** (deux carrés grisés).
+- Le bloc « Souvenirs du club » de la page du club ; l'encart album sur l'onglet Cavalier.
+- Agrandir les photos d'un post dans le fil.
+- 🟥 **Les abonnements Stripe** : paiement encaissé, ligne `abonnements_premium` jamais créée, au
+  moins deux fois. Soraya débloquée à la main. **Seul point qui touche de l'argent.**
+
+---
+
 # 🟩 15/09/2026 (00 h 55) — UN SEUL RAIL DE DERNIERS RÉSULTATS : C'EST CELUI DU HAUT QUI PART
 
 | Fichier | Où | md5 | Quoi |
