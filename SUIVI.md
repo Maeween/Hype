@@ -10,6 +10,287 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 15/09/2026 (21 h) — L'ENCART ALBUM QUITTE L'ONGLET CAVALIER · LES PHOTOS D'UN POST S'OUVRENT
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1f4500e7…` | build **20260908-169** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `5443a90f…` (20260908-168). **Deux des sept réponses de Blandine, celles qui ne
+demandaient rien d'autre qu'un feu vert.**
+
+## 7a — L'ENCART « L'ALBUM DE L'ÉCURIE » QUITTE L'ONGLET CAVALIER
+
+« Oui, retire également cet encart s'il est grisé et n'ouvre rien. »
+
+Grisé « Prochainement » et sans destination depuis le **26/07**. Il était parti de la page du
+club au build 145, il restait sur l'onglet Cavalier. Il en part.
+
+Le composant reste dans le fichier, non nettoyé : il est encore rendu par `EcranEcurie`,
+l'ancienne écurie perso retirée de la navigation, et **partira avec elle**.
+
+## 7b — LES PHOTOS D'UN POST S'OUVRENT EN PLEIN ÉCRAN
+
+« Branche la visionneuse existante du build 153 sur les photos du fil… réutiliser la visionneuse
+existante, ne pas en créer une nouvelle. »
+
+C'est bien **la même** : `setVuRep` + `hypeCalquePhoto`, posée au 149 pour le média d'une
+réponse, corrigée au 153 (le calque manquant, qui bloquait la page) puis au 165 (les marqueurs
+anti-balayage, qui la faisaient sortir de la page). **Aucune visionneuse nouvelle, aucun calque
+de plus.**
+
+⚠️ **Seules les images deviennent tactiles.** Une **vidéo** garde ses propres commandes : la
+rendre tactile volerait le toucher à son bouton de lecture.
+
+Vaut pour les **cinq** murs qui partagent ce composant : écurie, club, Actualités, fiche cheval,
+rendez-vous passés.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- `setVuRep` bien présent dans `MurHype` (compté) — la leçon du 149 appliquée avant, pas après.
+- Il ne reste **qu'un** rendu de `EncartAlbumEcurie`, celui de l'écran mort.
+- Périmètre : **4 lignes remplacées, 19 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+---
+
+## SES RÉPONSES DU 15/09, ACQUISES ET À RESPECTER
+
+**MON CARNET — décisions verrouillées :**
+
+- **Titre d'un conseil : (a) + (b) en repli.** L'utilisatrice peut saisir un titre court en
+  rangeant un conseil ; sans titre, on dérive automatiquement des premiers mots de la réponse.
+  ⚠️ **Pas de génération IA obligatoire en V1.**
+- **État du conseil : petite table séparée**, à côté des épingles. ⚠️ **Ne pas modifier la
+  structure Hey Baby existante si ce n'est pas nécessaire.**
+- **Médias d'une séance : les deux** — rattacher un média existant **et** en ajouter un nouveau.
+  ⚠️ **Tout nouvel envoi réutilise le pipeline média existant, les mêmes quotas, le même
+  stockage. Aucun système parallèle.**
+- **Conseils liés à un cheval : tous dans la même liste**, avec le nom du cheval affiché
+  discrètement.
+- **Séance minimale : oui** — date + note suffisent. Cheval, conseils et médias facultatifs.
+
+**SANTÉ DU CLUB :** par cheval, **photo + nom + prochaine échéance colorée**. Le point de
+couleur seul est trop abstrait — « je veux comprendre immédiatement quel cheval est concerné et
+quelle échéance arrive ».
+
+## CE QUI RESTE, ET ELLE S'EN OCCUPE
+
+1. **Stripe** — elle vérifie le dashboard en mode **live** et donnera : présence du webhook,
+   domaine, événements écoutés, état des dernières tentatives. **Seul point qui touche de
+   l'argent.**
+2. **Photos lentes** — elle publie avec 3 ou 4 photos et enverra la capture du bandeau de
+   diagnostic (⚠️ build **168** minimum : sur le 167 le bandeau était visible par tout le monde,
+   et le 167 n'a jamais été poussé) plus son ressenti sur le moment où ça ralentit.
+3. **Barre du bas** — elle teste sur iPhone et confirmera si elle se déplace encore, et dans
+   quelles circonstances.
+
+## PRÊT À CODER DÈS QU'ELLE LE DIT
+
+- **MON CARNET**, plan en neuf étapes (H0 à H8) dans le document de relevé. ⚠️ **H0 d'abord** :
+  relever les policies existantes sur `echanges_heybaby_epingles`, `albums_cheval` et
+  `videos_mux` avant d'écrire le moindre SQL.
+- **Santé du club**, la dernière carte grisée, maintenant entièrement spécifiée.
+
+---
+
+# 🟩 15/09/2026 (20 h 40) — LE DIAGNOSTIC D'ENVOI EST RÉSERVÉ À SON SEUL COMPTE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `5443a90f…` | build **20260908-168** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `d6953220…` (20260908-166), son dernier build poussé. **Le 167 n'a jamais été mis en
+ligne** : elle a posé la question avant de le pousser, donc le bandeau n'a été vu par personne.
+
+## SA QUESTION, ET LA MAUVAISE RÉPONSE
+
+« Il n'y a que moi qui vois l'outil, on est d'accord ? »
+
+**Non.** Le bandeau posé au build 167 n'avait **aucune condition**. Il s'affichait pour
+n'importe qui publie une photo, sur les **cinq** murs qui partagent ce composer : écurie, club,
+Actualités, fiche cheval, rendez-vous passés. Une cavalière aurait lu « Préparation sur le
+téléphone : 8,4 s · 12,1 Mo → 2,3 Mo », ce qui ne lui dit rien.
+
+C'est elle qui a posé la question. Je ne l'avais pas vu.
+
+**Leçon :** un outil de mesure n'est jamais neutre à l'écran. Avant de poser quoi que ce soit
+dans un composant **partagé par cinq écrans**, se demander **qui** va le voir — la même vigilance
+que pour le dessin des vignettes, où la prop `vignette` avait justement été inventée pour ça.
+
+## LE CORRECTIF
+
+Le test utilisé est **`estCompteFeinnHype`**, qui **existe déjà** dans le fichier et ne reconnaît
+que `feinn@live.fr`. Aucun nouveau mécanisme, aucune liste à maintenir, et rien de deviné sur la
+façon d'identifier son compte.
+
+Portées vérifiées : `estCompteFeinnHype` en bloc **1**, `MurHype` en bloc **13**, et `moi` est
+bien l'état de l'utilisatrice chargée par le composant.
+
+## POUR LE RETIRER QUAND L'ENVOI SERA STABILISÉ
+
+Sa question : « quand ça sera stabilisé on pourra le retirer ? » — **oui, en une ligne.**
+
+- soit remplacer la condition par `false` (le bandeau disparaît, le code reste) ;
+- soit supprimer le bloc entier : il est **d'un seul tenant**, et les mesures (`refPrep`,
+  `setDiag`) ne servent qu'à lui.
+
+Les chronomètres eux-mêmes sont inoffensifs et peuvent rester : ils ne font que soustraire deux
+dates, sans rien afficher ni transmettre.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QU'ELLE DOIT FAIRE AVEC
+
+Publier une fois **avec 3 ou 4 photos**, puis envoyer la capture du bandeau. Il départagera :
+**préparation** longue = son iPhone (compression) ; **envoi** long = le réseau ou le stockage.
+Les deux se corrigent différemment.
+
+⚠️ Et si la correction passe par baisser la qualité des photos, ce sera **sa décision** : la
+beauté des photos est sa règle absolue, ce n'est pas à moi de l'arbitrer.
+
+---
+
+# 🟩 15/09/2026 (20 h 20) — UN OUTIL DE MESURE DE L'ENVOI, PLUTÔT QUE DES HYPOTHÈSES
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `f17b0ce4…` | build **20260908-167** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `d6953220…` (20260908-166).
+
+## SA DEMANDE, ET POURQUOI ELLE A RAISON
+
+« Tu peux mettre un outil en ligne pour qu'on sache pourquoi. »
+
+Jusqu'ici je devinais. **Le build 166 a rendu les envois parallèles en supposant que c'était la
+cause de la lenteur, sans preuve.** C'est exactement ce qu'il ne faut pas faire : corriger une
+cause non établie, puis ne pas savoir si ça a marché.
+
+## CE QUE LE DIAGNOSTIC AFFICHE
+
+Après **chaque publication contenant au moins un média**, un bandeau turquoise apparaît dans le
+composer, avec les vrais chiffres, **séparés par phase** :
+
+| Phase | Ce qu'elle mesure | Ce que ça désigne si elle domine |
+|---|---|---|
+| **Préparation sur le téléphone** | le temps de `hypePhotoDirecte` pour chaque photo, avec le poids **avant → après** | l'iPhone : compression locale |
+| **Envoi de la publication** | le premier média, celui qui crée le message | le réseau ou le stockage |
+| **Envoi des médias en plus** | les suivants, parallèles depuis le 166 | le réseau, ou le parallèle qui ne sert à rien |
+| **Total** | la somme | — |
+
+Ces trois nombres suffisent à savoir **où** ça traîne. Les deux causes se corrigent
+différemment, et on ne peut pas choisir sans les voir.
+
+## ⚠️ AUCUNE DONNÉE N'EST TRANSMISE NI ENREGISTRÉE
+
+Tout est mesuré et affiché **sur l'appareil**. Rien ne part vers la base, rien n'est conservé.
+Le bandeau se referme d'un toucher, et ne s'affiche jamais sans média.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Tout ce que le bandeau appelle est bien défini **dans `MurHype`** : `setDiag`, `refPrep`,
+  `mo()`, `sec()`, `TQmCl`, `M2` (comptés — leçon du 149, où un appel à une fonction absente du
+  composant aurait planté au premier toucher).
+- Périmètre : **3 lignes remplacées, 68 ajoutées**, dans `MurHype` seul.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QU'IL FAUT FAIRE AVEC, ET CE QUE ÇA DÉCIDERA
+
+Publier une fois **avec 3 ou 4 photos**, puis m'envoyer la capture du bandeau.
+
+- **Préparation longue** (par exemple 12 s pour 4 photos) → c'est la compression sur l'iPhone.
+  Corrections possibles : compresser en parallèle plutôt qu'en série, ou baisser la qualité
+  cible. ⚠️ La seconde touche la beauté des photos, sa règle absolue : ce sera sa décision.
+- **Envoi long** → c'est le réseau ou le stockage. Là, le parallèle du 166 sert, et la suite est
+  ailleurs (taille des fichiers envoyés, réglages du stockage).
+- **Préparation ET envoi courts alors qu'elle trouve ça lent** → le temps est ailleurs, et le
+  diagnostic l'aura prouvé : il faudra chronométrer l'ouverture du sélecteur de photos, pas
+  l'envoi.
+
+## CE QUI RESTE
+
+- 🟥 **Les abonnements Stripe** : `dashboard.stripe.com/webhooks`. **Seul point qui touche de
+  l'argent**, deux fois déjà.
+- **La barre du bas** : le correctif du 164 attend son verdict.
+- **MON CARNET** : cinq décisions, dont le titre et le thème d'un conseil.
+- La carte **Santé du club**, grisée à sa demande.
+- L'encart album encore présent sur l'onglet **Cavalier**.
+- Agrandir les photos d'un post dans le fil.
+
+---
+
+# 🟩 15/09/2026 (20 h) — LES MÉDIAS EN PLUS PARTENT EN PARALLÈLE, PLUS EN FILE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `d6953220…` | build **20260908-166** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `f75c86c0…` (20260908-165).
+
+## LE SEUL POINT DE LENTEUR QUE LE CODE MONTRE CLAIREMENT
+
+« Beaucoup de mal à charger les photos. »
+
+Les médias **supplémentaires** d'un message étaient envoyés **un par un**, chaque attente après
+la précédente. Avec trois photos en plus : trois attentes bout à bout, et l'impression que rien
+n'avance. Ils partent maintenant **ensemble**.
+
+## ⚠️ DEUX PROPRIÉTÉS CONSERVÉES, CE SONT ELLES QUI COMPTENT
+
+1. **L'ordre choisi est gardé.** `Promise.all` rend les résultats dans l'ordre des **entrées**,
+   pas dans l'ordre d'arrivée — et le filtrage des échecs vient après. La première photo choisie
+   reste la première.
+2. **Chaque envoi reste indépendant.** Chaque promesse a son propre `catch` et rend `null` : un
+   échec n'emporte pas les autres, exactement comme le `try/catch` par média d'avant. Et le
+   message est **déjà publié** à ce stade : rien ne peut le perdre.
+
+Au plus **3 fichiers en parallèle** (4 médias moins le premier) : pas de risque de saturer la
+connexion d'un téléphone.
+
+⚠️ **Le premier média reste envoyé avant les autres**, et c'est inévitable : c'est lui qui crée
+le message, et il faut son identifiant pour rattacher les suivants.
+
+## ⚠️ CE BUILD NE PROUVE PAS QUE C'ÉTAIT LA CAUSE
+
+C'est la seule que le code montre clairement. **S'il reste lent, il faut trancher entre deux
+choses très différentes** :
+
+- lent à **choisir** les photos (l'aperçu qui tarde) → c'est la compression locale sur
+  l'iPhone ;
+- lent à **publier** (après avoir touché Publier) → c'est le réseau ou le stockage.
+
+Les deux se corrigent différemment. La question à lui poser : **à quel moment ça traîne ?**
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **6 lignes remplacées, 20 ajoutées**, un seul endroit de `publier()`.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE, ET QUI ATTEND ELLE
+
+- 🟥 **Les abonnements Stripe** : `dashboard.stripe.com/webhooks`. **Seul point qui touche de
+  l'argent**, deux fois déjà.
+- **La barre du bas** : le correctif du 164 attend son verdict.
+- **La lenteur des photos** : à quel moment ça traîne (choix ou publication) ?
+- **MON CARNET** : cinq décisions, dont le titre et le thème d'un conseil — les épingles n'en
+  ont pas en base.
+- La carte **Santé du club**, grisée à sa demande.
+- L'encart album encore présent sur l'onglet **Cavalier** (demandé deux fois, sans réponse).
+- Agrandir les photos d'un post dans le fil (proposé, sans réponse).
+
+---
+
 # 🟩 15/09/2026 (19 h 45) — LA SORTIE PENDANT LE ZOOM · LE FAUX « ENVOI A ÉCHOUÉ »
 
 | Fichier | Où | md5 | Quoi |
