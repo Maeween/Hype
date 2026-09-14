@@ -10,6 +10,90 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (14 h) — LA CARTE « HEY BABY » EN DOUBLE · FICHE DE DÉMO RETIRÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `719aff77…` | build **20260908-134** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Blandine : « Hey Baby ne se met pas à jour avec sa photo de profil dans l'affichage des
+chevaux de l'écurie », puis « vire-la, on va la refaire s'il faut ».
+
+## 🟥 CE N'ÉTAIT PAS UNE PHOTO QUI NE SE METTAIT PAS À JOUR
+
+C'était une **carte de démo en double**. `CHEVAUX_FICHE` — la vieille liste écrite à la
+main, d'avant la base — contenait `heybaby: { nom: "Hey Baby", photo: IMG_HEYBABY_CHEVAL,
+info: "Jument · CSO" }`. Ces fiches ne s'affichent que sur le compte Feinn
+(`estCompteFeinn`) et ne disparaissent que si un vrai cheval porte **exactement** le même
+nom. Le vrai s'appelle **« Hey Baby Please »** : un mot d'écart, donc la carte de démo
+restait, avec sa photo **écrite dans le code** — qui ne pouvait donc jamais changer.
+
+**Retirée.** Son retrait ne coûte rien : sa ligne était vide (`flots: []`,
+`palmares: []`). `NOMS_MIGRES.heybaby` est **conservée** : elle sert à retrouver le vrai
+cheval en base si un ancien lien pointe encore sur ce slug.
+
+⚠️ **Les cinq autres ne sont PAS touchées.** Rizotto et Boréalis portent encore des
+origines et un **palmarès écrits en dur** qui entrent dans leurs affichages **pour tout le
+monde**. Les retirer demande un vrai chantier, pas une ligne. Les autres sont masquées
+aujourd'hui **par coïncidence** : leur nom de démo est identique au nom réel.
+
+## CE QUI RESTE, ET QUI N'EST PAS RÉGLÉ
+
+Requête passée par elle : `chevaux.photo_url` de « Hey Baby Please » est **vide**
+(`taille_photo = 0`), et son `user_id` est `fa2875ae…` — **ce n'est pas son compte**
+(`NOMS_MIGRES` dit d'ailleurs « noms reels des chevaux de Liam en base »).
+
+Conséquence, et c'est un **comportement voulu** depuis le 02/09 : quand elle pose une photo
+sur un cheval qui n'est pas le sien, `appliquerPhotoCheval` l'écrit dans
+`chevaux_histoires` et **jamais** dans `chevaux.photo_url` — « la photo est MIENNE, elle
+reste sur ma page ». La belle photo de saut vit donc dans son téléphone et sur sa page
+perso, pas sur la fiche commune.
+
+Et sur la page **Écurie**, la vignette continuera d'afficher l'image du code : il existe un
+repli par NOM, `AFFICHES_SECOURS = { …, "Hey Baby Please": IMG_HEYBABY_CHEVAL }`, utilisé
+quand `photo_url` est vide. **Conservé** — le retirer montrerait un portrait générique, pas
+sa photo.
+
+**DÉCISION À PRENDRE PAR ELLE** : une **modératrice** doit-elle pouvoir poser la photo
+OFFICIELLE d'un cheval qui n'est pas le sien (elle le fait déjà pour l'année, le design et
+`photo_palmares`) ? Si oui, sa photo remonterait partout. Sinon, c'est à Liam de la poser.
+Rien n'a été codé dans ce sens.
+
+## ⚠️ ÉCART DE MÉTHODE, À RETENIR
+
+J'ai d'abord parlé de « fiches de démo que personne ne voit », ce qui lui a fait craindre
+pour ses vraies fiches — palmarès, photos, vidéos, vaccins. **Deux choses portent le même
+mot « fiche »** : la liste en dur du fichier, et les vraies lignes de `chevaux` en base.
+Toujours nommer laquelle des deux, surtout quand la phrase contient « retirer ».
+
+---
+
+# 🟩 14/09/2026 (13 h 45) — PAGE SANTÉ · LE LISERÉ DES RACCOURCIS D'ÉCHÉANCE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `79d73f0c…` | build **20260908-133** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Blandine : « quand on sélectionne rappel dans un an, ce serait bien qu'il y ait le liseré
+autour qu'on soit sûr ».
+
+**Ma faute** : les pastilles « 6 mois » et « 1 an » recevaient `actif: false` **en dur**.
+Elles ne s'allumaient donc jamais — seule « Aucune » réagissait. On ne pouvait pas savoir
+si le raccourci avait été pris.
+
+Elles s'allument maintenant quand la date affichée **est** celle qu'elles calculent. Elles
+ne gardent aucun état de leur côté : **c'est la date qui fait loi**. Conséquence voulue —
+si elle retouche la date à la main, le liseré s'éteint, ce qui est juste : ce n'est plus
+« 1 an ».
+
+Liseré d'une pastille active renforcé au passage (2 px turquoise franc + halo), pour
+qu'elle se voie d'un coup d'œil sur tous les choix de la feuille : type, précision,
+zone des pieds, échéance.
+
+---
+
 # 🟩 14/09/2026 (13 h 30) — PAGE SANTÉ · LISIBILITÉ : CARTES OPAQUES ET GROS CARRÉS DE DATES
 
 | Fichier | Où | md5 | Quoi |
