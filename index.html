@@ -34871,6 +34871,13 @@ function EcranSanteCheval() {
   var nomVu = surnom || nomOffi;
   var montrerOffi = !!(surnom && surnom.toLowerCase() !== nomOffi.toLowerCase());
   var photoVue = String((perso && perso.photo_url) || (fiche && fiche.photo_url) || "");
+  /* 14/09 (A1b) — « BOREALIS DE FEI... » : le nom etait force sur UNE ligne et se
+     coupait. La fiche cheval sait deja separer le nom de son AFFIXE (« de Feinn »,
+     « d'Amour », « du Rozel », « des Bruyeres ») : on reprend sa coupe, nom en
+     grand et affixe en petit dessous. Aucune troncature. */
+  var mAff = nomVu.match(/^(.*?)\s+(de\s.+|d\u2019.+|d'.+|du\s.+|des\s.+)$/i);
+  var nomCourt = mAff ? mAff[1] : nomVu;
+  var affixe = mAff ? mAff[2] : "";
 
   var MOIS = [T("janv.", "Jan", "ene.", "genn.", "1\u6708", "Jan."), T("f\u00e9vr.", "Feb", "feb.", "febbr.", "2\u6708", "Feb."), T("mars", "Mar", "mar.", "mar.", "3\u6708", "M\u00e4rz"), T("avril", "Apr", "abr.", "apr.", "4\u6708", "Apr."), T("mai", "May", "may.", "magg.", "5\u6708", "Mai"), T("juin", "Jun", "jun.", "giu.", "6\u6708", "Juni"), T("juil.", "Jul", "jul.", "lug.", "7\u6708", "Juli"), T("ao\u00fbt", "Aug", "ago.", "ag.", "8\u6708", "Aug."), T("sept.", "Sep", "sept.", "sett.", "9\u6708", "Sept."), T("oct.", "Oct", "oct.", "ott.", "10\u6708", "Okt."), T("nov.", "Nov", "nov.", "nov.", "11\u6708", "Nov."), T("d\u00e9c.", "Dec", "dic.", "dic.", "12\u6708", "Dez.")];
   function jourDe(s) {
@@ -34993,9 +35000,9 @@ function EcranSanteCheval() {
   if (soins === null) {
     corps = h("div", { style: { padding: "40px 20px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#6D7681" } }, "\u2026");
   } else if (!soins.length) {
-    corps = h("div", { style: { padding: "34px 22px", textAlign: "center" } },
-      h("div", { style: { fontSize: 34 } }, "\ud83e\ude7a"),
-      h("div", { style: { fontFamily: M, fontSize: 13, color: "#8A929C", marginTop: 12, lineHeight: 1.6 } },
+    corps = h("div", { style: { margin: "0 16px", padding: "22px 20px 24px", textAlign: "center", borderRadius: 18, border: "1px solid rgba(255,255,255,0.08)", background: "rgba(10,14,17,0.45)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" } },
+      h("div", { style: { fontSize: 30 } }, "\ud83e\ude7a"),
+      h("div", { style: { fontFamily: M, fontSize: 13, color: "#8A929C", marginTop: 10, lineHeight: 1.6 } },
         T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.")));
   } else {
     var titreSec = function (txt) {
@@ -35036,7 +35043,8 @@ function EcranSanteCheval() {
           h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { flex: "0 0 auto", width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
           photoVue ? h("img", { src: photoVue, alt: "", style: { flex: "0 0 auto", width: 54, height: 54, borderRadius: "50%", objectFit: "cover", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "0 0 18px rgba(32,217,245,0.16)" } }) : null,
           h("div", { style: { flex: 1, minWidth: 0 } },
-            h("div", { style: { fontFamily: C, fontSize: 23, fontWeight: 700, letterSpacing: 0.8, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, nomVu.toUpperCase()),
+            h("div", { style: { fontFamily: C, fontSize: 23, fontWeight: 700, letterSpacing: 0.8, lineHeight: 1.08, overflowWrap: "anywhere" } }, nomCourt.toUpperCase()),
+            affixe ? h("div", { style: { fontFamily: C, fontSize: 12.5, letterSpacing: "0.16em", textTransform: "uppercase", color: TQ, marginTop: 2, overflowWrap: "anywhere" } }, affixe) : null,
             montrerOffi ? h("div", { style: { fontFamily: M, fontSize: 9.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#7C858D", marginTop: 2 } }, nomOffi) : null,
             identite ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "rgba(220,227,232,0.66)", marginTop: 3 } }, identite) : null)),
         h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: TQ, marginTop: 14, paddingLeft: 2 } },
@@ -35046,7 +35054,7 @@ function EcranSanteCheval() {
         h("div", { style: { marginTop: 8, textAlign: "right", fontFamily: "'Snell Roundhand','Brush Script MT',cursive", fontWeight: 600, fontSize: 19, lineHeight: 1.2, color: "#7FE8F2", textShadow: "0 0 14px rgba(32,217,245,0.42)", opacity: 0.92 } },
           T("Prendre soin, c\u2019est d\u00e9j\u00e0 aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura \u00e8 gi\u00e0 amare.", "\u6c17\u3065\u304b\u3046\u3053\u3068\u306f\u3001\u611b\u3059\u308b\u3053\u3068\u3002", "F\u00fcrsorge ist schon Liebe."))),
       /* ---------- GESTE PRINCIPAL — inactif en A1, il s'allume avec le formulaire ---------- */
-      h("div", { style: { display: "flex", justifyContent: "center", padding: "2px 16px 16px" } },
+      h("div", { style: { display: "flex", justifyContent: "center", padding: "2px 16px 10px" } },
         h("div", { role: "button", "aria-disabled": "true", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M, fontSize: 13.5, fontWeight: 700, opacity: 0.4, cursor: "default" } },
           h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
           h("span", null, T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen")))),
