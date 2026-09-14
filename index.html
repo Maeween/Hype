@@ -34799,6 +34799,232 @@ function EncartCliniqueVeto() {
    NON AFFICHE DANS CETTE TRANCHE, volontairement : le nom du professionnel
    (professionnel_id -> table professionnels = tranche 3) et le contenu de `details`, dont la
    forme n a pas encore ete relevee. Aucun mock, aucun champ invente. */
+/* Libelles des types de soins — SOURCE UNIQUE, partagee par la page et la feuille.
+   Les cles sont EXACTEMENT les valeurs acceptees par la contrainte de soins_cheval. */
+function hypeSoinsLibelles(T) {
+  return {
+    veterinaire: T("V\u00e9t\u00e9rinaire", "Vet", "Veterinario", "Veterinario", "\u7363\u533b", "Tierarzt"),
+    ferrure: T("Ferrure", "Shoeing", "Herrado", "Ferratura", "\u8e44\u9244", "Beschlag"),
+    parage: T("Parage", "Trimming", "Recorte", "Pareggio", "\u524a\u8e44", "Hufpflege"),
+    vaccin: T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "\u30ef\u30af\u30c1\u30f3", "Impfung"),
+    vermifuge: T("Vermifuge", "Deworming", "Verm\u00edfugo", "Vermifugo", "\u99c6\u866b", "Wurmkur"),
+    dentiste: T("Dentiste", "Dentist", "Dentista", "Dentista", "\u6b6f\u79d1", "Zahnarzt"),
+    osteopathe: T("Ost\u00e9opathe", "Osteopath", "Oste\u00f3pata", "Osteopata", "\u6574\u9aa8", "Osteopath"),
+    locomotion: T("Locomotion", "Gait check", "Locomoci\u00f3n", "Locomozione", "\u6b69\u69d8", "Gangbild"),
+    imagerie: T("Imagerie", "Imaging", "Imagen", "Diagnostica", "\u753b\u50cf\u8a3a\u65ad", "Bildgebung"),
+    traitement: T("Traitement", "Treatment", "Tratamiento", "Trattamento", "\u6cbb\u7642", "Behandlung"),
+    autre: T("Autre", "Other", "Otro", "Altro", "\u305d\u306e\u4ed6", "Andere")
+  };
+}
+var HYPE_SOINS_TYPES = ["vaccin", "vermifuge", "ferrure", "parage", "veterinaire", "dentiste", "osteopathe", "locomotion", "imagerie", "traitement", "autre"];
+
+/* ==========================================================
+   FEUILLE « SOIN » — ajouter, modifier, supprimer une ligne de soins_cheval.
+   Detachee vers <body> (hypePortailBody) : au-dessus de la barre d'onglets, avec
+   la cale de l'encoche basse. Aucun champ de fichier.
+   LES DROITS SONT TENUS PAR LA BASE (policies + hype_peut_ecrire_sante). Ici on ne
+   fait que NE PAS PROPOSER le geste a qui ne peut pas ecrire ; si la base refuse
+   quand meme, l'echec est AFFICHE et reste a l'ecran (un refus RLS revient sous la
+   forme d'un enregistrement qui ne rend AUCUNE ligne : c'est dit tel quel).
+   Le defaut « vaccin annuel : J-15 + jour J » vit ICI, jamais en base.
+   ========================================================== */
+function FeuilleSoin(props) {
+  var h = React.createElement;
+  var ctx = useApp(); var tr = ctx.tr;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var M = "'Montserrat',sans-serif", C = "'Cinzel',serif", TQ = "#20D9F5";
+  var LIBS = hypeSoinsLibelles(T);
+  var s0 = props.soin || null;
+
+  function isoAuj() { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function ajoutMois(iso, n) {
+    var m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return "";
+    var d = new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+    var j = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + n);
+    var dernier = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
+    d.setDate(Math.min(j, dernier));
+    return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+  }
+  function ecartJours(a, b) {
+    var ma = String(a || "").match(/^(\d{4})-(\d{2})-(\d{2})/), mb = String(b || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (!ma || !mb) return null;
+    var da = new Date(Number(ma[1]), Number(ma[2]) - 1, Number(ma[3])), db = new Date(Number(mb[1]), Number(mb[2]) - 1, Number(mb[3]));
+    return Math.round((db.getTime() - da.getTime()) / 86400000);
+  }
+
+  var _ty = React.useState(String((s0 && s0.type) || "vaccin")); var type = _ty[0], setType = _ty[1];
+  var _ti = React.useState(String((s0 && s0.titre) || "")); var titre = _ti[0], setTitre = _ti[1];
+  var _di = React.useState(String((s0 && s0.date_intervention) || isoAuj())); var dInt = _di[0], setDInt = _di[1];
+  var _dp = React.useState(String((s0 && s0.date_prochaine) || "")); var dProch = _dp[0], setDProch = _dp[1];
+  var _pc = React.useState(String((s0 && s0.precision_prochaine) || "jour")); var prec = _pc[0], setPrec = _pc[1];
+  var _no = React.useState(String((s0 && s0.notes) || "")); var notes = _no[0], setNotes = _no[1];
+  var _ra = React.useState(!!(s0 && s0.rappel_avant_actif)); var rAvant = _ra[0], setRAvant = _ra[1];
+  var _rj = React.useState(String((s0 && s0.rappel_jours_avant != null) ? s0.rappel_jours_avant : 15)); var rJours = _rj[0], setRJours = _rj[1];
+  var _rz = React.useState(!!(s0 && s0.rappel_jour_j)); var rJourJ = _rz[0], setRJourJ = _rz[1];
+  var _tc = React.useState(!!s0); var rappelTouche = _tc[0], setRappelTouche = _tc[1];
+  var _bz = React.useState(false); var busy = _bz[0], setBusy = _bz[1];
+  var _er = React.useState(""); var erreur = _er[0], setErreur = _er[1];
+  var _cf = React.useState(false); var confirme = _cf[0], setConfirme = _cf[1];
+
+  /* DEFAUT DES RAPPELS — il vit ICI et nulle part ailleurs : un VACCIN dont la
+     prochaine echeance tombe a un an (bouton « 1 an », ou 330 a 400 jours saisis a
+     la main) propose J-15 + le jour J. Des le premier interrupteur touche, plus
+     rien n'est impose. Hype ne decide JAMAIS la date medicale. */
+  React.useEffect(function () {
+    if (rappelTouche) return;
+    if (!dProch) { setRAvant(false); setRJourJ(false); return; }
+    var e = ecartJours(dInt || isoAuj(), dProch);
+    if (type === "vaccin" && e !== null && e >= 330 && e <= 400) { setRAvant(true); setRJours("15"); setRJourJ(true); }
+  }, [type, dProch, dInt, rappelTouche]);
+
+  function placeholderTitre() {
+    if (type === "vaccin") return T("Grippe, t\u00e9tanos\u2026", "Flu, tetanus\u2026", "Gripe, t\u00e9tanos\u2026", "Influenza, tetano\u2026", "\u30a4\u30f3\u30d5\u30eb\u30a8\u30f3\u30b6\u306a\u3069", "Grippe, Tetanus\u2026");
+    if (type === "vermifuge") return T("Produit utilis\u00e9", "Product used", "Producto usado", "Prodotto usato", "\u4f7f\u7528\u3057\u305f\u85ac", "Verwendetes Mittel");
+    if (type === "ferrure" || type === "parage") return T("Avant + arri\u00e8re", "Front + hind", "Delante + detr\u00e1s", "Anteriori + posteriori", "\u524d\u5f8c", "Vorne + hinten");
+    return T("En deux mots", "In a few words", "En dos palabras", "In due parole", "\u4e00\u8a00\u3067", "In zwei Worten");
+  }
+
+  var styleChamp = { width: "100%", boxSizing: "border-box", marginTop: 6, padding: "12px 13px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "#EDF2F5", fontFamily: M, fontSize: 16, outline: "none" };
+  function etiquette(txt) { return h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#8A929C", marginTop: 16 } }, txt); }
+  function pastille(txt, actif, onTap, cle) {
+    return h("div", { key: cle, role: "button", onClick: onTap, style: { display: "inline-flex", alignItems: "center", minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid " + (actif ? "rgba(32,217,245,0.7)" : "rgba(255,255,255,0.14)"), background: actif ? "rgba(32,217,245,0.14)" : "rgba(255,255,255,0.03)", color: actif ? "#9CEDF8" : "#B7C0C8", fontFamily: M, fontSize: 12.5, fontWeight: actif ? 700 : 500, cursor: "pointer" } }, txt);
+  }
+  function interrupteur(txt, actif, onTap, cle) {
+    return h("div", { key: cle, role: "button", onClick: onTap, style: { display: "flex", alignItems: "center", gap: 11, minHeight: 46, padding: "0 13px", borderRadius: 13, border: "1px solid " + (actif ? "rgba(32,217,245,0.5)" : "rgba(255,255,255,0.12)"), background: actif ? "rgba(32,217,245,0.08)" : "rgba(255,255,255,0.02)", cursor: "pointer", marginTop: 8 } },
+      h("span", { style: { flex: "0 0 auto", width: 20, height: 20, borderRadius: 6, border: "1px solid " + (actif ? TQ : "rgba(255,255,255,0.3)"), background: actif ? "rgba(32,217,245,0.22)" : "transparent", color: TQ, fontSize: 13, fontWeight: 800, lineHeight: "19px", textAlign: "center" } }, actif ? "\u2713" : ""),
+      h("span", { style: { fontFamily: M, fontSize: 13, color: actif ? "#EDF2F5" : "#A8B2BA" } }, txt));
+  }
+
+  async function enregistrer() {
+    if (busy) return;
+    setErreur("");
+    if (!dInt && !dProch) {
+      setErreur(T("Il faut au moins une date : celle du soin, ou la prochaine \u00e9ch\u00e9ance.", "At least one date is needed: the care date, or the next due date.", "Hace falta al menos una fecha: la del cuidado o la pr\u00f3xima.", "Serve almeno una data: quella della cura o la prossima scadenza.", "\u65e5\u4ed8\u304c\u5c11\u306a\u304f\u3068\u30821\u3064\u5fc5\u8981\u3067\u3059\u3002", "Mindestens ein Datum wird ben\u00f6tigt."));
+      return;
+    }
+    if (typeof supa === "undefined" || !supa) {
+      setErreur(T("Connexion \u00e0 la base indisponible.", "Database unavailable.", "Base de datos no disponible.", "Base dati non disponibile.", "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u306b\u63a5\u7d9a\u3067\u304d\u307e\u305b\u3093\u3002", "Datenbank nicht verf\u00fcgbar."));
+      return;
+    }
+    setBusy(true);
+    /* On n'ecrit JAMAIS ics_sequence ni ics_exporte_le ici : ils appartiennent a
+       l'export calendrier, et le declencheur hype_soins_touch en depend. */
+    var champs = {
+      type: type,
+      titre: String(titre || "").trim() || null,
+      date_intervention: dInt || null,
+      date_prochaine: dProch || null,
+      precision_prochaine: dProch ? prec : "jour",
+      notes: String(notes || "").trim() || null,
+      rappel_avant_actif: !!(dProch && rAvant),
+      rappel_jours_avant: (dProch && rAvant) ? Math.max(1, Math.min(365, parseInt(rJours, 10) || 15)) : null,
+      rappel_jour_j: !!(dProch && rJourJ)
+    };
+    var r = null;
+    try {
+      if (s0 && s0.id) { r = await supa.from("soins_cheval").update(champs).eq("id", s0.id).select(); }
+      else { champs.cheval_id = props.chevalId; r = await supa.from("soins_cheval").insert(champs).select(); }
+    } catch (eEn) { r = { error: eEn }; }
+    setBusy(false);
+    if (r && r.error) {
+      setErreur(T("Le soin n'a pas pu \u00eatre enregistr\u00e9 : ", "Could not save: ", "No se pudo guardar: ", "Impossibile salvare: ", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", "Konnte nicht gespeichert werden: ") + String((r.error && (r.error.message || r.error)) || "?"));
+      return;
+    }
+    if (!r || !r.data || !r.data.length) {
+      setErreur(T("La base n'a renvoy\u00e9 aucune ligne : l'\u00e9criture a \u00e9t\u00e9 refus\u00e9e (droits).", "The database returned no row: the write was refused (permissions).", "La base no devolvi\u00f3 ninguna fila: escritura rechazada (permisos).", "Nessuna riga restituita: scrittura rifiutata (permessi).", "\u884c\u304c\u8fd4\u3055\u308c\u307e\u305b\u3093\uff1a\u66f8\u304d\u8fbc\u307f\u304c\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\u3002", "Keine Zeile zur\u00fcck: Schreiben verweigert (Rechte)."));
+      return;
+    }
+    if (props.onEnregistre) props.onEnregistre();
+  }
+
+  async function supprimer() {
+    if (busy || !(s0 && s0.id)) return;
+    setBusy(true); setErreur("");
+    var r = null;
+    try { r = await supa.from("soins_cheval").delete().eq("id", s0.id).select(); } catch (eSu) { r = { error: eSu }; }
+    setBusy(false);
+    if (r && r.error) {
+      setErreur(T("Le soin n'a pas pu \u00eatre supprim\u00e9 : ", "Could not delete: ", "No se pudo eliminar: ", "Impossibile eliminare: ", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", "Konnte nicht gel\u00f6scht werden: ") + String((r.error && (r.error.message || r.error)) || "?"));
+      return;
+    }
+    if (!r || !r.data || !r.data.length) {
+      setErreur(T("Rien n'a \u00e9t\u00e9 supprim\u00e9 : la base a refus\u00e9 (droits).", "Nothing was deleted: refused by the database (permissions).", "No se elimin\u00f3 nada: rechazado (permisos).", "Nulla eliminato: rifiutato (permessi).", "\u524a\u9664\u3055\u308c\u307e\u305b\u3093\uff1a\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\u3002", "Nichts gel\u00f6scht: verweigert (Rechte)."));
+      return;
+    }
+    if (props.onEnregistre) props.onEnregistre();
+  }
+
+  var voile = h("div", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { position: "fixed", inset: 0, zIndex: 9500, background: "rgba(4,6,9,0.84)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+    h("div", { onClick: function (eS) { eS.stopPropagation(); }, style: { width: "100%", maxWidth: 560, maxHeight: "88vh", overflowY: "auto", WebkitOverflowScrolling: "touch", borderRadius: "22px 22px 0 0", border: "1px solid rgba(32,217,245,0.34)", borderBottom: "none", background: "linear-gradient(180deg, rgba(12,18,24,0.99), rgba(7,10,13,1))", padding: "18px 16px calc(env(safe-area-inset-bottom) + 20px)" } },
+      h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1.4, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase" } },
+        (s0 && s0.id) ? T("Modifier le soin", "Edit entry", "Editar el cuidado", "Modifica la cura", "\u8a18\u9332\u3092\u7de8\u96c6", "Eintrag bearbeiten")
+                      : T("Nouveau soin", "New entry", "Nuevo cuidado", "Nuova cura", "\u65b0\u3057\u3044\u8a18\u9332", "Neuer Eintrag")),
+      props.nomCheval ? h("div", { style: { fontFamily: M, fontSize: 11, color: "#8A99A1", textAlign: "center", marginTop: 4 } }, props.nomCheval) : null,
+
+      etiquette(T("Type", "Type", "Tipo", "Tipo", "\u7a2e\u985e", "Art")),
+      h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, marginTop: 7 } },
+        HYPE_SOINS_TYPES.map(function (k) {
+          return pastille(LIBS[k] || k, type === k, function () { setType(k); }, "ty" + k);
+        })),
+
+      etiquette(T("Intitul\u00e9", "Label", "T\u00edtulo", "Titolo", "\u898b\u51fa\u3057", "Bezeichnung")),
+      h("input", { value: titre, onChange: function (e) { setTitre(e.target.value); }, placeholder: placeholderTitre(), style: styleChamp }),
+
+      etiquette(T("Fait le", "Done on", "Hecho el", "Fatto il", "\u5b9f\u65bd\u65e5", "Erledigt am")),
+      h("input", { type: "date", value: dInt, onChange: function (e) { setDInt(e.target.value); }, style: styleChamp }),
+      h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 5, lineHeight: 1.5 } },
+        T("Laisse vide s'il s'agit seulement de quelque chose \u00e0 pr\u00e9voir.", "Leave empty if this is only something to plan.", "D\u00e9jalo vac\u00edo si solo es algo por prever.", "Lascia vuoto se \u00e8 solo qualcosa da pianificare.", "\u4e88\u5b9a\u3060\u3051\u306e\u5834\u5408\u306f\u7a7a\u306e\u307e\u307e\u3067\u3002", "Leer lassen, wenn es nur geplant ist.")),
+
+      etiquette(T("Prochaine \u00e9ch\u00e9ance", "Next due date", "Pr\u00f3xima fecha", "Prossima scadenza", "\u6b21\u56de\u4e88\u5b9a", "N\u00e4chste F\u00e4lligkeit")),
+      h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7, marginTop: 7 } },
+        pastille(T("6 mois", "6 months", "6 meses", "6 mesi", "6\u30f6\u6708", "6 Monate"), false, function () { setRappelTouche(false); setDProch(ajoutMois(dInt || isoAuj(), 6)); }, "e6"),
+        pastille(T("1 an", "1 year", "1 a\u00f1o", "1 anno", "1\u5e74", "1 Jahr"), false, function () { setRappelTouche(false); setDProch(ajoutMois(dInt || isoAuj(), 12)); }, "e12"),
+        pastille(T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine"), !dProch, function () { setRappelTouche(false); setDProch(""); }, "e0")),
+      h("input", { type: "date", value: dProch, onChange: function (e) { setRappelTouche(false); setDProch(e.target.value); }, style: styleChamp }),
+      h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 5, lineHeight: 1.5 } },
+        T("Ces boutons ne sont qu'un raccourci : la date reste la tienne, Hype ne d\u00e9cide aucun protocole.", "These buttons are only a shortcut: the date stays yours, Hype prescribes nothing.", "Estos botones son un atajo: la fecha es tuya, Hype no prescribe nada.", "Questi pulsanti sono una scorciatoia: la data resta tua, Hype non prescrive nulla.", "\u3053\u308c\u306f\u76ee\u5b89\u3067\u3059\u3002\u65e5\u4ed8\u306f\u3042\u306a\u305f\u304c\u6c7a\u3081\u307e\u3059\u3002", "Nur eine Abk\u00fcrzung: das Datum bleibt deines.")),
+
+      dProch ? h("div", null,
+        etiquette(T("Pr\u00e9cision", "Precision", "Precisi\u00f3n", "Precisione", "\u7cbe\u5ea6", "Genauigkeit")),
+        h("div", { style: { display: "flex", gap: 7, marginTop: 7 } },
+          pastille(T("Jour pr\u00e9cis", "Exact day", "D\u00eda exacto", "Giorno esatto", "\u65e5\u4ed8", "Genauer Tag"), prec === "jour", function () { setPrec("jour"); }, "pj"),
+          pastille(T("Le mois seulement", "Month only", "Solo el mes", "Solo il mese", "\u6708\u306e\u307f", "Nur Monat"), prec === "mois", function () { setPrec("mois"); }, "pm")),
+
+        etiquette(T("Rappels", "Reminders", "Recordatorios", "Promemoria", "\u30ea\u30de\u30a4\u30f3\u30c9", "Erinnerungen")),
+        interrupteur(T("Me pr\u00e9venir avant", "Remind me before", "Avisarme antes", "Avvisami prima", "\u4e8b\u524d\u306b\u77e5\u3089\u305b\u308b", "Vorher erinnern"), rAvant, function () { setRappelTouche(true); setRAvant(!rAvant); }, "ra"),
+        rAvant ? h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginTop: 8, paddingLeft: 2 } },
+          h("input", { type: "number", inputMode: "numeric", min: 1, max: 365, value: rJours, onChange: function (e) { setRappelTouche(true); setRJours(e.target.value); }, style: Object.assign({}, styleChamp, { marginTop: 0, width: 92, flex: "0 0 auto", textAlign: "center" }) }),
+          h("span", { style: { fontFamily: M, fontSize: 12.5, color: "#A8B2BA" } }, T("jours avant", "days before", "d\u00edas antes", "giorni prima", "\u65e5\u524d", "Tage vorher"))) : null,
+        interrupteur(T("Me pr\u00e9venir le jour m\u00eame", "Remind me on the day", "Avisarme el mismo d\u00eda", "Avvisami il giorno stesso", "\u5f53\u65e5\u306b\u77e5\u3089\u305b\u308b", "Am Tag erinnern"), rJourJ, function () { setRappelTouche(true); setRJourJ(!rJourJ); }, "rj"),
+        h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 7, lineHeight: 1.5 } },
+          T("Ces rappels servent \u00e0 l'ajout au calendrier, qui arrive bient\u00f4t.", "These reminders feed the calendar export, coming soon.", "Sirven para el calendario, que llega pronto.", "Serviranno all'esportazione nel calendario, in arrivo.", "\u30ab\u30ec\u30f3\u30c0\u30fc\u9023\u643a\u7528\u3067\u3059\uff08\u6e96\u5099\u4e2d\uff09\u3002", "F\u00fcr den Kalender-Export, kommt bald."))) : null,
+
+      etiquette(T("Notes", "Notes", "Notas", "Note", "\u30e1\u30e2", "Notizen")),
+      h("textarea", { value: notes, rows: 3, onChange: function (e) { setNotes(e.target.value); }, style: Object.assign({}, styleChamp, { resize: "vertical", lineHeight: 1.5 }) }),
+
+      erreur ? h("div", { style: { marginTop: 14, padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.38)", background: "rgba(255,107,107,0.08)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } }, erreur) : null,
+
+      h("button", { onClick: enregistrer, disabled: busy, style: { width: "100%", marginTop: 18, padding: "15px 0", borderRadius: 999, border: "1px solid rgba(32,217,245,0.32)", background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M, fontSize: 14.5, fontWeight: 700, cursor: "pointer", opacity: busy ? 0.6 : 1 } },
+        busy ? "\u2026" : T("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern")),
+
+      (s0 && s0.id) ? (confirme
+        ? h("div", { style: { marginTop: 14, padding: "13px", borderRadius: 14, border: "1px solid rgba(240,92,116,0.4)", background: "rgba(240,92,116,0.07)" } },
+            h("div", { style: { fontFamily: M, fontSize: 12.5, color: "#F2B8C2", lineHeight: 1.55 } },
+              T("Supprimer d\u00e9finitivement \u00ab\u00a0", "Permanently delete \u201c", "Eliminar definitivamente \u00ab\u00a0", "Eliminare definitivamente \u00ab\u00a0", "\u5b8c\u5168\u306b\u524a\u9664\uff1a\u300c", "Endg\u00fcltig l\u00f6schen \u201e")
+              + ((LIBS[String(s0.type)] || s0.type) + (s0.titre ? (" \u00b7 " + s0.titre) : ""))
+              + T("\u00a0\u00bb ?", "\u201d?", "\u00a0\u00bb?", "\u00a0\u00bb?", "\u300d", "\u201c?")),
+            s0.ics_exporte_le ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#E8C887", marginTop: 8, lineHeight: 1.55 } },
+              T("Ce rappel a d\u00e9j\u00e0 \u00e9t\u00e9 export\u00e9 : l'\u00e9v\u00e9nement peut rester dans ton calendrier et devra y \u00eatre supprim\u00e9 \u00e0 la main.", "This reminder was already exported: the event may stay in your calendar and must be removed there by hand.", "Ya se export\u00f3: el evento puede quedar en tu calendario y habr\u00e1 que borrarlo all\u00ed.", "Gi\u00e0 esportato: l'evento pu\u00f2 restare nel calendario e va rimosso a mano.", "\u65e2\u306b\u66f8\u304d\u51fa\u3057\u6e08\u307f\u3067\u3059\uff1a\u30ab\u30ec\u30f3\u30c0\u30fc\u5074\u3067\u306e\u524a\u9664\u304c\u5fc5\u8981\u3067\u3059\u3002", "Bereits exportiert: der Termin bleibt evtl. im Kalender und muss dort gel\u00f6scht werden.")) : null,
+            h("div", { style: { display: "flex", gap: 10, marginTop: 12 } },
+              h("button", { onClick: function () { setConfirme(false); }, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u53d6\u6d88", "Abbrechen")),
+              h("button", { onClick: supprimer, disabled: busy, style: { flex: 1, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(240,92,116,0.55)", background: "rgba(240,92,116,0.14)", color: "#FFB3BF", fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: "pointer", opacity: busy ? 0.6 : 1 } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"))))
+        : h("button", { onClick: function () { setConfirme(true); }, style: { width: "100%", marginTop: 10, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(240,92,116,0.35)", background: "transparent", color: "#F0A0AE", fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: "pointer" } }, T("Supprimer ce soin", "Delete this entry", "Eliminar este cuidado", "Elimina questa cura", "\u3053\u306e\u8a18\u9332\u3092\u524a\u9664", "Eintrag l\u00f6schen"))) : null,
+
+      h("button", { onClick: function () { if (!busy && props.onFermer) props.onFermer(); }, style: { width: "100%", marginTop: 10, padding: "12px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.20)", background: "transparent", color: "#C9D3D8", fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } },
+        T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))));
+  return (typeof hypePortailBody === "function") ? hypePortailBody(voile) : voile;
+}
+
 function EcranSanteCheval() {
   var h = React.createElement;
   var ctx = (typeof useApp === "function") ? useApp() : {};
@@ -34824,6 +35050,10 @@ function EcranSanteCheval() {
      n'est jamais reecrit : il sert de cle au verrou d'identite de l'import FFE. */
   var stF = React.useState(null); var fiche = stF[0], setFiche = stF[1];
   var stP = React.useState(null); var perso = stP[0], setPerso = stP[1];
+  var stM = React.useState(null); var moi = stM[0], setMoi = stM[1];
+  var stJ = React.useState(0); var maj = stJ[0], setMaj = stJ[1];
+  /* null = fermee ; { soin: null } = nouveau ; { soin: <ligne> } = modification */
+  var stO = React.useState(null); var feuille = stO[0], setFeuille = stO[1];
 
   React.useEffect(function () {
     var actif = true;
@@ -34839,7 +35069,7 @@ function EcranSanteCheval() {
       } catch (e3) { if (actif) { setErr(String(e3)); setSoins([]); } }
     })();
     return function () { actif = false; };
-  }, [chId]);
+  }, [chId, maj]);
 
   React.useEffect(function () {
     var actif = true;
@@ -34850,6 +35080,7 @@ function EcranSanteCheval() {
         if (!actif) return;
         if (rc && !rc.error && rc.data) setFiche(rc.data);
         var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
+        if (actif && u) setMoi(u);
         if (!actif || !u || !u.id) return;
         var rp = await supa.from("chevaux_histoires").select("*").eq("cheval_id", chId).eq("user_id", u.id).maybeSingle();
         if (!actif) return;
@@ -34875,6 +35106,13 @@ function EcranSanteCheval() {
      coupait. La fiche cheval sait deja separer le nom de son AFFIXE (« de Feinn »,
      « d'Amour », « du Rozel », « des Bruyeres ») : on reprend sa coupe, nom en
      grand et affixe en petit dessous. Aucune troncature. */
+  /* AFFICHAGE SEULEMENT. L'autorite reste la base (hype_peut_ecrire_sante) :
+     proprietaire du cheval OU moderatrice. Une cavaliere rattachee lit et ne voit
+     donc aucun geste d'ecriture ; si la base refusait malgre tout, la feuille le
+     dirait au lieu d'echouer en silence. */
+  var peutEcrire = !!(moi && ((fiche && fiche.user_id && fiche.user_id === moi.id)
+    || ((typeof estModerateurHype === "function") && estModerateurHype(moi))));
+
   var mAff = nomVu.match(/^(.*?)\s+(de\s.+|d\u2019.+|d'.+|du\s.+|des\s.+)$/i);
   var nomCourt = mAff ? mAff[1] : nomVu;
   var affixe = mAff ? mAff[2] : "";
@@ -34889,6 +35127,14 @@ function EcranSanteCheval() {
   function enClair(s) {
     var d = jourDe(s); if (!d) return "";
     return d.getDate() + " " + MOIS[d.getMonth()] + " " + d.getFullYear();
+  }
+  /* precision_prochaine = « mois » : la date n'a pas de jour sur ce soin, on
+     n'en invente pas un. L'ancien affichage ecrivait le mot « jour » tel quel a
+     cote de chaque date. */
+  function enClairP(iso, precision) {
+    var d = jourDe(iso); if (!d) return "";
+    if (String(precision || "") === "mois") return MOIS[d.getMonth()] + " " + d.getFullYear();
+    return enClair(iso);
   }
   function joursAvant(s) {
     var d = jourDe(s); if (!d) return null;
@@ -34918,14 +35164,11 @@ function EcranSanteCheval() {
     .filter(function (x) { return !!x; }).join("  \u00b7  ");
 
   /* Les libelles connus ; un type inattendu s affiche tel quel plutot que d etre masque. */
-  var LIB = {
-    vaccin: T("Vaccin", "Vaccine", "Vacuna", "Vaccino", "\u30ef\u30af\u30c1\u30f3", "Impfung"),
-    vermifuge: T("Vermifuge", "Deworming", "Vermífugo", "Vermifugo", "\u99c6\u866b", "Wurmkur"),
-    dentiste: T("Dentiste", "Dentist", "Dentista", "Dentista", "\u6b6f\u79d1", "Zahnarzt"),
-    marechal: T("Mar\u00e9chal", "Farrier", "Herrador", "Maniscalco", "\u8e44\u9244", "Schmied"),
-    osteo: T("Ost\u00e9opathe", "Osteopath", "Oste\u00f3pata", "Osteopata", "\u6574\u9aa8", "Osteopath"),
-    veto: T("V\u00e9t\u00e9rinaire", "Vet", "Veterinario", "Veterinario", "\u7363\u533b", "Tierarzt")
-  };
+  /* 14/09 (A3) — les cles etaient marechal / osteo / veto, qui n'existent PAS dans
+     la contrainte de soins_cheval : « veterinaire », « ferrure » et « osteopathe »
+     retombaient sur le repli et restaient en francais dans les 5 autres langues.
+     Source unique desormais partagee avec la feuille de saisie. */
+  var LIB = hypeSoinsLibelles(T);
   function libelle(s) {
     var k = String(s || "").toLowerCase().trim();
     if (LIB[k]) return LIB[k];
@@ -34947,19 +35190,19 @@ function EcranSanteCheval() {
       ? T("aujourd\u2019hui", "today", "hoy", "oggi", "\u4eca\u65e5", "heute")
       : (j === 1 ? T("demain", "tomorrow", "ma\u00f1ana", "domani", "\u660e\u65e5", "morgen")
         : T("dans " + j + " jours", "in " + j + " days", "en " + j + " d\u00edas", "tra " + j + " giorni", j + "\u65e5\u5f8c", "in " + j + " Tagen"));
-    return h("div", { key: cle, style: { display: "flex", gap: 12, padding: "13px 14px", borderRadius: 14, border: "1px solid " + (etat && etat !== "vert" ? coul : "rgba(255,255,255,0.08)"), background: "rgba(255,255,255,0.025)", marginBottom: 9 } },
+    return h("div", { key: cle, onClick: peutEcrire ? function () { setFeuille({ soin: s }); } : null, role: peutEcrire ? "button" : null, style: { display: "flex", gap: 12, padding: "13px 14px", borderRadius: 14, border: "1px solid " + (etat && etat !== "vert" ? coul : "rgba(255,255,255,0.08)"), background: "rgba(255,255,255,0.025)", marginBottom: 9, cursor: peutEcrire ? "pointer" : "default" } },
       h("div", { style: { flex: "0 0 4px", width: 4, borderRadius: 4, background: coul } }),
       h("div", { style: { flex: 1, minWidth: 0 } },
         h("div", { style: { display: "flex", alignItems: "baseline", gap: 8 } },
           h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: "0.18em", textTransform: "uppercase", color: TQ, fontWeight: 700 } }, libelle(s.type)),
-          h("div", { style: { marginLeft: "auto", fontFamily: M, fontSize: 10.5, color: "#6D7681", whiteSpace: "nowrap" } }, enClair(s.date_intervention))),
+          h("div", { style: { marginLeft: "auto", fontFamily: M, fontSize: 10.5, color: "#6D7681", whiteSpace: "nowrap" } }, enClair(s.date_intervention)),
+          peutEcrire ? h("span", { style: { fontFamily: M, fontSize: 11, color: "rgba(32,217,245,0.55)", flexShrink: 0 } }, "\u270e") : null),
         s.titre ? h("div", { style: { fontFamily: M, fontSize: 13.5, fontWeight: 700, color: "#EDF2F5", marginTop: 4, lineHeight: 1.35 } }, s.titre) : null,
         s.notes ? h("div", { style: { fontFamily: M, fontSize: 12, color: "rgba(220,227,232,0.62)", marginTop: 3, lineHeight: 1.5, whiteSpace: "pre-wrap" } }, s.notes) : null,
         s.date_prochaine ? h("div", { style: { marginTop: 8, display: "flex", alignItems: "center", gap: 7, flexWrap: "wrap" } },
           h("span", { style: { fontFamily: M, fontSize: 11.5, fontWeight: 700, color: coul } },
-            T("Prochain", "Next", "Pr\u00f3ximo", "Prossimo", "\u6b21\u56de", "N\u00e4chste") + " \u00b7 " + enClair(s.date_prochaine)),
-          mot ? h("span", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, color: coul, padding: "3px 9px", borderRadius: 999, border: "1px solid " + coul, background: (etat === "rouge" ? "rgba(255,107,129,0.10)" : "rgba(232,200,135,0.10)") } }, mot) : null,
-          s.precision_prochaine ? h("span", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681" } }, s.precision_prochaine) : null) : null));
+            T("Prochain", "Next", "Pr\u00f3ximo", "Prossimo", "\u6b21\u56de", "N\u00e4chste") + " \u00b7 " + enClairP(s.date_prochaine, s.precision_prochaine)),
+          mot ? h("span", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 700, color: coul, padding: "3px 9px", borderRadius: 999, border: "1px solid " + coul, background: (etat === "rouge" ? "rgba(255,107,129,0.10)" : "rgba(232,200,135,0.10)") } }, mot) : null) : null));
   }
 
   function delaiCourt(j) {
@@ -34992,7 +35235,7 @@ function EcranSanteCheval() {
           return h("div", { key: "t" + (s.id || i), style: { flex: "0 0 auto", minWidth: 134, maxWidth: 180, padding: "11px 13px 12px", borderRadius: 16, border: "1px solid " + (etat === "vert" ? "rgba(255,255,255,0.10)" : coul), background: "rgba(10,14,17,0.52)", backdropFilter: "blur(7px)", WebkitBackdropFilter: "blur(7px)" } },
             h("div", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: coul, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, libelle(s.type)),
             h("div", { style: { fontFamily: M, fontSize: 14, fontWeight: 700, color: "#EDF2F5", marginTop: 6, lineHeight: 1.2, whiteSpace: "nowrap" } }, delaiCourt(j)),
-            h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#7C858D", marginTop: 3, whiteSpace: "nowrap" } }, enClair(s.date_prochaine)));
+            h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#7C858D", marginTop: 3, whiteSpace: "nowrap" } }, enClairP(s.date_prochaine, s.precision_prochaine)));
         })));
   }
 
@@ -35054,14 +35297,21 @@ function EcranSanteCheval() {
         h("div", { style: { marginTop: 8, textAlign: "right", fontFamily: "'Snell Roundhand','Brush Script MT',cursive", fontWeight: 600, fontSize: 19, lineHeight: 1.2, color: "#7FE8F2", textShadow: "0 0 14px rgba(32,217,245,0.42)", opacity: 0.92 } },
           T("Prendre soin, c\u2019est d\u00e9j\u00e0 aimer.", "Caring is already loving.", "Cuidar ya es querer.", "Prendersi cura \u00e8 gi\u00e0 amare.", "\u6c17\u3065\u304b\u3046\u3053\u3068\u306f\u3001\u611b\u3059\u308b\u3053\u3068\u3002", "F\u00fcrsorge ist schon Liebe."))),
       /* ---------- GESTE PRINCIPAL — inactif en A1, il s'allume avec le formulaire ---------- */
-      h("div", { style: { display: "flex", justifyContent: "center", padding: "2px 16px 10px" } },
-        h("div", { role: "button", "aria-disabled": "true", style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M, fontSize: 13.5, fontWeight: 700, opacity: 0.4, cursor: "default" } },
+      peutEcrire ? h("div", { style: { display: "flex", justifyContent: "center", padding: "2px 16px 10px" } },
+        h("div", { role: "button", onClick: function () { setFeuille({ soin: null }); }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, padding: "0 22px", borderRadius: 999, background: "linear-gradient(100deg,rgba(16,21,24,0.86) 40%,rgba(32,217,245,0.20) 100%)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.09), 0 6px 22px rgba(0,0,0,0.42)", backdropFilter: "blur(9px)", WebkitBackdropFilter: "blur(9px)", color: "#E4F3F7", fontFamily: M, fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
           h("span", { style: { fontSize: 17, fontWeight: 400, lineHeight: 1 } }, "+"),
-          h("span", null, T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen")))),
+          h("span", null, T("Ajouter un soin", "Add a care entry", "A\u00f1adir un cuidado", "Aggiungi una cura", "\u30b1\u30a2\u3092\u8ffd\u52a0", "Eintrag hinzuf\u00fcgen")))) : null,
       tuiles(),
     err ? h("div", { style: { margin: "0 16px 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
       T("Les soins n\u2019ont pas pu \u00eatre lus : ", "Care records could not load: ", "No se pudieron cargar los cuidados: ", "Impossibile caricare le cure: ", "\u8a18\u9332\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Eintr\u00e4ge nicht geladen: ") + err) : null,
-      corps));
+      corps),
+    feuille ? h(FeuilleSoin, {
+      chevalId: chId,
+      nomCheval: nomVu,
+      soin: feuille.soin,
+      onFermer: function () { setFeuille(null); },
+      onEnregistre: function () { setFeuille(null); setMaj(maj + 1); }
+    }) : null);
 }
 
 function EcranCliniqueEquine() {
