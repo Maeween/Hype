@@ -10,6 +10,144 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 14/09/2026 (16 h) — LES SIX RACCOURCIS EN HAUT DE LA PAGE DU CLUB
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `e9575438…` | build **20260908-136** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `08740ca6…` (20260908-135). Contient aussi l'ouverture des posts du 135.
+
+## SA DÉCISION, APRÈS AVOIR VU DEUX MAQUETTES
+
+Deux mises en page lui ont été montrées : **A**, la grille remplace le long déroulé ; **B**, la
+grille s'ajoute au-dessus. Sa réponse : « **B**, on ne touche pas à la page actuelle, on ajoute
+juste comme sur la page cheval les 6 petits carrés qui mènent vers d'autres pages ».
+
+Le déroulé est donc **intact** : ces cartes ne remplacent rien, elles raccourcissent. Grille de
+**3 colonnes sur 2 rangées**, comme celle de la fiche cheval.
+
+## ⚠️ DEUX DESTINATIONS SUR SIX EXISTENT AUJOURD'HUI
+
+| Carte | État |
+|---|---|
+| Agenda | **ouvre** `agenda-club` (avec `window.__agendaClub`) |
+| Actualités | **ouvre** `actualites-ecurie` (avec `__filEcurieCible` / `__filEcurieNom`, pour que le fil suive l'écurie réellement affichée, `clubForce` comprise) |
+| Cavaliers · Chevaux · Souvenirs · Santé | **grisées, non cliquables, « Bientôt »** |
+
+Les quatre pages ne sont pas encore écrites. Leur carte est grisée exactement comme la carte
+« Actualité » de la fiche cheval l'a été du 29/08 au 14/09 : **jamais un lien qui ne mène nulle
+part**. Quand une page existera, remplacer son « Bientôt » et son `null` par sa destination
+suffit à l'ouvrir.
+
+⚠️ **Ne pas pointer « Santé » vers l'écran `sante`** : celui-là est le **magazine** santé et ses
+six articles, pas la santé des chevaux du club. Piège à retenir.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **2 lignes remplacées, 50 ajoutées**, un seul endroit de `EcranGuilde` plus
+  l'en-tête et le build.
+- `C`, `M`, `T`, `TURQL`, `monClub`, `setEcran` bien en portée (vérifié dans `EcranGuilde`).
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LES QUATRE PAGES À ÉCRIRE, DANS L'ORDRE OÙ ELLES SONT PRÊTES
+
+**1. Souvenirs (validée sur maquette).** Une bande d'années en haut (2026 · 2025 · 2024) puis
+une mosaïque serrée de toutes les photos du mur du club, la plus récente en premier, médias
+supplémentaires des posts à plusieurs images compris. Rien à créer, rien à nommer : à l'opposé
+des albums d'un cheval, qui sont des objets avec couverture, titre et visibilité — c'est
+précisément ce qu'elle voulait pour éviter la confusion. Toucher une photo l'ouvre **en grand**
+dans la visionneuse (choix par défaut annoncé, réversible).
+⚠️ Cette page doit remplacer **les deux** blocs qui font déjà la même promesse : l'encart
+« L'album de l'écurie » (grisé, non cliquable) et le bloc « Souvenirs du club ».
+⚠️ Rappel du relevé : « Souvenirs du club » **n'a jamais fonctionné** — la mosaïque est
+dessinée, mais sa liste de photos n'est jamais remplie, aucun chargement n'a été écrit.
+
+**2. Chevaux du club** · **3. Cavaliers** · **4. Santé du club** (la liste des chevaux avec ce
+qui arrive ou ce qui est en retard, d'où l'on entre dans la page Santé d'un cheval ; l'encart
+Véto y déménage, décision d'elle). Questions encore ouvertes pour celle-là : quels chevaux y
+figurent, et ce qu'on voit par cheval.
+
+---
+
+# 🟩 14/09/2026 (15 h) — TOUCHER UN POST EN VIGNETTE L'OUVRE ENFIN
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `08740ca6…` | build **20260908-135** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `719aff77…` (20260908-134). ⚠️ Ce build part bien du **134** : les builds 131 à
+134 (page Santé, carte « Hey Baby ») **ne sont pas touchés**.
+
+## 🟥 CE N'ÉTAIT PAS UN BUG, C'ÉTAIT UN OUBLI DE MA PART
+
+Blandine : « pour les posts de publication je clique dessus ils ne s'ouvrent pas, il n'y a que
+le bouton modifier qui les déploie ».
+
+Au toucher, **il ne se passait rien** : le dessin en vignettes a été posé le 13/09 à un moment
+où il n'existait **aucune page où aller**, et l'ouverture n'a **jamais été branchée** ensuite.
+Et « Modifier » n'ouvrait rien du tout : le mode modification retombe volontairement sur le
+dessin d'origine, ce qui donnait l'illusion d'une ouverture par l'éditeur.
+
+## LE CORRECTIF : SUR PLACE, SANS PAGE NOUVELLE
+
+L'état **ouvert** est le **rendu d'origine**, déjà présent juste après la vignette dans le même
+composant : photo en grand, texte entier avec son « Voir la suite », pied complet, réponses.
+**Rien n'a été redessiné**, et le rendu d'origine n'a **pas** été modifié — le « Replier » est
+posé juste en dessous, puisque ce rendu n'a pas de bouton pour se refermer.
+
+- **Une seule** carte ouverte à la fois.
+- Le **cœur**, **Modifier** et la **croix** ne déclenchent plus l'ouverture par ricochet
+  (`stopPropagation`).
+- Le **rectangle des réponses** ouvre le post **avec ses réponses déjà dépliées** : une seule
+  touche au lieu de deux.
+
+## ⚠️ TROIS PAGES CORRIGÉES D'UN COUP
+
+C'est le **dessin** qui porte l'ouverture, pas la page : la **page du club**, la page
+**Actualités de l'écurie** et la page **Actualité d'un cheval** sont réparées par la même
+modification. Le fil de la page **Communauté** n'est pas concerné — c'est un autre code, et il
+s'ouvrait déjà de cette façon.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Périmètre : **7 lignes remplacées, 23 ajoutées**, toutes dans `MurHype`, plus l'en-tête et le
+  build.
+- `tAm`, `TQmCl`, `M2` et `T` bien en portée à l'endroit du « Replier » (vérifié).
+- Aucune collision de nom : `ouvertPost` / `stOuv` n'existaient pas dans le fichier.
+- La numérotation des commentaires d'en-tête reprend à **(97)** : l'autre session est allée
+  jusqu'à (96), il ne fallait pas repasser dessus.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI RESTE EN ATTENTE DE SES RÉPONSES
+
+Le chantier **onglets de la page du club** + **page Souvenirs par année**, esquissé par elle :
+« faudrait faire des onglets un peu comme ceux de la page cheval qui renvoient vers d'autres
+pages pour le club également », et une page de photos **par année** présentée différemment des
+albums des chevaux « que ça porte pas à confusion ».
+
+Déjà relevé et acquis :
+- ⚠️ **Deux blocs font déjà la même promesse** sur la page du club : l'encart « L'album de
+  l'écurie » (grisé « Prochainement », non cliquable) et le bloc « Souvenirs du club ». La page
+  par année doit remplacer **les deux**.
+- ⚠️ **« Souvenirs du club » n'a jamais fonctionné** : la mosaïque est dessinée, mais la liste
+  de photos qu'elle affiche n'est **jamais remplie** — déclarée, aucun chargement écrit. Elle
+  ne peut afficher que sa phrase d'invitation, quel que soit le nombre de photos sur le mur.
+- Décision d'elle : l'encart **Véto** ne reste pas sur la page du club, il part dans **Santé**,
+  qui rassemblera les fiches santé de tous les chevaux. Seule la **Sellerie** reste en bas.
+- Grille envisagée : Cavaliers · Chevaux · Agenda · Actualités · Souvenirs · Santé.
+
+Questions encore ouvertes : la grille remplace-t-elle le long déroulé ou se pose-t-elle
+au-dessus ; les souvenirs viennent-ils du mur du club seul ou aussi des affiches d'agenda ;
+toucher une photo ouvre-t-il la photo ou le post ; et pour la page Santé du club, quels chevaux
+y figurent et ce qu'on voit par cheval.
+
+---
+
 # 🟩 14/09/2026 (14 h) — LA CARTE « HEY BABY » EN DOUBLE · FICHE DE DÉMO RETIRÉE
 
 | Fichier | Où | md5 | Quoi |
