@@ -10,6 +10,161 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 16/09/2026 (05 h 50) — « MA PROGRESSION » PASSE EN « PROCHAINEMENT », GRISÉE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `1d21179c…` | build **20260908-182** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `4ba9899d…` (20260908-181).
+
+## CE QUI CHANGE
+
+« Et la page progression pour l'instant laisse-la en prochainement / grise. »
+
+**Même traitement que les cartes grisées de la grille du club** : opacité réduite, sur-titre en
+gris, pastille **« Prochainement »** à la place de la flèche, et **aucune action** — on ne touche
+pas dans le vide.
+
+## ⚠️ LA BANDE DE CHIFFRES EST RETIRÉE AVEC ELLE
+
+Afficher « 1 240 XP · série 7 jours · 82 % aux quiz » **juste au-dessus** d'une rubrique marquée
+« Prochainement » se contredirait à l'écran.
+
+Elle est **conservée dans le code**, prête à revenir — et les chiffres restent calculés **sans
+coûter aucune requête**, ils viennent du contexte de l'app.
+
+**Si tu la veux malgré tout**, dis-le : c'est une ligne, et elle peut revenir **sans** rallumer la
+rubrique.
+
+## POUR RALLUMER LA RUBRIQUE PLUS TARD
+
+Remettre son action (`setEcran("stats")`) et retirer le dernier argument. **L'écran `stats`
+existe et fonctionne, il n'a jamais été touché** — c'est bien l'accès qui est grisé, pas le
+contenu qui manque.
+
+## L'ÉTAT DE LA PAGE APPRENTISSAGE
+
+| Rubrique | État |
+|---|---|
+| **Ma progression** | grisée · Prochainement |
+| **Mon carnet** | active |
+| **Hey Baby Coach** | active (ouvre le panneau des conseils) |
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Un seul accès grisé, un seul `setEcran("stats")` restant — **dans un commentaire**, pas dans
+  du code actif (vérifié).
+- Périmètre : **10 lignes remplacées, 22 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI ATTEND SES RÉPONSES
+
+Les questions du document `APPRENTISSAGE-releve-et-proposition.md` : **Hey Baby Coach en page
+propre ou en panneau**, le design section par section, le rail « Apprendre », **Linguae** (⚠️
+c'est une sortie de l'application), et les quatre formes en **composants réutilisables** pour
+décliner l'apprentissage du cheval.
+
+## ET TOUJOURS EN ATTENTE
+
+🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+Les **derniers résultats** après le 178. Les **photos lentes**. La **barre du bas**.
+
+---
+
+# 🟩 16/09/2026 (05 h 30) — TROIS ONGLETS SUR LA PAGE CAVALIER · LA PAGE APPRENTISSAGE
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `4ba9899d…` | build **20260908-181** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `61f0c0e9…` (20260908-180).
+
+## 1. LA CARTE EXISTANTE DEVIENT APPRENTISSAGE
+
+« On a déjà l'onglet apprentissage, c'est juste qu'il renvoie vers Hey Baby au lieu de renvoyer
+vers une page apprentissage. »
+
+Son sur-titre perd son **« HEY BABY · »**, ses mots deviennent « Mon apprentissage / Comprendre ·
+travailler · progresser / Ma progression, mon carnet, mes conseils », et elle ouvre la route
+`apprentissage` au lieu de `assistant`.
+
+## 2. UNE TROISIÈME CARTE MÈNE À HEY BABY
+
+Reprise de celle de l'**accueil** : son image (`IMG_HEYBABY_BANNIERE`) et ses mots « Hey Baby /
+Mon coach / **virtuel** », le second mot en turquoise comme là-bas.
+
+⚠️ **Mais pas ses classes CSS.** La carte de l'accueil est en classes `banner heyb glass`, qui
+portent **leur propre hauteur**. Les reprendre aurait donné une carte d'une taille **différente**
+des deux autres — alors qu'elle demande trois onglets de **même** taille. On reprend donc le
+style en ligne des deux cartes voisines (188 px, `calc(100% - 32px)`, rayon 24) et seuls l'image
+et les textes viennent de l'accueil.
+
+Le geste « Privé » des visites est conservé sur les trois : désactivées quand on regarde le
+profil de quelqu'un d'autre.
+
+## 3. 🟥 L'ANCIENNE ENTRÉE « MON CARNET » DU BUILD 173 EST RETIRÉE
+
+Elle posait **deux** problèmes, tous deux de moi :
+
+- elle **se superposait** au badge Premium, à la flèche retour et au pseudo — marge calculée à
+  l'aveugle sur un écran que je n'avais jamais vu ;
+- et surtout elle mettait le carnet au **premier niveau**, ce qu'elle a explicitement refusé :
+  « le résultat actuel réduit l'apprentissage du cavalier à Mon carnet, ce n'est pas ce que je
+  veux ».
+
+Le carnet se rejoint désormais **par Apprentissage**, comme les deux autres rubriques.
+
+## 4. LA PAGE APPRENTISSAGE EXISTE, VOLONTAIREMENT SOBRE
+
+Elle porte les **trois accès** qu'elle a nommés — Ma progression (→ l'écran `stats`, qui existe
+déjà), Mon carnet, Hey Baby Coach (→ le panneau des conseils) — et une **bande de chiffres** lue
+**dans le contexte de l'app, sans une seule requête** (XP, série, cours, moyenne aux quiz).
+
+⚠️ **Ce n'est pas le design final, et la page le dit à l'écran.** Elle a écrit « je valide
+d'abord l'architecture et le design ». Tout l'habillage éditorial proposé dans le document du
+16/09 — bandeau photo, carte riche, rail « Apprendre », Linguae — **attend son verdict point par
+point**. La structure ne changera pas, seule sa mise en forme.
+
+**Pourquoi la page existe quand même :** un onglet qui n'ouvre rien est proscrit dans ce projet.
+Elle a demandé l'accès ; l'accès doit mener quelque part.
+
+⚠️ **Hey Baby Coach ouvre le panneau, pas une page propre** — c'est l'option **(b)** du
+document, prise par défaut parce que l'option (a) est une décision qu'elle n'a pas encore prise.
+Un mot d'elle et ça bascule.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Sur la page Cavalier : **trois** cartes de 188 px, une vers `memoirescavalier`, une vers
+  `apprentissage`, une vers `assistant`. **Zéro** accès direct au carnet (compté).
+- `PanneauConseilsHB` est déclaré **avant** `EcranApprentissage` (vérifié).
+- Périmètre : **18 lignes remplacées, 144 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## CE QUI ATTEND SES RÉPONSES
+
+Les six questions du document `APPRENTISSAGE-releve-et-proposition.md`, dont :
+
+1. **Hey Baby Coach : page propre (a) ou panneau (b) ?**
+2. Le design de la page mère, section par section.
+3. Le rail « Apprendre » : Galops, Articles, Vidéos, Reprises, Phases du saut — et faut-il y
+   mettre les écoles, le monde, le voyage, le jeu ?
+4. **Linguae en bas de page** : oui ou non ? ⚠️ C'est une **sortie de l'application**
+   (`lingo.html`), ça doit se voir.
+5. Les quatre formes en **composants réutilisables** pour décliner l'apprentissage du cheval :
+   on le décide maintenant ou après ?
+
+## ET TOUJOURS EN ATTENTE
+
+🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+Les **derniers résultats** après le 178. Les **photos lentes**. La **barre du bas**.
+
+---
+
 # 🟩 16/09/2026 (00 h 50) — MON CARNET H7 : LE LIEN CONSEIL ↔ SÉANCE, LE CŒUR DU CHANTIER
 
 | Fichier | Où | md5 | Quoi |
