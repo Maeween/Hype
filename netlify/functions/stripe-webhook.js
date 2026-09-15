@@ -67,6 +67,32 @@
 
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 
+/* ── LES TARIFS, EN UN SEUL ENDROIT ──────────────────────────────────────────
+   16/09/2026. Avant, le plan etait devine en dur dans deux branches :
+   `objet.amount_total === 7999 ? "annuel" : "mensuel"`. Deux defauts :
+     1. 7999 est un ANCIEN prix. L annuel est a 99,99 € (9999) depuis, donc tout
+        annuel etait enregistre comme « mensuel » - et son expire_le calcule sur
+        32 jours au lieu de 367. Verifie dans l app le 16/09 : plan_annuel_detail
+        dit bien « 99,99 €/an ».
+     2. La regle etait ecrite DEUX FOIS, donc a corriger deux fois.
+   Ici : une table, en centimes, avec la duree qui va avec. Un tarif qui change
+   se corrige a UN seul endroit. Un montant inconnu retombe sur « mensuel », le
+   choix le moins genereux - on ne donne pas un an par erreur.                */
+const TARIFS = {
+    9999: { plan: "annuel", jours: 367 },   // Hype Premium annuel - 99,99 €
+    7999: { plan: "annuel", jours: 367 },   // ancien tarif annuel, conserve
+    2499: { plan: "mensuel", jours: 32 },   // Hype Premium mensuel - 24,99 €
+    1590: { plan: "duo", jours: 32 },       // Pro Duo - 15,90 €/mois
+    1190: { plan: "ai", jours: 32 },        // Pro IA - 11,90 €/mois
+    1299: { plan: "mensuel", jours: 32 },   // 12,99 €/mois
+};
+function tarifDe(montant) {
+    const t = TARIFS[Number(montant)];
+    if (t) return t;
+    log("montant inconnu :", montant, "— traite comme mensuel");
+    return { plan: "mensuel", jours: 32 };
+}
+
 function log() {
     try {
         const args = Array.prototype.slice.call(arguments);
@@ -198,8 +224,37 @@ export default async (req) => {
     let ecritureOk = true;
 
     try {
-        // ----- Paiement initial d'un abonnement -----
-        if (evenement.type === "checkout.session.completed" && objet && objet.mode === "subscription") {
+        /* ── Paiement initial : ABONNEMENT *ou* PAIEMENT UNIQUE ─────────────────────
+           🟥 RÉVISION DU 16/09/2026 — Soraya a payé 99,99 € le 14/09 (Hype Premium
+           annuel) et n'a jamais reçu sa ligne. Diagnostic établi sur le tableau de
+           bord Stripe, preuves à l'appui :
+             · Client « Invité », identifiant gcus_… et non cus_… (d'où « Clients : 0 »)
+             · AUCUN sub_, aucune ligne « Subscription creation » dans ses événements
+             · le lien utilisé, plink_1TrFwt…, est un tarif à PAIEMENT UNIQUE
+
+           LE BUG : cette condition exigeait `mode === "subscription"`. Pour un
+           paiement unique `mode` vaut "payment" → aucune branche ne s'exécutait,
+           `ecritureOk` restait à true, et le webhook répondait 200 OK. Stripe
+           considérait le travail fait et ne réessayait JAMAIS. Ni ligne, ni alerte,
+           ni trace : un échec totalement silencieux.
+
+           ⚠️ CE N'EST PAS LE BUG D'AOÛT, et il ne faut pas les confondre. En août
+           (Violaine, Aurélie, Laurène) le webhook ENTRAIT bien dans la branche,
+           échouait à trouver la cavalière, répondait 500, et Stripe réessayait
+           pendant des jours — un échec visible et répété. La preuve que les
+           paiements d'août étaient bien des abonnements : userIdParEmail n'est
+           appelée qu'À L'INTÉRIEUR de cette branche ; s'ils avaient été des
+           paiements uniques, elle n'aurait jamais été atteinte et le bug de la
+           liste tronquée n'aurait pas pu se produire. Le correctif du 28/08 est
+           intact et fonctionne — celui-ci bouche un AUTRE trou.
+
+           ⚠️ CE QUE CHANGE LE PAIEMENT UNIQUE : il n'y a pas de `subscription`, donc
+           pas d'invoice.paid, donc AUCUN renouvellement automatique. La durée
+           écrite ici est la seule qui vaudra : à l'échéance, l'abonnement expire
+           et la cavalière devra repayer. C'est cohérent avec un tarif « Fondateur »
+           payé une fois, mais il faut le savoir.                                  */
+        const modeSession = objet && objet.mode;
+        if (evenement.type === "checkout.session.completed" && objet && (modeSession === "subscription" || modeSession === "payment")) {
             const email = (objet.customer_details && objet.customer_details.email) || objet.customer_email || null;
             let userId = objet.client_reference_id || null;
 
@@ -209,15 +264,16 @@ export default async (req) => {
                 if (userId) log("rattachée par email :", email);
             }
 
-            const plan = objet.amount_total === 7999 ? "annuel" : "mensuel";
-            const dureeJours = plan === "annuel" ? 367 : 32; // filet, affiné par invoice.paid
-            const expire = new Date(Date.now() + dureeJours * 86400000).toISOString();
+            const t = tarifDe(objet.amount_total);
+            const plan = t.plan;
+            const expire = new Date(Date.now() + t.jours * 86400000).toISOString();
 
             if (!userId) {
                 // Ni identifiant, ni compte trouvé pour cette adresse.
                 // On refuse de dire « c'est fait » : Stripe réessaiera, et la
                 // ligne restera visible dans les journaux avec son adresse.
                 log("ALERTE : paiement non rattachable — email :", email,
+                    "· mode :", modeSession,
                     "· client :", objet.customer, "· abonnement :", objet.subscription);
                 ecritureOk = false;
             } else {
@@ -225,13 +281,18 @@ export default async (req) => {
                     user_id: userId,
                     email: email,
                     stripe_customer: objet.customer || null,
+                    /* Pour un paiement unique, il n'y a pas d'abonnement : on laisse
+                       null plutôt que d'inventer une valeur. C'est aussi ce qui
+                       permettra plus tard de distinguer les deux en base. */
                     stripe_subscription: objet.subscription || null,
                     plan: plan,
                     statut: "actif",
                     expire_le: expire,
                     maj_le: new Date().toISOString(),
                 });
-                log("Premium activé :", plan, "—", email);
+                log("Premium activé :", plan, "—", email,
+                    "— mode :", modeSession,
+                    modeSession === "payment" ? "(paiement unique : aucun renouvellement automatique)" : "");
             }
         }
 
@@ -259,14 +320,15 @@ export default async (req) => {
 
                 if (userId) {
                     const montant = objet.amount_paid || objet.total || 0;
+                    const tF = tarifDe(montant);
                     ecritureOk = await upsertAbonnement(service, {
                         user_id: userId,
                         email: email,
                         stripe_customer: objet.customer || null,
                         stripe_subscription: objet.subscription || null,
-                        plan: montant === 7999 ? "annuel" : "mensuel",
+                        plan: tF.plan,
                         statut: "actif",
-                        expire_le: expire || new Date(Date.now() + 32 * 86400000).toISOString(),
+                        expire_le: expire || new Date(Date.now() + tF.jours * 86400000).toISOString(),
                         maj_le: new Date().toISOString(),
                     });
                     log("Ligne créée depuis invoice.paid pour", email);
