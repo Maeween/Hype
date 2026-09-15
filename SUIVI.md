@@ -10,6 +10,151 @@ revenir à une version précédente en un clic — le retour arrière d'urgence.
 
 ---
 
+# 🟩 16/09/2026 (00 h 50) — MON CARNET H7 : LE LIEN CONSEIL ↔ SÉANCE, LE CŒUR DU CHANTIER
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `61f0c0e9…` | build **20260908-180** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `87ebe346…` (20260908-179).
+
+## CE QUE ÇA DÉBLOQUE
+
+Un conseil peut être relié à **plusieurs séances sans jamais être dupliqué**. C'est ce qu'elle
+demandait depuis le départ : « voilà quand j'ai travaillé ce conseil et comment j'ai évolué ».
+
+## TROIS AJOUTS
+
+**1. En édition d'une séance, une section « Conseils travaillés ».** Un bouton ouvre **le même
+panneau** que Mon carnet, avec la prop `onChoisir` — deux panneaux auraient divergé dès la
+première retouche de la recherche ou des filtres. Les coches sont tenues **en mémoire** et
+écrites à l'enregistrement : on ne touche pas la base à chaque toucher.
+
+**2. En lecture**, les conseils travaillés s'affichent, et chacun **ouvre** son conseil.
+
+**3. La timeline de l'écran d'un conseil se remplit vraiment** — elle était annoncée vide au 179
+— avec les pastilles et le filet de sa maquette, et chaque ligne ouvre la séance.
+
+**Aucun graphique, aucun pourcentage** : « la progression doit être visible grâce aux séances
+réellement reliées au conseil ».
+
+## ⚠️ DEUX PRÉCAUTIONS QUI COMPTENT
+
+**Les liens sont écrits après la séance**, parce qu'il faut son identifiant — et **un échec ne
+perd jamais la séance** : elle est déjà en base à ce moment-là. Même motif que les
+identifications d'une publication, le 12/09.
+
+L'écriture **ajoute ce qui manque et retire ce qui a été décoché**, ligne par ligne, chacune
+indépendante.
+
+**Les doublons sont impossibles en base** : `unique (seance_id, epingle_id)`, posé le 15/09. Le
+code n'a pas à s'en occuper.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- Le panneau de choix, le bouton d'ouverture, `onChoisir`, `dejaChoisis` et `ecrireLiens` :
+  tous présents et branchés (comptés).
+- Périmètre : **7 lignes remplacées, 168 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## LE CARNET EST COMPLET, SAUF UNE BRIQUE
+
+Tout le reste fonctionne : la page, les séances, la création, la modification, la suppression, le
+panneau des conseils, l'écran d'un conseil, les trois états, les trois priorités, et maintenant
+l'historique réel.
+
+**Il manque les médias d'une séance.** ⚠️ Ils devront réutiliser **le pipeline existant, les
+mêmes quotas, le même stockage — aucun système parallèle**, sa consigne écrite.
+
+## CE QUI RESTE EN ATTENTE D'ELLE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Les derniers résultats** — le 178 a supprimé une attente : est-ce réglé ?
+3. **Photos lentes** — le diagnostic est prêt, réservé à son compte.
+4. **Barre du bas** — verdict.
+5. **« Voir pas ce que j'ai écrit une fois refermé »** — à préciser.
+
+---
+
+# 🟩 16/09/2026 (00 h 20) — MON CARNET H5 + H6 : LE PANNEAU DES CONSEILS ET L'ÉCRAN D'UN CONSEIL
+
+| Fichier | Où | md5 | Quoi |
+|---|---|---|---|
+| `index.html` | racine | `87ebe346…` | build **20260908-179** |
+| `SUIVI.md` | racine | — | cette entrée |
+
+Remplace le `1ce26716…` (20260908-178).
+
+**Les deux étapes ensemble**, parce qu'un panneau qui n'ouvre rien ne sert à rien — et le panneau
+livré inerte au 178 est maintenant branché.
+
+## H5 — LE PANNEAU DES CONSEILS
+
+Recherche, puis **Tous / À travailler / En cours / Acquis**. Liste **verticale** à grandes zones
+tactiles (68 px) — « ne pas faire de grille de 50 petites cartes ».
+
+⚠️ **La lecture est celle qui manquait.** `chargerEpinglesHB` **partitionne par cheval** : sans
+cheval, il ne rend que les épingles **sans** cheval, alors que le compteur compte tout. C'était
+l'écart entre « 52 » et une liste courte. Ici on lit **toutes** les épingles, et sa décision 5c
+est respectée : tout dans la même liste, le nom du cheval en petit.
+
+⚠️ **Le panneau est un calque `position: fixed`, pas un portail** (leçon du 23e et du 05/09), et
+il porte `data-noswipe` + `data-hscroll` — sans quoi un geste horizontal dedans changerait
+d'onglet. C'est la leçon du 165, payée sur le calque des photos.
+
+## H6 — L'ÉCRAN D'UN CONSEIL
+
+Le **texte original de Hey Baby en grand** — « il doit être beaucoup plus important visuellement
+que les métadonnées » —, les **trois états** en gros segments, le **titre court** qu'elle peut
+saisir (sa décision 4a), et l'**étoile des priorités**.
+
+⚠️ **Composant à part, et sortie avant tout hook** dans l'écran contextuel : les hooks React ne
+peuvent pas vivre dans une branche conditionnelle, et leur ordre changerait à chaque bascule
+séance/conseil. Même motif que `BlocResultatsCavaliere` le 13/09.
+
+⚠️ **Trois priorités au maximum, comptées avant d'écrire** : si c'est plein, on le **dit** au
+lieu d'accepter une quatrième en silence.
+
+⚠️ **Écriture par `upsert` sur (user_id, epingle_id)**, la contrainte d'unicité posée en base :
+aucun doublon possible, même en touchant deux fois. Et **un échec remet l'état précédent à
+l'écran** au lieu de laisser croire que c'est enregistré.
+
+⚠️ **La timeline des séances est vide, et elle l'écrit.** Rattacher un conseil à une séance est
+l'étape H7. Mieux vaut une phrase honnête qu'une section vide qui ressemble à un bug.
+
+## CE QUI S'ALLUME SUR MON CARNET
+
+La **ligne des conseils** (grisée « Bientôt » depuis le 173) ouvre maintenant le panneau, avec sa
+flèche. Et une **priorité** ouvre son conseil.
+
+## VÉRIFIÉ AVANT LIVRAISON
+
+- `node --check` sur les **18 blocs** : 0 erreur.
+- `hypeTitreConseil` en bloc **1** ; `PanneauConseilsHB`, `VueConseilCarnet`,
+  `EcranCarnetDetail`, `EcranMonCarnet` en bloc **13**, et **déclarés avant leurs appelants**
+  (vérifié).
+- Périmètre : **11 lignes remplacées, 185 ajoutées**.
+- Balises `<script src=>` et clés `?v=` : **identiques**. **Aucun SQL.**
+
+## IL RESTE DEUX ÉTAPES AU CARNET
+
+- **H7** — rattacher un conseil à une séance (ce qui remplira la timeline), puis les médias
+  d'une séance. ⚠️ **Pipeline existant, mêmes quotas, même stockage, aucun système parallèle.**
+- **H8** — est déjà fait en pratique : les priorités se choisissent depuis l'écran d'un conseil
+  et s'affichent sur Mon carnet.
+
+## CE QUI RESTE EN ATTENTE D'ELLE
+
+1. 🟥 **Stripe** — `dashboard.stripe.com/webhooks`. **Seul point qui touche de l'argent.**
+2. **Les derniers résultats** — le 178 a supprimé une attente : est-ce réglé ?
+3. **Photos lentes** — le diagnostic est prêt, réservé à son compte.
+4. **Barre du bas** — verdict.
+5. **« Voir pas ce que j'ai écrit une fois refermé »** — à préciser.
+
+---
+
 # 🟩 15/09/2026 (23 h 55) — LES DERNIERS RÉSULTATS N'ATTENDENT PLUS LA FICHE DU CHEVAL
 
 | Fichier | Où | md5 | Quoi |
