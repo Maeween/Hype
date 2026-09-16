@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-212"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-214"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -4072,6 +4072,43 @@ function hypeCalquePhoto(url, fermer) {
    Fonction globale parce que TROIS endroits en ont besoin : la page du carnet (priorites), le
    panneau des conseils et l ecran d un conseil. Trois copies auraient divergé au premier
    ajustement. */
+/* 16/09 (214) : LA LISTE DES THEMES, EN UN SEUL ENDROIT. Elle etait ecrite DEUX fois
+   (epinglage et bibliotheque) et il en fallait une troisieme pour l ecran d un conseil : trois
+   copies des memes cles, c est la garantie d un onglet un jour vide. `tf` est la fonction de
+   traduction du composant appelant (T ou TXT, meme signature).
+   ⚠️ LES CLES NE CHANGENT JAMAIS : elles sont ECRITES EN BASE. Modifier une cle ici rendrait
+   invisibles toutes les epingles deja rangees dessous. Pour renommer, on change le LIBELLE. */
+function hypeThemesHB(tf) {
+  return [
+    ["position", tf("Position", "Position", "Posici\u00f3n", "Posizione", "\u59d3\u52bf", "Position")],
+    ["plat", tf("Plat", "Flat", "Plano", "Piano", "\u99ac\u5834", "Dressur")],
+    ["saut", tf("Saut", "Jumping", "Salto", "Salto", "\u969c\u5bb3", "Springen")],
+    ["comportement", tf("Comportement", "Behaviour", "Comportamiento", "Comportamento", "\u884c\u52d5", "Verhalten")],
+    ["travail_pied", tf("Travail \u00e0 pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "\u5730\u4e0a\u4f5c\u696d", "Bodenarbeit")],
+    ["sante", tf("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")],
+    ["exterieur", tf("Ext\u00e9rieur", "Outdoor", "Exterior", "Esterno", "\u5916\u4e57", "Ausritt")],
+    ["autre", tf("Autre", "Other", "Otro", "Altro", "\u305d\u306e\u4ed6", "Andere")]
+  ];
+}
+
+/* 16/09 (213) : LA LECTURE DU THEME, EN UN SEUL ENDROIT. `carnet_conseils_etat.theme` est
+   passe de `text` a `text[]` en base le 16/09 (conversion des valeurs deja ecrites incluse).
+   Ce helper accepte les DEUX formes - la liste d aujourd hui, et le simple mot au cas ou une
+   ligne aurait echappe a la conversion. Toujours une liste en sortie, jamais null. */
+function hypeThemesListe(v) {
+  try {
+    if (!v) return [];
+    if (Object.prototype.toString.call(v) === "[object Array]") {
+      return v.map(function (x) { return String(x || "").trim(); }).filter(function (x) { return !!x; });
+    }
+    var t = String(v).trim();
+    if (!t) return [];
+    /* forme « {saut,position} » que Postgres renvoie parfois pour un tableau en texte */
+    if (t.charAt(0) === "{" && t.charAt(t.length - 1) === "}") t = t.slice(1, -1);
+    return t.split(",").map(function (x) { return String(x || "").replace(/^"|"$/g, "").trim(); }).filter(function (x) { return !!x; });
+  } catch (e) { return []; }
+}
+
 function hypeTitreConseil(ep, etat) {
   try {
     var t = (etat && etat.titre_court) ? String(etat.titre_court).trim() : "";
@@ -36344,16 +36381,7 @@ function PanneauConseilsHB(props) {
      d onglet » - memes pastilles, meme taille, meme turquoise, meme rail qui defile.
      LES CLES SONT LES MEMES QU A L EPINGLAGE (THEMES_HB dans Hey Baby). Si l une des deux
      listes change, l autre doit changer AUSSI : une cle orpheline = un onglet toujours vide. */
-  var THEMES_LIB = [
-    ["position", T("Position", "Position", "Posici\u00f3n", "Posizione", "\u59d3\u52bf", "Position")],
-    ["plat", T("Plat", "Flat", "Plano", "Piano", "\u99ac\u5834", "Dressur")],
-    ["saut", T("Saut", "Jumping", "Salto", "Salto", "\u969c\u5bb3", "Springen")],
-    ["comportement", T("Comportement", "Behaviour", "Comportamiento", "Comportamento", "\u884c\u52d5", "Verhalten")],
-    ["travail_pied", T("Travail \u00e0 pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "\u5730\u4e0a\u4f5c\u696d", "Bodenarbeit")],
-    ["sante", T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")],
-    ["exterieur", T("Ext\u00e9rieur", "Outdoor", "Exterior", "Esterno", "\u5916\u4e57", "Ausritt")],
-    ["autre", T("Autre", "Other", "Otro", "Altro", "\u305d\u306e\u4ed6", "Andere")]
-  ];
+  var THEMES_LIB = hypeThemesHB(T);
 
   /* 16/09 (204) : LA PAGE DU FOND EST VERROUILLEE TANT QUE LA FEUILLE EST OUVERTE.
      Trois tentatives a cote avant celle-ci (padding, overscroll-behavior, touch-action) :
@@ -36405,7 +36433,7 @@ function PanneauConseilsHB(props) {
         if (!vif) return;
         setListe(eps.map(function (ep) {
           var et = parId[String(ep.id)] || null;
-          return { ep: ep, etat: (et && et.etat) || "a_travailler", priorite: !!(et && et.priorite), titre: (typeof hypeTitreConseil === "function") ? hypeTitreConseil(ep, et) : "", court: (et && et.titre_court) ? String(et.titre_court).trim() : "", theme: (et && et.theme) || "" };
+          return { ep: ep, etat: (et && et.etat) || "a_travailler", priorite: !!(et && et.priorite), titre: (typeof hypeTitreConseil === "function") ? hypeTitreConseil(ep, et) : "", court: (et && et.titre_court) ? String(et.titre_court).trim() : "", themes: hypeThemesListe(et && et.theme) };
         }));
       } catch (eG) { if (vif) { setErr(String(eG)); setListe([]); } }
     })();
@@ -36420,9 +36448,10 @@ function PanneauConseilsHB(props) {
   var COULE = { a_travailler: OR, en_cours: TQL, acquis: "#7BD88F" };
 
   var vues = (liste || []).filter(function (x) {
-    /* 16/09 (212) : on filtre sur le THEME. Une epingle sans theme n apparait que dans
+    /* 16/09 (213) : une epingle peut etre rangee dans PLUSIEURS themes, sa demande. On
+       teste donc l APPARTENANCE a la liste. Une epingle sans theme n apparait que dans
        « Tous » - elle ne disparait JAMAIS de la bibliotheque, c est sa consigne. */
-    if (filtre !== "tous" && String(x.theme || "") !== filtre) return false;
+    if (filtre !== "tous" && (x.themes || []).indexOf(filtre) === -1) return false;
     var t = String(q || "").trim().toLowerCase();
     if (!t) return true;
     return (String(x.titre || "") + " " + String(x.ep.reponse || "") + " " + String(x.ep.question || "") + " " + String(x.ep.cheval_nom || "")).toLowerCase().indexOf(t) !== -1;
@@ -36727,6 +36756,20 @@ function VueConseilCarnet(props) {
      ⚠️ LE DROIT DE PUBLIER EST GARDE DEUX FOIS : ici, pour ne pas afficher un bouton qui
      echouerait, ET en base (la politique de lecture exige que le cheval appartienne a
      quelqu un de la meme ecurie). L ecran ne suffit jamais a proteger une donnee. */
+  /* 16/09 (214) : LES THEMES, MODIFIABLES APRES COUP. Sa demande : « autorise a modifier
+     une epingle ». La liste de depart vient de la ligne deja chargee (`dep.themes`, remplie
+     par hypeThemesListe cote bibliotheque), avec repli sur la colonne brute si l ecran est
+     ouvert par un autre chemin. */
+  var THEMES_V = hypeThemesHB(T);
+  var stTh = React.useState(function () {
+    try {
+      if (dep.themes) return hypeThemesListe(dep.themes);
+      return hypeThemesListe(dep.theme);
+    } catch (eTi) { return []; }
+  });
+  var mesThemes = stTh[0], setMesThemes = stTh[1];
+  var stThB = React.useState(false); var thBusy = stThB[0], setThBusy = stThB[1];
+
   var stVis = React.useState(!!(dep.ep && dep.ep.visible_ecurie)); var visEc = stVis[0], setVisEc = stVis[1];
   var stVisB = React.useState(false); var visBusy = stVisB[0], setVisBusy = stVisB[1];
   /* Le cheval de l epingle est-il enregistre sous SON compte ? `chevaux` vient de useApp,
@@ -36842,6 +36885,24 @@ function VueConseilCarnet(props) {
     if (!ok) setPrio(!vise);
   }
 
+  /* 16/09 (214) : on ecrit la liste ENTIERE a chaque toucher, via le helper `ecrire` qui
+     existe deja - l upsert remplace la ligne, donc etat, priorite et titre court doivent
+     repartir avec, sinon on les efface. L ecran ne bouge QU APRES la base. */
+  async function basculerMonTheme(cle) {
+    if (thBusy) return;
+    var av = (mesThemes || []).slice();
+    var l = av.slice();
+    var i = l.indexOf(cle);
+    if (i === -1) l.push(cle); else l.splice(i, 1);
+    setThBusy(true);
+    var ok = await ecrire({ etat: etat, priorite: prio, titre_court: (titre || "").trim() || null, theme: l.length ? l : null });
+    if (ok) {
+      setMesThemes(l);
+      try { dep.themes = l; } catch (eDt) { }
+    }
+    setThBusy(false);
+  }
+
   async function enregistrerTitre() {
     var ok = await ecrire({ etat: etat, priorite: prio, titre_court: (titre || "").trim() || null },
       T("Titre enregistr\u00e9.", "Title saved.", "T\u00edtulo guardado.", "Titolo salvato.", "\u4fdd\u5b58\u3057\u307e\u3057\u305f\u3002", "Titel gespeichert."));
@@ -36913,6 +36974,19 @@ function VueConseilCarnet(props) {
                             pris ? h("span", { style: { flex: "0 0 auto", color: TQL, fontSize: 14, lineHeight: 1 } }, "\u2713") : null);
                         })))
           : null),
+
+      /* 16/09 (214) : LES THEMES DE CE CONSEIL, modifiables. Meme rail, memes pastilles que
+         partout ailleurs. Chaque toucher ecrit en base tout de suite : pas de bouton
+         « enregistrer » a oublier. */
+      h("div", { style: { marginTop: 14 } },
+        h("div", { style: { fontFamily: M, fontSize: 9, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: "#7B848E", marginBottom: 8 } },
+          T("Th\u00e8mes", "Themes", "Temas", "Temi", "\u30c6\u30fc\u30de", "Themen")),
+        h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2, opacity: thBusy ? 0.6 : 1 } },
+          THEMES_V.map(function (th) {
+            var pris = (mesThemes || []).indexOf(th[0]) !== -1;
+            return h("div", { key: th[0], role: "button", onClick: function () { basculerMonTheme(th[0]); },
+              style: { flex: "0 0 auto", padding: "9px 14px", minHeight: 42, display: "flex", alignItems: "center", borderRadius: 999, border: "1px solid " + (pris ? "rgba(95,233,240,0.55)" : "rgba(255,255,255,0.12)"), background: pris ? "rgba(95,233,240,0.10)" : "transparent", color: pris ? TQL : "#A9B4BC", fontFamily: M, fontSize: 12.5, fontWeight: pris ? 800 : 500, cursor: "pointer", whiteSpace: "nowrap" } }, th[1]);
+          }))),
 
       /* 16/09 (209) : L INTERRUPTEUR. N APPARAIT PAS du tout quand elle n a pas le droit de
          publier - un bouton grise qui echoue vaut moins qu un bouton absent. */
@@ -61026,17 +61100,18 @@ function EcranAssistantIA() {
        `discipline` dans les seances, enregistree dans la langue de saisie et donc
        inexploitable comme filtre. L interface traduit la cle a l affichage.
        AUCUNE CLASSIFICATION AUTOMATIQUE : le theme ne vient que d un toucher. */
-    const THEMES_HB = [
-        ["position", TXT("Position", "Position", "Posici\u00f3n", "Posizione", "\u59d3\u52bf", "Position")],
-        ["plat", TXT("Plat", "Flat", "Plano", "Piano", "\u99ac\u5834", "Dressur")],
-        ["saut", TXT("Saut", "Jumping", "Salto", "Salto", "\u969c\u5bb3", "Springen")],
-        ["comportement", TXT("Comportement", "Behaviour", "Comportamiento", "Comportamento", "\u884c\u52d5", "Verhalten")],
-        ["travail_pied", TXT("Travail \u00e0 pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "\u5730\u4e0a\u4f5c\u696d", "Bodenarbeit")],
-        ["sante", TXT("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit")],
-        ["exterieur", TXT("Ext\u00e9rieur", "Outdoor", "Exterior", "Esterno", "\u5916\u4e57", "Ausritt")],
-        ["autre", TXT("Autre", "Other", "Otro", "Altro", "\u305d\u306e\u4ed6", "Andere")]
-    ];
-    const [themeEp, setThemeEp] = useState("");
+    const THEMES_HB = hypeThemesHB(TXT);
+
+    /* 16/09 (213) : PLUSIEURS THEMES par epingle, sa demande. Un tableau, pas une valeur. */
+    const [themesEp, setThemesEp] = useState([]);
+    const basculerTheme = (cle) => {
+        setThemesEp((av) => {
+            const l = (av || []).slice();
+            const i = l.indexOf(cle);
+            if (i === -1) l.push(cle); else l.splice(i, 1);
+            return l;
+        });
+    };
     useEffect(() => {
         if (!epingleCible || epingleCible.paywall || epingleCible.limite || chevauxEcurie !== null) return;
         let vif = true;
@@ -61219,7 +61294,7 @@ function EcranAssistantIA() {
     const choisirChevalEpingle = (chevalId, chevalNom) => {
         /* 16/09 (211) : le theme repart A VIDE a chaque epinglage. Garder le dernier choisi
            ferait enregistrer « Saut » sur un conseil de sante sans qu elle s en apercoive. */
-        setThemeEp("");
+        setThemesEp([]);
         const cible = epingleCible || {};
         setEpingleCible({ question: cible.question, reponse: cible.reponse, chevalId: chevalId || null, chevalNom: chevalNom || null, etapeCav: true });
     };
@@ -61234,11 +61309,13 @@ function EcranAssistantIA() {
                n ecrit RIEN : pas de ligne d etat inutile, et l epingle restera dans « Tous ». */
             try {
                 const idEp = (r && r.data && r.data.id) ? r.data.id : null;
-                if (idEp && themeEp) {
+                if (idEp && themesEp && themesEp.length) {
                     const u2 = await utilisateurActuel();
                     if (u2 && u2.id) {
+                        /* La colonne est un tableau depuis le 16/09 : on envoie le tableau tel
+                           quel. Aucun theme choisi => on n ecrit RIEN, pas de ligne inutile. */
                         await supa.from("carnet_conseils_etat")
-                            .upsert({ user_id: u2.id, epingle_id: idEp, theme: themeEp }, { onConflict: "user_id,epingle_id" });
+                            .upsert({ user_id: u2.id, epingle_id: idEp, theme: themesEp }, { onConflict: "user_id,epingle_id" });
                     }
                 }
             } catch (eTh) { }
@@ -61511,10 +61588,10 @@ function EcranAssistantIA() {
                        rail porte data-hscroll et overscroll-behavior : sans eux un glissement
                        horizontal change d onglet et entraine la page. */
                     React.createElement("p", { style: { margin: "0 0 7px 2px", fontSize: 9.5, fontWeight: 800, letterSpacing: 1.6, textTransform: "uppercase", color: COLORS.encreDoux } },
-                        TXT("Th\u00e8me (facultatif)", "Theme (optional)", "Tema (opcional)", "Tema (facoltativo)", "\u30c6\u30fc\u30de\uff08\u4efb\u610f\uff09", "Thema (optional)")),
+                        TXT("Th\u00e8mes (facultatif, plusieurs possibles)", "Themes (optional, several allowed)", "Temas (opcional, varios)", "Temi (facoltativo, pi\u00f9 di uno)", "\u30c6\u30fc\u30de\uff08\u4efb\u610f\u30fb\u8907\u6570\u53ef\uff09", "Themen (optional, mehrere)")),
                     React.createElement("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2, marginBottom: 14 } },
-                        THEMES_HB.map((th) => React.createElement("button", { key: th[0], onClick: () => setThemeEp(themeEp === th[0] ? "" : th[0]),
-                            style: { flex: "0 0 auto", padding: "9px 14px", borderRadius: 999, minHeight: 42, border: `1px solid ${themeEp === th[0] ? COLORS.turquoise + "88" : "rgba(255,255,255,0.14)"}`, background: themeEp === th[0] ? `${COLORS.turquoise}18` : "transparent", color: themeEp === th[0] ? COLORS.turquoise : COLORS.encreDoux, fontWeight: themeEp === th[0] ? 800 : 500, fontSize: 12.5, cursor: "pointer", whiteSpace: "nowrap" } }, th[1]))),
+                        THEMES_HB.map((th) => { const pris = (themesEp || []).indexOf(th[0]) !== -1; return React.createElement("button", { key: th[0], onClick: () => basculerTheme(th[0]),
+                            style: { flex: "0 0 auto", padding: "9px 14px", borderRadius: 999, minHeight: 42, border: `1px solid ${pris ? COLORS.turquoise + "88" : "rgba(255,255,255,0.14)"}`, background: pris ? `${COLORS.turquoise}18` : "transparent", color: pris ? COLORS.turquoise : COLORS.encreDoux, fontWeight: pris ? 800 : 500, fontSize: 12.5, cursor: "pointer", whiteSpace: "nowrap" } }, th[1]); })),
                     React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9, maxHeight: "46vh", overflowY: "auto", overscrollBehavior: "contain" } },
                         React.createElement("button", { onClick: () => validerEpingle(epingleCible.chevalId, epingleCible.chevalNom, null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${COLORS.turquoise}14`, border: `1px solid ${COLORS.turquoise}55`, color: COLORS.turquoise, fontWeight: 800, fontSize: 14, cursor: "pointer", textAlign: "left" } },
                             TXT("Personne", "Nobody", "Nadie", "Nessuno", "\u306a\u3057", "Niemand")),
