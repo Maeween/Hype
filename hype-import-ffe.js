@@ -794,6 +794,14 @@
           }).join(", ") + " " + (lstA.length > 1 ? "sont partis" : "est parti")
             + " sur leur propre fiche.";
         }
+        var lstAmb = E.ambigus ? Object.keys(E.ambigus) : [];
+        if (lstAmb.length) {
+          phrase += " " + lstAmb.map(function (k) {
+            return "« " + k + " » (" + E.ambigus[k] + " chevaux de ce nom)";
+          }).join(", ") + " " + (lstAmb.length > 1 ? "n'ont" : "n'a")
+            + " pas été rangé" + (lstAmb.length > 1 ? "s" : "")
+            + " : je ne sais pas duquel il s'agit, donc je n'ai rien écrit.";
+        }
         var lstI = E.inconnus ? Object.keys(E.inconnus) : [];
         if (lstI.length) {
           phrase += " En revanche " + lstI.map(function (k) {
@@ -1014,6 +1022,9 @@
            donc NON ecrits. Sans ce compte rendu, elle croirait a des lignes perdues. */
         E.ailleurs = (rep.ailleurs && typeof rep.ailleurs === "object") ? rep.ailleurs : null;
         E.inconnus = (rep.inconnus && typeof rep.inconnus === "object") ? rep.inconnus : null;
+        /* 18/09 (243) : les homonymes, a distinguer des inconnus — « il y en a plusieurs de
+           ce nom » n appelle pas la meme action que « je ne connais pas ce cheval ». */
+        E.ambigus = (rep.ambigus && typeof rep.ambigus === "object") ? rep.ambigus : null;
       } else {
         E.enregistres = (typeof rep === "number") ? rep : aGarder.length;
         E.doublons = 0;
