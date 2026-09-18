@@ -258,8 +258,21 @@
        sur tout cheval sans proprietaire renseigne. */
     try {
       var cavEnTete = null;
-      for (var iC = 0; iC < lignes.length && iC < 40; iC++) {
-        var mC = lignes[iC].match(/^([A-Z\u00c0-\u00dc][A-Z\u00c0-\u00dc' -]{1,38})\s*[\u2014\u2013-]\s*\d{7}[A-Z]\s*$/);
+      /* 19/09 (245) — DEUX DEFAUTS DU 240, MESURES SUR SON IMPORT REEL DE 22h31 :
+         1) LA RECHERCHE S ARRETAIT A LA 40e LIGNE. Le telemat d une cavaliere commence par
+            la LISTE DES CAVALIERS DU CLUB (25 lignes chez elle, « ALHADEFF EVE », « ALI
+            LARBI »...) : son nom n arrivait qu APRES, et n etait donc jamais lu. Resultat,
+            cavalier VIDE sur les 6 lignes importees. On parcourt desormais tout le document
+            jusqu au premier bloc de resultats (« Date … »).
+         2) LE MOTIF EXIGEAIT UN TIRET entre le nom et la licence. Son PDF ecrit les deux
+            formes : « ROUX EVAN 4638006J – Résultats » (sans tiret avant la licence) ET
+            « ROUX EVAN — 4638006J ». Le tiret devient optionnel, et ce qui suit la licence
+            est tolere.
+         ⚠️ La liste des cavalieres du club ne peut pas donner de faux positif : ces lignes
+         ne portent PAS de numero de licence (« ALHADEFF EVE Non »). */
+      for (var iC = 0; iC < lignes.length; iC++) {
+        if (/^Date\s+\d{2}\/\d{2}\/\d{4}/.test(lignes[iC])) break;   /* les resultats commencent */
+        var mC = lignes[iC].match(/^([A-Z\u00c0-\u00dc][A-Z\u00c0-\u00dc' -]{1,38}?)\s*[\u2014\u2013-]?\s*\d{7}[A-Z]\b/);
         if (mC) { cavEnTete = mC[1].replace(/\s+/g, " ").trim(); break; }
       }
       /* 18/09 (240) : ⚠️ LES DEUX TELEMATS N ECRIVENT PAS LE NOM DANS LE MEME ORDRE.
@@ -727,6 +740,13 @@
           (r.partants ? "<small>sur " + r.partants + "</small>" : ""))
                 : "—<small>" + ech(motStatut(r.statut)) + "</small>") + "</span>" +
         '<span class="hi-co"><b>' + ech(r.epreuve || "épreuve inconnue") + "</b>" +
+        /* 19/09 (245) — SA DEMANDE, repetee : « ça propose toujours pas les chevaux
+           concernés ». Le rangement multi-chevaux etait MUET avant l enregistrement : elle
+           ne voyait le cheval nulle part, et le message de fin arrivait trop tard.
+           Le nom lu dans « Sur … » s affiche desormais SUR CHAQUE LIGNE, en turquoise, avant
+           qu elle valide. Sur un telemat de CHEVAL il n y a pas de « Sur » : rien ne
+           s affiche, et c est juste — toutes les lignes vont sur la fiche ouverte. */
+        (r.cheval_pdf ? '<span class="li" style="color:#5FE9F0;font-weight:700">' + ech(joli(r.cheval_pdf)) + "</span>" : "") +
         '<span class="li">' + ech(joli(r.concours)) + "</span>" +
         '<span class="qd">' + jour(r.date) +
         (r.quart ? " · quart " + r.quart + "e" : " · quart non donné") +
