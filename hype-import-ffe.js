@@ -131,6 +131,22 @@
     { cle: "concours",   lib: "Concours" },
     { cle: "classement", lib: "Classement" },
     { cle: "monteur",    lib: "Monté par" },
+    /* 18/09 (240) — LE TELEMAT D UN CAVALIER. Mesure sur les deux PDF reels de Blandine
+       (Evan.pdf et Riri_.pdf, 18/09) :
+       · telemat d un CHEVAL : chaque bloc porte « Monté par EVAN ROUX » ;
+       · telemat d un CAVALIER : ce champ N EXISTE PAS. Chaque bloc porte « Sur RIZOTTO
+         D'EMERY » (le CHEVAL), et le nom du cavalier n est ecrit QU UNE FOIS, en en-tete
+         du document (« ROUX EVAN — 4638006J »).
+       Le lecteur ne connaissait que « Monté par » : sur un telemat de cavaliere, le
+       cavalier restait donc VIDE sur toutes les lignes. Consequences MESUREES en base :
+       1) deux imports du meme concours (une fois par le cheval, une fois par le cavalier)
+          creaient des DOUBLONS, la cle de dedoublonnage incluant le cavalier ;
+       2) PIRE — a l interieur d UN SEUL telemat de cavaliere, deux chevaux courant la
+          MEME epreuve le MEME jour donnaient deux lignes de cle IDENTIQUE (date + epreuve
+          + concours + cavalier vide) : la seconde etait jetee EN SILENCE. Les deux
+          resultats de Cruibhin du 12 et 13/09 n existent nulle part dans sa base.
+       On lit donc AUSSI le cheval de chaque ligne. */
+    { cle: "cheval",     lib: "Sur" },
     { cle: "points",     lib: "Pts qualif. Chpt" },
     { cle: "quart",      lib: "Quart" }
   ];
@@ -234,6 +250,36 @@
       }
       if (typeof window !== "undefined") window.__hypeNomPdfFFE = nomPdfX;
     } catch (eNp) { }
+    /* 18/09 (240) : LE NOM DU CAVALIER DANS L EN-TETE. Forme reelle du telemat de
+       cavaliere : « ROUX EVAN — 4638006J » ou « ROUX EVAN - 4638006J », le numero de
+       licence etant 7 chiffres suivis d une lettre. On ne retient QUE cette forme :
+       sans elle, le cavalier reste VIDE. Jamais de nom devine, jamais de repli sur le
+       profil connecte - c est le defaut du 27/08 qui affichait « monte par Blandine »
+       sur tout cheval sans proprietaire renseigne. */
+    try {
+      var cavEnTete = null;
+      for (var iC = 0; iC < lignes.length && iC < 40; iC++) {
+        var mC = lignes[iC].match(/^([A-Z\u00c0-\u00dc][A-Z\u00c0-\u00dc' -]{1,38})\s*[\u2014\u2013-]\s*\d{7}[A-Z]\s*$/);
+        if (mC) { cavEnTete = mC[1].replace(/\s+/g, " ").trim(); break; }
+      }
+      /* 18/09 (240) : ⚠️ LES DEUX TELEMATS N ECRIVENT PAS LE NOM DANS LE MEME ORDRE.
+         Mesure sur ses deux PDF : l en-tete du telemat de cavaliere donne « ROUX EVAN »
+         (NOM PRENOM), tandis que « Monté par » donne « EVAN ROUX » (PRENOM NOM). Laisser
+         les deux formes en base RECREERAIT exactement les doublons qu on corrige, avec
+         deux ecritures du meme cavalier.
+         On ramene donc l en-tete a la forme de « Monté par » : le DERNIER mot passe
+         devant. Cela couvre les noms composes (« BREDA DE OLIVEIRA ILYANA » ->
+         « ILYANA BREDA DE OLIVEIRA »).
+         ⚠️ LIMITE ASSUMEE ET A CONNAITRE : un PRENOM COMPOSE ecrit en deux mots
+         (« JEAN PIERRE ») serait mal remis dans l ordre. La FFE n en met pas dans cet
+         en-tete sur les telemats vus, mais si un cavalier apparait en double un jour,
+         c est la premiere chose a regarder. */
+      if (cavEnTete) {
+        var mots = cavEnTete.split(" ").filter(Boolean);
+        if (mots.length >= 2) cavEnTete = mots[mots.length - 1] + " " + mots.slice(0, mots.length - 1).join(" ");
+      }
+      if (typeof window !== "undefined") window.__hypeCavalierPdfFFE = cavEnTete;
+    } catch (eCt) { try { window.__hypeCavalierPdfFFE = null; } catch (eCt2) { } }
     var fiches = [], cour = null, derniere = null;
     for (var i = 0; i < lignes.length; i++) {
       var ligne = lignes[i];
@@ -279,7 +325,15 @@
            restait collé au nom du concours (« MAGNANVILLE er »).      */
         concours: (f.concours || "").replace(/\s+/g, " ").trim()
                     .replace(/\s+(er|ère|e)$/i, "").trim(),
-        cavalier: (f.monteur || "").replace(/\s+/g, " ").trim()
+        /* 18/09 (240) : le cheval lu dans « Sur … ». Il servira au rangement
+           multi-chevaux (etape suivante) ET a la cle de dedoublonnage, pour que deux
+           chevaux ne s annulent plus. */
+        cheval_pdf: (f.cheval || "").replace(/\s+/g, " ").trim(),
+        cavalier: ((f.monteur || "") || (function () {
+                      /* Pas de « Monté par » => telemat de cavaliere : on prend le nom
+                         de l en-tete, le meme pour toutes les lignes du document. */
+                      try { return (typeof window !== "undefined" && window.__hypeCavalierPdfFFE) || ""; } catch (eCv) { return ""; }
+                    })()).replace(/\s+/g, " ").trim()
                     /* 02/09 : ceinture. Meme si un en-tete inconnu se collait au nom,
                        il ne part plus en base. On ne coupe jamais s'il resterait moins
                        de deux mots, pour ne pas amputer un vrai patronyme. */
