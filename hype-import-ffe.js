@@ -783,6 +783,26 @@
       if (doublons > 0) phrase += " " + doublons + " ligne" + (doublons > 1 ? "s étaient" : " était")
         + " déjà là, " + (doublons > 1 ? "elles ont" : "elle a") + " été ignorée"
         + (doublons > 1 ? "s" : "") + ".";
+      /* 18/09 (242) : DIRE le rangement multi-chevaux. Un telemat de cavaliere porte
+         plusieurs chevaux : ses lignes partent desormais chacune sur la fiche de SON
+         cheval. Sans cette phrase, elle croirait que des lignes ont disparu. */
+      try {
+        var lstA = E.ailleurs ? Object.keys(E.ailleurs) : [];
+        if (lstA.length) {
+          phrase += " " + lstA.map(function (k) {
+            return E.ailleurs[k] + (E.ailleurs[k] > 1 ? " sur " : " sur ") + k;
+          }).join(", ") + " " + (lstA.length > 1 ? "sont partis" : "est parti")
+            + " sur leur propre fiche.";
+        }
+        var lstI = E.inconnus ? Object.keys(E.inconnus) : [];
+        if (lstI.length) {
+          phrase += " En revanche " + lstI.map(function (k) {
+            return E.inconnus[k] + " ligne" + (E.inconnus[k] > 1 ? "s" : "") + " sur « " + k + " »";
+          }).join(", ") + " " + (lstI.length > 1 ? "n'ont" : "n'a")
+            + " pas été enregistrée" + (lstI.length > 1 ? "s" : "")
+            + " : aucun cheval de ce nom chez toi. Crée sa fiche, puis relance cet import.";
+        }
+      } catch (eRg) { }
       phrase += " Tu peux importer une autre saison quand tu veux.";
     } else if (doublons > 0) {
       titre = "Cette saison était déjà là";
@@ -989,6 +1009,11 @@
       if (rep && typeof rep === "object") {
         E.enregistres = Number(rep.n) || 0;
         E.doublons = Number(rep.doublons) || 0;
+        /* 18/09 (242) : le rangement multi-chevaux doit se VOIR. `ailleurs` = ce qui est
+           parti sur une autre fiche ; `inconnus` = les chevaux du telemat non reconnus,
+           donc NON ecrits. Sans ce compte rendu, elle croirait a des lignes perdues. */
+        E.ailleurs = (rep.ailleurs && typeof rep.ailleurs === "object") ? rep.ailleurs : null;
+        E.inconnus = (rep.inconnus && typeof rep.inconnus === "object") ? rep.inconnus : null;
       } else {
         E.enregistres = (typeof rep === "number") ? rep : aGarder.length;
         E.doublons = 0;
