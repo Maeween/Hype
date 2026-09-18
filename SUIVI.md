@@ -26,8 +26,9 @@ INDEX EN LIGNE CHEZ ELLE : 20260908-217 (md5 d7bff6e6). CONFIRMÉ.
 218 (onglets « Pour qui ? ») : EN LIGNE, vu sur sa capture de 21 h 35
 (les onglets et le « + » s'affichent).
 219 : EN LIGNE (vu sur son enregistrement de 21 h 54, « Moi » encore là).
-INDEX LIVRÉS ENSUITE : 220 → 228 (§12 D, G, I, J, K, L). Chacun contient les
-précédents. 223 EN LIGNE le 17/09. 224 à 228 NON POUSSÉS / NON CONFIRMÉS.
+INDEX LIVRÉS ENSUITE : 220 → 229 (§12 D, G, I, J, K, L, M). Chacun contient
+les précédents. 223 EN LIGNE le 17/09. 224 à 229 NON POUSSÉS / NON CONFIRMÉS.
+DERNIER LIVRÉ : 20260908-229 (md5 022faf2c).
 ⚠️ Elle testait encore le 223 le 17/09 à 10 h 44 (petite croix grise = 223).
 ⚠️ 219 → 222 LIVRÉS SANS TEST INTERMÉDIAIRE : l'assistant a demandé le test
 avant le 222, elle a répondu « ok vas-y ». Si panne : suspecter 219-222.
@@ -645,3 +646,63 @@ L. 18/09 — MUR : 4 PHOTOS CHOISIES, UNE SEULE GARDÉE (BUILD 228)
   flou vient d'une vignette de VIDÉO agrandie ou d'un endroit précis de
   l'affichage — attendre sa réponse (photo ou vidéo ? flou avant ou après
   ouverture ? net en pinçant ?) avant tout code.
+
+────────────────────────────────────────────────────────────
+M. BUILD 229 (18/09) — PAGE D'UN RENDEZ-VOUS PASSÉ, LIVRAISON 1 SUR 2
+────────────────────────────────────────────────────────────
+Brief + maquette fournis par elle (hero, résultats, galerie, publications,
+commentaires). ⚠️ SEULS LE HERO ET LES RÉSULTATS SONT FAITS. NE PAS
+ENCHAÎNER sur la livraison 2 avant son test.
+
+⚠️ INCIDENT DE MÉTHODE À RETENIR : cette livraison a d'abord été codée sur
+l'index 218, dans une conversation qui n'avait pas le fichier à jour. Elle
+l'a arrêtée à temps (« t'avais pas le bon index »). TOUT A ÉTÉ REFAIT sur le
+228. RÈGLE : demander le NUMÉRO D'INDEX AVANT DE TOUCHER AU FICHIER, pas
+seulement avant d'analyser une capture.
+
+· HERO : 210 → 176 px, dégradé qui finit franchement en noir, marge du haut
+  resserrée (76 → 68). Le texte reste du VRAI TEXTE, jamais dans l'image.
+  ⚠️ IL Y A DEUX HEROS IDENTIQUES DANS LE FICHIER (`minHeight: 210`) :
+  l'autre appartient à `EcranEvenement`, les grands événements nationaux.
+  Seul celui de `EcranEvenementPasse` a été touché — vérifié après coup.
+· LA LIMITE DE 20 RÉSULTATS EST RETIRÉE. Ses mots : « c'est ici qu'on
+  consulte les résultats ». La donnée est déjà chargée : aucun coût.
+· RÉSULTATS REFAITS : épreuve en petites capitales or, CHEVAL en turquoise
+  (l'information la plus visible), cavalier en gris, classement à droite —
+  en or pour une victoire. Fond noir continu, filet de 1 px à 5,5 %, petit
+  point or pour l'esprit chronologique. AUCUNE carte encadrée.
+· LE NOMBRE DE PARTANTS n'est jamais l'information principale, et il est
+  MASQUÉ quand il vaut 1 (on n'écrit RIEN, pas « 1 partant non affiché ») et
+  pour une PRÉPARATOIRE (détectée sur le libellé). Son « 1/1 » devient
+  « 1er » tout court.
+· ⚠️ LE NOM DU CHEVAL EST RÉSOLU EN AMONT, DANS L'AGENDA — son instruction.
+  `resultats` ne porte que `cheval_id` ; UNE SEULE requête sur `chevaux`
+  pour tous les rendez-vous d'un coup. La page de détail continue de ne RIEN
+  requêter : elle reçoit `window.__evPasse`, déjà chargé. Si la résolution
+  échoue, le nom reste vide et la ligne s'affiche sans : jamais de nom
+  inventé.
+· ⚠️ DEUX CHOSES DE LA MAQUETTE VOLONTAIREMENT NON FAITES, et son brief les
+  interdit lui-même : LES VIGNETTES PAR RÉSULTAT (aucune relation
+  photo ↔ résultat n'existe) et LE « SANS-FAUTE » (aucune colonne ne le
+  porte). Ne pas les ajouter plus tard sans une vraie donnée.
+· Le bloc décoratif du bas de la maquette (citation, image) n'est pas
+  ajouté : hors du périmètre annoncé.
+· DIAGNOSTIC DE L'ENVOI REPLIÉ : sa demande, « moins envahissant et pas tout
+  en hauteur ». Il devient UNE LIGNE (nombre de médias · durée totale) qui
+  se déplie au toucher, avec une croix pour le fermer.
+  ⚠️ IL RESTE STRICTEMENT RÉSERVÉ À SON COMPTE (`estCompteFeinnHype`),
+  condition inchangée. Aucune cavalière ne l'a jamais vu.
+· Vérifié intacts après coup : la suppression d'un rendez-vous (227) et le
+  correctif des 4 photos du mur (228).
+
+À TESTER : ouvrir un rendez-vous passé → hero plus court, tous les résultats
+visibles avec le nom du cheval en turquoise, « 1er » sans « sur 1 », rien
+pour une Préparatoire ; le diagnostic tient sur une ligne et se déplie.
+
+RESTE POUR LA LIVRAISON 2 : la galerie qui s'allonge (aucune limite de
+médias aujourd'hui), les publications liées plus compactes, la zone
+« Partager un moment » qui ne doit plus manger un demi-écran à vide.
+SA DEMANDE DU 18/09, NON COMMENCÉE : CHOISIR LA PHOTO DE COUVERTURE. La
+couverture est `ev.image_url`, sinon le PREMIER média. La colonne existe
+déjà : « choisir » = y écrire l'URL du média retenu. Aucun SQL. Reste à
+décider OÙ (toucher long sur une photo, ou action dans le menu « … »).
