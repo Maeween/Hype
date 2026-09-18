@@ -26,8 +26,9 @@ INDEX EN LIGNE CHEZ ELLE : 20260908-217 (md5 d7bff6e6). CONFIRMÉ.
 218 (onglets « Pour qui ? ») : EN LIGNE, vu sur sa capture de 21 h 35
 (les onglets et le « + » s'affichent).
 219 : EN LIGNE (vu sur son enregistrement de 21 h 54, « Moi » encore là).
-INDEX LIVRÉS ENSUITE : 220 (§11 H), 221 (§11 I), 222 (§11 K). Chacun contient
-les précédents. NON CONFIRMÉS EN LIGNE, NON TESTÉS.
+INDEX LIVRÉS ENSUITE : 220 → 228 (§12 D, G, I, J, K, L). Chacun contient les
+précédents. 223 EN LIGNE le 17/09. 224 à 228 NON POUSSÉS / NON CONFIRMÉS.
+⚠️ Elle testait encore le 223 le 17/09 à 10 h 44 (petite croix grise = 223).
 ⚠️ 219 → 222 LIVRÉS SANS TEST INTERMÉDIAIRE : l'assistant a demandé le test
 avant le 222, elle a répondu « ok vas-y ». Si panne : suspecter 219-222.
 ⚠️ Le 219 N'A PAS ÉTÉ TESTÉ avant le 220 (« ok continue ») : risque signalé.
@@ -465,3 +466,182 @@ K. BUILD 222 — LIVRÉ, À TESTER (contient 219 à 221)
   https://2hype.netlify.app/images/APY_SABOT.mp4 pour vérifier que le
   fichier est en ligne. Une tuile modératrice « Tester l'écran du caillou »
   a été proposée, NON FAITE (modification séparée si elle la veut).
+
+────────────────────────────────────────────────────────────
+12. 16-17/09 (nuit et matinée) — BASE ET MOSAÏQUE D'ALBUM
+────────────────────────────────────────────────────────────
+A. ✅ classement_ecuries() RÉÉCRITE EN BASE par elle (« Success ») :
+  membres sur ecurie ET ecurie2 (distinct, « __perso__ » exclu), paliers
+  hauts_faits sur les deux écuries, résultats et podiums au club DU CHEVAL
+  (chevaux.club). Même formule XP. Vérifié : Feinn 20 membres / 861 résultats /
+  7 367 XP ; SEP 21 / 161 / 1 614. Classement des clubs dans l'appli NON
+  REGARDÉ par elle.
+  Retour arrière possible : l'ancienne définition est au §11 A (tout sur
+  profiles.ecurie seul).
+B. 3 RÉSULTATS ORPHELINS : sur la fiche SUPPRIMÉE « Elfe » (cheval_id
+  6183c1f4…, supprimée le 28/08), saisis à la main, sans date, sans épreuve,
+  SANS cavalier : Maisons-Laffitte prépa 80 (1ᵉʳ), Orveau prépa 80 (3ᵉ),
+  HDL prépa 90 (2ᵉ). « Elfe » = « Elfe de Feinn » (confirmé). Palmarès jsonb
+  d'Elfe de Feinn vide. SA DÉCISION : NE RIEN RATTACHER, elle importera le
+  vrai palmarès. ⚠️ L'import dédoublonne sur date+épreuve+concours+cavalier :
+  ces 3 lignes ne seraient pas reconnues ; elles restent invisibles.
+C. RÉSULTATS D'AMBRE « invisibles » : FAUSSE ALERTE, filtre « sans faute »
+  actif. 9 résultats « AMBRE VANGE… », tous importés depuis le compte de
+  Blandine (user_id = elle). Pas de bug.
+  JOURNAL D'ENVOI : visible SEULEMENT par son compte (estCompteFeinnHype),
+  « Effacer » le vide. ELLE LE GARDE.
+D. BUILD 223 — MOSAÏQUE D'ALBUM, FORMAT PAR ALBUM — LIVRÉ, À TESTER
+· SQL PASSÉ PAR ELLE (« Success ») : table album_photo_formats (album_id →
+  albums_cheval.id on delete cascade, photo_url, format ∈ normal / grand /
+  pleine_largeur / pleine_hauteur, user_id default auth.uid(), updated_at,
+  clé (album_id, photo_url)). RLS : select si l'album est visible (hérite de
+  albums_cheval) ; insert/update/delete si propriétaire de l'album OU
+  hype_est_moderatrice().
+· Ses choix : option B (un format PAR ALBUM, indépendant de photo_formats de
+  la chronologie), 2 colonnes, sans format = PETITE (aucun album ne change
+  d'aspect tant que rien n'est choisi), grille simple pendant Réorganiser.
+· Code : hypeComposerAlbum2 (placement 2 colonnes, comble les trous sur 3
+  cases max, jamais de recul) + hypeTailleCaseAlbum (normal 1×1, grand 2×2,
+  pleine_largeur 2×1, pleine_hauteur 1×2). Hauteur de ligne = largeur d'une
+  colonne, mesurée (ResizeObserver). Tuile « + N » placée comme petite case.
+· Lien « Choisir le format des photos » sous les boutons : propriétaire ou
+  modératrice seulement, pas pendant Réorganiser (et Réorganiser masqué
+  pendant le choix). Ouvre TOUT l'album et un panneau AU-DESSUS de la grille
+  (leçon 221) : Petite (supprime la ligne) · Grand · Pleine largeur · Pleine
+  hauteur · Terminé. Écriture vérifiée, refus affiché. Clé = urlNue(photo).
+· À TESTER : album sans format = inchangé ; Choisir le format → photo →
+  Grand → la mosaïque se recompose ; Petite → revient ; Réorganiser toujours
+  OK ; un autre compte ne voit pas le lien ; la chronologie ne change pas.
+
+E. ÉPINGLER DEPUIS HEY BABY — PAS DE PANNE, UN PARCOURS MUET
+· Vérifié en base : ses épingles s'écrivent bien (« test pin » sur Delicada,
+  17/09). Les 2 conseils sans cheval d'hier sont passés sous Hey Baby Please
+  → LE « + » DU BUILD 221 MARCHE (validé par les données, pas par un test).
+· ⚠️ ERREUR DE L'ASSISTANT : avoir conclu trop vite que « test pin » avait
+  échoué, sur une requête lancée avant qu'elle ne la crée. Ne plus conclure
+  « ça n'existe pas » sur un horodatage plus ancien que l'action.
+· Défauts de clarté relevés dans le code, NON CORRIGÉS : toute erreur
+  d'épinglage affiche « Connecte-toi pour épingler » (faux) ; le catch ferme
+  la fenêtre en silence ; toucher le voile ferme sans rien dire ; le bandeau
+  de succès dure 2,4 s. À traiter plus tard.
+· Retirer un conseil : possible aujourd'hui en touchant la ZONE SOMBRE À
+  GAUCHE de la carte (2 touchers), rien ne l'indique. SON CHOIX : option A,
+  un bouton VISIBLE (croix ou corbeille) avec confirmation → BUILD 225 À
+  FAIRE, non commencé.
+
+F. AGENDA DE CLUB — LA VRAIE CAUSE ÉTAIT MUETTE
+· « Publier » grisé = titre ou DATE DE DÉBUT manquante. Elle avait mis le
+  25 oct. dans « Fin » et laissé « Début » vide, rien ne le disait ; elle a
+  attendu plusieurs minutes en croyant à un envoi en cours. Résolu de son
+  côté dès qu'elle a rempli « Début » (« ça marche »).
+· L'affiche n'était sans doute jamais en cause.
+· Suppression : croix sur la carte du rendez-vous (propriétaire du club
+  seulement) ; croix × sur une photo du mur de l'événement. Rendre la croix
+  PLUS VISIBLE : proposé, NON TRANCHÉ.
+
+G. BUILD 224 — LIVRÉ, À TESTER (contient 219 à 223)
+· Trois silences supprimés dans le formulaire d'agenda de club (aucun droit,
+  aucune requête, aucun champ modifié : on AFFICHE seulement) :
+  1) phrase sous « Publier » éteint : « Il manque le titre » ou « Il manque
+     la date de début (Fin est facultative) » ;
+  2) échec d'envoi de l'affiche : message + vraie erreur + « Réessayer »
+     (le fichier choisi est gardé dans une ref) ; fichier non-image refusé
+     avec un message clair ;
+  3) refus ou échec de la publication : affiché dans la fenêtre, qui reste
+     ouverte, au lieu du bouton qui se remet en place en silence.
+· À TESTER : créer un rendez-vous sans date de début → la phrase apparaît ;
+  avec titre + début → publication OK comme avant ; ajouter une affiche →
+  aperçu ; choisir un fichier non-image → message.
+
+H. ✅ DROITS SUR LA SEP — CAUSE TROUVÉE ET CORRIGÉE EN BASE
+· Policies de club_agenda : INSERT, UPDATE et DELETE passent toutes par
+  hype_est_proprietaire_club(club_clef), qui lit la table clubs_revendiques
+  (clef + email = auth.jwt() email). SELECT = true (lecture publique).
+· La table ne contenait QU'UNE ligne : « ecurie feinn ». La SEP n'y était
+  pas → la base refusait tout sur la SEP alors que l'appli affichait les
+  boutons (CLUBS_REVENDIQUES_G, côté appli, contient la SEP depuis le 15/09).
+· ✅ INSERT PASSÉ PAR ELLE (1 ligne) : clef « societe d'equitation de paris
+  (sep) » + feinn@live.fr. Écriture identique à ce que calcule clefClubG.
+· À TESTER par elle : créer, puis supprimer un rendez-vous sur la SEP.
+
+I. BUILD 225 — LISTE DES CLUBS LUE DEPUIS LA BASE — LIVRÉ, À TESTER
+· clubRevendiquePar lit désormais un registre HYPE_CLUBS_REVENDIQUES chargé
+  depuis la table clubs_revendiques (select *), fusionné PAR-DESSUS la
+  constante CLUBS_REVENDIQUES_G qui reste le repli. Rechargé aussi à la
+  connexion (onAuthStateChange). Table illisible = comportement d'avant.
+· La base reste la seule autorité : ce registre décide seulement ce que
+  l'écran PROPOSE. Un refus est désormais affiché (224).
+· ⚠️ Asynchrone : un club ajouté en base apparaît au RECHARGEMENT suivant.
+· ⚠️ DETTE, non traitée : une AUTRE constante, CLUBS_REVENDIQUES (sans _G,
+  utilisée ligne ~32985 pour la VILLE du club), n'est pas branchée sur la
+  base. Elle ne donne aucun droit. À unifier un jour.
+· À TESTER : la page de la SEP et celle de Feinn montrent toujours les
+  boutons de gestion ; un compte cavalière ne les voit pas.
+
+J. BUILD 226 — ACTIONS VISIBLES — LIVRÉ, À TESTER
+· RETIRER UN CONSEIL (son option A) : la zone sombre à gauche de la carte
+  N'EST PLUS un bouton (ancien gestionnaire supprimé, pas commenté) — on
+  l'activait par accident sans le savoir. Une VRAIE croix ✕ ronde, bordée,
+  38 px, apparaît à DROITE de chaque carte, avant la pastille d'état.
+  Deux touchers : le 1er passe la croix en rouge et affiche « Touche encore
+  la croix, à droite, pour retirer ce conseil », le 2e retire. Retrait en
+  base D'ABORD, puis à l'écran. Pas de croix en mode CHOIX (depuis une
+  séance de carnet).
+· POST DU MUR D'UN ÉVÉNEMENT : la croix passe de 15 px gris sans cadre à un
+  rond bordé de 40 px, et elle DEMANDE CONFIRMATION (avant, elle effaçait
+  sans rien demander). Elle n'apparaît que sur ses propres publications.
+· Un espace vide (112 px + safe-area) est ajouté sous le fil de l'événement :
+  la dernière carte ne passe plus sous la barre du bas. La barre elle-même
+  n'est pas touchée (zone sensible, correctif 164 toujours en attente).
+· LEÇON DU JOUR, à garder : 3 boutons cachés par la barre du bas en une
+  soirée. Toute action doit être EN HAUT d'un panneau qui défile, ou avoir
+  de l'air sous elle.
+· À TESTER : croix sur un conseil (2 touchers) → il disparaît et ne revient
+  pas après rechargement ; toucher la zone gauche n'efface plus rien ;
+  ouvrir un conseil marche toujours ; croix d'un post du mur → confirmation.
+
+K. BUILD 227 — SUPPRIMER UN RENDEZ-VOUS — LIVRÉ, À TESTER
+· MANQUE TROUVÉ (pas un réglage caché) : la croix de suppression n'existait
+  QUE sur les rendez-vous À VENIR (agc-x). Les rendez-vous PASSÉS
+  (carteEvPasse) n'avaient AUCUN bouton de suppression. « Cso » du 2 sept
+  était donc ineffaçable. Elle : « sur le mur je vois pas de croix ».
+· Ajouté : croix ✕ ronde bordée 38 px en haut à droite de chaque carte de
+  rendez-vous PASSÉ, gestionnaire du club seulement (estProprio).
+· Ajouté : bouton « Supprimer ce rendez-vous » EN BAS de la page du
+  rendez-vous (EcranEvenementPasse), puis retour à l'agenda. Le droit y est
+  lu sur ev.club_clef via une nouvelle aide clefClubRevendiqueePar(clef,
+  user), qui interroge le registre chargé depuis la base au 225.
+· CONFIRMATION OBLIGATOIRE sur les deux (sa demande explicite), avec le
+  titre du rendez-vous dans la question, et refus de la base AFFICHÉ.
+· ⚠️ La suppression emporte le mur du rendez-vous (photos et commentaires).
+  Les résultats FFE ne sont pas touchés : ils tiennent à la date.
+· À TESTER : supprimer « Cso » depuis la liste des passés (croix) ; en créer
+  un autre et le supprimer depuis sa page ; vérifier qu'une cavalière ne
+  voit ni la croix ni le bouton.
+
+L. 18/09 — MUR : 4 PHOTOS CHOISIES, UNE SEULE GARDÉE (BUILD 228)
+· Son signalement : « je mets 4 en ligne et ça m'en affiche une seule »,
+  répété plusieurs fois (12 à 16 médias perdus au total).
+· PROUVÉ EN BASE : commentaires du 18/09 08:58 UTC → medias NULL ; celui du
+  14/09 17:19 → medias contient bien plusieurs URLs (ce jour-là elle les
+  avait ajoutées UNE PAR UNE). Les photos sont de vrais fichiers du
+  stockage (pas de data: URL), et l'envoi passe bien par
+  preparerPhotoMaster (2560 px / q90) : ces deux pistes sont abandonnées.
+· CAUSE, dans `choisir` du composeur de MurHype : `ajouterMedia` testait
+  `if (!photo)` en relisant l'ÉTAT React, figé pendant toute la boucle de
+  sélection. Les 4 photos voyaient donc la première place libre et
+  s'écrasaient : seule la DERNIÈRE survivait, et `photosEnPlus` restait
+  vide → colonne `medias` non écrite.
+· CORRECTIF 228 : compteurs LOCAUX (`prisePremiere`, `ajoutes`) au fil de la
+  sélection, au lieu de relire l'état. Ordre conservé, limite de 4 par
+  message inchangée, avertissement du 165 inchangé. Périmètre : ce seul
+  composeur (mur des rendez-vous, du fil et du club).
+· À TESTER : choisir 4 photos EN UNE FOIS → les 4 doivent apparaître dans
+  l'aperçu, puis dans la publication ; en choisir 6 → message « seules les 4
+  premières » ; une par une → comme avant.
+· ENCORE OUVERT : la QUALITÉ d'une photo ouverte en grand (« regarde la
+  mauvaise qualité »). Établi : fichier réel, pipeline correct, visionneuse
+  qui demande jusqu'à 2560 px (grandeImageHype ×DPR). Reste à savoir si le
+  flou vient d'une vignette de VIDÉO agrandie ou d'un endroit précis de
+  l'affichage — attendre sa réponse (photo ou vidéo ? flou avant ou après
+  ouverture ? net en pinçant ?) avant tout code.

@@ -49,8 +49,8 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-218"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
-html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-228"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
 @keyframes cavCadre{ 0%{ background-position:0% 50%; } 100%{ background-position:280% 50%; } }
@@ -1770,9 +1770,61 @@ function teinteHypeActive() { try { var t = localStorage.getItem("hype_teinte");
 const HYPE_MODERATEURS = ["feinn@live.fr", "malicia2008@hotmail.fr"];
 const CLUBS_REVENDIQUES_G = { "ecurie feinn": { email: "feinn@live.fr", ville: "Itteville (Essonne)" }, "societe d'equitation de paris (sep)": { email: "feinn@live.fr", ville: "Paris" } };   /* 15/09 : Blandine coache l'equipe de la SEP -> memes droits de gestion que sur sa propre ecurie (creer/supprimer les rendez-vous du club, banniere, cavaliers). Nom recopie tel quel depuis profiles.ecurie/ecurie2. */
 function clefClubG(n) { try { return (n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim(); } catch (e) { return (n || "").toLowerCase().trim(); } }
+/* 17/09 (225) — LA LISTE DES CLUBS QU ELLE GERE VIENT MAINTENANT DE LA BASE.
+   Le 17/09, elle ne pouvait rien creer sur la SEP : la liste vivait a DEUX endroits, la
+   constante ci-dessus (appli) et la table `clubs_revendiques` (base, seule consultee par
+   hype_est_proprietaire_club dans les policies). Elles s etaient desynchronisees : la SEP
+   n existait que cote appli, donc les boutons s affichaient et la base refusait en silence.
+   ⚠️ LA BASE RESTE LA SEULE AUTORITE : ce registre ne donne aucun droit, il decide seulement
+   ce que l ecran PROPOSE. Une ligne de trop ici ne ferait que faire reapparaitre un bouton
+   refuse par la base (et desormais le refus est AFFICHE, build 224).
+   ⚠️ La constante reste le point de depart : si la table est illisible (hors ligne, pas de
+   session), l appli se comporte EXACTEMENT comme avant. Rien ne peut donc regresser.
+   ⚠️ Le chargement est asynchrone : un club ajoute en base apparait au rechargement suivant,
+   pas en direct. C est assume, la liste change une fois tous les six mois. */
+var HYPE_CLUBS_REVENDIQUES = Object.assign({}, CLUBS_REVENDIQUES_G);
+var __hypeClubsRevChargement = null;
+function hypeChargerClubsRevendiques() {
+  try {
+    if (__hypeClubsRevChargement) return __hypeClubsRevChargement;
+    if (typeof supa === "undefined" || !supa) return Promise.resolve(false);
+    __hypeClubsRevChargement = Promise.resolve(supa.from("clubs_revendiques").select("*")).then(function (r) {
+      __hypeClubsRevChargement = null;
+      if (!r || r.error || !r.data || !r.data.length) return false;
+      var fusion = Object.assign({}, CLUBS_REVENDIQUES_G);
+      r.data.forEach(function (li) {
+        if (!li || !li.clef || !li.email) return;
+        var cl = clefClubG(li.clef);
+        var av = fusion[cl] || {};
+        fusion[cl] = { email: li.email, ville: li.ville || av.ville || null };
+      });
+      HYPE_CLUBS_REVENDIQUES = fusion;
+      try { window.dispatchEvent(new Event("hype-clubs-revendiques")); } catch (eEv) { }
+      return true;
+    }).catch(function () { __hypeClubsRevChargement = null; return false; });
+    return __hypeClubsRevChargement;
+  } catch (eCr) { __hypeClubsRevChargement = null; return Promise.resolve(false); }
+}
+try {
+  hypeChargerClubsRevendiques();
+  /* La table peut etre illisible avant la session : on retente une fois connectee. */
+  if (typeof supa !== "undefined" && supa && supa.auth && supa.auth.onAuthStateChange) {
+    supa.auth.onAuthStateChange(function (evCr) { if (evCr === "SIGNED_IN" || evCr === "TOKEN_REFRESHED" || evCr === "INITIAL_SESSION") hypeChargerClubsRevendiques(); });
+  }
+} catch (eCr0) { }
+/* 17/09 (227) : meme test, mais a partir de la CLEF deja enregistree sur le rendez-vous
+   (club_agenda.club_clef), quand le nom du club n est pas a portee de main. */
+function clefClubRevendiqueePar(clef, user) {
+  try {
+    var rv = HYPE_CLUBS_REVENDIQUES[String(clef || "").trim()] || null;
+    if (!rv) return false;
+    var email = (user && (user.email || (user.user_metadata && user.user_metadata.email))) || "";
+    return String(email).toLowerCase() === String(rv.email).toLowerCase();
+  } catch (e) { return false; }
+}
 function clubRevendiquePar(nomEcurie, user) {
-  try { var rv = CLUBS_REVENDIQUES_G[clefClubG(nomEcurie)] || null;
-    if (!rv && typeof noyauEcurie === "function") { var nyR = noyauEcurie(nomEcurie); for (var kR in CLUBS_REVENDIQUES_G) { if (noyauEcurie(kR) === nyR) { rv = CLUBS_REVENDIQUES_G[kR]; break; } } } /* 06/08 : "Feinn" == "Ecurie Feinn" == "\u00c9curie Feinn" */
+  try { var rv = HYPE_CLUBS_REVENDIQUES[clefClubG(nomEcurie)] || null;
+    if (!rv && typeof noyauEcurie === "function") { var nyR = noyauEcurie(nomEcurie); for (var kR in HYPE_CLUBS_REVENDIQUES) { if (noyauEcurie(kR) === nyR) { rv = HYPE_CLUBS_REVENDIQUES[kR]; break; } } }
     if (!rv) return false;
     var email = (user && (user.email || (user.user_metadata && user.user_metadata.email))) || "";
     return String(email).toLowerCase() === String(rv.email).toLowerCase();
@@ -21517,7 +21569,7 @@ exports.hydrateRoot = function (container, initialChildren, options) {
 };
 exports.version = "19.2.5";
 
-});</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(!r||r.firstChild)return false;var lg="fr";try{var e=JSON.parse(localStorage.getItem("augalop_etat_v1")||"null");if(e&&e.langue)lg=e.langue;}catch(x){}var T={fr:["Un caillou dans le sabot","Hype s'est arr\u00eat\u00e9 net. Rien n'est perdu : ta progression est enregistr\u00e9e.","Revenir \u00e0 l'accueil","D\u00e9tails techniques"],en:["A stone in the hoof","Hype stopped short. Nothing is lost \u2014 your progress is saved.","Back to home","Technical details"],es:["Una piedra en el casco","Hype se ha detenido. No se pierde nada: tu progreso est\u00e1 guardado.","Volver al inicio","Detalles t\u00e9cnicos"],it:["Un sassolino nello zoccolo","Hype si \u00e8 fermato. Non \u00e8 perso nulla: i tuoi progressi sono salvati.","Torna alla home","Dettagli tecnici"],de:["Ein Stein im Huf","Hype ist stehen geblieben. Nichts ist verloren: Dein Fortschritt ist gespeichert.","Zur\u00fcck zur Startseite","Technische Details"],ja:["\u3072\u3065\u3081\u306b\u5c0f\u77f3\u304c","Hype \u304c\u3068\u307e\u3063\u3066\u3057\u307e\u3044\u307e\u3057\u305f\u3002\u304d\u308d\u304f\u306f\u306e\u3053\u3063\u3066\u3044\u307e\u3059\u3002","\u30db\u30fc\u30e0\u306b\u3082\u3069\u308b","\u304f\u308f\u3057\u3044\u3058\u3087\u3046\u307b\u3046"]};var w=T[lg]||T.fr;var im=(window.HYPE_IMGS&&window.HYPE_IMGS["k554"])||"";var st=String((err&&err.stack)||m||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");r.innerHTML='<div class="hyperr">'+(im?'<img src="'+im+'" alt="">':'<div class="hyperr-apy">\ud83d\udc34</div>')+'<h1>'+w[0]+'</h1><p>'+w[1]+'</p>'+'<button type="button" id="hyperr-go">'+w[2]+'</button>'+'<button type="button" id="hyperr-det">'+w[3]+'</button>'+'<pre class="err" id="hyperr-pre" hidden>'+st+'</pre></div>';var g=document.getElementById("hyperr-go");if(g)g.onclick=function(){try{location.replace(location.pathname);}catch(x){location.reload();}};var d=document.getElementById("hyperr-det");if(d)d.onclick=function(){var p=document.getElementById("hyperr-pre");if(p)p.hidden=!p.hidden;};return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};/* 25/08 : createPortal vit dans le module de base react-dom, pas dans react-dom-client — sans lui, la sortie de la barre du bas (session 160) retombait silencieusement sur le rendu d avant. */try{var __pB=__require("react-dom");if(__pB&&__pB.createPortal){window.ReactDOM.createPortal=__pB.createPortal;}}catch(ePortail){}}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
+});</script><script>window.onerror=function(m,s,l,c,err){var b=document.getElementById("boot");if(b)b.remove();var r=document.getElementById("root");if(!r||r.firstChild)return false;var lg="fr";try{var e=JSON.parse(localStorage.getItem("augalop_etat_v1")||"null");if(e&&e.langue)lg=e.langue;}catch(x){}var T={fr:["Un caillou dans le sabot","Hype s'est arr\u00eat\u00e9 net. Rien n'est perdu : ta progression est enregistr\u00e9e.","Revenir \u00e0 l'accueil","D\u00e9tails techniques"],en:["A stone in the hoof","Hype stopped short. Nothing is lost \u2014 your progress is saved.","Back to home","Technical details"],es:["Una piedra en el casco","Hype se ha detenido. No se pierde nada: tu progreso est\u00e1 guardado.","Volver al inicio","Detalles t\u00e9cnicos"],it:["Un sassolino nello zoccolo","Hype si \u00e8 fermato. Non \u00e8 perso nulla: i tuoi progressi sono salvati.","Torna alla home","Dettagli tecnici"],de:["Ein Stein im Huf","Hype ist stehen geblieben. Nichts ist verloren: Dein Fortschritt ist gespeichert.","Zur\u00fcck zur Startseite","Technische Details"],ja:["\u3072\u3065\u3081\u306b\u5c0f\u77f3\u304c","Hype \u304c\u3068\u307e\u3063\u3066\u3057\u307e\u3044\u307e\u3057\u305f\u3002\u304d\u308d\u304f\u306f\u306e\u3053\u3063\u3066\u3044\u307e\u3059\u3002","\u30db\u30fc\u30e0\u306b\u3082\u3069\u308b","\u304f\u308f\u3057\u3044\u3058\u3087\u3046\u307b\u3046"]};var w=T[lg]||T.fr;var im=(window.HYPE_IMGS&&window.HYPE_IMGS["k554"])||"";var st=String((err&&err.stack)||m||"").replace(/&/g,"&amp;").replace(/</g,"&lt;");r.innerHTML='<div class="hyperr">'+'<video id="hyperr-vid" src="images/APY_SABOT.mp4" autoplay muted loop playsinline preload="auto" aria-label="Apy"></video><div class="hyperr-apy" id="hyperr-apy" hidden>\ud83d\udc34</div>'+'<h1>'+w[0]+'</h1><p>'+w[1]+'</p>'+'<button type="button" id="hyperr-go">'+w[2]+'</button>'+'<button type="button" id="hyperr-det">'+w[3]+'</button>'+'<pre class="err" id="hyperr-pre" hidden>'+st+'</pre></div>';/* 16/09 (222) : video d Apy (images/APY_SABOT.mp4, 170 px) a la place de k554, casse. Si la video ne charge pas : emoji cheval. */var vA=document.getElementById("hyperr-vid");if(vA){var koA=function(){try{vA.remove();}catch(x){}var eA=document.getElementById("hyperr-apy");if(eA)eA.hidden=false;};vA.addEventListener("error",koA);try{vA.muted=true;var pA=vA.play();if(pA&&pA.catch)pA.catch(function(){});}catch(x){}}var g=document.getElementById("hyperr-go");if(g)g.onclick=function(){try{location.replace(location.pathname);}catch(x){location.reload();}};var d=document.getElementById("hyperr-det");if(d)d.onclick=function(){var p=document.getElementById("hyperr-pre");if(p)p.hidden=!p.hidden;};return false;};</script><script>try{window.React=__require("react");var __c=__require("react-dom-client");window.ReactDOM={createRoot:__c.createRoot,hydrateRoot:__c.hydrateRoot,version:__c.version};/* 25/08 : createPortal vit dans le module de base react-dom, pas dans react-dom-client — sans lui, la sortie de la barre du bas (session 160) retombait silencieusement sur le rendu d avant. */try{var __pB=__require("react-dom");if(__pB&&__pB.createPortal){window.ReactDOM.createPortal=__pB.createPortal;}}catch(ePortail){}}catch(e){throw e;}</script><script>window.HYPE_IMGS=window.HYPE_IMGS||{};</script><script src="hype-images-1.js"></script><script src="hype-images-2.js"></script><script src="hype-images-6.js"></script><script src="hype-images-7.js"></script><script src="hype-images-8.js"></script><script src="hype-images-9.js"></script><script src="hype-images-10.js"></script><script src="hype-images-11.js"></script><script src="hype-images-12.js"></script><script src="hype-images-13.js"></script><script src="hype-images-14.js"></script><script src="hype-images-15.js"></script><script src="hype-images-16.js"></script><script src="hype-images-17.js"></script><script src="hype-images-18.js"></script><script src="hype-images-19.js"></script><script src="hype-images-20.js"></script><script src="hype-images-21.js"></script><script src="hype-images-22.js"></script><script src="hype-images-23.js"></script><script src="hype-images-24.js"></script><script src="hype-images-25.js"></script><script src="hype-images-26.js"></script><script src="hype-images-27.js"></script>
 <script src="hype-images-28.js"></script>
 <script src="hype-images-29.js"></script><script src="hype-images-30.js"></script><script src="hype-images-31.js"></script><script src="hype-images-32.js"></script><script src="hype-images-33.js"></script><script src="hype-images-34.js"></script><script src="hype-images-35.js"></script><script src="hype-images-36.js"></script><script src="hype-images-37.js"></script><script src="hype-images-38.js"></script><script src="hype-images-39.js"></script><script src="hype-images-40.js"></script><script src="hype-images-41.js"></script><script src="hype-images-42.js"></script><script src="hype-images-43.js"></script><script src="hype-images-44.js"></script><script src="hype-images-45.js"></script><script src="hype-images-46.js"></script><script src="hype-images-47.js"></script><script src="hype-images-48.js"></script><script src="hype-images-49.js"></script><script src="hype-images-50.js"></script><script src="hype-images-51.js"></script><script src="hype-images-52.js"></script><script src="hype-images-53.js"></script><script src="hype-images-54.js"></script><script src="hype-images-55.js"></script><script src="hype-images-56.js"></script>
 <script src="hype-images-57.js"></script><script src="hype-images-58.js"></script><script src="hype-images-59.js"></script><script src="hype-images-60.js"></script><script src="hype-images-61.js"></script><script src="hype-images-62.js"></script><script src="hype-images-63.js"></script><script src="hype-images-64.js"></script><script src="hype-images-65.js"></script><script src="hype-images-66.js"></script><script src="hype-images-67.js"></script><script src="hype-images-68.js"></script><script src="hype-images-69.js"></script><script src="hype-images-70.js"></script><script src="hype-images-71.js"></script><script src="hype-images-72.js"></script><script src="hype-images-73.js"></script><script src="hype-images-74.js"></script><script src="hype-images-75.js"></script><script src="hype-images-76.js"></script><script src="hype-images-77.js"></script><script src="hype-images-78.js"></script><script src="hype-images-79.js"></script><script src="hype-images-80.js"></script><script src="hype-images-81.js"></script><script src="hype-images-82.js"></script><script src="hype-images-83.js"></script><script src="hype-images-84.js"></script><script src="hype-images-85.js"></script><script src="hype-images-86.js"></script><script src="hype-images-87.js"></script><script src="hype-images-88.js"></script><script src="hype-images-89.js"></script><script src="hype-images-90.js"></script><script src="hype-images-91.js"></script><script src="hype-images-92.js"></script><script src="hype-images-93.js"></script><script src="hype-images-94.js"></script><script src="hype-images-95.js"></script><script src="hype-images-96.js"></script><script src="hype-images-97.js"></script><script src="hype-images-98.js"></script><script src="hype-images-99.js"></script><script src="hype-images-100.js"></script><script src="hype-images-101.js"></script><script src="hype-images-102.js"></script><script src="hype-images-103.js"></script><script src="hype-images-104.js"></script><script src="hype-images-105.js"></script><script src="hype-images-106.js"></script><script src="hype-images-107.js"></script><script src="hype-images-108.js"></script><script src="hype-images-109.js"></script><script src="hype-images-110.js"></script><script src="hype-images-111.js"></script><script src="hype-images-112.js"></script><script src="hype-images-113.js"></script><script>/* Convention à partir de k547 : nouvelles images en vrais fichiers .jpg (dossier images/), plus de base64. */for(var _hk=547;_hk<=554;_hk++){window.HYPE_IMGS["k"+_hk]="images/k"+_hk+".jpg";}for(var _hk3=615;_hk3<=628;_hk3++){window.HYPE_IMGS["k"+_hk3]="images/k"+_hk3+".jpeg";}   /* baby-c20 Paille ou foin ? La nourriture */</script><script src="hype-images-114.js"></script><script src="hype-images-115.js"></script><script src="hype-images-116.js"></script><script src="hype-images-117.js"></script><script src="hype-images-118.js"></script><script src="hype-images-119.js"></script><script>/* Correctif : les fichiers réels sur GitHub sont en .jpeg (k555/k556/k557/k603), pas .jpg comme hype-images-119.js le déclare. On force les bons chemins ici plutôt que d'éditer ce fichier séparé. */window.HYPE_IMGS["k555"]="images/k555.jpeg";window.HYPE_IMGS["k556"]="images/k556.jpeg";window.HYPE_IMGS["k557"]="images/k557.jpeg";window.HYPE_IMGS["k603"]="images/k603.jpeg";window.HYPE_IMGS["k604"]="images/k604.jpeg";window.HYPE_IMGS["k605"]="images/k605.jpeg";window.HYPE_IMGS["k606"]="images/k606.jpeg";window.HYPE_IMGS["k607"]="images/k607.jpeg";window.HYPE_IMGS["k608"]="images/k608.jpeg";window.HYPE_IMGS["k609"]="images/k609.jpeg";window.HYPE_IMGS["k610"]="images/k610.jpeg";window.HYPE_IMGS["k615"]="images/k615.jpeg";window.HYPE_IMGS["k616"]="images/k616.jpeg";window.HYPE_IMGS["k617"]="images/k617.jpeg";window.HYPE_IMGS["k618"]="images/k618.jpeg";window.HYPE_IMGS["k619"]="images/k619.jpeg";window.HYPE_IMGS["k620"]="images/k620.jpeg";window.HYPE_IMGS["k621"]="images/k621.jpeg";window.HYPE_IMGS["k622"]="images/k622.jpeg";window.HYPE_IMGS["k623"]="images/k623.jpeg";window.HYPE_IMGS["k624"]="images/k624.jpeg";window.HYPE_IMGS["k625"]="images/k625.jpeg";window.HYPE_IMGS["k626"]="images/k626.jpeg";window.HYPE_IMGS["k627"]="images/k627.jpeg";window.HYPE_IMGS["k628"]="images/k628.jpeg";window.HYPE_IMGS["k629"]="images/k629.jpeg";window.HYPE_IMGS["k630"]="images/k630.jpg";window.HYPE_IMGS["k631"]="images/k631.jpg";window.HYPE_IMGS["k632"]="images/k632.jpg";window.HYPE_IMGS["k633"]="images/k633.jpg";window.HYPE_IMGS["k634"]="images/k634.jpg";window.HYPE_IMGS["k635"]="images/k635.jpg";window.HYPE_IMGS["k637"]="images/k637.jpg";window.HYPE_IMGS["k636"]="images/k636.jpg";window.HYPE_IMGS["k638"]="images/k638.jpg";window.HYPE_IMGS["k639"]="images/k639.jpg";window.HYPE_IMGS["k640"]="images/k640.jpg";window.HYPE_IMGS["k641"]="images/k641.jpg";window.HYPE_IMGS["k642"]="images/k642.jpg";window.HYPE_IMGS["k643"]="images/k643.jpg";
@@ -23451,12 +23503,19 @@ function EcranEvenement(){
           h("div", { style:{ flex:1, minWidth:0 } },
             h("div",{style:{fontSize:13.5,fontWeight:700}}, p.a),
             h("div",{style:{fontSize:11,color:"#8A929C",fontFamily:M}}, tempsRelatif(p.ts))),
-          (p.moi ? h("button", { onClick:function(){ supprimer(p.id); }, "aria-label":T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "L\u00f6schen"), style:{ background:"none", border:"none", color:"#6a727a", fontSize:15, cursor:"pointer", padding:6 } }, "\u2715") : null)),
+          /* 17/09 (226) : croix VISIBLE (rond borde, 40 px) au lieu d un signe gris de 15 px sans
+             cadre. Blandine, sur son post de test : « je vois pas ou effacer ». Confirmation
+             ajoutee : la croix effacait sans rien demander. */
+          (p.moi ? h("button", { onClick:function(eSup){ try { if (eSup) eSup.stopPropagation(); } catch (eS1) { } var okS = true; try { if (window.confirm) okS = window.confirm(T("Effacer cette publication ?", "Delete this post?", "\u00bfEliminar esta publicaci\u00f3n?", "Eliminare questo post?", "\u3053\u306e\u6295\u7a3f\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "Diesen Beitrag l\u00f6schen?")); } catch (eS2) { } if (okS) supprimer(p.id); }, "aria-label":T("Effacer cette publication", "Delete this post", "Eliminar esta publicaci\u00f3n", "Elimina questo post", "\u3053\u306e\u6295\u7a3f\u3092\u524a\u9664", "Diesen Beitrag l\u00f6schen"), style:{ flex:"0 0 auto", width:40, height:40, borderRadius:"50%", background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.22)", color:"#D4DCE0", fontSize:15, lineHeight:1, cursor:"pointer", padding:0, display:"flex", alignItems:"center", justifyContent:"center" } }, "\u2715") : null)),
         (p.t ? h("div", { style:{ padding:"0 12px 10px", fontSize:13.5, color:"#D4DCE0", fontFamily:M, lineHeight:1.45, whiteSpace:"pre-wrap" } }, p.t) : null),
         (img ? h("div", { onClick:function(){ setZoomImg(img); setZoomFit(true); }, style:{ width:"100%", height:200, backgroundImage:"url("+img+")", backgroundSize:"cover", backgroundPosition:"center 30%", cursor:"zoom-in" } }) : null),
         h("div", { style:{ display:"flex", alignItems:"center", gap:16, padding:"9px 10px" } },
           h("button", { onClick:function(){ aimer(p.id); }, style:{ display:"flex", alignItems:"center", gap:6, background:"none", border:"none", cursor:"pointer", color:p.aime ? "#5FE9F0" : "#8A929C", fontFamily:M, fontSize:12.5, padding:"4px 6px" } }, (p.aime ? "\u2764" : "\u2661") + " " + p.l))); }),
       h("div", { style:{ padding:"2px 2px 0", fontSize:11, color:"#6a727a", fontStyle:"italic", fontFamily:M } }, T("Fil enregistr\u00e9 sur cet appareil \u2014 il deviendra commun \u00e0 tous les cavaliers avec les comptes Hype.","Feed saved on this device \u2014 it becomes shared with Hype rider accounts.","Guardado en este dispositivo \u2014 ser\u00e1 compartido con las cuentas Hype.","Salvato su questo dispositivo \u2014 diventer\u00e0 condiviso con gli account Hype.","\u3053\u306e\u7aef\u672b\u306b\u4fdd\u5b58 \u2014 Hype\u30a2\u30ab\u30a6\u30f3\u30c8\u3067\u5171\u6709\u306b\u306a\u308a\u307e\u3059\u3002","Feed auf diesem Ger\u00e4t gespeichert \u2014 wird mit Hype-Konten f\u00fcr alle Reiter geteilt."))),
+      /* 17/09 (226) : de l air sous le fil. Trois fois aujourd hui un bouton s est retrouve sous
+         la barre du bas (bouton « Ranger », croix d un post) : ici on pousse simplement le bas
+         du fil au-dessus d elle. La barre elle-meme n est pas touchee. */
+      h("div", { style:{ height:"calc(112px + env(safe-area-inset-bottom))" } }),
     (zoomImg ? h("div", { style:{ position:"fixed", inset:0, zIndex:999, background:"rgba(4,7,10,0.96)", animation:"evZoomIn .22s ease both", backdropFilter:"blur(4px)", WebkitBackdropFilter:"blur(4px)" } },
       h("div", { onClick:function(e){ if(e.target === e.currentTarget){ setZoomImg(null); } }, style: zoomFit ? { position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", padding:"calc(env(safe-area-inset-top) + 16px) 10px calc(env(safe-area-inset-bottom) + 16px)" } : { position:"absolute", inset:0, overflow:"auto", WebkitOverflowScrolling:"touch", padding:"calc(env(safe-area-inset-top) + 56px) 0 calc(env(safe-area-inset-bottom) + 16px)" } },
         h("img", { src:zoomImg, alt:"", onClick:function(e){ e.stopPropagation(); setZoomFit(!zoomFit); }, style: zoomFit ? { maxWidth:"100%", maxHeight:"100%", objectFit:"contain", borderRadius:8, boxShadow:"0 12px 44px rgba(10,26,36,0.143)", cursor:"zoom-in" } : { width:"230%", maxWidth:"none", display:"block", cursor:"zoom-out" } })),
@@ -24904,7 +24963,9 @@ class BarriereEcran extends React.Component {
     render() {
         if (!this.state.mort) return this.props.children;
         const w = HYPE_SABOT[this.props.langue] || HYPE_SABOT.fr;
-        const img = (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS["k554"]) || "";
+        /* 16/09 (222) : la video d Apy remplace k554 (casse, carre « ? »), taille moyenne 170 px, son choix.
+           Repli sur l emoji cheval si la video ne charge pas (etat apyKo). */
+        const apyKo = !!(this.state && this.state.apyKo);
         const secondaire = {
             padding: 11, borderRadius: 12, fontFamily: "inherit", fontSize: 12.5,
             background: "transparent", border: "1px solid " + COLORS.nuitBordure,
@@ -24916,13 +24977,15 @@ class BarriereEcran extends React.Component {
                 justifyContent: "center", textAlign: "center", padding: "36px 24px"
             }
         },
-            img
-                ? React.createElement("img", {
-                    src: img, alt: "Apy",
+            !apyKo
+                ? React.createElement("video", {
+                    src: "images/APY_SABOT.mp4", autoPlay: true, loop: true, muted: true, playsInline: true, preload: "auto", "aria-label": "Apy",
+                    ref: (el) => { if (el) { try { el.muted = true; el.defaultMuted = true; const pr = el.play(); if (pr && pr.catch) pr.catch(() => { }); } catch (eV) { } } },
+                    onError: () => { try { this.setState({ apyKo: true }); } catch (eS) { } },
                     style: {
-                        width: 96, height: 96, borderRadius: "50%", objectFit: "cover",
+                        width: 170, height: 170, borderRadius: "50%", objectFit: "cover",
                         border: "1px solid " + COLORS.turquoiseDim, marginBottom: 18,
-                        background: COLORS.nuitElevee
+                        background: COLORS.nuitElevee, display: "block"
                     }
                 })
                 : React.createElement("div", {
@@ -31072,6 +31135,15 @@ function AgendaClubHype(props) {
   /* 14/09 (128) : un echec d ouverture de fiche se DIT, il ne laisse pas un clic muet. */
   var stEAgc = React.useState(""); var errAgc = stEAgc[0], setErrAgc = stEAgc[1];
   var stUpload = React.useState(false); var uploadEnCours = stUpload[0], setUploadEnCours = stUpload[1];
+  /* 17/09 (224) — L AGENDA DE CLUB NE DOIT PLUS RIEN AVALER. Blandine, sur la SEP : « je n arrive
+     pas a charger une affiche », puis « j appuie sur Publier et rien ne marche ». Deux silences
+     dans ce formulaire, trouves dans le code : (1) choisirImageAgc n affichait AUCUNE erreur (le
+     `.catch` coupait juste « Envoi… ») ; (2) enregistrer() ne disait rien quand la base refusait
+     (r.error ignore). La vraie cause de son blocage etait une troisieme chose muette : « Publier »
+     est eteint sans dire POURQUOI quand il manque le titre ou la date de debut.
+     ⚠️ Aucun envoi, aucun droit, aucune requete n est modifie ici : on AFFICHE seulement. */
+  var stErrImg = React.useState(""); var errImgAgc = stErrImg[0], setErrImgAgc = stErrImg[1];
+  var refDernierFichierAgc = React.useRef(null);
   var refImgAgc = React.useRef(null);
   /* 02/09 : retour depuis la page agenda avec une demande d ajout. Lu a chaque
      rendu, comme window.__ouvrirPalmares — la page Club peut deja etre montee. */
@@ -31133,14 +31205,30 @@ function AgendaClubHype(props) {
     catch (eJ) { return ""; }
   }
 
+  /* 17/09 (224) : l envoi de l affiche DIT ce qui se passe. Le fichier choisi est garde en
+     memoire (ref, pas d etat) pour le bouton « Reessayer ». */
+  function envoyerAfficheAgc(fichier) {
+    if (!fichier) return;
+    refDernierFichierAgc.current = fichier;
+    setErrImgAgc(""); setUploadEnCours(true);
+    Promise.resolve(envoyerPhoto(fichier)).then(function (res) {
+      setUploadEnCours(false);
+      if (res && res.url) { setForm(function (f) { return Object.assign({}, f, { image_url: res.url }); }); setErrImgAgc(""); return; }
+      var m = (res && res.error) ? ((typeof hypeErreurTexte === "function") ? hypeErreurTexte(res.error) : String((res.error && res.error.message) || res.error)) : "";
+      setErrImgAgc(T("L\u2019affiche n\u2019a pas pu \u00eatre envoy\u00e9e", "The poster could not be uploaded", "No se pudo enviar el cartel", "Impossibile inviare la locandina", "\u30dd\u30b9\u30bf\u30fc\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f") + (m ? " \u2014 " + m : "."));
+    }).catch(function (eEa) {
+      setUploadEnCours(false);
+      setErrImgAgc(T("L\u2019affiche n\u2019a pas pu \u00eatre envoy\u00e9e", "The poster could not be uploaded", "No se pudo enviar el cartel", "Impossibile inviare la locandina", "\u30dd\u30b9\u30bf\u30fc\u3092\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f") + " \u2014 " + ((typeof hypeErreurTexte === "function") ? hypeErreurTexte(eEa) : String(eEa)));
+    });
+  }
   function choisirImageAgc(e) {
     var fichier = e && e.target && e.target.files && e.target.files[0];
-    if (!fichier) return;
-    setUploadEnCours(true);
-    envoyerPhoto(fichier).then(function (res) {
-      setUploadEnCours(false);
-      if (res && res.url) setForm(function (f) { return Object.assign({}, f, { image_url: res.url }); });
-    }).catch(function () { setUploadEnCours(false); });
+    if (!fichier) { setErrImgAgc(T("Aucun fichier re\u00e7u du t\u00e9l\u00e9phone. R\u00e9essaie.", "No file received from the phone. Try again.", "Ning\u00fan archivo recibido. Reint\u00e9ntalo.", "Nessun file ricevuto. Riprova.", "\u30d5\u30a1\u30a4\u30eb\u3092\u53d7\u3051\u53d6\u308c\u307e\u305b\u3093\u3002")); return; }
+    if (fichier.type && String(fichier.type).indexOf("image/") !== 0) {
+      setErrImgAgc(T("Ce fichier n\u2019est pas une image.", "This file is not an image.", "Este archivo no es una imagen.", "Questo file non \u00e8 un\u2019immagine.", "\u3053\u306e\u30d5\u30a1\u30a4\u30eb\u306f\u753b\u50cf\u3067\u306f\u3042\u308a\u307e\u305b\u3093\u3002"));
+      return;
+    }
+    envoyerAfficheAgc(fichier);
   }
 
   function recharger() {
@@ -31177,8 +31265,18 @@ function AgendaClubHype(props) {
     setErrAgc("");
     setEnvoi(true);
     ajouterAgendaClub({ clef: clef, nomClub: nomClub, type: form.type, titre: form.titre.trim(), date_jour: form.date_jour, date_fin: form.date_fin || null, heure: (form.heure || "").trim(), lieu: (form.lieu || "").trim(), description: (form.description || "").trim(), image_url: form.image_url || "" })
-      .then(function (r) { setEnvoi(false); if (r && !r.error) { setModal(false); setForm({ type: "stage", titre: "", date_jour: "", date_fin: "", heure: "", lieu: "", description: "", image_url: "" }); recharger(); } })
-      .catch(function () { setEnvoi(false); });
+      /* 17/09 (224) : un refus de la base est AFFICHE, la fenetre reste ouverte. Avant, le bouton
+         se remettait simplement en place et elle croyait a une attente sans fin. */
+      .then(function (r) {
+        setEnvoi(false);
+        if (r && !r.error) { setModal(false); setForm({ type: "stage", titre: "", date_jour: "", date_fin: "", heure: "", lieu: "", description: "", image_url: "" }); recharger(); return; }
+        var mE = (r && r.error) ? ((typeof hypeErreurTexte === "function") ? hypeErreurTexte(r.error) : String((r.error && r.error.message) || r.error)) : "";
+        setErrAgc(T("La publication a \u00e9t\u00e9 refus\u00e9e", "Publishing was refused", "La publicaci\u00f3n fue rechazada", "Pubblicazione rifiutata", "\u6295\u7a3f\u304c\u62d2\u5426\u3055\u308c\u307e\u3057\u305f") + (mE ? " \u2014 " + mE : "."));
+      })
+      .catch(function (eEn) {
+        setEnvoi(false);
+        setErrAgc(T("La publication a \u00e9chou\u00e9", "Publishing failed", "La publicaci\u00f3n fall\u00f3", "Pubblicazione non riuscita", "\u6295\u7a3f\u306b\u5931\u6557\u3057\u307e\u3057\u305f") + " \u2014 " + ((typeof hypeErreurTexte === "function") ? hypeErreurTexte(eEn) : String(eEn)));
+      });
   }
   function supprimer(id) {
     try { if (typeof window !== "undefined" && window.confirm && !window.confirm(T("Supprimer ce rendez-vous ?", "Delete this event?", "\u00bfEliminar esta cita?", "Eliminare questo evento?", "\u3053\u306e\u4e88\u5b9a\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f"))) return; } catch (e) { }
@@ -31268,12 +31366,24 @@ function AgendaClubHype(props) {
         h("div", { onClick: function () { refImgAgc.current && refImgAgc.current.click(); }, style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 12, border: "1px dashed rgba(255,255,255,0.22)", background: "rgba(255,255,255,0.03)", cursor: "pointer" } },
           form.image_url ? h("img", { src: form.image_url, alt: "", style: { width: 40, height: 40, borderRadius: 8, objectFit: "cover", flexShrink: 0 } }) : null,
           h("span", { style: { fontSize: 12.5, color: "#9AA6AE", fontFamily: "'Montserrat',sans-serif" } }, uploadEnCours ? T("Envoi\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : (form.image_url ? T("Changer l'affiche", "Change poster", "Cambiar cartel", "Cambia locandina", "\u5909\u66f4") : T("Ajouter une affiche", "Add a poster", "A\u00f1adir un cartel", "Aggiungi locandina", "\u8ffd\u52a0"))))),
+        /* 17/09 (224) : l erreur d envoi de l affiche, DANS la fenetre, avec « Reessayer ». */
+        errImgAgc ? h("div", { style: { marginTop: 8, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.08)", color: "#FF9B9B", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, lineHeight: 1.5 } },
+          errImgAgc,
+          refDernierFichierAgc.current ? h("div", { role: "button", onClick: function (eRe) { try { if (eRe) { eRe.stopPropagation(); eRe.preventDefault(); } } catch (eR2) { } if (!uploadEnCours) envoyerAfficheAgc(refDernierFichierAgc.current); }, style: { marginTop: 8, minHeight: 40, borderRadius: 999, border: "1px solid rgba(255,155,155,0.5)", color: "#FFC9C9", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, cursor: "pointer" } },
+            T("R\u00e9essayer", "Try again", "Reintentar", "Riprova", "\u518d\u8a66\u884c")) : null) : null,
       /* 14/09 (130) : le refus s affiche DANS la fenetre. Le bandeau de la page est cache
          derriere elle : une fin avant le debut aurait eu l air d un bouton mort. */
       errAgc ? h("div", { style: { margin: "2px 0 10px", padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.08)", color: "#FF9B9B", fontFamily: "'Montserrat',sans-serif", fontSize: 12, lineHeight: 1.45 } }, errAgc) : null,
       h("div", { className: "agc-actions" },
         h("button", { className: "agc-annuler", onClick: function () { if (!envoi) setModal(false); } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb")),
-        h("button", { className: "agc-ok" + ((!form.titre.trim() || !form.date_jour || envoi) ? " off" : ""), onClick: enregistrer }, envoi ? "\u2026" : T("Publier", "Publish", "Publicar", "Pubblica", "\u516c\u958b"))))) : null;
+        h("button", { className: "agc-ok" + ((!form.titre.trim() || !form.date_jour || envoi) ? " off" : ""), onClick: enregistrer }, envoi ? "\u2026" : T("Publier", "Publish", "Publicar", "Pubblica", "\u516c\u958b"))),
+      /* 17/09 (224) : POURQUOI « Publier » est eteint. Sa perte de temps du 17/09 : la date etait
+         dans « Fin », « Debut » vide, et rien ne le disait — un bouton eteint ressemble a une
+         attente sans fin. Simple phrase, aucun champ corrige en douce. */
+      (!envoi && (!form.titre.trim() || !form.date_jour)) ? h("div", { style: { marginTop: 8, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, color: "#9AA6AE", lineHeight: 1.5 } },
+        !form.titre.trim()
+          ? T("Il manque le titre pour publier.", "A title is needed to publish.", "Falta el t\u00edtulo.", "Manca il titolo.", "\u30bf\u30a4\u30c8\u30eb\u304c\u5fc5\u8981\u3067\u3059\u3002")
+          : T("Il manque la date de d\u00e9but pour publier (« Fin » est facultative).", "A start date is needed to publish (\u201cEnd\u201d is optional).", "Falta la fecha de inicio.", "Manca la data di inizio.", "\u958b\u59cb\u65e5\u304c\u5fc5\u8981\u3067\u3059\u3002")) : null)) : null;
 
   return h(React.Fragment, null,
    h("div", { className: "agc-wrap" },
@@ -32050,6 +32160,23 @@ function EcranAgendaClub() {
      supplementaires des posts a plusieurs medias (colonne `medias`) sont prises aussi, et
      les publications privees ecartees comme partout ailleurs.
      Les RESULTATS FFE ne sont pas encore la : c est la tranche suivante, par la date. */
+  /* 17/09 (227) : une seule fonction pour supprimer un rendez-vous, AVEC CONFIRMATION (sa
+     demande : « demande confirmation pour chaque suppression »), et qui DIT quand la base
+     refuse au lieu de ne rien faire. Utilisee par le passe et par la page du rendez-vous. */
+  function supprimerRdvClub(ev) {
+    if (!ev || !ev.id) return;
+    var ok = true;
+    try {
+      if (window.confirm) ok = window.confirm(T("Supprimer « " + (ev.titre || "") + " » ? Ses photos et commentaires seront effac\u00e9s aussi.", "Delete \u201c" + (ev.titre || "") + "\u201d? Its photos and comments will be deleted too.", "\u00bfEliminar \u00ab" + (ev.titre || "") + "\u00bb? Tambi\u00e9n se borrar\u00e1n sus fotos y comentarios.", "Eliminare \u00ab" + (ev.titre || "") + "\u00bb? Anche foto e commenti saranno eliminati.", "\u300c" + (ev.titre || "") + "\u300d\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "\u201e" + (ev.titre || "") + "\u201c l\u00f6schen? Fotos und Kommentare werden ebenfalls gel\u00f6scht."));
+    } catch (eC4) { }
+    if (!ok) return;
+    try {
+      Promise.resolve(supprimerAgendaClub(ev.id)).then(function (r) {
+        if (r && r.error) { setErrPasse(T("La suppression a \u00e9t\u00e9 refus\u00e9e : ", "Deletion was refused: ", "Eliminaci\u00f3n rechazada: ", "Eliminazione rifiutata: ", "\u524a\u9664\u304c\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\uff1a", "L\u00f6schen abgelehnt: ") + String((r.error && r.error.message) || r.error)); return; }
+        setErrPasse(""); setOuvertEv(null); chargerPasse(); recharger();
+      }).catch(function (eD) { setErrPasse(String(eD)); });
+    } catch (eD2) { setErrPasse(String(eD2)); }
+  }
   var carteEvPasse = function (ev) {
     var meta = META2[ev.type] || META2.stage;
     var ouvert = (ouvertEv === ev.id);
@@ -32152,7 +32279,16 @@ function EcranAgendaClub() {
       }),
       (listeRes.length > 8) ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6B7580", marginTop: 6 } },
         "+ " + (listeRes.length - 8) + " " + T("autres", "more", "m\u00e1s", "altri", "\u4ef6", "weitere")) : null) : null;
-    return h("div", { key: ev.id, style: { borderRadius: 16, overflow: "hidden", border: "1px solid " + (ouvert ? "rgba(217,199,163,0.42)" : "rgba(255,255,255,0.08)"), background: "rgba(255,255,255,0.022)", marginBottom: 12 } },
+    /* 17/09 (227) : SUPPRIMER UN RENDEZ-VOUS PASSE. Blandine : « sur le mur je vois pas de
+       croix » - et pour cause, AUCUN bouton de suppression n avait jamais ete code pour le
+       passe (il n existait que pour les rendez-vous a venir). Croix ronde bordee, visible,
+       en haut a droite de la carte, reservee a la gestionnaire du club, avec confirmation.
+       ⚠️ La suppression emporte le MUR du rendez-vous (cascade cote base). Les resultats FFE
+       ne sont PAS touches : ils tiennent a la date, pas au rendez-vous. */
+    return h("div", { key: ev.id, style: { position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid " + (ouvert ? "rgba(217,199,163,0.42)" : "rgba(255,255,255,0.08)"), background: "rgba(255,255,255,0.022)", marginBottom: 12 } },
+      estProprio ? h("div", { role: "button", "aria-label": T("Supprimer ce rendez-vous", "Delete this event", "Eliminar esta cita", "Elimina questo evento", "\u3053\u306e\u4e88\u5b9a\u3092\u524a\u9664", "Diesen Termin l\u00f6schen"),
+        onClick: function (eSp) { try { if (eSp) { eSp.stopPropagation(); eSp.preventDefault(); } } catch (eS3) { } supprimerRdvClub(ev); },
+        style: { position: "absolute", top: 8, right: 8, zIndex: 4, width: 38, height: 38, borderRadius: "50%", background: "rgba(7,8,10,0.72)", border: "1px solid rgba(255,255,255,0.28)", color: "#E6ECEF", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, lineHeight: 1, cursor: "pointer", boxSizing: "border-box" } }, "\u2715") : null,
       rang,
       bande,
       blocRes,
@@ -36392,6 +36528,93 @@ function PanneauConseilsHB(props) {
      imaginaire : pas de cheval sans epingle, pas de cavaliere sans epingle. */
   var stQui = React.useState("tous"); var qui = stQui[0], setQui = stQui[1];
   var stQuiO = React.useState(false); var quiOuvert = stQuiO[0], setQuiOuvert = stQuiO[1];
+  /* 16/09 (218) : « POUR QUI ? » DEVIENT UNE RANGEE D ONGLETS + un bouton « + » au bout.
+     Sa demande : « des onglets au-dessus qui determinent ce qui s affiche en dessous », les
+     onglets = CE QUI A DEJA UNE EPINGLE (meme construction que choixQui, inchangee), et le
+     « + » sert a RATTACHER DES CONSEILS EXISTANTS a un cheval (son option 2). Constat du
+     jour en base : 10 epingles, 9 SANS cheval - dont ses questions sur sa jument Hey Baby.
+     ⚠️ Le « + » N EXISTE PAS en mode choix (props.onChoisir, depuis une seance).
+     ⚠️ Chaque rattachement est une ecriture VERIFIEE : une ligne doit revenir, sinon on le
+     DIT (lecon du 16/09 : une regle manquante renvoie zero ligne, pas une erreur).
+     ⚠️ Rien n est rattache sans qu elle ait coche le conseil. Aucune deduction depuis le texte. */
+  var stAj = React.useState(null); var ajout = stAj[0], setAjout = stAj[1];
+  var stAjB = React.useState(false); var ajBusy = stAjB[0], setAjBusy = stAjB[1];
+  var stAjE = React.useState(""); var ajErr = stAjE[0], setAjErr = stAjE[1];
+  async function rattacherCoches() {
+    if (!ajout || !ajout.cv || ajBusy) return;
+    var coches = ajout.coches || {};
+    var ids = Object.keys(coches).filter(function (k) { return !!coches[k]; });
+    if (!ids.length) { setAjErr(T("Coche au moins un conseil.", "Tick at least one tip.", "Marca al menos un consejo.", "Seleziona almeno un consiglio.", "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle mindestens einen Tipp.")); return; }
+    if (typeof supa === "undefined" || !supa) { setAjErr("Enregistrement indisponible."); return; }
+    setAjErr(""); setAjBusy(true);
+    var nid = String(ajout.cv.id), nnom = String(ajout.cv.nom || "").trim();
+    var ok = {}, refus = 0, detail = "";
+    for (var i = 0; i < ids.length; i++) {
+      try {
+        var r = await supa.from("echanges_heybaby_epingles").update({ cheval_id: nid, cheval_nom: nnom }).eq("id", ids[i]).select("id").maybeSingle();
+        if (r && !r.error && r.data) ok[ids[i]] = true;
+        else { refus++; if (r && r.error) detail = String((r.error && r.error.message) || r.error); }
+      } catch (eRa) { refus++; detail = String(eRa); }
+    }
+    setListe(function (l) {
+      return (l || []).map(function (x) {
+        if (x && x.ep && ok[String(x.ep.id)]) return Object.assign({}, x, { ep: Object.assign({}, x.ep, { cheval_id: nid, cheval_nom: nnom }) });
+        return x;
+      });
+    });
+    setAjBusy(false);
+    if (refus) {
+      var reste = {}; ids.forEach(function (k) { if (!ok[k]) reste[k] = true; });
+      setAjout(function (a) { return a ? Object.assign({}, a, { coches: reste }) : a; });
+      setAjErr(T("La base a refus\u00e9 ", "The database refused ", "La base rechaz\u00f3 ", "Il database ha rifiutato ", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\uff1a", "Die Datenbank hat abgelehnt: ") + refus + " / " + ids.length + (detail ? " \u2014 " + detail : ""));
+      return;
+    }
+    setAjout(null);
+    setFiltre("tous");
+    setQui("chv:" + nnom);
+  }
+
+  /* 16/09 (219) : LE « + » PROPOSE LA MEME LISTE QUE L ECRAN D UN CONSEIL (215) : ses
+     chevaux, PUIS les chevaux de ses ecuries. C est la regle du 207, pour TOUT LE MONDE
+     (« les gens ne montent pas que le cheval dont ils sont proprietaires ») - le 218 ne
+     proposait que ses propres chevaux, erreur de l assistant. Meme requete, meme logique :
+     cavaliers de ses deux clubs (profil club/ecurie + club2/ecurie2), puis leurs chevaux.
+     ⚠️ Colonnes EXPLICITES avec ecurie ET ecurie2 pour hypeCavaliersDuClub (piege du 189).
+     ⚠️ Si un jour la liste doit suivre chevaux.club, changer LES DEUX endroits ensemble. */
+  var stAjE2 = React.useState(null); var chvEcAj = stAjE2[0], setChvEcAj = stAjE2[1];
+  React.useEffect(function () {
+    if (!ajout || chvEcAj !== null) return;
+    var vif = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) { if (vif) setChvEcAj([]); return; }
+        var pf = ctx.profil || {};
+        var clubs = [];
+        var c1 = String(pf.club || pf.ecurie || "").trim();
+        var c2 = String(pf.club2 || pf.ecurie2 || "").trim();
+        if (c1) clubs.push(c1);
+        if (c2 && c2.toLowerCase() !== c1.toLowerCase()) clubs.push(c2);
+        if (!clubs.length || typeof hypeCavaliersDuClub !== "function") { if (vif) setChvEcAj([]); return; }
+        var vusP = {}, ids = [];
+        for (var i = 0; i < clubs.length; i++) {
+          var l = await hypeCavaliersDuClub(clubs[i], "id, pseudo, ecurie, ecurie2");
+          ((l) || []).forEach(function (pr) { if (!pr || !pr.id || vusP[pr.id]) return; vusP[pr.id] = true; ids.push(pr.id); });
+        }
+        if (!ids.length) { if (vif) setChvEcAj([]); return; }
+        var rc = await supa.from("chevaux").select("id, nom").in("user_id", ids).is("supprime_le", null).limit(500);
+        if (!vif) return;
+        if (rc && rc.error) { setChvEcAj([]); return; }
+        var miens = {};
+        (ctx.chevaux || []).forEach(function (cv) { if (cv && cv.id) miens[String(cv.id)] = true; });
+        var autres = ((rc && rc.data) || [])
+          .filter(function (cv) { return cv && cv.id && cv.nom && !miens[String(cv.id)]; })
+          .map(function (cv) { return { id: cv.id, nom: cv.nom }; });
+        autres.sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || "")); });
+        setChvEcAj(autres);
+      } catch (eChA) { if (vif) setChvEcAj([]); }
+    })();
+    return function () { vif = false; };
+  }, [!!ajout]);
 
   var choixQui = (function () {
     var out = [{ cle: "tous", nom: T("Tous les conseils", "All tips", "Todos los consejos", "Tutti i consigli", "\u3059\u3079\u3066", "Alle Tipps"), img: null, lettre: "\u25a6" }];
@@ -36406,7 +36629,9 @@ function PanneauConseilsHB(props) {
       });
       /* « Moi » = les conseils que tu as gardes pour toi, c est-a-dire ceux qui ne sont
          rattaches a AUCUNE cavaliere. Propose seulement s il en existe. */
-      if (sansCav) out.push({ cle: "moi", nom: T("Moi", "Me", "Yo", "Io", "\u81ea\u5206", "Ich"), img: (ctx.profil && ctx.profil.avatar_url) || null, lettre: "\u2022" });
+      /* 16/09 (220) : L ONGLET « Moi » EST RETIRE, sa decision. « Tous les conseils » montre deja
+         tout, et « Moi » (= aucune cavaliere) faisait doublon chez elle. `sansCav` reste compte
+         mais n ajoute plus d onglet. Le filtre qui === "moi" plus bas reste inoffensif. */
       Object.keys(cavs).sort(function (a, b) { return a.localeCompare(b); }).forEach(function (n) {
         out.push({ cle: "cav:" + n, nom: n, img: null, lettre: n.slice(0, 1).toUpperCase() });
       });
@@ -36554,32 +36779,92 @@ function PanneauConseilsHB(props) {
         h("input", { type: "text", value: q, onChange: function (e) { setQ(e.target.value); },
           placeholder: T("Rechercher\u2026", "Search\u2026", "Buscar\u2026", "Cerca\u2026", "\u691c\u7d22\u2026", "Suchen\u2026"), style: stChamp }),
 
-        /* 16/09 (216) : POUR QUI ? Un seul selecteur compact. Il n apparait QUE s il y a
-           autre chose a choisir que « Tous les conseils » - un menu a une seule entree ne
-           sert qu a prendre de la place. Le menu se deplie SUR PLACE : pas de portail. */
-        (choixQui.length > 1) ? h("div", { style: { marginTop: 11 } },
+        /* 16/09 (218) : POUR QUI ? en RANGEE D ONGLETS (remplace le menu deroulant du 216).
+           Memes pastilles que le rail des themes juste dessous. Le « + » au bout ouvre, SUR
+           PLACE (pas de portail), la liste de ses chevaux, puis ses conseils SANS cheval a
+           cocher. En mode choix, pas de « + » et la rangee n apparait que s il y a un choix. */
+        (!props.onChoisir || choixQui.length > 1) ? h("div", { style: { marginTop: 11 } },
           h("div", { style: { fontFamily: M, fontSize: 9, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: "#7B848E", marginBottom: 7 } },
             T("Pour qui\u00a0?", "For whom?", "\u00bfPara qui\u00e9n?", "Per chi?", "\u5bfe\u8c61", "F\u00fcr wen?")),
-          h("div", { role: "button", onClick: function () { setQuiOuvert(!quiOuvert); },
-            style: { display: "flex", alignItems: "center", gap: 10, minHeight: 48, padding: "0 13px", borderRadius: 14, border: "1px solid " + (qui === "tous" ? "rgba(255,255,255,0.12)" : "rgba(95,233,240,0.45)"), background: qui === "tous" ? "rgba(255,255,255,0.03)" : "rgba(95,233,240,0.07)", cursor: "pointer" } },
-            quiActuel.img
-              ? h("img", { src: quiActuel.img, alt: "", loading: "lazy", decoding: "async", style: { width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto", display: "block" } })
-              : h("span", { style: { width: 28, height: 28, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 11, color: "#8A929C" } }, quiActuel.lettre),
-            h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 13.5, fontWeight: 700, color: qui === "tous" ? "#C9D3D8" : TQL, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, quiActuel.nom),
-            h("span", { style: { flex: "0 0 auto", fontSize: 11, lineHeight: 1, color: "rgba(255,255,255,0.35)" } }, quiOuvert ? "\u25b4" : "\u25be")),
-          quiOuvert
-            ? h("div", { style: { marginTop: 7, borderRadius: 14, border: "1px solid rgba(255,255,255,0.09)", background: "rgba(255,255,255,0.02)", overflow: "hidden", maxHeight: "42vh", overflowY: "auto", overscrollBehavior: "contain" } },
-                choixQui.map(function (o, iO) {
-                  var prisQ = (o.cle === qui);
-                  return h("div", { key: o.cle, role: "button", onClick: function () { setQui(o.cle); setQuiOuvert(false); },
-                    style: { display: "flex", alignItems: "center", gap: 11, minHeight: 50, padding: "0 13px", borderTop: iO ? "1px solid rgba(255,255,255,0.05)" : "none", cursor: "pointer", background: prisQ ? "rgba(95,233,240,0.07)" : "transparent" } },
-                    o.img
-                      ? h("img", { src: o.img, alt: "", loading: "lazy", decoding: "async", style: { width: 30, height: 30, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto", display: "block" } })
-                      : h("span", { style: { width: 30, height: 30, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 11.5, color: "#8A929C" } }, o.lettre),
-                    h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 14, fontWeight: prisQ ? 700 : 500, color: prisQ ? TQL : "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o.nom),
-                    prisQ ? h("span", { style: { flex: "0 0 auto", color: TQL, fontSize: 14, lineHeight: 1 } }, "\u2713") : null);
-                }))
-            : null) : null,
+          h("div", { "data-hscroll": "1", style: { display: "flex", gap: 7, overflowX: "auto", overscrollBehavior: "contain", paddingBottom: 2 } },
+            choixQui.map(function (o) {
+              var prisO = (o.cle === qui);
+              return h("div", { key: o.cle, role: "button", onClick: function () { setQui(o.cle); setAjout(null); setAjErr(""); },
+                style: { flex: "0 0 auto", display: "flex", alignItems: "center", gap: 7, maxWidth: 210, minHeight: 40, padding: (o.cle === "tous") ? "0 15px" : "0 14px 0 5px", borderRadius: 999, border: "1px solid " + (prisO ? "rgba(95,233,240,0.55)" : "rgba(255,255,255,0.12)"), background: prisO ? "rgba(95,233,240,0.10)" : "transparent", cursor: "pointer", boxSizing: "border-box" } },
+                (o.cle === "tous") ? null : (o.img
+                  ? h("img", { src: o.img, alt: "", loading: "lazy", decoding: "async", style: { width: 28, height: 28, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto", display: "block" } })
+                  : h("span", { style: { width: 28, height: 28, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 11, color: "#8A929C", boxSizing: "border-box" } }, o.lettre)),
+                h("span", { style: { minWidth: 0, fontFamily: M, fontSize: 12.5, fontWeight: prisO ? 800 : 500, color: prisO ? TQL : "#A9B4BC", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o.nom));
+            }),
+            props.onChoisir ? null : h("div", { key: "__plus", role: "button", "aria-label": T("Ajouter un cheval", "Add a horse", "A\u00f1adir un caballo", "Aggiungi un cavallo", "\u99ac\u3092\u8ffd\u52a0", "Pferd hinzuf\u00fcgen"),
+              onClick: function () { setAjErr(""); setAjout(ajout ? null : { etape: "cheval" }); },
+              style: { flex: "0 0 auto", width: 40, height: 40, borderRadius: "50%", border: "1px dashed " + (ajout ? "rgba(95,233,240,0.65)" : "rgba(255,255,255,0.28)"), background: ajout ? "rgba(95,233,240,0.10)" : "transparent", color: ajout ? TQL : "#C9D3D8", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 20, lineHeight: 1, cursor: "pointer", boxSizing: "border-box" } }, ajout ? "\u2715" : "+")),
+          (ajout && !props.onChoisir) ? h("div", { style: { marginTop: 8, borderRadius: 14, border: "1px solid rgba(95,233,240,0.22)", background: "rgba(255,255,255,0.02)", overflow: "hidden", maxHeight: "44vh", overflowY: "auto", overscrollBehavior: "contain" } },
+            (ajout.etape === "cheval")
+              ? h("div", null,
+                  h("div", { style: { padding: "12px 14px 6px", fontFamily: M, fontSize: 9, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: "#7B848E" } },
+                    T("Quel cheval\u00a0?", "Which horse?", "\u00bfQu\u00e9 caballo?", "Quale cavallo?", "\u3069\u306e\u99ac\uff1f", "Welches Pferd?")),
+                  (function () {
+                    var mesCv = (ctx.chevaux || []).filter(function (cv) { return cv && cv.id && cv.nom; });
+                    function ligneCv(cv, pref) {
+                      var ph = cv.photo_url || null; /* photo pour SES chevaux seulement : la liste de l ecurie ne charge pas photo_url (certaines sont des images entieres en base, trop lourdes pour 500 lignes) - meme choix qu au 215 */
+                      return h("div", { key: pref + cv.id, role: "button",
+                        onClick: function () { setAjErr(""); setAjout({ etape: "conseils", cv: { id: cv.id, nom: cv.nom }, coches: {} }); },
+                        style: { display: "flex", alignItems: "center", gap: 11, minHeight: 50, padding: "0 14px", borderTop: "1px solid rgba(255,255,255,0.05)", cursor: "pointer" } },
+                        ph
+                          ? h("img", { src: ph, alt: "", loading: "lazy", decoding: "async", style: { width: 32, height: 32, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto", display: "block" } })
+                          : h("span", { style: { width: 32, height: 32, borderRadius: "50%", flex: "0 0 auto", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 12, color: "#8A929C", boxSizing: "border-box" } }, String(cv.nom || "?").trim().slice(0, 1).toUpperCase()),
+                        h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 14, fontWeight: 500, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cv.nom),
+                        h("span", { style: { flex: "0 0 auto", fontSize: 15, lineHeight: 1, color: "rgba(255,255,255,0.35)" } }, "\u203a"));
+                    }
+                    return h("div", null,
+                      mesCv.map(function (cv) { return ligneCv(cv, "aj"); }),
+                      (chvEcAj === null)
+                        ? h("div", { style: { padding: "16px 14px", textAlign: "center", fontFamily: M, fontSize: 12.5, color: "#6D7681", borderTop: "1px solid rgba(255,255,255,0.05)" } }, "\u2026")
+                        : (chvEcAj.length
+                            ? h("div", null,
+                                h("div", { style: { padding: "12px 14px 6px", borderTop: "1px solid rgba(255,255,255,0.05)", fontFamily: M, fontSize: 9, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: "#7B848E" } },
+                                  T("Les chevaux de l\u2019\u00e9curie", "The stable\u2019s horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u30af\u30e9\u30d6\u306e\u99ac", "Die Pferde des Stalls")),
+                                chvEcAj.map(function (cv) { return ligneCv(cv, "ajec"); }))
+                            : (mesCv.length ? null : h("div", { style: { padding: "14px", fontFamily: M, fontSize: 12.5, color: "#6D7681" } },
+                                T("Aucun cheval \u00e0 proposer.", "No horse to offer.", "Ning\u00fan caballo disponible.", "Nessun cavallo disponibile.", "\u99ac\u304c\u3044\u307e\u305b\u3093\u3002", "Kein Pferd verf\u00fcgbar.")))));
+                  })())
+              : h("div", null,
+                  /* 16/09 (221) : LE BOUTON « Ranger » MONTE SUR LA LIGNE DU NOM DU CHEVAL, son choix A.
+                     Vu sur son enregistrement : en bas de la liste, il passait sous la barre du bas et
+                     rebondissait dessous - impossible a toucher. En haut, il reste visible quelle que
+                     soit la longueur de la liste. Le message d erreur s affiche juste dessous. */
+                  h("div", { style: { display: "flex", alignItems: "center", gap: 8, minHeight: 52, padding: "6px 8px 6px 14px", borderBottom: "1px solid rgba(255,255,255,0.06)", boxSizing: "border-box" } },
+                    h("div", { role: "button", onClick: function () { if (!ajBusy) { setAjErr(""); setAjout({ etape: "cheval" }); } },
+                      style: { flex: 1, minWidth: 0, display: "flex", alignItems: "center", gap: 8, minHeight: 40, cursor: "pointer" } },
+                      h("span", { style: { fontSize: 15, lineHeight: 1, color: "rgba(255,255,255,0.45)" } }, "\u2039"),
+                      h("span", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 13.5, fontWeight: 700, color: TQL, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, ajout.cv.nom)),
+                    h("div", { role: "button", onClick: rattacherCoches,
+                      style: { flex: "0 0 auto", minHeight: 40, padding: "0 16px", borderRadius: 999, border: "1px solid rgba(95,233,240,0.55)", background: "rgba(95,233,240,0.14)", color: TQL, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 13, fontWeight: 700, cursor: ajBusy ? "default" : "pointer", opacity: ajBusy ? 0.6 : 1, whiteSpace: "nowrap", boxSizing: "border-box" } },
+                      ajBusy
+                        ? "\u2026"
+                        : (T("Ranger", "File", "Guardar", "Archivia", "\u6574\u7406", "Ablegen") + " (" + Object.keys(ajout.coches || {}).filter(function (kk) { return ajout.coches[kk]; }).length + ")"))),
+                  ajErr ? h("div", { style: { margin: "10px 14px 0", padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.45 } }, ajErr) : null,
+                  h("div", { style: { padding: "12px 14px 6px", fontFamily: M, fontSize: 9, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: "#7B848E" } },
+                    T("Les conseils qui le concernent", "Tips about this horse", "Consejos sobre este caballo", "Consigli su questo cavallo", "\u3053\u306e\u99ac\u306e\u30a2\u30c9\u30d0\u30a4\u30b9", "Tipps zu diesem Pferd")),
+                  (function () {
+                    var sansCv = (liste || []).filter(function (x) { return x && x.ep && !String(x.ep.cheval_nom || "").trim(); });
+                    if (!sansCv.length) return h("div", { style: { padding: "14px", fontFamily: M, fontSize: 12.5, color: "#6D7681" } },
+                      T("Tous tes conseils ont d\u00e9j\u00e0 un cheval.", "All your tips already have a horse.", "Todos tus consejos ya tienen caballo.", "Tutti i tuoi consigli hanno gi\u00e0 un cavallo.", "\u3059\u3079\u3066\u99ac\u304c\u8a2d\u5b9a\u6e08\u307f\u3067\u3059\u3002", "Alle Tipps haben schon ein Pferd."));
+                    return h("div", null, sansCv.map(function (x) {
+                      var k = String(x.ep.id);
+                      var coche = !!(ajout.coches && ajout.coches[k]);
+                      var lib = String(x.court || x.titre || x.ep.question || "").trim();
+                      return h("div", { key: "cc" + k, role: "button",
+                        onClick: function () { if (ajBusy) return; setAjErr(""); setAjout(function (a) { if (!a) return a; var c = Object.assign({}, a.coches); c[k] = !c[k]; return Object.assign({}, a, { coches: c }); }); },
+                        style: { display: "flex", alignItems: "center", gap: 11, minHeight: 54, padding: "8px 14px", borderTop: "1px solid rgba(255,255,255,0.05)", cursor: "pointer", background: coche ? "rgba(95,233,240,0.07)" : "transparent", boxSizing: "border-box" } },
+                        h("span", { style: { width: 22, height: 22, borderRadius: 6, flex: "0 0 auto", border: "1px solid " + (coche ? "rgba(95,233,240,0.75)" : "rgba(255,255,255,0.25)"), background: coche ? "rgba(95,233,240,0.22)" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", color: TQL, fontSize: 13, lineHeight: 1, boxSizing: "border-box" } }, coche ? "\u2713" : ""),
+                        h("div", { style: { flex: 1, minWidth: 0 } },
+                          h("div", { style: { fontFamily: M, fontSize: 13, fontWeight: coche ? 700 : 500, color: coche ? "#EDF2F5" : "#C9D3D8", lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, lib),
+                          h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 2 } }, dateCourte(x.ep.created_at))));
+                    }));
+                  })())
+          ) : null) : null,
 
         h("div", { style: { fontFamily: M, fontSize: 9, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", color: "#7B848E", marginTop: 13, marginBottom: 1 } },
           T("Th\u00e8me", "Theme", "Tema", "Tema", "\u30c6\u30fc\u30de", "Thema")),
@@ -36638,19 +36923,15 @@ function PanneauConseilsHB(props) {
                          vers `chevaux` pour une vignette. */
                       /* En mode CHOIX (depuis une seance) l epingle n est pas un bouton : on
                          selectionne des conseils, on n en retire pas. */
-                      h("span", { role: props.onChoisir ? null : "button",
-                        "aria-label": props.onChoisir ? null : T("Retirer ce conseil", "Remove this tip", "Quitar este consejo", "Rimuovi questo consiglio", "\u3053\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u524a\u9664", "Diesen Tipp entfernen"),
-                        onClick: props.onChoisir ? null : function (evS) {
-                          try { if (evS) { evS.stopPropagation(); evS.preventDefault(); } } catch (eS) { }
-                          if (String(supId) !== String(x.ep.id)) { setSupId(String(x.ep.id)); return; }
-                          setSupId("");
-                          if (typeof retirerEpingleHB !== "function") { setErr(T("Retrait indisponible.", "Removal unavailable.", "No disponible.", "Non disponibile.", "\u5229\u7528\u3067\u304d\u307e\u305b\u3093\u3002", "Nicht verf\u00fcgbar.")); return; }
-                          /* On retire de l ecran APRES la base, jamais avant : un echec ne doit
-                             pas faire disparaitre un conseil qui existe toujours. */
-                          Promise.resolve(retirerEpingleHB(x.ep.id)).then(function () {
-                            setListe(function (av) { return (av || []).filter(function (y) { return String(y.ep.id) !== String(x.ep.id); }); });
-                          }).catch(function (eR) { setErr(String(eR)); });
-                        },
+                      /* 17/09 (226) : LA ZONE SOMBRE A GAUCHE N EST PLUS UN BOUTON. Blandine :
+                         « on devrait avoir l option sur chaque conseil de le retirer » — rien
+                         n indiquait que cette zone retirait le conseil, et on la touchait par
+                         accident. Le retrait passe par une VRAIE croix, a droite (son choix A).
+                         Ici : simple decor, etoile doree si priorite, sinon epingle dessinee. */
+                      h("span", { role: null,
+                        "aria-label": null,
+                        onClick: null,
+                        /* 17/09 (226) : l ancien gestionnaire de retrait de cette zone est SUPPRIME (il est desormais porte par la croix de droite). */
                         style: { flex: "0 0 auto", width: 42, height: 42, borderRadius: 12, background: (String(supId) === String(x.ep.id)) ? "rgba(255,107,129,0.12)" : "rgba(255,255,255,0.045)", border: "1px solid " + ((String(supId) === String(x.ep.id)) ? "rgba(255,107,129,0.6)" : "rgba(255,255,255,0.07)"), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 2, cursor: props.onChoisir ? "inherit" : "pointer" } },
                         (String(supId) === String(x.ep.id))
                           ? h("span", { style: { color: "#FF9B9B", fontSize: 16, lineHeight: 1 } }, "\u2715")
@@ -36670,8 +36951,24 @@ function PanneauConseilsHB(props) {
                           x.court || String(x.ep.question || "").trim() || x.titre),
                         (String(supId) === String(x.ep.id))
                           ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#FF9B9B", marginTop: 4, lineHeight: 1.45 } },
-                              T("Touche encore la croix pour retirer ce conseil.", "Tap the cross again to remove this tip.", "Toca de nuevo la cruz para quitarlo.", "Tocca di nuovo la croce per rimuoverlo.", "\u3082\u3046\u4e00\u5ea6\u30d0\u30c4\u3092\u62bc\u3059\u3068\u524a\u9664\u3055\u308c\u307e\u3059\u3002", "Tippe erneut aufs Kreuz zum Entfernen."))
+                              T("Touche encore la croix, \u00e0 droite, pour retirer ce conseil.", "Tap the cross on the right again to remove this tip.", "Toca de nuevo la cruz para quitarlo.", "Tocca di nuovo la croce per rimuoverlo.", "\u3082\u3046\u4e00\u5ea6\u30d0\u30c4\u3092\u62bc\u3059\u3068\u524a\u9664\u3055\u308c\u307e\u3059\u3002", "Tippe erneut aufs Kreuz zum Entfernen."))
                           : h("div", { style: { fontFamily: M, fontSize: 10.5, color: "#6D7681", marginTop: 4 } }, dateCourte(x.ep.created_at))),
+                      /* 17/09 (226) : LA CROIX DE RETRAIT, visible, a droite. Deux touchers :
+                         le premier passe la carte en rouge et l explique, le second retire.
+                         Absente en mode CHOIX (on selectionne des conseils, on n en retire pas). */
+                      props.onChoisir ? null : h("span", { role: "button",
+                        "aria-label": T("Retirer ce conseil", "Remove this tip", "Quitar este consejo", "Rimuovi questo consiglio", "\u3053\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u524a\u9664", "Diesen Tipp entfernen"),
+                        onClick: function (evX) {
+                          try { if (evX) { evX.stopPropagation(); evX.preventDefault(); } } catch (eX1) { }
+                          if (String(supId) !== String(x.ep.id)) { setSupId(String(x.ep.id)); return; }
+                          setSupId("");
+                          if (typeof retirerEpingleHB !== "function") { setErr(T("Retrait indisponible.", "Removal unavailable.", "No disponible.", "Non disponibile.", "\u5229\u7528\u3067\u304d\u307e\u305b\u3093\u3002", "Nicht verf\u00fcgbar.")); return; }
+                          /* On retire de l ecran APRES la base, jamais avant (regle du 16/09). */
+                          Promise.resolve(retirerEpingleHB(x.ep.id)).then(function () {
+                            setListe(function (av) { return (av || []).filter(function (y) { return String(y.ep.id) !== String(x.ep.id); }); });
+                          }).catch(function (eR) { setErr(String(eR)); });
+                        },
+                        style: { flex: "0 0 auto", width: 38, height: 38, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box", cursor: "pointer", background: (String(supId) === String(x.ep.id)) ? "rgba(255,107,129,0.16)" : "rgba(255,255,255,0.05)", border: "1px solid " + ((String(supId) === String(x.ep.id)) ? "rgba(255,107,129,0.75)" : "rgba(255,255,255,0.18)"), color: (String(supId) === String(x.ep.id)) ? "#FF9B9B" : "#96A0A8", fontSize: 14, lineHeight: 1 } }, "\u2715"),
                       props.onChoisir
                         ? h("span", { style: { flex: "0 0 auto", width: 26, height: 26, borderRadius: "50%", border: "1.5px solid " + ((props.dejaChoisis && props.dejaChoisis[String(x.ep.id)]) ? OR : "rgba(255,255,255,0.22)"), background: (props.dejaChoisis && props.dejaChoisis[String(x.ep.id)]) ? OR : "transparent", color: "#0B0E12", fontSize: 14, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center" } }, (props.dejaChoisis && props.dejaChoisis[String(x.ep.id)]) ? "\u2713" : "")
                         : h("span", { title: LIBE[x.etat] || LIBE.a_travailler, "aria-label": LIBE[x.etat] || LIBE.a_travailler,
@@ -37938,6 +38235,34 @@ function EcranEvenementPasse() {
   var res = (paq && paq.resultats) || [];
 
   var stV = React.useState(null); var visu = stV[0], setVisu = stV[1];
+  /* 17/09 (227) : suppression du rendez-vous depuis sa page. Le droit est lu sur la CLEF du
+     club portee par le rendez-vous, comparee au registre (qui vient de la base depuis le 225). */
+  var stSupE = React.useState(""); var errSup = stSupE[0], setErrSup = stSupE[1];
+  var stSupB = React.useState(false); var busySup = stSupB[0], setBusySup = stSupB[1];
+  var stMoiE = React.useState(null); var moiEv = stMoiE[0], setMoiEv = stMoiE[1];
+  React.useEffect(function () {
+    var vifE = true;
+    try { Promise.resolve(utilisateurActuel()).then(function (u) { if (vifE) setMoiEv(u || null); }).catch(function () { if (vifE) setMoiEv(null); }); } catch (eU) { }
+    return function () { vifE = false; };
+  }, []);
+  var peutSupprimerRdv = !!(ev && ev.club_clef && moiEv && typeof clefClubRevendiqueePar === "function" && clefClubRevendiqueePar(ev.club_clef, moiEv));
+  function supprimerCeRdv() {
+    if (!ev || !ev.id || busySup) return;
+    var okS = true;
+    try {
+      if (window.confirm) okS = window.confirm(T("Supprimer \u00ab " + (ev.titre || "") + " \u00bb ? Ses photos et commentaires seront effac\u00e9s aussi.", "Delete \u201c" + (ev.titre || "") + "\u201d? Its photos and comments will be deleted too.", "\u00bfEliminar \u00ab" + (ev.titre || "") + "\u00bb?", "Eliminare \u00ab" + (ev.titre || "") + "\u00bb?", "\u300c" + (ev.titre || "") + "\u300d\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "\u201e" + (ev.titre || "") + "\u201c l\u00f6schen?"));
+    } catch (eC5) { }
+    if (!okS) return;
+    setErrSup(""); setBusySup(true);
+    try {
+      Promise.resolve(supprimerAgendaClub(ev.id)).then(function (r) {
+        setBusySup(false);
+        if (r && r.error) { setErrSup(T("La suppression a \u00e9t\u00e9 refus\u00e9e : ", "Deletion was refused: ", "Eliminaci\u00f3n rechazada: ", "Eliminazione rifiutata: ", "\u524a\u9664\u304c\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\uff1a", "L\u00f6schen abgelehnt: ") + String((r.error && r.error.message) || r.error)); return; }
+        try { window.__evPasse = null; } catch (eW) { }
+        retour();
+      }).catch(function (eD3) { setBusySup(false); setErrSup(String(eD3)); });
+    } catch (eD4) { setBusySup(false); setErrSup(String(eD4)); }
+  }
 
   function retour() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("agenda-club"); } }
 
@@ -38023,6 +38348,15 @@ function EcranEvenementPasse() {
         T("Commentaires", "Comments", "Comentarios", "Commenti", "\u30b3\u30e1\u30f3\u30c8", "Kommentare")),
       h(MurHype, { cible: "agenda:" + String(ev.id), vignette: true, sansTitre: true, teinte: OR,
         chargerEnPlus: function () { return hypePostsAgenda(ev.id); } })),
+
+    /* 17/09 (227) : SUPPRIMER LE RENDEZ-VOUS, depuis sa propre page (sa demande : ne plus avoir
+       a revenir en arriere pour le trouver). Gestionnaire du club seulement, confirmation
+       obligatoire, refus de la base AFFICHE. La suppression emporte le mur du rendez-vous. */
+    (peutSupprimerRdv ? h("div", { style: { padding: "30px 18px calc(24px + env(safe-area-inset-bottom))" } },
+      errSup ? h("div", { style: { marginBottom: 10, padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, errSup) : null,
+      h("div", { role: "button", onClick: supprimerCeRdv,
+        style: { margin: "0 auto", width: "fit-content", minHeight: 46, padding: "0 22px", borderRadius: 999, border: "1px solid rgba(240,92,116,0.45)", background: "rgba(240,92,116,0.08)", color: "#F0A0AE", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: M, fontSize: 12.5, fontWeight: 700, cursor: busySup ? "default" : "pointer", opacity: busySup ? 0.6 : 1 } },
+        busySup ? "\u2026" : T("Supprimer ce rendez-vous", "Delete this event", "Eliminar esta cita", "Elimina questo evento", "\u3053\u306e\u4e88\u5b9a\u3092\u524a\u9664", "Diesen Termin l\u00f6schen"))) : null),
 
     hypeCalquePhoto(visu, function () { setVisu(null); }));
 }
@@ -42491,9 +42825,22 @@ function MurHype(props) {
       setAvisMedias(T("Seules les " + reste + " premi\u00e8res ont \u00e9t\u00e9 ajout\u00e9es \u2014 4 m\u00e9dias au maximum.", "Only the first " + reste + " were added \u2014 4 media max.", "Solo se a\u00f1adieron las " + reste + " primeras \u2014 m\u00e1ximo 4.", "Aggiunte solo le prime " + reste + " \u2014 massimo 4.", "\u6700\u521d\u306e" + reste + "\u4ef6\u306e\u307f\u8ffd\u52a0 \u2014 \u6700\u59274\u4ef6\u3002", "Nur die ersten " + reste + " hinzugef\u00fcgt \u2014 max. 4."));
     }
     fs = fs.slice(0, reste);
+    /* 18/09 (228) - QUATRE PHOTOS CHOISIES, UNE SEULE GARDEE. Blandine : « je mets 4 en ligne
+       et ca m en affiche une seule », confirme en base (colonne `medias` vide sur sa publication
+       du 18/09, pleine sur celle du 14/09 ou elle les avait ajoutees UNE PAR UNE).
+       CAUSE : `photo` est lu ici tel qu il etait AU MOMENT DU CHOIX. React ne le met a jour
+       qu au rendu suivant, donc les quatre photos voyaient toutes la premiere place « libre »
+       et s ecrasaient l une apres l autre - il ne restait que la derniere.
+       CORRECTIF : on compte les places au fil de la selection, dans une variable locale
+       (`prisePremiere`), au lieu de relire l etat. L ordre choisi est garde, la limite de 4
+       par message ne change pas, et l avertissement reste celui du 165. */
+    var prisePremiere = !!photo;
+    var ajoutes = (photosEnPlus || []).length;
     var ajouterMedia = function (m) {
       if (!m) return;
-      if (!photo) { setPhoto(m); return; }
+      if (!prisePremiere) { prisePremiere = true; setPhoto(m); return; }
+      if (ajoutes >= (MEDIAS_MAX_PAR_MESSAGE - 1)) return;
+      ajoutes += 1;
       setPhotosEnPlus(function (l) { return ((l || []).length >= (MEDIAS_MAX_PAR_MESSAGE - 1)) ? l : (l || []).concat([m]); });
     };
     /* en serie : l ordre choisi est l ordre garde */
@@ -43662,6 +44009,44 @@ function NouveauxCavaliers() {
 }
 
 /* ===== Albums nommes des chevaux ===== */
+/* 17/09 (223) — MOSAIQUE D ALBUM EN 2 COLONNES, FORMAT CHOISI PAR ALBUM (choix de Blandine :
+   option B « un format par album », « 2 » colonnes, Petite par defaut, grille simple pendant
+   Reorganiser). Meme logique de placement que hypeComposerAnneeGalerie (chronologie), adaptee
+   a 2 colonnes et SANS rythme automatique : une photo sans format reste petite, donc un album
+   ou rien n a ete choisi garde exactement son aspect d avant.
+   Tailles : normal 1x1, grand 2x2, pleine_largeur 2x1, pleine_hauteur 1x2.
+   Combler les trous : on regarde au plus les 3 cases suivantes, une photo n avance jamais de
+   plus de 3 places et ne recule jamais (meme regle que la chronologie, 12/09 (33)). */
+function hypeComposerAlbum2(tailles) {
+  var COLS = 2, occ = {}, curL = 1, curC = 1, out = [];
+  function libre(l, c, w, hh) {
+    if (c + w - 1 > COLS) return false;
+    for (var a = 0; a < hh; a++) for (var b = 0; b < w; b++) if (occ[(l + a) + "," + (c + b)]) return false;
+    return true;
+  }
+  var pile = tailles.map(function (t, i) { return { i: i, w: t.w, h: t.h }; });
+  while (pile.length) {
+    var prise = 0;
+    if (!libre(curL, curC, pile[0].w, pile[0].h)) {
+      for (var e = 1; e < pile.length && e <= 3; e++) if (libre(curL, curC, pile[e].w, pile[e].h)) { prise = e; break; }
+    }
+    var it = pile.splice(prise, 1)[0];
+    var l = curL, c = curC, g = 0;
+    while (!libre(l, c, it.w, it.h) && g < 6000) { c++; if (c > COLS) { c = 1; l++; } g++; }
+    for (var a2 = 0; a2 < it.h; a2++) for (var b2 = 0; b2 < it.w; b2++) occ[(l + a2) + "," + (c + b2)] = true;
+    out[it.i] = { col: c, ligne: l, w: it.w, h: it.h, ordre: out.length };
+    curL = l; curC = c + it.w; if (curC > COLS) { curC = 1; curL++; }
+    var s = 0; while (occ[curL + "," + curC] && s < 6000) { curC++; if (curC > COLS) { curC = 1; curL++; } s++; }
+  }
+  return out;
+}
+function hypeTailleCaseAlbum(fmt) {
+  if (fmt === "grand") return { w: 2, h: 2 };
+  if (fmt === "pleine_largeur") return { w: 2, h: 1 };
+  if (fmt === "pleine_hauteur") return { w: 1, h: 2 };
+  return { w: 1, h: 1 };
+}
+
 function AlbumsCheval(props) {
   var h = React.createElement;
   var ctx = useApp(); var tr = ctx.tr; var premium = ctx.premium; var setEcranAC = ctx.setEcran;
@@ -44837,6 +45222,72 @@ function AlbumsCheval(props) {
     setAvertAc({ phrase: phrase, suite: suite, destructif: !!destructif });
   }
   var albOuvert = (albumsAff || []).filter(function (x) { return x.id === ouvert; })[0] || null;
+  /* 17/09 (223) — FORMATS DE PHOTOS PAR ALBUM (table album_photo_formats, SQL passe par Blandine
+     le 17/09 : cle album_id + photo_url, RLS = lecture si l album est visible, ecriture par la
+     proprietaire de l album ou une moderatrice). Cle photo = urlNue(u), comme la chronologie.
+     ⚠️ Aucune ligne = « Petite ». « Petite » SUPPRIME la ligne, elle n en ecrit pas.
+     ⚠️ Toute ecriture est VERIFIEE (une ligne doit revenir), sinon le message le dit. */
+  var fmtAlbSt = React.useState({ id: null, map: {} }); var fmtAlb = fmtAlbSt[0], setFmtAlb = fmtAlbSt[1];
+  var modeFmtSt = React.useState(null); var modeFmtAlb = modeFmtSt[0], setModeFmtAlb = modeFmtSt[1];
+  var selFmtSt = React.useState(null); var selFmtAlb = selFmtSt[0], setSelFmtAlb = selFmtSt[1];
+  var errFmtSt = React.useState(null); var errFmtAlb = errFmtSt[0], setErrFmtAlb = errFmtSt[1];
+  var okFmtSt = React.useState(false); var okFmtAlb = okFmtSt[0], setOkFmtAlb = okFmtSt[1];
+  var busyFmtSt = React.useState(false); var busyFmtAlb = busyFmtSt[0], setBusyFmtAlb = busyFmtSt[1];
+  var uniteAlbSt = React.useState(150); var uniteAlb = uniteAlbSt[0], setUniteAlb = uniteAlbSt[1];
+  var refGrilleAlb = React.useRef(null);
+  function cleFmtAlb(u) { try { return (typeof urlNue === "function") ? urlNue(u) : u; } catch (eCf) { return u; } }
+  React.useEffect(function () {
+    var idA = albOuvert ? albOuvert.id : null;
+    setModeFmtAlb(null); setSelFmtAlb(null); setErrFmtAlb(null); setOkFmtAlb(false);
+    if (!idA || (albOuvert && albOuvert.__auto) || typeof supa === "undefined" || !supa) { setFmtAlb({ id: idA, map: {} }); return; }
+    var vifF = true;
+    (async function () {
+      try {
+        var rA = await supa.from("album_photo_formats").select("photo_url, format").eq("album_id", idA);
+        if (!vifF) return;
+        var mA = {};
+        ((rA && rA.data) || []).forEach(function (x) { if (x && x.photo_url && x.format) mA[x.photo_url] = x.format; });
+        setFmtAlb({ id: idA, map: mA });
+      } catch (eFa) { if (vifF) setFmtAlb({ id: idA, map: {} }); }
+    })();
+    return function () { vifF = false; };
+  }, [albOuvert ? albOuvert.id : null]);
+  React.useEffect(function () {
+    function mesurerAlb() {
+      try {
+        var el = refGrilleAlb.current; if (!el) return;
+        var lg = el.clientWidth || 0; if (lg <= 0) return;
+        var uA = Math.max(60, Math.round((lg - 8) / 2));
+        setUniteAlb(function (av) { return Math.abs(av - uA) > 1 ? uA : av; });
+      } catch (eMa) { }
+    }
+    mesurerAlb();
+    var tA2 = setTimeout(mesurerAlb, 300);
+    var roA = null;
+    try { if (typeof ResizeObserver !== "undefined" && refGrilleAlb.current) { roA = new ResizeObserver(mesurerAlb); roA.observe(refGrilleAlb.current); } } catch (eRo) { }
+    return function () { clearTimeout(tA2); try { if (roA) roA.disconnect(); } catch (eRo2) { } };
+  }, [albOuvert ? albOuvert.id : null, albDeplie, reorgAlb, modeFmtAlb]);
+  async function appliquerFmtAlb(u, fmt) {
+    if (!albOuvert || !u || busyFmtAlb) return;
+    setErrFmtAlb(null); setOkFmtAlb(false); setBusyFmtAlb(true);
+    var idA = albOuvert.id, cle = cleFmtAlb(u), rF = null;
+    try {
+      if (!fmt) rF = await supa.from("album_photo_formats").delete().eq("album_id", idA).eq("photo_url", cle).select("photo_url");
+      else rF = await supa.from("album_photo_formats").upsert({ album_id: idA, photo_url: cle, format: fmt, updated_at: new Date().toISOString() }, { onConflict: "album_id,photo_url" }).select("photo_url");
+    } catch (eAp) { rF = { error: eAp }; }
+    setBusyFmtAlb(false);
+    if (rF && rF.error) { setErrFmtAlb((typeof hypeErreurTexte === "function") ? hypeErreurTexte(rF.error) : String((rF.error && rF.error.message) || rF.error)); return; }
+    if (fmt && !(rF && rF.data && rF.data.length)) {
+      setErrFmtAlb(T("La base a refus\u00e9 ce changement (aucune ligne modifi\u00e9e). Seule la propri\u00e9taire de l\u2019album ou une mod\u00e9ratrice peut changer un format.", "The database refused this change (no row modified). Only the album owner or a moderator can change a size.", "La base rechaz\u00f3 el cambio.", "Il database ha rifiutato la modifica.", "\u5909\u66f4\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002"));
+      return;
+    }
+    setFmtAlb(function (av) {
+      if (!av || av.id !== idA) return av;
+      var n = Object.assign({}, av.map); if (fmt) n[cle] = fmt; else delete n[cle];
+      return { id: idA, map: n };
+    });
+    setOkFmtAlb(true); setTimeout(function () { setOkFmtAlb(false); }, 2200);
+  }
   React.useEffect(function () {
     if (!ouvert) return;
     /* Deux images : le panneau doit avoir ete pose ET mesure avant de viser. */
@@ -44984,7 +45435,28 @@ function AlbumsCheval(props) {
               (m.role === "createur") ? h("span", { style: { fontFamily: M9, fontSize: 8.5, color: tnT, fontWeight: 700 } }, "\u2726") : null);
           })) : null) : null) : null,
       (albOuvert.photos || []).length ? h("div", null,
-        h("div", { style: { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 } }, (function () {
+        /* 17/09 (223) : panneau « Choisir le format », AU-DESSUS de la grille (lecon du 221 : un
+           bouton d action ne doit jamais etre sous la liste, la barre du bas passe devant). */
+        (modeFmtAlb === albOuvert.id) ? h("div", { style: { margin: "0 0 10px", padding: "11px 11px 12px", borderRadius: 14, border: "1px solid " + tA(0.4), background: tA(0.06) } },
+          h("div", { style: { display: "flex", alignItems: "center", gap: 8, marginBottom: 8 } },
+            h("div", { style: { flex: 1, minWidth: 0, fontFamily: M9, fontSize: 11.5, color: tnT, lineHeight: 1.45 } },
+              selFmtAlb ? T("Choisis sa taille.", "Choose its size.", "Elige su tama\u00f1o.", "Scegli la dimensione.", "\u5927\u304d\u3055\u3092\u9078\u629e\u3002")
+                        : T("Touche la photo \u00e0 r\u00e9gler.", "Tap the photo to adjust.", "Toca la foto.", "Tocca la foto.", "\u5199\u771f\u3092\u30bf\u30c3\u30d7\u3002")),
+            h("button", { onClick: function () { setModeFmtAlb(null); setSelFmtAlb(null); setErrFmtAlb(null); }, style: { flex: "0 0 auto", minHeight: 40, padding: "0 16px", borderRadius: 999, border: "1px solid " + tA(0.55), background: "transparent", color: tnT, fontFamily: M9, fontSize: 11.5, fontWeight: 700, cursor: "pointer" } },
+              T("Termin\u00e9", "Done", "Listo", "Fatto", "\u5b8c\u4e86"))),
+          selFmtAlb ? h("div", { style: { display: "flex", flexWrap: "wrap", gap: 7 } }, [
+            { v: null, lib: "\u25ab " + T("Petite", "Small", "Peque\u00f1a", "Piccola", "\u5c0f") },
+            { v: "grand", lib: "\u25a3 " + T("Grand", "Large", "Grande", "Grande", "\u5927") },
+            { v: "pleine_largeur", lib: "\u2194 " + T("Pleine largeur", "Full width", "Ancho completo", "Larghezza piena", "\u6a2a\u5e45") },
+            { v: "pleine_hauteur", lib: "\u2195 " + T("Pleine hauteur", "Full height", "Alto completo", "Altezza piena", "\u7e26\u9577") }
+          ].map(function (op) {
+            var act = ((fmtAlb.id === albOuvert.id && fmtAlb.map[cleFmtAlb(selFmtAlb)]) || null) === op.v;
+            return h("button", { key: "fa" + String(op.v), onClick: function () { appliquerFmtAlb(selFmtAlb, op.v); },
+              style: { minHeight: 44, padding: "0 13px", borderRadius: 10, border: "1px solid " + (act ? tnT : "rgba(255,255,255,0.16)"), background: act ? tA(0.16) : "transparent", color: act ? tnT : "#C9D3D8", fontFamily: M9, fontSize: 12, fontWeight: act ? 800 : 600, cursor: busyFmtAlb ? "default" : "pointer", opacity: busyFmtAlb ? 0.6 : 1 } }, op.lib);
+          })) : null,
+          errFmtAlb ? h("div", { style: { marginTop: 8, fontFamily: M9, fontSize: 11, color: "#F0A05F", lineHeight: 1.5 } }, errFmtAlb) : null,
+          okFmtAlb ? h("div", { style: { marginTop: 8, fontFamily: M9, fontSize: 11, color: tnT, fontWeight: 800 } }, T("Taille appliqu\u00e9e \u2713", "Size applied \u2713", "Tama\u00f1o aplicado \u2713", "Dimensione applicata \u2713", "\u9069\u7528\u3057\u307e\u3057\u305f \u2713")) : null) : null,
+        h("div", { ref: refGrilleAlb, style: (reorgAlb === albOuvert.id) ? { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8 } : { display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gridAutoRows: uniteAlb + "px", gridAutoFlow: "row", gap: 8 } }, (function () {
         /* 28/08 (demande Blandine, ajustee en cours de route : "peut-etre 8?") : seuil
            de repli a 8 LIGNES visibles avant "voir tout" -- en 2 colonnes, 8 lignes =
            16 cases : 15 photos + la tuile "+N" en 16e case si l'album en compte plus de 16. */
@@ -44992,7 +45464,13 @@ function AlbumsCheval(props) {
         var enReorg = (reorgAlb === albOuvert.id);
         var couvAct = albOuvert.couverture || lPh[0];
         /* 12/09 (31) : en mode Reorganiser, tout est affiche — on ne peut pas ranger ce qu'on ne voit pas */
-        var visibles = (albDeplie || enReorg) ? lPh : (lPh.length > 16 ? lPh.slice(0, 15) : lPh);
+        var enFmt = (modeFmtAlb === albOuvert.id);
+        var visibles = (albDeplie || enReorg || enFmt) ? lPh : (lPh.length > 16 ? lPh.slice(0, 15) : lPh);
+        /* 17/09 (223) : placement en mosaique 2 colonnes (hors Reorganiser). La tuile « + N » compte comme une petite case. */
+        var mapFA = (fmtAlb && fmtAlb.id === albOuvert.id) ? fmtAlb.map : {};
+        var avecPlus = (!albDeplie && !enFmt && !enReorg && lPh.length > 16);
+        var placeAlb = enReorg ? null : hypeComposerAlbum2(visibles.map(function (uP) { return hypeTailleCaseAlbum(mapFA[cleFmtAlb(uP)] || null); }).concat(avecPlus ? [{ w: 1, h: 1 }] : []));
+        function posAlb(iP) { var pp = placeAlb && placeAlb[iP]; return pp ? { gridColumn: pp.col + " / span " + pp.w, gridRow: pp.ligne + " / span " + pp.h, aspectRatio: "auto", height: "100%" } : {}; }
         var cel = visibles.map(function (u, iU) {
           var estV = !!(typeof estUrlVideo === "function" && estUrlVideo(u));
           var estCouv = (u === couvAct);
@@ -45001,7 +45479,8 @@ function AlbumsCheval(props) {
              Hors de ce mode, comportement strictement inchange. */
           var estSoulevee = enReorg && dragPhoto === u;
           var estVisee = enReorg && dragPhoto && dragPhoto !== u && dragIndex === iU;
-          var styleCel = { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)", background: "#0B1116", cursor: "pointer" };
+          var styleCel = Object.assign({ position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", border: "1px solid rgba(255,255,255,0.09)", background: "#0B1116", cursor: "pointer" }, posAlb(iU));
+          if (enFmt && selFmtAlb === u) { styleCel.border = "2px solid " + tnT; styleCel.boxShadow = "0 0 0 2px " + tA(0.35); }
           if (enReorg) {
             styleCel.touchAction = "none"; styleCel.WebkitUserSelect = "none"; styleCel.userSelect = "none"; styleCel.WebkitTouchCallout = "none";
             styleCel.border = "1px solid " + tA(estVisee ? 0.85 : 0.35);
@@ -45018,7 +45497,7 @@ function AlbumsCheval(props) {
             onPointerCancel: function () { reorgAnnuler(); },
             onContextMenu: function (eD) { try { eD.preventDefault(); } catch (eX) { } }
           } : {};
-          return h("div", Object.assign({ key: u + "@" + iU /* 08/09 ACTION 3c-1 : cle par URL (+ position, contre les doublons) au lieu de l index seul */, onClick: function () { if (enReorg) return; ouvrirVisu(lPh, u); }, style: styleCel }, evReorg),
+          return h("div", Object.assign({ key: u + "@" + iU /* 08/09 ACTION 3c-1 : cle par URL (+ position, contre les doublons) au lieu de l index seul */, onClick: function () { if (enReorg) return; if (enFmt) { setSelFmtAlb(u); setErrFmtAlb(null); setOkFmtAlb(false); return; } ouvrirVisu(lPh, u); }, style: styleCel }, evReorg),
             enReorg ? h("span", { style: { position: "absolute", top: 5, left: 5, zIndex: 3, minWidth: 20, height: 20, padding: "0 5px", borderRadius: 999, background: "rgba(7,8,10,0.72)", color: "#EDF2F5", fontFamily: M9, fontSize: 10.5, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" } }, String(iU + 1)) : null,
             estV ? hypeMiniatureVideo(u, { largeur: 400, style: { pointerEvents: "none" } }) : h("img", { draggable: false /* 12/09 (31) : coupe le faux glisser de Safari */, /* 08/09 ACTION 3c-1 : vignette 320x320 EXPLICITE (au lieu de l original reecrit en 900 px par l observateur), lazy, repli sur l original une fois si le service d images echoue */ src: (typeof vignetteHype === "function") ? vignetteHype(u, 320, 320) : u, alt: "", loading: "lazy", decoding: "async", onError: function (eE) { try { if (typeof replierVignette === "function") replierVignette(eE, u); } catch (eR) { } }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }),
             estV ? h("span", { style: { position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.55)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, color: "#FFFFFF", zIndex: 1 } }, "\u25b6") : null,
@@ -45034,7 +45513,7 @@ function AlbumsCheval(props) {
             h("button", { onClick: function (eCv) { if (eCv && eCv.stopPropagation) eCv.stopPropagation(); if (!estCouv) definirCouverture(albOuvert, u); }, "aria-label": "Couverture", style: { position: "absolute", bottom: 5, right: 5, height: 30, padding: "0 12px", borderRadius: 999, background: "rgba(7,8,10,0.78)", border: "1px solid " + tA(estCouv ? 0.85 : 0.45), color: estCouv ? tnT : "rgba(237,242,245,0.85)", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: M9, letterSpacing: 0.3, zIndex: 2 } }, (estCouv ? "\u2713 " : "") + T("Couv.", "Cover", "Portada", "Cover", "\u8868\u7d19")));
         });
         if (!albDeplie && lPh.length > 16) {
-          cel.push(h("div", { key: "plus", onClick: function () { setAlbDeplie(true); }, role: "button", style: { aspectRatio: "1 / 1", borderRadius: 11, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer" } },
+          cel.push(h("div", { key: "plus", onClick: function () { setAlbDeplie(true); }, role: "button", style: { gridColumn: (placeAlb && placeAlb[visibles.length]) ? (placeAlb[visibles.length].col + " / span 1") : undefined, gridRow: (placeAlb && placeAlb[visibles.length]) ? (placeAlb[visibles.length].ligne + " / span 1") : undefined, aspectRatio: "1 / 1", borderRadius: 11, border: "1.5px dashed " + tA(0.5), background: tA(0.05), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer" } },
             h("span", { style: { fontFamily: M9, fontSize: 17, fontWeight: 800, color: tnT } }, "+" + (lPh.length - 15)),
             h("span", { style: { fontFamily: M9, fontSize: 8.5, fontWeight: 700, color: tA(0.9), letterSpacing: 0.3, textTransform: "uppercase", textAlign: "center", lineHeight: 1.3, padding: "0 6px" } }, T("Voir les photos suivantes", "See the next photos", "Ver las siguientes fotos", "Vedi le foto successive", "\u6b21\u306e\u5199\u771f\u3092\u898b\u308b", "N\u00e4chste Fotos ansehen"))));
         }
@@ -45157,11 +45636,16 @@ function AlbumsCheval(props) {
             setFeuilleVideo(function (v) { return !v; });
           }, style: { flex: 1, padding: "11px 4px", borderRadius: 999, border: "1px solid " + tA(feuilleVideo ? 0.95 : 0.55), background: envoiCours ? tA(0.12) : (feuilleVideo ? tA(0.16) : "transparent"), color: tnT, fontSize: 11.5, fontWeight: 700, cursor: envoiCours ? "default" : "pointer", fontFamily: M9, textAlign: "center", whiteSpace: "nowrap" } },
           envoiCours ? T("Envoi en cours\u2026", "Uploading\u2026", "Enviando\u2026", "Invio\u2026", "\u9001\u4fe1\u4e2d\u2026") : "+ " + T("Vid\u00e9o", "Video", "V\u00eddeo", "Video", "\u52d5\u753b"))))) : null,
+      /* 17/09 (223) : lien « Choisir le format », pour la proprietaire de l album et les
+         moderatrices seulement (meme regle que la base). Absent pendant Reorganiser. */
+      (albOuvert && !albOuvert.__lecture && !albOuvert.__auto && (albOuvert.photos || []).length > 0 && reorgAlb !== albOuvert.id && modeFmtAlb !== albOuvert.id && (estAMoiAlb(albOuvert) || modAc)) ? h("div", { style: { marginTop: 2, textAlign: "center" } },
+        h("button", { onClick: function () { setModeFmtAlb(albOuvert.id); setSelFmtAlb(null); setErrFmtAlb(null); setOkFmtAlb(false); setAlbDeplie(true); try { var elG = refGrilleAlb.current; if (elG && elG.scrollIntoView) elG.scrollIntoView({ block: "start", behavior: "smooth" }); } catch (eSi) { } }, style: { background: "none", border: "none", color: "#8A99A1", fontFamily: M9, fontSize: 10.5, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3, padding: "6px 8px" } },
+          T("Choisir le format des photos", "Choose photo sizes", "Elegir el tama\u00f1o de las fotos", "Scegli la dimensione delle foto", "\u5199\u771f\u306e\u5927\u304d\u3055\u3092\u9078\u3076"))) : null,
       /* 12/09 (31) — LIEN « RÉORGANISER LES PHOTOS », sous la rangée des trois boutons. Discret,
          dans le flux (aucun calque, aucun portail). Il n'apparaît que si l'album a au moins deux
          photos et qu'on peut y écrire (jamais sur un album en lecture seule ni sur « Autres
          moments »). En mode actif : une consigne courte + « Terminé ». */
-      (albOuvert && !albOuvert.__lecture && !albOuvert.__auto && (albOuvert.photos || []).length > 1) ? h("div", { style: { marginTop: 10, textAlign: "center" } },
+      (albOuvert && !albOuvert.__lecture && !albOuvert.__auto && (albOuvert.photos || []).length > 1 && modeFmtAlb !== albOuvert.id /* 17/09 (223) : pas de Reorganiser pendant le choix du format */) ? h("div", { style: { marginTop: 10, textAlign: "center" } },
         (reorgAlb !== albOuvert.id)
           ? h("button", { onClick: function () { setReorgAlb(albOuvert.id); setOrdreLocal(null); reorgAnnuler(); }, style: { background: "none", border: "none", color: "#8A99A1", fontFamily: M9, fontSize: 10.5, cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3, padding: "6px 8px" } },
               T("Réorganiser les photos", "Reorder photos", "Reordenar las fotos", "Riordina le foto", "\u5199\u771f\u306e\u4e26\u3073\u9806\u3092\u5909\u3048\u308b", "Fotos neu anordnen"))
@@ -60501,18 +60985,7 @@ function EcranArticles() {
     var imgLamotte = (ARTICLES[1] && ARTICLES[1].tuile) || ((typeof IMG_COUPE_OPEN !== "undefined") ? IMG_COUPE_OPEN : "");
     var imgSanteHub = (typeof IMG_SANTE_SIGNAUX !== "undefined") ? IMG_SANTE_SIGNAUX : "";
     var imgHB = (typeof IMG_HEYBABY_AVATAR !== "undefined") ? IMG_HEYBABY_AVATAR : "";
-    /* 16/09 (218) : sa demande - griser l acces a Mon carnet, le temps de sa refonte, avec
-       « Prochainement » comme partout ailleurs dans l appli. Un SIXIEME argument facultatif :
-       les appels existants n ont pas bouge d un caractere. Rien n est supprime, aucune donnee
-       touchee - ses seances restent en base, et rouvrir l acces sera retirer un argument. */
-    function ligneDeroulante(cle, num, label, action, dernier, bientot) {
-        if (bientot) {
-            return React.createElement("div", { key: cle, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "13px 15px", borderBottom: dernier ? "none" : "1px solid rgba(32,217,245,0.12)", opacity: 0.45, cursor: "default" } },
-                React.createElement("span", { style: { width: 34, height: 34, borderRadius: 10, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.12)", color: "#8A929C", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flex: "0 0 auto" } }, num),
-                React.createElement("span", { style: { flex: 1, minWidth: 0, fontSize: 13.5, fontWeight: 600, color: "#8A929C", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, label),
-                React.createElement("span", { style: { flex: "0 0 auto", fontSize: 9, fontWeight: 700, letterSpacing: 1.2, textTransform: "uppercase", color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
-                    T("Prochainement", "Coming soon", "Pr\u00f3ximamente", "Prossimamente", "\u8fd1\u65e5\u516c\u958b", "Demn\u00e4chst")));
-        }
+    function ligneDeroulante(cle, num, label, action, dernier) {
             return React.createElement("button", { key: cle, onClick: action, style: { display: "flex", alignItems: "center", gap: 12, width: "100%", textAlign: "left", padding: "13px 15px", background: "none", border: "none", borderBottom: dernier ? "none" : "1px solid rgba(255,255,255,0.06)", cursor: "pointer" } },
                 React.createElement("span", { style: { width: 34, height: 34, borderRadius: 10, background: "rgba(32,217,245,0.1)", border: "1px solid rgba(32,217,245,0.4)", color: "#5FE9F0", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 700, flex: "0 0 auto" } }, num),
                 React.createElement("span", { style: { flex: 1, minWidth: 0, fontSize: 13.5, fontWeight: 600, color: "#EDF2F5", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, label),
@@ -60548,7 +61021,7 @@ function EcranArticles() {
             [
                 ligneDeroulante("mt-carnet", "\ud83d\udcd2",
                     tr({ fr: "Mes s\u00e9ances", en: "My sessions", es: "Mis sesiones", it: "Le mie sessioni", ja: "\u7a3d\u53e4\u306e\u8a18\u9332", de: "Meine Einheiten" }),
-                    null, false, true),
+                    function () { setEcran("carnet"); }, false),
                 ligneDeroulante("mt-conseils", "\ud83d\udccc",
                     tr({ fr: "Mes conseils Hey Baby", en: "My Hey Baby tips", es: "Mis consejos Hey Baby", it: "I miei consigli Hey Baby", ja: "\u30a2\u30c9\u30d0\u30a4\u30b9", de: "Meine Hey-Baby-Tipps" }),
                     function () { setMtPan(true); }, true)
