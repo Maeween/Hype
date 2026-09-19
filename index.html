@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-245"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260908-246"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -29611,6 +29611,8 @@ function BlocResultatsCavaliere(props) {
   var sien = !!props.sien;
 
   var _l = React.useState(null), lignes = _l[0], setLignes = _l[1];
+  /* 19/09 (246) : noms et portraits des chevaux, pour la carte reprise de la page Ecurie. */
+  var _cr = React.useState({}), chevauxRes = _cr[0], setChevauxRes = _cr[1];
   var _ouv = React.useState(false), choixOuvert = _ouv[0], setChoixOuvert = _ouv[1];
   var _oc = React.useState(false), occupe = _oc[0], setOccupe = _oc[1];
   var _err = React.useState(""), erreur = _err[0], setErreur = _err[1];
@@ -29636,7 +29638,7 @@ function BlocResultatsCavaliere(props) {
     try {
       if (typeof supa === "undefined" || !supa) { setLignes([]); return; }
       var r = await supa.from("resultats")
-        .select("id, concours, epreuve, place, classement, partants, date_epreuve, visible, masque_cavaliere")
+        .select("id, concours, epreuve, place, classement, partants, date_epreuve, visible, masque_cavaliere, cheval_id, cavalier")
         .eq("cavalier_id", id)
         .limit(2000);
       if (r && r.error) { setErreur(T("Lecture refus\u00e9e : ", "Read refused: ", "Lectura rechazada: ", "Lettura rifiutata: ", "\u8aad\u307f\u53d6\u308a\u62d2\u5426\uff1a", "Lesen abgelehnt: ") + (r.error.message || "")); setLignes([]); return; }
@@ -29654,11 +29656,32 @@ function BlocResultatsCavaliere(props) {
             ep: x.epreuve || "",
             d: String(x.date_epreuve || ""),
             an: String(x.date_epreuve || "").slice(0, 4),
+            /* 19/09 (246) : le CHEVAL et le CAVALIER. Sa demande : « prends ce design la
+               avec l icone du poney monte dedans etc et le poney en bleu » — la carte de la
+               page Ecurie. Ce bloc ne lisait ni l un ni l autre. */
+            cheval_id: x.cheval_id || null,
+            cav: x.cavalier || "",
             masq: x.masque_cavaliere === true
           };
         })
         .sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
       setLignes(l);
+      /* 19/09 (246) : noms et portraits, en UNE requete pour toutes les lignes.
+         ⚠️ SANS PHOTO, PAS DE TROU : le medaillon n est pas dessine du tout et le reste
+         remonte. C est la regle qu elle a posee pour la carte de l Ecurie (« ou tu en mets
+         rien tant pis si t en as pas ») : jamais de portrait generique. */
+      try {
+        var idsCh = [];
+        l.forEach(function (x) { if (x.cheval_id && idsCh.indexOf(x.cheval_id) === -1) idsCh.push(x.cheval_id); });
+        if (idsCh.length) {
+          var rc = await supa.from("chevaux").select("id, nom, photo_url").in("id", idsCh.slice(0, 200));
+          if (rc && !rc.error) {
+            var tab = {};
+            ((rc && rc.data) || []).forEach(function (c) { if (c && c.id) tab[String(c.id)] = { nom: c.nom || "", photo: c.photo_url || "" }; });
+            setChevauxRes(tab);
+          }
+        }
+      } catch (eCh) { }
     } catch (e) { setLignes([]); }
   }
   React.useEffect(function () { charger(); }, [userId]);
@@ -29694,21 +29717,50 @@ function BlocResultatsCavaliere(props) {
     var grp = {}, ordre = [];
     liste.forEach(function (rr) {
       var cle = rr.nom + "|" + rr.ep + "|" + (rr.d || rr.an);
-      if (!grp[cle]) { grp[cle] = { concours: rr.nom, epreuve: rr.ep, an: rr.an, partants: rr.part, places: [] }; ordre.push(cle); }
+      if (!grp[cle]) { grp[cle] = { concours: rr.nom, epreuve: rr.ep, an: rr.an, d: rr.d, partants: rr.part, places: [], lignes: [] }; ordre.push(cle); }
       grp[cle].places.push(rr.pl);
+      grp[cle].lignes.push(rr);
       if (!grp[cle].partants && rr.part) grp[cle].partants = rr.part;
     });
+    /* 19/09 (246) — LA CARTE DE LA PAGE ECURIE, REPRISE ICI. Sa demande : « je veux tout
+       changer comme sur la page Ecurie ». L ancienne carte n affichait NI le cavalier NI le
+       cheval : « 1ER · Challenge de Folleville · Poney 2 Vitesse · /3 ». On reprend l ordre
+       exact de la carte du rail aux coupes, valide par elle le 01/09 : medaille et annee,
+       PUIS le portrait rond, PUIS la phrase « 1er EVAN ROUX sur Rizotto » avec le cheval en
+       turquoise, PUIS le concours et l epreuve.
+       ⚠️ LE CHEVAL N EST NOMME QU UNE FOIS — la faute corrigee le 01/09 (« t as ecrit
+       Rizotto deux fois ») ne doit pas revenir par ici.
+       ⚠️ SANS PHOTO, PAS DE TROU : pas de portrait generique, le reste remonte.
+       ⚠️ LE NOM DU CAVALIER EST CONSERVE meme sur sa propre page : c est le rendu qu elle a
+       montre, et la question lui a ete posee trois fois sans reponse. Une ligne a retirer si
+       la repetition la gene a l usage. */
     return ordre.slice(0, 8).map(function (cle, i) {
       var gr = grp[cle];
-      var meilleur = (gr.places || []).filter(function (p) { return p != null; }).sort(function (a, b) { return a - b; })[0] || null;
-      var coup = meilleur === 1 ? "\ud83c\udfc6" : meilleur === 2 ? "\ud83e\udd48" : meilleur === 3 ? "\ud83e\udd49" : "\ud83c\udf96\ufe0f";
-      var rangTxt = meilleur ? (String(meilleur) + (meilleur === 1 ? "er" : "e")) : "";
-      return h("div", { key: "rc" + i, style: { flex: "0 0 158px", padding: "12px 13px 14px", borderRadius: 14, background: "rgba(16,21,24,0.86)", border: "1px solid rgba(217,168,92,0.32)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } },
+      var meilleur = (gr.lignes || []).slice().sort(function (a, b) { return (a.pl || 99) - (b.pl || 99); })[0] || {};
+      var mp = (gr.places || []).filter(function (p) { return p != null; }).sort(function (a, b) { return a - b; })[0] || null;
+      var coup = mp === 1 ? "\ud83c\udfc6" : mp === 2 ? "\ud83e\udd48" : mp === 3 ? "\ud83e\udd49" : "\ud83c\udf96\ufe0f";
+      var rangTxt = mp ? (String(mp) + (mp === 1 ? "er" : "e")) : "";
+      var infoCh = (meilleur.cheval_id && chevauxRes[String(meilleur.cheval_id)]) ? chevauxRes[String(meilleur.cheval_id)] : null;
+      var nomCh = (infoCh && infoCh.nom) || "";
+      var photoCh = (infoCh && infoCh.photo) || "";
+      var qui = meilleur.cav || "";
+      return h("div", { key: "rc" + i, style: { flex: "0 0 158px", padding: "12px 13px 14px", borderRadius: 14, background: "rgba(16,21,24,0.86)", border: "1px solid rgba(32,217,245,0.32)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center" } },
         h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
           h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
-          gr.an ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: ORR, letterSpacing: ".12em", fontFamily: M } }, gr.an) : null),
-        rangTxt ? h("div", { style: { fontFamily: C, fontSize: 20, fontWeight: 700, color: "#F1F6F8", marginTop: 10 } }, rangTxt) : null,
-        h("div", { style: { fontFamily: C, fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 8, lineHeight: 1.3 } }, gr.concours || "\u2014"),
+          /* 19/09 (246) : meme date qu a l Ecurie, meme place, meme discretion. */
+          (gr.d || gr.an) ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: TURQ, letterSpacing: ".08em", fontFamily: M } },
+            gr.d ? gr.d.slice(8, 10) + "/" + gr.d.slice(5, 7) + "/" + gr.d.slice(0, 4) : gr.an) : null),
+        photoCh
+          ? h("img", { src: photoCh, alt: "", loading: "lazy", decoding: "async",
+              onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } },
+              style: { width: 66, height: 66, borderRadius: "50%", objectFit: "cover", marginTop: 10, border: "1px solid rgba(255,255,255,0.16)" } })
+          : null,
+        (rangTxt || qui || nomCh)
+          ? h("div", { style: { fontSize: 11.5, fontFamily: M, fontWeight: 700, color: "#F1F6F8", marginTop: 10, lineHeight: 1.35 } },
+              (rangTxt ? (rangTxt + " ") : "") + qui,
+              nomCh ? h("span", { style: { color: TURQ, fontWeight: 600 } }, (qui ? " sur " : "") + nomCh) : null)
+          : null,
+        h("div", { style: { fontFamily: C, fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3 } }, gr.concours || "\u2014"),
         gr.epreuve ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: M, marginTop: 3, lineHeight: 1.35 } }, gr.epreuve) : null,
         gr.partants ? h("div", { style: { fontSize: 9, color: "#6F7A83", fontFamily: M, marginTop: 4 } }, "/ " + gr.partants) : null);
     });
@@ -29759,10 +29811,14 @@ function BlocResultatsCavaliere(props) {
       }))
   ) : null;
 
-  return h("div", { style: { padding: "30px 0 0" } },
-    h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 16px 9px" } },
-      h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: ORR, fontFamily: M } },
-        T("R\u00e9sultats de concours", "Competition results", "Resultados de concurso", "Risultati di concorso", "\u7af6\u6280\u6210\u7e3e", "Turnierergebnisse").toUpperCase()),
+  /* 19/09 (246) : MEME TITRE ET MEME RESPIRATION QUE SUR LA PAGE ECURIE — « Derniers
+     resultats » en Cinzel, et un vrai espace de separation au-dessus (sa demande : « sous
+     ses chevaux avec un titre et un bon espace de separation »). L ancien reglage a 30 px
+     faisait chevaucher ce bloc avec « Mes chevaux » juste en dessous. */
+  return h("div", { style: { padding: "44px 0 10px" } },
+    h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 16px 11px" } },
+      h("div", { style: { fontFamily: C, fontSize: 15, letterSpacing: 1, color: "#F4F7FA", fontWeight: 600 } },
+        T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e", "Letzte Ergebnisse")),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }),
       sien ? h("button", { onClick: function () { setChoixOuvert(true); }, style: { background: "none", border: "none", color: TURQ, fontFamily: M, fontSize: 11, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", minHeight: 34 } },
         T("Choisir", "Choose", "Elegir", "Scegli", "\u9078\u3076", "Ausw\u00e4hlen")) : null),
@@ -30507,7 +30563,6 @@ function EcranMonCavalier() {
       /* 13/09 (119) : ses resultats de concours, juste avant ses chevaux. Composant
          AUTONOME (ses propres etats) : les hooks React ne peuvent pas vivre dans une
          fonction de rendu interieure, et un bloc ne part jamais sans ses variables. */
-      h(BlocResultatsCavaliere, { userId: (__estVisite ? ((__visitePub && __visitePub.id) || null) : ((profil && profil.id) || null)), sien: !__estVisite }),
       h("div", { style: { padding: "0 16px" } }, (__estVisite ? eyebrow(T("Ses chevaux", "Their horses", "Sus caballos", "I suoi cavalli", "彼の馬")) : eyebrow(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac"), T("G\u00e9rer mon \u00e9curie", "Manage stable", "Gestionar", "Gestisci", "\u7ba1\u7406"), function () { setEcran("guilde"); }))),
       /* 03/09 — LE CHOIX D ECURIE. N apparait que si le cavalier a DEUX ecuries
          (meme condition que la question posee a la creation d un cheval le 02/09) :
@@ -30569,6 +30624,13 @@ function EcranMonCavalier() {
                 : (T("Voir les autres", "See the others", "Ver los dem\u00e1s", "Vedi gli altri", "\u4ed6\u3092\u898b\u308b", "Weitere anzeigen") + " (" + (tousChv.length - 9) + ")")),
             h("span", { style: { fontSize: 11, lineHeight: 1 } }, tousChevauxVus ? "\u25b4" : "\u25be")));
       })(),
+    /* 19/09 (246) : LE RAIL DES RESULTATS PASSE SOUS LES CHEVAUX. Sa demande : « dans l idee
+       il devrait plutot poper en dessous de mes chevaux non », puis « sous ses chevaux avec un
+       titre et un bon espace de separation ». C est aussi l ordre de la page Ecurie : les
+       chevaux, PUIS « Derniers resultats ». Il etait AU-DESSUS et chevauchait « Mes chevaux ».
+       Le composant est AUTONOME (ses propres etats) : le deplacer ne casse pas l ordre des
+       hooks — c est la raison pour laquelle il avait ete sorti en composant a part le 13/09. */
+    h(BlocResultatsCavaliere, { userId: (__estVisite ? ((__visitePub && __visitePub.id) || null) : ((profil && profil.id) || null)), sien: !__estVisite }),
     h("div", { className: "rise", onClick: function () { setEcran("memoirescavalier"); }, role: "button", style: { position: "relative", height: 132, boxSizing: "border-box", margin: "18px 16px 0", borderRadius: 20, overflow: "hidden", border: "1px solid rgba(45,212,222,0.28)", background: "#0B1013", cursor: "pointer", boxShadow: "0 18px 50px rgba(0,0,0,0.55), 0 0 34px rgba(32,217,245,0.08)" } },
       (typeof HYPE_IMGS !== "undefined" && HYPE_IMGS.memoriesEncart) ? h("img", { src: HYPE_IMGS.memoriesEncart, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }) : null,
       h("div", { style: { position: "absolute", left: 18, bottom: 16, right: 78 } },
@@ -33082,7 +33144,10 @@ function EcranGuilde() {
           if (!anG && rr.created_at) { try { anG = String(new Date(rr.created_at).getFullYear()); } catch (eA1) { } }
           var cle = [String(rr.concours || ""), String(rr.epreuve || ""), String(rr.date_epreuve || anG || "")].join("|");
           if (!grp[cle]) {
-            grp[cle] = { cle: cle, an: anG, concours: rr.concours || "", epreuve: rr.epreuve || "", partants: rr.partants || null, photo_url: rr.photo_url || null, __tri: rr.__tri || 0, places: [] };
+            /* 19/09 (246) : la DATE entre dans le groupe. Sa demande : « rajouter la date
+               sur les deux pour pas qu on confonde les epreuves ». Deux epreuves du meme
+               nom au meme concours la meme annee etaient indistinguables. */
+            grp[cle] = { cle: cle, an: anG, d: rr.date_epreuve || "", concours: rr.concours || "", epreuve: rr.epreuve || "", partants: rr.partants || null, photo_url: rr.photo_url || null, __tri: rr.__tri || 0, places: [] };
             ordreG.push(cle);
           }
           var gg = grp[cle];
@@ -33714,7 +33779,11 @@ function EcranGuilde() {
             h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
               h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
               gr.epingle ? h("span", { style: { fontSize: 11 } }, "\ud83d\udccc") : null,
-              gr.an ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: TURQL, letterSpacing: ".12em", fontFamily: M } }, gr.an) : null),
+              /* 19/09 (246) : la date COMPLETE remplace l annee seule, au meme endroit et
+                 dans le meme petit corps : discret, et deux epreuves du meme nom ne se
+                 confondent plus. Sans date connue, l annee reste. */
+              (gr.d || gr.an) ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: TURQL, letterSpacing: ".08em", fontFamily: M } },
+                gr.d ? gr.d.slice(8, 10) + "/" + gr.d.slice(5, 7) + "/" + gr.d.slice(0, 4) : gr.an) : null),
             photoCh
               ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 66, height: 66, borderRadius: "50%", objectFit: "cover", marginTop: 10, border: "1px solid rgba(255,255,255,0.16)" } })
               : null,
