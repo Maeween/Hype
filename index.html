@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260921-332"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260921-333"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -40235,6 +40235,15 @@ function EcranEvenementPasse() {
   var stPaqL = React.useState(null); var paqLu = stPaqL[0], setPaqLu = stPaqL[1];
   var stErrL = React.useState(""); var errLien = stErrL[0], setErrLien = stErrL[1];
   var stMsgP = React.useState(""); var msgPartage = stMsgP[0], setMsgPartage = stMsgP[1];
+  /* 21/09 (333) : la STORY d un concours passe - le panneau de choix, l apercu (UNE seule image en
+     memoire, son adresse locale liberee a chaque remplacement et a la fermeture), l etat. */
+  var stChP = React.useState(false); var choixPart = stChP[0], setChoixPart = stChP[1];
+  var stStU = React.useState(""); var storyUrl = stStU[0], setStoryUrl = stStU[1];
+  var stStB = React.useState(false); var storyBusy = stStB[0], setStoryBusy = stStB[1];
+  var stStM = React.useState(""); var storyMsg = stStM[0], setStoryMsg = stStM[1];
+  var storyFichierRef = React.useRef(null);
+  var storyUrlRef = React.useRef("");
+  React.useEffect(function () { return function () { try { if (storyUrlRef.current) URL.revokeObjectURL(storyUrlRef.current); } catch (eRv) { } }; }, []);
   var stCouv = React.useState(""); var couvLocale = stCouv[0], setCouvLocale = stCouv[1];
   var stCouvB = React.useState(""); var couvBusy = stCouvB[0], setCouvBusy = stCouvB[1];
   var stCouvE = React.useState(""); var couvErr = stCouvE[0], setCouvErr = stCouvE[1];
@@ -40412,6 +40421,207 @@ function EcranEvenementPasse() {
      VRAIE PHOTO : la couverture choisie si c est une photo du mur, sinon la premiere photo -
      jamais le document « Le jour J ». Le telephone refuse les fichiers ? On partage le texte
      seul. Pas de partage du tout (ordinateur) ? Le texte est copie, et on le DIT. */
+  /* ════════ 21/09 (333) — LA STORY D UN CONCOURS PASSE (premier test) ════════
+     Brief de Blandine : une image verticale 1080 × 1920 a partir des VRAIES photos du concours,
+     posees DERRIERE son fond fixe « hype-story-concours-images-journee.png » (racine du site),
+     dont les trois cadres sont de vraies ouvertures transparentes. Le fond et ses textes ne sont
+     JAMAIS redessines ; le code ajoute seulement les photos, le titre, la date, le lieu et les
+     compteurs.
+     ORDRE : noir -> grande photo -> petite photo (ou noir) -> photo portrait (ou noir) -> le PNG
+     -> les textes. Les cadres secondaires sont TOUJOURS peints apres la grande photo, photo ou
+     noir : la grande ne peut donc jamais transparaitre dans une autre fenetre.
+     MESURES prises sur le vrai fichier (941 × 1672, composantes transparentes, rectangles
+     tournes minimaux), ramenees au format 1080 × 1920 ; + 6 px de marge (le fond masque).
+     PHOTOS : photosEv (videos, document « Le jour J » et doublons deja ecartes, regles de la
+     page), la couverture choisie en grand si c en est une. Chargees par fetch -> Blob -> adresse
+     locale : le Canvas n est jamais contamine (sinon toBlob echouerait). Une photo qui echoue
+     laisse sa place a la suivante ; aucune photo lisible -> partage classique.
+     LIEN : toujours https://2hype.fr/#s=<id> (jamais location.origin : une PWA installee peut
+     encore tourner sur l ancienne adresse). Instagram ne rend pas un lien cliquable depuis une
+     page web : 2HYPE.FR est dans l image, le lien part dans le texte ET « Copier le lien » existe. */
+  var STORY_FOND = "hype-story-concours-images-journee.png";
+  var STORY_BASE = "https://2hype.fr/";
+  var STORY_CADRES = [
+    { cx: 462.6, cy: 643.1, w: 734, h: 453, rot: -4.28, fy: 0.32 },  /* grand paysage en haut */
+    { cx: 390.0, cy: 1020.0, w: 500, h: 262, rot: 4.87, fy: 0.5 },   /* petit paysage en bas a gauche */
+    { cx: 853.6, cy: 904.6, w: 292, h: 509, rot: 6.24, fy: 0.3 }     /* portrait a droite */
+  ];
+  var STORY_TEXTES = {
+    titre: { x: 71, cy: 168, largeur: 700, hauteur: 96 },
+    date: { x: 170, base: 257, largeur: 373 },
+    lieu: { x: 170, base: 325, largeur: 373 },
+    compteurs: { cx: 828.6, cy: 1290.9, largeur: 212, hauteur: 60 }
+  };
+  function lienStory() { return STORY_BASE + "#s=" + String(ev.id); }
+  function chargerImageLocale(url) {
+    return (async function () {
+      var rp = await fetch(url, { mode: "cors", cache: "force-cache" });
+      if (!rp || !rp.ok) throw new Error("HTTP " + (rp && rp.status));
+      var bl = await rp.blob();
+      if (!bl || !bl.size) throw new Error("vide");
+      var adr = URL.createObjectURL(bl);
+      var img = await new Promise(function (ok, ko) {
+        var im = new Image();
+        im.onload = function () { ok(im); };
+        im.onerror = function () { ko(new Error("decodage")); };
+        im.src = adr;
+      });
+      return { img: img, liberer: function () { try { URL.revokeObjectURL(adr); } catch (eL) { } } };
+    })();
+  }
+  function peindreCadre(ctx, c, img) {
+    ctx.save();
+    ctx.translate(c.cx, c.cy);
+    ctx.rotate(c.rot * Math.PI / 180);
+    ctx.beginPath(); ctx.rect(-c.w / 2, -c.h / 2, c.w, c.h); ctx.clip();
+    if (img) {
+      var iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+      var k = Math.max(c.w / iw, c.h / ih), dw = iw * k, dh = ih * k;
+      ctx.drawImage(img, -dw / 2, -c.h / 2 - (dh - c.h) * c.fy, dw, dh);
+    } else {
+      ctx.fillStyle = "#000000"; ctx.fillRect(-c.w / 2, -c.h / 2, c.w, c.h);
+    }
+    ctx.restore();
+  }
+  function couperLignes(ctx, txt, largeur, maxLignes) {
+    var mots = String(txt || "").split(/\s+/).filter(Boolean), lignes = [], cur = "";
+    for (var i = 0; i < mots.length; i++) {
+      var essai = cur ? cur + " " + mots[i] : mots[i];
+      if (ctx.measureText(essai).width <= largeur || !cur) cur = essai;
+      else { lignes.push(cur); cur = mots[i]; }
+    }
+    if (cur) lignes.push(cur);
+    if (lignes.length > maxLignes) return null;
+    for (var j = 0; j < lignes.length; j++) if (ctx.measureText(lignes[j]).width > largeur) return null;
+    return lignes;
+  }
+  function ligneAjustee(ctx, txt, largeur, famille, poids, taille, tailleMin) {
+    var t = taille;
+    ctx.font = poids + " " + t + "px " + famille;
+    while (t > tailleMin && ctx.measureText(txt).width > largeur) { t -= 1; ctx.font = poids + " " + t + "px " + famille; }
+    var s = String(txt);
+    if (ctx.measureText(s).width > largeur) {
+      while (s.length > 1 && ctx.measureText(s + "\u2026").width > largeur) s = s.slice(0, -1);
+      s = s + "\u2026";
+    }
+    return s;
+  }
+  async function fabriquerStory() {
+    var photos = (typeof photosEv !== "undefined" && photosEv) ? photosEv.slice() : [];
+    var couvC = couvLocale || ev.image_url || "";
+    if (couvC && photos.indexOf(couvC) > 0) { photos.splice(photos.indexOf(couvC), 1); photos.unshift(couvC); }
+    if (!photos.length) return null;
+    var libs = [];
+    try {
+      /* les photos : on remplit les cadres dans l ordre grand, portrait, petit ;
+         une photo illisible cede sa place a la suivante */
+      var ordreCadres = [0, 2, 1], images = [null, null, null], iP = 0;
+      for (var oc = 0; oc < ordreCadres.length && iP < photos.length; oc++) {
+        while (iP < photos.length) {
+          var u = photos[iP++];
+          try {
+            var src = (typeof grandeImageHype === "function") ? grandeImageHype(u, 1400) : u;
+            var li = await chargerImageLocale(src);
+            libs.push(li); images[ordreCadres[oc]] = li.img; break;
+          } catch (eP) { }
+        }
+      }
+      if (!images[0] && !images[1] && !images[2]) return null;
+      if (!images[0]) { for (var z = 1; z < 3; z++) if (images[z]) { images[0] = images[z]; images[z] = null; break; } }
+      var fond = await chargerImageLocale(STORY_FOND);
+      libs.push(fond);
+      var cv = document.createElement("canvas"); cv.width = 1080; cv.height = 1920;
+      var ctx = cv.getContext("2d");
+      ctx.fillStyle = "#000000"; ctx.fillRect(0, 0, 1080, 1920);
+      peindreCadre(ctx, STORY_CADRES[0], images[0]);
+      peindreCadre(ctx, STORY_CADRES[1], images[1]);
+      peindreCadre(ctx, STORY_CADRES[2], images[2]);
+      ctx.drawImage(fond.img, 0, 0, 1080, 1920);
+      try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (eFt) { }
+      var SERIF = "'Cinzel', 'Cormorant Garamond', Georgia, serif", SANS = "'Montserrat', 'Helvetica Neue', Arial, sans-serif";
+      ctx.textBaseline = "alphabetic";
+      /* le titre : 2 lignes au plus, la taille descend jusqu a tenir */
+      var T0 = STORY_TEXTES.titre, titre = String(ev.titre || "").trim(), lignesT = null, tT = 60;
+      if (titre) {
+        for (tT = 60; tT >= 26; tT -= 2) {
+          ctx.font = "600 " + tT + "px " + SERIF;
+          var lg = couperLignes(ctx, titre, T0.largeur, 2);
+          if (lg && lg.length * tT * 1.15 <= T0.hauteur + (lg.length === 1 ? 12 : 0)) { lignesT = lg; break; }
+        }
+        if (!lignesT) { ctx.font = "600 26px " + SERIF; tT = 26; lignesT = [ligneAjustee(ctx, titre, T0.largeur, SERIF, "600", 26, 26)]; }
+        ctx.fillStyle = "#F4EFE4";
+        var hT = lignesT.length * tT * 1.15, y0 = T0.cy - hT / 2 + tT * 0.95;
+        lignesT.forEach(function (l, iL) { ctx.fillText(l, T0.x, y0 + iL * tT * 1.15); });
+      }
+      /* la date et le lieu, a cote des icones du fond */
+      ctx.fillStyle = "#EDE6D6";
+      if (quand) { var sD = ligneAjustee(ctx, quand, STORY_TEXTES.date.largeur, SANS, "500", 28, 18); ctx.fillText(sD, STORY_TEXTES.date.x, STORY_TEXTES.date.base); }
+      if (ev.lieu) { var sL = ligneAjustee(ctx, String(ev.lieu), STORY_TEXTES.lieu.largeur, SANS, "500", 28, 18); ctx.fillText(sL, STORY_TEXTES.lieu.x, STORY_TEXTES.lieu.base); }
+      /* les compteurs, dans le cartouche vide ; chaque partie a zero est masquee */
+      var nbPh = photos.length, nbVi = (typeof videosEv !== "undefined" && videosEv) ? videosEv.length : 0, nbRe = res.length;
+      var parts = [];
+      if (nbPh) parts.push(nbPh + (nbPh === 1 ? " PHOTO" : " PHOTOS"));
+      if (nbVi) parts.push(nbVi + (nbVi === 1 ? " VID\u00c9O" : " VID\u00c9OS"));
+      if (nbRe) parts.push(nbRe + (nbRe === 1 ? " R\u00c9SULTAT" : " R\u00c9SULTATS"));
+      if (parts.length) {
+        var C0 = STORY_TEXTES.compteurs;
+        ctx.fillStyle = "#E9D3A2"; ctx.textAlign = "center";
+        var une = parts.join(" \u00b7 "), tC = 24;
+        ctx.font = "700 " + tC + "px " + SANS;
+        while (tC > 17 && ctx.measureText(une).width > C0.largeur) { tC -= 1; ctx.font = "700 " + tC + "px " + SANS; }
+        if (ctx.measureText(une).width <= C0.largeur) {
+          ctx.fillText(une, C0.cx, C0.cy + tC * 0.36);
+        } else {
+          var l1 = parts.slice(0, parts.length - 1).join(" \u00b7 "), l2 = parts[parts.length - 1];
+          tC = 18; ctx.font = "700 " + tC + "px " + SANS;
+          while (tC > 12 && Math.max(ctx.measureText(l1).width, ctx.measureText(l2).width) > C0.largeur) { tC -= 1; ctx.font = "700 " + tC + "px " + SANS; }
+          ctx.fillText(l1, C0.cx, C0.cy - tC * 0.25);
+          ctx.fillText(l2, C0.cx, C0.cy + tC * 1.0);
+        }
+        ctx.textAlign = "left";
+      }
+      var blob = await new Promise(function (ok) { try { cv.toBlob(function (b) { ok(b || null); }, "image/jpeg", 0.92); } catch (eTb) { ok(null); } });
+      if (!blob) return null;
+      var slug = String(ev.titre || "rdv").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "rdv";
+      var fichier = null;
+      try { fichier = new File([blob], "hype-" + slug + "-story.jpg", { type: "image/jpeg" }); } catch (eFi) { fichier = null; }
+      return { blob: blob, fichier: fichier };
+    } finally {
+      libs.forEach(function (l) { try { l.liberer(); } catch (eLb) { } });
+    }
+  }
+  async function creerStory() {
+    setChoixPart(false); setStoryMsg(""); setStoryBusy(true);
+    var r = null;
+    try { r = await fabriquerStory(); } catch (eFs) { r = null; }
+    setStoryBusy(false);
+    if (!r || !r.blob) { setMsgPartage(T("La story n\u2019a pas pu \u00eatre cr\u00e9\u00e9e : partage classique.", "The story could not be created: classic sharing.", "No se pudo crear la story: env\u00edo cl\u00e1sico.", "Impossibile creare la story: condivisione classica.", "\u30b9\u30c8\u30fc\u30ea\u30fc\u3092\u4f5c\u6210\u3067\u304d\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Story konnte nicht erstellt werden: normales Teilen.")); partagerSouvenir(); return; }
+    try { if (storyUrlRef.current) URL.revokeObjectURL(storyUrlRef.current); } catch (eRv2) { }
+    var adr = ""; try { adr = URL.createObjectURL(r.blob); } catch (eAd) { adr = ""; }
+    storyUrlRef.current = adr; storyFichierRef.current = r.fichier || null;
+    setStoryUrl(adr);
+  }
+  function fermerStory() {
+    try { if (storyUrlRef.current) URL.revokeObjectURL(storyUrlRef.current); } catch (eRv3) { }
+    storyUrlRef.current = ""; storyFichierRef.current = null; setStoryUrl(""); setStoryMsg("");
+  }
+  async function partagerStory() {
+    var f = storyFichierRef.current, lien = lienStory();
+    var texte = "Retrouvez toutes les photos et partagez les v\u00f4tres sur Hype \ud83e\ude75 " + lien;
+    if (f && navigator.canShare && navigator.canShare({ files: [f] }) && navigator.share) {
+      try { await navigator.share({ files: [f], title: String(ev.titre || "Hype"), text: texte }); return; }
+      catch (eSh) { if (String(eSh && eSh.name) === "AbortError") return; }
+    }
+    fermerStory(); partagerSouvenir();
+  }
+  function copierLienStory() {
+    var lien = lienStory();
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lien).then(function () { setStoryMsg(T("Lien copi\u00e9.", "Link copied.", "Enlace copiado.", "Link copiato.", "\u30ea\u30f3\u30af\u3092\u30b3\u30d4\u30fc\u3057\u307e\u3057\u305f\u3002", "Link kopiert.")); }, function () { setStoryMsg(lien); });
+      } else setStoryMsg(lien);
+    } catch (eCp) { setStoryMsg(lien); }
+  }
   async function partagerSouvenir() {
     try {
       var photosS = (typeof photosEv !== "undefined" && photosEv) ? photosEv : [];
@@ -40423,7 +40633,7 @@ function EcranEvenementPasse() {
       if (res.length) cpt.push(res.length + " " + (res.length === 1 ? T("r\u00e9sultat", "result", "resultado", "risultato", "\u4ef6\u306e\u7d50\u679c", "Ergebnis") : T("r\u00e9sultats", "results", "resultados", "risultati", "\u4ef6\u306e\u7d50\u679c", "Ergebnisse")));
       if (cpt.length) lignesS.push(cpt.join(" \u00b7 "));
       var lienS = "";
-      try { lienS = location.origin + location.pathname + "#s=" + String(ev.id); } catch (eLs) { lienS = ""; }
+      lienS = "https://2hype.fr/#s=" + String(ev.id); /* (333) : adresse officielle, jamais location.origin */
       if (lienS) lignesS.push(lienS);
       var texteS = lignesS.filter(Boolean).join("\n");
       var srcS = "";
@@ -40516,7 +40726,7 @@ function EcranEvenementPasse() {
       h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.62) 0%, rgba(6,7,9,0.26) 34%, rgba(6,7,9,0.88) 76%, #060709 100%)" } }),
       h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer", zIndex: 3 } }, "\u2039"),
       /* 21/09 (313) : partager le souvenir. */
-      h("button", { onClick: partagerSouvenir, "aria-label": T("Partager", "Share", "Compartir", "Condividi", "\u5171\u6709", "Teilen"),
+      h("button", { onClick: function () { if (String(ev.type || "").toLowerCase() === "concours" && photosEv && photosEv.length) setChoixPart(true); else partagerSouvenir(); }, "aria-label": T("Partager", "Share", "Compartir", "Condividi", "\u5171\u6709", "Teilen"),
         style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", right: 14, zIndex: 3, width: 38, height: 38, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(255,255,255,0.22)", color: "#EDF2F5", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, cursor: "pointer" } },
         h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, "aria-hidden": true },
           h("path", { d: "M12 3 v12 M7.5 7.5 L12 3 L16.5 7.5 M5 12 v7 a2 2 0 0 0 2 2 h10 a2 2 0 0 0 2 -2 v-7", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" }))),
@@ -40561,6 +40771,28 @@ function EcranEvenementPasse() {
        desormais pareil : filet de 1 px a 5,5 %, puis le titre en Cinzel. */
     h("style", { dangerouslySetInnerHTML: { __html: HYEP_CSS } }),
     msgPartage ? h("div", { style: { margin: "12px 18px 0", fontFamily: M, fontSize: 11.5, color: "#8A99A1" } }, msgPartage) : null,
+    /* 21/09 (333) : le panneau de choix du partage. */
+    choixPart ? hypePortailBody(h("div", { "data-noswipe": "1", onClick: function (eO) { if (eO && eO.target === eO.currentTarget) setChoixPart(false); },
+        style: { position: "fixed", inset: 0, zIndex: 9990, background: "rgba(4,5,7,0.62)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+      h("div", { style: { width: "100%", maxWidth: 520, boxSizing: "border-box", background: "#12161C", borderTop: "1px solid rgba(255,255,255,0.12)", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: "16px 16px calc(env(safe-area-inset-bottom) + 18px)" } },
+        [["story", T("Créer la story", "Create the story", "Crear la story", "Crea la story", "ストーリーを作成", "Story erstellen"), creerStory, true],
+         ["classique", T("Partage classique", "Classic sharing", "Envío clásico", "Condivisione classica", "通常の共有", "Normales Teilen"), function () { setChoixPart(false); partagerSouvenir(); }, false],
+         ["annuler", T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen"), function () { setChoixPart(false); }, false]].map(function (b) {
+          return h("button", { key: b[0], onClick: b[2], style: { display: "block", width: "100%", minHeight: 48, marginTop: 8, borderRadius: 14, border: b[3] ? "none" : "1px solid rgba(255,255,255,0.16)", background: b[3] ? "#20D9F5" : "transparent", color: b[3] ? "#04252A" : "#EDF2F5", fontFamily: M, fontSize: 14, fontWeight: 700, cursor: "pointer" } }, b[1]);
+        })))) : null,
+    storyBusy ? hypePortailBody(h("div", { "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 9991, background: "rgba(4,5,7,0.8)", display: "flex", alignItems: "center", justifyContent: "center", color: "#EDF2F5", fontFamily: M, fontSize: 13 } },
+      T("Création de la story…", "Creating the story…", "Creando la story…", "Creazione della story…", "ストーリーを作成中…", "Story wird erstellt…"))) : null,
+    /* 21/09 (333) : l apercu de la story (9:16, tient dans l ecran, fond noir). */
+    storyUrl ? hypePortailBody(h("div", { "data-noswipe": "1", "data-hscroll": "1",
+        style: { position: "fixed", inset: 0, zIndex: 9992, background: "#000", display: "flex", flexDirection: "column", alignItems: "center", boxSizing: "border-box", padding: "calc(env(safe-area-inset-top) + 12px) 14px calc(env(safe-area-inset-bottom) + 14px)", overflow: "hidden" } },
+      h("div", { style: { flex: "1 1 auto", minHeight: 0, width: "100%", display: "flex", alignItems: "center", justifyContent: "center" } },
+        h("img", { src: storyUrl, alt: "", style: { maxWidth: "100%", maxHeight: "100%", aspectRatio: "9 / 16", objectFit: "contain", borderRadius: 12, display: "block" } })),
+      storyMsg ? h("div", { style: { flex: "0 0 auto", marginTop: 8, fontFamily: M, fontSize: 11.5, color: "#8A99A1", textAlign: "center", overflowWrap: "anywhere" } }, storyMsg) : null,
+      h("div", { style: { flex: "0 0 auto", width: "100%", maxWidth: 420, display: "flex", flexDirection: "column", gap: 8, marginTop: 10 } },
+        h("button", { onClick: partagerStory, style: { minHeight: 48, borderRadius: 14, border: "none", background: "#20D9F5", color: "#04252A", fontFamily: M, fontSize: 14, fontWeight: 700, cursor: "pointer" } }, T("Partager la story", "Share the story", "Compartir la story", "Condividi la story", "ストーリーを共有", "Story teilen")),
+        h("div", { style: { display: "flex", gap: 8 } },
+          h("button", { onClick: copierLienStory, style: { flex: 1, minHeight: 46, borderRadius: 14, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#EDF2F5", fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Copier le lien", "Copy link", "Copiar enlace", "Copia link", "リンクをコピー", "Link kopieren")),
+          h("button", { onClick: fermerStory, style: { flex: 1, minHeight: 46, borderRadius: 14, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "#EDF2F5", fontFamily: M, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen")))))) : null,
 
     /* — LE MUR DES SOUVENIRS (recopie de la page du cheval) — */
     photosEv.length ? titreEv(T("Le mur des souvenirs", "The memory wall", "El muro de recuerdos", "Il muro dei ricordi", "\u601d\u3044\u51fa\u306e\u58c1", "Die Erinnerungswand"), true) : null,
