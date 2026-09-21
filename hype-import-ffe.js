@@ -325,7 +325,147 @@
     });
   }
 
+  /* ════════ 22/09 — ÉTAPE 1 : LE PDF « RÉSULTATS DÉTAILLÉS » D UNE ÉPREUVE (site FFE / SIF) ════════
+     Sa demande : « on peut élargir les capacités de l outil pour qu il sache lire ça aussi ? Et
+     comme ça il en profite pour mettre à jour les résultats des autres chevaux ». Document réel :
+     E_trier_.pdf (concours SIF 2732594, épreuve n°04, CSO Club 3 Grand Prix, 20/09/2026).
+     FORME MESURÉE avec le même assemblage de lignes que l app (pdf.js + lignesDePage) :
+       · en tête : « Concours SIF n 2732594 – Épreuve n 04 du » / « 20/09/2026 (CSO Club 3 Grand
+         Prix) », et « 20/09/2026 — PARIS ETRIER COSSEBRISSAC (75) — » ;
+       · puis, après « Résultats détaillés », une ligne par cavalier dans cet ordre : RANG (« 3 SF »,
+         « 18 », « El. », « NP », « HC » + « Hors classement »), CAVALIER, CLUB (« … (75) »),
+         CHEVAL, COACH, puis les POINTS (20 / 15 / 5 / 2.5, absents plus bas) et le QUART (1 à 4).
+         Les exposants (« re », « er », « e ») sortent sur des lignes À PART : on les saute ;
+       · fin : « … engagés maximum sur le concours ».
+     PARTANTS = classés + éliminés (sans les non-partants ni le hors classement).
+     Chaque ligne a la MÊME forme que celles du télémat (date, épreuve, concours, cheval_pdf,
+     cavalier, place, partants, quart, statut, mention SF, points) : l écrivain de l app la range
+     sur la fiche de SON cheval comme il le fait déjà depuis le 18/09. Chaque ligne porte en plus
+     son CLUB : l écran ne garde que celles du club choisi (le sien, reconnu d office). */
+  function estResultatsDetailles(texte) {
+    return /R[\u00e9e]sultats\s+d[\u00e9e]taill[\u00e9e]s/i.test(texte) && /Concours\s+SIF/i.test(texte);
+  }
+  function lireSIF(texte) {
+    var L = String(texte).split("\n").map(function (l) { return l.replace(/[\u2b50]/g, "").replace(/\s+/g, " ").trim(); }).filter(Boolean);
+    var tout = L.join(" ");
+    var date = null, epreuve = "", concours = "";
+    var mE = tout.match(/[\u00c9E]preuve\s+n\s*\S+\s+du\s+(\d{2}\/\d{2}\/\d{4})\s*\(([^)]+)\)/i);
+    if (mE) { date = lireDate(mE[1]); epreuve = mE[2].replace(/^CSO\s+/i, "").replace(/\s+/g, " ").trim(); }
+    var mC = tout.match(/\d{2}\/\d{2}\/\d{4}\s*[\u2014\u2013-]\s*(.+?)\s*\(\d{2,3}[AB]?\)/);
+    if (mC) concours = mC[1].replace(/\s+/g, " ").trim();
+    if (!concours) { var mC2 = tout.match(/CONCOURS\s+N\S*\s*\d+\s+(.+?)\s+R[\u00e9e]sultat/i); if (mC2) concours = mC2[1].trim(); }
+    var i0 = -1;
+    for (var k = 0; k < L.length; k++) { if (/R[\u00e9e]sultats\s+d[\u00e9e]taill[\u00e9e]s/i.test(L[k])) { i0 = k + 1; break; } }
+    if (i0 < 0) return { lignes: [], alertes: [], format: "sif", clubs: [] };
+    var jetons = [];
+    for (var j = i0; j < L.length; j++) {
+      if (/engag[\u00e9e]s\s+maximum/i.test(L[j]) || /^Politique de confidentialit/i.test(L[j])) break;
+      if (/^(re|er|\u00e8re|e)$/i.test(L[j])) continue;   /* exposants isolés */
+      jetons.push(L[j]);
+    }
+    var RANG = /^(\d{1,3})(\s+SF)?$|^(El\.?|Elim\.?|Ab\.?|NP|HC)$/i;
+    var CLUB = /\(\d{2,3}[AB]?\)$/;
+    var NUM = /^\d+(?:[.,]\d+)?$/;
+    /* L ANCRE, C EST LE CLUB : chaque cavalier a exactement UNE ligne « … (75) ». Les points et le
+       quart (« 20 », « 1 ») ressemblent à des rangs : on ne cherche donc le rang qu À REBOURS depuis
+       le club (rang, puis 1 ou 2 lignes de nom). */
+    var iClubs = [];
+    for (var t = 0; t < jetons.length; t++) if (CLUB.test(jetons[t])) iClubs.push(t);
+    var debuts = iClubs.map(function (ci) {
+      for (var r = ci - 1; r >= Math.max(0, ci - 4); r--) {
+        if (/^Hors classement$/i.test(jetons[r])) continue;
+        if (RANG.test(jetons[r])) return r;
+      }
+      return -1;
+    });
+    var brutes = [];
+    iClubs.forEach(function (ci, n) {
+      var ri = debuts[n];
+      if (ri < 0) return;
+      var fin = (n + 1 < iClubs.length && debuts[n + 1] >= 0) ? debuts[n + 1] : jetons.length;
+      var nom = jetons.slice(ri + 1, ci).filter(function (v) { return !/^Hors classement$/i.test(v); });
+      var suite = jetons.slice(ci + 1, fin).filter(function (v) { return !/^Hors classement$/i.test(v) && !/^Non partant/i.test(v); });
+      brutes.push({ rang: jetons[ri], champs: nom.concat([jetons[ci]]).concat(suite) });
+    });
+    var lignes = [], alertes = [];
+    brutes.forEach(function (b) {
+      var iClub = -1;
+      for (var c = 0; c < b.champs.length; c++) { if (CLUB.test(b.champs[c])) { iClub = c; break; } }
+      var cav = iClub > 0 ? b.champs.slice(0, iClub).join(" ") : "";
+      var club = iClub >= 0 ? b.champs[iClub] : "";
+      var apres = iClub >= 0 ? b.champs.slice(iClub + 1) : [];
+      var textes = apres.filter(function (v) { return !NUM.test(v); });
+      var nombres = apres.filter(function (v) { return NUM.test(v); });
+      var cheval = textes.length >= 2 ? textes.slice(0, textes.length - 1).join(" ") : (textes[0] || "");
+      var coach = textes.length >= 2 ? textes[textes.length - 1] : "";
+      var points = null, quart = null;
+      if (nombres.length >= 2) { points = parseFloat(nombres[0].replace(",", ".")); quart = parseInt(nombres[1], 10); }
+      else if (nombres.length === 1) { var v1 = parseFloat(nombres[0].replace(",", ".")); if (v1 >= 1 && v1 <= 4 && /^\d$/.test(nombres[0])) quart = v1; else points = v1; }
+      var mR2 = b.rang.match(/^(\d{1,3})(\s+SF)?$/);
+      var statut = mR2 ? "classe" : (/^NP$/i.test(b.rang) ? "non_partant" : (/^HC$/i.test(b.rang) ? "hors_classement" : (/^Ab/i.test(b.rang) ? "abandon" : "elimine")));
+      lignes.push({
+        rangSIF: b.rang, statut: statut, place: mR2 ? parseInt(mR2[1], 10) : null,
+        mention: (mR2 && mR2[2]) ? "SF" : "", cavalier: cav.replace(/\s+/g, " ").trim(),
+        club: club.replace(/\s+/g, " ").trim(), cheval_pdf: cheval.replace(/\s+/g, " ").trim(),
+        coach: coach, points: points, quart: quart
+      });
+    });
+    var partants = lignes.filter(function (r) { return r.statut === "classe" || r.statut === "elimine" || r.statut === "abandon"; }).length;
+    var sorties = [], parClub = {};
+    lignes.forEach(function (r, n) {
+      if (r.statut === "non_partant" || r.statut === "hors_classement") return;
+      var o = {
+        rang: n + 1, date: date, epreuve: epreuve, concours: concours,
+        cheval_pdf: r.cheval_pdf, cavalier: r.cavalier, club: r.club, coach: r.coach,
+        place: r.place, partants: partants || null, quart: r.quart, statut: r.statut,
+        mention: r.mention,
+        /* ⚠️ Les points « 2.5 » ne sont PAS arrondis : la colonne des télémats n a jamais reçu que des
+           entiers, un décimal pourrait faire refuser tout l envoi. Un point fractionnaire n est donc
+           pas écrit (null) - à reprendre avec le chantier « classement sportif », qui veut les points
+           EXACTS. Les entiers (20, 15, 5) partent normalement. */
+        points: (r.points == null || isNaN(r.points) || Math.round(r.points) !== r.points) ? null : r.points,
+        garder: r.statut === "classe" || estSansFauteFFE(r.mention)
+      };
+      if (!o.date) { o.doute = "date de l\u2019\u00e9preuve absente"; o.garder = false; }
+      if (!o.cheval_pdf) o.doute = "cheval non lu";
+      /* Pas de contrôle « quart attendu » ici : sur ce document, le compte des partants de la FFE
+         (forfaits, hors classement) n est pas donné, et le contrôle criait à tort. Le quart est
+         LU, jamais recalculé (règle de toujours). */
+      if (o.doute) alertes.push(o);
+      sorties.push(o);
+      parClub[o.club] = (parClub[o.club] || 0) + 1;
+    });
+    var clubs = Object.keys(parClub).filter(Boolean).map(function (nm) { return { nom: nm, n: parClub[nm] }; })
+      .sort(function (a, b) { return b.n - a.n; });
+    return { lignes: sorties, alertes: alertes, format: "sif", clubs: clubs, epreuve: epreuve, concours: concours, date: date };
+  }
+  /* Le club du document qui correspond à l une de ses écuries (profil : ecurie, ecurie2), fournies
+     par l app dans window.__hypeEcuriesImport. Comparaison sur les MOTS, sans accents, sans le
+     numéro de département, sans les petits mots : « SOCIETE D EQUITATION DE PARIS (75) » et
+     « Société d'Équitation de Paris (SEP) » se reconnaissent. Aucun club reconnu : elle choisit. */
+  function motsClub(x) {
+    var PETITS = { de: 1, d: 1, du: 1, des: 1, la: 1, le: 1, l: 1, et: 1, les: 1 };
+    return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+      .replace(/\(\s*\d{2,3}[ab]?\s*\)/g, " ").replace(/[^a-z0-9]+/g, " ").split(" ")
+      .filter(function (m) { return m && !PETITS[m]; });
+  }
+  function clubReconnu(clubs, ecuries) {
+    var mesMots = (ecuries || []).map(motsClub).filter(function (m) { return m.length; });
+    for (var i = 0; i < (clubs || []).length; i++) {
+      var mc = motsClub(clubs[i].nom);
+      if (!mc.length) continue;
+      for (var j = 0; j < mesMots.length; j++) {
+        var mm = mesMots[j];
+        var aDansB = mc.every(function (w) { return mm.indexOf(w) >= 0; });
+        var bDansA = mm.length >= 2 && mm.every(function (w) { return mc.indexOf(w) >= 0; });
+        if (aDansB || bDansA) return clubs[i].nom;
+      }
+    }
+    return "";
+  }
+
   function lire(texte) {
+    if (estResultatsDetailles(texte)) return lireSIF(texte);
     var sorties = [], alertes = [];
     lireFiches(texte).forEach(function (f, rang) {
       var c = lireClassement(f.classement);
@@ -447,7 +587,8 @@
     NIVEAUX: NIVEAUX,
     lireClassement: lireClassement,
     quartAttendu: quartAttendu,
-    estSansFauteFFE: estSansFauteFFE
+    estSansFauteFFE: estSansFauteFFE,
+    clubReconnu: clubReconnu
   };
   if (typeof window !== "undefined") window.HYPE_IMPORT = API;
   if (typeof module !== "undefined" && module.exports) module.exports = API;
@@ -604,7 +745,7 @@
   }
 
   /* ==== l'état de l'écran ============================================== */
-  var E = { etape: "choix", lignes: [], cavalier: "", err: null, nomFichier: "", occupe: false, niveau: "classe" };
+  var E = { etape: "choix", lignes: [], cavalier: "", err: null, nomFichier: "", occupe: false, niveau: "classe", sif: null, club: "" };
 
   function ech(s) {
     return String(s === null || s === undefined ? "" : s)
@@ -637,7 +778,8 @@
       '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
       '<li>Choisis l\'onglet <b>« Page entière »</b></li>' +
       '<li><b>Enregistrer le PDF dans Fichiers</b></li></ol>' +
-      '⚠️ Il faut bien un <b>PDF</b> : une capture en image ne se lit pas.</div>';
+      '⚠️ Il faut bien un <b>PDF</b> : une capture en image ne se lit pas.' +
+      '<br><br><b>Nouveau :</b> tu peux aussi donner la page <b>« R\u00e9sultats d\u00e9taill\u00e9s »</b> d\u2019une \u00e9preuve (site FFE), enregistr\u00e9e en PDF de la m\u00eame fa\u00e7on : les r\u00e9sultats de ton club iront chacun sur la fiche de son cheval.</div>';
     /* 🟥 23/08 session 158 — LA VIDÉO D AIDE, TOUT EN BAS.
        Maquette validee par Blandine : centree, 280 px, couverture E (le poney
        et la coupe), muette et en boucle. Muette EXPRES : avec du son, iOS et
@@ -699,8 +841,10 @@
 
   /* ==== 3 · LA RELECTURE — le cœur ===================================== */
   function vueRelecture() {
-    var toutes = E.lignes;
-    var vis = E.cavalier ? toutes.filter(function (r) { return r.cavalier === E.cavalier; }) : toutes;
+    /* 22/09 : pour une épreuve (PDF « Résultats détaillés »), on ne relit et on n écrit QUE les
+       lignes du club choisi ; les autres clubs ne sont jamais envoyés. */
+    var toutes = E.sif ? E.lignes.filter(function (r) { return r.club === E.club; }) : E.lignes;
+    var vis = (E.cavalier && !E.sif) ? toutes.filter(function (r) { return r.cavalier === E.cavalier; }) : toutes;
     var gardees = vis.filter(function (r) { return r.garder; }).length;
     var doutes = vis.filter(function (r) { return r.doute; }).length;
     var horsPiste = vis.length - vis.filter(function (r) { return r.statut === "classe"; }).length;
@@ -717,7 +861,18 @@
       '<div class="hi-bi dt"><b>' + doutes + '</b><span>à vérifier</span></div>' +
       '<div class="hi-bi no"><b>' + horsPiste + '</b><span>hors piste</span></div></div>';
 
-    var cavs = (window.HYPE_IMPORT ? window.HYPE_IMPORT.cavaliers(toutes) : []);
+    if (E.sif) {
+      h += '<div class="hi-aide" style="margin-top:14px">\u00c9preuve : <b>' + ech(E.sif.epreuve || "?") + '</b><br>' +
+        ech(joli(E.sif.concours || "")) + ' \u00b7 ' + jour(E.sif.date) + '<br>' +
+        (E.club ? 'Seules les lignes de ton club seront enregistr\u00e9es, chacune sur la fiche de son cheval.'
+                : 'Choisis ton club ci-dessous : seules ses lignes seront enregistr\u00e9es.') + '</div>';
+      h += '<div class="hi-st">Ton club<em>' + E.sif.clubs.length + ' clubs</em></div><div class="hi-cavs">';
+      E.sif.clubs.forEach(function (c) {
+        h += '<div class="hi-cav' + (E.club === c.nom ? " on" : "") + '" data-hi-club="' + ech(c.nom) + '">' + ech(joli(c.nom)) + ' \u00b7 ' + c.n + '</div>';
+      });
+      h += '</div>';
+    }
+    var cavs = (window.HYPE_IMPORT && !E.sif ? window.HYPE_IMPORT.cavaliers(toutes) : []);
     if (cavs.length > 1) {
       h += '<div class="hi-st">Qui montait<em>garde seulement tes lignes</em></div><div class="hi-cavs">';
       h += '<div class="hi-cav' + (E.cavalier === "" ? " on" : "") + '" data-hi-cav="">Tous · ' + toutes.length + '</div>';
@@ -761,10 +916,10 @@
        décochées comprises (elles arrivent en visible = false). Le bouton
        annonçait donc moins que ce qu il faisait. Il dit maintenant le
        vrai total, et une phrase sous lui explique le rôle des coches. */
-    var aEcrire = E.lignes.filter(function (r) {
+    var aEcrire = toutes.filter(function (r) {
       return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee";
     }).length;
-    var caches = aEcrire - E.lignes.filter(function (r) { return r.garder; }).length;
+    var caches = aEcrire - toutes.filter(function (r) { return r.garder; }).length;
     if (E.err) h += '<div class="hi-err" style="margin:0 16px 12px"><b>L\'enregistrement a \u00e9chou\u00e9 : </b>' + ech(E.err) + "</div>"; /* 26/08 : l'erreur s'affiche AU-DESSUS du bouton — elle \u00e9tait rendue sous le pied, hors de l'\u00e9cran, et Blandine ne voyait \u00ab rien se passer \u00bb */
     h += '<div class="hi-pied">' +
       '<button class="hi-bt" data-hi="enregistrer"' + (aEcrire ? "" : " disabled") + '>' +
@@ -910,10 +1065,18 @@
           var o = window.HYPE_IMPORT.lire(txt);
           if (!o.lignes.length) {
             E.err = "Aucun résultat trouvé dans ce PDF. Vérifie que c'est bien la page " +
-                    "entière de ton telemat, et non une capture en image.";
+                    "entière de ton telemat (ou la page « Résultats détaillés » d'une épreuve), et non une capture en image.";
             E.etape = "choix"; refaire(); return;
           }
           E.lignes = o.lignes; E.cavalier = ""; E.niveau = "classe";
+          /* 22/09 : un PDF « Résultats détaillés » - pas de verrou d identité (aucun nom de cheval
+             en en-tête : chaque ligne porte le sien), et le club est reconnu d office. */
+          E.sif = (o.format === "sif") ? { clubs: o.clubs || [], epreuve: o.epreuve || "", concours: o.concours || "", date: o.date || null } : null;
+          E.club = "";
+          if (E.sif) {
+            try { window.__hypeNomPdfFFE = null; window.__hypeOriginesFFE = null; window.__hypeCavalierPdfFFE = null; } catch (eW) { }
+            try { E.club = window.HYPE_IMPORT.clubReconnu(E.sif.clubs, (typeof window !== "undefined" && window.__hypeEcuriesImport) || []); } catch (eC) { E.club = ""; }
+          }
           window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
           E.etape = "niveau"; refaire();
         }).catch(function (e) {
@@ -932,7 +1095,7 @@
       var cible = null;
       while (el && el !== hote) {
         if (el.getAttribute && (el.getAttribute("data-hi") ||
-            el.getAttribute("data-hi-l") || el.getAttribute("data-hi-cav") ||
+            el.getAttribute("data-hi-l") || el.getAttribute("data-hi-cav") || el.getAttribute("data-hi-club") ||
             el.getAttribute("data-hi-nv"))) { cible = el; break; }
         el = el.parentNode;
       }
@@ -950,6 +1113,8 @@
         E.lignes.forEach(function (r) { if (r.rang === n) r.garder = !r.garder; });
         refaire(); return;
       }
+      var clb = cible.getAttribute("data-hi-club");
+      if (clb !== null && E.sif) { E.club = clb || ""; refaire(); return; }
       var cv = cible.getAttribute("data-hi-cav");
       if (cv !== null) { E.cavalier = cv || ""; refaire(); return; }
 
@@ -1013,7 +1178,8 @@
        Ne sont ecartes que forfaits et epreuves annulees : le cheval n a
        pas couru. E.lignes ne les contient deja pas, on redouble ici.   */
     var aGarder = E.lignes.filter(function (r) {
-      return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee";
+      return r && r.date && r.statut !== "non_partant" && r.statut !== "annulee"
+        && (!E.sif || (E.club && r.club === E.club));   /* 22/09 : une épreuve = SON club seulement */
     });
     if (!aGarder.length) {
       E.err = "aucune ligne à enregistrer."; refaire(); return;
@@ -1060,7 +1226,7 @@
   }
 
   function reinitialiser() {
-    E = { etape: "choix", lignes: [], cavalier: "", err: null, nomFichier: "", occupe: false, niveau: "classe" };
+    E = { etape: "choix", lignes: [], cavalier: "", err: null, nomFichier: "", occupe: false, niveau: "classe", sif: null, club: "" };
   }
 
   /* ==== ce qu'on ajoute à HYPE_IMPORT ================================== */
