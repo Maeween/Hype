@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260922-344"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260922-346"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -25683,6 +25683,8 @@ function Router() {
                 ecran === "guilde" && React.createElement(EcranGuilde, null),
                 /* 01/09 : « Performances en concours » — tous les resultats du club. */
                 ecran === "perf-concours" && React.createElement(EcranPerfConcours, null),
+                /* 22/09 (346) : la page « Résultats » d une cavalière. */
+                ecran === "resultats-cavalier" && React.createElement(EcranResultatsCavaliere, null),
                 ecran === "agenda-club" && React.createElement(EcranAgendaClub, null),
                 ecran === "gerer-ecurie" && React.createElement(EcranGererEcurie, null),
                 ecran === "moncompte" && React.createElement(EcranMonCompte, null),
@@ -29906,6 +29908,7 @@ function BlocResultatsCavaliere(props) {
   var _oc = React.useState(false), occupe = _oc[0], setOccupe = _oc[1];
   var _err = React.useState(""), erreur = _err[0], setErreur = _err[1];
   var _msg = React.useState(""), message = _msg[0], setMessage = _msg[1];
+  var idResoluRef = React.useRef(null); /* (346) : l identifiant reellement lu, pour « Voir tout » */
 
   async function charger() {
     /* 🟥 13/09 (121) — CAUSE DU BLOC INVISIBLE, trouvee apres 3 requetes de Blandine.
@@ -29924,6 +29927,7 @@ function BlocResultatsCavaliere(props) {
       }
     } catch (eId) { }
     if (!id) { setLignes([]); return; }
+    idResoluRef.current = id;
     try {
       if (typeof supa === "undefined" || !supa) { setLignes([]); return; }
       var r = await supa.from("resultats")
@@ -30111,7 +30115,10 @@ function BlocResultatsCavaliere(props) {
         T("Derniers r\u00e9sultats", "Latest results", "\u00daltimos resultados", "Ultimi risultati", "\u6700\u65b0\u306e\u6210\u7e3e", "Letzte Ergebnisse")),
       h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }),
       sien ? h("button", { onClick: function () { setChoixOuvert(true); }, style: { background: "none", border: "none", color: TURQ, fontFamily: M, fontSize: 11, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", minHeight: 34 } },
-        T("Choisir", "Choose", "Elegir", "Scegli", "\u9078\u3076", "Ausw\u00e4hlen")) : null),
+        T("Choisir", "Choose", "Elegir", "Scegli", "\u9078\u3076", "Ausw\u00e4hlen")) : null,
+      /* 22/09 (346) : « Voir tout » -> la page Résultats de la cavalière (EcranResultatsCavaliere). */
+      h("button", { onClick: function () { try { window.__resCavaliereId = idResoluRef.current || userId || ""; } catch (eW) { } if (app.setEcran) app.setEcran("resultats-cavalier"); }, style: { background: "none", border: "none", color: TURQ, fontFamily: M, fontSize: 11, fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap", minHeight: 34, padding: "0 2px" } },
+        T("Voir tout \u203a", "See all \u203a", "Ver todo \u203a", "Vedi tutto \u203a", "\u3059\u3079\u3066 \u203a", "Alle \u203a"))),
 
     montrees.length
       ? h("div", { style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" }, "data-hscroll": "1" }, cartes(montrees))
@@ -34344,6 +34351,643 @@ function hypeRecompense(place, partants) {
       }, "\uFF0B " + T("Ajouter un rendez-vous", "Add an event", "A\u00f1adir una cita", "Aggiungi un evento", "\u4e88\u5b9a\u3092\u8ffd\u52a0", "Termin hinzuf\u00fcgen"))) : null);
 }
 
+/* ════════ 22/09 (346) — LA PAGE « RÉSULTATS » D UNE CAVALIÈRE ════════
+   Sa demande : « il faut créer sa page résultats, c est le plus important », puis « reproduis en
+   gros la page similaire qu on a faite pour les chevaux et on affinera après ; par contre il faut
+   qu on puisse voir quand même les principaux résultats sur sa page, et c est là qu on peut mettre
+   voir tout ». Entrée : « Voir tout › » à droite de « Derniers résultats » sur sa page Cavalier
+   (BlocResultatsCavaliere, qui garde ses 8 dernières cartes).
+   LE CORPS EST UNE COPIE du palmarès éditorial de la fiche cheval (EcranCheval, bloc « PALMARÈS
+   ÉDITORIAL — Proposition B ») : mêmes 4 chiffres (sorties / victoires / podiums / classements,
+   règles de Blandine), mêmes filtres (Tous / Classés / Podiums / Sans faute), mêmes moments forts,
+   mêmes saisons dépliables, mêmes points de qualification, mêmes « Derniers résultats » en cartes.
+   La fiche cheval N EST PAS TOUCHÉE (copie, pas partage ; à « affiner après »).
+   ADAPTATIONS, par des variables posées ici (le code copié les lit sans le savoir) :
+   · les lignes = `resultats` où cavalier_id = la cavalière (MÊME lecture que son bloc de page),
+     sans celles qu elle a masquées (masque_cavaliere) ; la coche de l import (visible) est
+     respectée par le corps copié ;
+   · dans chaque ligne, « cavalier » reçoit le NOM DU CHEVAL : les onglets du haut deviennent des
+     onglets PAR CHEVAL et les listes disent « · Rizotto d Emery » ; le vrai nom de la cavalière
+     reste pour la phrase des cartes (« 1er EVAN ROUX sur Rizotto d Emery ») ;
+   · en-tête = sa photo de profil, son nom ; aucun outil de propriétaire ni de modératrice ici
+     (choix de photo d en-tête, choix des médias des moments forts, corbeille) : page de lecture ;
+   · pas de « palmarès écrit en dur » (il n existe que sur les chevaux).
+   Aucun SQL, aucune table, route nouvelle « resultats-cavalier ». */
+function EcranResultatsCavaliere() {
+  var h = React.createElement;
+  var app = useApp();
+  var tr = app.tr, setEcran = app.setEcran;
+  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  var stId = React.useState(function () { try { return String(window.__resCavaliereId || ""); } catch (e) { return ""; } });
+  var riderId = stId[0];
+  var stP = React.useState(null); var prof = stP[0], setProf = stP[1];
+  var stR = React.useState(null); var resDb = stR[0], setResDb = stR[1];
+  var stM = React.useState(null); var moi = stM[0], setMoi = stM[1];
+  var stV = React.useState(function () { try { return localStorage.getItem("hype_res_vue") || "tous"; } catch (e) { return "tous"; } });
+  var vueRes = stV[0], setVueRes = stV[1];
+  function poserVueRes(v) { try { localStorage.setItem("hype_res_vue", v); } catch (e) { } setVueRes(v); }
+  var stSo = React.useState(null); var saisonOuv = stSo[0], setSaisonOuv = stSo[1];
+  var stSp = React.useState(null); var saisonPts = stSp[0], setSaisonPts = stSp[1];
+  var stCf = React.useState("tous"); var cavFiltre = stCf[0], setCavFiltre = stCf[1];
+  var stVm = React.useState(false); var voirMasques = stVm[0], setVoirMasques = stVm[1];
+  var stTo = React.useState(""); var toast = stTo[0], setToast = stTo[1];
+  var stE = React.useState(""); var erreur = stE[0], setErreur = stE[1];
+  React.useEffect(function () { try { window.scrollTo(0, 0); } catch (e) { } }, []);
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        var u = null; try { u = await utilisateurActuel(); } catch (eU) { u = null; }
+        if (vif) setMoi(u);
+        if (!riderId || typeof supa === "undefined" || !supa) { if (vif) setResDb([]); return; }
+        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie").eq("id", riderId).maybeSingle();
+        if (vif) setProf((rp && rp.data) || { id: riderId, pseudo: "" });
+        var rr = await supa.from("resultats").select("*").eq("cavalier_id", riderId).limit(2000);
+        if (rr && rr.error) { if (vif) { setErreur(String(rr.error.message || rr.error)); setResDb([]); } return; }
+        var lignes = ((rr && rr.data) || []).filter(function (x) { return x && x.masque_cavaliere !== true; });
+        var ids = [];
+        lignes.forEach(function (x) { if (x.cheval_id && ids.indexOf(x.cheval_id) === -1) ids.push(x.cheval_id); });
+        var noms = {};
+        if (ids.length) {
+          var rc = await supa.from("chevaux").select("id, nom").in("id", ids.slice(0, 300));
+          ((rc && !rc.error && rc.data) || []).forEach(function (cv) { if (cv && cv.id) noms[String(cv.id)] = cv.nom || ""; });
+        }
+        lignes = lignes.map(function (x) {
+          var nomCh = (x.cheval_id && noms[String(x.cheval_id)]) || x.cheval_nom || "";
+          return Object.assign({}, x, { cav_reel: x.cavalier || "", ch_reel: nomCh, cavalier: nomCh || x.cavalier || "" });
+        });
+        if (vif) setResDb(lignes);
+      } catch (eL) { if (vif) { setErreur(String(eL)); setResDb([]); } }
+    })();
+    return function () { vif = false; };
+  }, [riderId]);
+  /* ── les variables que le corps copié de la fiche cheval attend ── */
+  var nomCav = (prof && prof.pseudo) || "";
+  var c = { nom: nomCav, palmares: [] };
+  var chevalDyn = { ownerId: null, nom: "", photo_palmares: null, moments_forts_medias: null, dbId: null };
+  var id = riderId;
+  var photoCh = prof ? (((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) || ((typeof avatarHypeDefaut === "function") ? avatarHypeDefaut(prof.id || prof.pseudo) : "")) : "";
+  var photosForts = [], albumsForts = [], mediaTousMF = [];
+  var pickerMomentF = null; function setPickerMomentF() { } function ouvrirPickerMomentF() { } function definirMediaMomentFort() { }
+  function estModerateurHype() { return false; }   /* page de lecture : aucun outil ici */
+  async function supprimerResultat() { return { error: "indisponible ici" }; }
+  var teinteCl = "#5FE9F0";
+  function tA(a) { return "rgba(32,217,245," + a + ")"; }
+  function encartIdentiteCh(titrePage) {
+    var OR9 = "#D9A85C";
+    return h("div", { style: { position: "relative", margin: "4px 16px 18px", borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)", minHeight: 150 } },
+      photoCh ? h("img", { src: photoCh, alt: "", style: { width: "46%", height: 170, objectFit: "cover", objectPosition: "center 25%", display: "block", opacity: .94 } }) : h("div", { style: { height: 150 } }),
+      h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(4,7,10,0) 22%, rgba(4,7,10,.78) 48%, rgba(4,7,10,.96) 72%)" } }),
+      h("div", { style: { position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", width: "54%" } },
+        h("div", { style: { color: OR9, fontSize: 13, lineHeight: 1, marginBottom: 5 } }, "\u265B"),
+        h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: 18, lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase", overflowWrap: "anywhere" } }, nomCav || "\u2014"),
+        (prof && prof.ecurie && prof.ecurie !== "__perso__") ? h("div", { style: { marginTop: 5, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } }, prof.ecurie) : null,
+        h("div", { style: { marginTop: 6, fontSize: 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titrePage)));
+  }
+  var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
+  return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110 } },
+    h("div", { style: { padding: "calc(env(safe-area-inset-top) + 14px) 14px 8px", display: "flex", alignItems: "center", gap: 10 } },
+      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
+      h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: teinteCl } }, T("R\u00e9sultats en concours", "Competition results", "Resultados", "Risultati", "\u5927\u4f1a\u306e\u6210\u7e3e", "Turnierergebnisse"))),
+    (resDb === null)
+      ? h("div", { style: { padding: "40px 20px", textAlign: "center", color: "#8A929C", fontFamily: "'Montserrat',sans-serif", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026"))
+      : (!resDb.length
+          ? h("div", null, encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen")),
+              h("div", { style: { margin: "0 16px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.08)", padding: 16, color: "#8A929C", fontSize: 12.5, lineHeight: 1.55, fontFamily: "'Montserrat',sans-serif" } },
+                erreur ? erreur : T("Aucun r\u00e9sultat reli\u00e9 \u00e0 ce compte pour l\u2019instant. Ils apparaissent ici une fois son nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Relier les r\u00e9sultats FFE \u00bb).", "No result linked to this account yet.", "A\u00fan no hay resultados vinculados.", "Nessun risultato collegato per ora.", "\u307e\u3060\u6210\u7e3e\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine verkn\u00fcpften Ergebnisse.")))
+          : h("div", { style: { padding: "0 0 28px" } },
+        (function () {
+          var lignesBrutes = (resDb || []).filter(function (r) { return r && (voirMasques || r.visible !== false) && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
+          function pl9(r) { if (r.place != null) return Number(r.place); var m9 = String(r.classement || "").match(/^\s*(\d+)/); return m9 ? Number(m9[1]) : null; }
+          /* 06/09 : la ligne porte desormais son IDENTIFIANT, son ORIGINE (import ou
+             saisie a la main) et la MENTION du telemat — necessaires pour la corbeille
+             des saisies manuelles et pour la pastille « Sans faute ».
+             ⚠️ Meme lecture du sans-faute que le lecteur d'import et hype-resultats.js :
+             trois endroits, faute de module partage. Si la regle change, la changer aux trois. */
+          /* 06/09 (Blandine) — LES POINTS DE QUALIFICATION, ADDITIONNES.
+             ⚠️ ON NE RECALCULE RIEN. Le barème FFE dépend de l'indice, du quart,
+             du coefficient d'épreuve, du circuit, de la division — et il a changé
+             au 1er janvier 2026 (10 pts pour un sans-faute + points de quart, le
+             tout coefficienté). Recalculer, ce serait produire des chiffres faux
+             à chaque évolution du règlement. On additionne donc la colonne
+             « Pts qualif. Chpt » que la FFE a elle-même calculée, telle qu'elle
+             arrive du télémat. Une ligne sans points ne compte pas — elle n'est
+             pas comptée comme zéro, elle est signalée à l'écran.
+             ⚠️ La saison n'est PAS gravée : SAISON_DEBUT_MOIS/JOUR se changent en
+             une ligne le jour où la FFE bouge ses dates (période de qualification
+             fixée chaque année, et par championnat). */
+          var SAISON_DEBUT_MOIS = 7, SAISON_DEBUT_JOUR = 1;   /* 1er juillet, choix de Blandine */
+          function saisonDe(d) {
+            try {
+              var p = String(d || "").split("-"); if (p.length < 3) return null;
+              var an = Number(p[0]), mo = Number(p[1]), jo = Number(p[2]);
+              var apres = (mo > SAISON_DEBUT_MOIS) || (mo === SAISON_DEBUT_MOIS && jo >= SAISON_DEBUT_JOUR);
+              return apres ? an : (an - 1);
+            } catch (eSa) { return null; }
+          }
+          /* Le type d'épreuve est lu dans son nom, tel que la FFE l'écrit. */
+          function familleEp(ep) {
+            var t = String(ep || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            if (!t) return "Autres";
+            if (/pr[e]?para/.test(t)) return "Preparatoire";
+            if (/hunter/.test(t)) return "Hunter";
+            if (/dressage/.test(t)) return "Dressage";
+            /* 06/09 (Blandine : « As poney 2 c'est pas poney 2 ») — les As sont une
+               CATÉGORIE À PART, pas un Poney 2 : le circuit des As ne se mélange pas
+               avec les épreuves poney classiques. On les reconnaît AVANT, sinon
+               « As Poney 2D » tombait dans Poney 2. Le suffixe de taille (A/B/C/D)
+               n'entre pas dans le nom : c'est l'indice qui compte. */
+            /* 06/09, 2e correction de Blandine (« As1 pareil ») : le télémat écrit
+               aussi bien « As Poney 2D » que « As 1 » — c'est le même circuit des As.
+               Les deux formes tombent donc dans le même groupe, indice compris. */
+            /* 06/09, 3e correction (« en Amat tu comptes aussi W ? ») : le W est un
+               niveau comme Élite ou 1-4, il a donc sa propre ligne. Avant, « Amateur W »
+               tombait dans le fourre-tout « Amateur » et se mélangeait aux épreuves
+               dont on n'a pas su lire l'indice. */
+            /* ⚠️ Le W se teste AVANT le chiffre et avec une fin de mot, sinon il
+               s'attrape au milieu d'un mot. Le chiffre, lui, ne PEUT PAS exiger une
+               fin de mot : « As Poney 2D » colle l'indice à la taille du poney (D),
+               et « 2D » ne serait plus reconnu (piège vu au banc d'essai). */
+            if (/\bas\s*(?:poney\s*)?w\b/.test(t)) return "As Poney W";
+            var mAs = /\bas\s*(?:poney\s*)?(elite|[1-4])/.exec(t);
+            if (mAs) return "As Poney " + (mAs[1] === "elite" ? "Elite" : mAs[1]);
+            if (/\bas\s*poney/.test(t)) return "As Poney";
+            var mW = /(poney|club|amateur|pro)\s*w\b/.exec(t);
+            if (mW) return mW[1].charAt(0).toUpperCase() + mW[1].slice(1) + " W";
+            var mEl = /(poney|club|amateur|pro)\s*(elite|[1-4])/.exec(t);
+            if (mEl) {
+              var fam = mEl[1].charAt(0).toUpperCase() + mEl[1].slice(1);
+              return fam + " " + (mEl[2] === "elite" ? "Elite" : mEl[2]);
+            }
+            if (/poney/.test(t)) return "Poney";
+            if (/club/.test(t)) return "Club";
+            if (/amateur/.test(t)) return "Amateur";
+            return "Autres";
+          }
+          function estSFf(f) { var t = String(f && f.mn || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, ""); if (!t) return false; return /(^|[^a-z])sf([^a-z]|$)/.test(t) || /sans\s*-?\s*faute/.test(t); }
+          var tousF = lignesBrutes.map(function (r) { return { id: r.id, og: (r.origine || "main"), mn: String(r.mention || ""), pts: ((r.points == null || r.points === "") ? null : Number(r.points)), pl: pl9(r), part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "", cav: r.cavalier || "", q: (r.quart == null ? null : Number(r.quart)), d: String(r.date_epreuve || ""), an: String(r.date_epreuve || "").slice(0, 4) }; }).filter(function (f) { return f.pl != null; });
+          /* 30/08 — BARRE EMPILEE PAR SAISON. Liste PARALLELE a tousF qui GARDE les
+             parcours SANS place (eliminations, abandons : place vide, classement
+             "El." / "Ab."), volontairement ecartes de tousF par le .filter ci-dessus.
+             Ces lignes SONT en base (decision 24/08 : « elimines et abandons comptent
+             dans le palmares »), elles n etaient simplement jamais affichees.
+             ⚠️ tousR ne sert QU A la barre. Ne jamais la brancher sur les 4 chiffres
+             du bandeau, les moments forts, les onglets cavaliers ni sortiesDe : ces
+             compteurs bougeraient tous d un coup. */
+          var tousR = lignesBrutes.map(function (r) { return { pl: pl9(r), cav: r.cavalier || "", an: String(r.date_epreuve || "").slice(0, 4) }; });
+          var ansR = {}; tousR.forEach(function (f) { if (f.an) (ansR[f.an] = ansR[f.an] || []).push(f); });
+          var nV = tousF.filter(function (f) { return f.pl === 1; }).length;
+          var nP = tousF.filter(function (f) { return f.pl <= 3; }).length;
+          var nC = tousF.length;
+          function sortiesDe(fs) { var parLieu = {}; fs.forEach(function (f) { if (!f.d) return; var k = f.nom.toLowerCase().trim(); (parLieu[k] = parLieu[k] || {})[f.d] = true; }); var tot = 0; Object.keys(parLieu).forEach(function (k) { var js = Object.keys(parLieu[k]).sort(); var prec = null; js.forEach(function (j) { var t = Date.parse(j + "T00:00:00Z"); if (prec == null || isNaN(t) || (t - prec) > 86400000) tot++; if (!isNaN(t)) prec = t; }); }); return tot; }
+          var nS = sortiesDe(tousF);
+          /* 26/08 — CLASSEMENT DES MOMENTS FORTS, regle dictee par Blandine (« pourquoi
+             Villers alors que t'as l'Open de France gagne en P1, le Salon de Bordeaux,
+             la P Elite de Barbizon ») : 1) les concours a TITRES d'abord (Open de
+             France, championnats… puis les grands internationaux/salons), 2) puis le
+             NIVEAU d'epreuve (Elite > 1 > 2 > 3), 3) puis les PARTANTS. Victoires en
+             tete de pool, podiums en complement s'il manque des cartes. Le palmares
+             ecrit en dur (decision 24/08 : s'affiche, ne compte pas) entre dans CE
+             pool d'affichage, avec dedoublonnage (les deux Bordeaux ne font qu'un). */
+          /* ⚠️ LE FILTRE NE TOUCHE PAS LES 4 CHIFFRES. nS/nV/nP/nC restent calcules
+             sur TOUTES les lignes : un bandeau qui dirait « 18 sorties » alors que
+             le cheval en a 12 serait faux, et Blandine lirait ses propres chiffres
+             comme incoherents. Le filtre ne concerne que les LISTES. */
+          /* ⚠️ REGLE DES PREPARATOIRES (Blandine, 02/09) : en preparatoire le
+             classement n est pas un rang face aux autres, c est un verdict sur le
+             parcours. 1er = sans faute ; toute autre place = il y a eu des fautes.
+             On ne garde donc QUE la victoire, jamais une 2e ou 3e place — ni en
+             « classes », ni en « podiums ».
+             ⚠️ Une preparatoire n a pas de quart : sans cette regle explicite, un
+             filtre sur `q === 1` la ferait disparaitre entierement. */
+          function gardePrepa(fP) { return (fP.pl === 1) && /pr[ée]pa/i.test(String(fP.ep || "")); }
+          function estPrepaLigne(fP) { return /pr[ée]pa/i.test(String(fP.ep || "")); }
+          var vueF = tousF;
+          if (vueRes === "classes") {
+            vueF = tousF.filter(function (fQ) { return estPrepaLigne(fQ) ? gardePrepa(fQ) : (fQ.q === 1); });
+          } else if (vueRes === "podiums") {
+            vueF = tousF.filter(function (fQ) { return estPrepaLigne(fQ) ? gardePrepa(fQ) : ((fQ.pl || 99) <= 3); });
+          } else if (vueRes === "sf") {
+            vueF = tousF.filter(estSFf);
+          }
+          var fortsPool = vueF.slice();
+          try {
+            (((typeof c !== "undefined" && c) && c.palmares) || []).forEach(function (rJ) {
+              if (!rJ || !rJ.event) return;
+              var mR = String(rJ.rang || "").match(/^\s*(\d+)/); var plJ = mR ? Number(mR[1]) : null;
+              if (plJ == null) return;
+              var dsJ = String(rJ.ds || ""); var mC = dsJ.match(/avec\s+(.+)$/i);
+              fortsPool.push({ pl: plJ, part: null, nom: String(rJ.event || ""), ep: dsJ.split("\u00b7")[0].trim(), cav: (mC ? mC[1].trim() : ""), d: "", an: String(rJ.annee || "").slice(0, 4) });
+            });
+          } catch (eFp) { }
+          function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); if (/open de france|championnat|\bchp\b|finale|coupe de france|crit\u00e9rium|criterium|grand tournoi/.test(tT)) return 2; if (/internation|\bint\b|salon du cheval|salon internat/.test(tT)) return 1; return 0; }
+          function poidsNiveau(f) { var eN = (f.ep || "").toLowerCase(); if (/\u00e9lite|elite/.test(eN)) return 5; var mN = eN.match(/\b([1-4])\b/); return mN ? (5 - Number(mN[1])) : 0; }
+          function jetonFort(f) { var ts = String(f.nom || "").toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g, "").split(/\s+/).filter(function (w) { return w.length > 5; }).sort(function (a, b) { return b.length - a.length; }); return (f.an || "") + "|" + (ts[0] || String(f.nom || "").toLowerCase()); }
+          /* 02/09 (Blandine) : « pas prioritaire en tant que moment fort ». Une
+             victoire en preparatoire reste affichable, mais elle passe APRES les
+             epreuves classantes — c est le premier critere du tri, avant meme le
+             titre. Elle ne remonte donc en vitrine que faute de mieux. */
+          function estPrepaF(f) { return /pr[ée]pa/i.test(String(f && f.ep || "")); }
+          function triFort(a, b) { return ((estPrepaF(a) ? 1 : 0) - (estPrepaF(b) ? 1 : 0)) || (poidsTitre(b) - poidsTitre(a)) || (poidsNiveau(b) - poidsNiveau(a)) || ((b.part || 0) - (a.part || 0)) || ((a.pl || 99) - (b.pl || 99)); }
+          var vics = fortsPool.filter(function (f) { return f.pl === 1; }).slice().sort(triFort);
+          /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ if (vics.length < 5) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
+          var forts = []; var jetonsVus = {};
+          /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ vics.forEach(function (fV) { if (forts.length >= 5) return; var jV = jetonFort(fV); if (jetonsVus[jV]) return; jetonsVus[jV] = 1; forts.push(fV); });
+          var ans = {}; vueF.forEach(function (f) { if (f.an) (ans[f.an] = ans[f.an] || []).push(f); });
+          var listeAns = Object.keys(ans).sort().reverse();
+          var cavStats = {}; tousF.forEach(function (fC) { if (!fC.cav) return; if (!cavStats[fC.cav]) cavStats[fC.cav] = { n: 0, d: "" }; cavStats[fC.cav].n++; if ((fC.d || "") > cavStats[fC.cav].d) cavStats[fC.cav].d = fC.d || ""; });
+          var cavsPalm = Object.keys(cavStats).sort(function (cA, cB) { return (cavStats[cB].n - cavStats[cA].n) || cavStats[cB].d.localeCompare(cavStats[cA].d); }); /* 27/08 : onglets cavaliers TRIES — celui qui a le plus monte d abord, puis les plus recents (demande Blandine) */
+          function filtreCav(lF) { return (cavFiltre && cavFiltre !== "tous") ? lF.filter(function (fF) { return fF.cav === cavFiltre; }) : lF; }
+          /* 🟩 06/09 (Blandine) — "Derniers resultats" en cartes comme sur la page ecurie,
+   MEME rendu que le rail plus haut (medaille, annee, portrait rond, 1er CAVALIER sur
+   CHEVAL, concours, epreuve, partants, autres classes). Source : filtreCav(vueF), donc
+   suit desormais l'onglet cavalier choisi juste au-dessus — avant, cette section restait
+   toujours sur les resultats les plus recents TOUS cavaliers confondus, meme quand un
+   onglet (Elena C., Manon H....) etait choisi : "pas normal que ce soit les resultats de
+   Liam qui apparaissent a leur nom". Plafond a 6 cartes, choisi par elle. */
+var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
+          var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
+          function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
+          var OR9 = "#D9A85C";
+          var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
+          function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
+          /* 02/09 (Blandine) — UNE PHOTO PAR MOMENT FORT, JAMAIS LA MEME TROIS FOIS.
+             Ordre de recherche :
+               1. un album dont le NOM evoque le concours -> photo vraiment liee au moment ;
+               2. sinon, tirage au hasard dans toutes ses photos, SANS REPETITION entre
+                  les trois cartes (melange sement sur l identifiant du cheval + le jour,
+                  donc stable dans la journee et renouvele le lendemain) ;
+               3. s il n y a AUCUNE photo d album, seule la premiere carte reprend le
+                  portrait du cheval — les deux autres restent sur leur degrade plutot
+                  que de repeter la meme image, ce qui etait precisement le reproche. */
+          var motsClesF = function (t) {
+            return String(t || "").toLowerCase()
+              .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+              .replace(/[^a-z0-9 ]+/g, " ").split(" ")
+              .filter(function (m) { return m.length >= 4; });
+          };
+          var photoDAlbumPourF = function (f) {
+            if (!f || !albumsForts || !albumsForts.length) return null;
+            var mots = motsClesF(f.nom).concat(motsClesF(f.ep));
+            if (!mots.length) return null;
+            var trouve = null;
+            albumsForts.forEach(function (aF) {
+              if (trouve) return;
+              var nomA = String(aF.nom || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+              for (var iM = 0; iM < mots.length; iM++) {
+                if (nomA.indexOf(mots[iM]) >= 0) { trouve = aF.photos[0]; return; }
+              }
+            });
+            return trouve;
+          };
+          var grainePhF = (function () {
+            var t = String(id || "") + "|" + Math.floor(Date.now() / 86400000), n = 0;
+            for (var iG = 0; iG < t.length; iG++) { n = (n * 31 + t.charCodeAt(iG)) >>> 0; }
+            return n;
+          })();
+          var pioche = (photosForts || []).slice();
+          (function melanger() { /* mulberry32, meme graine toute la journee */
+            var a = grainePhF;
+            function rnd() { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+            for (var iP = pioche.length - 1; iP > 0; iP--) { var jP = Math.floor(rnd() * (iP + 1)); var tmp = pioche[iP]; pioche[iP] = pioche[jP]; pioche[jP] = tmp; }
+          })();
+          var dejaPrises = {};
+          /* \U0001f7e9 06/09 (Blandine) : qui peut choisir la photo/video d'un moment fort ?
+             la proprietaire du cheval, ou une moderatrice Hype — meme logique que le
+             changement de photo_palmares plus haut. */
+          var peutChoisirMediaF = !!((chevalDyn && moi && chevalDyn.ownerId === moi.id) || (typeof estModerateurHype === "function" && estModerateurHype(moi)));
+          function carteFort(f, grande, idx) {
+            if (!f) return null;
+            var jetonF = jetonFort(f);
+            var surchargeF = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonF]) || null;
+            var phF = surchargeF ? surchargeF.url : photoDAlbumPourF(f);
+            if (!surchargeF) {
+              if (phF && dejaPrises[phF]) phF = null;
+              if (!phF) {
+                for (var iF2 = 0; iF2 < pioche.length; iF2++) {
+                  if (!dejaPrises[pioche[iF2]]) { phF = pioche[iF2]; break; }
+                }
+              }
+              if (!phF && idx === 0) phF = photoCh; /* le portrait, mais UNE seule fois */
+              if (phF) dejaPrises[phF] = 1;
+            }
+            var estVidF = surchargeF && surchargeF.type === "video";
+            return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", /* 🟩 06/09 (Blandine : "rallonge un peu la partie ou y a la photo, a chaque fois tu la coupes en deux, ca gache l'effet visuel") */ /* 🟩 06/09 (Blandine : "on garde le format large mais large ne veut pas dire tres court en hauteur, rallonge un peu sa hauteur") */ height: grande ? 280 : 178, flex: grande ? null : 1, minWidth: 0 } },
+              phF ? (estVidF
+                ? hypeMiniatureVideo(phF, { largeur: 900, objectPosition: "center 28%", picto: false, style: { position: "absolute", inset: 0, opacity: .82 } })
+                : h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } })) : null,
+              h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
+              h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.72)", color: grande ? "#241503" : teinteCl, border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid " + teinteCl } }, "1"),
+              /* \U0001f7e9 06/09 : petit crayon discret, reserve a peutChoisirMediaF — n'empeche pas
+                 le clic sur la carte (stopPropagation) qui ouvrirait la saison a la place. */
+              peutChoisirMediaF ? h("button", { onClick: function (eEd) { eEd.stopPropagation(); ouvrirPickerMomentF(jetonF); }, "aria-label": T("Choisir la photo ou la vid\u00e9o", "Choose the photo or video", "Elegir foto o v\u00eddeo", "Scegli foto o video", "\u5199\u771f\u307e\u305f\u306f\u52d5\u753b\u3092\u9078\u3076", "Foto oder Video w\u00e4hlen"), style: { position: "absolute", top: 7, right: 7, width: grande ? 30 : 24, height: grande ? 30 : 24, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.6)", color: "#F2EDE2", fontSize: grande ? 13 : 11, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } }, "\u270e") : null,
+              h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 12px 12px" : "0 9px 9px", textAlign: "center" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grande ? 14.5 : 10.8, color: "#F2EDE2", letterSpacing: ".03em", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom + (f.an ? " " + f.an : "")),
+                f.ep ? h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.ep) : null,
+                h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#B9BEC4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                  h("span", { style: { color: OR9, fontWeight: 700 } }, "1er"), " sur " + (f.part || "?"), f.cav ? " \u00b7 " : null, f.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, f.cav) : null)));
+          }
+          return h(React.Fragment, null,
+            /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
+            encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen")),
+            /* — 2 · LE BANDEAU DES QUATRE CHIFFRES — */
+            /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", margin: "18px 16px 0", padding: "15px 6px 14px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
+              [[nS, T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts")], [nV, T("victoires", "wins", "victorias", "vittorie", "\u512a\u52dd", "Siege")], [nP, T("podiums", "podiums", "podios", "podi", "\u8868\u5f70\u53f0", "Podien")], [nC, T("class\u00e9s", "placings", "clasificados", "piazzamenti", "\u5165\u8cde", "Platzierungen")]].map(function (cq, iq) {
+                return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: teinteCl } }, String(cq[0])),
+                  h("div", { style: { marginTop: 2, fontSize: 8.2, letterSpacing: ".13em", color: "#8A929C", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1])); })),
+            /* 02/09 — LE MENU D AFFICHAGE, sous les quatre chiffres.
+               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
+               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
+               c est la que la question se pose.
+               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
+               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
+            (function () {
+              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              if (!proprioF) return null;
+              var choix = [
+                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle")],
+                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert")],
+                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien")],
+                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
+                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei")]
+              ];
+              var nMasq = tousF.length - vueF.length;
+              return h("div", { style: { margin: "10px 16px 0" } },
+                h("div", { style: { display: "flex", gap: 7 } },
+                  choix.map(function (cH) {
+                    var onV = (vueRes === cH[0]);
+                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
+                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
+                        border: "1px solid " + (onV ? "rgba(217,199,163,0.7)" : "rgba(255,255,255,0.13)"),
+                        background: onV ? "rgba(217,199,163,0.14)" : "rgba(255,255,255,0.03)",
+                        color: onV ? "#D9C7A3" : "rgba(237,242,245,0.62)",
+                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
+                  })),
+                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "#6F7883", fontFamily: "'Montserrat',sans-serif" } },
+                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
+                                  "results hidden \u00b7 the counters above stay complete",
+                                  "resultados ocultos \u00b7 los contadores siguen completos",
+                                  "risultati nascosti \u00b7 i contatori restano completi",
+                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
+                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig")) : null);
+            })(),
+            /* — 3 · SES MOMENTS FORTS — */
+            forts.length ? h(React.Fragment, null,
+              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "32px 22px 14px" } }, filetOr(),
+                h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, letterSpacing: ".1em", color: "#EFE9DC", whiteSpace: "nowrap" } }, T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "\u30cf\u30a4\u30e9\u30a4\u30c8", "Seine Highlights").toUpperCase()), filetOr()),
+              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ h("div", { style: { margin: "0 16px" } },
+                carteFort(forts[0], true, 0),
+                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null,
+                (forts[3] || forts[4]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[3], false, 3), carteFort(forts[4], false, 4)) : null),
+              /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
+                 resultats, elle a pas a envoyer encore ailleurs »). */
+              null) : null,
+            /* \U0001f7e9 06/09 (Blandine : "vrai bouton pour choisir photo/video sur un moment
+               fort") \u2014 le picker s'ouvre en tapant le crayon d'une carte moment fort. Choix
+               fait DANS les photos/videos deja envoyees sur ce cheval (chargerPhotosSouvenirs) :
+               pas de nouvel envoi ici, la photo/video existe deja quelque part sur la fiche. */
+            pickerMomentF ? h("div", { onClick: function () { setPickerMomentF(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
+              h("div", { onClick: function (ePk) { ePk.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(217,168,92,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Photo ou vid\u00e9o de ce moment", "Photo or video for this highlight", "Foto o v\u00eddeo de este momento", "Foto o video di questo momento", "\u3053\u306e\u77ac\u9593\u306e\u5199\u771f\u30fb\u52d5\u753b", "Foto oder Video f\u00fcr diesen Moment")),
+                h("div", { style: { fontSize: 11, color: "rgba(234,242,244,.45)", textAlign: "center", marginBottom: 14, fontFamily: "'Montserrat',sans-serif" } }, T("Choisis parmi les photos et vid\u00e9os d\u00e9j\u00e0 envoy\u00e9es sur ce cheval.", "Pick from the photos and videos already sent for this horse.", "Elige entre las fotos y v\u00eddeos ya enviados de este caballo.", "Scegli tra le foto e i video gi\u00e0 inviati per questo cavallo.", "\u3053\u306e\u99ac\u306b\u3059\u3067\u306b\u9001\u3089\u308c\u305f\u5199\u771f\u30fb\u52d5\u753b\u304b\u3089\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle aus den bereits gesendeten Fotos und Videos dieses Pferdes.")),
+                h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
+                  (mediaTousMF === null) ? h("div", { style: { color: "#5B646E", fontSize: 12.5, fontFamily: "'Montserrat',sans-serif", textAlign: "center", padding: "22px 0" } }, "\u2026")
+                    : (!mediaTousMF.length ? h("div", { style: { color: "#5B646E", fontSize: 12.5, fontFamily: "'Montserrat',sans-serif", fontStyle: "italic", textAlign: "center", padding: "22px 0" } }, T("Aucune photo ni vid\u00e9o pour l'instant.", "No photo or video yet.", "A\u00fan ninguna foto ni v\u00eddeo.", "Ancora nessuna foto o video.", "\u307e\u3060\u5199\u771f\u3082\u52d5\u753b\u3082\u3042\u308a\u307e\u305b\u3093\u3002", "Noch kein Foto oder Video."))
+                      : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7 } },
+                        mediaTousMF.map(function (uM, iM) {
+                          var vidM = typeof estUrlVideo === "function" && estUrlVideo(uM);
+                          return h("div", { key: "pmf" + iM, role: "button", onClick: function () { definirMediaMomentFort(pickerMomentF, uM); }, style: { position: "relative", paddingBottom: "100%", borderRadius: 10, overflow: "hidden", cursor: "pointer", background: "#12242b" } },
+                            vidM
+                              ? hypeMiniatureVideo(uM, { largeur: 400, style: { position: "absolute", inset: 0 } })
+                              : h("img", { src: uM, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
+                            vidM ? h("div", { style: { position: "absolute", right: 4, bottom: 4, fontSize: 13 } }, "\u25b6\ufe0f") : null);
+                        }))),
+                (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[pickerMomentF]) ? h("button", { onClick: function () { definirMediaMomentFort(pickerMomentF, null); }, style: { marginTop: 12, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(237,242,245,0.65)", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Revenir au choix automatique", "Go back to automatic choice", "Volver a la elecci\u00f3n autom\u00e1tica", "Torna alla scelta automatica", "\u81ea\u52d5\u9078\u629e\u306b\u623b\u3059", "Zur automatischen Auswahl zur\u00fcckkehren")) : null,
+                h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen"))))) : null,
+            /* — 3bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) —
+               Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
+               « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
+               porte de points : inutile de montrer un tableau de zéros à qui n'a
+               pas encore repassé ses télémats. */
+            (function () {
+              var avecPts = filtreCav(tousF).filter(function (fP) { return fP.pts != null && !isNaN(fP.pts); });
+              if (!avecPts.length) return null;
+              var saisons = {};
+              avecPts.forEach(function (fP) { var sA = saisonDe(fP.d); if (sA == null) return; if (!saisons[sA]) saisons[sA] = []; saisons[sA].push(fP); });
+              var clesS = Object.keys(saisons).sort().reverse();
+              if (!clesS.length) return null;
+              var sCour = (saisonPts != null && saisons[saisonPts]) ? saisonPts : clesS[0];
+              var lignesS = saisons[sCour] || [];
+              var totalS = lignesS.reduce(function (acc, fP) { return acc + (fP.pts || 0); }, 0);
+              var parFam = {};
+              lignesS.forEach(function (fP) { var k = familleEp(fP.ep); if (!parFam[k]) parFam[k] = { n: 0, p: 0 }; parFam[k].n++; parFam[k].p += (fP.pts || 0); });
+              var famTri = Object.keys(parFam).sort(function (a1, b1) { return parFam[b1].p - parFam[a1].p; });
+              var sansPts = filtreCav(tousF).length - avecPts.length;
+              var arrondi = function (x) { return Math.round(x * 100) / 100; };
+              return h(React.Fragment, null,
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
+                  h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
+                    T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte").toUpperCase()), filetOr()),
+                (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
+                  clesS.map(function (sK) {
+                    var onS = (String(sK) === String(sCour));
+                    return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
+                      style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
+                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
+                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
+                        color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+                      sK + " / " + (Number(sK) + 1));
+                  })) : null,
+                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
+                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
+                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
+                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
+                      T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ") + lignesS.length + " " +
+                      T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen"))),
+                  h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    T("Saison du 1er juillet " + sCour + " au 30 juin " + (Number(sCour) + 1),
+                      "Season from 1 July " + sCour + " to 30 June " + (Number(sCour) + 1),
+                      "Temporada del 1 de julio " + sCour + " al 30 de junio " + (Number(sCour) + 1),
+                      "Stagione dal 1\u00ba luglio " + sCour + " al 30 giugno " + (Number(sCour) + 1),
+                      sCour + "\u5e747\u67081\u65e5\u301c" + (Number(sCour) + 1) + "\u5e746\u670830\u65e5",
+                      "Saison vom 1. Juli " + sCour + " bis 30. Juni " + (Number(sCour) + 1))),
+                  h("div", { style: { marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                    famTri.map(function (kF, iF) {
+                      return h("div", { key: "fam" + kF, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: iF ? "1px solid rgba(255,255,255,0.045)" : "none" } },
+                        h("div", { style: { flex: 1, minWidth: 0, fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, kF),
+                        h("div", { style: { flex: "0 0 auto", fontSize: 10.5, color: "#8A929C" } }, parFam[kF].n + " \u00d7"),
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: OR9, minWidth: 42, textAlign: "right" } }, arrondi(parFam[kF].p)));
+                    })),
+                  /* ⚠️ ON DIT CE QU'ON NE SAIT PAS : une ligne sans points n'est pas
+                     comptée pour zéro, elle est annoncée. */
+                  sansPts > 0 ? h("div", { style: { marginTop: 11, fontSize: 10.5, lineHeight: 1.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    sansPts + " " + T("r\u00e9sultat" + (sansPts > 1 ? "s" : "") + " sans points connus \u2014 repasse son t\u00e9l\u00e9mat pour les r\u00e9cup\u00e9rer. Les points sont ceux calcul\u00e9s par la FFE, jamais recalcul\u00e9s ici.",
+                                       "result" + (sansPts > 1 ? "s" : "") + " with no known points \u2014 re-import its telemat. Points come from the FFE, never recomputed here.",
+                                       "resultado" + (sansPts > 1 ? "s" : "") + " sin puntos conocidos \u2014 vuelve a importar su telemat.",
+                                       "risultat" + (sansPts > 1 ? "i" : "o") + " senza punti noti \u2014 reimporta il suo telemat.",
+                                       "\u30dd\u30a4\u30f3\u30c8\u4e0d\u660e\u306e\u7d50\u679c\u304c\u3042\u308a\u307e\u3059\u3002",
+                                       "Ergebnis(se) ohne bekannte Punkte \u2014 Telemat erneut importieren.")) : null));
+            })(),
+            /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
+            listeAns.length ? h(React.Fragment, null,
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
+                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison").toUpperCase()), filetOr()),
+              (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
+                [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
+                  var onC = (cavFiltre === oC[0]);
+                  return h("button", { key: "cav" + oC[0], /* 🟩 06/09 (Blandine : "ca ouvre l'annee sans la derouler, du coup on regarde les
+   derniers resultats a la place ; faudrait quand ca ouvre l'annee que ca deroule les
+   resultats") — choisir un onglet cavalier deplie desormais directement la saison la
+   plus recente ou ce cavalier a couru, sans taper une deuxieme fois dessus. `cible` est
+   utilise en dur (pas `cavFiltre`, qui n'aurait pas encore la nouvelle valeur au moment
+   de ce calcul — setCavFiltre est asynchrone). */
+                  onClick: function () {
+                    var cible = oC[0];
+                    setCavFiltre(cible);
+                    var candidats = listeAns.filter(function (anX) {
+                      var ligs = ans[anX] || [];
+                      return (cible === "tous") ? ligs.length > 0 : ligs.some(function (lg) { return lg.cav === cible; });
+                    });
+                    setSaisonOuv(candidats.length ? candidats[0] : null);
+                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
+                })) : null,
+              listeAns.map(function (anK) {
+                var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
+                var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
+                var pA = fsA.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).length;
+                var cA = fsA.length;
+                var fsR = filtreCav(ansR[anK] || []); var totR = fsR.length;
+                function nPlR(tR) { return fsR.filter(tR).length; }
+                var s1 = nPlR(function (f) { return f.pl === 1; });
+                var s2 = nPlR(function (f) { return f.pl === 2; });
+                var s3 = nPlR(function (f) { return f.pl === 3; });
+                var s4 = nPlR(function (f) { return f.pl != null && f.pl > 3; });
+                var sVide = Math.max(0, totR - s1 - s2 - s3 - s4);
+                                var ouvA = (saisonOuv === anK);
+                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "#14161a", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
+                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
+                    h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
+                    h("span", { style: { fontSize: 10.3, color: "#8A929C", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start"))),
+                    h("span", { style: { marginLeft: "auto", fontSize: 10.8, color: "#C8CDD3", whiteSpace: "nowrap" } },
+                      h("span", { style: { color: OR9 } }, "\uD83C\uDFC6 " + vA), "\u2003",
+                      h("span", { style: { color: "#B9BEC4" } }, "\uD83E\uDD48 " + pA), "\u2003",
+                      h("span", { style: { color: "#8A929C" } }, "\uD83C\uDFC5 " + cA)),
+                    h("span", { style: { marginLeft: 7, color: ouvA ? OR9 : "#5B646E", fontSize: 12, display: "inline-block", transition: "transform .25s ease", transform: ouvA ? "rotate(180deg)" : "none" } }, "\u02c5")),
+                  h("div", { style: { marginTop: 9, height: 6, borderRadius: 3, background: "rgba(255,255,255,.05)", overflow: "hidden", display: "flex" } }, /* 30/08 : l ancienne barre etait un TAUX DE PODIUM non libelle (victoires+podiums / total) — illisible, prise pour un separateur, et fausse : denominateur deja purge des non-classes, donc 100 % sur une saison a 1 sortie et 0 victoire. Remplacee par une barre EMPILEE dont le tout = les parcours de la saison, El./Ab. compris. Le fond qui reste nu EST l information : ce qui n a pas ete classe. */
+                    [[s1, OR9], [s2, "#B9BEC4"], [s3, "#A9713C"], [s4, "#2E5A78"]].map(function (sg, ig) {
+                      return sg[0] ? h("div", { key: "sg" + ig, style: { flex: sg[0], minWidth: 5, background: sg[1] } }) : null;
+                    }),
+                    sVide ? h("div", { key: "sgv", style: { flex: sVide } }) : null),
+                  ouvA ? h("div", { onClick: function (eDp) { try { eDp.stopPropagation(); } catch (eS9) { } }, style: { marginTop: 9, borderTop: "1px solid rgba(255,255,255,0.06)", cursor: "default" } },
+                    fsA.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).map(function (rS, iS) {
+                      return h("div", { key: "sr" + iS, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 2px", borderTop: iS ? "1px solid rgba(255,255,255,0.045)" : "none", minWidth: 0 } },
+                        h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, rS.d ? dateFr(rS.d) : anK),
+                        h("div", { style: { flex: 1, minWidth: 0 } },
+                          h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
+                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rS.cav) : null)),
+                        estSFf(rS) ? h("span", { style: { flex: "0 0 auto", fontSize: 9.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", color: "#7FEAF2", border: "1px solid rgba(32,217,245,0.45)", borderRadius: 999, padding: "2px 7px" } }, "SF") : null,
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")),
+                        /* 06/09 (Blandine : « je voudrais retirer a la main des resultats
+                           ajoutes a la main qui chevauchent avec ceux telecharges ») — la
+                           corbeille n'apparait QUE sur une ligne saisie a la main, et
+                           seulement pour la proprietaire du cheval ou une moderatrice.
+                           ⚠️ Une ligne officielle importee n'est jamais supprimable ici :
+                           elle se decoche a la relecture de l'import, elle ne se detruit pas. */
+                        (rS.og !== "import" && rS.id && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi)))
+                          ? h("button", { "aria-label": T("Retirer ce r\u00e9sultat", "Remove this result", "Quitar este resultado", "Rimuovi questo risultato", "\u3053\u306e\u7d50\u679c\u3092\u524a\u9664", "Dieses Ergebnis entfernen"),
+                              onClick: function (eSup) {
+                                try { eSup.stopPropagation(); } catch (eS8) { }
+                                var quoi = (rS.nom || "") + (rS.ep ? (" \u00b7 " + rS.ep) : "");
+                                if (!window.confirm(T("Retirer d\u00e9finitivement cette ligne saisie \u00e0 la main ?", "Permanently remove this hand-entered line?", "\u00bfQuitar definitivamente esta l\u00ednea escrita a mano?", "Rimuovere definitivamente questa riga inserita a mano?", "\u624b\u5165\u529b\u306e\u3053\u306e\u884c\u3092\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "Diese von Hand erfasste Zeile endg\u00fcltig entfernen?") + "\n\n" + quoi)) return;
+                                (async function () {
+                                  try {
+                                    var rSup = await supprimerResultat(rS.id);
+                                    if (rSup && rSup.error) { setToast(T("Suppression impossible : ", "Could not delete: ", "No se pudo eliminar: ", "Eliminazione impossibile: ", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a", "L\u00f6schen nicht m\u00f6glich: ") + String(rSup.error.message || rSup.error)); return; }
+                                    setResDb(function (av) { return (av || []).filter(function (x) { return x && x.id !== rS.id; }); });
+                                    setToast(T("R\u00e9sultat retir\u00e9.", "Result removed.", "Resultado eliminado.", "Risultato rimosso.", "\u7d50\u679c\u3092\u524a\u9664\u3057\u307e\u3057\u305f\u3002", "Ergebnis entfernt."));
+                                  } catch (eSp) { setToast(T("Suppression impossible : ", "Could not delete: ", "No se pudo eliminar: ", "Eliminazione impossibile: ", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a", "L\u00f6schen nicht m\u00f6glich: ") + String((eSp && eSp.message) || eSp)); }
+                                })();
+                              },
+                              style: { flex: "0 0 auto", marginLeft: 8, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.03)", color: "rgba(237,242,245,0.55)", fontSize: 13, lineHeight: 1, cursor: "pointer" } }, "\ud83d\uddd1") : null);
+                    })) : null);
+              })) : null,
+            /* — 5 · DERNIERS RÉSULTATS — */
+            recents.length ? h(React.Fragment, null,
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 9px" } }, /* 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
+                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse").toUpperCase()), filetOr()),
+              h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
+                (function () {
+                  var grpR = {}, ordreR = [];
+                  recents.forEach(function (rr) {
+                    if (!rr) return;
+                    var cle = String(rr.nom || "") + "|" + String(rr.ep || "") + "|" + String(rr.d || rr.an || "");
+                    /* 14/09 (155) : le SECOND rail garde aussi la date complete, sinon il
+                       serait reste a l annee (son groupe s appelle grpR, pas grp). */
+                    if (!grpR[cle]) { grpR[cle] = { concours: rr.nom || "", epreuve: rr.ep || "", an: rr.an || "", date: rr.d || "", partants: rr.part || null, places: [] }; ordreR.push(cle); }
+                    grpR[cle].places.push({ rang: rr.pl || null, cavalier: rr.cav || "" });
+                    if (!grpR[cle].partants && rr.part) grpR[cle].partants = rr.part;
+                  });
+                  var nomChR = (chevalDyn && chevalDyn.nom) || c.nom || "";
+                  return ordreR.slice(0, 6).map(function (cle, iR) {
+                    var gr = grpR[cle];
+                    var tries = (gr.places || []).slice().sort(function (a5, b5) { return (a5.rang || 99) - (b5.rang || 99); });
+                    var meilleur = tries[0] || {};
+                    var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
+                    var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
+                    return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
+                      style: { flex: "0 0 46%", height: 240, boxSizing: "border-box", overflow: "hidden", padding: "12px 13px 14px", borderRadius: 20, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
+                        h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
+                        /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
+                       repli sur la seule annee si la date est absente ou illisible. Les DEUX
+                       rails identiques du fichier sont corriges : c est le meme element. */
+                    (function () {
+                      var txtD = gr.an || "";
+                      try {
+                        var mD = String(gr.date || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+                        if (mD) {
+                          var MO = ["janv.", "f\u00e9vr.", "mars", "avril", "mai", "juin", "juil.", "ao\u00fbt", "sept.", "oct.", "nov.", "d\u00e9c."];
+                          txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
+                        }
+                      } catch (eD) { }
+                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl, letterSpacing: ".08em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
+                    })()),
+                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 56, height: 56, borderRadius: "50%", objectFit: "cover", marginTop: 8, border: "1px solid " + tA(0.35) } }) : null,
+                      h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F1F6F8", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
+                        (rangTxt ? (rangTxt + " ") : "") + (meilleur.cav_reel || meilleur.cavalier || ""),
+                        (meilleur.ch_reel || nomChR) ? h("span", { style: { color: teinteCl, fontWeight: 600 } }, " sur " + (meilleur.ch_reel || nomChR)) : null),
+                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
+                      /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
+                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
+                      null,
+                      (function () {
+                        /* 21/09 (316) : une seule ligne « + N autres classees » (carte a hauteur fixe) ;
+                           les noms restent dans le panneau Performances, ouvert au toucher de la carte. */
+                        var nAutresF = Math.max(0, tries.length - 1);
+                        if (!nAutresF) return null;
+                        return h("div", { style: { marginTop: 7, paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 9.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                          "+ " + nAutresF + " " + (nAutresF === 1 ? "autre class\u00e9e" : "autres class\u00e9es"));
+                      })());
+                  });
+                })())) : null,
+            /* — 6 · CTA — */
+            /* 02/09 : le CTA vers la page technique est RETIRE. A sa place, la seule
+               chose qui vivait derriere : l acces de la proprietaire aux lignes
+               qu elle a decochees a la relecture de l import. */
+            (function () {
+              var proprioP = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              var nMq = ((resDb) || []).filter(function (rM) { return rM && rM.visible === false; }).length;
+              if (!proprioP || !nMq) return null;
+              return h("div", { role: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { textAlign: "center", margin: "22px 16px 0", fontSize: 11.5, color: voirMasques ? teinteCl : "#8A929C", cursor: "pointer" } },
+                (voirMasques ? "\u2611 " : "\u2610 ") + (voirMasques
+                  ? T("Les lignes masqu\u00e9es sont affich\u00e9es", "Hidden lines are shown", "L\u00edneas ocultas visibles", "Righe nascoste visibili", "\u975e\u8868\u793a\u306e\u884c\u3092\u8868\u793a\u4e2d", "Ausgeblendete Zeilen sichtbar")
+                  : T("Afficher aussi les " + nMq + " lignes masqu\u00e9es", "Also show the " + nMq + " hidden lines", "Mostrar tambi\u00e9n las " + nMq + " l\u00edneas ocultas", "Mostra anche le " + nMq + " righe nascoste", nMq + " \u4ef6\u306e\u975e\u8868\u793a\u884c\u3082\u8868\u793a", "Auch die " + nMq + " ausgeblendeten Zeilen zeigen")));
+            })(),
+            h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse")));
+        }))),
+    toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(96px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", background: "#12161C", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 14px", fontSize: 12.5, color: "#EDF2F5", zIndex: 60 } }, toast) : null);
+}
 function EcranPerfConcours() {
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
@@ -66939,8 +67583,10 @@ function EcranProfil() {
                 });
             })(),
 
-            /* 22/09 (340) : ma licence FFE et mon nom FFE (étape 2a de l import par épreuve). */
-            React.createElement(BlocLicenceFFE, { key: "ffe" }),
+            /* 22/09 (345) : la tuile « Ma licence FFE » (340) est RETIREE de Mon compte, sur sa decision :
+               elle doublonnait « Relier les resultats FFE » (EcranRattacherFFE, 13/09) et n etait reliee
+               a rien. Le composant BlocLicenceFFE reste dans le fichier, inerte (aucun nettoyage) ;
+               la table noms_ffe reste en base, inutilisee. */
 
             /* LA POSITION — tuile large, avec son interrupteur.
                ⚠️ Correction de Blandine à respecter mot pour mot : désactiver ne
