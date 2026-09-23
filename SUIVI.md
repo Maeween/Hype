@@ -3006,3 +3006,2069 @@ SORTIE (l'ancienne phrase, inchangée).
 
 🟠 TOUJOURS EN SUSPENS, RIEN CODÉ : la page flottante à l'arrivée sur un
 rendez-vous (point 78-2) et la sélection de plusieurs photos (point 78-1).
+
+────────────────────────────────────────────────────────────
+80. 21/09 (304) — LES CARTES DE RÉSULTATS À LA MESURE DES CARTES
+    DE RENDEZ-VOUS, PARTOUT ; MOINS DE VIDE SUR LA PAGE DU CLUB
+────────────────────────────────────────────────────────────
+
+SA DEMANDE (capture de 11 h 04, page du club) : « réduis l'espace inutile et
+aligne les encoches des rendez-vous et des résultats, même taille même
+alignement », « ok », puis « tu peux faire la même modif partout où il y a
+les cartes rendez-vous et résultats ».
+
+RELEVÉ AVANT DE TOUCHER :
+· LES CARTES DE RENDEZ-VOUS (AgendaClubHype) sont à DEUX endroits : la page
+  du club ET la page Agenda. Elles ne changent pas : ce sont elles, la
+  référence (largeur 46 %, coins 20).
+· LES RAILS DE RÉSULTATS affichés sont TROIS : page du club, page cavalière
+  (BlocResultatsCavaliere), fiche cheval (rail du bas). Un quatrième existe
+  sur la fiche cheval, NEUTRALISÉ au 116 : pas touché.
+
+✅ LIVRÉ AU 304, aucun SQL :
+1. SUR LES TROIS RAILS : largeur des cartes 158 px → 46 % (même règle que
+   les cartes de rendez-vous), coins 14 → 20, nom du concours limité à
+   2 lignes avec « … ».
+2. TOUTES LES CARTES D'UN RAIL ONT LA MÊME HAUTEUR. Sur la page cavalière et
+   la fiche cheval, c'était déjà le cas. Sur la page du club, le 293 avait
+   posé l'inverse (« flex-start », chaque carte à son texte) : ⚠️ ANNULÉ
+   VOLONTAIREMENT, puisqu'elle demande la même taille. La limite à 2 lignes
+   borne la carte la plus haute. Conséquence possible : une carte qui porte
+   d'autres classés (jusqu'à 3 lignes de plus) allonge toutes les autres
+   du même rail.
+3. PAGE DU CLUB : le titre « Derniers résultats » décalé de 4 px pour tomber
+   sur le même bord que « L'agenda du club » ; la marge au-dessus de l'agenda
+   passe de 46 à 16 px.
+
+VÉRIFICATION : node --check sur le script principal (qui contient les trois
+composants touchés) — OK. Modifications confinées aux lignes visées.
+Marqueur de build 20260921-304.
+
+⚠️ CE FICHIER CONTIENT AUSSI LES 302 ET 303, pas encore poussés à la date de
+cette livraison.
+
+🟠 TOUJOURS EN SUSPENS, RIEN CODÉ : la page flottante (sécurité anti-décalage
+sur toute la fiche + phrase des sorties qui revient à la ligne) — proposée,
+son « ok » n'a pas été donné explicitement pour ce point ; la sélection de
+plusieurs photos (quel bouton ?).
+
+────────────────────────────────────────────────────────────
+81. 21/09 (305) — ACCUEIL : « WHAT'S UP » EN DERNIER, LE BOUTON DES
+    QUÊTES HABILLÉ COMME « MON COMPTE »
+────────────────────────────────────────────────────────────
+
+CONFIRMÉ SUR SA CAPTURE DE 11 H 12 : l'index en ligne est le 304 (« INDEX
+20260921-304 ») — les 302, 303 et 304 sont donc poussés.
+
+SA DEMANDE : « passe le What's up en dernier et laisse un peu d'espace entre
+l'écriture et le bas du dernier onglet », « rendre le voir toutes les quêtes
+similaire à l'onglet de mon compte et les aligner ». Proposition faite
+(icône ✦), « ok ».
+
+✅ LIVRÉ AU 305, aucun SQL :
+1. LA LIGNE « WHAT'S UP » passe SOUS « Mon compte », avec 22 px d'air. Rien
+   d'inventé : c'est la prop `compte` de LienQuoiDeNeuf, déjà posée pour la
+   page Mon compte, qui fait exactement ça.
+2. « VOIR TOUTES MES QUÊTES » (BlocProchainesQuetes) reprend TRAIT POUR TRAIT
+   le style de l'onglet « Mon compte » : carte sombre (COLORS.nuitClaire),
+   bordure COLORS.ligne, coins 16, padding 14/16, carré d'icône turquoise
+   34 px, texte blanc 14,5 à gauche, flèche grise à droite. Icône : ✦, celle
+   du titre « Tes prochaines quêtes ».
+3. ALIGNÉS : même largeur, mêmes bords ; 10 px entre les deux (la marge du
+   haut de « Mon compte » passe de 16 à 10).
+
+⚠️ CONSÉQUENCE DITE ET ACCEPTÉE : le bouton des quêtes n'est plus plein et
+turquoise ; il attire moins l'œil. BlocProchainesQuetes n'est rendu QU'À UN
+endroit (l'accueil) : rien d'autre n'est touché.
+
+VÉRIFICATION : node --check OK, modifications confinées. Build 20260921-305.
+
+🟠 TOUJOURS EN SUSPENS, RIEN CODÉ : la page flottante (son « ok » explicite
+pour ce point n'a pas été donné) ; la sélection de plusieurs photos (quel
+bouton ?).
+
+────────────────────────────────────────────────────────────
+82. 21/09 (306) — ACCUEIL : LES DEUX ONGLETS PLUS DISCRETS ET PLUS ESPACÉS
+────────────────────────────────────────────────────────────
+
+✅ LE 305 EST EN LIGNE ET CONFORME (sa capture de 11 h 30 : « INDEX
+20260921-305 », les deux onglets alignés, « What's up » tout en bas).
+
+SA DEMANDE : « tu peux les espacer un peu plus et les laisser un peu plus
+discrets ». Proposition chiffrée, « oui ok ».
+
+✅ LIVRÉ AU 306, sur les DEUX onglets à l'identique (« Voir toutes mes
+quêtes » et « Mon compte »), aucun SQL :
+· écart entre eux 10 → 16 px ;
+· padding 14/16 → 13/15, donc environ 58 px de haut au lieu de 64 ;
+· carré d'icône 34 → 30 px (coins 11 → 10, icône 16 → 14) ;
+· texte 14,5 → 13,5, graisse 600 → 500, blanc adouci rgba(237,242,245,0.86)
+  au lieu de COLORS.encre.
+
+VÉRIFICATION : node --check OK, modifications confinées. Build
+20260921-306 (une seule occurrence).
+
+⚠️ NUMÉROTATION : le redesign de « Déjà passé » (étape 1, carteEvPasse),
+cadré et validé dans son brief, devient donc le BUILD 307. Il attend la
+validation du 306 sur iPhone.
+
+🟠 TOUJOURS EN SUSPENS, RIEN CODÉ : la page flottante ; la sélection de
+plusieurs photos.
+
+────────────────────────────────────────────────────────────
+83. 21/09 (307) — « DÉJÀ PASSÉ » : LES CARTES DEVIENNENT DES SOUVENIRS
+    (étape 1 du redesign) + L'ACCUEIL S'OUVRE EN HAUT
+────────────────────────────────────────────────────────────
+
+CADRE : brief validé par elle (audit accepté, décisions tranchées : pas de
+podiums, « N publications » et jamais « N commentaires », aucun auteur,
+règle provisoire sur image_url, carrousel à venir intact). Puis « code si tu
+as toutes tes réponses ». Et, au passage : « quand on clique sur la page
+accueil on arrive en plein milieu de la page, fais en sorte qu'on arrive en
+haut ».
+
+✅ (A) carteEvPasse, DANS EcranAgendaClub — SEUL LE DESSIN CHANGE :
+· en-tête : cartouche jour + mois court (lu à la main dans « AAAA-MM-JJ »,
+  jamais new Date("AAAA-MM-JJ") ; mois par toLocaleDateString dans la langue,
+  repli MOIS2), « → jour de fin » si plusieurs jours ; type en petites
+  capitales dorées ; titre serif 2 lignes max ; lieu 1 ligne ;
+· MOSAÏQUE : médias NETTOYÉS (non-chaînes et vides écartés) et DÉDOUBLONNÉS
+  sur une clé normalisée (sans ?…, sans #…, décodée, sans protocole ni « / »
+  final — pour comparer seulement, l'URL affichée n'est jamais modifiée).
+  1 = panoramique, 2 = côte à côte, 3+ = grande à gauche + deux petites,
+  « +N » sur la 3e seulement s'il en reste. Le grand visuel est une PHOTO si
+  une photo existe ; les vidéos vont dans les petites cases ; que des vidéos
+  = miniature de la 1re en grand. Vidéos par hypeMiniatureVideo, jamais par
+  vignetteHype, jamais lues. Images : vignetteHype, lazy, cover, et une image
+  qui ne charge pas se masque (fond sombre dessous) ;
+· image_url, RÈGLE D'AFFICHAGE SEULEMENT : si elle correspond à un média =
+  couverture choisie, placée en premier ; sinon = affiche, utilisée
+  UNIQUEMENT s'il n'y a aucun média ; sinon fond sombre + icône du type ;
+· CONCOURS : « N médias · N résultats » (chaque morceau masqué s'il vaut 0),
+  PAS de podiums ; bouton « Voir le bilan » s'il y a des résultats, sinon
+  « Voir le souvenir ». LA LISTE DES RÉSULTATS N'EST PLUS CRÉÉE DU TOUT ;
+· STAGE / SORTIE : aucun résultat affiché ; aperçu 2 lignes = description,
+  sinon 1re publication qui a du texte (libellé « Souvenir partagé »), sinon
+  rien ; « N médias · N publications » ; bouton « Voir les photos » (stage) ou
+  « Voir le souvenir » (sortie) ;
+· UNE SEULE NAVIGATION pour la carte ET le bouton : window.__evPasse =
+  { ev, medias (bruts), resultats (tous) } puis « evenement-passe », comme
+  avant. Zone principale, bouton et croix sont TROIS éléments frères : aucun
+  bouton imbriqué ;
+· LA CROIX DE SUPPRESSION : même condition (estProprio), même appel
+  (supprimerRdvClub et sa confirmation), stopPropagation + preventDefault ;
+  zone tactile 44 × 44, rond visible 30 px ;
+· CSS : classes hype-agenda-passe-*, posées UNE fois par la 1re carte (index
+  fourni par .map). Mosaïque : hauteur min(158 px, (100vw − 58 px) / 2),
+  soit un ratio 2:1 plafonné.
+· Le dépliage sur place (ouvertEv, inutilisé depuis le 171) est recopié tel
+  quel. La bande de vignettes et le visionneur qu'elle ouvrait ne sont plus
+  dans la carte (tout reste dans la fiche).
+NON TOUCHÉ : limite à 5 et « Voir les précédents (N) », carrousel à venir,
+calendrier, EcranEvenementPasse, MurHype, requêtes, tables, RLS.
+
+✅ (B) L'ACCUEIL S'OUVRE EN HAUT. Cause : la mémoire de défilement par écran
+(session 112, __scrollMem dans le fournisseur) restaurait la dernière
+position de l'accueil. Dans `naviguer`, aller vers « dashboard » remet sa
+mémoire à 0. ⚠️ SEULEMENT QUAND ON Y VA (onglet, lien) : le retour arrière
+(retourEcran) n'est pas modifié.
+
+VÉRIFICATION : node --check sur le script principal (qui contient les deux
+modifications) — OK ; aucun JSX ; build 20260921-307 (une occurrence).
+⚠️ Contient aussi le 306 s'il n'a pas été poussé.
+
+À TESTER SUR L'IPHONE : voir la réponse de livraison (liste de 14 tests).
+
+🟠 TOUJOURS EN SUSPENS, RIEN CODÉ : la page flottante ; la sélection de
+plusieurs photos ; l'identification (301) à tester à deux comptes.
+
+────────────────────────────────────────────────────────────
+84. 21/09 (308) — « IDENTIFIER » SUR LES MURS DES RENDEZ-VOUS ET DANS
+    LES RÉPONSES
+────────────────────────────────────────────────────────────
+
+SA REMARQUE : « j'ai essayé de mentionner qqun dans un commentaire avec @
+mais ça me propose aucun cavalier ». NORMAL : le « @ » tapé dans le texte n'a
+jamais été codé (chemin B du 301). Elle veut les deux : « 1 et 2 ».
+
+⚠️ ERREUR DE MA PART, TROUVÉE EN RELISANT AVANT DE CODER ET DITE AUSSITÔT :
+le §75 (301) affirmait que « Identifier » marchait déjà sur la fiche d'un
+rendez-vous. FAUX : le lien n'était rendu que si la cible commence par
+« ecurie: » (estFilEcurie). Sur les murs « agenda:<id> » (fiche à venir,
+page d'un rendez-vous passé), on ne pouvait identifier PERSONNE, et la
+notification du 301 n'y servait donc à rien. Leçon : ne jamais écrire
+« ça marche déjà là » sans avoir lu la condition d'affichage.
+
+✅ LIVRÉ AU 308, aucun SQL (même table `identifications`) :
+1. « IDENTIFIER » SOUS « PARTAGE UN MOMENT… » AUSSI SUR LES MURS DES
+   RENDEZ-VOUS (estMurAgenda). « Ajouter un lieu » reste réservé au fil de
+   l'écurie (un rendez-vous a déjà son lieu).
+2. « IDENTIFIER » DANS LES RÉPONSES, sur tous les murs : même lien, MÊME
+   liste (chargerCandidatsTags, chargée une fois — aucune deuxième liste),
+   pastilles des choix avec croix, liste dans le flux. Écriture APRÈS l'envoi
+   (photo_url « post:<id de la réponse> », statut accepté) ; un échec ne perd
+   jamais la réponse. La réponse ajoutée localement prend son vrai identifiant
+   quand il est connu.
+3. LES NOMS S'AFFICHENT SOUS LA RÉPONSE (« avec Margot, 🐎 Crumble »), relus
+   en UNE requête pour toutes les réponses chargées.
+4. NOTIFICATION « t'a identifiée dans une réponse » (nouveau type
+   `identification_reponse`, 6 langues), cavalières seulement, cible = celle
+   du mur → même trajet au toucher que pour une publication.
+
+⚠️ À VÉRIFIER EN BASE, UNE REQUÊTE : si `notifications.type` porte une
+contrainte CHECK, les types `identification_post` (301) et
+`identification_reponse` (308) seraient REFUSÉS EN SILENCE (hypeNotifier
+avale l'erreur). Requête donnée à Blandine :
+select pg_get_constraintdef(c.oid) from pg_constraint c
+where c.conrelid = 'public.notifications'::regclass and c.contype = 'c';
+
+VÉRIFICATION : node --check OK, diff confiné (MurHype, libellé de
+notification, marqueur). Build 20260921-308. ⚠️ Contient le 307, NON TESTÉ.
+
+DÉCISIONS POUR LA SUITE (309, puis le « @ ») :
+· la LISTE proposée : « en priorité ceux de l'écurie, ensuite tous les
+  autres » ; les autres cavaliers portent LEUR PREMIÈRE ÉCURIE (profiles.
+  ecurie) ENTRE PARENTHÈSES — « Margot (Écurie Feinn) ». Il faudra un champ
+  de recherche (on ne liste pas tout Hype) : rechercherCavaliersHype existe
+  déjà (pseudo + ecurie, filtre ilike). 309 = cette liste, partagée par
+  « Identifier » (publication + réponse) et par le futur « @ ».
+· le « @ » en trois étapes : publication, réponses, noms en couleur.
+
+🟠 TOUJOURS EN SUSPENS : la page flottante ; la sélection de plusieurs
+photos ; le test du 307.
+
+· 21/09, 11 h 47 — RÉSULTAT DE LA REQUÊTE SUR notifications : « Success. No
+  rows returned » → AUCUNE contrainte CHECK sur notifications.type. Les types
+  `identification_post` (301) et `identification_reponse` (308) ne sont donc
+  pas refusés pour leur nom. Ce résultat ne prouve RIEN d'autre : l'arrivée
+  réelle de la notification reste à tester à deux comptes.
+· Méthode de test choisie : « 1 » — elle pousse le 308 (qui contient le 307)
+  et teste tout ensemble. Une correction éventuelle du 307 sera le 309.
+
+────────────────────────────────────────────────────────────
+85. 21/09 (309) — LA PAGE D'UN RENDEZ-VOUS PASSÉ : LE MUR DES SOUVENIRS,
+    LES VIDÉOS, PUIS LES RÉSULTATS (dessin recopié de la page d'un cheval)
+────────────────────────────────────────────────────────────
+
+✅ 307 ET 308 VUS À L'ÉCRAN (captures de 11 h 52-11 h 53, INDEX 308) : les
+cartes « Déjà passé » sont conformes (mosaïque, « +N », « N médias ·
+N résultats », « Voir le bilan » / « Voir le souvenir », aucune liste de
+résultats) ; « Identifier » apparaît bien sous « Partage un moment… » sur la
+page d'un rendez-vous. Sa mention qui « ne propose aucun cavalier » : elle
+avait tapé @ — normal, le @ n'est pas codé.
+
+SA DEMANDE : « la série de photos ressemble à rien, on avait fait un joli mur
+pour accrocher les souvenirs sur les pages communautaires des chevaux, est-ce
+qu'on peut reproduire exactement le mur des souvenirs qui se déplie avec
+toutes les photos et ses vidéos puis résultats en dessous avant les
+commentaires ? », puis « y a juste à copier le code … et à réadapter », « ok ».
+
+✅ LIVRÉ AU 309, dans EcranEvenementPasse SEULEMENT, aucun SQL, aucune
+requête :
+· NOUVEL ORDRE : haut de fiche (inchangé) → horaires → description → LE MUR
+  DES SOUVENIRS → LES VIDÉOS → RÉSULTATS → Publications & commentaires →
+  suppression.
+· LE MUR : dessin RECOPIÉ d'EcranChevalCommun (pêle-mêle en deux colonnes
+  équilibrées à la hauteur, formes f-p/f-l/f-c, angles, scotch un cliché sur
+  trois, 1-2 photos = liste centrée), avec SES PROPRES CLASSES `hyep-*` : la
+  page du cheval N'EST PAS TOUCHÉE. 6 photos puis « Voir tous les souvenirs → »
+  qui déplie tout (et « Replier les souvenirs ↑ »). Toucher = la photo en
+  grand (visionneuse existante). PAS de « @auteur » sur les photos (le paquet
+  de la fiche ne le porte pas — décision : sans, pour commencer).
+· LES VIDÉOS : le rail de la page du cheval, miniatures par
+  hypeMiniatureVideo, toucher = lecture en grand. Pas de durée affichée (la
+  miniature ne la fournit pas) ni de titre (une vidéo de rendez-vous n'en a
+  pas).
+· LES RÉSULTATS : la carte « En concours » de la page du cheval (rond de
+  place or / argent-bronze, épreuve, puis cheval en turquoise · classement ·
+  cavalier en blanc, récompense à droite). ⚠️ REMPLACE le dessin du 229.
+  TOUS montrés. Règles conservées : partants masqués à 1 et pour une
+  préparatoire, hypeRecompense, lien du cheval vers sa fiche (cheval_id
+  seulement, stopPropagation), aucun lien sur le cavalier.
+· LA COUVERTURE : plus de bouton « Couverture ? » sur les photos. Un petit
+  lien « Choisir la couverture » sous le mur (gestionnaire du club seulement)
+  ouvre la grille d'avant, PHOTOS SEULEMENT, avec ses boutons ; même fonction
+  choisirCouverture, même écriture.
+· Médias dédoublonnés (clé sans ? ni #) avant d'être répartis entre photos et
+  vidéos.
+
+VÉRIFICATION : node --check OK ; diff confiné à EcranEvenementPasse et au
+marqueur. Build 20260921-309.
+
+🟠 NOUVELLE DEMANDE, NOTÉE, NON CODÉE : « quand on modifie on peut pas
+identifier » — en modification d'une publication, le lien « Identifier »
+n'existe pas. À traiter à part.
+🟠 SUITE PRÉVUE : 310 = la liste « écurie d'abord, puis tous les autres, avec
+leur écurie entre parenthèses », partagée par « Identifier » et le futur @.
+🟠 TOUJOURS EN SUSPENS : la page flottante ; la sélection de plusieurs photos.
+
+────────────────────────────────────────────────────────────
+86. 21/09 (310) — LE MUR SANS LE DOCUMENT « LE JOUR J », SANS TÊTE COUPÉE,
+    MOINS DE CHEVAUCHEMENT
+────────────────────────────────────────────────────────────
+
+✅ LE 309 EST EN LIGNE (capture de 12 h 11 : le mur pêle-mêle s'affiche sur le
+CSO Étrier de Paris). Ses trois remarques : « interdire le document des
+horaires de passage dans le mur des souvenirs », « s'assurer qu'aucune tête ne
+soit coupée », « un peu moins envahissante sur celle du dessous la première
+photo en haut à gauche ». Proposition détaillée, « ok ».
+
+✅ LIVRÉ AU 310, aucun SQL, aucune requête :
+1. LE DOCUMENT « LE JOUR J » ÉCARTÉ. Le fichier n'a pas de nom reconnaissable
+   (envoyerPhoto → « <compte>/<horodatage>.jpg »). Ce qui le signe : sa
+   PUBLICATION, dont le texte est exactement le titre du générateur (« Le jour
+   J » / « Race day » / « El día J » / « Il giorno » / « 当日 » / « Der Tag »).
+   · dans la CARTE « Déjà passé » (carteEvPasse) : écarté de la mosaïque et du
+     compte des médias ;
+   · transmis à la fiche dans un champ NOUVEAU du paquet, `documents` (en plus
+     de ev / medias / resultats, qui ne changent pas) → écarté du MUR ;
+   · il reste dans les publications en bas de la fiche.
+   ⚠️ Une vraie photo publiée avec ce seul texte serait écartée aussi (cas
+   jugé improbable, dit à Blandine). Seules les publications DIRECTES du
+   rendez-vous sont lues (c'est là que le générateur publie).
+2. AUCUNE TÊTE COUPÉE DANS LE MUR : chaque photo garde SA forme (hauteur
+   automatique, plus de proportion imposée f-p / f-l / f-c) → rien n'est
+   rogné, par construction. Les colonnes s'équilibrent sur la VRAIE proportion
+   lue au chargement (état ratiosMur) ; l'étirement du dernier cliché, qui
+   recadrait, est supprimé.
+   Sur les CARTES « Déjà passé », le recadrage reste (mosaïque) mais il est
+   centré plus haut (object-position 50 % 22 %) : ça épargne les têtes au
+   mieux, SANS garantie.
+3. CHEVAUCHEMENT RÉDUIT : 12-24 px → 4-8 px ; l'élargissement d'un cliché sur
+   cinq passe de 108 % à 104 %.
+
+VÉRIFICATION : node --check OK, diff confiné à carteEvPasse,
+EcranEvenementPasse et au marqueur. Build 20260921-310.
+
+🟠 EN ATTENTE, NON CODÉ : identifier pendant la modification d'une
+publication ; la liste « écurie d'abord puis les autres » (devient 311) et le
+@ ; la page flottante ; la sélection de plusieurs photos.
+
+────────────────────────────────────────────────────────────
+87. 21/09 (311) — « IDENTIFIER » PENDANT LA MODIFICATION D'UNE PUBLICATION
+────────────────────────────────────────────────────────────
+
+✅ LE 310 EST VALIDÉ (« le mur est bien », captures de 12 h 20-12 h 21 : plus
+de document, photos entières, chevauchement réduit).
+
+RELEVÉ EN BASE AVANT DE CODER (policies de `identifications`) : id_creation
+(INSERT), id_lecture (SELECT, true), id_modif (UPDATE, true), id_suppr
+(DELETE, true) → le RETRAIT d'une identification est autorisé.
+⚠️ DETTE DE SÉCURITÉ NOTÉE, NON TOUCHÉE : id_suppr et id_modif valent
+« true » — n'importe qui peut supprimer ou modifier N'IMPORTE QUELLE
+identification. À resserrer dans un chantier SQL à part (par exemple :
+l'auteur, la personne identifiée ou une modératrice).
+
+SA DEMANDE : « quand on modifie on peut pas identifier ». Proposition, « ok ».
+
+✅ LIVRÉ AU 311, dans MurHype, aucun SQL :
+· en modification, sous les médias, le même lien « Identifier » et la MÊME
+  liste (chargerCandidatsTags) ; les personnes déjà identifiées sont
+  PRÉ-COCHÉES (lues dans infosPosts), avec leurs pastilles et leur croix ;
+· à l'enregistrement, APRÈS le texte (un échec ne perd jamais la
+  modification) : les AJOUTS sont écrits (statut accepté) et SEULES les
+  nouvelles cavalières sont prévenues (« t'a identifiée dans une
+  publication ») ; les RETRAITS suppriment leur ligne ; un retrait refusé
+  garde le nom affiché ; l'affichage sous la publication est mis à jour tout
+  de suite ;
+· « Annuler » remet tout à zéro.
+Build 20260921-311. node --check OK, diff confiné à MurHype et au marqueur.
+
+DÉCIDÉ, À FAIRE ENSUITE (312) : toucher une publication l'ouvre SEULE, en
+plein écran par-dessus la page (croix pour refermer, retour à la même place
+dans la liste) — « ok partout » : sur tous les murs en vignettes (page du
+club, Actualités, fiches des rendez-vous, actualité d'un cheval).
+Puis : la liste « écurie d'abord puis les autres » et le @.
+🟠 EN SUSPENS : la page flottante ; la sélection de plusieurs photos.
+
+────────────────────────────────────────────────────────────
+88. 21/09 (312) — UNE PUBLICATION OUVERTE S'AFFICHE SEULE, EN PLEIN ÉCRAN
+────────────────────────────────────────────────────────────
+
+SA DEMANDE : « quand on ouvre un commentaire ça serait bien qu'il soit séparé
+des autres, qu'il s'ouvre seul », puis « ok partout », « fais le plein écran
+et on enchaîne sur 2 ». (Elle redemande aussi « rends possible
+l'identification quand on modifie une publication » : C'EST LE 311, livré
+juste avant — dit à Blandine, rien à refaire.)
+
+✅ LIVRÉ AU 312, dans MurHype, aucun SQL :
+· en mode vignettes, toucher une publication ne la déplie plus AU MILIEU de la
+  liste : le MÊME rendu complet (rien n'est redessiné — photos, texte, Aimer,
+  Répondre, réponses, Modifier, Identifier) est posé dans un CALQUE PLEIN
+  ÉCRAN par-dessus la page ; la croix (44 px, en haut à droite) ou un toucher
+  sur le fond le referme ; la page dessous n'a pas bougé. Le « Replier » placé
+  sous la publication dépliée disparaît (remplacé par la croix).
+· ⚠️ calque position: fixed, PAS un portail (leçons du 23e et du 05/09),
+  data-noswipe + data-hscroll (leçon du 165) ; zIndex 8700 = au-dessus de la
+  barre du bas, SOUS la visionneuse de photos (8800) pour qu'une photo touchée
+  dans la publication s'ouvre par-dessus.
+· Vaut pour TOUS les murs en vignettes : page du club, Actualités de
+  l'écurie, fiches des rendez-vous (à venir et passés), actualité d'un cheval.
+⚠️ À SURVEILLER AU TEST : si un écran enveloppe le mur dans un élément animé
+par « transform », un calque fixe s'y cale au lieu de couvrir l'écran. La
+visionneuse de photos du mur est posée exactement pareil et fonctionne : on
+ne s'attend pas au problème, mais c'est le premier point à regarder.
+Build 20260921-312. node --check OK, diff confiné à MurHype et au marqueur.
+
+À FAIRE ENSUITE (choix « 2 ») : l'événement passé partageable, avec un lien
+#s=<id> qui ouvre DIRECTEMENT le mur des souvenirs (bouton Partager + page
+souvenir capable de se charger seule). Préalable : relever qui peut LIRE
+club_agenda / commentaires / resultats (policies SELECT) — un lien ouvert par
+une personne hors du club ou non connectée ne doit ni planter ni mentir.
+
+────────────────────────────────────────────────────────────
+89. 21/09 (313) — LE SOUVENIR SE PARTAGE, ET LE LIEN OUVRE DIRECTEMENT
+    LE MUR DES SOUVENIRS
+────────────────────────────────────────────────────────────
+
+SA QUESTION : « l'événement passé, pour le partager on fait comment ? » →
+aucun bouton sur la page souvenir, et le lien #r= ouvrait la fiche « à
+venir ». Son choix : « 2 » (le lien ouvre DIRECTEMENT le mur), après le 312.
+
+RELEVÉ EN BASE (policies SELECT, 21/09) :
+· club_agenda « lecture agenda club » : public, true ;
+· commentaires « commentaires lecture » : public, true (+ une policy anon sur
+  les médias publics des chevaux, rendue redondante par la première) ;
+· resultats « lecture resultats » : public, true (+ une policy anon limitée
+  aux chevaux non privés, redondante elle aussi).
+→ le lien peut se charger pour n'importe qui.
+⚠️ DETTE DE SÉCURITÉ NOTÉE, NON TOUCHÉE : « commentaires lecture » = true pour
+le rôle public → les publications PRIVÉES sont lisibles par l'API ; l'appli
+ne fait que les MASQUER à l'écran (filtre côté téléphone). À traiter dans le
+même chantier SQL que id_suppr / id_modif.
+
+✅ LIVRÉ AU 313, aucun SQL :
+1. ROUTE #s=<id> (routeur des liens) : vide le paquet de l'agenda et ouvre
+   « evenement-passe ». #r= (rendez-vous à venir) inchangé.
+2. EcranEvenementPasse SE CHARGE SEUL quand le paquet est vide : le
+   rendez-vous (chargerAgendaEvenement), les publications de son mur + celles
+   rattachées (hypePostsAgenda) → médias (privées écartées sauf les siennes),
+   le document « Le jour J » (règle du 310), les résultats des cavalières du
+   club PAR LA DATE (club reconnu par clefClubG + hypeMemeClub sur ecurie /
+   ecurie2) et le nom des chevaux. Une lecture qui échoue laisse sa section
+   vide. Pendant le chargement : « Ouverture du souvenir… ». Arrivée depuis
+   l'agenda : RIEN ne change.
+   ⚠️ CORRECTIF DE STRUCTURE au passage, INDISPENSABLE : les trois états de la
+   couverture (stCouv, stCouvB, stCouvE) étaient déclarés APRÈS le retour
+   anticipé « if (!ev) ». Tant que la page recevait tout d'un coup, c'était
+   sans effet ; une page qui se charge en deux temps aurait changé le nombre de
+   hooks entre deux rendus (plantage React). Ils sont remontés en tête.
+3. BOUTON « PARTAGER » rond en haut à droite du bandeau : titre, date, lieu,
+   « N photos · N résultats », lien #s=, et UNE VRAIE PHOTO jointe (la
+   couverture choisie si c'est une photo du mur, sinon la première — jamais
+   le document). Repli : texte seul ; sans partage : copie + message.
+Build 20260921-313. node --check OK, diff confiné au routeur (une ligne),
+à EcranEvenementPasse et au marqueur.
+
+À TESTER : partager un souvenir, ouvrir le lien reçu (idéalement depuis un
+autre téléphone ou compte) → le mur s'ouvre ; retour depuis l'agenda
+inchangé ; partage avec photo jointe.
+⚠️ Le 312 (plein écran) n'était pas encore testé à cette livraison.
+
+────────────────────────────────────────────────────────────
+90. 21/09 (314) — LE POP-UP « QUOI DE NEUF » RETIRÉ ET MIS À JOUR (1.9) ;
+    LES NOTIFICATIONS LUES LE RESTENT ENFIN
+────────────────────────────────────────────────────────────
+
+SES MOTS (capture de 12 h 51, pop-up « Reprise 1.8 ») : « ça ainsi que les
+notifications visuelles qui ne disparaissent pas même après avoir été
+consultées, ça fait quatre fois que c'est supposé avoir été retiré », puis
+« au moins mets-le à jour déjà ».
+
+✅ LIVRÉ AU 314, aucun SQL :
+1. LE POP-UP NE S'OUVRE PLUS TOUT SEUL (OverlayQuoiDeNeuf : « return; » en
+   tête de l'effet, commenté). POURQUOI IL REVENAIT alors que le code ne le
+   montre qu'une fois par version : la version « déjà vue » vit dans la
+   mémoire du téléphone (localStorage « hype_maj_vue »), propre à CHAQUE
+   ADRESSE et à chaque façon d'ouvrir l'appli. Le passage à 2hype.fr (20/09),
+   ou une ouverture par Safari au lieu de l'écran d'accueil, repartaient d'une
+   mémoire vide. (Les deux purges au changement de compte, elles, préservent
+   bien cette clé — vérifié.) Les nouveautés restent à un toucher, par la
+   ligne « What's up » de l'accueil.
+2. REPRISE 1.9 (HYPE_VERSION_APP 1.8 → 1.9), datée du 21 septembre, cinq
+   mouvements qui existent VRAIMENT : les souvenirs des rendez-vous ;
+   partager un souvenir ; identifier ses amies (rendez-vous, réponses,
+   modification) ; les publications en plein écran ; le document du jour J.
+   6 langues, chaque ligne mène à la page du club. La 1.8 reste en historique.
+   ⚠️ Au passage : la 1.8 annonçait déjà « les mentions @ » — elles existent
+   DANS LES STORIES (hype-stories.js), pas dans les publications du fil.
+3. NOTIFICATIONS « LUES » QUI REVENAIENT — CAUSE PROUVÉE DANS LE CODE : une
+   requête Supabase n'est ENVOYÉE qu'au moment où l'on attend son résultat
+   (await / .then). « Tout marquer lu » (toutLu), le toucher d'une
+   notification (tapPerso) et le ménage des notifications de plus de 60 jours
+   lançaient la requête SANS l'un ni l'autre : elles n'ont JAMAIS atteint la
+   base. L'écran les marquait lues pour la session ; au chargement suivant,
+   tout revenait. Les trois partent désormais pour de bon.
+   ⚠️ À VÉRIFIER EN BASE : qu'une policy UPDATE autorise la destinataire à
+   passer `lu` à true (sinon la requête part mais ne modifie rien). Requête
+   donnée à Blandine.
+   ⚠️ Les notifications de COMMUNAUTÉ (partagées par toute l'écurie) ne sont
+   pas marquées en base : leur « vu » est une date gardée sur le téléphone
+   (hype_notifs_comm_vu) — donc elles réapparaissent une fois sur une nouvelle
+   adresse. Normal, non modifié.
+Build 20260921-314. node --check OK, diff confiné (notifications,
+HYPE_MAJ / HYPE_VERSION_APP, OverlayQuoiDeNeuf, marqueur).
+
+────────────────────────────────────────────────────────────
+91. 21/09 (315) — LES QUÊTES NE MÈNENT PLUS À L'ANCIENNE ÉCURIE PERSO ;
+    CE QUE LE CHANGEMENT D'ADRESSE A « REMIS À ZÉRO »
+────────────────────────────────────────────────────────────
+
+RELEVÉ EN BASE (policies de `notifications`, 21/09) : INSERT public ; SELECT =
+destinataire = moi, OU (destinataire vide ET contexte = MON profiles.ecurie) ;
+UPDATE et DELETE = destinataire = moi. → le correctif du 314 (« lu »
+réellement envoyé) sera accepté par la base.
+⚠️ DETTE NOTÉE : les notifications de COMMUNAUTÉ ne sont lisibles que pour la
+PREMIÈRE écurie (profiles.ecurie) — une cavalière dont la SEP est en ecurie2
+ne voit pas celles de la SEP. À corriger en SQL, plus tard, si elle le veut.
+Elle : « les notifications je les vois à chaque connexion » → c'est EXACTEMENT
+le défaut corrigé au 314 (la mise à jour « lu » n'était jamais envoyée) ; à
+revérifier une fois le 314 poussé.
+
+SA REMARQUE (captures de 12 h 54) : la carte « La suite pour toi » est revenue
+sur l'accueil (« Mets une photo sur un de tes chevaux ») et l'a envoyée sur
+l'ANCIENNE écurie perso (« Ton écurie perso — Feinn — 24 chevaux »), censée ne
+plus être en ligne.
+CAUSE : trois quêtes de découverte avaient pour cible l'écran « ecurie »
+(EcranEcurie, retiré de la navigation au build 90). La carte « La suite pour
+toi » appelle setEcran(q.cible) sans passer par la barre du bas (qui, elle,
+remplace « ecurie » par « guilde »).
+✅ LIVRÉ AU 315, aucun SQL : « Ajoute ton premier cheval » et « Mets une
+photo sur un de tes chevaux » → page Cavalier (moncavalier) ; « Philosophie
+de ton écurie » → page du club (guilde). L'ancienne page n'est plus
+atteignable que par la tuile ADMIN « Ancienne écurie perso (aperçu) » de Mon
+compte, gardée exprès (elle a dit « ok » sans demander de la retirer).
+Build 20260921-315. node --check OK.
+
+SA QUESTION : « combien d'autres choses ont roll back ? » — RÉPONSE DONNÉE :
+AUCUN CODE n'est revenu en arrière. Ce qui « revient » vient de la MÉMOIRE DU
+TÉLÉPHONE (localStorage), propre à CHAQUE ADRESSE : sur 2hype.fr elle est
+repartie vide. Ce qui y vit, relevé dans le code : l'état local de l'appli
+(augalop_etat_v1 : profil local, liste locale des chevaux — d'où la quête
+photo revenue), le pop-up vu (hype_maj_vue), la bannière d'installation
+(hype_install_vu), les TEINTES choisies (hype_teinte, hype_teinte_citation,
+hype_teinte_citation_titre, hype_teinte_ecurie), l'affichage en vignettes
+(hype_vignettes), les « déjà vu » (galops, résultats, ajouts d'écurie,
+notifications de communauté), les brouillons en cours, les copies locales
+des photos d'origine (avatar, écurie, bannière du club, chevaux) servant au
+recadrage, et la session de connexion. RIEN de ce qui est EN BASE (chevaux,
+photos, publications, résultats, rendez-vous) n'est touché.
+⚠️ CONSEIL DONNÉ : choisir UNE adresse (2hype.fr) et remettre l'icône de
+l'écran d'accueil depuis elle ; sinon deux mémoires coexistent.
+PISTE (NON DÉCIDÉE) : ranger les préférences visibles (teintes) en base pour
+qu'elles suivent la cavalière partout.
+
+────────────────────────────────────────────────────────────
+92. 21/09 (316) — CARTES DE RÉSULTATS ET DE RENDEZ-VOUS : MÊME HAUTEUR,
+    FIXE, QUEL QUE SOIT LE CONTENU
+────────────────────────────────────────────────────────────
+
+SA CAPTURE (12 h 58, page du club) : les cartes « Derniers résultats » sont
+nettement plus hautes que les rendez-vous, avec du vide en bas. Elle :
+« c'est revenu en arrière ». VÉRIFIÉ : le 304 est intact (largeur 46 %, coins
+20, rangée étirée). Ce qui a changé, c'est le CONTENU : la règle du 304
+(« toutes à la hauteur de la plus haute ») dépendait de la carte la plus
+haute, et une carte avec plusieurs autres classées étirait toute la rangée.
+MON ERREUR : une règle qui dépend du contenu n'était pas robuste — signalée
+comme risque au 304, mais j'aurais dû la rendre fixe dès le départ.
+Elle : « ok pour 316 », « hauteur, largeur et alignement ».
+
+✅ LIVRÉ AU 316, aucun SQL :
+· HAUTEUR FIXE 240 px pour les cartes de résultats des TROIS rails (page du
+  club, page cavalière, fiche cheval) ET pour les cartes de rendez-vous
+  (.agc-c2 dans AGENDA_CSS — donc aussi sur la page Agenda) : les deux rangées
+  ont exactement la même hauteur, quoi qu'il arrive.
+· Largeur (46 %) et alignement (bords gauches, écart de 10 px) : déjà
+  identiques depuis le 304, vérifiés sur sa capture.
+· Pour que tout tienne dans 240 px : portrait 66 → 56 px ; la phrase « 1er X
+  sur Y » limitée à 2 lignes ; épreuve et partants réunis sur UNE ligne
+  coupée proprement ; la liste des autres classées (jusqu'à 3 lignes)
+  remplacée par UNE ligne « + N autres classées ».
+⚠️ CORRECTION D'UNE AFFIRMATION À ELLE : j'avais dit que les noms restaient
+visibles « en touchant la carte ». Vrai sur la FICHE CHEVAL seulement (le
+toucher ouvre Performances). Sur la PAGE DU CLUB, la carte ne s'ouvre pas :
+les noms sont dans « Voir tout ». La page cavalière n'avait pas de liste.
+Build 20260921-316. node --check OK.
+
+────────────────────────────────────────────────────────────
+93. 21/09 (317) — PAGE DU CLUB : LES PLUS RÉCENTES PUBLICATIONS EN PREMIER
+    (correctif d'une erreur du 300)
+────────────────────────────────────────────────────────────
+
+SES MOTS (captures de 13 h 28) : « la fin de page n'est plus du tout comme on
+l'avait faite », puis « on avait interverti l'ordre, les derniers
+apparaissaient en premier » et « on avait deux publications, et c'est celle
+d'Evan qui était masquée ». Sur sa capture : #BestTeam (Evan, 66 j) EN
+PREMIER, puis la publication de 8 j, et la plus récente cachée sous « Voir la
+suite (1) ».
+
+CAUSE, PROUVÉE DANS LE CODE — MON ERREUR DU 300 : l'ordre « conversation »
+(du plus ancien au plus récent) avait été lié à la prop `composerEnBas`, avec
+un commentaire affirmant que seule la fiche d'un rendez-vous la passait. FAUX :
+trois murs la passent — la fiche d'un rendez-vous à venir, la page d'un
+rendez-vous passé ET LA PAGE DU CLUB (15/09, build 176 : deux publications
+puis le champ dessous). Sur la page du club, avec la limite de 2, on voyait
+donc les deux PLUS ANCIENNES, et la plus récente partait sous « Voir la
+suite ». Leçon : avant d'accrocher un comportement à une prop, relever TOUS
+ses appels (grep), jamais « de mémoire ».
+
+✅ LIVRÉ AU 317, dans MurHype, aucun SQL : `ordreConversation` = composerEnBas
+ET cible « agenda:<id> ». L'ordre conversation ne vaut plus que pour les murs
+des RENDEZ-VOUS (sa demande du 300) ; partout ailleurs, page du club comprise,
+le plus récent en premier, comme avant le 300. Le champ « Partage un
+moment… » reste sous les publications sur la page du club.
+Build 20260921-317. node --check OK.
+À TESTER : page du club → la publication la plus récente en premier, les deux
+plus récentes visibles, celle d'Evan (66 j) sous « Voir la suite ».
+
+────────────────────────────────────────────────────────────
+94. 21/09 (318) — LA LISTE D'IDENTIFICATION : L'ÉCURIE D'ABORD, PUIS TOUT
+    HYPE, AVEC L'ÉCURIE ENTRE PARENTHÈSES
+────────────────────────────────────────────────────────────
+
+SES DÉCISIONS (déjà notées au §84) : « en prio ceux de l'écurie et ensuite
+tous les autres », « on mentionne leur écurie entre parenthèses ». « Ok
+continue ».
+
+✅ LIVRÉ AU 318, dans MurHype, aucun SQL :
+· UNE SEULE liste (listeTagsRendu) pour les TROIS endroits où l'on identifie :
+  nouvelle publication, réponse, modification — les trois copies qui
+  existaient sont remplacées par cet unique rendu.
+· un CHAMP DE RECHERCHE en tête (collé en haut de la liste, 16 px : pas de
+  zoom iOS) ; il filtre la section « Mon écurie » (cavalières ET chevaux de
+  l'écurie, comme avant), sans tenir compte des accents ;
+· dès 2 lettres, une section « Autres cavalières de Hype » : recherche par
+  pseudo dans tout Hype (rechercherCavaliersHype, déjà existante : 15 au plus,
+  soi-même exclue, celles déjà dans l'écurie écartées), chacune avec sa
+  PREMIÈRE écurie entre parenthèses — « Margot (Écurie Feinn) ». Pas de
+  chevaux d'autres écuries. Recherche lancée 300 ms après la dernière frappe.
+· hauteur de la liste 190 → 260 px (le champ prend de la place).
+· une cavalière extérieure identifiée s'écrit EXACTEMENT comme les autres
+  (identifications + notification).
+Build 20260921-318. node --check OK, diff confiné à MurHype et au marqueur.
+
+PROCHAINE ÉTAPE (le « @ ») : taper @ dans le texte ouvrira CETTE MÊME liste,
+filtrée par ce qui suit le @.
+
+────────────────────────────────────────────────────────────
+95. 21/09 (319) — LE « @ » DANS LE TEXTE, ÉTAPE 1 : LA NOUVELLE PUBLICATION
+────────────────────────────────────────────────────────────
+
+« Ok continue » après le 318.
+
+✅ LIVRÉ AU 319, dans MurHype, aucun SQL :
+· dans « Partage un moment… », taper @ (en début de mot) ouvre SOUS le champ
+  la MÊME liste que « Identifier » (listeTagsRendu, nouvelle option
+  « sansChamp » : c'est ce qui suit le @ qui sert de recherche) — l'écurie
+  d'abord, puis tout Hype dès 2 lettres, l'écurie entre parenthèses ;
+· toucher un nom : « @Nom » remplace ce qui avait été tapé, suivi d'un espace,
+  ET la personne rejoint les identifications de la publication (même
+  écriture, même notification qu'avec « Identifier ») ; la liste se ferme ;
+· un espace après le @ ferme la liste ; disponible là où « Identifier »
+  l'est (fil de l'écurie, murs des rendez-vous) ; remise à zéro après la
+  publication.
+⚠️ Effacer « @Nom » du texte avant de publier NE retire PAS l'identification
+(elle reste cochée dans « Identifier », où on peut la décocher).
+Build 20260921-319. node --check OK, diff confiné à MurHype et au marqueur.
+
+ÉTAPES SUIVANTES DU @ : (2) le @ dans les réponses, et en modification ;
+(3) les « @Nom » affichés en couleur dans les textes, touchables.
+
+────────────────────────────────────────────────────────────
+96. 21/09 (320) — LE « @ », ÉTAPE 2 : DANS LES RÉPONSES ET EN MODIFICATION
+────────────────────────────────────────────────────────────
+
+« Ok continue ».
+
+✅ LIVRÉ AU 320, dans MurHype, aucun SQL :
+· détection du @ mise en commun (trouverMention), insertion commune
+  (insererMention), ajout sans doublon (ajouterSansDoublon) ;
+· DANS UNE RÉPONSE : taper @ ouvre la liste sous le champ ; le nom choisi
+  s'insère et rejoint les identifications de la RÉPONSE (celles du 308 :
+  écrites après l'envoi, notification « t'a identifiée dans une réponse ») ;
+· EN MODIFICATION D'UNE PUBLICATION : même chose ; le nom rejoint les
+  identifications de la publication (règles du 311 : seules les NOUVELLES
+  personnes sont prévenues à l'enregistrement) ;
+· remises à zéro après l'envoi d'une réponse, à l'enregistrement et à
+  l'annulation d'une modification.
+Disponible partout où les réponses et la modification existent (comme
+« Identifier » dans ces deux cas).
+Build 20260921-320. node --check OK, diff confiné à MurHype et au marqueur.
+
+⚠️ MÉTHODE : une commande bash a dépassé le délai (sed -n "${n}p" avec n VIDE
+imprime le fichier de 7,8 Mo entier dans rev). Fichier vérifié INTACT (md5
+identique à la livraison). Relire ce fichier en Python, jamais avec un numéro
+de ligne qui pourrait être vide.
+
+ÉTAPE 3 DU @, restante : les « @Nom » affichés en couleur dans les textes, et
+touchables (ouvrent le profil / la fiche).
+
+────────────────────────────────────────────────────────────
+97. 21/09 (321) — LE « @ », ÉTAPE 3 : LES NOMS EN COULEUR, TOUCHABLES
+────────────────────────────────────────────────────────────
+
+« Ok continue ».
+
+✅ LIVRÉ AU 321, dans MurHype, aucun SQL :
+· dans le texte d'une PUBLICATION (rendu complet, donc aussi en plein écran)
+  et d'une RÉPONSE, chaque « @Nom » qui correspond à une personne ou à un
+  cheval RÉELLEMENT identifié sur ce message s'affiche en couleur (teinte du
+  mur), en gras ; un @ tapé au hasard reste du texte ordinaire ;
+· toucher : une cavalière → son profil public (même chemin que la page du
+  club : window.__cavalierPublic + __cavalierOuvert « __public », écran
+  « cavalier ») ; un cheval → sa fiche (window.__chevalOuvert) ;
+  stopPropagation (le toucher n'ouvre pas la publication derrière) ;
+· noms les plus longs cherchés d'abord ; texte toujours rendu en texte
+  (jamais d'innerHTML) ; les annonces Hype ne sont pas concernées.
+· Les aperçus en VIGNETTE (titre + une ligne) restent en texte simple : on
+  touche la vignette pour ouvrir la publication, où les noms sont en couleur.
+Build 20260921-321. node --check OK, diff confiné à MurHype et au marqueur.
+
+LE CHANTIER « @ » EST COMPLET : publication (319), réponses et modification
+(320), noms en couleur touchables (321), liste partagée écurie → tout Hype
+(318). Rien de testé sur iPhone à cette date, du 312 au 321.
+
+────────────────────────────────────────────────────────────
+98. 21/09 (322) — LA FICHE D'UN RENDEZ-VOUS NE « FLOTTE » PLUS
+────────────────────────────────────────────────────────────
+
+Proposé le 20/09 (§78-2, vidéo de 23 h 38), jamais codé faute de « ok »
+explicite ; fait sur son « ok continue » du 21/09.
+
+✅ LIVRÉ AU 322, dans FicheEvenementClub, aucun SQL :
+· `overflowX: "hidden"` sur le conteneur plein écran de la fiche : il avait
+  `overflowY: auto` sans `overflowX`, donc tout élément plus large que
+  l'écran le rendait défilable sur le côté (la fiche glissait sous le doigt).
+  Le défilement horizontal est fermé pour de bon, quel que soit l'élément.
+· la phrase fixe des SORTIES (« Plus qu'un rendez-vous, des moments forts »,
+  en capitales espacées, en `nowrap` depuis le 299) peut revenir à la ligne,
+  centrée — c'était la cause de départ. Concours et stages avaient déjà une
+  phrase qui revient à la ligne depuis le 303.
+Build 20260921-322. node --check OK.
+
+RESTE EN SUSPENS :
+· sélection de plusieurs photos qui se referme au premier choix — il manque
+  TOUJOURS l'information : bouton 📷 Photos d'une nouvelle publication, ou
+  appareil photo d'une réponse (mono-fichier par construction) ?
+· dettes de sécurité SQL (§87, §89) : identifications (DELETE / UPDATE =
+  true), commentaires privés lisibles par l'API ; notifications de
+  communauté limitées à la première écurie (§91). Chantier SQL, sa décision.
+· tests iPhone des builds 312 à 322.
+
+────────────────────────────────────────────────────────────
+99. 21/09 (323) — LA LISTE D'IDENTIFICATION PAR ORDRE ALPHABÉTIQUE
+────────────────────────────────────────────────────────────
+
+✅ CAPTURES DE 13 H 45-13 H 46 : 317 (ordre du club), 307/310 (carte
+« Déjà passé »), 313 (bouton de partage) et 312 (plein écran) VUS À L'ÉCRAN.
+Le « @ » : « je viens de le faire » — il fonctionne une fois le bon index
+poussé (elle testait sur une version antérieure au 319).
+
+SA DEMANDE : « ça serait bien qu'on voie les noms des cavaliers par ordre
+alphabétique dans l'écurie », « et hors écurie aussi bien sûr ».
+
+✅ LIVRÉ AU 323, dans listeTagsRendu (MurHype), aucun SQL :
+· section « Mon écurie » : les cavalières d'abord, puis les chevaux, chacun
+  de A à Z ;
+· section « Autres cavalières de Hype » : de A à Z ;
+· tri à la française (localeCompare « fr », sans accents ni majuscules),
+  avec un repli simple si le téléphone ne le gère pas.
+Vaut pour les quatre usages de la liste : « Identifier » (publication,
+réponse, modification) et le @.
+Build 20260921-323. node --check OK.
+
+────────────────────────────────────────────────────────────
+100. 21/09 (324) — PAGE ACTUALITÉS : UN BANDEAU AVEC LA DERNIÈRE PHOTO PUBLIÉE
+────────────────────────────────────────────────────────────
+
+SA DEMANDE (capture de 13 h 51, page « Le fil de l'écurie — Actualités ») :
+« il n'y a pas de photo là-haut, on peut en ajouter une ? À la limite un
+encart dynamique, que ce soit la dernière photo publiée à chaque fois ».
+Proposition, « ok » ; « seulement là pour l'instant » (pas la page du club ni
+l'Agenda).
+
+✅ LIVRÉ AU 324, dans EcranActualitesEcurie SEULEMENT, aucun SQL :
+· UNE lecture à l'ouverture : les 12 dernières publications du MÊME fil
+  (même cible que le mur dessous : cible reçue de la page du club, sinon
+  « ecurie:<nom en minuscules> », sinon « ecurie:<id> » comme MurHype) qui
+  portent une photo ; on garde la plus récente ni PRIVÉE ni VIDÉO ;
+· bandeau photo derrière « Le fil de l'écurie / Actualités / <écurie> » :
+  photo NON filtrée, voile sombre dégradé pour la lisibilité, cadrage centré
+  plus haut (50 % 30 %) ; textes et flèche de retour au-dessus ;
+· toucher le bandeau : la photo en grand (hypeCalquePhoto) ; la flèche de
+  retour arrête le toucher (stopPropagation) ;
+· aucune photo dans le fil : la page reste exactement comme avant.
+Build 20260921-324. node --check OK.
+
+────────────────────────────────────────────────────────────
+101. 21/09 — SQL PASSÉ PAR ELLE : LA PORTE DES IDENTIFICATIONS EST FERMÉE
+────────────────────────────────────────────────────────────
+
+Relevés avant d'écrire : hype_est_moderatrice() existe et n'attend AUCUN
+argument (pg_get_function_identity_arguments vide) ; toutes les écritures de
+l'appli dans `identifications` se font EN SON PROPRE NOM (auteur_id =
+l'utilisatrice — relu dans le code : publications, réponses, modification,
+rendez-vous, albums, photos, propositions).
+SQL passé à 14 h 07 (« Success. No rows returned »), vérifié à 14 h 10 :
+· id_creation (INSERT) : with check auteur_id = moi ;
+· id_modif (UPDATE) et id_suppr (DELETE) : l'autrice, OU la personne
+  identifiée (cible_id = moi), OU une modératrice (hype_est_moderatrice()),
+  OU la propriétaire du CHEVAL identifié (type 'cheval' + chevaux.user_id) ;
+· id_lecture (SELECT) : inchangée (true).
+Relevé au passage : `cible_id` est de type texte.
+⚠️ Conséquence dite : une gestionnaire de club NON modératrice ne peut plus
+détacher une publication rattachée à un rendez-vous par quelqu'un d'autre.
+⚠️ DÉFAUT EXISTANT NOTÉ, NON TOUCHÉ : albumsIdentifiesPour interroge
+`.not("album_id", "is", null)` alors que la colonne album_id N'EXISTE PAS
+(relevé du 16/09) → cette liste revient toujours vide, en silence.
+RESTE (dettes SQL, sa décision) : publications privées lisibles par l'API
+(commentaires lecture = true) ; notifications de communauté limitées à la
+première écurie.
+
+────────────────────────────────────────────────────────────
+102. 21/09 (325) — PLUSIEURS PHOTOS D'UN COUP EN MODIFIANT UNE PUBLICATION
+────────────────────────────────────────────────────────────
+
+SA VIDÉO (11 h 37) : en MODIFIANT une publication, le carré « + » refermait
+la photothèque dès la première photo — son champ n'acceptait qu'UN fichier
+(files[0], sans `multiple`, accept mixte image+vidéo). Ce n'était pas le
+bouton « 📷 Photos » de la création, qui accepte déjà plusieurs photos.
+
+✅ LIVRÉ AU 325, dans MurHype, aucun SQL :
+· le « + » ouvre un champ PHOTOS SEULES avec `multiple` (leçon iOS du 05/09 :
+  un champ mixte + multiple laisse la validation inerte) ; nouvelle fonction
+  ajouterPhotosEdite : hypePhotoDirecte puis envoyerPhoto, en PARALLÈLE,
+  ordre conservé, chaque photo indépendante ; plafond 4 médias, ce qui
+  dépasse est DIT, les échecs d'envoi aussi ;
+· un petit bouton 🎬 à côté garde l'ancien champ, désormais « video/* »,
+  une vidéo à la fois, par l'ancien chemin INCHANGÉ.
+⚠️ OBSERVATION, NON TOUCHÉE : cet ancien chemin (ajouterMediaEdite) envoie une
+vidéo par envoyerPhoto, alors que le code dit ailleurs qu'une vidéo ne doit
+jamais l'atteindre (elles passent par Mux). Ajouter une VIDÉO en modification
+est donc à tester ; si ça échoue, c'est un chantier à part.
+Build 20260921-325. node --check OK.
+
+────────────────────────────────────────────────────────────
+103. 21/09 — DEUXIÈME PORTE FERMÉE : LES PUBLICATIONS PRIVÉES
+────────────────────────────────────────────────────────────
+
+Relevé : commentaires.prive = boolean, commentaires.user_id = uuid.
+SQL passé à 14 h 19, vérifié : « commentaires lecture » (public) =
+coalesce(prive, false) = false OR user_id = auth.uid() OR
+hype_est_moderatrice(). La policy anon des médias publics des chevaux reste.
+→ une publication privée n'est plus lisible que par son autrice ou une
+modératrice. L'appli n'en montrait déjà qu'à l'autrice : rien ne change à
+l'écran.
+
+────────────────────────────────────────────────────────────
+104. 21/09 (326) — NOTIFICATIONS DE COMMUNAUTÉ : L'APPLI LAISSE LA BASE TRIER
+────────────────────────────────────────────────────────────
+
+DEUX DÉFAUTS TROUVÉS EN RELISANT (dits à Blandine) :
+1. seule la PREMIÈRE écurie (profiles.ecurie) était regardée, par la policy
+   ET par l'appli (chargerN : .eq("contexte", monEcurie)) ;
+2. PLUS GRAVE : « X a publié dans ta communauté » (type post_ecurie / post_club)
+   est rangée avec contexte = CLÉ DU FIL en minuscules + « |post:<id> »
+   (« ecurie feinn|post:123 », depuis le build 41 du 12/09). L'égalité exacte
+   avec le nom du profil (« Ecurie Feinn ») n'a JAMAIS été vraie : ces
+   notifications ne sont arrivées chez PERSONNE. Les autres (rejoint, cheval,
+   souvenir, agenda, diffusion) portent le nom tel quel et marchaient.
+
+✅ LIVRÉ AU 326 : chargerN ne filtre plus par nom — il demande les
+notifications de communauté (destinataire vide, pas les siennes, contexte non
+vide, 60 jours) et la POLICY décide. Avec l'ancienne policy : résultat
+IDENTIQUE à avant. Build 20260921-326. node --check OK.
+
+À PASSER EN SQL (donné à Blandine) : « lecture notifications » compare
+split_part(contexte, '|', 1), en minuscules, sans accents, sans espaces aux
+bords, aux DEUX écuries du profil (ecurie, ecurie2).
+⚠️ Conséquence dite : les notifications de publication des 60 derniers jours,
+présentes en base mais jamais lisibles, peuvent apparaître d'un coup.
+
+────────────────────────────────────────────────────────────
+105. 21/09 — TROISIÈME PORTE PASSÉE EN SQL ; (327) LES PALMARÈS PAR SEMAINE
+────────────────────────────────────────────────────────────
+
+SQL « lecture notifications » passé à 14 h 28 (« Success ») : destinataire =
+moi, OU (destinataire vide ET contexte non vide ET split_part(contexte,'|',1),
+en minuscules, sans accents (translate), sans espaces aux bords, égal à MON
+ecurie OU MON ecurie2).
+Relevé (14 h 3x) des notifications de COMMUNAUTÉ sur 60 jours : rejoint 34,
+cheval 32, agenda 12, haut_fait 11, post_ecurie 2, post_club 1. Elle : « rien
+des posts de Mégane, Maylis, etc. » → EXPLICATION (code) : hypeNotifierCommentaire
+ne prévient la communauté que pour les murs « ecurie: » et « club: » ; une
+publication sur le mur d'un RENDEZ-VOUS (« agenda:<id> ») ne crée AUCUNE
+notification. Et on ne reçoit jamais les siennes.
+
+SA DEMANDE (palmarès) : « rassembler les chevaux ayant récupéré leur palmarès en
+un seul post », « par semaine si c'est le même geste ».
+✅ LIVRÉ AU 327 (cartesDImport + les deux rendus du fil Communauté), aucun
+SQL : UNE carte par personne et par semaine (lundi → dimanche) ; un cheval
+importé plusieurs fois n'y figure qu'une fois, chiffres additionnés ; titre
+« X a rendu leur palmarès à N chevaux » (phrase d'avant quand il n'y en a
+qu'un) ; carte ouverte : un cheval par ligne avec ses chiffres, toucher →
+SON palmarès. Coche de relecture respectée.
+⚠️ Nouvel identifiant de carte (« import:<personne>:<lundi> ») : les j'aime /
+réponses des anciennes cartes par cheval ne suivent pas (tous à 0).
+Build 20260921-327. node --check OK (les deux blocs de script touchés).
+
+NOUVELLE DEMANDE, NON CODÉE : des notifications de communauté pour la création
+d'un cheval (EXISTE déjà : type « cheval »), l'ajout de photos, les infos d'un
+concours… → proposition à faire.
+
+────────────────────────────────────────────────────────────
+106. 21/09 (328) — TROIS NOTIFICATIONS DE COMMUNAUTÉ EN PLUS
+────────────────────────────────────────────────────────────
+
+SA DEMANDE : « ça serait bien d'avoir des notices en cas de création de
+cheval, ajout de photos, info sur un concours… », « oui, ajoute tout, que ça
+vive un peu ». Elle : « j'ai vu aucune notification pour une création de
+cheval » — le type « cheval » EXISTE (32 en 60 jours) et a son libellé ; deux
+raisons possibles, non tranchées : on ne reçoit jamais les siennes (elle crée
+beaucoup de chevaux elle-même), et avant le SQL du 21/09 la comparaison du
+nom d'écurie était EXACTE (un « Écurie » accentué d'un côté suffisait à tout
+cacher). À revérifier maintenant que la comparaison ignore accents et
+majuscules.
+
+✅ LIVRÉ AU 328, aucun SQL :
+1. « post_agenda » : une publication sur le MUR D'UN RENDEZ-VOUS prévient la
+   communauté du club du rendez-vous (club_clef lue en base), extrait = titre
+   du rendez-vous, cible « agenda:<id> » (le toucher ouvre sa fiche), suffixe
+   « |post:<id> » pour le ménage à la suppression. Le document « Le jour J »,
+   publié sur ce mur, en profite aussi. (hypeNotifierCommentaire)
+2. « agenda_maj » : modifier une information utile d'un rendez-vous (date,
+   heures, lieu, titre, description, type — PAS le seul choix de couverture)
+   prévient la communauté du club ; au plus UNE fois par rendez-vous et par
+   demi-heure depuis ce téléphone. (modifierAgendaClub)
+3. « photos_cheval » : ajouter des photos à l'album d'un CHEVAL prévient la
+   communauté de l'écurie DU CHEVAL (chevaux.club) — une notification par
+   envoi, avec le nombre de photos RÉELLEMENT rattachées (contexte
+   « <écurie>|n:<N> », la policy ne lit que ce qui précède le « | ») ; rien
+   pour un cheval sans écurie. (AlbumsCheval.importerFichiers)
+Libellés ajoutés dans ligneComm (« a publié sur un rendez-vous », « a mis à
+jour un rendez-vous », « a ajouté N photos à un cheval »), extrait affiché
+comme les autres. Navigation au toucher : branches existantes (agenda:,
+cheval:).
+Build 20260921-328. node --check OK sur les deux blocs de script touchés.
+
+────────────────────────────────────────────────────────────
+107. 21/09 (329) — UN ONGLET « ÉCURIE » DANS LE FIL ; DES HAUTS FAITS LISIBLES
+────────────────────────────────────────────────────────────
+
+SA CAPTURE (14 h 37, Communauté → Le fil → Amis) : seulement des « Haut fait
+débloqué — quete:photo-cheval:1 » (nom technique affiché), et « ça serait bien
+de rajouter un onglet écurie, il n'y en a pas ». « Ok continue ».
+
+✅ LIVRÉ AU 329, aucun SQL :
+· troisième onglet « Écurie » (Tous / Amis / Écurie), 6 langues : même
+  contenu que « Tous » (résultats publiés + cartes de palmarès) mais limité
+  aux cavalières de SES écuries — ecurie ET ecurie2, relues en base —, elle
+  comprise (filEcurie → fil({ idsFiltre }), membres par hypeCavaliersDuClub).
+· hypeLibelleHautFait : « quete:<id>:n » s'affiche avec le TITRE de la quête
+  (HYPE_QUETES_DECOUVERTE, langue de l'appli) — vignette et carte ouverte ;
+  tout autre nom reste tel quel (rien d'inventé).
+⚠️ Constat, non modifié : l'onglet « Tous » ne montre pas les hauts faits
+(seul « Amis » les lit, via filAmis) ; l'onglet « Écurie » suit « Tous ».
+Build 20260921-329. node --check OK (deux blocs touchés).
+
+────────────────────────────────────────────────────────────
+108. 21/09 (330) — LES HAUTS FAITS DANS L'ONGLET « ÉCURIE »
+────────────────────────────────────────────────────────────
+
+Proposé au 329 (« si tu veux aussi les hauts faits dans Écurie »), « ok
+continue ». filEcurie ajoute aux résultats et palmarès les hauts faits
+(table hauts_faits, 40 au plus) des cavalières de ses écuries, avec la même
+forme d'élément que filAmis (même rendu, titre lisible du 329), puis trie le
+tout par date (60 au plus). Aucun SQL. Build 20260921-330. node --check OK.
+
+────────────────────────────────────────────────────────────
+109. 21/09 (331) — LES ALBUMS OÙ L'ON EST IDENTIFIÉ S'AFFICHENT ENFIN
+────────────────────────────────────────────────────────────
+
+Défaut noté au §101 (« ok continue »). CAUSE : albumsIdentifiesPour filtrait
+sur `album_id`, colonne ABSENTE de `identifications` → requête rejetée en
+entier, liste toujours vide. Deux effets : les propositions d'identification
+sur un ALBUM (en attente) n'apparaissaient jamais, et les albums ACCEPTÉS ne
+rejoignaient jamais la liste des albums du cheval / de la cavalière.
+✅ LIVRÉ AU 331, aucun SQL :
+· filtre sur photo_url LIKE « album:% » (ce qu'écrit identifierAlbum),
+  identifiant de l'album lu dans photo_url, recopié dans ident.album_id pour
+  les appelants ;
+· au passage, les propositions de PHOTOS écartent les lignes « album:… » :
+  jusqu'ici, une proposition d'album y serait apparue comme une « photo »
+  d'adresse illisible (même cause : le filtre `!x.album_id` était toujours
+  vrai).
+⚠️ Conséquence à voir au test : des propositions d'album en attente depuis
+longtemps peuvent apparaître d'un coup.
+Build 20260921-331. node --check OK (deux blocs touchés).
+
+────────────────────────────────────────────────────────────
+110. 21/09 (332) — LE BOUTON VIDÉO QUITTE LE MODE MODIFICATION
+────────────────────────────────────────────────────────────
+
+CONSTAT (code, pas de test nécessaire) : le bouton 🎬 du mode modification
+(325) passait par ajouterMediaEdite → envoyerPhoto, qui REFUSE les vidéos
+(garde-fou du 09/09 : elles doivent passer par Mux). Ajouter une vidéo en
+modifiant une publication n'a donc JAMAIS marché.
+SA DÉCISION : « retire pour l'instant et on verra plus tard » (option 1 ; la
+2 = rattacher une vidéo Mux à une publication existante, chantier avec une
+partie serveur, reportée).
+✅ LIVRÉ AU 332 : bouton 🎬 retiré ; le « + » (plusieurs photos) reste, et
+retirer une vidéo d'une publication reste possible. Le champ vidéo et
+ajouterMediaEdite restent dans le fichier, inertes (aucun nettoyage).
+Build 20260921-332. node --check OK.
+
+EN ATTENTE DE SON « OK » (rien codé) : elle affirme une règle « par défaut,
+sans acceptation, ça rejoint l'album du cheval, mais on peut les récupérer »
+pour les identifications d'ALBUM — AUCUNE trace dans le suivi ni le code
+(identifierAlbum écrit statut « attente »). Proposé : acceptation directe à
+l'identification, bouton « Retirer de mes albums » (identifiée / propriétaire
+du cheval / modératrice, déjà permis par id_suppr), SQL pour accepter les
+propositions en attente.
+
+────────────────────────────────────────────────────────────
+111. 21/09 (333) — LA STORY D'UN CONCOURS PASSÉ (premier test)
+────────────────────────────────────────────────────────────
+
+Note : elle a choisi de laisser la règle des albums COMME ELLE EST (un album ne
+rejoint la page que si la personne ACCEPTE) — sujet mis de côté.
+
+BRIEF (validé par elle, relu par Chat) : sur la page d'un concours passé,
+fabriquer une image Story 1080 × 1920 avec les VRAIES photos, derrière son fond
+fixe « hype-story-concours-images-journee.png » (fourni, 941 × 1672, trois
+fenêtres réellement transparentes — vérifié : alpha 0 à l'intérieur).
+
+✅ LIVRÉ AU 333, dans EcranEvenementPasse SEULEMENT, aucun SQL, aucune
+dépendance :
+· FICHIER À POUSSER À LA RACINE DU DÉPÔT : hype-story-concours-images-journee.png
+  (le PNG fourni, inchangé, seulement renommé). Chemin lu par le code :
+  « hype-story-concours-images-journee.png » (même origine que l'index).
+· Bouton « Partager » : un CONCOURS avec au moins une vraie photo ouvre un
+  panneau « Créer la story / Partage classique / Annuler » (portail vers body,
+  au-dessus de la barre d'onglets) ; sinon, partage classique direct, inchangé.
+· CADRES MESURÉS sur le fichier (composantes transparentes, rectangles tournés
+  minimaux via OpenCV), ramenés à 1080 × 1920, + 6 px de marge — objet unique
+  STORY_CADRES (centre, largeur, hauteur, rotation, cadrage vertical fy) :
+  grand paysage 462.6/643.1, 734 × 453, −4,28° (fy 0,32) ; petit paysage
+  390/1020, 500 × 262, +4,87° (fy 0,5) ; portrait 853.6/904.6, 292 × 509,
+  +6,24° (fy 0,3). Contrôlé par une simulation d'assemblage (les trois
+  fenêtres tombent pile). Textes : STORY_TEXTES (titre x 71 / centre 168 /
+  700 × 96 ; date x 170 base 257 ; lieu x 170 base 325 ; compteurs dans le
+  cartouche, centre 828.6/1290.9, 212 × 60).
+· ORDRE : noir → grande photo → petite (ou noir) → portrait (ou noir) → PNG →
+  textes. Les secondaires sont TOUJOURS peints après la grande : elle ne peut
+  pas transparaître dans une autre fenêtre ; chaque photo est coupée à SON
+  cadre (clip), en « cover », jamais étirée, jamais répétée.
+· PHOTOS : photosEv (vidéos, document « Le jour J », doublons écartés), la
+  couverture choisie en grand si c'en est une ; remplissage grand → portrait →
+  petit ; une photo illisible cède sa place à la suivante ; aucune lisible →
+  partage classique. Chargement fetch → Blob → adresse locale (libérée après).
+· TEXTES : titre en Cinzel (repli Cormorant/Georgia), ivoire, 2 lignes max,
+  60 → 26 px jusqu'à tenir ; date et lieu en Montserrat 28 → 18 px, « … » si
+  trop long ; compteurs « 11 PHOTOS · 2 VIDÉOS · 6 RÉSULTATS » (chaque partie
+  à zéro masquée, vidéos = videosEv, résultats = res ; PAS de podiums), sur
+  2 lignes si ça ne tient pas. document.fonts.ready attendu.
+· JPEG 0,92, « hype-<titre-normalisé>-story.jpg » ; aperçu 9:16 plein écran
+  noir (portail, data-noswipe + data-hscroll), boutons 46-48 px « Partager la
+  story / Copier le lien / Fermer » ; UNE image en mémoire, adresse locale
+  révoquée au remplacement, à la fermeture et au démontage.
+· LIEN : toujours https://2hype.fr/#s=<id> ; texte « Retrouvez toutes les
+  photos et partagez les vôtres sur Hype 🩵 <lien> ». Partage de fichier
+  indisponible → partage classique. Le PARTAGE CLASSIQUE fabrique désormais
+  aussi son lien depuis https://2hype.fr (au lieu de location.origin) — seul
+  changement du partage classique.
+⚠️ NON VÉRIFIABLE D'ICI : que les photos Supabase se dessinent sans
+contaminer le Canvas (dépend des en-têtes CORS de Supabase Storage, ouverts en
+principe sur les objets publics). Si le test échoue, l'écran bascule seul sur
+le partage classique avec un message.
+Build 20260921-333. node --check OK ; diff confiné à EcranEvenementPasse et
+au marqueur.
+
+· (334) 21/09 — Elle : « c'est à mettre dans les fichiers image ». Le dépôt
+  range ses images dans `images/` (95 références dans l'index). Le fond de la
+  story est désormais lu à `images/hype-story-concours-images-journee.png`,
+  avec repli à la racine. Build 20260921-334.
+
+· (335) 21/09, 17 h 46 — Sa capture WhatsApp : le partage part bien sur
+  https://2hype.fr/#s=… (le 333/334 est EN LIGNE), mais c'est le partage
+  CLASSIQUE (texte « 11 photos » + une photo), pas la story : « c'est push
+  mais toujours rien ». Non tranché : panneau jamais vu, ou story ratée puis
+  repli (le message de repli est sous la description, masqué par la feuille
+  de partage). CAUSE PROBABLE (code) : la story chargeait les photos par la
+  VIGNETTE redimensionnée avec fetch(…, { cache: "force-cache" }) ; Safari
+  peut alors resservir la copie mise en cache par une balise <img> SANS
+  en-têtes CORS et refuser la lecture. Le partage classique, lui, fait
+  fetch(url) simple sur l'ADRESSE D'ORIGINE, et ça marche (photo reçue).
+  CORRECTIF : même appel que le classique (fetch(url) simple, adresse
+  d'origine). ET chaque échec dit désormais SA RAISON dans le message
+  (« photo : … », « fond introuvable (images/…) », « image non exportable
+  (Canvas) »). Build 20260921-335.
+
+· (336) 21/09, 18 h 05 — ✅ LA STORY FONCTIONNE SUR IPHONE (sa capture de
+  l'aperçu : fond, trois photos, titre, date, lieu, « 11 PHOTOS » à leur
+  place). Le correctif du 335 (fetch simple sur l'adresse d'origine) était le
+  bon. Sa remarque : « un souci d'adaptation des images » — une photo
+  VERTICALE tombée dans le petit cadre paysage perdait la tête de la
+  cavalière. CORRECTIF : jusqu'à 6 photos chargées, la couverture (ou la
+  première) en grand, la plus VERTICALE des autres dans le cadre portrait,
+  la plus HORIZONTALE restante dans le petit cadre ; cadrage vertical remonté
+  à 0,28 pour le grand et le petit cadre (0,30 pour le portrait). Build
+  20260921-336.
+
+────────────────────────────────────────────────────────────
+112. 21/09 (337) — LES LIENS DE SOUVENIR OUVRAIENT LA PAGE COMMUNAUTÉ
+     (MON ERREUR DU 313) — RATTRAPAGE DES LIENS DÉJÀ ENVOYÉS
+────────────────────────────────────────────────────────────
+
+SES MOTS : « le lien que t'as mis dans la story amène sur la page
+communauté », « je l'ai partagé à tout le monde ».
+CAUSE PROUVÉE (code) : « #s= » est DEPUIS LE 14/08 la famille des STORIES
+dans CIBLE_DIRECTE (« #s=<id> une story »), traitée AVANT ma route du 313 —
+qui ne s'exécutait donc JAMAIS. Tous les liens de souvenir partagés (partage
+classique 313-336, story 333-336) ouvraient la page Communauté. LEÇON : avant
+de créer une adresse, relire le tableau des familles d'adresses (commentaire
+du 14/08) et chercher toute branche `fam === "<lettre>"` déjà existante.
+
+✅ LIVRÉ AU 337, aucun SQL :
+1. RATTRAPAGE des liens déjà envoyés : sur « #s=<id> », l'appli ouvre comme
+   avant la page Communauté (une vraie story s'ouvre toujours), puis
+   hypeRattraperLienSouvenir demande à la base si l'identifiant est un
+   RENDEZ-VOUS (club_agenda) ; si oui, elle bascule sur sa page souvenir
+   (réessais toutes les 0,4 s tant que l'appli n'est pas prête, 10 s au plus).
+   Porte de navigation ajoutée pour ça : window.__hypeSetEcran = naviguer.
+2. NOUVELLE ADRESSE DES SOUVENIRS : « https://2hype.fr/#souvenir=<id> »
+   (route « souvenir » dans CIBLE_DIRECTE), utilisée par la story ET par le
+   partage classique. Elle ne croise plus les stories.
+La branche « s » ajoutée au 313 plus bas reste en place, inerte (aucun
+nettoyage).
+Build 20260921-337. node --check OK.
+
+────────────────────────────────────────────────────────────
+113. 21/09 — À FAIRE PLUS TARD (noté à sa demande) : LES MAILS SUPABASE
+     EN FRANÇAIS
+────────────────────────────────────────────────────────────
+
+SIGNALÉ : une cavalière a demandé un nouveau mot de passe et a reçu le mail
+ENTIÈREMENT EN ANGLAIS. Ce n'est pas l'appli : c'est le modèle de mail de
+Supabase. Le modèle français « HYPE — ton cheval t'attend », écrit
+autrefois, n'est donc pas (ou plus) enregistré dans Supabase.
+À FAIRE, dans le tableau de bord Supabase :
+1. Authentication → Emails / Email Templates → « Reset Password » : objet
+   « HYPE — ton cheval t'attend » + corps HTML en français (fond #060709,
+   bouton turquoise #20D9F5 « Choisir mon nouveau mot de passe », garder
+   {{ .ConfirmationURL }} tel quel) — texte complet déjà rédigé dans la
+   conversation du 21/09 ;
+2. traduire aussi « Confirm signup », « Magic Link », « Change Email »
+   (sans doute encore en anglais) — proposé, à préparer ;
+3. Authentication → URL Configuration : Site URL = https://2hype.fr ;
+   Redirect URLs : garder aussi https://2hype.netlify.app/** (anciens liens).
+LIMITE : Supabase n'envoie qu'UNE langue par modèle (les anglophones
+recevront le français).
+
+· (338) 21/09, 22 h 42 — Sa capture : la story s'ouvre dans Instagram, mais
+  le bouton « Story » de la feuille d'Instagram est à moitié RECOUVERT par
+  « Envoyer un message » (Instagram ajoute cette option quand l'image arrive
+  AVEC du texte) ; le toucher tombait sur « message ». Et en « Publication »,
+  Instagram recadre en 4:5 (normal : l'image est au format story 9:16 —
+  expliqué ; un format publication 4:5 demanderait un deuxième fond, proposé,
+  non décidé). ✅ Deux boutons dans l'aperçu : « Pour Instagram (image
+  seule) » (navigator.share({ files }) sans texte) et « Pour WhatsApp,
+  Messages… (avec le lien) » (comme avant) ; « Copier le lien » et « Fermer »
+  inchangés. Build 20260921-338.
+
+────────────────────────────────────────────────────────────
+114. 21/09 — IDÉE EN ATTENTE : IMPORTER LES RÉSULTATS D'UN CONCOURS DEPUIS LE
+     PDF « RÉSULTATS DÉTAILLÉS » DE LA FFE (rien de codé)
+────────────────────────────────────────────────────────────
+
+SA QUESTION : déposer un document de résultats sur la page d'un concours,
+voir les classements dessus, et mettre à jour les palmarès des chevaux et
+cavalières concernés. DOCUMENT FOURNI : « E_trier_.pdf » = page SIF FFE
+« Résultats détaillés » imprimée en PDF, AVEC DU VRAI TEXTE (lisible), UNE
+épreuve par PDF (concours SIF 2732594, épreuve n°04, CSO Club 3 Grand Prix,
+20/09/2026). Chaque ligne, toujours dans le même ordre : rang (ou El. / NP /
+HC) + « SF » ; NOM CAVALIER ; CLUB (« SOCIETE D EQUITATION DE PARIS (75) ») ;
+CHEVAL ; COACH (« BLANDINE PRONOST ») ; points (20 / 15 / 5 / 2.5) ; QUART
+(1er → 4e, la colonne que l'import FFE lit déjà).
+Sur cette épreuve : 6 cavalières de la SEP (Maëlys Masure / Aceitunero 3e SF,
+Aurélie Bussonnais / Dakota CA 10e SF, Romy Thaïs Cirba Ménil / Cirrus des
+Lauriers 23e, Clémence Honorat / Apache du Lys 31e, Lauren Sojfer / Orchid's
+Yellow El., Emma Petitjean / Ecolo Louvo El.).
+POINT DÉLICAT : relier « MAELYS MASURE » (FFE) à un compte Hype (souvent un
+simple prénom) — par les résultats déjà importés, puis confirmation à l'écran
+la première fois, retenue ensuite. Chevaux : par le nom, tolérance de l'import.
+QUATRE DÉCISIONS À PRENDRE (posées, sans réponse) : 1) qui garder (club du
+rendez-vous, et/ou cavalières dont elle est le coach) ; 2) cavalière sans
+compte : ligne affichée sans palmarès, ou ignorée ; 3) colonne SQL « ce
+résultat appartient à ce rendez-vous » (règle le rattachement par la date) ;
+4) doublons avec le télémat : reconnus (cavalière + cheval + date + épreuve).
+SA DÉCISION : « garde ça en tête, mais on va attendre que toutes les
+cavalières se soient inscrites pour la SEP ». À REPRENDRE à ce moment-là.
+
+────────────────────────────────────────────────────────────
+115. 21/09 — IMPORT DES RÉSULTATS D'UNE ÉPREUVE (PDF « RÉSULTATS DÉTAILLÉS »)
+     : CHANTIER RELANCÉ, PLAN DÉCIDÉ, RIEN CODÉ
+────────────────────────────────────────────────────────────
+
+Contexte : elle a essayé de donner le PDF « Résultats détaillés » (Étrier,
+Club 3 GP) à l'import du palmarès de Daphné → « Aucun résultat trouvé »
+(normal : l'import ne lit que le TÉLÉMAT d'une cavalière/d'un cheval).
+SES DÉCISIONS (21/09, soir) :
+· élargir l'outil d'import pour qu'il lise AUSSI ce PDF d'épreuve, et qu'il en
+  profite pour mettre à jour les AUTRES chevaux présents (fiche dans Hype,
+  nom reconnu avec la tolérance de l'import) ;
+· un résultat est rangé AU NOM DE LA CAVALIÈRE qui montait (si elle a un
+  compte) — donc dans son palmarès ET celui du cheval ; correspondance « NOM
+  FFE » ↔ compte Hype CONFIRMÉE À L'ÉCRAN la première fois, retenue ensuite ;
+· relecture à l'écran avant enregistrement (cases à cocher), pas de doublon
+  avec le télémat (cavalière + cheval + date + épreuve) ;
+· les résultats RANGÉS PAR ÉCURIE (un titre par écurie) sur la PAGE SOUVENIR
+  du concours ET sur la FICHE DU CONCOURS DANS L'AGENDA.
+RELEVÉ EN BASE : resultats, INSERT = « poster resultat » (auth.uid() =
+user_id) → personne ne pouvait enregistrer pour une autre cavalière.
+✅ SQL PASSÉ PAR ELLE (23 h 56, « Success ») : policy ADDITIONNELLE
+« poster resultat moderation » (INSERT, authenticated, with check
+hype_est_moderatrice()) — seules les modératrices peuvent enregistrer pour
+n'importe quelle cavalière ; le droit des cavalières est inchangé.
+BLOQUÉ SUR : le fichier hype-import-ffe.js (à fournir depuis GitHub — ne
+jamais le réécrire à l'aveugle). Ensuite : plan détaillé à valider, puis code.
+(Remplace le « on attend que toutes les cavalières soient inscrites » du
+§114 : elle a relancé le chantier.)
+
+────────────────────────────────────────────────────────────
+116. 22/09 (339 + hype-import-ffe.js ?v=19) — ÉTAPE 1 : L'IMPORT LIT LE PDF
+     « RÉSULTATS DÉTAILLÉS » D'UNE ÉPREUVE
+────────────────────────────────────────────────────────────
+
+Fichier hype-import-ffe.js FOURNI PAR ELLE (1079 lignes, 62,8 Ko). Découpage
+validé (« Ok ») : étape 1 = lire l'épreuve et ranger sur les FICHES DES
+CHEVAUX ; étape 2 = au nom de chaque cavalière (+ case « nom FFE » au profil,
+SQL) ; étape 3 = résultats par écurie sur la page souvenir et la fiche agenda.
+
+✅ LIVRÉ (étape 1) :
+· hype-import-ffe.js : lire() reconnaît le document (« Résultats détaillés » +
+  « Concours SIF ») et passe par lireSIF(). Format MESURÉ sur son PDF réel avec
+  le même assemblage de lignes que l'app (pdf.js + lignesDePage, exécuté ici
+  sur E_trier_.pdf) : en-tête (épreuve « Club 3 Grand Prix », date, concours
+  « PARIS ETRIER COSSEBRISSAC »), puis rang / cavalier / club « (75) » /
+  cheval / coach / points / quart ; exposants (« re », « er », « e ») sur des
+  lignes à part, sautés. ANCRE = la ligne du CLUB (les points et le quart
+  ressemblent à des rangs : le rang est cherché à rebours depuis le club).
+  Résultat du test : 36 lignes, 5 clubs, les 6 de la SEP exactes (Maëlys
+  Masure / Aceitunero 3e SF q1 20 pts ; Aurélie Bussonnais / Dakota CA 10e SF
+  q1 20 pts ; Romy Thaïs Cirba Ménil / Cirrus des Lauriers 23e q3 ; Clémence
+  Honorat / Apache du Lys 31e q4 ; Lauren Sojfer / Orchid's Yellow et Emma
+  Petitjean / Ecolo Louvo éliminées). Partants = classés + éliminés (36) ;
+  NP et HC non écrits.
+· Chaque ligne a la forme d'une ligne de télémat (+ club, coach) : l'écrivain
+  de l'app la range sur la fiche de SON cheval (reconnaissance à deux niveaux
+  du 18/09) ; pas de verrou d'identité (aucun nom de cheval en en-tête).
+· Relecture : le CLUB de l'utilisatrice est reconnu D'OFFICE (mots du nom,
+  sans accents ni département : « SOCIETE D EQUITATION DE PARIS (75) » ↔
+  « Societe d'Equitation de Paris (SEP) ») — sinon elle le choisit par une
+  pastille ; SEULES les lignes du club choisi sont relues et ENVOYÉES, les
+  autres clubs ne partent jamais.
+· Pas de contrôle « quart attendu » sur ce document (les partants FFE n'y sont
+  pas donnés : faux doutes) ; le quart est LU.
+· ⚠️ POINTS FRACTIONNAIRES (2.5) NON ÉCRITS (null) : la colonne n'a jamais
+  reçu que des entiers ; un décimal risquerait de faire refuser tout l'envoi.
+  À reprendre avec le chantier « classement sportif » (points EXACTS).
+· index.html (339) : clé ?v=18 → 19 ; l'écran d'import pose
+  window.__hypeEcuriesImport (ecurie, ecurie2 du profil) pour la
+  reconnaissance du club.
+⚠️ ÉTAPE 1 = rangé AU NOM DE CELLE QUI IMPORTE (comme tout import
+aujourd'hui) ; l'attribution à chaque cavalière est l'étape 2.
+⚠️ DOUBLONS AVEC LE TÉLÉMAT : la clé compare aussi le NOM DU CONCOURS ; si le
+télémat l'écrit autrement que « PARIS ETRIER COSSEBRISSAC », un doublon est
+possible — à surveiller au premier télémat de ce concours.
+node --check OK (module + index) ; build 20260922-339.
+
+────────────────────────────────────────────────────────────
+117. 22/09 (340) — ÉTAPE 2a : « MA LICENCE FFE » DANS MON COMPTE
+────────────────────────────────────────────────────────────
+
+SON IDÉE : « si chaque cavalière remplit son numéro de licence en confirmant
+que c'est bien elle, ça irait pas ? ». Réponse donnée : oui pour la licence
+(unique, présente en tête du télémat d'une cavalière), MAIS la page
+« Résultats détaillés » n'affiche QUE des noms → on garde aussi le NOM FFE.
+Décision (« Ok ») : PAS de case sur le profil (la modératrice aurait dû
+écrire sur le profil des autres) → petite table à part, SQL donné :
+`noms_ffe` (nom_ffe text PK, user_id uuid → auth.users on delete cascade,
+licence text UNIQUE, cree_par, cree_le), RLS : lecture authenticated ;
+insert / update / delete = hype_est_moderatrice() OU user_id = auth.uid().
+⚠️ SQL NON CONFIRMÉ PASSÉ à la livraison du 340.
+
+✅ LIVRÉ AU 340 (index.html seul ; hype-import-ffe.js inchangé depuis ?v=19) :
+nouvelle tuile « Ma licence FFE » dans Mon compte → section Compte, juste
+après « Mon abonnement » (composant BlocLicenceFFE). Elle y écrit SON numéro
+(contrôlé : 7 chiffres + 1 lettre) et SON nom tel que la FFE l'écrit
+(pré-rempli avec son prénom, rangé en MAJUSCULES SANS ACCENTS), coche « C'est
+bien moi », enregistre (sa ligne précédente est remplacée). Messages clairs :
+table absente (« la base n'est pas encore prête »), nom ou licence déjà pris
+par un autre compte, format invalide. 6 langues.
+Build 20260922-340. node --check OK.
+RESTE : 2b (à l'import, chaque résultat au nom de la cavalière reconnue par
+noms_ffe, confirmation par la modératrice pour les non déclarées) ; étape 3.
+
+· 22/09, 00 h 15 — ✅ SQL « noms_ffe » PASSÉ PAR ELLE (« Success. No rows
+  returned ») : table + RLS (lecture authenticated ; écriture / modification
+  / suppression = modératrice OU sa propre ligne). La tuile « Ma licence FFE »
+  du 340 peut enregistrer.
+· PROPOSÉ, EN ATTENTE DE SON « OK » (341) : le bouton qui bascule la page
+  Écurie d'une écurie à l'autre EXISTE (pastilles écurie principale /
+  secondaire, setClubForce) mais il est caché derrière AFFICHER_GAMIF_CLUB =
+  false (partie classement éteinte). Proposé : l'afficher dès qu'une cavalière
+  a deux écuries, indépendamment de ce drapeau ; retour sur l'écurie
+  principale à chaque réouverture de la page.
+
+· (341) 22/09 — « Ok » : les pastilles de bascule entre les deux écuries
+  s'affichent sur la page Écurie dès que ecurie2 existe et diffère de la
+  principale, sans dépendre d'AFFICHER_GAMIF_CLUB (resté false, la partie
+  classement reste éteinte). Toucher une pastille bascule TOUTE la page
+  (setClubForce → monClub : bannière, membres, chevaux, agenda, résultats,
+  fil) ; retour sur l'écurie principale à la réouverture. Build
+  20260922-341. node --check OK.
+
+────────────────────────────────────────────────────────────
+118. 22/09 (342) — LE FORMAT « PUBLICATION » INSTAGRAM (4:5) POUR UN CONCOURS PASSÉ
+────────────────────────────────────────────────────────────
+
+Deux fonds fournis (1092 × 1440, fenêtres transparentes vérifiées, quasi
+identiques). Constat dit : ≈ 3:4, plus haut que le 4:5 maximal d'une
+publication ; et PAS de ligne pour le nom du concours (la date suit
+« CONCOURS »). Sa réponse : « 2, choisis le plus pratique pour toi » →
+SECOND fond retenu ; le nom du concours va À CÔTÉ DE L'ÉPINGLE, suivi du lieu
+s'il n'y est pas déjà (« CSO étrier de Paris » contient « Étrier de Paris » →
+une seule fois).
+✅ LIVRÉ AU 342, EcranEvenementPasse seul, aucun SQL :
+· FICHIER À POUSSER DANS images/ : hype-publication-concours-images-journee.png
+  (son second fond, inchangé, renommé ; repli à la racine).
+· panneau de partage d'un concours : « Créer la story » ET « Créer la
+  publication (format Instagram) » ; classique / Annuler inchangés.
+· fabriquerStory(fmt) : format « story » inchangé ; format « publication »
+  (PUB_FORMAT) = image 1080 × 1350, fond posé rogné de 37,5 px en haut et en
+  bas (1092 × 1365 → 1080 × 1350), fenêtres mesurées sur le fichier (grand
+  481/426, 743 × 403, −4,22° ; petit 390/761, 481 × 229, +5,88° ; portrait
+  845/653, 290 × 453, +6,83°), date x 178 base 111, nom (+ lieu) x 178 base
+  158 en demi-gras, compteurs dans le cartouche 827/963. Simulation
+  d'assemblage : tout tombe en place.
+· aperçu au ratio 4:5 pour la publication ; fichier « …-publication.jpg » ;
+  mêmes boutons (Instagram image seule / WhatsApp avec lien / copier / fermer).
+Build 20260922-342. node --check OK.
+
+────────────────────────────────────────────────────────────
+119. 22/09 (343) — LA BASCULE ENTRE LES DEUX ÉCURIES, REMONTÉE ET FIABILISÉE
+────────────────────────────────────────────────────────────
+
+SA CAPTURE (11 h 01, page Écurie Feinn) : « c'est push mais je vois pas où
+changer d'écurie ». DEUX CAUSES POSSIBLES, toutes deux corrigées :
+1. MON ERREUR D'ANNONCE : au 341 les pastilles étaient restées APRÈS le mur
+   « À la une » (très bas), alors que j'avais écrit « juste sous les
+   stories ». → REMONTÉES juste sous le bandeau du club (nom, lieu, OFFICIAL),
+   avant les stories, visibles sans défiler.
+2. ecurieSecondaire ne lisait que le PROFIL GARDÉ SUR LE TÉLÉPHONE
+   (profil.club2 || profil.ecurie2) — potentiellement vide sur la nouvelle
+   adresse 2hype.fr. → relu aussi en BASE (profiles.ecurie2, état
+   ecurie2Base).
+Build 20260922-343. node --check OK.
+
+⚠️ ERREUR SIGNALÉE LE 22/09 (non corrigée, attend son « ok ») : la tuile
+« Ma licence FFE » (340) et la table noms_ffe DOUBLONNENT un système EXISTANT
+depuis le 13/09 : EcranRattacherFFE (tuile modératrice « Relier les résultats
+FFE » dans Mon compte : noms FFE tirés de resultats.cavalier, état Libre /
+Relié / Demande ; hype_rattacher_cavalier, hype_accepter_cavalier,
+hype_refuser_cavalier) + porte cavalière « C'est moi »
+(hype_noms_ffe_libres, hype_revendiquer_cavalier). Les résultats d'un nom
+relié s'affichent sur la page Cavalier (BlocResultatsCavaliere, filtre
+cavalier_id). Proposé : RETIRER la tuile 340 ; l'étape 2 de l'import
+s'appuiera sur ce système. LEÇON : avant de créer une fonction, chercher dans
+l'index les fonctions SQL appelées (liste des rpc) et les écrans voisins.
+À VÉRIFIER (une requête) : un nom déjà relié rattache-t-il aussi les
+résultats importés APRÈS le rattachement (cavalier_id posé à l'insertion ?).
+
+────────────────────────────────────────────────────────────
+120. 22/09 (344) — ✅ L'IMPORT D'ÉPREUVE MARCHE ; LA COCHE GOUVERNE AUSSI
+     LES PAGES DE RENDEZ-VOUS
+────────────────────────────────────────────────────────────
+
+✅ ÉTAPE 1 VALIDÉE À L'ÉCRAN (capture de 11 h 09, page du CSO Étrier de
+Paris) : les résultats de l'épreuve Club 3 GP importés depuis le PDF
+« Résultats détaillés » s'affichent (Aceitunero 3e/36 Maëlys Masure, Dakota CA
+10e/36 Aurélie Bussonnais, Cirrus des Lauriers 23e/36, Orchid's Yellow et
+Ecolo Louvo éliminés). Apache du Lys (Clémence Honorat) absent : cheval sans
+fiche dans Hype, très probablement (non enregistré, dit à l'écran de fin).
+SA REMARQUE : « il a pris tous les résultats au lieu de prendre que les
+sans-faute et les classements ». CAUSE : les pages de rendez-vous (agenda :
+EcranAgendaClub ; page souvenir ouverte par lien : EcranEvenementPasse) lisaient
+les résultats SANS la colonne `visible` → les lignes décochées à la relecture
+(23e hors 1er quart, éliminées) s'affichaient. L'import, lui, avait bien
+décoché (le palmarès les masque).
+✅ CORRIGÉ AU 344 : les deux lectures prennent `visible` et écartent les
+lignes visible = false (règle de toujours : la coche gouverne TOUT à
+l'affichage, listes et compteurs — les cartes « N résultats » suivent).
+Build 20260922-344. node --check OK.
+
+· (345) 22/09 — « Ok » : la tuile « Ma licence FFE » (340) est RETIRÉE de Mon
+  compte (doublon d'EcranRattacherFFE, reliée à rien). BlocLicenceFFE reste
+  dans le fichier, inerte ; la table noms_ffe reste en base, inutilisée
+  (suppression possible plus tard, sa décision : `drop table public.noms_ffe;`).
+  Build 20260922-345. node --check OK.
+
+· 22/09 — RELEVÉ EN BASE (deux requêtes) : les 5 noms importés de l'Étrier
+  (AURELIE BUSSONNAIS, EMMA PETITJEAN, LAUREN SOJFER, MAELYS MASURE,
+  ROMY THAIS CIRBA MENIL) n'ont AUCUN résultat relié à un compte (relies = 0
+  partout ; MAELYS MASURE a 2 résultats au total). Elle : « on ne les a pas
+  remis aux cavaliers encore ». → rien à corriger. Plan convenu pour l'étape
+  2 : 1) elle relie les noms (Mon compte → « Relier les résultats FFE », ou
+  « C'est moi » côté cavalière) ; 2) au prochain import d'épreuve, une requête
+  vérifie si les NOUVEAUX résultats d'un nom déjà relié portent cavalier_id ;
+  3) seulement s'ils ne le portent pas : correctif dans l'écrivain de l'import
+  (reprendre le cavalier_id déjà attribué à ce nom).
+
+────────────────────────────────────────────────────────────
+121. 22/09 (346) — LA PAGE « RÉSULTATS » D'UNE CAVALIÈRE
+────────────────────────────────────────────────────────────
+
+SA DEMANDE : sur la page perso (capture d'Evan), « je vois les derniers
+résultats mais pas tous ses résultats » ; « il faut créer sa page résultats,
+c'est le plus important » ; « reproduis en gros la page similaire qu'on a
+faite pour les chevaux, on affinera après ; il faut qu'on puisse voir quand
+même les principaux résultats sur sa page, et c'est là qu'on peut mettre voir
+tout ». CONSTAT : BlocResultatsCavaliere n'affichait que les 8 derniers
+concours, sans aucun accès à la liste complète.
+
+✅ LIVRÉ AU 346, aucun SQL :
+· BlocResultatsCavaliere (page Cavalier) : GARDE ses cartes « Derniers
+  résultats » ; nouveau lien « Voir tout › » à droite du titre (sur sa page
+  comme en visite) → écran « resultats-cavalier » (identifiant réellement lu
+  par le bloc, retenu dans idResoluRef → window.__resCavaliereId).
+· NOUVEL ÉCRAN EcranResultatsCavaliere, route « resultats-cavalier ». Son
+  corps est une COPIE TEXTUELLE du palmarès éditorial de la fiche cheval (bloc
+  « PALMARÈS ÉDITORIAL — Proposition B » d'EcranCheval, ~59 000 caractères) —
+  mêmes 4 chiffres et règles (sorties, victoires hors prépas, podiums,
+  classements), filtres Tous / Classés / Podiums / Sans faute, moments forts,
+  saisons dépliables, points de qualification, derniers résultats en cartes.
+  La FICHE CHEVAL N'EST PAS TOUCHÉE (copie, pas partage).
+  Adaptations par des variables locales que le corps copié lit :
+  lignes = resultats où cavalier_id = la cavalière (même lecture que son
+  bloc), sans masque_cavaliere ; « cavalier » de chaque ligne := NOM DU CHEVAL
+  (les onglets deviennent des onglets PAR CHEVAL, les listes disent « ·
+  Rizotto d'Emery ») ; vrai nom gardé pour la phrase des cartes (deux
+  retouches textuelles dans la copie : cav_reel / ch_reel) ; en-tête = photo
+  de profil + nom + écurie ; AUCUN outil de propriétaire ou de modératrice
+  (estModerateurHype local → false, chevalDyn.ownerId = null) : page de
+  lecture ; pas de palmarès écrit en dur (c.palmares = []).
+  Aucun résultat relié : message qui renvoie à « Relier les résultats FFE ».
+· Vérifications : node --check OK ; analyse des noms libres de la copie
+  (acorn) : ne restent que des fonctions globales existantes.
+⚠️ À AFFINER APRÈS (dit par elle) : les deux copies du palmarès (cheval /
+cavalière) évolueront séparément — toute règle de calcul changée d'un côté
+doit l'être de l'autre (même avertissement que « résumé ↔ palmarès »).
+Build 20260922-346.
+
+────────────────────────────────────────────────────────────
+122. 22/09 (347 + 348) — L'ENCART ÉCURIE DE LA PAGE CAVALIER ; LA PAGE
+     RÉSULTATS QUI RESTAIT VIDE
+────────────────────────────────────────────────────────────
+
+SES DEMANDES (après le 346) : sur la page Cavalier, des onglets comme sur les
+pages cheval et écurie — Photos, Vidéos, Performances, Progression (→ carnet),
+Théorie (→ Galops), Actualité (publications, mentions, concours ; « au besoin
+tu mettras comme d'habitude grisé en écrivant prochainement ») ; et l'écurie :
+« rares sont ceux qui en ont deux ; plutôt un petit + qu'un gros onglet qui
+prend la moitié de la largeur ; tant qu'il y a une seule écurie, l'onglet
+horizontal pleine largeur, avec l'encart de l'écurie et quelques infos (ville
+et département) ». « Ok » : écurie d'abord (347), tuiles ensuite ; en visite,
+Progression et Théorie cachées (proposé).
+
+✅ 347 — EcranMonCavalier : la grille 2 colonnes « Mon club | Ajouter une
+écurie » devient une CARTE PLEINE LARGEUR par écurie (la seconde dessous, plus
+compacte), avec « 📍 ville (département) » ; « + Ajouter une écurie » devient
+un petit lien sous la carte, et N'APPARAÎT PLUS EN VISITE (sa capture d'Ambre
+montrait la grosse case sur la page d'une autre). Ville : d'abord la table des
+clubs revendiqués (copie de CLUBS_REVENDIQUES d'EcranGuilde : « ecurie feinn »
+→ « Itteville (Essonne) » — ⚠️ DEUX COPIES, à changer aux deux endroits), puis
+window.HYPE_CLUBS. Clics, crayons, éditeurs : inchangés.
+
+✅ 348 — SA CAPTURE (11 h 44) : « la page résultats d'Evan reste vide ».
+CAUSE (MON ERREUR du 346) : j'avais copié le bloc du palmarès SANS les « () »
+qui l'appellent → React recevait une fonction au lieu d'un contenu, rien ne
+s'affichait (avertissement « Functions are not valid as a React child »,
+reproduit ici). LEÇON : rendre la page hors ligne AVANT livraison — désormais
+fait avec React + react-dom/server et des données d'exemple (harnais).
+Corrigé, plus deux défauts vus au rendu : (a) les cartes « Derniers
+résultats » disaient « 3e Rizotto sur Evan » → « 3e Evan sur Rizotto » ; (b)
+un podium ajouté aux moments forts affichait « 1er » → son VRAI rang (« 3e »).
+⚠️ Le défaut (b) EXISTE AUSSI sur la fiche cheval (copie d'origine) : non
+corrigé là-bas, à lui proposer.
+Build 20260922-348. node --check OK ; rendu hors ligne OK.
+
+· (349) 22/09 — « Ok continue » : LES RACCOURCIS DE LA PAGE CAVALIER
+  (EcranMonCavalier), juste au-dessus de l'encart écurie, dessin de carteG
+  (page du club / fiche cheval : hauteur 104, pastille ronde, pictogramme
+  tracé, Cinzel 12.5, pied en petites capitales ; sans page = 50 %).
+  Destinations RÉELLES : Photos → « memoirescavalier » (Hype Memories, lit
+  déjà la visite) ; Performances → « resultats-cavalier » (identifiant : la
+  visitée, sinon l'utilisatrice relue par utilisateurActuel) ; Progression →
+  « carnet » ; Théorie → « galops ». Vidéos et Actualité : GRISÉES
+  « Prochainement » (aucune page n'existe ; l'écran « videos » de l'app n'est
+  pas celui d'une cavalière). EN VISITE : Progression et Théorie CACHÉES.
+  Build 20260922-349. node --check OK.
+
+· (350) 22/09 — « Ok continue » : le défaut vu au 348 est corrigé AUSSI sur
+  la FICHE CHEVAL (palmarès éditorial d'EcranCheval) : une carte « moment
+  fort » ajoutée en complément (podium, quand il y a moins de 5 victoires)
+  affichait « 1er » ; elle affiche désormais son VRAI rang (« 2e », « 3e »).
+  Une seule ligne changée. Build 20260922-350. node --check OK.
+
+────────────────────────────────────────────────────────────
+123. 22/09 (351) — LA PAGE « ACTUALITÉ » D'UNE CAVALIÈRE ; LA TUILE S'ALLUME
+────────────────────────────────────────────────────────────
+
+Proposition faite (contenu, règles, question sur les albums), réponse « Ok
+continue » → albums NON inclus (question restée sans réponse ; ajout possible).
+✅ LIVRÉ, aucun SQL : nouvel écran EcranActualiteCavaliere, route
+« actualite-cavalier » (window.__actuCavaliereId) ; la tuile « Actualité » de
+la page Cavalier s'allume (visite → la visitée, sinon l'utilisatrice).
+UNE liste du plus récent au plus ancien :
+1. SES publications (commentaires user_id = elle, cibles ecurie: / club: /
+   agenda: / cheval:, pas les réponses post:), 60 au plus ;
+2. les publications où elle est IDENTIFIÉE (identifications type cavalier,
+   statut accepte, photo_url « post:<id> » — ce qu'écrivent « Identifier »
+   et le @), avec « Identifiée par <auteur> » ;
+3. SES CONCOURS (resultats cavalier_id = elle, sans visible = false ni
+   masque_cavaliere), 30 au plus, avec le cheval et le badge SF.
+Privé : garanti par la policy « commentaires lecture » (21/09). Toucher une
+publication ouvre SON MUR (agenda → fiche du rendez-vous via __agendaFiche +
+guilde ; cheval → fiche ; ecurie → page Actualités) ; toucher un concours ouvre
+la page Résultats. Rendu hors ligne OK (harnais React + données d'exemple) ;
+node --check OK. Build 20260922-351.
+
+· (352) 22/09 — « Ok » : LA PAGE « VIDÉOS » D'UNE CAVALIÈRE (EcranVideosCavaliere,
+  route « videos-cavalier », window.__videosCavaliereId) ; la tuile « Vidéos »
+  s'allume. Contenu : les vidéos qu'ELLE A PUBLIÉES (photo_url ET medias de ses
+  publications sur les murs écurie / club / agenda / cheval, 200 publications
+  lues au plus), grille de 3 miniatures (hypeMiniatureVideo) du plus récent au
+  plus ancien, date dessous ; toucher = lecture en grand (hypeCalquePhoto, qui
+  lit les vidéos). NON inclus (dit) : albums des chevaux, vidéos où elle est
+  identifiée. Privé : policy « commentaires lecture ». Aucun SQL. Rendu hors
+  ligne OK ; node --check OK. Build 20260922-352.
+
+· (353) 22/09 — Sa réponse sur la page Vidéos : « les 1 faut les mettre, et
+  les 2 avec son accord ». AJOUTÉ à EcranVideosCavaliere : (1) les vidéos des
+  ALBUMS DE SES CHEVAUX (chevaux possédés + rattachés via chevaux_liens ;
+  albums publics, un album privé seulement pour son autrice qui le lit) —
+  légende = nom du cheval ; (2) les vidéos où elle est IDENTIFIÉE, SEULEMENT
+  statut « accepte » (identification d'une publication « post:<id> » → ses
+  médias, ou d'un média direct) — légende « Identifiée ». Tri par date,
+  doublons écartés. Aucun SQL. Rendu hors ligne OK ; node --check OK.
+  Build 20260922-353.
+  (Note : sur son « OK continue » précédent, j'avais commencé l'étape 1 de la
+  refonte Communauté SANS son choix explicite ; ANNULÉE avant livraison, rien
+  poussé. Elle reste en attente de ses trois réponses d'audit.)
+
+────────────────────────────────────────────────────────────
+124. 22/09 (354) — REFONTE DE LA PAGE COMMUNAUTÉ, ÉTAPE 1 : L'EN-TÊTE
+────────────────────────────────────────────────────────────
+
+Après l'audit (§ plus haut, point pour Chat fourni) et ses « ok, continue »
+répétés, le plan est lancé par ses étapes qui NE dépendent PAS des trois
+décisions encore ouvertes (Journal des clubs, carte compacte, « Le Monde Au
+Galop »).
+✅ ÉTAPE 1 (EcranCommunaute) : bande noire au-dessus de l'image 104 → 60 px
+(+ encoche), dégradé de raccord remonté d'autant ; « COMMUNAUTÉ / ÉQUESTRE »
+en IVOIRE (#F4EFE4) ; sous-titre turquoise #5FE9F0 gardé (10 px, espacement
+2,6) ; libellés des 4 accès en ivoire adouci. Accès, icônes, routes (Résultats
+toujours sans action), rail de stories : INCHANGÉS. Aucun SQL.
+Build 20260922-354. node --check OK.
+PROCHAINES ÉTAPES (sans ses décisions) : 2) événement mis en avant + Mon club ;
+3) L'Agenda en rail ; 5) classement compact ; 6) rails Personnes suivies /
+Nouveaux cavaliers (+ data-hscroll) ; 7) Le fil. EN ATTENTE DE SES RÉPONSES :
+4) carte compacte, 8) Journal des clubs, et le sort de « Le Monde Au Galop ».
+
+· (355) 22/09 — « Ok, continue » : REFONTE COMMUNAUTÉ, ÉTAPE 2.
+  Événement mis en avant (CarteEvenementsC, appelé UNIQUEMENT par
+  Communauté) : bord ivoire discret au lieu du turquoise, ombre portée ;
+  pastille « Événement » en or champagne (texte #E9D3A2, bord or) au lieu du
+  dégradé turquoise ; titre ivoire ; lieu · dates en or ; points du carrousel
+  toujours turquoise. « Mon club » : bord et fond sobres (ivoire), titre
+  ivoire, pictogramme turquoise gardé dans un carré plus discret. Données,
+  carrousel, clics : INCHANGÉS. Aucun SQL. Build 20260922-355. node --check OK.
+
+· (356) 22/09 — « Ok, continue » : REFONTE COMMUNAUTÉ, ÉTAPE 3 — « L'AGENDA ».
+  L'ancien bloc « Grands événements » (4 cartes empilées) est DÉPLACÉ juste
+  sous « Mon club » et devient un RAIL HORIZONTAL titré « L'Agenda » : cartes
+  à 78 % de largeur (une entière + l'aperçu de la suivante), 150 px, arrêt
+  carte par carte (scroll-snap), data-hscroll (le geste horizontal ne change
+  pas d'onglet), bord ivoire, pastilles « À la une » / « L'article » en or
+  champagne, lieu · dates en or. MÊMES 4 événements, MÊMES états (salon et
+  equita « Prochainement » non cliquables), MÊMES clics (csio → article, les
+  autres → événement). Le repère refEvenements a SUIVI le bloc : l'accès
+  « Événements » de l'en-tête défile toujours jusqu'à lui. Ancien
+  emplacement vidé (commentaire). Aucun SQL. Build 20260922-356.
+  node --check OK.
+
+· (357) 22/09 — Brief de Chat « build 346, étape 1 » reçu alors que le fichier
+  était au 356 (étapes 1-3 déjà faites sur ses « ok, continue ») ; conflit
+  SIGNALÉ, sa réponse : « si tu as déjà avancé plus que ça, pas de problème,
+  on n'est pas obligés de tout suivre » → on GARDE 355 et 356, et on applique
+  ce qui manquait du brief :
+  · les 4 accès en GRILLE de 4 colonnes égales (minmax(0, 1fr), minWidth 0),
+    zone tactile ≥ 52 px de haut, libellés centrés qui peuvent passer à la
+    ligne (aucun nowrap, overflowWrap anywhere), petit trait turquoise sous
+    l'icône, libellé ivoire — mêmes icônes, textes, destinations ;
+  · « Résultats » (go: null depuis toujours) défile désormais jusqu'au début
+    du « Le fil » : nouvelle ref refFil (déclarée avec les deux autres, en tête
+    du composant), posée sur le conteneur du titre et des filtres ; même
+    versSection que Cavaliers / Événements ; ongletFil et les fonctions du fil
+    INCHANGÉS ;
+  · un petit filet OR sous le sous-titre (seul détail or de l'en-tête).
+  Aucun SQL, aucune requête. Build 20260922-357. node --check OK.
+
+· (358) 22/09 — « Ok continue » : REFONTE COMMUNAUTÉ — CLASSEMENT DES CLUBS
+  PLUS COMPACT. Lignes du classement (4e → 6e, et son club détaché) :
+  hauteur 48 px (padding 10), rang en OR (#D9A85C) au-delà du podium, nom du
+  club en ivoire (s'étire, coupé proprement), XP en or champagne avec « XP »
+  en petit, filets et bord de la liste en ivoire discret ; « Voir les autres
+  clubs » turquoise, zone tactile 44 px. INCHANGÉS : le PODIUM
+  (PodiumClubsHype, ajouté à sa demande le 01/09), le calcul
+  (classement_ecuries), la liste qui commence au 4e (ses décisions du 13/09),
+  son club toujours visible, les clics. Retirer le podium pour gagner de la
+  hauteur serait revenir sur une de ses décisions : PROPOSÉ, pas fait.
+  Aucun SQL. Build 20260922-358. node --check OK.
+
+· (359) 22/09 — Brief de Chat « 358 — classement des clubs compact » reçu
+  (fichier déjà au 358 ; elle : « même si tu as déjà avancé, n'en tiens pas
+  compte »), puis SA précision : « le podium, je trouve qu'il est trop gros
+  aussi, on pourrait le réduire, au-dessus en dessous par un fond du noir ».
+  ÉCART ASSUMÉ AU BRIEF : le brief remplaçait podium + liste par une liste 1→6 ;
+  sa demande GARDE le podium, réduit → la liste continue de commencer au 4e
+  (ses décisions du 13/09), pas de doublon du top 3.
+  ✅ PodiumClubsHype : variante « compact » (Communauté = SEUL appelant,
+  vérifié : 1 occurrence) → 70 % de la largeur, centré, fond noir autour ;
+  image et ancrages en % intacts ; rendu par défaut inchangé.
+  ✅ Lignes (points du brief) : rangs SANS emoji (1er or champagne, 2e argent
+  doux, 3e bronze discret, autres ivoire adouci), nom ivoire en flex 1 coupé
+  proprement, XP en or à droite, CHEVRON turquoise « › » sur chaque ligne
+  ouvrable, repère « · Votre club » turquoise sous le nom de son club (ligne
+  existante ou ligne détachée, jamais dupliquée) ; bouton « Voir les autres
+  clubs » : doublon minHeight du 358 corrigé (44 px). Données (classementClubs
+  / classement_ecuries), voirTousClubs, clics (__guildeEcurie → guilde) :
+  INCHANGÉS. Aucun SQL, aucune requête. Build 20260922-359. node --check OK.
+
+· (360) 22/09 — « OK continue » : REFONTE COMMUNAUTÉ — LES DEUX RAILS HUMAINS.
+  « Personnes suivies » (EcranCommunaute) : data-hscroll AJOUTÉ (défaut relevé
+  à l'audit : le geste horizontal pouvait changer d'onglet), écart 18 px,
+  arrêt doux carte par carte, anneau des portraits affiné (1,5 px, dégradé
+  turquoise → or) au lieu du gros anneau turquoise, prénom en ivoire.
+  « Nouveaux cavaliers » (NouveauxCavaliers, SEUL appelant : Communauté) :
+  cartes plus sobres (bord ivoire discret, ombre, rayon 20), arrêt carte par
+  carte, nom en ivoire, bouton « Suivre » turquoise gardé avec zone tactile
+  40 px ; data-hscroll déjà présent. Les deux sections restent SÉPARÉES ;
+  données (listerCavaliers / derniersCavaliers), clics, « Voir tout »,
+  Suivre / Suivi : INCHANGÉS. Aucun SQL. Build 20260922-360. node --check OK.
+
+· (361) 22/09 — « Ok, continue » : REFONTE COMMUNAUTÉ — « LE FIL » ET LES
+  TITRES. titreSec (propre à EcranCommunaute) : titres de section en IVOIRE
+  suivis d'un filet OR qui s'efface (vaut pour L'Agenda, Carte des clubs,
+  Classement, Personnes suivies, Le fil). Filtres du fil (Tous / Amis /
+  Écurie) : actif = trait et texte turquoise sur fond à peine teinté, les
+  autres en ivoire adouci ; zone tactile 40 px ; passage à la ligne permis.
+  Contenu du fil (afficherFil, fil / filAmis / filEcurie, ongletFil) :
+  INCHANGÉ. Aucun SQL. Build 20260922-361. node --check OK.
+  Elle ajoute : « il manque encore plein de choses sur la page cavalier » —
+  précision demandée (liste ou capture).
+
+· (362) 22/09 — SES DÉCISIONS sur les cartes de la page Communauté :
+  1) la CARTE DE FRANCE (iframe FRANCE_MAP_HTML) EST GARDÉE, telle quelle :
+     « elle a son utilité quand les cavaliers vont dire où ils sont en
+     concours » — IDÉE NOTÉE (rien codé) : un « PASSEPORT » des chevaux et des
+     cavalières montrant sur cette carte où ils sont allés en concours ;
+  2) un seul chemin vers le globe : « un seul en tête, avec écrit le monde
+     Hype » ; « Monde, peut-être ». → l'accès « Clubs » de l'en-tête devient
+     « Monde Hype » (même icône 🌐, même écran « monde », 6 langues) ; le GROS
+     BOUTON « Le Monde Au Galop » (150 px) est RETIRÉ de la page.
+  Aucun SQL. Build 20260922-362. node --check OK.
+  RESTE sur cette page : le Journal des clubs (reporté, sauf avis contraire).
+
+────────────────────────────────────────────────────────────
+125. 22/09 (363) — « LE JOURNAL DES CLUBS » SUR LA PAGE COMMUNAUTÉ
+────────────────────────────────────────────────────────────
+
+Proposition faite (contenu, règles, place, une lecture de plus), « Ok
+continue ». ✅ Nouveau composant AUTONOME JournalDesClubs (ses propres états,
+aucun hook ajouté à EcranCommunaute), posé sous L'Agenda :
+· UNE lecture : commentaires des cibles « ecurie: » et « club: » avec
+  photo_url non vide, 80 plus récents ; écartés : privés (prive), fils perso
+  (cible dont la clé est un identifiant), publications sans image fixe
+  (vidéo seule) ; 8 cartes au plus, 2 par club au plus ;
+· carte (rail 72 %, scroll-snap, data-hscroll) : photo (vignetteHype,
+  cadrage 50 % 30 %), nom du club en or champagne (tiré de la cible, mots
+  capitalisés), date, deux lignes de texte en ivoire ; toucher → le fil de
+  l'écurie (actualites-ecurie, __filEcurieCible / __filEcurieNom) ou la page
+  du club (__guildeEcurie + guilde) ;
+· rien d'inventé : sans publication, rien ne s'affiche.
+⚠️ Le nom du club vient de la CLÉ de la cible (minuscules, accents perdus :
+« ecurie feinn » → « Ecurie Feinn ») ; un nom accentué s'affichera sans ses
+accents — à affiner si ça gêne.
+Rendu hors ligne OK ; node --check OK. Build 20260922-363.
+
+· (364) 22/09 — « Continue » : Journal des clubs — le VRAI NOM DU CLUB, avec
+  ses accents. Relu dans les écuries (ecurie / ecurie2) des AUTRICES des
+  cartes (une petite lecture profiles), celle dont la clé (clefClubG)
+  correspond à la cible ; à défaut, le nom tiré de la clé comme avant.
+  Aucun SQL. Build 20260922-364. node --check OK ; rendu hors ligne OK.
+
+· (365) 22/09 — Sa capture (13 h 24, page d'une cavalière en VISITE) : 4 tuiles
+  sur une grille de 3 colonnes → « Actualité » seule sur sa ligne. Grille
+  adaptée : 4 tuiles → 2 × 2 ; 6 tuiles (sa propre page) → 3 × 2 comme avant
+  (colonnes minmax(0, 1fr)). Build 20260922-365. node --check OK.
+
+· (366) 22/09 — SES MOTS : « on avait dit qu'on laissait la photo de
+  l'Écurie sur la page dans l'encart de l'écurie » ; tuiles : « pas dans les
+  tuiles, on les laisse telles quelles pour l'instant » (proposition de
+  photos dans 2 tuiles REFUSÉE). ✅ Nouveau composant FondBanniereClub : la
+  BANNIÈRE DU CLUB (tableaux_clubs, clé « club-banniere:<clefClubG> », même
+  source que le podium) en FOND de la carte « Mon club » et de la carte de la
+  deuxième écurie (page Cavalier), derrière le texte (carte « isolate »,
+  z-index -1), voile sombre dégradé pour la lisibilité ; sans bannière, la
+  carte reste comme avant. Une lecture par carte. Aucun SQL.
+  Build 20260922-366. node --check OK.
+
+· 22/09, 13 h 30 — ÉCRAN BLANC au lancement, capture avec UNE barre de réseau
+  (quatre à 13 h 24). Vérification du code des derniers builds : aucune faute
+  d'écriture (mêmes « erreurs » de découpage qu'aux builds 345 / 352, fausses
+  alertes dues aux <script> contenus dans des chaînes). Fichier de retour au
+  364 préparé par précaution. RÉSULTAT : « c'est revenu sans push » → c'était
+  le RÉSEAU (les outils chargés au démarrage n'arrivaient pas). Retour au 364
+  ANNULÉ, rien poussé ; le 366 reste en place. LEÇON utile : un écran blanc
+  sur réseau faible n'est pas forcément un bug — vérifier le réseau d'abord.
+
+· (367) 22/09 — Elle : « 4 tuiles au lieu de 6 ? et pas avec le bon design »
+  (son téléphone était encore au 364 : push du 365 / 366 bloqué par un réseau
+  faible). Deux corrections :
+  1) SA PROPRE PAGE OUVERTE « EN VISITE » (depuis la liste des cavaliers du
+     club → __cavalierOuvert « __public ») : c'est quand même SA page → les 6
+     tuiles (pageAMoi = pas en visite OU id visité = moiIdAlb) ;
+  2) les tuiles reprennent TRAIT POUR TRAIT le dessin de carteR (fiche
+     cheval) : pastille à bord teinte 0,7 avec halo, fond de pastille plus
+     sombre, voile dégradé sur la carte, teinte de l'appli
+     (teinteHypeActive / teinteRGBA) au lieu d'un turquoise figé — sans photo
+     (sa décision).
+  Build 20260922-367 (contient 365 et 366). node --check OK.
+
+· (368) 22/09 — SA DÉCISION : « la page Communauté, ça va pas visuellement ;
+  mets son accès en prochainement pour l'instant, le temps qu'on la refasse ;
+  tu me gardes uniquement l'accès à moi ». NavBar : l'onglet « Communauté »
+  reste VISIBLE mais grisé (opacité 0,45) ; un toucher affiche une bulle
+  « Prochainement » (6 langues, 2,2 s) au lieu d'ouvrir la page. SEUL son
+  compte (estCompteFeinnHype = feinn@live.fr, relu par utilisateurActuel)
+  l'ouvre normalement. NON coupés (dit) : les autres chemins vers l'écran
+  « communaute » (liens de story « #s= », notifications) — une story partagée
+  doit continuer de s'ouvrir. La refonte (354-364) reste en place, à revoir
+  avec elle. Build 20260922-368. node --check OK.
+  (À la livraison du 368, le 367 n'était pas confirmé en ligne ; le 368 le
+  contient.)
+
+· (369) 22/09 — SA DÉCISION (capture de la page d'Evan, 4 tuiles) : « laisse
+  les visibles et tu mets le petit cadenas privé » (option recommandée contre
+  « 4 sur une même ligne », trop étroit sur iPhone), « ok fais ça ».
+  EcranMonCavalier : EN VISITE, les 6 tuiles restent affichées (3 × 2) ;
+  Progression et Théorie sont grisées (comme une tuile sans page), pied
+  « 🔒 Privé » (6 langues) en gris clair, SANS clic. Sur sa propre page (y
+  compris ouverte depuis le club) : inchangé, les 6 s'ouvrent.
+  + « SON CLUB » au lieu de « MON CLUB » sur la carte d'écurie quand on visite
+  la page de quelqu'un d'autre (6 langues).
+  Build 20260922-369. node --check OK.
+
+· (370) 22/09 — Sa capture de 17 h 56 (encore au 368 : 4 tuiles en 2 × 2,
+  « Mon club ») : « aère un peu avec le haut de l'encart suivant, diminue un
+  peu la taille des cases, et reprends le design et la taille qu'elles ont
+  sur les autres pages ». La TAILLE vient avec le 369 : 6 tuiles en 3
+  colonnes, exactement la grille et la hauteur (104 px) des tuiles de la
+  fiche cheval et du club ; les grosses cases 2 × 2 disparaissent. AJOUTÉ au
+  370 : espace entre les tuiles et la carte de l'écurie 22 → 34 px.
+  Build 20260922-370 (contient 369). node --check OK.
+
+· (371) 22/09 — Sa capture (album auto « Autres moments » d'Evan : cavalier
+  sans tête, cheval coupé) : « assure-toi au moins qu'on voit l'image et
+  qu'elle ne coupe pas le cheval et le cavalier en deux ; s'il faut, quand il
+  y a un seul album, fais-le plus petit, centré, mais sois sûre que les photos
+  ne soient pas abîmées ». AlbumsCheval (page Cavalier ET fiche cheval, même
+  composant) : UN SEUL ALBUM → carte à 76 % de la largeur, CENTRÉE,
+  couverture carrée avec la photo EN ENTIER (object-fit contain) sur fond
+  sombre — aucun recadrage, AUCUN filtre (règle des photos de chevaux).
+  Deux albums et plus : recadrage gardé, mais remonté (object-position
+  50 % 28 %) pour épargner les têtes. Remplace le « bandeau pleine largeur
+  1,55:1 » décidé le 05-06/09. Build 20260922-371. node --check OK.
+
+· (372) 22/09 — Sa capture : sur l'album « Autres moments » d'Evan, toucher
+  « Couv. » → « Action refusée : cet album n'appartient pas à la fiche
+  affichée ». CAUSE : « Autres moments » est un album AUTOMATIQUE (__auto :
+  les photos où la personne est identifiée, sans ligne en base) ; le bouton
+  « Couv. » s'affichait sur TOUTES les vignettes de l'album ouvert, sans
+  condition, et la garde albumAutorise refusait ensuite (à juste titre). Le
+  bouton n'apparaît plus que sur un album qu'on peut GÉRER : ni automatique,
+  ni en lecture seule, et à soi (ou modératrice, comme la base).
+  La couverture d'« Autres moments » reste la première photo (non choisie).
+  Build 20260922-372 (contient 371). node --check OK.
+
+────────────────────────────────────────────────────────────
+126. 22/09 (373) — REDESIGN COMPLET DE LA PAGE COMMUNAUTÉ (HORS FIL), BRIEF DE CHAT
+────────────────────────────────────────────────────────────
+
+Build trouvé : 20260922-372 ; livré : 20260922-373. Page toujours « Prochainement »
+pour tous sauf elle (368). Le FIL est STRICTEMENT inchangé (afficherFil, fil,
+filAmis, filEcurie, ongletFil, refFil, accès Résultats).
+Composants modifiés : EcranCommunaute, JournalDesClubs, NouveauxCavaliers
+(ces deux derniers n'ont que Communauté comme appelant).
+· EN-TÊTE : cause du grand vide = bande de 60 px AU-DESSUS de COMM_HERO + image
+  en hauteur NATURELLE avant les accès. Bande retirée ; COMM_HERO dans un cadre
+  de (encoche + 136 px), object-fit cover (jamais déformée), cadrage 30 %,
+  dégradé vers le fond ; accès à ~20 px du sous-titre ; accès et actions
+  inchangés.
+· STORIES : hype-stories.js (non fourni) n'offre que « libre » et
+  « libre-carte » → pas de variante compacte réutilisable, module non
+  modifiable sans son fichier. SOLUTION D'ATTENTE : zoom CSS 0,8 sur le seul
+  conteneur de Communauté (réduit aussi la place occupée ; les autres pages
+  inchangées). Bandes grises (sa décision du 01/09) gardées. Variante propre =
+  dans hype-stories.js, à faire avec le fichier.
+· RETIRÉS DU RENDU (fonctions GARDÉES dans le fichier) : CarteEvenementsC
+  (doublon des 4 événements de L'Agenda) ; PodiumClubsHype (grand bloc noir).
+  (« Le Monde Au Galop » était déjà retiré au 362.)
+· MON CLUB : carte 96 px mini, rayon 18, fond #0B0E12, bord ivoire discret,
+  pictogramme turquoise dans un carré de 48 px, flèche turquoise ; clic
+  inchangé.
+· L'AGENDA : refEvenements posé sur le CONTENEUR DU TITRE (plus sur le rail à
+  marge négative) ; cartes 82 %, 168 px, rayon 18 ; mêmes 4 événements, états,
+  clics, data-hscroll ; EVENEMENTS rendu UNE seule fois.
+· JOURNAL DES CLUBS : grandes cartes 86 %, 180 px, photo pleine carte, dégradé
+  seulement derrière le texte (club en petites capitales or, date, 2 lignes) ;
+  même source et même lecture qu'au 363 ; jamais d'EVENEMENTS ; masqué sans
+  publication. Pas de likes / commentaires (non chargés ici).
+· CARTE DES CLUBS : 200 px, même FRANCE_MAP_HTML, iframe NON manipulable dans
+  la page (pointer-events none), « Ouvrir la carte » turquoise ; toucher →
+  même carte interactive dans un calque plein écran (hypePortailBody,
+  data-noswipe, zIndex 9985, croix 44 px, safe areas) ; carte ouverte = la
+  petite iframe est retirée (jamais deux iframes) ; nouvel état carteGrande
+  déclaré avec les refs, avant tout rendu.
+· CLASSEMENT : un seul titre (repère refClassement posé dessus) ; liste
+  compacte DU 1er AU 6e (DEBUT 0), son club à sa vraie place s'il est plus
+  loin, jamais dupliqué ; données, voirTousClubs, clics inchangés.
+  ⚠️ Revient sur « la liste démarre au 4e » (13/09) : logique, le podium
+  n'est plus affiché.
+· PERSONNES SUIVIES : cartes 88 px, portraits 68 px, écurie sur une ligne en
+  gris si elle existe. Limite des 30 de listerCavaliers NON corrigée (brief).
+· NOUVEAUX CAVALIERS : cartes à 46 % (max 200 px), rayon 18, bouton Suivre
+  44 px ; données et gestes inchangés.
+Aucune requête ajoutée, aucun SQL, aucune route. node --check OK ; rendu hors
+ligne du Journal OK ; vérifications : CarteEvenementsC appelé 0 fois,
+PodiumClubsHype rendu 0 fois, 1 titre « Classement des clubs », 5 rails
+data-hscroll, bouton Monde Au Galop absent.
+
+· (374) 22/09 — « Fais » (+ hype-stories.js fourni).
+  PAGE CAVALIER EN VISITE (points 1 à 6 proposés) : récit vide → « <Prénom>
+  n'a pas encore partagé son histoire. » sans bouton « Lire la suite » ;
+  « Ses amis » ; Hype Memories « Son récit, ses albums, ses conseils
+  épinglés » ; « Son apprentissage » ; carte Hey Baby (son coach à elle)
+  CACHÉE ; « cavaliers dans sa team ». Sa propre page : inchangée.
+  Point 7 (le champ « Partage un moment… » sur la page de quelqu'un
+  d'autre) : NON TRANCHÉ, rien changé.
+  STORIES SUR COMMUNAUTÉ : hype-stories.js LU (450 Ko, version 20bx) — il
+  possède DÉJÀ une variante sans croissant, forme « carte » (vignettes
+  arrondies, liseré teinté fin si non vue, prénom dessous) qui accepte
+  carteL / carteH. Communauté l'utilise en 82 × 108 (≈ 4 visibles) ; le zoom
+  provisoire du 373 est retiré. Le module N'EST PAS modifié (inutile) ; les
+  autres pages gardent « libre ».
+  Build 20260922-374. node --check OK.
+
+· (375) 22/09 — Elle : « la taille des stories, j'aimais mieux avant ». Page
+  Communauté : RETOUR à l'affichage d'avant la refonte (BandeauStories forme
+  « libre-carte », taille d'origine, padding 10) ; les petites vignettes
+  « carte » 82 × 108 du 374 sont abandonnées. (Le brief de Chat les trouvait
+  trop imposantes : c'est SA préférence qui compte.) Question laissée en
+  attente sur la page Cavalier : publier chez une autre cavalière — « on voit
+  ça après, j'y réfléchis ». Build 20260922-375. node --check OK.
+
+· (376) 22/09 — Elle : « ma barre du bas rebloque au milieu de la page » ;
+  capture reçue = CAPTURE « PAGE ENTIÈRE » de Communauté (la barre y est en
+  bas, donc le défaut n'y est pas visible) → cause NON établie, capture
+  normale + geste + INDEX redemandés. La capture montre en revanche :
+  (a) cartes de L'Agenda NOIRES : l'image y était un fond CSS
+  « url(<image embarquée>) » sans guillemets → passée en vraie <img>
+  (comme le Journal, qui s'affichait) ; (b) « Personnes suivies » : écurie
+  écrite DEUX fois (ma ligne du 373 doublonnait une ligne existante) →
+  retirée ; (c) Journal : dégradé trop opaque (photo visible sur un tiers)
+  → allégé. (La carte des clubs apparaît noire : l'iframe n'est pas
+  capturée par la « page entière » d'iOS, à vérifier à l'écran.)
+  Build 20260922-376 (contient 375). node --check OK.
+
+· (377) 22/09 — Ses deux demandes : « ça ne sert à rien de réduire la France
+  autant dans son encart : garde l'encart comme ça mais augmente la taille de
+  la France dedans » → l'encart garde ses 200 px, la carte est dessinée dans
+  une fenêtre de 360 px centrée verticalement (haut et bas rognés) : la France
+  occupe bien plus de place, sans déformation ; « réduis la taille du fil,
+  même la police d'écriture » → cartes du fil 96 → 78 px, vignette 108 → 84,
+  rayon 14, titre 13,5 → 12, détail 11,5 → 10,5, auteur 10,5 → 9,5, compteurs
+  11,5 → 10,5, pictogramme 26 → 22, écart entre cartes 10 → 8. Contenu,
+  filtres, likes, « Voir la suite » : INCHANGÉS. Build 20260922-377.
+  node --check OK.
+
+· (378) 22/09 — « Laisse seulement les 3 premiers clubs dans le classement » :
+  liste par défaut = 1er au 3e (LIMITE 6 → 3) ; les autres restent accessibles
+  par « Voir les autres clubs » (dépliage sur place, inchangé) ; son club garde
+  sa ligne détachée à sa vraie place s'il est au-delà du 3e, jamais dupliqué.
+  Build 20260922-378 (contient 377). node --check OK.
+
+· (379) 22/09 — Ses trois demandes : (a) « la carte déborde un peu en bas » →
+  fenêtre de dessin 360 → 300 px (l'encart garde ses 200 px) ; (b) « au lieu de
+  mettre une coupe, mets l'icône des chevaux ou des cavaliers concernés à
+  gauche » → la case de gauche affiche la photo du post si elle existe, sinon
+  la PHOTO DE PROFIL de la personne concernée (déjà chargée avec le post), avec
+  le petit pictogramme en médaillon ; à défaut, le pictogramme seul.
+  ⚠️ Les photos des CHEVAUX ne sont pas chargées par ce fil : les afficher
+  demanderait une lecture de plus (proposé, non fait) ; (c) « diminue encore le
+  fil et son écriture » → cartes 78 → 66 px, vignette 84 → 68, rayon 12, titre
+  12 → 11, détail 10,5 → 9,5, auteur 9,5 → 9, compteurs 10,5 → 10, pastille
+  d'avatar 18 → 16. Contenu et gestes inchangés. Build 20260922-379.
+  node --check OK.
+
+· (380) 22/09 — « On ne voit plus le bas de l'image de la communauté
+  équestre, c'est dommage, rallonge un peu » : bandeau de l'en-tête 136 →
+  186 px et cadrage descendu (center 45 %) → le bas du globe réapparaît, sans
+  revenir au grand vide d'avant le 373. Build 20260922-380 (contient 379).
+  node --check OK.
+
+· (381) 22/09 — « Oui, chevaux, ça serait mieux » : les cartes de palmarès du
+  fil affichent à gauche la TÊTE DU CHEVAL concerné (le plus récent quand la
+  carte en regroupe plusieurs). cartesDImport lit désormais photo_url avec le
+  nom (même requête, une colonne de plus, aucune lecture ajoutée) ; la photo
+  est portée par chaque cheval de la carte et par la carte (chevalPhoto).
+  Ordre dans la case de gauche : photo du post → tête du cheval → photo de
+  profil → pictogramme. Build 20260922-381. node --check OK.
+
+· (382) 22/09 — « Les bandeaux des nouveaux cavaliers, on peut les réduire un
+  peu » : visuel de la carte 128 → 96 px, coins 18/14, pastille « NOUVEAU »
+  remontée (top 115 → 83), prénom 13,5 → 12,5, marges réduites. Données,
+  clics, bouton Suivre : inchangés. Build 20260922-382. node --check OK.
+
+· (383) 22/09 — « Remonte un peu la carte dans son onglet » → la fenêtre de
+  dessin de la France est décalée vers le haut (translateY −50 % → −56 %),
+  l'encart garde ses 200 px. « Fais les onglets de nouveaux cavaliers moins
+  larges » → cartes 46 % → 37 % (max 158 px) : environ deux et demie
+  visibles. Build 20260922-383. node --check OK.
+
+────────────────────────────────────────────────────────────
+127. 22/09 (384) — LA BASCULE ENTRE DEUX ÉCURIES MÉLANGEAIT LES FILS
+────────────────────────────────────────────────────────────
+
+Ses captures de 20 h 36 : sur la page du club basculée sur « Societe
+d'Equitation de Paris (SEP) » (en-tête, lieu et 21 membres corrects),
+« Actualités de l'écurie » affichait les publications d'ECURIE FEINN.
+CAUSE : MurHype conserve sa cible dans un ÉTAT initialisé UNE SEULE FOIS
+(cibleInitiale) et sa lecture ne tourne qu'au montage (dépendances vides).
+Changer d'écurie changeait la prop `cible`, jamais l'état : le mur restait
+sur la première écurie.
+✅ CORRECTIF (384), limité à la page du club, SANS toucher MurHype qui sert
+partout : une `key` liée à la cible (« mur-<clé> ») → React remonte le mur au
+changement d'écurie, il relit donc la bonne cible.
+⚠️ MÊME DÉFAUT POSSIBLE ailleurs si une page change la cible sans remonter le
+composant — page Actualités de l'écurie à vérifier.
+ET ÇA EXPLIQUE SA QUESTION PRÉCÉDENTE sur le Journal des clubs (« que des
+publications de Feinn, aucune de la SEP ») : les publications qu'elle croyait
+postées sur la SEP étaient en fait sur le mur de Feinn. La requête de
+vérification des cibles reste utile pour confirmer.
+Build 20260922-384. node --check OK.
+
+· (385) 22/09 — Ses deux VIDÉOS de 20 h 47 : (1) arrivée sur la page, attente,
+  bascule vers la SEP → tout juste (en-tête, cavaliers, chevaux, résultats,
+  fil vide) ; (2) retour de Communauté (page remontée sur Feinn), bascule
+  IMMÉDIATE vers la SEP → en-tête et cavaliers SEP, mais CHEVAUX et RÉSULTATS
+  de Feinn. CAUSE : le grand chargement du club (EcranGuilde, effet [monClub],
+  ~20 000 caractères, plusieurs lectures) NE S'ANNULAIT PAS au changement de
+  club : celui de Feinn, parti le premier, finissait APRÈS celui de la SEP et
+  écrasait ses chevaux et ses résultats (course entre deux chargements).
+  CORRECTIF : jeton par chargement (jetonClubRef) ; dans l'effet, les 7
+  setters (chevaux, rail, liens, membres, photos, rail club, résultats) sont
+  gardés : un chargement dépassé par un plus récent ne pose plus rien.
+  Le 384 (key du mur) reste nécessaire pour le fil.
+  Build 20260922-385. node --check OK.
+  (Note : « ça m'avait remis à l'autre écurie » en revenant de Communauté est
+  normal — la page repart de l'écurie principale ; à discuter si elle veut
+  que la bascule soit mémorisée.)
+
+────────────────────────────────────────────────────────────
+128. 23/09 (386) — HEY BABY : TOUTE PHOTO ÉCHOUE ; LE DIAGNOSTIC À L'ÉCRAN
+────────────────────────────────────────────────────────────
+
+SYMPTÔME (ses captures de 14 h 34-14 h 38) : Hey Baby répond « Petit souci de
+connexion » à toute photo, et aussi à un simple texte envoyé APRÈS une photo
+dans la même conversation (« Alors »). Un texte seul dans une conversation
+neuve passe (« Bonjour » → réponse normale, sur 2hype.netlify.app).
+
+CE QUI EST ÉTABLI (lu dans les fichiers, pas supposé) :
+· L'app renvoie à chaque message les 10 derniers échanges, IMAGES COMPRISES :
+  un texte après une photo repart donc avec la photo — même échec.
+· Le relais EN LIGNE (GitHub main, netlify/functions/assistant.js) est la
+  VERSION 3 : 179 lignes, 7,6 Ko, CORS « * ». Avec une image il prend
+  OPENAI_VISION_MODEL (repli gpt-4o) ; en cas de refus OpenAI il répond
+  502 { error: "OpenAI <statut>" } — le détail d'OpenAI ne va QUE dans le
+  journal Netlify.
+· Le mode « perception » (photo en deux étapes) de l'index est bien compris
+  par la v3 : elle l'ignore et répond au format lisible. PAS une
+  incompatibilité.
+· Le NOUVEAU DOMAINE 2hype.fr N'EST PAS EN CAUSE : relais en CORS « * ».
+  (L'index appelle toujours https://2hype.netlify.app/.netlify/functions/
+  assistant, en dur, 5 endroits — fonctionne depuis 2hype.fr grâce au « * ».)
+· Pistes abandonnées en séance, contredites par les fichiers : domaine,
+  incompatibilité v3/perception.
+· CAUSE DE L'ÉCHEC PHOTO : NON ÉTABLIE. Restent : modèle vision refusé par
+  OpenAI, photo refusée, ou délai dépassé (Netlify coupe avant la réponse).
+
+⚠️ UNE VERSION 5 DU RELAIS EXISTE HORS DU DÉPÔT (309 lignes, 14,9 Ko, datée
+22/07, « passage contrôlé à GPT-5.6 Sol », erreurs structurées avec code et
+reqId — c'est pour ELLE que l'index a été écrit). Elle n'est PAS en ligne et
+on ne sait pas si elle a été retirée exprès. NE PAS la pousser à l'aveugle :
+elle REFUSE toute photo si OPENAI_VISION_MODEL n'est pas renseignée dans
+Netlify, et envoie un réglage de précision d'image (OPENAI_VISION_DETAIL,
+défaut « original ») qu'OpenAI peut refuser. Décision reportée par Blandine
+après lecture du diagnostic.
+
+✅ CE BUILD (index seul) — décision de Blandine « fais parler l'appli » :
+diagHB(etape, detail) dans EcranAssistantIA / envoyer. Sous « Petit souci de
+connexion », une ligne « ⚙️ Diagnostic (visible par toi seule) » : étape,
+code HTTP, réponse du relais (error / code / message), durée. Quatre appels :
+échec de l'étape observation photo, erreur structurée, flux vide, erreur
+générale (réseau, HTTP, délai de 65 s ou bouton stop). L'erreur HTTP garde
+désormais le champ « error » de la v3 (err.hbErreur).
+RÉSERVÉ à estCompteFeinnHype (feinn@live.fr), session lue en LOCAL
+(getSession). Les cavalières ne voient AUCUN changement.
+POUR LE RETIRER : faire de diagHB une fonction vide.
+Build 20260923-386. node --check OK (18 blocs) ; marqueurs contrôlés avant/
+après (HYPE ▸, function, createElement, ?v=, hype-images- inchangés).
+
+À FAIRE ENSUITE : elle envoie une photo à Hey Baby et montre la ligne ⚙️ ;
+selon ce qu'elle dit, décider de la v5 et du réglage Netlify à vérifier.
+DETTE notée : relais en CORS « * » — un autre site peut s'en servir sur son
+compte OpenAI. À traiter plus tard, sur sa décision.
+
+· (387) 23/09 — PREUVE par ses deux essais « Bonjour », conversation neuve,
+  sans photo : 2hype.netlify.app (14 h 38) → réponse normale ; 2hype.fr
+  (16 h 46, dans Safari) → « Load failed » en 1 s (même chose dans l'appli
+  installée à 16 h 44). Depuis le NOUVEAU DOMAINE, Hey Baby ne joignait plus
+  son relais, même en texte. ⚠️ CORRIGE MA CONCLUSION DU 386 : le CORS « * »
+  du relais ne suffisait pas à mettre le domaine hors de cause — l'appel
+  d'un site vers l'autre était bloqué AVANT le relais (cause exacte du
+  blocage non identifiée ; inutile pour réparer).
+  CORRECTIF (décision « Ok ») : les 5 adresses par défaut du relais passent
+  de https://2hype.netlify.app/.netlify/functions/assistant à l'adresse
+  RELATIVE /.netlify/functions/assistant — l'app parle au relais de
+  l'adresse où elle se trouve. Le réglage window.HYPE_API reste prioritaire.
+  Conséquence dite : une copie de l'index ouverte HORS LIGNE (aperçu depuis
+  les fichiers) n'a plus Hey Baby. LIEN_APP (lien de partage et QR code,
+  toujours 2hype.netlify.app) NON TOUCHÉ.
+  NON RÉGLÉ ICI : la photo avait AUSSI échoué sur 2hype.netlify.app à
+  14 h 38 — refaire un essai photo sur 2hype.fr après poussée ; la ligne ⚙️
+  dira si c'est un second problème. Relais v5 toujours NON poussé (attendre
+  ce test). Build 20260923-387. node --check OK (18 blocs) ; marqueurs
+  inchangés, 6 lignes modifiées (5 adresses + build).
