@@ -1,7 +1,7 @@
 // netlify/functions/assistant.js — Relais Hey Baby v5
 // v5 (22/07/2026) — Passage contrôlé à GPT-5.6 Sol pour l'analyse photo (spec Blandine) :
 //   - Nouveau mode "perception" : appel d'observation visuelle isolé, non-streamé, sortie JSON
-//     structurée (response_format json_object), budget de sortie réduit (1200 tokens).
+//     structurée (response_format json_object), budget de sortie 3000 tokens (1200 jusqu'au 25/09).
 //   - Réglages VISION séparés du texte : OPENAI_VISION_MODEL (obligatoire en mode perception,
 //     AUCUN repli silencieux vers un autre modèle), OPENAI_VISION_REASONING (repli :
 //     OPENAI_REASONING), OPENAI_VISION_DETAIL (défaut "original", transmis tel quel à OpenAI).
@@ -150,7 +150,7 @@ export default async (req) => {
 
     const charge = {
         model: modele,
-        max_completion_tokens: mode === "perception" ? 1200 : 4096,
+        max_completion_tokens: mode === "perception" ? 3000 : 4096, // 25/09 : 1200 -> 3000 (grille d observation elargie ; le raisonnement du modele compte dans ce plafond)
         stream: streaming,
         messages: messagesOpenAI,
     };
