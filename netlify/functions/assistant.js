@@ -1,7 +1,13 @@
 // netlify/functions/assistant.js — Relais Hey Baby v5
 // v5 (22/07/2026) — Passage contrôlé à GPT-5.6 Sol pour l'analyse photo (spec Blandine) :
 //   - Nouveau mode "perception" : appel d'observation visuelle isolé, non-streamé, sortie JSON
-//     structurée (response_format json_object), budget de sortie 3000 tokens (1200 jusqu'au 25/09).
+//     structurée (response_format json_object), budget de sortie 8000 tokens (1200 puis 3000 jusqu'au 26/09).
+//   - 26/09 : la perception répond EN FLUX avec des espaces « signe de vie » toutes les 5 s, puis
+//     le JSON final. Raison, prouvée par le journal du 26/09 : l'appel prend 32 à 44 s et le
+//     téléphone perdait la connexion vers 24 s faute de réponse (« Load failed ») alors que la
+//     fonction continuait. Une réponse en flux relève de la limite de 60 s de Netlify. Le client
+//     n'a rien à changer : les espaces en tête sont ignorés par JSON.parse. Une réponse vide
+//     (budget épuisé par la réflexion) est désormais signalée comme erreur au lieu de passer.
 //   - Réglages VISION séparés du texte : OPENAI_VISION_MODEL (obligatoire en mode perception,
 //     AUCUN repli silencieux vers un autre modèle), OPENAI_VISION_REASONING (repli :
 //     OPENAI_REASONING), OPENAI_VISION_DETAIL (défaut "original", transmis tel quel à OpenAI).
@@ -27,6 +33,8 @@ const CORS = {
 };
 
 const TIMEOUT_OPENAI_MS = 51000;
+const TIMEOUT_PERCEPTION_MS = 55000; // 26/09 : perception en flux, sous la limite de 60 s de Netlify
+const SIGNE_DE_VIE_MS = 5000;
 const LIMITE_PAYLOAD_OCTETS = 8 * 1024 * 1024;
 
 const STATUTS_ERREUR = {
@@ -150,7 +158,7 @@ export default async (req) => {
 
     const charge = {
         model: modele,
-        max_completion_tokens: mode === "perception" ? 3000 : 4096, // 25/09 : 1200 -> 3000 (grille d observation elargie ; le raisonnement du modele compte dans ce plafond)
+        max_completion_tokens: mode === "perception" ? 8000 : 4096, // 26/09 : 3000 -> 8000 (journal : 0 caractere rendu en « medium », la reflexion avait tout pris)
         stream: streaming,
         messages: messagesOpenAI,
     };
@@ -182,6 +190,75 @@ export default async (req) => {
     if (poidsOctets > LIMITE_PAYLOAD_OCTETS) {
         log(reqId, "payload trop lourd :", poidsOctets, "octets — abandon avant appel OpenAI");
         return erreurJSON("PAYLOAD_TOO_LARGE", "Le média envoyé est trop volumineux.", reqId, { poidsOctets: poidsOctets });
+    }
+
+    // ----- Perception : réponse en flux avec signes de vie (26/09) -----
+    if (mode === "perception") {
+        const encP = new TextEncoder();
+        const ctrlP = new AbortController();
+        let vieP = null, minuteurP = null, fini = false;
+        const fluxP = new ReadableStream({
+            async start(controller) {
+                const envoyer = (txt) => { try { controller.enqueue(encP.encode(txt)); } catch (e) { } };
+                const terminer = (objet) => {
+                    if (fini) return; fini = true;
+                    clearInterval(vieP); clearTimeout(minuteurP);
+                    envoyer(JSON.stringify(objet));
+                    try { controller.close(); } catch (e) { }
+                };
+                envoyer(" ");
+                vieP = setInterval(() => envoyer(" "), SIGNE_DE_VIE_MS);
+                let expireP = false;
+                minuteurP = setTimeout(() => { expireP = true; log(reqId, "timeout OpenAI perception (" + TIMEOUT_PERCEPTION_MS + " ms)"); try { ctrlP.abort(); } catch (e) { } }, TIMEOUT_PERCEPTION_MS);
+                try {
+                    const amontP = await fetch("https://api.openai.com/v1/chat/completions", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json", Authorization: "Bearer " + cle },
+                        signal: ctrlP.signal,
+                        body: chargeSerialisee,
+                    });
+                    const dureeMs = () => Date.now() - t0;
+                    if (!amontP.ok) {
+                        const detailTxt = await amontP.text().catch(() => "");
+                        log(reqId, "OpenAI HTTP", amontP.status, "après", dureeMs(), "ms (perception) —", detailTxt.slice(0, 400));
+                        let code = "OPENAI_SERVER_ERROR";
+                        if (amontP.status === 401 || amontP.status === 403) code = "OPENAI_AUTH_ERROR";
+                        else if (amontP.status === 404 || /model/i.test(detailTxt) && /not.?found|does not exist|access/i.test(detailTxt)) code = "OPENAI_MODEL_NOT_FOUND";
+                        else if (amontP.status === 400 && /reasoning/i.test(detailTxt)) code = "OPENAI_REASONING_PARAM";
+                        else if (amontP.status === 400 && /detail/i.test(detailTxt)) code = "OPENAI_DETAIL_PARAM";
+                        else if (amontP.status === 400) code = "OPENAI_BAD_REQUEST";
+                        else if (amontP.status === 429) code = "OPENAI_RATE_LIMIT";
+                        terminer({ ok: false, code: code, message: "Le fournisseur IA a renvoyé une erreur (HTTP " + amontP.status + ").", reqId: reqId, dureeMs: dureeMs() });
+                        return;
+                    }
+                    const data = await amontP.json().catch(() => null);
+                    const choix = data && data.choices && data.choices[0];
+                    const texte = (choix && choix.message && choix.message.content) || "";
+                    const raison = (choix && choix.finish_reason) || "?";
+                    const u = (data && data.usage) || {};
+                    const reflexion = u.completion_tokens_details && u.completion_tokens_details.reasoning_tokens;
+                    log(reqId, "réponse complète (perception) en", dureeMs(), "ms —", texte.length, "caractères — fin :", raison, "— jetons sortie", u.completion_tokens, "dont réflexion", reflexion);
+                    if (!texte) {
+                        terminer({ ok: false, code: "INVALID_RESPONSE", message: "Observation vide (fin : " + raison + ", réflexion " + reflexion + " jetons).", reqId: reqId, dureeMs: dureeMs() });
+                        return;
+                    }
+                    terminer({ ok: true, reqId: reqId, mode: mode, content: [{ type: "text", text: texte }] });
+                } catch (e) {
+                    const d = Date.now() - t0;
+                    if (expireP) { log(reqId, "perception abandonnée après", d, "ms (timeout)"); terminer({ ok: false, code: "AI_TIMEOUT", message: "L'analyse a pris trop de temps.", reqId: reqId, dureeMs: d }); }
+                    else { log(reqId, "erreur réseau vers OpenAI (perception) après", d, "ms :", e && e.message); terminer({ ok: false, code: "OPENAI_SERVER_ERROR", message: "Connexion au fournisseur IA impossible.", reqId: reqId, dureeMs: d }); }
+                }
+            },
+            cancel() {
+                fini = true; clearInterval(vieP); clearTimeout(minuteurP);
+                try { ctrlP.abort(); } catch (e) { }
+                log(reqId, "perception annulée par le client après", Date.now() - t0, "ms");
+            },
+        });
+        return new Response(fluxP, {
+            status: 200,
+            headers: { ...CORS, "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-cache", "X-Accel-Buffering": "no", "X-Request-Id": reqId },
+        });
     }
 
     const ctrl = new AbortController();
