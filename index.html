@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260927-408"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260927-409"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -40936,7 +40936,7 @@ function EcranCarnetDetail() {
   var tr = ctx.tr || function (o) { return (o && (o.fr || "")) || ""; };
   var setEcran = ctx.setEcran || function () { };
   var retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
-  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }   /* 27/09 (409) : 7e langue, l arabe */
   var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif";
   var OR = "#E8B84B", TQL = "#5FE9F0";
 
@@ -40976,12 +40976,12 @@ function EcranCarnetDetail() {
   var HJ_DISC = ["plat", "dressage", "saut", "exterieur", "travail_a_pied", "autre"];
   var HJ_DISC_FR = { plat: "Plat", dressage: "Dressage", saut: "Saut", exterieur: "Extérieur", travail_a_pied: "Travail à pied", autre: "Autre" };
   function hjLibDisc(k) {
-    if (k === "plat") return T("Plat", "Flatwork", "Plano", "Piano", "馬場", "Flacharbeit");
-    if (k === "dressage") return T("Dressage", "Dressage", "Doma", "Dressage", "馬術", "Dressur");
-    if (k === "saut") return T("Saut", "Jumping", "Salto", "Salto", "障害", "Springen");
-    if (k === "exterieur") return T("Extérieur", "Outdoor", "Exterior", "Esterno", "外乗", "Ausritt");
-    if (k === "travail_a_pied") return T("Travail à pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "地上作業", "Bodenarbeit");
-    if (k === "autre") return T("Autre", "Other", "Otro", "Altro", "その他", "Andere");
+    if (k === "plat") return T("Plat", "Flatwork", "Plano", "Piano", "馬場", "Flacharbeit", "\u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u0627\u0644\u0645\u0633\u0637\u062d");
+    if (k === "dressage") return T("Dressage", "Dressage", "Doma", "Dressage", "馬術", "Dressur", "\u0627\u0644\u062a\u0631\u0648\u064a\u0636");
+    if (k === "saut") return T("Saut", "Jumping", "Salto", "Salto", "障害", "Springen", "\u0642\u0641\u0632 \u0627\u0644\u062d\u0648\u0627\u062c\u0632");
+    if (k === "exterieur") return T("Extérieur", "Outdoor", "Exterior", "Esterno", "外乗", "Ausritt", "\u0646\u0632\u0647\u0629 \u062e\u0627\u0631\u062c\u064a\u0629");
+    if (k === "travail_a_pied") return T("Travail à pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "地上作業", "Bodenarbeit", "\u0627\u0644\u0639\u0645\u0644 \u0645\u0646 \u0627\u0644\u0623\u0631\u0636");
+    if (k === "autre") return T("Autre", "Other", "Otro", "Altro", "その他", "Andere", "\u0623\u062e\u0631\u0649");
     return "";
   }
   /* Reconnaissance TOLERANTE des anciennes valeurs (libelles des anciennes pastilles, dans les 6
@@ -41064,8 +41064,8 @@ function EcranCarnetDetail() {
     e.target.value = "";
     if (!fs.length) return;
     var reste = 8 - (medias.length + nouvelles.length);
-    if (reste <= 0) { setErr(T("8 photos au maximum par s\u00e9ance.", "8 photos per session at most.", "M\u00e1ximo 8 fotos.", "Massimo 8 foto.", "\u6700\u59278\u679a\u3067\u3059\u3002", "H\u00f6chstens 8 Fotos.")); return; }
-    if (fs.length > reste) setErr(T("Seules les " + reste + " premi\u00e8res ont \u00e9t\u00e9 ajout\u00e9es \u2014 8 au maximum.", "Only the first " + reste + " were added \u2014 8 max.", "Solo las " + reste + " primeras \u2014 m\u00e1ximo 8.", "Solo le prime " + reste + " \u2014 massimo 8.", "\u6700\u521d\u306e" + reste + "\u679a\u306e\u307f\u3002", "Nur die ersten " + reste + " \u2014 max. 8."));
+    if (reste <= 0) { setErr(T("8 photos au maximum par s\u00e9ance.", "8 photos per session at most.", "M\u00e1ximo 8 fotos.", "Massimo 8 foto.", "\u6700\u59278\u679a\u3067\u3059\u3002", "H\u00f6chstens 8 Fotos.", "8 \u0635\u0648\u0631 \u0643\u062d\u062f \u0623\u0642\u0635\u0649 \u0644\u0643\u0644 \u062d\u0635\u0629.")); return; }
+    if (fs.length > reste) setErr(T("Seules les " + reste + " premi\u00e8res ont \u00e9t\u00e9 ajout\u00e9es \u2014 8 au maximum.", "Only the first " + reste + " were added \u2014 8 max.", "Solo las " + reste + " primeras \u2014 m\u00e1ximo 8.", "Solo le prime " + reste + " \u2014 massimo 8.", "\u6700\u521d\u306e" + reste + "\u679a\u306e\u307f\u3002", "Nur die ersten " + reste + " \u2014 max. 8.", "\u0623\u0636\u064a\u0641\u062a \u0623\u0648\u0644 " + reste + " \u0635\u0648\u0631 \u0641\u0642\u0637 \u2014 8 \u0643\u062d\u062f \u0623\u0642\u0635\u0649."));
     fs = fs.slice(0, reste);
     (function suite(iF) {
       if (iF >= fs.length) return;
@@ -41094,7 +41094,7 @@ function EcranCarnetDetail() {
       }))).filter(function (u) { return !!u; });
     } catch (eAll) { }
     setEnvoiM(false);
-    if (urls.length < nouvelles.length) setErr(T("Certaines photos n\u2019ont pas pu \u00eatre envoy\u00e9es \u2014 la s\u00e9ance est bien enregistr\u00e9e.", "Some photos could not be uploaded \u2014 the session is saved.", "Algunas fotos no se enviaron \u2014 la sesi\u00f3n est\u00e1 guardada.", "Alcune foto non sono state inviate \u2014 la sessione \u00e8 salvata.", "\u4e00\u90e8\u306e\u5199\u771f\u3092\u9001\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Einige Fotos konnten nicht gesendet werden."));
+    if (urls.length < nouvelles.length) setErr(T("Certaines photos n\u2019ont pas pu \u00eatre envoy\u00e9es \u2014 la s\u00e9ance est bien enregistr\u00e9e.", "Some photos could not be uploaded \u2014 the session is saved.", "Algunas fotos no se enviaron \u2014 la sesi\u00f3n est\u00e1 guardada.", "Alcune foto non sono state inviate \u2014 la sessione \u00e8 salvata.", "\u4e00\u90e8\u306e\u5199\u771f\u3092\u9001\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "Einige Fotos konnten nicht gesendet werden.", "\u062a\u0639\u0630\u0631 \u0625\u0631\u0633\u0627\u0644 \u0628\u0639\u0636 \u0627\u0644\u0635\u0648\u0631 \u2014 \u062a\u0645 \u062d\u0641\u0638 \u0627\u0644\u062d\u0635\u0629."));
     return medias.concat(urls);
   }
   var stCo = React.useState([]); var conseils = stCo[0], setConseils = stCo[1];
@@ -41246,7 +41246,7 @@ function EcranCarnetDetail() {
 
   function retour() { if (peutReculer && retourEcran) { retourEcran(); } else { setEcran("carnet"); } }
 
-  var MOIS = [T("janvier", "January", "enero", "gennaio", "1\u6708", "Januar"), T("f\u00e9vrier", "February", "febrero", "febbraio", "2\u6708", "Februar"), T("mars", "March", "marzo", "marzo", "3\u6708", "M\u00e4rz"), T("avril", "April", "abril", "aprile", "4\u6708", "April"), T("mai", "May", "mayo", "maggio", "5\u6708", "Mai"), T("juin", "June", "junio", "giugno", "6\u6708", "Juni"), T("juillet", "July", "julio", "luglio", "7\u6708", "Juli"), T("ao\u00fbt", "August", "agosto", "agosto", "8\u6708", "August"), T("septembre", "September", "septiembre", "settembre", "9\u6708", "September"), T("octobre", "October", "octubre", "ottobre", "10\u6708", "Oktober"), T("novembre", "November", "noviembre", "novembre", "11\u6708", "November"), T("d\u00e9cembre", "December", "diciembre", "dicembre", "12\u6708", "Dezember")];
+  var MOIS = [T("janvier", "January", "enero", "gennaio", "1\u6708", "Januar", "\u064a\u0646\u0627\u064a\u0631"), T("f\u00e9vrier", "February", "febrero", "febbraio", "2\u6708", "Februar", "\u0641\u0628\u0631\u0627\u064a\u0631"), T("mars", "March", "marzo", "marzo", "3\u6708", "M\u00e4rz", "\u0645\u0627\u0631\u0633"), T("avril", "April", "abril", "aprile", "4\u6708", "April", "\u0623\u0628\u0631\u064a\u0644"), T("mai", "May", "mayo", "maggio", "5\u6708", "Mai", "\u0645\u0627\u064a\u0648"), T("juin", "June", "junio", "giugno", "6\u6708", "Juni", "\u064a\u0648\u0646\u064a\u0648"), T("juillet", "July", "julio", "luglio", "7\u6708", "Juli", "\u064a\u0648\u0644\u064a\u0648"), T("ao\u00fbt", "August", "agosto", "agosto", "8\u6708", "August", "\u0623\u063a\u0633\u0637\u0633"), T("septembre", "September", "septiembre", "settembre", "9\u6708", "September", "\u0633\u0628\u062a\u0645\u0628\u0631"), T("octobre", "October", "octubre", "ottobre", "10\u6708", "Oktober", "\u0623\u0643\u062a\u0648\u0628\u0631"), T("novembre", "November", "noviembre", "novembre", "11\u6708", "November", "\u0646\u0648\u0641\u0645\u0628\u0631"), T("d\u00e9cembre", "December", "diciembre", "dicembre", "12\u6708", "Dezember", "\u062f\u064a\u0633\u0645\u0628\u0631")];
   function enClair(s) {
     var m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
     return m ? (Number(m[3]) + " " + MOIS[Number(m[2]) - 1] + " " + m[1]) : String(s || "");
@@ -41255,11 +41255,11 @@ function EcranCarnetDetail() {
   async function enregistrer() {
     if (envoi) return;
     setErr("");
-    if (!dateS) { setErr(T("Choisis d\u2019abord une date.", "Pick a date first.", "Elige una fecha.", "Scegli una data.", "\u65e5\u4ed8\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle ein Datum.")); return; }
+    if (!dateS) { setErr(T("Choisis d\u2019abord une date.", "Pick a date first.", "Elige una fecha.", "Scegli una data.", "\u65e5\u4ed8\u3092\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle ein Datum.", "\u0627\u062e\u062a\u0627\u0631\u064a \u062a\u0627\u0631\u064a\u062e\u0627 \u0623\u0648\u0644\u0627.")); return; }
     setEnvoi(true);
     try {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
-      if (!u || !u.id) { setErr(T("Tu n\u2019es plus connect\u00e9e.", "You are no longer signed in.", "Ya no est\u00e1s conectada.", "Non sei pi\u00f9 connessa.", "\u30ed\u30b0\u30a4\u30f3\u304c\u5207\u308c\u3066\u3044\u307e\u3059\u3002", "Du bist nicht mehr angemeldet.")); setEnvoi(false); return; }
+      if (!u || !u.id) { setErr(T("Tu n\u2019es plus connect\u00e9e.", "You are no longer signed in.", "Ya no est\u00e1s conectada.", "Non sei pi\u00f9 connessa.", "\u30ed\u30b0\u30a4\u30f3\u304c\u5207\u308c\u3066\u3044\u307e\u3059\u3002", "Du bist nicht mehr angemeldet.", "\u0644\u0645 \u062a\u0639\u0648\u062f\u064a \u0645\u062a\u0635\u0644\u0629.")); setEnvoi(false); return; }
       var ch = null;
       ch = hjChevalParId(chevalId);   /* 27/09 (408) : siens, lies ET chevaux des ecuries */
       /* 16/09 (186) : les photos sont envoyees AVANT l ecriture de la seance, pour que leurs
@@ -41345,111 +41345,111 @@ function EcranCarnetDetail() {
     } else if (chevalLibre) { nomAffiche = chevalLibre; sansFiche = true; }
     corps = h("div", { style: { padding: "4px 16px 24px", minWidth: 0 } },
       h("div", { style: { fontFamily: M, fontSize: 12.5, color: HJ.gris, margin: "0 0 16px" } },
-        T("Seule la date est obligatoire.", "Only the date is required.", "Solo la fecha es obligatoria.", "Solo la data è obbligatoria.", "日付のみ必須です。", "Nur das Datum ist Pflicht.")),
+        T("Seule la date est obligatoire.", "Only the date is required.", "Solo la fecha es obligatoria.", "Solo la data è obbligatoria.", "日付のみ必須です。", "Nur das Datum ist Pflicht.", "\u0627\u0644\u062a\u0627\u0631\u064a\u062e \u0648\u062d\u062f\u0647 \u0625\u0644\u0632\u0627\u0645\u064a.")),
 
-      bloc([etiquette(T("Date", "Date", "Fecha", "Data", "日付", "Datum"), false),
+      bloc([etiquette(T("Date", "Date", "Fecha", "Data", "日付", "Datum", "\u0627\u0644\u062a\u0627\u0631\u064a\u062e"), false),
         h("div", { key: "dt", style: { minWidth: 0, maxWidth: "100%" } },
           h("input", { type: "date", className: "hj-date", value: dateS, onChange: function (e) { setDateS(e.target.value); }, style: stChamp }))]),
 
-      bloc([etiquette(T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd"), true),
+      bloc([etiquette(T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd", "\u0627\u0644\u062d\u0635\u0627\u0646"), true),
         h("div", { key: "chv", role: "button", onClick: function () { setRechCh(""); setSaisieLibre(false); setLibreTmp(chevalLibre || ""); setPanCheval(true); },
           style: Object.assign({}, stChamp, { display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }) },
           h("span", { style: { flex: 1, minWidth: 0, color: nomAffiche ? HJ.ivoire : HJ.gris, overflow: "hidden", textOverflow: "ellipsis" } },
-            nomAffiche || T("Choisir un cheval", "Choose a horse", "Elegir un caballo", "Scegli un cavallo", "馬を選ぶ", "Pferd wählen")),
-          sansFiche ? h("span", { style: { flex: "0 0 auto", fontSize: 11, color: HJ.champ, border: "1px solid rgba(173,139,87,0.5)", borderRadius: 999, padding: "3px 8px" } }, T("sans fiche", "no profile", "sin ficha", "senza scheda", "未登録", "ohne Profil")) : null,
+            nomAffiche || T("Choisir un cheval", "Choose a horse", "Elegir un caballo", "Scegli un cavallo", "馬を選ぶ", "Pferd wählen", "\u0627\u062e\u062a\u064a\u0627\u0631 \u062d\u0635\u0627\u0646")),
+          sansFiche ? h("span", { style: { flex: "0 0 auto", fontSize: 11, color: HJ.champ, border: "1px solid rgba(173,139,87,0.5)", borderRadius: 999, padding: "3px 8px" } }, T("sans fiche", "no profile", "sin ficha", "senza scheda", "未登録", "ohne Profil", "\u0628\u0644\u0627 \u0645\u0644\u0641")) : null,
           h("span", { style: { flex: "0 0 auto", color: HJ.champ, fontSize: 20, lineHeight: 1 } }, "›"))]),
 
-      bloc([etiquette(T("Discipline", "Discipline", "Disciplina", "Disciplina", "種目", "Disziplin"), true),
+      bloc([etiquette(T("Discipline", "Discipline", "Disciplina", "Disciplina", "種目", "Disziplin", "\u0627\u0644\u0627\u062e\u062a\u0635\u0627\u0635"), true),
         hjHist && !discTouche ? h("div", { key: "hist", style: { fontFamily: M, fontSize: 13, color: HJ.gris, margin: "0 0 8px" } },
-          T("Enregistrée : ", "Saved as: ", "Guardada: ", "Salvata: ", "保存済み：", "Gespeichert: "), h("span", { style: { color: HJ.ivoire } }, hjHist)) : null,
+          T("Enregistrée : ", "Saved as: ", "Guardada: ", "Salvata: ", "保存済み：", "Gespeichert: ", "\u0645\u062d\u0641\u0648\u0638: "), h("span", { style: { color: HJ.ivoire } }, hjHist)) : null,
         h("div", { key: "grid", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
           HJ_DISC.map(function (k) {
             var pris = discCle === k;
             return h("div", { key: "dc" + k, role: "button", onClick: function () { setDiscCle(pris ? "" : k); setDiscTouche(true); }, style: pastilleHJ(pris) }, hjLibDisc(k));
           })),
         discCle === "autre" ? h("input", { key: "autre", type: "text", value: discAutre, maxLength: 60, onChange: function (e) { setDiscAutre(e.target.value); setDiscTouche(true); },
-          placeholder: T("Précise (ex. longe, poney games…)", "Specify (e.g. lunging…)", "Precisa (p. ej. cuerda…)", "Specifica (es. longia…)", "内容を入力", "Genauer (z. B. Longe…)"),
+          placeholder: T("Précise (ex. longe, poney games…)", "Specify (e.g. lunging…)", "Precisa (p. ej. cuerda…)", "Specifica (es. longia…)", "内容を入力", "Genauer (z. B. Longe…)", "\u062d\u062f\u062f\u064a (\u0645\u062b\u0644\u0627: \u0627\u0644\u062d\u0628\u0644 \u0627\u0644\u0637\u0648\u064a\u0644\u060c \u0623\u0644\u0639\u0627\u0628 \u0627\u0644\u0645\u0647\u0648\u0631\u2026)"),
           style: Object.assign({}, stChamp, { marginTop: 8 }) }) : null]),
 
-      bloc([etiquette(T("Thème", "Theme", "Tema", "Tema", "テーマ", "Thema"), true),
-        h("input", { key: "th", type: "text", value: theme, maxLength: 120, onChange: function (e) { setTheme(e.target.value); }, placeholder: T("ex. Transitions et régularité", "e.g. Transitions and rhythm", "p. ej. Transiciones y regularidad", "es. Transizioni e regolarità", "例：移行とリズム", "z. B. Übergänge und Takt"), style: stChamp })]),
+      bloc([etiquette(T("Thème", "Theme", "Tema", "Tema", "テーマ", "Thema", "\u0627\u0644\u0645\u0648\u0636\u0648\u0639"), true),
+        h("input", { key: "th", type: "text", value: theme, maxLength: 120, onChange: function (e) { setTheme(e.target.value); }, placeholder: T("ex. Transitions et régularité", "e.g. Transitions and rhythm", "p. ej. Transiciones y regularidad", "es. Transizioni e regolarità", "例：移行とリズム", "z. B. Übergänge und Takt", "\u0645\u062b\u0644\u0627: \u0627\u0644\u0627\u0646\u062a\u0642\u0627\u0644\u0627\u062a \u0648\u0627\u0644\u0627\u0646\u062a\u0638\u0627\u0645"), style: stChamp })]),
 
-      bloc([etiquette(T("Ressenti", "How it felt", "Sensaciones", "Sensazioni", "感覚", "Gefühl"), true),
+      bloc([etiquette(T("Ressenti", "How it felt", "Sensaciones", "Sensazioni", "感覚", "Gefühl", "\u0627\u0644\u0625\u062d\u0633\u0627\u0633"), true),
         h("div", { key: "rs", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
-          [["bonnes", T("Bonnes sensations", "Good feelings", "Buenas sensaciones", "Buone sensazioni", "良い感覚", "Gutes Gefühl")],
-           ["mitigees", T("Sensations mitigées", "Mixed feelings", "Sensaciones mixtas", "Sensazioni contrastanti", "まあまあ", "Gemischtes Gefühl")],
-           ["difficile", T("Séance difficile", "Tough session", "Sesión difícil", "Sessione difficile", "難しい稽古", "Schwierige Einheit")]].map(function (r) {
+          [["bonnes", T("Bonnes sensations", "Good feelings", "Buenas sensaciones", "Buone sensazioni", "良い感覚", "Gutes Gefühl", "\u0625\u062d\u0633\u0627\u0633 \u062c\u064a\u062f")],
+           ["mitigees", T("Sensations mitigées", "Mixed feelings", "Sensaciones mixtas", "Sensazioni contrastanti", "まあまあ", "Gemischtes Gefühl", "\u0625\u062d\u0633\u0627\u0633 \u0645\u062a\u0641\u0627\u0648\u062a")],
+           ["difficile", T("Séance difficile", "Tough session", "Sesión difícil", "Sessione difficile", "難しい稽古", "Schwierige Einheit", "\u062d\u0635\u0629 \u0635\u0639\u0628\u0629")]].map(function (r) {
             var pris = ressenti === r[0];
             return h("div", { key: "rs" + r[0], role: "button", onClick: function () { setRessenti(pris ? "" : r[0]); }, style: pastilleHJ(pris) }, r[1]);
           }))]),
 
-      bloc([etiquette(T("Lieu", "Place", "Lugar", "Luogo", "場所", "Ort"), true),
-        h("input", { key: "li", type: "text", value: lieu, maxLength: 80, onChange: function (e) { setLieu(e.target.value); }, placeholder: T("ex. Carrière", "e.g. Arena", "p. ej. Pista", "es. Campo", "例：馬場", "z. B. Reitplatz"), style: stChamp })]),
+      bloc([etiquette(T("Lieu", "Place", "Lugar", "Luogo", "場所", "Ort", "\u0627\u0644\u0645\u0643\u0627\u0646"), true),
+        h("input", { key: "li", type: "text", value: lieu, maxLength: 80, onChange: function (e) { setLieu(e.target.value); }, placeholder: T("ex. Carrière", "e.g. Arena", "p. ej. Pista", "es. Campo", "例：馬場", "z. B. Reitplatz", "\u0645\u062b\u0644\u0627: \u0627\u0644\u0645\u064a\u062f\u0627\u0646"), style: stChamp })]),
 
-      bloc([etiquette(T("À retenir", "To remember", "Para recordar", "Da ricordare", "覚えておくこと", "Merken"), true),
+      bloc([etiquette(T("À retenir", "To remember", "Para recordar", "Da ricordare", "覚えておくこと", "Merken", "\u0644\u0644\u062a\u0630\u0643\u0631"), true),
         h("textarea", { key: "ar", value: aRetenir, rows: 2, maxLength: 300, ref: function (el) { if (el && !el.__hjG) { el.__hjG = 1; grandir(el); } }, onChange: function (e) { setARetenir(e.target.value); grandir(e.target); },
-          placeholder: T("ex. garder mes jambes présentes sans me crisper", "e.g. keep my legs on without tensing", "p. ej. mantener las piernas sin crisparme", "es. tenere le gambe senza irrigidirmi", "例：力まずに脈を保つ", "z. B. Beine dran, ohne zu verkrampfen"),
+          placeholder: T("ex. garder mes jambes présentes sans me crisper", "e.g. keep my legs on without tensing", "p. ej. mantener las piernas sin crisparme", "es. tenere le gambe senza irrigidirmi", "例：力まずに脈を保つ", "z. B. Beine dran, ohne zu verkrampfen", "\u0645\u062b\u0644\u0627: \u0625\u0628\u0642\u0627\u0621 \u0633\u0627\u0642\u064a \u062d\u0627\u0636\u0631\u062a\u064a\u0646 \u062f\u0648\u0646 \u062a\u0634\u0646\u062c"),
           style: Object.assign({}, stChamp, { minHeight: 72, resize: "none", lineHeight: 1.45, overflow: "hidden" }) })]),
 
-      bloc([etiquette(T("Ma note", "My note", "Mi nota", "La mia nota", "メモ", "Meine Notiz"), true),
+      bloc([etiquette(T("Ma note", "My note", "Mi nota", "La mia nota", "メモ", "Meine Notiz", "\u0645\u0644\u0627\u062d\u0638\u062a\u064a"), true),
         h("textarea", { key: "no", value: note, rows: 3, ref: function (el) { if (el && !el.__hjG) { el.__hjG = 1; grandir(el); } }, onChange: function (e) { ecrireNote(e.target.value); grandir(e.target); },
-          placeholder: T("Comment ça s’est passé ?", "How did it go?", "¿Cómo fue?", "Com’è andata?", "どうでしたか？", "Wie war es?"),
+          placeholder: T("Comment ça s’est passé ?", "How did it go?", "¿Cómo fue?", "Com’è andata?", "どうでしたか？", "Wie war es?", "\u0643\u064a\u0641 \u062c\u0631\u062a \u0627\u0644\u062d\u0635\u0629\u061f"),
           style: Object.assign({}, stChamp, { minHeight: 96, resize: "none", lineHeight: 1.5, overflow: "hidden" }) })]),
 
       /* Conseils : logique INCHANGEE (memes etats, meme panneau, memes ecritures), seul l habit change. */
-      bloc([etiquette(T("Conseils Hey Baby", "Hey Baby tips", "Consejos Hey Baby", "Consigli Hey Baby", "Hey Babyのアドバイス", "Hey-Baby-Tipps"), true),
+      bloc([etiquette(T("Conseils Hey Baby", "Hey Baby tips", "Consejos Hey Baby", "Consigli Hey Baby", "Hey Babyのアドバイス", "Hey-Baby-Tipps", "\u0646\u0635\u0627\u0626\u062d Hey Baby"), true),
         conseils.length ? h("div", { key: "csl", style: { display: "flex", flexDirection: "column", gap: 7, marginBottom: 8 } },
           conseils.map(function (c) {
             return h("div", { key: "cs" + c.id, style: { display: "flex", alignItems: "center", gap: 9, padding: "8px 8px 8px 13px", borderRadius: 12, border: "1px solid rgba(173,139,87,0.30)", background: "rgba(173,139,87,0.06)", minHeight: 48 } },
               h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 14, color: HJ.ivoire, lineHeight: 1.35 } }, c.titre),
-              h("button", { onClick: function () { setConseils(conseils.filter(function (x) { return String(x.id) !== String(c.id); })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen"),
+              h("button", { onClick: function () { setConseils(conseils.filter(function (x) { return String(x.id) !== String(c.id); })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "\u0625\u0632\u0627\u0644\u0629"),
                 style: { flex: "0 0 auto", width: 40, height: 40, borderRadius: "50%", background: "transparent", border: "1px solid rgba(242,237,228,0.16)", color: HJ.gris, fontSize: 14, cursor: "pointer", padding: 0 } }, "✕"));
           })) : null,
         h("div", { key: "csb", role: "button", onClick: function () { setPanChoix(true); },
           style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, borderRadius: 12, border: "1px dashed rgba(173,139,87,0.55)", color: HJ.champ, fontFamily: M, fontSize: 14, fontWeight: 600, cursor: "pointer" } },
           h("span", { style: { fontSize: 17, lineHeight: 1 } }, "+"),
           conseils.length
-            ? T("Ajouter un autre conseil", "Add another tip", "Añadir otro consejo", "Aggiungi un altro consiglio", "アドバイスを追加", "Weiteren Tipp")
-            : T("Choisir des conseils Hey Baby", "Pick Hey Baby tips", "Elegir consejos Hey Baby", "Scegli consigli Hey Baby", "アドバイスを選ぶ", "Hey-Baby-Tipps wählen"))]),
+            ? T("Ajouter un autre conseil", "Add another tip", "Añadir otro consejo", "Aggiungi un altro consiglio", "アドバイスを追加", "Weiteren Tipp", "\u0625\u0636\u0627\u0641\u0629 \u0646\u0635\u064a\u062d\u0629 \u0623\u062e\u0631\u0649")
+            : T("Choisir des conseils Hey Baby", "Pick Hey Baby tips", "Elegir consejos Hey Baby", "Scegli consigli Hey Baby", "アドバイスを選ぶ", "Hey-Baby-Tipps wählen", "\u0627\u062e\u062a\u064a\u0627\u0631 \u0646\u0635\u0627\u0626\u062d Hey Baby"))]),
 
       /* Photos : UNIQUEMENT les anciennes (on peut encore en retirer une de la seance). Plus aucun
          bouton d ajout, plus aucun envoi vers le bucket public (decision du 27/09). */
-      medias.length ? bloc([etiquette(T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos"), false),
+      medias.length ? bloc([etiquette(T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "\u0627\u0644\u0635\u0648\u0631"), false),
         h("div", { key: "ph", style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 7 } },
           medias.map(function (u, iU) {
             return h("div", { key: "md" + iU, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: HJ.carte } },
               h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 240, 240) : u, alt: "", loading: "lazy", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-              h("button", { onClick: function () { setMedias(medias.filter(function (x) { return x !== u; })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen"),
+              h("button", { onClick: function () { setMedias(medias.filter(function (x) { return x !== u; })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen", "\u0625\u0632\u0627\u0644\u0629"),
                 style: { position: "absolute", top: 3, right: 3, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(242,237,228,0.35)", background: "rgba(8,10,11,0.85)", color: HJ.ivoire, fontSize: 13, cursor: "pointer", padding: 0 } }, "✕"));
           })),
         h("div", { key: "phm", style: { fontFamily: M, fontSize: 12, color: HJ.gris, marginTop: 8 } },
-          T("L’ajout de nouvelles photos est suspendu pour le moment.", "Adding new photos is paused for now.", "Añadir fotos está en pausa.", "L’aggiunta di foto è sospesa.", "写真の追加は一時停止中です。", "Neue Fotos sind vorübergehend pausiert."))]) : null,
+          T("L’ajout de nouvelles photos est suspendu pour le moment.", "Adding new photos is paused for now.", "Añadir fotos está en pausa.", "L’aggiunta di foto è sospesa.", "写真の追加は一時停止中です。", "Neue Fotos sind vorübergehend pausiert.", "\u0625\u0636\u0627\u0641\u0629 \u0635\u0648\u0631 \u062c\u062f\u064a\u062f\u0629 \u0645\u062a\u0648\u0642\u0641\u0629 \u062d\u0627\u0644\u064a\u0627."))]) : null,
 
       err ? h("div", { style: { margin: "0 0 14px", padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 13, lineHeight: 1.5 } }, err) : null,
 
       h("div", { role: "button", onClick: enregistrer,
         style: { display: "flex", alignItems: "center", justifyContent: "center", width: "100%", minHeight: 52, borderRadius: 12, border: "1px solid " + HJ.reflet, background: HJ.pet, color: HJ.ivoire, fontFamily: M, fontSize: 16, fontWeight: 600, cursor: envoi ? "default" : "pointer", opacity: envoi ? 0.6 : 1, marginTop: 6, boxSizing: "border-box" } },
-        envoi ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…") : T("Enregistrer ma séance", "Save my session", "Guardar mi sesión", "Salva la sessione", "保存する", "Einheit speichern")),
+        envoi ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…", "\u062c\u0627\u0631 \u0627\u0644\u062d\u0641\u0638\u2026") : T("Enregistrer ma séance", "Save my session", "Guardar mi sesión", "Salva la sessione", "保存する", "Einheit speichern", "\u062d\u0641\u0638 \u062d\u0635\u062a\u064a")),
 
       (seance && seance.id) ? h("div", { role: "button", onClick: function () { setMode("lecture"); setErr(""); },
         style: { margin: "10px auto 0", width: "fit-content", fontFamily: M, fontSize: 13, color: HJ.gris, textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer", padding: "10px 14px", minHeight: 44, boxSizing: "border-box" } },
-        T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen")) : null);
+        T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "\u0625\u0644\u063a\u0627\u0621")) : null);
   } else {
     var se = seance || {};
     var sousT = [se.cheval_nom || null, se.discipline || null].filter(function (x) { return !!x; }).join(" \u00b7 ");
     corps = h("div", { style: { padding: "6px 16px 40px" } },
       sousT ? h("div", { style: { fontFamily: M, fontSize: 13.5, color: TQL, marginBottom: 20 } }, sousT) : null,
       se.note ? h("div", { style: { marginBottom: 26 } },
-        etiquette(T("Ma note", "My note", "Mi nota", "La mia nota", "\u30e1\u30e2", "Meine Notiz"), false),
+        etiquette(T("Ma note", "My note", "Mi nota", "La mia nota", "\u30e1\u30e2", "Meine Notiz", "\u0645\u0644\u0627\u062d\u0638\u062a\u064a"), false),
         h("div", { style: { fontFamily: M, fontSize: 15, color: "#E7EDF1", lineHeight: 1.65, whiteSpace: "pre-wrap" } }, se.note))
         : h("div", { style: { fontFamily: M, fontSize: 13, color: "#6D7681", fontStyle: "italic", marginBottom: 26 } },
-            T("Pas de note pour cette s\u00e9ance.", "No note for this session.", "Sin nota.", "Nessuna nota.", "\u30e1\u30e2\u306a\u3057\u3002", "Keine Notiz.")),
+            T("Pas de note pour cette s\u00e9ance.", "No note for this session.", "Sin nota.", "Nessuna nota.", "\u30e1\u30e2\u306a\u3057\u3002", "Keine Notiz.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0644\u0627\u062d\u0638\u0629 \u0644\u0647\u0630\u0647 \u0627\u0644\u062d\u0635\u0629.")),
 
       /* 16/09 (186) : les photos, en LECTURE - deux colonnes, proportions respectees
          (object-fit contain, aucun recadrage carre impose : sa regle). Un toucher ouvre en
          plein ecran par le calque existant. */
       (Array.isArray(seance && seance.medias) && seance.medias.length) ? h("div", { style: { marginBottom: 26 } },
-        etiquette(T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos"), false),
+        etiquette(T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631"), false),
         h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 7 } },
           seance.medias.map(function (u, iU) {
             return h("div", { key: "pl" + iU, role: "button", onClick: function () { setVuP(u); },
@@ -41459,7 +41459,7 @@ function EcranCarnetDetail() {
 
       /* 16/09 (180) : les conseils travailles, en LECTURE - chacun ouvre son conseil. */
       conseils.length ? h("div", { style: { marginBottom: 26 } },
-        etiquette(T("Conseils travaill\u00e9s", "Tips worked on", "Consejos trabajados", "Consigli lavorati", "\u53d6\u308a\u7d44\u3093\u3060\u30a2\u30c9\u30d0\u30a4\u30b9", "Bearbeitete Tipps"), false),
+        etiquette(T("Conseils travaill\u00e9s", "Tips worked on", "Consejos trabajados", "Consigli lavorati", "\u53d6\u308a\u7d44\u3093\u3060\u30a2\u30c9\u30d0\u30a4\u30b9", "Bearbeitete Tipps", "\u0627\u0644\u0646\u0635\u0627\u0626\u062d \u0627\u0644\u062a\u064a \u062a\u0645 \u0627\u0644\u0639\u0645\u0644 \u0639\u0644\u064a\u0647\u0627"), false),
         h("div", { style: { display: "flex", flexDirection: "column", gap: 7 } },
           conseils.map(function (c) {
             return h("div", { key: "cl" + c.id, role: "button",
@@ -41477,24 +41477,24 @@ function EcranCarnetDetail() {
 
       h("div", { role: "button", onClick: function () { setMode("edition"); setConfSup(false); },
         style: { display: "flex", alignItems: "center", justifyContent: "center", width: "100%", minHeight: 52, borderRadius: 999, border: "1px solid " + OR, background: "rgba(232,184,75,0.07)", color: OR, fontFamily: M, fontSize: 14.5, fontWeight: 700, cursor: "pointer" } },
-        T("Modifier ma s\u00e9ance", "Edit my session", "Modificar mi sesi\u00f3n", "Modifica la sessione", "\u7de8\u96c6\u3059\u308b", "Einheit bearbeiten")),
+        T("Modifier ma s\u00e9ance", "Edit my session", "Modificar mi sesi\u00f3n", "Modifica la sessione", "\u7de8\u96c6\u3059\u308b", "Einheit bearbeiten", "\u062a\u0639\u062f\u064a\u0644 \u062d\u0635\u062a\u064a")),
 
       h("div", { role: "button", onClick: supprimer,
         style: { margin: "14px auto 0", width: "fit-content", fontFamily: M, fontSize: 12.5, color: confSup ? "#FF9B9B" : "#6D7681", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer", padding: "10px 14px", minHeight: 44 } },
         confSup
-          ? T("Confirmer la suppression ?", "Confirm deletion?", "\u00bfConfirmar la eliminaci\u00f3n?", "Confermare l\u2019eliminazione?", "\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "L\u00f6schen best\u00e4tigen?")
-          : T("Supprimer cette s\u00e9ance", "Delete this session", "Eliminar esta sesi\u00f3n", "Elimina questa sessione", "\u3053\u306e\u7a3d\u53e4\u3092\u524a\u9664", "Diese Einheit l\u00f6schen")));
+          ? T("Confirmer la suppression ?", "Confirm deletion?", "\u00bfConfirmar la eliminaci\u00f3n?", "Confermare l\u2019eliminazione?", "\u524a\u9664\u3057\u307e\u3059\u304b\uff1f", "L\u00f6schen best\u00e4tigen?", "\u062a\u0623\u0643\u064a\u062f \u0627\u0644\u062d\u0630\u0641\u061f")
+          : T("Supprimer cette s\u00e9ance", "Delete this session", "Eliminar esta sesi\u00f3n", "Elimina questa sessione", "\u3053\u306e\u7a3d\u53e4\u3092\u524a\u9664", "Diese Einheit l\u00f6schen", "\u062d\u0630\u0641 \u0647\u0630\u0647 \u0627\u0644\u062d\u0635\u0629")));
   }
 
-  return h("div", { style: { minHeight: "100vh", background: HJ.fond, color: HJ.ivoire, paddingBottom: "calc(env(safe-area-inset-bottom) + 40px)" } },
+  return h("div", { dir: (ctx.langue === "ar") ? "rtl" : undefined, lang: ctx.langue || undefined, style: { minHeight: "100vh", background: HJ.fond, color: HJ.ivoire, paddingBottom: "calc(env(safe-area-inset-bottom) + 40px)" } },
     /* 27/09 (408) : barre d onglets cachee sur cet ecran ; date iOS alignee et bornee. */
     h("style", null, "body.hb-sans-barre .hype-barre-onglets{display:none !important} .hj-date{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%} .hj-date::-webkit-date-and-time-value{text-align:left;min-height:1.3em} .hj-date::-webkit-calendar-picker-indicator{filter:invert(0.8)}"),
     h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 54px) 18px 18px" } },
-      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
+      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
       h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: 2.2, textTransform: "uppercase", color: HJ.bronze, fontWeight: 700, marginTop: 6 } },
         (mode === "edition" && !(seance && seance.id))
-          ? T("Nouvelle s\u00e9ance", "New session", "Nueva sesi\u00f3n", "Nuova sessione", "\u65b0\u3057\u3044\u7a3d\u53e4", "Neue Einheit")
-          : T("Ma s\u00e9ance", "My session", "Mi sesi\u00f3n", "La mia sessione", "\u7a3d\u53e4", "Meine Einheit")),
+          ? T("Nouvelle s\u00e9ance", "New session", "Nueva sesi\u00f3n", "Nuova sessione", "\u65b0\u3057\u3044\u7a3d\u53e4", "Neue Einheit", "\u062d\u0635\u0629 \u062c\u062f\u064a\u062f\u0629")
+          : T("Ma s\u00e9ance", "My session", "Mi sesi\u00f3n", "La mia sessione", "\u7a3d\u53e4", "Meine Einheit", "\u062d\u0635\u062a\u064a")),
       h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, color: HJ.ivoire, marginTop: 6, lineHeight: 1.2 } },
         enClair(mode === "edition" ? dateS : ((seance && seance.date_seance) || dateS)))),
     corps,
@@ -41522,25 +41522,25 @@ function EcranCarnetDetail() {
       return h("div", { "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 9000, background: HJ.fond, display: "flex", flexDirection: "column" } },
         h("div", { style: { flex: "0 0 auto", padding: "calc(env(safe-area-inset-top) + 12px) 16px 10px", borderBottom: "1px solid rgba(242,237,228,0.08)" } },
           h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
-            h("div", { style: { flex: 1, minWidth: 0, fontFamily: C, fontSize: 19, fontWeight: 600, color: HJ.ivoire } }, T("Choisir un cheval", "Choose a horse", "Elegir un caballo", "Scegli un cavallo", "馬を選ぶ", "Pferd wählen")),
-            h("button", { onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen"), style: { flex: "0 0 auto", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(242,237,228,0.16)", background: "transparent", color: HJ.ivoire, fontSize: 16, cursor: "pointer", padding: 0 } }, "✕")),
-          h("input", { type: "search", value: rechCh, onChange: function (e) { setRechCh(e.target.value); }, placeholder: T("Rechercher un cheval", "Search a horse", "Buscar un caballo", "Cerca un cavallo", "馬を検索", "Pferd suchen"), style: stChamp })),
+            h("div", { style: { flex: 1, minWidth: 0, fontFamily: C, fontSize: 19, fontWeight: 600, color: HJ.ivoire } }, T("Choisir un cheval", "Choose a horse", "Elegir un caballo", "Scegli un cavallo", "馬を選ぶ", "Pferd wählen", "\u0627\u062e\u062a\u064a\u0627\u0631 \u062d\u0635\u0627\u0646")),
+            h("button", { onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "\u0625\u063a\u0644\u0627\u0642"), style: { flex: "0 0 auto", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(242,237,228,0.16)", background: "transparent", color: HJ.ivoire, fontSize: 16, cursor: "pointer", padding: 0 } }, "✕")),
+          h("input", { type: "search", value: rechCh, onChange: function (e) { setRechCh(e.target.value); }, placeholder: T("Rechercher un cheval", "Search a horse", "Buscar un caballo", "Cerca un cavallo", "馬を検索", "Pferd suchen", "\u0627\u0644\u0628\u062d\u062b \u0639\u0646 \u062d\u0635\u0627\u0646"), style: stChamp })),
         h("div", { style: { flex: "1 1 0", minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", padding: "4px 16px calc(env(safe-area-inset-bottom) + 28px)" } },
-          ligne("aucun", T("Aucun cheval", "No horse", "Ningún caballo", "Nessun cavallo", "馬なし", "Kein Pferd"), !chevalId && !chevalLibre, function () { setChevalId(""); setChevalLibre(""); fermer(); }),
-          ligne("libre", T("Cheval sans fiche…", "Horse without a profile…", "Caballo sin ficha…", "Cavallo senza scheda…", "未登録の馬…", "Pferd ohne Profil…"), !!chevalLibre, function () { setSaisieLibre(!saisieLibre); },
-            T("Tape son nom, aucune fiche n’est créée", "Type its name, no profile is created", "Escribe su nombre, no se crea ficha", "Scrivi il nome, nessuna scheda creata", "名前を入力（登録はしません）", "Namen eingeben, kein Profil wird angelegt")),
+          ligne("aucun", T("Aucun cheval", "No horse", "Ningún caballo", "Nessun cavallo", "馬なし", "Kein Pferd", "\u0628\u062f\u0648\u0646 \u062d\u0635\u0627\u0646"), !chevalId && !chevalLibre, function () { setChevalId(""); setChevalLibre(""); fermer(); }),
+          ligne("libre", T("Cheval sans fiche…", "Horse without a profile…", "Caballo sin ficha…", "Cavallo senza scheda…", "未登録の馬…", "Pferd ohne Profil…", "\u062d\u0635\u0627\u0646 \u0628\u0644\u0627 \u0645\u0644\u0641\u2026"), !!chevalLibre, function () { setSaisieLibre(!saisieLibre); },
+            T("Tape son nom, aucune fiche n’est créée", "Type its name, no profile is created", "Escribe su nombre, no se crea ficha", "Scrivi il nome, nessuna scheda creata", "名前を入力（登録はしません）", "Namen eingeben, kein Profil wird angelegt", "\u0627\u0643\u062a\u0628\u064a \u0627\u0633\u0645\u0647\u060c \u0644\u0646 \u064a\u062a\u0645 \u0625\u0646\u0634\u0627\u0621 \u0623\u064a \u0645\u0644\u0641")),
           saisieLibre ? h("div", { key: "saisie", style: { display: "flex", gap: 8, padding: "10px 0 6px", minWidth: 0 } },
             h("div", { style: { flex: 1, minWidth: 0 } },
-              h("input", { type: "text", value: libreTmp, maxLength: 60, onChange: function (e) { setLibreTmp(e.target.value); }, placeholder: T("Nom du cheval", "Horse name", "Nombre del caballo", "Nome del cavallo", "馬の名前", "Name des Pferdes"), style: stChamp })),
+              h("input", { type: "text", value: libreTmp, maxLength: 60, onChange: function (e) { setLibreTmp(e.target.value); }, placeholder: T("Nom du cheval", "Horse name", "Nombre del caballo", "Nome del cavallo", "馬の名前", "Name des Pferdes", "\u0627\u0633\u0645 \u0627\u0644\u062d\u0635\u0627\u0646"), style: stChamp })),
             h("div", { role: "button", onClick: function () { var v = (libreTmp || "").trim(); if (!v) return; setChevalId(""); setChevalLibre(v); fermer(); },
               style: { flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 48, padding: "0 16px", borderRadius: 12, background: (libreTmp || "").trim() ? HJ.pet : "transparent", border: "1px solid " + HJ.reflet, color: HJ.ivoire, fontFamily: M, fontSize: 15, fontWeight: 600, cursor: "pointer", opacity: (libreTmp || "").trim() ? 1 : 0.5 } },
-              T("Valider", "OK", "Aceptar", "OK", "決定", "OK"))) : null,
-          miens.length ? titreSec(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬", "Meine Pferde")) : null,
+              T("Valider", "OK", "Aceptar", "OK", "決定", "OK", "\u062a\u0623\u0643\u064a\u062f"))) : null,
+          miens.length ? titreSec(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬", "Meine Pferde", "\u062e\u064a\u0648\u0644\u064a")) : null,
           miens.map(function (c) { return ligne("m" + c.id, c.nom || "", String(chevalId) === String(c.id), function () { setChevalId(c.id); setChevalLibre(""); fermer(); }); }),
-          (chvEc === null || ecurie.length) ? titreSec(T("Chevaux de mes écuries", "Horses of my stables", "Caballos de mis cuadras", "Cavalli delle mie scuderie", "厩舎の馬", "Pferde meiner Ställe")) : null,
-          chvEc === null ? h("div", { key: "chg", style: { fontFamily: M, fontSize: 13, color: HJ.gris, padding: "10px 4px" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Lädt…")) : null,
+          (chvEc === null || ecurie.length) ? titreSec(T("Chevaux de mes écuries", "Horses of my stables", "Caballos de mis cuadras", "Cavalli delle mie scuderie", "厩舎の馬", "Pferde meiner Ställe", "\u062e\u064a\u0648\u0644 \u0625\u0633\u0637\u0628\u0644\u0627\u062a\u064a")) : null,
+          chvEc === null ? h("div", { key: "chg", style: { fontFamily: M, fontSize: 13, color: HJ.gris, padding: "10px 4px" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Lädt…", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026")) : null,
           ecurie.map(function (c) { return ligne("e" + c.id, c.nom || "", String(chevalId) === String(c.id), function () { setChevalId(c.id); setChevalLibre(""); fermer(); }); }),
-          (q && !miens.length && !ecurie.length) ? h("div", { key: "rien", style: { fontFamily: M, fontSize: 13.5, color: HJ.gris, padding: "16px 4px" } }, T("Aucun cheval ne correspond.", "No matching horse.", "Ningún caballo coincide.", "Nessun cavallo corrisponde.", "該当する馬はありません。", "Kein passendes Pferd.")) : null));
+          (q && !miens.length && !ecurie.length) ? h("div", { key: "rien", style: { fontFamily: M, fontSize: 13.5, color: HJ.gris, padding: "16px 4px" } }, T("Aucun cheval ne correspond.", "No matching horse.", "Ningún caballo coincide.", "Nessun cavallo corrisponde.", "該当する馬はありません。", "Kein passendes Pferd.", "\u0644\u0627 \u064a\u0648\u062c\u062f \u062d\u0635\u0627\u0646 \u0645\u0637\u0627\u0628\u0642.")) : null));
     })() : null,
     panChoix ? h(PanneauConseilsHB, {
       onFermer: function () { setPanChoix(false); },
@@ -41579,7 +41579,7 @@ function EcranMonApprentissage() {
   var tr = ctx.tr || function (o) { return (o && (o.fr || "")) || ""; };
   var setEcran = ctx.setEcran || function () { };
   var retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
-  function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+  function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }   /* 27/09 (409) : 7e langue, l arabe */
 
   var stS = React.useState(undefined); var seance = stS[0], setSeance = stS[1];      /* undefined = en cours, null = aucune */
   var stL = React.useState(undefined); var nbMots = stL[0], setNbMots = stL[1];      /* undefined = en cours, null = illisible */
@@ -41626,7 +41626,7 @@ function EcranMonApprentissage() {
   function noterSeance() { try { window.__carnet = { quoi: "nouvelle" }; } catch (eN) { } setEcran("carnet-detail"); }
   function ouvrirLinguae() { try { window.location.href = "lingo.html"; } catch (eLg) { } }
 
-  var MOIS = [T("janvier", "January", "enero", "gennaio", "1月", "Januar"), T("février", "February", "febrero", "febbraio", "2月", "Februar"), T("mars", "March", "marzo", "marzo", "3月", "März"), T("avril", "April", "abril", "aprile", "4月", "April"), T("mai", "May", "mayo", "maggio", "5月", "Mai"), T("juin", "June", "junio", "giugno", "6月", "Juni"), T("juillet", "July", "julio", "luglio", "7月", "Juli"), T("août", "August", "agosto", "agosto", "8月", "August"), T("septembre", "September", "septiembre", "settembre", "9月", "September"), T("octobre", "October", "octubre", "ottobre", "10月", "Oktober"), T("novembre", "November", "noviembre", "novembre", "11月", "November"), T("décembre", "December", "diciembre", "dicembre", "12月", "Dezember")];
+  var MOIS = [T("janvier", "January", "enero", "gennaio", "1月", "Januar", "\u064a\u0646\u0627\u064a\u0631"), T("février", "February", "febrero", "febbraio", "2月", "Februar", "\u0641\u0628\u0631\u0627\u064a\u0631"), T("mars", "March", "marzo", "marzo", "3月", "März", "\u0645\u0627\u0631\u0633"), T("avril", "April", "abril", "aprile", "4月", "April", "\u0623\u0628\u0631\u064a\u0644"), T("mai", "May", "mayo", "maggio", "5月", "Mai", "\u0645\u0627\u064a\u0648"), T("juin", "June", "junio", "giugno", "6月", "Juni", "\u064a\u0648\u0646\u064a\u0648"), T("juillet", "July", "julio", "luglio", "7月", "Juli", "\u064a\u0648\u0644\u064a\u0648"), T("août", "August", "agosto", "agosto", "8月", "August", "\u0623\u063a\u0633\u0637\u0633"), T("septembre", "September", "septiembre", "settembre", "9月", "September", "\u0633\u0628\u062a\u0645\u0628\u0631"), T("octobre", "October", "octubre", "ottobre", "10月", "Oktober", "\u0623\u0643\u062a\u0648\u0628\u0631"), T("novembre", "November", "noviembre", "novembre", "11月", "November", "\u0646\u0648\u0641\u0645\u0628\u0631"), T("décembre", "December", "diciembre", "dicembre", "12月", "Dezember", "\u062f\u064a\u0633\u0645\u0628\u0631")];
   function enClair(s) {
     var m = String(s || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
     if (!m) return String(s || "");
@@ -41703,6 +41703,7 @@ function EcranMonApprentissage() {
     ".hype-apprentissage-hb .fil{width:32px;height:1px;background:var(--ha-bronze);margin:14px 0 12px}",
     ".hype-apprentissage-hb .th{font-size:10.5px;letter-spacing:.24em;text-transform:uppercase;color:rgba(242,237,228,.8)}",
     ".hype-apprentissage-hb .hype-apprentissage-btn{margin-top:18px;flex:none;display:inline-flex;max-width:100%}",
+    "[dir=rtl] .hype-apprentissage-outil .hype-apprentissage-chev,[dir=rtl] .hype-apprentissage-btn svg{transform:scaleX(-1)}",   /* 27/09 (409) : chevrons retournes en arabe */
     "@media (prefers-reduced-motion: reduce){.hype-apprentissage-chev{transition:none}.hype-apprentissage-apercu{animation:none}}"
   ].join("");
 
@@ -41712,13 +41713,13 @@ function EcranMonApprentissage() {
     lignesJournal = h("div", { className: "hype-apprentissage-etat" }, h("span", { className: "hype-apprentissage-picto" }, picto("cal")), h("span", { className: "hype-apprentissage-lib", style: { color: "#A9ADB0" } }, "…"));
   } else if (seance === null) {
     lignesJournal = h("div", { className: "hype-apprentissage-etat" }, h("span", { className: "hype-apprentissage-picto" }, picto("cal")),
-      h("span", { className: "hype-apprentissage-lib" }, T("Aucune séance pour le moment.", "No session yet.", "Todavía no hay sesiones.", "Ancora nessuna sessione.", "まだ稽古はありません。", "Noch keine Einheit.")));
+      h("span", { className: "hype-apprentissage-lib" }, T("Aucune séance pour le moment.", "No session yet.", "Todavía no hay sesiones.", "Ancora nessuna sessione.", "まだ稽古はありません。", "Noch keine Einheit.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u062d\u0635\u0635 \u062d\u062a\u0649 \u0627\u0644\u0622\u0646.")));
   } else {
     var sous = [seance.cheval_nom || null, seance.discipline || null].filter(function (x) { return !!x; }).join(" · ");
     lignesJournal = h(React.Fragment, null,
       h("button", { type: "button", className: "hype-apprentissage-etat", "aria-expanded": ouvert ? "true" : "false", onClick: function () { setOuvert(!ouvert); } },
         h("span", { className: "hype-apprentissage-picto" }, picto("cal")),
-        h("span", { className: "hype-apprentissage-lib" }, T("Dernière séance", "Last session", "Última sesión", "Ultima sessione", "最後の稽古", "Letzte Einheit")),
+        h("span", { className: "hype-apprentissage-lib" }, T("Dernière séance", "Last session", "Última sesión", "Ultima sessione", "最後の稽古", "Letzte Einheit", "\u0622\u062e\u0631 \u062d\u0635\u0629")),
         chevron("hype-apprentissage-chev" + (ouvert ? " ouvert" : ""))),
       ouvert ? h("div", { className: "hype-apprentissage-apercu" },
         h("div", { className: "d" }, enClair(seance.date_seance)),
@@ -41729,24 +41730,24 @@ function EcranMonApprentissage() {
   /* --- Linguae --- */
   var stLing;
   if (nbMots === undefined) stLing = "…";
-  else if (nbMots === null) stLing = T("Mes mots gardés dans Linguae.", "The words I kept in Linguae.", "Mis palabras guardadas en Linguae.", "Le mie parole salvate in Linguae.", "Linguaeで保存した単語。", "Meine in Linguae gemerkten Wörter.");
-  else if (nbMots === 0) stLing = T("Aucun mot enregistré", "No saved words", "Ninguna palabra guardada", "Nessuna parola salvata", "保存した単語はありません", "Keine gespeicherten Wörter");
-  else if (nbMots === 1) stLing = T("1 mot à retenir.", "1 word to remember.", "1 palabra para recordar.", "1 parola da ricordare.", "覚える単語 1", "1 Wort zum Merken.");
-  else stLing = T(nbMots + " mots à retenir.", nbMots + " words to remember.", nbMots + " palabras para recordar.", nbMots + " parole da ricordare.", "覚える単語 " + nbMots, nbMots + " Wörter zum Merken.");
+  else if (nbMots === null) stLing = T("Mes mots gardés dans Linguae.", "The words I kept in Linguae.", "Mis palabras guardadas en Linguae.", "Le mie parole salvate in Linguae.", "Linguaeで保存した単語。", "Meine in Linguae gemerkten Wörter.", "\u0643\u0644\u0645\u0627\u062a\u064a \u0627\u0644\u0645\u062d\u0641\u0648\u0638\u0629 \u0641\u064a Linguae.");
+  else if (nbMots === 0) stLing = T("Aucun mot enregistré", "No saved words", "Ninguna palabra guardada", "Nessuna parola salvata", "保存した単語はありません", "Keine gespeicherten Wörter", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0643\u0644\u0645\u0627\u062a \u0645\u062d\u0641\u0648\u0638\u0629");
+  else if (nbMots === 1) stLing = T("1 mot à retenir.", "1 word to remember.", "1 palabra para recordar.", "1 parola da ricordare.", "覚える単語 1", "1 Wort zum Merken.", "\u0643\u0644\u0645\u0629 \u0648\u0627\u062d\u062f\u0629 \u0644\u0644\u062d\u0641\u0638.");
+  else stLing = T(nbMots + " mots à retenir.", nbMots + " words to remember.", nbMots + " palabras para recordar.", nbMots + " parole da ricordare.", "覚える単語 " + nbMots, nbMots + " Wörter zum Merken.", nbMots + " \u0643\u0644\u0645\u0627\u062a \u0644\u0644\u062d\u0641\u0638.");
 
   var imgHB = "images/FOND_HEYBABY.webp";
 
-  return h("div", { className: "hype-apprentissage" },
+  return h("div", { className: "hype-apprentissage", dir: (ctx.langue === "ar") ? "rtl" : undefined, lang: ctx.langue || undefined },
     h("style", null, CSS),
     h("header", { className: "hype-apprentissage-haut" },
       h("img", { src: "images/APPRENTISSAGE_HAUT.webp", alt: "", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (eI) { } } }),
       h("div", { className: "hype-apprentissage-voile" }),
-      h("button", { type: "button", className: "hype-apprentissage-retour", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück") }, "‹"),
+      h("button", { type: "button", className: "hype-apprentissage-retour", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "\u0631\u062c\u0648\u0639") }, "‹"),
       h("div", { className: "hype-apprentissage-titres" },
-        h("h1", { className: "hype-apprentissage-titre" }, T("Mon apprentissage", "My learning", "Mi aprendizaje", "Il mio apprendimento", "私の学び", "Mein Lernweg")),
-        h("div", { className: "hype-apprentissage-devise" }, T("Comprendre · Pratiquer · Progresser", "Understand · Practise · Progress", "Comprender · Practicar · Progresar", "Capire · Praticare · Progredire", "理解する · 練習する · 上達する", "Verstehen · Üben · Vorankommen")),
+        h("h1", { className: "hype-apprentissage-titre" }, T("Mon apprentissage", "My learning", "Mi aprendizaje", "Il mio apprendimento", "私の学び", "Mein Lernweg", "\u062a\u0639\u0644\u0645\u064a")),
+        h("div", { className: "hype-apprentissage-devise" }, T("Comprendre · Pratiquer · Progresser", "Understand · Practise · Progress", "Comprender · Practicar · Progresar", "Capire · Praticare · Progredire", "理解する · 練習する · 上達する", "Verstehen · Üben · Vorankommen", "\u0623\u0641\u0647\u0645 \u00b7 \u0623\u062a\u062f\u0631\u0628 \u00b7 \u0623\u062a\u0642\u062f\u0645")),
         h("div", { className: "hype-apprentissage-filet" }),
-        h("div", { className: "hype-apprentissage-phrase" }, T("Chaque séance écrit la suite.", "Every session writes what comes next.", "Cada sesión escribe lo que sigue.", "Ogni sessione scrive il seguito.", "稽古ごとに続きが書かれる。", "Jede Einheit schreibt die Fortsetzung.")))),
+        h("div", { className: "hype-apprentissage-phrase" }, T("Chaque séance écrit la suite.", "Every session writes what comes next.", "Cada sesión escribe lo que sigue.", "Ogni sessione scrive il seguito.", "稽古ごとに続きが書かれる。", "Jede Einheit schreibt die Fortsetzung.", "\u0643\u0644 \u062d\u0635\u0629 \u062a\u0643\u062a\u0628 \u0645\u0627 \u064a\u0644\u064a\u0647\u0627.")))),
 
     h("div", { className: "hype-apprentissage-corps" },
       /* 1. Journal */
@@ -41754,52 +41755,52 @@ function EcranMonApprentissage() {
         h("div", { className: "hype-apprentissage-jtete" },
           h("span", { className: "hype-apprentissage-picto" }, picto("cal")),
           h("div", { style: { flex: 1, minWidth: 0 } },
-            h("h2", { className: "hype-apprentissage-h" }, T("Mon journal de progression", "My progress journal", "Mi diario de progreso", "Il mio diario dei progressi", "上達の記録", "Mein Fortschrittsjournal")),
-            h("div", { className: "hype-apprentissage-desc" }, T("Mes séances, mes sensations, mes objectifs.", "My sessions, my feelings, my goals.", "Mis sesiones, mis sensaciones, mis objetivos.", "Le mie sessioni, le mie sensazioni, i miei obiettivi.", "稽古、感覚、目標。", "Meine Einheiten, mein Gefühl, meine Ziele.")))),
+            h("h2", { className: "hype-apprentissage-h" }, T("Mon journal de progression", "My progress journal", "Mi diario de progreso", "Il mio diario dei progressi", "上達の記録", "Mein Fortschrittsjournal", "\u0633\u062c\u0644 \u062a\u0642\u062f\u0645\u064a")),
+            h("div", { className: "hype-apprentissage-desc" }, T("Mes séances, mes sensations, mes objectifs.", "My sessions, my feelings, my goals.", "Mis sesiones, mis sensaciones, mis objetivos.", "Le mie sessioni, le mie sensazioni, i miei obiettivi.", "稽古、感覚、目標。", "Meine Einheiten, mein Gefühl, meine Ziele.", "\u062d\u0635\u0635\u064a\u060c \u0623\u062d\u0627\u0633\u064a\u0633\u064a\u060c \u0623\u0647\u062f\u0627\u0641\u064a.")))),
         lignesJournal,
         h("div", { className: "hype-apprentissage-actions" },
           h("button", { type: "button", className: "hype-apprentissage-btn", onClick: noterSeance },
-            T("Noter une séance", "Log a session", "Anotar una sesión", "Annota una sessione", "稽古を記録", "Einheit notieren"), chevron()),
+            T("Noter une séance", "Log a session", "Anotar una sesión", "Annota una sessione", "稽古を記録", "Einheit notieren", "\u062a\u0633\u062c\u064a\u0644 \u062d\u0635\u0629"), chevron()),
           h("button", { type: "button", className: "hype-apprentissage-lien", onClick: function () { setEcran("carnet"); } },
-            T("Voir mon journal", "See my journal", "Ver mi diario", "Vedi il mio diario", "記録を見る", "Mein Journal ansehen")))),
+            T("Voir mon journal", "See my journal", "Ver mi diario", "Vedi il mio diario", "記録を見る", "Mein Journal ansehen", "\u0639\u0631\u0636 \u0633\u062c\u0644\u064a")))),
 
       /* 2. Outils */
-      h("div", { className: "hype-apprentissage-section" }, h("h2", null, T("Mes outils pour apprendre", "My learning tools", "Mis herramientas para aprender", "I miei strumenti per imparare", "学びの道具", "Meine Lernwerkzeuge"))),
+      h("div", { className: "hype-apprentissage-section" }, h("h2", null, T("Mes outils pour apprendre", "My learning tools", "Mis herramientas para aprender", "I miei strumenti per imparare", "学びの道具", "Meine Lernwerkzeuge", "\u0623\u062f\u0648\u0627\u062a\u064a \u0644\u0644\u062a\u0639\u0644\u0645"))),
       h("div", { className: "hype-apprentissage-outils" },
         h("button", { type: "button", className: "hype-apprentissage-outil", onClick: function () { setEcran("galops"); } },
           h("span", { className: "hype-apprentissage-picto" }, picto("livre")),
           h("span", { className: "txt" },
-            h("span", { className: "hype-apprentissage-h", style: { display: "block" } }, T("Théorie des Galops", "Galop theory", "Teoría de los Galops", "Teoria dei Galop", "ガロップ理論", "Galopp-Theorie")),
-            h("span", { className: "st", style: { display: "block" } }, T("Réviser à mon rythme.", "Revise at my own pace.", "Repasar a mi ritmo.", "Ripassare al mio ritmo.", "自分のペースで復習。", "In meinem Tempo wiederholen.")),
-            h("span", { className: "act" }, T("Continuer", "Continue", "Continuar", "Continua", "続ける", "Weiter"))),
+            h("span", { className: "hype-apprentissage-h", style: { display: "block" } }, T("Théorie des Galops", "Galop theory", "Teoría de los Galops", "Teoria dei Galop", "ガロップ理論", "Galopp-Theorie", "\u0646\u0638\u0631\u064a\u0629 \u0645\u0633\u062a\u0648\u064a\u0627\u062a \u0627\u0644\u063a\u0627\u0644\u0648\u0628")),
+            h("span", { className: "st", style: { display: "block" } }, T("Réviser à mon rythme.", "Revise at my own pace.", "Repasar a mi ritmo.", "Ripassare al mio ritmo.", "自分のペースで復習。", "In meinem Tempo wiederholen.", "\u0623\u0631\u0627\u062c\u0639 \u0639\u0644\u0649 \u0625\u064a\u0642\u0627\u0639\u064a.")),
+            h("span", { className: "act" }, T("Continuer", "Continue", "Continuar", "Continua", "続ける", "Weiter", "\u0645\u062a\u0627\u0628\u0639\u0629"))),
           chevron("hype-apprentissage-chev")),
         h("button", { type: "button", className: "hype-apprentissage-outil", onClick: ouvrirLinguae },
           h("span", { className: "hype-apprentissage-picto" }, picto("bulle")),
           h("span", { className: "txt" },
-            h("span", { className: "hype-apprentissage-h", style: { display: "block" } }, T("Mon carnet Linguae", "My Linguae notebook", "Mi cuaderno Linguae", "Il mio quaderno Linguae", "Linguaeノート", "Mein Linguae-Heft")),
+            h("span", { className: "hype-apprentissage-h", style: { display: "block" } }, T("Mon carnet Linguae", "My Linguae notebook", "Mi cuaderno Linguae", "Il mio quaderno Linguae", "Linguaeノート", "Mein Linguae-Heft", "\u062f\u0641\u062a\u0631\u064a \u0641\u064a Linguae")),
             h("span", { className: "st", style: { display: "block" } }, stLing),
-            h("span", { className: "act" }, T("Voir le carnet", "See the notebook", "Ver el cuaderno", "Vedi il quaderno", "ノートを見る", "Heft ansehen"))),
+            h("span", { className: "act" }, T("Voir le carnet", "See the notebook", "Ver el cuaderno", "Vedi il quaderno", "ノートを見る", "Heft ansehen", "\u0639\u0631\u0636 \u0627\u0644\u062f\u0641\u062a\u0631"))),
           chevron("hype-apprentissage-chev")),
         /* 26/09 (405) : THEORIE & CULTURE, meme forme que les deux lignes du dessus (Blandine :
            « tu le fais similaire aux deux onglets au dessus »). Ouvre la page existante `articles`. */
         h("button", { type: "button", className: "hype-apprentissage-outil", onClick: function () { setEcran("articles"); } },
           h("span", { className: "hype-apprentissage-picto" }, picto("mag")),
           h("span", { className: "txt" },
-            h("span", { className: "hype-apprentissage-h", style: { display: "block" } }, T("Th\u00e9orie & Culture", "Theory & Culture", "Teor\u00eda y Cultura", "Teoria e Cultura", "\u7406\u8ad6\u3068\u6587\u5316", "Theorie & Kultur")),
-            h("span", { className: "st", style: { display: "block" } }, T("Le Mag de la culture \u00e9questre.", "The equestrian culture magazine.", "La revista de la cultura ecuestre.", "Il magazine della cultura equestre.", "\u99ac\u8853\u6587\u5316\u30de\u30ac\u30b8\u30f3\u3002", "Das Magazin der Reitkultur.")),
-            h("span", { className: "act" }, T("D\u00e9couvrir", "Discover", "Descubrir", "Scopri", "\u898b\u308b", "Entdecken"))),
+            h("span", { className: "hype-apprentissage-h", style: { display: "block" } }, T("Th\u00e9orie & Culture", "Theory & Culture", "Teor\u00eda y Cultura", "Teoria e Cultura", "\u7406\u8ad6\u3068\u6587\u5316", "Theorie & Kultur", "\u0627\u0644\u0646\u0638\u0631\u064a\u0629 \u0648\u0627\u0644\u062b\u0642\u0627\u0641\u0629")),
+            h("span", { className: "st", style: { display: "block" } }, T("Le Mag de la culture \u00e9questre.", "The equestrian culture magazine.", "La revista de la cultura ecuestre.", "Il magazine della cultura equestre.", "\u99ac\u8853\u6587\u5316\u30de\u30ac\u30b8\u30f3\u3002", "Das Magazin der Reitkultur.", "\u0645\u062c\u0644\u0629 \u062b\u0642\u0627\u0641\u0629 \u0627\u0644\u0641\u0631\u0648\u0633\u064a\u0629.")),
+            h("span", { className: "act" }, T("D\u00e9couvrir", "Discover", "Descubrir", "Scopri", "\u898b\u308b", "Entdecken", "\u0627\u0643\u062a\u0634\u0627\u0641"))),
           chevron("hype-apprentissage-chev"))),
 
       /* 3. Conseils Hey Baby */
-      h("div", { className: "hype-apprentissage-section" }, h("h2", null, T("Mes conseils Hey Baby", "My Hey Baby tips", "Mis consejos Hey Baby", "I miei consigli Hey Baby", "Hey Babyのアドバイス", "Meine Hey-Baby-Tipps"))),
+      h("div", { className: "hype-apprentissage-section" }, h("h2", null, T("Mes conseils Hey Baby", "My Hey Baby tips", "Mis consejos Hey Baby", "I miei consigli Hey Baby", "Hey Babyのアドバイス", "Meine Hey-Baby-Tipps", "\u0646\u0635\u0627\u0626\u062d\u064a \u0645\u0646 Hey Baby"))),
       h("button", { type: "button", className: "hype-apprentissage-hb", onClick: function () { setPanOuvert(true); } },
         h("span", { className: "img", style: { backgroundImage: "url(" + imgHB + ")" } }),
         h("span", { className: "voile" }),
         h("span", { className: "in", style: { display: "block" } },
-          h("span", { className: "t", style: { display: "block" } }, T("Retrouver les conseils de mon coach.", "Find my coach's tips.", "Encontrar los consejos de mi coach.", "Ritrovare i consigli del mio coach.", "コーチのアドバイスを見る。", "Die Tipps meines Coachs wiederfinden.")),
+          h("span", { className: "t", style: { display: "block" } }, T("Retrouver les conseils de mon coach.", "Find my coach's tips.", "Encontrar los consejos de mi coach.", "Ritrovare i consigli del mio coach.", "コーチのアドバイスを見る。", "Die Tipps meines Coachs wiederfinden.", "\u0623\u062c\u062f \u0646\u0635\u0627\u0626\u062d \u0645\u062f\u0631\u0628\u064a.")),
           h("span", { className: "fil", style: { display: "block" } }),
-          h("span", { className: "th", style: { display: "block" } }, T("Position · Plat · Saut", "Position · Flatwork · Jumping", "Posición · Plano · Salto", "Posizione · Piano · Salto", "姿勢 · 平地 · 障害", "Sitz · Dressur · Springen")),
-          h("span", { className: "hype-apprentissage-btn", "aria-hidden": "true" }, T("Voir mes conseils", "See my tips", "Ver mis consejos", "Vedi i miei consigli", "アドバイスを見る", "Meine Tipps ansehen"), chevron()))),
+          h("span", { className: "th", style: { display: "block" } }, T("Position · Plat · Saut", "Position · Flatwork · Jumping", "Posición · Plano · Salto", "Posizione · Piano · Salto", "姿勢 · 平地 · 障害", "Sitz · Dressur · Springen", "\u0627\u0644\u062c\u0644\u0633\u0629 \u00b7 \u0627\u0644\u062a\u062f\u0631\u064a\u0628 \u0627\u0644\u0645\u0633\u0637\u062d \u00b7 \u0627\u0644\u0642\u0641\u0632")),
+          h("span", { className: "hype-apprentissage-btn", "aria-hidden": "true" }, T("Voir mes conseils", "See my tips", "Ver mis consejos", "Vedi i miei consigli", "アドバイスを見る", "Meine Tipps ansehen", "\u0639\u0631\u0636 \u0646\u0635\u0627\u0626\u062d\u064a"), chevron()))),
       h("div", { "aria-hidden": "true", style: { height: 32, flex: "none" } })),
     (typeof caleBarreHype === "function") ? caleBarreHype() : h("div", { style: { height: "calc(env(safe-area-inset-bottom) + 84px)" } }),
     panOuvert ? h(PanneauConseilsHB, { depuis: "apprentissage", onFermer: function () { setPanOuvert(false); } }) : null);
