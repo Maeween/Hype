@@ -5422,3 +5422,81 @@ entre le téléphone et Internet — appli en arrière-plan, réseau). Le 398
   « en_cours », l'appli attend jusqu'à 5 min puis affiche l'erreur.
   Build 20260926-401 (contient 399 + 400). node --check OK (18 blocs) ;
   marqueurs inchangés hors ajouts voulus.
+
+· (402) 26/09, 23 h 10 — CONSEILS HEY BABY : PLUS DE PLACE, PISTE C.
+  Sa demande : « la page conseils Hey Baby reste encore trop limitée en
+  espace ». Aperçu publié avec l'écran actuel et trois pistes (A : le haut
+  se replie au défilement ; B : haut compact en permanence avec bouton
+  Filtrer ; C : pas de barre d'onglets sur cette page). Son choix : « Pourquoi
+  pas c on peut tester ? ».
+  – La barre d'onglets du bas porte désormais la classe hype-barre-onglets.
+  – PanneauConseilsHB pose la classe hb-sans-barre sur <body> à l'ouverture
+    et la retire à la fermeture (compteur window.__hbSansBarre si deux
+    panneaux s'empilent) ; une règle CSS cache la barre tant que la classe
+    est là. On sort par la croix.
+  – Cale du bas de la liste 104 → 28 px (+ encoche), puisque la barre n'est
+    plus là.
+  – Vaut pour les TROIS portes du panneau : depuis Théorie & Culture (Mon
+    travail), depuis Mon carnet, et le mode « choisir un conseil » d'une
+    séance.
+  – L'en-tête (photo, citation, HEY BABY, bouton, recherche, filtres) est
+    INCHANGÉ. A et B restent possibles plus tard, combinables avec C.
+  Retour en arrière : retirer l'effet commenté (402) dans PanneauConseilsHB.
+  Build 20260926-402 (contient 399 à 401). node --check OK (18 blocs) ;
+  seules modifications : les 4 points ci-dessus + le numéro de build.
+
+  PAGE APPRENTISSAGE — 26/09, 23 h 06 : elle A CHANGÉ D'AVIS depuis le
+  16/09 (« ça sert à rien de créer une page d'apprentissage alors qu'on en a
+  déjà une ») : elle veut maintenant une VRAIE page Apprentissage, d'où l'on
+  va vers Mon carnet et vers Mes conseils Hey Baby. Rien de codé. Questions
+  en attente : (1) la page s'ajoute à côté de « Théorie & Culture » ou la
+  remplace sur la carte « Mon apprentissage » de la page Cavalier ;
+  (2) ce qu'elle entend par « carnet à construire » (Mon carnet existe
+  déjà : ce qui manque dedans ?) ; (3) deux grandes portes seulement, ou
+  aussi un aperçu (dernier conseil, 3 priorités du moment). Faire un
+  APERÇU avant tout code, une fois ses réponses données.
+
+· (403) 26/09, 23 h 45 — PAGE « MON APPRENTISSAGE » (nouvelle, ajoutée).
+  Décisions de Blandine : « On ajoute la page » (Théorie & Culture RESTE ;
+  on retirera plus tard, sur sa demande, les lignes du carnet qui y sont) ;
+  brief détaillé + maquette fournis (fond #080A0B, cartes #121617, bleu
+  pétrole #254F60 / #376B7D / #5C8792, bronze #AD8B57, champagne #C5AA78,
+  ivoire #F2EDE4 — palette PROPRE à cette page, Hype inchangé ailleurs) ;
+  « Théorie des Galops » → l'onglet Galops (« oui c'est ça ») ; photo du haut
+  fournie par elle ; carte Hey Baby = la photo du haut des conseils
+  (images/FOND_HEYBABY.webp) ; Linguae en version simple (« Ok »).
+  – Composant EcranMonApprentissage (juste avant EcranMonCarnet), route
+    `apprentissage`, styles dans une seule feuille injectée, classes
+    hype-apprentissage-*. Aucun SQL, aucune table, aucune donnée inventée.
+  – Entrée : la carte « Mon apprentissage » de la page Cavalier ouvre
+    `apprentissage` (avant : `articles`). Le texte de la carte (« Galops,
+    articles, mon carnet, mes conseils ») est INCHANGÉ — à revoir sur sa
+    décision. Théorie & Culture reste ouverte depuis l'Accueil.
+  – L'onglet Cavalier du menu reste allumé sur cette page.
+  – Retour ‹ : retourEcran (historique), sinon la page Cavalier.
+  – JOURNAL = Mon carnet : seule la DERNIÈRE séance est lue (carnet_seances,
+    limit 1, RLS). Aucune → « Aucune séance pour le moment. », sans chevron.
+    Sinon ligne « Dernière séance » + chevron (aria-expanded) qui déplie
+    date, cheval · discipline, note (4 lignes max). « Noter une séance » =
+    window.__carnet { quoi: "nouvelle" } puis `carnet-detail` (comme le
+    bouton du carnet). « Voir mon journal » = `carnet`.
+  – THÉORIE DES GALOPS = setEcran("galops").
+  – LINGUAE : relevé de lingo.html — le carnet est synchronisé dans
+    hype_lingua_progression.carnet (une ligne par compte, clé « ville|ref »
+    → { v, d, a, t }) ; le carnet ne garde QUE des références, le texte des
+    mots vit dans les lexiques hype-lingo-lex-*.js (30+ fichiers). Donc :
+    NOMBRE RÉEL de mots affiché (t absent ou "mot", a !== false ; phrases et
+    lettres non comptées), 0 → « Aucun mot enregistré », lecture impossible
+    → phrase neutre sans chiffre. Les 3 mots en clair ne sont PAS affichés.
+    « Voir le carnet » ouvre lingo.html sur son accueil : Linguae n'a pas de
+    lien direct vers le carnet (#lecon, #situation, #duel, #sprint
+    seulement). En attente, deux étapes séparées : lien #carnet dans
+    lingo.html, puis affichage des mots.
+  – CONSEILS HEY BABY : PanneauConseilsHB depuis: "apprentissage" ; au
+    retour d'un conseil, le panneau se rouvre (window.__rouvrirConseils).
+  – Fichier NOUVEAU : images/APPRENTISSAGE_HAUT.webp (1672 × 941, 78 Ko,
+    tirée de sa photo) ; si absent, l'en-tête reste sombre, rien ne casse.
+  Vérifs : node --check OK (18 blocs), un seul marqueur 20260926-403, aucun
+  JSX ; rendu isolé à 320 et 390 px : aucun débordement horizontal.
+  Build 20260926-403 (contient 399 à 402). ⚠️ 402 (barre cachée sur les
+  conseils) N'ÉTAIT PAS ENCORE TESTÉ quand 403 a été livré.
