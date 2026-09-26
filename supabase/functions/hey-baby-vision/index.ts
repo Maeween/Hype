@@ -23,6 +23,15 @@
 //   OPENAI_TEXT_MODEL       (rédaction — ex. "gpt-5.6-sol")
 //   OPENAI_REASONING        (réflexion de la rédaction — ex. "medium")
 
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
+// 26/09 (soir) — MODE DIFFÉRÉ pour la perception (corps.differe === true) : la fonction crée une ligne
+// dans public.heybaby_analyses (statut en_cours), répond TOUT DE SUITE { ok, differe, jobId }, puis
+// travaille en arrière-plan (EdgeRuntime.waitUntil) et écrit le résultat dans la ligne (termine /
+// erreur). L'appli relit la ligne toutes les 3 s. Raison, prouvée le 26/09 à 20 h 55 : observation
+// en « high » = 95 s, et le téléphone perdait la connexion vers 46 s (appli en arrière-plan, réseau).
+// Écriture avec la clé de service (SUPABASE_SERVICE_ROLE_KEY, secret par défaut des Edge Functions) :
+// l'appli n'a AUCUN droit d'écriture sur la table. Le mode sans « differe » reste inchangé.
 const ORIGINES = ["https://2hype.fr", "https://www.2hype.fr", "https://2hype.netlify.app"];
 const DUREE_MAX_MS = 300000;      // 5 min, sous les 400 s de Supabase
 const SIGNE_DE_VIE_MS = 5000;     // bien sous les 150 s d'inactivité tolérées
@@ -144,6 +153,60 @@ Deno.serve(async (req: Request) => {
     signal: ctrl.signal,
     body: chargeSerialisee,
   });
+
+  // ----- Perception en différé -----
+  if (mode === "perception" && corps.differe === true) {
+    const jeton = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+    const urlSb = Deno.env.get("SUPABASE_URL") || "";
+    const cleService = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    if (!urlSb || !cleService) { log(reqId, "différé : SUPABASE_URL ou clé de service absente"); return erreur("INTERNAL_ERROR", "Configuration serveur incomplète (différé).", 500); }
+    const admin = createClient(urlSb, cleService, { auth: { persistSession: false } });
+    let userId = "";
+    try {
+      const u = await admin.auth.getUser(jeton);
+      userId = (u && u.data && u.data.user && u.data.user.id) || "";
+    } catch (_e) { userId = ""; }
+    if (!userId) { log(reqId, "différé : utilisateur non reconnu"); return erreur("INVALID_REQUEST", "Session non reconnue.", 401); }
+    const ins = await admin.from("heybaby_analyses").insert({ user_id: userId, statut: "en_cours" }).select("id").single();
+    if (ins.error || !ins.data) { log(reqId, "différé : création de la ligne impossible —", ins.error && ins.error.message); return erreur("INTERNAL_ERROR", "Analyse impossible à enregistrer.", 500); }
+    const jobId = ins.data.id as string;
+    const ecrire = async (champs: Record<string, unknown>) => {
+      const r = await admin.from("heybaby_analyses").update({ ...champs, updated_at: new Date().toISOString() }).eq("id", jobId);
+      if (r.error) log(reqId, "différé : écriture du résultat impossible —", r.error.message);
+    };
+    const travail = (async () => {
+      const minuteurD = setTimeout(() => { expire = true; log(reqId, "différé : timeout (" + DUREE_MAX_MS + " ms)"); try { ctrl.abort(); } catch (_e) { /* rien */ } }, DUREE_MAX_MS);
+      try {
+        const amont = await appelerOpenAI();
+        if (!amont.ok) {
+          const detail = await amont.text().catch(() => "");
+          log(reqId, "OpenAI HTTP", amont.status, "après", Date.now() - t0, "ms (différé) —", detail.slice(0, 400));
+          await ecrire({ statut: "erreur", erreur_code: codeErreurOpenAI(amont.status, detail), erreur_message: "Le fournisseur IA a renvoyé une erreur (HTTP " + amont.status + ")." });
+          return;
+        }
+        const data: any = await amont.json().catch(() => null);
+        const choix = data?.choices?.[0];
+        const texte: string = choix?.message?.content || "";
+        const raison = choix?.finish_reason || "?";
+        const u = data?.usage || {};
+        const reflexion = u?.completion_tokens_details?.reasoning_tokens;
+        log(reqId, "réponse complète (différé) en", Date.now() - t0, "ms —", texte.length, "caractères — fin :", raison, "— jetons sortie", u.completion_tokens, "dont réflexion", reflexion, "— job", jobId);
+        if (!texte) { await ecrire({ statut: "erreur", erreur_code: "INVALID_RESPONSE", erreur_message: "Observation vide (fin : " + raison + ", réflexion " + reflexion + " jetons)." }); return; }
+        await ecrire({ statut: "termine", resultat: texte });
+      } catch (e) {
+        const d = Date.now() - t0;
+        log(reqId, "différé : échec après", d, "ms —", (e as Error)?.message);
+        await ecrire({ statut: "erreur", erreur_code: expire ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR", erreur_message: expire ? "L'analyse a pris trop de temps." : "Connexion au fournisseur IA impossible." });
+      } finally { clearTimeout(minuteurD); }
+    })();
+    try {
+      // deno-lint-ignore no-explicit-any
+      const er = (globalThis as any).EdgeRuntime;
+      if (er && typeof er.waitUntil === "function") er.waitUntil(travail);
+    } catch (_e) { /* rien */ }
+    log(reqId, "différé : job", jobId, "lancé pour", userId);
+    return json({ ok: true, differe: true, jobId, reqId });
+  }
 
   // ----- Perception : JSON final précédé de signes de vie -----
   if (mode === "perception") {
