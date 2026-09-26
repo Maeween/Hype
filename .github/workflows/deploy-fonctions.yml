@@ -24,3 +24,6 @@ jobs:
           version: latest
 
       - run: supabase functions deploy mux-upload --project-ref $PROJECT_ID
+
+      # 26/09 : analyse photo de Hey Baby (limite de temps de Netlify trop courte)
+      - run: supabase functions deploy hey-baby-vision --project-ref $PROJECT_ID
