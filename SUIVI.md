@@ -4998,77 +4998,427 @@ Build 20260922-384. node --check OK.
   que la bascule soit mémorisée.)
 
 ────────────────────────────────────────────────────────────
-128. 23/09 (386) — HEY BABY : TOUTE PHOTO ÉCHOUE ; LE DIAGNOSTIC À L'ÉCRAN
+128. 23/09 (386 + 387) — HEY BABY EN PANNE DEPUIS 2HYPE.FR ; LE DIAGNOSTIC
+     À L'ÉCRAN ; LE RELAIS V5 ENFIN EN LIGNE
 ────────────────────────────────────────────────────────────
 
-SYMPTÔME (ses captures de 14 h 34-14 h 38) : Hey Baby répond « Petit souci de
-connexion » à toute photo, et aussi à un simple texte envoyé APRÈS une photo
-dans la même conversation (« Alors »). Un texte seul dans une conversation
-neuve passe (« Bonjour » → réponse normale, sur 2hype.netlify.app).
+SYMPTÔME (captures du 23/09) : Hey Baby répond « Petit souci de connexion »
+à tout, photo ou texte.
 
-CE QUI EST ÉTABLI (lu dans les fichiers, pas supposé) :
-· L'app renvoie à chaque message les 10 derniers échanges, IMAGES COMPRISES :
-  un texte après une photo repart donc avec la photo — même échec.
-· Le relais EN LIGNE (GitHub main, netlify/functions/assistant.js) est la
-  VERSION 3 : 179 lignes, 7,6 Ko, CORS « * ». Avec une image il prend
-  OPENAI_VISION_MODEL (repli gpt-4o) ; en cas de refus OpenAI il répond
-  502 { error: "OpenAI <statut>" } — le détail d'OpenAI ne va QUE dans le
-  journal Netlify.
-· Le mode « perception » (photo en deux étapes) de l'index est bien compris
-  par la v3 : elle l'ignore et répond au format lisible. PAS une
-  incompatibilité.
-· Le NOUVEAU DOMAINE 2hype.fr N'EST PAS EN CAUSE : relais en CORS « * ».
-  (L'index appelle toujours https://2hype.netlify.app/.netlify/functions/
-  assistant, en dur, 5 endroits — fonctionne depuis 2hype.fr grâce au « * ».)
-· Pistes abandonnées en séance, contredites par les fichiers : domaine,
-  incompatibilité v3/perception.
-· CAUSE DE L'ÉCHEC PHOTO : NON ÉTABLIE. Restent : modèle vision refusé par
-  OpenAI, photo refusée, ou délai dépassé (Netlify coupe avant la réponse).
+· (386) DIAGNOSTIC À L'ÉCRAN — décision « fais parler l'appli ». Fonction
+  diagHB(etape, detail) dans EcranAssistantIA / envoyer : sous « Petit souci
+  de connexion », une ligne « ⚙️ Diagnostic (visible par toi seule) » (étape,
+  code HTTP, réponse du relais, durée). Quatre appels : échec de l'étape
+  observation photo, erreur structurée, flux vide, erreur générale. RÉSERVÉ
+  à estCompteFeinnHype (feinn@live.fr), session lue en local (getSession).
+  Les cavalières ne voient rien. POUR LE RETIRER : diagHB = fonction vide.
 
-⚠️ UNE VERSION 5 DU RELAIS EXISTE HORS DU DÉPÔT (309 lignes, 14,9 Ko, datée
-22/07, « passage contrôlé à GPT-5.6 Sol », erreurs structurées avec code et
-reqId — c'est pour ELLE que l'index a été écrit). Elle n'est PAS en ligne et
-on ne sait pas si elle a été retirée exprès. NE PAS la pousser à l'aveugle :
-elle REFUSE toute photo si OPENAI_VISION_MODEL n'est pas renseignée dans
-Netlify, et envoie un réglage de précision d'image (OPENAI_VISION_DETAIL,
-défaut « original ») qu'OpenAI peut refuser. Décision reportée par Blandine
-après lecture du diagnostic.
+· (387) LA CAUSE, PROUVÉE par deux essais « Bonjour » en conversation neuve,
+  sans photo : 2hype.netlify.app → réponse ; 2hype.fr → « Load failed » en
+  1 s. L'index appelait le relais en dur sur https://2hype.netlify.app/…
+  (5 endroits) : depuis 2hype.fr, l'appel d'un site vers l'autre était
+  bloqué AVANT le relais (le CORS « * » du relais ne suffisait pas — ma
+  conclusion inverse du 386 était fausse). CORRECTIF : adresse RELATIVE
+  /.netlify/functions/assistant (window.HYPE_API reste prioritaire).
+  Conséquence : une copie de l'index ouverte hors ligne n'a plus Hey Baby.
+  LIEN_APP (partage, QR code) NON touché. ✅ Confirmé : Hey Baby répond de
+  nouveau depuis 2hype.fr, photos comprises.
 
-✅ CE BUILD (index seul) — décision de Blandine « fais parler l'appli » :
-diagHB(etape, detail) dans EcranAssistantIA / envoyer. Sous « Petit souci de
-connexion », une ligne « ⚙️ Diagnostic (visible par toi seule) » : étape,
-code HTTP, réponse du relais (error / code / message), durée. Quatre appels :
-échec de l'étape observation photo, erreur structurée, flux vide, erreur
-générale (réseau, HTTP, délai de 65 s ou bouton stop). L'erreur HTTP garde
-désormais le champ « error » de la v3 (err.hbErreur).
-RÉSERVÉ à estCompteFeinnHype (feinn@live.fr), session lue en LOCAL
-(getSession). Les cavalières ne voient AUCUN changement.
-POUR LE RETIRER : faire de diagHB une fonction vide.
-Build 20260923-386. node --check OK (18 blocs) ; marqueurs contrôlés avant/
-après (HYPE ▸, function, createElement, ?v=, hype-images- inchangés).
+· RELAIS — le dépôt portait la VERSION 3 de netlify/functions/assistant.js
+  (179 lignes) alors que l'index est écrit pour la VERSION 5 (309 lignes,
+  22/07, photo en deux temps « observation » puis « rédaction », erreurs
+  détaillées). Blandine : sans doute une erreur de poussée à l'époque.
+  Variables Netlify vérifiées sur capture : OPENAI_VISION_MODEL et
+  OPENAI_VISION_REASONING existent, OPENAI_VISION_DETAIL n'existe pas
+  (défaut « original »). V5 POUSSÉE le 23/09, test photo réussi. Le 25/09
+  la v3 a été remise par erreur puis la v5 re-livrée et re-poussée.
 
-À FAIRE ENSUITE : elle envoie une photo à Hey Baby et montre la ligne ⚙️ ;
-selon ce qu'elle dit, décider de la v5 et du réglage Netlify à vérifier.
-DETTE notée : relais en CORS « * » — un autre site peut s'en servir sur son
-compte OpenAI. À traiter plus tard, sur sa décision.
+DETTE : relais en CORS « * » — un autre site peut s'en servir sur son compte
+OpenAI. Non urgent, sur sa décision.
+Builds 20260923-386 et -387. node --check OK (18 blocs).
 
-· (387) 23/09 — PREUVE par ses deux essais « Bonjour », conversation neuve,
-  sans photo : 2hype.netlify.app (14 h 38) → réponse normale ; 2hype.fr
-  (16 h 46, dans Safari) → « Load failed » en 1 s (même chose dans l'appli
-  installée à 16 h 44). Depuis le NOUVEAU DOMAINE, Hey Baby ne joignait plus
-  son relais, même en texte. ⚠️ CORRIGE MA CONCLUSION DU 386 : le CORS « * »
-  du relais ne suffisait pas à mettre le domaine hors de cause — l'appel
-  d'un site vers l'autre était bloqué AVANT le relais (cause exacte du
-  blocage non identifiée ; inutile pour réparer).
-  CORRECTIF (décision « Ok ») : les 5 adresses par défaut du relais passent
-  de https://2hype.netlify.app/.netlify/functions/assistant à l'adresse
-  RELATIVE /.netlify/functions/assistant — l'app parle au relais de
-  l'adresse où elle se trouve. Le réglage window.HYPE_API reste prioritaire.
-  Conséquence dite : une copie de l'index ouverte HORS LIGNE (aperçu depuis
-  les fichiers) n'a plus Hey Baby. LIEN_APP (lien de partage et QR code,
-  toujours 2hype.netlify.app) NON TOUCHÉ.
-  NON RÉGLÉ ICI : la photo avait AUSSI échoué sur 2hype.netlify.app à
-  14 h 38 — refaire un essai photo sur 2hype.fr après poussée ; la ligne ⚙️
-  dira si c'est un second problème. Relais v5 toujours NON poussé (attendre
-  ce test). Build 20260923-387. node --check OK (18 blocs) ; marqueurs
-  inchangés, 6 lignes modifiées (5 adresses + build).
+────────────────────────────────────────────────────────────
+129. 25/09 (390) — HEY BABY : NOUVELLE GRILLE D'OBSERVATION DES PHOTOS
+     (PLAT + SAUT)
+────────────────────────────────────────────────────────────
+
+SON CONSTAT : l'analyse photo (v5) est « super courte » et « pas forcément
+très bonne » ; elle veut surtout mieux au SAUT et sur la position du
+cavalier.
+CAUSES LUES DANS LE CODE : (1) la grille d'observation
+(HEYBABY_PROMPT_PERCEPTION) ne regardait que 8 points (pied/genou, bassin,
+épaules, regard, encolure, antérieurs) ; (2) au saut, UN seul champ libre
+pour tout le cavalier ; (3) les consignes de rédaction
+(HEYBABY_CONSIGNES_PEDAGOGIE) brident la longueur (une priorité, deux
+phrases de réserves, exercice seulement si confiance élevée).
+Vérifié sur sa capture de 13 h 16 (avant ce build) : sur une photo où
+l'obstacle est visible, l'ancienne grille reconnaissait bien la phase
+ascendante et les antérieurs repliés — le défaut est la PAUVRETÉ, pas le
+contexte.
+
+PLAN EN TROIS ACTIONS, une à la fois avec test :
+· ACTION 1 — FAITE ET POUSSÉE le 25/09 : relais v5, plafond de l'étape
+  d'observation 1200 → 3000 jetons (assistant.js ligne 153, raisonnement du
+  modèle compris). Aucun effet visible.
+· ACTION 2 — CE BUILD (390). Cadre posé par Blandine, grille rédigée par
+  ChatGPT en trois allers-retours, relue ici :
+  – bloc 0 qualité et exploitabilité de la photo ;
+  – PLAT : 14 critères, dont deux à ELLE ajoutés (« ligne de dos bien
+    tendue » → ligne_dos_cheval ; « la propulsion » → posterieur_avance
+    dans locomotion_phase, position instantanée seulement) ;
+  – SAUT : phase (abord → réception) + 8 critères cavalier
+    (buste_angle_hanche, bassin_selle, position_mouvement, jambes_saut,
+    pieds_talons_saut, mains_bras_saut, renes_saut, regard_saut) + 3 cheval
+    (forme_dos_encolure_saut, anterieurs avec avant_bras, posterieurs avec
+    symetrie) ; repères de lecture PAR PHASE, jamais un barème ;
+  – CONTEXTE ANNONCÉ par la cavalière (« phase ascendante », « c'est au
+    saut ») retenu si la photo ne le contredit pas (champ source_contexte),
+    jamais preuve d'une position, jamais de confiance gonflée — pour les
+    photos de saut dont l'obstacle est hors du cadre ;
+  – visibilité par côté, AUCUNE comparaison droite-gauche si un côté est
+    caché ; échelle fixe non_perceptible / leger / modere / marque ; AUCUNE
+    mesure en cm ni en degrés ; « position observée ≠ fonctionnement » ;
+    aucun jugement de présentation ni de qualité du saut ; règle du pied /
+    verticale du genou et interdiction oreille-épaule-hanche-talon en
+    suspension CONSERVÉES.
+  PLACE (ajout de ma part, ChatGPT n'ayant pas répondu sur le budget) : un
+  critère non applicable s'écrit {"statut":"non_applicable"} ; au saut, les
+  critères plat qui ont leur équivalent saut ne sont pas remplis (seuls
+  equilibre_general_couple, attitude_cheval, rectitude_incurvation,
+  interaction_cavalier_cheval le sont). Grille remplie ≈ 1 550 jetons au
+  plat comme au saut (≈ 2 300 sans ce correctif), sous les 3 000.
+  ⚠️ La consigne elle-même passe à ~33 500 caractères : un peu plus de temps
+  et de coût par photo. Si la ligne ⚙️ affiche AI_TIMEOUT, c'est là.
+  Aucun autre code ne lit ces champs (vérifié).
+  ⚠️ Les builds 388 et 389 n'ont JAMAIS été poussés : annulés.
+· ACTION 3 — À FAIRE : réécrire la rédaction (HEYBABY_CONSIGNES_PEDAGOGIE).
+  Décidé : 6 blocs au plat (Équilibre, Haut du corps, Assiette, Jambes,
+  Mains/contact, Cheval) séparant vu / interprétation / conseil ; JUSQU'À
+  3 points forts (faits observés) ; 2 priorités ; seuils de confiance
+  ≥ 0,70 correction, 0,45-0,69 vérification (vidéo), < 0,45 non exploité ;
+  propulsion et présentation seulement comme INDICES. Demande de Blandine
+  en plus : PLUSIEURS exercices en fin de réponse, progressifs, adaptés au
+  Galop, spécifiques à la phase au saut. Consigne demandée à ChatGPT, en
+  attente de sa réponse.
+Entre l'action 2 et l'action 3, la rédaction actuelle lit la nouvelle grille :
+ça marche, mais le gain complet vient avec l'action 3.
+Build 20260925-390. node --check OK (18 blocs) ; gabarit JSON vérifié
+(14 critères plat, 12 saut) ; marqueurs inchangés hors ajouts voulus.
+
+· RETOUR ARRIÈRE (25/09, 13 h 29) — le 390 poussé, test photo de saut :
+  « ⚙️ photo, étape observation — HTTP 504 — réponse illisible (pas du
+  JSON) — après 35 s ». PROUVÉ : Netlify a COUPÉ le relais avant sa
+  réponse (un abandon du relais lui-même aurait renvoyé du JSON
+  AI_TIMEOUT). Cause : l'étape d'observation est devenue trop longue
+  (consigne ~33 500 caractères au lieu de ~5 000, grille plus grosse).
+  Toutes les analyses photo étaient donc en panne. Décision « Ok » :
+  index 20260923-387 REMIS EN LIGNE à l'identique (ancienne grille ;
+  diagnostic ⚙️ et adresse relative conservés). La grille du 390 est
+  GARDÉE de côté, à réinstaller quand le temps sera réglé.
+  Leviers proposés, non tranchés : A) baisser OPENAI_VISION_REASONING dans
+  Netlify (valeur actuelle à relever) ; B) condenser la grille 2 à 3 fois
+  sans perdre le fond ; C) faire répondre l'étape d'observation au fil de
+  l'eau (streaming : 60 s selon la doc Netlify) — relais + index.
+  ⚠️ La doc Netlify annonce 60 s pour une fonction synchrone, mais la
+  coupure a eu lieu vers 30 s : la limite réelle de son projet est plus
+  basse que la doc — ne pas s'y fier.
+
+· (391) 26/09 — GRILLE CONDENSÉE. Valeurs Netlify relevées sur ses captures :
+  OPENAI_VISION_MODEL = gpt-5.6-sol, OPENAI_VISION_REASONING = medium,
+  OPENAI_REASONING = medium ; OPENAI_TEXT_MODEL = gpt-5.6-sol (dit par
+  elle). Blandine REFUSE de passer la réflexion à « low » (qualité) : levier
+  écarté. Décision « Ok » pour la piste B : la grille du 390 réécrite en
+  ~17 300 caractères au lieu de ~33 500 — même fond, MÊMES clés JSON
+  (comparaison automatique : aucune clé différente), mêmes garde-fous ;
+  seules les répétitions sont retirées. Rédaction (étape 2) inchangée.
+  Rappel : avec le 387 (ancienne grille ~5 000 caractères), le 25/09 à
+  16 h 53, une réponse a AUSSI été coupée pendant la rédaction (« Load
+  failed » à 63 s) — cause non identifiée (journal Netlify de la fonction
+  assistant nécessaire). Si le 391 est encore coupé à l'observation :
+  piste C (observation en streaming, 60 s selon la doc) ; si c'est à la
+  rédaction : relever le journal Netlify d'abord.
+  Build 20260926-391. node --check OK (18 blocs) ; gabarit JSON vérifié.
+
+· RELAIS (26/09, poussé) — journal Netlify du 26/09 : observation de 32 à
+  44 s, une réponse revenue VIDE (0 caractère, plafond 3 000 mangé par la
+  réflexion), et le téléphone qui perd la connexion à 24 s pendant que la
+  fonction continue. assistant.js modifié (v5, 386 lignes) : perception
+  répondue EN FLUX (en-têtes immédiats, espace « signe de vie » toutes les
+  5 s, JSON final ; l'index n'a rien à changer), plafond 3 000 → 8 000,
+  arrêt propre à 55 s, observation vide signalée comme erreur
+  (INVALID_RESPONSE), journal enrichi (fin, jetons de réflexion). Testé ici
+  avec un faux OpenAI (réussite, vide, erreur 400).
+  RÉSULTAT PROUVÉ (journal 14 h 58) : observation complète en 48 s, 4 532
+  caractères, fin « stop », 3 763 jetons dont 2 436 de réflexion (le 8 000
+  était nécessaire) — MAIS le téléphone a perdu la réponse à 34 s (HTTP 200
+  puis « pas du JSON »). CONCLUSION : son projet Netlify coupe vers 30 s
+  MÊME EN FLUX (la doc annonce 60 s : faux chez elle). Avec gpt-5.6-sol en
+  medium, une observation ne tient pas dans 30 s.
+· OPENAI_VISION_DETAIL = high créée dans Netlify le 26/09 (image envoyée
+  moins grande ; essai de gain de temps, sans toucher à la réflexion).
+  Résultat à relever. Pour annuler : supprimer la variable (défaut original).
+· (392) 26/09 — MAINTENANCE PHOTO, décision « mets un mot pour annoncer en
+  maintenance pour les photos ». HEYBABY_PHOTO_MAINTENANCE = true : une
+  cavalière qui choisit une photo reçoit « L'analyse de photos est
+  momentanément en maintenance… » (7 langues) ; rien n'est envoyé. PHOTOS
+  seulement (texte et vidéos inchangés — les vidéos risquent le même délai,
+  non testé). Le compte de Blandine (estCompteFeinnHype, session lue en
+  local) garde l'analyse pour les essais. Rallumer pour toutes : false.
+  PISTE DE FOND PROPOSÉE : faire l'analyse photo dans une fonction Supabase
+  (Edge Function, déploiement GitHub Actions déjà en place) dont la limite
+  de durée est bien plus longue — à vérifier dans la doc Supabase avant de
+  construire. Non commencé.
+  Build 20260926-392. node --check OK (18 blocs) ; message relu (7 langues).
+
+────────────────────────────────────────────────────────────
+130. 26/09 (393) — ANALYSE PHOTO DÉPLACÉE VERS SUPABASE (« hey-baby-vision »)
+────────────────────────────────────────────────────────────
+
+POURQUOI : prouvé par le journal Netlify du 26/09, l'observation d'une photo
+prend 32 à 51 s et son projet Netlify coupe la connexion vers 30 s, même en
+flux avec signes de vie. Décision de Blandine : passer par Supabase (limite
+400 s sur plan payant, 150 s sans aucun envoi — doc Supabase), et mettre
+l'OBSERVATION en « high » ; la RÉDACTION reste en « medium » (« 2 ou 3 min
+c'est trop »). C'est toujours OpenAI (gpt-5.6-sol) derrière.
+
+⚙️ FONCTION SUPABASE — supabase/functions/hey-baby-vision/index.ts (Deno) :
+même contrat que le relais Netlify v5 (perception = JSON final précédé
+d'espaces « signe de vie » toutes les 5 s ; standard = texte en flux avec
+marqueur d'erreur). Plafonds : 16 000 jetons pour l'observation, 12 000 pour
+la rédaction ; arrêt propre à 5 min. « Verify JWT » actif : seul un
+utilisateur connecté peut l'appeler. Origines : 2hype.fr, www.2hype.fr,
+2hype.netlify.app. Testée hors ligne avec un faux OpenAI (réussite, vide,
+erreur 400, flux, CORS).
+DÉPLOIEMENT : .github/workflows/deploy-fonctions.yml a une 2e ligne
+« supabase functions deploy hey-baby-vision ». Run #12 (lancé à la main) :
+étape « deploy hey-baby-vision » VERTE. ⚠️ Modifier le .yml ne relance
+PAS le déploiement (filtre sur supabase/functions/**) : lancer à la main,
+ou modifier un fichier du dossier de la fonction. Le fichier
+supabase/functions/hey-baby-vision/.keep (contenu « ok ») ne sert qu'à ça.
+SECRETS SUPABASE (Edge Functions → Secrets), posés le 26/09, vérifiés sur
+capture : OPENAI_API_KEY (NOUVELLE clé OpenAI « Hype Supabase », distincte
+de celle de Netlify — date d'expiration à relever), OPENAI_VISION_MODEL =
+gpt-5.6-sol, OPENAI_VISION_REASONING = high, OPENAI_TEXT_MODEL =
+gpt-5.6-sol, OPENAI_REASONING = medium. ⚠️ NE PAS mettre « high » dans
+Netlify : le texte y serait coupé à 30 s.
+
+📱 INDEX (393) : HEYBABY_VOIE_SUPABASE = true — pour une PHOTO et sur le
+SEUL compte de Blandine (estCompteFeinnHype), les deux étapes partent vers
+SUPABASE_URL/functions/v1/hey-baby-vision avec le jeton de session
+(apikey = CLE_PUBLISHABLE, comme la fonction Mux) ; l'appli attend jusqu'à
+5 min par étape (HEYBABY_TIMEOUT_SUPA_MS) au lieu de 65 s. La ligne ⚙️
+indique la voie ([Supabase] / [Netlify]). Les cavalières restent en
+maintenance photo (392) ; texte et vidéos inchangés (Netlify).
+POUR COUPER : HEYBABY_VOIE_SUPABASE = false.
+
+RÈGLE DE NOMMAGE (pour ne pas se perdre, demandée par Blandine) :
+📱 index.html = l'appli, toujours à la RACINE du dépôt ; ⚙️ index.ts = une
+fonction Supabase, toujours dans supabase/functions/<nom>/ — Supabase impose
+ce nom. Chaque livraison donne le chemin complet.
+
+Build 20260926-393. node --check OK (18 blocs) ; marqueurs inchangés.
+
+· COMPTE OPENAI (26/09, 19 h 14) — le compte OpenAI qui PAIE Hey Baby (celui
+  de la clé Netlify, qui a du crédit) s'ouvre avec « CONTINUE WITH APPLE »
+  sur platform.openai.com (adresse Apple masquée). Trouvé par Blandine après
+  un premier essai raté : la première clé « Hype Supabase » avait été créée
+  dans un AUTRE compte, sans crédit ni facturation (« You have not started a
+  billing plan yet ») — d'où le 429 « credit_balance_exhausted » du 26/09 à
+  18 h 56 (journal Supabase). À faire : créer la clé dans le compte Apple,
+  la coller dans le secret Supabase OPENAI_API_KEY, puis supprimer la clé
+  inutile de l'autre compte. Secret OPENAI_VISION_REASONING saisi « High »
+  (majuscule, vu dans le journal) : à corriger en « high ».
+  Ce compte (connexion Apple) : organisation « Hype », projet « Default
+  project » ; relevé le 26/09 à 19 h 13 : dépense de septembre 2,98 $ sur un
+  plafond mensuel de 100 $, 47 requêtes et ~160 000 jetons sur 7 jours
+  (essais photo compris).
+· ✅ 26/09, 19 h 51 — ANALYSE PHOTO PAR SUPABASE CONFIRMÉE PAR BLANDINE
+  (« c'est bon »). Derniers réglages : nouvelle clé OpenAI créée dans le
+  compte Apple (organisation « Hype », 6,56 $ de crédit, recharge auto
+  5 $ → 10 $ SANS plafond mensuel — plafond à fixer si elle le souhaite) et
+  collée dans OPENAI_API_KEY (empreinte a788…) ; OPENAI_VISION_REASONING et
+  OPENAI_REASONING RETAPÉS en minuscules (« High » / « Medium » refusés par
+  OpenAI : OPENAI_REASONING_PARAM). Leçon : taper ces valeurs au clavier,
+  ne jamais coller (une clé collée par erreur à 17:25 dans le réglage).
+  Clés du compte Apple : « Hyp… » active (NETLIFY, ne pas toucher,
+  expiration « Ja… » à relever), « Hype » révoquée, « Hype Supabase ».
+  RESTE : rouvrir l'analyse photo aux cavalières (HEYBABY_PHOTO_MAINTENANCE
+  = false ET voie Supabase pour toutes) ; action 3 (rédaction et exercices) ;
+  vidéos toujours via Netlify (même risque de coupure, non testé).
+
+· (394) 26/09 — PREMIÈRE ANALYSE PHOTO VALIDÉE PAR BLANDINE (« le reste de
+  l'analyse est ok ») : phase, antérieurs, bassin, angle de hanche, pied /
+  genou, ligne coude-main-bouche, exercice justes. SEUL DÉFAUT : « le dos
+  paraît neutre » (« ça veut rien dire »). Sa règle : « quand il n'a rien à
+  dire, qu'il ne dise rien », et les réserves « X n'est pas lisible ici »
+  aussi (« ça sert à rien »). FAIT dans HEYBABY_CONSIGNES_PEDAGOGIE
+  (rédaction) : un point indéterminable n'est plus mentionné, sauf s'il est
+  exactement ce que le cavalier a demandé (une phrase) ; suppression de la
+  consigne « limites de la photo en deux phrases » ; RÈGLE ABSOLUE ajoutée
+  : un point sans particularité ou illisible est passé sous silence. La
+  grille d'observation n'est PAS touchée (« neutre » y reste une valeur
+  possible, mais n'est plus dit au cavalier).
+  Idée proposée, non décidée : bouton « Corriger » réservé aux modératrices
+  — ses corrections enregistrées en base et ajoutées aux consignes de Hey
+  Baby pour toutes (SQL + index), en réponse à « on n'a aucun moyen de le
+  faire apprendre par lui-même ? » (le modèle n'apprend pas seul).
+  Build 20260926-394. node --check OK (18 blocs) ; marqueurs inchangés.
+
+────────────────────────────────────────────────────────────
+131. 26/09 — HEY BABY : LE BOUTON « CORRIGER » (4 étapes)
+────────────────────────────────────────────────────────────
+
+SA QUESTION : « on n'a aucun moyen de le faire apprendre par lui-même ? ».
+Réponse : le modèle n'apprend rien seul ; ce qui change ses réponses, ce sont
+ses consignes. Décision « Ok » : un bouton « Corriger » réservé aux
+modératrices, dont les corrections entrent dans les consignes de Hey Baby
+pour TOUTES les cavalières. Alternative gardée pour plus tard : une
+« bibliothèque » de documents de référence qu'il consulte. Déconseillé :
+l'apprentissage automatique sur les conversations des cavalières.
+Plan : 1) table ; 2) lecture ; 3) bouton ; 4) page de gestion.
+
+· ÉTAPE 1 — SQL PASSÉ le 26/09 (« Success. No rows returned ») : table
+  public.heybaby_corrections (id, created_at, auteur défaut auth.uid(),
+  texte 3-500 car., question, reponse_extrait, actif) ; RLS : lecture pour
+  authenticated, insert/update/delete via public.hype_est_moderatrice() ;
+  anon révoqué.
+· ÉTAPE 2 — BUILD 395 : chargerCorrectionsHB() lit les corrections actives
+  (40 max) à l'ouverture de Hey Baby ; getSystemPrompt les ajoute en fin de
+  consignes (bloc « CORRECTIONS DE LA MONITRICE », 4 000 caractères max) —
+  s'applique au texte ET à la rédaction des photos, PAS à l'étape
+  d'observation (qui ne regarde que l'image). Règle posée par Blandine :
+  ses corrections sont des connaissances, Hey Baby ne les cite jamais mot
+  pour mot, il les reformule proprement. Échec de lecture silencieux (Hey
+  Baby répond comme avant), noté dans la console.
+  Test : une correction insérée à la main par SQL.
+· À FAIRE ENSUITE (décidé, « Oui B ») : le CENTRE DE GRAVITÉ du cavalier
+  et du cheval comme point d'observation systématique (grille) + sa règle
+  d'interprétation (rédaction) : idéalement alignés verticalement ; celui
+  du cavalier en avant → surcharge l'avant-main, déséquilibre ; en arrière
+  → renvoie le cheval en avant, il aura tendance à se creuser. Repères
+  demandés à Blandine (où situer chaque centre sur une photo ; la règle
+  vaut-elle aussi au saut ?). Après les étapes 3 et 4.
+  Build 20260926-395. node --check OK (18 blocs) ; marqueurs inchangés.
+· ÉTAPE 3 — BUILD 396 (« ok vas-y ») : bouton « ✏️ Corriger » (or) à côté
+  de « 📌 Épingler » sous chaque réponse de Hey Baby, VISIBLE DES SEULES
+  MODÉRATRICES — détection par supa.rpc("hype_est_moderatrice") (la même
+  règle que la base), repli sur estCompteFeinnHype. Fenêtre (portail vers
+  body, z-index 200) : extrait de la réponse, zone de texte 500 caractères,
+  Annuler / Enregistrer ; écriture dans heybaby_corrections (texte, question
+  précédente, extrait de réponse) ; erreur affichée en clair si refus ; en
+  cas de succès la correction est ajoutée à HB_CORRECTIONS et s'applique dès
+  la question suivante. ⚠️ Le test de l'étape 2 (correction d'essai « Bonne
+  monte ! » insérée par SQL) n'a PAS été confirmé par Blandine : ce build
+  le couvre aussi (écrire une correction, poser une question, voir l'effet).
+  À FAIRE : étape 4 (page de gestion : revoir / désactiver / supprimer) ;
+  supprimer la correction d'essai si elle a été insérée.
+  Build 20260926-396. node --check OK (18 blocs) ; marqueurs inchangés hors
+  ajouts voulus.
+· 26/09 — Test des étapes 2 et 3 RÉUSSI (« Bonne monte ! » appliqué dès la
+  question suivante, puis annulé par une 2e correction). Les deux corrections
+  d'essai SUPPRIMÉES par SQL, vérifié par SELECT : il reste UNE vraie
+  correction, écrite par Blandine avec le bouton : « Ne parle pas de dos
+  neutre ça ne veut rien dire ».
+· ÉTAPE 4 — BUILD 397 (« ok vas-y ») : lien « Toutes les corrections → »
+  dans la fenêtre Corriger ; la liste (100 max, plus récentes d'abord)
+  montre chaque correction, son état (Active / En pause) et sa date, avec
+  « Mettre en pause / Réactiver » (colonne actif) et « Supprimer » en deux
+  touchers. Après chaque changement, HB_CORRECTIONS est relue (effet
+  immédiat). Refus de la base signalé en clair, y compris le cas silencieux
+  (aucune ligne touchée = droits refusés). Limite : on y accède depuis le
+  bouton Corriger d'une réponse — il faut au moins une réponse à l'écran.
+  LE CHANTIER « CORRIGER » EST COMPLET (4 étapes).
+  Build 20260926-397. node --check OK (18 blocs) ; marqueurs inchangés.
+
+────────────────────────────────────────────────────────────
+132. 26/09 (soir) — ANALYSE PHOTO EN DIFFÉRÉ (3 étapes) ; LIMITE LEVÉE
+     POUR LES MODÉRATRICES
+────────────────────────────────────────────────────────────
+
+POURQUOI (journal Supabase, 20 h 55) : l'observation en « high » a duré
+95 s et s'est terminée normalement côté Supabase, mais le téléphone avait
+perdu la connexion à 46 s (sans annulation vue par la fonction : coupure
+entre le téléphone et Internet — appli en arrière-plan, réseau). Le 398
+(réouverture aux cavalières) n'a PAS été poussé : trop fragile. Décision
+« B » : le différé, la solution solide, en gardant le « high ».
+
+· ÉTAPE 1 — SQL PASSÉ (21 h 06) : table public.heybaby_analyses (id,
+  user_id, statut en_cours / termine / erreur, resultat, erreur_code,
+  erreur_message, created_at, updated_at) ; RLS : chaque utilisatrice ne
+  lit QUE ses lignes ; aucune écriture depuis l'appli (insert / update /
+  delete révoqués), seule la fonction écrit avec la clé de service.
+  À prévoir : nettoyage automatique (ex. lignes de plus de 7 jours).
+· ÉTAPE 2 — ⚙️ supabase/functions/hey-baby-vision/index.ts (323 lignes),
+  déploiement #14 VERT : mode « differe » pour la perception — vérifie le
+  jeton (auth.getUser), crée la ligne, répond aussitôt { ok, differe,
+  jobId }, puis travaille en arrière-plan (EdgeRuntime.waitUntil) et écrit
+  termine + resultat, ou erreur + code. L'ancien mode reste intact. Testé
+  hors ligne (faux Supabase / OpenAI) : réponse en 0,1 s, résultat et
+  erreur rangés, jeton inconnu refusé (401).
+  ⚠️ INCIDENT 21 h 10 : index.ts poussé À LA PLACE DE index.html → appli
+  en panne quelques minutes ; build 397 remis à la racine, fonction remise
+  dans son dossier. Règle rappelée : 📱 index.html à la racine, ⚙️ index.ts
+  dans supabase/functions/<nom>/.
+· ÉTAPE 3 — BUILD 399 (fait à partir du 397, PAS du 398) : sur la voie
+  Supabase, l'observation part avec differe: true ; l'appli relit la ligne
+  toutes les 3 s jusqu'au résultat (5 min max) ; une lecture ratée
+  (arrière-plan, réseau) est refaite au tour suivant. La rédaction reste
+  en flux (medium, rapide). Les cavalières RESTENT en maintenance photo
+  (voie Supabase = compte de Blandine seulement, comme au 397).
+· LIMITE DE QUESTIONS (« Oui ») : Blandine bloquée à 20 questions (plan Duo)
+  après les essais. Désormais aucune limite pour les modératrices
+  (estModoHB : fonction hype_est_moderatrice, repli compte de Blandine) ;
+  cavalières inchangées (gratuit 1, Premium 4, Hype IA 15, Duo 20).
+  Build 20260926-399. node --check OK (18 blocs) ; marqueurs inchangés.
+· 26/09, 21 h 30 — ✅ DIFFÉRÉ VALIDÉ par Blandine (« ça a marché »). MAIS
+  analyse jugée « limite moins bonne » que celle de 19 h 52 : phase lue
+  « planer » au lieu de « phase ascendante » (variance d'un essai à l'autre,
+  même photo, même réglage) ; conclusion « tu en fais trop » tirée du
+  buste et de l'angle de hanche seuls (le piège qu'elle a décrit) ; jambe
+  non mentionnée (non observée, ou tue par la règle du 394 — à vérifier) ;
+  ton jugé « un peu trop familier ». Leviers : nouvelle grille saut (en
+  attente de ses 4 réponses : repère du centre de gravité du cheval,
+  plafonds de confiance 0,7 / 0,5, trois indices minimum, centrage et
+  épaule-fesses-talon au plat ?) ; ton (vouvoiement ou style sobre,
+  possible via Corriger) ; éventuel assouplissement du 394. Reporté par
+  Blandine (« ça me fatigue, on verra plus tard »).
+· 26/09, 22 h 07 — essai proposé : OPENAI_REASONING = high dans les secrets
+  SUPABASE seulement (rédaction des photos ; jamais dans Netlify). Résultat
+  non encore relevé. La rédaction n'est pas en différé : rester sur
+  l'écran pendant l'essai. Retour : retaper « medium ».
+· (400) 26/09 — PAGE CAVALIER : avec DEUX écuries, deux CARRÉS CÔTE À CÔTE
+  (grille 2 colonnes, aspect 1:1, nom en 14 px, crayon en haut à droite,
+  texte sous le crayon) ; avec UNE écurie, carte pleine largeur et lien
+  « + Ajouter une écurie » inchangés (décision du 22/09). Espace au-dessus
+  des écuries 34 → 46 px, avant « Mon récit » 22 → 36 px. Clics, crayons
+  et éditeurs inchangés.
+  Build 20260926-400 (contient 399). node --check OK (18 blocs) ; marqueurs
+  inchangés.
+
+· (401) 26/09, 22 h 16 — REPRISE D'UNE ANALYSE PHOTO EN ATTENTE. Capture de
+  22 h 13 : trois « Photo envoyée » sans réponse ; SELECT sur
+  heybaby_analyses : les trois « termine ». Donc Supabase avait fini, mais
+  l'écran Hey Baby avait été quitté (page Cavalier, ou rechargement) : le
+  démontage de l'écran coupe la requête, et l'historique ne garde que la
+  question. Décision « Oui vas-y » :
+  – à la création du job différé, il est NOTÉ sur le téléphone
+    (localStorage hype_hb_job_attente : jobId, question, conversationId,
+    t0) ;
+  – en revenant sur Hey Baby (après le chargement de l'historique, même
+    en arrivant d'un cours), l'appli retrouve le job, pose la bulle
+    « J'analyse… », relit la ligne toutes les 3 s, puis REFAIT la
+    rédaction (medium, en flux) et l'enregistre dans l'historique ;
+  – abandon au-delà de 10 min (HEYBABY_REPRISE_MAX_MS) ; job d'une autre
+    conversation ignoré ;
+  – le job noté est effacé dès que l'analyse a une issue (réponse, erreur,
+    stop, délai) SAUF quand on quitte l'écran (marqueur hbUnmount posé au
+    démontage) — il reste alors noté pour la prochaine ouverture ;
+  – en reprise : pas de nouvelle question comptée, pas de bulle
+    utilisateur ajoutée (l'historique la porte), la saisie n'est pas
+    vidée ; envoyer(texte, { reprise }) appelée via envoyerRef (dernière
+    version) ; la mémoire d'écurie est lue au moment de la rédaction
+    (contexteHBRef) pour que la reprise ne parte pas avec une mémoire vide.
+  Limite connue : si Supabase a été interrompu et que la ligne reste
+  « en_cours », l'appli attend jusqu'à 5 min puis affiche l'erreur.
+  Build 20260926-401 (contient 399 + 400). node --check OK (18 blocs) ;
+  marqueurs inchangés hors ajouts voulus.
