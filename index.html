@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260927-407"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20260927-408"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -40967,6 +40967,70 @@ function EcranCarnetDetail() {
   var stLi = React.useState((seance0 && seance0.lieu) || ""); var lieu = stLi[0], setLieu = stLi[1];
   var stRs = React.useState((seance0 && seance0.ressenti_cle) || ""); var ressenti = stRs[0], setRessenti = stRs[1];
   var stAr = React.useState((seance0 && seance0.a_retenir) || ""); var aRetenir = stAr[0], setARetenir = stAr[1];
+  /* 27/09 (408) : REFONTE DU FORMULAIRE (creation / modification) aux couleurs du journal - brief de
+     Blandine du 27/09 : palette petrole / bronze / ivoire, selecteur de cheval en panneau avec recherche
+     (regle 207 + « Cheval sans fiche »), disciplines en CLES FIXES, date qui ne deborde plus, barre
+     d onglets cachee sur cet ecran, plus AUCUN nouvel envoi de photo (anciennes photos conservees). */
+  var HJ = { fond: "#080A0B", carte: "#121617", pet: "#254F60", petA: "#376B7D", reflet: "#5C8792", bronze: "#AD8B57", champ: "#C5AA78", ivoire: "#F2EDE4", gris: "#A9ADB0" };
+  function hjNorm(v) { try { return String(v || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim(); } catch (eN) { return String(v || "").toLowerCase().trim(); } }
+  var HJ_DISC = ["plat", "dressage", "saut", "exterieur", "travail_a_pied", "autre"];
+  var HJ_DISC_FR = { plat: "Plat", dressage: "Dressage", saut: "Saut", exterieur: "Extérieur", travail_a_pied: "Travail à pied", autre: "Autre" };
+  function hjLibDisc(k) {
+    if (k === "plat") return T("Plat", "Flatwork", "Plano", "Piano", "馬場", "Flacharbeit");
+    if (k === "dressage") return T("Dressage", "Dressage", "Doma", "Dressage", "馬術", "Dressur");
+    if (k === "saut") return T("Saut", "Jumping", "Salto", "Salto", "障害", "Springen");
+    if (k === "exterieur") return T("Extérieur", "Outdoor", "Exterior", "Esterno", "外乗", "Ausritt");
+    if (k === "travail_a_pied") return T("Travail à pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "地上作業", "Bodenarbeit");
+    if (k === "autre") return T("Autre", "Other", "Otro", "Altro", "その他", "Andere");
+    return "";
+  }
+  /* Reconnaissance TOLERANTE des anciennes valeurs (libelles des anciennes pastilles, dans les 6
+     langues). « Dressur » est ambigu (l ancien bouton Plat ET Dressage l ecrivaient en allemand) :
+     non reconnu, donc conserve tel quel. « Theorie » : non reconnu, conserve tel quel. */
+  function hjReconnaitre(v) {
+    var n = hjNorm(v); if (!n) return "";
+    var M2 = {
+      plat: ["plat", "flat", "flatwork", "plano", "piano", "馬場"],
+      saut: ["saut", "obstacle", "jumping", "salto", "springen", "障害"],
+      dressage: ["dressage", "doma", "馬術"],
+      exterieur: ["exterieur", "outdoor", "exterior", "esterno", "ausritt", "外乗"],
+      travail_a_pied: ["travail a pied", "groundwork", "trabajo a pie", "lavoro da terra", "bodenarbeit", "地上作業"],
+      autre: ["autre"]
+    };
+    for (var k in M2) { if (M2[k].indexOf(n) >= 0) return k; }
+    return "";
+  }
+  var hjCle0 = (seance0 && seance0.discipline_cle && HJ_DISC.indexOf(seance0.discipline_cle) >= 0) ? seance0.discipline_cle : hjReconnaitre(seance0 && seance0.discipline);
+  var hjHist = (seance0 && seance0.discipline && !hjCle0) ? String(seance0.discipline) : "";
+  var stDk = React.useState(hjCle0 || ""); var discCle = stDk[0], setDiscCle = stDk[1];
+  var stDa = React.useState((hjCle0 === "autre" && seance0 && seance0.discipline && hjNorm(seance0.discipline) !== "autre") ? String(seance0.discipline) : ""); var discAutre = stDa[0], setDiscAutre = stDa[1];
+  var stDt = React.useState(false); var discTouche = stDt[0], setDiscTouche = stDt[1];
+  var stCl = React.useState((seance0 && !seance0.cheval_id && seance0.cheval_nom) ? String(seance0.cheval_nom) : ""); var chevalLibre = stCl[0], setChevalLibre = stCl[1];
+  var stPc = React.useState(false); var panCheval = stPc[0], setPanCheval = stPc[1];
+  var stRc = React.useState(""); var rechCh = stRc[0], setRechCh = stRc[1];
+  var stSl = React.useState(false); var saisieLibre = stSl[0], setSaisieLibre = stSl[1];
+  var stLt = React.useState(""); var libreTmp = stLt[0], setLibreTmp = stLt[1];
+  var stEc = React.useState(null); var chvEc = stEc[0], setChvEc = stEc[1];
+  /* La barre d onglets est cachee tant que cet ecran est ouvert (meme mecanique que le 402 :
+     classe hb-sans-barre sur <body>, compteur partage window.__hbSansBarre). */
+  React.useEffect(function () {
+    try { window.__hbSansBarre = (window.__hbSansBarre || 0) + 1; document.body.classList.add("hb-sans-barre"); } catch (eSB) { }
+    return function () {
+      try {
+        window.__hbSansBarre = Math.max(0, (window.__hbSansBarre || 1) - 1);
+        if (!window.__hbSansBarre) document.body.classList.remove("hb-sans-barre");
+      } catch (eSB2) { }
+    };
+  }, []);
+  /* Panneau des chevaux ouvert : le fond est verrouille (body fixed + decalage restitue). */
+  React.useEffect(function () {
+    if (!panCheval) return;
+    var y = 0;
+    try { y = window.scrollY || 0; document.body.style.position = "fixed"; document.body.style.top = (-y) + "px"; document.body.style.left = "0"; document.body.style.right = "0"; } catch (eLk) { }
+    return function () {
+      try { document.body.style.position = ""; document.body.style.top = ""; document.body.style.left = ""; document.body.style.right = ""; window.scrollTo(0, y); } catch (eLk2) { }
+    };
+  }, [panCheval]);
   var stCh = React.useState([]); var chevaux = stCh[0], setChevaux = stCh[1];
   var stEnv = React.useState(false); var envoi = stEnv[0], setEnvoi = stEnv[1];
   var stEr = React.useState(""); var err = stEr[0], setErr = stEr[1];
@@ -41084,16 +41148,84 @@ function EcranCarnetDetail() {
   }
 
   /* La note en cours, gardee sur l appareil (seulement pour une nouvelle seance). */
+  /* 27/09 (408) : BROUILLON v2. L ancien brouillon ne gardait que la note (texte brut) ; il garde
+     desormais tout le formulaire en JSON { v: 2, ... }. Un ancien brouillon (texte) est relu comme
+     une note - repli defensif, rien ne plante. Seulement pour une NOUVELLE seance jamais enregistree. */
   var CLE = "hype_brouillon_carnet";
+  var stBr = React.useState(false); var brPret = stBr[0], setBrPret = stBr[1];
   React.useEffect(function () {
-    if (!nouvelle) return;
-    try { var d = localStorage.getItem(CLE); if (d && !note) setNote(d); } catch (eB) { }
+    if (!nouvelle) { setBrPret(true); return; }
+    try {
+      var d = localStorage.getItem(CLE);
+      if (d) {
+        var o = null;
+        try { o = JSON.parse(d); } catch (eJ) { o = null; }
+        if (o && typeof o === "object" && o.v === 2) {
+          if (o.date) setDateS(String(o.date));
+          if (o.chevalId) setChevalId(String(o.chevalId));
+          if (o.chevalLibre) setChevalLibre(String(o.chevalLibre));
+          if (o.discCle && HJ_DISC.indexOf(o.discCle) >= 0) { setDiscCle(String(o.discCle)); setDiscTouche(true); }
+          if (o.discAutre) setDiscAutre(String(o.discAutre));
+          if (o.theme) setTheme(String(o.theme));
+          if (o.lieu) setLieu(String(o.lieu));
+          if (o.ressenti) setRessenti(String(o.ressenti));
+          if (o.aRetenir) setARetenir(String(o.aRetenir));
+          if (o.note) setNote(String(o.note));
+          if (Array.isArray(o.conseils)) setConseils(o.conseils.filter(function (c) { return c && c.id != null; }).map(function (c) { return { id: c.id, titre: String(c.titre || ""), cheval: String(c.cheval || "") }; }));
+        } else if (!(o && typeof o === "object") && String(d).trim()) {
+          setNote(String(d));
+        }
+      }
+    } catch (eB) { }
+    setBrPret(true);
   }, []);
-  function ecrireNote(v) {
-    setNote(v);
-    if (!nouvelle) return;
-    try { if (v && v.trim()) localStorage.setItem(CLE, v); else localStorage.removeItem(CLE); } catch (eB2) { }
+  React.useEffect(function () {
+    if (!nouvelle || !brPret || mode !== "edition" || (seance && seance.id)) return;
+    try {
+      var vide = !(chevalId || chevalLibre || discCle || discAutre || theme || lieu || ressenti || aRetenir || (note && note.trim()) || conseils.length);
+      if (vide) { localStorage.removeItem(CLE); return; }
+      localStorage.setItem(CLE, JSON.stringify({ v: 2, date: dateS, chevalId: chevalId || "", chevalLibre: chevalLibre || "", discCle: discTouche ? discCle : "", discAutre: discAutre || "", theme: theme || "", lieu: lieu || "", ressenti: ressenti || "", aRetenir: aRetenir || "", note: note || "", conseils: conseils.map(function (c) { return { id: c.id, titre: c.titre || "", cheval: c.cheval || "" }; }) }));
+    } catch (eB2) { }
+  }, [brPret, mode, dateS, chevalId, chevalLibre, discCle, discAutre, discTouche, theme, lieu, ressenti, aRetenir, note, conseils]);
+  function ecrireNote(v) { setNote(v); }
+  /* Les chevaux des ecuries (regle 207 - meme requete que les conseils Hey Baby), charges une fois,
+     en EDITION seulement. Les siens et les lies restent charges plus bas, comme avant. */
+  React.useEffect(function () {
+    if (mode !== "edition" || chvEc !== null) return;
+    var vif = true;
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) { if (vif) setChvEc([]); return; }
+        var pf = ctx.profil || {};
+        var clubs = [];
+        var c1 = String(pf.club || pf.ecurie || "").trim();
+        var c2 = String(pf.club2 || pf.ecurie2 || "").trim();
+        if (c1) clubs.push(c1);
+        if (c2 && c2.toLowerCase() !== c1.toLowerCase()) clubs.push(c2);
+        if (!clubs.length || typeof hypeCavaliersDuClub !== "function") { if (vif) setChvEc([]); return; }
+        var vusP = {}, ids = [];
+        for (var i = 0; i < clubs.length; i++) {
+          var l = await hypeCavaliersDuClub(clubs[i], "id, pseudo, ecurie, ecurie2");
+          ((l) || []).forEach(function (pr) { if (!pr || !pr.id || vusP[pr.id]) return; vusP[pr.id] = true; ids.push(pr.id); });
+        }
+        if (!ids.length) { if (vif) setChvEc([]); return; }
+        var rc = await supa.from("chevaux").select("id, nom").in("user_id", ids).is("supprime_le", null).limit(500);
+        if (!vif) return;
+        if (rc && rc.error) { setChvEc([]); return; }
+        var l2 = ((rc && rc.data) || []).filter(function (cv) { return cv && cv.id && cv.nom; }).map(function (cv) { return { id: cv.id, nom: cv.nom }; });
+        l2.sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || ""), "fr"); });
+        setChvEc(l2);
+      } catch (eE) { if (vif) setChvEc([]); }
+    })();
+    return function () { vif = false; };
+  }, [mode]);
+  function hjChevalParId(id) {
+    if (!id) return null;
+    var tous = (chevaux || []).concat(chvEc || []);
+    for (var i = 0; i < tous.length; i++) { if (String(tous[i].id) === String(id)) return tous[i]; }
+    return null;
   }
+
 
   React.useEffect(function () {
     var vif = true;
@@ -41129,16 +41261,17 @@ function EcranCarnetDetail() {
       var u = (typeof utilisateurActuel === "function") ? await utilisateurActuel() : null;
       if (!u || !u.id) { setErr(T("Tu n\u2019es plus connect\u00e9e.", "You are no longer signed in.", "Ya no est\u00e1s conectada.", "Non sei pi\u00f9 connessa.", "\u30ed\u30b0\u30a4\u30f3\u304c\u5207\u308c\u3066\u3044\u307e\u3059\u3002", "Du bist nicht mehr angemeldet.")); setEnvoi(false); return; }
       var ch = null;
-      for (var i = 0; i < chevaux.length; i++) { if (String(chevaux[i].id) === String(chevalId)) { ch = chevaux[i]; break; } }
+      ch = hjChevalParId(chevalId);   /* 27/09 (408) : siens, lies ET chevaux des ecuries */
       /* 16/09 (186) : les photos sont envoyees AVANT l ecriture de la seance, pour que leurs
          URL partent avec elle - une seule ecriture en base au lieu de deux. */
       var urlsFinales = medias;
-      try { urlsFinales = await envoyerPhotosCarnet(); } catch (eEnvP) { urlsFinales = medias; }
+      /* 27/09 (408) : plus AUCUN envoi de photo (decision du 27/09) - seules les anciennes URL restent. */
       var champs = {
         date_seance: dateS,
         cheval_id: chevalId || null,
-        cheval_nom: ch ? (ch.nom || null) : null,
-        discipline: (disc || "").trim() || null,
+        cheval_nom: chevalId
+          ? (ch ? (ch.nom || null) : ((seance0 && String(seance0.cheval_id) === String(chevalId)) ? (seance0.cheval_nom || null) : null))
+          : ((chevalLibre || "").trim() || null),   /* 27/09 (408) : cheval sans fiche = nom tape, cheval_id null */
         note: (note || "").trim() || null,
         theme: (theme || "").trim() || null,          /* 27/09 (407) */
         lieu: (lieu || "").trim() || null,
@@ -41146,6 +41279,13 @@ function EcranCarnetDetail() {
         a_retenir: (aRetenir || "").trim() || null,
         medias: urlsFinales
       };
+      /* 27/09 (408) : DISCIPLINE EN CLE FIXE. Ecrite pour une nouvelle seance, ou si la cavaliere a
+         touche a la discipline. Sinon l ancienne valeur (Theorie, Dressur...) reste intacte en base. */
+      if (!(seance && seance.id) || discTouche) {
+        if (!discCle) { champs.discipline = null; champs.discipline_cle = null; }
+        else if (discCle === "autre") { champs.discipline_cle = "autre"; champs.discipline = (discAutre || "").trim() || "Autre"; }
+        else { champs.discipline_cle = discCle; champs.discipline = HJ_DISC_FR[discCle] || null; }
+      }
       var r;
       if (seance && seance.id) {
         champs.updated_at = new Date().toISOString();
@@ -41180,124 +41320,120 @@ function EcranCarnetDetail() {
     } catch (eS) { setErr(String(eS)); setEnvoi(false); }
   }
 
-  var stChamp = { width: "100%", boxSizing: "border-box", padding: "13px 14px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.04)", color: "#F4F7FA", fontFamily: M, fontSize: 15, minHeight: 48, outline: "none" };
+  /* 27/09 (408) : champs a la palette du journal ; 16 px minimum (pas de zoom iOS) ; largeur bornee
+     (width / maxWidth 100 %, minWidth 0, block) - c est ce qui empeche la date de deborder. */
+  var stChamp = { display: "block", width: "100%", maxWidth: "100%", minWidth: 0, boxSizing: "border-box", padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(242,237,228,0.12)", background: HJ.carte, color: HJ.ivoire, fontFamily: M, fontSize: 16, minHeight: 48, outline: "none", WebkitAppearance: "none", appearance: "none" };
   function etiquette(txt, facult) {
-    return h("div", { style: { fontFamily: M, fontSize: 10.5, letterSpacing: 1.4, textTransform: "uppercase", color: "#8A929C", fontWeight: 700, margin: "0 0 7px" } },
-      txt, facult ? h("span", { style: { color: "#5B646E", textTransform: "none", letterSpacing: 0, fontWeight: 500, fontSize: 11 } }, "  \u00b7 " + T("facultatif", "optional", "opcional", "facoltativo", "\u4efb\u610f", "optional")) : null);
+    return h("div", { style: { fontFamily: M, fontSize: 10.5, letterSpacing: 1.8, textTransform: "uppercase", color: HJ.champ, fontWeight: 600, margin: "0 0 8px" } }, txt);
   }
+  function pastilleHJ(pris) {
+    return { padding: "6px 8px", minHeight: 44, minWidth: 0, borderRadius: 10, border: "1px solid " + (pris ? HJ.reflet : "rgba(242,237,228,0.12)"), background: pris ? HJ.pet : "transparent", color: pris ? HJ.ivoire : HJ.gris, fontFamily: M, fontSize: 13.5, fontWeight: pris ? 600 : 500, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center", lineHeight: 1.2, boxSizing: "border-box" };
+  }
+  function grandir(el) { try { if (!el) return; el.style.height = "auto"; el.style.height = Math.min(el.scrollHeight + 2, 640) + "px"; } catch (eG) { } }
+
 
   var corps;
   if (mode === "edition") {
-    corps = h("div", { style: { padding: "6px 16px 40px" } },
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("Date", "Date", "Fecha", "Data", "\u65e5\u4ed8", "Datum"), false),
-        h("input", { type: "date", value: dateS, onChange: function (e) { setDateS(e.target.value); }, style: stChamp })),
+    /* 27/09 (408) : le formulaire refondu. Ordre du brief : date, cheval, discipline, theme,
+       ressenti, lieu, a retenir, note, conseils, anciennes photos, enregistrer. */
+    var bloc = function (enfants) { return h.apply(null, ["div", { style: { marginBottom: 18, minWidth: 0 } }].concat(enfants)); };
+    var nomAffiche = "";
+    var sansFiche = false;
+    if (chevalId) {
+      var chA = hjChevalParId(chevalId);
+      nomAffiche = chA ? (chA.nom || "") : ((seance0 && String(seance0.cheval_id) === String(chevalId)) ? (seance0.cheval_nom || "") : "…");
+    } else if (chevalLibre) { nomAffiche = chevalLibre; sansFiche = true; }
+    corps = h("div", { style: { padding: "4px 16px 24px", minWidth: 0 } },
+      h("div", { style: { fontFamily: M, fontSize: 12.5, color: HJ.gris, margin: "0 0 16px" } },
+        T("Seule la date est obligatoire.", "Only the date is required.", "Solo la fecha es obligatoria.", "Solo la data è obbligatoria.", "日付のみ必須です。", "Nur das Datum ist Pflicht.")),
 
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("Cheval", "Horse", "Caballo", "Cavallo", "\u99ac", "Pferd"), true),
-        h("div", { style: { display: "flex", gap: 7, flexWrap: "wrap" } },
-          h("div", { role: "button", onClick: function () { setChevalId(""); },
-            style: { padding: "11px 15px", borderRadius: 999, border: "1px solid " + (!chevalId ? OR : "rgba(255,255,255,0.14)"), background: !chevalId ? "rgba(232,184,75,0.10)" : "transparent", color: !chevalId ? OR : "#A9B4BC", fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" } },
-            T("Aucun", "None", "Ninguno", "Nessuno", "\u306a\u3057", "Keins")),
-          chevaux.map(function (c) {
-            var pris = String(chevalId) === String(c.id);
-            return h("div", { key: c.id, role: "button", onClick: function () { setChevalId(pris ? "" : c.id); },
-              style: { padding: "11px 15px", borderRadius: 999, border: "1px solid " + (pris ? OR : "rgba(255,255,255,0.14)"), background: pris ? "rgba(232,184,75,0.10)" : "transparent", color: pris ? OR : "#C9D3D8", fontFamily: M, fontSize: 13, fontWeight: pris ? 700 : 500, cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" } },
-              c.nom || "");
-          }))),
+      bloc([etiquette(T("Date", "Date", "Fecha", "Data", "日付", "Datum"), false),
+        h("div", { key: "dt", style: { minWidth: 0, maxWidth: "100%" } },
+          h("input", { type: "date", className: "hj-date", value: dateS, onChange: function (e) { setDateS(e.target.value); }, style: stChamp }))]),
 
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("Type de travail", "Type of work", "Tipo de trabajo", "Tipo di lavoro", "\u5185\u5bb9", "Art der Arbeit"), true),
-        h("div", { style: { display: "flex", gap: 7, flexWrap: "wrap", marginBottom: 9 } },
-          [T("Plat", "Flat", "Plano", "Piano", "\u99ac\u5834", "Dressur"), T("Obstacle", "Jumping", "Salto", "Salto", "\u969c\u5bb3", "Springen"), T("Dressage", "Dressage", "Doma", "Dressage", "\u99ac\u8853", "Dressur"), T("Ext\u00e9rieur", "Outdoor", "Exterior", "Esterno", "\u5916\u4e57", "Ausritt"), T("Travail \u00e0 pied", "Groundwork", "Trabajo a pie", "Lavoro da terra", "\u5730\u4e0a\u4f5c\u696d", "Bodenarbeit"), T("Th\u00e9orie", "Theory", "Teor\u00eda", "Teoria", "\u5b66\u79d1", "Theorie")].map(function (d, iD) {
-            var pris = (disc || "").trim().toLowerCase() === d.toLowerCase();
-            return h("div", { key: "d" + iD, role: "button", onClick: function () { setDisc(pris ? "" : d); },
-              style: { padding: "10px 14px", borderRadius: 999, border: "1px solid " + (pris ? TQL : "rgba(255,255,255,0.14)"), background: pris ? "rgba(95,233,240,0.10)" : "transparent", color: pris ? TQL : "#A9B4BC", fontFamily: M, fontSize: 12.5, fontWeight: pris ? 700 : 500, cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" } }, d);
+      bloc([etiquette(T("Cheval", "Horse", "Caballo", "Cavallo", "馬", "Pferd"), true),
+        h("div", { key: "chv", role: "button", onClick: function () { setRechCh(""); setSaisieLibre(false); setLibreTmp(chevalLibre || ""); setPanCheval(true); },
+          style: Object.assign({}, stChamp, { display: "flex", alignItems: "center", gap: 10, cursor: "pointer" }) },
+          h("span", { style: { flex: 1, minWidth: 0, color: nomAffiche ? HJ.ivoire : HJ.gris, overflow: "hidden", textOverflow: "ellipsis" } },
+            nomAffiche || T("Choisir un cheval", "Choose a horse", "Elegir un caballo", "Scegli un cavallo", "馬を選ぶ", "Pferd wählen")),
+          sansFiche ? h("span", { style: { flex: "0 0 auto", fontSize: 11, color: HJ.champ, border: "1px solid rgba(173,139,87,0.5)", borderRadius: 999, padding: "3px 8px" } }, T("sans fiche", "no profile", "sin ficha", "senza scheda", "未登録", "ohne Profil")) : null,
+          h("span", { style: { flex: "0 0 auto", color: HJ.champ, fontSize: 20, lineHeight: 1 } }, "›"))]),
+
+      bloc([etiquette(T("Discipline", "Discipline", "Disciplina", "Disciplina", "種目", "Disziplin"), true),
+        hjHist && !discTouche ? h("div", { key: "hist", style: { fontFamily: M, fontSize: 13, color: HJ.gris, margin: "0 0 8px" } },
+          T("Enregistrée : ", "Saved as: ", "Guardada: ", "Salvata: ", "保存済み：", "Gespeichert: "), h("span", { style: { color: HJ.ivoire } }, hjHist)) : null,
+        h("div", { key: "grid", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
+          HJ_DISC.map(function (k) {
+            var pris = discCle === k;
+            return h("div", { key: "dc" + k, role: "button", onClick: function () { setDiscCle(pris ? "" : k); setDiscTouche(true); }, style: pastilleHJ(pris) }, hjLibDisc(k));
           })),
-        h("input", { type: "text", value: disc, onChange: function (e) { setDisc(e.target.value); }, placeholder: T("ou \u00e9cris autre chose\u2026", "or write something else\u2026", "o escribe otra cosa\u2026", "o scrivi altro\u2026", "\u305d\u306e\u4ed6\u3092\u5165\u529b", "oder etwas anderes\u2026"), style: stChamp })),
+        discCle === "autre" ? h("input", { key: "autre", type: "text", value: discAutre, maxLength: 60, onChange: function (e) { setDiscAutre(e.target.value); setDiscTouche(true); },
+          placeholder: T("Précise (ex. longe, poney games…)", "Specify (e.g. lunging…)", "Precisa (p. ej. cuerda…)", "Specifica (es. longia…)", "内容を入力", "Genauer (z. B. Longe…)"),
+          style: Object.assign({}, stChamp, { marginTop: 8 }) }) : null]),
 
-      /* 27/09 (407) : theme, lieu, ressenti, a retenir */
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("Th\u00e8me de la s\u00e9ance", "Session theme", "Tema de la sesi\u00f3n", "Tema della sessione", "\u30c6\u30fc\u30de", "Thema der Einheit"), true),
-        h("input", { type: "text", value: theme, maxLength: 120, onChange: function (e) { setTheme(e.target.value); }, placeholder: T("ex. Transitions et r\u00e9gularit\u00e9", "e.g. Transitions and rhythm", "p. ej. Transiciones y regularidad", "es. Transizioni e regolarit\u00e0", "\u4f8b\uff1a\u79fb\u884c\u3068\u30ea\u30ba\u30e0", "z. B. \u00dcberg\u00e4nge und Takt"), style: stChamp })),
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("Lieu", "Place", "Lugar", "Luogo", "\u5834\u6240", "Ort"), true),
-        h("input", { type: "text", value: lieu, maxLength: 80, onChange: function (e) { setLieu(e.target.value); }, placeholder: T("ex. Carri\u00e8re", "e.g. Arena", "p. ej. Pista", "es. Campo", "\u4f8b\uff1a\u99ac\u5834", "z. B. Reitplatz"), style: stChamp })),
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("Mon ressenti", "How it felt", "Mis sensaciones", "Le mie sensazioni", "\u611f\u899a", "Mein Gef\u00fchl"), true),
-        h("div", { style: { display: "flex", gap: 7, flexWrap: "wrap" } },
-          [["bonnes", T("Bonnes sensations", "Good feelings", "Buenas sensaciones", "Buone sensazioni", "\u826f\u3044\u611f\u899a", "Gutes Gef\u00fchl")],
-           ["mitigees", T("Sensations mitig\u00e9es", "Mixed feelings", "Sensaciones mixtas", "Sensazioni contrastanti", "\u307e\u3042\u307e\u3042", "Gemischtes Gef\u00fchl")],
-           ["difficile", T("S\u00e9ance difficile", "Tough session", "Sesi\u00f3n dif\u00edcil", "Sessione difficile", "\u96e3\u3057\u3044\u7a3d\u53e4", "Schwierige Einheit")]].map(function (r) {
+      bloc([etiquette(T("Thème", "Theme", "Tema", "Tema", "テーマ", "Thema"), true),
+        h("input", { key: "th", type: "text", value: theme, maxLength: 120, onChange: function (e) { setTheme(e.target.value); }, placeholder: T("ex. Transitions et régularité", "e.g. Transitions and rhythm", "p. ej. Transiciones y regularidad", "es. Transizioni e regolarità", "例：移行とリズム", "z. B. Übergänge und Takt"), style: stChamp })]),
+
+      bloc([etiquette(T("Ressenti", "How it felt", "Sensaciones", "Sensazioni", "感覚", "Gefühl"), true),
+        h("div", { key: "rs", style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
+          [["bonnes", T("Bonnes sensations", "Good feelings", "Buenas sensaciones", "Buone sensazioni", "良い感覚", "Gutes Gefühl")],
+           ["mitigees", T("Sensations mitigées", "Mixed feelings", "Sensaciones mixtas", "Sensazioni contrastanti", "まあまあ", "Gemischtes Gefühl")],
+           ["difficile", T("Séance difficile", "Tough session", "Sesión difícil", "Sessione difficile", "難しい稽古", "Schwierige Einheit")]].map(function (r) {
             var pris = ressenti === r[0];
-            return h("div", { key: "rs" + r[0], role: "button", onClick: function () { setRessenti(pris ? "" : r[0]); },
-              style: { padding: "10px 14px", borderRadius: 999, border: "1px solid " + (pris ? TQL : "rgba(255,255,255,0.14)"), background: pris ? "rgba(95,233,240,0.10)" : "transparent", color: pris ? TQL : "#A9B4BC", fontFamily: M, fontSize: 12.5, fontWeight: pris ? 700 : 500, cursor: "pointer", minHeight: 44, display: "flex", alignItems: "center" } },
-              r[1]);
-          }))),
-      h("div", { style: { marginBottom: 22 } },
-        etiquette(T("\u00c0 retenir", "To remember", "Para recordar", "Da ricordare", "\u899a\u3048\u3066\u304a\u304f\u3053\u3068", "Merken"), true),
-        h("textarea", { value: aRetenir, rows: 2, maxLength: 300, onChange: function (e) { setARetenir(e.target.value); },
-          placeholder: T("ex. garder mes jambes pr\u00e9sentes sans me crisper", "e.g. keep my legs on without tensing", "p. ej. mantener las piernas sin crisparme", "es. tenere le gambe senza irrigidirmi", "\u4f8b\uff1a\u529b\u307e\u305a\u306b\u8108\u3092\u4fdd\u3064", "z. B. Beine dran, ohne zu verkrampfen"),
-          style: Object.assign({}, stChamp, { minHeight: 70, resize: "vertical", lineHeight: 1.5 }) })),
+            return h("div", { key: "rs" + r[0], role: "button", onClick: function () { setRessenti(pris ? "" : r[0]); }, style: pastilleHJ(pris) }, r[1]);
+          }))]),
 
-      h("div", { style: { marginBottom: 24 } },
-        etiquette(T("Ma note", "My note", "Mi nota", "La mia nota", "\u30e1\u30e2", "Meine Notiz"), true),
-        h("textarea", { value: note, onChange: function (e) { ecrireNote(e.target.value); }, rows: 6,
-          placeholder: T("Comment \u00e7a s\u2019est pass\u00e9 ?", "How did it go?", "\u00bfC\u00f3mo fue?", "Com\u2019\u00e8 andata?", "\u3069\u3046\u3067\u3057\u305f\u304b\uff1f", "Wie war es?"),
-          style: Object.assign({}, stChamp, { minHeight: 130, resize: "vertical", lineHeight: 1.55 }) })),
+      bloc([etiquette(T("Lieu", "Place", "Lugar", "Luogo", "場所", "Ort"), true),
+        h("input", { key: "li", type: "text", value: lieu, maxLength: 80, onChange: function (e) { setLieu(e.target.value); }, placeholder: T("ex. Carrière", "e.g. Arena", "p. ej. Pista", "es. Campo", "例：馬場", "z. B. Reitplatz"), style: stChamp })]),
 
-      /* 16/09 (180) : les conseils travailles, en EDITION. Les coches sont tenues en memoire
-         et ecrites a l enregistrement. */
-      h("div", { style: { marginBottom: 24 } },
-        etiquette(T("Conseils travaill\u00e9s", "Tips worked on", "Consejos trabajados", "Consigli lavorati", "\u53d6\u308a\u7d44\u3093\u3060\u30a2\u30c9\u30d0\u30a4\u30b9", "Bearbeitete Tipps"), true),
-        conseils.length ? h("div", { style: { display: "flex", flexDirection: "column", gap: 7, marginBottom: 10 } },
+      bloc([etiquette(T("À retenir", "To remember", "Para recordar", "Da ricordare", "覚えておくこと", "Merken"), true),
+        h("textarea", { key: "ar", value: aRetenir, rows: 2, maxLength: 300, ref: function (el) { if (el && !el.__hjG) { el.__hjG = 1; grandir(el); } }, onChange: function (e) { setARetenir(e.target.value); grandir(e.target); },
+          placeholder: T("ex. garder mes jambes présentes sans me crisper", "e.g. keep my legs on without tensing", "p. ej. mantener las piernas sin crisparme", "es. tenere le gambe senza irrigidirmi", "例：力まずに脈を保つ", "z. B. Beine dran, ohne zu verkrampfen"),
+          style: Object.assign({}, stChamp, { minHeight: 72, resize: "none", lineHeight: 1.45, overflow: "hidden" }) })]),
+
+      bloc([etiquette(T("Ma note", "My note", "Mi nota", "La mia nota", "メモ", "Meine Notiz"), true),
+        h("textarea", { key: "no", value: note, rows: 3, ref: function (el) { if (el && !el.__hjG) { el.__hjG = 1; grandir(el); } }, onChange: function (e) { ecrireNote(e.target.value); grandir(e.target); },
+          placeholder: T("Comment ça s’est passé ?", "How did it go?", "¿Cómo fue?", "Com’è andata?", "どうでしたか？", "Wie war es?"),
+          style: Object.assign({}, stChamp, { minHeight: 96, resize: "none", lineHeight: 1.5, overflow: "hidden" }) })]),
+
+      /* Conseils : logique INCHANGEE (memes etats, meme panneau, memes ecritures), seul l habit change. */
+      bloc([etiquette(T("Conseils Hey Baby", "Hey Baby tips", "Consejos Hey Baby", "Consigli Hey Baby", "Hey Babyのアドバイス", "Hey-Baby-Tipps"), true),
+        conseils.length ? h("div", { key: "csl", style: { display: "flex", flexDirection: "column", gap: 7, marginBottom: 8 } },
           conseils.map(function (c) {
-            return h("div", { key: "cs" + c.id, style: { display: "flex", alignItems: "center", gap: 9, padding: "11px 13px", borderRadius: 14, border: "1px solid rgba(232,184,75,0.28)", background: "rgba(232,184,75,0.05)", minHeight: 50 } },
-              h("span", { style: { fontSize: 13, flex: "0 0 auto" } }, "\ud83d\udccc"),
-              h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 13, color: "#F4F7FA", lineHeight: 1.35 } }, c.titre),
-              h("button", { onClick: function () { setConseils(conseils.filter(function (x) { return String(x.id) !== String(c.id); })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059", "Entfernen"),
-                style: { flex: "0 0 auto", width: 34, height: 34, borderRadius: "50%", background: "rgba(7,8,10,0.6)", border: "1px solid rgba(255,255,255,0.16)", color: "#9AA6AE", fontSize: 14, cursor: "pointer", padding: 0 } }, "\u2715"));
+            return h("div", { key: "cs" + c.id, style: { display: "flex", alignItems: "center", gap: 9, padding: "8px 8px 8px 13px", borderRadius: 12, border: "1px solid rgba(173,139,87,0.30)", background: "rgba(173,139,87,0.06)", minHeight: 48 } },
+              h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 14, color: HJ.ivoire, lineHeight: 1.35 } }, c.titre),
+              h("button", { onClick: function () { setConseils(conseils.filter(function (x) { return String(x.id) !== String(c.id); })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen"),
+                style: { flex: "0 0 auto", width: 40, height: 40, borderRadius: "50%", background: "transparent", border: "1px solid rgba(242,237,228,0.16)", color: HJ.gris, fontSize: 14, cursor: "pointer", padding: 0 } }, "✕"));
           })) : null,
-        h("div", { role: "button", onClick: function () { setPanChoix(true); },
-          style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, borderRadius: 999, border: "1px dashed rgba(232,184,75,0.40)", color: OR, fontFamily: M, fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
-          h("span", { style: { fontSize: 16, lineHeight: 1 } }, "+"),
+        h("div", { key: "csb", role: "button", onClick: function () { setPanChoix(true); },
+          style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, borderRadius: 12, border: "1px dashed rgba(173,139,87,0.55)", color: HJ.champ, fontFamily: M, fontSize: 14, fontWeight: 600, cursor: "pointer" } },
+          h("span", { style: { fontSize: 17, lineHeight: 1 } }, "+"),
           conseils.length
-            ? T("Ajouter un autre conseil", "Add another tip", "A\u00f1adir otro consejo", "Aggiungi un altro consiglio", "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u8ffd\u52a0", "Weiteren Tipp")
-            : T("Choisir des conseils Hey Baby", "Pick Hey Baby tips", "Elegir consejos Hey Baby", "Scegli consigli Hey Baby", "\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u9078\u3076", "Hey-Baby-Tipps w\u00e4hlen"))),
+            ? T("Ajouter un autre conseil", "Add another tip", "Añadir otro consejo", "Aggiungi un altro consiglio", "アドバイスを追加", "Weiteren Tipp")
+            : T("Choisir des conseils Hey Baby", "Pick Hey Baby tips", "Elegir consejos Hey Baby", "Scegli consigli Hey Baby", "アドバイスを選ぶ", "Hey-Baby-Tipps wählen"))]),
 
-      /* 16/09 (186) : les photos, en EDITION. Choix multiple, apercu, croix pour retirer. */
-      h("div", { style: { marginBottom: 24 } },
-        etiquette(T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos"), true),
-        (medias.length || nouvelles.length) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 7, marginBottom: 10 } },
+      /* Photos : UNIQUEMENT les anciennes (on peut encore en retirer une de la seance). Plus aucun
+         bouton d ajout, plus aucun envoi vers le bucket public (decision du 27/09). */
+      medias.length ? bloc([etiquette(T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos"), false),
+        h("div", { key: "ph", style: { display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: 7 } },
           medias.map(function (u, iU) {
-            return h("div", { key: "md" + iU, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", background: "#0B1116" } },
+            return h("div", { key: "md" + iU, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", background: HJ.carte } },
               h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(u, 240, 240) : u, alt: "", loading: "lazy", decoding: "async", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-              h("button", { onClick: function () { setMedias(medias.filter(function (x) { return x !== u; })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059", "Entfernen"),
-                style: { position: "absolute", top: 3, right: 3, width: 28, height: 28, borderRadius: "50%", border: "1.5px solid rgba(255,107,129,0.75)", background: "rgba(7,8,10,0.88)", color: "#FF9AA8", fontSize: 14, fontWeight: 800, cursor: "pointer", padding: 0 } }, "\u2715"));
-          }),
-          nouvelles.map(function (m, iN) {
-            return h("div", { key: "nv" + iN, style: { position: "relative", aspectRatio: "1 / 1", borderRadius: 11, overflow: "hidden", background: "#0B1116", border: "1px solid rgba(232,184,75,0.35)" } },
-              h("img", { src: m.dataUrl, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
-              h("button", { onClick: function () { setNouvelles(nouvelles.filter(function (x) { return x !== m; })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "\u5916\u3059", "Entfernen"),
-                style: { position: "absolute", top: 3, right: 3, width: 28, height: 28, borderRadius: "50%", border: "1.5px solid rgba(255,107,129,0.75)", background: "rgba(7,8,10,0.88)", color: "#FF9AA8", fontSize: 14, fontWeight: 800, cursor: "pointer", padding: 0 } }, "\u2715"));
-          })) : null,
-        h("input", { ref: refFicM, type: "file", accept: "image/*", multiple: true, onChange: choisirPhotosCarnet, style: { display: "none" } }),
-        h("div", { role: "button", onClick: function () { try { if (refFicM.current) refFicM.current.click(); } catch (eCl) { } },
-          style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 48, borderRadius: 999, border: "1px dashed rgba(232,184,75,0.40)", color: OR, fontFamily: M, fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
-          h("span", { style: { fontSize: 16, lineHeight: 1 } }, "+"),
-          (medias.length || nouvelles.length)
-            ? T("Ajouter des photos", "Add photos", "A\u00f1adir fotos", "Aggiungi foto", "\u5199\u771f\u3092\u8ffd\u52a0", "Fotos hinzuf\u00fcgen")
-            : T("Choisir des photos", "Pick photos", "Elegir fotos", "Scegli foto", "\u5199\u771f\u3092\u9078\u3076", "Fotos w\u00e4hlen"))),
+              h("button", { onClick: function () { setMedias(medias.filter(function (x) { return x !== u; })); }, "aria-label": T("Retirer", "Remove", "Quitar", "Rimuovi", "外す", "Entfernen"),
+                style: { position: "absolute", top: 3, right: 3, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(242,237,228,0.35)", background: "rgba(8,10,11,0.85)", color: HJ.ivoire, fontSize: 13, cursor: "pointer", padding: 0 } }, "✕"));
+          })),
+        h("div", { key: "phm", style: { fontFamily: M, fontSize: 12, color: HJ.gris, marginTop: 8 } },
+          T("L’ajout de nouvelles photos est suspendu pour le moment.", "Adding new photos is paused for now.", "Añadir fotos está en pausa.", "L’aggiunta di foto è sospesa.", "写真の追加は一時停止中です。", "Neue Fotos sind vorübergehend pausiert."))]) : null,
 
-      err ? h("div", { style: { margin: "0 0 16px", padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } }, err) : null,
+      err ? h("div", { style: { margin: "0 0 14px", padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 13, lineHeight: 1.5 } }, err) : null,
 
       h("div", { role: "button", onClick: enregistrer,
-        style: { display: "flex", alignItems: "center", justifyContent: "center", width: "100%", minHeight: 56, borderRadius: 999, border: "none", background: envoi ? "rgba(232,184,75,0.35)" : OR, color: "#0B0E12", fontFamily: M, fontSize: 15.5, fontWeight: 800, letterSpacing: 0.3, cursor: envoi ? "default" : "pointer" } },
-        envoi ? T("Enregistrement\u2026", "Saving\u2026", "Guardando\u2026", "Salvataggio\u2026", "\u4fdd\u5b58\u4e2d\u2026", "Speichern\u2026") : T("Enregistrer ma s\u00e9ance", "Save my session", "Guardar mi sesi\u00f3n", "Salva la sessione", "\u4fdd\u5b58\u3059\u308b", "Einheit speichern")),
+        style: { display: "flex", alignItems: "center", justifyContent: "center", width: "100%", minHeight: 52, borderRadius: 12, border: "1px solid " + HJ.reflet, background: HJ.pet, color: HJ.ivoire, fontFamily: M, fontSize: 16, fontWeight: 600, cursor: envoi ? "default" : "pointer", opacity: envoi ? 0.6 : 1, marginTop: 6, boxSizing: "border-box" } },
+        envoi ? T("Enregistrement…", "Saving…", "Guardando…", "Salvataggio…", "保存中…", "Speichern…") : T("Enregistrer ma séance", "Save my session", "Guardar mi sesión", "Salva la sessione", "保存する", "Einheit speichern")),
 
       (seance && seance.id) ? h("div", { role: "button", onClick: function () { setMode("lecture"); setErr(""); },
-        style: { margin: "14px auto 0", width: "fit-content", fontFamily: M, fontSize: 12.5, color: "#8A929C", textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer", padding: "10px 14px", minHeight: 44 } },
-        T("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen")) : null);
+        style: { margin: "10px auto 0", width: "fit-content", fontFamily: M, fontSize: 13, color: HJ.gris, textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer", padding: "10px 14px", minHeight: 44, boxSizing: "border-box" } },
+        T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen")) : null);
   } else {
     var se = seance || {};
     var sousT = [se.cheval_nom || null, se.discipline || null].filter(function (x) { return !!x; }).join(" \u00b7 ");
@@ -41350,19 +41486,62 @@ function EcranCarnetDetail() {
           : T("Supprimer cette s\u00e9ance", "Delete this session", "Eliminar esta sesi\u00f3n", "Elimina questa sessione", "\u3053\u306e\u7a3d\u53e4\u3092\u524a\u9664", "Diese Einheit l\u00f6schen")));
   }
 
-  return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 120 } },
+  return h("div", { style: { minHeight: "100vh", background: HJ.fond, color: HJ.ivoire, paddingBottom: "calc(env(safe-area-inset-bottom) + 40px)" } },
+    /* 27/09 (408) : barre d onglets cachee sur cet ecran ; date iOS alignee et bornee. */
+    h("style", null, "body.hb-sans-barre .hype-barre-onglets{display:none !important} .hj-date{-webkit-appearance:none;appearance:none;min-width:0;max-width:100%} .hj-date::-webkit-date-and-time-value{text-align:left;min-height:1.3em} .hj-date::-webkit-calendar-picker-indicator{filter:invert(0.8)}"),
     h("div", { style: { position: "relative", padding: "calc(env(safe-area-inset-top) + 54px) 18px 18px" } },
       h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck"), style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 40, height: 40, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.10)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-      h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: 2.2, textTransform: "uppercase", color: OR, fontWeight: 700, marginTop: 6 } },
+      h("div", { style: { fontFamily: M, fontSize: 10, letterSpacing: 2.2, textTransform: "uppercase", color: HJ.bronze, fontWeight: 700, marginTop: 6 } },
         (mode === "edition" && !(seance && seance.id))
           ? T("Nouvelle s\u00e9ance", "New session", "Nueva sesi\u00f3n", "Nuova sessione", "\u65b0\u3057\u3044\u7a3d\u53e4", "Neue Einheit")
           : T("Ma s\u00e9ance", "My session", "Mi sesi\u00f3n", "La mia sessione", "\u7a3d\u53e4", "Meine Einheit")),
-      h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, color: "#F4F7FA", marginTop: 6, lineHeight: 1.2 } },
+      h("div", { style: { fontFamily: C, fontSize: 24, fontWeight: 700, color: HJ.ivoire, marginTop: 6, lineHeight: 1.2 } },
         enClair(mode === "edition" ? dateS : ((seance && seance.date_seance) || dateS)))),
     corps,
     /* 16/09 (180) : le panneau qui sert a CHOISIR des conseils - le meme composant que celui
        de Mon carnet, avec la prop `onChoisir`. */
     hypeCalquePhoto(vuP, function () { setVuP(null); }),
+    /* 27/09 (408) : LE PANNEAU DES CHEVAUX. Plein ecran, recherche locale, lignes de 50 px.
+       Ordre : Aucun cheval, Cheval sans fiche, puis mes chevaux (siens + lies, charges comme avant),
+       puis les chevaux de mes ecuries (regle 207), dedoublonnes par id. Aucune fiche n est jamais creee. */
+    panCheval ? (function () {
+      var q = hjNorm(rechCh);
+      function garde(c) { return !q || hjNorm(c.nom).indexOf(q) >= 0; }
+      var vus = {};
+      var miens = (chevaux || []).filter(function (c) { if (!c || !c.id || vus[c.id]) return false; vus[c.id] = 1; return true; }).filter(garde);
+      var ecurie = (chvEc || []).filter(function (c) { if (!c || !c.id || vus[c.id]) return false; vus[c.id] = 1; return true; }).filter(garde);
+      function fermer() { setPanCheval(false); setSaisieLibre(false); }
+      function ligne(cle, txt, pris, onClick, sousTxt) {
+        return h("div", { key: cle, role: "button", onClick: onClick, style: { display: "flex", alignItems: "center", gap: 10, minHeight: 50, padding: "6px 4px", borderBottom: "1px solid rgba(242,237,228,0.07)", cursor: "pointer" } },
+          h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { fontFamily: M, fontSize: 16, color: pris ? HJ.ivoire : "#DCDDD9", fontWeight: pris ? 600 : 500, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, txt),
+            sousTxt ? h("div", { style: { fontFamily: M, fontSize: 12, color: HJ.gris, marginTop: 2 } }, sousTxt) : null),
+          pris ? h("span", { style: { flex: "0 0 auto", color: HJ.reflet, fontSize: 18 } }, "✓") : null);
+      }
+      function titreSec(txt) { return h("div", { key: "t" + txt, style: { fontFamily: M, fontSize: 10.5, letterSpacing: 1.8, textTransform: "uppercase", color: HJ.champ, fontWeight: 600, margin: "18px 4px 4px" } }, txt); }
+      return h("div", { "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 9000, background: HJ.fond, display: "flex", flexDirection: "column" } },
+        h("div", { style: { flex: "0 0 auto", padding: "calc(env(safe-area-inset-top) + 12px) 16px 10px", borderBottom: "1px solid rgba(242,237,228,0.08)" } },
+          h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
+            h("div", { style: { flex: 1, minWidth: 0, fontFamily: C, fontSize: 19, fontWeight: 600, color: HJ.ivoire } }, T("Choisir un cheval", "Choose a horse", "Elegir un caballo", "Scegli un cavallo", "馬を選ぶ", "Pferd wählen")),
+            h("button", { onClick: fermer, "aria-label": T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen"), style: { flex: "0 0 auto", width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(242,237,228,0.16)", background: "transparent", color: HJ.ivoire, fontSize: 16, cursor: "pointer", padding: 0 } }, "✕")),
+          h("input", { type: "search", value: rechCh, onChange: function (e) { setRechCh(e.target.value); }, placeholder: T("Rechercher un cheval", "Search a horse", "Buscar un caballo", "Cerca un cavallo", "馬を検索", "Pferd suchen"), style: stChamp })),
+        h("div", { style: { flex: "1 1 0", minHeight: 0, overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", padding: "4px 16px calc(env(safe-area-inset-bottom) + 28px)" } },
+          ligne("aucun", T("Aucun cheval", "No horse", "Ningún caballo", "Nessun cavallo", "馬なし", "Kein Pferd"), !chevalId && !chevalLibre, function () { setChevalId(""); setChevalLibre(""); fermer(); }),
+          ligne("libre", T("Cheval sans fiche…", "Horse without a profile…", "Caballo sin ficha…", "Cavallo senza scheda…", "未登録の馬…", "Pferd ohne Profil…"), !!chevalLibre, function () { setSaisieLibre(!saisieLibre); },
+            T("Tape son nom, aucune fiche n’est créée", "Type its name, no profile is created", "Escribe su nombre, no se crea ficha", "Scrivi il nome, nessuna scheda creata", "名前を入力（登録はしません）", "Namen eingeben, kein Profil wird angelegt")),
+          saisieLibre ? h("div", { key: "saisie", style: { display: "flex", gap: 8, padding: "10px 0 6px", minWidth: 0 } },
+            h("div", { style: { flex: 1, minWidth: 0 } },
+              h("input", { type: "text", value: libreTmp, maxLength: 60, onChange: function (e) { setLibreTmp(e.target.value); }, placeholder: T("Nom du cheval", "Horse name", "Nombre del caballo", "Nome del cavallo", "馬の名前", "Name des Pferdes"), style: stChamp })),
+            h("div", { role: "button", onClick: function () { var v = (libreTmp || "").trim(); if (!v) return; setChevalId(""); setChevalLibre(v); fermer(); },
+              style: { flex: "0 0 auto", display: "flex", alignItems: "center", justifyContent: "center", minHeight: 48, padding: "0 16px", borderRadius: 12, background: (libreTmp || "").trim() ? HJ.pet : "transparent", border: "1px solid " + HJ.reflet, color: HJ.ivoire, fontFamily: M, fontSize: 15, fontWeight: 600, cursor: "pointer", opacity: (libreTmp || "").trim() ? 1 : 0.5 } },
+              T("Valider", "OK", "Aceptar", "OK", "決定", "OK"))) : null,
+          miens.length ? titreSec(T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬", "Meine Pferde")) : null,
+          miens.map(function (c) { return ligne("m" + c.id, c.nom || "", String(chevalId) === String(c.id), function () { setChevalId(c.id); setChevalLibre(""); fermer(); }); }),
+          (chvEc === null || ecurie.length) ? titreSec(T("Chevaux de mes écuries", "Horses of my stables", "Caballos de mis cuadras", "Cavalli delle mie scuderie", "厩舎の馬", "Pferde meiner Ställe")) : null,
+          chvEc === null ? h("div", { key: "chg", style: { fontFamily: M, fontSize: 13, color: HJ.gris, padding: "10px 4px" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Lädt…")) : null,
+          ecurie.map(function (c) { return ligne("e" + c.id, c.nom || "", String(chevalId) === String(c.id), function () { setChevalId(c.id); setChevalLibre(""); fermer(); }); }),
+          (q && !miens.length && !ecurie.length) ? h("div", { key: "rien", style: { fontFamily: M, fontSize: 13.5, color: HJ.gris, padding: "16px 4px" } }, T("Aucun cheval ne correspond.", "No matching horse.", "Ningún caballo coincide.", "Nessun cavallo corrisponde.", "該当する馬はありません。", "Kein passendes Pferd.")) : null));
+    })() : null,
     panChoix ? h(PanneauConseilsHB, {
       onFermer: function () { setPanChoix(false); },
       dejaChoisis: dejaChoisis,
