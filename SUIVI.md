@@ -6376,3 +6376,43 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   retirer → rien d'effacé ; supprimer la séance → photo + vignette effacées.
   Aucun SQL. node --check OK (18 blocs), un seul marqueur.
   Build 20260927-438 (contient 437).
+· (439) 27/09, 21 h 20 — COULEURS RAVIVÉES SUR LA FICHE DE SÉANCE.
+  Suite du 431 (« ça manque un peu de doré et de vie dans le bleu, sans en
+  faire trop ») : la fiche de séance (EcranCarnetDetail, écriture ET lecture)
+  reprend exactement la palette de la page du journal.
+  Palette HJ : carte #131819, pétrole #2E6A80 (avant #254F60), pétrole clair
+  #37788F, reflet #7DB6C3 (avant #5C8792), bronze #C29B5C, doré #D6B676 (avant
+  #C5AA78), gris #BFC3C5. Bleus transparents passés sur le nouveau pétrole,
+  dorés plus francs, textes secondaires plus lumineux (0,5→0,7 ; 0,55→0,72 ;
+  0,58→0,76 ; 0,62→0,8 ; 0,7→0,84 ; 0,72 et 0,78→0,86), lien #8ECBD8.
+  Bouton « Enregistrer ma séance » : dégradé + halo, comme « Noter une séance ».
+  Remplacements faits en UNE passe (pas d'enchaînement 0,5→0,7→0,84) et
+  limités à EcranCarnetDetail. Encart d'envoi vidéo (cyan), rouge d'erreur et
+  voiles sombres : inchangés. Aucune logique touchée.
+  Test : captures avant/après (lecture complète et nouvelle séance), 390 px.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-439 (contient 438).
+· VÉRIFICATION 27/09, 21 h 25 — LES AUTRES FONCTIONS SUPABASE ET LE CORS
+  (point « à surveiller » de l'incident vidéo). Relevé dans l'index : il
+  n'appelle que DEUX fonctions Supabase.
+  - mux-upload : corrigée le 27/09 (ALLOWED_ORIGIN = "*").
+  - hey-baby-vision : ses origines autorisées sont déjà 2hype.fr,
+    www.2hype.fr et 2hype.netlify.app (§130, 26/09), et elle a fonctionné
+    depuis 2hype.fr. Rien à faire.
+  Tout le reste passe par Netlify en adresse RELATIVE (assistant,
+  supprimer-compte) : même site, donc pas de CORS. Seule inconnue : les
+  fichiers séparés (hype-stories.js, hype-video.js…), absents d'ici — à
+  regarder avec le chantier des stories.
+· (440) 27/09, 21 h 30 — LE JOURNAL NE GARDE RIEN D'UN COMPTE À L'AUTRE.
+  La page du journal (425-429) retient en mémoire le filtre, le nombre de
+  séances affichées, la semaine et le jour choisis, la séance ouverte
+  (window.__jcFiltre, __jcNb, __jcSem, __jcJour, __carnet) et les adresses
+  temporaires des photos du coffre (__hjCarnetUrls). Sur un téléphone
+  partagé, la personne suivante les retrouvait (sans jamais voir les
+  données de l'autre : la base filtre).
+  CORRECTION : nouvelle fonction hypeViderEtatsJournal(), appelée par
+  deconnexion() (le passage unique de tous les boutons « Se déconnecter » et
+  de la suppression de compte), même si la fermeture de session échoue, ET à
+  tout événement SIGNED_OUT (session expirée…). Rien en base.
+  Test : fonction isolée → les 5 réglages repassent à vide, le cache des
+  adresses est vidé.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-440 (contient 439).
