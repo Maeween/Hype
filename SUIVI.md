@@ -6184,142 +6184,153 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     inchangés. EcranCarnetDetail non touché (432).
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20260927-431.
 
-· (432) 27/09, 04 h 40 — TRADUCTION : LES 14 LOTS DU PAQUET POSÉS D'UN COUP
-  (conversation « Trad arabe »). Blandine : « Tu peux coder », « là je vais
-  rien tester je te fais confiance ». ⚠️ RISQUE SIGNALÉ : 14 lots dans un seul
-  build, NON TESTÉ sur iPhone (la règle « un lot, un test » n'a pas été suivie,
-  à sa demande). Si un écran casse : suspecter d'abord ce build.
-  ⚠️ Le 432 prévu pour les couleurs de la fiche de séance (EcranCarnetDetail)
-  devient le 433, À FAIRE À PARTIR DE CET INDEX 432.
-  Paquet préparé hors index pendant les builds 418-431 (hype-traductions-pack
-  .json + appliquer-traductions.js, chaque texte retrouvé par son code exact,
-  uniquement dans l'écran de son lot) ; appliqué sur l'index 431 : 0 texte
-  introuvable, 0 modification refusée.
-  – Lots 1-4 : les 4 écoles (Cadre Noir, Vienne, Portugaise, Jerez) en arabe
-    (570 textes) + voix de lecture ar-SA.
-  – Lot 5 : page Santé du cheval + sa carte d'accueil : allemand ET arabe
-    manquaient (118 textes).
-  – Lot 6 : 13 petites fonctions de traduction qui n'acceptaient que 5 langues
-    (L, TR, T5, TXT, T) passent à 7 : le 416 disait « tous les helpers
-    acceptent ar », c'était FAUX pour elles (examen blanc, quiz, « vu il y
-    a… », résultat de quiz, fin de cours, recadrage, fond studio, album
-    photos, conseils Hey Baby) ; 126 textes (de + ar) ; jours/mois de l'agenda
-    du club en japonais et allemand.
-  – Lot 7 : données des cours (reprises FFE, Galops, biomécanique,
-    compléments, observation, jeux, questions à Hey Baby) : 360 textes.
-  – Lot 8 : CSIO, Lamotte, Le Mans, articles, phrases d'accroche des
-    rendez-vous (hypePhraseRdv) : 103 textes.
-  – Lot 9 : badges, nouveautés, légendes, familles, quêtes, décors, offre de
-    lancement, installer l'appli, suppression de compte… : 289 textes.
-  – Lot 10 : EXAMENS BLANCS (Galops 1-7, 155 questions) n'existaient qu'en
-    FRANÇAIS pour toutes les langues → banque réécrite en {fr…ar} (l'écran
-    savait déjà lire ce format). Bouton « Recommencer » : repartait de la
-    banque non traduite (aurait planté) → repart de banqueTraduite.
-  – Lot 11 (hypeT7, français identique) : mois des dates sur 6 écrans, boutons
-    de la fiche cheval, page commune (LE MUR DES SOUVENIRS…), souvenirs,
-    invitation, story, fichier calendrier d'un rendez-vous, Modifier mon club,
-    confirmation d'abonnement, don, « ce cheval existe déjà », titres et notes
-    des reprises (devenus des get : lus à l'affichage).
-  – Lot 12 : page « Les phases du saut » (PSAUT_HTML traduit à l'affichage,
-    6 phases, boutons), annonces de Lamotte, descriptions/dates des grands
-    événements (get), noms des couleurs des sélecteurs (page Cavalier,
-    tableaux du club). ⚠️ lamotte.json en ligne (français) remplace les
-    annonces s'il existe.
-  – Lot 13 : contrôle qualité : ~20 cases vides remplies (es/it/ja/de) ;
-    morceaux vides exprès (« Il y a », « du », « avec », « Voir les ») →
-    marque invisible ​ (avant : le français s'affichait, « Il y a 5 min
-    ago ») ; + « Séances du » en japonais (journal, 42xxx).
-  – ARABE SANS SIGNES DE VOCALISATION PARTOUT (décision de Blandine, 27/09,
-    03 h 53, pour une lectrice arabophone adulte) : harakat et chadda retirés
-    de tout l'arabe existant (I18N, 16 dictionnaires COMPL_…_I18N, journal
-    419-431). Aucun mot changé. Contrôle : 0 signe restant dans l'index.
-  – Lot 14 : balises des cours ?v= montées (galop1 v3, galop2 v3, galop3 v4,
-    galops-sup v3) → LES 4 FICHIERS DE COURS LIVRÉS AVEC CE BUILD :
-    hype-cours-galops-sup.js v3 : Galops 5, 6, 7 (français seul jusque-là)
-    traduits dans les 7 langues (217 textes ; correct et ordre des options
-    intacts) ; chapitre g6-c2 « L'impulsion » reçoit l'arabe (42 textes) ;
-    galop1/2/3 : signes retirés de l'arabe + 4 morceaux de titre vides → ​.
-  – Écrans modératrice : RESTENT EN FRANÇAIS (décision de Blandine, 27/09).
-  – NON TRADUIT volontairement : « Pas connecté » et messages d'erreur des
-    fonctions (le code compare String(r.error) === "Pas connecté" : traduire
-    casserait ce test) ; ALLURE_NOMS (sert à reconnaître le texte français des
-    figures) ; fiches de démonstration ; noms propres ; consignes de l'IA.
-  – QUESTION OUVERTE : « poney » en arabe. Linguae a établi que مهر = poulain
-    (poney = بوني). Hype utilise مهر pour poney (8 fois dans l'index, 9 dans
-    les cours ; le fichier maître des Galops 1-4 l'imposait). Les nouvelles
-    traductions disent بوني. Rien remplacé : Blandine demande l'avis de
-    ChatGPT.
-  – Fichiers jamais vus : hype-cours-baby.js, hype-memory-poney.js,
-    hype-resultats.js, hype-modeles-db.js, hype-video.js.
-  CONTRÔLES : node --check OK (18 blocs + 4 fichiers de cours), un seul
-  marqueur (20260927-432). Appli lancée dans un navigateur de test (base
-  simulée), 40 écrans ouverts en français, arabe et allemand : aucun écran
-  ne plante à cause de ce build ; le français est identique au 431.
-  ⚠️ Écran « videos » : plante DÉJÀ dans le 431 (EcranVideos is not defined)
-  — sans rapport avec la traduction, probablement jamais atteint.
-  Build 20260927-432 (contient 418 à 431).
+· 27/09, 12 h 39 → 20 h 14 — INCIDENT VIDÉO (hors build, côté Supabase).
+  Symptôme : vidéo impossible dans les commentaires d'un événement (stage),
+  « vidéo : TypeError: Load failed », 3 essais.
+  Diagnostic, une vérification à la fois :
+  – videos_mux : aucune ligne du jour → la fonction mux-upload n'allait jamais
+    jusqu'à la réservation du quota.
+  – Invocations de mux-upload : seulement la vérification OPTIONS (200), jamais
+    le POST → Safari bloquait la vraie demande.
+  – Clés JWT : le projet est passé à une nouvelle clé de signature (Current =
+    nouvelle, Previous = ancienne) ; la fonction a « Verify JWT with legacy
+    secret » activé. Piste NON retenue au final (voir cause).
+  – CAUSE RÉELLE (ligne 1 de mux-upload) : ALLOWED_ORIGIN =
+    "https://2hype.netlify.app", alors que Hype tourne désormais sur
+    https://2hype.fr → CORS refusé par Safari.
+  CORRECTION faite par Blandine dans l'éditeur Supabase (19 h 55), déployée :
+  const ALLOWED_ORIGIN = "*";  (sans risque : la fonction vérifie elle-même
+  l'utilisateur via utilisateurDuJeton → /auth/v1/user ; le CORS ne protégeait
+  rien, comme le disait déjà son commentaire du 04/09).
+  Test : envoi OK (videos_mux ready à 19 h 58) ; le 1er commentaire vidéo avait
+  été supprimé par Blandine pendant la préparation (case vide, rien ne
+  bougeait) ; 2e essai : « la vidéo est arrivée » (20 h 14).
+  À SURVEILLER : les AUTRES fonctions Supabase (Hey Baby…) peuvent avoir la même
+  ligne ALLOWED_ORIGIN = 2hype.netlify.app → à vérifier si l'une casse sur 2hype.fr.
+  Améliorations proposées, NON faites : (1) indicateur visible pendant l'envoi
+  puis la préparation (« Envoi 45 % », « Préparation… ») au lieu d'une case
+  vide ; (2) webhook Mux côté serveur pour accrocher la vidéo sans dépendre du
+  téléphone après l'envoi. Photos/vidéos des séances du journal : toujours
+  suspendues, choix A (coffre privé) / B / C posé à Blandine.
 
-· (433) 27/09, 05 h 00 — TRADUCTION, SUITE (« Ok continue », sans test du 432).
-  ⚠️ 432 ET 433 NON TESTÉS SUR IPHONE : si un écran casse, suspecter ces deux
-  builds. Les couleurs de la fiche de séance (EcranCarnetDetail), prévues
-  « 432 » puis « 433 », deviennent le 434, À FAIRE À PARTIR DE CET INDEX.
-  – Globe des clubs (GLOBE_HTML_HYPE, iframe « Hype Universe ») : son
-    dictionnaire interne HYPE_L n'avait que fr/en/es/it/ja/de → arabe ajouté
-    (28 textes : recherche, filtres, « C'est mon club », types de clubs…).
-    Il reçoit déjà la langue de l'appli par message (hype-lang).
-  – Catégorie des articles (« Événements équestres ») affichée en français
-    dans toutes les langues à 3 endroits (article à la une de l'accueil,
-    cartes du Mag, page d'un article) → traduite à l'affichage (hypeT7) ; la
-    valeur stockée ne change pas (le filtre par catégorie la compare).
-  – Traductions existantes FAUSSES corrigées :
-    · fond studio « Noir » : allemand « Rappe » (cheval noir) → « Schwarz » ;
-    · thème des conseils « Position » : japonais 姿势 (chinois) → 姿勢 ;
-    · Cadre Noir : « eine "Schulsprung" » → « ein "Schulsprung" » ;
-    · reprises : « doubler » était traduit « traverser la diagonale » dans
-      les 6 langues (c'est une autre figure). « A — doubler » → « A — down
-      the centre line » / « auf die Mittellinie abwenden »… ; « B — Doubler ·
-      X — doubler » → traverser la largeur puis entrer sur la ligne du milieu
-      (lecture la plus probable, à confirmer sur le texte officiel) ;
-      « BE — doubler dans la largeur » (anglais) ; étiquette « Doubler » du
-      jeu Plan de reprise → « Turn across the arena »… 57 textes.
-  – Relevé : COMM_HTML_HYPE et __lmagInit (anciennes pages en français) ne
-    sont appelés NULLE PART : laissés tels quels.
-  CONTRÔLES : node --check OK (18 blocs), un seul marqueur (20260927-433).
-  Navigateur de test (base simulée), 40 écrans en arabe et en anglais : aucun
-  plantage nouveau (« videos » plante déjà depuis le 431, sans rapport).
-  Build 20260927-433 (contient 432).
+· (432) 27/09, 20 h 30 — ENCART D'ENVOI VIDÉO DANS LES COMMENTAIRES (MurHype :
+  murs, événements, fil). Blandine : « quand le téléchargement est en cours le
+  visuel est différent de l'encart, on pourrait écrire en haut en couleur
+  téléchargement en cours merci de patienter ; sinon la petite vidéo de la
+  mascotte » → option 3 choisie (les deux).
+  – CAUSE de la « case vide » : pour les statuts uploading / processing, la
+    case recevait un libellé NUL (seul « Vidéo non envoyée » en avait un).
+  – Désormais : bandeau en couleur en haut de l'encart — « Téléchargement en
+    cours, merci de patienter » (uploading) puis « Préparation de la vidéo… »
+    (processing) — + Titi (images/titi-envoi-video.mp4, la même que l'onglet
+    Vidéos de la fiche cheval ; absente = seul le texte s'affiche) + une phrase
+    d'aide : garder Hype ouverte pendant l'envoi / revenir sur la page pour voir
+    la vidéo prête. 7 langues. « Vidéo non envoyée » inchangé.
+  – NON fait (build séparé proposé) : le mur ne se rafraîchit pas tout seul à la
+    fin de la préparation — la vidéo apparaît quand on revient sur la page (le
+    texte le dit honnêtement).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20260927-432
+  (contient 430 et 431).
 
-· (434) 27/09, 05 h 30 — TRADUCTION : FICHIERS SÉPARÉS + « PONEY » EN ARABE
-  (« Ok continue » ; fichiers fournis par Blandine à 04 h 35 ; réponse de
-  ChatGPT transmise à 04 h 36 : poney = بوني, poulain = مهر).
-  ⚠️ 432, 433, 434 NON TESTÉS SUR IPHONE. Les couleurs de la fiche de séance
-  deviennent le 435, À PARTIR DE CET INDEX.
-  – hype-cours-baby.js (v113, ?v=113) : le Chemin Baby n'avait PAS d'arabe
-    (6 langues) → 786 dictionnaires reçoivent « ar » (~280 000 caractères :
-    histoires de Liam et Apy, leçons, quiz, titres). Arabe simple, sans
-    voyelles ; noms (Apy, Liam, Samuel, Elea, Evan, Bambina) en latin.
-  – hype-memory-poney.js (v5, ?v=5) : 134 textes (niveaux, leçons, cartes).
-  – hype-video.js (?v=27092026) : catalogue, chapitres, collections (93
-    textes) + 82 textes de l'écran (T() à 6 langues → 7).
-    ⚠️ CORRECTION DU 432 : l'écran « videos » ne plante PAS. Il est défini
-    dans hype-video.js, que le navigateur de test ne chargeait pas.
-  – hype-resultats.js (VERSION 4, ?v=4) : la page des résultats en concours
-    était écrite en français seul → dictionnaire TXR en 7 langues dans le
-    module (lit window.__hypeLangue) : totaux, phrases (« 2 victoires en 5
-    sorties avec… », accords et ordinaux par langue : 1er / 1st / 1.º / 1° /
-    1. / 1位), grands moments, cavaliers, tri, liste, dates (mois et ordre
-    du jour selon la langue), boutons. Les noms d'événements et les titres
-    (données) restent tels quels. Testé en fr, en, de, ja, ar : 0 erreur.
-  – « PONEY » EN ARABE : مهر (poulain) était utilisé pour « poney » → بوني
-    partout où le français dit poney : index 9 (Mémory du Poney, « Je parle
-    au poney », « Un poney peut être… », ration du poney de club…), Galop 1
-    (6), Galop 3 (2), Galops sup (1). GARDÉ مهر là où c'est vraiment un
-    poulain (gestation, « Un poulain », du poulain au Schulhengst…) et dans
-    le Chemin Baby (leçon « poulain ≠ poney »).
-    Versions : galop1 v4, galop3 v5, galops-sup v4 (balises ?v= montées).
-  – hype-modeles-db.js : PAS FOURNI, pas vérifié.
-  CONTRÔLES : node --check OK (18 blocs + 8 fichiers), un seul marqueur
-  (20260927-434). Navigateur de test (base simulée, tous les fichiers
-  séparés chargés), 40 écrans en arabe et en français : aucun plantage, y
-  compris « videos » (bibliothèque vidéo en arabe).
-  Build 20260927-434 (contient 432 et 433).
+· (433) 27/09, 20 h 40 — LA VIDÉO REMPLACE L'ENCART D'ELLE-MÊME (MurHype).
+  Blandine : « Ok continue » (proposé au 432).
+  – Tant qu'un message du mur affiche une vidéo en cours (statut uploading ou
+    processing), le mur relit ses messages toutes les 8 s, au plus 6 min ; dès
+    qu'aucune vidéo n'est en cours, plus aucune lecture supplémentaire.
+  – Relecture immédiate quand l'envoi signale sa fin (événements déjà émis par
+    hypePosterVideoCommentaire : hype-souvenirs-maj, hype-albums-modifies).
+  – Texte de préparation mis à jour (7 langues) : « Elle va apparaître ici
+    d'elle-même d'ici une minute ou deux. »
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20260927-433
+  (contient 432).
+
+· 27/09, 20 h 35 — SQL PASSÉ PAR BLANDINE (coffre privé du journal), vérifié :
+  storage.buckets avant : « photos » seul (public, 500 Mo, tous types).
+  Créé : dossier « carnet » (public = false, 10 Mo par fichier, image/jpeg,
+  image/png, image/webp) + 3 règles sur storage.objects, « soi seulement »
+  (1er sous-dossier = auth.uid()) : carnet_voir_soi (SELECT),
+  carnet_ajouter_soi (INSERT), carnet_supprimer_soi (DELETE). Vérification :
+  4 lignes attendues présentes. Dossier « photos » non touché.
+
+· (434) 27/09, 20 h 50 — PHOTOS DU JOURNAL RÉACTIVÉES, DANS LE COFFRE PRIVÉ.
+  Blandine : option A (« Ok A »). Builds A (ajouter) et B (afficher) réunis
+  dans ce seul build, SIGNALÉ : sans l'affichage, une photo privée envoyée
+  n'aurait pas pu se voir au test.
+  – Fiche de séance (modification) : bouton « Ajouter des photos » (plusieurs
+    d'un coup, 8 max par séance) ; les nouvelles s'affichent à la suite des
+    anciennes et partent à l'enregistrement ; phrase « Tes photos sont
+    privées : toi seule peux les voir. » + « L'ajout de vidéos sera bientôt
+    disponible. » (7 langues).
+  – Envoi : hypeCarnetEnvoyerPhoto → dossier « carnet », chemin
+    <uid>/<horodatage>-<aléa>.<ext> (préparation preparerPhotoMaster
+    inchangée ; format refusé par le coffre → reconverti en JPEG) + une
+    vignette <même nom>_v.jpg (480 px) pour les cartes. La séance garde une
+    RÉFÉRENCE « carnet:<chemin> », jamais une adresse publique.
+  – Affichage : hypeCarnetSigner = adresses temporaires (1 h) demandées EN UNE
+    FOIS pour toutes les photos à l'écran (createSignedUrls), gardées 50 min en
+    mémoire. Fiche (galerie) : grande photo pour les grandes cases, vignette
+    pour les petites ; visionneuse = grande photo. Journal (cartes) : vignette.
+  – Anciennes photos (adresses publiques) : affichées comme avant, non touchées.
+  – NON fait (build C) : la suppression réelle du fichier quand on retire une
+    photo ou qu'on supprime une séance (aujourd'hui la photo retirée disparaît
+    de la séance, le fichier reste dans le coffre, privé).
+  Tests (Supabase simulé) : lecture d'une séance avec 1 photo privée + 1
+  ancienne, ajout d'une photo, enregistrement (2 envois : photo + vignette ;
+  référence carnet: ajoutée à medias), carte du journal avec vignette privée
+  (1 seule demande d'adresses). Une parenthèse de fermeture oubliée dans le
+  bloc Souvenirs a été détectée par node --check et corrigée avant livraison.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-434.
+
+· (435) 27/09, 21 h 00 — LIEN PARTAGÉ D'UN RENDEZ-VOUS (#r=<id>) : LA FICHE
+  S'OUVRE À COUP SÛR. Blandine : un lien d'événement de l'agenda « ramène sur la
+  page Écurie » alors que « on avait déjà géré ça » (builds 128 et 283).
+  CAUSE : AgendaClubHype lisait la note window.__agendaFiche et l'EFFAÇAIT dès
+  son premier affichage, avant que la connexion soit rétablie quand l'appli
+  s'ouvre depuis un lien : la base (club_agenda, réservée aux connectés) ne
+  renvoyait rien, ou la page se redessinait et la note était perdue.
+  CORRECTION (AgendaClubHype seul) : la note est gardée tant que la fiche n'est
+  pas vraiment ouverte ; essais toutes les 0,8 s pendant 10 s au plus, dès que
+  la connexion est là ; un seul essai à la fois, mais un agenda démonté ne
+  bloque pas le nouveau ; « Ce rendez-vous n'existe plus » seulement une fois
+  connectée. Liens déjà envoyés, droits, base : inchangés.
+  Test : simulation (connexion qui arrive après 1,5 s + agenda redessiné à 1 s)
+  → la fiche s'ouvre dans le nouvel agenda, note effacée ensuite.
+  Stories en partage : reportées à la demande de Blandine (« on verra après »).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-435 (contient 434).
+· SQL 27/09, 20 h 47 (passé par Blandine, « Success. No rows returned ») —
+  VIDÉO DANS LE CARNET, ÉTAPE 1 : contrainte videos_mux_destination_type_check
+  étendue à 'seance' ; nouvelle fonction carnet_seance_ajouter_media(p_seance,
+  p_url) (security invoker : ajout atomique à carnet_seances.medias, si absent,
+  seulement sur SA séance) ; hype_reserver_place_video recréée à l'identique +
+  une branche « ready » pour destination_type = 'seance' (vidéo comptée tant
+  qu'elle est dans une séance). Plafonds inchangés : illimité / 15 / 3.
+· (436) 27/09, 21 h 15 — AJOUTER UNE VIDÉO À UNE SÉANCE DU CARNET.
+  Blandine : « mets les vidéos en ligne sur la page carnet de bord ».
+  EcranCarnetDetail seul. Bouton « Ajouter une vidéo » dans Souvenirs, à côté
+  de « Ajouter des photos », seulement sur une séance DÉJÀ enregistrée (sinon :
+  « Pour ajouter une vidéo, enregistre d'abord ta séance »). 3 min maximum,
+  8 photos + vidéos au maximum par séance.
+  CHEMIN (le même que les commentaires) : réservation Mux avec la cible
+  « carnet:<uid> » (quota serveur) → trace videos_mux enrichie
+  (destination « seance », id de la séance) → envoi du fichier → attente Mux
+  (jusqu'à ~6 min tant que l'appli reste ouverte) → carnet_seance_ajouter_media
+  (jamais de réécriture du tableau entier) → trace « ready ». Ensuite la vidéo
+  est ajoutée à l'écran ; un « Enregistrer » ultérieur la garde.
+  PENDANT L'ENVOI : même encart que le fil (432) — bandeau « Téléchargement en
+  cours, merci de patienter · NN % » puis « Préparation de la vidéo… », Titi.
+  Visible aussi en lecture si elle enregistre pendant l'envoi.
+  GALERIE : une vidéo montre son image Mux et le ▶ ; toucher = la visionneuse
+  existante (lit déjà les vidéos). Carte du journal : inchangée (elle savait
+  déjà afficher une vidéo en première position).
+  MESSAGES CLAIRS (7 langues) : quota atteint, vidéo trop longue, échec
+  d'envoi, préparation ratée, toujours en préparation.
+  TEXTE D'INFO : les vidéos ne sont PAS dans le coffre privé (Mux est public :
+  quiconque a le lien peut la voir) — c'est dit sous les boutons.
+  ⚠️ NON FAIT (prévu) : rattrapage si l'appli est fermée avant la fin (la vidéo
+  reste alors chez Mux, trace en uploading/processing, non rattachée). NE PAS
+  appeler hypeMuxReconcilier sur une cible « carnet:… » en l'état : sa branche
+  non-album écrit dans commentaires/souvenirs, pas dans carnet_seances.
+  Test simulé : envoi → encart 40 % → rpc (p_seance, URL m3u8) → trace ready →
+  vignette vidéo dans la galerie → Enregistrer garde la vidéo ; quota en arabe
+  → message clair, rien d'envoyé ; nouvelle séance → pas de bouton.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-436 (contient 435).
