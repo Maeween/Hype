@@ -15,7 +15,7 @@
 
    Point d'entrée :  HYPE_RESULTATS.rendre(hote, options)
 
-   ⚠️ VERSION : 2  (01/09/2026)
+   ⚠️ VERSION : 4  (27/09/2026 — textes dans les 7 langues de l'appli, arabe compris ; lit window.__hypeLangue)
    index.html charge ce fichier avec une clé `?v=`. À CHAQUE livraison de ce
    fichier, incrémenter le numéro ci-dessus ET le `?v=` de la balise dans
    index.html — sinon le navigateur et la PWA servent l'ancienne version quoi
@@ -282,6 +282,147 @@
               "août", "septembre", "octobre", "novembre", "décembre"];
   var PETITS = ["de", "du", "des", "la", "le", "les", "en", "et", "sur", "d", "l", "aux", "au"];
 
+  /* ==== 1 bis. LES LANGUES (27/09/2026) ===================================
+     Le module était écrit en français seul. Il lit la langue de l'appli
+     (window.__hypeLangue, posée par App) et repli sur le français.       */
+  function lgR() { try { var l = window.__hypeLangue || "fr"; return TXR[l] ? l : "fr"; } catch (e) { return "fr"; } }
+  var TXR = {
+    fr: { sorties: "Sorties", victoires: "Victoires", podiums: "Podiums", classements: "Classements",
+      notePrepa: "Entre parenthèses : les victoires en épreuve préparatoire. Elles comptent à part, jamais dans le chiffre des victoires.",
+      tete: function (v, s, p) { return "<b>" + v + " victoire" + (v > 1 ? "s" : "") + "</b> en " + s + " sortie" + (s > 1 ? "s" : "") + (p ? " avec " + p : ""); },
+      plusBelle: "Sa plus belle", plusBeauPodium: "Son plus beau podium", plusBeauClassement: "Son plus beau classement",
+      classe: "classé", et: " et ", sur: " sur ",
+      grandsMoments: "Ses grands moments", occasions: function (n) { return "à " + n + " occasions"; },
+      kRdv: "Grand rendez-vous", kEch: "Très grosse échéance", kTV: "Triple victoire", kDV: "Double victoire", kTP: "Triple podium", kDP: "Double podium",
+      tTV: "Trois victoires", tDV: "Deux victoires", tTP: "Trois podiums", tDP: "Deux podiums",
+      nConcours: function (n) { return n + " concours"; }, derouler: function (n) { return "▾ dérouler les " + n; },
+      prepa: "Préparatoire", partantsNon: "partants non donnés",
+      sesCavaliers: "Ses cavaliers", tousCavaliers: "Tous ses cavaliers", nSorties: function (n) { return n + " sorties"; },
+      vMin: "victoires", pMin: "podiums", cMin: "classements", nEpreuves: function (n) { return n + " épreuves"; },
+      rienGarde: "Rien de gardé de ce concours.", ajouter: "+ ajouter des photos, une vidéo, un souvenir",
+      triForts: "Les plus forts", triDate: "Par date", triHauteur: "Par hauteur",
+      sesConcours: "Ses concours", sesConcoursAvec: function (p) { return "Ses concours avec " + p; },
+      anVict: function (n) { return n + " victoire" + (n > 1 ? "s" : ""); }, anPod: function (n) { return n + " podium" + (n > 1 ? "s" : ""); },
+      aucun: "Aucun résultat pour l'instant.", importer: "⤓ Importer mes résultats",
+      mois: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
+      suff: function (p) { return Number(p) === 1 ? "er" : "e"; }, jour: function (j, m) { return j + " " + m; } },
+    en: { sorties: "Outings", victoires: "Wins", podiums: "Podiums", classements: "Placings",
+      notePrepa: "In brackets: wins in preparatory classes. They are counted separately, never in the number of wins.",
+      tete: function (v, s, p) { return "<b>" + v + " win" + (v > 1 ? "s" : "") + "</b> in " + s + " outing" + (s > 1 ? "s" : "") + (p ? " with " + p : ""); },
+      plusBelle: "Best win", plusBeauPodium: "Best podium", plusBeauClassement: "Best placing",
+      classe: "placed", et: " and ", sur: " of ",
+      grandsMoments: "Big moments", occasions: function (n) { return "on " + n + " occasions"; },
+      kRdv: "Major event", kEch: "Very big event", kTV: "Triple win", kDV: "Double win", kTP: "Triple podium", kDP: "Double podium",
+      tTV: "Three wins", tDV: "Two wins", tTP: "Three podiums", tDP: "Two podiums",
+      nConcours: function (n) { return n + " show" + (n > 1 ? "s" : ""); }, derouler: function (n) { return "▾ show all " + n; },
+      prepa: "Preparatory", partantsNon: "starters not given",
+      sesCavaliers: "Riders", tousCavaliers: "All riders", nSorties: function (n) { return n + " outings"; },
+      vMin: "wins", pMin: "podiums", cMin: "placings", nEpreuves: function (n) { return n + " classes"; },
+      rienGarde: "Nothing saved from this show yet.", ajouter: "+ add photos, a video, a memory",
+      triForts: "Strongest", triDate: "By date", triHauteur: "By height",
+      sesConcours: "Shows", sesConcoursAvec: function (p) { return "Shows with " + p; },
+      anVict: function (n) { return n + " win" + (n > 1 ? "s" : ""); }, anPod: function (n) { return n + " podium" + (n > 1 ? "s" : ""); },
+      aucun: "No results yet.", importer: "⤓ Import my results",
+      mois: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+      suff: function (p) { p = Number(p); var d = p % 100; if (d >= 11 && d <= 13) return "th"; return ["th", "st", "nd", "rd"][p % 10] || "th"; }, jour: function (j, m) { return j + " " + m; } },
+    es: { sorties: "Salidas", victoires: "Victorias", podiums: "Podios", classements: "Clasificaciones",
+      notePrepa: "Entre paréntesis: las victorias en pruebas preparatorias. Se cuentan aparte, nunca en la cifra de victorias.",
+      tete: function (v, s, p) { return "<b>" + v + " victoria" + (v > 1 ? "s" : "") + "</b> en " + s + " salida" + (s > 1 ? "s" : "") + (p ? " con " + p : ""); },
+      plusBelle: "Su mejor victoria", plusBeauPodium: "Su mejor podio", plusBeauClassement: "Su mejor clasificación",
+      classe: "clasificado", et: " y ", sur: " de ",
+      grandsMoments: "Sus grandes momentos", occasions: function (n) { return "en " + n + " ocasiones"; },
+      kRdv: "Gran cita", kEch: "Cita muy importante", kTV: "Triple victoria", kDV: "Doble victoria", kTP: "Triple podio", kDP: "Doble podio",
+      tTV: "Tres victorias", tDV: "Dos victorias", tTP: "Tres podios", tDP: "Dos podios",
+      nConcours: function (n) { return n + " concurso" + (n > 1 ? "s" : ""); }, derouler: function (n) { return "▾ ver los " + n; },
+      prepa: "Preparatoria", partantsNon: "participantes no indicados",
+      sesCavaliers: "Sus jinetes", tousCavaliers: "Todos sus jinetes", nSorties: function (n) { return n + " salidas"; },
+      vMin: "victorias", pMin: "podios", cMin: "clasificaciones", nEpreuves: function (n) { return n + " pruebas"; },
+      rienGarde: "Nada guardado de este concurso.", ajouter: "+ añadir fotos, un vídeo, un recuerdo",
+      triForts: "Los mejores", triDate: "Por fecha", triHauteur: "Por altura",
+      sesConcours: "Sus concursos", sesConcoursAvec: function (p) { return "Sus concursos con " + p; },
+      anVict: function (n) { return n + " victoria" + (n > 1 ? "s" : ""); }, anPod: function (n) { return n + " podio" + (n > 1 ? "s" : ""); },
+      aucun: "Todavía no hay resultados.", importer: "⤓ Importar mis resultados",
+      mois: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
+      suff: function () { return "º"; }, jour: function (j, m) { return j + " de " + m; } },
+    it: { sorties: "Uscite", victoires: "Vittorie", podiums: "Podi", classements: "Piazzamenti",
+      notePrepa: "Tra parentesi: le vittorie nelle prove preparatorie. Si contano a parte, mai nel numero delle vittorie.",
+      tete: function (v, s, p) { return "<b>" + v + (v > 1 ? " vittorie" : " vittoria") + "</b> in " + s + (s > 1 ? " uscite" : " uscita") + (p ? " con " + p : ""); },
+      plusBelle: "La vittoria più bella", plusBeauPodium: "Il podio più bello", plusBeauClassement: "Il piazzamento migliore",
+      classe: "piazzato", et: " e ", sur: " su ",
+      grandsMoments: "I grandi momenti", occasions: function (n) { return "in " + n + " occasioni"; },
+      kRdv: "Grande appuntamento", kEch: "Appuntamento importantissimo", kTV: "Tripla vittoria", kDV: "Doppia vittoria", kTP: "Triplo podio", kDP: "Doppio podio",
+      tTV: "Tre vittorie", tDV: "Due vittorie", tTP: "Tre podi", tDP: "Due podi",
+      nConcours: function (n) { return n + (n > 1 ? " concorsi" : " concorso"); }, derouler: function (n) { return "▾ mostra tutti i " + n; },
+      prepa: "Preparatoria", partantsNon: "partenti non indicati",
+      sesCavaliers: "I suoi cavalieri", tousCavaliers: "Tutti i suoi cavalieri", nSorties: function (n) { return n + " uscite"; },
+      vMin: "vittorie", pMin: "podi", cMin: "piazzamenti", nEpreuves: function (n) { return n + " prove"; },
+      rienGarde: "Niente salvato di questo concorso.", ajouter: "+ aggiungi foto, un video, un ricordo",
+      triForts: "I migliori", triDate: "Per data", triHauteur: "Per altezza",
+      sesConcours: "I suoi concorsi", sesConcoursAvec: function (p) { return "I suoi concorsi con " + p; },
+      anVict: function (n) { return n + (n > 1 ? " vittorie" : " vittoria"); }, anPod: function (n) { return n + (n > 1 ? " podi" : " podio"); },
+      aucun: "Ancora nessun risultato.", importer: "⤓ Importa i miei risultati",
+      mois: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
+      suff: function () { return "°"; }, jour: function (j, m) { return j + " " + m; } },
+    ja: { sorties: "出場", victoires: "優勝", podiums: "表彰台", classements: "入賞",
+      notePrepa: "括弧内は準備競技での優勝です。優勝数には含めず、別に数えます。",
+      tete: function (v, s, p) { return (p ? p + "と " : "") + s + "回の出場で<b>" + v + "勝</b>"; },
+      plusBelle: "最高の優勝", plusBeauPodium: "最高の表彰台", plusBeauClassement: "最高の入賞",
+      classe: "入賞", et: "・", sur: "/",
+      grandsMoments: "輝かしい瞬間", occasions: function (n) { return n + "回"; },
+      kRdv: "大きな大会", kEch: "とても大きな大会", kTV: "3勝", kDV: "2勝", kTP: "表彰台3回", kDP: "表彰台2回",
+      tTV: "3つの優勝", tDV: "2つの優勝", tTP: "3つの表彰台", tDP: "2つの表彰台",
+      nConcours: function (n) { return n + "大会"; }, derouler: function (n) { return "▾ " + n + "件すべて表示"; },
+      prepa: "準備競技", partantsNon: "出場数不明",
+      sesCavaliers: "ライダー", tousCavaliers: "すべてのライダー", nSorties: function (n) { return n + "回出場"; },
+      vMin: "勝", pMin: "表彰台", cMin: "入賞", nEpreuves: function (n) { return n + "競技"; },
+      rienGarde: "この大会の思い出はまだありません。", ajouter: "+ 写真・動画・思い出を追加",
+      triForts: "成績順", triDate: "日付順", triHauteur: "高さ順",
+      sesConcours: "出場した大会", sesConcoursAvec: function (p) { return p + "と出場した大会"; },
+      anVict: function (n) { return n + "勝"; }, anPod: function (n) { return "表彰台" + n + "回"; },
+      aucun: "まだ成績がありません。", importer: "⤓ 成績を取り込む",
+      mois: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
+      suff: function () { return "位"; }, jour: function (j, m) { return m + j + "日"; } },
+    de: { sorties: "Starts", victoires: "Siege", podiums: "Podien", classements: "Platzierungen",
+      notePrepa: "In Klammern: Siege in Vorbereitungsprüfungen. Sie zählen extra, nie bei den Siegen.",
+      tete: function (v, s, p) { return "<b>" + v + (v > 1 ? " Siege" : " Sieg") + "</b> bei " + s + (s > 1 ? " Starts" : " Start") + (p ? " mit " + p : ""); },
+      plusBelle: "Schönster Sieg", plusBeauPodium: "Schönstes Podium", plusBeauClassement: "Beste Platzierung",
+      classe: "platziert", et: " und ", sur: " von ",
+      grandsMoments: "Große Momente", occasions: function (n) { return n + "-mal"; },
+      kRdv: "Großes Event", kEch: "Sehr großes Event", kTV: "Dreifachsieg", kDV: "Doppelsieg", kTP: "Dreifaches Podium", kDP: "Doppeltes Podium",
+      tTV: "Drei Siege", tDV: "Zwei Siege", tTP: "Drei Podien", tDP: "Zwei Podien",
+      nConcours: function (n) { return n + (n > 1 ? " Turniere" : " Turnier"); }, derouler: function (n) { return "▾ alle " + n + " zeigen"; },
+      prepa: "Vorbereitung", partantsNon: "Starterzahl unbekannt",
+      sesCavaliers: "Reiter", tousCavaliers: "Alle Reiter", nSorties: function (n) { return n + " Starts"; },
+      vMin: "Siege", pMin: "Podien", cMin: "Platzierungen", nEpreuves: function (n) { return n + " Prüfungen"; },
+      rienGarde: "Noch nichts von diesem Turnier gespeichert.", ajouter: "+ Fotos, ein Video, eine Erinnerung hinzufügen",
+      triForts: "Stärkste", triDate: "Nach Datum", triHauteur: "Nach Höhe",
+      sesConcours: "Turniere", sesConcoursAvec: function (p) { return "Turniere mit " + p; },
+      anVict: function (n) { return n + (n > 1 ? " Siege" : " Sieg"); }, anPod: function (n) { return n + (n > 1 ? " Podien" : " Podium"); },
+      aucun: "Noch keine Ergebnisse.", importer: "⤓ Meine Ergebnisse importieren",
+      mois: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+      suff: function () { return "."; }, jour: function (j, m) { return j + ". " + m; } },
+    ar: { sorties: "المشاركات", victoires: "الانتصارات", podiums: "المنصات", classements: "الترتيبات",
+      notePrepa: "بين قوسين: الانتصارات في المسابقات التحضيرية. تحسب على حدة، ولا تدخل أبدا في عدد الانتصارات.",
+      tete: function (v, s, p) { return "<b>الانتصارات: " + v + "</b> في " + s + " مشاركة" + (p ? " مع " + p : ""); },
+      plusBelle: "أجمل انتصار", plusBeauPodium: "أجمل منصة", plusBeauClassement: "أفضل ترتيب",
+      classe: "مصنف", et: " و", sur: " من ",
+      grandsMoments: "اللحظات الكبرى", occasions: function (n) { return "في " + n + " مناسبات"; },
+      kRdv: "حدث كبير", kEch: "حدث كبير جدا", kTV: "ثلاثة انتصارات", kDV: "انتصاران", kTP: "ثلاث منصات", kDP: "منصتان",
+      tTV: "ثلاثة انتصارات", tDV: "انتصاران", tTP: "ثلاث منصات", tDP: "منصتان",
+      nConcours: function (n) { return "المسابقات: " + n; }, derouler: function (n) { return "▾ عرض الكل (" + n + ")"; },
+      prepa: "تحضيرية", partantsNon: "عدد المشاركين غير محدد",
+      sesCavaliers: "الفرسان", tousCavaliers: "كل الفرسان", nSorties: function (n) { return "المشاركات: " + n; },
+      vMin: "انتصارات", pMin: "منصات", cMin: "ترتيبات", nEpreuves: function (n) { return "المسابقات: " + n; },
+      rienGarde: "لا شيء محفوظ من هذه المسابقة.", ajouter: "+ أضيفي صورا أو فيديو أو ذكرى",
+      triForts: "الأقوى", triDate: "حسب التاريخ", triHauteur: "حسب الارتفاع",
+      sesConcours: "المسابقات", sesConcoursAvec: function (p) { return "المسابقات مع " + p; },
+      anVict: function (n) { return "الانتصارات: " + n; }, anPod: function (n) { return "المنصات: " + n; },
+      aucun: "لا توجد نتائج حتى الآن.", importer: "⤓ استيراد نتائجي",
+      mois: ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"],
+      suff: function () { return ""; }, jour: function (j, m) { return j + " " + m; } }
+  };
+  function tx(k) { var d = TXR[lgR()]; var v = d[k]; return v === undefined ? TXR.fr[k] : v; }
+
   /* ==== 2. LES PETITS OUTILS ============================================ */
 
   function rdvObj(lieu) {
@@ -325,17 +466,19 @@
       .replace(/"/g, "&quot;");
   }
   function nb(x) { var n = parseInt(x, 10); return isNaN(n) ? null : n; }
-  function suff(p) { return Number(p) === 1 ? "er" : "e"; }
+  function suff(p) { return tx("suff")(p); }
   function enJours(d) { var t = new Date(d).getTime(); return isNaN(t) ? 0 : Math.floor(t / 86400000); }
 
   function dateLongue(d1, d2) {
     if (!d1) return "";
     var a = d1.split("-"), b = (d2 || d1).split("-");
-    if (d1 === d2 || !d2) return Number(a[2]) + " " + MOIS[Number(a[1]) - 1] + " " + a[0];
+    var MO = tx("mois"), J = tx("jour");   /* 27/09 : dans la langue de l'appli */
+    if (d1 === d2 || !d2) return J(Number(a[2]), MO[Number(a[1]) - 1]) + " " + a[0];
     if (a[1] === b[1] && a[0] === b[0])
-      return Number(a[2]) + " et " + Number(b[2]) + " " + MOIS[Number(a[1]) - 1] + " " + a[0];
-    return Number(a[2]) + " " + MOIS[Number(a[1]) - 1] + " — " +
-           Number(b[2]) + " " + MOIS[Number(b[1]) - 1] + " " + b[0];
+      return (lgR() === "fr" ? Number(a[2]) + " et " + Number(b[2]) + " " + MO[Number(a[1]) - 1]
+                             : J(Number(a[2]) + "\u2013" + Number(b[2]), MO[Number(a[1]) - 1])) + " " + a[0];
+    return J(Number(a[2]), MO[Number(a[1]) - 1]) + " — " +
+           J(Number(b[2]), MO[Number(b[1]) - 1]) + " " + b[0];
   }
   function prenom(n) { return String(n || "").trim().split(/\s+/)[0] || ""; }
   function initiales(n) {
@@ -512,12 +655,12 @@
     gr.forEach(function (g) {
       var nv = g.l.filter(estV).length, np = g.l.filter(estP).length, c = null;
       if (g.titre)          c = { genre: "titre",     kick: g.titre,               cle: "titre|" + g.titre + "|" + g.ou };
-      else if (g.rang === 1) c = { genre: "rdv",       kick: "Grand rendez-vous",   cle: "rdv|" + g.rdv };
-      else if (g.rang === 2) c = { genre: "echeance",  kick: "Très grosse échéance", cle: "rdv|" + g.rdv };
-      else if (nv >= 3)      c = { genre: "triple-v",  kick: "Triple victoire",     cle: "tv" };
-      else if (nv === 2)     c = { genre: "double-v",  kick: "Double victoire",     cle: "dv" };
-      else if (np >= 3)      c = { genre: "triple-p",  kick: "Triple podium",       cle: "tp" };
-      else if (np === 2)     c = { genre: "double-p",  kick: "Double podium",       cle: "dp" };
+      else if (g.rang === 1) c = { genre: "rdv",       kick: tx("kRdv"),   cle: "rdv|" + g.rdv };
+      else if (g.rang === 2) c = { genre: "echeance",  kick: tx("kEch"), cle: "rdv|" + g.rdv };
+      else if (nv >= 3)      c = { genre: "triple-v",  kick: tx("kTV"),     cle: "tv" };
+      else if (nv === 2)     c = { genre: "double-v",  kick: tx("kDV"),     cle: "dv" };
+      else if (np >= 3)      c = { genre: "triple-p",  kick: tx("kTP"),       cle: "tp" };
+      else if (np === 2)     c = { genre: "double-p",  kick: tx("kDP"),       cle: "dp" };
       if (!c) return;
       c.g = g; cartes.push(c);
     });
@@ -537,15 +680,15 @@
       var lx = {}; occ.forEach(function (g) { lx[g.ou] = 1; });
       var kl = Object.keys(lx);
       var ttl = c.genre === "titre" ? c.kick
-        : c.genre === "triple-v" ? "Trois victoires"
-        : c.genre === "double-v" ? "Deux victoires"
-        : c.genre === "triple-p" ? "Trois podiums"
-        : c.genre === "double-p" ? "Deux podiums"
+        : c.genre === "triple-v" ? tx("tTV")
+        : c.genre === "double-v" ? tx("tDV")
+        : c.genre === "triple-p" ? tx("tTP")
+        : c.genre === "double-p" ? tx("tDP")
         : g0.ou;
       return {
         genre: c.genre, kick: c.kick, occ: occ, nb: occ.length, ttl: ttl,
         doree: ["titre", "rdv", "echeance", "triple-v"].indexOf(c.genre) >= 0,
-        lieu: kl.length === 1 ? kl[0] : kl.length + " concours",
+        lieu: kl.length === 1 ? kl[0] : tx("nConcours")(kl.length),
         an: uniq.length > 1 ? uniq.slice().reverse().join(" · ") : uniq[0],
         force: Math.max.apply(null, occ.map(force))
       };
@@ -575,8 +718,8 @@
     return t ? t.titre : null;
   }
   function ditRang(x) {
-    if (x.place === null) return "classé";
-    return x.place + suff(x.place) + (x.partants ? " sur " + x.partants : "");
+    if (x.place === null) return tx("classe");
+    return x.place + suff(x.place) + (x.partants ? tx("sur") + x.partants : "");
   }
   function ditOu(x) { return rdvNom(x.lieu) || joli(lieuNormal(x.lieu)); }
 
@@ -591,12 +734,10 @@
     /* Les victoires en preparatoire s'affichent entre parentheses A COTE du
        chiffre, jamais dedans. Rien n'apparait quand il n'y en a aucune. */
     var par = t.vp ? '<span class="hr-par">(' + t.vp + ")</span>" : "";
-    return '<div class="hr-totaux">' + c("hr-gris", t.s, "Sorties") +
-           c("hr-or", t.v, "Victoires", par) +
-           c("", t.p, "Podiums") + c("", t.c, "Classements") + "</div>" +
-           (t.vp ? '<div class="hr-note" data-hr-note-corps="prepa">Entre parenth\u00e8ses : ' +
-                   'les victoires en \u00e9preuve pr\u00e9paratoire. Elles comptent \u00e0 part, ' +
-                   'jamais dans le chiffre des victoires.</div>' : "");
+    return '<div class="hr-totaux">' + c("hr-gris", t.s, tx("sorties")) +
+           c("hr-or", t.v, tx("victoires"), par) +
+           c("", t.p, tx("podiums")) + c("", t.c, tx("classements")) + "</div>" +
+           (t.vp ? '<div class="hr-note" data-hr-note-corps="prepa">' + tx("notePrepa") + '</div>' : "");
   }
 
   function blocMot(ls, titres, filtre) {
@@ -613,32 +754,30 @@
       }).sort(function (a, b) { return a.place - b.place; });
       if (meme.length < 2) return ditRang(x);
       var r = meme.map(function (o) { return o.place + suff(o.place); });
-      return r.slice(0, -1).join(", ") + " et " + r[r.length - 1];
+      return r.slice(0, -1).join(", ") + tx("et") + r[r.length - 1];
     }
     function ligne(lb, val, ou) {
       return '<p class="hr-ml"><span class="hr-lb">' + ech(lb) + "</span>" +
              '<span class="hr-vl"><b>' + ech(val) + "</b> — " + ech(ou) + "</span></p>";
     }
     var h = '<div class="hr-mot"><div class="hr-dit">';
-    h += '<p class="hr-tete"><b>' + t.v + " victoire" + (t.v > 1 ? "s" : "") + "</b> en " +
-         t.s + " sortie" + (t.s > 1 ? "s" : "") +
-         (filtre ? " avec " + ech(prenom(filtre)) : "") + "</p>";
-    if (v) h += ligne("Sa plus belle", titreLigne(v, titres) || ditRang(v), ditOu(v));
-    if (p) h += ligne("Son plus beau podium", rangsDuConcours(p), ditOu(p));
-    if (c) h += ligne("Son plus beau classement", ditRang(c), ditOu(c));
+    h += '<p class="hr-tete">' + tx("tete")(t.v, t.s, filtre ? ech(prenom(filtre)) : "") + "</p>";
+    if (v) h += ligne(tx("plusBelle"), titreLigne(v, titres) || ditRang(v), ditOu(v));
+    if (p) h += ligne(tx("plusBeauPodium"), rangsDuConcours(p), ditOu(p));
+    if (c) h += ligne(tx("plusBeauClassement"), ditRang(c), ditOu(c));
     return h + "</div></div>";
   }
 
   function blocRail(gm, choisi) {
     if (!gm.length) return "";
-    var h = '<div class="hr-st">Ses grands moments<em>' + gm.length + "</em></div>" +
+    var h = '<div class="hr-st">' + tx("grandsMoments") + '<em>' + gm.length + "</em></div>" +
             '<div class="hr-rail">';
     gm.forEach(function (x, i) {
       h += '<div class="hr-aff' + (x.doree ? " hr-d" : "") + (choisi === i ? " hr-on" : "") +
         '" data-hr-aff="' + i + '"><div class="hr-ab">' +
         '<div class="hr-kick">' + ech(x.kick) + "</div>" +
         '<div class="hr-ttl">' + ech(x.ttl) + "</div>" +
-        '<div class="hr-an">' + (x.nb > 1 ? "<b>à " + x.nb + " occasions</b>" : ech(x.lieu)) + "</div>" +
+        '<div class="hr-an">' + (x.nb > 1 ? "<b>" + tx("occasions")(x.nb) + "</b>" : ech(x.lieu)) + "</div>" +
         blocOccs(x) + "</div></div>";
     });
     h += "</div>";
@@ -646,7 +785,7 @@
 
     var x = gm[choisi];
     h += '<div class="hr-detail"><div class="hr-dh"><div class="hr-kick">' + ech(x.kick) + "</div>" +
-      "<b>" + ech(x.ttl) + "</b><span>" + (x.nb > 1 ? "à " + x.nb + " occasions · " : "") +
+      "<b>" + ech(x.ttl) + "</b><span>" + (x.nb > 1 ? tx("occasions")(x.nb) + " · " : "") +
       ech(x.lieu) + "</span></div>";
     x.occ.forEach(function (g) {
       h += '<div class="hr-occ"><div class="hr-oa">' + (g.deb || "").slice(0, 4) + "</div>" +
@@ -670,7 +809,7 @@
       h += '<div class="hr-o"><span class="hr-y">' + (g.deb || "").slice(0, 4) + "</span>" +
            '<span class="hr-r">' + rangs + "</span></div>";
     });
-    if (reste > 0) h += '<div class="hr-o hr-encore">▾ dérouler les ' + x.occ.length + "</div>";
+    if (reste > 0) h += '<div class="hr-o hr-encore">' + tx("derouler")(x.occ.length) + "</div>";
     return h + "</div>";
   }
 
@@ -680,10 +819,10 @@
       (r.place === null ? "—" : r.place + suff(r.place)) + "</span>" +
       '<span class="hr-e"><span class="hr-ep">' +
       (estMain(r) ? '<span class="hr-mn">\u270E</span>' : "") + ech(r.ep) +
-      (estPrepa(r) ? '<span class="hr-etq hr-pale">Préparatoire</span>' : "") + "</span>" +
+      (estPrepa(r) ? '<span class="hr-etq hr-pale">' + tx("prepa") + '</span>' : "") + "</span>" +
       '<span class="hr-nb"><b>' +
-      (r.partants ? (r.place === null ? "" : r.place + suff(r.place) + " sur ") + r.partants
-                  : "partants non donnés") + "</b>" +
+      (r.partants ? (r.place === null ? "" : r.place + suff(r.place) + tx("sur")) + r.partants
+                  : tx("partantsNon")) + "</b>" +
       (r.cavalier ? " · " + ech(joli(r.cavalier)) : "") + "</span></span></div>";
   }
 
@@ -698,14 +837,14 @@
       var per = a.length ? (a[0] === a[a.length - 1] ? a[0] : a[0] + " — " + a[a.length - 1]) : "";
       return '<div class="hr-cav' + (filtre === cle ? " hr-on" : "") + '" data-hr-cav="' + ech(cle) + '">' +
         '<span class="hr-ini">' + initiales(nom) + '</span><div class="hr-nm"><b>' + ech(joli(nom)) + "</b>" +
-        '<div class="hr-ca">' + t.s + " sorties · " + per + "</div>" +
-        '<div class="hr-ch"><i class="hr-v">' + t.v + "</i> victoires &nbsp;·&nbsp; " +
-        '<i class="hr-p">' + t.p + "</i> podiums &nbsp;·&nbsp; " +
-        '<i class="hr-c">' + t.c + "</i> classements</div></div>" +
+        '<div class="hr-ca">' + tx("nSorties")(t.s) + " · " + per + "</div>" +
+        '<div class="hr-ch"><i class="hr-v">' + t.v + "</i> " + tx("vMin") + " &nbsp;·&nbsp; " +
+        '<i class="hr-p">' + t.p + "</i> " + tx("pMin") + " &nbsp;·&nbsp; " +
+        '<i class="hr-c">' + t.c + "</i> " + tx("cMin") + "</div></div>" +
         '<span class="hr-fl">›</span></div>';
     }
-    var h = '<div class="hr-st">Ses cavaliers</div><div class="hr-cavs">';
-    h += bloc("", "Tous ses cavaliers", ls);
+    var h = '<div class="hr-st">' + tx("sesCavaliers") + '</div><div class="hr-cavs">';
+    h += bloc("", tx("tousCavaliers"), ls);
     cles.sort(function (a, b) { return m[b].length - m[a].length; })
       .forEach(function (c) { h += bloc(c, c, m[c]); });
     return h + "</div>";
@@ -732,7 +871,7 @@
     var toutMain = g.l.length > 0 && g.l.every(estMain);
     h += '<div class="hr-qd">' + (toutMain ? '<span class="hr-mn">\u270E</span>' : "") +
       ech(dateLongue(g.deb, g.fin)) +
-      (g.l.length > 1 ? " · " + g.l.length + " épreuves" : "") + "</div>";
+      (g.l.length > 1 ? " · " + tx("nEpreuves")(g.l.length) : "") + "</div>";
     if (g.rdv) h += '<div class="hr-ets"><span class="hr-etq' +
       (g.rang === 2 ? " hr-pale" : "") + '">' + ech(g.rdv) + "</span></div>";
     h += "</div>";
@@ -743,8 +882,8 @@
     g.l.forEach(function (r) { h += ligneEpreuve(r); });
     h += "</div>";
 
-    h += '<div class="hr-album"><div class="hr-vierge">Rien de gardé de ce concours.<br>' +
-      "<b>+ ajouter des photos, une vidéo, un souvenir</b></div></div>";
+    h += '<div class="hr-album"><div class="hr-vierge">' + tx("rienGarde") + '<br>' +
+      "<b>" + tx("ajouter") + "</b></div></div>";
     return h + "</div>";
   }
 
@@ -766,7 +905,7 @@
   }
 
   function blocSelecteurTri(tri) {
-    var opts = [["force", "Les plus forts"], ["date", "Par date"], ["hauteur", "Par hauteur"]];
+    var opts = [["force", tx("triForts")], ["date", tx("triDate")], ["hauteur", tx("triHauteur")]];
     return '<div class="hr-tri">' + opts.map(function (o) {
       return '<b class="' + (tri === o[0] ? "hr-on" : "") + '" data-hr-tri="' + o[0] + '">' +
              o[1] + "</b>";
@@ -776,7 +915,7 @@
 function blocListe(gr, fermees, ouverts, filtre, tri) {
     var m = {};
     gr.forEach(function (g) { var a = (g.deb || "").slice(0, 4); (m[a] = m[a] || []).push(g); });
-    var h = '<div class="hr-st">' + (filtre ? "Ses concours avec " + ech(prenom(filtre)) : "Ses concours") +
+    var h = '<div class="hr-st">' + (filtre ? tx("sesConcoursAvec")(ech(prenom(filtre))) : tx("sesConcours")) +
             "<em>" + gr.length + "</em></div>";
     h += blocSelecteurTri(tri) + '<div class="hr-liste">';
     Object.keys(m).sort().reverse().forEach(function (a) {
@@ -784,9 +923,9 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
       var tous = []; gs.forEach(function (g) { tous = tous.concat(g.l); });
       var t = compte(tous);
       h += '<div class="hr-at' + f + '" data-hr-an="' + a + '"><span class="hr-yy">' + a + "</span>" +
-        '<span class="hr-rs"><i>' + t.v + "</i> victoire" + (t.v > 1 ? "s" : "") +
-        " &nbsp;·&nbsp; " + t.p + " podium" + (t.p > 1 ? "s" : "") +
-        " &nbsp;·&nbsp; " + gs.length + " concours</span><span class=\"hr-ch2\">▾</span></div>";
+        '<span class="hr-rs"><i>' + tx("anVict")(t.v) + "</i>" +
+        " &nbsp;·&nbsp; " + tx("anPod")(t.p) +
+        " &nbsp;·&nbsp; " + tx("nConcours")(gs.length) + "</span><span class=\"hr-ch2\">▾</span></div>";
       h += '<div class="hr-ac' + f + '" data-hr-corps="' + a + '">';
       /* Le tri joue DANS chaque année : le groupement par année reste,
          sinon on perd le repère du temps.  (Blandine, 22/08)            */
@@ -823,8 +962,8 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
       : toutes;
 
     if (!toutes.length) {
-      hote.innerHTML = '<div class="hr-rien">Aucun résultat pour l\'instant.</div>' +
-        (options.proprietaire ? '<button class="hr-bt" data-hr="import">⤓ Importer mes résultats</button>' : "");
+      hote.innerHTML = '<div class="hr-rien">' + tx("aucun") + '</div>' +
+        (options.proprietaire ? '<button class="hr-bt" data-hr="import">' + tx("importer") + '</button>' : "");
       brancher(hote, options);
       return;
     }
@@ -839,7 +978,7 @@ function blocListe(gr, fermees, ouverts, filtre, tri) {
     /* Un seul bouton : « Ajouter » existe deja dans l index, juste dessous.
        En poser un second faisait doublon a l ecran (vu le 22/08).       */
     if (options.proprietaire) {
-      h += '<button class="hr-bt" data-hr="import">⤓ Importer mes résultats</button>';
+      h += '<button class="hr-bt" data-hr="import">' + tx("importer") + '</button>';
     }
     hote.innerHTML = h;
     brancher(hote, options);

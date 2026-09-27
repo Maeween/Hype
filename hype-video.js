@@ -1,3 +1,4 @@
+/* 27/09/2026 : arabe ajouté (7e langue) — catalogue, chapitres, collections et textes de l écran ; T() accepte ar. */
 /* ============================================================
    HYPE ▸ BIBLIOTHÈQUE VIDÉO  (fichier séparé, chargé par index.html)
    ------------------------------------------------------------
@@ -65,27 +66,27 @@
        que des chapitres de Galop 3 et 4 : rien ne pouvait se rattacher a un
        cours du Galop 1, faute de libelle. Les intitules reprennent exactement
        ceux des cours (regle : jamais d'identifiant technique a l'ecran). */
-    "g1-c2":  { fr: "Le pansage, premier soin", en: "Grooming, the first form of care", es: "El acicalado, el primer cuidado", it: "La pulizia, la prima cura", ja: "手入れ：最初のケア", de: "Die Fellpflege, die erste Pflege" },
-    "g1-c5":  { fr: "La position du cavalier", en: "The rider's position", es: "La posición del jinete", it: "La posizione del cavaliere", ja: "騎手の姓勢", de: "Die Sitzposition des Reiters" },
-    "g1-c9":  { fr: "Les aides naturelles et artificielles", en: "Natural and artificial aids", es: "Las ayudas naturales y artificiales", it: "Gli aiuti naturali e artificiali", ja: "自然の扶助と人工の扶助", de: "Natürliche und künstliche Hilfen" },
-    "g1-c8":  { fr: "Le matériel de base", en: "Basic equipment", es: "El material básico", it: "L'attrezzatura di base", ja: "基本の道具", de: "Die Grundausrüstung" },
-    "g1-c10": { fr: "Le nœud d'attache", en: "The quick-release knot", es: "El nudo de atar", it: "Il nodo d'attacco", ja: "つなぎ結び", de: "Der Anbindeknoten" },
-    "g1-c15": { fr: "La sécurité avant tout", en: "Safety first", es: "La seguridad ante todo", it: "La sicurezza prima di tutto", ja: "安全が第一", de: "Sicherheit zuerst" },
-    "g1-c18": { fr: "Conduire en main en sécurité", en: "Leading in hand safely", es: "Llevar de la mano con seguridad", it: "Condurre a mano in sicurezza", ja: "安全な手級での引き马", de: "Sicher an der Hand führen" },
-    "g1-c19": { fr: "Monter et descendre en sécurité", en: "Mounting and dismounting safely", es: "Montar y desmontar con seguridad", it: "Salire e scendere in sicurezza", ja: "安全な乗降", de: "Sicher auf- und absteigen" },
+    "g1-c2":  { fr: "Le pansage, premier soin", en: "Grooming, the first form of care", es: "El acicalado, el primer cuidado", it: "La pulizia, la prima cura", ja: "手入れ：最初のケア", de: "Die Fellpflege, die erste Pflege", ar: "العناية بالشعر، أول رعاية" },
+    "g1-c5":  { fr: "La position du cavalier", en: "The rider's position", es: "La posición del jinete", it: "La posizione del cavaliere", ja: "騎手の姓勢", de: "Die Sitzposition des Reiters", ar: "وضعية الفارس" },
+    "g1-c9":  { fr: "Les aides naturelles et artificielles", en: "Natural and artificial aids", es: "Las ayudas naturales y artificiales", it: "Gli aiuti naturali e artificiali", ja: "自然の扶助と人工の扶助", de: "Natürliche und künstliche Hilfen", ar: "المساعدات الطبيعية والاصطناعية" },
+    "g1-c8":  { fr: "Le matériel de base", en: "Basic equipment", es: "El material básico", it: "L'attrezzatura di base", ja: "基本の道具", de: "Die Grundausrüstung", ar: "المعدات الأساسية" },
+    "g1-c10": { fr: "Le nœud d'attache", en: "The quick-release knot", es: "El nudo de atar", it: "Il nodo d'attacco", ja: "つなぎ結び", de: "Der Anbindeknoten", ar: "عقدة الربط" },
+    "g1-c15": { fr: "La sécurité avant tout", en: "Safety first", es: "La seguridad ante todo", it: "La sicurezza prima di tutto", ja: "安全が第一", de: "Sicherheit zuerst", ar: "السلامة أولا" },
+    "g1-c18": { fr: "Conduire en main en sécurité", en: "Leading in hand safely", es: "Llevar de la mano con seguridad", it: "Condurre a mano in sicurezza", ja: "安全な手級での引き马", de: "Sicher an der Hand führen", ar: "القيادة باليد بأمان" },
+    "g1-c19": { fr: "Monter et descendre en sécurité", en: "Mounting and dismounting safely", es: "Montar y desmontar con seguridad", it: "Salire e scendere in sicurezza", ja: "安全な乗降", de: "Sicher auf- und absteigen", ar: "الركوب والنزول بأمان" },
     /* 06/08 : premieres cles du Galop 2, pour les deux films « Objectif Galop® 2 ». */
-    "g2-c3": { fr: "Diriger sur un trac\u00e9", en: "Riding a line", es: "Trazar un recorrido", it: "Guidare su un tracciato", ja: "\u30e9\u30a4\u30f3\u3092\u63cf\u304f", de: "Auf einer Linie reiten" },
-    "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens" },
+    "g2-c3": { fr: "Diriger sur un trac\u00e9", en: "Riding a line", es: "Trazar un recorrido", it: "Guidare su un tracciato", ja: "\u30e9\u30a4\u30f3\u3092\u63cf\u304f", de: "Auf einer Linie reiten", ar: "التوجيه على مسار" },
+    "g2-c4": { fr: "La d\u00e9couverte du saut", en: "Discovering the jump", es: "El descubrimiento del salto", it: "La scoperta del salto", ja: "\u8df3\u8e8d\u306e\u767a\u898b", de: "Die Entdeckung des Springens", ar: "اكتشاف القفز" },
     /* 06/08 : cles ajoutees pour les films « Objectif Galop® 4 ». Les trois
        chapitres existaient deja dans les cours, ils n'avaient pas de libelle ici. */
-    "g4-transitions": { fr: "Réussir ses transitions", en: "Clean transitions", es: "Lograr sus transiciones", it: "Riuscire le transizioni", ja: "変換を成功させる", de: "Übergänge gelingen lassen" },
-    "g4-epaules-hanches": { fr: "Déplacer les épaules et les hanches", en: "Moving the shoulders and haunches", es: "Desplazar los hombros y las ancas", it: "Spostare le spalle e le anche", ja: "肩と腰を動かす", de: "Schultern und Hanken versetzen" },
-    "g4-obstacles-equilibre": { fr: "Équilibre à l'obstacle", en: "Balance over fences", es: "Equilibrio ante el obstáculo", it: "Equilibrio all'ostacolo", ja: "障害でのバランス", de: "Gleichgewicht am Sprung" },
-    "g4-exterieur": { fr: "En extérieur", en: "Out on a hack", es: "En exterior", it: "In esterno", ja: "外乗で", de: "Im Gelände" },
-    "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung" },
-    "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen" },
-    "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung" },
-    "g4-biomeca": { fr: "La biomécanique du cheval", en: "The horse's biomechanics", es: "La biomecánica del caballo", it: "La biomeccanica del cavallo", ja: "馬のバイオメカニクス", de: "Die Biomechanik des Pferdes" }
+    "g4-transitions": { fr: "Réussir ses transitions", en: "Clean transitions", es: "Lograr sus transiciones", it: "Riuscire le transizioni", ja: "変換を成功させる", de: "Übergänge gelingen lassen", ar: "إتقان الانتقالات" },
+    "g4-epaules-hanches": { fr: "Déplacer les épaules et les hanches", en: "Moving the shoulders and haunches", es: "Desplazar los hombros y las ancas", it: "Spostare le spalle e le anche", ja: "肩と腰を動かす", de: "Schultern und Hanken versetzen", ar: "تحريك الكتفين والوركين" },
+    "g4-obstacles-equilibre": { fr: "Équilibre à l'obstacle", en: "Balance over fences", es: "Equilibrio ante el obstáculo", it: "Equilibrio all'ostacolo", ja: "障害でのバランス", de: "Gleichgewicht am Sprung", ar: "التوازن فوق الحاجز" },
+    "g4-exterieur": { fr: "En extérieur", en: "Out on a hack", es: "En exterior", it: "In esterno", ja: "外乗で", de: "Im Gelände", ar: "في الخارج" },
+    "g4-contact": { fr: "Le contact", en: "Contact", es: "El contacto", it: "Il contatto", ja: "コンタクト", de: "Die Anlehnung", ar: "الاتصال" },
+    "g4-aides":   { fr: "L'accord des aides", en: "Coordination of the aids", es: "El acuerdo de las ayudas", it: "L'accordo degli aiuti", ja: "扶助の連携", de: "Das Zusammenspiel der Hilfen", ar: "تنسيق المساعدات" },
+    "g4-incurvation": { fr: "L'incurvation", en: "Bend and flexion", es: "La incurvación", it: "L'incurvamento", ja: "内方姿勢", de: "Stellung und Biegung", ar: "الانحناء" },
+    "g4-biomeca": { fr: "La biomécanique du cheval", en: "The horse's biomechanics", es: "La biomecánica del caballo", it: "La biomeccanica del cavallo", ja: "馬のバイオメカニクス", de: "Die Biomechanik des Pferdes", ar: "الميكانيكا الحيوية للحصان" }
   };
 
   /* Thèmes de la passation -> univers de la bibliothèque. */
@@ -103,7 +104,7 @@
     {
       id: "v-contact-01", yt: "0mAl3ZptRpg",
       source: "IFCE", intervenant: "Bernard Maurel",
-      intervenantRole: { fr: "Juge international de dressage", en: "International dressage judge", es: "Juez internacional de doma", it: "Giudice internazionale di dressage", ja: "国際馬場馬術審判員", de: "Internationaler Dressurrichter" },
+      intervenantRole: { fr: "Juge international de dressage", en: "International dressage judge", es: "Juez internacional de doma", it: "Giudice internazionale di dressage", ja: "国際馬場馬術審判員", de: "Internationaler Dressurrichter", ar: "حكم دولي في الترويض" },
       titreSource: "Le contact : élément physique et psychologique essentiel dans la relation cheval-cavalier",
       doc: "https://www.ifce.fr/dir-wbc-contact-1-1-b-maurel/",
       langueVideo: "fr", cours: ["g4-contact"], galop: 4, theme: "comprendre-le-cheval",
@@ -114,7 +115,7 @@
         es: "Comprender el contacto entre el caballo y su jinete",
         it: "Capire il contatto tra cavallo e cavaliere",
         ja: "馬と乗り手のコンタクトを理解する",
-        de: "Die Anlehnung zwischen Pferd und Reiter verstehen"
+        de: "Die Anlehnung zwischen Pferd und Reiter verstehen", ar: "فهم الاتصال بين الحصان وفارسه"
       },
       resume: {
         fr: "Ce que la main touche par les rênes, ce n'est pas seulement la bouche : c'est tout le fonctionnement du dos, du garrot et de l'encolure.",
@@ -122,7 +123,7 @@
         es: "Lo que la mano toca por las riendas no es solo la boca: es todo el funcionamiento del dorso, la cruz y el cuello.",
         it: "Ciò che la mano tocca tramite le redini non è solo la bocca: è tutto il funzionamento del dorso, del garrese e dell'incollatura.",
         ja: "手綱を通して手が触れているのは口だけではありません。背中、き甲、首の働き全体です。",
-        de: "Was die Hand über die Zügel berührt, ist nicht nur das Maul: es ist das ganze Zusammenspiel von Rücken, Widerrist und Hals."
+        de: "Was die Hand über die Zügel berührt, ist nicht nur das Maul: es ist das ganze Zusammenspiel von Rücken, Widerrist und Hals.", ar: "ما تلمسه اليد عبر اللجام ليس الفم فقط: بل هو عمل الظهر والحارك والرقبة كله."
       },
       observer: {
         fr: ["La main qui suit les mouvements de l'encolure", "Le lien entre le contact et le mouvement vers l'avant", "La relation entre les mains, l'assiette et les jambes", "Le confort et la confiance du cheval"],
@@ -130,13 +131,13 @@
         es: ["La mano que sigue los movimientos del cuello", "El vínculo entre el contacto y el movimiento hacia delante", "La relación entre manos, asiento y piernas", "La comodidad y la confianza del caballo"],
         it: ["La mano che segue i movimenti dell'incollatura", "Il legame tra contatto e movimento in avanti", "La relazione tra mani, assetto e gambe", "Il comfort e la fiducia del cavallo"],
         ja: ["首の動きに従う手", "コンタクトと前進の動きのつながり", "手、騎座、脚の関係", "馬の快適さと信頼"],
-        de: ["Die Hand, die den Bewegungen des Halses folgt", "Die Verbindung zwischen Anlehnung und Vorwärtsbewegung", "Das Verhältnis von Händen, Sitz und Beinen", "Der Komfort und das Vertrauen des Pferdes"]
+        de: ["Die Hand, die den Bewegungen des Halses folgt", "Die Verbindung zwischen Anlehnung und Vorwärtsbewegung", "Das Verhältnis von Händen, Sitz und Beinen", "Der Komfort und das Vertrauen des Pferdes"], ar: ["اليد التي تتبع حركات الرقبة","العلاقة بين الاتصال والحركة إلى الأمام","العلاقة بين اليدين والجلسة والساقين","راحة الحصان وثقته"]
       }
     },
     {
       id: "v-contact-02", yt: "_NDiPIGzdLk",
       source: "IFCE", intervenant: "Géraldine Vandevenne",
-      intervenantRole: { fr: "Ergonome équin, spécialiste des mors", en: "Equine ergonomist, bitting specialist", es: "Ergónoma equina, especialista en bocados", it: "Ergonoma equina, specialista dei morsi", ja: "馬のエルゴノミスト、ハミの専門家", de: "Pferde-Ergonomin, Gebiss-Spezialistin" },
+      intervenantRole: { fr: "Ergonome équin, spécialiste des mors", en: "Equine ergonomist, bitting specialist", es: "Ergónoma equina, especialista en bocados", it: "Ergonoma equina, specialista dei morsi", ja: "馬のエルゴノミスト、ハミの専門家", de: "Pferde-Ergonomin, Gebiss-Spezialistin", ar: "أخصائي في بيئة عمل الخيول، متخصص في الشكائم" },
       titreSource: "Les mors : leurs actions dans la bouche du cheval, leurs effets et leurs conséquences",
       doc: "https://www.ifce.fr/dir-wbc-contact-1-2-g-vandevenne/",
       langueVideo: "fr", cours: ["g4-contact"], galop: 4, theme: "soins-et-materiel",
@@ -147,7 +148,7 @@
         es: "Los bocados y su acción en la boca",
         it: "I morsi e la loro azione nella bocca",
         ja: "ハミと、口の中でのその作用",
-        de: "Gebisse und ihre Wirkung im Maul"
+        de: "Gebisse und ihre Wirkung im Maul", ar: "الشكائم وتأثيرها في الفم"
       },
       resume: {
         fr: "Sur quelles parties du corps le mors agit-il, et à partir de quand devient-il un instrument de douleur ?",
@@ -155,13 +156,13 @@
         es: "¿Sobre qué partes del cuerpo actúa el bocado, y cuándo se convierte en un instrumento de dolor?",
         it: "Su quali parti del corpo agisce il morso, e da quando diventa uno strumento di dolore?",
         ja: "ハミは体のどの部分に作用し、どこから痛みの道具になるのか。",
-        de: "Auf welche Körperteile wirkt das Gebiss, und ab wann wird es zu einem Instrument des Schmerzes?"
+        de: "Auf welche Körperteile wirkt das Gebiss, und ab wann wird es zu einem Instrument des Schmerzes?", ar: "على أي أجزاء من الجسم تؤثر الشكيمة، ومتى تصبح أداة للألم؟"
       }
     },
     {
       id: "v-contact-03", yt: "_-jWx21-oqk",
       source: "IFCE", intervenant: "Stéphane Montavon",
-      intervenantRole: { fr: "Docteur vétérinaire, médecine équine sportive", en: "Veterinarian, equine sports medicine", es: "Doctor veterinario, medicina equina deportiva", it: "Dottore veterinario, medicina equina sportiva", ja: "獣医師、馬のスポーツ医学", de: "Tierarzt, Pferdesportmedizin" },
+      intervenantRole: { fr: "Docteur vétérinaire, médecine équine sportive", en: "Veterinarian, equine sports medicine", es: "Doctor veterinario, medicina equina deportiva", it: "Dottore veterinario, medicina equina sportiva", ja: "獣医師、馬のスポーツ医学", de: "Tierarzt, Pferdesportmedizin", ar: "طبيب بيطري، طب الخيول الرياضي" },
       titreSource: "Les aspects biomécaniques du contact, la relation avec l'engagement et avec l'équilibre",
       doc: "https://www.ifce.fr/dir-wbc-contact-1-3-s-montavon/",
       langueVideo: "fr", cours: ["g4-contact", "g4-biomeca"], galop: 4, theme: "comprendre-le-cheval",
@@ -172,7 +173,7 @@
         es: "Contacto, enganche y equilibrio",
         it: "Contatto, impegno ed equilibrio",
         ja: "コンタクト、踏み込み、バランス",
-        de: "Anlehnung, Hinterhandaktivität und Gleichgewicht"
+        de: "Anlehnung, Hinterhandaktivität und Gleichgewicht", ar: "الاتصال والانخراط والتوازن"
       },
       resume: {
         fr: "Comment un contact juste laisse passer la poussée des postérieurs vers l'avant-main, et permet au garrot de s'élever.",
@@ -180,7 +181,7 @@
         es: "Cómo un contacto justo deja pasar el impulso de los posteriores hacia la mano delantera y permite que la cruz se eleve.",
         it: "Come un contatto giusto lascia passare la spinta dei posteriori verso l'anteriore, permettendo al garrese di elevarsi.",
         ja: "正しいコンタクトが後肢の推進を前躯へ通し、き甲を持ち上げさせる仕組み。",
-        de: "Wie eine korrekte Anlehnung den Schub der Hinterhand zur Vorhand durchlässt und den Widerrist anheben lässt."
+        de: "Wie eine korrekte Anlehnung den Schub der Hinterhand zur Vorhand durchlässt und den Widerrist anheben lässt.", ar: "كيف يسمح الاتصال الصحيح بانتقال دفع الأطراف الخلفية نحو المقدمة، ويتيح للحارك أن يرتفع."
       }
     },
     {
@@ -195,7 +196,7 @@
         es: "Comprender la incurvación a caballo",
         it: "Capire l'incurvamento in sella",
         ja: "騎乗しての内方姿勢を理解する",
-        de: "Stellung und Biegung im Sattel verstehen"
+        de: "Stellung und Biegung im Sattel verstehen", ar: "فهم الانحناء على السرج"
       },
       resume: {
         fr: "Une séance montée pour voir quand, pourquoi et comment demander l'incurvation : la vidéo la plus accessible sur ce sujet.",
@@ -203,7 +204,7 @@
         es: "Una sesión montada para ver cuándo, por qué y cómo pedir la incurvación: el vídeo más accesible sobre este tema.",
         it: "Una sessione montata per vedere quando, perché e come chiedere l'incurvamento: il video più accessibile su questo tema.",
         ja: "内方姿勢をいつ、なぜ、どのように求めるかを見る実技セッション。このテーマでもっとも分かりやすい映像。",
-        de: "Eine gerittene Einheit, die zeigt, wann, warum und wie man Biegung verlangt: das zugänglichste Video zu diesem Thema."
+        de: "Eine gerittene Einheit, die zeigt, wann, warum und wie man Biegung verlangt: das zugänglichste Video zu diesem Thema.", ar: "حصة ركوب لمعرفة متى ولماذا وكيف نطلب الانحناء: أسهل فيديو في هذا الموضوع."
       },
       observer: {
         fr: ["Le moment où le cavalier demande l'incurvation", "La coordination entre la jambe intérieure et la rêne extérieure", "La légèreté de la main intérieure", "La réaction du cheval sur la courbe"],
@@ -211,7 +212,7 @@
         es: ["El momento en que el jinete pide la incurvación", "La coordinación entre la pierna interior y la rienda exterior", "La ligereza de la mano interior", "La reacción del caballo en la curva"],
         it: ["Il momento in cui il cavaliere chiede l'incurvamento", "La coordinazione tra la gamba interna e la redine esterna", "La leggerezza della mano interna", "La reazione del cavallo sulla curva"],
         ja: ["乗り手が内方姿勢を求める瞬間", "内方の脚と外方の手綱の連係", "内方の手の軽さ", "曲線上での馬の反応"],
-        de: ["Der Moment, in dem der Reiter Biegung verlangt", "Das Zusammenspiel von innerem Bein und äußerem Zügel", "Die Leichtigkeit der inneren Hand", "Die Reaktion des Pferdes auf der Kurve"]
+        de: ["Der Moment, in dem der Reiter Biegung verlangt", "Das Zusammenspiel von innerem Bein und äußerem Zügel", "Die Leichtigkeit der inneren Hand", "Die Reaktion des Pferdes auf der Kurve"], ar: ["اللحظة التي يطلب فيها الفارس الانحناء","التنسيق بين الساق الداخلية واللجام الخارجي","خفة اليد الداخلية","رد فعل الحصان على المنحنى"]
       }
     },
     {
@@ -226,7 +227,7 @@
         es: "Comprender cómo coordinar las ayudas",
         it: "Capire come coordinare i propri aiuti",
         ja: "扶助をどう連係させるかを理解する",
-        de: "Verstehen, wie man seine Hilfen abstimmt"
+        de: "Verstehen, wie man seine Hilfen abstimmt", ar: "فهم كيفية تنسيق المساعدات"
       },
       resume: {
         fr: "L'accord des aides sur une courbe : le pli, l'incurvation, et la différence entre plier l'encolure et faire tourner tout le cheval.",
@@ -234,7 +235,7 @@
         es: "El acuerdo de las ayudas en una curva: el pliegue, la incurvación y la diferencia entre plegar el cuello y hacer girar a todo el caballo.",
         it: "L'accordo degli aiuti su una curva: la piega, l'incurvamento e la differenza tra flettere l'incollatura e far girare tutto il cavallo.",
         ja: "曲線上での扶助の一致。屈曲、内方姿勢、そして首を曲げることと馬全体を回すことの違い。",
-        de: "Das Zusammenspiel der Hilfen im Bogen: die Stellung, die Biegung, und der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes."
+        de: "Das Zusammenspiel der Hilfen im Bogen: die Stellung, die Biegung, und der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes.", ar: "تنسيق المساعدات على منحنى: الثني، والانحناء، والفرق بين ثني الرقبة وجعل الحصان كله يدور."
       },
       observer: {
         fr: ["Le rôle de la jambe intérieure", "Le rôle des aides extérieures", "La coordination entre les jambes et les mains", "La différence entre plier l'encolure et faire tourner tout le cheval", "Le maintien de l'impulsion pendant la demande"],
@@ -242,7 +243,7 @@
         es: ["El papel de la pierna interior", "El papel de las ayudas exteriores", "La coordinación entre piernas y manos", "La diferencia entre plegar el cuello y hacer girar a todo el caballo", "El mantenimiento de la impulsión durante la demanda"],
         it: ["Il ruolo della gamba interna", "Il ruolo degli aiuti esterni", "La coordinazione tra gambe e mani", "La differenza tra flettere l'incollatura e far girare tutto il cavallo", "Il mantenimento dell'impulso durante la richiesta"],
         ja: ["内方の脚の役割", "外方の扶助の役割", "脚と手の連係", "首を曲げることと馬全体を回すことの違い", "要求のあいだ推進を保つこと"],
-        de: ["Die Rolle des inneren Beins", "Die Rolle der äußeren Hilfen", "Das Zusammenspiel von Beinen und Händen", "Der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes", "Den Schwung während der Hilfengebung erhalten"]
+        de: ["Die Rolle des inneren Beins", "Die Rolle der äußeren Hilfen", "Das Zusammenspiel von Beinen und Händen", "Der Unterschied zwischen Halsbiegung und dem Wenden des ganzen Pferdes", "Den Schwung während der Hilfengebung erhalten"], ar: ["دور الساق الداخلية","دور المساعدات الخارجية","التنسيق بين الساقين واليدين","الفرق بين ثني الرقبة وجعل الحصان كله يدور","الحفاظ على الاندفاع أثناء الطلب"]
       }
     },
     {
@@ -257,7 +258,7 @@
         es: "La independencia de las ayudas",
         it: "L'indipendenza degli aiuti",
         ja: "扶助の独立",
-        de: "Die Unabhängigkeit der Hilfen"
+        de: "Die Unabhängigkeit der Hilfen", ar: "استقلالية المساعدات"
       },
       resume: {
         fr: "Agir d'une jambe sans tirer, fermer les doigts sans bloquer le reste du corps, tourner le regard sans se déséquilibrer.",
@@ -265,7 +266,7 @@
         es: "Actuar con una pierna sin tirar, cerrar los dedos sin bloquear el resto del cuerpo, girar la mirada sin desequilibrarse.",
         it: "Agire con una gamba senza tirare, chiudere le dita senza bloccare il resto del corpo, girare lo sguardo senza squilibrarsi.",
         ja: "引かずに片脚で作用する。体の残りを固めずに指を閉じる。バランスを崩さずに視線を向ける。",
-        de: "Mit einem Bein wirken ohne zu ziehen, die Finger schließen ohne den übrigen Körper festzumachen, den Blick wenden ohne das Gleichgewicht zu verlieren."
+        de: "Mit einem Bein wirken ohne zu ziehen, die Finger schließen ohne den übrigen Körper festzumachen, den Blick wenden ohne das Gleichgewicht zu verlieren.", ar: "استعمال ساق دون الشد، وإغلاق الأصابع دون تجميد بقية الجسم، وتحويل النظر دون فقدان التوازن."
       }
     },
     {
@@ -281,7 +282,7 @@
         es: "La dosificación de las ayudas",
         it: "Il dosaggio degli aiuti",
         ja: "扶助の加減",
-        de: "Die Dosierung der Hilfen"
+        de: "Die Dosierung der Hilfen", ar: "ضبط قوة المساعدات"
       },
       resume: {
         fr: "Une demande claire, progressive, suivie d'un relâchement : l'illustration directe de « la plus petite aide efficace ».",
@@ -289,7 +290,7 @@
         es: "Una demanda clara, progresiva, seguida de un relajamiento: la ilustración directa de «la ayuda más pequeña que funciona».",
         it: "Una richiesta chiara, progressiva, seguita da un rilascio: l'illustrazione diretta del «più piccolo aiuto efficace».",
         ja: "はっきりと、段階的に求め、そして解放する。「効く最小の扶助」をそのまま示す内容。",
-        de: "Eine klare, abgestufte Hilfe mit anschließendem Nachgeben: die direkte Veranschaulichung der \u201ekleinsten Hilfe, die wirkt\u201c."
+        de: "Eine klare, abgestufte Hilfe mit anschließendem Nachgeben: die direkte Veranschaulichung der \u201ekleinsten Hilfe, die wirkt\u201c.", ar: "طلب واضح وتدريجي يتبعه إرخاء: مثال مباشر على «أصغر مساعدة فعالة»."
       }
     },
     /* ============================================================
@@ -320,7 +321,7 @@
         es: "Abordar a su caballo",
         it: "Avvicinarsi al proprio cavallo",
         ja: "馬に近づく",
-        de: "An das Pferd herantreten"
+        de: "An das Pferd herantreten", ar: "الاقتراب من الحصان"
       },
       resume: {
         fr: "Se faire voir, se faire entendre, puis toucher : l'ordre des gestes qui font qu'un cheval ne sursaute pas.",
@@ -328,7 +329,7 @@
         es: "Hacerse ver, hacerse oír, y luego tocar: el orden de los gestos que evita que un caballo se sobresalte.",
         it: "Farsi vedere, farsi sentire, poi toccare: l'ordine dei gesti che evita che un cavallo si spaventi.",
         ja: "まず見てもらい、声をかけ、それから触れる。馬を驚かせないための順番。",
-        de: "Gesehen werden, gehört werden, dann berühren: die Reihenfolge, die ein Pferd nicht erschrecken lässt."
+        de: "Gesehen werden, gehört werden, dann berühren: die Reihenfolge, die ein Pferd nicht erschrecken lässt.", ar: "أن يراك، ثم أن يسمعك، ثم أن تلمسيه: ترتيب الحركات الذي يمنع الحصان من الفزع."
       },
       observer: {
         fr: ["La position du cavalier par rapport a l'œil du cheval", "La voix avant la main", "Le premier point de contact sur l'encolure", "Le changement de cote"],
@@ -336,7 +337,7 @@
         es: ["La posición del jinete respecto al ojo del caballo", "La voz antes que la mano", "El primer punto de contacto en el cuello", "El cambio de lado"],
         it: ["La posizione del cavaliere rispetto all'occhio del cavallo", "La voce prima della mano", "Il primo punto di contatto sull'incollatura", "Il cambio di lato"],
         ja: ["馬の目に対する位置", "手より先に声", "首への最初の接触", "左右の入れ替わり"],
-        de: ["Die Position des Reiters zum Auge des Pferdes", "Die Stimme vor der Hand", "Der erste Kontaktpunkt am Hals", "Der Seitenwechsel"]
+        de: ["Die Position des Reiters zum Auge des Pferdes", "Die Stimme vor der Hand", "Der erste Kontaktpunkt am Hals", "Der Seitenwechsel"], ar: ["موقع الفارس بالنسبة إلى عين الحصان","الصوت قبل اليد","أول نقطة لمس على الرقبة","تغيير الجهة"]
       }
     },
     {
@@ -350,7 +351,7 @@
         es: "Poner el cabestro",
         it: "Mettere la testiera",
         ja: "絵口をつける",
-        de: "Das Halfter anlegen"
+        de: "Das Halfter anlegen", ar: "وضع الرسن"
       },
       resume: {
         fr: "Chaque partie du licol a un nom et une place. Le film montre le geste complet, sans precipitation.",
@@ -358,7 +359,7 @@
         es: "Cada parte del cabestro tiene un nombre y un lugar. El vídeo muestra el gesto completo, sin prisa.",
         it: "Ogni parte della testiera ha un nome e un posto. Il film mostra il gesto completo, senza fretta.",
         ja: "絵口の各部には名前と位置がある。あわてずに、一連の動作を見せる。",
-        de: "Jeder Teil des Halfters hat einen Namen und einen Platz. Der Film zeigt den ganzen Ablauf, ohne Eile."
+        de: "Jeder Teil des Halfters hat einen Namen und einen Platz. Der Film zeigt den ganzen Ablauf, ohne Eile.", ar: "لكل جزء من الرسن اسم ومكان. يعرض الفيلم الحركة كاملة، دون تسرع."
       }
     },
     {
@@ -372,7 +373,7 @@
         es: "Llevar a su caballo de la mano",
         it: "Condurre il cavallo a mano",
         ja: "馬を引く",
-        de: "Das Pferd an der Hand führen"
+        de: "Das Pferd an der Hand führen", ar: "قيادة الحصان باليد"
       },
       resume: {
         fr: "A la hauteur de l'épaule, jamais devant, jamais derriere. Ou se placer, comment tenir la longe, comment tourner.",
@@ -380,7 +381,7 @@
         es: "A la altura del hombro, nunca delante, nunca detrás. Dónde colocarse, cómo sujetar la cuerda, cómo girar.",
         it: "All'altezza della spalla, mai davanti, mai dietro. Dove mettersi, come tenere la longhina, come girare.",
         ja: "肩の位置で、前すぎず後ろすぎず。立ち位置、索の持ち方、曲がるときの動き。",
-        de: "Auf Höhe der Schulter, nie davor, nie dahinter. Wo man geht, wie man den Strick hält, wie man wendet."
+        de: "Auf Höhe der Schulter, nie davor, nie dahinter. Wo man geht, wie man den Strick hält, wie man wendet.", ar: "بمحاذاة الكتف، لا أمامه أبدا ولا خلفه أبدا. أين نقف، وكيف نمسك حبل القيادة، وكيف ندور."
       },
       observer: {
         fr: ["La place du cavalier a hauteur d'epaule", "La main qui ne tire pas", "Le regard porte la ou l'on va", "Le tour effectue en poussant, pas en tirant"],
@@ -388,7 +389,7 @@
         es: ["El sitio del jinete a la altura del hombro", "La mano que no tira", "La mirada puesta donde se va", "El giro empujando, no tirando"],
         it: ["Il posto del cavaliere all'altezza della spalla", "La mano che non tira", "Lo sguardo dove si va", "La girata spingendo, non tirando"],
         ja: ["肩の横に並ぶ位置", "引っ張らない手", "進む先を見る目線", "引かずに押して回る"],
-        de: ["Der Platz auf Höhe der Schulter", "Die Hand, die nicht zieht", "Der Blick dorthin, wohin man geht", "Die Wendung durch Schieben, nicht Ziehen"]
+        de: ["Der Platz auf Höhe der Schulter", "Die Hand, die nicht zieht", "Der Blick dorthin, wohin man geht", "Die Wendung durch Schieben, nicht Ziehen"], ar: ["موقع القائد بمحاذاة الكتف","اليد التي لا تشد","النظر موجه إلى حيث نذهب","الدوران بالدفع لا بالشد"]
       }
     },
     {
@@ -402,7 +403,7 @@
         es: "Montar y desmontar",
         it: "Salire e scendere",
         ja: "乗ると降りる",
-        de: "Aufsteigen und Absteigen"
+        de: "Aufsteigen und Absteigen", ar: "الركوب والنزول"
       },
       resume: {
         fr: "Le montoir, les renes tenues, le pied qui ne pousse pas dans le flanc, et une descente qui ne surprend personne.",
@@ -410,7 +411,7 @@
         es: "El montador, las riendas en la mano, el pie que no empuja el flanco, y una bajada que no sorprende a nadie.",
         it: "Il montatoio, le redini in mano, il piede che non spinge nel fianco, e una discesa che non sorprende nessuno.",
         ja: "踏台、手継の持ち方、脅を押さない足、そして馬を驚かせない下馬。",
-        de: "Die Aufstiegshilfe, die Zügel in der Hand, ein Fuß, der nicht in die Flanke drückt, und ein Absteigen, das niemanden überrascht."
+        de: "Die Aufstiegshilfe, die Zügel in der Hand, ein Fuß, der nicht in die Flanke drückt, und ein Absteigen, das niemanden überrascht.", ar: "درج الركوب، واللجام في اليد، والقدم التي لا تضغط على الخاصرة، ونزول لا يفاجئ أحدا."
       }
     },
     {
@@ -424,7 +425,7 @@
         es: "El acicalado, gesto a gesto",
         it: "La pulizia, gesto per gesto",
         ja: "手入れを一つずつ",
-        de: "Die Fellpflege, Schritt für Schritt"
+        de: "Die Fellpflege, Schritt für Schritt", ar: "العناية بالشعر، حركة بحركة"
       },
       resume: {
         fr: "Film tourne pour le Galop 3, donc il va plus loin que le programme du Galop 1 : l'ordre des brosses y est montre en entier.",
@@ -432,7 +433,7 @@
         es: "Vídeo rodado para el Galop 3, por lo que va más allá del programa del Galop 1: se muestra el orden completo de los cepillos.",
         it: "Girato per il Galoppo 3, quindi va oltre il programma del Galoppo 1: l'ordine delle spazzole è mostrato per intero.",
         ja: "ガロー3向けに撮られたため、ガロー1の範囲を超える。ブラシの順番がすべて示される。",
-        de: "Für Galopp 3 gedreht, geht also über das Programm von Galopp 1 hinaus: die Reihenfolge der Bürsten wird vollständig gezeigt."
+        de: "Für Galopp 3 gedreht, geht also über das Programm von Galopp 1 hinaus: die Reihenfolge der Bürsten wird vollständig gezeigt.", ar: "صور الفيلم للغالوب 3، لذلك يتجاوز برنامج الغالوب 1: يظهر فيه ترتيب الفرش كاملا."
       }
     },
     {
@@ -446,7 +447,7 @@
         es: "Conducir al paso",
         it: "Condurre al passo",
         ja: "\u5e38\u6b69\u3067\u306e\u624b\u7dbf\u64cd\u4f5c",
-        de: "Im Schritt lenken"
+        de: "Im Schritt lenken", ar: "التوجيه في المشي"
       },
       resume: {
         fr: "Tourner, s'arreter, repartir : la premiere conversation entre la main, la jambe et le cheval.",
@@ -454,7 +455,7 @@
         es: "Girar, parar, volver a andar: la primera conversaci\u00f3n entre la mano, la pierna y el caballo.",
         it: "Girare, fermarsi, ripartire: la prima conversazione tra mano, gamba e cavallo.",
         ja: "\u66f2\u304c\u308b\u3001\u6b62\u307e\u308b\u3001\u518d\u3073\u9032\u3080\u3002\u624b\u3068\u8107\u3068\u99ac\u306e\u3001\u306f\u3058\u3081\u306e\u4f1a\u8a71\u3002",
-        de: "Wenden, halten, antreten: das erste Gespr\u00e4ch zwischen Hand, Bein und Pferd."
+        de: "Wenden, halten, antreten: das erste Gespr\u00e4ch zwischen Hand, Bein und Pferd.", ar: "الدوران، والتوقف، والانطلاق من جديد: أول حوار بين اليد والساق والحصان."
       },
       observer: {
         fr: ["La main basse et le poignet souple", "Le regard porte dans la direction voulue", "La jambe qui demande avant que la main tourne", "L'arret obtenu sans tirer"],
@@ -462,7 +463,7 @@
         es: ["La mano baja y la mu\u00f1eca flexible", "La mirada puesta en la direcci\u00f3n elegida", "La pierna que pide antes de que la mano gire", "La parada obtenida sin tirar"],
         it: ["La mano bassa e il polso morbido", "Lo sguardo nella direzione scelta", "La gamba che chiede prima che la mano giri", "L'arresto ottenuto senza tirare"],
         ja: ["\u4f4e\u3044\u624b\u3068\u67d4\u3089\u304b\u3044\u624b\u9996", "\u884c\u304d\u305f\u3044\u65b9\u5411\u3092\u898b\u308b\u76ee\u7dda", "\u624b\u3092\u4f7f\u3046\u524d\u306b\u8107\u3067\u6c42\u3081\u308b", "\u5f15\u304b\u305a\u306b\u5f97\u308b\u505c\u6b62"],
-        de: ["Tiefe Hand, weiches Handgelenk", "Der Blick in die gew\u00e4hlte Richtung", "Das Bein fragt, bevor die Hand wendet", "Das Halten ohne Ziehen"]
+        de: ["Tiefe Hand, weiches Handgelenk", "Der Blick in die gew\u00e4hlte Richtung", "Das Bein fragt, bevor die Hand wendet", "Das Halten ohne Ziehen"], ar: ["اليد منخفضة والمعصم لين","النظر موجه إلى الاتجاه المطلوب","الساق تطلب قبل أن تدير اليد","التوقف دون شد"]
       }
     },
     {
@@ -476,7 +477,7 @@
         es: "En equilibrio sobre los estribos",
         it: "In equilibrio sulle staffe",
         ja: "\u9419\u306e\u4e0a\u3067\u306e\u30d0\u30e9\u30f3\u30b9",
-        de: "Im Gleichgewicht in den B\u00fcgeln"
+        de: "Im Gleichgewicht in den B\u00fcgeln", ar: "التوازن على الركابين"
       },
       resume: {
         fr: "Le talon qui descend, le genou qui plie, et tout le poids qui trouve enfin son chemin jusqu'au pied.",
@@ -484,7 +485,7 @@
         es: "El tal\u00f3n que baja, la rodilla que se dobla, y todo el peso que encuentra por fin su camino hasta el pie.",
         it: "Il tallone che scende, il ginocchio che si flette, e tutto il peso che trova finalmente la strada fino al piede.",
         ja: "\u8e75\u3092\u4e0b\u3052\u3001\u819d\u3092\u3086\u308b\u3081\u308b\u3002\u4f53\u91cd\u304c\u3084\u3063\u3068\u8db3\u3078\u3068\u9053\u3092\u898b\u3064\u3051\u308b\u3002",
-        de: "Die Ferse tief, das Knie gebeugt, und das ganze Gewicht findet endlich seinen Weg bis in den Fu\u00df."
+        de: "Die Ferse tief, das Knie gebeugt, und das ganze Gewicht findet endlich seinen Weg bis in den Fu\u00df.", ar: "الكعب ينزل، والركبة تنثني، والوزن كله يجد أخيرا طريقه إلى القدم."
       },
       observer: {
         fr: ["Le talon plus bas que la pointe du pied", "Le genou qui absorbe le mouvement", "Le buste qui avance sans s'effondrer", "Les mains qui restent independantes de l'equilibre"],
@@ -492,7 +493,7 @@
         es: ["El tal\u00f3n m\u00e1s bajo que la punta del pie", "La rodilla que absorbe el movimiento", "El busto que avanza sin hundirse", "Las manos que siguen independientes del equilibrio"],
         it: ["Il tallone pi\u00f9 basso della punta del piede", "Il ginocchio che assorbe il movimento", "Il busto che avanza senza cedere", "Le mani che restano indipendenti dall'equilibrio"],
         ja: ["\u3064\u307e\u5148\u3088\u308a\u4f4e\u3044\u8e75", "\u52d5\u304d\u3092\u5438\u6536\u3059\u308b\u819d", "\u5d29\u308c\u305a\u306b\u524d\u306b\u51fa\u308b\u4e0a\u4f53", "\u30d0\u30e9\u30f3\u30b9\u3068\u5207\u308a\u96e2\u3055\u308c\u305f\u624b"],
-        de: ["Die Ferse tiefer als die Fu\u00dfspitze", "Das Knie, das die Bewegung aufnimmt", "Der Oberk\u00f6rper kommt vor, ohne einzusinken", "Die H\u00e4nde bleiben unabh\u00e4ngig vom Gleichgewicht"]
+        de: ["Die Ferse tiefer als die Fu\u00dfspitze", "Das Knie, das die Bewegung aufnimmt", "Der Oberk\u00f6rper kommt vor, ohne einzusinken", "Die H\u00e4nde bleiben unabh\u00e4ngig vom Gleichgewicht"], ar: ["الكعب أخفض من مقدمة القدم","الركبة تمتص الحركة","الجذع يتقدم دون أن ينهار","اليدان تبقيان مستقلتين عن التوازن"]
       }
     },
     /* --- Galop 4, meme serie FFE. Cinq films sur les sept trouves.
@@ -513,7 +514,7 @@
         es: "Equilibrarse sentado",
         it: "Equilibrarsi in sella",
         ja: "\u5750\u3063\u3066\u30d0\u30e9\u30f3\u30b9\u3092\u53d6\u308b",
-        de: "Im Sitz ins Gleichgewicht kommen"
+        de: "Im Sitz ins Gleichgewicht kommen", ar: "التوازن في الجلسة"
       },
       resume: {
         fr: "L'assiette n'est pas une position, c'est une aide. Le film montre ce que le bassin dit au cheval quand il cesse de resister.",
@@ -521,7 +522,7 @@
         es: "El asiento no es una posici\u00f3n, es una ayuda. El v\u00eddeo muestra lo que la pelvis dice al caballo cuando deja de resistir.",
         it: "L'assetto non \u00e8 una posizione, \u00e8 un aiuto. Il film mostra cosa dice il bacino al cavallo quando smette di resistere.",
         ja: "\u9a0e\u5750\u306f\u59d3\u52e2\u3067\u306f\u306a\u304f\u6276\u52a9\u3067\u3042\u308b\u3002\u9aa8\u76e4\u304c\u62b5\u6297\u3092\u3084\u3081\u305f\u3068\u304d\u3001\u99ac\u306b\u4f55\u3092\u4f1d\u3048\u308b\u306e\u304b\u3002",
-        de: "Der Sitz ist keine Haltung, er ist eine Hilfe. Der Film zeigt, was das Becken dem Pferd sagt, sobald es aufh\u00f6rt zu widerstehen."
+        de: "Der Sitz ist keine Haltung, er ist eine Hilfe. Der Film zeigt, was das Becken dem Pferd sagt, sobald es aufh\u00f6rt zu widerstehen.", ar: "الجلسة ليست وضعية، بل هي مساعدة. يعرض الفيلم ما يقوله الحوض للحصان عندما يتوقف عن المقاومة."
       },
       observer: {
         fr: ["Le bassin qui suit le mouvement sans le forcer", "Les epaules qui restent au-dessus des hanches", "La jambe qui pend au lieu de serrer", "Le moment ou le cheval se detend sous l'assiette"],
@@ -529,7 +530,7 @@
         es: ["La pelvis que sigue el movimiento sin forzarlo", "Los hombros que se mantienen sobre las caderas", "La pierna que cuelga en vez de apretar", "El momento en que el caballo se relaja bajo el asiento"],
         it: ["Il bacino che segue il movimento senza forzarlo", "Le spalle che restano sopra le anche", "La gamba che pende invece di stringere", "Il momento in cui il cavallo si distende sotto l'assetto"],
         ja: ["\u52d5\u304d\u3092\u5f37\u3081\u305a\u306b\u5f93\u3046\u9aa8\u76e4", "\u8170\u306e\u771f\u4e0a\u306b\u3068\u3069\u307e\u308b\u80a9", "\u7de0\u3081\u3064\u3051\u305a\u306b\u5782\u308c\u308b\u8107", "\u9a0e\u5750\u306e\u4e0b\u3067\u99ac\u304c\u7de9\u3080\u77ac\u9593"],
-        de: ["Das Becken folgt der Bewegung, ohne sie zu erzwingen", "Die Schultern bleiben \u00fcber den H\u00fcften", "Das Bein h\u00e4ngt, statt zu klemmen", "Der Moment, in dem sich das Pferd unter dem Sitz l\u00f6st"]
+        de: ["Das Becken folgt der Bewegung, ohne sie zu erzwingen", "Die Schultern bleiben \u00fcber den H\u00fcften", "Das Bein h\u00e4ngt, statt zu klemmen", "Der Moment, in dem sich das Pferd unter dem Sitz l\u00f6st"], ar: ["الحوض يتبع الحركة دون أن يفرضها","الكتفان تبقيان فوق الوركين","الساق تتدلى بدل أن تضغط","اللحظة التي يسترخي فيها الحصان تحت الجلسة"]
       }
     },
     {
@@ -543,7 +544,7 @@
         es: "Una reprise de doma",
         it: "Una ripresa di dressage",
         ja: "\u99ac\u5834\u99ac\u8853\u306e\u6f14\u76ee",
-        de: "Eine Dressuraufgabe"
+        de: "Eine Dressuraufgabe", ar: "عرض ترويض"
       },
       resume: {
         fr: "La reprise attendue au Galop 4, montee en entier. Tout ce que les chapitres expliquent separement, enchaine sans coupure.",
@@ -551,7 +552,7 @@
         es: "La reprise esperada en el Galop 4, montada por completo. Todo lo que los cap\u00edtulos explican por separado, encadenado sin cortes.",
         it: "La ripresa richiesta al Galoppo 4, montata per intero. Tutto ci\u00f2 che i capitoli spiegano separatamente, legato senza interruzioni.",
         ja: "\u30ac\u30ed\u30fc4\u3067\u6c42\u3081\u3089\u308c\u308b\u6f14\u76ee\u3092\u901a\u3057\u3067\u3002\u5404\u7ae0\u304c\u5225\u3005\u306b\u8aac\u304f\u3053\u3068\u304c\u3001\u5207\u308c\u76ee\u306a\u304f\u7d9a\u304f\u3002",
-        de: "Die bei Galopp 4 erwartete Aufgabe, komplett geritten. Alles, was die Kapitel einzeln erkl\u00e4ren, ohne Unterbrechung verkn\u00fcpft."
+        de: "Die bei Galopp 4 erwartete Aufgabe, komplett geritten. Alles, was die Kapitel einzeln erkl\u00e4ren, ohne Unterbrechung verkn\u00fcpft.", ar: "العرض المطلوب في الغالوب 4، مؤدى كاملا. كل ما تشرحه الفصول منفصلا، متسلسلا دون انقطاع."
       }
     },
     {
@@ -565,7 +566,7 @@
         es: "El contacto, en la pr\u00e1ctica",
         it: "Il contatto, in pratica",
         ja: "\u5b9f\u8df5\u3068\u3057\u3066\u306e\u30b3\u30f3\u30bf\u30af\u30c8",
-        de: "Anlehnung in der Praxis"
+        de: "Anlehnung in der Praxis", ar: "الاتصال، عمليا"
       },
       resume: {
         fr: "Apres les trois interventions IFCE sur la theorie du contact, voici le meme sujet monte, filme, en trois minutes.",
@@ -573,7 +574,7 @@
         es: "Despu\u00e9s de las tres intervenciones del IFCE sobre la teor\u00eda del contacto, aqu\u00ed est\u00e1 el mismo tema montado, filmado, en tres minutos.",
         it: "Dopo i tre interventi IFCE sulla teoria del contatto, ecco lo stesso tema a cavallo, filmato, in tre minuti.",
         ja: "\u30b3\u30f3\u30bf\u30af\u30c8\u306e\u7406\u8ad6\u3092\u8a9e\u308bIFCE\u306e\u4e09\u3064\u306e\u8b1b\u6f14\u306e\u3042\u3068\u306b\u3001\u540c\u3058\u4e3b\u984c\u3092\u99ac\u4e0a\u3067\u3001\u4e09\u5206\u3067\u3002",
-        de: "Nach den drei IFCE-Beitr\u00e4gen zur Theorie der Anlehnung hier dasselbe Thema geritten, gefilmt, in drei Minuten."
+        de: "Nach den drei IFCE-Beitr\u00e4gen zur Theorie der Anlehnung hier dasselbe Thema geritten, gefilmt, in drei Minuten.", ar: "بعد مداخلات IFCE الثلاث حول نظرية الاتصال، إليك الموضوع نفسه على ظهر الحصان، مصورا، في ثلاث دقائق."
       }
     },
     {
@@ -587,7 +588,7 @@
         es: "Desplazar las ancas",
         it: "Spostare le anche",
         ja: "\u8170\u3092\u52d5\u304b\u3059",
-        de: "Die Hanken versetzen"
+        de: "Die Hanken versetzen", ar: "تحريك الوركين"
       },
       resume: {
         fr: "La jambe reculee demande, la main accompagne, et l'arriere-main se deplace d'un pas. Pas deux.",
@@ -595,7 +596,7 @@
         es: "La pierna atrasada pide, la mano acompa\u00f1a, y los cuartos traseros se desplazan un paso. No dos.",
         it: "La gamba arretrata chiede, la mano accompagna, e le anche si spostano di un passo. Non due.",
         ja: "\u5f8c\u308d\u306b\u5f15\u3044\u305f\u8107\u3067\u6c42\u3081\u3001\u624b\u304c\u5bfe\u5fdc\u3057\u3001\u5f8c\u80a2\u304c\u4e00\u6b69\u52d5\u304f\u3002\u4e8c\u6b69\u3067\u306f\u306a\u3044\u3002",
-        de: "Das zur\u00fcckgenommene Bein fragt, die Hand begleitet, und die Hinterhand tritt einen Schritt zur Seite. Nicht zwei."
+        de: "Das zur\u00fcckgenommene Bein fragt, die Hand begleitet, und die Hinterhand tritt einen Schritt zur Seite. Nicht zwei.", ar: "الساق المرجعة إلى الخلف تطلب، واليد ترافق، والمؤخرة تتحرك خطوة واحدة. لا خطوتين."
       }
     },
     {
@@ -609,7 +610,7 @@
         es: "Desplazar los hombros",
         it: "Spostare le spalle",
         ja: "\u80a9\u3092\u52d5\u304b\u3059",
-        de: "Die Schultern versetzen"
+        de: "Die Schultern versetzen", ar: "تحريك الكتفين"
       },
       resume: {
         fr: "Le pendant du precedent, par l'avant-main. Regarder les deux a la suite rend la difference evidente.",
@@ -617,7 +618,7 @@
         es: "La contraparte del anterior, por el tercio delantero. Verlos seguidos hace la diferencia evidente.",
         it: "Il corrispondente del precedente, dall'avantreno. Guardarli di seguito rende la differenza evidente.",
         ja: "\u524d\u306e\u4f5c\u54c1\u306e\u5bfe\u3092\u306a\u3059\u3001\u524d\u80a2\u304b\u3089\u306e\u8a71\u3002\u7d9a\u3051\u3066\u898b\u308b\u3068\u9055\u3044\u304c\u306f\u3063\u304d\u308a\u3059\u308b\u3002",
-        de: "Das Gegenst\u00fcck zum vorigen Film, \u00fcber die Vorhand. Beide hintereinander gesehen, wird der Unterschied offensichtlich."
+        de: "Das Gegenst\u00fcck zum vorigen Film, \u00fcber die Vorhand. Beide hintereinander gesehen, wird der Unterschied offensichtlich.", ar: "المقابل للفيلم السابق، عبر المقدمة. مشاهدة الفيلمين متتاليين تجعل الفرق واضحا."
       }
     },
     {
@@ -631,7 +632,7 @@
         es: "El primer recorrido",
         it: "Il primo percorso",
         ja: "\u306f\u3058\u3081\u3066\u306e\u30b3\u30fc\u30b9",
-        de: "Der erste Parcours"
+        de: "Der erste Parcours", ar: "المسار الأول"
       },
       resume: {
         fr: "Reconnaitre, compter ses foulees, garder le meme galop du premier au dernier obstacle.",
@@ -639,7 +640,7 @@
         es: "Reconocer el recorrido, contar las zancadas, mantener el mismo galope del primer al \u00faltimo obst\u00e1culo.",
         it: "Ricognizione, conteggio delle falcate, e lo stesso galoppo dal primo all'ultimo ostacolo.",
         ja: "\u30b3\u30fc\u30b9\u3092\u4e0b\u898b\u3057\u3001\u6b69\u6570\u3092\u6570\u3048\u3001\u6700\u521d\u304b\u3089\u6700\u5f8c\u306e\u969c\u5bb3\u307e\u3067\u540c\u3058\u99c8\u6b69\u3092\u4fdd\u3064\u3002",
-        de: "Den Parcours abgehen, Galoppspr\u00fcnge z\u00e4hlen, denselben Galopp vom ersten bis zum letzten Sprung halten."
+        de: "Den Parcours abgehen, Galoppspr\u00fcnge z\u00e4hlen, denselben Galopp vom ersten bis zum letzten Sprung halten.", ar: "استطلاع المسار، وعد الخطوات، والحفاظ على العدو نفسه من أول حاجز إلى آخر حاجز."
       }
     },
     {
@@ -653,7 +654,7 @@
         es: "Circular en exterior",
         it: "Uscire in esterno",
         ja: "\u5916\u4e57\u3067\u306e\u884c\u52d5",
-        de: "Im Gel\u00e4nde unterwegs"
+        de: "Im Gel\u00e4nde unterwegs", ar: "الركوب في الخارج"
       },
       resume: {
         fr: "Le groupe, les distances, la route, et ce qu'on fait quand un cheval derriere n'est plus d'accord.",
@@ -661,7 +662,7 @@
         es: "El grupo, las distancias, la carretera, y qu\u00e9 hacer cuando un caballo de atr\u00e1s deja de estar de acuerdo.",
         it: "Il gruppo, le distanze, la strada, e cosa fare quando un cavallo dietro non \u00e8 pi\u00f9 d'accordo.",
         ja: "\u96c6\u56e3\u3001\u8eca\u9593\u8ddd\u96e2\u3001\u8def\u4e0a\u3001\u305d\u3057\u3066\u5f8c\u308d\u306e\u99ac\u304c\u7d0d\u5f97\u3057\u306a\u304f\u306a\u3063\u305f\u3068\u304d\u306e\u5bfe\u5fdc\u3002",
-        de: "Die Gruppe, die Abst\u00e4nde, die Stra\u00dfe, und was man tut, wenn ein Pferd hinten nicht mehr einverstanden ist."
+        de: "Die Gruppe, die Abst\u00e4nde, die Stra\u00dfe, und was man tut, wenn ein Pferd hinten nicht mehr einverstanden ist.", ar: "المجموعة، والمسافات، والطريق، وما نفعله عندما لا يعود حصان في الخلف موافقا."
       }
     },
     /* --- Galop 2, meme serie FFE. Deux films trouves sur les sept annonces.
@@ -679,7 +680,7 @@
         es: "Los primeros saltos",
         it: "I primi salti",
         ja: "\u306f\u3058\u3081\u306e\u8df3\u8e8d",
-        de: "Die ersten Spr\u00fcnge"
+        de: "Die ersten Spr\u00fcnge", ar: "القفزات الأولى"
       },
       resume: {
         fr: "Franchir un premier obstacle sans rien brusquer : l'abord, l'equilibre sur les etriers, et le regard qui passe par-dessus.",
@@ -687,7 +688,7 @@
         es: "Franquear un primer obst\u00e1culo sin brusquedad: la aproximaci\u00f3n, el equilibrio sobre los estribos y la mirada m\u00e1s all\u00e1.",
         it: "Superare il primo ostacolo senza forzare nulla: l'avvicinamento, l'equilibrio sulle staffe e lo sguardo oltre.",
         ja: "\u7121\u7406\u306e\u306a\u3044\u521d\u3081\u3066\u306e\u8df3\u8e8d\u3002\u30a2\u30d7\u30ed\u30fc\u30c1\u3001\u9419\u306e\u4e0a\u3067\u306e\u30d0\u30e9\u30f3\u30b9\u3001\u305d\u3057\u3066\u5148\u3092\u898b\u308b\u76ee\u7dda\u3002",
-        de: "Ein erstes Hindernis ohne Hast \u00fcberwinden: das Heranreiten, das Gleichgewicht in den B\u00fcgeln und der Blick dar\u00fcber hinaus."
+        de: "Ein erstes Hindernis ohne Hast \u00fcberwinden: das Heranreiten, das Gleichgewicht in den B\u00fcgeln und der Blick dar\u00fcber hinaus.", ar: "اجتياز أول حاجز دون تسرع: الاقتراب، والتوازن على الركابين، والنظر الذي يتجاوز الحاجز."
       }
     },
     {
@@ -701,7 +702,7 @@
         es: "Un recorrido tipo",
         it: "Un percorso tipo",
         ja: "\u6a19\u6e96\u7684\u306a\u30b3\u30fc\u30b9",
-        de: "Ein Musterparcours"
+        de: "Ein Musterparcours", ar: "مسار نموذجي"
       },
       resume: {
         fr: "A quoi ressemble le parcours attendu au Galop 2, du premier tracé au dernier arrêt.",
@@ -709,7 +710,7 @@
         es: "C\u00f3mo es el recorrido esperado en el Galop 2, del primer trazado a la \u00faltima parada.",
         it: "Com'\u00e8 fatto il percorso richiesto al Galoppo 2, dal primo tracciato all'ultimo arresto.",
         ja: "\u30ac\u30ed\u30fc2\u3067\u6c42\u3081\u3089\u308c\u308b\u30b3\u30fc\u30b9\u306e\u5168\u4f53\u50cf\u3002\u6700\u521d\u306e\u30e9\u30a4\u30f3\u304b\u3089\u6700\u5f8c\u306e\u505c\u6b62\u307e\u3067\u3002",
-        de: "Wie der beim Galopp 2 erwartete Parcours aussieht, von der ersten Linie bis zum letzten Halten."
+        de: "Wie der beim Galopp 2 erwartete Parcours aussieht, von der ersten Linie bis zum letzten Halten.", ar: "كيف يبدو المسار المطلوب في الغالوب 2، من أول خط إلى آخر توقف."
       }
     }
   ];
@@ -801,34 +802,34 @@
   /* ---------------- COLLECTIONS ÉDITORIALES ---------------- */
   var COLLS = [
     { id: "hvc-contact", sceau: "◉", format: "affiche",
-      nom: { fr: "Le contact, du geste à la sensation", en: "Contact, from gesture to feel", es: "El contacto, del gesto a la sensación", it: "Il contatto, dal gesto alla sensazione", ja: "コンタクト — 動作から感覚へ", de: "Die Anlehnung, von der Hand zum Gefühl" },
-      sous: { fr: "Le chapitre « Le contact » en vidéo", en: "The Contact chapter, in video", es: "El capítulo « El contacto » en vídeo", it: "Il capitolo « Il contatto » in video", ja: "「コンタクト」の章を動画で", de: "Das Kapitel Anlehnung als Video" },
+      nom: { fr: "Le contact, du geste à la sensation", en: "Contact, from gesture to feel", es: "El contacto, del gesto a la sensación", it: "Il contatto, dal gesto alla sensazione", ja: "コンタクト — 動作から感覚へ", de: "Die Anlehnung, von der Hand zum Gefühl", ar: "الاتصال، من الحركة إلى الإحساس" },
+      sous: { fr: "Le chapitre « Le contact » en vidéo", en: "The Contact chapter, in video", es: "El capítulo « El contacto » en vídeo", it: "Il capitolo « Il contatto » in video", ja: "「コンタクト」の章を動画で", de: "Das Kapitel Anlehnung als Video", ar: "فصل «الاتصال» بالفيديو" },
       ids: ["v-contact-01", "v-contact-02", "v-contact-03"] },
 
     { id: "hvc-aides", sceau: "❖", format: "affiche",
-      nom: { fr: "Mieux utiliser ses aides", en: "Using your aids better", es: "Usar mejor tus ayudas", it: "Usare meglio i propri aiuti", ja: "扶助をより上手に使う", de: "Die Hilfen besser einsetzen" },
-      sous: { fr: "Le chapitre « L'accord des aides » en vidéo", en: "The Coordination of Aids chapter, in video", es: "El capítulo « El acuerdo de las ayudas » en vídeo", it: "Il capitolo « L'accordo degli aiuti » in video", ja: "「扶助の連携」の章を動画で", de: "Das Kapitel Hilfengebung als Video" },
+      nom: { fr: "Mieux utiliser ses aides", en: "Using your aids better", es: "Usar mejor tus ayudas", it: "Usare meglio i propri aiuti", ja: "扶助をより上手に使う", de: "Die Hilfen besser einsetzen", ar: "استعمال المساعدات بشكل أفضل" },
+      sous: { fr: "Le chapitre « L'accord des aides » en vidéo", en: "The Coordination of Aids chapter, in video", es: "El capítulo « El acuerdo de las ayudas » en vídeo", it: "Il capitolo « L'accordo degli aiuti » in video", ja: "「扶助の連携」の章を動画で", de: "Das Kapitel Hilfengebung als Video", ar: "فصل «تنسيق المساعدات» بالفيديو" },
       ids: ["v-aides-01", "v-aides-02", "v-aides-03"] },
 
     /* Angle « académie équestre » : on met en avant qui parle, pas seulement
        le sujet. C'est ce qui distingue d'une plateforme de streaming. */
     { id: "hvc-voix", sceau: "❋", format: "liste", parIntervenant: true,
-      nom: { fr: "Paroles d'experts", en: "Expert voices", es: "Voces expertas", it: "Voci di esperti", ja: "専門家の声", de: "Stimmen der Fachleute" },
-      sous: { fr: "Juges, vétérinaires et ergonomes, sur le contact", en: "Judges, vets and ergonomists on contact", es: "Jueces, veterinarios y ergónomos, sobre el contacto", it: "Giudici, veterinari ed ergonomi, sul contatto", ja: "審判員・獣医師・エルゴノミストが語るコンタクト", de: "Richter, Tierärzte und Ergonomen zur Anlehnung" },
+      nom: { fr: "Paroles d'experts", en: "Expert voices", es: "Voces expertas", it: "Voci di esperti", ja: "専門家の声", de: "Stimmen der Fachleute", ar: "كلمات الخبراء" },
+      sous: { fr: "Juges, vétérinaires et ergonomes, sur le contact", en: "Judges, vets and ergonomists on contact", es: "Jueces, veterinarios y ergónomos, sobre el contacto", it: "Giudici, veterinari ed ergonomi, sul contatto", ja: "審判員・獣医師・エルゴノミストが語るコンタクト", de: "Richter, Tierärzte und Ergonomen zur Anlehnung", ar: "حكام وأطباء بيطريون وأخصائيو بيئة العمل، حول الاتصال" },
       ids: ["v-contact-01", "v-contact-03", "v-contact-02"] }
   ];
 
   /* ---------------- UNIVERS ---------------- */
   var UNIVERS = [
-    { k: "tous",     nom: { fr: "Tous", en: "All", es: "Todos", it: "Tutti", ja: "すべて", de: "Alle" } },
-    { k: "position", nom: { fr: "Position du cavalier", en: "Rider position", es: "Posición del jinete", it: "Posizione del cavaliere", ja: "騎手の姿勢", de: "Sitz des Reiters" } },
-    { k: "cheval",   nom: { fr: "Comprendre le cheval", en: "Understanding the horse", es: "Entender al caballo", it: "Capire il cavallo", ja: "馬を理解する", de: "Das Pferd verstehen" } },
-    { k: "dressage", nom: { fr: "Dressage", en: "Dressage", es: "Doma", it: "Dressage", ja: "馬場馬術", de: "Dressur" } },
-    { k: "obstacle", nom: { fr: "Obstacle", en: "Jumping", es: "Salto", it: "Salto ostacoli", ja: "障害飛越", de: "Springen" } },
-    { k: "pied",     nom: { fr: "Travail à pied", en: "Groundwork", es: "Trabajo a pie", it: "Lavoro da terra", ja: "地上作業", de: "Bodenarbeit" } },
-    { k: "soins",    nom: { fr: "Soins et préparation", en: "Care and preparation", es: "Cuidados y preparación", it: "Cura e preparazione", ja: "手入れと準備", de: "Pflege und Vorbereitung" } },
-    { k: "securite", nom: { fr: "Sécurité", en: "Safety", es: "Seguridad", it: "Sicurezza", ja: "安全", de: "Sicherheit" } },
-    { k: "baby",     nom: { fr: "Hey Baby", en: "Hey Baby", es: "Hey Baby", it: "Hey Baby", ja: "Hey Baby", de: "Hey Baby" } }
+    { k: "tous",     nom: { fr: "Tous", en: "All", es: "Todos", it: "Tutti", ja: "すべて", de: "Alle", ar: "الكل" } },
+    { k: "position", nom: { fr: "Position du cavalier", en: "Rider position", es: "Posición del jinete", it: "Posizione del cavaliere", ja: "騎手の姿勢", de: "Sitz des Reiters", ar: "وضعية الفارس" } },
+    { k: "cheval",   nom: { fr: "Comprendre le cheval", en: "Understanding the horse", es: "Entender al caballo", it: "Capire il cavallo", ja: "馬を理解する", de: "Das Pferd verstehen", ar: "فهم الحصان" } },
+    { k: "dressage", nom: { fr: "Dressage", en: "Dressage", es: "Doma", it: "Dressage", ja: "馬場馬術", de: "Dressur", ar: "الترويض" } },
+    { k: "obstacle", nom: { fr: "Obstacle", en: "Jumping", es: "Salto", it: "Salto ostacoli", ja: "障害飛越", de: "Springen", ar: "قفز الحواجز" } },
+    { k: "pied",     nom: { fr: "Travail à pied", en: "Groundwork", es: "Trabajo a pie", it: "Lavoro da terra", ja: "地上作業", de: "Bodenarbeit", ar: "العمل على الأرض" } },
+    { k: "soins",    nom: { fr: "Soins et préparation", en: "Care and preparation", es: "Cuidados y preparación", it: "Cura e preparazione", ja: "手入れと準備", de: "Pflege und Vorbereitung", ar: "العناية والتحضير" } },
+    { k: "securite", nom: { fr: "Sécurité", en: "Safety", es: "Seguridad", it: "Sicurezza", ja: "安全", de: "Sicherheit", ar: "السلامة" } },
+    { k: "baby",     nom: { fr: "Hey Baby", en: "Hey Baby", es: "Hey Baby", it: "Hey Baby", ja: "Hey Baby", de: "Hey Baby", ar: "Hey Baby" } }
   ];
 
   var SUGGESTS = ["contact", "accord des aides", "position", "céder", "départ au galop", "coudes", "indépendance des aides", "équilibre"];
@@ -948,9 +949,9 @@
      webconférences IFCE : on affiche la tranche, ou rien du tout plutôt
      qu'un chiffre inventé. */
   var TRANCHES = {
-    court: { fr: "moins de 3 min", en: "under 3 min", es: "menos de 3 min", it: "meno di 3 min", ja: "3分未満", de: "unter 3 Min" },
-    moyen: { fr: "3 à 8 min", en: "3 to 8 min", es: "3 a 8 min", it: "da 3 a 8 min", ja: "3〜8分", de: "3 bis 8 Min" },
-    plus8: { fr: "format long", en: "long format", es: "formato largo", it: "formato lungo", ja: "長編", de: "Langformat" }
+    court: { fr: "moins de 3 min", en: "under 3 min", es: "menos de 3 min", it: "meno di 3 min", ja: "3分未満", de: "unter 3 Min", ar: "أقل من 3 دقائق" },
+    moyen: { fr: "3 à 8 min", en: "3 to 8 min", es: "3 a 8 min", it: "da 3 a 8 min", ja: "3〜8分", de: "3 bis 8 Min", ar: "من 3 إلى 8 دقائق" },
+    plus8: { fr: "format long", en: "long format", es: "formato largo", it: "formato lungo", ja: "長編", de: "Langformat", ar: "صيغة طويلة" }
   };
 
   function fondCouv(v) {
@@ -1146,7 +1147,7 @@
     var h = React.createElement;
     var app = useApp();
     var setEcran = app.setEcran, tr = app.tr, langue = app.langue, premium = app.premium;
-    function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+    function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }
 
     /* Le catalogue est multilingue : on lit la langue du cavalier ici. */
     function titreDe(v) { return L(v.i18nTitre, langue); }
@@ -1284,17 +1285,17 @@
        l'image. Rend "" quand il n'y a rien de notable a dire. */
     function etatDe(v) {
       var pv = prog(v.id);
-      if (verrou(v)) return T("Premium", "Premium", "Premium", "Premium", "プレミアム", "Premium");
-      if (!v.src) return T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst");
-      if (pv && pv.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen");
-      if (pv && pv.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen");
+      if (verrou(v)) return T("Premium", "Premium", "Premium", "Premium", "プレミアム", "Premium", "بريميوم");
+      if (!v.src) return T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا");
+      if (pv && pv.vue) return T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة");
+      if (pv && pv.ouverte) return T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة");
       return "";
     }
     /* Galop · duree · etat, sous l'image, separes par des points medians.
        Les elements vides sont ecartes : jamais de « · · » orphelin. */
     function metaDe(v) {
       return [
-        T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + v.galop,
+        T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ") + v.galop,
         dureeDe(v),
         etatDe(v)
       ].filter(function (x) { return !!x; }).join(" · ");
@@ -1311,9 +1312,9 @@
     }
     function carteLigne(v, n) {
       var p = prog(v.id);
-      var etatTxt = !v.src ? T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst")
-        : (p && p.vue) ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen")
-        : (p && p.ouverte) ? T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen")
+      var etatTxt = !v.src ? T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا")
+        : (p && p.vue) ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة")
+        : (p && p.ouverte) ? T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة")
         : (v.intervenant || dureeDe(v) || "");
       return h("div", { key: v.id, style: { display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(255,255,255,.05)" } },
         h("button", { className: "hv-ligne", style: { borderBottom: "none", flex: 1, minWidth: 0 }, onClick: function () { ouvrir(v); } },
@@ -1323,10 +1324,10 @@
             h("h4", null, titreDe(v)),
             h("span", { className: "hv-meta", style: { display: "block" } },
               v.estAnim ? (v.source + " · " + v.titreSource)
-                        : (T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + v.galop + " · " + etatTxt)))),
+                        : (T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ") + v.galop + " · " + etatTxt)))),
         h("button", {
           className: "hv-fav" + (estFav(v.id) ? " on" : ""),
-          "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit"),
+          "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل"),
           onClick: function () { basculerFav(v.id); }
         }, estFav(v.id) ? "★" : "☆"));
     }
@@ -1372,21 +1373,21 @@
       }),
       h("div", { key: "voile", className: "hv-hero-voile" }),
       h("div", { key: "txt", className: "hv-hero-in" },
-        h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie")),
+        h("span", { className: "hv-kick" }, T("Hype · Académie", "Hype · Academy", "Hype · Academia", "Hype · Accademia", "Hype・アカデミー", "Hype · Akademie", "Hype · الأكاديمية")),
         h("h1", null,
-          T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video"),
-          h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek"))),
-        h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen")),
+          T("Bibliothèque", "Video", "Biblioteca", "Videoteca", "動画", "Video", "مكتبة"),
+          h("span", null, T("vidéo", "library", "de vídeo", "", "ライブラリ", "Bibliothek", "الفيديو"))),
+        h("p", { className: "hv-sub" }, T("Observe, comprends, progresse", "Watch, understand, progress", "Observa, comprende, progresa", "Osserva, capisci, progredisci", "見て、理解して、上達する", "Beobachten, verstehen, vorankommen", "لاحظي، افهمي، تقدمي")),
         h("div", { className: "hv-stats" },
-          h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos"))),
-          h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten"))),
-          h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel"))))));
+          h("div", null, h("b", null, dispo.length), h("i", null, T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات"))),
+          h("div", null, h("b", null, Object.keys(expertSet).length), h("i", null, T("intervenants", "speakers", "ponentes", "relatori", "登壇者", "Referenten", "متحدثين"))),
+          h("div", null, h("b", null, Object.keys(coursSet).length), h("i", null, T("chapitres", "chapters", "capítulos", "capitoli", "章", "Kapitel", "فصول"))))));
 
     var recherche = h("div", { className: "hv-rech" },
       h("span", { style: { opacity: .5, fontSize: 14 } }, "⌕"),
       h("input", {
         type: "search", value: rq, autoComplete: "off",
-        placeholder: T("Rechercher une vidéo, un exercice ou une notion", "Search a video, an exercise or a notion", "Buscar un vídeo, un ejercicio o una noción", "Cerca un video, un esercizio o una nozione", "動画・練習・用語を検索", "Video, Übung oder Begriff suchen"),
+        placeholder: T("Rechercher une vidéo, un exercice ou une notion", "Search a video, an exercise or a notion", "Buscar un vídeo, un ejercicio o una noción", "Cerca un video, un esercizio o una nozione", "動画・練習・用語を検索", "Video, Übung oder Begriff suchen", "ابحثي عن فيديو أو تمرين أو مفهوم"),
         onChange: function (e) { setRq(e.target.value); }
       }),
       rq ? h("button", { className: "hv-fav", onClick: function () { setRq(""); } }, "×") : null);
@@ -1403,7 +1404,7 @@
         }, L(x.nom, langue));
       }).concat([
         h("button", { key: "__f", className: "hv-filtres", onClick: function () { setFeuille(true); } },
-          "⚟ " + T("Filtres", "Filters", "Filtros", "Filtri", "絞り込み", "Filter") + (nbFiltres ? " · " + nbFiltres : ""))
+          "⚟ " + T("Filtres", "Filters", "Filtros", "Filtri", "絞り込み", "Filter", "عوامل التصفية") + (nbFiltres ? " · " + nbFiltres : ""))
       ]));
 
     /* ---------- bibliothèque encore vide ----------
@@ -1412,11 +1413,11 @@
     if (!dispo.length) {
       return h("div", { className: "hv-wrap" }, hero,
         h("div", { className: "hv-vide", style: { paddingTop: 34 } },
-          h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.")),
-          h("p", { className: "hv-s2" }, T("La bibliothèque s'ouvrira ici, chapitre par chapitre.", "The library will open here, chapter by chapter.", "La biblioteca se abrirá aquí, capítulo a capítulo.", "La videoteca si aprirà qui, capitolo per capitolo.", "章ごとに、ここに開いていきます。", "Die Bibliothek öffnet hier, Kapitel für Kapitel."))),
+          h("p", null, T("Les premières vidéos arrivent.", "The first videos are on their way.", "Los primeros vídeos están en camino.", "I primi video stanno arrivando.", "最初の動画を準備しています。", "Die ersten Videos sind auf dem Weg.", "الفيديوهات الأولى في الطريق.")),
+          h("p", { className: "hv-s2" }, T("La bibliothèque s'ouvrira ici, chapitre par chapitre.", "The library will open here, chapter by chapter.", "La biblioteca se abrirá aquí, capítulo a capítulo.", "La videoteca si aprirà qui, capitolo per capitolo.", "章ごとに、ここに開いていきます。", "Die Bibliothek öffnet hier, Kapitel für Kapitel.", "ستفتح المكتبة هنا، فصلا بعد فصل."))),
         h("div", { className: "hv-sec" },
           h("button", { className: "hv-btn hv-btn-p", style: { width: "100%" }, onClick: function () { setEcran("galops"); } },
-            T("Retour aux Galops", "Back to levels", "Volver a los Galops", "Torna ai Galop", "ガロー一覧に戻る", "Zurück zu den Galopps"))));
+            T("Retour aux Galops", "Back to levels", "Volver a los Galops", "Torna ai Galop", "ガロー一覧に戻る", "Zurück zu den Galopps", "العودة إلى مستويات الغالوب"))));
     }
 
     /* ---------- continuer à regarder ---------- */
@@ -1434,11 +1435,11 @@
         couv(mv, { galop: false }),
         h("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" } },
           h("h4", null, titreDe(mv)),
-          h("span", { className: "hv-lie", style: { display: "block" } }, T("Chapitre : ", "Chapter: ", "Capítulo: ", "Capitolo: ", "章：", "Kapitel: ") + chapitreDe(mv)),
+          h("span", { className: "hv-lie", style: { display: "block" } }, T("Chapitre : ", "Chapter: ", "Capítulo: ", "Capitolo: ", "章：", "Kapitel: ", "الفصل: ") + chapitreDe(mv)),
           /* 06/08 : la duree quittait la miniature, elle se lit ici. */
           dureeDe(mv) ? h("span", { className: "hv-lie", style: { display: "block", marginTop: 2 } }, dureeDe(mv)) : null,
           h("span", { style: { display: "block", fontSize: 9.5, color: "#20D9F5", marginTop: 9, letterSpacing: ".1em", textTransform: "uppercase" } },
-            T("Reprendre", "Resume", "Reanudar", "Riprendi", "つづける", "Fortsetzen"))));
+            T("Reprendre", "Resume", "Reanudar", "Riprendi", "つづける", "Fortsetzen", "متابعة"))));
     }
 
     /* ---------- à la une ---------- */
@@ -1454,21 +1455,21 @@
          decoratives et sans enjeu de lecture. */
       couv(une, { galop: false, sansVoile: true, sansMini: true }),
       h("div", { className: "hv-une-txt" },
-        h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen")),
+        h("span", { className: "hv-kick" }, T("Recommandée pour toi", "Recommended for you", "Recomendada para ti", "Consigliata per te", "あなたへのおすすめ", "Für dich empfohlen", "موصى به لك")),
         h("h3", null, titreDe(une)),
         h("p", { className: "hv-desc" }, resumeDe(une)),
         h("div", { className: "hv-minis" },
-          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + une.galop),
+          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ") + une.galop),
           dureeDe(une) ? h("span", { className: "hv-mini" }, dureeDe(une)) : null,
           h("span", { className: "hv-mini" }, chapitreDe(une)),
           une.source ? h("span", { className: "hv-mini" }, une.source) : null,
           etatDe(une) ? h("span", { className: "hv-mini" }, etatDe(une)) : null),
         h("div", { className: "hv-act" },
           h("button", { className: "hv-btn hv-btn-p", onClick: function () { ouvrir(une); } },
-            T("Regarder", "Watch", "Ver", "Guarda", "見る", "Ansehen")),
+            T("Regarder", "Watch", "Ver", "Guarda", "見る", "Ansehen", "مشاهدة")),
           h("button", {
             className: "hv-btn hv-btn-s" + (estFav(une.id) ? " on" : ""),
-            "aria-label": T("Ajouter à mes favoris", "Add to favourites", "Añadir a favoritos", "Aggiungi ai preferiti", "お気に入りに追加", "Zu Favoriten"),
+            "aria-label": T("Ajouter à mes favoris", "Add to favourites", "Añadir a favoritos", "Aggiungi ai preferiti", "お気に入りに追加", "Zu Favoriten", "إضافة إلى مفضلاتي"),
             onClick: function () { basculerFav(une.id); }
           }, estFav(une.id) ? "★" : "☆"))));
 
@@ -1476,8 +1477,8 @@
     var niveaux = [1, 2, 3, 4, 5, 6, 7];
     var blocGalops = h("div", { className: "hv-galops" },
       h("div", { className: "hv-sec", style: { marginTop: 0 } },
-        h("h2", null, T("Explorer par Galop", "Explore by level", "Explorar por Galop", "Esplora per Galop", "ガロー別に見る", "Nach Galopp entdecken")),
-        h("p", null, T("Le fil de ta progression fédérale", "The thread of your federal progression", "El hilo de tu progresión federal", "Il filo della tua progressione federale", "連盟級位に沿った道すじ", "Der Faden deiner Ausbildung"))),
+        h("h2", null, T("Explorer par Galop", "Explore by level", "Explorar por Galop", "Esplora per Galop", "ガロー別に見る", "Nach Galopp entdecken", "استكشفي حسب الغالوب")),
+        h("p", null, T("Le fil de ta progression fédérale", "The thread of your federal progression", "El hilo de tu progresión federal", "Il filo della tua progressione federale", "連盟級位に沿った道すじ", "Der Faden deiner Ausbildung", "مسار تقدمك في مستويات الاتحاد"))),
       h("div", { className: "hv-gscroll" }, niveaux.map(function (n) {
         var nb = dispo.filter(function (v) { return v.galop === n; }).length;
         return h("button", {
@@ -1485,8 +1486,8 @@
           onClick: function () { setGalop(galop === n ? null : n); setUniv("tous"); }
         },
           h("span", { className: "hv-cristal" }, h("b", null, n)),
-          h("small", null, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + n),
-          h("em", null, nb + " " + (nb > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos") : T("vidéo", "video", "vídeo", "video", "本", "Video"))));
+          h("small", null, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ") + n),
+          h("em", null, nb + " " + (nb > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو"))));
       })));
 
     /* ---------- collections ---------- */
@@ -1516,22 +1517,22 @@
     if (onglet === "hist") mesVs = dispo.filter(function (v) { var p = prog(v.id); return p && p.vue; });
 
     var videTxt = {
-      fav: [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten."),
-            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.")],
-      cours: [T("Aucune vidéo en cours.", "No video in progress.", "Ningún vídeo en curso.", "Nessun video in corso.", "視聴中の動画はありません。", "Kein Video läuft."),
-              T("Les vidéos commencées apparaîtront ici avec leur progression.", "Videos you start will appear here with their progress.", "Los vídeos empezados aparecerán aquí con su progreso.", "I video iniziati appariranno qui con il loro avanzamento.", "見はじめた動画が進捗つきで並びます。", "Begonnene Videos erscheinen hier mit ihrem Fortschritt.")],
-      hist: [T("Ton historique est vide.", "Your history is empty.", "Tu historial está vacío.", "La tua cronologia è vuota.", "履歴はまだ空です。", "Dein Verlauf ist leer."),
-             T("Les vidéos terminées viendront se ranger ici.", "Finished videos will be filed here.", "Los vídeos terminados se guardarán aquí.", "I video completati si raccoglieranno qui.", "見終わった動画がここに並びます。", "Fertige Videos werden hier abgelegt.")]
+      fav: [T("Aucun favori pour l'instant.", "No favourites yet.", "Aún no hay favoritos.", "Nessun preferito per ora.", "お気に入りはまだありません。", "Noch keine Favoriten.", "لا توجد مفضلات حاليا."),
+            T("Touche l'étoile sur une vidéo pour la retrouver ici.", "Tap the star on a video to find it here.", "Toca la estrella de un vídeo para encontrarlo aquí.", "Tocca la stella su un video per ritrovarlo qui.", "動画の星に触れると、ここに集まります。", "Tippe auf den Stern, um ein Video hier zu finden.", "المسي النجمة على أي فيديو لتجديه هنا.")],
+      cours: [T("Aucune vidéo en cours.", "No video in progress.", "Ningún vídeo en curso.", "Nessun video in corso.", "視聴中の動画はありません。", "Kein Video läuft.", "لا يوجد فيديو قيد المشاهدة."),
+              T("Les vidéos commencées apparaîtront ici avec leur progression.", "Videos you start will appear here with their progress.", "Los vídeos empezados aparecerán aquí con su progreso.", "I video iniziati appariranno qui con il loro avanzamento.", "見はじめた動画が進捗つきで並びます。", "Begonnene Videos erscheinen hier mit ihrem Fortschritt.", "ستظهر هنا الفيديوهات التي بدأتها مع مدى تقدمك فيها.")],
+      hist: [T("Ton historique est vide.", "Your history is empty.", "Tu historial está vacío.", "La tua cronologia è vuota.", "履歴はまだ空です。", "Dein Verlauf ist leer.", "سجلك فارغ."),
+             T("Les vidéos terminées viendront se ranger ici.", "Finished videos will be filed here.", "Los vídeos terminados se guardarán aquí.", "I video completati si raccoglieranno qui.", "見終わった動画がここに並びます。", "Fertige Videos werden hier abgelegt.", "ستصنف هنا الفيديوهات التي أنهيتها.")]
     }[onglet];
 
     var blocMes = h("div", null,
       h("div", { className: "hv-sec", style: { marginTop: 36 } },
-        h("h2", null, T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos")),
-        h("p", null, T("Ce que tu as gardé, commencé ou terminé", "What you saved, started or finished", "Lo que has guardado, empezado o terminado", "Ciò che hai salvato, iniziato o finito", "保存・視聴中・視聴済みのもの", "Gespeichert, begonnen oder beendet"))),
+        h("h2", null, T("Mes vidéos", "My videos", "Mis vídeos", "I miei video", "マイ動画", "Meine Videos", "فيديوهاتي")),
+        h("p", null, T("Ce que tu as gardé, commencé ou terminé", "What you saved, started or finished", "Lo que has guardado, empezado o terminado", "Ciò che hai salvato, iniziato o finito", "保存・視聴中・視聴済みのもの", "Gespeichert, begonnen oder beendet", "ما حفظته أو بدأته أو أنهيته"))),
       h("div", { className: "hv-ongl", style: { marginTop: 14 } },
-        [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten")],
-         ["cours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen")],
-         ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf")]].map(function (x) {
+        [["fav", T("Favoris", "Favourites", "Favoritos", "Preferiti", "お気に入り", "Favoriten", "المفضلة")],
+         ["cours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة")],
+         ["hist", T("Historique", "History", "Historial", "Cronologia", "履歴", "Verlauf", "السجل")]].map(function (x) {
           return h("button", { key: x[0], className: onglet === x[0] ? "on" : "", onClick: function () { setOnglet(x[0]); } }, x[1]);
         })),
       mesVs.length
@@ -1545,32 +1546,32 @@
       var lib = [];
       if (rq) lib.push("« " + rq + " »");
       if (univ !== "tous") { for (var iv = 0; iv < UNIVERS.length; iv++) { if (UNIVERS[iv].k === univ) lib.push(L(UNIVERS[iv].nom, langue)); } }
-      if (galop !== null) lib.push(T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + galop);
-      if (nbFiltres) lib.push(nbFiltres + " " + T("filtres", "filters", "filtros", "filtri", "絞り込み", "Filter"));
+      if (galop !== null) lib.push(T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ") + galop);
+      if (nbFiltres) lib.push(nbFiltres + " " + T("filtres", "filters", "filtros", "filtri", "絞り込み", "Filter", "عوامل تصفية"));
       blocResultats = h("div", { style: { marginTop: 18 } },
         h("button", {
           className: "hv-retourmenu",
           onClick: function () { setRq(""); setUniv("tous"); setGalop(null); setFiltres({ duree: [], etat: [] }); }
-        }, "\u2039 " + T("Retour au menu", "Back to menu", "Volver al menú", "Torna al menu", "メニューに戻る", "Zurück zum Menü")),
-        h("div", { className: "hv-compte" }, h("b", null, res.length), " " + (res.length > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos") : T("vidéo", "video", "vídeo", "video", "本", "Video")) + " · " + lib.join(" · ")),
+        }, "\u2039 " + T("Retour au menu", "Back to menu", "Volver al menú", "Torna al menu", "メニューに戻る", "Zurück zum Menü", "العودة إلى القائمة")),
+        h("div", { className: "hv-compte" }, h("b", null, res.length), " " + (res.length > 1 ? T("vidéos", "videos", "vídeos", "video", "本", "Videos", "فيديوهات") : T("vidéo", "video", "vídeo", "video", "本", "Video", "الفيديو")) + " · " + lib.join(" · ")),
         res.length
           ? h("div", { className: "hv-grille" }, res.map(carteAffiche))
           : h("div", { className: "hv-vide" },
-              h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.")),
-              h("p", { className: "hv-s2" }, T("Essaie un autre mot, ou élargis le niveau et la durée.", "Try another word, or widen level and duration.", "Prueba otra palabra, o amplía nivel y duración.", "Prova un'altra parola, o allarga livello e durata.", "別の言葉を試すか、級位と長さを広げてみて。", "Versuche ein anderes Wort oder erweitere Galopp und Dauer."))));
+              h("p", null, T("Aucune vidéo ne correspond encore.", "No video matches yet.", "Ningún vídeo coincide todavía.", "Nessun video corrisponde ancora.", "該当する動画はまだありません。", "Noch kein Video passt.", "لا يوجد فيديو مطابق حتى الآن.")),
+              h("p", { className: "hv-s2" }, T("Essaie un autre mot, ou élargis le niveau et la durée.", "Try another word, or widen level and duration.", "Prueba otra palabra, o amplía nivel y duración.", "Prova un'altra parola, o allarga livello e durata.", "別の言葉を試すか、級位と長さを広げてみて。", "Versuche ein anderes Wort oder erweitere Galopp und Dauer.", "جربي كلمة أخرى، أو وسعي المستوى والمدة."))));
     }
 
     /* ---------- feuille de filtres ---------- */
     var GROUPES = [
-      { cle: "duree", nom: T("Durée", "Duration", "Duración", "Durata", "長さ", "Dauer"), opts: [
-        ["court", T("Moins de 3 min", "Under 3 min", "Menos de 3 min", "Meno di 3 min", "3分未満", "Unter 3 Min")],
-        ["moyen", T("3 à 8 min", "3 to 8 min", "3 a 8 min", "Da 3 a 8 min", "3〜8分", "3 bis 8 Min")],
-        ["long", T("Plus de 8 min", "Over 8 min", "Más de 8 min", "Più di 8 min", "8分以上", "Über 8 Min")]] },
-      { cle: "etat", nom: T("Où tu en es", "Where you are", "Dónde estás", "Dove sei arrivato", "進み具合", "Wo du stehst"), opts: [
-        ["nonvue", T("Pas encore vues", "Not watched yet", "Aún sin ver", "Non ancora viste", "未視聴", "Noch nicht gesehen")],
-        ["encours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen")],
-        ["vue", T("Déjà vues", "Already watched", "Ya vistas", "Già viste", "視聴済み", "Schon gesehen")],
-        ["fav", T("Mes favoris", "My favourites", "Mis favoritos", "I miei preferiti", "お気に入り", "Meine Favoriten")]] }
+      { cle: "duree", nom: T("Durée", "Duration", "Duración", "Durata", "長さ", "Dauer", "المدة"), opts: [
+        ["court", T("Moins de 3 min", "Under 3 min", "Menos de 3 min", "Meno di 3 min", "3分未満", "Unter 3 Min", "أقل من 3 د")],
+        ["moyen", T("3 à 8 min", "3 to 8 min", "3 a 8 min", "Da 3 a 8 min", "3〜8分", "3 bis 8 Min", "من 3 إلى 8 د")],
+        ["long", T("Plus de 8 min", "Over 8 min", "Más de 8 min", "Più di 8 min", "8分以上", "Über 8 Min", "أكثر من 8 د")]] },
+      { cle: "etat", nom: T("Où tu en es", "Where you are", "Dónde estás", "Dove sei arrivato", "進み具合", "Wo du stehst", "أين وصلت"), opts: [
+        ["nonvue", T("Pas encore vues", "Not watched yet", "Aún sin ver", "Non ancora viste", "未視聴", "Noch nicht gesehen", "لم تشاهد بعد")],
+        ["encours", T("À revoir", "To rewatch", "Por repasar", "Da rivedere", "見なおす", "Nochmal ansehen", "لإعادة المشاهدة")],
+        ["vue", T("Déjà vues", "Already watched", "Ya vistas", "Già viste", "視聴済み", "Schon gesehen", "تمت مشاهدتها")],
+        ["fav", T("Mes favoris", "My favourites", "Mis favoritos", "I miei preferiti", "お気に入り", "Meine Favoriten", "مفضلاتي")]] }
     ];
     var blocFeuille = feuille ? h(React.Fragment, null,
       h("div", { className: "hv-voile-m", onClick: function () { setFeuille(false); } }),
@@ -1594,20 +1595,20 @@
         }),
         h("div", { style: { display: "flex", gap: 10, marginTop: 6 } },
           h("button", { className: "hv-btn hv-btn-s", style: { width: "auto", flex: 1 }, onClick: function () { setFiltres({ duree: [], etat: [] }); } },
-            T("Tout effacer", "Clear all", "Borrar todo", "Cancella tutto", "すべて解除", "Alles löschen")),
+            T("Tout effacer", "Clear all", "Borrar todo", "Cancella tutto", "すべて解除", "Alles löschen", "مسح الكل")),
           h("button", { className: "hv-btn hv-btn-p", style: { flex: 1.4 }, onClick: function () { setFeuille(false); } },
-            T("Voir les vidéos", "Show videos", "Ver los vídeos", "Vedi i video", "動画を見る", "Videos anzeigen"))))) : null;
+            T("Voir les vidéos", "Show videos", "Ver los vídeos", "Vedi i video", "動画を見る", "Videos anzeigen", "عرض الفيديوهات"))))) : null;
 
     return h("div", { className: "hv-wrap" },
       hero, recherche, sugs, chips,
       actif ? blocResultats : h("div", null,
         reprise ? h("div", null,
           h("div", { className: "hv-sec", style: { marginTop: 22 } },
-            h("h2", null, T("Continuer à regarder", "Keep watching", "Seguir viendo", "Continua a guardare", "つづきを見る", "Weiterschauen"))),
+            h("h2", null, T("Continuer à regarder", "Keep watching", "Seguir viendo", "Continua a guardare", "つづきを見る", "Weiterschauen", "متابعة المشاهدة"))),
           h("div", { style: { marginTop: 14 } }, reprise)) : null,
         h("div", { className: "hv-sec" },
-          h("h2", null, T("À la une", "Featured", "Destacado", "In primo piano", "注目", "Im Fokus")),
-          h("p", null, T("Choisie pour ton niveau et ton dernier chapitre", "Picked for your level and latest chapter", "Elegida para tu nivel y tu último capítulo", "Scelta per il tuo livello e il tuo ultimo capitolo", "あなたの級位と最新の章に合わせて", "Für dein Niveau und dein letztes Kapitel"))),
+          h("h2", null, T("À la une", "Featured", "Destacado", "In primo piano", "注目", "Im Fokus", "مميز")),
+          h("p", null, T("Choisie pour ton niveau et ton dernier chapitre", "Picked for your level and latest chapter", "Elegida para tu nivel y tu último capítulo", "Scelta per il tuo livello e il tuo ultimo capitolo", "あなたの級位と最新の章に合わせて", "Für dein Niveau und dein letztes Kapitel", "مختار لمستواك ولآخر فصل وصلت إليه"))),
         h("div", { style: { marginTop: 14 } }, blocUne),
         blocGalops,
         blocColls,
@@ -1669,7 +1670,7 @@
     var h = React.createElement;
     var app = useApp();
     var setEcran = app.setEcran, tr = app.tr, langue = app.langue;
-    function T(fr, en, es, it, ja, de) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de }); }
+    function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }
 
     /* Le catalogue est multilingue : on lit la langue du cavalier ici. */
     function titreDe(v) { return L(v.i18nTitre, langue); }
@@ -1688,9 +1689,9 @@
 
     if (!v) {
       return h("div", { className: "hv-lect" }, h("div", { className: "hv-corps" },
-        h("p", { className: "hv-d" }, T("Cette vidéo n'est plus disponible.", "This video is no longer available.", "Este vídeo ya no está disponible.", "Questo video non è più disponibile.", "この動画は見つかりません。", "Dieses Video ist nicht mehr verfügbar.")),
+        h("p", { className: "hv-d" }, T("Cette vidéo n'est plus disponible.", "This video is no longer available.", "Este vídeo ya no está disponible.", "Questo video non è più disponibile.", "この動画は見つかりません。", "Dieses Video ist nicht mehr verfügbar.", "هذا الفيديو لم يعد متاحا.")),
         h("button", { className: "hv-btn hv-btn-p", style: { marginTop: 18 }, onClick: function () { setEcran("videos"); } },
-          T("Retour à la bibliothèque", "Back to library", "Volver a la biblioteca", "Torna alla videoteca", "ライブラリに戻る", "Zurück zur Bibliothek"))));
+          T("Retour à la bibliothèque", "Back to library", "Volver a la biblioteca", "Torna alla videoteca", "ライブラリに戻る", "Zurück zur Bibliothek", "العودة إلى المكتبة"))));
     }
 
     var p = (etat.prog && etat.prog[v.id]) || null;
@@ -1733,57 +1734,57 @@
             allowFullScreen: true
           })
         : h("div", { className: "hv-soon" },
-            h("b", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst")),
+            h("b", null, T("Prochainement", "Coming soon", "Próximamente", "Prossimamente", "近日公開", "Demnächst", "قريبا")),
             h("span", null, T("Cette vidéo n'est pas encore tournée. Tout le reste de la fiche est déjà là : garde-la en favori, tu seras prévenue.",
               "This video has not been filmed yet. Everything else is already here: save it and you will be notified.",
               "Este vídeo aún no está grabado. Todo lo demás ya está aquí: guárdalo y te avisaremos.",
               "Questo video non è ancora girato. Tutto il resto è già qui: salvalo e ti avviseremo.",
               "この動画はまだ撮影されていません。ほかの内容はすでにあります。お気に入りに入れておいてください。",
-              "Dieses Video ist noch nicht gedreht. Alles andere ist schon da: speichere es, du wirst informiert."))));
+              "Dieses Video ist noch nicht gedreht. Alles andere ist schon da: speichere es, du wirst informiert.", "لم يصور هذا الفيديو بعد. كل ما تبقى من البطاقة موجود بالفعل: احفظيه في المفضلة وسيصلك إشعار."))));
 
     return h("div", { className: "hv-lect" }, lecteur,
       h("div", { className: "hv-corps" },
         h("span", { className: "hv-kick" }, chapitreDe(v)),
         h("h2", null, titreDe(v)),
         h("div", { className: "hv-minis" },
-          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ") + v.galop),
+          h("span", { className: "hv-mini" }, T("Galop ", "Level ", "Galop ", "Galop ", "ガロー ", "Galopp ", "الغالوب ") + v.galop),
           dureeDe(v) ? h("span", { className: "hv-mini" }, dureeDe(v)) : null,
-          h("span", { className: "hv-mini" }, vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen") : T("À regarder", "To watch", "Por ver", "Da guardare", "これから見る", "Anzusehen"))),
+          h("span", { className: "hv-mini" }, vue ? T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة") : T("À regarder", "To watch", "Por ver", "Da guardare", "これから見る", "Anzusehen", "للمشاهدة"))),
         h("p", { className: "hv-d" }, resumeDe(v)),
 
         h("button", { className: "hv-lien", onClick: versLeCours },
           h("span", { style: { minWidth: 0 } },
-            h("span", { className: "hv-k" }, T("Liée au chapitre", "Linked to chapter", "Vinculada al capítulo", "Collegata al capitolo", "関連する章", "Zum Kapitel")),
+            h("span", { className: "hv-k" }, T("Liée au chapitre", "Linked to chapter", "Vinculada al capítulo", "Collegata al capitolo", "関連する章", "Zum Kapitel", "مرتبط بالفصل")),
             h("span", { className: "hv-t" }, chapitreDe(v))),
           h("span", { style: { color: "#20D9F5", fontSize: 14, flex: "0 0 auto" } },
-            T("Voir le cours ›", "See the lesson ›", "Ver el curso ›", "Vedi il corso ›", "コースを見る ›", "Zum Kurs ›"))),
+            T("Voir le cours ›", "See the lesson ›", "Ver el curso ›", "Vedi il corso ›", "コースを見る ›", "Zum Kurs ›", "عرض الدرس ›"))),
 
         /* Points à observer : seulement pour les vidéos principales, qui en ont. */
         observerDe(v).length ? h("div", { className: "hv-bloc obs" },
-          h("h5", null, T("Pendant la vidéo, observe particulièrement…", "While watching, look especially at…", "Durante el vídeo, observa sobre todo…", "Durante il video, osserva soprattutto…", "動画では、とくにここを見て…", "Achte im Video besonders auf…")),
+          h("h5", null, T("Pendant la vidéo, observe particulièrement…", "While watching, look especially at…", "Durante el vídeo, observa sobre todo…", "Durante il video, osserva soprattutto…", "動画では、とくにここを見て…", "Achte im Video besonders auf…", "أثناء الفيديو، لاحظي بشكل خاص…")),
           h("ul", { className: "hv-li" }, observerDe(v).map(function (x, i) { return h("li", { key: i }, x); }))) : null,
 
         /* Qui parle. C'est l'angle « académie » : on nomme l'intervenant. */
         v.intervenant ? h("div", { className: "hv-bloc" },
-          h("h5", null, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent")),
+          h("h5", null, T("L'intervenant", "The speaker", "El ponente", "Il relatore", "登壇者", "Der Referent", "المتحدث")),
           h("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 500, color: "#F4F6F7" } }, v.intervenant),
           v.intervenantRole ? h("p", { style: { margin: "4px 0 0", fontSize: 11.5, color: "#8A95A1" } }, L(v.intervenantRole, langue)) : null,
           v.titreSource ? h("p", { style: { margin: "12px 0 0", fontSize: 11.5, color: "#8A95A1", lineHeight: 1.55, fontStyle: "italic" } }, "« " + v.titreSource + " »") : null,
           v.doc ? h("a", {
             href: v.doc, target: "_blank", rel: "noopener",
             style: { display: "inline-block", marginTop: 12, fontSize: 11, letterSpacing: ".12em", textTransform: "uppercase", color: "#20D9F5", textDecoration: "none", fontWeight: 600 }
-          }, T("Le document de l'intervention ›", "The talk's handout ›", "El documento de la intervención ›", "Il documento dell'intervento ›", "講演資料 ›", "Das Dokument zum Vortrag ›")) : null) : null,
+          }, T("Le document de l'intervention ›", "The talk's handout ›", "El documento de la intervención ›", "Il documento dell'intervento ›", "講演資料 ›", "Das Dokument zum Vortrag ›", "وثيقة المداخلة ›")) : null) : null,
 
         /* Avertissement honnête : les cartes sont traduites, la vidéo non. */
         (v.langueVideo && langue !== v.langueVideo) ? h("div", { className: "hv-bloc" },
           h("p", { style: { margin: 0, fontSize: 11.5, color: "#8A95A1", lineHeight: 1.55 } },
-            T("Cette vidéo est en français.", "This video is in French.", "Este vídeo está en francés.", "Questo video è in francese.", "この動画はフランス語です。", "Dieses Video ist auf Französisch."))) : null,
+            T("Cette vidéo est en français.", "This video is in French.", "Este vídeo está en francés.", "Questo video è in francese.", "この動画はフランス語です。", "Dieses Video ist auf Französisch.", "هذا الفيديو باللغة الفرنسية."))) : null,
 
         h("div", { className: "hv-act" },
           h("button", { className: "hv-vue" + (vue ? " on" : ""), onClick: basculerVue },
-            vue ? "✓ " + T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen")
-                : T("Marquer comme vue", "Mark as watched", "Marcar como vista", "Segna come vista", "視聴済みにする", "Als gesehen markieren")),
-          h("button", { className: "hv-btn hv-btn-s" + (fav ? " on" : ""), onClick: basculerFav, "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit") },
+            vue ? "✓ " + T("Vue", "Watched", "Vista", "Vista", "視聴済み", "Gesehen", "تمت المشاهدة")
+                : T("Marquer comme vue", "Mark as watched", "Marcar como vista", "Segna come vista", "視聴済みにする", "Als gesehen markieren", "تحديد كفيديو تمت مشاهدته")),
+          h("button", { className: "hv-btn hv-btn-s" + (fav ? " on" : ""), onClick: basculerFav, "aria-label": T("Favori", "Favourite", "Favorito", "Preferito", "お気に入り", "Favorit", "مفضل") },
             fav ? "★" : "☆")),
 
         (function () {
@@ -1791,7 +1792,7 @@
           if (!suiv.length) return null;
           return h("div", { style: { marginTop: 28 } },
             h("h5", { style: { fontFamily: "'Cinzel',serif", fontSize: 13, fontWeight: 500, letterSpacing: ".1em", textTransform: "uppercase", margin: 0, color: "#F4F6F7" } },
-              T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes")),
+              T("À regarder ensuite", "Watch next", "Ver a continuación", "Da guardare dopo", "次に見る", "Als Nächstes", "للمشاهدة لاحقا")),
             h("div", { className: "hv-fil", style: { margin: "12px 0" } }),
             suiv.map(function (x) {
               return h("button", {

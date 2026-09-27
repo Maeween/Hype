@@ -6288,3 +6288,38 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   Navigateur de test (base simulée), 40 écrans en arabe et en anglais : aucun
   plantage nouveau (« videos » plante déjà depuis le 431, sans rapport).
   Build 20260927-433 (contient 432).
+
+· (434) 27/09, 05 h 30 — TRADUCTION : FICHIERS SÉPARÉS + « PONEY » EN ARABE
+  (« Ok continue » ; fichiers fournis par Blandine à 04 h 35 ; réponse de
+  ChatGPT transmise à 04 h 36 : poney = بوني, poulain = مهر).
+  ⚠️ 432, 433, 434 NON TESTÉS SUR IPHONE. Les couleurs de la fiche de séance
+  deviennent le 435, À PARTIR DE CET INDEX.
+  – hype-cours-baby.js (v113, ?v=113) : le Chemin Baby n'avait PAS d'arabe
+    (6 langues) → 786 dictionnaires reçoivent « ar » (~280 000 caractères :
+    histoires de Liam et Apy, leçons, quiz, titres). Arabe simple, sans
+    voyelles ; noms (Apy, Liam, Samuel, Elea, Evan, Bambina) en latin.
+  – hype-memory-poney.js (v5, ?v=5) : 134 textes (niveaux, leçons, cartes).
+  – hype-video.js (?v=27092026) : catalogue, chapitres, collections (93
+    textes) + 82 textes de l'écran (T() à 6 langues → 7).
+    ⚠️ CORRECTION DU 432 : l'écran « videos » ne plante PAS. Il est défini
+    dans hype-video.js, que le navigateur de test ne chargeait pas.
+  – hype-resultats.js (VERSION 4, ?v=4) : la page des résultats en concours
+    était écrite en français seul → dictionnaire TXR en 7 langues dans le
+    module (lit window.__hypeLangue) : totaux, phrases (« 2 victoires en 5
+    sorties avec… », accords et ordinaux par langue : 1er / 1st / 1.º / 1° /
+    1. / 1位), grands moments, cavaliers, tri, liste, dates (mois et ordre
+    du jour selon la langue), boutons. Les noms d'événements et les titres
+    (données) restent tels quels. Testé en fr, en, de, ja, ar : 0 erreur.
+  – « PONEY » EN ARABE : مهر (poulain) était utilisé pour « poney » → بوني
+    partout où le français dit poney : index 9 (Mémory du Poney, « Je parle
+    au poney », « Un poney peut être… », ration du poney de club…), Galop 1
+    (6), Galop 3 (2), Galops sup (1). GARDÉ مهر là où c'est vraiment un
+    poulain (gestation, « Un poulain », du poulain au Schulhengst…) et dans
+    le Chemin Baby (leçon « poulain ≠ poney »).
+    Versions : galop1 v4, galop3 v5, galops-sup v4 (balises ?v= montées).
+  – hype-modeles-db.js : PAS FOURNI, pas vérifié.
+  CONTRÔLES : node --check OK (18 blocs + 8 fichiers), un seul marqueur
+  (20260927-434). Navigateur de test (base simulée, tous les fichiers
+  séparés chargés), 40 écrans en arabe et en français : aucun plantage, y
+  compris « videos » (bibliothèque vidéo en arabe).
+  Build 20260927-434 (contient 432 et 433).
