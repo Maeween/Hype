@@ -6166,3 +6166,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   avec photo inchangée, photo perso prioritaire sur la fiche, fiche seule,
   cheval absent. node --check OK (18 blocs), un seul marqueur.
   Build 20260927-430.
+
+· (431) 27/09, 04 h 25 — JOURNAL (EcranMonCarnet) : COULEURS RAVIVÉES. Blandine
+  (sur le 430) : « Les couleurs sont peut-être un peu fades », « ça manque un peu
+  de doré et de vie dans le bleu, sans en faire trop non plus ». Les deux pages
+  sont concernées : le journal d'abord (431), la fiche de séance ensuite (432).
+  – Palette du journal : pétrole #254F60 → #2E6A80, reflet #5C8792 → #7DB6C3,
+    doré #C5AA78 → #D6B676, bronze #AD8B57 → #C29B5C, cartes #121617 → #131819.
+  – Textes secondaires plus lumineux (ivoire à 72–95 % au lieu de 50–88 %).
+  – Bouton « Noter une séance » : léger dégradé pétrole + halo discret.
+  – Pastilles de discipline : pétrole plus franc, texte ivoire plein ; filtre
+    actif plus vif ; « Voir la séance » et « Modifier » en bleu plus lumineux.
+  – Doré : cadre des dates, contour du calendrier, traits des titres (2 px),
+    points du calendrier (6 px), pastille de ressenti, cible de l'objectif.
+  – Contour des cartes légèrement bleuté.
+  – Mise en page, textes, données, requêtes : INCHANGÉS. Bandeau et photos
+    inchangés. EcranCarnetDetail non touché (432).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20260927-431.
