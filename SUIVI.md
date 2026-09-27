@@ -5500,3 +5500,669 @@ entre le téléphone et Internet — appli en arrière-plan, réseau). Le 398
   JSX ; rendu isolé à 320 et 390 px : aucun débordement horizontal.
   Build 20260926-403 (contient 399 à 402). ⚠️ 402 (barre cachée sur les
   conseils) N'ÉTAIT PAS ENCORE TESTÉ quand 403 a été livré.
+
+· (404) 26/09, 23 h 50 — ENTRÉE DE « MON APPRENTISSAGE » CORRIGÉE.
+  Au 403 j'avais branché la nouvelle page sur la GRANDE carte « Mon
+  apprentissage » de la page Cavalier, qui ouvrait Théorie & Culture.
+  Blandine (capture 23 h 47) : « Laisse Théorie et culture avec son onglet
+  et relie Mon apprentissage au petit onglet Progression ».
+  – La grande carte rouvre `articles` (Théorie & Culture), comme avant le 403.
+  – La tuile « PROGRESSION » (grille des 6 tuiles, page Cavalier) ouvre
+    `apprentissage` au lieu de `carnet`. En visite chez quelqu'un : tuile
+    toujours grisée avec cadenas, sans clic (inchangé).
+  – Mon carnet reste ouvert par « Voir mon journal » dans la nouvelle page.
+  Build 20260926-404 (contient 399 à 403). node --check OK (18 blocs), un
+  seul marqueur. APPRENTISSAGE_HAUT.webp inchangé depuis le 403.
+
+· (405) 26/09, 23 h 55 — LIGNE « THÉORIE & CULTURE » DANS MON APPRENTISSAGE.
+  Test du 404 par Blandine (captures 23 h 50) : la page marche, « 15 mots à
+  retenir » s'affiche. Sa demande : une ligne Théorie & Culture sous le
+  carnet Linguae, « similaire aux deux onglets au-dessus ».
+  – Troisième ligne de « Mes outils pour apprendre » : pictogramme page de
+    magazine (dessiné, bronze), « Théorie & Culture », « Le Mag de la
+    culture équestre. », « Découvrir », chevron ; ouvre `articles`.
+    Page Théorie & Culture elle-même INCHANGÉE.
+  Build 20260926-405 (contient 399 à 404). node --check OK (18 blocs), un
+  seul marqueur ; rendu isolé 320 / 390 px sans débordement.
+  EN ATTENTE, validés dans le principe par Blandine, à faire UN PAR UN :
+  (2) retirer la grande carte « Mon apprentissage » (→ Théorie & Culture)
+  de la page Cavalier — il restera deux grandes cartes (Mes messages, Hey
+  Baby) au lieu de trois ; (3) retirer la bannière « Mon écurie » (cheval
+  noir, ouvre `guilde`) de la page Cavalier, doublon de la carte « Mon
+  club » ; « Mes chevaux » et « Gérer mon écurie › » restent.
+
+· (406) 27/09, 00 h 05 — DEUX RETRAITS, sur « Vas-y » de Blandine.
+  1. PAGE CAVALIER : la grande carte « Mon apprentissage » (qui ouvrait
+     Théorie & Culture) est RETIRÉE. Restent les deux grandes cartes Mes
+     messages et Hey Baby. Théorie & Culture reste ouverte depuis la page
+     Mon apprentissage (ligne ajoutée au 405) et depuis l'Accueil.
+  2. THÉORIE & CULTURE (EcranArticles) : la section « Mon travail » (menu
+     Mon carnet → Mes séances / Mes conseils Hey Baby) est RETIRÉE — ses
+     mots : « tu peux retirer les onglets qui emmenaient vers le carnet et
+     les conseils Hey Baby depuis la page Culture et Théorie ». La page
+     commence donc par « La Théorie des Galops ». L'état mtPan, l'effet
+     __rouvrirConseils === "articles" et le rendu du panneau restent dans
+     le composant, inertes (aucun nettoyage hors périmètre).
+  Carnet et conseils restent atteignables : page Mon apprentissage (tuile
+  Progression), et le panneau des conseils depuis Mon carnet.
+  Build 20260927-406 (contient 399 à 405). node --check OK (18 blocs), un
+  seul marqueur.
+  RESTE EN ATTENTE : (3) retirer la bannière « Mon écurie » de la page
+  Cavalier (proposée, pas encore validée pour exécution).
+
+────────────────────────────────────────────────────────────
+133. 27/09 — JOURNAL DE PROGRESSION (refonte de Mon carnet), ÉTAPES 0 À 3
+────────────────────────────────────────────────────────────
+DÉCISIONS DE BLANDINE (brief du 27/09, 00 h 13) : la nouvelle page
+REMPLACE visuellement Mon carnet (route `carnet`, EcranMonCarnet refondu,
+EcranCarnetDetail conservé) ; le bloc des 3 priorités Hey Baby quittera la
+page principale (données et liens conservés, conseils liés visibles dans la
+fiche) ; AUCUNE durée ; champs theme, lieu, ressenti_cle, a_retenir,
+discipline_cle, note gardée ; disciplines plat / dressage / saut /
+exterieur / travail_a_pied / autre (« Obstacle » affiché « Saut »), la
+colonne `discipline` historique n'est JAMAIS écrasée ; ressenti bonnes /
+mitigees / difficile, sans score ; objectif = table carnet_objectifs ;
+chevaux = siens + liés + écuries (règle 207) + « cheval sans fiche »
+(cheval_id null, nom tapé, aucune fiche créée) ; PHOTOS : les anciennes
+restent visibles, les NOUVEAUX envois ne seront pas réactivés dans la
+future version tant qu'un stockage privé et le quota ne sont pas définis
+(chantier séparé ; ne pas rendre le bucket photos privé).
+· ÉTAPE 0 — relevé en lecture seule (catalogues PostgreSQL), résultat
+  fourni par Blandine :
+  – RLS activée sur carnet_seances, carnet_seance_conseils,
+    carnet_conseils_etat ; policies select/insert/update/delete toutes
+    « authenticated » et auth.uid() = user_id (insert de carnet_seance_
+    conseils : la séance ET l'épingle doivent être à soi). anon : aucun
+    privilège sur ces tables.
+  – carnet_seances : cheval_id uuid nullable, date_seance NOT NULL, medias
+    jsonb NOT NULL défaut [], updated_at NOT NULL SANS trigger (le code
+    l'écrit à chaque update — à garder).
+  – FK carnet_seance_conseils.seance_id → carnet_seances ON DELETE CASCADE
+    (supprimer une séance supprime ses liens). epingle_id = bigint.
+  – Index (user_id, date_seance DESC) EXISTE déjà : rien à créer.
+  – Bucket photos : lecture publique (2 policies identiques), insert pour
+    tout connecté SANS restriction de dossier, AUCUNE policy delete.
+· ÉTAPE 1 — SQL PASSÉ (00 h 17, vérifié : 15 colonnes) :
+  ALTER TABLE public.carnet_seances ADD COLUMN IF NOT EXISTS theme text,
+  lieu text, ressenti_cle text, a_retenir text, discipline_cle text.
+  Aucune contrainte CHECK.
+· ÉTAPE 2 — SQL PASSÉ (00 h 18) : table public.carnet_objectifs (user_id
+  uuid PK → auth.users ON DELETE CASCADE, texte text, updated_at
+  timestamptz NOT NULL défaut now()) ; RLS activée ; REVOKE ALL à anon ;
+  4 policies authenticated auth.uid() = user_id (select, insert avec
+  check, update using + check, delete). Table vide, pas encore utilisée.
+· ÉTAPE 3 — BUILD 20260927-407 : EcranCarnetDetail, en ÉDITION seulement,
+  quatre champs facultatifs entre « Type de travail » et « Ma note » :
+  Thème (120 car.), Lieu (80), Mon ressenti (3 pastilles exclusives,
+  retouchables pour vider : bonnes / mitigees / difficile), À retenir
+  (300). Enregistrés dans theme, lieu, ressenti_cle, a_retenir (vide →
+  null). Rien d'affiché en LECTURE (étape 4). Date, cheval, discipline,
+  note, photos, conseils : inchangés. node --check OK (18 blocs), un seul
+  marqueur. Contient 399 à 406.
+  Test demandé : noter une séance avec les 4 champs, enregistrer, la
+  rouvrir en modification → les 4 champs doivent revenir remplis.
+
+· ÉTAPE 3 bis — BUILD 20260927-408 (27/09, 00 h 45) : REFONTE DU FORMULAIRE
+  (création / modification, EcranCarnetDetail seul). Brief de Blandine
+  (« ça ressemble pas du tout ») : palette du journal, compact, vrais
+  défauts iPhone.
+  – Ordre : date, cheval, discipline, thème, ressenti, lieu, à retenir,
+    note, conseils Hey Baby, anciennes photos, Enregistrer. Une seule
+    mention « Seule la date est obligatoire. » au lieu de « facultatif »
+    partout. Étiquettes champagne #C5AA78, champs #121617, 16 px (pas de
+    zoom iOS), 44-52 px de haut ; pastilles en grille 3 colonnes, sélection
+    pétrole #254F60 ; bouton Enregistrer pétrole, texte ivoire.
+  – DATE : input en display block, width/maxWidth 100 %, minWidth 0,
+    border-box, -webkit-appearance none + règle ::-webkit-date-and-time-
+    value (classe hj-date), parent en minWidth 0. Aucun overflow masqué.
+  – BARRE D'ONGLETS CACHÉE sur carnet-detail (lecture comme édition) :
+    même mécanique que le 402 (classe hb-sans-barre + compteur
+    window.__hbSansBarre, règle CSS injectée par l'écran). Sortie par ‹.
+    Bas de page : calc(env(safe-area-inset-bottom) + 40px).
+  – CHEVAL : une ligne « Choisir un cheval » / nom + chevron → panneau plein
+    écran (fond verrouillé), recherche locale sans accents, lignes 50 px :
+    « Aucun cheval » (cheval_id et cheval_nom null), « Cheval sans fiche… »
+    (champ + Valider → cheval_id null, cheval_nom = nom tapé, AUCUNE fiche
+    créée), « Mes chevaux » (mesChevaux + mesChevauxLies, comme avant),
+    « Chevaux de mes écuries » (règle 207, même requête que les conseils,
+    chargée une fois en édition), dédoublonnage par id. À l'enregistrement,
+    cheval_nom vient de la liste ; sinon, si l'id n'a pas changé, l'ancien
+    cheval_nom est gardé (corrige la perte du nom pour un cheval d'écurie).
+  – DISCIPLINE EN CLÉ FIXE : plat, dressage, saut, exterieur,
+    travail_a_pied, autre (+ champ texte si Autre). Écrite (discipline_cle
+    + libellé français canonique dans discipline ; Autre → texte tapé)
+    SEULEMENT pour une nouvelle séance ou si la discipline a été touchée.
+    Ancienne séance : pré-sélection par reconnaissance tolérante des
+    anciens libellés des 6 langues (Obstacle/Jumping/Salto/Springen → saut,
+    etc.), SANS écriture tant qu'on n'y touche pas. Non reconnus (Théorie,
+    « Dressur » allemand ambigu) : affichés « Enregistrée : … », jamais
+    migrés en silence.
+  – PHOTOS : plus AUCUN bouton d'ajout ni input fichier ; l'envoi
+    (envoyerPhotosCarnet / envoyerPhoto) n'est plus appelé nulle part. Les
+    anciennes photos restent affichées (retirer une photo de la séance reste
+    possible) avec « L'ajout de nouvelles photos est suspendu pour le
+    moment. »
+  – NOTE : 3 lignes au départ, s'agrandit avec le texte (À retenir aussi).
+  – CONSEILS : états, panneau et écritures INCHANGÉS, habit seulement.
+  – BROUILLON hype_brouillon_carnet v2 (JSON { v: 2, date, chevalId,
+    chevalLibre, discCle, discAutre, theme, lieu, ressenti, aRetenir, note,
+    conseils }) ; un ancien brouillon texte est relu comme note ; écrit
+    seulement pour une nouvelle séance jamais enregistrée ; effacé à
+    l'enregistrement (comme avant) ou quand tout est vide.
+  – Hors formulaire, touché volontairement : fond de la page #080A0B,
+    « NOUVELLE SÉANCE / MA SÉANCE » en bronze, date en ivoire (visible
+    aussi en lecture). La LECTURE n'affiche toujours pas thème / lieu /
+    ressenti / à retenir (étape suivante).
+  Vérifs : node --check OK (18 blocs), un seul marqueur, aucun JSX, aucune
+  requête SQL ajoutée, aucun envoi photo atteignable ; rendu isolé
+  (React simulé, données factices) à 320 / 375 / 430 px sans débordement,
+  panneau des chevaux, ancienne séance « Théorie » avec photos.
+  NON VÉRIFIÉ ICI (test iPhone) : enregistrement réel en base, rendu natif
+  de la date iOS, brouillon après fermeture de l'appli.
+
+────────────────────────────────────────────────────────────
+134. 27/09 — HYPE EST À 7 LANGUES : L'ARABE MANQUAIT PRESQUE PARTOUT
+────────────────────────────────────────────────────────────
+Rappel de Blandine (00 h 37 puis 00 h 55) : « n'oublie pas de traduire
+toutes les nouvelles pages, onglets, etc. dans toutes les langues à chaque
+fois », « normalement on est à 7 langues », « on avait dit qu'à compter de
+là on le mettait systématiquement car il va falloir tout traduire ».
+RÈGLE DÉSORMAIS : TOUT NOUVEAU TEXTE A SES 7 LANGUES (fr, en, es, it, ja,
+de, ar). Les helpers locaux T(fr,en,es,it,ja,de) doivent recevoir un 7e
+argument ar (tr() retombe sur fr quand ar manque).
+AUDIT DU 27/09 (index 408, lecture seule) :
+· LANGUES (ligne ~22162) contient bien « ar ». Mais ~2 820 appels T( et
+  ~1 350 objets { fr: … } : UN SEUL contient ar ; les 460 clés I18N non plus.
+  Une cavalière en arabe voit Hype presque entièrement EN FRANÇAIS (seuls
+  quelques écrans de cours posent dir="rtl").
+· ~150 textes FRANÇAIS EN DUR (hors traduction) dans ~50 composants :
+  visibles de toutes (EcranChevalCommun : Retour, Communauté, En concours,
+  Toutes ses histoires… ; EcranParcours : Ton club, Quel cavalier es-tu ?… ;
+  EcranCommunaute : Carte des clubs ; EcranMonCavalier : Modifier mon club,
+  Mon Écurie ; Se déconnecter ; Envoyer (messagerie) ; Précédent/Suivant
+  (BiomecaInteractif), etc.), écrans réservés à la modératrice
+  (AdminAbonnements, AdminUtilisateurs, EcranRattacherFFE, EcranAssistantIA
+  corrections, EcranDatesPhotos, EcranScoreVitrine, EcranJournalSession),
+  et noms propres à garder (Cadre Noir, écoles, Château de Piber…).
+· Non vérifiés : les fichiers séparés (hype-cours-*.js, hype-stories.js,
+  hype-import-ffe.js…) — pas fournis.
+PLAN PROPOSÉ : A (fait, 409) l'arabe sur les écrans de ce soir ; B les
+textes en dur visibles de toutes, écran par écran (question posée : écrans
+modératrice traduits ou non ?) ; C l'arabe partout, par grands écrans, avec
+le sens droite-gauche, même méthode que l'arabe de Linguae.
+
+· (409) BUILD 20260927-409 — ÉTAPE A : EcranMonApprentissage et
+  EcranCarnetDetail passent à 7 langues. T() de ces deux composants
+  accepte ar ; 114 textes reçoivent leur arabe (arabe standard moderne,
+  sans voyelles, consignes au féminin singulier, comme Linguae) — mois,
+  titres, boutons, disciplines, ressentis, panneau des chevaux, erreurs,
+  lecture d'une séance. Racines des deux écrans : dir="rtl" et lang quand
+  la langue est l'arabe ; chevrons des lignes d'outils et des boutons
+  retournés en arabe. Rendu isolé en arabe à 375 px : aucun débordement.
+  node --check OK (18 blocs), un seul marqueur. Contient 399 à 408.
+  Hors périmètre (reste en 6 langues) : PanneauConseilsHB, VueConseilCarnet,
+  EcranMonCarnet et tout le reste de l'appli (étape C).
+
+· (410) 27/09, 01 h 20 — ÉTAPE B : LES TEXTES FRANÇAIS ÉCRITS EN DUR, CÔTÉ
+  CAVALIÈRES, PASSENT EN 7 LANGUES (« Ok continue »).
+  – Nouveau helper GLOBAL hypeT7(fr, en, es, it, ja, de, ar), posé juste
+    avant `const LANGUES` ; il lit window.__hypeLangue, que App écrit à
+    chaque rendu juste après `const [langue, setLangue]`. Repli : français.
+  – Relevé fait avec un vrai analyseur JavaScript (acorn, /opt/node-tools) :
+    tous les textes français hors traduction utilisés comme ENFANT d'un
+    élément, comme placeholder / title / aria-label / alt / label, ou dans
+    un message (alert, setErr…). 266 trouvés ; 172 occurrences (139 textes
+    distincts) traduites ici, chacune remplacée EN PLACE par
+    hypeT7("<texte d'origine>", en, es, it, ja, de, ar) — le français est
+    gardé à l'identique.
+  – Écrans touchés : page commune d'un cheval (EcranChevalCommun,
+    PontChevalCommun), accueil et inscription (EcranIntro, EcranOnboarding,
+    EcranHypeUniverse, EcranVoyage, EcranProfilSetup, EcranParcours),
+    Communauté (titre, Carte des clubs), Univers (Se déconnecter, Mon profil,
+    Mon club, Mon Écurie, Ton univers équestre, La Voie de Cristal, Tarif
+    Fondateur, Mon compte), page Cavalier (Modifier mon pseudo, Mon écurie),
+    Écurie / Écurie Hype, club (EcranGuilde), fiche cheval (origines,
+    histoire, Ajouter / Retirer de mes chevaux, photos, messages d'erreur),
+    albums, messagerie (Envoyer, Ajouter une photo), cours (Retour,
+    Enregistrer, Commencer le cours, La bonne approche / À éviter, Page
+    précédente, Précédent / Suivant), visionneuses photo (Fermer, Photo
+    agrandie), Le Mag et les écoles (Cadre Noir, École Portugaise, Jerez,
+    Vienne, avec leurs noms usuels dans chaque langue), résultats (« autres
+    classées »), alertes (2e écurie non enregistrée, bannière, rattachement,
+    photo non enregistrée, abonnement).
+  – Phrases coupées en morceaux (COMMUNAUTÉ / ÉQUESTRE, CHAQUE CHEVAL /
+    RACONTE UNE / HISTOIRE., BON RETOUR, …) : chaque morceau traduit pour
+    que la phrase se lise dans l'ordre de chaque langue.
+  – NON TRADUITS VOLONTAIREMENT (écrans modératrice, sa réponse attendue) :
+    EcranRattacherFFE, EcranAssistantIA (corrections), EcranDatesPhotos,
+    AdminAbonnements, AdminUtilisateurs, EcranScoreVitrine,
+    EcranJournalSession, test Mux (EcranPremium), « Changer la photo
+    (admin) », messages techniques (module non chargé, Memory).
+  – LIMITE DU RELEVÉ : un texte rangé dans une variable ou une liste puis
+    affiché plus loin n'est pas vu par cette méthode ; il en reste donc
+    probablement. Et l'ARABE manque toujours dans les ~2 800 appels T(…)
+    existants (étape C).
+  node --check OK (18 blocs), un seul marqueur, un seul hypeT7. Build
+  20260927-410 (contient 399 à 409).
+
+· (411) 27/09, 01 h 45 — ÉTAPE C, LOT 1 : L'ARABE SUR LES ÉCRANS LES PLUS VUS
+  (« Super continue »).
+  – Écrans : EcranUnivers (accueil « Ton univers » + helper L5acc),
+    EcranDashboard (dictionnaire TXT : objet ar ajouté), EcranMonCavalier,
+    EcranEcurie, EcranGuilde (page club), EcranGererEcurie,
+    EcranAssistantIA (Hey Baby : messages d'accueil, suggestions, alertes),
+    PanneauConseilsHB, VueConseilCarnet, EcranMonCarnet.
+  – 388 insertions : 7e argument ar sur les appels T(…) / L5acc(…), clé ar
+    sur les objets { fr, en, … }. Les T() locaux de ces 7 composants et
+    L5acc acceptent désormais ar.
+  – DÉCOUVERTE : 146 appels de ces écrans n'avaient que 5 langues (PAS
+    D'ALLEMAND : repli français pour les germanophones). L'allemand a été
+    ajouté en même temps que l'arabe sur ces 146 appels.
+  – Le menu du bas (I18N) avait déjà ses 7 langues : rien à faire.
+  – Les noms d'événements (Open de France, Salon de Bordeaux…) restent
+    tels quels. Relevé fait avec acorn (extract.js) : il ne reste, sur ces
+    écrans, qu'un appel « relais » T(fr, …) qui n'a pas de texte.
+  – PAS ENCORE FAIT : le sens droite-gauche global en arabe (seuls Mon
+    apprentissage et le formulaire de séance l'ont) ; les sous-blocs
+    appelés par ces pages (EncartCavaliersSpectral, BlocResultatsCavaliere,
+    TableauxSpectralHype, ClocheNotifs…) ; et tous les autres écrans
+    (EcranCheval 342, AlbumsCheval 233, les écoles ~570, FicheEvenementClub
+    122, MurHype 107, EcranSanteCheval 82, EcranCommunaute 77…).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-411
+  (contient 399 à 410).
+
+· (412) 27/09, 02 h 10 — ÉTAPE C, LOT 2 : L'ARABE SUR LA FICHE CHEVAL ET SES
+  ALBUMS (« Ok continue »).
+  – EcranCheval (341 appels + 13 objets, dont COTES_GP : Côté père / mère /
+    grands-parents, et l'appel T(__cg.fr, …, __cg.ar)) et AlbumsCheval
+    (233 appels + 1 objet) : 587 insertions, 431 textes distincts. Les T()
+    locaux des deux composants acceptent ar.
+  – AlbumsCheval : 89 appels n'avaient PAS l'allemand (repli français) —
+    ajouté en même temps.
+  – Phrases avec variables (nombre de photos, noms de chevaux, saison,
+    minutes restantes, album d'une autre cavalière…) : traduites en
+    gardant les mêmes variables.
+  – Relevé acorn après coup : 0 texte sans arabe sur ces deux écrans.
+  – Sens droite-gauche toujours pas global.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-412
+  (contient 399 à 411).
+  RESTE (étape C) : écoles (Cadre Noir 170, Vienne 140, Portugaise 138,
+  Jerez 119), FicheEvenementClub 122, MurHype 107, EcranSanteCheval 82,
+  EcranCommunaute 77, EcranConnexionSpectral 64, EcranEvenementPasse 64,
+  ChronologieSouvenirs 64, EcranMessagerie 52, FeuilleSoin 49,
+  AgendaClubHype 47, EcranProfil 43, EcranResultatsCavaliere 40,
+  EcranEcurieHype 38, EcranAgendaClub 37, EcranArticles 37, EcranSanteClub
+  33, EcranMonCompte 30… et ~1 100 objets « globaux » (cours, données).
+
+· (413) 27/09, 02 h 30 — ÉTAPE C, LOT 3 : COMMUNAUTÉ, MESSAGERIE, CONNEXION,
+  MON COMPTE, NOTIFICATIONS (« Top continue »).
+  – EcranCommunaute (77 appels + 2 objets ; son T() « lg=== » reçoit une
+    branche ar), EcranConnexionSpectral (64 : erreurs, mots de passe,
+    « Ouvre ta boîte mail », réinitialisation…), EcranMessagerie (52),
+    ClocheNotifs (28), EcranMonCompte (30 objets + dictionnaire DICT : clé
+    ar ajoutée), EcranProfil (43 objets). 295 insertions, 258 textes.
+  – Allemand manquant ajouté en même temps sur 57 appels (messagerie et
+    notifications).
+  – Relevé acorn après coup : 0 texte sans arabe sur ces écrans.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-413
+  (contient 399 à 412).
+
+· (414) 27/09, 02 h 55 — ÉTAPE C, LOT 4 : MUR, ÉVÉNEMENTS, AGENDA DU CLUB,
+  SANTÉ DU CHEVAL (« Oui continue »).
+  – MurHype (107), FicheEvenementClub (123 : rendez-vous, ordre de passage,
+    document du concours, personnes autorisées, notifications iPhone,
+    ajout au calendrier), AgendaClubHype (48), EcranAgendaClub (38, noms
+    des jours et des mois en tableaux), EcranEvenementPasse (65 : souvenirs
+    d'un rendez-vous, story, couverture, résultats), EcranEvenement (33 :
+    Lamotte, présence, fil ; son T() « lg=== » reçoit une branche ar),
+    EcranSanteCheval (83), FeuilleSoin (50), EcranSanteClub (34),
+    FeuillePro (22). 595 insertions, 435 textes.
+  – Allemand manquant ajouté sur 56 appels (mur, agenda).
+  – Locale des dates : « fr-FR » → « ar » en arabe ; suffixes ordinaux
+    « er / e » → marque invisible (pas de suffixe en arabe).
+  – ⚠️ RESTE EN FRANÇAIS EN ARABE : la phrase d'accroche d'un rendez-vous
+    (hypePhraseRdv, banque de phrases) — l'appel passe phraseRdv.ar, mais
+    la banque n'a pas encore d'arabe (repli français, rien ne casse).
+  – Relevé acorn après coup : 0 texte sans arabe sur ces écrans (hors
+    appels relais T(fr, …)).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-414
+  (contient 399 à 413).
+
+· (415) 27/09, 03 h 05 — SENS DE LECTURE DROITE → GAUCHE POUR TOUTE L'APPLI
+  EN ARABE (« Continue »).
+  – Dans App, juste après window.__hypeLangue : <html dir="rtl"> quand la
+    langue est l'arabe, dir="ltr" sinon (retour explicite), et <html
+    lang="…"> à la langue choisie. Écrit seulement si la valeur change.
+  – Effets attendus en arabe : textes alignés à droite, rangées (flex)
+    inversées, menu du bas dans l'ordre arabe, champs de saisie à droite.
+  – NON retourné automatiquement (à corriger écran par écran si gênant) :
+    ce qui est placé en position absolue avec left / right (boutons ‹ de
+    retour, badges, croix), les chevrons › et flèches →, les dessins SVG,
+    et les rails qui défilent de côté (ils peuvent démarrer à droite).
+  – Les 6 autres langues ne changent pas.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-415
+  (contient 399 à 414).
+
+· (416) 27/09, 03 h 40 — ÉTAPE C, LOT 5 : TOUS LES AUTRES ÉCRANS (« Continue »).
+  – 774 insertions, 648 textes, sur ~110 composants : souvenirs et
+    chronologie (ChronologieSouvenirs : ranger, tailles, cadenas des années),
+    résultats d'une cavalière, Écurie Hype, Le Mag (EcranArticles),
+    rattachement FFE côté cavalière (EcranMesResultatsFFE, BlocLicenceFFE),
+    examen blanc, quiz, jeux (Mémory du poney, Vrai/Faux, puzzle, quiz
+    éclair, remettre dans l'ordre, plan de reprise), chemin Baby, reprises
+    de dressage (tracé animé), bibliothèque des Galops, parrainage, quêtes,
+    Premium, création d'un cheval, invitations, nouveaux cavaliers,
+    partager / installer l'appli (dictionnaires entiers : objet ar ajouté),
+    profil (PT : objectifs d'inscription), temps relatif (« il y a… »).
+  – Allemand manquant ajouté sur 100 appels.
+  – TOUS les helpers T() restants de l'index (38) acceptent désormais ar
+    (tr ou trEc) : plus aucun écran ne « perd » l'arabe à cause du helper.
+  – Images par langue (frImg, frInfo, infographie vermifuge) : en arabe,
+    l'image française est reprise.
+  – Relevé acorn après coup — RESTE sans arabe : les 4 écoles (EcranCadreNoir
+    171, EcranEcoleVienne 141, EcranEcolePortugaise 139, EcranEcoleJerez
+    120), ~760 objets « globaux » (données : cours, articles, listes),
+    EcranAdmin (3, modératrice) et getSystemPrompt (3, consignes de l'IA —
+    volontairement non traduites).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-416
+  (contient 399 à 415).
+
+· (417) 27/09, 03 h 50 — DRAPEAUX DE L'ALLEMAND ET DE L'ARABE DANS LE CHOIX
+  DES LANGUES. Capture de Blandine (01 h 39) : le menu des drapeaux de
+  l'Accueil (EcranUnivers) ne proposait que fr, en, es, it, ja — ni
+  l'allemand ni l'arabe, donc impossible de passer l'appli en arabe.
+  – Menu : 🇩🇪 de et 🇸🇦 ar ajoutés (7 drapeaux).
+  – Le bouton du haut affichait 🇫🇷 pour l'arabe (erreur du lot 1 : j'avais
+    recopié le drapeau français) → 🇸🇦. Même correction dans
+    PhotoMultilingue (FLAGS.ar).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-417.
+  ⚠️ TESTS EN LIGNE : page Mon apprentissage (404-405) et formulaire de
+  séance (407) vus sur ses captures ; 408 à 417 PAS ENCORE TESTÉS. Suite de la
+  traduction dans une AUTRE conversation (passation fournie le 27/09).
+
+· (418) 27/09, 03 h 55 — BANNIÈRE « MON ÉCURIE » RETIRÉE DE LA PAGE CAVALIER.
+  Blandine : « Ah oui retire-la » (proposée le 26/09 comme étape 3). La
+  grande bannière au cheval noir « Ton univers. Tes chevaux. Ta passion. »
+  (ouvrait `guilde`, doublon de la carte « Mon club ») n'est plus rendue.
+  « Mes chevaux », le choix d'écurie et « Gérer mon écurie › » restent.
+  Seule sa propre page était concernée (la bannière n'apparaissait pas en
+  visite). node --check OK (18 blocs), un seul marqueur. Build 20260927-418
+  (contient 399 à 417).
+
+· (419) 27/09, 02 h 05 — JOURNAL DE PROGRESSION, REFONTE ÉTAPE 1 SUR 4 :
+  MODE ÉDITION D'EcranCarnetDetail (3e maquette). Brief de Blandine du 27/09,
+  plan validé, découpage 419 édition / 420 panneau des chevaux et miniatures /
+  421 lecture / 422 anciennes photos.
+  – Bandeau photo (images/JOURNAL_SEANCE_FOND.webp, nouveau fichier), voile
+    et dégradé jusqu'au fond #080A0B ; « JOURNAL DE PROGRESSION », rond du
+    cheval (photo si déjà chargée — mesChevaux / mesChevauxLies —, sinon
+    pictogramme), nom en grand sur 2 lignes max, date discrète : l'input date
+    réel, transparent, couvre la ligne (borné à l'écran).
+  – Disciplines en rail défilable (data-hscroll), thème et lieu sur une ligne
+    chacun, ressenti en 3 choix sobres, « RÉSUMÉ DE LA SÉANCE » (écrit dans
+    note), « SOUVENIRS » (phrase « bientôt disponible », aucun bouton, anciennes
+    photos au rendu d'avant), ligne compacte « CONSEILS HEY BABY », bouton
+    « ENREGISTRER MA SÉANCE » pétrole.
+  – À RETENIR : champ affiché dès que l'état contient du texte (ancienne
+    séance, brouillon restauré, saisie), recalculé à chaque rendu ; une fois
+    apparu il reste affiché pendant la visite (refArVu). Masqué, rien n'est
+    forcé à null. Vidé volontairement → null à la sauvegarde.
+  – Inchangés : états, chargements, enregistrer(), brouillon v2, liens des
+    conseils, suppression, navigation, panneau des chevaux, visionneuse,
+    masquage de la barre, MODE LECTURE (en-tête compris).
+  – Arabe : pas d'espacement de lettres ; chevrons ‹ › retournés par le
+    navigateur ; rail qui démarre à droite.
+  – Aucun SQL, aucune route, aucune requête Supabase ajoutée, aucun autre
+    écran touché ; traductions déclarées dans EcranCarnetDetail (helper T).
+  Tests de rendu (React simulé) à 320 / 375 / 390 / 430 px, fr / ar / de / ja :
+  aucun débordement, champs à 16 px, zones tactiles ≥ 44 px. Tests de
+  sauvegarde : séance vide, brouillon avec et sans À retenir, séance « À
+  retenir » seul, effacement volontaire, séance complète (Obstacle affiché
+  Saut et non réécrit). node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-419.
+
+· (420) 27/09, 02 h 15 — JOURNAL DE PROGRESSION, ÉTAPE 2 SUR 4 : PANNEAU DES
+  CHEVAUX ET MINIATURES. Blandine : « Ok continue » (après le 419).
+  – Chevaux des écuries (règle 207) : la requête existante lit en plus
+    photo_url (même requête, aucune nouvelle). Leur photo s'affiche donc aussi
+    dans le rond du bandeau quand on les choisit.
+  – Panneau : miniature ronde de 40 px sur chaque ligne (photo en
+    object-fit cover, sinon pictogramme de cheval neutre) ; « Aucun cheval » =
+    rond barré ; « Cheval sans fiche… » = pictogramme sur bord pointillé.
+    Lignes de 56 px. Recherche, ordre, dédoublonnage et choix inchangés.
+  – Aucun nouveau texte (rien à traduire). Aucun SQL, aucune route, aucun
+    autre écran ; mode lecture non touché.
+  Rendu testé à 320 et 390 px (fr, ar). node --check OK (18 blocs), un seul
+  marqueur. Build 20260927-420 (contient 419).
+
+· (421) 27/09, 02 h 25 — JOURNAL DE PROGRESSION, ÉTAPE 3 SUR 4 : MODE LECTURE
+  D'EcranCarnetDetail. Blandine : « Ok continue » (après le 420).
+  – Le bandeau photo (cheval en grand, photo ou pictogramme, date discrète) est
+    désormais commun à l'édition et à la lecture ; en lecture rien n'y est
+    cliquable. Séance sans cheval : « Aucun cheval » en clair atténué ;
+    cheval sans fiche : pastille « sans fiche ».
+  – Lecture : discipline, lieu et thème en une zone compacte (qui passe à la
+    ligne plutôt que de déborder), ressenti en une pastille sobre, « RÉSUMÉ
+    DE LA SÉANCE » (note) puis « À RETENIR » à la suite, séparé par un trait
+    fin — les DEUX s'affichent, aucun n'est caché. Sans l'un ni l'autre :
+    « Pas de note pour cette séance. »
+  – Anciennes valeurs traduites À L'AFFICHAGE seulement (« Obstacle » → Saut,
+    discipline inconnue comme « Théorie » affichée telle quelle, ressenti
+    inconnu affiché tel quel). Rien n'est écrit en base en lecture.
+  – Conseils liés : ligne « CONSEILS HEY BABY » + un conseil par ligne
+    (ouverture inchangée). « MODIFIER MA SÉANCE » (pétrole, plus de jaune),
+    suppression à double confirmation inchangée.
+  – Photos : bloc de lecture d'avant conservé tel quel (refonte au 422).
+  – Arabe : textes écrits par la cavalière en dir="auto" (un texte français
+    garde son point à la bonne place).
+  – Limite connue : en lecture, la photo d'un cheval d'une AUTRE écurie ne
+    s'affiche que si le formulaire a été ouvert dans la même visite (la liste
+    de ces chevaux n'est chargée qu'en modification, aucune requête ajoutée).
+  – Aucun nouveau texte à traduire (tous existaient déjà en 7 langues).
+    Aucun SQL, aucune route, aucune requête ajoutée, aucun autre écran.
+  Rendu testé 320 / 375 / 390 / 430 px (fr, ar) ; sauvegardes de l'édition
+  retestées (vide, brouillons, À retenir seul, effacement, séance complète).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-421
+  (contient 419 et 420).
+
+· (422) 27/09, 02 h 35 — JOURNAL DE PROGRESSION, ÉTAPE 4 SUR 4 : PRÉSENTATION
+  DES ANCIENNES PHOTOS (« SOUVENIRS »). Blandine : « Ok continue » (après le 421).
+  – Une seule galerie, commune à l'édition et à la lecture : vignettes
+    SÉPARÉES (coins arrondis, 8 px entre chacune), jamais de mosaïque collée.
+    1 photo : grande vignette horizontale ; 2 : deux vignettes côte à côte ;
+    3 : une grande + deux petites ; plus de 3 : même disposition avec « +N »
+    posé sur la 3e vignette, un toucher sur « +N » déplie toutes les photos
+    (grille de 2, carrés).
+  – Ordre de la séance conservé. Recadrage centré un peu haut (têtes
+    préservées). Un toucher ouvre la visionneuse existante. Une vidéo (cas
+    qui n'existe pas encore dans le carnet) aurait un symbole lecture.
+  – Édition : chaque vignette garde son bouton de retrait (40 px). Lecture :
+    titre « Photos » remplacé par « SOUVENIRS » (déjà traduit en 7 langues).
+  – Un seul état ajouté (toutPh, pour « +N »). Aucun envoi réactivé, aucun
+    Mux, aucun SQL, aucune requête, aucun autre écran.
+  Rendu testé à 1, 2, 3 et 5 photos (320 / 375 / 390 px), dépliage « +N » et
+  édition. node --check OK (18 blocs), un seul marqueur. Build 20260927-422
+  (contient 419 à 421). REFONTE D'EcranCarnetDetail TERMINÉE (4/4).
+
+· (423) 27/09, 02 h 50 — JOURNAL DE PROGRESSION, BUILD CORRECTIF (avant le test
+  sur vrai iPhone). Brief de Blandine du 27/09. Aucun design refait.
+  1. « À retenir » : le useRef du 419 (modifié pendant le rendu) est remplacé
+     par un état aRetenirVisible (initialisé depuis a_retenir de la séance
+     ouverte) + un effet [aRetenir] qui le passe à vrai dès qu'il y a du texte.
+     Affiché si aRetenirVisible OU texte présent. Rien dans le brouillon.
+  2. Retrait d'une photo (édition) : zone tactile réelle 44 × 44 px, pastille
+     visible de 32 px à l'intérieur, type="button", preventDefault +
+     stopPropagation. Retire seulement de l'état (rien n'est écrit ni supprimé
+     avant « Enregistrer ma séance »).
+  3. Sens des champs (hjDirChamp) : vide → sens de l'interface (rtl en arabe,
+     ltr sinon) ; rempli → auto. Appliqué à thème, lieu, « Autre » discipline,
+     résumé, À retenir, recherche de cheval, cheval sans fiche.
+  4. toutPh (dépliage « +N ») remis à replié quand l'identifiant de la séance
+     change (effet [cleSeanceHJ], posé APRÈS l'état `seance` — une première
+     version placée plus haut lisait `seance` encore indéfini, repérée au test
+     et corrigée avant livraison).
+  5. Input date : opacity 0.01 (principe inchangé, pas de showPicker), aria-label
+     « Choisir la date de la séance » en 7 langues. Contenu dans sa ligne
+     (46 px), ne recouvre pas la ligne du cheval.
+  Hooks : +1 état et +2 effets, tous au niveau haut, ordre stable ; le cas
+  quoi:"conseil" sort toujours avant tout hook (inchangé).
+  Aucun SQL, aucune route, aucune requête modifiée, aucun autre écran.
+  Tests (React simulé, effets à dépendances) : À retenir (ancienne séance,
+  brouillons, effacement → reste visible → null), galerie (dépliage, repli au
+  changement de séance, bouton 44 × 44, retrait sans visionneuse ni écriture),
+  sens en arabe (vide rtl, français ltr, arabe rtl), date, suppression.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-423
+  (contient 419 à 422).
+
+· (424) 27/09, 02 h 45 — PREMIER RETOUR DU TEST IPHONE : ÉCRITURE ET CARTE DU
+  JOURNAL. Blandine (captures 02 h 33 / 02 h 34) : « Un peu gros en écriture
+  non ? » et « quand on clique sur mon journal de progression on s'attend à
+  arriver sur la page concernée ». Correctifs proposés, réponse « Oui ».
+  1. EcranCarnetDetail — écriture réduite d'un cran, sans toucher au design :
+     textes d'exemple des champs 16 → 14 px (le texte TAPÉ reste à 16 px :
+     pas de zoom iOS) ; ressenti 13,5 → 12,5 ; phrase des souvenirs 13,5 →
+     12,5 ; sous-titre des conseils 14 → 13 ; « Choisir » 15 → 14 ; date 14 →
+     13 ; titres de section 11 → 10,5 px, espacement 2,4 → 2 ; « CONSEILS HEY
+     BABY » 11,5 → 11 ; boutons « Enregistrer » et « Modifier » 14,5 / 14 →
+     13,5 px, espacement réduit. Nom du cheval inchangé.
+  2. EcranMonApprentissage — tout le haut de la carte « Mon journal de
+     progression » (icône, titre, phrase) ouvre le journal (`carnet`), comme
+     « Voir mon journal ». « Noter une séance », « Dernière séance » et « Voir
+     mon journal » inchangés.
+  Aucun SQL, aucune route, aucune requête. node --check OK (18 blocs), un seul
+  marqueur. Build 20260927-424 (contient 419 à 423).
+
+· (425) 27/09, 03 h 10 — PAGE PRINCIPALE DU JOURNAL, ÉTAPE 1 SUR 5 : BANDEAU ET
+  STRUCTURE (EcranMonCarnet, route carnet). Brief de Blandine (découpage 425
+  bandeau / 426 cartes / 427 filtres / 428 calendrier / 429 objectif).
+  – Nouveau fichier images/JOURNAL_CARNET_FOND.webp (1536×1024, 100 Ko), tiré
+    de l'image ORIGINALE du carnet en cuir envoyée par Blandine (version au
+    côté gauche sombre). Voile latéral + fondu vers #080A0B ; en arabe l'image
+    est retournée (texte à droite). Bouton retour : même retour(), 44 px.
+  – Textes : « MON JOURNAL DE PROGRESSION », « MES SÉANCES · MES SENSATIONS ·
+    MES OBJECTIFS », « Chaque séance laisse une trace. » (7 langues, fournies
+    par le brief ; césure douce Fortschritts-tagebuch en allemand ; taille du
+    titre souple, jamais un mot coupé au milieu).
+  – Bouton pétrole « Noter une séance » (même navigation : __carnet quoi
+    nouvelle → carnet-detail).
+  – « Mes conseils Hey Baby » en ligne secondaire compacte : compterEpinglesHB,
+    PanneauConseilsHB et réouverture au retour d'un conseil INCHANGÉS.
+  – Retirés de l'affichage : « Ma dernière séance » (elle est maintenant la 1re
+    carte) et « Mes priorités du moment » (lectures conservées, aucune donnée
+    touchée). Titre de liste « Mes dernières séances ».
+  – INCHANGÉS : cartes, requête (select * / date puis created_at décroissants /
+    limit 200), 8 cartes + « Voir tout », mémoire de défilement, EcranCarnetDetail.
+  – Espace bas porté à safe-area + 130 px (dernière carte au-dessus de la barre).
+  Aucun SQL, aucune route, aucune requête ajoutée ou modifiée.
+  Rendu testé 320 / 375 / 390 / 430 px (fr, de, ja, ar) et page vide ; bouton,
+  panneau des conseils et « Voir tout » testés. node --check OK (18 blocs), un
+  seul marqueur. Build 20260927-425.
+
+· (426) 27/09, 03 h 20 — PAGE PRINCIPALE DU JOURNAL, ÉTAPE 2 SUR 5 : NOUVELLES
+  CARTES DE SÉANCE. Blandine : « Ok continue » (après le 425).
+  – Carte (maquette) : date encadrée (jour en grand + mois court dans la langue
+    de l'appli ; l'année seulement si ce n'est pas l'année en cours ; la chaîne
+    AAAA-MM-JJ est découpée, Intl ne sert qu'à nommer le mois), nom du cheval
+    (2 lignes max), pastille de discipline, thème, lieu, 1re photo à droite
+    (vignette 4/3), puis sous un trait fin : « À retenir : … » (à défaut, le
+    début du résumé, comme les anciennes cartes, pour ne rien faire disparaître),
+    « Voir la séance › » et le ressenti en pastille.
+  – Anciennes valeurs traduites À L'AFFICHAGE seulement : « Obstacle » → Saut,
+    « Théorie » affichée telle quelle. Rien n'est écrit.
+  – INCHANGÉS : données (liste déjà chargée), toucher (__carnet quoi seance →
+    carnet-detail), 1re photo et miniature vidéo, 8 cartes + « Voir tout »,
+    requête, ordre. Espacement entre cartes 8 → 12 px.
+  – Arabe : textes saisis en dir="auto", pas d'espacement de lettres.
+  Aucun SQL, aucune requête, aucune route. Rendu testé 320 / 375 / 390 / 430 px
+  (fr, de, ja, ar) avec cheval absent, nom long, séance d'une autre année,
+  Obstacle, Théorie. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-426 (contient 425).
+
+· (427) 27/09, 03 h 30 — PAGE PRINCIPALE DU JOURNAL, ÉTAPE 3 SUR 5 : FILTRES ET
+  AFFICHAGE PROGRESSIF. Blandine : « Ok continue » (après le 426).
+  – Rail de filtres sous « Mes dernières séances » : Toutes · Plat · Dressage ·
+    Saut · Extérieur · Travail à pied · Autre (data-hscroll, pastilles 44 px,
+    barre de défilement masquée ; en arabe le rail démarre à droite).
+  – Filtre LOCAL sur la liste déjà chargée (aucune requête) : discipline_cle
+    sinon ancienne valeur reconnue (« Obstacle » → Saut) ; « Autre » = clé autre ;
+    les valeurs inconnues (« Théorie »…) seulement dans « Toutes ».
+  – Filtre vide : « Aucune séance dans cette discipline pour le moment. »
+  – « Voir tout » remplacé par l'affichage progressif : 8 cartes, puis « Voir
+    plus (N) » ajoute 8 à chaque toucher, puis « Replier ». Changer de filtre
+    revient à 8.
+  – Filtre et nombre affiché gardés pendant la visite (window, rien sur
+    l'appareil) : au retour d'une séance la liste est identique et la mémoire
+    de défilement retombe au même endroit.
+  – 2 états ajoutés (filtre, nombre) ; l'ancien état toutVoir reste déclaré,
+    inutilisé (pas de nettoyage hors périmètre).
+  Aucun SQL, aucune route, aucune requête. Tests : filtres Plat / Saut
+  (Obstacle inclus) / Autre vide / Toutes, Voir plus, 320 et 390 px, fr et ar.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-427 (contient
+  425 et 426).
+
+· (428) 27/09, 03 h 45 — PAGE PRINCIPALE DU JOURNAL, ÉTAPE 4 SUR 5 : CALENDRIER
+  COMPACT. Blandine : « Ok continue » (après le 427). Question du toucher sur un
+  jour restée sans réponse : première option prise ET SIGNALÉE (filtrer sur le
+  jour, second toucher = tout) — facile à changer si elle préfère autre chose.
+  – Sous « Noter une séance », avant la ligne des conseils : mois + année et
+    « • N séances » du mois (0 → « aucune séance ») sur une ligne, flèches ‹ ›
+    (44 px) pour changer de semaine, 7 jours du lundi au dimanche (nom court
+    et nombre dans la langue de l'appli), point champagne sous un jour qui a
+    une séance, jour choisi dans un cercle pétrole, aujourd'hui cerclé
+    champagne. Le mois affiché est celui du jeudi (semaine à cheval).
+  – Toucher un jour : la liste n'affiche que ses séances (combiné au filtre de
+    discipline), avec « Séances du … » et « Tout afficher » ; jour vide →
+    « Aucune séance ce jour-là. » ; second toucher = tout.
+  – Calculé sur la liste déjà chargée (200 dernières séances) : aucune requête.
+    Dates : chaînes AAAA-MM-JJ, calculs en UTC à partir des morceaux (jamais
+    new Date("AAAA-MM-JJ")) ; Intl ne sert qu'aux noms de mois et de jours.
+  – Semaine et jour gardés pendant la visite (window), comme le filtre.
+  – Une parenthèse en trop dans le compteur « aucune séance » a été détectée
+    par la vérification de syntaxe et corrigée avant livraison.
+  Aucun SQL, aucune route, aucune requête. Tests : jour avec séance, jour vide,
+  re-toucher, semaine précédente, semaine à cheval (28 sept → 4 oct = octobre),
+  320 / 375 / 390 / 430 px en fr, ar, ja, de. node --check OK (18 blocs), un
+  seul marqueur. Build 20260927-428 (contient 425 à 427).
+
+· (429) 27/09, 04 h 00 — PAGE PRINCIPALE DU JOURNAL, ÉTAPE 5 SUR 5 : « MON
+  OBJECTIF DU MOMENT ». Blandine : « Ok continue » (après le 428).
+  – Section sous le calendrier (titre au même style que « Mes dernières
+    séances ») : carte avec pictogramme cible, texte de l'objectif (Cormorant,
+    taille souple) et « Modifier » ; sans objectif : « Choisis un objectif sur
+    lequel te concentrer. » et « Définir ». Édition sur place : champ 16 px
+    (140 caractères), « Annuler » / « Enregistrer ».
+  – Table public.carnet_objectifs (créée le 27/09 à 00 h 18, RLS « soi
+    seulement ») : PREMIÈRE utilisation. Lecture : select texte, eq user_id,
+    maybeSingle. Écriture : upsert { user_id, texte, updated_at } onConflict
+    user_id. Texte vidé puis enregistré = delete de SA ligne (geste volontaire).
+    Jamais dans profiles. Lecture en échec : « Objectif indisponible pour le
+    moment. » (rien ne casse) ; écriture en échec : message, rien de perdu.
+  – Seuls échanges ajoutés de toute la série 425–429 (1 lecture à l'ouverture,
+    1 écriture à l'enregistrement).
+  Aucun SQL, aucune route. Tests (base simulée) : vide → Définir → enregistrer
+  (upsert), Modifier → vider → enregistrer (delete), lecture en erreur, 320 px
+  en fr, 375 px en ar. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-429 (contient 425 à 428). PAGE PRINCIPALE DU JOURNAL : 5/5.
+
+· (430) 27/09, 04 h 10 — JOURNAL : PHOTO DE SECOURS DES CARTES. Le test du 429
+  sur iPhone est validé par Blandine (« Tout a l'air ok »). Diagnostic photos
+  clos sans correction (séances du 22-23 sans média : comportement attendu).
+  Constat : la fiche de Hey Baby Please (cheval d'écurie ajouté à « mes chevaux
+  persos ») montre SA PHOTO PERSO (chevaux_histoires.photo_url, une par
+  cavalière et par cheval, posée le 02/09), la fiche commune n'ayant pas de
+  photo_url. EcranCheval affiche photoPerso || photo de la fiche.
+  Blandine : « Ok vas-y » pour l'ordre proposé.
+  – Carte SANS média : 1) photo perso de la cavalière pour ce cheval ;
+    2) photo de la fiche commune (chevaux.photo_url) ; 3) aucune photo.
+    Une carte AVEC média garde sa 1re photo, inchangé.
+  – DEUX lectures groupées pour toute la page, sur les chevaux uniques des
+    séances sans média : chevaux_histoires (user_id = soi, cheval_id in ids) et
+    chevaux (id in ids). Jamais une requête par carte. Échec de lecture ou
+    image qui ne charge pas = pas de photo de secours, rien d'autre ne change.
+  – Cheval sans fiche (cheval_id null) : pas de photo de secours.
+  – Le rond de la fiche de séance (EcranCarnetDetail) N'EST PAS touché : même
+    correction prévue dans un build séparé (431) si Blandine le valide.
+  Aucun SQL, aucune route. Test (base simulée) : 2 lectures seulement, séance
+  avec photo inchangée, photo perso prioritaire sur la fiche, fiche seule,
+  cheval absent. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-430.
