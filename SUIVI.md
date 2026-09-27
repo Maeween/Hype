@@ -6429,3 +6429,27 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   Test : rendu simulé de la page (8 cartes, calendrier, objectif, conseils),
   aucune erreur.
   node --check OK (18 blocs), un seul marqueur. Build 20260927-441 (contient 440).
+· (442) 27/09, 21 h 20 — LIEN D'UN RENDEZ-VOUS OUVERT DEPUIS WHATSAPP : LA FICHE
+  S'OUVRE MÊME SANS ÊTRE CONNECTÉ(E). Blandine (capture) : le lien ramène
+  toujours sur la page Écurie, malgré le 435. Capture prise dans le NAVIGATEUR
+  DE WHATSAPP : personne n'y est connecté (« Mon écurie », 0 membres, bandeau
+  vide), même elle.
+  CAUSE (erreur du 435) : la fiche attendait la connexion avant d'aller
+  chercher le rendez-vous. Or club_agenda est lisible par tout le monde
+  (policy SELECT « public, true », relevée le 21/09). Pour un visiteur non
+  connecté, l'attente ne finissait jamais → page Écurie vide.
+  CORRECTION (AgendaClubHype seul, choix « A ») : le rendez-vous est cherché
+  tout de suite, connecté(e) ou non ; essais toutes les 0,8 s pendant 10 s au
+  plus ; ensuite « Ce rendez-vous n'existe plus » (ou l'erreur) pour tout le
+  monde. La fiche s'ouvre par-dessus la page Écurie.
+  CONSÉQUENCE ACCEPTÉE : pour un visiteur non connecté, la page Écurie
+  derrière la fiche reste vide. Boutons de la fiche qui demandent un compte
+  (« Je viens »…) : non vérifiés pour un visiteur, à regarder au test.
+  QUESTION OUVERTE (Blandine) : rendre la page Écurie visible aux non
+  connectés, OU afficher un message « connecte-toi / crée un compte » —
+  à décider, rien de fait.
+  Test : boucle isolée, 4 cas (visiteur + rendez-vous existant → fiche ;
+  connectée → fiche ; rendez-vous supprimé → « n'existe plus » ; erreur base
+  → message d'erreur).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-442 (contient 441).
