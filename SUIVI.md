@@ -6353,3 +6353,26 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   asset_created, séance supprimée) → 5 résultats conformes.
   Aucun SQL. node --check OK (18 blocs), un seul marqueur.
   Build 20260927-437 (contient 436).
+· (438) 27/09, 21 h 10 — SUPPRESSION RÉELLE DES PHOTOS DU COFFRE (build C).
+  Avant : une photo retirée d'une séance, ou une séance supprimée, disparaissait
+  de l'appli mais le fichier restait dans le dossier privé « carnet ».
+  CORRECTION : nouvelle fonction globale hypeCarnetSupprimerPhotos(refs) (à côté
+  des fonctions du coffre). Elle efface la photo ET sa vignette (_v.jpg), et
+  seulement les références « carnet:… » (anciennes photos publiques et vidéos
+  Mux non touchées). Appelée UNIQUEMENT après une écriture réussie en base :
+  - « Enregistrer ma séance » : photos du coffre présentes en base avant et
+    absentes après → effacées (en arrière-plan) ;
+  - « Supprimer cette séance » (après confirmation) : toutes ses photos du
+    coffre → effacées.
+  Un échec d'effacement ne bloque rien et ne montre rien (note en console) ;
+  le fichier reste alors orphelin. Règle utilisée : carnet_supprimer_soi (déjà
+  en base, sous-dossier = soi).
+  NON FAIT : les vidéos Mux d'une séance supprimée restent chez Mux (et dans le
+  décompte du quota ? non : la branche « seance » de hype_reserver_place_video
+  ne compte que les vidéos encore présentes dans une séance). Suppression chez
+  Mux = à faire côté fonction mux-upload, plus tard.
+  Test simulé : retirer une photo du coffre + Enregistrer → 2 fichiers effacés
+  (photo + vignette), l'ancienne photo publique gardée ; Enregistrer sans rien
+  retirer → rien d'effacé ; supprimer la séance → photo + vignette effacées.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-438 (contient 437).
