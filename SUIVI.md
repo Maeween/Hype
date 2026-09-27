@@ -6334,3 +6334,22 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   vignette vidéo dans la galerie → Enregistrer garde la vidéo ; quota en arabe
   → message clair, rien d'envoyé ; nouvelle séance → pas de bouton.
   node --check OK (18 blocs), un seul marqueur. Build 20260927-436 (contient 435).
+· (437) 27/09, 21 h 05 — RATTRAPAGE DES VIDÉOS DE SÉANCE (suite du 436).
+  Si l'appli est fermée pendant l'envoi d'une vidéo de séance, la vidéo peut
+  être prête chez Mux sans être rattachée à la séance.
+  CORRECTION : nouvelle fonction globale hypeCarnetRattraperVideos() (à côté
+  des fonctions du coffre, avant EcranCarnetDetail), lancée en arrière-plan à
+  chaque ouverture de la page du journal (EcranMonCarnet, après le chargement
+  des séances). Elle lit SES traces videos_mux en destination « seance » encore
+  uploading/processing, demande l'état à Mux, et :
+  prête → carnet_seance_ajouter_media (sans doublon) puis trace ready, et la
+  liste des séances est relue une fois ; séance supprimée entre-temps → trace
+  errored ; échec Mux ou envoi introuvable → errored ; envoi jamais fini après
+  2 h ou préparation après 7 jours → errored ; sinon on attend la prochaine
+  ouverture. Mêmes règles que hypeMuxReconcilier, qui reste inchangé et ne doit
+  toujours PAS être appelé sur une cible « carnet:… ».
+  Rien d'affiché à la cavalière en cas d'échec (seulement la trace en base).
+  Test : fonction isolée avec 5 cas simulés (prête, abandonnée > 2 h, errored,
+  asset_created, séance supprimée) → 5 résultats conformes.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-437 (contient 436).
