@@ -6183,3 +6183,78 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   – Mise en page, textes, données, requêtes : INCHANGÉS. Bandeau et photos
     inchangés. EcranCarnetDetail non touché (432).
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20260927-431.
+
+· (432) 27/09, 04 h 40 — TRADUCTION : LES 14 LOTS DU PAQUET POSÉS D'UN COUP
+  (conversation « Trad arabe »). Blandine : « Tu peux coder », « là je vais
+  rien tester je te fais confiance ». ⚠️ RISQUE SIGNALÉ : 14 lots dans un seul
+  build, NON TESTÉ sur iPhone (la règle « un lot, un test » n'a pas été suivie,
+  à sa demande). Si un écran casse : suspecter d'abord ce build.
+  ⚠️ Le 432 prévu pour les couleurs de la fiche de séance (EcranCarnetDetail)
+  devient le 433, À FAIRE À PARTIR DE CET INDEX 432.
+  Paquet préparé hors index pendant les builds 418-431 (hype-traductions-pack
+  .json + appliquer-traductions.js, chaque texte retrouvé par son code exact,
+  uniquement dans l'écran de son lot) ; appliqué sur l'index 431 : 0 texte
+  introuvable, 0 modification refusée.
+  – Lots 1-4 : les 4 écoles (Cadre Noir, Vienne, Portugaise, Jerez) en arabe
+    (570 textes) + voix de lecture ar-SA.
+  – Lot 5 : page Santé du cheval + sa carte d'accueil : allemand ET arabe
+    manquaient (118 textes).
+  – Lot 6 : 13 petites fonctions de traduction qui n'acceptaient que 5 langues
+    (L, TR, T5, TXT, T) passent à 7 : le 416 disait « tous les helpers
+    acceptent ar », c'était FAUX pour elles (examen blanc, quiz, « vu il y
+    a… », résultat de quiz, fin de cours, recadrage, fond studio, album
+    photos, conseils Hey Baby) ; 126 textes (de + ar) ; jours/mois de l'agenda
+    du club en japonais et allemand.
+  – Lot 7 : données des cours (reprises FFE, Galops, biomécanique,
+    compléments, observation, jeux, questions à Hey Baby) : 360 textes.
+  – Lot 8 : CSIO, Lamotte, Le Mans, articles, phrases d'accroche des
+    rendez-vous (hypePhraseRdv) : 103 textes.
+  – Lot 9 : badges, nouveautés, légendes, familles, quêtes, décors, offre de
+    lancement, installer l'appli, suppression de compte… : 289 textes.
+  – Lot 10 : EXAMENS BLANCS (Galops 1-7, 155 questions) n'existaient qu'en
+    FRANÇAIS pour toutes les langues → banque réécrite en {fr…ar} (l'écran
+    savait déjà lire ce format). Bouton « Recommencer » : repartait de la
+    banque non traduite (aurait planté) → repart de banqueTraduite.
+  – Lot 11 (hypeT7, français identique) : mois des dates sur 6 écrans, boutons
+    de la fiche cheval, page commune (LE MUR DES SOUVENIRS…), souvenirs,
+    invitation, story, fichier calendrier d'un rendez-vous, Modifier mon club,
+    confirmation d'abonnement, don, « ce cheval existe déjà », titres et notes
+    des reprises (devenus des get : lus à l'affichage).
+  – Lot 12 : page « Les phases du saut » (PSAUT_HTML traduit à l'affichage,
+    6 phases, boutons), annonces de Lamotte, descriptions/dates des grands
+    événements (get), noms des couleurs des sélecteurs (page Cavalier,
+    tableaux du club). ⚠️ lamotte.json en ligne (français) remplace les
+    annonces s'il existe.
+  – Lot 13 : contrôle qualité : ~20 cases vides remplies (es/it/ja/de) ;
+    morceaux vides exprès (« Il y a », « du », « avec », « Voir les ») →
+    marque invisible ​ (avant : le français s'affichait, « Il y a 5 min
+    ago ») ; + « Séances du » en japonais (journal, 42xxx).
+  – ARABE SANS SIGNES DE VOCALISATION PARTOUT (décision de Blandine, 27/09,
+    03 h 53, pour une lectrice arabophone adulte) : harakat et chadda retirés
+    de tout l'arabe existant (I18N, 16 dictionnaires COMPL_…_I18N, journal
+    419-431). Aucun mot changé. Contrôle : 0 signe restant dans l'index.
+  – Lot 14 : balises des cours ?v= montées (galop1 v3, galop2 v3, galop3 v4,
+    galops-sup v3) → LES 4 FICHIERS DE COURS LIVRÉS AVEC CE BUILD :
+    hype-cours-galops-sup.js v3 : Galops 5, 6, 7 (français seul jusque-là)
+    traduits dans les 7 langues (217 textes ; correct et ordre des options
+    intacts) ; chapitre g6-c2 « L'impulsion » reçoit l'arabe (42 textes) ;
+    galop1/2/3 : signes retirés de l'arabe + 4 morceaux de titre vides → ​.
+  – Écrans modératrice : RESTENT EN FRANÇAIS (décision de Blandine, 27/09).
+  – NON TRADUIT volontairement : « Pas connecté » et messages d'erreur des
+    fonctions (le code compare String(r.error) === "Pas connecté" : traduire
+    casserait ce test) ; ALLURE_NOMS (sert à reconnaître le texte français des
+    figures) ; fiches de démonstration ; noms propres ; consignes de l'IA.
+  – QUESTION OUVERTE : « poney » en arabe. Linguae a établi que مهر = poulain
+    (poney = بوني). Hype utilise مهر pour poney (8 fois dans l'index, 9 dans
+    les cours ; le fichier maître des Galops 1-4 l'imposait). Les nouvelles
+    traductions disent بوني. Rien remplacé : Blandine demande l'avis de
+    ChatGPT.
+  – Fichiers jamais vus : hype-cours-baby.js, hype-memory-poney.js,
+    hype-resultats.js, hype-modeles-db.js, hype-video.js.
+  CONTRÔLES : node --check OK (18 blocs + 4 fichiers de cours), un seul
+  marqueur (20260927-432). Appli lancée dans un navigateur de test (base
+  simulée), 40 écrans ouverts en français, arabe et allemand : aucun écran
+  ne plante à cause de ce build ; le français est identique au 431.
+  ⚠️ Écran « videos » : plante DÉJÀ dans le 431 (EcranVideos is not defined)
+  — sans rapport avec la traduction, probablement jamais atteint.
+  Build 20260927-432 (contient 418 à 431).
