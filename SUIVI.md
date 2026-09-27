@@ -6258,3 +6258,33 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   ⚠️ Écran « videos » : plante DÉJÀ dans le 431 (EcranVideos is not defined)
   — sans rapport avec la traduction, probablement jamais atteint.
   Build 20260927-432 (contient 418 à 431).
+
+· (433) 27/09, 05 h 00 — TRADUCTION, SUITE (« Ok continue », sans test du 432).
+  ⚠️ 432 ET 433 NON TESTÉS SUR IPHONE : si un écran casse, suspecter ces deux
+  builds. Les couleurs de la fiche de séance (EcranCarnetDetail), prévues
+  « 432 » puis « 433 », deviennent le 434, À FAIRE À PARTIR DE CET INDEX.
+  – Globe des clubs (GLOBE_HTML_HYPE, iframe « Hype Universe ») : son
+    dictionnaire interne HYPE_L n'avait que fr/en/es/it/ja/de → arabe ajouté
+    (28 textes : recherche, filtres, « C'est mon club », types de clubs…).
+    Il reçoit déjà la langue de l'appli par message (hype-lang).
+  – Catégorie des articles (« Événements équestres ») affichée en français
+    dans toutes les langues à 3 endroits (article à la une de l'accueil,
+    cartes du Mag, page d'un article) → traduite à l'affichage (hypeT7) ; la
+    valeur stockée ne change pas (le filtre par catégorie la compare).
+  – Traductions existantes FAUSSES corrigées :
+    · fond studio « Noir » : allemand « Rappe » (cheval noir) → « Schwarz » ;
+    · thème des conseils « Position » : japonais 姿势 (chinois) → 姿勢 ;
+    · Cadre Noir : « eine "Schulsprung" » → « ein "Schulsprung" » ;
+    · reprises : « doubler » était traduit « traverser la diagonale » dans
+      les 6 langues (c'est une autre figure). « A — doubler » → « A — down
+      the centre line » / « auf die Mittellinie abwenden »… ; « B — Doubler ·
+      X — doubler » → traverser la largeur puis entrer sur la ligne du milieu
+      (lecture la plus probable, à confirmer sur le texte officiel) ;
+      « BE — doubler dans la largeur » (anglais) ; étiquette « Doubler » du
+      jeu Plan de reprise → « Turn across the arena »… 57 textes.
+  – Relevé : COMM_HTML_HYPE et __lmagInit (anciennes pages en français) ne
+    sont appelés NULLE PART : laissés tels quels.
+  CONTRÔLES : node --check OK (18 blocs), un seul marqueur (20260927-433).
+  Navigateur de test (base simulée), 40 écrans en arabe et en anglais : aucun
+  plantage nouveau (« videos » plante déjà depuis le 431, sans rapport).
+  Build 20260927-433 (contient 432).
