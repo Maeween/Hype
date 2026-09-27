@@ -6416,3 +6416,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   Test : fonction isolée → les 5 réglages repassent à vide, le cache des
   adresses est vidé.
   node --check OK (18 blocs), un seul marqueur. Build 20260927-440 (contient 439).
+· (441) 27/09, 21 h 35 — NETTOYAGE DE LA PAGE DU JOURNAL (EcranMonCarnet).
+  Depuis le 425, les « priorités du moment » ne sont plus affichées, mais la
+  page les lisait encore à chaque ouverture (2 requêtes : carnet_conseils_etat
+  puis echanges_heybaby_epingles) et gardait deux états inutilisés.
+  RETIRÉ : états prios et toutVoir, fonction locale titreConseil (servait
+  seulement aux priorités), bloc de lecture des priorités. Le compteur « Mes
+  conseils Hey Baby » est inchangé (compterEpinglesHB). Rien d'autre touché ;
+  aucune donnée effacée en base (les priorités restent enregistrées).
+  Effet : la page fait 2 requêtes de moins à l'ouverture. Aucun changement
+  visible.
+  Test : rendu simulé de la page (8 cartes, calendrier, objectif, conseils),
+  aucune erreur.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-441 (contient 440).
