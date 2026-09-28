@@ -7358,3 +7358,76 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   hype-modeles-db.js, index.html, SUIVI.md.
   node --check OK (18 blocs + catalogue), un seul marqueur.
   Build 20260928-488 (contient 487).
+· (489) 28/09, 17 h 40 — STORY D'UN RENDEZ-VOUS : LES PHOTOS ENTIÈRES, JAMAIS
+  COUPÉES. Blandine : « assure-toi qu'on voit bien les photos dedans en entier
+  sans qu'elles soient coupées ou qu'on puisse les bouger dedans ».
+  hypePhotoEntiere : la photo est posée ENTIÈRE (contain) dans son polaroïd ou
+  dans la fenêtre d'un modèle ; le vide autour est rempli par la même photo
+  agrandie et floutée (via une copie de 24 px, Safari n'ayant pas ctx.filter),
+  légèrement assombrie — même principe que les stories de l'appli (19af).
+  Remplace les deux dessins « cover » (polaroïds et fenêtres des modèles).
+  Stories de l'appli : rien à faire, hype-stories.js sait déjà mettre la photo
+  entière sur son flou (19af) et la recadrer fenêtre par fenêtre (19r) — les
+  6 modèles Hype du 488 en profitent.
+  Testé en rendu (données simulées). Aucun texte, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-489 (contient 488).
+· (490) 28/09, 17 h 50 — MON CARNET : UNE VIDÉO DÈS LA CRÉATION D'UNE SÉANCE.
+  Blandine (enregistrement d'écran 17 h 37) : « ça nous oblige à enregistrer
+  et revenir », puis l'iPhone ouvre la caméra au lieu de proposer ses vidéos.
+  - « Ajouter une vidéo » est affiché AUSSI sur une séance pas encore
+    enregistrée. La vidéo choisie est gardée de côté (vidAttente) avec un
+    encart « 🎬 <nom> — Elle partira dès que tu enregistres la séance. » et
+    une croix ; à « Enregistrer », dès que la séance a son identifiant,
+    l'envoi part (même chemin Mux qu'au 436, fonction extraite en
+    envoyerVideoCarnetFichier(f, idSe)) et l'encart d'envoi (Titi) s'affiche
+    dans la séance.
+  - La caméra : c'est le menu de l'iPhone (Photothèque / Prendre une vidéo /
+    Choisir le fichier) — il s'affiche sur le bouton, et « Prendre une vidéo »
+    tombe sous le doigt. Non modifiable par l'appli ; expliqué à Blandine
+    (choisir « Photothèque »).
+  TEXTES NOUVEAUX, 7 langues : message d'attente, « Vidéo », « Retirer ».
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-490 (contient 489).
+· (491) 28/09, 18 h 10 — LE DRAPEAU DES LANGUES SUR LES PAGES CAVALIER ET ÉCURIE.
+  Blandine : « on peut avoir le changement de langue aussi au-dessus des pages
+  cavalier, écurie et de leurs onglets ? j'ai l'impression qu'on ne l'a que
+  sur l'accueil » ; « Ok » (en haut à droite là où il y a de la place, à côté
+  des boutons déjà présents sinon).
+  Nouveau composant HypeDrapeauLangue : le même rond (38 px) et la même liste
+  verticale des 7 drapeaux que sur l'Accueil ; setLangue de l'appli (langue
+  pour toute l'appli, comme avant).
+  Posé en haut à droite de : page Cavalier, Histoire, Performances
+  (Résultats), Progression (Mon apprentissage), Photos, Vidéos, Actualité ;
+  page Écurie (décalé à 64 px : le bouton photo du club est déjà à droite),
+  Les cavaliers de l'écurie, Actualités de l'écurie, Agenda du club ; « Les
+  chevaux de l'écurie » : DANS la rangée « + ⋮ », en premier.
+  Testé en rendu (page Photos : ouverture de la liste, changement de langue).
+  Autres pages : node --check seulement.
+  Aucun texte nouveau (drapeaux), aucun SQL. node --check OK (18 blocs), un
+  seul marqueur. Build 20260928-491 (contient 490).
+· (492) 28/09, 18 h 35 — PARTAGER UNE PAGE. Blandine : « comment on peut faire pour
+  partager une page ? » ; « Ok » sur la proposition (bouton à côté du drapeau ;
+  le lien ouvre la bonne page ; sans compte : connexion puis retour sur la
+  page ; le privé reste privé).
+  - Bouton rond « partager » (HypeBoutonPartagerPage), à gauche du drapeau :
+    page Cavalier (lien #p=<id>), Actualité (#pa=), Photos (#pp=), Vidéos
+    (#pv=) d'une cavalière ; page Écurie (#ec=<club>, décalé à 110 px) ;
+    « Les chevaux de l'écurie » (#ec=, dans la rangée « + ⋮ ») ; « Les
+    cavaliers de l'écurie » (#cc=<club>) ; Actualités de l'écurie
+    (#ea=<club>). Menu de partage de l'iPhone (hypePartager existant) ;
+    sinon lien copié + « Lien copié ».
+  - ⚠️ La page Écurie montre toujours SA propre écurie à chacune : son lien
+    ouvre donc « Les chevaux de l'écurie » du club partagé (vitrine).
+  - Ouverture : hypeResoudreLienPage(fam, val) pose les variables de la page
+    (CIBLE_DIRECTE, nouvelles familles AVANT les anciennes règles, qui ne
+    bougent pas). Sans session : le lien est mémorisé (sessionStorage
+    « hype_retour_apres_auth », type « page ») et rouvert après connexion ou
+    inscription (mêmes deux crochets que le 459) ; hypeConsommerRetourAuth
+    laisse désormais un retour « page » intact.
+  - Fiche d'un cheval : NON touchée, elle a déjà « Générer un lien ».
+  - Le privé : rien de nouveau n'est lu ; chaque page garde ses règles
+    (Progression privée, photos privées, carnet).
+  Testé : résolution des liens et mémorisation après connexion (tests
+  unitaires). Boutons : node --check seulement.
+  TEXTES NOUVEAUX, 7 langues : « Partager », « Lien copié ». Aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-492 (contient 491).
