@@ -6947,3 +6947,414 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   de l'écurie et dans les albums de ses chevaux, sinon la plupart des cartes
   resteront « Pas encore de moments partagés ».
   node --check OK (18 blocs), un seul marqueur. Build 20260927-465 (contient 464).
+· (466) 28/09, 6 h 30 — PAGE « CAVALIERS DE L'ÉCURIE » : BOUTON PROFIL = ICÔNE
+  DORÉE SEULE. Deux maquettes montrées (A icône dorée seule, B dans un fin
+  cercle doré) ; Blandine : « juste icône dorée ». EcranCavaliersClub seul :
+  le rond gris-blanc du 462/463 est retiré ; la silhouette passe à 21 px, en
+  doré #D2B278 (seule touche dorée de la page). Zone tactile 44 × 44,
+  aria-label « Voir le profil », stopPropagation : inchangés.
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-466 (contient 465).
+· (467) 28/09, 11 h 55 — VISIONNEUSE DE LA FICHE CHEVAL : LE COMMENTAIRE D'UNE
+  PHOTO S'AFFICHAIT SOUS LES AUTRES. Blandine (3 captures : même commentaire
+  « 😂😂 géniale celle là » et même ❤ 1 sous trois photos différentes).
+  DIAGNOSTIC EN BASE (sa requête) : photo_comments → UNE seule ligne, adresse
+  précise (…/photos/7c38219b…/1788465706114.jpeg, cible cheval:964eacf2…) →
+  l'ENREGISTREMENT est juste, c'est l'AFFICHAGE qui garde l'état de la photo
+  précédente. Relecture du code : chaque ouverture / glissement recharge bien
+  par adresse (effet [visionneuse] → chargerLkCm) ; cause exacte non
+  reproduite d'ici (réponse tardive d'une photo précédente qui écrase la
+  suivante = hypothèse la plus probable).
+  GARDE-FOU (EcranCheval seul, visionneuse) : cmPourRef retient la photo pour
+  laquelle commentaires et J'aime sont chargés ; toute réponse arrivée pour une
+  autre photo est ignorée ; les J'aime repartent de zéro à chaque changement
+  (plus de « ❤ 1 » hérité) ; un effet de secours recharge si la photo affichée
+  ≠ photo chargée. Enregistrement, droits, base : inchangés.
+  Test simulé : réponse lente de la photo A + rapide de B → l'écran finit sur
+  B (aucun commentaire, 0 J'aime).
+  NON TOUCHÉ : la visionneuse des albums (AlbumsCheval) a le même schéma ; à
+  traiter de la même façon si le défaut y apparaît.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-467 (contient 466).
+· (468) 28/09, 13 h 40 — PAGE PHOTOS D'UN CHEVAL : LES ALBUMS DES AUTRES
+  CAVALIÈRES, EN LECTURE SEULE, SOUS LES SIENS (option « C »).
+  Blandine : sur la page Photos de Dakota, elle ne voyait que son album, pas
+  celui de Margot, alors que les photos de Margot s'affichaient dans la frise.
+  CAUSE : règle du 02/09 (EcranCheval → AlbumsCheval mesAlbumsSeulement : chacune
+  ne voit que ses albums), alors que ChronologieSouvenirs montre TOUS les
+  albums publics.
+  FAIT (AlbumsCheval seul, seulement avec mesAlbumsSeulement) : sous la rangée
+  de ses albums, une rangée « Albums des autres cavalières » (7 langues) avec
+  les albums PUBLICS des autres, déjà lus par listerAlbumsCheval (aucune
+  lecture de plus). Ils sont marqués __lecture (drapeau existant) → tous les
+  outils de modification déjà gardés par ce drapeau disparaissent, et
+  albumAutorise refuse toute écriture ; étoile « à la une » cachée. Ils
+  s'ouvrent normalement pour regarder (visionneuse, J'aime, commentaires).
+  Albums privés des autres : jamais montrés (filtre de listerAlbumsCheval).
+  Fiche commune / écurie (sans mesAlbumsSeulement) : inchangée.
+  Non testé en rendu (composant trop lié à l'appli) : node --check seulement.
+  SUITE DÉCIDÉE (rien de codé) — PROPOSER UNE PHOTO À L'ALBUM D'UNE AUTRE :
+  seules les cavalières DE L'ÉCURIE peuvent proposer (Blandine : « que les
+  cavalières de l'écurie oui ») ; en attendant la réponse, la photo va dans un
+  album automatique de celle qui propose, public ; si la propriétaire accepte,
+  la photo entre aussi dans son album. SQL à montrer avant de coder.
+  EN ATTENTE : nom de l'album automatique ; après acceptation, la photo reste
+  ou non dans l'album automatique.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-468 (contient 467).
+· (469) 28/09, 13 h 40 — PAGE « LES CHEVAUX DE L'ÉCURIE » (EcranEcurieHype,
+  anciennement « Écurie Hype ») : FLÈCHE RETOUR EN HAUT À GAUCHE. Blandine :
+  « mets la petite flèche en haut à gauche pour revenir en arrière ».
+  Même pastille (.ec2btn, 40 px) que « + » et « ⋮ » à droite, à la même
+  hauteur ; chevron gauche ; aria-label « Retour » (7 langues, texte déjà
+  existant ailleurs). Action : écran précédent (ctx.retourEcran si
+  ctx.peutReculer), sinon page Écurie (« guilde »). Le titre a déjà 100 px de
+  marge de chaque côté : rien ne se chevauche.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-469 (contient 468).
+· (470) 28/09, 14 h 00 — PROPOSER UNE PHOTO À L'ALBUM D'UNE AUTRE CAVALIÈRE,
+  ÉTAPE 1 (côté de celle qui propose). Blandine : « Ok continue ».
+  ⚠️ PRÉALABLE : le SQL « albums_propositions » (table + 4 policies, montré le
+  28/09 à 13 h 35) doit être passé AVANT de pousser ce build ; sinon la photo
+  va bien dans son album mais la proposition échoue, avec un message qui le dit.
+  CHOIX PAR DÉFAUT (annoncés, modifiables) : album automatique nommé
+  « <prénom> · <nom du cheval> », public ; si la propriétaire accepte, la
+  photo RESTE aussi dans l'album automatique.
+  FAIT (AlbumsCheval seul + une ligne dans les notifications) :
+  - Album d'une autre ouvert (lecture seule, 468), page d'un CHEVAL : encart
+    « ＋ Proposer une photo » + « La photo ira aussi dans ton propre album,
+    visible par toutes. » SEULEMENT si elle est de la même écurie que le cheval
+    (hypeMemeClub sur profil.ecurie / ecurie2 vs chevaux.club ; une lecture
+    chevaux nom + club par fiche).
+  - Choix de 1 à 5 photos → son album automatique est créé s'il n'existe pas
+    (creerAlbumCheval, public), la liste est relue, puis l'envoi passe par
+    importerFichiers (quotas, compression, rattachement atomique : inchangés ;
+    nouveau 3e paramètre facultatif apresAjout(url) appelé pour chaque photo
+    réellement rattachée) → une ligne albums_propositions (album_id, photo_url ;
+    auteur et « attente » posés par la base) par photo ; doublon (23505)
+    ignoré.
+  - Si au moins une proposition part : notification « proposition_album » à la
+    propriétaire (cible = le cheval, extrait = nom de l'album) + « Proposition
+    envoyée ». Échec : message avec la raison, en précisant que la photo est
+    bien dans son album.
+  - Notifications : nouveau libellé « te propose une photo pour ton album
+    « … » » (7 langues).
+  TEXTES NOUVEAUX, 7 langues : « Proposer une photo », la phrase d'aide, les
+  deux messages d'erreur, le libellé de notification.
+  RESTE (étape 2) : chez la propriétaire, voir les propositions de son album
+  avec Accepter (→ album_ajouter_media) / Refuser.
+  Non testé en rendu (composant trop lié à l'appli) : node --check seulement.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-470 (contient 469).
+· (471) 28/09, 13 h 40 — PAGE ACTUALITÉ DE LA CAVALIÈRE : LES VIDÉOS N'AVAIENT
+  PAS DE VIGNETTE. Blandine : « Sur les dernières publications on ne voit pas
+  les photos ni les vidéos sur la page actualité du cavalier ».
+  Cause : dans EcranActualiteCavaliere, vignette(po) posait le RÉSULTAT de
+  hypeMiniatureVideo(u) (un élément React) dans le src d'une <img> →
+  « [object Object] » → image cassée masquée par onError.
+  Correctif : l'élément est rendu tel quel dans une case 72 × 72 arrondie (image
+  Mux + picto ▶). Photos inchangées.
+  SQL albums_propositions relancé par erreur : « policy … already exists » =
+  déjà en place depuis le premier passage, rien à faire.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-471 (contient 470).
+· (472) 28/09, 13 h 45 — PAGE ACTUALITÉ : TOUCHER LA VIGNETTE OUVRE EN GRAND.
+  Blandine : « au moins une image couverture de la vidéo et un lien pour la
+  lire quand on clic dessus » ; choix B (vidéos ET photos).
+  Visionneuse existante hypeCalquePhoto (lecture vidéo, zoom photo, croix),
+  nouvel état visuA. Le toucher de la vignette ne remonte pas à la carte
+  (stopPropagation) : ailleurs sur la carte, on va toujours à la publication.
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-472 (contient 471).
+· (473) 28/09, 14 h 00 — PROPOSER UNE PHOTO, ÉTAPE 2 (côté de la PROPRIÉTAIRE).
+  Blandine : « Ok continue ».
+  Dans AlbumsCheval (page photos d'un cheval), au-dessus de « Albums » : encart
+  « Photos proposées (N) » quand des cavalières ont proposé des photos pour
+  SES albums de ce cheval (albums_propositions, statut « attente » ; même
+  habillage que « Albums proposés »). Chaque ligne : vignette, nom de l'album,
+  « proposée par <pseudo> », ✓ et ×.
+  - ✓ : la photo entre dans l'album (hypeAlbumAjouterMedia → RPC
+    album_ajouter_media, chemin atomique habituel ; « déjà là » compte comme
+    ok), puis statut « accepte » + repondu_le (si la colonne manque, statut
+    seul). Albums relus.
+  - × : statut « refuse ».
+  - Réponse VÉRIFIÉE (une ligne doit revenir), sinon message avec la raison.
+  - La photo reste dans l'album automatique de celle qui l'a proposée (choix 470).
+  PAS FAIT (à décider) : prévenir celle qui a proposé que sa photo est acceptée.
+  TEXTES NOUVEAUX, 7 langues : « Photos proposées », « proposée par »,
+  « Accepter », « Refuser », « Photo ajoutée à l'album », « Proposition
+  refusée », deux messages d'erreur, « aucune ligne modifiée ».
+  Aucun SQL. Non testé en rendu : node --check seulement.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-473 (contient 472).
+· (474) 28/09, 14 h 10 — NOTIFICATIONS DES PROPOSITIONS DE PHOTOS.
+  Blandine : « Oui notification disant Blandine te propose deux photos pour ton
+  album par exemple ».
+  - Proposition : la notification porte le NOMBRE de photos (champ contexte) →
+    « X te propose 2 photos pour ton album « … » » (une seule : « une photo »,
+    comme avant ; les anciennes notifications sans nombre restent au singulier).
+  - Acceptation : nouvelle notification « proposition_acceptee » à celle qui a
+    proposé → « X a ajouté ta photo à son album « … » » (une par photo
+    acceptée). Rien en cas de refus. Toucher = page du cheval.
+  TEXTES NOUVEAUX, 7 langues : les deux libellés. Aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-474 (contient 473).
+· (475) 28/09, 14 h 15 — RETIRER UNE CARTE DE SA PAGE ACTUALITÉ.
+  Blandine : « faudrait qu'on puisse masquer ou effacer une publication …
+  (effacer uniquement sur la page actualité) … avec une petite croix en haut à
+  droite ». Choix A : définitif, pas de liste pour remettre.
+  SQL PASSÉ PAR ELLE le 28/09 à 13 h 47 (« Success. No rows returned ») :
+  table actualite_masques (user_id par défaut auth.uid(), cle, created_at ;
+  clé primaire user_id + cle) ; RLS : lecture pour tous, ajout et retrait par
+  soi seulement.
+  - Croix discrète à droite de la date, sur SA page seulement (utilisateur
+    connecté = la cavalière de la page). Toucher → confirmation dans la carte
+    « Retirer de ton actualité ? » (+ « La publication reste là où elle a été
+    postée. » pour une publication) avec Retirer / Annuler.
+  - Retirer = une ligne actualite_masques : « post:<id> » ou « res:<id> » pour
+    un concours. La publication N'EST PAS effacée (reste sur son mur) ; le
+    concours reste sur la page Résultats.
+  - À la lecture de la page, les cartes retirées sont filtrées pour tout le
+    monde. Erreur → message en haut de la page.
+  TEXTES NOUVEAUX, 7 langues : « Retirer », « Retirer de ton actualité ? »,
+  « La publication reste là où elle a été postée. », « Annuler », message
+  d'erreur.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-475 (contient 474).
+· (476) 28/09, 14 h 05 — PAGE CAVALIER : LES DEUX GROS BOUTONS SOUS « MES CHEVAUX »
+  DISPARAISSENT. Blandine : « normalement les boutons ajouter un cheval et voir
+  tout devaient disparaître et être remplacés par la case du milieu » ;
+  maquette A/B montrée, choix B (conséquence annoncée : ses chevaux au-delà
+  des 8 de la grille ne sont plus visibles sur cette page ; ceux de l'écurie
+  restent accessibles par la carte du milieu).
+  Sur SA page, quand la carte du milieu existe (clubCarteMil) :
+  - barre « + Ajouter un cheval / Voir les autres (N) » retirée ;
+  - case « Ajouter un cheval » de la grille retirée (compte non premium) ;
+  - « + Ajouter » en petit en haut à droite du titre « Mes chevaux », à gauche
+    de « Gérer mon écurie › » (même style de lien).
+  Inchangé : profil visité (« Voir les autres » reste), cavalière sans écurie
+  (pas de carte du milieu → boutons d'avant).
+  TEXTE NOUVEAU, 7 langues : « Ajouter ». Aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-476 (contient 475).
+· (477) 28/09, 14 h 50 — PAGE ACTUALITÉ DE LA CAVALIÈRE AU DESSIN DE LA PAGE
+  « ACTUALITÉS » DE L'ÉCURIE. Blandine : « tu peux faire pour la page actualité
+  du cavalier le même design / présentation de page que sur la page actualité
+  de l'écurie » ; maquette montrée → SANS étiquettes ; « on peut laisser les
+  derniers résultats » → concours gardés (seulement ceux mis en ligne et non
+  décochés, comme avant) ; « On continue ».
+  EcranActualiteCavaliere seul (MurHype non touché) :
+  - Tête : grande photo = la plus récente de son fil (hors vidéo ; toucher =
+    en grand), pseudo en petit turquoise, « ACTUALITÉS », son écurie
+    (profiles.ecurie ajouté à la lecture). Sans photo : même tête sans fond.
+    Flèche retour en haut à gauche.
+  - Cartes publication : colonne de photos à gauche (1/2/3 cases ; photo =
+    en grand, vidéo = lecture), titre (1re ligne) + une ligne de description,
+    avatar + nom + temps relatif, ♡ (aimer / ne plus aimer, likes_cartes
+    « post:<id> ») et nombre de réponses. Le reste de la carte ouvre la
+    publication, comme avant.
+  - Cartes concours : même forme, bord doré ; colonne gauche = place, « sur N »,
+    SF ; concours, épreuve · cheval, 🏆 date. Toucher = page Résultats.
+  - Croix « Retirer » (475) en haut à droite de chaque carte, sur SA page
+    seulement ; même confirmation.
+  - Étiquettes « A publié / Identifiée par » retirées.
+  Lectures en plus : avatars des autrices identifiantes, likes_cartes et
+  réponses (commentaires) des publications affichées, en une fois chacune.
+  Testé en rendu (Playwright, données simulées) : sa page (4 croix +
+  confirmation), visite en arabe (aucune croix).
+  TEXTES NOUVEAUX, 7 langues : « Actualités », « sur », « Concours ».
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-477 (contient 476).
+· (478) 28/09, 16 h 00 — VISIONNEUSE DES ALBUMS : MÊME GARDE QU'AU 467.
+  Blandine : « gère la visionneuse ». AlbumsCheval, chargerLikesEtCommentaires :
+  cmPourRefAlb retient la photo pour laquelle J'aime, commentaires et
+  identifications de commentaires sont chargés ; toute réponse d'une autre
+  photo (arrivée en retard) est jetée ; filet (effet sans dépendances) :
+  photo affichée ≠ photo chargée → on recharge. Symptôme évité : un
+  commentaire qui reste sous les photos suivantes.
+  Aucun texte, aucun SQL. Build 20260928-478 (contient 477).
+· (479) 28/09, 16 h 05 — « DERNIERS RÉSULTATS » (page Cavalier) : PLUS DE BLOC
+  VIDE POUR LES VISITEURS. Blandine : « oui fais ». Quand la cavalière a tout
+  décoché avec « Choisir », une visiteuse ne voit plus « Aucun résultat
+  affiché » : la section disparaît. Elle-même garde le bloc (« Tu as masqué…
+  Choisir ») pour réafficher. Sans aucun résultat mis en ligne : déjà masqué
+  pour tout le monde (inchangé).
+  Aucun texte, aucun SQL. Build 20260928-479 (contient 478).
+· (480) 28/09, 16 h 10 — PAGE « CAVALIERS DE L'ÉCURIE » : SOURCES DE PHOTOS
+  ÉLARGIES. Blandine : « oui fais ». Toujours « albums d'abord, sinon le mur »
+  (choix du 453), toujours seulement ce qu'elle a créé, public :
+  - ALBUMS = ses albums de profil (« cavalier:<elle> ») + ses albums sur les
+    fiches des chevaux (« cheval:<id> ») ;
+  - MUR = son mur + ses publications sur les murs d'écurie, club,
+    rendez-vous, cheval (pas les réponses « post: », pas les privées, pas ce
+    qu'elle a posté sur le mur d'une autre cavalière).
+  Lectures groupées par user_id (albums 800, publications 1500 au plus).
+  Les J'aime (454) marchent pareil (photo_likes pour les albums,
+  likes_cartes « post:<id> » pour le mur).
+  Testé en rendu (données simulées) : album de cheval compté, album posé
+  sur le profil d'une autre ignoré, publication d'écurie comptée, doublon
+  ignoré.
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-480 (contient 479).
+  EN ATTENTE : bouton de test « Transformé » (« laisse pour l'instant ») ;
+  modèle de story d'événement (attend son image de fond PNG).
+· (481) 28/09, 16 h 10 — LES CAVALIÈRES D'UN CLUB SONT TRIÉES DANS LA BASE.
+  Question de Blandine (« j'ai à peine 40 comptes comment il en charge 2000 ») :
+  2000 = plafond ; l'appli téléchargeait tous les profils ayant une écurie,
+  puis triait sur le téléphone. Choix B (« Ok B »).
+  hypeCavaliersDuClub appelle d'abord la fonction SQL
+  hype_cavaliers_du_club(p_nom) → identifiants des cavalières de CE club
+  (comparaison souple identique à hypeMemeClub/noyauEcurie : accents,
+  majuscules, ponctuation, mots « écurie, club, centre, équestre, de, la… »
+  ignorés, l'un contenu dans l'autre ; repli sur le nom brut si le noyau est
+  vide), puis lit seulement ces profils. Le tri de l'appli reste en filet :
+  résultat identique à avant. Fonction absente ou en erreur → ancien chemin.
+  SQL PASSÉ PAR ELLE le 28/09 à 16 h 11 (« Success. No rows returned »), en
+  SECONDE version : la 1re échouait (« function extensions.unaccent(text) does
+  not exist » : unaccent absent de ce schéma) → accents retirés par
+  translate() (àâäáãåçéèêëíìîïñóòôöõúùûüýÿ), sans extension. Fonctions
+  hype_cle_ecurie(text) (immutable) et hype_cavaliers_du_club(text) (security
+  invoker = mêmes droits qu'avant), grant execute à anon et authenticated.
+  « œ » / « æ » non convertis, comme dans l'appli (noyauEcurie ne les
+  convertit pas non plus) : comportement identique.
+  Vérif. par elle (16 h 32) : select count(*) from
+  hype_cavaliers_du_club('Ecurie Feinn') → 21.
+  ⚠️ TROUVÉ EN PASSANT, NON CORRIGÉ (hors périmètre, à décider) : trois appels
+  demandent les profils SANS les colonnes ecurie/ecurie2 (fiche d'un
+  rendez-vous du club, partage d'un conseil du carnet, Hey Baby) → le filet
+  les écarte tous → ces trois listes sont TOUJOURS VIDES, depuis le 16/09 au
+  moins. Inchangé dans ce build.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-481 (contient 480).
+· (482) 28/09, 16 h 40 — ONGLETS DE LA PAGE CAVALIER ALIGNÉS SUR CEUX D'UN
+  CHEVAL. Blandine : « Histoire / performances / progression / photo / vidéo /
+  actualité ? Et on retire l'onglet théorie, l'accès aux galops est déjà
+  possible depuis la page performance » ; choix A pour les destinations.
+  - Ordre : Histoire · Performances · Progression · Photos · Vidéos ·
+    Actualité (grille 3 × 2, même dessin de tuile).
+  - Histoire (nouvelle tuile, icône cœur) → page du récit (memoirescavalier,
+    la même que « Lire la suite » ; gère déjà la visite).
+  - Photos → NOUVELLE page EcranPhotosCavaliere (route « photos-cavalier »,
+    window.__photosCavaliereId) : copie de la page Vidéos (352/353) avec les
+    PHOTOS : ses publications (écurie, club, rendez-vous, cheval), albums de
+    ses chevaux (possédés + rattachés ; privés seulement pour l'autrice), ses
+    albums de profil « cavalier:<elle> », publications où elle est
+    identifiée (acceptées). Grille 3 colonnes, toucher = en grand.
+  - Théorie retirée (la page Galops reste accessible ailleurs).
+  - En visite : Progression grisée avec cadenas (369), inchangé.
+  Testé en rendu (données simulées) : page Photos (doublons et vidéos
+  écartés). Tuiles : node --check seulement.
+  TEXTES NOUVEAUX, 7 langues : « Histoire », « Aucune photo publiée pour
+  l'instant. ». Aucun SQL. Build 20260928-482 (contient 481).
+· (483) 28/09, 16 h 45 — LES TROIS LISTES DE CAVALIÈRES TOUJOURS VIDES.
+  Blandine : « oui répare » (bug trouvé au 481). hypeCavaliersDuClub ajoute
+  d'office ecurie et ecurie2 aux colonnes demandées si elles manquent → la
+  fiche d'un rendez-vous du club, le partage d'un conseil du carnet et Hey
+  Baby reçoivent enfin les cavalières de l'écurie. Autres appels inchangés.
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-483 (contient 482).
+· (484) 28/09, 16 h 50 — LA PAGE « HISTOIRE » (ex « Hype Memories »).
+  Maquette montrée ; Blandine : « oui ok pour chevaux de cœur et on retire les
+  albums souvenirs qui iront sur la page photo », « l'encart retire-le il est
+  déjà sur progression », « on peut en mettre jusqu'à 6 ? ».
+  EcranMemoiresCavalier :
+  - tête : grande photo (sa photo de profil) sur toute la largeur, fondu
+    sombre, prénom en petit, « HISTOIRE », écurie · ville ; flèche retour ;
+  - récit : lettrine dorée ; au-delà de 420 signes, coupé + « Lire tout › /
+    Réduire » ; bouton Modifier inchangé ;
+  - REPÈRES (calculés, aucune saisie) : Galop (SA page seulement, donnée
+    personnelle ; ctx.profil.galopActuel s'il est un nombre), Concours et
+    Victoires (resultats mis en ligne, place 1), Chevaux (possédés +
+    rattachés). Une case absente si la donnée manque ;
+  - « Mes chevaux de cœur » (« Ses… » en visite) : grille 3 par ligne,
+    toucher = fiche du cheval ; 6 au plus, POUR L'INSTANT LES 6 PREMIERS
+    (choix manuel proposé, en attente de sa réponse) ;
+  - ALBUMS retirés → en tête de la page Photos (même composant AlbumsCheval
+    « cavalier:<id> ») ; encart Conseils Hey Baby retiré.
+  Testé en rendu (données simulées). TEXTES NOUVEAUX, 7 langues : Lire tout,
+  Réduire, Galop, Concours, Victoires, Chevaux, Mes/Ses chevaux de cœur.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-484 (contient 483).
+· (485) 28/09, 17 h 00 — CHOISIR SES CHEVAUX DE CŒUR. Blandine : « ok oui 1 »
+  (choix A : bouton « ✎ Choisir », jusqu'à 6).
+  SQL PASSÉ PAR ELLE le 28/09 à 16 h 47 (« Success. No rows returned ») :
+    alter table public.profiles add column if not exists chevaux_coeur jsonb;
+  (la mise à jour de son propre profil est déjà autorisée par les policies
+  existantes : c'est le chemin de majProfil.)
+  Page Histoire, SA page seulement : « ✎ Choisir » à droite du titre → feuille
+  du bas avec TOUS ses chevaux (possédés + rattachés), cases numérotées dans
+  l'ordre coché, 6 au plus (les autres grisés une fois 6 atteints),
+  Annuler / Enregistrer. Enregistrer = update profiles.chevaux_coeur (liste
+  d'identifiants) vérifié (la ligne doit revenir), sinon message avec la
+  raison dans la feuille. Affichage : l'ordre choisi ; liste vide ou colonne
+  absente → les 6 premiers (comme au 484) ; un cheval qui n'est plus le sien
+  disparaît tout seul.
+  Testé en rendu (données simulées) : décocher, cocher, enregistrer, ordre.
+  TEXTES NOUVEAUX, 7 langues : Choisir, « Coche jusqu'à 6 chevaux »,
+  Enregistrer, Annuler, « Choix non enregistré : ».
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-485 (contient 484).
+· (486) 28/09, 17 h 15 — « PARTAGER EN STORY » SUR LA FICHE D'UN RENDEZ-VOUS.
+  Demande et choix de Blandine : story « dans le genre du pêle-mêle du Mur des
+  souvenirs », sur SON fond (logo Hype en haut ; image embarquée en webp dans
+  la page, HYPE_FOND_STORY, ~41 Ko : aucun fichier à pousser) ; ses modèles
+  ChatGPT ne sont PAS utilisés tels quels (cadres figés dans l'image, trop
+  petits) : mises en page reproduites par nous ; « on peut s'arrêter à 6
+  photos » ; « tout le monde peut partager » ; @ RETIRÉS.
+  - FicheEvenementClub : bouton doré pleine largeur « ✦ Partager en story »
+    sous « Me prévenir / Partager » → HypeStoryEvenement (plein écran).
+  - Photos : publications du fil « agenda:<id> » (hors privées ; photo_url +
+    medias ; vidéos par leur image Mux), puis l'affiche (image_url) ; sans
+    doublon. 6 plus récentes cochées d'office, grille à cocher (6 max,
+    numéros), aperçu redessiné à chaque changement.
+  - Image 1080 × 1920 sur canvas (hypeDessinerStory) : fond « cover », 1 à 6
+    polaroïds (HYPE_STORY_MISES, une mise en page par nombre, 5 compris),
+    bord doré + scotch ; sans photo : un polaroïd vide. Cadre de texte en
+    bas : titre (Cinzel, réduit s'il est trop long), « date · heure · lieu »
+    (italique doré, date dans la langue de l'appli), écurie ; « 2HYPE.FR ».
+  - Partager : menu de partage de l'iPhone avec le fichier JPEG (Instagram,
+    Enregistrer l'image…) ; sinon téléchargement ; échec → message +
+    « appui long sur l'image pour l'enregistrer ». Photo refusée par le
+    navigateur (protection) → message « décoche-la ».
+  Testé en rendu (Playwright, données simulées) : image générée, privée
+  écartée. Pas testé sur iPhone (partage réel, photos Supabase/Mux).
+  TEXTES NOUVEAUX, 7 langues : Partager en story, Ta story, Préparation…,
+  Choisis jusqu'à 6 photos, Partager, deux messages d'erreur.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-486 (contient 485).
+  À VENIR (demande de Blandine, 17 h 10) : croiser ces modèles avec ceux des
+  stories de l'appli (dans les deux sens) — il faut le fichier du module
+  story (story.html / JS compagnon), absent d'ici.
+· (487) 28/09, 17 h 25 — STORY D'UN RENDEZ-VOUS : LES 28 MODÈLES DE L'APPLI + TEXTE
+  MODIFIABLE. Blandine : « on peut ajouter les modèles des story aussi pour le
+  partage des événements » ; choix A (leur décor + nos photos + NOTRE cadre de
+  texte par-dessus) ; « mais que ça puisse être modifiable si on le souhaite ».
+  - Bande de choix en haut de la fenêtre : « Hype » (nos polaroïds, 1–6) puis
+    les modèles du catalogue window.HYPE_MODELES (hype-modeles-db.js, déjà
+    chargé par l'appli) avec leur nombre de fenêtres. Décor = « /<clé>.webp »
+    à la racine (même origine : dessin sur canvas autorisé).
+  - Dessin : décor ajusté à 1080 × 1920 (contain, centré) ; chaque photo
+    passe SOUS le décor, tournée comme sa fenêtre (angle tiré des « coins »),
+    remplie « cover », découpée au « contour » exact ; fenêtres sans photo
+    laissées vides ; bandeau de texte plus bas et plus opaque (il PEUT couvrir
+    le bas d'une fenêtre basse — signalé à Blandine).
+  - « ✎ Modifier le texte » : trois champs (titre, date · lieu, écurie),
+    pré-remplis, + « Revenir au texte d'origine ». Aperçu redessiné 350 ms
+    après la dernière frappe.
+  - Décor introuvable → « Ce modèle n'a pas pu être chargé. Choisis-en un
+    autre. »
+  Testé en rendu avec un faux modèle (fenêtre penchée + ronde) et un titre
+  modifié. Les vrais décors ne sont pas testés d'ici (fichiers sur le site).
+  TEXTES NOUVEAUX, 7 langues : Modifier le texte, Titre, Date · lieu, Écurie,
+  Revenir au texte d'origine, « ce modèle en prend », message de décor.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-487 (contient 486).
+· (488) 28/09, 17 h 35 — NOS POLAROÏDS DEVIENNENT 6 MODÈLES DE STORY DE L'APPLI.
+  Blandine : « à l'inverse ajouter ceux-là aux modèles pour les story »,
+  « oui vas-y ». hype-stories.js N'EST PAS TOUCHÉ : il lit le catalogue
+  window.HYPE_MODELES (hype-modeles-db.js), et un modèle = un décor webp à la
+  racine + son entrée (règle écrite en tête du catalogue).
+  - 6 décors 1080 × 1920 (modele-hype-1.webp … modele-hype-6.webp, 58 à 80 Ko) :
+    son fond au logo, polaroïds bord doré + ombre + scotch, petit cœur doré ;
+    l'intérieur de chaque polaroïd est TRANSPARENT (fenêtre), le scotch reste
+    opaque par-dessus. Zone des photos 400 → 1720 px (sous le logo).
+  - hype-modeles-db.js : +6 entrées (taille, fenêtres : coins, contour 4 pts,
+    bbox, aire_pct) → 34 modèles ; en-tête complété.
+  - index.html : ?v=5 → ?v=6 sur hype-modeles-db.js (les téléphones
+    rechargent le catalogue) ; la fenêtre « Partager en story » n'affiche pas
+    ces 6-là (déjà présents en première case « Hype »).
+  FICHIERS À POUSSER À LA RACINE : modele-hype-1.webp à modele-hype-6.webp,
+  hype-modeles-db.js, index.html, SUIVI.md.
+  node --check OK (18 blocs + catalogue), un seul marqueur.
+  Build 20260928-488 (contient 487).
