@@ -6453,3 +6453,426 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   → message d'erreur).
   Aucun SQL. node --check OK (18 blocs), un seul marqueur.
   Build 20260927-442 (contient 441).
+· (443) 27/09, 21 h 40 — LA VRAIE CAUSE DU LIEN D'UN RENDEZ-VOUS QUI RESTE SUR
+  LA PAGE ÉCURIE. Blandine, capture WhatsApp après le 442 : « Tjs pas ».
+  CAUSE (trouvée en relisant tout le composant, ratée au 435 et au 442) :
+  AgendaClubHype ne dessine RIEN quand le club n'a aucun rendez-vous à venir
+  et qu'on ne peut pas en ajouter — y compris la fiche, qui est dessinée dans
+  ce même composant. Un visiteur non connecté n'a pas de club → aucun
+  rendez-vous → fiche chargée (grâce au 442) mais JAMAIS affichée.
+  Dans l'appli, connectée à son club (qui a des rendez-vous), ça marchait :
+  c'est pour ça que le problème n'apparaissait que depuis WhatsApp.
+  CORRECTION (AgendaClubHype seul) : dans ce cas précis (0 rendez-vous, pas
+  de droit d'ajout), on dessine SEULEMENT la fiche (plein écran) et le
+  message d'erreur, sans l'encart « Prochains rendez-vous ». Sans lien
+  ouvert : rien, comme avant. Club avec des rendez-vous : inchangé.
+  Le 442 reste nécessaire (sans lui, la fiche n'est pas chargée pour un
+  visiteur).
+  Test : rendu simulé du composant, avant/après —
+  441 : visiteur + lien → RIEN (le bug) ; 443 : visiteur + lien → FICHE ;
+  visiteur sans lien → rien (inchangé) ; club avec rendez-vous + lien →
+  fiche + encart (inchangé).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-443 (contient 442).
+· (444) 27/09, 22 h 10 — L'ENCART « HYPE MEMORIES » RETIRÉ DE LA PAGE CAVALIER.
+  Blandine : « la page cavalier on n'a plus besoin de Hype memories du coup
+  comme on a l'onglet photo et vidéo » ; après explication, « on peut juste
+  virer l'onglet hype memories du coup ? » (option A).
+  FAIT (EcranMonCavalier seul) : la grande carte « Hype Memories » (image
+  memoriesEncart, prénom, « Ton récit, tes albums, tes conseils épinglés »)
+  est retirée, en visite comme sur sa propre page.
+  ⚠️ LA PAGE memoirescavalier RESTE, car elle EST la page « Photos » : la tuile
+  Photos de la page Cavalier l'ouvre, ainsi que le bouton « Écrire / Modifier
+  mon récit » (« Lire la suite » en visite), un album ouvert depuis la fiche
+  cheval, l'acceptation d'une invitation d'album, le mur des souvenirs et les
+  liens #c=memento. Elle contient : le récit, les albums (AlbumsCheval
+  « cavalier:<id> »), les conseils Hey Baby épinglés.
+  À FAIRE PLUS TARD (Blandine : « faut qu'on la refasse correctement ») :
+  refaire cette page en vraie page « Photos » ; reloger d'abord le récit et
+  les conseils, puis rediriger tous les chemins ci-dessus.
+  Aucun texte nouveau (rien à traduire). Aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-444 (contient 443).
+· (445) 27/09, 22 h 20 — PAGE ÉCURIE : LE BOUTON « VOIR LES N CHEVAUX »
+  RETIRÉ. Blandine (capture) : « le bouton voir les 20 chevaux fait doublon
+  avec celui du milieu, on peut le retirer ? ».
+  VÉRIFIÉ AVANT : les deux ouvraient exactement la même page (ecurie-hype,
+  avec window.__ecurieHypeClub = monClub). Il reste la carte du milieu de la
+  grille « Les chevaux de l'écurie · Voir tout », présente dès qu'il y a au
+  moins un cheval.
+  EcranGuilde seul, une seule ligne remplacée. Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-445 (contient 444).
+· (446) 27/09, 22 h 30 — PAGE ÉCURIE : LE CHAMP « PARTAGE UN MOMENT… » RANGÉ
+  DANS LA PARTIE REPLIÉE. Blandine (capture) : « on peut mettre le fait de
+  poster une actualité dans la partie repliée ? ça casse la page en deux en
+  plein milieu », puis « À » (option A).
+  VÉRIFIÉ AVANT : seul le mur de la page Écurie (EcranGuilde, limite 2) se
+  replie dans la navigation. Les autres murs (fiches des rendez-vous,
+  souvenirs, cheval, Actualités) affichent tout, sans « Voir la suite » :
+  non touchés. L'ancienne écurie perso (EcranEcurie, limite 3, réservée
+  admin/modératrices, « à revoir avant suppression ») : non touchée.
+  FAIT : nouvelle prop MurHype `composerDansSuite`, passée par EcranGuilde
+  seulement. Replié avec « Voir la suite » → pas de champ ; déplié → champ
+  sous la dernière publication, juste avant « Replier » ; 2 publications ou
+  moins → champ sous elles (sinon personne ne pourrait publier). Brouillon
+  gardé si on replie (état de MurHype).
+  Test : ordre simulé — 4 publications repliées « p0 p1 Voir la suite » ;
+  dépliées « p0 p1 p2 p3 champ Replier » ; 2 publications « p0 p1 champ ».
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-446 (contient 445).
+· PROPOSÉ 27/09, 22 h 25 (rien codé) — AGENDA DU CLUB, boutons « + Ajouter » et
+  « Voir tout l'agenda » plus discrets : 4 maquettes envoyées (1 liens dorés
+  sans cadre ; 2 « + » rond dans le titre + « Tout voir › » dessous ; 3
+  « Tout voir › » dans l'en-tête + carte pointillée « Nouveau rendez-vous » au
+  bout du carrousel ; 4 deux pastilles-icônes « + » et calendrier). En
+  attente de son choix. → Choisi : « 1 ter » (voir 447).
+· (447) 27/09, 22 h 35 — AGENDA DU CLUB : BOUTONS PLUS DISCRETS (maquette
+  « 1 ter », Blandine : « Ok on peut faire ça »).
+  AgendaClubHype seul (donc page Écurie ET page de tout l'agenda, même
+  composant). Les deux gros boutons encadrés sous le carrousel (.agc-act)
+  sont RETIRÉS :
+  - « ＋ Ajouter » : petit lien doré À DROITE DU TITRE « Prochains
+    rendez-vous ». Mêmes droits (peutCreer). Caché si l'agenda est vide
+    (l'encart vide garde son bouton « Ajouter un rendez-vous »). Sur la page
+    agenda (sans titre) : seul, à droite, au-dessus du carrousel.
+  - « Tout l'agenda → » : petit lien doré SUR LA LIGNE DES POINTS, à droite ;
+    affiché dès 1 rendez-vous (avant : 2 minimum) ; jamais sur la page agenda.
+  Zone de toucher gardée à 44 px (marge négative, rien ne bouge à l'œil).
+  TEXTE NOUVEAU, 7 langues : « Tout l'agenda » / Full agenda / Toda la agenda
+  / Tutta l'agenda / すべての予定 / Ganzer Kalender / كل المواعيد.
+  « Ajouter » : texte existant, déjà traduit.
+  Test : le VRAI composant rendu dans Chromium (React de l'index, données
+  simulées, ses affiches) : 3 rendez-vous (titre + Ajouter, points + Tout
+  l'agenda), 1 rendez-vous (Tout l'agenda seul à droite), page agenda
+  (Ajouter seul, points, pas de Tout l'agenda). Aucune erreur console.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-447 (contient 446).
+· (448) 27/09, 22 h 40 — AGENDA DU CLUB : TITRE ALLÉGÉ. Blandine : « tu peux
+  juste laisser l'agenda du club en centrant le titre et retirer les
+  prochains rendez-vous ».
+  AgendaClubHype seul, page Écurie seulement (la page agenda n'avait déjà
+  pas de titre, sansTitre : inchangée). Le grand titre « Prochains
+  rendez-vous » est RETIRÉ ; « L'agenda du club » est CENTRÉ, et « ＋ Ajouter »
+  reste à droite sur la même ligne (mêmes droits ; aligné au pixel près,
+  mesuré dans Chromium). « Tout l'agenda → » sur la ligne des points :
+  inchangé.
+  Aucun texte nouveau (le texte « Prochains rendez-vous » n'est plus affiché
+  ici mais reste dans le code), aucun SQL.
+  Test : vrai composant rendu dans Chromium, aucune erreur console.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-448 (contient 447).
+· (449) 27/09, 23 h 05 — LA CARTE « LES CHEVAUX DE L'ÉCURIE » TOUJOURS AU
+  MILIEU, ET AUSSI SUR LA PAGE CAVALIER. Blandine : « on peut appliquer la
+  même chose sur la page cavalier ? avec la carte du milieu qui emmène vers
+  les autres chevaux ? ça serait bien qu'elle reste tjs au milieu », puis
+  « elle continue de faire ce qu'elle faisait actuellement » (lu comme : même
+  destination que sur la page Écurie) et « oui ok pour le milieu ».
+  - Nouvelle fonction globale hypePlacerAuMilieu (juste avant EcranGuilde).
+    Règle : 1 ou 2 lignes → milieu de la 1re ligne ; 3 lignes et plus →
+    plein centre (case 5) ; grille vide → case vide à gauche, carte au milieu.
+    Simulé : 0 « · C » ; 1 « H C » ; 2 « H C H » ; 3 « H C H | H » ;
+    5 « H C H | H H H » ; 6 « H H H | H C H | H » ; 8 « H H H | H C H | H H H ».
+  - Page Écurie (EcranGuilde) : la carte suit cette règle (avant : au centre
+    à partir de 5 chevaux, sinon À LA FIN).
+  - Page Cavalier (EcranMonCavalier) : MÊME carte (même dessin, textes déjà
+    traduits), ouvre ecurie-hype avec son écurie (celle choisie en haut si
+    elle en a deux ; sinon profil.club / profil.ecurie). SUR SA PAGE
+    SEULEMENT et si elle a une écurie ; en visite : pas de carte. La carte
+    « Ajouter un cheval », les cadenas Premium et le déroulant « Voir les
+    autres » (> 9 chevaux) : inchangés (l'ajout compte comme une case).
+  ⚠️ À VÉRIFIER AU TEST : avec le choix « Toutes » (deux écuries), la carte
+  mène à l'écurie principale du profil.
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-449 (contient 448).
+· (450) 27/09, 23 h 15 — PAGE CAVALIER : UN CHEVAL DE MOINS AVEC LA CARTE DU
+  MILIEU. Blandine (capture, 9 chevaux + carte = une 4e ligne avec un seul
+  cheval) : « il faut qu'il passe un cheval supplémentaire à déplier ».
+  FAIT (EcranMonCavalier seul) : nouvelle variable PLAFOND_CHV = 8 quand la
+  carte « Les chevaux de l'écurie » est affichée (sa page, avec une écurie),
+  9 sinon (visite : inchangé). Utilisée partout où « 9 » était écrit : nombre
+  de chevaux visibles, apparition de la barre « Ajouter / Voir les
+  autres (N) », et le N lui-même (8 → 9 dans son cas). Grille : 3 × 3 pile.
+  Club de la carte calculé une seule fois (clubCarteMil).
+  ⚠️ DÉFAUT DU 449 CORRIGÉ DANS LE MÊME BUILD (vu sur sa capture) : la carte du
+  milieu était DÉCALÉE vers le bas (un bouton centre son contenu dans la
+  hauteur de la case, plus haute à cause du nom et de la ligne du cheval).
+  alignSelf « start » : la carte s'aligne sur les photos.
+  Sans Premium : 6 chevaux, inchangé.
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-450 (contient 449).
+· RELEVÉ 27/09, 23 h 10 (rien codé) — REFONTE DE LA PAGE « CAVALIERS DE
+  L'ÉCURIE » (EcranCavaliersClub, écran cavaliers-club), brief ChatGPT : relevé
+  livré. Points clés : liste = hypeCavaliersDuClub (1 lecture profiles ≤ 2000,
+  filtre téléphone) ; murs = commentaires cible « cavalier:<id> » ; J'aime du
+  mur = likes_cartes PAR PUBLICATION (photo_likes = par photo, albums) ; privé
+  filtré seulement côté téléphone (policy lecture = true) ; BUG EXISTANT : en
+  visite, la page Cavalier affiche le mur de la VISITEUSE (MurHype cibleMoi).
+  Top 3 possible sans SQL : 1 lecture groupée à l'ouverture + 1 lecture au
+  dépliage. En attente de ses décisions (source mur/albums ; ses publications
+  seulement ; corriger d'abord le mur en visite).
+· BUILD 20260927-451 — CORRECTION DU MUR D'UN PROFIL CAVALIER VISITÉ (brief
+  ChatGPT ; numéroté 451 car le 450 = le cheval en moins de la page Cavalier).
+  - En visite publique, MurHype reçoit maintenant l'identifiant du cavalier
+    affiché : cible « cavalier:<__visitePub.id> » (MurHype acceptait déjà la
+    prop `cible` via cibleInitiale ; rien ajouté dans MurHype). Clé
+    « murcav-<id> » : le mur est recréé quand on passe d'une cavalière à une
+    autre (son effet de chargement ne tourne qu'au montage).
+  - Sur son propre profil : h(MurHype, { cibleMoi: true }), strictement inchangé.
+  - CHOIX DE BLANDINE « B » : en visite, PAS de champ de publication
+    (sansComposer). Conséquence dite et acceptée : un mur visité sans aucune
+    publication n'affiche rien (au lieu de « Sois le premier à publier ici »).
+    Sans ce choix, le correctif aurait permis d'écrire sur le mur des autres.
+  - Relevé : __visitePub / __estVisite (lus depuis window.__cavalierOuvert =
+    "__public" et window.__cavalierPublic) sont la source déjà utilisée par
+    toute la page (ex. BlocResultatsCavaliere) ; cibleMoi n'est utilisé qu'à
+    CET endroit ; aucun hook ajouté dans EcranMonCavalier.
+  - Publications privées de la personne visitée : toujours masquées
+    (filtrerPrivesM, inchangé).
+  - Aucune requête, aucun SQL, aucune modification visuelle hors du champ
+    retiré en visite. Prépare le futur aperçu des moments les plus aimés sur
+    la page « Cavaliers de l'écurie ».
+  Test simulé : A sur sa page → cavalier:A ; A visite B → cavalier:B ;
+  passage à C → cavalier:C (nouvelle clé).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-451 (contient 450).
+· (452) 27/09, 23 h 25 — PAGE « CAVALIERS DE L'ÉCURIE », REFONTE ÉTAPE 1 :
+  BANDEAU + PALETTE + CARTES SOBRES (brief ChatGPT ; Blandine : « Ok tu
+  continues sur la page ? »). EcranCavaliersClub SEUL.
+  - FICHIER À POUSSER : images/FOND_CAVALIERS_ECURIE.webp (son image des trois
+    cavalières au coucher du soleil, convertie en webp 1400 × 787, ≈ 100 Ko).
+    S'il manque, le bandeau reste un fond sombre, rien ne casse.
+  - Bandeau : image pleine largeur, cover, centrée, hauteur 250 px + zone du
+    haut de l'iPhone, dégradé sombre en bas vers le fond #080A0B. Dedans : nom
+    de l'écurie (champagne, capitales), « LES CAVALIERS » (Cinzel ivoire),
+    « Une écurie, des histoires à partager. » (italique). Bouton retour gardé
+    (44 px, même fonction retour()).
+  - Palette : noir chaud #080A0B, cartes #111416, ivoire #F2EDE4, champagne
+    #C5AA78 ; plus aucun cyan sur la page.
+  - Cartes : moins hautes (56 px mini, avant 64), avatar 42 px liseré
+    champagne, pseudo Cinzel, « @identifiant · ville », à droite « Voir le
+    profil › ». Toucher la carte ouvre le profil (ouvrir(p) inchangée).
+    « Galop » retiré de la ligne (colonne inexistante, toujours vide).
+    Arabe : la ligne « @identifiant · ville » garde son sens de lecture (dir auto).
+  - TEXTES NOUVEAUX, 7 langues : « Les cavaliers », « Une écurie, des
+    histoires à partager. », « Voir le profil ».
+  - INCHANGÉ : lecture de la liste (hypeCavaliersDuClub), tri, retour,
+    ouverture du profil, messages vide / erreur (recolorés seulement).
+    Aucune requête de plus, aucun SQL, pas encore de dépliage.
+  Test : vrai composant rendu dans Chromium (React de l'index, 5 cavalières
+  simulées, son image) à 390 et 320 px et en arabe : aucune erreur, aucune
+  largeur qui déborde (largeur de page = largeur d'écran), nom long coupé
+  proprement.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-452 (contient 451).
+· (453) 27/09, 23 h 40 — PAGE « CAVALIERS DE L'ÉCURIE », ÉTAPE 2 : L'APERÇU
+  DÉPLIABLE (photos, sans J'aime). Blandine : « Ok continue », puis
+  « plutôt des albums et si pas d'albums du mur ». EcranCavaliersClub SEUL.
+  - DEUX lectures groupées pour toutes les cavalières affichées (jamais une
+    par cavalière) :
+    1) albums_cheval, cible in « cavalier:<id> », visibilite = "public",
+       seulement les albums créés par la cavalière (user_id = id du mur) ;
+    2) commentaires, cible in « cavalier:<id> » (son mur), seulement SES
+       publications (user_id = id du mur), jamais prive.
+    Filtre téléphone : pas de vidéo (estUrlVideo + Mux), seulement des
+    adresses web, marqueur « #cadre » retiré (urlNue), sans doublon.
+  - Par cavalière : ALBUMS s'il y en a, SINON MUR. Les 3 plus récentes (albums
+    récents d'abord, derniers ajouts d'abord) — le tri par J'aime = étape 3.
+    Anciennes lignes « média en plus » du mur (cible post:<id>) : non lues.
+  - Carte : zone identité (toucher = profil, comme avant) + à droite un
+    CHEVRON seulement s'il y a au moins une photo, sinon « Voir le profil › ».
+    Deux boutons séparés (aucun bouton dans un bouton ; le chevron arrête
+    le toucher). Une seule carte ouverte à la fois ; 2e toucher = referme.
+  - Aperçu : séparateur discret, « SES MOMENTS », 1 photo = pleine largeur
+    (100 px de haut), 2 = côte à côte, 3 = une ligne (86 px) ; écart 7 px,
+    coins 10 px, miniatures vignetteHype, loading lazy ; « Voir le profil › ».
+    Pas de plein écran, pas de J'aime (étape 3).
+  - Erreur de lecture : dite sous la liste (« Les aperçus photos n'ont pas pu
+    être lus : … »), jamais avalée.
+  - TEXTES NOUVEAUX, 7 langues : « Ses moments », « Aperçu » (lecteur
+    d'écran), message d'erreur.
+  Test : vrai composant dans Chromium, données simulées : album public
+  (3 photos + 1 vidéo écartée + marqueur retiré) → 3 photos ; mur seul →
+  1 photo ; photo privée écartée (2 au lieu de 3) ; publication écrite par
+  quelqu'un d'autre ignorée ; album privé + texte seul → pas de chevron ;
+  une seule carte ouverte ; 2e toucher referme. Aucune erreur console.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-453 (contient 452).
+· (454) 27/09, 23 h 55 — PAGE « CAVALIERS DE L'ÉCURIE », ÉTAPE 3 : LES J'AIME.
+  Blandine : « Ok. Continue ». EcranCavaliersClub SEUL.
+  - Lus SEULEMENT quand on déplie une carte (geste de la personne, jamais une
+    boucle sur la liste), puis gardés en mémoire (re-déplier = aucune lecture).
+    · photos d'ALBUMS : photo_likes, PAR PHOTO ; on cherche l'adresse telle
+      qu'enregistrée ET sans marqueur « #cadre » ; une même personne n'est
+      comptée qu'une fois par photo ; paquets de 100 adresses, 300 photos max
+      (au-delà : pas de total affiché, pour ne pas mentir) ;
+    · photos du MUR : likes_cartes « post:<id> », PAR PUBLICATION (les photos
+      d'une même publication ont le même nombre) ; paquets de 150.
+  - Tri : J'aime décroissants, puis la plus récente, puis l'ordre d'origine.
+  - Petit « ♥ N » dans l'angle d'une photo seulement si N > 0.
+  - Titre : « SES MOMENTS LES PLUS AIMÉS » s'il y a au moins un J'aime, sinon
+    « SES MOMENTS » (pas de promesse fausse).
+  - Ligne sous les photos : albums « N photos · N J'aime » ; mur
+    « N publications · N J'aime » (toutes ses publications publiques de son
+    mur, texte compris, et leurs J'aime). À droite : « Voir le profil › ».
+    Pendant la lecture : cases sombres à la place des photos, pas de chiffres.
+    Échec : « J'aime non lus : <raison> », photos dans l'ordre récent.
+  - TEXTES NOUVEAUX, 7 langues : « Ses moments les plus aimés », photo(s),
+    publication(s), J'aime (singulier/pluriel), « J'aime non lus : ».
+  Test : vrai composant dans Chromium, données simulées : album (4 photos dont
+  une avec marqueur, 4 J'aime dont un doublon même personne) → « 4 photos ·
+  3 J'aime », ordre ♥2, ♥1, 0 ; mur (3 publications, dont une texte seul avec
+  1 J'aime) → « 3 publications · 3 J'aime », ordre ♥2 puis les plus récentes ;
+  aucun J'aime → « Ses moments », « 1 publication · 0 J'aime ». Aucune erreur.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-454 (contient 453).
+· (455) 27/09, 23 h 30 — PAGE « CAVALIERS DE L'ÉCURIE » : UN SEUL RÔLE PAR
+  ENDROIT. Blandine : « voir le profil et déplier sont au même endroit, on
+  s'y perd », puis « A ».
+  FAIT (EcranCavaliersClub seul) : à droite de la carte, SEULEMENT le chevron
+  (déplier) quand elle a au moins une photo ; sans photo, rien. Toucher la
+  photo ou le nom ouvre le profil, pour toutes les cavalières (inchangé).
+  « Voir le profil › » ne reste que dans l'aperçu déplié.
+  Aucun texte nouveau, aucun SQL. Test : rendu Chromium (cavalière avec
+  photos → chevron ; sans photo → rien à droite), aucune erreur.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-455 (contient 454).
+· BUILD 20260927-456 — CLARIFICATION DES ACTIONS SUR LES CARTES DES CAVALIERS
+  (brief ChatGPT, prévu comme « 455 » ; numéroté 456 car le 455 = retrait de
+  « Voir le profil » à droite, déjà livré).
+  - La photo et l'identité ouvrent le profil (ouvrir(p), inchangée).
+  - Lorsqu'un aperçu photographique existe, la commande « Ses moments ⌄ »
+    (⌃ une fois ouverte, même texte) ouvre ou ferme UNIQUEMENT cet aperçu :
+    vrai bouton type=button, frère de la zone identité, aria-expanded,
+    aria-label selon l'état (« Voir ses moments » / « Masquer ses moments »),
+    44 px minimum, preventDefault + stopPropagation, champagne 11 px, sans
+    fond ni cadre, un peu plus pâle fermée (0,82), pas d'espacement de
+    lettres en arabe.
+  - Sans photo, aucune commande de dépliage n'est affichée.
+  - « Voir le profil › » reste disponible dans l'aperçu ouvert.
+  - TEXTES NOUVEAUX, 7 langues : « Ses moments » (Highlights, Sus momentos,
+    I suoi momenti, 思い出, Momente, لحظات) + les deux aria-label.
+  - Aucune requête, aucun SQL et aucun changement de données.
+  Test Chromium (vrai composant) : 390 et 320 px + arabe — 3 commandes pour
+  3 cavalières avec photos, aucune pour celle sans photo ; commande 102 × 44
+  (60 × 44 en arabe) ; toucher la commande déplie sans ouvrir le profil ;
+  aria-expanded / aria-label corrects ; nom long tronqué, commande visible ;
+  largeur de page = largeur d'écran ; aucune erreur.
+  Remarque (non traitée, hors périmètre) : en arabe, la ligne « @identifiant »
+  s'aligne à gauche (dir auto du 452).
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-456 (contient 455).
+· (457) 27/09, 23 h 40 — PAGE « CAVALIERS DE L'ÉCURIE » : LIGNE « @IDENTIFIANT »
+  EN ARABE. Blandine : « Ok continue » (suite de la remarque du 456).
+  EcranCavaliersClub seul, une ligne : le « dir auto » du 452 est remplacé
+  par un <bdi dir="ltr"> autour de « @identifiant · ville ». En arabe, la
+  ligne s'aligne désormais sous le nom (à droite) et garde son sens de
+  lecture (@ambre.feinn · Itteville). Autres langues : aucun changement.
+  Test Chromium : arabe et français, aucune erreur, largeur OK.
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-457 (contient 456).
+· (458) 27/09, 23 h 50 — PAGE ÉCURIE : BANDEAU POUR LES VISITEURS NON
+  CONNECTÉS. Demande du 27/09 (« quand la personne va dessus on met un message
+  pour qu'il se connecte ou crée un compte ») ; Blandine : « Ok continue ».
+  EcranGuilde seul. Nouvel état visiteurG (null = inconnu, true = visiteur,
+  false = connectée), lu une fois par utilisateurActuel() au montage.
+  Visiteur : carte en haut de la page « Bienvenue sur Hype » + « Connecte-toi
+  ou crée ton compte pour retrouver ton écurie, ses rendez-vous et ses
+  moments. » + deux boutons 44 px : « Se connecter » (AUTH_MODE_SPECTRAL =
+  "connexion") et « Créer un compte » (AUTH_MODE_SPECTRAL = "inscription"),
+  puis écran « connexion » (modes déjà existants). Connectée : rien ne change.
+  Rien n'est ouvert aux visiteurs (la page reste vide pour eux). La fiche
+  d'un rendez-vous ouverte par un lien passe toujours par-dessus.
+  ⚠️ Non fait : après connexion, retour automatique sur le rendez-vous du lien.
+  TEXTES NOUVEAUX, 7 langues : titre, phrase, « Se connecter », « Créer un
+  compte ».
+  Test : le bandeau rendu dans Chromium (React de l'index) à 320 px (fr),
+  390 px (de, ar) : aucun débordement, bouton « Créer un compte » → mode
+  inscription, aucune erreur. La page Écurie entière n'a pas pu être rendue
+  hors de l'appli.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260927-458 (contient 457).
+· BUILD 20260927-459 — RETOUR AU RENDEZ-VOUS PARTAGÉ APRÈS AUTHENTIFICATION
+  (brief ChatGPT validé).
+  RELEVÉ : #r=<id> lu UNE fois au démarrage (CIBLE_DIRECTE → window.__agendaFiche
+  = id, écran « guilde ») ; AgendaClubHype ouvre la fiche puis efface la note ;
+  le hash reste dans l'adresse (pas de replaceState, un seul écouteur
+  hashchange ailleurs) ; boutons du 458 → AUTH_MODE_SPECTRAL puis écran
+  « connexion » ; connexion réussie = apresConnexion() → setEcran("dashboard") ;
+  inscription avec session → setEcran("intro") (questions d'accueil) ;
+  inscription avec confirmation e-mail → mode « confirmation », pas de session ;
+  AUCUN système de retour après connexion n'existait.
+  - Lorsqu'une personne arrive par un lien #r=<id>, la destination est
+    conservée temporairement dans sessionStorage (clé hype_retour_apres_auth,
+    valeur { type: "r", id }), SEULEMENT si aucune session n'existe à
+    l'arrivée (sinon toute ancienne valeur est effacée). Identifiant accepté :
+    lettres, chiffres, « - » et « _ », 80 caractères au plus.
+  - Après une CONNEXION réussie, le rendez-vous partagé est rouvert
+    automatiquement : window.__agendaFiche = id puis écran « guilde » (la même
+    mécanique que le lien #r, rien de dupliqué ; la fiche passe par-dessus).
+  - ÉCART VOULU avec le brief : après une INSCRIPTION créant une session, les
+    questions d'accueil se déroulent comme avant ; le retour a lieu à la
+    première arrivée sur l'accueil (effet dans Router, drapeau
+    window.__hypeRetourApresInscription). Sauter ces questions aurait changé
+    le parcours des nouvelles inscrites.
+  - Sans destination mémorisée, la navigation après authentification reste
+    inchangée (accueil).
+  - La destination est supprimée AVANT la redirection afin d'éviter toute
+    boucle. Mot de passe faux, erreur, abandon : rien n'est consommé.
+    Valeur illisible, vide ou de mauvais type : supprimée, navigation normale.
+  - Aucune donnée personnelle, aucun token et aucune session ne sont stockés
+    manuellement.
+  - Limite : sessionStorage n'est pas partagé si une confirmation
+    d'inscription est ouverte dans un autre onglet ou un autre navigateur (cas
+    habituel : le lien du mail s'ouvre dans Safari). La destination reste alors
+    dans l'onglet d'origine et sert si la personne s'y connecte.
+  - Rendez-vous supprimé : la fiche dit « Ce rendez-vous n'existe plus » (443),
+    sans boucle.
+  - Aucun SQL et aucune nouvelle requête de données (une lecture de session
+    locale, getSession, à l'arrivée par un lien).
+  Test simulé (fonctions réelles, stockage simulé) : arrivée visiteur →
+  mémorisé ; mot de passe faux → conservé ; connexion → id rendu et effacé ;
+  2e passage → rien (pas de boucle) ; déjà connectée → rien gardé ; valeur
+  illisible / mauvais type / identifiant invalide → supprimé, rien rendu.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-459 (contient 458).
+· (460) 28/09, 0 h 00 — PAGE « CAVALIERS DE L'ÉCURIE » : LES CAVALIÈRES
+  RETIRÉES DE L'ÉCURIE N'Y APPARAISSENT PLUS. Blandine : « Ok continue »
+  (dette listée : la liste ignorait ecurie_cavaliers_exclus).
+  CONSTAT : la page Écurie (EcranGuilde) retire les exclues depuis le 06/09
+  (cavaliersExclusEcurie(monClub)) ; la page Cavaliers ne le faisait pas →
+  une cavalière retirée restait listée (et son aperçu photos avec).
+  FAIT (EcranCavaliersClub seul) : même fonction, même nom d'écurie (clubC =
+  monClub), une seule lecture, appliquée juste après la liste et avant le tri.
+  Échec de lecture : liste inchangée (comme la page Écurie), raison en console.
+  NON FAIT, volontairement : hypeCavaliersDuClub lit toujours jusqu'à 2000
+  profils ; la fonction sert à ~15 écrans, la changer = chantier à part
+  (probablement avec SQL, à valider).
+  Test Chromium (vrai composant, 4 cavalières dont 1 exclue) : 3 affichées,
+  « 3 cavalières », lecture faite avec « Écurie Feinn ». Aucune erreur.
+  Aucun texte nouveau, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-460 (contient 459).
+· BUILD 20260927-461 — PAGE « CAVALIERS DE L'ÉCURIE » : CORRECTION VISUELLE
+  APRÈS LE TEST IPHONE (brief ChatGPT validé). EcranCavaliersClub seul.
+  DIAGNOSTIC DE L'IMAGE : le dépôt n'est pas visible d'ici. Sur la capture,
+  le haut est exactement la couleur de secours (#15120F) prévue quand l'image
+  manque → l'image NE SE CHARGE PAS. Le chemin du code est
+  url(images/FOND_CAVALIERS_ECURIE.webp), relatif à index.html, même
+  convention que les autres images (images/…). Fichier livré vérifié : WEBP
+  1400 × 787, 99 846 octets, nom sans espace, majuscules exactes. Cause la
+  plus probable : fichier pas encore poussé dans images/ (ou nom différent).
+  À faire par Blandine : pousser images/FOND_CAVALIERS_ECURIE.webp.
+  Aucune image créée ni renommée.
+  - Le voile noir a été allégé (0,12 en haut → 0,16 au milieu → 0,68 → fond),
+    l'image est largement visible au milieu.
+  - La hauteur du haut de page a été rééquilibrée : bandeau 212 px (au lieu
+    de 250) + zone du haut de l'iPhone ; la liste commence plus tôt.
+  - Les cartes reçoivent un léger relief anthracite/pétrole : dégradé
+    #151A1B → #101415, bordure champagne 0,22, reflet pétrole intérieur
+    discret, ombre douce ; avatar avec liseré champagne 0,42 et ombre chaude
+    légère ; « @identifiant · ville » en #A7ADB0 (plus lisible), <bdi> gardé.
+  - Le texte « Ses moments » est remplacé par un chevron seul (19 px,
+    champagne, 0,8 fermé / 1 ouvert) ; bouton 44 × 44, aria-expanded et
+    aria-label traduit conservés, preventDefault/stopPropagation conservés.
+  - Les actions profil et dépliage restent séparées ; sans photo : rien à
+    droite.
+  - Arabe : plus d'espacement de lettres sur le titre.
+  - Aucune requête, aucun SQL et aucune donnée modifiés (lectures :
+    albums_cheval, commentaires, likes_cartes, photo_likes — inchangées).
+  Test Chromium avec le VRAI fichier image, à 390 et 320 px et en arabe :
+  image chargée et visible (trois cavalières reconnaissables, non étirée),
+  titre lisible, bouton 44 × 44 sans texte, nom long tronqué, largeur de page
+  = largeur d'écran, aucune erreur.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-461 (contient 460).
