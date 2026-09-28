@@ -1,6 +1,53 @@
 # SUIVI — LANGUE ARABE
 ### Linguae · état du chantier `ar`
-*Mis à jour le 24/08/2026 — fusion des deux conversations (celle-ci prend le relais)*
+*Mis à jour le 28/09/2026 — reprise du chantier (état vérifié sur le dépôt GitHub)*
+
+---
+
+## 🟦 ÉTAT RÉEL AU 28/09 — RELEVÉ FAIT SUR LE DÉPÔT
+
+**L'arabe n'a JAMAIS été activé.** `lingo.html` en ligne = `?v=96`, `LANGUES_UI` = 6 langues, pas de drapeau, pas de `rtl`. Seules existent deux pages d'essai (`lingo-arabe-essai.html`, `lingo-controle-arabe.html`), qui ne sont pas l'appli.
+
+✅ **Alerte Connemara du 25/08 : CLOSE.** Le `connemara.js` du dépôt porte bien son arabe (103 champs sur 103).
+
+**Décision de Blandine (28/09) : option 1 — finir d'abord, activer ensuite.** On complète fichier par fichier, sans rien activer ; l'activation se fera à la fin, avec la procédure en 10 étapes (plus bas).
+
+### Lexiques chargés par `lingo.html` — champs arabes / champs à traduire
+
+| état | fichiers |
+|---|---|
+| ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
+| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83)** |
+| 🟥 à faire (0 arabe) | formation, versailles, enseignant, wellington, derby, cross, horsemanship, poney, tradition, western, polo, haras, endurance, vente, elevage, liberte, phrases-monde |
+| 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
+
+### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
+- `ETAPES_I18N` : 13 villes sans arabe — Taupō, Versailles, Saumur, Lamotte, Jerez, Séville, Vejer, Warendorf, Newmarket, Lambourn, Aberystwyth, Wellington, Hickstead.
+- `RECITS` : 15 villes sur 38 ont l'arabe · `POURQUOI` : 17 / 37 · `ACCUEIL_CHAP` : 8 / 36 · `COLL_NOM` : 48 familles / 80.
+- Interface sans arabe : environ 190 libellés (`UI`), plus `LXT`, `PHRASES_FIN`, `DESTINATIONS`, `LANGUE_NOM`, `TH_FAMILLES`, `TH_TXT`, `SON_TXT`, `LG_DRAPEAU`, `VOIX`…
+- ⚠️ Ces tables seront faites **après** les lexiques, en une seule livraison de `lingo.html`.
+
+### 28/09 — lot 1 : les trois villes espagnoles (lexiques seulement)
+- `hype-lingo-lex-andalou.js` (Jerez), `hype-lingo-lex-parade.js` (Séville), `hype-lingo-lex-vejer.js` (Vejer) : `mots`, `def`, phrases, dialogue, et `"ar"` ajouté à `dialogue.langues`.
+- Contrôles : syntaxe OK, 0 voyelle, 0 cyrillique, les six autres langues inchangées au caractère près.
+- `lingo.html` **non modifié** : l'arabe étant dormant, rien ne change à l'écran. Le `?l=` des trois lexiques sera monté au moment de l'activation.
+- Termes posés : الفروسية العليا (haute école), الترويض الكلاسيكي, المساعدات (les aides), الانسجام, الركوب الجانبي (amazone), سائق العربة (meneur), أعنة العربة (guides), عدة الحصان (harnachement), سوط الركوب, المهاميز, سترة الحماية, ضمادات الراحة / ضمادات العمل, واقيات القوائم, تجهيز الحصان بالسرج واللجام (seller).
+- 🟠 **Défaut français repéré (pas corrigé, hors périmètre)** : trois définitions contiennent un « \n » écrit en toutes lettres qui s'affiche tel quel (parade · attelage, formation, urgences-med). L'arabe ne le reproduit pas.
+
+---
+
+## 🟥 ALERTE DU 25/08 — LE `connemara.js` REÇU N'A PLUS D'ARABE
+
+Le fichier `hype-lingo-lex-connemara.js` uploadé le 25/08 contient **0 `mots.ar`, 0 `def.ar`** sur 64 concepts. Le SUIVI compte Connemara à 82 entrées, 2 relectures.
+
+Deux explications possibles, à trancher **avant toute manipulation** :
+- une **copie antérieure** à la traduction a été uploadée (le plus probable) ;
+- ou l'arabe de Connemara **n'a jamais été poussé au dépôt**, et il est perdu.
+
+⚠️ **NE RIEN PATCHER SUR CE FICHIER, NE PAS LE POUSSER** : il écraserait 82 entrées.
+Vérification à faire : ouvrir `hype-lingo-lex-connemara.js` sur GitHub (« Go to file ») et chercher `ar:`. La lettre et les trois volets de Connemara, eux, ont bien leur arabe dans `hype-lingo-villes.js` — c'est le lexique seul qui est en cause.
+
+C'est le même piège que la fusion `villes.js` du 24/08 : **la base de travail doit toujours être le fichier du dépôt, jamais une copie locale**.
 
 ---
 
@@ -20,7 +67,7 @@
 | **Aachen** — Le grand concours | 63 | **1 passe, appliquée** |
 | **La Baule** — L'arrivée | 92 | 2 passes |
 | **Kildare** — Les urgences du cheval | 86 | 3 passes |
-| **Connemara** — Le cheval | 82 | 2 passes |
+| **Connemara** — Le cheval | 82 | 2 passes · 🟥 **à vérifier au dépôt (voir alerte)** |
 | **Édimbourg** — Les urgences du cavalier | 80 | 2 passes |
 | **Newmarket** — L'écurie | 74 | 2 passes |
 | **Lambourn** — Le pansage | 70 | 1 passe |
@@ -30,34 +77,68 @@
 
 **1436 entrées traduites** (dont 96 dans quatre fichiers de réserve non chargés : pansage 13, jour J 5, filet 22, dressage 56). 🟥 Aucune validée par un arabophone.
 
-✅ **Les dix villes ont été relues au moins une fois.**
-
-✅ **Les cinq villes demandées le 24/08 sont faites** : Le Morne, Connemara, Newmarket, Lambourn, Aberystwyth.
+✅ **Toutes les villes traduites ont été relues au moins une fois.**
 
 ---
 
-## 🟥 FUSION DU 24/08 — DEUX CONVERSATIONS EN PARALLÈLE
+## ✅ RÉGLÉ LE 25/08 — LA FUSION `villes.js`
 
-Badminton et Oliva ont été traduites dans une seconde conversation, **sur une copie antérieure des fichiers** : la `lingo.html` finale de la première conversation (?v=77) ne contenait rien de ce travail, et réciproquement. **Fusion faite** : base = fichiers de la première conversation, réinjection intégrale de Badminton + Oliva (versions post-relecture). `VER` → **?v=78**.
-
-🟥 **`hype-lingo-villes.js` reste à fusionner.** La version de la première conversation (avec l'arabe de Connemara, Newmarket, Lambourn, Aberystwyth, Kildare, Édimbourg) n'a pas été fournie. La lettre et les volets de **Badminton** n'existent que dans une copie fondée sur l'ancienne base — **ne pas pousser cette copie-là**, elle écraserait quatre villes. Dès réception du bon `villes.js`, y greffer Badminton (7 entrées, ancres connues).
-
-**Anomalies structurelles relevées (pas un sujet arabe, à trancher un jour) :**
-- `ACCUEIL_CHAP` : clés orphelines `concours`, `urgences`, `dialogues` depuis le découpage du 18/08 ; `rome`, `urgences-vet`, `urgences-med` absentes, et **rien pour Aachen non plus** (Rome, Kildare, Édimbourg et Aix-la-Chapelle n'ont pas de mot d'accueil). `oliva` créée le 24/08 — texte de Claude validé dans son principe ; le relecteur propose une variante (« Avant d'entrer en piste, il faut d'abord entrer dans la liste. Vérifie tout deux fois. ») — à trancher.
-- 🟥 **24/08 (Flyinge/Barcelone)** : **dix familles `COLL_NOM` absentes de toutes les langues** (bug du point 8) — créées en sept langues, textes de Claude **à valider** ; sept familles existantes complétées en arabe. **Le chapeau (`PHRASES_FIN`) couvre 29 villes sur 38** : Flyinge, Barcelone et 7 autres n'en ont dans aucune langue — chantier français, pas arabe. **La table d'objectifs `TH_LIB`** (« voyager avec son cheval », 23 entrées) a reçu son arabe le 24/08 sur validation Blandine — dormante comme le reste, glossaire des relectures appliqué. Le nom de chapitre de Flyinge disait البيطرة (médecine vétérinaire) — corrigé en حدادة الخيل, **confirmé par le relecteur le 24/08**. ⚠️ La famille `deroule` (partagée entre chapitres) a été traduite سير الرحلة sur instruction de la relecture Barcelone — à revoir si une ville de dressage l'utilise un jour. Familles complétées le 24/08 au soir : `selle`, `filet`, `mouvements` (حركات الترويض), `notation` ; `tenue` créée en sept langues (réserve du dressage, à valider). Le mot d'accueil du chapitre matériel a reçu son arabe.
-- `COLL_NOM` : **quatre clés dupliquées** (`alerte`, `cavalier`, `cheval-urg`, `jour-j`), traductions en/ja divergentes ; la seconde écrase la première en silence.
+Le point 🟥 « `hype-lingo-villes.js` reste à fusionner » est **clos**. Vérifié sur le fichier du dépôt : 9 villes y portent leurs 7 entrées arabes (Newmarket, Lambourn, Connemara, Walsall, Aberystwyth, Windsor, **Badminton**, Kildare, Édimbourg) ; Hickstead n'est pas traduite, c'est normal. `villes-monde.js` en porte 8 (Oliva, Aachen, La Baule, Le Morne, Spruce, Barcelone, Flyinge, Clonbinane). Total 17 villes = les 17 du tableau.
 
 ---
 
-## 🟥 LE TROU DU 24/08 — SEIZE VILLES SANS `ETAPES_I18N`
+## LES CORRECTIONS FRANÇAISES DE BARCELONE — ÉTAT AU 25/08
 
-Découvert en vérifiant l'objet de collection du Morne. **Seize villes sur 38 n'avaient aucune entrée** dans `ETAPES_I18N` : leur nom de chapitre et leur souvenir s'affichaient **en français dans les six langues**, depuis leur création.
+Feu vert de Blandine le 25/08. **82 remplacements appliqués**, `VER` → **?v=92**, caches `barcelone ?l=5`, `ecurie ?l=4`, `villes-monde ?l=4`.
 
-Maurice, Burghley, Golegã, Fontainebleau, Barcelone, Rome, Vérone, Dubaï, Tokyo, Tamworth, Buenos Aires, Lexington, Santa Ynez, Spruce Meadows, Flyinge, Clonbinane.
+**Appliqué (six langues fr/en/es/it/de/ja) :**
 
-**Ce n'était pas un sujet arabe.** C'était un trou pour toutes les cavalières non francophones, invisible en naviguant en français. **32 textes écrits** en sept langues, les 38 villes sont maintenant complètes en six langues.
+| # | correction | où |
+|---|---|---|
+| 1-A | **ordre du dialogue** : barre de recul → attache → fermeture du pont | lexique barcelone |
+| 4 | licol : le licol de sécurité existe | barcelone **+ ecurie** |
+| 5 | protège-queue : « jamais directement sur les crins » retiré | barcelone |
+| 7 | van : *horse van* existe | barcelone |
+| 8 | camion : *van* seul ne s'emploie pas, sauf *horse van* | barcelone |
+| 9 | débarquer : à reculons possible selon le cheval | barcelone |
+| 10 | attache rapide : « risque de se blesser », pas « se blesse » | barcelone |
+| 11 | volet 2 : « chaque protection cède avant le cheval » supprimé | **villes-monde.js** |
+| 12 | voyage : équivalence « 4 h = une séance » retirée | barcelone |
+| 13 | aire de repos : la chaleur prime sur la porte fermée | barcelone |
+| 14 | arrivée : l'aération passe avant l'attente | barcelone |
+| 15 | filet à foin : sans manger la tête levée | barcelone |
 
-⚠️ C'est le deuxième défaut de ce type après `COLL_NOM`. Les deux ne se voient qu'en changeant de langue.
+🟥 **Encore en attente :**
+- **2 · `pause`** — définition d'un cours d'équitation dans un chapitre de transport. `cours.js` **n'a pas été fourni**, correction impossible sans lui.
+- **3 · `temperature`** — conflit réel : la définition parle de Calgary et des concours d'hiver, **ce qui est juste dans `froid.js` (Spruce Meadows, Canada) et hors sujet à Barcelone**. Corriger à l'identique partout supprimerait Calgary du chapitre où il a sa place. À trancher : version courte partout, ou version transport propre à Barcelone (= divergence assumée sur ce `ref`).
+- **6 · `passeport`** — bloqué par l'alerte connemara ci-dessus.
+
+**Découvertes de cartographie (le commentaire d'en-tête de `barcelone.js` est faux sur trois points) :**
+- `filet-foin` et `van` **n'existent plus que dans Barcelone** — pas de synchronisation à faire, pas de divergence.
+- `licol` est bien dupliqué dans `ecurie.js` : les six langues étaient identiques, **mais les deux `ar` divergeaient déjà** (celui d'ecurie affirmait l'interdiction absolue). L'arabe d'ecurie a été aligné sur celui de Barcelone, plus nuancé et relu. ⚠️ **Un `ar` relu a donc été modifié : à faire confirmer au relecteur.** Les `mots.ar` divergent aussi (`الرسن` à Barcelone, `الرسن من دون شكيمة` à l'écurie) — **non touché, à trancher**.
+- `passeport` est bien dupliqué dans `connemara.js`, à l'identique en six langues.
+
+---
+
+## 🟥 LE POINT DE VIGILANCE DU 25/08 — L'ARABE EN AVANCE SUR LE FRANÇAIS
+
+Sur les sept définitions de Barcelone corrigées le 25/08, **l'arabe disait déjà la version nuancée**, et les trois répliques du dialogue étaient **déjà dans l'ordre sûr**. Le traducteur avait rattrapé chaque affirmation dangereuse au passage, sans le signaler.
+
+Conséquence : là où le français n'a pas encore été corrigé, **l'arabe dormant ne dit pas la même chose que les six langues actives**. Le jour de l'activation, ces écarts deviendront visibles.
+
+👉 **À faire un jour :** un diff systématique fr↔ar sur les 17 villes traduites, pour lister les endroits où l'arabe a corrigé le français en silence. Chacun est une correction française en attente.
+
+---
+
+## ANOMALIES STRUCTURELLES (pas un sujet arabe, à trancher un jour)
+
+- `ACCUEIL_CHAP` : clés orphelines `concours`, `urgences`, `dialogues` depuis le découpage du 18/08 ; `rome`, `urgences-vet`, `urgences-med` absentes, et **rien pour Aachen non plus**. `oliva` créée le 24/08 — variante du relecteur jamais tranchée.
+- **Dix familles `COLL_NOM`** créées le 24/08 en sept langues (Flyinge ×6, Barcelone ×4), textes de Claude **à valider**. `grand` et `tenue` également.
+- **Le chapeau (`PHRASES_FIN`) couvre 29 villes sur 38.**
+- `COLL_NOM` : **quatre clés dupliquées** (`alerte`, `cavalier`, `cheval-urg`, `jour-j`), la seconde écrase la première en silence.
+- Famille `deroule` = سير الرحلة (partagée) — à revoir si une ville de dressage l'utilise.
+- **`ref` mal nommé** (25/08) : `d-bcn-barre-recul` dit maintenant « ferme le pont ». Renommer touche la progression Supabase — laissé tel quel sur décision.
+- La fiche `ARABE-flyinge.md` est en retard de deux points sur les fichiers (n°11 مربط, n°88 الحدوات) — à régénérer.
 
 ---
 
@@ -75,19 +156,9 @@ Maurice, Burghley, Golegã, Fontainebleau, Barcelone, Rome, Vérone, Dubaï, Tok
 | 8 | 🟥 `lingo.html` | **`COLL_NOM` — chaque valeur de `coll` du lexique** |
 | 9 | 🟥 `lingo.html` | **`ETAPES_I18N` — nom du chapitre, nom de la ville, souvenir** |
 
-**Les points 5, 7, 8 et 9 ont chacun été oubliés au moins une fois.** Ils ne se voient pas à l'écran tant que l'arabe n'est pas activé — sauf le 8, qui casse **immédiatement** les six autres langues.
+**Les points 5, 7, 8 et 9 ont chacun été oubliés au moins une fois.** Seul le 8 se voit immédiatement : il casse les six autres langues.
 
----
-
-## 🟥 LE BUG DU 23/08 — LES MOTS EN FRANÇAIS
-
-Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en français »*.
-
-**Cause :** `COLL_NOM` traduit les noms de familles de mots. Le code fait `tx(COLL_NOM[c.coll])`, qui retombe sur le français quand la clé n'existe pas. J'avais inventé les familles `science` et `nature` pour Clonbinane sans les déclarer. Kildare (7 familles) et Édimbourg (6) avaient le même défaut.
-
-**Corrigé** : 13 familles ajoutées à `COLL_NOM`, les 17 utilisées sont désormais toutes couvertes. `VER` → `?v=73`.
-
-⚠️ **Ce bug touchait les six langues, pas seulement l'arabe.** Une ville neuve dont les `coll` ne sont pas déclarés affiche ses familles en français partout. C'est le point 8 ci-dessus.
+**Contrôles à chaque livraison :** `node --check` sur chaque `.js` **et** sur les 6 blocs inline de `lingo.html` · vocalisation = 0 · cyrillique = 0 · parité ja/ar · 38 balises de ville · diff limité aux ajouts · ancres uniques (`assert count == 1`).
 
 ---
 
@@ -96,7 +167,9 @@ Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en 
 - Arabe standard moderne
 - 🟥 **Aucun signe vocalique.** Ne pas en réintroduire au coup par coup
 - 🟥 **Les consignes au FÉMININ singulier** (le club s'adresse à une cavalière) ; **la lettre au MASCULIN** (le narrateur est le même dans les 38 villes). Cette distinction a été violée deux fois
+- Boutiques et organisations au pluriel de politesse
 - **Formulation simple et descriptive** quand le terme technique n'est pas sûr — décrire juste vaut mieux que nommer faux
+- **Règle relecteur du 24/08 :** terme international de dressage sans équivalent arabe stabilisé → **translittération puis explication** (l'appuyer = الأبوييه)
 - Pour les chapitres de secours : **consignes courtes, sans tournure élégante**, avec l'exception du danger immédiat
 
 ---
@@ -104,10 +177,10 @@ Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en 
 ## LE CIRCUIT DE RELECTURE
 
 1. Je traduis, je livre les fichiers
-2. Je produis **une fiche unique par ville** — `ARABE-<ville>.md`, sections A à F, numérotation continue
+2. Je produis **une fiche unique par ville** — `ARABE-<ville>.md`, sections A à G, numérotation continue, textes FR + AR
 3. Blandine la fait relire par une autre source
 4. La relecture revient par numéros, avec texte de remplacement et motif
-5. J'applique, je régénère la fiche
+5. J'applique **uniquement ce qui est listé**, je régénère la fiche (« relecture n appliquée »)
 
 **Une seule fiche par ville.** Il y en a eu six pour trois villes avant regroupement — c'était ingérable.
 
@@ -115,7 +188,7 @@ Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en 
 
 ## 🟥 CE QUE LA RELECTURE ARABE A TROUVÉ DANS LE FRANÇAIS
 
-**Onze corrections du texte source, dans les six langues.** C'est devenu le bénéfice principal du chantier : traduire force à relire chaque affirmation.
+**Vingt-neuf corrections du texte source.** C'est devenu le bénéfice principal du chantier : traduire force à relire chaque affirmation.
 
 | ville | l'affirmation | le problème |
 |---|---|---|
@@ -132,39 +205,25 @@ Blandine : *« j'ai lancé les mots de la ville australienne et ils étaient en 
 | Aberystwyth | « la récupération, jusqu'à ce que le cheval soit sec » | critère **physiologique**, pas visuel |
 | Édimbourg | « le 112 fonctionne même sans carte SIM » | **faux** au Royaume-Uni |
 | Édimbourg | « la personne à chercher avant même d'appeler » | pouvait **retarder un appel vital** |
-| Badminton | « prendre l'option ne coûte jamais de pénalités » | trop absolu — un refus préalable reste pénalisé |
-| Badminton | « des pénalités seconde par seconde » | dépend du barème (FEI : fractions de point) |
-| Badminton | « l'obstacle est LA dernière épreuve » | vrai à Badminton, pas dans tous les formats |
-| Badminton | « le relief épuise bien plus que la hauteur » | non mesurable, trop absolu |
-| Badminton | « deux cartons en un an = suspendu » | à rattacher au règlement de la fédération |
-| Badminton | « convertir un niveau en hauteur, jamais en mot » | la technicité et le format comptent aussi |
-| Badminton | « un jour ou trois jours » | les formats modernes sont plus variés |
-| Oliva | « il faut une licence du pays » | exigences selon la fédération et le niveau (FEI) |
-| Oliva | « le steward a autorité pour éliminer » | il saisit le jury, ne décide pas seul |
-| Oliva | « frais jamais remboursés, règle partout » | dépend du règlement, du motif, des dates |
-| Oliva | « pas d'engagement tardif sur un grand concours » | possible si règlement et places le permettent |
-| Oliva | « deux numéros, sinon élimination » | modalités variables selon les compétitions |
+| Badminton | « prendre l'option ne coûte jamais de pénalités » | trop absolu |
+| Badminton | « des pénalités seconde par seconde » | dépend du barème |
+| Badminton | « l'obstacle est LA dernière épreuve » | vrai à Badminton, pas partout |
+| Badminton | « le relief épuise bien plus que la hauteur » | non mesurable |
+| Badminton | « deux cartons en un an = suspendu » | à rattacher au règlement fédéral |
+| Badminton | « convertir un niveau en hauteur, jamais en mot » | la technicité compte aussi |
+| Badminton | « un jour ou trois jours » | formats modernes plus variés |
+| Oliva | « il faut une licence du pays » | selon fédération et niveau |
+| Oliva | « le steward a autorité pour éliminer » | il saisit le jury |
+| Oliva | « frais jamais remboursés » | dépend du règlement |
+| Oliva | « pas d'engagement tardif sur un grand concours » | possible selon règlement |
+| Oliva | « deux numéros, sinon élimination » | modalités variables |
 | Oliva | « monter de hauteur plus simple que descendre » | pas universel |
-| Oliva | « on vérifie au bureau la veille » | souvent en ligne aujourd'hui |
-| Oliva | « membership = la seule exigence britannique » | varie selon discipline, niveau, day tickets |
-| Oliva | « au chronomètre OU au barème A » | fausse opposition — un barème A peut être au chrono |
-| 🟥 Barcelone | **dialogue E84–E86 : « ferme le pont » puis « attache-le » puis « vérifie la barre »** | **ORDRE DANGEREUX** — l'ordre sûr est barre de recul → attache → pont |
-| Barcelone | déf. de « la pause » : marche au pas, rênes longues | **vient d'un cours d'équitation**, pas du transport |
-| Barcelone | déf. de « la température » : Canada, Calgary, bulletins météo | **vient du chapitre du froid**, rien à voir avec Barcelone |
-| Barcelone | « 4 h de route fatiguent autant qu'une séance » | équivalence non démontrée |
-| Barcelone | « chaque protection cède avant le cheval » | trop absolu, peut être dangereux |
-| Barcelone | « jamais un cheval en liberté avec un licol » | il existe des licols de sécurité conçus pour céder |
-| Barcelone | « le protège-queue jamais directement sur les crins » | faux en règle générale |
-| Barcelone | « contrôlé à l'entrée de tout transport » | pas systématique |
-| Barcelone | « un Américain dit trailer pour les deux » / « jamais van » | horse van existe |
-| Barcelone | « toujours ouvrir l'avant, jamais à reculons » | pas universel — certains chevaux descendent à reculons |
-| Barcelone | « attaché ferme = blessé à la nuque » | risque réel, conséquence pas automatique |
-| Barcelone | « on ne débarque pas » à l'aire de repos / « attendre avant d'ouvrir » | interdictions/règles trop absolues, l'attente porte fermée peut être dangereuse en chaleur |
-| Barcelone | « accrocher le filet assez haut » | il faut aussi une position de tête confortable |
+| Oliva | « on vérifie au bureau la veille » | souvent en ligne |
+| Oliva | « membership = seule exigence britannique » | varie selon discipline |
+| Oliva | « au chronomètre OU au barème A » | fausse opposition |
 
-✅ **Les 16 corrections Badminton/Oliva ont été APPLIQUÉES aux six langues le 24/08** (validation Blandine), chirurgicalement — seule la phrase fautive a changé dans chaque langue. Lexiques passés en `?l=2`, `VER` → `?v=79`.
-
-Plus deux incohérences de contenu : « quatre nations » / « cinq nations » entre deux fichiers, et le chapitre d'Édimbourg qui s'appelait encore « Les dialogues ».
+✅ Les 16 corrections Badminton/Oliva appliquées le 24/08 (`?l=2`, `VER ?v=79`).
+✅ Les 12 corrections Barcelone appliquées le 25/08 (`VER ?v=92`) — détail dans la section ci-dessus, 3 restent en attente.
 
 ---
 
@@ -185,7 +244,6 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | le paddock | المرعى المسيج |
 | le bush | البرية الأسترالية |
 | le rond de longe | حلبة التدريب الدائرية |
-| la rampe du van | منحدر المقطورة |
 | l'abreuvoir | حوض الشرب |
 | le degré sous zéro | درجة تحت الصفر |
 | l'équitation scientifique | الفروسية العلمية |
@@ -198,31 +256,6 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | la fourbure | التهاب صفائح الحافر |
 | le coup de sang | انحلال العضلات الناتج عن الجهد |
 | le bouchon œsophagien | انسداد المريء |
-| la commotion cérébrale | ارتجاج الدماغ |
-| la nuque | مؤخرة الرقبة |
-| ne pas bouger | لا تتحركي |
-| *forward horse* | حصان ذو اندفاع طبيعي |
-| *genuine horse* | حصان موثوق وطيب الطباع |
-| 🟥 les rênes | الأعنة · العنان |
-| 🟥 le filet, la bride | اللجام |
-| le licol | الرسن |
-| le trot enlevé | الخبب مع النهوض والجلوس |
-| le lagon | البحيرة الشاطئية |
-| le récif-barrière | الحاجز المرجاني |
-| la marée basse · haute | الجزر · المد |
-| le box | حجرة الحصان |
-| la sellerie | غرفة السروج |
-| le manège · la carrière | الميدان المغطى · الميدان المكشوف |
-| la litière | الفرشة |
-| le foin | الدريس |
-| le concours complet / eventing | الفروسية الثلاثية |
-| le cross | اختراق الضاحية · اختبار اختراق الضاحية |
-| le dressage | الترويض |
-| le concours | المسابقة |
-| l'épreuve (the class) | الشوط |
-| s'engager · l'engagement | التسجيل في المسابقة · التسجيل |
-| le dossard | رقم المشاركة |
-| le secrétariat | مكتب التسجيل · أمانة المسابقة |
 | le commissaire (steward) | المشرف (Steward) |
 | le chef de piste | مصمم المسار |
 | la cocarde | شارة الفوز |
@@ -251,10 +284,13 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | la forge | الكور *(jamais المصهر)* |
 | le haras (Flyinge) | مربط فلينغه |
 | la ferrure, le shoeing en général | تركيب الحدوات |
+| le parage | تقليم الحافر |
+| la fourchette | نسر الحافر |
 | pieds nus (explications) | الحافر غير المنتعل / من دون حدوات |
 | la reconnaissance du parcours | معاينة مسار الحواجز |
-| l'appuyer | الأبوييه *(translittération — règle relecteur 24/08 : pour les termes internationaux de dressage sans équivalent arabe stabilisé, garder le terme translittéré et expliquer ensuite ; à arbitrer aussi pour التغيير الطائر et consorts à la relecture de la réserve du dressage)* |
+| l'appuyer | الأبوييه *(translittération — règle relecteur 24/08 ; à arbitrer aussi pour التغيير الطائر à la relecture de la réserve du dressage)* |
 | le véhicule de transport | مركبة النقل |
+| le licol | 🟥 الرسن *(Barcelone)* / الرسن من دون شكيمة *(écurie)* — **à trancher** |
 
 ---
 
@@ -275,7 +311,7 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 
 **Substitutions systématiques :** `الوبر` → `الشعر` · `المضمار` → `ميدان الركوب الداخلي` · `المرج` → `المرعى` · `المشرب` → `حوض الشرب` · `المربط` → `حجرة` · `جواب` → `استجابة` · `الالتباس` → `الارتباك` · `الركض` → `العدو الخفيف`
 
-**Verdict sur le vocabulaire technique rare :** garder les **formulations descriptives**. Pour le matériel d'hiver et les termes vétérinaires, elles sont plus compréhensibles qu'un mot unique régional. Ne pas chercher à les raccourcir.
+**Verdict sur le vocabulaire technique rare :** garder les **formulations descriptives**. Ne pas chercher à les raccourcir.
 
 ⚠️ **Piège à venir :** plusieurs textes disent « les six langues ». Avec l'arabe, ce sera faux. Kildare a déjà été corrigé en « toutes les langues disponibles » — à surveiller ailleurs.
 
@@ -285,7 +321,7 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 
 *Établie en relecture le 24/08. La plus précise dont on dispose.*
 
-🟥 **NE PAS se contenter d'ajouter `"ar"` à `LANGUES_UI`.** Cela ferait apparaître une langue à moitié branchée, avec de nombreux retours en français. Les tables suivantes n'ont aucune valeur `ar` à ce jour : `LANGUES_UI`, `LG_DRAPEAU`, `VOIX`, `LX_LANGUES`, `LANGUE_NOM`, et beaucoup de libellés d'interface.
+🟥 **NE PAS se contenter d'ajouter `"ar"` à `LANGUES_UI`.** Cela ferait apparaître une langue à moitié branchée. Les tables suivantes n'ont aucune valeur `ar` à ce jour : `LANGUES_UI`, `LG_DRAPEAU`, `VOIX`, `LX_LANGUES`, `LANGUE_NOM`, et beaucoup de libellés d'interface.
 
 **Les dix étapes :**
 
@@ -300,7 +336,7 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 9. Retirer les commentaires « arabe dormant » **uniquement après** un test réel de tous ces écrans sur téléphone
 10. 🟥 **Ne pas toucher aux six langues actives** pendant le branchement
 
-**Et avant tout cela :** les 30 villes restantes, et une validation native de tout ce qui aura été écrit.
+**Et avant tout cela :** les 21 villes restantes, et une validation native de tout ce qui aura été écrit.
 
 ---
 
@@ -310,7 +346,7 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 |---|---|---|---|---|
 | 1 | La Baule | France | L'arrivée | ✅ |
 | 2 | Le Morne | Maurice | La balade | ✅ |
-| 3 | Connemara | Irlande | Le cheval | ✅ |
+| 3 | Connemara | Irlande | Le cheval | ✅ 🟥 *(à vérifier au dépôt)* |
 | 4 | Newmarket | Angleterre | L'écurie | ✅ |
 | 5 | Lambourn | Angleterre | Le pansage | ✅ |
 | 6 | Walsall | Angleterre | Le matériel | ✅ |
@@ -319,17 +355,17 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 | 9 | Wellington | États-Unis | La tournée d'hiver | — |
 | 10 | Hickstead | Angleterre | Le derby | — |
 | 11 | Burghley | Angleterre | Le cross | — |
-| 12 | Badminton | Angleterre | Le concours | ✅ *(lettre+volets : villes.js à fusionner)* |
+| 12 | Badminton | Angleterre | Le concours | ✅ |
 | 13 | Kildare | Irlande | Les urgences | ✅ |
 | 14 | Édimbourg | Écosse | Les dialogues | ✅ |
-| 15 | Versailles | France | L'art équestre | — |
+| 15 | Versailles | France | L'art équestre | 🟦 **en cours** |
 | 16 | Saumur | France | Le Cadre Noir | — |
 | 17 | Lamotte-Beuvron | France | Le poney | — |
 | 18 | Golegã | Portugal | L'élevage | — |
 | 19 | Fontainebleau | France | Les jeunes chevaux | — |
 | 20 | Jerez | Espagne | Le cheval | — |
 | 21 | Séville | Espagne | La présentation | — |
-| 22 | Vejer | Espagne | L'intendance | — |
+| 22 | Vejer | Espagne | L'intendance | 🟦 **à suivre** |
 | 23 | Barcelone | Espagne | Voyager avec son cheval | ✅ |
 | 24 | Oliva Nova | Espagne | S'engager | ✅ |
 | 25 | Rome | Italie | La Coupe des Nations | — |
@@ -349,10 +385,15 @@ Plus deux incohérences de contenu : « quatre nations » / « cinq nations » e
 
 ---
 
-*À tenir à jour à chaque ville traduite. Vérifier les NEUF points avant de cocher.*
+## EN ATTENTE — LA SUITE
 
+1. 🟥 **Vérifier `connemara.js` au dépôt** (alerte en tête de document) — bloque la correction 6.
+2. 🟦 **Traduire Versailles, puis Vejer** (lexiques fournis le 25/08), puis les 19 villes restantes.
+3. 🟦 **Relectures attendues** : `materiel-reserve` (22), `dressage-reserve` (56, avec arbitrage التغيير الطائر selon la règle الأبوييه).
+4. 🟥 **Trancher** : la définition de `temperature` (Calgary) · `cours.js` pour `pause` · le `mots.ar` de `licol` · la variante du mot d'accueil d'Oliva · l'harmonisation منحدر التحميل au Morne.
+5. À valider par relecture : les familles créées le 24/08, `TH_LIB` (23 objectifs), et l'arabe de `licol` modifié le 25/08 dans `ecurie.js`.
+6. 🟥 **Aucune validation par un arabophone natif** sur l'ensemble du chantier.
 
 ---
 
-## POINT DE PASSATION — 24/08/2026 AU SOIR
-Conversation pilote pleine. La suite se fait en nouvelle conversation avec **PASSATION-ARABE.md**. État : 17 villes · 1436 entrées · VER ?v=88 · relectures appliquées jusqu'à Aachen incluse (VER ?v=89). En vol : relecture Aachen annoncée, réserves filet et dressage chez le relecteur, Versailles et Vejer à traduire, feu vert français Barcelone en attente.
+*À tenir à jour à chaque ville traduite. Vérifier les NEUF points avant de cocher.*
