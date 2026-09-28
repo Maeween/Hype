@@ -7471,3 +7471,226 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     (estCompteFeinnHype(user)).
   TEXTE NOUVEAU, 7 langues : « Mes quêtes » (My quests, Mis misiones…). Aucun SQL. node --check OK (18 blocs), un seul marqueur.
   Build 20260928-495 (contient 494).
+· (496) 28/09, 21 h 00 — PAGE ÉCURIE : DE L'AIR SOUS LES 6 ONGLETS. Blandine
+  (capture) : « laisse plus d'espace entre le bas des 6 onglets et l'onglet
+  suivant ». Marge sous la grille Cavaliers / Chevaux / Agenda / Actualités /
+  Souvenirs / Santé : 2 → 30 px (avant « La philosophie du club »).
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-496 (contient 495).
+· (497) 28/09, 21 h 05 — CLASSEMENT DES CLUBS MASQUÉ, TEMPORAIREMENT. Blandine :
+  « est-ce que tu peux temporairement masquer le classement des clubs tant qu'il
+  n'y a pas assez de cavaliers ».
+  Nouvelle constante HYPE_CLASSEMENT_CLUBS_VISIBLE = false (à côté de
+  estCompteFeinnHype). Masqués pour TOUT LE MONDE (son compte compris) :
+  - page Communauté : le titre « Classement des clubs », la liste et « Voir les
+    autres clubs » ;
+  - page Écurie : le cristal du rang (#N) à droite du nom du club (une colonne
+    vide le remplace, le nom reste centré).
+  Le podium (PodiumClubsHype) n'était déjà plus affiché nulle part. Rien n'est
+  supprimé ; rallumer = passer la constante à true. Les calculs continuent en
+  arrière-plan (inchangés).
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-497 (contient 496).
+· (498) 28/09, 21 h 08 — LE CRISTAL DU RANG REVIENT SUR LA PAGE ÉCURIE. Blandine :
+  « tu peux laisser la petite icône sur la page de l'écurie mais masque juste
+  sur la page communauté ». Seule la page Communauté garde le classement
+  masqué (HYPE_CLASSEMENT_CLUBS_VISIBLE = false). Le cristal ouvre toujours
+  Communauté (la page s'ouvre en haut, la section étant masquée).
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-498 (contient 497).
+· (499) 28/09, 21 h 30 — « MON RÉCIT » (page Cavalier) SUR SON IMAGE DE CHEVAL.
+  Blandine : maquette avec son image (tête de cheval noir à droite) ; choix B
+  (le texte comme aujourd'hui) « en essayant de préserver la tête du cheval en
+  entier à droite ». Pour toutes les pages Cavalier (siennes et visites).
+  - Image embarquée (HYPE_FOND_RECIT, webp 1230 × 500, ~19 Ko) : aucun
+    fichier à pousser.
+  - Posée en <img> calée en bas à droite, hauteur = celle de l'encart mais
+    plafonnée à 290 px : la tête entière tient toujours à droite, même avec
+    un long récit ; si l'encart est plus haut, le haut de l'image est fondu
+    (mask) dans le fond #05080c.
+  - Fondu sombre de gauche à droite ; le texte n'occupe que 56 % de la
+    largeur (jamais sur la tête), ombre portée légère ; lettrine dorée.
+  - Titre, trait, bouton « Modifier mon récit / Lire la suite » inchangés.
+  Testé en rendu (récit court et long). Aucun texte, aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-499 (contient 498).
+· (500) 28/09, 22 h — MON RÉCIT : NOUVELLE IMAGE VERTICALE, TEXTE PLUS PETIT,
+  BADGE PREMIUM ADMIN NON FLOTTANT. Blandine envoie une image verticale de
+  Hey Baby + un brief ChatGPT (tête couverte par le texte, police trop grande,
+  lignes de 2-3 mots, encart trop haut, badge Premium sur le titre), avec
+  « t'es pas obligé de tout suivre ».
+  - HYPE_FOND_RECIT remplacée par l'image verticale (webp 640 × 800, ~14 Ko),
+    calée en bas à droite, hauteur plafonnée à 360 px, fondu à gauche.
+  - Dégradé plus sombre à gauche, image bien visible sur le tiers droit.
+  - Colonne de texte : 64 % de la largeur (au lieu de 56 %), la tête reste libre.
+  - Texte du récit : 13,5 px, interligne 1,45, blanc cassé #E6E2D8, retours
+    à la ligne naturels ; lettrine dorée retirée. Encart minHeight 250.
+  - Le bouton admin Premium/Gratuit (visible seulement pour les modérateurs)
+    passe de « fixed » à « absolute » : il ne flotte plus sur le titre
+    « Mon récit » quand on fait défiler.
+  - Non appliqué : la liste à puces ✨ du brief (Blandine avait choisi B, le
+    texte tel quel).
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-500 (contient 499).
+· (501) 28/09, 22 h 15 — MON RÉCIT : IMAGE DE L'ŒIL, MOINS DE RETOURS À LA LIGNE.
+  Blandine envoie une nouvelle image (paysage, œil de cheval noir à droite) :
+  « refais avec cette image là et essaye d'aller moins à la ligne… les
+  phrases devraient tenir pour la plupart sur leur ligne ».
+  - HYPE_FOND_RECIT = son image recadrée sur la tête (webp 384 × 440, ~15 Ko),
+    calée à droite, centrée en hauteur, 180 px max, bords haut/bas/gauche fondus.
+  - Colonne de texte : 74 % de la largeur (au lieu de 64 %), texte 13 px,
+    interligne 1,42 ; dégradé sombre décalé en conséquence ; encart
+    minHeight 180 (au lieu de 250) → carte nettement moins haute.
+  - Testé en rendu à 375, 390 et 430 px : l'œil reste dégagé, les phrases
+    courantes tiennent sur une ligne (une phrase longue peut encore passer
+    sur deux à 375 px).
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-501 (contient 500).
+· (502) 28/09, 22 h 40 — PAGE CAVALIER : NOUVEAU BLOC « MES AMIS » (maquette de
+  Blandine + brief ChatGPT). Choix A : « Voir tout » ouvre la Communauté (aucune
+  page « tous mes amis » n'existe) ; le tri des suggestions par vraie écurie est
+  reporté (« on avisera après »).
+  - Nouveau composant HypeAmisVitrine, propre à la page Cavalier.
+    EncartCavaliersSpectral (utilisé sur six autres pages) N'EST PAS TOUCHÉ.
+  - En-tête : icône amis, « MES AMIS » / « SES AMIS » en visite, « LA TEAM
+    <pseudo> », nombre réel d'amis (même calcul qu'avant : amisDe / mesAmis),
+    « Voir tout › » et « + Ajouter » (Ajouter absent en visite). Les deux ouvrent
+    la Communauté, comme l'ancien bouton.
+  - Grand visuel : la vraie photo de profil du cavalier choisi, entière à
+    droite sur un fond flou de la même photo, fondu sombre à gauche ; sans
+    photo, son initiale. Nom + « Voir le profil › » : ouvre sa page Cavalier
+    avec la navigation existante (ouvrirCavAmi, inchangée).
+  - Rangée de portraits ronds qui glisse (barre masquée, le suivant dépasse) :
+    toucher un portrait le met en avant sans ouvrir le profil ; trait turquoise
+    sous le portrait actif.
+  - Retirés de la page Cavalier : la rangée « À découvrir », le grand bouton
+    « Ajouter » et la carte « N cavaliers dans ta team ».
+    Note : l'état `suggestions` (listerCavaliers) reste chargé mais n'est plus
+    affiché ici — non nettoyé (hors périmètre).
+  - Arabe : tout s'inverse (photo à gauche, flèches ‹). Textes nouveaux dans
+    les 7 langues (La team…, Cavaliers, Voir tout, Ajouter, Voir le profil,
+    « Pas encore d'amis » en visite).
+  - Testé en rendu à 375 / 390 / 430 px (fr), 375 px (ar, de) : aucun
+    débordement de page, seule la rangée défile.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-502 (contient 501).
+· (503) 28/09, 22 h 30 — « MES AMIS » (page Cavalier) : « VOIR TOUT » RETIRÉ, BLOC PLUS
+  PETIT. Blandine : « Voir tout et ajouter c'est la même chose non ? » → choix A
+  (retirer « Voir tout », la rangée qui glisse montre déjà tout le monde) ;
+  « réduis en hauteur et en taille de police l'onglet mes amis ».
+  - HypeAmisVitrine : bouton « Voir tout » et prop onVoirTout retirés ; seul
+    « + Ajouter » reste (Communauté), sur une seule ligne d'en-tête.
+  - Réductions : titre 16 → 13,5 px, équipe 9 → 8, nombre 22 → 17, icône 38 → 32,
+    grand visuel 176 → 132 px de haut, nom 25 → 19, « Voir le profil » 44 → 36 px,
+    portraits 62 → 48 px, prénoms 10,5 → 9 px, marges resserrées. Le bloc perd
+    environ un tiers de sa hauteur.
+  - Non fait (suggestions de ChatGPT, à proposer) : centrer le portrait choisi
+    dans la rangée ; afficher le prénom plutôt que le pseudo.
+  Testé en rendu 375/390/430 (fr), 375 (ar, de) : aucun débordement.
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-503 (contient 502).
+· (504) 28/09, 22 h 35 — « MES AMIS » : « VOIR LE PROFIL » DISCRET, PORTRAITS PLUS
+  GRANDS, PORTRAIT CHOISI CENTRÉ. Blandine : « retire le truc qui entoure voir le
+  profil et rends-le plus discret en bas de son onglet » ; « les deux » (centrer
+  le portrait choisi + prénom au lieu du pseudo) ; « laisse les icônes rondes un
+  peu plus grandes quand même ».
+  - « Voir le profil › » : plus de cadre, petit texte gris clair (10,5 px) en bas
+    à gauche du grand visuel (à droite en arabe) ; toujours ouvre le profil.
+  - Portraits 48 → 56 px, prénoms 9 → 9,5 px.
+  - Toucher un portrait le fait glisser au centre de la rangée (scrollIntoView,
+    seulement au toucher : rien ne bouge à l'ouverture de la page).
+  - EN ATTENTE : prénom au lieu du pseudo — la requête d'amis ne lit que
+    `pseudo` ; avant d'ajouter une colonne, vérifier en base qu'une colonne
+    prénom existe dans `profiles` (une requête SELECT demandée à Blandine).
+  Testé en rendu 375/390/430 (fr), 375 (ar, de). Aucun SQL, aucun texte nouveau.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-504 (contient 503).
+· (505) 28/09, 22 h 40 — PAGE CAVALIER : « GÉRER MON ÉCURIE › » RETIRÉ. Blandine :
+  « le bouton gérer mon écurie en dessous il sert à rien si ? » → oui, doublon
+  (il ouvrait `guilde`, la même page que l'onglet « Écurie » de la barre du bas)
+  → « ok vire-le oui ».
+  - Retiré aux deux endroits : à côté de « + Ajouter » (quand la carte du milieu
+    existe) et dans le titre « Mes chevaux » (sinon). « + Ajouter » reste.
+  - La page Écurie reste accessible par la barre du bas.
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-505 (contient 504). Toujours en attente : le SELECT sur les
+  colonnes de `profiles` pour afficher le prénom des amis.
+· 28/09, 22 h 33 — (sans build) PRÉNOM DES AMIS : le SELECT montre qu'il n'existe
+  AUCUNE colonne prenom / nom / first_name dans `profiles`. « MALICIA2008 » est le
+  2e compte de Blandine (renommé automatiquement) : elle changera le pseudo
+  elle-même. Pseudos longs sur deux lignes sous les portraits : « on verra plus
+  tard ». Rien de modifié.
+· (506) 28/09, 22 h 45 — PAGE CAVALIER : L'AMI MIS EN AVANT EST GARDÉ ; HAUTEUR DU
+  DRAPEAU ET DU BADGE PREMIUM. Blandine : « à chaque fois il oublie l'ami que j'ai
+  mis en gros » ; « j'ai un souci avec la hauteur des drapeaux et premium »
+  (capture : Premium plus bas que la flèche retour, à cheval sur le bord gauche
+  de la photo ; drapeau qui dépasse un peu à droite).
+  - HypeAmisVitrine : le choix est gardé sur l'appareil (localStorage,
+    clé hype_ami_vedette_<moi | id de la page visitée>). La liste d'amis arrive
+    dans un ordre variable : sans ça, un autre ami prenait la place à chaque
+    retour. Testé : le choix survit à un rechargement.
+  - Badge admin Premium : même ligne que la flèche retour, juste à sa droite
+    (left 60, top +18 : centré sur la flèche de 36 px). Visible par les
+    modérateurs seulement, comme avant.
+  - Drapeau : right 14 → 16, partage 60 → 62 (même retrait que la flèche retour,
+    left 16), sur la page Cavalier seulement ; les autres pages ne bougent pas.
+  - Suggestions de la Communauté : choix C de Blandine (liste du responsable
+    d'écurie d'abord, puis nom d'écurie). Vérification en base demandée avant.
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-506 (contient 505).
+· (507) 28/09, 22 h 55 — COMMUNAUTÉ : SECTION « À DÉCOUVRIR » (cavaliers à suivre),
+  OUVERTE DIRECTEMENT PAR « + AJOUTER » DU BLOC MES AMIS. Choix C de Blandine.
+  - Vérification en base (pg_policies, 28/09) : ecurie_cavaliers_choisis a une
+    politique « lecture publique » (SELECT true) → la liste est lisible par tous.
+  - hypeSuggestionsCavaliers(24), dans cet ordre :
+    1. SON ÉCURIE — d'abord la vraie liste : lignes ecurie_cavaliers_choisis
+       « accepte » où elle est membre → leurs responsables + tous les membres
+       acceptés de ces responsables (et les siens si elle est responsable) ;
+       « en_attente » ignoré. Puis en complément le nom d'écurie des profils
+       (hypeCavaliersDuClub sur son ecurie et ecurie2, même comparaison que la
+       page Écurie). Étiquette « Ton écurie ».
+    2. NOUVEAUX : derniersCavaliers(15), étiquette « Nouveau ».
+    3. AUTRES : listerCavaliers(40), avec la ville ou l'écurie.
+    Exclus : elle-même, ceux qu'elle suit (listeDesSuivis), ceux qu'elle a
+    bloqués et ceux qui l'ont bloquée (si lisible ; erreur ignorée). Pas de
+    « demandes en attente » : suivre est immédiat. Aucune colonne « profil
+    masqué » n'existe dans le code : rien à filtrer de ce côté.
+  - HypeADecouvrir : rangée de cartes (photo, pseudo, étiquette, bouton
+    « + Suivre » → suivre(), devient « ✓ Suivi »). Toucher la photo ouvre le
+    profil (ouvrirProfilPublic, inchangé). Placée juste avant « Personnes
+    suivies » ; « + Ajouter » pose __communauteCible = "decouvrir" et la page
+    y descend (même motif que le classement).
+  - Inchangés plus bas : « Voir tout » des personnes suivies et « Nouveaux sur
+    Hype » (doublons possibles avec la nouvelle section, à revoir si besoin).
+  - Testé : ordre et exclusions sur données factices (en attente, suivi,
+    bloqués dans les deux sens, soi-même : tous écartés) ; rendu à 375 px.
+  - 7 langues : À découvrir, Ton écurie, Nouveau, Suivre, Suivi, Chargement…,
+    « Personne à te proposer pour l'instant ».
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-507 (contient 506).
+· (508) 28/09, 23 h — PAGE CAVALIER : BLOC « PUBLICATIONS » RETIRÉ, TUILE ACTUALITÉ
+  GRISÉE « PROCHAINEMENT ». Blandine : « l'onglet publication on peut le retirer sur
+  la page cavalier ? au besoin on le met sur actualités » → choix A (le mur ira sur
+  Actualité, champ « Partage un moment… » compris), « et on gérera la page
+  actualité après, pour l'instant laisse-la en grisé / prochainement ».
+  - Le mur MurHype de la page Cavalier (sa page : cibleMoi ; en visite :
+    cavalier:<id>, sans champ) n'est plus rendu ; appel gardé en commentaire.
+    Les publications « cavalier:<id> » restent en base, rien d'effacé.
+  - Tuile « Actualité » : grisée, « Prochainement », non cliquable (carteP sans
+    action) ; allerActu reste dans le code. La page EcranActualiteCavaliere
+    existe toujours (un lien partagé #pa= l'ouvre encore).
+  - À FAIRE avec la refonte d'Actualité : y ajouter les publications
+    « cavalier:<id> » (aujourd'hui non lues par cette page) et, sur sa propre
+    page, le champ « Partage un moment… » (Photos, Vidéo).
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-508 (contient 507).
+· (509) 28/09, 23 h 05 — PAGE CAVALIER, « MES CHEVAUX » : LES CHOIX D'ÉCURIE SUR UNE
+  SEULE LIGNE. Blandine : « mettre les trois onglets Toutes, Écurie Feinn et SEP sur
+  la même ligne que ça prenne pas trop de place (et dans des types d'écriture
+  similaires) ».
+  - Rangée en une ligne (plus de retour), « Toutes » passe en PREMIER.
+  - Un nom qui finit par un sigle entre parenthèses s'affiche par ce sigle :
+    « Societe d'Equitation de Paris (SEP) » → « SEP » (nom complet gardé en
+    title / aria-label). Sans sigle, le nom se coupe avec « … » si besoin.
+  - Même style pour les trois (inchangé : 11,5 px, gras, Montserrat) ; marge
+    intérieure 13 → 12 px. Le filtre lui-même ne change pas (même valeur choisie).
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-509 (contient 508).
