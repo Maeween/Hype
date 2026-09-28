@@ -17,8 +17,8 @@
 | état | fichiers |
 |---|---|
 | ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
-| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107), horsemanship (Santa Ynez, 55), haras (Lexington, 71), polo (Buenos Aires, 60)** |
-| 🟥 à faire (0 arabe) | poney, tradition, western, endurance, vente, elevage, liberte, phrases-monde |
+| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107), horsemanship (Santa Ynez, 55), haras (Lexington, 71), polo (Buenos Aires, 60), poney (Lamotte, 99), elevage (Golegã, 72), vente (Vérone, 62)** |
+| 🟥 à faire (0 arabe) | tradition, western, endurance, liberte, phrases-monde |
 | 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
 
 ### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
@@ -55,6 +55,12 @@
 - ⚠️ Santa Ynez et Lexington écrivent leurs phrases isolées sous la forme `{lecon, p:{fr…}}` : l'arabe est posé DANS `p` (l'appli lit les deux formes).
 - Termes posés : الهورسمانشيب، العمل من الأرض، الرسن الحبلي، الضغط / رفع الضغط (release)، الانقياد (céder)، إزالة الحساسية، الإعداد الأول للحصان الصغير (débourrage — jamais « كسر »)، الهاكامور، التوقيت المناسب، الإحساس (feel) · مزرعة تربية الخيل، اليرلينغ، المزاد العلني، الدلال، شجرة النسب، الأب / الأم / أب الأم (sire, dam, dam sire)، سعر التلقيح، فرس التربية، المهر / المهرة / المهر الذكر، الفطام · الشوط (chukka)، المضرب، التصنيف (handicap)، خط الكرة، حصان البولو (« pony » anglais ≠ البوني).
 - Wellington · fanions : Blandine a redemandé à 17:53 ; réponse faite (renvoi juste, rien changé) — en attente de sa décision si elle préfère malgré tout Wellington.
+
+### 28/09 — lot 5 : Lamotte-Beuvron, Golegã, Vérone (lexiques seulement)
+- `hype-lingo-lex-poney.js` (Lamotte, 99 — y compris le champ `intro`), `hype-lingo-lex-elevage.js` (Golegã, 72), `hype-lingo-lex-vente.js` (Vérone, 62).
+- Mêmes contrôles, tous bons. `lingo.html` non modifié.
+- Lamotte : les 26 phrases isolées sont les mêmes que les 26 répliques du dialogue — même arabe des deux côtés, volontairement.
+- Termes posés : البوني (الحصان القزم) — glossaire respecté, jamais المهر ; الارتفاع عند الغارب، مقياس الارتفاع (toise)، فئة الارتفاع، ألعاب البوني، الكاروسيل، الركوب بلا سرج، الأعنة الملونة، ضمن / خارج حد الارتفاع · مزرعة التربية، الفرس / الفحل / المهر / المهرة، الحصان المخصي (glossaire)، فرس التربية، التلقيح / التلقيح الاصطناعي، الفطام، السلالة، سجل الأنساب (stud-book)، الاعتماد (Körung)، البنية (conformation)، العرض باليد، النسل · للبيع، التاجر، الفحص البيطري قبل الشراء، الصورة الإشعاعية، عقد البيع، الضمان، العيب الخفي، جواز السفر، الميزانية.
 
 ---
 
