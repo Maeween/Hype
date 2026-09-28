@@ -1,3 +1,18 @@
+# 🗓️ 28/09 — `lingo.html` ?v=97 : TOUT LE CONTENU EN ARABE (toujours dormant)
+
+**Ce qui change à l'écran : RIEN pour les six langues.** L'arabe reste invisible : `LANGUES_UI` est inchangé (fr, en, es, it, de, ja), pas de drapeau, pas de `rtl`.
+
+**Fait dans `lingo.html` (472 textes arabes ajoutés)** : noms des 38 villes, 13 noms de chapitre et souvenirs manquants (`ETAPES_I18N`), pays (`I18N_NAT`), horaires (`I18N_H`), 23 récits d'arrivée (`RECITS`), 20 `POURQUOI`, 28 mots d'accueil (`ACCUEIL_CHAP`), 32 familles (`COLL_NOM`), 15 chapeaux (`PHRASES_FIN`), les 186 libellés d'interface (`UI`), le lexique (`LXT`), les destinations, les thèmes, la carte « Linguae dans ta poche », la suppression de compte, l'installation, les tables de noms de langues.
+- Contrôle : les 21 592 éléments hors arabe sont identiques au caractère près à la v96 ; les 6 blocs `<script>` passent `node --check` ; chargée dans Chromium : 38 chapitres, 38 villes, aucune erreur JS.
+- 🟥 **Anomalie réparée** : dans `RECITS`, les récits arabes de **Walsall, Windsor et Aix-la-Chapelle** avaient été collés par erreur DANS l'entrée de **Taupō** (trois clés `ar` à la suite — seule la dernière comptait). Remis à leur place, et Taupō a reçu son propre récit.
+- **Laissé pour l'activation** (étapes 2-3 de la procédure) : `LG_DRAPEAU`, `LGN`, `VOIX`.
+- **`?l=` monté sur les 31 fichiers modifiés le 28/09** (lexiques, `villes*.js`, `phrases-monde.js` qui n'en avait pas). Indispensable : le service worker sert les lexiques depuis le cache tant que leur `?l=` ne change pas — sans ça, les corrections (dont le « \n » français de Séville, Warendorf, Édimbourg) n'arrivaient jamais sur les téléphones. `sw-linguae.js` inchangé.
+- Détail complet dans `SUIVI-ARABE.md`.
+
+**À tester sur iPhone** : ouvrir Linguae (fermer puis rouvrir l'appli pour charger la v97 — la version n'est affichée nulle part à l'écran), faire le tour habituel en français (accueil, une ville, le lexique, un quiz, la collection) — tout doit être exactement comme avant. Ouvrir la définition de l'attelage à Séville : plus de « \n ».
+
+---
+
 # 🗓️ 24/08 — CLÔTURE DE SESSION
 
 ## ÉTAT FINAL

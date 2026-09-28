@@ -78,10 +78,16 @@
 - ✅ **Corrigé le 28/09 (accord de Blandine)** : le piège مهر (= POULAIN) employé pour « poney » dans `villes.js` — 5 textes : Connemara (« Le poney des grands espaces » → بوني المساحات الواسعة), Aberystwyth (titre du volet Welsh pony and cob, « poney de montagne », Welsh Pony and Cob Society → البوني), Édimbourg (poney Highland → بوني الهايلاند). Relevé fait sur TOUS les fichiers de Linguae : plus aucun مهر là où l'anglais dit « pony ».
 - 28/09 : `hype-lingo-lex-ecurie.js` (titre arabe du lot 6) n'avait pas été poussé — renvoyé.
 
-### 🟠 CE QUI RESTE AVANT D'ACTIVER L'ARABE
-1. ~~villes-monde.js~~ ✅ · 2. ~~villes.js~~ ✅
-3. `lingo.html` : `ETAPES_I18N` (13 villes), `RECITS`, `POURQUOI`, `ACCUEIL_CHAP`, `COLL_NOM`, puis les ~190 libellés d'interface — **une seule livraison de `lingo.html`**, VER monté.
-4. L'activation elle-même (procédure en 10 étapes, plus bas).
+### 28/09 — lot 8 : `lingo.html` ?v=97 — ✅ TOUT LE CONTENU EST EN ARABE
+- 472 textes : noms des 38 villes (`ETAPES_I18N.v`), 13 noms de chapitre + souvenirs, `I18N_NAT`, `I18N_H` (heures au format 19:55), `RECITS` (23), `POURQUOI` (20), `ACCUEIL_CHAP` (28), `COLL_NOM` (32, y compris les doublons `cheval-urg`, `alerte`, `cavalier` — c'est la dernière occurrence qui compte), `PHRASES_FIN` (15), `UI` (186 — les `{…}` vérifiés un par un), `LXT`, `DESTINATIONS`, `TH_FAMILLES`, `TH_TXT`, `SON_TXT`, carte « dans ta poche », suppression de compte (`t`), installation (`DICT`), `LANGUE_NOM` et `LXT.nomLangue` (العربية + le nom de l'arabe dans chaque langue).
+- 🟥 **Réparé** : les récits arabes de Walsall, Windsor et Aix-la-Chapelle étaient collés dans l'entrée `RECITS.taupo` (3 clés `ar` ; seule la dernière était lue — Taupō affichait le texte d'Aix-la-Chapelle, les trois autres n'avaient rien). Remis à leur place ; Taupō a son propre récit.
+- Textes arabes qui parlent des langues : « سبع لغات » et « FR · EN · ES · IT · DE · JA · AR » (pt1t, pt1d, porteGalopsS). ⚠️ Les six autres langues disent encore « six langues » — à changer LE JOUR de l'activation, pas avant.
+- `?l=` monté sur les 31 fichiers du 28/09 ; `VER` → ?v=97.
+- Contrôles : 21 592 éléments hors arabe identiques à la v96 · 6 blocs OK · 0 voyelle · 0 cyrillique · Chromium : 38 chapitres, 38 villes, 0 erreur JS.
+
+### 🟠 CE QUI RESTE : L'ACTIVATION ELLE-MÊME
+- Restent volontairement sans arabe (ce sont les interrupteurs) : `LANGUES_UI`, `LG_DRAPEAU` (drapeau à choisir par Blandine — Hype utilise 🇸🇦), `LGN` (« AR »), `VOIX` (ar-SA).
+- Puis la procédure d'activation en 10 étapes (plus bas), après test iPhone de la v97.
 
 ---
 
