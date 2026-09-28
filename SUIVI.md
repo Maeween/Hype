@@ -7431,3 +7431,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   unitaires). Boutons : node --check seulement.
   TEXTES NOUVEAUX, 7 langues : « Partager », « Lien copié ». Aucun SQL.
   node --check OK (18 blocs), un seul marqueur. Build 20260928-492 (contient 491).
+· (493) 28/09, 19 h 55 — LA PAGE ÉCURIE PARTAGÉE MONTRE L'ÉCURIE PARTAGÉE. Blandine :
+  « pour la page Écurie on peut pas partager plutôt l'écurie du partage ? »,
+  « l'idée c'est justement de pouvoir partager une écurie précise avec ses
+  chevaux, ses cavaliers, ses résultats ».
+  Nouvelle famille #eg=<club> : window.__guildeEcurie = club → écran
+  « guilde ». C'est le MÊME mécanisme que le classement des clubs et la
+  carte de la 2e écurie (clubForce dans EcranGuilde) : la page Écurie
+  s'ouvre sur CE club (chevaux, cavaliers, résultats, agenda…), pour tout le
+  monde. Le bouton « partager » de la page Écurie envoie désormais #eg= (au
+  492 : #ec=, la vitrine des chevaux, qui reste pour « Les chevaux de
+  l'écurie »). Mémorisé après connexion comme les autres familles.
+  Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-493 (contient 492).
