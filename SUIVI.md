@@ -7694,3 +7694,27 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     intérieure 13 → 12 px. Le filtre lui-même ne change pas (même valeur choisie).
   Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
   Build 20260928-509 (contient 508).
+· (510) 28/09, 23 h 10 — PAGE CAVALIER : « MES AMIS » ALIGNÉ SUR « MES CHEVAUX ».
+  Blandine : « aligner la typographie des titres, notamment Mes amis et Mes
+  chevaux, et que les boutons Ajouter soient les mêmes (je préfère le titre et le
+  bouton Ajouter de Mes chevaux) ».
+  - Titre « MES AMIS » : Cinzel 15 px, espacement 1, capitales, #EDF2F5, poids
+    normal — exactement le titre « Mes chevaux » (et « Derniers résultats »,
+    déjà en Cinzel 15).
+  - « + Ajouter » : texte turquoise #5FE9F0, 12 px, gras 600, Montserrat, sans
+    cadre ni pastille — le même que celui de « Mes chevaux » (zone tactile 36 px).
+    Il ouvre toujours « À découvrir » dans la Communauté.
+  - Sous-titre « La team … » et nombre de cavaliers inchangés.
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-510 (contient 509).
+· (511) 28/09, 23 h 15 — « MES CHEVAUX » : LES TROIS CHOIX D'ÉCURIE RÉPARTIS SUR LA
+  LIGNE. Blandine : « centralise et espace les onglets Toutes, SEP et Feinn, qu'ils
+  se répartissent sur la ligne de façon équilibrée, laisse un peu plus d'espace
+  avec les photos qui suivent, et ne sélectionne pas l'écurie choisie en bleu, le
+  fait de l'entourer suffit ».
+  - Chaque choix prend une part égale de la ligne (flex 1), texte centré ;
+    écart 6 → 10 px ; espace sous la rangée 10 → 18 px.
+  - Choix actif : plus de fond ni de texte turquoise ; seul le contour turquoise
+    le signale (texte blanc cassé, les autres gris clair).
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-511 (contient 510).
