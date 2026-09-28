@@ -6876,3 +6876,74 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   titre lisible, bouton 44 × 44 sans texte, nom long tronqué, largeur de page
   = largeur d'écran, aucune erreur.
   node --check OK (18 blocs), un seul marqueur. Build 20260927-461 (contient 460).
+· (462) 28/09, 5 h 40 — PAGE « CAVALIERS DE L'ÉCURIE » : COULEURS DE LA PAGE
+  GALOPS + TOUCHER LA CARTE POUR DÉPLIER + BOUTON PROFIL À DROITE.
+  Blandine (captures Galops + Cavaliers) : « adapte plutôt dans ces couleurs-là,
+  les couleurs de la page cavalier là c'est très laid, et retire le bouton des
+  moments ; il vaudrait mieux que ça se déplie quand on clique dessus si ça
+  doit se déplier, et qu'à droite on ait un bouton pour accéder à son profil ».
+  (Remplace les choix de couleurs et de commande des 452 à 461.)
+  EcranCavaliersClub seul :
+  - Palette Galops : fond #050B12, cartes dégradé #0C1820 → #070E14, liserés
+    turquoise rgba(32,217,245,0.22) (0,45 + halo quand ouverte), accent
+    #5FE9F0, titre « LES CAVALIERS » bleu glacé #A8F0F5 avec halo, nom de
+    l'écurie gris bleuté, avatars cerclés turquoise. Plus aucun champagne.
+  - Toucher la carte (photo + nom) : déplie / replie l'aperçu s'il y a des
+    photos (aria-expanded sur la zone) ; sinon ouvre le profil.
+  - À droite, pour TOUTES : un rond turquoise avec une silhouette = ouvre le
+    profil (vrai bouton, 44 × 44, aria-label « Voir le profil » traduit,
+    stopPropagation). La commande « Ses moments » / chevron est retirée.
+  - « Voir le profil › » reste dans l'aperçu déplié ; une seule carte ouverte.
+  - Aucune lecture, aucun tri, aucun compteur modifiés. Aucun texte nouveau.
+  IMAGE DU BANDEAU : toujours absente chez elle (capture de 5 h 30, qui montre
+  encore « Ses moments » = version d'avant le 461). Le code suit le même modèle
+  que FOND_SANTE / JOURNAL_CARNET_FOND / FOND_HEYBABY, qui s'affichent → le
+  fichier n'est pas au bon endroit ou pas sous le bon nom sur GitHub.
+  Test Chromium (vraie image, 390 / 320 px, arabe) : toucher une carte avec
+  photos la déplie sans ouvrir le profil ; carte sans photo → profil ; bouton
+  profil sur chaque carte ; aucune largeur qui déborde ; aucune erreur.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-462 (contient 461).
+· (463) 28/09, 5 h 45 — PAGE « CAVALIERS DE L'ÉCURIE » : BLEU NUIT, GRIS ET
+  BLANC, PLUS DE TURQUOISE. Blandine : « au secours, reste plus dans les tons
+  bleu nuit dégradé gris et blanc que turquoise ».
+  EcranCavaliersClub seul : accent blanc cassé #E3E9EE ; tous les liserés et
+  halos turquoise → gris-blanc très transparent ; cartes en dégradé bleu nuit
+  → gris ardoise (#15212C → #0B131B → #0A1016) ; avatars sur fond ardoise ;
+  titre « LES CAVALIERS » blanc (plus de halo turquoise) ; nom de l'écurie
+  gris clair. Comportements du 462 inchangés (toucher = déplier, rond de
+  droite = profil). Aucune lecture ni texte modifiés.
+  Test Chromium (390 / 320 px, arabe) : aucun turquoise affiché, aucune
+  erreur, aucun débordement.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-463 (contient 462).
+· (464) 28/09, 6 h 20 — PAGE « CAVALIERS DE L'ÉCURIE » : L'IMAGE DU BANDEAU EST
+  EMBARQUÉE DANS index.html. Blandine (capture de 6 h 11, couleurs du 463 bien
+  en ligne) : « ça n'apparaît toujours pas l'image ».
+  CONSTAT : le code pointait vers images/FOND_CAVALIERS_ECURIE.webp, même
+  modèle que les autres fonds qui s'affichent → le fichier n'est pas trouvé
+  sur le site (dossier, nom — elle l'a reçu en minuscules — ou cache du
+  téléphone). Plutôt que de dépendre du fichier : l'image (webp 1000 × 562,
+  qualité 72, ≈ 50 Ko, ≈ 68 Ko en texte) est mise dans une constante globale
+  HYPE_FOND_CAVALIERS_ECURIE, juste avant EcranCavaliersClub, et le bandeau
+  l'utilise. PLUS AUCUN FICHIER À POUSSER pour ce fond (celui d'images/, s'il
+  y est, ne sert plus).
+  Test Chromium SANS aucun fichier image : l'image s'affiche ; 390 / 320 px,
+  arabe ; aucune erreur.
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-464 (contient 463).
+· (465) 28/09, 6 h 25 — PAGE « CAVALIERS DE L'ÉCURIE » : TOUCHER LA CARTE DÉPLIE
+  TOUJOURS. Blandine : « on arrive toujours sur le profil quand on clique sur
+  l'onglet au lieu de dérouler, et d'arriver sur le profil en cliquant sur le
+  bouton à droite ». CAUSE : au 462, une carte SANS photo trouvée ouvrait le
+  profil — et presque toutes ses cavalières sont dans ce cas (leurs photos
+  sont ailleurs : mur de l'écurie, albums des chevaux).
+  EcranCavaliersClub seul : toucher la carte déplie / replie TOUJOURS
+  (aria-expanded) ; seul le rond de droite ouvre le profil. Sans photo, la
+  partie dépliée dit « Pas encore de moments partagés. » + « Voir le profil › ».
+  Une seule carte ouverte à la fois (inchangé). Lectures inchangées.
+  TEXTE NOUVEAU, 7 langues : « Pas encore de moments partagés. »
+  Test Chromium : carte sans photo → dépliée, profil NON ouvert, message
+  affiché ; carte avec photos → dépliée, profil non ouvert ; rond de droite →
+  profil. Aucune erreur.
+  À PRÉVOIR (proposé le 27/09, option B) : chercher aussi ses photos sur le mur
+  de l'écurie et dans les albums de ses chevaux, sinon la plupart des cartes
+  resteront « Pas encore de moments partagés ».
+  node --check OK (18 blocs), un seul marqueur. Build 20260927-465 (contient 464).
