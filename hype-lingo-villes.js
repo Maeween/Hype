@@ -168,7 +168,7 @@ connemara:{
       ja:"コネマラは、山と泥炭地と湖と大西洋が出会う土地。光は一時間ごとに変わり、風は決して完全にはやみません。",
       ar:"الكونيمارا منطقة تلتقي فيها الجبال والمستنقعات الخثية والبحيرات والمحيط الأطلسي. يتغير الضوء فيها كل ساعة، والريح لا تهدأ تماما أبدا."}},
    {t:{fr:"Le poney des grands espaces", en:"The pony of the wide open spaces", es:"El poni de los grandes espacios",
-       it:"Il pony dei grandi spazi", de:"Das Pony der weiten Räume", ja:"大地のポニー", ar:"مهر المساحات الواسعة"},
+       it:"Il pony dei grandi spazi", de:"Das Pony der weiten Räume", ja:"大地のポニー", ar:"بوني المساحات الواسعة"},
     c:{
       fr:"Élevé pendant des générations dans un environnement exigeant, le Connemara est réputé pour son courage, son intelligence et sa sûreté de pied. Compact et bas sur pattes, il saute bien au-dessus de sa taille et porte aussi bien un enfant qui débute qu'un cavalier en compétition.",
       en:"Bred for generations in a demanding environment, the Connemara is known for its courage, intelligence and sure-footedness. Compact and close to the ground, it jumps well above its height and carries a beginner child as happily as a competition rider.",
@@ -263,7 +263,7 @@ aberystwyth:{
       ar:["هذا الصباح، انطلقت بالحصان عدوا في البحر.", "كان الشاطئ خاليا. دخل الكوب الماء من دون لحظة تردد، وأنهينا جولتنا بالعدو بين الأمواج. جف الملح على حذائي، وكنت أبتسم وحدي."]},
   volets:[
    {t:{fr:"Le Welsh pony and cob", en:"The Welsh pony and cob", es:"El poni y cob galés",
-       it:"Il Welsh pony and cob", de:"Das Welsh Pony and Cob", ja:"ウェルシュ・ポニー＆コブ", ar:"المهر والكوب الويلزيان"},
+       it:"Il Welsh pony and cob", de:"Das Welsh Pony and Cob", ja:"ウェルシュ・ポニー＆コブ", ar:"البوني والكوب الويلزيان"},
     c:{
       fr:"Un seul stud-book, quatre sections. La A, le poney de montagne, le plus petit. La B, plus fine, montée par les enfants en concours. La C, trapue, très utilisée en attelage. La D, le Welsh cob, assez grand pour porter un adulte. Le Ceredigion est son pays.",
       en:"One stud book, four sections. Section A, the mountain pony, the smallest. Section B, finer, ridden by children in competition. Section C, stocky, much used in driving. Section D, the Welsh cob, big enough to carry an adult. Ceredigion is its homeland.",
@@ -271,7 +271,7 @@ aberystwyth:{
       it:"Un solo libro genealogico, quattro sezioni. La A, il pony di montagna, il più piccolo. La B, più fine, montata dai bambini in gara. La C, tarchiata, molto usata negli attacchi. La D, il Welsh cob, abbastanza grande da portare un adulto. Il Ceredigion è la sua terra.",
       de:"Ein einziges Zuchtbuch, vier Sektionen. Die A, das Bergpony, das kleinste. Die B, feiner, von Kindern im Turnier geritten. Die C, gedrungen, viel im Fahrsport genutzt. Die D, das Welsh Cob, groß genug, um einen Erwachsenen zu tragen. Ceredigion ist seine Heimat.",
       ja:"血統書はひとつ、セクションは四つ。Aは山のポニーで最も小さく、Bはより繊細で子どもたちが競技で乗ります。Cはがっしりとして馬車競技で活躍し、Dのウェルシュ・コブは大人を乗せられる大きさ。ケレディジョンこそ、その故郷です。",
-      ar:"سجل أنساب واحد وأربعة أقسام. القسم ألف هو مهر الجبال، وهو الأصغر. والقسم باء أدق بنية، ويركبه الأطفال في المسابقات. والقسم جيم قوي ومكتنز البنية، ويستخدم كثيرا في جر العربات. أما القسم دال فهو الكوب الويلزي، وهو كبير بما يكفي ليمتطيه شخص بالغ. ومقاطعة كيريديجون هي موطنه."}},
+      ar:"سجل أنساب واحد وأربعة أقسام. القسم ألف هو بوني الجبال، وهو الأصغر. والقسم باء أدق بنية، ويركبه الأطفال في المسابقات. والقسم جيم قوي ومكتنز البنية، ويستخدم كثيرا في جر العربات. أما القسم دال فهو الكوب الويلزي، وهو كبير بما يكفي ليمتطيه شخص بالغ. ومقاطعة كيريديجون هي موطنه."}},
    {t:{fr:"Le rendez-vous", en:"The meeting place", es:"La cita",
        it:"L'appuntamento", de:"Der Treffpunkt", ja:"開催地", ar:"الموعد"},
     c:{
@@ -281,7 +281,7 @@ aberystwyth:{
       it:"L'Aberystwyth and Ceredigion County Show, affiliato alla Welsh Pony and Cob Society, assegna la sua medaglia al miglior soggetto di ogni sezione. È lì che si capisce cosa vogliono dire davvero quelle quattro lettere.",
       de:"Die Aberystwyth and Ceredigion County Show, der Welsh Pony and Cob Society angeschlossen, verleiht ihre Medaille an das beste Tier jeder Sektion. Dort versteht man, was diese vier Buchstaben wirklich bedeuten.",
       ja:"ウェルシュ・ポニー＆コブ協会公認のアベリストウィス＆ケレディジョン・カウンティショーでは、各セクションの最優秀馬にメダルが贈られます。あの四つの文字が本当は何を意味するのか、そこで初めて分かります。",
-      ar:"معرض أبريستويث وكيريديجون، المنتسب إلى جمعية المهر والكوب الويلزيين، يمنح ميداليته لأفضل جواد في كل قسم. وهناك تفهمين ما تعنيه هذه الحروف الأربعة حقا."}},
+      ar:"معرض أبريستويث وكيريديجون، المنتسب إلى جمعية البوني والكوب الويلزيين، يمنح ميداليته لأفضل جواد في كل قسم. وهناك تفهمين ما تعنيه هذه الحروف الأربعة حقا."}},
    {t:{fr:"Le savais-tu ?", en:"Did you know?", es:"¿Lo sabías?",
        it:"Lo sapevi?", de:"Wusstest du es?", ja:"知ってた？", ar:"هل كنت تعرفين؟"},
     c:{
@@ -544,7 +544,7 @@ edimbourg:{
       it:"Il Royal Highland Show si tiene ogni estate a Ingliston, alle porte della città. È il grande appuntamento agricolo ed equestre scozzese, e il posto dove vedere le razze del paese — l'Highland pony e il Clydesdale, quel cavallo da tiro con lunghe criniere sul basso degli arti.",
       de:"Die Royal Highland Show findet jeden Sommer in Ingliston vor den Toren der Stadt statt. Sie ist das große schottische Landwirtschafts- und Pferdetreffen und der Ort, um die Rassen des Landes zu sehen — das Highland Pony und das Clydesdale, jenes Zugpferd mit langem Behang an den unteren Beinen.",
       ja:"ロイヤル・ハイランド・ショーは毎年夏、街のすぐ外のイングリストンで開かれます。スコットランド最大の農業と馬の祭典で、この国の品種に出会える場所 — ハイランドポニーと、脚の下部に長い飾り毛をなびかせる輓馬クライズデールに。",
-      ar:"يقام معرض رويال هايلاند كل صيف في إنغليستون، على مشارف المدينة. وهو الملتقى الزراعي والفروسي الكبير في اسكتلندا، والمكان الذي يمكنك فيه رؤية سلالات البلاد، مثل مهر الهايلاند وحصان كلايدزديل، وهو حصان جر يتميز بشعر طويل حول أسفل قوائمه."}},
+      ar:"يقام معرض رويال هايلاند كل صيف في إنغليستون، على مشارف المدينة. وهو الملتقى الزراعي والفروسي الكبير في اسكتلندا، والمكان الذي يمكنك فيه رؤية سلالات البلاد، مثل بوني الهايلاند وحصان كلايدزديل، وهو حصان جر يتميز بشعر طويل حول أسفل قوائمه."}},
    {t:{fr:"La fin du voyage", en:"The end of the journey", es:"El final del viaje",
        it:"La fine del viaggio", de:"Das Ende der Reise", ja:"旅の終わり", ar:"نهاية الرحلة"},
     c:{

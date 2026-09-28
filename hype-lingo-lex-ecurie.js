@@ -54,7 +54,7 @@ window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
 window.HYPE_LINGO_LEX.ecurie = {
   ref: "ecurie",
   chapitre: 1,
-  titre: { fr:"L'écurie", en:"The yard", es:"La cuadra", it:"La scuderia", de:"Der Stall", ja:"厩舎" },
+  titre: { fr:"L'écurie", en:"The yard", es:"La cuadra", it:"La scuderia", de:"Der Stall", ja:"厩舎", ar:"الإسطبل" },
   lecons: 4,
 
   concepts: [

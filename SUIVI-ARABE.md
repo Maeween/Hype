@@ -75,7 +75,8 @@
 - Contrôle : les deux fichiers chargés dans l'ordre de l'appli → **38 / 38 villes** avec lettre (même nombre de paragraphes qu'en français) + 3 volets titre et texte. Syntaxe OK, 0 voyelle, 0 cyrillique, six langues intactes.
 - La lettre est au masculin comme le narrateur français — **sauf Burghley**, dont le français est au féminin (« on m'a laissée ») : l'arabe suit le français. Les volets s'adressent à la cavalière au féminin.
 - Titres communs repris à l'identique des villes déjà faites : « Si tu y allais » = لو ذهبت إلى هناك, « Le savais-tu ? » = هل كنت تعرفين؟
-- 🟥 **À TRANCHER (Blandine)** : dans `villes.js`, le volet de Connemara « Le poney des grands espaces » est traduit **مهر المساحات الواسعة** — مهر = POULAIN, le piège exact du glossaire. Proposé : بوني المساحات الواسعة. Non corrigé sans son accord.
+- ✅ **Corrigé le 28/09 (accord de Blandine)** : le piège مهر (= POULAIN) employé pour « poney » dans `villes.js` — 5 textes : Connemara (« Le poney des grands espaces » → بوني المساحات الواسعة), Aberystwyth (titre du volet Welsh pony and cob, « poney de montagne », Welsh Pony and Cob Society → البوني), Édimbourg (poney Highland → بوني الهايلاند). Relevé fait sur TOUS les fichiers de Linguae : plus aucun مهر là où l'anglais dit « pony ».
+- 28/09 : `hype-lingo-lex-ecurie.js` (titre arabe du lot 6) n'avait pas été poussé — renvoyé.
 
 ### 🟠 CE QUI RESTE AVANT D'ACTIVER L'ARABE
 1. ~~villes-monde.js~~ ✅ · 2. ~~villes.js~~ ✅
