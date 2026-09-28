@@ -17,8 +17,8 @@
 | état | fichiers |
 |---|---|
 | ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
-| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107)** |
-| 🟥 à faire (0 arabe) | horsemanship, poney, tradition, western, polo, haras, endurance, vente, elevage, liberte, phrases-monde |
+| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107), horsemanship (Santa Ynez, 55), haras (Lexington, 71), polo (Buenos Aires, 60)** |
+| 🟥 à faire (0 arabe) | poney, tradition, western, endurance, vente, elevage, liberte, phrases-monde |
 | 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
 
 ### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
@@ -48,6 +48,13 @@
 - Versailles : termes de dressage alignés sur ceux déjà posés dans les réserves (الأبوييه، الانقياد للساق، الكتف إلى الداخل، الرأس إلى الجدار). Termes nouveaux : الإيقاع، الارتخاء، التواصل مع الشكيمة، الاندفاع، الاستقامة، التجميع، الانحناء، الثني، الخفة، المؤخرة، المقدمة، الانقياد (soumission)، دخول القوائم الخلفية (engagement)، نفاذ المساعدات.
 - Warendorf : التكوين (formation) / التدريب (entraînement), الدورة التدريبية (stage), المجموعة الوطنية (cadre = squad) ≠ المنتخب (team).
 - ⚠️ Règle rappelée : quand la joueuse s'adresse à l'écuyer ou au moniteur, le verbe reste au masculin (تستمع، تقول) ; seul le club parle à la joueuse au féminin.
+
+### 28/09 — lot 4 : Santa Ynez, Lexington, Buenos Aires (lexiques seulement)
+- `hype-lingo-lex-horsemanship.js` (Santa Ynez, 55), `hype-lingo-lex-haras.js` (Lexington, 71), `hype-lingo-lex-polo.js` (Buenos Aires, 60).
+- Mêmes contrôles, tous bons. `lingo.html` non modifié.
+- ⚠️ Santa Ynez et Lexington écrivent leurs phrases isolées sous la forme `{lecon, p:{fr…}}` : l'arabe est posé DANS `p` (l'appli lit les deux formes).
+- Termes posés : الهورسمانشيب، العمل من الأرض، الرسن الحبلي، الضغط / رفع الضغط (release)، الانقياد (céder)، إزالة الحساسية، الإعداد الأول للحصان الصغير (débourrage — jamais « كسر »)، الهاكامور، التوقيت المناسب، الإحساس (feel) · مزرعة تربية الخيل، اليرلينغ، المزاد العلني، الدلال، شجرة النسب، الأب / الأم / أب الأم (sire, dam, dam sire)، سعر التلقيح، فرس التربية، المهر / المهرة / المهر الذكر، الفطام · الشوط (chukka)، المضرب، التصنيف (handicap)، خط الكرة، حصان البولو (« pony » anglais ≠ البوني).
+- Wellington · fanions : Blandine a redemandé à 17:53 ; réponse faite (renvoi juste, rien changé) — en attente de sa décision si elle préfère malgré tout Wellington.
 
 ---
 
