@@ -7444,3 +7444,30 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   l'écurie »). Mémorisé après connexion comme les autres familles.
   Aucun texte, aucun SQL. node --check OK (18 blocs), un seul marqueur.
   Build 20260928-493 (contient 492).
+· (494) 28/09, 20 h 05 — HEY BABY PASSE DANS PROGRESSION ; LES QUÊTES SUR LE SEUL
+  COMPTE DE BLANDINE. Blandine : « on peut retirer le lien vers Hey Baby depuis
+  la page cavalier et l'ajouter plutôt sur le menu progression ? », « à la
+  limite réutilise le texte de l'encart de Hey Baby de la page accueil », « et
+  on peut basculer l'encart les quêtes temporairement sur mon compte ».
+  - Page Cavalier : la grande carte Hey Baby est retirée (code gardé, éteint).
+  - Page Progression (Mon apprentissage), « Mes outils pour apprendre » :
+    4e ligne « Hey Baby » / « Mon coach virtuel » (mots de la carte de
+    l'Accueil, 7 langues) / « Poser une question » → écran « assistant ».
+    Même forme que les 3 lignes du dessus, pictogramme étoile.
+  - Page Cavalier : la carte « Tes quêtes » n'apparaît plus que sur le compte
+    Feinn (estCompteFeinnHype), en attendant. Rien n'est supprimé.
+  TEXTES NOUVEAUX, 7 langues : Mon coach virtuel, Poser une question.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-494 (contient 493).
+· (495) 28/09, 20 h 15 — « MES QUÊTES » PASSE SUR LA PAGE MON COMPTE. Blandine :
+  « en fait je voulais dire de le basculer sur la page Mon compte, mais c'est
+  bien qu'elle soit aussi visible uniquement de mon compte connecté », « pour
+  l'onglet mes quêtes ».
+  - Page Cavalier : la carte « Tes quêtes » est retirée (le 494 la limitait
+    au compte Feinn ; l'état estFeinnMC reste lu, sans effet).
+  - Page Mon compte (EcranMonCompte) : la même carte, titrée « Mes quêtes »
+    (badge de niveau, barre et XP, toucher = écran « quetes »), juste avant
+    « Supprimer mon compte », visible SEULEMENT sur le compte Feinn
+    (estCompteFeinnHype(user)).
+  TEXTE NOUVEAU, 7 langues : « Mes quêtes » (My quests, Mis misiones…). Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20260928-495 (contient 494).
