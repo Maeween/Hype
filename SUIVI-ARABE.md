@@ -19,7 +19,7 @@
 | ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
 | ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107), horsemanship (Santa Ynez, 55), haras (Lexington, 71), polo (Buenos Aires, 60), poney (Lamotte, 99), elevage (Golegã, 72), vente (Vérone, 62), tradition (Tokyo, 56), western (Tamworth, 58), endurance (Dubaï, 87), liberte (Taupō, 71), phrases-monde (10)** |
 | ✅ à faire | **plus aucun lexique** |
-| 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
+| ✅ villes | villes-monde.js et villes.js : 38 / 38 villes (28/09) |
 
 ### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
 - `ETAPES_I18N` : 13 villes sans arabe — Taupō, Versailles, Saumur, Lamotte, Jerez, Séville, Vejer, Warendorf, Newmarket, Lambourn, Aberystwyth, Wellington, Hickstead.
@@ -69,9 +69,16 @@
 - Dubaï : الحصان العربي الأصيل pour le pur-sang arabe (ici c'est bien la race arabe — le piège du glossaire ne vaut que pour le Thoroughbred).
 - ⚠️ `apprentissage.js` contient 3 mots vocalisés **dans des commentaires** (notes de relecture, jamais affichées). Laissés tels quels.
 
+### 28/09 — lot 7 : lettres et volets — ✅ LES 38 VILLES SONT COMPLÈTES (point 7 des neuf points)
+- `hype-lingo-villes-monde.js` : 21 villes (140 textes) — Saumur, Lamotte, Jerez, Séville, Vejer, Warendorf, Rome, Golegã, Vérone, Dubaï, Tokyo, Tamworth, Buenos Aires, Lexington, Wellington, Burghley, Versailles, Fontainebleau, Taupō, Santa Ynez.
+- `hype-lingo-villes.js` : Hickstead (7 textes), seule modification du fichier.
+- Contrôle : les deux fichiers chargés dans l'ordre de l'appli → **38 / 38 villes** avec lettre (même nombre de paragraphes qu'en français) + 3 volets titre et texte. Syntaxe OK, 0 voyelle, 0 cyrillique, six langues intactes.
+- La lettre est au masculin comme le narrateur français — **sauf Burghley**, dont le français est au féminin (« on m'a laissée ») : l'arabe suit le français. Les volets s'adressent à la cavalière au féminin.
+- Titres communs repris à l'identique des villes déjà faites : « Si tu y allais » = لو ذهبت إلى هناك, « Le savais-tu ? » = هل كنت تعرفين؟
+- 🟥 **À TRANCHER (Blandine)** : dans `villes.js`, le volet de Connemara « Le poney des grands espaces » est traduit **مهر المساحات الواسعة** — مهر = POULAIN, le piège exact du glossaire. Proposé : بوني المساحات الواسعة. Non corrigé sans son accord.
+
 ### 🟠 CE QUI RESTE AVANT D'ACTIVER L'ARABE
-1. `hype-lingo-villes-monde.js` : 56 champs arabes sur 196 (lettres et volets des villes « monde » non traduites).
-2. `hype-lingo-villes.js` : 63 / 70 (Hickstead).
+1. ~~villes-monde.js~~ ✅ · 2. ~~villes.js~~ ✅
 3. `lingo.html` : `ETAPES_I18N` (13 villes), `RECITS`, `POURQUOI`, `ACCUEIL_CHAP`, `COLL_NOM`, puis les ~190 libellés d'interface — **une seule livraison de `lingo.html`**, VER monté.
 4. L'activation elle-même (procédure en 10 étapes, plus bas).
 
