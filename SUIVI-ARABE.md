@@ -17,8 +17,8 @@
 | état | fichiers |
 |---|---|
 | ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
-| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83)** |
-| 🟥 à faire (0 arabe) | formation, versailles, enseignant, wellington, derby, cross, horsemanship, poney, tradition, western, polo, haras, endurance, vente, elevage, liberte, phrases-monde |
+| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92)** |
+| 🟥 à faire (0 arabe) | formation, versailles, enseignant, horsemanship, poney, tradition, western, polo, haras, endurance, vente, elevage, liberte, phrases-monde |
 | 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
 
 ### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
@@ -32,7 +32,14 @@
 - Contrôles : syntaxe OK, 0 voyelle, 0 cyrillique, les six autres langues inchangées au caractère près.
 - `lingo.html` **non modifié** : l'arabe étant dormant, rien ne change à l'écran. Le `?l=` des trois lexiques sera monté au moment de l'activation.
 - Termes posés : الفروسية العليا (haute école), الترويض الكلاسيكي, المساعدات (les aides), الانسجام, الركوب الجانبي (amazone), سائق العربة (meneur), أعنة العربة (guides), عدة الحصان (harnachement), سوط الركوب, المهاميز, سترة الحماية, ضمادات الراحة / ضمادات العمل, واقيات القوائم, تجهيز الحصان بالسرج واللجام (seller).
-- 🟠 **Défaut français repéré (pas corrigé, hors périmètre)** : trois définitions contiennent un « \n » écrit en toutes lettres qui s'affiche tel quel (parade · attelage, formation, urgences-med). L'arabe ne le reproduit pas.
+- ✅ **Défaut français corrigé le 28/09 (validé par Blandine)** : trois définitions affichaient un « \n » en toutes lettres (Séville · l'attelage, Warendorf · formation, Édimbourg · urgences-med). L'appli ne gère aucun retour à la ligne dans les définitions : le « \n » a été remplacé par un espace. Seul le français contenait le défaut ; rien d'autre n'a bougé dans ces fichiers. ⚠️ `formation.js` et `urgences-med.js` corrigés doivent servir de base à la suite.
+
+### 28/09 — lot 2 : Hickstead, Burghley, Wellington (lexiques seulement)
+- `hype-lingo-lex-derby.js` (Hickstead, 76), `hype-lingo-lex-cross.js` (Burghley, 69), `hype-lingo-lex-wellington.js` (Wellington, 92) : `mots`, `def`, phrases, dialogue, `"ar"` dans `dialogue.langues`.
+- Mêmes contrôles que le lot 1, tous bons. `lingo.html` non modifié.
+- Termes posés : الديربي, التلة الترابية (la banque / le talus), التل (la colline des spectateurs), الحاجز الثابت, الحاجز الطبيعي, معبر الماء, مسامير الحدوة (crampons), الدرجات (piano), الخندق, المخاضة (gué), الطريق المباشر / الخيار الطويل, الحاجز الضيق, الهبوط, نقطة الارتقاء, الحاجز العمودي, الأوكسر, العارضتان المتقاطعتان, المركب (combinaison), الرايات, معاينة المسار, الجولة النظيفة, جولة الفصل (barrage), ميدان الإحماء, الرفض, الهروب الجانبي, العصيان.
+- Consignes au groupe laissées au pluriel (Wellington : « attention à bien attendre vos sauts », « huit chevaux au paddock »), comme le veut la règle.
+- 🟠 **À signaler, pas touché** : à Wellington, la définition des fanions dit « le souvenir que tu rapportes de **Hickstead** » (texte d'origine, recopié tel quel en arabe).
 
 ---
 

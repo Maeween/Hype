@@ -213,7 +213,7 @@ window.HYPE_LINGO_LEX.parade = {
            es:{m:"el enganche"}, it:{m:"l'attacco"},
            de:{m:"das Gespann", p:"gue-chpann"}, ja:{m:"馬車の組", p:"basha no kumi"},
            ar:{m:"العربة وخيولها", var:"مجموعة الجر"} },
-    def:{ fr:"🟥 L'ANGLAIS COMPTE LES CHEVAUX D'UNE FAÇON QUI NE SE DEVINE PAS :\\n**single** un cheval · **pair** deux côte à côte · **tandem** deux l'un derrière l'autre · **four-in-hand** quatre.\\n⚠️ **FOUR-IN-HAND** compte par LA MAIN DU MENEUR : les quatre paires de guides tenues dans une seule main. C'est le plus beau mot du chapitre. Et *a turnout* désigne l'ensemble complet — chevaux, voiture, harnais, tenues — jugé comme un tout.",
+    def:{ fr:"🟥 L'ANGLAIS COMPTE LES CHEVAUX D'UNE FAÇON QUI NE SE DEVINE PAS : **single** un cheval · **pair** deux côte à côte · **tandem** deux l'un derrière l'autre · **four-in-hand** quatre. ⚠️ **FOUR-IN-HAND** compte par LA MAIN DU MENEUR : les quatre paires de guides tenues dans une seule main. C'est le plus beau mot du chapitre. Et *a turnout* désigne l'ensemble complet — chevaux, voiture, harnais, tenues — jugé comme un tout.",
           en:"English counts horses in a way you can't guess: single, pair, tandem, four-in-hand. « Four-in-hand » counts by the driver's hand — four pairs of reins held in one. And « a turnout » is the whole thing: horses, carriage, harness, clothes, judged together.",
           es:"El inglés cuenta los caballos de un modo particular: single, pair, tandem, four-in-hand. « Four-in-hand » cuenta por la mano del cochero.",
           it:"L'inglese conta i cavalli in modo particolare: single, pair, tandem, four-in-hand. « Four-in-hand » conta dalla mano del guidatore.",
