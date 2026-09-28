@@ -17,8 +17,8 @@
 | état | fichiers |
 |---|---|
 | ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
-| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92)** |
-| 🟥 à faire (0 arabe) | formation, versailles, enseignant, horsemanship, poney, tradition, western, polo, haras, endurance, vente, elevage, liberte, phrases-monde |
+| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107)** |
+| 🟥 à faire (0 arabe) | horsemanship, poney, tradition, western, polo, haras, endurance, vente, elevage, liberte, phrases-monde |
 | 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
 
 ### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
@@ -39,7 +39,15 @@
 - Mêmes contrôles que le lot 1, tous bons. `lingo.html` non modifié.
 - Termes posés : الديربي, التلة الترابية (la banque / le talus), التل (la colline des spectateurs), الحاجز الثابت, الحاجز الطبيعي, معبر الماء, مسامير الحدوة (crampons), الدرجات (piano), الخندق, المخاضة (gué), الطريق المباشر / الخيار الطويل, الحاجز الضيق, الهبوط, نقطة الارتقاء, الحاجز العمودي, الأوكسر, العارضتان المتقاطعتان, المركب (combinaison), الرايات, معاينة المسار, الجولة النظيفة, جولة الفصل (barrage), ميدان الإحماء, الرفض, الهروب الجانبي, العصيان.
 - Consignes au groupe laissées au pluriel (Wellington : « attention à bien attendre vos sauts », « huit chevaux au paddock »), comme le veut la règle.
-- 🟠 **À signaler, pas touché** : à Wellington, la définition des fanions dit « le souvenir que tu rapportes de **Hickstead** » (texte d'origine, recopié tel quel en arabe).
+- ✅ Vérifié le 28/09 : à Wellington, la définition des fanions dit « le souvenir que tu rapportes de **Hickstead** ». C'est JUSTE — le fanion rouge est bien le souvenir de Hickstead dans `ETAPES`. C'est un renvoi, pas une erreur. Rien à changer.
+
+### 28/09 — lot 3 : Warendorf, Versailles, Saumur (lexiques seulement)
+- `hype-lingo-lex-formation.js` (Warendorf, 60 — construit sur la version corrigée du « \n »), `hype-lingo-lex-versailles.js` (Versailles, 66), `hype-lingo-lex-enseignant.js` (Saumur, 107).
+- Mêmes contrôles, tous bons. `lingo.html` non modifié.
+- 🟥 **Saumur est un chapitre à DOUBLE FORME** : 36 mots portent un `dit` (l'ordre crié). Traité comme Aberystwyth : `ar:{m:"…", dit:"…"}`. L'enseignante parle à UNE élève → féminin singulier (توقفي، انزلي، تنفسي) ; au groupe → pluriel (أنصتوا، أمسكوا العرف، الجميع بالخطو). L'outil refuse désormais tout `dit` oublié.
+- Versailles : termes de dressage alignés sur ceux déjà posés dans les réserves (الأبوييه، الانقياد للساق، الكتف إلى الداخل، الرأس إلى الجدار). Termes nouveaux : الإيقاع، الارتخاء، التواصل مع الشكيمة، الاندفاع، الاستقامة، التجميع، الانحناء، الثني، الخفة، المؤخرة، المقدمة، الانقياد (soumission)، دخول القوائم الخلفية (engagement)، نفاذ المساعدات.
+- Warendorf : التكوين (formation) / التدريب (entraînement), الدورة التدريبية (stage), المجموعة الوطنية (cadre = squad) ≠ المنتخب (team).
+- ⚠️ Règle rappelée : quand la joueuse s'adresse à l'écuyer ou au moniteur, le verbe reste au masculin (تستمع، تقول) ; seul le club parle à la joueuse au féminin.
 
 ---
 
