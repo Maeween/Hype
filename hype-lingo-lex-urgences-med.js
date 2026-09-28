@@ -57,7 +57,8 @@ window.HYPE_LINGO_LEX["urgences-med"] = {
   ref: "urgences-med",
   chapitre: 14,
   titre: { fr:"Les urgences du cavalier", en:"Rider emergencies", es:"Urgencias del jinete",
-           it:"Le urgenze del cavaliere", de:"Notfälle beim Reiter", ja:"騎手の緊急事態" },
+           it:"Le urgenze del cavaliere", de:"Notfälle beim Reiter", ja:"騎手の緊急事態",
+           ar:"طوارئ الفارس" },
   lecons: 1,
 
   concepts: [

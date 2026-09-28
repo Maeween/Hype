@@ -35,7 +35,7 @@ window.HYPE_LINGO_LEX.cross = {
   chapitre: 30,
   titre: { fr:"Le cross", en:"Cross-country", es:"El cross", it:"Il cross",
            de:"Das Gelände", ja:"クロスカントリー",
-           ar:"الكروس" },
+           ar:"سباق الضاحية" },
   lecons: 1,
 
   concepts: [

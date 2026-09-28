@@ -74,7 +74,8 @@ window.HYPE_LINGO_LEX["urgences-vet"] = {
   ref: "urgences-vet",
   chapitre: 9,
   titre: { fr:"Les urgences du cheval", en:"Equine emergencies", es:"Urgencias del caballo",
-           it:"Le urgenze del cavallo", de:"Notfälle beim Pferd", ja:"馬の緊急事態" },
+           it:"Le urgenze del cavallo", de:"Notfälle beim Pferd", ja:"馬の緊急事態",
+           ar:"طوارئ الحصان" },
   lecons: 1,
 
   concepts: [

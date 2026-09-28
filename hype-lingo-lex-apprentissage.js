@@ -111,7 +111,8 @@ window.HYPE_LINGO_LEX.apprentissage = {
   ref: "apprentissage",
   chapitre: 1,
   titre: { fr:"L'apprentissage", en:"How horses learn", es:"El aprendizaje",
-           it:"L'apprendimento", de:"Das Lernen", ja:"馬の学習" },
+           it:"L'apprendimento", de:"Das Lernen", ja:"馬の学習",
+           ar:"التعلم" },
   lecons: 1,
 
   concepts: [

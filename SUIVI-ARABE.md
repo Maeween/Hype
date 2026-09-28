@@ -17,8 +17,8 @@
 | état | fichiers |
 |---|---|
 | ✅ complets ou quasi | cheval·connemara, ecurie, pansage, walsall, barcelone, jeunes, cours, windsor, aachen, badminton, oliva, rome, urgences-vet, urgences-med, arrivee, froid, balade, flyinge, apprentissage |
-| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107), horsemanship (Santa Ynez, 55), haras (Lexington, 71), polo (Buenos Aires, 60), poney (Lamotte, 99), elevage (Golegã, 72), vente (Vérone, 62)** |
-| 🟥 à faire (0 arabe) | tradition, western, endurance, liberte, phrases-monde |
+| ✅ **faits le 28/09** | **andalou (Jerez, 46), parade (Séville, 60), vejer (Vejer, 83), derby (Hickstead, 76), cross (Burghley, 69), wellington (Wellington, 92), formation (Warendorf, 60), versailles (Versailles, 66), enseignant (Saumur, 107), horsemanship (Santa Ynez, 55), haras (Lexington, 71), polo (Buenos Aires, 60), poney (Lamotte, 99), elevage (Golegã, 72), vente (Vérone, 62), tradition (Tokyo, 56), western (Tamworth, 58), endurance (Dubaï, 87), liberte (Taupō, 71), phrases-monde (10)** |
+| ✅ à faire | **plus aucun lexique** |
 | 🟠 partiels | villes-monde.js (56 / 196), villes.js (63 / 70) |
 
 ### Dans `lingo.html` (points 6, 8, 9 des neuf points) — relevé du 28/09
@@ -61,6 +61,19 @@
 - Mêmes contrôles, tous bons. `lingo.html` non modifié.
 - Lamotte : les 26 phrases isolées sont les mêmes que les 26 répliques du dialogue — même arabe des deux côtés, volontairement.
 - Termes posés : البوني (الحصان القزم) — glossaire respecté, jamais المهر ; الارتفاع عند الغارب، مقياس الارتفاع (toise)، فئة الارتفاع، ألعاب البوني، الكاروسيل، الركوب بلا سرج، الأعنة الملونة، ضمن / خارج حد الارتفاع · مزرعة التربية، الفرس / الفحل / المهر / المهرة، الحصان المخصي (glossaire)، فرس التربية، التلقيح / التلقيح الاصطناعي، الفطام، السلالة، سجل الأنساب (stud-book)، الاعتماد (Körung)، البنية (conformation)، العرض باليد، النسل · للبيع، التاجر، الفحص البيطري قبل الشراء، الصورة الإشعاعية، عقد البيع، الضمان، العيب الخفي، جواز السفر، الميزانية.
+
+### 28/09 — lot 6 : Tokyo, Tamworth, Dubaï, Taupō, phrases du monde — ✅ LES 38 CHAPITRES SONT COMPLETS
+- `hype-lingo-lex-tradition.js` (Tokyo, 56), `hype-lingo-lex-western.js` (Tamworth, 58), `hype-lingo-lex-endurance.js` (Dubaï, 87 — y compris `intro`), `hype-lingo-lex-liberte.js` (Taupō, 71), `hype-lingo-phrases-monde.js` (10 phrases ajoutées à dressage et écurie).
+- 🟥 **Contrôle global fait en chargeant les 41 fichiers comme l'appli** : 38 chapitres · 894 mots · 212 phrases · 838 répliques de dialogue — **0 manque**. Chaque `dialogue.langues` contient `"ar"`.
+- **Titres de chapitre (`titre.ar`)** : 9 anciens chapitres n'en avaient pas (ecurie, pansage, cours, urgences-vet, urgences-med, arrivee, froid, balade, apprentissage) → ajoutés, seule modification de ces fichiers. Et 5 titres de ce jour alignés sur le nom de chapitre déjà affiché par `ETAPES_I18N` : cross → سباق الضاحية, elevage → تربية الخيل, western → الركوب الغربي, haras → مزرعة الخيول, horsemanship → فن التعامل مع الخيل.
+- Dubaï : الحصان العربي الأصيل pour le pur-sang arabe (ici c'est bien la race arabe — le piège du glossaire ne vaut que pour le Thoroughbred).
+- ⚠️ `apprentissage.js` contient 3 mots vocalisés **dans des commentaires** (notes de relecture, jamais affichées). Laissés tels quels.
+
+### 🟠 CE QUI RESTE AVANT D'ACTIVER L'ARABE
+1. `hype-lingo-villes-monde.js` : 56 champs arabes sur 196 (lettres et volets des villes « monde » non traduites).
+2. `hype-lingo-villes.js` : 63 / 70 (Hickstead).
+3. `lingo.html` : `ETAPES_I18N` (13 villes), `RECITS`, `POURQUOI`, `ACCUEIL_CHAP`, `COLL_NOM`, puis les ~190 libellés d'interface — **une seule livraison de `lingo.html`**, VER monté.
+4. L'activation elle-même (procédure en 10 étapes, plus bas).
 
 ---
 

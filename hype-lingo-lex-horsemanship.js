@@ -69,7 +69,7 @@ window.HYPE_LINGO_LEX.horsemanship = {
   chapitre: 1,
   titre: { fr:"Le horsemanship", en:"Horsemanship", es:"La doma natural",
            it:"Il horsemanship", de:"Horsemanship", ja:"ホースマンシップ",
-           ar:"الهورسمانشيب" },
+           ar:"فن التعامل مع الخيل" },
   lecons: 1,
 
   concepts: [

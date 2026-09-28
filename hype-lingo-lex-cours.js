@@ -22,7 +22,7 @@ window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
 window.HYPE_LINGO_LEX.cours = {
   ref: "cours",
   chapitre: 5,
-  titre: { fr:"Le cours", en:"The lesson", es:"La clase", it:"La lezione", de:"Die Reitstunde", ja:"レッスン" },
+  titre: { fr:"Le cours", en:"The lesson", es:"La clase", it:"La lezione", de:"Die Reitstunde", ja:"レッスン", ar:"الدرس" },
   lecons: 4,
 
   concepts: [

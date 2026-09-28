@@ -45,7 +45,8 @@ window.HYPE_LINGO_LEX.balade = {
   ref: "balade",
   chapitre: 11,
   titre: { fr:"La balade", en:"The ride out", es:"El paseo", it:"La passeggiata",
-           de:"Der Ausritt", ja:"外乗" },
+           de:"Der Ausritt", ja:"外乗",
+           ar:"النزهة على الخيل" },
   lecons: 1,
 
   concepts: [

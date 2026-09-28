@@ -86,7 +86,7 @@ window.HYPE_LINGO_LEX.haras = {
   chapitre: 15,
   titre: { fr:"Le haras", en:"The stud farm", es:"La yeguada",
            it:"L'allevamento", de:"Das Gestüt", ja:"牧場",
-           ar:"مزرعة التربية" },
+           ar:"مزرعة الخيول" },
   lecons: 1,
 
   concepts: [

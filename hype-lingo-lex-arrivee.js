@@ -88,7 +88,8 @@ window.HYPE_LINGO_LEX.arrivee = {
   chapitre: 11,
   titre: { fr:"L'arrivée dans un club", en:"Arriving at a yard",
            es:"Llegar a un club", it:"Arrivare in un club",
-           de:"Ankommen im Reitverein", ja:"クラブに着く" },
+           de:"Ankommen im Reitverein", ja:"クラブに着く",
+           ar:"الوصول إلى النادي" },
   /* 🟥 19/08 : 2 -> 3. Le fichier a TOUJOURS contenu trois leçons ; ce
      compteur en annonçait deux. Sans effet sur le moteur, qui filtre par
      `c.lecon`, mais faux à la lecture. ⚠️ NE PAS CONFONDRE avec le nombre

@@ -68,7 +68,7 @@ window.HYPE_LINGO_LEX.elevage = {
   chapitre: 12,
   titre: { fr:"L'élevage", en:"Breeding", es:"La cría", it:"L'allevamento",
            de:"Die Zucht", ja:"繁殖",
-           ar:"التربية" },
+           ar:"تربية الخيل" },
   lecons: 1,
 
   concepts: [

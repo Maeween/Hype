@@ -101,7 +101,8 @@ window.HYPE_LINGO_LEX.froid = {
   ref: "froid",
   chapitre: 16,
   titre: { fr:"Le froid", en:"The cold", es:"El frío",
-           it:"Il freddo", de:"Die Kälte", ja:"寒さ" },
+           it:"Il freddo", de:"Die Kälte", ja:"寒さ",
+           ar:"البرد" },
   lecons: 1,
 
   concepts: [

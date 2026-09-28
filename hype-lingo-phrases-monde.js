@@ -40,7 +40,8 @@
       es:"¿ Hago una cesión a la pierna de B a E ?",
       it:"Faccio una cessione alla gamba da B a E ?",
       de:"Soll ich Schenkelweichen von B nach E reiten ?",
-      ja:"B から E へ 脚譲り を し ます か ?" },
+      ja:"B から E へ 脚譲り を し ます か ?",
+      ar:"هل أقوم بانقياد للساق من B إلى E؟" },
 
     { ref:"epaule-combien", lecon:2,
       fr:"Sur quelle longueur je garde l'épaule en dedans ?",
@@ -48,7 +49,8 @@
       es:"¿ Cuánto mantengo la espalda adentro ?",
       it:"Per quanto tratto tengo la spalla in dentro ?",
       de:"Wie lange halte ich das Schulterherein ?",
-      ja:"ショルダーイン は どこ まで 続け ます か ?" },
+      ja:"ショルダーイン は どこ まで 続け ます か ?",
+      ar:"على أي مسافة أحافظ على الكتف إلى الداخل؟" },
 
     { ref:"trop-vite-passage", lecon:2,
       fr:"Il précipite au passage, je ralentis la cadence ?",
@@ -56,7 +58,8 @@
       es:"Se precipita en el paso español, ¿ bajo el ritmo ?",
       it:"Affretta nel passage, rallento la cadenza ?",
       de:"Er eilt in der Passage — soll ich den Takt verlangsamen ?",
-      ja:"パッサージュ で 急ぎ ます。 リズム を 落とし ます か ?" },
+      ja:"パッサージュ で 急ぎ ます。 リズム を 落とし ます か ?",
+      ar:"إنه يتسرع في الباساج، هل أبطئ الإيقاع؟" },
 
     /* leçon 3 · les qualités */
     { ref:"pas-decontracte", lecon:3,
@@ -65,7 +68,8 @@
       es:"No está relajado, ¿ le dejo estirarse ?",
       it:"Non è decontratto, lo lascio allungarsi ?",
       de:"Er ist nicht losgelassen — soll ich ihn dehnen lassen ?",
-      ja:"リラックス し て い ませ ん。 伸ばさ せ ます か ?" },
+      ja:"リラックス し て い ませ ん。 伸ばさ せ ます か ?",
+      ar:"إنه غير مرتخ، هل أتركه يتمدد؟" },
 
     { ref:"rassembler-trop", lecon:3,
       fr:"Je demande trop de rassembler pour son âge ?",
@@ -73,7 +77,8 @@
       es:"¿ Le pido demasiada reunión para su edad ?",
       it:"Chiedo troppa riunione per la sua età ?",
       de:"Verlange ich zu viel Versammlung für sein Alter ?",
-      ja:"年齢 に 対して 収縮 を 求め すぎ です か ?" },
+      ja:"年齢 に 対して 収縮 を 求め すぎ です か ?",
+      ar:"هل أطلب منه تجميعا أكثر مما يناسب عمره؟" },
 
     { ref:"main-lourde", lecon:3,
       fr:"Ma main est trop lourde, il perd sa légèreté.",
@@ -81,7 +86,8 @@
       es:"Mi mano es demasiado dura y pierde su ligereza.",
       it:"La mia mano è troppo pesante e perde la leggerezza.",
       de:"Meine Hand ist zu schwer, er verliert seine Leichtigkeit.",
-      ja:"手 が 重 すぎ て 軽 さ が 失わ れ ます。" }
+      ja:"手 が 重 すぎ て 軽 さ が 失わ れ ます。",
+      ar:"يدي ثقيلة جدا، وهو يفقد خفته." }
 
   ],
 
@@ -94,7 +100,8 @@
       es:"¿ Cuántas pacas de paja por box a la semana ?",
       it:"Quante balle di paglia per box alla settimana ?",
       de:"Wie viele Ballen Stroh pro Box und Woche ?",
-      ja:"一 週間 に 馬房 ごと 藁 は 何 個 です か ?" },
+      ja:"一 週間 に 馬房 ごと 藁 は 何 個 です か ?",
+      ar:"كم بالة من القش لكل بوكس في الأسبوع؟" },
 
     { ref:"ou-brouette", lecon:2,
       fr:"Où je vide la brouette et où sont les fourches ?",
@@ -102,7 +109,8 @@
       es:"¿ Dónde vacío la carretilla y dónde están las horcas ?",
       it:"Dove svuoto la carriola e dove sono i forconi ?",
       de:"Wo entleere ich die Schubkarre und wo sind die Gabeln ?",
-      ja:"一輪車 は どこ に 空け ます か。 フォーク は どこ です か ?" },
+      ja:"一輪車 は どこ に 空け ます か。 フォーク は どこ です か ?",
+      ar:"أين أفرغ عربة اليد، وأين المذاري؟" },
 
     { ref:"ration-ecrite", lecon:3,
       fr:"Sa ration est écrite sur la porte, je peux la voir ?",
@@ -110,7 +118,8 @@
       es:"Su ración está escrita en la puerta, ¿ puedo verla ?",
       it:"La sua razione è scritta sulla porta, posso vederla ?",
       de:"Seine Ration steht an der Tür — darf ich sie sehen ?",
-      ja:"飼料 の 量 は 扉 に 書い て あり ます。 見 て も いい です か ?" },
+      ja:"飼料 の 量 は 扉 に 書い て あり ます。 見 て も いい です か ?",
+      ar:"حصته الغذائية مكتوبة على الباب، هل يمكنني رؤيتها؟" },
 
     { ref:"foin-avant-grain", lecon:3,
       fr:"Je donne le foin avant les granulés, c'est bien ça ?",
@@ -118,7 +127,8 @@
       es:"Doy el heno antes del pienso, ¿ es correcto ?",
       it:"Do il fieno prima dei mangimi, è giusto ?",
       de:"Ich gebe das Heu vor dem Kraftfutter, stimmt das ?",
-      ja:"濃厚 飼料 の 前 に 乾草 を 与え ます。 それ で 合っ て い ます か ?" }
+      ja:"濃厚 飼料 の 前 に 乾草 を 与え ます。 それ で 合っ て い ます か ?",
+      ar:"أعطيه الدريس قبل العلف المحبب، أليس كذلك؟" }
 
   ]
 

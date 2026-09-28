@@ -49,7 +49,7 @@ window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
 window.HYPE_LINGO_LEX.pansage = {
   ref: "pansage",
   chapitre: 2,
-  titre: { fr:"Le pansage", en:"Grooming", es:"La limpieza", it:"La pulizia", de:"Das Putzen", ja:"手入れ" },
+  titre: { fr:"Le pansage", en:"Grooming", es:"La limpieza", it:"La pulizia", de:"Das Putzen", ja:"手入れ", ar:"العناية بالحصان" },
   lecons: 4,
 
   concepts: [
