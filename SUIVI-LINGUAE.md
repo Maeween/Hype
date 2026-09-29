@@ -1,10 +1,30 @@
-# 🗓️ 29/09 — DOHA, 39e VILLE · ÉTAPE 1/2 : le vocabulaire et la lettre (invisibles)
+# 🗓️ 29/09 — DOHA, 39e VILLE — `lingo.html` ?v=98
+
+## ÉTAPE 2 — Doha dans le voyage (livrée avec l'étape 1, non poussée séparément)
+
+**À l'écran** : Doha apparaît en 39e ville (« Chapitre 39 · Le cheval arabe de show », Qatar, drapeau 🇶🇦), Premium comme toutes les villes hors `VILLE_OFFERTE`. Rien ne change pour les 38 autres.
+
+**Dans `lingo.html`** : balise script `hype-lingo-lex-doha.js?l=1` · `ETAPES` (h 18 h 10, ciel nuit bleue/or, forme `haras`, `ic:"numero"`) · `ETAPES_I18N` · `I18N_NAT` + `TH_PAVILLON` (Qatar) · `RECITS` (récit de Blandine, 9 paragraphes) · `POURQUOI` · `ACCUEIL_CHAP` (« Apprendre à regarder ») · `PHRASES_FIN` (écrite par Claude, 7 langues) · `COLL_NOM` (modele, membres-mouvement, ring) · `ETAPE_SRC` · `NIVEAU_VILLE` (2) · `ICONES.numero` (neuve) · `TH_FAMILLES` (« Le concours ») + `TH_LIB` (« regarder un cheval de show ») · `TITRE_SOMBRE` (tiers haut de la carte mesuré à 161,7) · `VER` ?v=98.
+- Contrôles : seules 6 lignes existantes modifiées (virgules, VER, liste de thèmes) · 6 blocs `<script>` OK · 0 voyelle · Chromium : 39 étapes, chapitre Doha = 16 concepts + 4 phrases + dialogue, arrivée ouverte en FR et EN sans erreur JS.
+- Aucun texte « 38 villes » visible dans l'appli : rien à passer à 39.
+
+**`sw-linguae.js`** : `hype-lingo-lex-doha.js` ajouté à `SOCLE_JS`, `CACHE` → `linguae-v11`.
+
+**Images** (image de Blandine, 29/09) : `carte-doha.webp` et `fond-doha.webp` (900 × 1200, même image pour les deux en attendant un 2e visuel), `carte-doha-vignette.jpg` (450 × 600). ⚠️ L'image d'origine était en paysage avec un panneau « DOHA AL SHAQAB » et des logos en tête de cheval (bâtiment, barrières) : recadrage portrait sur la jument et le présentateur — ni texte ni logo (consigne « aucun logo réel » de son propre fichier). Pas encore d'objet (`objet-doha*.webp`) : le médaillon montre l'icône.
+
+**Lettre raccourcie (accord de Blandine, 29/09 : « tu peux adapter »)** : la lettre complète débordait de la carte postale (≈ 40 % plus longue que Barcelone, la plus longue qui tienne). Version gardée, faite de ses propres phrases, identique dans les 7 langues : l'accroche + « Puis une jument grise est entrée dans le ring d'Al Shaqab. J'ai compris qu'un œil s'éduque comme une main. Je repars avec seize mots nouveaux. Mais surtout avec une autre façon de regarder un cheval. »
+
+**Non intégré, faute d'emplacement** : la description du souvenir (« Un petit numéro de présentation rapporté de Doha… ») — aucune ville n'a de texte de souvenir, seul le nom s'affiche.
+
+**À surveiller au test** : le « Pourquoi Doha ? » de Blandine est bien plus long que les autres et s'affiche aussi dans la liste des villes.
+
+## ÉTAPE 1 — le vocabulaire et la lettre
 
 **Source : fichier de Blandine « Hype_Linguae_DOHA_7_langues_Claude » (29/09), sept langues fournies — repris tel quel, non retraduit.** Doha = la ville (Qatar) ; Al Shaqab (Education City) = le lieu. Chapitre : « Le cheval arabe de show ».
 
 **Livré à l'étape 1** (rien ne change à l'écran tant que `lingo.html` ne les appelle pas) :
 - `hype-lingo-lex-doha.js` — NOUVEAU. 16 concepts, 1 leçon, 4 phrases isolées (reprises mot pour mot de répliques du dialogue), dialogue de 24 répliques en 6 temps de 4, `langues` avec `"ar"`. Ajouts de Claude : les prononciations `p` (en, de, ja) seulement.
-- `hype-lingo-villes-monde.js` — `MONDE.doha` ajouté (lettre + 3 volets, 7 langues). Aucune autre ville touchée. `lieu:"Al Shaqab · Qatar"`, `niveau:2`.
+- `hype-lingo-villes-monde.js` — `MONDE.doha` ajouté (lettre + 3 volets, 7 langues ; lettre raccourcie, voir étape 2). Aucune autre ville touchée. `lieu:"Al Shaqab · Qatar"`, `niveau:2`.
 
 **Audit des refs (consigne de Blandine) :**
 
@@ -29,13 +49,12 @@
 
 ⚠️ Pour les cinq refs existantes, les `mots` DÉJÀ en place sont conservés (consigne) : « the legs », « the ground jury », 頭, 首, « shown in hand »… — et non les variantes du fichier de Blandine (« the limbs », « the judging panel », 頭部, 頸, « in-hand presentation »). Leur DÉFINITION est celle de Doha. Le lexique n'affiche chaque ref qu'une fois (`lxConstruire`, « un concept = un ref global »).
 
-**Lettre** : cinq paragraphes et la formule « Doha, » dans le fichier source → mise au format des 38 autres (accroche + corps, texte intact, formule retirée). Plus longue que les autres : **à vérifier sur la carte postale à l'étape 2**.
+**Lettre** : cinq paragraphes et la formule « Doha, » dans le fichier source → mise au format des 38 autres (accroche + corps, formule retirée), puis raccourcie (voir étape 2).
 
 **Familles nouvelles (pour l'étape 2, `COLL_NOM`)** : `modele`, `membres-mouvement`, `ring` — libellés fournis par Blandine.
 
 ⚠️ Effet connu, pas nouveau : chaque ville ajoutée change la liste des « duels » partagés par lien (`motsDuDuel` tire dans TOUS les lexiques) — un ancien lien de duel donnera d'autres mots. C'était déjà le cas à chaque ville.
 
-**Étape 2 à venir** : `lingo.html` (?v=98 — ETAPES, ETAPES_I18N, I18N_NAT « Qatar », I18N_H, RECITS, POURQUOI, ACCUEIL_CHAP, PHRASES_FIN, COLL_NOM, ETAPE_SRC, ICONES, balise script) + `sw-linguae.js` (SOCLE_JS + CACHE). Images à fournir par Blandine : carte, fond, objet (3 vues).
 
 ---
 
