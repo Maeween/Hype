@@ -7718,3 +7718,41 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     le signale (texte blanc cassé, les autres gris clair).
   Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
   Build 20260928-511 (contient 510).
+· (512) 28/09, 23 h 20 — « MES AMIS » : GRAND VISUEL MOINS SOMBRE. Blandine :
+  « assombris un peu moins de surface l'onglet de l'ami qui a la grande icône,
+  pas plus que la moitié de la largeur ».
+  - La photo de l'ami occupe désormais 62 % de la largeur à droite (à gauche en
+    arabe), recadrée (cover, centre 30 %), fondue sur son premier cinquième.
+    Avant : largeur = hauteur (≈ 40 % pour une photo carrée).
+  - Voile sombre : s'arrête à 50 % de la largeur (avant 68 %), un peu plus
+    léger (0,85 → 0,55 → 0) ; fond flou éclairci (luminosité 0,45 → 0,55).
+  Testé en rendu 375/390/430 (fr), 375 (ar, de). Aucun SQL, aucun texte nouveau.
+  node --check OK (18 blocs), un seul marqueur. Build 20260928-512 (contient 511).
+· (513) 29/09, 1 h 10 — PAGE CAVALIER : FLÈCHE RETOUR, PREMIUM, PARTAGE ET DRAPEAU AU-
+  DESSUS DE LA PHOTO. Blandine (capture) : « ils ne doivent pas être à l'intérieur de
+  la photo mais en HAUT de la photo ».
+  - Cause : la page n'avait pas de position « relative » ; ces quatre boutons
+    (position absolue, haut + 14 px) se calaient donc sur un conteneur plus haut de
+    l'appli et tombaient ~110 px trop bas, dans la photo (qui commence à haut + 62 px).
+  - Correctif : position « relative » sur la racine de la page Cavalier. Les
+    boutons se calent sur la page : haut + 14 / + 18 px, au-dessus de la photo.
+    Rien d'autre ne bouge.
+  - Pour info : la barre grise sous « Le mur des songes » est la bande du bandeau
+    des stories (demandée le 17/08) — non touchée.
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260929-513 (contient 512).
+· (514) 29/09, 18 h 30 — FICHE D'UN RENDEZ-VOUS : L'AFFICHE SEULE N'APPARAISSAIT PAS.
+  Blandine (3 captures, Open de Dressage SEP) : « quand j'ajoute un événement avec
+  affiche, je l'ouvre et l'affiche disparaît ; je rajoute l'affiche en photo, elle
+  n'apparaît toujours pas ; je la mets en avant et d'un coup les deux pop ».
+  - Cause : avec UNE seule carte (l'affiche seule, choix du 20/09 (297) : pleine
+    largeur, hauteur plafonnée), le bloc image avait « flex: 1 » (base 0) : cette
+    base passait devant la hauteur demandée et la carte s'écrasait à 0 px — il ne
+    restait qu'un trait. Avec deux cartes, le minimum de 250 px la faisait réapparaître.
+    Reproduit en navigateur : 2 px avant, 448 px après.
+  - Correctif : une carte seule garde sa hauteur (flex 0 0 auto). Rien d'autre ne
+    change ; la grille à deux colonnes est identique.
+  - L'affiche était bien enregistrée : rien à refaire en base. La photo ajoutée et
+    mise en avant en double peut être retirée par le menu « ••• ».
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260929-514 (contient 513).
