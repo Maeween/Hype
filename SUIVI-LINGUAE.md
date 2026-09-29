@@ -1,3 +1,44 @@
+# 🗓️ 29/09 — DOHA, 39e VILLE · ÉTAPE 1/2 : le vocabulaire et la lettre (invisibles)
+
+**Source : fichier de Blandine « Hype_Linguae_DOHA_7_langues_Claude » (29/09), sept langues fournies — repris tel quel, non retraduit.** Doha = la ville (Qatar) ; Al Shaqab (Education City) = le lieu. Chapitre : « Le cheval arabe de show ».
+
+**Livré à l'étape 1** (rien ne change à l'écran tant que `lingo.html` ne les appelle pas) :
+- `hype-lingo-lex-doha.js` — NOUVEAU. 16 concepts, 1 leçon, 4 phrases isolées (reprises mot pour mot de répliques du dialogue), dialogue de 24 répliques en 6 temps de 4, `langues` avec `"ar"`. Ajouts de Claude : les prononciations `p` (en, de, ja) seulement.
+- `hype-lingo-villes-monde.js` — `MONDE.doha` ajouté (lettre + 3 volets, 7 langues). Aucune autre ville touchée. `lieu:"Al Shaqab · Qatar"`, `niveau:2`.
+
+**Audit des refs (consigne de Blandine) :**
+
+| concept | ref finale | existante / nouvelle | fichier source |
+|---|---|---|---|
+| le type | `type-race` | nouvelle | — |
+| la tête | `tete` | **existante** | lex-connemara |
+| l'encolure | `encolure` | **existante** | lex-pansage (Lambourn) |
+| le corps | `corps` | nouvelle | — |
+| la ligne du dessus | `ligne-dessus` | nouvelle | — |
+| les membres | `membres` | **existante** | lex-pansage (Lambourn) |
+| les aplombs | `aplombs` | nouvelle | — |
+| le mouvement | `mouvement` | nouvelle | — |
+| le modèle | `modele` | nouvelle (≠ `modele-allures` de Golegã, qui est le CONCOURS) | — |
+| l'équilibre | `equilibre-modele` | nouvelle (≠ `equilibre` de Warendorf et Taupō : équilibre du cavalier) | — |
+| la présentation en main | `presente-en-main` | **existante** | lex-elevage (Golegã) |
+| le présentateur / la présentatrice | `presentateur` | nouvelle | — |
+| la pose | `pose` | nouvelle | — |
+| le jury | `jury` | **existante** | lex-rome |
+| la note | `note-show` | nouvelle (≠ `minima` de Rome) | — |
+| la classe | `classe-show` | nouvelle (≠ `epreuve` d'Oliva, « the class » = l'épreuve) | — |
+
+⚠️ Pour les cinq refs existantes, les `mots` DÉJÀ en place sont conservés (consigne) : « the legs », « the ground jury », 頭, 首, « shown in hand »… — et non les variantes du fichier de Blandine (« the limbs », « the judging panel », 頭部, 頸, « in-hand presentation »). Leur DÉFINITION est celle de Doha. Le lexique n'affiche chaque ref qu'une fois (`lxConstruire`, « un concept = un ref global »).
+
+**Lettre** : cinq paragraphes et la formule « Doha, » dans le fichier source → mise au format des 38 autres (accroche + corps, texte intact, formule retirée). Plus longue que les autres : **à vérifier sur la carte postale à l'étape 2**.
+
+**Familles nouvelles (pour l'étape 2, `COLL_NOM`)** : `modele`, `membres-mouvement`, `ring` — libellés fournis par Blandine.
+
+⚠️ Effet connu, pas nouveau : chaque ville ajoutée change la liste des « duels » partagés par lien (`motsDuDuel` tire dans TOUS les lexiques) — un ancien lien de duel donnera d'autres mots. C'était déjà le cas à chaque ville.
+
+**Étape 2 à venir** : `lingo.html` (?v=98 — ETAPES, ETAPES_I18N, I18N_NAT « Qatar », I18N_H, RECITS, POURQUOI, ACCUEIL_CHAP, PHRASES_FIN, COLL_NOM, ETAPE_SRC, ICONES, balise script) + `sw-linguae.js` (SOCLE_JS + CACHE). Images à fournir par Blandine : carte, fond, objet (3 vues).
+
+---
+
 # 🗓️ 28/09 — `lingo.html` ?v=97 : TOUT LE CONTENU EN ARABE (toujours dormant)
 
 **Ce qui change à l'écran : RIEN pour les six langues.** L'arabe reste invisible : `LANGUES_UI` est inchangé (fr, en, es, it, de, ja), pas de drapeau, pas de `rtl`.

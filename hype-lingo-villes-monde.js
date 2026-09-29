@@ -1393,6 +1393,77 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
     ]
   };
 
+  /* 🟥 DOHA, 39e VILLE (29/09/2026) — « Le cheval arabe de show ».
+     Lieu narratif : AL SHAQAB, Education City (Doha = la ville, Al Shaqab
+     = le lieu). Texte fourni par Blandine en sept langues, repris tel
+     quel. ⚠️ Sa lettre commençait par « Doha, » et comptait cinq
+     paragraphes : mise au format des 38 autres (accroche + corps, texte
+     inchangé, formule d'appel retirée — le nom de la ville est déjà sur
+     la carte). Plus longue que les autres : à vérifier sur iPhone. */
+  MONDE.doha = {
+    lieu:"Al Shaqab · Qatar", carte:true, niveau:2,
+    image:"la jument grise sous les projecteurs d'Al Shaqab",
+    lettre:{
+      fr:["Ce soir, j’ai cru que j’allais simplement regarder de beaux chevaux.",
+          "Puis une jument grise est entrée dans le ring d’Al Shaqab. Tout le monde regardait la même jument, mais personne ne semblait regarder exactement la même chose : la tête, l’encolure, les membres, le mouvement… J’ai compris qu’un œil s’éduque comme une main. Au début, je voyais une silhouette. À la fin, je voyais des détails, puis la façon dont ces détails formaient un ensemble. Je repars avec seize mots nouveaux. Mais surtout avec une autre façon de regarder un cheval."],
+      en:["Tonight, I thought I was simply going to look at beautiful horses.",
+          "Then a grey mare entered the ring at Al Shaqab. Everyone was watching the same mare, but no one seemed to be looking at exactly the same thing: the head, the neck, the limbs, the movement… I realised that the eye can be trained just like the hand. At first, I saw a silhouette. By the end, I saw details, and then the way those details formed a whole. I leave with sixteen new words. But above all, with a different way of looking at a horse."],
+      es:["Esta noche pensaba que simplemente iba a mirar caballos bonitos.",
+          "Después, una yegua torda entró en el ring de Al Shaqab. Todos miraban a la misma yegua, pero nadie parecía observar exactamente lo mismo: la cabeza, el cuello, las extremidades, el movimiento… Comprendí que la mirada se educa igual que la mano. Al principio veía una silueta. Al final veía detalles y, después, la forma en que esos detalles componían un conjunto. Me voy con dieciséis palabras nuevas. Pero, sobre todo, con otra forma de mirar a un caballo."],
+      it:["Questa sera pensavo che avrei semplicemente guardato dei bei cavalli.",
+          "Poi una cavalla grigia è entrata nel ring di Al Shaqab. Tutti guardavano la stessa cavalla, ma nessuno sembrava osservare esattamente la stessa cosa: la testa, il collo, gli arti, il movimento… Ho capito che anche lo sguardo si educa, proprio come la mano. All’inizio vedevo una sagoma. Alla fine vedevo i dettagli e poi il modo in cui quei dettagli formavano un insieme. Riparto con sedici parole nuove. Ma soprattutto con un altro modo di guardare un cavallo."],
+      de:["Heute Abend dachte ich, ich würde mir einfach schöne Pferde ansehen.",
+          "Dann kam eine Schimmelstute in den Ring von Al Shaqab. Alle sahen dieselbe Stute, doch niemand schien genau dasselbe zu betrachten: den Kopf, den Hals, die Gliedmaßen, die Bewegung … Ich habe verstanden, dass man den Blick genauso schulen kann wie die Hand. Am Anfang sah ich eine Silhouette. Am Ende sah ich Details und dann, wie diese Details ein Ganzes bildeten. Ich fahre mit sechzehn neuen Wörtern weiter. Vor allem aber mit einer neuen Art, ein Pferd anzusehen."],
+      ja:["今夜は、ただきれいな馬を見るだけだと思っていた。",
+          "でもAl Shaqabのリングに一頭の芦毛の牝馬が入ってきた。同じ牝馬を見ているのに、みんなが見ているものは少しずつ違うようだった。頭部、頸、四肢、動き……。 目も、手と同じように鍛えられるのだとわかった。 最初に見えていたのは一つのシルエットだった。最後には細部が見え、その細部がどう一つの全体をつくっているのかまで見えるようになった。 新しい十六の言葉を持って、ここを出る。 でも何より、馬を見る新しい視点を持って。"],
+      ar:["هذا المساء ظننت أنني سأكتفي بمشاهدة خيول جميلة.",
+          "ثم دخلت فرس رمادية إلى حلبة Al Shaqab. كان الجميع ينظرون إلى الفرس نفسها، لكن لم يكن الجميع يلاحظون الشيء نفسه تماما: الرأس، والعنق، والقوائم، والحركة... فهمت أن العين تتدرب مثل اليد. في البداية كنت أرى هيئة عامة. وفي النهاية صرت أرى التفاصيل، ثم أرى كيف تجتمع هذه التفاصيل لتشكل صورة كاملة. أغادر ومعي ست عشرة كلمة جديدة. لكن الأهم أنني أغادر بطريقة جديدة للنظر إلى الحصان."]},
+    volets:[
+     {t:{fr:"Si tu y allais",
+         en:"If you went there",
+         es:"Si fueras allí",
+         it:"Se ci andassi",
+         de:"Wenn du hinfahren würdest",
+         ja:"もし行くなら",
+         ar:"لو ذهبت إلى هناك"},
+      c:{fr:"Commence par Al Shaqab, à Education City. Prends le temps de regarder les chevaux à l’arrêt puis en mouvement : même sans connaître les notes, essaie de décrire ce que tu vois avant d’écouter les commentaires des autres.",
+         en:"Start at Al Shaqab in Education City. Take time to watch the horses standing and then in motion: even without knowing the scores, try to describe what you see before listening to other people’s comments.",
+         es:"Empieza por Al Shaqab, en Education City. Tómate tu tiempo para observar los caballos parados y después en movimiento: aunque no conozcas las puntuaciones, intenta describir lo que ves antes de escuchar los comentarios de los demás.",
+         it:"Comincia da Al Shaqab, a Education City. Prenditi il tempo di osservare i cavalli da fermi e poi in movimento: anche senza conoscere i punteggi, prova a descrivere ciò che vedi prima di ascoltare i commenti degli altri.",
+         de:"Beginne bei Al Shaqab in Education City. Nimm dir Zeit, die Pferde zuerst im Stand und dann in der Bewegung zu betrachten. Auch wenn du die Wertungen nicht kennst, versuche zunächst selbst zu beschreiben, was du siehst, bevor du den Kommentaren anderer zuhörst.",
+         ja:"Education CityのAl Shaqabから始めよう。まず静止している馬を、次に動いている馬をじっくり見る。得点がわからなくても、周りの意見を聞く前に、自分の目に何が見えるか言葉にしてみよう。",
+         ar:"ابدئي من Al Shaqab في Education City. خذي وقتك في مراقبة الخيول وهي واقفة ثم أثناء الحركة. حتى إن لم تعرفي الدرجات، حاولي وصف ما ترينه قبل الاستماع إلى تعليقات الآخرين."}},
+     {t:{fr:"Le savais-tu ?",
+         en:"Did you know?",
+         es:"¿Lo sabías?",
+         it:"Lo sapevi?",
+         de:"Wusstest du schon?",
+         ja:"知ってた？",
+         ar:"هل كنت تعرفين؟"},
+      c:{fr:"Dans les shows de chevaux arabes, le jugement peut distinguer plusieurs critères comme le type, la tête et l’encolure, le corps, les membres et le mouvement. Séparer les critères oblige à regarder plus précisément.",
+         en:"In Arabian horse shows, judging can separate several criteria such as type, head and neck, body, limbs and movement. Separating the criteria encourages a more precise way of looking.",
+         es:"En los shows de caballos árabes, la evaluación puede distinguir varios criterios como el tipo, la cabeza y el cuello, el cuerpo, las extremidades y el movimiento. Separar los criterios obliga a observar con mayor precisión.",
+         it:"Negli show di cavalli arabi, la valutazione può distinguere diversi criteri come tipo, testa e collo, corpo, arti e movimento. Separare i criteri porta a osservare con maggiore precisione.",
+         de:"Bei Shows für Arabische Pferde kann die Bewertung verschiedene Kriterien wie Typ, Kopf und Hals, Körper, Gliedmaßen und Bewegung unterscheiden. Die getrennte Betrachtung der Kriterien führt zu genauerem Hinsehen.",
+         ja:"アラブ馬のショーでは、タイプ、頭部と頸、胴体、四肢、動きなど、複数の項目を分けて評価することがある。項目を分けることで、より細かく観察することになる。",
+         ar:"في عروض الخيل العربية، يمكن أن يميز التقييم بين عدة معايير مثل الطابع النوعي والرأس والعنق والجسم والقوائم والحركة. فصل المعايير يدفعك إلى الملاحظة بدقة أكبر."}},
+     {t:{fr:"À toi de regarder",
+         en:"Your turn to observe",
+         es:"Ahora te toca observar",
+         it:"Ora tocca a te osservare",
+         de:"Jetzt bist du mit Beobachten dran",
+         ja:"今度は自分で見てみよう",
+         ar:"دورك في الملاحظة"},
+      c:{fr:"Choisis une photo de cheval de profil, puis une courte vidéo au trot. Sur la photo, décris le modèle et les membres. Sur la vidéo, oublie quelques secondes la beauté de la tête et concentre-toi uniquement sur le mouvement. Ton regard change-t-il ?",
+         en:"Choose a side-on photo of a horse, then a short video at the trot. In the photo, describe the conformation and limbs. In the video, forget the beauty of the head for a few seconds and focus only on movement. Does the way you look change?",
+         es:"Elige una foto de un caballo de perfil y después un vídeo corto al trote. En la foto, describe la conformación y las extremidades. En el vídeo, olvida durante unos segundos la belleza de la cabeza y concéntrate únicamente en el movimiento. ¿Cambia tu forma de mirar?",
+         it:"Scegli una foto di un cavallo di profilo e poi un breve video al trotto. Nella foto descrivi la conformazione e gli arti. Nel video dimentica per qualche secondo la bellezza della testa e concentrati soltanto sul movimento. Il tuo sguardo cambia?",
+         de:"Wähle ein seitliches Foto eines Pferdes und anschließend ein kurzes Video im Trab. Beschreibe auf dem Foto Exterieur und Gliedmaßen. Vergiss im Video für ein paar Sekunden die Schönheit des Kopfes und konzentriere dich nur auf die Bewegung. Verändert sich dein Blick?",
+         ja:"馬を横から撮った写真を一枚選び、次に速歩の短い動画を選ぼう。写真では馬体構造と四肢を説明する。動画では数秒間、頭部の美しさを意識せず、動きだけに集中してみよう。見え方は変わるかな？",
+         ar:"اختاري صورة لحصان من الجانب، ثم مقطع فيديو قصيرا له أثناء الخبب. في الصورة، صفي البنية والقوائم. وفي الفيديو، انسي جمال الرأس لبضع ثوان وركزي فقط على الحركة. هل تغيرت طريقة نظرك؟"}}
+    ]
+  };
+
   /* ajout clé par clé : on ne remplace jamais une ville déjà présente */
   var k;
   for(k in MONDE){
