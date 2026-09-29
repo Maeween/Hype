@@ -1,3 +1,21 @@
+# 🗓️ 30/09 — DOHA : LE SOUVENIR DEVIENT LE FER À CHEVAL — `lingo.html` ?v=99
+
+**Décision de Blandine (30/09, 00 h 45)** : « au final on a changé le souvenir pour un fer à cheval souvenir ». Le numéro du ring (fichier du 29/09) est abandonné. Nom choisi par elle parmi deux propositions : **« Un fer à cheval de nacre »** (Flyinge a déjà « Un fer à cheval doré », il fallait un nom distinct). Traductions de Claude : en « A mother-of-pearl horseshoe » · es « Una herradura de nácar » · it « Un ferro di cavallo di madreperla » · de « Ein Perlmutt-Hufeisen » · ja « 螺鈿の蹄鉄 » · ar « حدوة من الصدف » (sans voyelles).
+
+**Images** (planche de Blandine, 2e version reçue à 00 h 49, fond transparent) : trois vues découpées, alpha nettoyé (≤ 40 → 0, ≥ 240 → 255, rognage à 8 px), aucun halo sur fond sombre ni clair, ni texte ni logo :
+- `objet-doha.webp` (704 × 722) — de face : médaillon de l'arrivée, vitrine, collection, repli de la sellerie ;
+- `pose-doha.webp` (581 × 714) — trois quarts, bord gauche visible ;
+- `pose-doha-34.webp` (602 × 718) — trois quarts, bord droit visible (règle de Blandine, « comme d'hab » : les deux trois-quarts pour la sellerie, comme Taupō et Édimbourg).
+
+**Dans `lingo.html`** (5 lignes existantes modifiées + commentaires) : `ETAPES.doha` → `souv:"Un fer à cheval de nacre", ic:"fer"` (icône existante, en repli seulement) · `ETAPES_I18N.doha.souv` (6 langues) · `POSE_34` et `POSE_PROPRE` gagnent `doha:1` · `VER` ?v=99 (premier geste contre une image qui s'entête : le fond de Doha poussé ce soir par-dessus l'ancien sous le même `?v=98` est ainsi rechargé aussi). L'icône `numero` reste dans `ICONES`, inutilisée (pas de nettoyage hors périmètre).
+- ✅ Au passage, un défaut évité : `lingo-collection.html` a sa propre table d'icônes, qui n'a jamais eu `numero` — le dos de la carte Doha dans la collection n'aurait montré aucune icône. Avec `fer`, elle en a une.
+- Ni `sw-linguae.js` (inchangé, les images se chargent à la demande sous leur `VER`) ni `lingo-sellerie.html` (les trois vues suivent la règle déjà codée) ne changent.
+- Contrôles : 6 blocs `<script>` OK · 0 voyelle arabe · Chromium (iPhone 390 × 844) : `souvN` « Un fer à cheval de nacre — au quiz sans faute » avant le gain, « Souvenir de Doha · Un fer à cheval de nacre » après ; médaillon = `objet-doha.webp?v=99` (plus l'icône) ; `eSouv` juste dans les 7 langues ; `sellerieObjets()` renvoie `pose-doha.webp` / `pose-doha-34.webp` / repli `objet-doha.webp` ; aucune erreur JS.
+
+**À pousser (racine)** : `lingo.html` · `objet-doha.webp` · `pose-doha.webp` · `pose-doha-34.webp` · `sellerie-entree.webp` · `sellerie-droite.webp` (les deux retrouvés, voir l'incident ci-dessous) · ce `SUIVI-LINGUAE.md`.
+
+**🟥 INCIDENT SELLERIE, signalé par Blandine le 30/09 à 00 h 51** (capture : « Image absente : sellerie-entree.webp · sellerie-droite.webp ») : ces deux murs de la pièce classique — la porte et la vitrine de face — **n'ont jamais été poussés**. Vérifié dans l'historique GitHub jusqu'au 21/07 : aucune trace des deux fichiers, alors que les six autres murs livrés le 12/08 (session 209) y sont depuis ce jour-là. Ils figuraient bien dans le lot « à pousser → racine » du 12/08 (97 ko et 79 ko, 1000 × 1500). Le bandeau est le garde-fou du 14/08 (« chaque mur charge seul, le fichier manquant est nommé »), il fait son travail. Rien à corriger dans le code. **Retrouvés par Blandine le 30/09 à 01 h 12** dans son téléphone : md5 vérifiés contre la table du 12/08 (`b3263de14ec0` = `sellerie-droite.webp`, la vitrine de face, 1000 × 1500 ; `0132755061e4` = `sellerie-entree.webp`, la porte, 1000 × 1500), ce sont bien les fichiers d'origine, renvoyés sous leur nom pour être poussés à la racine avec ce lot. Le bandeau disparaîtra de lui-même ; la pièce classique aura enfin ses huit murs. ⚠️ Reste vrai depuis le 12/08 : la paire vitrine de face / vitrine de biais (`PAIRES.droite`) a été mesurée sur cette image-ci — à vérifier au doigt, un objet posé sur la vitrine doit se retrouver au bon endroit dans l'angle.
+
 # 🗓️ 29/09 — DOHA, 39e VILLE — `lingo.html` ?v=98
 
 ## ÉTAPE 2 — Doha dans le voyage (livrée avec l'étape 1, non poussée séparément)

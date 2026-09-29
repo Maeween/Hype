@@ -3961,7 +3961,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=98";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=99";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4393,11 +4393,15 @@ var ETAPES = [
     · `ciel` — nuit bleue et lumières chaudes du ring.
     · `forme:"haras"` — un centre équestre et d'élevage, pas un village.
     · `ic:"numero"` — icône neuve : un carton de ring numéroté.
+    🟥 30/09 : LE SOUVENIR A CHANGÉ — « Le numéro du ring » devient le fer à
+    cheval (décision de Blandine, images reçues le même soir) : `souv` dans
+    les 7 langues, `ic:"fer"` (icône existante, repli seulement : les trois
+    vues existent). L'icône `numero` reste dans ICONES, inutilisée.
     · LE QATAR est un pays neuf : I18N_NAT + TH_PAVILLON.
     · Niveau 2 (NIVEAU_VILLE), Premium comme toutes les villes hors
       VILLE_OFFERTE.
     ================================================================== */
- {ref:"doha",      ch:"Le cheval arabe de show", v:"Doha", nat:"Qatar", h:"18 h 10", ciel:["#0B1426","#C9A86A"], forme:"haras", souv:"Le numéro du ring", ic:"numero"}
+ {ref:"doha",      ch:"Le cheval arabe de show", v:"Doha", nat:"Qatar", h:"18 h 10", ciel:["#0B1426","#C9A86A"], forme:"haras", souv:"Un fer à cheval de nacre", ic:"fer"}
 ];
 /* ==================================================================
    TOUTES LES VILLES SONT OUVERTES (7 août 2026)
@@ -4544,7 +4548,7 @@ var ETAPES_I18N = {
  doha:{
    ch:{en:"The Arabian show horse", es:"El caballo árabe de show", it:"Il cavallo arabo da show", de:"Das Arabische Showpferd", ja:"アラブ馬のショー", ar:"خيل العرض العربية"},
    v:{ja:"ドーハ", ar:"الدوحة"},
-   souv:{en:"The ring number", es:"El número de pista", it:"Il numero del ring", de:"Die Ringnummer", ja:"リングナンバー", ar:"رقم حلبة العرض"}},
+   souv:{en:"A mother-of-pearl horseshoe", es:"Una herradura de nácar", it:"Un ferro di cavallo di madreperla", de:"Ein Perlmutt-Hufeisen", ja:"螺鈿の蹄鉄", ar:"حدوة من الصدف"}},
  maurice:{
    ch:{en:"The ride out", es:"El paseo", it:"La passeggiata", de:"Der Ausritt", ja:"外乗",
        ar:"النزهة على الخيل"},
@@ -7947,8 +7951,12 @@ function selleriePiece(nom){
    angles. Le souvenir a changé le même jour : le carnet de mots est
    devenu l'armoire, en même temps que le chapitre est devenu
    « Les urgences du cavalier ». */
-var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1, tamworth:1, taupo:1, edimbourg:1};
-var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1, taupo:1, edimbourg:1};
+/* 🟥 30/09 : DOHA ajoutée aux deux tables — le fer à cheval a ses trois
+   vues (`objet-doha.webp` de face, `pose-doha.webp` et `pose-doha-34.webp`
+   de trois quarts, un de chaque côté), toutes en fond transparent,
+   découpées de l'image de Blandine. Même règle que Taupō et Édimbourg. */
+var POSE_34 = {walsall:1, dubai:1, lambourn:1, connemara:1, oliva:1, kildare:1, badminton:1, tamworth:1, taupo:1, edimbourg:1, doha:1};
+var POSE_PROPRE = {walsall:1, dubai:1, oliva:1, versailles:1, taupo:1, edimbourg:1, doha:1};
 /* 16/08 : versailles ajoutee — le couvre-reins royal a une vraie vue
    PLIEE pour la sellerie (`pose-versailles.webp`), distincte de la vue
    deployee de la vitrine. Voir la regle des TROIS ETATS en tete du
