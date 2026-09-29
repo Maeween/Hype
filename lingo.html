@@ -3257,6 +3257,8 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <script src="hype-lingo-lex-flyinge.js?l=3"></script>
 <!-- 21/08 : Clonbinane, « L'apprentissage ». 16 concepts, dialogue de 25 répliques. -->
 <script src="hype-lingo-lex-apprentissage.js?l=2"></script>
+<!-- 29/09 : DOHA (Qatar), 39e ville, « Le cheval arabe de show ». 16 concepts, dialogue de 24 répliques. Contenu fourni par Blandine en sept langues. -->
+<script src="hype-lingo-lex-doha.js?l=1"></script>
 <!-- Les phrases manquantes de Saumur (dressage L2-L3) et de Vejer
      (ecurie L2-L3). Additif : refuse tout ref déjà présent. -->
 <script src="hype-lingo-phrases-monde.js?l=1"></script>
@@ -3959,7 +3961,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=97";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=98";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4380,7 +4382,22 @@ var ETAPES = [
       collection — aucune autre icône n'est un habit.
     · L'AUSTRALIE est un pays neuf dans le voyage : voir I18N_NAT.
     ================================================================== */
- {ref:"clonbinane",ch:"L'apprentissage",v:"Clonbinane",nat:"Australie",   h:"06 h 40", ciel:["#0E1A20","#C9A16B"], forme:"lande",   souv:"Un manteau australien en toile huilée", ic:"manteau"}
+ {ref:"clonbinane",ch:"L'apprentissage",v:"Clonbinane",nat:"Australie",   h:"06 h 40", ciel:["#0E1A20","#C9A16B"], forme:"lande",   souv:"Un manteau australien en toile huilée", ic:"manteau"},
+ /* ==================================================================
+    39e VILLE — DOHA, QATAR (29 septembre 2026). « Le cheval arabe de show ».
+    Lieu : Al Shaqab, Education City — Doha est la VILLE, Al Shaqab le LIEU.
+    Contenu fourni par Blandine en sept langues (lexique, récit, pourquoi,
+    accueil, lettre, volets, souvenir, familles).
+    · `h:"18 h 10"` — le soir : son récit se passe « lorsque le jour
+      commence à tomber », sous les projecteurs.
+    · `ciel` — nuit bleue et lumières chaudes du ring.
+    · `forme:"haras"` — un centre équestre et d'élevage, pas un village.
+    · `ic:"numero"` — icône neuve : un carton de ring numéroté.
+    · LE QATAR est un pays neuf : I18N_NAT + TH_PAVILLON.
+    · Niveau 2 (NIVEAU_VILLE), Premium comme toutes les villes hors
+      VILLE_OFFERTE.
+    ================================================================== */
+ {ref:"doha",      ch:"Le cheval arabe de show", v:"Doha", nat:"Qatar", h:"18 h 10", ciel:["#0B1426","#C9A86A"], forme:"haras", souv:"Le numéro du ring", ic:"numero"}
 ];
 /* ==================================================================
    TOUTES LES VILLES SONT OUVERTES (7 août 2026)
@@ -4477,7 +4494,9 @@ var I18N_NAT = {
  "Canada":         {en:"Canada",    es:"Canadá",   it:"Canada",    de:"Kanada",    ja:"カナダ", ar:"كندا"},
  /* 🟥 18/08 : NATION NEUVE, ajoutée avec Taupō. ⚠️ Doit toujours aller de
     pair avec une entrée dans TH_PAVILLON — sinon le drapeau reste vide. */
- "Nouvelle-Zélande":{en:"New Zealand", es:"Nueva Zelanda", it:"Nuova Zelanda", de:"Neuseeland", ja:"ニュージーランド", ar:"نيوزيلندا"}
+ "Nouvelle-Zélande":{en:"New Zealand", es:"Nueva Zelanda", it:"Nuova Zelanda", de:"Neuseeland", ja:"ニュージーランド", ar:"نيوزيلندا"},
+ /* 29/09 : NATION NEUVE, avec Doha. Va de pair avec TH_PAVILLON. */
+ "Qatar":{en:"Qatar", es:"Catar", it:"Qatar", de:"Katar", ja:"カタール", ar:"قطر"}
 };
 var I18N_H = {
  "19 h 55":{en:"7.55 pm", es:"19:55", it:"19:55", de:"19:55 Uhr", ja:"19時55分", ar:"19:55"},
@@ -4521,6 +4540,11 @@ var ETAPES_I18N = {
     ⚠️ RÈGLE : toute ville neuve doit avoir son entrée ICI, au même titre
     que ses quatre déclarations et que ses familles dans COLL_NOM.
     🟡 Le champ `ar` est dormant : aucun écran ne le lit. */
+ /* 29/09 : DOHA, 39e ville — textes fournis par Blandine en sept langues. */
+ doha:{
+   ch:{en:"The Arabian show horse", es:"El caballo árabe de show", it:"Il cavallo arabo da show", de:"Das Arabische Showpferd", ja:"アラブ馬のショー", ar:"خيل العرض العربية"},
+   v:{ja:"ドーハ", ar:"الدوحة"},
+   souv:{en:"The ring number", es:"El número de pista", it:"Il numero del ring", de:"Die Ringnummer", ja:"リングナンバー", ar:"رقم حلبة العرض"}},
  maurice:{
    ch:{en:"The ride out", es:"El paseo", it:"La passeggiata", de:"Der Ausritt", ja:"外乗",
        ar:"النزهة على الخيل"},
@@ -4865,6 +4889,73 @@ var RECITS = {
       "ここでは、ロープなしで働く馬と、手に何も持たない騎手を見かけます。",
       {f:"フリーライディングを世に知らせる前に、ある人馬が総合馬術を走ったのがこの国です。華やかさは競技の後に来たのであって、競技の代わりに来たのではありません。"}],
   ar:["تملأ البحيرة فوهة البركان، ويمتد العشب حتى البراكين من دون أن يصادف سياجا.", "هنا نرى خيولا تعمل بلا حبل قيادة، وفارسات لم يعد في أيديهن شيء.", {f:"في هذا البلد شارك ثنائي في الفروسية الثلاثية قبل أن يعرف العالم بالركوب الحر. جاء المشهد المذهل بعد الرياضة، لا بدلا منها."}]},
+ /* 29/09 : DOHA — « Sous les lumières de Doha », récit fourni par Blandine
+    en sept langues, repris tel quel. ⚠️ Plus long que les autres récits
+    (neuf paragraphes, sans `{f:}`) : à vérifier sur iPhone. */
+ doha:{
+  fr:["La chaleur est encore là lorsque tu arrives à Education City, mais le jour commence à tomber. Devant toi, les lignes blanches d’Al Shaqab découpent le ciel de Doha. Tout paraît immense et pourtant, à l’approche du ring, ton regard se resserre sur un seul cheval.",
+      "Une jument grise entre au trot. Sous les projecteurs, sa robe devient presque argentée. Le présentateur court à côté d’elle, puis ralentit. Autour du ring, les conversations s’effacent un instant.",
+      "Tu regardes d’abord sa tête. C’est presque automatique. Puis tu te rappelles ce que tu viens d’apprendre : ne pas t’arrêter au premier détail. Ton regard descend le long de l’encolure, suit la ligne du dessus, revient vers les membres. Lorsqu’elle s’immobilise devant le jury, tu essaies de voir le cheval tout entier.",
+      "Quelques secondes plus tard, elle repart au trot.",
+      "Et tout change.",
+      "Ce qui semblait figé devient mouvement. Tu regardes moins la pose, davantage la façon dont le corps se déplace. Pour la première fois, les mots « modèle », « aplombs » et « mouvement » ne ressemblent plus à du vocabulaire à retenir. Ils désignent réellement quelque chose que tu peux voir.",
+      "Un autre cheval attend déjà à l’entrée du ring.",
+      "Cette fois, avant même qu’on te dise quoi regarder, tes yeux cherchent l’ensemble.",
+      "Tu n’as pas seulement appris de nouveaux mots à Doha. Tu as appris à regarder."],
+  en:["The heat is still there when you arrive at Education City, but daylight is beginning to fade. In front of you, the white lines of Al Shaqab cut across the Doha sky. Everything seems immense, yet as you approach the ring your attention narrows to a single horse.",
+      "A grey mare trots into the ring. Under the lights, her coat looks almost silver. The handler runs beside her, then slows down. Around the ring, the conversations fade for a moment.",
+      "You look at her head first. It is almost automatic. Then you remember what you have just learned: do not stop at the first detail. Your eyes travel down the neck, follow the topline and return to the limbs. When she stands in front of the judges, you try to see the whole horse.",
+      "A few seconds later, she trots off again.",
+      "And everything changes.",
+      "What seemed still becomes movement. You pay less attention to the stand-up and more to the way the body moves. For the first time, the words “conformation”, “limb alignment” and “movement” no longer feel like vocabulary to memorise. They describe something you can actually see.",
+      "Another horse is already waiting at the entrance to the ring.",
+      "This time, before anyone tells you what to look at, your eyes search for the whole picture.",
+      "You have not only learned new words in Doha. You have learned how to look."],
+  es:["El calor sigue presente cuando llegas a Education City, pero empieza a caer la tarde. Ante ti, las líneas blancas de Al Shaqab recortan el cielo de Doha. Todo parece inmenso y, sin embargo, al acercarte a la pista, tu mirada se concentra en un solo caballo.",
+      "Una yegua torda entra al trote. Bajo los focos, su capa parece casi plateada. El presentador corre a su lado y después reduce el ritmo. Alrededor de la pista, las conversaciones se apagan por un instante.",
+      "Primero miras su cabeza. Es casi automático. Después recuerdas lo que acabas de aprender: no detenerte en el primer detalle. Tu mirada baja por el cuello, sigue la línea superior y vuelve a las extremidades. Cuando se inmoviliza delante del jurado, intentas ver al caballo entero.",
+      "Unos segundos después, vuelve a salir al trote.",
+      "Y todo cambia.",
+      "Lo que parecía inmóvil se convierte en movimiento. Te fijas menos en la pose y más en la forma en que se desplaza el cuerpo. Por primera vez, las palabras « conformación », « aplomos » y « movimiento » dejan de parecer vocabulario que hay que memorizar. Designan algo que realmente puedes ver.",
+      "Otro caballo ya espera a la entrada de la pista.",
+      "Esta vez, antes incluso de que te digan qué mirar, tus ojos buscan el conjunto.",
+      "En Doha no solo has aprendido palabras nuevas. Has aprendido a mirar."],
+  it:["Il caldo si sente ancora quando arrivi a Education City, ma il giorno comincia a calare. Davanti a te, le linee bianche di Al Shaqab si stagliano contro il cielo di Doha. Tutto sembra immenso eppure, avvicinandoti al ring, il tuo sguardo si concentra su un solo cavallo.",
+      "Una cavalla grigia entra al trotto. Sotto i riflettori, il suo mantello sembra quasi argentato. Il presentatore corre accanto a lei, poi rallenta. Intorno al ring, per un istante le conversazioni si spengono.",
+      "Guardi subito la sua testa. È quasi automatico. Poi ricordi ciò che hai appena imparato: non fermarti al primo dettaglio. Lo sguardo scende lungo il collo, segue la linea superiore e torna sugli arti. Quando si ferma davanti alla giuria, provi a vedere il cavallo nel suo insieme.",
+      "Pochi secondi dopo riparte al trotto.",
+      "E tutto cambia.",
+      "Ciò che sembrava immobile diventa movimento. Guardi meno la posa e di più il modo in cui si muove il corpo. Per la prima volta, le parole « conformazione », « appiombi » e « movimento » non sembrano più vocaboli da memorizzare. Indicano davvero qualcosa che puoi vedere.",
+      "Un altro cavallo aspetta già all’ingresso del ring.",
+      "Questa volta, prima ancora che qualcuno ti dica cosa guardare, i tuoi occhi cercano l’insieme.",
+      "A Doha non hai soltanto imparato parole nuove. Hai imparato a guardare."],
+  de:["Die Wärme ist noch zu spüren, als du in Education City ankommst, doch der Tag neigt sich dem Ende zu. Vor dir zeichnen die weißen Linien von Al Shaqab Konturen in den Himmel von Doha. Alles wirkt riesig, und doch richtet sich dein Blick beim Näherkommen an den Ring plötzlich nur noch auf ein einziges Pferd.",
+      "Eine Schimmelstute trabt in den Ring. Im Scheinwerferlicht wirkt ihr Fell beinahe silbern. Der Vorführer läuft neben ihr her und wird dann langsamer. Rund um den Ring verstummen die Gespräche für einen Moment.",
+      "Zuerst schaust du auf ihren Kopf. Fast automatisch. Dann erinnerst du dich an das, was du gerade gelernt hast: Bleib nicht beim ersten Detail stehen. Dein Blick wandert am Hals entlang, folgt der Oberlinie und kehrt zu den Gliedmaßen zurück. Als sie vor der Jury stehen bleibt, versuchst du, das ganze Pferd zu sehen.",
+      "Wenige Sekunden später trabt sie wieder an.",
+      "Und alles verändert sich.",
+      "Was eben noch unbeweglich wirkte, wird zu Bewegung. Du achtest weniger auf die Aufstellung und mehr darauf, wie sich der Körper bewegt. Zum ersten Mal wirken die Wörter „Exterieur“, „Gliedmaßenstellung“ und „Bewegung“ nicht mehr wie Vokabeln, die du auswendig lernen musst. Sie bezeichnen etwas, das du wirklich sehen kannst.",
+      "Am Eingang des Rings wartet bereits das nächste Pferd.",
+      "Diesmal suchen deine Augen schon nach dem Gesamtbild, noch bevor dir jemand sagt, worauf du achten sollst.",
+      "In Doha hast du nicht nur neue Wörter gelernt. Du hast gelernt hinzusehen."],
+  ja:["Education Cityに着いても、まだ暑さは残っている。でも日は少しずつ傾き始めている。目の前では、Al Shaqabの白いラインがDohaの空を切り取っている。すべてが大きく見えるのに、リングへ近づくにつれて、あなたの視線は一頭の馬だけに集まっていく。",
+      "芦毛の牝馬が速歩でリングに入ってくる。照明の下で、その毛色は銀色に近く見える。ハンドラーが隣を走り、やがて速度を落とす。リングの周りでは、一瞬だけ会話が静まる。",
+      "最初に目が行くのは頭部。ほとんど無意識だ。でも、今学んだことを思い出す。最初の一部分だけで止まらないこと。視線を頸に沿って下ろし、トップラインを追い、四肢へ戻す。審査員の前で牝馬が止まると、馬全体を見ようとする。",
+      "数秒後、牝馬は再び速歩で動き出す。",
+      "すると、すべてが変わる。",
+      "静止していたものが動きになる。立ち姿よりも、体がどのように動くかを見るようになる。初めて「馬体構造」「肢勢」「動き」という言葉が、覚えるだけの単語ではなくなる。本当に自分の目で見えるものを表す言葉になる。",
+      "次の馬が、もうリングの入口で待っている。",
+      "今度は何を見るべきか言われる前から、あなたの目は馬全体を探している。",
+      "Dohaで覚えたのは、新しい言葉だけではない。 あなたは、馬を見ることを学んだ。"],
+  ar:["لا تزال الحرارة حاضرة عندما تصلين إلى Education City، لكن النهار بدأ يميل إلى الغروب. أمامك ترسم الخطوط البيضاء لمجمع Al Shaqab ملامحها على سماء الدوحة. يبدو كل شيء واسعا، ومع اقترابك من حلبة العرض يتركز نظرك على حصان واحد فقط.",
+      "تدخل فرس رمادية إلى الحلبة بالخبب. تحت الأضواء يبدو شعرها فضيا تقريبا. يركض مقدم الحصان إلى جانبها ثم يبطئ. حول الحلبة تخفت الأحاديث للحظة.",
+      "تنظرين أولا إلى رأسها. يحدث ذلك بصورة شبه تلقائية. ثم تتذكرين ما تعلمته للتو: لا تتوقفي عند أول تفصيل. ينتقل نظرك على طول العنق، ويتابع الخط العلوي، ثم يعود إلى القوائم. عندما تقف أمام لجنة التحكيم، تحاولين رؤية الحصان كله.",
+      "بعد بضع ثوان تنطلق بالخبب من جديد.",
+      "ويتغير كل شيء.",
+      "ما بدا ساكنا يصبح حركة. تنظرين أقل إلى وقفة العرض وأكثر إلى الطريقة التي يتحرك بها الجسم. للمرة الأولى، لم تعد كلمات «البنية» و«استقامة القوائم» و«الحركة» مجرد مفردات يجب حفظها. إنها تصف أشياء يمكنك رؤيتها فعلا.",
+      "هناك حصان آخر ينتظر بالفعل عند مدخل الحلبة.",
+      "هذه المرة، وقبل أن يخبرك أحد بما يجب أن تنظري إليه، تبحث عيناك عن الصورة الكاملة.",
+      "لم تتعلمي في الدوحة كلمات جديدة فحسب. لقد تعلمت كيف تنظرين إلى الحصان."]},
  santaynez:{
   fr:["La vallée sent la poussière chaude et l'eucalyptus, et rien ici ne se fait dans le bruit.",
       "On y apprend à demander si peu que le cheval réponde avant qu'on ait insisté.",
@@ -5724,6 +5815,10 @@ var ICONES = {
     vitrée : anneau de suspension, fronton en arche, croix sur le fronton,
     deux étagères, bouton de porte. Même trait que les autres. */
  pharmacie:'<path d="M30 6 a3 3 0 1 1 0.1 0 M30 12 v3 M16 26 q14 -14 28 0 M14 26 h32 v28 h-32 Z M18 30 h26 v20 h-26 Z M18 38 h26 M18 44 h26 M28 20 h4 M30 18 v4 M42 40 a1.5 1.5 0 1 0 0.1 0" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
+ /* Le numéro de ring de Doha (29/09). Carton de présentation : cordon
+    d'attache, carton aux coins arrondis, grand chiffre, filet sous le
+    chiffre. Même trait que les autres. */
+ numero:'<path d="M24 8 l6 6 l6 -6 M18 14 h24 q4 0 4 4 v28 q0 4 -4 4 h-24 q-4 0 -4 -4 v-28 q0 -4 4 -4 Z M26 24 l5 -4 v18 M26 38 h10 M22 44 h16" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>',
  manteau:'<path d="M24 12 h12 M24 12 l-10 6 v30 h32 v-30 l-10 -6 M14 18 q16 10 32 0 M22 32 h16 M30 20 v28 M26 10 h8 v4 h-8 Z" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  lampion:'<path d="M30 10 v6 M20 16 h20 l-3 6 h-14 Z M22 22 q-4 12 8 14 q12 -2 8 -14 M26 40 h8 M30 44 v8" fill="none" stroke="#D4AF37" stroke-width="2" stroke-linejoin="round"/>',
  toise:'<path d="M30 8 v40 M20 48 h20 M24 14 h12 M24 22 h12 M24 30 h12 M24 38 h12 M14 12 h10" fill="none" stroke="#D4AF37" stroke-width="2"/>',
@@ -6033,6 +6128,14 @@ var POURQUOI = {
   ja:"フランスの若いスポーツホースたちの集いの場。その未来が決まる場所。",
   ar:"الموعد الفرنسي للخيول الرياضية الصغيرة، حيث يحسم مستقبلها."},
  /* 🟡 `ar` dormant — voir RECITS. */
+ /* 29/09 : DOHA — texte de Blandine (« Pourquoi Doha ? »), plus long que les autres : à vérifier dans la liste des villes. */
+ doha:{fr:"Parce qu’ici, le cheval arabe ne se découvre pas seulement dans les livres. À Al Shaqab, il se regarde en mouvement, dans son modèle, son expression et ses proportions. Doha devient donc l’endroit idéal pour apprendre un vocabulaire très particulier : celui qui permet de passer de « ce cheval est beau » à « voilà ce que j’observe ».",
+  en:"Because here, the Arabian horse is not something you discover only in books. At Al Shaqab, you observe it in motion, through its conformation, expression and proportions. Doha is therefore an ideal place to learn a very particular vocabulary: the words that take you from “this horse is beautiful” to “this is what I can see”.",
+  es:"Porque aquí el caballo árabe no se descubre solo en los libros. En Al Shaqab se observa en movimiento, a través de su conformación, su expresión y sus proporciones. Doha se convierte así en un lugar ideal para aprender un vocabulario muy particular: el que permite pasar de « este caballo es bonito » a « esto es lo que observo ».",
+  it:"Perché qui il cavallo arabo non si scopre soltanto nei libri. Ad Al Shaqab lo si osserva in movimento, nella conformazione, nell’espressione e nelle proporzioni. Doha diventa così il luogo ideale per imparare un vocabolario molto particolare: quello che permette di passare da « questo cavallo è bello » a « ecco che cosa osservo ».",
+  de:"Weil man das Arabische Pferd hier nicht nur aus Büchern kennenlernt. In Al Shaqab betrachtet man es in der Bewegung, in seinem Exterieur, seinem Ausdruck und seinen Proportionen. Doha ist damit ein idealer Ort für einen ganz besonderen Wortschatz: Wörter, mit denen aus „Dieses Pferd ist schön“ ein „Das ist es, was ich beobachte“ wird.",
+  ja:"ここでは、アラブ馬を本の中だけで知るのではない。Al Shaqabでは、動き、馬体構造、表情、プロポーションを実際に観察できる。だからDohaは、「この馬はきれい」から「私はここを見ている」へと変わるための、特別な語彙を学ぶのにぴったりの場所だ。",
+  ar:"لأنك هنا لا تكتشفين الحصان العربي في الكتب فقط. في Al Shaqab تراقبينه أثناء الحركة، وتلاحظين بنيته وتعبيره وتناسق أبعاده. لذلك تصبح الدوحة مكانا مثاليا لتعلم مفردات خاصة تنقلك من «هذا الحصان جميل» إلى «هذا ما ألاحظه»."},
  clonbinane:{ar:"برية فيكتوريا، حيث تراقب طريقة تعلم الحصان قبل أن يطلب منه شيء.",
   fr:"Le bush du Victoria, où l'on regarde comment un cheval apprend avant de lui demander.",
   en:"The Victorian bush, where you watch how a horse learns before asking anything of him.",
@@ -6087,7 +6190,10 @@ var NIVEAU_VILLE = {
      Le niveau 3 fait entrer les phrases à remettre dans l'ordre dès les
      premières vagues, et le vocal dans le tirage. C'est un chapitre où
      l'on parle. */
-  taupo:3
+  taupo:3,
+  /* 29/09 : DOHA en niveau 2 — on observe et on décrit (modèle, aplombs,
+     mouvement), sans encore produire de longues phrases. */
+  doha:2
 };
 function niveauVille(ref){ return NIVEAU_VILLE[ref] || 1; }
 /* ==================================================================
@@ -6167,7 +6273,7 @@ var TH_FAMILLES = [
     nom:{fr:"À pied", en:"On the ground", es:"A pie", it:"Da terra", de:"Am Boden", ja:"地上から", ar:"من الأرض"} },
   { cles:["cours","windsor","versailles","wellington","aachen","froid","enseignant","andalou"],
     nom:{fr:"À cheval", en:"In the saddle", es:"A caballo", it:"In sella", de:"Im Sattel", ja:"馬上で", ar:"على ظهر الحصان"} },
-  { cles:["badminton","oliva","rome","cross","derby"],
+  { cles:["badminton","oliva","rome","cross","derby","doha"],
     nom:{fr:"Le concours", en:"The show", es:"El concurso", it:"Il concorso", de:"Das Turnier", ja:"競技会", ar:"المسابقة"} },
   { cles:["poney","polo","western","endurance","tradition","parade"],
     nom:{fr:"Les disciplines", en:"The disciplines", es:"Las disciplinas", it:"Le discipline", de:"Die Disziplinen", ja:"各種目", ar:"التخصصات"} }
@@ -6175,6 +6281,8 @@ var TH_FAMILLES = [
 
 var TH_LIB = {
   /* 🟡 ARABE DORMANT (24/08) : champ `ar` sur les 23 objectifs — aucun écran ne le lit. Termes alignés sur le glossaire des relectures. */
+  /* 29/09 : DOHA (famille « Le concours ») — objectif écrit par Claude. */
+  doha:{fr:"regarder un cheval de show", en:"look at a show horse", es:"observar un caballo de show", it:"osservare un cavallo da show", de:"ein Showpferd betrachten", ja:"ショーの馬を見る", ar:"ملاحظة حصان العرض"},
   arrivee:{fr:"arriver dans un club",en:"arrive at a riding school",es:"llegar a un club",it:"arrivare in un club",de:"im Reitverein ankommen",ja:"乗馬クラブに着く",ar:"الوصول إلى النادي"},
   balade:{fr:"réserver une balade",en:"book a ride out",es:"reservar un paseo",it:"prenotare una passeggiata",de:"einen Ausritt buchen",ja:"外乗を予約する",ar:"حجز نزهة على الخيل"},
   urgences:{fr:"gérer une urgence",en:"handle an emergency",es:"gestionar una urgencia",it:"gestire un'emergenza",de:"einen Notfall bewältigen",ja:"緊急事態に対応する",ar:"التصرف في حالة طارئة"},
@@ -6237,6 +6345,8 @@ var TH_PAVILLON = {
   "Canada":"\uD83C\uDDE8\uD83C\uDDE6",
   /* 18/08 : Suède, pour Flyinge. */
   "Suède":"\uD83C\uDDF8\uD83C\uDDEA",
+  /* 29/09 : Qatar, pour Doha. */
+  "Qatar":"\uD83C\uDDF6\uD83C\uDDE6",
   "Nouvelle-Z\u00e9lande":"\uD83C\uDDF3\uD83C\uDDFF",
   "Angleterre":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC65\uDB40\uDC6E\uDB40\uDC67\uDB40\uDC7F",
   "\u00c9cosse":"\uD83C\uDFF4\uDB40\uDC67\uDB40\uDC62\uDB40\uDC73\uDB40\uDC63\uDB40\uDC74\uDB40\uDC7F",
@@ -7251,6 +7361,14 @@ function souvenirObtenu(ref){
    six langues, lue par tx().
    ================================================================== */
 var PHRASES_FIN = {
+ /* 29/09 : DOHA — chapeau écrit par Claude en sept langues (accord de Blandine sur le principe, 29/09), inspiré de sa lettre. */
+ doha:{fr:"Un regard s'éduque comme une main. <b>Tu sais maintenant voir un cheval entier.</b>",
+  en:"An eye can be trained like a hand. <b>Now you can see the whole horse.</b>",
+  es:"La mirada se educa como la mano. <b>Ahora sabes ver al caballo entero.</b>",
+  it:"Lo sguardo si educa come la mano. <b>Ora sai vedere il cavallo intero.</b>",
+  de:"Den Blick kann man schulen wie die Hand. <b>Jetzt siehst du das ganze Pferd.</b>",
+  ja:"目は、手と同じように鍛えられる。<b>もう、馬の全体が見えるようになった。</b>",
+  ar:"العين تتدرب مثل اليد. <b>والآن صرت ترين الحصان كله.</b>"},
  /* 🟡 `ar` dormant — voir le récit. */
  labaule:{ar:"أن تفتحي باب إسطبل بلغة أخرى، فذلك سفر في حد ذاته. <b>وباب رحلتك ينفتح هنا.</b>",
   fr:"Pousser la porte d'une écurie dans une autre langue, c'est déjà voyager. <b>La tienne s'ouvre ici.</b>",
@@ -7486,7 +7604,13 @@ var TITRE_SOMBRE = ["warendorf","jerez","oliva","lamotte",
                        (notamment par une vraie photo d'Alycia Burton), IL
                        FAUT REMESURER : la liste depend de l'image, pas de la
                        ville. */
-                    "taupo"];
+                    "taupo",
+                    /* 🟥 DOHA ajoutée le 29/09 : ciel de coucher de soleil rose
+                       et or, tiers supérieur mesuré à 161,7 sur la carte
+                       réellement livrée (recadrage portrait de l'image de
+                       Blandine, sans panneau ni logo). À REMESURER si la
+                       carte change. */
+                    "doha"];
 /* ⚠️ `vejer` etait DEJA dans cette liste, et sa nouvelle carte le confirme :
    son tiers superieur passe de 110 a 140,9 de luminance. Rien a changer,
    mais la mesure a ete refaite comme la regle l'exige a chaque
@@ -8222,7 +8346,10 @@ var ETAPE_SRC = {
   flyinge:     [["flyinge",1]],
   /* 21/08 : Clonbinane. Fichier `apprentissage`, une seule leçon.
      16 concepts, phrases vides, dialogue de 25 répliques en 6 temps. */
-  clonbinane:  [["apprentissage",1]]
+  clonbinane:  [["apprentissage",1]],
+  /* 29/09 : Doha. Fichier `doha`, une seule leçon, 16 concepts, 4 phrases,
+     dialogue de 24 répliques en 6 temps. */
+  doha:        [["doha",1]]
 };
 
 /* Le texte d'accueil d'un chapitre se choisit par le fichier source majoritaire,
@@ -9322,6 +9449,10 @@ var COLL_NOM = {
      de son lexique, sinon ses familles de mots s'affichent en français
      dans les six langues. À vérifier au même titre que les quatre
      déclarations obligatoires. */
+  /* 29/09 : DOHA — trois familles neuves, libellés fournis par Blandine. */
+  modele:{fr:"Le modèle", en:"Conformation", es:"La conformación", it:"La conformazione", de:"Das Exterieur", ja:"馬体構造", ar:"البنية"},
+  "membres-mouvement":{fr:"Les membres et le mouvement", en:"Limbs and movement", es:"Las extremidades y el movimiento", it:"Gli arti e il movimento", de:"Gliedmaßen und Bewegung", ja:"四肢と動き", ar:"القوائم والحركة"},
+  ring:{fr:"Dans le ring", en:"In the ring", es:"En la pista", it:"Nel ring", de:"Im Ring", ja:"リングの中で", ar:"في حلبة العرض"},
   plage:{fr:"La plage", en:"The beach", es:"La playa", it:"La spiaggia",
     de:"Der Strand", ja:"浜辺", ar:"الشاطئ"},
   groupe:{fr:"Monter en groupe", en:"Riding in a group", es:"Montar en grupo",
@@ -9512,6 +9643,14 @@ var ACCUEIL_CHAP = {
   /* 🟥 24/08 : clé absente depuis le découpage du 18/08. Texte écrit par Claude, validé dans son principe par Blandine — le relecteur propose une variante, à trancher. 🟡 ar dormant. */
   oliva:{fr:"S'engager : l'épreuve, le dossard, la liste de départ.", en:"Entering: the class, the number, the start list.", es:"Inscribirse: la prueba, el dorsal, la lista de salida.", it:"Iscriversi: la prova, il numero, la lista di partenza.", de:"Nennen: die Prüfung, die Startnummer, die Startliste.", ja:"エントリー — 競技、ゼッケン、出走リスト。", ar:"التسجيل في المسابقة: الشوط، ورقم المشاركة، وقائمة الانطلاق."},
   /* 🟡 `ar` dormant — voir RECITS. */
+  /* 29/09 : DOHA — « Apprendre à regarder », texte de Blandine. */
+  doha:{fr:"Une tête expressive attire immédiatement l’œil. Mais sais-tu regarder le reste ? À Doha, entre dans le ring d’Al Shaqab et découvre comment décrire le modèle, les membres et le mouvement d’un cheval arabe présenté en main.",
+    en:"An expressive head immediately catches the eye. But do you know how to look at the rest? In Doha, step into the world of Al Shaqab’s ring and learn how to describe the conformation, limbs and movement of an Arabian horse shown in hand.",
+    es:"Una cabeza expresiva atrae inmediatamente la mirada. Pero ¿sabes observar el resto? En Doha, entra en el ring de Al Shaqab y descubre cómo describir la conformación, las extremidades y el movimiento de un caballo árabe presentado a la mano.",
+    it:"Una testa espressiva attira subito lo sguardo. Ma sai osservare il resto? A Doha, entra nel ring di Al Shaqab e scopri come descrivere la conformazione, gli arti e il movimento di un cavallo arabo presentato a mano.",
+    de:"Ein ausdrucksstarker Kopf zieht sofort den Blick auf sich. Aber kannst du auch den Rest betrachten? Betritt in Doha den Ring von Al Shaqab und lerne, Exterieur, Gliedmaßen und Bewegung eines an der Hand vorgestellten Arabischen Pferdes zu beschreiben.",
+    ja:"表情豊かな頭部はすぐに目を引く。でも、それ以外も見られる？ DohaのAl Shaqabのリングで、引き馬で見せるアラブ馬の馬体構造、四肢、動きをどう表現するか学ぼう。",
+    ar:"يجذب الرأس المعبر نظرك مباشرة. لكن هل تعرفين كيف تلاحظين بقية الحصان؟ في الدوحة، ادخلي أجواء حلبة Al Shaqab وتعلمي كيف تصفين بنية حصان عربي معروض باليد وقوائمه وحركته."},
   clonbinane:{ar:"كيف يتعلم الحصان: المراقبة، عتبة الاستجابة، الإشارة، تخفيف الضغط، والاستراحة.",
   fr:"Comment le cheval apprend : observer, le seuil, le signal, le relâchement, la pause.", en:"How a horse learns: observing, threshold, the cue, the release, the break.", es:"Cómo aprende el caballo: observar, el umbral, la señal, la soltura, la pausa.", it:"Come impara il cavallo: osservare, la soglia, il segnale, il rilascio, la pausa.", de:"Wie das Pferd lernt: beobachten, die Schwelle, das Signal, das Nachgeben, die Pause.", ja:"馬の学び方 — 観察、閾値、合図、解放、休憩。"},
   /* 🟡 ar dormant (24/08) — voir RECITS. */

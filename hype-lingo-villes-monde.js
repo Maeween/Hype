@@ -1399,25 +1399,29 @@ window.HYPE_LINGO_VILLES = window.HYPE_LINGO_VILLES || {};
      quel. ⚠️ Sa lettre commençait par « Doha, » et comptait cinq
      paragraphes : mise au format des 38 autres (accroche + corps, texte
      inchangé, formule d'appel retirée — le nom de la ville est déjà sur
-     la carte). Plus longue que les autres : à vérifier sur iPhone. */
+     la carte). ⚠️ VERSION COURTE (29/09) : la lettre complète débordait de
+     la carte postale (≈ 40 % plus longue que Barcelone, la plus longue qui
+     tienne). Gardées : l'accroche, la 1re phrase du 2e paragraphe, « un œil
+     s'éduque comme une main », et les deux phrases de fin — les propres
+     phrases de Blandine, rien de retraduit. */
   MONDE.doha = {
     lieu:"Al Shaqab · Qatar", carte:true, niveau:2,
     image:"la jument grise sous les projecteurs d'Al Shaqab",
     lettre:{
       fr:["Ce soir, j’ai cru que j’allais simplement regarder de beaux chevaux.",
-          "Puis une jument grise est entrée dans le ring d’Al Shaqab. Tout le monde regardait la même jument, mais personne ne semblait regarder exactement la même chose : la tête, l’encolure, les membres, le mouvement… J’ai compris qu’un œil s’éduque comme une main. Au début, je voyais une silhouette. À la fin, je voyais des détails, puis la façon dont ces détails formaient un ensemble. Je repars avec seize mots nouveaux. Mais surtout avec une autre façon de regarder un cheval."],
+          "Puis une jument grise est entrée dans le ring d’Al Shaqab. J’ai compris qu’un œil s’éduque comme une main. Je repars avec seize mots nouveaux. Mais surtout avec une autre façon de regarder un cheval."],
       en:["Tonight, I thought I was simply going to look at beautiful horses.",
-          "Then a grey mare entered the ring at Al Shaqab. Everyone was watching the same mare, but no one seemed to be looking at exactly the same thing: the head, the neck, the limbs, the movement… I realised that the eye can be trained just like the hand. At first, I saw a silhouette. By the end, I saw details, and then the way those details formed a whole. I leave with sixteen new words. But above all, with a different way of looking at a horse."],
+          "Then a grey mare entered the ring at Al Shaqab. I realised that the eye can be trained just like the hand. I leave with sixteen new words. But above all, with a different way of looking at a horse."],
       es:["Esta noche pensaba que simplemente iba a mirar caballos bonitos.",
-          "Después, una yegua torda entró en el ring de Al Shaqab. Todos miraban a la misma yegua, pero nadie parecía observar exactamente lo mismo: la cabeza, el cuello, las extremidades, el movimiento… Comprendí que la mirada se educa igual que la mano. Al principio veía una silueta. Al final veía detalles y, después, la forma en que esos detalles componían un conjunto. Me voy con dieciséis palabras nuevas. Pero, sobre todo, con otra forma de mirar a un caballo."],
+          "Después, una yegua torda entró en el ring de Al Shaqab. Comprendí que la mirada se educa igual que la mano. Me voy con dieciséis palabras nuevas. Pero, sobre todo, con otra forma de mirar a un caballo."],
       it:["Questa sera pensavo che avrei semplicemente guardato dei bei cavalli.",
-          "Poi una cavalla grigia è entrata nel ring di Al Shaqab. Tutti guardavano la stessa cavalla, ma nessuno sembrava osservare esattamente la stessa cosa: la testa, il collo, gli arti, il movimento… Ho capito che anche lo sguardo si educa, proprio come la mano. All’inizio vedevo una sagoma. Alla fine vedevo i dettagli e poi il modo in cui quei dettagli formavano un insieme. Riparto con sedici parole nuove. Ma soprattutto con un altro modo di guardare un cavallo."],
+          "Poi una cavalla grigia è entrata nel ring di Al Shaqab. Ho capito che anche lo sguardo si educa, proprio come la mano. Riparto con sedici parole nuove. Ma soprattutto con un altro modo di guardare un cavallo."],
       de:["Heute Abend dachte ich, ich würde mir einfach schöne Pferde ansehen.",
-          "Dann kam eine Schimmelstute in den Ring von Al Shaqab. Alle sahen dieselbe Stute, doch niemand schien genau dasselbe zu betrachten: den Kopf, den Hals, die Gliedmaßen, die Bewegung … Ich habe verstanden, dass man den Blick genauso schulen kann wie die Hand. Am Anfang sah ich eine Silhouette. Am Ende sah ich Details und dann, wie diese Details ein Ganzes bildeten. Ich fahre mit sechzehn neuen Wörtern weiter. Vor allem aber mit einer neuen Art, ein Pferd anzusehen."],
+          "Dann kam eine Schimmelstute in den Ring von Al Shaqab. Ich habe verstanden, dass man den Blick genauso schulen kann wie die Hand. Ich fahre mit sechzehn neuen Wörtern weiter. Vor allem aber mit einer neuen Art, ein Pferd anzusehen."],
       ja:["今夜は、ただきれいな馬を見るだけだと思っていた。",
-          "でもAl Shaqabのリングに一頭の芦毛の牝馬が入ってきた。同じ牝馬を見ているのに、みんなが見ているものは少しずつ違うようだった。頭部、頸、四肢、動き……。 目も、手と同じように鍛えられるのだとわかった。 最初に見えていたのは一つのシルエットだった。最後には細部が見え、その細部がどう一つの全体をつくっているのかまで見えるようになった。 新しい十六の言葉を持って、ここを出る。 でも何より、馬を見る新しい視点を持って。"],
+          "でもAl Shaqabのリングに一頭の芦毛の牝馬が入ってきた。目も、手と同じように鍛えられるのだとわかった。新しい十六の言葉を持って、ここを出る。でも何より、馬を見る新しい視点を持って。"],
       ar:["هذا المساء ظننت أنني سأكتفي بمشاهدة خيول جميلة.",
-          "ثم دخلت فرس رمادية إلى حلبة Al Shaqab. كان الجميع ينظرون إلى الفرس نفسها، لكن لم يكن الجميع يلاحظون الشيء نفسه تماما: الرأس، والعنق، والقوائم، والحركة... فهمت أن العين تتدرب مثل اليد. في البداية كنت أرى هيئة عامة. وفي النهاية صرت أرى التفاصيل، ثم أرى كيف تجتمع هذه التفاصيل لتشكل صورة كاملة. أغادر ومعي ست عشرة كلمة جديدة. لكن الأهم أنني أغادر بطريقة جديدة للنظر إلى الحصان."]},
+          "ثم دخلت فرس رمادية إلى حلبة Al Shaqab. فهمت أن العين تتدرب مثل اليد. أغادر ومعي ست عشرة كلمة جديدة. لكن الأهم أنني أغادر بطريقة جديدة للنظر إلى الحصان."]},
     volets:[
      {t:{fr:"Si tu y allais",
          en:"If you went there",

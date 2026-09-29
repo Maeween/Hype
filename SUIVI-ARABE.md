@@ -85,6 +85,11 @@
 - `?l=` monté sur les 31 fichiers du 28/09 ; `VER` → ?v=97.
 - Contrôles : 21 592 éléments hors arabe identiques à la v96 · 6 blocs OK · 0 voyelle · 0 cyrillique · Chromium : 38 chapitres, 38 villes, 0 erreur JS.
 
+### 29/09 — DOHA (39e ville) : arabe complet dès la création
+- Arabe fourni par Blandine (lexique, définitions, dialogue, récit, pourquoi, accueil, lettre, volets, souvenir, familles) ; chapeau `PHRASES_FIN` et objectif `TH_LIB` écrits par Claude. Dormant comme le reste.
+- Les neuf points sont remplis d'emblée : lexique (16) · définitions · dialogue (24) · phrases (4) · `langues` avec `"ar"` · récit/pourquoi/accueil/chapeau · lettre + 3 volets · `COLL_NOM` (3 familles neuves) · `ETAPES_I18N` (nom الدوحة, chapitre خيل العرض العربية, souvenir رقم حلبة العرض).
+- 0 voyelle. Pour les 5 refs réutilisées (tete, encolure, membres, jury, presente-en-main), l'arabe du mot est celui déjà en place.
+
 ### 🟠 CE QUI RESTE : L'ACTIVATION ELLE-MÊME
 - Restent volontairement sans arabe (ce sont les interrupteurs) : `LANGUES_UI`, `LG_DRAPEAU` (drapeau à choisir par Blandine — Hype utilise 🇸🇦), `LGN` (« AR »), `VOIX` (ar-SA).
 - Puis la procédure d'activation en 10 étapes (plus bas), après test iPhone de la v97.
