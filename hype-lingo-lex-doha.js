@@ -281,14 +281,18 @@ window.HYPE_LINGO_LEX.doha = {
       ja:"次の馬が入ってきた。同じクラスなの？",
       ar:"يدخل حصان آخر. هل هو في الفئة نفسها؟" },
 
-    { ref:"ph-doh-ordre", lecon:1, mots:["type-race", "modele", "tete", "encolure", "membres", "mouvement"],
-      fr:"Je regarde d’abord son type et son modèle, puis sa tête, son encolure, ses membres et enfin son mouvement.",
-      en:"First I look at its type and conformation, then its head, neck and limbs, and finally its movement.",
-      es:"Primero observo su tipo y su conformación, después la cabeza, el cuello y las extremidades y, por último, el movimiento.",
-      it:"Prima osservo il tipo e la conformazione, poi la testa, il collo e gli arti e infine il movimento.",
-      de:"Zuerst schaue ich auf Typ und Exterieur, dann auf Kopf, Hals und Gliedmaßen und schließlich auf die Bewegung.",
-      ja:"まずタイプと馬体構造、それから頭部、頸、四肢、最後に動きを見る。",
-      ar:"أنظر أولا إلى طابعه النوعي وبنيته، ثم إلى رأسه وعنقه وقوائمه، وأخيرا إلى حركته." }
+    /* 🟥 30/09 : « ph-doh-ordre » (18 mots à remettre en ordre, la 2e phrase
+       la plus longue des 39 villes, médiane 6) retirée à la demande de
+       Blandine (« dix fois trop longue »). Remplacée par une réplique courte
+       du dialogue ci-dessous, reprise telle quelle dans les 7 langues. */
+    { ref:"ph-doh-encolure", lecon:1, mots:["encolure"],
+      fr:"Son encolure paraît très dessinée sous la lumière.",
+      en:"Her neck looks very defined under the lights.",
+      es:"Su cuello se ve muy definido bajo la luz.",
+      it:"Il suo collo sembra molto definito sotto la luce.",
+      de:"Ihr Hals wirkt im Licht sehr klar gezeichnet.",
+      ja:"光の下だと、頸のラインがすごくはっきり見える。",
+      ar:"يبدو عنقها واضح الخطوط جدا تحت الضوء." }
 
   ],
 
