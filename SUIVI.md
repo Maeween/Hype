@@ -7808,12 +7808,47 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     5,5 px avant, 0 après.
   Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
   Build 20261001-518 (contient 517).
-· EN ATTENTE — PAGE « TEAM COMPÉTITION » (demande du 01/10, maquette reçue). Décisions
-  de Blandine : équipe de la SEP ; liste précise de chevaux et de cavalières qu'elle
-  donnera (écrite en dur, marquée temporaire, pas de SQL) ; photos/vidéos et résultats
-  limités à ces cavalières et chevaux ; vraies données tout de suite ; page ouverte
-  seulement par le lien caché 2hype.netlify.app/#team-competition ; clic sur une
-  cavalière → sa page Cavalier actuelle ; en-tête et barre du bas de Hype conservés.
-  Reste à trancher : les deux listes, texte du hero (maquette « Passion · Exigence ·
-  Performance » ou texte « Des cavalières, des chevaux, des objectifs communs »),
-  « Voir toutes/tous » ou « Voir tout », photo du hero. Pas encore codé.
+· (SQL) 01/10, 0 h 55 — GROUPES D'UN CLUB. ✅ PASSÉ PAR ELLE en deux parties (« Success »,
+  la première tentative s'était coupée au collage, rien n'avait été créé).
+  - Tables : groupes (id, club_clef, nom, cree_par, cree_le, unique club_clef+nom),
+    groupes_membres (groupe_id, user_id, ajoute_par, ajoute_le), agenda_groupes
+    (agenda_id → club_agenda, groupe_id, ajoute_par, ajoute_le). RLS : lecture ouverte ;
+    ajout/retrait de membres et de rendez-vous = hype_peut_gerer_club du club du groupe ;
+    un rendez-vous ne va que dans un groupe DU MÊME club ; création d'un groupe =
+    hype_peut_gerer_club ; suppression = hype_est_proprietaire_club.
+  - Groupe créé VIDE : « Team Compétition », club_clef « societe d'equitation de paris
+    (sep) », id d135ec7f-2db1-4d5d-8103-2be2b8248d09. Choix B : elle ajoute les membres
+    elle-même depuis la page.
+  - Relevés du 01/10 : Aurélie a DEUX comptes (« Aurélie » SEP + Feinn, « Aurelie » SEP) ;
+    garder celui qui a l'abonnement = « Aurélie » (avec accent).
+  - ⚠️ À REGARDER PLUS TARD (hors Team) : l'abonnement d'« Aurélie » est « actif » mais
+    expire_le = 22/09/2026 (dépassé) — renouvellement non enregistré ou statut pas remis à jour.
+· (519) 01/10, 1 h 15 — PAGE « TEAM COMPÉTITION » (SEP), LIEN CACHÉ #team-competition.
+  Maquette de Blandine suivie (hero, portraits ronds, UNE carte agenda, 3 lignes de
+  résultats, 4 souvenirs), noir #060709 / or #D6B676 / ivoire #F4F1EA, titres Cormorant
+  Garamond (déjà chargée), textes Montserrat. En-tête de la maquette NON recopié (Hype n'a
+  pas d'en-tête commun) : flèche retour + drapeau de langue comme les autres pages ; barre
+  du bas de Hype inchangée. Nouvelle fonction EcranTeamCompetition + route
+  « team-competition » (table des adresses) + ligne d'affichage. Rien d'autre touché.
+  - Hero : sa photo, images/TEAM_COMPETITION.webp (NOUVEAU FICHIER, 44 Ko) ; texte B.
+  - Nos cavalières = membres du groupe ; clic → page Cavalier actuelle. Bouton « Gérer
+    les membres » (propriétaire / gestionnaires SEP seulement) : liste des membres de la
+    SEP, recherche, Ajouter / Retirer, refus de la base AFFICHÉ.
+  - Nos chevaux = liste écrite TEMPORAIRE TEAM_CHEVAUX_TEMP (Cirrus, Yellow, Aceitunero,
+    Centaure, Josie, Envole-toi, Ecolo, Dakota), cherchée parmi les chevaux des membres de
+    la SEP (hypeChevauxDuClub), nom exact ou nom qui commence par ce mot, sans accents.
+  - Agenda = rendez-vous à venir rattachés au groupe (agenda_groupes) : VIDE tant que le
+    520 n'existe pas. Clic → fiche du rendez-vous (par la page du club, mécanisme
+    __agendaFiche existant : le retour ramène donc à la page du club).
+  - Résultats = cavalier_id d'une membre OU cheval_id d'un cheval de l'équipe, sans les
+    masqués (masque_cavaliere) ni les décochés (visible=false). Point or = podium.
+    Clic → page Résultats de la cavalière, sinon fiche du cheval.
+  - Souvenirs = albums publics des chevaux et des profils de l'équipe + photos où elles /
+    ils sont identifiés ; vidéos avec icône lecture ; ouverture dans la visionneuse Hype.
+  - « Voir tout » déplie sur place (Réduire pour replier).
+  - Textes nouveaux traduits en 7 langues ; arabe de droite à gauche vérifié.
+  Testé en navigateur avec données d'essai : 375 / 390 / 430 px (fr), 375 (ar, de), aucun
+  débordement, panneau des membres. node --check OK (18 blocs), un seul marqueur.
+  Build 20261001-519 (contient 518).
+  SUITE PRÉVUE : 520 = « Groupes » dans le menu ••• d'un rendez-vous ; 521 = choix du
+  groupe à la création ; plus tard : chevaux ajoutés au groupe par les membres.
