@@ -3068,9 +3068,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
 <!-- ex-`cheval` leçons 1+2+3 (robes, marques, anatomie) + le bloc `races`.
      La leçon 4 est partie à Fontainebleau, dans `jeunes.js`. -->
 <script src="hype-lingo-lex-connemara.js?l=2"></script>
-<!-- ex-`materiel` : leçon 1 à Walsall, leçons 3+4 à Vejer.
-     La leçon 2 (le filet) dort dans `materiel-reserve.js`, non chargé. -->
-<script src="hype-lingo-lex-walsall.js?l=3"></script>
+<!-- ex-`materiel` : leçons 1+2 à Walsall (la 2, le filet, ouverte le 30/09
+     depuis `materiel-reserve.js`, qui reste non chargé), leçons 3+4 à Vejer. -->
+<script src="hype-lingo-lex-walsall.js?l=4"></script>
 <script src="hype-lingo-lex-vejer.js?l=2"></script>
 <!-- 🟥 BARCELONE, 37e ville (19/08) — « Voyager avec son cheval ».
      ⚠️ QUINZE de ses trente concepts sont des RAPPELS : 9 d'`ecurie`, plus
@@ -3106,7 +3106,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      ⚠️ NE PAS confondre avec SÉVILLE (`parade`) : là-bas la Feria et la
      parade, ici la formation artistique. Deux villes espagnoles, deux
      mondes, quatre-vingt-dix kilomètres. -->
-<script src="hype-lingo-lex-andalou.js?l=2"></script>
+<script src="hype-lingo-lex-andalou.js?l=3"></script>
 <!-- ⚠️ Le fichier n'a PAS changé le 19/08 — seul `ETAPE_SRC.aberystwyth`
      a bougé. `?l=3` reste donc valide, ne pas l'incrémenter sans raison. -->
 <script src="hype-lingo-lex-cours.js?l=4"></script>
@@ -3961,7 +3961,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=100";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=101";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -4245,7 +4245,7 @@ var ETAPES = [
     couverture de remise des prix a été écartée : doublon avec le
     couvre-reins de Versailles et la couverture d'hiver de Spruce. */
  {ref:"fontainebleau", ch:"Les jeunes chevaux", v:"Fontainebleau", nat:"France", h:"08 h 05", ciel:["#141C18","#B8A66E"], forme:"foret",    souv:"Une plaque de box",            ic:"plaque"},
- {ref:"jerez",     ch:"Le cheval",     v:"Jerez",       nat:"Espagne",        h:"08 h 15", ciel:["#101B26","#4A4258"], forme:"haras",    souv:"Une jarre andalouse",          ic:"jarre"},
+ {ref:"jerez",     ch:"La haute école", v:"Jerez",       nat:"Espagne",        h:"08 h 15", ciel:["#101B26","#4A4258"], forme:"haras",    souv:"Une jarre andalouse",          ic:"jarre"},
  {ref:"seville",   ch:"La présentation",v:"Séville",    nat:"Espagne",        h:"09 h 05", ciel:["#131C24","#5A4A4E"], forme:"village",  souv:"Un peigne de tresses",         ic:"peigne"},
  {ref:"vejer",     ch:"L'intendance",  v:"Vejer",       nat:"Espagne",        h:"09 h 50", ciel:["#0E1A22","#4E5257"], forme:"cote",     souv:"Un seau de zinc",              ic:"seau"},
  /* 🟥 BARCELONE, 37e ville, ajoutée le 19/08/2026 — « Voyager avec son cheval ».
@@ -4710,7 +4710,12 @@ var ETAPES_I18N = {
          it:"Una coccarda dei campionati", de:"Eine Meisterschaftsschleife", ja:"選手権のロゼット",
          ar:"وردة البطولات"}},
  jerez:{
-   ch:{en:"The horse", es:"El caballo", it:"Il cavallo", de:"Das Pferd", ja:"馬", ar:"الحصان"},
+   /* 🟥 30/09 : « Le cheval » était un reste du chapitre d'avant le 18/08
+      (le hongre, l'étalon, la jument, parti à Fontainebleau). Le chapitre
+      de Jerez est l'École royale et, depuis ce jour, ses mouvements de
+      haute école. ⚠️ Pas « L'art équestre » : c'est déjà le titre de
+      VERSAILLES — deux villes ne portent pas le même chapitre. */
+   ch:{en:"High school", es:"La alta escuela", it:"L'alta scuola", de:"Die Hohe Schule", ja:"高等馬術", ar:"المدرسة العليا"},
    v:{ja:"ヘレス", ar:"خيريث"},
    souv:{en:"An Andalusian jar", es:"Una jarra andaluza", it:"Una giara andalusa",
          de:"Ein andalusischer Krug", ja:"アンダルシアの壺",
@@ -7489,13 +7494,16 @@ var PHRASES_FIN = {
   de:"Ein Fohlen zur Welt kommen zu sehen heißt, eine Geschichte beginnen zu sehen. <b>Eines Tages wird sie jemand reiten.</b>",
   ja:"仔馬の誕生は、ひとつの物語の始まり。<b>いつか誰かが、その馬に乗る日が来る。</b>",
   ar:"أن تري مهرا يولد يعني أن تري قصة تبدأ. <b>وسيركبه أحدهم يوما ما.</b>"},
- jerez:{fr:"Chaque robe, chaque marque raconte un cheval unique. <b>Il n'y en a pas deux pareils au monde.</b>",
-  en:"Every coat, every marking tells of one unique horse. <b>No two in the world are alike.</b>",
-  es:"Cada capa, cada marca cuenta un caballo único. <b>No hay dos iguales en el mundo.</b>",
-  it:"Ogni mantello, ogni segno racconta un cavallo unico. <b>Non ce ne sono due uguali al mondo.</b>",
-  de:"Jedes Fell, jedes Abzeichen erzählt von einem einzigartigen Pferd. <b>Keine zwei auf der Welt sind gleich.</b>",
-  ja:"毛色も、白斑も、一頭一頭の物語。<b>世界に同じ馬は二頭といない。</b>",
-  ar:"كل لون، وكل علامة، يروي قصة حصان فريد. <b>لا يوجد حصانان متشابهان في العالم.</b>"},
+ /* 🟥 30/09 : phrase de fin RÉÉCRITE — l'ancienne parlait des robes et des
+    marques, un reste du chapitre « Le cheval » parti à Fontainebleau le
+    18/08. Jerez, c'est l'École royale et, depuis ce jour, la haute école. */
+ jerez:{fr:"La haute école ne s'admire pas seulement, elle se nomme. <b>Tu sais maintenant lire ce que le cheval danse.</b>",
+  en:"High school is not only admired, it can be named. <b>You can now read what the horse is dancing.</b>",
+  es:"La alta escuela no solo se admira: se nombra. <b>Ahora sabes leer lo que baila el caballo.</b>",
+  it:"L'alta scuola non si ammira soltanto, si nomina. <b>Ora sai leggere ciò che il cavallo danza.</b>",
+  de:"Die Hohe Schule wird nicht nur bewundert, sie hat Namen. <b>Du kannst jetzt lesen, was das Pferd tanzt.</b>",
+  ja:"高等馬術は眺めるだけのものではなく、名前で語れるもの。<b>馬が踊っているものを、もう読み取れる。</b>",
+  ar:"المدرسة العليا لا تشاهد فقط بل تسمى. <b>أصبحت الآن قادرة على قراءة ما يرقصه الحصان.</b>"},
  seville:{fr:"Présenter un cheval, c'est le mettre en lumière sans se montrer soi. <b>La plus belle des élégances.</b>",
   en:"Presenting a horse means putting it in the light, not yourself. <b>The finest kind of elegance.</b>",
   es:"Presentar un caballo es ponerlo a él en la luz, no a ti. <b>La más bella elegancia.</b>",
@@ -8180,7 +8188,12 @@ var ETAPE_SRC = {
      ⚠️ LA LEÇON 3 (l'organisation du cours : cours particulier, collectif,
      assurance, durée, annuler) RESTE DANS LE FICHIER MAIS N'EST PAS
      OUVERTE — décision de Blandine. Ne pas l'ajouter ici sans elle. */
-  labaule:     [["arrivee",1],["arrivee",2]],
+  /* 🟥 30/09 : LA LEÇON 3 OUVERTE, sur son ordre (« l'arrivée au club, ça
+     faut les ajouter à La Baule ! ») : cinq mots qui dormaient depuis
+     toujours dans un fichier pourtant chargé. La Baule passe de 26 à 31
+     concepts. La leçon n'a pas de phrase à elle (toutes sont en 1 et 2) :
+     le tirage lui donne celles du chapitre, comme prévu par le quota. */
+  labaule:     [["arrivee",1],["arrivee",2],["arrivee",3]],
   maurice:     [["balade",1]],
   /* 🟥 19/08 : NEWMARKET OUVRE SES QUATRE LEÇONS — 10 / 11 / 8 / 8, soit
      37 concepts au lieu de 10. Trente-deux dormaient depuis juillet.
@@ -8200,7 +8213,12 @@ var ETAPE_SRC = {
      (leçons 1+2+3 + races gb-irl, tout dans une seule leçon-fichier). */
   connemara:   [["connemara",1],["connemara",2],["connemara",3]],
   /* 🟥 18/08 : découpage un-fichier-par-ville. `materiel` → `walsall`. */
-  walsall:     [["walsall",1]],
+  /* 🟥 30/09 : WALSALL OUVRE LA BRIDE — la leçon 2 (le filet, la têtière,
+     le frontal, la muserolle, la sous-gorge, les rênes, le mors, la bride,
+     le collier de chasse, la martingale), orpheline depuis le 18/08, est
+     copiée dans `hype-lingo-lex-walsall.js` (décision de Blandine : « ok
+     on peut l'ajouter sur Walsall la bride »). 14 → 24 mots. */
+  walsall:     [["walsall",1],["walsall",2]],
   /* 🟥 19/08 : ABERYSTWYTH OUVRE SES QUATRE LEÇONS — 10 -> 42 concepts.
      Trente-deux dormaient : la position du cavalier, les figures de manège
      et les mots de l'enseignant. Son dialogue citait déjà 24 mots répartis
@@ -8287,7 +8305,11 @@ var ETAPE_SRC = {
      `hype-lingo-lex-jeunes.js` à la place, pour n'avoir plus qu'un seul
      fichier par ville. Deux paires, même clé, tags de leçon inchangés. */
   fontainebleau: [["jeunes",4],["jeunes",1]],
-  jerez:       [["andalou",1]],
+  /* 🟥 30/09 : JEREZ OUVRE LA HAUTE ÉCOLE — les onze mouvements de dressage
+     qui dormaient dans `dressage-reserve.js` (leçon 2, jamais attribuée)
+     sont copiés en leçon 2 d'`andalou` (décision de Blandine : « ok pour
+     Jerez »). 11 → 22 mots. `reculer` y devient `reculer-dressage`. */
+  jerez:       [["andalou",1],["andalou",2]],
   /* 🔴 17/08 : SÉVILLE EST SANS CHAPITRE. Elle pointait sur `materiel` 3,
      que VEJER a reçue le même jour. Laisser les deux dessus donnerait la
      même leçon à deux villes.

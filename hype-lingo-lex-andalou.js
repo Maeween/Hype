@@ -54,7 +54,7 @@ window.HYPE_LINGO_LEX.andalou = {
   titre: { fr:"L'art équestre", en:"Equestrian art", es:"El arte ecuestre",
            it:"L'arte equestre", de:"Die Reitkunst", ja:"馬術の芸術",
            ar:"فن الفروسية" },
-  lecons: 1,
+  lecons: 2,
 
   concepts: [
 
@@ -200,7 +200,164 @@ window.HYPE_LINGO_LEX.andalou = {
           it:"Il dressage nato dal lavoro col bestiame: una mano sulle redini, l'altra libera per la garrocha. Non è il western, benché questo ne discenda.",
           de:"Die Dressur, die aus der Rinderarbeit entstand: eine Hand am Zügel, die andere frei für die Garrocha. Nicht mit Western zu übersetzen, auch wenn dieser davon abstammt.",
           ja:"どの言語でもスペイン語のまま使います。牛追いの仕事から生まれた調教で、片手で手綱を持ち、もう一方はガロチャという長い棒のために空けておきます。急停止、後肢を軸にした旋回など、牛を仕分ける馬に必要な動きです。アメリカのウエスタンはメキシコを経てこれに由来しますが、同じものではありません。",
-          ar:"🟥 الاسم يبقى بالإسبانية في كل مكان. إنه الترويض المولود من العمل مع الماشية: يد على الأعنة، والأخرى حرة لحمل الغاروتشا، العصا الطويلة. توقفات مفاجئة، ودورانات على الأرداف، وكل ما يطلب من حصان يفرز الثيران. ⚠️ لا تترجميه بـ «الويسترن»: الويسترن الأمريكي منحدر منه عبر المكسيك، لكنهما ليسا الشيء نفسه — فالدوما باكيرا تركب بسرج إسباني، وبيد واحدة، وبلباس الريف." } }
+          ar:"🟥 الاسم يبقى بالإسبانية في كل مكان. إنه الترويض المولود من العمل مع الماشية: يد على الأعنة، والأخرى حرة لحمل الغاروتشا، العصا الطويلة. توقفات مفاجئة، ودورانات على الأرداف، وكل ما يطلب من حصان يفرز الثيران. ⚠️ لا تترجميه بـ «الويسترن»: الويسترن الأمريكي منحدر منه عبر المكسيك، لكنهما ليسا الشيء نفسه — فالدوما باكيرا تركب بسرج إسباني، وبيد واحدة، وبلباس الريف." } },
+
+  /* ============ LEÇON 2 · LES MOUVEMENTS DE HAUTE ÉCOLE ============
+     🟥 30/09/2026 — SUR DÉCISION DE BLANDINE (« ok pour Jerez ») : les onze
+     mouvements de dressage qui dormaient depuis le 6 août dans
+     `hype-lingo-lex-dressage-reserve.js` (leçon 2, jamais attribuée à une
+     ville) rejoignent l'École royale — c'est sa haute école. Repris tels
+     quels, à UNE exception : `reculer` devient `reculer-dressage`, parce
+     que `reculer` existe déjà dans le chapitre des urgences d'Édimbourg
+     (reculer, s'écarter) — un concept, un ref. Pas de phrase propre à cette
+     leçon (celles de la réserve sont toutes en leçon 4) : le tirage lui
+     donne les quatre du chapitre. Le dialogue de Jerez ne cite pas encore
+     ces mots — à écrire par Blandine. Jerez passe de 11 à 22 mots.
+     ⚠️ Le fichier de réserve reste en place, inchangé et non chargé ;
+     Versailles ne cite aucun de ces refs (vérifié le 30/09). */
+
+  { ref:"cession-jambe", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"la cession à la jambe"}, en:{m:"leg-yield", p:"lègue-yild"},
+           es:{m:"la cesión a la pierna"}, it:{m:"la cessione alla gamba"},
+           de:{m:"das Schenkelweichen", p:"chèn-keul-vaï-cheune"}, ja:{m:"脚に譲る", p:"ashi ni yuzuru", var:"レッグ・イールド"},
+           ar:{m:"الانقياد للساق"} }, /* precise (rapport 07/08) */
+    def:{ fr:"Le cheval se déplace de côté sans incurvation, presque droit. Le premier mouvement latéral appris, et celui qu'on confond le plus souvent avec l'appuyer.",
+          en:"The horse moves sideways with no bend, almost straight. The first lateral work learned, and the one most often confused with half-pass.",
+          es:"El caballo se desplaza de lado sin incurvación, casi recto. El primer movimiento lateral que se aprende, y el que más se confunde con el appuyer.",
+          it:"Il cavallo si sposta di lato senza incurvazione, quasi dritto. Il primo movimento laterale imparato, e quello che più si confonde con l'appoggiata.",
+          de:"Das Pferd weicht seitwärts ohne Biegung, fast gerade. Die erste erlernte Seitwärtsbewegung — und die am häufigsten mit der Traversale verwechselte.",
+          ja:"馬が屈曲せず、ほぼまっすぐなまま横へ動く運動。最初に習う横運動であり、ハーフパスと最も混同されやすいものです。",
+          ar:"يتحرك الحصان جانبيا من دون انحناء، مستقيما تقريبا. أول حركة جانبية تتعلم، وأكثر ما يخلط بينها وبين الأبوييه." } },
+
+  { ref:"epaule-dedans", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"l'épaule en dedans"}, en:{m:"shoulder-in", p:"chol-deur-inn"},
+           es:{m:"la espalda adentro"}, it:{m:"la spalla in dentro"},
+           de:{m:"das Schulterherein", p:"choul-teur-hè-raïn"}, ja:{m:"ショルダーイン", p:"shorudā in"},
+           ar:{m:"الكتف إلى الداخل"} }, /* valide (rapport 07/08) */
+    def:{ fr:"Les épaules rentrées vers l'intérieur, les hanches sur la piste, le cheval incurvé autour de la jambe intérieure. Les cinq langues latines et germaniques disent toutes littéralement « épaule dedans » — un cas rare d'accord total.",
+          en:"Shoulders brought in, hips on the track, the horse bent round the inside leg. All five European languages say literally « shoulder in ».",
+          es:"Las espaldas hacia el interior, las caderas en la pista, el caballo incurvado alrededor de la pierna interior. Las cinco lenguas latinas y germánicas dicen todas literalmente « espalda adentro » — un raro caso de acuerdo total.",
+          it:"Le spalle verso l'interno, le anche sulla pista, il cavallo incurvato attorno alla gamba interna. Le cinque lingue latine e germaniche dicono tutte alla lettera « spalla in dentro » — un raro caso di accordo totale.",
+          de:"Die Schultern hereingeholt, die Hüften auf dem Hufschlag, das Pferd um das innere Bein gebogen. Alle fünf romanischen und germanischen Sprachen sagen wörtlich « Schulter herein » — ein seltener Fall völliger Einigkeit.",
+          ja:"肩を内側へ、腰は蹄跡の上に、馬は内方脚のまわりに屈曲。ラテン系・ゲルマン系の五言語はすべて文字どおり「肩を内へ」— 珍しい満場一致です。",
+          ar:"الكتفان إلى الداخل، والوركان على المسار، والحصان منحن حول الساق الداخلية. اللغات اللاتينية والجرمانية الخمس تقول كلها حرفيا «الكتف إلى الداخل»." } },
+
+  { ref:"appuyer", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"l'appuyer"}, en:{m:"half-pass", p:"haf-pass"},
+           es:{m:"la apoyada"}, it:{m:"l'appoggiata"},
+           de:{m:"die Traversale", p:"tra-vèr-za-le"}, ja:{m:"ハーフパス", p:"hāfu pasu"},
+           ar:{m:"الأبوييه"} },
+    def:{ fr:"Déplacement latéral avec incurvation dans le sens de la marche. ⚠️ Aucun accord entre les langues : l'anglais dit « demi-passage », l'allemand emploie un mot d'origine française que le français n'utilise pas, et le japonais l'anglais.",
+          en:"Sideways with the bend in the direction of travel. No two languages agree here: English says half-pass, German uses a French-looking word the French never use.",
+          es:"Desplazamiento lateral con incurvación en el sentido de la marcha. ⚠️ Ningún acuerdo entre lenguas: el inglés dice « half-pass », el alemán usa una palabra de origen francés que el francés no usa, y el japonés el inglés.",
+          it:"Spostamento laterale con incurvazione nel senso del movimento. ⚠️ Nessun accordo tra le lingue: l'inglese dice « half-pass », il tedesco usa una parola d'origine francese che il francese non usa, e il giapponese l'inglese.",
+          de:"Seitwärtsbewegung mit Biegung in Bewegungsrichtung. ⚠️ Keinerlei Einigkeit: Englisch sagt « half-pass », Deutsch nutzt ein französischstämmiges Wort, das das Französische nicht kennt (Traversale), Japanisch das Englische.",
+          ja:"進行方向へ屈曲したまま横へ進む運動。⚠️ 言語間の一致は皆無です。英語は « half-pass »、ドイツ語はフランス語由来なのにフランス語では使われない言葉、日本語は英語からの借用。",
+          ar:"حركة جانبية مع انحناء في اتجاه السير — الاسم الدولي محفوظ كما هو. ⚠️ لا اتفاق بين اللغات: الإنجليزية تقول half-pass، والألمانية تستعمل كلمة من أصل فرنسي لا تستعملها الفرنسية نفسها." } },
+
+  { ref:"changement-pied", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"le changement de pied"}, en:{m:"the flying change", p:"flaï-ing tchèndj"},
+           es:{m:"el cambio de pie"}, it:{m:"il cambio di piede"},
+           de:{m:"der Galoppwechsel", p:"ga-lopp-vèk-seul"}, ja:{m:"踏歩変換", p:"tōhohenkan"},
+           ar:{m:"التغيير الطائر"} }, // ??
+    def:{ fr:"Changer de pied de galop en l'air, sans repasser au trot. ⚠️ L'anglais insiste sur le fait que c'est en suspension : **flying** change. On les compte : au temps, au deux temps, au trois temps.",
+          en:"Changing the leading leg in the air, without trotting. English stresses the suspension: a flying change.",
+          es:"Cambiar de pie de galope en el aire, sin pasar por el trote. ⚠️ El inglés insiste en que ocurre en suspensión: **flying** change. Se cuentan: al tiempo, a dos tiempos, a tres tiempos.",
+          it:"Cambiare piede di galoppo in aria, senza ripassare al trotto. ⚠️ L'inglese insiste sul fatto che avviene in sospensione: **flying** change. Si contano: al tempo, a due tempi, a tre tempi.",
+          de:"Der Galoppwechsel in der Luft, ohne Trab dazwischen. ⚠️ Das Englische betont die Schwebephase: **flying** change. Man zählt sie: von Sprung zu Sprung, alle zwei, alle drei Sprünge.",
+          ja:"速歩を挟まず、空中で駈歩の手前を替えること。⚠️ 英語は宙に浮いている瞬間を強調します — **flying** change。数え方もあります：一歩ごと、二歩ごと、三歩ごと。",
+          ar:"تغيير قيادة العدو في الهواء، من دون العودة إلى الخبب. ⚠️ الإنجليزية تشدد على أنه في لحظة التعلق: **flying** change. وتعد التغييرات: في كل خطوة، وكل خطوتين، وكل ثلاث." } },
+
+  { ref:"pirouette", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"la pirouette"}, en:{m:"the pirouette", p:"pi-rou-ètt"},
+           es:{m:"la pirueta"}, it:{m:"la piroetta"},
+           de:{m:"die Pirouette", p:"pi-rou-è-te"}, ja:{m:"ピルーエット", p:"pirūetto"},
+           ar:{m:"البيرويت"} },
+    def:{ fr:"Un tour complet au galop autour d'un postérieur qui reste en place. Le mot français a été adopté partout, danse comprise.",
+          en:"A full turn in canter round a hind leg that stays in place. The French word was adopted everywhere, dance included.",
+          es:"Una vuelta completa al galope alrededor de un posterior que queda en su sitio. La palabra francesa fue adoptada en todas partes, danza incluida.",
+          it:"Un giro completo al galoppo attorno a un posteriore che resta al suo posto. La parola francese è stata adottata ovunque, danza compresa.",
+          de:"Eine ganze Drehung im Galopp um ein an Ort bleibendes Hinterbein. Das französische Wort wurde überall übernommen — auch im Tanz.",
+          ja:"片方の後肢を軸に、駈歩のままその場で一回転する運動。このフランス語は世界じゅうで採用されました — バレエの世界でも。",
+          ar:"دورة كاملة في العدو حول قائمة خلفية تبقى في مكانها. الكلمة الفرنسية اعتمدت في كل مكان، بما في ذلك الرقص." } },
+
+  { ref:"piaffer", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"le piaffer"}, en:{m:"piaffe", p:"pi-af"},
+           es:{m:"el piaffe"}, it:{m:"il piaffe"},
+           de:{m:"die Piaffe", p:"pi-a-fe"}, ja:{m:"ピアッフェ", p:"piaffe"},
+           ar:{m:"البياف"} },
+    def:{ fr:"Un trot sur place, cadencé et rassemblé. Curiosité : le mot est français, mais c'est la forme allemande *die Piaffe* qui a été reprise par l'anglais, l'espagnol et l'italien.",
+          en:"A cadenced, collected trot on the spot. The word is French, but it is the German form that English, Spanish and Italian borrowed.",
+          es:"Un trote en el sitio, cadenciado y reunido. Curiosidad: la palabra es francesa, pero fue la forma alemana *die Piaffe* la que tomaron el inglés, el español y el italiano.",
+          it:"Un trotto sul posto, cadenzato e riunito. Curiosità: la parola è francese, ma è la forma tedesca *die Piaffe* che è stata ripresa da inglese, spagnolo e italiano.",
+          de:"Ein kadenzierter, versammelter Trab auf der Stelle. Kurios: Das Wort ist französisch, aber Englisch, Spanisch und Italienisch übernahmen die deutsche Form *die Piaffe*.",
+          ja:"その場で行う、拍子の整った収縮した速歩。面白いことに、言葉はフランス語なのに、英・西・伊が借りたのはドイツ語形の *die Piaffe* でした。",
+          ar:"خبب في المكان، موقع ومجموع. طرافة: الكلمة فرنسية، لكن الصيغة الألمانية *die Piaffe* هي التي أخذتها الإنجليزية والإسبانية والإيطالية." } },
+
+  { ref:"passage", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"le passage"}, en:{m:"passage", p:"pa-sadj"},
+           es:{m:"el passage"}, it:{m:"il passage"},
+           de:{m:"die Passage", p:"pa-sa-je"}, ja:{m:"パッサージュ", p:"passāju"},
+           ar:{m:"الباساج"} },
+    def:{ fr:"Un trot très rassemblé, avec un long temps de suspension. ⚠️ Se prononce à la française même en anglais : dire « pa-sidj » à l'anglaise ne sera pas compris.",
+          en:"A very collected trot with a long moment of suspension. Pronounced the French way even in English.",
+          es:"Un trote muy reunido, con un largo tiempo de suspensión. ⚠️ Se pronuncia a la francesa incluso en inglés: decir « pa-sidj » a la inglesa no será entendido.",
+          it:"Un trotto molto riunito, con un lungo tempo di sospensione. ⚠️ Si pronuncia alla francese anche in inglese: dire « pa-sidj » all'inglese non sarà capito.",
+          de:"Ein stark versammelter Trab mit langer Schwebephase. ⚠️ Wird auch im Englischen französisch ausgesprochen — « pa-sidj » versteht niemand.",
+          ja:"高く長い滞空を伴う、深く収縮した速歩。⚠️ 英語でもフランス語ふうに発音します。英語読みで「パシッジ」と言っても通じません。",
+          ar:"خبب مجموع جدا، مع زمن تعلق طويل. ⚠️ ينطق بالطريقة الفرنسية حتى في الإنجليزية: نطقه على الطريقة الإنجليزية «pa-sidj» لن يفهم." } },
+
+  { ref:"reculer-dressage", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"le reculer"}, en:{m:"the rein-back", p:"rèn-bak"},
+           es:{m:"el paso atrás"}, it:{m:"l'indietreggiare"},
+           de:{m:"das Rückwärtsrichten", p:"ruk-vèrts-rirh-teune"}, ja:{m:"後退", p:"kōtai"},
+           ar:{m:"الرجوع إلى الخلف"} },
+    def:{ fr:"Reculer droit, par bipèdes diagonaux, le nombre de pas exact demandé par la reprise. ⚠️ L'anglais le nomme par la rêne, **rein-back**, alors que le mouvement vient d'abord du dos et des jambes.",
+          en:"Straight back in diagonal pairs, the exact number of steps the test asks for. English names it after the rein.",
+          es:"Recular derecho, por bípedos diagonales, el número exacto de pasos que pide la reprise. ⚠️ El inglés lo nombra por la rienda, **rein-back**, cuando el movimiento nace del dorso y las piernas.",
+          it:"Indietreggiare dritto, per bipedi diagonali, il numero esatto di passi chiesto dalla ripresa. ⚠️ L'inglese lo chiama con la redine, **rein-back**, mentre il movimento nasce prima da schiena e gambe.",
+          de:"Gerade rückwärtsrichten, auf diagonalen Beinpaaren, exakt die verlangte Trittzahl. ⚠️ Das Englische benennt es nach dem Zügel — **rein-back** —, obwohl die Bewegung aus Rücken und Schenkeln kommt.",
+          ja:"対角の肢を対にして、要求された歩数だけまっすぐ後退すること。⚠️ 英語は手綱の名で **rein-back** と呼びますが、この運動はまず背中と脚から生まれるものです。",
+          ar:"الرجوع مستقيما، بالقوائم القطرية، بعدد الخطوات المطلوب في الاختبار بالضبط. ⚠️ الإنجليزية تسميه بالعنان، **rein-back**، مع أن الحركة تأتي أولا من الظهر والساقين." } },
+
+  { ref:"contre-galop", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"le contre-galop"}, en:{m:"counter-canter", p:"kaoune-teur kann-teur"},
+           es:{m:"el galope a la contra"}, it:{m:"il galoppo rovesciato"}, // ??
+           de:{m:"der Konter-Galopp", p:"kon-teur-ga-lopp", var:"Außengalopp"}, ja:{m:"反対駈歩", p:"hantai kakeho"},
+           ar:{m:"العدو المعاكس"} }, // ??
+    def:{ fr:"Galoper à droite sur la main gauche, volontairement et en équilibre. C'est un test de rectitude et d'obéissance, pas une faute.",
+          en:"Cantering right while going left, on purpose and in balance. A test of straightness and obedience, not a mistake.",
+          es:"Galopar a la derecha en la mano izquierda, voluntariamente y en equilibrio. Es una prueba de rectitud y obediencia, no una falta.",
+          it:"Galoppare a destra sulla mano sinistra, volontariamente e in equilibrio. È una prova di rettitudine e obbedienza, non un errore.",
+          de:"Auf der linken Hand bewusst im Rechtsgalopp gehen, in Balance. Ein Test für Geraderichtung und Gehorsam — kein Fehler.",
+          ja:"左手前の回りで、あえて右手前の駈歩を、バランスを保って続けること。真直性と従順さの試験であって、誤りではありません。",
+          ar:"العدو على اليد اليمنى فوق المسار الأيسر، عمدا وبتوازن. إنه اختبار للاستقامة والطاعة، لا خطأ." } },
+
+  { ref:"trot-allonge", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"le trot allongé"}, en:{m:"extended trot", p:"èks-tèn-dèd trot"},
+           es:{m:"el trote largo"}, it:{m:"il trotto allungato"},
+           de:{m:"der starke Trab", p:"chtar-ke trab"}, ja:{m:"伸長速歩", p:"shinchō hayaashi"},
+           ar:{m:"الخبب الممدود"} }, // ??
+    def:{ fr:"L'amplitude maximale, sans précipiter. ⚠️ L'allemand ne dit pas « allongé » mais **starker Trab**, le trot *fort* — et l'échelle allemande complète va de Arbeitstrab (travail) à Mitteltrab (moyen) puis starker Trab.",
+          en:"Maximum reach without hurrying. German does not say extended but starker Trab, the strong trot.",
+          es:"La amplitud máxima, sin precipitar. ⚠️ El alemán no dice « alargado » sino **starker Trab**, el trote *fuerte* — y la escala alemana completa va de Arbeitstrab (trabajo) a Mitteltrab (medio) y starker Trab.",
+          it:"L'ampiezza massima, senza precipitare. ⚠️ Il tedesco non dice « allungato » ma **starker Trab**, il trotto *forte* — e la scala tedesca completa va da Arbeitstrab (di lavoro) a Mitteltrab (medio) a starker Trab.",
+          de:"Der größte Rahmen, ohne zu eilen. ⚠️ Das Deutsche sagt nicht « verlängert », sondern **starker Trab** — und die Reihe geht von Arbeitstrab über Mitteltrab zum starken Trab.",
+          ja:"急がずに、最大限の伸びを見せる速歩。⚠️ ドイツ語は「伸ばした」ではなく **starker Trab**（強い速歩）と言い、段階も Arbeitstrab（常用）→ Mitteltrab（中間）→ starker Trab と揃っています。",
+          ar:"أقصى اتساع للخطوة، من دون تسرع. ⚠️ الألمانية لا تقول «ممدود» بل **starker Trab**، الخبب *القوي* — وسلمها الكامل يمتد من Arbeitstrab (خبب العمل) إلى Mitteltrab (المتوسط) فما فوق." } },
+
+  { ref:"tete-au-mur", lecon:2, coll:"mouvements",
+    mots:{ fr:{m:"la tête au mur"}, en:{m:"travers", p:"tra-vèr", var:"head to the wall"},
+           es:{m:"la grupa adentro"}, it:{m:"il travers"},
+           de:{m:"das Traversale", p:"tra-vèr-za-le", var:"Kruppeherein"}, ja:{m:"トラバース", p:"torabāsu"},
+           ar:{m:"الرأس إلى الجدار"} },
+    def:{ fr:"L'inverse de l'épaule en dedans : ce sont les HANCHES qui rentrent, les épaules restant sur la piste. Le cheval regarde où il va, incurvé du côté du déplacement. ⚠️ L'anglais garde le mot FRANÇAIS, « travers » — comme pour « appuyer » qui devient « half-pass ». Le français dit aussi « croupe au mur », c'est le même mouvement.",
+          en:"The opposite of shoulder-in: the HIPS come in, the shoulders stay on the track, and the horse looks where he's going. English keeps the French word, « travers ».",
+          es:"Lo contrario de la espalda adentro: entra la GRUPA, las espaldas se quedan en la pista, y el caballo mira hacia donde va.",
+          it:"Il contrario della spalla in dentro: entrano le ANCHE, le spalle restano in pista, e il cavallo guarda dove va.",
+          de:"Das Gegenteil vom Schulterherein: die HANKEN kommen herein, die Schultern bleiben auf dem Hufschlag, und das Pferd schaut in die Bewegungsrichtung.",
+          ja:"ショルダーインの逆。肩は蹄跡に残したまま、腰を内側に入れます。馬は進行方向を見ます。",
+          ar:"عكس الكتف إلى الداخل: الوركان هما اللذان يدخلان، والكتفان يبقيان على المسار. الحصان ينظر حيث يذهب، منحنيا في اتجاه الحركة. ⚠️ الإنجليزية تحتفظ بالكلمة الفرنسية «travers»." } },
 
   ],
 
