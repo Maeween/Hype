@@ -1,3 +1,30 @@
+# 🗓️ 30/09 (nuit) — LE MORNE : TROTTER EN ÉQUILIBRE, TROTTER ENLEVÉ SUR LE BON DIAGONAL — `lingo.html` ?v=103
+
+**Décision de Blandine (23 h 40 : « ajoute trot assis, trot en équilibre » ; 23 h 41 : « et trot enlevé sur le bon diagonal oui »)**, après sa remarque « je n'ai pas trouvé diagonale, ou trotter enlevé sur le bon pied » dans le lexique. Vérifié avant d'écrire : **« le trot assis » existe déjà** (Aberystwyth, `cours` L1, « sitting trot »), rien à ajouter ; « le trot enlevé » existe (Aberystwyth et Le Morne) ; ni « trotter en équilibre » ni « sur le bon diagonal » n'existaient nulle part.
+
+**Deux concepts nouveaux, écrits par Claude dans les 7 langues** (mots, prononciations en/de/ja, définitions), ajoutés à `hype-lingo-lex-balade.js` (Le Morne), à côté de « galoper en équilibre » et « galoper assis », qui en sont les jumeaux au galop — et non à Aberystwyth, déjà à 42 mots :
+- `trot-equilibre` — « trotter en équilibre » / « to trot in a light seat » (var. two-point) / « trotar en equilibrio » / « trottare in equilibrio » / « im leichten Sitz traben » / « 軽く腰を浮かせて速歩する » / « الخبب في وضع التوازن » ;
+- `trot-bon-diagonal` — « trotter enlevé sur le bon diagonal » (var. « sur le bon pied ») / « to rise on the correct diagonal » / « trotar levantado en el diagonal correcto » / « trottare battuto sulla diagonale giusta » / « auf dem richtigen Fuß leichttraben » / « 正しい斜対で軽速歩をする » / « الخبب الخفيف على القطر الصحيح ».
+Le Morne : 18 → **20 mots**. Famille `balade` (existante). Aucun autre mot touché. ⚠️ Ces deux mots sont de Claude, pas de Blandine : à relire par elle (surtout l'allemand « der richtige Fuß » et le japonais 斜対).
+
+`lingo.html` : balise `hype-lingo-lex-balade.js?l=8` → **`?l=9`**, `VER` → **?v=103**. Ce lot **contient aussi Windsor** (entrée suivante, livrée à 22 h 20 en ?v=102 mais jamais poussée) : `hype-lingo-lex-windsor.js` inchangé depuis, `ETAPE_SRC.windsor` et `?l=4` déjà dans ce `lingo.html`.
+
+**Contrôles** : `node --check` OK, 6 blocs `<script>` OK, 0 voyelle arabe, 7 langues sur les 20 · Chromium : Le Morne 20 concepts, leçon (41 étapes) jouée 6 fois sans blocage ni erreur ; lexique : **864 mots**, les deux nouveaux visibles sous « Le Morne », « le trot assis » toujours sous Aberystwyth.
+
+**🟠 LEXIQUE — « je n'ai pas trouvé diagonale » : trouvé, et c'est un défaut de classement.** « La diagonale » y est (Aberystwyth), mais **rangée à la lettre L**, en 267e position, entre « la deuxième manche » et « la doma vaquera » : `lxTri` classe sur le mot AVEC son article, `lxInitiale` prend la première lettre du résultat. En français, 655 mots sur 862 tombent sous L (le, la, les, l'), la lettre D n'a que 16 mots (ceux sans article) ; même chose en anglais (the), espagnol, italien, allemand. L'abécédaire ne sert donc à rien, seule la recherche marche. Au passage : « la deuxième manche » apparaît deux fois (deux refs différents pour le même mot, Aachen et une autre ville). **Correction proposée, en attente de son ok** : classer et lettrer sur le mot sans article (fr le/la/les/l'/un/une/des ; en the/a/an/to ; es el/la/los/las/un/una ; it il/lo/la/i/gli/le/l'/un/una ; de der/die/das/ein/eine ; ar ال), sans toucher à la recherche. Un seul endroit du code.
+
+**À pousser (racine), en une fois** : `lingo.html` (?v=103) · `hype-lingo-lex-balade.js` · `hype-lingo-lex-windsor.js` · ce `SUIVI-LINGUAE.md`. ⚠️ Remplace le lot de 22 h 20 (?v=102), à ne plus utiliser. Inchangés : tout le reste.
+
+# 🗓️ 30/09 (soir) — WINDSOR OUVRE LA NOTATION ET LA TENUE — livré en ?v=102, non poussé, fondu dans le lot ?v=103 ci-dessus
+
+**Décision de Blandine (22 h 17 : « 2 pardon », tout à Windsor).** La leçon 4 de `hype-lingo-lex-dressage-reserve.js` — la seule des six leçons dormantes qui avait ses phrases — rejoint Windsor, la ville de la reprise : le protocole, la note, le coefficient, le pourcentage, les remarques du juge, les notes d'ensemble, l'erreur de parcours, la cloche du juge, le contrôle des embouchures, le classement, la veste, le haut-de-forme, la queue-de-pie, la reprise libre en musique (familles `notation` et `tenue`, déjà dans `COLL_NOM`), plus ses 5 phrases (« Ce mouvement est en coefficient deux ? », « Où je récupère mon protocole ? », « 65 %, son meilleur résultat. », « Je me suis trompée de figure. », « Reste à cheval pour le contrôle. »).
+- `hype-lingo-lex-windsor.js` : `lecons: 2`, 14 concepts et 5 phrases copiés tels quels, **numéro de leçon 4 → 2** (l'appli numérote d'après `lecon` : sans ce renommage Windsor aurait affiché « leçon 1 » puis « leçon 4 »). Aucun ref, aucune définition modifiés ; aucun conflit de ref avec les lexiques chargés (vérifié) ; `protocole`, cité par le dialogue de Windsor en `motsAilleurs`, est désormais enseigné sur place. En-tête mis à jour. Windsor : 19 → **33 mots** — la plus grosse ouverture de la nuit, choix de Blandine contre le partage avec Versailles.
+- `lingo.html` : `ETAPE_SRC.windsor` → `[["windsor",1],["windsor",2]]`, balise `hype-lingo-lex-windsor.js?l=3` → **`?l=4`**, `VER` ?v=101 → **?v=102**. Rien d'autre. `sw-linguae.js` inchangé.
+- Contrôles : `node --check` OK, 6 blocs `<script>` OK, 0 voyelle arabe, 7 langues sur les 14 · Chromium : Windsor 33 concepts, leçon 2 (14 mots, 33 étapes) jouée 6 fois de bout en bout, clic réel sur chaque « Continuer » — rien de bloqué, aucun écran vide, aucune erreur JS.
+- **Bilan des leçons dormantes après cette nuit** : sur les 6 (47 mots), 4 sont réveillées — La Baule L3 (5), Walsall la bride (10), Jerez les mouvements (11), Windsor la notation (14). Restent le pansage de réserve (tondeuse, mue, tique… 6 mots, `pansage-reserve`) et le concours de réserve (tableau d'affichage, le trac, 2 mots), plus 4 mots isolés dans d'anciens fichiers. Les fichiers de réserve restent tous en place, inchangés et non chargés.
+
+~~À pousser : `lingo.html` (?v=102) · `hype-lingo-lex-windsor.js` · `SUIVI-LINGUAE.md`~~ — lot livré à 22 h 20, **jamais poussé** : à 23 h 45 il est refondu dans le lot ?v=103 (entrée du dessus), qui contient les mêmes fichiers plus Le Morne.
+
 # 🗓️ 30/09 — TROIS LEÇONS RÉVEILLÉES : LA BAULE, WALSALL, JEREZ — `lingo.html` ?v=101
 
 Suite directe de la note « taille des villes et leçons qui dorment » (entrée du 30/09 ci-dessous, décision initiale « on reste tel quel »), revue par Blandine dans la même nuit, ville par ville. Trois ordres, trois modifications, un seul lot.
@@ -13,7 +40,7 @@ Suite directe de la note « taille des villes et leçons qui dorment » (entrée
 
 **Contrôles** : `node --check` sur les deux lexiques, 6 blocs `<script>` de `lingo.html` OK, 0 voyelle arabe · Chromium (iPhone 390 × 844) : La Baule 31 / Walsall 24 / Jerez 22 concepts, titre « La haute école » ; chaque leçon nouvelle (La Baule L3, Walsall L2, Jerez L2) ouverte en forçant la maîtrise des précédentes et jouée 6 fois de bout en bout, clic réel sur chaque « Continuer » — aucun clic sans effet, aucun écran vide, aucune erreur JS, aucun exercice sauté.
 
-**Reste ouvert — la notation et la tenue de dressage** (`dressage-reserve` L4, 14 mots + 5 phrases). Trois options posées : 1. tout à Versailles (28) · 2. tout à Windsor (33) · 3. partage, la notation (10) à Versailles et la tenue + la reprise libre en musique (4) à Windsor. Réponse de Blandine le 30/09 à 22 h 08 : « 3 Windsor » — à préciser (partage, ou tout à Windsor ?) avant le lot suivant.
+**La notation et la tenue de dressage** (`dressage-reserve` L4, 14 mots + 5 phrases) : options posées 1. tout à Versailles (28) · 2. tout à Windsor (33) · 3. partage. Réponse de Blandine : « 3 Windsor », puis « 2 pardon » (22 h 17) → tout à Windsor, lot suivant (?v=102, entrée au-dessus).
 
 **À pousser (racine), en une fois** : `lingo.html` · `hype-lingo-lex-walsall.js` · `hype-lingo-lex-andalou.js` · ce `SUIVI-LINGUAE.md`. Inchangés : `sw-linguae.js`, tous les autres lexiques, les images.
 

@@ -7,8 +7,10 @@
 
    ⚠️ `titre` REPRIS TEL QUEL DE L'ANCIEN CHAPITRE.
 
-   UNE SEULE LEÇON, CONSERVÉE À L'IDENTIQUE :
+   DEUX LEÇONS :
      · leçon 1 — le rectangle et les lettres (19 concepts)
+     · leçon 2 — la notation et la tenue (14 concepts, ex-leçon 4 de la
+       réserve, ouverte le 30/09/2026)
 
    Les leçons 2 (orpheline, les mouvements), 3 (Versailles) et 4
    (orpheline, notation + tenue) sont déplacées séparément.
@@ -19,7 +21,7 @@ window.HYPE_LINGO_LEX = window.HYPE_LINGO_LEX || {};
 window.HYPE_LINGO_LEX.windsor = {
   ref: "windsor",
   titre: { fr:"Le dressage", en:"Dressage", es:"La doma clásica", it:"Il dressage", de:"Die Dressur", ja:"馬場馬術", ar:"الترويض" },
-  lecons: 1,
+  lecons: 2,
 
   concepts: [
 
@@ -284,12 +286,244 @@ window.HYPE_LINGO_LEX.windsor = {
           ja:"⚠️ フランス語で最も厄介な多義語。« la reprise » は馬場の**生徒の一団**と、馬場馬術の**経路**の両方を指します。英語はきれいに分けます — *the ride* と *the test*。ドイツ語も同様に Abteilung と Aufgabe。",
           ar:"⚠️ أخبث الأصدقاء المزيفين في الفرنسية: كلمة «la reprise» تعني مجموعة التلاميذ في الميدان وتعني اختبار الترويض معا. الإنجليزية تفصل بوضوح: *the ride* للمجموعة، و*the test* للاختبار. والألمانية أيضا: Abteilung / Aufgabe." } },
 
-  /* ============ LEÇON 2 · LES MOUVEMENTS ============ */
+  /* ============ LEÇON 2 · LA NOTATION ET LA TENUE ============
+     🟥 30/09/2026 — OUVERTE SUR DÉCISION DE BLANDINE (« 2 » : tout à Windsor).
+     Les quatorze concepts sont REPRIS TELS QUELS de
+     `hype-lingo-lex-dressage-reserve.js` (leçon 4, jamais attribuée à une
+     ville), avec leurs cinq phrases : aucun ref, aucune définition
+     modifiés. Seul le numéro de leçon change, 4 → 2, pour que Windsor
+     enchaîne « leçon 1, leçon 2 » (l'appli numérote d'après `lecon`).
+     `protocole`, cité par le dialogue de Windsor en `motsAilleurs`, est
+     désormais enseigné ici même. Les mouvements (ex-leçon 2) sont partis à
+     JEREZ le même jour. Windsor passe de 19 à 33 mots. Le fichier de réserve
+     reste en place, inchangé et non chargé. */
+
+  { ref:"protocole", lecon:2, coll:"notation",
+    mots:{ fr:{m:"le protocole"}, en:{m:"the test sheet", p:"tèst chite", var:"score sheet"},
+           es:{m:"la hoja de puntuación"}, it:{m:"il foglio di giudizio"},
+           de:{m:"das Protokoll", p:"pro-to-kol"}, ja:{m:"採点表", p:"saitenhyō"},
+           ar:{m:"ورقة التحكيم"} }, // ??
+    def:{ fr:"La feuille où chaque mouvement reçoit sa note et sa remarque. On la récupère après l'épreuve, et c'est le vrai cours particulier de la journée.",
+          en:"The sheet where every movement gets its mark and comment. Collected afterwards, it is the real lesson of the day.",
+          es:"La hoja donde cada movimiento recibe su nota y su comentario. Se recoge tras la prueba, y es la verdadera clase particular del día.",
+          it:"Il foglio dove ogni movimento riceve il suo voto e la sua osservazione. Si ritira dopo la prova, ed è la vera lezione privata della giornata.",
+          de:"Der Bogen, auf dem jede Lektion Note und Bemerkung erhält. Man holt ihn nach der Prüfung ab — die wahre Einzelstunde des Tages.",
+          ja:"各運動に点と講評が書き込まれる用紙。競技のあとに受け取ります。その日いちばんの個人レッスンは、実はこの紙です。",
+          ar:"الورقة التي تتلقى فيها كل حركة درجتها وملاحظتها. تستلم بعد الاختبار، وهي الدرس الخاص الحقيقي لذلك اليوم." } },
+
+  { ref:"note", lecon:2, coll:"notation",
+    mots:{ fr:{m:"la note"}, en:{m:"the mark", p:"mark", var:"score (US)"},
+           es:{m:"la nota"}, it:{m:"il voto"},
+           de:{m:"die Note", p:"nô-te"}, ja:{m:"点数", p:"tensū"},
+           ar:{m:"الدرجة"} },
+    def:{ fr:"De 0 à 10 par mouvement : 10 excellent, 6 satisfaisant, 0 mouvement non exécuté. ⚠️ L'anglais britannique dit **mark**, l'américain **score** — et « note » en anglais veut dire une remarque écrite, pas une note.",
+          en:"0 to 10 per movement. British English says mark, American score — and « note » in English means a written comment, not a mark.",
+          es:"De 0 a 10 por movimiento: 10 excelente, 6 satisfactorio, 0 movimiento no ejecutado. ⚠️ El inglés británico dice **mark**, el americano **score** — y « note » en inglés significa una nota escrita, no una calificación.",
+          it:"Da 0 a 10 per movimento: 10 eccellente, 6 sufficiente, 0 movimento non eseguito. ⚠️ L'inglese britannico dice **mark**, l'americano **score** — e « note » in inglese significa un appunto scritto, non un voto.",
+          de:"0 bis 10 pro Lektion: 10 ausgezeichnet, 6 befriedigend, 0 nicht ausgeführt. ⚠️ Britisch heißt es **mark**, amerikanisch **score** — und « note » ist auf Englisch eine Notiz, keine Note.",
+          ja:"運動ごとに0〜10点。10は最優秀、6は満足、0は不実施。⚠️ イギリス英語は **mark**、アメリカ英語は **score** — そして英語の « note » はメモの意味で、点数ではありません。",
+          ar:"من 0 إلى 10 لكل حركة: 10 ممتاز، و6 مرض، و0 حركة لم تنفذ. ⚠️ الإنجليزية البريطانية تقول **mark**، والأمريكية **score** — أما «note» بالإنجليزية فتعني ملاحظة مكتوبة، لا درجة." } },
+
+  { ref:"coefficient", lecon:2, coll:"notation",
+    mots:{ fr:{m:"le coefficient"}, en:{m:"the coefficient", p:"kô-i-fi-cheunt", var:"double marks"},
+           es:{m:"el coeficiente"}, it:{m:"il coefficiente"},
+           de:{m:"der Koeffizient", p:"ko-è-fi-tsi-ènt"}, ja:{m:"係数", p:"keisū"},
+           ar:{m:"المعامل"} }, // ??
+    def:{ fr:"Certains mouvements comptent double. Les Britanniques disent souvent simplement **double marks** : savoir lesquels sont doublés change la façon de préparer une reprise.",
+          en:"Some movements count twice. The British often just say « double marks ».",
+          es:"Algunos movimientos cuentan doble. Los británicos dicen a menudo simplemente **double marks**: saber cuáles se doblan cambia la manera de preparar una reprise.",
+          it:"Certi movimenti contano doppio. I britannici dicono spesso semplicemente **double marks**: sapere quali sono raddoppiati cambia il modo di preparare una ripresa.",
+          de:"Manche Lektionen zählen doppelt. Die Briten sagen oft schlicht **double marks**: Zu wissen, welche, verändert die Vorbereitung einer Aufgabe.",
+          ja:"一部の運動は二倍で数えられます。イギリス人は単に **double marks** と言うことも。どの運動が二倍かを知っているかどうかで、経路の準備の仕方が変わります。",
+          ar:"بعض الحركات تحسب مضاعفة. البريطانيون يقولون غالبا ببساطة **double marks**: معرفة الحركات المضاعفة تغير طريقة تحضير الاختبار." } },
+
+  { ref:"pourcentage", lecon:2, coll:"notation",
+    mots:{ fr:{m:"le pourcentage"}, en:{m:"the percentage", p:"peur-sènn-tidj"},
+           es:{m:"el porcentaje"}, it:{m:"la percentuale"},
+           de:{m:"der Prozentsatz", p:"pro-tsènt-zats"}, ja:{m:"得点率", p:"tokutenritsu"},
+           ar:{m:"النسبة المئوية"} }, // ??
+    def:{ fr:"Le total ramené sur 100. Repères valables partout : autour de 60 % la reprise est correcte, 65 % bonne, 70 % très bonne, au-delà on parle de niveau international.",
+          en:"The total as a percentage. Around 60 % is correct, 65 % good, 70 % very good, beyond that international level.",
+          es:"El total llevado a 100. Referencias válidas en todas partes: en torno al 60 % la reprise es correcta, 65 % buena, 70 % muy buena, más allá se habla de nivel internacional.",
+          it:"Il totale riportato su 100. Riferimenti validi ovunque: attorno al 60 % la ripresa è corretta, 65 % buona, 70 % molto buona, oltre si parla di livello internazionale.",
+          de:"Die Summe auf 100 gerechnet. Überall gültige Anhaltspunkte: um 60 % ist die Aufgabe ordentlich, 65 % gut, 70 % sehr gut — darüber spricht man von internationalem Niveau.",
+          ja:"合計を100点満点に換算したもの。世界共通の目安：60%前後で妥当、65%で良、70%で優 — それを超えれば国際レベルの話になります。",
+          ar:"المجموع منسوبا إلى 100. معايير صالحة في كل مكان: نحو 60 % اختبار صحيح، و65 % جيد، و70 % جيد جدا، وما فوق ذلك يعد مستوى دوليا." } },
+
+  { ref:"remarques", lecon:2, coll:"notation",
+    mots:{ fr:{m:"les remarques du juge"}, en:{m:"the comments", p:"ko-mèntss"},
+           es:{m:"los comentarios"}, it:{m:"i commenti"},
+           de:{m:"die Bemerkungen", p:"be-mèr-koun-gueune"}, ja:{m:"コメント", p:"komento"},
+           ar:{m:"ملاحظات الحكم"} },
+    def:{ fr:"Écrites à la main, souvent en abrégé, et parfois plus utiles que la note elle-même. Quelques abréviations anglaises courantes : *needs more impulsion*, *croaked*, *bal.* pour balance, *tense*.",
+          en:"Hand-written, often abbreviated, and often more useful than the mark itself.",
+          es:"Escritas a mano, a menudo abreviadas, y a veces más útiles que la propia nota. Algunas abreviaturas inglesas corrientes: *needs more impulsion*, *croaked*, *bal.* por balance, *tense*.",
+          it:"Scritte a mano, spesso abbreviate, e a volte più utili del voto stesso. Alcune abbreviazioni inglesi correnti: *needs more impulsion*, *croaked*, *bal.* per balance, *tense*.",
+          de:"Handschriftlich, oft abgekürzt — und manchmal nützlicher als die Note selbst. Gängige englische Kürzel: *needs more impulsion*, *croaked*, *bal.* für balance, *tense*.",
+          ja:"手書きで、しばしば略語で — ときに点数そのものより役に立ちます。よくある英語の略語：*needs more impulsion*、*croaked*、balance の略の *bal.*、*tense*。",
+          ar:"مكتوبة باليد، ومختصرة غالبا، وقد تكون أنفع من الدرجة نفسها. من الاختصارات الإنجليزية الشائعة: *needs more impulsion*، و*bal.* للتوازن، و*tense*." } },
+
+  { ref:"note-ensemble", lecon:2, coll:"notation",
+    mots:{ fr:{m:"les notes d'ensemble"}, en:{m:"the collective marks", p:"ko-lèk-tiv marks"},
+           es:{m:"las notas de conjunto"}, it:{m:"le note d'insieme"},
+           de:{m:"die Gesamtnoten", p:"gue-zamt-nô-teune"}, ja:{m:"総合点", p:"sōgōten"},
+           ar:{m:"الدرجات العامة"} }, // ??
+    def:{ fr:"En bas du protocole : allures, impulsion, soumission, position du cavalier. Elles jugent la reprise entière, pas un mouvement — et elles pèsent lourd.",
+          en:"At the foot of the sheet: paces, impulsion, submission, rider's position. They judge the whole test, and they weigh heavily.",
+          es:"Al pie del protocolo: aires, impulsión, sumisión, posición del jinete. Juzgan la reprise entera, no un movimiento — y pesan mucho.",
+          it:"In fondo al protocollo: andature, impulso, sottomissione, posizione del cavaliere. Giudicano la ripresa intera, non un movimento — e pesano molto.",
+          de:"Am Ende des Protokolls: Grundgangarten, Schwung, Durchlässigkeit, Sitz des Reiters. Sie bewerten die ganze Aufgabe, nicht eine Lektion — und sie wiegen schwer.",
+          ja:"採点表のいちばん下 — 歩様、勢い、従順さ、騎手の姿勢。ひとつの運動ではなく演技全体を評価する項目で、配点も重いのです。",
+          ar:"في أسفل ورقة التحكيم: المشيات، والاندفاع، والخضوع، ووضع الفارس. تحكم على الاختبار كله لا على حركة واحدة — ووزنها كبير." } },
+
+  { ref:"erreur-parcours", lecon:2, coll:"notation",
+    mots:{ fr:{m:"l'erreur de parcours"}, en:{m:"an error of course", p:"è-reur of korss"},
+           es:{m:"un error de recorrido"}, it:{m:"un errore di percorso"},
+           de:{m:"der Bahnfehler", p:"ban-fé-leur"}, ja:{m:"コース違い", p:"kōsu chigai"},
+           ar:{m:"خطأ المسار"} }, // ??
+    def:{ fr:"Se tromper de figure ou de lettre. Ce n'est pas éliminatoire tout de suite : la pénalité est forfaitaire, et c'est en général à la troisième erreur qu'on est éliminé — un détail qui évite d'abandonner pour rien.",
+          en:"Going the wrong way. Not instant elimination: a fixed penalty, and usually only the third error sends you out.",
+          es:"Equivocarse de figura o de letra. No es eliminatorio al instante: la penalización es fija, y en general es a la tercera falta cuando se elimina — un detalle que evita abandonar por nada.",
+          it:"Sbagliare figura o lettera. Non è eliminatorio subito: la penalità è forfettaria, e in genere è alla terza errore che si è eliminati — un dettaglio che evita di ritirarsi per niente.",
+          de:"Figur oder Buchstabe verwechselt. Nicht sofort eliminierend: Der Abzug ist pauschal, und meist scheidet man erst beim dritten Fehler aus — ein Detail, das vor grundlosem Aufgeben bewahrt.",
+          ja:"図形や文字を間違えること。即失権にはなりません。減点は定額で、ふつうは三度目の間違いで失権 — 知っていれば、無用な棄権をせずに済む知識です。",
+          ar:"الخطأ في الشكل أو في الحرف. ليس إقصائيا فورا: الجزاء مقطوع، وعادة ما يقصى الفارس عند الخطأ الثالث — تفصيل يجنب الاستسلام قبل الأوان." } },
+
+  { ref:"cloche-juge", lecon:2, coll:"notation",
+    mots:{ fr:{m:"la cloche du juge"}, en:{m:"the bell", p:"bèl", var:"the horn · the whistle"},
+           es:{m:"la campana"}, it:{m:"la campana"},
+           de:{m:"die Glocke", p:"glo-ke"}, ja:{m:"合図の鐘", p:"aizu no kane"},
+           ar:{m:"جرس الحكم"} }, // ??
+    def:{ fr:"Elle sonne pour te faire entrer — et elle sonne aussi pour signaler une erreur de parcours. Deux sens opposés pour un même son : la reconnaître évite la panique.",
+          en:"It rings to send you in — and it also rings to flag an error of course. Two opposite meanings, one sound.",
+          es:"Suena para hacerte entrar — y suena también para señalar un error de recorrido. Dos sentidos opuestos para un mismo sonido: reconocerla evita el pánico.",
+          it:"Suona per farti entrare — e suona anche per segnalare un errore di percorso. Due sensi opposti per lo stesso suono: riconoscerla evita il panico.",
+          de:"Sie läutet zum Einreiten — und sie läutet auch bei einem Bahnfehler. Zwei gegensätzliche Bedeutungen für denselben Klang: Wer das weiß, gerät nicht in Panik.",
+          ja:"入場の合図に鳴り — 経路違反の合図にも鳴ります。同じ音にまるで逆のふたつの意味。知っていれば慌てずに済みます。",
+          ar:"يرن ليأذن لك بالدخول — ويرن أيضا للإشارة إلى خطأ في المسار. معنيان متعاكسان لصوت واحد: تمييزه يجنب الذعر." } },
+
+  { ref:"controle-embouchures", lecon:2, coll:"notation",
+    mots:{ fr:{m:"le contrôle des embouchures"}, en:{m:"the tack check", p:"tak tchèk", var:"bit check"},
+           es:{m:"el control de embocaduras"}, it:{m:"il controllo delle imboccature"},
+           de:{m:"die Ausrüstungskontrolle", p:"aouss-rus-toungs-kon-tro-le"}, ja:{m:"馬具検査", p:"bagu kensa"},
+           ar:{m:"فحص الشكائم"} }, // ??
+    def:{ fr:"À la sortie du rectangle, un commissaire vérifie mors, muserolle et éperons. Refuser, c'est l'élimination : on reste à cheval et on laisse faire.",
+          en:"On leaving the arena a steward checks bit, noseband and spurs. Refusing means elimination: stay mounted and let them.",
+          es:"A la salida del rectángulo, un comisario verifica bocado, muserola y espuelas. Negarse es la eliminación: uno permanece a caballo y deja hacer.",
+          it:"All'uscita del rettangolo, un commissario verifica imboccatura, capezzina e speroni. Rifiutare è l'eliminazione: si resta a cavallo e si lascia fare.",
+          de:"Am Ausgang des Vierecks prüft ein Steward Gebiss, Nasenriemen und Sporen. Verweigern heißt Ausscheiden: Man bleibt sitzen und lässt es geschehen.",
+          ja:"馬場を出たところで、係員がハミ、鼻革、拍車を確認します。拒めば失権。馬上に座ったまま、されるがままにしておくこと。",
+          ar:"عند الخروج من الميدان، يتحقق المشرف من الشكيمة وحزام الأنف والمهاميز. رفض الفحص إقصاء: تبقين على السرج وتتركينه يعمل." } },
+
+  { ref:"classement", lecon:2, coll:"notation",
+    mots:{ fr:{m:"le classement"}, en:{m:"the placing", p:"plé-sing", var:"the results"},
+           es:{m:"la clasificación"}, it:{m:"la classifica"},
+           de:{m:"die Platzierung", p:"pla-tsi-roung"}, ja:{m:"順位", p:"jun'i"},
+           ar:{m:"الترتيب"} },
+    def:{ fr:"Affiché après le passage du dernier concurrent. En dressage, on se compare d'abord à son propre pourcentage précédent — le classement dépend de qui s'est inscrit ce jour-là.",
+          en:"Posted after the last competitor. In dressage you compare yourself to your own previous percentage first.",
+          es:"Publicado tras el paso del último concursante. En doma uno se compara primero con su propio porcentaje anterior — la clasificación depende de quién se inscribió ese día.",
+          it:"Affisso dopo il passaggio dell'ultimo concorrente. In dressage ci si confronta prima col proprio percentuale precedente — la classifica dipende da chi si è iscritto quel giorno.",
+          de:"Ausgehängt nach dem letzten Starter. In der Dressur vergleicht man sich zuerst mit dem eigenen letzten Prozentsatz — die Platzierung hängt davon ab, wer an dem Tag gemeldet hat.",
+          ja:"最後の出場者が終わってから掲示されます。馬場馬術でまず比べる相手は、前回の自分のパーセンテージ。順位のほうは、その日に誰がエントリーしたか次第です。",
+          ar:"يعرض بعد مرور آخر متسابق. في الترويض تقارنين نفسك أولا بنسبتك المئوية السابقة — فالترتيب يتوقف على من سجل في ذلك اليوم." } },
+
+  { ref:"veste", lecon:2, coll:"tenue",
+    mots:{ fr:{m:"la veste"}, en:{m:"the show jacket", p:"cho djè-kite", var:"the competition jacket"},
+           es:{m:"la chaqueta"}, it:{m:"la giacca"},
+           de:{m:"das Turnierjackett", p:"tour-nir-ja-kète", var:"der Turnierrock"}, ja:{m:"競技用ジャケット", p:"kyōgiyō jaketto"},
+           ar:{m:"سترة المسابقة"} }, // ?? ja
+    def:{ fr:"La veste courte des niveaux club et amateur, portée avec la bombe. C'est la tenue de la très grande majorité des concours : la queue-de-pie ne vient qu'ensuite.",
+          en:"The short jacket worn at club and amateur level, with a hat. It's what almost everyone competes in — the tailcoat comes much later.",
+          es:"La chaqueta corta de los niveles club y amateur, con casco. Es la ropa de la gran mayoría de los concursos: el frac viene después.",
+          it:"La giacca corta dei livelli club e amatoriale, con il cap. È l'abbigliamento della grande maggioranza dei concorsi: il frac viene dopo.",
+          de:"Das kurze Jackett für Club- und Amateurniveau, mit Kappe. So startet die große Mehrheit — der Frack kommt erst viel später.",
+          ja:"クラブ・アマチュア級で着る短い上着。ヘルメットと合わせます。ほとんどの競技会はこの服装で、燕尾服はもっと上の級からです。",
+          ar:"السترة القصيرة لمستويات النوادي والهواة، تلبس مع الخوذة. إنها زي الغالبية العظمى من المسابقات: معطف الذيل لا يأتي إلا بعد ذلك." } },
+
+  { ref:"haut-de-forme", lecon:2, coll:"tenue",
+    mots:{ fr:{m:"le haut-de-forme"}, en:{m:"the top hat", p:"top hatt"},
+           es:{m:"la chistera"}, it:{m:"il cilindro"},
+           de:{m:"der Zylinder", p:"tsu-linn-deur"}, ja:{m:"シルクハット", p:"shiruku hatto"},
+           ar:{m:"القبعة العالية"} },
+    def:{ fr:"Il se porte avec la queue-de-pie, aux niveaux élevés seulement — jamais avec la veste. ⚠️ Il recule partout au profit de la bombe : plusieurs fédérations l'ont interdit, et beaucoup de cavaliers de haut niveau y ont renoncé d'eux-mêmes.",
+          en:"Worn with the tailcoat, at the top levels only — never with a show jacket. It's disappearing in favour of a hat: several federations have banned it, and many top riders gave it up themselves.",
+          es:"Se lleva con el frac, solo en los niveles altos — nunca con la chaqueta. Está desapareciendo en favor del casco: varias federaciones lo han prohibido.",
+          it:"Si porta con il frac, solo ai livelli alti — mai con la giacca. Sta sparendo a favore del cap: diverse federazioni l'hanno vietato.",
+          de:"Wird zum Frack getragen, nur in den höheren Klassen — nie zum Turnierjackett. Er verschwindet zugunsten der Kappe: mehrere Verbände haben ihn verboten.",
+          ja:"燕尾服と合わせ、上級でのみ着用します。ジャケットとは合わせません。安全のためヘルメットに置き換わりつつあり、禁止した連盟もあります。",
+          ar:"تلبس مع معطف الذيل، في المستويات العالية فقط — ولا تلبس مع السترة أبدا. ⚠️ إنها تتراجع في كل مكان لمصلحة الخوذة: عدة اتحادات منعتها، وكثير من فرسان القمة تخلوا عنها." } },
+
+  { ref:"queue-de-pie", lecon:2, coll:"notation",
+    mots:{ fr:{m:"la queue-de-pie"}, en:{m:"the tailcoat", p:"téïl-kôte", var:"shadbelly (US)"},
+           es:{m:"el frac"}, it:{m:"il frac"},
+           de:{m:"der Frack", p:"frak"}, ja:{m:"燕尾服", p:"enbifuku"},
+           ar:{m:"معطف الذيل"} },
+    def:{ fr:"Réservée aux épreuves de haut niveau ; la veste courte partout ailleurs. ⚠️ Les Américains l'appellent **shadbelly**, littéralement « ventre d'alose » — un mot que personne ne devine.",
+          en:"For upper levels only; a short jacket everywhere else. Americans call it a shadbelly, « shad belly », which nobody guesses.",
+          es:"Reservado a las pruebas de alto nivel; la chaqueta corta en el resto. ⚠️ Los americanos lo llaman **shadbelly**, literalmente « vientre de sábalo » — una palabra que nadie adivina.",
+          it:"Riservato alle prove di alto livello; la giacca corta ovunque altro. ⚠️ Gli americani lo chiamano **shadbelly**, alla lettera « ventre di alosa » — una parola che nessuno indovina.",
+          de:"Den hohen Prüfungen vorbehalten; sonst das kurze Jackett. ⚠️ Die Amerikaner nennen ihn **shadbelly**, wörtlich « Maifischbauch » — ein Wort, auf das niemand kommt.",
+          ja:"上級競技だけの装い。それ以外はショートジャケットです。⚠️ アメリカでは **shadbelly** — 直訳すれば「ニシンの腹」。誰にも見当のつかない言葉です。",
+          ar:"مخصص لاختبارات المستوى العالي؛ والسترة القصيرة في كل ما عداها. ⚠️ الأمريكيون يسمونه **shadbelly**، حرفيا «بطن سمكة الشابل» — كلمة لا يخمنها أحد." } },
+
+  { ref:"kur", lecon:2, coll:"notation",
+    mots:{ fr:{m:"la reprise libre en musique"}, en:{m:"the freestyle", p:"fri-staïl", var:"kür"},
+           es:{m:"la Kür", var:"el ejercicio libre"}, it:{m:"il freestyle", var:"la Kür"},
+           de:{m:"die Kür", p:"kur"}, ja:{m:"自由演技", p:"jiyū engi"},
+           ar:{m:"الاختبار الحر على الموسيقى"} }, // ??
+    def:{ fr:"Une reprise composée par le cavalier sur sa musique, avec des figures imposées à placer librement. ⚠️ Le mot allemand **die Kür** s'emploie tel quel dans le monde entier, y compris sur les protocoles internationaux.",
+          en:"A test the rider builds to their own music, with required movements placed freely. The German word Kür is used worldwide.",
+          es:"Una reprise compuesta por el jinete sobre su música, con figuras impuestas colocadas libremente. ⚠️ La palabra alemana **die Kür** se emplea tal cual en el mundo entero, incluso en los protocolos internacionales.",
+          it:"Una ripresa composta dal cavaliere sulla sua musica, con figure imposte da piazzare liberamente. ⚠️ La parola tedesca **die Kür** si usa tale e quale nel mondo intero, anche sui protocolli internazionali.",
+          de:"Eine vom Reiter zu eigener Musik gestaltete Aufgabe mit frei platzierten Pflichtlektionen. ⚠️ **Die Kür** wird weltweit im Original verwendet — auch auf internationalen Protokollen.",
+          ja:"騎手が自分の音楽に振り付ける自由演技。規定の運動を自由な位置に組み込みます。⚠️ ドイツ語の **die Kür** は国際的な採点表の上でも、世界じゅうでそのまま使われています。",
+          ar:"اختبار يؤلفه الفارس على موسيقاه، مع أشكال مفروضة يضعها بحرية. ⚠️ الكلمة الألمانية **die Kür** تستعمل كما هي في العالم كله، حتى على أوراق التحكيم." } },
 
   ],
 
   /* ---- phrases complètes ---- */
   phrases: [
+    { ref:"mouvement-double", lecon:2,
+      fr:"Ce mouvement est en coefficient deux ?",
+      en:"Does this movement carry double marks ?",
+      es:"¿ Este movimiento lleva coeficiente dos ?",
+      it:"Questo movimento ha coefficiente due ?",
+      de:"Hat diese Lektion einen Koeffizienten ?",
+      ja:"この 課題 は 係数 二 です か ?",
+      ar:"هل هذه الحركة بمعامل اثنين؟" },
+    { ref:"protocole-recuperer", lecon:2,
+      fr:"Où je récupère mon protocole ?",
+      en:"Where do I collect my sheet ?",
+      es:"¿ Dónde recojo mi protocolo ?",
+      it:"Dove ritiro il mio protocollo ?",
+      de:"Wo hole ich mein Protokoll ab ?",
+      ja:"採点表 は どこ で 受け取り ます か ?",
+      ar:"من أين أستلم ورقة التحكيم؟" },
+    { ref:"soixante-cinq", lecon:2,
+      fr:"65 %, son meilleur résultat.",
+      en:"65 % — her best yet.",
+      es:"65 %, su mejor resultado.",
+      it:"65 %, il suo miglior risultato.",
+      de:"65 % — ihr bestes Ergebnis.",
+      ja:"65 パーセント、 自己 ベスト です。",
+      ar:"65 %، أفضل نتيجة له." },
+    { ref:"cloche-erreur", lecon:2,
+      fr:"Je me suis trompée de figure.",
+      en:"I went the wrong way.",
+      es:"Me equivoqué de figura.",
+      it:"Ho sbagliato figura.",
+      de:"Ich bin falsch geritten.",
+      ja:"経路 を 間違え まし た。",
+      ar:"لقد أخطأت في الشكل." },
+    { ref:"controle-sortie", lecon:2,
+      fr:"Reste à cheval pour le contrôle.",
+      en:"Stay on for the tack check.",
+      es:"Quédate montada para el control.",
+      it:"Resta a cavallo per il controllo.",
+      de:"Bleib sitzen für die Kontrolle.",
+      ja:"検査 まで 馬 に 乗っ た まま で。",
+      ar:"ابقي على السرج من أجل الفحص." },
     { ref:"quelle-reprise", lecon:1,
       fr:"Je passe à quelle heure ?",
       en:"What time am I on ?",

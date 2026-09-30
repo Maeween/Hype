@@ -3114,7 +3114,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      Les leçons 2+4 dorment dans `dressage-reserve.js`, non chargé.
      ⚠️ La leçon 2 (les mouvements) est employée en `motsAilleurs` par le
      dialogue de Versailles — ne pas la dupliquer ici. -->
-<script src="hype-lingo-lex-windsor.js?l=3"></script>
+<script src="hype-lingo-lex-windsor.js?l=4"></script>
 <script src="hype-lingo-lex-versailles.js?l=2"></script>
 <!-- 🟥 16/08 : LE CHAPITRE DE L'ENSEIGNANT, pour SAUMUR. Le role
      « enseignant » etait annonce depuis le 6 aout dans lex-cours.js
@@ -3237,7 +3237,9 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
      acquis. Doit se charger APRES arrivee.js, jamais avant. -->
 <!-- ⚠️ ?l=4 DEPUIS LE 13/08 : `monter-a-cru` ajoute et la cle `dialogue`
      avec les 21 phrases du Morne. Meme raison que pour arrivee.js. -->
-<script src="hype-lingo-lex-balade.js?l=8"></script>
+<!-- 30/09 : `?l=9` — deux mots ajoutés au Morne (trotter en équilibre, trotter
+     enlevé sur le bon diagonal), décision de Blandine. -->
+<script src="hype-lingo-lex-balade.js?l=9"></script>
 
 <!-- 🟥 TAUPŌ, 35e ville, ajoutée le 18/08/2026 — LA MONTE EN LIBERTÉ.
      Première ville néo-zélandaise du voyage, donc PREMIÈRE NATION NEUVE
@@ -3961,7 +3963,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=101";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=103";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -8230,7 +8232,13 @@ var ETAPE_SRC = {
      d'être retrouvés en dressage à Windsor (étape 8), et non l'inverse. */
   aberystwyth: [["cours",1],["cours",2],["cours",3],["cours",4]],
   /* 🟥 18/08 : découpage un-fichier-par-ville. `dressage` → `windsor`. */
-  windsor:     [["windsor",1]],
+  /* 🟥 30/09 : WINDSOR OUVRE LA NOTATION ET LA TENUE — la leçon 4 de
+     `dressage-reserve.js` (protocole, note, coefficient, pourcentage,
+     remarques, notes d'ensemble, erreur de parcours, cloche, contrôle des
+     embouchures, classement, veste, haut-de-forme, queue-de-pie, RLM),
+     jamais attribuée, est copiée en leçon 2 de `windsor` avec ses cinq
+     phrases (décision de Blandine : « 2 », tout à Windsor). 19 → 33 mots. */
+  windsor:     [["windsor",1],["windsor",2]],
   /* v76 : Hickstead enseigne LE DERBY (decision de Blandine, 11/08 : « on
      s'attend a apprendre des termes en rapport au derby — la il n'y a pas
      un seul terme »). L'obstacle generique part en reserve pour la future

@@ -359,7 +359,49 @@ window.HYPE_LINGO_LEX.balade = {
           it:"Per stabilizzarsi senza tirare sulla bocca. La criniera non ha nervi: afferrarla non fa niente al cavallo, mentre aggrapparsi alle redini lo accelera o gli rovina la bocca.",
           de:"Um sich zu stabilisieren, ohne am Maul zu ziehen. Die Mähne hat keine Nerven: sich daran festzuhalten tut dem Pferd nichts, während Festhalten an den Zügeln es antreibt oder das Maul verletzt.",
           ja:"口を引っ張らずに体勢を保つための動作。たてがみには神経がないので、つかんでも馬は痛くありません。手綱にしがみつくと、馬は速くなるか口を痛めます。必要になる前に覚えておく動作です。",
-          ar:"يساعد الإمساك بخصلة من العرف على استعادة التوازن من دون الشد على فم الحصان. أمسكي العرف قرب الرقبة بدلا من التعلق بالأعنة، لأن جذب الأعنة قد يؤلم فم الحصان أو يدفعه إلى رفع رأسه أو الإسراع." } }
+          ar:"يساعد الإمساك بخصلة من العرف على استعادة التوازن من دون الشد على فم الحصان. أمسكي العرف قرب الرقبة بدلا من التعلق بالأعنة، لأن جذب الأعنة قد يؤلم فم الحصان أو يدفعه إلى رفع رأسه أو الإسراع." } },
+
+  /* ============ AJOUT DU 30/09/2026 — LE TROT, COMME LE GALOP ============
+     Décision de Blandine (« ajoute trot en équilibre », « et trot enlevé
+     sur le bon diagonal oui »). Les deux mots n'existaient nulle part dans
+     l'appli (vérifié : « le trot enlevé » et « le trot assis » existent,
+     Aberystwyth et ici ; ni l'équilibre au trot, ni le bon diagonal).
+     Placés au Morne, à côté de « galoper en équilibre » et « galoper
+     assis », qui en sont les jumeaux au galop — Aberystwyth est déjà à
+     42 mots. Écrits par Claude dans les 7 langues. Le Morne : 18 → 20. */
+
+  { ref:"trot-equilibre", lecon:1, coll:"balade",
+    mots:{ fr:{m:"trotter en équilibre"},
+           en:{m:"to trot in a light seat", p:"laïte sitt", var:"two-point"},
+           es:{m:"trotar en equilibrio"},
+           it:{m:"trottare in equilibrio"},
+           de:{m:"im leichten Sitz traben", p:"laïch-teune zitts"},
+           ja:{m:"軽く腰を浮かせて速歩する", p:"karuku koshi o ukasete hayaashi suru"},
+           ar:{m:"الخبب في وضع التوازن"} },
+    def:{ fr:"Ni assis, ni enlevé : les fesses restent hors de la selle, le poids dans les étriers, comme au galop en équilibre. On l'emploie sur un long trot en terrain irrégulier, ou pour soulager le dos d'un jeune cheval. ⚠️ L'anglais dit **light seat** ou **two-point**, les mêmes mots qu'au galop.",
+          en:"Neither sitting nor rising: the seat stays out of the saddle, the weight in the stirrups, as in the light-seat canter. Used on a long trot over uneven ground, or to spare a young horse's back. Same words as at the canter: light seat, two-point.",
+          es:"Ni sentado ni levantado: el trasero queda fuera de la silla y el peso en los estribos, como en el galope en equilibrio. Se usa en un trote largo por terreno irregular, o para aliviar el dorso de un caballo joven.",
+          it:"Né seduto né battuto: il sedere resta fuori dalla sella, il peso nelle staffe, come nel galoppo in equilibrio. Si usa su un lungo trotto in terreno irregolare, o per alleggerire il dorso di un cavallo giovane.",
+          de:"Weder ausgesessen noch leichtgetrabt: das Gesäß bleibt aus dem Sattel, das Gewicht in den Bügeln, wie im leichten Sitz beim Galopp. Für einen langen Trab auf unebenem Boden, oder um den Rücken eines jungen Pferdes zu schonen.",
+          ja:"座るのでも軽速歩でもなく、腰を鞍から浮かせたまま、体重を鐙に預けます。駆歩の軽い姿勢と同じです。不整地での長い速歩や、若い馬の背を楽にしたいときに使います。",
+          ar:"لا جلوسا ولا نهوضا: يبقى المقعد مرتفعا عن السرج والوزن على الركابين، كما في العدو في وضع التوازن. يستعمل في خبب طويل على أرض غير مستوية، أو لتخفيف الحمل عن ظهر حصان صغير السن." } },
+
+  { ref:"trot-bon-diagonal", lecon:1, coll:"balade",
+    mots:{ fr:{m:"trotter enlevé sur le bon diagonal", var:"sur le bon pied"},
+           en:{m:"to rise on the correct diagonal", p:"raïze onn ze ko-rèkt daï-a-go-neul"},
+           es:{m:"trotar levantado en el diagonal correcto"},
+           it:{m:"trottare battuto sulla diagonale giusta"},
+           de:{m:"auf dem richtigen Fuß leichttraben", p:"aouf dèm rich-ti-gueune fouss"},
+           ja:{m:"正しい斜対で軽速歩をする", p:"tadashii shatai de keihayaashi o suru"},
+           ar:{m:"الخبب الخفيف على القطر الصحيح"} },
+    def:{ fr:"Au trot enlevé, on se lève quand l'épaule extérieure avance et on s'assied quand elle recule. Sur le mauvais diagonal, le cheval se déséquilibre dans les courbes ; en balade, on change de diagonal de temps en temps pour fatiguer les deux côtés pareil. ⚠️ Les Anglais disent **the correct diagonal**, les Allemands « le bon pied » (**der richtige Fuß**).",
+          en:"In rising trot, you rise as the outside shoulder goes forward and sit as it comes back. On the wrong diagonal the horse loses balance in the turns; out hacking, change diagonals now and then so both sides tire the same. The Germans say « the right foot » (der richtige Fuß).",
+          es:"En el trote levantado, se sube cuando la espalda exterior avanza y se sienta cuando retrocede. En el diagonal equivocado el caballo se desequilibra en las curvas; en paseo se cambia de diagonal de vez en cuando para cansar los dos lados por igual.",
+          it:"Nel trotto battuto ci si alza quando la spalla esterna avanza e ci si siede quando torna indietro. Sulla diagonale sbagliata il cavallo perde l'equilibrio nelle curve; in passeggiata si cambia diagonale ogni tanto, per affaticare i due lati allo stesso modo.",
+          de:"Beim Leichttraben steht man auf, wenn die äußere Schulter vorgeht, und setzt sich, wenn sie zurückkommt. Auf dem falschen Fuß verliert das Pferd in den Wendungen das Gleichgewicht; im Gelände wechselt man ab und zu den Fuß, damit beide Seiten gleich ermüden.",
+          ja:"軽速歩では、外側の肩が前に出るときに立ち、戻るときに座ります。斜対を間違えると、馬は曲がるときにバランスを崩します。外乗では、左右が同じように疲れるよう、ときどき斜対を替えます。",
+          ar:"في الخبب الخفيف تنهضين عندما يتقدم الكتف الخارجي وتجلسين عندما يعود. وعلى القطر الخطأ يفقد الحصان توازنه في المنعطفات؛ وفي النزهة يبدل القطر من حين إلى آخر حتى يتعب الجانبان بالتساوي." } },
+
 
   ],
 
