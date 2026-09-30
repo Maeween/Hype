@@ -7793,3 +7793,27 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Une seule écurie : carte pleine largeur inchangée.
   Maquette de comparaison faite en navigateur (carré / 3:2). Aucun SQL, aucun texte
   nouveau. node --check OK (18 blocs), un seul marqueur. Build 20260930-517 (contient 516).
+· (518) 01/10, 0 h 35 — PAGE CAVALIER, « MES CHEVAUX » : CARTES ALIGNÉES SUR LA CARTE DU
+  MILIEU. Blandine (capture, 2e rangée Boréalis / Les chevaux de l'écurie / Tully) :
+  « on peut aligner toute la taille des cartes à celle du milieu ? ».
+  - Constat mesuré sur sa capture : les cartes ont déjà toutes la même taille (4/5) ;
+    c'est la photo de Boréalis qui était posée 2-3 px plus bas que la carte du milieu
+    et que Tully.
+  - Cause : chaque carte cheval est un bouton, et un bouton centre son contenu en
+    hauteur. La ligne « ◇ Cheval de l'écurie » sous Tully est un peu plus haute (symbole
+    ◇) : la rangée grandit et Boréalis se recentre plus bas. La carte du milieu était
+    déjà collée en haut (align-self: start, (450)).
+  - Correctif : align-self: start sur les cartes chevaux de la grille « Mes chevaux »
+    (une ligne). Taille, noms, clics inchangés. Reproduit en navigateur : décalage
+    5,5 px avant, 0 après.
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20261001-518 (contient 517).
+· EN ATTENTE — PAGE « TEAM COMPÉTITION » (demande du 01/10, maquette reçue). Décisions
+  de Blandine : équipe de la SEP ; liste précise de chevaux et de cavalières qu'elle
+  donnera (écrite en dur, marquée temporaire, pas de SQL) ; photos/vidéos et résultats
+  limités à ces cavalières et chevaux ; vraies données tout de suite ; page ouverte
+  seulement par le lien caché 2hype.netlify.app/#team-competition ; clic sur une
+  cavalière → sa page Cavalier actuelle ; en-tête et barre du bas de Hype conservés.
+  Reste à trancher : les deux listes, texte du hero (maquette « Passion · Exigence ·
+  Performance » ou texte « Des cavalières, des chevaux, des objectifs communs »),
+  « Voir toutes/tous » ou « Voir tout », photo du hero. Pas encore codé.
