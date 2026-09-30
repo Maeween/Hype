@@ -7756,3 +7756,40 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     mise en avant en double peut être retirée par le menu « ••• ».
   Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
   Build 20260929-514 (contient 513).
+· (515) 29/09, 18 h 35 — PAGE CAVALIER : LES BOUTONS DU HAUT ENFIN AU-DESSUS DE LA PHOTO.
+  Blandine (capture après le 514) : « tu étais supposé avoir remonté la ligne avec les
+  drapeaux et Premium, je vois que ce n'est toujours pas le cas ».
+  - ERREUR DU 513 (diagnostic incomplet) : la position « relative » ne suffisait pas.
+    Vraie cause : la marge du haut de la photo (haut + 62 px) fusionnait avec la page
+    (fusion des marges CSS) ; toute la page commençait donc 62 px plus bas et les
+    boutons, calés sur elle, tombaient dans la photo.
+  - Correctif : « display: flow-root » sur la racine de la page Cavalier, qui empêche
+    cette fusion. Reproduit et vérifié en navigateur : boutons à 76 px avant, 14 px
+    après ; la photo reste à 62 px (inchangée).
+  Aucun SQL, aucun texte nouveau. node --check OK (18 blocs), un seul marqueur.
+  Build 20260929-515 (contient 514).
+· (516) 29/09, 18 h 45 — PAGE HISTOIRE : LE RÉCIT AU DESIGN DE « MON RÉCIT » + « MES AMIS ».
+  Blandine : « reproduire sur la page Histoire la mise en page et le design de mon
+  histoire à la place de l'ancienne » ; « copier aussi Mes amis comme c'est sur la page
+  Cavalier, en dessous ».
+  - Carte du récit : même rendu que la carte « Mon récit » de la page Cavalier (image
+    de l'œil HYPE_FOND_RECIT à droite, voile sombre, colonne de texte 74 %, 13 px,
+    interligne 1,42, blanc cassé, sans lettrine). Texte ENTIER : le « Lire tout » à
+    420 caractères est retiré (cette page sert à lire le récit). Bouton « Modifier /
+    Écrire mon récit » et fenêtre d'édition inchangés.
+  - « Mes amis » (HypeAmisVitrine) juste sous le récit, avant les repères : amis de la
+    personne de la page (amisDe), « Ses amis » en visite (sans « + Ajouter »), même
+    ouverture de profil, « + Ajouter » → « À découvrir ». L'ami mis en avant est le
+    même que sur la page Cavalier (même mémoire). Le bloc de la page Cavalier reste.
+  Aucun SQL, aucun texte nouveau (textes déjà traduits). node --check OK (18 blocs),
+  un seul marqueur. Build 20260929-516 (contient 515).
+· (517) 30/09, 1 h 40 — PAGE CAVALIER : LES DEUX CARTES D'ÉCURIE EN RECTANGLES
+  HORIZONTAUX. Blandine : « faire les encarts des deux clubs moins hauts, plutôt
+  horizontaux que carrés ».
+  - Quand il y a deux écuries : format 1/1 → 3/2 (≈ 110 px de haut au lieu de 166 à
+    375 px de large) ; le texte remonte en haut (marge du haut 46 → 12 px) et garde
+    38 px à droite pour le crayon ; crayon 30 → 26 px, calé à 8 px du coin. Une carte
+    s'allonge d'elle-même si le nom est long (« Societe d'Equitation de Paris (SEP) »).
+  - Une seule écurie : carte pleine largeur inchangée.
+  Maquette de comparaison faite en navigateur (carré / 3:2). Aucun SQL, aucun texte
+  nouveau. node --check OK (18 blocs), un seul marqueur. Build 20260930-517 (contient 516).
