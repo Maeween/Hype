@@ -7852,3 +7852,38 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   Build 20261001-519 (contient 518).
   SUITE PRÉVUE : 520 = « Groupes » dans le menu ••• d'un rendez-vous ; 521 = choix du
   groupe à la création ; plus tard : chevaux ajoutés au groupe par les membres.
+· (520) 01/10, 1 h 25 — « GROUPES » DANS LE MENU ••• D'UN RENDEZ-VOUS. Suite prévue au 519,
+  « Ok continue » de Blandine.
+  - Menu ••• de la fiche d'un rendez-vous (visible comme avant pour la propriétaire du
+    club et l'autrice du rendez-vous) : nouvelle entrée « Groupes », sous « Gérer les
+    personnes autorisées ».
+  - Panneau (même gabarit que « Personnes autorisées ») : les groupes DU CLUB du
+    rendez-vous, une case à cocher par groupe. Cocher = ajout dans agenda_groupes,
+    décocher = retrait ; la liste est relue après chaque geste ; refus de la base AFFICHÉ
+    (ex. une autrice qui n'est ni propriétaire ni gestionnaire : la base refuse).
+  - Le rendez-vous reste dans l'agenda du club ; coché « Team Compétition », il apparaît
+    aussi sur la page #team-competition.
+  - Textes nouveaux en 7 langues. Panneau testé en navigateur (données d'essai).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-520 (contient 519).
+  SUITE PRÉVUE : 521 = choix des groupes à la création d'un rendez-vous.
+· (521) 01/10, 1 h 35 — CHOISIR LES GROUPES À LA CRÉATION D'UN RENDEZ-VOUS. Suite prévue
+  (choix de Blandine : 521 d'abord, puis le chantier des clubs).
+  - Fenêtre « Nouveau rendez-vous » de l'agenda du club (AgendaClubHype) : nouveau champ
+    « Groupes (facultatif) », juste avant les boutons, avec une pastille à cocher par groupe
+    DU club. Il n'apparaît que si le club a au moins un groupe. Rien de coché par défaut ;
+    les coches sont remises à zéro à la fermeture.
+  - À « Publier » : le rendez-vous est créé comme avant ; S'IL EST CRÉÉ, il est ensuite
+    ajouté aux groupes cochés (agenda_groupes). Si cet ajout est refusé, le message
+    « Rendez-vous créé, mais l'ajout au groupe a échoué : … » s'affiche sur la page (le
+    rendez-vous existe bien ; on peut refaire l'ajout par ••• > Groupes).
+  - Textes nouveaux en 7 langues. Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20261001-521 (contient 520).
+· EN ATTENTE — CHANTIER « CLUBS ORGANISATEURS DES CONCOURS » (décisions du 01/10) :
+  relier chaque résultat au club qui organise le concours, via la base des clubs du globe
+  (HYPE_CLUBS, 3 145 clubs, fichiers hype-clubs-db-1 à 4.js, non modifiables par l'appli) +
+  une table Supabase « clubs ajoutés » à créer. Q1 = A : club inconnu AJOUTÉ
+  AUTOMATIQUEMENT (après recherche tolérante pour éviter les doublons). Q2 = A : relier
+  aussi les résultats déjà importés. Affichage prévu sous le concours : « 📍 Club · Ville
+  (dép.) ». PDF reçu : fiche FFE de Tully (résultats 2022) — la colonne « Concours » y donne
+  un lieu / organisateur abrégé (« FONTAINEBLEAU », « LESIGNY -HARAS DE MAISON », « MANTES -
+  ST MARTIN », « LE MANS BOULERIE JUMP HAR ») et non le nom exact du club. À étudier.
