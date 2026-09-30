@@ -7878,12 +7878,33 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     rendez-vous existe bien ; on peut refaire l'ajout par ••• > Groupes).
   - Textes nouveaux en 7 langues. Aucun SQL. node --check OK (18 blocs), un seul marqueur.
   Build 20261001-521 (contient 520).
-· EN ATTENTE — CHANTIER « CLUBS ORGANISATEURS DES CONCOURS » (décisions du 01/10) :
-  relier chaque résultat au club qui organise le concours, via la base des clubs du globe
-  (HYPE_CLUBS, 3 145 clubs, fichiers hype-clubs-db-1 à 4.js, non modifiables par l'appli) +
-  une table Supabase « clubs ajoutés » à créer. Q1 = A : club inconnu AJOUTÉ
-  AUTOMATIQUEMENT (après recherche tolérante pour éviter les doublons). Q2 = A : relier
-  aussi les résultats déjà importés. Affichage prévu sous le concours : « 📍 Club · Ville
-  (dép.) ». PDF reçu : fiche FFE de Tully (résultats 2022) — la colonne « Concours » y donne
-  un lieu / organisateur abrégé (« FONTAINEBLEAU », « LESIGNY -HARAS DE MAISON », « MANTES -
-  ST MARTIN », « LE MANS BOULERIE JUMP HAR ») et non le nom exact du club. À étudier.
+· (SQL) 01/10, 1 h 30 — LIEUX DES CONCOURS. ✅ PASSÉ PAR ELLE en 3 parties (« Success »),
+  vérifié : 39 concours, 11 lieux.
+  - Base du globe relue dans le dépôt (hype-clubs-db-1 à 4.js, 3 145 clubs) : SEULS 561 ont
+    une ville → le rapprochement automatique par ville ne suffit pas ; décision : tableau de
+    correspondance validé par Blandine pour les 40 noms de concours les plus fréquents
+    (655 résultats), puis ajout automatique « à vérifier » pour les nouveaux (523).
+  - Tables : lieux_ajoutes (nom unique, ville, departement, genre club|lieu, a_verifier) et
+    concours_lieux (concours_cle = nom normalisé sans accents/minuscules/ponctuation→espace,
+    concours, lieu_nom, ville, departement, source base|ajoute|ville, a_verifier). Lecture
+    ouverte ; écriture = hype_est_moderatrice().
+  - Réponses de Blandine : Carrière de la Vallée = Bièvres ; Mantes St Martin = chez Lazare,
+    Saint-Martin-la-Garenne ; Challenge de Folleville = Haras de Folleville (Breuillet 91) ;
+    Ozoir = Domaine de Lipica ; Boulerie Jump = Pôle Européen du Cheval (même lieu, 3
+    écritures du Mans) ; Maisons-Laffitte = l'Hippodrome ; Milly la Forêt = HDL Jump ;
+    Bois le Roi seul = Rozier OU UCPA → ville seule ; Lésigny = Haras de Maison Blanche ;
+    Paris / Paris Bois de Boulogne = ville seule (la FFE précise d'habitude Étrier, SEP,
+    Touring).
+  - 8 lieux déjà dans la base, 11 ajoutés, 4 en ville seule (Paris, Bois-le-Roi, Barbizon,
+    Ballancourt). « À vérifier » (complétés par moi) : Écurie Lazare, Écurie Christel
+    Boulard (sans ville), Les Écuries de Saint-Fargeau.
+· (522) 01/10, 1 h 40 — PAGE TEAM : LE LIEU SOUS CHAQUE RÉSULTAT.
+  - Lignes « Résultats récents » : sous le nom du concours, en petit gris avec une épingle
+    or : « Haras de Jardy · Marnes-la-Coquette (92) », ou la ville seule
+    (« Bois-le-Roi (77) »). Lu dans concours_lieux (une requête pour tous les concours
+    affichés). Concours pas encore relié : ligne inchangée.
+  - Aucun texte nouveau à traduire (noms propres). Testé en navigateur (données d'essai).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-522 (contient 521).
+  SUITE PRÉVUE : 523 = à l'import FFE, un concours inconnu est relié s'il ressemble à un
+  lieu connu, sinon ajouté « à vérifier » + petite liste pour les modératrices (touche
+  hype-import-ffe.js) ; plus tard : lieux ajoutés sur le globe.
