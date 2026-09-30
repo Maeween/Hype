@@ -3963,7 +3963,7 @@ button{font-family:inherit;color:inherit;border:0;background:none;cursor:pointer
    C'est le TROISIÈME épisode du même piège (voir v46, v48, v50).
    Contrepartie assumée, la même à chaque fois : tout le reste des images
    se retélécharge une fois, pour tout le monde. */
-var VER = "?v=103";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
+var VER = "?v=104";   /* 🟥 v73 (23/08) : 13 familles COLL_NOM manquantes (bug des mots en francais). */
 /* v72 (21/08) : CLONBINANE, 38e ville — carte, fond, objet,
                         video d'arrivee et affiche sont des fichiers NEUFS.
                         v71 (20/08) : le lexique alphabetique.
@@ -13944,10 +13944,38 @@ try{ appliquerLangue(); }catch(err){}
   function lxVar(o,lg){ var m=o.mots&&o.mots[lg]; return (m&&m["var"])||""; }
   /* le japonais se range sur sa prononciation quand elle existe
      (`mots.ja.p`), sinon sur ses propres caracteres. */
+  /* 🟥 01/10 — LE CLASSEMENT IGNORE L'ARTICLE (décision de Blandine : « mets-la
+     à D », « idem pour les autres mots dans le même cas »). Avant, le tri et
+     la lettre portaient sur le mot ENTIER : en français, 655 mots sur 862
+     tombaient sous L (le, la, les, l'), « la diagonale » était en 267e
+     position sous L, et l'abécédaire ne servait à rien — même défaut en
+     anglais (the), espagnol, italien, allemand. Désormais on classe sur le
+     mot sans son article, son pronom ou sa préposition de tête, langue par
+     langue ; la recherche (`lxDessiner`) n'est pas touchée, elle cherche
+     toujours dans le mot entier. Le mot AFFICHÉ ne change pas. */
+  var LX_ARTICLES = {
+    fr: /^(les?|la|l'|l’|une?|des|du|de la|de l'|de l’|aux?|à la|à l'|à l’|à|en|se|s'|s’)\s+/i,
+    en: /^(the|an?|to|some)\s+/i,
+    es: /^(el|los|las?|un[ao]?s?|al|del|de la)\s+/i,
+    it: /^(il|lo|la|i|gli|le|l'|l’|un[ao]?|un'|un’|al|allo|alla|ai|agli|alle|del|dello|della)\s+/i,
+    de: /^(der|die|das|des|dem|den|eine?[nmrs]?|im|am|ins|zum|zur|an der|auf dem|in der)\s+/i,
+    ar: /^(ال)/
+  };
+  function lxSansArticle(s, lg){
+    var t=String(s||"").replace(/^[\s"«»'’(]+/, "");
+    var re=LX_ARTICLES[lg];
+    if(re){
+      /* l'apostrophe se colle au mot (l'épaule) : on la traite comme un espace */
+      var u=t.replace(/^(l|s|d|un|de l|à l)['’]\s*/i, function(x){ return x.replace(/['’]\s*$/, "' "); });
+      var v=u.replace(re, "");
+      if(v && v!==u) t=v;
+    }
+    return t || String(s||"");
+  }
   function lxTri(o,lg){
     var m=o.mots&&o.mots[lg]; if(!m) return "";
     if(lg==="ja" && m.p) return String(m.p).toLowerCase();
-    return String(m.m||"").toLowerCase();
+    return lxSansArticle(m.m||"", lg).toLowerCase();
   }
   function lxInitiale(s){
     if(!s) return "\u2022";
