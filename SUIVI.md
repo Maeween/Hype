@@ -8012,3 +8012,34 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai ; le fil MurHype n'existe pas dans le
     banc d'essai, à vérifier sur iPhone). Aucun SQL. node --check OK (18 blocs), un seul marqueur.
     Build 20261001-528 (contient 527).
+· (529) 01/10, 11 h 45 — PAGE TEAM : « RETIRER DE L'ÉQUIPE » SUR UN RÉSULTAT.
+  Constat de Blandine : un résultat d'une cavalière hors équipe sur Ecolo s'affichait (la page montre tous
+  les résultats des chevaux du groupe, quelle que soit la cavalière). Son choix : B (bouton manuel) ;
+  A (tri automatique : pour un cheval de l'équipe, ne garder que les cavalières de l'équipe) = PLUS TARD.
+  - Carte dépliée, pour la propriétaire / les gestionnaires SEP seulement : « ✕ Retirer de l'équipe ».
+    Le résultat disparaît de la page Team ; il reste sur la fiche du cheval et dans « Tous ses résultats ».
+  - Sous les résultats (mêmes personnes seulement) : « Résultats retirés (n) » → la liste grisée ; carte
+    dépliée → « ↺ Remettre dans l'équipe ». Refus de la base affiché dans la carte (« Impossible : … »).
+  - Le compteur et « Voir tout » ne comptent que les résultats visibles.
+  - SQL (à passer par elle) : SQL-529-resultats-retires.sql — table groupes_resultats_masques (groupe_id →
+    groupes, resultat_id en texte, masque_par, masque_le, clé groupe+résultat) ; lecture ouverte ;
+    ajout/retrait = hype_peut_gerer_club du club du groupe. Tant que le SQL n'est pas passé : rien n'est
+    masqué, et le bouton affiche « Impossible : … ».
+  - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai : retirer, remettre, arabe).
+  node --check OK (18 blocs), un seul marqueur. Build 20261001-529 (contient 528).
+· (530) 01/10, 12 h 10 — PAGE TEAM : L'AGENDA EN CARTES QUI SE DÉPLIENT.
+  Maquettes A / B / C / D montrées ; choix de Blandine : REPLIÉ = visuel A (même carte que les résultats,
+  affiche du rendez-vous à droite fondue dans le noir), DÉPLIÉ = visuel B (une seule image en grand
+  quand il y en a une), PAS de mur de photos, renvoi vers le rendez-vous de l'agenda du club.
+  - Carte 104 px : sur-titre « À venir / En cours / Passé · date » (or ; gris si passé), titre, « lieu · heure ».
+    Contour doré pour les rendez-vous à venir. Image = l'affiche du rendez-vous (club_agenda.image_url) ;
+    pas d'affiche = carte sans image (pas de photo de souvenirs en remplacement).
+  - Toucher déplie (une seule ouverte) : Date longue (→ date de fin si plusieurs jours, · heure), Lieu, Type
+    (Concours / Sortie / Stage, mêmes libellés que la page du rendez-vous), l'affiche EN GRAND (toucher =
+    agrandie en plein écran), « Ouvrir le rendez-vous › » : à venir → page du rendez-vous (agenda du club) ;
+    passé → sa page souvenirs (comme avant).
+  - Même rangement qu'avant : le prochain rendez-vous seul ; « Voir tout » montre les suivants puis
+    « Rendez-vous passés ». « Je participe » non repris (on s'inscrit depuis la page du rendez-vous).
+  - Les anciennes fonctions carteRdv / ligneRdv restent dans le fichier, plus utilisées (pas de nettoyage).
+  - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai, français et arabe, liens vérifiés).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-530 (contient 529).
