@@ -8312,8 +8312,18 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Signalé 02/10 01:30 — bannière d'écurie refusée
 - Message : « [42501] new row violates row-level security policy for table "tableaux_clubs" ».
 - La photo s'affiche sur son téléphone mais n'est pas enregistrée pour le club.
-- Le code d'enregistrement n'a pas changé avec la V2 (même fonction qu'avant). Diagnostic en cours, une requête à la fois.
+- Le code d'enregistrement n'a pas changé avec la V2 (même fonction qu'avant).
+- Cause trouvée : en base, une règle permettait d'AJOUTER une bannière (propriétaire du club) mais aucune ne permettait de la REMPLACER (les règles de modification n'acceptaient que citation et histoire). Feinn (29/08) et la SEP (01/10) avaient déjà une bannière → tout changement refusé.
+- Correction : SQL passé par Blandine le 02/10 à 01:37 (succès) — nouvelle règle tableaux_clubs_update_banniere (le propriétaire du club peut remplacer sa bannière). Rien de changé dans l'app.
 
-## En attente (réponse de Blandine)
-- Prochains événements : design de quelle page (ancienne page Écurie ou page Équipe) ? 2 par ligne ou 1 par ligne ?
-- Derniers résultats : cartes plus hautes que larges, toujours 3 par ligne ?
+## (545) Page Écurie V2 — Prochains événements et Derniers résultats
+- Prochains événements (ses mots : « quand il n'y en a pas on ne voit pas la section, un seul sur toute la ligne, deux = deux carrés, à partir de trois tous en carrousel ») :
+  - 0 : la section n'apparaît pas. ⚠️ Le bouton « + Ajouter » qui était dans la section vide disparaît avec elle ; on ajoute un rendez-vous depuis l'onglet Agenda.
+  - 1 : une carte sur toute la ligne (image en largeur).
+  - 2 : deux cartes carrées.
+  - 3 et plus : tous les événements (12 au plus) dans un carrousel, cartes larges (78 %), la suivante dépasse.
+  - Mêmes couleurs (noir vert, champagne), affiche entière, toute la carte ouvre le rendez-vous.
+- Derniers résultats : format des cartes de l'ancienne page Écurie, couleurs champagne gardées.
+  - Carrousel, cartes 46 % de large, 240 px de haut, coins 20 px, portrait rond 56 px, nom du concours sur 2 lignes, ligne « + N autres classées » (7 langues).
+  - Tous les résultats (12 au plus) au lieu de 3.
+- Testé banc 375 px (français et arabe), chargement complet sans nouvelle erreur. Aucun SQL. Build 20261002-545.
