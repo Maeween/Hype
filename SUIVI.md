@@ -8238,3 +8238,55 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     onglets, liens, arabe (miroir), aucune largeur qui dépasse ; chargement complet de l'appli : mêmes erreurs de
     démarrage que la 533 (dues au banc d'essai). Textes nouveaux en 7 langues.
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261002-539 (contient 538).
+· (540) 02/10, 01 h 10 — PAGE ÉCURIE V2 : TROIS RETOUCHES DEMANDÉES PAR BLANDINE (capture iPhone de la 539).
+  - Derniers résultats : « remets la même taille que sur l'ancienne » → cartes 46 % de large × 240 px de haut
+    (gabarit de l'ancienne page, ~2 cartes visibles), nom du concours sur 2 lignes, textes légèrement réduits.
+  - Bandeau : « assombri à gauche en bas pour le titre » → voile en coin, côté du nom (côté droit en arabe), par-dessus
+    le dégradé du bas ; la photo n'est pas recolorée.
+  - Actualités de l'écurie : « tu peux en mettre deux » → les 2 publications les plus récentes (même lecture, 2 lignes).
+  Rien d'autre touché. Testé en navigateur (banc d'essai 375 px, aucune largeur qui dépasse) + chargement complet de
+  l'appli (mêmes erreurs que la 533, dues au banc d'essai). Aucun texte nouveau, aucun SQL. node --check OK (18 blocs),
+  un seul marqueur. Build 20261002-540 (contient 539).
+· (541) 02/10, 01 h 40 — PAGE ÉCURIE V2 : CORRECTIONS VISUELLES (brief « correction ciblée » de Blandine).
+  - BANDEAU VIDE — CAUSE EXACTE : la V2 (539) n'affichait que `banniere` (tableaux_clubs « club-banniere:<clé> »).
+    La SEP n'a PAS de bannière propre ; l'ancienne page affichait alors son image de REPLI :
+    `banniere || (thème crimson ? IMG_BANDEAU_CRIMSON : UV3_H2)`. La V2 reprend maintenant EXACTEMENT cette
+    expression (nouvelle prop `couvertureDefaut` calculée dans EcranGuilde, aucune nouvelle lecture). Bandeau
+    440 px + zone sûre, cover centré, dégradé seulement en bas (+ voile en coin côté nom, 540), « Ajouter une
+    photo de couverture » seulement s'il n'y a vraiment aucune image (propriétaire).
+  - NOM : correspondance D'AFFICHAGE seulement « Societe d'Equitation de Paris (SEP) » → « Société d’Équitation de
+    Paris (SEP) » (table NOMS_AFFICHES dans EcranEcurieV2) ; base inchangée ; autres écuries : leur vrai nom.
+    32 px, « (SEP) » 24 px, 3 lignes.
+  - SÉLECTEUR : capsule ▾ supprimée ; le nom est le bouton (2 écuries) avec un chevron discret « ⌄ » après la
+    dernière ligne ; rien pour une seule écurie. Feuille : miniature + ville pour l'écurie AFFICHÉE ; pour l'autre,
+    initiale seulement (sa photo / sa ville ne sont pas chargées et le brief interdit toute nouvelle requête).
+  - ONGLETS : rangée défilable (cases ≥ 80 px, 70 px de haut, 13 px, accroche douce, barre masquée, fondu sur le bord
+    de fin, inversé en arabe), aucun onglet actif.
+  - CITATION : 16 px, largeur 86 %, auteur 10,5 px plus discret, traits plus fins.
+  - ÉVÉNEMENTS : carrousel, cartes 84 %, image 210 px : affiche ENTIÈRE (contain) sur la même image floutée et
+    assombrie ; sans image : grand cartouche date + icône calendrier ; carte entière cliquable ; titre serif 17 px.
+  - CHEVAUX : noms 13 px, casse d'origine (plus de capitales forcées), 2 lignes, marges intérieures, dégradé renforcé.
+  - RÉSULTATS : largeur de l'ancienne page GARDÉE (demande directe de Blandine à 01 h 03, le brief disait
+    1,15-1,3 carte) ; hauteur ajustée au contenu (plus de 240 px fixes), concours et épreuve sur une ligne, carte
+    entière cliquable (perf-concours, comme « Voir tout »).
+  - ACTUALITÉS : DEUX publications GARDÉES (demande directe de 01 h 04 ; le brief disait une) ; état vide plus bas.
+  - BAS DE PAGE : 110 px → 32 px (la barre du bas a déjà sa place réservée par l'appli) ; plus de minHeight.
+  - PROFONDEUR : surfaces #0E1A18, bordures 0,28, ombres légères, fond très légèrement dégradé.
+  - MODIFIÉS : EcranEcurieV2 (styles), EcranGuilde (UNE prop de plus : couvertureDefaut), TableauxSpectralHype
+    (rendu citation-v2 : tailles / couleurs). AUCUNE requête Supabase, route, permission, table ni ancienne page touchée.
+  - Testé (banc d'essai 375 px) : avec image par défaut, sans image, 9 / 5 / 2 chevaux, événement sans image, arabe,
+    aucune page qui défile en largeur ; chargement complet : mêmes erreurs que la 533 (banc d'essai). Aucun SQL.
+  node --check OK (18 blocs), un seul marqueur. Build 20261002-541 (contient 540).
+· (542) 02/10, 01 h 50 — PAGE ÉCURIE V2 : DEMANDES DE BLANDINE À 01 h 11 (prises par-dessus la 541, livrées ensemble).
+  « Essaye de mettre 3 par ligne pour les événements à venir ainsi que pour les derniers résultats », « il manque en
+  bas les souvenirs ».
+  - Prochains événements : 3 rendez-vous (au lieu de 2), grille de 3 cartes (affiche entière 3/4 sur fond flouté ;
+    sans image : grand cartouche date), dessous date + titre 2 lignes + lieu ; carte entière cliquable. Remplace le
+    carrousel 84 % de la 541.
+  - Derniers résultats : grille de 3 cartes compactes (photo 42 px, textes 8,5-12,5 px) ; carte entière cliquable.
+  - SOUVENIRS (nouveau, tout en bas) : 6 photos (2 lignes de 3, carrées) tirées des publications du fil de l'écurie
+    — la MÊME lecture que les actualités, portée de 8 à 40 lignes (aucune requête en plus) ; toucher = photo en grand
+    (hypeCalquePhoto) ; « Voir tout » = la page Souvenirs existante (souvenirs-club). ⚠️ Les albums publics des
+    chevaux, que la page Souvenirs montre aussi, ne sont PAS repris ici (il faudrait une lecture de plus).
+  Testé (banc d'essai 375 px, aucune largeur qui dépasse) + chargement complet (mêmes erreurs que la 533). Textes
+  nouveaux en 7 langues. Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261002-542 (contient 541).
