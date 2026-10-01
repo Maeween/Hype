@@ -7970,3 +7970,19 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     décision était « Aurélie » AVEC accent → signalé, à corriger par elle dans « Gérer les membres ».
   - Texte nouveau en 7 langues. Non testé en navigateur. Aucun SQL. node --check OK (18 blocs), un seul
     marqueur. Build 20261001-525 (contient 524).
+· (526) 01/10, 11 h 25 — PAGE TEAM : PANNEAU « RENDEZ-VOUS DE L'ÉQUIPE » + RENDEZ-VOUS PASSÉS. Blandine :
+  « le bouton ajouter un rendez-vous doit proposer les rdv déjà existants pour qu'on puisse les ajouter » ;
+  « ajoute quand même ceux qui sont passés, qu'elles puissent retrouver le lien, consulter et mettre des
+  photos sur les événements passés, comme sur les autres pages ».
+  - « + Ajouter un rendez-vous » (propriétaire / gestionnaires SEP) ouvre désormais un PANNEAU : en haut
+    « ✦ Créer un nouveau rendez-vous » (= le 525 : formulaire SEP, Team Compétition déjà coché) ; dessous,
+    les rendez-vous de l'agenda SEP (200 plus récents), À VENIR d'abord (le plus proche en haut) puis
+    « RENDEZ-VOUS PASSÉS » (le plus récent en haut) ; recherche (titre / lieu) ; Ajouter / Retirer par
+    rendez-vous (agenda_groupes, refus de la base affiché), page Team rafraîchie aussitôt.
+  - Bloc Agenda de la page Team : la grande carte = le prochain rendez-vous ; sans rendez-vous à venir :
+    « Aucun rendez-vous à venir pour l'instant. » ; « Voir tout » déplie les autres à venir PUIS
+    « RENDEZ-VOUS PASSÉS » de l'équipe. Un passé s'ouvre sur sa PAGE SOUVENIRS (écran evenement-passe,
+    même porte que l'agenda du club : photos, fil) ; un à venir s'ouvre sur sa fiche (inchangé).
+  - Règle à venir / passé = celle de l'agenda du club (la date de fin décide quand elle existe).
+  - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai : page + panneau). Aucun SQL.
+    node --check OK (18 blocs), un seul marqueur. Build 20261001-526 (contient 525).
