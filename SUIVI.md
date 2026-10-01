@@ -8179,3 +8179,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     « TEzT is not defined » ; 537 : identique à la 533 (seules les erreurs dues à l'absence de réseau du banc d'essai).
   Rien d'autre changé. node --check OK, un seul marqueur. Build 20261001-537 (contient 536). Pousser index.html ET
   hype-stories.js ensemble.
+· (538) 01/10, 23 h 05 — L'ÉCRAN PROFIL NE PLANTE PLUS QUAND LA FICHE DU COMPTE MANQUE. Capture d'Aurélie (20 h 52,
+  avant la 536) : « Un caillou dans le sabot », écran « profil », « null is not an object (evaluating
+  'profil.sur_carte') ». Cause : l'écran lisait la fiche du compte alors qu'elle était vide (pas encore chargée ou
+  connexion perdue). Cause précise du vide NON prouvée (c'était juste avant la correction de son abonnement).
+  - EcranProfil devient une garde : fiche présente → l'écran habituel (renommé EcranProfilInterne, INCHANGÉ) ;
+    fiche absente → « Ton profil se charge… », puis au bout de 4 s un bouton « Se reconnecter » (écran connexion).
+  - 2 textes nouveaux en 7 langues. Testé en navigateur (sans fiche : message puis bouton ; avec fiche : écran
+    normal) + chargement complet de l'appli : mêmes erreurs de démarrage que la 533 (dues au banc d'essai).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-538 (contient 537 : pousser aussi
+  hype-stories.js si la 537 n'est pas encore poussée).
