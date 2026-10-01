@@ -8021,7 +8021,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Sous les résultats (mêmes personnes seulement) : « Résultats retirés (n) » → la liste grisée ; carte
     dépliée → « ↺ Remettre dans l'équipe ». Refus de la base affiché dans la carte (« Impossible : … »).
   - Le compteur et « Voir tout » ne comptent que les résultats visibles.
-  - SQL (à passer par elle) : SQL-529-resultats-retires.sql — table groupes_resultats_masques (groupe_id →
+  - SQL ✅ PASSÉ PAR ELLE le 01/10 à 12 h 38 (« Success », avec en plus notify pgrst reload schema, après
+    l'erreur « Could not find the table » vue sur iPhone) : SQL-529-resultats-retires.sql — table groupes_resultats_masques (groupe_id →
     groupes, resultat_id en texte, masque_par, masque_le, clé groupe+résultat) ; lecture ouverte ;
     ajout/retrait = hype_peut_gerer_club du club du groupe. Tant que le SQL n'est pas passé : rien n'est
     masqué, et le bouton affiche « Impossible : … ».
@@ -8043,3 +8044,36 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Les anciennes fonctions carteRdv / ligneRdv restent dans le fichier, plus utilisées (pas de nettoyage).
   - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai, français et arabe, liens vérifiés).
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-530 (contient 529).
+· (À FAIRE PLUS TARD) 01/10, 12 h 44 — PAGE ÉCURIE : RETIRER LE BLOC « CAVALIERS DU CLUB ».
+  Idée de Blandine : la page Écurie (onglet du bas) a un accès vers une page avec les cavaliers, donc le
+  bloc « Cavaliers du club » (EcranEcurie, EncartCavaliersSpectral, entre les chevaux et les Souvenirs)
+  ferait doublon. Son choix pour inviter / retirer : C (sur la page des cavaliers). « On verra ça plus
+  tard » → NON FAIT.
+  Constat (lecture du code) : la pastille « Voir les membres » (nom du club) ouvre la page de l'écurie
+  (EcranGuilde), qui a DÉJÀ son bloc « Cavaliers de l'écurie » avec le « + » « Compose ton écurie » (même
+  liste cavaliersChoisisEcurie) et le retrait avec confirmation (19/09, 247). C est donc déjà rempli.
+  Conséquence signalée : sur la page de l'écurie, retirer est réservé à la propriétaire / aux modératrices
+  et vaut pour tout le monde ; un cavalier ordinaire ne pourrait plus retirer ses propres invités.
+  À confirmer par elle avant de coder : est-ce bien la pastille « Voir les membres » qu'elle visait ?
+  Aucun SQL prévu, aucun nouveau texte.
+· (531) 01/10, 12 h 55 — PAGE TEAM : SOUVENIRS RÉCENTS PLUS GRANDS.
+  Demande de Blandine (« les photos en plus grand »), maquettes A / B / C puis D / E ; son choix : D = 3 par
+  ligne, carrées, 2 lignes (6 photos avant « Voir tout », au lieu de 4 petites en 4/3).
+  - Tuiles : carré, coins arrondis 10, fin contour or ; vignette demandée en 400 × 400 (au lieu de
+    360 × 270) pour rester nette. Toucher = photo / vidéo en grand, inchangé ; « Voir tout » inchangé.
+  - Rien d'autre touché. Aucun texte nouveau. Testé en navigateur (données d'essai).
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-531 (contient 530).
+· (532) 01/10, 13 h 05 — PAGE TEAM : SOUVENIRS SUR UNE SEULE LIGNE. Blandine : « je préfère une ligne ».
+  3 photos carrées avant « Voir tout » (au lieu de 6 sur 2 lignes) ; « Voir tout » apparaît dès 4 souvenirs.
+  Rien d'autre touché. Testé en navigateur. Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+  Build 20261001-532 (contient 531).
+· (533) 01/10, 15 h 50 — LA FLÈCHE ‹ DES PAGES CAVALIER ET CHEVAL REVIENT EN ARRIÈRE.
+  Signalé par Blandine : depuis la page Team, ouvrir une cavalière ou un cheval puis revenir « arrive sur
+  une autre page ». Cause trouvée : la flèche ‹ en haut de la page Cavalier menait TOUJOURS à l'Accueil
+  (setEcran("dashboard")), celle de la fiche cheval TOUJOURS à « Mon cavalier ».
+  - Les deux flèches font maintenant comme le geste retour : page précédente (ctx.retourEcran, même
+    garde que le reste de l'appli). Sans page précédente (lien direct) : comportement d'avant.
+  - Conséquence annoncée et validée (« Ok ») : vaut PARTOUT (ex. cavalier ouvert depuis l'Écurie → retour
+    à l'Écurie, plus à l'Accueil).
+  Aucun SQL, aucun texte nouveau. Non testable dans le banc d'essai (pages hors Team) : à tester sur iPhone.
+  node --check OK (18 blocs), un seul marqueur. Build 20261001-533 (contient 532).
