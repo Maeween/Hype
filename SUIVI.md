@@ -8189,3 +8189,52 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     normal) + chargement complet de l'appli : mêmes erreurs de démarrage que la 533 (dues au banc d'essai).
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-538 (contient 537 : pousser aussi
   hype-stories.js si la 537 n'est pas encore poussée).
+· (DÉCISIONS, codé en 539) 02/10, 00 h 40 — PAGE ÉCURIE V2 (« champagne »), brief de Blandine (texte reçu ; IMAGE DE LA
+  MAQUETTE PAS ENCORE REÇUE — lien ChatGPT bloqué, elle doit l'envoyer en photo). RIEN CODÉ.
+  Confirmé avant code : page actuelle = EcranGuilde, écran « guilde » (onglet du bas « Écurie », liens #monecurie /
+  #monclub / partage « eg ») ; V2 = nouveau composant EcranEcurieV2, styles préfixés « ecurie-v2- », ancienne page
+  conservée en secours (un seul interrupteur pour revenir), aucun SQL.
+  Décisions de Blandine : garder le passage entre ses deux écuries (« trouver le visuel adapté ») et le 📷 photo ;
+  RETIRER de la page (code conservé) : stories, À la une, niveau / classement, quêtes, Ma Sellerie ; rester en
+  CHAMPAGNE (pas de couleur d'écurie sur la V2) ; citation = le texte « philosophie du club » de l'écurie, avec un
+  petit crayon discret ; CITATION PAR DÉFAUT (écurie sans texte) : « Faites du cheval un compagnon et non un
+  esclave, vous verrez quel ami extraordinaire il est. » — avec l'auteur en petit : Nuno Oliveira (attribution des
+  recueils de citations ; elle pensait à Ray Hunt, corrigé). Pour la SEP elle écrira « L'excellence équestre au
+  cœur de Paris ». ZIP demandé dans le brief : à confirmer.
+· (539) 02/10, 01 h 30 — PAGE ÉCURIE V2 « CHAMPAGNE ». Brief + maquette de Blandine (image reçue en photo),
+  arbitrages ChatGPT transmis par elle : 6 onglets du brief (Cavaliers, Chevaux, Agenda, Actualités, Souvenirs,
+  Santé), sans soulignement, rangée légèrement défilable (cases 78 px × 70 px) ; chevron après le nom pour changer
+  d'écurie (feuille basse avec coche) ; 📷 rond en haut à droite (propriétaire) et, sans couverture, dégradé sombre
+  + « Ajouter une photo de couverture » (propriétaire seulement) ; affiches d'événements ENTIÈRES (contain) sur leur
+  propre image floutée ; mosaïque adaptée au nombre réel (8+ : 8 autour du carré central ; 1-7 : chevaux puis la carte
+  « Voir tout », 2 colonnes si ≤ 2 ; 0 : état vide), badge hexagonal = icône cavalier + chiffre ; résultats en
+  carrousel ~1,2 carte visible ; actualités = la plus récente (titre = 1re phrase, sans photo = carte texte à filet).
+  - NOUVEAU COMPOSANT : EcranEcurieV2 (inséré juste avant EcranGuilde), styles « ecurie-v2- », palette #06100F /
+    #0B1514 / ivoire #F3EEE4 / champagne #C9A66B / #BDB6AA / bordures rgba(201,166,107,.30), aucun turquoise.
+  - ROUTE INCHANGÉE : l'onglet du bas « Écurie » ouvre toujours « guilde » ; EcranGuilde charge tout comme avant
+    puis, si HYPE_ECURIE_V2 (= true), passe ses données à EcranEcurieV2. ANCIENNE PAGE CONSERVÉE INTACTE :
+    HYPE_ECURIE_V2 = false la remet, rien d'autre à faire.
+  - RÉUTILISÉ (aucune requête dupliquée) : écurie affichée / clubForce / ecurieSecondaire, bannière
+    (tableaux_clubs club-banniere + choisirBanniere), villeClub, maG.membres (classement_ecuries), chevauxClub +
+    liensClub, railClub + chevauxRail + membres (résultats), droits clubRevendiquePar, routes des 6 tuiles
+    (cavaliers-club, ecurie-hype, agenda-club, actualites-ecurie, souvenirs-club, sante-club), perf-concours,
+    __ouvrirCreationCheval, ouverture d'un cheval (cheval).
+  - AGENDA : AgendaClubHype reste MONTÉ, invisible (hauteur 0), pour ses rendez-vous et pour ouvrir la fiche /
+    le formulaire d'ajout (calques fixes). 2 props optionnelles ajoutées : pont (ouvrir / ajouter / peutCreer) et
+    onEvs (liste chargée). Sans elles (autres pages) : aucun changement. Les liens « ouvrir ce rendez-vous » des
+    autres pages (window.__agendaFiche → guilde) marchent donc toujours.
+  - CITATION : TableauxSpectralHype, nouveau rendu « citation-v2 » (texte philosophie de l'écurie entre deux traits
+    champagne, crayon discret = même règle d'écriture qu'avant, même fenêtre d'édition). Par défaut : Oliveira
+    (7 langues) + « — Nuno Oliveira ». Le reste du composant est inchangé (fenêtre d'édition déplacée dans une
+    variable, même contenu).
+  - SEULE LECTURE NOUVELLE : la dernière publication du fil « ecurie:<écurie> » (8 lignes max, privées exclues),
+    puisque le fil complet n'est plus monté sur la page. Lecture ouverte à tous comme le fil.
+  - RETIRÉS DE LA PAGE (code conservé) : stories, À la une / mur immersif, niveau / classement / stats, quêtes,
+    Ma Sellerie, encart cavaliers, histoire, couleur d'écurie (pastilles du menu 📷).
+  - Gardés : drapeau de langue, partage de la page, bandeau d'invitation des visiteurs non connectés.
+  - À SAVOIR : le nom de l'écurie s'affiche tel qu'il est enregistré (« Societe d'Equitation de Paris (SEP) », sans
+    accents) ; « + Ajouter » un cheval visible pour toute personne connectée (comme l'ancienne page).
+  - Testé en navigateur (banc d'essai, iPhone 375 px) : avec / sans photo, 9 / 3 / 0 chevaux, feuille d'écuries,
+    onglets, liens, arabe (miroir), aucune largeur qui dépasse ; chargement complet de l'appli : mêmes erreurs de
+    démarrage que la 533 (dues au banc d'essai). Textes nouveaux en 7 langues.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261002-539 (contient 538).
