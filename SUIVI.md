@@ -7928,3 +7928,33 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     vue par node --check et corrigée.
   Aucun SQL de plus. node --check OK (18 blocs), un seul marqueur. Build 20261001-523
   (contient 522). Suite renumérotée : 524 = rapprochement des concours à l'import FFE.
+· (NETLIFY) 01/10, 10 h 05 — HORSELINGO.FR : REPORTÉ, RIEN N'A ÉTÉ CHANGÉ. Constat vérifié en direct :
+  2hype.fr ouvre Hype ; Linguae vit DANS le site 2hype (2hype.fr/lingo.html) ; horselingo.fr
+  est branché sur l'ANCIEN site Netlify (majestic-melba), qui n'affiche qu'une page « Hype a
+  déménagé » ; horselingo.fr/lingo.html → 404. Option B (domaine déplacé sur le site 2hype +
+  netlify.toml avec règles horselingo.fr → /lingo.html) préparée puis ABANDONNÉE par Blandine :
+  elle va contre la séparation future de Linguae, et pas le temps aujourd'hui. Décision : on ne
+  touche à rien, elle donne les deux adresses (2hype.fr et 2hype.fr/lingo.html). Le netlify.toml
+  modifié NE DOIT PAS être poussé. À reprendre lors de la séparation de Linguae (site Netlify
+  propre, horselingo.fr dessus). Le renommage « Horse Lingo » dans l'appli reste à faire.
+· (SQL) 01/10, 10 h 54 — DOUBLON « ELLE M'A DIT » RÉSOLU. ✅ PASSÉ PAR ELLE (« Success »).
+  Constat (2 lectures) : fiche a27df268-… « Elle m'a dit circee » (Blandine, 03/09, 1 album,
+  1 rattachée, 0 résultat) et fiche 8b45fe0e-… « Elle m'a dit » (Maylis, dcb7f342-…, 11/09,
+  vide). Choix validé (« Ok ») : on garde celle de Blandine (nom NON modifié : clé FFE),
+  Maylis y est RATTACHÉE (chevaux_liens), la fiche vide de Maylis est retirée de groupes_chevaux
+  puis mise à la corbeille (supprime_le = now(), récupérable 30 jours).
+  Rappel : les 523 (index identique octet pour octet) et la photo du hero sont EN LIGNE (vérifié
+  dans le dépôt le 01/10, commit 88119bd) ; ajout de chevaux à la Team confirmé par Blandine.
+· (524) 01/10, 11 h 00 — PAGE CAVALIER : PASTILLE PROVISOIRE « ✦ TEAM » À DROITE DU NOM. Blandine :
+  « à côté de mon nom sur la page Cavalier, me permettant d'accéder à la page compétition ; on
+  modifiera après, mais au moins que je puisse aller sur la page sans demander l'adresse » ; « dans
+  un doré, dans les mêmes tons que la page compétition ».
+  - Pastille dorée (#D6B676, contour doré, fond doré très léger, Montserrat 9,5 px en capitales)
+    juste après le crayon du pseudo ; un toucher ouvre l'écran « team-competition ».
+  - Visible SEULEMENT sur sa propre page, et seulement pour : la propriétaire de la SEP
+    (clubRevendiquePar), une gestionnaire de la SEP (club_gestionnaires) ou une membre du groupe
+    « Team Compétition » (groupes_membres). Jamais en visite. Les autres ne voient rien : la page
+    reste non annoncée.
+  - Texte « Team » traduit (Equipo, チーム, الفريق ; Team ailleurs).
+  - PROVISOIRE : le vrai badge (Team / Coach, où l'afficher, nom du groupe) reste à décider.
+  Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-524 (contient 523).
