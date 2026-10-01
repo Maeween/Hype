@@ -7958,3 +7958,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Texte « Team » traduit (Equipo, チーム, الفريق ; Team ailleurs).
   - PROVISOIRE : le vrai badge (Team / Coach, où l'afficher, nom du groupe) reste à décider.
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-524 (contient 523).
+· (525) 01/10, 11 h 10 — PAGE TEAM : « + AJOUTER UN RENDEZ-VOUS ». Blandine : « je ne vois pas où rajouter
+  des événements sur la page » (oubli de ma part au 519) ; « oui, ajoute aussi le bouton sur la page Team ».
+  - Bloc Agenda de la page Team : bouton doré « + Ajouter un rendez-vous » (propriétaire / gestionnaires
+    SEP seulement, même règle que « Gérer les membres »).
+  - Il ouvre la page du club SEP (window.__guildeEcurie = TEAM_CLUB) avec le formulaire « Nouveau
+    rendez-vous » déjà ouvert (mécanisme existant window.__agendaOuvrirAjout) ET la pastille « Team
+    Compétition » déjà cochée (nouveau : window.__agendaGroupesCoches, lu une fois à l'ouverture de la
+    fenêtre, dans AgendaClubHype). Après « Publier », on reste sur la page du club.
+  - Relevé sur sa capture : la membre ajoutée est « Aurelie » SANS accent (compte sans abonnement) ; la
+    décision était « Aurélie » AVEC accent → signalé, à corriger par elle dans « Gérer les membres ».
+  - Texte nouveau en 7 langues. Non testé en navigateur. Aucun SQL. node --check OK (18 blocs), un seul
+    marqueur. Build 20261001-525 (contient 524).
