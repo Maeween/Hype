@@ -8297,3 +8297,23 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveau dégradé depuis la gauche qui porte le titre (inversé en arabe).
 - Pas de SQL.
 - En attente : prochains événements (reprendre le design d'une autre page, cartes plus larges) et derniers résultats (cartes plus longues) — question posée à Blandine sur la page de référence.
+
+## (544) Page Écurie V2 — Souvenirs en mosaïque (brief de Blandine)
+- 5 souvenirs au plus, 48 px sous « Actualités ».
+- 5 ou plus : grande carte à gauche (55 %) + 4 petites en 2 × 2 (inversé en arabe : grande à droite).
+- 1 : une grande carte horizontale ; 2 : deux cartes égales ; 3 : une large en haut + deux dessous ; 4 : 2 × 2.
+- 0 : petit encart « Aucun souvenir pour l'instant ».
+- Jamais de case vide ni de photo répétée. Coins 13 px, fine bordure champagne, photos en « cover ».
+- Vidéo : petit rond lecture champagne au centre.
+- Grande image : la plus récente qui est une photo (sinon la plus récente). ⚠️ Il n'existe pas de « souvenir mis en avant » ni de note de qualité dans les données : ces deux règles du brief ne peuvent pas s'appliquer.
+- Pas de texte sur les photos (les données n'en ont pas), donc pas de dégradé sombre.
+- Même lecture qu'avant (fil de l'écurie), aucune requête en plus, aucun SQL.
+
+## Signalé 02/10 01:30 — bannière d'écurie refusée
+- Message : « [42501] new row violates row-level security policy for table "tableaux_clubs" ».
+- La photo s'affiche sur son téléphone mais n'est pas enregistrée pour le club.
+- Le code d'enregistrement n'a pas changé avec la V2 (même fonction qu'avant). Diagnostic en cours, une requête à la fois.
+
+## En attente (réponse de Blandine)
+- Prochains événements : design de quelle page (ancienne page Écurie ou page Équipe) ? 2 par ligne ou 1 par ligne ?
+- Derniers résultats : cartes plus hautes que larges, toujours 3 par ligne ?
