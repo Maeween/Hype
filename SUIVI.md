@@ -7986,3 +7986,29 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Règle à venir / passé = celle de l'agenda du club (la date de fin décide quand elle existe).
   - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai : page + panneau). Aucun SQL.
     node --check OK (18 blocs), un seul marqueur. Build 20261001-526 (contient 525).
+· (527) 01/10, 11 h 30 — PAGE TEAM : LE BOUTON DU RENDEZ-VOUS DEVIENT UN « + » À DROITE DU TITRE. Blandine :
+  « le bouton ajouter un rdv prend beaucoup de place ; remplace-le par un plus entouré à droite du titre de
+  l'agenda » ; maquette (rendu réel, données d'essai) validée : « Ok top ».
+  - Rond de 32 px, contour doré, « + » doré, posé à droite du titre Agenda (après « Voir tout » quand il
+    existe) ; même panneau qu'au 526 ; propriétaire / gestionnaires SEP seulement. Le gros bouton sous la
+    liste est retiré. enTete accepte désormais un élément à droite (paramètre extra).
+  - Texte : seulement l'aria-label (7 langues). Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+    Build 20261001-527 (contient 526).
+· (528) 01/10, 11 h 45 — PAGE TEAM : RÉSULTATS EN CARTES « E BIS » QUI SE DÉPLIENT. Blandine : « les résultats
+  on voit rien, les informations sont trop longues » ; « qu'ils se déplient et qu'on puisse commenter ou ajouter
+  des photos » ; 7 maquettes montrées (A à G puis E bis) ; choix : E bis (« Ok on prend ça »). Questions restées
+  sans réponse, réglages par défaut annoncés : 3 cartes avant « Voir tout », UNE CARTE PAR RÉSULTAT (pas par
+  concours), fil ouvert à tous (comme les fils des rendez-vous).
+  - Carte de 104 px : photo du cheval (sinon de la cavalière) à droite, fondue dans le noir ; à gauche :
+    sur-titre « 🏆 Victoire / 🥈 / 🥉 / Ne · date », titre « Cavalière & Cheval » (pseudo du compte, sinon nom
+    FFE remis en minuscules), dessous « épreuve · lieu (concours_lieux, sinon nom du concours) · place / partants ».
+    Podium : contour et sur-titre dorés ; sinon gris.
+  - Toucher DÉPLIE la carte (une seule ouverte) : photos et noms cavalière « sur » cheval ; Concours, Épreuve,
+    Classement (place / partants · sans faute si mention), Date longue, Lieu (si relié) ; liens « Fiche du
+    cheval › » et « Tous ses résultats › » ; puis « ✦ SOUVENIRS DE CE RÉSULTAT » = MurHype cible
+    « resultat:<id> » (vignettes, 3 visibles puis dépliage, composer en bas : photo / vidéo / texte).
+  - Données ajoutées à la lecture : partants, mention, cavalier (texte FFE) ; chevaux (nom, photo) et
+    profils (pseudo, photo) des résultats affichés.
+  - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai ; le fil MurHype n'existe pas dans le
+    banc d'essai, à vérifier sur iPhone). Aucun SQL. node --check OK (18 blocs), un seul marqueur.
+    Build 20261001-528 (contient 527).
