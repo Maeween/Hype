@@ -8128,3 +8128,41 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     Sans le SQL : page bleue comme avant, pastilles qui affichent « Impossible : … ».
   - Texte nouveau en 7 langues. Testé en navigateur (banc d'essai de la page Écurie : bleu, doré, bordeaux).
   node --check OK (18 blocs), un seul marqueur. Build 20261001-534 (contient 533).
+· (535) 01/10, 23 h 05 — PAGE ÉCURIE : LA COULEUR PASSE DANS LE MENU PHOTO. Blandine : « je préférerais que les
+  choix de couleur soient dans le menu photo comme sur la page cheval ».
+  - Le bouton 📷 (en haut à droite) ouvre maintenant un MENU (comme la fiche cheval) : « 📷 Changer la photo »
+    (propriétaire, inchangé) + « 🎨 Couleur de l'écurie » et ses 4 pastilles (propriétaire OU gestionnaire),
+    refus de la base affiché dans le menu, « Fermer ». Le 📷 apparaît donc aussi pour une gestionnaire
+    (sans « Changer la photo »).
+  - La ligne de pastilles sous le sélecteur d'écuries (534) est RETIRÉE.
+  - Testé en navigateur (banc d'essai : menu, choix du doré, page qui change). Textes nouveaux en 7 langues.
+  SQL-534-couleur-ecurie.sql ✅ PASSÉ PAR ELLE le 01/10 à 22 h 37 (« Success », fin du collage vérifiée). node --check OK (18 blocs), un seul
+  marqueur. Build 20261001-535 (contient 534).
+· (536) 01/10, 23 h 45 — PAGE ÉCURIE : RÈGLE SOBRE + BLOCS RETIRÉS + INVITER / RETIRER SUR LA PAGE CAVALIERS.
+  Constat de Blandine sur iPhone (534) : « il reste bcp de choses en bleu », puis sur l'encart Cavaliers « c'est un
+  sapin de Noël » et « quelle que soit la couleur il y a trop de couleurs ». Maquette « sobre » montrée. Ses choix :
+  RÈGLE SOBRE oui (textes ivoire / gris ; couleur seulement sur quelques touches : icônes, boutons d'action,
+  petits titres, filets) ; encarts : A (la couleur de l'écurie l'emporte sur « Teinte de l'encart ») ; UNE version ;
+  RETIRER l'encart « Cavaliers de l'écurie » (« on les retrouve sur leur page ») ; inviter / retirer : A = déplacés
+  sur la page Cavaliers ; RETIRER « L'histoire du club » (« un seul endroit où écrire suffit »).
+  - Mécanisme : EcranGuilde pose window.__teinteEcurieActive {c, cl, rgb} pendant qu'elle est affichée (effacé en
+    la quittant) ; hypeTeinteEcurie() le lit. Blocs partagés en MODE SOBRE seulement quand il est posé (ailleurs :
+    AUCUN changement) : transparences de couleur → blanches neutres, couleur pleine → couleur de l'écurie.
+    Touchés : TableauxSpectralHype (encart philosophie : palette « nuit », petit titre en couleur, lien « Teinte de
+    l'encart » masqué sur cette page ; prop sansHistoire), EncartSellerie, MurHype (+ teinte: TURQ passée),
+    agenda (feuille de style .hype-ec-sobre limitée à la page), et dans hype-stories.js : BandeauStories,
+    RailALaUne, MurImmersif (tn / tnL = couleur, tA = blanc neutre).
+  - Dans la page : transparences neutres (RGBT = blanc), tuiles à contour et filet neutres, badge cheval sobre.
+    S'applique aussi en BLEU (défaut) : la page Écurie de tous les clubs devient plus sobre, même sans couleur choisie.
+  - Encart « Cavaliers de l'écurie » : plus affiché (code conservé, désactivé). « L'histoire du club » : plus
+    affichée sur la page Écurie (texte conservé en base, rien supprimé).
+  - Page Cavaliers (EcranCavaliersClub) : « + Ajouter un cavalier » (connecté·e) → fenêtre « Compose ton écurie »
+    (version sobre, mêmes fonctions ajouterCavalierChoisi / retirerCavalierChoisi, écurie = celle de la page) ; ses
+    invités apparaissent dans la liste ; croix sur un invité = le retirer de SA liste ; croix sur une cavalière =
+    la retirer de l'écurie, propriétaire ou modératrice, EN DEUX TOUCHERS (bandeau nommant la cavalière, règle du
+    19/09), refus de la base affiché. Limite : si l'écurie n'a encore AUCUN membre, la liste vide ne montre pas
+    les invités.
+  - FICHIERS : index.html + hype-stories.js (racine). Textes nouveaux en 7 langues. Testé en navigateur (bancs
+    d'essai : page Écurie bleu / doré, page Cavaliers : croix, confirmation, fenêtre d'ajout). Stories / « À la
+    une » non visibles au banc d'essai : à vérifier sur iPhone.
+  Aucun SQL. node --check OK (18 blocs + hype-stories.js), un seul marqueur. Build 20261001-536 (contient 535).

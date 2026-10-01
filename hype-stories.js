@@ -2338,13 +2338,16 @@ function hsTempsRelatif(iso, lg) {
 --------------------------------------------------------------------------- */
 function BandeauStories(props) {
   var h = React.createElement;
+  var TEzB = (typeof hypeTeinteEcurie === "function") ? hypeTeinteEcurie() : null;   /* (536) mode sobre sur la page Ecurie */
   var app = (typeof useApp === "function") ? useApp() : {};
   var lg = (app && app.langue) || "fr";
   var premium = !!(app && app.premium);
   var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
-  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: (TEzB ? TEzB.c : "#20D9F5"), lumineux: (TEzB ? TEzB.c : "#5FE9F0") };
   var tn = th.principal, tnL = th.lumineux;
-  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(" + (TEzB ? "255,255,255" : "32,217,245") + "," + a + ")"); }
+  /* (536) page Ecurie, regle sobre : accent = couleur de l ecurie, transparences neutres */
+  if (TEzB) { tn = TEzB.c; tnL = TEzB.c; tA = function (a) { return "rgba(255,255,255," + a + ")"; }; }
 
   var gS = React.useState([]), groupes = gS[0], setGroupes = gS[1];
   var mS = React.useState(null), moiId = mS[0], setMoiId = mS[1];
@@ -2692,8 +2695,8 @@ function BandeauStories(props) {
   function rondAjout() {
     var creux = h("span", { style: { fontSize: carte ? 30 : 34, lineHeight: 1, color: tnL, fontWeight: 300 } }, "+");
     var visuel = carte
-      ? h("div", { style: { width: CL, height: CH_, borderRadius: 16, border: "1px dashed " + tA(0.55), background: "rgba(17,20,23,0.85)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 0 26px rgba(32,217,245,0.06)" } }, creux)
-      : h("div", { style: { width: T, height: T, borderRadius: "50%", margin: "0 auto", border: "1px dashed " + tA(0.55), background: "rgba(17,20,23,0.85)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 0 26px rgba(32,217,245,0.06)" } }, creux);
+      ? h("div", { style: { width: CL, height: CH_, borderRadius: 16, border: "1px dashed " + tA(0.55), background: "rgba(17,20,23,0.85)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 0 26px rgba(" + (TEzB ? "255,255,255" : "32,217,245") + ",0.06)" } }, creux)
+      : h("div", { style: { width: T, height: T, borderRadius: "50%", margin: "0 auto", border: "1px dashed " + tA(0.55), background: "rgba(17,20,23,0.85)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 0 26px rgba(" + (TEzB ? "255,255,255" : "32,217,245") + ",0.06)" } }, creux);
     return h("button", {
       key: "stplus",
       onClick: choisirFichier,
@@ -4890,12 +4893,15 @@ async function hsGroupeALaUne(album, lg) {
 
 function RailALaUne(props) {
   var h = React.createElement;
+  var TEzR = (typeof hypeTeinteEcurie === "function") ? hypeTeinteEcurie() : null;   /* (536) mode sobre sur la page Ecurie */
   var app = (typeof useApp === "function") ? useApp() : {};
   var lg = (app && app.langue) || "fr";
   var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
-  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: (TEzR ? TEzR.c : "#20D9F5"), lumineux: (TEzR ? TEzR.c : "#5FE9F0") };
   var tn = th.principal, tnL = th.lumineux;
-  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(" + (TEzR ? "255,255,255" : "32,217,245") + "," + a + ")"); }
+  /* (536) page Ecurie, regle sobre : accent = couleur de l ecurie, transparences neutres */
+  if (TEzR) { tn = TEzR.c; tnL = TEzR.c; tA = function (a) { return "rgba(255,255,255," + a + ")"; }; }
 
   var uS = React.useState([]), unes = uS[0], setUnes = uS[1];
   var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
@@ -5058,7 +5064,7 @@ var HS_MUR_COULEURS = [
   { nom: "Ardoise", hex: "#12506A" },
   { nom: "Pétrole", hex: "#166F8C" },
   { nom: "Lagune", hex: "#1BA8C8" },
-  { nom: "Turquoise", hex: "#20D9F5" }
+  { nom: "Turquoise", hex: (TEzR ? TEzR.c : "#20D9F5") }
 ];
 
 /* Réglage de départ — 20/08/2026, RÉGLAGE VALIDÉ PAR BLANDINE sur son écran,
@@ -5106,12 +5112,15 @@ function hsMurMasque(f, adoucir) {
 
 function MurImmersif(props) {
   var h = React.createElement;
+  var TEzI = (typeof hypeTeinteEcurie === "function") ? hypeTeinteEcurie() : null;   /* (536) mode sobre sur la page Ecurie */
   var app = (typeof useApp === "function") ? useApp() : {};
   var lg = (app && app.langue) || "fr";
   var M = "'Montserrat',sans-serif", C = "'Cinzel',Georgia,serif";
-  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: "#20D9F5", lumineux: "#5FE9F0" };
+  var th = (typeof teinteHypeActive === "function") ? teinteHypeActive() : { principal: (TEzI ? TEzI.c : "#20D9F5"), lumineux: (TEzI ? TEzI.c : "#5FE9F0") };
   var tn = th.principal, tnL = th.lumineux;
-  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(32,217,245," + a + ")"); }
+  function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(" + (TEzI ? "255,255,255" : "32,217,245") + "," + a + ")"); }
+  /* (536) page Ecurie, regle sobre : accent = couleur de l ecurie, transparences neutres */
+  if (TEzI) { tn = TEzI.c; tnL = TEzI.c; tA = function (a) { return "rgba(255,255,255," + a + ")"; }; }
 
   var uS = React.useState([]), unes = uS[0], setUnes = uS[1];
   var oS = React.useState(null), ouverte = oS[0], setOuverte = oS[1];
