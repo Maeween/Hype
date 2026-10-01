@@ -8077,3 +8077,54 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     à l'Écurie, plus à l'Accueil).
   Aucun SQL, aucun texte nouveau. Non testable dans le banc d'essai (pages hors Team) : à tester sur iPhone.
   node --check OK (18 blocs), un seul marqueur. Build 20261001-533 (contient 532).
+· (SQL) 01/10, 20 h 55 — ABONNEMENT D'AURÉLIE REMIS. Relevé : « Aurélie » (avec accent), mensuel, statut
+  actif, expire_le 22/09/2026 19:28 UTC → l'appli la traite en NON Premium depuis le 22/09 (elle vérifie la
+  date). Blandine : « elle a été débitée ». SQL donné : expire_le = 22/10/2026 19:28:33 UTC (un mois
+  après l'ancienne fin), sa seule ligne (pseudo = 'Aurélie'). ✅ PASSÉ (20 h 53) : 1 ligne, mensuel, actif,
+  expire_le 2026-10-22 19:28:33+00.
+  ⚠️ À REGARDER : pourquoi le renouvellement mensuel payé n'a pas mis à jour expire_le (risque pour tous
+  les abonnés mensuels). Revérifier sa ligne avant le 22/10.
+· (SQL) 01/10, 20 h 56 — ABONNEMENT DE LAUREN REMIS. Relevé : « Lauren », mensuel, actif, expire_le
+  22/09/2026 18:13 UTC (MÊME JOUR qu'Aurélie → panne commune du renouvellement, pas un cas isolé).
+  Blandine : même problème, débitée. SQL donné : expire_le = 22/10/2026 18:13:00 UTC, pseudo = 'Lauren'.
+  ✅ PASSÉ (20 h 55) : 1 ligne, mensuel, actif, 2026-10-22 18:13:00+00. ⚠️ Vérifier TOUS les abonnés mensuels (date de fin dépassée mais statut actif).
+· (Relevé) 01/10, 21 h 04 — Abonnements « actif » à date de fin dépassée : il n'en reste qu'UN, « Dominique »,
+  plan duo, expire_le 16/09/2026 12:14 UTC → traité NON Premium depuis le 16/09. Rien modifié : question
+  posée à Blandine (a-t-il/elle été débité(e) ?). Précision de Blandine : « duo » = Premium + l'IA, pour UNE
+  seule personne (pas un 2e compte).
+  Deux comptes « Dominique », TOUS LES DEUX abonnés : dominique.wirtschafter@orange.fr = duo, fin 16/09 (dépassée) ;
+  hadjadj.dominique@gmail.com = mensuel, fin 01/10/2026 23:59:59 UTC (= 02/10 à 1 h 59, heure de Paris).
+  Correction de Blandine : le compte hadjadj = UN MOIS GRATUIT qu'elle lui avait offert, pas un abonnement
+  payé (« elle s'est pas abonnée je crois ») → fin normale cette nuit, ce n'est PAS un test du renouvellement. Stripe (capture de Blandine) : orange.fr DÉBITÉ 24,99 € le 14/09 à 15 h 15 (Link, réussi)
+  → SQL donné : expire_le = 16/10/2026 12:14:50 UTC, ciblé par son e-mail + plan duo. ✅ PASSÉ (21 h 12) :
+  1 ligne, orange.fr, duo, actif, 2026-10-16 12:14:50+00.
+  Aussi vu dans Stripe : a.bussonnais@outlook.com 12,99 € réussi (Aurélie) ; un paiement 24,99 € ÉCHOUÉ
+  (basia.baster@poczta.fm) — non traité.
+  BILAN 01/10 soir : 3 abonnés payés mais vus non Premium (Aurélie, Lauren, Dominique orange.fr) remis à la
+  main jusqu'au 22/10, 22/10 et 16/10. CAUSE NON TROUVÉE : le paiement Stripe ne met pas à jour expire_le.
+  À regarder AVANT le 16/10 (sinon ils reperdent le Premium).
+· (CORRECTION) 01/10, 22 h 35 — ⚠️ ERREUR DE MA PART : l'onglet « Écurie » du bas ouvre l'écran « guilde »
+  (EcranGuilde, la page de l'écurie, qui passe d'une écurie à l'autre), PAS EcranEcurie. L'entrée « À FAIRE
+  PLUS TARD — retirer le bloc Cavaliers du club » de 12 h 44 visait EcranEcurie : elle est donc À REVOIR
+  avec Blandine (le bloc de l'onglet Écurie est « Cavaliers de l'écurie » d'EcranGuilde).
+  Chantier couleur (demande du 01/10 soir) : la couleur suivra l'écurie AFFICHÉE dans EcranGuilde.
+· (534) 01/10, 22 h 55 — PAGE ÉCURIE (onglet du bas = EcranGuilde) : LA COULEUR DE L'ÉCURIE.
+  Demande de Blandine : comme la fiche cheval (bleu / doré / bordeaux / vert) sur la page Écurie (« surtout »)
+  puis la page Cavalier (PLUS TARD, autre build). Ses précisions : la couleur se choisit par les RESPONSABLES
+  de l'écurie ; elle suit l'écurie AFFICHÉE (on passe d'une écurie à l'autre) ; doré = le doré doux de la page
+  Team (#D6B676). Question « même doré sur la fiche cheval (#D9B56C) ? » restée SANS RÉPONSE → fiche cheval
+  NON touchée.
+  - Pastilles « Couleur de l'écurie » sous le sélecteur d'écuries, visibles par la propriétaire
+    (clubRevendiquePar) ou une gestionnaire (club_gestionnaires) de l'écurie affichée. Bleu = défaut (vide).
+    Refus de la base affiché (« Impossible : … »), retour à l'ancienne couleur.
+  - Tout le monde voit la page de cette écurie dans sa couleur. Table club_teintes (clé = clefClubG du nom de
+    l'écurie, comme la bannière). Cache local PAR ÉCURIE pour l'affichage immédiat, la base fait foi.
+  - Dans EcranGuilde : TURQ / TURQL prennent la couleur de l'écurie ; les 28 textes de couleur bleus écrits en
+    dur (rgba 32,217,245 / 95,233,240, #20D9F5, #5FE9F0, #1FB8C4, #4DEAD8) passent par la couleur choisie.
+  - RESTENT BLEUS (blocs partagés avec d'autres pages, pas touchés) : Cavaliers de l'écurie
+    (EncartCavaliersSpectral), agenda (AgendaClubHype), fil / souvenirs (MurHype), tableaux
+    (TableauxSpectralHype), sellerie (EncartSellerie). Texte sombre #04252A conservé sur les boutons dégradés.
+  - SQL : SQL-534-couleur-ecurie.sql (table club_teintes, lecture ouverte, écriture = hype_peut_gerer_club).
+    Sans le SQL : page bleue comme avant, pastilles qui affichent « Impossible : … ».
+  - Texte nouveau en 7 langues. Testé en navigateur (banc d'essai de la page Écurie : bleu, doré, bordeaux).
+  node --check OK (18 blocs), un seul marqueur. Build 20261001-534 (contient 533).
