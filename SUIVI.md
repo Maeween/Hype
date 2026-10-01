@@ -8290,3 +8290,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     chevaux, que la page Souvenirs montre aussi, ne sont PAS repris ici (il faudrait une lecture de plus).
   Testé (banc d'essai 375 px, aucune largeur qui dépasse) + chargement complet (mêmes erreurs que la 533). Textes
   nouveaux en 7 langues. Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261002-542 (contient 541).
+
+## (543) Page Écurie V2 — bandeau
+- Photo du bandeau moins haute (340 px + encoche).
+- Plus sombre en bas.
+- Nouveau dégradé depuis la gauche qui porte le titre (inversé en arabe).
+- Pas de SQL.
+- En attente : prochains événements (reprendre le design d'une autre page, cartes plus larges) et derniers résultats (cartes plus longues) — question posée à Blandine sur la page de référence.
