@@ -7905,6 +7905,26 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     affichés). Concours pas encore relié : ligne inchangée.
   - Aucun texte nouveau à traduire (noms propres). Testé en navigateur (données d'essai).
   Aucun SQL. node --check OK (18 blocs), un seul marqueur. Build 20261001-522 (contient 521).
-  SUITE PRÉVUE : 523 = à l'import FFE, un concours inconnu est relié s'il ressemble à un
+  SUITE PRÉVUE (renumérotée 524) : à l'import FFE, un concours inconnu est relié s'il ressemble à un
   lieu connu, sinon ajouté « à vérifier » + petite liste pour les modératrices (touche
   hype-import-ffe.js) ; plus tard : lieux ajoutés sur le globe.
+· (SQL) 01/10, 1 h 41 — CHEVAUX D'UN GROUPE. ✅ PASSÉ PAR ELLE (« Success »). Table
+  groupes_chevaux (groupe_id → groupes, cheval_id → chevaux, ajoute_par, ajoute_le, clé
+  groupe+cheval) ; lecture ouverte ; ajout/retrait = hype_peut_gerer_club du club du groupe.
+  Groupe « Team Compétition » : aucun cheval au départ.
+· (523) 01/10, 1 h 45 — PAGE TEAM : « GÉRER LES CHEVAUX ». Demande de Blandine (« il manque
+  des chevaux ») ; ses choix : A = la liste écrite disparaît, B = recherche parmi les chevaux
+  de la SEP seulement.
+  - TEAM_CHEVAUX_TEMP RETIRÉE : « Nos chevaux » = les chevaux du groupe, dans l'ordre d'ajout.
+    Au premier affichage, la rangée est donc VIDE jusqu'à ce qu'elle les ajoute.
+  - Bouton « Gérer les chevaux » sous « Nos chevaux » (propriétaire / gestionnaires SEP) : le
+    même panneau que « Gérer les membres » (titre « Chevaux de l'équipe », recherche, photo,
+    Ajouter / Retirer, refus de la base affiché). Chevaux proposés = ceux des membres de la
+    SEP, filtre hypeChevauxDuClub (même règle que la page du club).
+  - Un échec de lecture des chevaux du groupe s'affiche dans la section, sans vider la page.
+  - Résultats et souvenirs suivent automatiquement les chevaux du groupe.
+  - Textes nouveaux en 7 langues. Testé en navigateur (données d'essai). ⚠️ ERREUR DE MA
+    PART rattrapée avant livraison : une parenthèse manquante dans le champ de recherche,
+    vue par node --check et corrigée.
+  Aucun SQL de plus. node --check OK (18 blocs), un seul marqueur. Build 20261001-523
+  (contient 522). Suite renumérotée : 524 = rapprochement des concours à l'import FFE.
