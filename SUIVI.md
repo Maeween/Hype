@@ -8166,3 +8166,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
     d'essai : page Écurie bleu / doré, page Cavaliers : croix, confirmation, fenêtre d'ajout). Stories / « À la
     une » non visibles au banc d'essai : à vérifier sur iPhone.
   Aucun SQL. node --check OK (18 blocs + hype-stories.js), un seul marqueur. Build 20261001-536 (contient 535).
+· (537) 01/10, 23 h 00 — 🟥 CORRECTIF URGENT : LA 536 FAISAIT PLANTER L'APPLI AU DÉMARRAGE (« Un caillou dans le
+  sabot », global code 2hype.fr:32169:4704, capture de Blandine à 22 h 55).
+  ⚠️ ERREUR DE MA PART : mon script de « mode sobre » délimitait chaque fonction jusqu'à la PROCHAINE ligne
+  « function », et a donc aussi modifié du code placé ENTRE deux fonctions : la feuille de style AGENDA_CSS (index)
+  et la liste HS_MUR_COULEURS (hype-stories.js). Ces lignes lisaient TEzT / TEzR, qui n'existent qu'à l'intérieur
+  des fonctions → ReferenceError au chargement → appli entière arrêtée. node --check ne voit pas ce genre d'erreur.
+  - Les DEUX lignes sont remises à l'identique de l'original (AGENDA_CSS depuis la 535, HS_MUR_COULEURS depuis le dépôt).
+    Vérifié : plus aucune variable TEz… hors de sa fonction (contrôle ligne par ligne).
+  - NOUVEAU CONTRÔLE avant livraison : chargement complet de l'appli dans un navigateur (dépôt + index + fichiers
+    modifiés) et comparaison des erreurs de démarrage avec la version précédente. 536 : « TEzR is not defined »,
+    « TEzT is not defined » ; 537 : identique à la 533 (seules les erreurs dues à l'absence de réseau du banc d'essai).
+  Rien d'autre changé. node --check OK, un seul marqueur. Build 20261001-537 (contient 536). Pousser index.html ET
+  hype-stories.js ensemble.

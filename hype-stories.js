@@ -5064,7 +5064,7 @@ var HS_MUR_COULEURS = [
   { nom: "Ardoise", hex: "#12506A" },
   { nom: "Pétrole", hex: "#166F8C" },
   { nom: "Lagune", hex: "#1BA8C8" },
-  { nom: "Turquoise", hex: (TEzR ? TEzR.c : "#20D9F5") }
+  { nom: "Turquoise", hex: "#20D9F5" }
 ];
 
 /* Réglage de départ — 20/08/2026, RÉGLAGE VALIDÉ PAR BLANDINE sur son écran,
