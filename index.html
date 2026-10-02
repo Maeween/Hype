@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261002-576"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261002-578"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -26062,7 +26062,7 @@ function Router() {
                     ecran === "connexion" && React.createElement(EcranConnexionSpectral, null),
                 ecran === "profil-setup" && React.createElement(EcranProfilSetup, null),
                 ecran === "voyage" && React.createElement(EcranVoyage, null),
-                ecran === "dashboard" && React.createElement(EcranUnivers, null),
+                ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
                 ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
                 ecran === "galop-detail" && React.createElement(EcranGalopDetail, null),
                 ecran === "cours" && React.createElement(EcranCours, null),
@@ -41754,6 +41754,225 @@ chapAcc(L5acc("Mon monde", "My world", "Mi mundo", "Il mio mondo", "\u79c1\u306e
     toast && React.createElement("div", { style: { position: "fixed", left: "50%", bottom: "calc(86px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 60, background: "rgba(20,26,33,0.96)", color: "#EDF2F5", border: "1px solid rgba(32,217,245,0.74)", borderRadius: 999, padding: "10px 18px", fontSize: 13, fontWeight: 600, fontFamily: "'Montserrat',sans-serif", boxShadow: "0 10px 30px rgba(10,26,36,0.11)" } }, toast));
 }
 
+
+/* ============================================================
+   02/10/2026 (577) — ACCUEIL V2 · BUILD 1 : LA COQUILLE ET LE HERO.
+   Refonte complete de l accueil decidee par Blandine, livree PAR ETAPES
+   (1 build = 1 bloc, test iPhone, validation, bloc suivant).
+   Le nouvel accueil (EcranAccueilV2) est construit A COTE de l ancien
+   (EcranUnivers), qui reste intact : le routeur monte l UN ou l AUTRE,
+   jamais les deux (pas de masquage CSS : une seule video, une seule
+   serie de requetes, un seul versement d XP).
+   ⚠️ ACCUEIL_V2_ACTIF = false -> l ancien accueil revient tel quel,
+   rien d autre a toucher. C est le retour arriere du chantier.
+   Build 1 = fond, hero video actuel (meme fichier, memes comportements),
+   les quatre boutons du haut (deconnexion, cloche, enveloppe, langue),
+   la phrase sous la video, les dimensions generales, et l espace reserve
+   aux blocs suivants. La barre du bas est celle de l appli (portail body),
+   rien n est recopie ici.
+   ============================================================ */
+var ACCUEIL_V2_ACTIF = true;
+
+/* Styles du corps V2, scope .acc2 : independants de UV3_CSS (qui n est
+   injecte QUE quand l ancien accueil est monte). Les regles du hero sont
+   recopiees a l identique de l ancien accueil pour un rendu video inchange.
+   Palette du corps (a partir du build 2) : noir #060709, petrole #0D1518,
+   ivoire #F3EEE4, champagne #C9A66B — aucun turquoise vif dans le corps. */
+const ACC2_CSS = `.acc2{min-height:100vh;--bg:#060709;--petrole:#0D1518;--petrole-2:#101A1D;--ivoire:#F3EEE4;--champagne:#C9A66B;--champagne-2:#D2B07A;--line:rgba(255,255,255,0.09)}
+.acc2 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+.acc2{background:var(--bg);color:var(--ivoire);font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased}
+.acc2 .app{max-width:430px;margin:0 auto;position:relative;padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+@keyframes acc2breathe{0%,100%{opacity:.45;transform:scale(1)}50%{opacity:.8;transform:scale(1.1)}}
+.acc2 .hero{position:relative;height:432px;overflow:hidden}
+.acc2 .hero-img{position:absolute;inset:0;background-image:url(images/inline-05.jpg);background-size:cover;background-position:center 22%;filter:brightness(1.1) saturate(1.15)}
+.acc2 .hero-pulse{position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:360px;height:360px;background:radial-gradient(circle,rgba(32,217,245,0.407),transparent 62%);animation:acc2breathe 7s ease-in-out infinite;pointer-events:none}
+.acc2 .hero-grad{position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 3%,rgba(6,7,9,.35) 24%,transparent 48%)}
+.acc2 .hero-side{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,.18),transparent 30%)}
+.acc2 .content{padding:16px 18px 0}
+@keyframes acc2Lettre{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+.acc2 .acc2-carte-h{position:relative;display:block;width:100%;height:80px;border-radius:18px;overflow:hidden;border:1px solid rgba(201,166,107,0.30);background:var(--petrole);cursor:pointer;padding:0;margin:0;text-align:start;color:var(--ivoire);-webkit-appearance:none;appearance:none}
+.acc2 .acc2-carte-h:active{transform:scale(.99)}
+.acc2 .acc2-carte-img{position:absolute;inset:0;background-size:cover;background-position:center 42%;background-repeat:no-repeat}
+.acc2 .acc2-carte-voile{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,0.97) 0%,rgba(6,7,9,0.90) 30%,rgba(6,7,9,0.52) 52%,rgba(6,7,9,0.16) 72%,rgba(6,7,9,0.12) 86%,rgba(6,7,9,0.58) 100%)}
+[dir=rtl] .acc2 .acc2-carte-voile{background:linear-gradient(270deg,rgba(6,7,9,0.97) 0%,rgba(6,7,9,0.90) 30%,rgba(6,7,9,0.52) 52%,rgba(6,7,9,0.16) 72%,rgba(6,7,9,0.12) 86%,rgba(6,7,9,0.58) 100%)}
+.acc2 .acc2-carte-txt{position:absolute;inset-inline-start:18px;inset-inline-end:66px;top:50%;transform:translateY(-50%)}
+.acc2 .acc2-carte-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;font-weight:600;line-height:1.1;letter-spacing:.2px;color:var(--ivoire);text-shadow:0 1px 10px rgba(0,0,0,.6)}
+.acc2 .acc2-carte-s{margin-top:4px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:500;line-height:1.3;color:rgba(243,238,228,0.84);text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.acc2 .acc2-carte-fleche{position:absolute;inset-inline-end:16px;top:50%;transform:translateY(-50%);width:32px;height:32px;border-radius:50%;border:1.2px solid var(--champagne);background:rgba(6,7,9,0.38);color:var(--champagne);display:flex;align-items:center;justify-content:center}
+.acc2 .acc2-carte-fleche svg{display:block}
+[dir=rtl] .acc2 .acc2-carte-fleche svg{transform:scaleX(-1)}`;
+
+/* ------------------------------------------------------------
+   EffetsAccueilDashboard — composant INVISIBLE (rend null).
+   Les blocs de quetes ne sont plus affiches sur l accueil V2, mais le
+   VERSEMENT DE L XP des quetes accomplies doit continuer : c est la meme
+   mecanique que « La suite pour toi » (BandeauSuiteHype) de l ancien
+   accueil, sans l interface : nombre d amis (hypeUtiliserAmis, table
+   follows), garde useRef pour une seule execution par montage, puis
+   hypeVerserXpQuetes(ctx, amis) dont le verrou est EN BASE (hype_paliers)
+   — rien n est paye deux fois. Monte une seule fois par visite de l accueil,
+   parce qu il vit dans EcranAccueilV2.
+   Connu, non corrige ici (hors perimetre, identique a l ancien accueil) :
+   l effet part au montage, avant le retour du nombre d amis.
+   ------------------------------------------------------------ */
+function EffetsAccueilDashboard() {
+  var ctx = useApp();
+  var amis = hypeUtiliserAmis();
+  var xpQueteFait = React.useRef(false);
+  React.useEffect(function () {
+    if (xpQueteFait.current) return;
+    xpQueteFait.current = true;
+    var vif = true;
+    (async function () {
+      try {
+        var r = await hypeVerserXpQuetes(ctx, amis);
+        if (!vif || !r) return;
+        var total = (r.gagne || 0) + (r.rattrape || 0);
+        if (total > 0 && typeof ctx.setXp === "function") {
+          ctx.setXp(function (x) { return (Number(x) || 0) + total; });
+        }
+      } catch (eX) { }
+    })();
+    return function () { vif = false; };
+  }, []);
+  return null;
+}
+
+/* ------------------------------------------------------------
+   EcranAccueilV2 — le nouvel accueil (route "dashboard" quand
+   ACCUEIL_V2_ACTIF est vrai). Build 1 : hero + boutons du haut.
+   ------------------------------------------------------------ */
+function EcranAccueilV2() {
+  var h = React.createElement;
+  var ctx = useApp();
+  var lg = ctx.langue || "fr";
+  var setEcran = ctx.setEcran, setLangue = ctx.setLangue;
+  var retourDepuisAccueil = ctx.retourDepuisAccueil;
+  var __swipeA = React.useRef(null);
+  var __montageA = React.useRef(Date.now());
+  var _nl = React.useState(0); var nonLusMsg = _nl[0], setNonLusMsg = _nl[1];
+  var _lo = React.useState(false); var langOuvert = _lo[0], setLangOuvert = _lo[1];
+  var videoObs = React.useRef(null);
+
+  /* Enveloppe : meme compteur de non-lus que l ancien accueil
+     (hypeTotalNonLus, rafraichi toutes les 45 s, arrete quand on quitte la page). */
+  React.useEffect(function () {
+    var actif = true;
+    function maj() { try { hypeTotalNonLus().then(function (n) { if (actif) setNonLusMsg(n || 0); }); } catch (e) { } }
+    maj();
+    var it = setInterval(maj, 45000);
+    return function () { actif = false; clearInterval(it); };
+  }, []);
+
+  /* Video : l observateur qui la met en pause hors ecran est ARRETE au
+     demontage (seul ajout par rapport a l ancien hero, qui ne l arretait pas). */
+  React.useEffect(function () {
+    return function () { try { if (videoObs.current) { videoObs.current.disconnect(); videoObs.current = null; } } catch (e) { } };
+  }, []);
+
+  /* Meme nav() que l ancien accueil : on oublie le cavalier ouvert avant de partir. */
+  function nav(id) { return function () { try { window.__cavalierOuvert = null; window.__cavalierPublic = null; } catch (eNv) { } setEcran(id); }; }
+  /* Traduction : le tr du contexte (objet 7 langues), repli sur la langue courante puis le francais. */
+  function trA(o) { try { if (ctx && typeof ctx.tr === "function") return ctx.tr(o); } catch (eTr) { } return o[lg] || o.fr; }
+
+  var DRAPEAUX = [["fr", "🇫🇷"], ["en", "🇬🇧"], ["es", "🇪🇸"], ["it", "🇮🇹"], ["ja", "🇯🇵"], ["de", "🇩🇪"], ["ar", "🇸🇦"]];
+  var drapeauActuel = "🇫🇷";
+  for (var iD = 0; iD < DRAPEAUX.length; iD++) { if (DRAPEAUX[iD][0] === lg) drapeauActuel = DRAPEAUX[iD][1]; }
+
+  var libDeconnexion = hypeT7("Se déconnecter", "Sign out", "Cerrar sesión", "Esci", "ログアウト", "Abmelden", "تسجيل الخروج");
+
+  /* ===== HERO : la video actuelle du cheval noir, memes fichiers, memes comportements
+     (lecture auto, muet, poster, image de secours en cas d erreur, pause hors ecran). ===== */
+  var hero = h("header", { className: "hero", style: { height: "auto", paddingTop: "calc(env(safe-area-inset-top) + 30px)", marginBottom: 30 } },
+    h("div", { className: "hero-img", style: { opacity: 0, transition: "opacity .5s ease" } }),
+    h("video", { src: "hype-accueil-video-2.mp4", poster: "hype-accueil-poster-2.jpg", muted: true, loop: true, playsInline: true, autoPlay: true, preload: "metadata", "aria-hidden": "true",
+      onError: function (eEr) {
+        try {
+          eEr.target.style.display = "none";
+          var hp = eEr.target.parentNode;
+          var fond = hp && hp.querySelector(".hero-img");
+          if (fond) fond.style.opacity = "1";          /* le filet de securite reprend son role */
+          if (hp) hp.style.height = "432px";            /* et la hauteur fixe d origine revient */
+        } catch (e0) { }
+      },
+      ref: function (elV) {
+        try {
+          if (!elV || elV.__animAcc2) return; elV.__animAcc2 = 1;
+          var lire = function () { try { var pr = elV.play(); if (pr && pr.catch) pr.catch(function () { }); } catch (e1) { } };
+          lire();
+          if (typeof IntersectionObserver === "function") {
+            var io = new IntersectionObserver(function (ents) {
+              ents.forEach(function (en) { if (en.isIntersecting) lire(); else { try { elV.pause(); } catch (e2) { } } });
+            }, { threshold: 0.05 });
+            io.observe(elV);
+            videoObs.current = io;
+          }
+        } catch (e3) { }
+      },
+      style: { position: "relative", zIndex: 1, display: "block", width: "auto", maxWidth: "100%", height: "auto", maxHeight: "66vh", margin: "0 auto", pointerEvents: "none", background: "transparent" } }),
+    h("div", { className: "hero-pulse" }),
+    h("div", { className: "hero-side" }),
+    h("div", { className: "hero-grad" }),
+
+    /* Deconnexion : meme bouton, meme fonction que l ancien accueil. */
+    h("button", { onClick: function () { hypeSeDeconnecter([function () { try { if (ctx && typeof ctx.setProfil === "function") ctx.setProfil(null); } catch (eP) { } }]).then(function () { setEcran("connexion"); }); }, "aria-label": libDeconnexion, title: libDeconnexion, style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 58, zIndex: 6, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+      h("svg", { viewBox: "0 0 24 24", width: 16, height: 16, fill: "none", stroke: "rgba(255,255,255,0.85)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
+        h("path", { d: "M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" }),
+        h("path", { d: "M16 17l5-5-5-5" }),
+        h("path", { d: "M21 12H9" }))),
+
+    /* Cloche : le composant existant, tel quel (panneau, direct, lu/non lu, routage, quete « notifs »). */
+    h(ClocheNotifs, null),
+
+    /* Enveloppe : meme bouton que l ancien accueil, avec sa pastille de non-lus. */
+    h("button", { onClick: function () { setEcran("messagerie"); }, "aria-label": "Messages", style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 146, zIndex: 7, width: 38, height: 38, borderRadius: 13, border: "1px solid " + (nonLusMsg > 0 ? "rgba(32,217,245,0.55)" : "rgba(255,255,255,0.22)"), background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", boxShadow: "0 4px 18px rgba(0,0,0,0.35)", padding: 0 } },
+      h("svg", { "aria-hidden": "true", viewBox: "0 0 24 24", width: 20, height: 20, fill: "none",
+        stroke: (nonLusMsg > 0 ? "#20D9F5" : "rgba(255,255,255,0.62)"), strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round",
+        style: { filter: (nonLusMsg > 0 ? "drop-shadow(0 0 6px rgba(32,217,245,0.75))" : "none") } },
+        h("rect", { x: 2.5, y: 5, width: 19, height: 14, rx: 2.5 }),
+        h("path", { d: "M3 6.5l9 6.5 9-6.5" })),
+      (nonLusMsg > 0) ? h("span", { style: { position: "absolute", top: -4, right: -4, minWidth: 17, height: 17, borderRadius: 999, background: "#20D9F5", color: "#04262C", fontSize: 9.5, fontWeight: 800, lineHeight: "13px", textAlign: "center", padding: "0 4px", border: "2px solid #07080A", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 10px rgba(32,217,245,0.7)", fontFamily: "'Montserrat',sans-serif" } }, (nonLusMsg > 99 ? "99+" : String(nonLusMsg))) : null),
+
+    /* Langue : meme bouton, meme liste des 7 drapeaux, meme setLangue. */
+    h("div", { style: { position: "absolute", top: "calc(14px + env(safe-area-inset-top))", right: 14, zIndex: 6 } },
+      h("button", { onClick: function () { setLangOuvert(!langOuvert); }, "aria-label": "Langue", style: { width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(10px)", backdropFilter: "blur(10px)", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 18px rgba(0,0,0,0.35)" } }, drapeauActuel),
+      langOuvert ? h("div", { style: { position: "absolute", top: 44, right: 0, display: "flex", flexDirection: "column", gap: 6, padding: 8, borderRadius: 16, border: "1px solid rgba(255,255,255,0.14)", background: "rgba(8,11,15,0.86)", WebkitBackdropFilter: "blur(14px)", backdropFilter: "blur(14px)", boxShadow: "0 14px 34px rgba(0,0,0,0.5)" } },
+        DRAPEAUX.map(function (pl) { return h("button", { key: pl[0], onClick: function () { setLangue(pl[0]); setLangOuvert(false); }, style: { width: 34, height: 34, borderRadius: "50%", border: lg === pl[0] ? "1.5px solid #20D9F5" : "1px solid rgba(255,255,255,0.10)", background: lg === pl[0] ? "rgba(32,217,245,0.18)" : "transparent", fontSize: 15, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" } }, pl[1]); })) : null),
+
+    /* La phrase sous la video, comme aujourd hui (7 langues). */
+    h("div", { style: { width: "100%", textAlign: "center", padding: "14px 8px 0" } },
+      h("div", { style: { fontFamily: "'Montserrat', sans-serif", fontSize: 11.5, fontWeight: 600, letterSpacing: 3.4, textTransform: "uppercase", color: "rgba(248,251,253,0.72)", opacity: 0, animation: "acc2Lettre 1s ease 0.6s forwards" } },
+        hypeT7("Ton univers équestre", "Your equestrian world", "Tu mundo ecuestre", "Il tuo mondo equestre", "あなたの乗馬の世界", "Deine Reitwelt", "عالمك في الفروسية"))));
+
+  /* ===== BUILD 2 (578) : CARTE « AUJOURD HUI » — horizontale, faible hauteur, fond image
+     provisoire (images/accueil_v2_aujourdhui_v1.webp, decoupe de la maquette), fort voile sombre
+     cote texte, texte ivoire, fleche ronde champagne. Ouvre la page Mon apprentissage telle
+     quelle (pas de progression personnalisee calculee ici, decision Blandine). RTL : le voile et
+     la fleche changent de cote, le chevron se retourne. ===== */
+  var carteAujourdhui = h("button", { type: "button", className: "acc2-carte-h", onClick: nav("apprentissage") },
+    h("div", { className: "acc2-carte-img", "aria-hidden": "true", style: { backgroundImage: "url(images/accueil_v2_aujourdhui_v1.webp)" } }),
+    h("div", { className: "acc2-carte-voile", "aria-hidden": "true" }),
+    h("div", { className: "acc2-carte-txt" },
+      h("div", { className: "acc2-carte-t" }, trA({ fr: "Aujourd\u2019hui", en: "Today", es: "Hoy", it: "Oggi", ja: "\u4eca\u65e5", de: "Heute", ar: "\u0627\u0644\u064a\u0648\u0645" })),
+      h("div", { className: "acc2-carte-s" }, trA({ fr: "Continuer ma progression", en: "Continue my progress", es: "Continuar mi progreso", it: "Continuare il mio percorso", ja: "\u5b66\u3073\u3092\u7d9a\u3051\u308b", de: "Meinen Fortschritt fortsetzen", ar: "\u0645\u062a\u0627\u0628\u0639\u0629 \u062a\u0642\u062f\u0645\u064a" }))),
+    h("span", { className: "acc2-carte-fleche", "aria-hidden": "true" },
+      h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round" },
+        h("path", { d: "M9 6l6 6-6 6" }))));
+
+  return h("div", {
+      className: "acc2",
+      /* Balayage depuis le bord gauche -> retour a la page vue avant l accueil (meme geste que l ancien accueil). */
+      onTouchStart: function (e) { var t0 = e.touches[0]; __swipeA.current = (t0 && t0.clientX < 30) ? { x: t0.clientX, y: t0.clientY } : null; },
+      onTouchEnd: function (e) { var s = __swipeA.current; __swipeA.current = null; if (!s) return; if (Date.now() - __montageA.current < 400) return; var t1 = e.changedTouches[0]; if (t1 && (t1.clientX - s.x) > 70 && Math.abs(t1.clientY - s.y) < 80 && retourDepuisAccueil) retourDepuisAccueil(); }
+    },
+    h("style", { dangerouslySetInnerHTML: { __html: ACC2_CSS } }),
+    h(EffetsAccueilDashboard, null),
+    h("div", { className: "app" },
+      hero,
+      /* Le corps de la page, bloc par bloc. Build 2 (578) : la carte « Aujourd hui ». */
+      h("div", { className: "content" },
+        carteAujourdhui)));
+}
 
 /* ===================== MON ÉCURIE ===================== */
 /* ===== MON ÉCURIE — assets (CSS scopé .ecv + images) ===== */
