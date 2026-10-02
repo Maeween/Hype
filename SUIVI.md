@@ -8512,3 +8512,26 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichier images/ecurie-fin-de-page-2.webp (1000 px de large, ~18 Ko) ; nouveau nom pour éviter l'ancienne image en cache. Pas de base64 (nombre d'images intégrées dans l'index inchangé : 108).
 - images/ecurie-fin-de-page.webp (571, provisoire) ne sert plus : peut rester ou être supprimée.
 - Aucun SQL. Build 20261002-572.
+
+## (573) Page Écurie V2 — la signature HYPE passait sous la barre du bas
+- Sa capture (13:18) : tout en bas, « HYPE » et ses deux lignes étaient à moitié cachés par la barre de navigation.
+- Cause : en 571 j'ai réduit l'espace du bas de 80 à 26 px en croyant que l'appli réservait déjà la place de la barre — ce n'est pas le cas sur cette page. Erreur de ma part.
+- Correction : vraie cale en fin de page = hauteur de la barre (84 px + encoche, même mesure que caleBarreHype) + 26 px d'air ; le padding du bas passe à 0.
+- Aucun SQL. Build 20261002-573.
+
+## (574) Fin de page Écurie — plus d'air
+- Ses mots : « laisse plus de place au-dessus et en dessous de la fin de page ».
+- Au-dessus de la photo : 64 px au lieu de 34. En dessous de la signature HYPE : 56 px au lieu de 26 (en plus de la hauteur de la barre du bas).
+- Aucun SQL. Build 20261002-574.
+
+## (575) Fin de page Écurie — moins d'espace en dessous
+- Sa capture de la 574 : la signature est entière, mais ~146 px vides sous HYPE (« ça descend peut-être un peu trop »). Constat : sur cette page la barre du bas ne recouvre presque pas la fin (ce que je croyais en 573 était faux) — l'espace visible ≈ la hauteur de la cale.
+- Cale du bas : encoche + 64 px (au lieu de encoche + 140) → environ autant d'air sous HYPE qu'au-dessus de la photo.
+- Aucun SQL. Build 20261002-575.
+
+## (576) Page Écurie V2 — Prochains événements « grande image + détails » (brief de Blandine)
+- Les 2 prochains événements (triés par date) en 2 cartes horizontales empilées, 14 px entre elles, toute la largeur, 132 px de haut, coins 20 px, bordure champagne très fine, fond vert-noir en léger dégradé, sans ombre.
+- Dans chaque carte : colonne date (jour en grand ivoire, mois champagne en capitales, année discrète, fond plus sombre, fine séparation) | l'affiche réelle recadrée (cover, cadrée par le haut, ~33 % de la largeur, fondue vers la zone texte) | titre serif (2 lignes max), badge du type réel en champagne (Stage / Concours / Sortie, 7 langues — c'est le type enregistré, il n'existe pas de champ « CSO »), lieu avec petite épingle | petit rond chevron. Toute la carte ouvre l'événement ; « Voir tout » inchangé.
+- Sans affiche : pas de zone image (le texte prend la place). Sans événement : section toujours cachée.
+- Remplace l'affichage 545-564 (1 / 2 / carrousel) : on ne montre plus que 2 événements, les autres via « Voir tout ». L'ancien dessin (carteEv) est gardé dans le code, plus appelé.
+- Testé banc 375 px (français, arabe : sens inversé). Aucun SQL. Build 20261002-576.
