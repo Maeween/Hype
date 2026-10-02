@@ -8559,3 +8559,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Polices : Parisienne (écriture manuscrite) pour fr/en/es/it/de ; japonais en Noto Sans JP (déjà chargée par l'appli), jamais une police script latine sur le japonais ou l'arabe ; arabe en Aref Ruqaa. Les deux polices sont demandées à Google Fonts par la feuille de style de l'accueil V2 (même mécanique que la page Communauté avec COMM_CSS_HYPE), et Google ne sert que les fichiers réellement utilisés : Aref Ruqaa n'est téléchargée que si la langue est l'arabe. Repli si la police n'arrive pas (hors ligne) : Cormorant Garamond.
 - ⚠️ Le rendu de l'écriture manuscrite n'a pas pu être vu sur le banc (Google Fonts injoignable depuis le banc, repli Georgia affiché) : à vérifier sur l'iPhone. La mise en page (deux lignes, centrage, espaces, arabe à droite, japonais) a été vérifiée en fr, ar et ja.
 - Vérifications : node --check 18/18 ; marqueurs de garde présents ; aucune erreur au rendu. Aucune image, aucun SQL. Build 20261002-579.
+
+## (580) ACCUEIL V2 — build 4 : la grille 3 × 3
+- Sous la signature : neuf tuiles sur trois colonnes (10 px d'écart), fond pétrole très sombre en léger dégradé, bordure champagne très fine, coins 16 px, icône champagne au trait (24 px), libellé ivoire en serif (Cormorant Garamond), deux lignes maximum ; les tuiles d'une même ligne ont la même hauteur. Compactes et tactiles (68 px minimum).
+- Ordre imposé : Mon écurie · Mes chevaux · Hey Baby / Galops · Culture équestre · Vidéothèque / Linguae · Le coin des pro · Mon compte. En arabe la grille s'inverse d'elle-même (dir=rtl).
+- Icônes : maison, fer à cheval, robot, rosette, livre, lecture vidéo, globe, groupe, document. Fer, rosette, livre, vidéo, globe et document sont les tracés déjà utilisés par les cartes de quêtes (`qIcone`) ; maison, robot et groupe sont dessinés au même trait.
+- Libellés en 7 langues (fr, en, es, it, ja, de, ar) par le tr du contexte ; « Hey Baby » et « Linguae » restent tels quels partout.
+- ⚠️ Au build 4, une tuile ne fait encore RIEN quand on la touche : les destinations sont branchées au build 5 (plan validé par Blandine).
+- Vérifications : node --check 18/18 ; marqueurs de garde présents ; banc 375 px en fr, ar et de, aucune erreur. Aucune image, aucun SQL. Build 20261002-580.
