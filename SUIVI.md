@@ -8625,3 +8625,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sa demande (formulée « sur la page cavalier » : les deux blocs vivent sur la page ÉCURIE du club, c'est là que c'est fait) : les deux cartes d'événements passent de 132 à 108 px de haut ; même contenu (colonne date, affiche, titre sur 2 lignes, badge du type, lieu, chevron).
 - La section « Actualités de l'écurie » (titre + dernière publication) n'est plus affichée. Code gardé (`blocActu`) : remettre `blocActu,` dans la liste des sections pour la faire revenir. L'accès rapide « Actualités » en haut de la page ouvre toujours le fil ; le bloc « Faites vivre votre écurie » continue de compter les publications.
 - Vérifications : node --check 18/18 ; marqueurs de garde ; banc 375 px avec deux événements factices : cartes mesurées à 108 px, section Actualités absente, aucune erreur. Aucune image, aucun SQL. Build 20261003-589.
+
+## (590) ACCUEIL V2 — fin de page « signature » comme sur la page Écurie (sa demande, avec son visuel)
+- Tout en bas de l'accueil, sous le bloc Premium (56 px d'air) : la même fin de page que l'Écurie (571-575) — une bande de paysage très basse (118 px, toute la largeur, fondue dans le noir en haut, en bas et sur les côtés, sans cadre ni bouton), puis la signature « HYPE » en Cormorant champagne entre deux filets champagne. En arabe les filets s'inversent, la photo n'est pas retournée.
+- Image : `images/accueil_v2_fin_de_page_v1.webp` (1000 × 333, ~19 Ko, WebP) = son visuel du cheval noir au-dessus du lac au coucher du soleil, redimensionné ; pas de base64 ; si le fichier manque, la bande disparaît et la signature reste.
+- Sous la signature : la cale de l'accueil (92 px + encoche), la barre ne recouvre rien.
+- Vérifications : node --check 18/18 ; marqueurs de garde ; banc 375 px fr et ar, aucune erreur. Aucun SQL, rien d'autre touché. Build 20261003-590.
+- Toujours en attente de sa décision sur la photo de couverture de la page Écurie (zoom du bandeau 340 px sur une photo panoramique : options a/b/c proposées, photo d'origine et capture demandées).
