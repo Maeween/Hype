@@ -8327,3 +8327,155 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Carrousel, cartes 46 % de large, 240 px de haut, coins 20 px, portrait rond 56 px, nom du concours sur 2 lignes, ligne « + N autres classées » (7 langues).
   - Tous les résultats (12 au plus) au lieu de 3.
 - Testé banc 375 px (français et arabe), chargement complet sans nouvelle erreur. Aucun SQL. Build 20261002-545.
+
+## (546) Page Écurie — Derniers résultats : chargement plus rapide + même règle que les événements
+- Ses mots : « les derniers résultats mettent bcp plus de temps que tout le reste à charger ».
+- Cause : le chargement attendait, AVANT de lire les résultats, trois choses qui n'en ont pas besoin : les photos du mur du club, le classement des chevaux par XP (5 requêtes) et le comptage des cavaliers par cheval.
+- Correction : ces trois lectures partent maintenant en parallèle sans bloquer ; les résultats sont lus dès que les chevaux sont connus. Rien de supprimé, les mêmes données arrivent (testé : résultats affichés avant la fin du classement XP).
+- Sécurité ajoutée : s'il n'y a aucun membre ou si la lecture échoue, la liste est mise à vide (avant, « … » pouvait rester affiché pour toujours).
+- Affichage (ses mots : « quand il n'y a pas de résultat tout disparaît ; un seul sur toute la ligne ; deux en deux carrés ») :
+  - 0 résultat (ou pendant le chargement) : la section n'apparaît pas.
+  - 1 : une carte sur toute la ligne. 2 : deux cartes côte à côte (presque carrées : un vrai carré coupait le texte). 3 et plus : carrousel (format 545).
+- Testé banc 375 px + chargement complet (mêmes erreurs que d'habitude). Aucun SQL. Build 20261002-546.
+
+## (547) Page Écurie V2 — Actualités, Souvenirs, Événements
+- Actualités (ses mots : « s'il n'y a rien elle ne doit pas apparaître ») : section cachée sans publication (et pendant le chargement).
+- Souvenirs de la SEP vides alors que la page Souvenirs montrait des photos : CAUSE = le bloc ne lisait que les photos du fil de l'écurie ; les photos visibles sur la page Souvenirs venaient des ALBUMS PUBLICS des chevaux du club (signalé dès la 542).
+  - Correction : le bloc ajoute les albums publics des chevaux du club (même lecture que la page Souvenirs : albums_cheval, visibilité public, 16 albums au plus), sur la liste des chevaux déjà chargée par la page. Une lecture de plus. Fil + albums mélangés, du plus récent au plus ancien, sans doublon.
+- Souvenirs : petites photos plus grandes (format 4/5 au lieu de carré, la grande suit) ; 80 px d'espace sous le dernier bloc au lieu de 32 (« décolle du bas de page »).
+- Prochains événements, 3 et plus (ses mots : « on les alignait côte à côte ») : cartes carrées comme pour 2 événements, côte à côte (46 % de large), qu'on fait glisser ; avant elles faisaient 78 % (une seule visible).
+- Testé banc 375 px + chargement complet (mêmes erreurs que d'habitude). Aucun SQL. Build 20261002-547.
+
+## (548) Revoir l'ancienne page Écurie (son choix : A + raccourci dans Mon compte)
+- Adresse : 2hype.fr/?ecurie=ancienne → l'onglet Écurie montre l'ancienne page. Tout le monde garde la nouvelle par défaut.
+- Raccourci dans Mon compte, visible de SON compte seulement (même règle que « Mes quêtes », estCompteFeinnHype) : « Voir l'ancienne page Écurie » ; une fois dessus, le bouton devient « Revenir à la nouvelle page Écurie ». Textes en 7 langues.
+- Ça dure jusqu'au rechargement de l'appli ; rien n'est enregistré, aucune donnée touchée.
+- ⚠️ L'adresse marche pour quiconque la connaît (ce n'est qu'un affichage, aucun droit en plus).
+- Testé : avec l'adresse → ancienne page ; sans → nouvelle. Chargement complet sans nouvelle erreur. Aucun SQL. Build 20261002-548.
+
+## (549) Page Écurie V2 — ordre et noir
+- Ses mots : « passe les événements sous les chevaux et passe la page en noir plus profond ».
+- Ordre : bandeau, onglets, citation, Nos chevaux, Prochains événements, Derniers résultats, Actualités, Souvenirs.
+- Fond : #06100F → #030706 (toujours une pointe de vert), milieu du dégradé #081412 → #050B0A ; les voiles sombres du bandeau suivent le même noir. Cartes (#0E1A18) inchangées, elles ressortent donc un peu plus.
+- Aucun SQL. Build 20261002-549.
+
+## (550) Page Écurie V2 — cartes des événements moins hautes
+- Ses mots : « réduis la hauteur des cartes des événements ».
+- Zone d'image : 2 et plus (côte à côte) carré → 4/3 ; 1 seul (toute la ligne) 16/9 → 2/1. L'affiche reste entière (posée sur son flou).
+- Ordre (ses mots : « passe-les sous les résultats ») : bandeau, onglets, citation, Nos chevaux, Derniers résultats, Prochains événements, Actualités, Souvenirs.
+- Aucun SQL. Build 20261002-550.
+
+## (551) Page Écurie V2 — Actualités côte à côte, fondu
+- Ses mots : « passer les deux sur la même ligne comme sur la photo ; idéalement un fondu noir entre la photo et la partie avec le texte ».
+- 2 publications : côte à côte (2 colonnes), photo à gauche (36 %), texte à droite en plus petit (date, titre 2 lignes, début du texte 2 lignes), petite flèche ronde. 1 seule : toute la ligne comme avant.
+- Fondu : la photo se fond vers le fond de la carte côté texte (inversé en arabe). Publication sans photo : liseré champagne, comme avant.
+- Testé banc 375 px (français et arabe), chargement complet sans nouvelle erreur. Aucun SQL. Build 20261002-551.
+
+## (552) Hey Baby — la page partait sur le côté
+- Sa vidéo (02:13) : la conversation glissait de gauche à droite, textes coupés des deux côtés.
+- Cause : des messages contenant de longs morceaux SANS espace (journaux techniques collés, identifiants, liens) ne revenaient pas à la ligne ; la bulle dépassait l'écran et toute la liste devenait plus large que l'iPhone. Ce n'est PAS lié aux changements de la page Écurie.
+- Correction : les bulles coupent ces longs morceaux n'importe où (overflowWrap anywhere), et la liste des messages ne défile plus de côté.
+- Testé : avec un message de ce type, page de 604 px de large avant → 375 px après (largeur iPhone). Aucun SQL. Build 20261002-552.
+- ⚠️ À noter (vu dans sa vidéo, rien de changé) : les journaux qu'elle a collés montrent « OpenAI HTTP 429 — credit_balance_exhausted » le 26/09 : le compte OpenAI de Hey Baby n'avait plus de crédit à ce moment-là.
+
+## (553) Page Écurie V2 — « Accès rapides » (brief de Blandine)
+- La rangée d'onglets texte qui défilait (sous le bandeau) devient le bloc « Accès rapides » : grille 3 × 2, mêmes 6 destinations (Cavaliers, Chevaux, Agenda, Actualités, Souvenirs, Santé), même place dans la page.
+- Petit titre « Accès rapides » en serif ivoire + filet champagne qui s'efface (comme sa maquette).
+- Cartes : 78 px de haut, coins 13 px, fond vert-noir à peine plus clair que la page, contour champagne fin (24 %), léger reflet en haut, aucune ombre.
+- Icône 14 px dans un cercle de 28 px à trait très fin champagne, sans remplissage ni halo. Nom en serif ivoire capitales 12 px (10,5 px pour les mots longs, ex. ERINNERUNGEN). « Ouvrir → » supprimé ; à la place un tout petit filet champagne sous le nom.
+- Écarts : 9 px entre colonnes, 10 px entre rangées. Toute la carte est tactile.
+- Textes en 7 langues (titre ajouté). Testé banc 375 px en français, arabe, allemand, japonais. Chargement complet sans nouvelle erreur. Aucun SQL. Build 20261002-553.
+
+## (554) Page Écurie V2 — citation au-dessus des Accès rapides
+- Ses mots : « laisse la citation au-dessus des onglets ».
+- Ordre : bandeau, citation, Accès rapides, Nos chevaux, Derniers résultats, Prochains événements, Actualités, Souvenirs.
+- Vu sur sa capture : la citation de Feinn s'affiche « “ « … » ” » (deux paires de guillemets) car le texte enregistré contient déjà « ». Rien changé, signalé.
+- Aucun SQL. Build 20261002-554.
+
+## (555) Page Écurie V2 — une seule actualité, toute la largeur
+- Ses mots : « remets les actualités sur toute la largeur avec une seule actualité ».
+- La dernière publication du fil, sur toute la largeur (photo à gauche avec le fondu de la 551, sinon liseré champagne). Les autres restent dans « Voir tout ».
+- Aucun SQL. Build 20261002-555.
+
+## (556) Page Écurie V2 — actualité plus haute, événements plus petits
+- Ses mots : « un peu plus de hauteur sur l'onglet actualité ; diminue la taille des prochains événements ».
+- Actualité : carte de 150 px de haut au lieu de ~118 (photo et texte), texte centré en hauteur.
+- Événements : zone d'image 16/10 (au lieu de 4/3) ; 1 seul : 5/2 (au lieu de 2/1) ; carrousel : cartes à 38 % de la largeur au lieu de 46 % (on en voit 2 et le début de la 3e) ; textes un peu plus petits.
+- Aucun SQL. Build 20261002-556.
+
+## (557) Page Écurie V2 — Souvenirs en carrousel (brief de Blandine)
+- La mosaïque (544/547) devient un carrousel : une grande carte paysage (16/10, coins 16 px) centrée, les voisines dépassent de chaque côté et sont atténuées ; on glisse au doigt avec accroche au centre.
+- Deux petites flèches rondes (32 px, contour champagne fin, fond noir translucide, chevron fin), centrées sur l'image ; grisées au début / à la fin. En arabe le sens est inversé.
+- Points dessous : la position active en capsule champagne, les autres gris doux.
+- En bas de chaque photo : seulement la DATE réelle (publication du fil ou album), discrète sur un léger dégradé. Pas de faux titre (les photos n'en ont pas).
+- 5 souvenirs au plus (mêmes données qu'en 547 : fil + albums publics des chevaux). 1 seul : une carte sur toute la largeur, sans flèches ni points. 0 : petit encart vide (inchangé).
+- Vidéo : rond lecture champagne au centre. Toucher une photo = en grand (inchangé).
+- Testé banc 375 px (français, arabe, 1 photo), flèches cliquées. Chargement complet sans nouvelle erreur. Aucun SQL. Build 20261002-557.
+
+## (558) Page Écurie V2 — résultats moins hauts, blocs rapprochés
+- Ses mots : « réduis un peu la hauteur des cartes des résultats et diminue un peu l'espace entre chaque bloc ».
+- Cartes de résultats (carrousel) : 212 px au lieu de 240, marges intérieures et espacements un peu réduits (rien de supprimé).
+- Espace au-dessus de chaque bloc : 40 px au lieu de 52 (Prochains événements 34 au lieu de 40, Souvenirs 40 au lieu de 48, Accès rapides 22 au lieu de 26).
+- Aucun SQL. Build 20261002-558.
+
+## (559) Page Écurie V2 — événements : l'affiche prend toute la carte
+- Ses mots : « que les affiches prennent plus de place et soient fondues / assombries en bas pour mettre le texte par-dessus ».
+- L'affiche remplit toute la carte (cadrée par le haut), un dégradé noir monte du bas, date + titre + lieu posés dessus (texte ivoire, date champagne). Plus de bande de texte séparée ni de flou autour de l'affiche.
+- Formats : 3 et plus (carrousel) 4/5 ; 2 : carré ; 1 seul : 16/9. ⚠️ Comme l'affiche remplit la carte, le bas d'une affiche en hauteur est coupé (surtout pour 1 seul événement, en largeur) ; l'affiche entière reste visible en ouvrant l'événement.
+- Sans affiche : grande date champagne en haut, texte en bas (même dégradé).
+- Aucun SQL. Build 20261002-559.
+
+## (560) Page Écurie V2 — Souvenirs plus variés, sans la photo de l'actualité
+- Ses mots : « varie plus que ça dans les photos souvenirs et ne prends pas la même que celle dans l'actualité ».
+- Les photos de la publication affichée dans « Actualités » sont écartées des Souvenirs.
+- Une seule photo par publication et par album d'abord (la plus récente de chacun), en alternant photo du fil / photo d'album ; une 2e photo d'une même source seulement s'il manque de quoi remplir les 5 places.
+- Lecture des albums : ajout de la colonne id (déjà lue par la page Souvenirs) pour reconnaître chaque album. Aucun SQL. Build 20261002-560.
+
+## (561) Page Écurie V2 — photos Souvenirs un peu plus petites
+- Ses mots : « les photos des souvenirs un peu plus petites ».
+- Carrousel : carte d'environ 279 px de large au lieu de 315 (48 px de marge de chaque côté au lieu de 30), format 16/9 au lieu de 16/10 ; les voisines dépassent davantage, les flèches sont posées sur elles. 1 seul souvenir : 16/9.
+- Aucun SQL. Build 20261002-561.
+
+## (562) Page Écurie V2 — chevaux un peu plus petits, photo du haut fondue dans le noir
+- Ses mots : « réduis un petit peu la taille des chevaux ; un fondu de la photo de l'onglet écurie vers le noir sur la partie basse ».
+- Chevaux : cartes au format 10/11 au lieu de 4/5 (environ 12 % moins hautes) ; la carte centrale « Les chevaux de l'écurie » a un texte un peu plus petit pour garder des rangées égales.
+- Bandeau : la photo elle-même s'efface progressivement vers le bas (pleine jusqu'à 42 %, puis s'estompe jusqu'au noir de la page) au lieu d'un simple voile ; fond du bandeau = noir de la page. Les voiles existants (gauche, coin, bas) sont gardés.
+- Aucun SQL. Build 20261002-562.
+
+## (563) Page Écurie V2 — 3 résultats visibles sur la ligne
+- Ses mots : « on avait dit qu'on réduisait pour en avoir 3 sur la même ligne ».
+- Carrousel des résultats (3 et plus) : chaque carte fait un tiers de la largeur → 3 cartes visibles en entier, on glisse pour les suivantes. Hauteur 164 px, coins 14 px, portrait 40 px, textes réduits (nom du concours 2 lignes, épreuve et « + N autres classées » sur une ligne).
+- 1 ou 2 résultats : inchangé (toute la ligne / deux côte à côte).
+- Aucun SQL. Build 20261002-563.
+
+## (564) Page Écurie V2 — bouton photo aligné, 2 événements centrés
+- Ses mots : « l'icône de l'appareil photo n'est pas alignée avec les autres ».
+  - Le bouton 📷 (propriétaire) passe sur la même rangée que Partager et le drapeau, même taille (38 px), même écart (8 px), à droite. Avant : 44 px, plus bas.
+- Ses mots : « quand il n'y a que deux événements, moins larges et plus espacés des bords et entre eux ».
+  - 2 événements : mêmes cartes que le carrousel (38 % de large, format 4/5), centrées avec des espaces égaux sur les bords et entre elles. Avant : deux carrés pleine largeur.
+- Aucun SQL. Build 20261002-564.
+
+## (565) Page Écurie V2 — écurie nouvelle ou peu remplie (brief de Blandine)
+- « Responsable » = celui qui peut changer la photo de couverture (même règle que le 📷). Tout le reste = visiteur / membre.
+- Nouveau bloc « Faites vivre votre écurie » (responsable seulement), sous les Accès rapides : titre serif, petite phrase, 3 lignes avec icône fine et chevron — Ajouter un cheval (même fenêtre que « + Ajouter »), Créer un événement (formulaire de l'agenda si autorisé, sinon page Agenda), Publier une actualité (fil de l'écurie). Il disparaît dès qu'il y a au moins 1 cheval ET au moins 1 événement / actualité / souvenir. N'apparaît qu'une fois tout chargé.
+- Chevaux vides : responsable → petite carte « Présentez les chevaux de l'écurie / Ajouter un cheval › » avec icône fine ; visiteur → « Les chevaux de l'écurie seront bientôt présentés ici. »
+- Souvenirs vides : responsable → « Commencez l'album de l'écurie / Les photos partagées apparaîtront ici. / Ajouter une photo › » (ouvre le fil de l'écurie) ; visiteur → « Les souvenirs de l'écurie apparaîtront ici. »
+- Résultats, Événements, Actualités vides : déjà cachés (546-547), inchangé.
+- Couverture : ⚠️ la photo générique par défaut (UV3_H2, ajoutée en 541 quand la SEP n'avait pas de bannière) n'est PLUS utilisée — le brief interdit une photo qui ne serait pas celle du club. Sans bannière : fond vert-noir, fin motif de tête de cheval champagne très pâle, grain discret ; « Ajouter une photo de couverture » en petit pour le responsable, rien pour le visiteur. La SEP et Feinn ont chacune leur bannière : pas d'effet pour elles.
+- ⚠️ NON FAIT, à décider : le brief demande « + Ajouter » (chevaux) pour le responsable seulement. Aujourd'hui tout membre connecté le voit et s'en sert pour ajouter SON cheval à l'écurie ; le réserver au responsable retirerait cette possibilité aux membres. Laissé tel quel.
+- Textes en 7 langues. Testé banc 375 px (page vide responsable / visiteur, page pleine : le bloc « Faites vivre » n'apparaît pas). Aucun SQL. Build 20261002-565.
+
+## (566) Page Écurie V2 — états vides alignés sur la maquette
+- Son « Ok » aux points 1 à 3 de la comparaison avec sa maquette.
+- Chevaux vides (responsable) : grand dessin de tête de cheval au trait champagne (66 px) à gauche, au lieu de la petite icône ronde.
+- « Faites vivre votre écurie » : icônes plus grandes (21 px), lignes un peu plus hautes (46 px).
+- Souvenirs vides (responsable) : icône photo dans un cadre arrondi légèrement teinté champagne (52 px).
+- Couverture sans photo : fond graphique gardé (point 4 non tranché) ; elle annonce une photo à envoyer.
+- Aucun SQL. Build 20261002-566.
+
+## (567) Page Écurie V2 — photo de couverture par défaut choisie par Blandine
+- Elle a envoyé une photo (allée d'écurie, boxes, lanternes, porte voûtée) pour les écuries SANS photo de couverture.
+- Intégrée dans index.html (JPEG 1100 px, ~89 Ko, constante IMG_ECURIE_DEFAUT_V2) : aucun fichier en plus à pousser. Même fondu vers le noir en bas que les autres couvertures.
+- Remplace le fond graphique de la 565 (qui ne s'affiche plus que si l'image manquait). Les écuries qui ont leur photo (SEP, Feinn) ne changent pas.
+- ⚠️ Comme il y a toujours une image, le gros bouton « Ajouter une photo de couverture » n'apparaît plus ; le responsable change la photo avec le bouton 📷 en haut à droite (comme avant).
+- Aucun SQL. Build 20261002-567.
