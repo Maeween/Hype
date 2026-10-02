@@ -8594,3 +8594,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Dans index.html : seules les trois adresses d'image changent (et les commentaires qui les citent). Cadrages inchangés (Aujourd'hui centré à 42 %, les deux grandes cartes cadrées à droite / à gauche en arabe).
 - Les anciens fichiers `accueil_v2_*_v1.webp` ne sont plus utilisés : à supprimer du dépôt ou à laisser, sans effet.
 - Vérifications : node --check 18/18 ; marqueurs de garde ; banc 375 px avec les vraies images : les trois cartes rendent correctement (cavaliers visibles, sujet à droite pour Mon profil et Ma communauté), aucune erreur. Aucun SQL. Build 20261002-584.
+
+## (585) ACCUEIL V2 — plus d'air au-dessus de « Mon profil »
+- Sa demande : « laisse plus d'espace au-dessus de Mon profil ». L'écart entre la grille et la carte Mon profil passe de 22 à 36 px. L'écart entre Mon profil et Ma communauté (14 px) ne change pas.
+- Une seule règle CSS modifiée (`.acc2-carte-g{margin-top}`). node --check 18/18 ; marqueurs de garde ; banc 375 px, aucune erreur. Aucune image, aucun SQL. Build 20261002-585.
+
+## (586) ACCUEIL V2 — trois réglages visuels (brief de Blandine)
+- (1) Espace grille → Mon profil : 36 px, dans sa cible « 28 à 36 px » (c'est la valeur posée au 585 ; si elle voyait encore le 584, l'écart était de 22 px). Carte Mon profil et écart Mon profil → Ma communauté inchangés. Mesuré au banc : 36 px.
+- (2) Icônes de la grille agrandies de 24 à 27 px (+12,5 %). Le trait reste visuellement le même (épaisseur ramenée de 1,7 à 1,51 unité pour compenser l'agrandissement, donc 1,7 px à l'écran, identique aux cartes de quêtes) ; même champagne ; tuiles NON agrandies (écart icône-texte 7 → 6 px, marges 10/9 → 9/8 px, hauteur minimale 68 px conservée, mesurée) ; textes inchangés.
+- (3) « Mes chevaux » : tête de cheval de profil au trait (oreille, chanfrein, naseaux, encolure avec une ligne de crinière, œil) dessinée au même trait que les autres icônes, à la place du fer à cheval. Pas de remplissage, pas d'emoji.
+- Rien d'autre touché : ordre, couleurs, textes, destinations, vidéo, images, barre du bas, dimensions de la grille, polices. node --check 18/18 ; marqueurs de garde ; banc 375 px, aucune erreur. Aucune image, aucun SQL. Build 20261002-586.
