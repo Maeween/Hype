@@ -8587,3 +8587,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - `carteGrande()` accepte maintenant une classe et un style en plus (la carte Mon profil ne change pas).
 - Vérifications : node --check 18/18 ; marqueurs de garde présents ; banc : avec un compte ordinaire le toucher montre la bulle et reste sur l'accueil, elle disparaît après 2,2 s ; avec le compte feinn@live.fr la page Communauté s'ouvre ; aucune erreur. Aucun SQL. Build 20261002-583.
 - Avec ce build, les 7 blocs de la maquette sont en place. Reste, sur décision de Blandine : RTL complet du corps (déjà posé bloc par bloc, à vérifier en vrai), vrais visuels, raffinements, puis le nettoyage de l'ancien accueil (EcranUnivers reste pour l'instant le retour arrière, `ACCUEIL_V2_ACTIF`).
+
+## (584) ACCUEIL V2 — les vrais visuels des trois bandeaux
+- Blandine a envoyé les trois images définitives (cavaliers de face au coucher du soleil pour « Aujourd'hui », cavalière seule sur la colline pour « Mon profil », cavaliers de dos pour « Ma communauté »). Elles remplacent les découpes provisoires de la maquette.
+- Fichiers, sous de NOUVEAUX noms (règle du cache : un nom déjà servi peut rester en mémoire sur les téléphones) : `images/accueil_v2_aujourdhui_v2.webp` (1000 × 333, ~32 Ko), `images/accueil_v2_profil_v2.webp` (1000 × 250, ~23 Ko), `images/accueil_v2_communaute_v2.webp` (1000 × 250, ~29 Ko). WebP qualité 80, largeur 1000 px (≈ 3 × la largeur affichée : net sur iPhone). Pas de base64. Aucun retraitement : les images sont déjà sombres à gauche, le voile des cartes fait le reste.
+- Dans index.html : seules les trois adresses d'image changent (et les commentaires qui les citent). Cadrages inchangés (Aujourd'hui centré à 42 %, les deux grandes cartes cadrées à droite / à gauche en arabe).
+- Les anciens fichiers `accueil_v2_*_v1.webp` ne sont plus utilisés : à supprimer du dépôt ou à laisser, sans effet.
+- Vérifications : node --check 18/18 ; marqueurs de garde ; banc 375 px avec les vraies images : les trois cartes rendent correctement (cavaliers visibles, sujet à droite pour Mon profil et Ma communauté), aucune erreur. Aucun SQL. Build 20261002-584.
