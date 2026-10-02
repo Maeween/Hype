@@ -8479,3 +8479,36 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Remplace le fond graphique de la 565 (qui ne s'affiche plus que si l'image manquait). Les écuries qui ont leur photo (SEP, Feinn) ne changent pas.
 - ⚠️ Comme il y a toujours une image, le gros bouton « Ajouter une photo de couverture » n'apparaît plus ; le responsable change la photo avec le bouton 📷 en haut à droite (comme avant).
 - Aucun SQL. Build 20261002-567.
+
+## (568) Couverture par défaut : fichier à part, plus de base64
+- Ses mots : « on avait dit qu'on arrêtait ça car trop lourd ». Erreur de ma part en 567 : j'avais mis la photo en base64 dans index.html alors que la règle est de sortir les images de l'index (chantier « photos base64 → fichiers »).
+- La photo est maintenant un fichier : images/ecurie-couverture-defaut.webp (WebP 1100 px, ~54 Ko), lu par l'adresse « images/ecurie-couverture-defaut.webp ». index.html retrouve son poids d'avant la 567.
+- ⚠️ Le fichier image DOIT être poussé dans le dossier images/ du dépôt, sinon les écuries sans photo afficheraient le fond vert-noir (la carte ne casse pas).
+- Aucun SQL. Build 20261002-568.
+
+## (569) Page Écurie V2 — bloc Souvenirs retiré
+- Ses mots : « retire la partie souvenir de la page Écurie, comme il a son onglet là-haut ».
+- La page se termine maintenant par « Actualités de l'écurie ». Les Souvenirs restent accessibles par l'Accès rapide « Souvenirs » (page Souvenirs du club, inchangée).
+- La lecture des albums publics des chevaux (ajoutée en 547 pour ce bloc) est coupée : une requête en moins au chargement. Le code du bloc est gardé (remettre blocSouv dans la liste + retirer la ligne « if (true) return; » pour le ravoir).
+- Le bloc « Faites vivre votre écurie » compte toujours les photos du fil comme souvenirs (plus les albums).
+- Aucun SQL. Build 20261002-569.
+
+## (570) Nouvelle photo de couverture par défaut (fichier, pas de base64)
+- Blandine a envoyé une autre photo (écurie au coucher du soleil, cyprès, chevaux au pré) pour les écuries SANS couverture.
+- Fichier images/ecurie-couverture-defaut-2.webp (WebP 1100 px, ~91 Ko). Nouveau nom exprès : l'ancienne image ne peut pas rester en cache. index.html ne contient que l'adresse ; aucune image en base64 ajoutée (vérifié : les seules images base64 restantes de l'index — IMG_QUETES_FOND / IMG_QUETES_HERO — existaient avant ce chantier).
+- images/ecurie-couverture-defaut.webp (568) n'est plus utilisée : peut rester ou être supprimée du dépôt, sans effet.
+- Sur iPhone, le bandeau montre le centre-haut de la photo (ciel, colline, cyprès, façade) ; le bas (chevaux au pré, allée) passe dans le fondu noir.
+- Aucun SQL. Build 20261002-570.
+
+## (571) Page Écurie V2 — fin de page « signature minimaliste » (son choix : proposition 3, symbole HYPE)
+- Sous la dernière section (Actualités) : 34 px, puis une bande de paysage très basse (118 px, toute la largeur) fondue dans le noir en haut, en bas et sur les côtés (aucun cadre, aucun coin, aucune ombre), puis une fine ligne champagne – HYPE (serif, espacé) – fine ligne champagne, puis 26 px avant la barre du bas (au lieu de 80 px vides).
+- Image = fichier images/ecurie-fin-de-page.webp (~7 Ko), PAS de base64 (vérifié : nombre d'images intégrées dans l'index inchangé). ⚠️ Provisoire : découpée dans sa maquette (basse résolution, un peu floue sur iPhone) ; à remplacer par la vraie photo dès qu'elle l'envoie (même nom → changer le nom pour éviter le cache).
+- Si l'image manque, elle disparaît sans casser la page (la signature reste).
+- En arabe : lignes inversées, photo non retournée. Rien d'autre touché.
+- Aucun SQL. Build 20261002-571.
+
+## (572) Fin de page Écurie — vraie photo
+- Blandine a envoyé la vraie photo panoramique (coucher de soleil, cheval bai de trois quarts arrière à droite, encolure nattée).
+- Fichier images/ecurie-fin-de-page-2.webp (1000 px de large, ~18 Ko) ; nouveau nom pour éviter l'ancienne image en cache. Pas de base64 (nombre d'images intégrées dans l'index inchangé : 108).
+- images/ecurie-fin-de-page.webp (571, provisoire) ne sert plus : peut rester ou être supprimée.
+- Aucun SQL. Build 20261002-572.
