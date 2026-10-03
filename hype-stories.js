@@ -1,4 +1,6 @@
 /* ============================================================================
+   (610, ?v=20bz) 03/10 : propriete `accent` de BandeauStories (couleur d accent imposee par la page appelante,
+   voir dans la fonction). Sans elle : comportement inchange. Aucune autre ligne touchee.
    (607, ?v=20by) 03/10 : ARABE ajoute a toutes les entrees de HS_TXT (hsT) et au bouton « Partager » — demande
    de Blandine (« mets-les en arabe aussi »). Aucune autre ligne touchee.
    HYPE ▸ hype-stories.js — v2 — SESSION 115 (12/08/2026)
@@ -44,7 +46,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bx";
+var HYPE_STORIES_VERSION = "20bz";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -2351,6 +2353,10 @@ function BandeauStories(props) {
   function tA(a) { return (typeof teinteRGBA === "function") ? teinteRGBA(tn, a) : ("rgba(" + (TEzB ? "255,255,255" : "32,217,245") + "," + a + ")"); }
   /* (536) page Ecurie, regle sobre : accent = couleur de l ecurie, transparences neutres */
   if (TEzB) { tn = TEzB.c; tnL = TEzB.c; tA = function (a) { return "rgba(255,255,255," + a + ")"; }; }
+  /* (610, ?v=20bz) `accent` : couleur d accent IMPOSEE par la page appelante (anneau des ronds, point « non lue »,
+     « + » et son libelle, trait entre deux medaillons). Sans cette propriete, rien ne change : la teinte du cavalier
+     (ou celle de l ecurie) comme avant. Demande de Blandine pour la Communaute V2 (champagne, pas de turquoise). */
+  if (props && props.accent) { tn = props.accent; tnL = props.accent; tA = function (a) { return (typeof teinteRGBA === "function") ? teinteRGBA(props.accent, a) : ("rgba(201,166,107," + a + ")"); }; }
 
   var gS = React.useState([]), groupes = gS[0], setGroupes = gS[1];
   var mS = React.useState(null), moiId = mS[0], setMoiId = mS[1];
