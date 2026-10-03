@@ -244,9 +244,28 @@
     var lignes = String(texte).split("\n").map(function (l) { return l.trim(); }).filter(Boolean);
     try { if (typeof window !== "undefined") window.__hypeOriginesFFE = extraireOrigines(lignes); } catch (eOx) { try { window.__hypeOriginesFFE = null; } catch (eOx2) { } } /* 26/08 (corrige 12h05) : le lecteur vit dans le BLOC 1, sans la variable d etat E du bloc 2 — la premiere greffe y referencait E et cassait TOUTE lecture (« Can't find variable: E », capture Blandine 12h02). Pont par window. */
     try { /* 26/08 soir : VERROU D'IDENTITE — on lit AUSSI le nom du cheval dans l'en-tete du telemat (la ligne juste au-dessus de « … né le JJ/MM/AAAA ») ; l'ecrivain refusera un telemat qui ne correspond pas a la fiche ouverte (72 lignes de Rizotto ont ete retrouvees sur Vallieres). */
+      /* 03/10 (593, ?v=20) \u2014 LE NOM FFE PEUT PORTER UN SUFFIXE APRES UNE ETOILE, ET TENIR SUR DEUX LIGNES.
+         Telemat d Olivia Optima (Olivia_2017.pdf, lu avec le meme assemblage de lignes que l app) :
+           \u00ab OLIVIA OPTIMA*PO N EYS \u00bb   (le nom, puis l etoile et le debut du suffixe \u00ab PONEYS PARTENAIRES \u00bb,
+           \u00ab PARTE N AIRES \u00bb              le proprietaire ; bruit d extraction habituel)
+           \u00ab Origine Etrangere Poney n\u00e9 le 19/06/2010 \u00bb
+         La ligne juste au-dessus de \u00ab n\u00e9 le \u00bb n etait donc que la FIN du suffixe : le verrou comparait
+         \u00ab PARTE N AIRES \u00bb a \u00ab Olivia Optima \u00bb et refusait l import. Desormais, quand une etoile est en
+         jeu (sur cette ligne ou sur celle du dessus), on recolle les deux lignes et on coupe tout ce qui
+         suit l etoile : \u00ab OLIVIA OPTIMA \u00bb. Un nom sans etoile est lu exactement comme avant (une ligne).
+         Satine de Sienne (\u00ab SATINE DE SIENNE *PONEYS PARTE\u2026 \u00bb) est dans le meme cas. */
       var nomPdfX = null;
+      var fragNom = /^[A-Z\u00c0-\u00dc0-9' .*-]{2,40}$/, pasUnNom = /^(Robe|P[e\u00e8]re|Naisseur|Date|Selle|Poney)\b/i;
       for (var iN = 0; iN + 1 < lignes.length; iN++) {
-        if (/n[e\u00e9]e?\s+le\s+\d{2}\/\d{2}\/\d{4}/i.test(lignes[iN + 1]) && /^[A-Z\u00c0-\u00dc0-9' .-]{2,40}$/.test(lignes[iN].trim()) && !/^(Robe|P[e\u00e8]re|Naisseur|Date|Selle|Poney)\b/i.test(lignes[iN].trim())) { nomPdfX = lignes[iN].trim(); break; }
+        if (!/n[e\u00e9]e?\s+le\s+\d{2}\/\d{2}\/\d{4}/i.test(lignes[iN + 1])) continue;
+        var lNom = lignes[iN].trim();
+        if (!fragNom.test(lNom) || !/[A-Z\u00c0-\u00dc]/.test(lNom) || pasUnNom.test(lNom)) continue;
+        var lHaut = (iN > 0) ? lignes[iN - 1].trim() : "";
+        if ((lNom.indexOf("*") >= 0 || lHaut.indexOf("*") >= 0) && fragNom.test(lHaut) && /[A-Z\u00c0-\u00dc]/.test(lHaut) && !pasUnNom.test(lHaut)) lNom = lHaut + " " + lNom;
+        var iEtoile = lNom.indexOf("*");
+        if (iEtoile >= 0) lNom = lNom.slice(0, iEtoile);
+        lNom = lNom.replace(/\s+/g, " ").trim();
+        if (lNom.length >= 2) { nomPdfX = lNom; break; }
       }
       if (typeof window !== "undefined") window.__hypeNomPdfFFE = nomPdfX;
     } catch (eNp) { }
