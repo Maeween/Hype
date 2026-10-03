@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261003-597"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261003-598"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -35994,7 +35994,7 @@ function EcranResultatsCavaliere() {
               fortsPool.push({ pl: plJ, part: null, nom: String(rJ.event || ""), ep: dsJ.split("\u00b7")[0].trim(), cav: (mC ? mC[1].trim() : ""), d: "", an: String(rJ.annee || "").slice(0, 4) });
             });
           } catch (eFp) { }
-          function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); /* (596) ECHELLE DES TITRES, reglee avec Blandine : 3 = titre NATIONAL (Open de France, championnat / chpt de France, coupe de France, criterium, finale, grand tournoi) ; 2 = INTERNATIONAL ou SALON (« le salon int de Bordeaux devrait etre plus important ») ; 1 = autre championnat (regional, des territoires, « Chp Reg »... — « on gardait les Reg ») ; 0 = epreuve ordinaire, et aussi un championnat ou circuit DEPARTEMENTAL sans mention regionale (« sans les dpt », 594). */ if (/open de france|championnat de france|chpt? de france|coupe de france|crit\u00e9rium|criterium|finale|grand tournoi/.test(tT)) return 3; if (/internation|\bint\b|salon du cheval|salon internat|\bsalon\b|\bequita\b/.test(tT)) return 2; /* Equita Lyon = salon, sans le mot */ if ((/\bd[e\u00e9]?pt\b|d[e\u00e9]partemental/.test(tT)) && !(/\breg\b|r[e\u00e9]gional/.test(tT))) return 0; if (/championnat|\bchpt?\b|des territoires/.test(tT)) return 1; return 0; }
+          function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); /* (596) ECHELLE DES TITRES, reglee avec Blandine : 3 = titre NATIONAL (Open de France, championnat / chpt de France, coupe de France, criterium, finale, grand tournoi) ; 2 = INTERNATIONAL ou SALON (« le salon int de Bordeaux devrait etre plus important ») ; 1 = autre championnat (regional, des territoires, « Chp Reg »... — « on gardait les Reg ») ; 0 = epreuve ordinaire, et aussi un championnat ou circuit DEPARTEMENTAL sans mention regionale (« sans les dpt », 594). */ if (/open de france|championnat de france|chpt? de france|coupe de france|crit\u00e9rium|criterium|finale|grand tournoi/.test(tT)) return 3; if (/internation|\bint\b|salon du cheval|salon internat|\bsalon\b|\bequita\b|\beurexpo\b/.test(tT)) return 2; /* Equita Lyon = salon, sans le mot ; (598) la FFE l ecrit « EUREXPO » (le lieu) : enregistre tel quel, demande de Blandine */ if ((/\bd[e\u00e9]?pt\b|d[e\u00e9]partemental/.test(tT)) && !(/\breg\b|r[e\u00e9]gional/.test(tT))) return 0; if (/championnat|\bchpt?\b|des territoires/.test(tT)) return 1; return 0; }
           function poidsNiveau(f) { var eN = (f.ep || "").toLowerCase(); if (/\u00e9lite|elite/.test(eN)) return 5; var mN = eN.match(/\b([1-4])\b/); return mN ? (5 - Number(mN[1])) : 0; }
           function jetonFort(f) { var ts = String(f.nom || "").toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g, "").split(/\s+/).filter(function (w) { return w.length > 5; }).sort(function (a, b) { return b.length - a.length; }); return (f.an || "") + "|" + (ts[0] || String(f.nom || "").toLowerCase()); }
           /* 02/09 (Blandine) : « pas prioritaire en tant que moment fort ». Une
@@ -36006,7 +36006,9 @@ function EcranResultatsCavaliere() {
           /* (597) Blandine : « un passage ne suffit pas, mais en l occurrence ils gagnent ! » — le pool reste celui des
              VICTOIRES (podiums en complement s il manque des cartes), comme avant le 596. Equita Lyon et l Open a
              Fontainebleau remontent parce que ce sont des victoires a un grand rendez-vous (echelle des titres du 596)
-             et que deux Open la meme annee avec deux chevaux ne sont plus confondus (dedoublonnage par cheval). */
+             et que deux Open la meme annee avec deux chevaux ne sont plus confondus (dedoublonnage par cheval).
+             (598) « par defaut je dirais victoire » : le pool automatique = les VICTOIRES, point. (Le choix a la main
+             d un moment fort — en retirer un, en ajouter un autre — est un chantier a part, demande le 03/10.) */
           var vics = fortsPool.filter(function (f) { return f.pl === 1; }).slice().sort(triFort);
           /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ if (vics.length < 5) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
           var forts = []; var jetonsVus = {};
@@ -36187,70 +36189,6 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                         }))),
                 (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[pickerMomentF]) ? h("button", { onClick: function () { definirMediaMomentFort(pickerMomentF, null); }, style: { marginTop: 12, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(237,242,245,0.65)", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Revenir au choix automatique", "Go back to automatic choice", "Volver a la elecci\u00f3n autom\u00e1tica", "Torna alla scelta automatica", "\u81ea\u52d5\u9078\u629e\u306b\u623b\u3059", "Zur automatischen Auswahl zur\u00fcckkehren", "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a")) : null,
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642"))))) : null,
-            /* — 3bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) —
-               Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
-               « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
-               porte de points : inutile de montrer un tableau de zéros à qui n'a
-               pas encore repassé ses télémats. */
-            (function () {
-              var avecPts = filtreCav(tousF).filter(function (fP) { return fP.pts != null && !isNaN(fP.pts); });
-              if (!avecPts.length) return null;
-              var saisons = {};
-              avecPts.forEach(function (fP) { var sA = saisonDe(fP.d); if (sA == null) return; if (!saisons[sA]) saisons[sA] = []; saisons[sA].push(fP); });
-              var clesS = Object.keys(saisons).sort().reverse();
-              if (!clesS.length) return null;
-              var sCour = (saisonPts != null && saisons[saisonPts]) ? saisonPts : clesS[0];
-              var lignesS = saisons[sCour] || [];
-              var totalS = lignesS.reduce(function (acc, fP) { return acc + (fP.pts || 0); }, 0);
-              var parFam = {};
-              lignesS.forEach(function (fP) { var k = familleEp(fP.ep); if (!parFam[k]) parFam[k] = { n: 0, p: 0 }; parFam[k].n++; parFam[k].p += (fP.pts || 0); });
-              var famTri = Object.keys(parFam).sort(function (a1, b1) { return parFam[b1].p - parFam[a1].p; });
-              var sansPts = filtreCav(tousF).length - avecPts.length;
-              var arrondi = function (x) { return Math.round(x * 100) / 100; };
-              return h(React.Fragment, null,
-                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
-                  h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
-                    T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
-                (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
-                  clesS.map(function (sK) {
-                    var onS = (String(sK) === String(sCour));
-                    return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
-                      style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
-                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
-                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
-                        color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
-                      sK + " / " + (Number(sK) + 1));
-                  })) : null,
-                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
-                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
-                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
-                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
-                      T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ", "\u0646\u0642\u0627\u0637 \u00b7 ") + lignesS.length + " " +
-                      T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
-                  h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
-                    T("Saison du 1er juillet " + sCour + " au 30 juin " + (Number(sCour) + 1),
-                      "Season from 1 July " + sCour + " to 30 June " + (Number(sCour) + 1),
-                      "Temporada del 1 de julio " + sCour + " al 30 de junio " + (Number(sCour) + 1),
-                      "Stagione dal 1\u00ba luglio " + sCour + " al 30 giugno " + (Number(sCour) + 1),
-                      sCour + "\u5e747\u67081\u65e5\u301c" + (Number(sCour) + 1) + "\u5e746\u670830\u65e5",
-                      "Saison vom 1. Juli " + sCour + " bis 30. Juni " + (Number(sCour) + 1), "\u0627\u0644\u0645\u0648\u0633\u0645 \u0645\u0646 1 \u064a\u0648\u0644\u064a\u0648 " + sCour + " \u0625\u0644\u0649 30 \u064a\u0648\u0646\u064a\u0648 " + (Number(sCour) + 1))),
-                  h("div", { style: { marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
-                    famTri.map(function (kF, iF) {
-                      return h("div", { key: "fam" + kF, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: iF ? "1px solid rgba(255,255,255,0.045)" : "none" } },
-                        h("div", { style: { flex: 1, minWidth: 0, fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, kF),
-                        h("div", { style: { flex: "0 0 auto", fontSize: 10.5, color: "#8A929C" } }, parFam[kF].n + " \u00d7"),
-                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: OR9, minWidth: 42, textAlign: "right" } }, arrondi(parFam[kF].p)));
-                    })),
-                  /* ⚠️ ON DIT CE QU'ON NE SAIT PAS : une ligne sans points n'est pas
-                     comptée pour zéro, elle est annoncée. */
-                  sansPts > 0 ? h("div", { style: { marginTop: 11, fontSize: 10.5, lineHeight: 1.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
-                    sansPts + " " + T("r\u00e9sultat" + (sansPts > 1 ? "s" : "") + " sans points connus \u2014 repasse son t\u00e9l\u00e9mat pour les r\u00e9cup\u00e9rer. Les points sont ceux calcul\u00e9s par la FFE, jamais recalcul\u00e9s ici.",
-                                       "result" + (sansPts > 1 ? "s" : "") + " with no known points \u2014 re-import its telemat. Points come from the FFE, never recomputed here.",
-                                       "resultado" + (sansPts > 1 ? "s" : "") + " sin puntos conocidos \u2014 vuelve a importar su telemat.",
-                                       "risultat" + (sansPts > 1 ? "i" : "o") + " senza punti noti \u2014 reimporta il suo telemat.",
-                                       "\u30dd\u30a4\u30f3\u30c8\u4e0d\u660e\u306e\u7d50\u679c\u304c\u3042\u308a\u307e\u3059\u3002",
-                                       "Ergebnis(se) ohne bekannte Punkte \u2014 Telemat erneut importieren.", "\u0646\u062a\u064a\u062c\u0629 \u0628\u0644\u0627 \u0646\u0642\u0627\u0637 \u0645\u0639\u0631\u0648\u0641\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0645\u0644\u0641 t\u00e9l\u00e9mat \u0644\u0627\u0633\u062a\u0631\u062c\u0627\u0639\u0647\u0627. \u0627\u0644\u0646\u0642\u0627\u0637 \u0647\u064a \u0627\u0644\u062a\u064a \u062a\u062d\u0633\u0628\u0647\u0627 FFE\u060c \u0648\u0644\u0627 \u064a\u0639\u0627\u062f \u062d\u0633\u0627\u0628\u0647\u0627 \u0647\u0646\u0627.")) : null));
-            })(),
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
@@ -36393,6 +36331,70 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                       })());
                   });
                 })())) : null,
+            /* — 5bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) — (598) Blandine : « mets les points de qualif en dessous des derniers résultats » : le bloc, inchangé, passe sous « Derniers résultats » (il était entre les moments forts et « Par saison »).
+               Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
+               « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
+               porte de points : inutile de montrer un tableau de zéros à qui n'a
+               pas encore repassé ses télémats. */
+            (function () {
+              var avecPts = filtreCav(tousF).filter(function (fP) { return fP.pts != null && !isNaN(fP.pts); });
+              if (!avecPts.length) return null;
+              var saisons = {};
+              avecPts.forEach(function (fP) { var sA = saisonDe(fP.d); if (sA == null) return; if (!saisons[sA]) saisons[sA] = []; saisons[sA].push(fP); });
+              var clesS = Object.keys(saisons).sort().reverse();
+              if (!clesS.length) return null;
+              var sCour = (saisonPts != null && saisons[saisonPts]) ? saisonPts : clesS[0];
+              var lignesS = saisons[sCour] || [];
+              var totalS = lignesS.reduce(function (acc, fP) { return acc + (fP.pts || 0); }, 0);
+              var parFam = {};
+              lignesS.forEach(function (fP) { var k = familleEp(fP.ep); if (!parFam[k]) parFam[k] = { n: 0, p: 0 }; parFam[k].n++; parFam[k].p += (fP.pts || 0); });
+              var famTri = Object.keys(parFam).sort(function (a1, b1) { return parFam[b1].p - parFam[a1].p; });
+              var sansPts = filtreCav(tousF).length - avecPts.length;
+              var arrondi = function (x) { return Math.round(x * 100) / 100; };
+              return h(React.Fragment, null,
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
+                  h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
+                    T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
+                (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
+                  clesS.map(function (sK) {
+                    var onS = (String(sK) === String(sCour));
+                    return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
+                      style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
+                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
+                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
+                        color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+                      sK + " / " + (Number(sK) + 1));
+                  })) : null,
+                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
+                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
+                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
+                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
+                      T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ", "\u0646\u0642\u0627\u0637 \u00b7 ") + lignesS.length + " " +
+                      T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
+                  h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    T("Saison du 1er juillet " + sCour + " au 30 juin " + (Number(sCour) + 1),
+                      "Season from 1 July " + sCour + " to 30 June " + (Number(sCour) + 1),
+                      "Temporada del 1 de julio " + sCour + " al 30 de junio " + (Number(sCour) + 1),
+                      "Stagione dal 1\u00ba luglio " + sCour + " al 30 giugno " + (Number(sCour) + 1),
+                      sCour + "\u5e747\u67081\u65e5\u301c" + (Number(sCour) + 1) + "\u5e746\u670830\u65e5",
+                      "Saison vom 1. Juli " + sCour + " bis 30. Juni " + (Number(sCour) + 1), "\u0627\u0644\u0645\u0648\u0633\u0645 \u0645\u0646 1 \u064a\u0648\u0644\u064a\u0648 " + sCour + " \u0625\u0644\u0649 30 \u064a\u0648\u0646\u064a\u0648 " + (Number(sCour) + 1))),
+                  h("div", { style: { marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                    famTri.map(function (kF, iF) {
+                      return h("div", { key: "fam" + kF, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: iF ? "1px solid rgba(255,255,255,0.045)" : "none" } },
+                        h("div", { style: { flex: 1, minWidth: 0, fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, kF),
+                        h("div", { style: { flex: "0 0 auto", fontSize: 10.5, color: "#8A929C" } }, parFam[kF].n + " \u00d7"),
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: OR9, minWidth: 42, textAlign: "right" } }, arrondi(parFam[kF].p)));
+                    })),
+                  /* ⚠️ ON DIT CE QU'ON NE SAIT PAS : une ligne sans points n'est pas
+                     comptée pour zéro, elle est annoncée. */
+                  sansPts > 0 ? h("div", { style: { marginTop: 11, fontSize: 10.5, lineHeight: 1.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    sansPts + " " + T("r\u00e9sultat" + (sansPts > 1 ? "s" : "") + " sans points connus \u2014 repasse son t\u00e9l\u00e9mat pour les r\u00e9cup\u00e9rer. Les points sont ceux calcul\u00e9s par la FFE, jamais recalcul\u00e9s ici.",
+                                       "result" + (sansPts > 1 ? "s" : "") + " with no known points \u2014 re-import its telemat. Points come from the FFE, never recomputed here.",
+                                       "resultado" + (sansPts > 1 ? "s" : "") + " sin puntos conocidos \u2014 vuelve a importar su telemat.",
+                                       "risultat" + (sansPts > 1 ? "i" : "o") + " senza punti noti \u2014 reimporta il suo telemat.",
+                                       "\u30dd\u30a4\u30f3\u30c8\u4e0d\u660e\u306e\u7d50\u679c\u304c\u3042\u308a\u307e\u3059\u3002",
+                                       "Ergebnis(se) ohne bekannte Punkte \u2014 Telemat erneut importieren.", "\u0646\u062a\u064a\u062c\u0629 \u0628\u0644\u0627 \u0646\u0642\u0627\u0637 \u0645\u0639\u0631\u0648\u0641\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0645\u0644\u0641 t\u00e9l\u00e9mat \u0644\u0627\u0633\u062a\u0631\u062c\u0627\u0639\u0647\u0627. \u0627\u0644\u0646\u0642\u0627\u0637 \u0647\u064a \u0627\u0644\u062a\u064a \u062a\u062d\u0633\u0628\u0647\u0627 FFE\u060c \u0648\u0644\u0627 \u064a\u0639\u0627\u062f \u062d\u0633\u0627\u0628\u0647\u0627 \u0647\u0646\u0627.")) : null));
+            })(),
             /* — 6 · CTA — */
             /* 02/09 : le CTA vers la page technique est RETIRE. A sa place, la seule
                chose qui vivait derriere : l acces de la proprietaire aux lignes
@@ -59762,7 +59764,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
               fortsPool.push({ pl: plJ, part: null, nom: String(rJ.event || ""), ep: dsJ.split("\u00b7")[0].trim(), cav: (mC ? mC[1].trim() : ""), d: "", an: String(rJ.annee || "").slice(0, 4) });
             });
           } catch (eFp) { }
-          function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); /* (596) ECHELLE DES TITRES, reglee avec Blandine : 3 = titre NATIONAL (Open de France, championnat / chpt de France, coupe de France, criterium, finale, grand tournoi) ; 2 = INTERNATIONAL ou SALON (« le salon int de Bordeaux devrait etre plus important ») ; 1 = autre championnat (regional, des territoires, « Chp Reg »... — « on gardait les Reg ») ; 0 = epreuve ordinaire, et aussi un championnat ou circuit DEPARTEMENTAL sans mention regionale (« sans les dpt », 594). */ if (/open de france|championnat de france|chpt? de france|coupe de france|crit\u00e9rium|criterium|finale|grand tournoi/.test(tT)) return 3; if (/internation|\bint\b|salon du cheval|salon internat|\bsalon\b|\bequita\b/.test(tT)) return 2; /* Equita Lyon = salon, sans le mot */ if ((/\bd[e\u00e9]?pt\b|d[e\u00e9]partemental/.test(tT)) && !(/\breg\b|r[e\u00e9]gional/.test(tT))) return 0; if (/championnat|\bchpt?\b|des territoires/.test(tT)) return 1; return 0; }
+          function poidsTitre(f) { var tT = ((f.nom || "") + " " + (f.ep || "")).toLowerCase(); /* (596) ECHELLE DES TITRES, reglee avec Blandine : 3 = titre NATIONAL (Open de France, championnat / chpt de France, coupe de France, criterium, finale, grand tournoi) ; 2 = INTERNATIONAL ou SALON (« le salon int de Bordeaux devrait etre plus important ») ; 1 = autre championnat (regional, des territoires, « Chp Reg »... — « on gardait les Reg ») ; 0 = epreuve ordinaire, et aussi un championnat ou circuit DEPARTEMENTAL sans mention regionale (« sans les dpt », 594). */ if (/open de france|championnat de france|chpt? de france|coupe de france|crit\u00e9rium|criterium|finale|grand tournoi/.test(tT)) return 3; if (/internation|\bint\b|salon du cheval|salon internat|\bsalon\b|\bequita\b|\beurexpo\b/.test(tT)) return 2; /* Equita Lyon = salon, sans le mot ; (598) la FFE l ecrit « EUREXPO » (le lieu) : enregistre tel quel, demande de Blandine */ if ((/\bd[e\u00e9]?pt\b|d[e\u00e9]partemental/.test(tT)) && !(/\breg\b|r[e\u00e9]gional/.test(tT))) return 0; if (/championnat|\bchpt?\b|des territoires/.test(tT)) return 1; return 0; }
           function poidsNiveau(f) { var eN = (f.ep || "").toLowerCase(); if (/\u00e9lite|elite/.test(eN)) return 5; var mN = eN.match(/\b([1-4])\b/); return mN ? (5 - Number(mN[1])) : 0; }
           function jetonFort(f) { var ts = String(f.nom || "").toLowerCase().replace(/[^a-z\u00e0-\u00ff ]/g, "").split(/\s+/).filter(function (w) { return w.length > 5; }).sort(function (a, b) { return b.length - a.length; }); return (f.an || "") + "|" + (ts[0] || String(f.nom || "").toLowerCase()); }
           /* 02/09 (Blandine) : « pas prioritaire en tant que moment fort ». Une
@@ -59774,7 +59776,9 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
           /* (597) Blandine : « un passage ne suffit pas, mais en l occurrence ils gagnent ! » — le pool reste celui des
              VICTOIRES (podiums en complement s il manque des cartes), comme avant le 596. Equita Lyon et l Open a
              Fontainebleau remontent parce que ce sont des victoires a un grand rendez-vous (echelle des titres du 596)
-             et que deux Open la meme annee avec deux chevaux ne sont plus confondus (dedoublonnage par cheval). */
+             et que deux Open la meme annee avec deux chevaux ne sont plus confondus (dedoublonnage par cheval).
+             (598) « par defaut je dirais victoire » : le pool automatique = les VICTOIRES, point. (Le choix a la main
+             d un moment fort — en retirer un, en ajouter un autre — est un chantier a part, demande le 03/10.) */
           var vics = fortsPool.filter(function (f) { return f.pl === 1; }).slice().sort(triFort);
           /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ if (vics.length < 5) vics = vics.concat(fortsPool.filter(function (f) { return f.pl > 1 && f.pl <= 3; }).slice().sort(triFort));
           var forts = []; var jetonsVus = {};
@@ -59955,70 +59959,6 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                         }))),
                 (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[pickerMomentF]) ? h("button", { onClick: function () { definirMediaMomentFort(pickerMomentF, null); }, style: { marginTop: 12, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.18)", background: "transparent", color: "rgba(237,242,245,0.65)", fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Revenir au choix automatique", "Go back to automatic choice", "Volver a la elecci\u00f3n autom\u00e1tica", "Torna alla scelta automatica", "\u81ea\u52d5\u9078\u629e\u306b\u623b\u3059", "Zur automatischen Auswahl zur\u00fcckkehren", "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0627\u0644\u0627\u062e\u062a\u064a\u0627\u0631 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a")) : null,
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642"))))) : null,
-            /* — 3bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) —
-               Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
-               « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
-               porte de points : inutile de montrer un tableau de zéros à qui n'a
-               pas encore repassé ses télémats. */
-            (function () {
-              var avecPts = filtreCav(tousF).filter(function (fP) { return fP.pts != null && !isNaN(fP.pts); });
-              if (!avecPts.length) return null;
-              var saisons = {};
-              avecPts.forEach(function (fP) { var sA = saisonDe(fP.d); if (sA == null) return; if (!saisons[sA]) saisons[sA] = []; saisons[sA].push(fP); });
-              var clesS = Object.keys(saisons).sort().reverse();
-              if (!clesS.length) return null;
-              var sCour = (saisonPts != null && saisons[saisonPts]) ? saisonPts : clesS[0];
-              var lignesS = saisons[sCour] || [];
-              var totalS = lignesS.reduce(function (acc, fP) { return acc + (fP.pts || 0); }, 0);
-              var parFam = {};
-              lignesS.forEach(function (fP) { var k = familleEp(fP.ep); if (!parFam[k]) parFam[k] = { n: 0, p: 0 }; parFam[k].n++; parFam[k].p += (fP.pts || 0); });
-              var famTri = Object.keys(parFam).sort(function (a1, b1) { return parFam[b1].p - parFam[a1].p; });
-              var sansPts = filtreCav(tousF).length - avecPts.length;
-              var arrondi = function (x) { return Math.round(x * 100) / 100; };
-              return h(React.Fragment, null,
-                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
-                  h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
-                    T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
-                (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
-                  clesS.map(function (sK) {
-                    var onS = (String(sK) === String(sCour));
-                    return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
-                      style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
-                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
-                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
-                        color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
-                      sK + " / " + (Number(sK) + 1));
-                  })) : null,
-                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
-                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
-                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
-                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
-                      T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ", "\u0646\u0642\u0627\u0637 \u00b7 ") + lignesS.length + " " +
-                      T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
-                  h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
-                    T("Saison du 1er juillet " + sCour + " au 30 juin " + (Number(sCour) + 1),
-                      "Season from 1 July " + sCour + " to 30 June " + (Number(sCour) + 1),
-                      "Temporada del 1 de julio " + sCour + " al 30 de junio " + (Number(sCour) + 1),
-                      "Stagione dal 1\u00ba luglio " + sCour + " al 30 giugno " + (Number(sCour) + 1),
-                      sCour + "\u5e747\u67081\u65e5\u301c" + (Number(sCour) + 1) + "\u5e746\u670830\u65e5",
-                      "Saison vom 1. Juli " + sCour + " bis 30. Juni " + (Number(sCour) + 1), "\u0627\u0644\u0645\u0648\u0633\u0645 \u0645\u0646 1 \u064a\u0648\u0644\u064a\u0648 " + sCour + " \u0625\u0644\u0649 30 \u064a\u0648\u0646\u064a\u0648 " + (Number(sCour) + 1))),
-                  h("div", { style: { marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
-                    famTri.map(function (kF, iF) {
-                      return h("div", { key: "fam" + kF, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: iF ? "1px solid rgba(255,255,255,0.045)" : "none" } },
-                        h("div", { style: { flex: 1, minWidth: 0, fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, kF),
-                        h("div", { style: { flex: "0 0 auto", fontSize: 10.5, color: "#8A929C" } }, parFam[kF].n + " \u00d7"),
-                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: OR9, minWidth: 42, textAlign: "right" } }, arrondi(parFam[kF].p)));
-                    })),
-                  /* ⚠️ ON DIT CE QU'ON NE SAIT PAS : une ligne sans points n'est pas
-                     comptée pour zéro, elle est annoncée. */
-                  sansPts > 0 ? h("div", { style: { marginTop: 11, fontSize: 10.5, lineHeight: 1.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
-                    sansPts + " " + T("r\u00e9sultat" + (sansPts > 1 ? "s" : "") + " sans points connus \u2014 repasse son t\u00e9l\u00e9mat pour les r\u00e9cup\u00e9rer. Les points sont ceux calcul\u00e9s par la FFE, jamais recalcul\u00e9s ici.",
-                                       "result" + (sansPts > 1 ? "s" : "") + " with no known points \u2014 re-import its telemat. Points come from the FFE, never recomputed here.",
-                                       "resultado" + (sansPts > 1 ? "s" : "") + " sin puntos conocidos \u2014 vuelve a importar su telemat.",
-                                       "risultat" + (sansPts > 1 ? "i" : "o") + " senza punti noti \u2014 reimporta il suo telemat.",
-                                       "\u30dd\u30a4\u30f3\u30c8\u4e0d\u660e\u306e\u7d50\u679c\u304c\u3042\u308a\u307e\u3059\u3002",
-                                       "Ergebnis(se) ohne bekannte Punkte \u2014 Telemat erneut importieren.", "\u0646\u062a\u064a\u062c\u0629 \u0628\u0644\u0627 \u0646\u0642\u0627\u0637 \u0645\u0639\u0631\u0648\u0641\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0645\u0644\u0641 t\u00e9l\u00e9mat \u0644\u0627\u0633\u062a\u0631\u062c\u0627\u0639\u0647\u0627. \u0627\u0644\u0646\u0642\u0627\u0637 \u0647\u064a \u0627\u0644\u062a\u064a \u062a\u062d\u0633\u0628\u0647\u0627 FFE\u060c \u0648\u0644\u0627 \u064a\u0639\u0627\u062f \u062d\u0633\u0627\u0628\u0647\u0627 \u0647\u0646\u0627.")) : null));
-            })(),
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
@@ -60161,6 +60101,70 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                       })());
                   });
                 })())) : null,
+            /* — 5bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) — (598) Blandine : « mets les points de qualif en dessous des derniers résultats » : le bloc, inchangé, passe sous « Derniers résultats » (il était entre les moments forts et « Par saison »).
+               Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
+               « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
+               porte de points : inutile de montrer un tableau de zéros à qui n'a
+               pas encore repassé ses télémats. */
+            (function () {
+              var avecPts = filtreCav(tousF).filter(function (fP) { return fP.pts != null && !isNaN(fP.pts); });
+              if (!avecPts.length) return null;
+              var saisons = {};
+              avecPts.forEach(function (fP) { var sA = saisonDe(fP.d); if (sA == null) return; if (!saisons[sA]) saisons[sA] = []; saisons[sA].push(fP); });
+              var clesS = Object.keys(saisons).sort().reverse();
+              if (!clesS.length) return null;
+              var sCour = (saisonPts != null && saisons[saisonPts]) ? saisonPts : clesS[0];
+              var lignesS = saisons[sCour] || [];
+              var totalS = lignesS.reduce(function (acc, fP) { return acc + (fP.pts || 0); }, 0);
+              var parFam = {};
+              lignesS.forEach(function (fP) { var k = familleEp(fP.ep); if (!parFam[k]) parFam[k] = { n: 0, p: 0 }; parFam[k].n++; parFam[k].p += (fP.pts || 0); });
+              var famTri = Object.keys(parFam).sort(function (a1, b1) { return parFam[b1].p - parFam[a1].p; });
+              var sansPts = filtreCav(tousF).length - avecPts.length;
+              var arrondi = function (x) { return Math.round(x * 100) / 100; };
+              return h(React.Fragment, null,
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
+                  h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
+                    T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
+                (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
+                  clesS.map(function (sK) {
+                    var onS = (String(sK) === String(sCour));
+                    return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
+                      style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
+                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
+                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
+                        color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
+                      sK + " / " + (Number(sK) + 1));
+                  })) : null,
+                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
+                  h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
+                    h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
+                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
+                      T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ", "\u0646\u0642\u0627\u0637 \u00b7 ") + lignesS.length + " " +
+                      T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
+                  h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    T("Saison du 1er juillet " + sCour + " au 30 juin " + (Number(sCour) + 1),
+                      "Season from 1 July " + sCour + " to 30 June " + (Number(sCour) + 1),
+                      "Temporada del 1 de julio " + sCour + " al 30 de junio " + (Number(sCour) + 1),
+                      "Stagione dal 1\u00ba luglio " + sCour + " al 30 giugno " + (Number(sCour) + 1),
+                      sCour + "\u5e747\u67081\u65e5\u301c" + (Number(sCour) + 1) + "\u5e746\u670830\u65e5",
+                      "Saison vom 1. Juli " + sCour + " bis 30. Juni " + (Number(sCour) + 1), "\u0627\u0644\u0645\u0648\u0633\u0645 \u0645\u0646 1 \u064a\u0648\u0644\u064a\u0648 " + sCour + " \u0625\u0644\u0649 30 \u064a\u0648\u0646\u064a\u0648 " + (Number(sCour) + 1))),
+                  h("div", { style: { marginTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+                    famTri.map(function (kF, iF) {
+                      return h("div", { key: "fam" + kF, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderTop: iF ? "1px solid rgba(255,255,255,0.045)" : "none" } },
+                        h("div", { style: { flex: 1, minWidth: 0, fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, kF),
+                        h("div", { style: { flex: "0 0 auto", fontSize: 10.5, color: "#8A929C" } }, parFam[kF].n + " \u00d7"),
+                        h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 15, fontWeight: 700, color: OR9, minWidth: 42, textAlign: "right" } }, arrondi(parFam[kF].p)));
+                    })),
+                  /* ⚠️ ON DIT CE QU'ON NE SAIT PAS : une ligne sans points n'est pas
+                     comptée pour zéro, elle est annoncée. */
+                  sansPts > 0 ? h("div", { style: { marginTop: 11, fontSize: 10.5, lineHeight: 1.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
+                    sansPts + " " + T("r\u00e9sultat" + (sansPts > 1 ? "s" : "") + " sans points connus \u2014 repasse son t\u00e9l\u00e9mat pour les r\u00e9cup\u00e9rer. Les points sont ceux calcul\u00e9s par la FFE, jamais recalcul\u00e9s ici.",
+                                       "result" + (sansPts > 1 ? "s" : "") + " with no known points \u2014 re-import its telemat. Points come from the FFE, never recomputed here.",
+                                       "resultado" + (sansPts > 1 ? "s" : "") + " sin puntos conocidos \u2014 vuelve a importar su telemat.",
+                                       "risultat" + (sansPts > 1 ? "i" : "o") + " senza punti noti \u2014 reimporta il suo telemat.",
+                                       "\u30dd\u30a4\u30f3\u30c8\u4e0d\u660e\u306e\u7d50\u679c\u304c\u3042\u308a\u307e\u3059\u3002",
+                                       "Ergebnis(se) ohne bekannte Punkte \u2014 Telemat erneut importieren.", "\u0646\u062a\u064a\u062c\u0629 \u0628\u0644\u0627 \u0646\u0642\u0627\u0637 \u0645\u0639\u0631\u0648\u0641\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0645\u0644\u0641 t\u00e9l\u00e9mat \u0644\u0627\u0633\u062a\u0631\u062c\u0627\u0639\u0647\u0627. \u0627\u0644\u0646\u0642\u0627\u0637 \u0647\u064a \u0627\u0644\u062a\u064a \u062a\u062d\u0633\u0628\u0647\u0627 FFE\u060c \u0648\u0644\u0627 \u064a\u0639\u0627\u062f \u062d\u0633\u0627\u0628\u0647\u0627 \u0647\u0646\u0627.")) : null));
+            })(),
             /* — 6 · CTA — */
             /* 02/09 : le CTA vers la page technique est RETIRE. A sa place, la seule
                chose qui vivait derriere : l acces de la proprietaire aux lignes
