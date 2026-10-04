@@ -1,4 +1,7 @@
 /* ============================================================================
+   (643, ?v=20ca) 04/10 : LE RAIL NE SE VIDE PLUS (option B de Blandine) — la derniere story de chaque cavaliere
+   reste sur le rail apres ses 7 jours, en « ancienne » (anneau gris, apres les fraiches), jusqu a sa prochaine
+   story. Lecture sans le filtre expire_le dans hsListerStories, tri a trois niveaux. Rien d autre touche.
    (610, ?v=20bz) 03/10 : propriete `accent` de BandeauStories (couleur d accent imposee par la page appelante,
    voir dans la fonction). Sans elle : comportement inchange. Aucune autre ligne touchee.
    (607, ?v=20by) 03/10 : ARABE ajoute a toutes les entrees de HS_TXT (hsT) et au bouton « Partager » — demande
@@ -46,7 +49,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20bz";
+var HYPE_STORIES_VERSION = "20ca";
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -1909,8 +1912,15 @@ async function hsListerStories() {
     try { user = await utilisateurActuel(); } catch (eU) { user = null; }
     var moiId = user ? user.id : null;
 
+    /* 04/10 (643) — LE RAIL NE SE VIDE PLUS. Blandine (4 stories vivantes sur 41, « plein de stories ont
+       disparu ») a choisi l option B : « la derniere story de chaque cavaliere reste affichee tant qu elle
+       n en a pas poste une nouvelle ». Les 300 dernieres stories sont lues SANS le filtre des 7 jours ;
+       les stories encore vivantes gardent exactement le comportement d avant ; pour une autrice sans story
+       vivante, sa derniere story (avec les photos de la meme composition, champ `groupe`) reste sur le rail
+       en « ancienne » : anneau et nom gris, pas de point « non vu », placee apres toutes les fraiches, la
+       plus recente d abord. Rien ne change en base ni dans le stockage : les 7 jours restent la duree de
+       vie « fraiche » (et le mois Premium aussi). */
     var r = await supa.from("hype_stories").select("*")
-      .gt("expire_le", new Date().toISOString())
       .order("created_at", { ascending: false }).limit(300);
     if (r && r.error) return { data: [], moiId: moiId, error: r.error };
     var lignes = (r && r.data) || [];
@@ -1918,6 +1928,21 @@ async function hsListerStories() {
 
     var bloques = await hsIdsBloques();
     lignes = lignes.filter(function (s) { return s && s.user_id && !bloques[s.user_id]; });
+    var maintenantIso = new Date().toISOString();
+    var vivantes = lignes.filter(function (s) { return String(s.expire_le || "") > maintenantIso; });
+    var auteursVivants = {};
+    vivantes.forEach(function (s) { auteursVivants[s.user_id] = true; });
+    var anciennesParAuteur = {};
+    lignes.forEach(function (s) {
+      if (auteursVivants[s.user_id] || String(s.expire_le || "") > maintenantIso) return;
+      var e = anciennesParAuteur[s.user_id];
+      if (!e) { anciennesParAuteur[s.user_id] = { groupe: s.groupe || null, lignes: [s] }; return; }
+      if (e.groupe && s.groupe === e.groupe) e.lignes.push(s);   /* les autres photos de la meme composition */
+    });
+    var anciennes = [];
+    Object.keys(anciennesParAuteur).forEach(function (k) { anciennes = anciennes.concat(anciennesParAuteur[k].lignes); });
+    lignes = vivantes.concat(anciennes);
+    if (!lignes.length) return { data: [], moiId: moiId, error: null };
     if (!lignes.length) return { data: [], moiId: moiId, error: null };
 
     var ids = []; var vu = {};
@@ -1960,6 +1985,7 @@ async function hsListerStories() {
           moi: !!(moiId && s.user_id === moiId),
           memeEcurie: !!(noyauMoi && noyauA && noyauMoi === noyauA),
           suivi: !!suivis[s.user_id],
+          ancienne: !auteursVivants[s.user_id],   /* (643) derniere story expiree, gardee sur le rail */
           stories: []
         };
         index[s.user_id] = g;
@@ -2000,9 +2026,14 @@ async function hsListerStories() {
       g.premier = (g.stories[0] && g.stories[0].created_at) || "";
     });
     groupes.sort(function (a, b) {
+      /* (643) les anciennes apres toutes les fraiches, et entre elles la plus recente d abord */
+      if (!!a.ancienne !== !!b.ancienne) return a.ancienne ? 1 : -1;
+      if (a.ancienne) return String(a.premier) > String(b.premier) ? -1 : 1;
       if (a.toutesVues !== b.toutesVues) return a.toutesVues ? 1 : -1;
       return String(a.premier) < String(b.premier) ? -1 : 1;
     });
+    /* (643) une ancienne se dessine comme une story deja vue : anneau gris, nom gris, sans point */
+    groupes.forEach(function (g) { if (g.ancienne) g.toutesVues = true; });
 
     return { data: groupes, moiId: moiId, error: null };
   } catch (e) { return { data: [], moiId: null, error: String(e) }; }
