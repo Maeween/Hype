@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261004-635"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261004-636"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -35945,6 +35945,168 @@ function hypeRecompense(place, partants) {
   }, []);
   try { estProprio = (typeof clubRevendiquePar === "function") && clubRevendiquePar(club, moiA); } catch (eP) { }
 
+  /* 04/10 (636) — FORFAITS : L AGENDA PRIVE DU GESTIONNAIRE. Demande de Blandine : « un agenda
+     prive au gestionnaire de l ecurie qui permet de noter les cours par forfait pour les cartes
+     de 10 h en les decomptant pour les cavaliers concernes » (Dominique Wirtschaffer et Yumiko :
+     10 seances de 1 h 30 chacune). PREMIERE TRANCHE, volontairement simple et fonctionnelle :
+     - visible SEULEMENT par la proprietaire du club (clubRevendiquePar) ou une gestionnaire
+       designee (club_gestionnaires), comme la creation d un rendez-vous ; la base l impose
+       aussi (RLS = hype_peut_gerer_club). Pour toute autre personne, RIEN ne change sur cette
+       page : aucune requete, aucun bloc ;
+     - tables forfaits (une carte : nom, 10 seances, 90 min, couleur) et forfait_seances (une
+       seance = un jour, heure facultative). SQL livre a cote (SQL-636-forfaits.sql), a passer
+       AVANT de pousser cet index ; sans lui, le bloc dit clairement que la table manque ;
+     - le compteur n est PAS stocke : restantes = total - nombre de seances enregistrees. Une
+       seance ajoutee decompte, une seance supprimee recredite, rien ne peut se desynchroniser ;
+     - dans la grille du mois, chaque jour de seance porte un coin colore (couleur de la
+       cavaliere, deux couleurs partagees en diagonale pour deux cavalieres, comme sa maquette) ;
+       la pastille ronde des rendez-vous du club reste au centre, les deux cohabitent ;
+     - pour la gestion, TOUS les jours se touchent : sous la grille, le jour touche montre ses
+       seances (nom, horaire, duree, restantes, croix) et « Ajouter une seance » ;
+     - les cartes des forfaits (couleur, nom, 9 / 10 seances, jauge) sous le calendrier, avec
+       « Nouveau forfait » et une croix de suppression (confirmation, refus de la base affiche).
+     Reste pour les tranches suivantes : lier une cavaliere a son profil (portrait), renouveler
+     un forfait termine, modifier une seance, fiche du jour en volet, cases carrees. */
+  var FORF_COULEURS = ["#3FA39A", "#AEBFD0", "#4E86B8", "#2F6F7E", "#7FA7C9", "#5BB5C9"];
+  var rtlF = (lg === "ar");
+  var clefF = (typeof clefClubG === "function") ? clefClubG(club) : String(club || "").toLowerCase().trim();
+  var _gf = React.useState(false); var suisGestF = _gf[0], setSuisGestF = _gf[1];
+  React.useEffect(function () {
+    var vif = true;
+    (async function () {
+      try {
+        if (estProprio || !clefF || !moiA || !moiA.id || typeof supa === "undefined" || !supa) { if (vif) setSuisGestF(false); return; }
+        var r = await supa.from("club_gestionnaires").select("user_id").eq("club_clef", clefF).eq("user_id", moiA.id).limit(1);
+        if (vif) setSuisGestF(!!(r && r.data && r.data.length));
+      } catch (eGf) { if (vif) setSuisGestF(false); }
+    })();
+    return function () { vif = false; };
+  }, [clefF, estProprio, moiA]);
+  var peutForfaits = !!(estProprio || suisGestF);
+  var _ff = React.useState(null); var forfaits = _ff[0], setForfaits = _ff[1];
+  var _fs = React.useState([]); var seancesF = _fs[0], setSeancesF = _fs[1];
+  var _fe = React.useState(""); var errF = _fe[0], setErrF = _fe[1];
+  var _fb = React.useState(false); var busyF = _fb[0], setBusyF = _fb[1];
+  var _fo = React.useState(false); var formF = _fo[0], setFormF = _fo[1];
+  var _fn = React.useState({ nom: "", total: "10", duree: "90" }); var nouvF = _fn[0], setNouvF = _fn[1];
+  var _fa = React.useState(null); var ajoutF = _fa[0], setAjoutF = _fa[1];   /* { forfait_id, heure } quand la ligne d ajout est ouverte */
+  var refMontF = React.useRef(true);
+  React.useEffect(function () { refMontF.current = true; return function () { refMontF.current = false; }; }, []);
+
+  function msgErrF(e) {
+    var m = String((e && e.message) || e || "");
+    if (/does not exist|schema cache|PGRST205|42P01/i.test(m)) return T("La table des forfaits n’existe pas encore (SQL du build 636 à passer).", "The packages table does not exist yet (run the build 636 SQL).", "La tabla de bonos aún no existe (ejecutar el SQL del build 636).", "La tabella dei pacchetti non esiste ancora (eseguire l’SQL del build 636).", "回数券のテーブルがまだありません（ビルド636のSQLを実行）。", "Die Karten-Tabelle existiert noch nicht (SQL von Build 636 ausführen).", "جدول الباقات غير موجود بعد (يجب تنفيذ SQL الإصدار 636).");
+    return T("Impossible : ", "Not possible: ", "Imposible: ", "Impossibile: ", "できません：", "Nicht möglich: ", "غير ممكن: ") + m;
+  }
+  async function lireForfaits() {
+    try {
+      if (typeof supa === "undefined" || !supa || !clefF) return;
+      var r1 = await supa.from("forfaits").select("*").eq("club_clef", clefF).eq("clos", false).order("cree_le", { ascending: true }).limit(100);
+      if (!refMontF.current) return;
+      if (r1 && r1.error) { setErrF(msgErrF(r1.error)); setForfaits([]); setSeancesF([]); return; }
+      var lf = (r1 && r1.data) || [];
+      var ids = lf.map(function (f) { return f.id; });
+      var ls = [];
+      if (ids.length) {
+        var r2 = await supa.from("forfait_seances").select("*").in("forfait_id", ids).order("date_jour", { ascending: true }).limit(2000);
+        if (!refMontF.current) return;
+        if (r2 && r2.error) { setErrF(msgErrF(r2.error)); setForfaits(lf); setSeancesF([]); return; }
+        ls = (r2 && r2.data) || [];
+      }
+      setErrF(""); setForfaits(lf); setSeancesF(ls);
+    } catch (eLf) { if (refMontF.current) { setErrF(msgErrF(eLf)); setForfaits([]); setSeancesF([]); } }
+  }
+  React.useEffect(function () { if (peutForfaits) lireForfaits(); }, [peutForfaits, clefF]);
+
+  function nbSeancesDe(idF) { var n = 0; (seancesF || []).forEach(function (s) { if (s.forfait_id === idF) n++; }); return n; }
+  function restantesDe(f) { return Math.max(0, (Number(f.seances_total) || 0) - nbSeancesDe(f.id)); }
+  function forfaitDe(idF) { for (var i = 0; i < (forfaits || []).length; i++) if (forfaits[i].id === idF) return forfaits[i]; return null; }
+  function seancesDuJour(iso) {
+    var l = (seancesF || []).filter(function (s) { return String(s.date_jour || "").slice(0, 10) === iso; });
+    l.sort(function (a, b) { return String(a.heure || "99").localeCompare(String(b.heure || "99")) || String(a.cree_le || "").localeCompare(String(b.cree_le || "")); });
+    return l.map(function (s) { return { s: s, f: forfaitDe(s.forfait_id) }; }).filter(function (x) { return !!x.f; });
+  }
+  function couleursDuJour(iso) { var c = []; seancesDuJour(iso).forEach(function (x) { var k = x.f.couleur || FORF_COULEURS[0]; if (c.indexOf(k) === -1) c.push(k); }); return c; }
+  function dureeTxtF(min) {
+    var m = Number(min) || 0, hh = Math.floor(m / 60), mm = m % 60;
+    if (lg === "ja") return (hh ? hh + "時間" : "") + (mm ? mm + "分" : "");
+    if (lg === "ar") return (hh ? hh + " س" : "") + (hh && mm ? " " : "") + (mm ? mm + " د" : "");
+    if (!hh) return mm + " min";
+    return hh + " h" + (mm ? " " + (mm < 10 ? "0" + mm : mm) : "");
+  }
+  function plageTxtF(heure, min) {
+    var m = /^(\d{1,2}):(\d{2})/.exec(String(heure || ""));
+    if (!m) return "";
+    var deb = Number(m[1]) * 60 + Number(m[2]), fin = deb + (Number(min) || 0);
+    var f2 = function (t) { t = ((t % 1440) + 1440) % 1440; return String(Math.floor(t / 60)).padStart(2, "0") + ":" + String(t % 60).padStart(2, "0"); };
+    return f2(deb) + " – " + f2(fin);
+  }
+  var LOCF = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar" };
+  var txtRefusF = T("Rien n’a été supprimé (refus de la base).", "Nothing was deleted (refused by the database).", "No se eliminó nada (rechazado por la base).", "Niente è stato eliminato (rifiuto del database).", "何も削除されませんでした（データベースが拒否）。", "Nichts gelöscht (von der Datenbank abgelehnt).", "لم يُحذف شيء (رفضت قاعدة البيانات).");
+  var txtRienF = T("La base n’a rien renvoyé.", "The database returned nothing.", "La base no devolvió nada.", "Il database non ha restituito nulla.", "データベースから応答がありません。", "Die Datenbank hat nichts zurückgegeben.", "لم تُرجع قاعدة البيانات شيئًا.");
+  async function creerForfait() {
+    var nom = String(nouvF.nom || "").trim();
+    var total = parseInt(nouvF.total, 10), duree = parseInt(nouvF.duree, 10);
+    if (!nom) { setErrF(T("Il manque le nom.", "The name is missing.", "Falta el nombre.", "Manca il nome.", "名前がありません。", "Der Name fehlt.", "الاسم ناقص.")); return; }
+    if (!(total >= 1 && total <= 100)) total = 10;
+    if (!(duree >= 15 && duree <= 600)) duree = 90;
+    var prises = (forfaits || []).map(function (f) { return f.couleur; });
+    var couleur = null;
+    for (var i = 0; i < FORF_COULEURS.length; i++) if (prises.indexOf(FORF_COULEURS[i]) === -1) { couleur = FORF_COULEURS[i]; break; }
+    if (!couleur) couleur = FORF_COULEURS[(forfaits || []).length % FORF_COULEURS.length];
+    setBusyF(true);
+    try {
+      var r = await supa.from("forfaits").insert({ club_clef: clefF, cavalier_nom: nom.slice(0, 60), seances_total: total, duree_min: duree, couleur: couleur }).select("*");
+      if (r && r.error) { setErrF(msgErrF(r.error)); return; }
+      var ligne = (r && r.data && r.data[0]) || null;
+      if (!ligne) { setErrF(txtRienF); return; }
+      setErrF(""); setForfaits(function (l) { return (l || []).concat([ligne]); }); setNouvF({ nom: "", total: "10", duree: "90" }); setFormF(false);
+    } catch (eCf) { setErrF(msgErrF(eCf)); } finally { setBusyF(false); }
+  }
+  async function supprimerForfait(f) {
+    var ok = true;
+    try { if (window.confirm) ok = window.confirm(T("Supprimer le forfait de « " + f.cavalier_nom + " » et toutes ses séances ?", "Delete " + f.cavalier_nom + "’s package and all its sessions?", "¿Eliminar el bono de " + f.cavalier_nom + " y todas sus sesiones?", "Eliminare il pacchetto di " + f.cavalier_nom + " e tutte le sue lezioni?", f.cavalier_nom + "の回数券とすべてのレッスンを削除しますか？", "Die Karte von " + f.cavalier_nom + " und alle ihre Einheiten löschen?", "حذف باقة " + f.cavalier_nom + " وكل حصصها؟")); } catch (eC5) { }
+    if (!ok) return;
+    setBusyF(true);
+    try {
+      var r = await supa.from("forfaits").delete().eq("id", f.id).select("id");
+      if (r && r.error) { setErrF(msgErrF(r.error)); return; }
+      if (!(r && r.data && r.data.length)) { setErrF(txtRefusF); return; }
+      setErrF(""); setForfaits(function (l) { return (l || []).filter(function (x) { return x.id !== f.id; }); }); setSeancesF(function (l) { return (l || []).filter(function (s) { return s.forfait_id !== f.id; }); });
+    } catch (eSf) { setErrF(msgErrF(eSf)); } finally { setBusyF(false); }
+  }
+  async function ajouterSeance(iso) {
+    var f = (ajoutF && ajoutF.forfait_id) ? forfaitDe(ajoutF.forfait_id) : null;
+    if (!f) { setErrF(T("Choisis la cavalière ou le cavalier.", "Choose the rider.", "Elige el jinete.", "Scegli il cavaliere.", "騎手を選んでください。", "Bitte Reiterin / Reiter wählen.", "اختاري الفارس.")); return; }
+    if (restantesDe(f) <= 0) { setErrF(T("Plus de séance disponible sur ce forfait.", "No sessions left on this package.", "No quedan sesiones en este bono.", "Nessuna lezione rimasta su questo pacchetto.", "この回数券は残りがありません。", "Keine Einheiten mehr auf dieser Karte.", "لم تبقَ حصص في هذه الباقة.")); return; }
+    var heure = String((ajoutF && ajoutF.heure) || "").trim(); if (!/^\d{1,2}:\d{2}/.test(heure)) heure = "";
+    setBusyF(true);
+    try {
+      var r = await supa.from("forfait_seances").insert({ forfait_id: f.id, date_jour: iso, heure: heure ? heure.slice(0, 5) : null }).select("*");
+      if (r && r.error) { setErrF(msgErrF(r.error)); return; }
+      var ligne = (r && r.data && r.data[0]) || null;
+      if (!ligne) { setErrF(txtRienF); return; }
+      setErrF(""); setSeancesF(function (l) { return (l || []).concat([ligne]); }); setAjoutF(null);
+    } catch (eAs) { setErrF(msgErrF(eAs)); } finally { setBusyF(false); }
+  }
+  async function supprimerSeance(s) {
+    var ok = true;
+    try { if (window.confirm) ok = window.confirm(T("Supprimer cette séance ?", "Delete this session?", "¿Eliminar esta sesión?", "Eliminare questa lezione?", "このレッスンを削除しますか？", "Diese Einheit löschen?", "حذف هذه الحصة؟")); } catch (eC6) { }
+    if (!ok) return;
+    setBusyF(true);
+    try {
+      var r = await supa.from("forfait_seances").delete().eq("id", s.id).select("id");
+      if (r && r.error) { setErrF(msgErrF(r.error)); return; }
+      if (!(r && r.data && r.data.length)) { setErrF(txtRefusF); return; }
+      setErrF(""); setSeancesF(function (l) { return (l || []).filter(function (x) { return x.id !== s.id; }); });
+    } catch (eSs) { setErrF(msgErrF(eSs)); } finally { setBusyF(false); }
+  }
+  var STYLE_CHAMP_F = { width: "100%", boxSizing: "border-box", padding: "11px 12px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.05)", color: "#F0F4F6", fontSize: 16, fontFamily: M, WebkitAppearance: "none", appearance: "none" };
+  var BTN_OR_F = { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(217,199,163,0.5)", background: "rgba(217,199,163,0.14)", color: OR, fontSize: 14, fontWeight: 600, fontFamily: M, cursor: "pointer", minHeight: 44 };
+  var BTN_GRIS_F = { flex: 1, padding: "12px", borderRadius: 13, border: "1px solid rgba(255,255,255,0.15)", background: "none", color: "#C9CFD4", fontSize: 14, fontFamily: M, cursor: "pointer", minHeight: 44 };
+  var TXT_SEANCES_F = T("séances", "sessions", "sesiones", "lezioni", "回", "Einheiten", "حصص");
+  var TXT_SUPPR_F = T("Supprimer", "Delete", "Eliminar", "Elimina", "削除", "Löschen", "حذف");
+  var TXT_ANNULER_F = T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء");
   var META2 = {
     stage: { emoji: "\uD83C\uDF93", label: T("Stage", "Clinic", "Cursillo", "Stage", "\u8B1B\u7FD2", "Lehrgang", "\u062a\u062f\u0631\u064a\u0628") },
     concours: { emoji: "\uD83C\uDFC6", label: T("Concours", "Show", "Concurso", "Concorso", "\u7AF6\u6280\u4F1A", "Turnier", "\u0645\u0633\u0627\u0628\u0642\u0629") },
@@ -36044,18 +36206,26 @@ function hypeRecompense(place, partants) {
         var fond = "transparent";
         if (ts.length === 1) fond = COULT[ts[0]] || OR;
         else if (ts.length > 1) fond = "linear-gradient(135deg, " + (COULT[ts[0]] || OR) + " 50%, " + (COULT[ts[1]] || OR) + " 50%)";
+        /* (636) les couleurs des forfaits ce jour-la (gestion seulement) : coin colore de la case,
+           deux couleurs partagees en diagonale pour deux cavalieres. Tous les jours se touchent
+           pour la gestion, pour pouvoir y ajouter une seance. */
+        var fj = peutForfaits ? couleursDuJour(iso) : [];
+        var tap = !!(ts.length || fj.length || peutForfaits);
         cases.push(h("div", {
-          key: "j" + jour, role: ts.length ? "button" : null,
-          onClick: ts.length ? function () { setJourVu(choisi ? "" : iso); } : null,
-          style: { display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 0", cursor: ts.length ? "pointer" : "default" }
+          key: "j" + jour, role: tap ? "button" : null,
+          onClick: tap ? function () { setJourVu(choisi ? "" : iso); setAjoutF(null); } : null,
+          style: { position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: "3px 0", cursor: tap ? "pointer" : "default" }
         },
           h("div", { style: {
             width: 32, height: 32, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
             background: fond, fontFamily: M, fontSize: 13,
-            fontWeight: ts.length ? 800 : 500,
-            color: ts.length ? "#07090B" : (iso === isoAuj ? OR : "rgba(237,242,245,0.62)"),
+            fontWeight: (ts.length || fj.length) ? 800 : 500,
+            color: ts.length ? "#07090B" : (fj.length ? "#F3EEE4" : (iso === isoAuj ? OR : "rgba(237,242,245,0.62)")),
             border: choisi ? "2px solid #EDF2F5" : (iso === isoAuj && !ts.length ? "1px solid " + OR : "1px solid transparent")
-          } }, String(jour))));
+          } }, String(jour)),
+          fj.length ? h("span", { "data-forfait-jour": iso, style: { position: "absolute", bottom: 0, insetInlineEnd: 2, width: 15, height: 15, pointerEvents: "none",
+            clipPath: rtlF ? "polygon(0 0, 0 100%, 100% 100%)" : "polygon(100% 0, 100% 100%, 0 100%)",
+            background: fj.length > 1 ? ("linear-gradient(" + (rtlF ? "135deg" : "45deg") + ", " + fj[0] + " 50%, " + fj[1] + " 50%)") : fj[0] } }) : null));
       })(j);
     }
     function glisser(pas) {
@@ -36101,7 +36271,91 @@ function hypeRecompense(place, partants) {
               h("div", { style: { fontFamily: C, fontSize: 15.5, color: "#F4F7FA", marginTop: 2, lineHeight: 1.25 } }, ev.titre || ""),
               (ev.lieu || ev.description) ? h("div", { style: { fontSize: 11.5, color: "#8A929C", marginTop: 3, fontFamily: M } }, (ev.lieu && String(ev.lieu).trim()) || (ev.description && String(ev.description).trim())) : null),
             ev.heure ? h("div", { style: { flex: "0 0 auto", fontSize: 11.5, color: "rgba(244,247,250,0.45)", fontFamily: M, paddingTop: 2 } }, ev.heure) : null);
-        })) : null);
+        })) : null,
+      /* (636) LES SEANCES DU JOUR TOUCHE (gestion seulement) : nom, horaire, duree, restantes,
+         croix ; puis « Ajouter une seance » (cavaliere + heure facultative). */
+      (peutForfaits && jourVu) ? (function () {
+        var lj = seancesDuJour(jourVu);
+        var titreJ = jourVu;
+        try { var dJ = dateDe(jourVu); if (dJ && !isNaN(dJ.getTime())) titreJ = dJ.toLocaleDateString(LOCF[lg] || "fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" }); } catch (eTj) { }
+        var dispo = (forfaits || []).filter(function (f) { return restantesDe(f) > 0; });
+        return h("div", { "data-forfaits-jour": jourVu, style: { marginTop: 14, paddingTop: 12, borderTop: "1px solid rgba(255,255,255,0.07)" } },
+          h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 4 } },
+            h("div", { style: { fontFamily: C, fontSize: 14.5, color: "#F3EEE4" } }, titreJ.charAt(0).toUpperCase() + titreJ.slice(1)),
+            h("div", { style: { fontSize: 9.5, letterSpacing: 2, fontWeight: 700, color: OR, textTransform: "uppercase", fontFamily: M, flex: "0 0 auto" } },
+              T("Forfaits", "Packages", "Bonos", "Pacchetti", "回数券", "Karten", "الباقات"))),
+          lj.length ? lj.map(function (x) {
+            var rest = restantesDe(x.f), plage = plageTxtF(x.s.heure, x.f.duree_min);
+            return h("div", { key: "fs" + x.s.id, className: "forf-seance", style: { display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.05)" } },
+              h("span", { style: { width: 10, height: 10, borderRadius: "50%", background: x.f.couleur || FORF_COULEURS[0], flex: "0 0 auto" } }),
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { fontFamily: C, fontSize: 14, color: "#F4F7FA", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, x.f.cavalier_nom),
+                h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#8A929C", marginTop: 2 } }, (plage ? plage + "  " : "") + "(" + dureeTxtF(x.f.duree_min) + ")")),
+              h("div", { style: { textAlign: "end", flex: "0 0 auto" } },
+                h("div", { style: { fontFamily: M, fontSize: 13, color: "#F3EEE4", fontWeight: 600 } }, h("span", { dir: "ltr", style: { unicodeBidi: "isolate" } }, h("span", { style: { color: OR } }, String(rest)), " / " + x.f.seances_total)),
+                h("div", { style: { fontFamily: M, fontSize: 9.5, color: "#8A929C" } }, T("séances restantes", "sessions left", "sesiones restantes", "lezioni rimaste", "残り", "Einheiten übrig", "حصص متبقية"))),
+              h("button", { onClick: function () { supprimerSeance(x.s); }, "aria-label": TXT_SUPPR_F, disabled: busyF, style: { width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.04)", color: "#C9CFD4", fontSize: 13, cursor: "pointer", flex: "0 0 auto", padding: 0 } }, "✕"));
+          }) : h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#6B7580", fontStyle: "italic", padding: "8px 0" } },
+            T("Aucune séance ce jour-là.", "No session that day.", "Ninguna sesión ese día.", "Nessuna lezione quel giorno.", "この日のレッスンはありません。", "Keine Einheit an diesem Tag.", "لا حصص في هذا اليوم.")),
+          ajoutF ? h("div", { "data-forfait-ajout": "1", style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 8 } },
+            h("select", { value: ajoutF.forfait_id || "", onChange: function (e) { var v = e.target.value; setAjoutF(function (a) { return Object.assign({}, a || {}, { forfait_id: v }); }); }, style: STYLE_CHAMP_F },
+              h("option", { value: "" }, T("Choisir la cavalière ou le cavalier…", "Choose the rider…", "Elegir jinete…", "Scegli il cavaliere…", "騎手を選ぶ…", "Reiterin / Reiter wählen…", "اختيار الفارس…")),
+              dispo.map(function (f) { return h("option", { key: "o" + f.id, value: f.id }, f.cavalier_nom + " · " + restantesDe(f) + " / " + f.seances_total); })),
+            h("div", { style: { display: "flex", gap: 8, alignItems: "center" } },
+              h("span", { style: { fontFamily: M, fontSize: 10.5, color: "#8A929C", flex: "0 0 auto" } }, T("Heure (facultatif)", "Time (optional)", "Hora (opcional)", "Ora (facoltativa)", "時刻（任意）", "Uhrzeit (optional)", "الوقت (اختياري)")),
+              h("input", { type: "time", value: ajoutF.heure || "", onChange: function (e) { var v = e.target.value; setAjoutF(function (a) { return Object.assign({}, a || {}, { heure: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { flex: 1, width: "auto", minWidth: 0 }) })),
+            h("div", { style: { display: "flex", gap: 8 } },
+              h("button", { onClick: function () { setAjoutF(null); setErrF(""); }, style: BTN_GRIS_F }, TXT_ANNULER_F),
+              h("button", { onClick: function () { ajouterSeance(jourVu); }, disabled: busyF, style: BTN_OR_F }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة"))))
+            : (dispo.length ? h("div", { role: "button", "data-forfait-plus": "1", onClick: function () { setErrF(""); setAjoutF({ forfait_id: dispo.length === 1 ? dispo[0].id : "", heure: "" }); },
+              style: { marginTop: 10, textAlign: "center", padding: "11px 8px", borderRadius: 13, border: "1px dashed rgba(217,199,163,0.4)", color: OR, fontSize: 11, fontWeight: 700, letterSpacing: 1.4, textTransform: "uppercase", cursor: "pointer", fontFamily: M } },
+              "＋ " + T("Ajouter une séance", "Add a session", "Añadir una sesión", "Aggiungi una lezione", "レッスンを追加", "Einheit hinzufügen", "إضافة حصة"))
+              : h("div", { style: { marginTop: 8, fontFamily: M, fontSize: 11, color: "#6B7580", fontStyle: "italic" } },
+                (forfaits && forfaits.length)
+                  ? T("Tous les forfaits sont terminés.", "All packages are used up.", "Todos los bonos están agotados.", "Tutti i pacchetti sono esauriti.", "すべての回数券を使い切りました。", "Alle Karten sind aufgebraucht.", "كل الباقات منتهية.")
+                  : T("Crée d’abord un forfait ci-dessous.", "Create a package below first.", "Crea primero un bono abajo.", "Crea prima un pacchetto qui sotto.", "まず下で回数券を作成してください。", "Lege zuerst unten eine Karte an.", "أنشئي أولًا باقة أدناه."))));
+      })() : null,
+      /* (636) LES FORFAITS DU CLUB (gestion seulement) : une carte par forfait (couleur, nom,
+         restantes / total, jauge, duree), « Nouveau forfait », croix de suppression. */
+      peutForfaits ? h("div", { "data-forfaits": "1", style: { marginTop: 22 } },
+        h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 8, marginBottom: 10 } },
+          h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.4, textTransform: "uppercase", color: OR, fontFamily: M } },
+            T("Forfaits", "Packages", "Bonos", "Pacchetti", "回数券", "Karten", "الباقات")),
+          h("div", { style: { fontSize: 10, color: "#6B7580", fontFamily: M, textAlign: "end" } },
+            "🔒 " + T("Visible uniquement par la gestion", "Only visible to management", "Solo visible para la gestión", "Visibile solo alla gestione", "管理者のみ表示", "Nur für die Leitung sichtbar", "مرئي للإدارة فقط"))),
+        errF ? h("div", { "data-forfaits-err": "1", style: { margin: "0 0 10px", padding: "10px 12px", borderRadius: 11, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.45 } }, errF) : null,
+        (forfaits === null)
+          ? h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#6B7580", fontStyle: "italic", padding: "4px 0 8px" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Wird geladen…", "جارٰ التحميل…"))
+          : (forfaits.length ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 } }, forfaits.map(function (f) {
+            var rest = restantesDe(f), tot = Number(f.seances_total) || 0, fini = rest <= 0;
+            return h("div", { key: "fc" + f.id, className: "forf-carte", "data-forfait": f.id, style: { position: "relative", padding: "12px 12px 12px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.07)", background: "#0D1518", opacity: fini ? 0.55 : 1 } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 8, paddingInlineEnd: 22 } },
+                h("span", { style: { width: 10, height: 10, borderRadius: "50%", background: f.couleur || FORF_COULEURS[0], flex: "0 0 auto" } }),
+                h("div", { style: { fontFamily: C, fontSize: 13, color: "#F3EEE4", lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, f.cavalier_nom)),
+              h("div", { style: { marginTop: 8, fontFamily: M, fontSize: 12, color: "#8A929C" } },
+                h("span", { dir: "ltr", style: { unicodeBidi: "isolate" } }, h("span", { className: "forf-rest", style: { color: OR, fontSize: 15, fontWeight: 700 } }, String(rest)), " / " + tot), " " + TXT_SEANCES_F),
+              h("div", { style: { marginTop: 8, height: 4, borderRadius: 2, background: "rgba(255,255,255,0.08)", overflow: "hidden" } },
+                h("div", { style: { width: (tot ? Math.round(rest / tot * 100) : 0) + "%", height: "100%", borderRadius: 2, background: f.couleur || FORF_COULEURS[0] } })),
+              h("div", { style: { marginTop: 6, fontFamily: M, fontSize: 10, color: "#6B7580" } }, dureeTxtF(f.duree_min) + (fini ? " · " + T("Terminé", "Used up", "Agotado", "Esaurito", "終了", "Aufgebraucht", "منتهية") : "")),
+              h("button", { onClick: function () { supprimerForfait(f); }, "aria-label": TXT_SUPPR_F, disabled: busyF, style: { position: "absolute", top: 8, insetInlineEnd: 8, width: 24, height: 24, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.10)", background: "rgba(255,255,255,0.03)", color: "#8A929C", fontSize: 10, cursor: "pointer", padding: 0 } }, "✕"));
+          })) : h("div", { style: { fontFamily: M, fontSize: 11.5, color: "#6B7580", fontStyle: "italic", padding: "4px 0 8px" } },
+            T("Aucun forfait pour l’instant.", "No package yet.", "Todavía no hay bonos.", "Nessun pacchetto per ora.", "回数券はまだありません。", "Noch keine Karte.", "لا توجد باقات بعد."))),
+        formF ? h("div", { "data-forfait-form": "1", style: { marginTop: 12, padding: 12, borderRadius: 14, border: "1px solid rgba(217,199,163,0.25)", background: "rgba(217,199,163,0.04)", display: "flex", flexDirection: "column", gap: 8 } },
+            h("input", { value: nouvF.nom, placeholder: T("Nom de la cavalière ou du cavalier", "Rider’s name", "Nombre del jinete", "Nome del cavaliere", "騎手の名前", "Name der Reiterin / des Reiters", "اسم الفارسة أو الفارس"), maxLength: 60,
+              onChange: function (e) { var v = e.target.value; setNouvF(function (n) { return Object.assign({}, n, { nom: v }); }); }, style: STYLE_CHAMP_F }),
+            h("div", { style: { display: "flex", gap: 8 } },
+              h("label", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 10.5, color: "#8A929C" } },
+                T("Nombre de séances", "Number of sessions", "Número de sesiones", "Numero di lezioni", "回数", "Anzahl Einheiten", "عدد الحصص"),
+                h("input", { type: "number", inputMode: "numeric", min: 1, max: 100, value: nouvF.total, onChange: function (e) { var v = e.target.value; setNouvF(function (n) { return Object.assign({}, n, { total: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { marginTop: 4 }) })),
+              h("label", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 10.5, color: "#8A929C" } },
+                T("Durée d’une séance (min)", "Session length (min)", "Duración de una sesión (min)", "Durata di una lezione (min)", "1回の時間（分）", "Dauer einer Einheit (Min.)", "مدة الحصة (دقيقة)"),
+                h("input", { type: "number", inputMode: "numeric", min: 15, max: 600, step: 15, value: nouvF.duree, onChange: function (e) { var v = e.target.value; setNouvF(function (n) { return Object.assign({}, n, { duree: v }); }); }, style: Object.assign({}, STYLE_CHAMP_F, { marginTop: 4 }) }))),
+            h("div", { style: { display: "flex", gap: 8 } },
+              h("button", { onClick: function () { setFormF(false); setErrF(""); }, style: BTN_GRIS_F }, TXT_ANNULER_F),
+              h("button", { onClick: creerForfait, disabled: busyF, style: BTN_OR_F }, T("Créer", "Create", "Crear", "Crea", "作成", "Anlegen", "إنشاء"))))
+          : h("div", { role: "button", "data-forfait-nouveau": "1", onClick: function () { setErrF(""); setFormF(true); },
+            style: { marginTop: 12, textAlign: "center", padding: "12px 8px", borderRadius: 13, border: "1px solid rgba(217,199,163,0.30)", color: OR, fontSize: 11, fontWeight: 700, letterSpacing: 1.6, textTransform: "uppercase", cursor: "pointer", fontFamily: M } },
+            "＋ " + T("Nouveau forfait", "New package", "Nuevo bono", "Nuovo pacchetto", "新しい回数券", "Neue Karte", "باقة جديدة"))) : null);
   })();
 
 
