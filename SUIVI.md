@@ -9179,3 +9179,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fait : hype-stories.js — une classe `hs-nom-moi` sur le nom quand la story est la sienne (rien d'autre ; sur la page Cavalier la classe est sans effet) ; ?v=20ca → 20cb dans index.html ; COM2_CSS : `.com2 .com2-stories .hs-nom-moi{display:none}` remplace le masquage de tous les noms.
 - Reste du 685 inchangé (titre Stories remonté, barre de défilement masquée). Le mot « Ajouter » sous le « + » n'est plus concerné.
 - node --check 18/18 + hype-stories.js ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-686.
+
+## Build 20261005-687 — Communauté : Stories et reste de la page remontés
+- Demande de Blandine (capture de 22 h 24) : « remonte aussi le reste de la page sous Stories, et remonte encore un peu les stories ».
+- Fait (COM2_CSS, Communauté seulement) : photos des Stories −24 px vers leur titre (margin-top −24 px sur .com2-stories) ; espace entre la section Stories et « À découvrir » 44 → 14 px, donc tout ce qui suit remonte de 30 px (54 px au total sous le titre Stories). Rien d'autre touché.
+- Non vérifié au banc (pas de capture cette fois) : à juger sur iPhone ; si les noms sous les Stories frôlent « À découvrir », remonter l'espace de 14 à ~24 px.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-687.
+
+## Build 20261005-688 — Communauté : encore moins d'espace entre Stories et « À découvrir »
+- Demande de Blandine (capture de 22 h 28) : « remonte encore la page sous les stories, il y a trop d'espace entre les stories et À découvrir ».
+- Fait : −36 px sous le rail des Stories (margin-bottom −36 px sur .com2-stories, Communauté seulement) : tout ce qui suit remonte d'autant (≈ 90 px au total sous le titre Stories depuis le 685). Rien d'autre touché.
+- Non vérifié au banc ; si un nom de story touche « À découvrir », remonter de −36 à ~−20 px.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-688.
