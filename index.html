@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261005-663"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261005-664"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -25063,41 +25063,41 @@ var COMMUNAUTE_V2_ACTIVE = true;
 /* (621) ACCES A LA COMMUNAUTE REOUVERT A TOUS (Blandine : « tu pourras re-autoriser l acces a Communaute »). Le verrou du 22/09 (368 / 583 :
    « Prochainement » pour tout le monde sauf son compte) reste dans le code, eteint par cet interrupteur : false = le verrou revient tel quel. */
 var COMMUNAUTE_OUVERTE_A_TOUS = true;
-var COM2_CSS = ".com2{min-height:100vh;background:#060709;color:#F3EEE4;position:relative;overflow:clip;padding-bottom:calc(28px + env(safe-area-inset-bottom));font-family:'Montserrat',sans-serif}"
+var COM2_CSS = ".com2{min-height:100vh;background:#05080B;color:#F3EEE4;position:relative;overflow:clip;padding-bottom:calc(28px + env(safe-area-inset-bottom));font-family:'Montserrat',sans-serif}"
   + ".com2 *{box-sizing:border-box}"
   /* decor : SON visuel de planete (images/communaute_v2_planete_v1.webp, 1240 x 558, ~55 Ko, pose au 599), ancre a l extremite
      de fin de ligne (a droite en francais, retourne et a gauche en arabe), fondu dans le noir en bas et par un voile — pas de base64 */
   + ".com2 .com2-decor{position:absolute;inset-block-start:0;inset-inline:0;height:300px;overflow:hidden;pointer-events:none}"
   + ".com2 .com2-planete{position:absolute;inset-block-start:-44px;inset-inline-end:-160px;width:640px;height:auto;display:block;opacity:.88;-webkit-mask-image:linear-gradient(180deg,#000 50%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(180deg,#000 50%,rgba(0,0,0,0) 100%)}"
   + "[dir=rtl] .com2 .com2-planete{transform:scaleX(-1)}"
-  + ".com2 .com2-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0.08) 0%,rgba(6,7,9,0.22) 45%,#060709 100%)}"
-  + ".com2 .com2-voile-g{position:absolute;inset-block:0;inset-inline-start:0;width:76%;background:linear-gradient(90deg,rgba(6,7,9,0.80) 0%,rgba(6,7,9,0.55) 45%,rgba(6,7,9,0) 100%)}" /* (600) Blandine : « on lit mal le titre » — voile plus fort cote texte, planete remontee et decalee, ombre portee sur le titre */
+  + ".com2 .com2-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,0.08) 0%,rgba(5,8,11,0.22) 45%,#05080B 100%)}"
+  + ".com2 .com2-voile-g{position:absolute;inset-block:0;inset-inline-start:0;width:76%;background:linear-gradient(90deg,rgba(5,8,11,0.80) 0%,rgba(5,8,11,0.55) 45%,rgba(5,8,11,0) 100%)}" /* (600) Blandine : « on lit mal le titre » — voile plus fort cote texte, planete remontee et decalee, ombre portee sur le titre */
   + "[dir=rtl] .com2 .com2-voile-g{transform:scaleX(-1)}"
   /* (618) cloche + drapeau de langue en haut a droite (fin de ligne en arabe) : la cloche est le composant EXISTANT (ClocheNotifs,
      panneau, lu / non lu, routage), repositionne ici par surcharge de ses styles en ligne et habille champagne ; le drapeau ouvre
      la meme liste des 7 langues que l Accueil V2 (Blandine : « l avatar c est le drapeau pour changer les langues »). */
   + ".com2 .com2-haut{position:absolute;inset-block-start:calc(env(safe-area-inset-top) + 16px);inset-inline-end:16px;z-index:5;display:flex;align-items:center;gap:10px}"
-  + ".com2 .com2-haut .cloche-theme-communauteV2{position:relative !important;top:auto !important;right:auto !important;left:auto !important;width:38px !important;height:38px !important;border-radius:50% !important;border:1px solid rgba(201,166,107,0.45) !important;background:rgba(13,21,24,0.85) !important;box-shadow:none !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important}"
-  + ".com2 .com2-haut .cloche-theme-communauteV2 .cloche-ic{stroke:#E9D3A2 !important;filter:none !important}"
-  + ".com2 .com2-haut .cloche-theme-communauteV2 .cloche-pastille{background:#C9A66B !important;color:#1A1408 !important;box-shadow:none !important;right:auto !important;inset-inline-end:-3px}"
+  + ".com2 .com2-haut .cloche-theme-communauteV2{position:relative !important;top:auto !important;right:auto !important;left:auto !important;width:38px !important;height:38px !important;border-radius:50% !important;border:1px solid rgba(197,170,120,0.45) !important;background:rgba(5,8,11,0.85) !important;box-shadow:none !important;-webkit-backdrop-filter:none !important;backdrop-filter:none !important}"
+  + ".com2 .com2-haut .cloche-theme-communauteV2 .cloche-ic{stroke:#D8BC86 !important;filter:none !important}"
+  + ".com2 .com2-haut .cloche-theme-communauteV2 .cloche-pastille{background:#C5AA78 !important;color:#1A1408 !important;box-shadow:none !important;right:auto !important;inset-inline-end:-3px}"
   + ".com2 .com2-lang{position:relative}"
-  + ".com2 .com2-lang > button{width:38px;height:38px;border-radius:50%;padding:0;border:1px solid rgba(201,166,107,0.45);background:rgba(13,21,24,0.85);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-appearance:none;appearance:none}"
-  + ".com2 .com2-lang-liste{position:absolute;inset-block-start:44px;inset-inline-end:0;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:16px;border:1px solid rgba(201,166,107,0.3);background:rgba(8,11,15,0.94);box-shadow:0 14px 34px rgba(0,0,0,0.5);z-index:8}"
+  + ".com2 .com2-lang > button{width:38px;height:38px;border-radius:50%;padding:0;border:1px solid rgba(197,170,120,0.45);background:rgba(5,8,11,0.85);font-size:16px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-appearance:none;appearance:none}"
+  + ".com2 .com2-lang-liste{position:absolute;inset-block-start:44px;inset-inline-end:0;display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:16px;border:1px solid rgba(197,170,120,0.3);background:rgba(8,11,15,0.94);box-shadow:0 14px 34px rgba(0,0,0,0.5);z-index:8}"
   + ".com2 .com2-lang-liste button{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,0.10);background:transparent;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-appearance:none;appearance:none;padding:0}"
-  + ".com2 .com2-lang-liste button.actif{border:1.5px solid #C9A66B;background:rgba(201,166,107,0.18)}"
+  + ".com2 .com2-lang-liste button.actif{border:1.5px solid #C5AA78;background:rgba(197,170,120,0.18)}"
   /* en-tete */
   + ".com2 .com2-tete{position:relative;z-index:1;padding:calc(env(safe-area-inset-top) + 28px) 22px 0}"
   + ".com2 .com2-titre{margin:0;font-family:'Cormorant Garamond','Cinzel',Georgia,serif;font-weight:500;font-size:clamp(26px,8.6vw,34px);line-height:1.05;letter-spacing:0.06em;text-transform:uppercase;color:#F3EEE4;text-align:start;padding-inline-end:100px;text-shadow:0 2px 18px rgba(0,0,0,.9),0 0 3px rgba(0,0,0,.7)}"
   + ".com2 .com2-sous{margin-top:9px;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;line-height:1.28;color:rgba(243,238,228,0.82);text-align:start;text-shadow:0 1px 14px rgba(0,0,0,.9),0 0 2px rgba(0,0,0,.6)}"
   + ".com2 .com2-sous span{display:block}"
   /* carte Monde Hype */
-  + ".com2 .com2-monde{position:relative;z-index:1;display:flex;align-items:center;gap:14px;width:calc(100% - 32px);margin:72px 16px 0;padding:19px 18px;border-radius:18px;border:1px solid rgba(201,166,107,0.55);background:linear-gradient(135deg,#0D1518 0%,#0B1215 55%,#080D10 100%);color:#F3EEE4;text-align:start;cursor:pointer;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 10px 26px rgba(0,0,0,0.35)}"
-  + ".com2 .com2-globe{flex:0 0 auto;width:46px;height:46px;display:flex;align-items:center;justify-content:center;color:#7CCBD6}"
+  + ".com2 .com2-monde{position:relative;z-index:1;display:flex;align-items:center;gap:14px;width:calc(100% - 32px);margin:72px 16px 0;padding:19px 18px;border-radius:18px;border:1px solid rgba(197,170,120,0.55);background:linear-gradient(135deg,#254F60 0%,#1B3A47 55%,#152E39 100%);color:#F3EEE4;text-align:start;cursor:pointer;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 10px 26px rgba(0,0,0,0.35)}"
+  + ".com2 .com2-globe{flex:0 0 auto;width:46px;height:46px;display:flex;align-items:center;justify-content:center;color:#C5AA78}"
   + ".com2 .com2-globe svg{width:40px;height:40px;display:block}"
   + ".com2 .com2-monde-x{flex:1;min-width:0}"
   + ".com2 .com2-monde-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:600;line-height:1.1;color:#F3EEE4}"
   + ".com2 .com2-monde-s{margin-top:5px;font-size:12.5px;line-height:1.4;color:rgba(243,238,228,0.72)}"
-  + ".com2 .com2-chev{flex:0 0 auto;width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:#C9A66B}"
+  + ".com2 .com2-chev{flex:0 0 auto;width:22px;height:22px;display:flex;align-items:center;justify-content:center;color:#C5AA78}"
   + ".com2 .com2-chev svg{width:20px;height:20px;display:block}"
   + "[dir=rtl] .com2 .com2-chev{transform:scaleX(-1)}"
   /* sections */
@@ -25115,46 +25115,46 @@ var COM2_CSS = ".com2{min-height:100vh;background:#060709;color:#F3EEE4;position
      sous le rond ; le « + » (seul bouton du rail avec un aria-label) reste en PREMIER. */
   + ".com2 .com2-stories [data-hscroll]{background:transparent !important;gap:8px !important;padding:6px 16px 2px !important}"
   + ".com2 .com2-stories [data-hscroll] > button[aria-label]{order:-1}"
-  + ".com2 .com2-stories [data-hscroll] > button[aria-label] > div:first-child{background:rgba(13,21,24,0.92) !important;box-shadow:none !important}"
+  + ".com2 .com2-stories [data-hscroll] > button[aria-label] > div:first-child{background:rgba(5,8,11,0.92) !important;box-shadow:none !important}"
   + ".com2 .com2-stories [data-hscroll] > button[aria-label] > div:last-child{color:rgba(243,238,228,0.8) !important}"
   + ".com2 .com2-stories [data-hscroll] > button > div:last-child{margin-top:5px !important;font-size:11px !important}"
   + ".com2 .com2-sec-st .com2-sec-t{padding-bottom:4px}"
   + ".com2 .com2-sec-st + .com2-sec{margin-top:26px}"
   /* (602) A decouvrir : deux cartes d entree cote a cote (image, titre, sous-texte, chevron), aucune icone */
   + ".com2 .com2-dec{display:flex;gap:12px;padding:0 16px}"
-  + ".com2 .com2-dec-c{position:relative;flex:1;min-width:0;height:152px;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,0.42);background:#0D1518;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 10px 24px rgba(0,0,0,0.35)}"
-  + ".com2 .com2-dec-c.ouverte{border-color:rgba(201,166,107,0.95)}"
+  + ".com2 .com2-dec-c{position:relative;flex:1;min-width:0;height:152px;border-radius:16px;overflow:hidden;border:1px solid rgba(197,170,120,0.42);background:#0F2029;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 10px 24px rgba(0,0,0,0.35)}"
+  + ".com2 .com2-dec-c.ouverte{border-color:rgba(197,170,120,0.95)}"
   + ".com2 .com2-dec-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;opacity:.9;display:block}"
-  + ".com2 .com2-dec-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0) 28%,rgba(6,7,9,.55) 58%,rgba(6,7,9,.95) 100%)}"
+  + ".com2 .com2-dec-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,0) 28%,rgba(5,8,11,.55) 58%,rgba(5,8,11,.95) 100%)}"
   + ".com2 .com2-dec-x{position:absolute;inset-inline-start:12px;inset-inline-end:30px;inset-block-end:11px}"
   + ".com2 .com2-dec-t{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:600;line-height:1.1;color:#F3EEE4}"
   + ".com2 .com2-dec-s{display:block;margin-top:3px;font-size:10.5px;line-height:1.3;color:rgba(243,238,228,.74)}"
-  + ".com2 .com2-dec-chev{position:absolute;inset-inline-end:9px;inset-block-end:12px;width:18px;height:18px;color:#C9A66B}"
+  + ".com2 .com2-dec-chev{position:absolute;inset-inline-end:9px;inset-block-end:12px;width:18px;height:18px;color:#C5AA78}"
   + ".com2 .com2-dec-chev svg{width:18px;height:18px;display:block}"
   + "[dir=rtl] .com2 .com2-dec-chev{transform:scaleX(-1)}"
   + ".com2 .com2-dec-ext{margin-top:6px}"
   /* (604) Dans les ecuries : cartes horizontales empilees, image panoramique, nom a l extremite de debut, chevron a la fin */
   + ".com2 .com2-ecu{display:flex;flex-direction:column;gap:12px;padding:0 16px}"
-  + ".com2 .com2-ecu-c{position:relative;display:block;width:100%;height:90px;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,0.42);background:#0D1518;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 10px 24px rgba(0,0,0,0.35)}"
+  + ".com2 .com2-ecu-c{position:relative;display:block;width:100%;height:90px;border-radius:16px;overflow:hidden;border:1px solid rgba(197,170,120,0.42);background:#0F2029;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 10px 24px rgba(0,0,0,0.35)}"
   + ".com2 .com2-ecu-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 45%;display:block}"
-  + ".com2 .com2-ecu-voile{position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,.97) 0%,rgba(6,7,9,.9) 38%,rgba(6,7,9,.35) 66%,rgba(6,7,9,.18) 100%)}"
+  + ".com2 .com2-ecu-voile{position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,8,11,.97) 0%,rgba(5,8,11,.9) 38%,rgba(5,8,11,.35) 66%,rgba(5,8,11,.18) 100%)}"
   + "[dir=rtl] .com2 .com2-ecu-voile{transform:scaleX(-1)}"
   + ".com2 .com2-ecu-x{position:absolute;inset-inline-start:18px;inset-inline-end:44px;top:50%;transform:translateY(-50%)}"
   + ".com2 .com2-ecu-t{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:19px;font-weight:600;line-height:1.1;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
   + ".com2 .com2-ecu-s{display:block;margin-top:4px;font-size:11px;line-height:1.3;color:rgba(243,238,228,.74);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
-  + ".com2 .com2-ecu-chev{position:absolute;inset-inline-end:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#C9A66B}"
+  + ".com2 .com2-ecu-chev{position:absolute;inset-inline-end:14px;top:50%;transform:translateY(-50%);width:20px;height:20px;color:#C5AA78}"
   + ".com2 .com2-ecu-chev svg{width:20px;height:20px;display:block}"
   + "[dir=rtl] .com2 .com2-ecu-chev{transform:translateY(-50%) scaleX(-1)}"
   /* (659) « Dans les ecuries » : UNE grande carte immersive (photo pleine, voile du bas, nom, avatars, compteur, chevron) ;
      les autres ecuries en rail horizontal apres « Voir tout ». Bordure a peine visible, pas d or epais. */
-  + ".com2 .com2-ecu-g{position:relative;display:block;width:100%;height:176px;border-radius:18px;overflow:hidden;border:1px solid rgba(201,166,107,0.16);background:#0B1316;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 14px 30px rgba(0,0,0,0.45)}"
+  + ".com2 .com2-ecu-g{position:relative;display:block;width:100%;height:176px;border-radius:18px;overflow:hidden;border:1px solid rgba(197,170,120,0.16);background:#173440;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 14px 30px rgba(0,0,0,0.45)}"
   + ".com2 .com2-ecu-g .com2-ecu-img{object-position:center 35%}"
-  + ".com2 .com2-ecu-gv{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0.04) 0%,rgba(6,7,9,0.14) 38%,rgba(6,7,9,0.80) 76%,rgba(6,7,9,0.96) 100%)}"
+  + ".com2 .com2-ecu-gv{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,0.04) 0%,rgba(5,8,11,0.14) 38%,rgba(5,8,11,0.80) 76%,rgba(5,8,11,0.96) 100%)}"
   + ".com2 .com2-ecu-gx{position:absolute;inset-inline-start:16px;inset-inline-end:46px;bottom:14px;min-width:0}"
   + ".com2 .com2-ecu-gt{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:600;line-height:1.05;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 2px 12px rgba(0,0,0,0.65)}"
   + ".com2 .com2-ecu-gl{display:flex;align-items:center;gap:10px;margin-top:9px;min-width:0}"
   + ".com2 .com2-ecu-avs{display:flex;flex:0 0 auto}"
-  + ".com2 .com2-ecu-av{width:28px;height:28px;border-radius:50%;background-size:cover;background-position:center;background-color:#111B1E;border:1.5px solid rgba(201,166,107,0.8);box-shadow:0 0 0 2px #060709;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px;color:#F3EEE4;flex:0 0 auto}"
+  + ".com2 .com2-ecu-av{width:28px;height:28px;border-radius:50%;background-size:cover;background-position:center;background-color:#1B3A47;border:1.5px solid rgba(197,170,120,0.8);box-shadow:0 0 0 2px #05080B;display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:13px;color:#F3EEE4;flex:0 0 auto}"
   + ".com2 .com2-ecu-av+.com2-ecu-av{margin-inline-start:-9px}"
   + ".com2 .com2-ecu-gs{font-family:'Montserrat',sans-serif;font-size:11.5px;color:rgba(243,238,228,0.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}"
   + ".com2 .com2-ecu-g .com2-ecu-chev{top:auto;bottom:20px;transform:none;width:22px;height:22px}"
@@ -25162,7 +25162,7 @@ var COM2_CSS = ".com2{min-height:100vh;background:#060709;color:#F3EEE4;position
   + "[dir=rtl] .com2 .com2-ecu-g .com2-ecu-chev{transform:scaleX(-1)}"
   + ".com2 .com2-ecu-rail{display:flex;gap:10px;overflow-x:auto;-webkit-overflow-scrolling:touch;scroll-snap-type:x mandatory;padding:12px 16px 4px;scrollbar-width:none}"
   + ".com2 .com2-ecu-rail::-webkit-scrollbar{display:none}"
-  + ".com2 .com2-ecu-p{position:relative;display:block;flex:0 0 64%;height:112px;border-radius:16px;overflow:hidden;border:1px solid rgba(201,166,107,0.16);background:#0B1316;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;scroll-snap-align:start}"
+  + ".com2 .com2-ecu-p{position:relative;display:block;flex:0 0 64%;height:112px;border-radius:16px;overflow:hidden;border:1px solid rgba(197,170,120,0.16);background:#173440;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;scroll-snap-align:start}"
   + ".com2 .com2-ecu-p .com2-ecu-gx{inset-inline-start:12px;inset-inline-end:34px;bottom:10px}"
   + ".com2 .com2-ecu-p .com2-ecu-gt{font-size:19px}"
   + ".com2 .com2-ecu-p .com2-ecu-gl{margin-top:5px;gap:8px}"
@@ -25175,75 +25175,75 @@ var COM2_CSS = ".com2{min-height:100vh;background:#060709;color:#F3EEE4;position
   /* (659) « A l agenda » : une grande carte (date en haut, pastille du type, titre, club, chevron) puis trois petites sur une
      ligne (date, image a l extremite de fin, titre court, chevron). Bordure champagne fine, comme le visuel de reference. */
   + ".com2 .com2-ag{padding:0 16px}"
-  + ".com2 .com2-ag-g{position:relative;display:block;width:100%;height:200px;border-radius:18px;overflow:hidden;border:1px solid rgba(201,166,107,0.38);background:#0B1316;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 14px 30px rgba(0,0,0,0.45)}"
+  + ".com2 .com2-ag-g{position:relative;display:block;width:100%;height:200px;border-radius:18px;overflow:hidden;border:1px solid rgba(197,170,120,0.38);background:#173440;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit;box-shadow:0 14px 30px rgba(0,0,0,0.45)}"
   + ".com2 .com2-ag-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%;display:block}"
-  + ".com2 .com2-ag-fond{position:absolute;inset:0;background:radial-gradient(120% 90% at 85% 12%,rgba(201,166,107,0.26) 0%,rgba(201,166,107,0) 55%),linear-gradient(160deg,#11262D 0%,#08151B 55%,#060709 100%)}"
-  + ".com2 .com2-ag-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,0.30) 0%,rgba(6,7,9,0.04) 30%,rgba(6,7,9,0.22) 52%,rgba(6,7,9,0.90) 100%)}"
-  + ".com2 .com2-ag-date{position:absolute;top:12px;inset-inline-start:14px;display:flex;flex-direction:column;align-items:center;min-width:46px;padding:6px 8px 5px;border-radius:12px;background:rgba(6,7,9,0.5);border:1px solid rgba(201,166,107,0.28);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}"
-  + ".com2 .com2-ag-date b{font-family:'Cormorant Garamond',Georgia,serif;font-size:31px;font-weight:600;line-height:1;color:#E9D3A2}"
+  + ".com2 .com2-ag-fond{position:absolute;inset:0;background:radial-gradient(120% 90% at 85% 12%,rgba(197,170,120,0.26) 0%,rgba(197,170,120,0) 55%),linear-gradient(160deg,#254F60 0%,#1B3A47 55%,#132A34 100%)}"
+  + ".com2 .com2-ag-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,0.30) 0%,rgba(5,8,11,0.04) 30%,rgba(5,8,11,0.22) 52%,rgba(5,8,11,0.90) 100%)}"
+  + ".com2 .com2-ag-date{position:absolute;top:12px;inset-inline-start:14px;display:flex;flex-direction:column;align-items:center;min-width:46px;padding:6px 8px 5px;border-radius:12px;background:rgba(5,8,11,0.5);border:1px solid rgba(197,170,120,0.28);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}"
+  + ".com2 .com2-ag-date b{font-family:'Cormorant Garamond',Georgia,serif;font-size:31px;font-weight:600;line-height:1;color:#D8BC86}"
   + ".com2 .com2-ag-date i{font-style:normal;font-family:'Montserrat',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:1.2px;color:#F3EEE4;margin-top:3px;white-space:nowrap}"
   + ".com2 .com2-ag-x{position:absolute;inset-inline-start:14px;inset-inline-end:42px;bottom:14px;display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-width:0}"
-  + ".com2 .com2-ag-badge{display:inline-block;max-width:100%;padding:3px 9px;border-radius:999px;border:1px solid rgba(243,238,228,0.32);background:rgba(6,7,9,0.5);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.3px;color:rgba(243,238,228,0.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}"
+  + ".com2 .com2-ag-badge{display:inline-block;max-width:100%;padding:3px 9px;border-radius:999px;border:1px solid rgba(243,238,228,0.32);background:rgba(5,8,11,0.5);font-family:'Montserrat',sans-serif;font-size:10px;letter-spacing:0.3px;color:rgba(243,238,228,0.92);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}"
   + ".com2 .com2-ag-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:24px;font-weight:600;line-height:1.05;color:#F3EEE4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-shadow:0 2px 12px rgba(0,0,0,0.65);max-width:100%}"
   + ".com2 .com2-ag-c{display:block;max-width:100%;font-family:'Montserrat',sans-serif;font-size:11.5px;color:rgba(243,238,228,0.82);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
-  + ".com2 .com2-ag-chev{position:absolute;inset-inline-end:12px;bottom:16px;width:20px;height:20px;color:#C9A66B}"
+  + ".com2 .com2-ag-chev{position:absolute;inset-inline-end:12px;bottom:16px;width:20px;height:20px;color:#C5AA78}"
   + ".com2 .com2-ag-chev svg{width:20px;height:20px;display:block}"
   + "[dir=rtl] .com2 .com2-ag-chev{transform:scaleX(-1)}"
   + ".com2 .com2-ag-p3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:10px}"
-  + ".com2 .com2-ag-p{position:relative;display:block;height:104px;min-width:0;border-radius:14px;overflow:hidden;border:1px solid rgba(201,166,107,0.32);background:#0B1316;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit}"
+  + ".com2 .com2-ag-p{position:relative;display:block;height:104px;min-width:0;border-radius:14px;overflow:hidden;border:1px solid rgba(197,170,120,0.32);background:#173440;padding:0;cursor:pointer;text-align:start;color:#F3EEE4;-webkit-appearance:none;appearance:none;font:inherit}"
   + ".com2 .com2-ag-p .com2-ag-img{inset-inline-start:40%;width:60%;object-position:center}"
-  + ".com2 .com2-ag-p .com2-ag-voile{background:linear-gradient(90deg,rgba(6,7,9,0.96) 0%,rgba(6,7,9,0.78) 40%,rgba(6,7,9,0.18) 100%),linear-gradient(180deg,rgba(6,7,9,0) 45%,rgba(6,7,9,0.88) 100%)}"
+  + ".com2 .com2-ag-p .com2-ag-voile{background:linear-gradient(90deg,rgba(5,8,11,0.96) 0%,rgba(5,8,11,0.78) 40%,rgba(5,8,11,0.18) 100%),linear-gradient(180deg,rgba(5,8,11,0) 45%,rgba(5,8,11,0.88) 100%)}"
   + "[dir=rtl] .com2 .com2-ag-p .com2-ag-voile{transform:scaleX(-1)}"
   + ".com2 .com2-ag-pd{position:absolute;top:8px;inset-inline-start:9px;display:flex;flex-direction:column;align-items:center}"
-  + ".com2 .com2-ag-pd b{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:600;line-height:1;color:#E9D3A2}"
+  + ".com2 .com2-ag-pd b{font-family:'Cormorant Garamond',Georgia,serif;font-size:23px;font-weight:600;line-height:1;color:#D8BC86}"
   + ".com2 .com2-ag-pd i{font-style:normal;font-family:'Montserrat',sans-serif;font-size:8.5px;font-weight:700;letter-spacing:1px;color:#F3EEE4;margin-top:2px;white-space:nowrap}"
   + ".com2 .com2-ag-pt{position:absolute;inset-inline-start:9px;inset-inline-end:24px;bottom:9px;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;line-height:1.2;color:#F3EEE4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-shadow:0 1px 8px rgba(0,0,0,0.7)}"
   + ".com2 .com2-ag-p .com2-ag-chev{bottom:9px;inset-inline-end:7px;width:16px;height:16px}"
   + ".com2 .com2-ag-p .com2-ag-chev svg{width:16px;height:16px}"
-  + ".com2 .com2-lien{background:none;border:none;padding:6px 0;font:inherit;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:#C9A66B;cursor:pointer;display:inline-flex;align-items:center;gap:3px;min-height:36px}"
+  + ".com2 .com2-lien{background:none;border:none;padding:6px 0;font:inherit;font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;color:#C5AA78;cursor:pointer;display:inline-flex;align-items:center;gap:3px;min-height:36px}"
   + ".com2 .com2-lien svg{width:16px;height:16px;display:block}"
   + "[dir=rtl] .com2 .com2-lien svg{transform:scaleX(-1)}"
   /* (605) Le fil : 4 onglets en pastilles, actif champagne, inactifs petrole ; tiennent sur une ligne a 375 px */
   /* (616) les 4 onglets en UN SEUL composant (« segmented control ») : une pilule sombre a liseret champagne, 4 segments
-     egaux sans bordure entre eux ; l actif garde les couleurs du 612 (fond #121A1C, liseret 0.55, texte #D8BC86, trait).
+     egaux sans bordure entre eux ; l actif garde les couleurs du 612 (fond #254F60, liseret 0.55, texte #D8BC86, trait).
      Avant (605) : 4 pilules separees de 36 px avec 8 px d ecart. Japonais : police reduite (« アクティビティ » ne tient pas a 12 px). */
-  + ".com2 .com2-onglets{display:flex;gap:2px;margin:0 16px;padding:3px;border-radius:999px;border:1px solid rgba(201,166,107,0.3);background:#0D1518}"
+  + ".com2 .com2-onglets{display:flex;gap:2px;margin:0 16px;padding:3px;border-radius:999px;border:1px solid rgba(197,170,120,0.3);background:#0F2029}"
   + ".com2 .com2-onglet{position:relative;flex:1;min-width:0;height:34px;border-radius:999px;border:1px solid transparent;background:transparent;color:rgba(243,238,228,0.72);font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:.01em;padding:0 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;-webkit-appearance:none;appearance:none}"
   + ".com2 .com2-onglets[data-lg=ja] .com2-onglet{font-size:11.5px;letter-spacing:0}"
-  /* (612) onglet actif plus sourd (Blandine : « trop jaune, trop lumineux ») : fond petrole #121A1C, liseret champagne 0.55,
+  /* (612) onglet actif plus sourd (Blandine : « trop jaune, trop lumineux ») : fond petrole #254F60, liseret champagne 0.55,
      texte champagne clair #D8BC86, petit trait champagne de 2 px sous le texte. Dimensions, espacement, typo inchanges ;
-     onglets inactifs inchanges. Avant : fond #C9A66B plein, liseret #C9A66B, texte #1A1408. */
-  + ".com2 .com2-onglet.actif{background:#121A1C;border-color:rgba(201,166,107,0.55);color:#D8BC86}"
-  + ".com2 .com2-onglet.actif::after{content:'';position:absolute;inset-inline:26%;inset-block-end:5px;height:2px;border-radius:2px;background:#C9A66B;opacity:.9}"
+     onglets inactifs inchanges. Avant : fond #C5AA78 plein, liseret #C5AA78, texte #1A1408. */
+  + ".com2 .com2-onglet.actif{background:#254F60;border-color:rgba(197,170,120,0.55);color:#D8BC86}"
+  + ".com2 .com2-onglet.actif::after{content:'';position:absolute;inset-inline:26%;inset-block-end:5px;height:2px;border-radius:2px;background:#C5AA78;opacity:.9}"
   + ".com2 .com2-fil-vide{margin:22px 22px 0;font-family:'Cormorant Garamond',Georgia,serif;font-size:16px;line-height:1.4;color:rgba(243,238,228,0.55);text-align:start}"
   /* (608) les cartes du fil : avatar, nom, date · contexte, texte, image, j aime / commentaires, menu « … » */
   + ".com2 .com2-posts{display:flex;flex-direction:column;gap:12px;padding:14px 16px 0}"
-  + ".com2 .com2-post{position:relative;border-radius:16px;border:1px solid rgba(201,166,107,0.22);background:linear-gradient(180deg,#0E1719 0%,#0B1214 100%);padding:14px 14px 12px;box-shadow:0 10px 24px rgba(0,0,0,0.3)}"
+  + ".com2 .com2-post{position:relative;border-radius:16px;border:1px solid rgba(197,170,120,0.22);background:linear-gradient(180deg,#1E4452 0%,#152E39 100%);padding:14px 14px 12px;box-shadow:0 10px 24px rgba(0,0,0,0.3)}"
   + ".com2 .com2-post-tete{display:flex;align-items:center;gap:11px}"
-  + ".com2 .com2-post-av{flex:0 0 auto;width:42px;height:42px;border-radius:50%;padding:2px;border:1px solid rgba(201,166,107,0.55);background:none;cursor:pointer;-webkit-appearance:none;appearance:none}"
-  + ".com2 .com2-post-av span{display:block;width:100%;height:100%;border-radius:50%;background-size:cover;background-position:center;background-color:#111B1E;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#F3EEE4;display:flex;align-items:center;justify-content:center}"
+  + ".com2 .com2-post-av{flex:0 0 auto;width:42px;height:42px;border-radius:50%;padding:2px;border:1px solid rgba(197,170,120,0.55);background:none;cursor:pointer;-webkit-appearance:none;appearance:none}"
+  + ".com2 .com2-post-av span{display:block;width:100%;height:100%;border-radius:50%;background-size:cover;background-position:center;background-color:#1B3A47;font-family:'Cormorant Garamond',Georgia,serif;font-size:17px;color:#F3EEE4;display:flex;align-items:center;justify-content:center}"
   + ".com2 .com2-post-qui{flex:1;min-width:0;text-align:start}"
   + ".com2 .com2-post-nom{display:block;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
   + ".com2 .com2-post-meta{display:block;margin-top:2px;font-family:'Montserrat',sans-serif;font-size:11px;color:rgba(243,238,228,0.55)}"
   + ".com2 .com2-post-menu{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:none;background:none;color:rgba(243,238,228,0.7);font-size:20px;line-height:1;letter-spacing:1px;cursor:pointer;-webkit-appearance:none;appearance:none;padding:0}"
-  + ".com2 .com2-post-actions{position:absolute;inset-inline-end:12px;inset-block-start:48px;z-index:3;background:#10191A;border:1px solid rgba(201,166,107,0.35);border-radius:12px;padding:4px;box-shadow:0 10px 24px rgba(0,0,0,0.45)}"
+  + ".com2 .com2-post-actions{position:absolute;inset-inline-end:12px;inset-block-start:48px;z-index:3;background:#173440;border:1px solid rgba(197,170,120,0.35);border-radius:12px;padding:4px;box-shadow:0 10px 24px rgba(0,0,0,0.45)}"
   + ".com2 .com2-post-actions button{display:block;width:100%;min-width:150px;min-height:40px;padding:8px 14px;border:none;background:none;color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:13px;font-weight:600;text-align:start;cursor:pointer;-webkit-appearance:none;appearance:none}"
   + ".com2 .com2-post-txt{margin-top:11px;font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.45;color:rgba(243,238,228,0.92);text-align:start;overflow-wrap:anywhere}"
   + ".com2 .com2-post-txt.lien{cursor:pointer}"
   + ".com2 .com2-post-sous{margin-top:4px;font-family:'Montserrat',sans-serif;font-size:12px;line-height:1.4;color:rgba(243,238,228,0.6);text-align:start}"
-  + ".com2 .com2-post-img{display:block;width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-top:11px;background:#0A1113}"
+  + ".com2 .com2-post-img{display:block;width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-top:11px;background:#132A34}"
   /* (621) carte de palmares : la tete du cheval en VIGNETTE de 72 px a droite du texte (Blandine : « diminue la photo »), plus de grande image */
   + ".com2 .com2-post-ligne{display:flex;align-items:center;gap:12px;margin-top:11px}"
   + ".com2 .com2-post-ligne .com2-post-x{flex:1;min-width:0}"
   + ".com2 .com2-post-ligne .com2-post-txt{margin-top:0}"
-  + ".com2 .com2-post-vign{flex:0 0 auto;width:72px;height:72px;border-radius:12px;object-fit:cover;background:#0A1113;cursor:pointer}"
-  + ".com2 .com2-post-chx{margin-top:8px;border-top:1px solid rgba(201,166,107,0.18)}"
+  + ".com2 .com2-post-vign{flex:0 0 auto;width:72px;height:72px;border-radius:12px;object-fit:cover;background:#132A34;cursor:pointer}"
+  + ".com2 .com2-post-chx{margin-top:8px;border-top:1px solid rgba(197,170,120,0.18)}"
   + ".com2 .com2-post-ch{display:flex;align-items:center;gap:8px;width:100%;min-height:40px;padding:7px 2px;border:none;border-bottom:1px solid rgba(255,255,255,0.05);background:none;color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:12.5px;text-align:start;cursor:pointer;-webkit-appearance:none;appearance:none}"
-  + ".com2 .com2-post-ch b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#E9D3A2}"
+  + ".com2 .com2-post-ch b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#D8BC86}"
   + ".com2 .com2-post-ch i{font-style:normal;color:rgba(243,238,228,0.55);font-size:11px}"
   + ".com2 .com2-post-pied{display:flex;align-items:center;gap:18px;margin-top:11px;padding-top:9px;border-top:1px solid rgba(255,255,255,0.06)}"
   + ".com2 .com2-post-pied button,.com2 .com2-post-pied a{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 2px;border:none;background:none;color:rgba(243,238,228,0.7);font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;text-decoration:none;-webkit-appearance:none;appearance:none}"
-  + ".com2 .com2-post-pied .aime{color:#C9A66B}"
+  + ".com2 .com2-post-pied .aime{color:#C5AA78}"
   + ".com2 .com2-post-pied svg{width:18px;height:18px;display:block}"
   + ".com2 .com2-post-com{margin-top:8px}"
   /* (619) carte LEGERE (Blandine : « 10 fois trop grands quand rien a dire et pas de photo ») : un resultat sans photo ni video
@@ -25263,45 +25263,144 @@ var COM2_CSS = ".com2{min-height:100vh;background:#060709;color:#F3EEE4;position
   /* (657) DEPLIER UNE PUBLICATION (son choix : « un truc qui deplie vers le bas quand on appuie dessus ») : la carte se
      touche, un chevron a droite du pied dit qu elle se deplie, le detail s ouvre sous elle (lignes, commentaires, Replier). */
   + ".com2 .com2-post{cursor:pointer}"
-  + ".com2 .com2-post.ouvert{border-color:rgba(201,166,107,0.45);box-shadow:0 0 0 1px rgba(201,166,107,0.10)}"
+  + ".com2 .com2-post.ouvert{border-color:rgba(197,170,120,0.45);box-shadow:0 0 0 1px rgba(197,170,120,0.10)}"
   + ".com2 .com2-post-pied .com2-post-chev{margin-inline-start:auto;min-width:22px;padding:0;justify-content:center;color:rgba(243,238,228,0.45);font-size:13px}"
   + ".com2 .com2-post.ouvert .com2-post-pied .com2-post-chev{color:#D8BC86}"
   + ".com2 .com2-post.leger .com2-post-pied .com2-post-chev{margin-inline-start:0}"
   + ".com2 .com2-post-detail{grid-column:1 / -1;margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,0.07);cursor:default}"
-  + ".com2 .com2-post-dl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12.5px;color:#8A929C}"
+  + ".com2 .com2-post-dl{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:12.5px;color:#BDB6AA}"
   + ".com2 .com2-post-dl b{color:#F3EEE4;font-weight:600;text-align:end;min-width:0;overflow-wrap:anywhere}"
   + ".com2 .com2-post-dl.lien b{color:#D8BC86;cursor:pointer}"
   + ".com2 .com2-post-detail .com2-post-lienprofil{display:inline-flex;align-items:center;min-height:36px;margin-top:4px;border:none;background:none;padding:0;color:#D8BC86;font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer}"
-  + ".com2 .com2-post-replier{display:block;width:100%;margin-top:8px;padding:9px 0;border:none;background:none;color:#C9A66B;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer}"
+  + ".com2 .com2-post-replier{display:block;width:100%;margin-top:8px;padding:9px 0;border:none;background:none;color:#C5AA78;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;cursor:pointer}"
   /* (611) le bloc des reponses (SectionCommentaires, styles en ligne, NON modifie) habille aux couleurs de la page :
      bouton « N Commenter » ivoire, bulle champagne, texte ivoire, liseres champagne, champ sombre, « Envoyer » champagne
      (le turquoise ne reste que sur les autres pages). Selecteurs par structure : bouton d ouverture = 1er bouton du bloc ;
      « + » et « Envoyer » = 1er et dernier bouton de la ligne de saisie ; « Connecte-toi » = bouton direct du panneau. */
   /* (622) selecteurs sur les classes STABLES du composant (prop theme: "communauteV2"), plus par structure */
   + ".com2 .sc-theme-communauteV2 .sc-ouvrir{color:rgba(243,238,228,0.72) !important;font-size:12px !important;min-height:30px}"
-  + ".com2 .sc-theme-communauteV2 .sc-ouvrir svg{stroke:#C9A66B}"
-  + ".com2 .sc-theme-communauteV2 .sc-panneau{border-top-color:rgba(201,166,107,0.16) !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-ouvrir svg{stroke:#C5AA78}"
+  + ".com2 .sc-theme-communauteV2 .sc-panneau{border-top-color:rgba(197,170,120,0.16) !important}"
   + ".com2 .sc-theme-communauteV2 .sc-texte{color:rgba(243,238,228,0.82) !important}"
-  + ".com2 .sc-theme-communauteV2 .sc-media{border-color:rgba(201,166,107,0.35) !important}"
-  + ".com2 .sc-theme-communauteV2 .sc-connexion{color:#E9D3A2 !important}"
-  + ".com2 .sc-theme-communauteV2 .sc-plus{border-color:rgba(201,166,107,0.4) !important;color:#C9A66B !important;border-radius:12px !important}"
-  + ".com2 .sc-theme-communauteV2 .sc-envoyer{background:#C9A66B !important;color:#1A1408 !important;border-radius:12px !important;font-weight:700 !important}"
-  + ".com2 .sc-theme-communauteV2 .sc-envoyer:disabled{background:rgba(201,166,107,0.5) !important}"
-  + ".com2 .sc-theme-communauteV2 .sc-champ{background:#0A1113 !important;border:1px solid rgba(201,166,107,0.28) !important;border-radius:12px !important;color:#F3EEE4 !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-media{border-color:rgba(197,170,120,0.35) !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-connexion{color:#D8BC86 !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-plus{border-color:rgba(197,170,120,0.4) !important;color:#C5AA78 !important;border-radius:12px !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-envoyer{background:#C5AA78 !important;color:#1A1408 !important;border-radius:12px !important;font-weight:700 !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-envoyer:disabled{background:rgba(197,170,120,0.5) !important}"
+  + ".com2 .sc-theme-communauteV2 .sc-champ{background:#132A34 !important;border:1px solid rgba(197,170,120,0.28) !important;border-radius:12px !important;color:#F3EEE4 !important}"
   + ".com2 .sc-theme-communauteV2 .sc-champ::placeholder{color:rgba(243,238,228,0.4)}"
-  + ".com2 .com2-fil-plus{display:block;margin:16px auto 0;min-height:42px;padding:0 20px;border-radius:999px;border:1px solid rgba(201,166,107,0.45);background:rgba(201,166,107,0.08);color:#E9D3A2;font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;-webkit-appearance:none;appearance:none}"
+  + ".com2 .com2-fil-plus{display:block;margin:16px auto 0;min-height:42px;padding:0 20px;border-radius:999px;border:1px solid rgba(197,170,120,0.45);background:rgba(197,170,120,0.08);color:#D8BC86;font-family:'Montserrat',sans-serif;font-size:12.5px;font-weight:700;cursor:pointer;-webkit-appearance:none;appearance:none}"
   /* (609) Activite : lignes compactes (avatar, phrase, detail, heure, vignette) — sans j aime ni reponses */
   + ".com2 .com2-act{display:flex;flex-direction:column;padding:8px 16px 0}"
   + ".com2 .com2-act-l{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:9px 2px;border:none;border-bottom:1px solid rgba(255,255,255,0.06);background:none;color:#F3EEE4;text-align:start;cursor:pointer;-webkit-appearance:none;appearance:none;font:inherit}"
-  + ".com2 .com2-act-av{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background-size:cover;background-position:center;background-color:#111B1E;border:1px solid rgba(201,166,107,0.4);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#F3EEE4}"
+  + ".com2 .com2-act-av{flex:0 0 auto;width:34px;height:34px;border-radius:50%;background-size:cover;background-position:center;background-color:#1B3A47;border:1px solid rgba(197,170,120,0.4);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;color:#F3EEE4}"
   + ".com2 .com2-act-x{flex:1;min-width:0}"
   + ".com2 .com2-act-t{display:block;font-family:'Montserrat',sans-serif;font-size:12.5px;line-height:1.35;color:rgba(243,238,228,0.88)}"
   + ".com2 .com2-act-t b{font-weight:700;color:#F3EEE4}"
   + ".com2 .com2-act-s{display:block;margin-top:2px;font-family:'Montserrat',sans-serif;font-size:11px;line-height:1.35;color:rgba(243,238,228,0.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
   + ".com2 .com2-act-d{flex:0 0 auto;font-family:'Montserrat',sans-serif;font-size:10.5px;color:rgba(243,238,228,0.45);white-space:nowrap}"
-  + ".com2 .com2-act-img{flex:0 0 auto;width:44px;height:44px;border-radius:10px;object-fit:cover;background:#0A1113}"
+  + ".com2 .com2-act-img{flex:0 0 auto;width:44px;height:44px;border-radius:10px;object-fit:cover;background:#132A34}"
   /* (614) maquette 1 : dans le fil, les evenements (hauts faits) sont des lignes compactes entre les cartes */
   + ".com2 .com2-fil-lignes{display:flex;flex-direction:column;padding:0 2px}"
+  /* ═══ (664) REFONTE SELON LA MAQUETTE DU 05/10 : hero « Monde Hype », palette bleu petrole, cartes. Tout est sous .com2. ═══ */
+  /* le hero : 70 svh (520 a 760 px), bord a bord, planete en haut a droite (SON visuel), cavaliere a gauche, lignes du globe en SVG,
+     fondu vers le fond en bas ; le texte dans le dernier tiers, a l extremite de debut ; la capsule Monde Hype sous le sous-titre */
+  + ".com2 .com2-hero{position:relative;height:clamp(520px,70svh,760px);overflow:hidden;background:#05080B;z-index:0}"
+  + ".com2 .com2-hero-globe{position:absolute;top:-60px;right:-55%;width:200%;height:auto;display:block;opacity:.96;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000 50%,rgba(0,0,0,0) 100%);mask-image:linear-gradient(180deg,#000 50%,rgba(0,0,0,0) 100%)}"
+  /* les lignes suivent la sphere de la planete (centre vers 140 % / 350 px, rayon ~ 97 % de la largeur) ; elles s effacent vers le bas et la gauche */
+  + ".com2 .com2-hero-lignes{position:absolute;top:-98px;left:25%;width:230%;height:auto;display:block;pointer-events:none;opacity:.8;-webkit-mask-image:radial-gradient(circle at 50% 50%,#000 30%,rgba(0,0,0,0) 52%);mask-image:radial-gradient(circle at 50% 50%,#000 30%,rgba(0,0,0,0) 52%)}"
+  + ".com2 .com2-hero-cav{position:absolute;bottom:24%;left:-6%;width:66%;height:auto;display:block;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 58% 60% at 42% 50%,#000 42%,rgba(0,0,0,0) 100%);mask-image:radial-gradient(ellipse 58% 60% at 42% 50%,#000 42%,rgba(0,0,0,0) 100%)}"
+  + ".com2 .com2-hero-voile{position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.34) 0%,rgba(5,8,11,0) 22%,rgba(5,8,11,0) 48%,rgba(5,8,11,.72) 70%,#05080B 100%)}"
+  + ".com2 .com2-hero-x{position:absolute;inset-inline-start:22px;inset-inline-end:22px;inset-block-end:30px;z-index:2;text-align:start}"
+  + ".com2 .com2-hero .com2-titre{font-size:clamp(36px,10.8vw,46px);letter-spacing:0.05em;padding-inline-end:0;text-shadow:none}"
+  + ".com2 .com2-hero .com2-sous{margin-top:10px;font-size:22px;line-height:1.3;color:rgba(243,238,228,0.9);text-shadow:none;max-width:320px}"
+  + ".com2 .com2-monde-cap{display:inline-flex;align-items:center;gap:12px;margin-top:22px;min-height:50px;padding:0 18px 0 8px;border-radius:999px;border:1px solid rgba(197,170,120,0.55);background:rgba(5,8,11,0.62);color:#F3EEE4;font:inherit;cursor:pointer;-webkit-appearance:none;appearance:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}"
+  + "[dir=rtl] .com2 .com2-monde-cap{padding:0 8px 0 18px}"
+  + ".com2 .com2-monde-ic{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid rgba(197,170,120,0.45);background:#05080B;display:flex;align-items:center;justify-content:center;color:#C5AA78}"
+  + ".com2 .com2-monde-ic svg{width:20px;height:20px;display:block}"
+  + ".com2 .com2-monde-l{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#F3EEE4;white-space:nowrap}"
+  + ".com2 .com2-monde-cap .com2-chev{width:18px;height:18px}"
+  + ".com2 .com2-monde-cap .com2-chev svg{width:18px;height:18px}"
+  /* la cloche et le drapeau : fond quasi noir, liseret champagne (deja), au-dessus du hero */
+  + ".com2 .com2-haut{z-index:6}"
+  /* respirations : 42 px entre les sections, 38 apres le hero, titres avec un filet champagne a droite */
+  + ".com2 .com2-hero + .com2-sec{margin-top:36px}"
+  + ".com2 .com2-sec{margin-top:42px}"
+  + ".com2 .com2-sec-st + .com2-sec{margin-top:40px}"
+  + ".com2 .com2-sec-t{align-items:center;padding:0 22px 12px}"
+  + ".com2 .com2-sec-t .com2-h2{flex:0 0 auto;font-size:27px}"
+  + ".com2 .com2-sec-t::after{content:'';order:1;flex:1;height:1px;margin-top:4px;background:linear-gradient(90deg,rgba(197,170,120,.5) 0%,rgba(197,170,120,.08) 100%)}"
+  + "[dir=rtl] .com2 .com2-sec-t::after{background:linear-gradient(270deg,rgba(197,170,120,.5) 0%,rgba(197,170,120,.08) 100%)}"
+  + ".com2 .com2-sec-t .com2-lien{order:2;flex:0 0 auto;font-size:12.5px;color:#C5AA78}"
+  /* A decouvrir : vraie photo en haut (108 px), bloc texte bleu petrole dessous, chevron dans un rond noir */
+  + ".com2 .com2-dec{gap:12px}"
+  + ".com2 .com2-dec-c{height:206px;border:1px solid rgba(197,170,120,0.3);background:linear-gradient(180deg,#254F60 0%,#1B3A47 100%);box-shadow:0 12px 26px rgba(0,0,0,0.35)}"
+  + ".com2 .com2-dec-img{inset:0 0 auto 0;height:112px;object-position:center 35%;opacity:1}"
+  + ".com2 .com2-dec-voile{inset:0 0 auto 0;height:112px;background:linear-gradient(180deg,rgba(5,8,11,0) 55%,rgba(37,79,96,0.9) 100%)}"
+  + ".com2 .com2-dec-x{inset-inline-start:13px;inset-inline-end:40px;inset-block-end:16px}"
+  + ".com2 .com2-dec-t{font-size:18px}"
+  + ".com2 .com2-dec-s{margin-top:4px;font-size:11px;line-height:1.35;color:rgba(243,238,228,.78)}"
+  + ".com2 .com2-dec-chev{inset-inline-end:10px;inset-block-end:16px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(197,170,120,0.5);background:rgba(5,8,11,0.55);display:flex;align-items:center;justify-content:center}"
+  + ".com2 .com2-dec-chev svg{width:15px;height:15px}"
+  /* Dans les ecuries : photo a l extremite de debut (44 %), nom + compteur + avatars a cote, chevron rond ; carte 136 px bleu petrole */
+  + ".com2 .com2-ecu-g{height:136px;border:1px solid rgba(197,170,120,0.3);background:linear-gradient(180deg,#254F60 0%,#1B3A47 100%)}"
+  + ".com2 .com2-ecu-g .com2-ecu-img,.com2 .com2-ecu-p .com2-ecu-img{inset-inline-end:auto;width:44%;object-position:center}"
+  + ".com2 .com2-ecu-gv{inset-inline-start:36%;inset-inline-end:auto;width:12%;background:linear-gradient(90deg,rgba(37,79,96,0) 0%,#254F60 100%)}"
+  + "[dir=rtl] .com2 .com2-ecu-gv{background:linear-gradient(270deg,rgba(37,79,96,0) 0%,#254F60 100%)}"
+  + ".com2 .com2-ecu-gx,.com2 .com2-ecu-p .com2-ecu-gx{inset-inline-start:calc(44% + 14px);inset-inline-end:46px;inset-block-end:auto;top:50%;transform:translateY(-50%)}"
+  + ".com2 .com2-ecu-gt{font-size:23px;text-shadow:none}"
+  + ".com2 .com2-ecu-p .com2-ecu-gt{font-size:18px}"
+  + ".com2 .com2-ecu-gl{flex-direction:column;align-items:flex-start;gap:7px;margin-top:6px}"
+  + ".com2 .com2-ecu-gs{order:1;font-size:11.5px;color:rgba(243,238,228,.8)}"
+  + ".com2 .com2-ecu-avs{order:2}"
+  + ".com2 .com2-ecu-av{width:24px;height:24px;font-size:11px;box-shadow:0 0 0 2px #1E4452}"
+  + ".com2 .com2-ecu-av+.com2-ecu-av{margin-inline-start:-7px}"
+  + ".com2 .com2-ecu-g .com2-ecu-chev,.com2 .com2-ecu-p .com2-ecu-chev{inset-block-end:auto;top:50%;transform:translateY(-50%);inset-inline-end:12px;width:26px;height:26px;border-radius:50%;border:1px solid rgba(197,170,120,0.5);background:rgba(5,8,11,0.55);display:flex;align-items:center;justify-content:center}"
+  + ".com2 .com2-ecu-g .com2-ecu-chev svg,.com2 .com2-ecu-p .com2-ecu-chev svg{width:15px;height:15px}"
+  + "[dir=rtl] .com2 .com2-ecu-g .com2-ecu-chev,[dir=rtl] .com2 .com2-ecu-p .com2-ecu-chev{transform:translateY(-50%) scaleX(-1)}"
+  + ".com2 .com2-ecu-p{height:120px;flex-basis:76%}"
+  /* A l agenda : carte principale = colonne date | type, titre, club, lieu | photo a l extremite de fin (40 %) ; les 3 suivantes = date | titre | chevron */
+  + ".com2 .com2-ag-g{display:flex;align-items:stretch;height:auto;min-height:150px;border:1px solid rgba(197,170,120,0.34);background:linear-gradient(180deg,#254F60 0%,#1B3A47 100%)}"
+  + ".com2 .com2-ag-g .com2-ag-img{inset-inline-start:auto;inset-inline-end:0;width:40%;object-position:center}"
+  + ".com2 .com2-ag-g .com2-ag-fond{inset-inline-start:60%;inset-inline-end:0;width:40%}"
+  + ".com2 .com2-ag-g .com2-ag-voile{inset-inline-start:58%;inset-inline-end:auto;width:12%;background:linear-gradient(90deg,#1E4452 0%,rgba(30,68,82,0) 100%)}"
+  + "[dir=rtl] .com2 .com2-ag-g .com2-ag-voile{background:linear-gradient(270deg,#1E4452 0%,rgba(30,68,82,0) 100%)}"
+  + ".com2 .com2-ag-g .com2-ag-date{position:relative;top:auto;inset-inline-start:auto;flex:0 0 60px;min-width:0;border-radius:0;border:none;border-inline-end:1px solid rgba(197,170,120,0.2);background:rgba(5,8,11,0.34);justify-content:center;padding:10px 4px;-webkit-backdrop-filter:none;backdrop-filter:none}"
+  + ".com2 .com2-ag-g .com2-ag-date b{font-size:32px}"
+  + ".com2 .com2-ag-g .com2-ag-x{position:relative;inset:auto;flex:1;min-width:0;margin-inline-end:40%;padding:14px 12px 14px 14px;gap:5px;justify-content:center}"
+  + ".com2 .com2-ag-g .com2-ag-badge{border-color:rgba(197,170,120,0.45);background:rgba(5,8,11,0.45)}"
+  + ".com2 .com2-ag-g .com2-ag-t{font-size:22px;text-shadow:none}"
+  + ".com2 .com2-ag-c{font-size:11.5px;color:rgba(243,238,228,.78)}"
+  + ".com2 .com2-ag-l{display:flex;align-items:center;gap:5px;max-width:100%;font-family:'Montserrat',sans-serif;font-size:11.5px;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}"
+  + ".com2 .com2-ag-l svg{flex:0 0 auto;width:13px;height:13px;color:#C5AA78}"
+  + ".com2 .com2-ag-g .com2-ag-chev{bottom:10px;inset-inline-end:10px;width:28px;height:28px;border-radius:50%;border:1px solid rgba(197,170,120,0.5);background:rgba(5,8,11,0.6);display:flex;align-items:center;justify-content:center}"
+  + ".com2 .com2-ag-g .com2-ag-chev svg{width:15px;height:15px}"
+  + ".com2 .com2-ag-p3{gap:10px;margin-top:12px}"
+  + ".com2 .com2-ag-p{display:flex;align-items:stretch;height:72px;border:1px solid rgba(197,170,120,0.3);background:linear-gradient(180deg,#1E4452 0%,#173440 100%)}"
+  + ".com2 .com2-ag-p .com2-ag-pd{position:relative;top:auto;inset-inline-start:auto;flex:0 0 40px;justify-content:center;border-inline-end:1px solid rgba(197,170,120,0.18);background:rgba(5,8,11,0.34)}"
+  + ".com2 .com2-ag-p .com2-ag-pd b{font-size:20px}"
+  + ".com2 .com2-ag-p .com2-ag-pd i{font-size:8px}"
+  + ".com2 .com2-ag-p .com2-ag-pt{position:relative;inset:auto;flex:1;min-width:0;align-self:center;padding:0 18px 0 8px;font-size:11.5px;text-shadow:none}"
+  + "[dir=rtl] .com2 .com2-ag-p .com2-ag-pt{padding:0 8px 0 18px}"
+  + ".com2 .com2-ag-p .com2-ag-chev{bottom:auto;top:50%;transform:translateY(-50%);inset-inline-end:5px;width:14px;height:14px}"
+  + "[dir=rtl] .com2 .com2-ag-p .com2-ag-chev{transform:translateY(-50%) scaleX(-1)}"
+  /* Le fil : onglets fins, cartes bleu petrole sombre a liseret discret, plus d air ; repliee, la photo d un resultat est une
+     vignette a l extremite de fin (40 %) a cote du texte ; depliee (657), elle reprend toute la largeur */
+  + ".com2 .com2-onglets{margin:0 16px;background:rgba(15,32,41,0.9)}"
+  + ".com2 .com2-onglet.actif{background:#254F60;border-color:rgba(197,170,120,0.6);color:#F3EEE4}"
+  + ".com2 .com2-posts{gap:14px;padding:16px 16px 0}"
+  + ".com2 .com2-post{border:1px solid rgba(197,170,120,0.2);background:linear-gradient(180deg,#1E4452 0%,#152E39 100%);padding:16px 16px 12px;box-shadow:0 12px 26px rgba(0,0,0,0.32)}"
+  + ".com2 .com2-post.ouvert{border-color:rgba(197,170,120,0.5)}"
+  + ".com2 .com2-post-av span{background-color:#132A34}"
+  + ".com2 .com2-post-txt{margin-top:12px;font-size:14px}"
+  + ".com2 .com2-post-sous{margin-top:5px}"
+  + ".com2 .com2-post-pied{margin-top:12px;padding-top:10px;border-top:1px solid rgba(197,170,120,0.14)}"
+  + ".com2 .com2-post.avec-photo:not(.ouvert){display:grid;grid-template-columns:minmax(0,1fr) 40%;grid-template-rows:auto auto 1fr auto;column-gap:12px;align-items:start}"
+  + ".com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-tete,.com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-pied,.com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-com,.com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-actions{grid-column:1 / -1}"
+  + ".com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-txt,.com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-sous{grid-column:1}"
+  + ".com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-img{grid-column:2;grid-row:2 / span 2;align-self:start;margin-top:12px;height:96px;max-height:96px;border-radius:12px}"
+  + ".com2 .com2-post.avec-photo:not(.ouvert) > .com2-post-pied{grid-row:4}"
+  + ".com2 .com2-post.leger{padding:12px 14px 10px}"
   + ".com2 .com2-fil-lignes .com2-act-l:last-child{border-bottom:none}";
 /* (604) « DANS LES ECURIES » — lecture AUTONOME, copie de celle du Journal des clubs de la V1 (JournalDesClubs n est pas
    touche) : les dernieres publications AVEC PHOTO des fils d ecurie et de club (cibles « ecurie: » et « club: »), jamais
@@ -25664,14 +25763,14 @@ function EcranCommunauteV2() {
       h("span", { className: "com2-ag-x" },
         ty ? h("span", { className: "com2-ag-badge" }, ty) : null,
         h("span", { className: "com2-ag-t" }, ev.titre),
-        ev.nomClub ? h("span", { className: "com2-ag-c" }, ev.nomClub) : null),
+        ev.nomClub ? h("span", { className: "com2-ag-c" }, ev.nomClub) : null,
+        ev.lieu ? h("span", { className: "com2-ag-l" }, icEpingle, h("span", { style: { minWidth: 0, overflow: "hidden", textOverflow: "ellipsis" } }, ev.lieu)) : null),   /* (664) le lieu */
       h("span", { className: "com2-ag-chev", "aria-hidden": "true" }, icChev));
   }
   function carteAgendaPetite(ev) {
     var dj = dateCarteAg(ev.date);
+    /* (664) carte compacte : date | titre | chevron, sans image (maquette) */
     return h("button", { key: "agp" + ev.id, type: "button", className: "com2-ag-p", "data-com2": "agenda-ev", "data-ev": ev.id, onClick: function () { ouvrirRdvCom(ev); } },
-      imgAg(ev, 320, 320),
-      h("span", { className: "com2-ag-voile", "aria-hidden": "true" }),
       h("span", { className: "com2-ag-pd" }, h("b", null, dj.j), h("i", null, dj.m)),
       h("span", { className: "com2-ag-pt" }, ev.titre),
       h("span", { className: "com2-ag-chev", "aria-hidden": "true" }, icChev));
@@ -25876,7 +25975,7 @@ function EcranCommunauteV2() {
       (post.type !== "hautfait") ? h("button", { type: "button", className: "com2-post-lienprofil", onClick: function () { var idA = post.user_id || (post.auteur && post.auteur.id) || null; if (idA) ouvrirProfilPublic({ id: idA, pseudo: nom, avatar_url: av }); } }, T2(TXT.voirProfil) + " \u203a") : null,
       (typeof SectionCommentaires === "function") ? h(Com2Commentaires, { key: "com" + post.id, cible: cibleCom(post) }) : null,
       h("button", { type: "button", className: "com2-post-replier", onClick: function () { setPostOuvert(null); } }, T2(TXT.replier))) : null;
-    return h("article", { key: post.id, className: "com2-post" + (leger ? " leger" : "") + (ouvert ? " ouvert" : ""), "data-type": post.type || "resultat", "data-post": post.id, "data-ouvert": ouvert ? "1" : null,
+    return h("article", { key: post.id, className: "com2-post" + (leger ? " leger" : "") + (ouvert ? " ouvert" : "") + ((img && post.type !== "import") ? " avec-photo" : ""),   /* (664) */ "data-type": post.type || "resultat", "data-post": post.id, "data-ouvert": ouvert ? "1" : null,
       onClick: function (eC) { try { var cib = eC && eC.target; if (cib && cib.closest && cib.closest("button, a, input, textarea, select, img, video, .lien, .com2-post-com, .com2-post-actions, .com2-post-detail, .com2-post-chx")) return; } catch (eC2) { } basculerPost(post); } },
       h("div", { className: "com2-post-tete" },
         h("button", { type: "button", className: "com2-post-av", "aria-label": nom, onClick: function () { var idA = post.user_id || (post.auteur && post.auteur.id) || null; if (idA) ouvrirProfilPublic({ id: idA, pseudo: nom, avatar_url: av }); } }, h("span", { style: av ? { backgroundImage: "url(" + av + ")" } : null }, av ? null : (nom.charAt(0) || "?").toUpperCase())),
@@ -26007,6 +26106,27 @@ function EcranCommunauteV2() {
     h("circle", { cx: 12, cy: 12, r: 9 }),
     h("path", { d: "M3 12h18M12 3c2.6 2.6 3.9 5.6 3.9 9s-1.3 6.4-3.9 9c-2.6-2.6-3.9-5.6-3.9-9S9.4 5.6 12 3Z" }),
     h("path", { d: "M5.2 7.5c2 1.1 4.3 1.6 6.8 1.6s4.8-.5 6.8-1.6M5.2 16.5c2-1.1 4.3-1.6 6.8-1.6s4.8.5 6.8 1.6" }));
+  /* (664) les lignes du globe du hero : paralleles, meridiens, trois arcs et quelques points, champagne et bleu gris a faible opacite */
+  function lignesGlobe() {
+    var cx = 280, cy = 280, R = 236, el = [];
+    [-60, -30, 0, 30, 60].forEach(function (lat, i) {
+      var a = lat * Math.PI / 180, ry = R * Math.cos(a) * 0.36, y = cy + R * Math.sin(a) * 0.98;
+      el.push(h("ellipse", { key: "la" + i, cx: cx, cy: y, rx: R * Math.cos(a), ry: Math.max(2, ry), fill: "none", stroke: "rgba(92,135,146,0.42)", strokeWidth: 0.8 }));
+    });
+    [15, 45, 75, 105, 135, 165].forEach(function (lon, i) {
+      var rx = R * Math.abs(Math.sin(lon * Math.PI / 180));
+      el.push(h("ellipse", { key: "lo" + i, cx: cx, cy: cy, rx: Math.max(2, rx), ry: R, fill: "none", stroke: i % 2 ? "rgba(197,170,120,0.34)" : "rgba(92,135,146,0.42)", strokeWidth: 0.8 }));
+    });
+    el.push(h("circle", { key: "c", cx: cx, cy: cy, r: R, fill: "none", stroke: "rgba(197,170,120,0.5)", strokeWidth: 1 }));
+    [[150, 180, 60, 60, 300, 120], [120, 330, 240, 120, 390, 300], [210, 120, 320, 40, 430, 150]].forEach(function (q, i) {
+      el.push(h("path", { key: "a" + i, d: "M" + q[0] + " " + q[1] + " Q" + q[2] + " " + q[3] + " " + q[4] + " " + q[5], fill: "none", stroke: "rgba(197,170,120,0.55)", strokeWidth: 1 }));
+    });
+    [[150, 180], [300, 120], [120, 330], [390, 300], [210, 120], [430, 150], [330, 240]].forEach(function (pt, i) {
+      el.push(h("circle", { key: "p" + i, cx: pt[0], cy: pt[1], r: i % 3 ? 1.6 : 2.4, fill: "rgba(216,188,134,0.85)" }));
+    });
+    return h("svg", { className: "com2-hero-lignes", viewBox: "0 0 560 560", "aria-hidden": "true" }, el);
+  }
+  var icEpingle = h("svg", { viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 21s-6-5.3-6-11a6 6 0 0 1 12 0c0 5.7-6 11-6 11Z" }), h("circle", { cx: 12, cy: 10, r: 2.2 }));
   var aStories = (typeof window !== "undefined" && window.BandeauStories);
   var _lo = React.useState(false); var langOuvert = _lo[0], setLangOuvert = _lo[1];
   var DRAPEAUX_C2 = [["fr", "\uD83C\uDDEB\uD83C\uDDF7"], ["en", "\uD83C\uDDEC\uD83C\uDDE7"], ["es", "\uD83C\uDDEA\uD83C\uDDF8"], ["it", "\uD83C\uDDEE\uD83C\uDDF9"], ["ja", "\uD83C\uDDEF\uD83C\uDDF5"], ["de", "\uD83C\uDDE9\uD83C\uDDEA"], ["ar", "\uD83C\uDDF8\uD83C\uDDE6"]];
@@ -26014,9 +26134,21 @@ function EcranCommunauteV2() {
   for (var iD = 0; iD < DRAPEAUX_C2.length; iD++) { if (DRAPEAUX_C2[iD][0] === lg) drapeauActuel = DRAPEAUX_C2[iD][1]; }
   return h("div", { className: "com2" },
     h("style", null, COM2_CSS),
-    h("div", { className: "com2-decor", "aria-hidden": "true" },
-      h("img", { className: "com2-planete", src: "images/communaute_v2_planete_v1.webp", alt: "", decoding: "async", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e2) { } } }),
-      h("div", { className: "com2-voile" }), h("div", { className: "com2-voile-g" })),
+    /* (664) LE HERO « MONDE HYPE » (maquette du 05/10) : la planete (SON visuel, 599) en grand en haut a droite, coupee par les bords,
+       les lignes du globe en SVG par-dessus, la cavaliere (images/communaute_v2_nouveaux_profils_v2.webp) a gauche, un voile qui
+       fond vers le fond de page ; le titre, le sous-titre et la capsule Monde Hype dans le dernier tiers, a l extremite de debut. */
+    h("div", { className: "com2-hero", "data-com2": "hero" },
+      h("img", { className: "com2-hero-globe", src: "images/communaute_v2_planete_v1.webp", alt: "", decoding: "async", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e2) { } } }),
+      lignesGlobe(),
+      h("img", { className: "com2-hero-cav", src: "images/communaute_v2_nouveaux_profils_v2.webp", alt: "", decoding: "async", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e2) { } } }),
+      h("div", { className: "com2-hero-voile", "aria-hidden": "true" }),
+      h("div", { className: "com2-hero-x" },
+        h("h1", { className: "com2-titre" }, T2(TXT.titre)),
+        h("div", { className: "com2-sous" }, h("span", null, T2(TXT.sous1)), h("span", null, T2(TXT.sous2))),
+        h("button", { type: "button", className: "com2-monde-cap", onClick: ouvrirMonde, "data-com2": "monde" },
+          h("span", { className: "com2-monde-ic" }, icGlobe),
+          h("span", { className: "com2-monde-l" }, T2(TXT.monde)),
+          h("span", { className: "com2-chev" }, icChev)))),
     /* (618) cloche (composant existant) + drapeau : la liste des 7 langues de l Accueil V2, meme setLangue */
     h("div", { className: "com2-haut" },
       (typeof ClocheNotifs === "function") ? h(ClocheNotifs, { theme: "communauteV2" }) : null,
@@ -26024,15 +26156,7 @@ function EcranCommunauteV2() {
         h("button", { type: "button", "aria-label": T2(TXT.langue), "data-com2": "langue", onClick: function () { setLangOuvert(!langOuvert); } }, drapeauActuel),
         langOuvert ? h("div", { className: "com2-lang-liste", role: "listbox" },
           DRAPEAUX_C2.map(function (pl) { return h("button", { key: pl[0], type: "button", className: lg === pl[0] ? "actif" : "", "aria-label": pl[0], onClick: function () { try { if (typeof ctx.setLangue === "function") ctx.setLangue(pl[0]); } catch (eL) { } setLangOuvert(false); } }, pl[1]); })) : null)),
-    h("header", { className: "com2-tete" },
-      h("h1", { className: "com2-titre" }, T2(TXT.titre)),
-      h("div", { className: "com2-sous" }, h("span", null, T2(TXT.sous1)), h("span", null, T2(TXT.sous2)))),
-    h("button", { type: "button", className: "com2-monde", onClick: ouvrirMonde, "data-com2": "monde" },
-      h("span", { className: "com2-globe" }, icGlobe),
-      h("span", { className: "com2-monde-x" },
-        h("span", { className: "com2-monde-t", style: { display: "block" } }, T2(TXT.monde)),
-        h("span", { className: "com2-monde-s", style: { display: "block" } }, T2(TXT.mondeS))),
-      h("span", { className: "com2-chev" }, icChev)),
+    /* (664) l en-tete et la grande carte Monde Hype vivent desormais DANS le hero (ci-dessus) */
     /* Stories : le composant du module, pose dans le fond sombre, sans les bandes grises de la V1 ; (610) forme « rond »
        (cercles nets, meme diametre pour le « + ») a la place du fondu « libre ». Si le module n est pas charge, la section n apparait pas. */
     aStories ? h("section", { className: "com2-sec com2-sec-st" },
