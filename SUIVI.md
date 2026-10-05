@@ -9198,3 +9198,17 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fait : la petite carte reprend l'image de l'événement (même source que la grande carte), hauteur 72 → 176 px, photo pleine (cadrée en haut), pastille de date en haut à gauche (fond sombre), titre en bas sur un dégradé sombre ; chevron masqué (la carte entière ouvre le rendez-vous, comme avant). JSX : carteAgendaPetite ajoute imgAg + voile ; CSS COM2_CSS (bloc 665 remplacé). Grande carte inchangée, clics/routes inchangés. Sans affiche : fond bleu pétrole (com2-ag-fond).
 - Non vérifié au banc (pas de rendez-vous de test) : à juger sur iPhone.
 - node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-689.
+
+## Build 690 — 05/10 — Partage d'un événement en story : version simple
+**Demande** : « Si je veux partager en story un des événements de l'agenda il me propose obligatoirement des images pré découpées, on peut partager simplement l'évènement en story ? » → option A validée (« Ok »).
+**Changement** : le bouton « Partager en story » de la fiche d'un rendez-vous ouvre désormais l'**affiche seule**, entière, sur fond flou (même rendu que les photos des modèles), sans modèle ni cadre de texte. Boutons inchangés : « Publier dans mes stories Hype » et « Partager ailleurs ». Un lien « Personnaliser (modèles, photos, texte) » ouvre l'éditeur complet d'avant (28 modèles, photos, texte). Légende publiée dans Hype = titre — date · heure · lieu (la date n'est pas dessinée sur l'affiche).
+**Cas sans affiche** : l'éditeur complet s'ouvre comme avant (composition « Hype » par défaut).
+**Traduit** : « Personnaliser… » en 7 langues.
+**Conséquences** : une affiche déjà carrée ou horizontale apparaît entière au centre, bords flous ; si l'image est protégée (CORS) le dessin retombe sur la composition « Hype » par défaut. Non vérifié visuellement sur iPhone (pas de bench).
+**Vérifs** : marqueurs 9/2/3/7 OK, 18 blocs node --check OK, 1 meta hype-build 20261005-690.
+
+## Build 691 — 05/10 — Communauté : titres de sections plus petits
+**Demande** : « baisse un peu la taille des titres sur la page communauté ».
+**Changement** : `.com2 .com2-h2` (À découvrir, Dans les écuries, À l'agenda…) passe de 26px à 22px. Rien d'autre touché.
+**Conséquence** : les titres sont un peu plus discrets ; l'espace sous les titres ne change pas. Non vérifié visuellement sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261005-691.
