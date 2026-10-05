@@ -9191,3 +9191,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fait : −36 px sous le rail des Stories (margin-bottom −36 px sur .com2-stories, Communauté seulement) : tout ce qui suit remonte d'autant (≈ 90 px au total sous le titre Stories depuis le 685). Rien d'autre touché.
 - Non vérifié au banc ; si un nom de story touche « À découvrir », remonter de −36 à ~−20 px.
 - node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-688.
+
+## Build 20261005-689 — Communauté, agenda : les 3 petites cartes redeviennent des cartes affiche, plus grandes
+- Demande de Blandine : « l'actuel serait bien avec les 3 petites cartes plus grandes, là on voit même pas les affiches ».
+- Constat : depuis le build 664/665 les 3 petites cartes étaient de petites lignes de 72 px, SANS image (date | titre | chevron). Ma maquette « 1 · actuel » montrait par erreur l'ancienne version avec image.
+- Fait : la petite carte reprend l'image de l'événement (même source que la grande carte), hauteur 72 → 176 px, photo pleine (cadrée en haut), pastille de date en haut à gauche (fond sombre), titre en bas sur un dégradé sombre ; chevron masqué (la carte entière ouvre le rendez-vous, comme avant). JSX : carteAgendaPetite ajoute imgAg + voile ; CSS COM2_CSS (bloc 665 remplacé). Grande carte inchangée, clics/routes inchangés. Sans affiche : fond bleu pétrole (com2-ag-fond).
+- Non vérifié au banc (pas de rendez-vous de test) : à juger sur iPhone.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-689.
