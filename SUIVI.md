@@ -9104,3 +9104,78 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - NON appliqué, volontairement (à valider) : (1) fondu sous la photo de profil — le code porte la règle de Blandine « aucun dégradé superposé à une photo de cheval, la photo est nue » ; je n'ai rien posé sur la photo, à sa décision ; (2) contour des Stories — sur la page Cavalier les Stories s'affichent en forme « libre » (photo sans anneau, voir hype-stories.js) : il n'y a pas de contour à recolorer ; seul le « + Ajouter » prend le champagne par la teinte de la page ; hype-stories.js inchangé (?v=20ca) ; (3) barre de navigation — elle est commune à toutes les pages (déjà en champagne #D2B07A) : non touchée pour ne pas modifier les autres pages ; (4) fenêtres de saisie (modales d'édition) laissées en fond sombre opaque pour la lisibilité.
 - Reste d'un build précédent : la teinte « champagne » par défaut posée en 671 (TEINTES_HYPE) est conservée telle quelle (les albums photo / invitations d'écurie / classement qui suivent la teinte restent en champagne).
 - node --check 18/18 ; marqueurs liensClub 9 / chevalCommunDemoData 2 / palmTech 3 / EcranSanteCheval 7 ; un seul meta. Build 20261005-674 (contient 673 = À découvrir plus petit, et 672 = fil vertical).
+
+## Build 20261005-675 — Stories de la Communauté = celles de la page Cavalier
+- Demande de Blandine : remettre le fondu noir à l'extérieur des photos, sans cercle doré, plus espacées, et reproduire exactement les Stories de la page Cavalier (taille, espace, fondu noir, « + » à la fin).
+- Fait : la Communauté appelle maintenant `BandeauStories` avec les mêmes réglages que la page Cavalier (`forme: "libre"`, `padding: "10px 0 10px"`, taille 104 par défaut). Les anciens réglages locaux (taille 70, cercle champagne, espacements, « + » déplacé) sont retirés du CSS ; reste une seule règle : fond du rail transparent.
+- Conséquence : les Stories de la Communauté sont plus grandes qu'avant (70 → 104 px), sans contour doré. hype-stories.js inchangé (?v=20ca).
+- Banc : fr et ar sans erreur, aucun débordement horizontal, cellules 116 px espacées de 10 px.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-675.
+
+## Build 20261005-676 — Cartes chevaux de la page Cavalier plus carrées
+- Demande de Blandine : cartes photo de la grille « Mes chevaux » un peu plus carrées.
+- Fait : proportion 4/5 → 10/11 (largeur inchangée, hauteur ~112×140 → ~112×123 px) sur les cartes cheval, la carte « ajouter » et la carte du milieu (écurie), pour que la grille reste alignée. Rien d'autre touché.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-676.
+
+## Build 20261005-677 — Fin de page Cavalier (photo + trait HYPE)
+- Demande de Blandine : clôturer la page Cavalier en bas comme les autres pages, avec une photo et le trait horizontal HYPE.
+- Fait : même signature que l'Accueil / l'Écurie / la Communauté, posée juste au-dessus de la petite ligne « HYPE · version … » : paysage fondu (images/accueil_v2_fin_de_page_v1.webp, déjà dans le dépôt, aucune image nouvelle), puis filets champagne mat (#C5AA78) et « HYPE ». Fond des bords fondu en #05080B (fond de la page Cavalier). Sens des filets inversé en arabe. Aucune carte, aucun bouton, rien d'autre touché.
+- Si le fichier image manque, la signature HYPE reste seule.
+- Banc fr + ar : aucune erreur, page plus haute d'environ 190 px, pas de débordement horizontal.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-677.
+
+## Build 20261005-678 — Page Galops : cyan → bleu pétrole
+- Demande de Blandine : « passe-les plutôt en bleu pétrole au lieu de cyan » (suite de mes propositions sur la page Galops, option A).
+- Fait, UNIQUEMENT dans l'écran Galops (EcranBibliothequeGalops, son CSS « mevo », les dépliants GalopDepliant, l'encart Bibliothèque vidéo) : cyan #20D9F5 / rgba(32,217,245) → bleu reflet #5C8792 ; cyans clairs #7FE8F2 / #7DDDE8 / #5FE9F0 → #8FB3BD ; fond bleu-vert foncé #0F5E6B / rgba(13,58,64) → #254F60 ; blanc teinté cyan #F4FEFF → ivoire #F3EEE4 ; 4 emplois de COLORS.turquoise de cet écran → #8FB3BD / #5C8792 (COLORS.turquoise lui-même N'EST PAS touché : il sert ailleurs).
+- Non touchés : toutes les images (cheval bleu, bandeaux, poneys), l'argent #BFD0DA des cercles, le bleu poudre de Baby, aucune taille ni disposition, aucune autre page.
+- NON fait : l'écran « Bibliothèque vidéo » (Mieux utiliser ses aides, Paroles d'experts) vit dans hype-video.js, absent de mon dossier de travail : il garde ses cyans tant que Blandine ne m'envoie pas ce fichier.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-678.
+
+## Build 20261005-679 — Cavalier : le bas de la photo hero fond dans le fond de page
+- Demande de Blandine : « est-ce qu'on peut faire fondre le bas de la photo hero avec le fond de la page ? ».
+- Fait : un MASQUE de transparence sur le cadre de la photo (opaque jusqu'à ~66 % de la hauteur, puis fondu jusqu'à transparent en bas). Aucune couleur ni dégradé n'est posé SUR la photo : elle devient seulement transparente vers le bas, donc se raccorde au fond #05080B. Le cadre (bordure) fond aussi en bas. Photo, cadrage, tailles, marges : inchangés.
+- ⚠ Cela nuance l'ancienne règle « la photo est nue » (commentaire du build 515) : décision de Blandine de ce jour, qui prime.
+- Banc : le fondu se voit sur le cadre ; je n'ai pas pu afficher une vraie photo de profil dans mon banc (pas d'avatar de test) — à juger sur iPhone.
+- Diagnostic en cours (pas de code) : décompte « Performances · En concours » de l'Écurie Feinn (EcranPerfConcours) = résultats de TOUS les membres (écurie 1 OU 2 = Feinn) ; la requête de contrôle montre que les 40 premiers cavaliers viennent tous du compte Blandine (Feinn + SEP) : rien dans la base ne sépare Feinn et SEP. Décision de correction en attente.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-679.
+
+## Build 20261005-680 — Résultats d'écurie : seulement les cavaliers déclarés de l'écurie
+- Demande de Blandine : « limite à chaque écurie les résultats des cavaliers étant déclarés sur l'écurie » (écran Performances · En concours, EcranPerfConcours). Cause du défaut : l'écran prenait TOUS les résultats des comptes de l'écurie, donc aussi les cavaliers SEP rangés sous le compte de Blandine (rattachée à Feinn ET SEP).
+- Fait : un résultat n'est gardé que si son cavalier (nom FFE) est relié, dans cavaliers_ffe, à un compte de l'écurie (écurie 1 ou 2 rattachée, ou cavalier ajouté à l'écurie dans ecurie_cavaliers_choisis), sans les cavaliers retirés (ecurie_cavaliers_exclus). Aucun SQL.
+- Conséquence : aujourd'hui seuls 3 cavaliers sont reliés à Feinn (Liam Roux, Evan Roux, Blandine Pronost) ; les autres (Elea Brillard, Emma Victoire Durand…) disparaissent du décompte tant que leur nom FFE n'est pas relié à un compte. Si la lecture de cavaliers_ffe est refusée/en erreur, l'ancien affichage est gardé (pas de page vide à tort). La page Écurie (carrousel « Derniers résultats ») n'est pas touchée : à vérifier séparément.
+- Écarté après diagnostic : filtre par cheval (la base marque « Dakota ca » comme cheval Feinn alors qu'il est SEP) ; noms_ffe (vide pour Feinn).
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-680.
+
+## Build 20261005-681 — Écurie Feinn : 4 cavalières ajoutées à la main
+- Demande de Blandine : « Elea, Emma, Valentine, Pauline, tu les laisses à Feinn ».
+- Fait : liste à la main MANUELS_ECURIE dans EcranPerfConcours (écurie dont le nom contient « feinn ») : ELEA BRILLARD, EMMA VICTOIRE DURAND, VALENTINE LANGLOIS DEPOIX, PAULINE GILLES. Elles s'ajoutent aux cavaliers reliés à un compte (Liam, Evan, Blandine). Aucun SQL ; pour en ajouter, une ligne de plus dans le code.
+- NON fait (en attente de sa réponse) : afficher aussi les résultats des cavaliers sans compte montés sur les chevaux de l'écurie — risque signalé : « Dakota ca » est marqué cheval Feinn en base alors qu'il est SEP, Margot Khoury (SEP, sans compte) réapparaîtrait chez Feinn.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-681.
+
+## Build 20261005-682 — Écurie Feinn : + Ilona Hugot
+- Demande de Blandine : « Ilona Delphine aussi ». Ajouté : ILONA HUGOT (seule « Ilona » de la liste des résultats). « Delphine » : nom FFE complet pas encore connu — en attente de Blandine (n'est pas dans les 40 premiers noms des résultats).
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-682.
+
+## Build 20261005-683 — Écurie Feinn : + Chloé Berthier
+- Demande de Blandine : « Chloé Berthier aussi (Chloé) ». Ajouté : CHLOE BERTHIER (pas Chloé Paya ni Chloé Desforges, aussi présentes dans les résultats).
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-683.
+
+## Build 20261005-684 — Badge « CSO Club » / « Coach » à côté du pseudo (équipe compétition SEP)
+- Demande de Blandine : à côté du pseudo des cavalières de l'équipe compétition SEP, une petite info comme la sienne, qui dise « CSO Club » et qui emmène sur la page compétition.
+- Fait : sur la page Cavalier (la sienne ET celle d'une cavalière visitée), à côté du pseudo : badge champagne « ✦ CSO CLUB » pour une membre du groupe « Team Compétition » de la SEP ; « ✦ COACH » (7 langues) pour la propriétaire / gestionnaire de la SEP (remplace l'ancienne pastille provisoire « Team » du build 524). Au toucher : ouvre la page Team compétition — mais seulement si la personne qui regarde y a déjà accès (propriétaire, gestionnaire ou membre du groupe) ; sinon le badge est affiché sans lien (la page reste cachée aux autres, décision du 01/10).
+- Pas fait (volontairement, une chose à la fois) : le badge dans les listes (Communauté, classements, fil) — seulement sur la page Cavalier pour l'instant.
+- Non vérifié au banc : mon banc n'a pas les données du groupe ; à juger sur l'iPhone avec une vraie membre.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-684.
+
+## Build 20261005-685 — Communauté : Stories remontées, barre de défilement et noms sous les Stories masqués
+- Demande de Blandine (3 messages, capture cerclée) : (1) « aligne Stories avec son trait en dessous du bas de la photo hero » ; (2) « retire le trait en dessous qui défile quand on touche aux stories » = la barre grise de défilement sous le rail ; (3) « idem pour le petit Ma story en dessous ».
+- Fait, Communauté seulement (COM2_CSS, rien dans hype-stories.js) : (1) le titre « Stories » + son filet remontent de 48 px (marge 44 → −4 px), sur le bas noir du hero, ~30 px sous les cavaliers de la photo ; (2) barre de défilement du rail masquée (scrollbar-width + ::-webkit-scrollbar) ; (3) le nom sous chaque story (« Ma story », prénoms) est masqué.
+- À savoir : la règle du build 667 « hero + sec » ne s'appliquait pas (la div .com2-haut s'intercale) : remplacée par une règle sur la section Stories. Le masquage des noms vaut pour TOUS les noms du rail, et peut aussi masquer le libellé du bouton « + Ajouter » s'il est dans le même type de bloc. La page Cavalier n'est pas touchée.
+- Non vérifié au banc (captures d'écran refusées pendant le build) : à juger sur iPhone.
+- node --check 18/18 ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-685.
+
+## Build 20261005-686 — Communauté : seul « Ma story » est masqué (les noms des autres reviennent)
+- Demande de Blandine : « pas la peine de virer les noms de tout le monde ». Corrige le 685 : les noms sous les Stories reviennent pour tout le monde ; seul le nom de sa propre story (« Ma story ») reste masqué, Communauté seulement.
+- Fait : hype-stories.js — une classe `hs-nom-moi` sur le nom quand la story est la sienne (rien d'autre ; sur la page Cavalier la classe est sans effet) ; ?v=20ca → 20cb dans index.html ; COM2_CSS : `.com2 .com2-stories .hs-nom-moi{display:none}` remplace le masquage de tous les noms.
+- Reste du 685 inchangé (titre Stories remonté, barre de défilement masquée). Le mot « Ajouter » sous le « + » n'est plus concerné.
+- node --check 18/18 + hype-stories.js ; marqueurs 9 / 2 / 3 / 7 ; un seul meta 20261005-686.

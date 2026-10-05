@@ -2725,7 +2725,7 @@ function BandeauStories(props) {
       style: { background: "none", border: "none", padding: 0, cursor: "pointer", flex: "0 0 auto", width: largeurCel, textAlign: carte ? "left" : "center" }
     },
       contenu,
-      h("div", { style: { fontSize: 11, marginTop: 7, fontFamily: M, fontWeight: g.toutesVues ? 500 : 700, color: g.toutesVues ? "#8A929C" : "#E4ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+      h("div", { className: g.moi ? "hs-nom-moi" : undefined, style: { fontSize: 11, marginTop: 7, fontFamily: M, fontWeight: g.toutesVues ? 500 : 700, color: g.toutesVues ? "#8A929C" : "#E4ECEF", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
         ((libre || libreRect) && !g.toutesVues) ? h("span", { style: { display: "inline-block", width: 5, height: 5, borderRadius: "50%", background: tn, boxShadow: "0 0 6px " + tA(0.9), marginRight: 5, verticalAlign: "middle" } }) : null,
         g.moi ? hsT("ma", lg) : (g.pseudo || "Cavalier")));
   }
