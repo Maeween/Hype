@@ -9212,3 +9212,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 **Changement** : `.com2 .com2-h2` (À découvrir, Dans les écuries, À l'agenda…) passe de 26px à 22px. Rien d'autre touché.
 **Conséquence** : les titres sont un peu plus discrets ; l'espace sous les titres ne change pas. Non vérifié visuellement sur iPhone.
 **Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261005-691.
+
+## Build 692 — 06/10 — Fiche d'un événement : palette des boutons d'action (couleurs uniquement)
+**Demande** : harmoniser la palette des boutons sous les événements (Je viens / Agenda / Me prévenir / Partager / Partager en story / compteur) avec les autres pages, sans toucher structure, ordre, dimensions, textes, icônes, logique.
+**Changements (FicheEvenementClub, bloc ~35172–35227, styles seulement)** :
+- « Je viens » : fond `linear-gradient(135deg, rgba(55,107,125,.42) 0%, rgba(37,79,96,.30) 48%, rgba(8,17,22,.72) 100%)`, `backdrop-filter: blur(10px)`, bordure `1px rgba(92,135,146,.42)`, texte #F3EEE4, chevron #F3EEE4, icône calendrier #C5AA78 si inscrite, sinon ivoire atténué.
+- « Agenda », « Me prévenir/Je serai prévenue », « Partager » : fond `linear-gradient(145deg, rgba(37,79,96,.12), rgba(5,8,11,.82))`, bordure `1px rgba(92,135,146,.25)`, texte #F3EEE4, icônes ivoire atténué (plus de `meta.couleur`).
+- « Partager en story » : fond rgba(5,8,11,.72), bordure rgba(197,170,120,.58), texte/étoile #C5AA78.
+- Compteur : rgba(189,182,170,.65).
+**Non touché** : tailles, rayons, espacements, textes, traductions, handlers, zone de publication.
+**Écart signalé** : la capture jointe montrait « Agenda / Je serai prévenue / Partager » sur une seule ligne et « 0 inscrit(e) » ; le code actuel a deux rangées (Je viens + Agenda ; Me prévenir + Partager) et « inscrite(s) » : structure du code conservée. La cloche est un emoji : sa couleur ne peut pas être changée sans changer l'icône.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261006-692. Non vérifié visuellement sur iPhone.
