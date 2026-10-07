@@ -1002,7 +1002,7 @@
             return E.inconnus[k] + " ligne" + (E.inconnus[k] > 1 ? "s" : "") + " sur « " + k + " »";
           }).join(", ") + " " + (lstI.length > 1 ? "n'ont" : "n'a")
             + " pas été enregistrée" + (lstI.length > 1 ? "s" : "")
-            + " : aucun cheval de ce nom chez toi. Crée sa fiche, puis relance cet import.";
+            + " : aucun cheval de ce nom chez toi. " + (E.peutCreer ? "Crée sa fiche juste en dessous : les lignes partent aussitôt dessus." : "Crée sa fiche, puis relance cet import.");
         }
       } catch (eRg) { }
       phrase += " Tu peux importer une autre saison quand tu veux.";
@@ -1014,6 +1014,10 @@
       titre = "Rien à enregistrer";
       phrase = "Ce fichier ne contient aucune épreuve courue — que des forfaits "
         + "ou des épreuves annulées.";
+    } else if (E.inconnus && Object.keys(E.inconnus).length) {   /* 07/10 (695) : rien d ecrit parce qu AUCUN cheval n est connu — ce n est pas une panne */
+      titre = "Ces chevaux ne sont pas encore dans Hype";
+      phrase = "Aucune ligne n'a été écrite : " + Object.keys(E.inconnus).map(function (k) { return E.inconnus[k] + " ligne" + (E.inconnus[k] > 1 ? "s" : "") + " sur « " + k + " »"; }).join(", ")
+        + ". " + (E.peutCreer ? "Crée leur fiche juste en dessous : les lignes partent aussitôt dessus." : "Crée leur fiche, puis relance cet import.");
     } else {
       titre = "Rien n'a été écrit";
       phrase = envoyees + " ligne" + (envoyees > 1 ? "s ont" : " a") + " été envoyée"
@@ -1036,8 +1040,27 @@
     } else if (E.originesInfo && E.originesInfo.etat === "remplacees") {
       blocOg = '<div class="hi-aide" style="margin-top:12px">\u2713 Origines officielles pos\u00e9es sur sa fiche.</div>';
     }
+    /* 07/10 (695) — CREER LA FICHE D UN CHEVAL INCONNU, sur place. Le nom est celui du fichier : on peut le corriger
+       avant de creer. Une fois la fiche creee, l import est rejoue ; les lignes deja ecrites sont reconnues comme doublons. */
+    var blocCreer = "";
+    try {
+      var lstC = (E.peutCreer && E.inconnus) ? Object.keys(E.inconnus).filter(function (k) { return k && k !== "?"; }) : [];
+      if (lstC.length) {
+        blocCreer = '<div class="hi-aide" style="margin-top:12px"><b>Chevaux \u00e0 cr\u00e9er</b><br>V\u00e9rifie l\'orthographe, puis cr\u00e9e sa fiche.';
+        lstC.forEach(function (k, i) {
+          var joli = String(k).toLowerCase().replace(/(^|[\s\-'])([a-z\u00e0-\u00ff])/g, function (m0, a0, b0) { return a0 + b0.toUpperCase(); });
+          var enCours = (E.creation === k);
+          blocCreer += '<div style="display:flex;gap:8px;margin-top:9px;align-items:center">'
+            + '<input id="hiCh' + i + '" value="' + ech(joli) + '" maxlength="60" ' + (enCours ? "disabled " : "")
+            + 'style="flex:1;min-width:0;box-sizing:border-box;padding:10px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:inherit;font-size:16px">'
+            + '<button class="hi-bt2" data-hi-creer="' + i + '" ' + (enCours || E.creation ? "disabled " : "") + 'style="flex:0 0 auto;white-space:nowrap">' + (enCours ? "Cr\u00e9ation\u2026" : "Cr\u00e9er sa fiche") + '</button></div>'
+            + '<div style="margin-top:3px;font-size:10.5px;opacity:.7">' + E.inconnus[k] + " ligne" + (E.inconnus[k] > 1 ? "s" : "") + " dans le fichier</div>";
+        });
+        blocCreer += "</div>";
+      }
+    } catch (eBc) { blocCreer = ""; }
     return '<div class="hi-fin"><div class="ic">' + (n > 0 ? "🏆" : "✓") + '</div>' +
-      "<b>" + titre + "</b><span>" + phrase + "</span></div>" + blocOg +
+      "<b>" + titre + "</b><span>" + phrase + "</span></div>" + blocCreer + blocOg +
       '<div class="hi-pied"><button class="hi-bt" data-hi="encore">Importer une autre saison</button>' +
       '<button class="hi-bt2" data-hi="fermer">Revenir à sa fiche</button></div>';
   }
@@ -1046,6 +1069,7 @@
   function rendre(hote, options) {
     if (!hote) return;
     options = options || {};
+    E.peutCreer = (typeof options.onCreerCheval === "function");   /* 07/10 (695) */
     E.nomCheval = options.nomCheval || E.nomCheval || null; /* 26/08 : la cible affichable voyage par E (les vues ne voient pas options) */
     poserStyle();
     if (hote.className.indexOf("hi") < 0) hote.className += " hi";
@@ -1115,11 +1139,28 @@
       while (el && el !== hote) {
         if (el.getAttribute && (el.getAttribute("data-hi") ||
             el.getAttribute("data-hi-l") || el.getAttribute("data-hi-cav") || el.getAttribute("data-hi-club") ||
-            el.getAttribute("data-hi-nv"))) { cible = el; break; }
+            el.getAttribute("data-hi-nv") || el.getAttribute("data-hi-creer"))) { cible = el; break; }
         el = el.parentNode;
       }
       if (!cible) return;
 
+      var crI = cible.getAttribute("data-hi-creer");
+      if (crI !== null) {   /* 07/10 (695) : creer la fiche d un cheval inconnu, puis rejouer l enregistrement */
+        if (E.creation || typeof options.onCreerCheval !== "function") return;
+        var lstCr = E.inconnus ? Object.keys(E.inconnus).filter(function (k) { return k && k !== "?"; }) : [];
+        var nomOrig = lstCr[Number(crI)];
+        var inpCr = hote.querySelector("#hiCh" + crI);
+        var nomFin = String((inpCr && inpCr.value) || nomOrig || "").replace(/\s+/g, " ").trim();
+        if (!nomOrig || !nomFin) return;
+        E.creation = nomOrig; E.err = null; refaire();
+        Promise.resolve(options.onCreerCheval(nomFin)).then(function (rC) {
+          if (rC && rC.error) { E.creation = null; E.err = "La fiche n'a pas pu \u00eatre cr\u00e9\u00e9e : " + String(rC.error); refaire(); return; }
+          E.creation = null;
+          E.avantEnreg = E.enregistres || 0; E.avantDoublons = E.doublons || 0; E.relance = true;
+          enregistrer(hote, options, refaire);
+        }).catch(function (eCr) { E.creation = null; E.err = "La fiche n'a pas pu \u00eatre cr\u00e9\u00e9e : " + String((eCr && eCr.message) || eCr); refaire(); });
+        return;
+      }
       var nv = cible.getAttribute("data-hi-nv");
       if (nv) {
         E.niveau = nv;
@@ -1210,12 +1251,13 @@
     var p;
     try { p = options.onEnregistrer(aGarder, ((typeof window !== "undefined" && window.__hypeOriginesFFE) || null), ((typeof window !== "undefined" && window.__hypeNomPdfFFE) || null)); } /* 26/08 : origines + NOM DU CHEVAL voyagent avec les resultats (ponts window, voir bloc 1) */
     catch (eS) {
+      E.relance = false;
       E.occupe = false; E.err = (eS && eS.message) ? eS.message : String(eS);
       refaire(); return;
     }
     var pGardee = Promise.race([Promise.resolve(p), new Promise(function (resG) { setTimeout(function () { resG({ __gardeModule: true }); }, 35000); })]); /* 26/08 : ceinture du module — même si l'app ne répond JAMAIS, l'écran se libère et le dit */
     pGardee.then(function (rep) {
-      if (rep && rep.__gardeModule) { E.occupe = false; E.err = "Pas de r\u00e9ponse au bout de 35 secondes \u2014 rien n'a \u00e9t\u00e9 confirm\u00e9. V\u00e9rifie le r\u00e9seau et r\u00e9essaie."; E.etape = "relecture"; refaire(); return; }
+      if (rep && rep.__gardeModule) { E.relance = false; E.occupe = false; E.err = "Pas de r\u00e9ponse au bout de 35 secondes \u2014 rien n'a \u00e9t\u00e9 confirm\u00e9. V\u00e9rifie le r\u00e9seau et r\u00e9essaie."; E.etape = "relecture"; refaire(); return; }
       E.occupe = false;
       /* 🟥 24/08 : on retient AUSSI les doublons et le total lu, pour que
          l ecran de fin puisse dire POURQUOI c est zero. */
@@ -1234,10 +1276,12 @@
         E.enregistres = (typeof rep === "number") ? rep : aGarder.length;
         E.doublons = 0;
       }
+      if (E.relance) { E.enregistres = (E.enregistres || 0) + (E.avantEnreg || 0); E.doublons = E.avantDoublons || 0; E.relance = false; E.avantEnreg = 0; E.avantDoublons = 0; }   /* 07/10 (695) : le total reste cumule apres la creation d une fiche */
       E.envoyees = aGarder.length;
       E.originesInfo = (rep && typeof rep === "object" && rep.origines) ? rep.origines : null; /* 26/08 */
       E.etape = "fin"; refaire();
     }).catch(function (e) {
+      E.relance = false;
       E.occupe = false;
       E.err = (e && e.message) ? e.message : String(e);
       E.etape = "relecture"; refaire();

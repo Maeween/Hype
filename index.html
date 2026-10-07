@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261006-692"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261007-696"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -2900,8 +2900,9 @@ function nomsHippiquesProches(a, b) {
   try { if (cA.length >= 6 && cB.length >= 6 && distEdit(cA, cB) <= 2) procheAssez = true; } catch (eD) { }
   return (nA.indexOf(nB) >= 0 || nB.indexOf(nA) >= 0 || (cA && cB && (cA.indexOf(cB) >= 0 || cB.indexOf(cA) >= 0)) || procheAssez);
 }
-async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
-  if (nomPdf) { /* 26/08 : VERROU D'IDENTITE — le nom lu dans le telemat doit correspondre a la fiche cible, sinon REFUS (aucun croisement possible, pour Blandine comme pour Delphine et tous les cavaliers) */
+async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf, opts) {
+  var modeCav = !!(opts && opts.cavaliere);   /* 07/10 (694) : import depuis la page Performances de la cavaliere, sans cheval impose */
+  if (nomPdf && chevalId) { /* 26/08 : VERROU D'IDENTITE — le nom lu dans le telemat doit correspondre a la fiche cible, sinon REFUS (aucun croisement possible, pour Blandine comme pour Delphine et tous les cavaliers) */
     try {
       var rNo = await delaiDeGarde(supa.from("chevaux").select("nom").eq("id", chevalId).maybeSingle(), 15, "v\u00e9rification du cheval");
       var nomCible = (rNo && rNo.data && rNo.data.nom) || "";
@@ -2959,7 +2960,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
       : "La connexion a échoué. Rien n'a été écrit." };
   }
   if (!user) return { n: 0, doublons: 0, error: "Pas connecté" };
-  if (!chevalId) return { n: 0, doublons: 0, error: "Cheval inconnu" };
+  if (!chevalId && !modeCav) return { n: 0, doublons: 0, error: "Cheval inconnu" };
   /* 🟥 23/08 session 154 — ON ENREGISTRE TOUT CE QUI A ÉTÉ COURU.
      L ancienne règle était `r.garder && r.statut === "classe"`. Elle violait
      deux décisions de Blandine, écrites dans la passation :
@@ -2979,6 +2980,53 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
              && r.statut !== "absent" && r.statut !== "illisible";
   });
   if (!aEcrire.length) return { n: 0, doublons: 0 };
+
+  /* 07/10 (694) — IMPORT DE LA CAVALIERE : SEULES SES LIGNES PARTENT. Le nom lu dans le fichier doit etre
+     un nom FFE RELIE A SON COMPTE (cavaliers_ffe.user_id = elle). Les lignes d un autre nom sont ecartees
+     et comptees ; si aucune ne lui appartient, rien n est ecrit et on lui dit pourquoi. */
+  var ignoreesCav = 0;
+  var nomStockeCav = function (x) {   /* meme nettoyage que l ecriture (netFFE + netNomCavalierFFE), pour que le nom relie soit celui des lignes */
+    var b = String(x || "");
+    try { if (typeof hypeReparerFFE === "function") b = hypeReparerFFE(b); } catch (eRc) { }
+    b = b.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/g, "").replace(/\s+/g, " ").trim();
+    return netNomCavalierFFE(b);
+  };
+  var nomsALierCav = {};   /* nom stocke -> true : noms a rattacher a son compte apres l ecriture */
+  if (modeCav) {
+    var nrmC = function (x) { return String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, " ").replace(/\s+/g, " ").trim().split(" ").filter(Boolean).sort().join(" "); };
+    var mesNoms = {};
+    try {
+      var rMn = await delaiDeGarde(supa.from("cavaliers_ffe").select("nom").eq("user_id", user.id).limit(20), 15, "lecture de ton nom FFE");
+      if (rMn && rMn.error) return { n: 0, doublons: 0, error: "Ton nom FFE n'a pas pu \u00eatre lu, rien n'a \u00e9t\u00e9 \u00e9crit : " + String(rMn.error.message || rMn.error) };
+      ((rMn && rMn.data) || []).forEach(function (x) { if (x && x.nom) mesNoms[nrmC(x.nom)] = true; });
+    } catch (eMn) { return { n: 0, doublons: 0, error: "Ton nom FFE n'a pas pu \u00eatre lu, rien n'a \u00e9t\u00e9 \u00e9crit." }; }
+    /* 07/10 (696) — NOM FFE PAS ENCORE RELIE : si le fichier ne porte QU UN SEUL nom (telemat de cavaliere), on lui demande de
+       confirmer que c est bien le sien, puis on le RELIE A SON COMPTE tout de suite (fonction SQL hype_relier_mon_nom_ffe).
+       Plusieurs noms differents dans le fichier et aucun relie : on ne devine pas, on refuse. */
+    if (!Object.keys(mesNoms).length) {
+      var vusC = {};
+      aEcrire.forEach(function (r) { var k0 = nrmC(r.cavalier); if (k0 && !vusC[k0]) vusC[k0] = nomStockeCav(r.cavalier); });
+      var clesC = Object.keys(vusC);
+      if (clesC.length !== 1) return { n: 0, doublons: 0, error: "Ton nom FFE n'est pas encore reli\u00e9 \u00e0 ton compte, et ce fichier contient " + (clesC.length ? clesC.length + " noms diff\u00e9rents" : "aucun nom de cavali\u00e8re") + " : je ne peux pas deviner le tien. Relie-le d'abord (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb), puis recommence. Rien n'a \u00e9t\u00e9 \u00e9crit." };
+      var nomAConf = vusC[clesC[0]];
+      var okConf = false;
+      try { okConf = window.confirm("Ce fichier est celui de \u00ab " + nomAConf + " \u00bb.\n\nC'est bien ton nom FFE ?\nSi tu confirmes, ton compte sera reli\u00e9 \u00e0 ce nom et ces r\u00e9sultats seront les tiens."); } catch (eCf) { okConf = false; }
+      if (!okConf) return { n: 0, doublons: 0, error: "Import annul\u00e9 : ton nom FFE n'a pas \u00e9t\u00e9 confirm\u00e9. Rien n'a \u00e9t\u00e9 \u00e9crit." };
+      var rLien = await supa.rpc("hype_relier_mon_nom_ffe", { p_nom: nomAConf });
+      if (rLien && rLien.error) {
+        var mL = String(rLien.error.message || rLien.error);
+        return { n: 0, doublons: 0, error: /deja_pris/.test(mL) ? "Ce nom FFE est d\u00e9j\u00e0 reli\u00e9 \u00e0 un autre compte. Demande \u00e0 une mod\u00e9ratrice de t'aider. Rien n'a \u00e9t\u00e9 \u00e9crit."
+          : /trop_de_noms/.test(mL) ? "Ton compte est d\u00e9j\u00e0 reli\u00e9 \u00e0 un autre nom FFE que celui de ce fichier. Si ce n'est pas le bon, demande \u00e0 une mod\u00e9ratrice de le corriger. Rien n'a \u00e9t\u00e9 \u00e9crit."
+          : "Le rattachement de ton nom a \u00e9t\u00e9 refus\u00e9 par la base : " + mL + ". Rien n'a \u00e9t\u00e9 \u00e9crit." };
+      }
+      mesNoms[clesC[0]] = true;
+    }
+    var avantC = aEcrire.length;
+    aEcrire = aEcrire.filter(function (r) { return mesNoms[nrmC(r.cavalier)] === true; });
+    ignoreesCav = avantC - aEcrire.length;
+    if (!aEcrire.length) return { n: 0, doublons: 0, error: "Ce fichier ne contient aucun r\u00e9sultat \u00e0 ton nom FFE (" + avantC + " ligne" + (avantC > 1 ? "s" : "") + " au nom d'une autre personne). Rien n'a \u00e9t\u00e9 \u00e9crit." };
+    aEcrire.forEach(function (r) { var nm0 = nomStockeCav(r.cavalier); if (nm0) nomsALierCav[nm0] = true; });
+  }
 
   /* ce que le cheval a déjà */
   /* 🟥 24/08 : ce `catch` était VIDE. Si la lecture échouait, `deja` restait
@@ -3224,7 +3272,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
   }
   /* 🟥 aucune diffusion à l'écurie : sept saisons noieraienT le fil. */
   var infoOg = null;
-  if (originesOff && (originesOff.pere || originesOff.mere || originesOff.robe || originesOff.naissance)) {
+  if (chevalId && originesOff && (originesOff.pere || originesOff.mere || originesOff.robe || originesOff.naissance)) {
     /* 26/08 — REGLE DE BLANDINE : case vide -> l officiel remplit sans demander ;
        saisie manuelle differente -> le cavalier choisit (rien ne s ecrase par surprise). */
     try {
@@ -3256,6 +3304,17 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
   /* 18/09 (242) : on REND le detail du rangement, pour que l ecran puisse le DIRE.
      `ailleurs` = ce qui est parti sur une AUTRE fiche que celle ouverte ;
      `inconnus` = les chevaux du telemat qu on n a pas su reconnaitre, donc NON ecrits. */
+  /* 07/10 (696) : import de la cavaliere — ses lignes sont rattachees a son compte (cavalier_id) par la fonction SQL, nom par nom */
+  var avertLien = "";
+  if (modeCav && n > 0) {
+    var nomsL = Object.keys(nomsALierCav);
+    for (var iLn = 0; iLn < nomsL.length; iLn++) {
+      try {
+        var rLn = await supa.rpc("hype_relier_mon_nom_ffe", { p_nom: nomsL[iLn] });
+        if (rLn && rLn.error) avertLien = "Les r\u00e9sultats sont enregistr\u00e9s mais pas encore rattach\u00e9s \u00e0 ton compte (" + String(rLn.error.message || rLn.error) + "). ";
+      } catch (eLn) { avertLien = "Les r\u00e9sultats sont enregistr\u00e9s mais pas encore rattach\u00e9s \u00e0 ton compte. "; }
+    }
+  }
   var ailleurs = {};
   neufs.forEach(function (x) {
     if (x && x.cheval_id && String(x.cheval_id) !== String(chevalId)) {
@@ -3270,7 +3329,7 @@ async function enregistrerImportFFE(chevalId, lignes, originesOff, nomPdf) {
     }
   });
   return { n: n, doublons: doublons, origines: infoOg, ailleurs: ailleurs, inconnus: inconnus, ambigus: ambigus,
-    avertissement: manquePS ? "Les r\u00e9sultats sont enregistr\u00e9s, mais PAS la mention « sans faute » ni les points : la base n'a pas encore les colonnes. Passe le SQL sql-06-09-sansfaute-points.sql, puis relance cet import pour les r\u00e9cup\u00e9rer." : null };
+    avertissement: ((avertLien || "") + (ignoreesCav ? (ignoreesCav + " ligne" + (ignoreesCav > 1 ? "s" : "") + " au nom d'une autre personne " + (ignoreesCav > 1 ? "ont" : "a") + " \u00e9t\u00e9 ignor\u00e9e" + (ignoreesCav > 1 ? "s" : "") + ". ") : "") + (manquePS ? "Les r\u00e9sultats sont enregistr\u00e9s, mais PAS la mention « sans faute » ni les points : la base n'a pas encore les colonnes. Passe le SQL sql-06-09-sansfaute-points.sql, puis relance cet import pour les r\u00e9cup\u00e9rer." : "")) || null };
 }
 async function appliquerOriginesOfficielles(chevalId, originesOff) { /* 26/08 : le cavalier a choisi « prendre l officiel » — on remplace pere/mere et on complete le reste */
   try {
@@ -27432,8 +27491,18 @@ function Router() {
                     attente: "Préparation de l'import…",
                     err: "L'import n'a pas pu s'ouvrir."
                   },
-                  nomCheval: (typeof window !== "undefined" && window.HYPE_CHEVAL_IMPORT_NOM) || null, /* 26/08 : la cible s AFFICHE sur l ecran d import */
-                  onFermer: function () { setEcran("cheval"); },
+                  onCreerCheval: async function (nomC) {   /* 07/10 (695) : cree la fiche d un cheval inconnu du fichier, SANS notifier l ecurie (chevaux d autrefois) */
+                    try {
+                      var uC = await utilisateurActuel(); if (!uC) return { error: "Pas connect\u00e9" };
+                      var nomOk = String(nomC || "").replace(/\s+/g, " ").trim().slice(0, 60); if (!nomOk) return { error: "nom vide" };
+                      var ecC = await monEcurieNom();
+                      var rC2 = await supa.from("chevaux").insert({ user_id: uC.id, ecurie: ecC, nom: nomOk }).select().single();
+                      if (rC2 && rC2.error) return { error: String(rC2.error.message || rC2.error) };
+                      return { id: rC2 && rC2.data && rC2.data.id };
+                    } catch (eC2) { return { error: String((eC2 && eC2.message) || eC2) }; }
+                  },
+                  nomCheval: (typeof window !== "undefined" && !window.HYPE_IMPORT_CAVALIERE && window.HYPE_CHEVAL_IMPORT_NOM) || null, /* 26/08 : la cible s AFFICHE sur l ecran d import */
+                  onFermer: function () { var cavF = !!(typeof window !== "undefined" && window.HYPE_IMPORT_CAVALIERE); try { window.HYPE_IMPORT_CAVALIERE = false; } catch (eCf) { } setEcran(cavF ? "resultats-cavalier" : "cheval"); },   /* 07/10 (694) */
                   onOrigines: function (originesOff) { /* 26/08 : conflit tranche par le cavalier */
                     var chId2 = window.HYPE_CHEVAL_IMPORT || null; /* 26/08 : cible fraiche obligatoire (voir onEnregistrer) */
                     if (!chId2) return Promise.resolve({ error: "cheval introuvable" });
@@ -27444,6 +27513,14 @@ function Router() {
                        et l'enregistrement, HYPE_CHEVAL_IMPORT est vide et la
                        fonction refusait avec « Cheval inconnu » SANS RIEN
                        AFFICHER. On garde le cheval aussi en mémoire locale. */
+                    if (window.HYPE_IMPORT_CAVALIERE) {   /* 07/10 (694) : import depuis la page Performances de la cavaliere — chaque ligne va a son cheval, nom FFE verifie */
+                      return enregistrerImportFFE(null, lignes, null, null, { cavaliere: true })
+                        .then(function (rC) {
+                          if (rC && rC.error) throw new Error(rC.error);
+                          if (rC && rC.avertissement) { try { window.alert(rC.avertissement); } catch (eAvC) { } }
+                          return { n: (rC && rC.n) || 0, doublons: (rC && rC.doublons) || 0 };
+                        });
+                    }
                     var chId = window.HYPE_CHEVAL_IMPORT || null; /* 26/08 : CIBLE FRAICHE OBLIGATOIRE — plus aucun repli sur une memoire de session */
                     if (!chId) return Promise.reject(new Error("le cheval n'a pas \u00e9t\u00e9 retrouv\u00e9 — rouvre l'import depuis sa fiche."));
                     return enregistrerImportFFE(chId, lignes, originesOff || null, nomPdf || null)
@@ -37816,6 +37893,21 @@ function EcranResultatsCavaliere() {
         (prof && prof.ecurie && prof.ecurie !== "__perso__") ? h("div", { style: { marginTop: 5, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } }, prof.ecurie) : null,
         h("div", { style: { marginTop: 6, fontSize: 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titrePage)));
   }
+  /* 07/10 (694) — IMPORTER MES RESULTATS depuis la page Performances de la cavaliere (SA page seulement) : meme video
+     que la fiche cheval, meme phrase, meme bouton. L import range chaque ligne sur son cheval et verifie son nom FFE. */
+  var blocImportCav = (moi && riderId && String(moi.id) === String(riderId) && resDb !== null) ? h("div", { "data-import-cavaliere": "1", style: { margin: "30px 16px 0" } },
+    h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto", borderRadius: 16, overflow: "hidden", background: "#000", border: "1px solid rgba(255,255,255,.07)" } },
+      h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1", autoPlay: true, muted: true, loop: true, playsInline: true, "webkit-playsinline": "true", preload: "metadata",
+        onClick: function (eV) { try { eV.stopPropagation(); var v = eV.currentTarget; if (v.requestFullscreen) v.requestFullscreen(); else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen(); } catch (eF) { } },
+        style: { width: "100%", display: "block" } }),
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "32%", pointerEvents: "none", background: "linear-gradient(180deg,rgba(6,7,9,0),rgba(6,7,9,.9))" } })),
+    h("div", { style: { position: "relative", margin: "26px auto 0", maxWidth: "17em", padding: "19px 0", textAlign: "center" } },
+      h("div", { style: { position: "absolute", top: 0, left: "32%", right: "32%", height: 1, background: "#2A323D" } }),
+      h("div", { style: { fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: 24, lineHeight: 1.3, fontWeight: 400, color: "#F4F7FA" } }, T("Tes résultats officiels, à redécouvrir sur Hype.", "Your official results, to rediscover on Hype.", "Tus resultados oficiales, para redescubrir en Hype.", "I tuoi risultati ufficiali, da riscoprire su Hype.", "公式成績を Hype で見つけ直そう。", "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.", "\u0646\u062a\u0627\u0626\u062c\u0643 \u0627\u0644\u0631\u0633\u0645\u064a\u0629\u060c \u0644\u062a\u0639\u064a\u062f\u064a \u0627\u0643\u062a\u0634\u0627\u0641\u0647\u0627 \u0639\u0644\u0649 Hype.")),
+      h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%", height: 1, background: "#2A323D" } })),
+    h("button", { onClick: function () { try { window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); },
+      style: { position: "relative", width: "100%", marginTop: 16, padding: "14px 34px", border: 0, borderLeft: "2px solid " + teinteCl, borderRadius: "0 12px 12px 0", background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)", color: "#F4F7FA", fontSize: 12.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", textAlign: "center", cursor: "pointer" } },
+      T("Importer mes résultats officiels", "Import my official results", "Importar mis resultados oficiales", "Importa i miei risultati ufficiali", "公式成績を取り込む", "Meine offiziellen Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c\u064a \u0627\u0644\u0631\u0633\u0645\u064a\u0629"), h("span", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: teinteCl, fontWeight: 400 } }, "\u2192"))) : null;
   var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110 } },
     h(HypeDrapeauLangue, null),   /* (491) */
@@ -38429,6 +38521,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             })(),
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")));
         })() /* (348) : le bloc copie est une fonction A APPELER - sans ces () la page restait vide */)),
+    blocImportCav,   /* (694) */
     toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(96px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", background: "#12161C", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 14px", fontSize: 12.5, color: "#EDF2F5", zIndex: 60 } }, toast) : null);
 }
 /* ════════ 22/09 (351) — LA PAGE « ACTUALITÉ » D UNE CAVALIÈRE ════════
@@ -58551,7 +58644,7 @@ function HypeImportEcran(props) {
        incremente a chaque fois (v=19bm) — faire PAREIL ICI.
        🟥 REGLE : toute livraison de hype-import-ffe.js incremente ce numero.
        Sinon la livraison n arrive jamais sur le telephone. */
-    sc.src = "hype-import-ffe.js?v=20";   /* 03/10 (593) : v19 -> v20, lecture du nom FFE avec suffixe apres l etoile (Olivia Optima). 18/09 (241) : v14 -> v15. REGLE DU FICHIER, respectee ici : toute livraison de hype-import-ffe.js incremente ce numero, sinon l iPhone continue de servir l ANCIEN lecteur depuis son cache et le correctif semble ne rien faire. */
+    sc.src = "hype-import-ffe.js?v=21";   /* 07/10 (695) : v20 -> v21, creation de la fiche d un cheval inconnu. 03/10 (593) : v19 -> v20, lecture du nom FFE avec suffixe apres l etoile (Olivia Optima). 18/09 (241) : v14 -> v15. REGLE DU FICHIER, respectee ici : toute livraison de hype-import-ffe.js incremente ce numero, sinon l iPhone continue de servir l ANCIEN lecteur depuis son cache et le correctif semble ne rien faire. */
     sc.onload = function () { if (!vivant) return; setCharge(false); setTimeout(dessiner, 0); };
     sc.onerror = function () { if (!vivant) return; setCharge(false); setErrCh("fichier introuvable"); };
     document.head.appendChild(sc);
@@ -59303,8 +59396,9 @@ function EcranCheval() {
      tous les chevaux en tant qu'admin, pour l'instant on finalisera les details plus
      tard") — `estModerateurHype(moi)` en plus de la propriete, meme principe que
      partout ailleurs dans le fichier ou un statut de moderatrice ouvre un passage. */
-    if (!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi)))) { bientot(); return; }
+    if (!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estLieFiche || estModerateurHype(moi)))) { bientot(); return; }
     try {
+      window.HYPE_IMPORT_CAVALIERE = false;   /* 07/10 (694) : import depuis une fiche cheval = mode cheval */
       window.HYPE_CHEVAL_IMPORT = c.dbId || null;
       window.HYPE_CHEVAL_IMPORT_NOM = (c && c.nom) || null;
       window.localStorage.removeItem("hype_cheval_import"); /* 26/08 : la memoire collante est PURGEE — ce repli rattachait les telemat au DERNIER cheval ouvert d une session passee (72 lignes de Rizotto retrouvees sur la fiche de Vallieres). Une cible d import ne se devine JAMAIS. */
@@ -61404,7 +61498,7 @@ async function supprimerSouvenirOuvert() {
                 "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.", "\u0646\u062a\u0627\u0626\u062c\u0643 \u0627\u0644\u0631\u0633\u0645\u064a\u0629\u060c \u0644\u062a\u0639\u064a\u062f\u064a \u0627\u0643\u062a\u0634\u0627\u0641\u0647\u0627 \u0639\u0644\u0649 Hype.")),
             h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%",
                                 height: 1, background: "#2A323D" } })))),
-          (chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h("button", {
+          (chevalDyn && moi && (chevalDyn.ownerId === moi.id || estLieFiche || estModerateurHype(moi))) ? h("button", {
             onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } ouvrirImportFFE(); },
             /* 02/09 (Blandine, capture) : le bouton chevauchait le rail des resultats
                juste en dessous. Ecriture CENTREE, remontee de 26 a 16 px, et une vraie
@@ -61900,7 +61994,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
               jouera sur l écran d import, avec la seconde vidéo.
            ⚠️ La vidéo porte une IMAGE DE COUVERTURE : si iOS refuse la
               lecture automatique, on voit la mascotte, pas un carré noir. */
-        (chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c\u064a")) : null,
+        (chevalDyn && moi && (chevalDyn.ownerId === moi.id || estLieFiche || estModerateurHype(moi))) ? h("button", { className: "addbtn", onClick: function () { ouvrirImportFFE(); }, style: { marginBottom: 8 } }, "\u2913 " + T("Importer mes résultats", "Import my results", "Importar mis resultados", "Importa i miei risultati", "結果を取り込む", "Meine Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c\u064a")) : null,
         h("button", { className: "addbtn", onClick: function () { if (peutSaisirResultat) { setPanneau(null); ouvrirAjoutResultat(); } else bientot(); } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir resultado", "Aggiungi risultato", "結果を追加", "Ein Ergebnis hinzufügen", "\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629")))) : h("div", { style: { padding: "0 0 28px" } },
         /* ═══ 25/08 s165 — PALMARÈS ÉDITORIAL (Proposition B, référence IMG_8514) ═══
            Le corps historique (vidéo + cartes par année) devient la « page technique »
