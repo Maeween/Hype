@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261008-739"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261008-740"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(32,217,245,.25),0 0 38px rgba(32,217,245,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#20D9F5,#5FE9F0);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(32,217,245,0.15) 0%, rgba(32,217,245,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(32,217,245,0.25) 45%, rgba(32,217,245,0.10) 65%, rgba(32,217,245,0.9) 88%, rgba(32,217,245,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(32,217,245,0.16); }
@@ -63760,6 +63760,241 @@ async function hypeLireFicheCheval(id) {
   }
 }
 
+/* (740) FENETRE DES ORIGINES — reprise UNE fois de l ancienne fiche (ouvrirEditOrigines,
+   importerOriginesDepuisCapture, sauverOrigines et leur fenetre « Mon cheval ») ; EcranCheval
+   garde sa copie, inchangee. Memes champs (SIRE, race, age, date de naissance, 3 generations
+   avec leur ligne de detail, naisseur), meme lecture de capture par l IA, meme sauvegarde
+   IMBRIQUEE et NON DESTRUCTRICE (un nom inchange garde son detail et ses propres ascendants).
+   Trois differences VOULUES, toutes dans le sens de la securite :
+   1. pre-remplissage depuis origines.pere/mere OU, a defaut, origines.pedigree (l ancienne
+      fenetre ne lisait que le premier : un cheval range sous « pedigree » s ouvrait VIDE et
+      « Enregistrer » effacait ses origines) ;
+   2. la fenetre reste ouverte tant que l enregistrement n a pas reussi ; une erreur s affiche
+      DANS la fenetre (l ancienne se fermait avant d enregistrer et avalait les erreurs) ;
+   3. couleurs V2 (champagne, ivoire), aucun cyan.
+   props : cheval { dbId, nom, ligne }, T, onFermer(), onEnregistre(ligneMaj) */
+function FeuilleOriginesCheval(props) {
+  var h = React.createElement;
+  var T = props.T;
+  var IVOIRE = "#F2EBDD", CHAMP = "#C9A96E", SERIF = "'Cormorant Garamond', Georgia, serif", SANS = "'Montserrat', system-ui, sans-serif";
+  var chv = props.cheval || {};
+  var ligneA = chv.ligne || {};
+  var ogA = (function () { try { var o = ligneA.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object") ? o : {}; } catch (e) { return {}; } })();
+  var racP = (function () { var pg = ogA.pedigree || {}; return { pere: (ogA.pere != null && ogA.pere !== "") ? ogA.pere : (pg.pere || null), mere: (ogA.mere != null && ogA.mere !== "") ? ogA.mere : (pg.mere || null) }; })();
+  function nm(n) { if (!n) return ""; if (typeof n === "string") return n; return String(n.nom || ""); }
+  function sub(n, k) { return (n && typeof n === "object") ? n[k] : null; }
+  function dN(n) { return (n && typeof n === "object" && n.detail) ? String(n.detail) : ""; }
+  var CHAMPS_PED = ["pere", "mere", "pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"];
+  function noeudDe(cle) {
+    /* « pere » et « mere » sont les deux racines ; pp, pm, ppp... sont des chemins (p = pere, m = mere) */
+    var chemin = (cle === "pere") ? "p" : ((cle === "mere") ? "m" : cle);
+    var n = (chemin.charAt(0) === "p") ? racP.pere : racP.mere;
+    for (var i = 1; i < chemin.length; i++) n = sub(n, chemin.charAt(i) === "p" ? "pere" : "mere");
+    return n;
+  }
+  var stL = React.useState(function () {
+    var o = {
+      race: String(ligneA.race || ""),
+      age: (ligneA.age != null ? String(ligneA.age) : ""),
+      naissance: (function () { var nI = (typeof hypeNaissanceNormaliser === "function") ? hypeNaissanceNormaliser(ogA.naissance || "") : null; return nI ? nI.affiche : ""; })(),
+      sire: ogA.sire || "",
+      naisseur: ogA.naisseur || ""
+    };
+    CHAMPS_PED.forEach(function (c) { var n = noeudDe(c); o[c] = nm(n); o["d_" + c] = dN(n); });
+    return o;
+  });
+  var loc = stL[0], setLoc = stL[1];
+  var stI = React.useState(false); var impEnCours = stI[0], setImpEnCours = stI[1];
+  var stM = React.useState(null); var impMsg = stM[0], setImpMsg = stM[1];
+  var stS = React.useState(false); var sauveEnCours = stS[0], setSauveEnCours = stS[1];
+  var stE = React.useState(""); var erreurSauve = stE[0], setErreurSauve = stE[1];
+  var refFichier = React.useRef(null);
+
+  async function importer(fichier) {
+    if (!fichier) return;
+    setImpEnCours(true); setImpMsg(null);
+    try {
+      var b64 = await new Promise(function (ok, ko) { var l = new FileReader(); l.onload = function () { ok(String(l.result || "")); }; l.onerror = function () { ko(new Error("lecture")); }; l.readAsDataURL(fichier); });
+      var virg = b64.indexOf(",");
+      var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
+      var donnees = b64.slice(virg + 1);
+      /* consigne IDENTIQUE a celle de l ancienne fiche */
+      var consigne = "Tu lis une capture d'ecran d'une fiche de pedigree equin (site IFCE / infochevaux, Horsetelex, "
+        + "ou similaire). Retrouve : le nom du CHEVAL dont c'est la fiche (nomCheval), sa race/stud-book, "
+        + "sa date de naissance COMPLETE si elle est ecrite (format JJ/MM/AAAA), sinon seulement l annee (4 chiffres), son naisseur/eleveur si visible, le pere (sire), la mere (dam), "
+        + "et si visibles les grands-parents et arriere-grands-parents. Reponds UNIQUEMENT par un objet JSON "
+        + "valide, sans texte autour, sans balises markdown, de cette forme exacte (chaine vide \"\" si non trouve) : "
+        + '{"nomCheval":"","race":"","naissance":"","naisseur":"","pere":"","mere":"","pp":"","pm":"","mp":"","mm":"","ppp":"","ppm":"","pmp":"","pmm":"","mpp":"","mpm":"","mmp":"","mmm":"",'
+        + '"d_pere":"","d_mere":"","d_pp":"","d_pm":"","d_mp":"","d_mm":"","d_ppp":"","d_ppm":"","d_pmp":"","d_pmm":"","d_mpp":"","d_mpm":"","d_mmp":"","d_mmm":""}. '
+        + "pp = pere du pere, pm = mere du pere, mp = pere de la mere, mm = mere de la mere ; ppp/ppm/pmp/pmm/mpp/mpm/mmp/mmm "
+        + "suivent la meme logique un cran plus loin (parents de pp, de pm, de mp, de mm dans cet ordre). "
+        + "Pour CHAQUE ancetre trouve, si la capture montre a cote de son nom une annee de naissance, une race ou un stud-book, "
+        + "un indice (IPO, ISO, BSO, BLUP...) ou un niveau de performance (ex. CSO 1m40), recopie ces mentions telles quelles, "
+        + "en une seule courte ligne de 60 caracteres maximum, dans la cle d_<champ> correspondante (d_pere pour le pere, d_pp pour "
+        + "le pere du pere, etc.). Chaine vide si rien n'est ecrit a cote du nom. N'invente jamais une information absente de l'image. "
+        + "Si l'image ne contient visiblement aucune information de pedigree, reponds exactement {}.";
+      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant";
+      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
+      texte = String(texte || "").replace(/```json|```/g, "").trim();
+      var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
+      var TOUS = CHAMPS_PED.concat(["race", "naissance", "naisseur"]);
+      if (!(trouve && TOUS.some(function (k) { return trouve[k] && String(trouve[k]).trim(); }))) {
+        setImpMsg({ ok: false, texte: T("Aucune origine reconnue dans cette capture.", "No bloodline recognised in this screenshot.", "No se han reconocido orígenes en esta captura.", "Nessuna origine riconosciuta in questa schermata.", "このキャプチャから血統情報を読み取れませんでした。", "In diesem Screenshot wurde keine Abstammung erkannt.", "لم يتم التعرف على أي نسب في هذه اللقطة.") });
+        setImpEnCours(false); return;
+      }
+      var nomCible = chv.nom || "";
+      var nomVu = trouve.nomCheval ? String(trouve.nomCheval).trim() : "";
+      /* meme regle que l ancienne fiche : si la capture est celle d un ASCENDANT deja tape,
+         on decale les noms au bon niveau de l arbre au lieu de refuser */
+      var NIV = [{ p: "p", c: "pere" }, { p: "m", c: "mere" }, { p: "pp", c: "pp" }, { p: "pm", c: "pm" }, { p: "mp", c: "mp" }, { p: "mm", c: "mm" }];
+      var decal = null;
+      var memeCheval = !nomVu || !nomCible || nomsHippiquesProches(nomVu, nomCible);
+      if (!memeCheval) {
+        for (var i = 0; i < NIV.length && !decal; i++) { var dt = loc[NIV[i].c]; if (dt && nomsHippiquesProches(nomVu, dt)) decal = NIV[i].p; }
+        if (!decal) {
+          setImpMsg({ ok: false, texte: T("Cette capture semble être celle de « " + nomVu + " », mais la fiche ouverte est « " + nomCible + " », et ce nom ne correspond à aucun ascendant déjà tapé. Import refusé pour ne pas mélanger les deux.", "This screenshot looks like it's about « " + nomVu + " », but the profile open is « " + nomCible + " », and this name doesn't match any ancestor already entered. Import refused so the two don't get mixed up.", "Esta captura parece ser de « " + nomVu + " », pero la ficha abierta es « " + nomCible + " », y este nombre no coincide con ningún ascendiente ya introducido. Importación rechazada para no mezclarlos.", "Questa schermata sembra riguardare « " + nomVu + " », ma la scheda aperta è « " + nomCible + " », e questo nome non corrisponde a nessun ascendente già inserito. Importazione rifiutata per non mescolarli.", "このキャプチャは「" + nomVu + "」のもののようですが、開いているページは「" + nomCible + "」で、この名前は既入力の祖先のどれにも一致しません。混同を防ぐためインポートを拒否しました。", "Dieser Screenshot scheint « " + nomVu + " » zu zeigen, aber das geöffnete Profil ist « " + nomCible + " », und dieser Name stimmt mit keinem bereits eingegebenen Vorfahren überein. Import abgelehnt, um beide nicht zu vermischen.", "يبدو أن هذه اللقطة تخص « " + nomVu + " »، لكن الصفحة المفتوحة هي « " + nomCible + " »، وهذا الاسم لا يطابق أي سلف مدخل. تم رفض الاستيراد لعدم الخلط بينهما.") });
+          setImpEnCours(false); return;
+        }
+      }
+      var app = trouve;
+      if (decal) {
+        app = {};
+        var prof = 3 - decal.length;
+        function pose(srcK, dstK) { if (trouve[srcK]) { app[dstK] = trouve[srcK]; if (trouve["d_" + srcK]) app["d_" + dstK] = trouve["d_" + srcK]; } }
+        if (prof >= 1) { pose("pere", decal + "p"); pose("mere", decal + "m"); }
+        if (prof >= 2) { pose("pp", decal + "pp"); pose("pm", decal + "pm"); pose("mp", decal + "mp"); pose("mm", decal + "mm"); }
+        if (!Object.keys(app).length) {
+          setImpMsg({ ok: false, texte: T("Reconnu comme « " + nomVu + " », mais trop loin dans l'arbre pour trouver une place (ce formulaire s'arrête aux arrière-grands-parents).", "Recognised as « " + nomVu + " », but too deep in the tree to find a slot (this form stops at great-grandparents).", "Reconocido como « " + nomVu + " », pero demasiado lejos en el árbol para encontrar un lugar (este formulario llega hasta los bisabuelos).", "Riconosciuto come « " + nomVu + " », ma troppo lontano nell'albero per trovare un posto (questo modulo arriva fino ai bisnonni).", "「" + nomVu + "」として認識されましたが、系図の奥が深すぎます（このフォームは曾祖父母までです）。", "Als « " + nomVu + " » erkannt, aber zu tief im Stammbaum für einen freien Platz (dieses Formular reicht bis zu den Urgroßeltern).", "تم التعرف عليه كـ« " + nomVu + " »، لكنه بعيد جدا في الشجرة ولا مكان له (يتوقف هذا النموذج عند أجداد الأجداد).") });
+          setImpEnCours(false); return;
+        }
+      }
+      setLoc(function (oo) {
+        var nn = Object.assign({}, oo);
+        Object.keys(app).forEach(function (k) { if (CHAMPS_PED.indexOf(k) >= 0 && app[k] && String(app[k]).trim()) nn[k] = String(app[k]).trim(); });
+        Object.keys(app).forEach(function (k) { if (k.indexOf("d_") === 0 && CHAMPS_PED.indexOf(k.slice(2)) >= 0 && app[k] && String(app[k]).trim()) nn[k] = String(app[k]).trim().slice(0, 60); });
+        if (!decal) {
+          if (trouve.race && String(trouve.race).trim()) nn.race = String(trouve.race).trim();
+          if (trouve.naisseur && String(trouve.naisseur).trim()) nn.naisseur = String(trouve.naisseur).trim();
+          var nsN = hypeNaissanceNormaliser(trouve.naissance);
+          if (nsN) { nn.naissance = nsN.affiche; nn.age = String(nsN.age); }
+        }
+        return nn;
+      });
+      setImpMsg({ ok: true, texte: decal
+        ? T("Reconnu comme « " + nomVu + " », déjà dans l'arbre — origines décalées au bon niveau. Vérifie avant d'enregistrer.", "Recognised as « " + nomVu + " », already in the tree — bloodline shifted to the right level. Check it before saving.", "Reconocido como « " + nomVu + " », ya en el árbol — orígenes desplazados al nivel correcto. Revísalos antes de guardar.", "Riconosciuto come « " + nomVu + " », già nell'albero — origini spostate al livello giusto. Controlla prima di salvare.", "「" + nomVu + "」として認識され、既に系図内に存在 — 正しい世代に血統を移動しました。保存前に確認してください。", "Als « " + nomVu + " » erkannt, bereits im Stammbaum — Abstammung auf die richtige Ebene verschoben. Bitte vor dem Speichern prüfen.", "تم التعرف عليه كـ« " + nomVu + " »، وهو موجود في الشجرة — تم نقل النسب إلى المستوى الصحيح. تحققي قبل الحفظ.")
+        : T("Origines complétées depuis la capture — vérifie avant d'enregistrer.", "Bloodline filled in from the screenshot — check it before saving.", "Orígenes completados desde la captura — revísalos antes de guardar.", "Origini completate dalla schermata — controlla prima di salvare.", "キャプチャから血統を入力しました。保存前に確認してください。", "Abstammung aus dem Screenshot übernommen — bitte vor dem Speichern prüfen.", "تم إكمال النسب من اللقطة — تحققي قبل الحفظ.") });
+    } catch (eG) {
+      setImpMsg({ ok: false, texte: T("Lecture impossible — réessaie.", "Could not read it — try again.", "No se pudo leer — inténtalo de nuevo.", "Lettura impossibile — riprova.", "読み取れませんでした。もう一度お試しください。", "Konnte nicht gelesen werden — versuch es nochmal.", "تعذرت القراءة — أعيدي المحاولة.") });
+    }
+    setImpEnCours(false);
+  }
+
+  async function sauver() {
+    if (sauveEnCours) return;
+    setErreurSauve("");
+    if (!chv.dbId || typeof supa === "undefined" || !supa) { setErreurSauve(T("Fiche non enregistrée en base — impossible d'enregistrer.", "Profile not saved in the database — cannot save.", "Ficha no guardada en la base — imposible guardar.", "Scheda non salvata nel database — impossibile salvare.", "データベースに未保存のため保存できません。", "Profil nicht in der Datenbank — Speichern nicht möglich.", "الملف غير محفوظ في قاعدة البيانات — تعذر الحفظ.")); return; }
+    setSauveEnCours(true);
+    try {
+      var ogN = Object.assign({}, ogA);
+      function noeud(nomTxt, ancien, detailTxt) {
+        nomTxt = String(nomTxt || "").trim();
+        if (!nomTxt) return null;
+        var n = { nom: nomTxt };
+        var dTxt = (detailTxt === undefined) ? null : String(detailTxt == null ? "" : detailTxt).trim().slice(0, 60);
+        if (dTxt) n.detail = dTxt;
+        if (ancien && typeof ancien === "object" && String(ancien.nom || "").trim().toLowerCase() === nomTxt.toLowerCase()) {
+          if (dTxt === null && ancien.detail) n.detail = ancien.detail;
+          if (ancien.pere) n.pere = ancien.pere;
+          if (ancien.mere) n.mere = ancien.mere;
+        }
+        return n;
+      }
+      var ancP = (racP.pere && typeof racP.pere === "object") ? racP.pere : null;
+      var ancM = (racP.mere && typeof racP.mere === "object") ? racP.mere : null;
+      function branche(racine, anc, k) {
+        var n = noeud(loc[k], anc, loc["d_" + k]);
+        if (!n) return null;
+        var aP = anc && anc.pere, aM = anc && anc.mere;
+        var vP = noeud(loc[k === "pere" ? "pp" : "mp"], aP, loc["d_" + (k === "pere" ? "pp" : "mp")]);
+        var vM = noeud(loc[k === "pere" ? "pm" : "mm"], aM, loc["d_" + (k === "pere" ? "pm" : "mm")]);
+        var base = (k === "pere") ? "p" : "m";
+        if (vP) { var a = noeud(loc[base + "pp"], aP && aP.pere, loc["d_" + base + "pp"]), b = noeud(loc[base + "pm"], aP && aP.mere, loc["d_" + base + "pm"]); if (a) vP.pere = a; else delete vP.pere; if (b) vP.mere = b; else delete vP.mere; }
+        if (vM) { var c2 = noeud(loc[base + "mp"], aM && aM.pere, loc["d_" + base + "mp"]), d2 = noeud(loc[base + "mm"], aM && aM.mere, loc["d_" + base + "mm"]); if (c2) vM.pere = c2; else delete vM.pere; if (d2) vM.mere = d2; else delete vM.mere; }
+        if (vP) n.pere = vP; else delete n.pere;
+        if (vM) n.mere = vM; else delete n.mere;
+        return n;
+      }
+      ogN.pere = branche(racP, ancP, "pere");
+      ogN.mere = branche(racP, ancM, "mere");
+      if (ogN.pedigree) ogN.pedigree = { pere: ogN.pere, mere: ogN.mere };
+      var na = String(loc.naisseur || "").trim(); if (na) ogN.naisseur = na; else delete ogN.naisseur;
+      var siV = String(loc.sire || "").trim(); if (siV) ogN.sire = siV; else delete ogN.sire;
+      var raceV = String(loc.race || "").trim();
+      var ageV = (String(loc.age || "").match(/\d+/) || [null])[0];
+      var nsV = hypeNaissanceNormaliser(loc.naissance || "");
+      if (nsV) { ogN.naissance = nsV.iso; ageV = String(nsV.age); } else delete ogN.naissance;
+      var payl = { origines: ogN, race: raceV || null, age: ageV ? Number(ageV) : null };
+      var rO = await supa.from("chevaux").update(payl).eq("id", chv.dbId).select("id");
+      if (rO && rO.error) throw new Error(rO.error.message || String(rO.error));
+      if (!(rO && rO.data && rO.data.length)) throw new Error(T("aucune ligne modifiée (droits ?)", "no row updated (permissions?)", "ninguna fila modificada (¿permisos?)", "nessuna riga modificata (permessi?)", "更新された行なし（権限？）", "keine Zeile geändert (Rechte?)", "لم يتم تعديل أي سطر (الصلاحيات؟)"));
+      setSauveEnCours(false);
+      if (props.onEnregistre) props.onEnregistre(Object.assign({}, ligneA, payl));
+    } catch (eS) {
+      setSauveEnCours(false);
+      setErreurSauve(T("Enregistrement impossible : ", "Could not save: ", "No se pudo guardar: ", "Salvataggio non riuscito: ", "保存できませんでした：", "Speichern nicht möglich: ", "تعذر الحفظ: ") + String((eS && eS.message) || eS || "?"));
+    }
+  }
+
+  var LP = T("Père", "Sire", "Padre", "Padre", "父", "Vater", "الأب"), LM = T("Mère", "Dam", "Madre", "Madre", "母", "Mutter", "الأم");
+  var CHAMPS = [["sire", "N° SIRE"], ["race", T("Race", "Breed", "Raza", "Razza", "品種", "Rasse", "السلالة")], ["age", T("Âge (ans)", "Age (years)", "Edad (años)", "Età (anni)", "年齢", "Alter (Jahre)", "العمر (بالسنوات)")], ["naissance", T("Date de naissance (JJ/MM/AAAA)", "Date of birth (DD/MM/YYYY)", "Fecha de nacimiento (DD/MM/AAAA)", "Data di nascita (GG/MM/AAAA)", "生年月日（DD/MM/YYYY）", "Geburtsdatum (TT/MM/JJJJ)", "تاريخ الميلاد (يوم/شهر/سنة)")], ["pere", LP], ["mere", LM],
+    [null, T("Grands-parents", "Grandparents", "Abuelos", "Nonni", "祖父母", "Großeltern", "الأجداد")], ["--pere", ""], ["pp", LP], ["pm", LM], ["--mere", ""], ["mp", LP], ["mm", LM],
+    [null, T("Arrière-grands-parents", "Great-grandparents", "Bisabuelos", "Bisnonni", "曾祖父母", "Urgroßeltern", "أجداد الأجداد")], ["--pp", ""], ["ppp", LP], ["ppm", LM], ["--pm", ""], ["pmp", LP], ["pmm", LM], ["--mp", ""], ["mpp", LP], ["mpm", LM], ["--mm", ""], ["mmp", LP], ["mmm", LM],
+    ["naisseur", T("Naisseur / éleveur", "Breeder", "Criador", "Allevatore", "生産者", "Züchter / Aufzüchter", "المربي")]];
+  var COTES = {
+    "--pere": { c: "pere", d: true, t: T("Côté père", "Sire side", "Lado paterno", "Lato paterno", "父系", "Vaterseite", "جهة الأب") },
+    "--mere": { c: "mere", d: false, t: T("Côté mère", "Dam side", "Lado materno", "Lato materno", "母系", "Mutterseite", "جهة الأم") },
+    "--pp": { c: "pp", d: true, t: T("Père du père", "Sire's sire", "Padre del padre", "Padre del padre", "父の父", "Vater des Vaters", "أب الأب") },
+    "--pm": { c: "pm", d: false, t: T("Mère du père", "Sire's dam", "Madre del padre", "Madre del padre", "父の母", "Mutter des Vaters", "أم الأب") },
+    "--mp": { c: "mp", d: true, t: T("Père de la mère", "Dam's sire", "Padre de la madre", "Padre della madre", "母の父", "Vater der Mutter", "أب الأم") },
+    "--mm": { c: "mm", d: false, t: T("Mère de la mère", "Dam's dam", "Madre de la madre", "Madre della madre", "母の母", "Mutter der Mutter", "أم الأم") }
+  };
+  var DEMI = ["pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"];
+  var styleInput = { width: "100%", boxSizing: "border-box", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(242,235,221,0.16)", background: "rgba(242,235,221,0.04)", color: IVOIRE, fontSize: 16, fontFamily: SANS, outline: "none" };
+
+  var voile = h("div", { onClick: function () { if (!sauveEnCours && props.onFermer) props.onFermer(); }, style: { position: "fixed", inset: 0, zIndex: 8600, background: "rgba(4,6,5,0.8)", display: "flex", alignItems: "flex-start", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 60px) 0 0" } },
+    h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "92%", maxWidth: 440, maxHeight: "calc(100dvh - env(safe-area-inset-top) - 100px)", overflowY: "auto", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain", borderRadius: 20, border: "1px solid rgba(201,169,110,0.45)", background: "linear-gradient(180deg, rgba(16,20,17,0.99), rgba(7,10,8,1))", padding: "22px 18px calc(20px + 84px + env(safe-area-inset-bottom))" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: 26, color: IVOIRE, textAlign: "center", marginBottom: 4 } }, T("Origines", "Bloodline", "Orígenes", "Origini", "血統", "Herkunft", "النسب")),
+      h("div", { style: { fontFamily: SANS, fontSize: 12, color: "rgba(242,235,221,0.6)", textAlign: "center", margin: "0 0 16px", lineHeight: 1.5 } }, chv.nom || ""),
+      h("input", { ref: refFichier, type: "file", accept: "image/*", style: { display: "none" }, onChange: function (eF) { var f = (eF.target && eF.target.files && eF.target.files[0]) || null; try { eF.target.value = ""; } catch (eR) { } if (f) importer(f); } }),
+      h("button", { onClick: function () { if (!impEnCours && refFichier.current) refFichier.current.click(); }, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", minHeight: 46, padding: "0 14px", marginBottom: 14, borderRadius: 999, border: "1px solid " + CHAMP, background: "rgba(201,169,110,0.08)", color: CHAMP, fontSize: 13, fontWeight: 600, fontFamily: SANS, cursor: impEnCours ? "default" : "pointer", opacity: impEnCours ? 0.6 : 1 } },
+        impEnCours ? T("Lecture de la capture…", "Reading the screenshot…", "Leyendo la captura…", "Lettura della schermata…", "キャプチャを読み取り中…", "Screenshot wird gelesen…", "جار قراءة اللقطة…")
+          : ("⤓ " + T("Importer depuis une capture (IFCE, Horsetelex…)", "Import from a screenshot (IFCE, Horsetelex…)", "Importar desde una captura (IFCE, Horsetelex…)", "Importa da una schermata (IFCE, Horsetelex…)", "キャプチャからインポート（IFCE、Horsetelex…）", "Aus Screenshot importieren (IFCE, Horsetelex…)", "الاستيراد من لقطة شاشة (IFCE، Horsetelex…)"))),
+      impMsg ? h("div", { style: { fontFamily: SANS, fontSize: 12, textAlign: "center", marginBottom: 14, padding: "9px 11px", borderRadius: 12, color: impMsg.ok ? CHAMP : "#F0A3A3", background: impMsg.ok ? "rgba(201,169,110,0.08)" : "rgba(160,50,50,0.14)", lineHeight: 1.5 } }, impMsg.texte) : null,
+      CHAMPS.map(function (chp, iC) {
+        if (!chp[0]) return h("div", { key: "t" + iC, style: { fontFamily: SERIF, fontSize: 19, color: IVOIRE, textAlign: "center", margin: "20px 0 12px", paddingTop: 16, borderTop: "1px solid rgba(201,169,110,0.18)" } }, chp[1]);
+        if (COTES[chp[0]]) {
+          var cg = COTES[chp[0]], par = String(loc[cg.c] || "").trim();
+          return h("div", { key: chp[0], style: { fontFamily: SANS, fontSize: 10, letterSpacing: "0.14em", color: CHAMP, textTransform: "uppercase", margin: cg.d ? "4px 0 8px" : "16px 0 8px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+            par ? (T("Du côté de ", "On ", "Por parte de ", "Lato ", "の系統 ", "Seite von ", "من جهة ") + par) : cg.t);
+        }
+        var demi = DEMI.indexOf(chp[0]) >= 0;
+        var ped = CHAMPS_PED.indexOf(chp[0]) >= 0;
+        return h("div", { key: chp[0], style: demi ? { marginBottom: 10, width: "calc(50% - 5px)", display: "inline-block", verticalAlign: "top", marginInlineEnd: (["pp", "mp", "ppp", "pmp", "mpp", "mmp"].indexOf(chp[0]) >= 0) ? 10 : 0 } : { marginBottom: 12 } },
+          h("div", { style: { fontFamily: SANS, fontSize: 9, letterSpacing: "0.2em", color: "rgba(242,235,221,0.55)", textTransform: "uppercase", marginBottom: 5 } }, chp[1]),
+          h("input", { value: loc[chp[0]] || "", maxLength: 60, placeholder: "—", onChange: function (eI) { var v = eI.target.value; setLoc(function (oo) { var nn = Object.assign({}, oo); nn[chp[0]] = v; return nn; }); }, style: styleInput }),
+          (ped && String(loc[chp[0]] || "").trim())
+            ? h("input", { value: loc["d_" + chp[0]] || "", maxLength: 60, placeholder: T("Détail : année, race, indice…", "Detail: year, breed, index…", "Detalle: año, raza, índice…", "Dettaglio: anno, razza, indice…", "詳細：生年、品種、指数…", "Detail: Jahr, Rasse, Index…", "تفاصيل: السنة، السلالة، المؤشر…"), onChange: function (eD) { var vD = eD.target.value; setLoc(function (oo) { var nn = Object.assign({}, oo); nn["d_" + chp[0]] = vD; return nn; }); }, style: Object.assign({}, styleInput, { marginTop: 5, padding: "8px 11px", fontSize: 16, color: "rgba(242,235,221,0.75)", background: "rgba(242,235,221,0.025)" }) })
+            : null);
+      }),
+      erreurSauve ? h("div", { style: { marginTop: 10, fontFamily: SANS, fontSize: 12.5, color: "#F0A3A3", lineHeight: 1.5 } }, erreurSauve) : null,
+      h("div", { style: { display: "flex", gap: 10, marginTop: 16 } },
+        h("button", { onClick: function () { if (!sauveEnCours && props.onFermer) props.onFermer(); }, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "1px solid rgba(242,235,221,0.25)", background: "transparent", color: IVOIRE, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: SANS } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء")),
+        h("button", { onClick: sauver, style: { flex: 1, padding: "13px 0", borderRadius: 999, border: "none", background: CHAMP, color: "#14110A", fontSize: 13, fontWeight: 700, cursor: sauveEnCours ? "default" : "pointer", opacity: sauveEnCours ? 0.7 : 1, fontFamily: SANS } }, sauveEnCours ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ")))));
+  return (typeof hypePortailBody === "function") ? hypePortailBody(voile) : voile;
+}
+
 /* (739) Parente d un cheval — reprise UNE fois de chargerDescendantsCheval + ascendantVersFiche
    (EcranCheval garde sa copie, inchangee). Meme lot (400 chevaux non supprimes), meme
    rapprochement de noms (nomsHippiquesProches, celui des imports) :
@@ -63886,7 +64121,7 @@ function EcranChevalV2() {
   };
   var sexe = SEXES[String(og.sexe || "").toLowerCase().trim()] || "";
   /* annee : seulement depuis la date de naissance exacte (origines.naissance). Pas deduite de l age. */
-  var annee = (function () { var m = String(og.naissance || "").match(/^(\d{4})-/); return m ? m[1] : ""; })();
+  var annee = (function () { var m = String(og.naissance || "").match(/^(\d{4})(-|$)/); return m ? m[1] : ""; })();   /* (740) une annee seule (date incomplete) est aussi une donnee exacte */
   var sousTitre = [race, sexe, annee].filter(Boolean).join("  ·  ");
 
   var photoBrute = photoPersoBase || phLoc || ligne.photo_url || secours.photo || (typeof UV3_H1 !== "undefined" ? UV3_H1 : "");
@@ -63906,6 +64141,8 @@ function EcranChevalV2() {
       if ((n.getMonth() + 1) < Number(m[2]) || ((n.getMonth() + 1) === Number(m[2]) && n.getDate() < Number(m[3]))) a--;
       if (a >= 0 && a < 60) return a;
     }
+    var mA = String(og.naissance || "").match(/^(\d{4})$/);   /* (740) annee seule : meme calcul que hypeNaissanceNormaliser */
+    if (mA) { var aA = new Date().getFullYear() - Number(mA[1]); if (aA >= 0 && aA < 60) return aA; }
     var v = parseInt(String(ligne.age == null ? "" : ligne.age), 10);
     return (isFinite(v) && v >= 0 && v < 60) ? v : null;
   })();
@@ -64047,9 +64284,35 @@ function EcranChevalV2() {
       blocs.push(h("div", { key: "errP", style: { marginTop: 12, padding: "0 4px", fontFamily: SANS, fontSize: 11, color: "rgba(242,235,221,0.5)" } },
         T("Liens de parenté indisponibles pour le moment : ", "Family links unavailable for now: ", "Parentesco no disponible por ahora: ", "Parentele non disponibili per ora: ", "血縁リンクは現在利用できません：", "Verwandtschaft derzeit nicht verfügbar: ", "روابط القرابة غير متاحة حاليًا: ") + parente.erreur));
     }
+    if (peutOrig) blocs.push(h("div", { key: "outilO", style: { padding: "2px 4px 0" } }, boutonOrig("bO")));   /* (740) */
     return h("div", { style: { padding: "16px 14px 16px" } }, blocs);
   }
   var LIB_RETOURNER = T("Retourner la carte", "Flip the card", "Girar la tarjeta", "Gira la scheda", "カードを裏返す", "Karte umdrehen", "اقلب البطاقة");
+
+  /* (740) OUTIL DES ORIGINES — visible SEULEMENT pour la proprietaire ou une moderatrice, sur un cheval
+     enregistre en base. Libelle selon l etat reel : rien -> « Ajouter », pere OU mere -> « Completer »,
+     pere ET mere -> « Voir / modifier ». La base (RLS) reste la vraie protection. */
+  var ofSt = React.useState(false); var origOuverte = ofSt[0], setOrigOuverte = ofSt[1];
+  var msgSt = React.useState(""); var msgV2 = msgSt[0], setMsgV2 = msgSt[1];
+  React.useEffect(function () { setOrigOuverte(false); }, [id]);
+  var peutOrig = !!(chV && chV.dbId && moi && (estMien || (typeof estModerateurHype === "function" && estModerateurHype(moi))));
+  var etatOrig = (pereR || nomDeR(pdgR.mere)) ? ((pereR && nomDeR(pdgR.mere)) ? "complet" : "partiel") : "vide";
+  var LIB_OUTIL_ORIG = etatOrig === "vide"
+    ? T("Ajouter les origines", "Add the bloodline", "Añadir los orígenes", "Aggiungi le origini", "血統を追加", "Herkunft hinzufügen", "إضافة النسب")
+    : (etatOrig === "partiel"
+      ? T("Compléter les origines", "Complete the bloodline", "Completar los orígenes", "Completa le origini", "血統を補完", "Herkunft ergänzen", "إكمال النسب")
+      : T("Voir / modifier les origines", "View / edit the bloodline", "Ver / modificar los orígenes", "Vedi / modifica le origini", "血統を表示・編集", "Herkunft ansehen / bearbeiten", "عرض / تعديل النسب"));
+  function boutonOrig(cle) {
+    if (!peutOrig) return null;
+    return h("button", { key: cle, onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } setOrigOuverte(true); }, style: { display: "inline-flex", alignItems: "center", gap: 8, marginTop: 14, padding: "10px 18px", borderRadius: 999, border: "1px solid " + CHAMPAGNE, background: "rgba(201,169,110,0.06)", color: CHAMPAGNE, fontFamily: SERIF, fontSize: 16, cursor: "pointer" } },
+      LIB_OUTIL_ORIG, h("span", { "aria-hidden": "true", style: { fontFamily: SANS, fontSize: 13, display: "inline-block", transform: rtl ? "scaleX(-1)" : "none" } }, "›"));
+  }
+  function apresOrigines(ligneMaj) {
+    setOrigOuverte(false);
+    setEtat(function (prev) { return (prev && prev.cheval) ? Object.assign({}, prev, { cheval: Object.assign({}, prev.cheval, { ligne: ligneMaj }) }) : prev; });
+    setMsgV2(T("Origines mises à jour ✨", "Bloodline updated ✨", "Orígenes actualizados ✨", "Origini aggiornate ✨", "血統を更新しました ✨", "Herkunft aktualisiert ✨", "تم تحديث النسب ✨"));
+    setTimeout(function () { setMsgV2(""); }, 2600);
+  }
 
   function rond(contenu, label, onClick) {
     return h("button", {
@@ -64128,13 +64391,15 @@ function EcranChevalV2() {
             ? h("div", { role: "button", onClick: retourner, "aria-label": LIB_RETOURNER, style: { display: "flex", alignItems: "stretch", gap: 16, padding: 14, cursor: "pointer" } },
                 photoCarte ? h("div", { style: { position: "relative", flex: "0 0 40%", maxWidth: 160, minHeight: 150, borderRadius: 12, overflow: "hidden", background: "#0B0E0C" } },
                   h("img", { src: photoCarte, alt: "", loading: "lazy", onError: function (eI) { try { var im = eI.currentTarget; if (im.dataset.repli !== "1" && photoBrute && im.src !== photoBrute) { im.dataset.repli = "1"; im.src = photoBrute; } else { im.style.display = "none"; } } catch (eR) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 25%", display: "block" } })) : null,
-                h("div", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "2px 30px 2px 2px" } }, lignesRecto))
+                h("div", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: "2px 30px 2px 2px" } }, lignesRecto, (etatOrig === "vide") ? h("div", null, boutonOrig("rO")) : null))
             : versoCarte(),
           /* bouton rond de retournement, coin haut (cote fin de lecture) */
           h("button", { onClick: function (eB) { try { eB.stopPropagation(); } catch (eS) { } retourner(); }, "aria-label": LIB_RETOURNER, style: { position: "absolute", top: 10, insetInlineEnd: 10, width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(201,169,110,0.7)", background: "rgba(7,10,8,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, cursor: "pointer" } },
             h("svg", { viewBox: "0 0 24 24", width: 17, height: 17, fill: "none", stroke: CHAMPAGNE, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" },
               h("path", { d: "M20 11a8 8 0 0 0-14.3-4.9L4 8" }), h("path", { d: "M4 4v4h4" }), h("path", { d: "M4 13a8 8 0 0 0 14.3 4.9L20 16" }), h("path", { d: "M20 20v-4h-4" })))))) : null,
     message ? h("div", { style: { margin: "28px 22px 0", fontFamily: SANS, fontSize: 14, lineHeight: 1.6, color: IVOIRE_DOUX } }, message) : null,
+    origOuverte && chV ? h(FeuilleOriginesCheval, { cheval: chV, T: T, onFermer: function () { setOrigOuverte(false); }, onEnregistre: apresOrigines }) : null,   /* (740) */
+    msgV2 ? h("div", { role: "status", style: { position: "fixed", left: "50%", bottom: "calc(100px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", zIndex: 90, padding: "11px 18px", borderRadius: 999, border: "1px solid rgba(201,169,110,0.5)", background: "rgba(10,13,11,0.96)", color: IVOIRE, fontFamily: SANS, fontSize: 13, whiteSpace: "nowrap" } }, msgV2) : null,
     /* mention discrete de la version en construction (disparaitra au passage de la route) */
     h("div", { style: { margin: "44px 22px 0", fontFamily: SANS, fontSize: 9.5, letterSpacing: "0.24em", textTransform: "uppercase", color: CHAMPAGNE, opacity: 0.55 } },
       T("Nouvelle fiche · version de test", "New profile · test version", "Nueva ficha · versión de prueba", "Nuova scheda · versione di prova", "新しいプロフィール · テスト版", "Neues Profil · Testversion", "ملف جديد · نسخة تجريبية")));
