@@ -1008,6 +1008,7 @@
         }
       } catch (eRg) { }
       if (E.completes > 0) phrase += " " + E.completes + " point" + (E.completes > 1 ? "s manquants ont été complétés" : " manquant a été complété") + " sur des lignes déjà là.";
+      if (E.rattachees > 0) phrase += " " + E.rattachees + " résultat" + (E.rattachees > 1 ? "s ont été rattachés" : " a été rattaché") + " au compte de" + (E.rattachees > 1 ? " leurs cavalières" : " sa cavalière") + " (visibles sur leur page Performances).";
       phrase += " Tu peux importer une autre saison quand tu veux.";
     } else if (E.completes > 0) {
       titre = E.completes + " point" + (E.completes > 1 ? "s complétés" : " complété");
@@ -1344,7 +1345,7 @@
       if (rep && typeof rep === "object") {
         E.enregistres = Number(rep.n) || 0;
         E.doublons = Number(rep.doublons) || 0;
-        E.completes = Number(rep.completes) || 0; E.refusees = Number(rep.refusees) || 0;   /* (728) points completes sur des lignes deja la */
+        E.completes = Number(rep.completes) || 0; E.refusees = Number(rep.refusees) || 0; E.rattachees = Number(rep.rattachees) || 0;   /* (728) points completes sur des lignes deja la */
         /* 18/09 (242) : le rangement multi-chevaux doit se VOIR. `ailleurs` = ce qui est
            parti sur une autre fiche ; `inconnus` = les chevaux du telemat non reconnus,
            donc NON ecrits. Sans ce compte rendu, elle croirait a des lignes perdues. */

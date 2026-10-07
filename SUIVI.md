@@ -9475,3 +9475,27 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Test fait : lecture des 3 PDF de Dakota + un faux second cheval → 49 lignes rangées sur 2 chevaux, rangs uniques, fichier vide signalé. L'écriture en base et l'écran sur iPhone ne sont pas testés.
 - ⚠️ Limites : le nom du cheval est cherché sous « Fiche équidé » (comme dans les PDF de Dakota) ; l'écran d'import reste en français uniquement. La recherche des chevaux hors écurie est limitée à 12 noms différents par import. Josie du maynot : aucun résultat en base, donc rien à compléter, il faudra importer son fichier.
 - Checks : marqueurs, node --check 18 blocs + hype-import-ffe.js.
+
+## Build 730 — 7 oct. 2026 — Barre du bas qui flotte sur la page Performances chevaux
+- Demande : « la barre du bas flotte sur la page au lieu d'être fixée en bas » (vidéo : en haut de page la barre est bien en bas ; en faisant défiler elle reste au milieu de l'écran).
+- Cause probable (NON prouvée, pas d'iPhone ici) : le conteneur de la page avait `overflowX: hidden` avec `minHeight: 100vh` ; sur iPhone cela peut en faire une zone de défilement à part et décaler la barre fixe. Changé en `overflowX: clip` (coupe sans créer de zone de défilement).
+- Un seul changement, uniquement cette page. Les 4 autres pages qui ont le même réglage ne sont pas touchées (à traiter si le défaut y apparaît).
+- Fichiers : index.html seul (SUIVI.md avec). hype-import-ffe.js inchangé.
+- Non vérifié : test iPhone (défiler jusqu'en bas, la barre doit rester collée en bas). Sur iOS < 16 `clip` est ignoré (aucune coupe, aucun risque visible).
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 731 — 7 oct. 2026 — Barre du bas : même correctif sur les autres pages
+- Demande : « tu peux faire ça sur les autres pages aussi, ça arrive régulièrement ».
+- Changement : `overflowX: hidden` → `clip` sur les 2 autres pages à conteneur simple (lignes ~40265 et ~50109). Les 2 pages restantes (lignes ~31642 et ~43366) ont un défilement vertical propre : `clip` y serait converti en `hidden` par le navigateur, donc aucun effet ; non touchées.
+- Cause toujours NON prouvée (pas d'iPhone). Si la barre flotte encore sur une page, me dire laquelle : cause à chercher ailleurs.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé.
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 732 — 7 oct. 2026 — Un import met à jour chevaux ET cavalières, quel que soit l'endroit
+- Demande : « quel que soit l'endroit où l'outil est utilisé, tout soit mis à jour niveau chevaux et cavaliers ».
+- Constat : les résultats vont dans une seule table (par cheval) → chevaux déjà à jour partout. Les pages cavalière lisent `cavalier_id`, posé seulement quand la cavalière relie son nom ou importe elle-même ; un import par le bouton Team (ou une fiche cheval) ne rattachait pas les cavalières DÉJÀ reliées.
+- SQL (à passer par Blandine, fichier SQL-732-rattacher-resultats-importes.sql) : fonction `hype_rattacher_resultats_importes()` — ne rattache que les lignes importées par l'appelant, sans cavalière, dont le nom est déjà relié (cavaliers_ffe). Noms non reliés : en attente, comme avant.
+- Changement : à la fin de TOUT import (3 entrées) qui a écrit des lignes, appel de cette fonction ; l'écran de fin dit « N résultats rattachés ». Fonction absente ou en erreur : rien ne bloque, aucun message.
+- Fichiers : index.html (`hype-import-ffe.js?v=25`), hype-import-ffe.js, SUIVI.md.
+- Limite : ne rattrape que les lignes importées par le compte qui appelle ; les lignes importées avant par d'autres comptes ne sont pas touchées. Non vérifié sur iPhone ni en base.
+- Checks : marqueurs, node --check 18 blocs + hype-import-ffe.js.
