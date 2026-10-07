@@ -789,9 +789,9 @@
       (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Rattach\u00e9 \u00e0 : <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i></i><i></i></div>';
     h += '<label class="hi-zone"><div class="ic">⤓</div>' +
-      '<b>Choisir un PDF</b>' +
-      '<span>Depuis Fichiers, sur ton téléphone</span>' +
-      '<input type="file" accept="application/pdf,.pdf" data-hi="fichier"></label>';
+      '<b>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Choisir un ou plusieurs PDF' : 'Choisir un PDF') + '</b>' +
+      '<span>' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? 'Une fiche FFE par cheval : tu peux en choisir plusieurs d\'un coup' : 'Depuis Fichiers, sur ton téléphone') + '</span>' +
+      '<input type="file" accept="application/pdf,.pdf" data-hi="fichier"' + ((typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) ? ' multiple' : '') + '></label>';
     h += '<div class="hi-aide"><b>Comment obtenir ce PDF</b>' +
       '<ol><li>Ouvre ton telemat FFE <b>dans Safari</b></li>' +
       '<li>Fais une capture d\'écran, puis <b>appuie sur la vignette</b> avant qu\'elle disparaisse</li>' +
@@ -846,6 +846,7 @@
       '<p>Tout sera enregistré de toute façon — tu pourras changer d\'avis ' +
       'plus tard sans réimporter.</p></div>' +
       '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i></i></div>';
+    if (E.avisMulti) h += '<div class="hi-aide" style="margin:0 16px 12px">' + ech(E.avisMulti) + '</div>';
     h += '<div class="hi-nv">';
     n.forEach(function (o) {
       h += '<div class="hi-n' + (E.niveau === o.c ? " on" : "") + '" data-hi-nv="' + o.c + '">' +
@@ -875,6 +876,7 @@
       (E.nomCheval ? '<p style="margin:8px 0 0;font-size:12.5px">Ces r\u00e9sultats iront sur la fiche de <b style="color:rgb(var(--t))">' + ech(E.nomCheval) + '</b></p>' : '') + '</div>' +
       '<div class="hi-etapes"><i class="on"></i><i class="on"></i><i class="on"></i></div>';
 
+    if (E.avisMulti) h += '<div class="hi-aide" style="margin:0 16px 12px">' + ech(E.avisMulti) + '</div>';
     h += '<div class="hi-bilan">' +
       '<div class="hi-bi ok"><b>' + gardees + '</b><span>à garder</span></div>' +
       '<div class="hi-bi dt"><b>' + doutes + '</b><span>à vérifier</span></div>' +
@@ -1089,6 +1091,55 @@
     brancher(hote, options);
   }
 
+  /* ==== PLUSIEURS FICHIERS D UN COUP (729) ==============================
+     Chaque fichier = la fiche FFE d un cheval (ou le telemat d une cavaliere). On lit chaque fichier, on
+     retrouve le NOM DU CHEVAL de sa fiche, et on le pose sur chacune de ses lignes (cheval_pdf) : l ecriture
+     range ensuite chaque ligne sur le cheval de ce nom — jamais au hasard (inconnu ou homonymes = non ecrit).
+     ⚠️ Si le nom du cheval est introuvable dans un fichier, ce fichier est ECARTE et on le dit. */
+  function nomChevalFiche(txt) {
+    var ls = String(txt || "").split("\n").map(function (x) { return x.trim(); });
+    var idx = -1, i;
+    for (i = 0; i < ls.length; i++) { if (/fiche\s+[e\u00e9]quid[e\u00e9]/i.test(ls[i])) { idx = i; break; } }
+    if (idx < 0) return null;
+    for (var j = idx + 1; j < ls.length && j <= idx + 8; j++) {
+      var l = ls[j];
+      if (!l) continue;
+      if (/supprimer|ma cavalerie|^club\s*\/?\s*poney$|^poney$|^club$/i.test(l)) continue;
+      if (/^(origine|robe|propri|r[e\u00e9]f[e\u00e9]rent|comp[e\u00e9]tition)/i.test(l)) break;
+      if (/[A-Z\u00c0-\u00dc]{2}/.test(l)) return l;
+      break;
+    }
+    return null;
+  }
+  function nettoyerNomCheval(n) {
+    var t = String(n || "");
+    var iE = t.indexOf("*"); if (iE >= 0) t = t.slice(0, iE);
+    t = t.replace(/\s*\(?\s*alias\b[\s\S]*$/i, "");
+    return t.replace(/\s+/g, " ").trim();
+  }
+  function fusionnerFichiers(liste) {
+    var lignes = [], problemes = [], parCheval = {};
+    (liste || []).forEach(function (fi) {
+      var nomF = (fi && fi.nom) || "fichier";
+      var o;
+      try { o = window.HYPE_IMPORT.lire(fi.txt); } catch (eL) { problemes.push(nomF + " : fichier illisible."); return; }
+      var nomLu = null;
+      try { nomLu = (typeof window !== "undefined" && window.__hypeNomPdfFFE) || null; } catch (eN) { }
+      if (!o || !o.lignes || !o.lignes.length) { problemes.push(nomF + " : aucun r\u00e9sultat trouv\u00e9."); return; }
+      if (o.format === "sif") { problemes.push(nomF + " : c'est une page \u00ab R\u00e9sultats d\u00e9taill\u00e9s \u00bb d'\u00e9preuve, \u00e0 importer seule, pas avec les fiches de chevaux."); return; }
+      var nom = nettoyerNomCheval(nomLu || nomChevalFiche(fi.txt));
+      var sansNom = o.lignes.filter(function (r) { return !r.cheval_pdf; }).length;
+      if (sansNom && !nom) { problemes.push(nomF + " : je n'ai pas retrouv\u00e9 le nom du cheval dans ce fichier, il n'est pas import\u00e9."); return; }
+      o.lignes.forEach(function (r) {
+        if (!r.cheval_pdf) r.cheval_pdf = nom;
+        r.rang = lignes.length + 1;
+        lignes.push(r);
+        var k = r.cheval_pdf; parCheval[k] = (parCheval[k] || 0) + 1;
+      });
+    });
+    return { lignes: lignes, problemes: problemes, parCheval: parCheval };
+  }
+
   /* ==== LES GESTES ======================================================
      🟥 22/08 : les écouteurs étaient posés sur CHAQUE bouton, et
      réattachés à chaque redessin. Le bouton « Enregistrer » ne répondait
@@ -1109,6 +1160,29 @@
       f.addEventListener("change", function () {
         var fic = f.files && f.files[0];
         if (!fic) return;
+        if (typeof window !== "undefined" && window.HYPE_IMPORT_MULTI) {   /* 07/10 (729) : plusieurs fichiers, plusieurs chevaux */
+          var fics = Array.prototype.slice.call(f.files);
+          E.err = null; E.avisMulti = ""; E.nomFichier = fics.length + " fichier" + (fics.length > 1 ? "s" : ""); E.etape = "lecture"; refaire();
+          var liste = [];
+          fics.reduce(function (chaine, unF) {
+            return chaine.then(function () {
+              return window.HYPE_IMPORT.texteDuPdf(unF).then(function (txt) { liste.push({ nom: unF.name, txt: txt }); }).catch(function (eF) { liste.push({ nom: unF.name, txt: "" }); });
+            });
+          }, Promise.resolve()).then(function () {
+            var fu = fusionnerFichiers(liste);
+            if (!fu.lignes.length) {
+              E.err = "Aucun r\u00e9sultat lisible dans ces fichiers. " + fu.problemes.join(" ");
+              E.etape = "choix"; refaire(); return;
+            }
+            E.lignes = fu.lignes; E.cavalier = ""; E.niveau = "classe"; E.sif = null; E.club = "";
+            try { window.__hypeNomPdfFFE = null; window.__hypeOriginesFFE = null; window.__hypeCavalierPdfFFE = null; } catch (eW2) { }
+            var chv = Object.keys(fu.parCheval);
+            E.avisMulti = chv.length + " cheval" + (chv.length > 1 ? "aux" : "") + " : " + chv.map(function (k) { return k + " (" + fu.parCheval[k] + ")"; }).join(", ") + "." + (fu.problemes.length ? " \u26a0\ufe0f " + fu.problemes.join(" ") : "");
+            window.HYPE_IMPORT.appliquer(E.lignes, E.niveau);
+            E.etape = "niveau"; refaire();
+          }).catch(function (eM) { E.err = "Les fichiers n'ont pas pu \u00eatre lus. " + (eM && eM.message ? eM.message : ""); E.etape = "choix"; refaire(); });
+          return;
+        }
         E.err = null; E.nomFichier = fic.name; E.etape = "lecture"; refaire();
         window.HYPE_IMPORT.texteDuPdf(fic).then(function (txt) {
           var o = window.HYPE_IMPORT.lire(txt);
@@ -1302,6 +1376,7 @@
   /* ==== ce qu'on ajoute à HYPE_IMPORT ================================== */
   if (typeof window !== "undefined" && window.HYPE_IMPORT) {
     window.HYPE_IMPORT.rendre = rendre;
+    window.HYPE_IMPORT.fusionner = fusionnerFichiers;   /* (729) */
     window.HYPE_IMPORT.reinitialiser = reinitialiser;
     window.HYPE_IMPORT.etat = function () { return E; };
   }

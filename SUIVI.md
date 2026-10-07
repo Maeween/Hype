@@ -9300,3 +9300,178 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 **Changements (index.html)** : nouveau composant `EcranPerformancesChevaux` (route `performances-chevaux`) ; lien « Performances des chevaux › » sous « Nos chevaux » sur la page Team Compétition. Chevaux = groupe « Team Compétition » de la SEP (`groupes_chevaux`, hors chevaux supprimés) ; points = somme de `resultats.points` par `cheval_id` pour la saison choisie (1er sept → 31 août, sur `date_epreuve`) ; tri points décroissants ; saisons proposées : courante + 2 précédentes ; hero provisoire = `images/TEAM_COMPETITION.webp` ; « Comprendre le barème » et « i » affichent « arrive bientôt » (pas de page barème existante). Textes en 7 langues. Aucun SQL, aucune écriture.
 **Points à trancher / limites** : (1) égalités : aucune règle existante → ordre alphabétique provisoire (beaucoup de chevaux sont à 0 point tant que les télémats n'ont pas été réimportés) ; (2) un résultat sans date n'entre dans aucune saison ; (3) points non renseignés = 0 ; (4) pas de page barème ; (5) image hero dédiée non reçue ; (6) pas de « archives » dans le sélecteur ; (7) podium : nom au-dessus des points (cartes trop étroites pour les mettre côte à côte). Non testé sur iPhone.
 **Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-703, test simulé du classement (filtre saison + tri OK), aucune mention « Dernier résultat » dans la page.
+
+## Build 704 — 07/10 — Performances des chevaux : départage des ex æquo
+**Demande** : « ordre alphabétique si pas de résultats précédents, ou ordre en fonction du dernier classement ».
+**Changement** : à égalité de points sur la saison choisie, le cheval le mieux classé sur la saison PRÉCÉDENTE passe devant ; s'il n'y a rien avant (ou même total), ordre alphabétique. Interprétation de « dernier classement » = total de la saison d'avant (à corriger si elle voulait dire autre chose).
+**Conséquence** : les rangs restent numérotés 1, 2, 3… (pas de rang partagé) ; pour la saison 2026-2027, le départage vient de 2025-2026 dès que ces résultats ont des points FFE renseignés.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-704.
+
+## Build 705 — 07/10 — Performances des chevaux : vrai hero + photos du podium dézoomées
+**Demande** : « Mets ça en hero » (image fournie) ; « pour les photos des trois premiers chevaux, dézoome qu'on voit leur tête, et assombris la partie où il y a la place 1/2/3 ».
+**Changements** : nouvelle image `images/team-competition-performances-hero.webp` (fichier à pousser dans images/, ~129 Ko, convertie du PNG fourni, pas de base64), hero sur toute la largeur, cavalière à droite, voile sombre à gauche pour le titre. Podium : la photo du cheval n'occupe plus toute la carte mais une bande centrale (plus de tête visible, bords fondus), le haut de la carte est assombri autour du laurier du rang, le bas reste sombre pour le nom et les points.
+**Non vérifié** : rendu sur iPhone ; selon la photo d'origine d'un cheval, le cadrage de la tête peut demander un réglage fin cheval par cheval.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-705.
+
+## Build 706 — 07/10 — Team Compétition : chapitre « Classements des chevaux »
+**Demande** : « un chapitre avec le même visuel que les autres, appelé classements des chevaux ; dedans un onglet performances chevaux qui mène sur la page ».
+**Changements** : le bouton « Performances des chevaux › » ajouté sous « Nos chevaux » (703) est retiré ; nouveau chapitre « Classements des chevaux » (même titre serif, même séparateur doré, même carte que l'agenda : fond sombre, filet doré, icône classement, chevron) placé après « Nos chevaux » et avant « Agenda » ; il contient la carte « Performances chevaux » (sous-titre « Classement de la saison ») qui ouvre la page. Textes en 7 langues. La page elle-même est inchangée (titre « Performances des chevaux »).
+**Non vérifié** : rendu iPhone ; d'autres cartes pourront rejoindre ce chapitre plus tard (classement cavalières…).
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-706.
+
+## Build 707 — 07/10 — Carte « Performances chevaux » : image du hero à droite, fondue dans le noir
+**Demande** : « mets l'image hero de la page en dégradé, comme pour les autres onglets, à droite de l'onglet qui emmène sur la page ».
+**Changement** : sur la carte « Performances chevaux » (chapitre « Classements des chevaux »), l'image `images/team-competition-performances-hero.webp` (déjà livrée au 705) occupe la droite de la carte (62 %, cavalière cadrée) et se fond dans le noir vers la gauche, même technique que l'affiche des cartes d'agenda ; icône, titre et chevron restent au-dessus. Aucun nouveau fichier image.
+**Non vérifié** : rendu iPhone (lisibilité du titre sur le dégradé).
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-707.
+
+## Build 708 — 07/10 — Carte « Performances chevaux » : mêmes dimensions que les cartes d'agenda
+**Demande** : « mets l'onglet aux mêmes dimensions que les autres sur la page ».
+**Changement** : la carte passe à la même hauteur (104 px), même rayon (12), même fond (#0B0F13), même contour doré (0,38), même zone d'image (55 % à droite) et même dégradé que les cartes d'agenda. Contenu et page inchangés.
+**Non vérifié** : rendu iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-708.
+
+## Build 709 — 07/10 — Onglet Vidéos d'un cheval : les envois ratés des autres ne s'affichent plus
+**Demande** : « on voit les vidéos non envoyées des autres » (capture : deux cartes « Vidéo non envoyée » + « Supprimer » sur l'onglet Vidéos d'Apache du Lys).
+**Cause** : la liste des vidéos « pas encore prêtes / échouées » (`chVidsCom`) reprenait celles de toutes les personnes ayant posté sur ce cheval, avec un bouton « Supprimer » visible de tous.
+**Changement** : cette liste ne garde plus que les vidéos non prêtes de la personne connectée (`user_id` = moi). Les vidéos prêtes de tout le monde restent affichées comme avant.
+**Conséquences / non vérifié** : la propriétaire du cheval ne voit plus les échecs des autres sur cet onglet (elle ne peut donc plus les y supprimer) ; les lignes déjà échouées restent en base (aucun nettoyage fait). Le même type de carte « Vidéo non envoyée » existe aussi dans les fils de commentaires/souvenirs (non touchés ici, non vérifiés). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-709.
+
+## Build 710 — 07/10 — Performances des chevaux : saisons et filtres d'épreuve fonctionnels
+**Demande** : brief « Performances des chevaux — logique » : saisons réelles, filtres d'épreuve, total = points gagnés tels qu'enregistrés, aucun barème recalculé, aucun SQL.
+**Structure inspectée (rien à créer)** : table `resultats` : cheval = `cheval_id`, date = `date_epreuve`, épreuve = `epreuve` (nom FFE), points gagnés = `points` (colonne FFE telle qu'importée ; vide = 0). Saison = calculée sur la date (1er sept → 31 août, règle du 13/09).
+**Changements (EcranPerformancesChevaux)** : (1) sélecteur de saison : courante + 2 précédentes + section « Archives » (saisons plus anciennes SEULEMENT si des résultats existent) ; (2) filtres : « Général » + une puce par famille d'épreuve réellement présente dans les résultats de la saison choisie (Poney 1, Club 3, Poney Elite…, lues par la même règle que la fiche cheval, copie de `familleEp` → `hypeFamilleEpreuve`), défilement horizontal ; le bouton à gauche de « Comprendre le barème » affiche le filtre actif ; filtre absent d'une saison → retour sur Général ; (3) total = somme des `points` du cheval pour saison + filtre ; chevaux sans résultat gardés à 0 après les autres ; (4) ex æquo : total de la saison précédente MÊME FILTRE, puis alphabétique ; (5) aucune ligne pour la sélection → « Aucun résultat pour cette sélection. » (7 langues), pas de faux points. Design inchangé hors la rangée de puces.
+**Points d'attention** : la fiche cheval compte sa saison au 1er JUILLET (choix du 06/09), cette page au 1er SEPTEMBRE : une épreuve de juillet/août tombe dans une saison différente sur les deux écrans — à harmoniser si besoin ; une épreuve dont le nom n'est pas lu va dans « Autres » ; un résultat sans date n'entre dans aucune saison ; points non renseignés = 0.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-710, banc d'essai (général / Poney 1 / Club 3 / 2025-2026 / saison vide / archives) conforme.
+
+## Build 711 — 07/10 — Performances des chevaux : retouches visuelles (podium, liste, barre, hero)
+**Demande** (relecture de design) : podium moins haut et moins vide, liste 4→fin plus discrète, barre Général / Comprendre le barème moins flottante, hero un peu plus compact avec fondu plus tôt.
+**Changements (design seulement, logique inchangée)** : podium 214 → 176 px (−18 %), photo plus haute dans la carte, haut assombri autour du rang, nom et points remontés ; fond des cartes #0E1A18 → #0C1514 (presque noir, nuance pétrole) ; liste : lignes 68 → 58 px, rang plus petit et discret, vignette 66×44 (plus large, moins haute), nom ivoire, points ivoire doux (plus de jaune), chevron plus petit et terne, espace entre lignes 9 → 7 ; barre : trait central réduit à 18 px, éléments rapprochés, « Général » avec léger fond pétrole ; hero 350 → 322 px, titre 36 → 33 px et un peu plus haut, fondu vers le noir sur 170 px (commence plus tôt).
+**Non vérifié** : rendu iPhone (cadrage des têtes avec la photo plus haute).
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-711.
+
+## Build 712 — 07/10 — Performances chevaux : titre, têtes des chevaux, « Général » en un seul bouton déroulant
+**Demande** : titre « Performances chevaux » (sans « des ») ; têtes de chevaux jamais coupées sur les photos du podium ; « Général » ne doit pas être en double et doit se déplier au clic pour voir les autres catégories.
+**Changements** : (1) titre de la page en français « Performances chevaux » (autres langues inchangées) ; (2) photos du podium affichées ENTIÈRES (plus de recadrage) dans la bande centrale, fondu seulement en bas ; (3) la rangée de puces est supprimée : il ne reste qu'UN bouton « Général » (avec petit chevron) qui, au clic, déroule la liste « Général + catégories de la saison » ; choisir une catégorie la ferme, le bouton affiche alors la catégorie active.
+**Conséquence** : sur les photos, une image très large ou très haute laisse un peu de noir sur les côtés (c'est le prix de ne rien couper). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-712.
+
+## Build 713 — 07/10 — Performances chevaux : cartes du podium plus larges
+**Demande** : « les onglets du podium peuvent être un peu plus larges ? »
+**Changement** : marges latérales du podium 22 → 12 px et écart entre cartes 10 → 8 px : chaque carte gagne environ 8 % de largeur (sur iPhone 390 px : ≈ +10 px par carte). Le reste de la page (liste, filtres) garde ses marges de 22 px.
+**Non vérifié** : rendu iPhone (le podium dépasse légèrement la liste de chaque côté, volontairement).
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-713.
+
+## Build 714 — 07/10 — Performances chevaux : onglets plus ombrés / dégradés
+**Demande** : « on peut avoir les onglets un peu plus ombrés / dégradés ? »
+**Changement** : lignes 4→fin : fond en dégradé (un peu plus clair à gauche #15221F → #0C1514 → presque noir #060A0A à droite), ombre intérieure en bas et filet de lumière en haut, légère ombre portée ; cartes du podium : ombre intérieure sur les bords (vignettage) et ombre portée. Couleurs, tailles et textes inchangés.
+**Non vérifié** : rendu iPhone (intensité à régler si trop / pas assez).
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-714.
+
+## Build 715 — 07/10 — Podium : le nom du cheval sous sa photo
+**Demande** : « laisse les noms des chevaux en dessous de leur photo sur le podium » (le nom chevauchait le bas de la photo).
+**Changement** : photo dans la bande haute (32 → 122 px, entière), nom + points dans la zone sombre juste en dessous, sans recouvrement. Pour cela les cartes passent de 176 à 200 px (la version d'origine faisait 214).
+**Conséquence** : le podium est un peu plus haut qu'au 711-714 (compromis demandé : photo entière + nom dessous). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-715.
+
+## Build 716 — 07/10 — Performances chevaux : bouton « Comprendre le barème » retiré, phrase discrète en bas
+**Demande** : « retire le bouton comprendre le barème pour l'instant et ajoute une petite phrase discrète en italique en bas précisant que le classement est effectué sur la base des points gagnés pour la saison en officiel ».
+**Changements** : bouton « Comprendre le barème » (et son petit trait) supprimé de la barre : il ne reste que le bouton « Général » déroulant ; phrase en italique, petite et discrète, centrée sous le classement : « Classement établi sur les points officiels gagnés en épreuve pour la saison sélectionnée. » (7 langues ; masquée quand il n'y a rien à classer) ; le bouton « i » du hero affiche maintenant cette même phrase (au lieu de « barème bientôt »).
+**Conséquence** : plus aucune entrée vers un barème ; à remettre quand la page barème existera. Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-716.
+
+## Build 717 — 07/10 — Performances chevaux : titre sur deux lignes
+**Demande** : « laisse le titre en deux lignes (Performances / chevaux), sinon ça écrase la photo ».
+**Changement** : le titre français s'écrit sur deux lignes (« Performances » puis « chevaux ») ; les autres langues gardent leur retour à la ligne naturel. Rien d'autre.
+**Non vérifié** : rendu iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-717.
+
+## Build 718 — 07/10 — Performances chevaux : plus d'air autour du podium
+**Demande** : « aère un peu au-dessus et au-dessous du podium ».
+**Changement** : espace entre la barre « Général » et le podium 24 → 36 px ; espace entre le podium et la liste 24 → 38 px. Rien d'autre.
+**Non vérifié** : rendu iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-718.
+
+## Build 719 — 7 oct. 2026 — Carte « dernier souvenir » cliquable (page commune du cheval)
+- Demande : cliquer sur « Centaure et Sixtine 💗 · 4 sept. » (Indices & partage) n'amenait nulle part.
+- Changement : la carte ouvre maintenant l'album du souvenir, avec la même visionneuse que les photos du mur commun (ouvrirAlbum). Le dernier souvenir mémorise l'identifiant de son album ; curseur « main » quand c'est cliquable.
+- Conséquences : en mode démo (pas d'album réel) la carte reste non cliquable. Aucun nouveau texte.
+- Non vérifié : test iPhone (ouverture de l'album, retour).
+- Checks : marqueurs OK, node --check 18 blocs.
+
+## Build 720 — 7 oct. 2026 — Barème officiel consultable sur la page Performances chevaux
+- Demande : rendre le barème consultable en ligne, avec la source.
+- Changement : sous la phrase en italique en bas de la page, un lien « Voir le barème officiel » ouvre une fiche : sans-faute dans le temps 10 pts ; +10 (1er quart), +5 (2e), +2,5 (3e) ; Amateur/Club/Poney depuis le 1er janv. 2026. Lien vers la source : article FFE « Décryptage : principales évolutions réglementaires 2026 ». 7 langues.
+- Précision affichée : Hype n'applique pas ce barème, elle additionne les points enregistrés par la FFE (aucun recalcul).
+- Non vérifié : le règlement Open de France 2026 n'a pas pu être lu (PDF bloqué) ; la source est l'article FFE. Date de début de saison 2026/27 non confirmée. Test iPhone.
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 721 — 7 oct. 2026 — Chapitre « Règlements » en bas de la page Team Compétition
+- Demande : rendre le règlement Open de France 2026 (PDF fourni) disponible en ligne via un onglet en bas de la page compétition.
+- Changement : nouveau chapitre « Règlements » après « Suivi », avec une carte « Règlement Open de France 2026 » qui ouvre le PDF dans un nouvel onglet ; source citée (FFE, édité le 29/08/2025, mis à jour le 09/01/2026). 7 langues.
+- Fichier à pousser : docs/reglement-open-de-france-2026.pdf (nouveau dossier docs/ à la racine du dépôt).
+- Lu dans le PDF : période de qualification Poney 10/06/2025→07/06/2026, Clubs 23/06/2025→21/06/2026 (ce n'est PAS une date de début de saison sportive) ; barème CSO au 01/01/2026 : sans-faute 10 + quart 10 / 5 / 2,5 / 0, × coefficient épreuve (0,5 / 0,75 / 1 / 2) × coefficient circuit.
+- Non vérifié : ouverture du PDF sur iPhone (PWA) ; date de début de la saison 2026/27.
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 722 — 7 oct. 2026 — Début de saison par type d'épreuve (page Performances chevaux)
+- Demande (« Ok » sur les 3 propositions) : la saison commence quand la période de qualification précédente de l'Open de France s'arrête.
+- Changement : Poney → 8 juin ; Club → 22 juin ; tous les autres types → 1er septembre. Le type est lu dans le nom de l'épreuve (contient « poney » / « club »). Saison 2026/27 : tout résultat Poney depuis le 08/06/2026 et Club depuis le 22/06/2026 compte. Saison précédente et ex aequo suivent la même règle.
+- Conséquences : des chevaux à 0 peuvent maintenant avoir des points (résultats de juin–août). Entre le 8 juin et le 31 août 2027, la saison « courante » sera calculée sur la date Poney (la plus précoce).
+- ⚠️ À mettre à jour pour 2027 quand le règlement 2027 sortira (fonction debutDe).
+- Non vérifié : test iPhone. Hey Baby ne lit pas le PDF du règlement (son contexte vient d'un prompt, pas des fichiers docs/).
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 723 — 7 oct. 2026 — Début de saison Amateur (page Performances chevaux)
+- Demande : « fie-toi à ça pour l'instant » (captures Google : Critérium de France Amateur 2026, qualification 16/06/2025 → 14/06/2026, clôture 22/06/2026).
+- Changement : les épreuves Amateur démarrent la saison le 15 juin (lendemain de la fin de la période du Critérium), même règle que Poney (8 juin) et Club (22 juin). Autres types : 1er septembre.
+- Conséquences : les résultats Amateur depuis le 15/06/2026 comptent dans la saison 2026/27 (ex. les 5 résultats de septembre, 315 pts).
+- ⚠️ Non vérifié : dates lues sur un résumé Google IA, pas sur le règlement du Critérium ; le Championnat Amateur (période 06/10/2025 → 27/09/2026, clôture 05/10/2026) n'est pas suivi. À confirmer quand le règlement du Critérium sera retrouvé ; à mettre à jour en 2027.
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 724 — 7 oct. 2026 — Amateur : deux décomptes Critérium / Championnat (page Performances chevaux)
+- Demande (option C) : proposer les deux classements pour l'Amateur, avec une petite phrase sur le coefficient 3 pour ceux qui choisissent les points championnat.
+- Changement : quand on choisit une catégorie Amateur dans le menu, deux boutons « Critérium » / « Championnat » apparaissent. Critérium = comptage normal (depuis le 15 juin). Championnat = points du Critérium (15 juin → 27 sept.) × 3, puis points depuis le 28 sept. × 1 (pas de double compte). Phrase explicative en italique sous les boutons (vue Championnat), 7 langues. « Général » et les autres catégories : inchangés (comptage Critérium, sans ×3).
+- ⚠️ Interprétation à valider : le règlement du Championnat dit seulement que les points du Critérium comptent × 3 pour la qualification ; la répartition « avant/après le 28 sept. » est une règle posée par moi pour éviter de compter deux fois. Ce n'est PAS un classement de qualification officiel (pas de liste de qualification, pas de top 3 automatique). Hype recalcule ici un coefficient, contrairement au reste de la page.
+- Non vérifié : test iPhone ; dates Critérium issues d'un résumé Google IA.
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 725 — 7 oct. 2026 — Correction du décompte Championnat Amateur
+- Erreur de mon build 724 signalée par Blandine : j'avais compté ×3 tous les points du 15 juin au 27 sept. Les « points du Critérium » sont ceux gagnés au Critérium de France lui-même (Le Mans, mi-juillet).
+- Vérifié en base (une requête) : aucun résultat du Critérium de France Amateur dans l'appli (juillet = Open de France Poney/Club, Warm up, Carrière de la Vallée).
+- Nouveau comptage vue Championnat : résultats du Critérium (mot « critérium » dans le concours/épreuve) × 3 ; résultats depuis le 28 sept. × 1 ; autres résultats Amateur entre les deux : 0. Vue Critérium et Général inchangés. Phrase explicative et 7 langues mises à jour. La requête de la page lit maintenant aussi la colonne `concours`.
+- Non vérifié : nom exact du Critérium dans les futurs résultats importés ; test iPhone ; ce n'est pas un classement de qualification officiel.
+- Checks : marqueurs, node --check 18 blocs.
+
+## Build 726 — 7 oct. 2026 — Le Critérium Amateur est reconnu comme de l'Amateur
+- Constat (résultats de Tully et Liam, 2025) : le Critérium s'appelle « Critérium SO Am 3 Jeune et - … » dans l'épreuve, concours « LE MANS OPEN AMATEUR ». « Am » n'était pas reconnu : ces lignes tombaient dans « Autres » et dans la saison commençant le 1er septembre.
+- Changement : « Critérium SO Am N » est lu comme « Amateur N » (filtre Amateur) et démarre sa saison le 15 juin. La reconnaissance ×3 du Championnat (mot « critérium ») fonctionne donc sur ces lignes.
+- Constaté : presque tous ces résultats ont des points vides en base (1 sur 7 en a : 187) ; la vue Championnat sera donc basse tant que les points ne sont pas importés.
+- ⚠️ Même règle de nom NON reportée dans la fiche cheval (`familleEp`), hors périmètre ; à synchroniser si besoin.
+- Non vérifié : test iPhone.
+- Checks : marqueurs, node --check 18 blocs, test de la fonction sur 4 intitulés.
+
+## Build 727 — 7 oct. 2026 — Bouton de fin d'import : « Revenir à mes résultats » (mode cavalière)
+- Demande (« Ok ») : en import depuis la page Performances de la cavalière, le bouton de fin « Revenir à sa fiche » devient « Revenir à mes résultats ». En import depuis une fiche cheval, il reste « Revenir à sa fiche ».
+- Fichiers : hype-import-ffe.js (nouveau, à pousser) + index.html (`?v=21` → `?v=22`).
+- Remarque : tout l'écran d'import (hype-import-ffe.js) est écrit en français uniquement, sans système de langues ; ce libellé suit le reste de l'écran (non traduit). Traduire cet écran serait un chantier à part.
+- Non vérifié : test iPhone des deux modes.
+- Checks : marqueurs, node --check 18 blocs + hype-import-ffe.js.
+
+## Build 728 — 7 oct. 2026 — L'import complète les points manquants des lignes déjà en base
+- Constat (Dakota ca) : 70 résultats en base, 1 seul avec des points ; ses fiches FFE (3 PDF) en portent presque partout (« Pts qualif. Chpt »). Les anciens imports (avant le 06/09) n'avaient pas enregistré les points, et un réimport écartait les lignes comme doublons sans les compléter.
+- Changement : à l'import, quand une ligne existe déjà (même date, épreuve, concours, cavalier, cheval) avec des points VIDES et que le fichier en a, les points sont remplis sur la ligne existante. Aucune ligne n'est ajoutée, aucun point déjà rempli n'est jamais modifié (filtre « points vide »). L'écran de fin dit « N points complétés » (et combien n'ont pas pu l'être, si une ligne appartient à un autre compte).
+- Fichiers : index.html (enregistrerImportFFE + deux retours de onEnregistrer, `?v=22` → `?v=23`) et hype-import-ffe.js (écran de fin).
+- À faire côté Blandine : réimporter les PDF de chaque cheval (un fichier à la fois pour l'instant). Import de plusieurs fichiers / plusieurs chevaux d'un coup = build suivant (non commencé).
+- Limite : si les lignes ont été importées par un autre compte que celui qui réimporte, la mise à jour peut être refusée par la base (compté « refusées »). Non vérifié sur iPhone. Josie du maynot : 0 résultat en base, hors périmètre.
+- Checks : marqueurs, node --check 18 blocs + hype-import-ffe.js.
+
+## Build 729 — 7 oct. 2026 — Import de plusieurs fichiers / plusieurs chevaux d'un coup
+- Demande : pouvoir mettre à l'import plusieurs fichiers d'un coup, concernant plusieurs chevaux.
+- Changement : nouveau bouton « Importer des résultats » sur la page Team Compétition, à côté de « Gérer les chevaux » (visible seulement pour ceux qui gèrent l'équipe ; 7 langues). Il ouvre l'import en mode « plusieurs chevaux » : on choisit plusieurs PDF d'un coup (une fiche FFE par cheval). Chaque fichier est lu, le nom du cheval est retrouvé dans sa fiche (« DAKOTA CA (alias …) » → « DAKOTA CA »), puis chaque ligne est rangée sur le cheval de ce nom. L'écran de relecture montre le nom du cheval sur chaque ligne, et un récapitulatif (« 2 chevaux : DAKOTA CA (33), … »). Les points manquants des lignes déjà en base sont complétés (build 728).
+- Sécurité : un cheval inconnu ou en plusieurs exemplaires n'est jamais deviné (lignes non écrites, et dites à l'écran) ; un fichier dont le nom du cheval est introuvable est écarté et signalé ; une page « Résultats détaillés » d'épreuve est refusée dans ce mode.
+- Fichiers : index.html (`hype-import-ffe.js?v=24`) + hype-import-ffe.js. Les autres entrées d'import (fiche cheval, page cavalière) sont inchangées (le mode « plusieurs chevaux » est remis à faux à chaque entrée).
+- Test fait : lecture des 3 PDF de Dakota + un faux second cheval → 49 lignes rangées sur 2 chevaux, rangs uniques, fichier vide signalé. L'écriture en base et l'écran sur iPhone ne sont pas testés.
+- ⚠️ Limites : le nom du cheval est cherché sous « Fiche équidé » (comme dans les PDF de Dakota) ; l'écran d'import reste en français uniquement. La recherche des chevaux hors écurie est limitée à 12 noms différents par import. Josie du maynot : aucun résultat en base, donc rien à compléter, il faudra importer son fichier.
+- Checks : marqueurs, node --check 18 blocs + hype-import-ffe.js.
