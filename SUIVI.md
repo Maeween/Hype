@@ -9253,3 +9253,50 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 **Changements index.html** (`enregistrerImportFFE`, mode cavalière) : si aucun nom FFE n'est relié à son compte et que le fichier porte UN SEUL nom → fenêtre « Ce fichier est celui de « X ». C'est bien ton nom FFE ? » ; Annuler ⇒ rien écrit ; OK ⇒ appel RPC (refus traduits), puis écriture. Fichier à plusieurs noms et aucun relié ⇒ refus (on ne devine pas). Après écriture, appel de la RPC pour chaque nom écrit : les lignes reçoivent `cavalier_id` (l'insert n'écrit plus `cavalier_id` lui-même : moins de dépendance aux règles RLS). Noms déjà reliés : comportement du 694 inchangé (autres noms ignorés, comptés).
 **Conséquences / non vérifié** : tant que le SQL n'est pas passé, l'import d'une cavalière non reliée affichera l'erreur de la base. Risque assumé : on se relie à un nom libre de son choix, garde-fous = confirmation, nom libre seulement, 1 nom max par compte, le fichier lui-même (télémat de son compte FFE). Non testé sur iPhone.
 **Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-696.
+
+## Build 697 — 07/10 — Ajouter un résultat à son nom : bouton sur le profil + bouton sur la page Performances
+**Demande** : « un bouton sur le profil et un sur la page performances du cavalier » pour ajouter des résultats propres à chaque cavalière ; puis « adapte les couleurs aussi ».
+**Changements** :
+- Nouveau composant `HypeAjoutResultatCavaliere` (fenêtre plein écran, palette pétrole/champagne) : concours (obligatoire), épreuve (facultatif), année, classement (1er / 2e / 3e / Classé), cheval = un de SES chevaux (liste `chevaux` du compte) ou « autre cheval » avec nom libre. Écrit dans `resultats` : user_id, concours, epreuve, annee, classement, cavalier (son nom FFE relié, sinon son pseudo), cavalier_id = elle, cheval_id ou cheval_nom. Si la base refuse `cavalier_id`/`cheval_nom`/`annee`, repli sans ces colonnes ; sans `cavalier_id`, rattachement par `hype_relier_mon_nom_ffe(son nom FFE)` si son nom est relié, sinon message « apparaîtra une fois ton nom FFE relié ». Le texte de la fenêtre est traduit en 7 langues.
+- Page Cavalier, bloc « Derniers résultats » (`BlocResultatsCavaliere`, sur SA page seulement) : bouton « + Ajouter » à côté de « Choisir » / « Voir tout » ; la liste se recharge après l'ajout.
+- Page Performances (`EcranResultatsCavaliere`, sur SA page seulement) : bouton « + Ajouter un résultat » (champagne, contour fin) au-dessus du bloc vidéo/import ; la page se recharge après l'ajout (`rechargeRes`).
+- Couleurs : le bloc vidéo/import de la page Performances passe du cyan au pétrole (#5C8792 / #8FB3BD) ; la nouvelle fenêtre est entièrement pétrole/champagne.
+**Conséquences / non vérifié** : pas d'anti-doublon à la saisie (deux fois le même concours = deux lignes) ; le droit d'écriture de `cavalier_id` par la cavalière dépend des règles RLS (repli prévu) ; `resultats.cheval_nom` et `annee` supposées présentes (repli sinon). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-697.
+
+## Build 698 — 07/10 — Anti-doublon à la saisie « Ajouter un résultat » (cavalière)
+**Demande** : « Anti doublon ? » (limite signalée au 697).
+**Changement** : dans `HypeAjoutResultatCavaliere`, avant l'écriture : lecture des résultats à son nom (cavalier_id ou user_id = elle) ; si même concours (texte normalisé), même année (si connue des deux côtés) et même épreuve (si renseignée des deux côtés) → fenêtre « Tu as déjà un résultat sur « X » (année) · épreuve · classement. L'ajouter quand même ? » (7 langues) ; Annuler = rien écrit. Une erreur de lecture ne bloque pas l'ajout.
+**Non couvert** : un résultat saisi à la main n'a pas de date précise, il n'est donc pas reconnu comme doublon d'un import FFE du même concours (l'import a sa propre clé date+épreuve+concours+cavalière+cheval). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-698.
+
+## Build 699 — 07/10 — Badge d'équipe : « Team CSO Club SEP »
+**Demande** : « On mets Team CSO Club SEP » (libellé du badge à côté du pseudo sur la page Cavalier, build 684).
+**Changement** : le libellé non-coach passe de « CSO Club » à « Team CSO Club SEP » (nom propre, non traduit). « Coach » inchangé, ainsi que le lien vers la page Team Compétition.
+**Conséquence** : le badge est plus long (9,5 px, majuscules, sans retour à la ligne, ne se rétrécit pas) : sur un petit écran ou un long pseudo il peut pousser ou serrer le pseudo — à vérifier. Non testé sur iPhone.
+**Note du jour** : une livraison « 698 » partie trop tôt (anti-doublon pas encore appliqué, index encore en 697) a été remplacée dans la minute par la bonne ; seule la dernière livraison compte.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-699.
+
+## Build 700 — 07/10 — « Mes résultats de concours » : la cavalière relie son nom FFE toute seule
+**Demande** : « Ok mais ce serait bien d'ajouter un bouton sur la page Mon compte où un cavalier puisse revendiquer son nom FFE ». La tuile « Mes résultats de concours » (Mon compte → écran `mes-resultats-ffe`) existait déjà depuis le 113/114 ; elle est conservée comme porte d'entrée.
+**Changements (EcranMesResultatsFFE)** : le geste « C'est moi » appelle désormais `hype_relier_mon_nom_ffe(nom)` (SQL du 696) : le nom est relié TOUT DE SUITE et ses résultats rattachés (message « X est relié à ton compte — N résultat(s) rattaché(s) »), au lieu de `hype_revendiquer_cavalier` (demande en attente de modératrice). Texte de confirmation adapté (« ces N résultats seront reliés à ton compte tout de suite »). Refus traduits en 7 langues : nom déjà relié à un autre compte (`deja_pris`), compte déjà relié à un nom (`trop_de_noms`). Couleurs : cyan/or vif → pétrole (#8FB3BD, bordure rgba(92,135,146)) et champagne (#C5AA78). Les demandes déjà « en attente » restent affichées comme avant ; la porte modératrice « Relier les résultats FFE » est inchangée (sans limite).
+**Conséquences / non vérifié** : plus de validation par une modératrice sur ce chemin : une cavalière peut relier un nom libre qui n'est pas le sien (garde-fous : confirmation, nom libre seulement, 1 nom par compte, modératrice peut corriger). Dépend du SQL 696 (déjà passé). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-700.
+
+## Build 701 — 07/10 — Page Cavalier : ajouter un résultat officiel (choix + raccourci)
+**Demande** : « je vois la fenêtre pour ajouter un résultat à la main mais je ne vois pas où ajouter un résultat officiel » → option C (les deux).
+**Changements (BlocResultatsCavaliere, sur SA page seulement)** : « + Ajouter » ouvre d'abord un choix « Résultats officiels FFE » / « À la main » / Annuler (7 langues) ; « À la main » ouvre la fenêtre existante ; « Résultats officiels FFE » lance le même import cavalière que sur la page Performances (confirmation du nom FFE, lignes réparties par cheval ; « Fermer » ramène à ses résultats). Raccourci permanent « Importer mes résultats officiels → » sous la liste « Derniers résultats ».
+**Conséquences / non vérifié** : pas testé sur iPhone ; le bouton « Revenir à sa fiche » de l'import garde son libellé en mode cavalière (à renommer sur « Ok »).
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-701.
+
+## Build 702 — 07/10 — Team Compétition : deux lignes de portraits (cavalières et chevaux)
+**Demande** : « sur la Team Compétition on peut autoriser deux lignes pour les cavalières et les chevaux ? »
+**Changement** : « Nos cavalières » et « Nos chevaux » montrent jusqu'à 8 portraits (2 lignes de 4) au lieu de 4 ; « Voir tout » n'apparaît qu'au-delà de 8 (même réglage pour les deux).
+**Conséquences / non vérifié** : la page est plus haute quand il y a plus de 4 membres ou chevaux ; pas de changement s'il y en a 4 ou moins. Pas testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-702.
+
+## Build 703 — 07/10 — Page « Performances des chevaux » (Team Compétition)
+**Demande** : brief + maquette : classement dynamique des chevaux de la Team Compétition (rang, photo, nom, total de points), podium 1-2-3 puis liste 4 et suivants, sans « dernier résultat », saison réellement recalculée, rien en dur.
+**Changements (index.html)** : nouveau composant `EcranPerformancesChevaux` (route `performances-chevaux`) ; lien « Performances des chevaux › » sous « Nos chevaux » sur la page Team Compétition. Chevaux = groupe « Team Compétition » de la SEP (`groupes_chevaux`, hors chevaux supprimés) ; points = somme de `resultats.points` par `cheval_id` pour la saison choisie (1er sept → 31 août, sur `date_epreuve`) ; tri points décroissants ; saisons proposées : courante + 2 précédentes ; hero provisoire = `images/TEAM_COMPETITION.webp` ; « Comprendre le barème » et « i » affichent « arrive bientôt » (pas de page barème existante). Textes en 7 langues. Aucun SQL, aucune écriture.
+**Points à trancher / limites** : (1) égalités : aucune règle existante → ordre alphabétique provisoire (beaucoup de chevaux sont à 0 point tant que les télémats n'ont pas été réimportés) ; (2) un résultat sans date n'entre dans aucune saison ; (3) points non renseignés = 0 ; (4) pas de page barème ; (5) image hero dédiée non reçue ; (6) pas de « archives » dans le sélecteur ; (7) podium : nom au-dessus des points (cartes trop étroites pour les mettre côte à côte). Non testé sur iPhone.
+**Vérifs** : marqueurs 9/2/3/7, 18 blocs node --check OK, 1 meta hype-build 20261007-703, test simulé du classement (filtre saison + tri OK), aucune mention « Dernier résultat » dans la page.
