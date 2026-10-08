@@ -9901,3 +9901,33 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non touché : `EcranCheval`, fiche V2, tout le reste du fichier (vérifié : seules différences = cette condition et le marqueur). Aucun SQL, aucune image, aucun nouveau texte.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
 - Checks : marqueur unique 20261008-759, marqueurs de garde présents (liensClub, chevalCommunDemoData, palmTech, EcranSanteCheval), node --check 18 blocs OK.
+
+## Build 2a (SQL) — 9 oct. 2026 — Référencement : adresses remplies
+- Passé en base par Blandine (`sql-build2a-remplir-slugs.sql`) : les 42 chevaux NON supprimés ont reçu leur adresse (minuscules, sans accents, tirets ; aucun doublon). Les 4 fiches supprimées n'en reçoivent PAS (décision de Blandine : « s'ils sont refaits ça leur donnera une adresse »). « madgeek » est un vrai cheval (confirmé). `chevaux.nom` non touché.
+- Contrôle passé : 42 avec adresse, 0 vivant sans adresse, 0 supprimé avec adresse.
+
+## Build 2b (SQL) — 9 oct. 2026 — Référencement : règle automatique des adresses
+- Passé en base (`sql-build2b-regle-auto-slug.sql`) : fonction `hype_cheval_slug_auto()` + déclencheur `chevaux_slug_auto` (avant création et modification) sur `chevaux`. Nouveau cheval vivant → adresse fabriquée (suffixe -2, -3… si le nom est pris) ; fiche restaurée sans adresse → en reçoit une ; adresse posée = définitive (renommage ou tentative d'effacer/modifier → l'ancienne est remise, sans erreur) ; fiche supprimée → rien. `unaccent` est dans le schéma `public`.
+- Testé avant livraison sur une base PostgreSQL locale (1, 2a, 2b, relance du 2b, restauration, effacement bloqué), puis en base par un test sans trace qui finit volontairement en erreur « TEST OK … apy-de-reve-2 / apres renommage : apy-de-reve-2 » (premier essai refusé : `user_id` obligatoire dans `chevaux`, corrigé dans le test). Vérifié ensuite : un seul « Apy de rêve » en base, rien n'est resté.
+- ⚠️ Pour changer un jour l'adresse d'un cheval, il faudra une commande spéciale (la règle bloque toute modification).
+
+## Test sans compte — 9 oct. 2026 — RÉUSSI
+- `https://2hype.fr/#cheval-4462edac-8c8a-4ad6-817c-58b3ec0c5161` (Rizotto d'Emery) ouvert en navigation privée, sans compte : fiche complète affichée (photo, nom, badge, origines, accès Histoire / Performances 189 rés. / Santé / Photos / Vidéos / Actualité, présentation). Aucun build de réparation nécessaire avant la route /cheval/.
+- Note pour le build Open Graph : la photo principale de Rizotto montre aussi sa cavalière de face — décider à ce moment-là quelle photo sert d'aperçu (pas de nom de cavalière côté Google, la question du visage reste à trancher).
+
+## Build 3b — ANNULÉ (rien à corriger)
+- Les 6 liens `href="#"` de la page Premium (`PV5_TPL`) se terminent DÉJÀ tous par `return false` : aucun rechargement possible, même avec `<base href="/">`. Erreur de l'audit du 08/10 (ligne lue tronquée), signalée à Blandine. Aucune modification.
+
+## Build 760 — 9 oct. 2026 — Référencement, build 3c : les liens de partage partent toujours de la racine
+- Demande : « Ok continue » — étape 3c du chantier (le 3b n'ayant rien à corriger).
+- Changement (4 lignes) : les liens fabriqués à partir de `location.pathname` (l'adresse de la page en cours) partent maintenant explicitement de la racine `/` :
+  - liens de partage par familles (#g=, #b=, #c=, #a=, #v=, #u=, #e=…) : `base + "/#" + famille + "=" + valeur` ;
+  - lien d'un rendez-vous : `location.origin + "/#r=" + id` ;
+  - lien d'invitation à un album : `location.origin + "/" + "#album-invite=" + jeton` ;
+  - partage d'une fiche cheval (menu de la fiche) : `location.origin + "/#cheval-" + id`.
+- Effet aujourd'hui : AUCUN. Depuis 2hype.fr, l'adresse de la page est « / », donc les liens produits sont exactement les mêmes qu'avant. La différence ne jouera que sur les futures pages /cheval/… (sinon les liens auraient été « 2hype.fr/cheval/xxx#r=… », faux).
+- Les 6 autres lectures de `location.pathname` sont laissées telles quelles (rechargements et nettoyage de paramètres : corrects aussi sur /cheval/ ; LIEN_APP prioritaire pour la dernière).
+- Non touché : tout le reste du fichier (vérifié : seules différences = ces 4 lignes et le marqueur). Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Tests iPhone conseillés : partager un rendez-vous, une invitation d'album, une fiche cheval (menu ⋯ de la fiche) → chaque lien doit s'ouvrir normalement.
+- Checks : marqueur unique 20261009-760, marqueurs de garde présents, node --check 18 blocs OK.
