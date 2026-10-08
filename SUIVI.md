@@ -9879,3 +9879,25 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non touché : `EcranCheval`, tout le fichier hors `EcranChevalV2` (vérifié identique à la 757). Aucun SQL, aucune image ajoutée, un seul mot nouveau (« sur ») traduit en 7 langues.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
 - Non vérifié : test iPhone. Checks : marqueur unique 20261008-758, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Chantier RÉFÉRENCEMENT GOOGLE des fiches chevaux — décisions et état au 8 oct. 2026
+- Objectif : chaque cheval a une adresse publique `https://2hype.fr/cheval/<adresse>` qui ouvre la fiche « cheval » normale dans Hype (pas EcranChevalCommun), l'adresse restant affichée dans la barre. Google y lira ensuite titre, description, photo et résultats (builds suivants).
+- Décisions de Blandine : TOUS les chevaux (pas seulement la Team) ; visible sur Google si non supprimé, `visibilite` différent de 'prive' (colonne déjà en base, défaut 'public', aucun écran ne la modifie aujourd'hui) et au moins une photo ou un résultat visible → 35 chevaux sur 46 ; aucun nom de cavalier ou cavalière dans ce que lit Google ; résultats montrés : `visible = true` et `masque_cavaliere` différent de true ; adresse tirée du nom officiel, jamais modifiée ensuite (`chevaux.nom` n'est JAMAIS touché, clé FFE) ; programme Netlify (edge function) qui ne lit que le début d'index.html ; `<base href="/">` ajouté UNIQUEMENT sur les pages /cheval/ (plutôt que convertir des centaines de chemins) ; 404 pour une adresse inconnue ou un cheval non visible, 503 si la base ne répond pas ; bouton « Masquer de Google » et bandeau « Rejoins Hype » plus tard.
+- Diagnostic en base (lecture seule) : lecture de `chevaux` et `resultats` ouverte à tout le monde (policies « true » + droits anon) — la page publique pourra lire avec la clé publique ; dette signalée, hors chantier : tous les résultats, noms complets des cavaliers compris, sont lisibles par l'API publique ; policies en double sur `chevaux`.
+- Constaté en passant, non traité : index.html charge 12 fichiers hype-images-*.js absents du dépôt (26, 27, 62, 63, 64, 66, 73, 74, 89, 102, 103, 112).
+- Ordre des builds validé : 1 colonne → 2a remplissage → 2b règles automatiques → [test sans compte] → 3a routeur → 3b liens Premium → 3c liens de partage → 3d bouton Partager du palmarès → 3e fonction Netlify → puis titre/description, aperçus, texte, sitemap, cache, liens Performances, partage par adresse.
+
+## Build 1 (SQL) — 8 oct. 2026 — Référencement : colonne `chevaux.slug`
+- Passé en base par Blandine (`sql-build1-slug-chevaux.sql`) : colonne `slug` (texte, vide), index unique `chevaux_slug_unique`, contrainte de format `chevaux_slug_format` (minuscules, chiffres, tirets, 120 caractères max). Aucun remplissage, aucune règle automatique.
+- Contrôle passé : 46 chevaux, 0 adresse, index présent, contrainte présente.
+- Aperçu des adresses du Build 2a (lecture seule) : 46 adresses proposées, AUCUN doublon. Remarques : 4 anciennes fiches supprimées ont un nom proche d'une fiche vivante (Cooltax de Virchel z / Cooltax, Elfe / Elfe de Feinn, Daphné / Daphne velleda, Elle m'a dit / Elle m'a dit circee) ; « madgeek » ressemble à un cheval de test — à confirmer par Blandine avant le remplissage.
+
+## Build 759 — 8 oct. 2026 — Référencement, build 3a : le routeur reconnaît la future route /cheval/<adresse>
+- Demande : « Ok tu peux coder » — étape 3a du chantier référencement (routeur seul).
+- Changement (une condition dans `CIBLE_DIRECTE`, juste après la lecture du hash) : s'il n'y a AUCUN hash et que `window.__HYPE_ROUTE_CHEVAL` contient un identifiant de forme uuid, on pose `window.__chevalOuvert` sur cet identifiant et l'écran de départ est « cheval ». Un hash existant garde toujours la priorité ; une valeur mal formée est ignorée.
+- Effet aujourd'hui : AUCUN. `__HYPE_ROUTE_CHEVAL` n'existe nulle part tant que la fonction Netlify (build 3e) n'est pas en ligne : démarrage et liens historiques strictement inchangés.
+- Vérifié hors appli sur le code de l'aiguillage : sans rien → comportement d'avant ; route seule → fiche cheval du bon identifiant ; route + hash → le hash gagne ; valeur invalide → ignorée ; #cheval-… et #r=… → inchangés.
+- ⚠️ Écart signalé : le test « fiche ouverte sans compte » (navigation privée, lien Partager d'une fiche) devait être fait AVANT les builds 3. Ce build étant inerte, il peut être poussé avant ; le test reste OBLIGATOIRE avant le build 3e.
+- Non touché : `EcranCheval`, fiche V2, tout le reste du fichier (vérifié : seules différences = cette condition et le marqueur). Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Checks : marqueur unique 20261008-759, marqueurs de garde présents (liensClub, chevalCommunDemoData, palmTech, EcranSanteCheval), node --check 18 blocs OK.
