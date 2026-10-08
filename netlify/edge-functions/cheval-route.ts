@@ -1,5 +1,5 @@
 /* ============================================================================
-   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, builds 3e, 4, 5 et 6)
+   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, builds 3e, 4, 5, 6 et 9A)
    L'ADRESSE PUBLIQUE D'UN CHEVAL : https://2hype.fr/cheval/<adresse>
 
    CE QUE FAIT CE FICHIER (et RIEN d'autre)
@@ -23,8 +23,10 @@
      <title>      « Nom – Race | Hype » (ou « Nom – Profil cheval | Hype » sans race),
                   qui REMPLACE le <title>Hype</title> d'origine (un seul titre) ;
      description  phrase faite UNIQUEMENT de vraies données : nom, race, année
-                  de naissance (origines officielles), écurie, nombre de résultats
-                  visibles ; aucun nom de cavalier ;
+                  de naissance (origines officielles), écurie, puis ce que la fiche
+                  contient (profil, photos, origines, résultats) ; aucun nom de
+                  cavalier. Build 9A (09/10) : PLUS AUCUN NOMBRE de résultats (il
+                  pouvait différer du compteur de la fiche, qui suit sa propre règle) ;
      canonical    https://2hype.fr/cheval/<adresse> (toujours 2hype.fr, même
                   ouvert depuis 2hype.netlify.app).
 
@@ -146,9 +148,14 @@ function infosSeo(cheval: any, nbResultats: number, slug: string) {
   if (annee) phrase += " (" + annee + ")";
   if (club) phrase += " — " + club;
   phrase += ". ";
-  phrase += nbResultats > 0
-    ? "Profil, photos et " + nbResultats + " résultat" + (nbResultats > 1 ? "s" : "") + " en concours sur Hype."
-    : "Profil et photos sur Hype.";
+  // Build 9A : ce que contient la fiche, SANS chiffre, seulement ce qui existe vraiment.
+  const contenu = ["Profil"];
+  if (propre(cheval.photo_url)) contenu.push("photos");
+  if (origines && (propre(origines.pere) || propre(origines.mere))) contenu.push("origines");
+  if (nbResultats > 0) contenu.push("résultats en concours");
+  const liste = contenu.length === 1 ? contenu[0]
+    : contenu.slice(0, -1).join(", ") + " et " + contenu[contenu.length - 1];
+  phrase += liste + " sur Hype.";
 
   return { titre, description: phrase, canonical: DOMAINE + "/cheval/" + slug, image: imageApercu(cheval.photo_url), nom };
 }
@@ -185,7 +192,7 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[]): string {
   if (propre(og.pere) || propre(og.mere)) html += `<p>Origines : ${texte(og.pere) || "?"} × ${texte(og.mere) || "?"}</p>`;
   if (club && club !== "__perso__") html += `<p>Écurie : ${texte(club)}</p>`;
   if (nbResultats > 0) {
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Résultats en concours (${nbResultats})</h2><ul style="padding-left:18px;margin:0">`;
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Résultats en concours</h2><ul style="padding-left:18px;margin:0">`;
     for (const r of resultats) {
       const morceaux = [dateFr(r.date_epreuve, r.annee), texte(r.concours), texte(r.epreuve)].filter(Boolean);
       const cl = rang(r.place, r.classement);
@@ -197,7 +204,7 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[]): string {
       if (morceaux.length) html += `<li>${morceaux.join(" — ")}</li>`;
     }
     html += `</ul>`;
-    if (nbResultats > resultats.length) html += `<p>… et ${nbResultats - resultats.length} autres résultats sur Hype.</p>`;
+    if (nbResultats > resultats.length) html += `<p>… et d’autres résultats sur Hype.</p>`;   // build 9A : sans nombre
   }
   html += `</main>`;
   return html;
