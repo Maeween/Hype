@@ -1,0 +1,9 @@
+# Hype — robots.txt (référencement, build 7 — 09/10/2026)
+# Tout le site reste explorable (y compris les fichiers dont la page a besoin
+# pour s'afficher). Les pages de test (apercu-*.html, DEV_*.html) ne sont PAS
+# bloquées ici : elles recevront un « noindex » (build 8), que Google ne
+# pourrait pas lire s'il était empêché d'y entrer.
+User-agent: *
+Allow: /
+
+Sitemap: https://2hype.fr/sitemap.xml
