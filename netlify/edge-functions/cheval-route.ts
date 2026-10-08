@@ -1,5 +1,5 @@
 /* ============================================================================
-   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e)
+   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e + build 4)
    L'ADRESSE PUBLIQUE D'UN CHEVAL : https://2hype.fr/cheval/<adresse>
 
    CE QUE FAIT CE FICHIER (et RIEN d'autre)
@@ -19,8 +19,17 @@
         cheval (aiguillage ajouté au build 759).
       L'adresse /cheval/<adresse> RESTE affichée dans la barre.
 
-   CE QU'IL NE FAIT PAS (builds suivants) : aucun titre, aucune description,
-   aucun aperçu WhatsApp, aucun texte pour Google, aucun cache.
+   BUILD 4 (09/10) — CE QUE GOOGLE LIT EN HAUT DE LA PAGE :
+     <title>      « Nom – Race | Hype » (ou « Nom – Profil cheval | Hype » sans race),
+                  qui REMPLACE le <title>Hype</title> d'origine (un seul titre) ;
+     description  phrase faite UNIQUEMENT de vraies données : nom, race, année
+                  de naissance (origines officielles), écurie, nombre de résultats
+                  visibles ; aucun nom de cavalier ;
+     canonical    https://2hype.fr/cheval/<adresse> (toujours 2hype.fr, même
+                  ouvert depuis 2hype.netlify.app).
+
+   CE QU'IL NE FAIT PAS (builds suivants) : aucun aperçu WhatsApp (Open Graph),
+   aucun texte pour Google dans la page, aucun cache.
 
    ⚠️ LE GROS FICHIER N'EST PAS RELU : on ne lit que le début de la page
    (jusqu'à <head>, vers 200 Ko), on ajoute la ligne, et tout le reste
@@ -35,6 +44,8 @@ const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const FORME_ADRESSE = /^\/cheval\/([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
+const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");   // build 4 : remplacé par le titre du cheval
+const DOMAINE = "https://2hype.fr";
 const LECTURE_MAX = 2 * 1024 * 1024;   // si le repère n'est pas dans les 2 premiers Mo : on s'arrête
 const DELAI_BASE_MS = 2500;
 
@@ -77,6 +88,36 @@ const PAGE_503 = () => pageSimple(503, [
   ["ar", "هايب غير متاح مؤقتًا. حاول مرة أخرى بعد قليل."],
 ], "Hype");
 
+/* ---------- Build 4 : titre, description, canonical ---------- */
+function echapper(t: string): string {
+  return String(t || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+function propre(t: unknown): string { return String(t == null ? "" : t).replace(/\s+/g, " ").trim(); }
+
+function infosSeo(cheval: any, nbResultats: number, slug: string) {
+  const nom = propre(cheval.nom) || "Cheval";
+  const race = propre(cheval.race);
+  let origines: any = cheval.origines;
+  try { if (typeof origines === "string") origines = JSON.parse(origines); } catch { origines = null; }
+  const mAn = String((origines && origines.naissance) || "").match(/^(\d{4})/);
+  const annee = mAn ? mAn[1] : "";
+  const clubBrut = propre(cheval.club) || propre(cheval.ecurie);
+  const club = (clubBrut && clubBrut !== "__perso__") ? clubBrut : "";
+
+  const titre = nom + " – " + (race || "Profil cheval") + " | Hype";
+
+  let phrase = nom;
+  if (race) phrase += ", " + race;
+  if (annee) phrase += " (" + annee + ")";
+  if (club) phrase += " — " + club;
+  phrase += ". ";
+  phrase += nbResultats > 0
+    ? "Profil, photos et " + nbResultats + " résultat" + (nbResultats > 1 ? "s" : "") + " en concours sur Hype."
+    : "Profil et photos sur Hype.";
+
+  return { titre, description: phrase, canonical: DOMAINE + "/cheval/" + slug };
+}
+
 /* ---------- Lecture Supabase (clé publique) ---------- */
 async function lire(chemin: string, signal: AbortSignal): Promise<any[]> {
   const r = await fetch(SUPABASE_URL + "/rest/v1/" + chemin, {
@@ -85,6 +126,20 @@ async function lire(chemin: string, signal: AbortSignal): Promise<any[]> {
   });
   if (!r.ok) throw new Error("supabase-http-" + r.status);
   return await r.json();
+}
+
+/* Nombre exact de résultats visibles (en-tête Content-Range « 0-0/189 »). */
+async function compterResultats(chevalId: string, signal: AbortSignal): Promise<number> {
+  const r = await fetch(SUPABASE_URL + "/rest/v1/resultats?cheval_id=eq." + encodeURIComponent(chevalId) +
+    "&visible=is.true&masque_cavaliere=not.is.true&select=id", {
+    headers: { apikey: CLE, Authorization: "Bearer " + CLE, Prefer: "count=exact", Range: "0-0" },
+    signal,
+  });
+  if (!r.ok && r.status !== 206 && r.status !== 416) throw new Error("supabase-http-" + r.status);
+  try { await r.body?.cancel(); } catch { /* rien */ }
+  const total = (r.headers.get("content-range") || "").split("/")[1];
+  const n = parseInt(total || "0", 10);
+  return isFinite(n) && n > 0 ? n : 0;
 }
 
 /* ---------- Recherche d'une suite d'octets ---------- */
@@ -107,29 +162,46 @@ function coller(a: Uint8Array, b: Uint8Array): Uint8Array {
 }
 
 /* ---------- La page Hype avec la ligne ajoutée, en flux ---------- */
-async function pageAvecRoute(source: Response, uuid: string): Promise<Response | null> {
+async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string }): Promise<Response | null> {
   if (!source.body) return null;
-  const ajout = new TextEncoder().encode(
-    `<base href="/"><script>window.__HYPE_ROUTE_CHEVAL=${JSON.stringify(uuid)};</script>`);
+  const enc = new TextEncoder();
+  const ajout = enc.encode(
+    `<base href="/"><script>window.__HYPE_ROUTE_CHEVAL=${JSON.stringify(uuid)};</script>` +
+    `<meta name="description" content="${echapper(seo.description)}">` +
+    `<link rel="canonical" href="${echapper(seo.canonical)}">`);
+  const nouveauTitre = enc.encode(`<title>${echapper(seo.titre)}</title>`);
   const lecteur = source.body.getReader();
 
-  // 1. On lit seulement jusqu'au repère <head><meta charset="utf-8">.
+  // 1. On lit seulement le début : jusqu'au repère <head><meta charset="utf-8">,
+  //    puis jusqu'au <title>Hype</title> qui le suit de quelques centaines d'octets.
   let debut = new Uint8Array(0);
-  let pos = -1;
-  while (pos < 0) {
+  let pos = -1, posTitre = -1;
+  while (pos < 0 || posTitre < 0) {
     const { value, done } = await lecteur.read();
     if (done) break;
-    // on ne recherche que dans la zone neuve (+ chevauchement de la taille du repère)
     const depart = Math.max(0, debut.length - REPERE.length);
     debut = coller(debut, value);
-    const p = chercher(debut.subarray(depart), REPERE);
-    if (p >= 0) pos = depart + p;
-    else if (debut.length > LECTURE_MAX) break;
+    if (pos < 0) { const p = chercher(debut.subarray(depart), REPERE); if (p >= 0) pos = depart + p; }
+    if (pos >= 0 && posTitre < 0) {
+      const dT = Math.max(pos, debut.length - value.length - REPERE_TITRE.length);
+      const pT = chercher(debut.subarray(dT), REPERE_TITRE);
+      if (pT >= 0) posTitre = dT + pT;
+    }
+    if (debut.length > LECTURE_MAX) break;
   }
   if (pos < 0) { try { lecteur.cancel(); } catch { /* rien */ } return null; }
 
   const coupe = pos + REPERE.length;
-  const tete = coller(coller(debut.subarray(0, coupe), ajout), debut.subarray(coupe));
+  let tete: Uint8Array;
+  if (posTitre > coupe) {
+    // un seul <title> : celui du cheval remplace « Hype »
+    tete = coller(coller(coller(coller(debut.subarray(0, coupe), ajout), debut.subarray(coupe, posTitre)), nouveauTitre),
+      debut.subarray(posTitre + REPERE_TITRE.length));
+  } else {
+    // <title>Hype</title> introuvable (index.html modifié ?) : la page marche quand même, sans titre de cheval
+    console.log("[cheval-route] <title>Hype</title> introuvable : titre non remplacé");
+    tete = coller(coller(debut.subarray(0, coupe), ajout), debut.subarray(coupe));
+  }
 
   // 2. Le reste du fichier part tel quel, sans être lu ni modifié.
   const flux = new ReadableStream<Uint8Array>({
@@ -163,19 +235,17 @@ export default async (request: Request, _context: Context) => {
   const stop = setTimeout(() => minuteur.abort(), DELAI_BASE_MS);
   let cheval: any = null;
   let aUnResultat = false;
+  let nbResultats = 0;
   try {
     const lignes = await lire(
-      "chevaux?slug=eq." + encodeURIComponent(slug) + "&select=id,supprime_le,visibilite,photo_url&limit=1",
+      "chevaux?slug=eq." + encodeURIComponent(slug) +
+      "&select=id,nom,race,club,ecurie,origines,supprime_le,visibilite,photo_url&limit=1",
       minuteur.signal,
     );
     cheval = lignes && lignes[0];
-    if (cheval && !String(cheval.photo_url || "").trim()) {
-      const res = await lire(
-        "resultats?cheval_id=eq." + encodeURIComponent(cheval.id) +
-        "&visible=is.true&masque_cavaliere=not.is.true&select=id&limit=1",
-        minuteur.signal,
-      );
-      aUnResultat = Array.isArray(res) && res.length > 0;
+    if (cheval && FORME_UUID.test(String(cheval.id || ""))) {
+      nbResultats = await compterResultats(String(cheval.id), minuteur.signal);
+      aUnResultat = nbResultats > 0;
     }
   } catch (e) {
     console.log("[cheval-route] base injoignable :", String(e));
@@ -195,7 +265,7 @@ export default async (request: Request, _context: Context) => {
   try {
     const source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } });
     if (!source.ok) { console.log("[cheval-route] index.html http", source.status); return PAGE_503(); }
-    const page = await pageAvecRoute(source, String(cheval.id));
+    const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug));
     if (!page) { console.log("[cheval-route] repère <head> introuvable"); return PAGE_503(); }
     if (request.method === "HEAD") { try { await page.body?.cancel(); } catch { /* rien */ } return new Response(null, { status: 200, headers: page.headers }); }
     return page;
