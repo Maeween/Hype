@@ -9931,3 +9931,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
 - Tests iPhone conseillés : partager un rendez-vous, une invitation d'album, une fiche cheval (menu ⋯ de la fiche) → chaque lien doit s'ouvrir normalement.
 - Checks : marqueur unique 20261009-760, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 761 — 9 oct. 2026 — Référencement, build 3d : le bouton Partager du bandeau palmarès partage le cheval affiché
+- Demande : « Ok continue » — étape 3d du chantier référencement.
+- Changement (1 ligne, dans `EcranCheval`) : le bouton rond « Partager » posé sur le bandeau photo du palmarès envoyait l'adresse de la page en cours (`location.href`). Il envoie maintenant le lien du cheval réellement affiché : `https://2hype.fr/#cheval-<id>` (même identifiant que le bouton de partage du menu de la fiche, corrigé en 760).
+- Pourquoi : l'adresse en cours n'est pas forcément celle de ce cheval (accueil « 2hype.fr/ » quand on est arrivé par la navigation, ou l'adresse d'un AUTRE cheval ouvert avant) — défaut déjà présent aujourd'hui, et qui serait devenu fréquent avec les adresses /cheval/.
+- Visible : oui, en partageant depuis ce bouton → le lien reçu ouvre bien la fiche de ce cheval (avant, souvent juste l'accueil). Rien d'autre ne change.
+- ⚠️ Contient aussi le 760 (pas encore poussé au moment de cette livraison).
+- Non touché : tout le reste du fichier (vérifié : seules différences avec le 760 = cette ligne et le marqueur). Aucun SQL, aucune image, aucun nouveau texte. La fiche V2 n'a pas de bouton équivalent.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Checks : marqueur unique 20261009-761, marqueurs de garde présents, node --check 18 blocs OK.
