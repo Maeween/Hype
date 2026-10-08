@@ -9941,3 +9941,25 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non touché : tout le reste du fichier (vérifié : seules différences avec le 760 = cette ligne et le marqueur). Aucun SQL, aucune image, aucun nouveau texte. La fiche V2 n'a pas de bouton équivalent.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
 - Checks : marqueur unique 20261009-761, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Builds edge 3e → 9A + sitemap/robots/_headers — 9 oct. 2026 — Référencement (hors index.html, notés ici avec la livraison 762)
+- 3e : nouvelle fonction Netlify `netlify/edge-functions/cheval-route.ts` (route `/cheval/*`). Elle lit le cheval par son adresse (clé publique), vérifie qu'il peut être montré (pas supprimé, pas « prive », photo OU résultat visible et non masqué), sert la page Hype normale en flux (ne lit que le début, ~640 Ko) et y ajoute `<base href="/">` + `window.__HYPE_ROUTE_CHEVAL`. 404 (7 langues) si adresse inconnue ou cheval non montrable, 503 si la base ne répond pas. Validé en réel : `2hype.fr/cheval/rizotto-d-emery` ouvre la fiche.
+- 4 : titre « Nom – Race | Hype » (remplace le <title>Hype</title>), meta description, canonical `https://2hype.fr/cheval/<adresse>`.
+- 5 / 5b : aperçus WhatsApp / réseaux (og:*, twitter:*), photo = photo principale du cheval (choix de Blandine), repli `icon-512.png` (⚠️ `partage-apercu.jpg` utilisé par story.html n'existe pas sur le dépôt) ; 5b : année de naissance lue quelle que soit son écriture (JJ/MM/AAAA). Validé en réel dans WhatsApp.
+- 6 : bloc texte pour Google `<main id="seo-cheval">` dans `#root` (nom, race, sexe, robe, naissance, origines, écurie, 50 derniers résultats visibles), AUCUN nom de cavalier, ni naisseur, ni histoire ; remplacé par l'appli au démarrage.
+- 7 : `netlify/edge-functions/sitemap-chevaux.ts` (liste fabriquée depuis la base, même règle), `sitemap.xml` (sommaire), `robots.txt` (tout explorable + sitemap). Validé en ligne : 35 adresses. 7 chevaux vivants absents faute de photo principale et de résultat visible : Hey Baby Please, Delicada, Edgard, Fantomette de Feinn, Hola, madgeek, Verone.
+- 8 : `_headers` — `X-Robots-Tag: noindex` sur les 150 pages de test (apercu-, DEV_, preview, maquette-, index-…, lingo-*.html, hype-*.html…) ; restent visibles : index, lingo.html, story.html.
+- 9 (cache) : REPORTÉ (risque de pages anciennes, et verrou de mise à jour remis à zéro à chaque ouverture → boucle de rechargement possible ; chantier séparé : mémoriser le numéro de build attendu).
+- 9A : plus aucun nombre de résultats dans la description et le bloc texte (181 côté Google contre 189 sur la fiche) ; règles de comptage inchangées.
+
+## Build 762 — 9 oct. 2026 — Référencement, build 10 : vrais liens sur la page « Performances des chevaux »
+- Demande : brief « BUILD 10 » (relu avec ChatGPT) — cartes de la page Performances en vrais liens `<a href="/cheval/<adresse>">`, expérience identique.
+- Changements (uniquement `EcranPerformancesChevaux` + une ligne de `hypeClasserChevauxTeam`) :
+  - requête des chevaux de cette page : `select("id, nom, photo_url")` → `select("id, nom, photo_url, slug")` (l'autre requête identique, ailleurs, n'est pas touchée) ;
+  - `hypeClasserChevauxTeam` : champ additionnel `slug` (la fiche V2 qui l'utilise aussi l'ignore) ;
+  - podium (`carteTop`) et rangs 4+ (`ligne`) : `<a href="/cheval/<adresse>">` au lieu de `<button>` quand le cheval a une adresse ; sans adresse → le bouton d'origine, inchangé (jamais d'adresse fabriquée dans l'appli). Clic normal = ouverture interne comme avant (`preventDefault` + `ouvrirCheval`) ; Cmd/Ctrl/Maj/Alt + clic ou clic non principal = le navigateur suit le lien (nouvel onglet). Le lien reprend explicitement ce que le bouton recevait par défaut (bloc, `border-box`, interligne normal, pas de soulignement, marge nulle). Règles CSS globales `a` / `button` non touchées.
+- Vérifié dans un Chromium au format iPhone 13, avec une base simulée (5 chevaux, dont un sans adresse), ancienne et nouvelle version côte à côte : 0 pixel différent sur la capture, mêmes positions et tailles pour chaque carte et chacun de ses éléments, même police, couleurs, fonds, ombres, bordures ; liens présents (`<a href="/cheval/rizotto-d-emery" data-podium="1">`) ; clic normal → fiche du bon cheval, adresse inchangée ; Ctrl+clic → nouvel onglet sur `/cheval/dexter` sans navigation interne ; cheval sans adresse → bouton, ouverture interne OK ; aucune erreur.
+- À vérifier sur iPhone : appui long sur une carte → iOS propose maintenant le menu d'un lien (aperçu, ouvrir, copier) — nouveau comportement, normal pour un lien.
+- Non touché : edge functions, sitemap, robots, _headers, partage, navigation, page Team, autres cartes. Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Checks : marqueur unique 20261009-762, marqueurs de garde présents, node --check 18 blocs OK.
