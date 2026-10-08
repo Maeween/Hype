@@ -1,5 +1,5 @@
 /* ============================================================================
-   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e + build 4 + build 5, année corrigée)
+   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, builds 3e, 4, 5 et 6)
    L'ADRESSE PUBLIQUE D'UN CHEVAL : https://2hype.fr/cheval/<adresse>
 
    CE QUE FAIT CE FICHIER (et RIEN d'autre)
@@ -36,8 +36,17 @@
      ex. data:) → l'icône Hype icon-512.png (⚠️ partage-apercu.jpg, utilisé par
      story.html, n'existe PAS sur le dépôt : non utilisé ici).
 
-   CE QU'IL NE FAIT PAS (builds suivants) : aucun texte pour Google dans la
-   page, aucun cache.
+   BUILD 6 (09/10) — LE TEXTE QUE GOOGLE LIT DANS LA PAGE :
+     un bloc <main id="seo-cheval"> glissé DANS <div id="root"> : nom (h1),
+     surnom, race, sexe, robe, naissance, père × mère, écurie, puis les
+     résultats visibles (50 plus récents : date, concours, épreuve, classement,
+     partants, mention). AUCUN nom de cavalier ; ni naisseur, ni histoire
+     (textes libres qui peuvent contenir des noms de personnes).
+     L'appli, en démarrant, REMPLACE ce bloc par la vraie fiche (createRoot) :
+     c'est la même information, en texte simple. Pendant le chargement, le bloc
+     est placé sous l'écran « Hype — chargement… » (rien ne change à l'œil).
+
+   CE QU'IL NE FAIT PAS (builds suivants) : sitemap, robots.txt, cache.
 
    ⚠️ LE GROS FICHIER N'EST PAS RELU : on ne lit que le début de la page
    (jusqu'à <head>, vers 200 Ko), on ajoute la ligne, et tout le reste
@@ -53,6 +62,8 @@ const FORME_ADRESSE = /^\/cheval\/([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");   // build 4 : remplacé par le titre du cheval
+const REPERE_RACINE = new TextEncoder().encode('<div id="root">');      // build 6 : le texte pour Google va juste après
+const NB_RESULTATS_TEXTE = 50;
 const DOMAINE = "https://2hype.fr";
 const LECTURE_MAX = 2 * 1024 * 1024;   // si le repère n'est pas dans les 2 premiers Mo : on s'arrête
 const DELAI_BASE_MS = 2500;
@@ -142,6 +153,56 @@ function infosSeo(cheval: any, nbResultats: number, slug: string) {
   return { titre, description: phrase, canonical: DOMAINE + "/cheval/" + slug, image: imageApercu(cheval.photo_url), nom };
 }
 
+/* ---------- Build 6 : le texte de la fiche pour Google ---------- */
+function texte(t: unknown): string { return echapper(propre(t)); }
+function dateFr(d: unknown, annee: unknown): string {
+  const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return m[3] + "/" + m[2] + "/" + m[1];
+  return propre(annee);
+}
+function rang(place: unknown, classement: unknown): string {
+  const n = parseInt(String(place == null ? "" : place), 10);
+  if (isFinite(n) && n > 0) return n === 1 ? "1er" : n + "e";
+  return propre(classement);
+}
+function blocTexte(cheval: any, nbResultats: number, resultats: any[]): string {
+  let og: any = cheval.origines;
+  try { if (typeof og === "string") og = JSON.parse(og); } catch { og = null; }
+  og = og || {};
+  const nom = propre(cheval.nom) || "Cheval";
+  const infos: string[] = [];
+  if (propre(cheval.race)) infos.push(texte(cheval.race));
+  if (propre(og.sexe)) infos.push(texte(og.sexe));
+  if (propre(og.robe)) infos.push(texte(og.robe));
+  const naiss = String(og.naissance || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (naiss) infos.push("né(e) le " + naiss[3] + "/" + naiss[2] + "/" + naiss[1]);
+  else if (propre(og.naissance)) infos.push("né(e) " + (/^\d{4}$/.test(propre(og.naissance)) ? "en " : "le ") + texte(og.naissance));
+  const club = (propre(cheval.club) || propre(cheval.ecurie));
+  let html = `<main id="seo-cheval" lang="fr" style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
+  if (propre(cheval.alias)) html += `<p>Surnom : ${texte(cheval.alias)}</p>`;
+  if (infos.length) html += `<p>${infos.join(" · ")}</p>`;
+  if (propre(og.pere) || propre(og.mere)) html += `<p>Origines : ${texte(og.pere) || "?"} × ${texte(og.mere) || "?"}</p>`;
+  if (club && club !== "__perso__") html += `<p>Écurie : ${texte(club)}</p>`;
+  if (nbResultats > 0) {
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Résultats en concours (${nbResultats})</h2><ul style="padding-left:18px;margin:0">`;
+    for (const r of resultats) {
+      const morceaux = [dateFr(r.date_epreuve, r.annee), texte(r.concours), texte(r.epreuve)].filter(Boolean);
+      const cl = rang(r.place, r.classement);
+      let fin = cl ? texte(cl) : "";
+      const pa = parseInt(String(r.partants == null ? "" : r.partants), 10);
+      if (fin && isFinite(pa) && pa > 0) fin += " sur " + pa + " partants";
+      if (propre(r.mention)) fin += (fin ? ", " : "") + (/^sf$/i.test(propre(r.mention)) ? "sans faute" : texte(r.mention));
+      if (fin) morceaux.push(fin);
+      if (morceaux.length) html += `<li>${morceaux.join(" — ")}</li>`;
+    }
+    html += `</ul>`;
+    if (nbResultats > resultats.length) html += `<p>… et ${nbResultats - resultats.length} autres résultats sur Hype.</p>`;
+  }
+  html += `</main>`;
+  return html;
+}
+
 /* ---------- Lecture Supabase (clé publique) ---------- */
 async function lire(chemin: string, signal: AbortSignal): Promise<any[]> {
   const r = await fetch(SUPABASE_URL + "/rest/v1/" + chemin, {
@@ -152,18 +213,22 @@ async function lire(chemin: string, signal: AbortSignal): Promise<any[]> {
   return await r.json();
 }
 
-/* Nombre exact de résultats visibles (en-tête Content-Range « 0-0/189 »). */
-async function compterResultats(chevalId: string, signal: AbortSignal): Promise<number> {
+/* Résultats visibles : le nombre exact (en-tête Content-Range « 0-49/181 ») et les
+   50 plus récents. Colonnes choisies : AUCUNE colonne de cavalier n'est demandée. */
+async function lireResultats(chevalId: string, signal: AbortSignal): Promise<{ n: number; lignes: any[] }> {
   const r = await fetch(SUPABASE_URL + "/rest/v1/resultats?cheval_id=eq." + encodeURIComponent(chevalId) +
-    "&visible=is.true&masque_cavaliere=not.is.true&select=id", {
-    headers: { apikey: CLE, Authorization: "Bearer " + CLE, Prefer: "count=exact", Range: "0-0" },
+    "&visible=is.true&masque_cavaliere=not.is.true" +
+    "&select=concours,epreuve,date_epreuve,annee,classement,place,partants,mention" +
+    "&order=date_epreuve.desc.nullslast,created_at.desc", {
+    headers: { apikey: CLE, Authorization: "Bearer " + CLE, Prefer: "count=exact", Range: "0-" + (NB_RESULTATS_TEXTE - 1) },
     signal,
   });
-  if (!r.ok && r.status !== 206 && r.status !== 416) throw new Error("supabase-http-" + r.status);
-  try { await r.body?.cancel(); } catch { /* rien */ }
+  if (r.status === 416) { try { await r.body?.cancel(); } catch { /* rien */ } return { n: 0, lignes: [] }; }
+  if (!r.ok) throw new Error("supabase-http-" + r.status);
+  const lignes = await r.json();
   const total = (r.headers.get("content-range") || "").split("/")[1];
   const n = parseInt(total || "0", 10);
-  return isFinite(n) && n > 0 ? n : 0;
+  return { n: isFinite(n) && n > 0 ? n : (Array.isArray(lignes) ? lignes.length : 0), lignes: Array.isArray(lignes) ? lignes : [] };
 }
 
 /* ---------- Recherche d'une suite d'octets ---------- */
@@ -186,7 +251,7 @@ function coller(a: Uint8Array, b: Uint8Array): Uint8Array {
 }
 
 /* ---------- La page Hype avec la ligne ajoutée, en flux ---------- */
-async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string; image: string; nom: string }): Promise<Response | null> {
+async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string; image: string; nom: string }, texteGoogle: string): Promise<Response | null> {
   if (!source.body) return null;
   const enc = new TextEncoder();
   const ajout = enc.encode(
@@ -209,36 +274,42 @@ async function pageAvecRoute(source: Response, uuid: string, seo: { titre: strin
   const nouveauTitre = enc.encode(`<title>${echapper(seo.titre)}</title>`);
   const lecteur = source.body.getReader();
 
-  // 1. On lit seulement le début : jusqu'au repère <head><meta charset="utf-8">,
-  //    puis jusqu'au <title>Hype</title> qui le suit de quelques centaines d'octets.
+  // 1. On lit seulement le début, jusqu'à <div id="root"> (vers 640 Ko sur 9,6 Mo) :
+  //    on y trouve <head><meta charset="utf-8">, <title>Hype</title> et <div id="root">.
   let debut = new Uint8Array(0);
-  let pos = -1, posTitre = -1;
-  while (pos < 0 || posTitre < 0) {
+  let posRacine = -1;
+  while (posRacine < 0) {
     const { value, done } = await lecteur.read();
     if (done) break;
-    const depart = Math.max(0, debut.length - REPERE.length);
+    const depart = Math.max(0, debut.length - REPERE_RACINE.length);
     debut = coller(debut, value);
-    if (pos < 0) { const p = chercher(debut.subarray(depart), REPERE); if (p >= 0) pos = depart + p; }
-    if (pos >= 0 && posTitre < 0) {
-      const dT = Math.max(pos, debut.length - value.length - REPERE_TITRE.length);
-      const pT = chercher(debut.subarray(dT), REPERE_TITRE);
-      if (pT >= 0) posTitre = dT + pT;
-    }
-    if (debut.length > LECTURE_MAX) break;
+    const p = chercher(debut.subarray(depart), REPERE_RACINE);
+    if (p >= 0) posRacine = depart + p;
+    else if (debut.length > LECTURE_MAX) break;
   }
+  const pos = chercher(debut, REPERE);
   if (pos < 0) { try { lecteur.cancel(); } catch { /* rien */ } return null; }
-
   const coupe = pos + REPERE.length;
-  let tete: Uint8Array;
-  if (posTitre > coupe) {
-    // un seul <title> : celui du cheval remplace « Hype »
-    tete = coller(coller(coller(coller(debut.subarray(0, coupe), ajout), debut.subarray(coupe, posTitre)), nouveauTitre),
-      debut.subarray(posTitre + REPERE_TITRE.length));
-  } else {
-    // <title>Hype</title> introuvable (index.html modifié ?) : la page marche quand même, sans titre de cheval
-    console.log("[cheval-route] <title>Hype</title> introuvable : titre non remplacé");
-    tete = coller(coller(debut.subarray(0, coupe), ajout), debut.subarray(coupe));
+  const posTitre = chercher(debut.subarray(coupe), REPERE_TITRE);
+  const tTitre = posTitre >= 0 ? coupe + posTitre : -1;
+  if (tTitre < 0) console.log("[cheval-route] <title>Hype</title> introuvable : titre non remplacé");
+  if (posRacine < 0) console.log("[cheval-route] <div id=\"root\"> introuvable : pas de texte pour Google");
+
+  // Assemblage : [début][ajout][…][titre du cheval][…]<div id="root">[texte Google][suite]
+  const morceaux: Uint8Array[] = [debut.subarray(0, coupe), ajout];
+  let curseur = coupe;
+  if (tTitre > 0 && (posRacine < 0 || tTitre < posRacine)) {
+    morceaux.push(debut.subarray(curseur, tTitre), nouveauTitre);
+    curseur = tTitre + REPERE_TITRE.length;
   }
+  if (posRacine > curseur) {
+    const finRacine = posRacine + REPERE_RACINE.length;
+    morceaux.push(debut.subarray(curseur, finRacine), enc.encode(texteGoogle));
+    curseur = finRacine;
+  }
+  morceaux.push(debut.subarray(curseur));
+  let tete = new Uint8Array(0);
+  for (const mo of morceaux) tete = coller(tete, mo);
 
   // 2. Le reste du fichier part tel quel, sans être lu ni modifié.
   const flux = new ReadableStream<Uint8Array>({
@@ -273,15 +344,18 @@ export default async (request: Request, _context: Context) => {
   let cheval: any = null;
   let aUnResultat = false;
   let nbResultats = 0;
+  let resultats: any[] = [];
   try {
     const lignes = await lire(
       "chevaux?slug=eq." + encodeURIComponent(slug) +
-      "&select=id,nom,race,club,ecurie,origines,supprime_le,visibilite,photo_url&limit=1",
+      "&select=id,nom,alias,race,club,ecurie,origines,supprime_le,visibilite,photo_url&limit=1",
       minuteur.signal,
     );
     cheval = lignes && lignes[0];
     if (cheval && FORME_UUID.test(String(cheval.id || ""))) {
-      nbResultats = await compterResultats(String(cheval.id), minuteur.signal);
+      const lu = await lireResultats(String(cheval.id), minuteur.signal);
+      nbResultats = lu.n;
+      resultats = lu.lignes;
       aUnResultat = nbResultats > 0;
     }
   } catch (e) {
@@ -302,7 +376,7 @@ export default async (request: Request, _context: Context) => {
   try {
     const source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } });
     if (!source.ok) { console.log("[cheval-route] index.html http", source.status); return PAGE_503(); }
-    const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug));
+    const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug), blocTexte(cheval, nbResultats, resultats));
     if (!page) { console.log("[cheval-route] repère <head> introuvable"); return PAGE_503(); }
     if (request.method === "HEAD") { try { await page.body?.cancel(); } catch { /* rien */ } return new Response(null, { status: 200, headers: page.headers }); }
     return page;
