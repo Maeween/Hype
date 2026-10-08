@@ -9513,3 +9513,357 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non vérifié : iPhone (7 langues : les libellés longs, ex. allemand/italien, peuvent encore être serrés ; la ligne ne passe jamais en deux lignes, le texte se resserre).
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé.
 - Checks : marqueurs, node --check 18 blocs.
+
+## Build 735 — 8 oct. 2026 — Fiche cheval V2 : squelette + adresse cachée de test
+- Chantier « refonte fiche cheval » (lancé le 07/10). Méthode validée par Blandine le 08/10 :
+  - nouvel écran `EcranChevalV2` construit À CÔTÉ de l'ancien ; `EcranCheval` reste INTACT (aucune ligne modifiée, rien supprimé) jusqu'au passage de la route ;
+  - accès de test uniquement par l'adresse cachée `#chevalv2-<id>` ;
+  - 1 bloc par livraison, testé sur iPhone ;
+  - règle enfermée dans l'ancien écran = reprise UNE fois dans une fonction partagée pour la V2 (l'ancien écran garde sa copie, doublon temporaire jusqu'à sa suppression) ;
+  - bugs résultats (B1 ajout manuel, B2 suppression par la propriétaire [SQL, touchera aussi l'ancienne fiche], B4 modifier un résultat, B5 date de saison) corrigés dans la V2 seulement, en livraisons séparées ; B3 (rail caché par les coupes) propre à l'ancienne fiche, non reproduit.
+- Décisions de contenu V2 (08/10) : bouton hero « Ajouter à mes chevaux / Retirer de mes chevaux » (pas de « Suivre ») ; surnom perso RETIRÉ (données gardées en base), photo perso et histoire perso CONSERVÉES ; sexe rangé dans le JSON `origines` (sans SQL), saisi dans la fenêtre des origines (Hongre / Jument / Entier) ; principaux résultats = moments forts choisis à la main → victoires → podiums → meilleurs classements (jamais les points Team) ; anciennes épingles (`epingle_rang`) ignorées par la V2 ; histoire + conseils Hey Baby en bas de la page « Son histoire » ; 6 accès (Son histoire, Performances, Photos, Vidéos, Actualité, Santé), aucun ne paraît sélectionné sur la page principale ; page principale = hero, 6 accès, Identité & origines (carte retournable), Photos & vidéos, Derniers résultats (3 lignes), Principaux résultats (3 cartes) ; états vides discrets ; maquettes « remplie » et « vide » reçues le 08/10.
+- Changement 735 (3 endroits, rien d'autre) :
+  1. adresse cachée : ligne `chevalv2-` ajoutée dans `CIBLE_DIRECTE`, juste avant la ligne `cheval-` (inchangée) ; pose `window.__chevalOuvert` et ouvre l'écran `cheval-v2` ;
+  2. aiguillage : ligne `ecran === "cheval-v2"` ajoutée sous celle de `cheval` (inchangée) ;
+  3. nouveau code après la fin d'`EcranCheval` : `hypeLireFicheCheval(id)` (lecture du cheval reprise de l'ancien écran : fiche démo en dur, 7 fiches migrées par nom, cheval normal par identifiant ; toute erreur est renvoyée et AFFICHÉE) + `EcranChevalV2` (bouton retour champagne, mention « Nouvelle fiche · version de test », nom du cheval en serif ivoire sur fond noir-vert ; sinon « Chargement… », « Cheval introuvable. » ou « Impossible de charger ce cheval : <erreur> »).
+- Textes nouveaux en 7 langues (fr, en, es, it, ja, de, ar) ; arabe : page en droite-à-gauche, flèche retour retournée.
+- Non touché : `EcranCheval`, `EcranChevalCommun`, page Performances chevaux, toutes les autres pages. Aucun SQL. Aucune image ajoutée.
+- Limite : l'adresse n'est lue qu'à l'ouverture de l'appli (comme `#cheval-<id>`) : changer l'adresse puis recharger la page.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-735, marqueurs de garde (liensClub, chevalCommunDemoData, palmTech, EcranSanteCheval) présents, node --check 18 blocs OK.
+
+## Build 736 — 8 oct. 2026 — Fiche cheval V2 : le haut de page (hero)
+- Demande : « Ok continue » (V2-2 du plan).
+- Changement (uniquement dans `EcranChevalV2`) :
+  - grande photo pleine largeur (hauteur 420–600 px selon l'écran, ~64 % de la hauteur), cadrée vers le haut (tête), qui se fond dans le fond noir-vert (fondu validé par Blandine dans le brief du 08/10) ; haut légèrement assombri pour lire les boutons ;
+  - en haut : retour (même règle que l'ancienne fiche) et ••• (VISIBLE MAIS SANS ACTION : le menu arrive en V2-13) ;
+  - en bas : nom en serif ivoire, puis « race · sexe · année » UNIQUEMENT avec les données qui existent.
+- Règles de données :
+  - nom = alias FFE s'il existe, sinon nom (règle du 02/09 ; surnom perso retiré de la V2). ⚠️ L'ancienne fiche n'affichait en fait jamais l'alias (il était perdu au chargement) : un cheval avec alias peut donc s'afficher sous un autre nom en V2 ;
+  - année = seulement depuis la date de naissance exacte (`origines.naissance`), jamais déduite de l'âge ;
+  - sexe = lu dans `origines.sexe` (hongre / jument / entier, traduits en 7 langues) ; vide aujourd'hui pour tous les chevaux, la saisie arrive au build « sexe » (V2-6b) ;
+  - photo = même règle que l'ancienne fiche : photo perso en base (`chevaux_histoires.photo_url`, seulement si le cheval n'est pas le sien) > photo gardée dans le téléphone (`hype_cheval_photo_<id>`) > photo officielle > photo de la fiche démo > portrait Hype. Image demandée en grande taille (`grandeImageHype`, 1600) ; si elle échoue, l'original ; sinon rien (pas de trou).
+- Pas encore là (builds à venir) : bouton « Ajouter à mes chevaux / Retirer » (V2-12), barre des 6 accès (V2-3), tout le reste de la page.
+- Mention « Nouvelle fiche · version de test » gardée, plus discrète, sous le haut de page (à retirer au passage de la route).
+- Rendu vérifié dans un navigateur de test (iPhone 390×844, fausses données, polices remplacées) : boutons, nom, sous-titre et fondu en place. Arabe non vérifié dans ce rendu.
+- Non touché : `EcranCheval` (vérifié identique octet pour octet), tout le reste. Aucun SQL, aucune image ajoutée.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-736, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 737 — 8 oct. 2026 — Fiche cheval V2 : la barre des 6 accès
+- Demande : « Ok continue » (V2-3 du plan).
+- Changement (uniquement dans `EcranChevalV2`) : barre « Son histoire · Performances · Photos · Vidéos · Actualité · Santé » sous le haut de page, détachée du nom (40 px), filet champagne très fin, AUCUN accès souligné ou sélectionné (page principale = six portes). Libellés en 7 langues (reprise des traductions de l'ancienne fiche ; « Son histoire » nouveau).
+- Où mènent les accès (pages EXISTANTES, ancienne fiche non modifiée) :
+  - Performances → ancienne fiche ouverte sur le palmarès (`window.__ouvrirPalmares`, déjà en place) ;
+  - Actualité → ancienne fiche ouverte sur le fil (`window.__ouvrirActualite`, déjà en place) ;
+  - Santé → écran Santé du cheval (`window.__santeCheval`, même forme que l'ancienne fiche) ;
+  - Son histoire, Photos, Vidéos → ancienne fiche ouverte EN HAUT (pas d'ouverture directe existante pour ces parties ; elles seront refaites dans la V2).
+  - Le retour depuis ces pages revient sur la V2.
+- Taille : sur un iPhone, les 6 libellés ne tiennent PAS sur une ligne à une taille lisible (la maquette les montre en très petit). Choix : serif 16 px, la barre défile sur le côté, léger fondu au bord de fin pour l'indiquer (inversé en arabe). Question posée à Blandine : garder le défilement ou passer sur 2 lignes de 3.
+- Report signalé : la correction de l'ordre de lecture du cheval (cheval ouvert AVANT l'adresse de test, et accepter `#cheval-<id>` pour le passage) est déplacée en V2-5 (ancêtres/poulains cliquables), là où elle devient utile et testable.
+- Règles du chantier référencement (message du 08/10, 1 h) à respecter dans toute la V2 : ouverture par `window.__chevalOuvert` / `#cheval-<id>` ; affichage correct sans compte (utilisateur null, boutons réservés masqués ou vers la connexion) ; nom et résultats en VRAI texte ; tout nouveau fichier avec une adresse commençant par « / » ; jamais de lien construit avec `location.pathname` (utiliser `location.origin + "/"`) ; Partager sans adresse figée ; ne pas toucher `chevaux.slug` / `chevaux.visibilite`. ⚠️ Signalé au chantier référencement : le reste de l'appli charge ses scripts et beaucoup d'images par des adresses SANS « / » (hype-supabase.js, hype-cours-*.js, mascotte-abo.webp, palmares-*.mp4, images/…) ; depuis /cheval/<nom> ils seraient cherchés au mauvais endroit → l'appli entière risque de ne pas démarrer (solution habituelle : une ligne `<base href="/">` en haut d'index.html, à faire et tester dans ce chantier-là). Deux boutons « Recharger » utilisent `location.pathname`.
+- Rendu vérifié dans un navigateur de test (390×844, police de remplacement plus large que la vraie) : 4 libellés visibles, le reste en défilement.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-737, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 738 — 8 oct. 2026 — Fiche cheval V2 : carte Identité & origines, RECTO
+- Demande : « Ok continue » (V2-4). Question de la barre des accès (défilement ou 2 lignes de 3) restée sans réponse : défilement conservé.
+- Changement (uniquement dans `EcranChevalV2`) : section « Identité & origines » (titre serif 28 px, 44 px au-dessus, 22 px sous le titre) avec UNE carte à filet champagne : à gauche la photo du cheval (même photo que le haut de page, vignette 360×440, cadrée vers la tête) ; à droite des lignes à icône fine champagne, UNIQUEMENT si la donnée existe :
+  - âge : calculé depuis `origines.naissance` (années révolues), sinon colonne `chevaux.age` (comme l'ancienne fiche ; cette colonne peut être en retard si la date de naissance n'est pas saisie) ;
+  - sexe : `origines.sexe` (vide pour l'instant) ;
+  - « Origines » + « père × père de mère », lus exactement comme l'ancienne fiche (`origines.pedigree`, sinon `origines.pere` / `origines.mere`) ; sans origines : « Origines non renseignées ».
+- Race et année non répétées (déjà dans le haut de page). Pas d'indice IPO ni de niveau/discipline sur le recto (brief).
+- Lecture de la maquette : elle montre recto et verso côte à côte avec « 1/2 » et des flèches ; le brief valide UNE carte qui se retourne → une seule carte pleine largeur ; le bouton de retournement et le verso arrivent en V2-5, le bouton « Ajouter / Compléter / Voir-modifier les origines » en V2-6, la ligne Team en V2-7.
+- Textes nouveaux en 7 langues (« Identité & origines », « N an(s) », « Origines non renseignées » ; « Origines » repris de l'ancienne fiche).
+- Rendu vérifié (390×844, fausses données) : cas complet (9 ans · Hongre · Origines Quidam de Revel × Le Tot de Semilly) et cas vide (seule la ligne « Origines non renseignées »).
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-738, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 739 — 8 oct. 2026 — Fiche cheval V2 : la carte se retourne (verso des origines) + ordre de lecture du cheval
+- Demande : « Ok continue » (V2-5).
+- Changement (uniquement dans la V2) :
+  1. CARTE RETOURNABLE : toucher le recto, ou le bouton rond ↻ (coin haut, côté fin de lecture), fait un quart de tour, change de face, quart de tour retour ; le même bouton remet au recto. La hauteur suit la face visible (le verso est plus haut). Animation inversée en arabe.
+  2. VERSO (mêmes données et même lecture que l'ancienne fiche) : titre « Origines » ; arbre en grille sur 1 à 3 générations selon ce qui est renseigné (père / mère, grands-parents, arrière-grands-parents, avec la ligne de détail de chaque ancêtre) ; ancêtre à bon IPO (≥ HYPE_IPO_BON) en or avec ★ ; ancêtre qui a une fiche Hype = souligné et cliquable ; ancien format `og.arbre` affiché SEULEMENT s'il n'y a pas de grille (l'ancienne fiche les doublait) ; naisseur ; SIRE avec lien Info Chevaux (même page générale IFCE que l'ancienne fiche) ; poulains trouvés, cliquables ; sans origines : « Origines non renseignées ».
+  3. PARENTÉ : `hypeParenteCheval(nom, id)` = reprise UNE fois de `chargerDescendantsCheval` + `ascendantVersFiche` (même lot de 400 chevaux, même rapprochement `nomsHippiquesProches`), chargée au premier passage au verso (décision du 05/09). Si la lecture échoue, une ligne discrète l'affiche (« Liens de parenté indisponibles… »), rien n'est avalé.
+  4. ORDRE DE LECTURE DU CHEVAL (règle du chantier référencement, reportée du 737) : `window.__chevalOuvert` d'abord, puis l'adresse de test `#chevalv2-<id>`, puis l'ancien lien `#cheval-<id>`. Ouvrir un ancêtre ou un poulain depuis la V2 change de cheval SUR PLACE (état local + retour en haut de page), car aller vers le même écran ne fait rien dans l'appli. Le retour ramène à l'écran précédent (pas au cheval précédent).
+- Repéré dans l'ancienne fiche (NON corrigé, non prouvé sur iPhone) : ses ancêtres/poulains cliquables font `setEcran("cheval")` alors qu'on est déjà sur « cheval », ce que l'appli ignore → le clic ne semble rien faire (sauf rafraîchissement par un autre événement).
+- Le bouton « Ajouter / Compléter / Voir-modifier les origines » arrive en V2-6 (rien d'éditable dans ce build).
+- Textes nouveaux en 7 langues (« Retourner la carte », « Liens de parenté indisponibles… » ; Père, Mère, Naisseur, Poulains, Origines repris de l'ancienne fiche).
+- Rendu vérifié (390×844, fausses données sur 3 générations) : recto → verso → recto ; ancêtre ayant une fiche souligné + ★ IPO ; naisseur, SIRE, poulain présents ; clic sur le poulain = changement de cheval et retour en haut.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-739, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 740 — 8 oct. 2026 — Fiche cheval V2 : outil des origines (ajouter / compléter / voir-modifier + import capture)
+- Demande : « Ok continue » (V2-6).
+- Changement :
+  1. Nouveau composant partagé `FeuilleOriginesCheval` = reprise UNE fois de la fenêtre « Mon cheval » de l'ancienne fiche (ouvrirEditOrigines + importerOriginesDepuisCapture + sauverOrigines) ; l'ancienne fiche garde sa copie, inchangée. Mêmes champs (SIRE, race, âge, date de naissance, père/mère, 4 grands-parents, 8 arrière-grands-parents, ligne de détail par ancêtre, naisseur), MÊME consigne de lecture de capture par l'IA (relais `/.netlify/functions/assistant`), même refus si la capture est celle d'un autre cheval, même décalage si c'est celle d'un ascendant déjà tapé, même sauvegarde imbriquée et non destructrice, mêmes colonnes écrites (`chevaux.origines`, `race`, `age`).
+  2. Dans la V2 : bouton « Ajouter les origines » (rien de renseigné) / « Compléter les origines » (père OU mère) / « Voir / modifier les origines » (père ET mère), visible SEULEMENT pour la propriétaire ou une modératrice, sur un cheval en base. Au verso toujours ; au recto aussi quand rien n'est renseigné. Après enregistrement : la carte se met à jour tout de suite + message « Origines mises à jour ✨ ».
+- Différences VOULUES avec l'ancienne fenêtre (toutes pour la sécurité des données) :
+  - ⚠️ DÉFAUT TROUVÉ DANS L'ANCIENNE FENÊTRE (non corrigé là-bas) : elle ne se pré-remplit que depuis `origines.pere/mere`, alors que la carte lit aussi `origines.pedigree`. Un cheval dont les origines ne sont rangées que sous `pedigree` ouvre une fenêtre VIDE, et « Enregistrer » EFFACE ses origines. La V2 pré-remplit depuis l'un OU l'autre.
+  - la fenêtre reste ouverte tant que l'enregistrement n'a pas réussi ; toute erreur s'affiche dedans, y compris « aucune ligne modifiée (droits ?) » (l'ancienne se fermait avant d'enregistrer et avalait les erreurs) ;
+  - champs en 16 px (l'ancienne en 14 px fait zoomer l'iPhone) ; couleurs V2, aucun cyan.
+- Petite correction V2 liée : une date de naissance réduite à l'année (« 2017 », ce que la fenêtre enregistre quand le jour n'est pas connu) est maintenant prise en compte pour l'année du haut de page et pour l'âge (avant : seule la date complète l'était).
+- Le sexe n'est PAS encore dans la fenêtre (build suivant, V2-6b) ; une valeur déjà présente dans les origines est conservée à l'enregistrement.
+- Vérifié dans un navigateur de test (fausses données, origines rangées SOUS `pedigree` seulement) : visiteur = pas de bouton ; propriétaire = bouton, fenêtre pré-remplie avec les 14 ancêtres + détail + SIRE + date + naisseur ; contenu envoyé à l'enregistrement relu : tout est conservé (y compris sexe et pedigree). Un défaut de pré-remplissage du père/de la mère trouvé pendant ce test a été corrigé avant livraison.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone, lecture réelle d'une capture par l'IA, enregistrement réel en base (droits). Checks : marqueur unique 20261008-740, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 741 — 8 oct. 2026 — Fiche cheval V2 : le sexe dans la fenêtre des origines
+- Demande : « Ok continue » (V2-6b). Décision du 08/10 : sexe rangé dans `chevaux.origines` (clé `sexe`, sans SQL).
+- Changement (uniquement `FeuilleOriginesCheval`, la fenêtre V2) :
+  - sous la date de naissance, choix « Hongre / Jument / Entier » (pastilles) ; toucher le choix actif le retire ; pré-rempli avec la valeur existante ;
+  - enregistrement : `origines.sexe` = hongre | jument | entier ; aucun choix = clé retirée (effacement voulu) ;
+  - import de capture : la consigne donnée à l'IA demande AUSSI le sexe s'il est écrit (« hongre », « jument » ou « entier » ; étalon/mâle non castré = entier ; vide sinon) ; appliqué seulement quand la capture est celle du cheval lui-même (pas lors d'un décalage vers un ascendant). C'est la seule différence de consigne avec l'ancienne fiche.
+  - affichage : le haut de page (race · sexe · année) et le recto de la carte (ligne avec icône ♂ / ♀) lisaient déjà `origines.sexe` depuis 736/738 : ils se mettent à jour dès l'enregistrement.
+- Textes nouveaux en 7 langues (« Sexe » ; Hongre / Jument / Entier déjà traduits en 736).
+- L'ancienne fiche ne connaît pas le sexe : elle ne l'affiche pas et le CONSERVE quand elle enregistre (sa sauvegarde repart des origines existantes).
+- Vérifié dans un navigateur de test : Hongre pré-sélectionné, passage à Jument, valeur envoyée = « jument », haut de page mis à jour.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone, lecture réelle du sexe sur une capture IFCE. Checks : marqueur unique 20261008-741, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 742 — 8 oct. 2026 — Fiche cheval V2 : proportions de la maquette (haut de page, barre des accès, titres)
+- Retour de Blandine sur iPhone (captures 01:25) : « Les onglets c'est pas du tout ce qui était prévu, le titre et hero non plus ». Constat : nom ~2× trop grand, photo du haut à 64 % de l'écran, barre qui n'affichait que 4 accès sur 6 (défilement), titre de section trop gros. Corrigé en UNE livraison (les trois signalés ensemble).
+- Changements (uniquement dans la V2) :
+  - haut de page : hauteur 330–410 px (~45 % de l'écran, avant 600 px max) ; nom 46 → 31 px ; ligne race · sexe · année 11 → 9,5 px ; fondu latéral côté texte ajouté (nom à gauche sur fond sombre, cheval à droite, comme la maquette), fondu bas un peu plus marqué ;
+  - barre des 6 accès : les SIX tiennent sur une ligne (serif 13 px, espacement réparti, marges réduites) ; le fondu de bord est retiré ; le défilement reste seulement en secours si une langue déborde (allemand, arabe possibles) ; aucun accès sélectionné ;
+  - titre « Identité & origines » 28 → 22 px ; lignes de la carte 17 → 15,5 px pour rester en proportion.
+- Mesuré dans le navigateur de test (police de remplacement PLUS LARGE que Cormorant) : barre 356 px de contenu pour 356 px visibles → tient.
+- Question posée : la maquette montre recto ET verso côte à côte (deux demi-cartes, « 1/2 » et flèches) ; la V2 a une seule carte qui se retourne (brief) — à confirmer par Blandine.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-742, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 743 — 8 oct. 2026 — Fiche cheval V2 : bouton « Ajouter à mes chevaux / Retirer » dans le haut de page + barre plus basse + retournement sans saut
+- Contexte : Blandine a envoyé à la suite les consignes « LIVRAISON V2-1 … V2-8 UNIQUEMENT » de son plan, alors que V2-1 → V2-6b existaient déjà (735 → 742). Rien n'a été défait : seuls les points de ces consignes qui n'étaient PAS encore couverts sont ajoutés ici. V2-1 = 735 ; V2-2 = 736/742 (+ bouton ci-dessous) ; V2-3 = 737/742 ; V2-4 = 738 ; V2-5 = 739 ; V2-6 = 740 ; V2-6b = 741. V2-7 (Team) et V2-8 (aperçu Photos & vidéos) : à faire, une livraison chacune.
+- Changements (uniquement dans la V2) :
+  1. BOUTON du haut de page « Ajouter à mes chevaux » / « Retirer de mes chevaux » (remplace « Suivre ce cheval », décision du 08/10) : même mécanique que l'ancienne fiche (lecture `chevaux_liens` pour moi + ce cheval ; `lierCheval` / `delierCheval` existantes). Caché pour : visiteur non connecté, rattachement indéterminé (lecture en échec), propriétaire, modératrice sur une fiche de démo écrite dans le code. Cœur plein quand le cheval est dans mes chevaux. Message de confirmation ; en cas d'échec, message « Impossible pour l'instant » AVEC la raison renvoyée.
+  2. Haut de page un peu plus haut (380–470 px) pour loger le bouton ; barre des accès descendue (32 → 40 px sous le haut de page).
+  3. Barre des accès : taille de texte qui suit la largeur de l'écran (11,5 à 13 px). Mesuré : iPhone 390 px = les 6 tiennent ; 375 px = 3 px de trop (défile à peine) ; iPhone SE 320 px = défile ; jamais de texte coupé.
+  4. Retournement de la carte : quand on revient au recto après avoir fait défiler le verso (plus haut), la page ramène doucement la carte en vue au lieu de sauter.
+- Textes nouveaux en 7 langues (Ajouter à mes chevaux, Retirer de mes chevaux, Dans tes chevaux ✓, Déjà dans tes chevaux ✓, Retiré de tes chevaux ✓, Impossible pour l'instant).
+- Vérifié dans le navigateur de test : bouton présent pour une visiteuse connectée non propriétaire, clic → « Retirer de mes chevaux » + message ; absent pour un visiteur non connecté et pour la propriétaire (déjà vérifié en 740 par le même compte de test).
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone, écriture réelle dans `chevaux_liens`. Checks : marqueur unique 20261008-743, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 744 — 8 oct. 2026 — Fiche cheval V2 : ligne Team sur le recto (V2-7)
+- Demande : « Ok et adapte bien le visuel à ce que chat t'a donné » + consigne « LIVRAISON V2-7 UNIQUEMENT ».
+- Changement :
+  1. Nouvelle fonction partagée `hypeClassementTeamChevaux()` = reprise UNE fois du calcul de `EcranPerformancesChevaux` dans sa vue PAR DÉFAUT (saison en cours, « Général », sans coefficient Amateur) : équipe = groupe « Team Compétition » du club SEP (`groupes` / `groupes_chevaux`), chevaux non supprimés ; points = somme de `resultats.points` enregistrés, lignes visibles seulement ; saison par type d'épreuve (Poney 8 juin, Club 22 juin, Amateur/Critérium 15 juin, autres 1er septembre ; saison en cours selon la règle Poney) ; ex aequo : saison précédente puis ordre alphabétique. AUCUN barème recalculé. La page Performances chevaux garde sa copie (vérifiée identique).
+  2. Recto de la carte Identité : ligne « Team compétition » + « #rang · N points » (icône groupe), SEULEMENT si le cheval est dans le groupe ; rien sinon (y compris si la lecture échoue).
+- ⚠️ Deux copies du même calcul existent désormais (page Performances chevaux + fonction partagée) : toute future règle (dates de saison 2027, etc.) doit être changée aux DEUX endroits, ou la page devra passer par la fonction (livraison séparée, à décider).
+- Textes nouveaux en 7 langues (« Team compétition », « points »).
+- Vérifié dans le navigateur de test : cheval hors Team = pas de ligne ; cheval dans la Team = « Team compétition / #1 · 42 points ».
+- Consignes reçues et EN ATTENTE (une livraison chacune, après validation iPhone) : V2-8 aperçu « Photos & vidéos », V2-9 « Derniers résultats » (3 lignes dans une seule carte), V2-10 « Principaux résultats » (3 cartes, règle moments forts → victoires → podiums → meilleurs classements, `epingle_rang` ignoré).
+- Non touché : `EcranCheval`, `EcranPerformancesChevaux` (vérifiés identiques), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone sur les vrais chevaux de la Team (comparer avec la page Performances chevaux). Checks : marqueur unique 20261008-744, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 745 — 8 oct. 2026 — Fiche cheval V2 : aperçu « Photos & vidéos » (V2-8)
+- Demande : « Ok continue » + consigne « LIVRAISON V2-8 UNIQUEMENT ».
+- Changement (uniquement dans la V2), sous « Identité & origines » (52 px au-dessus) :
+  - titre « Photos & vidéos » + « Voir tout › » (seulement s'il y a des médias) ;
+  - rail horizontal de 8 médias au plus, mélangés photos/vidéos, MÊMES médias que le rail de l'ancienne fiche (`chargerPhotosSouvenirs` : vedettes, souvenirs publiés, albums) ; première vignette plus large, angles arrondis, AUCUNE bordure, défilement doux ; vidéo = petit ▶ rond champagne (vignette Mux quand elle existe, sinon fond sombre + ▶) ;
+  - toucher un média = ancienne fiche ouverte DIRECTEMENT dans sa visionneuse sur ce média (j'aime + commentaires), via `window.__chevalPhotoOuvrir` (mécanisme déjà utilisé par les notifications ; le panneau des commentaires s'ouvre aussi) ;
+  - « Voir tout » et « Ajouter » ouvrent l'ancienne fiche EN HAUT (ses onglets Photos/Vidéos n'ont pas d'ouverture directe ; ils seront refaits dans la V2) ;
+  - VIDE : une seule ligne discrète entre deux filets fins, « Aucun souvenir pour le moment », + « Ajouter » SEULEMENT pour la propriétaire, un cavalier rattaché ou une modératrice ; aucune case vide.
+- Textes nouveaux en 7 langues (« Photos & vidéos », « Voir tout », « Aucun souvenir pour le moment », « Ajouter », « Photo », « Vidéo »).
+- Limite connue (même comportement que l'ancienne fiche) : `chargerPhotosSouvenirs` ne trie pas les souvenirs publiés « privés » d'autres personnes ; le rail de l'ancienne fiche les montrait déjà ainsi.
+- Vérifié dans le navigateur de test : vide visiteur (ligne seule, pas de bouton), vide propriétaire (+ Ajouter), avec médias (vignettes + ▶), clic sur une photo → ancienne fiche ouverte qui a bien lu le signal.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image ajoutée.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-745, marqueurs de garde présents, node --check 18 blocs OK.
+- Consignes en attente : V2-9 (Derniers résultats), V2-10 (Principaux résultats), V2-11 (correction de l'ajout manuel d'un résultat), V2-12 (modifier un résultat).
+- DÉCISION DE BLANDINE (08/10, 1 h 38) : « note ensuite pour qu'on ait un seul calcul qui calcule les points sinon ça va être compliqué ». → À FAIRE en livraison séparée (après la série V2 en cours) : faire passer la page Performances chevaux par la fonction partagée `hypeClassementTeamChevaux()` (en l'étendant à ses filtres : saison choisie, famille d'épreuve, vue Amateur Critérium/Championnat), puis retirer sa copie interne → UN SEUL calcul des points Team dans l'appli.
+
+## Build 746 — 8 oct. 2026 — Fiche cheval V2 : audit des états vides (V2-14) + passe de finition (V2-15)
+- Demandes : consignes « LIVRAISON V2-13 / V2-14 / V2-15 UNIQUEMENT ».
+- V2-13 (suppression d'un résultat) : ANALYSE seule, rien exécuté. Deux verrous : (1) `supprimerResultat` filtre elle-même `user_id = moi` ; (2) en base, règle de suppression probablement réservée à l'auteur (règle UPDATE du 19/09 `resultats_masquer_proprio_ou_admin` documentée, règle DELETE jamais relevée). DÉCISION DE BLANDINE (08/10, 1 h 40) : « Laisse tomber, pas de raison de mettre une suppression des lignes pour l'instant » → AUCUNE suppression dans la V2, aucun SQL, ancienne fiche inchangée. NE PAS REFAIRE sans nouvelle demande.
+- V2-14 — AUDIT DES ÉTATS VIDES (navigateur de test, fausses données) :
+  - cheval minimal (sans photo, race, âge, sexe, origines, médias, hors Team) : haut de page = portrait Hype par défaut (absent dans l'outil de test, donc fond sombre seul) + nom ; pas de ligne race · sexe · année ; carte = « Origines non renseignées » seule (+ « Ajouter les origines » pour la propriétaire) ; Photos & vidéos = une ligne « Aucun souvenir pour le moment » (+ « Ajouter » si droits) ; aucune ligne Team ; aucun tiret ni case vide ;
+  - cheval partiel (race + âge + père seul) : ligne « SELLE FRANÇAIS » seule, recto = âge + « Origines / Cooltax » ;
+  - états vides nettement moins hauts que les sections remplies (page minimale ~1 090 px contre ~1 900 px remplie) ;
+  - « Derniers résultats » et « Principaux résultats » (V2-9 / V2-10) PAS ENCORE CONSTRUITS → leurs états vides seront vérifiés à leur livraison.
+  - À VÉRIFIER SUR IPHONE : un cheval SANS AUCUNE photo — le portrait Hype par défaut (UV3_H1, fichier d'images séparé) doit remplir le haut de page ; s'il manque, le haut de page serait un grand fond sombre.
+- V2-15 — FINITION (aucune nouvelle fonction, structure inchangée) :
+  - espacements ajustés aux fourchettes du brief : 22 px entre chaque titre de section et son contenu (avant 18), 44 px entre « Identité & origines » et « Photos & vidéos » (avant 52) ; 40 px haut de page → barre ; 44 px barre → Identité ;
+  - contrôlé dans le navigateur de test : arabe (page en droite-à-gauche, retour à droite, ••• à gauche, barre et carte inversées, textes traduits, aucun débordement) ; allemand (barre trop large → défile, aucun texte coupé) ; japonais (tient) ; iPhone 390 / 375 / SE 320 (barre qui défile si besoin, aucune carte qui dépasse) ;
+  - 7 langues : les 80 textes de la V2 ont bien 7 traductions, aucune vide.
+  - Navigation (retour, 6 accès, retour vers la V2) : branchements inchangés depuis 737 ; à confirmer sur iPhone.
+- Non touché : `EcranCheval`, `EcranPerformancesChevaux` (vérifiés identiques), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-746, marqueurs de garde présents, node --check 18 blocs OK.
+- Reste à faire : V2-9 Derniers résultats, V2-10 Principaux résultats, V2-11 correction de l'ajout manuel, V2-12 modifier un résultat ; puis calcul unique des points Team (décision 08/10).
+
+## Build 747 — 8 oct. 2026 — Fiche cheval V2 : « Derniers résultats » (V2-9)
+- Demande : « Ok continue » + consigne « LIVRAISON V2-9 UNIQUEMENT ».
+- Changement (uniquement dans la V2), sous « Photos & vidéos » (44 px) :
+  1. Fonction partagée `hypeResultatsCheval(id)` = reprise UNE fois de la lecture des résultats de l'ancienne fiche (`resultats` par `cheval_id`, tous les champs, tri date d'épreuve décroissante dates vides en dernier, plafond 500, accents FFE réparés par `hypeReparerLignes`). Servira aussi aux « Principaux résultats ».
+  2. Section « Derniers résultats » + « Voir tout › » (→ palmarès de l'ancienne fiche) : UNE seule carte, filet champagne fin, 3 lignes au plus = les 3 épreuves les plus récentes. Une ligne par épreuve (même concours + épreuve + date regroupés, la mieux classée affichée, comme le rail de l'ancienne fiche). Par ligne : date (« 28 sept. 2026 », langue de l'appli ; sinon l'année), concours (2 lignes max), épreuve, cavalier sur SA ligne (jamais coupé par une épreuve longue), classement en pastille (« 3e / 30 » ; 1er = pastille champagne pleine, podium = filet champagne, autres = neutre ; « El. », « Ab. » tels quels), chevron. Toucher une ligne = palmarès.
+  3. Résultats masqués (`visible = false`) exclus. Aucune statistique, aucune médaille, aucune photo.
+  4. VIDE : un bloc sobre entre deux filets « Aucun résultat pour l'instant » + « + Ajouter un résultat » SEULEMENT pour propriétaire / cavalier rattaché / modératrice ; il ouvre provisoirement l'ancienne fiche (qui a déjà son encart « Ajouter un résultat » quand le cheval n'a pas de résultat). La vraie fenêtre d'ajout V2 = V2-11. Si la lecture échoue : « Résultats indisponibles pour le moment : <raison> ».
+- Pas de colonne « lieu » en base : le lieu reste dans le nom du concours. Les résultats ajoutés à la main sans date (bug connu, corrigé en V2-11) tombent en bas de liste.
+- Textes nouveaux en 7 langues.
+- Vérifié dans le navigateur de test : regroupement (2 cavalières sur la même épreuve → la 3e affichée), ligne masquée exclue, « El. » affiché, 3 lignes max ; vide propriétaire = « + Ajouter un résultat ».
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-747, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 748 — 8 oct. 2026 — Fiche cheval V2 : « Principaux résultats » (V2-10)
+- Demande : « Ok continue » + consigne « LIVRAISON V2-10 UNIQUEMENT ».
+- Changement (uniquement dans la V2), sous « Derniers résultats » (44 px) :
+  1. Fonction partagée `hypePrincipauxResultats(lignes, palmaresDur, 3)` = règle UNIFIÉE (décision du 08/10) reprenant la logique des moments forts de l'ancienne fiche : 1) moments forts choisis à la main (`fort_force`), 2) victoires, 3) podiums, 4) meilleurs classements ; retirés à la main (`fort_exclu`) jamais repris ; dans chaque groupe le MÊME tri que l'ancienne fiche (préparatoires en dernier, titre 3/2/1/0, victoire, partants, niveau, place) ; un rendez-vous une seule fois (année + mot principal du concours + cavalier, clé identique à l'ancienne fiche) ; lignes masquées exclues ; palmarès écrit dans le code des fiches de démo inclus comme dans l'ancienne fiche. `epingle_rang` IGNORÉ. Points Team JAMAIS.
+  2. Section « Principaux résultats » + « Voir tout › » (→ palmarès) : 3 cartes éditoriales en défilement horizontal (≈ 240 × 158 px), filet champagne, image de fond : média choisi à la main pour ce moment fort (`chevaux.moments_forts_medias`, même clé que l'ancienne fiche), sinon portrait du cavalier relié à un compte, sinon photo du cheval très atténuée ; dessus : coupe fine + classement en grand (1er en champagne) + « / partants », épreuve (2 lignes), « CONCOURS · ANNÉE », chevron. Toucher = palmarès.
+  3. VIDE : une phrase en italique « Pas encore de résultat marquant », aucune carte fantôme.
+- Note : la règle de l'ancienne fiche dédoublonne par rendez-vous ET cavalier → deux cavalières classées dans la même épreuve sur ce cheval peuvent donner deux cartes (comportement conservé tel quel).
+- Testé à part (règle seule) : moment fort à la main en tête ; Open de France gagné avant victoire ordinaire ; deux épreuves du même Open = une carte ; retiré et masqué exclus ; préparatoire derrière ; sans victoire → podium puis classements (championnat régional avant épreuve ordinaire) ; aucun résultat / seulement « El. » → vide.
+- Textes nouveaux en 7 langues.
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone (comparer avec les moments forts de l'ancienne page palmarès : l'ancienne en montre 5 et n'a pas le palier « meilleurs classements »). Checks : marqueur unique 20261008-748, marqueurs de garde présents, node --check 18 blocs OK.
+- Reste : V2-11 correction de l'ajout manuel d'un résultat, V2-12 modifier un résultat, puis calcul unique des points Team.
+
+## Build 749 — 8 oct. 2026 — Fiche cheval V2 : ajout manuel d'un résultat CORRIGÉ (V2-11)
+- Demande : « Ok continue » + consigne « LIVRAISON V2-11 UNIQUEMENT ».
+- Constat (vérifié) : l'ancienne saisie à la main n'écrit que `user_id, cheval_id, concours, classement (+ annee)` ; la case « Discipline · cavalier » n'est jamais enregistrée, ni date, ni épreuve séparée, ni partants.
+- Colonnes : AUCUN SQL nécessaire. Les colonnes `epreuve, place, partants, date_epreuve, cavalier` existent (l'import FFE les écrit déjà). Il n'existe PAS de colonne « discipline » ni « lieu » : la discipline va dans l'épreuve (« CSO Club 1 », comme la FFE), le lieu dans le concours. `annee` : tentée puis retirée si la base la refuse (même repli que l'ancienne fiche). `cavalier_id` volontairement NON écrit (droits d'écriture non vérifiés).
+- Changement (uniquement dans la V2) :
+  1. Nouvelle fenêtre `FeuilleAjoutResultatV2` : date de l'épreuve (sélecteur iPhone, aujourd'hui par défaut ; si vidée → champ Année), concours (lieu) obligatoire, épreuve (discipline comprise), place + partants (chiffres ; refus si place > partants), ou statut Éliminé / Abandon / Classé, cavalier (pré-rempli avec le prénom + nom du profil connecté, modifiable).
+  2. Enregistre : `user_id, cheval_id, concours, epreuve, classement` (« 1ᵉʳ », « 2ᵉ »… comme avant, ou « El. » / « Ab. » / « Classé »), `place, partants, date_epreuve, cavalier, annee`.
+  3. Garde-fou anti-doublon repris de l'ancienne saisie, AFFINÉ : même personne + même concours + même jour (ou même année sans date) + même épreuve quand elle est donnée → confirmation ; deux épreuves différentes du même concours ne déclenchent plus l'alerte.
+  4. Accès : « + Ajouter un résultat » sous la carte « Derniers résultats » et dans l'état vide, SEULEMENT pour propriétaire / cavalier rattaché / modératrice. Après enregistrement : relecture des résultats → la ligne apparaît à sa place (tri par date), message « Résultat ajouté 🏆 ».
+- Conséquences : un résultat ajouté depuis la V2 est complet partout où les résultats sont lus (palmarès de l'ancienne fiche compris : sorties, saisons, classements). Sans `points`, il compte 0 dans les points Team. Sans `cavalier_id`, il n'apparaît pas sur la page de la cavalière (qui lit `cavalier_id`). L'ancienne saisie à la main reste défectueuse jusqu'au passage de la route (décision : bugs corrigés dans la V2 seulement).
+- Pas encore dans la V2 : import depuis une capture et import officiel FFE (toujours accessibles par l'ancienne fiche / l'écran d'import).
+- Textes nouveaux en 7 langues.
+- Vérifié dans le navigateur de test : champs pré-remplis (date du jour, cavalier), contenu envoyé relu (toutes les colonnes ci-dessus), message de confirmation, anti-doublon (même concours + même épreuve → alerte ; autre épreuve → pas d'alerte).
+- Non touché : `EcranCheval` (vérifié identique), tout le reste. Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone, écriture réelle en base (droits). Checks : marqueur unique 20261008-749, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 750 — 8 oct. 2026 — Fiche cheval V2 : CORRECTIF DU HAUT DE PAGE UNIQUEMENT
+- Demande : « CORRECTIF V2 — HERO UNIQUEMENT » (capture + maquette annoncées mais AUCUNE image reçue avec le message : travail fait d'après la maquette validée du 08/10 et les consignes chiffrées).
+- Changement (uniquement le haut de page de `EcranChevalV2`, 11 lignes) :
+  - hauteur 490–560 px (68 % de l'écran ; avant 380–470) ; photo cadrée plus haut (têtes) ; fondu progressif repensé : la photo se dissout dans le fond noir-vert à partir du milieu, totalement sombre en bas ;
+  - nom placé dans le tiers inférieur avec 46 px de zone sombre dessous (avant 22) ; serif ivoire 32–40 px selon la largeur (une ligne pour la plupart des noms) ;
+  - ligne race · sexe · année : 10 px, espacement des lettres élargi (0,3 em), discrète ;
+  - bouton « Ajouter à mes chevaux / Retirer » : 20 px sous la ligne ; désormais AUSSI visible pour un visiteur NON connecté (il mène à l'écran de connexion — règle du chantier référencement). Il reste CACHÉ pour la propriétaire du cheval (on ne peut pas ajouter son propre cheval : `lierCheval` le refuse) et en cas de lecture du rattachement en échec.
+- Mesuré (navigateur de test, iPhone 390×844) : haut de page 560 px, nom à ~70 % de la hauteur, bouton jusqu'à 514 px, barre des accès à 600 px → 86 px de zone sombre entre le bouton et la barre. iPhone SE 375×667 : 490 px, même équilibre.
+- Non touché : barre des 6 accès, Identité & origines, Photos & vidéos, résultats, données, requêtes, navigation ; `EcranCheval` (vérifié identique). Aucun SQL, aucune image.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone avec la vraie photo de Rizotto. Checks : marqueur unique 20261008-750, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 751 — 8 oct. 2026 — Fiche cheval V2 : CORRECTIF DU HAUT DE PAGE (REMPLACE LA 750, à ne pas pousser)
+- Demande : « CORRECTIF V2 — HERO UNIQUEMENT » ; la maquette et les deux captures iPhone sont arrivées après la livraison de la 750.
+- Erreur de la 750 (signalée) : les « 500–560 px » de la consigne étaient des pixels de l'IMAGE de la maquette, pas des points d'écran iPhone. Rapportés à l'écran, cela fait un haut de page d'environ 235–300 pt. La 750 faisait 560 pt : trop haut, la barre des accès sortait presque de l'écran. La 750 est annulée par la 751.
+- Changement (uniquement le haut de page de `EcranChevalV2`) :
+  - hauteur : encoche + 285–335 pt selon la largeur (76 % de la largeur de l'écran) ;
+  - fondu revu : léger voile en haut (boutons lisibles), photo nette au milieu, dissolution progressive dans le fond noir-vert sur le dernier tiers ;
+  - nom : serif ivoire 28–34 pt, une ligne pour la plupart des noms, placé dans le bas du haut de page avec 26 pt de marge dessous ;
+  - ligne race · sexe · année : 9 pt, lettres très espacées (0,24 em), discrète ;
+  - bouton « Ajouter à mes chevaux / Retirer » plus compact (hauteur 32), 14 pt sous la ligne ; mêmes règles d'affichage qu'en 750 (caché pour la propriétaire ; visiteur non connecté → connexion) ;
+  - respiration de 30 pt avant la barre des accès (seule la marge au-dessus de la barre change, la barre elle-même n'est pas modifiée).
+- Mesuré (navigateur de test) : iPhone 390×844 → haut de page 296 pt, haut du nom à 173, bas du bouton à 270, barre à 326. iPhone SE 375×667 → haut de page 285 pt.
+- Non touché : barre des 6 accès (hors sa marge du haut), Identité & origines, Photos & vidéos, résultats, données, requêtes, navigation ; `EcranCheval` (vérifié identique). Aucun SQL, aucune image.
+- Remarqué sur la maquette, NON fait (hors consigne) : le rail Photos y est plus compact (vignettes ~93 pt).
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone avec la vraie photo de Rizotto (cadrage des têtes). Checks : marqueur unique 20261008-751, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 752 — 8 oct. 2026 — Fiche cheval V2 : MODIFIER UN RÉSULTAT (V2-12)
+- Demande : « LIVRAISON V2-12 » ; approche proposée sans code, décision de Blandine « A1 B1 ok ».
+- Décisions : A1 = seule la personne qui a saisi la ligne peut la modifier (comme l'ancienne fiche) ; B1 = les résultats importés de la FFE (`origine = "import"`) restent VERROUILLÉS. Les points Team ne sont pas modifiables à la main (en attente du calcul unique). Toujours pas de suppression de ligne (décision du 08/10).
+- Constat (ancienne fiche, non corrigé) : `modifierResultat` ne corrige que concours, classement et photo ; date, épreuve, place, partants et cavalier ne se modifient pas.
+- Changement (uniquement dans la V2) :
+  1. Petit crayon ✎ au bout d'une ligne des « Derniers résultats », visible SEULEMENT si la ligne a été saisie par la personne connectée et n'est pas un import FFE. Toucher la ligne elle-même ouvre toujours les Performances.
+  2. Le crayon ouvre la même fenêtre que l'ajout (`FeuilleAjoutResultatV2`, nouveau mode modification), titrée « Modifier le résultat », pré-remplie : date (ou année), concours, épreuve, place (lue aussi depuis le classement « 3ᵉ »), partants, statut Éliminé / Abandon / Classé, cavalier.
+  3. Enregistrer met à jour CETTE ligne (jamais une nouvelle) : `concours, epreuve, classement, place, partants, date_epreuve, cavalier, annee` (repli sans `annee` si la base la refuse), filtrée sur l'identifiant de la ligne ET la personne connectée.
+  4. Un classement d'origine en texte libre (ni place, ni El./Ab./Classé) est conservé tel quel tant que la place et le statut restent vides.
+  5. Si la base ne modifie aucune ligne (droits, ligne disparue) ou renvoie une erreur, c'est DIT dans la fenêtre : rien n'est faussement confirmé. Après succès : relecture des résultats, message « Résultat modifié ✓ ».
+  6. Pas d'alerte anti-doublon en modification (elle reste à l'ajout).
+- Limite connue : seules les 3 lignes affichées dans « Derniers résultats » ont le crayon ; les plus anciennes se modifieront depuis la future page Performances de la V2.
+- Textes nouveaux en 7 langues (titre, bouton crayon, messages d'erreur et de succès).
+- Vérifié dans le navigateur de test : crayon présent sur la ligne saisie à la main par moi, absent sur l'import FFE et sur la ligne d'une autre personne ; fenêtre pré-remplie ; contenu envoyé relu (place 1 → 2 donne classement « 2ᵉ ») ; aucune insertion ; message affiché.
+- Non touché : `EcranCheval` (vérifié identique), haut de page (751), tout le reste. Aucun SQL, aucune image.
+- En attente, à part : alignement visuel sur la maquette (prompt envoyé à ChatGPT pour les mesures exactes).
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone, écriture réelle en base (droits de mise à jour). Checks : marqueur unique 20261008-752, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 753 — 8 oct. 2026 — UN SEUL CALCUL DES POINTS TEAM (page Performances chevaux + fiche cheval V2)
+- Demande : « note ensuite pour qu'on ait un seul calcul qui calcule les points sinon ça va être compliqué » (décision consignée en 745), puis « Ok continue ».
+- Avant : deux copies de la même règle — une dans la page Performances chevaux (`EcranPerformancesChevaux`), une dans `hypeClassementTeamChevaux` (fiche V2, build 744). Un changement de règle aurait dû être fait deux fois.
+- Changement : la règle vit maintenant à UN seul endroit, trois fonctions partagées :
+  - `hypeSaisonTeam(date, épreuve)` : à quelle saison appartient un résultat (Poney 8 juin, Club 22 juin, Amateur/Critérium 15 juin, autres 1er septembre) ;
+  - `hypePoidsTeam(ligne, vueChampionnatAmateur)` : coefficient (1 par défaut ; vue Championnat Amateur : Critérium ×3, depuis le 28 septembre ×1, le reste 0) ;
+  - `hypeClasserChevauxTeam(chevaux, lignes, lignesSaisonPrécédente, vueChampionnatAmateur)` : somme des points enregistrés, tri, départage (saison précédente puis ordre alphabétique), rang.
+  - La page Performances chevaux et la fiche V2 passent toutes les deux par ces fonctions. Les filtres de la page (saison choisie, type d'épreuve, Critérium / Championnat) restent dans la page : ce sont des choix d'affichage, pas des règles de points.
+- ⚠️ Conséquence : la page Performances chevaux, en service, est modifiée (2 passages remplacés par l'appel aux fonctions partagées). Les règles ont été DÉPLACÉES, pas changées.
+- Vérifié : comparaison automatique ancien calcul / nouveau calcul sur 3 000 jeux de données tirés au hasard (dates, types d'épreuve, points vides ou en texte, Critérium, ex aequo, vue Championnat) → 0 différence. Dans le navigateur de test : page Performances chevaux identique avant/après (même ordre, mêmes points), ligne Team de la fiche V2 identique (« #1 · 42 points »).
+- Rappel : toujours aucun barème recalculé, les points sont ceux enregistrés dans `resultats.points`. Les règles de saison sont à mettre à jour pour 2027.
+- Non touché : `EcranCheval` (vérifié identique), affichage de la page Performances chevaux, fiche V2 (hors source du calcul). Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone avec les vraies données. Checks : marqueur unique 20261008-753, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 754 — 8 oct. 2026 — Fiche cheval V2 : CORRECTIF VISUEL, PROPORTIONS UNIQUEMENT
+- Demande : « CORRECTIF VISUEL V2 — PROPORTIONS UNIQUEMENT » (mesures cibles fournies, d'après la maquette). Les deux images annoncées ne sont pas arrivées avec le message : travail fait d'après les valeurs chiffrées et la maquette déjà reçue.
+- Le menu ••• (décisions : teinte retirée, identification dans le menu, écurie du cheval en ligne à part comme aujourd'hui) est mis en attente : il passe en 755.
+- Valeurs CSS réellement appliquées (ancienne → nouvelle), mesures à 390 pt dans le navigateur de test :
+  - hero : hauteur inchangée (encoche + clamp(285px, 76vw, 335px) = 296 pt) ; marge sous le bloc nom/bouton 26 → 16 px ;
+  - barre des accès : marge au-dessus 30 → 10 px ; écart bouton → barre mesuré 56 → 26 pt (la barre remonte de 20 pt, le texte du hero descend de 10 pt) ;
+  - barre → titre « Identité & origines » : 44 → 30 px ;
+  - titre : 22 px inchangé ; titre → carte 22 → 18 px ;
+  - carte Identité (recto) : marge intérieure 14 → 10 px ; écart photo/texte 16 → 14 px ; hauteur minimale 204 px (avant : imposée par la photo, min 150 + marges) ; photo 40 % (max 160 px) → 43 % de la largeur intérieure, toute la hauteur, arrondi 12 → 11 px, cadrage inchangé (cover) ; lignes 9 → 6 px de marge ; icônes 22 → 21 px ; âge / sexe / « Origines » 15,5 px inchangés ; texte du pedigree 11,5 → 13 px, interligne 1,45 → 1,28 ; bouton rond 34 → 37 px ;
+  - carte → titre « Photos & vidéos » : 44 → 36 px ;
+  - vignettes : 1re 210 px / autres 160 px de large × 168 → toutes 95 × 116 px ; écart 10 → 9 px ; arrondi 12 → 11 px ; pastille ▶ 32 → 28 px (à l'échelle de la vignette) ; image demandée en 240 px au lieu de 320–420.
+- Mesuré : carte Identité 206 pt pour un cheval hors Team ; ⚠️ 251 pt pour un cheval de la Team (la ligne « Team compétition · #1 · 42 points » ajoute une ligne ; dans le navigateur de test la police de remplacement, plus large que Cormorant, coupe aussi « Team compétition » sur deux lignes — sur iPhone elle devrait tenir sur une, soit ~230 pt). Signalé à Blandine, rien décidé à sa place.
+- Vignettes visibles à l'écran : 1,8 → 3,8.
+- Non touché : couleurs, polices, navigation, données, verso de la carte, résultats, `EcranCheval` (vérifié identique) ; tout le fichier hors `EcranChevalV2` vérifié identique. Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone avec Cormorant et les vraies photos. Checks : marqueur unique 20261008-754, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 755 — 8 oct. 2026 — Fiche cheval V2 : CORRECTIF VISUEL n° 2, PROPORTIONS UNIQUEMENT
+- Demande : nouveau « CORRECTIF VISUEL V2 — PROPORTIONS UNIQUEMENT » (consignes ChatGPT + comparaison côte à côte). ⚠️ L'« écran actuel » de la comparaison est la capture de 02:10, donc AVANT la 754 : la plupart des points (écart bouton → barre, barre → titre, carte, vignettes) étaient déjà corrigés en 754 et sont restés tels quels.
+- ⚠️ Consigne NON appliquée, signalée : « hero de 500 à 540 pt ». C'est la même confusion qu'en 750 : 500–540 sont des pixels de l'image de la maquette ; à 390 pt de large, le hero de la maquette fait environ 280–300 pt. Le hero reste à 296 pt (ce qui correspond à la maquette). Appliquer 500–540 pt referait l'erreur de la 750.
+- Valeurs CSS appliquées (ancienne → nouvelle), mesurées à 390 pt :
+  - nom : clamp(28px, 7.6vw, 34px) = 29,6 → clamp(30px, 8vw, 32px) = 31,2 pt ; interligne 1,06 → 0,98 ;
+  - ligne race · sexe : 9 → 9,5 px ; espacement 0,24 → 0,21 em ; écart nom → ligne 9 px (inchangé) ;
+  - bouton : hauteur 32 → 35 pt ; marges 6/15/6/12 → 6/16/6/13 ; cœur 14 → 15,5 ; écart ligne → bouton 14 → 12 ; texte 13,5 (inchangé) ; largeur mesurée 175 → 179 pt ;
+  - écart bouton → barre : 26 pt (inchangé depuis 754) ;
+  - barre : hauteur 43 pt (inchangée) ; marge intérieure 3 → 9 px (≈ 13 px avec l'espacement des boutons) ; espacement des boutons 5 → 4 px ; texte 13 px à 390 (inchangé) ; aucun accès actif ;
+  - barre → titre Identité : 30 (inchangé) ;
+  - titres de section : 22 px (inchangé) ; sous le titre 22 → 18 px (Photos & vidéos, Derniers / Principaux résultats ; Identité déjà à 18) ; « Voir tout » 15 → 13 px ;
+  - au-dessus de Derniers résultats et Principaux résultats : 44 → 36 px ;
+  - carte Identité : marge intérieure 10 → 12 px ; photo 43 % de la largeur, hauteur 100 % → ~91 % (8 px d'air en haut et en bas) ; hauteur 206 pt (inchangée) ; textes 15,5 / pedigree 13, interligne 1,28 ; icônes 21 ; bouton rond 37 (inchangés depuis 754) ;
+  - carte → Photos & vidéos : 36 (inchangé) ;
+  - vignettes : 95 px fixe → clamp(92px, 24.4vw, 104px) (92 à 375, 95 à 390, 104 à 430) × 116 ; écart 9 ; arrondi 11 (inchangés).
+- Mesures : 390 pt → hero 296, bouton 179 × 35, écart bouton → barre 26, barre 43, barre → titre 30, carte 206 (⚠️ 255 pour un cheval de la Team, point A/B toujours ouvert), photo 43 % × 91 %, carte → Photos 36, ~3,7 vignettes. 375 pt → hero 285, 3,9 vignettes ; la barre dépasse de 3 px dans le navigateur de test avec la police de remplacement (plus large que Cormorant) : elle devrait tenir sur iPhone, sinon elle défile de côté sans rien casser. 430 pt → hero 327, 3,5 vignettes.
+- Non touché : couleurs, polices, navigation, données, fonctions, verso de la carte ; tout le fichier hors `EcranChevalV2` vérifié identique à la 754. Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-755, marqueurs de garde présents, node --check 18 blocs OK.
+- Menu ••• : décalé en 756.
+
+## Build 756 — 8 oct. 2026 — Pages compétition visibles par tous (pour l'instant)
+- Demande : « Tu peux laisser les pages compétition visibles par tous pour l'instant ? »
+- Constat (lecture du code) : les pages « Team compétition » et « Performances chevaux » ne bloquent personne elles-mêmes ; le SEUL verrou était sur le badge « Team CSO Club SEP » à côté du pseudo d'une cavalière de la Team (ou de la coach) : le toucher n'ouvrait la page que pour la coach, une gestionnaire de la SEP ou une membre du groupe Team Compétition (`accesTeamMC`). Pour les autres, le badge ne faisait rien.
+- Changement (1 ligne) : le badge ouvre maintenant la page Team compétition pour TOUT le monde, visiteuse de la page publique comprise. Depuis la page Team, « Performances chevaux » est accessible comme avant.
+- Inchangé : les boutons de gestion de la page Team (membres, chevaux) restent réservés à la propriétaire / gestionnaire ; le badge ne s'affiche toujours que sur la page d'une cavalière de la Team ou de la coach ; aucune nouvelle entrée ailleurs (ni menu, ni page Écurie). Le calcul de `accesTeamMC` reste dans le code (non utilisé), pour remettre le verrou facilement plus tard.
+- ⚠️ Non vérifié : les règles de la base sur la lecture des groupes (`groupes`, `groupes_membres`, `groupes_chevaux`). Si une personne extérieure à la Team voit la page vide, ce sont ces règles qui bloquent — il faudrait alors du SQL, rien n'a été fait.
+- Non touché : `EcranCheval`, fiche V2, tout le reste. Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Checks : marqueur unique 20261008-756, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 757 — 8 oct. 2026 — Fiche cheval V2 : titre du hero descendu + présentations des résultats interverties
+- Demande : « Descends un peu le titre sur le hero de la page cheval ça écrase la photo » et « on intervertissait aussi les derniers résultats et les principaux résultats en présentation, on garde les derniers résultats en carrousel ».
+- 1. Hero : le bloc nom + ligne race · sexe + bouton descend de 12 pt (marge sous le bloc 16 → 4 px). Pour garder l'écart validé de 26 pt entre le bouton et la barre, la marge au-dessus de la barre passe de 10 à 22 px : la barre descend donc aussi de 12 pt (318 au lieu de 306 à 390 pt). Hauteur du hero inchangée (296 pt), photo et cadrage inchangés.
+- 2. Résultats (présentations interverties, ordre des sections inchangé) :
+  - « Derniers résultats » = CARROUSEL de cartes (présentation des anciens « Principaux ») : classement en grand, épreuve, cavalier, concours · date ; fond = portrait du cavalier relié à un compte, sinon photo du cheval très atténuée ; le crayon ✎ (modifier, 752) est en haut de la carte, mêmes règles (ma saisie à la main seulement, pas les imports FFE) ; « + Ajouter un résultat » reste dessous.
+  - « Principaux résultats » = CARTE DE 3 LIGNES (présentation des anciens « Derniers ») : date, concours, épreuve, cavalier, pastille de classement.
+  - Données, tris et règles de choix INCHANGÉS (747 pour les derniers, 748 pour les principaux) ; toucher une carte ou une ligne ouvre toujours les Performances.
+  - Les deux présentations sont maintenant deux petites fonctions communes (`carteResultat`, `ligneResultat`) dans la V2.
+- Vérifié dans le navigateur de test : mesures du haut de page (bouton 292, barre 318, écart 26), carrousel et liste affichés, crayon présent seulement sur la ligne saisie par moi, modification complète (place 1 → 2) toujours fonctionnelle, aucune erreur.
+- Non touché : `EcranCheval`, tout le fichier hors `EcranChevalV2` (vérifié identique à la 756). Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-757, marqueurs de garde présents, node --check 18 blocs OK.
