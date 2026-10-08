@@ -1,5 +1,5 @@
 /* ============================================================================
-   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e + build 4)
+   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e + build 4 + build 5)
    L'ADRESSE PUBLIQUE D'UN CHEVAL : https://2hype.fr/cheval/<adresse>
 
    CE QUE FAIT CE FICHIER (et RIEN d'autre)
@@ -28,8 +28,16 @@
      canonical    https://2hype.fr/cheval/<adresse> (toujours 2hype.fr, même
                   ouvert depuis 2hype.netlify.app).
 
-   CE QU'IL NE FAIT PAS (builds suivants) : aucun aperçu WhatsApp (Open Graph),
-   aucun texte pour Google dans la page, aucun cache.
+   BUILD 5 (09/10) — L'APERÇU DANS WHATSAPP, MESSAGES, FACEBOOK, X… (Open Graph) :
+     og:title / og:description / og:url (= canonical) / og:image / og:type,
+     et les équivalents twitter:. Photo = la PHOTO PRINCIPALE du cheval
+     (chevaux.photo_url — choix de Blandine du 09/10), agrandie à 1200 px par
+     Supabase comme pour les stories ; pas de photo (ou photo non publiable,
+     ex. data:) → l'icône Hype icon-512.png (⚠️ partage-apercu.jpg, utilisé par
+     story.html, n'existe PAS sur le dépôt : non utilisé ici).
+
+   CE QU'IL NE FAIT PAS (builds suivants) : aucun texte pour Google dans la
+   page, aucun cache.
 
    ⚠️ LE GROS FICHIER N'EST PAS RELU : on ne lit que le début de la page
    (jusqu'à <head>, vers 200 Ko), on ajoute la ligne, et tout le reste
@@ -92,6 +100,21 @@ const PAGE_503 = () => pageSimple(503, [
 function echapper(t: string): string {
   return String(t || "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 }
+/* Build 5 : l'image d'aperçu. Même transformation Supabase que story-apercu.ts
+   (1200 px de large, sans recadrage). Une photo non utilisable → icône Hype. */
+const IMAGE_HYPE = DOMAINE + "/icon-512.png";
+function imageApercu(brut: unknown): string {
+  const u = String(brut || "").trim();
+  if (!u || u.startsWith("data:") || u.startsWith("blob:")) return IMAGE_HYPE;
+  let abs = u;
+  if (u.startsWith("//")) abs = "https:" + u;
+  else if (!/^https?:\/\//i.test(u)) abs = DOMAINE + "/" + u.replace(/^\.?\/+/, "");
+  if (abs.includes("/storage/v1/object/public/") && !abs.includes("/render/image/")) {
+    abs = abs.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") +
+      (abs.includes("?") ? "&" : "?") + "width=1200&resize=contain&quality=80";
+  }
+  return abs;
+}
 function propre(t: unknown): string { return String(t == null ? "" : t).replace(/\s+/g, " ").trim(); }
 
 function infosSeo(cheval: any, nbResultats: number, slug: string) {
@@ -115,7 +138,7 @@ function infosSeo(cheval: any, nbResultats: number, slug: string) {
     ? "Profil, photos et " + nbResultats + " résultat" + (nbResultats > 1 ? "s" : "") + " en concours sur Hype."
     : "Profil et photos sur Hype.";
 
-  return { titre, description: phrase, canonical: DOMAINE + "/cheval/" + slug };
+  return { titre, description: phrase, canonical: DOMAINE + "/cheval/" + slug, image: imageApercu(cheval.photo_url), nom };
 }
 
 /* ---------- Lecture Supabase (clé publique) ---------- */
@@ -162,13 +185,26 @@ function coller(a: Uint8Array, b: Uint8Array): Uint8Array {
 }
 
 /* ---------- La page Hype avec la ligne ajoutée, en flux ---------- */
-async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string }): Promise<Response | null> {
+async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string; image: string; nom: string }): Promise<Response | null> {
   if (!source.body) return null;
   const enc = new TextEncoder();
   const ajout = enc.encode(
     `<base href="/"><script>window.__HYPE_ROUTE_CHEVAL=${JSON.stringify(uuid)};</script>` +
     `<meta name="description" content="${echapper(seo.description)}">` +
-    `<link rel="canonical" href="${echapper(seo.canonical)}">`);
+    `<link rel="canonical" href="${echapper(seo.canonical)}">` +
+    // build 5 : aperçu de partage (Open Graph + X/Twitter)
+    `<meta property="og:type" content="website">` +
+    `<meta property="og:site_name" content="Hype">` +
+    `<meta property="og:locale" content="fr_FR">` +
+    `<meta property="og:title" content="${echapper(seo.titre)}">` +
+    `<meta property="og:description" content="${echapper(seo.description)}">` +
+    `<meta property="og:url" content="${echapper(seo.canonical)}">` +
+    `<meta property="og:image" content="${echapper(seo.image)}">` +
+    `<meta property="og:image:alt" content="${echapper(seo.nom)}">` +
+    `<meta name="twitter:card" content="summary_large_image">` +
+    `<meta name="twitter:title" content="${echapper(seo.titre)}">` +
+    `<meta name="twitter:description" content="${echapper(seo.description)}">` +
+    `<meta name="twitter:image" content="${echapper(seo.image)}">`);
   const nouveauTitre = enc.encode(`<title>${echapper(seo.titre)}</title>`);
   const lecteur = source.body.getReader();
 
