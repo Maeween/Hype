@@ -9867,3 +9867,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non touché : `EcranCheval`, tout le fichier hors `EcranChevalV2` (vérifié identique à la 756). Aucun SQL, aucune image, aucun nouveau texte.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
 - Non vérifié : test iPhone. Checks : marqueur unique 20261008-757, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 758 — 8 oct. 2026 — Fiche cheval V2 : « Derniers résultats » en cartes verticales (format des pages Cavalier / Écurie)
+- Demande : « Pour les résultats des derniers concours garde plutôt le format qu'on avait déjà sur la page cavalier et chevaux en cartes verticales » (vidéo d'écran jointe).
+- Changement (uniquement dans la V2) : les cartes du carrousel « Derniers résultats » (757) sont remplacées par la carte verticale déjà validée le 01/09 (rail du palmarès de l'ancienne fiche, page Écurie, page Cavalier) : médaille (🏆 / 🥈 / 🥉 / 🎖️) + année en haut, portrait rond du cheval, « 1er CAVALIER sur CHEVAL » (cheval nommé une seule fois), concours, épreuve, « / partants », puis en petit les autres classés de la même épreuve (3 au plus). Sans photo : pas de trou, le médaillon n'est pas dessiné. Largeur 158 pt comme l'original.
+- Adapté à la V2 : couleurs champagne / ivoire et polices Cormorant / Montserrat au lieu du cyan et de Cinzel de l'ancienne fiche (même mise en page). Le crayon ✎ (modifier, 752, mêmes règles) est en haut à droite de la carte, à côté de l'année.
+- Nombre de cartes : 3 comme avant dans la V2 (l'ancienne fiche en montrait jusqu'à 15, chiffre choisi par Blandine le 03/09) — question posée, rien changé sans réponse.
+- Données : la liste des derniers résultats est la même (747) ; elle garde maintenant aussi tous les classés de chaque épreuve pour la ligne « autres classés ». « Principaux résultats » (carte de 3 lignes, 757) inchangé. La carte horizontale de la 757 (`carteResultat`), devenue inutile, est retirée.
+- Vérifié dans le navigateur de test : cartes affichées (médaille, année, portrait, cavalier sur cheval, concours, épreuve, partants, autre classée « 6e Zoé Petit »), crayon seulement sur ma saisie à la main, modification toujours fonctionnelle, aucune erreur.
+- Visuel du badge « ✦ TEAM CSO CLUB SEP » envoyé à Blandine (rendu de la page Cavalier d'une membre de la Team, navigateur de test) : aucun changement de code pour ça.
+- Non touché : `EcranCheval`, tout le fichier hors `EcranChevalV2` (vérifié identique à la 757). Aucun SQL, aucune image ajoutée, un seul mot nouveau (« sur ») traduit en 7 langues.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueur unique 20261008-758, marqueurs de garde présents, node --check 18 blocs OK.
