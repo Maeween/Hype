@@ -9499,3 +9499,17 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichiers : index.html (`hype-import-ffe.js?v=25`), hype-import-ffe.js, SUIVI.md.
 - Limite : ne rattrape que les lignes importées par le compte qui appelle ; les lignes importées avant par d'autres comptes ne sont pas touchées. Non vérifié sur iPhone ni en base.
 - Checks : marqueurs, node --check 18 blocs + hype-import-ffe.js.
+
+## Build 733 — 7 oct. 2026 — Barre du bas qui flotte (toutes pages) : la barre relit la vraie hauteur de l'écran
+- Constat (captures 23:10–23:12) : la barre est à la MÊME hauteur (haut à ~47 % de l'écran) sur Accueil, Galops, Cavalier, Communauté, Écurie, Premium, Hey Baby → pas un défaut de défilement d'une page ; l'iPhone garde une hauteur d'affichage trop courte. Le correctif 730/731 (`overflowX: clip`) n'était pas la bonne piste (laissé, sans effet nuisible).
+- Changement (composant NavBar, un seul) : si la zone visible (visualViewport) est plus haute que la hauteur d'affichage de plus de 40 px, la barre est descendue de l'écart (`bottom` négatif). Relu à chaque défilement/redimensionnement et chaque seconde. Le clavier (zone visible plus courte) n'est jamais touché.
+- Limite : cause NON prouvée. Si l'iPhone se trompe sur les DEUX hauteurs, ce correctif ne change rien. Si la barre flotte encore : fermer/rouvrir l'appli et me dire si c'est après un geste précis (capture d'écran, rotation, clavier, retour d'une autre appli).
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Non vérifié : test iPhone. Checks : marqueurs, node --check 18 blocs.
+
+## Build 734 — 7 oct. 2026 — Page Team Compétition : « Importer des résultats » sur la même ligne que « Gérer les chevaux »
+- Demande : bouton à droite, sur la même ligne.
+- Changement : les deux boutons sont dans une même rangée (écart entre eux, « Importer des résultats » à droite). Pour que les deux tiennent sur un iPhone, marges intérieures 14 → 10 px et espacement des lettres 1,4 → 0,9 sur ces DEUX boutons (« Gérer les chevaux » est donc un peu plus serré qu'avant). « Gérer les membres » inchangé.
+- Non vérifié : iPhone (7 langues : les libellés longs, ex. allemand/italien, peuvent encore être serrés ; la ligne ne passe jamais en deux lignes, le texte se resserre).
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé.
+- Checks : marqueurs, node --check 18 blocs.
