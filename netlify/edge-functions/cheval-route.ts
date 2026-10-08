@@ -1,5 +1,5 @@
 /* ============================================================================
-   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e + build 4 + build 5)
+   HYPE ▸ netlify/edge-functions/cheval-route.ts — 09/10/2026 (référencement, build 3e + build 4 + build 5, année corrigée)
    L'ADRESSE PUBLIQUE D'UN CHEVAL : https://2hype.fr/cheval/<adresse>
 
    CE QUE FAIT CE FICHIER (et RIEN d'autre)
@@ -122,7 +122,8 @@ function infosSeo(cheval: any, nbResultats: number, slug: string) {
   const race = propre(cheval.race);
   let origines: any = cheval.origines;
   try { if (typeof origines === "string") origines = JSON.parse(origines); } catch { origines = null; }
-  const mAn = String((origines && origines.naissance) || "").match(/^(\d{4})/);
+  // l'année de naissance, quelle que soit l'écriture : « 2005-05-07 », « 2005 » ou « 07/05/2005 » (correctif 09/10)
+  const mAn = String((origines && origines.naissance) || "").match(/(?:^|\D)((?:19|20)\d{2})(?:\D|$)/);
   const annee = mAn ? mAn[1] : "";
   const clubBrut = propre(cheval.club) || propre(cheval.ecurie);
   const club = (clubBrut && clubBrut !== "__perso__") ? clubBrut : "";
