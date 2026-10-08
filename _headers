@@ -251,3 +251,44 @@
 #  le nom donne aux photos que l'utilisateur envoie (new File(..., "photo.jpg")).
 #  Le figer un an serait absurde et potentiellement dangereux.
 # =====================================================================
+
+# =====================================================================
+#  09/10/2026 — RÉFÉRENCEMENT, BUILD 8 : LES PAGES DE TEST HORS DE GOOGLE
+#
+#  Le dépôt contient environ 150 pages d'aperçu, de maquette et de test
+#  (copies de l'appli, parfois de 9 Mo) qui sont en ligne. Sans ces règles,
+#  Google pourrait les indexer comme des doublons de Hype.
+#  « X-Robots-Tag: noindex » = Google peut les voir mais ne les montre pas.
+#  Rien ne change pour elles : elles s'ouvrent toujours normalement.
+#  ⚠️ Ne PAS les bloquer aussi dans robots.txt : Google ne pourrait plus lire
+#  ce noindex.
+#
+#  RESTENT VISIBLES PAR GOOGLE : / (index.html), /cheval/…, lingo.html,
+#  story.html, sitemap.xml, sitemap-chevaux.xml, robots.txt.
+# =====================================================================
+/DEV_*
+  X-Robots-Tag: noindex
+/_SC_*
+  X-Robots-Tag: noindex
+/apercu-*
+  X-Robots-Tag: noindex
+/c.html
+  X-Robots-Tag: noindex
+/diag-*
+  X-Robots-Tag: noindex
+/extraire-*
+  X-Robots-Tag: noindex
+/hype-*.html
+  X-Robots-Tag: noindex
+/index-*
+  X-Robots-Tag: noindex
+/lingo-*.html
+  X-Robots-Tag: noindex
+/maquette-*
+  X-Robots-Tag: noindex
+/page-chapitre.html
+  X-Robots-Tag: noindex
+/preview*
+  X-Robots-Tag: noindex
+/test-*
+  X-Robots-Tag: noindex
