@@ -10208,3 +10208,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Page Performances des chevaux : le petit libellé sous le titre affiche le nom lu dans la fiche de la Team (repli : ancien « Team compétition » traduit tant que la fiche n'est pas chargée).
 - Fiche cheval : la ligne de classement Team (« #rang · points ») porte le nom de la Team (hypeClassementTeamChevaux renvoie aussi `nom`).
 - Le nom suivra tout seul s'il change un jour. Checks : marqueur unique 20261010-786, node --check 18 blocs OK ; rendu Performances vérifié (iPhone 13).
+- Build 786 mis en ligne (Ok de Blandine).
+
+## Build 787 — 10/10/2026 · Piquets : barre d'onglets + création (« + »)
+- Choix de Blandine : la création d'abord (aucun piquet n'existait, une barre seule aurait été invisible).
+- Page « Les chevaux de l'écurie », entre les compteurs et les cartes : barre défilante « Tous les chevaux » + piquets de l'écurie (nature « piquet » ; les Teams n'y sont jamais) + « + » réservé à la gestion de l'écurie (propriétaire via clubRevendiquePar, ou club_gestionnaires).
+- Public : seulement les piquets qui ont au moins un cheval. Clic sur un piquet = les cartes se limitent à ses chevaux (la présentation du piquet viendra à l'étape C).
+- « + » ouvre une feuille : propositions (CSO / Dressage / Complet × Club, Amateur, Poney ; Hunter, Voltige, Equifun, Equifeel, Shetland, Loisir) + « Personnalisé » (nom libre, Compétition ou Loisir) ; choix des chevaux parmi ceux de la page (au moins un). Une proposition déjà créée disparaît de la liste.
+- Enregistrement : groupes (club_clef exacte de l'écurie revendiquée, nature piquet, discipline, niveau, type) puis groupes_chevaux. Si les chevaux échouent, le piquet vide est supprimé (propriétaire) et l'erreur est affichée.
+- Nouveaux : HYPE_PIQUETS_PROPOSES, hypeClefClubPiquets, hypeLibPiquet, CreationPiquetEH. Textes en 7 langues (noms de disciplines non traduits, sauf « Loisir »).
+- Testé dans Chromium iPhone 13 (base simulée) : barre, feuille, enregistrement (groupe + 2 chevaux), filtre. Checks : marqueur unique 20261010-787, node --check 18 blocs OK.
