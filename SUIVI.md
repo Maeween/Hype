@@ -10040,3 +10040,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Vérifié dans un Chromium au format iPhone 13 : badges 1, 2 et 100 chargés ; page Quêtes identique avant/après (seule l'animation de l'anneau diffère) ; Mon compte identique ; aucune erreur.
 - Fichiers : index.html + SUIVI.md + dossier images/badges-niveau/ (100 fichiers).
 - Checks : marqueur unique 20261009-767, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 768 — 9 oct. 2026 — Santé du club : « Importer des soins » depuis un message collé (étape 1)
+- Demande : donner une capture / un message (ex. WhatsApp « Maréchal : » + 9 chevaux) et que chaque fiche se remplisse. Blandine a laissé Claude trancher (« continue ») ; choix retenus, modifiables : import pour PLUSIEURS chevaux depuis la page Santé du club ; « maréchal » = ferrure (parage au choix) ; sans date écrite = date du jour, affichée et modifiable ; AUCUNE prochaine échéance inventée (date_prochaine vide) ; texte collé d'abord, capture au build suivant.
+- Nouveau : bouton « 📋 Importer des soins » en haut de la liste (EcranSanteClub) → feuille plein écran (portail, au-dessus de la barre du bas) : zone de texte, « Lire le message », puis une carte par cheval (case à cocher, cheval reconnu ou à choisir — rouge si inconnu et décoché —, type de soin, date), « Enregistrer N soin(s) ».
+- Lecture SANS IA, dans le téléphone (hypeImportSoinsLire) : une ligne-titre (« Marechal : », « Vaccins 12/10 ») fixe le type/la date des lignes suivantes ; une date dans une ligne la remplace ; copie WhatsApp « [08/10/2026 11:52] Nom: … » → la date du message sert de date. Rapprochement des noms sans accents ni majuscules : exact, puis début du nom (« Rizotto » → Rizotto d'Emery, « My dream » → My Dream de Feinn), puis tous les mots ; deux candidats → pas de choix automatique.
+- Écriture soin par soin (insert soins_cheval, details = {import:"texte", ligne}) : un refus de la base (cheval sur lequel on n'a pas le droit d'écrire) s'affiche sur sa ligne sans bloquer les autres ; la liste du club se recharge ensuite.
+- Testé dans un Chromium au format iPhone 13 (base simulée) avec SON message : 8 chevaux reconnus en ferrure à la date du jour, « Borealis » (absent de la base) laissé décoché en rouge ; « Enregistrer 8 soin(s) » → 8 écritures, ✓ sur chaque carte, bilan affiché ; aucune erreur. Textes en 7 langues.
+- Fichiers : index.html + SUIVI.md.
+- Checks : marqueur unique 20261009-768, marqueurs de garde présents, node --check 18 blocs OK.
