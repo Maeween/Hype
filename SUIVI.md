@@ -10168,3 +10168,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Titre en deux tons : « Performances » ivoire, « des chevaux » champagne doux (#D2B07A), 7 langues. Libellé « Team compétition », bouton Saison, retour et « i » inchangés.
 - Rien d'autre ne change (classement, filtres, saison, cartes, barème).
 - ⚠️ L'ancienne image `team-competition-performances-hero.webp` reste utilisée par la tuile « Performances chevaux » de la page Team : on ne la supprime pas.
+- Photos des futurs piquets ajoutées dans `images/` (pas encore utilisées par l'appli, aucun effet à l'écran) : `piquet-cso.webp`, `piquet-dressage.webp`, `piquet-dressage-2.webp` (cavalière en haut-de-forme), `piquet-complet-club.webp`, `piquet-complet-amateur.webp`, `piquet-voltige.webp`, `piquet-loisir.webp`.
