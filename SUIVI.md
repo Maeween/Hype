@@ -10088,3 +10088,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Chaque carte affiche « Prochaine échéance » pré-remplie (date du soin + délai) pour ces 5 types ; recalculée si on change le type ou la date, tant qu'on ne l'a pas modifiée à la main ; modifiable ou effaçable. Enregistrée dans date_prochaine. Autres types (ostéopathe, vétérinaire, traitement…) : rien de proposé. Pour une PRIMO-vaccination (2e injection, 1er rappel), la date proposée (1 an) est à corriger à la main — question posée à Blandine.
 - Testé dans un Chromium au format iPhone 13 : son message maréchal → 8 ferrures au 09/10/2026 avec prochaine échéance au 04/12/2026 ; « Terminé » OK ; aucune erreur. Texte en 7 langues.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-773, node --check 18 blocs OK.
+
+## Build 774 — 9 oct. 2026 — 11 appels à des fichiers d'images inexistants retirés
+- index.html chargeait au démarrage 12 fichiers hype-images-XX.js absents du dépôt (26, 27, 62, 63, 64, 66, 73, 74, 89, 102, 103, 112) → 12 téléchargements ratés (404) à chaque ouverture de l'appli.
+- Retirés : les 11 balises <script> vers des fichiers qui n'existent pas. GARDÉE : celle de hype-images-89.js, car le dépôt contient « hype-images-89 2.js » (1,9 Mo, images k451 et suivantes) qui ressemble au vrai fichier renommé par l'iPhone — le renommer ferait réapparaître des images de cours : question posée à Blandine, rien touché.
+- Aucun changement visible : 643 images disponibles avant comme après, accueil identique (seule l'animation d'ouverture diffère d'une capture à l'autre), aucune erreur ; 404 au démarrage : 12 → 1.
+- Fait sans question (« continue », rien de visible) ; réversible.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-774, node --check 18 blocs OK.
