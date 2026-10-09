@@ -10218,3 +10218,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Enregistrement : groupes (club_clef exacte de l'écurie revendiquée, nature piquet, discipline, niveau, type) puis groupes_chevaux. Si les chevaux échouent, le piquet vide est supprimé (propriétaire) et l'erreur est affichée.
 - Nouveaux : HYPE_PIQUETS_PROPOSES, hypeClefClubPiquets, hypeLibPiquet, CreationPiquetEH. Textes en 7 langues (noms de disciplines non traduits, sauf « Loisir »).
 - Testé dans Chromium iPhone 13 (base simulée) : barre, feuille, enregistrement (groupe + 2 chevaux), filtre. Checks : marqueur unique 20261010-787, node --check 18 blocs OK.
+- Build 787 mis en ligne (Ok de Blandine).
+
+## Build 788 — 10/10/2026 · Piquets, étape C : présentation d'un piquet
+- Quand un piquet est choisi dans la barre : bloc de présentation (bordure variante D) avec la photo de sa discipline (`hypePhotoPiquet` → images/piquet-*.webp ; personnalisé → photo loisir), « PIQUET » + badge discret Club / Amateur / Poney en champagne, nom en serif, petite phrase (compétition : « Les chevaux de l'écurie engagés en … » ; loisir : plaisir, balade, complicité), nombre de chevaux en pétrole ; puis le titre « Nos chevaux » et les cartes.
+- Piquet vide (visible de la gestion seulement) : « Aucun cheval attribué pour l'instant. », aucune fausse carte.
+- La carte « Ajouter un cheval » (ajout à l'écurie) est masquée dans la vue d'un piquet, pour ne pas la confondre avec un ajout au piquet (étape D).
+- Pas encore : lien vers les résultats du piquet (étape F), bouton « Ajouter un cheval » au piquet (étape D).
+- Textes en 7 langues. Testé Chromium iPhone 13 (piquet rempli et piquet vide). Checks : marqueur unique 20261010-788, node --check 18 blocs OK.
