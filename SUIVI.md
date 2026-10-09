@@ -10095,3 +10095,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Aucun changement visible : 643 images disponibles avant comme après, accueil identique (seule l'animation d'ouverture diffère d'une capture à l'autre), aucune erreur ; 404 au démarrage : 12 → 1.
 - Fait sans question (« continue », rien de visible) ; réversible.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-774, node --check 18 blocs OK.
+### 09/10 (23 h) — hype-images-89.js retrouvé (hors build index, à reporter au suivi avec le prochain index)
+- Inquiétude de Blandine (« les images de cours étaient toutes là ») : vérifié sur TOUT l'historique GitHub (depuis le 30/06) — les 12 fichiers hype-images manquants n'ont JAMAIS existé dans le dépôt ; le ménage du soir n'en a supprimé aucun.
+- « hype-images-89 2.js » (envoyé le 19/07 sous ce nom par l'iPhone) contenait les 7 images du Memory Baby Poney (k451 couverture paysage, k452 portrait, k453 dodo, k454 copains, k455 eau, k456 balade, k457 foin) : jamais chargées. Renommé en hype-images-89.js (commit « Renomme … », poussé). Vérifié : 643 → 648 images disponibles, 0 fichier introuvable au démarrage, aucune erreur. k455 et k457 passaient jusque-là par le filet images/k455.jpg / k457.jpg.
+
+## Build 775 — 9 oct. 2026 — Les liens partagés donnent 2hype.fr (plus 2hype.netlify.app)
+- LIEN_APP valait encore "https://2hype.netlify.app" : bouton Partager, QR code, invitations et partages de fiches/albums renvoyaient vers l'ancienne adresse, à l'inverse de la décision « jamais netlify.app » du référencement. Désormais "https://2hype.fr". Les anciens liens netlify.app fonctionnent toujours (même site).
+- Texte d'aide « Ou ouvre 2hype.netlify.app dans Safari… » (ajout au calendrier) → « 2hype.fr » en français et en arabe (les autres langues disaient « le site »).
+- NON fait, question posée : renvoi automatique (301) de 2hype.netlify.app vers 2hype.fr — ⚠️ risque à vérifier d'abord : si l'adresse du webhook Stripe est en netlify.app, une redirection casserait l'activation des abonnements (Stripe ne suit pas les redirections).
+- Les mentions restantes de 2hype.netlify.app sont des commentaires de code.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-775, node --check 18 blocs OK.
