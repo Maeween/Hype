@@ -10291,3 +10291,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sous les pastilles des piquets, une ligne à part, seulement si le cheval est réellement dans la Team : icône « cavaliers », « Team CSO Club · Découvrir ses cavaliers › ». Ouvre la page Team (et efface le souvenir d'un piquet sur Performances). Pas présentée comme un piquet (autre icône, autre forme, placée à part).
 - La ligne de classement Team dans la carte (#rang · points) reste inchangée.
 - Fiche V2 seulement (adresse cachée #chevalv2-<id>). Testé Chromium iPhone 13. Checks : marqueur unique 20261010-797, node --check 18 blocs OK.
+
+## Build 798 — 10/10/2026 · Barre des piquets : pastilles en dégradé ombré
+- Demande de Blandine (capture entourée) : plus de pastille pleine dorée pour l'onglet actif. Onglet actif : fond dégradé pétrole → noir transparent, liseré champagne 0,5, ombre portée, texte ivoire gras ; inactifs : dégradé sombre transparent, liseré champagne 0,16, texte ivoire 72 % ; bouton « + » assorti.
+- Rien d'autre ne change. Checks : marqueur unique 20261010-798, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
