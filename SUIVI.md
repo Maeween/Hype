@@ -10014,3 +10014,22 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé.
 - Checks : marqueur unique 20261009-765, marqueurs de garde présents, node --check 18 blocs OK.
 - À VENIR (ordre convenu) : notification iPhone à chaque nouvelle inscription ; outil de lecture des soins depuis une photo (exemple reçu : message WhatsApp « Maréchal : » + liste de chevaux, sans date écrite → la date devra venir de l'en-tête « Aujourd'hui » ou être demandée).
+
+### 09/10 — NOTIFICATION « NOUVELLE INSCRIPTION » (hors build index)
+- Décision : Blandine a laissé Claude choisir ; option B retenue (notification sur son iPhone, pas un message aux membres). L'onglet Activité de la Communauté affichait déjà « X a rejoint Hype » (build 609).
+- Fonction notifier-abonnement étendue (commit « annonce aussi les nouvelles inscriptions », poussé par Claude, déploiement GitHub au vert) : lit la file inscriptions_a_annoncer, la coche (annonce_le) AVANT d'envoyer « 👋 Nouvelle inscription — <pseudo> a rejoint Hype ». Protégée : file absente → abonnements inchangés. Testée hors ligne.
+- SQL sql-notif-inscriptions.sql : table inscriptions_a_annoncer (illisible depuis l'appli), règle AFTER INSERT inscription_annoncer sur profiles (profiles non modifiée ; les comptes existants ne sont pas annoncés). La file et l'appel sont dans deux blocs protégés : une notification ne peut jamais bloquer une création de compte. Testé en base locale.
+- ⚠️ Le pseudo au moment de l'inscription est le DÉBUT DE L'ADRESSE E-MAIL (handle_new_user : split_part(email,'@',1)) — c'est ce qui s'affiche dans la notification, pas le pseudo choisi ensuite.
+
+### 09/10 (soir) — MÉNAGE DU DOSSIER images/ (hors build index)
+- État des lieux sans rien toucher : 512 fichiers (87 Mo). Recherche de chaque nom dans tout le dépôt ET dans toutes les colonnes texte de la base (aucune trace).
+- Supprimés (commit « Ménage images/ », poussé par Claude) : images/index.html (vieille copie, 8,9 Mo), images/SUIVI.md, images/netlify.toml (rangés là par erreur) ; couv-g2-robes-variante-pre.jpg, fond_story_hype_editorial.png, hype-anim-cheval-poster.jpg, hype-anim-cheval.webm, poney-mail-courrier.png, poney-patiente.mp4. Environ 10 Mo. Récupérables dans l'historique GitHub.
+- ⚠️ Blandine avait annulé la première demande ; l'opération était pourtant déjà partie et a abouti (constaté et signalé). Résultat conforme à ce qu'elle avait validé.
+- Gardés : k550–k552 (appelés par la boucle k547–k554), hype-anim-rideaux.webm (hype-video.js), k457/k473/k474 et k631–k639 (versions fichier d'images encore en base64, pour la suite).
+
+## Build 766 — 9 oct. 2026 — Base64, lot A : les 6 grandes images de fond deviennent des fichiers
+- Sorties d'index.html (octets identiques, décodés tels quels) : images/fond-recit.webp (HYPE_FOND_RECIT), images/fond-story.webp (HYPE_FOND_STORY, aussi chargée pour fabriquer les stories — même origine, pas de souci de canvas), images/quetes-fond.jpg (IMG_QUETES_FOND, définie mais utilisée nulle part), images/quetes-hero.jpg (IMG_QUETES_HERO), images/fond-cavaliers-ecurie.webp (HYPE_FOND_CAVALIERS_ECURIE), images/psaut-hero.webp (fond du PSAUT_HTML, inséré par innerHTML dans la page : l'adresse relative marche).
+- Index : 9,54 Mo → 9,50 Mo ; reste 100 images base64 (lot B = HYPE_NIVEAU_BADGES + petites).
+- Vérifié dans un Chromium au format iPhone 13 : les 6 fichiers se chargent (bonnes dimensions) ; pages Quêtes et Cavaliers de l'écurie identiques avant/après (Quêtes : seule l'animation de l'anneau diffère d'une capture à l'autre).
+- Fichiers : index.html + SUIVI.md + 6 nouvelles images dans images/.
+- Checks : marqueur unique 20261009-766, marqueurs de garde présents, node --check 18 blocs OK.
