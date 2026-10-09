@@ -10059,3 +10059,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - ⚠️ Pas testé avec la vraie IA depuis ici (accès bloqué) : c'est le test iPhone qui le dira. Durée attendue 1 à 2 min par capture (réglage « high » de l'analyse photo).
 - Fichiers : index.html + SUIVI.md.
 - Checks : marqueur unique 20261009-769, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 770 — 9 oct. 2026 — Importer des soins : lire aussi une facture en PDF
+- Demande : « quand je reçois une facture vétérinaire pour 15 vaccins d'un coup … lui envoyer la facture et qu'il comprenne par lui-même » (souvent en PDF par e-mail).
+- Le bouton devient « 📷 Lire une capture, une photo ou un PDF » (toujours réservé au compte de Blandine). Un PDF est découpé en images DANS LE TÉLÉPHONE (4 premières pages au plus, 1800 px, fond blanc), puis toutes les pages partent en UN seul appel à hey-baby-vision (mode perception, différé), avec la consigne « pages d'un même document ». Au-delà de 4 pages, un message le dit.
+- pdf.js (Mozilla, licence Apache 2.0, version 6.2.108 « legacy ») HÉBERGÉ sur le site : vendor/pdfjs-6.2.108/ (pdf.min.mjs ~0,5 Mo, pdf.worker.min.mjs ~1,3 Mo, LICENSE). Chargé SEULEMENT quand on choisit un PDF : aucun poids en plus au démarrage de l'appli. Hébergé chez nous (et pas sur un CDN) pour que son « worker » ait la même adresse que l'appli.
+- ⚠️ Erreur évitée au test : la version « normale » de pdf.js 6 utilise une fonction JavaScript trop récente (getOrInsertComputed) → « this[#Ra].getOrInsertComputed is not a function » ; la version « legacy », qui l'apporte elle-même, marche. Garder la legacy.
+- _headers : /vendor/pdfjs-6.2.108/* servi en text/javascript (Safari refuse un module .mjs mal typé), cache long, noindex.
+- Testé dans un Chromium au format iPhone 13 (réponse de l'IA simulée) : PDF de 5 pages → 4 images envoyées + message « 4 premières pages (5 pages) » ; cartes remplies ; une image simple marche toujours comme au 769 ; aucune erreur.
+- Fichiers : index.html + SUIVI.md + _headers + vendor/pdfjs-6.2.108/ (3 fichiers).
+- Checks : marqueur unique 20261009-770, marqueurs de garde présents, node --check 18 blocs OK.

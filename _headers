@@ -292,3 +292,10 @@
   X-Robots-Tag: noindex
 /test-*
   X-Robots-Tag: noindex
+
+# 09/10 (770) : pdf.js (lecture des factures PDF), charge seulement quand on choisit un PDF.
+# Type JavaScript explicite : Safari refuse un module .mjs servi avec un autre type.
+/vendor/pdfjs-6.2.108/*
+  Content-Type: text/javascript; charset=utf-8
+  Cache-Control: public, max-age=31536000, immutable
+  X-Robots-Tag: noindex
