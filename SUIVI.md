@@ -10233,3 +10233,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Dans le bloc du piquet, pour la gestion de l'écurie seulement : bouton « Gérer les chevaux » (« Ajouter un cheval » si le piquet est vide).
 - Feuille GestionPiquetEH : chevaux de la page, ceux du piquet déjà cochés ; « Enregistrer » ajoute les cochés et retire les décochés (groupes_chevaux). Retirer un cheval du piquet ne supprime pas sa fiche. Le piquet lui-même n'est jamais supprimé ici.
 - Textes en 7 langues. Testé Chromium iPhone 13 (base simulée : 1 ajout, 1 retrait). Checks : marqueur unique 20261010-789, node --check 18 blocs OK.
+- Build 789 mis en ligne (Ok de Blandine).
+- 10/10 (Ok de Blandine) : 3 fiches « Gacco » en double envoyées à la corbeille (supprime_le) — 282e0ae4…, abebc47c…, 9d7adbae… ; gardée : a46fb5f8… (la première).
+
+## Build 790 — 10/10/2026 · Création d'un cheval : alerte « tu as déjà un cheval de ce nom »
+- Cause des 4 « Gacco » : la fenêtre « Un nouveau cheval » cherche les doublons dans l'écurie et dans tout Hype, mais ÉCARTE volontairement mes propres chevaux (possédés ou rattachés) → recréer un cheval qu'on a déjà ne prévenait de rien.
+- Désormais : si le nom tapé (sans accents ni majuscules) est exactement celui d'un de MES chevaux, encart champagne « Tu as déjà un cheval nommé « X » (écurie) » + bouton « Ouvrir sa fiche ». « Créer sa fiche » demande alors un 2e appui pour créer quand même (remis à zéro dès que le nom change).
+- Textes en 7 langues. Testé Chromium iPhone 13. Checks : marqueur unique 20261010-790, node --check 18 blocs OK.
+- Signalés par Blandine dans la même vidéo, à traiter ensuite (un build chacun) : (a) la liste « Choisis un cheval de l'écurie » de cette fenêtre propose les chevaux de SON écurie de profil (Feinn) même ouverte depuis la SEP ; (b) en sortant de la fiche créée, on revient sur la mauvaise écurie.
