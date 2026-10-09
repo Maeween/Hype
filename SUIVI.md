@@ -10241,3 +10241,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Désormais : si le nom tapé (sans accents ni majuscules) est exactement celui d'un de MES chevaux, encart champagne « Tu as déjà un cheval nommé « X » (écurie) » + bouton « Ouvrir sa fiche ». « Créer sa fiche » demande alors un 2e appui pour créer quand même (remis à zéro dès que le nom change).
 - Textes en 7 langues. Testé Chromium iPhone 13. Checks : marqueur unique 20261010-790, node --check 18 blocs OK.
 - Signalés par Blandine dans la même vidéo, à traiter ensuite (un build chacun) : (a) la liste « Choisis un cheval de l'écurie » de cette fenêtre propose les chevaux de SON écurie de profil (Feinn) même ouverte depuis la SEP ; (b) en sortant de la fiche créée, on revient sur la mauvaise écurie.
+- Build 790 mis en ligne (Ok de Blandine).
+
+## Build 791 — 10/10/2026 · « Un nouveau cheval » part de l'écurie de la page
+- La page des chevaux d'une écurie pose `window.__creationChevalClub` (écurie de la page) juste avant d'ouvrir la fenêtre via la carte « Ajouter un cheval » ; la fenêtre la lit une fois.
+- Effets : la liste « Choisis un cheval de l'écurie » montre les chevaux de CETTE écurie (avant : toujours l'écurie du profil, donc Feinn depuis la SEP) ; « Dans quelle écurie ? » est présélectionné sur elle si elle fait partie de mes écuries (avant : « Aucune »).
+- Ouverte d'ailleurs (autres boutons), la fenêtre garde son comportement d'avant.
+- Checks : marqueur unique 20261010-791, node --check 18 blocs OK ; ouverture testée Chromium iPhone 13 sans erreur.
