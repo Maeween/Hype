@@ -10254,3 +10254,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Page Écurie et page des chevaux, ouvertes SANS écurie transmise (retour d'une fiche, onglet, accueil) : repartent de la dernière écurie choisie au lieu de l'écurie du profil.
 - Conséquence assumée (annoncée à Blandine) : après être passée sur la SEP, l'onglet Écurie reste sur la SEP jusqu'à ce qu'on rechoisisse Feinn ou qu'on ferme l'appli.
 - Vérifié Chromium iPhone 13 : aller SEP → accueil → retour sur les chevaux = SEP (791 : « L'Écurie Hype »). Checks : marqueur unique 20261010-792, node --check 18 blocs OK.
+- Builds 791 et 792 mis en ligne (Ok de Blandine).
+
+## Build 793 — 10/10/2026 · Pas deux chevaux du même nom dans la même écurie
+- Règle de Blandine (« normalement on peut pas avoir deux chevaux du même nom dans la même écurie »).
+- Fenêtre « Un nouveau cheval » : écurie visée = choix « Dans quelle écurie ? », sinon écurie de la page, sinon du profil. Nom exact (sans accents ni majuscules) déjà porté par un cheval de cette écurie (tous propriétaires) ou par un de mes chevaux rangé dans cette écurie / sans écurie → encart « existe déjà dans cette écurie… ajoute un détail au nom (ex. « X II ») » + « Ouvrir sa fiche », bouton « Créer sa fiche » désactivé.
+- Deux écuries différentes peuvent chacune avoir leur homonyme ; mon cheval homonyme dans une AUTRE écurie garde l'alerte du 790 (2e appui pour créer).
+- Limite : seule cette fenêtre est protégée (l'autre chemin de création, Gérer mon écurie, a son propre anti-doublon) ; rien n'est vérifié en base.
+- Textes en 7 langues. Testé Chromium iPhone 13. Checks : marqueur unique 20261010-793, node --check 18 blocs OK.
