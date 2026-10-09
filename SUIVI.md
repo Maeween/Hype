@@ -10226,3 +10226,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - La carte « Ajouter un cheval » (ajout à l'écurie) est masquée dans la vue d'un piquet, pour ne pas la confondre avec un ajout au piquet (étape D).
 - Pas encore : lien vers les résultats du piquet (étape F), bouton « Ajouter un cheval » au piquet (étape D).
 - Textes en 7 langues. Testé Chromium iPhone 13 (piquet rempli et piquet vide). Checks : marqueur unique 20261010-788, node --check 18 blocs OK.
+- Build 788 mis en ligne (Ok de Blandine).
+- Premiers vrais piquets créés par Blandine (SEP) : CSO Club (9 chevaux), CSO Amateur (1). ⚠️ En touchant « Ajouter un cheval » dans la vue d'un piquet (787), elle a créé 4 fiches « Gacco » (SEP, 23:18 → 23:20 UTC) : cette carte crée un cheval, elle n'ajoute pas au piquet. Corrigé par le 788 (carte masquée dans la vue d'un piquet). Doublons signalés, suppression en attente de son accord.
+
+## Build 789 — 10/10/2026 · Piquets, étape D : gérer les chevaux d'un piquet
+- Dans le bloc du piquet, pour la gestion de l'écurie seulement : bouton « Gérer les chevaux » (« Ajouter un cheval » si le piquet est vide).
+- Feuille GestionPiquetEH : chevaux de la page, ceux du piquet déjà cochés ; « Enregistrer » ajoute les cochés et retire les décochés (groupes_chevaux). Retirer un cheval du piquet ne supprime pas sa fiche. Le piquet lui-même n'est jamais supprimé ici.
+- Textes en 7 langues. Testé Chromium iPhone 13 (base simulée : 1 ajout, 1 retrait). Checks : marqueur unique 20261010-789, node --check 18 blocs OK.
