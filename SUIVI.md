@@ -10069,3 +10069,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé dans un Chromium au format iPhone 13 (réponse de l'IA simulée) : PDF de 5 pages → 4 images envoyées + message « 4 premières pages (5 pages) » ; cartes remplies ; une image simple marche toujours comme au 769 ; aucune erreur.
 - Fichiers : index.html + SUIVI.md + _headers + vendor/pdfjs-6.2.108/ (3 fichiers).
 - Checks : marqueur unique 20261009-770, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 771 — 9 oct. 2026 — Importer des soins : bouton « ✓ Terminé » après l'enregistrement
+- Vu sur sa capture du 768 : une fois tout enregistré, le bas de la feuille restait « Enregistrer 0 soin(s) » grisé. Désormais, quand il ne reste rien à enregistrer et qu'au moins un soin est passé, le bouton devient « ✓ Terminé » (vert) et ferme la feuille ; la liste du club est déjà rechargée. Texte en 7 langues.
+- Testé dans un Chromium au format iPhone 13 : après « Enregistrer 8 soin(s) » → « ✓ Terminé » → feuille fermée ; aucune erreur.
+- Fichiers : index.html + SUIVI.md.
+- Checks : marqueur unique 20261009-771, marqueurs de garde présents, node --check 18 blocs OK.
+- EN ATTENTE (décision de Blandine) : calcul automatique de la prochaine échéance — il faut ses délais habituels (vaccin, maréchal, vermifuge, dentiste…).
