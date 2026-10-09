@@ -10262,3 +10262,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Deux écuries différentes peuvent chacune avoir leur homonyme ; mon cheval homonyme dans une AUTRE écurie garde l'alerte du 790 (2e appui pour créer).
 - Limite : seule cette fenêtre est protégée (l'autre chemin de création, Gérer mon écurie, a son propre anti-doublon) ; rien n'est vérifié en base.
 - Textes en 7 langues. Testé Chromium iPhone 13. Checks : marqueur unique 20261010-793, node --check 18 blocs OK.
+- Build 793 mis en ligne (Ok de Blandine).
+
+## Build 794 — 10/10/2026 · Piquets, étape F : « Voir les résultats » d'un piquet
+- Bloc d'un piquet de COMPÉTITION ayant au moins un cheval : bouton champagne « Voir les résultats ».
+- Il ouvre la page Performances des chevaux sur CE piquet (window.__perfGroupe = { id, nom }) : classement par points de la saison choisie (date des épreuves, 1er sept → 31 août), filtres d'épreuve, comme pour la Team ; le petit libellé sous le titre affiche le nom du piquet (« CSO Club »).
+- Retour depuis une fiche cheval : on revient sur le même piquet (window.__perfGroupeCourant). Le bouton « Performances » de la page Team efface ce souvenir et rouvre la Team.
+- Limite connue : les résultats d'un cheval ne sont pas encore triés par discipline (un cheval à la fois en CSO et en dressage verra ses deux sortes d'épreuves) ; les filtres d'épreuve existants permettent de les séparer.
+- Testé Chromium iPhone 13. Checks : marqueur unique 20261010-794, node --check 18 blocs OK.
