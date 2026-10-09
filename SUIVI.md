@@ -10248,3 +10248,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Effets : la liste « Choisis un cheval de l'écurie » montre les chevaux de CETTE écurie (avant : toujours l'écurie du profil, donc Feinn depuis la SEP) ; « Dans quelle écurie ? » est présélectionné sur elle si elle fait partie de mes écuries (avant : « Aucune »).
 - Ouverte d'ailleurs (autres boutons), la fenêtre garde son comportement d'avant.
 - Checks : marqueur unique 20261010-791, node --check 18 blocs OK ; ouverture testée Chromium iPhone 13 sans erreur.
+
+## Build 792 — 10/10/2026 · L'écurie choisie est retenue pendant la session
+- `window.__hypeEcurieCourante` (en mémoire, remis à zéro à la fermeture de l'appli) : posée quand on choisit une écurie sur la page Écurie (clubForce) et quand la page des chevaux reçoit une écurie.
+- Page Écurie et page des chevaux, ouvertes SANS écurie transmise (retour d'une fiche, onglet, accueil) : repartent de la dernière écurie choisie au lieu de l'écurie du profil.
+- Conséquence assumée (annoncée à Blandine) : après être passée sur la SEP, l'onglet Écurie reste sur la SEP jusqu'à ce qu'on rechoisisse Feinn ou qu'on ferme l'appli.
+- Vérifié Chromium iPhone 13 : aller SEP → accueil → retour sur les chevaux = SEP (791 : « L'Écurie Hype »). Checks : marqueur unique 20261010-792, node --check 18 blocs OK.
