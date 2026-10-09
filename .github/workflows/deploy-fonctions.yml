@@ -27,3 +27,8 @@ jobs:
 
       # 26/09 : analyse photo de Hey Baby (limite de temps de Netlify trop courte)
       - run: supabase functions deploy hey-baby-vision --project-ref $PROJECT_ID
+
+      # 09/10 : notification « Nouvel abonnement » sur l'iPhone de Blandine.
+      # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton
+      # (sans ce drapeau, la ligne de commande remet le contrôle et tout appel est refusé).
+      - run: supabase functions deploy notifier-abonnement --no-verify-jwt --project-ref $PROJECT_ID
