@@ -10049,3 +10049,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé dans un Chromium au format iPhone 13 (base simulée) avec SON message : 8 chevaux reconnus en ferrure à la date du jour, « Borealis » (absent de la base) laissé décoché en rouge ; « Enregistrer 8 soin(s) » → 8 écritures, ✓ sur chaque carte, bilan affiché ; aucune erreur. Textes en 7 langues.
 - Fichiers : index.html + SUIVI.md.
 - Checks : marqueur unique 20261009-768, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 769 — 9 oct. 2026 — Importer des soins : lire une CAPTURE ou une PHOTO (étape 2)
+- Dans la feuille « Importer des soins » (build 768), nouveau bouton « 📷 Lire une capture ou une photo », visible UNIQUEMENT sur le compte de Blandine (estCompteFeinnHype), comme l'analyse photo de Hey Baby : chaque lecture est payée (OpenAI).
+- Aucune nouvelle fonction serveur : on réutilise hey-baby-vision en mode « perception » EN DIFFÉRÉ (job dans heybaby_analyses relu toutes les 3 s, jusqu'à 5 min) — tient même si l'appli passe en arrière-plan. Image réduite à 1800 px max en JPEG avant envoi.
+- Consigne donnée à l'IA : rendre UNIQUEMENT une liste JSON (texte lu, cheval, type parmi les 11 types de la base, date) ; noms recopiés exactement s'ils figurent dans la liste des chevaux du club ; « marechal » sans précision = ferrure ; « Aujourd'hui / Hier » convertis avec la date du jour ; rien d'inventé (illisible = vide).
+- L'IA ne décide rien : chaque ligne repasse par le même rapprochement des noms que le texte collé ; type inconnu ou cheval non reconnu → carte décochée, à compléter ; date absente → date du document, sinon date du jour. Puis vérification et « Enregistrer » comme au 768.
+- Testé dans un Chromium au format iPhone 13 (base et réponse de l'IA simulées) : envoi en mode perception + différé avec une image JPEG ; 4 lignes rendues → Elfe et Quarla reconnus et cochés (dates 03/10 et 04/10), « Toto » inconnu décoché, Filou reconnu mais type illisible → décoché ; aucune erreur. Textes en 7 langues.
+- ⚠️ Pas testé avec la vraie IA depuis ici (accès bloqué) : c'est le test iPhone qui le dira. Durée attendue 1 à 2 min par capture (réglage « high » de l'analyse photo).
+- Fichiers : index.html + SUIVI.md.
+- Checks : marqueur unique 20261009-769, marqueurs de garde présents, node --check 18 blocs OK.
