@@ -10169,3 +10169,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rien d'autre ne change (classement, filtres, saison, cartes, barème).
 - ⚠️ L'ancienne image `team-competition-performances-hero.webp` reste utilisée par la tuile « Performances chevaux » de la page Team : on ne la supprime pas.
 - Photos des futurs piquets ajoutées dans `images/` (pas encore utilisées par l'appli, aucun effet à l'écran) : `piquet-cso.webp`, `piquet-dressage.webp`, `piquet-dressage-2.webp` (cavalière en haut-de-forme), `piquet-complet-club.webp`, `piquet-complet-amateur.webp`, `piquet-voltige.webp`, `piquet-loisir.webp`.
+
+## SQL E1 — 10/10/2026 (passé par Blandine dans Supabase)
+- Table `groupes` : nouvelles cases `nature` ('piquet' par défaut / 'equipe'), `discipline`, `niveau` (club, amateur, poney, autre, sans_circuit), `type` ('competition' par défaut / 'loisir'), `description`, `ordre`.
+- La Team actuelle (SEP, nom « Team Compétition » inchangé) est marquée equipe · cso · club.
+- Nouvelle règle « groupes modification » : modifier un groupe = propriétaire ou gestionnaire de son écurie (hype_peut_gerer_club), sans pouvoir le déplacer vers une écurie non gérée.
+- Vérifié dans la base après passage.
+
+## Photos des futurs piquets — 10/10/2026 (ajoutées sans index.html, aucun effet à l'écran)
+- `piquet-equifun.webp`, `piquet-dressage-poney.webp`, `piquet-cso-poney.webp`, `piquet-equifeel.webp`, `piquet-shetland.webp`, `piquet-complet-poney.webp`, `piquet-hunter.webp`.
+- Répartition dressage proposée : `piquet-dressage.webp` (casque) = Club, `piquet-dressage-2.webp` (haut-de-forme) = Amateur — à confirmer.
+
+## Build 783 — 10/10/2026 · Étape E2 : la Team retrouvée par sa fiche, plus par son nom
+- Nouvelle fonction `hypeRequeteTeam` (à côté de TEAM_CLE) : groupe de l'écurie avec nature « equipe », discipline « cso », niveau « club », le plus ancien (jamais d'erreur s'il y en avait deux).
+- Branchée aux 5 endroits qui cherchaient « Team Compétition » par son nom : accès à la page Team (Mon cavalier), badge à côté du pseudo, page Team, page Performances, classement Team sur la fiche cheval.
+- Le petit titre des panneaux « Gérer les membres / les chevaux » lit le nom dans la fiche.
+- Rien ne change à l'écran (captures avant/après identiques au pixel sur Team et Performances). Prépare le renommage en « Team CSO Club » (E3).
+- Checks : marqueur unique 20261010-783, node --check 18 blocs OK.
