@@ -10186,3 +10186,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le petit titre des panneaux « Gérer les membres / les chevaux » lit le nom dans la fiche.
 - Rien ne change à l'écran (captures avant/après identiques au pixel sur Team et Performances). Prépare le renommage en « Team CSO Club » (E3).
 - Checks : marqueur unique 20261010-783, node --check 18 blocs OK.
+
+## Build 784 — 10/10/2026 · Étape E3 (code) : « Team CSO Club »
+- Titre de la page Team tiré du nom de la Team dans sa fiche : « Team » / « CSO Club » dès que le nom est « Team CSO Club » ; tant que le nom est encore « Team Compétition », l'ancien titre traduit reste (aucun changement avant le SQL de renommage).
+- Badge à côté du pseudo : « Team CSO Club » (sans « SEP »).
+- Libellé de secours TEAM_NOM_GROUPE = « Team CSO Club ».
+- Le nom d'une Team est une donnée : il n'est pas traduit (comme un nom propre).
+- Inchangés (à décider plus tard) : le petit libellé « Team compétition » du haut de la page Performances et de la ligne de classement sur la fiche cheval.
+- Vérifié : avec l'ancien nom, page Team identique au pixel au build 783 ; avec le nouveau nom, titre « Team / CSO Club ». Checks : marqueur unique 20261010-784, node --check 18 blocs OK.
+- SQL de renommage à passer par Blandine : update public.groupes set nom = 'Team CSO Club' where id = 'd135ec7f-2db1-4d5d-8103-2be2b8248d09';
+- Choix noté : ligne propriétaire des cartes chevaux = variante D (ivoire, minuscules) → build 785.
