@@ -10076,3 +10076,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichiers : index.html + SUIVI.md.
 - Checks : marqueur unique 20261009-771, marqueurs de garde présents, node --check 18 blocs OK.
 - EN ATTENTE (décision de Blandine) : calcul automatique de la prochaine échéance — il faut ses délais habituels (vaccin, maréchal, vermifuge, dentiste…).
+
+## Build 772 — 9 oct. 2026 — Back-office : la page des abonnements voit enfin TOUS les abonnés
+- Dette notée au 765 : AdminAbonnements (Back-office) lisait la table abonnements_premium, dont la règle ne laisse lire que SA propre ligne → une seule ligne et l'avertissement jaune depuis le début.
+- Elle lit maintenant hype_admin_abonnements() (passée en base le 09/10, réservée à feinn@live.fr), qui rend aussi pseudo et écurie (plus de seconde lecture de profiles). Le reste de la page (tri, compteurs, échéances à 30 jours) est inchangé.
+- Fait sans question à Blandine (« fais tout ce que tu peux gérer ») : correction d'une dette déjà signalée, page visible d'elle seule.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-772, node --check 18 blocs OK.
