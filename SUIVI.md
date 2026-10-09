@@ -10277,3 +10277,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sous la carte Identité & origines : « PIQUET(S) » + une pastille par piquet du cheval (« CSO Club › »). Les Teams n'y figurent pas (étape J à part).
 - La pastille ouvre la page des chevaux de l'écurie du piquet (écurie du cheval si elle correspond, sinon la clé de l'écurie), ce piquet déjà choisi (window.__ecurieHypePiquet).
 - Testé Chromium iPhone 13 (fiche V2 → piquet ouvert). Checks : marqueur unique 20261010-795, node --check 18 blocs OK.
+- Build 795 mis en ligne (Ok de Blandine, option 1 : fiche V2 seulement).
+
+## Build 796 — 10/10/2026 · Piquets, étape I : passerelle « Découvrir la Team »
+- La page des chevaux charge aussi les Teams de la même écurie (nature « equipe ») et leurs chevaux — jamais affichées comme onglets.
+- Sous le bloc d'un piquet : un encart discret par Team qui partage AU MOINS UN cheval avec le piquet (intersection calculée dans l'appli) : nom de la Team en champagne, « Découvrez les cavaliers qui montent ces chevaux, leurs rendez-vous et leurs résultats. », bouton « Découvrir la Team › » vers la page Team.
+- Pas de Team dans l'écurie, ou aucun cheval commun : rien n'est affiché.
+- Limite : la page Team ouvre toujours la Team CSO Club de la SEP (une seule Team existe) ; l'ouverture d'une Team précise viendra avec la 2e Team.
+- Textes en 7 langues. Testé Chromium iPhone 13 (CSO Club avec cheval commun : encart ; Dressage sans cheval commun : rien). Checks : marqueur unique 20261010-796, node --check 18 blocs OK.
