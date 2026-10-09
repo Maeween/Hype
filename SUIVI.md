@@ -10146,3 +10146,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Lecture proposée : le frein n'est pas la qualité de l'appli mais ce qui se voit en 30 secondes (une appli vide à remplir) ; montrer UN déclic par personne, déjà rempli, plutôt que tout l'appli.
 - Déclics par profil : compétiteurs → leur palmarès déjà rempli + « Me prévenir » sur le prochain concours ; propriétaires → la fiche santé de leur cheval (maréchal, vermifuge, prochaine date) + la page publique 2hype.fr/cheval/… ; cavaliers étrangers (ex. japonais) → l'appli et la théorie de leur Galop dans leur langue, installée AVEC eux ; cavaliers qui préparent un Galop → cours, quiz et progression ; parents des plus jeunes → photos/vidéos de l'enfant + jeu Memory Baby Poney.
 - Méthode : une seule chose par personne ; préparer leurs données AVANT de montrer ; remplacer une habitude (horaires et résultats de concours donnés UNIQUEMENT dans Hype, plus sur WhatsApp) plutôt que s'ajouter ; s'appuyer sur le tiers motivé (partage de fiches et résultats) plutôt que relancer.
+
+## Build 780 — 9 oct. 2026 — Chevaux de l'écurie : le titre ne passe plus sous les boutons, « de l'Écurie »
+- Accord de Blandine (« oui vas-y ») pour toucher au haut de page sur ce seul point (le héros reste tel quel : photo, couleurs, effets).
+- Le titre (h1 ec2titre) passait sous les boutons du haut (retour à gauche ; partager, drapeau, + et menu à droite, ~200 px) : il descend sous la rangée de boutons (marginTop 52) et reprend presque toute la largeur (padding 0 24 au lieu de 0 100). Rien d'autre ne bouge.
+- Texte : « Les chevaux de Ecurie Feinn » → « Les chevaux de l'Écurie Feinn » (élision française devant une voyelle ; « Ecurie » en tête du nom affiché avec son accent, dans toutes les langues) ; en japonais, « の馬 » passe après le nom (il était devant). Les autres langues gardent leur tournure.
+- Vérifié dans un Chromium au format iPhone 13 : titre entièrement lisible sous les boutons, « LES CHEVAUX DE L'ÉCURIE FEINN » ; aucune erreur ; capture avant/après jointe.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-780, node --check 18 blocs OK.
