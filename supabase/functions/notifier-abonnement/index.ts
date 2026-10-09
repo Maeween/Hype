@@ -1,6 +1,7 @@
 // supabase/functions/notifier-abonnement/index.ts — Hype · « Nouvel abonnement » sur l'iPhone de Blandine (09/10/2026)
 //
 // CE QU'ELLE FAIT
+// (09/10, ajout) Elle annonce aussi chaque NOUVELLE INSCRIPTION : « 👋 Nouvelle inscription — X a rejoint Hype ».
 // Quand quelqu'un prend un abonnement, Blandine reçoit une notification dans Hype :
 //   « 🎉 Nouvel abonnement » — « Pack Duo — Léa »
 //   « 🔁 Changement d'abonnement » — « Premium mensuel → Premium annuel — Léa »
@@ -154,8 +155,38 @@ Deno.serve(async (req) => {
       if (r.envois > 0) annonces++;
       erreurs.push(...r.erreurs);
     }
+    // ── 09/10 : les nouvelles inscriptions en attente d'annonce ──
+    // File public.inscriptions_a_annoncer, remplie par une règle sur profiles (création de compte).
+    // Protégé : si la file n'existe pas encore (SQL pas passé), les abonnements marchent quand même.
+    let inscriptions = 0;
+    try {
+      const file = await rest(
+        "inscriptions_a_annoncer?annonce_le=is.null&select=id,user_id&order=id.asc&limit=20",
+        { headers: entetes() }) || [];
+      for (const ins of file) {
+        const prise = await rest(
+          "inscriptions_a_annoncer?id=eq." + encodeURIComponent(ins.id) + "&annonce_le=is.null",
+          {
+            method: "PATCH",
+            headers: entetes({ Prefer: "return=representation" }),
+            body: JSON.stringify({ annonce_le: new Date().toISOString() }),
+          });
+        if (!prise || !prise.length) continue;
+        const qui = await nomCavaliere(ins.user_id);
+        const r = await envoyer(appareils, {
+          titre: "👋 Nouvelle inscription",
+          corps: qui ? qui + " a rejoint Hype" : "Quelqu'un a rejoint Hype",
+          url: "/", tag: "hype-inscription-" + ins.user_id,
+        });
+        if (r.envois > 0) inscriptions++;
+        erreurs.push(...r.erreurs);
+      }
+    } catch (e) {
+      console.log("[notifier-abonnement] inscriptions ignorées :", String(e).slice(0, 200));
+    }
+
     if (erreurs.length) console.log("[notifier-abonnement] erreurs d'envoi :", erreurs.join(" | "));
-    return json({ ok: true, en_attente: attente.length, annonces, erreurs });
+    return json({ ok: true, en_attente: attente.length, annonces, inscriptions, erreurs });
   } catch (e) {
     console.log("[notifier-abonnement] erreur :", String(e));
     return json({ ok: false, erreur: String(e && (e as Error).message || e).slice(0, 200) }, 500);
