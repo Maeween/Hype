@@ -10153,3 +10153,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Texte : « Les chevaux de Ecurie Feinn » → « Les chevaux de l'Écurie Feinn » (élision française devant une voyelle ; « Ecurie » en tête du nom affiché avec son accent, dans toutes les langues) ; en japonais, « の馬 » passe après le nom (il était devant). Les autres langues gardent leur tournure.
 - Vérifié dans un Chromium au format iPhone 13 : titre entièrement lisible sous les boutons, « LES CHEVAUX DE L'ÉCURIE FEINN » ; aucune erreur ; capture avant/après jointe.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-780, node --check 18 blocs OK.
+
+## Build 781 — 10 oct. 2026 — Santé du club + feuille « Importer des soins » : couleurs de l'accueil, plus de cyan
+- Accord de Blandine (« ok pour santé ») pour la page suivante de l'harmonisation, même méthode que les chevaux de l'écurie (couleurs de l'accueil, touche de pétrole discrète, haut de page gardé).
+- EcranSanteClub : accent cyan (TQ #20D9F5 / TQL #5FE9F0) → champagne #C9A66B / #D2B07A (mot « SANTÉ » du bandeau, chevrons ›) ; état « échéance OK » → pétrole #5C8792 (rouge et ambre inchangés) ; cartes des chevaux → fond des tuiles de l'accueil + liseré doré très subtil qui glisse vers le pétrole (comme le 779) ; les cartes en retard / bientôt gardent leur bordure rouge / ambre ; vignette #0D1518 ; textes ivoire #F3EEE4 et ivoire 84 / 62 / 50 % ; bouton « Importer des soins » → contour champagne, texte ivoire. Photo du bandeau et mise en page du haut inchangées.
+- ImportSoinsClub : boutons « Lire le message » et « Enregistrer » → champagne avec texte sombre ; bouton « Lire une capture… » et bilan → contour champagne, texte ivoire ; fond #060709 ; textes ivoire. Vert du ✓ « enregistré » et rouge des refus inchangés.
+- Vérifié dans un Chromium au format iPhone 13 : cyan calculé à l'écran 37 → 5 (les 5 restants viennent de la fenêtre de notification commune à toute l'appli, hors de cette page) ; aucune erreur ; captures avant/après.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261010-781, node --check 18 blocs OK.
