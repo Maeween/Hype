@@ -10202,3 +10202,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 785 — 10/10/2026 · Chevaux de l'écurie : ligne du propriétaire plus discrète (variante D)
 - `.ecv .ec2card .l3` : doré #D2B07A en capitales → ivoire atténué rgba(243,238,228,0.55), minuscules (« by Blandine »), 10,5 px, graisse 500. Choix de Blandine parmi 5 variantes.
 - Rien d'autre ne change. Checks : marqueur unique 20261010-785, node --check 18 blocs OK.
+- Build 785 mis en ligne (Ok de Blandine).
+
+## Build 786 — 10/10/2026 · « Team compétition » → nom de la Team (« Team CSO Club »)
+- Page Performances des chevaux : le petit libellé sous le titre affiche le nom lu dans la fiche de la Team (repli : ancien « Team compétition » traduit tant que la fiche n'est pas chargée).
+- Fiche cheval : la ligne de classement Team (« #rang · points ») porte le nom de la Team (hypeClassementTeamChevaux renvoie aussi `nom`).
+- Le nom suivra tout seul s'il change un jour. Checks : marqueur unique 20261010-786, node --check 18 blocs OK ; rendu Performances vérifié (iPhone 13).
