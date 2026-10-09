@@ -10082,3 +10082,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Elle lit maintenant hype_admin_abonnements() (passée en base le 09/10, réservée à feinn@live.fr), qui rend aussi pseudo et écurie (plus de seconde lecture de profiles). Le reste de la page (tri, compteurs, échéances à 30 jours) est inchangé.
 - Fait sans question à Blandine (« fais tout ce que tu peux gérer ») : correction d'une dette déjà signalée, page visible d'elle seule.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-772, node --check 18 blocs OK.
+
+## Build 773 — 9 oct. 2026 — Importer des soins : prochaine échéance proposée
+- Délais donnés par Blandine le 09/10 (par messages successifs) : vermifuge tous les 4 mois ; dentiste 1 fois par an ; maréchal toutes les 8 semaines (ferrure ET parage) ; vaccin tous les ans « une fois la primo-vaccination et les rappels faits ».
+- Chaque carte affiche « Prochaine échéance » pré-remplie (date du soin + délai) pour ces 5 types ; recalculée si on change le type ou la date, tant qu'on ne l'a pas modifiée à la main ; modifiable ou effaçable. Enregistrée dans date_prochaine. Autres types (ostéopathe, vétérinaire, traitement…) : rien de proposé. Pour une PRIMO-vaccination (2e injection, 1er rappel), la date proposée (1 an) est à corriger à la main — question posée à Blandine.
+- Testé dans un Chromium au format iPhone 13 : son message maréchal → 8 ferrures au 09/10/2026 avec prochaine échéance au 04/12/2026 ; « Terminé » OK ; aucune erreur. Texte en 7 langues.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-773, node --check 18 blocs OK.
