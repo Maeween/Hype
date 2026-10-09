@@ -10121,3 +10121,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Vérifié dans un Chromium au format iPhone 13 : aucun cyan calculé à l'écran ; aucune erreur. Capture avant/après jointe.
 - Observation (non touchée, hors périmètre) : sur un écran de 390 px, le titre « LES CHEVAUX DE ECURIE FEINN » passe sous les boutons partager / drapeau du haut.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-777, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 778 — 9 oct. 2026 — Chevaux de l'écurie : touche de bleu pétrole visible (liserés + race)
+- Retour de Blandine sur le 777 (en vocal, relayé) : garder le fond des cartes comme l'accueil, mais ajouter du bleu pétrole VISIBLE sur les liserés et certaines écritures ; elle a laissé Claude choisir.
+- Choix : liseré des cartes de chevaux (.ec2card) rgba(201,166,107,0.16) → pétrole #376B7D (le ton clair de la Communauté V2, #254F60 étant invisible sur ce fond) ; ligne de race sous le nom (.l2) ivoire 62 % → pétrole lisible #5C8792 (reflet de la palette). Noms (ivoire) et « BY … » (.l3, champagne) inchangés ; carte « Ajouter un cheval » inchangée (lueur dorée) ; héros intact.
+- Correction du suivi du 777 : le liseré des cartes était resté à 0,16 (et non 0,20) — sans objet désormais.
+- Vérifié dans un Chromium au format iPhone 13 : liserés pétrole nets, race en pétrole lisible, aucun cyan, aucune erreur ; capture avant/après jointe.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-778, node --check 18 blocs OK.
