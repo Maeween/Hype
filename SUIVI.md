@@ -10128,3 +10128,21 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Correction du suivi du 777 : le liseré des cartes était resté à 0,16 (et non 0,20) — sans objet désormais.
 - Vérifié dans un Chromium au format iPhone 13 : liserés pétrole nets, race en pétrole lisible, aucun cyan, aucune erreur ; capture avant/après jointe.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-778, node --check 18 blocs OK.
+
+## Build 779 — 9 oct. 2026 — Chevaux de l'écurie : liseré doré très subtil qui glisse vers le pétrole (variante D)
+- Retour de Blandine sur le 778 : « il y a peut-être trop de pétrole ». 4 variantes montrées en image (A pétrole adouci, B pétrole adouci + race ivoire, C liseré doré + race pétrole, D liseré doré → pétrole) ; choix : D, « mais que le liseré doré reste très subtil ».
+- .ec2card : le liseré plein #376B7D est remplacé par un liseré en dégradé (technique padding-box / border-box, fond de carte inchangé) : champagne rgba(201,166,107,0.32) en haut à gauche → pétrole rgba(55,107,125,0.30) au milieu → pétrole 0,10 en bas. Race (.l2) toujours en pétrole #5C8792 ; noms ivoire, « BY … » champagne, carte « Ajouter un cheval » (sa propre bordure) et héros inchangés.
+- Vérifié dans un Chromium au format iPhone 13 : liseré nettement plus discret qu'au 778, aucune erreur ; capture avant/après jointe.
+- Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261009-779, node --check 18 blocs OK.
+
+### 09/10 (soir) — IDÉE À REPRENDRE : réseaux sociaux / promotion de Hype (pas une tâche de code)
+- Blandine réfléchit à un outil ou une IA pour gérer ses réseaux sociaux (surtout Instagram), d'abord pour faire connaître Hype, un peu pour son écurie et ses concours. A déjà fait « quelques posts sur Instagram, sans plus ».
+- Piste retenue en discussion : un outil de PROGRAMMATION de posts et d'aide à la rédaction (type Metricool ou Buffer, version gratuite pour commencer), en gardant la main ; NE PAS laisser une IA publier seule du contenu générique « monde équestre ». S'appuyer sur ses vraies images (chevaux, concours) et sur des captures / courtes vidéos de l'appli (fiche cheval, palmarès, jeu du poney). Rythme tenable et régulier (2-3 posts par semaine) plutôt qu'un gros élan.
+- Leviers évoqués : Instagram/TikTok, convaincre des gérants d'écurie de proposer Hype à leurs cavaliers, présence en concours.
+- À faire plus tard : légendes Instagram types pour présenter Hype ; prompt pour ChatGPT qui prépare un scénario de vidéo scène par scène (quoi filmer, texte à afficher).
+
+### 09/10 (soir) — IDÉE À REPRENDRE : faire adopter Hype autour d'elle (pas une tâche de code)
+- Constat de Blandine : Hype lui est indispensable (résultats de concours importés en un clic, suivi santé/maréchalerie d'un cheval au même endroit, théorie en 7 langues), mais peu de monde s'y met ; dans l'équipe compétition, environ un tiers l'a installée malgré un mois de rappels et plusieurs démonstrations — impression de « faire du forcing ».
+- Lecture proposée : le frein n'est pas la qualité de l'appli mais ce qui se voit en 30 secondes (une appli vide à remplir) ; montrer UN déclic par personne, déjà rempli, plutôt que tout l'appli.
+- Déclics par profil : compétiteurs → leur palmarès déjà rempli + « Me prévenir » sur le prochain concours ; propriétaires → la fiche santé de leur cheval (maréchal, vermifuge, prochaine date) + la page publique 2hype.fr/cheval/… ; cavaliers étrangers (ex. japonais) → l'appli et la théorie de leur Galop dans leur langue, installée AVEC eux ; cavaliers qui préparent un Galop → cours, quiz et progression ; parents des plus jeunes → photos/vidéos de l'enfant + jeu Memory Baby Poney.
+- Méthode : une seule chose par personne ; préparer leurs données AVANT de montrer ; remplacer une habitude (horaires et résultats de concours donnés UNIQUEMENT dans Hype, plus sur WhatsApp) plutôt que s'ajouter ; s'appuyer sur le tiers motivé (partage de fiches et résultats) plutôt que relancer.
