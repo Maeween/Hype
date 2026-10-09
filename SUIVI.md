@@ -10270,3 +10270,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Retour depuis une fiche cheval : on revient sur le même piquet (window.__perfGroupeCourant). Le bouton « Performances » de la page Team efface ce souvenir et rouvre la Team.
 - Limite connue : les résultats d'un cheval ne sont pas encore triés par discipline (un cheval à la fois en CSO et en dressage verra ses deux sortes d'épreuves) ; les filtres d'épreuve existants permettent de les séparer.
 - Testé Chromium iPhone 13. Checks : marqueur unique 20261010-794, node --check 18 blocs OK.
+- Build 794 mis en ligne (Ok de Blandine).
+
+## Build 795 — 10/10/2026 · Piquets, étape G : les piquets sur la fiche cheval (V2)
+- ⚠️ Fiche cheval V2 (EcranChevalV2, adresse cachée #chevalv2-<id>, en construction, méthode du 08/10 : l'ancienne fiche reste intacte jusqu'à la bascule). Même chose pour la ligne Team (744/786) : elle n'existe que dans la V2.
+- Sous la carte Identité & origines : « PIQUET(S) » + une pastille par piquet du cheval (« CSO Club › »). Les Teams n'y figurent pas (étape J à part).
+- La pastille ouvre la page des chevaux de l'écurie du piquet (écurie du cheval si elle correspond, sinon la clé de l'écurie), ce piquet déjà choisi (window.__ecurieHypePiquet).
+- Testé Chromium iPhone 13 (fiche V2 → piquet ouvert). Checks : marqueur unique 20261010-795, node --check 18 blocs OK.
