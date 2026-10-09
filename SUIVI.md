@@ -10196,3 +10196,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Vérifié : avec l'ancien nom, page Team identique au pixel au build 783 ; avec le nouveau nom, titre « Team / CSO Club ». Checks : marqueur unique 20261010-784, node --check 18 blocs OK.
 - SQL de renommage à passer par Blandine : update public.groupes set nom = 'Team CSO Club' where id = 'd135ec7f-2db1-4d5d-8103-2be2b8248d09';
 - Choix noté : ligne propriétaire des cartes chevaux = variante D (ivoire, minuscules) → build 785.
+
+## SQL E3 — 10/10/2026 (passé par Blandine) : la Team s'appelle « Team CSO Club » (vérifié dans la base). Build 784 mis en ligne.
+
+## Build 785 — 10/10/2026 · Chevaux de l'écurie : ligne du propriétaire plus discrète (variante D)
+- `.ecv .ec2card .l3` : doré #D2B07A en capitales → ivoire atténué rgba(243,238,228,0.55), minuscules (« by Blandine »), 10,5 px, graisse 500. Choix de Blandine parmi 5 variantes.
+- Rien d'autre ne change. Checks : marqueur unique 20261010-785, node --check 18 blocs OK.
