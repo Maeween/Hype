@@ -10033,3 +10033,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Vérifié dans un Chromium au format iPhone 13 : les 6 fichiers se chargent (bonnes dimensions) ; pages Quêtes et Cavaliers de l'écurie identiques avant/après (Quêtes : seule l'animation de l'anneau diffère d'une capture à l'autre).
 - Fichiers : index.html + SUIVI.md + 6 nouvelles images dans images/.
 - Checks : marqueur unique 20261009-766, marqueurs de garde présents, node --check 18 blocs OK.
+
+## Build 767 — 9 oct. 2026 — Base64, lot B : les 100 badges de niveau deviennent des fichiers
+- HYPE_NIVEAU_BADGES (100 images PNG, environ 477 Ko de base64) → images/badges-niveau/niveau-1.png … niveau-100.png (mêmes octets). La table est maintenant remplie par une boucle ; hypeBadgeNiveau() inchangée (repli sur le niveau 1).
+- Index : 9,50 Mo → 8,80 Mo. Il ne reste PLUS AUCUNE image en base64 dans index.html (les fichiers hype-images-*.js, à part, n'ont pas été touchés).
+- Vérifié dans un Chromium au format iPhone 13 : badges 1, 2 et 100 chargés ; page Quêtes identique avant/après (seule l'animation de l'anneau diffère) ; Mon compte identique ; aucune erreur.
+- Fichiers : index.html + SUIVI.md + dossier images/badges-niveau/ (100 fichiers).
+- Checks : marqueur unique 20261009-767, marqueurs de garde présents, node --check 18 blocs OK.
