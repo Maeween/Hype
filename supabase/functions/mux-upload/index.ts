@@ -1,4 +1,4 @@
-const ALLOWED_ORIGIN = "https://2hype.netlify.app";
+const ALLOWED_ORIGIN = "*"; // 27/09 : corrigé par Blandine dans Supabase (Hype tourne sur 2hype.fr) — remis ici le 09/10 pour que GitHub ne l écrase plus
 
 const cors = {
   "Access-Control-Allow-Origin": ALLOWED_ORIGIN,
