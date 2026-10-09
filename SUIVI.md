@@ -10160,3 +10160,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - ImportSoinsClub : boutons « Lire le message » et « Enregistrer » → champagne avec texte sombre ; bouton « Lire une capture… » et bilan → contour champagne, texte ivoire ; fond #060709 ; textes ivoire. Vert du ✓ « enregistré » et rouge des refus inchangés.
 - Vérifié dans un Chromium au format iPhone 13 : cyan calculé à l'écran 37 → 5 (les 5 restants viennent de la fenêtre de notification commune à toute l'appli, hors de cette page) ; aucune erreur ; captures avant/après.
 - Fichiers : index.html + SUIVI.md. Checks : marqueur unique 20261010-781, node --check 18 blocs OK.
+
+## Build 782 — 10/10/2026 · Haut de la page « Performances des chevaux »
+- Nouvelle image `images/PERFORMANCES_CHEVAUX_HERO.webp` (cheval seul à droite, coucher de soleil, sans texte ; 76 Ko).
+- Cadrage à droite (65 %, 70 % sur les écrans de moins de 360 px) : tête et oreilles entières sur iPhone 13 et iPhone SE.
+- Fondu doux sur les 45 % du bas vers le fond de la page ; voile gauche allégé (l'image est déjà sombre à gauche).
+- Titre en deux tons : « Performances » ivoire, « des chevaux » champagne doux (#D2B07A), 7 langues. Libellé « Team compétition », bouton Saison, retour et « i » inchangés.
+- Rien d'autre ne change (classement, filtres, saison, cartes, barème).
+- ⚠️ L'ancienne image `team-competition-performances-hero.webp` reste utilisée par la tuile « Performances chevaux » de la page Team : on ne la supprime pas.
