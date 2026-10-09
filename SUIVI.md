@@ -10285,3 +10285,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Pas de Team dans l'écurie, ou aucun cheval commun : rien n'est affiché.
 - Limite : la page Team ouvre toujours la Team CSO Club de la SEP (une seule Team existe) ; l'ouverture d'une Team précise viendra avec la 2e Team.
 - Textes en 7 langues. Testé Chromium iPhone 13 (CSO Club avec cheval commun : encart ; Dressage sans cheval commun : rien). Checks : marqueur unique 20261010-796, node --check 18 blocs OK.
+- Build 796 mis en ligne (Ok de Blandine).
+
+## Build 797 — 10/10/2026 · Piquets, étape J : ligne Team séparée sur la fiche cheval (V2)
+- Sous les pastilles des piquets, une ligne à part, seulement si le cheval est réellement dans la Team : icône « cavaliers », « Team CSO Club · Découvrir ses cavaliers › ». Ouvre la page Team (et efface le souvenir d'un piquet sur Performances). Pas présentée comme un piquet (autre icône, autre forme, placée à part).
+- La ligne de classement Team dans la carte (#rang · points) reste inchangée.
+- Fiche V2 seulement (adresse cachée #chevalv2-<id>). Testé Chromium iPhone 13. Checks : marqueur unique 20261010-797, node --check 18 blocs OK.
