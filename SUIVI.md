@@ -10575,3 +10575,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveau composant VideoResultatsOfficiels (masqué par défaut, même ligne pour l'afficher, puis vidéo + phrase) posé sur : la page d'import des résultats (sous le titre) et les Performances d'un cheval qui n'a encore aucun résultat.
 - Le build 838 (allègement des captures) reste en attente de son accord, sur sa branche, NON publié.
 - Checks : marqueur unique 20261010-839, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 840 — 10/10/2026 · Captures allégées avant la lecture par l'IA (préparé au « 838 », publié avec son accord)
+- Contexte : lecture des origines de Lorik « super longue » puis « Lecture impossible — réessaie » par intermittence (lenteurs du service de lecture), et une capture envoyée en TAILLE RÉELLE (risque de dépasser la limite du relais de 6 Mo une fois encodée, ou le temps accordé ; un fichier HEIC n'est pas lu).
+- Nouvelle fonction hypeAllegerImageB64 : si l'image est lourde (> ~1,1 Mo) ou dans un format inhabituel (HEIC…), elle est redessinée en JPEG (1400 px de large au plus, 3000 px de haut au plus, qualité 0,85, fond blanc) ; sinon elle part telle quelle ; en cas de souci, l'originale. Testée en Chromium : image de 29,6 Mo → 1,9 Mo ; une capture normale de 0,6 Mo inchangée.
+- Appliquée aux 4 lectures d'image : origines (ancienne fiche et V2), résultats par capture, documents.
+- Ne supprime pas les lenteurs du service lui-même ; réduit l'envoi et évite l'échec sur les grosses images.
+- Accord : « Ok continue » (14 h 34). Checks : marqueur unique 20261010-840, node --check 18 blocs OK, marqueurs de garde OK.
