@@ -10378,3 +10378,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Mêmes réglages que les onglets des piquets (dégradé pétrole → noir, liseré champagne 0,45, ombre, texte ivoire) pour les boutons pleins ajoutés ces derniers jours : Mon compte (« Retour à l'accueil » + 2 boutons), notification « Super », « Enregistrer » des chevaux du déplacement, « C'est lui, l'ajouter à mes chevaux », « Créer le piquet », « Enregistrer » d'un piquet, onglets actifs de la messagerie (texte ivoire). 13 réglages.
 - Les boutons dorés plus anciens, choisis avant (fiche cheval V2, page Écurie…), ne sont PAS touchés.
 - Checks : marqueur unique 20261010-809, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13 (messagerie, Mon compte : 0 cyan).
+
+## Build 810 — 10/10/2026 · Une notification de communauté ouverte ne reste plus « nouvelle »
+- Blandine : « ça fait 6 fois que je clique sur la notification (Masure a publié sur le rendez-vous « CSO étrier de Paris ») et elle apparaît toujours comme nouvelle ».
+- CAUSE : les notifications de COMMUNAUTÉ (une seule ligne partagée par toute l'écurie, sans destinataire) ne passaient « vues » qu'avec « Tout marquer comme lu ». Le tap ouvrait la page sans rien retenir (les notifications personnelles, elles, étaient déjà marquées lues au tap).
+- CORRECTION : au tap, l'identifiant de la notification est retenu sur l'appareil (clé localStorage `hype_notifs_comm_lus`, 300 dernières). Le point et le compteur de la cloche l'ignorent ensuite. Rien en base, aucun SQL, aucun nouveau texte.
+- Limite à savoir : retenu par appareil (comme « Tout marquer comme lu » pour la communauté depuis toujours) : ouverte sur l'iPhone, elle peut rester nouvelle sur un autre appareil.
+- Checks : marqueur unique 20261010-810, node --check 18 blocs OK, marqueurs de garde OK ; tour des 12 écrans Chromium iPhone 13 sans erreur.
