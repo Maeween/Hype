@@ -10614,3 +10614,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - EN BASE (10/10, par Claude, pour respecter sa demande du 842) : Sunhill Blondey Boy (Connemara) et Orchid's Yellow (New Forest) reçoivent origines.gabarit = « cheval » (seulement s'ils n'avaient aucun gabarit) → ils restent chez les chevaux.
 - Deviennent poneys par la liste (relevé en base) : Apy de Rêve et My Dream de Feinn (Welsh PB, Écurie Feinn). À passer en « Cheval » sur leur fiche si elle le souhaite.
 - Checks : marqueur unique 20261010-845, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 846 — 10/10/2026 · Photo d'un cheval qui n'est pas le mien : elle devient la photo principale (modératrice, responsable du club)
+- Blandine (captures : Edgard, sa photo sur la fiche, l'image par défaut « cavalière sur cheval noir » sur la carte) : « ça devient chiant ces problèmes de photo ».
+- CAUSE (même famille que Tully, Hey Baby, Verone) : sur un cheval d'une autre, « Changer la photo » ne posait qu'une photo PERSO (chevaux_histoires, règle du 02/09) ; la photo principale (chevaux.photo_url, lue par les cartes, la clinique, la Communauté) restait vide → image par défaut partout sauf sur sa fiche.
+- CORRECTION : en modératrice ou responsable du club du cheval, la photo choisie devient AUSSI la photo principale (hypeMajChevalDroits, fonction SQL du 834). Pour les autres cavalières, rien ne change (photo perso seulement).
+- EN BASE (10/10, par Claude) : Edgard reçoit sa photo perso comme photo principale (seul cheval encore dans ce cas : photo principale vide + photo perso de Blandine dont le fichier existe).
+- Checks : marqueur unique 20261010-846, node --check 18 blocs OK, marqueurs de garde OK.
