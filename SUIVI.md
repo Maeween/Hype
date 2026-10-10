@@ -10441,3 +10441,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CORRECTION EN BASE (10/10, par Claude, un seul cheval, condition sur l'ancienne valeur) : `update chevaux set photo_url = '…/photos/bc7c52ee…/1791627098573.jpg' where id = '907563eb-a7b7-48e9-8cfc-188624c385f8' and photo_url = '…/1785082709360.jpg'` → la photo de la fiche (fichier existant) devient aussi la photo de la carte, pour tout le monde.
 - FILET DANS LE CODE : sur la grille « Les chevaux de l'écurie » et la carte de communauté, une photo introuvable laisse place à l'image de cheval par défaut au lieu du « ? ».
 - Checks : marqueur unique 20261010-818, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 819 — 10/10/2026 · Fiche cheval : la vidéo « résultats officiels » réservée à la propriétaire
+- Blandine (capture d'une fiche visitée) : « la vidéo pour mettre ses résultats en ligne, on ne devrait pas la voir sur la page des chevaux qu'on visite ».
+- Change la règle du 25/08 (« la vidéo et la phrase sont une vitrine : tout le monde les voit ») : la vidéo, la phrase « Tes résultats officiels, à redécouvrir sur Hype. » et le lien « Revoir la petite vidéo » ne s'affichent plus que pour la propriétaire du cheval et ses cavalières liées.
+- Le bouton « Importer mes résultats officiels » garde sa règle (propriétaire, cavalière liée ou modératrice) : en modératrice, Blandine le verra encore seul sur les fiches des autres.
+- Aucun texte nouveau, aucun SQL.
+- Checks : marqueur unique 20261010-819, node --check 18 blocs OK, marqueurs de garde OK.
