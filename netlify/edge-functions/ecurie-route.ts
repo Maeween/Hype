@@ -161,7 +161,7 @@ async function contenuHype(nom: string) {
         "&select=id,nom,race,slug,photo_url&order=nom.asc&limit=80", minuteur.signal),
       lire("club_agenda?club_clef=eq." + encodeURIComponent(nom.trim().toLowerCase()) +
         "&or=(date_jour.gte." + aujourdhui + ",date_fin.gte." + aujourdhui + ")" +
-        "&select=titre,type,date_jour,date_fin,lieu&order=date_jour.asc&limit=10", minuteur.signal),
+        "&select=id,titre,type,date_jour,date_fin,lieu&order=date_jour.asc&limit=10", minuteur.signal),
       // 10/10 : la grande photo de l'écurie (lisible sans connexion depuis la règle passée par Blandine le 10/10)
       lire("tableaux_clubs?cle=eq." + encodeURIComponent("club-banniere:" + clef) + "&select=contenu&limit=1", minuteur.signal).catch(() => []),
     ]);
@@ -181,6 +181,14 @@ async function contenuHype(nom: string) {
 }
 
 /* ---------- Ce que lit Google ---------- */
+/* 10/10 (856) : chaque rendez-vous a sa page publique (evenement-route.ts) — même adresse. */
+function lienRdv(r: any): string {
+  const id = String(r.id || "");
+  if (!/^[0-9a-f]{8}-/i.test(id)) return texte(r.titre);
+  const s = String(r.titre || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    .replace(/œ/g, "oe").replace(/æ/g, "ae").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70).replace(/-+$/, "");
+  return `<a href="${DOMAINE}/evenement/${s ? s + "-" : ""}${id.slice(0, 8).toLowerCase()}">${texte(r.titre) || "Rendez-vous"}</a>`;
+}
 function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | null, hype: Awaited<ReturnType<typeof contenuHype>>) {
   const nom = propre(ec.n);
   const ville = propre(ec.v) || (geo ? geo.v : "");
@@ -226,7 +234,7 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Prochains rendez-vous</h2><ul style="padding-left:18px;margin:0">`;
     for (const r of hype.rdv) {
       const morceaux = [dateFr(r.date_jour) + (r.date_fin && r.date_fin !== r.date_jour ? " → " + dateFr(r.date_fin) : ""),
-        TYPES[String(r.type || "").toLowerCase()] || "", texte(r.titre), texte(r.lieu)].filter(Boolean);
+        TYPES[String(r.type || "").toLowerCase()] || "", lienRdv(r), texte(r.lieu)].filter(Boolean);
       html += `<li>${morceaux.join(" — ")}</li>`;
     }
     html += `</ul>`;
