@@ -10855,3 +10855,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - La lecture des albums prend aussi `user_id`, puis UNE lecture de `profiles` (id, pseudo, avatar_url) pour les autrices. Sous « N souvenirs » : petite photo ronde + « par Prénom » (7 langues : par / by / por / di / — / von / بواسطة).
 - Les albums partent de « en cours de lecture » (null) au lieu d'une liste vide : le message « Pas encore d'album » du 879 ne clignote plus avant la fin de la lecture.
 - Test : page Souvenirs avec 2 albums simulés de 2 cavalières → « par Ambre », « par Margot ». Checks : 18 blocs OK, marqueur 20261010-880 unique, gardes OK.
+
+## Build 881 — 10/10/2026 · Page Photos du cheval, étape 1 : les albums s'adaptent à leur nombre
+- Consigne ChatGPT validée par Blandine (décisions A1, B1, D : rangée qui défile à partir de 4 sur téléphone). UNIQUEMENT la page Photos du cheval : AlbumsCheval reçoit `presentationPhotos: true` à cet endroit seulement ; pages Cavalier et Écurie inchangées.
+- Chaque rangée (« Albums », « Albums des autres cavalières ») calcule sa propre disposition : 1 album = bandeau pleine largeur de 200 px, photo EN ENTIER (contain) sur un fond de la même photo agrandie, floutée et assombrie (règle du 22/09 : ne jamais couper le cheval ni le cavalier) ; 2 ou 3 = colonnes égales (4/5 et 3/4) ; 4 et plus = rangée qui défile, cartes de 156 × 195 px. Titres sur 2 lignes.
+- Album sans couverture : fond bleu pétrole + petit symbole image. Aucun album : encart discret « Aucun album pour le moment — Crée ton premier album pour organiser les souvenirs de ton cheval. » (le bouton reste la pastille « + Nouvel album » existante). Section des autres vide : « Aucun album partagé pour le moment. » (7 langues).
+- Inchangés : étoile « à la une », ouverture, droits, données, chronologie des souvenirs.
+- Test : composant rendu seul avec 0, 1, 2, 3 (dont 1 sans photo) et 5 albums simulés. Checks : 18 blocs OK, marqueur 20261010-881 unique, gardes OK.
+- Étape 2 (à faire, build séparé) : la page Photos du cheval sur ordinateur (menu 210 px, contenu élargi, grille de 4 sur ordinateur).
+- À FAIRE PLUS TARD (consigne séparée, ne pas développer maintenant) : page Vidéos du cheval sur ordinateur. Direction validée pour les cartes vidéo : vignette sur toute la carte, informations sur l'image, fondu noir bleuté progressif sans bandeau opaque, titre / auteur / date si elles existent, durée si disponible, vidéos horizontales, verticales et carrées respectées.
