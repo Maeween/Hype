@@ -10678,3 +10678,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Page Écurie : montre aussi les chevaux dont `club` désigne cette écurie, même si le propriétaire n'en est pas membre (requête `club ilike <nom>`, 300 maxi), fusionnés sans doublon avec les chevaux des membres.
 - Tests (iPhone 13) : visiteur → clic → écran « Créer mon compte » + mémo posé ; session + mémo → page « 3 Rivières Équitation » + fenêtre « Un nouveau cheval », mémo effacé ; aucune erreur. Checks : 18 blocs node --check OK, un seul marqueur 20261010-854, marqueurs de garde OK. Le parcours complet des 12 écrans a été interrompu à la demande de Blandine (non rejoué).
 - Aussi depuis la dernière livraison (fichier ecurie-route.ts publié seul) : règle SQL « banniere club lisible sans connexion » passée par Blandine ; aperçu de partage des pages écurie = grande photo de l'écurie (sinon partage-apercu.jpg) ; texte Google des écuries sans cheval = « Un box virtuel chez Hype ? ».
+
+## Build 855 — 10/10/2026 · Communauté : stories en rectangles fondus + plus d'air avant « À découvrir »
+- Blandine (capture) : « laisse plus d'espace entre À découvrir et le bas des stories, et passe les stories en rectangle ou carré avec le même design fondu comme elles étaient avant ».
+- EcranCommunauteV2 : BandeauStories passe de la forme « libre » à « libre-carte » (rectangles fondus, la forme de la page d'accueil depuis le build 375) ; marge sous le rail de stories -36 px → 0 (36 px d'air en plus avant « À découvrir »). Rien d'autre ne change ; hype-stories.js non modifié.
+- Checks : 18 blocs node --check OK, un seul marqueur 20261010-855, marqueurs de garde OK ; page Communauté ouverte sans erreur (sans vraies stories dans le navigateur de test : rendu des cartes à vérifier sur iPhone).
