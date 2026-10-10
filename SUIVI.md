@@ -11036,3 +11036,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 912 (11/10, publié — accord de Blandine « on publie tout dès que c'est prêt »)
 - Couvertures, étape 2 : sur chaque vidéo de l'onglet Vidéos (galerie et collections), un petit bouton image doré en haut à droite, visible seulement par la personne qui a mis la vidéo en ligne (dossier de stockage à son nom, ou vidéo Mux à elle) ou une admin. Il ouvre « Couverture de la vidéo » : aperçu, « Choisir une photo » (photo du téléphone, réduite à 960 px, envoyée dans son dossier photos, enregistrée comme couverture choisie), « Revenir à l'image automatique » (si une couverture existe), « Fermer ». La base vérifie aussi les droits ; un refus s'affiche en clair. 7 langues.
+
+## Build 913 (11/10, publié — accord de Blandine « on publie tout dès que c'est prêt »)
+- Fiche cheval : rail « Derniers résultats » sous « Importer mes résultats officiels » — 3 cartes visibles au lieu de 2 et demie (largeur = un tiers, portrait 66 → 50 px, textes un peu plus petits, retour à la ligne si besoin).
+- Fiche cheval : vignettes d'albums au-dessus de « Le voir en mouvement » — 3 par ligne au lieu de 2.
+- Analyse Photos/Vidéos ordinateur rendue à Blandine (4 builds proposés, rien codé). Bloc « Photos proposées (12) » de la capture = fausses données de mon outil de test (table albums_propositions vide en vrai).
