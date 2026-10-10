@@ -10816,3 +10816,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Arabe : même comportement qu'au téléphone — sur les cartes Profil/Communauté, l'image est cadrée à gauche (on voit surtout les arbres, les cavaliers sont sous le voile) ; à revoir si Blandine le souhaite.
 - Tests : 1440, 1024, arabe 1440, téléphone 390. Checks : 18 blocs node --check OK, un seul marqueur 20261010-873, marqueurs de garde OK.
 - Accueil ordinateur terminé (870-873). Reste en ordinateur : fiche cheval (en dernier, décision Blandine), autres pages.
+
+## Build 874 — 10/10/2026 · Page « Les cavaliers » de l'écurie sur ordinateur
+- Demande Blandine (« les cavaliers de l'écurie c'est facile »). EcranCavaliersClub, seulement à partir de 1024 px (useHypeLarge) ; téléphone inchangé (vérifié en capture).
+- Le routeur laisse la page s'élargir (1280 px max, comme la page Écurie). Bandeau photo 320 px de haut, titre « LES CAVALIERS » 42 px. Les cartes des cavalières passent en grille : 3 colonnes sur un écran large, 2 sur un petit ordinateur (chaque carte garde tout : photo, nom, @, ville, croix de retrait, bouton profil, dépliage des moments).
+- Le bandeau « Retirer X de l'écurie ? » se place à côté du menu de gauche (à droite en arabe) au lieu de passer dessous.
+- Tests : 1440, 1024, arabe 1440, téléphone 390 (10 cavalières simulées). Checks : 18 blocs node --check OK, un seul marqueur 20261010-874, marqueurs de garde OK.
