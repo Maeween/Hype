@@ -10972,7 +10972,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Photo du haut descendue (marge haute 64 px) pour ne plus passer sous le drapeau et la flèche retour.
 - Plus d'air sous le bandeau IPO (18 → 40 px) et sous le rail des coupes (10 → 34 px).
 
-## Build 902 (10/10, préparé — attend « Ok publie »)
+## Build 902 (10/10, publié avec l'accord de Blandine — « publie le reste déjà »)
 - Fiche cheval : la bande de photos qui défile toute seule sous « Le voir en mouvement » est retirée (doublon de la tuile Photos). Option sansDefile, seule la fiche est touchée.
 - Correction de ma première version : j'avais d'abord retiré le rail d'albums (mauvaise lecture) ; il est remis tel quel.
 - Titres verticaux « Médias » et « Liens & partage » retirés dans la marge.
