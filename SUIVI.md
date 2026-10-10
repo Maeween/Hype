@@ -10665,3 +10665,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   2. une écurie sans membre ou sans cheval restait sur « … » pour toujours (la liste n'était jamais déclarée vide) → elle est maintenant déclarée vide, l'invitation apparaît. En cas d'erreur de lecture des chevaux, rien ne change (« … »).
 - Non modifié : le texte provisoire lu par Google dans ecurie-route.ts (français seulement) — à aligner si Blandine le souhaite.
 - Testé (iPhone 13, déconnecté, écurie sans cheval) : carte affichée, clic → fenêtre de création ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-852, marqueurs de garde OK.
+
+## Build 853 — 10/10/2026 · Invitation « Un box virtuel » : les traductions de Blandine
+- Blandine a fourni ses propres traductions (en, es, it, ja, de, ar) du titre, du texte et du bouton : elles remplacent celles que j'avais faites au build 852 (fr inchangé). Bouton : Set up my horse / Instalar mi caballo / Inserisci il cavallo / 愛馬を追加 / Pferd einrichten / أضف حصاني.
+- Rien d'autre ne change. Checks : 18 blocs node --check OK, un seul marqueur 20261010-853, marqueurs de garde OK ; bloc vérifié à l'écran (écurie sans cheval, déconnecté).
