@@ -10340,3 +10340,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Dans l'encart bloquant du 793, à côté de « Ouvrir sa fiche » : bouton champagne « C'est lui, l'ajouter à mes chevaux » (même fonction de rattachement que le « C'est lui » existant), affiché seulement si le cheval n'est pas déjà à moi. 7 langues.
 - Checks : marqueur unique 20261010-802, node --check 18 blocs OK ; testé Chromium iPhone 13 (mon propre cheval : bouton absent, création bloquée).
 - Publication groupée 801 + 802 (une seule mise en ligne).
+
+## Build 803 — 10/10/2026 · Fiche santé d'un cheval aux couleurs de l'accueil
+- EcranSanteCheval : 20 couleurs cyan → champagne (#20D9F5 → #C9A66B ; #9CEDF8, #7FE8F2 → #D2B07A ; rgba(32,217,245,…) → rgba(201,166,107,…)). Cyan calculé à l'écran : 100 → 0 (Chromium iPhone 13).
+- Reste : l'image de fond décorative (constellations bleutées) est une image, inchangée.
+- Checks : marqueur unique 20261010-803, node --check 18 blocs OK.
