@@ -10637,3 +10637,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - EcranCommunauteV2 : nouvelle carte carteAgendaEcurie, copie exacte de carteEvH (EcranEcurieV2) : colonne date (jour / mois doré / année), affiche à gauche fondue dans le noir, titre sur 2 lignes, badge doré du type, lieu, rond chevron. 3 rendez-vous affichés, « Voir tout » au-delà de 3 (avant : une grande carte + 6 petites, « Voir tout » au-delà de 7). Les anciennes cartes (grande / petite) restent dans le code, plus rendues.
 - Blandine (capture) : « tu peux laisser les accès rapides encore plus profonds ». Tuiles Accès rapides : lumière plus forte en haut (bord haut doré plus clair, reflet), socle sombre en bas, ombre portée plus longue (0 20px 34px), cercle de l'icône creusé. Espacement entre tuiles 10/14 px pour laisser respirer l'ombre.
 - Testé dans le navigateur de test (iPhone 13) : 3 cartes rendues, aucune erreur. Checks : marqueur unique 20261010-849, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 850 — 10/10/2026 · Accès rapides un peu plus grands
+- Blandine (captures de la page Écurie) : « c'est mieux, on les voudrait juste un peu plus grandes ».
+- Tuiles Accès rapides (EcranEcurieV2) : hauteur 96 px (78 avant), cercle de l'icône 34 px (28), icône 16 px (14), nom 13 px (12 ; 11 pour les noms longs). Profondeur du 849 gardée.
+- Mesuré dans le navigateur de test : 6 tuiles à 96 px, aucune erreur. Checks : marqueur unique 20261010-850, node --check 18 blocs OK, marqueurs de garde OK.
