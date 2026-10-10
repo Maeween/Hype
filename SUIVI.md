@@ -10991,8 +10991,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Onglet Vidéos vide (Titi), téléphone : carte 300 → 390 px de haut, la vidéo occupe le haut (74 %) et le texte + bouton descendent sous la tête de Titi, sur fond uni.
 - Page Écurie, « Derniers résultats » : cartes rallongées (164 → 192 px) et nom de l'épreuve sur 2 lignes au lieu d'être coupé par « … ».
 
-## Build 905 (11/10, préparé — attend « Ok publie »)
+## Build 905 + 906 (11/10, publiés ensemble avec l'accord de Blandine — « Ok publie »)
 - Collections de vidéos, étape 1/4 (affichage) : l'onglet Vidéos lit la table collections_videos (SQL passé par Blandine le 11/10). S'il existe au moins une collection avec une vidéo visible : une section par collection (nom tel que saisi, « N vidéos », 2 colonnes, 4 vidéos puis « Voir toutes les vidéos de cette collection »), puis « Autres vidéos » (vidéos hors collection + vidéos en préparation). Sinon : galerie inchangée. Une collection n'affiche que des vidéos que la personne voit déjà (rien de privé ne fuit). Textes en 7 langues.
 - Hero fiche cheval : hauteur 66 → 54 % de l'écran.
 - Onglet Vidéos : plus d'air sous le titre « Vidéos » (14 → 26 px).
 - Droits des collections (réponse de Blandine : propriétaire du cheval, propriétaire de l'écurie, admins) : SQL préparé dans sql/2026-10-11-collections-videos-droits.sql, à passer par elle.
+- SQL des droits passé par Blandine le 11/10 (« Success ») : fonction hype_peut_gerer_collections + 3 règles (créer / modifier / supprimer) pour propriétaire du cheval, propriétaire de son écurie, admins.
+- Build 906 — collections, étape 2 (création et gestion) : grande carte en pointillés « + Créer une collection / Organise tes vidéos comme tu le souhaites » (comme la maquette) sous les vidéos, visible seulement par les personnes autorisées et s'il y a au moins une vidéo prête. Fenêtre du bas : nom (obligatoire, 60 caractères), vidéos du cheval à cocher (celles déjà dans une autre collection portent son nom ; les cocher les déplace), Enregistrer / Annuler. Sur chaque collection, « ⋯ » ouvre la même fenêtre : renommer, changer les vidéos, Monter / Descendre, Supprimer (confirmation dans la fenêtre ; les vidéos retournent dans « Autres vidéos »). Tout refus de la base s'affiche en clair. Fenêtre posée au-dessus de la barre du bas. 7 langues.
+- Reste : étape 3 (proposer une collection à l'ajout d'une vidéo), étape 4 (ordinateur).
