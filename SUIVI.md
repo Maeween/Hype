@@ -10828,3 +10828,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Cause (mon erreur au build 872) : la règle CSS des pastilles `.com2-post-pill` se terminait par un guillemet en trop (`}\"`). Dans une feuille de style écrite sur une seule ligne, ce guillemet ouvrait une « chaîne » jamais fermée qui avalait TOUTES les règles suivantes de la Communauté → plus de mise en forme à partir de là. Le test node --check ne le voyait pas (c'est du texte valide pour JavaScript) et ma capture de test du 872 montrait déjà le problème : je ne l'ai pas repéré.
 - Correction : guillemet retiré. Capture de contrôle : page Communauté de nouveau habillée (titre centré, bouton « Monde Hype », cartes, fil).
 - Leçon : après toute retouche d'une feuille de style écrite en morceaux de texte, comparer la capture avant/après de la page concernée.
+
+## Build 876 — 10/10/2026 · Retour en arrière demandé par Blandine : plus de pastilles dans la carte palmarès
+- Blandine : « reviens à la version avant les pastilles, t'as trop de problèmes sur la page ». Le changement du 872 est entièrement retiré : la carte « X a rendu leur palmarès à N chevaux » montre de nouveau une ligne par cheval avec ses chiffres (comme au 871), et les deux règles CSS des pastilles sont supprimées.
+- Contrôle : la partie Communauté du fichier est identique, caractère pour caractère, à celle du build 871 ; les seules différences avec le 871 sont l'accueil sur ordinateur (873), la page Les cavaliers sur ordinateur (874) et le numéro de version.
+- Le besoin (carte trop longue) reste ouvert ; à reprendre seulement si Blandine le redemande.
