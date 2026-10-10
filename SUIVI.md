@@ -10490,3 +10490,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Appliqué : grille « Les chevaux de l'écurie » et carte de communauté (nom suivi de (OC), plus de ligne race) ; fiche cheval : (OC) à côté du grand nom, ligne race · âge · naissance sans la race, phrase d'histoire « Jaiko de popey (OC) est un cheval de l'écurie … ».
 - Aucune donnée changée (la race reste « Origine constatée » en base), aucun texte nouveau à traduire (sigle).
 - Checks : marqueur unique 20261010-825, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 826 — 10/10/2026 · Vidéo « résultats officiels » : propriétaire SEULE (suite du 819) + photo de Hey Baby Please
+- Blandine (capture de la fiche de Hey Baby Please, cheval de Liam qu'elle a dans « mes chevaux persos ») : « je vois toujours la vidéo sur les chevaux que je visite ». Le 819 la montrait aussi aux « cavalières liées » (lien chevaux persos) : c'était son cas. La vitrine (vidéo + phrase) n'est plus montrée qu'à la PROPRIÉTAIRE du cheval. Le bouton d'import garde sa règle.
+- « Photo Hey Baby » (sa capture de la clinique : icône au lieu de la photo) : chevaux.photo_url de Hey Baby Please était VIDE ; la fiche affichait sa photo perso (chevaux_histoires). CORRECTION EN BASE (10/10, par Claude, un seul cheval, seulement si vide) : photo_url = sa photo perso (…/bc7c52ee…/1789383059668.jpg, fichier vérifié existant). Même cas relevé, NON corrigé sans son accord : Verone (SEP).
+- Checks : marqueur unique 20261010-826, node --check 18 blocs OK, marqueurs de garde OK.
