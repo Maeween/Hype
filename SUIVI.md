@@ -10502,3 +10502,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Vu sur sa capture : 815 (deux lignes), 816 (dates lisibles, « 11 OCT. », « 08 NOV. ») en ligne.
 - Checks : marqueur unique 20261010-827, node --check 18 blocs OK, marqueurs de garde OK.
 - 10/10 13 h 15, accord de Blandine (« vas-y, je suis admin et responsable d'écurie ») : Verone (SEP) reçoit aussi sa photo perso comme photo principale (chevaux.photo_url était vide ; fichier …/bc7c52ee…/1788469348094.jpg vérifié existant). Plus aucun cheval actif avec photo principale vide alors qu'une photo perso existe.
+
+## Build 828 — 10/10/2026 · Déconnectée = vraiment déconnectée (plus d'état « à moitié connecté »)
+- Blandine : « quand on est déconnecté, plein de bugs : des endroits où il nous croit connecté, d'autres non ».
+- CAUSE (reproduite en test, sans session Supabase mais avec le profil gardé sur le téléphone) : l'appli rouvrait l'Accueil complet avec le prénom, l'abonnement (cadenas Premium ouverts), l'écran du dernier passage et les droits de responsable d'écurie gardés en mémoire, alors que tout ce qui lit la base voyait « personne ». Arrive après une session expirée, un appareil évincé (limite d'appareils : la déconnexion ne vidait PAS le profil), ou une déconnexion faite ailleurs.
+- RÈGLE POSÉE : pas de session = pas d'état connecté. Dans HypeApp, (1) au démarrage, si Supabase ne connaît personne et qu'un profil est gardé sur le téléphone → on vide profil, abonnement, liste des écuries revendiquées et droits « responsable du club » en mémoire, puis écran de connexion ; (2) même chose à chaque fin de session (événement SIGNED_OUT). EXCEPTIONS : les liens directs partagés (fiche cheval publique, story, album invité…) restent ouverts aux visiteurs ; le lien « mot de passe oublié » aussi.
+- Message sur l'écran de connexion (7 langues) : « Ta session a expiré : reconnecte-toi pour retrouver ton compte. » — pas affiché après un vrai bouton « Se déconnecter », ni après une éviction (qui garde son propre message).
+- Rien n'est effacé en base ; la reconnexion recharge profil et progression (coffre-fort existant).
+- TEST Chromium iPhone 13 : sans session + profil gardé → AVANT (827) Accueil complet « connecté » ; APRÈS (828) écran de connexion + message. Avec session → Accueil normal, aucune erreur.
+- Checks : marqueur unique 20261010-828, node --check 18 blocs OK, marqueurs de garde OK.
