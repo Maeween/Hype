@@ -10922,3 +10922,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 892 — 10/10/2026 · En-tête du cheval : flèche de partage retirée, crayon → trois petits points
 - Blandine : « retire ta flèche, on comprend pas ce que c'est » (un bouton de partage de fiche sera fait ailleurs plus tard — À FAIRE) et « pour changer de photo, mets juste trois petits points discrets en bas à droite comme ailleurs ». Le bouton « Changer la photo (admin) » (modératrice seulement, même geste changerPhotoPalm) devient ⋯ discret en bas à droite de la carte.
 - Checks : 18 blocs OK, marqueur 20261010-892 unique, gardes OK.
+
+## Build 893 — 10/10/2026 · En-tête du cheval : le nom ne déborde plus sur la photo
+- Blandine : « noms sur deux lignes uniquement quand c'est indispensable, car ils débordent sur la photo ». Sur l'en-tête remis au 891 : la zone du nom commence après la photo (60 %, marge droite 10 px), taille d'origine 18 px ; le nom reste sur une ligne et passe à la ligne entre les mots seulement s'il ne tient pas (ex. RIZOTTO / D'EMERY ; DAKOTA CA sur une ligne).
+- Vidéo de cérémonie (confettis) : laissée telle quelle pour l'instant, décision de Blandine (« on est sur la page Vidéos »).
+- Checks : 18 blocs OK, marqueur 20261010-893 unique, gardes OK ; capture iPhone.
