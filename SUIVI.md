@@ -10495,3 +10495,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture de la fiche de Hey Baby Please, cheval de Liam qu'elle a dans « mes chevaux persos ») : « je vois toujours la vidéo sur les chevaux que je visite ». Le 819 la montrait aussi aux « cavalières liées » (lien chevaux persos) : c'était son cas. La vitrine (vidéo + phrase) n'est plus montrée qu'à la PROPRIÉTAIRE du cheval. Le bouton d'import garde sa règle.
 - « Photo Hey Baby » (sa capture de la clinique : icône au lieu de la photo) : chevaux.photo_url de Hey Baby Please était VIDE ; la fiche affichait sa photo perso (chevaux_histoires). CORRECTION EN BASE (10/10, par Claude, un seul cheval, seulement si vide) : photo_url = sa photo perso (…/bc7c52ee…/1789383059668.jpg, fichier vérifié existant). Même cas relevé, NON corrigé sans son accord : Verone (SEP).
 - Checks : marqueur unique 20261010-826, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 827 — 10/10/2026 · Agenda Communauté : petites cartes plus espacées
+- Blandine (capture) : « espace un peu plus les cartes de l'agenda sur la page communauté, notamment horizontalement ».
+- Grille des petites cartes : 10 → 16 px entre les colonnes et entre les lignes, 12 → 16 px sous la grande carte. CSS seulement.
+- Vu sur sa capture : 815 (deux lignes), 816 (dates lisibles, « 11 OCT. », « 08 NOV. ») en ligne.
+- Checks : marqueur unique 20261010-827, node --check 18 blocs OK, marqueurs de garde OK.
