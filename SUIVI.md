@@ -10361,3 +10361,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 806 — 10/10/2026 · Piquets : encarts transparents pétrole, boutons sur une ligne
 - Demande de Blandine (capture CSO Amateur) : encart du piquet et encart « Team » → fond transparent en dégradé pétrole → noir, liseré champagne 0,18, ombre portée ; boutons « Voir les résultats » et « Gérer les chevaux » côte à côte sur une même ligne, même style que les onglets (dégradé pétrole ombré, liseré champagne ; plus de bouton doré plein) ; bouton « Découvrir la Team » assorti.
 - Checks : marqueur unique 20261010-806, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
+
+## Build 807 — 10/10/2026 · Communauté : le titre descend sous la photo
+- Demande de Blandine (capture) : « COMMUNAUTÉ », le sous-titre et la capsule « Monde Hype » sortent du hero et se placent juste sous la photo (globe + cavaliers), au lieu d'être posés sur le ciel. Stories suit, 38 px plus bas. Photo et cadrage inchangés.
+- Couleurs : décision de Blandine (09:26) — l'ancien turquoise commun (COLORS.turquoise, 448 usages) ne passe PAS en champagne ; plutôt pétrole, et il restera à certains endroits : à décider ensemble, rien changé.
+- Checks : marqueur unique 20261010-807, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
