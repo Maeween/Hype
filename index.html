@@ -60006,7 +60006,7 @@ function AlbumsPromus(props) {
         }
         rangR++;
       }
-      if (!phsR.length) return null;
+      if (!phsR.length || props.sansDefile) return null; /* (902) bande de photos qui defile retiree de la fiche (doublon) */
       return h("div", null,
         h("div", { ref: function (elC) {
           if (!elC || elC.__autoDefile) return; elC.__autoDefile = true;
@@ -63563,9 +63563,8 @@ async function supprimerSouvenirOuvert() {
         /* 31/07 : l IPO vit dans le chapitre Performances (decision Blandine) */
         cristal("medias"),
         h("div", { id: "chapMedias", style: { position: "relative" } },
-          h("div", { style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } },
-            h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Médias", "Media", "Medios", "Media", "メディア", "Medien", "\u0627\u0644\u0648\u0633\u0627\u0626\u0637"))),
-          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, sansRail: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuseAlbumId(null); setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("photos"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("photos"); } })) /* 29/08 : les medias renvoyaient sur Souvenirs, qui n'a plus de photos depuis le decoupage — ils ouvrent desormais la page Photos */,
+          null /* (902) titre vertical Medias retire */,
+          h("div", { style: { minWidth: 0 } },  h("div", { id: "chapMedias" }, h(AlbumsPromus, { cible: cibleCh, sansTitre: true, sansDefile: true, teinte: teinte, photoDefaut: photoCh, onOuvrirMedia: function (uM) { try { setVisionneuseAlbumId(null); setVisionneuse(uM); } catch (eOm) { } }, onVideosTrouvees: setChVids, onVoirVideos: function () { setPanneau("videos"); }, onTout: function () { setPanneau("photos"); }, onOuvrir: function (idAlb) { try { if (typeof window !== "undefined") window.__albumOuvert = idAlb; } catch (eAO) { } setPanneau("photos"); } })) /* 29/08 : les medias renvoyaient sur Souvenirs, qui n'a plus de photos depuis le decoupage — ils ouvrent desormais la page Photos */,
         /* 30/07: banniere Hype Memories retiree — redondante avec la carte Toutes ses photos */
 
         /* 30/07: encart Clinique retire de la fiche (doublon avec la carte Sante du carrousel) — emplacement reserve au futur encart Videos */)),
@@ -63580,8 +63579,7 @@ async function supprimerSouvenirOuvert() {
            Actualite existent toujours dans le code, prets pour quand Blandine voudra les ouvrir. */
         /* 25/08 : chapitre Sante & sellerie RETIRE de la fiche (cartes Clinique veterinaire + Sellerie) — decision Blandine ; les ecrans clinique/sellerie restent atteignables depuis leurs autres portes */
         cristal("partage"), h("div", { style: { position: "relative" } }, /* 02/08 : conteneur positionne ajoute — le titre vertical s ancrait a un ancetre lointain et se posait par-dessus le titre d un autre chapitre (bug signale par Blandine) */
-          h("div", { id: "chapPartage", style: { position: "absolute", left: -3, top: 6, width: 20, display: "flex", justifyContent: "center", pointerEvents: "none", zIndex: 2 } }, /* 31/07 soir : dernier titre horizontal passe a la verticale dans la marge, comme les autres chapitres */
-          h("span", { style: { writingMode: "vertical-rl", transform: "rotate(180deg)", fontSize: 15, letterSpacing: "0.34em", color: teinteCl, fontWeight: 800, fontFamily: "'Cinzel',Georgia,serif", whiteSpace: "nowrap", textTransform: "uppercase", textShadow: "0 1px 0 rgba(0,0,0,0.95), 0 0 16px " + tA(0.5) } }, T("Liens & partage", "Links & sharing", "Enlaces", "Link e condivisione", "\u30ea\u30f3\u30af\u3068\u5171\u6709", "Links & Teilen", "\u0627\u0644\u0631\u0648\u0627\u0628\u0637 \u0648\u0627\u0644\u0645\u0634\u0627\u0631\u0643\u0629"))),
+          null /* (902) titre vertical Liens & partage retire */,
         h("div", { className: "share rise", style: { position: "relative", animationDelay: ".18s" } },
           h("div", { className: "row" },
             h("div", { className: "txt" },

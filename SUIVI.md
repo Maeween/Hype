@@ -10973,4 +10973,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Plus d'air sous le bandeau IPO (18 → 40 px) et sous le rail des coupes (10 → 34 px).
 
 ## Build 902 (10/10, préparé — attend « Ok publie »)
-- Fiche cheval, partie Médias : le rail de photos qui défile (« Toutes ses photos » + couvertures d'albums) est retiré, doublon de la tuile Photos. La carte « Le voir en mouvement » reste. Les albums restent accessibles par la tuile Photos. Seule la fiche est touchée (option sansRail).
+- Fiche cheval : la bande de photos qui défile toute seule sous « Le voir en mouvement » est retirée (doublon de la tuile Photos). Option sansDefile, seule la fiche est touchée.
+- Correction de ma première version : j'avais d'abord retiré le rail d'albums (mauvaise lecture) ; il est remis tel quel.
+- Titres verticaux « Médias » et « Liens & partage » retirés dans la marge.
