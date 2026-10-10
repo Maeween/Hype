@@ -10621,3 +10621,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CORRECTION : en modératrice ou responsable du club du cheval, la photo choisie devient AUSSI la photo principale (hypeMajChevalDroits, fonction SQL du 834). Pour les autres cavalières, rien ne change (photo perso seulement).
 - EN BASE (10/10, par Claude) : Edgard reçoit sa photo perso comme photo principale (seul cheval encore dans ce cas : photo principale vide + photo perso de Blandine dont le fichier existe).
 - Checks : marqueur unique 20261010-846, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 847 — 10/10/2026 · Ostéopathe : prochaine échéance proposée à 1 an
+- Proposition de Claude acceptée par Blandine (« ok ») : à l'import des soins, une séance d'ostéopathe propose la prochaine échéance 1 an plus tard (comme dentiste et vaccin). Toujours modifiable ou effaçable sur la carte avant « Enregistrer ».
+- Décisions du même « ok », sans changement dans l'appli : maréchal sans précision = ferrure (8 semaines) ; lecture des captures réservée à son compte pour l'instant ; renvoi 2hype.netlify.app → 2hype.fr en attente de sa vérification Stripe ; couleurs plus lumineuses reportées.
+- Checks : marqueur unique 20261010-847, node --check 18 blocs OK, marqueurs de garde OK.
