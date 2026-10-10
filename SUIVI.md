@@ -10393,3 +10393,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Seul le bloc de titre de la page Communauté V2 change (COM2_CSS + une enveloppe span.com2-titre-halo). Aucun texte nouveau, aucune image ajoutée, aucun SQL.
 - Les autres planches (pages entières en pétrole, fondus, 12 couleurs) restent des propositions non retenues.
 - Checks : marqueur unique 20261010-811, node --check 18 blocs OK, marqueurs de garde OK ; rendu vérifié (iPhone 13, police de secours) : titre centré, tient sur la ligne, halo visible.
+
+## Build 812 — 10/10/2026 · Panneau des notifications : cyan → pétrole
+- Le panneau de la cloche (vu par Blandine au build 810) était encore en ancien bleu cyan : fond, lignes non lues, point, onglets, compteurs, bouton « Tout marquer comme lu », pastille de la cloche.
+- 25 couleurs remplacées dans ClocheNotifs seulement : cyan #20D9F5 / rgba(32,217,245,…) → pétrole #7FA3AD / rgba(127,163,173,…) ; textes cyan clair (#5FE9F0, #BFF2FA) → ivoire #F3EEE4 ; chiffres sur pastille → #06090B. Les icônes dorées restent dorées.
+- Couleurs seulement : aucun texte, aucune requête, aucun SQL.
+- Checks : marqueur unique 20261010-812, node --check 18 blocs OK, marqueurs de garde OK.
