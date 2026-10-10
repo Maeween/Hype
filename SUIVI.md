@@ -10366,3 +10366,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande de Blandine (capture) : « COMMUNAUTÉ », le sous-titre et la capsule « Monde Hype » sortent du hero et se placent juste sous la photo (globe + cavaliers), au lieu d'être posés sur le ciel. Stories suit, 38 px plus bas. Photo et cadrage inchangés.
 - Couleurs : décision de Blandine (09:26) — l'ancien turquoise commun (COLORS.turquoise, 448 usages) ne passe PAS en champagne ; plutôt pétrole, et il restera à certains endroits : à décider ensemble, rien changé.
 - Checks : marqueur unique 20261010-807, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
+
+## Build 808 — 10/10/2026 · La page Écurie ne change plus d'écurie toute seule
+- Signalé par Blandine : en quittant une page d'écurie et en y revenant, l'écurie avait changé.
+- Cause (introduite par le 792) : la page des chevaux d'une écurie écrivait dans la MÊME mémoire que la page Écurie (window.__hypeEcurieCourante). Ouvrir les chevaux de la SEP (depuis la Team, un piquet, une fiche…) faisait donc repartir la page Écurie sur la SEP au retour.
+- Correctif : la page des chevaux a sa propre mémoire (window.__ecurieHypeCourante) ; la page Écurie ne retient que l'écurie choisie sur elle-même (ou ouverte par un lien vers cette écurie).
+- Vérifié Chromium iPhone 13 : Écurie (Feinn) → chevaux de la SEP → retour Écurie = Feinn (807 : changeait). Checks : marqueur unique 20261010-808, node --check 18 blocs OK.
