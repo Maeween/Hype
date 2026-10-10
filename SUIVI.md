@@ -10918,3 +10918,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « reviens aux en-têtes précédents ». La carte photo + nom des onglets du cheval (encartIdentiteCh d'EcranCheval) est remise EXACTEMENT comme au build 881 : photo 58 % à gauche, nom 18 px sur la droite, sans les changements des 882 (agrandi sur ordinateur), 885 (zone, taille calculée, disposition fixée en arabe) et 889 (une ligne). Seule la couronne reste retirée (890, sa demande juste avant).
 - ⚠️ Conséquences rendues : un nom long peut de nouveau mordre sur la photo (« ENVOLE TOI CJ67 ») ; en arabe la photo repart sous le voile. Gardés : le titre du haut sans le nom en double (886), tout le reste de la page Photos et Vidéos.
 - Question en attente : les confettis (vidéo de cérémonie passée en version dorée au 888) — A remettre la version crystal, B retirer la vidéo.
+
+## Build 892 — 10/10/2026 · En-tête du cheval : flèche de partage retirée, crayon → trois petits points
+- Blandine : « retire ta flèche, on comprend pas ce que c'est » (un bouton de partage de fiche sera fait ailleurs plus tard — À FAIRE) et « pour changer de photo, mets juste trois petits points discrets en bas à droite comme ailleurs ». Le bouton « Changer la photo (admin) » (modératrice seulement, même geste changerPhotoPalm) devient ⋯ discret en bas à droite de la carte.
+- Checks : 18 blocs OK, marqueur 20261010-892 unique, gardes OK.
