@@ -10477,3 +10477,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Marge sous la carte Origines : 0 → 26 px (avant les tuiles Histoire / Performances / Santé…). Une seule valeur.
 - Vu sur sa capture : le recto du 821 s'affiche bien (Père / Mère / Père de mère, ligne race · âge · naissance lisible) et l'outil d'import apparaît sur un cheval de la SEP qu'elle n'a pas créé (820 + SQL OK).
 - Checks : marqueur unique 20261010-823, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 824 — 10/10/2026 · Correction du 822 : l'aperçu garde la photo de la story
+- Blandine : « normalement ça partageait les images des stories elles-mêmes ? ». OUI : la fonction netlify/edge-functions/story-apercu.ts (31/08) remplace og:image, og:title et og:description par la vraie photo, le nom et la légende de la story. Elle fonctionne toujours (elle remplace la valeur de la balise og:image, quelle que soit l'adresse).
+- partage-apercu.jpg n'est donc qu'une image de SECOURS : story sans photo, expirée, ou base qui ne répond pas à temps.
+- ERREUR DU 822 CORRIGÉE : les balises og:image:width = 1200 / height = 630 ajoutées dans story.html restaient en place quand la fonction mettait la photo (souvent en hauteur) de la story → dimensions fausses, risque de recadrage de l'aperçu. Retirées.
+- index.html inchangé.
