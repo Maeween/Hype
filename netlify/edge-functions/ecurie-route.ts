@@ -26,8 +26,9 @@
       chevaux avec lien vers leur fiche publique, rendez-vous, derniers résultats,
       invitation à ajouter son cheval, source OpenStreetMap). L'appli remplace ce
       bloc en démarrant.
-   Image d'aperçu : partage-apercu.jpg pour toutes pour l'instant (la grande photo
-   de l'écurie viendra quand sa lecture sans connexion aura été ouverte en base).
+   Image d'aperçu : la grande photo de l'écurie (tableaux_clubs, clé « club-banniere:… »,
+   lisible sans connexion depuis la règle passée par Blandine le 10/10) ; sinon
+   partage-apercu.jpg.
    ========================================================================= */
 
 import type { Context } from "https://edge.netlify.com";
@@ -113,6 +114,17 @@ function rang(place: unknown, classement: unknown): string {
 }
 const TYPES: Record<string, string> = { stage: "Stage", concours: "Concours", sortie: "Sortie", cours: "Cours", soiree: "Soirée", reunion: "Réunion" };
 
+/* La grande photo de l'écurie, agrandie à 1200 px par Supabase (comme cheval-route.ts) ;
+   pas de photo utilisable → l'image Hype commune partage-apercu.jpg. */
+function imageApercu(brut: unknown): string {
+  const u = String(brut || "").trim();
+  if (!u || !/^https:\/\//i.test(u)) return IMAGE_APERCU;
+  if (u.includes("/storage/v1/object/public/") && !u.includes("/render/image/")) {
+    return u.replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + (u.includes("?") ? "&" : "?") + "width=1200&resize=contain&quality=80";
+  }
+  return u;
+}
+
 /* ---------- Lectures ---------- */
 async function lire(chemin: string, signal: AbortSignal): Promise<any[]> {
   const r = await fetch(SUPABASE_URL + "/rest/v1/" + chemin, { headers: { apikey: CLE, Authorization: "Bearer " + CLE }, signal });
@@ -137,18 +149,21 @@ async function communeDepuisCoordonnees(la?: number, lo?: number): Promise<{ v: 
 }
 
 async function contenuHype(nom: string) {
-  const vide = { chevaux: [] as any[], resultats: [] as any[], rdv: [] as any[], lu: false };
+  const vide = { chevaux: [] as any[], resultats: [] as any[], rdv: [] as any[], banniere: "", lu: false };
   const minuteur = new AbortController();
   const stop = setTimeout(() => minuteur.abort(), DELAI_BASE_MS);
   try {
     const aujourdhui = new Date().toISOString().slice(0, 10);
-    const [chevaux, rdv] = await Promise.all([
+    const clef = nom.trim().toLowerCase();
+    const [chevaux, rdv, ban] = await Promise.all([
       lire("chevaux?club=ilike." + encodeURIComponent(litteral(nom)) +
         "&supprime_le=is.null&or=(visibilite.is.null,visibilite.neq.prive)" +
         "&select=id,nom,race,slug,photo_url&order=nom.asc&limit=80", minuteur.signal),
       lire("club_agenda?club_clef=eq." + encodeURIComponent(nom.trim().toLowerCase()) +
         "&or=(date_jour.gte." + aujourdhui + ",date_fin.gte." + aujourdhui + ")" +
         "&select=titre,type,date_jour,date_fin,lieu&order=date_jour.asc&limit=10", minuteur.signal),
+      // 10/10 : la grande photo de l'écurie (lisible sans connexion depuis la règle passée par Blandine le 10/10)
+      lire("tableaux_clubs?cle=eq." + encodeURIComponent("club-banniere:" + clef) + "&select=contenu&limit=1", minuteur.signal).catch(() => []),
     ]);
     const ids = chevaux.map((c) => String(c.id || "")).filter((i) => FORME_UUID.test(i));
     let resultats: any[] = [];
@@ -157,7 +172,8 @@ async function contenuHype(nom: string) {
         "&select=cheval_id,concours,epreuve,date_epreuve,classement,place,partants,mention" +
         "&order=date_epreuve.desc.nullslast,created_at.desc&limit=400", minuteur.signal);
     }
-    return { chevaux, resultats, rdv, lu: true };
+    const banniere = (ban && ban[0] && typeof ban[0].contenu === "string") ? ban[0].contenu.trim() : "";
+    return { chevaux, resultats, rdv, banniere, lu: true };
   } catch (e) {
     console.log("[ecurie-route] base lente ou injoignable :", String(e));
     return vide;
@@ -230,14 +246,14 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     html += `</ul>`;
   }
   if (!montrables.length) {
-    // TEXTE PROVISOIRE : sera remplacé par le texte choisi par Blandine (prompt ChatGPT du 10/10)
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Ton cheval est à ${texte(nom)} ?</h2>`;
-    html += `<p>Crée sa fiche sur Hype : ses photos, ses origines, ses résultats en concours et ses souvenirs, au même endroit. Ensuite, toute l’écurie peut suivre les concours, les stages et les sorties ensemble.</p>`;
+    // 10/10 : le texte de Blandine (le même que l'invitation affichée dans l'appli, build 852-853)
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Un box virtuel chez Hype ?</h2>`;
+    html += `<p>Pas de paille à faire ici : juste la fiche de ton cheval, ses photos, ses concours, ses souvenirs et son suivi… et d’autres cavaliers avec qui les partager. Théorie, conseils et coach virtuel t’accompagnent aussi dans ta progression.</p>`;
   }
   html += `<p style="margin-top:22px;font-size:12px">Hype est une application indépendante, sans lien officiel avec cette écurie ni avec la FFE. Données de l’écurie : © contributeurs OpenStreetMap.</p>`;
   html += `</main>`;
 
-  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: IMAGE_APERCU, nom, html };
+  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html };
 }
 
 /* ---------- Flux : la page Hype avec les ajouts (identique à cheval-route.ts) ---------- */
