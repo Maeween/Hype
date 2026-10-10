@@ -10931,3 +10931,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 894 — 10/10/2026 · Onglet Vidéos : la deuxième barre grise
 - Blandine : « ne retire pas une des deux barres grises ». Vérifié : aucune barre n'avait été retirée (3 barres #15181C avant et après ce soir) ; l'onglet Vidéos n'en avait qu'une (sous les onglets). Ajout de la seconde, comme sur la page Photos, entre la carte du cheval et le titre « Vidéos » (30 px, marge 24 px).
 - Checks : 18 blocs OK, marqueur 20261010-894 unique, gardes OK.
+
+## Build 895 — 10/10/2026 · Fiche du cheval : rangée des valeurs retirée ; Titi rendu à sa taille
+- Blandine (capture entourée) : « ça sur la page chevaux tu peux le virer complètement ». La rangée Confiance / Complicité / Respect / Franchise… (+ Niveau / Classement grisés) est retirée de la fiche principale, avec ses deux losanges (cristal « apercu » et « perf ») ; un simple espace de 34 px les remplace avant Performances. Les valeurs déjà saisies restent en base (statsCh), seulement plus affichées.
+- Onglet Vidéos vide : Titi avait été réduit à 84 px au 887 (« on la voit plus ») → remis à 168 px, centré au-dessus de « Aucune vidéo pour le moment ».
+- Checks : 18 blocs OK, marqueur 20261010-895 unique, gardes OK ; capture iPhone de la fiche.
