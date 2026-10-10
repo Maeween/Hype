@@ -10626,3 +10626,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Proposition de Claude acceptée par Blandine (« ok ») : à l'import des soins, une séance d'ostéopathe propose la prochaine échéance 1 an plus tard (comme dentiste et vaccin). Toujours modifiable ou effaçable sur la carte avant « Enregistrer ».
 - Décisions du même « ok », sans changement dans l'appli : maréchal sans précision = ferrure (8 semaines) ; lecture des captures réservée à son compte pour l'instant ; renvoi 2hype.netlify.app → 2hype.fr en attente de sa vérification Stripe ; couleurs plus lumineuses reportées.
 - Checks : marqueur unique 20261010-847, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 848 — 10/10/2026 · Page Écurie : plus de profondeur sur les tuiles, les chevaux et les derniers résultats
+- Blandine (deux captures entourées) : « laisse plus de profondeur aux cartes des derniers résultats, ainsi qu'aux onglets amenant sur les pages (Accès rapides) et aux cartes des chevaux ».
+- Même relief pour les trois (page Écurie, EcranEcurieV2) : ombre portée plus marquée (0 12px 24px + 0 3px 6px), reflet clair sur le bord haut, ombre intérieure en bas. Tuiles « Accès rapides » et cartes « Derniers résultats » : fond pétrole éclairé par le haut (dégradé #284A56 → #101D22 → presque noir). Cartes chevaux : photos inchangées, ombre ajoutée.
+- CSS seulement. Checks : marqueur unique 20261010-848, node --check 18 blocs OK, marqueurs de garde OK.
