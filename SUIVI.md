@@ -10306,3 +10306,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rien n'est écrit en dur : la destination se change dans la base (groupe_destination_id).
 - Note : « Voir tout » n'apparaît qu'au-delà de 8 chevaux (règle existante) ; la Team en a 10.
 - Checks : marqueur unique 20261010-799, node --check 18 blocs OK ; page Team identique au pixel sans destination (Chromium iPhone 13).
+- Build 799 mis en ligne (Ok de Blandine).
+- ⚠️ 10/10 02:15 : 2hype.fr EN PAUSE (« Site not available — usage limits »). Cause probable : plan gratuit Netlify = 300 crédits/mois, 15 crédits par mise en ligne en production ; une vingtaine de mises en ligne dans la soirée (782 → 799 + photos). Décision : plus aucune mise en ligne tant que le site est en pause ; ensuite, mises en ligne GROUPÉES (plusieurs builds testés d'un coup).
+
+## Build 800 — 10/10/2026 · Rendez-vous : chevaux du déplacement (PAS ENCORE EN LIGNE)
+- Fiche d'un rendez-vous (FicheEvenementClub) : encart « Chevaux du déplacement » (liste des chevaux enregistrés dans agenda_chevaux, visible de tous ; rien si vide pour les non-gestionnaires).
+- Gestion (peutModifier) : « Choisir les chevaux » / « Modifier » → feuille « Qui part ? » : chevaux des groupes rattachés au rendez-vous (Team, piquets) proposés et cochés par défaut si rien n'est encore enregistré ; « + Ajouter un autre cheval de l'écurie » (reste de l'écurie du rendez-vous) ; « Enregistrer » ajoute / retire (agenda_chevaux). Pas de cavalier par cheval (décision : les cavaliers tournent).
+- Les piquets sont déjà proposés dans le menu « Groupes » d'un rendez-vous (la liste prend tous les groupes de l'écurie) : décision R2 respectée sans changement.
+- Nouveaux : hypeChevauxEcurieTous, ChevauxDeplacementEV. Textes en 7 langues. Checks : marqueur unique 20261010-800, node --check 18 blocs OK. Test iPhone à faire.
