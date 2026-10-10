@@ -10954,3 +10954,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture, « t'as fait quoi là ?! ») : la carte photo + nom des onglets passée en pétrole au 897 ne va pas → remise exactement comme avant (fond #04070A, contour blanc 6 %, voile noir). Le pétrole reste sur les tuiles, la carte Origines et la carte IPO de la fiche principale.
 - Onglet Vidéos : une vidéo horizontale REMPLIT sa case (plus de bandes grises en haut et en bas) ; verticale et carrée restent entières sur fond flou.
 - Publié sur demande explicite de correction. Checks : 18 blocs OK, marqueur 20261010-898 unique, gardes OK ; capture iPhone.
+
+## Build 899 — 10/10/2026 · Les pages du cheval reprennent le haut de l'accueil (validé par Blandine sur aperçu)
+- Blandine : « reproduis exactement le fond de l'accueil… regarde en haut, c'est pas noir » puis « fais ça sur toutes les pages auxquelles la page cheval mène ». Toutes les pages « panneau » du cheval (Histoire, Photos, Performances, Vidéos, Actualité, Flots, Passeport) et la page Santé du cheval : fond #060709 + la même lueur que le haut de l'accueil (.hero-pulse : cercle de 360 px centré à 120 px du haut, rgba(127,163,173,.407) → transparent 62 %).
+- Barres de séparation (#15181C) des onglets du cheval → dégradé bleu pétrole des tuiles de l'accueil (#111B1F → #0B1215) ; cases des vidéos idem.
+- Aperçus montrés avant publication. Checks : 18 blocs OK, marqueur 20261010-899 unique, gardes OK.

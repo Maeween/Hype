@@ -52320,7 +52320,7 @@ function EcranSanteCheval() {
     }
   });
 
-  return h("div", { style: { position: "relative", minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 120 } },
+  return h("div", { style: { position: "relative", minHeight: "100vh", background: "radial-gradient(circle 180px at 50% 120px, rgba(127,163,173,0.407), transparent 62%), #060709" /* (899) lueur de l accueil */, color: "#EDF2F5", paddingBottom: 120 } },
     fond,
     h("div", { style: { position: "relative", zIndex: 1 } },
       /* ---------- EN-TETE CHEVAL : PORTRAIT FONDU DANS LE NOIR ----------
@@ -63648,7 +63648,7 @@ async function supprimerSouvenirOuvert() {
           setPanneau(ordre[suiv]);
         } catch (eS2) { }
       },
-      style: Object.assign({ position: "fixed", inset: 0, zIndex: 6500, background: (panneau === "photos" || panneau === "videos") ? "radial-gradient(circle 180px at 50% 120px, rgba(127,163,173,0.407), transparent 62%), #060709" : "#060709" /* (899) meme lueur que le haut de l accueil (.hero-pulse : cercle de 360 px, rgba(127,163,173,.407) -> transparent 62 %) */, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 },
+      style: Object.assign({ position: "fixed", inset: 0, zIndex: 6500, background: "radial-gradient(circle 180px at 50% 120px, rgba(127,163,173,0.407), transparent 62%), #060709" /* (899) meme lueur que le haut de l accueil, sur TOUTES les pages du cheval (.hero-pulse : cercle de 360 px, rgba(127,163,173,.407) -> transparent 62 %) */, overflowY: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 130 },
         (largeCh && panneau) ? { left: rtlCh ? 0 : 210, right: rtlCh ? 210 : 0, paddingLeft: "max(24px, calc((100% - 1240px) / 2))", paddingRight: "max(24px, calc((100% - 1240px) / 2))", paddingBottom: 80 } : {}) },   /* (882) Photos ; (884) Blandine : tous les onglets (Histoire, Performances, Videos...) laissent aussi le menu visible */
       h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 8px" } },
         h("button", { onClick: function () { setPanneau(null); }, style: { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, flexShrink: 0 } }, "‹"),
