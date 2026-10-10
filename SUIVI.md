@@ -10345,3 +10345,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - EcranSanteCheval : 20 couleurs cyan → champagne (#20D9F5 → #C9A66B ; #9CEDF8, #7FE8F2 → #D2B07A ; rgba(32,217,245,…) → rgba(201,166,107,…)). Cyan calculé à l'écran : 100 → 0 (Chromium iPhone 13).
 - Reste : l'image de fond décorative (constellations bleutées) est une image, inchangée.
 - Checks : marqueur unique 20261010-803, node --check 18 blocs OK.
+
+## Build 804 — 10/10/2026 · Mon compte (et carte Parrainage) aux couleurs de l'accueil
+- EcranMonCompte : cyan en dur (25) + COLORS.turquoise / Dark / Dim (12, uniquement dans cet écran) → champagne #C9A66B / #B8955A / rgba(201,166,107,0.18) ; #8FE6EF → #D2B07A. Badge « ✓ Connecté à Hype Universe », bouton « Retour à l'accueil » (texte #060709), barre de progression.
+- BlocParrainage (« Ramène tes amis », code HYPE-…, « Valider ») : 7 couleurs cyan → champagne.
+- Cyan calculé à l'écran : 57 → 0 (Chromium iPhone 13). COLORS.turquoise global (448 usages) NON modifié.
+- Checks : marqueur unique 20261010-804, node --check 18 blocs OK.
