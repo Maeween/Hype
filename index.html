@@ -62518,18 +62518,24 @@ function EcranCheval() {
         return h("button", { key: "tb" + tb[0], type: "button", onClick: function () { setPanneau(tb[0]); }, style: { flex: "0 0 auto", padding: "6px 2px 7px", border: "none", borderBottom: "1.5px solid " + (onTb ? "#C9A66B" : "transparent"), marginBottom: -1, background: "none", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: onTb ? 700 : 500, letterSpacing: "0.02em", color: onTb ? "#C9A66B" : "rgba(237,242,245,0.55)", whiteSpace: "nowrap" } }, tb[1]);
       }));
   }
+  /* (914) le bandeau « photo a gauche, nom a cote » s applique des 700 px de large (tablette), suivi en direct */
+  var elSt = React.useState(function () { try { return window.innerWidth >= 700; } catch (eW) { return false; } }); var encartLarge = elSt[0], setEncartLarge = elSt[1];
+  React.useEffect(function () {
+    function fEl() { try { var v = window.innerWidth >= 700; setEncartLarge(function (o) { return o === v ? o : v; }); } catch (eW2) { } }
+    window.addEventListener("resize", fEl); return function () { window.removeEventListener("resize", fEl); };
+  }, []);
   function encartIdentiteCh(titrePage) {
     var OR9 = "#D9A85C";
     var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh;
     /* (914) ORDINATEUR SEULEMENT (largeCh) : photo a gauche (largeur fixe, entiere, jamais rognee), nom juste a cote,
        aligne a gauche ; un nom long passe sur 2 lignes puis se reduit un peu, sans jamais deborder. iPhone : inchange. */
-    if (largeCh) {
+    if (largeCh || encartLarge) {   /* (914) aussi sur tablette des 700 px de large */
       var nomL = String(c.nom || "");
       var tailleL = nomL.length > 34 ? 20 : nomL.length > 22 ? 24 : 28;
-      return h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 28, margin: "4px 16px 18px", padding: 0, borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)", minHeight: 200 } },
-        h("div", { style: { flex: "0 0 300px", height: 210, background: "#04070A", display: "flex", alignItems: "center", justifyContent: "center" } },
+      return h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: largeCh ? 28 : 16, margin: "4px 16px 18px", padding: 0, borderRadius: 18, overflow: "hidden", background: "#04070A", border: "1px solid rgba(255,255,255,.06)", minHeight: 200 } },
+        h("div", { style: { flex: largeCh ? "0 0 300px" : "0 0 230px" /* (914) tablette : photo un peu plus etroite */, height: 210, background: "#04070A", display: "flex", alignItems: "center", justifyContent: "center" } },
           photoPalmId ? h("img", { src: photoPalmId, alt: "", style: { maxWidth: "100%", maxHeight: "100%", width: "auto", height: "auto", objectFit: "contain", display: "block", opacity: .96 } }) : null),
-        h("div", { dir: "auto", style: { flex: "1 1 auto", minWidth: 0, padding: "0 48px", textAlign: "start" } },
+        h("div", { dir: "auto", style: { flex: "1 1 auto", minWidth: 0, padding: largeCh ? "0 48px" : "0 28px", textAlign: "start" } },
           h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: tailleL, lineHeight: 1.2, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase", overflowWrap: "break-word", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, nomL),
           h("div", { style: { marginTop: 10, fontSize: 10, letterSpacing: ".18em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titrePage)),
         (moi && typeof estModerateurHype === "function" && estModerateurHype(moi) && chevalDyn && chevalDyn.dbId) ? h("button", { onClick: changerPhotoPalm, title: "Changer la photo (admin)", "aria-label": "\u2026", style: { position: "absolute", bottom: 6, insetInlineEnd: 8, zIndex: 3, minWidth: 30, height: 24, padding: "0 4px", border: "none", background: "transparent", color: "rgba(237,242,245,0.55)", fontSize: 18, lineHeight: 1, letterSpacing: 1, cursor: "pointer" } }, "\u22EF") : null);
