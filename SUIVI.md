@@ -10999,3 +10999,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - SQL des droits passé par Blandine le 11/10 (« Success ») : fonction hype_peut_gerer_collections + 3 règles (créer / modifier / supprimer) pour propriétaire du cheval, propriétaire de son écurie, admins.
 - Build 906 — collections, étape 2 (création et gestion) : grande carte en pointillés « + Créer une collection / Organise tes vidéos comme tu le souhaites » (comme la maquette) sous les vidéos, visible seulement par les personnes autorisées et s'il y a au moins une vidéo prête. Fenêtre du bas : nom (obligatoire, 60 caractères), vidéos du cheval à cocher (celles déjà dans une autre collection portent son nom ; les cocher les déplace), Enregistrer / Annuler. Sur chaque collection, « ⋯ » ouvre la même fenêtre : renommer, changer les vidéos, Monter / Descendre, Supprimer (confirmation dans la fenêtre ; les vidéos retournent dans « Autres vidéos »). Tout refus de la base s'affiche en clair. Fenêtre posée au-dessus de la barre du bas. 7 langues.
 - Reste : étape 3 (proposer une collection à l'ajout d'une vidéo), étape 4 (ordinateur).
+
+## Build 907 (11/10, préparé — attend « Ok publie »)
+- Fiche cheval, partie médias (au-dessus de « Le voir en mouvement ») : avec 0 ou 1 album, une seule carte sur toute la largeur au lieu de la ligne de vignettes.
+  - 1 album : sa couverture et son nom ; toucher = ouvrir l'album.
+  - 0 album mais des photos : « Toutes ses photos » ; toucher = la galerie.
+  - aucune photo : image fournie par Blandine (images/photos-vide-cheval.jpg, fichier séparé, pas de base64), « Chaque cheval a son histoire… » et « Partage ses grands moments ici » ; toucher = créer un album.
+  - 2 albums ou plus : la ligne de vignettes reste comme avant.
+- Fichier à pousser en plus de index.html : images/photos-vide-cheval.jpg (nouveau).
