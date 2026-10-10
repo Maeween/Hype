@@ -11027,3 +11027,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 910 (11/10, publié avec l'accord de Blandine — « Ok publie »)
 - Pages du cheval (Histoire, Photos, Performances, Vidéos) : plus de grand titre en haut (seulement la flèche retour et le drapeau) ; les 4 onglets passent en petits mots sans ronds (page ouverte en champagne soulignée) et descendent SOUS la carte du cheval — sous la 2e barre grise sur Photos et Vidéos, juste sous la carte sur Histoire et Performances (qui n'ont pas de 2e barre). Une seule fonction (ongletsPanCh) pour les 4. Le glissement du doigt entre pages reste. 7 langues. Les autres pages (Flots, Actualité, Passeport) gardent leur titre.
 - SQL photo_cadrages passé par Blandine le 11/10 (« Success ») — cadrage à la main, chantier suivant (build 911).
+
+## Build 911 (11/10, préparé — attend « Ok publie »)
+- Fenêtre des collections : les anciennes vidéos (fichiers .mov/.mp4 sans image Mux) retrouvent une vraie vignette, fabriquée UNE PAR UNE (un seul lecteur caché à la fois, image prise à 0,15 s, réduite à 240 px, lecteur libéré aussitôt ; échec ou 8 s dépassées → la case garde son ▶). Plus aucun risque de figer le téléphone comme le 11/10. Testé : vidéo lisible → image ; fichier introuvable → ▶, sans erreur.
