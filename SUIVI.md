@@ -11013,3 +11013,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fiche cheval : les trois petits points du menu de la fiche quittent la ligne du nom et passent, discrets (•••, sans cadre), en bas à droite DANS la photo (en bas à gauche en arabe). Même menu, même action.
 - Nom du cheval sur une seule ligne : il prend toute la largeur ; s'il est long, la police se réduit un peu (31 → 26 px au-delà de 13 lettres, 22 px au-delà de 17). Au-delà de 20 lettres, retour à la ligne autorisé.
 - Voile bleuté (option A validée par Blandine) : 13 % → 22 % (et 4 % → 7 % au milieu), sur la fiche, ses pages et la page Santé.
+
+## Build 909 (11/10, préparé — attend « Ok publie »)
+- CORRECTIF GEL DE L'IPHONE (signalé par Blandine en rangeant ses vidéos dans une collection) : dans la fenêtre « Modifier / Nouvelle collection », chaque ancienne vidéo (fichier .mov/.mp4 sans image Mux) ouvrait un lecteur vidéo pour afficher sa vignette — toutes à la fois, en plus de la galerie derrière → mémoire saturée, page bloquée, téléphone figé 1-2 min. Désormais ces vignettes sont une simple case sombre avec ▶ (aucun lecteur). Les vidéos Mux gardent leur vraie image. Fonction partagée hypeMiniatureVideo NON modifiée.
+- Fenêtre des collections : plus de sélection de texte par appui long (le titre se sélectionnait).
+- « ⋯ » des collections plus visible : rond champagne bordé.
+- Données vérifiées en base : ses 2 collections (« Compétition », « Entraînement Liam ») sont bien enregistrées.
