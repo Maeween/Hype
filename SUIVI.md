@@ -10864,3 +10864,21 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Test : composant rendu seul avec 0, 1, 2, 3 (dont 1 sans photo) et 5 albums simulés. Checks : 18 blocs OK, marqueur 20261010-881 unique, gardes OK.
 - Étape 2 (à faire, build séparé) : la page Photos du cheval sur ordinateur (menu 210 px, contenu élargi, grille de 4 sur ordinateur).
 - À FAIRE PLUS TARD (consigne séparée, ne pas développer maintenant) : page Vidéos du cheval sur ordinateur. Direction validée pour les cartes vidéo : vignette sur toute la carte, informations sur l'image, fondu noir bleuté progressif sans bandeau opaque, titre / auteur / date si elles existent, durée si disponible, vidéos horizontales, verticales et carrées respectées.
+
+## Build 882 — 10/10/2026 · Page Photos du cheval, étape 2 : version ordinateur
+- EcranCheval : useHypeLarge (largeCh). La page « panneau » Photos (calque plein écran) laisse le menu de gauche visible (décalée de 210 px, à droite en arabe), contenu centré jusqu'à 1240 px, marges ≥ 24 px. En-tête agrandi : photo 280 px de haut.
+- AlbumsCheval (page Photos seulement) : bandeau d'un album seul 260 px ; 2 albums en 3/2 ; 3 albums en 4/3 ; 4 et plus = grille qui passe à la ligne (cartes ≥ 220 px, carrées) : 4 colonnes à 1440 px, 3 à 1024 px.
+
+## Build 883 — 10/10/2026 · Page Photos : ajustements après vérification sur iPhone (consigne ChatGPT)
+- « + Nouvel album » quitte le bas de la page : petit bouton (contour champagne, fond pétrole) à droite du titre « Albums » ; « + Album » sur téléphone, « + Nouvel album » sur ordinateur. Même geste, même règle d'affichage qu'avant (aucune condition de droits sur cette page aujourd'hui ; l'écriture est contrôlée à l'enregistrement). L'ancienne pastille reste sur les pages Cavalier et Écurie.
+- « Albums des autres cavalières » entièrement caché quand vide (titre, phrase, espace), réaffiché dès qu'un album partagé est visible.
+
+## Build 884 — 10/10/2026 · Fiche cheval sur ordinateur : tous les onglets laissent le menu visible
+- Demande Blandine : la correction du 882 s'applique à tous les « panneaux » du cheval (Histoire, Performances, Vidéos, Flots, Actualité…) : décalés de 210 px, contenu centré 1240 px max. Avant, leur début passait sous le menu de gauche. Fiche principale inchangée.
+
+## Build 885 — 10/10/2026 · En-tête du cheval et état vide des albums (maquette validée)
+- En-tête commun aux onglets : la zone de texte commence APRÈS la photo (60 %, 52 % sur l'en-tête agrandi), le nom passe à la ligne entre les mots, taille calculée sur le mot le plus long (22 px max sur iPhone, 40 px max sur ordinateur : « le plus grand possible sans empiéter », demande Blandine), jamais de points de suspension, rien de changé en base.
+- Arabe : l'en-tête garde sa disposition (photo à gauche) — avant, la photo partait à droite sous le voile et sous le nom ; le texte reste écrit de droite à gauche.
+- Aucun album : encart de la maquette (icône carnet champagne entre deux filets, « Chaque cheval a son histoire… », « Crée son premier album pour garder ses plus beaux souvenirs. », bouton « Partage ses grands moments ici → » qui fait exactement l'action de « + Nouvel album ») ; 7 langues. Le petit « + Album » du titre n'apparaît que s'il existe déjà des albums.
+- Mis en ligne ensemble (commit ce20281). Checks : 18 blocs OK, marqueur 20261010-885 unique, gardes OK ; captures iPhone, arabe, 1024 et 1440.
+- ⚠️ Écart de méthode : le SUIVI de 882-885 n'est pas parti avec l'index dans le commit de publication (script de mise à jour en échec non vu à temps) ; ajouté juste après, sans changement de l'appli.
