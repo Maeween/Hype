@@ -10531,3 +10531,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CORRECTION : consigne (deux fiches) : « même sans aucun parent écrit, renvoie ce que la capture montre sur le cheval lui-même (nom, race, date de naissance, sexe, naisseur) » ; {} seulement s'il n'y a aucune information sur un cheval. Ancienne fiche : le sexe est demandé (hongre / jument / entier, « femelle » → jument), compté, prérempli et enregistré dans les origines (comme la V2 depuis le 741) ; sans sexe lu, celui déjà enregistré reste.
 - Race « Indéterminée » → affichée (OI) après le nom, comme « Origine inconnue » (825).
 - Checks : marqueur unique 20261010-831, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 832 — 10/10/2026 · Fiche cheval : espace au-dessus des Origines + bloc « histoire » retiré de la fiche
+- Blandine (capture de Vol O Vent Deslandes) : « laisse un peu d'espace au-dessus de l'onglet des origines aussi » → marge au-dessus de la carte Origines 22 → 34 px.
+- Blandine : « l'onglet histoire du cheval, je pense qu'on peut le retirer car il apparaît sur son histoire dans la page spécifique » → le bloc « son histoire » sous les tuiles n'est plus affiché (code gardé, éteint par un `if (true) return null`). La phrase automatique (« X est un cheval de l'écurie… ») disparaît avec lui.
+- Pour ne rien perdre, la page Histoire → Souvenirs reprend la règle du bloc retiré : sur un cheval qui n'est pas le mien, elle montre MON histoire perso (chevaux_histoires), sinon l'histoire du cheval ; le bouton d'édition s'affiche pour la propriétaire ET la cavalière liée (avant : propriétaire seule), libellé « Modifier son histoire » quand un texte existe (nouveau texte, 7 langues), « Écrire son histoire » sinon.
+- Checks : marqueur unique 20261010-832, node --check 18 blocs OK, marqueurs de garde OK.
