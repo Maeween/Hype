@@ -1245,24 +1245,83 @@ function cadreDeUrl(url) {
    puis on libere le lecteur avant de passer a la suivante. Echec ou delai depasse (8 s) : on abandonne
    cette video (la case garde son simple ▶), jamais de blocage. */
 var HYPE_VIG_LEGACY = {}; var hypeVigLegFile = []; var hypeVigLegEnCours = false;
+/* (911) l image d une video pour l affichage : couverture enregistree, sinon image Mux, sinon (ancienne video) vignette fabriquee */
+function hypeImageVideo(url, largeur) {
+  var c = hypeCouvertureVideo(url); if (c) return c;
+  var m = (typeof hypeMuxVignetteUrl === "function") ? hypeMuxVignetteUrl(url, largeur || 520) : null; if (m) return m;
+  return hypeVignetteLegacy(url);
+}
 function hypeVignetteLegacy(url) {
   try {
     var k = String(url || ""); if (!k) return null;
     if (Object.prototype.hasOwnProperty.call(HYPE_VIG_LEGACY, k)) return HYPE_VIG_LEGACY[k] || null;
     HYPE_VIG_LEGACY[k] = null; hypeVigLegFile.push(k);
+    hypeCouvertureVideo(k);   /* (911) demande en meme temps si une couverture est deja enregistree */
     if (!hypeVigLegEnCours) setTimeout(hypeVigLegSuivante, 50);
   } catch (eVl) { }
   return null;
 }
+/* (911) COUVERTURES DE VIDEOS ENREGISTREES (table video_couvertures, SQL passe par Blandine le 11/10).
+   hypeCouvertureVideo(url) : l image enregistree (choisie ou automatique), sinon null. Lecture groupee
+   (au plus 80 adresses par requete), resultat garde en memoire ; quand une couverture arrive, evenement
+   « hype-couvertures » pour que l ecran se redessine. undefined = pas encore su. */
+var HYPE_COUV = {}; var hypeCouvFile = []; var hypeCouvMin = null;
+function hypeCleCouv(u) { try { return (typeof urlNue === "function") ? String(urlNue(u) || "") : String(u || ""); } catch (eK) { return String(u || ""); } }
+function hypeCouvertureVideo(url) {
+  var k = hypeCleCouv(url); if (!k) return null;
+  if (Object.prototype.hasOwnProperty.call(HYPE_COUV, k)) return HYPE_COUV[k] || null;
+  HYPE_COUV[k] = undefined; hypeCouvFile.push(k);
+  if (!hypeCouvMin) hypeCouvMin = setTimeout(hypeChargerCouv, 60);
+  return null;
+}
+function hypeCouvConnue(url) { var k = hypeCleCouv(url); return Object.prototype.hasOwnProperty.call(HYPE_COUV, k) && HYPE_COUV[k] !== undefined; }
+async function hypeChargerCouv() {
+  hypeCouvMin = null;
+  var lot = hypeCouvFile.splice(0); if (!lot.length) return;
+  var trouve = false;
+  for (var i = 0; i < lot.length; i += 80) {
+    var part = lot.slice(i, i + 80);
+    try {
+      if (typeof supa === "undefined" || !supa) throw new Error("hors ligne");
+      var r = await supa.from("video_couvertures").select("video_url, image_url").in("video_url", part);
+      part.forEach(function (k) { HYPE_COUV[k] = null; });
+      ((r && r.data) || []).forEach(function (l) { if (l && l.video_url && l.image_url) { HYPE_COUV[l.video_url] = l.image_url; trouve = true; } });
+    } catch (eC) { part.forEach(function (k) { HYPE_COUV[k] = null; }); }
+  }
+  try { document.dispatchEvent(new CustomEvent("hype-couvertures")); } catch (eE) { }
+  /* les anciennes videos qui attendaient de savoir si elles avaient deja une couverture repartent */
+  if (!hypeVigLegEnCours && hypeVigLegFile.length) setTimeout(hypeVigLegSuivante, 50);
+}
+/* enregistre une couverture AUTOMATIQUE (premiere image de la video) — une seule fois, jamais par-dessus une existante */
+async function hypeEnregistrerCouvAuto(k, dataUrl) {
+  try {
+    if (!k || !dataUrl || HYPE_COUV[k]) return;
+    if (typeof supa === "undefined" || !supa || typeof utilisateurActuel !== "function") return;
+    var u = await utilisateurActuel(); if (!u || !u.id) return;
+    var bin = atob(String(dataUrl).split(",")[1] || ""); var arr = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+    var chemin = u.id + "/couv-" + Date.now() + "-" + Math.random().toString(36).slice(2, 8) + ".jpg";
+    var up = await supa.storage.from("photos").upload(chemin, new Blob([arr], { type: "image/jpeg" }), { contentType: "image/jpeg", upsert: false });
+    if (up && up.error) return;
+    var pub = supa.storage.from("photos").getPublicUrl(chemin);
+    var adr = pub && pub.data && pub.data.publicUrl; if (!adr) return;
+    var ins = await supa.from("video_couvertures").insert({ video_url: k, image_url: adr, auto: true }).select("video_url");
+    if (ins && !ins.error) { HYPE_COUV[k] = adr; try { document.dispatchEvent(new CustomEvent("hype-couvertures")); } catch (eE2) { } }
+  } catch (eS) { }
+}
 function hypeVigLegSuivante() {
-  var k = hypeVigLegFile.shift();
-  if (!k) { hypeVigLegEnCours = false; return; }
+  /* (911) on ne fabrique que si l on SAIT qu aucune couverture n est enregistree */
+  var iP = -1;
+  for (var q = 0; q < hypeVigLegFile.length; q++) { if (hypeCouvConnue(hypeVigLegFile[q])) { iP = q; break; } }
+  if (iP < 0) { hypeVigLegEnCours = false; return; }   /* hypeChargerCouv relancera */
+  var k = hypeVigLegFile.splice(iP, 1)[0];
+  if (hypeCouvertureVideo(k)) { setTimeout(hypeVigLegSuivante, 0); return; }
   hypeVigLegEnCours = true;
   var fini = false, v = null, minuteur = null;
   function terminer(img) {
     if (fini) return; fini = true;
     try { clearTimeout(minuteur); } catch (e0) { }
-    if (img) { HYPE_VIG_LEGACY[k] = img; try { document.dispatchEvent(new CustomEvent("hype-vignettes-legacy")); } catch (e1) { } }
+    if (img) { HYPE_VIG_LEGACY[k] = img; try { document.dispatchEvent(new CustomEvent("hype-vignettes-legacy")); } catch (e1) { } hypeEnregistrerCouvAuto(hypeCleCouv(k), img); }
     try { if (v) { v.removeAttribute("src"); v.load(); } } catch (e2) { }
     v = null;
     setTimeout(hypeVigLegSuivante, 120);
@@ -62321,7 +62380,7 @@ function EcranCheval() {
   var colBSt = React.useState(false); var colBusy = colBSt[0], setColBusy = colBSt[1];
   var colCSt = React.useState(false); var colConfSup = colCSt[0], setColConfSup = colCSt[1];
   var vlSt = React.useState(0); var setVigLegTick = vlSt[1];   /* (911) re-affiche quand une vignette d ancienne video est prete */
-  React.useEffect(function () { function fVl() { setVigLegTick(function (n) { return n + 1; }); } document.addEventListener("hype-vignettes-legacy", fVl); return function () { document.removeEventListener("hype-vignettes-legacy", fVl); }; }, []);
+  React.useEffect(function () { function fVl() { setVigLegTick(function (n) { return n + 1; }); } document.addEventListener("hype-vignettes-legacy", fVl); document.addEventListener("hype-couvertures", fVl); return function () { document.removeEventListener("hype-vignettes-legacy", fVl); document.removeEventListener("hype-couvertures", fVl); }; }, []);
   React.useEffect(function () {
     var vifCv = true;
     try { if (typeof listerCollectionsVideos === "function") listerCollectionsVideos(cibleCh).then(function (rCv) { if (vifCv) setCollVid((rCv && rCv.data) || []); }); } catch (eCv) { }
@@ -62589,7 +62648,7 @@ function EcranCheval() {
         h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: 8 } },
           prets.map(function (u, iP) {
             var coche = e.vids.indexOf(u) >= 0;
-            var vg = (typeof hypeMuxVignetteUrl === "function") ? hypeMuxVignetteUrl(u, 240) : null;
+            var vg = hypeImageVideo(u, 240);   /* (911) couverture enregistree > Mux > fabriquee */
             return h("div", { key: "cp" + iP, role: "button", onClick: function () { setColEdit(function (o) { var l = o.vids.slice(); var k = l.indexOf(u); if (k >= 0) l.splice(k, 1); else l.push(u); return Object.assign({}, o, { vids: l }); }); }, style: { cursor: "pointer" } },
               h("div", { style: { position: "relative", width: "100%", aspectRatio: "1 / 1", borderRadius: 10, overflow: "hidden", border: coche ? "2px solid #C9A66B" : "1px solid rgba(255,255,255,0.12)", background: "#0A1215" } },
                 vg ? h("img", { src: vg, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: coche ? 1 : 0.75 } })
@@ -62663,12 +62722,12 @@ function EcranCheval() {
   }
   function vignetteVidCh(url) {
     var horizV = (ratiosVid[url] || 0) >= 1.2;   /* (898) Blandine : une video horizontale REMPLIT sa case (plus de bandes grises) ; verticale/carree : entiere sur fond flou */
-    var vigV = (typeof hypeMuxVignetteUrl === "function") ? hypeMuxVignetteUrl(url, 520) : null;
+    var vigV = hypeImageVideo(url, 520);   /* (911) couverture enregistree > Mux > vignette fabriquee une par une (plus de lecteur par case) */
     var lecture = h("div", { style: { position: "absolute", inset: 0, zIndex: 3, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" } },
       h("div", { style: { width: 48, height: 48, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.7)", background: "rgba(5,8,9,0.45)", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 16px rgba(0,0,0,0.35)" } },
         h("svg", { viewBox: "0 0 24 24", "aria-hidden": "true", style: { width: 18, height: 18, marginLeft: 3, fill: "#F3EEE4" } }, h("path", { d: "M7 4.5v15l12-7.5z" }))));
     var fondu = h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "38%", zIndex: 2, background: "linear-gradient(0deg, rgba(5,8,9,0.45), rgba(5,8,9,0))", pointerEvents: "none" } });
-    if (!vigV) return h(React.Fragment, null, hypeMiniatureVideo(url, { largeur: 500, picto: false, objectFit: "contain", style: { pointerEvents: "none", background: "#0A1215" } }), fondu, lecture);
+    if (!vigV) return h(React.Fragment, null, h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(165deg,#111B1F 0%,#0B1215 100%)" } }), fondu, lecture);   /* (911) en attendant son image : case sombre, aucun lecteur */
     return h(React.Fragment, null,
       h("img", { src: vigV, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", draggable: false, onError: function (eB) { try { eB.currentTarget.style.display = "none"; } catch (e0) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transform: "scale(1.2)", filter: "blur(16px) brightness(0.45)", pointerEvents: "none" } }),
       h("img", { src: vigV, alt: "", loading: "lazy", decoding: "async", draggable: false, onLoad: function (eL) { try { var im = eL.currentTarget; if (im.naturalWidth && im.naturalHeight) { var rr = Math.round(im.naturalWidth / im.naturalHeight * 100) / 100; setRatiosVid(function (o) { if (o[url] === rr) return o; var n2 = Object.assign({}, o); n2[url] = rr; return n2; }); } } catch (eRl) { } }, onError: function (eI) { try { eI.currentTarget.style.display = "none"; } catch (e1) { } }, style: { position: "absolute", inset: 0, zIndex: 1, width: "100%", height: "100%", objectFit: horizV ? "cover" : "contain", pointerEvents: "none" } }),
