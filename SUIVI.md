@@ -10980,6 +10980,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Traits dorés à gauche retirés : carte « En concours » et bouton « Importer mes résultats officiels ».
 - Carte Origines allégée : lignes vides masquées (ex. « Père de mère — »), phrase « Toucher la carte pour voir l'arbre complet » retirée (le petit ↻ en haut à droite reste le signe qu'on peut retourner la carte), crayon de l'indice sur la même ligne que la race/âge.
 
-## Build 903 (10/10, préparé — attend « Ok publie »)
+## Build 903 (11/10, publié avec l'accord de Blandine — « ok publie une fois que tout ça est fait »)
 - Fiche cheval : la photo du haut prend exactement le format de la vidéo de l'accueil — cadre vertical (9:16), 66 % de la hauteur de l'écran, centré, coins arrondis, fine bordure. Conséquence : une photo horizontale est recadrée sur son centre (les côtés sont coupés).
 - Badge « Légende Hype » placé à droite de l'écurie, sur la même ligne (s'il manque de place, il passe dessous). La ligne écurie n'apparaît que pour la propriétaire qui a plusieurs écuries.
+- Badge raccourci à « ✦ Légende Hype » (« 1 sur 100 000 » retiré : déjà dans le bandeau IPO).
+- Ligne de l'écurie (📍) visible par tout le monde sur la fiche, en simple lecture. Le sélecteur (▼) reste réservé à la propriétaire qui a plusieurs écuries. Si le cheval n'a pas d'écurie, rien ne s'affiche.
+- Collections vidéo : analyse et SQL proposés (table collections_videos), rien de passé en base, en attente de ses réponses.

@@ -62752,8 +62752,14 @@ async function supprimerSouvenirOuvert() {
           h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 14, rowGap: 8, marginTop: 10 } }, /* (903) ecurie et Legende Hype sur la meme ligne */
           (function () {
             var proprioE = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-            if (!proprioE || mesClubsFiche.length < 2) return null;
             var actuel = String((chevalDyn && chevalDyn.club) || "").trim();
+            /* (903) Blandine : « la ligne de l ecurie devrait s afficher dans une fiche cheval, qu on sache d ou il vient ».
+               Pour tout le monde : simple lecture (sans fleche). Le selecteur reste reserve a la proprietaire qui a plusieurs ecuries. */
+            if (!proprioE || mesClubsFiche.length < 2) {
+              if (!actuel) return null;
+              return h("div", { style: { minWidth: 0, display: "inline-flex", alignItems: "center", gap: 7, fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "#D9C7A3" } },
+                h("span", { style: { fontSize: 11 } }, "\uD83D\uDCCD"), actuel);
+            }
             return h("div", { style: { minWidth: 0 } },
               h("div", { role: "button", onClick: function () { setOuvrirEcu(!ouvrirEcu); setErreurClub(""); },
                 style: { display: "inline-flex", alignItems: "center", gap: 7, cursor: "pointer",
@@ -62782,9 +62788,9 @@ async function supprimerSouvenirOuvert() {
                 })) : null,
               erreurClub ? h("div", { style: { marginTop: 6, fontSize: 11.5, color: "#FF6B6B", fontFamily: "'Montserrat',sans-serif" } }, erreurClub) : null);
           })(),
-          lblT2 ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45) } },
+          lblT2 ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45), whiteSpace: "nowrap" } },
                 h("b", { style: { color: teinteCl, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.14em" } }, "\u2726 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "\u4f1d\u8aac", "HYPE-LEGENDE", "\u0623\u0633\u0637\u0648\u0631\u0629 HYPE")),
-                h("span", { style: { color: "rgba(244,247,250,0.75)", fontSize: 10.5, letterSpacing: "0.06em", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: 8 } }, lblT2)) : null));
+                null /* (903) « 1 sur 100 000 » retire du badge : deja dans le bandeau IPO */) : null));
           })(),
 
           /* 22/08 session 152 : trois points de 1,4 px sans etiquette — personne ne
