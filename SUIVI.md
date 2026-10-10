@@ -10483,3 +10483,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - partage-apercu.jpg n'est donc qu'une image de SECOURS : story sans photo, expirée, ou base qui ne répond pas à temps.
 - ERREUR DU 822 CORRIGÉE : les balises og:image:width = 1200 / height = 630 ajoutées dans story.html restaient en place quand la fonction mettait la photo (souvent en hauteur) de la story → dimensions fausses, risque de recadrage de l'aperçu. Retirées.
 - index.html inchangé.
+
+## Build 825 — 10/10/2026 · « Origine constatée » → (OC) après le nom, « Origine inconnue » → (OI)
+- Blandine (après la phrase « Jaiko de popey est un Origine constatée de l'écurie… ») : « mets juste (OC) entre parenthèses après son nom, et (OI) quand ce sont des origines inconnues ».
+- Nouvelle fonction hypeSigleOrigine(race) : « Origine constatée » (ou « OC ») → OC ; « Origine inconnue », « Origine non constatée », « OI », « ONC » → OI ; accents et majuscules ignorés. En base aujourd'hui : 5 chevaux « Origine constatée », aucun « inconnue ».
+- Appliqué : grille « Les chevaux de l'écurie » et carte de communauté (nom suivi de (OC), plus de ligne race) ; fiche cheval : (OC) à côté du grand nom, ligne race · âge · naissance sans la race, phrase d'histoire « Jaiko de popey (OC) est un cheval de l'écurie … ».
+- Aucune donnée changée (la race reste « Origine constatée » en base), aucun texte nouveau à traduire (sigle).
+- Checks : marqueur unique 20261010-825, node --check 18 blocs OK, marqueurs de garde OK.
