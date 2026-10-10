@@ -10329,3 +10329,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Publication groupée du 10/10 (une seule mise en ligne, commit « [publier] » fed1cae) : netlify.toml [publier], allègement images/hi, build 800 + correctif. main et production identiques. (Un premier envoi sans le marqueur a été annulé par la règle : il ne coûte rien.)
 - Vérifications avant publication : 18 blocs node --check OK, marqueur unique 20261010-800, 4 garde-fous présents, 12 écrans principaux ouverts sans erreur ni fichier manquant (Chromium iPhone 13). Vérification du site en ligne impossible depuis ma machine (accès réseau à 2hype.fr bloqué) : à regarder par Blandine.
 - À FAIRE par Blandine (facultatif mais conseillé) : Netlify → Branches and deploy contexts → Production branch = production, Branch deploys = production seulement.
+
+## Build 801 — 10/10/2026 · Fin de l'ancien cyan : fenêtre « Un nouveau cheval » et fenêtre de notification
+- ModaleCreationCheval : bordures, lueurs, titre « MON ÉCURIE », champ, choix d'écurie, bouton « Créer sa fiche », liste des chevaux → champagne #C9A66B / #D2B07A, ivoire #F3EEE4, fonds pétrole #101A1D / #111B1F → #0B1215 (24 remplacements, plus aucun cyan).
+- InvitationsEcurieHype (fenêtre « X t'a ajouté à son écurie / Super / Quitter », affichée partout) : champagne au lieu du cyan ; bouton « Super » en dégradé champagne, texte #060709 ; la teinte personnelle n'est plus appliquée à cette fenêtre. « +11 autre notification » → pluriel correct (7 langues).
+- Rien d'autre ne change. Checks : marqueur unique 20261010-801, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
