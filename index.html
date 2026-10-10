@@ -62688,7 +62688,7 @@ async function supprimerSouvenirOuvert() {
       /* 10/10 (901) Blandine : le haut de la fiche reprend la DIMENSION, le design et le PLACEMENT de la video de l accueil :
          photo centree, entiere, hauteur max 66 % de l ecran, sur le fond de la page (plus de boite noire « studio »), fondu en bas ;
          le cadre colore (double filet) et le halo de couleur sont retires. */
-      h("header", { className: "hero", style: { background: "transparent", paddingTop: "calc(env(safe-area-inset-top) + 30px)", marginBottom: 18 } },
+      h("header", { className: "hero", style: { background: "transparent", paddingTop: "calc(env(safe-area-inset-top) + 64px)" /* (901) photo descendue sous le drapeau et la fleche */, marginBottom: 18 } },
         /* 02/08 : photo doublee dans l en-tete (signale par Blandine, screenshots My Dream et
            Boréalis : « la photo qui se met en petit par dessus la meme grande, et les cadres qui
            restent »). La boite fait 50svh et la photo est en object-fit contain : elle ne remplit

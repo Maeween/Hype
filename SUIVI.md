@@ -10969,3 +10969,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Les 6 tuiles reprennent exactement le dessin et les couleurs des tuiles de l'accueil (fond pétrole, bordure champagne fine, icône champagne 27 px, libellé ivoire). Conséquence : plus de photo de fond ni de petite ligne « Souvenirs → / 18 rés. → ».
 - Écart sous les tuiles = écart au-dessus (58 px).
 - Mot vertical « Performances » retiré sur la vidéo du palmarès.
+- Photo du haut descendue (marge haute 64 px) pour ne plus passer sous le drapeau et la flèche retour.
