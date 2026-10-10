@@ -10543,3 +10543,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Retour à l'affichage d'avant le 825 : grille « Les chevaux de l'écurie » et carte de communauté (nom seul, ligne race « Origine constatée » de nouveau affichée) ; grand nom de la fiche sans (OC).
 - Carte Origines de la fiche : la ligne race · âge · naissance affiche « (OC) » ou « (OI) » à la place de « Origine constatée » / « Origine inconnue » / « Indéterminée ». La phrase d'histoire (825) garde le sigle, mais ce bloc n'est plus affiché depuis le 832.
 - Checks : marqueur unique 20261010-833, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 834 — 10/10/2026 · Modifier la fiche d'un cheval qui n'est pas le mien (modératrice, responsable du club)
+- Blandine : « laisse-moi modifier les fiches des chevaux qui ne sont pas à moi », puis « je dois pouvoir tout modifier ».
+- CAUSE : « Modifier la fiche » (nom, race, âge, discipline, teinte) passait par modifierCheval, qui ajoutait `.eq("user_id", moi)` → rien n'était enregistré sur un cheval d'un autre, sans message. « Changer la photo » : même règle en base (RLS : propriétaire seule), échec silencieux. La teinte n'était proposée qu'à la propriétaire.
+- CODE : nouvelle fonction hypeMajChevalDroits(id, maj) : voie normale d'abord, sinon la fonction SQL hype_maj_cheval. Utilisée par modifierCheval, la photo du cheval (hypeEnregistrerPhoto) et la teinte (proposée aussi à la modératrice et à la responsable du club). Un échec affiche « La fiche n'a pas pu être enregistrée (droits insuffisants ?) » (7 langues) au lieu de se taire.
+- SQL À PASSER PAR BLANDINE (sql834) : hype_maj_cheval(p_id, p_maj jsonb), SECURITY DEFINER, mêmes droits que hype_maj_origines_cheval (propriétaire, hype_est_moderatrice, hype_peut_gerer_club du club du cheval) ; ne touche QUE nom (jamais vide), race, age, discipline, teinte, photo_url, histoire, photo_palmares, alias de CE cheval ; exécution réservée aux comptes connectés. AUCUNE policy RLS modifiée.
+- Inchangé : l'écurie du cheval (set_cheval_club : propriétaire ou admin), l'histoire écrite sur le cheval d'un autre reste SON histoire perso (règle du 02/09).
+- Checks : marqueur unique 20261010-834, node --check 18 blocs OK, marqueurs de garde OK.
