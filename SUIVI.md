@@ -10990,3 +10990,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 904 (11/10, publié avec l'accord de Blandine — « ok continue et tu peux publier »)
 - Onglet Vidéos vide (Titi), téléphone : carte 300 → 390 px de haut, la vidéo occupe le haut (74 %) et le texte + bouton descendent sous la tête de Titi, sur fond uni.
 - Page Écurie, « Derniers résultats » : cartes rallongées (164 → 192 px) et nom de l'épreuve sur 2 lignes au lieu d'être coupé par « … ».
+
+## Build 905 (11/10, préparé — attend « Ok publie »)
+- Collections de vidéos, étape 1/4 (affichage) : l'onglet Vidéos lit la table collections_videos (SQL passé par Blandine le 11/10). S'il existe au moins une collection avec une vidéo visible : une section par collection (nom tel que saisi, « N vidéos », 2 colonnes, 4 vidéos puis « Voir toutes les vidéos de cette collection »), puis « Autres vidéos » (vidéos hors collection + vidéos en préparation). Sinon : galerie inchangée. Une collection n'affiche que des vidéos que la personne voit déjà (rien de privé ne fuit). Textes en 7 langues.
+- Hero fiche cheval : hauteur 66 → 54 % de l'écran.
+- Droits des collections (réponse de Blandine : propriétaire du cheval, propriétaire de l'écurie, admins) : SQL préparé dans sql/2026-10-11-collections-videos-droits.sql, à passer par elle.
