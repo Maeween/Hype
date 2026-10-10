@@ -42448,7 +42448,7 @@ function EcranGuilde() {
         var nC = String(monClub || "").trim();
         try {
           if (k === "cavaliers") { window.__cavaliersClub = { nom: nC }; setEcran("cavaliers-club"); }
-          else if (k === "chevaux") { window.__ecurieHypeClub = nC || null; setEcran("ecurie-hype"); }
+          else if (k === "chevaux") { window.__ecurieHypeClub = nC || null; window.__ecurieHypePiquet = null; try { hypeMemEc("piquet", null); } catch (eMp) { } setEcran("ecurie-hype"); }   /* (897) Blandine : « Chevaux » ouvre TOUJOURS « Tous les chevaux », plus le dernier onglet/piquet vu ; le retour depuis une fiche cheval garde, lui, l onglet */
           else if (k === "agenda") { window.__agendaClub = monClub || ""; setEcran("agenda-club"); }
           else if (k === "actus") { window.__filEcurieCible = "ecurie:" + nC.toLowerCase(); window.__filEcurieNom = nC; setEcran("actualites-ecurie"); }
           else if (k === "souvenirs") { window.__souvenirsClub = { clef: nC.toLowerCase(), nom: nC }; setEcran("souvenirs-club"); }
