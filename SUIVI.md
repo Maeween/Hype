@@ -10909,3 +10909,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Capture de Blandine : « DAKOTA CA » passait sur 2 lignes en très grand depuis le 885 alors qu'il tenait sur une ligne. Nouvelle règle : si le nom ENTIER tient dans sa zone à une taille correcte (≥ 17 px iPhone, ≥ 30 px ordinateur), il reste sur une ligne à cette taille (max 22 / 40 px) ; sinon 2 lignes, taille calculée sur le mot le plus long. Ex. DAKOTA CA, ELFE = 1 ligne ; RIZOTTO D'EMERY, ENVOLE TOI CJ67 = 2 lignes.
 - Ses questions sur les éléments autour du nom (pas de changement) : ♛ = petite couronne décorative au-dessus du nom ; crayon = « Changer la photo (admin) », visible seulement pour une modératrice ; flèche = « Partager la fiche » (feuille de partage du téléphone).
 - Checks : 18 blocs OK, marqueur 20261010-889 unique, gardes OK.
+
+## Build 890 — 10/10/2026 · En-tête du cheval : couronne retirée
+- Blandine : « dégage-moi les décorations sur son nom, la couronne etc. » La petite couronne ♛ au-dessus du nom (en-tête des onglets Histoire, Photos, Performances, Vidéos) est retirée. Restent : le nom, le sous-titre de l'onglet, le crayon (modératrice seulement, changer la photo) et la flèche de partage — en attente de sa réponse pour ces deux boutons.
+- Checks : 18 blocs OK, marqueur 20261010-890 unique, gardes OK.
