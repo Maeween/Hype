@@ -10601,3 +10601,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rangé SANS SQL dans les origines du cheval (origines.gabarit = « cheval » / « poney » ; « Auto » l'efface), enregistré par la même voie que les origines (hypeMajOriginesCheval : propriétaire, modératrice, responsable du club).
 - hypeEstPoney(race, origines) : le gabarit choisi passe avant la race. La page des chevaux d'une écurie lit maintenant aussi les origines (4 lectures) pour l'onglet « Tous les poneys » et les compteurs.
 - Checks : marqueur unique 20261010-843, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 844 — 10/10/2026 · Retour depuis la fiche d'un cheval qu'on vient de créer
+- Blandine : « ça fait deux fois qu'en revenant en arrière depuis la fiche créée d'un poney, j'arrive sur ma page cavalier dont je ne viens pas du tout ».
+- CAUSE : après la création d'un cheval, la fenêtre « Nouveau cheval » ouvrait sa fiche avec setEcran("cheval"), qui ne note pas la page de départ dans l'historique. Le retour reprenait donc la page d'AVANT (souvent « Mon cavalier »).
+- CORRECTION : ouverture par naviguer("cheval") (la porte de navigation habituelle) : la page d'où l'on a créé le cheval (page des chevaux de l'écurie, piquet…) est retenue, le retour y ramène.
+- Checks : marqueur unique 20261010-844, node --check 18 blocs OK, marqueurs de garde OK.
