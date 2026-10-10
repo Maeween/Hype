@@ -10743,3 +10743,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - E. Aperçu téléphone et ordinateur, enregistrement des préférences, publication volontaire des modifications.
 - F. Droits et confiance : réservé aux personnes autorisées ; ne pas confondre créateur d'une page et représentant officiel vérifié ; ne jamais publier automatiquement de coordonnées personnelles ; garder les permissions et la confidentialité existantes.
 - Règle pour le chantier actuel : rien de tout cela n'est développé maintenant (aucun bouton, aucune table, aucun réglage) ; la version ordinateur doit seulement rester assez souple pour l'accueillir plus tard.
+
+## Build 863 — 10/10/2026 · Ordinateur, étape 2 : page Écurie en une colonne, grande photo
+- Suite de la maquette validée (« Ok continue »). EcranEcurieV2, seulement sur grand écran (≥ 1 024 px) :
+  - plus de colonne collante à droite : la page se déroule en une seule colonne (dans 1 280 px maxi, marges de 24 px) dans l'ordre de la maquette : Bienvenue (visiteur), citation, accès rapides, chevaux, résultats, événements, Contacter l'écurie, paysage + HYPE ; la vitrine (visiteur sans compte) suit le même principe ;
+  - grande photo de 410 px de haut (340 sur téléphone), nom de l'écurie en 56 px (46 px si le nom fait plus de 42 signes ; « (SEP) » en 34 px) — correctif : le réglage du 859 n'avait aucun effet, chaque ligne du nom imposait 32 px ; nom, ville et membres décalés de 44 px du bord ;
+  - encart « Bienvenue sur Hype » limité à 820 px de large, centré.
+- Téléphone : inchangé (mêmes éléments, même ordre, mêmes tailles).
+- Tests : ordinateur 1 440 px connecté et visiteur, sans débordement horizontal ni erreur ; iPhone 13 inchangé ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-863, marqueurs de garde OK.
+- Prochaines étapes : 3) accès rapides plus hauts ; 4) chevaux en rangée de photos (la grille actuelle à 3 colonnes est trop grande sur ordinateur) ; 5) résultats et événements côte à côte ; 6) bas de page et vérifications 1 024 / 1 280 / 1 920 px et arabe.
