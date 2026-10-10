@@ -10407,3 +10407,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non touchés : les cyans écrits en dur ailleurs (#20D9F5 directement dans le code), à traiter page par page si elle le souhaite.
 - Pour remettre le turquoise à un endroit précis : y écrire l'ancienne valeur en dur.
 - Checks : marqueur unique 20261010-813, node --check 18 blocs OK, marqueurs de garde OK ; tour des écrans Chromium iPhone 13 sans erreur de page.
+
+## Build 814 — 10/10/2026 · Les cyans écrits en dur → pétrole (suite du 813)
+- Suite de « Ok continue » après le 813 : les cyans écrits directement dans le code (sans passer par COLORS.turquoise) passent aussi en pétrole.
+- Correspondances : #20D9F5 et #1FB8C4 → #7FA3AD ; rgba(32,217,245,a) → rgba(127,163,173,a) (même transparence) ; cyans clairs #5FE9F0, #7FEAF2, #7FE8F2, #9CEDF8, #8FE6EF → #CFE3E8 ; #17A8B3 → #5C8792 ; #0C5763 → #1E3A44 ; #BFF2FA → #F3EEE4.
+- 1 152 remplacements dans 137 composants (liste du compte : classement, articles, challenge reprise, page écurie, installer, écoles Vienne/Jerez/Portugaise, Cadre Noir, événements, santé, accueil, connexion, etc.).
+- NON touchés, volontairement : Hey Baby (EcranAssistantIA, CarteAssistantHero, EncartHeyBabyCta — « on verra les couleurs plus tard ») ; la teinte « Turquoise » que chaque cavalier peut choisir (table des teintes + écran Personnalisation + teinteClaire) ; le globe du Monde Hype (GlobeAmbiance, MiniGlobe, GlobeCavaliers, dessin canvas) ; l'ancienne page Communauté V1 (inactive).
+- Couleurs seulement : aucun texte, aucune requête, aucun SQL.
+- Checks : marqueur unique 20261010-814, node --check 18 blocs OK, marqueurs de garde OK ; tour des 12 écrans Chromium iPhone 13 sans erreur, aucun fichier local en échec.
