@@ -10295,3 +10295,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 798 — 10/10/2026 · Barre des piquets : pastilles en dégradé ombré
 - Demande de Blandine (capture entourée) : plus de pastille pleine dorée pour l'onglet actif. Onglet actif : fond dégradé pétrole → noir transparent, liseré champagne 0,5, ombre portée, texte ivoire gras ; inactifs : dégradé sombre transparent, liseré champagne 0,16, texte ivoire 72 % ; bouton « + » assorti.
 - Rien d'autre ne change. Checks : marqueur unique 20261010-798, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
+- Builds 797 et 798 mis en ligne (Ok de Blandine).
+
+## SQL K + R1 — 10/10/2026 (passé par Blandine, vérifié dans la base)
+- `groupes.groupe_destination_id` (uuid → groupes, on delete set null) ; la Team CSO Club (SEP) pointe vers le piquet « CSO Club ».
+- Nouvelle table `agenda_chevaux` (agenda_id → club_agenda, cheval_id → chevaux, cascade ; clé (agenda_id, cheval_id)) ; RLS active ; règles : lecture pour tous ; ajout / retrait = gestion de l'écurie du rendez-vous (hype_peut_gerer_club(club_agenda.club_clef)).
+
+## Build 799 — 10/10/2026 · Étape K : « Voir tout » des chevaux de la Team → son piquet
+- Page Team : le piquet de destination est lu à part (si la colonne manquait, erreur ignorée = comportement d'avant). S'il est réglé et que c'est bien un piquet, « Voir tout » de « Nos chevaux » ouvre la page des chevaux de la SEP sur ce piquet au lieu de déplier la liste. Les autres « Voir tout » ne changent pas.
+- Rien n'est écrit en dur : la destination se change dans la base (groupe_destination_id).
+- Note : « Voir tout » n'apparaît qu'au-delà de 8 chevaux (règle existante) ; la Team en a 10.
+- Checks : marqueur unique 20261010-799, node --check 18 blocs OK ; page Team identique au pixel sans destination (Chromium iPhone 13).
