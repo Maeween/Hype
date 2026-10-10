@@ -10808,3 +10808,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande Blandine (carte « X a rendu leur palmarès à 6 chevaux » trop longue) ; visuels A/B/C montrés, choix B.
 - EcranCommunauteV2 : au lieu d'une ligne par cheval (nom + résultats · classements · victoires), les chevaux sont de petites pastilles dorées avec leur nom seul, sur plusieurs lignes ; toucher une pastille ouvre la fiche du cheval (même action qu'avant). Les totaux restent sous la phrase. Les chiffres par cheval ne sont plus sur la carte (choix assumé).
 - Tests : page Communauté sur téléphone (données simulées, sans carte palmarès) s'affiche sans erreur. Checks : 18 blocs node --check OK, un seul marqueur 20261010-872, marqueurs de garde OK.
+- SQL de la notification « validation automatique » (sql/2026-10-10-notif-validation-auto.sql) passé par Blandine le 10/10 et vérifié en base : la notification du build 869 est active.
+
+## Build 873 — 10/10/2026 · Accueil sur ordinateur, étape 3 (fin) : Mon profil / Ma communauté, Cercle Crystal, bas de page
+- « Mon profil » et « Ma communauté » réunies dans un cadre `acc2-duo` : côte à côte sur ordinateur (200 px de haut, titre 32 px, grande flèche, survol), l'une sous l'autre sur téléphone comme avant (rendu iPhone vérifié identique).
+- Le Cercle Crystal en bande de 200 px, texte plus grand, même image et même bouton. Bas de page : paysage de 200 px de haut au lieu de 118 sur ordinateur.
+- Arabe : même comportement qu'au téléphone — sur les cartes Profil/Communauté, l'image est cadrée à gauche (on voit surtout les arbres, les cavaliers sont sous le voile) ; à revoir si Blandine le souhaite.
+- Tests : 1440, 1024, arabe 1440, téléphone 390. Checks : 18 blocs node --check OK, un seul marqueur 20261010-873, marqueurs de garde OK.
+- Accueil ordinateur terminé (870-873). Reste en ordinateur : fiche cheval (en dernier, décision Blandine), autres pages.
