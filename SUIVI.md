@@ -10631,3 +10631,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (deux captures entourées) : « laisse plus de profondeur aux cartes des derniers résultats, ainsi qu'aux onglets amenant sur les pages (Accès rapides) et aux cartes des chevaux ».
 - Même relief pour les trois (page Écurie, EcranEcurieV2) : ombre portée plus marquée (0 12px 24px + 0 3px 6px), reflet clair sur le bord haut, ombre intérieure en bas. Tuiles « Accès rapides » et cartes « Derniers résultats » : fond pétrole éclairé par le haut (dégradé #284A56 → #101D22 → presque noir). Cartes chevaux : photos inchangées, ombre ajoutée.
 - CSS seulement. Checks : marqueur unique 20261010-848, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 849 — 10/10/2026 · Agenda de la Communauté au design de la page Écurie + Accès rapides encore plus profonds
+- Blandine : « pour l'agenda de la communauté reproduis plutôt le design exact des Events de la page Écurie et tu n'en laisses que 3 affichés ».
+- EcranCommunauteV2 : nouvelle carte carteAgendaEcurie, copie exacte de carteEvH (EcranEcurieV2) : colonne date (jour / mois doré / année), affiche à gauche fondue dans le noir, titre sur 2 lignes, badge doré du type, lieu, rond chevron. 3 rendez-vous affichés, « Voir tout » au-delà de 3 (avant : une grande carte + 6 petites, « Voir tout » au-delà de 7). Les anciennes cartes (grande / petite) restent dans le code, plus rendues.
+- Blandine (capture) : « tu peux laisser les accès rapides encore plus profonds ». Tuiles Accès rapides : lumière plus forte en haut (bord haut doré plus clair, reflet), socle sombre en bas, ombre portée plus longue (0 20px 34px), cercle de l'icône creusé. Espacement entre tuiles 10/14 px pour laisser respirer l'ombre.
+- Testé dans le navigateur de test (iPhone 13) : 3 cartes rendues, aucune erreur. Checks : marqueur unique 20261010-849, node --check 18 blocs OK, marqueurs de garde OK.
