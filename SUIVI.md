@@ -10434,3 +10434,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 18 px d'espace sous les onglets Tous / Amis / Écuries / Activité. CSS seulement.
 - Vu sur sa capture : le 816 est bien en ligne (« 08 NOV. » lisible, bas des cartes fondu).
 - Checks : marqueur unique 20261010-817, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 818 — 10/10/2026 · Tully Blue Moon : photo « ? » sur la page des chevaux de l'écurie
+- Blandine (2 captures) : la fiche de Tully Blue Moon a bien une photo, mais sa carte dans « Les chevaux de l'écurie » montrait un « ? ».
+- CAUSE (base) : chevaux.photo_url de Tully pointait vers un fichier qui n'existe plus dans le stockage (photos/2f6eeb8b…/1785082709360.jpg). La fiche, elle, affiche la photo perso de Blandine (chevaux_histoires.photo_url), d'où la différence. Vérifié : c'est le SEUL cheval actif dans ce cas.
+- CORRECTION EN BASE (10/10, par Claude, un seul cheval, condition sur l'ancienne valeur) : `update chevaux set photo_url = '…/photos/bc7c52ee…/1791627098573.jpg' where id = '907563eb-a7b7-48e9-8cfc-188624c385f8' and photo_url = '…/1785082709360.jpg'` → la photo de la fiche (fichier existant) devient aussi la photo de la carte, pour tout le monde.
+- FILET DANS LE CODE : sur la grille « Les chevaux de l'écurie » et la carte de communauté, une photo introuvable laisse place à l'image de cheval par défaut au lieu du « ? ».
+- Checks : marqueur unique 20261010-818, node --check 18 blocs OK, marqueurs de garde OK.
