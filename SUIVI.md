@@ -10777,3 +10777,29 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Pour chaque demande : nom de l'écurie, date, demandeur et rôle, téléphone et e-mail (touchables), n° FFE, message, et le téléphone de l'écurie tiré de la base des clubs pour vérifier ; boutons Refuser / Accepter → `supa.rpc("hype_traiter_demande_ecurie")` (la base vérifie que c'est une modératrice ; accepter = la personne devient responsable de l'écurie, notification envoyée dans les deux cas). Résultat affiché sur la carte (acceptée / refusée / impossible : déjà une responsable / erreur avec raison) ; après une acceptation, la liste des clubs revendiqués est rechargée. 7 langues.
 - Tests : iPhone 13, compte modératrice (données simulées) : bouton visible, fenêtre, Accepter → « Acceptée » ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-867, marqueurs de garde OK.
 - Reste du chantier : étape 4 = la responsable modifie elle-même les coordonnées de « Contacter l'écurie » (SQL à prévoir).
+
+## Build 868 — 10/10/2026 · « Contacter l'écurie » : la responsable modifie elle-même les coordonnées (étape 4 du chantier « mini-site »)
+- Bloc « Contacter l'écurie » de EcranEcurieV2 : lit `tableaux_clubs` clé `club-contact:<écurie>` (téléphone, e-mail, site, Instagram, Facebook, adresse, horaires, phrase) ; ce qui est saisi remplace les infos de la base des clubs. Boutons Appeler, E-mail, Site, Instagram, Facebook, Itinéraire. Bouton « ✎ Modifier » pour la responsable de l'écurie ou une modératrice → fenêtre de saisie, enregistrée puis relue pour confirmer ; écurie sans coordonnées : « + Ajouter les coordonnées de l'écurie » (responsable seulement). 7 langues.
+- Page Google de l'écurie (netlify/edge-functions/ecurie-route.ts) : reprend aussi ces coordonnées et la phrase.
+- SQL passé par Blandine le 10/10 : sql/2026-10-10-contact-ecurie.sql (3 règles sur tableaux_clubs : ajout/modif réservés responsable ou modératrice et seulement la clé club-contact ; lecture sans compte de ces clés seulement). Vérifié en base.
+
+## Validation automatique des demandes d'écurie — 10/10/2026 (SQL seulement, pas de build)
+- sql/2026-10-10-validation-auto-ecurie.sql, passé par Blandine le 10/10 et vérifié : table `clubs_emails_annuaire` (281 e-mails des fiches clubs, illisible depuis l'appli) ; `hype_demander_ecurie` accepte tout de suite la demande quand l'e-mail CONFIRMÉ du compte = l'e-mail de l'écurie dans l'annuaire (la personne devient responsable + notification « demande acceptée »). Sinon, la demande attend une modératrice comme avant.
+- Décision Blandine : A d'abord ; B (e-mail de vérification envoyé à l'adresse de l'écurie quand le compte a une autre adresse) ensuite — en attente du choix du service d'envoi (Resend ou Brevo).
+
+## Build 869 — 10/10/2026 · Notification aux modératrices quand une écurie est récupérée automatiquement
+- Nouveau type de notification `demande-ecurie-auto` : « X a récupéré la page de … (e-mail de l'écurie vérifié) », 7 langues ; toucher ouvre la page de l'écurie.
+- À ACTIVER APRÈS PUBLICATION : sql/2026-10-10-notif-validation-auto.sql (remplace seulement hype_demander_ecurie pour prévenir feinn@live.fr et malicia2008@hotmail.fr). Tant qu'il n'est pas passé, la validation automatique se fait sans prévenir.
+
+## Build 870 — 10/10/2026 · Accueil sur ordinateur, étape 1 : grande bande vidéo
+- Seulement à partir de 1024 px (useHypeLarge) ; téléphone inchangé. Le routeur laisse l'accueil s'élargir (1400 px max) ; contenu centré 1180 px.
+- Vidéo : nouveau fichier hype-accueil-video-ordi.mp4 (776×462), tiré des 2,7 premières secondes de hype-anim-cheval.mp4 (avant le logo « HYPE / TON UNIVERS ÉQUESREE », les « 02/03 » et le rectangle noir de fin), logo « Ai » et cadre arrondi retirés, lu aller-retour pour boucler sans saut. hype-anim-cheval.mp4 reste intact (carte Grand Prix). Image d'attente : images/accueil-video-ordi-poster.jpg (aussi image de secours si la vidéo ne se lit pas, au lieu de l'ancien cheval turquoise).
+- Bande de 430 px, cadrée en haut (oreilles visibles) ; « TON UNIVERS ÉQUESTRE » en grand à gauche (à droite en arabe) avec un voile sombre ; lueur turquoise retirée sur ordinateur. Icônes messages, cloche, déconnexion et drapeaux de langue gardées en haut à droite.
+- Note : la vidéo est agrandie ~1,6× sur un écran 1440 → un peu moins nette ; option future : une vraie vidéo paysage ≥ 1920 px.
+
+## Build 871 — 10/10/2026 · Accueil sur ordinateur, étape 2 : carte « Aujourd'hui », phrase, 9 tuiles
+- Maquette ChatGPT validée par Blandine (sans les ajouts inventés : « Apprendre · Progresser… », « Voir la vidéo », avatar dans le menu).
+- Carte « Aujourd'hui » 164 px de haut, titre 36 px, grande flèche ; phrase manuscrite 31 px avec deux filets dorés de chaque côté ; 9 tuiles horizontales (icône, nom, petit chevron, léger effet au survol), 3 colonnes (resserrées entre 1024 et 1279 px). Arabe : sens inversé, chevrons retournés.
+- Tout le CSS ordinateur est à la fin de ACC2_CSS dans @media (min-width:1024px) : aucune règle téléphone touchée.
+- Tests (copie locale, données simulées) : 1440, 1024, arabe 1440, téléphone 390 inchangé. Checks : 18 blocs node --check OK, un seul marqueur 20261010-871, marqueurs de garde OK.
+- Reste : étape 3 (872) = « Mon profil » et « Ma communauté » côte à côte, Cercle Crystal, bas de page.
