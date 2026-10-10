@@ -10582,3 +10582,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Appliquée aux 4 lectures d'image : origines (ancienne fiche et V2), résultats par capture, documents.
 - Ne supprime pas les lenteurs du service lui-même ; réduit l'envoi et évite l'échec sur les grosses images.
 - Accord : « Ok continue » (14 h 34). Checks : marqueur unique 20261010-840, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 841 — 10/10/2026 · Page des chevaux d'une écurie : onglet automatique « Tous les poneys »
+- Blandine : « ajoute tous les poneys en onglet sur la page chevaux d'une écurie, qui apparaisse automatiquement comme celui de tous les chevaux ».
+- Dans la barre des piquets : « Tous les chevaux », puis « Tous les poneys » (7 langues) quand l'écurie a au moins un poney, puis les piquets. Il filtre la grille comme un piquet, sans fiche de gestion (ce n'est pas un groupe en base). La barre s'affiche aussi pour une écurie sans piquet mais avec des poneys.
+- Poney = race contenant « poney » / « pony » ou une race de poneys connue (Welsh, Shetland, Connemara, New Forest, Dartmoor, Exmoor, Fjord, Haflinger, Landais, Pottok, PFS, Highland pony) — fonction hypeEstPoney, utilisée aussi pour le compteur « Poneys » de l'en-tête (avant : « poney/pony » seulement, les Welsh comptaient comme chevaux).
+- Question en attente n° 5 réglée : malicia2008@hotmail.fr est un compte de Blandine (« tu peux laisser, c'est moi Malicia »), il reste modératrice.
+- Checks : marqueur unique 20261010-841, node --check 18 blocs OK, marqueurs de garde OK.
