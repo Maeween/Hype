@@ -299,3 +299,12 @@
   Content-Type: text/javascript; charset=utf-8
   Cache-Control: public, max-age=31536000, immutable
   X-Robots-Tag: noindex
+
+# 10/10 (851) : annuaire des écuries lu par la fonction ecurie-route.ts, et son
+# générateur. Utiles au site, pas à montrer dans Google. Toujours frais (il change
+# quand la base des clubs change).
+/ecuries.json
+  Cache-Control: public, max-age=0, must-revalidate
+  X-Robots-Tag: noindex
+/ecuries-generer.cjs
+  X-Robots-Tag: noindex
