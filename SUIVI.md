@@ -10537,3 +10537,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « l'onglet histoire du cheval, je pense qu'on peut le retirer car il apparaît sur son histoire dans la page spécifique » → le bloc « son histoire » sous les tuiles n'est plus affiché (code gardé, éteint par un `if (true) return null`). La phrase automatique (« X est un cheval de l'écurie… ») disparaît avec lui.
 - Pour ne rien perdre, la page Histoire → Souvenirs reprend la règle du bloc retiré : sur un cheval qui n'est pas le mien, elle montre MON histoire perso (chevaux_histoires), sinon l'histoire du cheval ; le bouton d'édition s'affiche pour la propriétaire ET la cavalière liée (avant : propriétaire seule), libellé « Modifier son histoire » quand un texte existe (nouveau texte, 7 langues), « Écrire son histoire » sinon.
 - Checks : marqueur unique 20261010-832, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 833 — 10/10/2026 · (OC) / (OI) seulement dans les origines (correction du 825)
+- Blandine : « pour les (OC) et (OI), c'était juste pour l'onglet histoire et les origines, pas pour ailleurs : retire-le des noms des chevaux ».
+- Retour à l'affichage d'avant le 825 : grille « Les chevaux de l'écurie » et carte de communauté (nom seul, ligne race « Origine constatée » de nouveau affichée) ; grand nom de la fiche sans (OC).
+- Carte Origines de la fiche : la ligne race · âge · naissance affiche « (OC) » ou « (OI) » à la place de « Origine constatée » / « Origine inconnue » / « Indéterminée ». La phrase d'histoire (825) garde le sigle, mais ce bloc n'est plus affiché depuis le 832.
+- Checks : marqueur unique 20261010-833, node --check 18 blocs OK, marqueurs de garde OK.
