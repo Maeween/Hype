@@ -10963,3 +10963,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 900 — 10/10/2026 · Voile du haut plus subtil, aussi sur la fiche principale
 - Blandine (captures) : la lueur du 899 faisait « un gros rond plus clair en plein milieu de la page » (elle restait fixe pendant le défilement). Remplacée par un voile large et très doux : ellipse 130 % × 420 px en haut, rgba(127,163,173,.13) → .04 → transparent, attaché au contenu (part avec le défilement). Sur toutes les pages du cheval, la page Santé et (demande de Blandine) la fiche principale (.chv .app : son ancienne lueur 0,185 + dégradé bleuté remplacés par le même voile sur #060709).
 - Aperçu montré avant publication. Checks : 18 blocs OK, marqueur 20261010-900 unique, gardes OK.
+
+## Build 901 (10/10, préparé — PAS encore publié, attend « Ok publie »)
+- Fiche cheval : haut de page comme la vidéo de l'accueil (photo entière, centrée, max 66 % de l'écran, plus de boîte noire « studio », plus de cadre coloré ni de halo, fondu doux en bas).
+- Les 6 tuiles reprennent exactement le dessin et les couleurs des tuiles de l'accueil (fond pétrole, bordure champagne fine, icône champagne 27 px, libellé ivoire). Conséquence : plus de photo de fond ni de petite ligne « Souvenirs → / 18 rés. → ».
+- Écart sous les tuiles = écart au-dessus (58 px).
+- Mot vertical « Performances » retiré sur la vidéo du palmarès.
