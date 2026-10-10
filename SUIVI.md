@@ -10802,4 +10802,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Carte « Aujourd'hui » 164 px de haut, titre 36 px, grande flèche ; phrase manuscrite 31 px avec deux filets dorés de chaque côté ; 9 tuiles horizontales (icône, nom, petit chevron, léger effet au survol), 3 colonnes (resserrées entre 1024 et 1279 px). Arabe : sens inversé, chevrons retournés.
 - Tout le CSS ordinateur est à la fin de ACC2_CSS dans @media (min-width:1024px) : aucune règle téléphone touchée.
 - Tests (copie locale, données simulées) : 1440, 1024, arabe 1440, téléphone 390 inchangé. Checks : 18 blocs node --check OK, un seul marqueur 20261010-871, marqueurs de garde OK.
-- Reste : étape 3 (872) = « Mon profil » et « Ma communauté » côte à côte, Cercle Crystal, bas de page.
+- Reste : étape 3 (873) = « Mon profil » et « Ma communauté » côte à côte, Cercle Crystal, bas de page.
+
+## Build 872 — 10/10/2026 · Fil de la Communauté : carte « palmarès » de plusieurs chevaux raccourcie (option B)
+- Demande Blandine (carte « X a rendu leur palmarès à 6 chevaux » trop longue) ; visuels A/B/C montrés, choix B.
+- EcranCommunauteV2 : au lieu d'une ligne par cheval (nom + résultats · classements · victoires), les chevaux sont de petites pastilles dorées avec leur nom seul, sur plusieurs lignes ; toucher une pastille ouvre la fiche du cheval (même action qu'avant). Les totaux restent sous la phrase. Les chiffres par cheval ne sont plus sur la carte (choix assumé).
+- Tests : page Communauté sur téléphone (données simulées, sans carte palmarès) s'affiche sans erreur. Checks : 18 blocs node --check OK, un seul marqueur 20261010-872, marqueurs de garde OK.
