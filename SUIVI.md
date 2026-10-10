@@ -10589,3 +10589,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Poney = race contenant « poney » / « pony » ou une race de poneys connue (Welsh, Shetland, Connemara, New Forest, Dartmoor, Exmoor, Fjord, Haflinger, Landais, Pottok, PFS, Highland pony) — fonction hypeEstPoney, utilisée aussi pour le compteur « Poneys » de l'en-tête (avant : « poney/pony » seulement, les Welsh comptaient comme chevaux).
 - Question en attente n° 5 réglée : malicia2008@hotmail.fr est un compte de Blandine (« tu peux laisser, c'est moi Malicia »), il reste modératrice.
 - Checks : marqueur unique 20261010-841, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 842 — 10/10/2026 · Poneys : seule la race qui dit « poney » compte (correction du 841)
+- Blandine : « ne décide pas par toi-même qui est poney et qui est cheval, remets Sunhill et Yellow chez les chevaux » (Sunhill Blondey Boy = Connemara, Orchid's Yellow = New Forest).
+- MON ERREUR au 841 : j'avais ajouté une liste de races « de poneys » (Welsh, Connemara, New Forest…). Retirée : hypeEstPoney revient à la règle d'avant — race contenant « poney » ou « pony », rien d'autre. Vaut pour l'onglet « Tous les poneys » et le compteur « Poneys ».
+- Checks : marqueur unique 20261010-842, node --check 18 blocs OK, marqueurs de garde OK.
