@@ -62809,11 +62809,11 @@ async function supprimerSouvenirOuvert() {
                      lisibles, puis la ligne race / age / naissance en plus grand et sans majuscules. */
                   h("div", { style: { fontSize: 10.5, letterSpacing: "0.22em", textTransform: "uppercase", color: teinteCl, fontWeight: 700, marginBottom: 10 } }, T("Origines", "Bloodline", "Or\u00edgenes", "Origini", "\u8840\u7d71", "Herkunft", "\u0627\u0644\u0646\u0633\u0628")),
                   (pN || nomDe(pdB.mere) || pmN) ? h("div", { style: { display: "grid", gridTemplateColumns: "auto minmax(0,1fr)", columnGap: 12, rowGap: 8, alignItems: "baseline", paddingRight: 34 } },
-                    [[T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater", "\u0627\u0644\u0623\u0628"), pN], [T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter", "\u0627\u0644\u0623\u0645"), nomDe(pdB.mere)], [T("P\u00e8re de m\u00e8re", "Damsire", "Padre de la madre", "Padre della madre", "\u6bcd\u306e\u7236", "Muttervater", "\u0623\u0628 \u0627\u0644\u0623\u0645"), pmN]].map(function (lv, ixL) {
+                    [[T("P\u00e8re", "Sire", "Padre", "Padre", "\u7236", "Vater", "\u0627\u0644\u0623\u0628"), pN], [T("M\u00e8re", "Dam", "Madre", "Madre", "\u6bcd", "Mutter", "\u0627\u0644\u0623\u0645"), nomDe(pdB.mere)], [T("P\u00e8re de m\u00e8re", "Damsire", "Padre de la madre", "Padre della madre", "\u6bcd\u306e\u7236", "Muttervater", "\u0623\u0628 \u0627\u0644\u0623\u0645"), pmN]].filter(function (lvF) { return !!lvF[1]; }) /* (902) lignes vides masquees */.map(function (lv, ixL) {
                       return [h("span", { key: "l" + ixL, style: { fontSize: 11.5, color: "rgba(244,247,250,0.62)", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, lv[0]),
                               h("span", { key: "v" + ixL, style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15.5, lineHeight: 1.25, color: lv[1] ? "#F4F7FA" : "rgba(244,247,250,0.32)", overflowWrap: "anywhere" } }, lv[1] || "\u2014")];
                     })) : h("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 15, lineHeight: 1.32, color: "#F4F7FA", paddingRight: 34 } }, T("Origines \u00e0 renseigner", "Bloodline to fill in", "Or\u00edgenes por completar", "Origini da inserire", "\u8840\u7d71\u672a\u8a18\u5165", "Herkunft erg\u00e4nzen", "\u0646\u0633\u0628 \u064a\u062c\u0628 \u0625\u062f\u062e\u0627\u0644\u0647\u0627")),
-                  h("div", { style: { marginTop: 10, fontSize: 11, color: "rgba(244,247,250,0.5)", fontFamily: "'Montserrat',sans-serif" } }, T("Toucher la carte pour voir l\u2019arbre complet", "Tap the card to see the full pedigree", "Toca la tarjeta para ver el \u00e1rbol completo", "Tocca la scheda per vedere l\u2019albero completo", "\u30bf\u30c3\u30d7\u3057\u3066\u8840\u7d71\u8868\u5168\u4f53\u3092\u898b\u308b", "Karte antippen f\u00fcr den ganzen Stammbaum", "\u0627\u0644\u0645\u0633\u064a \u0627\u0644\u0628\u0637\u0627\u0642\u0629 \u0644\u0631\u0624\u064a\u0629 \u0634\u062c\u0631\u0629 \u0627\u0644\u0646\u0633\u0628 \u0643\u0627\u0645\u0644\u0629")),
+                  false /* (902) phrase « Toucher la carte » retiree */ && h("div", { style: { marginTop: 10, fontSize: 11, color: "rgba(244,247,250,0.5)", fontFamily: "'Montserrat',sans-serif" } }, T("Toucher la carte pour voir l\u2019arbre complet", "Tap the card to see the full pedigree", "Toca la tarjeta para ver el \u00e1rbol completo", "Tocca la scheda per vedere l\u2019albero completo", "\u30bf\u30c3\u30d7\u3057\u3066\u8840\u7d71\u8868\u5168\u4f53\u3092\u898b\u308b", "Karte antippen f\u00fcr den ganzen Stammbaum", "\u0627\u0644\u0645\u0633\u064a \u0627\u0644\u0628\u0637\u0627\u0642\u0629 \u0644\u0631\u0624\u064a\u0629 \u0634\u062c\u0631\u0629 \u0627\u0644\u0646\u0633\u0628 \u0643\u0627\u0645\u0644\u0629")),
                   /* 02/08 : la race, l age, la robe et l indice IPO rejoignent la carte Origines,
                      en une seule ligne discrete (demande Blandine). Leur bloc dedie, qui occupait
                      toute une bande entre le carrousel et l histoire, est supprime : l histoire
@@ -62834,12 +62834,12 @@ async function supprimerSouvenirOuvert() {
                     var monCh = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
                     var aIx = !!((ogB.indices || [])[0] && (ogB.indices || [])[0][1]);
                     if (!bribes.length && !monCh) return null;
-                    return h("div", { style: { marginTop: 11, paddingTop: 9, borderTop: "1px solid rgba(255,255,255,0.07)", display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", fontSize: 13, lineHeight: 1.45, letterSpacing: "0.01em", textTransform: "none", color: "rgba(244,247,250,0.86)", fontFamily: "'Montserrat',sans-serif" } },   /* (821) plus grand, sans majuscules */
+                    return h("div", { style: { marginTop: 11, paddingTop: 9, borderTop: "1px solid rgba(255,255,255,0.07)", display: "block" /* (902) crayon dans le fil du texte */, fontSize: 13, lineHeight: 1.45, letterSpacing: "0.01em", textTransform: "none", color: "rgba(244,247,250,0.86)", fontFamily: "'Montserrat',sans-serif" } },   /* (821) plus grand, sans majuscules */
                       h("span", null, bribes.length ? bribes.join("  \u00b7  ") : "\u2014"),
                       (monCh && !aIx) ? h("span", { role: "button", title: "Renseigner l'indice", onClick: function (eIc) {
                         if (eIc && eIc.stopPropagation) eIc.stopPropagation();
                         ouvrirEditIndice();
-                      }, style: { display: "inline-flex", alignItems: "center", justifyContent: "center", width: 19, height: 19, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", fontSize: 9.5, color: "#C9D3D8", cursor: "pointer", flexShrink: 0 } }, "\u270e") : null);
+                      }, style: { display: "inline-flex", alignItems: "center", justifyContent: "center", width: 19, height: 19, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.28)", fontSize: 9.5, color: "#C9D3D8", cursor: "pointer", flexShrink: 0, verticalAlign: "middle", marginInlineStart: 8 } }, "\u270e") : null);
                   })(),
                   /* 04/10 (635) \u2014 L OUTIL D IMPORT DES ORIGINES, ENFIN VISIBLE. Blandine (deja le 05/09, et
                      a nouveau ce soir : \u00ab je cherche depuis 20 mn sans succes \u00bb) : l outil n etait
@@ -63362,7 +63362,7 @@ async function supprimerSouvenirOuvert() {
             style: {
               margin: "14px 16px 0", borderRadius: 16, overflow: "hidden", cursor: "pointer",
               border: "1px solid rgba(255,255,255,0.09)",
-              borderLeft: "3px solid " + teinteCl,
+              /* (902) trait dore a gauche retire */
               /* le « Souffle » : la lueur ne prend qu'au coin bas-droit */
               background: "radial-gradient(140% 100% at 118% 100%, " + tA(0.14) + ", transparent 58%),"
                         + " linear-gradient(160deg, rgba(18,23,27,0.9), rgba(11,14,17,0.92))",
@@ -63485,7 +63485,7 @@ async function supprimerSouvenirOuvert() {
                texte (position absolue) : en float elle decalait le centrage. */
             style: { position: "relative", width: "100%", marginTop: 16, marginBottom: 22,
                      padding: "14px 34px", border: 0,
-                     borderLeft: "2px solid " + teinteCl, borderRadius: "0 12px 12px 0",
+                     borderRadius: 12 /* (902) trait dore a gauche retire */,
                      background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)",
                      color: "#F4F7FA", fontSize: 12.5, fontWeight: 700,
                      fontFamily: "'Montserrat',sans-serif", textAlign: "center", cursor: "pointer" } },

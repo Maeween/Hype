@@ -10977,3 +10977,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Correction de ma première version : j'avais d'abord retiré le rail d'albums (mauvaise lecture) ; il est remis tel quel.
 - Titres verticaux « Médias » et « Liens & partage » retirés dans la marge.
 - Carte « En concours » : la ligne « et N autres » est retirée (doublon) ; « Voir tout son palmarès → » passe en bas à droite.
+- Traits dorés à gauche retirés : carte « En concours » et bouton « Importer mes résultats officiels ».
+- Carte Origines allégée : lignes vides masquées (ex. « Père de mère — »), phrase « Toucher la carte pour voir l'arbre complet » retirée (le petit ↻ en haut à droite reste le signe qu'on peut retourner la carte), crayon de l'indice sur la même ligne que la race/âge.
