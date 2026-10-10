@@ -10314,3 +10314,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Gestion (peutModifier) : « Choisir les chevaux » / « Modifier » → feuille « Qui part ? » : chevaux des groupes rattachés au rendez-vous (Team, piquets) proposés et cochés par défaut si rien n'est encore enregistré ; « + Ajouter un autre cheval de l'écurie » (reste de l'écurie du rendez-vous) ; « Enregistrer » ajoute / retire (agenda_chevaux). Pas de cavalier par cheval (décision : les cavaliers tournent).
 - Les piquets sont déjà proposés dans le menu « Groupes » d'un rendez-vous (la liste prend tous les groupes de l'écurie) : décision R2 respectée sans changement.
 - Nouveaux : hypeChevauxEcurieTous, ChevauxDeplacementEV. Textes en 7 langues. Checks : marqueur unique 20261010-800, node --check 18 blocs OK. Test iPhone à faire.
+- 800, correctif (testé) : « Autres chevaux de l'écurie » distingue « chargement… » de « Tous les chevaux de l'écurie sont déjà proposés ». Testé Chromium iPhone 13 (bloc vide → feuille → enregistrement : ajouts envoyés dans agenda_chevaux).
+
+## 10/10/2026 nuit (Blandine : « tu es en solo pour les huit heures à venir, tu as mon accord pour gérer et mettre en ligne »)
+### Netlify : facture et mises en ligne
+- Constat (captures de Blandine) : plan Pro, 10 430 crédits consommés du 21/09 au 10/10 → site en pause. Détail : 505 mises en ligne en production = 7 575 crédits (73 %) ; bande passante 141 Go = 2 812 (27 %) ; requêtes 40 ; calcul 4. Blandine a acheté 1 500 crédits et activé la recharge automatique ; site revenu vers 02:31.
+- netlify.toml : `[build] ignore` → Netlify ne met en ligne QUE les envois dont le message contient « [publier] » (une mise en ligne annulée ne coûte rien ; seules les mises en ligne réussies en production coûtent 15 crédits ; branches et aperçus gratuits). ⚠️ Un fichier envoyé à la main sur GitHub n'est plus publié, sauf si son message contient [publier].
+- Branche `production` créée (identique à main au 799) pour le réglage proposé à Blandine (Production branch = production) ; tant qu'il n'est pas fait, la règle [publier] suffit.
+### Allègement : les paquets hype-images
+- 108 fichiers hype-images-*.js chargés au démarrage pesaient 159,6 Mo (401 images en base64). Chaque nouveau téléphone, ou chaque iPhone qui vide son cache, téléchargeait ~150 Mo.
+- Les 401 images sont sorties en fichiers dans `images/hi/` (395 fichiers, nommés par empreinte, octets identiques, aucune recompression) ; les paquets ne contiennent plus que les adresses : 159,6 Mo → 0,06 Mo. Même recette que hype-images-1.js et 119.js (« aucune modification d'index.html nécessaire »).
+- Vérifié : les 647 clés d'images, exécutées dans l'ordre d'index.html avant et après, donnent exactement les mêmes octets ; les 381 images actives se chargent toutes dans Chromium ; page Galops affichée ; au démarrage 0,06 Mo de paquets d'images au lieu de ~160 Mo.
+- Les téléphones qui ont déjà les anciens paquets en cache les gardent (cache d'un an) : rien ne casse, ils ne retéléchargent rien.

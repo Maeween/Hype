@@ -34520,7 +34520,7 @@ function ChevauxDeplacementEV(props) {
     } catch (e) { setProposes([]); setErr(String((e && e.message) || e).slice(0, 160)); }
   }
   async function voirAutres() {
-    setAutres([]);
+    setAutres("chargement");
     var l = await hypeChevauxEcurieTous(ev.club_clef || "");
     var dans = {}; (proposes || []).forEach(function (c) { dans[c.id] = 1; });
     setAutres(l.filter(function (c) { return !dans[c.id]; }).sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || "")); }));
@@ -34563,7 +34563,8 @@ function ChevauxDeplacementEV(props) {
           "+ " + T("Ajouter un autre cheval de l’écurie", "Add another horse from the stable", "Añadir otro caballo de la cuadra", "Aggiungi un altro cavallo della scuderia", "厩舎の別の馬を追加", "Ein weiteres Pferd des Stalls hinzufügen", "أضف حصانًا آخر من الإسطبل"))
         : h("div", { style: { marginTop: 10 } },
             h("div", { style: { fontSize: 10, letterSpacing: 2, textTransform: "uppercase", color: CH, margin: "4px 0 8px" } }, T("Autres chevaux de l’écurie", "Other horses of the stable", "Otros caballos de la cuadra", "Altri cavalli della scuderia", "厩舎のほかの馬", "Weitere Pferde des Stalls", "خيول أخرى من الإسطبل")),
-            autres.length ? autres.map(ligneCheval) : h("div", { style: { fontSize: 13, color: IV2 } }, "…")),
+            autres === "chargement" ? h("div", { style: { fontSize: 13, color: IV2 } }, "…")
+              : (autres.length ? autres.map(ligneCheval) : h("div", { style: { fontSize: 13, color: IV2, fontStyle: "italic" } }, T("Tous les chevaux de l’écurie sont déjà proposés.", "All the stable's horses are already listed.", "Todos los caballos de la cuadra ya están propuestos.", "Tutti i cavalli della scuderia sono già proposti.", "厩舎の馬はすべて候補にあります。", "Alle Pferde des Stalls sind schon vorgeschlagen.", "كل خيول الإسطبل مقترحة بالفعل.")))),
       err ? h("div", { style: { marginTop: 12, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null,
       h("div", { style: { display: "flex", gap: 10, marginTop: 18 } },
         h("button", { type: "button", disabled: busy, onClick: function () { setOuvert(false); }, style: { flex: "0 0 auto", minHeight: 48, padding: "0 18px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.3)", background: "transparent", color: IV, fontFamily: M, fontSize: 14, cursor: "pointer" } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء")),
