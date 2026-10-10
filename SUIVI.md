@@ -10524,3 +10524,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CAUSE : toute ouverture de la page Écurie PAR UN LIEN (rendez-vous ou écurie touchés dans la Communauté, notification d'agenda, club d'une fiche cheval, Team, carte « dans les écuries »…) passait par window.__guildeEcurie ET l'écrivait dans la mémoire « écurie du moment » (window.__hypeEcurieCourante, 792). Le prochain toucher sur l'onglet Écurie restait donc sur ce club.
 - CORRECTION : une visite par lien est retenue à part (window.__hypeEcurieVisite) : les retours depuis les pages ouvertes pendant la visite (fiche cheval, agenda…) restent sur le club visité ; un toucher sur la barre du bas termine la visite, et l'onglet Écurie revient à l'écurie CHOISIE. Seul le sélecteur d'écurie de la page change « mon écurie du moment ».
 - Checks : marqueur unique 20261010-830, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 831 — 10/10/2026 · Import depuis une capture : on garde naissance et sexe même sans parents
+- Blandine (Lula, puis Idolo) : « quand pas d'origine précisée, il refuse de lire le reste ». Les captures du type equitation-paris.com (nom, date de naissance, race « Indéterminée », robe, sexe, AUCUN parent) donnaient « Aucune origine reconnue ».
+- CAUSE : la consigne envoyée à l'IA (deux fiches) se terminait par « si l'image ne contient aucune information de PEDIGREE, réponds {} » → sans père ni mère, l'IA renvoyait un objet vide. Et l'ancienne fiche ne demandait pas le sexe et ne le comptait pas.
+- CORRECTION : consigne (deux fiches) : « même sans aucun parent écrit, renvoie ce que la capture montre sur le cheval lui-même (nom, race, date de naissance, sexe, naisseur) » ; {} seulement s'il n'y a aucune information sur un cheval. Ancienne fiche : le sexe est demandé (hongre / jument / entier, « femelle » → jument), compté, prérempli et enregistré dans les origines (comme la V2 depuis le 741) ; sans sexe lu, celui déjà enregistré reste.
+- Race « Indéterminée » → affichée (OI) après le nom, comme « Origine inconnue » (825).
+- Checks : marqueur unique 20261010-831, node --check 18 blocs OK, marqueurs de garde OK.
