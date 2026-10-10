@@ -10551,3 +10551,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - SQL À PASSER PAR BLANDINE (sql834) : hype_maj_cheval(p_id, p_maj jsonb), SECURITY DEFINER, mêmes droits que hype_maj_origines_cheval (propriétaire, hype_est_moderatrice, hype_peut_gerer_club du club du cheval) ; ne touche QUE nom (jamais vide), race, age, discipline, teinte, photo_url, histoire, photo_palmares, alias de CE cheval ; exécution réservée aux comptes connectés. AUCUNE policy RLS modifiée.
 - Inchangé : l'écurie du cheval (set_cheval_club : propriétaire ou admin), l'histoire écrite sur le cheval d'un autre reste SON histoire perso (règle du 02/09).
 - Checks : marqueur unique 20261010-834, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 835 — 10/10/2026 · Page Écurie : la bascule Feinn / SEP revient au-dessus des chevaux
+- Blandine (capture, entourée entre « Accès rapides » et « Nos chevaux de l'écurie ») : « j'avais un bouton là pour changer d'écurie ».
+- Dans la page Écurie actuelle (EcranEcurieV2), le seul moyen de changer d'écurie était le titre déroulant « Écurie Feinn ⌄ » en haut. Ajout de deux pastilles (écurie principale | écurie secondaire) juste au-dessus de « Nos chevaux de l'écurie », affichées seulement quand le compte a deux écuries ; l'active en pétrole translucide liseré champagne. Même effet que le titre déroulant (d.setClubForce) : c'est un vrai choix, retenu (830).
+- Aucun texte nouveau (noms des écuries), aucun SQL.
+- Checks : marqueur unique 20261010-835, node --check 18 blocs OK, marqueurs de garde OK.
