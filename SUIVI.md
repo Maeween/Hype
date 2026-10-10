@@ -10692,3 +10692,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - `ecurie-route.ts` : dans le texte Google d'une écurie, chaque prochain rendez-vous devient un lien vers sa page.
 - index.html : CIBLE_DIRECTE lit `__HYPE_ROUTE_EVENEMENT` (seulement sans #) → page de l'écurie (visite) + fiche du rendez-vous par le mécanisme existant `window.__agendaFiche` (celui des liens #r= des stories, retour après connexion compris).
 - Tests : fonctions testées hors ligne (données simulées : adresse complète, adresse courte, inconnue, mal formée) ; appli : ouverture déconnectée sur la page SEP sans erreur ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-856, marqueurs de garde OK. À TESTER EN LIGNE par Blandine (Supabase inaccessible depuis l'atelier).
+
+## Build 857 — 10/10/2026 · Bandeau « Rejoins Hype » sur les fiches chevaux (visiteurs sans compte)
+- Liste « visibilité » validée par Blandine (« ok pour bandeau Hype », « Ok continue ») : la page Écurie avait déjà son encart « Bienvenue sur Hype » pour les visiteurs ; la fiche cheval (adresses publiques /cheval/… trouvées sur Google) n'avait rien.
+- Nouveau composant `BandeauRejoinsHype`, affiché seulement sur l'écran « cheval » et seulement pour une personne NON connectée : encart posé au-dessus de la barre du bas (hauteur de la barre mesurée), titre « Rejoins Hype », phrase « Ton cheval aussi mérite sa fiche : photos, origines, concours. », bouton « Créer un compte » (écran d'inscription), lien « J'ai déjà un compte » (écran de connexion), croix pour le fermer (jusqu'à la fermeture de l'onglet). 7 langues.
+- Rien ne change pour une personne connectée ; rien d'autre ne change sur la fiche.
+- Test (iPhone 13, déconnecté, fiche publique) : encart affiché au-dessus de la barre, aucune erreur ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-857, marqueurs de garde OK.
