@@ -10936,3 +10936,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture entourée) : « ça sur la page chevaux tu peux le virer complètement ». La rangée Confiance / Complicité / Respect / Franchise… (+ Niveau / Classement grisés) est retirée de la fiche principale, avec ses deux losanges (cristal « apercu » et « perf ») ; un simple espace de 34 px les remplace avant Performances. Les valeurs déjà saisies restent en base (statsCh), seulement plus affichées.
 - Onglet Vidéos vide : Titi avait été réduit à 84 px au 887 (« on la voit plus ») → remis à 168 px, centré au-dessus de « Aucune vidéo pour le moment ».
 - Checks : 18 blocs OK, marqueur 20261010-895 unique, gardes OK ; capture iPhone de la fiche.
+
+## Build 896 — 10/10/2026 · Onglet Vidéos vide : la carte de la maquette (Titi en fond)
+- Maquette + consigne de Blandine : la vidéo de Titi remplit toute la carte (300 px iPhone, 240 px ordinateur), tons chauds ; « Aucune vidéo pour le moment », « Ses premiers souvenirs en vidéo restent à partager… » et UN bouton « + Ajouter une vidéo » dans la carte (iPhone : en bas, centré ; ordinateur : à droite, à gauche en arabe). Le petit bouton du titre est caché tant qu'il n'y a aucune vidéo (pas de doublon) ; même geste d'ajout. 7 langues.
+- Checks : 18 blocs OK, marqueur 20261010-896 unique, gardes OK ; capture iPhone (la vidéo de Titi ne se lit pas dans l'outil de test).
