@@ -18,6 +18,21 @@
 #    va chercher le nouveau.
 # ============================================================
 
+# ============================================================
+#  AJOUT DU 10/10/2026 — NE PUBLIER QUE LES ENVOIS MARQUÉS [publier]
+#  Pourquoi : 505 mises en ligne en un mois (chaque fichier envoyé sur GitHub
+#  en déclenchait une) = 7 575 crédits Netlify sur 10 430, site mis en pause
+#  le 10/10. Chaque mise en ligne RÉUSSIE en production coûte 15 crédits ;
+#  une mise en ligne annulée par cette règle ne coûte rien.
+#  Règle : Netlify lit le message du dernier envoi ; s'il ne contient pas
+#  « [publier] », il n'y a pas de mise en ligne (le site reste tel quel).
+#  ⚠️ Un fichier envoyé à la main sur GitHub ne sera donc PAS mis en ligne,
+#  sauf si le message de l'envoi contient [publier].
+#  Code de sortie : 0 = annuler la mise en ligne, 1 = mettre en ligne.
+# ============================================================
+[build]
+  ignore = "git log -1 --pretty=%B | grep -qF '[publier]' && exit 1 || exit 0"
+
 # ---------- Le document principal : toujours frais ----------
 [[headers]]
   for = "/index.html"
