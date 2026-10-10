@@ -10518,3 +10518,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CORRECTION : les noms de 4 lettres et plus, de même longueur, acceptent 1 lettre d'écart. Testé : Lula/Luia oui ; Elfe/Zeus non ; Lula/« Lulu Bleu » non. Revers assumé : « Lola » serait accepté sur « Lula » — le formulaire reste prérempli et à vérifier avant « Enregistrer », rien n'est sauvé sans elle.
 - Vaut pour les deux fiches (ancienne et V2) et la vérification du télémat (même fonction).
 - Checks : marqueur unique 20261010-829, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 830 — 10/10/2026 · Page Écurie : une visite par lien ne change plus « mon écurie »
+- Blandine : « je suis encore régulièrement changée d'écurie quand je change de page, c'est vraiment énervant » (suite du 792/808).
+- CAUSE : toute ouverture de la page Écurie PAR UN LIEN (rendez-vous ou écurie touchés dans la Communauté, notification d'agenda, club d'une fiche cheval, Team, carte « dans les écuries »…) passait par window.__guildeEcurie ET l'écrivait dans la mémoire « écurie du moment » (window.__hypeEcurieCourante, 792). Le prochain toucher sur l'onglet Écurie restait donc sur ce club.
+- CORRECTION : une visite par lien est retenue à part (window.__hypeEcurieVisite) : les retours depuis les pages ouvertes pendant la visite (fiche cheval, agenda…) restent sur le club visité ; un toucher sur la barre du bas termine la visite, et l'onglet Écurie revient à l'écurie CHOISIE. Seul le sélecteur d'écurie de la page change « mon écurie du moment ».
+- Checks : marqueur unique 20261010-830, node --check 18 blocs OK, marqueurs de garde OK.
