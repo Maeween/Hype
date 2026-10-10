@@ -10822,3 +10822,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le routeur laisse la page s'élargir (1280 px max, comme la page Écurie). Bandeau photo 320 px de haut, titre « LES CAVALIERS » 42 px. Les cartes des cavalières passent en grille : 3 colonnes sur un écran large, 2 sur un petit ordinateur (chaque carte garde tout : photo, nom, @, ville, croix de retrait, bouton profil, dépliage des moments).
 - Le bandeau « Retirer X de l'écurie ? » se place à côté du menu de gauche (à droite en arabe) au lieu de passer dessous.
 - Tests : 1440, 1024, arabe 1440, téléphone 390 (10 cavalières simulées). Checks : 18 blocs node --check OK, un seul marqueur 20261010-874, marqueurs de garde OK.
+
+## Build 875 — 10/10/2026 · CORRECTION URGENTE : page Communauté sans son habillage depuis le 872
+- Signalé par Blandine (vidéo 20:43) : page Communauté « cassée » (titre à gauche, globe bleu, cartes du fil turquoise, stories sans leur fondu, « HYPE » en texte brut).
+- Cause (mon erreur au build 872) : la règle CSS des pastilles `.com2-post-pill` se terminait par un guillemet en trop (`}\"`). Dans une feuille de style écrite sur une seule ligne, ce guillemet ouvrait une « chaîne » jamais fermée qui avalait TOUTES les règles suivantes de la Communauté → plus de mise en forme à partir de là. Le test node --check ne le voyait pas (c'est du texte valide pour JavaScript) et ma capture de test du 872 montrait déjà le problème : je ne l'ai pas repéré.
+- Correction : guillemet retiré. Capture de contrôle : page Communauté de nouveau habillée (titre centré, bouton « Monde Hype », cartes, fil).
+- Leçon : après toute retouche d'une feuille de style écrite en morceaux de texte, comparer la capture avant/après de la page concernée.
