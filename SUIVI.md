@@ -10940,3 +10940,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 896 — 10/10/2026 · Onglet Vidéos vide : la carte de la maquette (Titi en fond)
 - Maquette + consigne de Blandine : la vidéo de Titi remplit toute la carte (300 px iPhone, 240 px ordinateur), tons chauds ; « Aucune vidéo pour le moment », « Ses premiers souvenirs en vidéo restent à partager… » et UN bouton « + Ajouter une vidéo » dans la carte (iPhone : en bas, centré ; ordinateur : à droite, à gauche en arabe). Le petit bouton du titre est caché tant qu'il n'y a aucune vidéo (pas de doublon) ; même geste d'ajout. 7 langues.
 - Checks : 18 blocs OK, marqueur 20261010-896 unique, gardes OK ; capture iPhone (la vidéo de Titi ne se lit pas dans l'outil de test).
+
+## ⚠️ 10/10/2026 22 h 30 · Site mis en pause par Netlify (crédits épuisés)
+- Import des résultats en échec (« fichier introuvable ») : le site 2hype.fr était en pause (« Site not available… usage limits »). Cause principale : mes mises en ligne trop nombreuses (89 dans la journée, ~15 crédits chacune). Blandine a rechargé ses crédits.
+- NOUVELLE RÈGLE (moi) : plus aucune mise en ligne sans l'accord explicite de Blandine ; les changements sont préparés sur une branche, montrés en captures, puis publiés en UNE fois.
+
+## Build 897 — 10/10/2026 · Fiche du cheval en bleu pétrole + tuile « Chevaux » de l'écurie (publication groupée, validée par Blandine)
+- Fonds bleu pétrole de l'accueil (dégradé #111B1F → #0B1215) sur la fiche du cheval : les 6 tuiles (voile des photos teinté pétrole), la carte Origines, la carte IPO, la carte photo + nom des onglets (voile pétrole, contour champagne fin). Rien d'autre.
+- Page Écurie, tuile « Chevaux » : ouvrait le dernier onglet vu (souvenir de 12 h ajouté au 836), d'où la Team CSO Club. Elle ouvre maintenant toujours « Tous les chevaux » (window.__ecurieHypePiquet et le souvenir « piquet » remis à zéro) ; le retour depuis une fiche cheval garde l'onglet.
+- Checks : 18 blocs OK, marqueur 20261010-897 unique, gardes OK ; captures avant/après de la fiche.
