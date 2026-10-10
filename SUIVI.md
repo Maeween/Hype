@@ -10904,3 +10904,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Choix de teinte caché à ses deux endroits (menu ⋮ de la fiche et « Modifier la fiche »). En base, chevaux.teinte n'est PAS effacée (5 chevaux : 2 dorés, 2 bordeaux, 1 vert) ; « Modifier la fiche » réenregistre la valeur existante telle quelle. Pour réactiver plus tard : relire chevalDyn.teinte et retirer les deux `false /* (888) */`.
 - Vidéo du coin Performances : la version dorée pour le champagne (au lieu de la version bleue).
 - Test : fiche principale sur iPhone (tuiles, losanges, IPO en champagne). Checks : 18 blocs OK, marqueur 20261010-888 unique, gardes OK.
+
+## Build 889 — 10/10/2026 · En-tête du cheval : un nom court reste sur une ligne
+- Capture de Blandine : « DAKOTA CA » passait sur 2 lignes en très grand depuis le 885 alors qu'il tenait sur une ligne. Nouvelle règle : si le nom ENTIER tient dans sa zone à une taille correcte (≥ 17 px iPhone, ≥ 30 px ordinateur), il reste sur une ligne à cette taille (max 22 / 40 px) ; sinon 2 lignes, taille calculée sur le mot le plus long. Ex. DAKOTA CA, ELFE = 1 ligne ; RIZOTTO D'EMERY, ENVOLE TOI CJ67 = 2 lignes.
+- Ses questions sur les éléments autour du nom (pas de changement) : ♛ = petite couronne décorative au-dessus du nom ; crayon = « Changer la photo (admin) », visible seulement pour une modératrice ; flèche = « Partager la fiche » (feuille de partage du téléphone).
+- Checks : 18 blocs OK, marqueur 20261010-889 unique, gardes OK.
