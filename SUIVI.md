@@ -10463,3 +10463,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Recto de la carte qui se retourne (ancienne fiche) : « ORIGINES » en 10,5 px (8 avant) ; trois lignes Père / Mère / Père de mère (avant : « père × père de mère » seul), étiquette lisible + nom en Cinzel 15,5 px, « — » pâle si inconnu ; la ligne race · âge · « né le … » · robe · indice passe en 13 px, sans majuscules, plus claire (9,5 px majuscules gris avant) ; l'aide devient « Toucher la carte pour voir l'arbre complet ».
 - Nouveaux textes (étiquettes Père / Mère / Père de mère et l'aide) en 7 langues. Aucune donnée, aucun SQL.
 - Checks : marqueur unique 20261010-821, node --check 18 blocs OK, marqueurs de garde OK.
+- 10/10 13 h 06 : SQL du 820 PASSÉ PAR BLANDINE (capture « Success. No rows returned »). Vérifié en base : hype_maj_origines_cheval existe, SECURITY DEFINER, exécutable par les comptes connectés, PAS par anon.
