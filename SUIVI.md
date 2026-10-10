@@ -11023,3 +11023,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Galerie par année : une photo « Grand » (2 colonnes) qui n'a aucune voisine à côté sur toute sa hauteur s'élargit à toute la largeur ; si une autre photo peut se mettre à sa droite, rien ne change (aucune ligne ne bouge).
 - Galerie par année : « Pleine largeur » passe de 2 à 3 cases de haut (à peu près carrée) pour moins couper les photos ; vaut pour toutes les photos pleine largeur de cette galerie.
 - Données vérifiées en base : ses 2 collections (« Compétition », « Entraînement Liam ») sont bien enregistrées.
+
+## Build 910 (11/10, préparé — attend « Ok publie »)
+- Pages du cheval (Histoire, Photos, Performances, Vidéos) : plus de grand titre en haut (seulement la flèche retour et le drapeau) ; les 4 onglets passent en petits mots sans ronds (page ouverte en champagne soulignée) et descendent SOUS la carte du cheval — sous la 2e barre grise sur Photos et Vidéos, juste sous la carte sur Histoire et Performances (qui n'ont pas de 2e barre). Une seule fonction (ongletsPanCh) pour les 4. Le glissement du doigt entre pages reste. 7 langues. Les autres pages (Flots, Actualité, Passeport) gardent leur titre.
