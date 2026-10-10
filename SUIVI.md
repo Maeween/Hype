@@ -11041,3 +11041,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fiche cheval : rail « Derniers résultats » sous « Importer mes résultats officiels » — 3 cartes visibles au lieu de 2 et demie (largeur = un tiers, portrait 66 → 50 px, textes un peu plus petits, retour à la ligne si besoin).
 - Fiche cheval : vignettes d'albums au-dessus de « Le voir en mouvement » — 3 par ligne au lieu de 2.
 - Analyse Photos/Vidéos ordinateur rendue à Blandine (4 builds proposés, rien codé). Bloc « Photos proposées (12) » de la capture = fausses données de mon outil de test (table albums_propositions vide en vrai).
+
+## Build 914 (11/10, préparé — PAS publié : Blandine/ChatGPT veulent voir chaque étape avant)
+- Étape 1/4 du chantier ordinateur : bandeau du cheval (encartIdentiteCh d'EcranCheval, partagé par Histoire/Photos/Performances/Vidéos) — sur ordinateur seulement (largeCh, ≥ 1024 px) : photo entière à gauche dans une case fixe de 300 × 210 px, nom juste à côté aligné au début, 28 px (24 px au-delà de 22 lettres, 20 px au-delà de 34), 2 lignes au plus, marges de 48 px ; ⋯ admin conservé. iPhone et tablette (< 1024 px) : inchangés. Arabe vérifié (photo à droite, menu à droite). Copie de EcranResultatsCavaliere non touchée.
