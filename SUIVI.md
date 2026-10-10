@@ -10351,3 +10351,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - BlocParrainage (« Ramène tes amis », code HYPE-…, « Valider ») : 7 couleurs cyan → champagne.
 - Cyan calculé à l'écran : 57 → 0 (Chromium iPhone 13). COLORS.turquoise global (448 usages) NON modifié.
 - Checks : marqueur unique 20261010-804, node --check 18 blocs OK.
+
+## Build 805 — 10/10/2026 · Messagerie aux couleurs de l'accueil
+- MSG_COL (utilisé seulement par EcranMessagerie) : fond #060709, cartes #101A1D, bordures champagne 0,16, bulles « eux » #16232A, MA bulle pétrole #254F60, accent champagne #C9A66B (était turquoise #20D9F5), textes ivoire #F3EEE4 / #A9A397.
+- EcranMessagerie : 35 couleurs cyan en dur → champagne. Cyan calculé à l'écran : 7 → 0. Les illustrations des poneys (images) restent bleues.
+- Checks : marqueur unique 20261010-805, node --check 18 blocs OK ; 12 écrans principaux sans erreur (Chromium iPhone 13).
+- Publication groupée 803 + 804 + 805 (une seule mise en ligne).
