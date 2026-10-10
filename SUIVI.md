@@ -11020,4 +11020,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - « ⋯ » des collections plus visible : rond champagne bordé.
 - Collections : une seule vidéo = carte élargie (comme la galerie validée au 887) ; nombre impair = la dernière élargie.
 - Galerie par année (Histoire/Photos) : une photo seule sur son année passe automatiquement en pleine largeur (sauf si un format a été choisi à la main).
+- Galerie par année : « Pleine largeur » passe de 2 à 3 cases de haut (à peu près carrée) pour moins couper les photos ; vaut pour toutes les photos pleine largeur de cette galerie.
 - Données vérifiées en base : ses 2 collections (« Compétition », « Entraînement Liam ») sont bien enregistrées.
