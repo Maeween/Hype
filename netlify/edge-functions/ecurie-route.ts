@@ -133,6 +133,11 @@ async function lire(chemin: string, signal: AbortSignal): Promise<any[]> {
   return Array.isArray(j) ? j : [];
 }
 /* Valeur littérale pour un filtre PostgREST « ilike » : * et % et _ seraient des jokers. */
+/* 10/10 : la clé d'un club, EXACTEMENT comme l'appli (clefClubG) : sans accents, minuscules, espaces simples.
+   Avant ce correctif : simple passage en minuscules → agenda et grande photo introuvables pour les noms accentués. */
+function clefClub(n: string): string {
+  return String(n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+}
 function litteral(s: string): string { return String(s).replace(/[*%_\\]/g, (c) => "\\" + c); }
 
 async function communeDepuisCoordonnees(la?: number, lo?: number): Promise<{ v: string; d: string } | null> {
@@ -154,12 +159,12 @@ async function contenuHype(nom: string) {
   const stop = setTimeout(() => minuteur.abort(), DELAI_BASE_MS);
   try {
     const aujourdhui = new Date().toISOString().slice(0, 10);
-    const clef = nom.trim().toLowerCase();
+    const clef = clefClub(nom);
     const [chevaux, rdv, ban] = await Promise.all([
       lire("chevaux?club=ilike." + encodeURIComponent(litteral(nom)) +
         "&supprime_le=is.null&or=(visibilite.is.null,visibilite.neq.prive)" +
         "&select=id,nom,race,slug,photo_url&order=nom.asc&limit=80", minuteur.signal),
-      lire("club_agenda?club_clef=eq." + encodeURIComponent(nom.trim().toLowerCase()) +
+      lire("club_agenda?club_clef=eq." + encodeURIComponent(clef) +
         "&or=(date_jour.gte." + aujourdhui + ",date_fin.gte." + aujourdhui + ")" +
         "&select=id,titre,type,date_jour,date_fin,lieu&order=date_jour.asc&limit=10", minuteur.signal),
       // 10/10 : la grande photo de l'écurie (lisible sans connexion depuis la règle passée par Blandine le 10/10)

@@ -290,8 +290,10 @@ export default async (request: Request, _context: Context) => {
   let ec: Ecurie | null = null; ecSlug = "";
   try {
     const an = await annuaire(url.origin);
-    const clef = propre(ev.club_clef).toLowerCase();
-    for (const k in an) { if (propre(an[k].n).toLowerCase() === clef) { ec = an[k]; ecSlug = k; break; } }
+    // 10/10 : même clé que l'appli (clefClubG : sans accents, minuscules, espaces simples)
+    const cle = (x: string) => String(x || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+    const clef = cle(ev.club_clef);
+    for (const k in an) { if (cle(an[k].n) === clef) { ec = an[k]; ecSlug = k; break; } }
   } catch (e) { console.log("[evenement-route] annuaire :", String(e)); }
 
   const adresse = adresseEvenement(ev.titre, ev.id);
