@@ -10511,3 +10511,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rien n'est effacé en base ; la reconnexion recharge profil et progression (coffre-fort existant).
 - TEST Chromium iPhone 13 : sans session + profil gardé → AVANT (827) Accueil complet « connecté » ; APRÈS (828) écran de connexion + message. Avec session → Accueil normal, aucune erreur.
 - Checks : marqueur unique 20261010-828, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 829 — 10/10/2026 · Import des origines : une lettre d'écart tolérée sur les noms courts
+- Blandine (captures) : capture de « Lula » (equitation-paris.com : née le 01.01.2013, femelle, gris) refusée sur la fiche « Luia » — « il pourrait enregistrer quand même le sexe et la date de naissance ».
+- CAUSE : nomsHippiquesProches n'acceptait une faute que pour les noms de 6 lettres et plus (2 lettres d'écart). « Lula » / « Luia » (4 lettres, 1 d'écart) était donc vu comme un autre cheval.
+- CORRECTION : les noms de 4 lettres et plus, de même longueur, acceptent 1 lettre d'écart. Testé : Lula/Luia oui ; Elfe/Zeus non ; Lula/« Lulu Bleu » non. Revers assumé : « Lola » serait accepté sur « Lula » — le formulaire reste prérempli et à vérifier avant « Enregistrer », rien n'est sauvé sans elle.
+- Vaut pour les deux fiches (ancienne et V2) et la vérification du télémat (même fonction).
+- Checks : marqueur unique 20261010-829, node --check 18 blocs OK, marqueurs de garde OK.
