@@ -41478,6 +41478,16 @@ function EcranEcurieV2(props) {
   /* visiteur non connecté (même bandeau d'invitation que l'ancienne page) */
   var invite = d.visiteurG === true ? h("div", { style: { margin: "18px 16px 0", padding: "16px", borderRadius: 14, border: "1px solid " + BORD, background: SURF } },
     h("div", { style: { fontFamily: SERIF, fontSize: 19, color: IV } }, T("Bienvenue sur Hype", "Welcome to Hype", "Te damos la bienvenida a Hype", "Benvenuto su Hype", "Hypeへようこそ", "Willkommen bei Hype", "مرحبا بك في Hype")),
+    /* 10/10 (861) VITRINE (Blandine : les pages d ecurie restent visibles sur Google mais « inaccessibles sans compte ») :
+       quelques chiffres, sans le detail, et l invitation a creer un compte. */
+    (function () {
+      var nC = (d.chevauxClub || []).length, nR = (evs || []).length, bouts = [];
+      if (nC) bouts.push(nC + " " + (nC > 1 ? T("chevaux", "horses", "caballos", "cavalli", "頭の馬", "Pferde", "خيول") : T("cheval", "horse", "caballo", "cavallo", "頭の馬", "Pferd", "حصان")));
+      if (nR) bouts.push(nR + " " + (nR > 1 ? T("rendez-vous à venir", "upcoming events", "próximos eventos", "eventi in arrivo", "件の予定", "anstehende Termine", "مواعيد قادمة") : T("rendez-vous à venir", "upcoming event", "próximo evento", "evento in arrivo", "件の予定", "anstehender Termin", "موعد قادم")));
+      return h("div", { style: { marginTop: 6, fontFamily: M, fontSize: 12.5, lineHeight: 1.55, color: GR2 } },
+        bouts.length ? h("div", { style: { color: CH, marginBottom: 3 } }, bouts.join(" · ")) : null,
+        T("Crée ton compte pour découvrir ses chevaux, ses résultats et son agenda.", "Create your account to discover its horses, results and calendar.", "Crea tu cuenta para descubrir sus caballos, sus resultados y su agenda.", "Crea il tuo account per scoprire i suoi cavalli, i risultati e il calendario.", "アカウントを作成して、馬・成績・予定をチェックしよう。", "Erstelle dein Konto, um seine Pferde, Ergebnisse und Termine zu entdecken.", "أنشئ حسابك لاكتشاف خيوله ونتائجه ومواعيده."));
+    })(),
     h("div", { style: { display: "flex", gap: 10, marginTop: 12 } },
       h("button", { type: "button", onClick: function () { d.allerAuthG("connexion"); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "1px solid " + BORD, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesión", "Accedi", "ログイン", "Anmelden", "تسجيل الدخول")),
       h("button", { type: "button", onClick: function () { d.allerAuthG("inscription"); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "none", background: CH, color: NOIR, fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Créer un compte", "Create an account", "Crear una cuenta", "Crea un account", "アカウントを作成", "Konto erstellen", "إنشاء حساب")))) : null;
@@ -41490,7 +41500,15 @@ function EcranEcurieV2(props) {
     bandeau,
     /* (859) ORDINATEUR : deux colonnes sous la photo — a gauche acces rapides, chevaux, resultats ; a droite (qui reste
        visible en defilant) l invitation, la citation et les prochains evenements. TELEPHONE : l ordre d avant, inchange. */
-    large ? h("div", { key: "ev2-large", style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) 380px", columnGap: 36, alignItems: "start", padding: "0 8px" } },
+    /* 10/10 (861) VITRINE pour un visiteur SANS COMPTE : photo, nom, ville, invitation (chiffres + creer un compte), citation,
+       « Contacter l ecurie », et l invitation « Un box virtuel » seulement si l ecurie n a aucun cheval. Pas d acces rapides,
+       ni chevaux, ni resultats, ni agenda (reserves aux personnes connectees). Connecte : la page complete, inchangee. */
+    (d.visiteurG === true) ? (large
+      ? h("div", { key: "ev2-vitrine-large", style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) 380px", columnGap: 36, alignItems: "start", padding: "0 8px" } },
+          h("div", { style: { minWidth: 0 } }, invite, citation, (d.chevauxClub && !d.chevauxClub.length) ? blocCh : null),
+          h("div", { style: { minWidth: 0, position: "sticky", top: 16, paddingTop: 6 } }, blocContact))
+      : h(React.Fragment, { key: "ev2-vitrine" }, invite, citation, (d.chevauxClub && !d.chevauxClub.length) ? blocCh : null, blocContact))
+    :     large ? h("div", { key: "ev2-large", style: { display: "grid", gridTemplateColumns: "minmax(0, 1fr) 380px", columnGap: 36, alignItems: "start", padding: "0 8px" } },
       h("div", { style: { minWidth: 0 } }, onglets, blocVivre, blocCh, blocRes),
       h("div", { style: { minWidth: 0, position: "sticky", top: 16, paddingTop: 6 } }, invite, citation, blocEv, blocContact))
     : h(React.Fragment, { key: "ev2-tel" },

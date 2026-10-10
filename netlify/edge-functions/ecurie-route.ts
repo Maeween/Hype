@@ -210,13 +210,8 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
 
   const titre = nom + (villeAff ? " – Écurie à " + villeAff : " – Écurie") + " | Hype";
   let description = nom + (villeAff ? ", écurie à " + villeAff : ", écurie") + ". ";
-  const contenu: string[] = [];
-  if (montrables.length) contenu.push("ses chevaux");
-  if (hype.rdv.length) contenu.push("ses prochains rendez-vous");
-  if (derniers.length) contenu.push("ses derniers résultats en concours");
-  if (contenu.length) {
-    const liste = contenu.length === 1 ? contenu[0] : contenu.slice(0, -1).join(", ") + " et " + contenu[contenu.length - 1];
-    description += "Découvre " + liste + " sur Hype.";
+  if (hype.chevaux.length || hype.rdv.length) {
+    description += propre(ec.t) ? "Téléphone, itinéraire, chevaux, résultats et agenda de l’écurie sur Hype." : "Chevaux, résultats et agenda de l’écurie sur Hype.";
   } else {
     description += "Ton cheval est ici ? Crée sa fiche sur Hype : photos, origines, résultats en concours.";
   }
@@ -228,37 +223,18 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   if (propre(ec.a)) contact.push("Adresse : " + texte(ec.a) + (propre(ec.cp) ? ", " + texte(ec.cp) : "") + (ville ? " " + texte(ville) : ""));
   if (propre(ec.t)) contact.push("Téléphone : " + texte(ec.t));
   if (propre(ec.s)) contact.push(`Site : <a href="${echapper(propre(ec.s))}" rel="nofollow noopener">${texte(ec.s)}</a>`);
-  if (contact.length) html += `<p>${contact.join("<br>")}</p>`;
+  const contactLiens = contact;   /* (861) affichées plus bas, sous « Contacter l’écurie » (comme dans l'appli) */
 
-  if (montrables.length) {
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Les chevaux de l’écurie</h2><ul style="padding-left:18px;margin:0">`;
-    for (const c of montrables) html += `<li><a href="${DOMAINE}/cheval/${c.slug}">${texte(c.nom)}</a>${propre(c.race) ? " — " + texte(c.race) : ""}</li>`;
-    html += `</ul>`;
-  }
-  if (hype.rdv.length) {
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Prochains rendez-vous</h2><ul style="padding-left:18px;margin:0">`;
-    for (const r of hype.rdv) {
-      const morceaux = [dateFr(r.date_jour) + (r.date_fin && r.date_fin !== r.date_jour ? " → " + dateFr(r.date_fin) : ""),
-        TYPES[String(r.type || "").toLowerCase()] || "", lienRdv(r), texte(r.lieu)].filter(Boolean);
-      html += `<li>${morceaux.join(" — ")}</li>`;
-    }
-    html += `</ul>`;
-  }
-  if (derniers.length) {
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Derniers résultats en concours</h2><ul style="padding-left:18px;margin:0">`;
-    for (const r of derniers) {
-      const morceaux = [dateFr(r.date_epreuve), texte(nomsParId[String(r.cheval_id)] || ""), texte(r.concours), texte(r.epreuve)].filter(Boolean);
-      let fin = rang(r.place, r.classement);
-      fin = fin ? texte(fin) : "";
-      const pa = parseInt(String(r.partants == null ? "" : r.partants), 10);
-      if (fin && isFinite(pa) && pa > 0) fin += " sur " + pa + " partants";
-      if (propre(r.mention)) fin += (fin ? ", " : "") + (/^sf$/i.test(propre(r.mention)) ? "sans faute" : texte(r.mention));
-      if (fin) morceaux.push(fin);
-      html += `<li>${morceaux.join(" — ")}</li>`;
-    }
-    html += `</ul>`;
-  }
-  if (!montrables.length) {
+  /* 10/10 (861) VITRINE : Google lit EXACTEMENT ce que voit un visiteur sans compte (sinon il y voit une tromperie) :
+     des chiffres, sans la liste des chevaux, des rendez-vous ni des résultats (réservés aux personnes connectées). */
+  const nbCh = hype.chevaux.length, nbRdv = hype.rdv.length;
+  const chiffres: string[] = [];
+  if (nbCh) chiffres.push(nbCh + (nbCh > 1 ? " chevaux" : " cheval"));
+  if (nbRdv) chiffres.push(nbRdv + " rendez-vous à venir");
+  if (chiffres.length) html += `<p>${chiffres.join(" · ")} sur Hype.</p>`;
+  html += `<p>Crée ton compte Hype pour découvrir ses chevaux, ses résultats et son agenda.</p>`;
+  if (contactLiens.length) html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Contacter l’écurie</h2><p>${contactLiens.join("<br>")}</p>`;
+  if (!hype.chevaux.length) {   /* (861) même règle que l’appli : aucun cheval → invitation */
     // 10/10 : le texte de Blandine (le même que l'invitation affichée dans l'appli, build 852-853)
     html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Un box virtuel chez Hype ?</h2>`;
     html += `<p>Pas de paille à faire ici : juste la fiche de ton cheval, ses photos, ses concours, ses souvenirs et son suivi… et d’autres cavaliers avec qui les partager. Théorie, conseils et coach virtuel t’accompagnent aussi dans ta progression.</p>`;
