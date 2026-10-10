@@ -10759,3 +10759,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - « Nos chevaux de l'écurie » : grande mosaïque de 4 colonnes, 7 chevaux + la carte « Les chevaux de l'écurie — Voir tout » en 8e (2 rangées), espacement 14 px. État vide (« Un box virtuel chez Hype ? ») inchangé.
 - Téléphone : inchangé (3 colonnes, carte « Voir tout » au milieu, tuiles de 96 px).
 - Tests : ordinateur 1 440 px sans débordement ni erreur ; iPhone 13 inchangé ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-864, marqueurs de garde OK.
+
+## Build 865 — 10/10/2026 · Ordinateur, étape 5 : résultats et événements côte à côte
+- EcranEcurieV2, grand écran : « Derniers résultats » (à gauche, 3 cartes) et « Prochains événements » (à droite) côte à côte comme sur la maquette, à partir de 1 280 px de large ; entre 1 024 et 1 279 px, l'un sous l'autre (classe ev2-resev). S'il manque l'un des deux blocs, l'autre prend toute la largeur. « Contacter l'écurie » centré sur 900 px de large au maximum (page complète et vitrine).
+- Vérifié à 1 024, 1 280, 1 440 et 1 920 px de large : aucun débordement horizontal, aucune erreur. Téléphone : inchangé. Parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-865, marqueurs de garde OK.
+- Non vérifiable dans le navigateur de test : le rendu des vraies cartes de résultats (pas de vrais résultats dans les données de test) → à regarder en ligne sur la page de la SEP.
