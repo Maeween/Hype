@@ -62326,7 +62326,7 @@ function EcranCheval() {
                  pour les noms longs ; jamais de points de suspension. */
               h("div", { dir: rtlCh ? "rtl" : undefined, style: { position: "absolute", left: grandEnt ? "52%" : "60%", right: 12, top: "50%", transform: "translateY(-50%)", textAlign: "center", minWidth: 0 } },
                 h("div", { style: { color: OR9, fontSize: 13, lineHeight: 1, marginBottom: 5 } }, "\u265B"),
-                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: grandEnt ? (String(c.nom || "").length > 16 ? 28 : 34) : (String(c.nom || "").length > 12 ? 16 : 18), lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase", overflowWrap: "break-word", textWrap: "balance" } }, c.nom),
+                h("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 700, fontSize: (function () { /* (885) taille selon le mot le plus long : le nom grandit tant qu il tient dans sa zone, sans jamais couper un mot */ var mots = String(c.nom || "").split(/\s+/); var lg = 1; mots.forEach(function (m) { if (m.length > lg) lg = m.length; }); return grandEnt ? Math.max(24, Math.min(40, Math.floor(440 / (lg * 0.78)))) : Math.max(14, Math.min(22, Math.floor(126 / (lg * 0.78)))); })(), lineHeight: 1.22, color: "#F4F6F7", letterSpacing: ".04em", textTransform: "uppercase", overflowWrap: "break-word", textWrap: "balance" } }, c.nom),
                 h("div", { style: { marginTop: grandEnt ? 10 : 6, fontSize: grandEnt ? 11 : 8.6, letterSpacing: ".16em", color: teinteCl, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, titrePage)));
   }
   /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
