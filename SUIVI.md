@@ -10448,3 +10448,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le bouton « Importer mes résultats officiels » garde sa règle (propriétaire, cavalière liée ou modératrice) : en modératrice, Blandine le verra encore seul sur les fiches des autres.
 - Aucun texte nouveau, aucun SQL.
 - Checks : marqueur unique 20261010-819, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 820 — 10/10/2026 · Origines : la responsable du club (et la modératrice) peut les modifier
+- Blandine : « l'outil ne m'est pas proposé pour les origines quand je n'ai pas créé la fiche ; en tant que responsable de l'écurie (SEP) on doit pouvoir le faire, et en tant qu'admin en plus évidemment ».
+- CAUSE : sur l'ancienne fiche, la ligne « origines » n'était proposée qu'à la propriétaire ; sur la fiche V2, à la propriétaire ou la modératrice. Et en base, la règle de modification des chevaux (RLS « chevaux maj » / « chevaux_modif » : auth.uid() = user_id) refuse tout autre compte, EN SILENCE (aucune ligne modifiée, pas d'erreur).
+- CODE : qui peut ouvrir l'outil = propriétaire, OU modératrice, OU responsable du club du cheval (chevaux.club, vérifié par la fonction existante hype_peut_gerer_club) — sur les deux fiches. L'enregistrement essaie d'abord la voie normale ; si la base ne modifie rien, il passe par la fonction hype_maj_origines_cheval. Si elle refuse aussi, un message clair (7 langues) au lieu d'un faux « mis à jour ».
+- SQL À PASSER PAR BLANDINE (fichier sql820 donné dans la conversation) : fonction hype_maj_origines_cheval(p_id, p_origines, p_race, p_age), SECURITY DEFINER, qui revérifie les MÊMES droits côté base (propriétaire, hype_est_moderatrice, hype_peut_gerer_club du club du cheval) et ne touche QUE origines, race et age de CE cheval. Exécution réservée aux comptes connectés. AUCUNE policy RLS modifiée.
+- ⚠️ hype_est_moderatrice() compte encore malicia2008@hotmail.fr (question en attente n° 5).
+- Tant que le SQL n'est pas passé : l'outil s'affiche bien pour elle, mais l'enregistrement sur un cheval qui n'est pas le sien affiche « Enregistrement refusé ».
+- Checks : marqueur unique 20261010-820, node --check 18 blocs OK, marqueurs de garde OK.
