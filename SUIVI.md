@@ -10399,3 +10399,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 25 couleurs remplacées dans ClocheNotifs seulement : cyan #20D9F5 / rgba(32,217,245,…) → pétrole #7FA3AD / rgba(127,163,173,…) ; textes cyan clair (#5FE9F0, #BFF2FA) → ivoire #F3EEE4 ; chiffres sur pastille → #06090B. Les icônes dorées restent dorées.
 - Couleurs seulement : aucun texte, aucune requête, aucun SQL.
 - Checks : marqueur unique 20261010-812, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 813 — 10/10/2026 · Ancien turquoise commun → pétrole (sauf Hey Baby)
+- Blandine (10/10) : l'ancien turquoise « plutôt en pétrole » (pas en champagne) ; puis « Hey Baby tu peux le laisser, on verra les couleurs plus tard ».
+- COLORS.turquoise #20D9F5 → #7FA3AD ; turquoiseDark #17A8B3 → #5C8792 ; turquoiseDim #1B4A4E → #1E3A44 (≈ 470 usages : Accueil/tableau de bord, Classement, cours, Galops, jeux, tracé animé, quiz, installation, partage, profil…).
+- Hey Baby GARDE son turquoise d'origine : dans EcranAssistantIA (25), CarteAssistantHero (7) et EncartHeyBabyCta (2), les COLORS.turquoise* sont remplacés par les anciennes valeurs en dur.
+- Non touchés : les cyans écrits en dur ailleurs (#20D9F5 directement dans le code), à traiter page par page si elle le souhaite.
+- Pour remettre le turquoise à un endroit précis : y écrire l'ancienne valeur en dur.
+- Checks : marqueur unique 20261010-813, node --check 18 blocs OK, marqueurs de garde OK ; tour des écrans Chromium iPhone 13 sans erreur de page.
