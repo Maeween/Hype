@@ -54312,6 +54312,20 @@ function hypeComposerAnneeGalerie(grpMEV, mapFormats) {
     for (var cQ = 1; cQ <= HYPE_GALERIE_COLONNES; cQ++) if (!occ[finL + "," + cQ]) { ligneComplete = false; break; }
     casesMEV.push({ p: caseMEV.p, fmt: caseMEV.fmt, manuel: caseMEV.manuel, col: cT, ligne: lT, w: tMEV.w, h: tMEV.h, coupeOk: (finL >= derniereL), coupeNette: (finL >= derniereL && ligneComplete), rang: caseMEV.rang });
   }
+  /* (909) Blandine : une GRANDE photo (2 colonnes) sans aucune voisine a cote sur toute sa hauteur reste
+     « collee a gauche » et desequilibre la page -> elle s elargit a toute la largeur (3 colonnes). Si une
+     autre photo peut se mettre a cote, rien ne change. Seules les colonnes changent : aucune ligne ne bouge. */
+  casesMEV.forEach(function (cG) {
+    if (cG.w !== 2) return;
+    var seule = true;
+    for (var lG = cG.ligne; lG < cG.ligne + cG.h && seule; lG++) {
+      for (var kG = 0; kG < casesMEV.length; kG++) {
+        var oG = casesMEV[kG]; if (oG === cG) continue;
+        if (lG >= oG.ligne && lG < oG.ligne + oG.h) { seule = false; break; }
+      }
+    }
+    if (seule) { cG.col = 1; cG.w = HYPE_GALERIE_COLONNES; }
+  });
   return { cases: casesMEV, lignes: derniereL };
 }
 
