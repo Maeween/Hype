@@ -11006,4 +11006,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - 0 album mais des photos : « Toutes ses photos » ; toucher = la galerie.
   - aucune photo : image fournie par Blandine (images/photos-vide-cheval.jpg, fichier séparé, pas de base64), « Chaque cheval a son histoire… » et « Partage ses grands moments ici » ; toucher = créer un album.
   - 2 albums ou plus : la ligne de vignettes reste comme avant.
+- Hero fiche cheval : cadre 9:16 → 3:4 (même hauteur, plus large : moins de vide sur les côtés, marge de 16 px gardée).
 - Fichier à pousser en plus de index.html : images/photos-vide-cheval.jpg (nouveau).
