@@ -10976,3 +10976,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fiche cheval : la bande de photos qui défile toute seule sous « Le voir en mouvement » est retirée (doublon de la tuile Photos). Option sansDefile, seule la fiche est touchée.
 - Correction de ma première version : j'avais d'abord retiré le rail d'albums (mauvaise lecture) ; il est remis tel quel.
 - Titres verticaux « Médias » et « Liens & partage » retirés dans la marge.
+- Carte « En concours » : la ligne « et N autres » est retirée (doublon) ; « Voir tout son palmarès → » passe en bas à droite.

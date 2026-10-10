@@ -63403,14 +63403,14 @@ async function supprimerSouvenirOuvert() {
                   f.an ? h("span", { style: { flex: "0 0 38px", textAlign: "right", fontSize: 10.5,
                     color: "#6E7780", fontFamily: "'Cinzel',Georgia,serif" } }, f.an) : null);
               }),
-              reste > 0 ? h("div", { style: { padding: "9px 15px", textAlign: "center",
+              false /* (902) « et N autres » retire, doublon du lien Voir tout */ && reste > 0 ? h("div", { style: { padding: "9px 15px", textAlign: "center",
                 fontSize: 10.5, color: "#8A929C" } },
                 T("et " + reste + " autre" + (reste > 1 ? "s" : ""),
                   "and " + reste + " more", "y " + reste + " m\u00e1s",
                   "e altri " + reste, "\u4ed6 " + reste + " \u4ef6",
                   "und " + reste + " weitere", "\u0648" + reste + " \u0623\u062e\u0631\u0649")) : null) : null,
 
-            h("div", { style: { padding: "11px 15px 13px", textAlign: "center", fontSize: 11,
+            h("div", { style: { padding: "11px 16px 13px", textAlign: faits.length ? "end" : "center" /* (902) lien en bas a droite */, fontSize: 11,
               fontWeight: 700, letterSpacing: "0.04em", color: teinteCl,
               borderTop: "1px solid rgba(255,255,255,0.07)" } },
               faits.length
