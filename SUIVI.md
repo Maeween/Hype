@@ -10849,3 +10849,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveau message si l'écurie n'a aucun album public : « Pas encore d'album : les albums publics des chevaux de l'écurie apparaîtront ici. » (7 langues).
 - Vérifié en base le 10/10 : aucune publication sur le fil de la SEP ; seul le fil de l'Écurie Feinn a des messages (4).
 - Checks 877-879 : 18 blocs node --check OK, un seul marqueur 20261010-879, marqueurs de garde OK.
+
+## Build 880 — 10/10/2026 · Souvenirs de l'écurie : on voit qui a créé chaque album
+- Blandine : « quand on voit les albums des autres cavalières, ce serait bien qu'on voie par qui sont les albums ».
+- La lecture des albums prend aussi `user_id`, puis UNE lecture de `profiles` (id, pseudo, avatar_url) pour les autrices. Sous « N souvenirs » : petite photo ronde + « par Prénom » (7 langues : par / by / por / di / — / von / بواسطة).
+- Les albums partent de « en cours de lecture » (null) au lieu d'une liste vide : le message « Pas encore d'album » du 879 ne clignote plus avant la fin de la lecture.
+- Test : page Souvenirs avec 2 albums simulés de 2 cavalières → « par Ambre », « par Margot ». Checks : 18 blocs OK, marqueur 20261010-880 unique, gardes OK.
