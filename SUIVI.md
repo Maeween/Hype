@@ -10421,3 +10421,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Avant « Voir tout », la section montre désormais le grand rendez-vous + 6 petites cartes (2 lignes de 3) au lieu de 3. « Voir tout » n'apparaît que s'il reste des rendez-vous au-delà (plus de 7). Déplié, rien ne change (tous, jusqu'à 12).
 - Aucun texte nouveau, aucun SQL.
 - Checks : marqueur unique 20261010-815, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 816 — 10/10/2026 · Agenda Communauté : bas des petites cartes fondu plus foncé, dates lisibles
+- Blandine : « on peut fondre le bas des cartes en plus foncé comme sur d'autres pages ».
+- Petites cartes de « À l'agenda » : fondu sombre plus marqué en bas (sous le titre, jusqu'à 98 %) et léger fondu en haut (derrière la date) ; pastille de date plus opaque (0,58 → 0,82) avec un léger flou.
+- Dates (grande et petites cartes) en chiffres « droits » (lnum) : avec les chiffres anciens de Cormorant, « 11 » se lisait « II » et « 08 » ressemblait à « 68 » (capture de Blandine).
+- CSS seulement : aucun texte, aucun SQL.
+- Checks : marqueur unique 20261010-816, node --check 18 blocs OK, marqueurs de garde OK.
