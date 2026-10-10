@@ -10898,3 +10898,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Inchangés : visionneuse plein écran, lecteur, envoi, Titi pendant l'envoi, messages d'erreur, droits.
 - Tests : 0, 1, 2, 3, 5 vidéos simulées (horizontales, verticales, carrées) sur iPhone. Checks : 18 blocs OK, marqueur 20261010-887 unique, gardes OK.
 - Suite : build 2 = version ordinateur (après validation). Puis, demande de Blandine (10/10 22 h) : retirer le choix de couleur des chevaux, tout le monde sur la même, fiche aux couleurs de l'accueil (champagne).
+
+## Build 888 — 10/10/2026 · Toutes les fiches de chevaux aux couleurs de l'accueil
+- Blandine : « retire le choix de couleur, passe tout le monde sur la même, on réajustera plus tard » puis « passe les chevaux à la couleur de l'accueil déjà ». EcranCheval : `teinte` = champagne #C9A66B pour tous (avant : bleu #7FA3AD par défaut, règle du 30/07, ou la teinte choisie). Tout ce qui suit la teinte passe en champagne : titres, losanges, contours, ronds des icônes, onglets, albums, vidéos.
+- Choix de teinte caché à ses deux endroits (menu ⋮ de la fiche et « Modifier la fiche »). En base, chevaux.teinte n'est PAS effacée (5 chevaux : 2 dorés, 2 bordeaux, 1 vert) ; « Modifier la fiche » réenregistre la valeur existante telle quelle. Pour réactiver plus tard : relire chevalDyn.teinte et retirer les deux `false /* (888) */`.
+- Vidéo du coin Performances : la version dorée pour le champagne (au lieu de la version bleue).
+- Test : fiche principale sur iPhone (tuiles, losanges, IPO en champagne). Checks : 18 blocs OK, marqueur 20261010-888 unique, gardes OK.
