@@ -10752,3 +10752,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Téléphone : inchangé (mêmes éléments, même ordre, mêmes tailles).
 - Tests : ordinateur 1 440 px connecté et visiteur, sans débordement horizontal ni erreur ; iPhone 13 inchangé ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-863, marqueurs de garde OK.
 - Prochaines étapes : 3) accès rapides plus hauts ; 4) chevaux en rangée de photos (la grille actuelle à 3 colonnes est trop grande sur ordinateur) ; 5) résultats et événements côte à côte ; 6) bas de page et vérifications 1 024 / 1 280 / 1 920 px et arabe.
+
+## Build 864 — 10/10/2026 · Ordinateur, étapes 3 et 4 : accès rapides plus hauts, chevaux en grande mosaïque
+- Suite de la maquette validée. EcranEcurieV2, seulement sur grand écran (≥ 1 024 px) :
+  - Accès rapides : les 6 tuiles sur une rangée, 126 px de haut (96 sur téléphone), léger soulèvement + éclaircissement au survol de la souris (rien sur écran tactile) ;
+  - « Nos chevaux de l'écurie » : grande mosaïque de 4 colonnes, 7 chevaux + la carte « Les chevaux de l'écurie — Voir tout » en 8e (2 rangées), espacement 14 px. État vide (« Un box virtuel chez Hype ? ») inchangé.
+- Téléphone : inchangé (3 colonnes, carte « Voir tout » au milieu, tuiles de 96 px).
+- Tests : ordinateur 1 440 px sans débordement ni erreur ; iPhone 13 inchangé ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-864, marqueurs de garde OK.
