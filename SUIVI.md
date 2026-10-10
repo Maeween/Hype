@@ -10471,3 +10471,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - story.html : og:image passe en adresse complète https://2hype.fr/partage-apercu.jpg (WhatsApp et Facebook l'exigent) + og:image:width / height.
 - index.html inchangé (toujours 20261010-821).
 - À savoir : WhatsApp garde en mémoire l'ancien aperçu d'un lien déjà partagé ; le nouveau se voit sur un lien partagé à partir de maintenant.
+
+## Build 823 — 10/10/2026 · Fiche cheval : espace sous la carte Origines
+- Blandine (capture de Jaiko de Popey) : « laisse un peu plus d'espace en dessous de l'encart des origines ».
+- Marge sous la carte Origines : 0 → 26 px (avant les tuiles Histoire / Performances / Santé…). Une seule valeur.
+- Vu sur sa capture : le recto du 821 s'affiche bien (Père / Mère / Père de mère, ligne race · âge · naissance lisible) et l'outil d'import apparaît sur un cheval de la SEP qu'elle n'a pas créé (820 + SQL OK).
+- Checks : marqueur unique 20261010-823, node --check 18 blocs OK, marqueurs de garde OK.
