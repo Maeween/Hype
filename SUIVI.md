@@ -11009,7 +11009,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Hero fiche cheval : cadre 9:16 → 3:4 (même hauteur, plus large : moins de vide sur les côtés, marge de 16 px gardée).
 - Fichier à pousser en plus de index.html : images/photos-vide-cheval.jpg (nouveau).
 
-## Build 908 (11/10, préparé — attend « Ok publie »)
+## Build 908 (11/10, publié avec l'accord de Blandine — « Ok publie »)
 - Fiche cheval : les trois petits points du menu de la fiche quittent la ligne du nom et passent, discrets (•••, sans cadre), en bas à droite DANS la photo (en bas à gauche en arabe). Même menu, même action.
 - Nom du cheval sur une seule ligne : il prend toute la largeur ; s'il est long, la police se réduit un peu (31 → 26 px au-delà de 13 lettres, 22 px au-delà de 17). Au-delà de 20 lettres, retour à la ligne autorisé.
 - Voile bleuté (option A validée par Blandine) : 13 % → 22 % (et 4 % → 7 % au milieu), sur la fiche, ses pages et la page Santé.
