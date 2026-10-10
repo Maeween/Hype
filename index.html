@@ -54258,6 +54258,8 @@ function hypeComposerAnneeGalerie(grpMEV, mapFormats) {
     var cleMEV = (typeof urlNue === "function") ? urlNue(pMEV.url) : pMEV.url;
     var fmtManuel = mapFormats[cleMEV] || null;
     var fmtMEV = fmtManuel;
+    /* (909) Blandine : une photo SEULE sur son annee passe automatiquement en pleine largeur (sauf format choisi a la main) */
+    if (!fmtMEV && photosMEV.length === 1) fmtMEV = "pleine_largeur";
     if (!fmtMEV) {
       var decMEV = hypeHacherTexte("rythme:" + String(grpMEV.an)) % 7;
       if ((iMEV + decMEV) % 13 === 0) fmtMEV = "pleine_largeur";
