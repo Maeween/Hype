@@ -63871,7 +63871,22 @@ async function supprimerSouvenirOuvert() {
           : panneau === "actualite" ? (T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631") + " \u00b7 " + c.nom)   /* 04/10 (638) : le panneau Actualite n avait pas de titre et retombait sur « Passeport Sante » */
           : T("Passeport Santé", "Health Passport", "Pasaporte de salud", "Passaporto salute", "健康パスポート", "Gesundheitspass", "\u062c\u0648\u0627\u0632 \u0627\u0644\u0635\u062d\u0629")),
         h("div", { style: { marginLeft: "auto" } }, h(SelecteurLangue, { compact: true }))),
-      (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", justifyContent: "space-between", gap: 8, margin: "0 16px 12px", borderBottom: "1px solid rgba(255,255,255,0.07)" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
+      null /* (910) onglets deplaces sous la 2e barre grise */,
+      /* 🟩 05/09 (Blandine : « c'est trop écrasé et compact, reproduis l'espace entre l'onglet
+   du haut et la suite comme sur la page Écurie ») — même bloc gris que les deux bandes de la
+   page Écurie/Guilde (`#15181C`, 18 px, arrondi 6, marge latérale 16), un seul trait ici pour
+   créer la respiration sous les 4 onglets, partagé par Histoire/Photos/Performances/Vidéos. */
+/* 🟥 06/09 (Blandine : « aère beaucoup beaucoup plus, laisse des espaces entre les
+           différentes parties ») — trait plus épais (18 -> 30 px), marges doublées. */
+(["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "14px 16px 26px" } }) : null,
+panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
+        (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0634\u0627\u0631\u0627\u062a \u062d\u0627\u0644\u064a\u0627.")),
+        h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen", "\u0625\u0636\u0627\u0641\u0629 \u0634\u0627\u0631\u0629"))) : null,
+      panneau === "videos" ? h("div", null,
+        encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a")),
+        /* (894) Blandine : la deuxieme barre grise, comme sur la page Photos, entre la carte du cheval et « Videos » */
+        h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "24px 16px" } }),
+        (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", justifyContent: "space-between", gap: 8, margin: "0 16px 22px", borderBottom: "1px solid rgba(255,255,255,0.07)" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
         [["souvenirs", T("Histoire", "Story", "Historia", "Storia", "物語", "Geschichte", "\u0627\u0644\u0642\u0635\u0629"),
           h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" })],
          ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "\u0627\u0644\u0635\u0648\u0631"),
@@ -63890,20 +63905,6 @@ async function supprimerSouvenirOuvert() {
           /* (910) option C : petits mots, sans les ronds ; la page ouverte en champagne soulignee */
           return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { flex: "0 0 auto", padding: "6px 2px 7px", border: "none", borderBottom: "1.5px solid " + (onTb ? "#C9A66B" : "transparent"), background: "none", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: onTb ? 700 : 500, letterSpacing: "0.02em", color: onTb ? "#C9A66B" : "rgba(237,242,245,0.55)", whiteSpace: "nowrap" } }, tb[1]);
         })) : null,
-      /* 🟩 05/09 (Blandine : « c'est trop écrasé et compact, reproduis l'espace entre l'onglet
-   du haut et la suite comme sur la page Écurie ») — même bloc gris que les deux bandes de la
-   page Écurie/Guilde (`#15181C`, 18 px, arrondi 6, marge latérale 16), un seul trait ici pour
-   créer la respiration sous les 4 onglets, partagé par Histoire/Photos/Performances/Vidéos. */
-/* 🟥 06/09 (Blandine : « aère beaucoup beaucoup plus, laisse des espaces entre les
-           différentes parties ») — trait plus épais (18 -> 30 px), marges doublées. */
-(["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "14px 16px 26px" } }) : null,
-panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
-        (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : h("div", { className: "empty" }, T("Aucun flot pour l'instant.", "No rosettes yet.", "Aún sin escarapelas.", "Ancora nessuna coccarda.", "まだロゼットはありません。", "Noch kein Flot vorhanden.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0634\u0627\u0631\u0627\u062a \u062d\u0627\u0644\u064a\u0627.")),
-        h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen", "\u0625\u0636\u0627\u0641\u0629 \u0634\u0627\u0631\u0629"))) : null,
-      panneau === "videos" ? h("div", null,
-        encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a")),
-        /* (894) Blandine : la deuxieme barre grise, comme sur la page Photos, entre la carte du cheval et « Videos » */
-        h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "24px 16px" } }),
         h("div", { style: { padding: "0 16px 24px" } },
         h("input", { ref: vdIn, type: "file", accept: "video/*", multiple: true, /* \ud83d\udfe5 05/09 (Blandine, capture 15h12) : troisieme champ video du fichier, oublie ce matin. Sans `multiple`, le selecteur iOS n a PAS de bouton de validation. Le traitement ne prend toujours que le premier fichier. */ style: { display: "none" }, onChange: function (eVi) {
           setVidSucces(false);
@@ -64900,6 +64901,25 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         /* 🟩 05/09 (Blandine : ajouter deux traits gris, identiques a ceux de la page Ecurie,
    au-dessus et en dessous des Albums pour les separer du reste de la page) */
         h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "24px 16px" } }),
+        (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? h("div", { style: { display: "flex", justifyContent: "space-between", gap: 8, margin: "0 16px 22px", borderBottom: "1px solid rgba(255,255,255,0.07)" } }, /* 31/07 : page seconde a onglets (architecture Blandine) */
+        [["souvenirs", T("Histoire", "Story", "Historia", "Storia", "物語", "Geschichte", "\u0627\u0644\u0642\u0635\u0629"),
+          h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9z", strokeLinejoin: "round" })],
+         ["photos", T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "\u0627\u0644\u0635\u0648\u0631"),
+          h("g", null, h("rect", { x: 3, y: 5, width: 18, height: 14, rx: 2.5 }), h("circle", { cx: 8.5, cy: 10, r: 1.6 }), h("path", { d: "M21 16l-5-5-4 4-2-2-4 4" }))],
+         ["palmares", T("Performances", "Performances", "Rendimiento", "Prestazioni", "実績", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c"),
+          h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" })],
+         ["videos", T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a"),
+          h("g", null, h("rect", { x: 3, y: 6, width: 12, height: 12, rx: 2.5 }), h("path", { d: "M15 10.5l6-3.5v10l-6-3.5z", strokeLinejoin: "round" }))]
+        /* 🟩 05/09 (Blandine : « on pourrait pas garder ceux qu'on avait sur la première page,
+           quitte à les mettre un peu plus petits ? ») — memes icones exactement que les 6 cartes de la
+           page d'accueil du cheval (meme trace SVG, copie depuis `carteR`), en version compacte : cercle
+           + libelle, au lieu des pilules de texte. Seuls les 4 qui ont un vrai onglet ici (Santé et
+           Actualité n'en ont pas, elles restent des cartes a part sur la page d'accueil). */
+        ].map(function (tb) {
+          var onTb = panneau === tb[0];
+          /* (910) option C : petits mots, sans les ronds ; la page ouverte en champagne soulignee */
+          return h("button", { key: "tb" + tb[0], onClick: function () { setPanneau(tb[0]); }, style: { flex: "0 0 auto", padding: "6px 2px 7px", border: "none", borderBottom: "1.5px solid " + (onTb ? "#C9A66B" : "transparent"), background: "none", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: onTb ? 700 : 500, letterSpacing: "0.02em", color: onTb ? "#C9A66B" : "rgba(237,242,245,0.55)", whiteSpace: "nowrap" } }, tb[1]);
+        })) : null,
         h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, presentationPhotos: true /* (881) */, mesAlbumsSeulement: true, fermerCle: albumsChFermerCle, ajoutCle: albumsChAjoutCle /* 11/09 (14) : « Ajouter un souvenir » -> feuille « Dans quel album ? » */, onOuvertureLocale: function () { setVisionneuse(null); } })),
         h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "24px 16px" } }),
         h(ChronologieSouvenirs, {
