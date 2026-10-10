@@ -10949,3 +10949,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fonds bleu pétrole de l'accueil (dégradé #111B1F → #0B1215) sur la fiche du cheval : les 6 tuiles (voile des photos teinté pétrole), la carte Origines, la carte IPO, la carte photo + nom des onglets (voile pétrole, contour champagne fin). Rien d'autre.
 - Page Écurie, tuile « Chevaux » : ouvrait le dernier onglet vu (souvenir de 12 h ajouté au 836), d'où la Team CSO Club. Elle ouvre maintenant toujours « Tous les chevaux » (window.__ecurieHypePiquet et le souvenir « piquet » remis à zéro) ; le retour depuis une fiche cheval garde l'onglet.
 - Checks : 18 blocs OK, marqueur 20261010-897 unique, gardes OK ; captures avant/après de la fiche.
+
+## Build 898 — 10/10/2026 · Retour de la carte du cheval + vidéos horizontales pleines
+- Blandine (capture, « t'as fait quoi là ?! ») : la carte photo + nom des onglets passée en pétrole au 897 ne va pas → remise exactement comme avant (fond #04070A, contour blanc 6 %, voile noir). Le pétrole reste sur les tuiles, la carte Origines et la carte IPO de la fiche principale.
+- Onglet Vidéos : une vidéo horizontale REMPLIT sa case (plus de bandes grises en haut et en bas) ; verticale et carrée restent entières sur fond flou.
+- Publié sur demande explicite de correction. Checks : 18 blocs OK, marqueur 20261010-898 unique, gardes OK ; capture iPhone.
