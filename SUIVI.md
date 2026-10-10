@@ -10568,3 +10568,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture, croix à côté de « 43 chevaux ») : « remets plutôt juste l'onglet de la deuxième écurie, juste un petit bouton pour changer de Feinn à SEP ».
 - Les deux pastilles du 835 ne sont plus affichées. À droite du nombre de chevaux, sous « Nos chevaux de l'écurie » : un petit bouton pétrole qui montre l'AUTRE écurie en nom court (sigle entre parenthèses → « SEP » ; sinon sans « Écurie » → « Feinn ») ; un toucher bascule (même effet que le titre déroulant, choix retenu).
 - Checks : marqueur unique 20261010-837, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 839 — 10/10/2026 · La petite vidéo « résultats officiels » masquée par défaut
+- Blandine (capture de la fiche d'un cheval sans résultat) : « ne rends pas la vidéo visible là, mets-la plutôt sur la page résultats quand elle est vide, ou quand quelqu'un veut mettre ses résultats en ligne », puis « laisse-la masquée par défaut, sinon juste la petite phrase pour l'afficher ».
+- Fiche cheval (propriétaire seule, règle du 826) : la vidéo et la phrase ne s'affichent plus d'office ; une ligne « Voir la petite vidéo ▸ » (7 langues) les affiche. Le bouton « Importer mes résultats officiels » ne change pas.
+- Nouveau composant VideoResultatsOfficiels (masqué par défaut, même ligne pour l'afficher, puis vidéo + phrase) posé sur : la page d'import des résultats (sous le titre) et les Performances d'un cheval qui n'a encore aucun résultat.
+- Le build 838 (allègement des captures) reste en attente de son accord, sur sa branche, NON publié.
+- Checks : marqueur unique 20261010-839, node --check 18 blocs OK, marqueurs de garde OK.
