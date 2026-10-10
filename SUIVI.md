@@ -10986,3 +10986,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Badge raccourci à « ✦ Légende Hype » (« 1 sur 100 000 » retiré : déjà dans le bandeau IPO).
 - Ligne de l'écurie (📍) visible par tout le monde sur la fiche, en simple lecture. Le sélecteur (▼) reste réservé à la propriétaire qui a plusieurs écuries. Si le cheval n'a pas d'écurie, rien ne s'affiche.
 - Collections vidéo : analyse et SQL proposés (table collections_videos), rien de passé en base, en attente de ses réponses.
+
+## Build 904 (11/10, préparé — attend « Ok publie »)
+- Onglet Vidéos vide (Titi), téléphone : carte 300 → 390 px de haut, la vidéo occupe le haut (74 %) et le texte + bouton descendent sous la tête de Titi, sur fond uni.
+- Page Écurie, « Derniers résultats » : cartes rallongées (164 → 192 px) et nom de l'épreuve sur 2 lignes au lieu d'être coupé par « … ».
