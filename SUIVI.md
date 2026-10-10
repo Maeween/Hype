@@ -10833,3 +10833,19 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « reviens à la version avant les pastilles, t'as trop de problèmes sur la page ». Le changement du 872 est entièrement retiré : la carte « X a rendu leur palmarès à N chevaux » montre de nouveau une ligne par cheval avec ses chiffres (comme au 871), et les deux règles CSS des pastilles sont supprimées.
 - Contrôle : la partie Communauté du fichier est identique, caractère pour caractère, à celle du build 871 ; les seules différences avec le 871 sont l'accueil sur ordinateur (873), la page Les cavaliers sur ordinateur (874) et le numéro de version.
 - Le besoin (carte trop longue) reste ouvert ; à reprendre seulement si Blandine le redemande.
+
+## Build 877 — 10/10/2026 · Fil Communauté : carte palmarès de plusieurs chevaux, écurie nommée + rangée de têtes qui défile
+- Blandine : sans la longue liste, mentionner l'écurie, et « au-delà des trois, qu'on puisse faire défiler sur le côté » (choix « 3 » = palmarès ET Activité ; Activité à suivre).
+- cartesDImport lit aussi `ecurie, club` des chevaux (repli sur club si écurie vide ou « __perso__ ») et range l'écurie de chaque cheval.
+- EcranCommunauteV2, carte palmarès à plusieurs chevaux : à la place d'une ligne par cheval, (1) le nom de l'écurie en doré (toucher = page de l'écurie) ou « N écuries » si plusieurs (texte 7 langues `nEcuries`), (2) une rangée de têtes rondes de 54 px avec le nom dessous, qu'on fait défiler sur le côté (toucher = fiche du cheval). Uniquement des styles en ligne (aucune retouche de la feuille de style du fil, cf. l'incident du 872).
+- Contrôle : captures de toute la page Communauté avant (876) / après (877) identiques hors la carte ; capture de la carte seule avant/après (carte simulée à 6 chevaux).
+
+## Build 878 — 10/10/2026 · Souvenirs de l'écurie : couverture d'album noire
+- Signalé par Blandine (album « Cirrus », 3 souvenirs, case noire). Cause : la couverture prenait le 1er élément de l'album, ici une VIDÉO Mux (.m3u8) qu'une balise image ne peut pas afficher.
+- Correction : la couverture = la 1re PHOTO de l'album ; s'il n'y a que des vidéos, l'image fournie par Mux (hypeMuxVignetteUrl).
+
+## Build 879 — 10/10/2026 · Souvenirs de l'écurie : partie « photos du mur du club » retirée (choix B de Blandine)
+- La mosaïque des photos du fil de l'écurie (et son message vide « Partage une photo sur le mur du club… ») n'est plus affichée, pour toutes les écuries ; la lecture correspondante n'est plus faite. La page montre l'en-tête puis « Les albums de l'écurie ».
+- Nouveau message si l'écurie n'a aucun album public : « Pas encore d'album : les albums publics des chevaux de l'écurie apparaîtront ici. » (7 langues).
+- Vérifié en base le 10/10 : aucune publication sur le fil de la SEP ; seul le fil de l'Écurie Feinn a des messages (4).
+- Checks 877-879 : 18 blocs node --check OK, un seul marqueur 20261010-879, marqueurs de garde OK.
