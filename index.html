@@ -62739,9 +62739,7 @@ async function supprimerSouvenirOuvert() {
                 h("h1", { style: { margin: 0, fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 31, lineHeight: 1.06, letterSpacing: 1, background: "linear-gradient(180deg,#FFFFFF,#C3CDD2)", WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent" } }, (mSp2 ? mSp2[1] : nmC2).toUpperCase()),
                 mSp2 ? h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 14.5, letterSpacing: "0.18em", textTransform: "uppercase", color: teinteCl, whiteSpace: "nowrap" } }, mSp2[2]) : null),   /* (833) plus de (OC)/(OI) a cote du grand nom */
               montrerOffi2 ? h("div", { style: { marginTop: 3, fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, letterSpacing: "0.1em", textTransform: "uppercase", color: "#7C858D" } }, nomOffi2) : null,
-              lblT2 ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45) } },
-                h("b", { style: { color: teinteCl, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.14em" } }, "\u2726 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "\u4f1d\u8aac", "HYPE-LEGENDE", "\u0623\u0633\u0637\u0648\u0631\u0629 HYPE")),
-                h("span", { style: { color: "rgba(244,247,250,0.75)", fontSize: 10.5, letterSpacing: "0.06em", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: 8 } }, lblT2)) : null,
+              null /* (903) badge deplace a droite de l ecurie */,
           /* 02/09 (Blandine) — L ECURIE DU CHEVAL, SOUS SON NOM.
              ⚠️ Le selecteur vivait dans « Modifier la fiche », derriere le menu de
              la photo : « ce n est pas du tout intuitif ». Il remonte ici, visible
@@ -62751,11 +62749,12 @@ async function supprimerSouvenirOuvert() {
              cavalier a PLUSIEURS ecuries : avec une seule, la question n a pas de
              sens et la ligne encombrerait la fiche.
              ⚠️ L echec d ecriture se DIT (lecon du .catch() vide du 01/09). */
+          h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 14, rowGap: 8, marginTop: 10 } }, /* (903) ecurie et Legende Hype sur la meme ligne */
           (function () {
             var proprioE = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
             if (!proprioE || mesClubsFiche.length < 2) return null;
             var actuel = String((chevalDyn && chevalDyn.club) || "").trim();
-            return h("div", { style: { marginTop: 10 } },
+            return h("div", { style: { minWidth: 0 } },
               h("div", { role: "button", onClick: function () { setOuvrirEcu(!ouvrirEcu); setErreurClub(""); },
                 style: { display: "inline-flex", alignItems: "center", gap: 7, cursor: "pointer",
                   fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: actuel ? "#D9C7A3" : "#8A929C" } },
@@ -62782,7 +62781,10 @@ async function supprimerSouvenirOuvert() {
                     cl || T("Aucune", "None", "Ninguna", "Nessuna", "\u306a\u3057", "Keine", "\u0644\u0627 \u0634\u064a\u0621"));
                 })) : null,
               erreurClub ? h("div", { style: { marginTop: 6, fontSize: 11.5, color: "#FF6B6B", fontFamily: "'Montserrat',sans-serif" } }, erreurClub) : null);
-          })());
+          })(),
+          lblT2 ? h("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "6px 13px", borderRadius: 999, border: "1px solid " + tA(0.45) } },
+                h("b", { style: { color: teinteCl, fontWeight: 700, fontSize: 10.5, letterSpacing: "0.14em" } }, "\u2726 " + T("L\u00c9GENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "\u4f1d\u8aac", "HYPE-LEGENDE", "\u0623\u0633\u0637\u0648\u0631\u0629 HYPE")),
+                h("span", { style: { color: "rgba(244,247,250,0.75)", fontSize: 10.5, letterSpacing: "0.06em", borderLeft: "1px solid rgba(255,255,255,0.2)", paddingLeft: 8 } }, lblT2)) : null));
           })(),
 
           /* 22/08 session 152 : trois points de 1,4 px sans etiquette — personne ne

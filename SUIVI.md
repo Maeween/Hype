@@ -10982,3 +10982,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 903 (10/10, préparé — attend « Ok publie »)
 - Fiche cheval : la photo du haut prend exactement le format de la vidéo de l'accueil — cadre vertical (9:16), 66 % de la hauteur de l'écran, centré, coins arrondis, fine bordure. Conséquence : une photo horizontale est recadrée sur son centre (les côtés sont coupés).
+- Badge « Légende Hype » placé à droite de l'écurie, sur la même ligne (s'il manque de place, il passe dessous). La ligne écurie n'apparaît que pour la propriétaire qui a plusieurs écuries.
