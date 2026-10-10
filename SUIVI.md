@@ -10994,4 +10994,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 905 (11/10, préparé — attend « Ok publie »)
 - Collections de vidéos, étape 1/4 (affichage) : l'onglet Vidéos lit la table collections_videos (SQL passé par Blandine le 11/10). S'il existe au moins une collection avec une vidéo visible : une section par collection (nom tel que saisi, « N vidéos », 2 colonnes, 4 vidéos puis « Voir toutes les vidéos de cette collection »), puis « Autres vidéos » (vidéos hors collection + vidéos en préparation). Sinon : galerie inchangée. Une collection n'affiche que des vidéos que la personne voit déjà (rien de privé ne fuit). Textes en 7 langues.
 - Hero fiche cheval : hauteur 66 → 54 % de l'écran.
+- Onglet Vidéos : plus d'air sous le titre « Vidéos » (14 → 26 px).
 - Droits des collections (réponse de Blandine : propriétaire du cheval, propriétaire de l'écurie, admins) : SQL préparé dans sql/2026-10-11-collections-videos-droits.sql, à passer par elle.
