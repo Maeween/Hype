@@ -62357,10 +62357,13 @@ function EcranCheval() {
   var rtlCh = (function () { try { return document.documentElement.dir === "rtl" || ctx.langue === "ar"; } catch (eR) { return false; } })();
   /* 10/10 (887) onglet Videos du cheval : case de la grille selon le rang et le nombre, et vignette (fonction partagee
      hypeMiniatureVideo NON modifiee : utilisee seulement en secours pour les anciennes videos sans image Mux). */
-  function caseVidCh(i, n) {
+  var rvSt = React.useState({}); var ratiosVid = rvSt[0], setRatiosVid = rvSt[1];   /* (887) proportion de chaque video, lue sur son image Mux */
+  function caseVidCh(i, n, url) {
+    var rV = (url && ratiosVid[url]) || 0;
     var st = { position: "relative", width: "100%", height: 168, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(201,166,107,0.22)", background: "#0A1215", cursor: "pointer" };
-    if (n === 1) return Object.assign(st, { gridColumn: "1 / -1", width: "80%", justifySelf: "center", height: 220 });
-    if (n % 2 === 1 && i === n - 1) return Object.assign(st, { gridColumn: "1 / -1", width: "78%", justifySelf: "center", height: 186 });
+    /* carte elargie : une video horizontale prend sa vraie proportion (plus de bandes), les autres gardent une hauteur bornee */
+    if (n === 1) return Object.assign(st, { gridColumn: "1 / -1", width: "80%", justifySelf: "center" }, rV >= 1.2 ? { height: "auto", aspectRatio: String(Math.min(rV, 3.2)), maxHeight: 220 } : { height: 220 });
+    if (n % 2 === 1 && i === n - 1) return Object.assign(st, { gridColumn: "1 / -1", width: "78%", justifySelf: "center" }, rV >= 1.2 ? { height: "auto", aspectRatio: String(Math.min(rV, 3.2)), maxHeight: 200 } : { height: 186 });
     return st;
   }
   function vignetteVidCh(url) {
@@ -62372,7 +62375,7 @@ function EcranCheval() {
     if (!vigV) return h(React.Fragment, null, hypeMiniatureVideo(url, { largeur: 500, picto: false, objectFit: "contain", style: { pointerEvents: "none", background: "#0A1215" } }), fondu, lecture);
     return h(React.Fragment, null,
       h("img", { src: vigV, alt: "", "aria-hidden": "true", loading: "lazy", decoding: "async", draggable: false, onError: function (eB) { try { eB.currentTarget.style.display = "none"; } catch (e0) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", transform: "scale(1.2)", filter: "blur(16px) brightness(0.45)", pointerEvents: "none" } }),
-      h("img", { src: vigV, alt: "", loading: "lazy", decoding: "async", draggable: false, onError: function (eI) { try { eI.currentTarget.style.display = "none"; } catch (e1) { } }, style: { position: "absolute", inset: 0, zIndex: 1, width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" } }),
+      h("img", { src: vigV, alt: "", loading: "lazy", decoding: "async", draggable: false, onLoad: function (eL) { try { var im = eL.currentTarget; if (im.naturalWidth && im.naturalHeight) { var rr = Math.round(im.naturalWidth / im.naturalHeight * 100) / 100; setRatiosVid(function (o) { if (o[url] === rr) return o; var n2 = Object.assign({}, o); n2[url] = rr; return n2; }); } } catch (eRl) { } }, onError: function (eI) { try { eI.currentTarget.style.display = "none"; } catch (e1) { } }, style: { position: "absolute", inset: 0, zIndex: 1, width: "100%", height: "100%", objectFit: "contain", pointerEvents: "none" } }),
       fondu, lecture);
   }
   /* 30/08 19h30 — CHEMIN DIRECT D'ENVOI DEPUIS L'ONGLET VIDEOS (demande Blandine :
@@ -63752,7 +63755,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
             /* 02/08 : la vignette ouvre la visionneuse au lieu de lire la video dans sa case de
                grille. Objectif fixe par Blandine : toute video chargee par un utilisateur doit
                pouvoir s afficher en grand. */
-            return h("div", { key: "vtab" + iV, role: "button", onClick: function () { try { window.__visListe = (chVids || []).slice(); } catch (eVl) { } setVisFerme(false); setVisionneuseAlbumId(null); setVisionneuse(vU); }, style: caseVidCh(iV, nTotV) },
+            return h("div", { key: "vtab" + iV, role: "button", onClick: function () { try { window.__visListe = (chVids || []).slice(); } catch (eVl) { } setVisFerme(false); setVisionneuseAlbumId(null); setVisionneuse(vU); }, style: caseVidCh(iV, nTotV, vU) },
               vignetteVidCh(vU));
           }),
           /* 09/09 (soir, correctif 2) : vidéos postées en commentaire — jamais vues par chVids. */
@@ -63766,7 +63769,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
                 /* 09/09 (soir) : bouton Supprimer -- seulement sur un échec, pas sur un envoi encore en cours. */
                 estErrC ? h("button", { onClick: function (eDc) { if (eDc && eDc.stopPropagation) eDc.stopPropagation(); if (!cV.id) return; supprimerCommentaire(cV.id).then(function () { setChVidsCom(function (l) { return (l || []).filter(function (x) { return x.id !== cV.id; }); }); }); }, style: { position: "absolute", bottom: 10, left: "50%", transform: "translateX(-50%)", fontSize: 10.5, color: "#FF9AA8", background: "rgba(60,10,20,0.55)", border: "1px solid rgba(255,107,129,0.5)", borderRadius: 999, padding: "5px 14px", cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Supprimer", "Delete", "Eliminar", "Elimina", "\u524a\u9664", "Löschen", "\u062d\u0630\u0641")) : null);
             }
-            return h("div", { key: "vtabc" + iC, role: "button", onClick: function () { try { window.__visListe = (chVids || []).concat((chVidsCom || []).filter(function (x) { return !x.statut || x.statut === "ready"; }).map(function (x) { return x.url; })); } catch (eVlc) { } setVisFerme(false); setVisionneuseAlbumId(null); setVisionneuse(cV.url); }, style: caseVidCh(iGlob, nTotC) },
+            return h("div", { key: "vtabc" + iC, role: "button", onClick: function () { try { window.__visListe = (chVids || []).concat((chVidsCom || []).filter(function (x) { return !x.statut || x.statut === "ready"; }).map(function (x) { return x.url; })); } catch (eVlc) { } setVisFerme(false); setVisionneuseAlbumId(null); setVisionneuse(cV.url); }, style: caseVidCh(iGlob, nTotC, cV.url) },
               vignetteVidCh(cV.url));
           })
         )

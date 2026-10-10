@@ -10888,3 +10888,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - En-tête du haut des onglets Histoire, Photos et Vidéos : seulement le nom de l'onglet (« Photos »), le nom du cheval n'est plus répété (il est dans la carte du cheval juste dessous). Actualité (sans carte du cheval) garde le nom.
 - Rappels déjà en place : nom sur 2 lignes (885), « + Album » dans le titre seulement s'il existe des albums, encart narratif sinon, autres cavalières cachées si vides (883/885).
 - Tests : carte seule horizontale / carrée / verticale / sans photo sur iPhone (390) et ordinateur (1240). Checks : 18 blocs OK, marqueur 20261010-886 unique, gardes OK.
+
+## Build 887 — 10/10/2026 · Onglet Vidéos du cheval, version iPhone (consigne ChatGPT validée, build 1 sur 2)
+- Titre « ◆ Vidéos » + petit bouton « + Ajouter une vidéo » à droite (contour champagne, fond pétrole) à la place de la grande barre ; même geste, même règle (visible pour tous, droits vérifiés à l'envoi).
+- Galerie 2 colonnes, cartes de 168 px ; 1 vidéo = carte centrée de 80 % ; nombre impair = la DERNIÈRE carte prend la ligne, élargie (78 %) et centrée, seulement pour équilibrer. Une carte élargie suit la vraie proportion d'une vidéo horizontale (lue sur l'image Mux au chargement, rien en base) ; sinon hauteur bornée (220 / 186 px).
+- Vignette : image Mux ENTIÈRE (contain) sur sa propre image floutée et assombrie, léger fondu en bas, bouton Lecture rond à fin contour champagne. Aucun texte, pas de durée (décision : règles RLS de videos_mux = lecture de ses propres vidéos seulement ; aucun SQL). Anciennes vidéos sans image Mux : rendu de secours existant (hypeMiniatureVideo, NON modifiée, utilisée à 28 endroits).
+- Vidéos en préparation / en échec : même carte d'attente qu'avant (et bouton Supprimer sur échec), dans la nouvelle grille, sans bouton Lecture.
+- Aucune vidéo : encart compact avec Titi + « Aucune vidéo pour le moment » (7 langues), pas de second bouton.
+- Inchangés : visionneuse plein écran, lecteur, envoi, Titi pendant l'envoi, messages d'erreur, droits.
+- Tests : 0, 1, 2, 3, 5 vidéos simulées (horizontales, verticales, carrées) sur iPhone. Checks : 18 blocs OK, marqueur 20261010-887 unique, gardes OK.
+- Suite : build 2 = version ordinateur (après validation). Puis, demande de Blandine (10/10 22 h) : retirer le choix de couleur des chevaux, tout le monde sur la même, fiche aux couleurs de l'accueil (champagne).
