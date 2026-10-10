@@ -10385,3 +10385,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CORRECTION : au tap, l'identifiant de la notification est retenu sur l'appareil (clé localStorage `hype_notifs_comm_lus`, 300 dernières). Le point et le compteur de la cloche l'ignorent ensuite. Rien en base, aucun SQL, aucun nouveau texte.
 - Limite à savoir : retenu par appareil (comme « Tout marquer comme lu » pour la communauté depuis toujours) : ouverte sur l'iPhone, elle peut rester nouvelle sur un autre appareil.
 - Checks : marqueur unique 20261010-810, node --check 18 blocs OK, marqueurs de garde OK ; tour des 12 écrans Chromium iPhone 13 sans erreur.
+
+## Build 811 — 10/10/2026 · Titre de la page Communauté : « V5 · Lueur pétrole »
+- Choix de Blandine sur la planche « Titres Communauté » (capture de V5) : « mets celui-là et on passe à autre chose ».
+- Le titre passe en grandes capitales Anton (45 px au plus, une seule ligne), avec la photo du hero (images/communaute-hero-monde-hype-cavaliers.webp, déjà dans le dépôt) DANS les lettres, éclaircie, et un halo pétrole autour (3 ombres : #7FA3AD fine, #5C8792, #376B7D large).
+- Titre, phrase et capsule Monde Hype sont désormais centrés. Position sous la photo inchangée (807).
+- Seul le bloc de titre de la page Communauté V2 change (COM2_CSS + une enveloppe span.com2-titre-halo). Aucun texte nouveau, aucune image ajoutée, aucun SQL.
+- Les autres planches (pages entières en pétrole, fondus, 12 couleurs) restent des propositions non retenues.
+- Checks : marqueur unique 20261010-811, node --check 18 blocs OK, marqueurs de garde OK ; rendu vérifié (iPhone 13, police de secours) : titre centré, tient sur la ligne, halo visible.
