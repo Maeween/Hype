@@ -63188,7 +63188,7 @@ async function supprimerSouvenirOuvert() {
           var discI = String(disc || "").toUpperCase();
           var imgI = (discI.indexOf("CSO") >= 0 || discI.indexOf("SAUT") >= 0 || discI.indexOf("JUMP") >= 0) ? IMG_LABAULE : null;
           var tI = 40 + pI * 3;
-          return h("div", { className: "rise", style: { animationDelay: ".075s", margin: "30px 16px 18px", borderRadius: 16, border: "1px solid " + tA(0.3 + pI * 0.09), background: "linear-gradient(135deg, " + tA(0.06 + pI * 0.018) + ", rgba(11,18,21,0) 60%), linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (897) */, boxShadow: pI >= 3 ? "0 0 " + (12 + pI * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pI * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
+          return h("div", { className: "rise", style: { animationDelay: ".075s", margin: "30px 16px 40px" /* (901) plus d air sous le bandeau IPO (18 -> 40) */, borderRadius: 16, border: "1px solid " + tA(0.3 + pI * 0.09), background: "linear-gradient(135deg, " + tA(0.06 + pI * 0.018) + ", rgba(11,18,21,0) 60%), linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (897) */, boxShadow: pI >= 3 ? "0 0 " + (12 + pI * 6) + "px " + tA(0.16) + ", inset 0 0 0 1px rgba(255,255,255,0.05)" : "inset 0 0 0 1px rgba(255,255,255,0.04)", padding: (10 + pI * 1.5) + "px 14px", display: "flex", alignItems: "center", gap: 13 } },
             imgI ? h("div", { style: { width: tI, height: tI, borderRadius: 14, overflow: "hidden", flexShrink: 0, border: "1px solid " + tA(0.42), boxShadow: "inset 0 0 0 1px rgba(255,255,255,0.06)" } },
               h("img", { src: imgI, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } })) : null,
             h("div", { style: { minWidth: 0 } },
@@ -63203,7 +63203,7 @@ async function supprimerSouvenirOuvert() {
         })() : null,
 
         null, /* 25/08 : pilule Coupes retiree (Blandine) — le rail reste ; l'onglet Resultats etait deja retire (s152) */
-        (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 10 } },
+        (ongletPerf === "coupes") && (c.flots && c.flots.length) ? h("div", { className: "rise", style: { display: "flex", gap: 12, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "0 16px 6px", marginBottom: 34 /* (901) plus d air sous les coupes (10 -> 34) */ } },
           c.flots.filter(function (fFl) { return fFl && fFl.img; }).map(function (fl, iF) {
             return h("div", { key: "flf" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") { setVisionneuseAlbumId(null); setVisionneuse(fl.img); } else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } }, style: { flex: "0 0 auto", width: 108, cursor: "pointer", textAlign: "center" } },
               fl.img ? h("img", { src: fl.img, alt: fl.lab || "", style: { width: 108, height: 132, objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
