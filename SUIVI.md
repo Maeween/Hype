@@ -10357,3 +10357,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - EcranMessagerie : 35 couleurs cyan en dur → champagne. Cyan calculé à l'écran : 7 → 0. Les illustrations des poneys (images) restent bleues.
 - Checks : marqueur unique 20261010-805, node --check 18 blocs OK ; 12 écrans principaux sans erreur (Chromium iPhone 13).
 - Publication groupée 803 + 804 + 805 (une seule mise en ligne).
+
+## Build 806 — 10/10/2026 · Piquets : encarts transparents pétrole, boutons sur une ligne
+- Demande de Blandine (capture CSO Amateur) : encart du piquet et encart « Team » → fond transparent en dégradé pétrole → noir, liseré champagne 0,18, ombre portée ; boutons « Voir les résultats » et « Gérer les chevaux » côte à côte sur une même ligne, même style que les onglets (dégradé pétrole ombré, liseré champagne ; plus de bouton doré plein) ; bouton « Découvrir la Team » assorti.
+- Checks : marqueur unique 20261010-806, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
