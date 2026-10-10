@@ -10698,3 +10698,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveau composant `BandeauRejoinsHype`, affiché seulement sur l'écran « cheval » et seulement pour une personne NON connectée : encart posé au-dessus de la barre du bas (hauteur de la barre mesurée), titre « Rejoins Hype », phrase « Ton cheval aussi mérite sa fiche : photos, origines, concours. », bouton « Créer un compte » (écran d'inscription), lien « J'ai déjà un compte » (écran de connexion), croix pour le fermer (jusqu'à la fermeture de l'onglet). 7 langues.
 - Rien ne change pour une personne connectée ; rien d'autre ne change sur la fiche.
 - Test (iPhone 13, déconnecté, fiche publique) : encart affiché au-dessus de la barre, aucune erreur ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-857, marqueurs de garde OK.
+
+## Build 858 — 10/10/2026 · Page des chevaux d'une écurie : les poneys ne sont plus en double dans « Tous les chevaux »
+- Blandine (captures, Edgard et Ipie entourés) : « les poneys se retrouvent en double sur les pages chevaux aussi, du coup ça surcharge ».
+- EcranEcurieHype : l'onglet « Tous les chevaux » n'affiche plus les poneys (même règle que l'onglet « Tous les poneys » du build 841 : hypeEstPoney, réglage « Gabarit » de la fiche prioritaire). Les poneys restent dans « Tous les poneys » et dans les onglets de groupes (CSO Club, etc.), qui ne changent pas. Cohérent avec les compteurs du haut (45 chevaux · 12 poneys).
+- Test : onglet « Tous les chevaux » sans les poneys, onglet « Tous les poneys » inchangé, aucune erreur ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-858, marqueurs de garde OK.
