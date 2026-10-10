@@ -10334,3 +10334,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - ModaleCreationCheval : bordures, lueurs, titre « MON ÉCURIE », champ, choix d'écurie, bouton « Créer sa fiche », liste des chevaux → champagne #C9A66B / #D2B07A, ivoire #F3EEE4, fonds pétrole #101A1D / #111B1F → #0B1215 (24 remplacements, plus aucun cyan).
 - InvitationsEcurieHype (fenêtre « X t'a ajouté à son écurie / Super / Quitter », affichée partout) : champagne au lieu du cyan ; bouton « Super » en dégradé champagne, texte #060709 ; la teinte personnelle n'est plus appliquée à cette fenêtre. « +11 autre notification » → pluriel correct (7 langues).
 - Rien d'autre ne change. Checks : marqueur unique 20261010-801, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13.
+
+## Build 802 — 10/10/2026 · « C'est lui, l'ajouter à mes chevaux » dans l'encart « même nom dans la même écurie »
+- Rappel de la règle des 01-03/09 : un cheval = une fiche partagée ; un 2e cavalier se RATTACHE au cheval existant (fiche, origines, résultats communs ; ses albums restent à lui).
+- Dans l'encart bloquant du 793, à côté de « Ouvrir sa fiche » : bouton champagne « C'est lui, l'ajouter à mes chevaux » (même fonction de rattachement que le « C'est lui » existant), affiché seulement si le cheval n'est pas déjà à moi. 7 langues.
+- Checks : marqueur unique 20261010-802, node --check 18 blocs OK ; testé Chromium iPhone 13 (mon propre cheval : bouton absent, création bloquée).
+- Publication groupée 801 + 802 (une seule mise en ligne).
