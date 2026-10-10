@@ -10607,3 +10607,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CAUSE : après la création d'un cheval, la fenêtre « Nouveau cheval » ouvrait sa fiche avec setEcran("cheval"), qui ne note pas la page de départ dans l'historique. Le retour reprenait donc la page d'AVANT (souvent « Mon cavalier »).
 - CORRECTION : ouverture par naviguer("cheval") (la porte de navigation habituelle) : la page d'où l'on a créé le cheval (page des chevaux de l'écurie, piquet…) est retenue, le retour y ramène.
 - Checks : marqueur unique 20261010-844, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 845 — 10/10/2026 · Liste des races de poneys remise, avec la possibilité de les passer en chevaux
+- Blandine : « si tu veux, remets ta liste de races pour poneys, mais laisse la possibilité de les retirer de poney et de les passer en chevaux ».
+- hypeEstPoney : race contenant poney / pony OU race de poneys connue (Welsh, Shetland, Connemara, New Forest, Dartmoor, Exmoor, Fjord, Haflinger, Landais, Pottok, PFS, Highland pony). Le gabarit choisi dans « Modifier la fiche » (843 : Auto / Cheval / Poney) passe toujours avant.
+- EN BASE (10/10, par Claude, pour respecter sa demande du 842) : Sunhill Blondey Boy (Connemara) et Orchid's Yellow (New Forest) reçoivent origines.gabarit = « cheval » (seulement s'ils n'avaient aucun gabarit) → ils restent chez les chevaux.
+- Deviennent poneys par la liste (relevé en base) : Apy de Rêve et My Dream de Feinn (Welsh PB, Écurie Feinn). À passer en « Cheval » sur leur fiche si elle le souhaite.
+- Checks : marqueur unique 20261010-845, node --check 18 blocs OK, marqueurs de garde OK.
