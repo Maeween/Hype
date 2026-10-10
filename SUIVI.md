@@ -10703,3 +10703,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (captures, Edgard et Ipie entourés) : « les poneys se retrouvent en double sur les pages chevaux aussi, du coup ça surcharge ».
 - EcranEcurieHype : l'onglet « Tous les chevaux » n'affiche plus les poneys (même règle que l'onglet « Tous les poneys » du build 841 : hypeEstPoney, réglage « Gabarit » de la fiche prioritaire). Les poneys restent dans « Tous les poneys » et dans les onglets de groupes (CSO Club, etc.), qui ne changent pas. Cohérent avec les compteurs du haut (45 chevaux · 12 poneys).
 - Test : onglet « Tous les chevaux » sans les poneys, onglet « Tous les poneys » inchangé, aucune erreur ; parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-858, marqueurs de garde OK.
+
+## Build 859 — 10/10/2026 · Affichage ordinateur, étape 1 : la page Écurie
+- Blandine (10/10) : « le format téléphone ne convient pas sur ordi » ; choix **B** = vraie mise en page ordinateur, page par page (A = habiller les côtés et C = élargir la colonne partout écartés).
+- Nouveau `useHypeLarge()` : vrai quand l'écran fait au moins 1024 px de large (ordinateur, grande tablette à l'horizontale), suit les changements de taille. Le téléphone n'est jamais concerné.
+- Router : sur la page Écurie (écran « guilde ») et seulement sur grand écran, la colonne de l'appli passe de 480 à 1 180 px. Tous les autres écrans gardent 480 px ; la barre du bas reste centrée en 480 px.
+- EcranEcurieV2 sur grand écran : la photo et le nom sur toute la largeur (titre 48 px au lieu de 32) ; dessous, deux colonnes : à gauche Accès rapides (6 sur une seule rangée), chevaux, derniers résultats ; à droite (reste visible en défilant) l'encart « Bienvenue sur Hype », la citation, les prochains événements. Sur téléphone : l'ordre et l'affichage d'avant, inchangés (même liste d'éléments, rendue telle quelle).
+- Tests : ordinateur 1 440 × 900 (page SEP déconnectée) sans erreur ; iPhone 13 : page Écurie et invitation inchangées, parcours des 12 écrans OK. Checks : 18 blocs node --check OK, un seul marqueur 20261010-859, marqueurs de garde OK.
+- Prochaine étape prévue : la fiche cheval sur ordinateur, puis le rendez-vous.
