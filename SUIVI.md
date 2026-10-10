@@ -10372,3 +10372,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Cause (introduite par le 792) : la page des chevaux d'une écurie écrivait dans la MÊME mémoire que la page Écurie (window.__hypeEcurieCourante). Ouvrir les chevaux de la SEP (depuis la Team, un piquet, une fiche…) faisait donc repartir la page Écurie sur la SEP au retour.
 - Correctif : la page des chevaux a sa propre mémoire (window.__ecurieHypeCourante) ; la page Écurie ne retient que l'écurie choisie sur elle-même (ou ouverte par un lien vers cette écurie).
 - Vérifié Chromium iPhone 13 : Écurie (Feinn) → chevaux de la SEP → retour Écurie = Feinn (807 : changeait). Checks : marqueur unique 20261010-808, node --check 18 blocs OK.
+- Build 808 mis en ligne.
+
+## Build 809 — 10/10/2026 · Boutons dorés pleins → transparents pétrole ombrés (préférence de Blandine du 10/10)
+- Mêmes réglages que les onglets des piquets (dégradé pétrole → noir, liseré champagne 0,45, ombre, texte ivoire) pour les boutons pleins ajoutés ces derniers jours : Mon compte (« Retour à l'accueil » + 2 boutons), notification « Super », « Enregistrer » des chevaux du déplacement, « C'est lui, l'ajouter à mes chevaux », « Créer le piquet », « Enregistrer » d'un piquet, onglets actifs de la messagerie (texte ivoire). 13 réglages.
+- Les boutons dorés plus anciens, choisis avant (fiche cheval V2, page Écurie…), ne sont PAS touchés.
+- Checks : marqueur unique 20261010-809, node --check 18 blocs OK ; rendu vérifié Chromium iPhone 13 (messagerie, Mon compte : 0 cyan).
