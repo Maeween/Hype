@@ -154,13 +154,13 @@ async function communeDepuisCoordonnees(la?: number, lo?: number): Promise<{ v: 
 }
 
 async function contenuHype(nom: string) {
-  const vide = { chevaux: [] as any[], resultats: [] as any[], rdv: [] as any[], banniere: "", lu: false };
+  const vide = { chevaux: [] as any[], resultats: [] as any[], rdv: [] as any[], banniere: "", contactSaisi: null as any, lu: false };
   const minuteur = new AbortController();
   const stop = setTimeout(() => minuteur.abort(), DELAI_BASE_MS);
   try {
     const aujourdhui = new Date().toISOString().slice(0, 10);
     const clef = clefClub(nom);
-    const [chevaux, rdv, ban] = await Promise.all([
+    const [chevaux, rdv, ban, ctc] = await Promise.all([
       lire("chevaux?club=ilike." + encodeURIComponent(litteral(nom)) +
         "&supprime_le=is.null&or=(visibilite.is.null,visibilite.neq.prive)" +
         "&select=id,nom,race,slug,photo_url&order=nom.asc&limit=80", minuteur.signal),
@@ -169,6 +169,8 @@ async function contenuHype(nom: string) {
         "&select=id,titre,type,date_jour,date_fin,lieu&order=date_jour.asc&limit=10", minuteur.signal),
       // 10/10 : la grande photo de l'écurie (lisible sans connexion depuis la règle passée par Blandine le 10/10)
       lire("tableaux_clubs?cle=eq." + encodeURIComponent("club-banniere:" + clef) + "&select=contenu&limit=1", minuteur.signal).catch(() => []),
+      // 10/10 (868) : les coordonnées saisies par la responsable (lisibles sans connexion)
+      lire("tableaux_clubs?cle=eq." + encodeURIComponent("club-contact:" + clef) + "&select=contenu&limit=1", minuteur.signal).catch(() => []),
     ]);
     const ids = chevaux.map((c) => String(c.id || "")).filter((i) => FORME_UUID.test(i));
     let resultats: any[] = [];
@@ -178,7 +180,9 @@ async function contenuHype(nom: string) {
         "&order=date_epreuve.desc.nullslast,created_at.desc&limit=400", minuteur.signal);
     }
     const banniere = (ban && ban[0] && typeof ban[0].contenu === "string") ? ban[0].contenu.trim() : "";
-    return { chevaux, resultats, rdv, banniere, lu: true };
+    let contactSaisi: any = null;
+    try { contactSaisi = (ctc && ctc[0] && ctc[0].contenu) ? JSON.parse(ctc[0].contenu) : null; } catch { contactSaisi = null; }
+    return { chevaux, resultats, rdv, banniere, contactSaisi, lu: true };
   } catch (e) {
     console.log("[ecurie-route] base lente ou injoignable :", String(e));
     return vide;
@@ -210,6 +214,7 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
 
   const titre = nom + (villeAff ? " – Écurie à " + villeAff : " – Écurie") + " | Hype";
   let description = nom + (villeAff ? ", écurie à " + villeAff : ", écurie") + ". ";
+  if (hype.contactSaisi && propre(hype.contactSaisi.phrase)) description += propre(hype.contactSaisi.phrase).replace(/[.!…]?$/, ". ");   /* (868) la phrase d'accueil de l'écurie */
   if (hype.chevaux.length || hype.rdv.length) {
     description += propre(ec.t) ? "Téléphone, itinéraire, chevaux, résultats et agenda de l’écurie sur Hype." : "Chevaux, résultats et agenda de l’écurie sur Hype.";
   } else {
@@ -220,9 +225,21 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
   html += `<p>Écurie${villeAff ? " à " + texte(villeAff) : ""}</p>`;
   const contact: string[] = [];
-  if (propre(ec.a)) contact.push("Adresse : " + texte(ec.a) + (propre(ec.cp) ? ", " + texte(ec.cp) : "") + (ville ? " " + texte(ville) : ""));
-  if (propre(ec.t)) contact.push("Téléphone : " + texte(ec.t));
-  if (propre(ec.s)) contact.push(`Site : <a href="${echapper(propre(ec.s))}" rel="nofollow noopener">${texte(ec.s)}</a>`);
+  const cs = (hype.contactSaisi && typeof hype.contactSaisi === "object") ? hype.contactSaisi : null;   /* (868) saisies par l'écurie : elles remplacent la base */
+  if (cs) {
+    if (propre(cs.phrase)) contact.push(`<em>${texte(cs.phrase)}</em>`);
+    if (propre(cs.adresse)) contact.push("Adresse : " + texte(cs.adresse));
+    if (propre(cs.tel)) contact.push("Téléphone : " + texte(cs.tel));
+    if (propre(cs.email)) contact.push("E-mail : " + texte(cs.email));
+    if (/^https?:\/\//i.test(propre(cs.site))) contact.push(`Site : <a href="${echapper(propre(cs.site))}" rel="nofollow noopener">${texte(cs.site)}</a>`);
+    if (propre(cs.instagram)) contact.push("Instagram : " + texte(cs.instagram));
+    if (propre(cs.facebook)) contact.push("Facebook : " + texte(cs.facebook));
+    if (propre(cs.horaires)) contact.push("Horaires : " + texte(cs.horaires));
+  } else {
+    if (propre(ec.a)) contact.push("Adresse : " + texte(ec.a) + (propre(ec.cp) ? ", " + texte(ec.cp) : "") + (ville ? " " + texte(ville) : ""));
+    if (propre(ec.t)) contact.push("Téléphone : " + texte(ec.t));
+    if (propre(ec.s)) contact.push(`Site : <a href="${echapper(propre(ec.s))}" rel="nofollow noopener">${texte(ec.s)}</a>`);
+  }
   const contactLiens = contact;   /* (861) affichées plus bas, sous « Contacter l’écurie » (comme dans l'appli) */
 
   /* 10/10 (861) VITRINE : Google lit EXACTEMENT ce que voit un visiteur sans compte (sinon il y voit une tromperie) :
