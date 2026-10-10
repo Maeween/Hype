@@ -10464,3 +10464,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveaux textes (étiquettes Père / Mère / Père de mère et l'aide) en 7 langues. Aucune donnée, aucun SQL.
 - Checks : marqueur unique 20261010-821, node --check 18 blocs OK, marqueurs de garde OK.
 - 10/10 13 h 06 : SQL du 820 PASSÉ PAR BLANDINE (capture « Success. No rows returned »). Vérifié en base : hype_maj_origines_cheval existe, SECURITY DEFINER, exécutable par les comptes connectés, PAS par anon.
+
+## Build 822 — 10/10/2026 · Image d'aperçu des stories partagées (question en attente n° 9)
+- story.html attendait /partage-apercu.jpg depuis le 19/08 : le fichier n'existait pas, l'aperçu WhatsApp/Instagram/Facebook d'une story partagée s'affichait sans image.
+- Nouveau fichier partage-apercu.jpg à la racine (1200 × 630, 96 Ko) : les cinq cavaliers de l'image de la Communauté devant le ciel étoilé, « HYPE » en capitales espacées ivoire, un filet champagne et « Ton univers équestre » (même langue que l'og:description, déjà en français).
+- story.html : og:image passe en adresse complète https://2hype.fr/partage-apercu.jpg (WhatsApp et Facebook l'exigent) + og:image:width / height.
+- index.html inchangé (toujours 20261010-821).
+- À savoir : WhatsApp garde en mémoire l'ancien aperçu d'un lien déjà partagé ; le nouveau se voit sur un lien partagé à partir de maintenant.
