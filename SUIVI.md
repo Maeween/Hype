@@ -10594,3 +10594,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « ne décide pas par toi-même qui est poney et qui est cheval, remets Sunhill et Yellow chez les chevaux » (Sunhill Blondey Boy = Connemara, Orchid's Yellow = New Forest).
 - MON ERREUR au 841 : j'avais ajouté une liste de races « de poneys » (Welsh, Connemara, New Forest…). Retirée : hypeEstPoney revient à la règle d'avant — race contenant « poney » ou « pony », rien d'autre. Vaut pour l'onglet « Tous les poneys » et le compteur « Poneys ».
 - Checks : marqueur unique 20261010-842, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 843 — 10/10/2026 · Choisir Cheval / Poney sur la fiche (gabarit)
+- Blandine : « laisse au moins une option pour pouvoir changer » (qui est poney, qui est cheval).
+- « Modifier la fiche » (menu ⋮ de la fiche cheval) : nouvelle ligne « Gabarit » avec trois choix — « Auto (race) » (par défaut : poney si la race contient poney / pony, règle du 842), « Cheval », « Poney » (7 langues).
+- Rangé SANS SQL dans les origines du cheval (origines.gabarit = « cheval » / « poney » ; « Auto » l'efface), enregistré par la même voie que les origines (hypeMajOriginesCheval : propriétaire, modératrice, responsable du club).
+- hypeEstPoney(race, origines) : le gabarit choisi passe avant la race. La page des chevaux d'une écurie lit maintenant aussi les origines (4 lectures) pour l'onglet « Tous les poneys » et les compteurs.
+- Checks : marqueur unique 20261010-843, node --check 18 blocs OK, marqueurs de garde OK.
