@@ -10501,3 +10501,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Grille des petites cartes : 10 → 16 px entre les colonnes et entre les lignes, 12 → 16 px sous la grande carte. CSS seulement.
 - Vu sur sa capture : 815 (deux lignes), 816 (dates lisibles, « 11 OCT. », « 08 NOV. ») en ligne.
 - Checks : marqueur unique 20261010-827, node --check 18 blocs OK, marqueurs de garde OK.
+- 10/10 13 h 15, accord de Blandine (« vas-y, je suis admin et responsable d'écurie ») : Verone (SEP) reçoit aussi sa photo perso comme photo principale (chevaux.photo_url était vide ; fichier …/bc7c52ee…/1788469348094.jpg vérifié existant). Plus aucun cheval actif avec photo principale vide alors qu'une photo perso existe.
