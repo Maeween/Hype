@@ -10428,3 +10428,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Dates (grande et petites cartes) en chiffres « droits » (lnum) : avec les chiffres anciens de Cormorant, « 11 » se lisait « II » et « 08 » ressemblait à « 68 » (capture de Blandine).
 - CSS seulement : aucun texte, aucun SQL.
 - Checks : marqueur unique 20261010-816, node --check 18 blocs OK, marqueurs de garde OK.
+
+## Build 817 — 10/10/2026 · Communauté : espace entre les onglets du fil et le fil
+- Blandine (capture) : « laisser de l'espace entre les onglets du fil et le fil lui-même, ils sont collés ». La première carte du fil se calait contre les onglets (le défilement par carte annule le retrait intérieur du haut).
+- 18 px d'espace sous les onglets Tous / Amis / Écuries / Activité. CSS seulement.
+- Vu sur sa capture : le 816 est bien en ligne (« 08 NOV. » lisible, bas des cartes fondu).
+- Checks : marqueur unique 20261010-817, node --check 18 blocs OK, marqueurs de garde OK.
