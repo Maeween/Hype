@@ -11486,3 +11486,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Barres grises sous la carte (Photos, Vidéos) retirées : la page Santé n'en a pas.
 - Page Histoire : le petit titre dit « Histoire » (comme l'onglet), plus « Souvenirs ».
 - Testé iPhone (4 pages), ordinateur 1280 px, arabe ; aucune erreur.
+
+## Build 979 (11/10) — fiche cheval : encart « Chaque cheval a son histoire… » plus petit
+- Blandine (22 h 50, capture) : « Tu peux réduire l'encart du racontez son histoire ».
+- AlbumsPromus, carte pleine largeur quand le cheval n'a ni album ni photo : proportion 2/1 au lieu de 4/3 (≈ 179 px au lieu de 268 px sur iPhone), image recadrée un peu plus bas (30 %), titre 21 px, bouton 36 px de haut. Les cartes « album » et « Toutes ses photos » ne changent pas.
+- Au passage (même message) : « pourquoi les couleurs tirent sur le beige au lieu du bleu pétrole d'un coup ? » → c'est la TEINTE PROPRE de Rizotto d'Emery en base (chevaux.teinte = #D9B56C ; Hey Baby Please = #C64B5C ; 84 chevaux sans teinte = pétrole). On ne la voyait plus à cause du bug Cruibhin (975) : toutes les fiches s'affichaient en Cruibhin. Rien n'a changé dans le code.
