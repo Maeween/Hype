@@ -11505,3 +11505,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé en français et en arabe ; aucune erreur. 23 h 03 : Blandine « Attends pardon » → en attente, rien publié.
 - 23 h 04, Blandine : « je garde la 2 pour le globe qui continue en fond de page, mais on peut avoir un titre similaire à celui des pages chevaux avec un fond assombri ? » → variante : coin bas assombri (com2b-assombri, miroir en arabe), petit titre champagne « LE MONDE HYPE » (7 langues) + « Communauté » en Cormorant en grand (com2b-nom, h1) ; le slogan passe en écriture dorée à droite (comme Santé). Les deux versions montrées en capture ; en attente de son choix, rien publié.
 - 23 h 27, Blandine : « Ok A, et on fait défiler avec des onglets semi-transparents sur la page de fond » → version « titre des pages chevaux » gardée ; le globe devient un FOND FIXE (calque .com2b-fond en position fixe, z-index -1 dans l'empilement propre de la page .com2b) : il reste immobile et la page défile par-dessus, encarts semi-transparents. Les cavaliers du bas de l'image se voient désormais derrière les Stories.
+
+## Build 982 (11/10) — la bulle « Tes notifications sont ici » ne s'affiche plus
+- Blandine (23 h 27) : « retire la phrase "Tes notifications sont ici", elle nous fait chier trop longtemps ».
+- ClocheNotifs : la bulle d'aide (CoachmarkHype « cloche-notifs ») est coupée par AFFICHER_COACH_CLOCHE = false, sur toutes les pages où la cloche apparaît (accueil, Communauté…). La cloche et ses notifications ne changent pas.
+
+## Build 983 (11/10) — page Santé : le carnet reste affiché même sans soin
+- Blandine (23 h 30, capture d'un cheval sans soin) : « il s'est passé quoi avec le carnet de soins, il risque pas d'en mettre s'il n'y a pas le bouton pour ajouter un document ; laisse au moins écrit Carnet de santé, les onglets et la proposition d'en ajouter un ».
+- CAUSE (ancienne, depuis le 942) : sans aucun soin, la page remplaçait tout le carnet par la boîte « Aucun soin enregistré pour l'instant » — plus de titre, plus d'onglets, plus de « Ajouter un document », et les documents déjà déposés étaient cachés.
+- CORRIGÉ : sans soin, le carnet complet s'affiche (titre, tous les onglets, ligne « Ajouter un document », documents existants) ; le message « Aucun soin enregistré pour l'instant. » est dans la liste vide. Testé en français et en arabe.
+- (Build 982, même livraison : bulle « Tes notifications sont ici » coupée.)
