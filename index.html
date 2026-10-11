@@ -25984,7 +25984,8 @@ function Com2Commentaires(props) {
    (globe + cavaliers) devient le FOND DU HAUT DE PAGE, plus de grand titre : une petite ligne espacee en haut (« TA COMMUNAUTE
    EQUESTRE », comme « TON UNIVERS EQUESTRE »), le slogan en italique devient le titre ; onglets du fil soulignes et transparents
    comme les pages du cheval ; publications et cartes plus transparentes. Surcharges isolees sous .com2.com2b (feuille a part). */
-var COM2B_CSS = ".com2.com2b{background:linear-gradient(180deg,rgba(5,8,11,0.12) 0%,rgba(5,8,11,0.3) 38%,rgba(5,8,11,0.72) 58%,rgba(5,8,11,0.96) 74%,#05080B 100%) top center/100% calc(min(100vw,700px) * 2.162) no-repeat,url('images/communaute-hero-monde-hype-cavaliers.webp') top center/min(100vw,700px) auto no-repeat,#05080B}"
+var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   /* (981) la page cree son propre empilement : le fond fixe (z-index -1) reste DEVANT le noir de la page, DERRIERE tout le contenu */
+  + ".com2.com2b .com2b-fond{position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(5,8,11,0.30) 0%,rgba(5,8,11,0.12) 30%,rgba(5,8,11,0.42) 62%,rgba(5,8,11,0.82) 100%),url('images/communaute-hero-monde-hype-cavaliers.webp') center top/cover no-repeat,#05080B}"   /* (981) Blandine : « on fait defiler avec des encarts semi-transparents sur la page de fond » : le globe reste immobile, la page defile par-dessus */
   + ".com2.com2b .com2-hero{height:calc(env(safe-area-inset-top) + 340px);background:transparent}"
   + ".com2.com2b .com2-hero-pic,.com2.com2b .com2-hero-voile{display:none}"
   + ".com2.com2b .com2-hero{position:relative;overflow:visible}"
@@ -26630,6 +26631,7 @@ function EcranCommunauteV2() {
   return h("div", { className: "com2 com2b" },   /* (981) maquette B */
     h("style", null, COM2_CSS),
     h("style", null, COM2B_CSS),
+    h("div", { className: "com2b-fond", "aria-hidden": "true" }),   /* (981) fond fixe */
     /* (664) LE HERO « MONDE HYPE » (maquette du 05/10) : la planete (SON visuel, 599) en grand en haut a droite, coupee par les bords,
        les lignes du globe en SVG par-dessus, la cavaliere (images/communaute_v2_nouveaux_profils_v2.webp) a gauche, un voile qui
        fond vers le fond de page ; le titre, le sous-titre et la capsule Monde Hype dans le dernier tiers, a l extremite de debut. */
