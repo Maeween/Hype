@@ -11067,3 +11067,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Liseré 1 px rgba(201,166,107,0.45) autour de chaque photo de la mosaïque et des couvertures d'albums (arrondis gardés, aucune ombre, aucune taille changée).
   - Chronologie : points #C9A66B (plein pour l'année active, contour pour les autres, plus de halo), trait vertical rgba(201,166,107,0.35) ; dimensions inchangées.
   - Mention « PHOTOS » sous le nom : #C9A66B, 11 px, graisse 400, espacement 3 px, majuscules (page Photos seulement, iPhone et ordinateur).
+
+## Build 918 (11/10, préparé — attend « Ok publie »)
+- Pages Photos et Vidéos du cheval : même fin de page que Cavalier / Accueil / Écurie / Communauté (petit paysage fondu images/accueil_v2_fin_de_page_v1.webp déjà dans le dépôt, filets champagne et « HYPE »). Fonction finPageCh. Aucun fichier nouveau.
