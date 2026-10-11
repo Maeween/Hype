@@ -11185,7 +11185,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé iPhone 390 px français et arabe.
 - Ajouts au 937 à sa demande : ordre des rubriques SUIVI → CARNET → ÉQUIPE DE SOINS → Hey Baby → Magazine (« l'équipe de soins vient en dessous du carnet ») ; sans aucun soin : SUIVI → « Aucun soin » → équipe → bandeaux. Carte de l'équipe moins opaque (fond à ~50 % + léger flou, le fond de page transparaît).
 
-## Build 938 (11/10, en attente de son accord) — pros partagés + retouches validées
+## Build 938 (11/10, publié — « Oui ok ») — pros partagés + retouches validées
 - Sa demande : « quand on rentre un véto ou un maréchal, proposer de l'ajouter à tous nos chevaux, ou à tous les chevaux de l'écurie quand on est responsable d'écurie ». Après un rattachement réussi (pro existant choisi ou nouveau pro), fenêtre « Ajouter aussi <nom> à : ☐ Tous mes chevaux (n) ☐ Tous les chevaux de l'écurie <club> (n) » (la 2e case seulement pour la responsable de l'écurie ou une modératrice). Un cheval à la fois : un refus de la base ne bloque pas les autres ; ceux qui l'avaient déjà sont comptés ; bilan affiché (« Ajouté à 4 chevaux · 2 l'avaient déjà · 1 refusé »). 7 langues.
 - SQL à passer par Blandine pour que les AUTRES responsables d'écurie puissent le faire : sql/2026-10-11-pros-ecurie.sql (règle d'ajout chpro_creer_ecurie sur cheval_professionnels : responsable de l'écurie du cheval ; ne donne accès à rien d'autre). Sans ce SQL : marche pour ses propres chevaux, et pour elle (modératrice) sur toute l'écurie.
 - Retouches de sa capture du haut de page (« c'est top… assombris juste sous le titre ») : la photo reste nette jusqu'à 90 % de la hauteur, l'assombrissement ne commence que sous le titre.
