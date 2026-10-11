@@ -11171,15 +11171,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé iPhone 390 px français et arabe, ligne dépliée/repliée.
 - Idée de Blandine notée pour le build suivant : des images à la place des initiales dans l'équipe (fer pour le maréchal, stéthoscope pour le vétérinaire…).
 
-## Build 936 (11/10, EN COURS, non publié) — équipe de soins : image du métier dans le médaillon
+## Build 936 (11/10, publié avec le 937) — équipe de soins : image du métier dans le médaillon
 - Idée de Blandine : à la place des initiales, une image par métier — vétérinaire (stéthoscope), maréchal (sabot ferré), dentiste (dents et pas-d'âne), ostéopathe (main sur l'encolure, reprise de la photo du Suivi). Fichiers images/sante-pro-<role>.webp (192 × 192, ~6-10 Ko). Initiales gardées pour un rôle inconnu.
 - Reste à faire : recadrer plus serré le stéthoscope et les dents (trop petits dans le médaillon), capture, accord.
 - Vérifié en base à sa demande (« Crumble avait une date de ferrure qui n'apparaît plus ») : Cruibhin / Crumble n'a qu'UN soin en base (vaccin du 01/03/2026, prochain 01/03/2027), aucune ferrure jamais enregistrée ; les dates « Cruibhin » de la maquette ChatGPT sont fictives.
 
-## Build 937 (11/10, en attente de son accord) — haut de la page Santé corrigé (capture de Blandine sur Crumble)
+## Build 937 (11/10, publié — « Ok merci ») — haut de la page Santé corrigé (capture de Blandine sur Crumble)
 - Sa demande : « le titre ne doit pas être sur la tête du cheval » ; « Ajouter un soin, tu le laisses ailleurs » ; « la petite phrase en italique, c'était en dessous du titre à droite ».
 - La photo n'occupe plus que la droite (62 % de la largeur au lieu de 80 %, fondu plus court) ; le bloc « SANTÉ & SOINS » + nom reste sur la moitié gauche, sur le fond sombre (la moitié droite en arabe).
 - « Prendre soin, c'est déjà aimer. » revient sous le haut de page, à droite, en italique doré (même police qu'avant le 931 : Snell Roundhand sur iPhone).
 - « + Ajouter un soin » sort du haut de page : centré dessous, contour champagne (pas de fond doré), puis 30 px avant SUIVI.
 - Contient aussi le build 936 (images du métier dans l'équipe de soins), pas encore montré à Blandine.
 - Testé iPhone 390 px français et arabe.
+- Ajouts au 937 à sa demande : ordre des rubriques SUIVI → CARNET → ÉQUIPE DE SOINS → Hey Baby → Magazine (« l'équipe de soins vient en dessous du carnet ») ; sans aucun soin : SUIVI → « Aucun soin » → équipe → bandeaux. Carte de l'équipe moins opaque (fond à ~50 % + léger flou, le fond de page transparaît).

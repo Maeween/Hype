@@ -52514,7 +52514,7 @@ function EcranSanteCheval() {
         h("svg", { viewBox: "0 0 24 24", style: { width: 21, height: 21, display: "block", flexShrink: 0 } }, h("circle", { cx: 12, cy: 8, r: 3.5, fill: "none", stroke: TQ, strokeWidth: 1.6 }), h("path", { d: "M5 20c.8-3.8 3.6-5.5 7-5.5s6.2 1.7 7 5.5M5.5 11a2.5 2.5 0 1 1 0-.1M18.5 11a2.5 2.5 0 1 1 0-.1", fill: "none", stroke: TQ, strokeWidth: 1.6, strokeLinecap: "round" })),
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#F3EEE4", flex: 1 } }, T("L'équipe de soins", "The care team", "El equipo de cuidados", "L'équipe di cura", "ケアチーム", "Das Pflegeteam", "فريق العناية"))),
       errPro ? h("div", { style: { marginBottom: 10, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, T("L'équipe n'a pas pu être lue : ", "The team could not load: ", "No se pudo cargar el equipo: ", "Impossibile caricare l'équipe: ", "チームを読み込めません：", "Team nicht geladen: ", "تعذرت قراءة الفريق: ") + errPro) : null,
-      roles.length ? h("div", { style: { borderRadius: 16, border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)", overflow: "hidden" } },
+      roles.length ? h("div", { style: { borderRadius: 16, border: "1px solid rgba(201,166,107,0.28)", background: "linear-gradient(165deg, rgba(17,27,31,0.55) 0%, rgba(11,18,21,0.45) 100%)" /* (937) moins opaque (Blandine) : le fond de page transparait */, WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", overflow: "hidden" } },
         roles.map(function (r, i) { return ligneEq(r, i); })) : null);
   }
   function grilleEquipe() {
@@ -52636,13 +52636,11 @@ function EcranSanteCheval() {
   } else if (!soins.length) {
     corps = h("div", { style: { padding: "0 16px 30px" } },
       suivi(),   /* (932) */
-      equipeLignes(),   /* (934) */
-      blocHeyBaby(),
-      blocMagazine(),   /* (935) */
       h("div", { style: { margin: "18px 0 4px", padding: "22px 20px 24px", textAlign: "center", borderRadius: 18, border: "1px solid rgba(255,255,255,0.07)", background: "#0B1014", boxShadow: "0 10px 30px rgba(0,0,0,0.45)" } },
       h("div", { style: { fontSize: 30 } }, "\ud83e\ude7a"),
       h("div", { style: { fontFamily: M, fontSize: 13, color: "#8A929C", marginTop: 10, lineHeight: 1.6 } },
-        T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0639\u0646\u0627\u064a\u0629 \u0645\u0633\u062c\u0644\u0629 \u062d\u0627\u0644\u064a\u0627."))));
+        T("Aucun soin enregistr\u00e9 pour l\u2019instant.", "No care recorded yet.", "A\u00fan no hay cuidados registrados.", "Nessuna cura registrata.", "\u307e\u3060\u8a18\u9332\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Eintr\u00e4ge.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0639\u0646\u0627\u064a\u0629 \u0645\u0633\u062c\u0644\u0629 \u062d\u0627\u0644\u064a\u0627."))),
+      h("div", { style: { marginTop: 30 } }, equipeLignes(), blocHeyBaby(), blocMagazine()));   /* (937) Blandine : l equipe vient sous le carnet */
   } else {
     var titreSec = function (txt) {
       return h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 11px" } },
@@ -52651,7 +52649,6 @@ function EcranSanteCheval() {
     };
     corps = h("div", { style: { padding: "0 16px 30px" } },
       suivi(),   /* (932) */
-      equipeLignes(),   /* (934) */
       h("div", { style: { marginTop: 6 } },
         titreSec(T("Carnet", "Record", "Historial", "Libretto", "\u8a18\u9332", "Verlauf", "\u0627\u0644\u062f\u0641\u062a\u0631")),
         soins.map(function (s, i) { return ligne(s, "c" + (s.id || i)); })),
@@ -52659,7 +52656,7 @@ function EcranSanteCheval() {
         soins.length + " " + (soins.length === 1
           ? T("soin", "entry", "cuidado", "cura", "\u4ef6", "Eintrag", "\u0639\u0646\u0627\u064a\u0629")
           : T("soins", "entries", "cuidados", "cure", "\u4ef6", "Eintr\u00e4ge", "\u0639\u0646\u0627\u064a\u0627\u062a"))),
-      h("div", { style: { marginTop: 30 } }, blocHeyBaby(), blocMagazine()));   /* (935) */
+      h("div", { style: { marginTop: 30 } }, equipeLignes(), blocHeyBaby(), blocMagazine()));   /* (935) ; (937) l equipe vient sous le carnet (Blandine) */
   }
 
   /* FOND — UN SEUL calque fixe (image + deux voiles dans le meme background) :
