@@ -11561,3 +11561,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 992 (12/10) — Communauté : globe en haute définition
 - Blandine (00 h 47) a envoyé le globe seul en grand (1024×1536) : il remplace la découpe de sa planche (images/communaute-globe-v2.webp, 302 Ko ; adresse ?v=2 pour forcer le rechargement). Recadré pour garder les cavaliers en bas du hero (position calc(encoche + 450 px − 130,5vw)). Testé 375 / 430 px et arabe.
 - 00 h 48 : pour « Dans les écuries » et « À l'agenda », maquette B choisie : LA CARTE SE RETOURNE (au dos les 3 plus récentes, ↺ pour revenir, « Voir tout » déplie le reste). Builds prévus : Stories rondes + « Voir tout » ; carrousel À découvrir ; carte Écuries ; carte Agenda ; fil.
+
+## Build 993 (12/10) — Communauté (carrousel) : Stories rondes + « Voir tout »
+- Blandine (00 h 44) : « Rondes, et ça peut faire déplier les stories suivantes s'il y en a d'autres ».
+- iPhone : BandeauStories en forme « rond » (anneau champagne #C9A66B, 58 px) au lieu de « libre-carte » ; ordinateur inchangé. « Voir tout » à droite du titre, affiché seulement si les stories dépassent la largeur (mesure du rail) ; il les fait passer sur plusieurs lignes, « Réduire » les remet sur une ligne. Aucune donnée ni action des stories modifiée (module hype-stories.js non touché).
+- Testé avec 8 stories simulées, français et arabe ; aucune erreur.
