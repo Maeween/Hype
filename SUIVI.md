@@ -11376,7 +11376,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Décisions de Blandine du 11/10 (21 h 42-21 h 46) — appli iPhone et paiements
 - Dans l'appli iPhone, Premium passe PAR APPLE (achat intégré) ; le site garde Stripe. Tous les abonnements (mensuel, annuel, duo, IA) ; prix inchangés pour l'instant ; dons Crystal gardés partout (dans l'appli iPhone ils devront passer par Apple, car ils donnent un statut).
-- Vérifié le 11/10 (developer.apple.com, « Payment options on the App Store in the EU », nouvelles règles UE au 1er octobre 2026) : achat Apple 15 % (programme petits développeurs) ; Stripe possible EN PLUS d'Apple dans l'appli mais Apple prend 10 % et exige un relevé mensuel → conseillé : Apple seul. RevenueCat (relie l'achat Apple à Supabase) : gratuit sous 2 500 $/mois de ventes dans l'appli, 1 % au-delà — conseillé, réponse de Blandine en attente.
+- Vérifié le 11/10 (developer.apple.com, « Payment options on the App Store in the EU », nouvelles règles UE au 1er octobre 2026) : achat Apple 15 % (programme petits développeurs) ; Stripe possible EN PLUS d'Apple dans l'appli mais Apple prend 10 % et exige un relevé mensuel → conseillé : Apple seul. RevenueCat (relie l'achat Apple à Supabase) : gratuit sous 2 500 $/mois de ventes dans l'appli, 1 % au-delà — ACCEPTÉ par Blandine (21 h 49 : « Ok pour RevenueCat »).
 
 ## Build 966 (11/10) — « Mes amis » plus compact (maquette C)
 - Blandine (21 h 43) : « Mes amis tu peux me proposer des maquettes qui prennent moins de place ? J'aime bien le design » ; 3 maquettes (A rangée de visages, B une ligne, C mise en avant réduite) ; « C pour les amis ».
