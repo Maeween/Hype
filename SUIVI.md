@@ -11113,3 +11113,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Couvertures de vidéos partout : toutes les petites images de vidéo de l'appli (fiche cheval, albums, fil, pages Écurie et Cavalier, souvenirs…) passent par un seul endroit (hypeMiniatureVideo). Il montre maintenant d'abord la couverture enregistrée (choisie, ou fabriquée automatiquement pour les anciennes vidéos), sinon l'image Mux, sinon l'ancien aperçu. L'image se met à jour d'elle-même quand la couverture arrive. La page Vidéos du cheval le faisait déjà depuis 911/912.
 - Effet en plus : les anciennes vidéos qui ont déjà une couverture automatique n'ouvrent plus de lecteur vidéo pour leur aperçu (plus léger pour l'iPhone).
 - Testé : avec deux couvertures enregistrées, les cases concernées affichent bien la couverture (fiche, page Photos, page Vidéos).
+
+## Build 927 (11/10, en attente de son accord)
+- Ranger une vidéo dans une collection dès son envoi : pendant l'envoi (sous Titi), si le cheval a des collections et qu'on peut les gérer, une petite ligne « Ranger cette vidéo dans une collection : Aucune / [collections] ». Rien n'est imposé : « Aucune » par défaut, aucune étape en plus.
+- La vidéo est ajoutée à la collection choisie au moment où elle devient prête (la collection est relue en base juste avant, rien n'est écrasé). Message vert « Vidéo rangée dans « … » ». Si la vidéo n'est pas prête à la fin de l'envoi, ou si la base refuse, message orange qui le dit (on peut alors la ranger avec ⋯).
+- Testé avec un envoi simulé : choix affiché, sélection, puis « Vidéo rangée dans « En concours » ».
+- Limite : si tu quittes l'appli avant la fin de l'envoi, l'envoi lui-même s'arrête (règle iPhone déjà affichée sous Titi), donc le rangement aussi.
