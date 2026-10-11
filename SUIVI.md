@@ -11580,3 +11580,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 996 (12/10) — Communauté (carrousel) : « À l'agenda » = carte qui se retourne
 - Même carte que « Dans les écuries » (harmonisées, demande du brief) : photo communaute-carte-agenda.webp, « À l'agenda » + « Concours, stages et événements à venir » (7 langues). Au dos : les 3 prochains événements de toutes les écuries (date en petit cadre, titre, écurie) ; « Voir tout (n) » déplie la suite ; chaque ligne ouvre la fiche de l'événement comme avant (ouvrirRdvCom). Aucune nouvelle donnée, aucun nouveau calendrier. iPhone seulement ; « Voir tout » du titre masqué sur iPhone.
 - Testé avec 5 événements simulés, français et arabe ; 16 scripts sans erreur.
+
+## Build 997 (12/10) — Communauté : cartes photo un peu plus petites
+- Blandine (00 h 59) : « j'aurais bien vu les onglets un peu moins gros avec les photos ». Carrousel « À découvrir » 182 → 150 px, cartes qui se retournent 182 → 162 px (le dos garde ses 3 lignes), titres 22 → 20 px, lignes du dos un peu plus serrées. iPhone seulement.
+- Fil : Blandine (00 h 58) « peu importe » pour les icônes des onglets → on garde le texte seul, rien changé.
+- Même message : « on n'a plus de pétrole du tout, si ? » → exact (globe et photos chauds, fonds noirs) ; variante avec des touches pétrole montrée (voile, dos des cartes, fil), en attente de son avis.
