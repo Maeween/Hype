@@ -11446,3 +11446,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture 22 h 21) : « Et ajouter un soin change-le en un onglet similaire à ajouter ses consignes » ; « et ensuite publie ». Le bouton rond centré devient la même carte à pointillés que « Ajouter ses consignes » (+, « Ajouter un soin », « Vaccin, vermifuge, ferrure, dentiste… », 7 langues), juste au-dessus. Même action (feuille de saisie), même verrou Premium. Remplace la version 970 (mise de côté, non publiée).
 - Testé : les deux cartes l'une sous l'autre ; un clic ouvre la feuille de saisie ; aucune erreur.
 - Publié avec 972 (ligne « Ajouter un document »).
+
+## Build 974 (11/10) — Carnet de santé : onglets soulignés (maquette A)
+- Blandine (22 h 21) : « pour le carnet de santé propose-moi un autre design pour les onglets » ; 3 maquettes (A soulignés, B barre segmentée, C tuiles à pictogramme) ; « A ».
+- Les pastilles (Tous, Vaccins (1)…) deviennent des onglets texte comme ceux des pages chevaux : texte gris clair, onglet choisi en champagne gras souligné d'un trait doré, nombre en petit à côté, fin trait gris sous la rangée ; défilement de côté inchangé. Mêmes filtres, même comportement.
+- Testé en français et en arabe ; la ligne « Ajouter un document » s'ouvre toujours ; aucune erreur.
