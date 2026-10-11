@@ -11221,3 +11221,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sous 1024 px (tablette) : la page garde sa colonne de téléphone, Suivi en 2 × 2 (avant : 4 cartes serrées dès 700 px, textes coupés).
 - iPhone inchangé.
 - Testé à 1 440 px, 834 px et 390 px.
+
+## Build 943 (11/10, en attente de son accord) — refonte Santé, étape 8 (partie 1) : contrôle du protocole vaccinal
+- Carte « Protocole vaccinal » sous le Suivi, dès qu'un vaccin est enregistré. Grippe et rhinopneumonie lues dans l'intitulé ou la note du vaccin (grippe, influenza, rhino, EHV, herpès, noms de vaccins courants). Pour chacune : « à jour — prochain rappel avant le … » (vert) ou « rappel dépassé depuis le … » (rouge). Puis les niveaux : Club / Poney (grippe), Amateur / Pro (grippe + rhino), SHF (grippe + rhino, moins de 14 mois), FEI (rappel de moins de 6 mois + 21 jours).
+- Avertissements : injection de moins de 7 jours (« pas de concours avant le … ») ; carnet incomplet dans Hype (moins de 3 injections : la primo-vaccination n'est pas visible, le contrôle suppose qu'elle a été faite) ; écart inhabituel entre les 2 premières injections ; vaccins sans maladie précisée.
+- Règles vérifiées le 11/10 : FFE grippe (2 injections à 21-92 jours, 1er rappel ≤ 6 mois, puis ≤ 12 mois) ; FFE rhino Pro (2024) / Amateur (01/2026) : 21-60 j, 120-180 j, annuel ; SHF : >14 mois = disqualification ; FEI : rappel < 6 mois + 21 j avant concours ; 7 jours sans injection avant un concours. Mention « ne remplace pas le livret ni le vétérinaire ».
+- Testé : grippe 20/10/2025 + rhino 02/06/2024 → grippe à jour, rhino dépassée, Club/Poney ✓, Amateur/Pro ✗ rhino, SHF ✗, FEI ✗.
+- Reste de l'étape 8 : lecture d'une photo du carnet (Premium), après les documents (étape 7, SQL en attente).
