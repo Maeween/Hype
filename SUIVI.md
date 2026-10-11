@@ -11215,23 +11215,30 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé iPhone 390 px : 6 soins de test, filtre Événements → 1 ligne.
 - Ajout au 941 (sa capture de Crumble, « assombris moins le haut, ça coupe le cheval ») : la photo du haut reprend 80 % de la largeur avec un fondu court sur le bord (tête du cheval entière) ; l'assombrissement ne reste que derrière le titre (voile arrondi dans le coin bas, côté texte ; miroir en arabe). Testé avec une découpe de sa capture.
 
-## Build 942 (11/10, en attente de son accord) — refonte Santé, étape 9/9 : version ordinateur (maquette validée)
+## Build 942 (11/10, publié le 11/10 avec 942-945 — « enchaîne… et ensuite tu peux publier ») — refonte Santé, étape 9/9 : version ordinateur (maquette validée)
 - Fait avant les étapes 7-8 à sa demande (« enchaîne sur un max de choses ») ; les documents et la lecture du carnet s'y ajouteront.
 - Ordinateur (≥ 1024 px) : la page Santé sort de la colonne de téléphone (largeur 1 280 px comme la page Écurie, menu latéral existant à gauche, aucun menu inventé). Hero 300 px de haut, photo sur 68 % à droite, nom 40 % plus grand ; Suivi : les 4 cartes sur une ligne ; Carnet de santé (≈ 62 %) et Équipe de soins côte à côte, alignés en haut ; bandeaux Hey Baby et Magazine côte à côte ; marges de 32 px.
 - Sous 1024 px (tablette) : la page garde sa colonne de téléphone, Suivi en 2 × 2 (avant : 4 cartes serrées dès 700 px, textes coupés).
 - iPhone inchangé.
 - Testé à 1 440 px, 834 px et 390 px.
 
-## Build 943 (11/10, en attente de son accord) — refonte Santé, étape 8 (partie 1) : contrôle du protocole vaccinal
+## Build 943 (11/10, publié le 11/10 avec 942-945 — « enchaîne… et ensuite tu peux publier ») — refonte Santé, étape 8 (partie 1) : contrôle du protocole vaccinal
 - Carte « Protocole vaccinal » sous le Suivi, dès qu'un vaccin est enregistré. Grippe et rhinopneumonie lues dans l'intitulé ou la note du vaccin (grippe, influenza, rhino, EHV, herpès, noms de vaccins courants). Pour chacune : « à jour — prochain rappel avant le … » (vert) ou « rappel dépassé depuis le … » (rouge). Puis les niveaux : Club / Poney (grippe), Amateur / Pro (grippe + rhino), SHF (grippe + rhino, moins de 14 mois), FEI (rappel de moins de 6 mois + 21 jours).
 - Avertissements : injection de moins de 7 jours (« pas de concours avant le … ») ; carnet incomplet dans Hype (moins de 3 injections : la primo-vaccination n'est pas visible, le contrôle suppose qu'elle a été faite) ; écart inhabituel entre les 2 premières injections ; vaccins sans maladie précisée.
 - Règles vérifiées le 11/10 : FFE grippe (2 injections à 21-92 jours, 1er rappel ≤ 6 mois, puis ≤ 12 mois) ; FFE rhino Pro (2024) / Amateur (01/2026) : 21-60 j, 120-180 j, annuel ; SHF : >14 mois = disqualification ; FEI : rappel < 6 mois + 21 j avant concours ; 7 jours sans injection avant un concours. Mention « ne remplace pas le livret ni le vétérinaire ».
 - Testé : grippe 20/10/2025 + rhino 02/06/2024 → grippe à jour, rhino dépassée, Club/Poney ✓, Amateur/Pro ✗ rhino, SHF ✗, FEI ✗.
 - Reste de l'étape 8 : lecture d'une photo du carnet (Premium), après les documents (étape 7, SQL en attente).
 
-## Build 944 (11/10, en attente de son accord) — refonte Santé, étape 7/9 : documents du carnet
+## Build 944 (11/10, publié le 11/10 avec 942-945 — « enchaîne… et ensuite tu peux publier ») — refonte Santé, étape 7/9 : documents du carnet
 - SQL sql/2026-10-11-documents-sante.sql PASSÉ par Blandine le 11/10 (capture « Success ») ; vérifié en base : table cheval_documents, espace de stockage PRIVÉ « sante », règles sante_voir / sante_ajouter / sante_supprimer (mêmes droits que la page Santé).
 - « + Ajouter un document » (contour champagne) en tête du Carnet de santé, pour qui peut modifier (verrou Premium) : photo ou PDF (15 Mo au plus), type (Ordonnance, Compte rendu, Certificat de vaccination, Page du carnet de vaccination, Protocole, Facture, Autre), intitulé facultatif, date (aujourd'hui par défaut), soin associé facultatif. Fichier rangé dans sante/<id du cheval>/… ; si la ligne est refusée par la base, le fichier envoyé est retiré.
 - Les documents apparaissent DANS le carnet (📎, mêlés aux soins par date) et comptent dans les filtres : Ordonnances, Événements (comptes rendus), Vaccins (certificats, pages du carnet), Protocoles (s'affiche dès qu'il y en a un). Un document ouvre une petite fenêtre : « Ouvrir le document » (lien temporaire de 10 min, jamais public), « Supprimer » (avec confirmation, propriétaire et modératrices).
 - Pas de doublon : le panneau d'un soin du Suivi (ex. Vaccin) montre les MÊMES documents (liés à ces soins, et les certificats/pages de carnet pour les vaccins) + « Joindre un document ».
 - Testé (base simulée) : ajout d'un PDF, affichage dans le carnet, fenêtre du document.
+
+## Build 945 (11/10, publié avec 942-944 — « enchaîne… et ensuite tu peux publier ») — refonte Santé, étape 8 (partie 2) : lire le carnet de vaccination
+- Bouton « 📷 Lire le carnet de vaccination » dans la carte « Protocole vaccinal » (et, sans aucun vaccin, une petite carte d'invitation), pour qui peut modifier ; verrou Premium (visible de tous, utilisable par les abonnés — sa décision).
+- Photo ou PDF (4 pages au plus) → lecture par hey-baby-vision (mode perception en différé, comme l'import de soins du 769) → liste des injections à vérifier : case, date (rouge si illisible), nom du vaccin, maladies (Grippe / Rhino / Tétanos) modifiables ; les dates déjà présentes dans le carnet sont décochées et signalées. « Garder la photo dans les documents du carnet » (coché par défaut) → document « Page du carnet de vaccination ».
+- Enregistrement : un soin « vaccin » par ligne cochée (intitulé = maladies + nom du vaccin), prochaine échéance (+1 an) sur la plus récente ; bilan affiché (ajoutés / refusés / photo gardée). Le contrôle du protocole (943) se met à jour aussitôt.
+- Testé avec une réponse de l'IA simulée : 3 lignes (une date illisible, une déjà au carnet, une nouvelle) → « 1 vaccin(s) ajouté(s) ». ⚠️ Pas testé avec la vraie IA depuis ici : c'est le test iPhone qui le dira (1 à 2 min par lecture).
+- Rappel sécurité déjà signalé : la fonction de lecture (hey-baby-vision) ne vérifie pas elle-même l'abonnement ; le verrou est dans l'appli. Chantier à part proposé.
