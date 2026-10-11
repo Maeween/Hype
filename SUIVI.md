@@ -11541,3 +11541,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (00 h 15, capture de 12 lignes « Blandine a ajouté un cheval : … ») : « ça je croyais qu'on les avait rassemblés ». Seuls les palmarès rendus l'étaient (build 327).
 - Même règle que le 327 (« par semaine si c'est le même geste ») : les chevaux ajoutés par UNE personne la MÊME semaine (lundi → dimanche) deviennent UNE ligne « Blandine a ajouté 6 chevaux » (noms des 3 premiers dessous, photo du premier), placée au plus récent. On la touche → la liste se déplie (photo + nom), chaque cheval ouvre sa fiche. Un seul cheval : ligne d'avant. Le compteur « Voir la suite » compte les lignes regroupées.
 - Nouveau texte aChevaux en 7 langues. Testé français et arabe (replié et déplié) ; aucune erreur.
+
+## Build 989 (12/10, PAS PUBLIÉ — branche build-989) — fiche cheval : le fond de Santé à la place de son image
+- Blandine (00 h 19) : « sur la page cavalier remplace la page que je t'ai envoyée par celle de la page Santé avec les mêmes réglages ». Compris comme la FICHE CHEVAL (seule page portant son image images/fond-cheval.webp, build 977) — à confirmer avant publication.
+- EcranCheval : fond = exactement celui de Santé (FOND_SANTE.webp, mêmes deux voiles, cadré à droite), FIXE : la fiche défile par-dessus. La fiche crée son propre empilement (position relative + z-index 0), le calque fixe est à z-index -1 dedans (corrige l'échec du 975 où le calque passait sous les fonds noirs). Halo du hero (960) inchangé. fond-cheval.webp reste dans le dépôt.
+- Testé iPhone (haut, milieu, bas de fiche) ; aucune erreur.
