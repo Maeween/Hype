@@ -11471,3 +11471,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - B : après l'ajout, « Annuler cet ajout » retire le pro des SEULS chevaux où il vient d'être ajouté.
   - C : fiche du pro → « Retirer de plusieurs chevaux… » : même liste (chevaux qui l'ont, rangés par écurie), rien de coché, bouton « Retirer (n) ».
 - 7 langues. Testé (base simulée) en français et en arabe : ajout, annulation, retrait ; aucune erreur.
+## Build 977 (11/10) — fiche cheval : la nouvelle image en fond de page
+- Blandine (22 h 26, image fournie) : maquette demandée pour la page Santé, puis (22 h 30) « Tu peux la mettre en fond de page sur la page cheval ? ». Image enregistrée en images/fond-cheval.webp (941 × 1672, 16 Ko).
+- Portée par le cadre de la fiche (.chv) : pleine largeur EN HAUT de la page puis le noir de l'appli, avec la lueur du haut de l'accueil et un voile léger ; le cadre .app devient transparent. Un calque « fixe » derrière tout a été essayé : invisible (les cadres de l'appli ont un fond noir opaque) — abandonné.
+- La page Santé garde son fond actuel (la maquette n'était qu'une comparaison).
+- Testé : fond visible derrière la photo, le nom et les origines ; plus bas, noir comme avant ; aucune erreur.
