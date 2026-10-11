@@ -11311,3 +11311,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Comme sur l'accueil, il passe DERRIÈRE la photo : la carte photo reçoit position relative + zIndex 1. Fond de la page inchangé.
 - Note honnête : sur l'accueil comme ici, l'animation remplace le décalage de centrage (translateX), donc le halo est en réalité décalé vers la droite et se voit surtout en haut à droite, autour de la photo. Reproduit tel quel (« identique »).
 - Testé : page affichée sans erreur, 1 animation active ; captures au repos et au plus fort de la respiration.
+
+## Build 956 (11/10, PAS ENCORE PUBLIÉ) — page « Mon cavalier » : voile des cartes d'écurie allégé
+- Blandine (capture 21 h 02) : « on voit très mal les couleurs des onglets des écuries tu peux alléger le voile ? ». FondBanniereClub (utilisé seulement par les cartes « Mon club » / « Deuxième écurie ») : voile 0,92 / 0,72 / 0,45 → 0,70 / 0,38 / 0,12 (plus sombre à gauche sous le texte, presque transparent à droite).
+- Testé : captures avant / après des deux cartes ; textes toujours lisibles.
