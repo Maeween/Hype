@@ -11557,3 +11557,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Bouton rond champagne en haut, côté début de ligne (à gauche ; à droite en arabe, flèche inversée), même style que Santé ; n'apparaît que s'il y a une page précédente (ctx.peutReculer) ; masqué sur ordinateur. Textes « Retour » 7 langues.
 - Réponses du même message : Stories en RONDS, « Voir tout » déplie les stories suivantes ; Écuries / Agenda : « on peut déplier aussi sinon ? … ou on retourne la carte, je sais pas, tu proposes quoi, montre des visuels » → maquettes à faire.
 - Testé français et arabe ; aucune erreur.
+
+## Build 992 (12/10) — Communauté : globe en haute définition
+- Blandine (00 h 47) a envoyé le globe seul en grand (1024×1536) : il remplace la découpe de sa planche (images/communaute-globe-v2.webp, 302 Ko ; adresse ?v=2 pour forcer le rechargement). Recadré pour garder les cavaliers en bas du hero (position calc(encoche + 450 px − 130,5vw)). Testé 375 / 430 px et arabe.
+- 00 h 48 : pour « Dans les écuries » et « À l'agenda », maquette B choisie : LA CARTE SE RETOURNE (au dos les 3 plus récentes, ↺ pour revenir, « Voir tout » déplie le reste). Builds prévus : Stories rondes + « Voir tout » ; carrousel À découvrir ; carte Écuries ; carte Agenda ; fil.
