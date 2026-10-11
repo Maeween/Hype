@@ -11193,7 +11193,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé iPhone 390 px : fenêtre, cases, bilan « Ajouté à 2 cheval(aux) » ; haut de page ; fin de page.
 - SQL sql/2026-10-11-pros-ecurie.sql PASSÉ par Blandine le 11/10 (« le sql est passé ») ; vérifié en base : règle chpro_creer_ecurie présente sur cheval_professionnels (à côté de chpro_creer, chpro_lire, chpro_supprimer).
 
-## Build 939 (11/10, en attente de son accord) — 5e onglet « Santé » sur les pages du cheval
+## Build 939 (11/10, publié — « Ok continue ») — 5e onglet « Santé » sur les pages du cheval
 - Sa demande : « ajouter Santé aux onglets des autres pages en haut, ils n'en ont que 4 ; au besoin Performances peut être ajusté en Perf ou Résultats ». Les petits onglets sous la carte du cheval (Histoire, Photos, Performances, Vidéos) deviennent : Histoire · Photos · Résultats · Vidéos · Santé. Santé ouvre la page Santé & soins de CE cheval (même ouverture que la tuile « Soins » de la fiche).
 - « Performances » renommé « Résultats » dans les 7 langues (Results, Resultados, Risultati, 結果, Ergebnisse, النتائج) pour la place.
 - Vérifié à 360 px (plus petit iPhone courant) dans les 7 langues : les 5 onglets tiennent sur une ligne, aucun débordement (allemand compris : Geschichte · Fotos · Ergebnisse · Videos · Gesundheit).
