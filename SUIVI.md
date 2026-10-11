@@ -11214,3 +11214,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Filtres qui filtrent vraiment, avec le nombre : Tous · Soins (ferrure, parage, vermifuge, dentiste, ostéo, autre) · Vaccins · Ordonnances (traitements) · Événements (vétérinaire, locomotion, imagerie) · Protocoles. Un filtre sans aucune ligne ne s'affiche pas (Protocoles apparaîtra avec les documents, étape 7). Défilement horizontal si les filtres dépassent.
 - Testé iPhone 390 px : 6 soins de test, filtre Événements → 1 ligne.
 - Ajout au 941 (sa capture de Crumble, « assombris moins le haut, ça coupe le cheval ») : la photo du haut reprend 80 % de la largeur avec un fondu court sur le bord (tête du cheval entière) ; l'assombrissement ne reste que derrière le titre (voile arrondi dans le coin bas, côté texte ; miroir en arabe). Testé avec une découpe de sa capture.
+
+## Build 942 (11/10, en attente de son accord) — refonte Santé, étape 9/9 : version ordinateur (maquette validée)
+- Fait avant les étapes 7-8 à sa demande (« enchaîne sur un max de choses ») ; les documents et la lecture du carnet s'y ajouteront.
+- Ordinateur (≥ 1024 px) : la page Santé sort de la colonne de téléphone (largeur 1 280 px comme la page Écurie, menu latéral existant à gauche, aucun menu inventé). Hero 300 px de haut, photo sur 68 % à droite, nom 40 % plus grand ; Suivi : les 4 cartes sur une ligne ; Carnet de santé (≈ 62 %) et Équipe de soins côte à côte, alignés en haut ; bandeaux Hey Baby et Magazine côte à côte ; marges de 32 px.
+- Sous 1024 px (tablette) : la page garde sa colonne de téléphone, Suivi en 2 × 2 (avant : 4 cartes serrées dès 700 px, textes coupés).
+- iPhone inchangé.
+- Testé à 1 440 px, 834 px et 390 px.
