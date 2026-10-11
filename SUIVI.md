@@ -11417,3 +11417,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture 21 h 54) : « mettre plutôt carnet de santé sur une ligne et mettre le bouton ajouter un document à droite sur la ligne des petits onglets en dessous ».
 - Titre seul sur sa ligne (sans retour à la ligne) ; les filtres (Tous, Vaccins…) défilent à gauche, le bouton « + Ajouter un document » reste fixe à droite, sur la même ligne. Même bouton, même action, même verrou Premium.
 - Testé à 390 px : titre entier sur une ligne, filtres et bouton alignés ; aucune erreur.
+
+## Build 970 (11/10) — page Santé : « Ajouter un soin » devient une carte comme « Consignes du cheval »
+- Blandine (21 h 59) : « Pour ajouter un soin on peut faire le même onglet que pour celui des consignes ? ». Le bouton rond centré est remplacé par une carte au même dessin que « Consignes du cheval » : cadre champagne, dégradé pétrole, image fondue à droite (images/sante-suivi-vaccin.webp, déjà dans le dépôt), « + » champagne, titre « Ajouter un soin », sous-titre « Vaccin, vermifuge, ferrure, dentiste… » (7 langues), flèche. Même action (feuille de saisie), même verrou Premium, même place (sous la phrase, au-dessus des consignes).
