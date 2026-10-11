@@ -11571,3 +11571,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Maquette « Version Carrousel » (iPhone) : les deux cartes côte à côte deviennent un carrousel d'une carte pleine largeur (182 px), nouvelles images (communaute-carte-profils / -cavalieres), titre 22 px en bas sur un dégradé noir ; glissement au doigt aimanté, flèches discrètes (désactivées en bout), points (le point actif s'allonge). Même action qu'avant : toucher la carte déplie « Nouveaux profils » / « Cavalières à suivre » dessous.
 - Fonction carrouselCom(clé, cartes) réutilisable (flèches par scrollIntoView → sens juste en arabe ; rangée data-hscroll). Textes « Précédent / Suivant » 7 langues. Ordinateur inchangé.
 - Testé français et arabe (flèche suivante, points, ouverture) ; 16 scripts vérifiés sans erreur.
+
+## Build 995 (12/10) — Communauté (carrousel) : « Dans les écuries » = carte qui se retourne
+- Maquette B choisie par Blandine (00 h 48). iPhone : une carte photo (communaute-carte-ecuries.webp), « Dans les écuries » + « Actualités et moments de vie des écuries » (7 langues), icône ↻. On la touche : elle pivote (0,6 s) et montre au dos les 3 écuries les plus récemment actives (vraies données déjà chargées : nom, publications, photos) ; ↺ la remet côté photo. « Voir tout (n) » sous la carte déplie les suivantes dessous ; chaque ligne ouvre les actualités de l'écurie, comme avant. Le « Voir tout » du titre est masqué sur iPhone. Ordinateur inchangé.
+- Fonctions carteRetournee(clé, image, titre, sous-titre, lignes) et ligneEcurieDos, réutilisées au build suivant pour l'agenda.
+- Testé avec 5 écuries simulées (recto, retournement, verso, dépliage), français et arabe ; 16 scripts sans erreur.
