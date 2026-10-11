@@ -11326,3 +11326,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - EcranMonCavalier : l'appel à window.MurImmersif (repli RailALaUne) est remplacé par null. Le bandeau des stories (BandeauStories) au-dessus ne change pas. Rien n'est supprimé en base ; les à la une restent sur Communauté / Club / Écurie.
 - Testé avec deux à la une simulées : avant → bloc « À la une » présent ; après → absent ; récit et Mur des songes toujours là ; aucune erreur. Capture pleine page.
 - Pour les remettre : rétablir l'appel (commentaire en place dans le code).
+
+## Build 959 (11/10) — page « Mon cavalier » : même fond que l'accueil
+- Blandine (21 h 14) : « Applique la couleur du fond de page de l'accueil sur la page cavalier » (elle avait d'abord dit de le garder, au 955). Fond : lueur radiale pétrole + #05080B → #060709 uni (= --bg de l'accueil). Le halo du 955 reste.
