@@ -11251,7 +11251,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Déploiement : par Claude avec son accord, ou par elle.
 - Message de refus affiché tel quel par la lecture d'affiche, EN FRANÇAIS seulement (à traduire dans l'appli si elle le veut). Pas testable d'ici (accès réseau bloqué) : à tester sur iPhone avec un compte non Premium.
 
-## Build 947 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — lecture d'affiche de l'agenda : message Premium traduit
+## Build 947 (11/10, PUBLIÉ le 11/10 vers 19 h 42 après son « Ok ») — lecture d'affiche de l'agenda : message Premium traduit
 - Suite de 946 : quand le service refuse (PREMIUM_REQUIRED), le cadre sous l'affiche dit, dans les 7 langues : « 🔒 La lecture automatique de l'affiche est réservée aux abonnés Premium. L'affiche est bien ajoutée : remplis les cases à la main. » Cadre doré (pas rouge), sans bouton « Relire l'affiche ». Avant : erreur rouge « L'affiche n'a pas pu être lue : Réservé aux abonnés Premium. », en français seulement.
 - Seul index.html change (TXT_LECT.premium, état « premium »). L'envoi de l'affiche n'est pas touché.
 - Testé (base simulée, service répondant 403 PREMIUM_REQUIRED) : français et arabe, captures. Marqueur 20261011-947 vérifié (une seule occurrence).
+
+## Build 948 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — vidéo : le choix de collection n'est plus perdu
+- Demande de Blandine (choix « 2 ») : ranger automatiquement la vidéo dans la collection choisie pendant l'envoi, même si elle n'était pas prête à la fin du suivi ou si on a quitté la fiche.
+- Le choix (vidéo + collection + cheval) est noté sur le téléphone (clé hype_rangements_v1, 7 jours au plus). À chaque ouverture de la fiche du cheval, et au retour dans l'appli, les vidéos devenues prêtes sont rangées (message vert « Vidéo rangée dans « … » »), celles en échec ou supprimées sont oubliées, celles en préparation attendent.
+- Message « pas encore prête » changé (7 langues) : « elle sera rangée toute seule dans la collection dès qu'elle le sera (en revenant sur cette page) ».
+- Limites : si l'appli est quittée pendant l'envoi lui-même (avant la fin du transfert), la vidéo n'arrive pas et il n'y a rien à ranger ; le choix vit sur CE téléphone seulement.
+- Testé (base simulée) : 5 choix en mémoire → la vidéo prête rangée (une seule écriture), celle en préparation gardée, celle en échec oubliée, celle d'un autre cheval gardée, celle de plus de 7 jours oubliée. Capture pleine page de l'onglet Vidéos. Marqueur 20261011-948 vérifié.
