@@ -11441,3 +11441,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fait : carnetSante — ligne-carte ajoutée (ouvrirDocAjout(), donc même fenêtre, même verrou Premium, même stockage) ; ancien bouton « + Ajouter un document » de la ligne des filtres (969) retiré. Titre, filtres, liste, consignes, « Ajouter un soin », Suivi, équipe : inchangés. 7 langues (titre et sous-titre), arabe en sens inversé.
 - Testé : iPhone 390 px (fr, ar) et ordinateur 1280 px ; la ligne fait la largeur de la liste ; un clic ouvre la fenêtre « Ajouter un document » existante ; aucune erreur.
 - Limite signalée : quand un cheval n'a AUCUN soin, la page montre « Aucun soin enregistré » à la place du carnet (comportement d'avant) → la ligne n'y apparaît pas.
+
+## Build 973 (11/10) — page Santé : « Ajouter un soin » en carte à pointillés comme « Ajouter ses consignes »
+- Blandine (capture 22 h 21) : « Et ajouter un soin change-le en un onglet similaire à ajouter ses consignes » ; « et ensuite publie ». Le bouton rond centré devient la même carte à pointillés que « Ajouter ses consignes » (+, « Ajouter un soin », « Vaccin, vermifuge, ferrure, dentiste… », 7 langues), juste au-dessus. Même action (feuille de saisie), même verrou Premium. Remplace la version 970 (mise de côté, non publiée).
+- Testé : les deux cartes l'une sous l'autre ; un clic ouvre la feuille de saisie ; aucune erreur.
+- Publié avec 972 (ligne « Ajouter un document »).
