@@ -11124,3 +11124,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Arabe, page Photos : la ligne du temps et ses points passent à droite (propriétés « début/fin de ligne » au lieu de gauche/droite).
 - Arabe, carte du cheval sur iPhone (moins de 700 px) : le voile sombre part maintenant du côté du nom, la photo n'est plus assombrie ; la zone du nom et le ⋯ admin se placent aussi du bon côté.
 - Testé en capture pleine page arabe et français : le français est inchangé.
+
+## Build 929 (11/10, en attente de son accord)
+- Reprise à la page quittée (sa demande : « chiant de pas revenir sur la page qu'on a quittée dès qu'on sort de l'appli 30 secondes »). Quand l'iPhone ferme Hype en arrière-plan, Hype rouvre maintenant sur la même page, avec ce qui y était ouvert (cheval, cavalière, écurie, album, agenda, santé…), l'onglet de la fiche cheval et la hauteur de défilement. Toutes les pages, sauf les parcours en cours (cours, quiz, examen, jeu, import de résultats, connexion, intro, installation…) : dans ce cas, reprise sur la dernière page normale.
+- Durée : 2 heures (choix de Blandine). Au-delà, démarrage comme avant.
+- Sécurité : une page qui plante à la reprise efface la reprise (on ne retombe pas en boucle sur l'écran d'erreur).
+- Pas repris : une fenêtre ouverte par-dessus la page (photo en grand, fenêtre de collection…), un texte en cours de saisie, les sous-onglets des autres pages que la fiche cheval.
+- Testé : fiche cheval onglet Photos défilée → rechargement → même cheval, onglet Photos, même hauteur ; page Santé défilée → même page, même hauteur ; reprise vieille de 3 h → démarrage normal.
