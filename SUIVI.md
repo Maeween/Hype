@@ -11451,3 +11451,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (22 h 21) : « pour le carnet de santé propose-moi un autre design pour les onglets » ; 3 maquettes (A soulignés, B barre segmentée, C tuiles à pictogramme) ; « A ».
 - Les pastilles (Tous, Vaccins (1)…) deviennent des onglets texte comme ceux des pages chevaux : texte gris clair, onglet choisi en champagne gras souligné d'un trait doré, nombre en petit à côté, fin trait gris sous la rangée ; défilement de côté inchangé. Mêmes filtres, même comportement.
 - Testé en français et en arabe ; la ligne « Ajouter un document » s'ouvre toujours ; aucune erreur.
+
+## Build 975 (11/10) — fiche cheval : la nouvelle image en fond de page
+- Blandine (22 h 26, image fournie) : maquette demandée pour la page Santé, puis (22 h 30) « Tu peux la mettre en fond de page sur la page cheval ? ». Image enregistrée en images/fond-cheval.webp (941 × 1672, 16 Ko).
+- Portée par le cadre de la fiche (.chv) : pleine largeur EN HAUT de la page puis le noir de l'appli, avec la lueur du haut de l'accueil et un voile léger ; le cadre .app devient transparent. Un calque « fixe » derrière tout a été essayé : invisible (les cadres de l'appli ont un fond noir opaque) — abandonné.
+- La page Santé garde son fond actuel (la maquette n'était qu'une comparaison).
+- Testé : fond visible derrière la photo, le nom et les origines ; plus bas, noir comme avant ; aucune erreur.
