@@ -11476,3 +11476,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Portée par le cadre de la fiche (.chv) : pleine largeur EN HAUT de la page puis le noir de l'appli, avec la lueur du haut de l'accueil et un voile léger ; le cadre .app devient transparent. Un calque « fixe » derrière tout a été essayé : invisible (les cadres de l'appli ont un fond noir opaque) — abandonné.
 - La page Santé garde son fond actuel (la maquette n'était qu'une comparaison).
 - Testé : fond visible derrière la photo, le nom et les origines ; plus bas, noir comme avant ; aucune erreur.
+
+## Build 978 (11/10) — Pages Histoire, Photos, Vidéos, Résultats du cheval : le design de la page Santé
+- Blandine (22 h 37) : « Mets la page de fond sous la page des résultats aussi et rends les onglets plus transparents, en gros ré-applique exactement le design de la page Santé aux pages photo vidéo histoire et performances. »
+- encartIdentiteCh (EcranCheval) : la carte encadrée devient le hero de Santé — photo du cheval pleine largeur fondue dans le noir, petit titre champagne espacé (HISTOIRE / PHOTOS / VIDÉOS / RÉSULTATS), nom en Cormorant en grand. Même hauteur que Santé (330 px + encoche ; 300 px ordinateur). Arabe en miroir.
+- Fond du panneau (pages en question) : la même image que Santé (images/FOND_SANTE.webp) avec les mêmes voiles ; elle reste immobile pendant le défilement.
+- Ligne du haut (retour + langue) flottante sur la photo, bouton retour rond champagne comme Santé (panHeroCh()). La page technique des résultats garde l'ancienne ligne.
+- Onglets plus transparents : gris 42 % au lieu de 55 %, onglet choisi champagne adouci, trait du bas plus discret.
+- Barres grises sous la carte (Photos, Vidéos) retirées : la page Santé n'en a pas.
+- Page Histoire : le petit titre dit « Histoire » (comme l'onglet), plus « Souvenirs ».
+- Testé iPhone (4 pages), ordinateur 1280 px, arabe ; aucune erreur.
