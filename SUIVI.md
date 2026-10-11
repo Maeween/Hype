@@ -11131,3 +11131,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sécurité : une page qui plante à la reprise efface la reprise (on ne retombe pas en boucle sur l'écran d'erreur).
 - Pas repris : une fenêtre ouverte par-dessus la page (photo en grand, fenêtre de collection…), un texte en cours de saisie, les sous-onglets des autres pages que la fiche cheval.
 - Testé : fiche cheval onglet Photos défilée → rechargement → même cheval, onglet Photos, même hauteur ; page Santé défilée → même page, même hauteur ; reprise vieille de 3 h → démarrage normal.
+
+## Build 930 (11/10, en attente de son accord)
+- Page Santé d'un cheval : tout le monde la consulte ; REMPLIR (ajouter ou modifier un soin, ajouter ou modifier un pro) est réservé aux abonnés Premium (sa demande : « idem pour remplir quoi que ce soit sur la page, réservé Premium »). Sans abonnement, toucher un de ces boutons ouvre une fenêtre « Réservé aux abonnés Premium » (Découvrir Premium / Plus tard), 7 langues. Modératrices jamais bloquées. Les droits d'écriture habituels (propriétaire + modératrices) restent en plus.
+- Testé : compte non abonné → fenêtre Premium ; compte abonné (annuel) → le formulaire s'ouvre.
+- Note : ce verrou est dans l'appli ; la base, elle, ne vérifie pas l'abonnement (inchangé).
+- Reçu le même jour la maquette ChatGPT « Refonte Santé & Soins » (Consignes, Suivi, Carnet de santé avec documents, Équipe, Hey Baby, Magazine) : audit et plan d'étapes à présenter avant tout code.
