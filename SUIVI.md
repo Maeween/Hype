@@ -11339,3 +11339,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - AlbumsPromus (utilisé seulement sur la fiche du cheval) : la carte « Ses vidéos · Le voir en mouvement » devient une fonction blocVideo(enTete) posée EN PREMIER (marge basse 26 px) ; son ancien emplacement, sous les albums, est vidé.
 - Albums (rail de 3, carte « Toutes ses photos », grande carte 0-1 album) : liseré 1 px rgba(201,166,107,0.45) sans ombre — le même que les pages Photos / Vidéos (avant : teinte du cheval à 40-50 % + ombre, ou champagne 0,3).
 - Testé avec 3 albums simulés : vidéo puis albums, liseré fin champagne, aucune erreur.
+
+## Build 962 (11/10) — onglet « Résultats » du cheval aligné sur Photos / Vidéos
+- Blandine (21 h 09) : « Sur la page des Résultats peux-tu l'aligner sur les autres niveau couleur, liseré des encarts etc » ; « Ok continue » (compris comme l'onglet Résultats des pages chevaux, comparé à Photos et Vidéos).
+- Sous le nom du cheval : « PERFORMANCES » → « RÉSULTATS » (comme l'onglet, 7 langues ; titre du panneau aussi).
+- Liseré champagne 1 px rgba(201,166,107,0.45) — celui des pages Photos / Vidéos — sur : la carte des chiffres (sorties, victoires, podiums, classés ; avant blanc 6 %), les cartes « moments forts » (avant or 20-30 %), les cartes « Derniers résultats » et leur rond photo (avant teinte du cheval, ombre intérieure retirée), l'encadré gris (#14161a, avant or 28 %). Boutons et fenêtres : inchangés.
+- Fin de page HYPE (paysage, filets, « HYPE ») ajoutée en bas, comme Photos / Vidéos.
+- Testé : captures avant / après avec 3 résultats simulés, aucune erreur.
