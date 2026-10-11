@@ -11055,4 +11055,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Cheval SANS collection : présentation Cinéma — la première vidéo en grand à sa vraie proportion (460 px de haut sur ordinateur, 380 sur tablette), puis les autres en rangées justifiées.
   - Hauteur de rangée : 200 px ordinateur, 210 px tablette, ajustée entre 80 et 125 % pour remplir la largeur ; dernière rangée à hauteur normale, alignée au début.
   - Vérifié à 390, 834, 1440 px et 1440 px en arabe, avec et sans collections. Même visionneuse, même bouton couverture, même carte « Créer une collection ». hypeMiniatureVideo non modifiée.
+- Fiche cheval : plus d'air sous la photo du haut (18 → 34 px).
 - Réponse à Blandine (liserés blancs dans la galerie photos) : ils sont DANS les photos elles-mêmes (cadres des photographes de concours : « Spring Tour by Harcour », « Barbizon 2021 »…). L'appli n'ajoute aucune bordure (tuile : arrondi 5 px, fond sombre). Option possible plus tard : recadrage à la main.
