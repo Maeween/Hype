@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261011-950"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261011-952"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -70376,7 +70376,7 @@ function EcranBibliothequeGalops() {
     const estModGal = (typeof estModerateurHype === "function") && estModerateurHype(moiGal);
     useEffect(() => { if (msgAVenir) { const _id = setTimeout(() => setMsgAVenir(null), 2600); return () => clearTimeout(_id); } }, [msgAVenir]);
     return (React.createElement("div", { style: { background: "#010409", minHeight: "100vh" } },
-        (msgAVenir ? React.createElement("div", { style: { position: "fixed", left: "50%", bottom: 92, transform: "translateX(-50%)", background: "rgba(13,20,28,0.94)", border: `1px solid #5C879266`, color: COLORS.blanc, padding: "11px 17px", borderRadius: 14, fontSize: 13, fontWeight: 600, zIndex: 60, maxWidth: "86%", textAlign: "center", boxShadow: "0 8px 30px rgba(10,26,36,0.099)" } }, "« " + msgAVenir + " » " + tr({ fr: "arrive très bientôt", en: "is coming very soon", ja: "は近日公開", es: "llega muy pronto", it: "arriva prestissimo", de: "kommt sehr bald", ar: "\u0642\u0631\u064a\u0628\u0627 \u062c\u062f\u0627" }) + " 🐴") : null),
+        (msgAVenir ? React.createElement("div", { style: { position: "fixed", left: "50%", bottom: 92, transform: "translateX(-50%)", background: "rgba(13,20,28,0.94)", border: `1px solid #17A8B366`, color: COLORS.blanc, padding: "11px 17px", borderRadius: 14, fontSize: 13, fontWeight: 600, zIndex: 60, maxWidth: "86%", textAlign: "center", boxShadow: "0 8px 30px rgba(10,26,36,0.099)" } }, "« " + msgAVenir + " » " + tr({ fr: "arrive très bientôt", en: "is coming very soon", ja: "は近日公開", es: "llega muy pronto", it: "arriva prestissimo", de: "kommt sehr bald", ar: "\u0642\u0631\u064a\u0628\u0627 \u062c\u062f\u0627" }) + " 🐴") : null),
         (function(){
             var gActBrut = (profil && typeof profil.galopActuel === "number" && profil.galopActuel >= 1 && profil.galopActuel <= 7) ? profil.galopActuel : 1;
             var galopActObj = GALOPS_I18N.find(function(g){ return g.id === gActBrut; });
@@ -70429,8 +70429,8 @@ function EcranBibliothequeGalops() {
                                 React.createElement("linearGradient", { id: "mevoGrad", x1: "0%", y1: "0%", x2: "100%", y2: "0%" },
                                     React.createElement("stop", { offset: "0%", stopColor: "#BFD0DA" }),
                                     React.createElement("stop", { offset: "30%", stopColor: "#BFD0DA" }),
-                                    React.createElement("stop", { offset: "50%", stopColor: "#5C8792" }),
-                                    React.createElement("stop", { offset: "64%", stopColor: "#5C8792" }),
+                                    React.createElement("stop", { offset: "50%", stopColor: "#17A8B3" }),
+                                    React.createElement("stop", { offset: "64%", stopColor: "#17A8B3" }),
                                     React.createElement("stop", { offset: "100%", stopColor: "#333D46" })),
                                 React.createElement("filter", { id: "mevoGlow", x: "-200%", y: "-200%", width: "500%", height: "500%" },
                                     React.createElement("feGaussianBlur", { stdDeviation: "1.4", result: "blur" }),
@@ -70608,8 +70608,8 @@ function CarteGalop({ galop, tr, termines, total, verrouille, aVenir, estDernier
             React.createElement("div", { style: { width: 12, height: 12, borderRadius: "50%", background: (verrouille || aVenir) ? COLORS.nuitBordure : galop.couleur, marginTop: 22, flexShrink: 0 } }),
             !estDernier && React.createElement("div", { style: { width: 2, flex: 1, background: COLORS.nuitBordure, marginTop: 4, marginBottom: 4 } })),
         React.createElement("button", { onClick: onClick, style: { flex: 1, textAlign: "left", background: COLORS.nuitClaire, position: "relative", overflow: "hidden", border: `1px solid ${COLORS.nuitBordure}`, borderRadius: 16, padding: 11, marginBottom: 10, display: "flex", alignItems: "center", gap: 11, opacity: aVenir ? 0.78 : (verrouille ? 0.7 : 1) } },
-            (aVenir ? React.createElement("div", { style: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, zIndex: 3, pointerEvents: "none", background: `linear-gradient(to top right, transparent calc(50% - 0.5px), ${COLORS.turquoise}4D calc(50% - 0.5px), ${COLORS.turquoise}4D calc(50% + 0.5px), transparent calc(50% + 0.5px))` } }) : null),
-            (galop.nouveau && !aVenir ? React.createElement("span", { style: { position: "absolute", top: 10, right: 10, zIndex: 4, fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 800, letterSpacing: 1.4, color: COLORS.nuit, background: COLORS.turquoise, padding: "3px 8px", borderRadius: 999, boxShadow: `0 0 12px ${COLORS.turquoise}88`, textTransform: "uppercase" } }, "New") : null),
+            (aVenir ? React.createElement("div", { style: { position: "absolute", top: 0, right: 0, bottom: 0, left: 0, zIndex: 3, pointerEvents: "none", background: `linear-gradient(to top right, transparent calc(50% - 0.5px), ${"#20D9F5"}4D calc(50% - 0.5px), ${"#20D9F5"}4D calc(50% + 0.5px), transparent calc(50% + 0.5px))` } }) : null),
+            (galop.nouveau && !aVenir ? React.createElement("span", { style: { position: "absolute", top: 10, right: 10, zIndex: 4, fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 800, letterSpacing: 1.4, color: COLORS.nuit, background: "#20D9F5", padding: "3px 8px", borderRadius: 999, boxShadow: `0 0 12px ${"#20D9F5"}88`, textTransform: "uppercase" } }, "New") : null),
             React.createElement("div", { style: { width: 46, height: 46, borderRadius: 12, background: (verrouille || aVenir) ? COLORS.nuitElevee : (url ? `url(${url}) center/cover no-repeat` : `linear-gradient(135deg, ${galop.couleur}33, ${galop.couleur}0D)`), display: "flex", alignItems: "center", justifyContent: "center", fontSize: 19, flexShrink: 0, position: "relative", overflow: "hidden" } }, (verrouille || aVenir) ? "🔒" : (!url && galop.icone)),
             React.createElement("div", { style: { flex: 1 } },
                 React.createElement("p", { style: { margin: 0, fontSize: 14.5, fontWeight: 700, color: COLORS.blanc } }, tr(galop.titre)),
@@ -70620,7 +70620,7 @@ function CarteGalop({ galop, tr, termines, total, verrouille, aVenir, estDernier
                     React.createElement("span", { style: { fontSize: 11, color: COLORS.grisDoux, fontWeight: 600 } },
                         termines,
                         "/",
-                        total))) : aVenir ? (React.createElement("span", { style: { fontSize: 11, color: COLORS.grisDoux, fontWeight: 600, letterSpacing: 0.4 } }, tr({ fr: "À venir", en: "Coming soon", ja: "近日公開", es: "Próximamente", it: "Prossimamente", de: "Demnächst", ar: "\u0642\u0627\u062f\u0645" }))) : (React.createElement("span", { style: { fontSize: 11.5, color: "#CFE3E8", fontWeight: 700 } }, premiumLabel))))));
+                        total))) : aVenir ? (React.createElement("span", { style: { fontSize: 11, color: COLORS.grisDoux, fontWeight: 600, letterSpacing: 0.4 } }, tr({ fr: "À venir", en: "Coming soon", ja: "近日公開", es: "Próximamente", it: "Prossimamente", de: "Demnächst", ar: "\u0642\u0627\u062f\u0645" }))) : (React.createElement("span", { style: { fontSize: 11.5, color: "#7FE8F2", fontWeight: 700 } }, premiumLabel))))));
 }
 /* ---------- DÉTAIL D'UN GALOP ---------- */
 /* ---------- HEY BABY x COURS : questions sur mesure, flots & médailles ---------- */
@@ -70758,7 +70758,7 @@ const MEDAILLE_EMOJI = { bronze: "\uD83E\uDD49", argent: "\uD83E\uDD48", or: "\u
 function FlotSpectral({ taille, eteint }) {
     const w = taille || 14, hgt = Math.round(w * 1.5);
     const c1 = eteint ? "rgba(255,255,255,0.10)" : "#178A93";
-    const c2 = eteint ? "rgba(255,255,255,0.16)" : "#7FA3AD";
+    const c2 = eteint ? "rgba(255,255,255,0.16)" : "#20D9F5";
     const c3 = eteint ? "rgba(255,255,255,0.12)" : "#1AA6B0";
     const c4 = eteint ? "rgba(255,255,255,0.20)" : "#EAFEFF";
     return React.createElement("svg", { viewBox: "0 0 24 36", width: w, height: hgt, style: { display: "block", overflow: "visible", flexShrink: 0 } },
@@ -70812,7 +70812,7 @@ function GardeGalopPremium(props) {
     nomG ? h("div", { style: { fontSize: 12, letterSpacing: "0.18em", textTransform: "uppercase", color: COLORS.grisDoux, marginBottom: 8 } }, nomG) : null,
     h("div", { style: { fontSize: 21, fontWeight: 700, color: COLORS.blanc, marginBottom: 10 } }, app.t("premium_requis")),
     h("div", { style: { fontSize: 14, lineHeight: 1.5, color: COLORS.grisDoux, maxWidth: 320, marginBottom: 26 } }, app.t("premium_avantage_court")),
-    h("button", { type: "button", onClick: function () { app.setEcran("premium"); }, style: { minHeight: 48, padding: "0 28px", borderRadius: 999, border: "none", background: COLORS.turquoise, color: COLORS.nuit, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 12 } }, app.t("decouvrir_premium")),
+    h("button", { type: "button", onClick: function () { app.setEcran("premium"); }, style: { minHeight: 48, padding: "0 28px", borderRadius: 999, border: "none", background: "#20D9F5", color: COLORS.nuit, fontSize: 15, fontWeight: 700, cursor: "pointer", marginBottom: 12 } }, app.t("decouvrir_premium")),
     h("button", { type: "button", onClick: retour, style: { minHeight: 44, padding: "0 22px", borderRadius: 999, border: "1px solid " + COLORS.nuitBordure, background: "transparent", color: COLORS.blanc, fontSize: 14, cursor: "pointer" } }, tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る", de: "Zurück", ar: "رجوع" })));
 }
 function EcranGalopDetail() {
@@ -70824,7 +70824,7 @@ function EcranGalopDetail() {
     const coursListe = obtenirCoursParGalop(galopOuvert, langue);
     const [tab, setTab] = useState("cours");
     const CATEGORIES_COURS = [
-        { cle: "connaissance", couleur: "#7FA3AD", titre: { fr: "Connaissance du cheval", en: "Knowing the horse", ja: "馬を知る", es: "Conocer al caballo", it: "Conoscere il cavallo", de: "Pferdekunde", ar: "\u0645\u0639\u0631\u0641\u0629 \u0627\u0644\u062d\u0635\u0627\u0646" } },
+        { cle: "connaissance", couleur: "#20D9F5", titre: { fr: "Connaissance du cheval", en: "Knowing the horse", ja: "馬を知る", es: "Conocer al caballo", it: "Conoscere il cavallo", de: "Pferdekunde", ar: "\u0645\u0639\u0631\u0641\u0629 \u0627\u0644\u062d\u0635\u0627\u0646" } },
         { cle: "technique", couleur: "#5B8DEF", titre: { fr: "Équitation", en: "Equitation", ja: "騎乗", es: "Equitación", it: "Equitazione", de: "Reiten", ar: "\u0627\u0644\u0641\u0631\u0648\u0633\u064a\u0629" } },
         { cle: "culture", couleur: "#A78BDB", titre: { fr: "Culture équestre", en: "Equestrian culture", ja: "馬術文化", es: "Cultura ecuestre", it: "Cultura equestre", de: "Reitkultur", ar: "\u062b\u0642\u0627\u0641\u0629 \u0627\u0644\u0641\u0631\u0648\u0633\u064a\u0629" } },
         { cle: "vie", couleur: "#E0A85A", titre: { fr: "Vie équestre", en: "Equestrian life", ja: "馬術ライフ", es: "Vida ecuestre", it: "Vita equestre", de: "Reiterleben", ar: "\u062d\u064a\u0627\u0629 \u0627\u0644\u0641\u0631\u0648\u0633\u064a\u0629" } },
@@ -70875,8 +70875,8 @@ function EcranGalopDetail() {
                 React.createElement("button", { onClick: () => setEcran("galops"), style: { width: 38, height: 38, borderRadius: 12, background: "rgba(255,255,255,0.15)", color: COLORS.blanc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, marginBottom: 14, flexShrink: 0 } }, "\u2190"),
                 React.createElement("div", { style: { marginTop: "auto", textAlign: "center" } },
                     React.createElement("h1", { style: { margin: 0, fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: "clamp(30px, 9vw, 44px)", letterSpacing: "3px", color: COLORS.blanc, lineHeight: 1.05 } }, tr(galop.titre)),
-                    React.createElement("p", { style: { margin: "8px 0 0", fontFamily: "'Cinzel', serif", fontWeight: 500, fontSize: "clamp(12px, 3.6vw, 15px)", letterSpacing: "4px", color: COLORS.turquoise } }, tr(galop.sousTitre))))),
-        React.createElement("div", { style: { display: "flex", padding: "16px 20px 0", gap: 8 } }, (galop.id === "baby" ? [{ id: "cours", label: t("onglet_cours") }] : [{ id: "cours", label: t("onglet_cours") }, { id: "quiz", label: t("onglet_quiz") }, { id: "examen", label: t("onglet_examen") }]).map((tb) => (React.createElement("button", { key: tb.id, onClick: () => setTab(tb.id), style: { flex: 1, padding: "10px 0", borderRadius: 12, background: tab === tb.id ? COLORS.turquoise : COLORS.nuitClaire, color: tab === tb.id ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${tab === tb.id ? COLORS.turquoise : COLORS.nuitBordure}`, fontSize: 13, fontWeight: 700 } }, tb.label)))),
+                    React.createElement("p", { style: { margin: "8px 0 0", fontFamily: "'Cinzel', serif", fontWeight: 500, fontSize: "clamp(12px, 3.6vw, 15px)", letterSpacing: "4px", color: "#20D9F5" } }, tr(galop.sousTitre))))),
+        React.createElement("div", { style: { display: "flex", padding: "16px 20px 0", gap: 8 } }, (galop.id === "baby" ? [{ id: "cours", label: t("onglet_cours") }] : [{ id: "cours", label: t("onglet_cours") }, { id: "quiz", label: t("onglet_quiz") }, { id: "examen", label: t("onglet_examen") }]).map((tb) => (React.createElement("button", { key: tb.id, onClick: () => setTab(tb.id), style: { flex: 1, padding: "10px 0", borderRadius: 12, background: tab === tb.id ? "#20D9F5" : COLORS.nuitClaire, color: tab === tb.id ? COLORS.nuit : COLORS.grisDoux, border: `1px solid ${tab === tb.id ? "#20D9F5" : COLORS.nuitBordure}`, fontSize: 13, fontWeight: 700 } }, tb.label)))),
         tab === "cours" && coursListe.length > 0 && React.createElement("div", { style: { padding: "14px 20px 0" } }, React.createElement(BadgeGalop, { complet: coursListe.length > 0 && coursListe.every((c) => coursTermines.includes(c.id)), couleur: galop.couleur, tr: tr })),
         React.createElement("div", { style: { padding: "16px 20px" } },
             tab === "cours" && galop.id === "baby" && (React.createElement(CheminPoneyBaby, { coursListe: coursListe, quizResultats: quizResultats, coursTermines: coursTermines, tr: tr, onOuvrir: (id) => { setCoursOuvert(id); setEcran("cours"); } })),
@@ -70899,12 +70899,12 @@ function EcranGalopDetail() {
             })(),
             tab === "cours" && galop.id === "baby" && (React.createElement(JeuxGalop, { tr: tr, setEcran: setEcran, setJeuOuvert: setJeuOuvert })),
             tab === "cours" && [3, 4, 5, 6, 7].includes(galop.id) && (React.createElement(BlocReprisesGalop, { tr: tr, setEcran: setEcran, setJeuOuvert: setJeuOuvert, galopId: galop.id })),
-            tab === "quiz" && galop.id === 1 && (React.createElement("button", { onClick: () => setImpression(true), style: { width: "100%", display: "flex", alignItems: "center", gap: 12, background: COLORS.nuitClaire, border: `1px dashed ${COLORS.turquoise}`, borderRadius: 16, padding: "13px 16px", marginBottom: 12, textAlign: "left" } },
+            tab === "quiz" && galop.id === 1 && (React.createElement("button", { onClick: () => setImpression(true), style: { width: "100%", display: "flex", alignItems: "center", gap: 12, background: COLORS.nuitClaire, border: `1px dashed ${"#20D9F5"}`, borderRadius: 16, padding: "13px 16px", marginBottom: 12, textAlign: "left" } },
                 React.createElement("span", { style: { fontSize: 20 } }, "\uD83D\uDDA8\uFE0F"),
                 React.createElement("div", { style: { flex: 1 } },
-                    React.createElement("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 700, color: COLORS.turquoiseDark } }, t("impr_bouton")),
+                    React.createElement("p", { style: { margin: 0, fontSize: 13.5, fontWeight: 700, color: "#17A8B3" } }, t("impr_bouton")),
                     React.createElement("p", { style: { margin: "1px 0 0", fontSize: 11.5, color: COLORS.encreDoux } }, t("impr_sous"))),
-                React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 16 } }, "\u2192"))),
+                React.createElement("span", { style: { color: "#20D9F5", fontSize: 16 } }, "\u2192"))),
             tab === "quiz" && coursListe.filter((cours) => coursEstPret(galop.id, cours.id) || estModGD).map((cours) => (React.createElement(CarteQuizApercu, { key: cours.id, cours: cours, resultat: quizResultats[cours.id], meilleurScoreLabel: t("meilleur_score"), pasTenteLabel: t("pas_encore_tente"), onClick: () => { setCoursOuvert(cours.id); setEcran("quiz"); } }))),
             tab === "quiz" && galop.id === 3 && typeof COURS_QCM_GLOBAL_G3 !== "undefined" && (React.createElement(CarteQuizApercu, { key: "g3-qcm-global", cours: Object.assign({}, COURS_QCM_GLOBAL_G3, { titre: tr(COURS_QCM_GLOBAL_G3.titre) }), resultat: quizResultats["g3-qcm-global"], meilleurScoreLabel: t("meilleur_score"), pasTenteLabel: t("pas_encore_tente"), onClick: () => { setCoursOuvert("g3-qcm-global"); setEcran("quiz"); } })),
             coursListe.length === 0 && tab !== "examen" && (React.createElement("div", { style: { background: COLORS.nuitClaire, borderRadius: 20, padding: "34px 22px", textAlign: "center", border: "1px solid " + COLORS.ligne } }, React.createElement("div", { style: { fontSize: 40, marginBottom: 12, opacity: 0.9 } }, "\uD83D\uDD12"), React.createElement("h3", { style: { margin: "0 0 6px", color: COLORS.encre, fontSize: 17 } }, tr({ fr: "Bient\u00f4t disponible", en: "Coming soon", es: "Pr\u00f3ximamente", it: "Presto disponibile", ja: "\u8fd1\u65e5\u516c\u958b", de: "Bald verf\u00fcgbar", ar: "\u0645\u062a\u0627\u062d \u0642\u0631\u064a\u0628\u0627" })), React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 13.5, margin: 0, lineHeight: 1.5 } }, tr({ fr: "Ce galop arrive prochainement.", en: "This level is coming soon.", es: "Este galop llegar\u00e1 pronto.", it: "Questo livello arriver\u00e0 presto.", ja: "\u3053\u306e\u30ec\u30d9\u30eb\u306f\u8fd1\u65e5\u516c\u958b\u4e88\u5b9a\u3067\u3059\u3002", de: "Dieser Galop kommt bald.", ar: "\u0647\u0630\u0627 \u0627\u0644\u063a\u0627\u0644\u0648\u0628 \u0642\u0627\u062f\u0645 \u0642\u0631\u064a\u0628\u0627." })))),
@@ -70915,7 +70915,7 @@ function EcranGalopDetail() {
                 React.createElement(BoutonPrincipal, { texte: t("demarrer_examen_blanc"), couleur: galop.couleur, onClick: () => setEcran("examen-blanc") }))))));
 }
 function CarteCours({ cours, termine, score, couleur, niveau, onClick, tr, prochainement, nouveau }) {
-    const acc = couleur || "#7FA3AD";
+    const acc = couleur || "#20D9F5";
     const maitrise = chapitreMaitrise(score);
     const aMaitrise = (medaillePourScore(score) || nbFlotsPourScore(score) > 0);
     const L = tr || ((o) => (o && o.fr) || "");
@@ -70926,11 +70926,11 @@ function CarteCours({ cours, termine, score, couleur, niveau, onClick, tr, proch
                 React.createElement("p", { style: { margin: 0, fontSize: 14.5, fontWeight: 700, color: COLORS.grisDoux } }, cours.titre),
                 React.createElement("p", { style: { margin: "3px 0 0", fontSize: 10.5, fontWeight: 800, letterSpacing: 1.2, textTransform: "uppercase", color: COLORS.encreDoux } }, L({ fr: "Prochainement", en: "Coming soon", es: "Próximamente", it: "Prossimamente", ja: "近日公開" , de: "Demnächst", ar: "\u0642\u0631\u064a\u0628\u0627"})))));
     }
-    return (React.createElement("button", { onClick: onClick, style: { position: "relative", width: "100%", textAlign: "left", background: COLORS.nuitClaire, border: maitrise ? `1px solid ${COLORS.turquoise}` : `1px solid ${COLORS.ligne}`, borderLeft: `3px solid ${acc}`, borderRadius: 16, padding: 14, marginBottom: 10, display: "flex", alignItems: "center", gap: 12, boxShadow: maitrise ? `0 0 16px ${COLORS.turquoise}44, inset 0 0 22px ${COLORS.turquoise}10` : "none" } },
-        (nouveau ? React.createElement("span", { style: { position: "absolute", top: 8, right: 10, zIndex: 4, fontFamily: "'Montserrat',sans-serif", fontSize: 9, fontWeight: 800, letterSpacing: 1.3, color: COLORS.nuit, background: COLORS.turquoise, padding: "2px 7px", borderRadius: 999, boxShadow: `0 0 10px ${COLORS.turquoise}88`, textTransform: "uppercase" } }, "New") : null),
+    return (React.createElement("button", { onClick: onClick, style: { position: "relative", width: "100%", textAlign: "left", background: COLORS.nuitClaire, border: maitrise ? `1px solid ${"#20D9F5"}` : `1px solid ${COLORS.ligne}`, borderLeft: `3px solid ${acc}`, borderRadius: 16, padding: 14, marginBottom: 10, display: "flex", alignItems: "center", gap: 12, boxShadow: maitrise ? `0 0 16px ${"#20D9F5"}44, inset 0 0 22px ${"#20D9F5"}10` : "none" } },
+        (nouveau ? React.createElement("span", { style: { position: "absolute", top: 8, right: 10, zIndex: 4, fontFamily: "'Montserrat',sans-serif", fontSize: 9, fontWeight: 800, letterSpacing: 1.3, color: COLORS.nuit, background: "#20D9F5", padding: "2px 7px", borderRadius: 999, boxShadow: `0 0 10px ${"#20D9F5"}88`, textTransform: "uppercase" } }, "New") : null),
         React.createElement("div", { style: { position: "relative", flexShrink: 0 } },
             React.createElement("div", { style: { width: 40, height: 40, borderRadius: "50%", background: `${acc}1A`, border: `1.5px solid ${acc}`, color: acc, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, letterSpacing: 0.3 } }, niveau || "G1"),
-            termine && React.createElement("svg", { viewBox: "0 0 24 36", width: 20, height: 30, style: { position: "absolute", top: -9, right: -8, overflow: "visible" } }, React.createElement("path", { d: "M9.5 11 L9.5 33 L12 28.5 L14.5 33 L14.5 11 Z", transform: "rotate(-17 12 12)", fill: "#178A93" }), React.createElement("path", { d: "M9.5 11 L9.5 33 L12 28.5 L14.5 33 L14.5 11 Z", transform: "rotate(17 12 12)", fill: "#7FA3AD" }), React.createElement("polygon", { points: "12.00,3.50 13.71,5.62 16.25,4.64 16.67,7.33 19.36,7.75 18.38,10.29 20.50,12.00 18.38,13.71 19.36,16.25 16.67,16.67 16.25,19.36 13.71,18.38 12.00,20.50 10.29,18.38 7.75,19.36 7.33,16.67 4.64,16.25 5.62,13.71 3.50,12.00 5.62,10.29 4.64,7.75 7.33,7.33 7.75,4.64 10.29,5.62", fill: "#7FA3AD" }), React.createElement("circle", { cx: 12, cy: 12, r: 6, fill: "#1AA6B0" }), React.createElement("circle", { cx: 12, cy: 12, r: 2.4, fill: "#EAFEFF" }))),
+            termine && React.createElement("svg", { viewBox: "0 0 24 36", width: 20, height: 30, style: { position: "absolute", top: -9, right: -8, overflow: "visible" } }, React.createElement("path", { d: "M9.5 11 L9.5 33 L12 28.5 L14.5 33 L14.5 11 Z", transform: "rotate(-17 12 12)", fill: "#178A93" }), React.createElement("path", { d: "M9.5 11 L9.5 33 L12 28.5 L14.5 33 L14.5 11 Z", transform: "rotate(17 12 12)", fill: "#20D9F5" }), React.createElement("polygon", { points: "12.00,3.50 13.71,5.62 16.25,4.64 16.67,7.33 19.36,7.75 18.38,10.29 20.50,12.00 18.38,13.71 19.36,16.25 16.67,16.67 16.25,19.36 13.71,18.38 12.00,20.50 10.29,18.38 7.75,19.36 7.33,16.67 4.64,16.25 5.62,13.71 3.50,12.00 5.62,10.29 4.64,7.75 7.33,7.33 7.75,4.64 10.29,5.62", fill: "#20D9F5" }), React.createElement("circle", { cx: 12, cy: 12, r: 6, fill: "#1AA6B0" }), React.createElement("circle", { cx: 12, cy: 12, r: 2.4, fill: "#EAFEFF" }))),
         React.createElement("div", { style: { flex: 1, minWidth: 0 } },
             React.createElement("p", { style: { margin: 0, fontSize: 14.5, fontWeight: 700, color: COLORS.encre } }, cours.titre),
             aMaitrise
@@ -70960,22 +70960,22 @@ function CouvertureCours({ bloc, onCommencer, onRetour, langue }) {
     ], { stroke: COLORS.soleil });
     const icListe = ic([
         React.createElement("path", { d: "M9 6 H20 M9 12 H20 M9 18 H20", key: "a" }),
-        React.createElement("rect", { x: 3.4, y: 4.6, width: 2.8, height: 2.8, rx: 0.8, key: "b", fill: COLORS.turquoise, stroke: "none" }),
-        React.createElement("rect", { x: 3.4, y: 10.6, width: 2.8, height: 2.8, rx: 0.8, key: "c", fill: COLORS.turquoise, stroke: "none" }),
-        React.createElement("rect", { x: 3.4, y: 16.6, width: 2.8, height: 2.8, rx: 0.8, key: "d", fill: COLORS.turquoise, stroke: "none" })
-    ], { stroke: COLORS.turquoise });
+        React.createElement("rect", { x: 3.4, y: 4.6, width: 2.8, height: 2.8, rx: 0.8, key: "b", fill: "#20D9F5", stroke: "none" }),
+        React.createElement("rect", { x: 3.4, y: 10.6, width: 2.8, height: 2.8, rx: 0.8, key: "c", fill: "#20D9F5", stroke: "none" }),
+        React.createElement("rect", { x: 3.4, y: 16.6, width: 2.8, height: 2.8, rx: 0.8, key: "d", fill: "#20D9F5", stroke: "none" })
+    ], { stroke: "#20D9F5" });
     const icEtoile = React.createElement("svg", { viewBox: "0 0 24 24", width: 19, height: 19, fill: "none", stroke: COLORS.soleil, strokeWidth: 1.6, strokeLinejoin: "round" },
         React.createElement("path", { d: "M12 4 L14.3 9.1 L19.8 9.7 L15.7 13.4 L16.9 18.8 L12 16 L7.1 18.8 L8.3 13.4 L4.2 9.7 L9.7 9.1 Z" }),
         React.createElement("circle", { cx: 12, cy: 12.2, r: 1, fill: COLORS.soleil, stroke: "none" }));
     const icRetour = React.createElement("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
         React.createElement("path", { d: "M15 5 L8 12 L15 19" }));
-    const icSignet = React.createElement("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: enregistre ? COLORS.turquoise : "none", stroke: enregistre ? COLORS.turquoise : COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
+    const icSignet = React.createElement("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: enregistre ? "#20D9F5" : "none", stroke: enregistre ? "#20D9F5" : COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
         React.createElement("path", { d: "M6 4 H18 V20 L12 16 L6 20 Z" }));
     const bouclier = React.createElement("svg", { viewBox: "0 0 48 58", width: 60, height: 74 },
-        React.createElement("path", { d: "M24 4 C30 7 36 8.5 42 9 C42 26.5 37 42.5 24 51.5 C11 42.5 6 26.5 6 9 C12 8.5 18 7 24 4 Z", fill: COLORS.turquoise + "12", stroke: COLORS.turquoise, strokeWidth: 2.6, strokeLinejoin: "round" }),
-        React.createElement("path", { d: "M20.4 15.4 L22.7 11.3 L24.3 16.3 Z", fill: COLORS.turquoise }),
-        React.createElement("path", { d: "M25.7 14.1 L29.2 10.9 L28.9 16.7 Z", fill: COLORS.turquoise }),
-        React.createElement("path", { d: "M23.7 16.5 C21.7 17.4 19.7 19.3 18.2 21.7 C16.7 24.1 15.2 25.7 13.6 26.7 C12.8 27.2 12.9 28.4 13.8 28.7 C14.8 29 15.9 28.7 16.7 28.1 C17.2 30.1 17.6 32.1 18.1 33.7 C18.6 36.2 20.2 38.7 22.7 40.2 C25.2 41.2 28.2 41.2 30.7 39.6 C29.6 36.1 29.1 33.1 30.2 30.1 C31.7 27.1 33.1 24 33.1 20.6 C33.1 18.1 32 16.6 30 16.1 C28 15.6 25.7 15.5 23.7 16.5 Z", fill: COLORS.turquoise }))
+        React.createElement("path", { d: "M24 4 C30 7 36 8.5 42 9 C42 26.5 37 42.5 24 51.5 C11 42.5 6 26.5 6 9 C12 8.5 18 7 24 4 Z", fill: "#20D9F5" + "12", stroke: "#20D9F5", strokeWidth: 2.6, strokeLinejoin: "round" }),
+        React.createElement("path", { d: "M20.4 15.4 L22.7 11.3 L24.3 16.3 Z", fill: "#20D9F5" }),
+        React.createElement("path", { d: "M25.7 14.1 L29.2 10.9 L28.9 16.7 Z", fill: "#20D9F5" }),
+        React.createElement("path", { d: "M23.7 16.5 C21.7 17.4 19.7 19.3 18.2 21.7 C16.7 24.1 15.2 25.7 13.6 26.7 C12.8 27.2 12.9 28.4 13.8 28.7 C14.8 29 15.9 28.7 16.7 28.1 C17.2 30.1 17.6 32.1 18.1 33.7 C18.6 36.2 20.2 38.7 22.7 40.2 C25.2 41.2 28.2 41.2 30.7 39.6 C29.6 36.1 29.1 33.1 30.2 30.1 C31.7 27.1 33.1 24 33.1 20.6 C33.1 18.1 32 16.6 30 16.1 C28 15.6 25.7 15.5 23.7 16.5 Z", fill: "#20D9F5" }))
     const chip = (icone, valeur, label) => React.createElement("div", { style: { flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, padding: "0 4px" } },
         React.createElement("span", { style: { flexShrink: 0, display: "flex" } }, icone),
         React.createElement("div", null,
@@ -70983,7 +70983,7 @@ function CouvertureCours({ bloc, onCommencer, onRetour, langue }) {
             React.createElement("div", { style: { fontSize: 12, color: COLORS.grisDoux, lineHeight: 1.2 } }, label)));
     const sep = () => React.createElement("div", { style: { width: 1, alignSelf: "stretch", background: "rgba(255,255,255,0.13)", margin: "3px 0" } });
     return React.createElement("div", { "data-noswipe": "true", style: { minHeight: "calc(100dvh - 84px)", background: COLORS.nuit, position: "relative", display: "flex", flexDirection: "column", overflow: "hidden" } },
-        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: hero ? ("url(" + hero + ") 50% 10%/100% auto no-repeat") : ("linear-gradient(160deg, " + COLORS.turquoiseDim + ", " + COLORS.nuit + ")") } }),
+        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: hero ? ("url(" + hero + ") 50% 10%/100% auto no-repeat") : ("linear-gradient(160deg, " + "#1B4A4E" + ", " + COLORS.nuit + ")") } }),
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: "linear-gradient(180deg, " + COLORS.nuit + "33 0%, " + COLORS.nuit + "00 22%, " + COLORS.nuit + "66 46%, " + COLORS.nuit + "E6 68%, " + COLORS.nuit + " 86%)" } }),
         React.createElement("style", null, "@keyframes brumeUn{0%,100%{transform:translate3d(-18%,4%,0) scale(1.1);opacity:.07}50%{transform:translate3d(16%,-3%,0) scale(1.38);opacity:.22}}@keyframes brumeDeux{0%,100%{transform:translate3d(18%,3%,0) scale(1.3);opacity:.20}50%{transform:translate3d(-15%,8%,0) scale(1.52);opacity:.06}}@keyframes brumeTrois{0%,100%{transform:translate3d(0,7%,0) scale(1.15);opacity:.06}50%{transform:translate3d(11%,-4%,0) scale(1.46);opacity:.21}}"),
         React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 1, overflow: "hidden", pointerEvents: "none" } },
@@ -70994,20 +70994,20 @@ function CouvertureCours({ bloc, onCommencer, onRetour, langue }) {
         React.createElement("div", { style: { position: "absolute", top: 16, right: 16, zIndex: 3, display: "flex", alignItems: "center", gap: 8 } }, React.createElement(SelecteurLangue, { compact: true }), React.createElement("button", { onClick: () => setEnregistre((v) => !v), "aria-label": hypeT7("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern", "\u062d\u0641\u0638"), style: { width: 42, height: 42, borderRadius: "50%", background: "rgba(8,10,13,0.5)", border: "1px solid rgba(255,255,255,0.16)", display: "flex", alignItems: "center", justifyContent: "center", padding: 0, flexShrink: 0 } }, icSignet)),
         React.createElement("div", { style: { position: "relative", zIndex: 2, flex: 1, padding: "0 26px 32px", display: "flex", flexDirection: "column", alignItems: "flex-start", textAlign: "left" } },
             React.createElement("div", { style: { height: "41vh", flexShrink: 0 } }),
-            bloc.galopLabel ? React.createElement("div", { style: { fontFamily: "'Oswald', system-ui, sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: COLORS.turquoise } }, L(bloc.galopLabel)) : null,
-            React.createElement("div", { style: { width: 38, height: 3, borderRadius: 2, background: COLORS.turquoise, margin: "8px 0 14px" } }),
+            bloc.galopLabel ? React.createElement("div", { style: { fontFamily: "'Oswald', system-ui, sans-serif", fontSize: 15, fontWeight: 600, letterSpacing: 3, textTransform: "uppercase", color: "#20D9F5" } }, L(bloc.galopLabel)) : null,
+            React.createElement("div", { style: { width: 38, height: 3, borderRadius: 2, background: "#20D9F5", margin: "8px 0 14px" } }),
             React.createElement("h1", { style: { margin: 0, fontFamily: "'Anton', system-ui, sans-serif", fontWeight: 400, textTransform: "uppercase", lineHeight: 0.92, letterSpacing: "0.5px" } },
                 React.createElement("span", { style: { display: "block", fontSize: "clamp(34px, 11.5vw, 52px)", color: COLORS.blanc } }, L(bloc.titre1)),
-                React.createElement("span", { style: { display: "block", fontFamily: "'Oswald', system-ui, sans-serif", fontWeight: 600, fontSize: "clamp(19px, 6.2vw, 27px)", letterSpacing: 3, color: COLORS.turquoise, marginTop: 4 } }, L(bloc.titre2))),
-            React.createElement("div", { style: { width: 48, height: 4, borderRadius: 2, background: COLORS.turquoise, opacity: 0.9, margin: "20px 0 16px" } }),
-            bloc.intro ? React.createElement("p", { style: { alignSelf: "stretch", margin: "18px 0 0", fontSize: 17, lineHeight: 1.55, color: "rgba(255,255,255,0.86)", textAlign: "left", whiteSpace: "pre-line", fontWeight: 500 } }, L(bloc.intro), bloc.introAccroche ? React.createElement("span", { style: { display: "block", color: COLORS.turquoise, fontWeight: 700, marginTop: 2 } }, L(bloc.introAccroche)) : null) : null,
+                React.createElement("span", { style: { display: "block", fontFamily: "'Oswald', system-ui, sans-serif", fontWeight: 600, fontSize: "clamp(19px, 6.2vw, 27px)", letterSpacing: 3, color: "#20D9F5", marginTop: 4 } }, L(bloc.titre2))),
+            React.createElement("div", { style: { width: 48, height: 4, borderRadius: 2, background: "#20D9F5", opacity: 0.9, margin: "20px 0 16px" } }),
+            bloc.intro ? React.createElement("p", { style: { alignSelf: "stretch", margin: "18px 0 0", fontSize: 17, lineHeight: 1.55, color: "rgba(255,255,255,0.86)", textAlign: "left", whiteSpace: "pre-line", fontWeight: 500 } }, L(bloc.intro), bloc.introAccroche ? React.createElement("span", { style: { display: "block", color: "#20D9F5", fontWeight: 700, marginTop: 2 } }, L(bloc.introAccroche)) : null) : null,
             React.createElement("div", { style: { alignSelf: "stretch", display: "flex", alignItems: "stretch", margin: "26px 0 0" } },
                 chip(icHorloge, L(bloc.duree), L(bloc.dureeLabel) || "de lecture"),
                 sep(),
                 chip(icListe, L(bloc.notions), L(bloc.notionsLabel) || "à découvrir"),
                 sep(),
                 chip(icEtoile, L(bloc.niveau), L(bloc.niveauLabel) || "")),
-            React.createElement("button", { onClick: onCommencer, style: { alignSelf: "stretch", marginTop: 20, width: "100%", padding: "18px 24px", borderRadius: 18, background: COLORS.turquoise, border: "none", color: COLORS.nuit, fontWeight: 800, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: "0 12px 30px " + COLORS.turquoise + "3A" } },
+            React.createElement("button", { onClick: onCommencer, style: { alignSelf: "stretch", marginTop: 20, width: "100%", padding: "18px 24px", borderRadius: 18, background: "#20D9F5", border: "none", color: COLORS.nuit, fontWeight: 800, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", gap: 10, boxShadow: "0 12px 30px " + "#20D9F5" + "3A" } },
                 L(bloc.boutonTexte) || hypeT7("Commencer le cours", "Start the lesson", "Empezar el curso", "Inizia la lezione", "\u30ec\u30c3\u30b9\u30f3\u3092\u59cb\u3081\u308b", "Lektion beginnen", "\u0628\u062f\u0621 \u0627\u0644\u062f\u0631\u0633"),
                 React.createElement("span", { style: { fontSize: 20 } }, "→"))));
 }
@@ -71020,12 +71020,12 @@ function SommaireCours({ bloc, total, baseIdx, progression, onRetour, onAllerA, 
         bouclier: svg([
             React.createElement("path", { d: "M12 3 L19 5.5 C19 13 16 18 12 20.8 C8 18 5 13 5 5.5 Z", key: "a" }),
             React.createElement("path", { d: "M9.6 10.8 C9.6 9.2 10.9 8.2 12.2 9 C13.1 9.6 13.2 10.9 12.4 11.7 L10.8 13.2", key: "b" }),
-            React.createElement("circle", { cx: 10.5, cy: 14.6, r: 0.6, fill: COLORS.turquoise, stroke: "none", key: "c" })
-        ], { stroke: COLORS.turquoise }),
+            React.createElement("circle", { cx: 10.5, cy: 14.6, r: 0.6, fill: "#20D9F5", stroke: "none", key: "c" })
+        ], { stroke: "#20D9F5" }),
         check: svg([
             React.createElement("circle", { cx: 12, cy: 12, r: 8.6, key: "a" }),
             React.createElement("path", { d: "M8 12.4 L10.9 15.3 L16.3 9.2", key: "b" })
-        ], { stroke: COLORS.turquoise }),
+        ], { stroke: "#20D9F5" }),
         feu: React.createElement("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none" },
             React.createElement("rect", { x: 8.6, y: 2.6, width: 6.8, height: 18.8, rx: 3, stroke: COLORS.soleil, strokeWidth: 1.6 }),
             React.createElement("circle", { cx: 12, cy: 7, r: 1.7, fill: COLORS.corail }),
@@ -71048,11 +71048,11 @@ function SommaireCours({ bloc, total, baseIdx, progression, onRetour, onAllerA, 
         distance: svg([
             React.createElement("path", { d: "M4 12 H20 M4 12 L7.2 9 M4 12 L7.2 15 M20 12 L16.8 9 M20 12 L16.8 15", key: "a" }),
             React.createElement("path", { d: "M4.6 6.5 V17.5 M19.4 6.5 V17.5", key: "b", opacity: 0.55 })
-        ], { stroke: COLORS.turquoise }),
+        ], { stroke: "#20D9F5" }),
         parole: svg([
             React.createElement("path", { d: "M5 6.5 H19 A2 2 0 0 1 21 8.5 V14 A2 2 0 0 1 19 16 H11.5 L7.5 19.4 V16 H5 A2 2 0 0 1 3 14 V8.5 A2 2 0 0 1 5 6.5 Z", key: "a" }),
             React.createElement("path", { d: "M7.6 10.3 H16.4 M7.6 12.8 H13.2", key: "b", opacity: 0.85 })
-        ], { stroke: COLORS.turquoise }),
+        ], { stroke: "#20D9F5" }),
         alerte: svg([
             React.createElement("path", { d: "M12 4 L20.6 19 H3.4 Z", key: "a" }),
             React.createElement("path", { d: "M12 9.8 V14", key: "b" }),
@@ -71062,7 +71062,7 @@ function SommaireCours({ bloc, total, baseIdx, progression, onRetour, onAllerA, 
     const chevron = React.createElement("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: COLORS.grisDoux, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" },
         React.createElement("path", { d: "M9 6 L15 12 L9 18" }));
     const carte = (it, idx) => React.createElement("button", { key: idx, onClick: () => onAllerA(baseIdx + idx + 1), style: { width: "100%", textAlign: "left", display: "flex", alignItems: "center", gap: 14, background: "rgba(11,14,19,0.55)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 18, padding: "14px 16px", marginBottom: 12 } },
-        React.createElement("span", { style: { width: 36, flexShrink: 0, textAlign: "center", fontSize: 26, fontWeight: 800, color: COLORS.turquoise, lineHeight: 1 } }, it.num),
+        React.createElement("span", { style: { width: 36, flexShrink: 0, textAlign: "center", fontSize: 26, fontWeight: 800, color: "#20D9F5", lineHeight: 1 } }, it.num),
         React.createElement("div", { style: { flex: 1, minWidth: 0 } },
             React.createElement("div", { style: { fontSize: 15.5, fontWeight: 700, color: COLORS.blanc, lineHeight: 1.2 } }, L(it.titre)),
             (L(it.sousTitre) ? React.createElement("div", { style: { fontSize: 12.5, color: COLORS.grisDoux, lineHeight: 1.3, marginTop: 2 } }, L(it.sousTitre)) : null)),
@@ -71082,15 +71082,15 @@ function SommaireCours({ bloc, total, baseIdx, progression, onRetour, onAllerA, 
         React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "10px 20px 14px", position: "relative", zIndex: 1 } },
             React.createElement("div", { style: { margin: "8px 0 0" } },
                 React.createElement("p", { style: { margin: 0, fontSize: 15, fontStyle: "italic", lineHeight: 1.5, color: COLORS.grisDoux } }, L(bloc.citation)),
-                bloc.citationAuteur ? React.createElement("p", { style: { margin: "7px 0 0", fontSize: 13, fontWeight: 600, color: COLORS.turquoise, textAlign: "right" } }, "— " + bloc.citationAuteur) : null),
-            React.createElement("div", { style: { width: 46, height: 4, borderRadius: 2, background: COLORS.turquoise, opacity: 0.85, margin: "16px 0 22px" } }),
+                bloc.citationAuteur ? React.createElement("p", { style: { margin: "7px 0 0", fontSize: 13, fontWeight: 600, color: "#20D9F5", textAlign: "right" } }, "— " + bloc.citationAuteur) : null),
+            React.createElement("div", { style: { width: 46, height: 4, borderRadius: 2, background: "#20D9F5", opacity: 0.85, margin: "16px 0 22px" } }),
             items.map((it, i) => carte(it, i))),
         React.createElement("div", { style: { position: "relative", zIndex: 1, padding: "12px 20px 18px", borderTop: "1px solid rgba(255,255,255,0.07)", background: COLORS.nuit } },
             React.createElement("div", { style: { display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 } },
                 React.createElement("span", { style: { fontSize: 13, fontWeight: 600, color: COLORS.encreDoux } }, (PROG[langue] || PROG.fr)),
-                React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color: COLORS.turquoise } }, (progression || 0) + "%")),
+                React.createElement("span", { style: { fontSize: 13, fontWeight: 800, color: "#20D9F5" } }, (progression || 0) + "%")),
             React.createElement("div", { style: { height: 6, borderRadius: 3, background: "rgba(255,255,255,0.1)", overflow: "hidden" } },
-                React.createElement("div", { style: { height: "100%", width: (progression || 0) + "%", background: COLORS.turquoise, borderRadius: 3, transition: "width 0.4s" } }))));
+                React.createElement("div", { style: { height: "100%", width: (progression || 0) + "%", background: "#20D9F5", borderRadius: 3, transition: "width 0.4s" } }))));
 }
 function EnteteNotion({ chapitre, onRetour, langue }) {
     const L = (v) => (v && typeof v === "object" && !Array.isArray(v)) ? (v[langue] || v.fr || "") : (v == null ? "" : v);
@@ -71100,7 +71100,7 @@ function EnteteNotion({ chapitre, onRetour, langue }) {
             React.createElement("svg", { viewBox: "0 0 24 24", width: 24, height: 24, fill: "none", stroke: COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement("path", { d: "M15 5 L8 12 L15 19" }))),
         React.createElement("span", { style: { fontSize: 16.5, fontWeight: 700, color: COLORS.blanc } }, L(chapitre)),
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, React.createElement(SelecteurLangue, { compact: true }), React.createElement("button", { onClick: () => setEnr((v) => !v), "aria-label": hypeT7("Enregistrer", "Save", "Guardar", "Salva", "\u4fdd\u5b58", "Speichern", "\u062d\u0641\u0638"), style: { width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", background: "none", border: "none", padding: 0 } },
-            React.createElement("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: enr ? COLORS.turquoise : "none", stroke: enr ? COLORS.turquoise : COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement("path", { d: "M6 4 H18 V20 L12 16 L6 20 Z" })))));
+            React.createElement("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: enr ? "#20D9F5" : "none", stroke: enr ? "#20D9F5" : COLORS.blanc, strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement("path", { d: "M6 4 H18 V20 L12 16 L6 20 Z" })))));
 }
 function PageNotion({ bloc, onNext, onPrev, langue }) {
     const touch = useRef(null);
@@ -71134,16 +71134,16 @@ function PageNotion({ bloc, onNext, onPrev, langue }) {
     const diag = DIAG[li] || DIAG.fr;
     const icones = (typeof PHOTO_RISQUES_EXCLUSION !== "undefined") ? PHOTO_RISQUES_EXCLUSION : "";
     const labelSection = (txt) => React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, margin: "28px 0 16px" } },
-        React.createElement("span", { style: { fontSize: 13, fontWeight: 700, letterSpacing: 1.5, color: COLORS.turquoise, textTransform: "uppercase", whiteSpace: "nowrap" } }, txt),
+        React.createElement("span", { style: { fontSize: 13, fontWeight: 700, letterSpacing: 1.5, color: "#20D9F5", textTransform: "uppercase", whiteSpace: "nowrap" } }, txt),
         React.createElement("span", { style: { flex: 1, height: 1, background: "rgba(255,255,255,0.14)" } }));
     return React.createElement("div", { "data-noswipe": "true", onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "100vh", background: COLORS.nuit, padding: "20px 22px 44px" } },
         React.createElement(EnteteNotion, { chapitre: bloc.chapitre, onRetour: onPrev, langue: langue }),
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 18 } },
-            React.createElement("span", { style: { width: 42, height: 42, flexShrink: 0, borderRadius: "50%", background: COLORS.turquoise, color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 800 } }, String(bloc.numero || 1)),
+            React.createElement("span", { style: { width: 42, height: 42, flexShrink: 0, borderRadius: "50%", background: "#20D9F5", color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 800 } }, String(bloc.numero || 1)),
             React.createElement("h1", { style: { fontSize: 27, fontWeight: 800, color: COLORS.blanc, margin: 0, lineHeight: 1.12 } }, L(bloc.titre))),
         L(bloc.intro) ? React.createElement("p", { style: { fontSize: 15.5, lineHeight: 1.55, color: COLORS.encreDoux, margin: "0 0 22px" } }, L(bloc.intro)) : null,
-        L(bloc.regleOr) ? React.createElement("div", { style: { border: "1px solid " + COLORS.turquoise + "55", background: COLORS.turquoise + "12", borderRadius: 18, padding: "16px 18px", textAlign: "center" } },
-            React.createElement("div", { style: { fontSize: 12.5, fontWeight: 800, letterSpacing: 2, color: COLORS.turquoise, textTransform: "uppercase", marginBottom: 9 } }, L(bloc.regleOrLabel) || "Regle d'or"),
+        L(bloc.regleOr) ? React.createElement("div", { style: { border: "1px solid " + "#20D9F5" + "55", background: "#20D9F5" + "12", borderRadius: 18, padding: "16px 18px", textAlign: "center" } },
+            React.createElement("div", { style: { fontSize: 12.5, fontWeight: 800, letterSpacing: 2, color: "#20D9F5", textTransform: "uppercase", marginBottom: 9 } }, L(bloc.regleOrLabel) || "Regle d'or"),
             React.createElement("div", { style: { fontSize: 17, fontWeight: 700, color: COLORS.blanc, lineHeight: 1.35 } }, L(bloc.regleOr))) : null,
         diag ? labelSection(L(bloc.sectionRisques) || "Les zones a risque") : null,
         diag ? React.createElement("div", { style: { position: "relative" } },
@@ -71176,15 +71176,15 @@ function PageApproche({ bloc, onNext, onPrev, langue }) {
     const frInfo = (typeof PHOTO_APPROCHE_INFO_FR !== "undefined") ? PHOTO_APPROCHE_INFO_FR : "";
     const INFO = { fr: frInfo, en: (typeof PHOTO_APPROCHE_INFO_EN !== "undefined") ? PHOTO_APPROCHE_INFO_EN : frInfo, ja: (typeof PHOTO_APPROCHE_INFO_JA !== "undefined") ? PHOTO_APPROCHE_INFO_JA : frInfo, es: (typeof PHOTO_APPROCHE_INFO_ES !== "undefined") ? PHOTO_APPROCHE_INFO_ES : frInfo, it: (typeof PHOTO_APPROCHE_INFO_IT !== "undefined") ? PHOTO_APPROCHE_INFO_IT : frInfo, ar: frInfo };
     const info = INFO[li] || INFO.fr;
-    const badge = (n) => React.createElement("span", { style: { width: 24, height: 24, flexShrink: 0, borderRadius: "12px 12px 12px 3px", background: COLORS.turquoise, color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, lineHeight: 1, marginTop: 1 } }, String(n));
+    const badge = (n) => React.createElement("span", { style: { width: 24, height: 24, flexShrink: 0, borderRadius: "12px 12px 12px 3px", background: "#20D9F5", color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, lineHeight: 1, marginTop: 1 } }, String(n));
     return React.createElement("div", { "data-noswipe": "true", onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "100vh", background: COLORS.nuit, padding: "20px 22px 44px" } },
         React.createElement(EnteteNotion, { chapitre: bloc.chapitre, onRetour: onPrev, langue: langue }),
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14, marginBottom: 16 } },
-            React.createElement("span", { style: { width: 42, height: 42, flexShrink: 0, borderRadius: "50%", background: COLORS.turquoise, color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 800 } }, String(bloc.numero || 2)),
+            React.createElement("span", { style: { width: 42, height: 42, flexShrink: 0, borderRadius: "50%", background: "#20D9F5", color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, fontWeight: 800 } }, String(bloc.numero || 2)),
             React.createElement("h1", { style: { fontSize: 27, fontWeight: 800, color: COLORS.blanc, margin: 0, lineHeight: 1.12 } }, L(bloc.titre))),
         L(bloc.intro) ? React.createElement("p", { style: { fontSize: 15.5, lineHeight: 1.55, color: COLORS.encreDoux, margin: "0 0 26px" } }, L(bloc.intro)) : null,
-        React.createElement("div", { style: { position: "relative", border: "1px solid " + COLORS.turquoise + "55", borderRadius: 18, padding: "24px 16px 16px", marginBottom: 22 } },
-            React.createElement("span", { style: { position: "absolute", top: -9, left: 16, background: COLORS.nuit, padding: "0 8px", fontSize: 12.5, fontWeight: 800, letterSpacing: 1.2, color: COLORS.turquoise, textTransform: "uppercase" } }, L(bloc.bonneApprocheLabel) || hypeT7("La bonne approche", "The right approach", "El enfoque correcto", "L\u2019approccio giusto", "\u6b63\u3057\u3044\u30a2\u30d7\u30ed\u30fc\u30c1", "Der richtige Ansatz", "\u0627\u0644\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u0635\u062d\u064a\u062d\u0629")),
+        React.createElement("div", { style: { position: "relative", border: "1px solid " + "#20D9F5" + "55", borderRadius: 18, padding: "24px 16px 16px", marginBottom: 22 } },
+            React.createElement("span", { style: { position: "absolute", top: -9, left: 16, background: COLORS.nuit, padding: "0 8px", fontSize: 12.5, fontWeight: 800, letterSpacing: 1.2, color: "#20D9F5", textTransform: "uppercase" } }, L(bloc.bonneApprocheLabel) || hypeT7("La bonne approche", "The right approach", "El enfoque correcto", "L\u2019approccio giusto", "\u6b63\u3057\u3044\u30a2\u30d7\u30ed\u30fc\u30c1", "Der richtige Ansatz", "\u0627\u0644\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u0635\u062d\u064a\u062d\u0629")),
             React.createElement("div", { style: { marginBottom: photo ? 18 : 0 } },
                 bons.map((it, i) => {
                     const t = (it && typeof it === "object" && !Array.isArray(it)) ? L(it.titre) : L(it);
@@ -71207,12 +71207,12 @@ function PageApproche({ bloc, onNext, onPrev, langue }) {
             React.createElement("button", { onClick: cyclerL, "aria-label": hypeT7("Changer la langue de l'image", "Change the image language", "Cambiar el idioma de la imagen", "Cambia la lingua dell\u2019immagine", "\u753b\u50cf\u306e\u8a00\u8a9e\u3092\u5909\u66f4", "Bildsprache \u00e4ndern", "\u062a\u063a\u064a\u064a\u0631 \u0644\u063a\u0629 \u0627\u0644\u0635\u0648\u0631\u0629"), style: { position: "absolute", top: 10, right: 10, display: "flex", alignItems: "center", gap: 5, padding: "5px 9px", borderRadius: 999, background: "rgba(8,10,13,0.62)", border: "1px solid rgba(255,255,255,0.22)", WebkitBackdropFilter: "blur(4px)", backdropFilter: "blur(4px)" } },
                 React.createElement("span", { style: { fontSize: 16, lineHeight: 1 } }, drapeau),
                 React.createElement("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "rgba(255,255,255,0.85)", strokeWidth: 2, strokeLinecap: "round", strokeLinejoin: "round" }, React.createElement("path", { d: "M7 10 L12 15 L17 10" })))) : null,
-        (L(bloc.astuceTitre) || pts.length) ? React.createElement("div", { style: { border: "1px solid " + COLORS.turquoise + "44", background: COLORS.turquoise + "0E", borderRadius: 18, padding: "18px 18px", marginTop: 100 } },
+        (L(bloc.astuceTitre) || pts.length) ? React.createElement("div", { style: { border: "1px solid " + "#20D9F5" + "44", background: "#20D9F5" + "0E", borderRadius: 18, padding: "18px 18px", marginTop: 100 } },
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 12, marginBottom: pts.length ? 12 : 0 } },
                 React.createElement("span", { style: { fontSize: 24, flexShrink: 0, lineHeight: 1 } }, "\uD83D\uDCA1"),
                 React.createElement("div", { style: { fontSize: 16, fontWeight: 800, color: COLORS.blanc, lineHeight: 1.25 } }, L(bloc.astuceTitre))),
             pts.map((p, i) => React.createElement("div", { key: i, style: { display: "flex", gap: 9, alignItems: "flex-start", marginBottom: i === pts.length - 1 ? 0 : 9 } },
-                React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 15, lineHeight: 1.3, flexShrink: 0, marginTop: -1 } }, "\u2022"),
+                React.createElement("span", { style: { color: "#20D9F5", fontSize: 15, lineHeight: 1.3, flexShrink: 0, marginTop: -1 } }, "\u2022"),
                 React.createElement("span", { style: { fontSize: 13.5, color: COLORS.encre, lineHeight: 1.45 } }, L(p))))) : null);
 }
 
@@ -71220,9 +71220,9 @@ function CouvertureLecon({ data, hero, onRetour, onContinuer, langue, dezoom }) 
     const L = (v) => (v && typeof v === "object" && !Array.isArray(v)) ? (v[langue] || v.fr || "") : (v == null ? "" : v);
     const C = data || {};
     const heroImg = hero || (typeof PHOTO_FOND_SOMMAIRE !== "undefined" ? PHOTO_FOND_SOMMAIRE : "");
-    const pill = (txt) => React.createElement("div", { style: { display: "inline-flex", border: "1px solid " + COLORS.turquoise + "66", borderRadius: 9, padding: "5px 13px", background: "rgba(8,10,13,0.42)" } }, React.createElement("span", { style: { fontSize: 12.5, fontWeight: 700, letterSpacing: 2, color: COLORS.turquoise } }, txt));
+    const pill = (txt) => React.createElement("div", { style: { display: "inline-flex", border: "1px solid " + "#20D9F5" + "66", borderRadius: 9, padding: "5px 13px", background: "rgba(8,10,13,0.42)" } }, React.createElement("span", { style: { fontSize: 12.5, fontWeight: 700, letterSpacing: 2, color: "#20D9F5" } }, txt));
     const icone = (nom) => {
-        const props = { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: COLORS.turquoise, strokeWidth: 1.8, style: { flexShrink: 0, marginTop: 1 } };
+        const props = { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "#20D9F5", strokeWidth: 1.8, style: { flexShrink: 0, marginTop: 1 } };
         if (nom === "oeil") return React.createElement("svg", props, React.createElement("path", { d: "M2 12 C5 6 10 4.5 12 4.5 C14 4.5 19 6 22 12 C19 18 14 19.5 12 19.5 C10 19.5 5 18 2 12 Z", strokeLinejoin: "round" }), React.createElement("circle", { cx: 12, cy: 12, r: 3 }));
         if (nom === "bulle") return React.createElement("svg", props, React.createElement("path", { d: "M4 5 H20 V15 H10 L6 19 V15 H4 Z", strokeLinejoin: "round" }));
         if (nom === "bouclier") return React.createElement("svg", props, React.createElement("path", { d: "M12 3 L19 6 V11 C19 16 15.5 19.5 12 21 C8.5 19.5 5 16 5 11 V6 Z", strokeLinejoin: "round" }), React.createElement("path", { d: "M9 12 L11 14 L15 9.5", strokeLinecap: "round", strokeLinejoin: "round" }));
@@ -71240,22 +71240,22 @@ function CouvertureLecon({ data, hero, onRetour, onContinuer, langue, dezoom }) 
             L(C.cours) ? React.createElement("div", { style: { marginBottom: 14 } }, pill(L(C.cours))) : null,
             React.createElement("h1", { style: { margin: 0, fontFamily: "'Montserrat', system-ui, sans-serif", fontWeight: 800, lineHeight: 1.02, letterSpacing: "-0.5px" } },
                 React.createElement("span", { style: { display: "block", fontSize: "clamp(38px, 12.5vw, 56px)", color: COLORS.blanc } }, L(C.titre1)),
-                React.createElement("span", { style: { display: "block", fontSize: "clamp(38px, 12.5vw, 56px)", color: COLORS.turquoise } }, L(C.titre2))),
+                React.createElement("span", { style: { display: "block", fontSize: "clamp(38px, 12.5vw, 56px)", color: "#20D9F5" } }, L(C.titre2))),
             L(C.sousTitre) ? React.createElement("div", { style: { fontSize: 20, fontWeight: 700, color: COLORS.blanc, marginTop: 10 } }, L(C.sousTitre)) : null,
-            React.createElement("div", { style: { width: 46, height: 3, borderRadius: 2, background: COLORS.turquoise, margin: "16px 0 0" } }),
+            React.createElement("div", { style: { width: 46, height: 3, borderRadius: 2, background: "#20D9F5", margin: "16px 0 0" } }),
             (L(C.introAvant) || L(C.introMot) || L(C.introApres)) ? React.createElement("p", { style: { alignSelf: "stretch", margin: "18px 0 0", fontSize: 16.5, lineHeight: 1.5, color: "rgba(255,255,255,0.84)", fontWeight: 500 } },
-                L(C.introAvant), React.createElement("span", { style: { color: COLORS.turquoise, fontWeight: 700 } }, L(C.introMot)), L(C.introApres)) : null,
+                L(C.introAvant), React.createElement("span", { style: { color: "#20D9F5", fontWeight: 700 } }, L(C.introMot)), L(C.introApres)) : null,
             (C.aRetenir && C.aRetenir.length) ? React.createElement("div", { style: { alignSelf: "stretch", marginTop: 22, border: "1px solid rgba(255,255,255,0.1)", background: "rgba(11,14,19,0.62)", borderRadius: 18, padding: "18px" } },
                 React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 11, marginBottom: 15 } },
-                    React.createElement("svg", { viewBox: "0 0 24 24", width: 21, height: 21, fill: "none", stroke: COLORS.turquoise, strokeWidth: 1.7 }, React.createElement("circle", { cx: 12, cy: 12, r: 8 }), React.createElement("circle", { cx: 12, cy: 12, r: 3 }), React.createElement("path", { d: "M12 1.5 V4 M12 20 V22.5 M1.5 12 H4 M20 12 H22.5", strokeLinecap: "round" })),
+                    React.createElement("svg", { viewBox: "0 0 24 24", width: 21, height: 21, fill: "none", stroke: "#20D9F5", strokeWidth: 1.7 }, React.createElement("circle", { cx: 12, cy: 12, r: 8 }), React.createElement("circle", { cx: 12, cy: 12, r: 3 }), React.createElement("path", { d: "M12 1.5 V4 M12 20 V22.5 M1.5 12 H4 M20 12 H22.5", strokeLinecap: "round" })),
                     React.createElement("span", { style: { fontSize: 14.5, fontWeight: 800, letterSpacing: 1.5, color: COLORS.blanc } }, L(C.aRetenirTitre))),
                 C.aRetenir.map((it, i, arr) => React.createElement("div", { key: i, style: { display: "flex", gap: 11, alignItems: "flex-start", marginBottom: i === arr.length - 1 ? 0 : 13 } },
                     icone(it.icone),
                     React.createElement("div", { style: { fontSize: 14.5, lineHeight: 1.5 } },
-                        React.createElement("span", { style: { color: COLORS.turquoise, fontWeight: 700 } }, L(it.fort)),
+                        React.createElement("span", { style: { color: "#20D9F5", fontWeight: 700 } }, L(it.fort)),
                         L(it.suite) ? " " : "",
                         L(it.suite) ? React.createElement("span", { style: { color: COLORS.encreDoux } }, L(it.suite)) : null)))) : null,
-            onContinuer ? React.createElement("button", { onClick: onContinuer, style: { alignSelf: "flex-start", marginTop: 24, padding: "11px 22px", borderRadius: 13, background: "rgba(127,163,173,0.296)", border: "1px solid " + COLORS.turquoise + "66", color: COLORS.turquoise, fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
+            onContinuer ? React.createElement("button", { onClick: onContinuer, style: { alignSelf: "flex-start", marginTop: 24, padding: "11px 22px", borderRadius: 13, background: "rgba(32,217,245,0.296)", border: "1px solid " + "#20D9F5" + "66", color: "#20D9F5", fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
                 L(C.cta) || "Continuer", React.createElement("span", { style: { fontSize: 16 } }, "\u2192")) : null));
 }
 
@@ -71269,7 +71269,7 @@ function CouvImage({ src, cta, onRetour, onContinuer, langue }) {
         React.createElement("div", { style: { position: "relative", zIndex: 2, flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "8px 0" } },
             React.createElement("img", { src: src, alt: hypeT7("Le pansage", "Grooming", "El aseo", "La governa", "\u624b\u5165\u308c", "Putzen", "\u0627\u0644\u0639\u0646\u0627\u064a\u0629 \u0628\u0627\u0644\u062d\u0635\u0627\u0646"), style: { width: "100%", display: "block" } })),
         onContinuer ? React.createElement("div", { style: { position: "relative", zIndex: 4, padding: "0 22px 28px", display: "flex", justifyContent: "center" } },
-            React.createElement("button", { onClick: onContinuer, style: { padding: "12px 26px", borderRadius: 13, background: "rgba(127,163,173,0.296)", border: "1px solid " + COLORS.turquoise + "66", color: COLORS.turquoise, fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
+            React.createElement("button", { onClick: onContinuer, style: { padding: "12px 26px", borderRadius: 13, background: "rgba(32,217,245,0.296)", border: "1px solid " + "#20D9F5" + "66", color: "#20D9F5", fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
                 L(cta) || "Commencer", React.createElement("span", { style: { fontSize: 16 } }, "\u2192"))) : null);
 }
 
@@ -71345,7 +71345,7 @@ function CouvAffiche({ data, hero, logo, chapitre, onRetour, onContinuer, langue
     const L = (v) => (v && typeof v === "object" && !Array.isArray(v)) ? (v[langue] || v.fr || "") : (v == null ? "" : v);
     const [msgPartage, setMsgPartage] = useState("");
     const C = data || {};
-    const ACC = (C && C.accent) || COLORS.turquoise;
+    const ACC = (C && C.accent) || "#20D9F5";
     /* 06/09 — TEXTE EN BAS (choix de Blandine, « texte descendu en bas », sur « Le contact » où le
        titre tombait sur la cavalière). Le bloc de texte est posé au ras du bouton, le bouton
        descend, et le voile sombre commence à mi-hauteur au lieu des deux tiers : le titre et la
@@ -71376,7 +71376,7 @@ function CouvAffiche({ data, hero, logo, chapitre, onRetour, onContinuer, langue
             L(C.citation) ? React.createElement("p", { style: { margin: "16px 0 0", fontFamily: "Georgia, 'Times New Roman', serif", fontStyle: "italic", fontSize: 17, lineHeight: 1.5, color: "rgba(255,255,255,0.9)", maxWidth: 300 } }, "\u201C", L(C.citation), "\u201D") : null,
             L(C.auteur) ? React.createElement("div", { style: { marginTop: 10, fontSize: 13.5, letterSpacing: 0.5, color: ACC } }, L(C.auteur)) : null),
         onContinuer ? React.createElement("div", { style: { position: "relative", zIndex: 4, padding: "6px 22px " + (basBouton + "px"), display: "flex", flexDirection: "column", alignItems: "center", gap: 10 } },
-            React.createElement("button", { onClick: onContinuer, style: { padding: "12px 28px", borderRadius: 13, background: "rgba(127,163,173,0.296)", border: "1px solid " + ACC + "66", color: ACC, fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
+            React.createElement("button", { onClick: onContinuer, style: { padding: "12px 28px", borderRadius: 13, background: "rgba(32,217,245,0.296)", border: "1px solid " + ACC + "66", color: ACC, fontSize: 14.5, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8 } },
                 L(C.cta) || "Commencer", React.createElement("span", { style: { fontSize: 16 } }, "\u2192")),
             C.partage ? React.createElement("button", { onClick: function () {
                     hypePartagerCours(C.partage, L(C.titre1) || "Hype", langue).then(function (r) {
@@ -71442,11 +71442,11 @@ function PageReglesOr({ bloc, onNext, onPrev, langue }) {
     const cyclerLangue = () => { const idx = ordre.indexOf(li); setLi(ordre[(idx + 1) % ordre.length]); };
     const diag = DIAG[li] || DIAG.fr;
     const regles = bloc.regles || [];
-    const badge = (n) => React.createElement("span", { style: { width: 30, height: 30, flexShrink: 0, borderRadius: "50%", background: COLORS.turquoise, color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, lineHeight: 1, marginTop: 1 } }, String(n));
+    const badge = (n) => React.createElement("span", { style: { width: 30, height: 30, flexShrink: 0, borderRadius: "50%", background: "#20D9F5", color: COLORS.nuit, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, fontWeight: 800, lineHeight: 1, marginTop: 1 } }, String(n));
     const carteRegle = (r, i) => React.createElement("div", { style: { display: "flex", gap: 13, alignItems: "flex-start", marginBottom: 18 } },
         badge(i + 1),
         React.createElement("div", { style: { flex: 1, minWidth: 0 } },
-            React.createElement("div", { style: { fontSize: 16, fontWeight: 800, color: COLORS.turquoise, marginBottom: 4 } }, L(r.titre)),
+            React.createElement("div", { style: { fontSize: 16, fontWeight: 800, color: "#20D9F5", marginBottom: 4 } }, L(r.titre)),
             React.createElement("div", { style: { fontSize: 13.5, color: COLORS.encre, lineHeight: 1.5 } }, L(r.texte))));
     const schema = diag ? React.createElement("div", { style: { position: "relative", margin: "26px 0 0" } },
         React.createElement("img", { src: diag, alt: "", style: { width: "100%", display: "block", borderRadius: 14 } }),
@@ -71460,8 +71460,8 @@ function PageReglesOr({ bloc, onNext, onPrev, langue }) {
             React.createElement(EnteteNotion, { chapitre: bloc.headerTitre, onRetour: onPrev, langue: langue }),
             React.createElement("div", { style: { textAlign: "center", margin: "4px 0 26px" } },
                 React.createElement("div", { style: { fontSize: 29, fontWeight: 800, color: COLORS.blanc, lineHeight: 1.1 } }, L(bloc.titre)),
-                L(bloc.sousTitre) ? React.createElement("div", { style: { fontSize: 20, fontWeight: 600, color: COLORS.turquoise, fontStyle: "italic", marginTop: 3 } }, L(bloc.sousTitre)) : null,
-                React.createElement("div", { style: { width: 46, height: 4, borderRadius: 2, background: COLORS.turquoise, opacity: 0.85, margin: "16px auto 0" } })),
+                L(bloc.sousTitre) ? React.createElement("div", { style: { fontSize: 20, fontWeight: 600, color: "#20D9F5", fontStyle: "italic", marginTop: 3 } }, L(bloc.sousTitre)) : null,
+                React.createElement("div", { style: { width: 46, height: 4, borderRadius: 2, background: "#20D9F5", opacity: 0.85, margin: "16px auto 0" } })),
             regles.map((r, i) => React.createElement(React.Fragment, { key: "r" + i }, carteRegle(r, i))),
             schema));
 }
@@ -71615,7 +71615,7 @@ function EcranCours() {
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 16 } },
                 React.createElement("button", { onClick: () => setEcran("galop-detail"), style: { width: 36, height: 36, borderRadius: 11, background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2715"),
                 React.createElement("div", { style: { flex: 1, height: 8, borderRadius: 4, background: COLORS.ligne } },
-                    React.createElement("div", { style: { height: "100%", width: `${((blocIdx + 1) / total) * 100}%`, background: COLORS.turquoise, borderRadius: 4, transition: "width 0.3s" } })),
+                    React.createElement("div", { style: { height: "100%", width: `${((blocIdx + 1) / total) * 100}%`, background: "#20D9F5", borderRadius: 4, transition: "width 0.3s" } })),
                 React.createElement(SelecteurLangue, { compact: true }))),
         React.createElement("div", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { flex: 1, padding: "8px 24px 24px", display: "flex", flexDirection: "column" } },
             React.createElement("h2", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontStyle: "italic", fontWeight: 600, fontSize: 20, color: COLORS.encre, textAlign: "center", marginBottom: modeEnseignantCours && cours.level ? 4 : 18 } }, cours.titre),
@@ -71624,7 +71624,7 @@ function EcranCours() {
             React.createElement(BlocCours, { bloc: bloc, key: blocIdx, astuceLabel: t("astuce_label"), onSuivant: suivant })),
         React.createElement("div", { style: { padding: "0 24px 28px", display: "flex", gap: 10, alignItems: "stretch" } }, /* 30/07 : fleche retour + boutons discrets (maquette validee par Blandine) */
             React.createElement("button", { onClick: precedent, "aria-label": hypeT7("Page pr\u00e9c\u00e9dente", "Previous page", "P\u00e1gina anterior", "Pagina precedente", "\u524d\u306e\u30da\u30fc\u30b8", "Vorherige Seite", "\u0627\u0644\u0635\u0641\u062d\u0629 \u0627\u0644\u0633\u0627\u0628\u0642\u0629"), style: { width: 46, borderRadius: 14, background: "#0D1114", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(234,242,244,0.7)", fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flex: "0 0 auto" } }, "\u2190"),
-            React.createElement("button", { onClick: suivant, style: { flex: 1, padding: "12px", borderRadius: 14, border: "1px solid rgba(127,163,173,0.45)", background: "rgba(127,163,173,0.12)", color: "#F3EEE4", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',-apple-system,sans-serif", cursor: "pointer" } }, estDernier ? t("terminer_cours") : t("suivant")))));
+            React.createElement("button", { onClick: suivant, style: { flex: 1, padding: "12px", borderRadius: 14, border: "1px solid rgba(32,217,245,0.45)", background: "rgba(32,217,245,0.12)", color: "#BFF2FA", fontSize: 14, fontWeight: 600, fontFamily: "'Montserrat',-apple-system,sans-serif", cursor: "pointer" } }, estDernier ? t("terminer_cours") : t("suivant")))));
 }
 /* ==========================================================================
    VignetteZoom — 17/08 (session 138). L ENVELOPPE.
@@ -71796,7 +71796,7 @@ function PhotoMultilingue({ src, alt, style }) {
     const mb = (style && style.marginBottom) || 0;
     return (React.createElement("div", { style: { marginBottom: mb } },
         React.createElement("div", { style: { display: "flex", justifyContent: "flex-end", padding: "0 0 8px" } },
-            React.createElement("div", { style: { display: "flex", gap: 4, background: "rgba(8,10,13,0.55)", padding: 4, borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)" } }, langs.map((l) => (React.createElement("button", { key: l, onClick: (e) => { e.stopPropagation(); setLng(l); }, title: l.toUpperCase(), style: { width: 30, height: 26, borderRadius: 8, fontSize: 15, lineHeight: 1, fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif', display: "flex", alignItems: "center", justifyContent: "center", background: l === lng ? COLORS.turquoise : "rgba(255,255,255,0.14)", border: l === lng ? `1px solid ${COLORS.turquoise}` : "1px solid transparent", opacity: l === lng ? 1 : 0.85 } }, FLAGS[l]))))),
+            React.createElement("div", { style: { display: "flex", gap: 4, background: "rgba(8,10,13,0.55)", padding: 4, borderRadius: 12, border: "1px solid rgba(255,255,255,0.08)" } }, langs.map((l) => (React.createElement("button", { key: l, onClick: (e) => { e.stopPropagation(); setLng(l); }, title: l.toUpperCase(), style: { width: 30, height: 26, borderRadius: 8, fontSize: 15, lineHeight: 1, fontFamily: '"Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif', display: "flex", alignItems: "center", justifyContent: "center", background: l === lng ? "#20D9F5" : "rgba(255,255,255,0.14)", border: l === lng ? `1px solid ${"#20D9F5"}` : "1px solid transparent", opacity: l === lng ? 1 : 0.85 } }, FLAGS[l]))))),
         React.createElement(PhotoZoomable, { src: src[lng] || src.fr, alt: alt, style: { ...style, marginBottom: 0 } })));
 }
 function Revele({ delai = 0, children }) {
@@ -71873,7 +71873,7 @@ function rendreSegmentRiche(seg, i) {
     }
     if (seg.k === "para") {
         return (React.createElement("p", { key: i, style: { margin: 0, fontSize: 16.5, color: COLORS.encre, lineHeight: 1.75 } },
-            seg.gras ? React.createElement("strong", { style: { color: COLORS.turquoise, fontStyle: (["grands cavaliers", "great riders", "grandes jinetes", "grandi cavalieri", "großen Reiter", "騎手の秘訣", "\u0643\u0628\u0627\u0631 \u0627\u0644\u0641\u0631\u0633\u0627\u0646"].some(function (kk) { return (seg.gras || "").indexOf(kk) >= 0; }) ? "italic" : "normal") } },
+            seg.gras ? React.createElement("strong", { style: { color: "#20D9F5", fontStyle: (["grands cavaliers", "great riders", "grandes jinetes", "grandi cavalieri", "großen Reiter", "騎手の秘訣", "\u0643\u0628\u0627\u0631 \u0627\u0644\u0641\u0631\u0633\u0627\u0646"].some(function (kk) { return (seg.gras || "").indexOf(kk) >= 0; }) ? "italic" : "normal") } },
                 seg.gras,
                 " ") : null,
             seg.texte));
@@ -71884,10 +71884,10 @@ function rendreSegmentRiche(seg, i) {
             return React.createElement(EncartHeyBabyCta, { key: i, titre: seg.titre, sous: seg.sous, puces: seg.puces });
         }
         return (React.createElement("div", { key: i, style: { background: "rgba(27,33,42,0.78)", border: "1px solid rgba(72,84,99,0.75)", borderRadius: 16, padding: "16px 18px" } },
-            React.createElement("h3", { style: { fontSize: 16.5, fontWeight: 700, color: COLORS.turquoise, margin: "0 0 10px", lineHeight: 1.35 } }, seg.titre),
+            React.createElement("h3", { style: { fontSize: 16.5, fontWeight: 700, color: "#20D9F5", margin: "0 0 10px", lineHeight: 1.35 } }, seg.titre),
             seg.sous ? React.createElement("p", { style: { margin: "0 0 12px", fontSize: 15, color: COLORS.grisDoux, lineHeight: 1.6 } }, seg.sous) : null,
             React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 11 } }, (seg.puces || []).map(function (p, j) { return (React.createElement("div", { key: j, style: { display: "flex", gap: 10, alignItems: "flex-start" } },
-                React.createElement("span", { style: { color: COLORS.turquoise, fontSize: 13, marginTop: 3, flexShrink: 0 } }, "\u25B8"),
+                React.createElement("span", { style: { color: "#20D9F5", fontSize: 13, marginTop: 3, flexShrink: 0 } }, "\u25B8"),
                 React.createElement("p", { style: { margin: 0, fontSize: 15.5, color: COLORS.encre, lineHeight: 1.65 } },
                     p.gras ? React.createElement("strong", null, p.gras, " ") : null,
                     p.texte))); }))));
@@ -71895,13 +71895,13 @@ function rendreSegmentRiche(seg, i) {
     if (seg.k === "encadre") {
         if (seg.variante === "citation") {
             return (React.createElement("div", { key: i, style: { textAlign: "center", padding: "8px 4px" } },
-                React.createElement("div", { style: { display: "flex", justifyContent: "center", marginBottom: 12 } }, React.createElement("svg", { width: 18, height: 27, viewBox: "0 0 20 30", fill: "none", style: { filter: "drop-shadow(0 0 8px rgba(127,163,173,0.55))" } }, React.createElement("path", { d: "M10 0 L20 11 L10 30 L0 11 Z", stroke: COLORS.turquoise, strokeWidth: 1.1, fill: "rgba(127,163,173,0.10)" }), React.createElement("path", { d: "M10 0 L10 30 M0 11 L20 11", stroke: "#CFE3E8", strokeWidth: 0.7, opacity: 0.7 }))),
+                React.createElement("div", { style: { display: "flex", justifyContent: "center", marginBottom: 12 } }, React.createElement("svg", { width: 18, height: 27, viewBox: "0 0 20 30", fill: "none", style: { filter: "drop-shadow(0 0 8px rgba(32,217,245,0.55))" } }, React.createElement("path", { d: "M10 0 L20 11 L10 30 L0 11 Z", stroke: "#20D9F5", strokeWidth: 1.1, fill: "rgba(32,217,245,0.10)" }), React.createElement("path", { d: "M10 0 L10 30 M0 11 L20 11", stroke: "#5FE9F0", strokeWidth: 0.7, opacity: 0.7 }))),
                 React.createElement("p", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontStyle: "italic", fontWeight: 600, fontSize: 20, color: COLORS.encre, lineHeight: 1.35, margin: "8px 0 12px" } }, seg.texte),
-                React.createElement("div", { style: { fontFamily: "'Oswald', sans-serif", textTransform: "uppercase", letterSpacing: "2px", fontSize: 11, color: COLORS.turquoise } }, seg.titre)));
+                React.createElement("div", { style: { fontFamily: "'Oswald', sans-serif", textTransform: "uppercase", letterSpacing: "2px", fontSize: 11, color: "#20D9F5" } }, seg.titre)));
         }
         return (React.createElement("div", { key: i, style: { textAlign: "center", padding: "6px 0" } },
-            React.createElement("div", { style: { display: "inline-block", borderTop: "1px solid " + COLORS.turquoise, borderBottom: "1px solid " + COLORS.turquoise, padding: "8px 0", margin: "0 0 11px" } },
-                React.createElement("h4", { style: { fontSize: 15.5, fontWeight: 700, color: COLORS.turquoiseDark, margin: 0 } }, seg.emoji ? seg.emoji + " " : "", seg.titre)),
+            React.createElement("div", { style: { display: "inline-block", borderTop: "1px solid " + "#20D9F5", borderBottom: "1px solid " + "#20D9F5", padding: "8px 0", margin: "0 0 11px" } },
+                React.createElement("h4", { style: { fontSize: 15.5, fontWeight: 700, color: "#17A8B3", margin: 0 } }, seg.emoji ? seg.emoji + " " : "", seg.titre)),
             React.createElement("p", { style: { margin: 0, fontSize: 15, color: COLORS.encre, lineHeight: 1.65 } }, seg.texte)));
     }
     return null;
@@ -71918,12 +71918,12 @@ function PopupGrid({ titre, items, style }) {
                 const ouvert = !!ouverts[i];
                 return React.createElement("button", {
                     key: i, onClick: () => toggle(i),
-                    style: { textAlign: "center", padding: "16px 10px", borderRadius: 16, background: ouvert ? `${COLORS.turquoise}14` : COLORS.nuitClaire, border: `1.5px solid ${ouvert ? COLORS.turquoise : COLORS.ligne}`, cursor: "pointer", transition: "background .3s, border-color .3s" }
+                    style: { textAlign: "center", padding: "16px 10px", borderRadius: 16, background: ouvert ? `${"#20D9F5"}14` : COLORS.nuitClaire, border: `1.5px solid ${ouvert ? "#20D9F5" : COLORS.ligne}`, cursor: "pointer", transition: "background .3s, border-color .3s" }
                 },
                     React.createElement("div", { key: ouvert ? "o" + i : "f" + i, style: { fontSize: 28, marginBottom: 6, display: "inline-block", animation: ouvert ? "popupHype .45s cubic-bezier(.34,1.56,.64,1)" : "none", opacity: ouvert ? 1 : 0.75 } }, it.emoji),
                     React.createElement("p", { style: { margin: 0, fontSize: 12, fontWeight: 700, color: COLORS.encre, lineHeight: 1.25 } }, ouvert ? null : it.titre),
                     ouvert ? React.createElement("p", { style: { margin: "4px 0 0", fontSize: 11, color: COLORS.encreDoux, lineHeight: 1.4 } }, it.texte || it.titre) : null,
-                    !ouvert ? React.createElement("p", { style: { margin: "4px 0 0", fontSize: 9.5, color: COLORS.turquoise, fontWeight: 700 } }, "\u2728") : null);
+                    !ouvert ? React.createElement("p", { style: { margin: "4px 0 0", fontSize: 9.5, color: "#20D9F5", fontWeight: 700 } }, "\u2728") : null);
             })));
 }
 
@@ -71983,7 +71983,7 @@ function CarteSegmentRiche({ seg }) {
     const langue = app.langue || "fr";
     const lab = CARTE_LABELS[langue] || CARTE_LABELS.fr;
     const [ouvert, setOuvert] = useState(false);
-    const turq = COLORS.turquoise;
+    const turq = "#20D9F5";
     const details = seg.details || [];
     return React.createElement("div", { style: { border: `1px solid ${COLORS.ligne}`, borderRadius: 18, background: COLORS.nuitClaire, padding: "22px 19px 16px" } },
         React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 9, marginBottom: 9 } },
@@ -72010,7 +72010,7 @@ function SectionCollapse({ titre, children }) {
     return React.createElement("div", { style: { borderBottom: `1px solid ${COLORS.ligne}` } },
         React.createElement("button", { onClick: () => setO(!o), style: { width: "100%", textAlign: "left", background: "none", border: "none", padding: "13px 0", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, cursor: "pointer", fontFamily: "'Montserrat', sans-serif" } },
             React.createElement("span", { style: { fontSize: 13.5, fontWeight: 700, color: COLORS.encre } }, titre),
-            React.createElement("span", { style: { fontSize: 11, color: COLORS.turquoise, transform: o ? "rotate(90deg)" : "none", transition: "transform .3s" } }, "\u203A")),
+            React.createElement("span", { style: { fontSize: 11, color: "#20D9F5", transform: o ? "rotate(90deg)" : "none", transition: "transform .3s" } }, "\u203A")),
         React.createElement("div", { style: { maxHeight: o ? 400 : 0, overflow: "hidden", transition: "max-height .4s cubic-bezier(.4,0,.2,1)" } },
             React.createElement("div", { style: { paddingBottom: 13, fontSize: 13.5, color: COLORS.encre, lineHeight: 1.65 } }, children)));
 }
@@ -72048,7 +72048,7 @@ function ComplementsBiomeca(props) {
     const coursId = (props && props.cours) || "g4-biomeca";
     const NV = COMPL_NAV[langue] || COMPL_NAV.fr;
     const setEcran = app.setEcran;
-    const turq = COLORS.turquoise;
+    const turq = "#20D9F5";
     const [vue, setVue] = useState(null);          // null | "defi" | "video" | "plus"
     const [coches, setCoches] = useState([]);
     const [defiFait, setDefiFait] = useState(false);
@@ -72248,7 +72248,7 @@ function CavalierEquilibre() {
     const L = CAVALIER_I18N[langue] || CAVALIER_I18N.fr;
     const [pose, setPose] = useState(0);
     const [vu, setVu] = useState(false);
-    const turq = COLORS.turquoise;
+    const turq = "#20D9F5";
     const rears = [40, 33, 26];
     const rear = rears[pose];
     const inten = (40 - rear) / 14;
@@ -72262,7 +72262,7 @@ function CavalierEquilibre() {
         React.createElement("p", { style: { fontSize: 14.5, color: COLORS.encre, lineHeight: 1.7, textAlign: "center", maxWidth: 410, margin: "0 auto 22px" } }, L.lead),
         React.createElement("div", { style: { position: "relative", border: `1px solid ${COLORS.ligne}`, borderRadius: 18, overflow: "hidden", background: COLORS.nuitClaire } },
             React.createElement(VignetteZoom, /* 17/08 : PREMIER ECRAN BASCULE sur l enveloppe. Interface identique, rien d autre ne change. Les 10 autres appels restent sur PhotoZoomable jusqu a verification de celui-ci. */ { src: HYPE_IMGS["k607"], alt: L.titre, style: { width: "100%", display: "block", opacity: 0.92 } }),
-            React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, left: 0, width: "50%", pointerEvents: "none", transition: "background 0.9s cubic-bezier(.4,0,.2,1)", background: `linear-gradient(270deg, transparent, rgba(127,163,173,${(0.16 - inten * 0.10).toFixed(3)}))` } }),
+            React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, left: 0, width: "50%", pointerEvents: "none", transition: "background 0.9s cubic-bezier(.4,0,.2,1)", background: `linear-gradient(270deg, transparent, rgba(32,217,245,${(0.16 - inten * 0.10).toFixed(3)}))` } }),
             React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, right: 0, width: "50%", pointerEvents: "none", transition: "background 0.9s cubic-bezier(.4,0,.2,1)", background: `linear-gradient(90deg, transparent, rgba(240,99,122,${(0.10 + inten * 0.22).toFixed(3)}))` } }),
             React.createElement("div", { style: { position: "absolute", top: 0, bottom: 0, left: "50%", width: 1, background: "rgba(148,180,210,0.25)" } }),
             React.createElement("div", { style: { position: "absolute", bottom: 12, left: 18, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 600, fontSize: pose === 0 ? 34 : 26, color: turq, opacity: pose === 0 ? 1 : 0.75, textShadow: "0 2px 14px rgba(0,0,0,0.8)", transition: "all .5s" } },
@@ -72438,7 +72438,7 @@ function BiomecaInteractif() {
     const s = L.steps[etape];
     const estSynth = etape === 3;
     const estCmp = etape === 4;
-    const turq = COLORS.turquoise;
+    const turq = "#20D9F5";
     const pill = (st, i) => React.createElement("button", { key: i, onClick: () => aller(i), style: { display: "flex", alignItems: "center", gap: 7, padding: "7px 12px 7px 8px", borderRadius: 999, border: `1px solid ${i === etape ? turq + "8C" : COLORS.ligne}`, background: i === etape ? turq + "12" : COLORS.nuitClaire, color: i === etape ? COLORS.blanc : COLORS.grisDoux, fontSize: 11.5, fontFamily: "'Montserrat', sans-serif", cursor: "pointer" } },
         React.createElement("span", { style: { width: 20, height: 20, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700, background: i === etape ? turq : "transparent", border: `1px solid ${i === etape ? turq : COLORS.ligne}`, color: i === etape ? "#04141a" : (i < etape ? turq : COLORS.grisTresDoux), boxShadow: i === etape ? `0 0 12px ${turq}8C` : "none" } }, i + 1),
         st.pill);
@@ -72579,7 +72579,7 @@ function ObserverEnMouvement({ onSuivant }) {
     const app = useApp() || {};
     const lg = app.langue || "fr";
     const L = (o) => (o && (o[lg] || o.fr)) || "";
-    const TQ = COLORS.turquoise;
+    const TQ = "#20D9F5";
     const [vues, setVues] = useState(() => {
         try { return JSON.parse(localStorage.getItem(OBS_CLE_VUES) || "[]") || []; } catch (e) { return []; }
     });
@@ -72672,7 +72672,7 @@ function ObserverEnMouvement({ onSuivant }) {
    comme un bloc de cours (donc une page), reutilisable partout via { type: "lien-phases-saut" }. */
 function CtaSceneCompact() {
     const { setEcran, tr } = useApp();
-    return React.createElement("button", { onClick: function () { try { setEcran("phases-saut"); } catch (e) { } }, style: { marginTop: 30, width: "100%", padding: "15px 18px", borderRadius: 16, border: "1px solid rgba(45,212,222,0.45)", background: "linear-gradient(90deg, rgba(12,87,99,0.55), rgba(127,163,173,0.22))", color: "#EAF6F8", fontSize: 15, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, cursor: "pointer" } },
+    return React.createElement("button", { onClick: function () { try { setEcran("phases-saut"); } catch (e) { } }, style: { marginTop: 30, width: "100%", padding: "15px 18px", borderRadius: 16, border: "1px solid rgba(45,212,222,0.45)", background: "linear-gradient(90deg, rgba(12,87,99,0.55), rgba(32,217,245,0.22))", color: "#EAF6F8", fontSize: 15, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, cursor: "pointer" } },
         "\u25B6\uFE0E ", tr({ fr: "Ouvrir la sc\u00e8ne interactive", en: "Open the interactive scene", es: "Abrir la escena interactiva", it: "Apri la scena interattiva", ja: "\u30a4\u30f3\u30bf\u30e9\u30af\u30c6\u30a3\u30d6\u30b7\u30fc\u30f3\u3092\u958b\u304f", de: "Interaktive Szene \u00f6ffnen", ar: "\u0641\u062a\u062d \u0627\u0644\u0645\u0634\u0647\u062f \u0627\u0644\u062a\u0641\u0627\u0639\u0644\u064a" }));
 }
 function BlocLienPhasesSaut() {
@@ -72680,7 +72680,7 @@ function BlocLienPhasesSaut() {
     const langue = app.langue || "fr";
     const setEcran = app.setEcran;
     const tr = (o) => (o && typeof o === "object" && o[langue] !== undefined) ? o[langue] : ((o && o.fr !== undefined) ? o.fr : o);
-    const TQ = COLORS.turquoise;
+    const TQ = "#20D9F5";
     const C = "'Cinzel',Georgia,serif";
     const M = "'Montserrat',-apple-system,sans-serif";
     /* 30/07 (maquette validee par Blandine) : la page porte desormais la conclusion "A retenir"
@@ -72760,12 +72760,12 @@ function BlocCours({ bloc, astuceLabel, onSuivant }) {
     if (bloc.type === "intro")
         return (React.createElement("div", { style: style },
             React.createElement("p", { style: { fontSize: 16.5, lineHeight: 1.7, color: COLORS.encre, margin: 0 } }, bloc.texte),
-            bloc.resume ? (React.createElement("div", { style: { marginTop: 16, background: `${COLORS.turquoise}0D`, border: `1px solid ${COLORS.turquoise}33`, borderRadius: 14, padding: "13px 15px" } },
+            bloc.resume ? (React.createElement("div", { style: { marginTop: 16, background: `${"#20D9F5"}0D`, border: `1px solid ${"#20D9F5"}33`, borderRadius: 14, padding: "13px 15px" } },
                 React.createElement("p", { style: { margin: 0, fontSize: 14, color: COLORS.encre, lineHeight: 1.55 } }, bloc.resume))) : null));
     if (bloc.type === "texte-riche") {
         return (React.createElement("div", { style: style },
             bloc.srcHaut ? React.createElement(PhotoMultilingue, { src: bloc.srcHaut, alt: bloc.titre || "", style: { width: "calc(100% + 48px)", display: "block", margin: "0 -24px 20px", borderRadius: 0 } }) : null,
-            bloc.titre ? (function(){ var brut = String(bloc.titre).replace(/^[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\uFE0F\u200D\u{1F1E6}-\u{1F1FF}\s]+/u, "").trim(); var m = brut.match(/^(.*?)\s*[:\uFF1A]\s*(.+)$/); var sur = null, principal = brut; if (m) { sur = m[1].trim(); principal = m[2].trim(); } if (principal) { principal = principal.charAt(0).toUpperCase() + principal.slice(1); } return React.createElement("div", { style: { textAlign: "center", margin: "4px 0 36px" } }, sur ? React.createElement("div", { style: { fontFamily: "'Oswald', 'Noto Sans JP', sans-serif", fontWeight: 500, textTransform: "uppercase", letterSpacing: "3.5px", fontSize: 13, color: COLORS.turquoise, margin: "0 0 12px" } }, sur) : null, React.createElement("h2", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontWeight: 600, fontSize: 31, lineHeight: 1.16, color: COLORS.encre, margin: 0 } }, principal), React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 12, margin: "17px 0 0" } }, React.createElement("div", { style: { height: 1, width: 46, background: COLORS.turquoise, opacity: 0.5 } }), React.createElement("div", { style: { width: 9, height: 9, background: COLORS.turquoise, transform: "rotate(45deg)", borderRadius: 1 } }), React.createElement("div", { style: { height: 1, width: 46, background: COLORS.turquoise, opacity: 0.5 } }))); })() : null,
+            bloc.titre ? (function(){ var brut = String(bloc.titre).replace(/^[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\uFE0F\u200D\u{1F1E6}-\u{1F1FF}\s]+/u, "").trim(); var m = brut.match(/^(.*?)\s*[:\uFF1A]\s*(.+)$/); var sur = null, principal = brut; if (m) { sur = m[1].trim(); principal = m[2].trim(); } if (principal) { principal = principal.charAt(0).toUpperCase() + principal.slice(1); } return React.createElement("div", { style: { textAlign: "center", margin: "4px 0 36px" } }, sur ? React.createElement("div", { style: { fontFamily: "'Oswald', 'Noto Sans JP', sans-serif", fontWeight: 500, textTransform: "uppercase", letterSpacing: "3.5px", fontSize: 13, color: "#20D9F5", margin: "0 0 12px" } }, sur) : null, React.createElement("h2", { style: { fontFamily: "'Cormorant Garamond', 'Noto Sans JP', Georgia, serif", fontWeight: 600, fontSize: 31, lineHeight: 1.16, color: COLORS.encre, margin: 0 } }, principal), React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 12, margin: "17px 0 0" } }, React.createElement("div", { style: { height: 1, width: 46, background: "#20D9F5", opacity: 0.5 } }), React.createElement("div", { style: { width: 9, height: 9, background: "#20D9F5", transform: "rotate(45deg)", borderRadius: 1 } }), React.createElement("div", { style: { height: 1, width: 46, background: "#20D9F5", opacity: 0.5 } }))); })() : null,
             React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: bloc.aere ? 34 : 20 } }, (bloc.contenu || []).map(function (s, i) { return bloc.aere ? React.createElement(Revele, { key: i, delai: (i % 2) * 110 }, rendreSegmentRiche(s, i)) : rendreSegmentRiche(s, i); })),
             bloc.src ? React.createElement(PhotoMultilingue, { src: bloc.src, alt: bloc.legende || "", style: { width: "calc(100% + 48px)", marginLeft: -24, marginRight: -24, display: "block", borderRadius: 0, marginTop: bloc.aere ? 34 : 22, marginBottom: 2 } }) : null,
             (bloc.contenuApres && bloc.contenuApres.length) ? React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 20, marginTop: 22 } }, bloc.contenuApres.map(rendreSegmentRiche)) : null,
@@ -72810,9 +72810,9 @@ function BlocCours({ bloc, astuceLabel, onSuivant }) {
                 React.createElement("p", { style: { margin: 0, fontSize: 14, color: COLORS.encre, lineHeight: 1.5 } }, item)))))));
     }
     if (bloc.type === "schema") {
-        return (React.createElement("div", { style: { ...style, background: `${COLORS.turquoise}0D`, border: `1.5px dashed ${COLORS.turquoise}`, borderRadius: 18, padding: 18 } },
+        return (React.createElement("div", { style: { ...style, background: `${"#20D9F5"}0D`, border: `1.5px dashed ${"#20D9F5"}`, borderRadius: 18, padding: 18 } },
             React.createElement("div", { style: { fontSize: 32, textAlign: "center", marginBottom: 10 } }, bloc.emoji),
-            React.createElement("h4", { style: { fontSize: 14, color: COLORS.turquoiseDark, margin: "0 0 8px", textAlign: "center" } }, bloc.titre),
+            React.createElement("h4", { style: { fontSize: 14, color: "#17A8B3", margin: "0 0 8px", textAlign: "center" } }, bloc.titre),
             React.createElement("p", { style: { fontSize: 13.5, color: COLORS.encre, lineHeight: 1.55, margin: 0 } }, bloc.description)));
     }
     if (bloc.type === "astuce") {
@@ -72889,7 +72889,7 @@ function PuzzleGalop({ srcImage, revealed, total, tr }) {
                 complet
                     ? "\u2728 " + tr({ fr: "Bravo, l'image est complète !", en: "Well done, the picture is complete!", es: "¡Bien hecho, la imagen está completa!", it: "Bravo, l'immagine è completa!", de: "Gut gemacht, das Bild ist komplett!", ja: "やったね、絵が完成したよ！", ar: "\u0623\u062d\u0633\u0646\u062a\u060c \u0627\u0644\u0635\u0648\u0631\u0629 \u0645\u0643\u062a\u0645\u0644\u0629!" })
                     : tr({ fr: "Termine plus de chapitres pour débloquer toute l'image.", en: "Finish more chapters to unlock the whole picture.", es: "Termina más capítulos para desbloquear toda la imagen.", it: "Completa più capitoli per sbloccare l'intera immagine.", de: "Schließe mehr Kapitel ab, um das ganze Bild freizuschalten.", ja: "もっと章を終えると、絵が全部見られるよ。", ar: "\u0623\u0646\u0647\u064a \u0641\u0635\u0648\u0644\u0627 \u0623\u0643\u062b\u0631 \u0644\u0641\u062a\u062d \u0627\u0644\u0635\u0648\u0631\u0629 \u0643\u0644\u0647\u0627." })),
-            React.createElement("button", { onClick: () => setOuvert(false), style: { marginTop: 14, fontSize: 12, fontWeight: 800, color: COLORS.nuit, background: COLORS.turquoise, border: "none", borderRadius: 999, padding: "9px 22px" } }, tr({ fr: "Fermer", en: "Close", es: "Cerrar", it: "Chiudi", de: "Schließen", ja: "閉じる", ar: "\u0625\u063a\u0644\u0627\u0642" }))));
+            React.createElement("button", { onClick: () => setOuvert(false), style: { marginTop: 14, fontSize: 12, fontWeight: 800, color: COLORS.nuit, background: "#20D9F5", border: "none", borderRadius: 999, padding: "9px 22px" } }, tr({ fr: "Fermer", en: "Close", es: "Cerrar", it: "Chiudi", de: "Schließen", ja: "閉じる", ar: "\u0625\u063a\u0644\u0627\u0642" }))));
 }
 function BadgeGalop({ complet, couleur, tr }) {
     return React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 10, margin: "0 0 4px", padding: "9px 16px", borderRadius: 999, background: complet ? `linear-gradient(90deg, ${COLORS.or}22, ${COLORS.or}0D)` : COLORS.nuitClaire, border: `1px solid ${complet ? COLORS.or : COLORS.nuitBordure}` } },
@@ -75929,7 +75929,7 @@ function NoeudCheminPoney({ cours, index, termine, etoiles, suggere, verrouille,
     const anneau = verrouille ? COLORS.nuitBordure : (termine ? couleurCadre : (suggere ? couleurCadre : COLORS.nuitBordure));
     const lueur = verrouille ? "transparent" : (termine ? `${couleurCadre}66` : (suggere ? `${couleurCadre}77` : "transparent"));
     return React.createElement("div", { style: { position: "relative", display: "flex", justifyContent: gauche ? "flex-start" : "flex-end", padding: "20px 22px" } },
-        index > 0 && React.createElement("div", { style: Object.assign({ position: "absolute", top: -18, width: 0, height: 36, borderLeft: `3px dotted ${COLORS.turquoise}40` }, gauche ? { left: 60 } : { right: 60 }) }),
+        index > 0 && React.createElement("div", { style: Object.assign({ position: "absolute", top: -18, width: 0, height: 36, borderLeft: `3px dotted ${"#20D9F5"}40` }, gauche ? { left: 60 } : { right: 60 }) }),
         React.createElement("button", { onClick: verrouille ? undefined : onClick, disabled: verrouille, style: { display: "flex", alignItems: "center", gap: 12, flexDirection: gauche ? "row" : "row-reverse", background: "none", border: "none", padding: 0, cursor: verrouille ? "default" : "pointer", opacity: verrouille ? 0.45 : 1 } },
             React.createElement("div", { style: { position: "relative", width: 76, height: 76, borderRadius: "50%", flexShrink: 0, boxShadow: `0 0 0 3px ${COLORS.nuit}, 0 0 0 5px ${anneau}, 0 0 18px ${lueur}`, animation: (suggere && !verrouille) ? "pulseCheminBaby 2.4s ease-in-out infinite" : "none" } },
                 verrouille ? React.createElement("div", { style: { width: "100%", height: "100%", borderRadius: "50%", background: COLORS.nuitClaire, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22 } }, "\uD83D\uDD12")
@@ -76088,7 +76088,7 @@ function CheminPoneyBaby({ coursListe, quizResultats, coursTermines, tr, onOuvri
         React.createElement("div", { style: { position: "relative" } }, elements),
         React.createElement("div", { style: { textAlign: "center", padding: "16px 20px 4px" } },
             React.createElement("div", { style: { height: 7, borderRadius: 999, background: COLORS.nuitBordure, overflow: "hidden", marginBottom: 8 } },
-                React.createElement("div", { style: { height: "100%", width: (coursListe.length ? Math.round(nbTermines / coursListe.length * 100) : 0) + "%", borderRadius: 999, background: `linear-gradient(90deg, ${COLORS.turquoise}, ${COLORS.or})` } })),
+                React.createElement("div", { style: { height: "100%", width: (coursListe.length ? Math.round(nbTermines / coursListe.length * 100) : 0) + "%", borderRadius: 999, background: `linear-gradient(90deg, ${"#20D9F5"}, ${COLORS.or})` } })),
             React.createElement("p", { style: { margin: 0, fontSize: 11.5, color: COLORS.encreDoux } }, nbTermines + " / " + coursListe.length + " " + tr({ fr: "chapitres", en: "chapters", es: "capítulos", it: "capitoli", de: "Kapitel", ja: "チャプター", ar: "\u0641\u0635\u0648\u0644" }) + " \u00B7 " + totalEtoiles + " \u2B50")));
 }
 function medaillePourScore(score) {
@@ -76107,7 +76107,7 @@ const MEDAILLE_META = {
 // Flot SVG (réutilise la rosette turquoise existante des cartes de cours). actif=false → rosette grisée.
 function FlotSvg({ actif, taille }) {
     const T = taille || 22;
-    const c1 = actif ? "#178A93" : "#2A3238", c2 = actif ? "#7FA3AD" : "#3A444C", cE = actif ? "#7FA3AD" : "#3A444C", cC = actif ? "#1AA6B0" : "#333B42", cP = actif ? "#EAFEFF" : "#20262C";
+    const c1 = actif ? "#178A93" : "#2A3238", c2 = actif ? "#20D9F5" : "#3A444C", cE = actif ? "#20D9F5" : "#3A444C", cC = actif ? "#1AA6B0" : "#333B42", cP = actif ? "#EAFEFF" : "#20262C";
     return React.createElement("svg", { viewBox: "0 0 24 36", width: T, height: Math.round(T * 1.5), style: { display: "block", overflow: "visible", opacity: actif ? 1 : 0.55 } },
         React.createElement("path", { d: "M9.5 11 L9.5 33 L12 28.5 L14.5 33 L14.5 11 Z", transform: "rotate(-17 12 12)", fill: c1 }),
         React.createElement("path", { d: "M9.5 11 L9.5 33 L12 28.5 L14.5 33 L14.5 11 Z", transform: "rotate(17 12 12)", fill: c2 }),
@@ -76130,7 +76130,7 @@ function RangeeMaitrise({ score, tailleFlot }) {
     return React.createElement("span", { style: { display: "inline-flex", alignItems: "flex-end", gap: 3 } }, [0, 1, 2, 3, 4].map((i) => React.createElement(FlotSvg, { key: i, actif: i < nb, taille: tailleFlot || 15 })));
 }
 function IcoResultat({ nom, taille, couleur }) {
-    const S = taille || 26; const c = couleur || "#7FA3AD";
+    const S = taille || 26; const c = couleur || "#20D9F5";
     const base = { viewBox: "0 0 24 24", width: S, height: S, fill: "none", stroke: c, strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round" };
     if (nom === "micro") return React.createElement("svg", base, React.createElement("rect", { x: 9, y: 2.5, width: 6, height: 11, rx: 3 }), React.createElement("path", { d: "M5.5 11a6.5 6.5 0 0 0 13 0" }), React.createElement("path", { d: "M12 17.5V21" }), React.createElement("path", { d: "M8.5 21h7" }));
     if (nom === "idee") return React.createElement("svg", base, React.createElement("path", { d: "M9 18h6" }), React.createElement("path", { d: "M10 21h4" }), React.createElement("path", { d: "M12 3a6 6 0 0 1 3.6 10.8c-.6.5-1.1 1.2-1.3 2H9.7c-.2-.8-.7-1.5-1.3-2A6 6 0 0 1 12 3z" }));
@@ -76142,14 +76142,14 @@ function IcoResultat({ nom, taille, couleur }) {
 function PageCoursTermine(props) {
     const { galop, chapitreNum, titre, dejaTermine, xpTexte, heroImg, avatarImg, tr, onHeyBaby, onQuiz, onRetour, onTouchStart, onTouchEnd } = props;
     const L = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
-    const TQ = "#7FA3AD", OR = "#D9A94B";
+    const TQ = "#20D9F5", OR = "#D9A94B";
     return React.createElement("div", { onTouchStart: onTouchStart, onTouchEnd: onTouchEnd, style: { minHeight: "100vh", background: "#060709", paddingBottom: "calc(env(safe-area-inset-bottom) + 28px)" } },
         // ---------- EN-TÊTE : image + titre centré ----------
         React.createElement("div", { style: { position: "relative", overflow: "hidden", minHeight: "44vh" } },
             heroImg ? React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + heroImg + ")", backgroundSize: "cover", backgroundPosition: "center top" } }) : React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "radial-gradient(120% 80% at 50% 32%, rgba(20,42,54,0.85), #060709 72%)" } }),
             React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(to top, #060709 4%, rgba(6,7,9,0.12) 44%, rgba(6,7,9,0.34) 100%)" } }),
             React.createElement("div", { style: { position: "relative", minHeight: "44vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", textAlign: "center", padding: "calc(env(safe-area-inset-top) + 22px) 22px 18px" } },
-                React.createElement("div", { style: { width: 62, height: 62, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, border: "1.5px solid " + TQ + "cc", background: "radial-gradient(circle, rgba(127,163,173,0.18), rgba(6,7,9,0.5))", boxShadow: "0 0 24px " + TQ + "55", fontSize: 30, color: "#EAFEFF" } }, "\u2713"),
+                React.createElement("div", { style: { width: 62, height: 62, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14, border: "1.5px solid " + TQ + "cc", background: "radial-gradient(circle, rgba(32,217,245,0.18), rgba(6,7,9,0.5))", boxShadow: "0 0 24px " + TQ + "55", fontSize: 30, color: "#EAFEFF" } }, "\u2713"),
                 React.createElement("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: 1.6, color: "rgba(210,224,230,0.82)", fontFamily: "'Montserrat',sans-serif" } }, "GALOP " + galop + "  \u203A"),
                 React.createElement("div", { style: { fontSize: 12.5, fontWeight: 800, letterSpacing: 2, color: TQ, fontFamily: "'Montserrat',sans-serif", textTransform: "uppercase", marginTop: 7 } }, L("Chapitre", "Chapter", "Cap\u00edtulo", "Capitolo", "\u7ae0") + " " + chapitreNum),
                 React.createElement("h1", { style: { margin: "8px 0 0", fontFamily: "'Cinzel', serif", fontSize: "clamp(24px, 7vw, 34px)", fontWeight: 600, color: "#F4F8FA", lineHeight: 1.1, maxWidth: "94%", textShadow: "0 2px 22px rgba(0,0,0,0.65)" } }, titre),
@@ -76158,7 +76158,7 @@ function PageCoursTermine(props) {
         React.createElement("div", { style: { padding: "0 18px" } },
             // ---------- PASTILLE XP ----------
             React.createElement("div", { style: { display: "flex", justifyContent: "center", marginTop: 4, marginBottom: 18 } },
-                React.createElement("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 18px", borderRadius: 999, background: dejaTermine ? "rgba(217,169,75,0.10)" : "rgba(127,163,173,0.10)", border: "1px solid " + (dejaTermine ? OR + "77" : TQ + "66") } },
+                React.createElement("div", { style: { display: "inline-flex", alignItems: "center", gap: 8, padding: "9px 18px", borderRadius: 999, background: dejaTermine ? "rgba(217,169,75,0.10)" : "rgba(32,217,245,0.10)", border: "1px solid " + (dejaTermine ? OR + "77" : TQ + "66") } },
                     React.createElement("span", { style: { fontSize: 17 } }, "\u26A1"),
                     React.createElement("span", { style: { fontWeight: 800, fontSize: 14, color: dejaTermine ? OR : TQ, fontFamily: "'Montserrat',sans-serif" } }, xpTexte))),
             // ---------- ENCART HEY BABY ----------
@@ -76169,16 +76169,16 @@ function PageCoursTermine(props) {
                         React.createElement("div", { style: { fontSize: 10, letterSpacing: "0.24em", textTransform: "uppercase", color: TQ, fontWeight: 700, marginBottom: 4 } }, "HEY BABY"),
                         React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 20, fontWeight: 600, color: "#F1F6F8" } }, L("Une question ?", "A question?", "\u00bfUna pregunta?", "Una domanda?", "\u8cea\u554f\u306f\uff1f")),
                         React.createElement("p", { style: { margin: "6px 0 0", fontSize: 13, color: "rgba(206,220,226,0.82)", lineHeight: 1.5 } }, L("Hey Baby conna\u00eet ce cours par c\u0153ur. Pose-lui une question, demande un exemple concret ou fais-toi expliquer une notion autrement.", "Hey Baby knows this lesson by heart. Ask a question, request a concrete example or have a concept explained another way.", "Hey Baby se sabe este curso de memoria. Hazle una pregunta, pide un ejemplo concreto o que te explique una noci\u00f3n de otra manera.", "Hey Baby conosce questo corso a memoria. Fai una domanda, chiedi un esempio concreto o fatti spiegare una nozione in un altro modo.", "Hey Baby\u306f\u3053\u306e\u30ec\u30c3\u30b9\u30f3\u3092\u719f\u77e5\u3057\u3066\u3044\u307e\u3059\u3002\u8cea\u554f\u3084\u5177\u4f53\u4f8b\u3092\u805e\u3044\u3066\u307f\u307e\u3057\u3087\u3046\u3002")))),
-                React.createElement("button", { onClick: onHeyBaby, style: { width: "100%", padding: "14px", borderRadius: 15, border: "none", background: "linear-gradient(135deg, #1E3A44, " + TQ + ")", color: "#04141A", fontWeight: 800, fontSize: 15, boxShadow: "0 0 22px " + TQ + "44", cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "\uD83E\uDD16 " + L("Demande \u00e0 Hey Baby", "Ask Hey Baby", "Preg\u00fantale a Hey Baby", "Chiedi a Hey Baby", "Hey Baby\u306b\u805e\u304f"))),
+                React.createElement("button", { onClick: onHeyBaby, style: { width: "100%", padding: "14px", borderRadius: 15, border: "none", background: "linear-gradient(135deg, #0C5763, " + TQ + ")", color: "#04141A", fontWeight: 800, fontSize: 15, boxShadow: "0 0 22px " + TQ + "44", cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "\uD83E\uDD16 " + L("Demande \u00e0 Hey Baby", "Ask Hey Baby", "Preg\u00fantale a Hey Baby", "Chiedi a Hey Baby", "Hey Baby\u306b\u805e\u304f"))),
             // ---------- CTA QUIZ ----------
-            React.createElement("button", { onClick: onQuiz, style: { width: "100%", boxSizing: "border-box", padding: "17px", borderRadius: 17, border: "none", background: "linear-gradient(135deg, #1E3A44, " + TQ + ")", color: "#04141A", fontWeight: 800, fontSize: 16.5, boxShadow: "0 0 26px " + TQ + "55", cursor: "pointer", marginBottom: 12, fontFamily: "'Montserrat',sans-serif" } }, L("Faire le quiz de ce cours", "Take this lesson's quiz", "Hacer el test de este curso", "Fai il quiz di questo corso", "\u3053\u306e\u30ec\u30c3\u30b9\u30f3\u306e\u30af\u30a4\u30ba\u3092\u3059\u308b")),
+            React.createElement("button", { onClick: onQuiz, style: { width: "100%", boxSizing: "border-box", padding: "17px", borderRadius: 17, border: "none", background: "linear-gradient(135deg, #0C5763, " + TQ + ")", color: "#04141A", fontWeight: 800, fontSize: 16.5, boxShadow: "0 0 26px " + TQ + "55", cursor: "pointer", marginBottom: 12, fontFamily: "'Montserrat',sans-serif" } }, L("Faire le quiz de ce cours", "Take this lesson's quiz", "Hacer el test de este curso", "Fai il quiz di questo corso", "\u3053\u306e\u30ec\u30c3\u30b9\u30f3\u306e\u30af\u30a4\u30ba\u3092\u3059\u308b")),
             React.createElement("button", { onClick: onRetour, style: { width: "100%", boxSizing: "border-box", padding: "14px", borderRadius: 15, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "rgba(220,232,236,0.85)", fontWeight: 700, fontSize: 14.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, L("Retour", "Back", "Volver", "Indietro", "\u623b\u308b"))));
 }
 
 function PageResultatQuiz(props) {
     const { galop, chapitreNum, titre, bonnes, total, meilleur, med, nbFlots, tr, heroImg, avatarImg, ouvrirHB, onRevoirCours, onPrec, onSuiv, prevExiste, suivExiste, onRecommencer, onRetourGalop, suivPret } = props;
     const L = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
-    const TQ = "#7FA3AD", OR = "#D9A94B";
+    const TQ = "#20D9F5", OR = "#D9A94B";
     // Médaille + prochain palier de flots
     let medLabel = null, prochainTxt = "";
     if (med === "or") { medLabel = L("Médaille d'or", "Gold medal", "Medalla de oro", "Medaglia d'oro", "金メダル"); prochainTxt = L("Chapitre maîtrisé, bravo !", "Chapter mastered, well done!", "¡Capítulo dominado, bravo!", "Capitolo padroneggiato, bravo!", "この章をマスター！お見事！"); }
@@ -76223,7 +76223,7 @@ function PageResultatQuiz(props) {
         React.createElement("div", { style: { padding: "0 16px" } },
             // ---------- BANDEAU SCORE ----------
             panneau(React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 14 } },
-                React.createElement("div", { style: { position: "relative", width: 78, height: 78, borderRadius: "50%", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", border: "2px solid " + TQ, boxShadow: "0 0 18px " + TQ + "44", background: "radial-gradient(circle, rgba(127,163,173,0.10), transparent 70%)" } },
+                React.createElement("div", { style: { position: "relative", width: 78, height: 78, borderRadius: "50%", flexShrink: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", border: "2px solid " + TQ, boxShadow: "0 0 18px " + TQ + "44", background: "radial-gradient(circle, rgba(32,217,245,0.10), transparent 70%)" } },
                     React.createElement("div", { style: { fontFamily: "'Cinzel', serif", fontSize: 22, fontWeight: 700, color: "#F4F8FA", lineHeight: 1 } }, bonnes + "/" + total),
                     React.createElement("div", { style: { fontSize: 9.5, color: "rgba(180,195,201,0.85)", marginTop: 3, fontFamily: "'Montserrat',sans-serif" } }, L("au quiz", "on quiz", "en el test", "al quiz", "クイズ"))),
                 React.createElement("div", { style: { flex: 1, minWidth: 0 } },
@@ -76264,7 +76264,7 @@ function PageResultatQuiz(props) {
             React.createElement("button", { onClick: onRevoirCours, style: { width: "100%", boxSizing: "border-box", padding: "13px", borderRadius: 15, border: "1px solid " + TQ + "55", background: "transparent", color: TQ, fontWeight: 700, fontSize: 14, cursor: "pointer", marginBottom: 8, fontFamily: "'Montserrat',sans-serif" } }, L("Revoir le cours", "Review the lesson", "Repasar el curso", "Rivedi il corso", "コースを見直す")),
             React.createElement("button", { onClick: onRecommencer, style: { width: "100%", boxSizing: "border-box", padding: "6px", borderRadius: 12, border: "none", background: "transparent", color: "rgba(150,165,172,0.75)", fontWeight: 600, fontSize: 12.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, L("Recommencer le quiz", "Retake the quiz", "Repetir el test", "Rifai il quiz", "クイズをやり直す"))),
         // ---------- NAVIGATION CHAPITRE (barre basse) ----------
-        React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9, padding: "4px 16px calc(env(safe-area-inset-bottom) + 20px)", flex: "none" } }, (suivExiste && suivPret) ? React.createElement("button", { onClick: onSuiv, style: { width: "100%", boxSizing: "border-box", padding: "14px 10px", borderRadius: 14, border: "none", background: "linear-gradient(135deg, #1E3A44, " + TQ + ")", color: "#04141A", fontWeight: 800, fontSize: 14.5, boxShadow: "0 0 20px " + TQ + "44", cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, L("Chapitre suivant", "Next chapter", "Capítulo siguiente", "Capitolo successivo", "次の章へ") + "  ›") : (suivExiste ? React.createElement("div", { style: { width: "100%", boxSizing: "border-box", padding: "13px 10px", borderRadius: 14, border: "1px dashed rgba(255,255,255,0.16)", color: "rgba(150,162,168,0.72)", fontWeight: 700, fontSize: 12.5, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }, L("Chapitre suivant à venir", "Next chapter coming soon", "Próximo capítulo pronto", "Prossimo capitolo in arrivo", "次の章は近日公開")) : null), React.createElement("button", { onClick: onRetourGalop, style: { width: "100%", boxSizing: "border-box", padding: "13px 10px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.18)", background: "rgba(20,26,32,0.55)", color: "rgba(220,232,236,0.92)", fontWeight: 700, fontSize: 13.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, L("Retour aux cours", "Back to lessons", "Volver a los cursos", "Torna ai corsi", "コース一覧へ")), prevExiste ? React.createElement("button", { onClick: onPrec, style: { width: "100%", boxSizing: "border-box", padding: "5px", borderRadius: 12, border: "none", background: "transparent", color: "rgba(150,165,172,0.7)", fontWeight: 600, fontSize: 12.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "‹  " + L("Chapitre précédent", "Previous chapter", "Capítulo anterior", "Capitolo precedente", "前の章へ")) : null));
+        React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9, padding: "4px 16px calc(env(safe-area-inset-bottom) + 20px)", flex: "none" } }, (suivExiste && suivPret) ? React.createElement("button", { onClick: onSuiv, style: { width: "100%", boxSizing: "border-box", padding: "14px 10px", borderRadius: 14, border: "none", background: "linear-gradient(135deg, #0C5763, " + TQ + ")", color: "#04141A", fontWeight: 800, fontSize: 14.5, boxShadow: "0 0 20px " + TQ + "44", cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, L("Chapitre suivant", "Next chapter", "Capítulo siguiente", "Capitolo successivo", "次の章へ") + "  ›") : (suivExiste ? React.createElement("div", { style: { width: "100%", boxSizing: "border-box", padding: "13px 10px", borderRadius: 14, border: "1px dashed rgba(255,255,255,0.16)", color: "rgba(150,162,168,0.72)", fontWeight: 700, fontSize: 12.5, textAlign: "center", fontFamily: "'Montserrat',sans-serif" } }, L("Chapitre suivant à venir", "Next chapter coming soon", "Próximo capítulo pronto", "Prossimo capitolo in arrivo", "次の章は近日公開")) : null), React.createElement("button", { onClick: onRetourGalop, style: { width: "100%", boxSizing: "border-box", padding: "13px 10px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.18)", background: "rgba(20,26,32,0.55)", color: "rgba(220,232,236,0.92)", fontWeight: 700, fontSize: 13.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, L("Retour aux cours", "Back to lessons", "Volver a los cursos", "Torna ai corsi", "コース一覧へ")), prevExiste ? React.createElement("button", { onClick: onPrec, style: { width: "100%", boxSizing: "border-box", padding: "5px", borderRadius: 12, border: "none", background: "transparent", color: "rgba(150,165,172,0.7)", fontWeight: 600, fontSize: 12.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "‹  " + L("Chapitre précédent", "Previous chapter", "Capítulo anterior", "Capitolo precedente", "前の章へ")) : null));
 }
 
 /* ===== EXAMENS BLANCS (banques par niveau) ===== */
@@ -76308,7 +76308,7 @@ function EcranExamenBlanc() {
     const [bonnes, setBonnes] = useState(0);
     const [termine, setTermine] = useState(false);
     const [confirmQuit, setConfirmQuit] = useState(false);
-    const TQ = COLORS.turquoise, KO = "#F05C74", LAB = ["A", "B", "C", "D", "E", "F"];
+    const TQ = "#20D9F5", KO = "#F05C74", LAB = ["A", "B", "C", "D", "E", "F"];
     const fond = (typeof PHOTOS !== "undefined" && PHOTOS["galop_" + galopNum]) || (typeof IMG_HEYBABY_FOND !== "undefined" ? IMG_HEYBABY_FOND : "");
     const titreGalop = "GALOP " + galopNum;
     const retour = () => setEcran("galop-detail");
@@ -76321,7 +76321,7 @@ function EcranExamenBlanc() {
         return React.createElement("div", { style: { minHeight: "100dvh", background: "#060709", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, textAlign: "center" } },
             React.createElement("div", { style: { fontSize: 40, marginBottom: 12 } }, "\u23F1"),
             React.createElement("h3", { style: { fontFamily: "'Cinzel',serif", color: "#F4F7FA", margin: "0 0 8px" } }, T("Examen blanc en pr\u00e9paration", "Mock exam coming soon", "Examen en preparaci\u00f3n", "Esame in preparazione", "\u6a21\u64ec\u8a66\u9a13\u306f\u6e96\u5099\u4e2d", "Probepr\u00fcfung in Vorbereitung", "\u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0627\u0644\u062a\u062c\u0631\u064a\u0628\u064a \u0642\u064a\u062f \u0627\u0644\u062a\u062d\u0636\u064a\u0631")),
-            React.createElement("button", { onClick: retour, style: { marginTop: 14, padding: "12px 22px", borderRadius: 14, border: "none", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#1E3A44,#22DAF5 55%,#7FE9FB)" } }, T("Retour au Galop", "Back to Galop", "Volver", "Torna", "\u623b\u308b", "Zur\u00fcck zum Galopp", "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0627\u0644\u063a\u0627\u0644\u0648\u0628")));
+            React.createElement("button", { onClick: retour, style: { marginTop: 14, padding: "12px 22px", borderRadius: 14, border: "none", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)" } }, T("Retour au Galop", "Back to Galop", "Volver", "Torna", "\u623b\u308b", "Zur\u00fcck zum Galopp", "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0627\u0644\u063a\u0627\u0644\u0648\u0628")));
     }
     const total = questions.length;
     const question = questions[idx];
@@ -76333,7 +76333,7 @@ function EcranExamenBlanc() {
 
     if (termine) {
         const score = Math.round(bonnes / total * 100);
-        const v = score >= 80 ? { t: T("R\u00e9ussi haut la main !", "Passed with flying colours!", "\u00a1Aprobado con nota!", "Superato brillantemente!", "\u898b\u4e8b\u5408\u683c\uff01", "Mit Bravour bestanden!", "\u0646\u062c\u0627\u062d \u0628\u0627\u0647\u0631!"), c: TQ } : (score >= 60 ? { t: T("R\u00e9ussi", "Passed", "Aprobado", "Superato", "\u5408\u683c", "Bestanden", "\u0646\u0627\u062c\u062d"), c: "#CFE3E8" } : { t: T("\u00c0 retravailler", "Keep practising", "A repasar", "Da rivedere", "\u8981\u5fa9\u7fd2", "Noch \u00fcben", "\u064a\u062d\u062a\u0627\u062c \u0645\u0631\u0627\u062c\u0639\u0629"), c: KO });
+        const v = score >= 80 ? { t: T("R\u00e9ussi haut la main !", "Passed with flying colours!", "\u00a1Aprobado con nota!", "Superato brillantemente!", "\u898b\u4e8b\u5408\u683c\uff01", "Mit Bravour bestanden!", "\u0646\u062c\u0627\u062d \u0628\u0627\u0647\u0631!"), c: TQ } : (score >= 60 ? { t: T("R\u00e9ussi", "Passed", "Aprobado", "Superato", "\u5408\u683c", "Bestanden", "\u0646\u0627\u062c\u062d"), c: "#5FE9F0" } : { t: T("\u00c0 retravailler", "Keep practising", "A repasar", "Da rivedere", "\u8981\u5fa9\u7fd2", "Noch \u00fcben", "\u064a\u062d\u062a\u0627\u062c \u0645\u0631\u0627\u062c\u0639\u0629"), c: KO });
         return React.createElement("div", { "data-noswipe": "true", style: { minHeight: "100dvh", background: "#060709", display: "flex", flexDirection: "column", isolation: "isolate" } },
             React.createElement("div", { style: { position: "relative", height: "34vh", flex: "none", overflow: "hidden" } },
                 React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, backgroundImage: "url(" + fond + ")", backgroundSize: "cover", backgroundPosition: "center" } }),
@@ -76348,7 +76348,7 @@ function EcranExamenBlanc() {
                         React.createElement("div", { style: { fontSize: 12, color: "#8A99A1", marginTop: 4 } }, bonnes + " / " + total))),
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 600, color: v.c, margin: "6px 0 2px" } }, v.t),
                 React.createElement("p", { style: { fontSize: 13, color: "#8A99A1", textAlign: "center", margin: "0 0 auto", maxWidth: 300, lineHeight: 1.5 } }, T("Refais l'examen autant de fois que tu veux pour progresser.", "Retake the exam as many times as you like.", "Repite el examen cuando quieras.", "Ripeti l'esame quando vuoi.", "\u4f55\u5ea6\u3067\u3082\u6311\u6226\u3067\u304d\u307e\u3059\u3002", "Wiederhole die Pr\u00fcfung so oft du willst, um besser zu werden.", "\u0623\u0639\u064a\u062f\u064a \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646 \u0643\u0645\u0627 \u062a\u0634\u0627\u0626\u064a\u0646 \u0644\u062a\u062a\u0642\u062f\u0645\u064a.")),
-                React.createElement("button", { onClick: recommencer, style: { width: "100%", maxWidth: 420, padding: 16, border: "none", borderRadius: 15, cursor: "pointer", marginTop: 16, fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#1E3A44,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)" } }, T("Recommencer l'examen", "Retake the exam", "Repetir", "Rifai l'esame", "\u3082\u3046\u4e00\u5ea6", "Pr\u00fcfung wiederholen", "\u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646")),
+                React.createElement("button", { onClick: recommencer, style: { width: "100%", maxWidth: 420, padding: 16, border: "none", borderRadius: 15, cursor: "pointer", marginTop: 16, fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)" } }, T("Recommencer l'examen", "Retake the exam", "Repetir", "Rifai l'esame", "\u3082\u3046\u4e00\u5ea6", "Pr\u00fcfung wiederholen", "\u0625\u0639\u0627\u062f\u0629 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646")),
                 React.createElement("button", { onClick: retour, style: { width: "100%", maxWidth: 420, padding: 14, border: "1px solid rgba(255,255,255,0.16)", borderRadius: 14, cursor: "pointer", marginTop: 10, background: "transparent", color: "#C9D3D8", fontFamily: "'Montserrat',sans-serif", fontSize: 14, fontWeight: 600 } }, T("Retour au Galop", "Back to the Galop", "Volver", "Torna al Galop", "\u623b\u308b", "Zur\u00fcck zum Galopp", "\u0627\u0644\u0639\u0648\u062f\u0629 \u0625\u0644\u0649 \u0627\u0644\u063a\u0627\u0644\u0648\u0628")), caleBarreHype()));
     }
 
@@ -76364,7 +76364,7 @@ function EcranExamenBlanc() {
             React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(34,218,245,0.6),transparent)" } }),
             React.createElement("div", { style: { position: "absolute", left: 16, right: 16, bottom: 0, transform: "translateY(50%)" } },
                 React.createElement("div", { style: { height: 5, borderRadius: 99, background: "rgba(10,14,18,0.7)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.06)" } },
-                    React.createElement("div", { style: { height: "100%", width: progPct + "%", borderRadius: 99, background: "linear-gradient(90deg,#1E3A44," + TQ + ")", boxShadow: "0 0 16px rgba(34,218,245,0.75)", transition: "width .5s cubic-bezier(.4,0,.15,1)" } })))),
+                    React.createElement("div", { style: { height: "100%", width: progPct + "%", borderRadius: 99, background: "linear-gradient(90deg,#0C5763," + TQ + ")", boxShadow: "0 0 16px rgba(34,218,245,0.75)", transition: "width .5s cubic-bezier(.4,0,.15,1)" } })))),
         React.createElement("div", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { flex: 1, display: "flex", flexDirection: "column", padding: "26px 22px 0" } },
             React.createElement("div", { style: { fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7f8894", fontWeight: 500 } }, T("Question", "Question", "Pregunta", "Domanda", "\u8cea\u554f", "Frage", "\u0633\u0624\u0627\u0644") + " " + (idx + 1) + " / " + total),
             React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, lineHeight: 1.34, margin: "12px 0 18px", color: "#F4F7FA" } }, question.question),
@@ -76385,7 +76385,7 @@ function EcranExamenBlanc() {
                     React.createElement("span", { style: { width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, background: estCorrect(reponse) ? TQ : KO, color: estCorrect(reponse) ? "#04222a" : "#2a060c" } }, estCorrect(reponse) ? "\u2713" : "\u2715"),
                     estCorrect(reponse) ? T("Bravo !", "Well done!", "\u00a1Bravo!", "Bravo!", "\u6b63\u89e3\uff01", "Bravo!", "\u0623\u062d\u0633\u0646\u062a!") : T("Pas tout \u00e0 fait", "Not quite", "Casi", "Non proprio", "\u60dc\u3057\u3044", "Nicht ganz", "\u0644\u064a\u0633 \u062a\u0645\u0627\u0645\u0627")),
                 React.createElement("p", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
-            React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#1E3A44,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
+            React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
                 valide ? (dernier ? T("Voir mon r\u00e9sultat", "See my result", "Ver mi resultado", "Vedi il risultato", "\u7d50\u679c\u3092\u898b\u308b", "Mein Ergebnis ansehen", "\u0639\u0631\u0636 \u0646\u062a\u064a\u062c\u062a\u064a") : T("Continuer", "Continue", "Continuar", "Continua", "\u7d9a\u3051\u308b", "Weiter", "\u0645\u062a\u0627\u0628\u0639\u0629")) : T("V\u00e9rifier", "Check", "Verificar", "Verifica", "\u78ba\u8a8d", "Pr\u00fcfen", "\u062a\u062d\u0642\u0642"))),
         caleBarreHype(),
         confirmQuit ? hypePortailBody(React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 220, display: "flex", alignItems: "flex-end", background: "rgba(4,6,8,0.6)", backdropFilter: "blur(6px)" }, onClick: function (e) { if (e.target === e.currentTarget) setConfirmQuit(false); } },
@@ -76393,7 +76393,7 @@ function EcranExamenBlanc() {
                 React.createElement("div", { style: { width: 40, height: 4, borderRadius: 99, background: "rgba(255,255,255,0.18)", margin: "0 auto 18px" } }),
                 React.createElement("h3", { style: { margin: "0 0 8px", fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, color: "#F4F7FA" } }, T("Quitter l'examen ?", "Leave the exam?", "\u00bfSalir del examen?", "Uscire dall'esame?", "\u8a66\u9a13\u3092\u3084\u3081\u308b\uff1f", "Pr\u00fcfung verlassen?", "\u0645\u063a\u0627\u062f\u0631\u0629 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646\u061f")),
                 React.createElement("p", { style: { margin: "0 0 18px", fontSize: 13, color: "#7f8894" } }, T("Ta progression ne sera pas enregistr\u00e9e.", "Your progress won't be saved.", "Tu progreso no se guardar\u00e1.", "I tuoi progressi non verranno salvati.", "\u9032\u6357\u306f\u4fdd\u5b58\u3055\u308c\u307e\u305b\u3093\u3002", "Dein Fortschritt wird nicht gespeichert.", "\u0644\u0646 \u064a\u062d\u0641\u0638 \u062a\u0642\u062f\u0645\u0643.")),
-                React.createElement("button", { onClick: function () { setConfirmQuit(false); }, style: { width: "100%", padding: 15, border: "none", borderRadius: 14, cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#1E3A44,#22DAF5 55%,#7FE9FB)" } }, T("Continuer l'examen", "Keep going", "Seguir", "Continua", "\u7d9a\u3051\u308b", "Pr\u00fcfung fortsetzen", "\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646")),
+                React.createElement("button", { onClick: function () { setConfirmQuit(false); }, style: { width: "100%", padding: 15, border: "none", borderRadius: 14, cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)" } }, T("Continuer l'examen", "Keep going", "Seguir", "Continua", "\u7d9a\u3051\u308b", "Pr\u00fcfung fortsetzen", "\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0627\u0645\u062a\u062d\u0627\u0646")),
                 React.createElement("button", { onClick: function () { setConfirmQuit(false); retour(); }, style: { width: "100%", padding: 13, border: "none", borderRadius: 12, background: "none", color: KO, fontWeight: 600, fontSize: 14, cursor: "pointer", marginTop: 8 } }, T("Quitter", "Leave", "Salir", "Esci", "\u3084\u3081\u308b", "Verlassen", "\u0645\u063a\u0627\u062f\u0631\u0629"))))) : null);
 }
 
@@ -76445,7 +76445,7 @@ function EcranQuiz() {
     if (!questions.length) {
         return (React.createElement("div", { style: { padding: 24, textAlign: "center" } },
             React.createElement("p", { style: { color: COLORS.encreDoux } }, "\u2014"),
-            React.createElement(BoutonPrincipal, { texte: t("retour_galop"), couleur: COLORS.turquoise, onClick: () => setEcran("galop-detail") })));
+            React.createElement(BoutonPrincipal, { texte: t("retour_galop"), couleur: "#20D9F5", onClick: () => setEcran("galop-detail") })));
     }
     const question = questions[idx];
     const estCorrect = (r) => r === question.correct;
@@ -76555,7 +76555,7 @@ function EcranQuiz() {
         const T = (fr, en, es, it, ja) => tr({ fr: fr, en: en, es: es, it: it, ja: ja });
         const L = ["A", "B", "C", "D", "E", "F"];
         const total = questions.length;
-        const TQ = COLORS.turquoise;
+        const TQ = "#20D9F5";
         const KO = "#F05C74";
         const dernier = idx >= total - 1;
         const progPct = (valide ? (idx + 1) : idx) / total * 100;
@@ -76589,7 +76589,7 @@ function EcranQuiz() {
                 React.createElement("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: 1, background: "linear-gradient(90deg,transparent,rgba(34,218,245,0.6),transparent)" } }),
                 React.createElement("div", { style: { position: "absolute", left: 16, right: 16, bottom: 0, transform: "translateY(50%)" } },
                     React.createElement("div", { style: { height: 5, borderRadius: 99, background: "rgba(10,14,18,0.7)", overflow: "hidden", border: "1px solid rgba(255,255,255,0.06)" } },
-                        React.createElement("div", { style: { height: "100%", width: progPct + "%", borderRadius: 99, background: "linear-gradient(90deg,#1E3A44," + TQ + ")", boxShadow: "0 0 16px rgba(34,218,245,0.75)", transition: "width .5s cubic-bezier(.4,0,.15,1)" } })))),
+                        React.createElement("div", { style: { height: "100%", width: progPct + "%", borderRadius: 99, background: "linear-gradient(90deg,#0C5763," + TQ + ")", boxShadow: "0 0 16px rgba(34,218,245,0.75)", transition: "width .5s cubic-bezier(.4,0,.15,1)" } })))),
             React.createElement("div", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { flex: 1, display: "flex", flexDirection: "column", padding: "26px 22px 0" } },
                 React.createElement("div", { style: { fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#7f8894", fontWeight: 500 } }, T("Question", "Question", "Pregunta", "Domanda", "\u8cea\u554f", "Frage", "\u0633\u0624\u0627\u0644") + " " + (idx + 1) + " / " + total),
                 React.createElement("div", { style: { fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 21, lineHeight: 1.34, margin: "12px 0 20px", color: "#F4F7FA" } }, question.question),
@@ -76616,7 +76616,7 @@ function EcranQuiz() {
                         React.createElement("span", { style: { width: 22, height: 22, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, background: estCorrect(reponse) ? TQ : KO, color: estCorrect(reponse) ? "#04222a" : "#2a060c" } }, estCorrect(reponse) ? "\u2713" : "\u2715"),
                         estCorrect(reponse) ? T("Bravo !", "Well done!", "\u00a1Bravo!", "Bravo!", "\u6b63\u89e3\uff01", "Bravo!", "\u0623\u062d\u0633\u0646\u062a!") : T("Pas tout \u00e0 fait", "Not quite", "Casi", "Non proprio", "\u60dc\u3057\u3044", "Nicht ganz", "\u0644\u064a\u0633 \u062a\u0645\u0627\u0645\u0627")),
                     React.createElement("p", { dir: langue === "ar" ? "rtl" : undefined, lang: langue, style: { margin: 0, fontSize: 13, lineHeight: 1.55, color: "#aab2bd" } }, question.explication || "")) : null,
-                React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#1E3A44,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
+                React.createElement("button", { onClick: valide ? suivant : verifier, disabled: !valide && reponse == null, style: { position: "relative", width: "100%", padding: 16, border: "none", borderRadius: 15, overflow: "hidden", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: "0.03em", color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)", boxShadow: "0 10px 28px rgba(34,218,245,0.3)", opacity: (!valide && reponse == null) ? 0.45 : 1, filter: (!valide && reponse == null) ? "grayscale(.5) brightness(.7)" : "none", transition: "opacity .25s, filter .25s" } },
                     valide ? (dernier ? T("Voir mon r\u00e9sultat", "See my result", "Ver mi resultado", "Vedi il risultato", "\u7d50\u679c\u3092\u898b\u308b", "Mein Ergebnis ansehen", "\u0639\u0631\u0636 \u0646\u062a\u064a\u062c\u062a\u064a") : T("Continuer", "Continue", "Continuar", "Continua", "\u7d9a\u3051\u308b", "Weiter", "\u0645\u062a\u0627\u0628\u0639\u0629")) : T("V\u00e9rifier", "Check", "Verificar", "Verifica", "\u78ba\u8a8d", "Pr\u00fcfen", "\u062a\u062d\u0642\u0642"))),
             caleBarreHype(),
             confirmQuit ? hypePortailBody(React.createElement("div", { style: { position: "fixed", inset: 0, zIndex: 220, display: "flex", alignItems: "flex-end", background: "rgba(4,6,8,0.6)", backdropFilter: "blur(6px)" }, onClick: function (e) { if (e.target === e.currentTarget) setConfirmQuit(false); } },
@@ -76624,17 +76624,17 @@ function EcranQuiz() {
                     React.createElement("div", { style: { width: 40, height: 4, borderRadius: 99, background: "rgba(255,255,255,0.18)", margin: "0 auto 18px" } }),
                     React.createElement("h3", { style: { margin: "0 0 8px", fontFamily: "'Cinzel',serif", fontWeight: 600, fontSize: 20, color: "#F4F7FA" } }, T("Quitter le quiz ?", "Leave the quiz?", "\u00bfSalir del quiz?", "Uscire dal quiz?", "\u30af\u30a4\u30ba\u3092\u3084\u3081\u308b\uff1f", "Quiz verlassen?", "\u0645\u063a\u0627\u062f\u0631\u0629 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631\u061f")),
                     React.createElement("p", { style: { margin: "0 0 18px", fontSize: 13, color: "#7f8894" } }, T("Ta progression ne sera pas enregistr\u00e9e.", "Your progress won't be saved.", "Tu progreso no se guardar\u00e1.", "I tuoi progressi non verranno salvati.", "\u9032\u6357\u306f\u4fdd\u5b58\u3055\u308c\u307e\u305b\u3093\u3002", "Dein Fortschritt wird nicht gespeichert.", "\u0644\u0646 \u064a\u062d\u0641\u0638 \u062a\u0642\u062f\u0645\u0643.")),
-                    React.createElement("button", { onClick: function () { setConfirmQuit(false); }, style: { width: "100%", padding: 15, border: "none", borderRadius: 14, cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#1E3A44,#22DAF5 55%,#7FE9FB)" } }, T("Continuer le quiz", "Keep going", "Seguir", "Continua", "\u7d9a\u3051\u308b", "Quiz fortsetzen", "\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631")),
+                    React.createElement("button", { onClick: function () { setConfirmQuit(false); }, style: { width: "100%", padding: 15, border: "none", borderRadius: 14, cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 15, fontWeight: 700, color: "#032329", background: "linear-gradient(100deg,#0C5763,#22DAF5 55%,#7FE9FB)" } }, T("Continuer le quiz", "Keep going", "Seguir", "Continua", "\u7d9a\u3051\u308b", "Quiz fortsetzen", "\u0645\u062a\u0627\u0628\u0639\u0629 \u0627\u0644\u0627\u062e\u062a\u0628\u0627\u0631")),
                     React.createElement("button", { onClick: function () { setConfirmQuit(false); setEcran("galop-detail"); }, style: { width: "100%", padding: 14, border: "1.5px solid rgba(240,92,116,0.55)", borderRadius: 12, background: "rgba(240,92,116,0.10)", color: KO, fontWeight: 700, fontSize: 14.5, cursor: "pointer", marginTop: 10 } }, T("Quitter", "Leave", "Salir", "Esci", "\u3084\u3081\u308b", "Verlassen", "\u0645\u063a\u0627\u062f\u0631\u0629"))))) : null));
     }
     return (React.createElement("div", { style: { minHeight: "100vh", display: "flex", flexDirection: "column" } },
         React.createElement("div", { style: { padding: "20px 20px 0" } },
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 20 } },
                 React.createElement("button", { onClick: () => setEcran("galop-detail"), style: { width: 36, height: 36, borderRadius: 11, background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, display: "flex", alignItems: "center", justifyContent: "center" } }, "\u2715"),
-                React.createElement("div", { style: { flex: 1, display: "flex", gap: 4 } }, questions.map((_, i) => (React.createElement("div", { key: i, style: { flex: 1, height: 8, borderRadius: 4, background: i < idx ? COLORS.prairie : i === idx ? COLORS.turquoise : COLORS.ligne } })))),
+                React.createElement("div", { style: { flex: 1, display: "flex", gap: 4 } }, questions.map((_, i) => (React.createElement("div", { key: i, style: { flex: 1, height: 8, borderRadius: 4, background: i < idx ? COLORS.prairie : i === idx ? "#20D9F5" : COLORS.ligne } })))),
                 React.createElement("button", { onClick: () => { setCoursImpression({ galopId: galopOuvert, coursId: coursOuvert }); setImpression(true); }, title: t("impr_bouton"), style: { width: 36, height: 36, borderRadius: 11, background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 } }, "\uD83D\uDDA8\uFE0F"))),
         React.createElement("div", { style: { flex: 1, padding: "8px 24px" } },
-            React.createElement("p", { style: { fontSize: 12, fontWeight: 700, color: COLORS.turquoiseDark, letterSpacing: 0.5, marginBottom: 8 } },
+            React.createElement("p", { style: { fontSize: 12, fontWeight: 700, color: "#17A8B3", letterSpacing: 0.5, marginBottom: 8 } },
                 t("question_label"),
                 " ",
                 idx + 1,
@@ -76649,7 +76649,7 @@ function EcranQuiz() {
                 React.createElement("p", { style: { margin: 0, fontWeight: 700, fontSize: 13, color: estCorrect(reponse) ? COLORS.prairieDark : COLORS.corail, marginBottom: 4 } }, estCorrect(reponse) ? t("bonne_reponse") : t("pas_tout_a_fait")),
                 React.createElement("p", { style: { margin: 0, fontSize: 13, color: COLORS.encre, lineHeight: 1.5 } }, question.explication)))),
         React.createElement("div", { style: { padding: "0 24px 28px" } },
-            React.createElement(BoutonPrincipal, { texte: idx < questions.length - 1 ? t("question_suivante") : t("voir_resultat"), couleur: COLORS.turquoise, onClick: suivant, disabled: !valide }))));
+            React.createElement(BoutonPrincipal, { texte: idx < questions.length - 1 ? t("question_suivante") : t("voir_resultat"), couleur: "#20D9F5", onClick: suivant, disabled: !valide }))));
 }
 function OptionQCM({ texte, index, reponse, valide, correct, onClick }) {
     let bg = COLORS.nuitClaire, border = COLORS.nuitBordure, color = COLORS.blanc;
@@ -76703,9 +76703,9 @@ function AvatarZoom() {
     if (!zoomImg)
         return null;
     return (React.createElement("div", { onClick: () => setZoomImg(null), style: { position: "fixed", inset: 0, background: "rgba(8,10,13,0.94)", zIndex: 90, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 24, animation: "fadeIn 0.25s ease-out" } },
-        React.createElement("div", { style: { width: "78vw", height: "78vw", maxWidth: 340, maxHeight: 340, borderRadius: "50%", overflow: "hidden", border: `3px solid ${COLORS.turquoise}`, boxShadow: `0 0 50px ${COLORS.turquoise}66`, animation: "popIn 0.35s ease-out" } },
+        React.createElement("div", { style: { width: "78vw", height: "78vw", maxWidth: 340, maxHeight: 340, borderRadius: "50%", overflow: "hidden", border: `3px solid ${"#20D9F5"}`, boxShadow: `0 0 50px ${"#20D9F5"}66`, animation: "popIn 0.35s ease-out" } },
             React.createElement("img", { src: zoomImg, alt: "avatar", style: { width: "100%", height: "100%", objectFit: "cover" } })),
-        React.createElement("button", { onClick: () => setZoomImg(null), style: { marginTop: 24, width: 46, height: 46, borderRadius: "50%", background: COLORS.turquoise, color: COLORS.nuit, fontWeight: 700, fontSize: 18 } }, "\u2715")));
+        React.createElement("button", { onClick: () => setZoomImg(null), style: { marginTop: 24, width: 46, height: 46, borderRadius: "50%", background: "#20D9F5", color: COLORS.nuit, fontWeight: 700, fontSize: 18 } }, "\u2715")));
 }
 function ModaleMerciVIP() {
     const { merciVIP, setMerciVIP, profil, t } = useApp();
@@ -76829,11 +76829,11 @@ function CeremonieGrandQuiz({ bonnes, total, onRetour, onRecommencer }) {
     return (React.createElement("div", { style: { position: "fixed", inset: 0, background: COLORS.nuit, overflow: "hidden", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 24px", zIndex: 60 } },
         React.createElement("div", { style: { position: "absolute", inset: 0, background: `url(${photo}) center/cover no-repeat`, opacity: 0.5 } }),
         React.createElement("div", { style: { position: "absolute", inset: 0, background: `radial-gradient(circle at 50% 40%, ${COLORS.nuit}15 0%, ${COLORS.nuit}39 60%, ${COLORS.nuit} 100%)` } }),
-        [0, 1, 2].map((i) => (React.createElement("div", { key: "r" + i, style: { position: "absolute", top: "40%", left: "50%", width: 220, height: 220, marginLeft: -110, marginTop: -110, borderRadius: "50%", border: `2px solid ${COLORS.turquoise}`, animation: `ringExpand 2.6s ease-out ${i * 0.5}s infinite` } }))),
-        Array.from({ length: 14 }).map((_, i) => (React.createElement("div", { key: "p" + i, style: { position: "absolute", left: `${8 + (i * 6.3) % 84}%`, top: `${68 + (i % 5) * 5}%`, width: 7, height: 7, background: i % 2 ? COLORS.turquoise : "#FFFFFF", transform: "rotate(45deg)", borderRadius: 1, animation: `floatUp ${3 + (i % 4) * 0.6}s ease-in ${(i % 6) * 0.3}s infinite` } }))),
+        [0, 1, 2].map((i) => (React.createElement("div", { key: "r" + i, style: { position: "absolute", top: "40%", left: "50%", width: 220, height: 220, marginLeft: -110, marginTop: -110, borderRadius: "50%", border: `2px solid ${"#20D9F5"}`, animation: `ringExpand 2.6s ease-out ${i * 0.5}s infinite` } }))),
+        Array.from({ length: 14 }).map((_, i) => (React.createElement("div", { key: "p" + i, style: { position: "absolute", left: `${8 + (i * 6.3) % 84}%`, top: `${68 + (i % 5) * 5}%`, width: 7, height: 7, background: i % 2 ? "#20D9F5" : "#FFFFFF", transform: "rotate(45deg)", borderRadius: 1, animation: `floatUp ${3 + (i % 4) * 0.6}s ease-in ${(i % 6) * 0.3}s infinite` } }))),
         React.createElement("div", { style: { position: "relative", textAlign: "center", animation: "popIn 0.6s ease-out" } },
-            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: 2, color: COLORS.turquoise, textTransform: "uppercase", marginBottom: 10 } }, x.score),
-            React.createElement("div", { style: { fontSize: 64, fontWeight: 800, color: "#FFFFFF", lineHeight: 1, textShadow: `0 0 30px ${COLORS.turquoise}` } }, "100%"),
+            React.createElement("div", { style: { fontSize: 12, fontWeight: 700, letterSpacing: 2, color: "#20D9F5", textTransform: "uppercase", marginBottom: 10 } }, x.score),
+            React.createElement("div", { style: { fontSize: 64, fontWeight: 800, color: "#FFFFFF", lineHeight: 1, textShadow: `0 0 30px ${"#20D9F5"}` } }, "100%"),
             React.createElement("h1", { style: { fontSize: 22, color: "#FFFFFF", margin: "14px 0 4px" } }, x.titre),
             React.createElement("p", { style: { fontSize: 14, color: COLORS.grisDoux, margin: 0 } },
                 x.sous,
@@ -76841,16 +76841,16 @@ function CeremonieGrandQuiz({ bonnes, total, onRetour, onRecommencer }) {
                 bonnes,
                 "/",
                 total)),
-        React.createElement("div", { style: { position: "relative", marginTop: 24, background: `${COLORS.nuit}2C`, border: `1px solid ${COLORS.turquoise}55`, borderRadius: 20, padding: "18px", width: "100%", maxWidth: 320, animation: "slideUp 0.5s ease-out 0.2s both" } },
-            React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 8, marginBottom: 14 } }, [["f", "♀"], ["m", "♂"]].map((g) => (React.createElement("button", { key: g[0], onClick: () => setGenre(g[0]), style: { width: 44, height: 38, borderRadius: 12, fontSize: 18, fontWeight: 700, color: genre === g[0] ? COLORS.nuit : COLORS.blanc, background: genre === g[0] ? COLORS.turquoise : COLORS.nuitClaire, border: `1px solid ${genre === g[0] ? COLORS.turquoise : COLORS.nuitBordure}` } }, g[1])))),
+        React.createElement("div", { style: { position: "relative", marginTop: 24, background: `${COLORS.nuit}2C`, border: `1px solid ${"#20D9F5"}55`, borderRadius: 20, padding: "18px", width: "100%", maxWidth: 320, animation: "slideUp 0.5s ease-out 0.2s both" } },
+            React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: 8, marginBottom: 14 } }, [["f", "♀"], ["m", "♂"]].map((g) => (React.createElement("button", { key: g[0], onClick: () => setGenre(g[0]), style: { width: 44, height: 38, borderRadius: 12, fontSize: 18, fontWeight: 700, color: genre === g[0] ? COLORS.nuit : COLORS.blanc, background: genre === g[0] ? "#20D9F5" : COLORS.nuitClaire, border: `1px solid ${genre === g[0] ? "#20D9F5" : COLORS.nuitBordure}` } }, g[1])))),
             React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 10 } },
-                React.createElement("div", { onClick: () => setZoomImg(photo), style: { width: 96, height: 96, borderRadius: "50%", overflow: "hidden", border: `3px solid ${COLORS.turquoise}`, animation: "glowPulse 2.4s ease-in-out infinite", cursor: "pointer" } },
+                React.createElement("div", { onClick: () => setZoomImg(photo), style: { width: 96, height: 96, borderRadius: "50%", overflow: "hidden", border: `3px solid ${"#20D9F5"}`, animation: "glowPulse 2.4s ease-in-out infinite", cursor: "pointer" } },
                     React.createElement("img", { src: photo, alt: "avatar", style: { width: "100%", height: "100%", objectFit: "cover" } })),
                 React.createElement("div", { style: { fontSize: 11, color: COLORS.grisDoux, marginTop: -2 } }, x.agrandir),
-                React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: COLORS.turquoise } }, x.avatar),
-                React.createElement("button", { onClick: utiliser, disabled: pris, style: { width: "100%", padding: "12px 0", borderRadius: 14, fontSize: 14, fontWeight: 700, color: pris ? COLORS.turquoise : COLORS.nuit, background: pris ? "transparent" : COLORS.turquoise, border: `1.5px solid ${COLORS.turquoise}` } }, pris ? "✓ " + x.defini : x.utiliser))),
+                React.createElement("div", { style: { fontSize: 13, fontWeight: 700, color: "#20D9F5" } }, x.avatar),
+                React.createElement("button", { onClick: utiliser, disabled: pris, style: { width: "100%", padding: "12px 0", borderRadius: 14, fontSize: 14, fontWeight: 700, color: pris ? "#20D9F5" : COLORS.nuit, background: pris ? "transparent" : "#20D9F5", border: `1.5px solid ${"#20D9F5"}` } }, pris ? "✓ " + x.defini : x.utiliser))),
         React.createElement("div", { style: { position: "relative", marginTop: 16, width: "100%", maxWidth: 320, display: "flex", flexDirection: "column", gap: 10 } },
-            React.createElement(BoutonPrincipal, { texte: x.retour, couleur: COLORS.turquoise, onClick: onRetour }),
+            React.createElement(BoutonPrincipal, { texte: x.retour, couleur: "#20D9F5", onClick: onRetour }),
             React.createElement(BoutonPrincipal, { texte: x.recommencer, couleur: COLORS.encreDoux, secondaire: true, onClick: onRecommencer }))));
 }
 /* ---------- EXAMEN BLANC ---------- */
@@ -76906,7 +76906,7 @@ function EcranExamen() {
         const score = Math.round((correctes / examenQuestions.length) * 100);
         const reussi = score >= 70;
         return (React.createElement("div", { style: { height: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 32, textAlign: "center" } },
-            React.createElement("div", { style: { width: 90, height: 90, borderRadius: "50%", background: reussi ? `${COLORS.prairie}1A` : `${COLORS.turquoise}1A`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: 800, color: reussi ? COLORS.prairieDark : COLORS.turquoiseDark, marginBottom: 20, animation: "popIn 0.5s ease-out" } },
+            React.createElement("div", { style: { width: 90, height: 90, borderRadius: "50%", background: reussi ? `${COLORS.prairie}1A` : `${"#20D9F5"}1A`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, fontWeight: 800, color: reussi ? COLORS.prairieDark : "#17A8B3", marginBottom: 20, animation: "popIn 0.5s ease-out" } },
                 score,
                 "%"),
             React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 15, marginBottom: 4 } },
@@ -76918,7 +76918,7 @@ function EcranExamen() {
             React.createElement("p", { style: { color: reussi ? COLORS.prairieDark : COLORS.corail, fontWeight: 700, fontSize: 14, marginBottom: 28 } }, reussi ? t("niveau_atteint") : t("niveau_a_retravailler")),
             React.createElement("div", { style: { width: "100%", display: "flex", flexDirection: "column", gap: 10 } },
                 React.createElement(BoutonPrincipal, { texte: t("voir_detail_reponses"), couleur: COLORS.encre, secondaire: true, onClick: () => setTermine("detail") }),
-                React.createElement(BoutonPrincipal, { texte: t("retour_accueil"), couleur: COLORS.turquoise, onClick: () => setEcran("dashboard") }))));
+                React.createElement(BoutonPrincipal, { texte: t("retour_accueil"), couleur: "#20D9F5", onClick: () => setEcran("dashboard") }))));
     }
     if (termine === "detail") {
         return (React.createElement("div", { style: { minHeight: "100vh" } },
@@ -76953,7 +76953,7 @@ function EcranExamen() {
         React.createElement("div", { style: { flex: 1, padding: "16px 24px" } },
             q.image && React.createElement("div", { style: { background: COLORS.creme, borderRadius: 18, height: 100, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 44, marginBottom: 16 } }, q.image),
             React.createElement("h2", { style: { fontSize: 17.5, color: COLORS.encre, lineHeight: 1.4, marginBottom: 20 } }, q.question),
-            q.type === "vrai-faux" ? (React.createElement("div", { style: { display: "flex", gap: 12 } }, [true, false].map((v) => (React.createElement("button", { key: String(v), onClick: () => repondre(idx, v), style: { flex: 1, padding: "20px 0", borderRadius: 16, background: reponses[idx] === v ? COLORS.turquoise : COLORS.nuitClaire, color: reponses[idx] === v ? COLORS.nuit : COLORS.grisDoux, border: `2px solid ${reponses[idx] === v ? COLORS.turquoise : COLORS.ligne}`, fontSize: 15, fontWeight: 700 } }, v ? t("vrai") : t("faux")))))) : (React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, q.options.map((opt, i) => (React.createElement("button", { key: i, onClick: () => repondre(idx, i), style: { textAlign: "left", padding: "14px 16px", borderRadius: 14, background: reponses[idx] === i ? COLORS.turquoise : COLORS.nuitClaire, color: reponses[idx] === i ? COLORS.nuit : COLORS.grisDoux, border: `2px solid ${reponses[idx] === i ? COLORS.turquoise : COLORS.ligne}`, fontSize: 14, fontWeight: 600 } }, opt)))))),
+            q.type === "vrai-faux" ? (React.createElement("div", { style: { display: "flex", gap: 12 } }, [true, false].map((v) => (React.createElement("button", { key: String(v), onClick: () => repondre(idx, v), style: { flex: 1, padding: "20px 0", borderRadius: 16, background: reponses[idx] === v ? "#20D9F5" : COLORS.nuitClaire, color: reponses[idx] === v ? COLORS.nuit : COLORS.grisDoux, border: `2px solid ${reponses[idx] === v ? "#20D9F5" : COLORS.ligne}`, fontSize: 15, fontWeight: 700 } }, v ? t("vrai") : t("faux")))))) : (React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, q.options.map((opt, i) => (React.createElement("button", { key: i, onClick: () => repondre(idx, i), style: { textAlign: "left", padding: "14px 16px", borderRadius: 14, background: reponses[idx] === i ? "#20D9F5" : COLORS.nuitClaire, color: reponses[idx] === i ? COLORS.nuit : COLORS.grisDoux, border: `2px solid ${reponses[idx] === i ? "#20D9F5" : COLORS.ligne}`, fontSize: 14, fontWeight: 600 } }, opt)))))),
         React.createElement("div", { style: { padding: "0 24px 28px", display: "flex", gap: 10 } },
             idx > 0 && React.createElement("button", { onClick: () => setIdx(idx - 1), style: { padding: "16px 20px", borderRadius: 18, background: COLORS.nuitClaire, border: `2px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 700 } }, "\u2190"),
             React.createElement("div", { style: { flex: 1 } },
