@@ -11088,5 +11088,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Page Photos, iPhone/tablette : albums en deux lignes de deux, couvertures HORIZONTALES (3:2) avec le même liseré champagne que les photos ; au-delà de 4 albums, carrousel qui défile sur le côté (colonnes de deux, aimantées), le bord de l'album suivant dépasse pour inviter à glisser. 2 albums = une ligne de deux ; 3 = deux lignes (2 + 1). Ordinateur inchangé. Vérifié en français et en arabe.
 - Constaté, non touché : en arabe, le trait et les points de la chronologie restent à gauche (défaut antérieur).
 
-## Build 922 (11/10, préparé — attend « Ok publie »)
+## Build 922 (11/10, publié — « Ok »)
 - Accueil, tuile « Mes chevaux » : mène désormais au même endroit que la carte « Les chevaux de l'écurie » de la page Cavalier (écran ecurie-hype, son écurie). Sans écurie : page Cavalier comme avant. Testé : avec écurie → « Les chevaux de l'Écurie Feinn » ; sans → page Cavalier.
+- ⚠️ À REVOIR PLUS TARD (demande de Blandine, 11/10) : la tuile « Mes chevaux » de l'accueil ouvre la page des chevaux de TOUTE l'écurie (ecurie-hype), pas seulement les chevaux de la cavalière. Il faudra trancher : garder ainsi, filtrer sur « mes » chevaux, ou créer une vraie page « Mes chevaux » (chevaux possédés + chevaux liés). Ne rien changer sans sa décision.
+- ⚠️ À REVOIR (signalé par Blandine le 11/10) : sur la page Cavalier, ce qu'elle a publié sur les profils d'autres personnes (chevaux, cavaliers) se mélange avec ce qui lui est propre. Il faut trouver un moyen de faire la différence. En attente d'une capture pour cerner exactement quels blocs sont concernés.
