@@ -11451,3 +11451,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (22 h 21) : « pour le carnet de santé propose-moi un autre design pour les onglets » ; 3 maquettes (A soulignés, B barre segmentée, C tuiles à pictogramme) ; « A ».
 - Les pastilles (Tous, Vaccins (1)…) deviennent des onglets texte comme ceux des pages chevaux : texte gris clair, onglet choisi en champagne gras souligné d'un trait doré, nombre en petit à côté, fin trait gris sous la rangée ; défilement de côté inchangé. Mêmes filtres, même comportement.
 - Testé en français et en arabe ; la ligne « Ajouter un document » s'ouvre toujours ; aucune erreur.
+
+## Build 975 (11/10) — BUG : tous les chevaux ouvraient Cruibhin
+- Blandine (22 h 20) : « je clique sur Apy … j'arrive sur Crumble », puis « quel que soit le cheval sur lequel je clique j'arrive sur Cruibhin ».
+- CAUSE (introduite au build 929, la reprise à la page quittée) : la page mémorisée était relue et REMISE EN PLACE à chaque affichage de l'appli, pas seulement au démarrage. Taper un cheval changeait de page → l'appli se redessinait → la reprise remettait le dernier cheval mémorisé (Cruibhin), qui était aussitôt re-mémorisé. Boucle sans fin dès qu'on avait ouvert l'appli dans les 2 h. Même défaut sur l'onglet de fiche et le défilement.
+- CORRIGÉ : la reprise n'est lue et appliquée QU'UNE FOIS, au premier affichage (useState avec initialiseur).
+- Testé : avant (974) on demande Apy → on reste sur Cruibhin ; après (975) → Apy. Aucune erreur.
+- Le fond de page de la fiche cheval (ancienne branche build-975) devient le build 976, toujours en attente.
+
+## 11/10 22 h 39 — Ostéopathe Alexandra ajoutée par erreur aux chevaux de la SEP
+- Elle a coché « Tous mes chevaux » dans la fenêtre « Ajouter aussi … à » : 72 chevaux, dont 52 au club « Société d'Équitation de Paris (SEP) » et 1 sans club (Guizemo Delorme).
+- Requête de retrait donnée à Blandine (elle la passe elle-même) : delete from cheval_professionnels cp using chevaux c where cp.cheval_id = c.id and cp.professionnel_id = 'b75441db-d7b5-4751-bf1f-024915e37078' and c.club ilike '%SEP%';
+- Piste d'amélioration proposée : dans cette fenêtre, séparer « mes chevaux » par écurie/club.
