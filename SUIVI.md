@@ -11073,3 +11073,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Build 918 (suite) — choix A + B de Blandine : losange champagne (deux filets fins + petit losange) entre chaque année de la chronologie ; année en Cinzel 24 px champagne (#C9A66B, au lieu de 19 px ivoire), point recalé (top 9). La 3e barre grise (entre Albums et la chronologie, page Photos) est remplacée par ce même losange.
 - Outil de test : nouvelle image verticale neutre (tst/vert2.jpg) à la place de l'ancienne capture d'écran d'Hype qui faisait croire à une fin de page en double.
 - Build 918 (suite) — aperçu de chaque année : au lieu de « au moins 15 photos », l'équivalent de 5 lignes PLEINES de la grille (une grande photo compte pour ses lignes), coupé toujours sur une ligne complète, puis « + N voir tout » pour dérouler. Réglable par HYPE_GALERIE_LIGNES_APERCU (5). Testé : 30 photos → 9 affichées sur 5 lignes nettes.
+
+## Build 919 (11/10, préparé — attend « Ok publie »)
+- Étape 3/4 : bloc « Photos proposées » sur tablette/ordinateur (largeAlb) — petites cartes, 2 à 3 par ligne (miniature 64 px, nom de l'album, « proposée par … », ✓ et ✕ juste à côté). iPhone : liste inchangée. Fonction d'acceptation/refus inchangée.
+- Outil de test corrigé : le faux Supabase renvoyait la liste des chevaux pour TOUTE table (d'où les « Photos proposées (12) » vides et le faux « Journal d'envoi ») ; il renvoie désormais une liste vide sauf données de test explicites. Nouvelle image verticale neutre.
+- Aperçu de chaque année : 4 lignes pleines au lieu de 5 (Blandine : « 6 c'est un peu long » — la coupe nette tombait parfois à la 6e ligne). Testé : 12 à 30 photos → 4 lignes nettes.
