@@ -11228,3 +11228,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Règles vérifiées le 11/10 : FFE grippe (2 injections à 21-92 jours, 1er rappel ≤ 6 mois, puis ≤ 12 mois) ; FFE rhino Pro (2024) / Amateur (01/2026) : 21-60 j, 120-180 j, annuel ; SHF : >14 mois = disqualification ; FEI : rappel < 6 mois + 21 j avant concours ; 7 jours sans injection avant un concours. Mention « ne remplace pas le livret ni le vétérinaire ».
 - Testé : grippe 20/10/2025 + rhino 02/06/2024 → grippe à jour, rhino dépassée, Club/Poney ✓, Amateur/Pro ✗ rhino, SHF ✗, FEI ✗.
 - Reste de l'étape 8 : lecture d'une photo du carnet (Premium), après les documents (étape 7, SQL en attente).
+
+## Build 944 (11/10, en attente de son accord) — refonte Santé, étape 7/9 : documents du carnet
+- SQL sql/2026-10-11-documents-sante.sql PASSÉ par Blandine le 11/10 (capture « Success ») ; vérifié en base : table cheval_documents, espace de stockage PRIVÉ « sante », règles sante_voir / sante_ajouter / sante_supprimer (mêmes droits que la page Santé).
+- « + Ajouter un document » (contour champagne) en tête du Carnet de santé, pour qui peut modifier (verrou Premium) : photo ou PDF (15 Mo au plus), type (Ordonnance, Compte rendu, Certificat de vaccination, Page du carnet de vaccination, Protocole, Facture, Autre), intitulé facultatif, date (aujourd'hui par défaut), soin associé facultatif. Fichier rangé dans sante/<id du cheval>/… ; si la ligne est refusée par la base, le fichier envoyé est retiré.
+- Les documents apparaissent DANS le carnet (📎, mêlés aux soins par date) et comptent dans les filtres : Ordonnances, Événements (comptes rendus), Vaccins (certificats, pages du carnet), Protocoles (s'affiche dès qu'il y en a un). Un document ouvre une petite fenêtre : « Ouvrir le document » (lien temporaire de 10 min, jamais public), « Supprimer » (avec confirmation, propriétaire et modératrices).
+- Pas de doublon : le panneau d'un soin du Suivi (ex. Vaccin) montre les MÊMES documents (liés à ces soins, et les certificats/pages de carnet pour les vaccins) + « Joindre un document ».
+- Testé (base simulée) : ajout d'un PDF, affichage dans le carnet, fenêtre du document.
