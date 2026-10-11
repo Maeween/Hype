@@ -11304,3 +11304,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - outils/alleger-index.cjs ajoute <meta name="hype-allege" content="1"> juste après <meta name="hype-build"> dans la copie allégée (et seulement si tout s'est bien passé).
 - index.html : nouvelle petite fonction hypeIndexAllegeTexte(langue) ; la ligne « Quoi de neuf · reprise … · index 20261011-NNN » affiche « · allégé » (7 langues : light, aligerado, alleggerito, 軽量版, verschlankt, مُخفَّف) quand la marque est là. Sans marque (index publié tel quel), rien ne s'affiche.
 - Testé : index normal → pas de mention ; copie allégée → « INDEX 20261011-954 · ALLÉGÉ » (et en arabe « مُخفَّف »), aucune erreur.
+
+## Build 955 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — page « Mon cavalier » : le halo qui respire de l'accueil
+- Blandine (11/10, 20 h 56-58) : « reproduire exactement le même halo qui respire … sur ma page cavalier » ; « Oui identique, tu peux laisser la couleur de fond de page de ma page cavalier et juste mettre le halo qui respire ».
+- EcranMonCavalier : un rond lumineux avec EXACTEMENT les réglages de l'accueil (.acc2 .hero-pulse + acc2breathe) — 360 px, haut −60 px, pétrole rgba(127,163,173,0.407) → transparent à 62 %, 7 s en boucle (opacité 0,45 → 0,8, taille ×1,1). Animation recopiée sous le nom hypeHaloCav (celle de l'accueil n'existe que sur l'accueil).
+- Comme sur l'accueil, il passe DERRIÈRE la photo : la carte photo reçoit position relative + zIndex 1. Fond de la page inchangé.
+- Note honnête : sur l'accueil comme ici, l'animation remplace le décalage de centrage (translateX), donc le halo est en réalité décalé vers la droite et se voit surtout en haut à droite, autour de la photo. Reproduit tel quel (« identique »).
+- Testé : page affichée sans erreur, 1 animation active ; captures au repos et au plus fort de la respiration.
