@@ -11315,3 +11315,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 956 (11/10, PAS ENCORE PUBLIÉ) — page « Mon cavalier » : voile des cartes d'écurie allégé
 - Blandine (capture 21 h 02) : « on voit très mal les couleurs des onglets des écuries tu peux alléger le voile ? ». FondBanniereClub (utilisé seulement par les cartes « Mon club » / « Deuxième écurie ») : voile 0,92 / 0,72 / 0,45 → 0,70 / 0,38 / 0,12 (plus sombre à gauche sous le texte, presque transparent à droite).
 - Testé : captures avant / après des deux cartes ; textes toujours lisibles.
+
+## Build 957 (11/10, PAS ENCORE PUBLIÉ) — page « Mon cavalier » : plus d'espace autour de la photo du haut
+- Blandine (21 h 03) : « laisse un peu plus d'espace entre la bordure du téléphone et celles de la photo hero ». Marges gauche/droite de la carte photo 16 → 26 px.
+- Conséquence assumée (règle du 506 : les boutons du haut s'alignent sur le bord de la photo) : flèche retour left 16 → 26, drapeau right 16 → 26, bouton partager right 62 → 72. Rien d'autre ne bouge.
+- Testé : captures avant / après (photo d'exemple), aucune erreur.
