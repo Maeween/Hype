@@ -11498,3 +11498,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Menu sous le hero : Histoire · Photos · Résultats · Vidéos · Santé (allumé). Un onglet ouvre la fiche du cheval directement sur la page choisie (window.__hypePanneauReprise).
 - Les maquettes de menu A/B/C (maq/menu.html) ne servent plus : Blandine a demandé le même menu, plus transparent.
 - Testé en français et en arabe ; aucune erreur.
+
+## Build 981 (11/10, PAS PUBLIÉ — branche build-981) — page Communauté : maquette B « comme l'accueil »
+- Blandine (22 h 54) : « le titre Communauté je le supporte plus… rapproche-toi de la page Santé ou Accueil, image de fond et encarts plus transparents, propose-moi des visuels » ; 3 maquettes (A comme Santé, B comme l'accueil, C titre gravé) ; « La 2 ».
+- EcranCommunauteV2 : classe com2b + feuille COM2B_CSS à part. L'image globe + cavaliers devient le fond du haut de page (pleine largeur, voile qui fond vers le noir) ; plus de « COMMUNAUTÉ » en Anton à halo ; petite ligne espacée « TA COMMUNAUTÉ ÉQUESTRE » en haut (7 langues) ; le slogan en italique devient le titre ; onglets du fil soulignés et transparents comme les pages du cheval ; publications, cartes « À découvrir », écuries et agenda plus transparents.
+- Testé en français et en arabe ; aucune erreur. 23 h 03 : Blandine « Attends pardon » → en attente, rien publié.
