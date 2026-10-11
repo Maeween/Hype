@@ -11417,3 +11417,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture 21 h 54) : « mettre plutôt carnet de santé sur une ligne et mettre le bouton ajouter un document à droite sur la ligne des petits onglets en dessous ».
 - Titre seul sur sa ligne (sans retour à la ligne) ; les filtres (Tous, Vaccins…) défilent à gauche, le bouton « + Ajouter un document » reste fixe à droite, sur la même ligne. Même bouton, même action, même verrou Premium.
 - Testé à 390 px : titre entier sur une ligne, filtres et bouton alignés ; aucune erreur.
+
+## Build 970 (11/10, MIS DE CÔTÉ — branche build-970) — « Ajouter un soin » en carte comme les consignes
+- Préparé (carte au dessin de « Consignes du cheval »), mais Blandine (22 h 00) : « attends un peu pour ajouter un soin, je vais déjà voir comment la page rend et après on voit ». NON publié ; le code attend sur la branche build-970.
+
+## Build 971 (11/10) — page Santé : « ton cheval » dans le bandeau Hey Baby
+- Blandine (22 h 00) : « il faut dire ton cheval pas votre cheval sur l'onglet Hey Baby ». « Une question sur la santé de votre cheval ? » → « … de ton cheval ? ». Les 6 autres langues tutoyaient déjà. Aucun autre « votre / vous » sur la page Santé.
+- Publié avec 967 (achats Apple, endormis), 968 (protocole vaccinal dans la fenêtre Vaccin) et 969 (Carnet de santé sur une ligne) — sans le 970.
