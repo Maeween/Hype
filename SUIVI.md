@@ -11042,9 +11042,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fiche cheval : vignettes d'albums au-dessus de « Le voir en mouvement » — 3 par ligne au lieu de 2.
 - Analyse Photos/Vidéos ordinateur rendue à Blandine (4 builds proposés, rien codé). Bloc « Photos proposées (12) » de la capture = fausses données de mon outil de test (table albums_propositions vide en vrai).
 
-## Build 914 (11/10, préparé — PAS publié : Blandine/ChatGPT veulent voir chaque étape avant)
+## Build 914 (11/10, publié le 11/10 au matin avec 915 — « Ok continue »)
 - Étape 1/4 du chantier ordinateur : bandeau du cheval (encartIdentiteCh d'EcranCheval, partagé par Histoire/Photos/Performances/Vidéos) — sur ordinateur seulement (largeCh, ≥ 1024 px) : photo entière à gauche dans une case fixe de 300 × 210 px, nom juste à côté aligné au début, 28 px (24 px au-delà de 22 lettres, 20 px au-delà de 34), 2 lignes au plus, marges de 48 px ; ⋯ admin conservé. Ajusté le 11/10 (consigne Blandine/ChatGPT) : s'applique DÈS 700 px de large (tablette), suivi en direct de la largeur ; en tablette photo 230 px et marges 28 px pour que les noms longs tiennent sur 2 lignes. Vérifié à 390, 699, 700, 768, 834, 1024 px et 834 px en arabe. En dessous de 700 px (iPhone) : inchangé. Arabe vérifié (photo à droite, menu à droite). Copie de EcranResultatsCavaliere non touchée.
 
-## Build 915 (11/10, préparé — PAS publié)
+## Build 915 (11/10, publié avec 914 — « Ok continue »)
 - iPhone (< 700 px), bandeau du cheval : un nom très long ne se coupe plus jamais au milieu d'un mot (overflowWrap normal, keep-all). Si le mot le plus long ne tient pas dans la zone du nom (40 % de la carte), la taille baisse juste ce qu'il faut (18 px normalement, 11 px minimum). Vérifié à 360, 390 et 430 px, nom long et nom court (« Rizotto d'Emery » reste à 18 px), et en arabe.
 - Constaté, non touché : en arabe sur iPhone, la photo du bandeau est assombrie par le dégradé (défaut antérieur au chantier).
