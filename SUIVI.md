@@ -11526,3 +11526,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - COM2B_CSS : publications du fil à 80 % d'opacité (au lieu de 38 %) avec un léger flou du globe derrière ; rubriques rapprochées (28 px entre rubriques au lieu de 44, Stories → À découvrir 8 px, titre → contenu 12 px au lieu de 18).
 - Marqueur : la date du jour passe à 20261012.
 - Testé iPhone ; aucune erreur.
+
+## Build 986 (12/10) — Communauté : globe assombri au milieu et en bas de l'écran
+- Blandine (00 h 07) : « assombris peut-être un peu le bas du globe, que ce qui est au milieu de la page soit à chaque fois sur un voile plus sombre pour être plus lisible ».
+- Voile du fond fixe (.com2b-fond) : haut de l'écran inchangé (globe bien visible derrière le titre), puis 58 % au milieu de l'écran et jusqu'à 88 % en bas (avant : 12 à 42 % au milieu). Comme le fond est fixe, tout ce qui passe au milieu de l'écran en défilant est sur ce voile plus sombre.
+- Testé iPhone ; aucune erreur.
