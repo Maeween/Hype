@@ -32,6 +32,11 @@
 # ============================================================
 [build]
   ignore = "git log -1 --pretty=%B | grep -qF '[publier]' && exit 1 || exit 0"
+  # 11/10/2026 (951) : au moment de publier, Netlify retire les commentaires de SA copie d'index.html (−15 % brut,
+  # −20 % compressé). Le dépôt garde tous ses commentaires. Garde-fous dans outils/alleger-index.cjs : en cas de
+  # doute, l'index part tel quel ; la publication n'échoue jamais à cause de ce script.
+  # POUR ANNULER : supprimer la ligne « command » ci-dessous.
+  command = "node outils/alleger-index.cjs"
 
 # ---------- Le document principal : toujours frais ----------
 [[headers]]
