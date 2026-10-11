@@ -11162,3 +11162,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rôle sans intervenant : ligne discrète « + Ajouter », visible SEULEMENT de qui peut modifier (les autres ne voient que les intervenants renseignés ; section cachée s'il n'y en a aucun).
 - Mêmes données, mêmes droits, même fiche (FeuillePro), verrou Premium du 930 inchangé.
 - Testé iPhone 390 px français et arabe.
+
+## Build 935 (11/10, en attente de son accord) — refonte Santé, étape 4/9 : bandeaux du bas
+- « Demander à Hey Baby » (« Une question sur la santé de votre cheval ? ») et « Le magazine santé » (« Nos articles et conseils ») : bandeaux illustrés avec les images de Blandine. Le cadre dessiné dans ses images a été retiré par découpe (images/sante-bandeau-heybaby.webp et -magazine.webp remplacées, 1952 × 304) : le liseré champagne est tracé par l'appli, net sur tous les écrans. Pictogramme rond à contour champagne, chevron. En arabe : miroir (image retournée).
+- Hey Baby s'ouvre avec la phrase de départ « J'ai une question sur la santé de <nom du cheval> : » — aucune donnée médicale ni document transmis.
+- Le magazine : même lien qu'avant (page Santé du magazine). L'ancienne carte « À lire » est remplacée.
+- Observations Hey Baby épinglées : une ligne dépliable « Observations de Hey Baby (n) » sous le bandeau, seulement s'il y en a ; dépliée, les observations (6 au plus), chacune ouvre la fenêtre de lecture habituelle, avec la mention « ne remplace pas l'avis d'un vétérinaire ».
+- Testé iPhone 390 px français et arabe, ligne dépliée/repliée.
+- Idée de Blandine notée pour le build suivant : des images à la place des initiales dans l'équipe (fer pour le maréchal, stéthoscope pour le vétérinaire…).
