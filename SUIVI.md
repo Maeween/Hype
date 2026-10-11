@@ -11209,7 +11209,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fenêtre de saisie : 3 zones de texte + petites étiquettes à toucher qui ajoutent le mot au texte (Chambon, Gogue, Élastiques, Martingale, Rênes allemandes, Longe seule ; Bandes de polo, Guêtres, Cloches, Protège-boulets, Bonnet, Filet simple, Muserolle croisée ; Douche des membres, Graisser les pieds, Argile, Glace après le travail, Couverture, Ne pas attacher court) — 7 langues. Enregistrement contrôlé (refus de la base affiché). Verrou Premium (930) appliqué au bouton Modifier.
 - Testé iPhone 390 px : affichage, dépliage, étiquette, enregistrement.
 
-## Build 941 (11/10, en attente de son accord) — refonte Santé, étape 6/9 : carnet de santé
+## Build 941 (11/10, publié — « Ok continue ») — refonte Santé, étape 6/9 : carnet de santé
 - « CARNET » devient « CARNET DE SANTÉ » (maquette) : une carte unique de lignes compactes — pictogramme champagne selon le type (seringue, fer, pilule, dent, stéthoscope, ordonnance, imagerie…), intitulé (Cormorant), détail (note, ou « Prochain · date », en rouge « en retard » si dépassé), date du soin à droite, chevron. Toucher une ligne ouvre sa fiche comme avant (verrou Premium inchangé).
 - Filtres qui filtrent vraiment, avec le nombre : Tous · Soins (ferrure, parage, vermifuge, dentiste, ostéo, autre) · Vaccins · Ordonnances (traitements) · Événements (vétérinaire, locomotion, imagerie) · Protocoles. Un filtre sans aucune ligne ne s'affiche pas (Protocoles apparaîtra avec les documents, étape 7). Défilement horizontal si les filtres dépassent.
 - Testé iPhone 390 px : 6 soins de test, filtre Événements → 1 ligne.
