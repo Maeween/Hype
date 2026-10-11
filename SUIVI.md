@@ -11108,3 +11108,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 925 (11/10, publié — « Ok vas y »)
 - Recadrage, étape 3 : dans un album ouvert, petit bouton ✜ en bas à gauche de chaque photo (à côté de « Couv. »), seulement pour qui gère l'album (même règle que « Couv. »), jamais sur les vidéos, caché en modes Ranger et Format. Il ouvre la même fenêtre que sur la page Photos (glisser, Annuler, Cadrage automatique, Enregistrer) ; le cadre a la forme de la case touchée. Le ✜ devient doré quand la photo a déjà un cadrage. Testé : 5 boutons sur 5 photos, la fenêtre s'ouvre, Enregistrer la referme.
 - Carte du cheval en haut des 4 pages : non touchée, la photo y est montrée entière (rien à recadrer).
+
+## Build 926 (11/10, en attente de son accord)
+- Couvertures de vidéos partout : toutes les petites images de vidéo de l'appli (fiche cheval, albums, fil, pages Écurie et Cavalier, souvenirs…) passent par un seul endroit (hypeMiniatureVideo). Il montre maintenant d'abord la couverture enregistrée (choisie, ou fabriquée automatiquement pour les anciennes vidéos), sinon l'image Mux, sinon l'ancien aperçu. L'image se met à jour d'elle-même quand la couverture arrive. La page Vidéos du cheval le faisait déjà depuis 911/912.
+- Effet en plus : les anciennes vidéos qui ont déjà une couverture automatique n'ouvrent plus de lecteur vidéo pour leur aperçu (plus léger pour l'iPhone).
+- Testé : avec deux couvertures enregistrées, les cases concernées affichent bien la couverture (fiche, page Photos, page Vidéos).
