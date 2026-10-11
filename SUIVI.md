@@ -11520,3 +11520,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Proposé après le 983 (sur ordinateur la page s'étalait sur toute la largeur, slogan collé à droite) ; Blandine : « Ok ».
 - COM2B_CSS, à partir de 900 px de large : contenu centré sur 960 px (comme Santé), hero 380 px, « Communauté » 56 px, marges 32 px. Le globe reste en plein écran derrière. iPhone inchangé.
 - Testé à 1280 px et 390 px ; aucune erreur.
+
+## Build 985 (12/10) — Communauté : fil plus opaque, parties rapprochées
+- Blandine (00 h 05, capture du fil) : « Le fil peut être un peu plus opaque et rapproche un peu toutes les parties ».
+- COM2B_CSS : publications du fil à 80 % d'opacité (au lieu de 38 %) avec un léger flou du globe derrière ; rubriques rapprochées (28 px entre rubriques au lieu de 44, Stories → À découvrir 8 px, titre → contenu 12 px au lieu de 18).
+- Marqueur : la date du jour passe à 20261012.
+- Testé iPhone ; aucune erreur.
