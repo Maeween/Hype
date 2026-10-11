@@ -65216,7 +65216,6 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           onOuvrir: function (uV, albIdV) { setAlbumsChFermerCle(function (nCl) { return nCl + 1; }); setVisionneuseAlbumId(albIdV || null); setVisionneuse(uV); },
           onAjouter: function () { ouvrirAjoutSouvenir(); } /* 11/09 (12) : plus jamais un tap muet -- voir ouvrirAjoutSouvenir */
         }),
-        finPageCh() /* (918) */,
                 /* 🟥 05/09 (Blandine : « ca fait trop sur cette page ») — la Galerie (en-tete + grille
            GrilleSouvenirs) est RETIREE d'ici. Ce qu'elle montrait vraiment : les photos
            POSTEES EN COMMENTAIRE (listerCommentaires), PAS les photos d'album — explication
@@ -65234,7 +65233,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         /* 05/09 : galVideCh retire avec Galerie, sa seule source. */ revoirMascotte ? h(BlocSouvenirsVide, { teinteCl: teinteCl, onAjouter: function () { ouvrirAjoutSouvenir(); } /* 11/09 (12) : meme secours que le bouton de la chronologie */ })
           : h("div", { style: { textAlign: "center", padding: "18px 16px 8px" } },
               h("span", { onClick: function () { setRevoirMascotte(true); }, style: { fontSize: 12.5, color: "rgba(237,242,245,.45)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer", letterSpacing: ".02em" } },
-                T("Revoir la petite vid\u00e9o", "Watch the little video again", "Volver a ver el v\u00eddeo", "Rivedi il piccolo video", "\u3082\u3046\u4e00\u5ea6\u52d5\u753b\u3092\u898b\u308b", "Das kleine Video nochmal ansehen", "\u0625\u0639\u0627\u062f\u0629 \u0645\u0634\u0627\u0647\u062f\u0629 \u0627\u0644\u0641\u064a\u062f\u064a\u0648 \u0627\u0644\u0642\u0635\u064a\u0631") + " \u21bb"))) : null,
+                T("Revoir la petite vid\u00e9o", "Watch the little video again", "Volver a ver el v\u00eddeo", "Rivedi il piccolo video", "\u3082\u3046\u4e00\u5ea6\u52d5\u753b\u3092\u898b\u308b", "Das kleine Video nochmal ansehen", "\u0625\u0639\u0627\u062f\u0629 \u0645\u0634\u0627\u0647\u062f\u0629 \u0627\u0644\u0641\u064a\u062f\u064a\u0648 \u0627\u0644\u0642\u0635\u064a\u0631") + " \u21bb")), finPageCh() /* (918) tout en bas, apres « Revoir la petite video » */) : null,
       /* 29/08 (demande Blandine) : PAGE ACTUALITE. Le fil du cheval (MurHype) y est
          desormais rendu, en pleine page et non plus en rail compact. La carte de la
          grille est volontairement GRISEE « Prochainement » pour l'instant : la page

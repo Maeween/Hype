@@ -11069,4 +11069,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Mention « PHOTOS » sous le nom : #C9A66B, 11 px, graisse 400, espacement 3 px, majuscules (page Photos seulement, iPhone et ordinateur).
 
 ## Build 918 (11/10, préparé — attend « Ok publie »)
-- Pages Photos et Vidéos du cheval : même fin de page que Cavalier / Accueil / Écurie / Communauté (petit paysage fondu images/accueil_v2_fin_de_page_v1.webp déjà dans le dépôt, filets champagne et « HYPE »). Fonction finPageCh. Aucun fichier nouveau.
+- Pages Photos et Vidéos du cheval : même fin de page que Cavalier / Accueil / Écurie / Communauté (petit paysage fondu images/accueil_v2_fin_de_page_v1.webp déjà dans le dépôt, filets champagne et « HYPE »). Fonction finPageCh, posée tout en bas (après « Revoir la petite vidéo » sur Photos). Aucun fichier nouveau.
