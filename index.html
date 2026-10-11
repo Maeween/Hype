@@ -52931,9 +52931,11 @@ function EcranSanteCheval() {
         }
         return h("div", { style: { position: "relative", width: "100%", height: "calc(env(safe-area-inset-top) + 330px)", overflow: "hidden", marginBottom: 4 } },
           /* fondu par masque (pas de voile noir plein) : la photo se dissout dans le fond de page, sans bord visible en bas */
-          h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "62%",   /* (937) 80 -> 62 % : photo a droite seulement */ WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 90%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 90%, rgba(0,0,0,0) 100%)" } },
-            h("img", { src: photoVue, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%", display: "block", WebkitMaskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 18%, #000 42%)", maskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.6) 18%, #000 42%)" } })),
+          h("div", { style: { position: "absolute", top: 0, bottom: 0, insetInlineEnd: 0, width: "80%",   /* (937) 62 % ; (941) 80 % + fondu court : la tete du cheval n est plus coupee (Blandine) */ WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 90%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 90%, rgba(0,0,0,0) 100%)" } },
+            h("img", { src: photoVue, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%", display: "block", WebkitMaskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 12%, #000 26%)", maskImage: "linear-gradient(" + (rtlS ? "270deg" : "90deg") + ", rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 12%, #000 26%)" } })),
           h("div", { "aria-hidden": "true", style: { position: "absolute", top: 0, left: 0, right: 0, height: 90, pointerEvents: "none", background: "linear-gradient(180deg, rgba(6,7,9,0.5) 0%, rgba(6,7,9,0) 100%)" } }),
+          /* (941) voile seulement derriere le titre (coin bas, cote texte) : le reste de la photo reste net */
+          h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, pointerEvents: "none", background: "radial-gradient(ellipse 75% 45% at " + (rtlS ? "100%" : "0%") + " 100%, rgba(6,7,9,0.88) 0%, rgba(6,7,9,0.55) 45%, rgba(6,7,9,0) 100%)" } }),
           retourFlottant,
           h("div", { style: { position: "absolute", insetInlineStart: 0, insetInlineEnd: 0, bottom: 0, zIndex: 2, padding: "0 20px 18px" } }, blocNom));
       })(),
