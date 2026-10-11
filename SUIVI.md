@@ -11156,3 +11156,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Image de Blandine (4 photos en une) découpée en 4 fichiers : images/sante-suivi-vermifuge.webp (cheval au foin), -vaccin.webp (main sur l'encolure), -ferrure.webp (sabot ferré), -dentiste.webp (dents et pas-d'âne). ~25 Ko chacune.
 - Chaque carte du SUIVI a sa photo en fond (sujet à droite), voile léger seulement côté texte (allégé après sa remarque « elles ont perdu toute couleur » : voile 0,88 → 0,72 et nul aux trois quarts, plus d’assombrissement en bas, photo à pleine opacité) ; en arabe, photo retournée pour garder le texte sur le côté sombre.
 - Testé iPhone 390 px français et arabe.
+
+## Build 934 (11/10, en attente de son accord) — refonte Santé, étape 3/9 : l'équipe de soins en lignes
+- Les 4 carrés (vétérinaire, maréchal, ostéopathe, dentiste) deviennent une carte unique de lignes, comme la maquette : médaillon avec les initiales (la table des pros n'a pas de photo), nom (Cormorant), spécialité · structure, boutons ronds téléphone et e-mail à contour champagne (dessinés), chevron vers la fiche pour qui peut modifier.
+- Rôle sans intervenant : ligne discrète « + Ajouter », visible SEULEMENT de qui peut modifier (les autres ne voient que les intervenants renseignés ; section cachée s'il n'y en a aucun).
+- Mêmes données, mêmes droits, même fiche (FeuillePro), verrou Premium du 930 inchangé.
+- Testé iPhone 390 px français et arabe.
