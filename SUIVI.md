@@ -11491,3 +11491,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (22 h 50, capture) : « Tu peux réduire l'encart du racontez son histoire ».
 - AlbumsPromus, carte pleine largeur quand le cheval n'a ni album ni photo : proportion 2/1 au lieu de 4/3 (≈ 179 px au lieu de 268 px sur iPhone), image recadrée un peu plus bas (30 %), titre 21 px, bouton 36 px de haut. Les cartes « album » et « Toutes ses photos » ne changent pas.
 - Au passage (même message) : « pourquoi les couleurs tirent sur le beige au lieu du bleu pétrole d'un coup ? » → c'est la TEINTE PROPRE de Rizotto d'Emery en base (chevaux.teinte = #D9B56C ; Hey Baby Please = #C64B5C ; 84 chevaux sans teinte = pétrole). On ne la voyait plus à cause du bug Cruibhin (975) : toutes les fiches s'affichaient en Cruibhin. Rien n'a changé dans le code.
+
+## Build 980 (11/10) — page Santé : les deux cartes côte à côte + le petit menu du cheval
+- Blandine : « mets plutôt les deux onglets côte à côte, Ajouter un soin et des consignes, et ajoute le petit menu qu'on a sur les autres pages », puis « rends les onglets plus transparents » (même style que 978).
+- Cartes : quand le cheval n'a encore aucune consigne, « + Ajouter un soin » et « + Ses consignes » se partagent la ligne (2 colonnes, pointillés). Dès qu'il a des consignes, le bandeau « Consignes du cheval » reprend toute la largeur, comme avant.
+- Menu sous le hero : Histoire · Photos · Résultats · Vidéos · Santé (allumé). Un onglet ouvre la fiche du cheval directement sur la page choisie (window.__hypePanneauReprise).
+- Les maquettes de menu A/B/C (maq/menu.html) ne servent plus : Blandine a demandé le même menu, plus transparent.
+- Testé en français et en arabe ; aucune erreur.
