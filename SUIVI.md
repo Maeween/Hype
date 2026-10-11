@@ -11420,3 +11420,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 970 (11/10) — page Santé : « Ajouter un soin » devient une carte comme « Consignes du cheval »
 - Blandine (21 h 59) : « Pour ajouter un soin on peut faire le même onglet que pour celui des consignes ? ». Le bouton rond centré est remplacé par une carte au même dessin que « Consignes du cheval » : cadre champagne, dégradé pétrole, image fondue à droite (images/sante-suivi-vaccin.webp, déjà dans le dépôt), « + » champagne, titre « Ajouter un soin », sous-titre « Vaccin, vermifuge, ferrure, dentiste… » (7 langues), flèche. Même action (feuille de saisie), même verrou Premium, même place (sous la phrase, au-dessus des consignes).
+
+## Build 971 (11/10) — page Santé : « ton cheval » dans le bandeau Hey Baby
+- Blandine (22 h 00) : « il faut dire ton cheval pas votre cheval sur l'onglet Hey Baby ». « Une question sur la santé de votre cheval ? » → « … de ton cheval ? ». Les 6 autres langues tutoyaient déjà. Aucun autre « votre / vous » sur la page Santé.
