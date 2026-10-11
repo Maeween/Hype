@@ -11270,6 +11270,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le site publie tout le dépôt : ~150 pages d'aperçu/test et les .md (dont SUIVI.md) probablement visibles en ligne. Aucune clé secrète trouvée.
 - iPhone : build-ios.yml (05/09) prêt, attend les 7 secrets Apple ; PLAN-APP-NATIVE.md cité mais absent du dépôt. À régler : adresse 2hype.netlify.app → 2hype.fr, paiements Stripe dans l'appli (règles Apple, décision de Blandine), notifications natives, phrases de permission appareil photo/photos, risque « simple site emballé ». Déjà bon : suppression du compte, pas de connexion Google/Facebook.
 
-## Build 949 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — 10 images de cours appelées par leur vraie extension
+## Build 949 (11/10, PUBLIÉ le 11/10 vers 20 h 04 après son « Ok ») — 10 images de cours appelées par leur vraie extension
 - k631, k632, k633, k634, k636, k637, k638, k639, k640, k641 : « images/kNNN.jpg » → « images/kNNN.jpeg » (les fichiers sont des .jpeg). Plus de demande ratée avant l'affichage. Rien d'autre ne change.
 - Vérifié : table relue dans une vraie page, les 10 adresses répondent ; il ne reste d'introuvables que k635, k642, k554 (+ k547/549/553 inutilisées). Pas de capture : aucun changement visible.
+- Précision (11/10, 20 h 05) : k554 n'est PAS utilisée par l'écran de plantage (variable lue mais jamais affichée — l'écran montre la vidéo d'Apy). Seules k635 et k642 manquent vraiment ; demandes d'images ChatGPT données à Blandine (même style que les couvertures Galop 4, portrait ~1024 × 1820).
+
+## Build 950 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — audit, piste B : un seul fichier d'images au lieu de 108
+- NOUVEAU FICHIER hype-images-tout-v1.js (63 Ko) : les 108 hype-images-*.js + les 2 petits scripts en ligne glissés entre eux, recopiés dans l'ORDRE EXACT de l'index (les clés écrasées le restent pareil). index.html : 108 balises → 1.
+- Les 108 anciens fichiers restent dans le dépôt (versions en cache sur les téléphones). ⚠️ _headers garde /hype-images-*.js en cache UN AN : ne jamais modifier hype-images-tout-v1.js — pour changer une image, nouveau fichier (v2) et nouvelle balise.
+- Vérifié dans une vraie page, avant / après : 648 clés identiques, image « installer » identique, mêmes variables globales, aucune erreur ; 1 demande au lieu de 108. Planche de 16 couvertures chargées depuis le nouveau fichier : aucune cassée.
