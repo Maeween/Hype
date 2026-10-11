@@ -11346,3 +11346,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Liseré champagne 1 px rgba(201,166,107,0.45) — celui des pages Photos / Vidéos — sur : la carte des chiffres (sorties, victoires, podiums, classés ; avant blanc 6 %), les cartes « moments forts » (avant or 20-30 %), les cartes « Derniers résultats » et leur rond photo (avant teinte du cheval, ombre intérieure retirée), l'encadré gris (#14161a, avant or 28 %). Boutons et fenêtres : inchangés.
 - Fin de page HYPE (paysage, filets, « HYPE ») ajoutée en bas, comme Photos / Vidéos.
 - Testé : captures avant / après avec 3 résultats simulés, aucune erreur.
+
+## Build 963 (11/10) — page « Mon cavalier » : « Mes amis » passe sous « Mes chevaux »
+- Blandine (21 h 26) : « Sur la page cavalier passe mes amis sous mes chevaux ». Le bloc « Mes amis » (HypeAmisVitrine) est déplacé tel quel juste après le bloc « Mes chevaux » ; rien d'autre ne change.
+- Testé : ordre affiché Mon récit → Mes chevaux → Mes amis → fin de page ; aucune erreur.
+- Vu en testant (pas de changement) : le halo du 955 dépasse à droite de l'écran (même réglage que l'accueil), mais html et body sont en overflow-x: clip — aucun défilement de côté.
