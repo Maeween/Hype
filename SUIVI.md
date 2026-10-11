@@ -11329,3 +11329,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 959 (11/10) — page « Mon cavalier » : même fond que l'accueil
 - Blandine (21 h 14) : « Applique la couleur du fond de page de l'accueil sur la page cavalier » (elle avait d'abord dit de le garder, au 955). Fond : lueur radiale pétrole + #05080B → #060709 uni (= --bg de l'accueil). Le halo du 955 reste.
+
+## Build 960 (11/10) — pages des chevaux : le halo qui respire derrière la photo du haut
+- Blandine (21 h 09) : « Rajoute le halo qui respire derrière le hero des pages chevaux aussi ». EcranCheval, en-tête .hero : même rond lumineux que l'accueil / Mon cavalier (955), placé à l'endroit où le « halo de couleur » avait été retiré au 901 ; la photo (zIndex 1) passe devant ; l'en-tête est déjà en overflow hidden.
+- Testé : 1 animation active, aucune erreur, capture au plus fort de la respiration (halo discret, comme sur l'accueil).
