@@ -11163,7 +11163,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Mêmes données, mêmes droits, même fiche (FeuillePro), verrou Premium du 930 inchangé.
 - Testé iPhone 390 px français et arabe.
 
-## Build 935 (11/10, en attente de son accord) — refonte Santé, étape 4/9 : bandeaux du bas
+## Build 935 (11/10, publié — « Ok oui ») — refonte Santé, étape 4/9 : bandeaux du bas
 - « Demander à Hey Baby » (« Une question sur la santé de votre cheval ? ») et « Le magazine santé » (« Nos articles et conseils ») : bandeaux illustrés avec les images de Blandine. Le cadre dessiné dans ses images a été retiré par découpe (images/sante-bandeau-heybaby.webp et -magazine.webp remplacées, 1952 × 304) : le liseré champagne est tracé par l'appli, net sur tous les écrans. Pictogramme rond à contour champagne, chevron. En arabe : miroir (image retournée).
 - Hey Baby s'ouvre avec la phrase de départ « J'ai une question sur la santé de <nom du cheval> : » — aucune donnée médicale ni document transmis.
 - Le magazine : même lien qu'avant (page Santé du magazine). L'ancienne carte « À lire » est remplacée.
