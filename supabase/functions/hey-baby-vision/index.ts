@@ -33,6 +33,9 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 // Écriture avec la clé de service (SUPABASE_SERVICE_ROLE_KEY, secret par défaut des Edge Functions) :
 // l'appli n'a AUCUN droit d'écriture sur la table. Le mode sans « differe » reste inchangé.
 const ORIGINES = ["https://2hype.fr", "https://www.2hype.fr", "https://2hype.netlify.app"];
+// 11/10 (946) : mêmes listes que l'appli (index.html, HYPE_MODERATEURS / HYPE_AMBASSADEURS) — à tenir à jour ensemble.
+const MODERATRICES = ["feinn@live.fr", "malicia2008@hotmail.fr"];
+const AMBASSADRICES = ["liamroux0@gmail.com", "evanroux569@gmail.com", "rizeamegane@gmail.com", "deborah.guilmain@free.fr", "neliafrance.auboin@gmail.com", "clementine.savin@gmail.com", "david.arlin20@gmail.com"];
 const DUREE_MAX_MS = 300000;      // 5 min, sous les 400 s de Supabase
 const SIGNE_DE_VIE_MS = 5000;     // bien sous les 150 s d'inactivité tolérées
 const LIMITE_PAYLOAD_OCTETS = 8 * 1024 * 1024;
@@ -104,6 +107,31 @@ Deno.serve(async (req: Request) => {
 
   const cle = Deno.env.get("OPENAI_API_KEY");
   if (!cle) { log(reqId, "OPENAI_API_KEY manquante"); return erreur("INTERNAL_ERROR", "Configuration serveur incomplète (clé OpenAI).", 500); }
+
+  // 11/10 (946) — CONTRÔLE D'ACCÈS CÔTÉ SERVEUR (demande de Blandine) : chaque lecture est payée (OpenAI). Avant, seul
+  // l'appli vérifiait l'abonnement ; un appel direct à la fonction passait. Désormais : utilisateur reconnu ET (modératrice,
+  // ambassadrice, ou abonnement Premium actif dans abonnements_premium — mêmes règles que l'appli : plan mensuel / annuel /
+  // ai / duo, statut « actif », pas expiré). Sinon : refus PREMIUM_REQUIRED (403), rien n'est envoyé à OpenAI.
+  {
+    const jetonA = (req.headers.get("authorization") || "").replace(/^Bearer\s+/i, "");
+    const urlA = Deno.env.get("SUPABASE_URL") || "";
+    const cleServA = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+    if (!urlA || !cleServA) { log(reqId, "accès : configuration incomplète"); return erreur("INTERNAL_ERROR", "Configuration serveur incomplète (accès).", 500); }
+    const adminA = createClient(urlA, cleServA, { auth: { persistSession: false } });
+    let uA: { id: string; email?: string } | null = null;
+    try { const r = await adminA.auth.getUser(jetonA); uA = (r && r.data && r.data.user) ? { id: r.data.user.id, email: r.data.user.email || "" } : null; } catch (_e) { uA = null; }
+    if (!uA) { log(reqId, "accès : session non reconnue"); return erreur("INVALID_REQUEST", "Session non reconnue.", 401); }
+    const email = String(uA.email || "").toLowerCase().trim();
+    let autorise = MODERATRICES.includes(email) || AMBASSADRICES.includes(email);
+    if (!autorise) {
+      try {
+        const ab = await adminA.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", uA.id);
+        autorise = ((ab && ab.data) || []).some((l: { plan?: string; statut?: string; expire_le?: string | null }) =>
+          l && l.statut === "actif" && ["mensuel", "annuel", "ai", "duo"].includes(String(l.plan)) && (!l.expire_le || new Date(l.expire_le).getTime() > Date.now()));
+      } catch (_e) { autorise = false; }
+    }
+    if (!autorise) { log(reqId, "accès refusé (pas d'abonnement Premium actif) —", uA.id); return erreur("PREMIUM_REQUIRED", "Réservé aux abonnés Premium.", 403); }
+  }
 
   const mode = corps?.mode === "perception" ? "perception" : "standard";
   const detailImage = mode === "perception" ? (Deno.env.get("OPENAI_VISION_DETAIL") || "original") : "high";
