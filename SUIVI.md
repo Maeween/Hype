@@ -11170,3 +11170,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Observations Hey Baby épinglées : une ligne dépliable « Observations de Hey Baby (n) » sous le bandeau, seulement s'il y en a ; dépliée, les observations (6 au plus), chacune ouvre la fenêtre de lecture habituelle, avec la mention « ne remplace pas l'avis d'un vétérinaire ».
 - Testé iPhone 390 px français et arabe, ligne dépliée/repliée.
 - Idée de Blandine notée pour le build suivant : des images à la place des initiales dans l'équipe (fer pour le maréchal, stéthoscope pour le vétérinaire…).
+
+## Build 936 (11/10, EN COURS, non publié) — équipe de soins : image du métier dans le médaillon
+- Idée de Blandine : à la place des initiales, une image par métier — vétérinaire (stéthoscope), maréchal (sabot ferré), dentiste (dents et pas-d'âne), ostéopathe (main sur l'encolure, reprise de la photo du Suivi). Fichiers images/sante-pro-<role>.webp (192 × 192, ~6-10 Ko). Initiales gardées pour un rôle inconnu.
+- Reste à faire : recadrer plus serré le stéthoscope et les dents (trop petits dans le médaillon), capture, accord.
+- Vérifié en base à sa demande (« Crumble avait une date de ferrure qui n'apparaît plus ») : Cruibhin / Crumble n'a qu'UN soin en base (vaccin du 01/03/2026, prochain 01/03/2027), aucune ferrure jamais enregistrée ; les dates « Cruibhin » de la maquette ChatGPT sont fictives.
