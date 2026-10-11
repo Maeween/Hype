@@ -11373,3 +11373,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - AVANT le 1er lancement : créer la fiche de l'appli dans App Store Connect (Apps → + → Nouvelle app : iOS, nom « Hype », langue Français, identifiant fr.ecuriefeinn.hype, SKU hype-ios-1).
 - Ensuite : GitHub → Actions → « iOS — build + TestFlight » → Run workflow. L'appli arrive dans TestFlight (~30 min de traitement chez Apple).
 - Reste ouvert, NON décidé par Blandine : paiements Premium / dons Crystal dans l'appli iPhone (règles Apple) ; notifications natives ; icône 1024 × 1024 sans cadre arrondi dessiné (l'icône actuelle icon-512 a son propre cadre : iOS en ajouterait un second) ; phrases de permission dans les 6 autres langues ; page de chargement (« HYPE » en ancien turquoise).
+
+## Décisions de Blandine du 11/10 (21 h 42-21 h 46) — appli iPhone et paiements
+- Dans l'appli iPhone, Premium passe PAR APPLE (achat intégré) ; le site garde Stripe. Tous les abonnements (mensuel, annuel, duo, IA) ; prix inchangés pour l'instant ; dons Crystal gardés partout (dans l'appli iPhone ils devront passer par Apple, car ils donnent un statut).
+- Vérifié le 11/10 (developer.apple.com, « Payment options on the App Store in the EU », nouvelles règles UE au 1er octobre 2026) : achat Apple 15 % (programme petits développeurs) ; Stripe possible EN PLUS d'Apple dans l'appli mais Apple prend 10 % et exige un relevé mensuel → conseillé : Apple seul. RevenueCat (relie l'achat Apple à Supabase) : gratuit sous 2 500 $/mois de ventes dans l'appli, 1 % au-delà — conseillé, réponse de Blandine en attente.
+
+## Build 966 (11/10) — « Mes amis » plus compact (maquette C)
+- Blandine (21 h 43) : « Mes amis tu peux me proposer des maquettes qui prennent moins de place ? J'aime bien le design » ; 3 maquettes (A rangée de visages, B une ligne, C mise en avant réduite) ; « C pour les amis ».
+- HypeAmisVitrine : le grand visuel (132 px, photo floue + fondu) devient une petite bande (photo carrée 64 px + nom + « Voir le profil › ») ; ronds de la rangée 56 → 44 px (cases 66 → 54, nom 9 px). En-tête, sélection mémorisée, clics, « + Ajouter » : inchangés. Hauteur du bloc ≈ 230 px.
+- Testé en français et en arabe (sens inversé correct), aucune erreur.
