@@ -11531,3 +11531,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (00 h 07) : « assombris peut-être un peu le bas du globe, que ce qui est au milieu de la page soit à chaque fois sur un voile plus sombre pour être plus lisible ».
 - Voile du fond fixe (.com2b-fond) : haut de l'écran inchangé (globe bien visible derrière le titre), puis 58 % au milieu de l'écran et jusqu'à 88 % en bas (avant : 12 à 42 % au milieu). Comme le fond est fixe, tout ce qui passe au milieu de l'écran en défilant est sur ce voile plus sombre.
 - Testé iPhone ; aucune erreur.
+
+## Build 987 (12/10) — Communauté : le fond s'assombrit dès qu'on fait défiler
+- Blandine (00 h 10) : « l'idéal serait que le fond s'assombrisse dès qu'on commence à scroller la page » ; puis « ça va pas buguer sur Android ? tu peux vérifier ? ».
+- Calque .com2b-fond-nuit (noir 72 %) posé sur le globe fixe ; son opacité suit le défilement : 0 en haut de page, 1 après 320 px. Mise à jour à chaque image d'animation (requestAnimationFrame), écouteur « passive » : rien ne bloque le défilement.
+- Testé iPhone (390 px) et ANDROID (Chrome 141, Pixel 7 émulé, défilement au doigt) : 164 px défilés → voile à 51 % ; 489 px → 100 % ; aucune erreur. Pas d'appareil Android réel dans l'environnement de test.
