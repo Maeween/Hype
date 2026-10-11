@@ -11320,3 +11320,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (21 h 03) : « laisse un peu plus d'espace entre la bordure du téléphone et celles de la photo hero ». Marges gauche/droite de la carte photo 16 → 26 px.
 - Conséquence assumée (règle du 506 : les boutons du haut s'alignent sur le bord de la photo) : flèche retour left 16 → 26, drapeau right 16 → 26, bouton partager right 62 → 72. Rien d'autre ne bouge.
 - Testé : captures avant / après (photo d'exemple), aucune erreur.
+
+## Build 958 (11/10, PAS ENCORE PUBLIÉ) — page « Mon cavalier » : les « À la une » retirées, le bandeau des stories reste
+- Blandine (21 h 03) : « Retire les story à la une et laisse juste les story, on réfléchira plus tard à une autre proposition ».
+- EcranMonCavalier : l'appel à window.MurImmersif (repli RailALaUne) est remplacé par null. Le bandeau des stories (BandeauStories) au-dessus ne change pas. Rien n'est supprimé en base ; les à la une restent sur Communauté / Club / Écurie.
+- Testé avec deux à la une simulées : avant → bloc « À la une » présent ; après → absent ; récit et Mur des songes toujours là ; aucune erreur. Capture pleine page.
+- Pour les remettre : rétablir l'appel (commentaire en place dans le code).
