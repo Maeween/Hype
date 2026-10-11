@@ -11256,9 +11256,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Seul index.html change (TXT_LECT.premium, état « premium »). L'envoi de l'affiche n'est pas touché.
 - Testé (base simulée, service répondant 403 PREMIUM_REQUIRED) : français et arabe, captures. Marqueur 20261011-947 vérifié (une seule occurrence).
 
-## Build 948 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — vidéo : le choix de collection n'est plus perdu
+## Build 948 (11/10, PUBLIÉ le 11/10 vers 19 h 47 après son « Ok ») — vidéo : le choix de collection n'est plus perdu
 - Demande de Blandine (choix « 2 ») : ranger automatiquement la vidéo dans la collection choisie pendant l'envoi, même si elle n'était pas prête à la fin du suivi ou si on a quitté la fiche.
 - Le choix (vidéo + collection + cheval) est noté sur le téléphone (clé hype_rangements_v1, 7 jours au plus). À chaque ouverture de la fiche du cheval, et au retour dans l'appli, les vidéos devenues prêtes sont rangées (message vert « Vidéo rangée dans « … » »), celles en échec ou supprimées sont oubliées, celles en préparation attendent.
 - Message « pas encore prête » changé (7 langues) : « elle sera rangée toute seule dans la collection dès qu'elle le sera (en revenant sur cette page) ».
 - Limites : si l'appli est quittée pendant l'envoi lui-même (avant la fin du transfert), la vidéo n'arrive pas et il n'y a rien à ranger ; le choix vit sur CE téléphone seulement.
 - Testé (base simulée) : 5 choix en mémoire → la vidéo prête rangée (une seule écriture), celle en préparation gardée, celle en échec oubliée, celle d'un autre cheval gardée, celle de plus de 7 jours oubliée. Capture pleine page de l'onglet Vidéos. Marqueur 20261011-948 vérifié.
+
+## Audit du 11/10 (20 h, lecture seule, rien modifié)
+- Photos des membres : 258 adresses vérifiées en base (chevaux, profils, albums, fil, stories, agenda, couvertures vidéo) → 0 manquante ; plus aucun base64 (appli et base).
+- Images de l'appli (table HYPE_IMGS, 648 clés lues dans une vraie page) : manquent k635 (couverture du cours Galop 4 « Déplacer les épaules et les hanches »), k642 (couverture Galop 4 « Sortir en extérieur et franchir les embûches »), k554 (image de l'écran de plantage) ; k547/k549/k553 déclarées mais jamais utilisées. 10 images k631-k641 appelées .jpg alors que les fichiers sont .jpeg (rattrapées par le filet, une demande ratée chacune) → corrigé en 949.
+- Poids : index 9,5 Mo (2,7 Mo compressé) ; à chaque ouverture aussi 5 fichiers de cours = 6,5 Mo, et 108 petits fichiers hype-images-*.js chargés un par un. Commentaires ≈ 1,6 Mo (17 %), CSS 0,8 Mo, grosses données (COMPL_*, EXAMENS_BLANCS, globe) ≈ 0,9 Mo, 29 fonctions jamais appelées 72 Ko. Pistes classées A-E proposées à Blandine (A = cours chargés à la demande, B = regrouper les fichiers d'images).
+- Le site publie tout le dépôt : ~150 pages d'aperçu/test et les .md (dont SUIVI.md) probablement visibles en ligne. Aucune clé secrète trouvée.
+- iPhone : build-ios.yml (05/09) prêt, attend les 7 secrets Apple ; PLAN-APP-NATIVE.md cité mais absent du dépôt. À régler : adresse 2hype.netlify.app → 2hype.fr, paiements Stripe dans l'appli (règles Apple, décision de Blandine), notifications natives, phrases de permission appareil photo/photos, risque « simple site emballé ». Déjà bon : suppression du compte, pas de connexion Google/Facebook.
+
+## Build 949 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — 10 images de cours appelées par leur vraie extension
+- k631, k632, k633, k634, k636, k637, k638, k639, k640, k641 : « images/kNNN.jpg » → « images/kNNN.jpeg » (les fichiers sont des .jpeg). Plus de demande ratée avant l'affichage. Rien d'autre ne change.
+- Vérifié : table relue dans une vraie page, les 10 adresses répondent ; il ne reste d'introuvables que k635, k642, k554 (+ k547/549/553 inutilisées). Pas de capture : aucun changement visible.
