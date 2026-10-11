@@ -11566,3 +11566,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (00 h 44) : « Rondes, et ça peut faire déplier les stories suivantes s'il y en a d'autres ».
 - iPhone : BandeauStories en forme « rond » (anneau champagne #C9A66B, 58 px) au lieu de « libre-carte » ; ordinateur inchangé. « Voir tout » à droite du titre, affiché seulement si les stories dépassent la largeur (mesure du rail) ; il les fait passer sur plusieurs lignes, « Réduire » les remet sur une ligne. Aucune donnée ni action des stories modifiée (module hype-stories.js non touché).
 - Testé avec 8 stories simulées, français et arabe ; aucune erreur.
+
+## Build 994 (12/10) — Communauté (carrousel) : « À découvrir » en carrousel photo
+- Maquette « Version Carrousel » (iPhone) : les deux cartes côte à côte deviennent un carrousel d'une carte pleine largeur (182 px), nouvelles images (communaute-carte-profils / -cavalieres), titre 22 px en bas sur un dégradé noir ; glissement au doigt aimanté, flèches discrètes (désactivées en bout), points (le point actif s'allonge). Même action qu'avant : toucher la carte déplie « Nouveaux profils » / « Cavalières à suivre » dessous.
+- Fonction carrouselCom(clé, cartes) réutilisable (flèches par scrollIntoView → sens juste en arabe ; rangée data-hscroll). Textes « Précédent / Suivant » 7 langues. Ordinateur inchangé.
+- Testé français et arabe (flèche suivante, points, ouverture) ; 16 scripts vérifiés sans erreur.
