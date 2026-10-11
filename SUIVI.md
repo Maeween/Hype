@@ -11151,3 +11151,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Pas encore : photos sombres en fond des cartes (maquette) — à voir avec Blandine ; les « + » des cartes ont disparu (l'ajout se fait par « + Ajouter un soin » du haut ou dans le panneau de chaque soin).
 - Images reçues de Blandine, ajoutées au dossier images (non utilisées dans ce build) : sante-bandeau-heybaby.webp, sante-bandeau-magazine.webp (bandeaux de l'étape 4), sante-hero-defaut.webp (haut de page sans photo / ordinateur).
 - Testé iPhone 390 px français et arabe ; « Voir tout » ouvre bien la liste complète.
+
+## Build 933 (11/10, en attente de son accord) — refonte Santé : photos des cartes du SUIVI
+- Image de Blandine (4 photos en une) découpée en 4 fichiers : images/sante-suivi-vermifuge.webp (cheval au foin), -vaccin.webp (main sur l'encolure), -ferrure.webp (sabot ferré), -dentiste.webp (dents et pas-d'âne). ~25 Ko chacune.
+- Chaque carte du SUIVI a sa photo en fond (sujet à droite), assombrie côté texte pour rester lisible ; en arabe, photo retournée pour garder le texte sur le côté sombre.
+- Testé iPhone 390 px français et arabe.
