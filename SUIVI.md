@@ -11536,3 +11536,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (00 h 10) : « l'idéal serait que le fond s'assombrisse dès qu'on commence à scroller la page » ; puis « ça va pas buguer sur Android ? tu peux vérifier ? ».
 - Calque .com2b-fond-nuit (noir 72 %) posé sur le globe fixe ; son opacité suit le défilement : 0 en haut de page, 1 après 320 px. Mise à jour à chaque image d'animation (requestAnimationFrame), écouteur « passive » : rien ne bloque le défilement.
 - Testé iPhone (390 px) et ANDROID (Chrome 141, Pixel 7 émulé, défilement au doigt) : 164 px défilés → voile à 51 % ; 489 px → 100 % ; aucune erreur. Pas d'appareil Android réel dans l'environnement de test.
+
+## Build 988 (12/10) — Communauté, onglet Activité : « X a ajouté N chevaux » en une seule ligne
+- Blandine (00 h 15, capture de 12 lignes « Blandine a ajouté un cheval : … ») : « ça je croyais qu'on les avait rassemblés ». Seuls les palmarès rendus l'étaient (build 327).
+- Même règle que le 327 (« par semaine si c'est le même geste ») : les chevaux ajoutés par UNE personne la MÊME semaine (lundi → dimanche) deviennent UNE ligne « Blandine a ajouté 6 chevaux » (noms des 3 premiers dessous, photo du premier), placée au plus récent. On la touche → la liste se déplie (photo + nom), chaque cheval ouvre sa fiche. Un seul cheval : ligne d'avant. Le compteur « Voir la suite » compte les lignes regroupées.
+- Nouveau texte aChevaux en 7 langues. Testé français et arabe (replié et déplié) ; aucune erreur.
