@@ -11104,3 +11104,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 924 (11/10, publié — « continue »)
 - Recadrage, étape 2 : le cadrage choisi dans la galerie par année s'applique aussi aux couvertures d'albums (page Photos, pages Cavalier/Écurie qui utilisent les mêmes albums), à la couverture de l'album ouvert et aux photos à l'intérieur des albums. Lecture groupée de photo_cadrages (hypeCadrage), mise à jour immédiate après un « Enregistrer ». Testé : un cadrage « 90% 10% » est bien appliqué à la couverture et aux photos concernées, les autres restent inchangées.
 - Reste : bouton Recadrer directement depuis un album ouvert ; carte du cheval (photo du haut des 4 pages).
+
+## Build 925 (11/10, en attente de son accord)
+- Recadrage, étape 3 : dans un album ouvert, petit bouton ✜ en bas à gauche de chaque photo (à côté de « Couv. »), seulement pour qui gère l'album (même règle que « Couv. »), jamais sur les vidéos, caché en modes Ranger et Format. Il ouvre la même fenêtre que sur la page Photos (glisser, Annuler, Cadrage automatique, Enregistrer) ; le cadre a la forme de la case touchée. Le ✜ devient doré quand la photo a déjà un cadrage. Testé : 5 boutons sur 5 photos, la fenêtre s'ouvre, Enregistrer la referme.
+- Carte du cheval en haut des 4 pages : non touchée, la photo y est montrée entière (rien à recadrer).
