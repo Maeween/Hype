@@ -11463,3 +11463,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Elle a coché « Tous mes chevaux » dans la fenêtre « Ajouter aussi … à » : 72 chevaux, dont 52 au club « Société d'Équitation de Paris (SEP) » et 1 sans club (Guizemo Delorme).
 - Requête de retrait donnée à Blandine (elle la passe elle-même) : delete from cheval_professionnels cp using chevaux c where cp.cheval_id = c.id and cp.professionnel_id = 'b75441db-d7b5-4751-bf1f-024915e37078' and c.club ilike '%SEP%';
 - Piste d'amélioration proposée : dans cette fenêtre, séparer « mes chevaux » par écurie/club.
+
+## Build 976 (11/10) — Un professionnel sur plusieurs chevaux : A + B + C
+- Suite de l'erreur ostéo/SEP. Blandine : « il faudrait trouver un moyen de régler ça si qqun fait la même erreur » ; choix A + B, puis « et même C quand même ».
+- Nouveau composant FenetreProChevaux (avant EcranSanteCheval), remplace la fenêtre du 938 :
+  - A : les chevaux sont rangés PAR ÉCURIE (club), une case par écurie (cochée / partielle « – » / vide) + « Voir » pour cocher cheval par cheval. Seule l'écurie du cheval ouvert est cochée d'office. Responsable d'écurie : groupe « Les chevaux des autres membres · <club> », décoché.
+  - B : après l'ajout, « Annuler cet ajout » retire le pro des SEULS chevaux où il vient d'être ajouté.
+  - C : fiche du pro → « Retirer de plusieurs chevaux… » : même liste (chevaux qui l'ont, rangés par écurie), rien de coché, bouton « Retirer (n) ».
+- 7 langues. Testé (base simulée) en français et en arabe : ajout, annulation, retrait ; aucune erreur.
