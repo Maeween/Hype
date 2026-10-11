@@ -11120,7 +11120,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé avec un envoi simulé : choix affiché, sélection, puis « Vidéo rangée dans « En concours » ».
 - Précision (corrigée après sa remarque) : changer de page DANS l'appli n'arrête ni l'envoi ni le rangement. Ce qui l'arrête : quitter l'appli ou verrouiller l'écran PENDANT que le fichier part du téléphone (iPhone met alors l'appli en pause). Une fois le fichier arrivé chez Mux, la vidéo finit de se préparer seule, mais le rangement dans la collection, lui, ne se fait que si l'appli est encore ouverte quand la vidéo devient prête (sinon message orange, à ranger avec ⋯).
 
-## Build 928 (11/10, en attente de son accord)
+## Build 928 (11/10, publié — « Ok vas y »)
 - Arabe, page Photos : la ligne du temps et ses points passent à droite (propriétés « début/fin de ligne » au lieu de gauche/droite).
 - Arabe, carte du cheval sur iPhone (moins de 700 px) : le voile sombre part maintenant du côté du nom, la photo n'est plus assombrie ; la zone du nom et le ⋯ admin se placent aussi du bon côté.
 - Testé en capture pleine page arabe et français : le français est inchangé.
