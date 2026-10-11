@@ -11057,3 +11057,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - Vérifié à 390, 834, 1440 px et 1440 px en arabe, avec et sans collections. Même visionneuse, même bouton couverture, même carte « Créer une collection ». hypeMiniatureVideo non modifiée.
 - Fiche cheval : plus d'air sous la photo du haut (18 → 34 px).
 - Réponse à Blandine (liserés blancs dans la galerie photos) : ils sont DANS les photos elles-mêmes (cadres des photographes de concours : « Spring Tour by Harcour », « Barbizon 2021 »…). L'appli n'ajoute aucune bordure (tuile : arrondi 5 px, fond sombre). Option possible plus tard : recadrage à la main.
+
+## Build 917 (11/10, préparé — PAS publié, contient aussi 916)
+- Page Photos du cheval (demandes de Blandine + consigne ChatGPT « 3 ajustements champagne ») :
+  - Encart du cheval remonté : 1re barre grise des 4 pages 14/26 px → 2/16 px de marges.
+  - Légende « ★ = à la une sur la fiche (3 max) » retirée à côté de « Albums » (page Photos seulement).
+  - Compteurs « N souvenirs · N approx. » retirés à côté de chaque année. La ligne 25 souvenirs / 6 saisons / 174 concours est GARDÉE (ChatGPT demande de conserver les compteurs) — à confirmer avec Blandine.
+  - « Modifier » de chaque année : petit bouton discret sur la ligne de l'année, tout à droite (même action, même droits).
+  - Liseré 1 px rgba(201,166,107,0.45) autour de chaque photo de la mosaïque et des couvertures d'albums (arrondis gardés, aucune ombre, aucune taille changée).
+  - Chronologie : points #C9A66B (plein pour l'année active, contour pour les autres, plus de halo), trait vertical rgba(201,166,107,0.35) ; dimensions inchangées.
+  - Mention « PHOTOS » sous le nom : #C9A66B, 11 px, graisse 400, espacement 3 px, majuscules (page Photos seulement, iPhone et ordinateur).
