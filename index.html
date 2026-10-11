@@ -1133,6 +1133,7 @@ function hypeHacherTexte(s) {
    11/09 (6) — BIBLIOTHEQUE DE COMPOSITIONS (voir HYPE_GALERIE_COMPOSITIONS plus bas, pres de son
    utilisation) : plus de compteur/tirage ici, chaque annee choisit et suit une composition fixe. */
 var HYPE_GALERIE_COLONNES = 3;            /* 12/09 (30) : 3 colonnes par annee — lu par le moteur de cases ET par le rendu, donc defini ici et pas dans le chargement */
+var HYPE_GALERIE_LIGNES_APERCU = 5;     /* (918) Blandine : apercu d une annee = l equivalent de 5 lignes PLEINES de photos (grandes photos comprises), coupe toujours sur une ligne complete ; le reste se deroule */
 var HYPE_GALERIE_PREVIEW_MIN = 15;       /* apercu d'une annee : au moins 15 photos, toujours un bloc ENTIER -- jamais coupe en deux (~15 a 18 affichees en pratique) */
 var PHOTO_MASTER_JPEG_QUALITY = 0.90;
 function hypeExtensionFichier(fichier) {
@@ -55315,11 +55316,11 @@ function ChronologieSouvenirs(props) {
              l'ancienne regle, pour ne jamais couper une grande case en deux. */
           var finApercu = 0;
           for (var iAp = 0; iAp < casesAn.length; iAp++) {
-            if (iAp + 1 >= HYPE_GALERIE_PREVIEW_MIN && casesAn[iAp].coupeNette) { finApercu = iAp + 1; break; }
+            if ((casesAn[iAp].ligne + casesAn[iAp].h - 1) >= HYPE_GALERIE_LIGNES_APERCU && casesAn[iAp].coupeNette) { finApercu = iAp + 1; break; }   /* (918) 5 lignes pleines puis on deroule */
           }
           if (!finApercu) {
             for (var iAp2 = 0; iAp2 < casesAn.length; iAp2++) {
-              if (iAp2 + 1 >= HYPE_GALERIE_PREVIEW_MIN && casesAn[iAp2].coupeOk) { finApercu = iAp2 + 1; break; }
+              if ((casesAn[iAp2].ligne + casesAn[iAp2].h - 1) >= HYPE_GALERIE_LIGNES_APERCU && casesAn[iAp2].coupeOk) { finApercu = iAp2 + 1; break; }
             }
           }
           if (finApercu > 0 && finApercu < casesAn.length) casesVisibles = casesAn.slice(0, finApercu);
