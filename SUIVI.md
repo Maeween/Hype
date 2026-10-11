@@ -11079,7 +11079,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Outil de test corrigé : le faux Supabase renvoyait la liste des chevaux pour TOUTE table (d'où les « Photos proposées (12) » vides et le faux « Journal d'envoi ») ; il renvoie désormais une liste vide sauf données de test explicites. Nouvelle image verticale neutre.
 - Aperçu de chaque année : 4 lignes pleines au lieu de 5 (Blandine : « 6 c'est un peu long » — la coupe nette tombait parfois à la 6e ligne). Testé : 12 à 30 photos → 4 lignes nettes.
 
-## Build 920 (11/10, préparé — attend « Ok publie »)
+## Build 920 (11/10, publié — « Ok »)
 - Étape 4/4 (vérification d'ensemble) : 4 pages du cheval × iPhone fr/ar, tablette, ordinateur fr/ar — aucune erreur, aucun débordement horizontal.
 - Page Photos : titre « Albums » au même dessin que les années (Cinzel 24 px champagne, sans losange ni trait) ; « + Album / + Nouvel album » discret comme « Modifier ».
 - 4 pages du cheval : 1re barre grise (au-dessus de la carte du cheval) retirée ; la carte remonte et grandit (iPhone 190 → 240 px de haut ; tablette/ordinateur photo 260/340 px, 250 px de haut).
