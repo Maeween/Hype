@@ -11333,3 +11333,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 960 (11/10) — pages des chevaux : le halo qui respire derrière la photo du haut
 - Blandine (21 h 09) : « Rajoute le halo qui respire derrière le hero des pages chevaux aussi ». EcranCheval, en-tête .hero : même rond lumineux que l'accueil / Mon cavalier (955), placé à l'endroit où le « halo de couleur » avait été retiré au 901 ; la photo (zIndex 1) passe devant ; l'en-tête est déjà en overflow hidden.
 - Testé : 1 animation active, aucune erreur, capture au plus fort de la respiration (halo discret, comme sur l'accueil).
+
+## Build 961 (11/10) — fiche du cheval : la vidéo au-dessus des albums, liseré léger autour des albums
+- Blandine (capture 21 h 12) : « Passe la vidéo au-dessus des albums photo sur la page cheval et laisse le léger liseré qu'on a mis sur les pages photo et vidéo des chevaux autour des albums ».
+- AlbumsPromus (utilisé seulement sur la fiche du cheval) : la carte « Ses vidéos · Le voir en mouvement » devient une fonction blocVideo(enTete) posée EN PREMIER (marge basse 26 px) ; son ancien emplacement, sous les albums, est vidé.
+- Albums (rail de 3, carte « Toutes ses photos », grande carte 0-1 album) : liseré 1 px rgba(201,166,107,0.45) sans ombre — le même que les pages Photos / Vidéos (avant : teinte du cheval à 40-50 % + ombre, ou champagne 0,3).
+- Testé avec 3 albums simulés : vidéo puis albums, liseré fin champagne, aucune erreur.
