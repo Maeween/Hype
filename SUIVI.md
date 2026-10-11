@@ -11049,7 +11049,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone (< 700 px), bandeau du cheval : un nom très long ne se coupe plus jamais au milieu d'un mot (overflowWrap normal, keep-all). Si le mot le plus long ne tient pas dans la zone du nom (40 % de la carte), la taille baisse juste ce qu'il faut (18 px normalement, 11 px minimum). Vérifié à 360, 390 et 430 px, nom long et nom court (« Rizotto d'Emery » reste à 18 px), et en arabe.
 - Constaté, non touché : en arabe sur iPhone, la photo du bandeau est assombrie par le dégradé (défaut antérieur au chantier).
 
-## Build 916 (11/10, préparé — PAS publié, présenté à Blandine)
+## Build 916 (11/10, publié avec 917 — « Oui ok vas y »)
 - Étape 2/4 : page Vidéos du cheval sur tablette et ordinateur (dès 700 px ; iPhone inchangé).
   - Cheval AVEC collections : collections les unes sous les autres, sans vidéo principale ; vignettes en rangées « justifiées » (toutes de même hauteur dans une rangée, chacune à la largeur de SA vraie proportion → verticales étroites, horizontales larges, aucune zone floutée, aucun recadrage, aucune dernière carte géante). 6 vidéos au départ au lieu de 4, puis « Voir toutes… ».
   - Cheval SANS collection : présentation Cinéma — la première vidéo en grand à sa vraie proportion (460 px de haut sur ordinateur, 380 sur tablette), puis les autres en rangées justifiées.
@@ -11058,7 +11058,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fiche cheval : plus d'air sous la photo du haut (18 → 34 px).
 - Réponse à Blandine (liserés blancs dans la galerie photos) : ils sont DANS les photos elles-mêmes (cadres des photographes de concours : « Spring Tour by Harcour », « Barbizon 2021 »…). L'appli n'ajoute aucune bordure (tuile : arrondi 5 px, fond sombre). Option possible plus tard : recadrage à la main.
 
-## Build 917 (11/10, préparé — PAS publié, contient aussi 916)
+## Build 917 (11/10, publié avec 916 — « Oui ok vas y »)
 - Page Photos du cheval (demandes de Blandine + consigne ChatGPT « 3 ajustements champagne ») :
   - Encart du cheval remonté : 1re barre grise des 4 pages 14/26 px → 2/16 px de marges.
   - Légende « ★ = à la une sur la fiche (3 max) » retirée à côté de « Albums » (page Photos seulement).
