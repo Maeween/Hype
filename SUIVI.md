@@ -11356,3 +11356,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture 21 h 36) : « les couleurs des tuiles sont très délavées c'est normal ? » ; puis « 1 » (= les 6 tuiles Histoire … Actualité).
 - carteP : fond CAV_PETIT (dégradé semi-transparent, grisâtre sur le noir) → fond pétrole PLEIN des tuiles de l'accueil (#111B1F → #0B1215) ; lueur champagne du haut et voile sombre du bas retirés (ils donnaient le ton beige terne). Pastille, pictogramme, textes, liseré et « Ouvrir → » inchangés ; « Actualité » reste à demi effacée (Prochainement).
 - Testé : captures avant / après, aucune erreur.
+## Build 964 (11/10) — appli iPhone : recette de fabrication remise à jour (.github/workflows/build-ios.yml seul)
+- Blandine (21 h 29) : « Oui pour l'appli iPhone continue d'avancer là-dessus ». index.html inchangé.
+- Adresse : l'appli ouvre https://2hype.fr (était 2hype.netlify.app) ; navigation permise : 2hype.fr, www.2hype.fr, 2hype.netlify.app, *.supabase.co, *.mux.com.
+- Nouvelle étape « Phrases de permission » : appareil photo, photothèque (lecture et ajout), micro (son des vidéos) + déclaration « chiffrement standard » (ITSAppUsesNonExemptEncryption = false). Phrases en FRANÇAIS seulement pour l'instant (les 6 autres langues demandent d'ajouter des fichiers au projet Xcode : à faire une fois le premier build réussi).
+- produce : skip_itc true — la fiche de l'appli dans App Store Connect se crée À LA MAIN une fois (la clé API d'Apple ne sait pas la créer) ; le workflow n'enregistre que l'identifiant fr.ecuriefeinn.hype.
+- Vérifié : YAML relu sans erreur. Pas testable ici (il faut le Mac de GitHub et les secrets) ; tant que les secrets manquent, le workflow s'arrête tout de suite, en vert.
+- Le fichier PLAN-APP-NATIVE.md cité par l'ancienne version n'existe plus : les instructions sont ci-dessous.
+
+### APPLI IPHONE — LES 7 SECRETS (à poser dans GitHub : dépôt Maeween/Hype → Settings → Secrets and variables → Actions → New repository secret)
+1. APPLE_TEAM_ID — l'identifiant d'équipe (10 caractères), sur developer.apple.com → Membership.
+2. ASC_KEY_ID, 3. ASC_ISSUER_ID, 4. ASC_KEY_P8 — une clé API App Store Connect (appstoreconnect.apple.com → Utilisateurs et accès → Intégrations → Clés d'API d'App Store Connect → rôle « Admin ») : l'ID de la clé, l'Issuer ID affiché au-dessus, et le CONTENU du fichier .p8 téléchargeable UNE seule fois (copier tout le texte, lignes BEGIN/END comprises).
+5. MATCH_GIT_URL — un dépôt GitHub PRIVÉ et vide (ex. Maeween/hype-certificats) qui gardera les certificats chiffrés ; l'adresse doit contenir un jeton d'accès : https://<jeton>@github.com/Maeween/hype-certificats.git (jeton « fine-grained » limité à ce seul dépôt, droit Contents en lecture/écriture).
+6. MATCH_PASSWORD — un mot de passe inventé (chiffre les certificats) ; à garder précieusement.
+7. HYPE_COMPANY_NAME — nom affiché comme vendeur (son nom propre, compte Apple Developer pris à son nom le 20/09).
+- AVANT le 1er lancement : créer la fiche de l'appli dans App Store Connect (Apps → + → Nouvelle app : iOS, nom « Hype », langue Français, identifiant fr.ecuriefeinn.hype, SKU hype-ios-1).
+- Ensuite : GitHub → Actions → « iOS — build + TestFlight » → Run workflow. L'appli arrive dans TestFlight (~30 min de traitement chez Apple).
+- Reste ouvert, NON décidé par Blandine : paiements Premium / dons Crystal dans l'appli iPhone (règles Apple) ; notifications natives ; icône 1024 × 1024 sans cadre arrondi dessiné (l'icône actuelle icon-512 a son propre cadre : iOS en ajouterait un second) ; phrases de permission dans les 6 autres langues ; page de chargement (« HYPE » en ancien turquoise).

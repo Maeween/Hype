@@ -5,7 +5,7 @@
 # puis construit, signe et envoie l'app. Rien d'autre n'est à pousser.
 #   - si un jour un fichier existe dans le dépôt sous natif/ (ex. natif/resources/icon-only.png
 #     pour l'icône), il est gardé tel quel et remplace la version fabriquée ici.
-#   - tant que les 7 secrets Apple ne sont pas posés (PLAN-APP-NATIVE.md § 4 bis), le workflow
+#   - tant que les 7 secrets Apple ne sont pas posés (SUIVI.md, section « APPLI IPHONE — LES 7 SECRETS »), le workflow
 #     s'arrête tout de suite, EN VERT, avec un mot dans le journal.
 # Se déclenche à la main (Actions → « iOS — build + TestFlight » → Run workflow) ou à chaque
 # poussée qui touche ce fichier ou natif/.
@@ -33,7 +33,7 @@ jobs:
       # ---- Les deux seuls réglages à changer AVANT le premier build (définitifs chez Apple) :
       HYPE_BUNDLE_ID: fr.ecuriefeinn.hype
       HYPE_APP_NAME: Hype
-      HYPE_SITE: https://2hype.netlify.app
+      HYPE_SITE: https://2hype.fr   # 11/10 (964) : le vrai domaine (etait 2hype.netlify.app)
       LANG: en_US.UTF-8
       LC_ALL: en_US.UTF-8
     steps:
@@ -44,7 +44,7 @@ jobs:
         run: |
           if [ -z "${{ secrets.ASC_KEY_ID }}" ]; then
             echo "ok=false" >> "$GITHUB_OUTPUT"
-            echo "Secrets Apple absents : rien a construire pour l'instant. Voir PLAN-APP-NATIVE.md, section 4 bis."
+            echo "Secrets Apple absents : rien a construire pour l'instant. Voir SUIVI.md, section APPLI IPHONE - LES 7 SECRETS."
           else
             echo "ok=true" >> "$GITHUB_OUTPUT"
           fi
@@ -86,7 +86,7 @@ jobs:
             "server": {
               "url": "${HYPE_SITE}",
               "errorPath": "erreur.html",
-              "allowNavigation": ["2hype.netlify.app", "*.supabase.co", "*.mux.com"]
+              "allowNavigation": ["2hype.fr", "www.2hype.fr", "2hype.netlify.app", "*.supabase.co", "*.mux.com"]
             },
             "ios": {
               "contentInset": "never",
@@ -145,7 +145,7 @@ jobs:
               cle = app_store_connect_api_key(
                 key_id: ENV["ASC_KEY_ID"], issuer_id: ENV["ASC_ISSUER_ID"],
                 key_content: ENV["ASC_KEY_P8"], is_key_content_base64: false, in_house: false)
-              options_produce = { api_key: cle, app_identifier: BUNDLE, app_name: NOM_APP, language: "fr-FR", sku: "hype-ios-1", skip_itc: false }
+              options_produce = { api_key: cle, app_identifier: BUNDLE, app_name: NOM_APP, language: "fr-FR", sku: "hype-ios-1", skip_itc: true }   # (964) la fiche App Store Connect se cree A LA MAIN une fois (la cle API ne sait pas la creer) ; produce ne fait que l identifiant
               options_produce[:company_name] = ENV["HYPE_COMPANY_NAME"] if ENV["HYPE_COMPANY_NAME"].to_s != ""
               produce(options_produce)
               match(type: "appstore", app_identifier: BUNDLE, api_key: cle, readonly: false,
@@ -189,6 +189,21 @@ jobs:
         working-directory: natif
         run: |
           if [ ! -d ios ]; then npx cap add ios; fi
+
+      # 11/10 (964) : phrases de permission (sans elles l'appli se ferme a l'ouverture de l'appareil photo et Apple refuse)
+      # + declaration de chiffrement standard (evite la question d'export a chaque envoi).
+      - name: Phrases de permission (Info.plist)
+        if: steps.pre.outputs.ok == 'true'
+        working-directory: natif
+        run: |
+          P=ios/App/App/Info.plist
+          pose() { plutil -replace "$1" "-$2" "$3" "$P"; }   # plutil remplace ou cree la cle ; la phrase reste entiere (espaces, apostrophes)
+          pose NSCameraUsageDescription string "Hype utilise l'appareil photo pour prendre les photos et vidéos de tes chevaux et de tes concours."
+          pose NSPhotoLibraryUsageDescription string "Hype ouvre ta photothèque pour ajouter des photos et vidéos à tes albums, à ta page et à celle de tes chevaux."
+          pose NSPhotoLibraryAddUsageDescription string "Hype peut enregistrer dans ta photothèque les images que tu choisis de garder."
+          pose NSMicrophoneUsageDescription string "Hype utilise le micro pour le son des vidéos que tu filmes."
+          pose ITSAppUsesNonExemptEncryption bool false
+          plutil -p "$P" | grep -E "Usage|Encryption" || true
 
       - name: Icône et écran de lancement (seulement si natif/resources/icon-only.png est dans le dépôt)
         if: steps.pre.outputs.ok == 'true'
