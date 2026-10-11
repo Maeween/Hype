@@ -110,6 +110,10 @@ try {
   if (r2.nScripts !== r.nScripts || r2.nStyles !== r.nStyles || r2.nComHTML !== 0 || r2.out !== r.out) throw new Error("contre-vérification : le résultat n'est pas stable");
   if (JSON.stringify(r2.ouvertures) !== JSON.stringify(r.ouvertures)) throw new Error("contre-vérification : balises script/style différentes");
   if (!marqueur || r.out.indexOf(marqueur) < 0) throw new Error("marqueur de version introuvable après allègement");
+  /* 11/10 (954) : marque visible dans l'appli (« · allégé » à côté du numéro de version, sous « Quoi de neuf »). */
+  const metaBuild = /<meta name="hype-build" content="\d{8}-\d+">/;
+  if (!metaBuild.test(r.out)) throw new Error("balise hype-build introuvable");
+  r.out = r.out.replace(metaBuild, function (m0) { return m0 + '<meta name="hype-allege" content="1">'; });
   const avant = Buffer.byteLength(html), apres = Buffer.byteLength(r.out);
   if (process.argv[3] === "--essai") { fs.writeFileSync(process.argv[4], r.out); log("ESSAI écrit dans", process.argv[4]); }
   else fs.writeFileSync(FICHIER, r.out);

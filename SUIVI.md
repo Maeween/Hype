@@ -11298,3 +11298,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Images fournies par Blandine (11/10, 20 h 37, faites avec ChatGPT d'après les demandes données à 20 h 05), 941 × 1672, enregistrées en JPEG qualité 86 : images/k635.jpg (269 Ko, « Déplacer les épaules et les hanches ») et images/k642.jpg (343 Ko, « Sortir en extérieur et franchir les embûches »).
 - AUCUN code modifié : hype-images-tout-v1.js attendait déjà ces deux adresses exactes (images/k635.jpg, images/k642.jpg). Les deux cours quittent leur couverture de secours.
 - Vérifié : les deux couvertures s'affichent dans les cours (captures). Il ne reste plus d'image introuvable utilisée par l'appli (k547/k549/k553/k554 déclarées mais jamais affichées).
+- Correctif d'écriture : les entrées 952 et 953 ci-dessus disent « PAS ENCORE PUBLIÉ » ; elles ont été PUBLIÉES ensemble le 11/10 vers 20 h 47 (« Ok merci oui »). Netlify (connecté le 11/10 à 20 h 55, lecture seule) : publication « ready » à 20 h 48, aucune erreur ; index.html compté comme « page générée » (signe que l'outil 951 l'a réécrit). Le connecteur ne donne PAS le texte du journal.
+
+## Build 954 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — « · allégé » visible à côté du numéro de version
+- outils/alleger-index.cjs ajoute <meta name="hype-allege" content="1"> juste après <meta name="hype-build"> dans la copie allégée (et seulement si tout s'est bien passé).
+- index.html : nouvelle petite fonction hypeIndexAllegeTexte(langue) ; la ligne « Quoi de neuf · reprise … · index 20261011-NNN » affiche « · allégé » (7 langues : light, aligerado, alleggerito, 軽量版, verschlankt, مُخفَّف) quand la marque est là. Sans marque (index publié tel quel), rien ne s'affiche.
+- Testé : index normal → pas de mention ; copie allégée → « INDEX 20261011-954 · ALLÉGÉ » (et en arabe « مُخفَّف »), aucune erreur.
