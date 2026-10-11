@@ -11551,3 +11551,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Refonte demandée par Blandine (00 h 35) d'après la maquette « Version Carrousel » de ChatGPT et son brief en 9 points ; « Nouvelle image oui ». Images découpées dans sa planche (pas de fichiers séparés reçus) : images/communaute-globe-v2.webp (581×1016), communaute-carte-profils / -cavalieres / -ecuries / -agenda .webp (868 px de large).
 - iPhone seulement (< 900 px) : nouveau globe en fond fixe, assombrissement au défilement gardé ; slogan et capsule « MONDE HYPE » alignés à gauche sous le titre ; hero un peu moins haut. Ordinateur inchangé (ancien globe).
 - Deux cadrages montrés (A : globe entier, cavaliers en bas de l'écran ; B : image remontée, cavaliers en bas du hero comme la maquette, haut du globe coupé) → « B » (00 h 42) : image remontée (position calc(encoche + 360 px − 129vw), largeur 100 %), testé à 375, 390 (arabe) et 430 px. Questions ouvertes : bouton retour, Stories rondes ou rectangles + destination de « Voir tout », destination des cartes Écuries / Agenda (aucune page « toutes les écuries » n'existe).
+
+## Build 991 (12/10) — Communauté (carrousel, build 2) : bouton retour sur iPhone
+- Blandine (00 h 44) : « revenir à la page d'où on vient ».
+- Bouton rond champagne en haut, côté début de ligne (à gauche ; à droite en arabe, flèche inversée), même style que Santé ; n'apparaît que s'il y a une page précédente (ctx.peutReculer) ; masqué sur ordinateur. Textes « Retour » 7 langues.
+- Réponses du même message : Stories en RONDS, « Voir tout » déplie les stories suivantes ; Écuries / Agenda : « on peut déplier aussi sinon ? … ou on retourne la carte, je sais pas, tu proposes quoi, montre des visuels » → maquettes à faire.
+- Testé français et arabe ; aucune erreur.
