@@ -52359,7 +52359,7 @@ function EcranSanteCheval() {
       h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 12 } },
         h("svg", { viewBox: "0 0 24 24", style: { width: 20, height: 20, display: "block", flexShrink: 0 } }, h("rect", { x: 3.5, y: 5, width: 17, height: 15.5, rx: 2, fill: "none", stroke: TQ, strokeWidth: 1.6 }), h("path", { d: "M3.5 10h17M8 3v4M16 3v4", fill: "none", stroke: TQ, strokeWidth: 1.6, strokeLinecap: "round" })),
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 18, fontWeight: 600, letterSpacing: "0.22em", textTransform: "uppercase", color: "#F3EEE4", flex: 1 } }, T("Suivi", "Follow-up", "Seguimiento", "Monitoraggio", "フォロー", "Verlauf", "المتابعة")),
-        h("span", { role: "button", onClick: function () { setFamille(FAM_TOUT.cle); }, style: { fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.8)", cursor: "pointer", whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل") + " ›")),
+        h("span", { role: "button", onClick: function () { setFamille(FAM_TOUT.cle); }, style: { fontFamily: M, fontSize: 12.5, color: "rgba(243,238,228,0.8)", cursor: "pointer", whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "すべて見る", "Alle ansehen", "عرض الكل") + ((function () { try { return document.documentElement.dir === "rtl"; } catch (eD) { return false; } })() ? " ‹" : " ›"))),
       h("div", { style: { display: "grid", gridTemplateColumns: large ? "repeat(4, minmax(0, 1fr))" : "1fr 1fr", gap: 12 } },
         FAM_SUIVI.map(function (f) { return carteSuivi(f); })));
   }
