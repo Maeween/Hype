@@ -11243,9 +11243,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé avec une réponse de l'IA simulée : 3 lignes (une date illisible, une déjà au carnet, une nouvelle) → « 1 vaccin(s) ajouté(s) ». ⚠️ Pas testé avec la vraie IA depuis ici : c'est le test iPhone qui le dira (1 à 2 min par lecture).
 - Rappel sécurité déjà signalé : la fonction de lecture (hey-baby-vision) ne vérifie pas elle-même l'abonnement ; le verrou est dans l'appli. Chantier à part proposé.
 
-## Build 946 (11/10, NON DÉPLOYÉ — attend l'accord de Blandine) — sécurité : la fonction de lecture vérifie elle-même l'abonnement
+## Build 946 (11/10, DÉPLOYÉ le 11/10 vers 19 h 30 après son « Ok » : fusion dans main → GitHub a remis en ligne la fonction, version 16, « Verify JWT » toujours actif) — sécurité : la fonction de lecture vérifie elle-même l'abonnement
 - Seul fichier touché : supabase/functions/hey-baby-vision/index.ts (index.html inchangé, pas de marqueur ni de publication Netlify).
 - Avant tout appel à OpenAI : session reconnue (jeton vérifié avec la clé de service, qui reste dans les secrets Supabase) PUIS modératrice, ambassadrice (mêmes listes qu'index.html, à tenir à jour ENSEMBLE) ou ligne abonnements_premium statut « actif », plan mensuel / annuel / ai / duo, non expirée. Sinon refus PREMIUM_REQUIRED (403) ou « Session non reconnue » (401), rien n'est payé.
 - Colonnes vérifiées en base (lecture) : user_id, plan, statut, expire_le. Syntaxe TypeScript vérifiée.
-- ⚠️ Conséquences à faire trancher par Blandine AVANT déploiement : (1) la lecture d'affiche de l'agenda d'écurie (build 658) passe par cette fonction pour tout le monde → elle deviendrait Premium ; (2) les membres Crystal (profil.vip, gardé seulement sur le téléphone) seraient refusés ; (3) « Verify JWT » doit rester activé sur la fonction.
+- ⚠️ Conséquences signalées, « Ok » de Blandine compris comme les premiers choix proposés (lecture d'affiche réservée au Premium, mise en ligne par Claude) : (1) la lecture d'affiche de l'agenda d'écurie (build 658) passe par cette fonction pour tout le monde → elle deviendrait Premium ; (2) les membres Crystal (profil.vip, gardé seulement sur le téléphone) seraient refusés ; (3) « Verify JWT » doit rester activé sur la fonction.
 - Déploiement : par Claude avec son accord, ou par elle.
+- Message de refus affiché tel quel par la lecture d'affiche, EN FRANÇAIS seulement (à traduire dans l'appli si elle le veut). Pas testable d'ici (accès réseau bloqué) : à tester sur iPhone avec un compte non Premium.
