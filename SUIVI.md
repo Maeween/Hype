@@ -11406,3 +11406,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 3. Copier la clé PUBLIQUE iOS (« appl_… ») → à coller dans index.html (window.HYPE_RC_CLE_IOS) : c'est ce qui réveille la couche 967.
 4. Webhook : adresse https://ldpjebgtskzdokrublfg.supabase.co/functions/v1/revenuecat-webhook ; en-tête Authorization = un long mot de passe inventé, posé AUSSI dans Supabase → Edge Functions → Secrets sous le nom REVENUECAT_WEBHOOK_AUTH.
 5. Ensuite seulement : SQL source, puis déploiement de revenuecat-webhook (« Verify JWT » ÉTEINT, protégé par le mot de passe), puis ajout à deploy-fonctions.yml.
+
+## Build 968 (11/10) — page Santé : le « Protocole vaccinal » quitte le milieu de la page, plus discret
+- Blandine (capture 21 h 52) : « C'est quoi ça sur la page santé ? C'est sur la page ordinateur aussi ? Faut le mettre plus discret, moins violent visuellement, et qu'on le voie quand on clique sur vaccin, pas en plein milieu de la page ».
+- Retiré de la page (téléphone ET ordinateur) ; affiché en tête de la fenêtre qui s'ouvre en touchant la carte « Vaccin » du Suivi (même fenêtre sur ordinateur).
+- Plus discret : plus de rouge vif (ambre doux pour « à faire », vert pâle pour « à jour »), pastilles Club / Amateur / SHF / FEI grises et fines, titre et points plus petits, cadre plus léger. Contenu, règles et bouton « Lire le carnet de vaccination » inchangés.
+- Testé : avant → protocole sur la page ; après → absent de la page, présent dans la fenêtre Vaccin ; aucune erreur.
