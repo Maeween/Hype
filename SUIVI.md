@@ -11093,7 +11093,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - ⚠️ À REVOIR PLUS TARD (demande de Blandine, 11/10) : la tuile « Mes chevaux » de l'accueil ouvre la page des chevaux de TOUTE l'écurie (ecurie-hype), pas seulement les chevaux de la cavalière. Il faudra trancher : garder ainsi, filtrer sur « mes » chevaux, ou créer une vraie page « Mes chevaux » (chevaux possédés + chevaux liés). Ne rien changer sans sa décision.
 - ⚠️ À REVOIR (signalé par Blandine le 11/10) : sur la page Cavalier, ce qu'elle a publié sur les profils d'autres personnes (chevaux, cavaliers) se mélange avec ce qui lui est propre. Il faut trouver un moyen de faire la différence. En attente d'une capture pour cerner exactement quels blocs sont concernés.
 
-## Build 923 (11/10, préparé — attend « Ok publie »)
+## Build 923 (11/10, publié — « Ok continue »)
 - Recadrage à la main, étape 1 (galerie par année, page Photos) — table photo_cadrages (SQL passé par Blandine le 11/10) :
   - « Modifier » d'une année → « Taille d'une photo » → toucher la photo → nouveau bouton « ✜ Recadrer » : fenêtre « Recadrer la photo » à la forme exacte de la case ; on fait glisser la photo pour choisir la partie visible ; Enregistrer / Cadrage automatique (retire le réglage) / Annuler. Refus de la base affiché en clair. 7 langues.
   - La photo d'origine n'est jamais modifiée : seule la position (« x% y% ») est retenue, pour tout le monde. Une photo cadrée est demandée entière au serveur puis placée à la position choisie ; les photos sans réglage sont inchangées.
