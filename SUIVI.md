@@ -11087,3 +11087,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 921 (11/10, publié — « Ok »)
 - Page Photos, iPhone/tablette : albums en deux lignes de deux, couvertures HORIZONTALES (3:2) avec le même liseré champagne que les photos ; au-delà de 4 albums, carrousel qui défile sur le côté (colonnes de deux, aimantées), le bord de l'album suivant dépasse pour inviter à glisser. 2 albums = une ligne de deux ; 3 = deux lignes (2 + 1). Ordinateur inchangé. Vérifié en français et en arabe.
 - Constaté, non touché : en arabe, le trait et les points de la chronologie restent à gauche (défaut antérieur).
+
+## Build 922 (11/10, préparé — attend « Ok publie »)
+- Accueil, tuile « Mes chevaux » : mène désormais au même endroit que la carte « Les chevaux de l'écurie » de la page Cavalier (écran ecurie-hype, son écurie). Sans écurie : page Cavalier comme avant. Testé : avec écurie → « Les chevaux de l'Écurie Feinn » ; sans → page Cavalier.
