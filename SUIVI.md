@@ -11293,3 +11293,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Comment : dans ces seuls écrans, COLORS.turquoise / turquoiseDark / turquoiseDim → anciennes valeurs écrites en dur (#20D9F5, #17A8B3, #1B4A4E) — 138 endroits ; et les 34 lignes que le 814 avait changées y reprennent EXACTEMENT leur texte d'avant le 814 (31 retrouvées dans l'historique + 3 lignes #5C8792 → #17A8B3).
 - Vérifié : captures avant / après (page Galop 2 : onglet actif, puces et contours des cours en turquoise ; bibliothèque, Chemin Baby, cours, quiz), aucune erreur, même contenu affiché.
 - Pour revenir au pétrole sur ces écrans : annuler ce build (git revert).
+
+## Build 953 (11/10, PAS ENCORE PUBLIÉ — attend son accord) — les 2 couvertures manquantes du Galop 4
+- Images fournies par Blandine (11/10, 20 h 37, faites avec ChatGPT d'après les demandes données à 20 h 05), 941 × 1672, enregistrées en JPEG qualité 86 : images/k635.jpg (269 Ko, « Déplacer les épaules et les hanches ») et images/k642.jpg (343 Ko, « Sortir en extérieur et franchir les embûches »).
+- AUCUN code modifié : hype-images-tout-v1.js attendait déjà ces deux adresses exactes (images/k635.jpg, images/k642.jpg). Les deux cours quittent leur couverture de secours.
+- Vérifié : les deux couvertures s'affichent dans les cours (captures). Il ne reste plus d'image introuvable utilisée par l'appli (k547/k549/k553/k554 déclarées mais jamais affichées).
