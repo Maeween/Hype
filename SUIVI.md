@@ -11515,3 +11515,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CAUSE (ancienne, depuis le 942) : sans aucun soin, la page remplaçait tout le carnet par la boîte « Aucun soin enregistré pour l'instant » — plus de titre, plus d'onglets, plus de « Ajouter un document », et les documents déjà déposés étaient cachés.
 - CORRIGÉ : sans soin, le carnet complet s'affiche (titre, tous les onglets, ligne « Ajouter un document », documents existants) ; le message « Aucun soin enregistré pour l'instant. » est dans la liste vide. Testé en français et en arabe.
 - (Build 982, même livraison : bulle « Tes notifications sont ici » coupée.)
+
+## Build 984 (12/10) — Communauté sur ordinateur : page resserrée au centre
+- Proposé après le 983 (sur ordinateur la page s'étalait sur toute la largeur, slogan collé à droite) ; Blandine : « Ok ».
+- COM2B_CSS, à partir de 900 px de large : contenu centré sur 960 px (comme Santé), hero 380 px, « Communauté » 56 px, marges 32 px. Le globe reste en plein écran derrière. iPhone inchangé.
+- Testé à 1280 px et 390 px ; aucune erreur.
