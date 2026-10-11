@@ -11070,3 +11070,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 918 (11/10, préparé — attend « Ok publie »)
 - Pages Photos et Vidéos du cheval : même fin de page que Cavalier / Accueil / Écurie / Communauté (petit paysage fondu images/accueil_v2_fin_de_page_v1.webp déjà dans le dépôt, filets champagne et « HYPE »). Fonction finPageCh, posée tout en bas (après « Revoir la petite vidéo » sur Photos). Aucun fichier nouveau.
+- Build 918 (suite) — choix A + B de Blandine : losange champagne (deux filets fins + petit losange) entre chaque année de la chronologie ; année en Cinzel 24 px champagne (#C9A66B, au lieu de 19 px ivoire), point recalé (top 9). La 3e barre grise (entre Albums et la chronologie, page Photos) est remplacée par ce même losange.
+- Outil de test : nouvelle image verticale neutre (tst/vert2.jpg) à la place de l'ancienne capture d'écran d'Hype qui faisait croire à une fin de page en double.

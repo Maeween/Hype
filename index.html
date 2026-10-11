@@ -55520,9 +55520,9 @@ function ChronologieSouvenirs(props) {
         var anActiveIci = (menuAn === grp.an) || (modeFormatAn === grp.an) || (modeAn === grp.an);
         return h("div", { key: "an" + grp.an, ref: anActiveIci ? refAnActive : null, style: { position: "relative", paddingLeft: 26, marginBottom: 26 } },
           /* point de la ligne */
-          h("span", { style: { position: "absolute", left: 2, top: 5, width: 11, height: 11, borderRadius: "50%", background: actif ? "#C9A66B" : "transparent", border: "1.5px solid #C9A66B" /* (917) champagne */, boxShadow: "none" } }),
+          h("span", { style: { position: "absolute", left: 2, top: 9, width: 11, height: 11, borderRadius: "50%", background: actif ? "#C9A66B" : "transparent", border: "1.5px solid #C9A66B" /* (917) champagne */, boxShadow: "none" } }),
           h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginBottom: 9 } },
-            h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: actif ? teinteCl : "#EDF2F5" } }, String(grp.an)),
+            h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: "#C9A66B" /* (918) annee plus grande, champagne */ } }, String(grp.an)),
             false && h("span", { style: { fontSize: 10.5, color: "#8A929C" } }, grp.photos.length + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen", "\u0630\u0643\u0631\u064a\u0627\u062a")),
             /* 13/09 (58) : le cadenas de l'annee, visible d'un coup d'oeil */
             verrousAn[String(grp.an)] ? h("span", { title: T("Annee verrouillee", "Year locked", "Ano bloqueado", "Anno bloccato", "\u30ed\u30c3\u30af\u4e2d", "Jahr gesperrt", "\u0633\u0646\u0629 \u0645\u0642\u0641\u0644\u0629"), style: { fontSize: 11, color: teinteCl } }, "\ud83d\udd12") : null,
@@ -55569,7 +55569,9 @@ function ChronologieSouvenirs(props) {
                 null /* (917) bouton Modifier monte sur la ligne de l annee, a droite */,
                 verrousAn[String(grp.an)] ? h("div", { style: { fontSize: 10, color: "#7B848C", marginTop: 5, lineHeight: 1.5 } },
                   T("Ann\u00e9e verrouill\u00e9e : personne d'autre n'y touche.", "Year locked: nobody else can change it.", "A\u00f1o bloqueado.", "Anno bloccato.", "\u30ed\u30c3\u30af\u4e2d\u3002", "Jahr gesperrt.", "\u0633\u0646\u0629 \u0645\u0642\u0641\u0644\u0629: \u0644\u0627 \u064a\u0644\u0645\u0633\u0647\u0627 \u0623\u062d\u062f \u063a\u064a\u0631\u0643.")) : null)
-            : null);
+            : null,
+            /* (918) Blandine (A + B) : losange champagne entre les annees */
+            (iG < annees.length - 1) ? h("div", { "aria-hidden": "true", style: { display: "flex", alignItems: "center", gap: 12, margin: "26px 0 0" } }, h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } }), h("i", { style: { width: 7, height: 7, background: "#C9A66B", transform: "rotate(45deg)", flexShrink: 0 } }), h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } })) : null);
       })),
 
     editAn != null ? ecranModifAnnee() : null,
@@ -65192,7 +65194,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "24px 16px" } }),
         ongletsPanCh(),
         h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, presentationPhotos: true /* (881) */, mesAlbumsSeulement: true, fermerCle: albumsChFermerCle, ajoutCle: albumsChAjoutCle /* 11/09 (14) : « Ajouter un souvenir » -> feuille « Dans quel album ? » */, onOuvertureLocale: function () { setVisionneuse(null); } })),
-        h("span", { style: { display: "block", height: 30, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (899) */, borderRadius: 10, margin: "24px 16px" } }),
+        h("div", { "aria-hidden": "true", style: { display: "flex", alignItems: "center", gap: 12, margin: "30px 16px 26px" } }, h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } }), h("i", { style: { width: 7, height: 7, background: "#C9A66B", transform: "rotate(45deg)", flexShrink: 0 } }), h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } })), /* (918) Blandine : la barre grise sous les albums devient le losange champagne */
         h(ChronologieSouvenirs, {
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           peutVedette: !!((chevalDyn && moi && chevalDyn.ownerId === moi.id) || (typeof estModerateurHype === "function" && estModerateurHype(moi))), /* 09/09 CORRECTIF : peutChoisirMediaF n'existe que dans la portee de sectionMomentsForts, pas ici -- meme expression recalculee directement, moi/chevalDyn deja verifies disponibles a cet endroit (cf. la prop proprio juste au-dessus, qui les utilise deja) */
