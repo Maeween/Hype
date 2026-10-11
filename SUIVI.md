@@ -11202,7 +11202,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## À REVOIR (noté le 11/10, Blandine : « laisse, je regarderai plus tard »)
 - Pages Photos et Vidéos du cheval « un peu moins opaques » : vérifié, les cartes y sont déjà presque transparentes (album ouvert 2 %, Photos proposées 6 %, Créer une collection 35 %) ; l'effet opaque vient du fond de page noir uni (la page Santé a un décor derrière). Pistes proposées : A) décor de fond discret comme la page Santé ; B) si elle parlait des photos de la galerie ou de leur liseré, l'ajuster. Rien de modifié.
 
-## Build 940 (11/10, en attente de son accord) — refonte Santé, étape 5/9 : consignes du cheval
+## Build 940 (11/10, publié — « Ok continue ») — refonte Santé, étape 5/9 : consignes du cheval
 - SQL sql/2026-10-11-cheval-consignes.sql PASSÉ par Blandine le 11/10 (capture « Success. No rows returned ») ; vérifié en base : table cheval_consignes, RLS active, 4 règles (consignes_lire / creer / modifier / supprimer ; lecture = hype_peut_voir_sante, écriture = hype_peut_ecrire_sante).
 - Bandeau « Consignes du cheval » entre « + Ajouter un soin » et SUIVI : une carte compacte (pictogramme, « N consignes renseignées », chevron, image discrète à droite), qui se déplie sur Enrênement / Matériel particulier / Soins spécifiques, avec « Modifier » pour qui peut modifier.
 - Rien de renseigné : ligne discrète « + Ajouter ses consignes » pour qui peut modifier ; rien du tout pour les autres.
