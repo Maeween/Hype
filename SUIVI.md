@@ -11351,3 +11351,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (21 h 26) : « Sur la page cavalier passe mes amis sous mes chevaux ». Le bloc « Mes amis » (HypeAmisVitrine) est déplacé tel quel juste après le bloc « Mes chevaux » ; rien d'autre ne change.
 - Testé : ordre affiché Mon récit → Mes chevaux → Mes amis → fin de page ; aucune erreur.
 - Vu en testant (pas de changement) : le halo du 955 dépasse à droite de l'écran (même réglage que l'accueil), mais html et body sont en overflow-x: clip — aucun défilement de côté.
+
+## Build 965 (11/10) — page « Mon cavalier » : les 6 tuiles ne sont plus délavées
+- Blandine (capture 21 h 36) : « les couleurs des tuiles sont très délavées c'est normal ? » ; puis « 1 » (= les 6 tuiles Histoire … Actualité).
+- carteP : fond CAV_PETIT (dégradé semi-transparent, grisâtre sur le noir) → fond pétrole PLEIN des tuiles de l'accueil (#111B1F → #0B1215) ; lueur champagne du haut et voile sombre du bas retirés (ils donnaient le ton beige terne). Pastille, pictogramme, textes, liseré et « Ouvrir → » inchangés ; « Actualité » reste à demi effacée (Prochainement).
+- Testé : captures avant / après, aucune erreur.
