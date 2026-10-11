@@ -11048,3 +11048,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 915 (11/10, publié avec 914 — « Ok continue »)
 - iPhone (< 700 px), bandeau du cheval : un nom très long ne se coupe plus jamais au milieu d'un mot (overflowWrap normal, keep-all). Si le mot le plus long ne tient pas dans la zone du nom (40 % de la carte), la taille baisse juste ce qu'il faut (18 px normalement, 11 px minimum). Vérifié à 360, 390 et 430 px, nom long et nom court (« Rizotto d'Emery » reste à 18 px), et en arabe.
 - Constaté, non touché : en arabe sur iPhone, la photo du bandeau est assombrie par le dégradé (défaut antérieur au chantier).
+
+## Build 916 (11/10, préparé — PAS publié, présenté à Blandine)
+- Étape 2/4 : page Vidéos du cheval sur tablette et ordinateur (dès 700 px ; iPhone inchangé).
+  - Cheval AVEC collections : collections les unes sous les autres, sans vidéo principale ; vignettes en rangées « justifiées » (toutes de même hauteur dans une rangée, chacune à la largeur de SA vraie proportion → verticales étroites, horizontales larges, aucune zone floutée, aucun recadrage, aucune dernière carte géante). 6 vidéos au départ au lieu de 4, puis « Voir toutes… ».
+  - Cheval SANS collection : présentation Cinéma — la première vidéo en grand à sa vraie proportion (460 px de haut sur ordinateur, 380 sur tablette), puis les autres en rangées justifiées.
+  - Hauteur de rangée : 200 px ordinateur, 210 px tablette, ajustée entre 80 et 125 % pour remplir la largeur ; dernière rangée à hauteur normale, alignée au début.
+  - Vérifié à 390, 834, 1440 px et 1440 px en arabe, avec et sans collections. Même visionneuse, même bouton couverture, même carte « Créer une collection ». hypeMiniatureVideo non modifiée.
+- Réponse à Blandine (liserés blancs dans la galerie photos) : ils sont DANS les photos elles-mêmes (cadres des photographes de concours : « Spring Tour by Harcour », « Barbizon 2021 »…). L'appli n'ajoute aucune bordure (tuile : arrondi 5 px, fond sombre). Option possible plus tard : recadrage à la main.
