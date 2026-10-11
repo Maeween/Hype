@@ -11576,3 +11576,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Maquette B choisie par Blandine (00 h 48). iPhone : une carte photo (communaute-carte-ecuries.webp), « Dans les écuries » + « Actualités et moments de vie des écuries » (7 langues), icône ↻. On la touche : elle pivote (0,6 s) et montre au dos les 3 écuries les plus récemment actives (vraies données déjà chargées : nom, publications, photos) ; ↺ la remet côté photo. « Voir tout (n) » sous la carte déplie les suivantes dessous ; chaque ligne ouvre les actualités de l'écurie, comme avant. Le « Voir tout » du titre est masqué sur iPhone. Ordinateur inchangé.
 - Fonctions carteRetournee(clé, image, titre, sous-titre, lignes) et ligneEcurieDos, réutilisées au build suivant pour l'agenda.
 - Testé avec 5 écuries simulées (recto, retournement, verso, dépliage), français et arabe ; 16 scripts sans erreur.
+
+## Build 996 (12/10) — Communauté (carrousel) : « À l'agenda » = carte qui se retourne
+- Même carte que « Dans les écuries » (harmonisées, demande du brief) : photo communaute-carte-agenda.webp, « À l'agenda » + « Concours, stages et événements à venir » (7 langues). Au dos : les 3 prochains événements de toutes les écuries (date en petit cadre, titre, écurie) ; « Voir tout (n) » déplie la suite ; chaque ligne ouvre la fiche de l'événement comme avant (ouvrirRdvCom). Aucune nouvelle donnée, aucun nouveau calendrier. iPhone seulement ; « Voir tout » du titre masqué sur iPhone.
+- Testé avec 5 événements simulés, français et arabe ; 16 scripts sans erreur.
