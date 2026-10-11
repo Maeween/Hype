@@ -11144,3 +11144,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Retiré du hero : la ligne âge / race / sexe (absente de la maquette) — à remettre si Blandine la veut. Le nom officiel reste affiché en petit quand un surnom est utilisé.
 - Sans photo : même texte sur le fond de page.
 - Testé iPhone 390 px en français et en arabe (miroir correct).
+
+## Build 932 (11/10, en attente de son accord) — refonte Santé, étape 2/9 : SUIVI
+- « À surveiller » et « En un coup d'œil » remplacés par la rubrique SUIVI de la maquette : 4 cartes Vermifuge, Vaccin, Ferrure (ferrure + parage), Dentiste équin. Chaque carte : pictogramme champagne (dessiné, plus d'émoji), nom, « Dernier » (date du dernier soin fait), « Prochain » (prochaine échéance ; en rouge si dépassée, champagne sinon ; « mars 2027 » si l'échéance n'a qu'un mois), chevron. Liseré champagne, rouge si retard. 2 × 2 sur iPhone, 4 sur une ligne dès 700 px.
+- Toucher une carte : ouvre la liste de ce soin (même panneau qu'avant, avec son « + » d'ajout). « Voir tout » : ouvre « Tous les soins » (les 11 types, dont vétérinaire, ostéo, traitements… qui n'ont plus de carte). Rien d'effacé.
+- Pas encore : photos sombres en fond des cartes (maquette) — à voir avec Blandine ; les « + » des cartes ont disparu (l'ajout se fait par « + Ajouter un soin » du haut ou dans le panneau de chaque soin).
+- Images reçues de Blandine, ajoutées au dossier images (non utilisées dans ce build) : sante-bandeau-heybaby.webp, sante-bandeau-magazine.webp (bandeaux de l'étape 4), sante-hero-defaut.webp (haut de page sans photo / ordinateur).
+- Testé iPhone 390 px français et arabe ; « Voir tout » ouvre bien la liste complète.
