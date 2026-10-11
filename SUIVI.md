@@ -11114,7 +11114,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Effet en plus : les anciennes vidéos qui ont déjà une couverture automatique n'ouvrent plus de lecteur vidéo pour leur aperçu (plus léger pour l'iPhone).
 - Testé : avec deux couvertures enregistrées, les cases concernées affichent bien la couverture (fiche, page Photos, page Vidéos).
 
-## Build 927 (11/10, en attente de son accord)
+## Build 927 (11/10, publié — « Ok continue »)
 - Ranger une vidéo dans une collection dès son envoi : pendant l'envoi (sous Titi), si le cheval a des collections et qu'on peut les gérer, une petite ligne « Ranger cette vidéo dans une collection : Aucune / [collections] ». Rien n'est imposé : « Aucune » par défaut, aucune étape en plus.
 - La vidéo est ajoutée à la collection choisie au moment où elle devient prête (la collection est relue en base juste avant, rien n'est écrasé). Message vert « Vidéo rangée dans « … » ». Si la vidéo n'est pas prête à la fin de l'envoi, ou si la base refuse, message orange qui le dit (on peut alors la ranger avec ⋯).
 - Testé avec un envoi simulé : choix affiché, sélection, puis « Vidéo rangée dans « En concours » ».
