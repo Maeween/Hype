@@ -11412,3 +11412,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Retiré de la page (téléphone ET ordinateur) ; affiché en tête de la fenêtre qui s'ouvre en touchant la carte « Vaccin » du Suivi (même fenêtre sur ordinateur).
 - Plus discret : plus de rouge vif (ambre doux pour « à faire », vert pâle pour « à jour »), pastilles Club / Amateur / SHF / FEI grises et fines, titre et points plus petits, cadre plus léger. Contenu, règles et bouton « Lire le carnet de vaccination » inchangés.
 - Testé : avant → protocole sur la page ; après → absent de la page, présent dans la fenêtre Vaccin ; aucune erreur.
+
+## Build 969 (11/10) — page Santé : « Carnet de santé » sur une ligne, « + Ajouter un document » à droite des petits onglets
+- Blandine (capture 21 h 54) : « mettre plutôt carnet de santé sur une ligne et mettre le bouton ajouter un document à droite sur la ligne des petits onglets en dessous ».
+- Titre seul sur sa ligne (sans retour à la ligne) ; les filtres (Tous, Vaccins…) défilent à gauche, le bouton « + Ajouter un document » reste fixe à droite, sur la même ligne. Même bouton, même action, même verrou Premium.
+- Testé à 390 px : titre entier sur une ligne, filtres et bouton alignés ; aucune erreur.
