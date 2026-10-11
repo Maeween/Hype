@@ -11062,7 +11062,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Page Photos du cheval (demandes de Blandine + consigne ChatGPT « 3 ajustements champagne ») :
   - Encart du cheval remonté : 1re barre grise des 4 pages 14/26 px → 2/16 px de marges.
   - Légende « ★ = à la une sur la fiche (3 max) » retirée à côté de « Albums » (page Photos seulement).
-  - Compteurs « N souvenirs · N approx. » retirés à côté de chaque année. La ligne 25 souvenirs / 6 saisons / 174 concours est GARDÉE (ChatGPT demande de conserver les compteurs) — à confirmer avec Blandine.
+  - Compteurs « N souvenirs · N approx. » retirés à côté de chaque année. La ligne souvenirs / saisons / concours est AUSSI retirée (choix de Blandine, malgré la consigne ChatGPT de garder les compteurs ; le nombre de concours reste sur la page Performances).
   - « Modifier » de chaque année : petit bouton discret sur la ligne de l'année, tout à droite (même action, même droits).
   - Liseré 1 px rgba(201,166,107,0.45) autour de chaque photo de la mosaïque et des couvertures d'albums (arrondis gardés, aucune ombre, aucune taille changée).
   - Chronologie : points #C9A66B (plein pour l'année active, contour pour les autres, plus de halo), trait vertical rgba(201,166,107,0.35) ; dimensions inchangées.

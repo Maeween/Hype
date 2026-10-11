@@ -55289,7 +55289,7 @@ function ChronologieSouvenirs(props) {
 
   return h("div", { style: { margin: "4px 0 0" } },
     /* Statistiques, toutes calculees depuis les vraies donnees */
-    h("div", { style: { display: "flex", alignItems: "flex-start", gap: 6, margin: "0 16px 6px", paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.08)" } },
+    false /* (917) Blandine : ligne souvenirs / saisons / concours retiree */ && h("div", { style: { display: "flex", alignItems: "flex-start", gap: 6, margin: "0 16px 6px", paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.08)" } },
       statBloc(stats.souvenirs, T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen", "\u0630\u0643\u0631\u064a\u0627\u062a")),
       statBloc(stats.saisons, T("saisons", "seasons", "temporadas", "stagioni", "シーズン", "Saisons", "\u0645\u0648\u0627\u0633\u0645")),
       statBloc(stats.concours, T("concours", "shows", "concursos", "concorsi", "大会", "Turniere", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
