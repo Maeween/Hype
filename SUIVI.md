@@ -11198,3 +11198,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - « Performances » renommé « Résultats » dans les 7 langues (Results, Resultados, Risultati, 結果, Ergebnisse, النتائج) pour la place.
 - Vérifié à 360 px (plus petit iPhone courant) dans les 7 langues : les 5 onglets tiennent sur une ligne, aucun débordement (allemand compris : Geschichte · Fotos · Ergebnisse · Videos · Gesundheit).
 - En attente : sa demande « les onglets des photos et vidéos un peu moins opaques » — à préciser (quels éléments).
+
+## À REVOIR (noté le 11/10, Blandine : « laisse, je regarderai plus tard »)
+- Pages Photos et Vidéos du cheval « un peu moins opaques » : vérifié, les cartes y sont déjà presque transparentes (album ouvert 2 %, Photos proposées 6 %, Créer une collection 35 %) ; l'effet opaque vient du fond de page noir uni (la page Santé a un décor derrière). Pistes proposées : A) décor de fond discret comme la page Santé ; B) si elle parlait des photos de la galerie ou de leur liseré, l'ajuster. Rien de modifié.
