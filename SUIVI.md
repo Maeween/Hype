@@ -11083,3 +11083,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Étape 4/4 (vérification d'ensemble) : 4 pages du cheval × iPhone fr/ar, tablette, ordinateur fr/ar — aucune erreur, aucun débordement horizontal.
 - Page Photos : titre « Albums » au même dessin que les années (Cinzel 24 px champagne, sans losange ni trait) ; « + Album / + Nouvel album » discret comme « Modifier ».
 - 4 pages du cheval : 1re barre grise (au-dessus de la carte du cheval) retirée ; la carte remonte et grandit (iPhone 190 → 240 px de haut ; tablette/ordinateur photo 260/340 px, 250 px de haut).
+
+## Build 921 (11/10, préparé — attend « Ok publie »)
+- Page Photos, iPhone/tablette : albums en deux lignes de deux, couvertures HORIZONTALES (3:2) avec le même liseré champagne que les photos ; au-delà de 4 albums, carrousel qui défile sur le côté (colonnes de deux, aimantées), le bord de l'album suivant dépasse pour inviter à glisser. 2 albums = une ligne de deux ; 3 = deux lignes (2 + 1). Ordinateur inchangé. Vérifié en français et en arabe.
+- Constaté, non touché : en arabe, le trait et les points de la chronologie restent à gauche (défaut antérieur).
