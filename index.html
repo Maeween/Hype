@@ -25984,13 +25984,19 @@ function Com2Commentaires(props) {
    (globe + cavaliers) devient le FOND DU HAUT DE PAGE, plus de grand titre : une petite ligne espacee en haut (« TA COMMUNAUTE
    EQUESTRE », comme « TON UNIVERS EQUESTRE »), le slogan en italique devient le titre ; onglets du fil soulignes et transparents
    comme les pages du cheval ; publications et cartes plus transparentes. Surcharges isolees sous .com2.com2b (feuille a part). */
-var COM2B_CSS = ".com2.com2b{background:linear-gradient(180deg,rgba(5,8,11,0) 0%,rgba(5,8,11,0.18) 38%,rgba(5,8,11,0.72) 58%,rgba(5,8,11,0.96) 74%,#05080B 100%) top center/100% calc(min(100vw,700px) * 2.162) no-repeat,url('images/communaute-hero-monde-hype-cavaliers.webp') top center/min(100vw,700px) auto no-repeat,#05080B}"
+var COM2B_CSS = ".com2.com2b{background:linear-gradient(180deg,rgba(5,8,11,0.12) 0%,rgba(5,8,11,0.3) 38%,rgba(5,8,11,0.72) 58%,rgba(5,8,11,0.96) 74%,#05080B 100%) top center/100% calc(min(100vw,700px) * 2.162) no-repeat,url('images/communaute-hero-monde-hype-cavaliers.webp') top center/min(100vw,700px) auto no-repeat,#05080B}"
   + ".com2.com2b .com2-hero{height:calc(env(safe-area-inset-top) + 340px);background:transparent}"
   + ".com2.com2b .com2-hero-pic,.com2.com2b .com2-hero-voile{display:none}"
-  + ".com2.com2b .com2b-eb{position:absolute;top:calc(env(safe-area-inset-top) + 62px);left:0;right:0;text-align:center;font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:rgba(243,238,228,0.78);text-shadow:0 1px 10px rgba(0,0,0,0.75);padding:0 20px}"
+  + ".com2.com2b .com2-hero{position:relative;overflow:visible}"
+  + ".com2.com2b .com2b-assombri{position:absolute;inset:0 0 -110px 0;pointer-events:none;background:linear-gradient(180deg,rgba(5,8,11,0.45) 0%,rgba(5,8,11,0) 18%),radial-gradient(ellipse 90% 42% at 0% 72%,rgba(6,7,9,0.9) 0%,rgba(6,7,9,0.6) 45%,rgba(6,7,9,0) 100%)}"
+  + "[dir=rtl] .com2.com2b .com2b-assombri{background:linear-gradient(180deg,rgba(5,8,11,0.45) 0%,rgba(5,8,11,0) 22%),radial-gradient(ellipse 90% 42% at 100% 72%,rgba(6,7,9,0.9) 0%,rgba(6,7,9,0.6) 45%,rgba(6,7,9,0) 100%)}"
+  + ".com2.com2b .com2b-bloc{position:absolute;inset-inline-start:0;inset-inline-end:0;bottom:0;z-index:2;padding:0 20px 18px;text-align:start}"
+  + ".com2.com2b .com2b-eb{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:3.6px;text-transform:uppercase;color:#C9A66B;text-shadow:0 1px 10px rgba(0,0,0,0.7)}"
+  + ".com2.com2b .com2b-nom{margin:6px 0 0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(34px,10.5vw,44px);line-height:1.04;color:#F6F1E7;text-shadow:0 2px 18px rgba(0,0,0,0.6)}"
   + ".com2.com2b .com2-hero-x{margin-top:0;text-align:center}"
-  + ".com2.com2b .com2b-titre{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-weight:500;font-size:clamp(24px,7vw,30px);line-height:1.25;color:#F6F1E7;text-shadow:0 2px 18px rgba(0,0,0,0.7)}"
-  + ".com2.com2b .com2b-titre span{display:block}"
+  + ".com2.com2b .com2-hero-x{padding:10px 22px 0 16px}"
+  + ".com2.com2b .com2b-titre{text-align:end;font-family:'Snell Roundhand','Brush Script MT',cursive;font-weight:600;font-size:19px;line-height:1.25;color:#D2B07A;text-shadow:0 0 14px rgba(201,166,107,0.42);opacity:0.92}"
+  + ".com2.com2b .com2-hero-x .com2-monde-cap{display:flex;width:max-content;margin:18px auto 0}"
   + ".com2.com2b .com2-monde-cap{margin-top:16px}"
   + ".com2.com2b .com2-lang > button{background:rgba(5,8,11,0.35)}"
   + ".com2.com2b .com2-onglets{gap:8px;margin:0 16px;padding:0;border:none;border-radius:0;border-bottom:1px solid rgba(255,255,255,0.05);background:transparent}"
@@ -26009,7 +26015,7 @@ function EcranCommunauteV2() {
   /* traduction : le tr du contexte (objet 7 langues), repli sur la langue courante puis le francais — meme mecanisme que l Accueil V2 */
   function T2(o) { try { if (ctx && typeof ctx.tr === "function") return ctx.tr(o); } catch (eT) { } return o[lg] || o.fr; }
   var TXT = {
-    eb: { fr: "Ta communauté équestre", en: "Your equestrian community", es: "Tu comunidad ecuestre", it: "La tua comunità equestre", ja: "あなたの乗馬コミュニティ", de: "Deine Reitsport-Community", ar: "مجتمعك الفروسي" },   /* (981) */
+    eb: { fr: "Le monde Hype", en: "The Hype world", es: "El mundo Hype", it: "Il mondo Hype", ja: "Hypeの世界", de: "Die Hype-Welt", ar: "عالم Hype" },   /* (981) */
     titre: { fr: "Communauté", en: "Community", es: "Comunidad", it: "Comunità", ja: "コミュニティ", de: "Community", ar: "المجتمع" },
     sous1: { fr: "Plus qu’une communauté,", en: "More than a community,", es: "Más que una comunidad,", it: "Più di una comunità,", ja: "コミュニティを超えて、", de: "Mehr als eine Community –", ar: "أكثر من مجتمع،" },
     sous2: { fr: "une passion qui nous unit.", en: "a passion that unites us.", es: "una pasión que nos une.", it: "una passione che ci unisce.", ja: "私たちをつなぐ情熱。", de: "eine Leidenschaft, die uns verbindet.", ar: "شغف يجمعنا." },
@@ -26634,11 +26640,14 @@ function EcranCommunauteV2() {
         h("source", { srcSet: "images/communaute-hero-monde-hype-cavaliers.webp", type: "image/webp" }),
         h("img", { className: "com2-hero-img", src: "images/communaute-hero-monde-hype-cavaliers.png", alt: "", decoding: "async", onError: function (eI) { try { eI.target.style.display = "none"; } catch (e2) { } } })),
       h("div", { className: "com2-hero-voile", "aria-hidden": "true" }),
-      h("div", { className: "com2b-eb" }, T2(TXT.eb))),   /* (981) */
+      h("div", { className: "com2b-assombri", "aria-hidden": "true" }),
+      h("div", { className: "com2b-bloc" },   /* (981) titre comme les pages du cheval : petit titre champagne espace + mot en grand, sur un coin assombri */
+        h("div", { className: "com2b-eb" }, T2(TXT.eb)),
+        h("h1", { className: "com2b-nom" }, T2(TXT.titre)))),
     /* 10/10 (807) Blandine : « descends le titre en dessous de la photo » : titre, sous-titre et capsule Monde Hype sortent du hero
        et se posent juste sous la photo (plus par-dessus le ciel). */
     h("div", { className: "com2-hero-x" },
-        h("h1", { className: "com2b-titre" }, h("span", null, T2(TXT.sous1)), h("span", null, T2(TXT.sous2))),   /* (981) le slogan devient le titre ; « COMMUNAUTE » en Anton a halo retire (Blandine) */
+        h("div", { className: "com2b-titre" }, h("span", null, T2(TXT.sous1)), " ", h("span", null, T2(TXT.sous2))),   /* (981) le slogan en ecriture doree, comme « Prendre soin, c est deja aimer » ; « COMMUNAUTE » en Anton a halo retire (Blandine) */
         h("button", { type: "button", className: "com2-monde-cap", onClick: ouvrirMonde, "data-com2": "monde" },
           h("span", { className: "com2-monde-ic" }, icGlobe),
           h("span", { className: "com2-monde-l" }, T2(TXT.monde)),
