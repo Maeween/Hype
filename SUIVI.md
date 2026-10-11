@@ -11585,3 +11585,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (00 h 59) : « j'aurais bien vu les onglets un peu moins gros avec les photos ». Carrousel « À découvrir » 182 → 150 px, cartes qui se retournent 182 → 162 px (le dos garde ses 3 lignes), titres 22 → 20 px, lignes du dos un peu plus serrées. iPhone seulement.
 - Fil : Blandine (00 h 58) « peu importe » pour les icônes des onglets → on garde le texte seul, rien changé.
 - Même message : « on n'a plus de pétrole du tout, si ? » → exact (globe et photos chauds, fonds noirs) ; variante avec des touches pétrole montrée (voile, dos des cartes, fil), en attente de son avis.
+
+## Build 998 (12/10, PAS PUBLIÉ — branche build-998) — Communauté ordinateur : globe panoramique
+- Blandine (01 h 02) envoie la « version ordi » du globe (1983×793) → images/communaute-globe-ordi.webp ; à partir de 900 px elle remplace l'ancien globe en fond fixe ; coin assombri derrière le titre élargi (plus de bord net). iPhone inchangé.
+- 01 h 04 : nouveau brief ChatGPT « Refonte ordinateur de la page Communauté » (maquette : hero panoramique à coins arrondis, Stories, 3 zones À découvrir / Écuries / Agenda côte à côte, fil en grille, filtres à gauche) avec « attendre validation avant toute modification » → plan proposé, 998 gardé en attente.
