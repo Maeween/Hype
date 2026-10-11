@@ -69,7 +69,8 @@ jobs:
               "@capacitor/core": "^8.0.0",
               "@capacitor/ios": "^8.0.0",
               "@capgo/capacitor-file-picker": "latest",
-              "@capgo/capacitor-uploader": "latest"
+              "@capgo/capacitor-uploader": "latest",
+              "@revenuecat/purchases-capacitor": "latest"
             },
             "devDependencies": {
               "@capacitor/cli": "^8.0.0",

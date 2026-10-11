@@ -11382,3 +11382,27 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (21 h 43) : « Mes amis tu peux me proposer des maquettes qui prennent moins de place ? J'aime bien le design » ; 3 maquettes (A rangée de visages, B une ligne, C mise en avant réduite) ; « C pour les amis ».
 - HypeAmisVitrine : le grand visuel (132 px, photo floue + fondu) devient une petite bande (photo carrée 64 px + nom + « Voir le profil › ») ; ronds de la rangée 56 → 44 px (cases 66 → 54, nom 9 px). En-tête, sélection mémorisée, clics, « + Ajouter » : inchangés. Hauteur du bloc ≈ 230 px.
 - Testé en français et en arabe (sens inversé correct), aucune erreur.
+
+## Build 967 (11/10, PRÉPARÉ — endormi, rien ne change sur le site) — achats Apple dans l'appli iPhone (RevenueCat)
+- Blandine (21 h 50) : « Prépare tout ce que tu peux et note en suivi ».
+- index.html : couche « achats Apple » ajoutée juste après hypeOuvrirLien. Elle enveloppe les deux portes de paiement existantes (hypeOuvrirPaiement = abonnements, hypeOuvrirLien = dons). ENDORMIE tant que window.HYPE_RC_CLE_IOS est vide ET qu'on n'est pas dans l'appli iPhone (Capacitor ios + module Purchases). Dans l'appli iPhone, une fois activée : lien Stripe connu → produit Apple ; achat via RevenueCat avec l'identifiant du compte Hype ; don → statut Crystal comme au retour Stripe (?vip=1) ; offre non convertie (Hype Pro…) → « Cette offre n'est pas disponible dans l'appli iPhone » (7 langues). Testé : sur le site les liens Stripe s'ouvrent comme avant ; iPhone simulé → configure(compte) → getProducts(annuel) → achat ; lien Pro → message.
+- supabase/functions/revenuecat-webhook/index.ts : PAS déployée (pas dans deploy-fonctions.yml). Met à jour la ligne abonnements_premium du compte (plan, statut, expire_le, source = 'apple') à chaque événement RevenueCat ; refuse sans le bon en-tête Authorization (secret Supabase REVENUECAT_WEBHOOK_AUTH) ; n'écrase JAMAIS un abonnement Stripe actif (journalise le double paiement) ; ignore dons et comptes anonymes. Testée sur événements simulés (achat, résiliation, expiration, don, conflit Stripe, anonyme, mauvais secret).
+- sql/2026-10-11-abonnements-source.sql : À PASSER PAR BLANDINE avant la mise en ligne de la fonction (ajoute la colonne source, 'stripe' par défaut ; RLS inchangée).
+- build-ios.yml : module @revenuecat/purchases-capacitor ajouté à l'appli iPhone.
+
+### APPLI IPHONE — CATALOGUE APPLE À CRÉER (App Store Connect → l'appli → Abonnements / Achats intégrés), identifiants À L'IDENTIQUE
+- Groupe d'abonnements « Hype Premium » :
+  - fr.ecuriefeinn.hype.premium.mensuel — Premium mensuel — 12,99 €/mois
+  - fr.ecuriefeinn.hype.premium.annuel — Premium annuel — 99,99 €/an
+  - fr.ecuriefeinn.hype.duo.mensuel — Pack Duo — 24,99 €/mois
+  - fr.ecuriefeinn.hype.ia.mensuel — Option IA — 14,99 €/mois
+- Achats simples « consommables » (dons Crystal) : fr.ecuriefeinn.hype.don.crystal20 / 40 / 80 / 120 / 150 / 200 / 250 / 500 (montants = ceux du site).
+- Prix : les mêmes que le site pour l'instant (décision 21 h 46). Apple propose des paliers : prendre le plus proche.
+- ⚠️ À VÉRIFIER (vu en préparant, rien changé) : la page Premium affiche Duo 24,99 €/mois et IA 14,99 €/mois, alors que la fonction Stripe du site reconnaît Duo à 15,90 € et IA à 11,90 € (24,99 € y est classé « mensuel », 14,99 € inconnu → « mensuel »). Il y a pourtant 5 Duo actifs en base : à regarder ensemble avant d'y toucher.
+
+### APPLI IPHONE — RÉGLAGES REVENUECAT (quand le compte existe)
+1. Créer le projet « Hype », ajouter l'appli App Store (identifiant fr.ecuriefeinn.hype) avec la clé d'achats intégrés Apple (.p8 « In-App Purchase », App Store Connect → Utilisateurs et accès → Intégrations).
+2. Droit d'accès (entitlement) « premium » relié aux 4 abonnements ; une « offering » par défaut.
+3. Copier la clé PUBLIQUE iOS (« appl_… ») → à coller dans index.html (window.HYPE_RC_CLE_IOS) : c'est ce qui réveille la couche 967.
+4. Webhook : adresse https://ldpjebgtskzdokrublfg.supabase.co/functions/v1/revenuecat-webhook ; en-tête Authorization = un long mot de passe inventé, posé AUSSI dans Supabase → Edge Functions → Secrets sous le nom REVENUECAT_WEBHOOK_AUTH.
+5. Ensuite seulement : SQL source, puis déploiement de revenuecat-webhook (« Verify JWT » ÉTEINT, protégé par le mot de passe), puis ajout à deploy-fonctions.yml.
