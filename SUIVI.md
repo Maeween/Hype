@@ -12153,3 +12153,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Tablette et ordinateur : mêmes règles que l'accueil (titre à gauche en grand, tuiles en lignes, deux cartes côte à côte).
 - Aucun bouton branché (seul le retour fonctionne). Lit seulement le nom, la race, le sexe, l'année et la photo du cheval. Textes nouveaux en 7 langues. Aucune image nouvelle.
 - Vérifié 390 / 820 / 1280 : aucun débordement, aucune erreur. 16 scripts 0 erreur.
+
+## Build 1070 (13/10) — Fiche cheval V3 : nom sous la photo + carte « Identité & origines » avec l'outil
+- Demande : « descends le titre de la v3 qu'il soit pas sur la photo et ajoute l'onglet avec les origines et l'outil ».
+- Le nom (et race · sexe · année) passe sous la photo, centré sur téléphone, à gauche en grand sur tablette et ordinateur.
+- Nouvelle carte « Identité & origines » (style des cartes de l'accueil) sous les tuiles : Père, Mère, Père de mère, Âge ; « Origines non renseignées » si vide.
+- Bouton « Ajouter / Compléter / Voir-modifier les origines » : ouvre la MÊME fenêtre que la V2 (saisie + import depuis une capture), visible seulement pour la propriétaire, la responsable du club et la modératrice. ⚠️ Ce bouton enregistre vraiment (c'est l'outil existant) ; le reste de la V3 n'est toujours pas branché.
+- Textes nouveaux en 7 langues. Vérifié 390 / 1280, aucune erreur. 16 scripts 0 erreur.
