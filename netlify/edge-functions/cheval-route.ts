@@ -222,7 +222,7 @@ function infosSeo(cheval: any, nbResultats: number, slug: string) {
   // Build 9A : ce que contient la fiche, SANS chiffre, seulement ce qui existe vraiment.
   const contenu = ["Profil"];
   if (propre(cheval.photo_url)) contenu.push("photos");
-  if (origines && (propre(origines.pere) || propre(origines.mere))) contenu.push("origines");
+  if (origines && (nomParent(origines.pere) || nomParent(origines.mere))) contenu.push("origines");
   if (nbResultats > 0) contenu.push("résultats en concours");
   const liste = contenu.length === 1 ? contenu[0]
     : contenu.slice(0, -1).join(", ") + " et " + contenu[contenu.length - 1];
@@ -243,6 +243,12 @@ function rang(place: unknown, classement: unknown): string {
   if (isFinite(n) && n > 0) return n === 1 ? "1er" : n + "e";
   return propre(classement);
 }
+/* 13/10/2026 : un parent est enregistré soit comme un nom, soit comme { nom, … } (comme l'appli : og.pere.nom || og.pere).
+   Avant ce correctif, le second cas s'écrivait « [object Object] » dans le texte lu par Google. */
+function nomParent(p: unknown): string {
+  if (p && typeof p === "object") return propre((p as any).nom);
+  return propre(p);
+}
 function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlug = ""): string {
   let og: any = cheval.origines;
   try { if (typeof og === "string") og = JSON.parse(og); } catch { og = null; }
@@ -260,7 +266,8 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlu
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
   if (propre(cheval.alias)) html += `<p>Surnom : ${texte(cheval.alias)}</p>`;
   if (infos.length) html += `<p>${infos.join(" · ")}</p>`;
-  if (propre(og.pere) || propre(og.mere)) html += `<p>Origines : ${texte(og.pere) || "?"} × ${texte(og.mere) || "?"}</p>`;
+  const pereN = nomParent(og.pere), mereN = nomParent(og.mere);
+  if (pereN || mereN) html += `<p>Origines : ${texte(pereN) || "?"} × ${texte(mereN) || "?"}</p>`;
   if (club && club !== "__perso__") {
     // 12/10 : lien vers la page publique de l'écurie quand elle est trouvée sans ambiguïté
     html += ecurieSlug
