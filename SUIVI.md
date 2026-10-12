@@ -11714,3 +11714,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Même composition que Photos (encartIntroCh, 1011) : image images/videos-intro.webp (antérieurs au saut), surtitre « VIDÉOS », « Des souvenirs en mouvement… », « Des premiers pas aux grands moments, retrouvez son histoire en vidéos. » (7 langues), petite icône lecture décorative dans un cercle fin ; aucun bouton.
 - Placé sous les onglets, avant « Vidéos » et le bouton d'ajout ; lecteurs et fonctions inchangés. Testé 375 px, 1280 px et arabe ; 16 scripts sans erreur.
 - 12 h 19 : Blandine envoie la maquette ordinateur/tablette de la page Histoire ; elle enverra ses précisions avant qu'on la code.
+
+## Build 1013 (12/10) — Page Histoire, étape 5 : menu « … » des témoignages
+- Blandine (12 h 17) : « fais ça et termine la page Histoire ».
+- Menu « … » en haut à droite de chaque témoignage (membre connecté seulement), selon les droits :
+  - auteur : Modifier (texte, 1 000 caractères, mention « · modifié ») et Supprimer (confirmation dans la carte : « Supprimer définitivement ce témoignage ? Non / Oui, supprimer ») ;
+  - modération du cheval (propriétaire, responsables vérifiés de l'écurie, modératrices — la base répond par hype_peut_moderer_cheval) : Masquer / Réafficher ; elle voit aussi les témoignages masqués (« · masqué ») ;
+  - modératrices Hype : Supprimer en plus ;
+  - autres membres : Signaler (motif facultatif ; table signalements_temoignages ; le témoignage reste en ligne ; message « Merci, le signalement a été transmis à la modération. »).
+- Aucune réponse ni discussion. Refus de la base → message « Action refusée ou impossible pour le moment. » (7 langues partout).
+- Testé : menus selon le rôle, masquer, modifier, signaler, supprimer (envois vérifiés) ; 16 scripts sans erreur.
+- Page Histoire : les 5 étapes du brief sont livrées. Prochain chantier annoncé : version ordinateur/tablette (maquette reçue 12 h 19 et 12 h 24 ; « ne tiens pas compte de Créer une collection » ; précisions à venir).
