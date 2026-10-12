@@ -273,8 +273,9 @@ ${alts.map((x) => `<link rel="alternate" hreflang="${x}" href="${DOM}/${x}/${o.c
 <meta property="og:title" content="${e(o.titre)}">
 <meta property="og:description" content="${e(o.desc)}">
 <meta property="og:url" content="${url}">
-<meta property="og:image" content="${DOM}/icon-512.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="${DOM}/images/hype-partage-1200x630.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
 ${o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld).replace(/</g, "\\u003c")}</script>` : ""}

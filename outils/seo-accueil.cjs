@@ -32,7 +32,7 @@ const DOMAINE = "https://2hype.fr";
 const TITRE = "Hype — l'appli des cavaliers : ton cheval, ton écurie et une IA équestre";
 const DESCRIPTION = "Photos, souvenirs, vidéos, résultats en concours, santé et soins de ton cheval, " +
   "agenda de ton écurie et Hey Baby, l'IA équestre. En 7 langues.";
-const IMAGE = DOMAINE + "/icon-512.png";
+const IMAGE = DOMAINE + "/images/hype-partage-1200x630.jpg";   // 12/10 : image de partage de Blandine (1200 × 630)
 
 const H2 = 'style="font-size:17px;color:#d8d2c4;margin:22px 0 6px"';
 const TEXTE =
@@ -110,7 +110,10 @@ function tete() {
     `<meta property="og:description" content="${echapper(DESCRIPTION)}">` +
     `<meta property="og:url" content="${DOMAINE}/">` +
     `<meta property="og:image" content="${IMAGE}">` +
-    `<meta name="twitter:card" content="summary">` +
+    `<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">` +
+    `<meta property="og:image:alt" content="Hype — l'appli des cavaliers">` +
+    `<meta name="twitter:card" content="summary_large_image">` +
+    `<meta name="twitter:image" content="${IMAGE}">` +
     `<meta name="twitter:title" content="${echapper(TITRE)}">` +
     `<meta name="twitter:description" content="${echapper(DESCRIPTION)}">` +
     `<script type="application/ld+json">${JSON.stringify(JSONLD).replace(/</g, "\\u003c")}</script>`
