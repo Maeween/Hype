@@ -42878,7 +42878,7 @@ function EcranEcurieV2(props) {
   })();
 
   /* visiteur non connecté (même bandeau d'invitation que l'ancienne page) */
-  var invite = d.visiteurG === true ? h("div", { style: { margin: "18px 16px 0", padding: "16px", borderRadius: 14, border: "1px solid " + BORD, background: SURF } },
+  var invite = d.visiteurG === true ? h("div", { style: { margin: "34px 16px 0" /* (1065) Blandine : « decolle un peu l encart du bas de la photo » (18 -> 34) */, padding: "16px", borderRadius: 14, border: "1px solid " + BORD, background: SURF } },
     h("div", { style: { fontFamily: SERIF, fontSize: 19, color: IV } }, T("Bienvenue sur Hype", "Welcome to Hype", "Te damos la bienvenida a Hype", "Benvenuto su Hype", "Hypeへようこそ", "Willkommen bei Hype", "مرحبا بك في Hype")),
     /* 10/10 (861) VITRINE (Blandine : les pages d ecurie restent visibles sur Google mais « inaccessibles sans compte ») :
        quelques chiffres, sans le detail, et l invitation a creer un compte. */
@@ -42892,7 +42892,7 @@ function EcranEcurieV2(props) {
     })(),
     h("div", { style: { display: "flex", gap: 10, marginTop: 12 } },
       h("button", { type: "button", onClick: function () { d.allerAuthG("connexion"); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "1px solid " + BORD, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Se connecter", "Sign in", "Iniciar sesión", "Accedi", "ログイン", "Anmelden", "تسجيل الدخول")),
-      h("button", { type: "button", onClick: function () { d.allerAuthG("inscription"); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "none", background: CH, color: NOIR, fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Créer un compte", "Create an account", "Crear una cuenta", "Crea un account", "アカウントを作成", "Konto erstellen", "إنشاء حساب")))) : null;
+      h("button", { type: "button", onClick: function () { d.allerAuthG("inscription"); }, style: { flex: 1, minHeight: 44, borderRadius: 999, border: "1px solid " + CH, background: "rgba(201,166,107,0.10)", color: CH, fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } /* (1065) plus de fond dore plein : contour champagne */ }, T("Créer un compte", "Create an account", "Crear una cuenta", "Crea un account", "アカウントを作成", "Konto erstellen", "إنشاء حساب")))) : null;
 
   /* (541) bas de page : la barre du bas a deja sa place reservee par l appli ; on ne garde que 32 px apres le dernier bloc */
   /* 12/10 (1059) - Blandine (21 h 44) : « je voulais qu il ne soit plus fixe, qu il redevienne normal, car on lisait mal sinon ».
