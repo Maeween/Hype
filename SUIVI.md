@@ -11815,53 +11815,53 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé : 8 photos tiennent sur environ un écran d'iPhone ; 16 scripts sans erreur.
 - 13 h 54 — Blandine valide le principe (« sous réserve d'un contrôle visuel sur iPhone avant publication ») : composition automatique variée, pas de gabarit. Ajouté : si la photo mise en avant (étoile) fait partie des photos de l'aperçu, elle prend la grande case ; sinon la plus récente ; une ancienne photo étoilée n'est jamais remontée. Albums (étape 2) décidés : carrousel horizontal, ~2,5 cartes visibles sur iPhone, couvertures 3:2, nom + nombre sous la couverture, fond sobre sans couverture — build séparé.
 
-## Build 1032 (12/10) — Page Photos : Albums en une seule rangée qui défile — NON PUBLIÉ (attend validation)
+## Build 1032 (12/10) — Page Photos : Albums en une seule rangée qui défile
 - Brief « Finalisation définitive de la page Photos » (14 h 01), étape 3 ; Blandine 14 h 03 : « garde une seule ligne pour les albums ».
 - Page Photos du cheval uniquement : tous les albums (même un seul) sur UNE rangée horizontale qui défile au doigt ; couvertures 3:2, coins arrondis 12 px, bordure champagne fine ; environ 2,5 cartes visibles sur iPhone ; cartes de 200 px sur tablette et ordinateur (plus de cartes visibles, pas plus grandes). Nom et nombre de souvenirs sous l'image. Même rangée pour « Albums des autres cavalières ».
 - Couvertures chargées en vignette (jamais l'original), en différé. Album sans couverture : fond pétrole sobre + petit symbole (inchangé).
 - Retirés de la page Photos : la grande carte adaptative de l'album seul et la grille 2×2. Inchangés : « + Album », ouverture d'un album (son contenu s'affiche juste sous la rangée), étoile « à la une », droits, pages Cavalier et Écurie.
 - Testé 375, 390, 820, 1280 px, 1 et 5 albums : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 
-## Build 1033 (12/10) — « Les moments récents » : trois finitions — NON PUBLIÉ (attend validation)
+## Build 1033 (12/10) — « Les moments récents » : trois finitions
 - Brief Blandine 14 h 04 « Finitions de l'encart Les moments récents » (composition validée, seulement trois retouches).
 - Mosaïque environ 10 % moins haute : mêmes photos, même ordre, même disposition ; seules les rangées sont un peu moins hautes (vignettes demandées à la nouvelle taille, recadrages gardés, images jamais déformées).
 - En-tête : 18 px minimum entre « Les moments récents » et le compteur ; titre 24 px sur iPhone (25 ailleurs) ; compteur plus discret ; s'il n'y a pas la place, le compteur passe à la ligne, à droite, sans chevauchement.
 - Bouton « Voir tous les souvenirs → » : capsule visible de 38 px, bordure plus fine ; zone tactile toujours de 44 px ; champagne mat. Même bouton pour « Découvrir les années passées » (les deux encarts restent assortis). La page « Tous les souvenirs » garde son bouton actuel.
 - Testé 375 et 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 
-## Build 1034 (12/10) — Zoom à deux doigts : la page ne saute plus — NON PUBLIÉ (attend validation)
+## Build 1034 (12/10) — Zoom à deux doigts : la page ne saute plus
 - Blandine 14 h 07 : « ça fait plusieurs fois que quand j'écarte pour zoomer sur photo ou encart ça saute ».
 - CAUSE (reproduite ici) : les deux gestes de balayage (changer d'onglet dans la fiche cheval, changer de page dans l'app) ne regardaient que le PREMIER doigt. En écartant deux doigts, ce doigt part de côté → pris pour un balayage → l'onglet ou la page changeait.
 - CORRECTION : un geste à deux doigts n'est jamais un balayage ; un balayage fait pendant que l'écran est zoomé non plus (on se déplace dans l'image). Le balayage normal à un doigt marche comme avant.
 - Testé : pincement → reste sur Photos (avant correctif : passait à l'onglet suivant) ; balayage à un doigt → change toujours d'onglet. 16 scripts sans erreur.
 
-## Build 1035 (12/10) — Page Photos : fond général un peu plus discret — NON PUBLIÉ (attend validation)
+## Build 1035 (12/10) — Page Photos : fond général un peu plus discret
 - Brief « Finalisation » étape 4 ; Blandine 14 h 12 : « Ok vas-y ».
 - Un voile sombre uniforme (30 %) est posé sur l'image de fond de la page Photos : moins lumineuse et moins contrastée, mêmes images (aucune nouvelle). Le haut (cheval, nom, onglets), les photos des chevaux et les encarts ne changent pas. « Tous les souvenirs » et les autres onglets : inchangés.
 - Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 14 h 55 — Blandine : « Ok » → builds 1032, 1033, 1034 et 1035 publiés ensemble (marqueur 20261012-1035), après mise à jour sur les derniers envois de la conversation référencement (pages /fr/ et /en/, réglages Netlify : aucun conflit, index.html non touché par eux).
 
-## Build 1036 (12/10) — Fiche du cheval : des photos au lieu des albums — NON PUBLIÉ (attend validation)
+## Build 1036 (12/10) — Fiche du cheval : des photos au lieu des albums
 - Blandine (15 h 36) : « Mets des photos au lieu des albums sur la page cheval ».
 - Sur la page principale du cheval, le rail / la carte d'albums est retiré. À la place : l'encart « Les moments récents » de la page Photos (même mosaïque, mêmes photos récentes, la photo étoilée en grand si elle en fait partie), en lecture seule. Son bouton « Voir toutes ses photos → » (7 langues) ouvre la page Photos ; toucher une photo l'ouvre en grand comme avant.
 - Inchangés : la carte vidéo « Le voir en mouvement » juste au-dessus, la page Photos, les albums eux-mêmes et leurs données. Sans aucune photo : petit encart « Aucun souvenir pour le moment » (déjà traduit), son bouton ouvre la page Photos.
 - Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 15 h 49 — Blandine : « Ok » → build 1036 publié (marqueur 20261012-1036).
 
-## Build 1037 (12/10) — Fiche du cheval sans aucune photo : l'ancien encart revient — NON PUBLIÉ (attend validation)
+## Build 1037 (12/10) — Fiche du cheval sans aucune photo : l'ancien encart revient
 - Blandine (15 h 49) : « S'il n'a aucune photo on avait déjà un encart, peux le laisser ».
 - Cheval sans aucune photo : on retrouve l'encart d'avant (photo de Blandine, « Chaque cheval a son histoire… », « Partage ses grands moments ici ») au lieu de « Aucun souvenir pour le moment ». Dès qu'il y a une photo : « Les moments récents » (build 1036), sans l'encart.
 - Testé 390 px avec et sans photos : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 15 h 51 — Blandine : « Ok » → build 1037 publié (marqueur 20261012-1037).
 
-## Build 1038 (12/10) — Page Photos : albums centrés quand ils tiennent à l'écran — NON PUBLIÉ (attend validation)
+## Build 1038 (12/10) — Page Photos : albums centrés quand ils tiennent à l'écran
 - Blandine (15 h 58, capture de Webster avec 2 albums collés à gauche) : « quand il y a seulement deux albums, espace-les pour les centrer ».
 - La rangée d'albums (et celle des autres cavalières) est centrée quand tous les albums tiennent à l'écran ; écart de 18 px quand il y en a exactement deux (10 px sinon). Quand ils débordent, la rangée part du bord gauche et défile comme avant (rien n'est coupé). Vaut aussi pour tablette et ordinateur.
 - Blandine (15 h 59) : « pense à automatiquement ajuster sur tablette et ordi les changements faits sur tel » → règle permanente : chaque changement iPhone est décliné et vérifié en tablette (820) et ordinateur (1280) dans le même build.
 - Testé 390 px (2 et 5 albums) et 1280 px (2 albums) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 16 h 01 — Blandine : « Ok » → build 1038 publié (marqueur 20261012-1038).
 
-## Build 1039 (12/10) — Onglet « Chevaux » dans la barre du bas + page « Mes chevaux » — NON PUBLIÉ (attend validation)
+## Build 1039 (12/10) — Onglet « Chevaux » dans la barre du bas + page « Mes chevaux »
 - Blandine (16 h 04) : « je voudrais ajouter un onglet chevaux au menu, à la barre de menu » ; 16 h 05 : choix A (nouvelle page) et C (8 onglets, libellés réduits).
 - Barre du bas : nouvel onglet « Chevaux » (icône fer à cheval, 7 langues) entre Cavalier et Communauté. Sur iPhone, les 8 libellés passent en 9,8 px (9 px en japonais) et « Communauté » s'écrit « Commu. » (fr/en/de), « Comuni. » (es), « Comun. » (it), « コミュ » (ja) ; l'arabe garde ses mots. Sur ordinateur (menu de gauche), libellés complets.
 - Nouvelle page EcranMesChevaux (écran « chevaux ») : « CHEVAUX / Mes chevaux / Tes chevaux et ceux que tu montes. », grille de mes chevaux possédés + rattachés (mêmes lectures que la page Cavalier, ◇ Cheval de l'écurie), carte « Ajouter un cheval » (même création), cadenas Premium à partir du 3e cheval possédé sans abonnement (même règle que la page Cavalier). Sans cheval : encart « Ajoute ton cheval / Créer sa fiche » (même image). En dessous : carte « Les chevaux de mon écurie » qui ouvre la page existante des chevaux du club. Bandeau HYPE en bas.
@@ -11878,7 +11878,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé pages Cavalier et « Mes chevaux » (390 px) : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 17 h 10 — Blandine : « Ok » → build 1040 publié (marqueur 20261012-1040).
 
-## Build 1041 (12/10) — Refonte de la page « Mes chevaux » (maquette de Blandine) — NON PUBLIÉ (attend validation)
+## Build 1041 (12/10) — Refonte de la page « Mes chevaux » (maquette de Blandine)
 - Blandine (17 h 16) : brief « Refonte de la page Mes chevaux » + maquette (17 h 17). Ses choix ensuite : pas d'onglets (« le menu là-haut est fictif »), 10 chevaux puis « Voir 10 chevaux de plus », recherche à partir de 12 chevaux (« bonne idée »), pas de flèche retour (onglet de la barre), pas de « Voir tout », « Réservé à Premium » (et non « Hype+ »).
 - Fond comme la page Communauté (Blandine 17 h 33) : une photo FIXE (images/PERFORMANCES_CHEVAUX_HERO.webp, déjà validée — remplaçable) dont le haut sert de hero (CHEVAUX / Mes chevaux / Tes chevaux et ceux que tu montes.), dégradée vers le noir en bas ; les encarts glissent dessus ; voile noir qui fonce sur les 320 premiers px de défilement ; fond sur son propre calque (même parade anti-gel que Communauté) ; en arabe la photo est retournée.
 - Deux cartes d'accès en pointillés côte à côte : « Ajouter un cheval / Créer sa fiche » et « Les chevaux de mon écurie / nom de l'écurie ».
@@ -11934,17 +11934,18 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 px : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 18 h 39 — Blandine : « Ok » → build 1047 publié (marqueur 20261012-1047). Elle valide aussi la page « À découvrir » à onglets (à faire).
 
-## Build 1048 (12/10) — Communauté iPhone : « Communauté » juste au-dessus des cavaliers, le reste juste en dessous — NON PUBLIÉ (attend validation)
+## Build 1048 (12/10) — Communauté iPhone : « Communauté » juste au-dessus des cavaliers, le reste juste en dessous
 - Blandine (18 h 39) : « l'idéal serait d'avoir Communauté juste au-dessus des cavaliers sur l'image et le reste du titre juste en dessous ».
 - iPhone seulement : la hauteur du haut de page et l'espace avant le slogan sont calculés sur la position des cavaliers dans le fond (elle dépend de la largeur de l'écran) : « LE MONDE HYPE / Communauté » se pose juste au-dessus des cavaliers, slogan et capsule « Monde Hype » juste en dessous. Les Stories descendent d'environ 140 px. Tablette et ordinateur inchangés.
 - Testé 375, 390, 430 px : même placement sur les trois ; 16 scripts sans erreur.
 
-## Build 1049 (12/10) — Page Écurie sur tablette et ordinateur — NON PUBLIÉ (attend validation)
+## Build 1049 (12/10) — Page Écurie sur tablette et ordinateur
 - Blandine (18 h 39) : « tu peux faire la page Écurie sur ordinateur et tablette » (après le fond fixe du 1046).
 - Constat : avec une photo verticale (dont l'image par défaut), la tête du cheval passait derrière la citation. Correction : sur tablette et ordinateur, le haut de page s'allonge (64 % de la hauteur d'écran) : le nom de l'écurie passe sous la tête du cheval, la citation et les accès rapides ne la recouvrent plus. Photo horizontale et iPhone inchangés.
 - Testé 820, 1024, 1440 px : aucune erreur ; 16 scripts sans erreur.
 
-## Build 1050 (12/10) — Page Écurie : une photo horizontale fait aussi office de fond — NON PUBLIÉ (attend validation)
+## Build 1050 (12/10) — Page Écurie : une photo horizontale fait aussi office de fond
 - Blandine (18 h 48, capture de l'Écurie Feinn avec sa photo de saut) : « elle ne se met toujours pas en fond de page ». Cause : une photo horizontale était affichée entière en largeur, donc en bande basse (≈ 260 px sur iPhone), puis du noir.
 - Désormais une photo horizontale couvre la zone du haut comme un vrai fond (60 % de l'écran sur iPhone, 64 % sur tablette/ordinateur), centrée : seuls les bords gauche et droit peuvent être rognés, jamais le haut ni le bas ; le nom de l'écurie se place en bas de cette zone, les encarts glissent dessus. Photos verticales : inchangé (1049).
 - Simulé avec sa photo (390 et 1280 px) : aucune erreur ; 16 scripts sans erreur.
+- 12/10, 18 h 52 — Blandine : « Ok » → builds 1048, 1049 et 1050 publiés ensemble (marqueur 20261012-1050).
