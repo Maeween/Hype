@@ -11828,3 +11828,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - En-tête : 18 px minimum entre « Les moments récents » et le compteur ; titre 24 px sur iPhone (25 ailleurs) ; compteur plus discret ; s'il n'y a pas la place, le compteur passe à la ligne, à droite, sans chevauchement.
 - Bouton « Voir tous les souvenirs → » : capsule visible de 38 px, bordure plus fine ; zone tactile toujours de 44 px ; champagne mat. Même bouton pour « Découvrir les années passées » (les deux encarts restent assortis). La page « Tous les souvenirs » garde son bouton actuel.
 - Testé 375 et 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Build 1034 (12/10) — Zoom à deux doigts : la page ne saute plus — NON PUBLIÉ (attend validation)
+- Blandine 14 h 07 : « ça fait plusieurs fois que quand j'écarte pour zoomer sur photo ou encart ça saute ».
+- CAUSE (reproduite ici) : les deux gestes de balayage (changer d'onglet dans la fiche cheval, changer de page dans l'app) ne regardaient que le PREMIER doigt. En écartant deux doigts, ce doigt part de côté → pris pour un balayage → l'onglet ou la page changeait.
+- CORRECTION : un geste à deux doigts n'est jamais un balayage ; un balayage fait pendant que l'écran est zoomé non plus (on se déplace dans l'image). Le balayage normal à un doigt marche comme avant.
+- Testé : pincement → reste sur Photos (avant correctif : passait à l'onglet suivant) ; balayage à un doigt → change toujours d'onglet. 16 scripts sans erreur.
