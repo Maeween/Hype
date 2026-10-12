@@ -11618,3 +11618,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Mesuré ici (iPhone simulé, processeur ralenti ×6, 160 résultats) : à l'ouverture d'une fiche, environ 0,6 à 1 s de travail en plusieurs morceaux (dessin de la page, normal) ; rien d'anormal trouvé dans le code. Pas de Safari iPhone ici pour reproduire.
 - Piste la plus probable côté iPhone : les grands fonds FIXES ajoutés ces derniers jours (fiche 989, Santé, Communauté) — Safari peut les repeindre à chaque image du défilement, surtout avec de grandes photos. Parade : chaque fond fixe passe sur un calque à part (transform translateZ(0), will-change) ; aspect inchangé (vérifié fiche, Santé, Communauté).
 - Si ça persiste : noter si le gel arrive à l'OUVERTURE de la fiche ou PENDANT le défilement, et si une vidéo est sur la page — la prochaine étape serait de désactiver le fond fixe de la fiche pour comparer.
+
+## Build 1004 (12/10) — Page Histoire, étape 1 : Hey Baby retiré, encart de fin « Son histoire continue »
+- Blandine : brief définitif « HYPE — Page Histoire du cheval » (5 étapes, un build par étape, résultats montrés avant de continuer) + image panoramique (œil du cheval à droite) → images/histoire-continue.webp (2172×724, 152 Ko).
+- Page Histoire : l'encart « Conseils de Hey Baby » n'est plus affiché ; le composant et ses données restent intacts (pour Actualités plus tard).
+- Nouvel encart en bas : « SON HISTOIRE CONTINUE / Avec vous… » (7 langues), photo en fond (œil à droite ; en arabe l'image est retournée, œil à gauche), dégradé de lisibilité à gauche, bordure champagne fine, coins arrondis 18, hauteur mini 170. Deux actions discrètes en capsules (aucun fond doré) :
+  - « Découvrir sa fiche communautaire → » : le bandeau « Découvrir l'histoire de … » est retiré de la page principale du cheval et déplacé ici (même composant PontChevalCommun, même destination, même condition : au moins un membre a ajouté le cheval). Sinon il n'apparaît pas, sans trou.
+  - « + Ajouter ce cheval à mes chevaux » / « Dans tes chevaux ✓ » : même mécanisme que le bouton flottant (logique sortie en peutLierFiche / basculerLienFiche, sans changement de comportement). Absent si l'action n'est pas possible (son propre cheval, etc.).
+- Le bouton flottant d'ajout est masqué uniquement sur la page Histoire ; inchangé ailleurs.
+- Hero, nom, onglets soulignés, fond et encart « Son histoire » : inchangés.
+- Testé iPhone (390), ordinateur (1280) et arabe ; 16 scripts sans erreur.
+- Prochaine étape (build séparé) : icône de partage sur « Son histoire » avec un lien qui ouvre directement la page Histoire.
