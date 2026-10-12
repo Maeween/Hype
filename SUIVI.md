@@ -11802,3 +11802,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 1029 (12/10) — Page Écurie en tablette : « ACTUALITÉS » ne déborde plus
 - Blandine : « 4 oui ». Sur tablette (moins de 1 100 px de large, 6 tuiles sur une ligne), les libellés de plus de 8 lettres passent en 11 px, espacement réduit, comme les libellés longs sur iPhone. Vérifié à 768 et 1 024 px : ACTUALITÉS entier ; 16 scripts sans erreur.
+
+## Build 1030 (12/10) — Fiche cheval : bandeau de fin HYPE + photos d'albums allégées (gel)
+- Blandine (13 h 46) : « elle n'a pas l'encart de fin » → la fiche principale du cheval se termine par le bandeau HYPE (finPageCh), sous « Partager sa fiche ».
+- Blandine (13 h 46) : « elle recommence à freeze… vérifie, on avait eu des soucis similaires avec des blocages sur Android ». Mesuré ici (mobile simulé, processeur ralenti ×6) : ouverture ≈ 0,9 s de travail au total, AUCUNE tâche longue pendant le défilement ; 2 vidéos (aucune ne joue hors écran), 3 flous, 3 masques — rien d'anormal côté code. CAUSE PROBABLE TROUVÉE : les couvertures d'albums de la fiche (cartes « Maison », « CSO »…) chargeaient la PHOTO ORIGINALE (jusqu'à 2 560 px, plusieurs Mo) sans vignette ; le décodage de ces grandes images bloque Safari et Android quelques secondes. Désormais : vignettes légères (420 px, 900×560 pour la grande carte), chargement différé et décodage en arrière-plan. Aucun changement visible.
+- 16 scripts sans erreur.
