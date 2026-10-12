@@ -89,8 +89,18 @@ const JSONLD = {
   image: IMAGE,
 };
 
+/* 12/10 (correctif) : le texte de présentation apparaissait à l'écran pendant le chargement de l'appli et à
+   chaque mise à jour. Il reste dans le HTML (Google le lit), mais il est caché :
+   - dès que le JavaScript démarre (classe « hype-js » posée sur <html> par la toute première balise du <head>) ;
+   - toujours dans l'appli installée sur l'écran d'accueil (display-mode: standalone), même sans JavaScript. */
+const MASQUE =
+  `<script>document.documentElement.classList.add("hype-js")</script>` +
+  `<style>html.hype-js #seo-accueil{display:none!important}` +
+  `@media (display-mode: standalone){#seo-accueil{display:none!important}}</style>`;
+
 function tete() {
   return (
+    MASQUE +
     `<meta name="description" content="${echapper(DESCRIPTION)}">` +
     `<link rel="canonical" href="${DOMAINE}/">` +
     `<meta property="og:type" content="website">` +
