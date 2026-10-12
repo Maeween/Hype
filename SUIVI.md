@@ -11758,3 +11758,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1020 (12/10) — Accueil : version tablette
 - La mise en page « ordinateur » de l'accueil (vidéo large, carte Aujourd'hui, phrase signature, 9 tuiles sur 3 colonnes, Mon profil / Ma communauté côte à côte, Cercle Crystal, fin de page) vaut dès 768 px : réglages CSS 1 024 → 768 px, conteneur élargi (« dashboard » ajouté à ECRANS_TABLETTE). Barre du bas inchangée sur tablette.
 - Testé 768 et 1024 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Build 1021 (12/10) — Cavaliers du club : version tablette
+- Mise en page « ordinateur » dès 768 px (grand hero, cavalières en grille de cartes), conteneur élargi (« cavaliers-club » dans ECRANS_TABLETTE). Le message flottant d'une demande se cale comme sur iPhone au-dessus de la barre du bas (le décalage du menu de gauche reste réservé à l'ordinateur).
+- Testé 820 px : aucun débordement, aucune erreur. Fin de la série tablette des pages prévues pour l'ordinateur (fiche cheval et sous-pages, albums, Santé, Écurie, Accueil, Cavaliers ; Communauté l'était déjà).
