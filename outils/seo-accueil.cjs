@@ -71,7 +71,8 @@ const TEXTE =
   `<h2 ${H2}>Trouve ton écurie</h2>` +
   `<p>Plus de 3 000 écuries et centres équestres en France ont leur page sur Hype. Par exemple : ` +
   `<a href="${DOMAINE}/ecurie/ecurie-feinn">Ecurie Feinn (Itteville)</a>, ` +
-  `<a href="${DOMAINE}/ecurie/societe-d-equitation-de-paris-sep">Société d'Équitation de Paris</a>.</p>` +
+  `<a href="${DOMAINE}/ecurie/societe-d-equitation-de-paris-sep">Société d'Équitation de Paris</a>. ` +
+  `<a href="${DOMAINE}/fr/centres-equestres/">Tous les centres équestres par département</a>.</p>` +
 
   `<p style="margin-top:22px"><a href="${DOMAINE}/">Crée ton compte gratuit</a></p>` +
   `</main>`;
