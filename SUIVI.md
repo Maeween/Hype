@@ -11877,3 +11877,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le cadenas des pages Cavalier et « Mes chevaux » suit maintenant le MÊME quota que la création (avant : toujours 2, donc Evan et Liam auraient vu un cadenas dès leur 3e cheval).
 - Testé pages Cavalier et « Mes chevaux » (390 px) : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 17 h 10 — Blandine : « Ok » → build 1040 publié (marqueur 20261012-1040).
+
+## Build 1041 (12/10) — Refonte de la page « Mes chevaux » (maquette de Blandine) — NON PUBLIÉ (attend validation)
+- Blandine (17 h 16) : brief « Refonte de la page Mes chevaux » + maquette (17 h 17). Ses choix ensuite : pas d'onglets (« le menu là-haut est fictif »), 10 chevaux puis « Voir 10 chevaux de plus », recherche à partir de 12 chevaux (« bonne idée »), pas de flèche retour (onglet de la barre), pas de « Voir tout », « Réservé à Premium » (et non « Hype+ »).
+- Haut de page photo compact (images/PERFORMANCES_CHEVAUX_HERO.webp, déjà validée — remplaçable si Blandine envoie l'image de sa maquette) : CHEVAUX / Mes chevaux / Tes chevaux et ceux que tu montes.
+- Deux cartes d'accès en pointillés côte à côte : « Ajouter un cheval / Créer sa fiche » et « Les chevaux de mon écurie / nom de l'écurie ».
+- « MES CHEVAUX » (petit cheval champagne, nombre à droite) puis cartes horizontales : photo à droite fondue dans le noir (image sombre neutre si pas de photo), nom en grand, race · âge · discipline, chevron ; badge « ◇ Cheval de l'écurie » pour les chevaux rattachés ; cheval au-delà du quota : carte atténuée + cadenas → Premium.
+- 10 chevaux, puis « Voir 10 chevaux de plus (encore N) » ; à partir de 12 chevaux, champ « Rechercher un cheval » (sans accents ni majuscules).
+- Un seul cheval : grande carte couverture « Voir sa fiche », puis « Ajouter un autre cheval » + écurie. Aucun cheval : encart « Ajoute ton cheval / Créer sa fiche » + écurie. Compte gratuit à sa limite : encart « Ajouter plus de chevaux / Réservé à Premium » (cadenas dans un cercle, pointillés).
+- iPhone 1 colonne ; tablette et ordinateur 2 colonnes (3 à partir de 1600 px) ; arabe : tout inversé (photo à gauche, chevrons). Données, règle Premium (build 1040), création, fiche, accès écurie : inchangés. Nouveaux textes en 7 langues.
+- Testé 390 (0, 1, 5 et 26 chevaux), 820, 1280 px et arabe : aucun débordement, aucune erreur ; 16 scripts sans erreur.
