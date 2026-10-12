@@ -12005,6 +12005,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (fr, arabe), 820, 1280 ; cas vide, un seul, 42 événements (alerte), filtre vide, clic vers un événement puis retour : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md, images/evenements-passes-portrait.webp, images/evenements-passes-large.webp (nouvelles).
 
+## Publication groupée 1052 → 1056 (12/10, 20 h 53)
+- Blandine : « Ah mais vas-y » → mise en ligne en une seule fois des builds 1052 (Communauté), 1053 et 1054 (Agenda), 1055 et 1056 (Événements passés). Marqueur en ligne : 20261012-1056.
+- Fichiers : index.html, SUIVI.md, images/evenements-passes-portrait.webp, images/evenements-passes-large.webp.
+
 ## Build 1056 (12/10) — Événements passés : années et « Voir plus » — NON PUBLIÉ (attend validation)
 - Choix de l'année (« Toutes les années », 2026, 2025…) : n'apparaît que si les événements couvrent plusieurs années. iPhone : sous les filtres, pleine largeur, ouvre la roue de choix du téléphone ; tablette/ordinateur : à droite des filtres (à gauche en arabe).
 - Titres par année (« 2026 », « 2025 »…) dans la liste quand « Toutes les années » couvre plusieurs années.
