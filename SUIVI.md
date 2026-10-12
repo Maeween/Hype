@@ -11859,3 +11859,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - La rangée d'albums (et celle des autres cavalières) est centrée quand tous les albums tiennent à l'écran ; écart de 18 px quand il y en a exactement deux (10 px sinon). Quand ils débordent, la rangée part du bord gauche et défile comme avant (rien n'est coupé). Vaut aussi pour tablette et ordinateur.
 - Blandine (15 h 59) : « pense à automatiquement ajuster sur tablette et ordi les changements faits sur tel » → règle permanente : chaque changement iPhone est décliné et vérifié en tablette (820) et ordinateur (1280) dans le même build.
 - Testé 390 px (2 et 5 albums) et 1280 px (2 albums) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- 12/10, 16 h 01 — Blandine : « Ok » → build 1038 publié (marqueur 20261012-1038).
