@@ -12127,3 +12127,46 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Retour = bouton rond contour champagne ; en haut à droite : langue + bouton rond ⋯ (ouvre le menu de la fiche). L'ancien ⋯ en bas à droite est retiré.
 - Vérifié téléphone et ordinateur. Branche build-1066 (contient aussi 1065).
 - Demandes en attente : menu des 6 encarts à remettre dans le design de la page ; outil d'import des origines accessible depuis l'onglet Origines ; retirer « Piquet » devant « CSO club » ; précision demandée sur « l'onglet de la réal CSO club à droite ».
+
+## Build 1067 (12/10) — Fiche cheval V2 : design complété (adresse cachée seulement)
+- Demande : « Finis la v2 que je me fasse une idée » + « mets en ligne » + « ne la branche pas aux autres pages, on fait juste le design ». La V2 reste ouverte UNIQUEMENT par 2hype.fr/#chevalv2-<id> ; la page cheval en service (V1) ne change pas.
+- Fond de page de la V1 (images/FOND_SANTE.webp, fixe), photo du hero qui se fond dans la page, sélecteur de langue à côté du ⋯.
+- Les 6 accès redeviennent des encarts (icône + nom) dans le style des cartes de la V2 : 3 × 2 sur téléphone, une ligne de 6 sur tablette et ordinateur.
+- Piquets : le mot « Piquet » est retiré ; la Team (ex. « Team CSO Club ») est une pastille sur la même ligne, à droite.
+- Photos & vidéos : la carte « Le voir en mouvement » et « Les moments récents » de la V1 (mêmes composants, lecture seule) à la place du petit rail.
+- Ajoutés : « Importer mes résultats officiels » (personnes autorisées, même écran que la V1), « Partager sa fiche » (habillée V2), bandeau de fin HYPE.
+- Tablette (≥ 768) : contenu en colonne centrée, vidéo et moments récents côte à côte. Ordinateur (≥ 1100) : origines à gauche, résultats à droite, puis vidéo et moments récents côte à côte. Route cheval-v2 ajoutée aux pages larges.
+- Les boutons ouvrent toujours les pages existantes de la V1 (rien de nouveau n'est branché). Textes nouveaux en 7 langues.
+- Vérifié iPhone 390, tablette 820, ordinateur 1280 : aucun débordement, aucune erreur. 16 scripts 0 erreur.
+- Mise en ligne seule (sans 1065 et 1066, qui attendent toujours ta validation).
+
+## Build 1068 (12/10) — Fiche cheval V2 : nom descendu sur la photo
+- Demande (capture d'Aceitunero) : « il faut clairement descendre les titres ».
+- Le bouton « Ajouter à mes chevaux / Retirer » sort du bas de la photo (c'est lui qui faisait remonter le nom sur la tête du cheval) et se place juste sous la photo, aligné sur le nom. Photo un peu plus haute sur téléphone (comme la V1).
+- Tablette et ordinateur : même principe, aligné sur la colonne du contenu. V2 seulement (adresse cachée). 16 scripts 0 erreur.
+- Mise en ligne avec la V2 seule (1065 et 1066 toujours en attente).
+
+## Build 1069 (12/10) — Fiche cheval V3 : maquette visuelle au design de l'accueil
+- Demande : « réplique complètement le design de l'accueil à la page cheval » → « plutôt sur une v3 » → « tu ne branches rien, c'est juste un visuel de page ».
+- Nouvelle page EcranChevalV3, ouverte UNIQUEMENT par 2hype.fr/#chevalv3-<id>. La V1 (en service) et la V2 ne changent pas.
+- Habillage identique à l'accueil (mêmes styles) : grand hero avec la photo du cheval à la place de la vidéo, nom en capitales espacées ; carte horizontale « Son histoire » (comme « Aujourd'hui ») ; phrase manuscrite champagne « Chaque cheval a son histoire, la sienne s'écrit ici. » ; 6 tuiles (Performances, Santé, Origines, Photos, Vidéos, Actualité) ; deux grandes cartes « Ses résultats » (images/piquet-cso.webp) et « Ses souvenirs » (photo du cheval) ; bloc façon Cercle Crystal « Partager sa fiche » ; bandeau de fin HYPE.
+- Tablette et ordinateur : mêmes règles que l'accueil (titre à gauche en grand, tuiles en lignes, deux cartes côte à côte).
+- Aucun bouton branché (seul le retour fonctionne). Lit seulement le nom, la race, le sexe, l'année et la photo du cheval. Textes nouveaux en 7 langues. Aucune image nouvelle.
+- Vérifié 390 / 820 / 1280 : aucun débordement, aucune erreur. 16 scripts 0 erreur.
+
+## Build 1070 (13/10) — Fiche cheval V3 : nom sous la photo + carte « Identité & origines » avec l'outil
+- Demande : « descends le titre de la v3 qu'il soit pas sur la photo et ajoute l'onglet avec les origines et l'outil ».
+- Le nom (et race · sexe · année) passe sous la photo, centré sur téléphone, à gauche en grand sur tablette et ordinateur.
+- Nouvelle carte « Identité & origines » (style des cartes de l'accueil) sous les tuiles : Père, Mère, Père de mère, Âge ; « Origines non renseignées » si vide.
+- Bouton « Ajouter / Compléter / Voir-modifier les origines » : ouvre la MÊME fenêtre que la V2 (saisie + import depuis une capture), visible seulement pour la propriétaire, la responsable du club et la modératrice. ⚠️ Ce bouton enregistre vraiment (c'est l'outil existant) ; le reste de la V3 n'est toujours pas branché.
+- Textes nouveaux en 7 langues. Vérifié 390 / 1280, aucune erreur. 16 scripts 0 erreur.
+
+## Build 1071 (13/10) — Page cheval V1 : corrections de la page principale — NON PUBLIÉ (proposition)
+- Demande : « sur la v1 règle tous les problèmes que tu avais soulevés et re propose moi la page ». Contient aussi 1065 et 1066 (non publiés).
+- Résultats en double : la liste des 3 derniers résultats est retirée de la carte « En concours » (les mêmes sont juste dessous en cartes). La carte garde les compteurs et « Voir tout son palmarès ».
+- Cartes des derniers résultats plus petites (médaille 14, portrait 34 au lieu de 50, textes et marges réduits), toujours 3 visibles.
+- Un seul écart de 28 px entre les blocs (origines, tuiles, En concours, séparateurs) ; l'espace vide de 56 px sous les tuiles est retiré.
+- Carte « En concours » et « Partager sa fiche » aux couleurs des tuiles (fond pétrole, filet champagne) ; le faux QR hachuré devient une icône de partage ; « Générer un lien » et « Importer mes résultats officiels » en contour champagne (jamais de doré plein).
+- Une année sans date ne s'affiche plus « NaN ».
+- Ordinateur : la page principale reste une colonne centrée comme aujourd'hui (version ordinateur prévue en dernier, décision du 10/10).
+- Vérifié iPhone 390 et ordinateur 1280 : aucune erreur, aucun débordement. 16 scripts 0 erreur.
