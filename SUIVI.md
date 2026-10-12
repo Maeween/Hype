@@ -11839,3 +11839,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Brief « Finalisation » étape 4 ; Blandine 14 h 12 : « Ok vas-y ».
 - Un voile sombre uniforme (30 %) est posé sur l'image de fond de la page Photos : moins lumineuse et moins contrastée, mêmes images (aucune nouvelle). Le haut (cheval, nom, onglets), les photos des chevaux et les encarts ne changent pas. « Tous les souvenirs » et les autres onglets : inchangés.
 - Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- 12/10, 14 h 55 — Blandine : « Ok » → builds 1032, 1033, 1034 et 1035 publiés ensemble (marqueur 20261012-1035), après mise à jour sur les derniers envois de la conversation référencement (pages /fr/ et /en/, réglages Netlify : aucun conflit, index.html non touché par eux).
