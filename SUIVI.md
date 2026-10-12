@@ -11695,3 +11695,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Base : table commentaires, cible « temoignage:<id du cheval> » ; un témoignage masqué n'apparaît qu'à son auteur (avec « · masqué »).
 - 7 langues. Testé : liste, vide, ordinateur, publication (envoi vérifié), « Lire la suite », « Voir les autres » ; 16 scripts sans erreur.
 - À venir : 4b (cœur J'aime + notification à la propriétaire), 5 (menu « … »).
+
+## Build 1010 (12/10) — Page Histoire, étape 4b : J'aime sur les témoignages + notification à la propriétaire
+- Blandine : « Ok » (12 h 14).
+- Cœur J'aime + compteur sous chaque témoignage (table likes_cartes existante, cible « temoignage:<id du témoignage> », un J'aime par personne) ; sans compte → connexion. Changement affiché tout de suite, annulé si la base refuse.
+- Nouveau témoignage → notification à la propriétaire du cheval (jamais à soi-même) : dans la cloche, onglet « Toi » : « <nom> a raconté son expérience avec <cheval> : « début du texte » » (7 langues) ; toucher la notification ouvre la page Histoire du cheval.
+- Pas de notification quand on aime un témoignage (non demandé).
+- Testé : J'aime (envoi vérifié, compteurs), notification envoyée avec le bon cheval et le bon texte ; 16 scripts sans erreur.
