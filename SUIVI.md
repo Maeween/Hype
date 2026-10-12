@@ -12073,6 +12073,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichiers : index.html, SUIVI.md.
 - Note : Blandine (21 h 58) — ne plus dire « Linguae » mais « Horse Lingo » (horselingo.fr) ; le branchement de horselingo.fr (site Netlify resté sur un dépôt manuel du 19/08 qui affiche Hype) est remis à plus tard.
 
+## Build 1063 (12/10) — Photo de cheval par défaut + Mes chevaux plus aéré — NON PUBLIÉ (attend validation)
+- Blandine (21 h 59) : « utilise la photo de Mes chevaux pour les chevaux qui n'ont pas de couverture ».
+- CHEVAL_DEFAUT = images/mes-chevaux-fond-couchant.webp (avant images/k4.jpg, gardée dans le dossier) : vaut partout où l'appli prenait déjà la photo par défaut.
+- En plus, là où un cheval sans photo n'avait PAS d'image : grandes cartes de Mes chevaux (avant : image « performances » très pâle), petites vignettes (Mes chevaux, déplacements d'un rendez-vous), mosaïque « Nos chevaux de l'écurie » (avant : l'initiale). Cadrée sur la tête du cheval.
+- Blandine (22 h 00, capture Mes chevaux) : « descends un peu les premiers boutons » → choix d'écurie et cartes d'accès descendus de 22 px ; boutons d'écurie plus hauts (36 → 42 px).
+- Testé 390 (Mes chevaux, Écurie) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md (image déjà en ligne, inchangée).
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
