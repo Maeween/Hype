@@ -11897,3 +11897,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fond (Blandine 17 h 49 : « attention à ce que ça coupe pas le cheval », trois images simulées sur la vraie page ; 17 h 55 : « la dernière que je t'ai donnée ») : images/mes-chevaux-fond-couchant.webp (941×1672, allégée en webp). Image ENTIÈRE calée à droite (60 % de la hauteur d'écran sur iPhone, toute la hauteur sur tablette/ordinateur), bord gauche fondu dans le noir : la tête du cheval n'est jamais coupée ; retournée en arabe. Réglage par image (FOND_MES_CHEVAUX). Les deux autres images essayées ne sont pas gardées dans le dépôt.
 - Testé 390 (français, arabe), 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 17 h 55 — Blandine : « Ok » → build 1042 publié (marqueur 20261012-1042).
+
+## Build 1043 (12/10) — « Mes chevaux » iPhone : le titre ne coupe plus le nez du cheval — NON PUBLIÉ (attend validation)
+- Blandine (17 h 58, capture de son iPhone : « Mes chevaux » touchait le nez du cheval) : « descends un peu le titre ».
+- iPhone seulement : le titre descend (haut de page 270 → 345 px) et l'image du fond, toujours entière, passe de 60 % à 54 % de la hauteur d'écran : la tête entière (oreilles → nez) reste au-dessus du titre. Tablette et ordinateur inchangés.
+- Testé 375 et 390 px : aucune erreur ; 16 scripts sans erreur.
