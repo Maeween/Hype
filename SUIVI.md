@@ -11668,3 +11668,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Cheval privé : aucun bouton « privé » n'existe dans l'appli (89 chevaux publics). Règle voulue par Blandine : privé = invisible partout mais ouvrable par son lien. Correction proposée pour les témoignages (visibles avec le lien, masqués toujours cachés), en attente de son accord ; bouton « Privé » = chantier futur.
 - 11 h 51 : table signalements_temoignages lancée par Blandine (vérifiée : 3 règles, sécurité active). 11 h 53 : correction « cheval privé » lancée aussi (vérifiée) → les témoignages d'un cheval privé sont visibles par qui a le lien ; un témoignage masqué reste caché (sauf auteur + modération).
 - Blandine : « compresse avant de poster, qu'on n'ait pas de factures énormes » → prévu pour l'étape 4 : photos de témoignage réduites à 1 600 px et compressées, 3 max, vignettes à l'affichage, pas de vidéo.
+
+## ⚠️ ERREUR SIGNALÉE (12/10, 11 h 58) — étape 3 : le masquage des témoignages aurait été refusé par la base
+- En préparant l'étape 4, relu la colonne commentaires.statut : elle a une RÈGLE existante (valeurs permises : uploading, processing, ready, errored) et une valeur par défaut « ready ». Ma copie de test ne l'avait pas → deux défauts dans le SQL de l'étape 3 : (1) chaque publication de témoignage aurait été refusée (« statut interdit à la publication », car « ready » est posé par défaut) ; (2) « masque » était refusé par la règle de la colonne. Aucun dégât : aucun témoignage n'existe encore.
+- Correctif proposé (fichier correctif-statut-temoignages.sql) : ajouter « masque » aux valeurs permises (rien d'autre ne change, aucune ligne touchée) ; garde-fou : publication avec statut vide ou « ready », la modération passe de « ready » à « masque » et inversement. Testé en local AVEC la vraie règle et la vraie valeur par défaut : publication OK, auteur ne peut pas se masquer, propriétaire masque et réaffiche, anonyme ne voit pas le masqué, pipeline vidéo (processing → ready) inchangé.
+
+## Build 1008 (12/10) — Encart « Son histoire continue » : maquette 3, deux boutons côte à côte
+- Blandine (11 h 55) : brief « Ajustement de l'encart Son histoire continue » (3ᵉ maquette).
+- Texte : « Une histoire, mille souvenirs… / Découvrez les siens et racontez les vôtres. » (7 langues) — remplace la phrase du 1005.
+- Les deux boutons sur UNE ligne, même hauteur (44 px), presque toute la largeur, fond noir semi-transparent, bordure champagne fine, contenu centré :
+  - gauche : icône communauté + « Voir sa fiche communautaire » + flèche (iPhone : « Fiche communautaire », sans la flèche pour que ça tienne) — même composant, même condition, même destination ;
+  - droite : + « Ajouter à mes chevaux » / ✓ « Dans tes chevaux » (iPhone : « Mes chevaux » avec + ou ✓) — même mécanisme, retrait toujours possible.
+  - Libellés courts sous 640 px de large ; police 12 px (12,5 sur ordinateur) ; sur ordinateur la ligne s'arrête à 620 px pour ne pas couvrir l'œil. Si une action manque, l'autre prend la ligne.
+- Rien d'autre ne change. Testé 375, 390, 1280 px et arabe ; 16 scripts sans erreur.
