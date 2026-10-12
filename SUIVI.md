@@ -11927,3 +11927,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Dégradé noir du haut éclairci (la photo se voit mieux). Deux images par défaut comparées (l'actuelle horizontale et une nouvelle verticale envoyée par Blandine) ; Blandine (18 h 31, capture) : « cette version-là est mieux, tu peux mettre en ligne » → image par défaut des écuries sans photo = le cheval au coucher du soleil (images/mes-chevaux-fond-couchant.webp, même image que « Mes chevaux »). L'ancienne (ecurie-couverture-defaut-2.webp) reste dans le dépôt ; la nouvelle image d'écurie proposée n'est pas gardée.
 - Testé 390 px français et arabe : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 18 h 31 — build 1046 publié (marqueur 20261012-1046).
+
+## Build 1047 (12/10) — Communauté iPhone : moins d'espace autour des Stories, titres de rubrique un peu plus petits — NON PUBLIÉ (attend validation)
+- Blandine (18 h 34, capture) : « baisse un peu les titres, il y a trop d'espace au-dessus et en dessous des stories ».
+- iPhone seulement (< 768 px) : titres de rubrique (Stories, À découvrir, Dans les écuries…) 24 → 21 px ; espace avant « Stories », entre le titre et les ronds, et entre les ronds et « À découvrir » réduits (la page remonte d'environ 35 px). Tablette et ordinateur inchangés.
+- Testé 390 px : aucune erreur ; 16 scripts sans erreur.
