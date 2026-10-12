@@ -11754,3 +11754,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1019 (12/10) — Page Écurie : version tablette
 - La page Écurie prend sa mise en page « ordinateur » dès 768 px (grand hero, 6 accès rapides sur une ligne, encarts élargis), dans le conteneur élargi (ECRANS_TABLETTE + « guilde »). Barre du bas inchangée.
 - Testé 768 et 820 px : aucun débordement, aucune erreur. À 768 px, « ACTUALITÉS » est un peu coupé dans sa tuile (à revoir si gênant).
+
+## Build 1020 (12/10) — Accueil : version tablette
+- La mise en page « ordinateur » de l'accueil (vidéo large, carte Aujourd'hui, phrase signature, 9 tuiles sur 3 colonnes, Mon profil / Ma communauté côte à côte, Cercle Crystal, fin de page) vaut dès 768 px : réglages CSS 1 024 → 768 px, conteneur élargi (« dashboard » ajouté à ECRANS_TABLETTE). Barre du bas inchangée sur tablette.
+- Testé 768 et 1024 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
