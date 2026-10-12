@@ -310,6 +310,11 @@ async function pageAvecRoute(source: Response, uuid: string, seo: { titre: strin
   if (!source.body) return null;
   const enc = new TextEncoder();
   const ajout = enc.encode(
+    // 12/10 (correctif, comme l'accueil) : le texte pour Google ne doit jamais s'afficher pendant le chargement de
+    // l'appli. Caché dès que le JavaScript démarre (classe hype-js) et toujours dans l'appli installée ; il reste
+    // dans la page que Google lit.
+    `<script>document.documentElement.classList.add("hype-js")</script>` +
+    `<style>html.hype-js #seo-cheval{display:none!important}@media (display-mode: standalone){#seo-cheval{display:none!important}}</style>` +
     `<base href="/"><script>window.__HYPE_ROUTE_CHEVAL=${JSON.stringify(uuid)};</script>` +
     `<meta name="description" content="${echapper(seo.description)}">` +
     `<link rel="canonical" href="${echapper(seo.canonical)}">` +
