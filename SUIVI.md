@@ -11963,6 +11963,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone seulement : espace entre les rubriques (À découvrir, Dans les écuries, À l'agenda, Le fil) ramené à 16 px, moins de place sous les points du carrousel et sous chaque titre de rubrique. Tablette et ordinateur inchangés.
 - Testé 390 px : aucune erreur ; 16 scripts sans erreur.
 
+## Refonte Agenda (12/10, 19 h 52) — audit validé, 5 builds prévus
+- Plan : 1053 en-tête compact · 1054 cartes horizontales « Prochains rendez-vous » (carrousel d'affiches retiré de cette page seulement, la page Écurie garde le sien) · 1055 « Déjà passé » retiré + lien « Voir les événements passés → » · 1056 calendrier restylé · 1057 tablette/ordinateur en deux colonnes.
+- Image d'en-tête : le cheval au couchant (images/mes-chevaux-fond-couchant.webp), validée par Blandine (19 h 57).
+- Blandine va envoyer des images pour les rendez-vous sans affiche : une par sorte (Stage, Concours, Sortie).
+- En attente de sa réponse : événements passés en solution (a) (l'ancien bloc s'ouvre sur la même page, avec un retour) ou (b) (lien seulement quand une vraie page existera).
+
+## Build 1053 (12/10) — Agenda : en-tête compact — NON PUBLIÉ (attend validation)
+- Titre aligné à gauche (à droite en arabe), « L'agenda du club » entre deux filets champagne, « Tous les rendez-vous » et le nom de l'écurie en Cormorant Garamond.
+- Le cheval au couchant en fond sur le côté, fondu vers le noir à gauche et en bas ; en arabe il passe à gauche et se retourne.
+- Onglets Rendez-vous / Forfaits soulignés (champagne) au lieu de la pilule ; mêmes onglets, même effet.
+- Bouton retour inchangé (toujours à gauche : le drapeau de langue occupe la droite).
+- Aucun nouveau texte (rien à traduire), aucune donnée touchée.
+- Testé 390 (fr et arabe), 820, 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur. Sur tablette et ordinateur la page reste en colonne pour l'instant : les deux colonnes arrivent au 1057.
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
