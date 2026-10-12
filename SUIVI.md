@@ -11933,3 +11933,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone seulement (< 768 px) : titres de rubrique (Stories, À découvrir, Dans les écuries…) 24 → 21 px ; espace avant « Stories », entre le titre et les ronds, et entre les ronds et « À découvrir » réduits (la page remonte d'environ 35 px). Tablette et ordinateur inchangés.
 - Testé 390 px : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 18 h 39 — Blandine : « Ok » → build 1047 publié (marqueur 20261012-1047). Elle valide aussi la page « À découvrir » à onglets (à faire).
+
+## Build 1048 (12/10) — Communauté iPhone : « Communauté » juste au-dessus des cavaliers, le reste juste en dessous — NON PUBLIÉ (attend validation)
+- Blandine (18 h 39) : « l'idéal serait d'avoir Communauté juste au-dessus des cavaliers sur l'image et le reste du titre juste en dessous ».
+- iPhone seulement : la hauteur du haut de page et l'espace avant le slogan sont calculés sur la position des cavaliers dans le fond (elle dépend de la largeur de l'écran) : « LE MONDE HYPE / Communauté » se pose juste au-dessus des cavaliers, slogan et capsule « Monde Hype » juste en dessous. Les Stories descendent d'environ 140 px. Tablette et ordinateur inchangés.
+- Testé 375, 390, 430 px : même placement sur les trois ; 16 scripts sans erreur.
