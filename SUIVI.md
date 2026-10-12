@@ -12054,6 +12054,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 et 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md.
 
+## Build 1061 (12/10) — Événements passés : cartes en largeur, deux colonnes
+- Blandine (21 h 44) : « le style actuel des cartes me va, pas leur disposition » ; (21 h 46) « oui c'est ça » pour des cartes en largeur en 2 colonnes.
+- Tablette et ordinateur : mêmes cartes que sur iPhone (date à gauche, photo à droite, chevron, bas de carte), en 2 colonnes (avant : photo en haut, 3 colonnes sur grand écran). Cartes d'une même rangée à la même hauteur. iPhone inchangé.
+- Rappel : toucher une carte ouvre la page de l'événement (inchangé, pas de dépliage — décision de Blandine 21 h 42).
+- Testé 390, 820, 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Publication 1059 + 1060 + 1061 (12/10, 21 h 55)
+- Blandine : « envoie tout d'un coup qu'on en finisse » → fond de l'Écurie qui défile (1059), retouches de l'agenda (1060), cartes des événements passés en 2 colonnes (1061). Marqueur : 20261012-1061.
+- Fichiers : index.html, SUIVI.md (images inchangées).
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
