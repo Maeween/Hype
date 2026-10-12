@@ -12085,6 +12085,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « oui vas-y » → page Santé aérée (1062), photo de cheval par défaut et Mes chevaux aéré (1063). Marqueur : 20261012-1063.
 - Fichiers : index.html, SUIVI.md.
 
+## Build 1065 (12/10) — Écurie (visiteur sans compte) : bouton à contour + encart décollé — NON PUBLIÉ (attend validation)
+- Blandine (23 h 15, capture de la page Écurie vue sans compte) : « pas de bouton plein doré et décolle un peu l'encart du bas de la photo ».
+- Encart « Bienvenue sur Hype » : 18 → 34 px sous la photo. « Créer un compte » : contour champagne + texte champagne au lieu du fond doré plein.
+- 16 scripts sans erreur. Capture visiteur impossible sur le banc de test (le banc sans session plante sur un profil vide, avant comme après la modification : propre au banc, pas à l'appli).
+- Fichiers : index.html, SUIVI.md.
+
 ## SQL Sécurité 1 — passé par Blandine (12/10, ~22 h 49), vérifié en lecture
 - Evan ajouté à hype_ambassadeurs (Liam y était déjà).
 - Règle « poster resultat » : une ligne origine = 'import' n'est acceptée que si hype_est_premium() (abonné mensuel/annuel/duo, ambassadeur, modératrice). Ajouts manuels, imports des modératrices et masquage inchangés.
