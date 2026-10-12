@@ -11910,3 +11910,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Simulé (iPhone 390) avec une photo verticale et une horizontale, avant / après. 16 scripts sans erreur.
 - 18 h 08 — Blandine choisit C : photo verticale → le bandeau s'agrandit (jusqu'à 560 px) pour qu'elle soit grande et entière ; les accès rapides descendent d'autant. Photo horizontale : entière, toute la largeur. Testé 390 et 1280 px.
 - 12/10, 18 h 10 — Blandine : « Ok » → build 1044 publié (marqueur 20261012-1044).
+
+## Build 1045 (12/10) — « Mes chevaux » sur ordinateur — NON PUBLIÉ (attend validation)
+- Blandine (18 h 11) : « au passage tu peux coder la page Mes chevaux pour l'ordinateur ».
+- À partir de 1280 px : cartes des chevaux en 3 colonnes, un peu plus hautes (124 px) ; boutons d'écurie à largeur fixe (plus étirés sur tout l'écran) ; cartes d'accès, recherche et encart Premium à largeur limitée (plus étirés) ; nom du cheval un peu plus petit pour ne pas être coupé. Le cheval du fond reste entier, calé à droite (à gauche en arabe). iPhone inchangé ; tablette : boutons d'écurie à largeur fixe.
+- Testé 1024, 1280, 1440 px et arabe : aucun débordement, aucune erreur ; 16 scripts sans erreur.
