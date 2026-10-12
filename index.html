@@ -69652,22 +69652,39 @@ function EcranMesChevaux() {
       h("button", { type: "button", onClick: creer, style: { marginTop: 14, display: "inline-flex", alignItems: "center", gap: 8, padding: "0 18px", minHeight: 42, borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(5,8,11,0.6)", color: IV, fontFamily: M9, fontWeight: 600, fontSize: 12.5, cursor: "pointer" } },
         "+ " + T("Créer sa fiche", "Create its profile", "Crear su ficha", "Crea la sua scheda", "プロフィールを作成", "Steckbrief anlegen", "إنشاء بطاقته"))));
   var largeurMax = grand ? 1180 : (tablette ? 900 : 600);
-  var hero = h("div", { style: { position: "relative", height: grand ? 360 : (tablette ? 320 : 280), overflow: "hidden" } },
-    h("img", { src: "images/PERFORMANCES_CHEVAUX_HERO.webp", alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: tablette ? "center 30%" : "68% 30%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
-    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(0deg, #05080B 0%, rgba(5,8,11,0.55) 38%, rgba(5,8,11,0.12) 70%, rgba(5,8,11,0.35) 100%), linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(5,8,11,0.85) 0%, rgba(5,8,11,0.35) 50%, rgba(5,8,11,0) 75%)" } }),
-    h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 18 } },
+  /* 12/10 (1041) Blandine : « fais la meme chose que sur la page Communaute : une image de fond qu on degrade vers le noir
+     en bas, dont le haut fait office de hero, et les encarts glissent dessus ». Fond FIXE sur son propre calque (meme parade
+     anti-gel que Communaute : translateZ), voile noir qui fonce de 0 a 1 sur les 320 premiers px de defilement. */
+  var refNuit = React.useRef(null);
+  React.useEffect(function () {
+    var att = false;
+    function maj() { att = false; try { var y = window.scrollY || document.documentElement.scrollTop || 0; if (refNuit.current) refNuit.current.style.opacity = String(Math.max(0, Math.min(1, y / 320))); } catch (eN) { } }
+    function surDefil() { if (!att) { att = true; requestAnimationFrame(maj); } }
+    maj();
+    window.addEventListener("scroll", surDefil, { passive: true });
+    return function () { window.removeEventListener("scroll", surDefil); };
+  }, []);
+  var fondFixe = h("div", { "aria-hidden": "true", style: { position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden", background: "#05080B", transform: "translateZ(0)", WebkitTransform: "translateZ(0)" } },
+    h("img", { src: "images/PERFORMANCES_CHEVAUX_HERO.webp", alt: "", decoding: "async", style: { position: "absolute", top: 0, left: 0, width: "100%", height: tablette ? "78vh" : "62vh", objectFit: "cover", objectPosition: tablette ? "center 25%" : "68% 25%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
+    h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,8,11,0.30) 0%, rgba(5,8,11,0.08) 18%, rgba(5,8,11,0.45) 34%, rgba(5,8,11,0.85) " + (tablette ? "62%" : "50%") + ", #05080B " + (tablette ? "78%" : "62%") + ")" } }),
+    h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(5,8,11,0.65) 0%, rgba(5,8,11,0.15) 55%, rgba(5,8,11,0) 80%)" } }),
+    h("div", { ref: refNuit, style: { position: "absolute", inset: 0, opacity: 0, background: "rgba(5,8,11,0.72)", willChange: "opacity" } }));
+  var hero = h("div", { style: { position: "relative", height: grand ? 340 : (tablette ? 310 : 270) } },
+    h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 14 } },
       h("div", { style: { maxWidth: largeurMax, margin: "0 auto", padding: "0 18px" } },
-        h("div", { style: { fontFamily: M9, fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: CH, fontWeight: 600 } }, T("Chevaux", "Horses", "Caballos", "Cavalli", "馬", "Pferde", "الخيول")),
-        h("h1", { style: { margin: "8px 0 0", fontFamily: C9, fontWeight: 500, fontSize: grand ? 60 : (tablette ? 54 : 44), lineHeight: 1, color: IV } }, T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "私の馬", "Meine Pferde", "خيولي")),
-        h("div", { style: { fontFamily: M9, fontSize: 13, color: "rgba(243,238,228,0.72)", marginTop: 10 } }, T("Tes chevaux et ceux que tu montes.", "Your horses and the ones you ride.", "Tus caballos y los que montas.", "I tuoi cavalli e quelli che monti.", "あなたの馬と、乗っている馬。", "Deine Pferde und die, die du reitest.", "خيولك والخيول التي تركبينها.")))));
+        h("div", { style: { fontFamily: M9, fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: CH, fontWeight: 600 } }, T("Chevaux", "Horses", "Caballos", "Cavalli", "\u99ac", "Pferde", "\u0627\u0644\u062e\u064a\u0648\u0644")),
+        h("h1", { style: { margin: "8px 0 0", fontFamily: C9, fontWeight: 500, fontSize: grand ? 60 : (tablette ? 54 : 44), lineHeight: 1, color: IV, textShadow: "0 2px 18px rgba(0,0,0,0.5)" } }, T("Mes chevaux", "My horses", "Mis caballos", "I miei cavalli", "\u79c1\u306e\u99ac", "Meine Pferde", "\u062e\u064a\u0648\u0644\u064a")),
+        h("div", { style: { fontFamily: M9, fontSize: 13, color: "rgba(243,238,228,0.75)", marginTop: 10 } }, T("Tes chevaux et ceux que tu montes.", "Your horses and the ones you ride.", "Tus caballos y los que montas.", "I tuoi cavalli e quelli che monti.", "\u3042\u306a\u305f\u306e\u99ac\u3068\u3001\u4e57\u3063\u3066\u3044\u308b\u99ac\u3002", "Deine Pferde und die, die du reitest.", "\u062e\u064a\u0648\u0644\u0643 \u0648\u0627\u0644\u062e\u064a\u0648\u0644 \u0627\u0644\u062a\u064a \u062a\u0631\u0643\u0628\u064a\u0646\u0647\u0627.")))));
   var corps;
   if (liste === null) corps = h("div", { style: { fontFamily: M9, fontSize: 12, color: "#8A929C", padding: "18px 0" } }, T("Chargement…", "Loading…", "Cargando…", "Caricamento…", "読み込み中…", "Lädt…", "جارٍ التحميل…"));
   else if (!n) corps = h(React.Fragment, null, encartVide, rangeeAcces(false));
   else if (n === 1) corps = h(React.Fragment, null, h("div", { style: { marginTop: 18 } }, couverture(liste[0])), rangeeAcces(true), limiteAtteinte ? encartPremium : null);
   else corps = h(React.Fragment, null, rangeeAcces(true), enTeteSection, champRecherche, grilleCartes, aucunResultat, boutonPlus, limiteAtteinte ? encartPremium : null);
-  return h("div", { style: { minHeight: "100vh", background: "#05080B", color: IV } },
-    hero,
-    h("div", { style: { maxWidth: largeurMax, margin: "0 auto", padding: "0 16px 30px" } }, corps));
+  return h("div", { style: { position: "relative", minHeight: "100vh", color: IV } },
+    fondFixe,
+    h("div", { style: { position: "relative", zIndex: 1 } },
+      hero,
+      h("div", { style: { maxWidth: largeurMax, margin: "0 auto", padding: "0 16px 30px" } }, corps)));
 }
 function EcranEcurieHype() {
   var h = React.createElement;
