@@ -11928,7 +11928,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 px français et arabe : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 18 h 31 — build 1046 publié (marqueur 20261012-1046).
 
-## Build 1047 (12/10) — Communauté iPhone : moins d'espace autour des Stories, titres de rubrique un peu plus petits — NON PUBLIÉ (attend validation)
+## Build 1047 (12/10) — Communauté iPhone : moins d’espace autour des Stories, titres de rubrique un peu plus petits
 - Blandine (18 h 34, capture) : « baisse un peu les titres, il y a trop d'espace au-dessus et en dessous des stories ».
 - iPhone seulement (< 768 px) : titres de rubrique (Stories, À découvrir, Dans les écuries…) 24 → 21 px ; espace avant « Stories », entre le titre et les ronds, et entre les ronds et « À découvrir » réduits (la page remonte d'environ 35 px). Tablette et ordinateur inchangés.
 - Testé 390 px : aucune erreur ; 16 scripts sans erreur.
+- 12/10, 18 h 39 — Blandine : « Ok » → build 1047 publié (marqueur 20261012-1047). Elle valide aussi la page « À découvrir » à onglets (à faire).
