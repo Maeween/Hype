@@ -11938,3 +11938,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (18 h 39) : « l'idéal serait d'avoir Communauté juste au-dessus des cavaliers sur l'image et le reste du titre juste en dessous ».
 - iPhone seulement : la hauteur du haut de page et l'espace avant le slogan sont calculés sur la position des cavaliers dans le fond (elle dépend de la largeur de l'écran) : « LE MONDE HYPE / Communauté » se pose juste au-dessus des cavaliers, slogan et capsule « Monde Hype » juste en dessous. Les Stories descendent d'environ 140 px. Tablette et ordinateur inchangés.
 - Testé 375, 390, 430 px : même placement sur les trois ; 16 scripts sans erreur.
+
+## Build 1049 (12/10) — Page Écurie sur tablette et ordinateur — NON PUBLIÉ (attend validation)
+- Blandine (18 h 39) : « tu peux faire la page Écurie sur ordinateur et tablette » (après le fond fixe du 1046).
+- Constat : avec une photo verticale (dont l'image par défaut), la tête du cheval passait derrière la citation. Correction : sur tablette et ordinateur, le haut de page s'allonge (64 % de la hauteur d'écran) : le nom de l'écurie passe sous la tête du cheval, la citation et les accès rapides ne la recouvrent plus. Photo horizontale et iPhone inchangés.
+- Testé 820, 1024, 1440 px : aucune erreur ; 16 scripts sans erreur.
