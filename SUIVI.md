@@ -11957,3 +11957,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Mêmes données et actions qu'avant (derniersCavaliers, hypeSuggestionsCavaliers, suivre / nePlusSuivre, ouverture du profil public). Communauté : les deux cartes ouvrent la page au lieu de déplier ; « + Ajouter » de Mes amis ouvre la page sur « Cavalières à suivre ». L'onglet Communauté de la barre reste allumé. Textes en 7 langues.
 - Testé 390 (deux onglets, clic depuis Communauté) et 1280 px : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 19 h 16 — Blandine : « Ok » → build 1051 publié (marqueur 20261012-1051).
+
+## Build 1052 (12/10) — Communauté iPhone : rubriques rapprochées — NON PUBLIÉ (attend validation)
+- Blandine (19 h 26, capture) : « on peut rapprocher les parties sur la page Communauté ».
+- iPhone seulement : espace entre les rubriques (À découvrir, Dans les écuries, À l'agenda, Le fil) ramené à 16 px, moins de place sous les points du carrousel et sous chaque titre de rubrique. Tablette et ordinateur inchangés.
+- Testé 390 px : aucune erreur ; 16 scripts sans erreur.
