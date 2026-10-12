@@ -12090,7 +12090,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Règle « poster resultat » : une ligne origine = 'import' n'est acceptée que si hype_est_premium() (abonné mensuel/annuel/duo, ambassadeur, modératrice). Ajouts manuels, imports des modératrices et masquage inchangés.
 - Déclencheur trg_resultats_rattachement (avant ajout ET modification de cavalier_id) : hors modératrice, cavalier_id ne peut être que soi-même ou le compte qui possède ce nom FFE (sinon remis à vide / à l'ancienne valeur). Rattachement auto des nouveaux imports inchangé.
 
-## Build 1064 (12/10) — Import réservé à Premium, Evan et Liam niveau Duo, dons sans Premium — NON PUBLIÉ (attend validation)
+## Build 1064 (12/10) — Import réservé à Premium, Evan et Liam niveau Duo, dons sans Premium — PUBLIÉ (23 h 06, « Ok » de Blandine)
 - Écran « Réservé à Premium » (cadenas, « Découvrir Hype Premium », Retour) posé sur l'écran d'import : couvre les 4 chemins (page de la cavalière, Performances, plusieurs chevaux, fiche cheval). Abonnés, ambassadeurs, modératrices, Evan et Liam importent comme avant.
 - Evan et Liam (Blandine : « autant de droits que les modérateurs au niveau des avantages ») : Premium partout + niveau Duo dans l'appli (Hey Baby au maximum, Hype IA). PAS d'outils de modération. Ancien compte de Liam (2f6eeb8b…, absent de la base) retiré de la liste.
 - Dons « Membre Crystal » : l'adresse ?vip=1 et la marque du téléphone ne donnent plus le Premium (marque effacée au démarrage). Le retour de don affiche un simple remerciement ; texte corrigé dans les 7 langues (il promettait « 6 mois de Premium offerts », faux).
