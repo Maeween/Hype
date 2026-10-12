@@ -11646,3 +11646,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « passe les couleurs de Hey Baby aux mêmes couleurs que tout le monde », puis « deuxième » (tous les chevaux d'un coup).
 - Avant : 5 chevaux avaient leur propre couleur (chevaux.teinte) — Hey Baby Please et Vallieres (rouge #C64B5C), My Dream de Feinn et Rizotto d'Emery (beige #D9B56C, la cause du « beige au lieu du bleu pétrole »), Olivia Optima (vert #5C7A5E).
 - Blandine a lancé : update chevaux set teinte = null where teinte is not null;  → vérifié : 0 cheval sur 89 avec une couleur propre. Aucun changement de code ; l'appli ne permet pas de redonner une couleur à un cheval.
+
+## Build 1007 (12/10) — Page Histoire, étape 2 : partager l'histoire
+- Blandine : « Tjs » (l'icône apparaît toujours, même sans histoire écrite).
+- Icône de partage discrète en haut à droite de l'encart « Son histoire » (à gauche en arabe) : cercle fin champagne, icône champagne, aucun fond doré. L'encart ne change pas autrement.
+- Même partage que la fiche (partagerFiche, photo du cheval comprise quand l'iPhone le permet, sinon lien copié) mais vers la page Histoire, titre « <nom> — Son histoire — Hype 🐎 » (7 langues) :
+  - cheval avec adresse publique : https://2hype.fr/cheval/<adresse>#histoire ;
+  - sinon : https://2hype.fr/#chevalhist-<id> (nouvelle adresse, l'ancienne #cheval-<id> ne change pas).
+- À l'ouverture du lien (de l'extérieur ou après rechargement), la fiche s'ouvre directement sur la page Histoire. Le partage général de la fiche est inchangé. Un cheval privé reste géré comme avant par la page publique /cheval/.
+- Testé : les deux formes de lien ouvrent la page Histoire avec le récit, le partage donne la bonne adresse ; français et arabe ; 16 scripts sans erreur.
