@@ -11725,3 +11725,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Aucune réponse ni discussion. Refus de la base → message « Action refusée ou impossible pour le moment. » (7 langues partout).
 - Testé : menus selon le rôle, masquer, modifier, signaler, supprimer (envois vérifiés) ; 16 scripts sans erreur.
 - Page Histoire : les 5 étapes du brief sont livrées. Prochain chantier annoncé : version ordinateur/tablette (maquette reçue 12 h 19 et 12 h 24 ; « ne tiens pas compte de Créer une collection » ; précisions à venir).
+
+## Build 1014 (12/10) — Fiche cheval : la mise en page « ordinateur » vaut aussi pour la tablette
+- Blandine (12 h 29) : « assure-toi d'adapter en version tablette, et fais-le aussi pour les autres pages qu'on avait préparées uniquement pour ordinateur ».
+- Nouveau réglage useHypeLargeur(768). Fiche cheval (Histoire, Photos, Résultats, Vidéos, Santé dans la fiche) et albums du cheval : grand hero, grilles larges, cartes d'albums dès 768 px. Le menu de gauche (et son décalage de 210 px) reste réservé aux écrans ≥ 1024 px ; sur tablette, la barre du bas ne change pas.
+- iPhone (< 768 px) inchangé. Testé à 820 px (Histoire, Photos, Vidéos, Résultats) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- À suivre, une page par build : version ordinateur/tablette de la page Histoire (maquette), puis Santé, Écurie, Accueil, Cavaliers du club en tablette.
+- 12 h 26 : audit du mur de souvenirs livré (lecture seule, aucun changement) ; 12 h 30 : texte pour ChatGPT fourni.
