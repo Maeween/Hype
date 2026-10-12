@@ -26011,7 +26011,7 @@ var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   
   + ".com2.com2b .com2-ecu-g,.com2.com2b .com2-ecu-p,.com2.com2b .com2-ecu-c,.com2.com2b .com2-ag-g,.com2.com2b .com2-ag-p{background:rgba(11,18,21,0.38);border-color:rgba(201,166,107,0.28)}"
   + ".com2.com2b .com2-sec{margin-top:28px}.com2.com2b .com2-sec-st + .com2-sec{margin-top:8px}.com2.com2b .com2-hero-x ~ .com2-sec-st{margin-top:24px}.com2.com2b .com2-sec-t{padding-bottom:12px}"   /* (985) Blandine : « rapproche un peu toutes les parties » (44 -> 28 px entre rubriques, titres plus pres de leur contenu) */
   + ".com2.com2b .com2-post{background:rgba(9,14,17,0.80);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 10px 24px rgba(0,0,0,0.3)}"   /* (985) « le fil peut etre un peu plus opaque » (38 % -> 80 %, leger flou du globe derriere) */
-  + "@media (max-width:1023px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.30) 0%,rgba(5,8,11,0.10) 22%,rgba(5,8,11,0.25) 40%,rgba(5,8,11,0.70) 60%,rgba(5,8,11,0.90) 100%),url('images/communaute-globe-v2.webp?v=2') center calc(env(safe-area-inset-top) + 450px - 130.5vw)/100% auto no-repeat,#05080B} .com2.com2b .com2-hero{height:calc(env(safe-area-inset-top) + 300px)} .com2.com2b .com2-hero-x{padding:8px 20px 0;text-align:start} .com2.com2b .com2b-titre{text-align:start;font-size:20px;max-width:300px} .com2.com2b .com2-hero-x .com2-monde-cap{margin:14px 0 0}}"   /* (990) refonte « Version Carrousel » (maquette ChatGPT validee par Blandine), build 1 : HERO, iPhone seulement — nouveau globe (images/communaute-globe-v2.webp, decoupe de sa planche), fond fixe et assombrissement au defilement gardes ; slogan et capsule « MONDE HYPE » alignes a gauche sous le titre ; hero un peu moins haut. Cadrage B choisi par Blandine : image remontee pour que les cinq cavaliers tombent en bas du hero (haut du globe coupe) ; (992) remplacee par la version haute definition qu elle a envoyee (1024x1536, proportions 2/3), recadree pour garder les cavaliers en bas du hero. Ordinateur inchange (ancien globe). */
+  + "@media (max-width:767px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.30) 0%,rgba(5,8,11,0.10) 22%,rgba(5,8,11,0.25) 40%,rgba(5,8,11,0.70) 60%,rgba(5,8,11,0.90) 100%),url('images/communaute-globe-v2.webp?v=2') center calc(env(safe-area-inset-top) + 450px - 130.5vw)/100% auto no-repeat,#05080B} .com2.com2b .com2-hero{height:calc(env(safe-area-inset-top) + 300px)} .com2.com2b .com2-hero-x{padding:8px 20px 0;text-align:start} .com2.com2b .com2b-titre{text-align:start;font-size:20px;max-width:300px} .com2.com2b .com2-hero-x .com2-monde-cap{margin:14px 0 0}}"   /* (990) refonte « Version Carrousel » (maquette ChatGPT validee par Blandine), build 1 : HERO, iPhone seulement — nouveau globe (images/communaute-globe-v2.webp, decoupe de sa planche), fond fixe et assombrissement au defilement gardes ; slogan et capsule « MONDE HYPE » alignes a gauche sous le titre ; hero un peu moins haut. Cadrage B choisi par Blandine : image remontee pour que les cinq cavaliers tombent en bas du hero (haut du globe coupe) ; (992) remplacee par la version haute definition qu elle a envoyee (1024x1536, proportions 2/3), recadree pour garder les cavaliers en bas du hero. Ordinateur inchange (ancien globe). */
   + ".com2.com2b .com2b-retour{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 14px);inset-inline-start:16px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,166,107,0.75);background:rgba(6,7,9,0.35);color:#C9A66B;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none}"
   + "@media (min-width:1024px){.com2.com2b .com2b-retour{display:none}}"   /* (991) ordinateur inchange */
   + ".com2.com2b .com2b-st-tout .com2-stories [data-hscroll]{flex-wrap:wrap !important;overflow:visible !important;row-gap:14px}"   /* (993) Voir tout : les stories passent sur plusieurs lignes */
@@ -26058,25 +26058,47 @@ var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   
   + ".com2.com2b .com2b-rt-tout{display:flex;margin:10px auto 0}"
   + ".com2.com2b .com2b-rt-suite{margin-top:8px;border-radius:14px;border:1px solid rgba(201,166,107,0.25);background:rgba(9,14,17,0.8);overflow:hidden}"
   + ".com2.com2b .com2b-rt-suite .com2b-rt-l:first-child{border-top:none}"   /* (995) carte qui se retourne */
-  + "@media (min-width:1024px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.25) 0%,rgba(5,8,11,0.10) 25%,rgba(5,8,11,0.35) 55%,rgba(5,8,11,0.80) 100%),url('images/communaute-globe-ordi.webp') center top/cover no-repeat,#05080B} .com2.com2b .com2b-assombri{left:-50vw;right:-50vw;background:linear-gradient(180deg,rgba(5,8,11,0.35) 0%,rgba(5,8,11,0) 18%),radial-gradient(ellipse 40% 50% at 50% 78%,rgba(6,7,9,0.7) 0%,rgba(6,7,9,0.35) 55%,rgba(6,7,9,0) 100%)}} "   /* (998) ordinateur : la version large du globe envoyee par Blandine (« version ordi ») */
-  + "@media (min-width:1024px){.com2.com2b{padding-inline:max(24px,calc((100% - 960px) / 2))} .com2.com2b .com2-hero{height:380px} .com2.com2b .com2b-bloc{padding:0 32px 26px} .com2.com2b .com2b-nom{font-size:56px} .com2.com2b .com2-hero-x{padding:12px 32px 0}}"   /* (984) ordinateur : la page se resserre au centre (960 px), comme Sante ; le globe reste en plein ecran derriere */
+  + "@media (min-width:768px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.25) 0%,rgba(5,8,11,0.10) 25%,rgba(5,8,11,0.35) 55%,rgba(5,8,11,0.80) 100%),url('images/communaute-globe-ordi.webp') center top/cover no-repeat,#05080B} .com2.com2b .com2b-assombri{left:-50vw;right:-50vw;background:linear-gradient(180deg,rgba(5,8,11,0.35) 0%,rgba(5,8,11,0) 18%),radial-gradient(ellipse 40% 50% at 50% 78%,rgba(6,7,9,0.7) 0%,rgba(6,7,9,0.35) 55%,rgba(6,7,9,0) 100%)}} "   /* (998) ordinateur : la version large du globe envoyee par Blandine (« version ordi ») */
+  + "@media (min-width:768px){.com2.com2b{padding-inline:max(24px,calc((100% - 960px) / 2))} .com2.com2b .com2-hero{height:380px} .com2.com2b .com2b-bloc{padding:0 32px 26px} .com2.com2b .com2b-nom{font-size:56px} .com2.com2b .com2-hero-x{padding:12px 32px 0}}"   /* (984) ordinateur : la page se resserre au centre (960 px), comme Sante ; le globe reste en plein ecran derriere */
   /* 12/10 (998) ORDINATEUR, BUILD 1 DU BRIEF « REFONTE ORDINATEUR » — PROPOSITION 1 « L EDITORIAL IMMERSIF » (recommandee) :
      globe panoramique en fond fixe (cale a gauche pour que globe et cavaliers soient au centre-droit), bloc titre a gauche
      (sur-titre, titre 64-88 px, slogan juste dessous, bouton), degrade de lisibilite depuis la gauche ; contenu jusqu a 1480 px. */
-  + "@media (min-width:1024px){"
-  + ".com2.com2b{padding-inline:max(32px,calc((100% - 1480px) / 2))}"
+  + "@media (min-width:768px){"
+  + ".com2.com2b{padding-inline:max(24px,calc((100% - 1480px) / 2))}"
   + ".com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.20) 0%,rgba(5,8,11,0.05) 30%,rgba(5,8,11,0.40) 62%,rgba(5,8,11,0.85) 100%),url('images/communaute-globe-ordi.webp') left top/auto clamp(560px,46vw,780px) no-repeat,#05080B}"
   + ".com2.com2b .com2-hero{height:clamp(250px,24vw,330px)}"
   + ".com2.com2b .com2b-assombri{left:-40px;right:-40px;bottom:-200px;background:linear-gradient(90deg,rgba(5,8,11,0.90) 0%,rgba(5,8,11,0.65) 36%,rgba(5,8,11,0) 75%)}"
   + ".com2.com2b .com2b-bloc{padding:0;padding-inline-start:clamp(28px,3.1vw,56px)}"
   + ".com2.com2b .com2b-eb{font-size:clamp(11px,0.95vw,13px)}"
-  + ".com2.com2b .com2b-nom{margin-top:10px;font-size:clamp(64px,6.1vw,88px)}"
+  + ".com2.com2b .com2b-nom{margin-top:10px;font-size:clamp(52px,6.1vw,88px)}"
   + ".com2.com2b .com2-hero-x{padding:8px 0 0;padding-inline-start:clamp(28px,3.1vw,56px);text-align:start;max-width:clamp(440px,41vw,600px)}"
   + ".com2.com2b .com2b-titre{text-align:start;font-size:clamp(21px,1.95vw,28px);max-width:none}"
   + ".com2.com2b .com2-hero-x .com2-monde-cap{display:inline-flex;margin:26px 0 0}"
   + "}"
-  + "@media (min-width:1024px){.com2.com2b .com2-sec-st .com2-sec-t{padding-inline:0} .com2.com2b .com2-stories [data-hscroll]{column-gap:22px !important}}"   /* (999) Stories ordinateur : alignees sur la colonne, espacement 22 px */
-  + "@media (min-width:1024px){[dir=rtl] .com2.com2b .com2b-assombri{background:linear-gradient(270deg,rgba(5,8,11,0.90) 0%,rgba(5,8,11,0.65) 36%,rgba(5,8,11,0) 75%)} [dir=rtl] .com2.com2b .com2b-fond{background-position:0 0,right top}}";
+  + "@media (min-width:768px){.com2.com2b .com2-sec-st .com2-sec-t{padding-inline:0} .com2.com2b .com2-stories [data-hscroll]{column-gap:22px !important}}"   /* (999) Stories ordinateur : alignees sur la colonne, espacement 22 px */
+  + "@media (min-width:768px) and (max-width:1279px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.20) 0%,rgba(5,8,11,0.05) 30%,rgba(5,8,11,0.40) 62%,rgba(5,8,11,0.85) 100%),url('images/communaute-globe-ordi.webp') center top/auto clamp(520px,52vw,640px) no-repeat,#05080B}}"   /* (1000) tablette : globe centre (portrait comme paysage) */
+  + "@media (min-width:768px){"
+  + ".com2.com2b .com2b-rubriques{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:20px;row-gap:34px;align-items:start;margin-top:34px}"
+  + ".com2.com2b .com2b-rubriques > .com2-sec{margin-top:0}"
+  + ".com2.com2b .com2b-rubriques > .com2-sec:first-child{grid-column:1 / -1}"
+  + ".com2.com2b .com2b-rubriques .com2-sec-t{padding-inline:0}"
+  + ".com2.com2b .com2b-rubriques .com2b-car{padding:0;scroll-padding:0}"
+  + ".com2.com2b .com2b-rubriques .com2b-rt-bloc{padding:0}"
+  + ".com2.com2b .com2b-rubriques .com2b-car > .com2-dec-c{height:auto;aspect-ratio:2.6}"
+  + ".com2.com2b .com2b-rubriques .com2b-rt{height:auto;aspect-ratio:1.65;min-height:164px}"
+  + ".com2.com2b .com2b-rubriques .com2b-car-prec{inset-inline-start:12px}.com2.com2b .com2b-rubriques .com2b-car-suiv{inset-inline-end:12px}"
+  + ".com2.com2b .com2b-rubriques .com2-dec-ext{grid-column:1 / -1}"
+  + ".com2.com2b [data-com2=fil] .com2-sec-t{padding-inline:0}"
+  + ".com2.com2b .com2-onglets{justify-content:flex-start;gap:28px;margin:0}"
+  + ".com2.com2b .com2-onglet{flex:0 0 auto}"
+  + ".com2.com2b .com2b-fil-grille{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;align-items:start;margin-top:18px}"
+  + ".com2.com2b .com2b-fil-grille .com2-post{background:rgba(9,17,21,0.82);border:1px solid rgba(201,166,107,0.16);border-radius:16px}"
+  + ".com2.com2b .com2-act{padding-inline:0}"
+  + ".com2.com2b .com2-fil-vide{margin-inline:0}"
+  + "}"
+  + "@media (min-width:1280px){.com2.com2b .com2b-rubriques{grid-template-columns:repeat(3,minmax(0,1fr));column-gap:22px}.com2.com2b .com2b-rubriques > .com2-sec:first-child{grid-column:auto}.com2.com2b .com2b-rubriques .com2b-car > .com2-dec-c{aspect-ratio:1.65}}"
+  + "@media (min-width:1440px){.com2.com2b .com2b-fil-grille{grid-template-columns:repeat(3,minmax(0,1fr))}}"   /* (1000) brief responsive : rubriques et fil selon la largeur */
+  + "@media (min-width:768px){[dir=rtl] .com2.com2b .com2b-assombri{background:linear-gradient(270deg,rgba(5,8,11,0.90) 0%,rgba(5,8,11,0.65) 36%,rgba(5,8,11,0) 75%)} [dir=rtl] .com2.com2b .com2b-fond{background-position:0 0,right top}}";
 function EcranCommunauteV2() {
   var ctx = useApp();
   var setEcran = ctx.setEcran;
@@ -26095,6 +26117,7 @@ function EcranCommunauteV2() {
     ecuriesS: { fr: "Actualit\u00e9s et moments de vie des \u00e9curies", en: "News and everyday moments from the stables", es: "Noticias y momentos de vida de las cuadras", it: "Notizie e momenti di vita delle scuderie", ja: "\u53a9\u820e\u306e\u30cb\u30e5\u30fc\u30b9\u3068\u65e5\u5e38", de: "Neuigkeiten und Alltag aus den St\u00e4llen", ar: "\u0623\u062e\u0628\u0627\u0631 \u0648\u0644\u062d\u0638\u0627\u062a \u0645\u0646 \u062d\u064a\u0627\u0629 \u0627\u0644\u0625\u0633\u0637\u0628\u0644\u0627\u062a" },   /* (995) */
     agendaS: { fr: "Concours, stages et \u00e9v\u00e9nements \u00e0 venir", en: "Upcoming shows, clinics and events", es: "Concursos, cursillos y eventos pr\u00f3ximos", it: "Concorsi, stage ed eventi in arrivo", ja: "\u4eca\u5f8c\u306e\u7af6\u6280\u4f1a\u30fb\u8b1b\u7fd2\u30fb\u30a4\u30d9\u30f3\u30c8", de: "Kommende Turniere, Lehrg\u00e4nge und Events", ar: "\u0645\u0633\u0627\u0628\u0642\u0627\u062a \u0648\u062f\u0648\u0631\u0627\u062a \u0648\u0641\u0639\u0627\u0644\u064a\u0627\u062a \u0642\u0627\u062f\u0645\u0629" },   /* (996) */
     retourner: { fr: "Retourner la carte", en: "Flip the card", es: "Dar la vuelta a la tarjeta", it: "Gira la carta", ja: "\u30ab\u30fc\u30c9\u3092\u88cf\u8fd4\u3059", de: "Karte umdrehen", ar: "\u0642\u0644\u0628 \u0627\u0644\u0628\u0637\u0627\u0642\u0629" },
+    voirPlusPub: { fr: "Voir plus de publications", en: "See more posts", es: "Ver m\u00e1s publicaciones", it: "Vedi altri post", ja: "\u3082\u3063\u3068\u898b\u308b", de: "Weitere Beitr\u00e4ge", ar: "\u0639\u0631\u0636 \u0627\u0644\u0645\u0632\u064a\u062f \u0645\u0646 \u0627\u0644\u0645\u0646\u0634\u0648\u0631\u0627\u062a" },   /* (1000) */
     carPrec: { fr: "Pr\u00e9c\u00e9dent", en: "Previous", es: "Anterior", it: "Precedente", ja: "\u524d\u3078", de: "Zur\u00fcck", ar: "\u0627\u0644\u0633\u0627\u0628\u0642" },   /* (994) */
     carSuiv: { fr: "Suivant", en: "Next", es: "Siguiente", it: "Successivo", ja: "\u6b21\u3078", de: "Weiter", ar: "\u0627\u0644\u062a\u0627\u0644\u064a" },
     voirTout: { fr: "Voir tout", en: "See all", es: "Ver todo", it: "Vedi tutto", ja: "すべて見る", de: "Alle anzeigen", ar: "عرض الكل" }, /* reserve aux builds suivants (aucune destination encore) */
@@ -26706,6 +26729,14 @@ function EcranCommunauteV2() {
     /* (669) une carte visible, les autres en glissant */
     var cellules = grouperFil(filPosts);
     var nbC = cellules.length, iC = Math.min(filIdx, Math.max(0, nbC - 1));
+    /* 12/10 (1000) tablette et ordinateur : les publications en GRILLE (2 colonnes, 3 a partir de 1440 px), 6 d abord puis
+       « Voir plus de publications » ; memes cartes, memes interactions. iPhone : le defilement carte par carte d avant. */
+    if (grilleFilCom) {
+      var visG = filPlus ? cellules : cellules.slice(0, 6);
+      return h(React.Fragment, null,
+        h("div", { className: "com2b-fil-grille", "data-com2": "fil-grille" }, visG.map(function (el, i) { return h("div", { key: "fg" + ((el && el.key) || i), className: "com2b-fil-gc" }, el); })),
+        (nbC > 6) ? h("button", { type: "button", className: "com2-fil-plus", onClick: function () { setFilPlus(!filPlus); } }, filPlus ? T2(TXT.replier) : (T2(TXT.voirPlusPub) + " (" + (nbC - 6) + ")")) : null);
+    }
     return h(React.Fragment, null,
       h("div", { className: "com2-fil-car", "data-com2": "fil-car", ref: refCarFil, onScroll: auDefilFil },
         cellules.map(function (el, i) { return h("div", { key: "cf" + ((el && el.key) || i), className: "com2-fil-cell", "data-cell": i }, el); })),
@@ -26794,7 +26825,9 @@ function EcranCommunauteV2() {
      Un voile noir pose sur le globe fixe passe de 0 (haut de page) a 1 apres 320 px de defilement (opacite du calque,
      mise a jour a chaque image d animation, sans redessiner la page). Au plus sombre : globe a peine visible. */
   /* (993) Stories : rondes sur iPhone, « Voir tout » si elles depassent la largeur */
-  var estMobileCom = (function () { try { return window.innerWidth < 1024; } catch (eW) { return true; } })();   /* (998) seuil ordinateur 1024 px (brief) */
+  var estMobileCom = (function () { try { return window.innerWidth < 768; } catch (eW) { return true; } })();   /* (1000) brief responsive : iPhone < 768 px */
+  var _gfc = React.useState(function () { try { return window.innerWidth >= 768; } catch (eG) { return false; } }); var grilleFilCom = _gfc[0], setGrilleFilCom = _gfc[1];
+  React.useEffect(function () { function fG() { try { var v = window.innerWidth >= 768; setGrilleFilCom(function (o) { return o === v ? o : v; }); } catch (eF) { } } window.addEventListener("resize", fG); return function () { window.removeEventListener("resize", fG); }; }, []);
   var _stt = React.useState(false); var storiesTout = _stt[0], setStoriesTout = _stt[1];
   var _std = React.useState(false); var storiesDeborde = _std[0], setStoriesDeborde = _std[1];
   var refStoriesCom = React.useRef(null);
@@ -26861,9 +26894,10 @@ function EcranCommunauteV2() {
       /* (610) forme « rond » 76 px, accent champagne (propriete du module), aucun retrait autour du rail */
       h("div", { className: "com2-stories", "data-hscroll": "1", ref: refStoriesCom }, h(window.BandeauStories, { forme: undefined, accent: "#C9A66B", taille: (function () { try { return window.innerWidth >= 1280 ? 64 : 58; } catch (eT) { return 58; } })(), padding: "10px 0 10px" })   /* 12/10 (999) ordinateur aussi : Stories rondes, 58 px (64 px des 1280 px), « Voir tout » (brief ordinateur, build 2) */   /* 12/10 (993) carrousel : Stories en RONDS nets a anneau champagne sur iPhone (maquette ; demande de Blandine) ; ordinateur inchange (« libre-carte ») */   /* 10/10 (855) Blandine : « passe les story en rectangle ou carre avec le meme design fondu comme elles etaient avant » -> forme « libre-carte » (celle de la page d accueil) ; avant : « libre » */   /* (675) exactement les Stories de la page Cavalier : photos qui se fondent dans le noir (sans anneau dore), taille et espacement du module, « + » a la fin */)) : null,
     /* (602) A DECOUVRIR — deux cartes d entree ; (627) ses deux visuels definitifs (images/communaute_v2_nouveaux_profils_v2.webp et communaute_v2_cavalieres_suivre_v1.webp, 500x460, sans texte) */
+    h("div", { className: "com2b-rubriques" },   /* (1000) les trois rubriques photo : empilees sur iPhone, 2 colonnes sur tablette, 3 sur ordinateur */
     h("section", { className: "com2-sec", ref: refDecouvrir, style: { scrollMarginTop: 12 } },
       h("div", { className: "com2-sec-t" }, h("h2", { className: "com2-h2" }, T2(TXT.decouvrir))),
-      estMobileCom ? carrouselCom("dec", [
+      true ? carrouselCom("dec", [
           carteDec("nouveaux", "images/communaute-carte-profils.webp", T2(TXT.nouveauxT), T2(TXT.nouveauxS)),
           carteDec("suivre", "images/communaute-carte-cavalieres.webp", T2(TXT.suivreT), T2(TXT.suivreS))])   /* (994) carrousel photo sur iPhone, nouvelles images ; memes cartes, meme action (deplier sous la carte) */
       : h("div", { className: "com2-dec" },
@@ -26876,18 +26910,18 @@ function EcranCommunauteV2() {
     (ecuries && ecuries.length) ? h("section", { className: "com2-sec", "data-com2": "ecuries" },
       h("div", { className: "com2-sec-t" },
         h("h2", { className: "com2-h2" }, T2(TXT.ecuries)),
-        (ecuries.length > 1 && !estMobileCom) ? h("button", { type: "button", className: "com2-lien", "data-com2": "ecuries-tout", onClick: function () { setEcuriesTout(!ecuriesTout); } }, ecuriesTout ? T2(TXT.reduire) : T2(TXT.voirTout), icChev) : null),
-      estMobileCom ? carteRetournee("ecuries", "images/communaute-carte-ecuries.webp", T2(TXT.ecuries), T2(TXT.ecuriesS), ecuries.map(ligneEcurieDos))   /* (995) iPhone : carte qui se retourne (maquette B) */
+        false ? h("button", { type: "button", className: "com2-lien", "data-com2": "ecuries-tout", onClick: function () { setEcuriesTout(!ecuriesTout); } }, ecuriesTout ? T2(TXT.reduire) : T2(TXT.voirTout), icChev) : null),
+      true ? carteRetournee("ecuries", "images/communaute-carte-ecuries.webp", T2(TXT.ecuries), T2(TXT.ecuriesS), ecuries.map(ligneEcurieDos))   /* (995) iPhone : carte qui se retourne (maquette B) */
       : h("div", { className: "com2-ecu" }, carteEcurieImmersive(ecuries[0], false)),
-      (!estMobileCom && ecuriesTout && ecuries.length > 1) ? h("div", { className: "com2-ecu-rail", "data-hscroll": "1" }, ecuries.slice(1).map(function (c) { return carteEcurieImmersive(c, true); })) : null) : null,
+      false ? h("div", { className: "com2-ecu-rail", "data-hscroll": "1" }, ecuries.slice(1).map(function (c) { return carteEcurieImmersive(c, true); })) : null) : null,
     /* (659) A L AGENDA — le rendez-vous le plus proche en grand, les trois suivants en petit ; « Voir tout » montre les suivants */
     (agenda && agenda.length) ? h("section", { className: "com2-sec", "data-com2": "agenda" },
       h("div", { className: "com2-sec-t" },
         h("h2", { className: "com2-h2" }, T2(TXT.agenda)),
-        (agenda.length > 3 && !estMobileCom) ? h("button", { type: "button", className: "com2-lien", "data-com2": "agenda-tout", onClick: function () { setAgendaTout(!agendaTout); } }, agendaTout ? T2(TXT.reduire) : T2(TXT.voirTout), icChev) : null),
-      estMobileCom ? carteRetournee("agenda", "images/communaute-carte-agenda.webp", T2(TXT.agenda), T2(TXT.agendaS), agenda.map(ligneAgendaDos))   /* (996) iPhone : carte qui se retourne, harmonisee avec « Dans les ecuries » */
+        false ? h("button", { type: "button", className: "com2-lien", "data-com2": "agenda-tout", onClick: function () { setAgendaTout(!agendaTout); } }, agendaTout ? T2(TXT.reduire) : T2(TXT.voirTout), icChev) : null),
+      true ? carteRetournee("agenda", "images/communaute-carte-agenda.webp", T2(TXT.agenda), T2(TXT.agendaS), agenda.map(ligneAgendaDos))   /* (996) iPhone : carte qui se retourne, harmonisee avec « Dans les ecuries » */
       : h("div", { className: "com2-ag", style: { display: "flex", flexDirection: "column", gap: 14 } },   /* 10/10 (849) le design des evenements de la page Ecurie, 3 affiches puis « Voir tout » (avant : une grande + 6 petites) */
-        (agendaTout ? agenda : agenda.slice(0, 3)).map(carteAgendaEcurie))) : null,   /* 10/10 (815) Blandine : « laisse une deuxieme ligne d evenements » : 6 petites cartes (2 lignes de 3) avant « Voir tout » (3 avant) */
+        (agendaTout ? agenda : agenda.slice(0, 3)).map(carteAgendaEcurie))) : null),   /* 10/10 (815) Blandine : « laisse une deuxieme ligne d evenements » : 6 petites cartes (2 lignes de 3) avant « Voir tout » (3 avant) */
     /* (605) LE FIL — titre + 4 onglets ; le contenu vient au build 6 */
     h("section", { className: "com2-sec", "data-com2": "fil" },
       h("div", { className: "com2-sec-t" }, h("h2", { className: "com2-h2" }, T2(TXT.fil))),
