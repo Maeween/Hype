@@ -57282,6 +57282,12 @@ function ChronologieSouvenirs(props) {
     ansRec.forEach(function (g) { photosRec = photosRec.concat(g.photos || []); });
     var maxRec = COLS === 3 ? 8 : (COLS === 4 ? 10 : 12);
     var apRec = photosRec.slice(0, maxRec);
+    /* (1031) Blandine : si la photo mise en avant (etoile) fait partie de cet apercu, elle prend la grande case ;
+       sinon la plus recente. Une ancienne photo etoilee n'est jamais remontee pour l'occasion. */
+    if (props.vedetteUrl) {
+      var iVed = -1; apRec.forEach(function (pV, iV) { if (iVed < 0 && cleDe(pV.url) === props.vedetteUrl) iVed = iV; });
+      if (iVed > 0) { var pVed = apRec[iVed]; apRec = [pVed].concat(apRec.slice(0, iVed), apRec.slice(iVed + 1)); }
+    }
     /* (1031) VITRINE : composition propre, independante des tailles enregistrees (qui restent intactes pour la page
        « Tous les souvenirs ») : la premiere photo en grande (2x2), les autres en tailles automatiques variees (petites,
        verticales), jamais de pleine largeur -> une mosaique compacte, sans trou. Les cadrages a la main sont gardes. */
