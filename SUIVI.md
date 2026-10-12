@@ -12139,3 +12139,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Les boutons ouvrent toujours les pages existantes de la V1 (rien de nouveau n'est branché). Textes nouveaux en 7 langues.
 - Vérifié iPhone 390, tablette 820, ordinateur 1280 : aucun débordement, aucune erreur. 16 scripts 0 erreur.
 - Mise en ligne seule (sans 1065 et 1066, qui attendent toujours ta validation).
+
+## Build 1068 (12/10) — Fiche cheval V2 : nom descendu sur la photo
+- Demande (capture d'Aceitunero) : « il faut clairement descendre les titres ».
+- Le bouton « Ajouter à mes chevaux / Retirer » sort du bas de la photo (c'est lui qui faisait remonter le nom sur la tête du cheval) et se place juste sous la photo, aligné sur le nom. Photo un peu plus haute sur téléphone (comme la V1).
+- Tablette et ordinateur : même principe, aligné sur la colonne du contenu. V2 seulement (adresse cachée). 16 scripts 0 erreur.
+- Mise en ligne avec la V2 seule (1065 et 1066 toujours en attente).
