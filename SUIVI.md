@@ -12018,6 +12018,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (fr), 820 (arabe), 1280 avec 30 événements sur 2 ans : 12 → 24 après « Voir plus », 12 en choisissant 2025 ; aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md (images inchangées depuis le 1055).
 
+## Build 1057 (12/10) — Agenda : calendrier restylé — NON PUBLIÉ (attend validation)
+- Calendrier dans un cadre sombre à fin filet champagne ; mois en Cormorant majuscules entre deux boutons ronds à contour.
+- Jours de la semaine en abrégé (« Lun », « Mar »… ; écrits par le téléphone dans la langue choisie) ; numéros centrés.
+- Jour choisi : contour champagne + fond un peu plus clair (plus de cadre blanc) ; aujourd'hui : numéro champagne + fin contour.
+- Petits points sous le numéro, sans halo ; jours du mois d'avant / d'après estompés (décor, on ne les touche pas).
+- Couleurs des rendez-vous adoucies partout sur la page (points, légende, liste du jour) : concours champagne, stage terracotta, sortie violet doux — mêmes que les cartes du 1054. Forfaits inchangés.
+- Fonctionnement inchangé (mêmes gestes, mêmes données, onglet Forfaits compris).
+- Testé 390 (fr, arabe), 1280 (japonais) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md.
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
