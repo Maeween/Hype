@@ -11681,3 +11681,17 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   - droite : + « Ajouter à mes chevaux » / ✓ « Dans tes chevaux » (iPhone : « Mes chevaux » avec + ou ✓) — même mécanisme, retrait toujours possible.
   - Libellés courts sous 640 px de large ; police 12 px (12,5 sur ordinateur) ; sur ordinateur la ligne s'arrête à 620 px pour ne pas couvrir l'œil. Si une action manque, l'autre prend la ligne.
 - Rien d'autre ne change. Testé 375, 390, 1280 px et arabe ; 16 scripts sans erreur.
+- 12 h 04 : correctif « statut » lancé par Blandine → vérifié en base (« masque » permis, garde-fou corrigé).
+
+## Build 1009 (12/10) — Page Histoire, étape 4a : témoignages « Ils ont croisé sa route »
+- Blandine : « Ok » (12 h 03) pour l'étape 4a.
+- Nouvelle section entre « Son histoire » et l'encart de fin (composant TemoignagesCheval, chevaux en base seulement) :
+  - titre « Ils ont croisé sa route » + UN seul bouton « Raconter mon expérience » (à droite du titre, dessous sur iPhone) ; sans compte, le bouton mène à la connexion ;
+  - aucun témoignage : titre + bouton seulement (aucune carte vide) ;
+  - cartes : photo de profil et nom (ouvrent le profil public), date, texte (≈ 250 caractères puis « Lire la suite »), jusqu'à 3 photos en vignettes (touche = grande photo) ;
+  - 3 témoignages, puis « Voir les autres témoignages (n) » ; 2 colonnes à partir de 768 px ;
+  - formulaire : texte 1 000 caractères max avec compteur, 3 photos max (pas de vidéo), Annuler / Publier ; publication immédiate.
+- Photos allégées avant l'envoi : 1 600 px, JPEG 0,82 (test : 4032×3024 1,5 Mo → 1600×1200 362 Ko), affichées sans transformation payante.
+- Base : table commentaires, cible « temoignage:<id du cheval> » ; un témoignage masqué n'apparaît qu'à son auteur (avec « · masqué »).
+- 7 langues. Testé : liste, vide, ordinateur, publication (envoi vérifié), « Lire la suite », « Voir les autres » ; 16 scripts sans erreur.
+- À venir : 4b (cœur J'aime + notification à la propriétaire), 5 (menu « … »).
