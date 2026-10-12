@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261012-1054"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261012-1055"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -28341,7 +28341,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */];
+    const ECRANS_TABLETTE = ["sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28420,7 +28420,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -28594,6 +28594,7 @@ function Router() {
                 ecran === "videos-cavalier" && React.createElement(EcranVideosCavaliere, null),
                 ecran === "photos-cavalier" && React.createElement(EcranPhotosCavaliere, null),   /* 28/09 (482) */
                 ecran === "agenda-club" && React.createElement(EcranAgendaClub, null),
+                ecran === "evenements-passes" && React.createElement(EcranAgendaClub, { vuePasses: true }),   /* 12/10 (1055) page Evenements passes */
                 ecran === "performances-chevaux" && React.createElement(EcranPerformancesChevaux, null),   /* 07/10 (703) */
                 ecran === "team-competition" && React.createElement(EcranTeamCompetition, null),   /* 01/10 (519) : page Team Competition, lien cache #team-competition */
                 ecran === "gerer-ecurie" && React.createElement(EcranGererEcurie, null),
@@ -37995,8 +37996,12 @@ function PodiumClubsHype(props) {
    a la fiche cheval.
    ⚠️ Le club vise arrive par `window.__agendaClub`, sur le modele de
    `window.__perfClub`. Sans lui, on retombe sur l ecurie du profil. */
-function EcranAgendaClub() {
+function EcranAgendaClub(props) {
   var h = React.createElement;
+  /* 12/10 (1055) : la page « Evenements passes » est une VUE de ce meme ecran (route
+     "evenements-passes") : elle reprend le chargement du passe deja ecrit ici (medias,
+     publications, resultats, couverture) au lieu d en faire une deuxieme copie. */
+  var vuePasses = !!(props && props.vuePasses);
   var app = (typeof useApp === "function") ? useApp() : {};
   var setEcran = app.setEcran || function () { };
   var lg = app.langue || "fr";
@@ -38247,6 +38252,9 @@ function hypeRecompense(place, partants) {
   /* 12/10 (1054) : la poignee vers le bloc d ajout (AgendaClubHype) - ses cartes ouvrent la
      fiche du rendez-vous SUR PLACE, comme le faisait le carrousel. */
   var refPontAg = React.useRef(null);
+  /* (1055) largeur de l ecran et filtre de la page Evenements passes (toujours appeles : meme ordre des hooks) */
+  var l768P = useHypeLargeur(768), l1100P = useHypeLargeur(1100);
+  var _fP = React.useState("tous"); var filtreP = _fP[0], setFiltreP = _fP[1];
 
   /* 04/10 (636) — FORFAITS : L AGENDA PRIVE DU GESTIONNAIRE. Demande de Blandine : « un agenda
      prive au gestionnaire de l ecurie qui permet de noter les cours par forfait pour les cartes
@@ -39153,6 +39161,71 @@ function hypeRecompense(place, partants) {
       setEcran("evenement-passe");
     }
 
+    /* 12/10 (1055) - LA CARTE « SOUVENIR » DE LA PAGE EVENEMENTS PASSES. Memes donnees, meme
+       calcul et meme navigation que la carte ci-dessous (couverture, medias sans le document
+       « Le jour J », resultats, bouton « Voir le bilan / les photos / le souvenir », croix pour
+       la proprietaire) : seule la presentation change. Une seule photo (la couverture), jamais
+       inventee ; sans media ni affiche, pas de zone photo du tout. Point de categorie champagne
+       pour toutes (Blandine : pas une couleur par categorie). */
+    if (vuePasses) {
+      var couvS = montres.length ? montres[0] : "";
+      var visuelS = null;
+      if (couvS) {
+        if (estVideo(couvS)) visuelS = (typeof hypeMiniatureVideo === "function") ? h("div", { style: { position: "absolute", inset: 0, overflow: "hidden" } }, hypeMiniatureVideo(couvS, { largeur: 640, picto: 16 })) : null;
+        else {
+          var srcS = couvS; try { if (typeof vignetteHype === "function") srcS = vignetteHype(couvS, 640, 400) || couvS; } catch (eVs) { srcS = couvS; }
+          visuelS = h("img", { src: srcS, alt: "", loading: "lazy", decoding: "async", draggable: false, onError: function (eIm) { try { eIm.target.style.visibility = "hidden"; } catch (eIm2) { } },
+            style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "saturate(0.9)" } });
+        }
+      }
+      var grilleS = l768P;
+      var chevronS = function (surPhoto) {
+        return h("span", { "aria-hidden": "true", style: { flex: "none", width: 34, height: 34, borderRadius: "50%", border: "1px solid rgba(243,238,228," + (surPhoto ? "0.55" : "0.30") + ")", background: surPhoto ? "rgba(5,8,11,0.45)" : "transparent", display: "flex", alignItems: "center", justifyContent: "center" } },
+          h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#F3EEE4", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", style: { transform: rtlA ? "scaleX(-1)" : "none" } }, h("path", { d: "M9 6l6 6-6 6" })));
+      };
+      var dateS = h("div", { style: { flex: "0 0 48px", textAlign: "center", paddingTop: 2 } },
+        h("div", { style: { fontFamily: CGA, fontSize: 28, fontWeight: 600, color: "#F3EEE4", lineHeight: 1 } }, pd1 ? String(pd1.jour) : "—"),
+        pd1 ? h("div", { style: { fontFamily: M, fontSize: 10.5, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase", color: "rgba(243,238,228,0.85)", marginTop: 5 } }, plusieursJours ? ("→ " + pd2.jour + " " + moisCourt(pd2)) : moisCourt(pd1)) : null,
+        pd1 ? h("div", { style: { fontFamily: M, fontSize: 10.5, color: "rgba(220,224,228,0.55)", marginTop: 3 } }, String(pd1.an)) : null);
+      var texteS = h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 7 } },
+          h("span", { "aria-hidden": "true", style: { width: 6, height: 6, borderRadius: "50%", background: "#C9A66B", flex: "none" } }),
+          h("span", { style: { fontFamily: M, fontSize: 9.5, fontWeight: 600, letterSpacing: 1.8, textTransform: "uppercase", color: "rgba(216,188,134,0.9)" } }, meta.label)),
+        texteNet(ev.titre) ? h("div", { style: { fontFamily: CGA, fontSize: 20, fontWeight: 600, color: "#F3EEE4", lineHeight: 1.15, marginTop: 4, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } }, texteNet(ev.titre)) : null,
+        texteNet(ev.lieu) ? h("div", { style: { display: "flex", alignItems: "center", gap: 6, marginTop: 5, fontFamily: M, fontSize: 12, color: "rgba(220,224,228,0.62)", minWidth: 0 } },
+          h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "currentColor", strokeWidth: 1.6, "aria-hidden": "true", style: { flex: "none" } },
+            h("path", { d: "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15.4 12 21 12 21z" }), h("circle", { cx: 12, cy: 10, r: 2.3 })),
+          h("span", { style: { overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, texteNet(ev.lieu))) : null);
+      var basS = h("div", { style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 14px 12px", marginTop: "auto", borderTop: "1px solid rgba(255,255,255,0.05)" } },
+        h("div", { style: { flex: 1, minWidth: 0, fontFamily: M, fontSize: 11.5, color: "rgba(220,224,228,0.58)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, morceaux.join("  ·  ")),
+        h("span", { style: { flex: "none", fontFamily: M, fontSize: 12, fontWeight: 600, color: "#D8BC86" } }, libBouton + (rtlA ? " ←" : " →")));
+      var croixS = estProprio ? h("div", { role: "button", "aria-label": T("Supprimer ce rendez-vous", "Delete this event", "Eliminar esta cita", "Elimina questo evento", "この予定を削除", "Diesen Termin löschen", "حذف هذا الموعد"),
+          onClick: function (eSp) { try { if (eSp) { eSp.stopPropagation(); eSp.preventDefault(); } } catch (eS3) { } supprimerRdvClub(ev); },
+          style: { position: "absolute", zIndex: 2, top: 0, insetInlineEnd: 0, width: 42, height: 42, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } },
+        h("span", { style: { width: 22, height: 22, borderRadius: "50%", background: "rgba(5,8,11,0.6)", border: "1px solid rgba(255,255,255,0.16)", color: "rgba(237,242,245,0.75)", fontSize: 10, display: "flex", alignItems: "center", justifyContent: "center" } }, "✕")) : null;
+      var cadreS = { position: "relative", height: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", borderRadius: 14, border: "1px solid rgba(201,166,107,0.24)", background: "#0A0E12", overflow: "hidden", cursor: "pointer" };
+      if (grilleS) {
+        /* tablette et ordinateur : photo en haut, cartes de meme hauteur dans la grille */
+        /* sans photo : la carte garde sa hauteur naturelle (pas de grand vide), et le chevron
+           descend en bas pour laisser le coin a la croix */
+        return h("div", { key: ev.id, role: "button", "data-souvenir": "1", onClick: ouvrirFiche, style: Object.assign({}, cadreS, visuelS ? {} : { height: "auto", alignSelf: "start" }) },
+          croixS,
+          visuelS ? h("div", { style: { position: "relative", aspectRatio: "2 / 1", maxWidth: "100%", overflow: "hidden", background: "#0D1216" } }, visuelS) : null,
+          h("div", { style: { display: "flex", alignItems: "flex-start", gap: 12, padding: "14px 14px 12px" } }, dateS, texteS, h("div", { style: { alignSelf: visuelS ? "center" : "flex-end" } }, chevronS(false))),
+          basS);
+      }
+      /* iPhone : carte en largeur, photo a droite (a gauche en arabe) */
+      return h("div", { key: ev.id, role: "button", "data-souvenir": "1", onClick: ouvrirFiche, style: cadreS },
+        croixS,
+        h("div", { style: { display: "flex", alignItems: "stretch", minHeight: 108 } },
+          h("div", { style: { flex: 1, minWidth: 0, display: "flex", alignItems: "flex-start", gap: 10, padding: "14px 10px 10px 12px", paddingInlineStart: 12 } }, dateS, texteS),
+          visuelS
+            ? h("div", { style: { position: "relative", flex: "0 0 36%", overflow: "hidden", background: "#0D1216" } }, visuelS,
+                h("div", { style: { position: "absolute", top: "50%", insetInlineEnd: 8, transform: "translateY(-50%)" } }, chevronS(true)))
+            : h("div", { style: { flex: "none", display: "flex", alignItems: "center", paddingInlineEnd: 12 } }, chevronS(false))),
+        basS);
+    }
+
     return h("div", { key: ev.id, className: "hype-agenda-passe-card" + (ouvert ? " ouvert" : "") },
       (iCarte === 0) ? h("style", { dangerouslySetInnerHTML: { __html: HYPE_AGENDA_PASSE_CSS } }) : null,
       /* 17/09 (227) : la croix de suppression, INCHANGEE dans son geste (estProprio,
@@ -39194,26 +39267,110 @@ function hypeRecompense(place, partants) {
           style: { margin: "6px auto 4px", display: "block", width: "fit-content", padding: "9px 18px", borderRadius: 999, border: "1px solid rgba(217,199,163,0.35)", background: "rgba(217,199,163,0.06)", color: OR, fontFamily: M, fontSize: 12, fontWeight: 700, cursor: "pointer", minHeight: 40 } },
           T("Replier", "Collapse", "Reducir", "Riduci", "\u9589\u3058\u308b", "Einklappen", "\u0637\u064a"))) : null);
   };
-  var LIM_PASSE = 5;
+  /* 12/10 (1055) - « DEJA PASSE » QUITTE LA PAGE AGENDA (decision de Blandine). A sa place, un
+     lien discret « Voir les evenements passes -> » qui ouvre la page dediee. Rien n est efface :
+     c est seulement l endroit ou on les regarde qui change. */
   var listePasse = (passe || []);
-  var vuesPasse = (listePasse.length > LIM_PASSE && !voirPasse) ? listePasse.slice(0, LIM_PASSE) : listePasse;
-  var blocPasse = h("div", { style: { marginTop: 26, paddingTop: 18, borderTop: "1px solid rgba(255,255,255,0.07)" } },
-    h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 14px" } },
-      h("div", { style: { fontFamily: C, fontSize: 15, fontWeight: 700, color: OR, textTransform: "uppercase", letterSpacing: 0.8 } },
-        T("D\u00e9j\u00e0 pass\u00e9", "Already happened", "Ya pasado", "Gi\u00e0 passato", "\u904e\u53bb\u306e\u4e88\u5b9a", "Vergangenes", "\u0627\u0646\u0642\u0636\u0649")),
-      h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(217,199,163,0.35), transparent)" } })),
-    errPasse ? h("div", { style: { margin: "0 0 12px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5 } },
-      T("Le pass\u00e9 n\u2019a pas pu \u00eatre charg\u00e9 : ", "The past could not load: ", "No se pudo cargar el pasado: ", "Impossibile caricare il passato: ", "\u904e\u53bb\u3092\u8aad\u307f\u8fbc\u3081\u307e\u305b\u3093\uff1a", "Vergangenes nicht geladen: ", "\u062a\u0639\u0630\u0631 \u062a\u062d\u0645\u064a\u0644 \u0645\u0627 \u0645\u0636\u0649: ") + errPasse) : null,
-    (passe === null) ? mot2("\u2026")
-      : (!passe.length
-          ? mot2(T("Aucun rendez-vous pass\u00e9.", "Nothing in the past.", "Nada en el pasado.", "Niente nel passato.", "\u904e\u53bb\u306e\u4e88\u5b9a\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Nichts Vergangenes.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0645\u0648\u0627\u0639\u064a\u062f \u0633\u0627\u0628\u0642\u0629."))
-          : h("div", null,
-              vuesPasse.map(carteEvPasse),
-              (listePasse.length > LIM_PASSE) ? h("div", { role: "button", onClick: function () { setVoirPasse(!voirPasse); },
-                style: { margin: "2px auto 0", display: "block", width: "fit-content", padding: "11px 20px", borderRadius: 999, border: "1px solid rgba(217,199,163,0.35)", background: "rgba(217,199,163,0.06)", color: OR, fontFamily: M, fontSize: 12, fontWeight: 700, cursor: "pointer", minHeight: 44 } },
-                voirPasse
-                  ? T("N\u2019afficher que les 5 derniers", "Show only the last 5", "Mostrar solo los 5 \u00faltimos", "Mostra solo gli ultimi 5", "\u76f4\u8fd15\u4ef6\u306e\u307f", "Nur die letzten 5", "\u0639\u0631\u0636 \u0622\u062e\u0631 5 \u0641\u0642\u0637")
-                  : (T("Voir les pr\u00e9c\u00e9dents", "See earlier ones", "Ver los anteriores", "Vedi i precedenti", "\u3055\u3089\u306b\u524d\u3092\u898b\u308b", "Fr\u00fchere ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0633\u0627\u0628\u0642\u0629") + "  (" + (listePasse.length - LIM_PASSE) + ")")) : null)));
+  var blocPasse = h("div", { style: { display: "flex", alignItems: "center", gap: 14, marginTop: 26 } },
+    h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(201,166,107,0.22)" } }),
+    h("button", { "data-agenda-passes": "1", onClick: function () { setEcran("evenements-passes"); },
+      style: { flex: "none", minHeight: 44, padding: "0 6px", background: "transparent", border: "none", color: "#D8BC86", fontFamily: M, fontSize: 13, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 4, textDecorationColor: "rgba(201,166,107,0.5)", cursor: "pointer" } },
+      T("Voir les événements passés", "See past events", "Ver los eventos pasados", "Vedi gli eventi passati", "過去のイベントを見る", "Vergangene Termine ansehen", "عرض الفعاليات السابقة") + (rtlA ? "  ←" : "  →")),
+    h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "rgba(201,166,107,0.22)" } }));
+
+  /* 12/10 (1055) - LA PAGE « EVENEMENTS PASSES » (brief et maquettes de Blandine). En-tete
+     avec ses deux images (verticale sur iPhone, horizontale sur tablette et ordinateur), filtres
+     Tous / Concours / Stages / Sorties sur les donnees deja chargees, cartes « souvenir » du plus
+     recent au plus ancien : 1 colonne sur iPhone, 2 sur tablette, 3 sur grand ecran. Le
+     chargement reste celui du passe (les 50 derniers, chargerAgendaClubPasse).
+     ⚠️ ALERTE DES 40 (Blandine, 20 h 12 : « mets-moi une alerte avant qu on arrive a 50 ») :
+     la proprietaire voit un petit encart quand le club a 40 evenements passes ou plus.
+     Au-dela de 50 les plus anciens ne s afficheraient plus ici, mais RIEN n est jamais efface
+     (« n efface jamais un evenement passe sauf si on decide nous de le supprimer ») : seule
+     la croix, avec confirmation, supprime. */
+  function pagePasses() {
+    var grand = l768P;
+    var FILTRES_P = [
+      ["tous", T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل")],
+      ["concours", T("Concours", "Shows", "Concursos", "Concorsi", "競技会", "Turniere", "المسابقات")],
+      ["stage", T("Stages", "Clinics", "Cursillos", "Stage", "講習", "Lehrgänge", "التدريبات")],
+      ["sortie", T("Sorties", "Outings", "Salidas", "Uscite", "外出", "Ausflüge", "الخرجات")]];
+    var liste = listePasse.filter(function (ev) { return filtreP === "tous" || String(ev.type || "").toLowerCase() === filtreP; });
+    var colonnes = l1100P ? 3 : (l768P ? 2 : 1);
+    var gouttiere = grand ? 32 : 18;
+    var bouton = function (txt, surClic, cle) {
+      return h("button", { key: cle, onClick: surClic, style: { minHeight: 44, padding: "0 20px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", background: "transparent", color: "#D8BC86", fontFamily: M, fontSize: 13, fontWeight: 500, cursor: "pointer" } }, txt);
+    };
+    var fondP = h("div", { "aria-hidden": "true", style: { position: "absolute", zIndex: 0, top: 0, insetInline: 0, height: grand ? 500 : 470, overflow: "hidden", pointerEvents: "none",
+          WebkitMaskImage: "linear-gradient(180deg, #000 0%, #000 55%, rgba(0,0,0,0) 100%)", maskImage: "linear-gradient(180deg, #000 0%, #000 55%, rgba(0,0,0,0) 100%)" } },
+        h("img", { src: grand ? "images/evenements-passes-large.webp" : "images/evenements-passes-portrait.webp", alt: "", decoding: "async",
+          onError: function (eI) { try { eI.target.style.display = "none"; } catch (e) { } },
+          style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: grand ? "70% 35%" : "60% 40%", display: "block", opacity: 0.8, transform: rtlA ? "scaleX(-1)" : "none" } }),
+        h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlA ? "270deg" : "90deg") + ", rgba(5,8,11,0.85) 0%, rgba(5,8,11,0.55) " + (grand ? "38%" : "48%") + ", rgba(5,8,11,0.05) " + (grand ? "70%" : "85%") + ")" } }));
+    var hero = h("div", { "data-passes-tete": "1", style: { position: "relative", zIndex: 1 } },
+      h("button", { onClick: function () { setEcran("agenda-club"); },
+        "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع"),
+        style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(5,8,11,0.45)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer" } }, "‹"),
+      h("div", { style: { position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: (grand ? "calc(env(safe-area-inset-top) + 74px) " : "calc(env(safe-area-inset-top) + 70px) ") + gouttiere + "px " + (grand ? "26px" : "20px") } },
+        grand ? h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 18, fontFamily: M, fontSize: 12.5 } },
+          h("button", { onClick: function () { setEcran("agenda-club"); }, style: { background: "transparent", border: "none", padding: 0, color: "#D8BC86", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
+            T("Agenda", "Calendar", "Agenda", "Agenda", "予定", "Kalender", "المواعيد")),
+          h("span", { "aria-hidden": "true", style: { color: "rgba(243,238,228,0.45)" } }, rtlA ? "‹" : "›"),
+          h("span", { style: { color: "rgba(243,238,228,0.8)" } }, T("Événements passés", "Past events", "Eventos pasados", "Eventi passati", "過去のイベント", "Vergangene Termine", "الفعاليات السابقة"))) : null,
+        h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
+          h("span", { "aria-hidden": "true", style: { width: 30, height: 1, background: "rgba(201,166,107,0.55)", flex: "none" } }),
+          h("span", { style: { fontSize: 10.5, fontWeight: 600, letterSpacing: 2.6, textTransform: "uppercase", color: "#C9A66B", fontFamily: M, whiteSpace: "nowrap" } },
+            T("Les souvenirs du club", "The club's memories", "Los recuerdos del club", "I ricordi del club", "クラブの思い出", "Erinnerungen des Vereins", "ذكريات النادي"))),
+        h("h1", { style: { margin: "12px 0 0", fontFamily: CGA, fontSize: grand ? 52 : 38, fontWeight: 600, lineHeight: 1.02, color: "#F3EEE4", textWrap: "balance", textShadow: "0 2px 18px rgba(0,0,0,0.55)" } },
+          T("Événements passés", "Past events", "Eventos pasados", "Eventi passati", "過去のイベント", "Vergangene Termine", "الفعاليات السابقة")),
+        h("div", { style: { marginTop: 8, fontFamily: M, fontSize: grand ? 14.5 : 13, color: "rgba(243,238,228,0.78)", maxWidth: 420, lineHeight: 1.5, textShadow: "0 1px 10px rgba(0,0,0,0.6)" } },
+          T("Concours, stages et moments partagés.", "Shows, clinics and shared moments.", "Concursos, cursillos y momentos compartidos.", "Concorsi, stage e momenti condivisi.", "競技会、講習、そして共に過ごした時間。", "Turniere, Lehrgänge und gemeinsame Momente.", "مسابقات وتدريبات ولحظات مشتركة.")),
+        club ? h("div", { style: { marginTop: 6, fontFamily: CGA, fontSize: grand ? 24 : 21, fontWeight: 500, color: "rgba(243,238,228,0.92)", textShadow: "0 2px 14px rgba(0,0,0,0.55)" } }, club) : null));
+    var filtres = listePasse.length ? h("div", { role: "tablist", "data-passes-filtres": "1", style: { position: "relative", zIndex: 1, display: "flex", gap: 8, overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none", padding: "2px " + gouttiere + "px 4px", margin: "0 auto", maxWidth: 1200 + 2 * gouttiere, boxSizing: "border-box" } },
+      FILTRES_P.map(function (f) {
+        var actif = filtreP === f[0];
+        return h("button", { key: "f" + f[0], role: "tab", "aria-selected": actif ? "true" : "false", onClick: function () { setFiltreP(f[0]); },
+          style: { flex: "none", minHeight: 40, padding: "0 18px", borderRadius: 999, border: actif ? "1px solid #C9A66B" : "1px solid rgba(255,255,255,0.12)", background: actif ? "rgba(201,166,107,0.10)" : "rgba(255,255,255,0.025)", color: actif ? "#D8BC86" : "rgba(237,242,245,0.66)", fontFamily: M, fontSize: 13, fontWeight: actif ? 600 : 500, cursor: "pointer", whiteSpace: "nowrap" } }, f[1]);
+      })) : null;
+    var alerte = (estProprio && listePasse.length >= 40) ? h("div", { "data-passes-alerte": "1", style: { margin: "0 0 14px", padding: "11px 14px", borderRadius: 12, border: "1px solid rgba(201,166,107,0.40)", background: "rgba(201,166,107,0.06)", color: "rgba(243,238,228,0.85)", fontFamily: M, fontSize: 12.5, lineHeight: 1.5 } },
+      T("Bientôt la limite d'affichage : {n} / 50. Au-delà, les plus anciens ne s'afficheront plus ici, mais rien n'est effacé.",
+        "Display limit coming up: {n} / 50. Beyond that, the oldest won't show here any more, but nothing is deleted.",
+        "Pronto el límite de visualización: {n} / 50. Después, los más antiguos ya no se mostrarán aquí, pero no se borra nada.",
+        "Limite di visualizzazione vicino: {n} / 50. Oltre, i più vecchi non verranno più mostrati qui, ma nulla viene cancellato.",
+        "表示上限が近づいています：{n} / 50。それ以降、古いものはここに表示されなくなりますが、削除はされません。",
+        "Anzeigegrenze bald erreicht: {n} / 50. Danach werden die ältesten hier nicht mehr angezeigt, aber nichts wird gelöscht.",
+        "اقتراب حد العرض: {n} / 50. بعد ذلك لن تظهر الأقدم هنا، لكن لن يُحذف شيء.").replace("{n}", String(listePasse.length))) : null;
+    var erreurP = errPasse ? h("div", { style: { margin: "0 0 14px", padding: "11px 13px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12.5 } }, errPasse) : null;
+    var contenu;
+    if (passe === null) contenu = mot2("…");
+    else if (!listePasse.length) {
+      contenu = h("div", { "data-passes-vide": "1", style: { textAlign: "center", padding: grand ? "50px 20px 30px" : "34px 10px 20px" } },
+        h("div", { "aria-hidden": "true", style: { width: 58, height: 58, margin: "0 auto", borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", display: "flex", alignItems: "center", justifyContent: "center" } },
+          h("svg", { viewBox: "0 0 24 24", width: 24, height: 24, fill: "none", stroke: "#C9A66B", strokeWidth: 1.4, strokeLinecap: "round" },
+            h("rect", { x: 3.5, y: 5, width: 17, height: 15.5, rx: 2.5 }), h("path", { d: "M3.5 9.5h17M8 3v4M16 3v4" }))),
+        h("div", { style: { marginTop: 16, fontFamily: CGA, fontSize: grand ? 28 : 24, fontWeight: 600, color: "#F3EEE4" } },
+          T("Les souvenirs restent à écrire…", "Memories are still to be written…", "Los recuerdos están por escribir…", "I ricordi sono ancora da scrivere…", "思い出はこれから。", "Die Erinnerungen werden noch geschrieben…", "الذكريات لم تُكتب بعد…")),
+        h("div", { style: { marginTop: 8, marginBottom: 20, fontFamily: M, fontSize: 13, color: "rgba(220,224,228,0.62)", lineHeight: 1.6 } },
+          T("Les événements passés de l'écurie apparaîtront ici.", "The stable's past events will appear here.", "Los eventos pasados de la cuadra aparecerán aquí.", "Gli eventi passati della scuderia appariranno qui.", "厩舎の過去のイベントがここに表示されます。", "Die vergangenen Termine des Stalls erscheinen hier.", "ستظهر هنا الفعاليات السابقة للإسطبل.")),
+        bouton(T("Voir les prochains rendez-vous", "See upcoming events", "Ver las próximas citas", "Vedi i prossimi eventi", "今後の予定を見る", "Nächste Termine ansehen", "عرض المواعيد القادمة") + (rtlA ? "  ←" : "  →"), function () { setEcran("agenda-club"); }, "bv"));
+    } else if (!liste.length) {
+      contenu = h("div", { style: { textAlign: "center", padding: "36px 10px 20px" } },
+        h("div", { style: { marginBottom: 16, fontFamily: M, fontSize: 13.5, color: "rgba(220,224,228,0.7)" } },
+          T("Aucun événement dans cette catégorie", "No events in this category", "Ningún evento en esta categoría", "Nessun evento in questa categoria", "このカテゴリーのイベントはありません", "Keine Termine in dieser Kategorie", "لا توجد فعاليات في هذه الفئة")),
+        bouton(T("Voir tous", "Show all", "Ver todos", "Vedi tutti", "すべて表示", "Alle anzeigen", "عرض الكل"), function () { setFiltreP("tous"); }, "bt"));
+    } else {
+      contenu = h("div", { "data-passes-grille": "1", style: { display: "grid", gridTemplateColumns: "repeat(" + colonnes + ", minmax(0, 1fr))", gap: grand ? 18 : 12, alignItems: "stretch" } },
+        liste.map(function (ev, iC) { return carteEvPasse(ev, iC); }));
+    }
+    return h("div", { "data-ecran-passes": "1", style: { position: "relative", isolation: "isolate", minHeight: "100vh", background: "#05080B", color: "#EDF2F5", paddingBottom: "calc(env(safe-area-inset-bottom) + 110px)" } },
+      h(HypeDrapeauLangue, null),
+      fondP,
+      hero,
+      filtres,
+      h("div", { style: { position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: (grand ? "22px " : "16px ") + gouttiere + "px 30px" } },
+        alerte, erreurP, contenu),
+      hypeCalquePhoto(visuPasse, function () { setVisuPasse(null); }));
+  }
 
   /* 12/10 (1054) - REFONTE AGENDA, ETAPE 2 : « PROCHAINS RENDEZ-VOUS » EN CARTES HORIZONTALES
      (maquette de Blandine). Bloc date a gauche, petit point de categorie, titre, lieu, photo a
@@ -39251,7 +39408,7 @@ function hypeRecompense(place, partants) {
       h("div", { role: "button", onClick: ouvrir, style: { position: "relative", display: "flex", alignItems: "center", gap: 14, padding: "12px 12px", paddingInlineStart: 12, minHeight: 92, boxSizing: "border-box", cursor: "pointer" } },
         h("div", { style: { flex: "0 0 58px", height: 66, borderRadius: 10, border: "1px solid rgba(201,166,107,0.50)", background: "rgba(6,7,9,0.55)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" } },
           h("div", { style: { fontFamily: CGA, fontSize: 27, fontWeight: 600, color: "#F3EEE4", lineHeight: 1 } }, okD ? d.getDate() : "\u2014"),
-          h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 600, letterSpacing: 1.1, color: "rgba(243,238,228,0.85)", textTransform: "uppercase", marginTop: 4 } },
+          h("div", { style: { fontFamily: M, fontSize: (dF ? 8.5 : 10) /* (1055) plusieurs jours : tient dans le cadre */, fontWeight: 600, letterSpacing: dF ? 0.4 : 1.1, color: "rgba(243,238,228,0.85)", textTransform: "uppercase", marginTop: 4, textAlign: "center", lineHeight: 1.25 } },
             okD ? (dF && !isNaN(dF.getTime()) ? "\u2192 " + dF.getDate() + " " + moisCourt(dF) : moisCourt(d)) : "")),
         h("div", { style: { flex: 1, minWidth: 0 } },
           h("div", { style: { display: "flex", alignItems: "center", gap: 7 } },
@@ -39369,6 +39526,7 @@ function hypeRecompense(place, partants) {
       blocPasse);
   }
 
+  if (vuePasses) return pagePasses();   /* (1055) apres tous les hooks */
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: "calc(env(safe-area-inset-bottom) + 110px)" } },
     h(HypeDrapeauLangue, null),   /* (491) */
     tete,

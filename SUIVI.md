@@ -11967,7 +11967,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Plan : 1053 en-tête compact · 1054 cartes horizontales « Prochains rendez-vous » (carrousel d'affiches retiré de cette page seulement, la page Écurie garde le sien) · 1055 « Déjà passé » retiré + lien « Voir les événements passés → » · 1056 calendrier restylé · 1057 tablette/ordinateur en deux colonnes.
 - Image d'en-tête : le cheval au couchant (images/mes-chevaux-fond-couchant.webp), validée par Blandine (19 h 57).
 - Blandine va envoyer des images pour les rendez-vous sans affiche : une par sorte (Stage, Concours, Sortie).
-- Événements passés : Blandine choisit la solution (a) (20 h 04) — le lien « Voir les événements passés → » ouvre l'ancien bloc sur la même page, avec un retour (build 1055).
+- Événements passés : solution (a) choisie à 20 h 04, puis REMPLACÉE à 20 h 10 par son brief « Création de la page Événements passés » (vraie page séparée, maquettes + 2 images) ; structure validée (« Ok », 20 h 11).
+- Nouvelle découpe : 1055 page Événements passés · 1056 choix de l'année + titres par année + « Voir plus » · 1057 calendrier restylé · 1058 agenda en deux colonnes (tablette/ordinateur).
+- Points de couleur : un seul point champagne sur la page Événements passés (son texte) ; l'agenda garde ses points doux par catégorie (pas de réponse à ma question, rien changé).
+- ⚠️ Règle de Blandine (20 h 12) : « n'efface jamais un événement passé sauf si on décide nous de le supprimer ». Seule la croix (propriétaire, avec confirmation) supprime. Le chargement ne prend que les 50 derniers (chargerAgendaClubPasse, limit 50) : au-delà, les plus anciens ne s'afficheraient plus mais restent en base. Alerte demandée avant 50 → posée au 1055 (dès 40).
 
 ## Build 1053 (12/10) — Agenda : en-tête compact — NON PUBLIÉ (attend validation)
 - Titre aligné à gauche (à droite en arabe), « L'agenda du club » entre deux filets champagne, « Tous les rendez-vous » et le nom de l'écurie en Cormorant Garamond.
@@ -11987,6 +11990,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le compte « N rendez-vous à venir » est retiré (les cartes le remplacent). « Déjà passé » reste jusqu'au 1055.
 - Nouveau texte traduit dans les 7 langues : « Prochains rendez-vous ». Mois des cartes écrits par le téléphone dans la langue choisie (corrige au passage l'allemand, qui affichait « 10月 » sur le carrousel — sur cette page seulement).
 - Testé 390 (fr et arabe), 820, 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Build 1055 (12/10) — Page « Événements passés » — NON PUBLIÉ (attend validation)
+- Nouvelle page (écran « evenements-passes »), ouverte par le lien discret « Voir les événements passés → » en bas de l'agenda. « Déjà passé » et ses cartes quittent la page Agenda. Rien n'est effacé en base.
+- C'est une vue du même écran que l'agenda : elle reprend le chargement du passé déjà écrit (médias sans le document « Le jour J », publications, résultats, couverture choisie ou affiche). Aucune requête nouvelle, aucune table, aucun droit changé.
+- En-tête : « LES SOUVENIRS DU CLUB », « Événements passés », « Concours, stages et moments partagés. », nom de l'écurie, retour vers l'agenda ; chemin « Agenda › Événements passés » sur tablette et ordinateur. Images de Blandine : images/evenements-passes-portrait.webp (iPhone) et images/evenements-passes-large.webp (tablette/ordinateur), découpées dans sa planche, fondues vers le noir ; retournées en arabe.
+- Filtres Tous · Concours · Stages · Sorties (champagne pour l'actif, défilent sur iPhone). « Événements écurie » et « Autres » de la maquette n'existent pas comme types → pas mis.
+- Cartes « souvenir », du plus récent au plus ancien : iPhone une colonne, photo à droite ; tablette 2 colonnes, ordinateur 3, photo en haut. Point champagne unique. Bas de carte : « N médias · N résultats » (seulement s'il y en a) et « Voir le bilan / les photos / le souvenir → » (mêmes règles qu'avant). Toucher la carte ouvre la page de l'événement (inchangée) ; son retour ramène ici.
+- Sans photo : pas de zone photo, la carte garde sa hauteur naturelle. Un seul événement : carte de taille normale. Aucun : « Les souvenirs restent à écrire… » + « Voir les prochains rendez-vous → ». Filtre vide : « Aucun événement dans cette catégorie » + « Voir tous ».
+- Croix de suppression gardée pour la propriétaire, même confirmation.
+- Alerte (demande de Blandine) : dès 40 événements passés, la propriétaire voit « Bientôt la limite d'affichage : N / 50… rien n'est effacé ».
+- Au passage (agenda, 1054) : la date de fin d'un rendez-vous sur plusieurs jours tient maintenant dans son cadre.
+- Tous les nouveaux textes traduits dans les 7 langues.
+- Testé 390 (fr, arabe), 820, 1280 ; cas vide, un seul, 42 événements (alerte), filtre vide, clic vers un événement puis retour : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md, images/evenements-passes-portrait.webp, images/evenements-passes-large.webp (nouvelles).
 
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
