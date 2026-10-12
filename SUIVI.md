@@ -11967,7 +11967,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Plan : 1053 en-tête compact · 1054 cartes horizontales « Prochains rendez-vous » (carrousel d'affiches retiré de cette page seulement, la page Écurie garde le sien) · 1055 « Déjà passé » retiré + lien « Voir les événements passés → » · 1056 calendrier restylé · 1057 tablette/ordinateur en deux colonnes.
 - Image d'en-tête : le cheval au couchant (images/mes-chevaux-fond-couchant.webp), validée par Blandine (19 h 57).
 - Blandine va envoyer des images pour les rendez-vous sans affiche : une par sorte (Stage, Concours, Sortie).
-- En attente de sa réponse : événements passés en solution (a) (l'ancien bloc s'ouvre sur la même page, avec un retour) ou (b) (lien seulement quand une vraie page existera).
+- Événements passés : Blandine choisit la solution (a) (20 h 04) — le lien « Voir les événements passés → » ouvre l'ancien bloc sur la même page, avec un retour (build 1055).
 
 ## Build 1053 (12/10) — Agenda : en-tête compact — NON PUBLIÉ (attend validation)
 - Titre aligné à gauche (à droite en arabe), « L'agenda du club » entre deux filets champagne, « Tous les rendez-vous » et le nom de l'écurie en Cormorant Garamond.
@@ -11976,6 +11976,17 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Bouton retour inchangé (toujours à gauche : le drapeau de langue occupe la droite).
 - Aucun nouveau texte (rien à traduire), aucune donnée touchée.
 - Testé 390 (fr et arabe), 820, 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur. Sur tablette et ordinateur la page reste en colonne pour l'instant : les deux colonnes arrivent au 1057.
+
+## Build 1054 (12/10) — Agenda : cartes « Prochains rendez-vous » — NON PUBLIÉ (attend validation)
+- Le carrousel d'affiches disparaît de la page Agenda SEULEMENT (option ajoutée au bloc d'agenda) : la page Écurie garde le sien, vérifié.
+- À sa place : un bouton pleine largeur « + Ajouter un rendez-vous » (même fenêtre de création, mêmes droits). L'encart « Nouveau : l'agenda du club » reste, il s'affiche comme avant tant que le club n'a aucun rendez-vous.
+- Section « PROCHAINS RENDEZ-VOUS » sous le calendrier : cartes horizontales (date encadrée, petit point de catégorie, titre, lieu, affiche fondue à droite s'il y en a une, chevron). Toucher une carte ouvre la fiche sur place, comme le carrousel.
+- Couleurs sobres sur les cartes : points concours champagne, stage terracotta, sortie violet doux. Le calendrier garde ses couleurs jusqu'au 1056.
+- Suppression gardée : petite croix discrète pour la propriétaire ou l'auteur du rendez-vous, avec la même confirmation ; une erreur de suppression s'affiche au-dessus des cartes.
+- Aucun rendez-vous : « Rien de prévu pour le moment » avec un petit pictogramme de calendrier.
+- Le compte « N rendez-vous à venir » est retiré (les cartes le remplacent). « Déjà passé » reste jusqu'au 1055.
+- Nouveau texte traduit dans les 7 langues : « Prochains rendez-vous ». Mois des cartes écrits par le téléphone dans la langue choisie (corrige au passage l'allemand, qui affichait « 10月 » sur le carrousel — sur cette page seulement).
+- Testé 390 (fr et arabe), 820, 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
