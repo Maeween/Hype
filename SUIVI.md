@@ -12081,6 +12081,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (Mes chevaux, Écurie) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md (image déjà en ligne, inchangée).
 
+## Publication 1062 + 1063 (12/10, 22 h 02)
+- Blandine : « oui vas-y » → page Santé aérée (1062), photo de cheval par défaut et Mes chevaux aéré (1063). Marqueur : 20261012-1063.
+- Fichiers : index.html, SUIVI.md.
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
