@@ -235,4 +235,81 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/sante-cheval/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/sante-cheval/"/>
   </url>
+  <url>
+    <loc>https://2hype.fr/fr/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/en/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/es/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/it/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/de/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ja/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ar/concours-resultats/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
+  </url>
 </urlset>
