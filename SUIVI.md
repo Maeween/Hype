@@ -11768,3 +11768,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveau composant commun FinPageHype (même dessin que la fin de page de la fiche cheval : paysage fondu, filets champagne, « HYPE »), ajouté une seule fois par le routeur sous les écrans listés dans ECRANS_FIN_PAGE.
 - Groupe 1 : profil (Mon compte), Mon carnet, Mon apprentissage, Mes résultats FFE. Testé 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Groupes suivants : Écurie (Cavaliers du club, Actualités, Souvenirs du club, Santé du club, souvenir d'un rendez-vous), Santé (Santé, Clinique), Culture (articles, article, 4 écoles), Divers (Vidéothèque, Abonnements).
+
+## Build 1023 (12/10) — Bandeau de fin « HYPE », groupe Écurie
+- Ajouté sous : Cavaliers du club, Actualités de l'écurie, Souvenirs du club, Santé du club, souvenir d'un rendez-vous (même composant FinPageHype, liste ECRANS_FIN_PAGE). Ces pages font au moins la hauteur de l'écran : le bandeau apparaît en fin de défilement.
+- Testé 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
