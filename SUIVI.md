@@ -11898,7 +11898,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (français, arabe), 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 17 h 55 — Blandine : « Ok » → build 1042 publié (marqueur 20261012-1042).
 
-## Build 1043 (12/10) — « Mes chevaux » iPhone : le titre ne coupe plus le nez du cheval — NON PUBLIÉ (attend validation)
+## Build 1043 (12/10) — « Mes chevaux » iPhone : le titre ne coupe plus le nez du cheval
 - Blandine (17 h 58, capture de son iPhone : « Mes chevaux » touchait le nez du cheval) : « descends un peu le titre ».
 - iPhone seulement : le titre descend (haut de page 270 → 345 px) et l'image du fond, toujours entière, passe de 60 % à 54 % de la hauteur d'écran : la tête entière (oreilles → nez) reste au-dessus du titre. Tablette et ordinateur inchangés.
 - Testé 375 et 390 px : aucune erreur ; 16 scripts sans erreur.
+- 12/10, 18 h 04 — Blandine : « Ok » → build 1043 publié (marqueur 20261012-1043).
