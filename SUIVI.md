@@ -11634,3 +11634,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (11 h 33, maquette des six variantes) : « complète avec ce qui était écrit, à la place de ce cheval tu mets son nom ».
 - Sous « Avec vous… » : « Retrouvez tous ses souvenirs, ses moments partagés et rejoignez la communauté autour de <nom du cheval>. » (7 langues, le nom affiché dans le hero). Rien d'autre ne change (photo, boutons, libellés).
 - Testé iPhone, ordinateur, arabe ; 16 scripts sans erreur.
+
+## Build 1006 (12/10) — Page Histoire : tout le monde voit l'histoire écrite par la propriétaire
+- Blandine (11 h 34) : « on va changer ça maintenant : tout le monde voit l'histoire écrite par le propriétaire, et on peut publier en dessous pour raconter la sienne ».
+- L'encart « Son histoire » montre à TOUS (connectés ou non) l'histoire du cheval (chevaux.histoire). Fin de la règle du 832 (sur le cheval d'une autre : son histoire perso, chevaux_histoires). Vérifié en base avant : 0 histoire perso écrite → rien n'est perdu ; la table et la photo/surnom perso ne changent pas.
+- Le bouton « Écrire / Modifier son histoire » : propriétaire seule (avant : + cavalière liée, qui écrivait une histoire perso).
+- « Raconter la sienne dessous » = les témoignages « Ils ont croisé sa route » (étape 4 du brief).
+- Testé : un membre qui n'est pas propriétaire voit le texte de la propriétaire, sans bouton d'édition ; 16 scripts sans erreur.
