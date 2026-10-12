@@ -11612,3 +11612,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (10 h 29) : « le hero et le nom des chevaux, reproduis ce qu'on a sur toutes ses pages vidéo, photo etc ».
 - EcranCheval : la photo centrée (54 vh) et le halo du 960 laissent place au hero de Santé/Photos/Vidéos : photo pleine largeur fondue dans le noir à gauche (68 % sur ordinateur), petit titre champagne (race · âge · discipline), nom en Cormorant en grand (surnom d'abord comme avant, affixe « de … » dessous en champagne, nom officiel en petit si un surnom s'affiche). Les trois petits points du menu restent en bas à droite de la photo. Le nom n'est plus répété sous la photo ; la ligne de l'écurie et tout le reste ne changent pas. Miroir en arabe.
 - Testé français et arabe ; 16 scripts sans erreur.
+
+## Build 1003 (12/10) — Gel de quelques secondes sur une page cheval : fonds fixes en calque à part
+- Blandine (10 h 37) : « ça vient de recommencer sur une page cheval ; en fait ça freeze pendant quelques secondes et d'un coup ça passe ». Ce n'est donc pas un geste perdu (parade du 1000) mais l'écran occupé.
+- Mesuré ici (iPhone simulé, processeur ralenti ×6, 160 résultats) : à l'ouverture d'une fiche, environ 0,6 à 1 s de travail en plusieurs morceaux (dessin de la page, normal) ; rien d'anormal trouvé dans le code. Pas de Safari iPhone ici pour reproduire.
+- Piste la plus probable côté iPhone : les grands fonds FIXES ajoutés ces derniers jours (fiche 989, Santé, Communauté) — Safari peut les repeindre à chaque image du défilement, surtout avec de grandes photos. Parade : chaque fond fixe passe sur un calque à part (transform translateZ(0), will-change) ; aspect inchangé (vérifié fiche, Santé, Communauté).
+- Si ça persiste : noter si le gel arrive à l'OUVERTURE de la fiche ou PENDANT le défilement, et si une vidéo est sur la page — la prochaine étape serait de désactiver le fond fixe de la fiche pour comparer.
