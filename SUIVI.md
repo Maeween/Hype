@@ -11596,6 +11596,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non reproductible ici (simulateur sans Safari iPhone). Vérifié : la superposition des panneaux n'a pas changé avec le 989 (un cadre parent était déjà un empilement à part). Cause la plus probable : défaut connu de Safari iPhone sur les pages fixes qui défilent — un geste tiré au bord haut/bas part à la page de derrière et la page du dessus paraît gelée.
 - CORRIGÉ (parade classique) : au premier contact du doigt, le panneau est décalé d'un pixel du bord ; overscroll-behavior: contain empêche le geste de passer derrière. Concerne Histoire, Photos, Vidéos, Résultats. Défilement au doigt testé (simulateur tactile) : OK.
 - À surveiller : si ça se reproduit, noter sur quelle page et après quel geste.
-## Build 999 (12/10, PAS PUBLIÉ — branche build-999) — Communauté ordinateur : Stories rondes
+## Build 1001 (12/10) — Communauté responsive (tablette et ordinateur) — partie 1 : Stories rondes
 - Brief ordinateur, build 2 : sur ordinateur aussi, Stories en ronds à anneau champagne (58 px, 64 px dès 1280 px), « Voir tout » si elles dépassent, alignées sur la colonne, espacement 22 px. iPhone inchangé.
 - ⚠️ ERREUR SIGNALÉE : le 998 (proposition 1) a été publié sur « code comme tu as fait » alors que Blandine demandait ensuite à voir la 2 et la 3 (message arrivé pendant la publication). Les propositions 2 (photo encadrée) et 3 (titre monumental) lui ont été montrées sur la vraie page (captures) ; en attente de son choix pour garder ou remplacer le 998.
+
+## Build 1001 (suite) — Communauté responsive : tablette et ordinateur
+- Blandine (10 h 20) : brief ChatGPT « Refonte responsive » (3 présentations : iPhone < 768 px inchangé, tablette, ordinateur) ; analyse présentée (menu de gauche à partir de 1024 px, place réelle : 768/820 sans menu, 814/984 à 1024/1194, 1070/1230/1710 à 1280/1440/1920) ; 10 h 22 : « Ok fais tout d'un coup ».
+- iPhone (< 768 px) : rien ne change. Le seuil JS/CSS de la version iPhone passe de 1024 à 768 px.
+- À partir de 768 px : haut de page éditorial (titre 52 → 88 px selon la largeur) ; tablette jusqu'à 1279 px : globe centré ; ordinateur : globe calé à gauche.
+- Rubriques : les trois sections enveloppées dans .com2b-rubriques ; tablette (768–1279) : « À découvrir » sur toute la largeur (carrousel, cartes 2,6:1) puis « Dans les écuries » et « À l'agenda » côte à côte (cartes qui se retournent, 1,65:1) ; ordinateur (≥ 1280) : trois colonnes égales 1,65:1. Le carrousel et les cartes qui se retournent servent désormais à toutes les largeurs (les anciennes cartes ordinateur ne sont plus affichées, code gardé).
+- Fil : onglets regroupés à gauche (écart 28 px) ; publications en grille 2 colonnes (3 à partir de 1440 px), fond rgba(9,17,21,.82), bordure champagne fine, 6 d'abord puis « Voir plus de publications (n) » (7 langues). iPhone : défilement carte par carte inchangé.
+- Testé 375, 390, 768, 820, 1024, 1194, 1280, 1440, 1920 px et arabe (820, 1280) : aucun débordement horizontal, aucune erreur ; 16 scripts vérifiés.
