@@ -38,8 +38,9 @@
   # POUR ANNULER : supprimer la ligne « command » ci-dessous.
   # 12/10/2026 (référencement, action 2) : seo-accueil.cjs ajoute ensuite le texte de l'accueil pour Google dans la
   # copie publiée d'index.html, et garde une copie sans ce texte (app-base.html) pour les pages /cheval/, /ecurie/,
-  # /evenement/. Il ne fait jamais échouer la publication. POUR ANNULER : remettre la ligne sans « ; node outils/seo-accueil.cjs ».
-  command = "node outils/alleger-index.cjs; node outils/seo-accueil.cjs"
+  # /evenement/. Il ne fait jamais échouer la publication. 12/10 : seo-galops.cjs fabrique ensuite les pages publiques de la
+  # théorie des Galops (/<langue>/galops/…) et sitemap-galops.xml, à partir des fichiers de cours ; jamais bloquant non plus. POUR ANNULER : remettre la ligne sans « ; node outils/seo-accueil.cjs ».
+  command = "node outils/alleger-index.cjs; node outils/seo-accueil.cjs; node outils/seo-galops.cjs"
 
 # ---------- 12/10/2026 : la copie de l'appli pour les pages publiques (référencement) ----------
 # Jamais rangée par Google (c'est l'accueil sans son texte), toujours fraîche.
