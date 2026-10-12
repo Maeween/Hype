@@ -11860,3 +11860,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (15 h 59) : « pense à automatiquement ajuster sur tablette et ordi les changements faits sur tel » → règle permanente : chaque changement iPhone est décliné et vérifié en tablette (820) et ordinateur (1280) dans le même build.
 - Testé 390 px (2 et 5 albums) et 1280 px (2 albums) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 16 h 01 — Blandine : « Ok » → build 1038 publié (marqueur 20261012-1038).
+
+## Build 1039 (12/10) — Onglet « Chevaux » dans la barre du bas + page « Mes chevaux » — NON PUBLIÉ (attend validation)
+- Blandine (16 h 04) : « je voudrais ajouter un onglet chevaux au menu, à la barre de menu » ; 16 h 05 : choix A (nouvelle page) et C (8 onglets, libellés réduits).
+- Barre du bas : nouvel onglet « Chevaux » (icône fer à cheval, 7 langues) entre Cavalier et Communauté. Sur iPhone, les 8 libellés passent en 9,8 px (9 px en japonais) et « Communauté » s'écrit « Commu. » (fr/en/de), « Comuni. » (es), « Comun. » (it), « コミュ » (ja) ; l'arabe garde ses mots. Sur ordinateur (menu de gauche), libellés complets.
+- Nouvelle page EcranMesChevaux (écran « chevaux ») : « CHEVAUX / Mes chevaux / Tes chevaux et ceux que tu montes. », grille de mes chevaux possédés + rattachés (mêmes lectures que la page Cavalier, ◇ Cheval de l'écurie), carte « Ajouter un cheval » (même création), cadenas Premium à partir du 3e cheval possédé sans abonnement (même règle que la page Cavalier). Sans cheval : encart « Ajoute ton cheval / Créer sa fiche » (même image). En dessous : carte « Les chevaux de mon écurie » qui ouvre la page existante des chevaux du club. Bandeau HYPE en bas.
+- Tablette : 4 colonnes ; ordinateur : 6 colonnes, page large (1280) comme les autres pages larges. Rien de nouveau en base, aucune table touchée.
+- Testé 375, 390, 820, 1280 px ; les 7 langues (aucun libellé de la barre coupé à 375/390 px, après correction du japonais) ; arabe de droite à gauche ; cas sans cheval. 16 scripts sans erreur.
