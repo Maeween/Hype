@@ -11869,8 +11869,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 375, 390, 820, 1280 px ; les 7 langues (aucun libellé de la barre coupé à 375/390 px, après correction du japonais) ; arabe de droite à gauche ; cas sans cheval. 16 scripts sans erreur.
 - 12/10, 16 h 24 — Blandine : « mets en ligne » → build 1039 publié (marqueur 20261012-1039). Question ouverte : avec un seul cheval, ouvrir directement sa fiche / le montrer en grand / garder la grille.
 
-## Build 1040 (12/10) — Chevaux : 2 gratuits, Premium sans limite — NON PUBLIÉ (attend validation)
+## Build 1040 (12/10) — Chevaux : 2 gratuits, Premium sans limite, Evan et Liam illimités
 - Blandine (16 h 58–17 h 01) : « Premium on peut mettre sans limite… pour l'instant, au cas où des écuries se créent » ; « Gratuit 2 ».
 - Vérifié avant de coder : en Premium, la création d'un cheval n'avait déjà AUCUNE limite (seuls les comptes gratuits sont contrôlés) ; l'ancienne règle « 6 en Premium » (hypeQuotaChevaux / hypeChevalBloque) n'est appelée nulle part. ⚠️ Erreur de ma part signalée à Blandine : je lui avais d'abord cité ces 6 chevaux comme règle active.
-- Changement : un compte gratuit peut désormais créer 2 chevaux (avant : 1). Exception Evan et Liam (30) inchangée ; les chevaux rattachés (qu'on monte) restent hors quota. L'affichage (cadenas à partir du 3e cheval possédé, pages Cavalier et « Mes chevaux ») était déjà réglé sur 2 : tout est maintenant cohérent.
+- Changement : un compte gratuit peut désormais créer 2 chevaux (avant : 1). Blandine (17 h 10) : « Evan et Liam doivent pouvoir faire illimité » → leur exception passe de 30 à illimité ; les chevaux rattachés (qu'on monte) restent hors quota. L'affichage (cadenas à partir du 3e cheval possédé, pages Cavalier et « Mes chevaux ») était déjà réglé sur 2 : tout est maintenant cohérent.
 - 16 scripts sans erreur.
+- Le cadenas des pages Cavalier et « Mes chevaux » suit maintenant le MÊME quota que la création (avant : toujours 2, donc Evan et Liam auraient vu un cadenas dès leur 3e cheval).
+- Testé pages Cavalier et « Mes chevaux » (390 px) : aucune erreur ; 16 scripts sans erreur.
+- 12/10, 17 h 10 — Blandine : « Ok » → build 1040 publié (marqueur 20261012-1040).

@@ -34591,7 +34591,7 @@ function EcranMonCavalier() {
                 "\uFF0B " + T("Cr\u00e9er sa fiche", "Create its profile", "Crear su ficha", "Crea la sua scheda", "\u30d7\u30ed\u30d5\u30a3\u30fc\u30eb\u3092\u4f5c\u6210", "Steckbrief anlegen", "\u0625\u0646\u0634\u0627\u0621 \u0628\u0637\u0627\u0642\u062a\u0647"))));
         }
         var cartes = slots.map(function (x, i) {
-          var verrouille = !__estVisite && !x.lien && i >= 2 && !premium;
+          var verrouille = !__estVisite && !x.lien && !premium && i >= ((typeof quotaGratuit === "function") ? quotaGratuit(moiCav && moiCav.id) : 2);   /* (1040) meme quota qu a la creation (2, illimite pour Evan et Liam) */
           var coeur = (x.ch.flots || []).some(function (fl) { return fl.coeur; });
           return h("button", { key: "cg" + i, onClick: verrouille ? function () { setEcran("premium"); } : ouvrirCheval(x.id), style: { background: "none", border: "none", padding: 0, textAlign: "left", cursor: "pointer", minWidth: 0, alignSelf: "start" /* 01/10 (518) : collee en haut de sa case comme la carte du milieu - un bouton centre son contenu en hauteur, et la ligne « \u25C7 Cheval de l ecurie » un peu plus haute faisait descendre les voisines de 2-3 px */ } },
             h("div", { style: { position: "relative", width: "100%", aspectRatio: "10 / 11", borderRadius: 14, overflow: "hidden", backgroundImage: x.ch.photo ? ("url(" + x.ch.photo + ")") : "none", backgroundColor: "#101D22", backgroundSize: "cover", backgroundPosition: "center", border: "1px solid " + CAV_BORD, boxShadow: "0 14px 26px -20px rgba(0,0,0,0.9)" } },
@@ -44038,9 +44038,9 @@ function SectionCommentaires({ cible, theme }) {
    restent limites a 1 cheval. Exception nominative par user_id (pas par email,
    plus fiable) -- A COMPLETER avec les vrais user_id d'Evan et de Liam. */
 var QUOTA_CHEVAUX_EXCEPTIONS = {
-  "fb616495-f533-461d-aa5b-537437a7b185": 30, /* Evan */
-  "2f6eeb8b-37ef-4ce5-9639-f2a267498d4b": 30, /* Liam (fiche 1) */
-  "fa2875ae-f740-4774-ad79-4726477add5e": 30  /* Liam (fiche 2) */
+  "fb616495-f533-461d-aa5b-537437a7b185": Infinity, /* Evan — 12/10 (1040) Blandine : illimite (etait 30) */
+  "2f6eeb8b-37ef-4ce5-9639-f2a267498d4b": Infinity, /* Liam (fiche 1) */
+  "fa2875ae-f740-4774-ad79-4726477add5e": Infinity  /* Liam (fiche 2) */
 };
 function quotaGratuit(userId) {
   if (userId && QUOTA_CHEVAUX_EXCEPTIONS[userId] != null) return QUOTA_CHEVAUX_EXCEPTIONS[userId];
@@ -69527,11 +69527,13 @@ function EcranMesChevaux() {
   var tablette = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;
   var ordi = (typeof useHypeLargeur === "function") ? useHypeLargeur(1024) : false;
   var _l = React.useState(null), liste = _l[0], setListe = _l[1];
+  var _q = React.useState(2), quotaCh = _q[0], setQuotaCh = _q[1];   /* (1040) quota gratuit du compte (2 ; illimite pour Evan et Liam) */
   React.useEffect(function () {
     var actif = true;
     (async function () {
       try {
         var tous = [];
+        try { var uQ = await utilisateurActuel(); if (actif && uQ && typeof quotaGratuit === "function") setQuotaCh(quotaGratuit(uQ.id)); } catch (eQ) { }
         if (typeof mesChevaux === "function") { var rc = await mesChevaux(); if (rc && rc.data) tous = rc.data.slice(); }
         if (typeof mesChevauxLies === "function") { var rl = await mesChevauxLies(); if (rl && rl.data && rl.data.length) tous = tous.concat(rl.data); }
         var vus = {}; tous = tous.filter(function (c) { if (!c || !c.id || vus[c.id]) return false; vus[c.id] = true; return true; });
@@ -69549,7 +69551,7 @@ function EcranMesChevaux() {
   var nbPossedes = 0;
   var cartes = (liste || []).map(function (c) {
     var lien = !!c.__lien;
-    var verrou = !lien && !premium && (nbPossedes++ >= 2);   /* meme regle que la page Cavalier : 2 chevaux possedes sans Premium */
+    var verrou = !lien && !premium && (nbPossedes++ >= quotaCh);   /* (1040) meme regle qu a la creation : 2 chevaux possedes sans Premium, illimite pour Evan et Liam */
     var photo = c.photo_url ? ((typeof vignetteHype === "function") ? vignetteHype(c.photo_url, 300, 330) : c.photo_url) : null;
     var info = [c.race, c.age, c.discipline].filter(Boolean).join(" · ");
     return h("button", { key: c.id, type: "button", onClick: function () { if (verrou) setEcran("premium"); else ouvrir(c.id); }, style: { background: "none", border: "none", padding: 0, textAlign: "start", cursor: "pointer", minWidth: 0, alignSelf: "start" } },
