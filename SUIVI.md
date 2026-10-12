@@ -11821,3 +11821,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Couvertures chargées en vignette (jamais l'original), en différé. Album sans couverture : fond pétrole sobre + petit symbole (inchangé).
 - Retirés de la page Photos : la grande carte adaptative de l'album seul et la grille 2×2. Inchangés : « + Album », ouverture d'un album (son contenu s'affiche juste sous la rangée), étoile « à la une », droits, pages Cavalier et Écurie.
 - Testé 375, 390, 820, 1280 px, 1 et 5 albums : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Build 1033 (12/10) — « Les moments récents » : trois finitions — NON PUBLIÉ (attend validation)
+- Brief Blandine 14 h 04 « Finitions de l'encart Les moments récents » (composition validée, seulement trois retouches).
+- Mosaïque environ 10 % moins haute : mêmes photos, même ordre, même disposition ; seules les rangées sont un peu moins hautes (vignettes demandées à la nouvelle taille, recadrages gardés, images jamais déformées).
+- En-tête : 18 px minimum entre « Les moments récents » et le compteur ; titre 24 px sur iPhone (25 ailleurs) ; compteur plus discret ; s'il n'y a pas la place, le compteur passe à la ligne, à droite, sans chevauchement.
+- Bouton « Voir tous les souvenirs → » : capsule visible de 38 px, bordure plus fine ; zone tactile toujours de 44 px ; champagne mat. Même bouton pour « Découvrir les années passées » (les deux encarts restent assortis). La page « Tous les souvenirs » garde son bouton actuel.
+- Testé 375 et 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
