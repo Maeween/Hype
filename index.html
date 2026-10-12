@@ -69519,6 +69519,7 @@ function GestionPiquetEH(props) {
    « Les chevaux de mon ecurie » : carte d acces a la page qui existe deja (ecurie-hype), sans recharger ces chevaux ici.
    iPhone 3 colonnes ; tablette 4 ; ordinateur 6 (largeur 1280 max, comme les autres pages larges).
    ============================================================================ */
+var FOND_MES_CHEVAUX = { src: "images/PERFORMANCES_CHEVAUX_HERO.webp", mobile: { h: "62vh", pos: "68% 25%" }, large: { h: "78vh", pos: "center 25%" } };
 function EcranMesChevaux() {
   /* 12/10 (1041) REFONTE « Mes chevaux » d apres la maquette validee par Blandine (17 h 17) et ses choix : pas d onglets
      (« le menu la-haut est fictif »), 10 chevaux puis « Voir 10 chevaux de plus », recherche a partir de 12 chevaux, pas de
@@ -69678,7 +69679,13 @@ function EcranMesChevaux() {
     return function () { window.removeEventListener("scroll", surDefil); };
   }, []);
   var fondFixe = h("div", { "aria-hidden": "true", style: { position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden", background: "#05080B", transform: "translateZ(0)", WebkitTransform: "translateZ(0)" } },
-    h("img", { src: "images/PERFORMANCES_CHEVAUX_HERO.webp", alt: "", decoding: "async", style: { position: "absolute", top: 0, left: 0, width: "100%", height: tablette ? "78vh" : "62vh", objectFit: "cover", objectPosition: tablette ? "center 25%" : "68% 25%", display: "block", transform: rtl ? "scaleX(-1)" : "none" } }),
+    (function () {
+      /* image de fond : reglages par image, pour ne JAMAIS couper le cheval (Blandine 17 h 49) */
+      var F = FOND_MES_CHEVAUX;
+      var st = tablette ? F.large : F.mobile;
+      if (st.droite) return h("img", { src: F.src, alt: "", decoding: "async", style: { position: "absolute", top: 0, insetInlineEnd: 0, height: st.h, width: "auto", maxWidth: "none", display: "block", transform: rtl ? "scaleX(-1)" : "none", WebkitMaskImage: "linear-gradient(90deg, transparent 0%, #000 35%)", maskImage: "linear-gradient(90deg, transparent 0%, #000 35%)" } });   /* image calee a droite, entiere (hauteur fixe), bord fondu : le cheval n est jamais coupe */
+      return h("img", { src: F.src, alt: "", decoding: "async", style: { position: "absolute", top: 0, left: 0, width: "100%", height: st.h, objectFit: "cover", objectPosition: st.pos, display: "block", transform: rtl ? "scaleX(-1)" : "none" } });
+    })(),
     h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,8,11,0.30) 0%, rgba(5,8,11,0.08) 18%, rgba(5,8,11,0.45) 34%, rgba(5,8,11,0.85) " + (tablette ? "62%" : "50%") + ", #05080B " + (tablette ? "78%" : "62%") + ")" } }),
     h("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(5,8,11,0.65) 0%, rgba(5,8,11,0.15) 55%, rgba(5,8,11,0) 80%)" } }),
     h("div", { ref: refNuit, style: { position: "absolute", inset: 0, opacity: 0, background: "rgba(5,8,11,0.72)", willChange: "opacity" } }));
