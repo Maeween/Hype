@@ -55,7 +55,7 @@ const DELAI_BASE_MS = 2500;
 const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
-type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number };
+type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number; x?: number };
 
 /* ---------- L'annuaire (gardé en mémoire tant que la fonction reste chaude) ---------- */
 let ANNUAIRE: Promise<Record<string, Ecurie>> | null = null;
@@ -276,7 +276,8 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   html += `<p style="margin-top:22px;font-size:12px">Hype est une application indépendante, sans lien officiel avec cette écurie ni avec la FFE. Données de l’écurie : © contributeurs OpenStreetMap.</p>`;
   html += `</main>`;
 
-  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html };
+  // 12/10/2026 : x = écartée du référencement (pas une écurie, ou doublon ; outils/ecuries-exclues.json)
+  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html, cachee: ec.x === 1 };
 }
 
 /* ---------- Flux : la page Hype avec les ajouts (identique à cheval-route.ts) ---------- */
@@ -308,6 +309,7 @@ async function pageAvecRoute(source: Response, nomClub: string, seo: ReturnType<
     `<base href="/"><script>window.__HYPE_ROUTE_ECURIE=${JSON.stringify(nomClub).replace(/</g, "\\u003c")};</script>` +
     `<meta name="description" content="${echapper(seo.description)}">` +
     `<link rel="canonical" href="${echapper(seo.canonical)}">` +
+    (seo.cachee ? `<meta name="robots" content="noindex, follow">` : "") +
     `<meta property="og:type" content="website">` +
     `<meta property="og:site_name" content="Hype">` +
     `<meta property="og:locale" content="fr_FR">` +

@@ -1,0 +1,315 @@
+{
+"accueil-centre-equestre": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"association-cheval-garonne": {
+"raison": "doublon de",
+"garder": "centre-equestre-cheval-garonne"
+},
+"boutique-equitation": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"bureau": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"centre-de-randonees-equestre-la-rose-des-vents": {
+"raison": "doublon de",
+"garder": "la-rose-des-vents"
+},
+"centre-equestre-036377": {
+"raison": "nom générique, en double avec",
+"garder": "les-haras-de-la-porte-de-saint-leu"
+},
+"centre-equestre-112241": {
+"raison": "nom générique, en double avec",
+"garder": "club-hippique-d-hardelot-plage"
+},
+"centre-equestre-206773": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-des-deux-rives"
+},
+"centre-equestre-309988": {
+"raison": "nom générique, en double avec",
+"garder": "centre-hippique"
+},
+"centre-equestre-374334": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-de-montfermeil"
+},
+"centre-equestre-578701": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-saint-pierre"
+},
+"centre-equestre-647932": {
+"raison": "nom générique, en double avec",
+"garder": "pole-hippique-de-yutz"
+},
+"centre-equestre-911874": {
+"raison": "nom générique, en double avec",
+"garder": "area-equestre-de-la-castelle"
+},
+"centre-equestre-969302": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-du-vieux-chateau"
+},
+"centre-equestre-cheval-garonne": {
+"raison": "doublon de",
+"garder": "garonne-cheval"
+},
+"centre-equestre-de-brezillet": {
+"raison": "doublon de",
+"garder": "saint-brieuc-equitation-espace-brezillet"
+},
+"centre-equestre-de-de-lege-cap-ferret": {
+"raison": "doublon de",
+"garder": "centre-equestre-de-lege-cap-ferret"
+},
+"centre-equestre-de-la-sensee": {
+"raison": "doublon de",
+"garder": "ecuries-de-la-sensee"
+},
+"centre-equestre-de-vassiviere-carriere": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"centre-equestre-et-poney-club": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-poney-club-mont-saint-aignan"
+},
+"centre-equestre-orloff-iii": {
+"raison": "doublon de",
+"garder": "centre-equestre-orloff-3"
+},
+"centre-equestre-poney-club-088916": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-du-pays-hayland"
+},
+"centre-equestre-poney-club-50": {
+"raison": "nom générique, en double avec",
+"garder": "la-cavalerie-d-andrea"
+},
+"centre-equestre-regional-635700": {
+"raison": "doublon de",
+"garder": "centre-equestre-regional-rene-dujardin"
+},
+"centre-equestre-riderland": {
+"raison": "doublon de",
+"garder": "riderland-ecurie-des-chartreux"
+},
+"cercle-hippique-dijonnais": {
+"raison": "doublon de",
+"garder": "centre-hippique-dijonnais"
+},
+"cirque-d-equitation-ext": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"club-des-isoles-centre-equestre": {
+"raison": "doublon de",
+"garder": "club-des-iles"
+},
+"club-hippique-aix-marseille": {
+"raison": "doublon de",
+"garder": "club-hippique-aix-marseille-ecuries-hubert-noel"
+},
+"club-house-et-manege": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"cote-sellerie": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"cross-equestre": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"detente-de-cross": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"domaine-de-la-garde": {
+"raison": "doublon de",
+"garder": "poney-club-du-domaine-de-la-garde"
+},
+"domaine-du-moulias": {
+"raison": "doublon de",
+"garder": "centre-equestre-domaine-du-moulias"
+},
+"ecole-d-equitation-du-waldhof-academie-equestre": {
+"raison": "doublon de",
+"garder": "centre-equestre-du-waldhof"
+},
+"ecole-equestre-du-scheidstein": {
+"raison": "doublon de",
+"garder": "ecole-d-equitation-scheidstein"
+},
+"ecurie-des-chartreux": {
+"raison": "doublon de",
+"garder": "riderland-ecurie-des-chartreux"
+},
+"ecurie-des-sablons": {
+"raison": "doublon de",
+"garder": "centre-equestre-les-sablons"
+},
+"ecurie-pierre-defrance": {
+"raison": "doublon de",
+"garder": "ecuries-pierre-defrance"
+},
+"ecuries-box": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"ecuries-box-et-petit-manege": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"ecuries-bureau": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"enclos": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"enclos-cheveaux": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"enclos-pour-les-poneys": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"epona": {
+"raison": "doublon de",
+"garder": "centre-equestre-epona-croissy-beaubourg-equitation"
+},
+"equitation": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-688383"
+},
+"etrier-chiroquois": {
+"raison": "doublon de",
+"garder": "l-etrier-chiroquois"
+},
+"ferme-de-fenicat": {
+"raison": "doublon de",
+"garder": "centre-equestre-fenicat"
+},
+"ferme-equestre-de-berthaire": {
+"raison": "doublon de",
+"garder": "centre-equestre-de-berthaire"
+},
+"ferme-equestre-du-pech-merle": {
+"raison": "doublon de",
+"garder": "centre-echestre-de-peche-merle"
+},
+"ferme-equestre-lou-recampado": {
+"raison": "doublon de",
+"garder": "centre-equestre-lou-recampadou"
+},
+"grange": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"haras-d-eloge-poney-club": {
+"raison": "doublon de",
+"garder": "ecuries-d-eloge"
+},
+"haras-de-jardy": {
+"raison": "doublon de",
+"garder": "jardy-equitation-haras-de-jardy"
+},
+"haras-national-du-pin": {
+"raison": "doublon de",
+"garder": "haras-national-le-haras-du-pin"
+},
+"horse": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"l-eperon-de-pin-balma": {
+"raison": "doublon de",
+"garder": "club-eperon-pin-balma"
+},
+"l-etrier-sarthois": {
+"raison": "doublon de",
+"garder": "etrier-sarthois"
+},
+"la-sellerie-de-mae": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"la-sellerie-du-loudunais": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"la-sellerie-du-parc": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"la-vaillantiere": {
+"raison": "doublon de",
+"garder": "haras-de-la-vaillantiere"
+},
+"le-chanois": {
+"raison": "doublon de",
+"garder": "carrousel-le-chanois"
+},
+"le-galop": {
+"raison": "doublon de",
+"garder": "centre-equestre-le-galop"
+},
+"le-galop-tricastin": {
+"raison": "doublon de",
+"garder": "centre-equestre-le-galop-tricastin"
+},
+"le-manege": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-de-teen-ranch"
+},
+"les-cyclamens": {
+"raison": "doublon de",
+"garder": "centre-equestre-les-cyclamens"
+},
+"les-ecuries-la-jument-de-margot": {
+"raison": "doublon de",
+"garder": "ecuries-la-jument-de-margot"
+},
+"lous-chivaus": {
+"raison": "doublon de",
+"garder": "centre-equestre-lous-chivaus"
+},
+"parc-des-hongres": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"parc-equestre-federal": {
+"raison": "doublon de",
+"garder": "parc-equestre-federal-ffe"
+},
+"parc-equestre-grande-lande": {
+"raison": "doublon de",
+"garder": "parc-equestre-de-la-grande-lande"
+},
+"plusieurs-terrain-d-equitation": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"poney-club-118768": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-du-rif"
+},
+"poney-club-25": {
+"raison": "nom générique, en double avec",
+"garder": "centre-equestre-240734"
+},
+"poney-club-629780": {
+"raison": "nom générique, en double avec",
+"garder": "club-hippique-de-versailles"
+},
+"poney-club-857854": {
+"raison": "nom générique, en double avec",
+"garder": "etrier-chiroquois"
+},
+"rond-d-echauffement": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"rond-de-voltige-069181": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"rond-de-voltige-264744": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"s-a-e-l-la-foret": {
+"raison": "doublon de",
+"garder": "centre-equestre-s-a-e-l-la-foret"
+},
+"saut-d-obstacles-carriere": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+},
+"scellerie": {
+"raison": "pas une écurie (partie d'un site, boutique ou nom vide)"
+}
+}

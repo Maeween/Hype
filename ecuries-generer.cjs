@@ -60,8 +60,14 @@ for (const [s, liste] of Object.entries(groupes)) {
 const cles = Object.keys(sortie).sort();
 const ordonne = {};
 for (const k of cles) ordonne[k] = sortie[k];
+// 12/10/2026 : écuries écartées du référencement (pas une écurie, ou doublon) — liste dans outils/ecuries-exclues.json.
+// Elles restent dans l'annuaire (leur page marche toujours) avec « x: 1 » : la page dit à Google de ne pas la montrer,
+// elles sortent du plan du site et des pages par département. Pour en remettre une : la retirer de ce fichier et relancer.
+let EXCLUES = {};
+try { EXCLUES = JSON.parse(fs.readFileSync(R + "outils/ecuries-exclues.json", "utf8")); } catch (e) {}
+for (const k of Object.keys(EXCLUES)) if (ordonne[k]) ordonne[k].x = 1;
 fs.writeFileSync(R + "ecuries.json", JSON.stringify(ordonne));
 fs.writeFileSync(R + "sitemap-ecuries.xml",
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-  cles.map((k) => `  <url><loc>https://2hype.fr/ecurie/${k}</loc></url>`).join("\n") + "\n</urlset>\n");
+  cles.filter((k) => !ordonne[k].x).map((k) => `  <url><loc>https://2hype.fr/ecurie/${k}</loc></url>`).join("\n") + "\n</urlset>\n");
 console.log("écuries :", L.length, "→ adresses :", cles.length);

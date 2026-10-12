@@ -112,7 +112,7 @@ function principal() {
   const parDep = {};
   for (const [adr, [dep, ville]] of Object.entries(D.ecuries)) {
     const fiche = annuaire[adr];
-    if (!fiche || !D.deps[dep]) continue;
+    if (!fiche || fiche.x || !D.deps[dep]) continue;   // x : écartée (outils/ecuries-exclues.json)
     (parDep[dep] = parDep[dep] || []).push({ adr, nom: fiche.n || adr, ville: String(ville || "").replace(/\s*\(\s*(\d{2,3}|2A|2B)\s*\)\s*$/i, "").trim() });
   }
   const chemin = (dep) => `centres-equestres/${slug(D.deps[dep][0])}-${dep.toLowerCase()}/`;
