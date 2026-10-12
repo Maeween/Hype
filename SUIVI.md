@@ -12160,3 +12160,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouvelle carte « Identité & origines » (style des cartes de l'accueil) sous les tuiles : Père, Mère, Père de mère, Âge ; « Origines non renseignées » si vide.
 - Bouton « Ajouter / Compléter / Voir-modifier les origines » : ouvre la MÊME fenêtre que la V2 (saisie + import depuis une capture), visible seulement pour la propriétaire, la responsable du club et la modératrice. ⚠️ Ce bouton enregistre vraiment (c'est l'outil existant) ; le reste de la V3 n'est toujours pas branché.
 - Textes nouveaux en 7 langues. Vérifié 390 / 1280, aucune erreur. 16 scripts 0 erreur.
+
+## Build 1071 (13/10) — Page cheval V1 : corrections de la page principale — NON PUBLIÉ (proposition)
+- Demande : « sur la v1 règle tous les problèmes que tu avais soulevés et re propose moi la page ». Contient aussi 1065 et 1066 (non publiés).
+- Résultats en double : la liste des 3 derniers résultats est retirée de la carte « En concours » (les mêmes sont juste dessous en cartes). La carte garde les compteurs et « Voir tout son palmarès ».
+- Cartes des derniers résultats plus petites (médaille 14, portrait 34 au lieu de 50, textes et marges réduits), toujours 3 visibles.
+- Un seul écart de 28 px entre les blocs (origines, tuiles, En concours, séparateurs) ; l'espace vide de 56 px sous les tuiles est retiré.
+- Carte « En concours » et « Partager sa fiche » aux couleurs des tuiles (fond pétrole, filet champagne) ; le faux QR hachuré devient une icône de partage ; « Générer un lien » et « Importer mes résultats officiels » en contour champagne (jamais de doré plein).
+- Une année sans date ne s'affiche plus « NaN ».
+- Ordinateur : la page principale reste une colonne centrée comme aujourd'hui (version ordinateur prévue en dernier, décision du 10/10).
+- Vérifié iPhone 390 et ordinateur 1280 : aucune erreur, aucun débordement. 16 scripts 0 erreur.
