@@ -11740,3 +11740,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1016 (12/10) — Page Histoire sur ordinateur et tablette : témoignages en bandeau
 - À partir de 768 px (maquette) : « Ils ont croisé sa route » devient un bandeau qui défile (2 cartes visibles sur tablette, 3 à partir de 1 200 px), flèches ‹ › de chaque côté, cartes de même hauteur ; lien « Tous les témoignages → » qui les affiche tous en grille (puis « Voir en bandeau »). Un seul bouton « Raconter mon expérience », inchangé. 7 langues, sens inversé en arabe.
 - iPhone : inchangé (3 puis « Voir les autres »). Testé 820 et 1280 px ; 16 scripts sans erreur.
+
+## Build 1017 (12/10) — Page Histoire sur ordinateur et tablette : fin de page Hype
+- À partir de 768 px : la page se ferme avec le paysage et la signature « HYPE » (finPageCh, la même que Photos et Vidéos), comme sur la maquette. iPhone inchangé. Testé 390 et 1280 px ; 16 scripts sans erreur.
+- Non repris de la maquette (n'existe pas dans Hype, ou à décider) : onglet « Actualité », étiquettes CSO/Compétition/Équipe, phrase sous le nom, « Créer une collection » (écarté par Blandine).
