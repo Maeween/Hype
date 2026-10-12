@@ -12064,6 +12064,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « envoie tout d'un coup qu'on en finisse » → fond de l'Écurie qui défile (1059), retouches de l'agenda (1060), cartes des événements passés en 2 colonnes (1061). Marqueur : 20261012-1061.
 - Fichiers : index.html, SUIVI.md (images inchangées).
 
+## Build 1062 (12/10) — Santé du cheval : haut de page aéré — NON PUBLIÉ (attend validation)
+- Blandine (21 h 56, capture) : « aère un peu le haut de cette page, on clique partout sans le vouloir » ; (21 h 57) « descends les premiers onglets et le reste de la page ».
+- Onglets Histoire · Photos · Résultats · Vidéos · Santé descendus (+28 px sous le nom du cheval) et plus hauts (zone de toucher 44 px).
+- Plus d'espace entre les onglets et « Prendre soin, c'est déjà aimer », puis avant les cartes « Ajouter un soin / Ses consignes », et entre ces deux cartes.
+- Rien d'autre ne change (mêmes boutons, mêmes actions).
+- Testé 390 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md.
+- Note : Blandine (21 h 58) — ne plus dire « Linguae » mais « Horse Lingo » (horselingo.fr) ; le branchement de horselingo.fr (site Netlify resté sur un dépôt manuel du 19/08 qui affiche Hype) est remis à plus tard.
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
