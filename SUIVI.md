@@ -12085,6 +12085,19 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « oui vas-y » → page Santé aérée (1062), photo de cheval par défaut et Mes chevaux aéré (1063). Marqueur : 20261012-1063.
 - Fichiers : index.html, SUIVI.md.
 
+## SQL Sécurité 1 — passé par Blandine (12/10, ~22 h 49), vérifié en lecture
+- Evan ajouté à hype_ambassadeurs (Liam y était déjà).
+- Règle « poster resultat » : une ligne origine = 'import' n'est acceptée que si hype_est_premium() (abonné mensuel/annuel/duo, ambassadeur, modératrice). Ajouts manuels, imports des modératrices et masquage inchangés.
+- Déclencheur trg_resultats_rattachement (avant ajout ET modification de cavalier_id) : hors modératrice, cavalier_id ne peut être que soi-même ou le compte qui possède ce nom FFE (sinon remis à vide / à l'ancienne valeur). Rattachement auto des nouveaux imports inchangé.
+
+## Build 1064 (12/10) — Import réservé à Premium, Evan et Liam niveau Duo, dons sans Premium — NON PUBLIÉ (attend validation)
+- Écran « Réservé à Premium » (cadenas, « Découvrir Hype Premium », Retour) posé sur l'écran d'import : couvre les 4 chemins (page de la cavalière, Performances, plusieurs chevaux, fiche cheval). Abonnés, ambassadeurs, modératrices, Evan et Liam importent comme avant.
+- Evan et Liam (Blandine : « autant de droits que les modérateurs au niveau des avantages ») : Premium partout + niveau Duo dans l'appli (Hey Baby au maximum, Hype IA). PAS d'outils de modération. Ancien compte de Liam (2f6eeb8b…, absent de la base) retiré de la liste.
+- Dons « Membre Crystal » : l'adresse ?vip=1 et la marque du téléphone ne donnent plus le Premium (marque effacée au démarrage). Le retour de don affiche un simple remerciement ; texte corrigé dans les 7 langues (il promettait « 6 mois de Premium offerts », faux).
+- Nouveaux textes traduits dans les 7 langues.
+- Testé 390 : compte gratuit → écran Premium ; compte gratuit avec ?vip=1 → remerciement puis écran Premium (plus de Premium) ; modératrice → import normal. 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md.
+
 ## Résultats FFE Premium — décisions et état (12/10, 22 h 00 → 22 h 46)
 - Import des résultats (télémat, cavalière ET cheval) : RÉSERVÉ À PREMIUM, sans saison gratuite (Blandine 22 h 26 « plus simple de laisser accès premium »). Rattachement d'un nom FFE : reste GRATUIT.
 - Premium = abonnement mensuel, annuel ou duo actif ; le plan « ai » (Hype IA) NE donne PAS Premium (Blandine 22 h 42) ; + ambassadeurs + modératrices.
