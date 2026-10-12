@@ -84,12 +84,15 @@ footer a{color:#a9a294}
 [dir=rtl] .haut img{object-position:38% 18%;transform:scaleX(-1)}
 @media (min-width:1100px){[dir=rtl] .haut img{right:auto;left:0;-webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 35%);mask-image:linear-gradient(270deg,transparent 0%,#000 35%)}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+.banniere{display:none}
+@media (min-width:760px){.haut{min-height:0;justify-content:flex-start;padding-top:86px;background:var(--fond)}.haut img:not(.banniere img),.haut::after{display:none}.banniere{display:block;position:relative;z-index:2;margin:0 0 30px}.banniere img{display:block;position:static;width:100%;height:auto;opacity:1;border-radius:18px;border:1px solid rgba(217,185,122,.2);-webkit-mask-image:none;mask-image:none}.haut .mot{display:none}.contenu-haut{max-width:none}}
 </style>
 </head>
 <body>
 <header class="haut">
 <img src="/images/cheval-fond-connexion-620.jpg" alt="Tête de cheval noir dans la pénombre" width="619" height="1100" fetchpriority="high">
 <div class="barre"><a class="marque" href="https://2hype.fr/">HYPE</a><a class="langue" href="#langues" aria-label="Langue">FR · Langue</a></div>
+<a class="banniere" href="https://2hype.fr/"><img src="/images/hype-partage-1200x630.jpg" width="1200" height="630" loading="lazy" alt="Hype — Toute ta passion équestre dans une seule application : chevaux, concours, écurie, progression, Hey Baby, souvenirs"></a>
 <div class="contenu-haut">
 <p class="mot">Hype</p>
 <h1>L&#x27;application équestre de ton cheval et de ton écurie</h1>
