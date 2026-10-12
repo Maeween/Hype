@@ -11846,3 +11846,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sur la page principale du cheval, le rail / la carte d'albums est retiré. À la place : l'encart « Les moments récents » de la page Photos (même mosaïque, mêmes photos récentes, la photo étoilée en grand si elle en fait partie), en lecture seule. Son bouton « Voir toutes ses photos → » (7 langues) ouvre la page Photos ; toucher une photo l'ouvre en grand comme avant.
 - Inchangés : la carte vidéo « Le voir en mouvement » juste au-dessus, la page Photos, les albums eux-mêmes et leurs données. Sans aucune photo : petit encart « Aucun souvenir pour le moment » (déjà traduit), son bouton ouvre la page Photos.
 - Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- 12/10, 15 h 49 — Blandine : « Ok » → build 1036 publié (marqueur 20261012-1036).
