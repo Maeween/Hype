@@ -11918,3 +11918,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (18 h 19) : « je vois rien sur la page Écurie » → expliqué : une bannière envoyée avant le 30/08 est déjà au format du bandeau (aucun changement visible, voulu) ; la différence se voit avec une photo verticale. Sécurité ajoutée : si la photo ne se charge pas, elle n'est jamais laissée invisible (onError).
 - Tablette vérifiée (820, 1024 px) : 2 colonnes, boutons d'écurie à largeur fixe, cheval entier à droite.
 - 12/10, 18 h 20 — Blandine : « Oui ok, charge pour la page ordi et tablette » → build 1045 publié (marqueur 20261012-1045).
+
+## Build 1046 (12/10) — Page Écurie : la photo de l'écurie devient le fond fixe de la page — NON PUBLIÉ (attend validation)
+- Blandine (18 h 22) : « l'idée c'est de mettre une image de fond comme on vient de faire pour la page Chevaux ».
+- La photo de couverture n'est plus dans le bandeau : elle devient un fond FIXE (même principe que « Mes chevaux » et Communauté) ; son haut sert de hero (nom de l'écurie dessus), elle se fond dans le noir en bas, les encarts glissent dessus, voile noir qui fonce sur les 320 premiers px de défilement ; calque à part (parade anti-gel).
+- Photo jamais recadrée : verticale → entière, calée à droite (à gauche en arabe), bord fondu, le haut de page s'allonge sur iPhone pour que le nom passe sous le cheval ; horizontale → entière sur toute la largeur. Sur ordinateur, le fond démarre après le menu de gauche. Écurie sans photo : fond graphique inchangé. Remplace l'essai du 1044 (photo dans le bandeau).
+- Testé 390 et 1280 px, photo verticale et photo horizontale (image par défaut), en haut et en défilant : aucune erreur ; 16 scripts sans erreur.
