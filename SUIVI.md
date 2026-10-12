@@ -11903,3 +11903,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone seulement : le titre descend (haut de page 270 → 345 px) et l'image du fond, toujours entière, passe de 60 % à 54 % de la hauteur d'écran : la tête entière (oreilles → nez) reste au-dessus du titre. Tablette et ordinateur inchangés.
 - Testé 375 et 390 px : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 18 h 04 — Blandine : « Ok » → build 1043 publié (marqueur 20261012-1043).
+
+## Build 1044 (12/10) — TEST page Écurie : photo de couverture jamais recadrée — NON PUBLIÉ (essai demandé par Blandine)
+- Blandine (17 h 59) : « quand quelqu'un met une photo sur la page Écurie, on peut faire la même chose ? » ; 18 h 05 : « teste sur Écurie que je voie ce que ça donne ».
+- Essai : une fois la photo chargée, on compare sa forme à celle du bandeau. Photo plus étroite (verticale) : toute la hauteur, calée à droite (à gauche en arabe), bord intérieur fondu dans le noir. Photo plus large : toute la largeur, calée en haut (le bas se fondait déjà dans le noir). Photo déjà recadrée au format du bandeau : comme avant. Apparition en fondu (pas de saut).
+- Simulé (iPhone 390) avec une photo verticale et une horizontale, avant / après. 16 scripts sans erreur.
