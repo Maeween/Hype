@@ -11744,3 +11744,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1017 (12/10) — Page Histoire sur ordinateur et tablette : fin de page Hype
 - À partir de 768 px : la page se ferme avec le paysage et la signature « HYPE » (finPageCh, la même que Photos et Vidéos), comme sur la maquette. iPhone inchangé. Testé 390 et 1280 px ; 16 scripts sans erreur.
 - Non repris de la maquette (n'existe pas dans Hype, ou à décider) : onglet « Actualité », étiquettes CSO/Compétition/Équipe, phrase sous le nom, « Créer une collection » (écarté par Blandine).
+
+## Build 1018 (12/10) — Santé & soins du cheval : version tablette
+- Constat : sur tablette (768–1023 px), toute l'appli était enfermée dans une colonne de téléphone (480 px) ; seules les pages qui s'ouvrent par-dessus (fiche cheval, Communauté) prenaient la largeur.
+- Le conteneur de l'appli s'élargit désormais sur tablette pour les écrans listés dans ECRANS_TABLETTE (ici : sante-cheval, 1 280 px max, comme l'ordinateur) ; la page Santé prend sa mise en page « ordinateur » dès 768 px (4 cartes de suivi, Hey Baby et magazine côte à côte). Barre du bas inchangée, pas de menu de gauche sous 1 024 px.
+- Testé 768 et 820 px (aucun débordement) ; Écurie vérifiée inchangée ; 16 scripts sans erreur.
+- 12 h 37–12 h 39 : idée de Blandine pour le mur de souvenirs (regrouper les années à une seule photo, ou les déplier) — « ne code pas concernant ce point ».
