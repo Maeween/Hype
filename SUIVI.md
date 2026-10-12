@@ -12085,6 +12085,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « oui vas-y » → page Santé aérée (1062), photo de cheval par défaut et Mes chevaux aéré (1063). Marqueur : 20261012-1063.
 - Fichiers : index.html, SUIVI.md.
 
+## Build 1065 (12/10) — Écurie (visiteur sans compte) : bouton à contour + encart décollé — NON PUBLIÉ (attend validation)
+- Blandine (23 h 15, capture de la page Écurie vue sans compte) : « pas de bouton plein doré et décolle un peu l'encart du bas de la photo ».
+- Encart « Bienvenue sur Hype » : 18 → 34 px sous la photo. « Créer un compte » : contour champagne + texte champagne au lieu du fond doré plein.
+- 16 scripts sans erreur. Capture visiteur impossible sur le banc de test (le banc sans session plante sur un profil vide, avant comme après la modification : propre au banc, pas à l'appli).
+- Fichiers : index.html, SUIVI.md.
+
 ## SQL Sécurité 1 — passé par Blandine (12/10, ~22 h 49), vérifié en lecture
 - Evan ajouté à hype_ambassadeurs (Liam y était déjà).
 - Règle « poster resultat » : une ligne origine = 'import' n'est acceptée que si hype_est_premium() (abonné mensuel/annuel/duo, ambassadeur, modératrice). Ajouts manuels, imports des modératrices et masquage inchangés.
@@ -12114,3 +12120,22 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
 - MAIS la règle du 04/10 (« la dernière story de chaque cavalière reste affichée, en gris, tant qu'elle n'en a pas posté une nouvelle », hype-stories.js hsListerStories) n'a JAMAIS pu marcher : les deux règles de lecture de la table hype_stories (hype_stories_lecture, hype_stories_lecture_publique) n'autorisent que expire_le > now(). Correctif = changer ces règles d'accès (SQL à préparer pour Blandine, avec analyse : une story terminée redevient lisible par tous).
 - Liste des défauts relevés sur ses captures (18 h 41–18 h 44) : en-tête qui recouvre le contenu ; décors vides avec « 1 » flottant ; « 1 photos choisies » ; pastille turquoise et bouton « G » du style de texte ; « Cercle Crystal » / « tes annonces » / « Visible 7 jours » même avec 1 mois ; icône ▶ bleue et pastille coupée en Musique ; recherche « Cirr » sans résultat dans Taguer ; croix + « Annuler » en double.
+
+## Build 1066 (12/10) — Page cheval V1 : hero dans le style de la V2 — NON PUBLIÉ (attend validation)
+- Photo pleine largeur qui se fond dans la page (masque dégradé), voile vertical + voile latéral (inversé en arabe).
+- Nom du cheval descendu plus bas, taille réduite (34 max sur téléphone), affixe puis infos (race, robe…) en petites capitales en dessous.
+- Retour = bouton rond contour champagne ; en haut à droite : langue + bouton rond ⋯ (ouvre le menu de la fiche). L'ancien ⋯ en bas à droite est retiré.
+- Vérifié téléphone et ordinateur. Branche build-1066 (contient aussi 1065).
+- Demandes en attente : menu des 6 encarts à remettre dans le design de la page ; outil d'import des origines accessible depuis l'onglet Origines ; retirer « Piquet » devant « CSO club » ; précision demandée sur « l'onglet de la réal CSO club à droite ».
+
+## Build 1067 (12/10) — Fiche cheval V2 : design complété (adresse cachée seulement)
+- Demande : « Finis la v2 que je me fasse une idée » + « mets en ligne » + « ne la branche pas aux autres pages, on fait juste le design ». La V2 reste ouverte UNIQUEMENT par 2hype.fr/#chevalv2-<id> ; la page cheval en service (V1) ne change pas.
+- Fond de page de la V1 (images/FOND_SANTE.webp, fixe), photo du hero qui se fond dans la page, sélecteur de langue à côté du ⋯.
+- Les 6 accès redeviennent des encarts (icône + nom) dans le style des cartes de la V2 : 3 × 2 sur téléphone, une ligne de 6 sur tablette et ordinateur.
+- Piquets : le mot « Piquet » est retiré ; la Team (ex. « Team CSO Club ») est une pastille sur la même ligne, à droite.
+- Photos & vidéos : la carte « Le voir en mouvement » et « Les moments récents » de la V1 (mêmes composants, lecture seule) à la place du petit rail.
+- Ajoutés : « Importer mes résultats officiels » (personnes autorisées, même écran que la V1), « Partager sa fiche » (habillée V2), bandeau de fin HYPE.
+- Tablette (≥ 768) : contenu en colonne centrée, vidéo et moments récents côte à côte. Ordinateur (≥ 1100) : origines à gauche, résultats à droite, puis vidéo et moments récents côte à côte. Route cheval-v2 ajoutée aux pages larges.
+- Les boutons ouvrent toujours les pages existantes de la V1 (rien de nouveau n'est branché). Textes nouveaux en 7 langues.
+- Vérifié iPhone 390, tablette 820, ordinateur 1280 : aucun débordement, aucune erreur. 16 scripts 0 erreur.
+- Mise en ligne seule (sans 1065 et 1066, qui attendent toujours ta validation).
