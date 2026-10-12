@@ -11950,9 +11950,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Simulé avec sa photo (390 et 1280 px) : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 18 h 52 — Blandine : « Ok » → builds 1048, 1049 et 1050 publiés ensemble (marqueur 20261012-1050).
 
-## Build 1051 (12/10) — Page « À découvrir » à onglets (Communauté) — NON PUBLIÉ (attend validation)
+## Build 1051 (12/10) — Page « À découvrir » à onglets (Communauté)
 - Blandine (18 h 36, captures) : ce qui se dépliait sous « Nouveaux profils » / « Cavalières à suivre » n'avait ni le visuel ni les couleurs de la page (anciennes listes, bouton turquoise) ; « mieux vaut des onglets que déplier ». 18 h 39 / 19 h 07 : « Ok ».
 - Nouvelle page EcranDecouvrir (écran « decouvrir ») : fond = le globe de Communauté, fixe et très assombri ; bouton retour vers Communauté ; « LE MONDE HYPE / À découvrir » ; deux onglets « Nouveaux profils · Cavalières à suivre » (soulignement champagne), l'onglet touché est ouvert d'office ; phrase d'accroche par onglet.
 - UNE seule sorte de carte : fond pétrole sombre, bordure champagne fine, photo ronde cerclée champagne, nom en Cormorant, « NOUVEAU » / « TON ÉCURIE » en champagne + écurie, bouton « + Suivre » au contour champagne (« Suivi ✓ » discret). Toutes les cartes ont la même hauteur. 2 par ligne sur iPhone, 3 sur tablette, 5 sur ordinateur.
 - Mêmes données et actions qu'avant (derniersCavaliers, hypeSuggestionsCavaliers, suivre / nePlusSuivre, ouverture du profil public). Communauté : les deux cartes ouvrent la page au lieu de déplier ; « + Ajouter » de Mes amis ouvre la page sur « Cavalières à suivre ». L'onglet Communauté de la barre reste allumé. Textes en 7 langues.
 - Testé 390 (deux onglets, clic depuis Communauté) et 1280 px : aucune erreur ; 16 scripts sans erreur.
+- 12/10, 19 h 16 — Blandine : « Ok » → build 1051 publié (marqueur 20261012-1051).
