@@ -11607,3 +11607,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rubriques : les trois sections enveloppées dans .com2b-rubriques ; tablette (768–1279) : « À découvrir » sur toute la largeur (carrousel, cartes 2,6:1) puis « Dans les écuries » et « À l'agenda » côte à côte (cartes qui se retournent, 1,65:1) ; ordinateur (≥ 1280) : trois colonnes égales 1,65:1. Le carrousel et les cartes qui se retournent servent désormais à toutes les largeurs (les anciennes cartes ordinateur ne sont plus affichées, code gardé).
 - Fil : onglets regroupés à gauche (écart 28 px) ; publications en grille 2 colonnes (3 à partir de 1440 px), fond rgba(9,17,21,.82), bordure champagne fine, 6 d'abord puis « Voir plus de publications (n) » (7 langues). iPhone : défilement carte par carte inchangé.
 - Testé 375, 390, 768, 820, 1024, 1194, 1280, 1440, 1920 px et arabe (820, 1280) : aucun débordement horizontal, aucune erreur ; 16 scripts vérifiés.
+
+## Build 1002 (12/10) — Fiche cheval : le hero des pages Photos / Vidéos / Santé
+- Blandine (10 h 29) : « le hero et le nom des chevaux, reproduis ce qu'on a sur toutes ses pages vidéo, photo etc ».
+- EcranCheval : la photo centrée (54 vh) et le halo du 960 laissent place au hero de Santé/Photos/Vidéos : photo pleine largeur fondue dans le noir à gauche (68 % sur ordinateur), petit titre champagne (race · âge · discipline), nom en Cormorant en grand (surnom d'abord comme avant, affixe « de … » dessous en champagne, nom officiel en petit si un surnom s'affiche). Les trois petits points du menu restent en bas à droite de la photo. Le nom n'est plus répété sous la photo ; la ligne de l'écurie et tout le reste ne changent pas. Miroir en arabe.
+- Testé français et arabe ; 16 scripts sans erreur.
