@@ -11736,3 +11736,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1015 (12/10) — Page Histoire sur ordinateur et tablette : encart « Son histoire » de la maquette
 - À partir de 768 px : grand encart photographique — photo du cheval à droite fondue dans le noir, surtitre « SON HISTOIRE », « Un parcours unique… » (Cormorant italique), « De ses premiers pas à aujourd'hui, découvrez l'histoire de <nom>. », puis le récit avec un filet champagne à gauche (7 langues, miroir en arabe). Même icône de partage, même bouton Écrire/Modifier (capsule, sans fond doré).
 - iPhone : encart inchangé. Testé 390, 820, 1280 px ; 16 scripts sans erreur.
+
+## Build 1016 (12/10) — Page Histoire sur ordinateur et tablette : témoignages en bandeau
+- À partir de 768 px (maquette) : « Ils ont croisé sa route » devient un bandeau qui défile (2 cartes visibles sur tablette, 3 à partir de 1 200 px), flèches ‹ › de chaque côté, cartes de même hauteur ; lien « Tous les témoignages → » qui les affiche tous en grille (puis « Voir en bandeau »). Un seul bouton « Raconter mon expérience », inchangé. 7 langues, sens inversé en arabe.
+- iPhone : inchangé (3 puis « Voir les autres »). Testé 820 et 1280 px ; 16 scripts sans erreur.
