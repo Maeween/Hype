@@ -48,6 +48,15 @@
      c'est la même information, en texte simple. Pendant le chargement, le bloc
      est placé sous l'écran « Hype — chargement… » (rien ne change à l'œil).
 
+   12/10/2026 — RÉFÉRENCEMENT, ACTION 1 (liens entre les pages) :
+     dans le texte pour Google, « Écurie : X » devient un LIEN vers la page
+     publique de l'écurie (https://2hype.fr/ecurie/<adresse>), trouvée dans
+     ecuries.json avec la même clé que l'appli (sans accents, minuscules).
+     Si le nom ne correspond à AUCUNE écurie, ou à PLUSIEURS (38 noms en double
+     dans l'annuaire), on laisse le simple texte, comme avant. Annuaire illisible
+     → texte simple, la fiche part quand même. Rien ne change à l'écran : ce
+     bloc est remplacé par la vraie fiche au démarrage de l'appli.
+
    CE QU'IL NE FAIT PAS (builds suivants) : sitemap, robots.txt, cache.
 
    ⚠️ LE GROS FICHIER N'EST PAS RELU : on ne lit que le début de la page
@@ -69,6 +78,40 @@ const NB_RESULTATS_TEXTE = 50;
 const DOMAINE = "https://2hype.fr";
 const LECTURE_MAX = 2 * 1024 * 1024;   // si le repère n'est pas dans les 2 premiers Mo : on s'arrête
 const DELAI_BASE_MS = 2500;
+
+/* ---------- 12/10 : l'annuaire des écuries (le même fichier qu'ecurie-route.ts) ---------- */
+let ANNUAIRE: Promise<Record<string, { n: string }>> | null = null;
+function annuaire(origine: string): Promise<Record<string, { n: string }>> {
+  if (!ANNUAIRE) {
+    ANNUAIRE = fetch(new URL("/ecuries.json", origine)).then((r) => {
+      if (!r.ok) throw new Error("ecuries.json http " + r.status);
+      return r.json();
+    }).catch((e) => { ANNUAIRE = null; throw e; });
+  }
+  return ANNUAIRE;
+}
+/* La clé d'un club, EXACTEMENT comme l'appli (clefClubG) et ecurie-route.ts. */
+function clefClub(n: unknown): string {
+  return String(n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
+}
+/* L'adresse publique de l'écurie du cheval : une seule correspondance, sinon "". */
+async function adresseEcurie(club: string, origine: string): Promise<string> {
+  const clef = clefClub(club);
+  if (!clef || clef === "__perso__") return "";
+  try {
+    const an = await annuaire(origine);
+    let trouve = "";
+    for (const s in an) {
+      if (clefClub(an[s] && an[s].n) !== clef) continue;
+      if (trouve) return "";          // nom en double dans l'annuaire : on ne devine pas
+      trouve = s;
+    }
+    return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(trouve) ? trouve : "";
+  } catch (e) {
+    console.log("[cheval-route] annuaire :", String(e));
+    return "";
+  }
+}
 
 /* ---------- Petites pages d'erreur (7 langues, sans dépendre de l'appli) ---------- */
 function pageSimple(statut: number, lignes: string[][], titre: string): Response {
@@ -172,7 +215,7 @@ function rang(place: unknown, classement: unknown): string {
   if (isFinite(n) && n > 0) return n === 1 ? "1er" : n + "e";
   return propre(classement);
 }
-function blocTexte(cheval: any, nbResultats: number, resultats: any[]): string {
+function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlug = ""): string {
   let og: any = cheval.origines;
   try { if (typeof og === "string") og = JSON.parse(og); } catch { og = null; }
   og = og || {};
@@ -190,7 +233,12 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[]): string {
   if (propre(cheval.alias)) html += `<p>Surnom : ${texte(cheval.alias)}</p>`;
   if (infos.length) html += `<p>${infos.join(" · ")}</p>`;
   if (propre(og.pere) || propre(og.mere)) html += `<p>Origines : ${texte(og.pere) || "?"} × ${texte(og.mere) || "?"}</p>`;
-  if (club && club !== "__perso__") html += `<p>Écurie : ${texte(club)}</p>`;
+  if (club && club !== "__perso__") {
+    // 12/10 : lien vers la page publique de l'écurie quand elle est trouvée sans ambiguïté
+    html += ecurieSlug
+      ? `<p>Écurie : <a href="${DOMAINE}/ecurie/${ecurieSlug}">${texte(club)}</a></p>`
+      : `<p>Écurie : ${texte(club)}</p>`;
+  }
   if (nbResultats > 0) {
     html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Résultats en concours</h2><ul style="padding-left:18px;margin:0">`;
     for (const r of resultats) {
@@ -379,11 +427,14 @@ export default async (request: Request, _context: Context) => {
     (String(cheval.photo_url || "").trim() !== "" || aUnResultat);
   if (!montrable) return PAGE_404();
 
+  // 12/10 : l'adresse de l'écurie (annuaire), pour le lien dans le texte Google
+  const ecurieSlug = await adresseEcurie(propre(cheval.club) || propre(cheval.ecurie), url.origin);
+
   // 5. La page Hype normale, avec la ligne ajoutée
   try {
     const source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } });
     if (!source.ok) { console.log("[cheval-route] index.html http", source.status); return PAGE_503(); }
-    const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug), blocTexte(cheval, nbResultats, resultats));
+    const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug), blocTexte(cheval, nbResultats, resultats, ecurieSlug));
     if (!page) { console.log("[cheval-route] repère <head> introuvable"); return PAGE_503(); }
     if (request.method === "HEAD") { try { await page.body?.cancel(); } catch { /* rien */ } return new Response(null, { status: 200, headers: page.headers }); }
     return page;
