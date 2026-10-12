@@ -11762,3 +11762,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1021 (12/10) — Cavaliers du club : version tablette
 - Mise en page « ordinateur » dès 768 px (grand hero, cavalières en grille de cartes), conteneur élargi (« cavaliers-club » dans ECRANS_TABLETTE). Le message flottant d'une demande se cale comme sur iPhone au-dessus de la barre du bas (le décalage du menu de gauche reste réservé à l'ordinateur).
 - Testé 820 px : aucun débordement, aucune erreur. Fin de la série tablette des pages prévues pour l'ordinateur (fiche cheval et sous-pages, albums, Santé, Écurie, Accueil, Cavaliers ; Communauté l'était déjà).
+
+## Build 1022 (12/10) — Bandeau de fin « HYPE », groupe Cavalier
+- Blandine (12 h 40) : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l'ont pas (hormis Au galop et celles d'arrivée) » ; 12 h 46 : laisser Reprises, Challenge reprise, Hey Baby ; outils d'admin exclus (Rattacher FFE, Score vitrine) ; 12 h 47 : « Ok », 5 groupes.
+- Nouveau composant commun FinPageHype (même dessin que la fin de page de la fiche cheval : paysage fondu, filets champagne, « HYPE »), ajouté une seule fois par le routeur sous les écrans listés dans ECRANS_FIN_PAGE.
+- Groupe 1 : profil (Mon compte), Mon carnet, Mon apprentissage, Mes résultats FFE. Testé 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Groupes suivants : Écurie (Cavaliers du club, Actualités, Souvenirs du club, Santé du club, souvenir d'un rendez-vous), Santé (Santé, Clinique), Culture (articles, article, 4 écoles), Divers (Vidéothèque, Abonnements).
