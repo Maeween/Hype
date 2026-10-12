@@ -11834,3 +11834,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CAUSE (reproduite ici) : les deux gestes de balayage (changer d'onglet dans la fiche cheval, changer de page dans l'app) ne regardaient que le PREMIER doigt. En écartant deux doigts, ce doigt part de côté → pris pour un balayage → l'onglet ou la page changeait.
 - CORRECTION : un geste à deux doigts n'est jamais un balayage ; un balayage fait pendant que l'écran est zoomé non plus (on se déplace dans l'image). Le balayage normal à un doigt marche comme avant.
 - Testé : pincement → reste sur Photos (avant correctif : passait à l'onglet suivant) ; balayage à un doigt → change toujours d'onglet. 16 scripts sans erreur.
+
+## Build 1035 (12/10) — Page Photos : fond général un peu plus discret — NON PUBLIÉ (attend validation)
+- Brief « Finalisation » étape 4 ; Blandine 14 h 12 : « Ok vas-y ».
+- Un voile sombre uniforme (30 %) est posé sur l'image de fond de la page Photos : moins lumineuse et moins contrastée, mêmes images (aucune nouvelle). Le haut (cheval, nom, onglets), les photos des chevaux et les encarts ne changent pas. « Tous les souvenirs » et les autres onglets : inchangés.
+- Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
