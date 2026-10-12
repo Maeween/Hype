@@ -11847,3 +11847,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Inchangés : la carte vidéo « Le voir en mouvement » juste au-dessus, la page Photos, les albums eux-mêmes et leurs données. Sans aucune photo : petit encart « Aucun souvenir pour le moment » (déjà traduit), son bouton ouvre la page Photos.
 - Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 15 h 49 — Blandine : « Ok » → build 1036 publié (marqueur 20261012-1036).
+
+## Build 1037 (12/10) — Fiche du cheval sans aucune photo : l'ancien encart revient — NON PUBLIÉ (attend validation)
+- Blandine (15 h 49) : « S'il n'a aucune photo on avait déjà un encart, peux le laisser ».
+- Cheval sans aucune photo : on retrouve l'encart d'avant (photo de Blandine, « Chaque cheval a son histoire… », « Partage ses grands moments ici ») au lieu de « Aucun souvenir pour le moment ». Dès qu'il y a une photo : « Les moments récents » (build 1036), sans l'encart.
+- Testé 390 px avec et sans photos : aucune erreur ; 16 scripts sans erreur.
