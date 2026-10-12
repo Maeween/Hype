@@ -11814,3 +11814,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CORRECTION : l'aperçu a sa propre composition, sans rien enregistrer ni modifier : 1re photo en grande (2×2), les autres en tailles automatiques variées (petites, verticales), jamais de pleine largeur ni de bandeau ; placement sans trou ; cadrages à la main gardés. La page « Tous les souvenirs » garde les tailles enregistrées (inchangée).
 - Testé : 8 photos tiennent sur environ un écran d'iPhone ; 16 scripts sans erreur.
 - 13 h 54 — Blandine valide le principe (« sous réserve d'un contrôle visuel sur iPhone avant publication ») : composition automatique variée, pas de gabarit. Ajouté : si la photo mise en avant (étoile) fait partie des photos de l'aperçu, elle prend la grande case ; sinon la plus récente ; une ancienne photo étoilée n'est jamais remontée. Albums (étape 2) décidés : carrousel horizontal, ~2,5 cartes visibles sur iPhone, couvertures 3:2, nom + nombre sous la couverture, fond sobre sans couverture — build séparé.
+
+## Build 1032 (12/10) — Page Photos : Albums en une seule rangée qui défile — NON PUBLIÉ (attend validation)
+- Brief « Finalisation définitive de la page Photos » (14 h 01), étape 3 ; Blandine 14 h 03 : « garde une seule ligne pour les albums ».
+- Page Photos du cheval uniquement : tous les albums (même un seul) sur UNE rangée horizontale qui défile au doigt ; couvertures 3:2, coins arrondis 12 px, bordure champagne fine ; environ 2,5 cartes visibles sur iPhone ; cartes de 200 px sur tablette et ordinateur (plus de cartes visibles, pas plus grandes). Nom et nombre de souvenirs sous l'image. Même rangée pour « Albums des autres cavalières ».
+- Couvertures chargées en vignette (jamais l'original), en différé. Album sans couverture : fond pétrole sobre + petit symbole (inchangé).
+- Retirés de la page Photos : la grande carte adaptative de l'album seul et la grille 2×2. Inchangés : « + Album », ouverture d'un album (son contenu s'affiche juste sous la rangée), étoile « à la une », droits, pages Cavalier et Écurie.
+- Testé 375, 390, 820, 1280 px, 1 et 5 albums : aucun débordement, aucune erreur ; 16 scripts sans erreur.
