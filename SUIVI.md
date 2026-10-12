@@ -11889,8 +11889,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (0, 1, 5 et 26 chevaux), 820, 1280 px et arabe : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 17 h 39 — Blandine : « Ok » → build 1041 publié (marqueur 20261012-1041).
 
-## Build 1042 (12/10) — « Mes chevaux » : choix de l'écurie — NON PUBLIÉ (attend validation)
+## Build 1042 (12/10) — « Mes chevaux » : choix de l'écurie + nouveau fond (cheval au coucher du soleil)
 - Blandine (17 h 44) : « mets la possibilité de changer d'écurie aussi sur la page ».
 - Même règle que la page Cavalier : la rangée « Toutes · Écurie 1 · Écurie 2 » n'apparaît que si le cavalier a DEUX écuries ; par défaut la première ; un nom avec un sigle entre parenthèses s'affiche par le sigle (« SEP ») ; filtre par la fonction unique hypeChevauxDuClub (un cheval sans club apparaît dans les deux).
 - La carte « Les chevaux de mon écurie » ouvre l'écurie choisie ; le nombre, la recherche et le « 10 par 10 » suivent le choix ; le cadenas Premium reste compté sur tous les chevaux du compte. Écurie sans aucun de ses chevaux : petit message « Aucun de tes chevaux dans cette écurie. » (7 langues).
 - Testé 390 px (français, arabe) et 1280 px avec deux écuries : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fond (Blandine 17 h 49 : « attention à ce que ça coupe pas le cheval », trois images simulées sur la vraie page ; 17 h 55 : « la dernière que je t'ai donnée ») : images/mes-chevaux-fond-couchant.webp (941×1672, allégée en webp). Image ENTIÈRE calée à droite (60 % de la hauteur d'écran sur iPhone, toute la hauteur sur tablette/ordinateur), bord gauche fondu dans le noir : la tête du cheval n'est jamais coupée ; retournée en arabe. Réglage par image (FOND_MES_CHEVAUX). Les deux autres images essayées ne sont pas gardées dans le dépôt.
+- Testé 390 (français, arabe), 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- 12/10, 17 h 55 — Blandine : « Ok » → build 1042 publié (marqueur 20261012-1042).
