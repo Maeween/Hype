@@ -11772,3 +11772,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Build 1023 (12/10) — Bandeau de fin « HYPE », groupe Écurie
 - Ajouté sous : Cavaliers du club, Actualités de l'écurie, Souvenirs du club, Santé du club, souvenir d'un rendez-vous (même composant FinPageHype, liste ECRANS_FIN_PAGE). Ces pages font au moins la hauteur de l'écran : le bandeau apparaît en fin de défilement.
 - Testé 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Build 1024 (12/10) — Bandeau de fin « HYPE », groupe Santé
+- Ajouté sous la page Santé et la Clinique équine. Testé 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
