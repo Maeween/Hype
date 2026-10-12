@@ -29,6 +29,14 @@
    Image d'aperçu : la grande photo de l'écurie (tableaux_clubs, clé « club-banniere:… »,
    lisible sans connexion depuis la règle passée par Blandine le 10/10) ; sinon
    partage-apercu.jpg.
+
+   12/10/2026 — RÉFÉRENCEMENT, ACTION 1 (liens entre les pages), choix A de Blandine :
+     sous les chiffres, le texte pour Google liste maintenant les NOMS des chevaux
+     qui ont déjà leur page publique (même règle que cheval-route.ts : adresse +
+     photo ou résultat visible), chacun en lien vers /cheval/<adresse>, et les
+     rendez-vous à venir en lien vers /evenement/… (lienRdv). Toujours AUCUN nom
+     de cavalier, AUCUN résultat. Les chevaux sans page publique ne sont ni
+     nommés ni liés. Rien ne change à l'écran : l'appli remplace ce bloc.
    ========================================================================= */
 
 import type { Context } from "https://edge.netlify.com";
@@ -249,6 +257,15 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   if (nbCh) chiffres.push(nbCh + (nbCh > 1 ? " chevaux" : " cheval"));
   if (nbRdv) chiffres.push(nbRdv + " rendez-vous à venir");
   if (chiffres.length) html += `<p>${chiffres.join(" · ")} sur Hype.</p>`;
+  /* 12/10 (référencement action 1, choix A) : les noms en liens vers les pages publiques */
+  if (montrables.length) {
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Ses chevaux sur Hype</h2><p>` +
+      montrables.map((c) => `<a href="${DOMAINE}/cheval/${c.slug}">${texte(c.nom) || "Cheval"}</a>`).join(" · ") + `</p>`;
+  }
+  if (nbRdv) {
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Prochains rendez-vous</h2><p>` +
+      hype.rdv.map((r) => { const d = dateFr(r.date_jour); return lienRdv(r) + (d ? " — " + d : ""); }).join("<br>") + `</p>`;
+  }
   html += `<p>Crée ton compte Hype pour découvrir ses chevaux, ses résultats et son agenda.</p>`;
   if (contactLiens.length) html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Contacter l’écurie</h2><p>${contactLiens.join("<br>")}</p>`;
   if (!hype.chevaux.length) {   /* (861) même règle que l’appli : aucun cheval → invitation */
