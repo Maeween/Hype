@@ -11962,3 +11962,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (19 h 26, capture) : « on peut rapprocher les parties sur la page Communauté ».
 - iPhone seulement : espace entre les rubriques (À découvrir, Dans les écuries, À l'agenda, Le fil) ramené à 16 px, moins de place sous les points du carrousel et sous chaque titre de rubrique. Tablette et ordinateur inchangés.
 - Testé 390 px : aucune erreur ; 16 scripts sans erreur.
+
+## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
+- Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
+- Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
+- MAIS la règle du 04/10 (« la dernière story de chaque cavalière reste affichée, en gris, tant qu'elle n'en a pas posté une nouvelle », hype-stories.js hsListerStories) n'a JAMAIS pu marcher : les deux règles de lecture de la table hype_stories (hype_stories_lecture, hype_stories_lecture_publique) n'autorisent que expire_le > now(). Correctif = changer ces règles d'accès (SQL à préparer pour Blandine, avec analyse : une story terminée redevient lisible par tous).
+- Liste des défauts relevés sur ses captures (18 h 41–18 h 44) : en-tête qui recouvre le contenu ; décors vides avec « 1 » flottant ; « 1 photos choisies » ; pastille turquoise et bouton « G » du style de texte ; « Cercle Crystal » / « tes annonces » / « Visible 7 jours » même avec 1 mois ; icône ▶ bleue et pastille coupée en Musique ; recherche « Cirr » sans résultat dans Taguer ; croix + « Annuler » en double.
