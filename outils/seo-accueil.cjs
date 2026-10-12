@@ -56,7 +56,7 @@ const TEXTE =
   `<li>Une fiche partagée entre propriétaire et cavaliers</li></ul>` +
 
   `<h2 ${H2}>Tes concours</h2><ul style="padding-left:18px;margin:0">` +
-  `<li>Importe ton relevé de résultats FFE en un geste : ton palmarès se construit tout seul</li>` +
+  `<li>Importe ton relevé de résultats FFE en un geste : ton palmarès se construit tout seul (avec Hype+)</li>` +
   `<li>Les points de qualification pour les championnats sont comptés pour toi</li>` +
   `<li>Un outil pour lire les listes de départ en concours</li></ul>` +
 
