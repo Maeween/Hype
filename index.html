@@ -26011,9 +26011,9 @@ var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   
   + ".com2.com2b .com2-ecu-g,.com2.com2b .com2-ecu-p,.com2.com2b .com2-ecu-c,.com2.com2b .com2-ag-g,.com2.com2b .com2-ag-p{background:rgba(11,18,21,0.38);border-color:rgba(201,166,107,0.28)}"
   + ".com2.com2b .com2-sec{margin-top:28px}.com2.com2b .com2-sec-st + .com2-sec{margin-top:8px}.com2.com2b .com2-hero-x ~ .com2-sec-st{margin-top:24px}.com2.com2b .com2-sec-t{padding-bottom:12px}"   /* (985) Blandine : « rapproche un peu toutes les parties » (44 -> 28 px entre rubriques, titres plus pres de leur contenu) */
   + ".com2.com2b .com2-post{background:rgba(9,14,17,0.80);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);box-shadow:0 10px 24px rgba(0,0,0,0.3)}"   /* (985) « le fil peut etre un peu plus opaque » (38 % -> 80 %, leger flou du globe derriere) */
-  + "@media (max-width:899px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.30) 0%,rgba(5,8,11,0.10) 22%,rgba(5,8,11,0.25) 40%,rgba(5,8,11,0.70) 60%,rgba(5,8,11,0.90) 100%),url('images/communaute-globe-v2.webp?v=2') center calc(env(safe-area-inset-top) + 450px - 130.5vw)/100% auto no-repeat,#05080B} .com2.com2b .com2-hero{height:calc(env(safe-area-inset-top) + 300px)} .com2.com2b .com2-hero-x{padding:8px 20px 0;text-align:start} .com2.com2b .com2b-titre{text-align:start;font-size:20px;max-width:300px} .com2.com2b .com2-hero-x .com2-monde-cap{margin:14px 0 0}}"   /* (990) refonte « Version Carrousel » (maquette ChatGPT validee par Blandine), build 1 : HERO, iPhone seulement — nouveau globe (images/communaute-globe-v2.webp, decoupe de sa planche), fond fixe et assombrissement au defilement gardes ; slogan et capsule « MONDE HYPE » alignes a gauche sous le titre ; hero un peu moins haut. Cadrage B choisi par Blandine : image remontee pour que les cinq cavaliers tombent en bas du hero (haut du globe coupe) ; (992) remplacee par la version haute definition qu elle a envoyee (1024x1536, proportions 2/3), recadree pour garder les cavaliers en bas du hero. Ordinateur inchange (ancien globe). */
+  + "@media (max-width:1023px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.30) 0%,rgba(5,8,11,0.10) 22%,rgba(5,8,11,0.25) 40%,rgba(5,8,11,0.70) 60%,rgba(5,8,11,0.90) 100%),url('images/communaute-globe-v2.webp?v=2') center calc(env(safe-area-inset-top) + 450px - 130.5vw)/100% auto no-repeat,#05080B} .com2.com2b .com2-hero{height:calc(env(safe-area-inset-top) + 300px)} .com2.com2b .com2-hero-x{padding:8px 20px 0;text-align:start} .com2.com2b .com2b-titre{text-align:start;font-size:20px;max-width:300px} .com2.com2b .com2-hero-x .com2-monde-cap{margin:14px 0 0}}"   /* (990) refonte « Version Carrousel » (maquette ChatGPT validee par Blandine), build 1 : HERO, iPhone seulement — nouveau globe (images/communaute-globe-v2.webp, decoupe de sa planche), fond fixe et assombrissement au defilement gardes ; slogan et capsule « MONDE HYPE » alignes a gauche sous le titre ; hero un peu moins haut. Cadrage B choisi par Blandine : image remontee pour que les cinq cavaliers tombent en bas du hero (haut du globe coupe) ; (992) remplacee par la version haute definition qu elle a envoyee (1024x1536, proportions 2/3), recadree pour garder les cavaliers en bas du hero. Ordinateur inchange (ancien globe). */
   + ".com2.com2b .com2b-retour{position:absolute;z-index:6;top:calc(env(safe-area-inset-top) + 14px);inset-inline-start:16px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(201,166,107,0.75);background:rgba(6,7,9,0.35);color:#C9A66B;font-size:20px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;-webkit-appearance:none;appearance:none}"
-  + "@media (min-width:900px){.com2.com2b .com2b-retour{display:none}}"   /* (991) ordinateur inchange */
+  + "@media (min-width:1024px){.com2.com2b .com2b-retour{display:none}}"   /* (991) ordinateur inchange */
   + ".com2.com2b .com2b-st-tout .com2-stories [data-hscroll]{flex-wrap:wrap !important;overflow:visible !important;row-gap:14px}"   /* (993) Voir tout : les stories passent sur plusieurs lignes */
   + ".com2.com2b .com2-sec-st .com2-sec-t{padding-bottom:4px}.com2.com2b .com2-stories{margin-top:-10px}"
   + ".com2.com2b .com2b-car-bloc{position:relative;padding-bottom:20px}"
@@ -26058,8 +26058,24 @@ var COM2B_CSS = ".com2.com2b{position:relative;z-index:0;background:#05080B}"   
   + ".com2.com2b .com2b-rt-tout{display:flex;margin:10px auto 0}"
   + ".com2.com2b .com2b-rt-suite{margin-top:8px;border-radius:14px;border:1px solid rgba(201,166,107,0.25);background:rgba(9,14,17,0.8);overflow:hidden}"
   + ".com2.com2b .com2b-rt-suite .com2b-rt-l:first-child{border-top:none}"   /* (995) carte qui se retourne */
-  + "@media (min-width:900px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.25) 0%,rgba(5,8,11,0.10) 25%,rgba(5,8,11,0.35) 55%,rgba(5,8,11,0.80) 100%),url('images/communaute-globe-ordi.webp') center top/cover no-repeat,#05080B} .com2.com2b .com2b-assombri{left:-50vw;right:-50vw;background:linear-gradient(180deg,rgba(5,8,11,0.35) 0%,rgba(5,8,11,0) 18%),radial-gradient(ellipse 40% 50% at 50% 78%,rgba(6,7,9,0.7) 0%,rgba(6,7,9,0.35) 55%,rgba(6,7,9,0) 100%)}} "   /* (998) ordinateur : la version large du globe envoyee par Blandine (« version ordi ») */
-  + "@media (min-width:900px){.com2.com2b{padding-inline:max(24px,calc((100% - 960px) / 2))} .com2.com2b .com2-hero{height:380px} .com2.com2b .com2b-bloc{padding:0 32px 26px} .com2.com2b .com2b-nom{font-size:56px} .com2.com2b .com2-hero-x{padding:12px 32px 0}}"   /* (984) ordinateur : la page se resserre au centre (960 px), comme Sante ; le globe reste en plein ecran derriere */;
+  + "@media (min-width:1024px){.com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.25) 0%,rgba(5,8,11,0.10) 25%,rgba(5,8,11,0.35) 55%,rgba(5,8,11,0.80) 100%),url('images/communaute-globe-ordi.webp') center top/cover no-repeat,#05080B} .com2.com2b .com2b-assombri{left:-50vw;right:-50vw;background:linear-gradient(180deg,rgba(5,8,11,0.35) 0%,rgba(5,8,11,0) 18%),radial-gradient(ellipse 40% 50% at 50% 78%,rgba(6,7,9,0.7) 0%,rgba(6,7,9,0.35) 55%,rgba(6,7,9,0) 100%)}} "   /* (998) ordinateur : la version large du globe envoyee par Blandine (« version ordi ») */
+  + "@media (min-width:1024px){.com2.com2b{padding-inline:max(24px,calc((100% - 960px) / 2))} .com2.com2b .com2-hero{height:380px} .com2.com2b .com2b-bloc{padding:0 32px 26px} .com2.com2b .com2b-nom{font-size:56px} .com2.com2b .com2-hero-x{padding:12px 32px 0}}"   /* (984) ordinateur : la page se resserre au centre (960 px), comme Sante ; le globe reste en plein ecran derriere */
+  /* 12/10 (998) ORDINATEUR, BUILD 1 DU BRIEF « REFONTE ORDINATEUR » — PROPOSITION 1 « L EDITORIAL IMMERSIF » (recommandee) :
+     globe panoramique en fond fixe (cale a gauche pour que globe et cavaliers soient au centre-droit), bloc titre a gauche
+     (sur-titre, titre 64-88 px, slogan juste dessous, bouton), degrade de lisibilite depuis la gauche ; contenu jusqu a 1480 px. */
+  + "@media (min-width:1024px){"
+  + ".com2.com2b{padding-inline:max(32px,calc((100% - 1480px) / 2))}"
+  + ".com2.com2b .com2b-fond{background:linear-gradient(180deg,rgba(5,8,11,0.20) 0%,rgba(5,8,11,0.05) 30%,rgba(5,8,11,0.40) 62%,rgba(5,8,11,0.85) 100%),url('images/communaute-globe-ordi.webp') left top/auto clamp(560px,46vw,780px) no-repeat,#05080B}"
+  + ".com2.com2b .com2-hero{height:clamp(250px,24vw,330px)}"
+  + ".com2.com2b .com2b-assombri{left:-40px;right:-40px;bottom:-200px;background:linear-gradient(90deg,rgba(5,8,11,0.90) 0%,rgba(5,8,11,0.65) 36%,rgba(5,8,11,0) 75%)}"
+  + ".com2.com2b .com2b-bloc{padding:0;padding-inline-start:clamp(28px,3.1vw,56px)}"
+  + ".com2.com2b .com2b-eb{font-size:clamp(11px,0.95vw,13px)}"
+  + ".com2.com2b .com2b-nom{margin-top:10px;font-size:clamp(64px,6.1vw,88px)}"
+  + ".com2.com2b .com2-hero-x{padding:8px 0 0;padding-inline-start:clamp(28px,3.1vw,56px);text-align:start;max-width:clamp(440px,41vw,600px)}"
+  + ".com2.com2b .com2b-titre{text-align:start;font-size:clamp(21px,1.95vw,28px);max-width:none}"
+  + ".com2.com2b .com2-hero-x .com2-monde-cap{display:inline-flex;margin:26px 0 0}"
+  + "}"
+  + "@media (min-width:1024px){[dir=rtl] .com2.com2b .com2b-assombri{background:linear-gradient(270deg,rgba(5,8,11,0.90) 0%,rgba(5,8,11,0.65) 36%,rgba(5,8,11,0) 75%)} [dir=rtl] .com2.com2b .com2b-fond{background-position:0 0,right top}}";
 function EcranCommunauteV2() {
   var ctx = useApp();
   var setEcran = ctx.setEcran;
@@ -26777,7 +26793,7 @@ function EcranCommunauteV2() {
      Un voile noir pose sur le globe fixe passe de 0 (haut de page) a 1 apres 320 px de defilement (opacite du calque,
      mise a jour a chaque image d animation, sans redessiner la page). Au plus sombre : globe a peine visible. */
   /* (993) Stories : rondes sur iPhone, « Voir tout » si elles depassent la largeur */
-  var estMobileCom = (function () { try { return window.innerWidth < 900; } catch (eW) { return true; } })();
+  var estMobileCom = (function () { try { return window.innerWidth < 1024; } catch (eW) { return true; } })();   /* (998) seuil ordinateur 1024 px (brief) */
   var _stt = React.useState(false); var storiesTout = _stt[0], setStoriesTout = _stt[1];
   var _std = React.useState(false); var storiesDeborde = _std[0], setStoriesDeborde = _std[1];
   var refStoriesCom = React.useRef(null);
