@@ -27632,6 +27632,10 @@ function HypeApp() {
        Blandine perdrait sa seule facon de voir l app comme une cavaliere.
        ============================================================ */
     const [ambassadeur, setAmbassadeur] = useState(false);
+    /* 12/10 (1064) Blandine : « Evan et Liam ont tout partout a volonte » -> leurs comptes (memes user_id que
+       QUOTA_CHEVAUX_EXCEPTIONS) sont traites comme Premium partout (cours, quiz, Sante, import des resultats...).
+       Niveau Premium, pas les formules Hype IA / Duo de Hey Baby. Lecture asynchrone : false tant qu on ne sait pas. */
+    const [accesTout, setAccesTout] = useState(false);
     const [forcerGratuit, setForcerGratuit] = useState(false);
     /* 18/08 — « le nombre d'ecrans avec le meme compte ». {places, limite,
        exempt} pour l affichage dans Mon compte ; null tant qu'on ne sait pas
@@ -27680,6 +27684,7 @@ function HypeApp() {
             utilisateurActuel().then((u) => {
                 if (!u || !actif) return;
                 try { if (typeof estAmbassadeurHype === "function") setAmbassadeur(estAmbassadeurHype(u)); } catch (eAmb) { }
+                try { setAccesTout(!!(u && u.id && typeof QUOTA_CHEVAUX_EXCEPTIONS !== "undefined" && QUOTA_CHEVAUX_EXCEPTIONS[u.id] != null)); } catch (eAt) { }   /* (1064) */
                 /* Un seul appel par ouverture d'app. En cas de refus 'evince',
                    on deconnecte immediatement — l'appareil vient de perdre sa
                    place a un autre, plus recent. Un message reste affiche a
@@ -27972,7 +27977,7 @@ function HypeApp() {
            deconnexion = crash immediat, et rien d'accessible ensuite (l'app
            reste sur l'ecran de crash). Corrige en verifiant que profil
            existe avant de lire .vip. */
-        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!(profil && profil.vip) || ambassadeur), estAbonne, planAbo, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
+        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!(profil && profil.vip) || ambassadeur || accesTout /* (1064) */), estAbonne, planAbo, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
         appareils,
         profil, setProfil,
         xp, setXp,
