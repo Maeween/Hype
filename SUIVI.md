@@ -11799,3 +11799,6 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Ajoutés dans images/ (allégés en webp) : photos-fond-mobile (1080×1920, 54 Ko), photos-fond-tablette (1200×1600, 61 Ko), photos-fond-ordinateur (1920×1080, 111 Ko), souvenirs-fond-mobile (44 Ko), souvenirs-fond-tablette (50 Ko), souvenirs-fond-ordinateur (86 Ko). Remplacés par les versions nettes 1200×400 : souvenirs-recents-fond.webp (28 Ko), souvenirs-annees-fond.webp (23 Ko).
 - Le fond du panneau (fondPanCh) : page Photos → photos-fond-*, page « Tous les souvenirs » → souvenirs-fond-* ; UNE seule image chargée selon l'écran (< 768 px mobile, 768–1023 tablette, ≥ 1024 ordinateur), cadrée sans déformation (cover, calée en haut), sous les deux voiles sombres déjà en place. Les autres pages du cheval gardent le fond Santé. Le fond reste immobile pendant le défilement (comme Santé).
 - Rien d'autre ne change (navigation, Albums, éditeur, base). Testé 390, 820, 1280 px ; 16 scripts sans erreur.
+
+## Build 1029 (12/10) — Page Écurie en tablette : « ACTUALITÉS » ne déborde plus
+- Blandine : « 4 oui ». Sur tablette (moins de 1 100 px de large, 6 tuiles sur une ligne), les libellés de plus de 8 lettres passent en 11 px, espacement réduit, comme les libellés longs sur iPhone. Vérifié à 768 et 1 024 px : ACTUALITÉS entier ; 16 scripts sans erreur.
