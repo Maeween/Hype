@@ -66,6 +66,16 @@ for (const k of cles) ordonne[k] = sortie[k];
 let EXCLUES = {};
 try { EXCLUES = JSON.parse(fs.readFileSync(R + "outils/ecuries-exclues.json", "utf8")); } catch (e) {}
 for (const k of Object.keys(EXCLUES)) if (ordonne[k]) ordonne[k].x = 1;
+// 12/10/2026 : ville et département retrouvés une fois pour toutes à partir de la position GPS (listes officielles INSEE,
+// outils/departements-ecuries.json, fabriqué pour les pages par département) — seulement quand l'annuaire ne les a pas.
+// La page écurie n'a donc plus besoin d'interroger geo.api.gouv.fr à chaque visite.
+let DEPV = {};
+try { DEPV = JSON.parse(fs.readFileSync(R + "outils/departements-ecuries.json", "utf8")).ecuries || {}; } catch (e) {}
+for (const [k, dv] of Object.entries(DEPV)) {
+  const e = ordonne[k]; if (!e || !Array.isArray(dv)) continue;
+  if ((!e.d || e.d === "97" || e.d === "20") && dv[0]) e.d = dv[0];   // « 97 » / « 20 » : code incomplet (outre-mer, Corse)
+  if (!e.v && dv[1]) e.v = dv[1];
+}
 fs.writeFileSync(R + "ecuries.json", JSON.stringify(ordonne));
 fs.writeFileSync(R + "sitemap-ecuries.xml",
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +

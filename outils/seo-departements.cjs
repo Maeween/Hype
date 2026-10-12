@@ -162,6 +162,11 @@ function principal() {
     h1: "Centres équestres par département", fil: accueil, corps,
     jsonld: { "@context": "https://schema.org", "@type": "CollectionPage", name: "Centres équestres par département", inLanguage: "fr", url: `${DOM}/fr/centres-equestres/` } }));
 
+  // Pour les pages écurie (netlify/edge-functions/ecurie-route.ts) : code → [adresse de la page, « de l'Essonne »]
+  const pourEcuries = {};
+  for (const dep of deps) pourEcuries[dep] = [`${DOM}/fr/${chemin(dep)}`, deDep(D.deps[dep][0], D.deps[dep][1])];
+  fs.writeFileSync(path.join(RACINE, "fr", "centres-equestres", "departements.json"), JSON.stringify(pourEcuries));
+
   let x = '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
   for (const u of urls) x += `  <url><loc>${DOM}/fr/${u}</loc></url>\n`;
   fs.writeFileSync(path.join(RACINE, "sitemap-departements.xml"), x + "</urlset>\n");

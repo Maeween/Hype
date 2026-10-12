@@ -57,6 +57,18 @@ const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number; x?: number };
 
+/* 12/10/2026 : pages « Centres équestres de l'Essonne (91) » (outils/seo-departements.cjs) : code → [adresse, « de l'Essonne »].
+   Jamais bloquant : si la liste manque, la page écurie s'affiche simplement sans ce lien. */
+let DEPARTEMENTS: Promise<Record<string, [string, string]>> | null = null;
+function departements(origine: string): Promise<Record<string, [string, string]>> {
+  if (!DEPARTEMENTS) {
+    DEPARTEMENTS = fetch(new URL("/fr/centres-equestres/departements.json", origine))
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => { DEPARTEMENTS = null; return {}; });
+  }
+  return DEPARTEMENTS;
+}
+
 /* ---------- L'annuaire (gardé en mémoire tant que la fonction reste chaude) ---------- */
 let ANNUAIRE: Promise<Record<string, Ecurie>> | null = null;
 function annuaire(origine: string): Promise<Record<string, Ecurie>> {
@@ -206,7 +218,7 @@ function lienRdv(r: any): string {
     .replace(/œ/g, "oe").replace(/æ/g, "ae").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70).replace(/-+$/, "");
   return `<a href="${DOMAINE}/evenement/${s ? s + "-" : ""}${id.slice(0, 8).toLowerCase()}">${texte(r.titre) || "Rendez-vous"}</a>`;
 }
-function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | null, hype: Awaited<ReturnType<typeof contenuHype>>) {
+function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | null, hype: Awaited<ReturnType<typeof contenuHype>>, deps: Record<string, [string, string]> = {}) {
   const nom = propre(ec.n);
   const ville = propre(ec.v) || (geo ? geo.v : "");
   const dep = propre(ec.d) || (geo ? geo.d : "");
@@ -273,6 +285,8 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Un box virtuel chez Hype ?</h2>`;
     html += `<p>Pas de paille à faire ici : juste la fiche de ton cheval, ses photos, ses concours, ses souvenirs et son suivi… et d’autres cavaliers avec qui les partager. Théorie, conseils et coach virtuel t’accompagnent aussi dans ta progression.</p>`;
   }
+  const pageDep = ec.x === 1 ? null : deps[dep];   // pas de lien depuis une fiche écartée
+  if (pageDep) html += `<p>Voir aussi : <a href="${echapper(pageDep[0])}">les centres équestres ${texte(pageDep[1])} (${texte(dep)})</a></p>`;
   html += `<p style="margin-top:22px;font-size:12px">Hype est une application indépendante, sans lien officiel avec cette écurie ni avec la FFE. Données de l’écurie : © contributeurs OpenStreetMap.</p>`;
   html += `</main>`;
 
@@ -380,11 +394,12 @@ export default async (request: Request, _context: Context) => {
   try { ec = (await annuaire(url.origin))[slug]; } catch (e) { console.log("[ecurie-route] annuaire :", String(e)); return PAGE_503(); }
   if (!ec || !propre(ec.n)) return PAGE_404();
 
-  const [hype, geo] = await Promise.all([
+  const [hype, geo, deps] = await Promise.all([
     contenuHype(ec.n),
     propre(ec.v) ? Promise.resolve(null) : communeDepuisCoordonnees(ec.la, ec.lo),
+    departements(url.origin).catch(() => ({} as Record<string, [string, string]>)),
   ]);
-  const seo = construire(slug, ec, geo, hype);
+  const seo = construire(slug, ec, geo, hype, deps);
 
   try {
     // 12/10 (référencement action 2) : la copie de l'appli SANS le texte de l'accueil (seo-accueil.cjs) ;
