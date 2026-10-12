@@ -12028,6 +12028,18 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (fr, arabe), 1280 (japonais) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md.
 
+## Build 1058 (12/10) — Agenda : deux colonnes sur tablette et ordinateur
+- L'agenda passe en grand sur tablette (dès 768 px) et ordinateur (comme Écurie, Mes chevaux…) : contenu centré sur 1 240 px au plus.
+- Calendrier à gauche (42 %), « Prochains rendez-vous » à droite (58 %) ; en arabe les colonnes s'inversent. iPhone inchangé (l'un sous l'autre).
+- En-tête : titre plus grand (46 px) et cheval au couchant plus haut sur tablette/ordinateur.
+- Bouton « + Ajouter un rendez-vous » à sa taille, à droite (à gauche en arabe) au lieu de toute la largeur.
+- Onglet Forfaits sur grand écran : calendrier seul, centré, 760 px au plus.
+- Testé 390, 820 (arabe), 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Publication 1057 + 1058 (12/10, 21 h 45)
+- Blandine : « oui… qu'on enchaîne » → calendrier restylé et agenda en deux colonnes mis en ligne ensemble. Marqueur : 20261012-1058.
+- Fichiers : index.html, SUIVI.md (images inchangées).
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
