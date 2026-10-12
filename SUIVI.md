@@ -12046,6 +12046,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (haut, milieu, bas de page) et 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md.
 
+## Build 1060 (12/10) — Agenda : titres plus bas, bandeau de fin, bouton à contour — NON PUBLIÉ (attend validation)
+- Blandine (21 h 46, capture) : « mets l'onglet de fin Hype et descends les titres qu'on voie bien le hero » ; (21 h 48) « pas de bouton plein doré ».
+- Titres de l'agenda descendus (iPhone + 70 px, tablette/ordinateur + 90 px) : la tête du cheval se voit en entier.
+- Bandeau de fin « HYPE » ajouté sous l'Agenda ET sous Événements passés (règle du 1022 : toutes les pages) ; marge du bas réduite en conséquence.
+- « + Ajouter un rendez-vous » : plus de fond doré plein, contour champagne fin et texte champagne (agenda seulement ; la page Écurie n'utilise pas ce bouton).
+- Testé 390 et 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md.
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
