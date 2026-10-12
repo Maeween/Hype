@@ -8,6 +8,11 @@
 <link rel="canonical" href="https://2hype.fr/fr/">
 <link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/">
 <link rel="alternate" hreflang="en" href="https://2hype.fr/en/">
+<link rel="alternate" hreflang="es" href="https://2hype.fr/es/">
+<link rel="alternate" hreflang="it" href="https://2hype.fr/it/">
+<link rel="alternate" hreflang="de" href="https://2hype.fr/de/">
+<link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/">
+<link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/">
 <link rel="alternate" hreflang="x-default" href="https://2hype.fr/">
 <meta name="theme-color" content="#07110f">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -16,6 +21,11 @@
 <meta property="og:site_name" content="Hype">
 <meta property="og:locale" content="fr_FR">
 <meta property="og:locale:alternate" content="en_GB">
+<meta property="og:locale:alternate" content="es_ES">
+<meta property="og:locale:alternate" content="it_IT">
+<meta property="og:locale:alternate" content="de_DE">
+<meta property="og:locale:alternate" content="ja_JP">
+<meta property="og:locale:alternate" content="ar_AR">
 <meta property="og:title" content="Hype — application équestre pour ton cheval, ton écurie et tes concours">
 <meta property="og:description" content="Photos, souvenirs, santé et soins de ton cheval, résultats FFE et points championnats, agenda de ton écurie, théorie des Galops et Hey Baby, l&#x27;IA équestre. En 7 langues.">
 <meta property="og:url" content="https://2hype.fr/fr/">
@@ -67,13 +77,17 @@ footer{max-width:1100px;margin:0 auto;padding:22px 20px max(28px,env(safe-area-i
 footer a{color:#a9a294}
 @media (min-width:760px){.grille{grid-template-columns:repeat(2,minmax(0,1fr))} .haut{padding:0 48px 72px;min-height:80vh} .barre{padding:22px 48px 0} main,footer{padding-left:48px;padding-right:48px} .ia{padding:30px 32px}}
 @media (min-width:1100px){.grille{grid-template-columns:repeat(3,minmax(0,1fr))} .haut,.barre{padding-left:max(48px,calc((100% - 1004px) / 2));padding-right:max(48px,calc((100% - 1004px) / 2))} .haut img{left:auto;right:0;width:min(52%,640px);object-position:50% 20%;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 35%);mask-image:linear-gradient(90deg,transparent 0%,#000 35%)} .haut::after{background:linear-gradient(180deg,rgba(3,5,5,0) 0%,rgba(3,5,5,0) 60%,rgba(6,10,9,.9) 92%,var(--fond) 100%)}}
+:lang(ar) h1,:lang(ar) h2,:lang(ar) h3,:lang(ar) .btn,:lang(ar) .langue,:lang(ja) h1,:lang(ja) h2,:lang(ja) .btn{letter-spacing:0}
+:lang(ar) body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
+[dir=rtl] .haut img{object-position:38% 18%;transform:scaleX(-1)}
+@media (min-width:1100px){[dir=rtl] .haut img{right:auto;left:0;-webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 35%);mask-image:linear-gradient(270deg,transparent 0%,#000 35%)}}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 <header class="haut">
 <img src="/images/cheval-fond-connexion-620.jpg" alt="Tête de cheval noir dans la pénombre" width="619" height="1100" fetchpriority="high">
-<div class="barre"><a class="marque" href="https://2hype.fr/">HYPE</a><a class="langue" href="https://2hype.fr/en/" hreflang="en" lang="en" aria-label="Langue : English">English</a></div>
+<div class="barre"><a class="marque" href="https://2hype.fr/">HYPE</a><a class="langue" href="#langues" aria-label="Langue">FR · Langue</a></div>
 <div class="contenu-haut">
 <p class="mot">Hype</p>
 <h1>L&#x27;application équestre de ton cheval et de ton écurie</h1>
@@ -88,6 +102,6 @@ footer a{color:#a9a294}
 <div class="liens"><a href="https://2hype.fr/ecurie/ecurie-feinn">Ecurie Feinn — Itteville</a><a href="https://2hype.fr/ecurie/societe-d-equitation-de-paris-sep">Société d'Équitation de Paris</a></div></section>
 <section class="fin"><h2>Découvre Hype</h2><p>Crée ton compte gratuitement et retrouve ton cheval, ton écurie et Hey Baby.</p><a class="btn" href="https://2hype.fr/">Ouvrir Hype</a></section>
 </main>
-<footer><p>Hype est une application indépendante, sans lien officiel avec la Fédération française d&#x27;équitation. Données des écuries : © contributeurs OpenStreetMap.</p><p style="margin-top:8px"><a href="https://2hype.fr/fr/" hreflang="fr" lang="fr">Français</a> · <a href="https://2hype.fr/en/" hreflang="en" lang="en">English</a></p></footer>
+<footer><p>Hype est une application indépendante, sans lien officiel avec la Fédération française d&#x27;équitation. Données des écuries : © contributeurs OpenStreetMap.</p><p id="langues" style="margin-top:8px"><strong lang="fr">Français</strong> · <a href="https://2hype.fr/en/" hreflang="en" lang="en">English</a> · <a href="https://2hype.fr/es/" hreflang="es" lang="es">Español</a> · <a href="https://2hype.fr/it/" hreflang="it" lang="it">Italiano</a> · <a href="https://2hype.fr/de/" hreflang="de" lang="de">Deutsch</a> · <a href="https://2hype.fr/ja/" hreflang="ja" lang="ja">日本語</a> · <a href="https://2hype.fr/ar/" hreflang="ar" lang="ar">العربية</a></p></footer>
 </body>
 </html>

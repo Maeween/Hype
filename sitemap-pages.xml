@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Hype — 12/10/2026 : l'accueil et les pages de présentation dans les 7 langues (fichier fixe, à compléter à la main quand une page de ce type est ajoutée). -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://2hype.fr/</loc>
+  </url>
+  <url>
+    <loc>https://2hype.fr/fr/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/en/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/es/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/it/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/de/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ar/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/"/>
+  </url>
+</urlset>
