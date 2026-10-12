@@ -11888,3 +11888,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone 1 colonne ; tablette et ordinateur 2 colonnes (3 à partir de 1600 px) ; arabe : tout inversé (photo à gauche, chevrons). Données, règle Premium (build 1040), création, fiche, accès écurie : inchangés. Nouveaux textes en 7 langues.
 - Testé 390 (0, 1, 5 et 26 chevaux), 820, 1280 px et arabe : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 17 h 39 — Blandine : « Ok » → build 1041 publié (marqueur 20261012-1041).
+
+## Build 1042 (12/10) — « Mes chevaux » : choix de l'écurie — NON PUBLIÉ (attend validation)
+- Blandine (17 h 44) : « mets la possibilité de changer d'écurie aussi sur la page ».
+- Même règle que la page Cavalier : la rangée « Toutes · Écurie 1 · Écurie 2 » n'apparaît que si le cavalier a DEUX écuries ; par défaut la première ; un nom avec un sigle entre parenthèses s'affiche par le sigle (« SEP ») ; filtre par la fonction unique hypeChevauxDuClub (un cheval sans club apparaît dans les deux).
+- La carte « Les chevaux de mon écurie » ouvre l'écurie choisie ; le nombre, la recherche et le « 10 par 10 » suivent le choix ; le cadenas Premium reste compté sur tous les chevaux du compte. Écurie sans aucun de ses chevaux : petit message « Aucun de tes chevaux dans cette écurie. » (7 langues).
+- Testé 390 px (français, arabe) et 1280 px avec deux écuries : aucun débordement, aucune erreur ; 16 scripts sans erreur.
