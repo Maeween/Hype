@@ -36,7 +36,18 @@
   # −20 % compressé). Le dépôt garde tous ses commentaires. Garde-fous dans outils/alleger-index.cjs : en cas de
   # doute, l'index part tel quel ; la publication n'échoue jamais à cause de ce script.
   # POUR ANNULER : supprimer la ligne « command » ci-dessous.
-  command = "node outils/alleger-index.cjs"
+  # 12/10/2026 (référencement, action 2) : seo-accueil.cjs ajoute ensuite le texte de l'accueil pour Google dans la
+  # copie publiée d'index.html, et garde une copie sans ce texte (app-base.html) pour les pages /cheval/, /ecurie/,
+  # /evenement/. Il ne fait jamais échouer la publication. POUR ANNULER : remettre la ligne sans « ; node outils/seo-accueil.cjs ».
+  command = "node outils/alleger-index.cjs; node outils/seo-accueil.cjs"
+
+# ---------- 12/10/2026 : la copie de l'appli pour les pages publiques (référencement) ----------
+# Jamais rangée par Google (c'est l'accueil sans son texte), toujours fraîche.
+[[headers]]
+  for = "/app-base.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    X-Robots-Tag = "noindex"
 
 # ---------- Le document principal : toujours frais ----------
 [[headers]]

@@ -432,7 +432,10 @@ export default async (request: Request, _context: Context) => {
 
   // 5. La page Hype normale, avec la ligne ajoutée
   try {
-    const source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } });
+    // 12/10 (référencement action 2) : la copie de l'appli SANS le texte de l'accueil (seo-accueil.cjs) ;
+    // si elle manque (publication sans le script), l'accueil comme avant.
+    let source = await fetch(new URL("/app-base.html", url.origin), { headers: { accept: "text/html" } });
+    if (!source.ok) { try { await source.body?.cancel(); } catch { /* rien */ } source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } }); }
     if (!source.ok) { console.log("[cheval-route] index.html http", source.status); return PAGE_503(); }
     const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug), blocTexte(cheval, nbResultats, resultats, ecurieSlug));
     if (!page) { console.log("[cheval-route] repère <head> introuvable"); return PAGE_503(); }

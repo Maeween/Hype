@@ -380,7 +380,10 @@ export default async (request: Request, _context: Context) => {
   const seo = construire(slug, ec, geo, hype);
 
   try {
-    const source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } });
+    // 12/10 (référencement action 2) : la copie de l'appli SANS le texte de l'accueil (seo-accueil.cjs) ;
+    // si elle manque (publication sans le script), l'accueil comme avant.
+    let source = await fetch(new URL("/app-base.html", url.origin), { headers: { accept: "text/html" } });
+    if (!source.ok) { try { await source.body?.cancel(); } catch { /* rien */ } source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } }); }
     if (!source.ok) { console.log("[ecurie-route] index.html http", source.status); return PAGE_503(); }
     const page = await pageAvecRoute(source, propre(ec.n), seo);
     if (!page) { console.log("[ecurie-route] repère <head> introuvable"); return PAGE_503(); }
