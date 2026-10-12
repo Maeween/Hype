@@ -312,4 +312,81 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/concours-resultats/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/concours-resultats/"/>
   </url>
+  <url>
+    <loc>https://2hype.fr/fr/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/en/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/es/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/it/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/de/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ja/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
+  <url>
+    <loc>https://2hype.fr/ar/photos-souvenirs/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/photos-souvenirs/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/photos-souvenirs/"/>
+  </url>
 </urlset>
