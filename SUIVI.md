@@ -11887,3 +11887,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Un seul cheval : grande carte couverture « Voir sa fiche », puis « Ajouter un autre cheval » + écurie. Aucun cheval : encart « Ajoute ton cheval / Créer sa fiche » + écurie. Compte gratuit à sa limite : encart « Ajouter plus de chevaux / Réservé à Premium » (cadenas dans un cercle, pointillés).
 - iPhone 1 colonne ; tablette et ordinateur 2 colonnes (3 à partir de 1600 px) ; arabe : tout inversé (photo à gauche, chevrons). Données, règle Premium (build 1040), création, fiche, accès écurie : inchangés. Nouveaux textes en 7 langues.
 - Testé 390 (0, 1, 5 et 26 chevaux), 820, 1280 px et arabe : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- 12/10, 17 h 39 — Blandine : « Ok » → build 1041 publié (marqueur 20261012-1041).
