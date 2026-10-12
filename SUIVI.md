@@ -11840,3 +11840,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Un voile sombre uniforme (30 %) est posé sur l'image de fond de la page Photos : moins lumineuse et moins contrastée, mêmes images (aucune nouvelle). Le haut (cheval, nom, onglets), les photos des chevaux et les encarts ne changent pas. « Tous les souvenirs » et les autres onglets : inchangés.
 - Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - 12/10, 14 h 55 — Blandine : « Ok » → builds 1032, 1033, 1034 et 1035 publiés ensemble (marqueur 20261012-1035), après mise à jour sur les derniers envois de la conversation référencement (pages /fr/ et /en/, réglages Netlify : aucun conflit, index.html non touché par eux).
+
+## Build 1036 (12/10) — Fiche du cheval : des photos au lieu des albums — NON PUBLIÉ (attend validation)
+- Blandine (15 h 36) : « Mets des photos au lieu des albums sur la page cheval ».
+- Sur la page principale du cheval, le rail / la carte d'albums est retiré. À la place : l'encart « Les moments récents » de la page Photos (même mosaïque, mêmes photos récentes, la photo étoilée en grand si elle en fait partie), en lecture seule. Son bouton « Voir toutes ses photos → » (7 langues) ouvre la page Photos ; toucher une photo l'ouvre en grand comme avant.
+- Inchangés : la carte vidéo « Le voir en mouvement » juste au-dessus, la page Photos, les albums eux-mêmes et leurs données. Sans aucune photo : petit encart « Aucun souvenir pour le moment » (déjà traduit), son bouton ouvre la page Photos.
+- Testé 390, 820, 1280 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
