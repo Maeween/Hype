@@ -33,7 +33,17 @@ const LECTURE_MAX = 2 * 1024 * 1024;
 const DELAI_BASE_MS = 2500;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
-type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number };
+type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number; x?: number };
+/* 12/10/2026 : pages « Centres équestres de l'Essonne (91) » : code → [adresse, « de l'Essonne »] ; jamais bloquant. */
+let DEPARTEMENTS: Promise<Record<string, [string, string]>> | null = null;
+function departements(origine: string): Promise<Record<string, [string, string]>> {
+  if (!DEPARTEMENTS) {
+    DEPARTEMENTS = fetch(new URL("/fr/centres-equestres/departements.json", origine))
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => { DEPARTEMENTS = null; return {}; });
+  }
+  return DEPARTEMENTS;
+}
 let ANNUAIRE: Promise<Record<string, Ecurie>> | null = null;
 function annuaire(origine: string): Promise<Record<string, Ecurie>> {
   if (!ANNUAIRE) {
@@ -303,6 +313,19 @@ export default async (request: Request, _context: Context) => {
 
   const adresse = adresseEvenement(ev.titre, ev.id);
   const seo = construire(ev, ec, adresse);
+  // 12/10/2026 : fil d'Ariane pour Google — Hype › Centres équestres › département › écurie › événement
+  // (seulement si l'écurie est trouvée et n'est pas écartée du référencement)
+  if (ec && ec.x !== 1 && ecSlug) {
+    const slugEc = ecSlug;
+    const deps = await departements(url.origin).catch(() => ({} as Record<string, [string, string]>));
+    const dep = String(ec.d || "").trim(), pageDep = deps[dep];
+    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/fr/" },
+      { "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" }];
+    if (pageDep) fil.push({ "@type": "ListItem", position: 3, name: "Centres équestres " + pageDep[1] + " (" + dep + ")", item: pageDep[0] });
+    fil.push({ "@type": "ListItem", position: fil.length + 1, name: String(ec.n), item: DOMAINE + "/ecurie/" + slugEc });
+    fil.push({ "@type": "ListItem", position: fil.length + 1, name: seo.nom, item: seo.canonical });
+    seo.jsonld += `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: fil }).replace(/</g, "\\u003c")}</script>`;
+  }
   try {
     // 12/10 (référencement action 2) : la copie de l'appli SANS le texte de l'accueil (seo-accueil.cjs) ;
     // si elle manque (publication sans le script), l'accueil comme avant.

@@ -90,6 +90,34 @@ function annuaire(origine: string): Promise<Record<string, { n: string }>> {
   }
   return ANNUAIRE;
 }
+/* 12/10/2026 : pages « Centres équestres de l'Essonne (91) » (outils/seo-departements.cjs) : code → [adresse, « de l'Essonne »].
+   Même fichier qu'ecurie-route.ts ; jamais bloquant. */
+let DEPARTEMENTS: Promise<Record<string, [string, string]>> | null = null;
+function departements(origine: string): Promise<Record<string, [string, string]>> {
+  if (!DEPARTEMENTS) {
+    DEPARTEMENTS = fetch(new URL("/fr/centres-equestres/departements.json", origine))
+      .then((r) => (r.ok ? r.json() : {}))
+      .catch(() => { DEPARTEMENTS = null; return {}; });
+  }
+  return DEPARTEMENTS;
+}
+/* 12/10/2026 : le chemin pour Google (fil d'Ariane) Hype › Centres équestres › département › écurie › cheval.
+   Seulement quand l'écurie du cheval est trouvée sans doute possible et n'est pas écartée du référencement. */
+async function filAriane(ecurieSlug: string, nomCheval: string, urlCheval: string, origine: string): Promise<string> {
+  if (!ecurieSlug) return "";
+  try {
+    const ec: any = (await annuaire(origine))[ecurieSlug];
+    if (!ec || ec.x === 1 || !propre(ec.n)) return "";
+    const deps = await departements(origine).catch(() => ({} as Record<string, [string, string]>));
+    const dep = propre(ec.d), pageDep = deps[dep];
+    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/fr/" },
+      { "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" }];
+    if (pageDep) fil.push({ "@type": "ListItem", position: 3, name: "Centres équestres " + pageDep[1] + " (" + dep + ")", item: pageDep[0] });
+    fil.push({ "@type": "ListItem", position: fil.length + 1, name: propre(ec.n), item: DOMAINE + "/ecurie/" + ecurieSlug });
+    fil.push({ "@type": "ListItem", position: fil.length + 1, name: nomCheval, item: urlCheval });
+    return `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: fil }).replace(/</g, "\\u003c")}</script>`;
+  } catch { return ""; }
+}
 /* La clé d'un club, EXACTEMENT comme l'appli (clefClubG) et ecurie-route.ts. */
 function clefClub(n: unknown): string {
   return String(n || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
@@ -306,7 +334,7 @@ function coller(a: Uint8Array, b: Uint8Array): Uint8Array {
 }
 
 /* ---------- La page Hype avec la ligne ajoutée, en flux ---------- */
-async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string; image: string; nom: string }, texteGoogle: string): Promise<Response | null> {
+async function pageAvecRoute(source: Response, uuid: string, seo: { titre: string; description: string; canonical: string; image: string; nom: string }, texteGoogle: string, jsonld = ""): Promise<Response | null> {
   if (!source.body) return null;
   const enc = new TextEncoder();
   const ajout = enc.encode(
@@ -318,6 +346,7 @@ async function pageAvecRoute(source: Response, uuid: string, seo: { titre: strin
     `<base href="/"><script>window.__HYPE_ROUTE_CHEVAL=${JSON.stringify(uuid)};</script>` +
     `<meta name="description" content="${echapper(seo.description)}">` +
     `<link rel="canonical" href="${echapper(seo.canonical)}">` +
+    jsonld +
     // build 5 : aperçu de partage (Open Graph + X/Twitter)
     `<meta property="og:type" content="website">` +
     `<meta property="og:site_name" content="Hype">` +
@@ -442,7 +471,9 @@ export default async (request: Request, _context: Context) => {
     let source = await fetch(new URL("/app-base.html", url.origin), { headers: { accept: "text/html" } });
     if (!source.ok) { try { await source.body?.cancel(); } catch { /* rien */ } source = await fetch(new URL("/", url.origin), { headers: { accept: "text/html" } }); }
     if (!source.ok) { console.log("[cheval-route] index.html http", source.status); return PAGE_503(); }
-    const page = await pageAvecRoute(source, String(cheval.id), infosSeo(cheval, nbResultats, slug), blocTexte(cheval, nbResultats, resultats, ecurieSlug));
+    const seo = infosSeo(cheval, nbResultats, slug);
+    const fil = await filAriane(ecurieSlug, seo.nom, seo.canonical, url.origin);
+    const page = await pageAvecRoute(source, String(cheval.id), seo, blocTexte(cheval, nbResultats, resultats, ecurieSlug), fil);
     if (!page) { console.log("[cheval-route] repère <head> introuvable"); return PAGE_503(); }
     if (request.method === "HEAD") { try { await page.body?.cancel(); } catch { /* rien */ } return new Response(null, { status: 200, headers: page.headers }); }
     return page;
