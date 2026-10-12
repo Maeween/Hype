@@ -12145,3 +12145,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le bouton « Ajouter à mes chevaux / Retirer » sort du bas de la photo (c'est lui qui faisait remonter le nom sur la tête du cheval) et se place juste sous la photo, aligné sur le nom. Photo un peu plus haute sur téléphone (comme la V1).
 - Tablette et ordinateur : même principe, aligné sur la colonne du contenu. V2 seulement (adresse cachée). 16 scripts 0 erreur.
 - Mise en ligne avec la V2 seule (1065 et 1066 toujours en attente).
+
+## Build 1069 (12/10) — Fiche cheval V3 : maquette visuelle au design de l'accueil
+- Demande : « réplique complètement le design de l'accueil à la page cheval » → « plutôt sur une v3 » → « tu ne branches rien, c'est juste un visuel de page ».
+- Nouvelle page EcranChevalV3, ouverte UNIQUEMENT par 2hype.fr/#chevalv3-<id>. La V1 (en service) et la V2 ne changent pas.
+- Habillage identique à l'accueil (mêmes styles) : grand hero avec la photo du cheval à la place de la vidéo, nom en capitales espacées ; carte horizontale « Son histoire » (comme « Aujourd'hui ») ; phrase manuscrite champagne « Chaque cheval a son histoire, la sienne s'écrit ici. » ; 6 tuiles (Performances, Santé, Origines, Photos, Vidéos, Actualité) ; deux grandes cartes « Ses résultats » (images/piquet-cso.webp) et « Ses souvenirs » (photo du cheval) ; bloc façon Cercle Crystal « Partager sa fiche » ; bandeau de fin HYPE.
+- Tablette et ordinateur : mêmes règles que l'accueil (titre à gauche en grand, tuiles en lignes, deux cartes côte à côte).
+- Aucun bouton branché (seul le retour fonctionne). Lit seulement le nom, la race, le sexe, l'année et la photo du cheval. Textes nouveaux en 7 langues. Aucune image nouvelle.
+- Vérifié 390 / 820 / 1280 : aucun débordement, aucune erreur. 16 scripts 0 erreur.
