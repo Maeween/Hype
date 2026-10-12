@@ -11709,3 +11709,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sous les onglets, avant les albums : surtitre « PHOTOS », « Des instants à garder… » (Cormorant italique), « Ses plus beaux moments, ses petits bonheurs et tous les souvenirs partagés. » (7 langues) ; photo à droite, dégradé sombre à gauche, bordure champagne fine, angles arrondis, petite icône photo décorative dans un cercle fin en haut à droite ; aucun bouton. Arabe : image et dégradé en miroir, icône à gauche.
 - Fonction encartIntroCh (dans la fiche cheval) réutilisable pour Vidéos. Rien d'autre ne change (albums, galerie, actions).
 - Testé 375, 390, 1280 px et arabe ; 16 scripts sans erreur.
+
+## Build 1012 (12/10) — Page Vidéos du cheval : encart d'introduction
+- Même composition que Photos (encartIntroCh, 1011) : image images/videos-intro.webp (antérieurs au saut), surtitre « VIDÉOS », « Des souvenirs en mouvement… », « Des premiers pas aux grands moments, retrouvez son histoire en vidéos. » (7 langues), petite icône lecture décorative dans un cercle fin ; aucun bouton.
+- Placé sous les onglets, avant « Vidéos » et le bouton d'ajout ; lecteurs et fonctions inchangés. Testé 375 px, 1280 px et arabe ; 16 scripts sans erreur.
+- 12 h 19 : Blandine envoie la maquette ordinateur/tablette de la page Histoire ; elle enverra ses précisions avant qu'on la code.
