@@ -11943,3 +11943,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (18 h 39) : « tu peux faire la page Écurie sur ordinateur et tablette » (après le fond fixe du 1046).
 - Constat : avec une photo verticale (dont l'image par défaut), la tête du cheval passait derrière la citation. Correction : sur tablette et ordinateur, le haut de page s'allonge (64 % de la hauteur d'écran) : le nom de l'écurie passe sous la tête du cheval, la citation et les accès rapides ne la recouvrent plus. Photo horizontale et iPhone inchangés.
 - Testé 820, 1024, 1440 px : aucune erreur ; 16 scripts sans erreur.
+
+## Build 1050 (12/10) — Page Écurie : une photo horizontale fait aussi office de fond — NON PUBLIÉ (attend validation)
+- Blandine (18 h 48, capture de l'Écurie Feinn avec sa photo de saut) : « elle ne se met toujours pas en fond de page ». Cause : une photo horizontale était affichée entière en largeur, donc en bande basse (≈ 260 px sur iPhone), puis du noir.
+- Désormais une photo horizontale couvre la zone du haut comme un vrai fond (60 % de l'écran sur iPhone, 64 % sur tablette/ordinateur), centrée : seuls les bords gauche et droit peuvent être rognés, jamais le haut ni le bas ; le nom de l'écurie se place en bas de cette zone, les encarts glissent dessus. Photos verticales : inchangé (1049).
+- Simulé avec sa photo (390 et 1280 px) : aucune erreur ; 16 scripts sans erreur.
