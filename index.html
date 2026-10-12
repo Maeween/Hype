@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261012-1026"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261012-1027"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -1132,7 +1132,7 @@ function hypeHacherTexte(s) {
 /* Parametres de galerie -- valeurs de TEST, pas des seuils definitifs (a ajuster apres usage reel).
    11/09 (6) — BIBLIOTHEQUE DE COMPOSITIONS (voir HYPE_GALERIE_COMPOSITIONS plus bas, pres de son
    utilisation) : plus de compteur/tirage ici, chaque annee choisit et suit une composition fixe. */
-var HYPE_GALERIE_COLONNES = 3;            /* 12/09 (30) : 3 colonnes par annee — lu par le moteur de cases ET par le rendu, donc defini ici et pas dans le chargement */
+var HYPE_GALERIE_COLONNES = (function () { try { var wG = window.innerWidth || 390; return wG >= 1024 ? 6 : (wG >= 768 ? 4 : 3); } catch (eG) { return 3; } })();   /* (1027) 3 iPhone, 4 tablette, 6 ordinateur */            /* 12/09 (30) : 3 colonnes par annee — lu par le moteur de cases ET par le rendu, donc defini ici et pas dans le chargement */
 var HYPE_GALERIE_LIGNES_APERCU = 4;     /* (918) Blandine : apercu d une annee = l equivalent de 5 lignes PLEINES de photos (grandes photos comprises), coupe toujours sur une ligne complete ; le reste se deroule */
 var HYPE_GALERIE_PREVIEW_MIN = 15;       /* apercu d'une annee : au moins 15 photos, toujours un bloc ENTIER -- jamais coupe en deux (~15 a 18 affichees en pratique) */
 var PHOTO_MASTER_JPEG_QUALITY = 0.90;
@@ -56049,101 +56049,158 @@ function EcranAlbumPhotos(props) {
    appelable a tout moment. L'effet de chargement l'appelle comme avant ; un changement de format,
    d'annee ou d'ordre recompose UNIQUEMENT l'annee touchee, dans l'etat, sans aucun rechargement.
    ============================================================================ */
-function tailleCaseGalerie(fmt) {
-  /* 12/09 (32) : « normal » = une petite case CHOISIE A LA MAIN. Different d'« automatique »,
-     ou c'est le rythme qui decide et peut agrandir la photo. */
+/* ============================================================================
+   12/10 (1027) — NOUVEAU MOTEUR DU MUR DE SOUVENIRS (decisions validees par Blandine, brief « Mur par annee »).
+   - La TAILLE est attachee a la PHOTO : format choisi a la main d'abord ; sinon une taille automatique tiree de
+     l'adresse de la photo (jamais de sa place) -> une photo deplacee garde sa taille.
+   - Une photo verticale (connue apres un premier affichage) passe en Pleine hauteur ; une photo trop petite n'est
+     jamais agrandie automatiquement. Ces infos sont gardees dans le telephone (hypeInfosPhotos).
+   - Placement « sans trou » : chaque photo prend la premiere place libre en partant du haut, l'ordre est respecte
+     autant que possible ; puis on equilibre la derniere ligne en ajustant SEULEMENT des tailles automatiques
+     (jamais un choix manuel), choisies par l'adresse de la photo (pas par la position).
+   - Une annee d'UNE seule photo : rendue a part, centree, a taille raisonnable (le moteur renvoie seule:true).
+   - Nombre de colonnes variable (3 iPhone, 4 tablette, 6 ordinateur) : HYPE_GALERIE_COLONNES.
+   ============================================================================ */
+var hypeInfosPhotos = (function () { try { return JSON.parse(localStorage.getItem("hype_infos_photos") || "{}") || {}; } catch (e) { return {}; } })();
+function hypeNoterInfoPhoto(cle, w, h) {
+  try {
+    if (!cle || !w || !h) return false;
+    var inf = { p: (h > w * 1.15) ? 1 : 0, s: (w < 500 && h < 500) ? 1 : 0 };
+    var av = hypeInfosPhotos[cle];
+    if (av && av.p === inf.p && av.s === inf.s) return false;
+    hypeInfosPhotos[cle] = inf;
+    try { localStorage.setItem("hype_infos_photos", JSON.stringify(hypeInfosPhotos)); } catch (eL) { }
+    return true;
+  } catch (e) { return false; }
+}
+function hypeColonnesGalerie() {
+  try { var w = window.innerWidth || 390; return w >= 1024 ? 6 : (w >= 768 ? 4 : 3); } catch (e) { return 3; }
+}
+function tailleCaseGalerie(fmt, cols) {
+  cols = cols || HYPE_GALERIE_COLONNES || 3;
   if (fmt === "normal") return { w: 1, h: 1 };
   if (fmt === "grand") return { w: 2, h: 2 };
   if (fmt === "pleine_hauteur") return { w: 1, h: 2 };
-  if (fmt === "pleine_largeur") return { w: 3, h: 3 };   /* (909) 2 -> 3 cases de haut, Blandine : « un peu plus haute, sinon ca coupe » */
+  if (fmt === "pleine_largeur") return { w: cols, h: Math.max(3, Math.round(cols * 2 / 3)) };   /* (909) 3 colonnes x 3 sur iPhone */
+  if (fmt === "panoramique") return { w: cols, h: Math.max(2, Math.round(cols / 2)) };
   return { w: 1, h: 1 };
 }
-
-function hypeComposerAnneeGalerie(grpMEV, mapFormats) {
-  mapFormats = mapFormats || {};
-  var photosMEV = grpMEV.photos;
-  var occ = {}, curL = 1, curC = 1, derniereL = 1;
-  function libreCase(lT, cT, wT, hT) {
-    if (cT + wT - 1 > HYPE_GALERIE_COLONNES) return false;
-    for (var dl = 0; dl < hT; dl++) for (var dc = 0; dc < wT; dc++) if (occ[(lT + dl) + "," + (cT + dc)]) return false;
+function hypeTailleAutoPhoto(cle) {
+  var inf = hypeInfosPhotos[cle] || null;
+  var x = hypeHacherTexte("taille:" + cle) % 100;
+  var f = x < 13 ? "grand" : (x < 21 ? "pleine_hauteur" : "normal");
+  if (inf && inf.s) return "normal";                       /* trop petite : jamais agrandie */
+  if (inf && inf.p && f === "grand") f = "pleine_hauteur";  /* verticale : format vertical plutot que carre */
+  if (inf && inf.p && f === "normal" && x % 2 === 0) f = "pleine_hauteur";
+  return f;
+}
+function hypePlacerCasesGalerie(items, cols) {
+  var occ = {}, derniere = 0, cases = [];
+  function libre(l, c, w, h) {
+    if (c + w - 1 > cols) return false;
+    for (var a = 0; a < h; a++) for (var b = 0; b < w; b++) if (occ[(l + a) + "," + (c + b)]) return false;
     return true;
   }
-  /* taille de chaque photo, decidee UNE fois : format manuel s'il y en a un, sinon le
-     rythme automatique assis sur le rang. Aucune taille ne depend de la position, donc
-     marquer une photo ne change jamais la taille d'une autre. */
-  var pileMEV = photosMEV.map(function (pMEV, iMEV) {
-    var cleMEV = (typeof urlNue === "function") ? urlNue(pMEV.url) : pMEV.url;
-    var fmtManuel = mapFormats[cleMEV] || null;
-    var fmtMEV = fmtManuel;
-    /* (909) Blandine : une photo SEULE sur son annee passe automatiquement en pleine largeur (sauf format choisi a la main) */
-    if (photosMEV.length === 1) fmtMEV = "pleine_largeur";   /* (909) Blandine : seule sur son annee = TOUJOURS pleine largeur, meme en « Grand » (sinon 2 cases collees a gauche) */
-    if (!fmtMEV) {
-      var decMEV = hypeHacherTexte("rythme:" + String(grpMEV.an)) % 7;
-      if ((iMEV + decMEV) % 13 === 0) fmtMEV = "pleine_largeur";
-      else if ((iMEV + decMEV) % 7 === 3) fmtMEV = "grand";
-    }
-    return { p: pMEV, fmt: fmtMEV, manuel: !!fmtManuel, rang: iMEV + 1, t: tailleCaseGalerie(fmtMEV) };
+  items.forEach(function (it) {
+    var t = tailleCaseGalerie(it.fmt, cols); var w = Math.min(t.w, cols), hh = t.h;
+    var l = 1, c = 1, garde = 0;
+    while (!libre(l, c, w, hh) && garde < 20000) { c++; if (c > cols) { c = 1; l++; } garde++; }
+    for (var a = 0; a < hh; a++) for (var b = 0; b < w; b++) occ[(l + a) + "," + (c + b)] = true;
+    derniere = Math.max(derniere, l + hh - 1);
+    cases.push({ p: it.p, fmt: it.fmt, manuel: it.manuel, col: c, ligne: l, w: w, h: hh, rang: it.rang });
   });
-  /* 12/09 (33) — COMBLER LES TROUS (choix de Blandine : option A, « jusqu'à 3 »). Quand la
-     photo qui vient ne rentre pas dans la place libre (une grande ou un bandeau en fin de
-     ligne), on regarde les 3 photos SUIVANTES au maximum : la premiere qui rentre prend la
-     place, et la photo trop large passe juste apres. Une photo ne peut donc avancer que de
-     3 places au plus, et JAMAIS reculer — l'ordre reste presque chronologique, et il n'y a
-     plus de case vide au milieu d'une annee. Sans cette regle, le trou restait tel quel. */
-  var REORDRE_MAX_AVANCE = 3;
-  var casesMEV = [];
-  while (pileMEV.length > 0) {
-    var iPrise = 0;
-    if (!libreCase(curL, curC, pileMEV[0].t.w, pileMEV[0].t.h)) {
-      for (var iEss = 1; iEss < pileMEV.length && iEss <= REORDRE_MAX_AVANCE; iEss++) {
-        if (libreCase(curL, curC, pileMEV[iEss].t.w, pileMEV[iEss].t.h)) { iPrise = iEss; break; }
-      }
-    }
-    var caseMEV = pileMEV.splice(iPrise, 1)[0];
-    var tMEV = caseMEV.t;
-    /* si meme les 3 suivantes ne rentrent pas : balayage en avant, le curseur ne recule jamais */
-    var lT = curL, cT = curC, garde = 0;
-    while (!libreCase(lT, cT, tMEV.w, tMEV.h) && garde < 6000) {
-      cT++; if (cT > HYPE_GALERIE_COLONNES) { cT = 1; lT++; }
-      garde++;
-    }
-    for (var dl2 = 0; dl2 < tMEV.h; dl2++) for (var dc2 = 0; dc2 < tMEV.w; dc2++) occ[(lT + dl2) + "," + (cT + dc2)] = true;
-    derniereL = Math.max(derniereL, lT + tMEV.h - 1);
-    curL = lT; curC = cT + tMEV.w;
-    if (curC > HYPE_GALERIE_COLONNES) { curC = 1; curL++; }
-    /* le curseur saute les cases deja prises par une grande case des lignes precedentes */
-    var sautGarde = 0;
-    while (occ[curL + "," + curC] && sautGarde < 6000) {
-      curC++; if (curC > HYPE_GALERIE_COLONNES) { curC = 1; curL++; }
-      sautGarde++;
-    }
-    /* coupeOk : cette photo est la plus BASSE placee jusqu'ici -> couper l'apercu juste
-       apres elle ne laisse aucune case coupee en deux. */
-    var finL = lT + tMEV.h - 1;
-    /* 12/09 (35) — POINT DE COUPE DE L'APERCU. coupeOk : cette photo est la plus basse
-       placee, donc aucune case ne serait coupee en deux. coupeNette, en plus : la derniere
-       ligne est COMPLETE (ses 3 colonnes prises). Sans ce second critere, l'apercu pouvait
-       s'arreter sur une petite photo seule au milieu de sa ligne, juste avant « + N voir
-       tout » — ce que Blandine a signale. */
-    var ligneComplete = true;
-    for (var cQ = 1; cQ <= HYPE_GALERIE_COLONNES; cQ++) if (!occ[finL + "," + cQ]) { ligneComplete = false; break; }
-    casesMEV.push({ p: caseMEV.p, fmt: caseMEV.fmt, manuel: caseMEV.manuel, col: cT, ligne: lT, w: tMEV.w, h: tMEV.h, coupeOk: (finL >= derniereL), coupeNette: (finL >= derniereL && ligneComplete), rang: caseMEV.rang });
+  var vides = 0;
+  for (var L = 1; L <= derniere; L++) for (var C = 1; C <= cols; C++) if (!occ[L + "," + C]) vides++;
+  /* points de coupe (apercu) : ligne complete et aucune case plus basse placee avant */
+  var basse = 0;
+  cases.forEach(function (cs) {
+    var fin = cs.ligne + cs.h - 1; basse = Math.max(basse, fin);
+    var complete = true; for (var C2 = 1; C2 <= cols; C2++) if (!occ[fin + "," + C2]) { complete = false; break; }
+    cs.coupeOk = fin >= basse; cs.coupeNette = cs.coupeOk && complete;
+  });
+  return { cases: cases, lignes: Math.max(1, derniere), vides: vides };
+}
+function hypeComposerAnneeColonnes(grpMEV, mapFormats, colsVoulues) {
+  mapFormats = mapFormats || {};
+  var cols = colsVoulues || HYPE_GALERIE_COLONNES || 3;
+  var photos = grpMEV.photos || [];
+  if (photos.length === 1) {
+    return { cases: [{ p: photos[0], fmt: "seule", manuel: false, col: 1, ligne: 1, w: cols, h: 1, rang: 1, coupeOk: true, coupeNette: true }], lignes: 1, seule: true };
   }
-  /* (909) Blandine : une GRANDE photo (2 colonnes) sans aucune voisine a cote sur toute sa hauteur reste
-     « collee a gauche » et desequilibre la page -> elle s elargit a toute la largeur (3 colonnes). Si une
-     autre photo peut se mettre a cote, rien ne change. Seules les colonnes changent : aucune ligne ne bouge. */
-  casesMEV.forEach(function (cG) {
-    if (cG.w !== 2) return;
-    var seule = true;
-    for (var lG = cG.ligne; lG < cG.ligne + cG.h && seule; lG++) {
-      for (var kG = 0; kG < casesMEV.length; kG++) {
-        var oG = casesMEV[kG]; if (oG === cG) continue;
-        if (lG >= oG.ligne && lG < oG.ligne + oG.h) { seule = false; break; }
+  var items = photos.map(function (p, i) {
+    var cle = (typeof urlNue === "function") ? urlNue(p.url) : p.url;
+    var man = mapFormats[cle] || null;
+    if (man === "automatique") man = null;
+    return { p: p, cle: cle, fmt: man || hypeTailleAutoPhoto(cle), manuel: !!man, rang: i + 1 };
+  });
+  /* 1) equilibre de la derniere ligne, sans dependre de l'ordre : on vise un total de cases multiple du
+        nombre de colonnes, en changeant le moins de tailles automatiques possible */
+  function cellules(f) { var t = tailleCaseGalerie(f, cols); return Math.min(t.w, cols) * t.h; }
+  var total = items.reduce(function (s, it) { return s + cellules(it.fmt); }, 0);
+  var parCle = items.filter(function (it) { return !it.manuel; }).slice().sort(function (a, b) { return (hypeHacherTexte("ajust:" + a.cle) % 9973) - (hypeHacherTexte("ajust:" + b.cle) % 9973); });
+  var reste = total % cols;
+  if (reste && parCle.length) {
+    var mouvements = [
+      { de: "normal", vers: "pleine_hauteur", d: 1 }, { de: "pleine_hauteur", vers: "normal", d: -1 },
+      { de: "normal", vers: "grand", d: 3 }, { de: "grand", vers: "normal", d: -3 },
+      { de: "grand", vers: "pleine_hauteur", d: -2 }, { de: "pleine_hauteur", vers: "grand", d: 2 }
+    ];
+    var meilleur = null;
+    (function chercher(chemin, delta, utilises) {
+      if (((total + delta) % cols + cols) % cols === 0 && chemin.length) { if (!meilleur || chemin.length < meilleur.length) meilleur = chemin.slice(); return; }
+      if (chemin.length >= 4) return;
+      mouvements.forEach(function (mv) {
+        var vus = 0;
+        for (var k = 0; k < parCle.length; k++) {
+          var it = parCle[k]; if (utilises[it.cle] || it.fmt !== mv.de) continue;
+          var inf = hypeInfosPhotos[it.cle];
+          if ((mv.vers === "grand") && inf && inf.s) continue;
+          utilises[it.cle] = true; chemin.push({ it: it, vers: mv.vers });
+          chercher(chemin, delta + mv.d, utilises);
+          chemin.pop(); delete utilises[it.cle];
+          if (++vus >= 2) break;   /* deux photos candidates au plus par type de mouvement : les premieres selon l'adresse */
+        }
+      });
+    })([], 0, {});
+    if (meilleur) meilleur.forEach(function (m) { m.it.fmt = m.vers; });
+  }
+  var res = hypePlacerCasesGalerie(items, cols);
+  /* 2) s'il reste un trou (forme des grandes cases), petites retouches sur les tailles automatiques */
+  var essais = 0;
+  while (res.vides > 0 && essais < 10) {
+    essais++;
+    var mieux = null;
+    for (var k2 = items.length - 1; k2 >= 0 && k2 >= items.length - 16; k2--) {
+      var it2 = items[k2]; if (it2.manuel) continue;
+      var options = it2.fmt === "normal" ? ["pleine_hauteur", "grand"] : (it2.fmt === "grand" ? ["normal", "pleine_hauteur"] : ["normal", "grand"]);
+      var dernier = (k2 === items.length - 1);
+      if (dernier && !(hypeInfosPhotos[it2.cle] && hypeInfosPhotos[it2.cle].s)) options.push("panoramique");
+      for (var o = 0; o < options.length; o++) {
+        var avant = it2.fmt; it2.fmt = options[o];
+        var r2 = hypePlacerCasesGalerie(items, cols);
+        if (r2.vides < (mieux ? mieux.vides : res.vides)) mieux = { k: k2, fmt: options[o], vides: r2.vides, res: r2 };
+        it2.fmt = avant;
       }
     }
-    if (seule) { cG.col = 1; cG.w = HYPE_GALERIE_COLONNES; }
+    if (!mieux) break;
+    items[mieux.k].fmt = mieux.fmt; res = mieux.res;
+  }
+  return { cases: res.cases, lignes: res.lignes, vides: res.vides };
+}
+
+/* Sur tablette / ordinateur, une annee avec peu de photos peut laisser des trous sur 4 ou 6 colonnes : on essaie
+   alors une grille plus etroite (4 puis 3 colonnes), centree, avec des cases de MEME taille que les autres annees. */
+function hypeComposerAnneeGalerie(grpMEV, mapFormats, colsVoulues) {
+  var cols = colsVoulues || HYPE_GALERIE_COLONNES || 3;
+  var r = hypeComposerAnneeColonnes(grpMEV, mapFormats, cols); r.cols = cols;
+  if (r.seule || !r.vides || cols <= 3) return r;
+  var choix = r;
+  [4, 3].forEach(function (c) {
+    if (c >= cols || !choix.vides) return;
+    var r2 = hypeComposerAnneeColonnes(grpMEV, mapFormats, c); r2.cols = c;
+    if (r2.vides < choix.vides) choix = r2;
   });
-  return { cases: casesMEV, lignes: derniereL };
+  return choix;
 }
 
 function ChronologieSouvenirs(props) {
@@ -56195,7 +56252,8 @@ function ChronologieSouvenirs(props) {
       try {
         var el = refGrilleAn.current; if (!el) return;
         var larg = el.clientWidth || 0; if (larg <= 0) return;
-        var col = (larg - 2 * 5) / HYPE_GALERIE_COLONNES;
+        if (props.mode === "vitrine") larg -= 60;   /* (1027) marges et bordure des encarts de la vitrine */
+        var col = (larg - 5 * (HYPE_GALERIE_COLONNES - 1)) / HYPE_GALERIE_COLONNES;
         var u = Math.max(40, Math.round(col * 0.75));
         setUniteGalerie(function (av) { return Math.abs(av - u) > 1 ? u : av; });
       } catch (eMs) { }
@@ -56415,7 +56473,8 @@ function ChronologieSouvenirs(props) {
       try {
         var el = refGrilleEdit.current; if (!el) return;
         var l = el.getBoundingClientRect().width; if (!(l > 0)) return;
-        var u = Math.floor((l - 5 * (HYPE_GALERIE_COLONNES - 1)) / HYPE_GALERIE_COLONNES);
+        var cE = parseInt(el.getAttribute("data-cols"), 10) || HYPE_GALERIE_COLONNES;
+        var u = Math.floor(((l - 5 * (cE - 1)) / cE) * 0.75);   /* (1027) memes cases que le mur (4/3), plus des carres */
         if (u > 0 && u !== uniteEdit) setUniteEdit(u);
       } catch (eM) { }
     }
@@ -56429,7 +56488,8 @@ function ChronologieSouvenirs(props) {
     var casesE = (grpE && grpE.cases) || [];
     var lignesE = (grpE && grpE.lignes) || 1;
     var uE = uniteEdit || uniteGalerie || 90;
-    return h("div", { ref: refGrilleEdit, style: { display: "grid", gridTemplateColumns: "repeat(" + HYPE_GALERIE_COLONNES + ", 1fr)", gridTemplateRows: "repeat(" + lignesE + ", " + uE + "px)", gap: 5 } },
+    var colsE = (grpE && grpE.cols) || HYPE_GALERIE_COLONNES;
+    return h("div", { ref: refGrilleEdit, "data-cols": colsE, style: { width: colsE >= HYPE_GALERIE_COLONNES ? "100%" : ("calc(" + colsE + " * (100% - " + (5 * (HYPE_GALERIE_COLONNES - 1)) + "px) / " + HYPE_GALERIE_COLONNES + " + " + (5 * (colsE - 1)) + "px)"), margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(" + colsE + ", 1fr)", gridTemplateRows: "repeat(" + lignesE + ", " + uE + "px)", gap: 5 } },
       casesE.map(function (cG, iG) {
         var pG = cG.p; var cK = (typeof urlNue === "function") ? urlNue(pG.url) : pG.url;
         var choisie = (cleSel && cleSel === cK) || (clesMulti && clesMulti[pG.url]);
@@ -56477,7 +56537,13 @@ function ChronologieSouvenirs(props) {
                   : T("Verrouiller cette ann\u00e9e", "Lock this year", "Bloquear este a\u00f1o", "Bloccare quest'anno", "\u3053\u306e\u5e74\u3092\u30ed\u30c3\u30af", "Jahr sperren", "\u0642\u0641\u0644 \u0647\u0630\u0647 \u0627\u0644\u0633\u0646\u0629"),
           verrouE ? T("Les autres pourront de nouveau la modifier", "Others will be able to change it again", "Otras podr\u00e1n modificarlo de nuevo", "Gli altri potranno modificarlo di nuovo", "\u4ed6\u306e\u4eba\u304c\u518d\u3073\u5909\u66f4\u3067\u304d\u307e\u3059", "Andere k\u00f6nnen es wieder \u00e4ndern", "\u0633\u064a\u062a\u0645\u0643\u0646 \u0627\u0644\u0622\u062e\u0631\u0648\u0646 \u0645\u0646 \u062a\u0639\u062f\u064a\u0644\u0647\u0627 \u0645\u062c\u062f\u062f\u0627")
                   : T("Les autres ne pourront plus y toucher", "Others will no longer be able to change it", "Las dem\u00e1s no podr\u00e1n tocarlo", "Gli altri non potranno pi\u00f9 toccarlo", "\u4ed6\u306e\u4eba\u306f\u5909\u66f4\u3067\u304d\u307e\u305b\u3093", "Andere k\u00f6nnen es nicht mehr \u00e4ndern", "\u0644\u0646 \u064a\u062a\u0645\u0643\u0646 \u0627\u0644\u0622\u062e\u0631\u0648\u0646 \u0645\u0646 \u0644\u0645\u0633\u0647\u0627"),
-          function () { setEditVue("cadenas"); }));
+          function () { setEditVue("cadenas"); }),
+        /* 12/10 (1027) une annee ancienne de 1 ou 2 photos rejoint « Les premiers souvenirs », sauf si on la garde a part */
+        ligneChoix("i", independantesAn[String(editAn)] ? "\u25c7" : "\u25c6",
+          independantesAn[String(editAn)] ? T("Regrouper avec les premiers souvenirs", "Group with the first memories", "Agrupar con los primeros recuerdos", "Raggruppa con i primi ricordi", "\u306f\u3058\u3081\u306e\u601d\u3044\u51fa\u306b\u307e\u3068\u3081\u308b", "Mit den ersten Erinnerungen gruppieren", "\u062a\u062c\u0645\u064a\u0639 \u0645\u0639 \u0627\u0644\u0630\u0643\u0631\u064a\u0627\u062a \u0627\u0644\u0623\u0648\u0644\u0649")
+                                          : T("Garder cette ann\u00e9e \u00e0 part", "Keep this year separate", "Mantener este a\u00f1o aparte", "Tieni quest'anno a parte", "\u3053\u306e\u5e74\u3092\u5225\u306b\u3059\u308b", "Dieses Jahr separat halten", "\u0625\u0628\u0642\u0627\u0621 \u0647\u0630\u0647 \u0627\u0644\u0633\u0646\u0629 \u0645\u0646\u0641\u0635\u0644\u0629"),
+          erreurIndep || T("Une ann\u00e9e ancienne avec 1 ou 2 photos rejoint \u00ab Les premiers souvenirs \u00bb", "An old year with 1 or 2 photos joins \u201cThe first memories\u201d", "Un a\u00f1o antiguo con 1 o 2 fotos se une a \u00ab Los primeros recuerdos \u00bb", "Un anno vecchio con 1 o 2 foto va nei \u00ab primi ricordi \u00bb", "\u5199\u771f1\u301c2\u679a\u306e\u53e4\u3044\u5e74\u306f\u307e\u3068\u3081\u3066\u8868\u793a", "Ein altes Jahr mit 1 oder 2 Fotos kommt zu \u201eDie ersten Erinnerungen\u201c", "\u0627\u0644\u0633\u0646\u0629 \u0627\u0644\u0642\u062f\u064a\u0645\u0629 \u0630\u0627\u062a \u0635\u0648\u0631\u0629 \u0623\u0648 \u0635\u0648\u0631\u062a\u064a\u0646 \u062a\u064f\u062c\u0645\u0651\u064e\u0639"),
+          function () { basculerIndependante(editAn); }));
     } else if (editVue === "ranger") {
       var lstE = ordreRangement(grpE);
       dedans = h("div", null,
@@ -56611,6 +56677,65 @@ function ChronologieSouvenirs(props) {
      l'annee sont les siennes) et refuse si l'annee est verrouillee : l'ecran n'a rien a decider.
      Fonction absente en base (SQL non passe) : on le dit et on ne touche a rien. */
   var _vr = React.useState({}), verrousAn = _vr[0], setVerrousAn = _vr[1];
+  /* 12/10 (1027) page « Tous les souvenirs » : annees gardees a part, regroupement deplie, filtre par annee */
+  var _ind = React.useState({}), independantesAn = _ind[0], setIndependantesAn = _ind[1];
+  var _pO = React.useState(false), premiersOuverts = _pO[0], setPremiersOuverts = _pO[1];
+  var _fA = React.useState(null), filtreAn = _fA[0], setFiltreAn = _fA[1];
+  var _fO = React.useState(false), filtreOuvert = _fO[0], setFiltreOuvert = _fO[1];
+  var _iE = React.useState(null), erreurIndep = _iE[0], setErreurIndep = _iE[1];
+  React.useEffect(function () {
+    var vif = true;
+    if (!chevalId) return;
+    try { supa.from("annees_photos").select("annee, independante").eq("cheval_id", chevalId).then(function (rI) {
+      if (!vif || !rI || rI.error || !rI.data) return;   /* colonne absente tant que le SQL n'est pas passe : rien ne change */
+      var mI = {}; rI.data.forEach(function (lI) { if (lI && lI.independante) mI[String(lI.annee)] = true; }); setIndependantesAn(mI);
+    }, function () { }); } catch (eI) { }
+    return function () { vif = false; };
+  }, [chevalId]);
+  async function basculerIndependante(anI) {
+    setErreurIndep(null);
+    var avant = !!independantesAn[String(anI)];
+    try {
+      var rI = await supa.rpc("photos_annee_independante", { p_cheval: String(chevalId), p_annee: parseInt(anI, 10), p_independante: !avant });
+      if (rI && rI.error) throw rI.error;
+      if (rI && rI.data === "refuse") throw new Error("refuse");
+      setIndependantesAn(function (m) { var n = Object.assign({}, m); if (avant) delete n[String(anI)]; else n[String(anI)] = true; return n; });
+    } catch (eB) {
+      var msgB = String((eB && eB.message) || eB);
+      setErreurIndep(/could not find|does not exist|PGRST202/i.test(msgB) || (eB && (eB.code === "PGRST202" || eB.code === "42883"))
+        ? T("R\u00e9glage pas encore disponible (mise \u00e0 jour de la base \u00e0 faire).", "Setting not available yet (database update needed).", "Ajuste a\u00fan no disponible.", "Impostazione non ancora disponibile.", "\u307e\u3060\u5229\u7528\u3067\u304d\u307e\u305b\u3093\u3002", "Einstellung noch nicht verf\u00fcgbar.", "\u0627\u0644\u0625\u0639\u062f\u0627\u062f \u063a\u064a\u0631 \u0645\u062a\u0627\u062d \u0628\u0639\u062f.")
+        : T("Action refus\u00e9e.", "Action refused.", "Acci\u00f3n rechazada.", "Azione rifiutata.", "\u62d2\u5426\u3055\u308c\u307e\u3057\u305f\u3002", "Aktion abgelehnt.", "\u062a\u0645 \u0627\u0644\u0631\u0641\u0636."));
+    }
+  }
+  /* nombre de colonnes selon l'ecran, infos apprises sur les photos : on recompose sans recharger */
+  var formatsRefCS = React.useRef({});
+  formatsRefCS.current = formatsManuels || {};
+  var minuteurRecompo = React.useRef(null);
+  function programmerRecompo() {
+    try { clearTimeout(minuteurRecompo.current); } catch (eC) { }
+    minuteurRecompo.current = setTimeout(function () { try { recomposerAnnees(formatsRefCS.current || {}); } catch (eR) { } }, 700);
+  }
+  React.useEffect(function () {
+    function surTaille() { var c = hypeColonnesGalerie(); if (c !== HYPE_GALERIE_COLONNES) { HYPE_GALERIE_COLONNES = c; programmerRecompo(); } }
+    try { window.addEventListener("resize", surTaille); } catch (eW) { }
+    return function () { try { window.removeEventListener("resize", surTaille); } catch (eW2) { } try { clearTimeout(minuteurRecompo.current); } catch (eC2) { } };
+  }, []);
+  /* ouverture directement sur les annees passees (« Decouvrir les annees passees ») */
+  var debutFaitCS = React.useRef(false);
+  React.useEffect(function () {
+    if (debutFaitCS.current || chargeCh || !props.debutAn || !annees.length) return;
+    debutFaitCS.current = true;
+    var anD = props.debutAn;
+    var grpD = null; annees.forEach(function (g) { if (g.an === anD) grpD = g; });
+    if (grpD && (grpD.photos || []).length <= 2) setPremiersOuverts(true);
+    setTimeout(function () {
+      try {
+        var racine = refGrilleAn.current; if (!racine) return;
+        var cible = racine.querySelector('[data-annee="' + anD + '"]') || racine.querySelector('[data-premiers="1"]');
+        if (cible && cible.scrollIntoView) cible.scrollIntoView({ behavior: "smooth", block: "start" });
+      } catch (eS) { }
+    }, 350);
+  }, [chargeCh, annees, props.debutAn]);
   var _vc = React.useState(false), verrouEnCours = _vc[0], setVerrouEnCours = _vc[1];
   var _eo = React.useState(null), erreurOrdre = _eo[0], setErreurOrdre = _eo[1];
   /* 13/09 (58) — PIECE 4b : POSER OU RETIRER LE CADENAS D'UNE ANNEE (decision de Blandine du
@@ -57058,310 +57183,229 @@ function ChronologieSouvenirs(props) {
   }
 
   if (chargeCh) return h("div", { style: { padding: "18px 16px", fontSize: 12, color: "#8A929C" } }, T("Chargement des souvenirs…", "Loading memories…", "Cargando recuerdos…", "Caricamento ricordi…", "読み込み中…", "Lädt…", "\u062c\u0627\u0631 \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0630\u0643\u0631\u064a\u0627\u062a\u2026"));
-  if (!annees.length) return null;
+  /* ===================== 12/10 (1027) NOUVEAU RENDU — maquette A « Mur par annee » =====================
+     Deux usages du meme composant (memes donnees, meme editeur) :
+       props.mode === "vitrine" : page Photos principale -> « Les moments recents » + « Au fil des annees »
+                                  (apercus, aucun outil d'edition), boutons qui ouvrent la page complete.
+       sinon (« complet »)      : page « Tous les souvenirs » -> toutes les annees, losange, nombre de souvenirs,
+                                  Modifier, filtre par annee, regroupement « Les premiers souvenirs ».
+     ================================================================================================ */
+  var COLS = HYPE_GALERIE_COLONNES || 3;
+  var GAP = 5;
+  var C_CH = "#C9A66B", C_IV = "#F3EEE4";
+  var rtlCS = false; try { rtlCS = document.documentElement.dir === "rtl"; } catch (eRt) { }
+  var nbTotal = annees.reduce(function (s, g) { return s + ((g && g.photos) ? g.photos.length : 0); }, 0);
+  function txtSouv(n) { return n + " " + (n > 1 ? T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen", "ذكريات") : T("souvenir", "memory", "recuerdo", "ricordo", "思い出", "Erinnerung", "ذكرى")); }
+  function losange(plein, taille) { var t = taille || 11; return h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: t, height: t, transform: "rotate(45deg)", border: "1.5px solid " + C_CH, background: plein ? C_CH : "transparent", boxSizing: "border-box", marginInlineEnd: 2 } }); }
+  function cleDe(u) { return (typeof urlNue === "function") ? urlNue(u) : u; }
+  var colPx = Math.max(60, (uniteGalerie || 90) / 0.75);
+  /* une case : UNE seule decoupe (la vignette est demandee aux proportions exactes de la case), ou image entiere
+     placee par le cadrage enregistre ; les grandes cases automatiques apprennent l'orientation de la photo */
+  function caseMur(cG, cle, extra) {
+    extra = extra || {};
+    var p = cG.p, cK = cleDe(p.url);
+    var wPx = cG.w * colPx + (cG.w - 1) * GAP, hPx = cG.h * (uniteGalerie || 90) + (cG.h - 1) * GAP;
+    var posCadr = cadrages[cK] || null;
+    var apprendre = !cG.manuel && cG.fmt !== "normal" && !hypeInfosPhotos[cK];
+    var src = (posCadr || apprendre)
+      ? ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(p.url, Math.max(wPx, hPx) * 1.3, Math.max(wPx, hPx) * 1.3) : p.url)
+      : ((typeof vignetteHype === "function") ? vignetteHype(p.url, Math.round(wPx), Math.round(hPx)) : p.url);
+    var estVed = props.vedetteUrl && cK === props.vedetteUrl;
+    return h("div", { key: cle, role: "button", onClick: function () { if (props.onOuvrir) props.onOuvrir(p.url, p.albumId); },
+        style: Object.assign({ position: "relative", overflow: "hidden", borderRadius: 6, cursor: "pointer", background: "#0B1013", border: "1px solid rgba(201,166,107,0.28)", boxSizing: "border-box", gridColumn: cG.col + " / span " + cG.w, gridRow: cG.ligne + " / span " + cG.h }, extra.style || {}) },
+      h("img", { src: src, alt: "", loading: "lazy", decoding: "async",
+        onLoad: apprendre ? function (eL) { try { var im = eL.target; if (hypeNoterInfoPhoto(cK, im.naturalWidth, im.naturalHeight)) programmerRecompo(); } catch (eI) { } } : undefined,
+        onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); },
+        style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: posCadr || (cG.fmt === "pleine_hauteur" ? "center 30%" : "center"), display: "block", WebkitTouchCallout: "none" } }),
+      extra.pastille ? h("span", { style: { position: "absolute", top: 6, insetInlineStart: 6, padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(5,8,11,0.7)", color: C_CH, fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 600 } }, extra.pastille) : null,
+      (extra.vedette && props.peutVedette) ? h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(p.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "フィーチャーにする", "Als Favorit festlegen", "تمييز"), style: { position: "absolute", top: 6, insetInlineStart: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVed ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVed ? "★" : "☆") : null);
+  }
+  /* une ou deux photos : centrees, taille raisonnable, proportions gardees (jamais etirees en pleine largeur) */
+  function petitesPhotos(photos, cle, opts) {
+    opts = opts || {};
+    var une = photos.length === 1;
+    return h("div", { key: cle, style: { display: "flex", justifyContent: "center", gap: 8 } },
+      photos.map(function (p, i) {
+        var cK = cleDe(p.url), posC = cadrages[cK] || null;
+        var largeur = une ? Math.min(340, Math.round(colPx * 2.2)) : Math.min(260, Math.round(colPx * 1.5));
+        var estVed = props.vedetteUrl && cK === props.vedetteUrl;
+        return h("div", { key: i, role: "button", onClick: function () { if (props.onOuvrir) props.onOuvrir(p.url, p.albumId); }, style: { position: "relative", width: une ? largeur : "calc((100% - 8px) / 2)", maxWidth: largeur, flex: une ? "0 1 auto" : "0 1 auto", borderRadius: 6, overflow: "hidden", border: "1px solid rgba(201,166,107,0.28)", background: "#0B1013", cursor: "pointer", aspectRatio: une ? undefined : "4 / 3" } },
+          h("img", { src: une ? ((typeof vignetteHypeContain === "function") ? vignetteHypeContain(p.url, largeur * 1.3, largeur * 1.3) : p.url) : ((typeof vignetteHype === "function") ? vignetteHype(p.url, largeur, Math.round(largeur * 0.75)) : p.url), alt: "", loading: "lazy", decoding: "async",
+            onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); },
+            style: une ? { width: "100%", height: "auto", maxHeight: 300, objectFit: "cover", objectPosition: posC || "center", display: "block" } : { width: "100%", height: "100%", objectFit: "cover", objectPosition: posC || "center", display: "block" } }),
+          opts.pastilles ? h("span", { style: { position: "absolute", top: 6, insetInlineStart: 6, padding: "2px 8px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(5,8,11,0.7)", color: C_CH, fontSize: 10.5, fontWeight: 600 } }, opts.pastilles[i]) : null,
+          (opts.vedette && props.peutVedette) ? h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(p.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "フィーチャーにする", "Als Favorit festlegen", "تمييز"), style: { position: "absolute", top: 6, insetInlineStart: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVed ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVed ? "★" : "☆") : null);
+      }));
+  }
+  /* une mosaique composee : grille de la largeur choisie par le moteur (plus etroite et centree si peu de photos) */
+  function mosaique(comp, cle, cases, opts) {
+    opts = opts || {};
+    var cs = cases || comp.cases || [];
+    var lignes = cs.reduce(function (mx, c) { return Math.max(mx, c.ligne + c.h - 1); }, 1);
+    var colsG = comp.cols || COLS;
+    var largeurPct = (colsG >= COLS) ? "100%" : ("calc(" + colsG + " * (100% - " + (GAP * (COLS - 1)) + "px) / " + COLS + " + " + (GAP * (colsG - 1)) + "px)");
+    return h("div", { key: cle, style: { display: "grid", gridTemplateColumns: "repeat(" + colsG + ", minmax(0, 1fr))", gridTemplateRows: "repeat(" + lignes + ", " + (uniteGalerie || 90) + "px)", gap: GAP, width: largeurPct, margin: "0 auto" } },
+      cs.map(function (cG, i) { return caseMur(cG, cle + ":" + i + ":" + cG.rang, { vedette: opts.vedette, pastille: opts.pastilles ? opts.pastilles(cG) : null }); }));
+  }
+  function compose(photos, cleAn) { return hypeComposerAnneeGalerie({ an: cleAn, photos: photos }, formatsManuels || {}, COLS); }
+  function boutonCapsule(txt, surTap, cle) {
+    return h("button", { key: cle, type: "button", onClick: surTap, style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, width: "100%", minHeight: 44, marginTop: 12, borderRadius: 999, border: "1px solid rgba(201,166,107,0.65)", background: "rgba(5,8,11,0.55)", color: C_CH, fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer" } }, txt, h("span", { "aria-hidden": "true" }, rtlCS ? "←" : "→"));
+  }
+  function carteSection(cle, titre, sousTitre, droite, corps, fond) {
+    return h("section", { key: cle, style: { position: "relative", overflow: "hidden", margin: "0 16px 16px", padding: "16px 14px 14px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.30)", background: "linear-gradient(160deg, rgba(14,24,29,0.82), rgba(6,9,12,0.88))" } },
+      /* (1027) photo d'ambiance en haut de l'encart (images validees par Blandine), fondue dans le noir */
+      fond ? h("img", { src: fond, alt: "", "aria-hidden": "true", decoding: "async", loading: "lazy", style: { position: "absolute", top: 0, left: 0, width: "100%", height: 150, objectFit: "cover", objectPosition: "center 40%", opacity: 0.5, pointerEvents: "none", WebkitMaskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.6) 55%, transparent 100%)", maskImage: "linear-gradient(180deg, #000 0%, rgba(0,0,0,0.6) 55%, transparent 100%)" } }) : null,
+      h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 10, marginBottom: sousTitre ? 2 : 12 } },
+        losange(false, 12),
+        h("h3", { style: { margin: 0, flex: 1, minWidth: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 25, lineHeight: 1.15, color: C_IV } }, titre),
+        droite ? h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "rgba(243,238,228,0.7)", whiteSpace: "nowrap" } }, droite) : null),
+      sousTitre ? h("div", { style: { position: "relative", fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "rgba(243,238,228,0.72)", margin: "0 0 12px", paddingInlineStart: 22 } }, sousTitre) : null,
+      h("div", { style: { position: "relative" } }, corps));
+  }
+  function etatVide() {
+    var nomV = props.nomCheval || "";
+    return h("section", { style: { margin: "6px 16px 16px", padding: "30px 18px 26px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.22)", background: "rgba(6,9,12,0.6)", textAlign: "center" } },
+      h("svg", { viewBox: "0 0 120 70", width: 132, height: 77, fill: "none", stroke: C_CH, strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { display: "block", margin: "0 auto" } },
+        h("rect", { x: 40, y: 22, width: 40, height: 30, rx: 5 }), h("circle", { cx: 60, cy: 37, r: 9 }), h("path", { d: "M50 22l3-6h14l3 6" }),
+        h("path", { d: "M32 54c-8-6-12-16-10-28M24 34c-4 0-7-2-8-6M27 44c-5 1-9-1-11-4M88 54c8-6 12-16 10-28M96 34c4 0 7-2 8-6M93 44c5 1 9-1 11-4" })),
+      h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 23, color: C_IV, marginTop: 14 } }, T("Aucun souvenir pour le moment", "No memories yet", "Aún no hay recuerdos", "Ancora nessun ricordo", "まだ思い出がありません", "Noch keine Erinnerungen", "لا توجد ذكريات بعد")),
+      h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, lineHeight: 1.55, color: "rgba(243,238,228,0.65)", margin: "8px auto 0", maxWidth: 300 } }, T("Ajoutez vos plus belles photos pour créer le mur de souvenirs de " + nomV + ".", "Add your best photos to create " + nomV + "'s memory wall.", "Añade tus mejores fotos para crear el muro de recuerdos de " + nomV + ".", "Aggiungi le tue foto più belle per creare il muro dei ricordi di " + nomV + ".", nomV + "の思い出の壁を作るために、いちばんの写真を追加しましょう。", "Füge deine schönsten Fotos hinzu, um die Erinnerungswand von " + nomV + " zu gestalten.", "أضف أجمل صورك لإنشاء جدار ذكريات " + nomV + ".")),
+      props.onAjouter ? h("button", { type: "button", onClick: props.onAjouter, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 44, marginTop: 18, padding: "0 24px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.65)", background: "rgba(5,8,11,0.55)", color: C_CH, fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer" } }, "+ " + T("Ajouter un souvenir", "Add a memory", "Añadir un recuerdo", "Aggiungi un ricordo", "思い出を追加", "Erinnerung hinzufügen", "إضافة ذكرى")) : null);
+  }
+  function plage(ans) { if (!ans.length) return ""; var mx = Math.max.apply(null, ans), mn = Math.min.apply(null, ans); return mx === mn ? String(mx) : (mn + " – " + mx); }
 
-  function statBloc(val, lbl) {
-    return h("div", { style: { flex: 1, textAlign: "center" } },
-      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 22, fontWeight: 700, color: "#F4F7FA", lineHeight: 1.1 } }, String(val)),
-      h("div", { style: { fontSize: 10, color: "#8A929C", marginTop: 3, letterSpacing: "0.04em" } }, lbl));
+  /* ------------------------------ PAGE PHOTOS : LA VITRINE ------------------------------ */
+  if (props.mode === "vitrine") {
+    if (!annees.length || !nbTotal) return etatVide();
+    var ansRec = annees.slice(0, 2), ansAnc = annees.slice(2);
+    var photosRec = [];
+    ansRec.forEach(function (g) { photosRec = photosRec.concat(g.photos || []); });
+    var maxRec = COLS === 3 ? 8 : (COLS === 4 ? 10 : 12);
+    var apRec = photosRec.slice(0, maxRec);
+    var corpsRec = apRec.length <= 2 ? petitesPhotos(apRec, "rec") : mosaique(compose(apRec, "recents"), "rec");
+    var secRec = carteSection("rec", T("Les moments récents", "Recent moments", "Momentos recientes", "Momenti recenti", "最近の瞬間", "Neueste Momente", "اللحظات الأخيرة"),
+      null, txtSouv(photosRec.length),
+      h("div", null, corpsRec, props.onVoirTout ? boutonCapsule(T("Voir tous les souvenirs", "See all memories", "Ver todos los recuerdos", "Vedi tutti i ricordi", "すべての思い出を見る", "Alle Erinnerungen ansehen", "عرض كل الذكريات"), function () { props.onVoirTout(null); }, "btR") : null), "images/souvenirs-recents-fond.webp");
+    var nbAnc = 0; ansAnc.forEach(function (g) { nbAnc += (g.photos || []).length; });
+    var titreAnc = T("Au fil des années", "Through the years", "A lo largo de los años", "Negli anni", "年月を重ねて", "Im Lauf der Jahre", "عبر السنوات");
+    var secAnc;
+    if (!ansAnc.length) {
+      secAnc = carteSection("anc", titreAnc, null, null, h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, color: "rgba(243,238,228,0.6)", paddingInlineStart: 22, marginTop: -4 } }, T("Aucun autre souvenir pour le moment.", "No other memories yet.", "Aún no hay otros recuerdos.", "Nessun altro ricordo per ora.", "ほかの思い出はまだありません。", "Noch keine weiteren Erinnerungen.", "لا توجد ذكريات أخرى حاليا.")), "images/souvenirs-annees-fond.webp");
+    } else {
+      /* une photo par annee passee (la premiere de son ordre), completee au besoin, sans repeter les recentes */
+      var nbVign = COLS === 3 ? 4 : (COLS === 4 ? 6 : 8);
+      var choix = [], anDe = [];
+      ansAnc.forEach(function (g) { if (choix.length < nbVign && g.photos && g.photos[0]) { choix.push(g.photos[0]); anDe.push(g.an); } });
+      for (var iA = 0; choix.length < nbVign && iA < ansAnc.length; iA++) {
+        (ansAnc[iA].photos || []).slice(1).forEach(function (p) { if (choix.length < nbVign) { choix.push(p); anDe.push(ansAnc[iA].an); } });
+      }
+      var rangee = h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + Math.max(choix.length, Math.min(nbVign, 4)) + ", minmax(0, 1fr))", gap: GAP } },
+        choix.map(function (p, i) { return caseMur({ p: p, fmt: "normal", manuel: true, col: i + 1, ligne: 1, w: 1, h: 1, rang: i }, "anc" + i, { pastille: String(anDe[i]), style: { gridColumn: "auto", gridRow: "auto", aspectRatio: "4 / 5" } }); }));
+      secAnc = carteSection("anc", titreAnc, txtSouv(nbAnc) + " • " + plage(ansAnc.map(function (g) { return g.an; })), null,
+        h("div", null, rangee, props.onVoirTout ? boutonCapsule(T("Découvrir les années passées", "Discover past years", "Descubrir los años pasados", "Scopri gli anni passati", "過去の年を見る", "Vergangene Jahre entdecken", "اكتشف السنوات الماضية"), function () { props.onVoirTout({ an: ansAnc[0].an }); }, "btA") : null), "images/souvenirs-annees-fond.webp");
+    }
+    return h("div", { ref: refGrilleAn, style: { margin: "4px 0 0" } }, secRec, secAnc);
   }
 
-  return h("div", { style: { margin: "4px 0 0" } },
-    /* Statistiques, toutes calculees depuis les vraies donnees */
-    false /* (917) Blandine : ligne souvenirs / saisons / concours retiree */ && h("div", { style: { display: "flex", alignItems: "flex-start", gap: 6, margin: "0 16px 6px", paddingBottom: 16, borderBottom: "1px solid rgba(255,255,255,0.08)" } },
-      statBloc(stats.souvenirs, T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen", "\u0630\u0643\u0631\u064a\u0627\u062a")),
-      statBloc(stats.saisons, T("saisons", "seasons", "temporadas", "stagioni", "シーズン", "Saisons", "\u0645\u0648\u0627\u0633\u0645")),
-      statBloc(stats.concours, T("concours", "shows", "concursos", "concorsi", "大会", "Turniere", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
+  /* ------------------------------ PAGE « TOUS LES SOUVENIRS » ------------------------------ */
+  if (!annees.length) return h("div", { ref: refGrilleAn }, etatVide());
+  var anCourant = new Date().getFullYear();
+  var anPlusRecent = annees[0] ? annees[0].an : anCourant;
+  /* annees « pauvres » : anciennes (ni l'annee en cours, ni la plus recente), 1 ou 2 photos, non gardees a part */
+  var pauvres = annees.filter(function (g) { return g.an !== anCourant && g.an !== anPlusRecent && (g.photos || []).length <= 2 && !independantesAn[String(g.an)]; });
+  var estPauvre = {}; pauvres.forEach(function (g) { estPauvre[g.an] = true; });
+  var regroupe = pauvres.length >= 2;
+  var premierPauvre = pauvres.length ? pauvres[0].an : null;
 
-    /* Chronologie : une ligne verticale, un point par annee */
-    h("div", { style: { position: "relative", padding: "18px 16px 0" } },
-      h("div", { style: { position: "absolute", insetInlineStart: 22 /* (928) arabe : la ligne passe a droite */, top: 26, bottom: 10, width: 1, background: "rgba(201,166,107,0.35)" /* (917) champagne */ } }),
-      annees.map(function (grp, iG) {
-        var actif = iG === 0;
-        var tout = !!ouvertes[grp.an];
-        /* 11/09 — apercu par BLOCS ENTIERS (jamais coupe au milieu) : on empile des blocs jusqu'a
-           atteindre HYPE_GALERIE_PREVIEW_MIN photos, puis on s'arrete a la fin du bloc en cours --
-           ~15 a 18 affichees en pratique selon le bloc qui complete le seuil, jamais 9 fixe comme
-           avant. Une petite annee (moins que le seuil) n'a pas de bouton "voir tout" : elle montre
-           deja tout ce qu'elle a. */
-        /* 12/09 (30) — APERCU D'UNE ANNEE, adapte aux cases : on garde au moins
-           HYPE_GALERIE_PREVIEW_MIN photos, puis on s'arrete a la premiere case qui termine une
-           ligne entiere (coupeOk) — jamais une grande case coupee en deux, jamais un trou en bas. */
-        var casesAn = grp.cases || [];
-        var casesVisibles = casesAn;
-        if (!tout) {
-          /* 12/09 (35) : on cherche d'abord une coupe NETTE (derniere ligne complete) ; a defaut,
-             l'ancienne regle, pour ne jamais couper une grande case en deux. */
-          var finApercu = 0;
-          for (var iAp = 0; iAp < casesAn.length; iAp++) {
-            if ((casesAn[iAp].ligne + casesAn[iAp].h - 1) >= HYPE_GALERIE_LIGNES_APERCU && casesAn[iAp].coupeNette) { finApercu = iAp + 1; break; }   /* (918) 5 lignes pleines puis on deroule */
-          }
-          if (!finApercu) {
-            for (var iAp2 = 0; iAp2 < casesAn.length; iAp2++) {
-              if ((casesAn[iAp2].ligne + casesAn[iAp2].h - 1) >= HYPE_GALERIE_LIGNES_APERCU && casesAn[iAp2].coupeOk) { finApercu = iAp2 + 1; break; }
-            }
-          }
-          if (finApercu > 0 && finApercu < casesAn.length) casesVisibles = casesAn.slice(0, finApercu);
-        }
-        var lignesVisibles = casesVisibles.reduce(function (mx, cV) { return Math.max(mx, cV.ligne + cV.h - 1); }, 1);
-        var reste = grp.photos.length - casesVisibles.length;
-        /* 11/09 (6) — connait l'orientation reelle d'une photo une fois chargee (meme mecanisme
-           que deja utilise ailleurs) et la memorise pour TOUTE tuile, pas seulement Pleine largeur
-           comme avant : plus de donnees connues -> les motifs portrait (PC/PG/PD) trouvent plus
-           souvent une vraie portrait a saisir des la composition suivante. */
-        /* 12/09 (30) — NEUTRALISEE. Elle memorisait l'orientation reelle des photos chargees pour
-           que les anciens motifs a portrait (PC/PG/PD) trouvent une vraie verticale. Plus personne
-           ne lit cette information depuis le passage a la grille de cases ; la laisser ecrire dans
-           l'etat provoquait un re-rendu de toute la chronologie a chaque image chargee, pour rien.
-           Le corps est conserve (jamais appele) si l'orientation redevient utile un jour. */
-        function detecterOrientation(cleOrientDet) {
-          return undefined;
-        }
-        function detecterOrientationInutilisee(cleOrientDet) {
-          return function (evCh) {
-            try {
-              var elCh = evCh && evCh.target; if (!elCh || !elCh.naturalWidth) return;
-              var portraitCh = elCh.naturalHeight > elCh.naturalWidth * 1.15;
-              if (portraitCh && orientationsConnues[cleOrientDet] !== "portrait") {
-                setOrientationsConnues(function (oPrev) { var oNext = Object.assign({}, oPrev); oNext[cleOrientDet] = "portrait"; return oNext; });
-              }
-            } catch (eDet) { }
-          };
-        }
-        /* Une seule tuile "photo" (Normal, Grand, petites d'un motif portrait, ou le portrait
-           lui-meme via cfg.contain) : meme ouverture de la visionneuse, meme selection multi-annee,
-           meme badge ★ Vedette partout. cfg.contain=true -> jamais de recadrage (vignetteHypeContain
-           + objectFit contain) au lieu du cover habituel -- reserve au portrait de PC/PG/PD. */
-        function tuileHype(p, cleTuile, cfg) {
-          var enSel = (modeAn === grp.an);
-          var choisie = enSel && photosSel.indexOf(p.url) >= 0;
-          var cleOrient = (typeof urlNue === "function") ? urlNue(p.url) : p.url;
-          /* 11/09 (8) — en mode « choisir le format », un tap ouvre le petit panneau de format au
-             lieu d'ouvrir la visionneuse ; hors de ce mode, comportement strictement inchange. */
-          var enFormat = (modeFormatAn === grp.an);
-          /* 13/09 (55) — RIEN NE DISAIT SUR QUELLE PHOTO LE PANNEAU TRAVAILLE (Blandine, video du
-             13/09 : « on peut pas selectionner les photos quand elles ont change de format, sur les
-             petites on voit qu'il se passe quelque chose, sur les grandes ca fait rien »). Le mode
-             « Changer l'annee » marque les photos choisies d'un lisere ; celui du format, JAMAIS.
-             Quand la photo touchee etait deja en « Automatique », le panneau affichait exactement
-             la meme chose qu'avant : impossible de distinguer un tap perdu d'un tap sans effet.
-             La photo touchee porte desormais le meme lisere que dans le mode annee, et les autres
-             s'estompent une fois qu'une photo est choisie -- meme convention, deja comprise. */
-          var choisieFmt = enFormat && !!photoFormat && cleOrient === ((typeof urlNue === "function") ? urlNue(photoFormat) : photoFormat);
-          var onClicTuile = function () { if (enFormat) { setPhotoFormat(p.url); return; } if (enSel) { setPhotosSel(function (l) { var iS = l.indexOf(p.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([p.url]); }); return; } if (props.onOuvrir) props.onOuvrir(p.url, p.albumId); };
-          var styleTuile = { position: "relative", overflow: "hidden", borderRadius: 5, cursor: "pointer", background: "#0B1013", border: "1px solid rgba(201,166,107,0.45)", boxSizing: "border-box" /* (917) */, outline: (choisie || choisieFmt) ? ("2px solid " + teinte) : "none", outlineOffset: (choisie || choisieFmt) ? -2 : 0, opacity: ((enSel && !choisie) || (enFormat && photoFormat && !choisieFmt)) ? .55 : 1 };
-          if (cfg.aspectRatio) styleTuile.aspectRatio = cfg.aspectRatio;
-          if (cfg.gridColumn) styleTuile.gridColumn = cfg.gridColumn;
-          if (cfg.gridRow) styleTuile.gridRow = cfg.gridRow;
-          /* (923) cadrage a la main : l image est demandee ENTIERE (sans recadrage serveur) puis placee dans la case a la
-             position choisie. Pleine hauteur (option A de Blandine) : remplit desormais ses deux cases, centree un peu haut
-             par defaut, reglable de la meme facon. Sans cadrage, les autres formats sont strictement inchanges. */
-          var posCadr = cadrages[cleOrient] || null;
-          var libreCadr = !!(posCadr || cfg.contain);
-          var cotCadr = Math.max(cfg.imgW || 420, cfg.imgH || 315) * 1.4;
-          var srcTuile = libreCadr
-            ? (typeof vignetteHypeContain === "function" ? vignetteHypeContain(p.url, cotCadr, cotCadr) : p.url)
-            : (typeof vignetteHype === "function" ? vignetteHype(p.url, cfg.imgW, cfg.imgH) : p.url);
-          return h("div", { key: cleTuile, role: "button", onClick: onClicTuile, style: styleTuile },
-            h("img", { src: srcTuile, alt: "", loading: "lazy", decoding: "async", onLoad: detecterOrientation(cleOrient), onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, p.url); }, style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: posCadr || (cfg.contain ? "center 30%" : "center"), display: "block", WebkitTouchCallout: "none" } /* (923) */ }),
-            (props.peutVedette ? (function () {
-              var estVed = props.vedetteUrl && cleOrient === props.vedetteUrl;
-              return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(p.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen", "\u062a\u0645\u064a\u064a\u0632"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVed ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVed ? "\u2605" : "\u2606");
-            })() : null));
-        }
-        /* Chaque motif est une petite grille FERMEE (3 colonnes) qui consomme exactement le nombre
-           de photos qu'elle affiche -- aucun trou possible. PL remplit reellement le bandeau (cover,
-           leger zoom/crop accepte, jamais de bande, jamais deforme -- demande explicite). PC/PG/PD :
-           le portrait n'est JAMAIS recadre (contain), completement entoure de 10 petites (cover,
-           4/3 comme partout ailleurs). PH reste rendue ici si un bloc de ce type existe, mais n'est
-           plus choisie automatiquement par la composition -- reservee a un futur choix manuel. */
-        /* 12/09 (30) — CODE MORT depuis le passage a la grille de cases : plus aucun appel.
-           Conserve tel quel dans ce build (chantier unique, aucun nettoyage opportuniste) ; a
-           supprimer dans un build dedie, avec les motifs PC/PG/PD et GH qu'il rend. */
-        function rendreBloc(bloc, iBloc) {
-          if (bloc.type === "PL") {
-            var pPL = bloc.photos[0];
-            var enSelPL = (modeAn === grp.an), choisiePL = enSelPL && photosSel.indexOf(pPL.url) >= 0;
-            var cleOrientPL = (typeof urlNue === "function") ? urlNue(pPL.url) : pPL.url;
-            /* 11/09 (20) — en mode « Choisir le format », toucher une photo en Pleine largeur ouvre son
-               choix de format (comme toutes les autres tuiles) au lieu de la visionneuse. */
-            var onClicPL = function () { if (modeFormatAn === grp.an) { setPhotoFormat(pPL.url); return; } if (enSelPL) { setPhotosSel(function (l) { var iS = l.indexOf(pPL.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([pPL.url]); }); return; } if (props.onOuvrir) props.onOuvrir(pPL.url, pPL.albumId); };
-            return h("div", { key: "bl" + iBloc, role: "button", onClick: onClicPL, style: { position: "relative", width: "100%", maxHeight: "60vh", aspectRatio: "16 / 9", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisiePL ? ("2px solid " + teinte) : "none", outlineOffset: choisiePL ? -2 : 0, opacity: (enSelPL && !choisiePL) ? .55 : 1 } },
-              h("img", { src: (typeof vignetteHype === "function" ? vignetteHype(pPL.url, 1400, 788) : pPL.url), alt: "", loading: "lazy", decoding: "async", onLoad: detecterOrientation(cleOrientPL), onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, pPL.url); }, style: { width: "100%", height: "100%", objectFit: "cover" /* 11/09 (6) : remplit reellement le bandeau, leger crop accepte -- demande explicite, plus de contain/bandes ici */, display: "block", WebkitTouchCallout: "none" } }),
-              (props.peutVedette ? (function () {
-                var estVedPL = props.vedetteUrl && cleOrientPL === props.vedetteUrl;
-                return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(pPL.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen", "\u062a\u0645\u064a\u064a\u0632"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVedPL ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVedPL ? "\u2605" : "\u2606");
-              })() : null));
-          }
-          if (bloc.type === "PH") {
-            var pPH = bloc.photos[0];
-            var enSelPH = (modeAn === grp.an), choisiePH = enSelPH && photosSel.indexOf(pPH.url) >= 0;
-            var cleOrientPH = (typeof urlNue === "function") ? urlNue(pPH.url) : pPH.url;
-            /* 11/09 (20) — idem pour Pleine hauteur. */
-            var onClicPH = function () { if (modeFormatAn === grp.an) { setPhotoFormat(pPH.url); return; } if (enSelPH) { setPhotosSel(function (l) { var iS = l.indexOf(pPH.url); if (iS >= 0) { var n2 = l.slice(); n2.splice(iS, 1); return n2; } return l.concat([pPH.url]); }); return; } if (props.onOuvrir) props.onOuvrir(pPH.url, pPH.albumId); };
-            return h("div", { key: "bl" + iBloc, role: "button", onClick: onClicPH, style: { position: "relative", width: "100%", display: "flex", justifyContent: "center", borderRadius: 5, overflow: "hidden", cursor: "pointer", background: "#0B1013", outline: choisiePH ? ("2px solid " + teinte) : "none", outlineOffset: choisiePH ? -2 : 0, opacity: (enSelPH && !choisiePH) ? .55 : 1 } },
-              h("img", { src: (typeof vignetteHypeContain === "function" ? vignetteHypeContain(pPH.url, 1000, 1600) : pPH.url), alt: "", loading: "lazy", decoding: "async", onLoad: detecterOrientation(cleOrientPH), onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, pPH.url); }, style: { maxWidth: "100%", maxHeight: "78vh", width: "auto", height: "auto", display: "block", objectFit: "contain", WebkitTouchCallout: "none" } }),
-              (props.peutVedette ? (function () {
-                var estVedPH = props.vedetteUrl && cleOrientPH === props.vedetteUrl;
-                return h("button", { onClick: function (eVd) { eVd.stopPropagation(); if (props.onDefinirVedette) props.onDefinirVedette(pPH.url); }, "aria-label": T("Mettre en vedette", "Set as featured", "Destacar", "Metti in evidenza", "\u30d5\u30a3\u30fc\u30c1\u30e3\u30fc\u306b\u3059\u308b", "Als Favorit festlegen", "\u062a\u0645\u064a\u064a\u0632"), style: { position: "absolute", top: 6, left: 6, width: 22, height: 22, borderRadius: "50%", border: "1px solid rgba(255,255,255,.35)", background: "rgba(4,6,9,.55)", color: estVedPH ? "#FFD37A" : "#F2EDE2", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, zIndex: 2 } }, estVedPH ? "\u2605" : "\u2606");
-              })() : null));
-          }
-          if (bloc.type === "GH") { /* 11/09 (22) — motif 8 : 3 petites / 1 grande pleine largeur / 3 petites ; toutes par tuileHype (visionneuse, selection, format, vedette inchanges) */
-            var pGH = bloc.photos;
-            return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 } },
-              tuileHype(pGH[0], "gh0", { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }),
-              tuileHype(pGH[1], "gh1", { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }),
-              tuileHype(pGH[2], "gh2", { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }),
-              tuileHype(pGH[3], "ghG", { aspectRatio: "16 / 9", gridColumn: "1 / 4", imgW: 1400, imgH: 788 }),
-              tuileHype(pGH[4], "gh4", { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }),
-              tuileHype(pGH[5], "gh5", { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }),
-              tuileHype(pGH[6], "gh6", { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }));
-          }
-          if (bloc.type === "T") {
-            return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 } },
-              bloc.photos.map(function (p, iP) { return tuileHype(p, "t" + iP, { aspectRatio: "4 / 3", imgW: 420, imgH: 315 }); }));
-          }
-          if (bloc.type === "GL" || bloc.type === "GR") {
-            var pG = bloc.photos[0], pD1 = bloc.photos[1], pD2 = bloc.photos[2];
-            var colG = (bloc.type === "GL") ? "1 / 3" : "2 / 4";
-            var colD = (bloc.type === "GL") ? "3 / 4" : "1 / 2";
-            return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "auto auto", gap: 5 } },
-              tuileHype(pG, "g", { gridColumn: colG, gridRow: "1 / 3", imgW: 840, imgH: 630 }),
-              tuileHype(pD1, "d1", { aspectRatio: "4 / 3", gridColumn: colD, gridRow: "1", imgW: 420, imgH: 315 }),
-              tuileHype(pD2, "d2", { aspectRatio: "4 / 3", gridColumn: colD, gridRow: "2", imgW: 420, imgH: 315 }));
-          }
-          /* PC / PG / PD : 4 lignes x 3 colonnes fermees, 11 photos (10 petites + 1 portrait). Le
-             portrait vaut exactement 1 colonne x 2 lignes (jamais recadre -- contain), completement
-             entoure. PC = portrait au centre (colonne 2), une petite de chaque cote sur les 2 lignes
-             du milieu. PG/PD = portrait sur le cote (colonne 1 ou 3), un bloc de 4 petites (2x2)
-             occupe les 2 colonnes restantes sur ces memes 2 lignes. */
-          var pet = bloc.photos;
-          var col1 = "1 / 2", col2 = "2 / 3", col3 = "3 / 4";
-          var enfants = [
-            tuileHype(pet[0], "p0", { aspectRatio: "4 / 3", gridRow: "1", gridColumn: col1, imgW: 420, imgH: 315 }),
-            tuileHype(pet[1], "p1", { aspectRatio: "4 / 3", gridRow: "1", gridColumn: col2, imgW: 420, imgH: 315 }),
-            tuileHype(pet[2], "p2", { aspectRatio: "4 / 3", gridRow: "1", gridColumn: col3, imgW: 420, imgH: 315 }),
-            tuileHype(pet[7], "p7", { aspectRatio: "4 / 3", gridRow: "4", gridColumn: col1, imgW: 420, imgH: 315 }),
-            tuileHype(pet[8], "p8", { aspectRatio: "4 / 3", gridRow: "4", gridColumn: col2, imgW: 420, imgH: 315 }),
-            tuileHype(pet[9], "p9", { aspectRatio: "4 / 3", gridRow: "4", gridColumn: col3, imgW: 420, imgH: 315 })
-          ];
-          var colPortraitBloc = (bloc.type === "PC") ? col2 : (bloc.type === "PG") ? col1 : col3;
-          enfants.push(tuileHype(bloc.photoPortrait, "pp", { gridRow: "2 / 4", gridColumn: colPortraitBloc, contain: true, imgW: 600, imgH: 1000 }));
-          if (bloc.type === "PC") {
-            enfants.push(tuileHype(pet[3], "p3", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: col1, imgW: 420, imgH: 315 }));
-            enfants.push(tuileHype(pet[4], "p4", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: col3, imgW: 420, imgH: 315 }));
-            enfants.push(tuileHype(pet[5], "p5", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: col1, imgW: 420, imgH: 315 }));
-            enfants.push(tuileHype(pet[6], "p6", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: col3, imgW: 420, imgH: 315 }));
-          } else {
-            var colA = (bloc.type === "PG") ? col2 : col1;
-            var colB = (bloc.type === "PG") ? col3 : col2;
-            enfants.push(tuileHype(pet[3], "p3", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: colA, imgW: 420, imgH: 315 }));
-            enfants.push(tuileHype(pet[4], "p4", { aspectRatio: "4 / 3", gridRow: "2", gridColumn: colB, imgW: 420, imgH: 315 }));
-            enfants.push(tuileHype(pet[5], "p5", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: colA, imgW: 420, imgH: 315 }));
-            enfants.push(tuileHype(pet[6], "p6", { aspectRatio: "4 / 3", gridRow: "3", gridColumn: colB, imgW: 420, imgH: 315 }));
-          }
-          return h("div", { key: "bl" + iBloc, style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "auto auto auto auto", gap: 5 } }, enfants);
-        }
-        /* 13/09 (56) — LA GRILLE DE RANGEMENT : toutes les photos de l'annee, en petites cases
-           egales et numerotees. Elle remplace la composition le temps du rangement, pour que le
-           doigt ait une cible simple et que la case visee soit lisible. */
-        function grilleRangement(grpR) {
-          var lstR = ordreRangement(grpR);
-          return h("div", null,
-            h("div", { style: { fontSize: 10.5, color: teinteCl, marginBottom: 7, lineHeight: 1.5 } },
-              T("Appuie sur une photo, garde le doigt, puis depose-la ou tu veux.", "Press a photo, hold, then drop it where you want.", "Manten pulsada una foto y sueltala donde quieras.", "Tieni premuta una foto e rilasciala dove vuoi.", "\u5199\u771f\u3092\u9577\u62bc\u3057\u3057\u3066\u597d\u304d\u306a\u4f4d\u7f6e\u3078.", "Halte ein Foto gedruckt und lege es ab, wo du willst.", "\u0627\u0636\u063a\u0637\u064a \u0639\u0644\u0649 \u0635\u0648\u0631\u0629 \u0648\u0623\u0628\u0642\u064a \u0625\u0635\u0628\u0639\u0643\u060c \u062b\u0645 \u0636\u0639\u064a\u0647\u0627 \u062d\u064a\u062b \u062a\u0631\u064a\u062f\u064a\u0646.")),
-            h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 5 } },
-              lstR.map(function (pR, iR) {
-                var uR = pR.url;
-                var souleveeR = dragPhotoAn === uR;
-                var viseeR = !!dragPhotoAn && dragPhotoAn !== uR && dragIndexAn === iR;
-                var stR = { position: "relative", aspectRatio: "1 / 1", borderRadius: 8, overflow: "hidden", background: "#0B1013", cursor: "pointer", touchAction: "none", WebkitUserSelect: "none", userSelect: "none", WebkitTouchCallout: "none", border: "1px solid " + (viseeR ? teinte : "rgba(255,255,255,0.10)") };
-                if (viseeR) stR.background = teinte + "28";
-                if (souleveeR) {
-                  stR.zIndex = 5; stR.opacity = 0.92; stR.boxShadow = "0 14px 30px rgba(0,0,0,0.55)";
-                  stR.transform = "translate3d(" + ((dragXYAn && dragXYAn.dx) || 0) + "px," + ((dragXYAn && dragXYAn.dy) || 0) + "px,0) scale(1.06)";
-                }
-                return h("div", { key: "rg" + uR + "@" + iR, style: stR,
-                    onPointerDown: function (eR) { ordPointerDown(grpR, uR, iR, eR); },
-                    onPointerMove: function (eR) { ordPointerMove(eR); },
-                    onPointerUp: function () { ordPointerUp(grpR); },
-                    onPointerCancel: function () { ordAnnuler(); },
-                    onContextMenu: function (eR) { try { eR.preventDefault(); } catch (eX) { } } },
-                  h("span", { style: { position: "absolute", top: 4, left: 4, zIndex: 3, minWidth: 19, height: 19, padding: "0 5px", borderRadius: 999, background: "rgba(7,8,10,0.72)", color: "#EDF2F5", fontFamily: "'Montserrat',sans-serif", fontSize: 10, fontWeight: 800, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" } }, String(iR + 1)),
-                  h("img", { draggable: false, src: (typeof vignetteHype === "function") ? vignetteHype(uR, 320, 320) : uR, alt: "", loading: "lazy", decoding: "async", onError: function (eIm) { if (typeof replierVignette === "function") replierVignette(eIm, uR); }, style: { width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none" } }));
-              })),
-            /* 13/09 (57) — L'ETAT DE L'ENREGISTREMENT, DIT A L'ECRAN. Une erreur reste affichee
-               jusqu'au geste suivant (jamais un bip de 3 secondes, jamais lu au bon moment). */
-            erreurOrdre
-              ? h("div", { style: { marginTop: 8, fontSize: 10.5, color: "#F0A05F", lineHeight: 1.5 } }, erreurOrdre)
-              : (ordreEnregistre
-                  ? h("div", { style: { marginTop: 8, fontSize: 10.5, color: teinteCl, fontWeight: 800, lineHeight: 1.5 } },
-                      T("Ordre enregistre \u2713", "Order saved \u2713", "Orden guardado \u2713", "Ordine salvato \u2713", "\u9806\u5e8f\u3092\u4fdd\u5b58 \u2713", "Reihenfolge gespeichert \u2713", "\u062a\u0645 \u062d\u0641\u0638 \u0627\u0644\u062a\u0631\u062a\u064a\u0628 \u2713"))
-                  : h("div", { style: { marginTop: 8, fontSize: 10, color: "#7B848C", lineHeight: 1.5 } },
-                      T("Chaque deplacement est enregistre tout de suite.", "Every move is saved right away.", "Cada movimiento se guarda de inmediato.", "Ogni spostamento viene salvato subito.", "\u5909\u66f4\u306f\u3059\u3050\u306b\u4fdd\u5b58\u3055\u308c\u307e\u3059\u3002", "Jede Bewegung wird sofort gespeichert.", "\u064a\u062d\u0641\u0638 \u0643\u0644 \u0646\u0642\u0644 \u0641\u0648\u0631\u0627."))),
-            h("button", { onClick: function () { ordQuitter(); }, style: { marginTop: 8, minHeight: 44, padding: "0 14px", borderRadius: 9, border: "1px solid rgba(255,255,255,0.16)", background: "transparent", color: "#8A929C", fontSize: 11.5, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } },
-              T("Termine", "Done", "Hecho", "Fatto", "\u5b8c\u4e86", "Fertig", "\u062a\u0645")));
-        }
-        var anActiveIci = (menuAn === grp.an) || (modeFormatAn === grp.an) || (modeAn === grp.an);
-        return h("div", { key: "an" + grp.an, ref: anActiveIci ? refAnActive : null, style: { position: "relative", paddingInlineStart: 26 /* (928) */, marginBottom: 26 } },
-          /* point de la ligne */
-          h("span", { style: { position: "absolute", insetInlineStart: 2 /* (928) */, top: 9, width: 11, height: 11, borderRadius: "50%", background: actif ? "#C9A66B" : "transparent", border: "1.5px solid #C9A66B" /* (917) champagne */, boxShadow: "none" } }),
-          h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, marginBottom: 9 } },
-            h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 24, fontWeight: 700, color: "#C9A66B" /* (918) annee plus grande, champagne */ } }, String(grp.an)),
-            false && h("span", { style: { fontSize: 10.5, color: "#8A929C" } }, grp.photos.length + " " + T("souvenirs", "memories", "recuerdos", "ricordi", "思い出", "Erinnerungen", "\u0630\u0643\u0631\u064a\u0627\u062a")),
-            /* 13/09 (58) : le cadenas de l'annee, visible d'un coup d'oeil */
-            verrousAn[String(grp.an)] ? h("span", { title: T("Annee verrouillee", "Year locked", "Ano bloqueado", "Anno bloccato", "\u30ed\u30c3\u30af\u4e2d", "Jahr gesperrt", "\u0633\u0646\u0629 \u0645\u0642\u0641\u0644\u0629"), style: { fontSize: 11, color: teinteCl } }, "\ud83d\udd12") : null,
-            /* Mention honnete : combien d'annees sont approximatives */
-            false /* (917) compteurs retires */ && grp.approx ? h("span", { style: { fontSize: 9.5, color: "#7B848C", fontStyle: "italic" } }, "· " + grp.approx + " " + T("approx.", "approx.", "aprox.", "circa", "概算", "ca.", "\u062a\u0642\u0631\u064a\u0628\u0627")) : null,
-            /* (917) Blandine : « Modifier » discret, sur la ligne de l annee, tout a droite */
-            props.proprio ? h("button", { type: "button", onClick: function () { ouvrirEditAnnee(grp.an); }, style: { marginInlineStart: "auto", alignSelf: "center", minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.35)", background: "transparent", color: "rgba(201,166,107,0.85)", fontFamily: "'Montserrat',sans-serif", fontSize: 11, cursor: "pointer" } },
-              T("Modifier", "Edit", "Modificar", "Modificare", "\u7de8\u96c6", "Bearbeiten", "\u062a\u0639\u062f\u064a\u0644")) : null),
-          /* 12/09 (30) — UNE SEULE GRILLE PAR ANNEE. 3 colonnes egales, lignes d'une hauteur
-             uniforme (uniteGalerie, mesuree une fois sur la largeur reelle) : une petite case fait
-             donc 4/3 comme avant, une grande 2x2 reste en 4/3, un portrait 1x2 est un vrai
-             vertical, un bandeau 3x2 remplit la largeur. Chaque tuile porte SES coordonnees :
-             aucun placement automatique, aucun « dense », l'ordre reste chronologique. */
-          (modeOrdreAn === grp.an && editAn == null) ? grilleRangement(grp) :
-          h("div", { ref: refGrilleAn /* 12/09 (30) : la largeur est mesuree sur la grille elle-meme, marges deja retirees */, style: { display: "grid", gridTemplateColumns: "repeat(" + HYPE_GALERIE_COLONNES + ", 1fr)", gridTemplateRows: "repeat(" + lignesVisibles + ", " + uniteGalerie + "px)", gap: 5 } },
-            casesVisibles.map(function (cG, iG) {
-              var imgW = cG.w >= 3 ? 1400 : (cG.w === 2 ? 840 : 420);
-              var imgH = cG.w >= 3 ? 700 : (cG.w === 2 ? 630 : 315);
-              if (cG.fmt === "pleine_hauteur") { imgW = 500; imgH = 1000; }
-              return tuileHype(cG.p, "cs" + iG + ":" + cG.rang, {
-                gridColumn: cG.col + " / span " + cG.w,
-                gridRow: cG.ligne + " / span " + cG.h,
-                imgW: imgW, imgH: imgH,
-                /* portrait choisi a la main : jamais recadre (exigence repetee de Blandine) ;
-                   partout ailleurs, remplissage comme avant. */
-                contain: cG.fmt === "pleine_hauteur"
-              });
-            })),
-          (reste > 0 && modeOrdreAn !== grp.an) ? h("button", { onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n[grp.an] = true; return n; }); }, style: { marginTop: 8, background: "none", border: "none", color: teinteCl, fontSize: 11, fontWeight: 700, cursor: "pointer", padding: "6px 0", minHeight: 44, fontFamily: "'Montserrat',sans-serif" } }, "+ " + reste + " " + T("voir tout", "view all", "ver todo", "vedi tutto", "すべて見る", "alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644")) : null,
-          /* 30/08 — CHANGER L'ANNEE D'UNE PHOTO (proprietaire seulement).
-             Un seul lien discret par annee. Tant qu'on ne l'a pas tape, la
-             grille se comporte exactement comme avant : un tap ouvre la photo. */
-          /* 11/09 (8) — CHOISIR LE FORMAT D'UNE PHOTO (proprietaire/moderatrice seulement, meme
-             condition que le lien d'annee juste en dessous). Un lien discret ouvre le mode ; un tap
-             sur une photo ouvre le petit panneau de format. La VEDETTE n'apparait pas ici : c'est
-             un statut independant, son bouton ★ reste sur chaque tuile comme avant. */
-          /* 13/09 (68) — UN SEUL BOUTON. Le menu « Modifier les photos ⋯ » du build 53 et ses
-             quatre entrees depliables (format, annee, ranger, cadenas) sont RETIRES de la galerie :
-             tout se passe desormais dans l'ecran dedie, ouvert par ce bouton (chemin A, choisi sur
-             maquette). La galerie ne porte plus aucun mode, donc plus rien a refermer et plus rien
-             qui se superpose a un album ouvert. */
-          props.proprio
-            ? h("div", { style: { marginTop: verrousAn[String(grp.an)] ? 6 : 0 } },
-                null /* (917) bouton Modifier monte sur la ligne de l annee, a droite */,
-                verrousAn[String(grp.an)] ? h("div", { style: { fontSize: 10, color: "#7B848C", marginTop: 5, lineHeight: 1.5 } },
-                  T("Ann\u00e9e verrouill\u00e9e : personne d'autre n'y touche.", "Year locked: nobody else can change it.", "A\u00f1o bloqueado.", "Anno bloccato.", "\u30ed\u30c3\u30af\u4e2d\u3002", "Jahr gesperrt.", "\u0633\u0646\u0629 \u0645\u0642\u0641\u0644\u0629: \u0644\u0627 \u064a\u0644\u0645\u0633\u0647\u0627 \u0623\u062d\u062f \u063a\u064a\u0631\u0643.")) : null)
-            : null,
-            /* (918) Blandine (A + B) : losange champagne entre les annees */
-            (iG < annees.length - 1) ? h("div", { "aria-hidden": "true", style: { display: "flex", alignItems: "center", gap: 12, margin: "26px 0 0" } }, h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } }), h("i", { style: { width: 7, height: 7, background: "#C9A66B", transform: "rotate(45deg)", flexShrink: 0 } }), h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } })) : null);
-      })),
-
+  function blocAnnee(grp, iG, forceTout) {
+    var tout = forceTout || !!ouvertes[grp.an];
+    var nb = (grp.photos || []).length;
+    var casesAn = grp.cases || [];
+    var casesVisibles = casesAn;
+    if (!tout && !grp.seule && nb > 2) {
+      /* apercu coupe sur une LIGNE PLEINE : toutes les cases au-dessus completes, aucune case coupee en deux */
+      var colsA = grp.cols || COLS, maxL = grp.lignes || 1, coupe = 0;
+      for (var R = Math.max(1, HYPE_GALERIE_LIGNES_APERCU); R < maxL && !coupe; R++) {
+        var ok = true, rempli = 0;
+        casesAn.forEach(function (cA) { var finA = cA.ligne + cA.h - 1; if (cA.ligne <= R && finA > R) ok = false; if (finA <= R) rempli += cA.w * cA.h; });
+        if (ok && rempli === R * colsA) coupe = R;
+      }
+      if (coupe) casesVisibles = casesAn.filter(function (cA) { return cA.ligne + cA.h - 1 <= coupe; });
+    }
+    var reste = nb - casesVisibles.length;
+    return h("div", { key: "an" + grp.an, "data-annee": grp.an, style: { marginBottom: 20 } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "0 0 10px" } },
+        losange(true, 11),
+        h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 31, fontWeight: 500, lineHeight: 1, color: C_CH } }, String(grp.an)),
+        h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, minWidth: 16, background: "linear-gradient(" + (rtlCS ? "270deg" : "90deg") + ", rgba(201,166,107,0.45), rgba(201,166,107,0.08))" } }),
+        verrousAn[String(grp.an)] ? h("span", { style: { fontSize: 11, color: teinteCl } }, "🔒") : null,
+        h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "rgba(243,238,228,0.7)", whiteSpace: "nowrap" } }, txtSouv(nb)),
+        props.proprio ? h("button", { type: "button", onClick: function () { ouvrirEditAnnee(grp.an); }, style: { minHeight: 30, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.35)", background: "transparent", color: "rgba(201,166,107,0.9)", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 600, cursor: "pointer" } }, T("Modifier", "Edit", "Modificar", "Modificare", "編集", "Bearbeiten", "تعديل")) : null),
+      (nb <= 2) ? petitesPhotos(grp.photos, "pp" + grp.an, { vedette: true }) : mosaique(grp, "m" + grp.an, casesVisibles, { vedette: true }),
+      reste > 0 ? h("button", { type: "button", onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n[grp.an] = true; return n; }); }, style: { display: "block", margin: "8px auto 0", background: "none", border: "none", color: C_CH, fontFamily: "'Montserrat',sans-serif", fontSize: 12, fontWeight: 600, cursor: "pointer", minHeight: 36 } }, "+ " + reste + " · " + T("voir tout", "see all", "ver todo", "vedi tutto", "すべて見る", "alle ansehen", "عرض الكل")) : null,
+      (props.proprio && verrousAn[String(grp.an)]) ? h("div", { style: { fontSize: 10, color: "#7B848C", marginTop: 6, lineHeight: 1.5 } }, T("Année verrouillée : personne d'autre n'y touche.", "Year locked: nobody else can change it.", "Año bloqueado.", "Anno bloccato.", "ロック中。", "Jahr gesperrt.", "سنة مقفلة.")) : null);
+  }
+  function blocPremiers() {
+    var nbP = 0, vign = [];
+    pauvres.forEach(function (g) { nbP += g.photos.length; g.photos.forEach(function (p) { vign.push({ p: p, an: g.an }); }); });
+    var titreP = T("Les premiers souvenirs", "The first memories", "Los primeros recuerdos", "I primi ricordi", "はじめの思い出", "Die ersten Erinnerungen", "الذكريات الأولى");
+    if (premiersOuverts) {
+      return h("div", { key: "premiers" },
+        h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "4px 0 14px" } },
+          h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 26, color: C_IV, lineHeight: 1.1 } }, titreP),
+            h("div", { style: { fontSize: 12, color: "rgba(243,238,228,0.62)", marginTop: 3 } }, plage(pauvres.map(function (g) { return g.an; })) + " • " + txtSouv(nbP))),
+          h("button", { type: "button", onClick: function () { setPremiersOuverts(false); }, style: { marginInlineStart: "auto", background: "none", border: "none", color: C_CH, fontSize: 12, fontWeight: 600, cursor: "pointer", minHeight: 32 } }, T("Replier", "Collapse", "Plegar", "Chiudi", "たたむ", "Einklappen", "طي"))),
+        pauvres.map(function (g, i) { return blocAnnee(g, i, true); }));
+    }
+    var nbV = Math.min(vign.length, COLS === 3 ? 4 : 6);
+    return h("section", { key: "premiers", "data-premiers": "1", style: { margin: "4px 0 22px", padding: "16px 14px 14px", borderRadius: 18, border: "1px solid rgba(201,166,107,0.30)", background: "linear-gradient(160deg, rgba(14,24,29,0.82), rgba(6,9,12,0.88))" } },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 10 } }, losange(false, 12), h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 26, color: C_IV } }, titreP)),
+      h("div", { style: { fontSize: 12, color: "rgba(243,238,228,0.62)", margin: "2px 0 12px", paddingInlineStart: 22 } }, plage(pauvres.map(function (g) { return g.an; })) + " • " + txtSouv(nbP)),
+      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + Math.max(nbV, 3) + ", minmax(0, 1fr))", gap: GAP } },
+        vign.slice(0, nbV).map(function (v, i) { return caseMur({ p: v.p, fmt: "normal", manuel: true, col: 1, ligne: 1, w: 1, h: 1, rang: i }, "pv" + i, { pastille: String(v.an), style: { gridColumn: "auto", gridRow: "auto", aspectRatio: "1 / 1" } }); })),
+      boutonCapsule(T("Découvrir ces années", "Discover these years", "Descubrir estos años", "Scopri questi anni", "これらの年を見る", "Diese Jahre entdecken", "اكتشف هذه السنوات"), function () { setPremiersOuverts(true); }, "btP"));
+  }
+  function ligneRepliee(grp) {
+    var ouverte = !!ouvertes["pli" + grp.an];
+    if (ouverte) return blocAnnee(grp, 0, true);
+    return h("button", { key: "pli" + grp.an, type: "button", onClick: function () { setOuvertes(function (o) { var n = Object.assign({}, o); n["pli" + grp.an] = true; return n; }); }, style: { display: "flex", alignItems: "center", gap: 10, width: "100%", minHeight: 48, margin: "0 0 18px", padding: "0 4px", background: "none", border: "none", borderBottom: "1px solid rgba(201,166,107,0.16)", color: C_IV, cursor: "pointer", textAlign: "start" } },
+      losange(false, 10),
+      h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 24, color: C_CH } }, String(grp.an)),
+      h("span", { style: { flex: 1 } }),
+      h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "rgba(243,238,228,0.7)" } }, txtSouv(grp.photos.length)),
+      h("span", { "aria-hidden": "true", style: { color: C_CH, fontSize: 16 } }, rtlCS ? "‹" : "›"));
+  }
+  var listeAffichee = filtreAn != null ? annees.filter(function (g) { return g.an === filtreAn; }) : annees;
+  var enfantsMur = [];
+  listeAffichee.forEach(function (grp, iG) {
+    if (filtreAn == null && estPauvre[grp.an]) {
+      if (regroupe) { if (grp.an === premierPauvre) enfantsMur.push(blocPremiers()); return; }
+      enfantsMur.push(ligneRepliee(grp)); return;
+    }
+    enfantsMur.push(blocAnnee(grp, iG, filtreAn != null));
+  });
+  var anMin = annees[annees.length - 1].an, anMax = annees[0].an;
+  return h("div", { ref: refGrilleAn, style: { margin: "4px 16px 0" } },
+    h("div", { style: { display: "flex", alignItems: "flex-start", gap: 10, margin: "0 0 18px", position: "relative" } },
+      h("div", { style: { flex: 1, minWidth: 0 } },
+        h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond',Georgia,serif", fontWeight: 500, fontSize: 30, lineHeight: 1.1, color: C_IV } }, T("Tous les souvenirs", "All memories", "Todos los recuerdos", "Tutti i ricordi", "すべての思い出", "Alle Erinnerungen", "كل الذكريات")),
+        h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, color: "rgba(243,238,228,0.65)", marginTop: 4 } }, nbTotal + " " + T("photos", "photos", "fotos", "foto", "枚", "Fotos", "صور") + " • " + (anMin === anMax ? String(anMax) : T("De " + anMax + " à " + anMin, "From " + anMax + " to " + anMin, "De " + anMax + " a " + anMin, "Dal " + anMax + " al " + anMin, anMax + "年〜" + anMin + "年", "Von " + anMax + " bis " + anMin, "من " + anMax + " إلى " + anMin)))),
+      h("button", { type: "button", onClick: function () { setFiltreOuvert(!filtreOuvert); }, "aria-label": T("Filtrer par année", "Filter by year", "Filtrar por año", "Filtra per anno", "年で絞り込む", "Nach Jahr filtern", "تصفية حسب السنة"), style: { flex: "0 0 auto", width: 40, height: 40, borderRadius: 10, border: "1px solid rgba(201,166,107," + (filtreAn != null || filtreOuvert ? "0.9" : "0.5") + ")", background: (filtreAn != null) ? "rgba(201,166,107,0.18)" : "rgba(5,8,11,0.55)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+        h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: C_CH, strokeWidth: 1.7, strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 5h16l-6 7.5V19l-4-2v-4.5z" }))),
+      filtreOuvert ? h("div", { role: "menu", style: { position: "absolute", top: 46, insetInlineEnd: 0, zIndex: 20, minWidth: 210, maxHeight: 320, overflowY: "auto", borderRadius: 14, border: "1px solid rgba(201,166,107,0.3)", background: "rgba(8,13,17,0.98)", boxShadow: "0 14px 34px rgba(0,0,0,0.55)", padding: "6px 0" } },
+        h("div", { style: { padding: "8px 14px 6px", fontSize: 11.5, color: "rgba(243,238,228,0.6)" } }, T("Filtrer par année", "Filter by year", "Filtrar por año", "Filtra per anno", "年で絞り込む", "Nach Jahr filtern", "تصفية حسب السنة")),
+        [{ an: null, n: nbTotal }].concat(annees.map(function (g) { return { an: g.an, n: g.photos.length }; })).map(function (o) {
+          var actif = filtreAn === o.an;
+          return h("button", { key: "f" + o.an, type: "button", role: "menuitem", onClick: function () { setFiltreAn(o.an); setFiltreOuvert(false); }, style: { display: "flex", width: "100%", alignItems: "center", gap: 10, minHeight: 40, padding: "0 14px", border: "none", borderTop: "1px solid rgba(255,255,255,0.05)", background: actif ? "rgba(201,166,107,0.12)" : "none", color: actif ? C_CH : C_IV, fontFamily: "'Montserrat',sans-serif", fontSize: 13, cursor: "pointer", textAlign: "start" } },
+            h("span", { style: { flex: 1 } }, o.an == null ? T("Toutes les années", "All years", "Todos los años", "Tutti gli anni", "すべての年", "Alle Jahre", "كل السنوات") : String(o.an)),
+            h("span", { style: { color: "rgba(243,238,228,0.6)", fontVariantNumeric: "tabular-nums" } }, String(o.n)));
+        })) : null),
+    enfantsMur,
     editAn != null ? ecranModifAnnee() : null,
-    props.onAjouter ? h("button", { onClick: props.onAjouter, style: { display: "block", margin: "6px auto 4px", minHeight: 48, padding: "0 26px", borderRadius: 999, border: "1px solid " + teinte + "88", background: "transparent", color: teinteCl, fontSize: 12.5, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "▧  " + T("Ajouter un souvenir", "Add a memory", "Añadir un recuerdo", "Aggiungi un ricordo", "思い出を追加", "Erinnerung hinzufügen", "\u0625\u0636\u0627\u0641\u0629 \u0630\u0643\u0631\u0649")) : null);
+    props.onAjouter ? h("button", { onClick: props.onAjouter, style: { display: "block", margin: "6px auto 4px", minHeight: 46, padding: "0 26px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.65)", background: "rgba(5,8,11,0.55)", color: C_CH, fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, "+ " + T("Ajouter un souvenir", "Add a memory", "Añadir un recuerdo", "Aggiungi un ricordo", "思い出を追加", "Erinnerung hinzufügen", "إضافة ذكرى")) : null);
 }
+
 
 /* ==========================================================
    29/08 — BLOC « PAS ENCORE DE SOUVENIRS » (video fournie par Blandine)
@@ -64257,6 +64301,9 @@ function EcranCheval() {
      propre photo ouverte des que celle-ci (la visionneuse de la fiche) s'ouvre \u2014 evite les
      deux superposees. Voir le commentaire jumeau dans AlbumsCheval. */
   var acfSt = React.useState(0); var albumsChFermerCle = acfSt[0], setAlbumsChFermerCle = acfSt[1];
+  /* 12/10 (1027) page « Tous les souvenirs » ouverte depuis la page Photos : null = vitrine ; { an } = page complete (an : annee de depart) */
+  var tsSt = React.useState(null); var tousSouvCh = tsSt[0], setTousSouvCh = tsSt[1];
+  React.useEffect(function () { setTousSouvCh(null); }, [panneau]);
   /* 11/09 (14) — meme motif que albumsChFermerCle : un compteur passe a AlbumsCheval (prop
      ajoutCle). A chaque +1, AlbumsCheval ouvre sa feuille « Dans quel album ? ». Utilise par
      « Ajouter un souvenir » (voir ouvrirAjoutSouvenir). */
@@ -67265,13 +67312,20 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         null /* (978) barre grise retiree : design de la page Sante */,
         ongletsPanCh(),
         /* 12/10 (1011) encart d introduction Photos (maquette de Blandine), avant les albums */
+        tousSouvCh ? h("button", { type: "button", onClick: function () { setTousSouvCh(null); try { var pnS = document.querySelector(".chvPanFix"); } catch (eS) { } }, style: { display: "inline-flex", alignItems: "center", gap: 8, minHeight: 40, margin: "0 16px 10px", padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.5)", background: "rgba(5,8,11,0.55)", color: "#C9A66B", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, (rtlCh ? "\u203a " : "\u2039 ") + T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631")) : null,
+        tousSouvCh ? null : h(React.Fragment, null,
         encartIntroCh("images/photos-intro.webp", T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631"),
           T("Des instants \u00e0 garder\u2026", "Moments to keep\u2026", "Instantes para guardar\u2026", "Istanti da custodire\u2026", "\u6b8b\u3057\u3066\u304a\u304d\u305f\u3044\u77ac\u9593\u2026", "Augenblicke zum Bewahren\u2026", "\u0644\u062d\u0638\u0627\u062a \u062a\u0633\u062a\u062d\u0642 \u0627\u0644\u0627\u062d\u062a\u0641\u0627\u0638 \u0628\u0647\u0627\u2026"),
           T("Ses plus beaux moments, ses petits bonheurs et tous les souvenirs partag\u00e9s.", "Their finest moments, little joys and all the memories shared.", "Sus mejores momentos, sus peque\u00f1as alegr\u00edas y todos los recuerdos compartidos.", "I suoi momenti pi\u00f9 belli, le piccole gioie e tutti i ricordi condivisi.", "\u6700\u9ad8\u306e\u77ac\u9593\u3001\u5c0f\u3055\u306a\u5e78\u305b\u3001\u305d\u3057\u3066\u5206\u304b\u3061\u5408\u3063\u305f\u3059\u3079\u3066\u306e\u601d\u3044\u51fa\u3002", "Seine sch\u00f6nsten Momente, kleinen Freuden und alle geteilten Erinnerungen.", "\u0623\u062c\u0645\u0644 \u0644\u062d\u0638\u0627\u062a\u0647\u060c \u0648\u0623\u0641\u0631\u0627\u062d\u0647 \u0627\u0644\u0635\u063a\u064a\u0631\u0629\u060c \u0648\u0643\u0644 \u0627\u0644\u0630\u0643\u0631\u064a\u0627\u062a \u0627\u0644\u0645\u0634\u062a\u0631\u0643\u0629."),
           h("svg", { viewBox: "0 0 24 24", width: 17, height: 17, fill: "none", stroke: "#C9A66B", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" }, h("rect", { x: 3.5, y: 4.5, width: 17, height: 15, rx: 2.5 }), h("circle", { cx: 9, cy: 10, r: 1.8 }), h("path", { d: "M4 17l5-4.5 4 3.5 3-2.5 4 3.5" }))),
         h("div", null, h(AlbumsCheval, { cible: cibleCh, teinte: teinte, presentationPhotos: true /* (881) */, mesAlbumsSeulement: true, fermerCle: albumsChFermerCle, ajoutCle: albumsChAjoutCle /* 11/09 (14) : « Ajouter un souvenir » -> feuille « Dans quel album ? » */, onOuvertureLocale: function () { setVisionneuse(null); } })),
-        h("div", { "aria-hidden": "true", style: { display: "flex", alignItems: "center", gap: 12, margin: "30px 16px 26px" } }, h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } }), h("i", { style: { width: 7, height: 7, background: "#C9A66B", transform: "rotate(45deg)", flexShrink: 0 } }), h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } })), /* (918) Blandine : la barre grise sous les albums devient le losange champagne */
+        h("div", { "aria-hidden": "true", style: { display: "flex", alignItems: "center", gap: 12, margin: "30px 16px 26px" } }, h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } }), h("i", { style: { width: 7, height: 7, background: "#C9A66B", transform: "rotate(45deg)", flexShrink: 0 } }), h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,0), rgba(201,166,107,0.5), rgba(201,166,107,0))" } })), /* (918) Blandine : la barre grise sous les albums devient le losange champagne */),
         h(ChronologieSouvenirs, {
+          key: tousSouvCh ? "souv-complet" : "souv-vitrine",
+          mode: tousSouvCh ? "complet" : "vitrine",   /* 12/10 (1027) vitrine sur la page Photos, page complete « Tous les souvenirs » */
+          debutAn: (tousSouvCh && tousSouvCh.an) || null,
+          nomCheval: String((c && c.nom) || ""),
+          onVoirTout: function (oV) { setTousSouvCh({ an: (oV && oV.an) || null }); try { setTimeout(function () { var pans = document.querySelectorAll("div"); for (var iP = 0; iP < pans.length; iP++) { var csP = getComputedStyle(pans[iP]); if (csP.position === "fixed" && csP.zIndex === "6500") { pans[iP].scrollTop = 0; break; } } }, 30); } catch (eT) { } },
           chevalId: (chevalDyn && chevalDyn.dbId) || null,
           peutVedette: !!((chevalDyn && moi && chevalDyn.ownerId === moi.id) || (typeof estModerateurHype === "function" && estModerateurHype(moi))), /* 09/09 CORRECTIF : peutChoisirMediaF n'existe que dans la portee de sectionMomentsForts, pas ici -- meme expression recalculee directement, moi/chevalDyn deja verifies disponibles a cet endroit (cf. la prop proprio juste au-dessus, qui les utilise deja) */
           vedetteUrl: (chevalDyn && chevalDyn.galerie_vedette_url && typeof urlNue === "function") ? urlNue(chevalDyn.galerie_vedette_url) : null,
