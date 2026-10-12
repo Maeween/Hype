@@ -11702,3 +11702,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveau témoignage → notification à la propriétaire du cheval (jamais à soi-même) : dans la cloche, onglet « Toi » : « <nom> a raconté son expérience avec <cheval> : « début du texte » » (7 langues) ; toucher la notification ouvre la page Histoire du cheval.
 - Pas de notification quand on aime un témoignage (non demandé).
 - Testé : J'aime (envoi vérifié, compteurs), notification envoyée avec le bon cheval et le bon texte ; 16 scripts sans erreur.
+
+## Build 1011 (12/10) — Page Photos du cheval : encart d'introduction
+- Blandine (12 h 15) : brief « Ajouter un encart d'introduction aux pages Photos et Vidéos » + maquettes + image des deux fonds (12 h 16) ; deux builds séparés, Photos d'abord.
+- Images : sa planche découpée en deux fichiers → images/photos-intro.webp (1874×378, 49 Ko ; l'œil) et images/videos-intro.webp (1874×396, 44 Ko ; les antérieurs au saut, pour le build suivant).
+- Sous les onglets, avant les albums : surtitre « PHOTOS », « Des instants à garder… » (Cormorant italique), « Ses plus beaux moments, ses petits bonheurs et tous les souvenirs partagés. » (7 langues) ; photo à droite, dégradé sombre à gauche, bordure champagne fine, angles arrondis, petite icône photo décorative dans un cercle fin en haut à droite ; aucun bouton. Arabe : image et dégradé en miroir, icône à gauche.
+- Fonction encartIntroCh (dans la fiche cheval) réutilisable pour Vidéos. Rien d'autre ne change (albums, galerie, actions).
+- Testé 375, 390, 1280 px et arabe ; 16 scripts sans erreur.
