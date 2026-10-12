@@ -11641,3 +11641,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le bouton « Écrire / Modifier son histoire » : propriétaire seule (avant : + cavalière liée, qui écrivait une histoire perso).
 - « Raconter la sienne dessous » = les témoignages « Ils ont croisé sa route » (étape 4 du brief).
 - Testé : un membre qui n'est pas propriétaire voit le texte de la propriétaire, sans bouton d'édition ; 16 scripts sans erreur.
+
+## 12/10 11 h 38 — Couleurs des chevaux remises à l'identique (en base, par Blandine)
+- Blandine : « passe les couleurs de Hey Baby aux mêmes couleurs que tout le monde », puis « deuxième » (tous les chevaux d'un coup).
+- Avant : 5 chevaux avaient leur propre couleur (chevaux.teinte) — Hey Baby Please et Vallieres (rouge #C64B5C), My Dream de Feinn et Rizotto d'Emery (beige #D9B56C, la cause du « beige au lieu du bleu pétrole »), Olivia Optima (vert #5C7A5E).
+- Blandine a lancé : update chevaux set teinte = null where teinte is not null;  → vérifié : 0 cheval sur 89 avec une couleur propre. Aucun changement de code ; l'appli ne permet pas de redonner une couleur à un cheval.
