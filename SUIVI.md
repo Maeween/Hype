@@ -12005,6 +12005,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Testé 390 (fr, arabe), 820, 1280 ; cas vide, un seul, 42 événements (alerte), filtre vide, clic vers un événement puis retour : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - Fichiers : index.html, SUIVI.md, images/evenements-passes-portrait.webp, images/evenements-passes-large.webp (nouvelles).
 
+## Build 1056 (12/10) — Événements passés : années et « Voir plus » — NON PUBLIÉ (attend validation)
+- Choix de l'année (« Toutes les années », 2026, 2025…) : n'apparaît que si les événements couvrent plusieurs années. iPhone : sous les filtres, pleine largeur, ouvre la roue de choix du téléphone ; tablette/ordinateur : à droite des filtres (à gauche en arabe).
+- Titres par année (« 2026 », « 2025 »…) dans la liste quand « Toutes les années » couvre plusieurs années.
+- 12 cartes, puis bouton à contour champagne « Voir plus d'événements (encore N) », 12 par 12. Changer de filtre ou d'année repart à 12 ; « Voir tous » remet aussi « Toutes les années ».
+- Tablette/ordinateur : les cartes d'une même ligne ont la même hauteur ; une carte sans photo garde son texte centré (pas de fausse zone photo).
+- Nouveaux textes traduits dans les 7 langues.
+- Testé 390 (fr), 820 (arabe), 1280 avec 30 événements sur 2 ans : 12 → 24 après « Voir plus », 12 en choisissant 2025 ; aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md (images inchangées depuis le 1055).
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
