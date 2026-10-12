@@ -11908,3 +11908,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (17 h 59) : « quand quelqu'un met une photo sur la page Écurie, on peut faire la même chose ? » ; 18 h 05 : « teste sur Écurie que je voie ce que ça donne ».
 - Essai : une fois la photo chargée, on compare sa forme à celle du bandeau. Photo plus étroite (verticale) : toute la hauteur, calée à droite (à gauche en arabe), bord intérieur fondu dans le noir. Photo plus large : toute la largeur, calée en haut (le bas se fondait déjà dans le noir). Photo déjà recadrée au format du bandeau : comme avant. Apparition en fondu (pas de saut).
 - Simulé (iPhone 390) avec une photo verticale et une horizontale, avant / après. 16 scripts sans erreur.
+- 18 h 08 — Blandine choisit C : photo verticale → le bandeau s'agrandit (jusqu'à 560 px) pour qu'elle soit grande et entière ; les accès rapides descendent d'autant. Photo horizontale : entière, toute la largeur. Testé 390 et 1280 px.

@@ -41962,6 +41962,11 @@ function EcranEcurieV2(props) {
       onLoad: function (eB) { try { var im = eB.currentTarget, bx = im.parentElement; if (!im || !bx || !im.naturalWidth || !im.naturalHeight) { if (im) im.style.opacity = "1"; return; }
         var rI = im.naturalWidth / im.naturalHeight, rB = (bx.clientWidth || 1) / (bx.clientHeight || 1);
         var bas = "linear-gradient(180deg, #000 0%, #000 42%, rgba(0,0,0,0.55) 70%, rgba(0,0,0,0.15) 88%, transparent 100%)";
+        if (rI < rB * 0.97) {
+          /* (1044, choix C de Blandine) photo verticale : le bandeau s agrandit (560 px max) pour qu elle soit plus grande */
+          var hVoulue = Math.min(560, Math.round(bx.clientWidth / rI));
+          if (hVoulue > bx.clientHeight + 8) { bx.style.height = hVoulue + "px"; rB = (bx.clientWidth || 1) / hVoulue; }
+        }
         if (rI < rB * 0.97) { var cote = "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", transparent 0%, #000 32%)";
           Object.assign(im.style, { inset: "auto", top: "0", bottom: "auto", left: rtl ? "0" : "auto", right: rtl ? "auto" : "0", width: "auto", height: "100%", maxWidth: "none", WebkitMaskImage: cote + ", " + bas, maskImage: cote + ", " + bas, WebkitMaskComposite: "source-in", maskComposite: "intersect" }); }
         else if (rI > rB * 1.03) { Object.assign(im.style, { inset: "auto", top: "0", left: "0", right: "0", bottom: "auto", width: "100%", height: "auto" }); }
