@@ -12040,6 +12040,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « oui… qu'on enchaîne » → calendrier restylé et agenda en deux colonnes mis en ligne ensemble. Marqueur : 20261012-1058.
 - Fichiers : index.html, SUIVI.md (images inchangées).
 
+## Build 1059 (12/10) — Écurie : le fond n'est plus fixe — NON PUBLIÉ (attend validation)
+- Blandine (21 h 44) : « je voulais qu'il ne soit plus fixe, qu'il redevienne normal, car on lisait mal sinon » (son message de 20 h 18 « laisse le fond en fixe » était mal exprimé).
+- La photo de l'écurie est posée en haut de la page (hauteur d'un écran) et défile avec elle, comme un bandeau normal : le texte ne passe plus par-dessus en défilant. Même image, même placement, même dégradé vers le noir.
+- Testé 390 (haut, milieu, bas de page) et 1280 : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+- Fichiers : index.html, SUIVI.md.
+
 ## À traiter avec la refonte des Stories (12/10, 19 h 30) — rien de codé
 - Blandine : « ne mets pas en ligne pour l'instant, il faut limiter au maximum les publications » → les builds prêts attendent son feu vert (1052 : rubriques Communauté rapprochées).
 - Stories disparues ce soir : PAS un bug d'affichage — 2 stories de 7 jours (05/10) et 4 d'un mois (12/09) arrivées à leur fin entre 17 h et 19 h 25 ; aucune ligne supprimée.
