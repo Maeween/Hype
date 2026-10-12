@@ -11750,3 +11750,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le conteneur de l'appli s'élargit désormais sur tablette pour les écrans listés dans ECRANS_TABLETTE (ici : sante-cheval, 1 280 px max, comme l'ordinateur) ; la page Santé prend sa mise en page « ordinateur » dès 768 px (4 cartes de suivi, Hey Baby et magazine côte à côte). Barre du bas inchangée, pas de menu de gauche sous 1 024 px.
 - Testé 768 et 820 px (aucun débordement) ; Écurie vérifiée inchangée ; 16 scripts sans erreur.
 - 12 h 37–12 h 39 : idée de Blandine pour le mur de souvenirs (regrouper les années à une seule photo, ou les déplier) — « ne code pas concernant ce point ».
+
+## Build 1019 (12/10) — Page Écurie : version tablette
+- La page Écurie prend sa mise en page « ordinateur » dès 768 px (grand hero, 6 accès rapides sur une ligne, encarts élargis), dans le conteneur élargi (ECRANS_TABLETTE + « guilde »). Barre du bas inchangée.
+- Testé 768 et 820 px : aucun débordement, aucune erreur. À 768 px, « ACTUALITÉS » est un peu coupé dans sa tuile (à revoir si gênant).
