@@ -290,8 +290,34 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   html += `<p style="margin-top:22px;font-size:12px">Hype est une application indépendante, sans lien officiel avec cette écurie ni avec la FFE. Données de l’écurie : © contributeurs OpenStreetMap.</p>`;
   html += `</main>`;
 
+  // 12/10/2026 : « carte d'identité » pour Google (schema.org) — seulement ce qui est vrai et déjà écrit sur la page,
+  // et rien pour une fiche écartée. SportsActivityLocation = lieu d'activité sportive (une sorte de LocalBusiness).
+  let jsonld = "";
+  if (ec.x !== 1) {
+    const url = DOMAINE + "/ecurie/" + slug;
+    const lieu: Record<string, unknown> = { "@context": "https://schema.org", "@type": "SportsActivityLocation", name: nom, url };
+    const adr: Record<string, string> = { "@type": "PostalAddress", addressCountry: "FR" };
+    const rue = cs ? propre(cs.adresse) : propre(ec.a);
+    if (rue) adr.streetAddress = rue;
+    if (!cs && propre(ec.cp)) adr.postalCode = propre(ec.cp);
+    if (ville) adr.addressLocality = ville.replace(/\s*\([^)]*\)\s*$/, "");   // « Itteville (91) » → « Itteville »
+    lieu.address = adr;
+    if (typeof ec.la === "number" && typeof ec.lo === "number") lieu.geo = { "@type": "GeoCoordinates", latitude: ec.la, longitude: ec.lo };
+    const tel = cs ? propre(cs.tel) : propre(ec.t);
+    if (tel) lieu.telephone = tel;
+    const site = cs ? propre(cs.site) : propre(ec.s);
+    if (/^https?:\/\//i.test(site)) lieu.sameAs = [site];
+    if (cs && propre(cs.phrase)) lieu.description = propre(cs.phrase);
+    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/fr/" },
+      { "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" }];
+    if (pageDep) fil.push({ "@type": "ListItem", position: 3, name: "Centres équestres " + pageDep[1] + " (" + dep + ")", item: pageDep[0] });
+    fil.push({ "@type": "ListItem", position: fil.length + 1, name: nom, item: url });
+    const blocs = [lieu, { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: fil }];
+    jsonld = blocs.map((b) => `<script type="application/ld+json">${JSON.stringify(b).replace(/</g, "\\u003c")}</script>`).join("");
+  }
+
   // 12/10/2026 : x = écartée du référencement (pas une écurie, ou doublon ; outils/ecuries-exclues.json)
-  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html, cachee: ec.x === 1 };
+  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html, cachee: ec.x === 1, jsonld };
 }
 
 /* ---------- Flux : la page Hype avec les ajouts (identique à cheval-route.ts) ---------- */
@@ -324,6 +350,7 @@ async function pageAvecRoute(source: Response, nomClub: string, seo: ReturnType<
     `<meta name="description" content="${echapper(seo.description)}">` +
     `<link rel="canonical" href="${echapper(seo.canonical)}">` +
     (seo.cachee ? `<meta name="robots" content="noindex, follow">` : "") +
+    seo.jsonld +
     `<meta property="og:type" content="website">` +
     `<meta property="og:site_name" content="Hype">` +
     `<meta property="og:locale" content="fr_FR">` +
