@@ -11732,3 +11732,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone (< 768 px) inchangé. Testé à 820 px (Histoire, Photos, Vidéos, Résultats) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
 - À suivre, une page par build : version ordinateur/tablette de la page Histoire (maquette), puis Santé, Écurie, Accueil, Cavaliers du club en tablette.
 - 12 h 26 : audit du mur de souvenirs livré (lecture seule, aucun changement) ; 12 h 30 : texte pour ChatGPT fourni.
+
+## Build 1015 (12/10) — Page Histoire sur ordinateur et tablette : encart « Son histoire » de la maquette
+- À partir de 768 px : grand encart photographique — photo du cheval à droite fondue dans le noir, surtitre « SON HISTOIRE », « Un parcours unique… » (Cormorant italique), « De ses premiers pas à aujourd'hui, découvrez l'histoire de <nom>. », puis le récit avec un filet champagne à gauche (7 langues, miroir en arabe). Même icône de partage, même bouton Écrire/Modifier (capsule, sans fond doré).
+- iPhone : encart inchangé. Testé 390, 820, 1280 px ; 16 scripts sans erreur.
