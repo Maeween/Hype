@@ -11629,3 +11629,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Hero, nom, onglets soulignés, fond et encart « Son histoire » : inchangés.
 - Testé iPhone (390), ordinateur (1280) et arabe ; 16 scripts sans erreur.
 - Prochaine étape (build séparé) : icône de partage sur « Son histoire » avec un lien qui ouvre directement la page Histoire.
+
+## Build 1005 (12/10) — Page Histoire : phrase de l'encart « Son histoire continue »
+- Blandine (11 h 33, maquette des six variantes) : « complète avec ce qui était écrit, à la place de ce cheval tu mets son nom ».
+- Sous « Avec vous… » : « Retrouvez tous ses souvenirs, ses moments partagés et rejoignez la communauté autour de <nom du cheval>. » (7 langues, le nom affiché dans le hero). Rien d'autre ne change (photo, boutons, libellés).
+- Testé iPhone, ordinateur, arabe ; 16 scripts sans erreur.
