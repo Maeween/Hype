@@ -11853,3 +11853,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Cheval sans aucune photo : on retrouve l'encart d'avant (photo de Blandine, « Chaque cheval a son histoire… », « Partage ses grands moments ici ») au lieu de « Aucun souvenir pour le moment ». Dès qu'il y a une photo : « Les moments récents » (build 1036), sans l'encart.
 - Testé 390 px avec et sans photos : aucune erreur ; 16 scripts sans erreur.
 - 12/10, 15 h 51 — Blandine : « Ok » → build 1037 publié (marqueur 20261012-1037).
+
+## Build 1038 (12/10) — Page Photos : albums centrés quand ils tiennent à l'écran — NON PUBLIÉ (attend validation)
+- Blandine (15 h 58, capture de Webster avec 2 albums collés à gauche) : « quand il y a seulement deux albums, espace-les pour les centrer ».
+- La rangée d'albums (et celle des autres cavalières) est centrée quand tous les albums tiennent à l'écran ; écart de 18 px quand il y en a exactement deux (10 px sinon). Quand ils débordent, la rangée part du bord gauche et défile comme avant (rien n'est coupé). Vaut aussi pour tablette et ordinateur.
+- Blandine (15 h 59) : « pense à automatiquement ajuster sur tablette et ordi les changements faits sur tel » → règle permanente : chaque changement iPhone est décliné et vérifié en tablette (820) et ordinateur (1280) dans le même build.
+- Testé 390 px (2 et 5 albums) et 1280 px (2 albums) : aucun débordement, aucune erreur ; 16 scripts sans erreur.
