@@ -11778,3 +11778,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 
 ## Build 1025 (12/10) — Bandeau de fin « HYPE », groupe Culture équestre
 - Ajouté sous : liste des articles, article ouvert, Cadre Noir, École de Jerez, École de Vienne, École portugaise. Testé 390 px : aucun débordement, aucune erreur ; 16 scripts sans erreur.
+
+## Build 1026 (12/10) — Bandeau de fin « HYPE », Vidéothèque
+- Ajouté sous la Vidéothèque. « Abonnements » retiré de la liste : vérification faite, c'est un outil d'admin (lecture réservée à feinn@live.fr), donc exclu comme Rattacher FFE et Score vitrine.
+- Série terminée : 18 pages ont reçu le bandeau (builds 1022 à 1026). Testé 390 px ; 16 scripts sans erreur.
