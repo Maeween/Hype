@@ -11852,3 +11852,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (15 h 49) : « S'il n'a aucune photo on avait déjà un encart, peux le laisser ».
 - Cheval sans aucune photo : on retrouve l'encart d'avant (photo de Blandine, « Chaque cheval a son histoire… », « Partage ses grands moments ici ») au lieu de « Aucun souvenir pour le moment ». Dès qu'il y a une photo : « Les moments récents » (build 1036), sans l'encart.
 - Testé 390 px avec et sans photos : aucune erreur ; 16 scripts sans erreur.
+- 12/10, 15 h 51 — Blandine : « Ok » → build 1037 publié (marqueur 20261012-1037).
