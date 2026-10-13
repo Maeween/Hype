@@ -12298,3 +12298,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Cartes « Derniers résultats » : de nouveau toutes à la même hauteur (textes limités à 2 lignes, autres classés sur une ligne, donc plus de grand vide).
 - Moments récents : la limite à deux rangées (grande photo + 2 petites, comme Webster) est gardée — brièvement annulée puis remise après la précision de Blandine.
 - 16 scripts 0 erreur. Vérifié iPhone 390 (mesures automatiques des écarts).
+- 13/10 12 h 55 : 1093 mis en ligne sur « Ok ».
