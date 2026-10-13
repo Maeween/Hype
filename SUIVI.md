@@ -12200,3 +12200,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Ordre : nom → badge(s) → phrase manuscrite « Chaque cheval a son histoire, la sienne s'écrit ici. » (7 langues, police Parisienne) → 6 tuiles → carte Origines.
 - Carte Origines (recto) : photo du cheval à gauche (40 %), à droite Père / Mère / Père de mère (étiquette au-dessus du nom) puis la ligne d'infos ; bouton « Importer les origines depuis une capture » dessous ; couleurs inchangées ; le verso (arbre complet) ne change pas.
 - 16 scripts 0 erreur. Vérifié iPhone 390 avec un cheval aux origines complètes.
+
+## Build 1077 (13/10) — Fiche cheval V1 : fond et couleurs de la V3
+- Demandes : « si on doit passer en fond de page normal, utilise la présentation de fond de page de la v3 » + « et ses couleurs sur toute la page ».
+- ⚠️ Signalé à Blandine : la première commande (fond) était déjà passée quand elle a interrompu ; elle est conservée car c'est ce qu'elle demande.
+- Plus d'image de fond sous la fiche (images/FOND_SANTE.webp n'est plus utilisée ici) : le noir uni de l'accueil / V3 (#060709), la photo du haut s'y fond.
+- Palette de la V3 sur toute la fiche et ses pages (Histoire, Photos, Performances, Vidéos…) : textes gris-bleu → ivoire chaud (#F3EEE4) et gris chauds ; ancien turquoise des styles de la fiche → champagne ; cartes des derniers résultats sur le fond pétrole de l'accueil ; deux boutons pleins turquoise (enregistrer la fiche, enregistrer les origines) → contour champagne. 210 couleurs remplacées, uniquement dans la fiche (EcranCheval et ses deux feuilles de style).
+
+## Build 1078 (13/10) — « Les moments récents » sur la fiche : deux rangées maximum
+- Demande : « assure-toi juste qu'on ne dépasse pas deux photos en hauteur, quand il y en a 3 ça fait trop long ».
+- Sur la fiche seulement : la grande photo (2 × 2) + 2 petites à côté (téléphone, 3 colonnes), exactement deux rangées, sans trou. La page Photos et « Tous les souvenirs » ne changent pas.
+- 16 scripts 0 erreur. Vérifié iPhone 390 (fiche et Performances).
