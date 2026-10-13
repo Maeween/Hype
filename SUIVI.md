@@ -12393,3 +12393,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 14/10 00 h 19 : horselingo.fr vérifié dans Google Search Console (enregistrement TXT google-site-verification ajouté chez Infomaniak, zone DNS de horselingo.fr — NE PAS LE SUPPRIMER) ; sitemap https://horselingo.fr/sitemap.xml envoyé, accepté par Google.
 - 14/10 00 h 58 : Horse Lingo, mis en ligne sur « Oui » : pages de vocabulaire dans les 6 langues (/vocabulaire/, /en/vocabulary/, /es/vocabulario/, /it/vocabolario/, /de/vokabular/, /ja/vocabulary/ ; 39 étapes × 6 = 240 pages + sommaires, hreflang entre les versions ; noms d'étapes/villes tirés d'ETAPES_I18N ; prononciation « à la française » seulement sur les pages fr, ailleurs seulement le rōmaji) + image d'aperçu de partage images/horselingo-partage-1200x630.jpg (carte de La Baule), balises og: ajoutées dans lingo.html à la publication. Toujours dans outils/seo-lexique.cjs, rien dans lingo.html du dépôt.
 - À transmettre à la conversation référencement de Hype (netlify.toml de Hype, pas touché ici) : rediriger 2hype.fr/lingo.html vers https://horselingo.fr si plus rien dans Hype n'ouvre lingo.html.
+
+## Build 1100 (14/10) — Page Écurie : tuiles « Accès rapides » semi-transparentes
+- Demande : « Sur la page Ecurie on peut passer les onglets en semi transparent ombré dégradé ? » ; précisé : les 6 tuiles « Accès rapides » ; « Ok » (01 h 14).
+- Parti de la version en ligne du dépôt (build 20261013-1099, récupérée sur GitHub), pas d'une copie ancienne.
+- Changement (une seule ligne, tuiles de la page Écurie `.ev2-tuile`) : le dégradé bleu pétrole → noir devient semi-transparent (opacité 42 % en haut → 78 % en bas, avant 100 %) avec un léger flou du fond derrière la tuile (backdrop-filter 7 px) ; le fond de page fixe se devine à travers. Ombres portées et reliefs inchangés, filet doré inchangé, petits cercles transparents derrière les icônes inchangés (« c'était sympa »), textes, icônes, tailles et disposition inchangés.
+- Même tuile sur iPhone, tablette (3 colonnes) et ordinateur (6 colonnes, survol inchangé) : le changement s'applique partout.
+- Remarque : à l'endroit des tuiles, le fond de page est presque noir ; l'effet est donc discret (tuiles un peu plus sombres et moins bleues). Si elle veut plus de transparence ou garder plus de bleu, une seule valeur à ajuster.
+- Non touché : tout le reste. Aucun SQL, aucune image, aucun nouveau texte.
+- Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
+- Checks : marqueur unique 20261014-1100, 16 scripts node --check 0 erreur, marqueurs de garde inchangés (liensClub, chevalCommunDemoData, palmTech, EcranSanteCheval).
