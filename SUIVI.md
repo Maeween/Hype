@@ -12193,3 +12193,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 1072, 1073, 1074 mis en ligne le 13/10 vers 10 h 56 (« Mets tout ça en ligne car la page cheval bloque en boucle »).
 - Cause trouvée : sur la page Performances d'un cheval SANS photo, le chargement des « photos des moments forts » renvoyait une liste vide ; cette liste vide relançait le chargement, qui renvoyait une liste vide… sans fin (deux lectures en base à chaque tour, l'iPhone saturait). Le test reproduisait le blocage (page Performances qui ne finissait jamais de s'afficher).
 - Correctif : ce chargement n'est fait qu'UNE fois par fiche. Vérifié : Performances, Photos, Vidéos, Histoire et la fiche s'affichent, avec et sans photos, aucune erreur. 16 scripts 0 erreur.
+
+## Build 1076 (13/10) — Fiche cheval V1 : phrase + 6 tuiles au-dessus, carte Origines façon V2 avec photo
+- Demandes : « on voit poney français de selle 21 ans deux fois » ; « transforme le visuel de la partie origines en celui de la v2 avec sa photo et passe les 6 cartes au-dessus mais garde les couleurs actuelles » ; « mets la petite phrase de la v3 au-dessus des cartes » ; « garde bien toutes les infos que la partie origines donne ».
+- Sous le nom : la ligne race · âge · discipline n'est plus affichée (doublon) ; la discipline (ex. CSO) rejoint la ligne d'infos de la carte Origines, qui garde race, âge, naissance, robe, indice (+ crayon de l'indice).
+- Ordre : nom → badge(s) → phrase manuscrite « Chaque cheval a son histoire, la sienne s'écrit ici. » (7 langues, police Parisienne) → 6 tuiles → carte Origines.
+- Carte Origines (recto) : photo du cheval à gauche (40 %), à droite Père / Mère / Père de mère (étiquette au-dessus du nom) puis la ligne d'infos ; bouton « Importer les origines depuis une capture » dessous ; couleurs inchangées ; le verso (arbre complet) ne change pas.
+- 16 scripts 0 erreur. Vérifié iPhone 390 avec un cheval aux origines complètes.
