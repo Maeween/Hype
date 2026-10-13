@@ -12377,3 +12377,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Conséquences dites à Blandine : les utilisateurs arrivant de l'ancienne adresse doivent se reconnecter une fois sur horselingo.fr (progression et Premium reviennent depuis la base) ; les anciennes icônes ouvrent horselingo.fr dans Safari — réinstaller l'icône depuis horselingo.fr.
 - Les fichiers de Lingo restent dans ce dépôt (retour arrière : supprimer les blocs de redirection). À retirer plus tard, une fois tout validé. Toute modification de Lingo se fait désormais dans Maeween/HorseLingo, PLUS ICI.
 - Lingo appelle toujours la fonction https://2hype.fr/.netlify/functions/supprimer-compte (CORS « * » déjà en place) : ne pas la supprimer ni restreindre son origine.
+
+## 13/10 — Horse Lingo (dépôt Maeween/HorseLingo, horselingo.fr) : référencement, première étape
+- Demande : « fais ce que tu peux faire sans confirmer le nom » (Blandine réfléchit au nom : une agence américaine « Horse Lingo », marketing équestre, a le nom avec ®). Mis en ligne sur « Ui vas y » (20 h 25).
+- outils/seo-lexique.cjs, lancé par Netlify à chaque publication (netlify.toml, ligne « command ») ; rien n'est écrit dans le dépôt. Fabrique : /vocabulaire/ (sommaire des 39 étapes, 947 mots), /vocabulaire/<ville>/ (chaque mot en fr + en, es, it, de, ja, prononciation), sitemap.xml, robots.txt, et dans lingo.html une description + l'adresse officielle (pas le titre, qui dit encore « Linguae · Le tour du monde » : à changer quand le nom sera décidé).
+- Gratuit / Premium comme l'appli (VILLE_OFFERTE) : La Baule, Le Morne, Kildare, Édimbourg complètes avec explications ; les autres : 8 premiers mots puis « la suite dans l'appli ».
+- Le nom n'est écrit qu'à un endroit : const NOM dans outils/seo-lexique.cjs.
+- Reste à faire par Blandine : déclarer horselingo.fr dans Google Search Console et y donner https://horselingo.fr/sitemap.xml.
