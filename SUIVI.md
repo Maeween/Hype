@@ -12248,3 +12248,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande : « les cartes derniers résultats sont trop longues ».
 - Cause : une carte qui listait les autres cavaliers classés de la même épreuve (jusqu'à 3 lignes) allongeait toutes les cartes de la rangée. Cette liste devient une seule ligne « + N autres classés ». Le détail reste sur la page Performances.
 - 16 scripts 0 erreur. Vérifié iPhone 390 (carte avec 3 cavaliers classés).
+
+## Build 1085 (13/10) — Import des origines au dos de la carte — publié avec 1084
+- Demande : « quand la carte origine se retourne, mets plutôt le bouton d'import là, en dessous des origines ».
+- Recto : la petite capsule d'import est retirée. Verso : « ⤓ Importer les origines depuis une capture » sous l'arbre des origines (après les poulains), mêmes droits (propriétaire, modératrice, responsable du club), même fenêtre ; toucher le bouton ne retourne pas la carte.
+- Vérifié iPhone 390 (carte retournée : bouton présent). 16 scripts 0 erreur.
+- 1084 et 1085 mis en ligne sur « Oui vas-y » (13/10 11 h 35).
