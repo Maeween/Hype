@@ -4,6 +4,17 @@
 
 ---
 
+## ✅ 14/10/2026 — L'ARABE EST ACTIVÉ (Horse Lingo, dépôt Maeween/HorseLingo, horselingo.fr)
+Ordre de Blandine (14/10, 01 h 10) : « mets tout en place pour la partie arabe », « on garde le drapeau » (🇸🇦, comme Hype). En ligne à 01 h 26.
+- Interrupteurs : `LANGUES_UI` (+ar), `LG_DRAPEAU` 🇸🇦, `LG/LGN` (« عربي »), `VOIX` ar-SA, `LX_LANGUES`, destination « L'arabe » (`cle:"desert"`, `lg:"ar"`) — on peut LIRE en arabe et APPRENDRE l'arabe.
+- Droite-gauche : petit script en fin de page (5 pages) qui met `dir="auto"` sur les SEULS éléments contenant de l'arabe. La page n'est jamais retournée (points 6-7 de la procédure). Remets-en-ordre (lingo.html et lingo-dialogue.html) construit de droite à gauche.
+- « Écris le mot » n'est pas proposé quand on APPREND l'arabe (comme le japonais : pas de clavier exigé) ; tri du lexique en `ar`.
+- Pages filles : textes d'interface arabes ajoutés (collection, globe, sellerie) ; dialogue : `LANGUES`, `NOM_LANGUE`, `VOIX`.
+- 74 libellés des exercices n'existaient qu'en fr/en → table `L7_TXT` en 7 langues (es, it, de, ja en profitent aussi).
+- « six langues » → « sept » (FR · EN · ES · IT · DE · JA · AR) ; « Cours et quiz · 7 langues ». Accueil et aperçu WhatsApp : « en six langues » (langues apprises, arabe compris). Les pages Google /vocabulaire/ n'ont PAS encore l'arabe : elles disent toujours « cinq langues » — à faire.
+- Tests Chromium (390 px) : accueil, arrivée La Baule, leçon fr→ar et ar→en, lexique (recherche arabe), dialogue fr→ar : 0 erreur JS.
+- 🟥 Reste : test iPhone par Blandine ; relecture par un arabophone natif ; pages Google en arabe.
+
 ## 🟦 ÉTAT RÉEL AU 28/09 — RELEVÉ FAIT SUR LE DÉPÔT
 
 **L'arabe n'a JAMAIS été activé.** `lingo.html` en ligne = `?v=96`, `LANGUES_UI` = 6 langues, pas de drapeau, pas de `rtl`. Seules existent deux pages d'essai (`lingo-arabe-essai.html`, `lingo-controle-arabe.html`), qui ne sont pas l'appli.
