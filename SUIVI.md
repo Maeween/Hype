@@ -12359,3 +12359,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Ce panneau n'existe que dans l'état sans cheval ; dès qu'il y a des chevaux, l'accès « Les chevaux de mon écurie » mène toujours à la page de l'écurie.
 - 7 langues. Aucune modification de la base. Testé 390 et 820 (liste, ajout, apparition du cheval) : pas de débordement, pas d'erreur. 16 scripts 0 erreur ; marqueur 20261013-1096.
 - 13/10 17 h 12 : mis en ligne sur « Ok ». La 1097 (bandeau de partage ajouté dans index.html) est abandonnée et non publiée : l'autre conversation avait réglé le partage de 2hype.fr à 17 h 02 (apercu-accueil.ts).
+
+## 13/10/2026 (soir) — Démarches en attente de réponse (à revoir dans quelques jours)
+- **Google pour les associations** : demande envoyée le 13/10 (site donné : https://2hype.fr/fr/association/ ; contact feinn@live.fr ; fonction : Présidente). Goodstack vérifie sous 2 à 14 jours ouvrés et peut demander statuts ou récépissé → surveiller feinn@live.fr, y compris le dossier Courrier indésirable.
+- **Mux — crédit associations (500 $)** : vérifié le 13/10, AUCUN crédit de 500 $ sur le compte. Forfait « Pay as you go », seul crédit = 20 $/mois inclus ; utilisation du mois 0,02 $, prochaine facture (3/11) 0 $. Mail envoyé par Blandine au support Mux le 13/10 pour demander le crédit associations → attendre la réponse.
