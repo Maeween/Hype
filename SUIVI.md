@@ -12254,3 +12254,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Recto : la petite capsule d'import est retirée. Verso : « ⤓ Importer les origines depuis une capture » sous l'arbre des origines (après les poulains), mêmes droits (propriétaire, modératrice, responsable du club), même fenêtre ; toucher le bouton ne retourne pas la carte.
 - Vérifié iPhone 390 (carte retournée : bouton présent). 16 scripts 0 erreur.
 - 1084 et 1085 mis en ligne sur « Oui vas-y » (13/10 11 h 35).
+
+## Build 1086 (13/10) — Carte Origines : photo plus large
+- Demande : « décale les infos vers la droite qu'on puisse voir la photo plus large, sinon ça l'écrase ».
+- Photo du recto : 40 % → 48 % de la largeur ; la colonne d'infos commence sous le bouton rond (34 px en haut) au lieu de garder 30 px vides à droite.
+- 16 scripts 0 erreur. Vérifié iPhone 390 (Webster et un cheval aux origines complètes).
