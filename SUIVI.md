@@ -12272,3 +12272,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Carte Origines : photo 48 % → 44 %, écarts réduits, lignes de détail 11,5 → 10,5 px : « Lando × Double Espoir » et « Mère : Chouane Pironnière » tiennent chacune sur une ligne ; un nom trop long passe encore à la ligne (rien n'est coupé).
 - 6 tuiles de la fiche : fond pétrole semi-transparent + ombre portée douce.
 - 1086, 1087, 1088 mis en ligne sur « Ok oui » (13/10 11 h 42). 16 scripts 0 erreur. Vérifié iPhone 390.
+
+## Build 1089 (13/10) — Cartes « Derniers résultats » : chacune sa hauteur
+- Demande : « les cartes sont toujours trop longues ».
+- La rangée n'étire plus les cartes à la hauteur de la plus longue (une carte avec un long nom de concours allongeait toutes les autres) ; nom du concours et épreuve limités à 2 lignes chacun.
+- « on voit toujours la petite ligne afficher la vidéo » : vérifié en propriétaire, la fiche (version en ligne depuis 11 h 42) n'affiche plus « Voir la petite vidéo » ; seule la page Performances a « Masquer la vidéo ». Question posée à Blandine sur l'endroit exact.
+- 16 scripts 0 erreur.
