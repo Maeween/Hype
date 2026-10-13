@@ -12290,3 +12290,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sous la vidéo : une seule ligne en italique, sans flèche ni cadre ; « Ajouter un résultat » ouvre l'ajout à la main, « importer mes résultats officiels » ouvre l'import ; chacun garde ses droits d'avant (si un seul est permis, seul celui-là s'affiche). 7 langues.
 - « + Ajouter un résultat » sous les cartes « Derniers résultats » : retiré (code gardé, éteint).
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+- 13/10 12 h 26 : 1089, 1090, 1091, 1092 mis en ligne sur « Tu peux publier ».
