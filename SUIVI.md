@@ -12278,3 +12278,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - La rangée n'étire plus les cartes à la hauteur de la plus longue (une carte avec un long nom de concours allongeait toutes les autres) ; nom du concours et épreuve limités à 2 lignes chacun.
 - « on voit toujours la petite ligne afficher la vidéo » : vérifié en propriétaire, la fiche (version en ligne depuis 11 h 42) n'affiche plus « Voir la petite vidéo » ; seule la page Performances a « Masquer la vidéo ». Question posée à Blandine sur l'endroit exact.
 - 16 scripts 0 erreur.
+
+## Build 1090-1091 (13/10) — Carte Origines aux mesures exactes de la V2 ; indice expliqué au verso
+- Demandes : « t'es pas capable de reproduire ce que t'as créé, sur la V2 l'onglet origine est super équilibré, sur la V1 un coup trop haut un coup trop bas » ; « IPO à renseigner avec un bouton à côté : on s'attend à pouvoir le renseigner, ou explique au moins quand la carte se retourne que pour valider l'IPO on peut ajouter un screen d'un site le mentionnant ».
+- Recto repris aux mesures de la V2 : photo 43 % avec 8 px en haut et en bas, écart 14, hauteur mini 204, colonne centrée verticalement, lignes à icône 21 px (écart 12, 6 px haut/bas), Cormorant 15,5 normal, détails 11 px (V2 : 13, réduit pour garder les origines sur une ligne), bouton rond 37 px ; seule différence voulue : 12 px de marge à droite au lieu de 34 pour que les origines tiennent sur une ligne (la 1re ligne, l'âge, est courte et ne touche pas le bouton). Couleurs de la page V1 gardées.
+- Ligne « Indice à renseigner » + crayon retirée du recto. Au verso, sous « Importer les origines depuis une capture » : « Pour faire valider l'IPO (ou un autre indice), importe la capture d'un site qui le mentionne : IFCE, Info Chevaux, Horsetelex… » (7 langues). L'IPO renseigné reste affiché au recto.
+- Build 1089 (cartes des derniers résultats à leur propre hauteur) inclus. 16 scripts 0 erreur. Vérifié iPhone 390, recto et verso.
