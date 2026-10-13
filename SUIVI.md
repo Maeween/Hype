@@ -12266,3 +12266,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Page Performances (vue normale) : la petite vidéo + « Tes résultats officiels, à redécouvrir sur Hype. » ouverte d'office sous les compteurs et filtres, avant « Ses moments forts », pour la propriétaire seulement (règle du 10/10) ; lien « Masquer la vidéo ▾ » (7 langues), et « Voir la petite vidéo » pour la rouvrir. Vue technique : même vidéo, ouverte, aussi pour un cheval avec résultats.
 - Vidéo de la cérémonie sur la fiche : 44 px au-dessus (au lieu de 28), 6 px dessous (au lieu de 52) → « Importer mes résultats officiels » remonte juste sous la vidéo.
 - 16 scripts 0 erreur. Vérifié iPhone 390 (fiche ; Performances en propriétaire).
+
+## Build 1088 (13/10) — Carte Origines sur une ligne quand c'est possible ; tuiles semi-transparentes ombrées — publié avec 1086 et 1087
+- Demandes : « inutile d'écrire sur deux lignes quand une suffit (Double Espoir, Chouane Pironnière) » ; « passe les onglets en semi-transparents ombrés ».
+- Carte Origines : photo 48 % → 44 %, écarts réduits, lignes de détail 11,5 → 10,5 px : « Lando × Double Espoir » et « Mère : Chouane Pironnière » tiennent chacune sur une ligne ; un nom trop long passe encore à la ligne (rien n'est coupé).
+- 6 tuiles de la fiche : fond pétrole semi-transparent + ombre portée douce.
+- 1086, 1087, 1088 mis en ligne sur « Ok oui » (13/10 11 h 42). 16 scripts 0 erreur. Vérifié iPhone 390.
