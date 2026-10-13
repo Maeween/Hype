@@ -12327,3 +12327,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Rien d'autre ne change : page Premium identique. 16 scripts 0 erreur ; marqueur 20261013-1094. Testé : abonnement refusé → rien ne s'ouvre ; don → pas de fenêtre ; abonnement accepté → suite normale (connexion, confirmation du compte, Stripe).
 - Fait depuis la conversation « référencement », l'autre conversation mise en pause par Blandine pendant la modification.
 - 13/10 13 h 37 : mis en ligne sur « Ok, vas-y ».
+
+## Build 1095 (13/10) — « Mes chevaux » : refonte, direction C avec le hero allégé de A
+- Demande : brief « Refonte de la page Mes chevaux » + maquette 3 directions ; audit et 3 directions proposés ; Blandine : « Ok vas y » (13 h 42) sur ma recommandation (C + hero de A, branchement 1).
+- Hero : plus de fond FIXE ni de voile au défilement. Photo dans le flux (mes-chevaux-fond-couchant.webp, cheval entier calé à droite, à gauche en arabe), fondue vers #05080B, moins haute (300 iPhone / 330 tablette / 360 ordinateur). Rien ne passe par-dessus. Textes inchangés.
+- État vide : (1) carte compacte « Ajoute ton cheval » — « Crée sa fiche, conserve ses souvenirs et suis son parcours. », flèche ronde en contour → création existante ; (2) carte « Les chevaux de mon écurie » : nom de l'écurie, photo images/ecurie-couverture-defaut-2.webp fondue, deux boutons contour pleine largeur « Découvrir les chevaux de l'écurie » et « Ajouter un cheval à mes chevaux » → tous deux vers la page existante des chevaux de l'écurie (branchement 1 : chaque fiche y porte déjà « Ajouter à mes chevaux », chevaux_liens, sans droit de modifier la fiche d'un autre compte) ; (3) encart « Tu montes un cheval qui n'est pas encore dans Hype ? … » → création. Plus de grande photo de coucher de soleil dans la carte.
+- Sans écurie : pas de nom fictif. La carte dit « Tu n'as pas encore renseigné ton écurie. » ; boutons « Renseigner mon écurie » (ouvre la page Cavalier directement sur le choix du club : drapeau window.__hypeOuvrirChoixClub lu une fois par EcranMonCavalier) et « Découvrir les chevaux de Hype » (même page, tous clubs).
+- Avec des chevaux : cartes inchangées ; les chevaux passent AVANT les accès « Ajouter un cheval » / « Les chevaux de mon écurie » ; bordures en pointillés remplacées par un trait plein champagne sur fond pétrole (accès et encart Premium).
+- Tablette : une colonne, boutons de l'écurie côte à côte. Ordinateur : deux colonnes (ajout + encart | écurie), boutons empilés.
+- 7 langues (nouveaux textes), arabe vérifié en RTL. Aucune modification de la base. Captures 375/390/820/1280 + arabe + 3 chevaux : pas de débordement, pas d'erreur. 16 scripts 0 erreur ; marqueur 20261013-1095.
+- 13/10 13 h 54 : mis en ligne sur « Ok vas y ».
