@@ -12218,3 +12218,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - « Derniers résultats » : titre Cormorant + « Voir tout › » (ouvre Performances), les cartes avec les marges de la V2, « + Ajouter un résultat » en texte champagne sous les cartes (remplace la carte « + » en pointillés), mêmes droits qu'avant.
 - « Principaux résultats » (nouveau sur la V1) : les 3 meilleurs classements (à égalité, le plus récent), une ligne par épreuve : concours, épreuve · année, cavalier, pastille de classement « 1er / 9 » à contour champagne ; toucher ouvre Performances. Résultats masqués exclus comme partout.
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+
+## Build 1080 (13/10) — Fiche cheval V1 : titre comme la V3 + mise en ligne de 1076 à 1080
+- Demande : « sous le nom de Webster il n'y a plus rien écrit ? adapte le titre, les lettres qui s'affichent en décalé et ce qui est écrit dessous à la v3 ».
+- Sous le nom : race · sexe · année de naissance (comme la V3 ; l'âge reste dans la carte Origines). Le nom puis cette ligne apparaissent en fondu décalé (0,3 s puis 0,6 s), comme la V3 et l'accueil. Race longue : lettres un peu moins espacées pour tenir sur une ligne.
+- Mise en ligne de 1076, 1077, 1078, 1079 et 1080 sur son « Oui vas-y » (13/10 11 h 17).
+- 16 scripts 0 erreur. Vérifié iPhone 390.
