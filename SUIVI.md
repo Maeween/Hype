@@ -12182,3 +12182,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Le fond de la fiche (images/FOND_SANTE.webp) n'est plus FIXE : il est posé en haut de la page et défile avec elle (même parade que la page Écurie, 1059). Plus bas, le noir de la page. Le correctif 1003 (calque à part) n'avait pas suffi.
 - La pastille flottante « Ajouter à / Retirer de mes chevaux » perd son flou d'arrière-plan (fond opaque à la place) : un flou sur un élément fixe se recalcule à chaque image du défilement.
 - À vérifier par Blandine sur iPhone (impossible à reproduire ici). 16 scripts 0 erreur.
+
+## Build 1074 (13/10) — Fiche cheval : plus d'air avant la vidéo ; page Cavalier : « La Team … » retiré
+- Demandes : « laisse plus d'espace entre les cartes et la vidéo sur la v1 » et « retire les mots la Team Blandine dans l'onglet les amis ».
+- Fiche cheval V1 : le séparateur ◆ entre les cartes des derniers résultats et la carte « Le voir en mouvement » passe de 28/28 px à 44/40 px.
+- Page Cavalier, carte « Mes amis » : la ligne « LA TEAM <prénom> » n'est plus affichée (code gardé, éteint).
+- 16 scripts 0 erreur. Vérifié iPhone 390.
