@@ -12291,3 +12291,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - « + Ajouter un résultat » sous les cartes « Derniers résultats » : retiré (code gardé, éteint).
 - 16 scripts 0 erreur. Vérifié iPhone 390.
 - 13/10 12 h 26 : 1089, 1090, 1091, 1092 mis en ligne sur « Tu peux publier ».
+
+## Build 1093 (13/10) — Fiche cheval : même écart entre tous les chapitres ; cartes de résultats alignées
+- Demandes : « aligne les cartes de résultat sur la même hauteur, calcule les espaces entre chaque partie et fais en sorte qu'ils soient de la même taille entre les différents chapitres » ; « moments récents : pile la taille qu'elle faisait sur Webster (deux rangées), sur Boréalis il y avait une rangée de trop ».
+- Écarts mesurés bord à bord dans l'appli puis réglés à 40 px : tuiles → « Identité & origines », carte Origines → vidéo de la cérémonie, ligne « Ajouter / importer » → « Derniers résultats » (le texte de la ligne compris), cartes → « Principaux résultats », liste → ◆, ◆ → carte vidéo, carte vidéo → « Les moments récents », moments → ◆, ◆ → « Partager sa fiche ». À l'intérieur d'un chapitre (titre → contenu) : 14-16 px, inchangé.
+- Cartes « Derniers résultats » : de nouveau toutes à la même hauteur (textes limités à 2 lignes, autres classés sur une ligne, donc plus de grand vide).
+- Moments récents : la limite à deux rangées (grande photo + 2 petites, comme Webster) est gardée — brièvement annulée puis remise après la précision de Blandine.
+- 16 scripts 0 erreur. Vérifié iPhone 390 (mesures automatiques des écarts).
