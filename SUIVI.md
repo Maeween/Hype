@@ -12299,3 +12299,22 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Moments récents : la limite à deux rangées (grande photo + 2 petites, comme Webster) est gardée — brièvement annulée puis remise après la précision de Blandine.
 - 16 scripts 0 erreur. Vérifié iPhone 390 (mesures automatiques des écarts).
 - 13/10 12 h 55 : 1093 mis en ligne sur « Ok ».
+
+## Référencement Google (12-13/10, conversation « référencement ») — récapitulatif
+- Rien dans index.html. Travail dans netlify/edge-functions/, outils/ et les pages statiques /{langue}/…
+- Pages de fonctionnalités en 7 langues : ia-equestre, sante-cheval, concours-resultats (mention « import FFE inclus dans Hype+ »), photos-souvenirs, gestion-ecurie, plan-lamotte-beuvron. Galops générés à la publication (outils/seo-galops.cjs).
+- 101 pages « Centres équestres du département » (outils/seo-departements.cjs, français seulement) ; département et ville des 3 145 écuries retrouvés par GPS (outils/departements-ecuries.json).
+- 85 fiches écuries écartées (pas des écuries / doublons) : outils/ecuries-exclues.json → noindex, hors plans du site.
+- Pages cheval / écurie (si au moins un cheval ou un rendez-vous) / événement en 7 langues : /{en,es,it,de,ja,ar}/cheval|ecurie|evenement/… ; plans du site avec hreflang (nouveau : sitemap-ecuries-langues.xml).
+- Corrigés : origines « [object Object] » (pages cheval), « (Itteville (91)) » (événements).
+- BUG À CORRIGER DANS index.html (sexeEnClair, japonais) : « Jument » et « Entier » affichent tous deux « 犇馬 » ; il faut 牝馬 (jument) et 牡馬 (entier).
+- Search Console : plan du site renvoyé par Blandine le 12/10 (« Sitemap submitted successfully »).
+
+## Page « L'association » (13/10) — VERSION DE TRAVAIL, NON PUBLIÉE
+- Page publique /{langue}/association/ en 7 langues (arabe RTL), d'après la maquette validée : hero « FEINN », « Notre association » (texte « Depuis 2020 » — création confirmée le 19/11/2020), 5 missions en icônes, 3 projets (sans paiement, sans don, sans montant ; jeune espoir non identifiable), mentions légales.
+- Générée par outils/association-generer.py (python3 outils/association-generer.py). Les pages NE SONT PAS dans le dépôt tant que Blandine n'a pas dit « ok » pour publier.
+- Photos : emplacements sobres en attendant les vraies photos FEINN, à déposer dans images/asso/ : hero.jpg, jeune.jpg (aucun mineur identifiable), retraite.jpg, espaces.jpg — le script les utilise automatiquement s'ils existent.
+- Mentions : éditeur association FEINN Équitation et Environnement, 3 chemin des Prés Picard 91760 Itteville, SIREN 898 028 980 ; responsable de la publication Blandine Pronost, présidente ; contact feinn@live.fr ; hébergeur Netlify, Inc., 101 2nd Street, Suite 575, San Francisco, CA, États-Unis, +1 415 691 1573.
+- DOCUMENTS JURIDIQUES RESTANT À PRÉPARER (aucun lien fictif posé) : conditions générales de vente des abonnements Hype+ (obligatoires avant les premiers paiements ; voir retractation-premium.md), politique de confidentialité complète.
+- À faire dans index.html (autre conversation) : lien discret « L'association » dans Mon compte vers https://2hype.fr/{langue}/association/ (ou la page intégrée à l'appli selon le cahier des charges du 13/10).
+- Démarches Blandine : Stripe et RIB au nom de l'association ; vérifier à quel nom est le domaine 2hype.fr ; demande Google Ad Grants via Percent une fois la page en ligne.
