@@ -12318,3 +12318,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - DOCUMENTS JURIDIQUES RESTANT À PRÉPARER (aucun lien fictif posé) : conditions générales de vente des abonnements Hype+ (obligatoires avant les premiers paiements ; voir retractation-premium.md), politique de confidentialité complète.
 - À faire dans index.html (autre conversation) : lien discret « L'association » dans Mon compte vers https://2hype.fr/{langue}/association/ (ou la page intégrée à l'appli selon le cahier des charges du 13/10).
 - Démarches Blandine : Stripe et RIB au nom de l'association ; vérifier à quel nom est le domaine 2hype.fr ; demande Google Ad Grants via Percent une fois la page en ligne.
+
+## Build 1094 (13/10) — Renonciation au droit de rétractation avant tout abonnement
+- Demande : « que ça figure et qu'il accepte quand il prend son abonnement ».
+- Un seul verrou posé sur window.hypeOuvrirPaiement et window.hypeOuvrirLien (après le bloc des achats Apple) : avant tout lien Stripe d'ABONNEMENT (annuel, mensuel, IA, Duo, et tout lien Stripe qui n'est pas un don), une fenêtre affiche « Avant de payer : Je demande l'accès immédiat à Hype+ et je reconnais renoncer à mon droit de rétractation de 14 jours (art. L221-28 du Code de la consommation). Appuie sur OK pour accepter et continuer. » (7 langues). Sans OK, rien ne s'ouvre.
+- Dons (HYPE_APPLE_DONS) : pas de fenêtre. Achats Apple (appli iPhone) : pas de fenêtre (conditions d'Apple).
+- Accord noté sur l'appareil (localStorage hype_renonce_retractation : date + offre). À faire plus tard : l'enregistrer en base (petite table, SQL à valider) pour garder la preuve.
+- Rien d'autre ne change : page Premium identique. 16 scripts 0 erreur ; marqueur 20261013-1094. Testé : abonnement refusé → rien ne s'ouvre ; don → pas de fenêtre ; abonnement accepté → suite normale (connexion, confirmation du compte, Stripe).
+- Fait depuis la conversation « référencement », l'autre conversation mise en pause par Blandine pendant la modification.
+- 13/10 13 h 37 : mis en ligne sur « Ok, vas-y ».
