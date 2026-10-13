@@ -12236,3 +12236,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande : « pour les titres passe plus dans des tons champagne, la couleur dorée est rude » + « pareil pour les icônes ».
 - Sur la fiche et ses pages : doré #C9A66B → champagne #D6C4A1, #D2B07A → #DCCBAA, filets assortis (141 remplacements). La vidéo dorée de la cérémonie reste choisie.
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+
+## Build 1083 (13/10) — « Importer mes résultats officiels » en lien italique
+- Demande : « on peut le laisser en champagne, en italique, sans être encadré, sous la vidéo ? »
+- Plus de cadre ni de fond : texte Cormorant italique 17 px champagne, centré, flèche collée au texte ; même place (sous la vidéo de la cérémonie), mêmes droits, même écran d'import.
+- 16 scripts 0 erreur. Vérifié iPhone 390.
