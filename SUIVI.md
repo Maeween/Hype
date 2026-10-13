@@ -12350,3 +12350,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html non touché. Pour annuler : supprimer le fichier.
 - Si on change TITRE/DESCRIPTION dans outils/seo-accueil.cjs, les changer aussi dans ce fichier.
 - WhatsApp garde parfois l'ancien aperçu en mémoire quelque temps : tester avec « https://2hype.fr/?v=2 » pour forcer.
+
+## Build 1096 (13/10) — « Mes chevaux » : liste directe des chevaux de l'écurie (bouton « Ajouter un cheval à mes chevaux »)
+- Demande : après explication du bouton (il menait au même endroit que « Découvrir… »), Blandine : « Ok » → je l'ai pris comme « fais la liste directe » (l'amélioration que j'avais proposée).
+- Le bouton ouvre, dans la carte « Les chevaux de mon écurie », la liste des chevaux de l'écurie (chevauxDeLEcurie, déjà utilisée par la création de cheval), sans ceux déjà dans Mes chevaux. Phrase : « Choisis le cheval que tu montes : il rejoint tes chevaux, la fiche reste à son propriétaire. »
+- Chaque ligne : photo, nom, race · propriétaire ; toucher le nom ouvre la fiche ; « + Ajouter » = lierCheval (chevaux_liens, existant) → « ✓ Ajouté », puis le cheval apparaît dans Mes chevaux avec le badge « Cheval de l'écurie ». En cas d'échec : « Réessayer ». Aucun droit de modification sur la fiche d'un autre compte.
+- Liste vide : « Aucun autre cheval de ton écurie pour l'instant. » Liste longue : défilement dans la carte (340 px max).
+- Ce panneau n'existe que dans l'état sans cheval ; dès qu'il y a des chevaux, l'accès « Les chevaux de mon écurie » mène toujours à la page de l'écurie.
+- 7 langues. Aucune modification de la base. Testé 390 et 820 (liste, ajout, apparition du cheval) : pas de débordement, pas d'erreur. 16 scripts 0 erreur ; marqueur 20261013-1096.
+- 13/10 17 h 12 : mis en ligne sur « Ok ». La 1097 (bandeau de partage ajouté dans index.html) est abandonnée et non publiée : l'autre conversation avait réglé le partage de 2hype.fr à 17 h 02 (apercu-accueil.ts).
