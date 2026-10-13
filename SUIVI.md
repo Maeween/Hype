@@ -12170,3 +12170,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Une année sans date ne s'affiche plus « NaN ».
 - Ordinateur : la page principale reste une colonne centrée comme aujourd'hui (version ordinateur prévue en dernier, décision du 10/10).
 - Vérifié iPhone 390 et ordinateur 1280 : aucune erreur, aucun débordement. 16 scripts 0 erreur.
+
+## Build 1072 (13/10) — Page cheval V1 : titre façon V3
+- Demande : « applique le titre de la v3 à la v1 ». (Rappel : 1065, 1066 et 1071 sont en ligne depuis le 13/10 00 h 10, « Oui » de Blandine.)
+- Le nom passe SOUS la photo (la photo garde sa hauteur, une bande de titre est ajoutée dessous) : capitales espacées en Cormorant, centré sur téléphone (à gauche sur grand écran), race · âge dessous en petites capitales. Le nom officiel reste affiché dessous quand un surnom est utilisé.
+- 16 scripts 0 erreur. Vérifié iPhone 390.
