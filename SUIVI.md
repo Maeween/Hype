@@ -12175,3 +12175,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande : « applique le titre de la v3 à la v1 ». (Rappel : 1065, 1066 et 1071 sont en ligne depuis le 13/10 00 h 10, « Oui » de Blandine.)
 - Le nom passe SOUS la photo (la photo garde sa hauteur, une bande de titre est ajoutée dessous) : capitales espacées en Cormorant, centré sur téléphone (à gauche sur grand écran), race · âge dessous en petites capitales. Le nom officiel reste affiché dessous quand un surnom est utilisé.
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+
+## Build 1073 (13/10) — Fiche cheval V1 : blocage pendant le défilement
+- Demande : « j'ai toujours un freeze de plusieurs secondes… la page vient encore de freezer alors que je venais de scroll » (fiche d'un cheval).
+- Mesures : 73 chevaux = 40 Ko de données, calculs courts (≤ 0,26 s même en simulant un téléphone lent), images déjà allégées → le blocage vient du dessin de la page par Safari iPhone.
+- Le fond de la fiche (images/FOND_SANTE.webp) n'est plus FIXE : il est posé en haut de la page et défile avec elle (même parade que la page Écurie, 1059). Plus bas, le noir de la page. Le correctif 1003 (calque à part) n'avait pas suffi.
+- La pastille flottante « Ajouter à / Retirer de mes chevaux » perd son flou d'arrière-plan (fond opaque à la place) : un flou sur un élément fixe se recalcule à chaque image du défilement.
+- À vérifier par Blandine sur iPhone (impossible à reproduire ici). 16 scripts 0 erreur.
