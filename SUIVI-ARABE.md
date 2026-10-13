@@ -13,7 +13,8 @@ Ordre de Blandine (14/10, 01 h 10) : « mets tout en place pour la partie arabe 
 - 74 libellés des exercices n'existaient qu'en fr/en → table `L7_TXT` en 7 langues (es, it, de, ja en profitent aussi).
 - « six langues » → « sept » (FR · EN · ES · IT · DE · JA · AR) ; « Cours et quiz · 7 langues ». Accueil et aperçu WhatsApp : « en six langues » (langues apprises, arabe compris). Les pages Google /vocabulaire/ n'ont PAS encore l'arabe : elles disent toujours « cinq langues » — à faire.
 - Tests Chromium (390 px) : accueil, arrivée La Baule, leçon fr→ar et ar→en, lexique (recherche arabe), dialogue fr→ar : 0 erreur JS.
-- 🟥 Reste : test iPhone par Blandine ; relecture par un arabophone natif ; pages Google en arabe.
+- ✅ 14/10, 01 h 55 : pages Google en arabe en ligne (horselingo.fr/ar/mufradat/, 40 pages, colonne arabe ajoutée aux pages des six autres langues, « six langues apprises / sept en tout »). Sitemap : 281 adresses.
+- 🟥 Reste : test iPhone par Blandine ; relecture par un arabophone natif.
 
 ## 🟦 ÉTAT RÉEL AU 28/09 — RELEVÉ FAIT SUR LE DÉPÔT
 
