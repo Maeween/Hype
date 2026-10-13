@@ -12343,3 +12343,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Restent : photos (images/asso/hero.jpg, jeune.jpg, retraite.jpg, espaces.jpg, puis relancer python3 outils/association-generer.py), liens vers CGV et politique de confidentialité une fois validées, lien dans Mon compte (index.html, autre conversation).
 
 - 13/10 14 h 25 : phrase ajoutée sur la page « L'association » (7 langues) : « L'association édite aussi Hype, l'application des cavaliers : les abonnements Hype+ financent ses activités et ses projets. » (règle Google Ad Grants : dire comment les ventes soutiennent la mission).
+
+## Build 1097 (13/10) — Aperçu de partage (bandeau) sur l'adresse courte https://2hype.fr
+- Constat : partagée dans WhatsApp, https://2hype.fr partait sans image. L'adresse courte ouvre l'appli (index.html), qui n'avait AUCUNE balise d'aperçu ; seule la page de présentation https://2hype.fr/fr/ (conversation référencement) porte le bandeau.
+- Demande : « Oui fais le ».
+- Ajout dans index.html, juste après <title>Hype</title> (non modifié) : og:type, og:site_name, og:title, og:description, og:image (images/hype-partage-1200x630.jpg, 1200×630, déjà dans le dépôt) + dimensions, twitter:card/image/title/description — mêmes textes que la page /fr/. Pas d'og:url (l'appli sert aussi d'autres adresses).
+- Fiches cheval / écurie / événement : leurs fonctions de bord (netlify/edge-functions, NON touchées) insèrent leurs propres balises juste après <head><meta charset="utf-8">, donc AVANT celles-ci : WhatsApp, iMessage et Facebook prennent la première image, l'aperçu propre au cheval/à l'écurie reste prioritaire. Le repère <head><meta charset="utf-8"> et <title>Hype</title> sont inchangés.
+- Aucun changement visible dans l'appli. WhatsApp peut garder quelques heures l'ancien aperçu d'un lien déjà envoyé. 16 scripts 0 erreur ; marqueur 20261013-1097.
+- Construit directement sur la version en ligne (SANS la 1096, toujours en attente d'accord).
