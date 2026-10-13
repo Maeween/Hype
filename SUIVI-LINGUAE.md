@@ -7557,3 +7557,8 @@ Syntaxe JS validée · diff exhaustif (aucune fonction perdue) · 79 phrases de 
 La relecture native des mots. Les vidéos et cartes manquantes (île Maurice à finaliser, quelques autres). La page de collection (cartes qui se retournent), toujours pas commencée.
 
 ---
+
+## 14/10/2026 — Adresses courtes des chapitres (dépôt HorseLingo, netlify.toml)
+- horselingo.fr/<nom> renvoie vers lingo.html#lecon=<ville> (302), pour partager sur Instagram sans « # » (le #lecon était pris pour un hashtag).
+- 52 adresses pour 39 villes. Ex. : ile-maurice / maurice / le-morne, pays-de-galles, ecosse, cadre-noir, aix-la-chapelle, japon, nouvelle-zelande, argentine, canada, suede, qatar, portugal + le nom de chaque ville (la-baule, lamotte-beuvron, oliva-nova, buenos-aires, santa-ynez, spruce-meadows…).
+- Nouvelle ville = ajouter un bloc [[redirects]] dans netlify.toml du dépôt HorseLingo.
