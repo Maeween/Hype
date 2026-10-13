@@ -69044,7 +69044,7 @@ function EcranChevalV2() {
   };
   var sexe = SEXES[String(og.sexe || "").toLowerCase().trim()] || "";
   /* annee : seulement depuis la date de naissance exacte (origines.naissance). Pas deduite de l age. */
-  var annee = (function () { var m = String(og.naissance || "").match(/(?:^|\D)((?:19|20)\d{2})(?:\D|$)/); return m ? m[1] : ""; })();   /* (1081) aussi « 19/04/2002 » */   /* (740) une annee seule (date incomplete) est aussi une donnee exacte */
+  var annee = (function () { var m = String(og.naissance || "").match(/^(\d{4})(-|$)/); return m ? m[1] : ""; })();   /* (740) une annee seule (date incomplete) est aussi une donnee exacte */
   var sousTitre = [race, sexe, annee].filter(Boolean).join("  ·  ");
 
   var photoBrute = photoPersoBase || phLoc || ligne.photo_url || secours.photo || (typeof UV3_H1 !== "undefined" ? UV3_H1 : "");
@@ -69733,7 +69733,7 @@ function EcranChevalV3() {
   var og = (function () { try { var o = ligne.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object") ? o : (secours.origines || {}); } catch (eO) { return secours.origines || {}; } })();
   var nom = (chV && (String(ligne.alias || "").trim() || chV.nom)) || "";
   var SEXES = { hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي"), jument: T("Jument", "Mare", "Yegua", "Giumenta", "牝馬", "Stute", "فرس"), entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل") };
-  var annee = (function () { var m = String(og.naissance || "").match(/(?:^|\D)((?:19|20)\d{2})(?:\D|$)/); return m ? m[1] : ""; })();   /* (1081) aussi « 19/04/2002 » */
+  var annee = (function () { var m = String(og.naissance || "").match(/^(\d{4})(-|$)/); return m ? m[1] : ""; })();
   var sousTitre = [String(ligne.race || "").trim(), SEXES[String(og.sexe || "").toLowerCase().trim()] || "", annee].filter(Boolean).join("  ·  ");
   var phLoc = (function () { try { return localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (eL) { return ""; } })();
   var photoBrute = phLoc || ligne.photo_url || secours.photo || (typeof CHEVAL_DEFAUT !== "undefined" ? CHEVAL_DEFAUT : "");

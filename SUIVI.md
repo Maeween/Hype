@@ -12241,3 +12241,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande : « on peut le laisser en champagne, en italique, sans être encadré, sous la vidéo ? »
 - Plus de cadre ni de fond : texte Cormorant italique 17 px champagne, centré, flèche collée au texte ; même place (sous la vidéo de la cérémonie), mêmes droits, même écran d'import.
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+- 13/10 11 h 33 : Blandine « ne corrige pas les V2 et V3, le but c'est justement de comparer » → la lecture de l'année « 19/04/2002 » ajoutée en 1081 dans la V2 et la V3 est ANNULÉE (V2 et V3 identiques à la version en ligne). Seule la V1 la garde.
+- Mise en ligne de 1081, 1082, 1083 sur « Mets en ligne que je vois ».
