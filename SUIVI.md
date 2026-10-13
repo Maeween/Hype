@@ -12224,3 +12224,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Sous le nom : race · sexe · année de naissance (comme la V3 ; l'âge reste dans la carte Origines). Le nom puis cette ligne apparaissent en fondu décalé (0,3 s puis 0,6 s), comme la V3 et l'accueil. Race longue : lettres un peu moins espacées pour tenir sur une ligne.
 - Mise en ligne de 1076, 1077, 1078, 1079 et 1080 sur son « Oui vas-y » (13/10 11 h 17).
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+
+## Build 1081 (13/10) — Fiche cheval V1 : carte Origines façon V2, bouton import réduit, espace avant la vidéo, bouton « mes chevaux » sous le nom
+- Demandes : « réduis la taille du bouton import et passe-le à droite de la photo, l'onglet ne ressemble pas à la V2 » ; « sous Webster il manque encore des infos » ; « laisse de l'espace entre l'onglet et la vidéo, ils se chevauchent » ; « c'est quoi le bouton rouge qui nous suit sur toute la page » ; « remets la date de naissance sur l'encart origines ».
+- Titre « Identité & origines » au-dessus de la carte ; recto au dessin de la V2 : photo à gauche, à droite des lignes à fine icône : âge (calculé depuis la naissance s'il n'est pas saisi) + « né le … », sexe, race + robe + discipline, origines (père × père de mère, puis la mère), indice (crayon si à renseigner) ; bouton rond de retournement ; « Importer depuis une capture » en petite capsule sous les lignes (à droite de la photo). Verso inchangé.
+- Année de naissance lue aussi au format « 19/04/2002 » (Webster) : sous le nom « HONGRE · 2002 » ; même correction dans la V2 et la V3. Webster n'a pas de race en base.
+- Vidéo de la cérémonie Performances : 28 px au-dessus (elle touchait la carte Origines).
+- Pastille flottante « Ajouter à / Retirer de mes chevaux persos » retirée ; même bouton (mêmes droits) posé sous le nom, capsule à contour champagne avec cœur, comme la V2.
+
+## Build 1082 (13/10) — Fiche cheval : champagne plus doux
+- Demande : « pour les titres passe plus dans des tons champagne, la couleur dorée est rude » + « pareil pour les icônes ».
+- Sur la fiche et ses pages : doré #C9A66B → champagne #D6C4A1, #D2B07A → #DCCBAA, filets assortis (141 remplacements). La vidéo dorée de la cérémonie reste choisie.
+- 16 scripts 0 erreur. Vérifié iPhone 390.
