@@ -12188,3 +12188,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fiche cheval V1 : le séparateur ◆ entre les cartes des derniers résultats et la carte « Le voir en mouvement » passe de 28/28 px à 44/40 px.
 - Page Cavalier, carte « Mes amis » : la ligne « LA TEAM <prénom> » n'est plus affichée (code gardé, éteint).
 - 16 scripts 0 erreur. Vérifié iPhone 390.
+
+## Build 1075 (13/10) — BUG : page cheval bloquée en boucle (corrigé) — publié avec 1072-1074
+- 1072, 1073, 1074 mis en ligne le 13/10 vers 10 h 56 (« Mets tout ça en ligne car la page cheval bloque en boucle »).
+- Cause trouvée : sur la page Performances d'un cheval SANS photo, le chargement des « photos des moments forts » renvoyait une liste vide ; cette liste vide relançait le chargement, qui renvoyait une liste vide… sans fin (deux lectures en base à chaque tour, l'iPhone saturait). Le test reproduisait le blocage (page Performances qui ne finissait jamais de s'afficher).
+- Correctif : ce chargement n'est fait qu'UNE fois par fiche. Vérifié : Performances, Photos, Vidéos, Histoire et la fiche s'affichent, avec et sans photos, aucune erreur. 16 scripts 0 erreur.
