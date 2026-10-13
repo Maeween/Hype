@@ -12367,3 +12367,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 13/10/2026 (soir) — Démarches en attente de réponse (à revoir dans quelques jours)
 - **Google pour les associations** : demande envoyée le 13/10 (site donné : https://2hype.fr/fr/association/ ; contact feinn@live.fr ; fonction : Présidente). Goodstack vérifie sous 2 à 14 jours ouvrés et peut demander statuts ou récépissé → surveiller feinn@live.fr, y compris le dossier Courrier indésirable.
 - **Mux — crédit associations (500 $)** : vérifié le 13/10, AUCUN crédit de 500 $ sur le compte. Forfait « Pay as you go », seul crédit = 20 $/mois inclus ; utilisation du mois 0,02 $, prochaine facture (3/11) 0 $. Mail envoyé par Blandine au support Mux le 13/10 pour demander le crédit associations → attendre la réponse.
+- 13/10 18:19 : CONFIRMÉ par Blandine dans WhatsApp — https://2hype.fr/?v=2 affiche bien le bandeau, le titre et la description.
