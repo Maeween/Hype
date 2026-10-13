@@ -12341,3 +12341,5 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## Page « L'association » — PUBLIÉE (13/10 vers 13 h 56)
 - Mise en ligne sur « Vas-y » : /{langue}/association/ en 7 langues (cadres « photo FEINN à venir » en attendant les photos), lien « L'association FEINN · Mentions légales » en pied des 7 pages d'accueil, ajout au plan du site (sitemap-pages.xml). index.html non touché.
 - Restent : photos (images/asso/hero.jpg, jeune.jpg, retraite.jpg, espaces.jpg, puis relancer python3 outils/association-generer.py), liens vers CGV et politique de confidentialité une fois validées, lien dans Mon compte (index.html, autre conversation).
+
+- 13/10 14 h 25 : phrase ajoutée sur la page « L'association » (7 langues) : « L'association édite aussi Hype, l'application des cavaliers : les abonnements Hype+ financent ses activités et ses projets. » (règle Google Ad Grants : dire comment les ventes soutiennent la mission).
