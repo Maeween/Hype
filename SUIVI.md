@@ -12284,3 +12284,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Recto repris aux mesures de la V2 : photo 43 % avec 8 px en haut et en bas, écart 14, hauteur mini 204, colonne centrée verticalement, lignes à icône 21 px (écart 12, 6 px haut/bas), Cormorant 15,5 normal, détails 11 px (V2 : 13, réduit pour garder les origines sur une ligne), bouton rond 37 px ; seule différence voulue : 12 px de marge à droite au lieu de 34 pour que les origines tiennent sur une ligne (la 1re ligne, l'âge, est courte et ne touche pas le bouton). Couleurs de la page V1 gardées.
 - Ligne « Indice à renseigner » + crayon retirée du recto. Au verso, sous « Importer les origines depuis une capture » : « Pour faire valider l'IPO (ou un autre indice), importe la capture d'un site qui le mentionne : IFCE, Info Chevaux, Horsetelex… » (7 langues). L'IPO renseigné reste affiché au recto.
 - Build 1089 (cartes des derniers résultats à leur propre hauteur) inclus. 16 scripts 0 erreur. Vérifié iPhone 390, recto et verso.
+
+## Build 1092 (13/10) — « Ajouter un résultat ou importer mes résultats officiels »
+- Demande : « est-ce qu'on a vraiment besoin de la flèche ? on pourrait plutôt mettre ajouter un résultat ou importer mes résultats officiels, et retirer le ajouter un résultat sous les résultats récents ».
+- Sous la vidéo : une seule ligne en italique, sans flèche ni cadre ; « Ajouter un résultat » ouvre l'ajout à la main, « importer mes résultats officiels » ouvre l'import ; chacun garde ses droits d'avant (si un seul est permis, seul celui-là s'affiche). 7 langues.
+- « + Ajouter un résultat » sous les cartes « Derniers résultats » : retiré (code gardé, éteint).
+- 16 scripts 0 erreur. Vérifié iPhone 390.
