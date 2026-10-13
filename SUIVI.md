@@ -12259,3 +12259,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande : « décale les infos vers la droite qu'on puisse voir la photo plus large, sinon ça l'écrase ».
 - Photo du recto : 40 % → 48 % de la largeur ; la colonne d'infos commence sous le bouton rond (34 px en haut) au lieu de garder 30 px vides à droite.
 - 16 scripts 0 erreur. Vérifié iPhone 390 (Webster et un cheval aux origines complètes).
+
+## Build 1087 (13/10) — Petite vidéo « résultats officiels » déplacée sur Performances ; espaces autour de la vidéo de la fiche
+- Demandes : « retire l'accès à la petite vidéo masquée et mets-la plutôt sur la page résultats après celle qui est en ligne » ; « avec possibilité de la masquer là-bas également » ; « tu pourras remonter importer mes résultats officiels » ; « augmente un peu l'espace entre le bas de l'onglet origines et le haut de la vidéo ».
+- Fiche : plus de « Voir la petite vidéo » (bloc éteint, code gardé, marge retirée).
+- Page Performances (vue normale) : la petite vidéo + « Tes résultats officiels, à redécouvrir sur Hype. » ouverte d'office sous les compteurs et filtres, avant « Ses moments forts », pour la propriétaire seulement (règle du 10/10) ; lien « Masquer la vidéo ▾ » (7 langues), et « Voir la petite vidéo » pour la rouvrir. Vue technique : même vidéo, ouverte, aussi pour un cheval avec résultats.
+- Vidéo de la cérémonie sur la fiche : 44 px au-dessus (au lieu de 28), 6 px dessous (au lieu de 52) → « Importer mes résultats officiels » remonte juste sous la vidéo.
+- 16 scripts 0 erreur. Vérifié iPhone 390 (fiche ; Performances en propriétaire).
