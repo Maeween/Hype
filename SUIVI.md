@@ -12384,3 +12384,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Gratuit / Premium comme l'appli (VILLE_OFFERTE) : La Baule, Le Morne, Kildare, Édimbourg complètes avec explications ; les autres : 8 premiers mots puis « la suite dans l'appli ».
 - Le nom n'est écrit qu'à un endroit : const NOM dans outils/seo-lexique.cjs.
 - Reste à faire par Blandine : déclarer horselingo.fr dans Google Search Console et y donner https://horselingo.fr/sitemap.xml.
+
+## Build 1099 (13/10) — Le nom « Horse Lingo » dans Hype
+- Demande : nom confirmé par Blandine (« Horse Lingo », deux mots, adresse horselingo.fr) ; « Ok, continue » (23 h 03) pour la tuile de Hype.
+- Côté Horse Lingo (dépôt Maeween/HorseLingo, 22 h 58) : tous les textes visibles « Hype Linguae » / « Linguae » → « Horse Lingo » (7 langues), titre de page, nom sous l'icône (manifeste). Noms techniques inchangés (fichiers, clés de stockage, messages internes). Confirmé par sa capture de 23 h 02.
+- index.html : seulement les textes visibles qui nomment Lingo → « Horse Lingo » : grande tuile de l'accueil, tuile de la grille (7 langues), « Mes mots gardés dans… » et « Mon carnet… » (page Mon apprentissage), l'annonce « … est opérationnel » des nouveautés. Identifiant de tuile « linguae » et noms de fonctions inchangés. Marqueur 20261013-1099. 16 scripts 0 erreur ; marqueurs de garde inchangés.
+- Le contexte envoyé à Hey Baby (« Revient du chapitre Linguae ») n'a pas été touché : invisible pour l'utilisateur.
