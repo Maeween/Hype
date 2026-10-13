@@ -12337,3 +12337,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Tablette : une colonne, boutons de l'écurie côte à côte. Ordinateur : deux colonnes (ajout + encart | écurie), boutons empilés.
 - 7 langues (nouveaux textes), arabe vérifié en RTL. Aucune modification de la base. Captures 375/390/820/1280 + arabe + 3 chevaux : pas de débordement, pas d'erreur. 16 scripts 0 erreur ; marqueur 20261013-1095.
 - 13/10 13 h 54 : mis en ligne sur « Ok vas y ».
+
+## Page « L'association » — PUBLIÉE (13/10 vers 13 h 56)
+- Mise en ligne sur « Vas-y » : /{langue}/association/ en 7 langues (cadres « photo FEINN à venir » en attendant les photos), lien « L'association FEINN · Mentions légales » en pied des 7 pages d'accueil, ajout au plan du site (sitemap-pages.xml). index.html non touché.
+- Restent : photos (images/asso/hero.jpg, jeune.jpg, retraite.jpg, espaces.jpg, puis relancer python3 outils/association-generer.py), liens vers CGV et politique de confidentialité une fois validées, lien dans Mon compte (index.html, autre conversation).

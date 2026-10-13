@@ -543,4 +543,81 @@
     <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/gestion-ecurie/"/>
     <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/gestion-ecurie/"/>
   </url>
+<url>
+    <loc>https://2hype.fr/fr/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
+<url>
+    <loc>https://2hype.fr/en/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
+<url>
+    <loc>https://2hype.fr/es/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
+<url>
+    <loc>https://2hype.fr/it/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
+<url>
+    <loc>https://2hype.fr/de/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
+<url>
+    <loc>https://2hype.fr/ja/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
+<url>
+    <loc>https://2hype.fr/ar/association/</loc>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://2hype.fr/fr/association/"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://2hype.fr/en/association/"/>
+    <xhtml:link rel="alternate" hreflang="es" href="https://2hype.fr/es/association/"/>
+    <xhtml:link rel="alternate" hreflang="it" href="https://2hype.fr/it/association/"/>
+    <xhtml:link rel="alternate" hreflang="de" href="https://2hype.fr/de/association/"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://2hype.fr/ja/association/"/>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://2hype.fr/ar/association/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://2hype.fr/fr/association/"/>
+  </url>
 </urlset>
