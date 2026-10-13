@@ -12243,3 +12243,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 16 scripts 0 erreur. Vérifié iPhone 390.
 - 13/10 11 h 33 : Blandine « ne corrige pas les V2 et V3, le but c'est justement de comparer » → la lecture de l'année « 19/04/2002 » ajoutée en 1081 dans la V2 et la V3 est ANNULÉE (V2 et V3 identiques à la version en ligne). Seule la V1 la garde.
 - Mise en ligne de 1081, 1082, 1083 sur « Mets en ligne que je vois ».
+
+## Build 1084 (13/10) — Cartes « Derniers résultats » moins longues
+- Demande : « les cartes derniers résultats sont trop longues ».
+- Cause : une carte qui listait les autres cavaliers classés de la même épreuve (jusqu'à 3 lignes) allongeait toutes les cartes de la rangée. Cette liste devient une seule ligne « + N autres classés ». Le détail reste sur la page Performances.
+- 16 scripts 0 erreur. Vérifié iPhone 390 (carte avec 3 cavaliers classés).
