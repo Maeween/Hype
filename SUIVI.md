@@ -12211,3 +12211,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande : « assure-toi juste qu'on ne dépasse pas deux photos en hauteur, quand il y en a 3 ça fait trop long ».
 - Sur la fiche seulement : la grande photo (2 × 2) + 2 petites à côté (téléphone, 3 colonnes), exactement deux rangées, sans trou. La page Photos et « Tous les souvenirs » ne changent pas.
 - 16 scripts 0 erreur. Vérifié iPhone 390 (fiche et Performances).
+
+## Build 1079 (13/10) — Fiche cheval V1 : résultats présentés comme la V2
+- Demande (capture entourée) : « la partie entourée tu peux la faire sauter et mets le visuel de la v2 pour les derniers résultats et les principaux résultats, en adaptant la couleur au reste de la page ».
+- Carte « En concours » (compteurs Sorties / Victoires / Podiums / Classés + « Voir tout son palmarès ») retirée de la fiche (code gardé, éteint). Les compteurs restent sur la page Performances.
+- « Derniers résultats » : titre Cormorant + « Voir tout › » (ouvre Performances), les cartes avec les marges de la V2, « + Ajouter un résultat » en texte champagne sous les cartes (remplace la carte « + » en pointillés), mêmes droits qu'avant.
+- « Principaux résultats » (nouveau sur la V1) : les 3 meilleurs classements (à égalité, le plus récent), une ligne par épreuve : concours, épreuve · année, cavalier, pastille de classement « 1er / 9 » à contour champagne ; toucher ouvre Performances. Résultats masqués exclus comme partout.
+- 16 scripts 0 erreur. Vérifié iPhone 390.
