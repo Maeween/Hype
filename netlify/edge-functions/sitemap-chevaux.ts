@@ -18,6 +18,14 @@ import type { Context } from "https://edge.netlify.com";
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
+
+/* 13/10/2026 : chaque page existe en 7 langues — on donne à Google les 7 adresses, chacune avec ses sœurs (hreflang). */
+const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar"];
+function sept(chemin: string): string {
+  const alt = LANGUES.map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${DOMAINE}${l === "fr" ? "" : "/" + l}${chemin}"/>`).join("\n") +
+    `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}"/>`;
+  return LANGUES.map((l) => `  <url>\n    <loc>${DOMAINE}${l === "fr" ? "" : "/" + l}${chemin}</loc>\n${alt}\n  </url>`).join("\n");
+}
 const FORME_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -54,8 +62,8 @@ export default async (_request: Request, _context: Context) => {
       if (Array.isArray(res) && res.length > 0) garder.push(slug);
     }
     const xml = '<?xml version="1.0" encoding="UTF-8"?>\n' +
-      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' +
-      garder.map((s) => `  <url><loc>${DOMAINE}/cheval/${s}</loc></url>`).join("\n") +
+      '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n' +
+      garder.map((s) => sept("/cheval/" + s)).join("\n") +
       (garder.length ? "\n" : "") +
       "</urlset>\n";
     return new Response(xml, {

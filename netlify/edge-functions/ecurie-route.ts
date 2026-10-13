@@ -44,7 +44,9 @@ import type { Context } from "https://edge.netlify.com";
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
-const FORME_ADRESSE = /^\/ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
+// 13/10/2026 : aussi /en/ecurie/…, /es/…, /it/…, /de/…, /ja/…, /ar/… — seulement pour les écuries qui ont
+// au moins un cheval ou un rendez-vous sur Hype ; sinon l'adresse étrangère renvoie vers la page française.
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const FORME_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
@@ -54,6 +56,74 @@ const LECTURE_MAX = 2 * 1024 * 1024;
 const DELAI_BASE_MS = 2500;
 const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
+
+/* ---------- 13/10/2026 : les 7 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR" };
+const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
+const TX: Record<Lg, Record<string, any>> = {
+  fr: { ecA: (v: string) => "Écurie à " + v, ec: "Écurie", ecAd: (v: string) => "écurie à " + v, ecd: "écurie",
+    descTel: "Téléphone, itinéraire, chevaux, résultats et agenda de l’écurie sur Hype.", desc: "Chevaux, résultats et agenda de l’écurie sur Hype.",
+    descInvite: "Ton cheval est ici ? Crée sa fiche sur Hype : photos, origines, résultats en concours.",
+    adresse: "Adresse", tel: "Téléphone", email: "E-mail", site: "Site", horaires: "Horaires",
+    nbCh: (n: number) => n + (n > 1 ? " chevaux" : " cheval"), nbRdv: (n: number) => n + " rendez-vous à venir", surHype: (t: string) => t + " sur Hype.", sep: " · ",
+    sesChevaux: "Ses chevaux sur Hype", rdv: "Prochains rendez-vous", compte: "Crée ton compte Hype pour découvrir ses chevaux, ses résultats et son agenda.", contacter: "Contacter l’écurie",
+    boxT: "Un box virtuel chez Hype ?", boxP: "Pas de paille à faire ici : juste la fiche de ton cheval, ses photos, ses concours, ses souvenirs et son suivi… et d’autres cavaliers avec qui les partager. Théorie, conseils et coach virtuel t’accompagnent aussi dans ta progression.",
+    pied: "Hype est une application indépendante, sans lien officiel avec cette écurie ni avec la FFE. Données de l’écurie : © contributeurs OpenStreetMap.", cheval: "Cheval", rendezVous: "Rendez-vous", dp: " : " },
+  en: { ecA: (v: string) => "Stable in " + v, ec: "Stable", ecAd: (v: string) => "stable in " + v, ecd: "stable",
+    descTel: "Phone, directions, horses, results and calendar of the stable on Hype.", desc: "Horses, results and calendar of the stable on Hype.",
+    descInvite: "Is your horse here? Create its profile on Hype: photos, pedigree, competition results.",
+    adresse: "Address", tel: "Phone", email: "Email", site: "Website", horaires: "Opening hours",
+    nbCh: (n: number) => n + (n > 1 ? " horses" : " horse"), nbRdv: (n: number) => n + (n > 1 ? " upcoming events" : " upcoming event"), surHype: (t: string) => t + " on Hype.", sep: " · ",
+    sesChevaux: "Its horses on Hype", rdv: "Upcoming events", compte: "Create your Hype account to discover its horses, results and calendar.", contacter: "Contact the stable",
+    boxT: "A virtual stall at Hype?", boxP: "No straw to muck out here: just your horse’s profile, photos, competitions, memories and care… and other riders to share them with. Theory, tips and a virtual coach also support your progress.",
+    pied: "Hype is an independent app with no official link to this stable or to the FFE. Stable data: © OpenStreetMap contributors.", cheval: "Horse", rendezVous: "Event", dp: ": " },
+  es: { ecA: (v: string) => "Cuadra en " + v, ec: "Cuadra", ecAd: (v: string) => "cuadra en " + v, ecd: "cuadra",
+    descTel: "Teléfono, cómo llegar, caballos, resultados y agenda de la cuadra en Hype.", desc: "Caballos, resultados y agenda de la cuadra en Hype.",
+    descInvite: "¿Tu caballo está aquí? Crea su ficha en Hype: fotos, orígenes, resultados en concursos.",
+    adresse: "Dirección", tel: "Teléfono", email: "Correo", site: "Sitio web", horaires: "Horario",
+    nbCh: (n: number) => n + (n > 1 ? " caballos" : " caballo"), nbRdv: (n: number) => n + (n > 1 ? " próximas citas" : " próxima cita"), surHype: (t: string) => t + " en Hype.", sep: " · ",
+    sesChevaux: "Sus caballos en Hype", rdv: "Próximas citas", compte: "Crea tu cuenta Hype para descubrir sus caballos, sus resultados y su agenda.", contacter: "Contactar con la cuadra",
+    boxT: "¿Un box virtual en Hype?", boxP: "Aquí no hay paja que sacar: solo la ficha de tu caballo, sus fotos, sus concursos, sus recuerdos y su seguimiento… y otros jinetes con quienes compartirlos. Teoría, consejos y un coach virtual también te acompañan en tu progreso.",
+    pied: "Hype es una aplicación independiente, sin vínculo oficial con esta cuadra ni con la FFE. Datos de la cuadra: © colaboradores de OpenStreetMap.", cheval: "Caballo", rendezVous: "Cita", dp: ": " },
+  it: { ecA: (v: string) => "Scuderia a " + v, ec: "Scuderia", ecAd: (v: string) => "scuderia a " + v, ecd: "scuderia",
+    descTel: "Telefono, indicazioni, cavalli, risultati e agenda della scuderia su Hype.", desc: "Cavalli, risultati e agenda della scuderia su Hype.",
+    descInvite: "Il tuo cavallo è qui? Crea la sua scheda su Hype: foto, origini, risultati in concorso.",
+    adresse: "Indirizzo", tel: "Telefono", email: "E-mail", site: "Sito", horaires: "Orari",
+    nbCh: (n: number) => n + (n > 1 ? " cavalli" : " cavallo"), nbRdv: (n: number) => n + (n > 1 ? " appuntamenti in arrivo" : " appuntamento in arrivo"), surHype: (t: string) => t + " su Hype.", sep: " · ",
+    sesChevaux: "I suoi cavalli su Hype", rdv: "Prossimi appuntamenti", compte: "Crea il tuo account Hype per scoprire i suoi cavalli, i risultati e l’agenda.", contacter: "Contattare la scuderia",
+    boxT: "Un box virtuale su Hype?", boxP: "Niente paglia da cambiare qui: solo la scheda del tuo cavallo, le sue foto, i concorsi, i ricordi e il suo monitoraggio… e altri cavalieri con cui condividerli. Teoria, consigli e coach virtuale ti accompagnano anche nei tuoi progressi.",
+    pied: "Hype è un’applicazione indipendente, senza legami ufficiali con questa scuderia né con la FFE. Dati della scuderia: © contributori di OpenStreetMap.", cheval: "Cavallo", rendezVous: "Appuntamento", dp: ": " },
+  de: { ecA: (v: string) => "Stall in " + v, ec: "Stall", ecAd: (v: string) => "Stall in " + v, ecd: "Stall",
+    descTel: "Telefon, Anfahrt, Pferde, Ergebnisse und Termine des Stalls auf Hype.", desc: "Pferde, Ergebnisse und Termine des Stalls auf Hype.",
+    descInvite: "Steht dein Pferd hier? Erstelle sein Profil auf Hype: Fotos, Abstammung, Turnierergebnisse.",
+    adresse: "Adresse", tel: "Telefon", email: "E-Mail", site: "Website", horaires: "Öffnungszeiten",
+    nbCh: (n: number) => n + (n > 1 ? " Pferde" : " Pferd"), nbRdv: (n: number) => n + (n > 1 ? " kommende Termine" : " kommender Termin"), surHype: (t: string) => t + " auf Hype.", sep: " · ",
+    sesChevaux: "Seine Pferde auf Hype", rdv: "Nächste Termine", compte: "Erstelle dein Hype-Konto, um seine Pferde, Ergebnisse und Termine zu entdecken.", contacter: "Stall kontaktieren",
+    boxT: "Eine virtuelle Box bei Hype?", boxP: "Hier muss kein Stroh gemistet werden: nur das Profil deines Pferdes, seine Fotos, Turniere, Erinnerungen und seine Betreuung… und andere Reiter, mit denen du sie teilst. Theorie, Tipps und ein virtueller Coach begleiten dich außerdem bei deinen Fortschritten.",
+    pied: "Hype ist eine unabhängige App ohne offizielle Verbindung zu diesem Stall oder zur FFE. Daten des Stalls: © OpenStreetMap-Mitwirkende.", cheval: "Pferd", rendezVous: "Termin", dp: ": " },
+  ja: { ecA: (v: string) => v + "の厩舎", ec: "厩舎", ecAd: (v: string) => v + "の厩舎", ecd: "厩舎",
+    descTel: "電話、アクセス、馬、成績、予定をHypeで。", desc: "馬、成績、予定をHypeで。",
+    descInvite: "あなたの馬はここにいますか？ Hypeでプロフィールを作りましょう：写真、血統、競技成績。",
+    adresse: "住所", tel: "電話", email: "メール", site: "ウェブサイト", horaires: "営業時間",
+    nbCh: (n: number) => "馬" + n + "頭", nbRdv: (n: number) => "今後の予定" + n + "件", surHype: (t: string) => t + "（Hype）", sep: "・",
+    sesChevaux: "Hypeに登録された馬", rdv: "今後の予定", compte: "Hypeのアカウントを作成すると、この厩舎の馬、成績、予定が見られます。", contacter: "厩舎への連絡",
+    boxT: "Hypeにバーチャル馬房を？", boxP: "ここでは寝わらの掃除はいりません。愛馬のプロフィール、写真、大会、思い出、日々のケア…そしてそれを分かち合う仲間のライダーたち。理論、アドバイス、バーチャルコーチがあなたの上達もサポートします。",
+    pied: "Hypeは独立したアプリで、この厩舎およびFFEとは公式な関係はありません。厩舎のデータ：© OpenStreetMap の貢献者。", cheval: "馬", rendezVous: "予定", dp: "：" },
+  ar: { ecA: (v: string) => "إسطبل في " + v, ec: "إسطبل", ecAd: (v: string) => "إسطبل في " + v, ecd: "إسطبل",
+    descTel: "الهاتف والاتجاهات والخيول والنتائج وأجندة الإسطبل على Hype.", desc: "الخيول والنتائج وأجندة الإسطبل على Hype.",
+    descInvite: "هل حصانك هنا؟ أنشئ ملفه على Hype: الصور، النسب، نتائج المسابقات.",
+    adresse: "العنوان", tel: "الهاتف", email: "البريد الإلكتروني", site: "الموقع", horaires: "المواعيد",
+    nbCh: (n: number) => "الخيول: " + n, nbRdv: (n: number) => "المواعيد القادمة: " + n, surHype: (t: string) => t + " على Hype.", sep: " · ",
+    sesChevaux: "خيوله على Hype", rdv: "المواعيد القادمة", compte: "أنشئ حسابك على Hype لتكتشف خيوله ونتائجه وأجندته.", contacter: "التواصل مع الإسطبل",
+    boxT: "مربط افتراضي في Hype؟", boxP: "لا قش لتنظيفه هنا: فقط ملف حصانك وصوره ومسابقاته وذكرياته ومتابعته… وفرسان آخرون تشاركهم إياها. وترافقك أيضًا النظرية والنصائح والمدرب الافتراضي في تقدّمك.",
+    pied: "Hype تطبيق مستقل لا تربطه أي صلة رسمية بهذا الإسطبل ولا بالاتحاد الفرنسي للفروسية (FFE). بيانات الإسطبل: © المساهمون في OpenStreetMap.", cheval: "حصان", rendezVous: "موعد", dp: ": " },
+};
+function liensLangues(chemin: string): string {
+  return LANGUES.map((l) => `<link rel="alternate" hreflang="${l}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
+    `<link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}">`;
+}
 
 type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number; x?: number };
 
@@ -123,9 +193,9 @@ function echapper(t: string): string {
 }
 function propre(t: unknown): string { return String(t == null ? "" : t).replace(/\s+/g, " ").trim(); }
 function texte(t: unknown): string { return echapper(propre(t)); }
-function dateFr(d: unknown): string {
+function dateFr(d: unknown, lg: Lg = "fr"): string {
   const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? m[3] + "/" + m[2] + "/" + m[1] : "";
+  return m ? (lg === "ja" ? m[1] + "/" + m[2] + "/" + m[3] : m[3] + "/" + m[2] + "/" + m[1]) : "";
 }
 function rang(place: unknown, classement: unknown): string {
   const n = parseInt(String(place == null ? "" : place), 10);
@@ -211,14 +281,17 @@ async function contenuHype(nom: string) {
 
 /* ---------- Ce que lit Google ---------- */
 /* 10/10 (856) : chaque rendez-vous a sa page publique (evenement-route.ts) — même adresse. */
-function lienRdv(r: any): string {
+function lienRdv(r: any, lg: Lg = "fr"): string {
   const id = String(r.id || "");
   if (!/^[0-9a-f]{8}-/i.test(id)) return texte(r.titre);
   const s = String(r.titre || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     .replace(/œ/g, "oe").replace(/æ/g, "ae").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 70).replace(/-+$/, "");
-  return `<a href="${DOMAINE}/evenement/${s ? s + "-" : ""}${id.slice(0, 8).toLowerCase()}">${texte(r.titre) || "Rendez-vous"}</a>`;
+  return `<a href="${DOMAINE}${prefixe(lg)}/evenement/${s ? s + "-" : ""}${id.slice(0, 8).toLowerCase()}">${texte(r.titre) || TX[lg].rendezVous}</a>`;
 }
-function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | null, hype: Awaited<ReturnType<typeof contenuHype>>, deps: Record<string, [string, string]> = {}) {
+function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | null, hype: Awaited<ReturnType<typeof contenuHype>>, deps: Record<string, [string, string]> = {}, lg: Lg = "fr") {
+  const t = TX[lg];
+  // 13/10/2026 : « active » = au moins un cheval ou un rendez-vous sur Hype → la page existe dans les 7 langues
+  const active = ec.x !== 1 && (hype.chevaux.length > 0 || hype.rdv.length > 0);
   const nom = propre(ec.n);
   const ville = propre(ec.v) || (geo ? geo.v : "");
   const dep = propre(ec.d) || (geo ? geo.d : "");
@@ -232,33 +305,33 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   for (const c of hype.chevaux) nomsParId[String(c.id)] = propre(c.nom);
   const derniers = hype.resultats.slice(0, 15);
 
-  const titre = nom + (villeAff ? " – Écurie à " + villeAff : " – Écurie") + " | Hype";
-  let description = nom + (villeAff ? ", écurie à " + villeAff : ", écurie") + ". ";
+  const titre = nom + " – " + (villeAff ? t.ecA(villeAff) : t.ec) + " | Hype";
+  let description = nom + (lg === "ja" ? "、" : lg === "ar" ? "، " : ", ") + (villeAff ? t.ecAd(villeAff) : t.ecd) + (lg === "ja" ? "。" : ". ");
   if (hype.contactSaisi && propre(hype.contactSaisi.phrase)) description += propre(hype.contactSaisi.phrase).replace(/[.!…]?$/, ". ");   /* (868) la phrase d'accueil de l'écurie */
   if (hype.chevaux.length || hype.rdv.length) {
-    description += propre(ec.t) ? "Téléphone, itinéraire, chevaux, résultats et agenda de l’écurie sur Hype." : "Chevaux, résultats et agenda de l’écurie sur Hype.";
+    description += propre(ec.t) ? t.descTel : t.desc;
   } else {
-    description += "Ton cheval est ici ? Crée sa fiche sur Hype : photos, origines, résultats en concours.";
+    description += t.descInvite;
   }
 
-  let html = `<main id="seo-ecurie" lang="fr" style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  let html = `<main id="seo-ecurie" lang="${lg}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
-  html += `<p>Écurie${villeAff ? " à " + texte(villeAff) : ""}</p>`;
+  html += `<p>${villeAff ? texte(t.ecA(villeAff)) : t.ec}</p>`;
   const contact: string[] = [];
   const cs = (hype.contactSaisi && typeof hype.contactSaisi === "object") ? hype.contactSaisi : null;   /* (868) saisies par l'écurie : elles remplacent la base */
   if (cs) {
     if (propre(cs.phrase)) contact.push(`<em>${texte(cs.phrase)}</em>`);
-    if (propre(cs.adresse)) contact.push("Adresse : " + texte(cs.adresse));
-    if (propre(cs.tel)) contact.push("Téléphone : " + texte(cs.tel));
-    if (propre(cs.email)) contact.push("E-mail : " + texte(cs.email));
-    if (/^https?:\/\//i.test(propre(cs.site))) contact.push(`Site : <a href="${echapper(propre(cs.site))}" rel="nofollow noopener">${texte(cs.site)}</a>`);
-    if (propre(cs.instagram)) contact.push("Instagram : " + texte(cs.instagram));
-    if (propre(cs.facebook)) contact.push("Facebook : " + texte(cs.facebook));
-    if (propre(cs.horaires)) contact.push("Horaires : " + texte(cs.horaires));
+    if (propre(cs.adresse)) contact.push(t.adresse + t.dp + texte(cs.adresse));
+    if (propre(cs.tel)) contact.push(t.tel + t.dp + texte(cs.tel));
+    if (propre(cs.email)) contact.push(t.email + t.dp + texte(cs.email));
+    if (/^https?:\/\//i.test(propre(cs.site))) contact.push(`${t.site}${t.dp}<a href="${echapper(propre(cs.site))}" rel="nofollow noopener">${texte(cs.site)}</a>`);
+    if (propre(cs.instagram)) contact.push("Instagram" + t.dp + texte(cs.instagram));
+    if (propre(cs.facebook)) contact.push("Facebook" + t.dp + texte(cs.facebook));
+    if (propre(cs.horaires)) contact.push(t.horaires + t.dp + texte(cs.horaires));
   } else {
-    if (propre(ec.a)) contact.push("Adresse : " + texte(ec.a) + (propre(ec.cp) ? ", " + texte(ec.cp) : "") + (ville ? " " + texte(ville) : ""));
-    if (propre(ec.t)) contact.push("Téléphone : " + texte(ec.t));
-    if (propre(ec.s)) contact.push(`Site : <a href="${echapper(propre(ec.s))}" rel="nofollow noopener">${texte(ec.s)}</a>`);
+    if (propre(ec.a)) contact.push(t.adresse + t.dp + texte(ec.a) + (propre(ec.cp) ? ", " + texte(ec.cp) : "") + (ville ? " " + texte(ville) : ""));
+    if (propre(ec.t)) contact.push(t.tel + t.dp + texte(ec.t));
+    if (propre(ec.s)) contact.push(`${t.site}${t.dp}<a href="${echapper(propre(ec.s))}" rel="nofollow noopener">${texte(ec.s)}</a>`);
   }
   const contactLiens = contact;   /* (861) affichées plus bas, sous « Contacter l’écurie » (comme dans l'appli) */
 
@@ -266,35 +339,35 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
      des chiffres, sans la liste des chevaux, des rendez-vous ni des résultats (réservés aux personnes connectées). */
   const nbCh = hype.chevaux.length, nbRdv = hype.rdv.length;
   const chiffres: string[] = [];
-  if (nbCh) chiffres.push(nbCh + (nbCh > 1 ? " chevaux" : " cheval"));
-  if (nbRdv) chiffres.push(nbRdv + " rendez-vous à venir");
-  if (chiffres.length) html += `<p>${chiffres.join(" · ")} sur Hype.</p>`;
+  if (nbCh) chiffres.push(t.nbCh(nbCh));
+  if (nbRdv) chiffres.push(t.nbRdv(nbRdv));
+  if (chiffres.length) html += `<p>${t.surHype(chiffres.join(t.sep))}</p>`;
   /* 12/10 (référencement action 1, choix A) : les noms en liens vers les pages publiques */
   if (montrables.length) {
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Ses chevaux sur Hype</h2><p>` +
-      montrables.map((c) => `<a href="${DOMAINE}/cheval/${c.slug}">${texte(c.nom) || "Cheval"}</a>`).join(" · ") + `</p>`;
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">${t.sesChevaux}</h2><p>` +
+      montrables.map((c) => `<a href="${DOMAINE}${prefixe(lg)}/cheval/${c.slug}">${texte(c.nom) || t.cheval}</a>`).join(" · ") + `</p>`;
   }
   if (nbRdv) {
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Prochains rendez-vous</h2><p>` +
-      hype.rdv.map((r) => { const d = dateFr(r.date_jour); return lienRdv(r) + (d ? " — " + d : ""); }).join("<br>") + `</p>`;
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">${t.rdv}</h2><p>` +
+      hype.rdv.map((r) => { const d = dateFr(r.date_jour, lg); return lienRdv(r, lg) + (d ? " — " + d : ""); }).join("<br>") + `</p>`;
   }
-  html += `<p>Crée ton compte Hype pour découvrir ses chevaux, ses résultats et son agenda.</p>`;
-  if (contactLiens.length) html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Contacter l’écurie</h2><p>${contactLiens.join("<br>")}</p>`;
+  html += `<p>${t.compte}</p>`;
+  if (contactLiens.length) html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">${t.contacter}</h2><p>${contactLiens.join("<br>")}</p>`;
   if (!hype.chevaux.length) {   /* (861) même règle que l’appli : aucun cheval → invitation */
     // 10/10 : le texte de Blandine (le même que l'invitation affichée dans l'appli, build 852-853)
-    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">Un box virtuel chez Hype ?</h2>`;
-    html += `<p>Pas de paille à faire ici : juste la fiche de ton cheval, ses photos, ses concours, ses souvenirs et son suivi… et d’autres cavaliers avec qui les partager. Théorie, conseils et coach virtuel t’accompagnent aussi dans ta progression.</p>`;
+    html += `<h2 style="font-size:17px;color:#d8d2c4;margin:22px 0 6px">${t.boxT}</h2>`;
+    html += `<p>${t.boxP}</p>`;
   }
-  const pageDep = ec.x === 1 ? null : deps[dep];   // pas de lien depuis une fiche écartée
+  const pageDep = (ec.x === 1 || lg !== "fr") ? null : deps[dep];   // pas de lien depuis une fiche écartée ; pages départements en français seulement
   if (pageDep) html += `<p>Voir aussi : <a href="${echapper(pageDep[0])}">les centres équestres ${texte(pageDep[1])} (${texte(dep)})</a></p>`;
-  html += `<p style="margin-top:22px;font-size:12px">Hype est une application indépendante, sans lien officiel avec cette écurie ni avec la FFE. Données de l’écurie : © contributeurs OpenStreetMap.</p>`;
+  html += `<p style="margin-top:22px;font-size:12px">${t.pied}</p>`;
   html += `</main>`;
 
   // 12/10/2026 : « carte d'identité » pour Google (schema.org) — seulement ce qui est vrai et déjà écrit sur la page,
   // et rien pour une fiche écartée. SportsActivityLocation = lieu d'activité sportive (une sorte de LocalBusiness).
   let jsonld = "";
   if (ec.x !== 1) {
-    const url = DOMAINE + "/ecurie/" + slug;
+    const url = DOMAINE + prefixe(lg) + "/ecurie/" + slug;
     const lieu: Record<string, unknown> = { "@context": "https://schema.org", "@type": "SportsActivityLocation", name: nom, url };
     const adr: Record<string, string> = { "@type": "PostalAddress", addressCountry: "FR" };
     const rue = cs ? propre(cs.adresse) : propre(ec.a);
@@ -308,8 +381,8 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     const site = cs ? propre(cs.site) : propre(ec.s);
     if (/^https?:\/\//i.test(site)) lieu.sameAs = [site];
     if (cs && propre(cs.phrase)) lieu.description = propre(cs.phrase);
-    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/fr/" },
-      { "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" }];
+    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/" + lg + "/" }];
+    if (lg === "fr") fil.push({ "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" });
     if (pageDep) fil.push({ "@type": "ListItem", position: 3, name: "Centres équestres " + pageDep[1] + " (" + dep + ")", item: pageDep[0] });
     fil.push({ "@type": "ListItem", position: fil.length + 1, name: nom, item: url });
     const blocs = [lieu, { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: fil }];
@@ -317,7 +390,7 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   }
 
   // 12/10/2026 : x = écartée du référencement (pas une écurie, ou doublon ; outils/ecuries-exclues.json)
-  return { titre, description, canonical: DOMAINE + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html, cachee: ec.x === 1, jsonld };
+  return { titre, description, canonical: DOMAINE + prefixe(lg) + "/ecurie/" + slug, image: imageApercu(hype.banniere), nom, html, cachee: ec.x === 1, jsonld, lg, active, chemin: "/ecurie/" + slug };
 }
 
 /* ---------- Flux : la page Hype avec les ajouts (identique à cheval-route.ts) ---------- */
@@ -350,10 +423,11 @@ async function pageAvecRoute(source: Response, nomClub: string, seo: ReturnType<
     `<meta name="description" content="${echapper(seo.description)}">` +
     `<link rel="canonical" href="${echapper(seo.canonical)}">` +
     (seo.cachee ? `<meta name="robots" content="noindex, follow">` : "") +
+    (seo.active ? liensLangues(seo.chemin) : "") +
     seo.jsonld +
     `<meta property="og:type" content="website">` +
     `<meta property="og:site_name" content="Hype">` +
-    `<meta property="og:locale" content="fr_FR">` +
+    `<meta property="og:locale" content="${LOCALE[seo.lg]}">` +
     `<meta property="og:title" content="${echapper(seo.titre)}">` +
     `<meta property="og:description" content="${echapper(seo.description)}">` +
     `<meta property="og:url" content="${echapper(seo.canonical)}">` +
@@ -414,8 +488,9 @@ async function pageAvecRoute(source: Response, nomClub: string, seo: ReturnType<
 export default async (request: Request, _context: Context) => {
   const url = new URL(request.url);
   const m = url.pathname.match(FORME_ADRESSE);
-  if (!m || m[1].length > 120) return PAGE_404();
-  const slug = m[1];
+  if (!m || m[2].length > 120) return PAGE_404();
+  const lg = (m[1] || "fr") as Lg;
+  const slug = m[2];
 
   let ec: Ecurie | undefined;
   try { ec = (await annuaire(url.origin))[slug]; } catch (e) { console.log("[ecurie-route] annuaire :", String(e)); return PAGE_503(); }
@@ -426,7 +501,11 @@ export default async (request: Request, _context: Context) => {
     propre(ec.v) ? Promise.resolve(null) : communeDepuisCoordonnees(ec.la, ec.lo),
     departements(url.origin).catch(() => ({} as Record<string, [string, string]>)),
   ]);
-  const seo = construire(slug, ec, geo, hype, deps);
+  const seo = construire(slug, ec, geo, hype, deps, lg);
+  // 13/10/2026 : version étrangère d'une écurie sans rien sur Hype (ou base injoignable) → la page française
+  if (lg !== "fr" && (!seo.active || !hype.lu)) {
+    return new Response(null, { status: 302, headers: { location: DOMAINE + "/ecurie/" + slug, "cache-control": "no-store" } });
+  }
 
   try {
     // 12/10 (référencement action 2) : la copie de l'appli SANS le texte de l'accueil (seo-accueil.cjs) ;
@@ -444,4 +523,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: "/ecurie/*" };
+export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*"] };

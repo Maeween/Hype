@@ -25,13 +25,49 @@ import type { Context } from "https://edge.netlify.com";
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
-const FORME_ADRESSE = /^\/evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
+// 13/10/2026 : aussi /en/evenement/…, /es/…, /it/…, /de/…, /ja/…, /ar/… (pages traduites)
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");
 const REPERE_RACINE = new TextEncoder().encode('<div id="root">');
 const LECTURE_MAX = 2 * 1024 * 1024;
 const DELAI_BASE_MS = 2500;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
+
+/* ---------- 13/10/2026 : les 7 langues (titre, lieu et description du rendez-vous restent tels qu'écrits) ---------- */
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR" };
+const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn" };
+const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
+const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
+  en: { stage: "Clinic", concours: "Competition", sortie: "Outing", cours: "Lesson", soiree: "Evening event", reunion: "Meeting" },
+  es: { stage: "Cursillo", concours: "Concurso", sortie: "Salida", cours: "Clase", soiree: "Velada", reunion: "Reunión" },
+  it: { stage: "Stage", concours: "Concorso", sortie: "Uscita", cours: "Lezione", soiree: "Serata", reunion: "Riunione" },
+  de: { stage: "Lehrgang", concours: "Turnier", sortie: "Ausflug", cours: "Reitstunde", soiree: "Abendveranstaltung", reunion: "Versammlung" },
+  ja: { stage: "講習会", concours: "競技会", sortie: "外乗", cours: "レッスン", soiree: "夜のイベント", reunion: "ミーティング" },
+  ar: { stage: "دورة تدريبية", concours: "مسابقة", sortie: "نزهة", cours: "درس", soiree: "سهرة", reunion: "اجتماع" },
+};
+const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
+  en: { rdv: "Event", du: (a: string, b: string) => "from " + a + " to " + b, le: (a: string) => "on " + a, a: (l: string) => "at " + l, heure: (h: string) => "At " + h, lieu: "Venue", org: (c: string) => "Organised by the stable " + c, defaut: "All the event details on Hype.", pied: "Hype is an independent app with no official link to this stable or to the FFE.", dp: ": " },
+  es: { rdv: "Cita", du: (a: string, b: string) => "del " + a + " al " + b, le: (a: string) => "el " + a, a: (l: string) => "en " + l, heure: (h: string) => "A las " + h, lieu: "Lugar", org: (c: string) => "Organizado por la cuadra " + c, defaut: "Toda la información de la cita en Hype.", pied: "Hype es una aplicación independiente, sin vínculo oficial con esta cuadra ni con la FFE.", dp: ": " },
+  it: { rdv: "Appuntamento", du: (a: string, b: string) => "dal " + a + " al " + b, le: (a: string) => "il " + a, a: (l: string) => "a " + l, heure: (h: string) => "Alle " + h, lieu: "Luogo", org: (c: string) => "Organizzato dalla scuderia " + c, defaut: "Tutte le informazioni sull’appuntamento su Hype.", pied: "Hype è un’applicazione indipendente, senza legami ufficiali con questa scuderia né con la FFE.", dp: ": " },
+  de: { rdv: "Termin", du: (a: string, b: string) => "vom " + a + " bis " + b, le: (a: string) => "am " + a, a: (l: string) => "in " + l, heure: (h: string) => "Um " + h + " Uhr", lieu: "Ort", org: (c: string) => "Veranstaltet vom Stall " + c, defaut: "Alle Infos zum Termin auf Hype.", pied: "Hype ist eine unabhängige App ohne offizielle Verbindung zu diesem Stall oder zur FFE.", dp: ": " },
+  ja: { rdv: "イベント", du: (a: string, b: string) => a + "〜" + b, le: (a: string) => a, a: (l: string) => "（" + l + "）", heure: (h: string) => h + "開始", lieu: "場所", org: (c: string) => "主催：" + c, defaut: "イベントの詳細はHypeで。", pied: "Hypeは独立したアプリで、この厩舎およびFFEとは公式な関係はありません。", dp: "：" },
+  ar: { rdv: "موعد", du: (a: string, b: string) => "من " + a + " إلى " + b, le: (a: string) => "في " + a, a: (l: string) => "في " + l, heure: (h: string) => "الساعة " + h, lieu: "المكان", org: (c: string) => "ينظمه إسطبل " + c, defaut: "كل تفاصيل الموعد على Hype.", pied: "Hype تطبيق مستقل لا تربطه أي صلة رسمية بهذا الإسطبل ولا بالاتحاد الفرنسي للفروسية (FFE).", dp: ": " },
+};
+function dateLongueLg(d: unknown, lg: Lg): string {
+  const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!m) return "";
+  try {
+    return new Intl.DateTimeFormat(INTL[lg], { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" })
+      .format(new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])));
+  } catch { return m[3] + "/" + m[2] + "/" + m[1]; }
+}
+function liensLangues(chemin: string): string {
+  return LANGUES.map((l) => `<link rel="alternate" hreflang="${l}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
+    `<link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}">`;
+}
 
 type Ecurie = { n: string; v?: string; cp?: string; d?: string; a?: string; t?: string; s?: string; la?: number; lo?: number; x?: number };
 /* 12/10/2026 : pages « Centres équestres de l'Essonne (91) » : code → [adresse, « de l'Essonne »] ; jamais bloquant. */
@@ -140,11 +176,12 @@ function dateLongue(d: unknown): string {
 }
 function heureOk(h: unknown): string { const m = String(h || "").match(/^(\d{1,2}):(\d{2})/); return m ? m[1].padStart(2, "0") + ":" + m[2] : ""; }
 
-function construire(ev: any, ec: Ecurie | null, adresse: string) {
+function construire(ev: any, ec: Ecurie | null, adresse: string, lg: Lg = "fr") {
+  if (lg !== "fr") return construireLg(ev, ec, adresse, lg);
   const titreEv = propre(ev.titre) || "Rendez-vous";
   const type = TYPES[String(ev.type || "").toLowerCase()] || "";
   const nomClub = ec ? propre(ec.n) : propre(ev.club_clef);
-  const villeClub = ec ? propre(ec.v) : "";
+  const villeClub = ec ? propre(ec.v).replace(/\s*\([^)]*\)\s*$/, "") : "";   // « Itteville (91) » → « Itteville » (13/10)
   const debut = dateLongue(ev.date_jour);
   const fin = (ev.date_fin && ev.date_fin !== ev.date_jour) ? dateLongue(ev.date_fin) : "";
   const quand = fin ? "du " + debut + " au " + fin : (debut ? "le " + debut : "");
@@ -188,7 +225,58 @@ function construire(ev: any, ec: Ecurie | null, adresse: string) {
   jd.image = [img];
   const jsonld = `<script type="application/ld+json">${JSON.stringify(jd).replace(/</g, "\\u003c")}</script>`;
 
-  return { titre, description, canonical: DOMAINE + adresse, image: img, nom: titreEv, html, jsonld };
+  return { titre, description, canonical: DOMAINE + adresse, image: img, nom: titreEv, html, jsonld, lg: "fr" as Lg, chemin: adresse };
+}
+/* 13/10/2026 : la même page dans une autre langue (mêmes données, mêmes règles : aucun nom de cavalier). */
+function construireLg(ev: any, ec: Ecurie | null, adresse: string, lg: Exclude<Lg, "fr">) {
+  const t = TXE[lg];
+  const titreEv = propre(ev.titre) || t.rdv;
+  const type = TYPES_LG[lg][String(ev.type || "").toLowerCase()] || "";
+  const nomClub = ec ? propre(ec.n) : propre(ev.club_clef);
+  const villeClub = ec ? propre(ec.v).replace(/\s*\([^)]*\)\s*$/, "") : "";   // « Itteville (91) » → « Itteville » (13/10)
+  const debut = dateLongueLg(ev.date_jour, lg);
+  const fin = (ev.date_fin && ev.date_fin !== ev.date_jour) ? dateLongueLg(ev.date_fin, lg) : "";
+  const quand = fin ? t.du(debut, fin) : (debut ? t.le(debut) : "");
+  const lieu = propre(ev.lieu);
+
+  const titre = titreEv + (quand ? " – " + quand : "") + " | Hype";
+  const morceaux = [type || t.rdv, quand, lieu ? t.a(lieu) : "", nomClub ? "— " + nomClub : ""].filter(Boolean);
+  let description = morceaux.join(lg === "ja" ? " " : " ") + (lg === "ja" ? "。" : ". ");
+  description += propre(ev.description) ? propre(ev.description).slice(0, 110) : t.defaut;
+
+  let html = `<main id="seo-evenement" lang="${lg}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(titreEv)}</h1>`;
+  const lignes: string[] = [];
+  if (type) lignes.push(texte(type));
+  if (quand) lignes.push(texte(quand.charAt(0).toUpperCase() + quand.slice(1)));
+  const h = heureOk(ev.heure) || heureOk(ev.heure_epreuve);
+  if (h) lignes.push(texte(t.heure(h)));
+  if (lieu) lignes.push(t.lieu + t.dp + texte(lieu));
+  if (lignes.length) html += `<p>${lignes.join("<br>")}</p>`;
+  if (nomClub) {
+    const lien = ec ? `<a href="${DOMAINE}${prefixe(lg)}/ecurie/${ecSlug}">${texte(nomClub)}</a>` : texte(nomClub);
+    html += `<p>${t.org(lien)}${villeClub ? " (" + texte(villeClub) + ")" : ""}</p>`;
+  }
+  if (propre(ev.description)) html += `<p>${texte(ev.description)}</p>`;
+  html += `<p style="margin-top:22px;font-size:12px">${t.pied}</p>`;
+  html += `</main>`;
+
+  const jd: any = {
+    "@context": "https://schema.org", "@type": "Event", name: titreEv,
+    startDate: String(ev.date_jour || "").slice(0, 10) + (h ? "T" + h : ""),
+    eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+    eventStatus: "https://schema.org/EventScheduled",
+    url: DOMAINE + prefixe(lg) + adresse, inLanguage: lg,
+  };
+  if (ev.date_fin) jd.endDate = String(ev.date_fin).slice(0, 10);
+  const nomLieu = lieu || nomClub;
+  if (nomLieu) jd.location = { "@type": "Place", name: nomLieu, address: (lieu ? lieu : (villeClub || nomLieu)) };
+  if (nomClub) jd.organizer = { "@type": "Organization", name: nomClub, ...(ec ? { url: DOMAINE + prefixe(lg) + "/ecurie/" + ecSlug } : {}) };
+  if (propre(ev.description)) jd.description = propre(ev.description).slice(0, 300);
+  const img = imageApercu(ev.image_url);
+  jd.image = [img];
+  const jsonld = `<script type="application/ld+json">${JSON.stringify(jd).replace(/</g, "\\u003c")}</script>`;
+  return { titre, description, canonical: DOMAINE + prefixe(lg) + adresse, image: img, nom: titreEv, html, jsonld, lg: lg as Lg, chemin: adresse };
 }
 let ecSlug = "";
 
@@ -209,7 +297,7 @@ function coller(a: Uint8Array, b: Uint8Array): Uint8Array {
   c.set(a, 0); c.set(b, a.length);
   return c;
 }
-async function pageAvecRoute(source: Response, route: { club: string; id: string }, seo: { titre: string; description: string; canonical: string; image: string; nom: string; html: string; jsonld: string }): Promise<Response | null> {
+async function pageAvecRoute(source: Response, route: { club: string; id: string }, seo: { titre: string; description: string; canonical: string; image: string; nom: string; html: string; jsonld: string; lg: Lg; chemin: string }): Promise<Response | null> {
   if (!source.body) return null;
   const enc = new TextEncoder();
   const ajout = enc.encode(
@@ -222,9 +310,10 @@ async function pageAvecRoute(source: Response, route: { club: string; id: string
     seo.jsonld +
     `<meta name="description" content="${echapper(seo.description)}">` +
     `<link rel="canonical" href="${echapper(seo.canonical)}">` +
+    liensLangues(seo.chemin) +
     `<meta property="og:type" content="website">` +
     `<meta property="og:site_name" content="Hype">` +
-    `<meta property="og:locale" content="fr_FR">` +
+    `<meta property="og:locale" content="${LOCALE[seo.lg]}">` +
     `<meta property="og:title" content="${echapper(seo.titre)}">` +
     `<meta property="og:description" content="${echapper(seo.description)}">` +
     `<meta property="og:url" content="${echapper(seo.canonical)}">` +
@@ -286,7 +375,8 @@ export default async (request: Request, _context: Context) => {
   const url = new URL(request.url);
   const m = url.pathname.match(FORME_ADRESSE);
   if (!m) return PAGE_404();
-  const court = m[2];
+  const lg = (m[1] || "fr") as Lg;
+  const court = m[3];
 
   const minuteur = new AbortController();
   const stop = setTimeout(() => minuteur.abort(), DELAI_BASE_MS);
@@ -312,17 +402,19 @@ export default async (request: Request, _context: Context) => {
   } catch (e) { console.log("[evenement-route] annuaire :", String(e)); }
 
   const adresse = adresseEvenement(ev.titre, ev.id);
-  const seo = construire(ev, ec, adresse);
+  const seo = construire(ev, ec, adresse, lg);
   // 12/10/2026 : fil d'Ariane pour Google — Hype › Centres équestres › département › écurie › événement
   // (seulement si l'écurie est trouvée et n'est pas écartée du référencement)
   if (ec && ec.x !== 1 && ecSlug) {
     const slugEc = ecSlug;
     const deps = await departements(url.origin).catch(() => ({} as Record<string, [string, string]>));
     const dep = String(ec.d || "").trim(), pageDep = deps[dep];
-    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/fr/" },
-      { "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" }];
-    if (pageDep) fil.push({ "@type": "ListItem", position: 3, name: "Centres équestres " + pageDep[1] + " (" + dep + ")", item: pageDep[0] });
-    fil.push({ "@type": "ListItem", position: fil.length + 1, name: String(ec.n), item: DOMAINE + "/ecurie/" + slugEc });
+    const fil: unknown[] = [{ "@type": "ListItem", position: 1, name: "Hype", item: DOMAINE + "/" + lg + "/" }];
+    if (lg === "fr") {   // les pages par département n'existent qu'en français
+      fil.push({ "@type": "ListItem", position: 2, name: "Centres équestres", item: DOMAINE + "/fr/centres-equestres/" });
+      if (pageDep) fil.push({ "@type": "ListItem", position: 3, name: "Centres équestres " + pageDep[1] + " (" + dep + ")", item: pageDep[0] });
+    }
+    fil.push({ "@type": "ListItem", position: fil.length + 1, name: String(ec.n), item: DOMAINE + prefixe(lg) + "/ecurie/" + slugEc });
     fil.push({ "@type": "ListItem", position: fil.length + 1, name: seo.nom, item: seo.canonical });
     seo.jsonld += `<script type="application/ld+json">${JSON.stringify({ "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: fil }).replace(/</g, "\\u003c")}</script>`;
   }
@@ -342,4 +434,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: "/evenement/*" };
+export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*"] };
