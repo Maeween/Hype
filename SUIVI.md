@@ -12368,3 +12368,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - **Google pour les associations** : demande envoyée le 13/10 (site donné : https://2hype.fr/fr/association/ ; contact feinn@live.fr ; fonction : Présidente). Goodstack vérifie sous 2 à 14 jours ouvrés et peut demander statuts ou récépissé → surveiller feinn@live.fr, y compris le dossier Courrier indésirable.
 - **Mux — crédit associations (500 $)** : vérifié le 13/10, AUCUN crédit de 500 $ sur le compte. Forfait « Pay as you go », seul crédit = 20 $/mois inclus ; utilisation du mois 0,02 $, prochaine facture (3/11) 0 $. Mail envoyé par Blandine au support Mux le 13/10 pour demander le crédit associations → attendre la réponse.
 - 13/10 18:19 : CONFIRMÉ par Blandine dans WhatsApp — https://2hype.fr/?v=2 affiche bien le bandeau, le titre et la description.
+
+## Build 1098 (13/10) — Horse Lingo vit désormais sur https://horselingo.fr
+- Contexte : Horse Lingo a son propre dépôt privé Maeween/HorseLingo, relié au projet Netlify majestic-melba-997a68 (domaine horselingo.fr). Mise en ligne là-bas le 13/10 à 17 h 52, puis correctif 18 h 39 : le Premium n'était pas relu après la connexion (`pont` appelé hors de son bloc → `window.pontLingua`). Testé par Blandine à 18 h 44 : connexion + ville Premium OK.
+- Supabase : https://horselingo.fr/** ajouté aux Redirect URLs par Blandine (Site URL inchangée).
+- index.html : les 3 boutons qui ouvraient « lingo.html » (tuile de l'accueil, DEST_TUILES.linguae, ouvrirLinguae de Mon carnet) ouvrent https://horselingo.fr. Rien d'autre. Marqueur 20261013-1098 (la 1097 abandonnée n'est pas réutilisée). 16 scripts 0 erreur ; marqueurs de garde inchangés.
+- netlify.toml : 2hype.fr/lingo.html et les 4 pages lingo-*.html renvoient (302) vers les mêmes pages sur horselingo.fr. Joker « /lingo-* » évité exprès (lingo-accueil.webp/.mp4 servent à la tuile de Hype).
+- Conséquences dites à Blandine : les utilisateurs arrivant de l'ancienne adresse doivent se reconnecter une fois sur horselingo.fr (progression et Premium reviennent depuis la base) ; les anciennes icônes ouvrent horselingo.fr dans Safari — réinstaller l'icône depuis horselingo.fr.
+- Les fichiers de Lingo restent dans ce dépôt (retour arrière : supprimer les blocs de redirection). À retirer plus tard, une fois tout validé. Toute modification de Lingo se fait désormais dans Maeween/HorseLingo, PLUS ICI.
+- Lingo appelle toujours la fonction https://2hype.fr/.netlify/functions/supprimer-compte (CORS « * » déjà en place) : ne pas la supprimer ni restreindre son origine.

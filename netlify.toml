@@ -178,3 +178,45 @@
 
 [functions."purge-planifiee"]
   schedule = "0 3 * * *"
+
+# ============================================================
+#  13/10/2026 — HORSE LINGO A DÉMÉNAGÉ SUR https://horselingo.fr
+#  (dépôt Maeween/HorseLingo, projet Netlify majestic-melba-997a68).
+#  Les anciennes adresses de Lingo sur 2hype.fr renvoient là-bas,
+#  y compris les icônes installées depuis 2hype.fr.
+#  302 (temporaire) VOLONTAIREMENT : pour revenir en arrière, il suffit
+#  de supprimer ces blocs ; un 301 resterait gravé dans les téléphones.
+#  Les fichiers lingo-*.html restent dans ce dépôt pour l'instant
+#  (retour arrière possible) — ils ne sont plus servis.
+#  ⚠️ PAS de joker "/lingo-*" : il attraperait lingo-accueil.webp et
+#  lingo-accueil.mp4, utilisés par la tuile Lingo de l'accueil de Hype.
+# ============================================================
+[[redirects]]
+  from = "/lingo.html"
+  to = "https://horselingo.fr/lingo.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/lingo-collection.html"
+  to = "https://horselingo.fr/lingo-collection.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/lingo-dialogue.html"
+  to = "https://horselingo.fr/lingo-dialogue.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/lingo-globe.html"
+  to = "https://horselingo.fr/lingo-globe.html"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/lingo-sellerie.html"
+  to = "https://horselingo.fr/lingo-sellerie.html"
+  status = 302
+  force = true
