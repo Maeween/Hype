@@ -12343,3 +12343,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Restent : photos (images/asso/hero.jpg, jeune.jpg, retraite.jpg, espaces.jpg, puis relancer python3 outils/association-generer.py), liens vers CGV et politique de confidentialité une fois validées, lien dans Mon compte (index.html, autre conversation).
 
 - 13/10 14 h 25 : phrase ajoutée sur la page « L'association » (7 langues) : « L'association édite aussi Hype, l'application des cavaliers : les abonnements Hype+ financent ses activités et ses projets. » (règle Google Ad Grants : dire comment les ventes soutiennent la mission).
+
+## 13/10/2026 — Bandeau dans les partages WhatsApp / Messages (apercu-accueil.ts)
+- Problème : en partageant 2hype.fr, pas de bandeau. Les balises étaient bonnes, mais l'accueil pèse ~8 Mo et les robots d'aperçu abandonnent avant.
+- Solution : `netlify/edge-functions/apercu-accueil.ts` sur « / » et « /index.html ». Si c'est un robot d'aperçu (WhatsApp, Facebook/Messages, Telegram, Slack, Discord, LinkedIn…), il reçoit une petite page de 2 Ko avec titre, description et `images/hype-partage-1200x630.jpg`. Les visiteurs et Googlebot ont la vraie page, inchangée.
+- index.html non touché. Pour annuler : supprimer le fichier.
+- Si on change TITRE/DESCRIPTION dans outils/seo-accueil.cjs, les changer aussi dans ce fichier.
+- WhatsApp garde parfois l'ancien aperçu en mémoire quelque temps : tester avec « https://2hype.fr/?v=2 » pour forcer.
