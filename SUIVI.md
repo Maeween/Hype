@@ -12738,3 +12738,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - LIVRAISON D (préparée) : branche premium-famille fusionnée avec l'appli en ligne (branche famille-publication). Seul conflit : ce suivi (les deux côtés gardés). index.html : corrections Hey Baby en ligne conservées, écrans Famille présents. Tests écrans : Hey Baby photo 4/4, Famille (titulaire, impayé, sans famille, invitations 7 langues dont arabe et japonais) sans erreur.
 - Ce que la publication change pour les abonnés : RIEN de visible (le bloc Famille n'apparaît que si le compte a une famille ; aucune n'existe ; le relais Stripe ne parle pas aux tables Famille tant que le produit n'est pas créé). Seul changement réel : à la suppression d'un compte qui a encore un abonnement ouvert, une ligne « à vérifier » prévient Blandine (rien n'est résilié automatiquement).
 - 15/10 ~1 h 05 : PUBLIÉE avec l'accord de Blandine (« Ok continue »). Fichiers concernés : index.html, netlify/functions/stripe-webhook.js, netlify/functions/supprimer-compte.js (+ fichiers SQL et tests, sans effet en ligne).
+
+
+## 15/10/2026 (1 h) — Cavalier V2 sur iPad et ordinateur, BUILD 1 (1130) : seuils, largeur, photo du haut — [publié 15/10 ~1 h 15, accord « Ok continue »]
+- Demande : adaptation iPad (820) et ordinateur (1440, barre latérale 210) de la page Cavalier V2, sans toucher l'iPhone (consigne « HYPE — CAVALIER V2 — Adaptation iPad et ordinateur » + maquette). Plan en 5 builds présenté, accord « Ok continue ».
+- Build 1 (index.html) : la page suit les seuils de Hype en direct (768 tablette, 1024 ordinateur ; avant : largeur lue une fois, seuils 700/1100) ; le conteneur de l'appli laisse la page Cavalier s'élargir (« cavalier », « moncavalier » ajoutés à ECRANS_TABLETTE et à la liste ordinateur, 1280) ; sur ordinateur la page est une colonne centrée de 1180 px ; photo du haut : iPad 340 px (avant 400), ordinateur 400 px (avant 430), photo 64 % sur ordinateur ; nom aligné à gauche sous la flèche retour.
+- iPhone : capture 390 px avant/après identique au pixel (animations figées).
+- Tests (Supabase simulé) : 390, 768, 820, 1024, 1280, 1440, 1600 px × fr/ar/de — 0 erreur, 0 débordement horizontal.
+- Constaté, NON corrigé (déjà présent sur iPhone, hors build) : en arabe, le bouton « ⋯ » (Mes actions) passe sous la flèche retour (les deux à gauche).
+- Prochains builds : 2) les 6 accès en rangée de cartes photo (iPad/ordi) ; 3) carte écurie pleine largeur ; 4) chevaux en 4 colonnes (grille juste) ; 5) tailles et marges du reste.
