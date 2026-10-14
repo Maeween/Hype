@@ -12549,3 +12549,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande (18 h 03, capture de l'aperçu à 7 chevaux) : « ça non plus c'est pas supposé arriver ».
 - index.html (build 20261014-1117), V2, sa page avec une écurie : 2 et 5 chevaux → chevaux + carte « Les chevaux de l'écurie » ; 1, 4 et 7 chevaux → + carte « + Ajouter mon cheval » (même taille, même parcours de création) pour finir la ligne ; 3 et 6 → « Les chevaux de l'écurie » en bouton pleine largeur sous la grille ; 8 et plus → carte au milieu (3 × 3). Nouvelle fonction cavV2CarteAjout.
 - Checks : marqueur unique 20261014-1117 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1118 : Cavalier V2 — les 6 accès en menu discret (proposition N)
+- Demandes (17 h 56 → 18 h 04) : « les 6 onglets sont un peu petits, d'autres propositions » → 14 propositions dans l'aperçu (A à N) → « le N est pas mal ».
+- index.html (build 20261014-1118), V2 : les 6 accès deviennent une liste sur 2 colonnes (3 sur tablette et ordinateur) : mini vignette carrée (images/cavalier-acces-*.webp), nom, flèche champagne, filet champagne fin dessous. Mêmes destinations ; Actualité grisée sans flèche (« Prochainement ») ; cadenas à la place de la flèche quand c'est privé (Progression en visite).
+- Checks : marqueur unique 20261014-1118 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
