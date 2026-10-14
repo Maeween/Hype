@@ -1,3 +1,47 @@
+# 🗓️ 15/10 (nuit) — RELECTURE DU VOCABULAIRE : 113 CORRECTIONS APPLIQUÉES — horselingo `b8d76da` [publier]
+
+**Page de relecture pour natifs** : artifact « Relecture Horse Lingo » (privé ; Blandine le partage par lien depuis le bouton Partager). 67 mots (36 de base + 31 délicats) × 10 langues (nl, pt, br, sv, pl, ro, da, no, ar, zh) ; le relecteur coche « juste » ou propose un mot, ses réponses restent sur son appareil et se copient en un texte à renvoyer à Blandine. Mise à jour du 15/10 : affiche aussi les variantes de l'anglais (ex. stable ≈ loose box / stall) et les mots corrigés ci-dessous.
+
+**Rapport de relecture** (document « Horse Lingo — rapport de relecture ») : 152 propositions, 8 certaines, 105 probables, 39 à confirmer. **Décision de Blandine : « Certaines et probables ».** Appliquées : 113 lignes (64 prononciations, 22 mots, 22 variantes, 5 ordres criés), seulement là où la valeur était exactement celle relue (les sens propres à un chapitre, ex. « engagement » à Versailles, ne sont pas touchés). Les « à confirmer » restent en attente d'un natif, ainsi que l'alezan danois (fuks / rød).
+
+**Exemples** : danois crinière « manen » (portait « manken », le mot du garrot) ; portugais garrot « a cernelha », arçon « o arção », contrat de foulées « o número de passadas » (le brésilien garde « galões ») ; néerlandais barrage sans la variante fausse « op tijd » ; norvégien rouan « konstant skimmel », liste « blesen » ; brésilien stage « a clínica », chef de piste « o armador de percurso » ; anglais « haute école » en mot principal. Sur les 9 points du premier retour : 5 erreurs confirmées et corrigées, 4 jugés justes (stable, numnah, kasztan, galões), haute école inversée.
+
+**Contrôles** : 43 fichiers relus par le navigateur sans erreur ; leçons fr→da, fr→pt, ar→nl jouées sans erreur JS ; ?l= des 22 lexiques modifiés incrémentés.
+
+**En attente** : **El Jadida (40e ville, « La fantasia »)** — brouillon français dans le document « El Jadida — La fantasia » ; Blandine : « On verra plus tard pour la 40e ville, laisse-la en suivi ». À reprendre : validation du texte et des 5 choix, traduction en 16 langues, 6 visuels à fournir par Blandine (carte, vignette, fond, objet, poses, vidéo d'arrivée).
+
+# 🗓️ 14/10 (nuit, suite) — ROUMAIN 🇷🇴, DANOIS 🇩🇰 ET NORVÉGIEN 🇳🇴 ACTIVÉS : 14e À 16e LANGUES — horselingo `4c6c45a` [publier]
+
+**Demande de Blandine** : « on ajoute romain et danois ? On a déjà. Norvégien ? » → je lui ai précisé qu'on n'avait ni le danois ni le roumain, et proposé les trois → « Ok ». Norvégien = **bokmål** (code interne `no`, voix et Google **nb-NO / nb**). Mis en ligne ensemble. Hype non touché.
+
+**Contenu (préparation `7447050`, puis `4c6c45a`)** : glossaires (875 concepts), 43 fichiers de vocabulaire, toute l'interface (lingo.html 684 textes, dialogue, collection, globe, sellerie, 65 libellés d'exercices, duel). Tutoiement partout ; roumain : tournures neutres si le genre de l'élève est inconnu, ș/ț à virgule. ⚠️ **Traduit par Claude (agents en parallèle, glossaires imposés), jamais relu par un natif.** À relire en priorité : ro termes de maréchalerie (« urechiușa » pour le pinçon, « fesla » pour le paturon), « foulée » (« pasul de galop » / « foulee-uri », à unifier) ; da « manken » (veut dire crinière ET garrot), « afskridtningen » (récupération) ; no « korsforlamming » (coup de sang), « avskrittingen » (récupération), « høyskolen » (haute école).
+
+**Activation** : LANGUES_UI, LG/LGN (RO, DA, NO), VOIX, destinations « Le roumain » (clé `dunare`), « Le danois » (`lyng`), « Le norvégien » (`fjord`), lexique, signatures « Pe curând / Vi ses / Vi sees, Hype ». « treize langues » → **seize** partout, « · RO · DA · NO » dans les listes, 羅・丁・諾 en japonais. Pages Google **/ro/vocabular/**, **/da/ordforrad/**, **/no/ordforrad/** (16 langues, 641 adresses dans le sitemap). Aperçu : « en 16 langues ».
+
+**Affichage** : les drapeaux sont maintenant sur **deux lignes de 8 partout** (téléphone, tablette, ordinateur : à 16, une seule ligne écrasait les drapeaux sur tablette). Pastilles de langue du récit sur deux lignes équilibrées à toutes les tailles.
+
+**Contrôles (Chromium)** : leçons fr→ro, fr→da, fr→no, ro→en, da→en, no→en, da→no, no→da, ro→da, ja→no, ar→ro, en→da, sv→no, pl→ro, fr→pl : **aucune erreur JS** ; dialogue de La Baule juste en ro, da, no ; aucun texte des 5 pages sans ro/da/no ; captures à 320, 390, 820, 1440 px. Mise en ligne vérifiée (Netlify « ready » sur 4c6c45a, /no/ordforrad/aachen/ répond en norvégien).
+
+**Signalé par les traducteurs dans le texte français d'origine (non corrigé, à voir avec Blandine)** : élevage, jument pleine — « portante » est attribué à l'allemand alors que c'est de l'italien (l'allemand dit « tragend ») ; jeunes chevaux, définition 26 — faute de frappe « RENDA ».
+
+**Reste (non bloquant)** : relecture par des natifs · Hype dans ces langues si Blandine le souhaite · au-delà de 16 langues, il faudra une autre présentation du choix de langue (liste déroulante).
+
+# 🗓️ 14/10 (nuit, suite) — SUÉDOIS 🇸🇪 ET POLONAIS 🇵🇱 ACTIVÉS : 12e ET 13e LANGUES — horselingo `b9ee69b` [publier]
+
+**Demande de Blandine** : « On ajoute le marocain ? » → j'ai expliqué les limites de la darija (langue surtout parlée, pas de voix sur les téléphones, traduction peu sûre) et proposé d'autres langues → « Le suédois et le polonais ». Mêmes règles que pour le portugais : mises en ligne ensemble, Hype non touché. Le marocain n'est **pas** fait (options laissées ouvertes : darija en lettres arabes, en lettres latines, ou une ville marocaine « tbourida » dans le voyage).
+
+**Contenu (préparation `dd47a8b`, puis `b9ee69b`)** : glossaires de 875 concepts, 43 fichiers de vocabulaire, toute l'interface (lingo.html 680 textes, dialogue, collection, globe, sellerie, 65 libellés d'exercices, duel). Tutoiement dans les deux langues ; en polonais, tournures neutres quand on ne sait pas si l'élève est une fille ou un garçon. ⚠️ **Traduit par Claude (agents en parallèle, glossaires imposés), jamais relu par un natif.** À faire relire en priorité : sv « vattenkoppen » (abreuvoir), « grimskaft » (longe), termes de maréchalerie (« trängsöm », « sömstick ») ; pl « fula » (foulée ; la PZJ écrit aussi « foule »), « czakker » (période de polo), « mioglobinuria » (coup de sang ; les cavaliers disent plutôt « ochwat mięśniowy »).
+
+**Activation** : LANGUES_UI, LG/LGN (SV, PL), VOIX sv-SE / pl-PL, destinations « Le suédois » (clé neuve `fjall`) et « Le polonais » (clé neuve `wisla`), lexique (drapeaux, tri sans en/ett/att en suédois), signatures « Vi ses, Hype » / « Do zobaczenia, Hype ». « onze langues » → **treize** partout, « · SV · PL » dans les listes, 瑞・波 en japonais. Pages Google **/sv/ordforrad/** et **/pl/slownictwo/** + colonnes partout (13 langues, 521 adresses dans le sitemap). Aperçu : « en 13 langues ».
+
+**Affichage** : téléphone — drapeaux sur deux lignes **7 + 6** ; pastilles du récit sur deux lignes ; tablette et ordinateur : une ligne.
+
+**Corrections au passage** : « engagement » (dressage, Versailles) mal traduit par « inscription » en sv et pl → corrigé ; « épaules » au travail à pied (Santa Ynez) recevait « épaules en arrière » en pt, br, sv, pl → corrigé ; sv « sélection » sportive (Warendorf) distincte de la sélection d'élevage ; pt « OS GALOPES » → « OS GALOPS » (nom gardé comme ailleurs).
+
+**Contrôles (Chromium)** : leçons fr→sv, fr→pl, sv→en, pl→en, sv→pl, pl→sv, ja→sv, ar→pl, en→sv, de→pl, br→sv, pt→pl, zh→pl, fr→br : **aucune erreur JS** ; dialogue de La Baule juste en sv et pl ; aucun texte des 5 pages sans sv/pl ; drapeaux à 320, 390, 820, 1440 px. Mise en ligne vérifiée (Netlify « ready » sur b9ee69b, /sv/ordforrad/aachen/ répond en suédois).
+
+**Reste (non bloquant)** : relecture par des natifs · Hype dans ces langues si Blandine le souhaite.
+
 # 🗓️ 14/10 (nuit, suite) — PORTUGAIS 🇵🇹 ET BRÉSILIEN 🇧🇷 ACTIVÉS : 10e ET 11e LANGUES — horselingo `3f5837a` [publier]
 
 **Demande de Blandine** : « Fais la même chose en portugais puis en brésilien » (même carte blanche que pour le néerlandais). Deux langues séparées : **pt** = portugais du Portugal (voix pt-PT, élève tutoyé), **br** = portugais du Brésil (voix pt-BR, « você », vocabulaire des écuries brésiliennes : baia, barrigueira, adestramento…). « br » est le code interne de l'appli ; Google et les navigateurs reçoivent le vrai code **pt-BR**. Mises en ligne ensemble (pas de « 10 langues » transitoire). Hype n'est **pas** touché.

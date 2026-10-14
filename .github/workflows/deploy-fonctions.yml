@@ -10,6 +10,11 @@ on:
 
 jobs:
   deployer:
+    # 14/10/2026 (livraison A) — GARDE-FOU : avant, tout envoi sur main touchant supabase/functions
+    # déployait AUSSITÔT les fonctions Supabase, sans le marqueur [publier] exigé pour le site.
+    # Désormais : déploiement seulement si le message de l'envoi contient [fonctions],
+    # ou à la main (onglet Actions › « Run workflow »).
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[fonctions]')
     runs-on: ubuntu-latest
 
     env:
