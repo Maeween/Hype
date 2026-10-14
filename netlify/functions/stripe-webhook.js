@@ -78,19 +78,53 @@ const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
    Ici : une table, en centimes, avec la duree qui va avec. Un tarif qui change
    se corrige a UN seul endroit. Un montant inconnu retombe sur « mensuel », le
    choix le moins genereux - on ne donne pas un an par erreur.                */
-const TARIFS = {
-    9999: { plan: "annuel", jours: 367 },   // Hype Premium annuel - 99,99 €
-    7999: { plan: "annuel", jours: 367 },   // ancien tarif annuel, conserve
-    2499: { plan: "mensuel", jours: 32 },   // Hype Premium mensuel - 24,99 €
-    1590: { plan: "duo", jours: 32 },       // Pro Duo - 15,90 €/mois
-    1190: { plan: "ai", jours: 32 },        // Pro IA - 11,90 €/mois
-    1299: { plan: "mensuel", jours: 32 },   // 12,99 €/mois
+/* ── 14/10/2026 — LIVRAISON 1 « SÉCURISATION HYPE IA » ───────────────────────
+   On n'identifie PLUS la formule par le montant payé (Hype IA à 14,99 € était
+   inconnu → « mensuel » par défaut → Premium complet offert par erreur ; et le
+   Pack Duo à 24,99 € était enregistré « mensuel », sans ses 20 questions IA).
+   On l'identifie par les IDENTIFIANTS STRIPE présents dans les messages signés :
+     · premier achat (checkout.session.completed) → identifiant du LIEN de paiement
+     · renouvellement (invoice.paid)               → identifiant du PRIX de la ligne
+   Identifiant inconnu → AUCUN droit + anomalie dans la table paiements_a_verifier.
+   Le compte Stripe est garanti par la signature (secret propre à ce compte).
+   Liens désactivés le 14/10 (Pro IA 11,90 · Pro Duo 15,90 · anciens 9,99 / 79,99)
+   et lien de test à 0 € : volontairement absents → traités comme inconnus.      */
+const OFFRES_PAR_LIEN = {
+    "plink_1TrFteHnB1OJ7FOmhQ9f3GU5": { plan: "mensuel", jours: 32 },   // Hype Premium mensuel 12,99 €
+    "plink_1TrFwtHnB1OJ7FOmVdlbOVhT": { plan: "annuel", jours: 367 },   // Cercle Crystal 99,99 € (paiement unique)
+    "plink_1TrGrTHnB1OJ7FOmZscujhRX": { plan: "duo", jours: 32 },       // Pack Duo 24,99 € (Premium + IA, un compte)
+    "plink_1TrGWfHnB1OJ7FOmQfLvaAsl": { plan: "ai", jours: 32 },        // Hype IA 14,99 € (IA seule, SANS Premium)
 };
-function tarifDe(montant) {
-    const t = TARIFS[Number(montant)];
-    if (t) return t;
-    log("montant inconnu :", montant, "— traite comme mensuel");
-    return { plan: "mensuel", jours: 32 };
+const OFFRES_PAR_PRIX = {
+    "price_1TrFsxHnB1OJ7FOmIUhz6c2t": { plan: "mensuel" },   // 12,99 €/mois
+    "price_1TrGrMHnB1OJ7FOmyXeAxdKt": { plan: "duo" },       // 24,99 €/mois
+    "price_1TrGW8HnB1OJ7FOmxDCQ9pyU": { plan: "ai" },        // 14,99 €/mois
+    "price_1TrFwmHnB1OJ7FOmLywabzpo": { plan: "annuel" },    // 99,99 € une fois (pas de facture de renouvellement)
+};
+// Liens de DONS (mécénat « Soutenez Hype ») : aucun droit, jamais.
+const LIENS_DONS = new Set([
+    "plink_1TofuoHnB1OJ7FOmlNSFTC35", // 20 €
+    "plink_1Toge8HnB1OJ7FOm3R3kNg1B", // 40 €
+    "plink_1TpwIOHnB1OJ7FOmgVNRdXyt", // 40 € (ancien)
+    "plink_1TogAVHnB1OJ7FOmw3rz7hdq", // 80 €
+    "plink_1Tp52AHnB1OJ7FOmbJ0W7dUp", // 120 € (inutilisé)
+    "plink_1Tp54tHnB1OJ7FOmJyLfYqpI", // 150 €
+    "plink_1Tp55WHnB1OJ7FOmyxHf2I5R", // 200 € (inutilisé)
+    "plink_1Tpw0fHnB1OJ7FOm32agYGI7", // 250 €
+    "plink_1TpvvFHnB1OJ7FOmJ3VdMPMA", // 500 €
+]);
+const PLANS_PAYES = { mensuel: 1, annuel: 1, duo: 1, ai: 1 };
+
+function prixDeFacture(f) {
+    try {
+        const l = f && f.lines && f.lines.data && f.lines.data[0];
+        if (!l) return null;
+        const pd = l.pricing && l.pricing.price_details;
+        if (pd && pd.price) return typeof pd.price === "string" ? pd.price : (pd.price.id || null);
+        if (l.price) return typeof l.price === "string" ? l.price : (l.price.id || null);
+        if (l.plan && l.plan.id) return l.plan.id;
+    } catch (e) { }
+    return null;
 }
 
 function log() {
@@ -170,6 +204,47 @@ async function ligneParAbonnement(service, subId) {
         const t = await r.json();
         return (t && t.length) ? t[0] : null;
     } catch (e) { return null; }
+}
+
+/* ── Ligne actuelle d'un compte (pour ne JAMAIS écraser un autre accès payé) ── */
+async function ligneParUtilisateur(service, userId) {
+    const r = await fetch(SUPABASE_URL + "/rest/v1/abonnements_premium?user_id=eq." + encodeURIComponent(userId) +
+        "&select=*&limit=1",
+        { headers: entetesSupabase(service) });
+    if (!r.ok) throw new Error("lecture ligne KO " + r.status);
+    const t = await r.json();
+    return (t && t.length) ? t[0] : null;
+}
+/* Un accès PAYÉ encore valable, venant d'un AUTRE achat que celui-ci ?
+   (abonnement Stripe différent, Crystal, Duo, IA ou achat Apple). Un mois offert
+   saisi à la main (sans trace Stripe, plan mensuel) n'est pas un conflit : un vrai
+   achat le remplace normalement.                                                */
+function accesPayeConcurrent(ligne, nouvelAbo) {
+    if (!ligne || ligne.statut !== "actif") return false;
+    if (ligne.expire_le && new Date(ligne.expire_le).getTime() <= Date.now()) return false;
+    if (nouvelAbo && ligne.stripe_subscription === nouvelAbo) return false;
+    const paye = !!(ligne.stripe_subscription || ligne.stripe_customer || ligne.source === "apple"
+        || ligne.plan === "annuel" || ligne.plan === "duo" || ligne.plan === "ai");
+    return paye;
+}
+/* ── Anomalie à vérifier à la main (table paiements_a_verifier, 14/10) ─────────
+   Un même événement ne crée qu'UNE ligne (stripe_event_id unique). Renvoie true
+   si l'anomalie est bien enregistrée : sinon on ne confirme PAS à Stripe.       */
+async function anomalie(service, evenement, infos) {
+    log("ANOMALIE", infos.anomalie, "·", evenement.id, "·", infos.identifiant_offre || "", "·", infos.email || "");
+    const r = await fetch(SUPABASE_URL + "/rest/v1/paiements_a_verifier?on_conflict=stripe_event_id", {
+        method: "POST",
+        headers: { ...entetesSupabase(service), Prefer: "resolution=ignore-duplicates,return=minimal" },
+        body: JSON.stringify({
+            stripe_event_id: evenement.id, type_evenement: evenement.type,
+            reference_stripe: infos.reference_stripe || null, identifiant_offre: infos.identifiant_offre || null,
+            user_id: infos.user_id || null, email: infos.email || null,
+            montant_centimes: (typeof infos.montant === "number") ? infos.montant : null,
+            anomalie: infos.anomalie,
+        }),
+    });
+    if (!r.ok) log("anomalie NON enregistrée", r.status, (await r.text().catch(() => "")).slice(0, 300));
+    return r.ok;
 }
 
 // Crée ou met à jour la ligne d'abonnement d'un cavalier (clé : user_id)
@@ -286,11 +361,21 @@ export default async (req) => {
                 if (userId) log("rattachée par email :", email);
             }
 
-            const t = tarifDe(objet.amount_total);
-            const plan = t.plan;
-            const expire = new Date(Date.now() + t.jours * 86400000).toISOString();
+            const lien = objet.payment_link || null;
+            const offre = lien ? OFFRES_PAR_LIEN[lien] : null;
+            const refS = objet.subscription || objet.payment_intent || objet.id;
+            const infosBase = { reference_stripe: refS, identifiant_offre: lien, user_id: userId, email: email, montant: objet.amount_total };
 
-            if (!userId) {
+            if (lien && LIENS_DONS.has(lien)) {
+                // Don : remerciement côté appli, AUCUN droit.
+                log("don reçu (aucun droit) :", lien, "—", objet.amount_total);
+            } else if (objet.payment_status !== "paid" && objet.payment_status !== "no_payment_required") {
+                // Paiement pas encore confirmé (moyen différé) : aucun droit.
+                ecritureOk = await anomalie(service, evenement, { ...infosBase, anomalie: "paiement_non_confirme" });
+            } else if (!offre) {
+                // Lien inconnu : on ne devine JAMAIS la formule par le montant.
+                ecritureOk = await anomalie(service, evenement, { ...infosBase, anomalie: "offre_inconnue" });
+            } else if (!userId) {
                 // Ni identifiant, ni compte trouvé pour cette adresse.
                 // On refuse de dire « c'est fait » : Stripe réessaiera, et la
                 // ligne restera visible dans les journaux avec son adresse.
@@ -299,6 +384,22 @@ export default async (req) => {
                     "· client :", objet.customer, "· abonnement :", objet.subscription);
                 ecritureOk = false;
             } else {
+                const plan = offre.plan;
+                /* Fin calculée depuis la DATE DU PAIEMENT (objet.created), pas depuis
+                   la réception : un ancien message rejoué ne prolonge rien.       */
+                const depart = (objet.created ? objet.created * 1000 : Date.now());
+                const expire = new Date(depart + offre.jours * 86400000).toISOString();
+                const ligneU = await ligneParUtilisateur(service, userId);
+                const dejaFait = !!(ligneU && ligneU.statut === "actif" && ligneU.plan === plan && ligneU.expire_le
+                    && Math.abs(new Date(ligneU.expire_le).getTime() - new Date(expire).getTime()) < 120000
+                    && (ligneU.stripe_subscription || null) === (objet.subscription || null));
+                if (dejaFait) {
+                    // Même achat déjà enregistré (message reçu deux fois) : rien à refaire.
+                    log("achat déjà enregistré, rien à refaire :", refS);
+                } else if (accesPayeConcurrent(ligneU, objet.subscription || null)) {
+                    // Le compte a déjà un AUTRE accès payé valable : on n'écrase rien.
+                    ecritureOk = await anomalie(service, evenement, { ...infosBase, anomalie: "double_abonnement" });
+                } else {
                 ecritureOk = await upsertAbonnement(service, {
                     user_id: userId,
                     email: email,
@@ -312,9 +413,10 @@ export default async (req) => {
                     expire_le: expire,
                     maj_le: new Date().toISOString(),
                 });
-                log("Premium activé :", plan, "—", email,
+                log("Accès activé :", plan, "—", email,
                     "— mode :", modeSession,
                     modeSession === "payment" ? "(paiement unique : aucun renouvellement automatique)" : "");
+                }
             }
         }
 
@@ -329,11 +431,27 @@ export default async (req) => {
 
             const champs = { statut: "actif", maj_le: new Date().toISOString() };
             if (expire) champs.expire_le = expire;
+            const prix = prixDeFacture(objet);
+            const offreF = prix ? OFFRES_PAR_PRIX[prix] : null;
+            const emailF = objet.customer_email || (objet.customer_details && objet.customer_details.email) || null;
+            const infosF = { reference_stripe: aboFacture, identifiant_offre: prix, email: emailF, montant: objet.amount_paid };
 
-            const touchees = await majParAbonnement(service, aboFacture, champs);
+            const ligneAbo = await ligneParAbonnement(service, aboFacture);
+            const touchees = ligneAbo ? await majParAbonnement(service, aboFacture, champs) : 0;
 
             if (touchees > 0) {
+                // Renouvellement d'une ligne existante : on prolonge SEULEMENT ses droits
+                // (la formule n'est jamais changée ici).
                 log("Renouvellement enregistré, expire le", expire || "(période inconnue)");
+                if (!offreF) {
+                    ecritureOk = await anomalie(service, evenement, { ...infosF, user_id: ligneAbo.user_id, anomalie: "offre_inconnue" });
+                } else if (ligneAbo.plan && offreF.plan !== ligneAbo.plan) {
+                    ecritureOk = await anomalie(service, evenement, { ...infosF, user_id: ligneAbo.user_id, anomalie: "changement_formule" });
+                }
+            } else if (ligneAbo) {
+                ecritureOk = false; // ligne trouvée mais mise à jour refusée : Stripe réessaiera
+            } else if (!offreF) {
+                ecritureOk = await anomalie(service, evenement, { ...infosF, anomalie: "offre_inconnue" });
             } else {
                 // Nouveauté : aucune ligne à mettre à jour. Avant, on s'arrêtait
                 // là en disant « c'est fait ». On tente maintenant de la CRÉER.
@@ -341,9 +459,11 @@ export default async (req) => {
                     (objet.customer_details && objet.customer_details.email) || null;
                 const userId = await userIdParEmail(service, email);
 
-                if (userId) {
-                    const montant = objet.amount_paid || objet.total || 0;
-                    const tF = tarifDe(montant);
+                if (userId && accesPayeConcurrent(await ligneParUtilisateur(service, userId), aboFacture)) {
+                    // Ex. : abonnée Premium qui a aussi Hype IA → on n'écrase pas son Premium.
+                    ecritureOk = await anomalie(service, evenement, { ...infosF, user_id: userId, anomalie: "double_abonnement" });
+                } else if (userId) {
+                    const tF = { plan: offreF.plan, jours: 32 };
                     ecritureOk = await upsertAbonnement(service, {
                         user_id: userId,
                         email: email,
