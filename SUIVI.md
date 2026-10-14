@@ -12777,3 +12777,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Tests écrans (faux serveur) : iPhone 375/390, tablette 820, ordinateur 1440 : aucune erreur, aucun débordement ; onglets OK ; paiement Famille ouvert avec le compte joint ; mécénat OK ; bascule ancienne/V3 OK ; cavalière ordinaire : ancienne page. Repères projets : fr / ar / ja arrivent sur le bon projet.
 - ⚠️ Le relais Stripe en ligne ne connaît pas encore le prix Famille (branche famille-vente) : ne pas payer Premium Famille pendant le test.
 - Restent : étape 2 (6 langues + arabe), étape 3 (V3 pour tout le monde + relais Famille = mise en vente), CGV (décision en attente).
+
+## 15/10/2026 (2 h) — Page Cavalier : nouvelle photo par défaut (1134) [publié, accord « Ok continue »]
+- Demande : « utilise la photo qu'on a sur la page Mes chevaux, ré-applique-la aussi aux hero de toutes les sous-pages du cavalier ».
+- Photo : images/mes-chevaux-fond-couchant.webp (déjà dans le dépôt, aucun nouveau fichier), constante IMG_CAVALIER_HERO_DEFAUT.
+- Cavalier sans photo : page Cavalier (remplace la silhouette bleue et sa version Crimson ; photo pleine, cadrée sur la tête ; iPad/ordinateur : cadre plus étroit pour garder le cheval entier), Histoire (remplace la première lettre du pseudo / « ? »), Résultats en concours / Performances (remplace l'avatar Hype tiré au hasard). Un cavalier qui a sa photo garde sa photo.
+- NON changé : l'avatar par défaut des petits ronds ailleurs dans l'appli (IMG_CAVALIER_DEFAUT) ; Progression (a déjà sa propre photo validée) ; Photos et Vidéos (n'ont pas de photo du haut) — question posée à Blandine.
+- Tests : 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.

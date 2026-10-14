@@ -32996,6 +32996,10 @@ const IMG_BANDEAU_CRIMSON = "images/IMG_BANDEAU_CRIMSON.jpg";
 const IMG_SAUT_CRIMSON = "images/IMG_SAUT_CRIMSON.jpg";
 const IMG_CAVALIER_DEFAUT_CRIMSON = "images/IMG_CAVALIER_DEFAUT_CRIMSON.jpg";
 const IMG_CAVALIER_DEFAUT = "images/IMG_CAVALIER_DEFAUT.jpg";
+/* 15/10 (1134) Blandine : « utilise la photo qu on a sur la page Mes chevaux, re applique-la aussi aux hero de toutes les sous-pages
+   du cavalier » : photo du haut par defaut (cavalier sans photo) de la page Cavalier, de Histoire et de Performances.
+   L avatar par defaut (petits ronds, ailleurs dans l appli) ne change pas. */
+const IMG_CAVALIER_HERO_DEFAUT = "images/mes-chevaux-fond-couchant.webp";
 function EcranAlbumInvite() {
   var h = React.createElement;
   var ctx = useApp(); var tr = ctx.tr, setEcran = ctx.setEcran;
@@ -33144,7 +33148,7 @@ function EcranMemoiresCavalier() {
     h("style", null, "@keyframes hmKen{from{transform:scale(1)}to{transform:scale(1.07)}}@keyframes hypeSpin{to{transform:rotate(1turn)}}.hype-cristal{position:relative;border-radius:20px;padding:1.6px;overflow:hidden;isolation:isolate}.hype-cristal::before{content:'';position:absolute;inset:-60%;z-index:0;background:conic-gradient(from 0deg,transparent 0 66%," + tn + " 82%," + tnL + " 90%,transparent 100%);animation:hypeSpin 4.5s linear infinite}.hype-cristal>.hype-cristal-cc{position:relative;z-index:1;border-radius:18px;overflow:hidden}"),
     h("div", { style: { position: "relative", height: 250, overflow: "hidden", borderRadius: "0 0 26px 26px", marginBottom: 16 } },
       photoV ? h("img", { src: photoV, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 30%", animation: "hmKen 14s ease-in-out infinite alternate" } })
-        : h("div", { style: { width: "100%", height: "100%", background: "linear-gradient(160deg, #0B141B, #06090C)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: C, fontSize: 52, color: tA(0.55) } }, (pseudoV || "?").charAt(0).toUpperCase()),
+        : h("img", { src: IMG_CAVALIER_HERO_DEFAUT, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: "50% 22%", animation: "hmKen 14s ease-in-out infinite alternate" } }),   /* (1134) avant : la premiere lettre du pseudo (ou « ? ») */
       h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.45) 0%, rgba(6,7,9,0.10) 38%, rgba(6,7,9,0.82) 78%, #060709 100%)" } }),
       h("button", { onClick: function () { setEcran(__estVisite ? "cavalier" : "moncavalier"); }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع"), style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 38, height: 38, borderRadius: "50%", background: "rgba(6,7,9,0.55)", border: "1px solid rgba(255,255,255,0.14)", color: "#EDF2F5", fontSize: 17, cursor: "pointer" } }, "‹"),
       h("div", { style: { position: "absolute", left: 16, right: 16, bottom: 14, textAlign: "center" } },
@@ -34347,8 +34351,8 @@ function EcranMonCavalier() {
      ligne ne s'affiche pas. Celles qui ont écrit une citation la gardent.
      ⚠️ Le Mur des Songes n'est PAS touché — mot de Blandine. */
   var citation = profil.citation || "";
-  var heroImg = profil.avatar || ((__thh && __thh.id === "crimson") ? IMG_CAVALIER_DEFAUT_CRIMSON : IMG_CAVALIER_DEFAUT);
-  var estLogo = !profil.avatar;
+  var heroImg = profil.avatar || IMG_CAVALIER_HERO_DEFAUT;   /* (1134) avant : silhouette bleue (ou sa version Crimson), affichee comme un logo */
+  var estLogo = false;
   /* 29/09 (513) : position « relative » sur la page. Sans elle, la fleche retour, le badge Premium, le partage et le
      drapeau se calaient sur un conteneur plus haut de l appli et tombaient ~110 px trop bas, DANS la photo (capture
      de Blandine : « ils ne doivent pas etre a l interieur de la photo mais en HAUT de la photo »). Desormais ils se
@@ -34462,7 +34466,7 @@ function EcranMonCavalier() {
     var handleV2 = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcV2) : "";
     var ecV2 = String((profil && (profil.club || profil.ecurie)) || "").trim();
     var masqueV2 = "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent 0%, #000 40%), linear-gradient(180deg, transparent 0%, #000 14%, #000 66%, transparent 100%)";
-    var photoV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: grandV2 ? "64%" : (tabV2 ? "60%" : "84%"), WebkitMaskImage: masqueV2, maskImage: masqueV2, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" };
+    var photoV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: (tabV2 && !profil.avatar) ? (grandV2 ? "42%" : "50%") /* (1134) photo par defaut (portrait) : cadre plus etroit, le cheval reste entier */ : (grandV2 ? "64%" : (tabV2 ? "60%" : "84%")), WebkitMaskImage: masqueV2, maskImage: masqueV2, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" };
     var ombreTxt = "0 2px 16px rgba(0,0,0,0.75)";
     var entreesV2 = [];
     if (!__estVisite) {
@@ -34477,7 +34481,7 @@ function EcranMonCavalier() {
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, overflow: "hidden" } },
         estLogo
           ? h("div", { style: Object.assign({}, photoV2, { backgroundImage: "url(" + heroImg + ")", backgroundSize: "auto 86%", backgroundRepeat: "no-repeat", backgroundPosition: "center 30%", opacity: 0.9 }) })
-          : h("img", { src: heroImg, alt: "", decoding: "async", style: Object.assign({}, photoV2, { objectFit: "cover", objectPosition: "center 22%", display: "block", height: "calc(100% - env(safe-area-inset-top) - 58px)" }) })),
+          : h("img", { src: heroImg, alt: "", decoding: "async", style: Object.assign({}, photoV2, { objectFit: "cover", objectPosition: (profil.avatar ? "center 22%" : (tabV2 ? "center 10%" : "center 22%")), display: "block", height: "calc(100% - env(safe-area-inset-top) - 58px)" }) })),
       /* le menu « Mes actions » (sa page) ou la bulle « ecrire » (visite), en haut a droite */
       !__estVisite
         ? h("button", { onClick: function (eM) { if (eM && eM.stopPropagation) eM.stopPropagation(); setMenuOuvertProfil(!menuOuvertProfil); }, "aria-label": T("Mes actions", "My actions", "Mis acciones", "Le mie azioni", "メニュー", "Meine Aktionen", "إجراءاتي"), style: Object.assign({}, rondV2, { fontSize: 17, lineHeight: 1, paddingBottom: 4, color: menuOuvertProfil ? "#C5AA78" : "#F3EEE4" }) }, "⋯")
@@ -40295,7 +40299,7 @@ function EcranResultatsCavaliere() {
   var c = { nom: nomCav, palmares: [] };
   var chevalDyn = { ownerId: null, nom: "", photo_palmares: null, moments_forts_medias: null, dbId: null };
   var id = riderId;
-  var photoCh = prof ? (((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) || ((typeof avatarHypeDefaut === "function") ? avatarHypeDefaut(prof.id || prof.pseudo) : "")) : "";
+  var photoCh = prof ? (((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) || IMG_CAVALIER_HERO_DEFAUT /* (1134) avant : un avatar Hype tire au hasard */) : "";
   var photosForts = [], albumsForts = [], mediaTousMF = [];
   var pickerMomentF = null; function setPickerMomentF() { } function ouvrirPickerMomentF() { } function definirMediaMomentFort() { }
   function estModerateurHype() { return false; }   /* page de lecture : aucun outil ici */
