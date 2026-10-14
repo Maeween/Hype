@@ -2475,6 +2475,21 @@ function BandeauStories(props) {
   }
 
   var T = (props && props.taille) || HS_TAILLE_ROND;
+  /* 14/10 (?v=20cd) — propriete `tailleAuto` (page Cavalier V2, Blandine : « on pourrait les centrer et que leur taille
+     s adapte en fonction de leur nombre ») : la taille des ronds se calcule sur la largeur disponible et le nombre de
+     visuels (2 au plus par cavalier + le « + »), entre 64 et 104 px ; si tout tient, le rail est CENTRE, sinon il defile
+     depuis le debut comme avant. Sans cette propriete : rien ne change. */
+  var railCentre = false;
+  if (props && props.tailleAuto) {
+    try {
+      var largA = Math.min((typeof window !== "undefined" && window.innerWidth) || 390, 760) - 28;
+      var nVis = 1, nGr = 1;
+      (groupes || []).forEach(function (gA) { nGr++; nVis += Math.min(2, ((gA && gA.stories) || []).length || 1); });
+      var tA = Math.floor((largA - 10 * (nGr - 1)) / nVis) - 12;
+      T = Math.max(64, Math.min(104, tA));
+      railCentre = (nVis * (T + 12) + 10 * (nGr - 1)) <= largA;
+    } catch (eTa) { }
+  }
   var LARGEUR = T + 12;
   /* FORME : "rond" par défaut (Cavalier, Club, Écurie) ou "carte" (Communauté).
      Le choix est passé par la page appelante, pas décidé ici : un seul
@@ -2753,7 +2768,7 @@ function BandeauStories(props) {
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
     /* 14/10 (?v=20cc) : propriete `fond` (fond du rail impose par la page appelante, ex. "transparent" sur la page Cavalier V2).
        Sans elle : #030405 comme avant, rien ne change ailleurs. */
-    h("div", { "data-hscroll": "1", style: { background: (props && props.fond) || "#030405", display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
+    h("div", { "data-hscroll": "1", style: { background: (props && props.fond) || "#030405", display: "flex", alignItems: "flex-start", justifyContent: railCentre ? "center" : "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */

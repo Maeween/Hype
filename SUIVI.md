@@ -12537,3 +12537,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html (build 20261014-1115) : en V2, le bloc du Mur des songes n'est plus affiché sur la page Cavalier (une ligne en tête du bloc). Le code, la fenêtre d'écriture et le texte enregistré (ma_voix) sont conservés ; l'ancienne page (hors V2) l'affiche toujours.
 - Checks : marqueur unique 20261014-1115 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
 - ⚠️ ERREUR DE MA PART, corrigée tout de suite : le premier envoi « Build 1115 » (4f27eb0) ne contenait QUE le suivi — la modification d'index.html avait échoué (texte de repère introuvable) et je l'ai envoyé quand même. Renvoyé juste après avec index.html réellement modifié (marqueur 20261014-1115).
+
+## 14/10/2026 — Build 1116 : Cavalier V2 — stories centrées, taille selon leur nombre
+- Demande (17 h 57) : « Pour les story ça choque, on pourrait les centrer et que leur taille s'adapte en fonction de leur nombre ? »
+- hype-stories.js (?v=20cd) : nouvelle propriété `tailleAuto` — taille des ronds calculée sur la largeur disponible et le nombre de visuels (2 au plus par cavalier + le « + »), entre 64 et 104 px ; si tout tient sur la largeur, le rail est centré, sinon il défile depuis le début comme avant. Sans la propriété : inchangé ailleurs.
+- index.html (build 20261014-1116) : « Ma story » V2 utilise `tailleAuto` (au lieu de 72 px fixes).
+- 🟥 Fichiers envoyés : index.html ET hype-stories.js (+ SUIVI.md).
+- Checks : marqueur unique 20261014-1116 ; 16 scripts 0 erreur ; hype-stories.js node --check OK ; marqueurs de garde inchangés.
