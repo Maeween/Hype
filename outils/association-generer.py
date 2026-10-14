@@ -224,6 +224,23 @@ ICO["insta"]='<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="1
 ICO["fb"]='<path d="M14.5 8H16V5.2c-.3 0-1.2-.2-2.3-.2-2.3 0-3.7 1.4-3.7 3.9V11H7.5v3H10v6.5h3V14h2.5l.4-3H13V9.2c0-.8.3-1.2 1.5-1.2Z"/>'
 ICO["croix"]='<path d="M6 6l12 12M18 6 6 18"/>'
 
+# ═══ ÉTAPE 2 (14/10) : bandeau des 5 engagements ═══
+ENG={
+"fr":(["Enseignement et formation","Jeunes espoirs","Retraite des chevaux","Petit élevage","Environnement"],["Enseignement","Jeunes espoirs","Retraite","Petit élevage","Environnement"],["Transmettre la passion et les savoirs équestres.","Accompagner les talents de demain.","Offrir une seconde vie à nos compagnons.","Une approche raisonnée et respectueuse.","Préserver un cadre naturel durable."]),
+"en":(["Teaching and training","Young talents","Horse retirement","Small-scale breeding","Environment"],["Teaching","Young talents","Retirement","Breeding","Environment"],["Passing on our passion and equestrian know-how.","Supporting tomorrow's talents.","Giving our companions a second life.","A thoughtful, respectful approach.","Preserving a lasting natural setting."]),
+"es":(["Enseñanza y formación","Jóvenes promesas","Jubilación de los caballos","Pequeña cría","Medio ambiente"],["Enseñanza","Jóvenes promesas","Jubilación","Cría","Medio ambiente"],["Transmitir la pasión y los saberes ecuestres.","Acompañar a los talentos del mañana.","Ofrecer una segunda vida a nuestros compañeros.","Un enfoque razonado y respetuoso.","Preservar un entorno natural duradero."]),
+"it":(["Insegnamento e formazione","Giovani promesse","Pensione dei cavalli","Piccolo allevamento","Ambiente"],["Insegnamento","Giovani promesse","Pensione","Allevamento","Ambiente"],["Trasmettere la passione e i saperi equestri.","Accompagnare i talenti di domani.","Offrire una seconda vita ai nostri compagni.","Un approccio ragionato e rispettoso.","Preservare un ambiente naturale duraturo."]),
+"de":(["Unterricht und Ausbildung","Junge Talente","Ruhestand der Pferde","Kleine Zucht","Umwelt"],["Unterricht","Junge Talente","Ruhestand","Zucht","Umwelt"],["Die Leidenschaft und das Reitwissen weitergeben.","Die Talente von morgen begleiten.","Unseren Gefährten ein zweites Leben schenken.","Ein durchdachter, respektvoller Ansatz.","Eine dauerhaft natürliche Umgebung bewahren."]),
+"ja":(["指導と育成","若い才能","馬の引退生活","小さな生産","環境"],["指導","若い才能","引退生活","生産","環境"],["乗馬への情熱と技術を伝えます。","明日の才能を支えます。","仲間である馬たちに第二の人生を。","理にかなった、思いやりのある取り組み。","持続する自然環境を守ります。"]),
+"ar":(["التعليم والتكوين","المواهب الشابة","تقاعد الخيول","تربية صغيرة","البيئة"],["التعليم","المواهب الشابة","التقاعد","التربية","البيئة"],["نقل الشغف والمعارف الفروسية.","مرافقة مواهب الغد.","منح رفاقنا حياة ثانية.","نهج مدروس ومحترم.","الحفاظ على بيئة طبيعية مستدامة."]),
+}
+ICO["groupe"]='<circle cx="12" cy="7.5" r="2.6"/><circle cx="5.8" cy="9.6" r="2.1"/><circle cx="18.2" cy="9.6" r="2.1"/><path d="M7.4 19c.4-3.2 2.3-5 4.6-5s4.2 1.8 4.6 5"/><path d="M2.5 18c.3-2.3 1.6-3.8 3.3-3.8 1 0 1.8.4 2.4 1.1"/><path d="M21.5 18c-.3-2.3-1.6-3.8-3.3-3.8-1 0-1.8.4-2.4 1.1"/>'
+ICO["tete"]='<path d="M8 20.5c0-3 .7-5.7 2.1-7.6l-3.6 1c-1 .3-1.9-.3-2-1.2L4.2 10.8c-.1-.6.2-1.2.7-1.5L10 5.6 11.2 3l1.5 2.3c3.6.7 6.3 4 6.3 8.2v7"/><circle cx="10.3" cy="8.7" r=".55"/>'
+def bandeau(lg):
+    titres,courts,phrases=ENG[lg]; ic=["cap","groupe","coeur","tete","pousse"]
+    li="".join(f'<li><span class="pic">{svg(i)}</span><span class="tit"><span class="long">{e(a)}</span><span class="court" aria-hidden="true">{e(c)}</span></span><span class="phr">{e(f)}</span></li>' for i,a,c,f in zip(ic,titres,courts,phrases))
+    return f'<section class="engag" id="engagements" aria-labelledby="engag-t"><h2 class="vh" id="engag-t">{e(T[lg]["engag"])}</h2><ul>{li}</ul></section>'
+
 CSS=r"""
 :root{--noir:#05080B;--noir2:#070A08;--petrole:#0D1518;--ivoire:#F3EEE4;--doux:#C9CFCB;--gris:#9AA39F;--champ:#C9A66B;--trait:rgba(201,166,107,.42);--trait2:rgba(201,166,107,.18);
 --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--cinzel:Cinzel,"Cormorant Garamond",Georgia,serif;--sans:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -296,6 +313,27 @@ img{max-width:100%}
 }
 [dir=rtl] .hero picture img{transform:scaleX(-1)}
 @media (min-width:1024px){[dir=rtl] .hero::after{background:linear-gradient(270deg,var(--noir) 0%,rgba(5,8,11,.86) 26%,rgba(5,8,11,.35) 50%,rgba(5,8,11,0) 68%),linear-gradient(180deg,rgba(5,8,11,0) 75%,var(--noir) 100%)}}
+/* ── 5 ENGAGEMENTS ── */
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.engag{background:var(--noir2);border-top:1px solid rgba(201,166,107,.10);border-bottom:1px solid rgba(201,166,107,.10)}
+.engag ul{list-style:none;margin:0 auto;max-width:1240px;padding:20px 8px 22px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.engag li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;min-width:0}
+.engag .pic{width:50px;height:50px;border-radius:50%;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;color:var(--champ)}
+.engag .pic .ico{width:24px;height:24px;stroke-width:1.2}
+.engag .tit{font:500 11px/1.25 var(--serif);color:var(--ivoire)}
+.engag .long,.engag .phr{display:none}
+@media (min-width:640px){
+ .engag ul{padding:28px 24px 30px;gap:0}
+ .engag li{padding:0 12px;gap:10px}
+ .engag li+li{border-inline-start:1px solid rgba(201,166,107,.22)}
+ .engag .pic{border:0;width:auto;height:auto}
+ .engag .pic .ico{width:34px;height:34px;stroke-width:1.1}
+ .engag .court{display:none}.engag .long{display:inline}
+ .engag .tit{font:500 11.5px/1.35 var(--cinzel);letter-spacing:.12em;text-transform:uppercase}
+ .engag .phr{display:block;font:400 13.5px/1.4 var(--serif);color:var(--doux);max-width:15em}
+}
+@media (min-width:1024px){.engag ul{padding:30px 32px 34px}.engag .tit{font-size:12.5px}.engag .phr{font-size:14.5px}}
+:lang(ja) .engag .tit,:lang(ar) .engag .tit{letter-spacing:.02em;text-transform:none;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Naskh Arabic",Georgia,serif}
 /* ── CONTENU (sections actuelles, refondues aux étapes suivantes) ── */
 main{max-width:1120px;margin:0 auto;padding:0 20px 20px}
 h2{font:500 clamp(28px,7vw,38px)/1.1 var(--serif);margin:42px 0 6px;color:var(--ivoire)}
@@ -394,9 +432,10 @@ def page(lg):
 <div class="txt"><p class="sur">Équitation et Environnement</p><h1 class="feinn">FEINN</h1><p class="accroche">{e(t["accroche"])}</p><div class="filet"></div>
 <p class="hero-desc">{e(t["hero_desc"])}</p><a class="btn" href="#association">{e(t["btn_asso"])} {svg("fleche","ico dir")}</a></div>
 </section>
+{bandeau(lg)}
 <main>
 <section class="presentation" id="association"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div>
-<ul class="missions" id="engagements">{"".join(f'<li><span class="cercle">{svg(i)}</span>{e(m)}</li>' for i,m in zip(mico,t["missions"]))}</ul></section>
+</section>
 <div class="bande"><blockquote>{e(t["citation1"])}</blockquote></div>
 <div class="sep"><span></span></div>
 <section id="projets"><h2>{e(t["projets_t"])}</h2><div class="trait"></div><p class="intro2">{e(t["projets_intro"])}</p>
