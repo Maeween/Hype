@@ -12600,3 +12600,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - RETOUR ARRIÈRE en une ligne (commentaire posé au-dessus de CAV_V2) : `false` = ancienne page pour tous ; l'ancienne formule = V2 pour Blandine seule.
 - À surveiller : premiers retours des cavaliers (pages visitées, cavaliers sans cheval → Hey Baby Please / Rizotto d'Emery à découvrir, cavaliers sans écurie).
 - Checks : marqueur unique 20261014-1125 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1126 : Cavalier V2 — contrôle des traductions
+- Question de Blandine (18 h 32) : « t'as traduit dans toutes les langues ? »
+- Relecture de tous les textes ajoutés par la V2 (1104 à 1125) : tous passent par T(…) en 7 langues (fr, en, es, it, ja, de, ar). Deux libellés invisibles à l'écran (lus par l'aide vocale du téléphone) étaient restés en français, repris de l'ancienne page : « Modifier mon club » et « Modifier ma deuxième écurie » → traduits en 7 langues.
+- Restent volontairement tels quels : « Team CSO Club » (nom de l'équipe, comme avant) et « Premium ».
+- ⚠️ Rappel : aucune traduction arabe ou japonaise n'a été relue par une personne de langue maternelle.
+- Checks : marqueur unique 20261014-1126 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
