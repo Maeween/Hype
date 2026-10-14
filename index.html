@@ -34806,6 +34806,13 @@ function EcranMonCavalier() {
       function carteV2(tiP, actP, kP, priveP) {
         var fermeV = !actP;
         var rtlA = false; try { rtlA = document.documentElement.dir === "rtl"; } catch (eRa) { }
+        /* 15/10 (1131) CAVALIER V2 IPAD / ORDINATEUR, BUILD 2 : des 768 px, les 6 acces deviennent une rangee de cartes photo
+           (memes images, memes destinations, memes regles : grisee « Prochainement », cadenas en visite). iPhone : la liste N, inchangee. */
+        if (cavTab) return h("div", { key: kP, role: fermeV ? null : "button", "aria-label": tiP, onClick: actP || null,
+          style: { minWidth: 0, cursor: fermeV ? "default" : "pointer", opacity: fermeV ? 0.5 : 1, textAlign: "center" } },
+          h("div", { "aria-hidden": "true", style: { position: "relative", width: "100%", aspectRatio: "5 / 4", borderRadius: 12, overflow: "hidden", border: "1px solid rgba(201,166,107,0.34)", backgroundColor: "#0b1316", backgroundImage: "url(images/cavalier-acces-" + (IMG_ACCES_V2[kP] || "histoire") + ".webp)", backgroundSize: "cover", backgroundPosition: "center", boxShadow: "0 10px 24px rgba(0,0,0,0.45)" } },
+            priveP ? h("span", { style: { position: "absolute", top: 6, insetInlineEnd: 6, width: 24, height: 24, borderRadius: "50%", background: "rgba(5,8,11,0.7)", border: "1px solid rgba(201,166,107,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11 } }, "\uD83D\uDD12") : null),
+          h("div", { style: { fontFamily: M, fontSize: cavOrdi ? 12.5 : 11.5, color: "#F3EEE4", marginTop: 8, lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, tiP));
         return h("div", { key: kP, role: fermeV ? null : "button", "aria-label": tiP, onClick: actP || null,
           style: { display: "flex", alignItems: "center", gap: 10, height: 46, minWidth: 0, borderBottom: "1px solid rgba(201,166,107,0.16)", cursor: fermeV ? "default" : "pointer", opacity: fermeV ? 0.5 : 1 } },
           h("span", { "aria-hidden": "true", style: { flex: "0 0 30px", height: 30, borderRadius: 8, backgroundColor: "#0b1316", backgroundImage: "url(images/cavalier-acces-" + (IMG_ACCES_V2[kP] || "histoire") + ".webp)", backgroundSize: "cover", backgroundPosition: "center", opacity: 0.9 } }),
@@ -34879,6 +34886,7 @@ function EcranMonCavalier() {
       ];
       /* 22/09 (365) : en visite il reste 4 tuiles - sur 3 colonnes, la 4e restait seule sur sa ligne
          (sa capture de 13 h 24). 4 tuiles -> grille 2 x 2 ; 6 tuiles -> 3 x 2 comme avant. */
+      if (CAV_V2 && cavTab) return h("div", { style: { display: "grid", gridTemplateColumns: "repeat(6, minmax(0, 1fr))", gap: cavOrdi ? 16 : 10, margin: cavOrdi ? "30px 16px 0" : "26px 16px 0", maxWidth: cavOrdi ? 900 : "none" } }, cartes);   /* (1131) une rangee de 6 cartes photo */
       if (CAV_V2) return h("div", { style: { display: "grid", gridTemplateColumns: largAcc >= 700 ? "repeat(3, minmax(0, 1fr))" : "repeat(2, minmax(0, 1fr))", columnGap: largAcc >= 700 ? 24 : 16, margin: largAcc >= 700 ? "26px 24px 0" : "20px 16px 0" } }, cartes);   /* (1105) ; (1118) liste N */
       return h("div", { style: { display: "grid", gridTemplateColumns: (cartes.length === 4 ? "repeat(2, minmax(0, 1fr))" : "repeat(3, minmax(0, 1fr))"), gap: 9, margin: "26px 16px 0" } }, cartes);
     })(),

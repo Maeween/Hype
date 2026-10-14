@@ -12747,3 +12747,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Tests (Supabase simulé) : 390, 768, 820, 1024, 1280, 1440, 1600 px × fr/ar/de — 0 erreur, 0 débordement horizontal.
 - Constaté, NON corrigé (déjà présent sur iPhone, hors build) : en arabe, le bouton « ⋯ » (Mes actions) passe sous la flèche retour (les deux à gauche).
 - Prochains builds : 2) les 6 accès en rangée de cartes photo (iPad/ordi) ; 3) carte écurie pleine largeur ; 4) chevaux en 4 colonnes (grille juste) ; 5) tailles et marges du reste.
+
+## 15/10/2026 (1 h 30) — Cavalier V2 sur iPad et ordinateur, BUILD 2 (1131) : les 6 accès en rangée de cartes photo [publié, accord « Ok continue »]
+- Dès 768 px : les 6 accès (Histoire, Performances, Progression, Photos, Vidéos, Actualité) deviennent une rangée de 6 cartes photo (images/cavalier-acces-*.webp, coins arrondis, filet champagne fin), nom dessous. Ordinateur : cartes un peu plus grandes, rangée limitée à 900 px.
+- Mêmes destinations et mêmes règles : Actualité grisée « Prochainement » ; cadenas en coin de carte quand c'est privé (visite).
+- iPhone : la liste N (2 colonnes) inchangée — capture 390 px avant/après identique au pixel.
+- Tests : 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement ; arabe : rangée inversée.
+- Photo par défaut de la page Cavalier : Blandine veut la changer — en attente de son image (et de savoir si la version « Crimson » est remplacée aussi).
