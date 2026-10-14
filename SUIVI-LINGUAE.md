@@ -7562,3 +7562,9 @@ La relecture native des mots. Les vidéos et cartes manquantes (île Maurice à 
 - horselingo.fr/<nom> renvoie vers lingo.html#lecon=<ville> (302), pour partager sur Instagram sans « # » (le #lecon était pris pour un hashtag).
 - 52 adresses pour 39 villes. Ex. : ile-maurice / maurice / le-morne, pays-de-galles, ecosse, cadre-noir, aix-la-chapelle, japon, nouvelle-zelande, argentine, canada, suede, qatar, portugal + le nom de chaque ville (la-baule, lamotte-beuvron, oliva-nova, buenos-aires, santa-ynez, spruce-meadows…).
 - Nouvelle ville = ajouter un bloc [[redirects]] dans netlify.toml du dépôt HorseLingo.
+
+## 14/10/2026 — Aperçus de partage par ville (dépôt HorseLingo)
+- `netlify/edge-functions/apercu-chapitre.ts` : sur les adresses courtes (/ile-maurice, /saumur…), les robots d'aperçu (WhatsApp, Instagram/Facebook, Messages…) reçoivent une page avec la carte postale de la ville, son nom, le pays et le chapitre ; les visiteurs et Google gardent le renvoi normal vers lingo.html#lecon=<ville>.
+- Images 1200×630 : `images/partage/<ref>.jpg` (39 villes), fabriquées par `outils/apercus-villes.py` à partir de carte-<ref>.webp (vignette jpg si la grande carte manque, ex. Flyinge).
+- Nouvelle ville : relancer le script, ajouter la règle dans netlify.toml + une ligne dans VILLES et le chemin dans config de la fonction.
+- Validé par Blandine le 14/10 (« Ok vas y »).
