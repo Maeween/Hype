@@ -124,10 +124,10 @@ const PLANS_PAYES = { mensuel: 1, annuel: 1, duo: 1, ai: 1 };
    en vente. Vides = aucun paiement Famille reconnu = le relais se comporte
    exactement comme aujourd'hui.                                              */
 const FAMILLE_LIENS = {
-    // "plink_…": { jours: 32 },   // Premium Famille 19,99 €/mois
+    "plink_1UQbSCHnB1OJ7FOmzXn56OBq": { jours: 32 },   // Premium Famille 19,99 €/mois (créé le 15/10/2026)
 };
 const FAMILLE_PRIX = new Set([
-    // "price_…",                   // Premium Famille 19,99 €/mois
+    "price_1UQbS7HnB1OJ7FOm5fRCm686",   // Premium Famille 19,99 €/mois (créé le 15/10/2026)
 ]);
 /* Tant que rien n'est rempli ci-dessus, le relais NE PARLE JAMAIS aux tables
    Famille : il fonctionne même si le SQL Famille n'est pas encore passé. */
