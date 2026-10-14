@@ -12671,3 +12671,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - TESTS (base simulée, aucune écriture réelle) : 20/20 réussis — 6 vrais événements Stripe des 30 derniers jours (Aurélie, Lauren dont refus du 21/09, Eva, Dominique) avec résultats identiques à l'ancien relais ; Hype IA seul → « ai » (l'ancien relais donnait « mensuel ») ; renouvellement IA ; Premium puis IA et IA puis Premium → rien écrasé + anomalies ; don ; code promo ; paiement différé ; identifiant inconnu ; panne Supabase → 500 ; Crystal reçu deux fois / rejoué 200 jours plus tard → aucune prolongation ; refus → « impayé » ; changement de formule ; Pack Duo → « duo ».
 - Reste pour la livraison 2 : paiements différés confirmés plus tard (message à activer dans Stripe), remboursements et litiges, doublons via table des événements, plusieurs abonnements par compte, compte introuvable (aujourd'hui : 500 et réessais Stripe, comme avant).
 - PUBLICATION : seulement après « publie » de Blandine ; puis test réel Hype IA (achat + remboursement manuel) quand elle le décide.
+
+## 14/10/2026 — Premium Famille, étape 2 (architecture) — PROPOSITION, RIEN D'EXÉCUTÉ
+- Branche `premium-famille` (non publiée). SQL proposé : `supabase/sql/premium_famille.sql` — NON passé en production.
+- 3 nouvelles tables séparées (familles, famille_membres, famille_journal) ; abonnements_premium n'est pas touchée.
+- Invitation par lien (code à usage unique, 7 jours, stocké seulement sous forme d'empreinte). Pas de 3e cavalier possible, même en contournant l'appli (bloqué par la base).
+- Remplacement : 1 nouveau cavalier par 30 jours, 4 cavaliers différents max par an (le 1er + 3 remplacements). Un cavalier qui revient n'est pas compté comme un remplacement.
+- Droits : hype_droits() = Premium + questions IA (on garde la formule la plus avantageuse : Duo 20, Hype IA 15, Premium/Famille 4). hype_est_premium() reçoit seulement la famille en plus.
+- Tests sur base locale imitant Supabase : 57/57 réussis (fichiers dans supabase/sql/tests/).
+- Restent à décider par Blandine avant l'étape 3 : compte Stripe (perso ou association), délai de grâce après impayé, portail client Stripe, nom du Pack Duo.
