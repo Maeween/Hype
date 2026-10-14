@@ -12483,3 +12483,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Choix « Toutes / écuries », quotas gratuits, cadenas Premium, dépliage en visite : inchangés.
   · Textes nouveaux en 7 langues.
 - Checks : marqueur unique 20261014-1108 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone) ; l'état « aucun cheval » ne se voit pas sur le compte de Blandine (elle a des chevaux).
+
+## 14/10/2026 — Build 1109 : Cavalier V2, étape 6 — « Ses amis »
+- Demande : « Ok continue » (17 h 37).
+- index.html (build 20261014-1109), en V2 seulement : encart V2 « Ses amis », placé après la partie chevaux (et son dépliage), avant les résultats.
+  · Une rangée qui défile : rond « + Ajouter un ami » (sa page ; même action qu'avant : Communauté, « À découvrir »), puis les portraits ronds des amis (touchés = leur page, comme avant).
+  · Sans ami : les cavaliers de SON écurie (suggestions existantes filtrées sur l'écurie), avec « Suivre » → « Suivi » (fonction suivre existante ; annulé à l'écran si l'envoi échoue).
+  · En visite sans ami : « Pas encore d'amis sur Hype. ». Pas de « Voir tous » (aucune page « tous les amis »).
+  · L'ancien bloc HypeAmisVitrine n'est plus monté en V2 (code conservé). Nouvelle petite mémoire d'écran suivisV2.
+  · Textes nouveaux en 7 langues.
+- Checks : marqueur unique 20261014-1109 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
