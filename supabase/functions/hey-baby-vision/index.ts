@@ -24,6 +24,8 @@
 //   OPENAI_REASONING        (réflexion de la rédaction — ex. "medium")
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
+// 15/10/2026 : photo complète (les 2 étapes côté serveur, réponse enregistrée même si l'appli est fermée).
+import { photoComplete } from "./photo-complete.js";
 
 // 26/09 (soir) — MODE DIFFÉRÉ pour la perception (corps.differe === true) : la fonction crée une ligne
 // dans public.heybaby_analyses (statut en_cours), répond TOUT DE SUITE { ok, differe, jobId }, puis
@@ -131,6 +133,18 @@ Deno.serve(async (req: Request) => {
       } catch (_e) { autorise = false; }
     }
     if (!autorise) { log(reqId, "accès refusé (pas d'abonnement Premium actif) —", uA.id); return erreur("PREMIUM_REQUIRED", "Réservé aux abonnés Premium.", 403); }
+  }
+
+  // ----- 15/10 : PHOTO COMPLÈTE (observation + rédaction côté serveur, en différé) -----
+  // Nouveau mode, ajouté à côté des anciens (inchangés) : l'appli ne l'utilise qu'une fois cette version en ligne.
+  if (corps?.mode === "photo_complete") {
+    return await photoComplete({
+      req, corps, reqId, t0, cle, log, json, erreur, createClient,
+      env: (n: string) => Deno.env.get(n),
+      // deno-lint-ignore no-explicit-any
+      waitUntil: (p: Promise<unknown>) => { const er = (globalThis as any).EdgeRuntime; if (er && typeof er.waitUntil === "function") er.waitUntil(p); },
+      jetonsPerception: JETONS_PERCEPTION, jetonsStandard: JETONS_STANDARD,
+    });
   }
 
   const mode = corps?.mode === "perception" ? "perception" : "standard";
