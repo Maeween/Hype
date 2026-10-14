@@ -283,6 +283,27 @@ def json_projets():
           "textes":{lg:{"titre":T[lg]["projets"][i][0],"court":T[lg]["pj_courts"][i],"long":T[lg]["projets"][i][1]} for lg in L}})
     return json.dumps(d,ensure_ascii=False,indent=1)
 
+# ═══ ÉTAPE 4 (14/10) : « Notre lieu » (sans dire que l'association est propriétaire du site) ═══
+LIEU={
+"fr":("Un lieu de vie et de partage","Le site équestre d'Itteville, utilisé par l'association depuis 2020, accueille nos chevaux et nos cavaliers dans un cadre naturel privilégié.",["12 boxes","Une carrière","Un rond de longe","Des prés et paddocks"]),
+"en":("A place to live and share","The Itteville equestrian site, used by the association since 2020, welcomes our horses and riders in a privileged natural setting.",["12 stables","An arena","A lunging ring","Fields and paddocks"]),
+"es":("Un lugar de vida y de encuentro","El centro ecuestre de Itteville, utilizado por la asociación desde 2020, acoge a nuestros caballos y jinetes en un entorno natural privilegiado.",["12 boxes","Una pista","Un picadero redondo","Prados y paddocks"]),
+"it":("Un luogo di vita e di condivisione","Il centro equestre di Itteville, utilizzato dall'associazione dal 2020, accoglie i nostri cavalli e cavalieri in una cornice naturale privilegiata.",["12 box","Un campo","Un tondino","Prati e paddock"]),
+"de":("Ein Ort zum Leben und Teilen","Die Reitanlage in Itteville, die der Verein seit 2020 nutzt, bietet unseren Pferden und Reitern eine besonders schöne natürliche Umgebung.",["12 Boxen","Ein Reitplatz","Ein Longierzirkel","Weiden und Paddocks"]),
+"ja":("暮らしと分かち合いの場所","協会が2020年から利用しているイッテヴィルの乗馬施設は、恵まれた自然の中で私たちの馬とライダーを迎えています。",["12の馬房","馬場","丸馬場","放牧地とパドック"]),
+"ar":("مكان للحياة والمشاركة","يستقبل الموقع الفروسي في إيتفيل، الذي تستخدمه الجمعية منذ عام 2020، خيولنا وفرساننا في إطار طبيعي مميز.",["12 إسطبلًا","ساحة تدريب","حلبة دائرية للترويض","مراعٍ وحظائر"]),
+}
+ICO["carriere"]='<rect x="3" y="7" width="18" height="10" rx="1"/><path d="M3 10.5h18M3 13.5h18M7.5 7v10M16.5 7v10"/>'
+ICO["rond"]='<ellipse cx="12" cy="10.5" rx="8.5" ry="4.5"/><path d="M3.5 10.5v3c0 2.5 3.8 4.5 8.5 4.5s8.5-2 8.5-4.5v-3"/>'
+ICO["cloture"]='<path d="M5.5 5v14M10.5 5v14M15.5 5v14M20.5 5v14M3 9h19M3 14h19"/>'
+LIEU_ATTENTE="images/fond-cavaliers-ecurie.webp"
+def section_lieu(lg):
+    titre,texte,atouts=LIEU[lg]; ic=["maison","carriere","rond","cloture"]
+    img="images/asso/lieu.jpg" if os.path.exists(os.path.join(RACINE,"images/asso/lieu.jpg")) else LIEU_ATTENTE
+    li="".join(f'<li>{svg(i)}<span>{e(a)}</span></li>' for i,a in zip(ic,atouts))
+    return f'''<section class="lieu" id="lieu" aria-labelledby="lieu-t"><img class="lieu-fond" src="/{img}" alt="" loading="lazy">
+<div class="in"><div class="lieu-txt"><p class="sur">{e(T[lg]["lieu"])}</p><h2 id="lieu-t">{e(titre)}</h2><p>{e(texte)}</p></div><ul class="atouts">{li}</ul></div></section>'''
+
 CSS=r"""
 :root{--noir:#05080B;--noir2:#070A08;--petrole:#0D1518;--ivoire:#F3EEE4;--doux:#C9CFCB;--gris:#9AA39F;--champ:#C9A66B;--trait:rgba(201,166,107,.42);--trait2:rgba(201,166,107,.18);
 --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--cinzel:Cinzel,"Cormorant Garamond",Georgia,serif;--sans:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -426,6 +447,30 @@ img{max-width:100%}
  .pj-detail{margin-top:40px}
 }
 @media (prefers-reduced-motion:reduce){.pistes{scroll-behavior:auto}.pdet summary .ico{transition:none}}
+/* ── NOTRE LIEU ── */
+.lieu{position:relative;background:var(--noir2);overflow:hidden}
+.lieu-fond{position:absolute;inset:0 0 auto 0;width:100%;height:380px;object-fit:cover;object-position:center 40%}
+.lieu::before{content:"";position:absolute;inset:0 0 auto 0;height:380px;background:linear-gradient(180deg,rgba(5,8,11,.25) 0%,rgba(5,8,11,.35) 45%,var(--noir2) 100%);z-index:1}
+.lieu .in{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 16px}
+.lieu-txt{min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:18px}
+.lieu h2{font:400 clamp(28px,7.4vw,38px)/1.12 var(--serif);margin:0 0 10px;color:var(--ivoire);text-wrap:balance}
+.lieu-txt p:last-child{margin:0;max-width:30em;font:400 14.5px/1.6 var(--sans);color:var(--doux)}
+.atouts{list-style:none;margin:0;padding:16px 0 26px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;border-top:1px solid rgba(201,166,107,.16)}
+.atouts li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;min-width:0;font:500 13px/1.3 var(--serif);color:var(--ivoire)}
+.atouts .ico{width:30px;height:30px;color:var(--champ);stroke-width:1.1}
+@media (min-width:640px){.lieu .in{padding:0 32px}.atouts li{font-size:14.5px}}
+@media (min-width:1024px){
+ .lieu{min-height:440px}
+ .lieu-fond{height:100%}
+ .lieu::before{height:100%;background:linear-gradient(90deg,rgba(5,8,11,.92) 0%,rgba(5,8,11,.66) 30%,rgba(5,8,11,.12) 55%,rgba(5,8,11,0) 75%)}
+ .lieu .in{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:40px;min-height:440px}
+ .lieu-txt{min-height:0;padding:56px 0}
+ .atouts{border:1px solid rgba(201,166,107,.28);border-radius:10px;background:rgba(7,10,8,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:22px 8px;gap:0;align-self:end;margin-bottom:44px;width:min(520px,44vw)}
+ .atouts li{padding:0 10px}
+ .atouts li+li{border-inline-start:1px solid rgba(201,166,107,.22)}
+}
+[dir=rtl] .lieu-fond{transform:scaleX(-1)}
+@media (min-width:1024px){[dir=rtl] .lieu::before{background:linear-gradient(270deg,rgba(5,8,11,.92) 0%,rgba(5,8,11,.66) 30%,rgba(5,8,11,.12) 55%,rgba(5,8,11,0) 75%)}}
 /* ── CONTENU (sections actuelles, refondues aux étapes suivantes) ── */
 main{max-width:1120px;margin:0 auto;padding:0 20px 20px}
 h2{font:500 clamp(28px,7vw,38px)/1.1 var(--serif);margin:42px 0 6px;color:var(--ivoire)}
@@ -526,6 +571,7 @@ def page(lg):
 </section>
 {bandeau(lg)}
 {section_projets(lg)}
+{section_lieu(lg)}
 <main>
 <section class="presentation" id="association"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div>
 </section>
