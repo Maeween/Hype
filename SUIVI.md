@@ -12568,3 +12568,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html (build 20261014-1120), V2 : le bloc « Ma story » (titre + phrase) sous l'écurie est retiré ; les stories (ronds fondus, centrés, taille selon leur nombre, rail sans fond) s'affichent juste sous le haut de page, sans titre ni phrase, avant les accès.
 - (Le correctif 1119 du plantage est inclus : hype-stories.js ?v=20ce.)
 - Checks : marqueur unique 20261014-1120 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1121 : Cavalier V2 — grilles des chevaux toujours justes, aussi en visite
+- Demande (18 h 05) : « fais les grilles justes quoi qu'il arrive » ; plantage 1119 confirmé réglé (« Ok c'est bon », 18 h 07).
+- index.html (build 20261014-1121), V2, EN VISITE : le nombre de chevaux montrés est un multiple de 3 (9 au plus) ; s'il en reste, bouton pleine largeur « Voir tous ses chevaux (n) ▾ » qui déplie, puis « Réduire ▴ ». Avec 1 ou 2 chevaux, ou une fois déplié, la dernière ligne incomplète est centrée. L'ancien dépliage de la visite n'est plus affiché en V2 (code conservé). Noms de variables vérifiés sans collision.
+- Checks : marqueur unique 20261014-1121 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
