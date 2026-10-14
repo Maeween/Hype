@@ -12544,3 +12544,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html (build 20261014-1116) : « Ma story » V2 utilise `tailleAuto` (au lieu de 72 px fixes).
 - 🟥 Fichiers envoyés : index.html ET hype-stories.js (+ SUIVI.md).
 - Checks : marqueur unique 20261014-1116 ; 16 scripts 0 erreur ; hype-stories.js node --check OK ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1117 : Cavalier V2 — la grille des chevaux est toujours pleine
+- Demande (18 h 03, capture de l'aperçu à 7 chevaux) : « ça non plus c'est pas supposé arriver ».
+- index.html (build 20261014-1117), V2, sa page avec une écurie : 2 et 5 chevaux → chevaux + carte « Les chevaux de l'écurie » ; 1, 4 et 7 chevaux → + carte « + Ajouter mon cheval » (même taille, même parcours de création) pour finir la ligne ; 3 et 6 → « Les chevaux de l'écurie » en bouton pleine largeur sous la grille ; 8 et plus → carte au milieu (3 × 3). Nouvelle fonction cavV2CarteAjout.
+- Checks : marqueur unique 20261014-1117 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
