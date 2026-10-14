@@ -2042,6 +2042,44 @@ function hypeMemEc(cle, v) {
    encodee) ou le temps accorde ; un fichier HEIC n est pas lu du tout. Avant l envoi, l image est donc redessinee en JPEG
    (1400 px de large au plus, 3000 px de haut au plus, qualite 0,85) si elle est lourde ou dans un format inhabituel.
    Le texte reste parfaitement lisible ; en cas de souci on garde l originale. */
+/* ═══ 14/10/2026 — LIVRAISON A : SÉCURITÉ DE HEY BABY ═══════════════════════════════════════
+   Tout appel à l'IA passe par hypeAppelIA : il joint le jeton de session (le serveur vérifie
+   le compte et décompte en base) et n'envoie plus de consignes, seulement une OPÉRATION et
+   des données. Les consignes sont écrites par le serveur (netlify/functions/assistant.js).
+   Le compteur affiché vient du serveur (en-têtes X-Quota-*, fonction hype_ia_mon_compteur). */
+async function hypeEntetesIA() {
+  var h = { "Content-Type": "application/json" };
+  try { var s = await supa.auth.getSession(); var j = s && s.data && s.data.session && s.data.session.access_token; if (j) h.Authorization = "Bearer " + j; } catch (e) { }
+  return h;
+}
+function hypeNoterQuotaIA(rep) {
+  try {
+    if (!rep || !rep.headers || rep.headers.get("X-Quota-Categorie") !== "question") return;
+    var u = parseInt(rep.headers.get("X-Quota-Utilisees"), 10), l = rep.headers.get("X-Quota-Limite");
+    if (isNaN(u)) return;
+    window.dispatchEvent(new CustomEvent("hype-quota-ia", { detail: { utilisees: u, limite: (l === "illimite" || l === null) ? null : parseInt(l, 10) } }));
+  } catch (e) { }
+}
+async function hypeAppelIA(corps, options) {
+  var url = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant";
+  var rep = await fetch(url, Object.assign({ method: "POST", headers: await hypeEntetesIA(), body: JSON.stringify(corps) }, options || {}));
+  hypeNoterQuotaIA(rep);
+  return rep;
+}
+function hypeLangueIA() { try { return window.__hypeLangue || "fr"; } catch (e) { return "fr"; } }
+/* Messages clairs pour les refus du serveur (7 langues). null = erreur technique ordinaire. */
+var HYPE_MESSAGES_IA = {
+  AUTH_REQUIRED: { fr: "Connecte-toi à ton compte Hype pour utiliser Hey Baby.", en: "Log in to your Hype account to use Hey Baby.", es: "Inicia sesión en tu cuenta Hype para usar Hey Baby.", it: "Accedi al tuo account Hype per usare Hey Baby.", de: "Melde dich bei deinem Hype-Konto an, um Hey Baby zu nutzen.", ja: "Hey Babyを使うには、Hypeアカウントにログインしてください。", ar: "سجّل الدخول إلى حسابك في Hype لاستخدام Hey Baby." },
+  QUOTA_ATTEINT: { fr: "Tu as utilisé toutes tes questions du jour. Rendez-vous demain, dès minuit !", en: "You've used all your questions for today. See you tomorrow, from midnight!", es: "Has usado todas tus preguntas de hoy. ¡Hasta mañana, desde medianoche!", it: "Hai usato tutte le domande di oggi. A domani, da mezzanotte!", de: "Du hast alle Fragen für heute genutzt. Bis morgen, ab Mitternacht!", ja: "今日の質問はすべて使いました。また明日、午前0時から！", ar: "لقد استخدمت كل أسئلتك لهذا اليوم. نلتقي غدًا بدءًا من منتصف الليل!" },
+  QUOTA_OUTILS_ATTEINT: { fr: "Limite de lectures automatiques atteinte pour aujourd'hui. Tu peux saisir à la main, ou réessayer demain.", en: "Daily limit for automatic reading reached. You can type it in by hand, or try again tomorrow.", es: "Se alcanzó el límite diario de lecturas automáticas. Puedes escribirlo a mano o volver a intentarlo mañana.", it: "Limite giornaliero di letture automatiche raggiunto. Puoi inserire a mano o riprovare domani.", de: "Tageslimit für automatisches Lesen erreicht. Du kannst es von Hand eingeben oder es morgen erneut versuchen.", ja: "本日の自動読み取りの上限に達しました。手入力するか、明日もう一度お試しください。", ar: "تم بلوغ الحد اليومي للقراءة التلقائية. يمكنك الإدخال يدويًا أو المحاولة غدًا." },
+  TROP_RAPIDE: { fr: "Doucement 🙂 Attends quelques secondes avant de recommencer.", en: "Easy 🙂 Wait a few seconds before trying again.", es: "Despacio 🙂 Espera unos segundos antes de volver a intentarlo.", it: "Piano 🙂 Aspetta qualche secondo prima di riprovare.", de: "Langsam 🙂 Warte ein paar Sekunden, bevor du es erneut versuchst.", ja: "少し落ち着いて🙂 数秒待ってからもう一度どうぞ。", ar: "على مهلك 🙂 انتظر بضع ثوانٍ قبل المحاولة مجددًا." },
+  MEDIA_REFUSE: { fr: "Ce fichier est trop lourd pour être analysé. Essaie avec une image plus légère ou une vidéo plus courte.", en: "This file is too heavy to analyse. Try a lighter image or a shorter video.", es: "Este archivo es demasiado pesado para analizarlo. Prueba con una imagen más ligera o un vídeo más corto.", it: "Questo file è troppo pesante da analizzare. Prova con un'immagine più leggera o un video più corto.", de: "Diese Datei ist zu groß für die Analyse. Versuche es mit einem kleineren Bild oder einem kürzeren Video.", ja: "このファイルは重すぎて分析できません。軽い画像か短い動画でお試しください。", ar: "هذا الملف ثقيل جدًا للتحليل. جرّب صورة أخف أو فيديو أقصر." },
+  SERVICE_INDISPONIBLE: { fr: "Hey Baby est momentanément indisponible. Réessaie dans un instant.", en: "Hey Baby is temporarily unavailable. Try again in a moment.", es: "Hey Baby no está disponible en este momento. Inténtalo de nuevo en un instante.", it: "Hey Baby è momentaneamente non disponibile. Riprova tra un attimo.", de: "Hey Baby ist vorübergehend nicht verfügbar. Versuche es gleich noch einmal.", ja: "Hey Babyは一時的に利用できません。少ししてからもう一度お試しください。", ar: "Hey Baby غير متاح مؤقتًا. حاول مرة أخرى بعد قليل." }
+};
+function hypeMessageIA(code, lg) {
+  var m = code && HYPE_MESSAGES_IA[code]; if (!m) return null;
+  var l = lg || hypeLangueIA(); return m[l] || m.fr;
+}
 async function hypeAllegerImageB64(dataUrl) {
   try {
     var s = String(dataUrl || "");
@@ -36654,12 +36692,9 @@ function FicheEvenementClub(props) {
       var virg = b64.indexOf(",");
       var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
       var donnees = b64.slice(virg + 1);
-      var consigne = (part === "horaires")
-        ? "Tu lis une capture d'ecran d'horaires d'un concours hippique. Pour CHAQUE ligne visible, donne l'epreuve, l'heure de reconnaissance, l'heure de debut, et le nombre de partants. Reponds UNIQUEMENT par un JSON valide, sans texte autour, sans balises markdown, de la forme {\"lignes\":[{\"epreuve\":\"\",\"reco\":\"\",\"debut\":\"\",\"partants\":\"\"}]}. Laisse une valeur vide si elle n'est pas visible. N'invente rien."
-        : "Tu lis une capture d'ecran d'un ordre de passage de concours hippique. Pour CHAQUE ligne visible, donne le numero de passage, le nom du cavalier et le nom du cheval. Reponds UNIQUEMENT par un JSON valide, sans texte autour, sans balises markdown, de la forme {\"lignes\":[{\"num\":\"\",\"cavalier\":\"\",\"cheval\":\"\"}]}. Laisse une valeur vide si elle n'est pas visible. N'invente rien.";
-      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant" /* 23/09 (387) : adresse RELATIVE - l app parle au relais de l adresse ou elle se trouve (2hype.fr bloquait l appel vers 2hype.netlify.app) */;
-      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture." }] }] }) });
-      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      /* 14/10 (livraison A) : la consigne de lecture est désormais écrite par le serveur (assistant.js) ; on envoie seulement l'opération et l'image. */
+      var rep = await hypeAppelIA({ operation: (part === "horaires") ? "lecture_horaires" : "lecture_ordre", langue: hypeLangueIA(), image: { type: "image", source: { type: "base64", media_type: typeImg, data: donnees } } });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; } if (data && data.ok === false && hypeMessageIA(data.code)) { setDocLecture(""); setDocErr(hypeMessageIA(data.code)); return; }
       var texte = "";
       try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
       texte = String(texte || "").replace(/```json|```/g, "").trim();
@@ -64488,18 +64523,9 @@ function EcranCheval() {
       var donnees = b64.slice(virg + 1);
       /* 🟩 05/09 22h50 (Blandine : "il verifie pas que le cheval concerne est bien le
          bon") — `nomCheval` s'ajoute a la demande, meme principe que l'import origines. */
-      var consigne = "Tu lis une capture d'ecran d'un historique de resultats de sport equestre "
-        + "(IFCE / infochevaux, Horsetelex, FFE, ou un site de concours). Retrouve d'abord le nom du "
-        + "CHEVAL concerne par ces resultats (nomCheval), puis CHAQUE resultat distinct visible sur "
-        + "l'image : son annee, le nom du concours/evenement, la discipline et/ou le nom du cavalier "
-        + "si visibles, et le classement obtenu. Reponds UNIQUEMENT par un objet JSON valide, sans texte "
-        + "autour, sans balises markdown, de cette forme exacte : "
-        + '{"nomCheval":"","resultats":[{"annee":"","event":"","ds":"","rang":""}]}. '
-        + 'rang doit valoir exactement "1", "2", "3", "classe" (classe = classe hors podium), ou "" si inconnu. '
-        + "Si l'image ne contient visiblement aucun resultat de concours, reponds exactement {\"nomCheval\":\"\",\"resultats\":[]}.";
-      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant" /* 23/09 (387) : adresse RELATIVE - l app parle au relais de l adresse ou elle se trouve (2hype.fr bloquait l appel vers 2hype.netlify.app) */;
-      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
-      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      /* 14/10 (livraison A) : la consigne de lecture est désormais écrite par le serveur (assistant.js) ; on envoie seulement l'opération et l'image. */
+      var rep = await hypeAppelIA({ operation: "lecture_palmares", langue: hypeLangueIA(), image: { type: "image", source: { type: "base64", media_type: typeImg, data: donnees } } });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; } if (data && data.ok === false && hypeMessageIA(data.code)) { setImportResMsg({ ok: false, texte: hypeMessageIA(data.code) }); setImportResEnCours(false); return; }
       var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
       texte = String(texte || "").replace(/```json|```/g, "").trim();
       var brut = null; try { brut = JSON.parse(texte); } catch (eP) { brut = null; }
@@ -64670,26 +64696,9 @@ function EcranCheval() {
       var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
       var donnees = b64.slice(virg + 1);
       var CHAMPS_PED = ["pere", "mere", "pp", "pm", "mp", "mm", "ppp", "ppm", "pmp", "pmm", "mpp", "mpm", "mmp", "mmm"];
-      var consigne = "Tu lis une capture d'ecran d'une fiche de pedigree equin (site IFCE / infochevaux, Horsetelex, "
-        + "ou similaire). Retrouve : le nom du CHEVAL dont c'est la fiche (nomCheval), sa race/stud-book, "
-        + "sa date de naissance COMPLETE si elle est ecrite (format JJ/MM/AAAA), sinon seulement l annee (4 chiffres), son naisseur/eleveur si visible, son sexe s il est ecrit (cle sexe : exactement \"hongre\", \"jument\" ou \"entier\" ; femelle = \"jument\", male non castre ou etalon = \"entier\" ; vide si non ecrit), le pere (sire), la mere (dam), "
-        + "et si visibles les grands-parents et arriere-grands-parents. Reponds UNIQUEMENT par un objet JSON "
-        + "valide, sans texte autour, sans balises markdown, de cette forme exacte (chaine vide \"\" si non trouve) : "
-        + '{"nomCheval":"","race":"","naissance":"","naisseur":"","sexe":"","pere":"","mere":"","pp":"","pm":"","mp":"","mm":"","ppp":"","ppm":"","pmp":"","pmm":"","mpp":"","mpm":"","mmp":"","mmm":"",'
-        + '"d_pere":"","d_mere":"","d_pp":"","d_pm":"","d_mp":"","d_mm":"","d_ppp":"","d_ppm":"","d_pmp":"","d_pmm":"","d_mpp":"","d_mpm":"","d_mmp":"","d_mmm":""}. '
-        + "pp = pere du pere, pm = mere du pere, mp = pere de la mere, mm = mere de la mere ; ppp/ppm/pmp/pmm/mpp/mpm/mmp/mmm "
-        + "suivent la meme logique un cran plus loin (parents de pp, de pm, de mp, de mm dans cet ordre). "
-        /* (626) Blandine : « on devait voir les chevaux ayant un bon IPO ou ayant tourne plus gros, issu de, date de naissance,
-           quand les infos figuraient sur le screen » — une courte ligne de detail par ancetre, recopiee de l image, jamais inventee */
-        + "Pour CHAQUE ancetre trouve, si la capture montre a cote de son nom une annee de naissance, une race ou un stud-book, "
-        + "un indice (IPO, ISO, BSO, BLUP...) ou un niveau de performance (ex. CSO 1m40), recopie ces mentions telles quelles, "
-        + "en une seule courte ligne de 60 caracteres maximum, dans la cle d_<champ> correspondante (d_pere pour le pere, d_pp pour "
-        + "le pere du pere, etc.). Chaine vide si rien n'est ecrit a cote du nom. N'invente jamais une information absente de l'image. "
-        + "Meme sans aucun parent ecrit, renvoie ce que la capture montre sur le cheval lui-meme (nom, race, date de naissance, sexe, naisseur). "   /* (831) */
-        + "Si l'image ne contient visiblement aucune information sur un cheval, reponds exactement {}.";
-      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant" /* 23/09 (387) : adresse RELATIVE - l app parle au relais de l adresse ou elle se trouve (2hype.fr bloquait l appel vers 2hype.netlify.app) */;
-      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
-      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      /* 14/10 (livraison A) : la consigne de lecture est désormais écrite par le serveur (assistant.js) ; on envoie seulement l'opération et l'image. */
+      var rep = await hypeAppelIA({ operation: "lecture_pedigree", langue: hypeLangueIA(), image: { type: "image", source: { type: "base64", media_type: typeImg, data: donnees } } });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; } if (data && data.ok === false && hypeMessageIA(data.code)) { setImportOrigMsg({ ok: false, texte: hypeMessageIA(data.code) }); setImportOrigEnCours(false); return; }
       var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
       texte = String(texte || "").replace(/```json|```/g, "").trim();
       var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
@@ -69005,26 +69014,9 @@ function FeuilleOriginesCheval(props) {
       var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
       var donnees = b64.slice(virg + 1);
       /* consigne IDENTIQUE a celle de l ancienne fiche */
-      var consigne = "Tu lis une capture d'ecran d'une fiche de pedigree equin (site IFCE / infochevaux, Horsetelex, "
-        + "ou similaire). Retrouve : le nom du CHEVAL dont c'est la fiche (nomCheval), sa race/stud-book, "
-        + "sa date de naissance COMPLETE si elle est ecrite (format JJ/MM/AAAA), sinon seulement l annee (4 chiffres), son naisseur/eleveur si visible, "
-        + "son sexe s il est ecrit (cle sexe : exactement \"hongre\", \"jument\" ou \"entier\" ; un male non castre / etalon = \"entier\" ; vide si non ecrit), "   /* (741) */
-        + "le pere (sire), la mere (dam), "
-        + "et si visibles les grands-parents et arriere-grands-parents. Reponds UNIQUEMENT par un objet JSON "
-        + "valide, sans texte autour, sans balises markdown, de cette forme exacte (chaine vide \"\" si non trouve) : "
-        + '{"nomCheval":"","race":"","naissance":"","naisseur":"","sexe":"","pere":"","mere":"","pp":"","pm":"","mp":"","mm":"","ppp":"","ppm":"","pmp":"","pmm":"","mpp":"","mpm":"","mmp":"","mmm":"",'
-        + '"d_pere":"","d_mere":"","d_pp":"","d_pm":"","d_mp":"","d_mm":"","d_ppp":"","d_ppm":"","d_pmp":"","d_pmm":"","d_mpp":"","d_mpm":"","d_mmp":"","d_mmm":""}. '
-        + "pp = pere du pere, pm = mere du pere, mp = pere de la mere, mm = mere de la mere ; ppp/ppm/pmp/pmm/mpp/mpm/mmp/mmm "
-        + "suivent la meme logique un cran plus loin (parents de pp, de pm, de mp, de mm dans cet ordre). "
-        + "Pour CHAQUE ancetre trouve, si la capture montre a cote de son nom une annee de naissance, une race ou un stud-book, "
-        + "un indice (IPO, ISO, BSO, BLUP...) ou un niveau de performance (ex. CSO 1m40), recopie ces mentions telles quelles, "
-        + "en une seule courte ligne de 60 caracteres maximum, dans la cle d_<champ> correspondante (d_pere pour le pere, d_pp pour "
-        + "le pere du pere, etc.). Chaine vide si rien n'est ecrit a cote du nom. N'invente jamais une information absente de l'image. "
-        + "Meme sans aucun parent ecrit, renvoie ce que la capture montre sur le cheval lui-meme (nom, race, date de naissance, sexe, naisseur). "   /* (831) */
-        + "Si l'image ne contient visiblement aucune information sur un cheval, reponds exactement {}.";
-      var API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant";
-      var rep = await fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigne, messages: [{ role: "user", content: [{ type: "image", source: { type: "base64", media_type: typeImg, data: donnees } }, { type: "text", text: "Lis cette capture et renvoie le JSON demande, rien d'autre." }] }] }) });
-      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+      /* 14/10 (livraison A) : la consigne de lecture est désormais écrite par le serveur (assistant.js) ; on envoie seulement l'opération et l'image. */
+      var rep = await hypeAppelIA({ operation: "lecture_pedigree", langue: hypeLangueIA(), image: { type: "image", source: { type: "base64", media_type: typeImg, data: donnees } } });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; } if (data && data.ok === false && hypeMessageIA(data.code)) { setImpMsg({ ok: false, texte: hypeMessageIA(data.code) }); setImpEnCours(false); return; }
       var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
       texte = String(texte || "").replace(/```json|```/g, "").trim();
       var trouve = null; try { trouve = JSON.parse(texte); } catch (eP) { trouve = null; }
@@ -82330,7 +82322,26 @@ function EcranAssistantIA() {
             return (q && q.d === jour) ? (q.n || 0) : 0;
         } catch (e) { return 0; }
     });
+    /* 14/10 (livraison A) : LE SERVEUR EST L'AUTORITÉ. quotaIA = { utilisees, limite } lu en base
+       (hype_ia_mon_compteur) et après chaque réponse (en-têtes). Le compteur du téléphone ne sert
+       plus qu'à l'affichage immédiat tant que le serveur n'a pas répondu (jamais pour bloquer). */
+    const [quotaIA, setQuotaIA] = useState(null);
+    const rafraichirQuotaIA = () => {
+        try {
+            if (typeof supa === "undefined" || !supa) return;
+            supa.rpc("hype_ia_mon_compteur").then((r) => {
+                if (r && !r.error && r.data && typeof r.data.questions === "number") setQuotaIA({ utilisees: r.data.questions, limite: (r.data.limite == null ? null : r.data.limite) });
+            }).catch(() => { });
+        } catch (e) { }
+    };
+    useEffect(() => {
+        rafraichirQuotaIA();
+        const ecoute = (e) => { try { if (e && e.detail) setQuotaIA({ utilisees: e.detail.utilisees, limite: e.detail.limite }); } catch (x) { } };
+        window.addEventListener("hype-quota-ia", ecoute);
+        return () => window.removeEventListener("hype-quota-ia", ecoute);
+    }, []);
     const compterQuestion = () => {
+        setQuotaIA((q) => q ? { utilisees: q.utilisees + 1, limite: q.limite } : q);
         setQuestionsPosees((n) => {
             const v = n + 1;
             try { localStorage.setItem("hype_heybaby_quota", JSON.stringify({ d: new Date().toISOString().slice(0, 10), n: v })); } catch (e) { }
@@ -82354,19 +82365,9 @@ function EcranAssistantIA() {
             const conv = msgs.slice(-16).map((m) => (m.role === "user" ? "Cavalier" : "Hey Baby") + " : " + String(m.contenu || "").replace(/\s+/g, " ").slice(0, 600)).join("\n");
             const nomsChevaux = (chevaux || []).map((c) => c && c.nom).filter(Boolean).slice(0, 8);
             const ficheCavActuelle = (fichesEcurie && fichesEcurie.cavalier) ? fichesEcurie.cavalier : "(aucune fiche cavalier pour l'instant)";
-            const consigneSynthese =
-                "Tu es la mémoire de l'app équestre Hype. À partir de la conversation ci-dessous entre un cavalier et l'assistant Hey Baby, "
-                + "mets à jour deux types de fiches durables, en français, de façon factuelle et concise. "
-                + "Ne retiens QUE ce qui est durablement utile pour mieux accompagner ce cavalier plus tard : difficultés récurrentes, objectifs, niveau réel constaté, style d'apprentissage pour le cavalier ; pour un cheval : tempérament, particularités de travail, soucis de santé mentionnés, préférences. "
-                + "Ignore le bavardage, les banalités et tout ce qui n'a pas de valeur à long terme. Si rien de neuf n'est à retenir, renvoie des fiches inchangées ou vides.\n\n"
-                + "Fiche cavalier actuelle : " + String(ficheCavActuelle).slice(0, 1200) + "\n"
-                + "Chevaux connus du cavalier : " + (nomsChevaux.length ? nomsChevaux.join(", ") : "(aucun)") + "\n\n"
-                + "Conversation :\n" + conv + "\n\n"
-                + "Réponds UNIQUEMENT par un objet JSON valide, sans texte autour, de la forme : "
-                + '{"cavalier":"fiche cavalier mise à jour, <=1200 caractères","chevaux":[{"nom":"NomDuCheval","fiche":"fiche mise à jour, <=500 caractères"}]}. '
-                + "N'inclus dans \"chevaux\" que les chevaux réellement évoqués dans cette conversation. Si aucune mise à jour, renvoie {\"cavalier\":\"\",\"chevaux\":[]}.";
-            const API = (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant" /* 23/09 (387) : adresse RELATIVE - l app parle au relais de l adresse ou elle se trouve (2hype.fr bloquait l appel vers 2hype.netlify.app) */;
-            fetch(API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ system: consigneSynthese, messages: [{ role: "user", content: "Fais la synthèse maintenant." }] }) })
+            /* 14/10 (livraison A) : la consigne de mémoire est écrite par le serveur ; on n'envoie que les données (fiche, noms des chevaux, conversation). */
+            const memoireIA = { ficheCavalier: (fichesEcurie && fichesEcurie.cavalier) ? String(fichesEcurie.cavalier) : "", chevaux: nomsChevaux, conversation: msgs.slice(-16).map((m) => ({ role: m.role === "user" ? "user" : "assistant", texte: String(m.contenu || "").replace(/\s+/g, " ").slice(0, 600) })) };
+            hypeAppelIA({ operation: "memoire", langue: langue, memoire: memoireIA })
                 .then((r) => r.json())
                 .then((data) => {
                     let txt = "";
@@ -82669,7 +82670,9 @@ function EcranAssistantIA() {
         return () => { actif = false; };
     }, [conversationId]);
     const LIMITE_JOUR = planAbo === "duo" ? 20 : planAbo === "ai" ? 15 : (premium ? 4 : 1); /* questions Hey Baby par jour : 1 gratuit, 4 Premium, 15 Hype IA, 20 Duo */
-    const limiteAtteinte = !estModoHB && questionsPosees >= LIMITE_JOUR; /* 26/09 (399) : aucune limite pour les moderatrices */
+    const limiteAffichee = (quotaIA && quotaIA.limite != null) ? quotaIA.limite : LIMITE_JOUR;
+    const questionsUtilisees = quotaIA ? quotaIA.utilisees : questionsPosees;
+    const limiteAtteinte = !estModoHB && (quotaIA ? (quotaIA.limite != null && quotaIA.utilisees >= quotaIA.limite) : questionsPosees >= LIMITE_JOUR); /* 26/09 (399) : aucune limite pour les moderatrices */
     useEffect(() => { var _a; (_a = finRef.current) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ behavior: "smooth" }); }, [messages, enCours]);
     const arreter = () => { try { if (abortRef.current) { hbLog("arrêt demandé par le cavalier"); abortRef.current.abort("stop"); } } catch (e) { } };
     const TXT = (fr, en, es, it, ja, de) => tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de });
@@ -82845,6 +82848,11 @@ function EcranAssistantIA() {
             const API_ASSISTANT = voieSupa ? voieSupa.url : (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant" /* 23/09 (387) : adresse RELATIVE - l app parle au relais de l adresse ou elle se trouve (2hype.fr bloquait l appel vers 2hype.netlify.app) */;
             // --- Construction de l'appel principal (comportement historique, inchangé pour texte et vidéo) ---
             let systemEnvoye = getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert, memoire: memoireHB, fiches: fichesEcurie, coursCtx: coursCtx, avecPhoto: !!imgEnvoyee, avecVideo: Array.isArray(framesEnvoyees) && framesEnvoyees.length > 0, nbFrames: Array.isArray(framesEnvoyees) ? framesEnvoyees.length : 0, avecTimestamps: !!(Array.isArray(framesEnvoyees) && framesEnvoyees.length && framesEnvoyees[0] && typeof framesEnvoyees[0] === "object") });
+            /* 14/10 (livraison A) : voie Netlify = le serveur écrit les consignes ; on lui envoie seulement le CONTEXTE (données).
+               systemEnvoye reste utilisé pour la voie Supabase (hey-baby-vision, compte de Blandine), inchangée. */
+            let ctxIA = { memoire: memoireHB, fiches: fichesEcurie, coursCtx: coursCtx, avecPhoto: !!imgEnvoyee, avecVideo: Array.isArray(framesEnvoyees) && framesEnvoyees.length > 0, nbFrames: Array.isArray(framesEnvoyees) ? framesEnvoyees.length : 0, avecTimestamps: !!(Array.isArray(framesEnvoyees) && framesEnvoyees.length && framesEnvoyees[0] && typeof framesEnvoyees[0] === "object") };
+            let suiteIA = null, obsIA = null;
+            const entetesIA = voieSupa ? null : await hypeEntetesIA();
             let messagesEnvoyes = (function () { const fenetre = nouveauxMessages.filter((m) => !m.intro && (m.contenu || m.image)).slice(-10); return fenetre.map((m, iM) => { const dernier = iM === fenetre.length - 1; if (dernier && m.frames && m.frames.length) { const blocs = m.frames.map(function (fr) { const data = (fr && typeof fr === "object") ? fr.data : fr; const t = (fr && typeof fr === "object" && typeof fr.t === "number") ? fr.t : null; const v = data.indexOf(","); const mt = data.slice(5, data.indexOf(";")) || "image/jpeg"; const img = { type: "image", source: { type: "base64", media_type: mt, data: data.slice(v + 1) } }; return t !== null ? [{ type: "text", text: "t=" + t + "s" }, img] : [img]; }).flat(); blocs.push({ type: "text", text: (m.contenu ? m.contenu : tr({ fr: "Analyse cette vid\u00e9o.", en: "Analyse this video.", es: "Analiza este v\u00eddeo.", it: "Analizza questo video.", ja: "\u3053\u306e\u52d5\u753b\u3092\u5206\u6790\u3057\u3066\u304f\u3060\u3055\u3044\u3002", de: "Analysiere dieses Video.", ar: "\u062d\u0644\u0644\u064a \u0647\u0630\u0627 \u0627\u0644\u0641\u064a\u062f\u064a\u0648." }) ) }); return { role: m.role, content: blocs }; } if (dernier && m.image) { const v = m.image.indexOf(","); const mt = m.image.slice(5, m.image.indexOf(";")) || "image/jpeg"; const blocs = [{ type: "image", source: { type: "base64", media_type: mt, data: m.image.slice(v + 1) } }]; if (m.contenu) blocs.push({ type: "text", text: m.contenu }); return { role: m.role, content: blocs }; } return { role: m.role, content: m.contenu || "(photo envoy\u00e9e pr\u00e9c\u00e9demment)" }; }); })();
             /* 04/10 (655) — VIDEO EN DIFFERE (voie Supabase, compte de Blandine ; son « oui pour les videos en differe »).
                Meme securite que la photo depuis le 26/09 : un seul appel qui CREE UN JOB (differe: true, sans flux), puis
@@ -82922,7 +82930,9 @@ function EcranAssistantIA() {
                 const mtImg = imgEnvoyee.slice(5, imgEnvoyee.indexOf(";")) || "image/jpeg";
                 const blocImage = { type: "image", source: { type: "base64", media_type: mtImg, data: imgEnvoyee.slice(vIdx + 1) } };
                 hbLog("perception : appel d'observation isolé (photo seule, sans historique ni carnet)");
-                const optPerc = { method: "POST", headers: voieSupa ? voieSupa.entetes : { "Content-Type": "application/json" }, body: JSON.stringify({ mode: "perception", stream: false, differe: !!voieSupa, system: HEYBABY_PROMPT_PERCEPTION, messages: [{ role: "user", content: [blocImage, { type: "text", text: question || "Observe cette photo selon la m\u00e9thode." }] }] }) };
+                const optPerc = voieSupa
+                    ? { method: "POST", headers: voieSupa.entetes, body: JSON.stringify({ mode: "perception", stream: false, differe: !!voieSupa, system: HEYBABY_PROMPT_PERCEPTION, messages: [{ role: "user", content: [blocImage, { type: "text", text: question || "Observe cette photo selon la m\u00e9thode." }] }] }) }
+                    : { method: "POST", headers: entetesIA, body: JSON.stringify({ operation: "perception", langue: langue, image: blocImage, question: question || "" }) };
                 try { repPerc = await fetch(API_ASSISTANT, { ...optPerc, signal: ctrl.signal }); }
                 catch (eP) { const cloneErr = eP && (eP.name === "DataCloneError" || String(eP.message || "").toLowerCase().indexOf("cloned") !== -1); if (cloneErr && !ctrl.signal.aborted) { repPerc = await fetch(API_ASSISTANT, optPerc); } else { throw eP; } }
                 try { dataPerc = await repPerc.json(); } catch (e) { }
@@ -82953,7 +82963,7 @@ function EcranAssistantIA() {
                 if (!repPerc.ok || !dataPerc || dataPerc.ok === false) {
                     const codeP = (dataPerc && dataPerc.code) || ("HTTP " + repPerc.status);
                     hbLog("perception : échec — " + codeP + (dataPerc && dataPerc.reqId ? " — reqId " + dataPerc.reqId : "") + " — après " + (Date.now() - t1) + " ms" + (dataPerc && dataPerc.message ? " — " + dataPerc.message : ""));
-                    majDerniere((d) => { d.pending = false; d.contenu = t("souci_connexion"); });
+                    majDerniere((d) => { d.pending = false; d.contenu = hypeMessageIA(dataPerc && dataPerc.code, langue) || t("souci_connexion"); });
                     diagHB("photo, \u00e9tape observation", "HTTP " + repPerc.status + " \u2014 " + (dataPerc ? (dataPerc.error || ((dataPerc.code || "") + " " + (dataPerc.message || "")).trim() || "r\u00e9ponse sans d\u00e9tail") : "r\u00e9ponse illisible (pas du JSON)"));
                     return;
                 }
@@ -82961,19 +82971,15 @@ function EcranAssistantIA() {
                 let obsValides = texteObs;
                 try { obsValides = JSON.stringify(JSON.parse(texteObs)); hbLog("perception : observations JSON valides en " + (Date.now() - t1) + " ms — reqId " + (dataPerc.reqId || "?")); }
                 catch (e) { hbLog("perception : JSON invalide — texte brut transmis à l'étape pédagogie — reqId " + (dataPerc.reqId || "?")); }
+                /* 14/10 (livraison A) : la 2e étape renvoie la réservation de la 1re (ne compte pas une 2e fois) et les observations. */
+                if (!voieSupa) { hypeNoterQuotaIA(repPerc); suiteIA = dataPerc.reservation || null; obsIA = obsValides; ctxIA = { memoire: contexteHBRef.current.memoireHB, fiches: contexteHBRef.current.fichesEcurie, coursCtx: coursCtx, avecPhoto: false, avecVideo: false, nbFrames: 0, avecTimestamps: false }; }
                 clearTimeout(minuteur); minuteur = armerMinuteur(); // budget dédié pour la 2e étape
                 systemEnvoye = getSystemPrompt(langue, { profil: profil, chevaux: chevaux, premium: premium, planAbo: planAbo, xp: xp, serie: serie, galopOuvert: galopOuvert, coursOuvert: coursOuvert, memoire: contexteHBRef.current.memoireHB, fiches: contexteHBRef.current.fichesEcurie, coursCtx: coursCtx, avecPhoto: false, avecVideo: false, nbFrames: 0, avecTimestamps: false }) + HEYBABY_CONSIGNES_PEDAGOGIE.replace("{OBS}", obsValides); /* 26/09 (401) : memoire lue via contexteHBRef */
                 messagesEnvoyes = [{ role: "user", content: question || tr({ fr: "Analyse cette photo.", en: "Analyse this photo.", es: "Analiza esta foto.", it: "Analizza questa foto.", ja: "\u3053\u306e\u5199\u771f\u3092\u5206\u6790\u3057\u3066\u304f\u3060\u3055\u3044\u3002", de: "Analysiere dieses Foto.", ar: "\u062d\u0644\u0644\u064a \u0647\u0630\u0647 \u0627\u0644\u0635\u0648\u0631\u0629." }) }];
             }
-            const optionsFetch = {
-                method: "POST",
-                headers: voieSupa ? voieSupa.entetes : { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    stream: true,
-                    system: systemEnvoye,
-                    messages: messagesEnvoyes,
-                }),
-            };
+            const optionsFetch = voieSupa
+                ? { method: "POST", headers: voieSupa.entetes, body: JSON.stringify({ stream: true, system: systemEnvoye, messages: messagesEnvoyes }) }
+                : { method: "POST", headers: entetesIA, body: JSON.stringify({ operation: "question", stream: true, langue: langue, contexte: ctxIA, messages: messagesEnvoyes, suite: suiteIA || undefined, observations: suiteIA ? obsIA : undefined }) };
             let response;
             try {
                 response = await fetch(API_ASSISTANT, { ...optionsFetch, signal: ctrl.signal });
@@ -82987,6 +82993,7 @@ function EcranAssistantIA() {
                     response = await fetch(API_ASSISTANT, optionsFetch);
                 } else { throw ePremier; }
             }
+            if (!voieSupa) hypeNoterQuotaIA(response);
             if (!response.ok) {
                 let detailErr = null;
                 try { detailErr = await response.clone().json(); } catch (e) { }
@@ -83002,7 +83009,7 @@ function EcranAssistantIA() {
                 const data = await response.json();
                 if (data && data.ok === false) {
                     hbLog("erreur structurée reçue", { code: data.code, reqId: data.reqId, message: data.message, apres_ms: Date.now() - t0 });
-                    majDerniere((d) => { d.pending = false; d.contenu = t("souci_connexion"); });
+                    majDerniere((d) => { d.pending = false; d.contenu = hypeMessageIA(data.code, langue) || t("souci_connexion"); });
                     diagHB("r\u00e9ponse", (data.code || "") + " " + (data.message || ""));
                     return;
                 }
@@ -83044,13 +83051,14 @@ function EcranAssistantIA() {
             const interrompu = ctrl.signal.aborted;
             const detailTech = err && err.hbCode ? (" — code " + err.hbCode + (err.hbReqId ? " — reqId " + err.hbReqId : "")) : "";
             hbLog(interrompu ? "requête interrompue" : "erreur", (err && err.message) ? err.message : String(err), "après " + (Date.now() - t0) + " ms" + detailTech);
-            majDerniere((d) => { d.pending = false; if (!d.contenu) d.contenu = interrompu ? t("heybaby_interrompu") : t("souci_connexion"); });
+            majDerniere((d) => { d.pending = false; if (!d.contenu) d.contenu = interrompu ? t("heybaby_interrompu") : (hypeMessageIA(err && err.hbCode, langue) || t("souci_connexion")); });
             diagHB(interrompu ? "interrompu (d\u00e9lai de " + Math.round(HEYBABY_TIMEOUT_MS / 1000) + " s d\u00e9pass\u00e9 ou bouton stop)" : "envoi", ((err && err.message) ? err.message : String(err)) + (err && err.hbErreur ? " \u2014 " + err.hbErreur : "") + (err && err.hbCode ? " \u2014 " + err.hbCode + (err.hbMessage ? " " + err.hbMessage : "") : ""));
         }
         finally {
             clearTimeout(minuteur);
             abortRef.current = null;
             setEnCours(false);
+            try { rafraichirQuotaIA(); } catch (eQ) { }   /* 14/10 (livraison A) : le compteur affiché revient à la valeur du serveur (question rendue, etc.) */
             /* 26/09 (401) : le job note est efface des que l analyse a une issue (reponse, erreur, arret, delai) -
                SAUF si on a quitte l ecran : il reste note pour etre repris a la prochaine ouverture. */
             if (jobCourant && !ctrl.hbUnmount) { try { const jN = JSON.parse(localStorage.getItem(HEYBABY_JOB_CLE) || "null"); if (jN && jN.jobId === jobCourant) localStorage.removeItem(HEYBABY_JOB_CLE); } catch (eF) { } }
@@ -83076,7 +83084,7 @@ function EcranAssistantIA() {
             React.createElement("button", { onClick: retourAssistant, "aria-label": tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る" , de: "Zurück", ar: "\u0631\u062c\u0648\u0639"}), style: { position: "absolute", left: 12, top: 12, height: 36, padding: "0 12px", borderRadius: 11, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: COLORS.blanc, fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", gap: 5 } }, "\u2039", React.createElement("span", null, tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る" , de: "Zurück", ar: "\u0631\u062c\u0648\u0639"}))),
             React.createElement("button", { onClick: () => setHistoOuvert(true), "aria-label": t("historique"), style: { position: "absolute", left: 12, top: 54, width: 36, height: 36, borderRadius: 11, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: COLORS.blanc, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" } }, "☰"),
             React.createElement("button", { onClick: () => { const msg = tr({ fr: "Démarrer une nouvelle conversation ? L'historique actuel restera consultable mais Hey Baby ne s'en souviendra plus.", en: "Start a new conversation? The current history stays available, but Hey Baby won't remember it anymore.", es: "¿Iniciar una nueva conversación? El historial actual seguirá disponible, pero Hey Baby ya no lo recordará.", it: "Avviare una nuova conversazione? La cronologia attuale resterà consultabile, ma Hey Baby non se ne ricorderà più.", ja: "新しい会話を始めますか？現在の履歴は閲覧できますが、Hey Babyはそれを覚えなくなります。" , de: "Eine neue Konversation starten? Der aktuelle Verlauf bleibt einsehbar, aber Hey Baby wird sich nicht mehr daran erinnern.", ar: "\u0628\u062f\u0621 \u0645\u062d\u0627\u062f\u062b\u0629 \u062c\u062f\u064a\u062f\u0629\u061f \u0633\u064a\u0628\u0642\u0649 \u0627\u0644\u0633\u062c\u0644 \u0627\u0644\u062d\u0627\u0644\u064a \u0645\u062a\u0627\u062d\u0627 \u0644\u0644\u0627\u0637\u0644\u0627\u0639 \u0644\u0643\u0646 Hey Baby \u0644\u0646 \u064a\u062a\u0630\u0643\u0631\u0647."}); if (!window.confirm(msg)) return; const id = nouvelleConversationHB(); setConversationId(id); setMessages([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]); }, "aria-label": tr({ fr: "Nouvelle conversation", en: "New conversation", es: "Nueva conversación", it: "Nuova conversazione", ja: "新しい会話" , de: "Neue Konversation", ar: "\u0645\u062d\u0627\u062f\u062b\u0629 \u062c\u062f\u064a\u062f\u0629"}), style: { position: "absolute", left: 12, top: 96, width: 36, height: 36, borderRadius: 11, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: COLORS.blanc, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" } }, "✚"),
-            React.createElement("span", { style: { position: "absolute", right: 12, top: 12, fontSize: 12.5, fontWeight: 800, color: "#20D9F5", background: `${"#20D9F5"}1A`, border: `1px solid ${"#20D9F5"}55`, minWidth: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" } }, Math.max(0, LIMITE_JOUR - questionsPosees))),
+            React.createElement("span", { style: { position: "absolute", right: 12, top: 12, fontSize: 12.5, fontWeight: 800, color: "#20D9F5", background: `${"#20D9F5"}1A`, border: `1px solid ${"#20D9F5"}55`, minWidth: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" } }, Math.max(0, limiteAffichee - questionsUtilisees))),
         React.createElement("div", { style: { position: "relative", zIndex: 2, flex: 1, minHeight: 0, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" } },   /* (552) plus de defilement de cote */
             React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", flexShrink: 0 } },
                 React.createElement("div", { style: { width: 156, height: 156, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: `3px solid ${"#20D9F5"}`, boxShadow: `0 0 28px ${"#20D9F5"}66`, marginTop: 8 } },
