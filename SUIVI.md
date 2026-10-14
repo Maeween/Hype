@@ -12585,3 +12585,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html (build 20261014-1123) : la page Cavalier V2 passe `ajoutBadge: true`.
 - 🟥 Fichiers envoyés : hype-stories.js ET index.html (+ SUIVI.md).
 - Checks : node --check hype-stories.js OK ; essai hors appli du bandeau (avec et sans sa story, et sans les nouvelles propriétés) : aucun plantage, 1 seul bouton « + » au bon endroit ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1124 : Cavalier V2 — les stories du cavalier en colonne à droite de la photo
+- Demandes (18 h 20 → 18 h 29) : « elles me font ch… ces stories, on sait jamais où les mettre » → aperçu En haut / Sur le côté / Côté gauche → « vendu pour le côté », « droite », « ses stories seulement ».
+- hype-stories.js (?v=20cg) : nouvelle propriété `colonne` (+ `seulUserId` / `seulMoi`, `ajout`) — petite colonne de ronds (46 px, anneau champagne, gris si déjà vues) avec les stories d'UN seul cavalier, 3 au plus, « +N » sur la dernière ; touche = visionneuse à cette story ; sur sa page, petit « + » en pointillé dessous ; rien si le cavalier n'a pas de story (et pas sa page). Sans `colonne` : inchangé ailleurs.
+- index.html (build 20261014-1124), V2 : la colonne est posée à droite de la photo du haut de page (sous les boutons) ; les stories de toute la communauté ne sont plus affichées sur la page Cavalier V2.
+- 🟥 Fichiers envoyés : hype-stories.js ET index.html (+ SUIVI.md).
+- Checks : node --check hype-stories.js OK ; essai hors appli : sa page avec 4 stories → 3 ronds + « +1 » + « + » ; visite d'un cavalier avec 1 story → 1 rond ; cavalier sans story → rien ; bandeau classique des autres pages → inchangé, sans erreur. 16 scripts 0 erreur ; marqueurs de garde inchangés.

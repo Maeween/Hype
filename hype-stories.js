@@ -2770,6 +2770,31 @@ function BandeauStories(props) {
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
     /* 14/10 (?v=20cc) : propriete `fond` (fond du rail impose par la page appelante, ex. "transparent" sur la page Cavalier V2).
        Sans elle : #030405 comme avant, rien ne change ailleurs. */
+    /* 14/10 (?v=20cg) — propriete `colonne` (page Cavalier V2, « vendu pour le cote », a droite) : au lieu du rail, une
+       petite COLONNE de ronds (46 px, anneau champagne) avec les stories d UN seul cavalier — `seulUserId` (page visitee)
+       ou `seulMoi` (sa page). 3 au plus, « +N » sur la derniere s il y en a plus ; touche = la visionneuse a cette story.
+       Sur sa page (`ajout`) : un petit « + » en pointille dessous. Personne d autre n apparait. Sans `colonne` : inchange. */
+    (props && props.colonne) ? (function () {
+      var cible = props.seulMoi ? moiId : (props.seulUserId || null);
+      var iG = -1;
+      if (cible) { for (var kG = 0; kG < groupes.length; kG++) { if (groupes[kG] && String(groupes[kG].user_id) === String(cible)) { iG = kG; break; } } }
+      var gC = iG >= 0 ? groupes[iG] : null;
+      var lesC = (gC && gC.stories) || [];
+      var vusC = lesC.slice(0, 3), resteC = lesC.length - vusC.length;
+      var ajoutC = !!(props.ajout && moiId);
+      if (!vusC.length && !ajoutC) return null;
+      return h("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 10 } },
+        vusC.map(function (stC, k) {
+          var brutC = (stC && stC.photo_url) || (gC && gC.avatar_url) || null;
+          var srcC = (brutC && typeof vignetteHype === "function") ? vignetteHype(brutC, 120, 120) : brutC;
+          return h("button", { key: "col" + k, "aria-label": (gC && gC.pseudo) || "story", onClick: function () { try { hsAmorcerAudio(); } catch (eA) { } setDepartS(k); setOuvert(iG); },
+            style: { position: "relative", width: 46, height: 46, borderRadius: "50%", padding: 2, cursor: "pointer", border: "1.5px solid " + (gC && gC.toutesVues ? "rgba(243,238,228,0.35)" : tnL), background: "rgba(5,8,11,0.4)", boxShadow: "0 6px 16px rgba(0,0,0,0.5)" } },
+            srcC ? h("img", { src: srcC, alt: "", loading: "lazy", style: { width: "100%", height: "100%", borderRadius: "50%", objectFit: "cover", display: "block" } })
+                 : h("span", { style: { display: "flex", width: "100%", height: "100%", alignItems: "center", justifyContent: "center", color: tnL, fontFamily: C, fontSize: 16 } }, String((gC && gC.pseudo) || "?").charAt(0).toUpperCase()),
+            (k === vusC.length - 1 && resteC > 0) ? h("span", { style: { position: "absolute", bottom: -4, right: -6, minWidth: 20, height: 18, padding: "0 4px", borderRadius: 9, background: "#05080B", border: "1px solid " + tnL, color: tnL, fontFamily: M, fontSize: 10, lineHeight: "16px", textAlign: "center" } }, "+" + resteC) : null);
+        }),
+        ajoutC ? h("button", { key: "colplus", onClick: choisirFichier, "aria-label": hsT("ajouter", lg), style: { width: 30, height: 30, borderRadius: "50%", padding: 0, background: "rgba(5,8,11,0.5)", border: "1px dashed " + tA(0.7), color: tnL, fontSize: 16, lineHeight: "28px", textAlign: "center", cursor: "pointer" } }, "+") : null);
+    })() :
     h("div", { "data-hscroll": "1", style: { background: (props && props.fond) || "#030405", display: "flex", alignItems: "flex-start", justifyContent: railCentre ? "center" : "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
