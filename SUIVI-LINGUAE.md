@@ -1,3 +1,23 @@
+# 🗓️ 14/10 (nuit) — LE CHINOIS ACTIVÉ : 8e LANGUE DE LECTURE ET DE VOYAGE — horselingo `63ebe1d` [publier]
+
+**Demande de Blandine** : « tu sais me rajouter le chinois aux langues ? » → « Fais déjà horse lingo oui » → « Tu as carte blanche […] gère ça de façon autonome ». Chinois **simplifié** (zh, voix zh-CN, drapeau 🇨🇳). Hype (2hype.fr) n'est **pas** touché : à faire plus tard si elle le veut.
+
+**Contenu (commits de préparation 062425a → 01df3b2, puis 63ebe1d)** : tous les lexiques (mots + pinyin, définitions, phrases, dialogues), cartes postales et lettres des 39 villes, `hype-lingo-villes*.js`, `hype-lingo-phrases-monde.js`, et toute l'interface de `lingo.html`, `lingo-dialogue.html`, `lingo-collection.html`, `lingo-globe.html`, `lingo-sellerie.html` (≈ 700 textes) + les 65 libellés d'exercices (L7). ⚠️ **Traduit par Claude, jamais relu par un natif** — même statut que l'arabe.
+
+**Activation, sur le modèle de l'arabe (bebade1)** : `LANGUES_UI`, LG/LGN (中文), VOIX, destination « Le chinois » (clé neuve `muraille`), lexique (tri et abécédaire par pinyin), signature des lettres « 再见，Hype », pas d'exercice « écris le mot » en chinois (comme japonais/arabe), « 第 n 课 » / « 第 n 章 ». « sept langues » → **huit** partout (accueil, Galops, pied de page). Pages Google : **/zh/cihui/** + colonne chinoise sur toutes les pages /vocabulaire/ (39 étapes, 947 mots, 8 langues, 321 adresses dans le sitemap). Aperçu des adresses courtes : « en 8 langues ».
+
+**Deux choix techniques à connaître** :
+- Les phrases chinoises des lexiques sont écrites **avec des espaces** entre groupes de mots : ce sont les tuiles de « remets la phrase dans l'ordre ». À l'écran, un petit script retire ces espaces entre deux caractères chinois (affichage seulement, données intactes ; le japonais n'est jamais touché).
+- Les `?l=` de **tous** les lexiques ont été incrémentés (le service worker garde les .js par adresse : sans ça, un téléphone aurait gardé des lexiques sans chinois).
+
+**🟠 Bug corrigé au passage (dialogue, toutes langues non latines)** : `normalise()` effaçait tout ce qui n'était pas a-z → en **japonais et en arabe**, « remets en ordre » comptait **toujours juste** et le micro ne comprenait **jamais rien**. Corrigé (lettres de toutes les écritures gardées, découpage en mots pour chinois/japonais). Vérifié : bonne réponse = « Compris », mauvaise = « Presque » en zh, ja, ar, en.
+
+**4 mots chinois manquants rattrapés** (un commentaire `// ??` cachait la clé au script) : abandon (endurance), rond de longe (horsemanship), responsable et cheval échappé (urgences).
+
+**Contrôles (Chromium)** : 8 drapeaux sur une ligne à 320, 390, 820 et 1440 px ; leçons jouées en fr→zh, ja→zh, ar→zh, de→zh, es→zh, it→zh, zh→en, en→ar, fr→ja : **aucune erreur JS** ; dialogue de La Baule joué en chinois ; collection, globe, lexique, sellerie en chinois. Mise en ligne vérifiée (/zh/cihui/ répond).
+
+**Reste (non bloquant)** : relecture par un natif · Hype lui-même en chinois si Blandine le souhaite · « La collection », « Ma sellerie · Prochainement », « Les thèmes d'apprentissage » et les consignes du dialogue étaient déjà en français seul pour toutes les langues (pas propre au chinois).
+
 # 🗓️ 01/10 — LE LEXIQUE CLASSE SANS L'ARTICLE — `lingo.html` ?v=104
 
 **Décision de Blandine (00 h 10 : « ok, mets-la à D », « idem pour les autres mots dans le même cas »)**, suite au constat de la veille : « la diagonale » rangée sous L, 655 mots sur 862 sous la même lettre en français.
