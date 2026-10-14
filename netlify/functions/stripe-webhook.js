@@ -139,10 +139,45 @@ const FAMILLE_EN_VENTE = Object.keys(FAMILLE_LIENS).length > 0 || FAMILLE_PRIX.s
 function dateEvenement(evenement) {
     return (evenement && evenement.created) ? new Date(evenement.created * 1000).toISOString() : null;
 }
-async function majFamille(service, evenement, sub, statut, expire) {
+/* 15/10 (livraison C) : on transmet aussi la FIN DE LA PÉRIODE FACTURÉE (lignes de la
+   facture). La base se fie à cette période et non plus à l'heure du message : un refus
+   d'une période déjà payée (même seconde, vieux message, ajustement en cours de mois)
+   ne suspend plus une famille qui a payé. */
+async function majFamille(service, evenement, sub, statut, expire, periodeFin) {
     if (!FAMILLE_EN_VENTE || !sub) return 0;
     return Number(await appelRpc(service, "famille_maj",
-        { p_sub: sub, p_statut: statut, p_expire: expire || null, p_evenement_le: dateEvenement(evenement) })) || 0;
+        { p_sub: sub, p_statut: statut, p_expire: expire || null, p_evenement_le: dateEvenement(evenement),
+          p_periode_fin: periodeFin || null })) || 0;
+}
+/* Fin de la période facturée : la plus tardive des lignes de la facture (les lignes du
+   prix Famille d'abord s'il y en a). Les lignes d'ajustement au prorata portent la même
+   fin que la période en cours : elles ne prolongent donc rien. Rend une date ISO ou null. */
+function periodeFacture(f) {
+    try {
+        const lignes = (f && f.lines && f.lines.data) || [];
+        const prixLigne = (l) => {
+            const pd = l && l.pricing && l.pricing.price_details;
+            if (pd && pd.price) return typeof pd.price === "string" ? pd.price : (pd.price.id || null);
+            return (l && l.price && l.price.id) || null;
+        };
+        const famille = lignes.filter((l) => FAMILLE_PRIX.has(prixLigne(l)));
+        const choix = famille.length ? famille : lignes;
+        let fin = 0;
+        for (const l of choix) { const e = l && l.period && Number(l.period.end); if (e > fin) fin = e; }
+        return fin ? new Date(fin * 1000).toISOString() : null;
+    } catch (e) { return null; }
+}
+/* Remboursement ou avoir sur une famille : AUCUNE action automatique, une ligne à vérifier. */
+async function signalerRemboursementFamille(service, evenement, objet) {
+    if (!FAMILLE_EN_VENTE || !objet || !objet.customer) return true;
+    const client = typeof objet.customer === "string" ? objet.customer : (objet.customer.id || null);
+    if (!client) return true;
+    const sub = await appelRpc(service, "famille_par_client", { p_customer: client });
+    if (!sub) return true;
+    const montant = typeof objet.amount_refunded === "number" ? objet.amount_refunded : (typeof objet.total === "number" ? objet.total : null);
+    return anomalie(service, evenement, { reference_stripe: sub, email: (objet.billing_details && objet.billing_details.email) || objet.customer_email || null,
+        montant, anomalie: "remboursement_ou_avoir",
+        note: (evenement.type === "credit_note.created" ? "Avoir" : "Remboursement") + " sur un abonnement Premium Famille : rien n'a été changé automatiquement. Décider s'il faut arrêter la famille (avec accord)." });
 }
 /* ── 3 bis : DOUBLE ABONNEMENT DANS L'AUTRE SENS ─────────────────────────────────
    Un membre d'une famille en cours (titulaire ou deuxième cavalier) achète en plus
@@ -181,9 +216,10 @@ function premiumPersoPaye(ligne) {
     return !!(accesPayeConcurrent(ligne, null) && ligne.plan !== "ai");
 }
 /* Ouvre la famille ; rend true si tout est bien enregistré (sinon Stripe réessaiera). */
-async function ouvrirFamille(service, evenement, userId, sub, client, expire, infos) {
+async function ouvrirFamille(service, evenement, userId, sub, client, expire, infos, periodeFin) {
     const res = await appelRpc(service, "famille_ouvrir",
-        { p_titulaire: userId, p_sub: sub, p_customer: client, p_expire: expire, p_evenement_le: dateEvenement(evenement) });
+        { p_titulaire: userId, p_sub: sub, p_customer: client, p_expire: expire, p_evenement_le: dateEvenement(evenement),
+          p_periode_fin: periodeFin || null });
     log("Famille :", res, "—", sub, "—", infos.email || "");
     if (res === "autre_famille") {
         // Le titulaire paie déjà une AUTRE famille en cours : rien de plus, à vérifier.
@@ -545,11 +581,13 @@ export default async (req) => {
             const ligneAbo = await ligneParAbonnement(service, aboFacture);
             const touchees = ligneAbo ? await majParAbonnement(service, aboFacture, champs) : 0;
             // Une famille n'est cherchée QUE si aucune ligne d'abonnement classique ne correspond.
-            const familleTouchee = ligneAbo ? 0 : await majFamille(service, evenement, aboFacture, "actif", expire);
+            const periodeF = periodeFacture(objet);
+            const expireFam = periodeF ? new Date(new Date(periodeF).getTime() + 2 * 86400000).toISOString() : expire;
+            const familleTouchee = ligneAbo ? 0 : await majFamille(service, evenement, aboFacture, "actif", expireFam, periodeF);
 
             if (familleTouchee) {
                 // Renouvellement Premium Famille : les deux comptes sont prolongés ensemble.
-                log("Famille renouvelée, expire le", expire || "(période inconnue)");
+                log("Famille : paiement reçu pour la période jusqu'au", periodeF || "(période inconnue)");
                 if (!prix || !FAMILLE_PRIX.has(prix)) {
                     ecritureOk = await anomalie(service, evenement, { ...infosF, anomalie: prix ? "changement_formule" : "offre_inconnue" });
                 }
@@ -561,7 +599,7 @@ export default async (req) => {
                     ecritureOk = false;
                 } else {
                     ecritureOk = await ouvrirFamille(service, evenement, userIdF, aboFacture, objet.customer || null,
-                        expire || new Date(Date.now() + 32 * 86400000).toISOString(), infosF);
+                        expireFam || new Date(Date.now() + 32 * 86400000).toISOString(), infosF, periodeF);
                 }
             } else if (touchees > 0) {
                 // Renouvellement d'une ligne existante : on prolonge SEULEMENT ses droits
@@ -613,7 +651,7 @@ export default async (req) => {
             const aboRefus = aboDeFacture(objet);
             let touchees = await majParAbonnement(service, aboRefus,
                 { statut: "impaye", maj_le: new Date().toISOString() });
-            if (touchees === 0 && await majFamille(service, evenement, aboRefus, "impaye")) { touchees = 1; log("Famille : paiement refusé", aboRefus); }
+            if (touchees === 0 && await majFamille(service, evenement, aboRefus, "impaye", null, periodeFacture(objet))) { touchees = 1; log("Famille : paiement refusé", aboRefus); }
             if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", aboRefus);
             log("Paiement refusé enregistré :", aboRefus);
         }
@@ -625,6 +663,12 @@ export default async (req) => {
             if (touchees === 0 && await majFamille(service, evenement, objet.id, "annule")) { touchees = 1; log("Famille résiliée", objet.id); }
             if (touchees === 0) log("annulation, aucune ligne correspondante :", objet.id);
             log("Abonnement annulé :", objet.id);
+        }
+
+        // ----- 15/10 (livraison C) : remboursement ou avoir (Premium Famille seulement) -----
+        // Ces deux messages ne sont reçus que s'ils sont cochés dans Stripe (à faire plus tard, avec accord).
+        else if ((evenement.type === "charge.refunded" || evenement.type === "credit_note.created") && objet) {
+            ecritureOk = await signalerRemboursementFamille(service, evenement, objet);
         }
     } catch (e) {
         log("erreur de traitement :", e && e.message);

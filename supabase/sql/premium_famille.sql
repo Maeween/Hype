@@ -1,4 +1,5 @@
 -- ═══════════════════════════════════════════════════════════════════════════
+-- ⚠️ 15/10/2026 : après ce fichier, passer AUSSI premium_famille_livraison_c.sql (paiements Stripe par période payée).
 -- HYPE — PREMIUM FAMILLE (étapes 2, 3 et 3 bis) — PROJET, NON EXÉCUTÉ
 -- Préparé le 14/10/2026. À passer par Blandine UNIQUEMENT après validation.
 -- Retour arrière : premium_famille_retour_arriere.sql (même dossier).
