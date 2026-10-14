@@ -12433,3 +12433,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html (build 20261014-1103) : dans `accordRenonce()`, après « OK », insertion en arrière-plan (offre = clé Stripe, langue, version « 2026-10-13 · L221-28 · v1 »). Ne bloque jamais le paiement ; si non connecté ou base muette, l'accord reste seulement dans localStorage comme avant.
 - Pour voir les accords : Supabase → Table Editor → renonciations_retractation.
 - Si le texte du renoncement change un jour : changer aussi `version_texte`.
+
+## 14/10/2026 — Build 1104 : Cavalier V2, étape 1 — le haut de page
+- Demande : « Ok vas-y code la page » (17 h 21), après validation de l'aperçu « Cavalier V2 Hype » (maquette + consignes du 14/10).
+- index.html (build 20261014-1104), dans `EcranMonCavalier` :
+  · Nouvelle fonction `cavV2Hero()` : photo du cavalier calée à droite (à gauche en arabe), fondue par masque (aucune couleur posée sur la photo), descendue sous la rangée de boutons ; « CAVALIER » (7 langues), prénom en Cormorant, crayon du pseudo, badge Team (Coach / Team CSO Club), identifiant + écurie, citation si elle existe.
+  · Menu « Mes actions » monté en haut à droite (mêmes entrées et mêmes actions qu'avant) ; en visite, la bulle « écrire » à la même place. Drapeau et partage décalés vers la gauche (72 / 118) pour lui laisser la place.
+  · L'ancienne carte photo et l'ancien bloc du prénom ne sont plus affichés en V2 (code conservé).
+- ⚠️ BASCULE `CAV_V2` : vraie seulement sur le compte de Blandine (estFeinnMC) ou si `window.HYPE_CAVALIER_V2 === true`. Tous les autres cavaliers gardent l'ancienne page, inchangée, tant qu'elle n'a pas validé.
+- Non touché dans cette étape : stories, Mur des songes, raccourcis, écurie, chevaux, amis, résultats, fin de page (étapes suivantes).
+- Envoyé sur GitHub SANS [publier] (consigne V2 : aucun déploiement sans accord explicite) → pas encore en ligne.
+- Checks : marqueur unique 20261014-1104 ; 16 scripts 0 erreur ; marqueurs de garde inchangés (liensClub 9, chevalCommunDemoData 2, palmTech 4, EcranSanteCheval 7, comme la 1103). Non vérifié : rendu réel (test iPhone à faire par Blandine, connexion impossible ici).
+- Étapes suivantes prévues (une par build, validée avant la suivante) : 2 accès illustrés + écurie(s) (plus d'espace entre les deux) ; 3 Ma story compacte ; 4 Son récit ; 5 Ses chevaux (grille 3 colonnes, carte écurie + « Ajouter mon cheval » dessous) ; 6 Ses amis ; 7 Ses résultats ; 8 fond, encarts et fin de page (remontée).
