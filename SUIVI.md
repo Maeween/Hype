@@ -12531,3 +12531,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Encart « Mon récit » plus foncé (dégradé pétrole → presque noir).
 - Checks : marqueur unique 20261014-1114 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
 - Reste avant d'ouvrir la V2 à tout le monde : décision sur le Mur des songes (toujours affiché sous le haut de page), validation de Blandine sur iPhone (sa page + une page visitée), puis passer la bascule CAV_V2 à vrai pour tous.
+
+## 14/10/2026 — Build 1115 : Cavalier V2 — le Mur des songes est retiré
+- Demande (17 h 55) : « Retire le mur des songes ».
+- index.html (build 20261014-1115) : en V2, le bloc du Mur des songes n'est plus affiché sur la page Cavalier (une ligne en tête du bloc). Le code, la fenêtre d'écriture et le texte enregistré (ma_voix) sont conservés ; l'ancienne page (hors V2) l'affiche toujours.
+- Checks : marqueur unique 20261014-1115 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
