@@ -12513,3 +12513,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande (17 h 45) : « s'il est sur sa page il doit voir Mes chevaux et si on lit sa page on doit voir Ses chevaux ».
 - index.html (build 20261014-1112), V2 seulement : titres Mes chevaux / Ses chevaux, Mon récit / Son récit, Mes amis / Ses amis, Mes résultats / Ses résultats (7 langues). « Ma story » (sa page) / « Les stories » (visite) inchangé.
 - Checks : marqueur unique 20261014-1112 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1113 : Cavalier V2 — « Ma story » option C + carte de l'écurie jamais seule
+- Demandes (17 h 44-51) : « Ma story ça va pas visuellement » → 3 propositions montrées dans l'aperçu → « Story C » ; « attention, ce cas de figure n'est pas censé arriver pour les chevaux » (capture : 3 chevaux, carte de l'écurie seule sur la 2e ligne).
+- hype-stories.js (?v=20cc) : nouvelle propriété `fond` du bandeau (fond du rail imposé par la page ; sans elle #030405, inchangé ailleurs).
+- index.html (build 20261014-1113), V2 seulement :
+  · « Ma story » SANS encart : titre + phrase « Partage ici tes plus beaux moments à cheval… » (sa page, toujours affichée pour que l'espace ne fasse pas vide), puis les stories en ronds fondus (forme « libre », 72 px), rail sans fond sombre.
+  · Chevaux : quand la carte « Les chevaux de l'écurie » se retrouverait seule sur sa ligne (3 ou 6 chevaux), elle devient un bouton contour pleine largeur « Les chevaux de l'écurie → » sous la grille (même destination). 8 chevaux et plus : au milieu, inchangé.
+- 🟥 Fichiers envoyés : index.html ET hype-stories.js (+ SUIVI.md).
+- Checks : marqueur unique 20261014-1113 ; 16 scripts 0 erreur ; hype-stories.js node --check OK ; marqueurs de garde inchangés.

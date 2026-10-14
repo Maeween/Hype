@@ -2751,7 +2751,9 @@ function BandeauStories(props) {
 
   return h("div", { style: { padding: (props && props.padding) || "16px 0 8px" } },
     h("input", { ref: fileRef, type: "file", accept: "image/*", multiple: true, onChange: surFichier, style: { display: "none" } }),
-    h("div", { "data-hscroll": "1", style: { background: "#030405", display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
+    /* 14/10 (?v=20cc) : propriete `fond` (fond du rail impose par la page appelante, ex. "transparent" sur la page Cavalier V2).
+       Sans elle : #030405 comme avant, rien ne change ailleurs. */
+    h("div", { "data-hscroll": "1", style: { background: (props && props.fond) || "#030405", display: "flex", alignItems: "flex-start", gap: 10, overflowX: "auto", overflowY: "hidden", padding: "22px 14px 6px", WebkitOverflowScrolling: "touch" } },
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */
