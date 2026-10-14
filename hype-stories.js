@@ -2475,7 +2475,7 @@ function BandeauStories(props) {
   }
 
   var T = (props && props.taille) || HS_TAILLE_ROND;
-  /* 14/10 (?v=20cd, corrige en 20ce) — propriete `tailleAuto` (page Cavalier V2, Blandine : « on pourrait les centrer et que leur taille
+  /* 14/10 (?v=20cd, corrige en 20ce, bornes 56-84 en 20cf) — propriete `tailleAuto` (page Cavalier V2, Blandine : « on pourrait les centrer et que leur taille
      s adapte en fonction de leur nombre ») : la taille des ronds se calcule sur la largeur disponible et le nombre de
      visuels (2 au plus par cavalier + le « + »), entre 64 et 104 px ; si tout tient, le rail est CENTRE, sinon il defile
      depuis le debut comme avant. Sans cette propriete : rien ne change. */
@@ -2488,7 +2488,7 @@ function BandeauStories(props) {
       /* ⚠️ (20ce) NE PAS appeler cette variable « tA » : c est deja le nom de la fonction de couleur du bandeau.
          Le 14/10 (20cd) elle l ecrasait -> « tA is not a function » -> page Cavalier V2 plantee. */
       var tailleCalc = Math.floor((largA - 10 * (nGr - 1)) / nVis) - 12;
-      T = Math.max(64, Math.min(104, tailleCalc));
+      T = Math.max(56, Math.min(84, tailleCalc));   /* (20cf) Blandine : « reduis la taille des story un peu » : 64-104 -> 56-84 */
       railCentre = (nVis * (T + 12) + 10 * (nGr - 1)) <= largA;
     } catch (eTa) { }
   }
@@ -2774,8 +2774,26 @@ function BandeauStories(props) {
       /* 19n (14/08, mot de Blandine) : « le + pour ajouter une story faut
          qu'il soit toujours en dernier sur le rail pas en premier ». Les
          stories passent devant, le + ferme la marche. */
-      groupes.map(function (g, i) { return rond(g, i); }),
-      rondAjout()),
+      /* 14/10 (?v=20cf) — propriete `ajoutBadge` (page Cavalier V2, choix « 3 M » de Blandine) : plus de grand rond « + » ;
+         un mini « + » (22 px, contour champagne) pose en bas a droite de SA propre story ; si elle n a aucune story en cours,
+         un petit rond « + » en pointille (34 px) a la fin du rail. Meme action (choisirFichier). Sans la propriete : inchange. */
+      (props && props.ajoutBadge)
+        ? (function () {
+            var aMoi = false;
+            var cellsB = groupes.map(function (g, i) {
+              var el = rond(g, i);
+              if (!(moiId && g && g.user_id === moiId) || aMoi) return el;
+              aMoi = true;
+              return h("div", { key: "stmoi" + i, style: { position: "relative", flex: "0 0 auto" } }, el,
+                h("button", { onClick: function (eB) { try { eB.stopPropagation(); } catch (e0) { } choisirFichier(); }, "aria-label": hsT("ajouter", lg),
+                  style: { position: "absolute", top: Math.round(T * 0.66), right: Math.round(LARGEUR * 0.12), width: 22, height: 22, borderRadius: "50%", padding: 0, background: "#05080B", border: "1px solid " + tnL, color: tnL, fontSize: 14, lineHeight: "20px", textAlign: "center", cursor: "pointer", zIndex: 2 } }, "+"));
+            });
+            if (!aMoi) cellsB.push(h("button", { key: "stplusB", onClick: choisirFichier, "aria-label": hsT("ajouter", lg),
+              style: { flex: "0 0 auto", alignSelf: "flex-start", marginTop: Math.max(0, Math.round((T - 34) / 2)), width: 34, height: 34, borderRadius: "50%", padding: 0, background: "transparent", border: "1px dashed " + tA(0.6), color: tnL, fontSize: 18, fontWeight: 300, lineHeight: "32px", textAlign: "center", cursor: "pointer" } }, "+"));
+            return cellsB;
+          })()
+        : groupes.map(function (g, i) { return rond(g, i); }),
+      (props && props.ajoutBadge) ? null : rondAjout()),
 
     (ouvert >= 0 && groupes[ouvert])
       ? h(VisionneuseStories, {

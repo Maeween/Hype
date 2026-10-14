@@ -12578,3 +12578,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande (18 h 08) : « la typo de mon récit peut être un peu plus petite ? »
 - index.html (build 20261014-1122), V2 : texte du récit 16 → 14 px (interligne 1,42), 8 lignes au plus au lieu de 7.
 - Checks : marqueur unique 20261014-1122 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1123 : Cavalier V2 — « + » discret posé sur sa story, stories un peu plus petites
+- Demandes (18 h 11 → 18 h 17) : « le bouton Ajouter est trop gros et pas assez discret » → 5 propositions × 3 tailles dans l'aperçu → « 3 M mais réduis la taille des story un peu ».
+- hype-stories.js (?v=20cf) : nouvelle propriété `ajoutBadge` — plus de grand rond « + » ; mini « + » de 22 px (contour champagne) posé en bas à droite de SA propre story ; sans story en cours, petit rond « + » en pointillé de 34 px à la fin du rail. Même action. `tailleAuto` : bornes 64-104 → 56-84 px. Sans ces propriétés : inchangé sur les autres pages.
+- index.html (build 20261014-1123) : la page Cavalier V2 passe `ajoutBadge: true`.
+- 🟥 Fichiers envoyés : hype-stories.js ET index.html (+ SUIVI.md).
+- Checks : node --check hype-stories.js OK ; essai hors appli du bandeau (avec et sans sa story, et sans les nouvelles propriétés) : aucun plantage, 1 seul bouton « + » au bon endroit ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
