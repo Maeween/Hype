@@ -12493,3 +12493,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · L'ancien bloc HypeAmisVitrine n'est plus monté en V2 (code conservé). Nouvelle petite mémoire d'écran suivisV2.
   · Textes nouveaux en 7 langues.
 - Checks : marqueur unique 20261014-1109 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
+
+## 14/10/2026 — Build 1110 : Cavalier V2, étape 7 — « Ses résultats » (+ ordre des amis)
+- Demandes : « Ok continue » (17 h 38) ; « Principaux on avait déjà dit, les résultats genre titres en premier » ; « pour les amis on a dit ceux avec le plus gros niveau en premier, pour favoriser d'avoir des images et des gens actifs » (17 h 39-40).
+- index.html (build 20261014-1110), en V2 seulement (BlocResultatsCavaliere reçoit `v2: CAV_V2`) :
+  · Avec résultats : encart V2 « Ses résultats » + « Voir tout » (page Résultats du cavalier), image équestre fondue en haut à droite ; « Principaux résultats / Ses plus belles performances » = 3 lignes (médaille 1er avec lauriers, épreuve, cheval, concours · partants, pastille Victoire / Podium) ; « Derniers résultats / Ses concours les plus récents » = les cartes actuelles du rail, inchangées, + « Choisir » (masquer/afficher, inchangé) ; sa page : « + Ajouter un résultat » (saisie à la main existante) et « Importer résultats FFE » (import existant, garde Premium de l'écran d'import inchangée).
+  · Règle des principaux = celle DÉJÀ VALIDÉE sur la page Résultats (594-598), fonctions recopiées à l'identique : classantes avant préparatoires, titres d'abord (3 national, 2 international/salon/Equita, 1 autre championnat, 0 ordinaire/départemental pur), victoire avant placement, partants, niveau, place ; pool = victoires, complété par les podiums ; dédoublonnage par rendez-vous et par cheval. ⚠️ Les moments forts choisis/retirés à la main sur la page Résultats ne sont pas lus ici (à brancher si elle le veut).
+  · Sans résultat (sa page) : encart d'accueil (image équestre sombre, coupe, « Chaque parcours est une étape d'une belle aventure. », « Ajoute ou importe tes résultats… », les deux boutons). En visite sans résultat : rien, comme avant.
+  · Ses amis : triés par niveau (rpc hype_ordre_cavaliers_xp, même source que la page Écurie), puis ceux qui ont une photo ; pareil pour les cavaliers de l'écurie proposés.
+  · Textes nouveaux en 7 langues.
+- Checks : marqueur unique 20261014-1110 ; 16 scripts 0 erreur (une parenthèse manquante attrapée par le contrôle avant envoi, corrigée) ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
