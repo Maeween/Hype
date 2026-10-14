@@ -74,8 +74,9 @@ alter table public.paiements_a_verifier add constraint paiements_a_verifier_anom
 alter table public.familles enable row level security;
 alter table public.famille_membres enable row level security;
 alter table public.famille_journal enable row level security;
-revoke all on public.familles, public.famille_membres, public.famille_journal from anon;
-revoke insert, update, delete on public.familles, public.famille_membres, public.famille_journal from authenticated;
+-- (Supabase donne par défaut TOUS les droits aux nouveaux comptes connectés, y compris « vider la table » qui
+--  passe outre la sécurité ligne par ligne : on retire tout, puis on rend seulement la lecture.)
+revoke all on public.familles, public.famille_membres, public.famille_journal from anon, authenticated;
 grant select on public.familles, public.famille_membres, public.famille_journal to authenticated;
 
 create or replace function public.famille_de_moi() returns uuid

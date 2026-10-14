@@ -9,6 +9,10 @@ do $$ begin
 end $$;
 grant usage on schema public, auth, extensions to anon, authenticated, service_role;
 create table public.profiles (id uuid primary key, pseudo text);
+-- comme Supabase : tout nouvel objet de public est ouvert par défaut aux comptes
+alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
+alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
+alter default privileges in schema public grant all on sequences to anon, authenticated, service_role;
 create table auth.users (id uuid primary key, email text);
 create or replace function auth.uid() returns uuid language sql stable as
   $$ select nullif(current_setting('test.uid', true), '')::uuid $$;

@@ -223,6 +223,9 @@ do $$ begin
   begin perform famille_ouvrir('00000000-0000-0000-0000-00000000000d','sub_pirate',null,now()+interval '10 years');
         insert into res(nom,attendu,obtenu) values ('Connecté : ouvrir une famille soi-même interdit','refusé','accepté');
   exception when insufficient_privilege then insert into res(nom,attendu,obtenu) values ('Connecté : ouvrir une famille soi-même interdit','refusé','refusé'); end;
+  begin truncate famille_membres;
+        insert into res(nom,attendu,obtenu) values ('Connecté : vider la table des membres interdit','refusé','accepté');
+  exception when insufficient_privilege then insert into res(nom,attendu,obtenu) values ('Connecté : vider la table des membres interdit','refusé','refusé'); end;
   begin perform famille_du_compte('00000000-0000-0000-0000-00000000000a');
         insert into res(nom,attendu,obtenu) values ('Connecté : fonction serveur famille_du_compte interdite','refusé','accepté');
   exception when insufficient_privilege then insert into res(nom,attendu,obtenu) values ('Connecté : fonction serveur famille_du_compte interdite','refusé','refusé'); end;
