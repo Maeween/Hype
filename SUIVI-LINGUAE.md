@@ -1,3 +1,19 @@
+# 🗓️ 14/10 (nuit, suite) — SUÉDOIS 🇸🇪 ET POLONAIS 🇵🇱 ACTIVÉS : 12e ET 13e LANGUES — horselingo `b9ee69b` [publier]
+
+**Demande de Blandine** : « On ajoute le marocain ? » → j'ai expliqué les limites de la darija (langue surtout parlée, pas de voix sur les téléphones, traduction peu sûre) et proposé d'autres langues → « Le suédois et le polonais ». Mêmes règles que pour le portugais : mises en ligne ensemble, Hype non touché. Le marocain n'est **pas** fait (options laissées ouvertes : darija en lettres arabes, en lettres latines, ou une ville marocaine « tbourida » dans le voyage).
+
+**Contenu (préparation `dd47a8b`, puis `b9ee69b`)** : glossaires de 875 concepts, 43 fichiers de vocabulaire, toute l'interface (lingo.html 680 textes, dialogue, collection, globe, sellerie, 65 libellés d'exercices, duel). Tutoiement dans les deux langues ; en polonais, tournures neutres quand on ne sait pas si l'élève est une fille ou un garçon. ⚠️ **Traduit par Claude (agents en parallèle, glossaires imposés), jamais relu par un natif.** À faire relire en priorité : sv « vattenkoppen » (abreuvoir), « grimskaft » (longe), termes de maréchalerie (« trängsöm », « sömstick ») ; pl « fula » (foulée ; la PZJ écrit aussi « foule »), « czakker » (période de polo), « mioglobinuria » (coup de sang ; les cavaliers disent plutôt « ochwat mięśniowy »).
+
+**Activation** : LANGUES_UI, LG/LGN (SV, PL), VOIX sv-SE / pl-PL, destinations « Le suédois » (clé neuve `fjall`) et « Le polonais » (clé neuve `wisla`), lexique (drapeaux, tri sans en/ett/att en suédois), signatures « Vi ses, Hype » / « Do zobaczenia, Hype ». « onze langues » → **treize** partout, « · SV · PL » dans les listes, 瑞・波 en japonais. Pages Google **/sv/ordforrad/** et **/pl/slownictwo/** + colonnes partout (13 langues, 521 adresses dans le sitemap). Aperçu : « en 13 langues ».
+
+**Affichage** : téléphone — drapeaux sur deux lignes **7 + 6** ; pastilles du récit sur deux lignes ; tablette et ordinateur : une ligne.
+
+**Corrections au passage** : « engagement » (dressage, Versailles) mal traduit par « inscription » en sv et pl → corrigé ; « épaules » au travail à pied (Santa Ynez) recevait « épaules en arrière » en pt, br, sv, pl → corrigé ; sv « sélection » sportive (Warendorf) distincte de la sélection d'élevage ; pt « OS GALOPES » → « OS GALOPS » (nom gardé comme ailleurs).
+
+**Contrôles (Chromium)** : leçons fr→sv, fr→pl, sv→en, pl→en, sv→pl, pl→sv, ja→sv, ar→pl, en→sv, de→pl, br→sv, pt→pl, zh→pl, fr→br : **aucune erreur JS** ; dialogue de La Baule juste en sv et pl ; aucun texte des 5 pages sans sv/pl ; drapeaux à 320, 390, 820, 1440 px. Mise en ligne vérifiée (Netlify « ready » sur b9ee69b, /sv/ordforrad/aachen/ répond en suédois).
+
+**Reste (non bloquant)** : relecture par des natifs · Hype dans ces langues si Blandine le souhaite.
+
 # 🗓️ 14/10 (nuit, suite) — PORTUGAIS 🇵🇹 ET BRÉSILIEN 🇧🇷 ACTIVÉS : 10e ET 11e LANGUES — horselingo `3f5837a` [publier]
 
 **Demande de Blandine** : « Fais la même chose en portugais puis en brésilien » (même carte blanche que pour le néerlandais). Deux langues séparées : **pt** = portugais du Portugal (voix pt-PT, élève tutoyé), **br** = portugais du Brésil (voix pt-BR, « você », vocabulaire des écuries brésiliennes : baia, barrigueira, adestramento…). « br » est le code interne de l'appli ; Google et les navigateurs reçoivent le vrai code **pt-BR**. Mises en ligne ensemble (pas de « 10 langues » transitoire). Hype n'est **pas** touché.
