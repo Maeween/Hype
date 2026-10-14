@@ -12759,3 +12759,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Dès 768 px : bandeau écurie plus haut (iPad 100 px, ordinateur 112 px ; iPhone 84 px inchangé), plus d'air à gauche, nom de l'écurie plus grand (28 / 30 px ; 24 px quand il y a deux écuries), ville plus lisible. Le petit carré « + Écurie » suit la même hauteur.
 - Rien d'autre ne change : même photo réelle du club fondue à droite (photo Hype par défaut si le club n'en a pas), mêmes clics, mêmes crayons, deux écuries = deux bandeaux côte à côte, visiteur sans écurie = rien.
 - iPhone : capture 390 px avant/après identique au pixel. Tests 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement ; vérifié aussi avec deux écuries (820 et 1440) et en arabe.
+
+## 15/10/2026 (1 h 45) — Cavalier V2 sur iPad et ordinateur, BUILD 4 (1133) : « Mes chevaux » en 4 colonnes, grille toujours juste [publié, accord « Ok continue »]
+- Dès 768 px : grille de 4 colonnes (iPhone : 3, inchangé), écart 16 px. Plafond de l'aperçu : 8 cases (7 chevaux + « Les chevaux de l'écurie » sur sa page avec écurie ; 8 chevaux sinon) ; au-delà, « Voir les autres » comme avant.
+- Sa page avec écurie (4 colonnes) : reste 3 → + carte écurie ; reste 2 ou 1 → + carte écurie + « Ajouter mon cheval » ; ligne pleine → lien « Les chevaux de l'écurie » pleine largeur ; 7 et plus → carte écurie en 8e case. Toute dernière ligne incomplète est CENTRÉE (règle de la visite du 14/10), jamais de case vide.
+- Visite : mêmes règles qu'avant, écrites pour 4 colonnes (aperçu multiple de 4, « Voir tous ses chevaux », dernière ligne centrée).
+- Tests (faux chevaux, Supabase simulé) : 0 à 9 chevaux × sa page avec / sans écurie × visite, à 820 et 1440 px, et en arabe — 0 erreur, 0 débordement. iPhone : 27 cas comparés avant/après au pixel, 0 différence.
+- Constaté, NON corrigé (déjà présent sur iPhone) : en visite, la carte « Ajouter un cheval » s'ajoute à la grille des chevaux de l'autre cavalier (visible avec 2 ou 5 chevaux sur iPhone, ou en dépliant).

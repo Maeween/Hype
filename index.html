@@ -34201,7 +34201,7 @@ function EcranMonCavalier() {
      passe dans « Voir les autres ». Blandine : « il faut qu il passe un cheval supplementaire a
      deplier ». En visite (pas de carte) : 9, inchange. */
   var clubCarteMil = (!__estVisite) ? ((ecChoisie && ecChoisie !== "__toutes__") ? ecChoisie : String((ctx.profil && (ctx.profil.club || ctx.profil.ecurie)) || "").trim()) : "";
-  var PLAFOND_CHV = clubCarteMil ? 8 : 9;
+  var PLAFOND_CHV = cavTab ? (clubCarteMil ? 7 : 8) /* 15/10 (1133) iPad / ordinateur : 4 colonnes, 8 cases au plus */ : (clubCarteMil ? 8 : 9);
   var filtreEc = (!__estVisite && mesEcuries.length > 1 && ecChoisie !== "__toutes__");
   var chevauxSource = filtreEc && typeof hypeChevauxDuClub === "function"
     ? hypeChevauxDuClub(chevauxReels || [], ecChoisie)
@@ -34387,6 +34387,19 @@ function EcranMonCavalier() {
         h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, color: "#C5AA78", textAlign: "center" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644") + " \u2192"))) : null;
     if (!carteM) return cavV2CarteAjout("__milV2");
     return h("div", { key: "__milV2", style: { display: "flex", flexDirection: "column", gap: 7, minWidth: 0, alignSelf: "start" } }, carteM);
+  }
+  /* 15/10 (1133) iPad / ordinateur : grille des chevaux en 4 colonnes. Une derniere ligne incomplete est CENTREE (meme regle que
+     la visite depuis le 14/10), pour qu aucune case ne reste vide. Les elements pleine largeur (lien, bouton) restent en fin. */
+  function cavV2Justifier(cellsJ, colJ, gapJ) {
+    var normJ = [], largesJ = [];
+    cellsJ.forEach(function (cJ) { if (cJ && cJ.props && cJ.props.style && cJ.props.style.gridColumn === "1 / -1") largesJ.push(cJ); else if (cJ) normJ.push(cJ); });
+    var resteJ = normJ.length % colJ;
+    if (resteJ && normJ.length) {
+      var derJ = normJ.splice(normJ.length - resteJ);
+      normJ.push(h("div", { key: "__resteJ", style: { gridColumn: "1 / -1", display: "flex", justifyContent: "center", gap: gapJ } },
+        derJ.map(function (cJ, iJ) { return h("div", { key: "rj" + iJ, style: { width: "calc((100% - " + ((colJ - 1) * gapJ) + "px) / " + colJ + ")", minWidth: 0 } }, React.cloneElement(cJ, { style: Object.assign({}, cJ.props.style, { width: "100%" }) })); })));
+    }
+    return normJ.concat(largesJ);
   }
   /* (1117) la carte « + Ajouter mon cheval » de la taille d une carte cheval (bouche-trou de la grille, sa page seulement) */
   function cavV2CarteAjout(cleA) {
@@ -35075,7 +35088,7 @@ function EcranMonCavalier() {
               color: onEc ? "#F3EEE4" : "#BDB6AA",
               fontSize: 11.5, fontWeight: 700, fontFamily: M } }, libEc);
         })) : null,
-      h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 10, padding: "2px 16px 4px" } }, (function () {
+      h("div", { style: { display: "grid", gridTemplateColumns: (CAV_V2 && cavTab) ? "repeat(4, minmax(0, 1fr))" : "repeat(3, 1fr)" /* (1133) */, gap: (CAV_V2 && cavTab) ? 16 : 10, padding: "2px 16px 4px" } }, (function () {
         var source = __estVisite ? chevauxVisite : chevaux; var PLAFOND_VUS = PLAFOND_CHV; var slots = (__estVisite || premium) ? (tousChevauxVus ? source.slice() : source.slice(0, PLAFOND_VUS)) : source.slice(0, 6);
         /* 04/10 (656) — PAS ENCORE DE CHEVAL : UN ENCART PLEINE LARGEUR AVEC IMAGE DE FOND (sa maquette, version C : texte a
            gauche, image a droite). Sur SA page : « Ajoute ton cheval » + bouton « Creer sa fiche » (meme action que la carte
@@ -35096,6 +35109,7 @@ function EcranMonCavalier() {
           if (decV[0]) cellsV.push(decV[0]);
           cellsV.push(milV);
           if (decV[1]) cellsV.push(decV[1]);
+          if (cavTab) return [cellsV[0]].concat(cavV2Justifier(cellsV.slice(1), 4, 16));   /* (1133) */
           return cellsV;
         }
         if (!source.length) {
@@ -35150,12 +35164,17 @@ function EcranMonCavalier() {
             /* (1117) Blandine : « ca non plus c est pas suppose arriver » (7 chevaux : une case vide). Regle : la grille est TOUJOURS
                pleine. n+1 multiple de 3 (2, 5 chevaux) : chevaux + carte de l ecurie ; n+2 multiple de 3 (1, 4, 7) : + la carte
                « Ajouter mon cheval » ; n multiple de 3 (3, 6) : l ecurie en lien pleine largeur ; 8 et plus : ecurie au milieu. */
-            if (cartes.length >= 8) cartes.splice(4, 0, milC);
-            else if ((cartes.length + 2) % 3 === 0) { cartes.push(milC); cartes.push(cavV2CarteAjout("__ajV2")); }
-            else if ((cartes.length + 1) % 3 === 1) cartes.push(h("button", { key: "__milLien", onClick: function () { try { window.__ecurieHypeClub = clubCarteC; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { gridColumn: "1 / -1", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 42, marginTop: 4, borderRadius: 999, border: "1px solid rgba(201,166,107,0.62)", background: "rgba(5,8,11,0.6)", color: "#F3EEE4", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
+            /* (1133) meme regle, ecrite pour 3 colonnes (iPhone, a l identique) ou 4 (iPad / ordinateur) :
+               4 col. : 7 chevaux (plafond) -> + ecurie ; reste 3 -> + ecurie ; reste 2 ou 1 -> + ecurie + ajout ; reste 0 -> lien pleine largeur. */
+            var colJ = cavTab ? 4 : 3, nJ = cartes.length;
+            if (!cavTab && nJ >= 8) cartes.splice(4, 0, milC);
+            else if (cavTab && nJ >= 7) cartes.push(milC);
+            else if (nJ % colJ === colJ - 2 || (cavTab && nJ % colJ === 1)) { cartes.push(milC); cartes.push(cavV2CarteAjout("__ajV2")); }
+            else if (nJ % colJ === 0) cartes.push(h("button", { key: "__milLien", onClick: function () { try { window.__ecurieHypeClub = clubCarteC; } catch (eCc) { } setEcran("ecurie-hype"); }, style: { gridColumn: "1 / -1", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 42, marginTop: 4, borderRadius: 999, border: "1px solid rgba(201,166,107,0.62)", background: "rgba(5,8,11,0.6)", color: "#F3EEE4", fontFamily: M, fontSize: 12.5, cursor: "pointer" } },
               T("Les chevaux de l'\u00e9curie", "The stable's horses", "Los caballos de la cuadra", "I cavalli della scuderia", "\u53a9\u820e\u306e\u99ac", "Die Pferde des Stalls", "\u062e\u064a\u0648\u0644 \u0627\u0644\u0625\u0633\u0637\u0628\u0644"),
               h("span", { "aria-hidden": "true", style: { color: "#C9A66B" } }, (function () { try { return document.documentElement.dir === "rtl" ? "\u2190" : "\u2192"; } catch (eD) { return "\u2192"; } })())));
             else cartes.push(milC);
+            if (cavTab) return cavV2Justifier(cartes, 4, 16);   /* (1133) */
             return cartes;
           }
           return hypePlacerAuMilieu(cartes, carteCentreC, "__videCentreChevauxC");
@@ -35165,13 +35184,14 @@ function EcranMonCavalier() {
            « Reduire » les replie). Avec 1 ou 2 chevaux, ou une fois deplie, la derniere ligne incomplete est CENTREE. */
         if (CAV_V2 && __estVisite && cartes.length) {
           var totV = source.length, nV = cartes.length;
-          var visV = (!tousChevauxVus && nV > 3 && nV % 3) ? cartes.slice(0, nV - (nV % 3)) : cartes.slice();
-          var defautV = (function () { var m = Math.min(totV, PLAFOND_CHV); return m > 3 ? m - (m % 3) : m; })();
-          var rV = visV.length % 3;
+          var cV3 = cavTab ? 4 : 3, gV = cavTab ? 16 : 10;   /* (1133) 4 colonnes sur iPad / ordinateur ; iPhone : 3, a l identique */
+          var visV = (!tousChevauxVus && nV > cV3 && nV % cV3) ? cartes.slice(0, nV - (nV % cV3)) : cartes.slice();
+          var defautV = (function () { var m = Math.min(totV, PLAFOND_CHV); return m > cV3 ? m - (m % cV3) : m; })();
+          var rV = visV.length % cV3;
           if (rV) {
             var derV = visV.splice(visV.length - rV);
-            visV.push(h("div", { key: "__resteV", style: { gridColumn: "1 / -1", display: "flex", justifyContent: "center", gap: 10 } },
-              derV.map(function (cV, iV) { return h("div", { key: "rv" + iV, style: { width: "calc((100% - 20px) / 3)", minWidth: 0 } }, React.cloneElement(cV, { style: Object.assign({}, cV.props.style, { width: "100%" }) })); })));
+            visV.push(h("div", { key: "__resteV", style: { gridColumn: "1 / -1", display: "flex", justifyContent: "center", gap: gV } },
+              derV.map(function (cV, iV) { return h("div", { key: "rv" + iV, style: { width: "calc((100% - " + ((cV3 - 1) * gV) + "px) / " + cV3 + ")", minWidth: 0 } }, React.cloneElement(cV, { style: Object.assign({}, cV.props.style, { width: "100%" }) })); })));
           }
           var plusV = !tousChevauxVus && totV > visV.length + (rV ? rV - 1 : 0) && totV > defautV;
           if (plusV || (tousChevauxVus && totV > defautV)) {
@@ -35182,6 +35202,7 @@ function EcranMonCavalier() {
           }
           return visV;
         }
+        if (CAV_V2 && cavTab) return cavV2Justifier(cartes, 4, 16);   /* (1133) sa page sans ecurie : derniere ligne centree */
         return cartes;
       })())),
     /* 11/10 (963) Blandine : « Sur la page cavalier passe mes amis sous mes chevaux » — bloc « Mes amis » deplace ici, tel quel. */
