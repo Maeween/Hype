@@ -12522,3 +12522,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Chevaux : quand la carte « Les chevaux de l'écurie » se retrouverait seule sur sa ligne (3 ou 6 chevaux), elle devient un bouton contour pleine largeur « Les chevaux de l'écurie → » sous la grille (même destination). 8 chevaux et plus : au milieu, inchangé.
 - 🟥 Fichiers envoyés : index.html ET hype-stories.js (+ SUIVI.md).
 - Checks : marqueur unique 20261014-1113 ; 16 scripts 0 erreur ; hype-stories.js node --check OK ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1114 : Cavalier V2, étape 8 — fond de page, fin de page, récit plus foncé
+- Demande (17 h 52) : « Et fonce-y. [Fonce un] peu l'encart de mon récit ».
+- index.html (build 20261014-1114), V2 seulement :
+  · Fond de page : noir profond #05080B avec trois touches discrètes de bleu pétrole (droite / gauche / droite) au lieu de #060709 uni ; le halo qui respire en haut reste.
+  · Fin de page (paysage + filets champagne + HYPE + ligne de version) remontée : 56 → 24 px au-dessus.
+  · Encart « Mon récit » plus foncé (dégradé pétrole → presque noir).
+- Checks : marqueur unique 20261014-1114 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+- Reste avant d'ouvrir la V2 à tout le monde : décision sur le Mur des songes (toujours affiché sous le haut de page), validation de Blandine sur iPhone (sa page + une page visitée), puis passer la bascule CAV_V2 à vrai pour tous.
