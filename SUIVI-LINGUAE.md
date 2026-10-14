@@ -1,3 +1,17 @@
+# 🗓️ 14/10 (nuit, suite) — LE NÉERLANDAIS ACTIVÉ : 9e LANGUE DE LECTURE ET DE VOYAGE — horselingo `2891c4d` [publier]
+
+**Demande de Blandine** : « Ok vas y ajoute le néerlandais, tu as carte blanche […] gère ça de façon autonome […] préviens-moi quand c'est fini ». Néerlandais des Pays-Bas (nl, voix nl-NL, drapeau 🇳🇱). Hype (2hype.fr) n'est **pas** touché (question posée, pas de réponse).
+
+**Contenu (préparation `6ab7525`, puis `2891c4d`)** : les 42 lexiques chargés (mots + prononciation écrite pour des Français, définitions, phrases, dialogues), cartes postales, lettres et récits des 39 villes, et toute l'interface de `lingo.html` (674 textes), `lingo-dialogue.html`, `lingo-collection.html`, `lingo-globe.html`, `lingo-sellerie.html` + les 65 libellés d'exercices (L7) + le duel. ⚠️ **Traduit par Claude, jamais relu par un natif** — même statut que l'arabe et le chinois.
+
+**Activation, sur le modèle du chinois (63ebe1d)** : `LANGUES_UI` et LG (pastille « NL »), VOIX nl-NL, destination « Le néerlandais » (clé neuve `polder`), lexique (drapeau, tri sans de/het/een/'t), signature des lettres « Tot ziens, Hype ». « Écris le mot » **gardé** (alphabet latin). « huit langues » → **neuf** partout (accueil, Galops, pied), « · NL » ajouté aux listes FR · EN · …, 蘭 dans la liste japonaise. Pages Google : **/nl/woordenschat/** + colonne néerlandaise sur toutes les pages (39 étapes, 947 mots, 9 langues, 361 adresses dans le sitemap). Aperçu des adresses courtes : « en 9 langues ». `?l=` de tous les lexiques incrémentés (service worker).
+
+**Affichage** : 9 drapeaux sur une ligne de 320 à 1440 px. Les pastilles de langue du récit d'arrivée se resserrent sur téléphone (une seule ligne dès 360 px).
+
+**Contrôles (Chromium)** : leçons jouées en fr→nl, nl→en, nl→de, nl→fr, ja→nl, ar→nl, en→nl, de→nl, es→nl, it→nl, et fr→zh (non-régression) : **aucune erreur JS** ; dialogue de La Baule en néerlandais (« remets en ordre » juste) ; aucun texte de la page sans clé nl. Mise en ligne vérifiée (déploiement Netlify « ready » sur 2891c4d, /nl/woordenschat/aachen/ répond en néerlandais).
+
+**Reste (non bloquant)** : relecture par un natif · Hype lui-même en néerlandais si Blandine le souhaite.
+
 # 🗓️ 14/10 (nuit) — LE CHINOIS ACTIVÉ : 8e LANGUE DE LECTURE ET DE VOYAGE — horselingo `63ebe1d` [publier]
 
 **Demande de Blandine** : « tu sais me rajouter le chinois aux langues ? » → « Fais déjà horse lingo oui » → « Tu as carte blanche […] gère ça de façon autonome ». Chinois **simplifié** (zh, voix zh-CN, drapeau 🇨🇳). Hype (2hype.fr) n'est **pas** touché : à faire plus tard si elle le veut.
