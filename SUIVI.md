@@ -12445,3 +12445,13 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Envoyé sur GitHub SANS [publier] (consigne V2 : aucun déploiement sans accord explicite) → pas encore en ligne.
 - Checks : marqueur unique 20261014-1104 ; 16 scripts 0 erreur ; marqueurs de garde inchangés (liensClub 9, chevalCommunDemoData 2, palmTech 4, EcranSanteCheval 7, comme la 1103). Non vérifié : rendu réel (test iPhone à faire par Blandine, connexion impossible ici).
 - Étapes suivantes prévues (une par build, validée avant la suivante) : 2 accès illustrés + écurie(s) (plus d'espace entre les deux) ; 3 Ma story compacte ; 4 Son récit ; 5 Ses chevaux (grille 3 colonnes, carte écurie + « Ajouter mon cheval » dessous) ; 6 Ses amis ; 7 Ses résultats ; 8 fond, encarts et fin de page (remontée).
+
+## 14/10/2026 — Build 1105 : Cavalier V2, étape 2 — les 6 accès illustrés et l'écurie
+- Demande : « Ok va s'y » (17 h 28), après la mise en ligne de l'étape 1.
+- Nouveaux fichiers : images/cavalier-acces-histoire.webp, -performances, -progression, -photos, -videos, -actualite (360 × 360, images fournies par Blandine le 14/10, partie illustration seulement : le nom est écrit par la page pour les 7 langues).
+- index.html (build 20261014-1105), en V2 seulement (même bascule CAV_V2 que la 1104) :
+  · Les 6 accès : petites tuiles illustrées sur une ligne de 6 (nom posé en bas + petit trait champagne). Mêmes destinations ; Actualité toujours grisée « Prochainement » ; Progression grisée avec cadenas en visite.
+  · L'écurie : encart dégradé pétrole, photo du club fondue à droite (bannière du club ; sinon images/fond-cavaliers-ecurie.webp), « MON ÉCURIE » / « SON ÉCURIE » (7 langues), nom en grand, ville, crayon de modification et clics inchangés. Deux écuries = deux encarts côte à côte. Une seule : petit carré pointillé « + Écurie » à côté (sa page seulement), qui ouvre l'ajout de la deuxième écurie comme avant.
+  · Plus d'espace au-dessus de l'écurie (48 px).
+  · FondBanniereClub : nouvelles options `fondu` et `defaut` (sans elles, rendu inchangé ailleurs).
+- Checks : marqueur unique 20261014-1105 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
