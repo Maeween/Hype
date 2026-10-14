@@ -12754,3 +12754,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - iPhone : la liste N (2 colonnes) inchangée — capture 390 px avant/après identique au pixel.
 - Tests : 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement ; arabe : rangée inversée.
 - Photo par défaut de la page Cavalier : Blandine veut la changer — en attente de son image (et de savoir si la version « Crimson » est remplacée aussi).
+
+## 15/10/2026 (1 h 40) — Cavalier V2 sur iPad et ordinateur, BUILD 3 (1132) : la carte écurie en grand bandeau [publié, accord « Ok continue »]
+- Dès 768 px : bandeau écurie plus haut (iPad 100 px, ordinateur 112 px ; iPhone 84 px inchangé), plus d'air à gauche, nom de l'écurie plus grand (28 / 30 px ; 24 px quand il y a deux écuries), ville plus lisible. Le petit carré « + Écurie » suit la même hauteur.
+- Rien d'autre ne change : même photo réelle du club fondue à droite (photo Hype par défaut si le club n'en a pas), mêmes clics, mêmes crayons, deux écuries = deux bandeaux côte à côte, visiteur sans écurie = rien.
+- iPhone : capture 390 px avant/après identique au pixel. Tests 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement ; vérifié aussi avec deux écuries (820 et 1440) et en arabe.
