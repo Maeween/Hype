@@ -1,3 +1,15 @@
+# 🗓️ 15/10 (nuit) — RELECTURE DU VOCABULAIRE : 113 CORRECTIONS APPLIQUÉES — horselingo `b8d76da` [publier]
+
+**Page de relecture pour natifs** : artifact « Relecture Horse Lingo » (privé ; Blandine le partage par lien depuis le bouton Partager). 67 mots (36 de base + 31 délicats) × 10 langues (nl, pt, br, sv, pl, ro, da, no, ar, zh) ; le relecteur coche « juste » ou propose un mot, ses réponses restent sur son appareil et se copient en un texte à renvoyer à Blandine. Mise à jour du 15/10 : affiche aussi les variantes de l'anglais (ex. stable ≈ loose box / stall) et les mots corrigés ci-dessous.
+
+**Rapport de relecture** (document « Horse Lingo — rapport de relecture ») : 152 propositions, 8 certaines, 105 probables, 39 à confirmer. **Décision de Blandine : « Certaines et probables ».** Appliquées : 113 lignes (64 prononciations, 22 mots, 22 variantes, 5 ordres criés), seulement là où la valeur était exactement celle relue (les sens propres à un chapitre, ex. « engagement » à Versailles, ne sont pas touchés). Les « à confirmer » restent en attente d'un natif, ainsi que l'alezan danois (fuks / rød).
+
+**Exemples** : danois crinière « manen » (portait « manken », le mot du garrot) ; portugais garrot « a cernelha », arçon « o arção », contrat de foulées « o número de passadas » (le brésilien garde « galões ») ; néerlandais barrage sans la variante fausse « op tijd » ; norvégien rouan « konstant skimmel », liste « blesen » ; brésilien stage « a clínica », chef de piste « o armador de percurso » ; anglais « haute école » en mot principal. Sur les 9 points du premier retour : 5 erreurs confirmées et corrigées, 4 jugés justes (stable, numnah, kasztan, galões), haute école inversée.
+
+**Contrôles** : 43 fichiers relus par le navigateur sans erreur ; leçons fr→da, fr→pt, ar→nl jouées sans erreur JS ; ?l= des 22 lexiques modifiés incrémentés.
+
+**En attente** : **El Jadida (40e ville, « La fantasia »)** — brouillon français dans le document « El Jadida — La fantasia » ; Blandine : « On verra plus tard pour la 40e ville, laisse-la en suivi ». À reprendre : validation du texte et des 5 choix, traduction en 16 langues, 6 visuels à fournir par Blandine (carte, vignette, fond, objet, poses, vidéo d'arrivée).
+
 # 🗓️ 14/10 (nuit, suite) — ROUMAIN 🇷🇴, DANOIS 🇩🇰 ET NORVÉGIEN 🇳🇴 ACTIVÉS : 14e À 16e LANGUES — horselingo `4c6c45a` [publier]
 
 **Demande de Blandine** : « on ajoute romain et danois ? On a déjà. Norvégien ? » → je lui ai précisé qu'on n'avait ni le danois ni le roumain, et proposé les trois → « Ok ». Norvégien = **bokmål** (code interne `no`, voix et Google **nb-NO / nb**). Mis en ligne ensemble. Hype non touché.
