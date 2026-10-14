@@ -12464,3 +12464,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Pas de « Voir toutes » : aucune page « toutes les stories » n'existe (pas de lien qui ne mène nulle part).
 - Checks : marqueur unique 20261014-1106 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
 - ⚠️ À trancher avec Blandine : le Mur des songes est toujours affiché sous le haut de page en V2.
+
+## 14/10/2026 — Build 1107 : Cavalier V2, étape 4 — « Son récit »
+- Demande : « Ok continue » (17 h 33). (Question du Mur des songes posée, pas encore tranchée : il reste affiché en V2.)
+- index.html (build 20261014-1107), en V2 seulement : encart V2 « Son récit », l'œil du cheval noir à droite (même image HYPE_FOND_RECIT, fondue par masque), texte à gauche.
+  · Vide : « Les plus belles histoires ne se mesurent pas en victoires. » ; sur sa page : « Et si tu racontais la tienne ? » (champagne) + bouton contour « ✎ Écrire son récit → ». En visite : la phrase seule, sans bouton.
+  · Rempli : le vrai récit (7 lignes au plus) ; sa page « Modifier mon récit », visite « Lire la suite ». Destination inchangée : memoirescavalier.
+  · Textes nouveaux en 7 langues.
+- Checks : marqueur unique 20261014-1107 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
