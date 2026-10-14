@@ -311,7 +311,7 @@ def page(lg):
 <div class="bande">{slot("bande1","fond",t) if False else '<div class="fond ph"></div>'}<blockquote>{e(t["citation1"])}</blockquote></div>
 <div class="sep"><span></span></div>
 <section><h2>{e(t["projets_t"])}</h2><div class="trait"></div><p class="intro2">{e(t["projets_intro"])}</p>
-<ul class="projets">{"".join(f'<li class="projet">{slot(k,"ph-projet",t).replace("ph-projet","photo")}<div><h3>{e(a)}</h3><div class="deco">{svg(i)}</div><p>{e(b)}</p></div></li>' for k,i,(a,b) in zip(pph,pico,t["projets"]))}</ul></section>
+<ul class="projets">{"".join(f'<li class="projet" id="{pid}">{slot(k,"ph-projet",t).replace("ph-projet","photo")}<div><h3>{e(a)}</h3><div class="deco">{svg(i)}</div><p>{e(b)}</p></div></li>' for pid,k,i,(a,b) in zip(["projet-jeune-espoir","projet-retraite","projet-espaces"],pph,pico,t["projets"]))}</ul></section>
 <div class="bande"><div class="fond ph"></div><blockquote>{e(t["citation2"])}</blockquote></div>
 <div class="sep"><span></span></div>
 <section id="mentions-legales"><h2>{e(t["ml_t"])}</h2><div class="trait"></div>

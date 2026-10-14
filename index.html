@@ -28394,7 +28394,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */];
+    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28473,7 +28473,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -86221,6 +86221,175 @@ async function hypeTesterMux() {
   }
 }
 
+/* ═══ 15/10/2026 — PAGE PREMIUM V3 (étape 1 : français, visible des seules modératrices) ═══
+   Design validé le 14/10 (aperçu « Page Premium V3 ») + Premium Famille.
+   Les cavalières voient toujours l'ancienne page (PV5) tant que Blandine n'a pas validé.
+   Liens Stripe : les mêmes que la page actuelle ; paiement via hypeOuvrirPaiement (compte obligatoire,
+   confirmation du compte, identifiant joint). Mécénat via hypeOuvrirLien. Images : fichiers de images/. */
+const PV3_LIENS = {
+    cav: "https://buy.stripe.com/28EaEX6aZ0OQbWF4SPfQI0c",
+    cry: "https://buy.stripe.com/fZu3cveHv5569Ox1GDfQI0d",
+    duo: "https://buy.stripe.com/fZu8wPdDr7de5yh70XfQI0f",
+    ia: "https://buy.stripe.com/28E7sL2YN7def8R2KHfQI0e",
+    fam: "https://buy.stripe.com/dRm28rarfapqe4NdplfQI0i",
+    mec: ["https://buy.stripe.com/8x29AT42ReFG3q9gBxfQI02", "https://buy.stripe.com/00w8wPeHvdBC4ud5WTfQI04", "https://buy.stripe.com/eVqbJ1fLzdBC6ClbhdfQI03",
+          "https://buy.stripe.com/3cIbJ142R556e4N4SPfQI06", "https://buy.stripe.com/aFa00j7f34129Ox70XfQI0a", "https://buy.stripe.com/6oU3cvarfgNOd0JetpfQI09"]
+};
+const PV3_CSS = ".pv3{container-type:inline-size;color-scheme:dark;--fond:#070A08;--carte:#0D1518;--carte2:#0A1114;--ivoire:#F2EBDD;--doux:#C4C8C3;--gris:#8E9893;--champ:#C9A66B;--trait:rgba(201,166,107,.34);--trait2:rgba(201,166,107,.16);--serif:\"Cormorant Garamond\",Georgia,serif;--sans:Montserrat,system-ui,-apple-system,Arial,sans-serif}.pv3, .pv3 *{box-sizing:border-box}.pv3{margin:0;background:var(--fond);color:var(--ivoire);font:15px/1.6 var(--sans);overflow-x:hidden}.pv3 a{color:var(--champ)}.pv3 button{font:inherit;color:inherit}.pv3 :focus-visible{outline:2px solid var(--champ);outline-offset:3px}.pv3 .wrap{max-width:1200px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}.pv3 h2{font:400 clamp(27px,7vw,38px)/1.12 var(--serif);margin:0;text-wrap:balance}.pv3 .sur{font:600 10.5px/1.4 var(--sans);letter-spacing:.2em;text-transform:uppercase;color:var(--champ);margin:0 0 8px}.pv3 .ico{width:18px;height:18px;flex:none}.pv3 .compte{font-size:12px;color:var(--gris);text-align:center;padding:10px 16px;border-bottom:1px solid var(--trait2)}.pv3 .compte b{color:var(--ivoire);font-weight:500}.pv3 .hero{position:relative;background:var(--fond)}.pv3 .hero .photo{position:relative;height:300px;overflow:hidden}.pv3 .hero .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 22%;display:block}.pv3 .hero .photo::after{content:\"\";position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,0) 55%,var(--fond) 100%)}.pv3 .hero .txt{position:relative;margin-top:-40px;padding-block:0 26px}.pv3 .hero h1{font:400 clamp(34px,9.5vw,54px)/1.05 var(--serif);margin:0}.pv3 .hero p.intro{margin:12px 0 18px;color:var(--doux);max-width:32em;font-size:14.5px}.pv3 .benef{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ivoire)}.pv3 .benef li{display:flex;align-items:center;gap:7px}.pv3 .benef li::before{content:\"\";width:5px;height:5px;border-radius:50%;background:var(--champ)}.pv3 .navsec{display:none}.pv3 .offres{padding-block:30px 10px}.pv3 .offres-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin-bottom:16px}.pv3 .onglets{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;margin:4px 0 6px;background:var(--carte2);border:1px solid var(--trait);border-radius:999px}.pv3 .onglets button{background:none;border:1px solid transparent;border-radius:999px;height:44px;font:600 13.5px var(--sans);color:var(--doux);cursor:pointer;padding:0 4px}.pv3 .onglets button[aria-selected=true]{color:var(--ivoire);border-color:var(--champ);background:rgba(201,166,107,.12)}.pv3 .aide{font-size:12px;color:var(--gris);margin:8px 0 16px}.pv3 .note-ia{font-size:12.5px;color:var(--doux);background:var(--carte2);border:1px solid var(--trait2);border-radius:12px;padding:10px 12px;margin:0 0 14px}.pv3 .grille{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}.pv3 .carte{display:flex;flex-direction:column;background:linear-gradient(180deg,var(--carte),var(--carte2));border:1px solid var(--trait2);border-radius:16px;overflow:hidden;min-width:0;box-shadow:0 14px 34px rgba(0,0,0,.35)}.pv3 .carte .ph{height:140px;position:relative;overflow:hidden}.pv3 .carte .ph img{width:100%;height:100%;object-fit:cover;display:block}.pv3 .carte .ph::after{content:\"\";position:absolute;inset:0;background:linear-gradient(180deg,rgba(13,21,24,0) 40%,var(--carte) 100%)}.pv3 .carte .corps{padding:4px 18px 18px;display:flex;flex-direction:column;gap:10px;flex:1}.pv3 .carte .nom{font:500 23px/1.15 var(--serif);margin:0}.pv3 .carte .nom small{display:block;font:500 11px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--champ);margin-bottom:4px}.pv3 .prix{font:500 30px/1 var(--serif);color:var(--ivoire)}.pv3 .prix span{font:400 13px var(--sans);color:var(--gris)}.pv3 .cond{font-size:12.5px;color:var(--doux);margin:0}.pv3 .av{list-style:none;padding:0;margin:4px 0 0;display:grid;gap:7px;font-size:13.5px}.pv3 .av li{display:flex;gap:9px;align-items:flex-start}.pv3 .av li::before{content:\"\";flex:none;width:12px;height:7px;margin-top:6px;border-left:1.5px solid var(--champ);border-bottom:1.5px solid var(--champ);transform:rotate(-45deg)}.pv3 .plus summary{list-style:none;cursor:pointer;font-size:12.5px;color:var(--champ);margin-top:2px}.pv3 .plus summary::-webkit-details-marker{display:none}.pv3 .plus[open] summary{margin-bottom:7px}.pv3 .btn{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:10px;min-height:46px;border-radius:999px;border:1px solid var(--champ);background:transparent;color:var(--ivoire);font:500 15px var(--sans);text-decoration:none;cursor:pointer}.pv3 .btn:hover{background:rgba(201,166,107,.1)}.pv3 .btn[disabled]{border-color:var(--trait2);color:var(--gris);cursor:default;background:none}.pv3 .badge{align-self:flex-start;font:600 10px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--champ);border:1px solid var(--trait);border-radius:999px;padding:4px 10px}.pv3 .carte.bientot{opacity:.78}.pv3 .carte.bientot .ph img{filter:grayscale(.5) brightness(.8)}.pv3 .carte[hidden]{display:none!important}.pv3 .comp{padding-block:34px 10px}.pv3 .comp h2{margin-bottom:16px}.pv3 .tab-wrap{overflow-x:auto;border:1px solid var(--trait2);border-radius:16px;display:none}.pv3 table{border-collapse:collapse;width:100%;min-width:640px;font-size:14px}.pv3 th,.pv3 td{padding:13px 14px;text-align:center;border-bottom:1px solid var(--trait2)}.pv3 th:first-child,.pv3 td:first-child{text-align:start;color:var(--doux)}.pv3 thead th{font:500 17px var(--serif);color:var(--ivoire);background:var(--carte)}.pv3 tbody tr:last-child td{border-bottom:0}.pv3 .ok{color:var(--champ)}.pv3 .non{color:#4E5754}.pv3 .comp-m{display:grid;gap:10px}.pv3 .lc{background:var(--carte2);border:1px solid var(--trait2);border-radius:14px;padding:12px 14px}.pv3 .lc b{display:block;font:500 15px var(--sans);margin-bottom:8px;font-weight:500}.pv3 .lc dl{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0;text-align:center}.pv3 .lc dt{font-size:10.5px;color:var(--gris)}.pv3 .lc dd{margin:2px 0 0;font-size:13.5px}.pv3 .mec{padding-block:40px 10px}.pv3 .mec .exp{color:var(--doux);font-size:13.5px;margin:10px 0 16px;max-width:42em}.pv3 .niveaux{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pv3 .niv{background:var(--carte2);border:1px solid var(--trait2);border-radius:14px;padding:14px 12px;text-align:center;display:flex;flex-direction:column;gap:4px;align-items:center}.pv3 .niv .n{font:600 10.5px var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--champ)}.pv3 .niv .m{font:500 26px/1.1 var(--serif)}.pv3 .niv .d{font-size:12px;color:var(--doux)}.pv3 .mec .petit{font-size:11.5px;color:var(--gris);margin-top:12px}.pv3 .feinn{margin-top:46px;padding-block:36px 34px;background:linear-gradient(180deg,#0B1316,#070A08)}.pv3 .feinn .exp{color:var(--doux);font-size:13.5px;margin:10px 0 16px;max-width:42em}.pv3 .pistes{list-style:none;margin:0;padding:0 0 4px;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}.pv3 .pistes::-webkit-scrollbar{display:none}.pv3 .pc{flex:0 0 86%;scroll-snap-align:start;background:var(--carte);border:1px solid var(--trait2);border-radius:16px;overflow:hidden;display:flex;flex-direction:column}.pv3 .pc .ph{height:160px;position:relative}.pv3 .pc .ph img{width:100%;height:100%;object-fit:cover;display:block}.pv3 .pc .num{position:absolute;left:14px;bottom:8px;font:400 28px var(--serif);color:var(--ivoire);text-shadow:0 2px 10px rgba(0,0,0,.6)}.pv3 .pc .c{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}.pv3 .pc h3{font:500 21px/1.2 var(--serif);margin:0}.pv3 .pc p{margin:0;font-size:13.5px;color:var(--doux)}.pv3 .pc a{margin-top:auto;font-size:13.5px;text-decoration:none;color:var(--champ)}.pv3 .points{display:flex;justify-content:center;gap:8px;margin:12px 0 0}.pv3 .points span{width:6px;height:6px;border-radius:50%;background:#3A4441}.pv3 .points span.on{background:var(--champ)}.pv3 .don-feinn{margin-top:22px;border:1px solid var(--trait);border-radius:16px;padding:16px;display:grid;gap:8px}.pv3 .don-feinn b{font:500 20px var(--serif)}.pv3 .don-feinn p{margin:0;font-size:13.5px;color:var(--doux)}.pv3 .mail{font-size:14px;color:var(--ivoire);user-select:all}.pv3 .lien-asso{display:inline-flex;align-items:center;gap:8px;font-size:13.5px;text-decoration:none;margin-top:14px}.pv3 .acces{padding-block:38px 50px}.pv3 .acces .l{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;background:var(--carte2);border:1px solid var(--trait2);border-radius:14px;margin-top:10px;text-decoration:none;color:var(--ivoire)}.pv3 .acces .l span{font-size:13px;color:var(--champ);white-space:nowrap}@container (min-width:640px){.pv3 .hero .photo{height:380px}.pv3 .onglets,.pv3 .aide,.pv3 .note-ia{display:none}.pv3 .carte[hidden]{display:flex!important}.pv3 .grille{grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.pv3 .c-cav{order:1}.pv3 .c-cry{order:2}.pv3 .c-ia{order:3}.pv3 .c-duo{order:4}.pv3 .c-ecu{order:5}.pv3 .c-pro{order:6}.pv3 .tab-wrap{display:block}.pv3 .comp-m{display:none}.pv3 .niveaux{grid-template-columns:repeat(3,minmax(0,1fr))}.pv3 .pc{flex-basis:calc(50% - 7px)}}@container (min-width:1024px){.pv3 .hero{min-height:420px;display:flex;align-items:center}.pv3 .hero .photo{position:absolute;inset:0;height:auto}.pv3 .hero .photo img{object-position:70% 30%}.pv3 .hero .photo::after{background:linear-gradient(90deg,var(--fond) 0%,rgba(7,10,8,.88) 30%,rgba(7,10,8,.2) 60%,rgba(7,10,8,0) 80%),linear-gradient(180deg,rgba(7,10,8,0) 75%,var(--fond) 100%)}.pv3 .hero .txt{margin-top:0;padding-block:60px;max-width:560px;width:100%}.pv3 .hero .wrap{width:100%}.pv3 .navsec{display:flex;gap:30px;justify-content:center;border-bottom:1px solid var(--trait2);padding:14px 0}.pv3 .navsec a{color:var(--doux);text-decoration:none;font-size:13.5px}.pv3 .navsec a:hover{color:var(--champ)}.pv3 .grille{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.pv3 .c-cav{order:1}.pv3 .c-duo{order:2}.pv3 .c-cry{order:3}.pv3 .c-ia{order:4}.pv3 .c-ecu{order:5}.pv3 .c-pro{order:6}.pv3 .carte .ph{height:150px}.pv3 .niveaux{grid-template-columns:repeat(6,minmax(0,1fr))}.pv3 .pistes{overflow:visible;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}.pv3 .points{display:none}.pv3 .don-feinn{grid-template-columns:1fr auto;align-items:center}}@media (prefers-reduced-motion:reduce){.pv3, .pv3 *{scroll-behavior:auto!important}}" +
+  ".pv3{min-height:100vh;position:relative}" +
+  ".pv3 .pv3-haut{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:20;display:flex;justify-content:space-between;align-items:center;pointer-events:none}" +
+  ".pv3 .pv3-haut button{pointer-events:auto;width:40px;height:40px;border-radius:50%;border:1px solid var(--trait);background:rgba(7,10,8,.62);color:var(--ivoire);font-size:18px;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}" +
+  ".pv3 .pv3-haut .pv3-ancienne{width:auto;height:34px;padding:0 14px;border-radius:999px;font:500 11.5px var(--sans)}" +
+  ".pv3 .compte{padding:calc(60px + env(safe-area-inset-top)) 16px 10px}" +
+  ".pv3 .carte .ph.fam img{object-position:50% 40%}" +
+  ".pv3 .lc dl{grid-template-columns:repeat(5,minmax(0,1fr))}" +
+  ".pv3 .nb2{display:inline-block;margin-left:6px;font:600 9.5px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--champ);border:1px solid var(--trait);border-radius:999px;padding:2px 8px;vertical-align:middle}" +
+  "@media (min-width:640px){.pv3 .c-cav{order:1}.pv3 .c-cry{order:2}.pv3 .c-fam{order:3}.pv3 .c-duo{order:4}.pv3 .c-ia{order:5}.pv3 .c-ecu{order:6}.pv3 .c-pro{order:7}}" +
+  "@media (min-width:1024px){.pv3 .c-cav{order:1}.pv3 .c-duo{order:2}.pv3 .c-cry{order:3}.pv3 .c-fam{order:4}.pv3 .c-ia{order:5}.pv3 .c-ecu{order:6}.pv3 .c-pro{order:7}}";
+
+const PV3_TXT = { fr: {
+    connecte: "Connectée avec", aucun: "Aucun abonnement sur ce compte", actif: "Abonnement actif sur ce compte", invite: "Connectez-vous pour vous abonner",
+    retour: "Retour", ancienne: "Ancienne page",
+    sur: "Hype Premium", h1: "Rejoignez Hype Premium", intro: "Tous les Galops, un coach IA et la communauté des cavaliers, sur iPhone comme sur ordinateur.",
+    b1: "Tous les Galops", b2: "Coach IA Hey Baby", b3: "Communauté complète",
+    nav1: "Nos offres", nav2: "Comparer les offres", nav3: "Soutenir Hype", nav4: "Projets FEINN",
+    offres_sur: "Nos offres", offres_t: "Choisissez votre formule", og_prem: "Premium", og_ia: "Premium + IA", og_pro: "Professionnels",
+    aide: "Touchez une catégorie : 7 formules au total. Le Pack Duo est dans « Premium + IA ».",
+    note_ia: "Hype IA seule ne donne pas accès à Premium. Le Pack Duo réunit Premium et l'IA pour un seul compte.",
+    mois: "/ mois", m12: "/ 12 mois", voir_plus: "Voir tous les avantages",
+    av_galops: "Tous les Galops", av_passeport: "Passeport équestre", av_ia4: "Coach IA : 4 questions par jour", av_comm: "Communauté complète", av_ecurie: "Écurie virtuelle", av_evts: "Événements exclusifs",
+    cav_small: "Mensuel", cav_nom: "Premium Cavalier", cav_cond: "Sans engagement, renouvelé chaque mois.", cav_btn: "Devenir Premium",
+    fam_small: "Deux cavaliers", fam_nom: "Premium Famille", fam_badge: "Nouveau", fam_cond: "Deux comptes Premium séparés, pour un seul abonnement. Renouvelé chaque mois.",
+    fam_av1: "Premium complet pour 2 cavaliers", fam_av2: "Coach IA : 4 questions par jour chacun", fam_av3: "Chacun garde son compte et ses données", fam_av4: "Le 2e cavalier s'invite depuis Mon compte", fam_btn: "Abonner ma famille",
+    duo_badge: "Premium + IA inclus", duo_small: "Le plus complet", duo_nom: "Pack Duo", duo_cond: "Premium Cavalier + Hype IA réunis, pour un seul compte. Renouvelé chaque mois.",
+    duo_av1: "Tous les avantages Premium", duo_av2: "Coach IA : 20 questions par jour", duo_av3: "Vidéos incluses", duo_btn: "Rejoindre le Pack Duo",
+    cry_small: "12 mois", cry_nom: "Cercle Crystal", cry_cond: "Payez une seule fois et profitez de vos avantages Premium pendant 12 mois, sans renouvellement automatique.",
+    cry_cond2: "Soit 8,33 € par mois en équivalent. À titre de comparaison, 12 mensualités Premium à 12,99 € représentent 155,88 €.", cry_btn: "Rejoindre le Cercle Crystal",
+    ia_small: "Votre coach personnel", ia_nom: "Hype IA", ia_cond: "Ne donne pas accès à Premium.", ia_av1: "Coach personnel 24h/24 avec Hey Baby", ia_av2: "Jusqu'à 15 questions par jour", ia_btn: "Activer Hype IA",
+    bientot_badge: "Prochainement", bientot_btn: "Bientôt disponible",
+    ecu_small: "Écuries et clubs", ecu_nom: "Premium Écurie", ecu_cond: "Une formule pour les écuries est en préparation.",
+    pro_small: "Enseignants et moniteurs", pro_nom: "Hype Pro", pro_cond: "Pour les enseignants et moniteurs · suivez vos élèves.",
+    comp_sur: "Comparer", comp_t: "Comparer les formules", c_cav: "Cavalier", c_cry: "Crystal", c_fam: "Famille", c_duo: "Pack Duo", c_duo_c: "Duo", c_ia: "Hype IA", c_ia_c: "IA",
+    r_prix: "Prix", r_paiement: "Paiement", r_comptes: "Comptes", r_premium: "Accès Premium", r_galops: "Tous les Galops", r_passeport: "Passeport équestre", r_comm: "Communauté complète", r_ia: "Questions IA par jour",
+    p_mois: "/mois", p_12: "/12 mois", chaque_mois: "chaque mois", une_fois: "une seule fois", mensuel: "mensuel", fois1: "1 fois", par_compte: "par compte",
+    lc_galops: "Tous les Galops · passeport · communauté",
+    mec_sur: "Mécènes", mec_t: "Soutenir le développement de Hype", mec_exp: "Ce soutien finance l'application. Ce n'est pas un don à l'association FEINN et il n'ouvre droit à aucune réduction d'impôt.",
+    niv: ["Crystal", "Argent", "Émeraude", "Rubis", "Diamant", "Légende"],
+    niv_d: ["Merci de croire au projet.", "Vous faites avancer Hype.", "Vous accompagnez son développement.", "Votre soutien est précieux.", "Vous entrez dans le cercle des fondateurs.", "Votre nom restera dans l'histoire."],
+    stripe: "Paiement sécurisé par Stripe.",
+    feinn_sur: "Association FEINN", feinn_t: "Les projets de l'association FEINN", feinn_exp: "L'association FEINN Équitation et Environnement porte trois projets. Les abonnements Premium ne sont pas des dons.",
+    pj1_t: "Un cheval pour un jeune espoir", pj1_d: "Aider un jeune cavalier prometteur à acquérir un cheval adapté à ses ambitions sportives.",
+    pj2_t: "La retraite de nos chevaux de club", pj2_d: "Contribuer à l'alimentation, aux soins et au bien-être des chevaux qui ont accompagné les cavaliers pendant des années.",
+    pj3_t: "Entretenir et réhabiliter nos espaces", pj3_d: "Participer à la rénovation des clôtures, prés et installations équestres, en respectant l'environnement naturel.",
+    decouvrir: "Découvrir ce projet →", don_t: "Faire un don à FEINN", don_d: "Dons en ligne bientôt disponibles. En attendant, écrivez-nous :", asso: "Découvrir l'association →",
+    acc_sur: "Raccourcis", acc_t: "Choisissez votre accès", acc1: "Commencer librement", acc2: "Rejoindre le Cercle Crystal", acc_fam: "Premium Famille · 2 cavaliers", acc3: "Pack Duo · Premium + IA", acc4: "Soutenir Hype", de_a: "de 20 € à 500 €"
+} };
+
+function pv3Html(lg, info) {
+    var t = PV3_TXT[lg] || PV3_TXT.fr;
+    var e = function (x) { return String(x == null ? "" : x).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+    var li = function (arr) { return arr.map(function (x) { return "<li>" + e(x) + "</li>"; }).join(""); };
+    var ok = '<td class="ok">✓</td>', non = '<td class="non">—</td>';
+    var dd = function (v, c) { return '<dd' + (c ? ' class="' + c + '"' : '') + '>' + v + '</dd>'; };
+    var lc = function (titre, vals) { var noms = [t.c_cav, t.c_cry, t.c_fam, t.c_duo_c, t.c_ia_c]; return '<div class="lc"><b>' + e(titre) + '</b><dl>' + vals.map(function (v, i) { return '<div><dt>' + e(noms[i]) + '</dt>' + v + '</div>'; }).join("") + '</dl></div>'; };
+    var asso = "/" + lg + "/association/";
+    var carte = function (cls, img, inner) { return '<article class="carte ' + cls + '"><div class="ph' + (cls.indexOf("c-fam") !== -1 ? " fam" : "") + '"><img src="images/' + img + '" alt="" loading="lazy"></div><div class="corps">' + inner + '</div></article>'; };
+    var nom = function (small, n, nb) { return '<h3 class="nom"><small>' + e(small) + '</small>' + e(n) + (nb ? '<span class="nb2">' + e(nb) + '</span>' : '') + '</h3>'; };
+    var prix = function (p, u) { return '<div class="prix">' + p + ' <span>' + e(u) + '</span></div>'; };
+    var plus = '<details class="plus"><summary>' + e(t.voir_plus) + '</summary><ul class="av">' + li([t.av_ecurie, t.av_evts]) + '</ul></details>';
+    var btn = function (cle, txt) { return '<button class="btn" type="button" data-paye="' + cle + '">' + e(txt) + '</button>'; };
+    var compte = info.email
+        ? e(t.connecte) + ' <b>' + e(info.email) + '</b> · ' + e(info.premium ? (info.plan || t.actif) : t.aucun)
+        : e(t.invite);
+    return ''
+    + '<p class="compte">' + compte + '</p>'
+    + '<header class="hero"><div class="photo"><img src="images/TEAM_COMPETITION.webp" alt=""></div><div class="wrap"><div class="txt">'
+    + '<p class="sur">' + e(t.sur) + '</p><h1>' + e(t.h1) + '</h1><p class="intro">' + e(t.intro) + '</p>'
+    + '<ul class="benef">' + li([t.b1, t.b2, t.b3]) + '</ul></div></div></header>'
+    + '<nav class="navsec" aria-label="Sections"><a href="#" data-aller="offres">' + e(t.nav1) + '</a><a href="#" data-aller="comparer">' + e(t.nav2) + '</a><a href="#" data-aller="soutenir">' + e(t.nav3) + '</a><a href="#" data-aller="feinn">' + e(t.nav4) + '</a></nav>'
+    + '<section class="offres wrap" data-sec="offres"><div class="offres-tete"><div><p class="sur">' + e(t.offres_sur) + '</p><h2>' + e(t.offres_t) + '</h2></div></div>'
+    + '<div class="onglets" role="tablist"><button role="tab" aria-selected="true" data-g="prem">' + e(t.og_prem) + '</button><button role="tab" aria-selected="false" data-g="ia">' + e(t.og_ia) + '</button><button role="tab" aria-selected="false" data-g="pro">' + e(t.og_pro) + '</button></div>'
+    + '<p class="aide">' + e(t.aide) + '</p><p class="note-ia" hidden>' + e(t.note_ia) + '</p>'
+    + '<div class="grille">'
+    + carte('c-cav" data-g="prem', 'team-competition-performances-hero.webp', nom(t.cav_small, t.cav_nom) + prix("12,99 €", t.mois) + '<p class="cond">' + e(t.cav_cond) + '</p><ul class="av">' + li([t.av_galops, t.av_passeport, t.av_ia4, t.av_comm]) + '</ul>' + plus + btn("cav", t.cav_btn))
+    + carte('c-fam" data-g="prem', 'communaute-carte-cavalieres.webp', nom(t.fam_small, t.fam_nom, t.fam_badge) + prix("19,99 €", t.mois) + '<p class="cond">' + e(t.fam_cond) + '</p><ul class="av">' + li([t.fam_av1, t.fam_av2, t.fam_av3, t.fam_av4]) + '</ul>' + btn("fam", t.fam_btn))
+    + carte('c-duo" data-g="ia" hidden data-x="', 'fond-cavaliers-ecurie.webp', '<span class="badge">' + e(t.duo_badge) + '</span>' + nom(t.duo_small, t.duo_nom) + prix("24,99 €", t.mois) + '<p class="cond">' + e(t.duo_cond) + '</p><ul class="av">' + li([t.duo_av1, t.duo_av2, t.duo_av3, t.av_galops]) + '</ul>' + btn("duo", t.duo_btn))
+    + carte('c-cry" data-g="prem', 'mes-chevaux-fond-couchant.webp', nom(t.cry_small, t.cry_nom) + prix("99,99 €", t.m12) + '<p class="cond">' + e(t.cry_cond) + '</p><p class="cond" style="color:var(--gris)">' + e(t.cry_cond2) + '</p><ul class="av">' + li([t.av_galops, t.av_passeport, t.av_ia4, t.av_comm]) + '</ul>' + plus + btn("cry", t.cry_btn))
+    + carte('c-ia" data-g="ia" hidden data-x="', 'accueil_v2_premium_crystal_v1.webp', nom(t.ia_small, t.ia_nom) + prix("14,99 €", t.mois) + '<p class="cond">' + e(t.ia_cond) + '</p><ul class="av">' + li([t.ia_av1, t.ia_av2]) + '</ul>' + btn("ia", t.ia_btn))
+    + carte('c-ecu bientot" data-g="pro" hidden data-x="', 'ECURIE_HERO2.jpg', '<span class="badge">' + e(t.bientot_badge) + '</span>' + nom(t.ecu_small, t.ecu_nom) + '<p class="cond">' + e(t.ecu_cond) + '</p><button class="btn" type="button" disabled>' + e(t.bientot_btn) + '</button>')
+    + carte('c-pro bientot" data-g="pro" hidden data-x="', 'evenements-passes-large.webp', '<span class="badge">' + e(t.bientot_badge) + '</span>' + nom(t.pro_small, t.pro_nom) + '<p class="cond">' + e(t.pro_cond) + '</p><button class="btn" type="button" disabled>' + e(t.bientot_btn) + '</button>')
+    + '</div></section>'
+    + '<section class="comp wrap" data-sec="comparer"><p class="sur">' + e(t.comp_sur) + '</p><h2>' + e(t.comp_t) + '</h2>'
+    + '<div class="tab-wrap"><table><thead><tr><th></th><th>' + e(t.c_cav) + '</th><th>' + e(t.c_cry) + '</th><th>' + e(t.c_fam) + '</th><th>' + e(t.c_duo) + '</th><th>' + e(t.c_ia) + '</th></tr></thead><tbody>'
+    + '<tr><td>' + e(t.r_prix) + '</td><td>12,99 €' + e(t.p_mois) + '</td><td>99,99 €' + e(t.p_12) + '</td><td>19,99 €' + e(t.p_mois) + '</td><td>24,99 €' + e(t.p_mois) + '</td><td>14,99 €' + e(t.p_mois) + '</td></tr>'
+    + '<tr><td>' + e(t.r_paiement) + '</td><td>' + e(t.chaque_mois) + '</td><td>' + e(t.une_fois) + '</td><td>' + e(t.chaque_mois) + '</td><td>' + e(t.chaque_mois) + '</td><td>' + e(t.chaque_mois) + '</td></tr>'
+    + '<tr><td>' + e(t.r_comptes) + '</td><td>1</td><td>1</td><td>2</td><td>1</td><td>1</td></tr>'
+    + '<tr><td>' + e(t.r_premium) + '</td>' + ok + ok + ok + ok + non + '</tr>'
+    + '<tr><td>' + e(t.r_galops) + '</td>' + ok + ok + ok + ok + non + '</tr>'
+    + '<tr><td>' + e(t.r_passeport) + '</td>' + ok + ok + ok + ok + non + '</tr>'
+    + '<tr><td>' + e(t.r_comm) + '</td>' + ok + ok + ok + ok + non + '</tr>'
+    + '<tr><td>' + e(t.r_ia) + '</td><td>4</td><td>4</td><td>4 ' + e(t.par_compte) + '</td><td>20</td><td>15</td></tr>'
+    + '</tbody></table></div><div class="comp-m">'
+    + lc(t.r_premium, [dd("✓", "ok"), dd("✓", "ok"), dd("✓", "ok"), dd("✓", "ok"), dd("—", "non")])
+    + lc(t.lc_galops, [dd("✓", "ok"), dd("✓", "ok"), dd("✓", "ok"), dd("✓", "ok"), dd("—", "non")])
+    + lc(t.r_comptes, [dd("1"), dd("1"), dd("2"), dd("1"), dd("1")])
+    + lc(t.r_ia, [dd("4"), dd("4"), dd("4"), dd("20"), dd("15")])
+    + lc(t.r_paiement, [dd(e(t.mensuel)), dd(e(t.fois1)), dd(e(t.mensuel)), dd(e(t.mensuel)), dd(e(t.mensuel))])
+    + '</div></section>'
+    + '<section class="mec wrap" data-sec="soutenir"><p class="sur">' + e(t.mec_sur) + '</p><h2>' + e(t.mec_t) + '</h2><p class="exp">' + e(t.mec_exp) + '</p><div class="niveaux">'
+    + [20, 40, 80, 150, 250, 500].map(function (m, i) { return '<button class="niv" type="button" data-don="' + i + '"><span class="n">' + e(t.niv[i]) + '</span><span class="m">' + m + ' €</span><span class="d">' + e(t.niv_d[i]) + '</span></button>'; }).join("")
+    + '</div><p class="petit">' + e(t.stripe) + '</p></section>'
+    + '<section class="feinn" data-sec="feinn"><div class="wrap"><p class="sur">' + e(t.feinn_sur) + '</p><h2>' + e(t.feinn_t) + '</h2><p class="exp">' + e(t.feinn_exp) + '</p><ul class="pistes">'
+    + [["team-competition-performances-hero.webp", t.pj1_t, t.pj1_d, "projet-jeune-espoir"], ["fond-recit.webp", t.pj2_t, t.pj2_d, "projet-retraite"], ["ecurie-couverture-defaut-2.webp", t.pj3_t, t.pj3_d, "projet-espaces"]].map(function (p, i) {
+        return '<li class="pc"><div class="ph"><img src="images/' + p[0] + '" alt=""><span class="num">0' + (i + 1) + '</span></div><div class="c"><h3>' + e(p[1]) + '</h3><p>' + e(p[2]) + '</p><a href="' + asso + '#' + p[3] + '" data-asso="1">' + e(t.decouvrir) + '</a></div></li>'; }).join("")
+    + '</ul><div class="points" aria-hidden="true"><span class="on"></span><span></span><span></span></div>'
+    + '<div class="don-feinn"><div><b>' + e(t.don_t) + '</b><p>' + e(t.don_d) + '</p></div><span class="mail">feinn@live.fr</span></div>'
+    + '<a class="lien-asso" href="' + asso + '" data-asso="1">' + e(t.asso) + '</a></div></section>'
+    + '<section class="acces wrap"><p class="sur">' + e(t.acc_sur) + '</p><h2>' + e(t.acc_t) + '</h2>'
+    + '<a class="l" href="#" data-paye="cav">' + e(t.acc1) + ' <span>12,99 € ' + e(t.mois) + ' ›</span></a>'
+    + '<a class="l" href="#" data-paye="cry">' + e(t.acc2) + ' <span>99,99 € ' + e(t.m12) + ' ›</span></a>'
+    + '<a class="l" href="#" data-paye="fam">' + e(t.acc_fam) + ' <span>19,99 € ' + e(t.mois) + ' ›</span></a>'
+    + '<a class="l" href="#" data-paye="duo">' + e(t.acc3) + ' <span>24,99 € ' + e(t.mois) + ' ›</span></a>'
+    + '<a class="l" href="#" data-aller="soutenir">' + e(t.acc4) + ' <span>' + e(t.de_a) + ' ›</span></a>'
+    + '</section>';
+}
+
+function EcranPremiumV3(props) {
+    var ctx = useApp();
+    var langue = ctx.langue || "fr";
+    var refPage = useRef(null);
+    var html = pv3Html(langue, { email: props.email, premium: props.premium, plan: props.plan });
+    useEffect(function () {
+        var racine = refPage.current; if (!racine) return;
+        var voir = function (g) {
+            racine.querySelectorAll(".onglets button").forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-g") === g ? "true" : "false"); });
+            racine.querySelectorAll(".carte").forEach(function (c) { c.hidden = c.getAttribute("data-g") !== g; });
+            var n = racine.querySelector(".note-ia"); if (n) n.hidden = g !== "ia";
+        };
+        var clic = function (ev) {
+            var el = ev.target && ev.target.closest ? ev.target.closest("[data-g],[data-paye],[data-don],[data-aller],[data-asso]") : null;
+            if (!el || !racine.contains(el)) return;
+            if (el.matches(".onglets button")) { ev.preventDefault(); voir(el.getAttribute("data-g")); return; }
+            if (el.hasAttribute("data-paye")) { ev.preventDefault(); var l = PV3_LIENS[el.getAttribute("data-paye")]; if (l && window.hypeOuvrirPaiement) window.hypeOuvrirPaiement(l); return; }
+            if (el.hasAttribute("data-don")) { ev.preventDefault(); var d = PV3_LIENS.mec[Number(el.getAttribute("data-don"))]; if (d && window.hypeOuvrirLien) window.hypeOuvrirLien(d); return; }
+            if (el.hasAttribute("data-asso")) { ev.preventDefault(); var u = new URL(el.getAttribute("href"), window.location.origin).href; if (window.hypeOuvrirLien) window.hypeOuvrirLien(u); else window.location.href = u; return; }
+            if (el.hasAttribute("data-aller")) { ev.preventDefault(); var cible = racine.querySelector('[data-sec="' + el.getAttribute("data-aller") + '"]'); if (cible) cible.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+        };
+        racine.addEventListener("click", clic);
+        var pistes = racine.querySelector(".pistes"), pts = racine.querySelectorAll(".points span");
+        var defil = function () { if (!pistes || !pistes.children[0]) return; var w = pistes.children[0].getBoundingClientRect().width + 14, i = Math.round(pistes.scrollLeft / w); pts.forEach(function (s, k) { s.classList.toggle("on", k === i); }); };
+        if (pistes) pistes.addEventListener("scroll", defil, { passive: true });
+        return function () { racine.removeEventListener("click", clic); if (pistes) pistes.removeEventListener("scroll", defil); };
+    }, [html]);
+    var t = PV3_TXT[langue] || PV3_TXT.fr;
+    return React.createElement("div", { className: "pv3" },
+        React.createElement("style", { dangerouslySetInnerHTML: { __html: PV3_CSS } }),
+        React.createElement("div", { className: "pv3-haut" },
+            React.createElement("button", { type: "button", onClick: props.onRetour, "aria-label": t.retour }, "‹"),
+            props.onAncienne ? React.createElement("button", { type: "button", className: "pv3-ancienne", onClick: props.onAncienne }, t.ancienne) : null),
+        React.createElement("div", { ref: refPage, dangerouslySetInnerHTML: { __html: html } }));
+}
+
 function EcranPremium() {
     var ctx = useApp();
     var setEcran = ctx.setEcran, langue = ctx.langue, tr = ctx.tr, premium = ctx.premium, planAbo = ctx.planAbo, profilP = ctx.profil; var famillePremiumP = !!ctx.famillePremium;
@@ -86228,6 +86397,8 @@ function EcranPremium() {
     var stMoiMux = useState(null); var moiMux = stMoiMux[0], setMoiMux = stMoiMux[1];
     var stResMux = useState(null); var resMux = stResMux[0], setResMux = stResMux[1];
     var stEnvMux = useState(false); var envMux = stEnvMux[0], setEnvMux = stEnvMux[1];
+    /* 15/10 : page Premium V3 — montrée d'abord aux seules modératrices (étape 1), avec retour possible à l'ancienne page. */
+    var stV3 = useState(true); var voirV3 = stV3[0], setVoirV3 = stV3[1];
     useEffect(function () { var vif = true;
       try { utilisateurActuel().then(function (u) { if (vif) setMoiMux(u || null); }).catch(function () { }); } catch (eU) { }
       return function () { vif = false; };
@@ -86295,10 +86466,15 @@ function EcranPremium() {
                 React.createElement("div", null,
                     React.createElement("div", { style: { fontFamily: "'Cinzel',Georgia,serif", fontSize: 19, fontWeight: 700, color: "#F4F7FA" } }, "Hype Pro"),
                     React.createElement("p", { style: { margin: "4px 0 0", fontSize: 12, lineHeight: 1.55, color: "rgba(244,247,250,0.78)" } }, tr({ fr: "Pour les enseignants et moniteurs \u00b7 suivez vos \u00e9l\u00e8ves \uD83C\uDFC7", en: "For teachers and instructors \u00b7 follow your riders \uD83C\uDFC7", es: "Para profesores y monitores \u00b7 sigue a tus alumnos \uD83C\uDFC7", it: "Per insegnanti e istruttori \u00b7 segui i tuoi allievi \uD83C\uDFC7", ja: "\u5148\u751f\u30fb\u30a4\u30f3\u30b9\u30c8\u30e9\u30af\u30bf\u30fc\u5411\u3051 \uD83C\uDFC7", de: "F\u00fcr Lehrer und Trainer \u00b7 begleite deine Sch\u00fcler \uD83C\uDFC7", ar: "\u0644\u0644\u0645\u062f\u0631\u0628\u064a\u0646 \u0648\u0627\u0644\u0645\u062f\u0631\u0633\u064a\u0646 \u00b7 \u062a\u0627\u0628\u0639\u0648\u0627 \u062a\u0644\u0627\u0645\u064a\u0630\u0643\u0645 \ud83c\udfc7" }))))));
+    if (estModMux && voirV3) {
+        return React.createElement(EcranPremiumV3, { email: mailP, premium: premium, plan: premium ? (L && L.T_HSUB) : "", onRetour: function () { setEcran("dashboard"); }, onAncienne: function () { setVoirV3(false); try { window.scrollTo(0, 0); } catch (eS) { } } });
+    }
     var htmlPage = PV5_TPL;
     for (var k in L) { htmlPage = htmlPage.split("{{" + k + "}}").join(L[k]); }
     htmlPage = htmlPage.split("{{IMG}}").join(PV5_IMG);
-    return (React.createElement("div", { className: premium ? "pv5 pv5abonne" : "pv5", style: { position: "relative" } },
+    return (React.createElement("div", { className: premium ? "pv5 pv5abonne" : "pv5", style: { position: "relative", maxWidth: 480, margin: "0 auto" /* 15/10 : l'ancienne page garde sa largeur de téléphone */ } },
+        estModMux ? React.createElement("div", { style: { textAlign: "center", padding: "calc(58px + env(safe-area-inset-top)) 0 6px" } },
+            React.createElement("button", { type: "button", onClick: function () { setVoirV3(true); try { window.scrollTo(0, 0); } catch (eS) { } }, style: { border: "1px solid #C9A66B", background: "rgba(201,166,107,.12)", color: "#F2EBDD", borderRadius: 999, padding: "8px 16px", fontSize: 12, fontWeight: 600 } }, "Voir la nouvelle page Premium (V3)")) : null,
         bandeauCompte,
         React.createElement("style", { dangerouslySetInnerHTML: { __html: PV5_CSS + ".pv5abonne h1.big{font-size:21px;letter-spacing:3px}" } }),
         React.createElement("button", { onClick: function () { setEcran("dashboard"); }, "aria-label": tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "\u623b\u308b", de: "Zur\u00fcck", ar: "\u0631\u062c\u0648\u0639" }), style: { position: "absolute", top: "calc(12px + env(safe-area-inset-top))", left: 12, zIndex: 20, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(9,13,17,0.55)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", color: "#EAF1F4", fontSize: 24, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" } }, "\u2039"),
