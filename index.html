@@ -82108,7 +82108,7 @@ const HEYBABY_TIMEOUT_SUPA_MS = 300000;
    demontage coupe la requete). Le job differe est note sur le telephone ; en revenant sur Hey Baby,
    l appli le retrouve, va chercher le resultat et redige la reponse. Abandon au-dela de 10 min. */
 const HEYBABY_JOB_CLE = "hype_hb_job_attente";
-const HEYBABY_REPRISE_MAX_MS = 600000;
+const HEYBABY_REPRISE_MAX_MS = 24 * 3600 * 1000; /* 14/10 (Blandine : « on peut garder le retour qu il arrive ? ») : 10 min -> 24 h. Une analyse photo laissee en route (ecran quitte) est reprise au retour sur Hey Baby jusqu au lendemain, au lieu d etre abandonnee apres 10 min. Le resultat de l observation reste en base (heybaby_analyses) ; la reponse est redigee a la reprise. */
 // --- Analyse photo en 2 étapes (spec 22/07/2026) ---
 // Étape 1 "perception" : observation isolée (photo + méthode + question seules — AUCUN historique,
 // carnet, profil ou consigne de ton), sortie JSON structurée. Étape 2 "pédagogie" : rédaction Hey
