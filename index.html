@@ -33450,6 +33450,9 @@ function HypeAjoutResultatCavaliere(props) {
   return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(contenu, document.body) : contenu;
 }
 function BlocResultatsCavaliere(props) {
+  /* 15/10 (1135) Cavalier V2 iPad / ordinateur, build 5 : memes marges que le reste de la page des 768 px (iPhone inchange). */
+  var cavTabR = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;
+  var cavOrdiR = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
   var h = React.createElement;
   var app = (typeof useApp === "function") ? useApp() : {};
   var tr = app.tr || function (o) { return o.fr; };
@@ -33572,11 +33575,11 @@ function BlocResultatsCavaliere(props) {
   function voirToutV2() { try { window.__resCavaliereId = idResoluRef.current || userId || ""; } catch (eW) { } if (app.setEcran) app.setEcran("resultats-cavalier"); }
   function encartV2() {
     var enfants = Array.prototype.slice.call(arguments);
-    return h.apply(null, ["section", { style: { position: "relative", margin: "32px 12px 0", padding: "14px 14px 16px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.24)", background: "linear-gradient(160deg, rgba(40,86,104,0.34) 0%, rgba(18,40,48,0.20) 42%, rgba(5,8,11,0.06) 100%)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", boxShadow: "0 16px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.05)", overflow: "hidden" } }].concat(enfants));
+    return h.apply(null, ["section", { style: { position: "relative", margin: cavTabR ? (cavOrdiR ? "44px 16px 0" : "40px 16px 0") : "32px 12px 0", padding: cavTabR ? "20px 22px 22px" : "14px 14px 16px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.24)", background: "linear-gradient(160deg, rgba(40,86,104,0.34) 0%, rgba(18,40,48,0.20) 42%, rgba(5,8,11,0.06) 100%)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", boxShadow: "0 16px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.05)", overflow: "hidden" } }].concat(enfants));
   }
   function titreV2(avecVoir) {
     return h("div", { style: { position: "relative", display: "flex", alignItems: "center", gap: 12 } },
-      h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: 23, color: "#F3EEE4", whiteSpace: "nowrap" } }, sien ? T("Mes r\u00e9sultats", "My results", "Mis resultados", "I miei risultati", "\u79c1\u306e\u6210\u7e3e", "Meine Ergebnisse", "\u0646\u062a\u0627\u0626\u062c\u064a") : T("Ses r\u00e9sultats", "Their results", "Sus resultados", "I suoi risultati", "\u6210\u7e3e", "Ergebnisse", "\u0646\u062a\u0627\u0626\u062c\u0647\u0627")),
+      h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: cavTabR ? (cavOrdiR ? 28 : 26) : 23, color: "#F3EEE4", whiteSpace: "nowrap" } }, sien ? T("Mes r\u00e9sultats", "My results", "Mis resultados", "I miei risultati", "\u79c1\u306e\u6210\u7e3e", "Meine Ergebnisse", "\u0646\u062a\u0627\u0626\u062c\u064a") : T("Ses r\u00e9sultats", "Their results", "Sus resultados", "I suoi risultati", "\u6210\u7e3e", "Ergebnisse", "\u0646\u062a\u0627\u0626\u062c\u0647\u0627")),
       h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", rgba(201,166,107,0.5), transparent)" } }),
       avecVoir ? h("button", { onClick: voirToutV2, style: { background: "none", border: "none", padding: 0, cursor: "pointer", color: "#C9A66B", fontFamily: M, fontSize: 12, whiteSpace: "nowrap" } }, T("Voir tout", "See all", "Ver todo", "Vedi tutto", "\u3059\u3079\u3066", "Alle ansehen", "\u0639\u0631\u0636 \u0627\u0644\u0643\u0644") + " " + flV2) : null);
   }
@@ -33593,7 +33596,7 @@ function BlocResultatsCavaliere(props) {
   var btnV2 = { display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 8, minHeight: 42, padding: "0 10px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.62)", background: "rgba(5,8,11,0.6)", color: "#F3EEE4", fontFamily: M, fontSize: 12, fontWeight: 400, cursor: "pointer", minWidth: 0, whiteSpace: "nowrap" };
   function actionsV2() {
     if (!sien) return null;
-    return h("div", { style: { position: "relative", display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, marginTop: 14 } },
+    return h("div", { style: { position: "relative", display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, marginTop: 14, maxWidth: 560 /* (1135) sans effet sur iPhone (plus etroit) ; grand ecran : boutons non etires */ } },
       h("button", { "data-ajout-resultat": "profil-v2", onClick: function () { setAjoutOuvert(true); }, style: btnV2 }, h("span", { "aria-hidden": "true", style: { fontSize: 16, fontWeight: 300 } }, "+"), T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir un resultado", "Aggiungi un risultato", "\u6210\u7e3e\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629")),
       h("button", { "data-import-profil": "v2", onClick: lancerImportOfficiel, style: btnV2 }, T("Importer r\u00e9sultats FFE", "Import FFE results", "Importar resultados FFE", "Importa risultati FFE", "FFE\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "FFE-Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c FFE")));
   }
@@ -34377,7 +34380,7 @@ function EcranMonCavalier() {
      ombre douce ; titre Cormorant ivoire + filet champagne qui s efface). Reutilises par les etapes suivantes. */
   function cavV2Bloc(cle, styleEnPlus) {
     var enfants = Array.prototype.slice.call(arguments, 2);
-    return h.apply(null, ["section", { key: cle, style: Object.assign({ position: "relative", margin: "32px 12px 0", padding: "14px 14px 16px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.24)", background: "linear-gradient(160deg, rgba(40,86,104,0.34) 0%, rgba(18,40,48,0.20) 42%, rgba(5,8,11,0.06) 100%)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", boxShadow: "0 16px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.05)", overflow: "hidden" }, styleEnPlus || {}) }].concat(enfants));
+    return h.apply(null, ["section", { key: cle, style: Object.assign({ position: "relative", margin: cavTab ? (cavOrdi ? "44px 16px 0" : "40px 16px 0") : "32px 12px 0" /* (1135) */, padding: cavTab ? "20px 22px 22px" : "14px 14px 16px", borderRadius: 16, border: "1px solid rgba(201,166,107,0.24)", background: "linear-gradient(160deg, rgba(40,86,104,0.34) 0%, rgba(18,40,48,0.20) 42%, rgba(5,8,11,0.06) 100%)", WebkitBackdropFilter: "blur(8px)", backdropFilter: "blur(8px)", boxShadow: "0 16px 34px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.05)", overflow: "hidden" }, styleEnPlus || {}) }].concat(enfants));
   }
   /* (1108) la cellule « Les chevaux de l ecurie » (meme carte, meme destination ecurie-hype) avec « + Ajouter mon cheval » dessous,
      de sorte que l ensemble ait la hauteur d une carte cheval. Sans ecurie : seulement la carte d ajout. */
@@ -34454,7 +34457,7 @@ function EcranMonCavalier() {
   function cavV2Titre(txt, voirTxt, onVoir, sansFleche) {
     var rtlT = false; try { rtlT = document.documentElement.dir === "rtl"; } catch (eR) { }
     return h("div", { style: { display: "flex", alignItems: "center", gap: 12 } },
-      h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: 23, color: "#F3EEE4", whiteSpace: "nowrap" } }, txt),
+      h("h2", { style: { margin: 0, fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: cavTab ? (cavOrdi ? 28 : 26) : 23, color: "#F3EEE4", whiteSpace: "nowrap" } }, txt),
       h("span", { "aria-hidden": "true", style: { flex: 1, height: 1, background: "linear-gradient(" + (rtlT ? "270deg" : "90deg") + ", rgba(201,166,107,0.5), transparent)" } }),
       (voirTxt && onVoir) ? h("button", { onClick: onVoir, style: { background: "none", border: "none", padding: 0, cursor: "pointer", color: "#C9A66B", fontFamily: M, fontSize: 12, whiteSpace: "nowrap" } }, sansFleche ? voirTxt : (voirTxt + " " + (rtlT ? "\u2190" : "\u2192"))) : null);
   }

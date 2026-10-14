@@ -12784,3 +12784,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Cavalier sans photo : page Cavalier (remplace la silhouette bleue et sa version Crimson ; photo pleine, cadrée sur la tête ; iPad/ordinateur : cadre plus étroit pour garder le cheval entier), Histoire (remplace la première lettre du pseudo / « ? »), Résultats en concours / Performances (remplace l'avatar Hype tiré au hasard). Un cavalier qui a sa photo garde sa photo.
 - NON changé : l'avatar par défaut des petits ronds ailleurs dans l'appli (IMG_CAVALIER_DEFAUT) ; Progression (a déjà sa propre photo validée) ; Photos et Vidéos (n'ont pas de photo du haut) — question posée à Blandine.
 - Tests : 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
+
+## 15/10/2026 (2 h 15) — Cavalier V2 sur iPad et ordinateur, BUILD 5 (1135) : marges et titres des blocs [publié, accord « Ok continue »]
+- Dès 768 px : les blocs (Mon récit, Mes amis, Mes résultats) s'alignent sur le reste de la page (bord à 16 px au lieu de 12), plus d'air entre eux (40 px, 44 sur ordinateur) et dedans ; titres des blocs plus grands (26 px iPad, 28 ordinateur ; 23 sur iPhone).
+- « Mes résultats » vide : les deux boutons (Ajouter un résultat, Importer résultats FFE) ne s'étirent plus sur toute la largeur (560 px au plus ; sans effet sur iPhone, plus étroit).
+- Contenu, ordre, rails (stories, amis, derniers résultats) et différences propriétaire / visiteur : inchangés.
+- iPhone : 4 cas comparés avant/après au pixel (0 et 2 chevaux avec écurie, 3 sans écurie, visite à 5), 0 différence. Tests 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
+- Fin du plan iPad / ordinateur de la page Cavalier (builds 1130 à 1135). Restent en question chez Blandine : photo par défaut sur Progression / Photos / Vidéos ; cartes chevaux plus petites et en largeur sur ordinateur (maquette) ; corrections « Ajouter un cheval » en visite et « ⋯ » en arabe.
