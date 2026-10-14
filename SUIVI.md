@@ -12573,3 +12573,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande (18 h 05) : « fais les grilles justes quoi qu'il arrive » ; plantage 1119 confirmé réglé (« Ok c'est bon », 18 h 07).
 - index.html (build 20261014-1121), V2, EN VISITE : le nombre de chevaux montrés est un multiple de 3 (9 au plus) ; s'il en reste, bouton pleine largeur « Voir tous ses chevaux (n) ▾ » qui déplie, puis « Réduire ▴ ». Avec 1 ou 2 chevaux, ou une fois déplié, la dernière ligne incomplète est centrée. L'ancien dépliage de la visite n'est plus affiché en V2 (code conservé). Noms de variables vérifiés sans collision.
 - Checks : marqueur unique 20261014-1121 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1122 : Cavalier V2 — texte de « Mon récit » plus petit
+- Demande (18 h 08) : « la typo de mon récit peut être un peu plus petite ? »
+- index.html (build 20261014-1122), V2 : texte du récit 16 → 14 px (interligne 1,42), 8 lignes au plus au lieu de 7.
+- Checks : marqueur unique 20261014-1122 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
