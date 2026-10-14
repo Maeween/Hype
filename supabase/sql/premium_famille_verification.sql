@@ -22,6 +22,10 @@ with v(controle, resultat) as (
          case when not exists (select 1 from information_schema.role_table_grants
                     where table_schema='public' and table_name in ('familles','famille_membres','famille_journal','famille_essais')
                       and grantee = 'anon') then 'OK' else 'PROBLÈME' end
+  union all select 'Livraison B : aucune lecture directe des 4 tables par les connectés',
+         case when not exists (select 1 from information_schema.role_table_grants
+                    where table_schema='public' and table_name in ('familles','famille_membres','famille_journal','famille_essais')
+                      and grantee in ('anon','authenticated')) then 'OK' else 'PROBLÈME' end
   union all select 'Table des essais : illisible pour les connectés',
          case when not has_table_privilege('authenticated','public.famille_essais','SELECT') then 'OK' else 'PROBLÈME' end
   -- 5. Fonctions présentes

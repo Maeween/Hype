@@ -77,7 +77,9 @@ alter table public.famille_journal enable row level security;
 -- (Supabase donne par défaut TOUS les droits aux nouveaux comptes connectés, y compris « vider la table » qui
 --  passe outre la sécurité ligne par ligne : on retire tout, puis on rend seulement la lecture.)
 revoke all on public.familles, public.famille_membres, public.famille_journal from anon, authenticated;
-grant select on public.familles, public.famille_membres, public.famille_journal to authenticated;
+-- 15/10/2026 (livraison B) : plus AUCUNE lecture directe pour l'appli ; tout passe par les fonctions
+-- (famille_mon_etat, famille_voir_invitation…). Passé en production le 15/10 à 0 h 31.
+revoke select on public.familles, public.famille_membres, public.famille_journal from authenticated;
 
 create or replace function public.famille_de_moi() returns uuid
 language sql stable security definer set search_path = public, pg_temp as $$
