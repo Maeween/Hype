@@ -12503,3 +12503,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Ses amis : triés par niveau (rpc hype_ordre_cavaliers_xp, même source que la page Écurie), puis ceux qui ont une photo ; pareil pour les cavaliers de l'écurie proposés.
   · Textes nouveaux en 7 langues.
 - Checks : marqueur unique 20261014-1110 ; 16 scripts 0 erreur (une parenthèse manquante attrapée par le contrôle avant envoi, corrigée) ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
+
+## 14/10/2026 — Build 1111 : Cavalier V2 — « + Ajouter » revient à droite du titre des chevaux
+- Demande (17 h 43, captures) : « retire le bouton Ajouter mon cheval sous l'encart Voir tout au milieu des fiches cheval et mets-le à la place de Voir tout, à la droite du titre, comme c'était avant ».
+- index.html (build 20261014-1111), V2 seulement : la carte « Les chevaux de l'écurie » est de nouveau seule dans sa case ; « Voir tous (n) » retiré du titre, remplacé par « + Ajouter » (sa page seulement ; même parcours de création). Paramètre `sansFleche` ajouté à cavV2Titre.
+- Checks : marqueur unique 20261014-1111 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
