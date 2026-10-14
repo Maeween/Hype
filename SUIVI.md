@@ -12607,3 +12607,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Restent volontairement tels quels : « Team CSO Club » (nom de l'équipe, comme avant) et « Premium ».
 - ⚠️ Rappel : aucune traduction arabe ou japonaise n'a été relue par une personne de langue maternelle.
 - Checks : marqueur unique 20261014-1126 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1127 : 🟥 CORRECTIF IMMÉDIAT de la 1126 (script cassé mis en ligne)
+- ERREUR DE MA PART : dans la 1126, une parenthèse manquait (fin du libellé traduit « Modifier ma deuxième écurie »). Le contrôle de syntaxe l'a SIGNALÉ (« 1 erreur »), mais ma commande a quand même envoyé et publié, car le contrôle ne bloquait pas l'envoi. Conséquence possible : pendant quelques minutes, l'appli publiée pouvait ne plus démarrer.
+- Correction : parenthèse remise ; build 20261014-1127 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+- Règle que je m'applique désormais : je lis le résultat du contrôle AVANT d'envoyer, et l'envoi ne part que si le résultat dit « 0 erreur ».
