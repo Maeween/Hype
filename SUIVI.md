@@ -12455,3 +12455,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Plus d'espace au-dessus de l'écurie (48 px).
   · FondBanniereClub : nouvelles options `fondu` et `defaut` (sans elles, rendu inchangé ailleurs).
 - Checks : marqueur unique 20261014-1105 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
+
+## 14/10/2026 — Build 1106 : Cavalier V2, étape 3 — « Ma story » en encart compact
+- Demande : « Top continue » (17 h 30).
+- index.html (build 20261014-1106), en V2 seulement :
+  · Deux aides communes pour la suite : `cavV2Bloc` (encart dégradé pétrole transparent, bord champagne fin, ombre douce) et `cavV2Titre` (titre Cormorant ivoire + filet champagne, lien « Voir… » optionnel).
+  · Le bandeau des stories quitte le haut de page et passe sous l'écurie, dans un encart « Ma story » (« Les stories » en visite), accent champagne, marges réduites ; sur sa page, la phrase « Partage ici tes plus beaux moments à cheval… » (7 langues).
+  · Pas de « Voir toutes » : aucune page « toutes les stories » n'existe (pas de lien qui ne mène nulle part).
+- Checks : marqueur unique 20261014-1106 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
+- ⚠️ À trancher avec Blandine : le Mur des songes est toujours affiché sous le haut de page en V2.
