@@ -12472,3 +12472,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
   · Rempli : le vrai récit (7 lignes au plus) ; sa page « Modifier mon récit », visite « Lire la suite ». Destination inchangée : memoirescavalier.
   · Textes nouveaux en 7 langues.
 - Checks : marqueur unique 20261014-1107 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone).
+
+## 14/10/2026 — Build 1108 : Cavalier V2, étape 5 — « Ses chevaux »
+- Demande : « Ok continue » (17 h 34).
+- index.html (build 20261014-1108), en V2 seulement :
+  · Titre V2 « Ses chevaux » ; « Voir tous (n) » dans le titre quand la grille ne montre pas tout (sa page, plus de 8 chevaux) → page Chevaux (« Mes chevaux »).
+  · Grille 3 colonnes, cartes actuelles inchangées (photo 10/11, Cinzel, ligne grise) ; le nom passe sur 2 lignes au lieu d'être coupé.
+  · Carte « Les chevaux de l'écurie » (même destination ecurie-hype) avec « + Ajouter mon cheval » juste dessous (même parcours de création) : l'ensemble a la hauteur d'une carte cheval. Placée au milieu quand la grille est pleine (8 chevaux), sinon à la fin. Sans écurie : la carte d'ajout seule.
+  · Aucun cheval (sa page) : « Chaque cheval a une histoire à découvrir… » + Hey Baby Please et Rizotto d'Emery (vraies fiches, cherchées par leur nom ; lecture seule, « ◇ À découvrir sur Hype ») de part et d'autre de la carte de l'écurie. Si la lecture échoue : seulement la carte de l'écurie et l'ajout. En visite : « Pas encore de cheval sur Hype. »
+  · Choix « Toutes / écuries », quotas gratuits, cadenas Premium, dépliage en visite : inchangés.
+  · Textes nouveaux en 7 langues.
+- Checks : marqueur unique 20261014-1108 ; 16 scripts 0 erreur ; marqueurs de garde inchangés. Non vérifié : rendu réel (test iPhone) ; l'état « aucun cheval » ne se voit pas sur le compte de Blandine (elle a des chevaux).
