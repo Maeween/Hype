@@ -203,6 +203,28 @@ async function majParAbonnement(service, subId, champs) {
     return isNaN(n) ? 1 : n; // en cas d'en-tête absent, on ne crie pas au loup
 }
 
+/* ── Numéro d'abonnement d'une FACTURE (14/10/2026) ──────────────────────────
+   Depuis la version d'API 2025-03 (« basil », et donc la nôtre, 2026-06-24.dahlia),
+   une facture n'a PLUS de champ `subscription` en haut : le numéro est rangé dans
+   parent.subscription_details.subscription (ou sur chaque ligne). Le relais
+   testait `objet.subscription` → toujours vide → renouvellements et refus de
+   paiement IGNORÉS en silence (réponse « OK » sans rien écrire) → Premium expiré
+   au bout de 32 jours malgré le prélèvement → validations à la main.
+   On lit maintenant les trois endroits possibles, l'ancien d'abord.          */
+function aboDeFacture(f) {
+    try {
+        if (!f) return null;
+        if (typeof f.subscription === "string" && f.subscription) return f.subscription;
+        if (f.subscription && f.subscription.id) return f.subscription.id;
+        const p = f.parent && f.parent.subscription_details && f.parent.subscription_details.subscription;
+        if (p) return typeof p === "string" ? p : (p.id || null);
+        const l = f.lines && f.lines.data && f.lines.data[0];
+        const s = l && l.parent && l.parent.subscription_item_details && l.parent.subscription_item_details.subscription;
+        if (s) return typeof s === "string" ? s : (s.id || null);
+    } catch (e) { }
+    return null;
+}
+
 export default async (req) => {
     if (req.method !== "POST") return new Response("POST uniquement", { status: 405 });
 
@@ -297,7 +319,8 @@ export default async (req) => {
         }
 
         // ----- Paiement de facture : premier paiement OU renouvellement -----
-        else if (evenement.type === "invoice.paid" && objet && objet.subscription) {
+        else if (evenement.type === "invoice.paid" && objet && aboDeFacture(objet)) {
+            const aboFacture = aboDeFacture(objet);
             let expire = null;
             try {
                 const fin = objet.lines && objet.lines.data && objet.lines.data[0] && objet.lines.data[0].period && objet.lines.data[0].period.end;
@@ -307,7 +330,7 @@ export default async (req) => {
             const champs = { statut: "actif", maj_le: new Date().toISOString() };
             if (expire) champs.expire_le = expire;
 
-            const touchees = await majParAbonnement(service, objet.subscription, champs);
+            const touchees = await majParAbonnement(service, aboFacture, champs);
 
             if (touchees > 0) {
                 log("Renouvellement enregistré, expire le", expire || "(période inconnue)");
@@ -325,7 +348,7 @@ export default async (req) => {
                         user_id: userId,
                         email: email,
                         stripe_customer: objet.customer || null,
-                        stripe_subscription: objet.subscription || null,
+                        stripe_subscription: aboFacture,
                         plan: tF.plan,
                         statut: "actif",
                         expire_le: expire || new Date(Date.now() + tF.jours * 86400000).toISOString(),
@@ -334,18 +357,19 @@ export default async (req) => {
                     log("Ligne créée depuis invoice.paid pour", email);
                 } else {
                     log("ALERTE : facture payée non rattachable — email :", email,
-                        "· client :", objet.customer, "· abonnement :", objet.subscription);
+                        "· client :", objet.customer, "· abonnement :", aboFacture);
                     ecritureOk = false;
                 }
             }
         }
 
         // ----- Paiement refusé -----
-        else if (evenement.type === "invoice.payment_failed" && objet && objet.subscription) {
-            const touchees = await majParAbonnement(service, objet.subscription,
+        else if (evenement.type === "invoice.payment_failed" && objet && aboDeFacture(objet)) {
+            const aboRefus = aboDeFacture(objet);
+            const touchees = await majParAbonnement(service, aboRefus,
                 { statut: "impaye", maj_le: new Date().toISOString() });
-            if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", objet.subscription);
-            log("Paiement refusé enregistré :", objet.subscription);
+            if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", aboRefus);
+            log("Paiement refusé enregistré :", aboRefus);
         }
 
         // ----- Annulation définitive -----
