@@ -12508,3 +12508,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande (17 h 43, captures) : « retire le bouton Ajouter mon cheval sous l'encart Voir tout au milieu des fiches cheval et mets-le à la place de Voir tout, à la droite du titre, comme c'était avant ».
 - index.html (build 20261014-1111), V2 seulement : la carte « Les chevaux de l'écurie » est de nouveau seule dans sa case ; « Voir tous (n) » retiré du titre, remplacé par « + Ajouter » (sa page seulement ; même parcours de création). Paramètre `sansFleche` ajouté à cavV2Titre.
 - Checks : marqueur unique 20261014-1111 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1112 : Cavalier V2 — « Mes » sur sa page, « Ses » en visite
+- Demande (17 h 45) : « s'il est sur sa page il doit voir Mes chevaux et si on lit sa page on doit voir Ses chevaux ».
+- index.html (build 20261014-1112), V2 seulement : titres Mes chevaux / Ses chevaux, Mon récit / Son récit, Mes amis / Ses amis, Mes résultats / Ses résultats (7 langues). « Ma story » (sa page) / « Les stories » (visite) inchangé.
+- Checks : marqueur unique 20261014-1112 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
