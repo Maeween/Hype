@@ -27585,6 +27585,8 @@ function HypeApp() {
     } catch (eDir) { }
     const [planAbo, setPlanAbo] = useState(sauve && typeof sauve.planAbo === "string" ? sauve.planAbo : ""); // "" | "mensuel" | "annuel"
     const estAbonne = planAbo !== "";
+    /* Premium Famille : Premium apporté par une famille (titulaire ou deuxième cavalier). Lu dans la base, gardé sur le téléphone. */
+    const [famillePremium, setFamillePremium] = useState(!!(sauve && sauve.famillePremium));
     const [creationCheval, setCreationCheval] = useState(false);
     useEffect(() => { try { window.__ouvrirCreationCheval = () => setCreationCheval(true); } catch (e) { } return () => { try { delete window.__ouvrirCreationCheval; } catch (e) { } }; }, []);
     /* 10/10 (854) Blandine (choix 1A) : un visiteur sans compte qui a appuye sur « Installer mon cheval » est passe
@@ -27979,7 +27981,8 @@ function HypeApp() {
            deconnexion = crash immediat, et rien d'accessible ensuite (l'app
            reste sur l'ecran de crash). Corrige en verifiant que profil
            existe avant de lire .vip. */
-        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || ambassadeur || accesTout /* (1064) ; le statut VIP « ?vip=1 » ne donne plus le Premium */), estAbonne, planAbo: (accesTout && !forcerGratuit && planAbo !== "duo") ? "duo" : planAbo /* (1064) Evan et Liam : tous les avantages, niveau Duo */, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
+        famillePremium,
+        premium: !forcerGratuit && (planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || famillePremium || ambassadeur || accesTout /* (1064) ; le statut VIP « ?vip=1 » ne donne plus le Premium */), estAbonne, planAbo: (accesTout && !forcerGratuit && planAbo !== "duo") ? "duo" : planAbo /* (1064) Evan et Liam : tous les avantages, niveau Duo */, setPlanAbo, setPremium: (v) => { setForcerGratuit(!v); setPlanAbo(v ? "annuel" : ""); },
         appareils,
         profil, setProfil,
         xp, setXp,
@@ -28073,6 +28076,8 @@ function HypeApp() {
         async function lireAbo(u) {
             try {
                 if (!u || typeof supa === "undefined") return;
+                /* Premium Famille : lu à part, n'influe jamais sur la formule personnelle. Erreur = on ne change rien. */
+                try { const rF = await supa.rpc("famille_mon_etat"); if (!fini && rF && !rF.error) setFamillePremium(!!(rF.data && rF.data.actif)); } catch (eF) { }
                 /* maybeSingle() rend null des qu il y a PLUSIEURS lignes pour le meme
    compte : le Premium etait refuse en silence sur un doublon. On lit
    la liste et on garde la ligne active la plus lointaine.          */
@@ -28130,7 +28135,7 @@ function HypeApp() {
         return () => { annule = true; try { if (abo) abo.unsubscribe(); } catch (e) { } };
     }, []);
     useEffect(() => {
-        const data = { profil, xp, serie, coursTermines, quizResultats, planAbo, langue, chevaux, ecran: ECRANS_RESTAURABLES[ecran] ? ecran : "dashboard" };
+        const data = { profil, xp, serie, coursTermines, quizResultats, planAbo, famillePremium, langue, chevaux, ecran: ECRANS_RESTAURABLES[ecran] ? ecran : "dashboard" };
         try { hypeSyncProgressionDifferee(data); } catch (eSync) { }
         /* Deux corrections dans ce seul bloc.
            1. Les images ne partent PLUS JAMAIS dans le localStorage : hypeEtatSansImages
@@ -28150,14 +28155,15 @@ function HypeApp() {
             }, 400);
         }
         catch (e) { }
-    }, [profil, xp, serie, coursTermines, quizResultats, planAbo, langue, chevaux]);
+    }, [profil, xp, serie, coursTermines, quizResultats, planAbo, famillePremium, langue, chevaux]);
     return (React.createElement(AppContext.Provider, { value: value },
         React.createElement(GlobalStyles, null),
         React.createElement(Router, null),
         React.createElement(AvatarZoom, null),
         React.createElement(RecadrageHype, null),
         React.createElement(ModaleMerciVIP, null),
-        creationCheval && React.createElement(ModaleCreationCheval, { onClose: () => setCreationCheval(false), tr, premium: planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || !!(profil && profil.vip), allerPremium: () => { setCreationCheval(false); setEcran("premium"); }, ouvrirFiche: (id) => { setCreationCheval(false); try { window.__chevalOuvert = id; } catch (e) { } naviguer("cheval"); } }),   /* 10/10 (844) Blandine : « en revenant en arriere depuis la fiche creee d un poney, j arrive sur ma page cavalier ». setEcran sautait l historique : la page d ou l on venait n etait pas retenue. naviguer() l empile. */
+        React.createElement(ModaleInvitationFamille, null),
+        creationCheval && React.createElement(ModaleCreationCheval, { onClose: () => setCreationCheval(false), tr, premium: planAbo === "mensuel" || planAbo === "annuel" || planAbo === "duo" || famillePremium || !!(profil && profil.vip), allerPremium: () => { setCreationCheval(false); setEcran("premium"); }, ouvrirFiche: (id) => { setCreationCheval(false); try { window.__chevalOuvert = id; } catch (e) { } naviguer("cheval"); } }),   /* 10/10 (844) Blandine : « en revenant en arriere depuis la fiche creee d un poney, j arrive sur ma page cavalier ». setEcran sautait l historique : la page d ou l on venait n etait pas retenue. naviguer() l empile. */
         React.createElement(VueImprimable, null)));
 }
 /* ---------- ROUTER PRINCIPAL ---------- */
@@ -31766,6 +31772,7 @@ function EcranSupprimerCompte({ email, onAnnuler }) {
                 body: JSON.stringify({ motif: (motif !== null ? cles[motif] : ""), message: message })
             });
             const rep = await r.json().catch(function () { return {}; });
+            if (rep && rep.code === "FAMILLE_ACTIVE") { setBusy(false); setErreur(famT(langue, "supprFamille")); return; }
             if (!r.ok || !rep.ok) { setBusy(false); setErreur(rep.erreur || T.err); return; }
             // Les donnees sont CONSERVEES 60 jours : on ne vide que ce qui
             // identifie l'appareil, pour que l'appli reparte propre.
@@ -83833,8 +83840,214 @@ function EcranProfil() {
       lent ? h("button", { type: "button", onClick: function () { try { if (app && app.setEcran) app.setEcran("connexion"); } catch (eC) { } }, style: { marginTop: 18, minHeight: 44, padding: "0 22px", borderRadius: 999, border: "1px solid rgba(255,255,255,0.25)", background: "transparent", color: "#EDF2F5", fontSize: 13, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer" } },
         T("Se reconnecter", "Sign in again", "Volver a iniciar sesi\u00f3n", "Accedi di nuovo", "\u518d\u30ed\u30b0\u30a4\u30f3", "Erneut anmelden", "\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644 \u0645\u062c\u062f\u062f\u064b\u0627")) : null);
 }
+/* ═══ PREMIUM FAMILLE (étape 3, branche premium-famille — 14/10/2026) ═══════════
+   Deux comptes cavaliers indépendants, un seul abonnement. Tout passe par les
+   fonctions sécurisées de la base (famille_*) : l'appli ne peut ni ajouter un
+   3e cavalier, ni prolonger un abonnement. Invisible tant que personne n'a de
+   famille (aucune vente pour l'instant). Textes dans les 7 langues ci-dessous. */
+const FAMILLE_I18N = {
+  fr: { titre: "Premium Famille", sous: "Deux comptes cavaliers indépendants — un seul abonnement", titulaire: "Titulaire", deuxieme: "Deuxième cavalier", aucun: "Pas encore", invitEnCours: "Invitation envoyée — lien valable jusqu'au {date}", inviter: "Inviter un cavalier", nouveauLien: "Créer un nouveau lien", annulerInvit: "Annuler l'invitation", retirer: "Retirer ce cavalier", quitter: "Quitter la famille", renouv: "Prochain renouvellement : {date}", fin: "Accès jusqu'au {date}", impaye: "Paiement refusé : Premium est suspendu pour les deux comptes jusqu'au prochain paiement.", remplacement: "Prochain changement de cavalier possible le {date}", lienPret: "Lien prêt ! Envoie-le au deuxième cavalier. Il est valable 7 jours et ne sert qu'une fois.", copier: "Copier le lien", copie: "Lien copié ✓", partage: "Rejoins mon abonnement Premium Famille sur Hype :", confirmRetirer: "Retirer {nom} ? Il garde son compte et ses données, mais perd Premium.", confirmQuitter: "Quitter la famille ? Tu gardes ton compte et tes données, mais tu perds Premium.", invitTitre: "Invitation Premium Famille", invitTexte: "{nom} t'invite à rejoindre son abonnement Premium Famille. Tu gardes ton compte, tes chevaux et toutes tes données : vous ne partagez que l'abonnement.", invitAnonyme: "Un cavalier", dejaPremium: "Tu as déjà un abonnement Premium à ton nom. Rien n'est résilié automatiquement : pour ne pas payer deux fois, écris-nous après avoir accepté et nous arrêterons ton ancien abonnement avec toi.", accepter: "Accepter", refuser: "Refuser", plusTard: "Plus tard", connexion: "Connecte-toi ou crée ton compte Hype pour accepter cette invitation. Le lien reste gardé sur ce téléphone.", ok: "OK", bienvenue: "Bienvenue dans la famille ! Premium est activé sur ton compte.", refuse: "Invitation refusée.", supprFamille: "Tu es titulaire d'un abonnement Premium Famille en cours. Résilie-le d'abord, pour que personne ne soit facturé ni privé de Premium sans prévenir.",
+    err: { INVITATION_INVALIDE: "Ce lien n'est plus valable. Demande un nouveau lien.", LIMITE_30_JOURS: "Un changement de cavalier est possible une fois tous les 30 jours.", LIMITE_ANNUELLE: "Le nombre maximum de changements pour cette année est atteint.", DEJA_DANS_UNE_FAMILLE: "Tu fais déjà partie d'une autre famille.", DEJA_TITULAIRE: "Tu as déjà ton propre abonnement Famille.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "C'est ton propre lien : envoie-le au deuxième cavalier.", FAMILLE_INACTIVE: "Cet abonnement Famille n'est plus actif.", DEJA_UN_DEUXIEME_CAVALIER: "Ta famille a déjà un deuxième cavalier.", FAMILLE_INTROUVABLE: "Abonnement Famille introuvable ou inactif.", CONNEXION_REQUISE: "Connecte-toi d'abord.", autre: "Une erreur est survenue. Réessaie." } },
+  en: { titre: "Premium Family", sous: "Two independent rider accounts — one subscription", titulaire: "Account holder", deuxieme: "Second rider", aucun: "Not yet", invitEnCours: "Invitation sent — link valid until {date}", inviter: "Invite a rider", nouveauLien: "Create a new link", annulerInvit: "Cancel the invitation", retirer: "Remove this rider", quitter: "Leave the family", renouv: "Next renewal: {date}", fin: "Access until {date}", impaye: "Payment declined: Premium is paused for both accounts until the next payment.", remplacement: "Next change of rider possible on {date}", lienPret: "Link ready! Send it to the second rider. It is valid for 7 days and works only once.", copier: "Copy the link", copie: "Link copied ✓", partage: "Join my Premium Family subscription on Hype:", confirmRetirer: "Remove {nom}? They keep their account and data, but lose Premium.", confirmQuitter: "Leave the family? You keep your account and data, but lose Premium.", invitTitre: "Premium Family invitation", invitTexte: "{nom} invites you to join their Premium Family subscription. You keep your account, your horses and all your data: you only share the subscription.", invitAnonyme: "A rider", dejaPremium: "You already have a Premium subscription in your name. Nothing is cancelled automatically: to avoid paying twice, write to us after accepting and we will stop your old subscription with you.", accepter: "Accept", refuser: "Decline", plusTard: "Later", connexion: "Log in or create your Hype account to accept this invitation. The link stays saved on this phone.", ok: "OK", bienvenue: "Welcome to the family! Premium is now active on your account.", refuse: "Invitation declined.", supprFamille: "You hold an active Premium Family subscription. Please cancel it first, so nobody is charged or loses Premium without warning.",
+    err: { INVITATION_INVALIDE: "This link is no longer valid. Ask for a new link.", LIMITE_30_JOURS: "The second rider can be changed once every 30 days.", LIMITE_ANNUELLE: "The maximum number of changes for this year has been reached.", DEJA_DANS_UNE_FAMILLE: "You are already part of another family.", DEJA_TITULAIRE: "You already have your own Family subscription.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "This is your own link: send it to the second rider.", FAMILLE_INACTIVE: "This Family subscription is no longer active.", DEJA_UN_DEUXIEME_CAVALIER: "Your family already has a second rider.", FAMILLE_INTROUVABLE: "Family subscription not found or inactive.", CONNEXION_REQUISE: "Please log in first.", autre: "Something went wrong. Please try again." } },
+  es: { titre: "Premium Familia", sous: "Dos cuentas de jinete independientes — una sola suscripción", titulaire: "Titular", deuxieme: "Segundo jinete", aucun: "Todavía no", invitEnCours: "Invitación enviada — enlace válido hasta el {date}", inviter: "Invitar a un jinete", nouveauLien: "Crear un enlace nuevo", annulerInvit: "Cancelar la invitación", retirer: "Quitar a este jinete", quitter: "Salir de la familia", renouv: "Próxima renovación: {date}", fin: "Acceso hasta el {date}", impaye: "Pago rechazado: Premium queda suspendido en las dos cuentas hasta el próximo pago.", remplacement: "Próximo cambio de jinete posible el {date}", lienPret: "¡Enlace listo! Envíaselo al segundo jinete. Es válido 7 días y solo sirve una vez.", copier: "Copiar el enlace", copie: "Enlace copiado ✓", partage: "Únete a mi suscripción Premium Familia en Hype:", confirmRetirer: "¿Quitar a {nom}? Conserva su cuenta y sus datos, pero pierde Premium.", confirmQuitter: "¿Salir de la familia? Conservas tu cuenta y tus datos, pero pierdes Premium.", invitTitre: "Invitación Premium Familia", invitTexte: "{nom} te invita a unirte a su suscripción Premium Familia. Conservas tu cuenta, tus caballos y todos tus datos: solo compartís la suscripción.", invitAnonyme: "Un jinete", dejaPremium: "Ya tienes una suscripción Premium a tu nombre. No se cancela nada automáticamente: para no pagar dos veces, escríbenos después de aceptar y detendremos contigo tu antigua suscripción.", accepter: "Aceptar", refuser: "Rechazar", plusTard: "Más tarde", connexion: "Inicia sesión o crea tu cuenta Hype para aceptar esta invitación. El enlace queda guardado en este teléfono.", ok: "OK", bienvenue: "¡Bienvenido a la familia! Premium está activado en tu cuenta.", refuse: "Invitación rechazada.", supprFamille: "Eres titular de una suscripción Premium Familia activa. Cancélala primero, para que nadie sea cobrado ni pierda Premium sin aviso.",
+    err: { INVITATION_INVALIDE: "Este enlace ya no es válido. Pide un enlace nuevo.", LIMITE_30_JOURS: "El segundo jinete se puede cambiar una vez cada 30 días.", LIMITE_ANNUELLE: "Se ha alcanzado el número máximo de cambios de este año.", DEJA_DANS_UNE_FAMILLE: "Ya formas parte de otra familia.", DEJA_TITULAIRE: "Ya tienes tu propia suscripción Familia.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "Es tu propio enlace: envíaselo al segundo jinete.", FAMILLE_INACTIVE: "Esta suscripción Familia ya no está activa.", DEJA_UN_DEUXIEME_CAVALIER: "Tu familia ya tiene un segundo jinete.", FAMILLE_INTROUVABLE: "Suscripción Familia no encontrada o inactiva.", CONNEXION_REQUISE: "Inicia sesión primero.", autre: "Se produjo un error. Inténtalo de nuevo." } },
+  it: { titre: "Premium Famiglia", sous: "Due account cavaliere indipendenti — un solo abbonamento", titulaire: "Titolare", deuxieme: "Secondo cavaliere", aucun: "Non ancora", invitEnCours: "Invito inviato — link valido fino al {date}", inviter: "Invita un cavaliere", nouveauLien: "Crea un nuovo link", annulerInvit: "Annulla l'invito", retirer: "Rimuovi questo cavaliere", quitter: "Lascia la famiglia", renouv: "Prossimo rinnovo: {date}", fin: "Accesso fino al {date}", impaye: "Pagamento rifiutato: Premium è sospeso per entrambi gli account fino al prossimo pagamento.", remplacement: "Prossimo cambio di cavaliere possibile il {date}", lienPret: "Link pronto! Invialo al secondo cavaliere. È valido 7 giorni e funziona una sola volta.", copier: "Copia il link", copie: "Link copiato ✓", partage: "Unisciti al mio abbonamento Premium Famiglia su Hype:", confirmRetirer: "Rimuovere {nom}? Conserva il suo account e i suoi dati, ma perde Premium.", confirmQuitter: "Lasciare la famiglia? Conservi il tuo account e i tuoi dati, ma perdi Premium.", invitTitre: "Invito Premium Famiglia", invitTexte: "{nom} ti invita a unirti al suo abbonamento Premium Famiglia. Conservi il tuo account, i tuoi cavalli e tutti i tuoi dati: condividete solo l'abbonamento.", invitAnonyme: "Un cavaliere", dejaPremium: "Hai già un abbonamento Premium a tuo nome. Nulla viene disdetto automaticamente: per non pagare due volte, scrivici dopo aver accettato e fermeremo insieme il tuo vecchio abbonamento.", accepter: "Accetta", refuser: "Rifiuta", plusTard: "Più tardi", connexion: "Accedi o crea il tuo account Hype per accettare questo invito. Il link resta salvato su questo telefono.", ok: "OK", bienvenue: "Benvenuto in famiglia! Premium è attivo sul tuo account.", refuse: "Invito rifiutato.", supprFamille: "Sei titolare di un abbonamento Premium Famiglia attivo. Disdicilo prima, perché nessuno venga addebitato o perda Premium senza preavviso.",
+    err: { INVITATION_INVALIDE: "Questo link non è più valido. Chiedi un nuovo link.", LIMITE_30_JOURS: "Il secondo cavaliere si può cambiare una volta ogni 30 giorni.", LIMITE_ANNUELLE: "È stato raggiunto il numero massimo di cambi per quest'anno.", DEJA_DANS_UNE_FAMILLE: "Fai già parte di un'altra famiglia.", DEJA_TITULAIRE: "Hai già un tuo abbonamento Famiglia.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "È il tuo link: invialo al secondo cavaliere.", FAMILLE_INACTIVE: "Questo abbonamento Famiglia non è più attivo.", DEJA_UN_DEUXIEME_CAVALIER: "La tua famiglia ha già un secondo cavaliere.", FAMILLE_INTROUVABLE: "Abbonamento Famiglia non trovato o non attivo.", CONNEXION_REQUISE: "Accedi prima.", autre: "Si è verificato un errore. Riprova." } },
+  de: { titre: "Premium Familie", sous: "Zwei unabhängige Reiterkonten — ein einziges Abo", titulaire: "Abo-Inhaber", deuxieme: "Zweiter Reiter", aucun: "Noch keiner", invitEnCours: "Einladung gesendet — Link gültig bis {date}", inviter: "Einen Reiter einladen", nouveauLien: "Neuen Link erstellen", annulerInvit: "Einladung zurückziehen", retirer: "Diesen Reiter entfernen", quitter: "Familie verlassen", renouv: "Nächste Verlängerung: {date}", fin: "Zugang bis {date}", impaye: "Zahlung abgelehnt: Premium ist für beide Konten bis zur nächsten Zahlung pausiert.", remplacement: "Nächster Reiterwechsel möglich am {date}", lienPret: "Link bereit! Schick ihn dem zweiten Reiter. Er gilt 7 Tage und funktioniert nur einmal.", copier: "Link kopieren", copie: "Link kopiert ✓", partage: "Tritt meinem Premium-Familie-Abo bei Hype bei:", confirmRetirer: "{nom} entfernen? Das Konto und die Daten bleiben erhalten, aber Premium entfällt.", confirmQuitter: "Familie verlassen? Du behältst dein Konto und deine Daten, verlierst aber Premium.", invitTitre: "Einladung Premium Familie", invitTexte: "{nom} lädt dich in sein Premium-Familie-Abo ein. Du behältst dein Konto, deine Pferde und alle deine Daten: Ihr teilt nur das Abo.", invitAnonyme: "Ein Reiter", dejaPremium: "Du hast bereits ein Premium-Abo auf deinen Namen. Nichts wird automatisch gekündigt: Damit du nicht doppelt zahlst, schreib uns nach dem Annehmen, und wir beenden dein altes Abo gemeinsam mit dir.", accepter: "Annehmen", refuser: "Ablehnen", plusTard: "Später", connexion: "Melde dich an oder erstelle dein Hype-Konto, um diese Einladung anzunehmen. Der Link bleibt auf diesem Telefon gespeichert.", ok: "OK", bienvenue: "Willkommen in der Familie! Premium ist auf deinem Konto aktiv.", refuse: "Einladung abgelehnt.", supprFamille: "Du bist Inhaber eines laufenden Premium-Familie-Abos. Kündige es zuerst, damit niemand ohne Vorwarnung belastet wird oder Premium verliert.",
+    err: { INVITATION_INVALIDE: "Dieser Link ist nicht mehr gültig. Bitte um einen neuen Link.", LIMITE_30_JOURS: "Der zweite Reiter kann einmal alle 30 Tage gewechselt werden.", LIMITE_ANNUELLE: "Die maximale Anzahl an Wechseln für dieses Jahr ist erreicht.", DEJA_DANS_UNE_FAMILLE: "Du gehörst bereits zu einer anderen Familie.", DEJA_TITULAIRE: "Du hast bereits ein eigenes Familien-Abo.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "Das ist dein eigener Link: Schick ihn dem zweiten Reiter.", FAMILLE_INACTIVE: "Dieses Familien-Abo ist nicht mehr aktiv.", DEJA_UN_DEUXIEME_CAVALIER: "Deine Familie hat bereits einen zweiten Reiter.", FAMILLE_INTROUVABLE: "Familien-Abo nicht gefunden oder nicht aktiv.", CONNEXION_REQUISE: "Bitte melde dich zuerst an.", autre: "Ein Fehler ist aufgetreten. Bitte versuche es erneut." } },
+  ja: { titre: "Premium ファミリー", sous: "2つの独立したライダーアカウント — サブスクリプションは1つ", titulaire: "契約者", deuxieme: "2人目のライダー", aucun: "まだいません", invitEnCours: "招待を送信済み — リンクの有効期限：{date}", inviter: "ライダーを招待する", nouveauLien: "新しいリンクを作成", annulerInvit: "招待を取り消す", retirer: "このライダーを外す", quitter: "ファミリーから抜ける", renouv: "次回の更新：{date}", fin: "{date}まで利用可能", impaye: "お支払いが拒否されました：次回のお支払いまで、2つのアカウントのPremiumが停止されます。", remplacement: "次にライダーを変更できる日：{date}", lienPret: "リンクの準備ができました！2人目のライダーに送ってください。有効期限は7日間、1回のみ使えます。", copier: "リンクをコピー", copie: "コピーしました ✓", partage: "HypeのPremium ファミリーに参加しよう：", confirmRetirer: "{nom}を外しますか？アカウントとデータはそのままですが、Premiumは使えなくなります。", confirmQuitter: "ファミリーから抜けますか？アカウントとデータはそのままですが、Premiumは使えなくなります。", invitTitre: "Premium ファミリーへの招待", invitTexte: "{nom}さんがPremium ファミリーに招待しています。あなたのアカウント、馬、すべてのデータはそのまま。共有するのはサブスクリプションだけです。", invitAnonyme: "ライダー", dejaPremium: "あなたはすでにご自身のPremiumに加入しています。自動で解約されることはありません。二重払いを避けるため、承認後にご連絡ください。一緒に以前の契約を停止します。", accepter: "承認する", refuser: "辞退する", plusTard: "あとで", connexion: "この招待を承認するには、ログインするかHypeアカウントを作成してください。リンクはこの端末に保存されます。", ok: "OK", bienvenue: "ファミリーへようこそ！あなたのアカウントでPremiumが有効になりました。", refuse: "招待を辞退しました。", supprFamille: "有効なPremium ファミリーの契約者です。誰かが予告なく請求されたりPremiumを失ったりしないよう、先に解約してください。",
+    err: { INVITATION_INVALIDE: "このリンクは無効です。新しいリンクを依頼してください。", LIMITE_30_JOURS: "2人目のライダーの変更は30日に1回までです。", LIMITE_ANNUELLE: "今年の変更回数の上限に達しました。", DEJA_DANS_UNE_FAMILLE: "すでに別のファミリーに参加しています。", DEJA_TITULAIRE: "すでにご自身のファミリー契約があります。", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "これはあなた自身のリンクです。2人目のライダーに送ってください。", FAMILLE_INACTIVE: "このファミリー契約は有効ではありません。", DEJA_UN_DEUXIEME_CAVALIER: "ファミリーにはすでに2人目のライダーがいます。", FAMILLE_INTROUVABLE: "ファミリー契約が見つからないか、有効ではありません。", CONNEXION_REQUISE: "先にログインしてください。", autre: "エラーが発生しました。もう一度お試しください。" } },
+  ar: { titre: "Premium العائلة", sous: "حسابان مستقلان لفارسَين — اشتراك واحد", titulaire: "صاحب الاشتراك", deuxieme: "الفارس الثاني", aucun: "لا يوجد بعد", invitEnCours: "تم إرسال الدعوة — الرابط صالح حتى {date}", inviter: "دعوة فارس", nouveauLien: "إنشاء رابط جديد", annulerInvit: "إلغاء الدعوة", retirer: "إزالة هذا الفارس", quitter: "مغادرة العائلة", renouv: "التجديد القادم: {date}", fin: "الوصول حتى {date}", impaye: "تم رفض الدفع: Premium متوقف للحسابين حتى الدفعة القادمة.", remplacement: "يمكن تغيير الفارس مجددًا في {date}", lienPret: "الرابط جاهز! أرسله إلى الفارس الثاني. صالح لمدة 7 أيام ويُستخدم مرة واحدة فقط.", copier: "نسخ الرابط", copie: "تم نسخ الرابط ✓", partage: "انضم إلى اشتراكي Premium العائلة على Hype:", confirmRetirer: "إزالة {nom}؟ يحتفظ بحسابه وبياناته، لكنه يفقد Premium.", confirmQuitter: "مغادرة العائلة؟ تحتفظ بحسابك وبياناتك، لكنك تفقد Premium.", invitTitre: "دعوة إلى Premium العائلة", invitTexte: "يدعوك {nom} للانضمام إلى اشتراكه Premium العائلة. تحتفظ بحسابك وخيولك وكل بياناتك: لا تتشاركان إلا الاشتراك.", invitAnonyme: "فارس", dejaPremium: "لديك بالفعل اشتراك Premium باسمك. لا يُلغى أي شيء تلقائيًا: حتى لا تدفع مرتين، راسلنا بعد القبول وسنوقف اشتراكك القديم معك.", accepter: "قبول", refuser: "رفض", plusTard: "لاحقًا", connexion: "سجّل الدخول أو أنشئ حسابك على Hype لقبول هذه الدعوة. يبقى الرابط محفوظًا على هذا الهاتف.", ok: "حسنًا", bienvenue: "مرحبًا بك في العائلة! تم تفعيل Premium على حسابك.", refuse: "تم رفض الدعوة.", supprFamille: "أنت صاحب اشتراك Premium العائلة ساري المفعول. ألغِه أولًا، حتى لا يُحاسَب أحد أو يفقد Premium دون إنذار.",
+    err: { INVITATION_INVALIDE: "هذا الرابط لم يعد صالحًا. اطلب رابطًا جديدًا.", LIMITE_30_JOURS: "يمكن تغيير الفارس الثاني مرة واحدة كل 30 يومًا.", LIMITE_ANNUELLE: "تم بلوغ الحد الأقصى للتغييرات لهذا العام.", DEJA_DANS_UNE_FAMILLE: "أنت بالفعل عضو في عائلة أخرى.", DEJA_TITULAIRE: "لديك بالفعل اشتراك عائلي خاص بك.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "هذا رابطك أنت: أرسله إلى الفارس الثاني.", FAMILLE_INACTIVE: "هذا الاشتراك العائلي لم يعد نشطًا.", DEJA_UN_DEUXIEME_CAVALIER: "لدى عائلتك فارس ثانٍ بالفعل.", FAMILLE_INTROUVABLE: "الاشتراك العائلي غير موجود أو غير نشط.", CONNEXION_REQUISE: "سجّل الدخول أولًا.", autre: "حدث خطأ. حاول مرة أخرى." } },
+};
+/* Lien de gestion Stripe (portail client) : vide tant qu'il n'est pas créé → bouton masqué. */
+const HYPE_PORTAIL_STRIPE = "";
+function famT(lg, cle, vars) {
+  const D = FAMILLE_I18N[lg] || FAMILLE_I18N.fr;
+  let s = (D[cle] !== undefined ? D[cle] : FAMILLE_I18N.fr[cle]) || "";
+  if (vars) Object.keys(vars).forEach(function (k) { s = s.split("{" + k + "}").join(vars[k]); });
+  return s;
+}
+function famErreur(lg, e) {
+  const D = (FAMILLE_I18N[lg] || FAMILLE_I18N.fr).err;
+  const m = String((e && (e.message || e.details)) || e || "");
+  const code = Object.keys(D).find(function (k) { return k !== "autre" && m.indexOf(k) !== -1; });
+  return D[code || "autre"];
+}
+function famDate(lg, d) {
+  try { return new Date(d).toLocaleDateString(lg === "fr" ? "fr-FR" : lg, { day: "numeric", month: "long", year: "numeric" }); } catch (e) { return String(d || ""); }
+}
+/* Le lien d'invitation arrive sous la forme …/?famille=CODE : on le garde sur le
+   téléphone (7 jours), on le retire de l'adresse, et la fenêtre d'invitation
+   le lira dès que la personne est connectée. */
+try {
+  (function () {
+    const p = new URLSearchParams(window.location.search);
+    const code = p.get("famille");
+    if (!code) return;
+    try { localStorage.setItem("hype_famille_code", JSON.stringify({ code: code, t: Date.now() })); } catch (e) { }
+    p.delete("famille");
+    const reste = p.toString();
+    window.history.replaceState({}, "", window.location.pathname + (reste ? "?" + reste : ""));
+  })();
+} catch (eFam) { }
+function famCodeGarde() {
+  try {
+    const o = JSON.parse(localStorage.getItem("hype_famille_code") || "null");
+    if (!o || !o.code) return null;
+    if (Date.now() - (o.t || 0) > 7 * 86400000) { localStorage.removeItem("hype_famille_code"); return null; }
+    return o.code;
+  } catch (e) { return null; }
+}
+function famOublierCode() { try { localStorage.removeItem("hype_famille_code"); } catch (e) { } }
+
+/* ── Bloc « Premium Famille » de Mon compte (n'apparaît que si on a une famille) ── */
+function BlocFamille() {
+  const app = useApp() || {};
+  const lg = app.langue || "fr";
+  const [etat, setEtat] = useState(null);
+  const [lien, setLien] = useState("");
+  const [copie, setCopie] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [msg, setMsg] = useState("");
+  async function lire() {
+    try {
+      if (typeof supa === "undefined" || !supa) return;
+      const r = await supa.rpc("famille_mon_etat");
+      if (r && !r.error) setEtat(r.data || null);
+    } catch (e) { }
+  }
+  useEffect(function () { lire(); }, []);
+  if (!etat) return null;
+  async function agir(fn, params, confirmation) {
+    if (busy) return;
+    if (confirmation && !window.confirm(confirmation)) return;
+    setBusy(true); setMsg("");
+    try {
+      const r = await supa.rpc(fn, params || {});
+      if (r && r.error) { setMsg(famErreur(lg, r.error)); setBusy(false); return null; }
+      await lire();
+      try { window.dispatchEvent(new Event("hype-resync-abo")); } catch (e) { }
+      setBusy(false);
+      return r ? r.data : null;
+    } catch (e) { setMsg(famErreur(lg, e)); setBusy(false); return null; }
+  }
+  async function inviter() {
+    const code = await agir("famille_inviter");
+    if (!code) return;
+    const url = window.location.origin + "/?famille=" + encodeURIComponent(code);
+    setLien(url); setCopie(false);
+    try { if (navigator.share) await navigator.share({ title: famT(lg, "invitTitre"), text: famT(lg, "partage"), url: url }); } catch (e) { }
+  }
+  async function copier() {
+    try { await navigator.clipboard.writeText(lien); setCopie(true); } catch (e) { }
+  }
+  const titu = etat.role === "titulaire";
+  const CY = "#7FA3AD", GRIS = "#8B96A0", GRIS_S = "#5E6871";
+  const carte = { gridColumn: "1 / -1", width: "100%", boxSizing: "border-box", padding: "17px 16px", borderRadius: 20, background: "linear-gradient(158deg, #151A20 0%, #10151A 52%, #0C1116 100%)", border: "1px solid rgba(244,247,250,0.055)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.045), 0 1px 3px rgba(0,0,0,0.35)", color: COLORS.blanc, textAlign: "start" };
+  const ligne = (lab, val, k) => React.createElement("div", { key: k, style: { display: "flex", justifyContent: "space-between", gap: 12, padding: "9px 0", borderTop: "1px solid rgba(244,247,250,0.07)", fontSize: 13 } },
+    React.createElement("span", { style: { color: GRIS } }, lab),
+    React.createElement("span", { style: { fontWeight: 600, textAlign: "end", minWidth: 0, overflowWrap: "anywhere" } }, val));
+  const bouton = (txt, onClick, k, discret) => React.createElement("button", { key: k, onClick: onClick, disabled: busy, style: { width: "100%", marginTop: 10, padding: "12px 14px", borderRadius: 999, border: "1px solid " + (discret ? "rgba(244,247,250,0.12)" : "rgba(127,163,173,0.45)"), background: "transparent", color: discret ? GRIS : COLORS.blanc, fontFamily: "'Montserrat', sans-serif", fontSize: 13, fontWeight: 600, cursor: busy ? "default" : "pointer", opacity: busy ? 0.6 : 1 } }, txt);
+  const enfants = [
+    React.createElement("b", { key: "t", style: { display: "block", fontSize: 15, fontWeight: 700 } }, famT(lg, "titre")),
+    React.createElement("span", { key: "s", style: { display: "block", fontSize: 11.5, color: CY, marginTop: 4, marginBottom: 10, lineHeight: 1.45 } }, famT(lg, "sous")),
+    ligne(famT(lg, "titulaire"), etat.titulaire || "—", "l1"),
+    ligne(famT(lg, "deuxieme"), etat.deuxieme || (etat.invitation_en_cours ? "—" : famT(lg, "aucun")), "l2"),
+  ];
+  if (etat.statut === "impaye") enfants.push(React.createElement("p", { key: "imp", style: { margin: "10px 0 0", fontSize: 12.5, color: COLORS.corail, lineHeight: 1.5 } }, famT(lg, "impaye")));
+  else if (etat.expire_le) enfants.push(React.createElement("p", { key: "l3", style: { margin: "10px 0 0", fontSize: 12, color: GRIS, lineHeight: 1.5 } }, famT(lg, titu ? "renouv" : "fin", { date: famDate(lg, etat.expire_le) })));
+  if (titu) {
+    if (etat.invitation_en_cours) enfants.push(React.createElement("p", { key: "ie", style: { margin: "10px 0 0", fontSize: 12, color: GRIS, lineHeight: 1.5 } }, famT(lg, "invitEnCours", { date: famDate(lg, etat.invitation_expire_le) })));
+    if (!etat.deuxieme && etat.remplacement_possible_le && new Date(etat.remplacement_possible_le).getTime() > Date.now())
+      enfants.push(React.createElement("p", { key: "rp", style: { margin: "8px 0 0", fontSize: 12, color: GRIS_S, lineHeight: 1.5 } }, famT(lg, "remplacement", { date: famDate(lg, etat.remplacement_possible_le) })));
+    if (lien) enfants.push(React.createElement("div", { key: "lien", style: { marginTop: 12, padding: 12, borderRadius: 14, background: "rgba(127,163,173,0.08)", border: "1px solid rgba(127,163,173,0.25)" } },
+      React.createElement("p", { style: { margin: "0 0 8px", fontSize: 12.5, lineHeight: 1.5 } }, famT(lg, "lienPret")),
+      React.createElement("input", { readOnly: true, value: lien, onFocus: (e) => { try { e.target.select(); } catch (x) { } }, dir: "ltr", style: { width: "100%", boxSizing: "border-box", padding: "9px 10px", borderRadius: 10, border: "1px solid rgba(244,247,250,0.12)", background: "#0B0F13", color: COLORS.blanc, fontSize: 12 } }),
+      bouton(copie ? famT(lg, "copie") : famT(lg, "copier"), copier, "cp")));
+    if (etat.statut === "actif" && !etat.deuxieme) enfants.push(bouton(famT(lg, etat.invitation_en_cours ? "nouveauLien" : "inviter"), inviter, "inv"));
+    if (etat.deuxieme) enfants.push(bouton(famT(lg, "retirer"), () => agir("famille_retirer", null, famT(lg, "confirmRetirer", { nom: etat.deuxieme })), "ret", true));
+    else if (etat.invitation_en_cours) enfants.push(bouton(famT(lg, "annulerInvit"), () => { setLien(""); agir("famille_retirer"); }, "ann", true));
+    if (HYPE_PORTAIL_STRIPE) enfants.push(bouton(tr7(lg), () => { try { window.open(HYPE_PORTAIL_STRIPE, "_blank"); } catch (e) { } }, "gerer", true));
+  } else {
+    enfants.push(bouton(famT(lg, "quitter"), () => agir("famille_quitter", null, famT(lg, "confirmQuitter")), "quit", true));
+  }
+  if (msg) enfants.push(React.createElement("p", { key: "msg", style: { margin: "10px 0 0", fontSize: 12.5, color: COLORS.corail, lineHeight: 1.5 } }, msg));
+  return React.createElement("div", { style: carte }, enfants);
+  function tr7(l) { return ({ fr: "Gérer mon abonnement", en: "Manage my subscription", es: "Gestionar mi suscripción", it: "Gestisci il mio abbonamento", de: "Mein Abo verwalten", ja: "サブスクリプションを管理", ar: "إدارة اشتراكي" })[l] || "Gérer mon abonnement"; }
+}
+
+/* ── Fenêtre d'invitation : s'ouvre quand un lien ?famille=… a été reçu ── */
+function ModaleInvitationFamille() {
+  const app = useApp() || {};
+  const lg = app.langue || "fr";
+  const [code, setCode] = useState(famCodeGarde());
+  const [infos, setInfos] = useState(null);      /* { valide, titulaire } */
+  const [connecte, setConnecte] = useState(null);
+  const [dejaPremium, setDejaPremium] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [fini, setFini] = useState("");
+  const [msg, setMsg] = useState("");
+  const [cache, setCache] = useState(false);
+  useEffect(function () {
+    if (!code) return;
+    let vif = true;
+    async function verifier(u) {
+      if (!vif) return;
+      if (!u) { setConnecte(false); return; }
+      setConnecte(true); setCache(false);
+      try {
+        const r = await supa.rpc("famille_voir_invitation", { p_code: code });
+        if (!vif) return;
+        const l = r && r.data && r.data[0];
+        setInfos(l || { valide: false, titulaire: "" });
+        const a = await supa.from("abonnements_premium").select("plan,statut,expire_le").eq("user_id", u.id);
+        const lignes = (a && a.data) || [];
+        if (vif) setDejaPremium(lignes.some(function (x) { return x.statut === "actif" && ["mensuel", "annuel", "duo"].indexOf(x.plan) !== -1 && (!x.expire_le || new Date(x.expire_le).getTime() > Date.now()); }));
+      } catch (e) { if (vif) setInfos({ valide: false, titulaire: "" }); }
+    }
+    (async () => { try { verifier(await utilisateurActuel()); } catch (e) { } })();
+    let abo = null;
+    try { const res = supa.auth.onAuthStateChange((_e, s) => verifier(s && s.user)); abo = res && res.data && res.data.subscription; } catch (e) { }
+    return () => { vif = false; try { if (abo) abo.unsubscribe(); } catch (e) { } };
+  }, [code]);
+  if (!code || cache || connecte === null || (connecte && !infos)) return null;
+  const fermer = (oublier) => { if (oublier) { famOublierCode(); setCode(null); } else setCache(true); };
+  async function repondre(fn) {
+    if (busy) return;
+    setBusy(true); setMsg("");
+    try {
+      const r = await supa.rpc(fn, { p_code: code });
+      if (r && r.error) { setMsg(famErreur(lg, r.error)); setBusy(false); return; }
+      famOublierCode();
+      try { window.dispatchEvent(new Event("hype-resync-abo")); } catch (e) { }
+      setFini(fn === "famille_accepter" ? famT(lg, "bienvenue") : famT(lg, "refuse"));
+      setBusy(false);
+    } catch (e) { setMsg(famErreur(lg, e)); setBusy(false); }
+  }
+  const fond = { position: "fixed", inset: 0, zIndex: 99998, background: "rgba(7,9,11,0.88)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 };
+  const boite = { width: "100%", maxWidth: 380, boxSizing: "border-box", padding: "24px 20px", borderRadius: 22, background: "linear-gradient(158deg, #151A20 0%, #0C1116 100%)", border: "1px solid rgba(127,163,173,0.30)", color: COLORS.blanc, textAlign: "center", fontFamily: "'Montserrat', sans-serif" };
+  const btn = (txt, onClick, plein, k) => React.createElement("button", { key: k, onClick: onClick, disabled: busy, style: { width: "100%", marginTop: 10, padding: 13, borderRadius: 999, border: "1px solid " + (plein ? "rgba(127,163,173,0.6)" : "rgba(244,247,250,0.12)"), background: plein ? "rgba(127,163,173,0.16)" : "transparent", color: plein ? COLORS.blanc : "#8B96A0", fontFamily: "'Montserrat', sans-serif", fontSize: 13.5, fontWeight: 600, cursor: "pointer", opacity: busy ? 0.6 : 1 } }, txt);
+  const titre = React.createElement("p", { key: "t", style: { margin: "0 0 4px", fontFamily: "'Cinzel', serif", fontSize: 12, letterSpacing: "0.22em", color: "#7FA3AD" } }, famT(lg, "invitTitre").toUpperCase());
+  const sous = React.createElement("p", { key: "s", style: { margin: "0 0 16px", fontSize: 11.5, color: "#8B96A0", lineHeight: 1.45 } }, famT(lg, "sous"));
+  const para = (txt, k, coul) => React.createElement("p", { key: k, style: { margin: "0 0 12px", fontSize: 14, lineHeight: 1.6, color: coul || COLORS.blanc } }, txt);
+  let corps;
+  if (fini) corps = [titre, para(fini, "f"), btn(famT(lg, "ok"), () => fermer(true), true, "ok")];
+  else if (!connecte) corps = [titre, sous, para(famT(lg, "connexion"), "c"), btn(famT(lg, "ok"), () => fermer(false), true, "ok")];
+  else if (!infos.valide) corps = [titre, para(famErreur(lg, "INVITATION_INVALIDE"), "inv"), btn(famT(lg, "ok"), () => fermer(true), true, "ok")];
+  else corps = [titre, sous,
+    para(famT(lg, "invitTexte", { nom: infos.titulaire || famT(lg, "invitAnonyme") }), "x"),
+    dejaPremium ? para(famT(lg, "dejaPremium"), "dp", "#D9C7A0") : null,
+    msg ? para(msg, "m", COLORS.corail) : null,
+    btn(famT(lg, "accepter"), () => repondre("famille_accepter"), true, "a"),
+    btn(famT(lg, "refuser"), () => repondre("famille_refuser"), false, "r"),
+    btn(famT(lg, "plusTard"), () => fermer(false), false, "l")];
+  return React.createElement("div", { style: fond }, React.createElement("div", { style: boite }, corps));
+}
+
 function EcranProfilInterne() {
-    const { profil, setProfil, premium, estAbonne, planAbo, setEcran, xp, t, tr, coursTermines, quizResultats, langue, setMerciVIP, setImpression, chevaux, setChevaux } = useApp();
+    const { profil, setProfil, premium, estAbonne, planAbo, setEcran, xp, t, tr, coursTermines, quizResultats, langue, setMerciVIP, setImpression, chevaux, setChevaux, famillePremium } = useApp();
     const [edition, setEdition] = useState(false);
     const [ajoutCheval, setAjoutCheval] = useState(false);
     const [limiteCheval, setLimiteCheval] = useState(false);
@@ -84100,6 +84313,10 @@ function EcranProfilInterne() {
                     sousLigne = tr({ fr: "Lecture en cours…", en: "Loading…", es: "Cargando…", it: "Caricamento…", ja: "読み込み中…", de: "Wird geladen…", ar: "\u062c\u0627\u0631 \u0627\u0644\u0642\u0631\u0627\u0621\u0629\u2026" });
                 } else if (aboMoi === false) {
                     sousLigne = tr({ fr: "Lecture impossible — réessaie plus tard.", en: "Couldn't read — try again later.", es: "No se pudo leer — inténtalo más tarde.", it: "Lettura impossibile — riprova più tardi.", ja: "読み込めませんでした。あとでお試しください。", de: "Nicht lesbar — versuche es später.", ar: "\u062a\u0639\u0630\u0631\u062a \u0627\u0644\u0642\u0631\u0627\u0621\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629 \u0644\u0627\u062d\u0642\u0627." });
+                } else if (aboMoi === null && famillePremium) {
+                    /* Premium Famille : pas de ligne personnelle, mais Premium via la famille (détail juste en dessous) */
+                    pastille = tr({ fr: "Actif", en: "Active", es: "Activa", it: "Attivo", ja: "有効", de: "Aktiv", ar: "\u0646\u0634\u0637" });
+                    sousLigne = famT(langue, "titre");
                 } else if (aboMoi === null) {
                     sousLigne = tr({ fr: "Aucun abonnement", en: "No subscription", es: "Sin suscripción", it: "Nessun abbonamento", ja: "サブスクリプションなし", de: "Kein Abo", ar: "\u0644\u0627 \u064a\u0648\u062c\u062f \u0627\u0634\u062a\u0631\u0627\u0643" });
                 } else {
@@ -84121,6 +84338,8 @@ function EcranProfilInterne() {
                     ico: [React.createElement("path", { key: "a", d: "M12 3l4.2 5.2L12 21 7.8 8.2z" }), React.createElement("path", { key: "b", d: "M7.8 8.2h8.4" })],
                 });
             })(),
+            /* Premium Famille (étape 3) : n'apparaît que si le compte a une famille */
+            React.createElement(BlocFamille, { key: "famille" }),
 
             /* 22/09 (345) : la tuile « Ma licence FFE » (340) est RETIREE de Mon compte, sur sa decision :
                elle doublonnait « Relier les resultats FFE » (EcranRattacherFFE, 13/09) et n etait reliee
@@ -85923,7 +86142,7 @@ async function hypeTesterMux() {
 
 function EcranPremium() {
     var ctx = useApp();
-    var setEcran = ctx.setEcran, langue = ctx.langue, tr = ctx.tr, premium = ctx.premium, planAbo = ctx.planAbo, profilP = ctx.profil;
+    var setEcran = ctx.setEcran, langue = ctx.langue, tr = ctx.tr, premium = ctx.premium, planAbo = ctx.planAbo, profilP = ctx.profil; var famillePremiumP = !!ctx.famillePremium;
     /* 03/09 : bouton de test Mux, visible UNIQUEMENT pour les moderatrices. */
     var stMoiMux = useState(null); var moiMux = stMoiMux[0], setMoiMux = stMoiMux[1];
     var stResMux = useState(null); var resMux = stResMux[0], setResMux = stResMux[1];
@@ -85975,6 +86194,7 @@ function EcranPremium() {
             : planAbo === "mensuel" ? tr({ fr: "Abonnement mensuel actif \u2713", en: "Monthly plan active \u2713", es: "Plan mensual activo \u2713", it: "Piano mensile attivo \u2713", ja: "\u6708\u9593\u30d7\u30e9\u30f3\u6709\u52b9 \u2713", de: "Monatsabo aktiv \u2713", ar: "\u0627\u0634\u062a\u0631\u0627\u0643 \u0634\u0647\u0631\u064a \u0646\u0634\u0637 \u2713" })
             : planAbo === "duo" ? tr({ fr: "Formule Duo active \u2713", en: "Duo plan active \u2713", es: "Plan D\u00fao activo \u2713", it: "Piano Duo attivo \u2713", ja: "Duo\u30d7\u30e9\u30f3\u6709\u52b9 \u2713", de: "Duo-Paket aktiv \u2713", ar: "\u0628\u0627\u0642\u0629 Duo \u0646\u0634\u0637\u0629 \u2713" })
             : planAbo === "ai" ? tr({ fr: "Formule IA active \u2713", en: "AI plan active \u2713", es: "Plan IA activo \u2713", it: "Piano IA attivo \u2713", ja: "AI\u30d7\u30e9\u30f3\u6709\u52b9 \u2713", de: "KI-Paket aktiv \u2713", ar: "\u0628\u0627\u0642\u0629 IA \u0646\u0634\u0637\u0629 \u2713" })
+            : famillePremiumP ? tr({ fr: "Premium Famille actif \u2713", en: "Premium Family active \u2713", es: "Premium Familia activo \u2713", it: "Premium Famiglia attivo \u2713", ja: "Premium \u30d5\u30a1\u30df\u30ea\u30fc\u6709\u52b9 \u2713", de: "Premium Familie aktiv \u2713", ar: "Premium \u0627\u0644\u0639\u0627\u0626\u0644\u0629 \u0646\u0634\u0637 \u2713" })
             : (profilP && profilP.vip) ? tr({ fr: "Membre d\u2019honneur \u2713", en: "Honorary member \u2713", es: "Miembro de honor \u2713", it: "Membro d\u2019onore \u2713", ja: "\u540d\u8a89\u30e1\u30f3\u30d0\u30fc \u2713", de: "Ehrenmitglied \u2713", ar: "\u0639\u0636\u0648 \u0634\u0631\u0641 \u2713" })
             : tr({ fr: "Acc\u00e8s Premium actif \u2713", en: "Premium access active \u2713", es: "Acceso Premium activo \u2713", it: "Accesso Premium attivo \u2713", ja: "Premium\u6709\u52b9 \u2713", de: "Premium-Zugang aktiv \u2713", ar: "\u0648\u0635\u0648\u0644 Premium \u0646\u0634\u0637 \u2713" });
         L = Object.assign({}, L, {

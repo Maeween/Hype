@@ -116,6 +116,9 @@ begin
   if exists (select 1 from public.famille_membres where user_id = auth.uid() and role = 'beneficiaire' and statut = 'actif') then
     raise exception 'DEJA_DANS_UNE_FAMILLE';
   end if;
+  if exists (select 1 from public.familles where titulaire_id = auth.uid() and statut in ('actif','impaye')) then
+    raise exception 'DEJA_TITULAIRE';
+  end if;
   if exists (select 1 from public.famille_membres where famille_id = v_f.id and role = 'beneficiaire'
               and active_le > now() - interval '30 days' and user_id is distinct from auth.uid()) then
     raise exception 'LIMITE_30_JOURS';
@@ -126,7 +129,11 @@ begin
   end if;
   update public.famille_membres set user_id = auth.uid(), statut = 'actif', code_hash = null,
          active_le = now(), maj_le = now() where id = v_m.id;
-  insert into public.famille_journal (famille_id, acteur, action) values (v_f.id, auth.uid(), 'acceptation');
+  -- Cas A : le nouveau venu payait déjà Premium lui-même → noté pour Blandine (aucune résiliation automatique)
+  insert into public.famille_journal (famille_id, acteur, action, detail) values (v_f.id, auth.uid(), 'acceptation',
+    case when exists (select 1 from public.abonnements_premium a where a.user_id = auth.uid() and a.statut = 'actif'
+                        and a.plan in ('mensuel','annuel','duo') and (a.expire_le is null or a.expire_le > now()))
+         then 'deja_premium_personnel' end);
   return true;
 end $$;
 
@@ -168,13 +175,91 @@ begin
   return true;
 end $$;
 
--- 5f. Ce que l'invitation montre avant d'accepter (prénom du titulaire seulement).
-create or replace function public.famille_voir_invitation(p_code text) returns table(valide boolean, titulaire_id uuid)
+drop function if exists public.famille_voir_invitation(text);
+-- 5f. Ce que l'invitation montre avant d'accepter : seulement le pseudo du titulaire.
+create or replace function public.famille_voir_invitation(p_code text) returns table(valide boolean, titulaire text)
 language sql stable security definer set search_path = public, extensions, pg_temp as $$
-  select (m.statut = 'invite' and m.invite_expire_le > now() and f.statut = 'actif'), f.titulaire_id
+  select (m.statut = 'invite' and m.invite_expire_le > now() and f.statut = 'actif'), coalesce(p.pseudo, '')
     from public.famille_membres m join public.familles f on f.id = m.famille_id
+    left join public.profiles p on p.id = f.titulaire_id
    where m.code_hash = encode(digest(p_code, 'sha256'), 'hex');
 $$;
+
+-- 5g. Ma famille, pour l'écran « Mon compte » (rien si je n'en ai pas).
+create or replace function public.famille_mon_etat() returns jsonb
+language plpgsql stable security definer set search_path = public, pg_temp as $$
+declare v_f public.familles; v_role text; v_b public.famille_membres;
+begin
+  if auth.uid() is null then return null; end if;
+  select f.* into v_f from public.familles f where f.titulaire_id = auth.uid() and f.statut in ('actif','impaye') limit 1;
+  if v_f.id is not null then v_role := 'titulaire';
+  else
+    select f.* into v_f from public.familles f join public.famille_membres m on m.famille_id = f.id
+     where m.user_id = auth.uid() and m.role = 'beneficiaire' and m.statut = 'actif' and f.statut in ('actif','impaye') limit 1;
+    if v_f.id is null then return null; end if;
+    v_role := 'beneficiaire';
+  end if;
+  select * into v_b from public.famille_membres where famille_id = v_f.id and role = 'beneficiaire' and statut in ('invite','actif')
+   order by cree_le desc limit 1;
+  return jsonb_build_object(
+    'role', v_role,
+    'statut', v_f.statut,
+    'actif', v_f.statut = 'actif' and (v_f.expire_le is null or v_f.expire_le > now()),
+    'expire_le', v_f.expire_le,
+    'titulaire', (select pseudo from public.profiles where id = v_f.titulaire_id),
+    'deuxieme', case when v_b.statut = 'actif' then (select pseudo from public.profiles where id = v_b.user_id) end,
+    'invitation_en_cours', v_b.statut = 'invite' and v_b.invite_expire_le > now(),
+    'invitation_expire_le', case when v_b.statut = 'invite' then v_b.invite_expire_le end,
+    'remplacement_possible_le', (select max(active_le) + interval '30 days' from public.famille_membres
+                                  where famille_id = v_f.id and role = 'beneficiaire' and active_le is not null)
+  );
+end $$;
+
+-- 5h. RÉSERVÉ AU RELAIS STRIPE (clé serveur) : ouvrir une famille après paiement.
+--     Rend 'cree', 'deja' (même abonnement déjà enregistré) ou 'autre_famille' (le titulaire en a déjà une autre en cours).
+create or replace function public.famille_ouvrir(p_titulaire uuid, p_sub text, p_customer text, p_expire timestamptz) returns text
+language plpgsql security definer set search_path = public, pg_temp as $$
+declare v_f uuid;
+begin
+  if p_sub is not null and exists (select 1 from public.familles where stripe_subscription = p_sub) then return 'deja'; end if;
+  if exists (select 1 from public.familles where titulaire_id = p_titulaire and statut in ('actif','impaye')
+              and (expire_le is null or expire_le > now())) then return 'autre_famille'; end if;
+  -- ancienne famille du même titulaire restée « en cours » mais échue : on la clôt proprement
+  update public.familles set statut = 'annule', maj_le = now() where titulaire_id = p_titulaire and statut in ('actif','impaye');
+  insert into public.familles (titulaire_id, stripe_subscription, stripe_customer, statut, expire_le)
+  values (p_titulaire, p_sub, p_customer, 'actif', p_expire) returning id into v_f;
+  insert into public.famille_membres (famille_id, user_id, role, statut, active_le) values (v_f, p_titulaire, 'titulaire', 'actif', now());
+  insert into public.famille_journal (famille_id, acteur, action, detail) values (v_f, p_titulaire, 'ouverture', p_sub);
+  return 'cree';
+end $$;
+
+-- 5i. RÉSERVÉ AU RELAIS STRIPE : renouvellement, impayé, résiliation. Rend le nombre de familles touchées (0 ou 1).
+create or replace function public.famille_maj(p_sub text, p_statut text, p_expire timestamptz default null) returns integer
+language plpgsql security definer set search_path = public, pg_temp as $$
+declare v_f uuid;
+begin
+  if p_statut not in ('actif','impaye','annule') then raise exception 'STATUT_INVALIDE'; end if;
+  update public.familles set statut = p_statut, expire_le = coalesce(p_expire, expire_le), maj_le = now()
+   where stripe_subscription = p_sub returning id into v_f;
+  if v_f is null then return 0; end if;
+  insert into public.famille_journal (famille_id, action, detail) values (v_f, 'stripe_' || p_statut, p_sub);
+  return 1;
+end $$;
+
+-- 5j. Famille résiliée → les deux rattachements prennent fin (les comptes et données restent).
+--     Le deuxième cavalier peut alors rejoindre une autre famille.
+create or replace function public.famille_fin_rattachements() returns trigger
+language plpgsql security definer set search_path = public, pg_temp as $$
+begin
+  if new.statut = 'annule' and old.statut <> 'annule' then
+    update public.famille_membres set statut = 'expire', code_hash = null, maj_le = now()
+     where famille_id = new.id and statut in ('invite','actif');
+  end if;
+  return new;
+end $$;
+drop trigger if exists famille_fin_rattachements on public.familles;
+create trigger famille_fin_rattachements after update of statut on public.familles
+  for each row execute function public.famille_fin_rattachements();
 
 -- 6. DROITS DU COMPTE : une seule réponse pour l'appli et le serveur.
 --    Premium = abonnement personnel OU famille OU ambassadeur OU modératrice ; questions IA = le plus avantageux.
@@ -227,6 +312,11 @@ begin
 end $$;
 
 revoke all on function public.famille_inviter(), public.famille_accepter(text), public.famille_refuser(text),
-  public.famille_retirer(), public.famille_quitter(), public.famille_voir_invitation(text), public.hype_droits(uuid) from public, anon;
+  public.famille_retirer(), public.famille_quitter(), public.famille_voir_invitation(text), public.famille_mon_etat(),
+  public.hype_droits(uuid), public.famille_ouvrir(uuid, text, text, timestamptz), public.famille_maj(text, text, timestamptz),
+  public.famille_fin_rattachements() from public, anon, authenticated;
 grant execute on function public.famille_inviter(), public.famille_accepter(text), public.famille_refuser(text),
-  public.famille_retirer(), public.famille_quitter(), public.famille_voir_invitation(text), public.hype_droits(uuid) to authenticated;
+  public.famille_retirer(), public.famille_quitter(), public.famille_voir_invitation(text), public.famille_mon_etat(),
+  public.hype_droits(uuid) to authenticated;
+-- Ouvrir / mettre à jour une famille : uniquement le relais Stripe (clé serveur), jamais l'appli.
+grant execute on function public.famille_ouvrir(uuid, text, text, timestamptz), public.famille_maj(text, text, timestamptz) to service_role;

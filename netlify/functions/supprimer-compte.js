@@ -248,6 +248,14 @@ async function purgerUn(cfg, uid) {
 
   try { const e = await supprimerPhotos(cfg, uid); if (e) echecs.push(e); } catch (e) { }
 
+  // Premium Famille : les familles TERMINÉES de ce titulaire partent avec lui
+  // (sinon la base refuse d'effacer le compte). Une famille encore en cours
+  // n'est PAS touchée : l'effacement du compte échouera et sera signalé, à voir à la main.
+  try {
+    const e = await supprimerLignes(cfg, "familles", "titulaire_id=eq." + encodeURIComponent(uid) + "&statut=eq.annule");
+    if (e) echecs.push(e);
+  } catch (e) { echecs.push("familles : " + String(e && e.message ? e.message : e)); }
+
   // Le compte de connexion, TOUJOURS EN DERNIER : si une étape précédente
   // échoue, on veut pouvoir retrouver le compte et recommencer.
   try {
@@ -340,6 +348,19 @@ exports.handler = async (event) => {
       await inserer(cfg, "departs_motifs", { motif: motif || null, message: message || null });
     }
   } catch (e) { }
+
+  // PREMIUM FAMILLE (cas G) : un TITULAIRE dont l'abonnement Famille est en cours
+  // ne peut pas lancer la suppression — sinon Stripe continuerait de facturer
+  // sans titulaire, et le deuxième cavalier perdrait tout sans prévenir.
+  // Il doit d'abord résilier. (Table absente = Famille pas encore en place : on continue.)
+  try {
+    const fam = await lire(cfg, "familles",
+      "select=id&titulaire_id=eq." + encodeURIComponent(uid) + "&statut=in.(actif,impaye)&limit=1");
+    if (fam && fam.length) {
+      log("suppression refusée : abonnement Famille en cours");
+      return reponse(409, { erreur: "famille_active", code: "FAMILLE_ACTIVE" }, enTetesRep);
+    }
+  } catch (e) { log("vérification Famille impossible :", e && e.message); }
 
   const maintenant = new Date();
   const prevue = new Date(maintenant.getTime() + JOURS_DELAI * 86400000);

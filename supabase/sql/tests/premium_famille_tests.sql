@@ -27,10 +27,17 @@ select pg_temp.t('Sans famille : titulaire non Premium', :'A', $q$select (hype_d
 select pg_temp.t('Sans famille : inviter refusé', :'A', $q$select famille_inviter()$q$, 'ERREUR FAMILLE_INTROUVABLE');
 
 -- Le futur relais crée la famille (simulé)
-insert into familles (id, titulaire_id, stripe_subscription, statut, expire_le)
-values ('11111111-1111-1111-1111-111111111111', :'A', 'sub_test_famille', 'actif', now() + interval '31 days');
-insert into famille_membres (famille_id, user_id, role, statut, active_le)
-values ('11111111-1111-1111-1111-111111111111', :'A', 'titulaire', 'actif', now());
+select pg_temp.t('Relais : ouvre la famille', null, $q$select famille_ouvrir('00000000-0000-0000-0000-00000000000a','sub_test_famille','cus_x',now()+interval '31 days')$q$, 'cree');
+select pg_temp.t('Relais : message reçu deux fois → rien de plus', null, $q$select famille_ouvrir('00000000-0000-0000-0000-00000000000a','sub_test_famille','cus_x',now()+interval '31 days')$q$, 'deja');
+select pg_temp.t('Relais : 2e famille payée par le même titulaire → signalée', null, $q$select famille_ouvrir('00000000-0000-0000-0000-00000000000a','sub_autre','cus_x',now()+interval '31 days')$q$, 'autre_famille');
+-- (test seulement) on donne à cette famille un identifiant fixe pour la suite
+set session_replication_role = replica;
+update famille_membres set famille_id = '11111111-1111-1111-1111-111111111111' where famille_id = (select id from familles where stripe_subscription = 'sub_test_famille');
+update famille_journal set famille_id = '11111111-1111-1111-1111-111111111111' where famille_id = (select id from familles where stripe_subscription = 'sub_test_famille');
+update familles set id = '11111111-1111-1111-1111-111111111111' where stripe_subscription = 'sub_test_famille';
+set session_replication_role = origin;
+select pg_temp.t('Mon compte : titulaire voit sa famille', :'A', $q$select (famille_mon_etat()->>'role') || '/' || (famille_mon_etat()->>'actif')$q$, 'titulaire/true');
+select pg_temp.t('Mon compte : rien pour un compte sans famille', :'C', $q$select coalesce(famille_mon_etat()::text,'(rien)')$q$, '(rien)');
 
 select pg_temp.t('Titulaire : Premium', :'A', $q$select (hype_droits()).premium::text$q$, 'true');
 select pg_temp.t('Titulaire : 4 questions IA', :'A', $q$select (hype_droits()).questions_ia::text$q$, '4');
@@ -41,7 +48,8 @@ select pg_temp.t('Deuxième cavalier pas encore Premium', :'B', $q$select (hype_
 do $$ begin perform set_config('test.uid','00000000-0000-0000-0000-00000000000a',false);
   insert into codes values ('c1', famille_inviter()); end $$;
 select pg_temp.t('Code non stocké en clair', null, $q$select count(*)::text from famille_membres m, codes c where m.code_hash = c.v$q$, '0');
-select pg_temp.t('Voir invitation', :'B', $q$select valide::text from famille_voir_invitation((select v from codes where k='c1'))$q$, 'true');
+select pg_temp.t('Voir invitation : valide + pseudo du titulaire', :'B', $q$select valide::text || '/' || titulaire from famille_voir_invitation((select v from codes where k='c1'))$q$, 'true/titulaire');
+select pg_temp.t('Mon compte : invitation en cours visible', :'A', $q$select famille_mon_etat()->>'invitation_en_cours'$q$, 'true');
 select pg_temp.t('Titulaire ne peut pas accepter sa propre invitation', :'A', $q$select famille_accepter((select v from codes where k='c1'))::text$q$, 'ERREUR TITULAIRE_NE_PEUT_PAS_ACCEPTER');
 select pg_temp.t('Faux code refusé', :'B', $q$select famille_accepter('nimportequoi')::text$q$, 'ERREUR INVITATION_INVALIDE');
 select pg_temp.t('Non connecté refusé', null, $q$select famille_accepter((select v from codes where k='c1'))::text$q$, 'ERREUR CONNEXION_REQUISE');
@@ -49,6 +57,8 @@ select pg_temp.t('B accepte', :'B', $q$select famille_accepter((select v from co
 select pg_temp.t('B Premium', :'B', $q$select (hype_droits()).premium::text$q$, 'true');
 select pg_temp.t('B 4 questions IA (pas 8, pas partagé)', :'B', $q$select (hype_droits()).questions_ia::text$q$, '4');
 select pg_temp.t('B via_famille', :'B', $q$select (hype_droits()).via_famille::text$q$, 'true');
+select pg_temp.t('Mon compte : B voit le titulaire', :'B', $q$select (famille_mon_etat()->>'role') || '/' || (famille_mon_etat()->>'titulaire')$q$, 'beneficiaire/titulaire');
+select pg_temp.t('Mon compte : titulaire voit B', :'A', $q$select famille_mon_etat()->>'deuxieme'$q$, 'soeur');
 select pg_temp.t('Code déjà utilisé : C refusé', :'C', $q$select famille_accepter((select v from codes where k='c1'))::text$q$, 'ERREUR INVITATION_INVALIDE');
 
 -- Pas de 3e cavalier
@@ -92,6 +102,7 @@ select pg_temp.t('5e cavalier dans l''année : refusé', :'D', $q$select famille
 select pg_temp.t('Un ancien de l''année (B) peut revenir', :'B', $q$select famille_accepter((select v from codes where k='c5'))::text$q$, 'true');
 
 -- Une personne dans une seule famille
+select pg_temp.t('Un titulaire ne peut pas être aussi bénéficiaire', :'A', $q$select famille_accepter((select v from codes where k='c5'))::text$q$, 'ERREUR INVITATION_INVALIDE');
 insert into familles (id, titulaire_id, statut, expire_le) values ('22222222-2222-2222-2222-222222222222', :'G', 'actif', now()+interval '31 days');
 do $$ begin perform set_config('test.uid','00000000-0000-0000-0000-000000000010',false);
   insert into codes values ('g1', famille_inviter()); end $$;
@@ -123,20 +134,40 @@ update familles set expire_le = now() + interval '30 days' where id = '11111111-
 select pg_temp.t('Renouvelée : B retrouve Premium', :'B', $q$select (hype_droits()).premium::text$q$, 'true');
 select pg_temp.t('Lien B conservé pendant l''impayé', null, $q$select statut from famille_membres where user_id='00000000-0000-0000-0000-00000000000b' and statut='actif'$q$, 'actif');
 
+select pg_temp.t('Relais : renouvellement', null, $q$select famille_maj('sub_test_famille','actif', now()+interval '33 days')::text$q$, '1');
+select pg_temp.t('Relais : abonnement inconnu → 0', null, $q$select famille_maj('sub_inconnu','actif', null)::text$q$, '0');
+select pg_temp.t('Relais : statut farfelu refusé', null, $q$select famille_maj('sub_test_famille','gratuit_a_vie', null)::text$q$, 'ERREUR STATUT_INVALIDE');
+
 -- Confidentialité : on lit les droits d'un autre ?
 select pg_temp.t('Lire les droits d''un autre : rien', :'C', $q$select count(*)::text from hype_droits('00000000-0000-0000-0000-00000000000a')$q$, '0');
 select pg_temp.t('Suppression du titulaire bloquée tant que la famille existe', null, $q$delete from auth.users where id='00000000-0000-0000-0000-00000000000a' returning 'supprimé'$q$,
   'ERREUR update or delete on table "users" violates foreign key constraint "familles_titulaire_id_fkey" on table "familles"');
+
+-- Résiliation définitive : les rattachements prennent fin, B peut rejoindre une autre famille
+select pg_temp.t('Relais : résiliation G', null, $q$select famille_maj((select stripe_subscription from familles where id='22222222-2222-2222-2222-222222222222'),'annule')::text$q$, '0');
+update familles set stripe_subscription='sub_g' where id='22222222-2222-2222-2222-222222222222';
+select pg_temp.t('Relais : résiliation G (avec son abonnement)', null, $q$select famille_maj('sub_g','annule')::text$q$, '1');
+select pg_temp.t('Après résiliation : D n''est plus rattaché', null, $q$select count(*)::text from famille_membres where famille_id='22222222-2222-2222-2222-222222222222' and statut in ('actif','invite')$q$, '0');
+select pg_temp.t('Après résiliation : G peut repayer une famille', null, $q$select famille_ouvrir('00000000-0000-0000-0000-000000000010','sub_g2',null,now()+interval '31 days')$q$, 'cree');
+
+-- Cas A : un cavalier qui payait déjà Premium rejoint → noté pour Blandine
+update famille_membres set statut='retire' where famille_id='11111111-1111-1111-1111-111111111111' and role='beneficiaire' and statut in ('actif','invite');
+delete from famille_membres where famille_id='11111111-1111-1111-1111-111111111111' and role='beneficiaire' and user_id in ('00000000-0000-0000-0000-00000000000e','00000000-0000-0000-0000-00000000000f');
+update famille_membres set active_le = active_le - interval '400 days' where famille_id='11111111-1111-1111-1111-111111111111' and role='beneficiaire';
+do $$ begin perform set_config('test.uid','00000000-0000-0000-0000-00000000000a',false);
+  insert into codes values ('c6', famille_inviter()); end $$;
+select pg_temp.t('Cas A : E (déjà Premium perso) accepte', :'E', $q$select famille_accepter((select v from codes where k='c6'))::text$q$, 'true');
+select pg_temp.t('Cas A : noté « déjà Premium personnel » dans le journal', null, $q$select detail from famille_journal where action='acceptation' and acteur='00000000-0000-0000-0000-00000000000e'$q$, 'deja_premium_personnel');
 
 -- Sécurité RLS en tant qu'utilisateur connecté
 set role authenticated;
 select set_config('test.uid', '00000000-0000-0000-0000-00000000000c', false);
 insert into res(nom,attendu,obtenu) select 'RLS : C (hors famille) ne voit aucune famille', '0', count(*)::text from familles;
 insert into res(nom,attendu,obtenu) select 'RLS : C ne voit aucun membre', '0', count(*)::text from famille_membres;
-select set_config('test.uid', '00000000-0000-0000-0000-00000000000b', false);
-insert into res(nom,attendu,obtenu) select 'RLS : B voit sa famille seulement', '1', count(*)::text from familles;
-insert into res(nom,attendu,obtenu) select 'RLS : B voit 2 membres actifs (lui + titulaire)', '2', count(*)::text from famille_membres where statut='actif';
-insert into res(nom,attendu,obtenu) select 'RLS : B ne lit pas le journal', '0', count(*)::text from famille_journal;
+select set_config('test.uid', '00000000-0000-0000-0000-00000000000e', false);
+insert into res(nom,attendu,obtenu) select 'RLS : E voit sa famille seulement', '1', count(*)::text from familles;
+insert into res(nom,attendu,obtenu) select 'RLS : E voit 2 membres actifs (lui + titulaire)', '2', count(*)::text from famille_membres where statut='actif';
+insert into res(nom,attendu,obtenu) select 'RLS : E (bénéficiaire) ne lit pas le journal', '0', count(*)::text from famille_journal;
 do $$ begin
   begin insert into famille_membres (famille_id,user_id,role,statut) values ('11111111-1111-1111-1111-111111111111','00000000-0000-0000-0000-00000000000d','beneficiaire','actif');
         insert into res(nom,attendu,obtenu) values ('RLS : écriture directe interdite','refusé','accepté');
@@ -147,6 +178,14 @@ do $$ begin
 end $$;
 select set_config('test.uid', '00000000-0000-0000-0000-00000000000a', false);
 insert into res(nom,attendu,obtenu) select 'RLS : titulaire lit le journal', 'oui', case when count(*) > 0 then 'oui' else 'non' end from famille_journal;
+do $$ begin
+  begin perform famille_ouvrir('00000000-0000-0000-0000-00000000000d','sub_pirate',null,now()+interval '10 years');
+        insert into res(nom,attendu,obtenu) values ('Connecté : ouvrir une famille soi-même interdit','refusé','accepté');
+  exception when insufficient_privilege then insert into res(nom,attendu,obtenu) values ('Connecté : ouvrir une famille soi-même interdit','refusé','refusé'); end;
+  begin perform famille_maj('sub_test_famille','actif',now()+interval '10 years');
+        insert into res(nom,attendu,obtenu) values ('Connecté : prolonger via le relais interdit','refusé','accepté');
+  exception when insufficient_privilege then insert into res(nom,attendu,obtenu) values ('Connecté : prolonger via le relais interdit','refusé','refusé'); end;
+end $$;
 reset role;
 set role anon;
 do $$ begin

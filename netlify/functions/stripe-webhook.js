@@ -115,6 +115,58 @@ const LIENS_DONS = new Set([
 ]);
 const PLANS_PAYES = { mensuel: 1, annuel: 1, duo: 1, ai: 1 };
 
+/* ── PREMIUM FAMILLE (étape 3, branche premium-famille — PAS ENCORE EN VENTE) ──
+   19,99 €/mois, deux comptes cavaliers. Rangé dans les tables familles /
+   famille_membres, JAMAIS dans abonnements_premium : aucun risque d'écraser
+   un autre abonnement du même compte.
+   ⚠️ Volontairement VIDES tant que le produit Stripe n'est pas créé : à remplir
+   avec l'identifiant du lien (plink_…) et du prix (price_…) le jour de la mise
+   en vente. Vides = aucun paiement Famille reconnu = le relais se comporte
+   exactement comme aujourd'hui.                                              */
+const FAMILLE_LIENS = {
+    // "plink_…": { jours: 32 },   // Premium Famille 19,99 €/mois
+};
+const FAMILLE_PRIX = new Set([
+    // "price_…",                   // Premium Famille 19,99 €/mois
+]);
+/* Tant que rien n'est rempli ci-dessus, le relais NE PARLE JAMAIS aux tables
+   Famille : il fonctionne même si le SQL Famille n'est pas encore passé. */
+const FAMILLE_EN_VENTE = Object.keys(FAMILLE_LIENS).length > 0 || FAMILLE_PRIX.size > 0;
+/* Met à jour une famille par son abonnement Stripe ; 0 si aucune (ou si pas en vente). */
+async function majFamille(service, sub, statut, expire) {
+    if (!FAMILLE_EN_VENTE || !sub) return 0;
+    return Number(await appelRpc(service, "famille_maj", { p_sub: sub, p_statut: statut, p_expire: expire || null })) || 0;
+}
+
+async function appelRpc(service, nom, params) {
+    const r = await fetch(SUPABASE_URL + "/rest/v1/rpc/" + nom, {
+        method: "POST", headers: entetesSupabase(service), body: JSON.stringify(params),
+    });
+    if (!r.ok) throw new Error(nom + " KO " + r.status + " " + (await r.text().catch(() => "")).slice(0, 200));
+    return r.json().catch(() => null);
+}
+/* Le titulaire paie-t-il AUSSI un Premium personnel (Cavalier, Crystal ou Duo) ?
+   Hype IA seul n'est pas un doublon : il ajoute des questions, pas Premium. */
+function premiumPersoPaye(ligne) {
+    return !!(accesPayeConcurrent(ligne, null) && ligne.plan !== "ai");
+}
+/* Ouvre la famille ; rend true si tout est bien enregistré (sinon Stripe réessaiera). */
+async function ouvrirFamille(service, evenement, userId, sub, client, expire, infos) {
+    const res = await appelRpc(service, "famille_ouvrir",
+        { p_titulaire: userId, p_sub: sub, p_customer: client, p_expire: expire });
+    log("Famille :", res, "—", sub, "—", infos.email || "");
+    if (res === "autre_famille") {
+        // Le titulaire paie déjà une AUTRE famille en cours : rien de plus, à vérifier.
+        return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement" });
+    }
+    if (res === "cree" && premiumPersoPaye(await ligneParUtilisateur(service, userId))) {
+        // Cas B : il payait déjà Premium Cavalier/Duo/Crystal → famille ouverte (il a payé),
+        // et signalée pour arrêter ou rembourser l'ancien, AVEC son accord. Rien d'automatique.
+        return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement" });
+    }
+    return true;
+}
+
 function prixDeFacture(f) {
     try {
         const l = f && f.lines && f.lines.data && f.lines.data[0];
@@ -372,6 +424,17 @@ export default async (req) => {
             } else if (objet.payment_status !== "paid" && objet.payment_status !== "no_payment_required") {
                 // Paiement pas encore confirmé (moyen différé) : aucun droit.
                 ecritureOk = await anomalie(service, evenement, { ...infosBase, anomalie: "paiement_non_confirme" });
+            } else if (lien && FAMILLE_LIENS[lien]) {
+                // Premium Famille : tables à part, jamais abonnements_premium.
+                if (!userId) {
+                    log("ALERTE : paiement Famille non rattachable — email :", email);
+                    ecritureOk = false;
+                } else {
+                    const depart = (objet.created ? objet.created * 1000 : Date.now());
+                    const expireF = new Date(depart + FAMILLE_LIENS[lien].jours * 86400000).toISOString();
+                    ecritureOk = await ouvrirFamille(service, evenement, userId, objet.subscription || refS,
+                        objet.customer || null, expireF, infosBase);
+                }
             } else if (!offre) {
                 // Lien inconnu : on ne devine JAMAIS la formule par le montant.
                 ecritureOk = await anomalie(service, evenement, { ...infosBase, anomalie: "offre_inconnue" });
@@ -438,8 +501,26 @@ export default async (req) => {
 
             const ligneAbo = await ligneParAbonnement(service, aboFacture);
             const touchees = ligneAbo ? await majParAbonnement(service, aboFacture, champs) : 0;
+            // Une famille n'est cherchée QUE si aucune ligne d'abonnement classique ne correspond.
+            const familleTouchee = ligneAbo ? 0 : await majFamille(service, aboFacture, "actif", expire);
 
-            if (touchees > 0) {
+            if (familleTouchee) {
+                // Renouvellement Premium Famille : les deux comptes sont prolongés ensemble.
+                log("Famille renouvelée, expire le", expire || "(période inconnue)");
+                if (!prix || !FAMILLE_PRIX.has(prix)) {
+                    ecritureOk = await anomalie(service, evenement, { ...infosF, anomalie: prix ? "changement_formule" : "offre_inconnue" });
+                }
+            } else if (!ligneAbo && prix && FAMILLE_PRIX.has(prix)) {
+                // Facture Famille arrivée AVANT la fin du paiement : on ouvre la famille par l'email.
+                const userIdF = await userIdParEmail(service, emailF);
+                if (!userIdF) {
+                    log("ALERTE : facture Famille non rattachable — email :", emailF);
+                    ecritureOk = false;
+                } else {
+                    ecritureOk = await ouvrirFamille(service, evenement, userIdF, aboFacture, objet.customer || null,
+                        expire || new Date(Date.now() + 32 * 86400000).toISOString(), infosF);
+                }
+            } else if (touchees > 0) {
                 // Renouvellement d'une ligne existante : on prolonge SEULEMENT ses droits
                 // (la formule n'est jamais changée ici).
                 log("Renouvellement enregistré, expire le", expire || "(période inconnue)");
@@ -486,16 +567,18 @@ export default async (req) => {
         // ----- Paiement refusé -----
         else if (evenement.type === "invoice.payment_failed" && objet && aboDeFacture(objet)) {
             const aboRefus = aboDeFacture(objet);
-            const touchees = await majParAbonnement(service, aboRefus,
+            let touchees = await majParAbonnement(service, aboRefus,
                 { statut: "impaye", maj_le: new Date().toISOString() });
+            if (touchees === 0 && await majFamille(service, aboRefus, "impaye")) { touchees = 1; log("Famille : paiement refusé", aboRefus); }
             if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", aboRefus);
             log("Paiement refusé enregistré :", aboRefus);
         }
 
         // ----- Annulation définitive -----
         else if (evenement.type === "customer.subscription.deleted" && objet && objet.id) {
-            const touchees = await majParAbonnement(service, objet.id,
+            let touchees = await majParAbonnement(service, objet.id,
                 { statut: "annule", maj_le: new Date().toISOString() });
+            if (touchees === 0 && await majFamille(service, objet.id, "annule")) { touchees = 1; log("Famille résiliée", objet.id); }
             if (touchees === 0) log("annulation, aucune ligne correspondante :", objet.id);
             log("Abonnement annulé :", objet.id);
         }

@@ -5,8 +5,10 @@ create extension if not exists pgcrypto with schema extensions;
 do $$ begin
   if not exists (select 1 from pg_roles where rolname='anon') then create role anon nologin; end if;
   if not exists (select 1 from pg_roles where rolname='authenticated') then create role authenticated nologin; end if;
+  if not exists (select 1 from pg_roles where rolname='service_role') then create role service_role nologin; end if;
 end $$;
-grant usage on schema public, auth, extensions to anon, authenticated;
+grant usage on schema public, auth, extensions to anon, authenticated, service_role;
+create table public.profiles (id uuid primary key, pseudo text);
 create table auth.users (id uuid primary key, email text);
 create or replace function auth.uid() returns uuid language sql stable as
   $$ select nullif(current_setting('test.uid', true), '')::uuid $$;
@@ -34,3 +36,4 @@ insert into auth.users values
 insert into public.abonnements_premium (user_id,plan,statut,expire_le) values
  ('00000000-0000-0000-0000-00000000000e','mensuel','actif',now()+interval '20 days'),
  ('00000000-0000-0000-0000-00000000000f','ai','actif',now()+interval '20 days');
+insert into public.profiles select id, split_part(email,'@',1) from auth.users;
