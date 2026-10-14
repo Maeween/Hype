@@ -1,0 +1,24 @@
+HYPE — LIVRAISON A bis (PRÉPARÉE, NON APPLIQUÉE, NON DÉPLOYÉE) : raccorder hey-baby-vision au compteur IA
+====================================================================================================
+Fonction : supabase/functions/hey-baby-vision/index.ts (route photo/vidéo du compte de Blandine uniquement).
+Aujourd'hui : compte vérifié + Premium exigé (liste maison), AUCUN quota, consignes envoyées par le navigateur.
+À faire dans une petite livraison séparée, APRÈS la mise en ligne de la livraison A :
+
+1. Contrôle d'accès (bloc « 11/10 (946) ») — garder getUser(jeton), puis :
+     const d = await adminA.rpc("hype_droits", { p_uid: uA.id });          // Premium Famille reconnu
+     autorise = MODERATRICES.includes(email) || (d.data && d.data[0] && d.data[0].premium);
+     const res = await adminA.rpc("hype_ia_reserver", { p_uid: uA.id, p_operation: mode === "perception" ? "perception" : "question",
+                                                        p_categorie: "question", p_avec_media: true, p_parent: corps.suite || null });
+     if (!res.data || res.data.ok !== true) return erreur(res.data?.code || "INTERNAL_ERROR", "…", res.data?.code === "SUITE_INVALIDE" ? 409 : 429);
+     const idRes = res.data.id;   // + renvoyer "reservation: idRes" dans les réponses de perception (comme assistant.js)
+2. Fin de réservation (comme assistant.js) :
+     - différé : ecrire({statut:"termine"}) → rpc("hype_ia_terminer", {p_id:idRes, p_consommee:true}) ;
+                 ecrire({statut:"erreur"})  → rpc("hype_ia_terminer", {p_id:idRes, p_consommee:false}) ;
+     - flux : comptée dès le premier mot ; rendue si rien n'a été produit ; déconnexion = comptée ;
+     - réponse directe : comptée si texte non vide, sinon rendue.
+3. Consignes côté serveur : reprendre getSystemPrompt / HEYBABY_PROMPT_PERCEPTION / HEYBABY_CONSIGNES_PEDAGOGIE
+   d'assistant.js (même texte), et faire envoyer par l'appli { operation, contexte, messages, suite, observations }
+   au lieu de { system, messages } (voie Supabase de index.html, 3 endroits : vidéo différée, perception, conversation).
+4. Limites médias identiques à assistant.js (24 images max, 2,6 Mo par image, 6,5 Mo au total).
+5. Déploiement : le workflow exige désormais [fonctions] dans le message de l'envoi (ou lancement manuel).
+Tests à prévoir : les 25 cas de la livraison A, rejoués sur la route Supabase (compte de test modératrice et compte Premium).
