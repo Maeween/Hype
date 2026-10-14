@@ -12554,3 +12554,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demandes (17 h 56 → 18 h 04) : « les 6 onglets sont un peu petits, d'autres propositions » → 14 propositions dans l'aperçu (A à N) → « le N est pas mal ».
 - index.html (build 20261014-1118), V2 : les 6 accès deviennent une liste sur 2 colonnes (3 sur tablette et ordinateur) : mini vignette carrée (images/cavalier-acces-*.webp), nom, flèche champagne, filet champagne fin dessous. Mêmes destinations ; Actualité grisée sans flèche (« Prochainement ») ; cadenas à la place de la flèche quand c'est privé (Progression en visite).
 - Checks : marqueur unique 20261014-1118 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1119 : 🟥 CORRECTIF URGENT — page Cavalier V2 plantée (« Un caillou dans le sabot »)
+- Signalé par Blandine (18 h 05, capture) : « TypeError : tA is not a function » dans hype-stories.js (rondAjout), écran moncavalier.
+- CAUSE (mon erreur, build 1116 / ?v=20cd) : dans la nouvelle option `tailleAuto` du bandeau, j'ai appelé une variable `tA`, qui est déjà le nom de la fonction de couleur du bandeau ; elle était écrasée par un nombre (350). Seule la page Cavalier V2 (sa page, qui utilise tailleAuto) plantait ; les autres pages ne passent pas par ce code.
+- CORRECTION : variable renommée `tailleCalc` (+ avertissement en commentaire) ; hype-stories.js ?v=20ce ; build 20261014-1119. Autres noms ajoutés vérifiés sans collision.
+- 🟥 Fichiers envoyés : hype-stories.js ET index.html (+ SUIVI.md).
+- Checks : node --check hype-stories.js OK ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+- Leçon : vérifier qu'un nouveau nom de variable n'existe pas déjà dans la fonction avant de l'utiliser (je ne l'avais pas fait).

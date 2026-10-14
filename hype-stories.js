@@ -2475,7 +2475,7 @@ function BandeauStories(props) {
   }
 
   var T = (props && props.taille) || HS_TAILLE_ROND;
-  /* 14/10 (?v=20cd) — propriete `tailleAuto` (page Cavalier V2, Blandine : « on pourrait les centrer et que leur taille
+  /* 14/10 (?v=20cd, corrige en 20ce) — propriete `tailleAuto` (page Cavalier V2, Blandine : « on pourrait les centrer et que leur taille
      s adapte en fonction de leur nombre ») : la taille des ronds se calcule sur la largeur disponible et le nombre de
      visuels (2 au plus par cavalier + le « + »), entre 64 et 104 px ; si tout tient, le rail est CENTRE, sinon il defile
      depuis le debut comme avant. Sans cette propriete : rien ne change. */
@@ -2485,8 +2485,10 @@ function BandeauStories(props) {
       var largA = Math.min((typeof window !== "undefined" && window.innerWidth) || 390, 760) - 28;
       var nVis = 1, nGr = 1;
       (groupes || []).forEach(function (gA) { nGr++; nVis += Math.min(2, ((gA && gA.stories) || []).length || 1); });
-      var tA = Math.floor((largA - 10 * (nGr - 1)) / nVis) - 12;
-      T = Math.max(64, Math.min(104, tA));
+      /* ⚠️ (20ce) NE PAS appeler cette variable « tA » : c est deja le nom de la fonction de couleur du bandeau.
+         Le 14/10 (20cd) elle l ecrasait -> « tA is not a function » -> page Cavalier V2 plantee. */
+      var tailleCalc = Math.floor((largA - 10 * (nGr - 1)) / nVis) - 12;
+      T = Math.max(64, Math.min(104, tailleCalc));
       railCentre = (nVis * (T + 12) + 10 * (nGr - 1)) <= largA;
     } catch (eTa) { }
   }
