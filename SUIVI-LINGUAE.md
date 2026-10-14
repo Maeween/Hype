@@ -1,3 +1,19 @@
+# 🗓️ 14/10 (nuit, suite) — ROUMAIN 🇷🇴, DANOIS 🇩🇰 ET NORVÉGIEN 🇳🇴 ACTIVÉS : 14e À 16e LANGUES — horselingo `4c6c45a` [publier]
+
+**Demande de Blandine** : « on ajoute romain et danois ? On a déjà. Norvégien ? » → je lui ai précisé qu'on n'avait ni le danois ni le roumain, et proposé les trois → « Ok ». Norvégien = **bokmål** (code interne `no`, voix et Google **nb-NO / nb**). Mis en ligne ensemble. Hype non touché.
+
+**Contenu (préparation `7447050`, puis `4c6c45a`)** : glossaires (875 concepts), 43 fichiers de vocabulaire, toute l'interface (lingo.html 684 textes, dialogue, collection, globe, sellerie, 65 libellés d'exercices, duel). Tutoiement partout ; roumain : tournures neutres si le genre de l'élève est inconnu, ș/ț à virgule. ⚠️ **Traduit par Claude (agents en parallèle, glossaires imposés), jamais relu par un natif.** À relire en priorité : ro termes de maréchalerie (« urechiușa » pour le pinçon, « fesla » pour le paturon), « foulée » (« pasul de galop » / « foulee-uri », à unifier) ; da « manken » (veut dire crinière ET garrot), « afskridtningen » (récupération) ; no « korsforlamming » (coup de sang), « avskrittingen » (récupération), « høyskolen » (haute école).
+
+**Activation** : LANGUES_UI, LG/LGN (RO, DA, NO), VOIX, destinations « Le roumain » (clé `dunare`), « Le danois » (`lyng`), « Le norvégien » (`fjord`), lexique, signatures « Pe curând / Vi ses / Vi sees, Hype ». « treize langues » → **seize** partout, « · RO · DA · NO » dans les listes, 羅・丁・諾 en japonais. Pages Google **/ro/vocabular/**, **/da/ordforrad/**, **/no/ordforrad/** (16 langues, 641 adresses dans le sitemap). Aperçu : « en 16 langues ».
+
+**Affichage** : les drapeaux sont maintenant sur **deux lignes de 8 partout** (téléphone, tablette, ordinateur : à 16, une seule ligne écrasait les drapeaux sur tablette). Pastilles de langue du récit sur deux lignes équilibrées à toutes les tailles.
+
+**Contrôles (Chromium)** : leçons fr→ro, fr→da, fr→no, ro→en, da→en, no→en, da→no, no→da, ro→da, ja→no, ar→ro, en→da, sv→no, pl→ro, fr→pl : **aucune erreur JS** ; dialogue de La Baule juste en ro, da, no ; aucun texte des 5 pages sans ro/da/no ; captures à 320, 390, 820, 1440 px. Mise en ligne vérifiée (Netlify « ready » sur 4c6c45a, /no/ordforrad/aachen/ répond en norvégien).
+
+**Signalé par les traducteurs dans le texte français d'origine (non corrigé, à voir avec Blandine)** : élevage, jument pleine — « portante » est attribué à l'allemand alors que c'est de l'italien (l'allemand dit « tragend ») ; jeunes chevaux, définition 26 — faute de frappe « RENDA ».
+
+**Reste (non bloquant)** : relecture par des natifs · Hype dans ces langues si Blandine le souhaite · au-delà de 16 langues, il faudra une autre présentation du choix de langue (liste déroulante).
+
 # 🗓️ 14/10 (nuit, suite) — SUÉDOIS 🇸🇪 ET POLONAIS 🇵🇱 ACTIVÉS : 12e ET 13e LANGUES — horselingo `b9ee69b` [publier]
 
 **Demande de Blandine** : « On ajoute le marocain ? » → j'ai expliqué les limites de la darija (langue surtout parlée, pas de voix sur les téléphones, traduction peu sûre) et proposé d'autres langues → « Le suédois et le polonais ». Mêmes règles que pour le portugais : mises en ligne ensemble, Hype non touché. Le marocain n'est **pas** fait (options laissées ouvertes : darija en lettres arabes, en lettres latines, ou une ville marocaine « tbourida » dans le voyage).
