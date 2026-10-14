@@ -34,7 +34,7 @@ img{max-width:100%}
 .ico{width:20px;height:20px;flex:none}
 [dir=rtl] .ico.dir{transform:scaleX(-1)}
 /* ── EN-TÊTE ── */
-.entete{position:relative;z-index:20;background:#05080B;padding-top:env(safe-area-inset-top);border-bottom:1px solid rgba(201,166,107,.12)}
+.entete{position:relative;z-index:20;background:#05080B;border-bottom:1px solid rgba(201,166,107,.12)}
 .entete .in{max-width:1240px;margin:0 auto;height:60px;display:flex;align-items:center;gap:14px;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
 .marque{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ivoire);min-width:0}
 .marque img{width:44px;height:auto;display:block}
@@ -76,24 +76,36 @@ img{max-width:100%}
 @media (min-width:1200px){.marque small{display:block}}
 @media (min-width:1024px) and (max-width:1199px){.nav a{font-size:14.5px}.nav{gap:16px}}
 /* ── HERO ── */
-.hero{position:relative;overflow:hidden;min-height:430px;display:flex;align-items:flex-end;background:var(--noir)}
+.hero{position:relative;overflow:hidden;min-height:0;display:flex;align-items:flex-end;background:var(--noir)}
 .hero picture,.hero picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% 30%}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.05) 0%,rgba(5,8,11,.10) 38%,rgba(5,8,11,.72) 70%,var(--noir) 100%);pointer-events:none}
 .hero .txt{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:0 16px 26px}
 .sur{font:500 11px/1.4 var(--cinzel);letter-spacing:.22em;text-transform:uppercase;color:var(--ivoire);opacity:.9;margin:0 0 10px}
 .feinn{font:400 clamp(50px,13.5vw,96px)/.95 var(--serif);letter-spacing:.14em;margin:0;color:var(--ivoire)}
-.accroche{font:400 clamp(22px,6vw,34px)/1.2 var(--serif);margin:8px 0 0;color:var(--ivoire);max-width:15em}
+.accroche{font:400 clamp(25px,7vw,34px)/1.2 var(--serif);margin:0;color:var(--ivoire);max-width:15em}
 .filet{width:44px;height:1px;background:var(--champ);margin:16px 0 14px}
 .hero-desc{display:none;margin:0 0 22px;max-width:30em;font:400 15px/1.6 var(--sans);color:var(--doux)}
 .btn{display:inline-flex;align-items:center;gap:12px;min-height:46px;padding:0 22px;border:1px solid var(--champ);border-radius:999px;color:var(--ivoire);text-decoration:none;font:500 16px var(--serif);background:rgba(5,8,11,.35);letter-spacing:.02em}
 .btn .ico{width:18px;height:18px;color:var(--ivoire)}
 .btn:hover{background:rgba(201,166,107,.12)}
-@media (min-width:640px){.hero{min-height:520px}.hero-desc{display:block}.hero .txt{padding:0 32px 46px}}
+@media (min-width:640px){.hero-desc{display:block}.hero .txt{padding:0 32px 46px}}
+/* 14/10 (haut de page) : sous 1024 px, la photo occupe le haut et le texte se pose dans la zone sombre en dessous — rien ne masque la tête du cheval */
+@media (max-width:1023px){
+ .hero{display:block}
+ .hero picture{position:relative;display:block;height:300px}
+ .hero picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 22%}
+ .hero::after{background:linear-gradient(180deg,rgba(5,8,11,0) 0%,rgba(5,8,11,0) 210px,rgba(5,8,11,.85) 270px,var(--noir) 300px)}
+ .hero .txt{margin-top:-46px;padding:0 16px 24px}
+ .accroche{max-width:17em}
+}
+@media (min-width:640px) and (max-width:1023px){.hero picture{height:360px}.hero picture img{object-position:70% 35%}.hero::after{background:linear-gradient(180deg,rgba(5,8,11,0) 0%,rgba(5,8,11,0) 260px,rgba(5,8,11,.85) 330px,var(--noir) 360px)}.hero .txt{padding:0 32px 30px}}
+
 @media (min-width:1024px){
- .hero{min-height:560px;align-items:center}
+ .hero{min-height:520px;align-items:flex-end}
  .hero picture img{object-position:right 35%}
  .hero::after{background:linear-gradient(90deg,var(--noir) 0%,rgba(5,8,11,.86) 26%,rgba(5,8,11,.35) 50%,rgba(5,8,11,0) 68%),linear-gradient(180deg,rgba(5,8,11,0) 75%,var(--noir) 100%)}
- .hero .txt{padding:60px 32px}
+ .hero .txt{padding:60px 32px 64px}
+ .hero .accroche{max-width:13em;font-size:38px}
  .accroche{font-size:34px}
 }
 [dir=rtl] .hero picture img{transform:scaleX(-1)}
@@ -303,8 +315,8 @@ h2+.trait{width:44px;height:1px;background:var(--champ);margin:10px 0 18px}
 <details class="burger"><summary aria-label="Menú"><span class="b"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><span class="x"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></span></summary><nav aria-label="Menú"><a href="#haut">Inicio<span><svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><a href="#association">La asociación<span><svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><a href="#engagements">Nuestros compromisos<span><svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><a href="#projets">Nuestros proyectos<span><svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><a href="#lieu">Nuestro lugar<span><svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><a href="#soutenir">Apóyanos<span><svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></a><a class="hype" href="https://2hype.fr/es/">Hype</a></nav></details></div>
 </div></header>
 <section class="hero"><picture><source media="(max-width:639px)" srcset="/images/mes-chevaux-fond-couchant.webp"><img src="/images/histoire-continue.webp" alt="" fetchpriority="high"></picture>
-<div class="txt"><p class="sur">Équitation et Environnement</p><h1 class="feinn">FEINN</h1><p class="accroche">Caballos, jinetes y un futuro más sostenible.</p><div class="filet"></div>
-<p class="hero-desc">Una asociación sin ánimo de lucro (ley francesa de 1901) comprometida con la enseñanza, la solidaridad, el bienestar animal y la preservación del medio ambiente.</p><a class="btn" href="#association">Descubrir nuestra asociación <svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="txt"><h1 class="accroche">Caballos, jinetes y un futuro más sostenible.</h1><div class="filet"></div>
+<a class="btn" href="#association">Descubrir nuestra asociación <svg class="ico dir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
 </section>
 <section class="engag" id="engagements" aria-labelledby="engag-t"><h2 class="vh" id="engag-t">Nuestros compromisos</h2><ul><li><span class="pic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 12 5l9 4.5-9 4.5-9-4.5Z"/><path d="M7 11.6V16c0 1.3 2.2 2.5 5 2.5s5-1.2 5-2.5v-4.4"/><path d="M21 9.5v5"/></svg></span><span class="tit"><span class="long">Enseñanza y formación</span><span class="court" aria-hidden="true">Enseñanza</span></span><span class="phr">Transmitir la pasión y los saberes ecuestres.</span></li><li><span class="pic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="7.5" r="2.6"/><circle cx="5.8" cy="9.6" r="2.1"/><circle cx="18.2" cy="9.6" r="2.1"/><path d="M7.4 19c.4-3.2 2.3-5 4.6-5s4.2 1.8 4.6 5"/><path d="M2.5 18c.3-2.3 1.6-3.8 3.3-3.8 1 0 1.8.4 2.4 1.1"/><path d="M21.5 18c-.3-2.3-1.6-3.8-3.3-3.8-1 0-1.8.4-2.4 1.1"/></svg></span><span class="tit"><span class="long">Jóvenes promesas</span><span class="court" aria-hidden="true">Jóvenes promesas</span></span><span class="phr">Acompañar a los talentos del mañana.</span></li><li><span class="pic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.3c0 5.6-7.5 10-7.5 10Z"/></svg></span><span class="tit"><span class="long">Jubilación de los caballos</span><span class="court" aria-hidden="true">Jubilación</span></span><span class="phr">Ofrecer una segunda vida a nuestros compañeros.</span></li><li><span class="pic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 20.5c0-3 .7-5.7 2.1-7.6l-3.6 1c-1 .3-1.9-.3-2-1.2L4.2 10.8c-.1-.6.2-1.2.7-1.5L10 5.6 11.2 3l1.5 2.3c3.6.7 6.3 4 6.3 8.2v7"/><circle cx="10.3" cy="8.7" r=".55"/></svg></span><span class="tit"><span class="long">Pequeña cría</span><span class="court" aria-hidden="true">Cría</span></span><span class="phr">Un enfoque razonado y respetuoso.</span></li><li><span class="pic"><svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20v-8"/><path d="M12 12c0-3.6 2.6-6.3 6.5-6.5.1 3.8-2.6 6.5-6.5 6.5Z"/><path d="M12 14.5c0-2.8-2-5-5.2-5.1-.1 3 2.1 5.1 5.2 5.1Z"/></svg></span><span class="tit"><span class="long">Medio ambiente</span><span class="court" aria-hidden="true">Medio ambiente</span></span><span class="phr">Preservar un entorno natural duradero.</span></li></ul></section>
 <section class="projets2" id="projets" aria-labelledby="pj-t"><div class="in">
