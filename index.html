@@ -28388,7 +28388,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */];
+    const ECRANS_TABLETTE = ["cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28467,7 +28467,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -33852,6 +33852,10 @@ function FondBanniereClub(props) {
    embarque ici (webp 1230 x 500, ~19 Ko) : aucun fichier a pousser. */
 var HYPE_FOND_RECIT = "images/fond-recit.webp";   /* (500) nouvelle image VERTICALE (Hey Baby), 640 x 800 */
 function EcranMonCavalier() {
+  /* 15/10 (1130) CAVALIER V2 SUR IPAD ET ORDINATEUR, BUILD 1 : les seuils de Hype (768 tablette, 1024 ordinateur), suivis en direct
+     (rotation de l iPad, fenetre agrandie). En dessous de 768 px : rien ne change. */
+  var cavTab = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;
+  var cavOrdi = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
   /* 05/10 (671) — PALETTE ALIGNEE sur Accueil / Ecurie / Communaute : turquoise -> champagne (#C5AA78, clair #C5AA78, bronze #AD8B57),
      blancs bleutes -> ivoire #F3EEE4, gris -> gris ivoire (#BDB6AA / #878D8E), fond #05080B. Couleurs seulement, dans cette page
      et ses blocs (EncartPhotoInvisible, BlocResultatsCavaliere, HypeAmisVitrine, PortraitChevalSpectral, EncreLumineuse). */
@@ -34431,15 +34435,14 @@ function EcranMonCavalier() {
       (voirTxt && onVoir) ? h("button", { onClick: onVoir, style: { background: "none", border: "none", padding: 0, cursor: "pointer", color: "#C9A66B", fontFamily: M, fontSize: 12, whiteSpace: "nowrap" } }, sansFleche ? voirTxt : (voirTxt + " " + (rtlT ? "\u2190" : "\u2192"))) : null);
   }
   function cavV2Hero() {
-    var largV2 = 390; try { largV2 = window.innerWidth || 390; } catch (eL) { }
-    var tabV2 = largV2 >= 700, grandV2 = largV2 >= 1100;
+    var tabV2 = cavTab, grandV2 = cavOrdi;   /* (1130) avant : largeur lue une fois, seuils 700 / 1100 */
     var rtlV2 = false; try { rtlV2 = document.documentElement.dir === "rtl"; } catch (eR) { }
-    var hV2 = grandV2 ? 430 : (tabV2 ? 400 : 380);
+    var hV2 = grandV2 ? 400 : (tabV2 ? 340 : 380);   /* (1130) iPad moins haut, ordinateur panoramique (350-410) */
     var srcV2 = __estVisite ? (__visitePub || profil) : (profRecit || profil);
     var handleV2 = (typeof hypeHandleTexte === "function") ? hypeHandleTexte(srcV2) : "";
     var ecV2 = String((profil && (profil.club || profil.ecurie)) || "").trim();
     var masqueV2 = "linear-gradient(" + (rtlV2 ? "270deg" : "90deg") + ", transparent 0%, #000 40%), linear-gradient(180deg, transparent 0%, #000 14%, #000 66%, transparent 100%)";
-    var photoV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: tabV2 ? "60%" : "84%", WebkitMaskImage: masqueV2, maskImage: masqueV2, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" };
+    var photoV2 = { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: grandV2 ? "64%" : (tabV2 ? "60%" : "84%"), WebkitMaskImage: masqueV2, maskImage: masqueV2, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" };
     var ombreTxt = "0 2px 16px rgba(0,0,0,0.75)";
     var entreesV2 = [];
     if (!__estVisite) {
@@ -34473,7 +34476,7 @@ function EcranMonCavalier() {
         : null,
       /* le texte, en bas a gauche (a droite en arabe) */
       h("div", { style: { position: "absolute", left: 0, right: 0, bottom: tabV2 ? 26 : 20, zIndex: 2 } },
-        h("div", { style: { maxWidth: tabV2 ? 760 : "none", margin: "0 auto", padding: "0 26px" } },
+        h("div", { style: { maxWidth: "none", margin: "0 auto", padding: grandV2 ? "0 34px" : "0 26px" } },   /* (1130) texte aligne a gauche, sous la fleche retour */
           h("div", { style: { fontFamily: M, fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600, textShadow: ombreTxt } }, T("Cavalier", "Rider", "Jinete", "Cavaliere", "騎手", "Reiter", "فارس")),
           h("div", { style: { display: "flex", alignItems: "flex-end", flexWrap: "wrap", gap: "6px 12px", marginTop: 8 } },
             h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: grandV2 ? 52 : (tabV2 ? 48 : 40), lineHeight: 1, color: "#F3EEE4", textShadow: ombreTxt, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" } }, prenom),
@@ -34485,7 +34488,7 @@ function EcranMonCavalier() {
             ecV2 ? h("span", { style: { color: "#F3EEE4" } }, ecV2) : null) : null,
           citation ? h("div", { style: { marginTop: 8, fontFamily: "'Cormorant Garamond', Georgia, serif", fontStyle: "italic", fontSize: 16, lineHeight: 1.35, color: "rgba(243,238,228,0.78)", textShadow: ombreTxt } }, "« " + citation + " »") : null)));
   }
-  return h("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96 } },
+  return h("div", { style: { position: "relative", display: "flow-root", minHeight: "100vh", background: CAV_V2 ? "radial-gradient(45% 10% at 100% 30%, rgba(22,64,72,0.18), transparent 100%), radial-gradient(40% 8% at 0% 62%, rgba(22,64,72,0.13), transparent 100%), radial-gradient(45% 9% at 100% 90%, rgba(22,64,72,0.15), transparent 100%), #05080B" /* 14/10 (1114) V2 : noir profond, quelques touches de bleu petrole, pas partout */ : "#060709" /* 11/10 (959) meme fond que l accueil (--bg de ACC2_CSS) ; avant : lueur radiale petrole + #05080B */, color: "#F3EEE4", paddingBottom: 96, maxWidth: (CAV_V2 && cavOrdi) ? 1180 : undefined, margin: (CAV_V2 && cavOrdi) ? "0 auto" : undefined /* (1130) ordinateur : colonne centree, comme les autres pages */ } },
     /* 11/10 (955) — LE HALO QUI RESPIRE DE L ACCUEIL, A L IDENTIQUE (Blandine : « identique », « tu peux laisser la couleur de fond de page de ma page cavalier et juste mettre le halo qui respire »).
        Memes reglages que .acc2 .hero-pulse + @keyframes acc2breathe (ACC2_CSS) : rond de 360 px, pétrole rgba(127,163,173,0.407) -> transparent a 62 %, 7 s en boucle (opacite 0,45 -> 0,8, taille x1,1).
        Comme sur l accueil il passe DERRIERE la photo (la carte photo recoit position relative + zIndex 1). Fond de la page inchange. */
