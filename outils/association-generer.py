@@ -304,6 +304,25 @@ def section_lieu(lg):
     return f'''<section class="lieu" id="lieu" aria-labelledby="lieu-t"><img class="lieu-fond" src="/{img}" alt="" loading="lazy">
 <div class="in"><div class="lieu-txt"><p class="sur">{e(T[lg]["lieu"])}</p><h2 id="lieu-t">{e(titre)}</h2><p>{e(texte)}</p></div><ul class="atouts">{li}</ul></div></section>'''
 
+# ═══ ÉTAPE 5 (14/10) : « Nous soutenir » (aucun paiement : contact par e-mail en attendant le compte Stripe de l'association) ═══
+SOUT={
+"fr":("Agir ensemble pour nos chevaux et notre environnement","Votre soutien permet de faire vivre nos projets et d'accompagner durablement nos actions. Les dons en ligne seront bientôt disponibles. En attendant, vous pouvez nous contacter pour en savoir plus.","Nous contacter pour soutenir un projet","Parce qu'un cheval change une vie, il mérite toute notre attention.","Soutenir un projet FEINN"),
+"en":("Acting together for our horses and our environment","Your support keeps our projects alive and helps us sustain our work over time. Online donations will be available soon. In the meantime, contact us to find out more.","Contact us to support a project","Because a horse changes a life, it deserves all our attention.","Supporting a FEINN project"),
+"es":("Actuar juntos por nuestros caballos y nuestro entorno","Tu apoyo da vida a nuestros proyectos y nos ayuda a mantener nuestras acciones en el tiempo. Las donaciones en línea estarán disponibles pronto. Mientras tanto, puedes contactarnos para saber más.","Contáctanos para apoyar un proyecto","Porque un caballo cambia una vida, merece toda nuestra atención.","Apoyar un proyecto de FEINN"),
+"it":("Agire insieme per i nostri cavalli e il nostro ambiente","Il vostro sostegno fa vivere i nostri progetti e accompagna nel tempo le nostre azioni. Le donazioni online saranno presto disponibili. Nel frattempo, potete contattarci per saperne di più.","Contattaci per sostenere un progetto","Perché un cavallo cambia una vita, merita tutta la nostra attenzione.","Sostenere un progetto FEINN"),
+"de":("Gemeinsam für unsere Pferde und unsere Umwelt","Ihre Unterstützung hält unsere Projekte lebendig und begleitet unsere Arbeit dauerhaft. Online-Spenden sind bald möglich. Bis dahin können Sie uns gerne kontaktieren, um mehr zu erfahren.","Kontaktieren Sie uns, um ein Projekt zu unterstützen","Weil ein Pferd ein Leben verändert, verdient es unsere ganze Aufmerksamkeit.","Ein FEINN-Projekt unterstützen"),
+"ja":("馬たちと環境のために、ともに行動を","皆さまのご支援が、私たちのプロジェクトを支え、活動を長く続ける力になります。オンラインでの寄付はまもなく開始します。それまでは、お気軽にお問い合わせください。","プロジェクトの支援について問い合わせる","馬は人生を変えてくれる。だからこそ、心を尽くして向き合いたい。","FEINNのプロジェクト支援について"),
+"ar":("معًا من أجل خيولنا وبيئتنا","دعمكم يُحيي مشاريعنا ويساعدنا على مواصلة أعمالنا على المدى الطويل. سيتوفر التبرع عبر الإنترنت قريبًا. وفي الأثناء، يمكنكم التواصل معنا لمعرفة المزيد.","تواصل معنا لدعم مشروع","لأن الحصان يغيّر حياة، فهو يستحق كل اهتمامنا.","دعم مشروع لجمعية FEINN"),
+}
+SOUT_ATTENTE="images/evenements-passes-large.webp"
+def section_soutenir(lg):
+    titre,texte,btn,cit,objet=SOUT[lg]
+    img="images/asso/soutenir.jpg" if os.path.exists(os.path.join(RACINE,"images/asso/soutenir.jpg")) else SOUT_ATTENTE
+    from urllib.parse import quote
+    return f'''<section class="soutenir" id="soutenir" aria-labelledby="sout-t"><div class="sout-txt"><p class="sur2">{e(T[lg]["soutenir"])}</p><h2 id="sout-t">{e(titre)}</h2><p>{e(texte)}</p>
+<div class="sout-actions"><a class="btn2" href="mailto:feinn@live.fr?subject={quote(objet)}">{e(btn)} {svg("fleche","ico dir")}</a><span class="mail">feinn@live.fr</span></div></div>
+<figure class="sout-photo"><img src="/{img}" alt="" loading="lazy"><blockquote>« {e(cit)} »</blockquote></figure></section>'''
+
 CSS=r"""
 :root{--noir:#05080B;--noir2:#070A08;--petrole:#0D1518;--ivoire:#F3EEE4;--doux:#C9CFCB;--gris:#9AA39F;--champ:#C9A66B;--trait:rgba(201,166,107,.42);--trait2:rgba(201,166,107,.18);
 --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--cinzel:Cinzel,"Cormorant Garamond",Georgia,serif;--sans:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -471,6 +490,35 @@ img{max-width:100%}
 }
 [dir=rtl] .lieu-fond{transform:scaleX(-1)}
 @media (min-width:1024px){[dir=rtl] .lieu::before{background:linear-gradient(270deg,rgba(5,8,11,.92) 0%,rgba(5,8,11,.66) 30%,rgba(5,8,11,.12) 55%,rgba(5,8,11,0) 75%)}}
+/* ── NOUS SOUTENIR ── */
+.soutenir{background:var(--ivoire);color:#191D1C;display:grid;grid-template-columns:minmax(0,1fr)}
+.sout-txt{padding:30px 16px 30px;max-width:640px}
+.soutenir h2{font:400 clamp(26px,6.8vw,34px)/1.14 var(--serif);margin:0 0 10px;color:#14181A;text-wrap:balance}
+.sout-txt>p:not(.sur2){margin:0 0 20px;font:400 14.5px/1.6 var(--sans);color:#4A504D}
+.sout-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.btn2{display:inline-flex;align-items:center;gap:12px;min-height:46px;padding:0 22px;border-radius:999px;background:#0F1416;color:#F3EEE4;text-decoration:none;font:500 16px var(--serif);border:1px solid #0F1416}
+.btn2 .ico{width:18px;height:18px}
+.btn2:hover{background:#1C2427}
+.mail{font:400 14px var(--sans);color:#4A504D;user-select:all}
+.sout-photo{position:relative;margin:0;min-height:230px;background:var(--noir);overflow:hidden}
+.sout-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 40%}
+.sout-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.15),rgba(5,8,11,.65))}
+.sout-photo blockquote{position:absolute;inset-inline:20px;bottom:22px;z-index:1;margin:0;font:italic 500 19px/1.4 var(--serif);color:#F3EEE4;text-align:start}
+@media (min-width:640px){.sout-txt{padding:40px 32px}.sout-photo{min-height:280px}}
+@media (min-width:1024px){
+ .soutenir{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:300px}
+ .sout-txt{padding:44px 32px 44px max(32px,calc((100vw - 1240px)/2 + 32px));max-width:none;align-self:center}
+ .sout-photo{min-height:0}
+ .sout-photo::after{background:linear-gradient(90deg,var(--ivoire) 0%,rgba(243,238,228,.55) 14%,rgba(5,8,11,.10) 38%,rgba(5,8,11,.35) 100%),linear-gradient(0deg,rgba(5,8,11,.7) 0%,rgba(5,8,11,0) 45%)}
+ [dir=rtl] .sout-photo::after{background:linear-gradient(270deg,var(--ivoire) 0%,rgba(243,238,228,.55) 14%,rgba(5,8,11,.10) 38%,rgba(5,8,11,.35) 100%)}
+ .sout-photo blockquote{inset-inline:auto 36px;max-width:19em;bottom:30px;text-align:end;font-size:21px;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+ .sout-photo{background:linear-gradient(0deg,rgba(5,8,11,.55),rgba(5,8,11,0) 45%)}
+}
+/* ── L'ASSOCIATION (texte) ── */
+.asso-txt{margin:0;padding:40px 0 8px}
+.asso-txt h2{margin-top:0}
+.asso-txt p{max-width:42em}
+@media (min-width:640px){.asso-txt{padding:52px 0 8px}}
 /* ── CONTENU (sections actuelles, refondues aux étapes suivantes) ── */
 main{max-width:1120px;margin:0 auto;padding:0 20px 20px}
 h2{font:500 clamp(28px,7vw,38px)/1.1 var(--serif);margin:42px 0 6px;color:var(--ivoire)}
@@ -572,12 +620,9 @@ def page(lg):
 {bandeau(lg)}
 {section_projets(lg)}
 {section_lieu(lg)}
+{section_soutenir(lg)}
 <main>
-<section class="presentation" id="association"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div>
-</section>
-<div class="bande"><blockquote>{e(t["citation1"])}</blockquote></div>
-<div class="sep"><span></span></div>
-<div class="bande"><blockquote>{e(t["citation2"])}</blockquote></div>
+<section class="presentation asso-txt" id="association"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div></section>
 <div class="sep"><span></span></div>
 <section id="mentions-legales"><h2>{e(t["ml_t"])}</h2><div class="trait"></div>
 <div class="legal"><div class="carte">
