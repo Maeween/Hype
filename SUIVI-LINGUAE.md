@@ -1,3 +1,19 @@
+# 🗓️ 14/10 (nuit, suite) — PORTUGAIS 🇵🇹 ET BRÉSILIEN 🇧🇷 ACTIVÉS : 10e ET 11e LANGUES — horselingo `3f5837a` [publier]
+
+**Demande de Blandine** : « Fais la même chose en portugais puis en brésilien » (même carte blanche que pour le néerlandais). Deux langues séparées : **pt** = portugais du Portugal (voix pt-PT, élève tutoyé), **br** = portugais du Brésil (voix pt-BR, « você », vocabulaire des écuries brésiliennes : baia, barrigueira, adestramento…). « br » est le code interne de l'appli ; Google et les navigateurs reçoivent le vrai code **pt-BR**. Mises en ligne ensemble (pas de « 10 langues » transitoire). Hype n'est **pas** touché.
+
+**Contenu (préparation `f998533`, puis `3f5837a`)** : glossaire de 875 concepts par langue, puis les 43 fichiers de vocabulaire (définitions, phrases, dialogues, cartes postales, lettres des 39 villes) et toute l'interface (lingo.html : 676 textes ; dialogue, collection, globe, sellerie ; 65 libellés d'exercices ; duel). ⚠️ **Traduit par Claude (travail réparti entre plusieurs agents, mêmes glossaires imposés), jamais relu par un natif** — même statut que l'arabe, le chinois et le néerlandais. Points à faire relire en priorité : « ensino » (pt) pour le dressage, « o clínic » (br) pour le stage, « os ombros » (br, les Brésiliens disent souvent « a paleta »), « a seleção nacional » pour cadre ET équipe nationale.
+
+**Activation** : LANGUES_UI, LG/LGN (PT, BR), VOIX, destinations « Le portugais » (clé neuve `tejo`) et « Le brésilien » (clé neuve `sertao`), lexique (drapeaux, tri sans o/a/um/do/da…), signatures « Até breve, Hype » / « Até logo, Hype ». « Écris le mot » gardé. « neuf langues » → **onze** partout, « · PT · BR » ajouté aux listes, 葡・伯 dans la liste japonaise. Pages Google : **/pt/vocabulario/** et **/br/vocabulario/** + colonnes partout (39 étapes, 947 mots, 11 langues, 441 adresses dans le sitemap). Aperçu des adresses courtes : « en 11 langues ».
+
+**Affichage** : téléphone (≤ 600 px) — les 11 drapeaux passent sur **deux lignes (6 + 5)** au lieu d'une ligne écrasée ; les pastilles de langue du récit sur deux lignes équilibrées. Tablette et ordinateur : une seule ligne.
+
+**Corrigé au passage (néerlandais)** : l'outil d'insertion rognait les espaces de début/fin → « Les1 », « Stad2 », « verwijzingscode:XXX » ; espaces rétablis, outil corrigé.
+
+**Contrôles (Chromium)** : leçons fr→pt, fr→br, pt→en, br→en, pt→br, br→pt, ja→pt, ar→br, en→pt, de→br, nl→pt, zh→br, fr→nl : **aucune erreur JS** ; dialogue de La Baule juste en pt et br ; aucun texte des 5 pages sans pt/br ; drapeaux à 320, 390, 820, 1440 px. Mise en ligne vérifiée (déploiement Netlify « ready » sur 3f5837a, /br/vocabulario/aachen/ répond en brésilien, og:locale pt_BR).
+
+**Reste (non bloquant)** : relecture par des natifs (Portugal et Brésil) · Hype dans ces langues si Blandine le souhaite.
+
 # 🗓️ 14/10 (nuit, suite) — LE NÉERLANDAIS ACTIVÉ : 9e LANGUE DE LECTURE ET DE VOYAGE — horselingo `2891c4d` [publier]
 
 **Demande de Blandine** : « Ok vas y ajoute le néerlandais, tu as carte blanche […] gère ça de façon autonome […] préviens-moi quand c'est fini ». Néerlandais des Pays-Bas (nl, voix nl-NL, drapeau 🇳🇱). Hype (2hype.fr) n'est **pas** touché (question posée, pas de réponse).
