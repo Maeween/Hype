@@ -12427,3 +12427,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - ⚠️ Points de l'audit du 13/10 NON appliqués faute de détail retrouvé (à revérifier avec Blandine) : titre baby-c18, quiz 4 de baby-c22 (« immédiatement »), g3-c13 (« Les aides intérieures »), quiz de g3-saut (« fait passer »), g4-c5 (liste santé), g4-soins-travail (phrase de la douche), quiz 5 de g4-vitesse, g5-c2, g5-c3, g6-c1.
 - ⚠️ Galops 5, 6, 7 : toujours en français seul (en-tête de hype-cours-galops-sup.js) — gros chantier de traduction à part.
 - Marqueur 20261014-1102. 16 scripts 0 erreur ; 4 fichiers de cours : syntaxe OK ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1103 : l'accord de renoncement (14 jours) est noté en base
+- Supabase : table `renonciations_retractation` créée (id, user_id = auth.uid() par défaut, offre, langue, version_texte, accepte_le). RLS : chacun AJOUTE seulement sa propre ligne ; lecture = soi-même ou modératrice (`hype_est_moderatrice()`) ; aucune modification ni suppression possible (pas de règle UPDATE/DELETE) ; anon sans accès. Testé en base (insertion simulée puis annulée) : OK.
+- index.html (build 20261014-1103) : dans `accordRenonce()`, après « OK », insertion en arrière-plan (offre = clé Stripe, langue, version « 2026-10-13 · L221-28 · v1 »). Ne bloque jamais le paiement ; si non connecté ou base muette, l'accord reste seulement dans localStorage comme avant.
+- Pour voir les accords : Supabase → Table Editor → renonciations_retractation.
+- Si le texte du renoncement change un jour : changer aussi `version_texte`.
