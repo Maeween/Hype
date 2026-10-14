@@ -1,6 +1,7 @@
 -- ═══════════════════════════════════════════════════════════════════════════
--- HYPE — PREMIUM FAMILLE (étape 2 : architecture) — PROJET, NON EXÉCUTÉ
+-- HYPE — PREMIUM FAMILLE (étapes 2, 3 et 3 bis) — PROJET, NON EXÉCUTÉ
 -- Préparé le 14/10/2026. À passer par Blandine UNIQUEMENT après validation.
+-- Retour arrière : premium_famille_retour_arriere.sql (même dossier).
 -- Ne touche pas à abonnements_premium : les droits Famille s'AJOUTENT aux autres.
 -- Testé sur une base PostgreSQL 16 locale (stubs Supabase) avant proposition.
 -- ═══════════════════════════════════════════════════════════════════════════
@@ -13,9 +14,11 @@ create table if not exists public.familles (
   stripe_customer text,
   statut text not null default 'actif' check (statut in ('actif','impaye','annule')),
   expire_le timestamptz,
+  stripe_evenement_le timestamptz,   -- date du dernier message Stripe appliqué (les plus anciens sont ignorés)
   cree_le timestamptz not null default now(),
   maj_le timestamptz not null default now()
 );
+alter table public.familles add column if not exists stripe_evenement_le timestamptz;
 -- Un titulaire n'a qu'UNE famille en cours.
 create unique index if not exists familles_une_en_cours_par_titulaire
   on public.familles(titulaire_id) where statut in ('actif','impaye');
@@ -52,6 +55,21 @@ create table if not exists public.famille_journal (
   cree_le timestamptz not null default now()
 );
 
+-- 3 bis. ESSAIS DE CODE RATÉS (limite : 10 par heure et par compte). Ni lisible ni modifiable par l'appli.
+create table if not exists public.famille_essais (
+  id bigint generated always as identity primary key,
+  user_id uuid not null,
+  cree_le timestamptz not null default now()
+);
+create index if not exists famille_essais_par_compte on public.famille_essais(user_id, cree_le);
+alter table public.famille_essais enable row level security;
+revoke all on public.famille_essais from anon, authenticated;
+
+-- 3 ter. Nouvelle sorte d'anomalie : compte supprimé alors qu'un abonnement Stripe tourne peut-être encore.
+alter table public.paiements_a_verifier drop constraint if exists paiements_a_verifier_anomalie_check;
+alter table public.paiements_a_verifier add constraint paiements_a_verifier_anomalie_check
+  check (anomalie in ('offre_inconnue','double_abonnement','paiement_non_confirme','changement_formule','compte_supprime_abonnement_actif'));
+
 -- 4. SÉCURITÉ : lecture de SA famille uniquement ; aucune écriture directe.
 alter table public.familles enable row level security;
 alter table public.famille_membres enable row level security;
@@ -86,8 +104,9 @@ create or replace function public.famille_inviter() returns text
 language plpgsql security definer set search_path = public, extensions, pg_temp as $$
 declare v_f uuid; v_code text;
 begin
+  -- « for update » : une seule action à la fois par famille (deux clics simultanés passent l'un après l'autre)
   select id into v_f from public.familles
-   where titulaire_id = auth.uid() and statut = 'actif' and (expire_le is null or expire_le > now());
+   where titulaire_id = auth.uid() and statut = 'actif' and (expire_le is null or expire_le > now()) for update;
   if v_f is null then raise exception 'FAMILLE_INTROUVABLE'; end if;
   if exists (select 1 from public.famille_membres where famille_id = v_f and role = 'beneficiaire' and statut = 'actif') then
     raise exception 'DEJA_UN_DEUXIEME_CAVALIER';
@@ -101,53 +120,81 @@ begin
   return v_code;
 end $$;
 
--- 5b. Le deuxième cavalier accepte (connecté). Limites : 1 nouveau cavalier / 30 jours, 4 cavaliers différents / an (le 1er + 3 remplacements).
-create or replace function public.famille_accepter(p_code text) returns boolean
+-- 5a bis. Contrôle commun d'un code reçu : compte connecté, pas plus de 10 codes faux par heure.
+--         Rend la ligne d'invitation valable, ou un code d'erreur (le code faux est alors compté).
+create or replace function public.famille_controle_code(p_code text, out ligne public.famille_membres, out erreur text)
 language plpgsql security definer set search_path = public, extensions, pg_temp as $$
-declare v_m public.famille_membres; v_f public.familles;
 begin
-  if auth.uid() is null then raise exception 'CONNEXION_REQUISE'; end if;
-  select * into v_m from public.famille_membres
-   where code_hash = encode(digest(p_code, 'sha256'), 'hex') and statut = 'invite' for update;
-  if v_m.id is null or v_m.invite_expire_le < now() then raise exception 'INVITATION_INVALIDE'; end if;
-  select * into v_f from public.familles where id = v_m.famille_id;
-  if v_f.statut <> 'actif' or (v_f.expire_le is not null and v_f.expire_le <= now()) then raise exception 'FAMILLE_INACTIVE'; end if;
-  if v_f.titulaire_id = auth.uid() then raise exception 'TITULAIRE_NE_PEUT_PAS_ACCEPTER'; end if;
+  if auth.uid() is null then erreur := 'CONNEXION_REQUISE'; return; end if;
+  delete from public.famille_essais where cree_le < now() - interval '1 day';
+  if (select count(*) from public.famille_essais where user_id = auth.uid() and cree_le > now() - interval '1 hour') >= 10 then
+    erreur := 'TROP_D_ESSAIS'; return;
+  end if;
+  select * into ligne from public.famille_membres
+   where code_hash = encode(digest(coalesce(p_code, ''), 'sha256'), 'hex') and statut = 'invite';
+  if ligne.id is null or ligne.invite_expire_le <= now() then
+    insert into public.famille_essais (user_id) values (auth.uid());
+    ligne := null; erreur := 'INVITATION_INVALIDE';
+  end if;
+end $$;
+
+-- 5b. Le deuxième cavalier accepte (connecté, après avoir appuyé sur « Accepter »).
+--     Rend 'OK' ou un code d'erreur lisible (jamais d'erreur technique).
+--     Limites : 1 nouveau cavalier / 30 jours, 4 cavaliers différents / an (le 1er + 3 remplacements).
+drop function if exists public.famille_accepter(text);
+create or replace function public.famille_accepter(p_code text) returns text
+language plpgsql security definer set search_path = public, extensions, pg_temp as $$
+declare c record; v_m public.famille_membres; v_f public.familles;
+begin
+  select * into c from public.famille_controle_code(p_code);
+  if c.erreur is not null then return c.erreur; end if;
+  -- Une seule action à la fois sur cette famille : on la réserve, puis on relit l'invitation.
+  select * into v_f from public.familles where id = (c.ligne).famille_id for update;
+  select * into v_m from public.famille_membres where id = (c.ligne).id for update;
+  if v_m.statut <> 'invite' or v_m.invite_expire_le <= now() then return 'INVITATION_INVALIDE'; end if;
+  if v_f.statut <> 'actif' or (v_f.expire_le is not null and v_f.expire_le <= now()) then return 'FAMILLE_INACTIVE'; end if;
+  if v_f.titulaire_id = auth.uid() then return 'TITULAIRE_NE_PEUT_PAS_ACCEPTER'; end if;
   if exists (select 1 from public.famille_membres where user_id = auth.uid() and role = 'beneficiaire' and statut = 'actif') then
-    raise exception 'DEJA_DANS_UNE_FAMILLE';
+    return 'DEJA_DANS_UNE_FAMILLE';
   end if;
   if exists (select 1 from public.familles where titulaire_id = auth.uid() and statut in ('actif','impaye')) then
-    raise exception 'DEJA_TITULAIRE';
+    return 'DEJA_TITULAIRE';
   end if;
   if exists (select 1 from public.famille_membres where famille_id = v_f.id and role = 'beneficiaire'
               and active_le > now() - interval '30 days' and user_id is distinct from auth.uid()) then
-    raise exception 'LIMITE_30_JOURS';
+    return 'LIMITE_30_JOURS';
   end if;
   if (select count(distinct user_id) from public.famille_membres where famille_id = v_f.id and role = 'beneficiaire'
        and active_le > now() - interval '365 days' and user_id is distinct from auth.uid()) >= 4 then
-    raise exception 'LIMITE_ANNUELLE';
+    return 'LIMITE_ANNUELLE';
   end if;
-  update public.famille_membres set user_id = auth.uid(), statut = 'actif', code_hash = null,
-         active_le = now(), maj_le = now() where id = v_m.id;
+  begin
+    update public.famille_membres set user_id = auth.uid(), statut = 'actif', code_hash = null,
+           active_le = now(), maj_le = now() where id = v_m.id;
+  exception when unique_violation then
+    -- Rejoint une autre famille à la même seconde : la base a refusé, on le dit clairement.
+    return 'DEJA_DANS_UNE_FAMILLE';
+  end;
   -- Cas A : le nouveau venu payait déjà Premium lui-même → noté pour Blandine (aucune résiliation automatique)
   insert into public.famille_journal (famille_id, acteur, action, detail) values (v_f.id, auth.uid(), 'acceptation',
     case when exists (select 1 from public.abonnements_premium a where a.user_id = auth.uid() and a.statut = 'actif'
                         and a.plan in ('mensuel','annuel','duo') and (a.expire_le is null or a.expire_le > now()))
          then 'deja_premium_personnel' end);
-  return true;
+  return 'OK';
 end $$;
 
--- 5c. Le deuxième cavalier refuse.
-create or replace function public.famille_refuser(p_code text) returns boolean
+-- 5c. Le deuxième cavalier refuse. Rend 'OK' ou un code d'erreur.
+drop function if exists public.famille_refuser(text);
+create or replace function public.famille_refuser(p_code text) returns text
 language plpgsql security definer set search_path = public, extensions, pg_temp as $$
-declare v_m public.famille_membres;
+declare c record;
 begin
-  select * into v_m from public.famille_membres
-   where code_hash = encode(digest(p_code, 'sha256'), 'hex') and statut = 'invite';
-  if v_m.id is null then raise exception 'INVITATION_INVALIDE'; end if;
-  update public.famille_membres set statut = 'refuse', code_hash = null, maj_le = now() where id = v_m.id;
-  insert into public.famille_journal (famille_id, acteur, action) values (v_m.famille_id, auth.uid(), 'refus');
-  return true;
+  select * into c from public.famille_controle_code(p_code);
+  if c.erreur is not null then return c.erreur; end if;
+  update public.famille_membres set statut = 'refuse', code_hash = null, maj_le = now()
+   where id = (c.ligne).id and statut = 'invite';
+  insert into public.famille_journal (famille_id, acteur, action) values ((c.ligne).famille_id, auth.uid(), 'refus');
+  return 'OK';
 end $$;
 
 -- 5d. Le titulaire retire le deuxième cavalier (ou annule l'invitation en cours).
@@ -155,7 +202,7 @@ create or replace function public.famille_retirer() returns boolean
 language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_f uuid;
 begin
-  select id into v_f from public.familles where titulaire_id = auth.uid() and statut in ('actif','impaye');
+  select id into v_f from public.familles where titulaire_id = auth.uid() and statut in ('actif','impaye') for update;
   if v_f is null then raise exception 'FAMILLE_INTROUVABLE'; end if;
   update public.famille_membres set statut = 'retire', code_hash = null, maj_le = now()
    where famille_id = v_f and role = 'beneficiaire' and statut in ('invite','actif');
@@ -170,20 +217,26 @@ declare v_m public.famille_membres;
 begin
   select * into v_m from public.famille_membres where user_id = auth.uid() and role = 'beneficiaire' and statut = 'actif';
   if v_m.id is null then raise exception 'PAS_DE_FAMILLE'; end if;
+  perform 1 from public.familles where id = v_m.famille_id for update;
   update public.famille_membres set statut = 'retire', maj_le = now() where id = v_m.id;
   insert into public.famille_journal (famille_id, acteur, action) values (v_m.famille_id, auth.uid(), 'depart');
   return true;
 end $$;
 
 drop function if exists public.famille_voir_invitation(text);
--- 5f. Ce que l'invitation montre avant d'accepter : seulement le pseudo du titulaire.
-create or replace function public.famille_voir_invitation(p_code text) returns table(valide boolean, titulaire text)
-language sql stable security definer set search_path = public, extensions, pg_temp as $$
-  select (m.statut = 'invite' and m.invite_expire_le > now() and f.statut = 'actif'), coalesce(p.pseudo, '')
-    from public.famille_membres m join public.familles f on f.id = m.famille_id
-    left join public.profiles p on p.id = f.titulaire_id
-   where m.code_hash = encode(digest(p_code, 'sha256'), 'hex');
-$$;
+-- 5f. Ce que l'invitation montre avant d'accepter : seulement le pseudo du titulaire (codes faux comptés).
+create or replace function public.famille_voir_invitation(p_code text) returns table(valide boolean, titulaire text, raison text)
+language plpgsql security definer set search_path = public, extensions, pg_temp as $$
+declare c record; v_f public.familles;
+begin
+  select * into c from public.famille_controle_code(p_code);
+  if c.erreur is not null then return query select false, ''::text, c.erreur; return; end if;
+  select * into v_f from public.familles where id = (c.ligne).famille_id;
+  if v_f.statut <> 'actif' or (v_f.expire_le is not null and v_f.expire_le <= now()) then
+    return query select false, ''::text, 'FAMILLE_INACTIVE'::text; return;
+  end if;
+  return query select true, coalesce((select pseudo from public.profiles where id = v_f.titulaire_id), ''), null::text;
+end $$;
 
 -- 5g. Ma famille, pour l'écran « Mon compte » (rien si je n'en ai pas).
 create or replace function public.famille_mon_etat() returns jsonb
@@ -217,7 +270,9 @@ end $$;
 
 -- 5h. RÉSERVÉ AU RELAIS STRIPE (clé serveur) : ouvrir une famille après paiement.
 --     Rend 'cree', 'deja' (même abonnement déjà enregistré) ou 'autre_famille' (le titulaire en a déjà une autre en cours).
-create or replace function public.famille_ouvrir(p_titulaire uuid, p_sub text, p_customer text, p_expire timestamptz) returns text
+drop function if exists public.famille_ouvrir(uuid, text, text, timestamptz);
+create or replace function public.famille_ouvrir(p_titulaire uuid, p_sub text, p_customer text, p_expire timestamptz,
+                                                 p_evenement_le timestamptz default null) returns text
 language plpgsql security definer set search_path = public, pg_temp as $$
 declare v_f uuid;
 begin
@@ -226,25 +281,64 @@ begin
               and (expire_le is null or expire_le > now())) then return 'autre_famille'; end if;
   -- ancienne famille du même titulaire restée « en cours » mais échue : on la clôt proprement
   update public.familles set statut = 'annule', maj_le = now() where titulaire_id = p_titulaire and statut in ('actif','impaye');
-  insert into public.familles (titulaire_id, stripe_subscription, stripe_customer, statut, expire_le)
-  values (p_titulaire, p_sub, p_customer, 'actif', p_expire) returning id into v_f;
+  insert into public.familles (titulaire_id, stripe_subscription, stripe_customer, statut, expire_le, stripe_evenement_le)
+  values (p_titulaire, p_sub, p_customer, 'actif', p_expire, p_evenement_le) returning id into v_f;
   insert into public.famille_membres (famille_id, user_id, role, statut, active_le) values (v_f, p_titulaire, 'titulaire', 'actif', now());
   insert into public.famille_journal (famille_id, acteur, action, detail) values (v_f, p_titulaire, 'ouverture', p_sub);
   return 'cree';
 end $$;
 
--- 5i. RÉSERVÉ AU RELAIS STRIPE : renouvellement, impayé, résiliation. Rend le nombre de familles touchées (0 ou 1).
-create or replace function public.famille_maj(p_sub text, p_statut text, p_expire timestamptz default null) returns integer
+-- 5i. RÉSERVÉ AU RELAIS STRIPE : renouvellement, impayé, résiliation.
+--     Rend 1 si l'abonnement est bien une famille (même si le message est ignoré), 0 sinon.
+--     Règles d'ordre (3 bis) :
+--       · une famille résiliée ne revient JAMAIS (un nouvel achat ouvre une nouvelle famille) ;
+--       · un message Stripe plus ancien que le dernier appliqué est ignoré ;
+--       · « payé » ne réactive que si la facture couvre une période PLUS RÉCENTE (la date de fin ne recule jamais) ;
+--       · « impayé » ne touche qu'une famille active.
+drop function if exists public.famille_maj(text, text, timestamptz);
+create or replace function public.famille_maj(p_sub text, p_statut text, p_expire timestamptz default null,
+                                              p_evenement_le timestamptz default null) returns integer
 language plpgsql security definer set search_path = public, pg_temp as $$
-declare v_f uuid;
+declare v_f public.familles; v_action text;
 begin
   if p_statut not in ('actif','impaye','annule') then raise exception 'STATUT_INVALIDE'; end if;
-  update public.familles set statut = p_statut, expire_le = coalesce(p_expire, expire_le), maj_le = now()
-   where stripe_subscription = p_sub returning id into v_f;
-  if v_f is null then return 0; end if;
-  insert into public.famille_journal (famille_id, action, detail) values (v_f, 'stripe_' || p_statut, p_sub);
+  select * into v_f from public.familles where stripe_subscription = p_sub for update;
+  if v_f.id is null then return 0; end if;
+  if v_f.statut = 'annule' then
+    v_action := 'ignore_deja_resiliee';
+  elsif p_evenement_le is not null and v_f.stripe_evenement_le is not null and p_evenement_le < v_f.stripe_evenement_le then
+    v_action := 'ignore_message_ancien';
+  elsif p_statut = 'annule' then
+    update public.familles set statut = 'annule', maj_le = now(),
+           stripe_evenement_le = greatest(stripe_evenement_le, p_evenement_le) where id = v_f.id;
+    v_action := 'stripe_annule';
+  elsif p_statut = 'impaye' then
+    if v_f.statut = 'actif' then
+      update public.familles set statut = 'impaye', maj_le = now(),
+             stripe_evenement_le = greatest(stripe_evenement_le, p_evenement_le) where id = v_f.id;
+      v_action := 'stripe_impaye';
+    else v_action := 'ignore_deja_impaye'; end if;
+  else -- 'actif'
+    if p_expire is not null and (v_f.expire_le is null or p_expire > v_f.expire_le) then
+      update public.familles set statut = 'actif', expire_le = p_expire, maj_le = now(),
+             stripe_evenement_le = greatest(stripe_evenement_le, p_evenement_le) where id = v_f.id;
+      v_action := 'stripe_actif';
+    else v_action := 'ignore_periode_ancienne'; end if;
+  end if;
+  insert into public.famille_journal (famille_id, action, detail) values (v_f.id, v_action, p_sub);
   return 1;
 end $$;
+
+-- 5i bis. RÉSERVÉ AU SERVEUR : ce compte fait-il partie d'une famille en cours ? ('titulaire', 'beneficiaire' ou null)
+create or replace function public.famille_du_compte(p_uid uuid) returns text
+language sql stable security definer set search_path = public, pg_temp as $$
+  select case when exists (select 1 from public.familles f where f.titulaire_id = p_uid and f.statut in ('actif','impaye')
+                             and (f.expire_le is null or f.expire_le > now())) then 'titulaire'
+              when exists (select 1 from public.familles f join public.famille_membres m on m.famille_id = f.id
+                            where m.user_id = p_uid and m.role = 'beneficiaire' and m.statut = 'actif'
+                              and f.statut in ('actif','impaye') and (f.expire_le is null or f.expire_le > now())) then 'beneficiaire'
+         end;
+$$;
 
 -- 5j. Famille résiliée → les deux rattachements prennent fin (les comptes et données restent).
 --     Le deuxième cavalier peut alors rejoindre une autre famille.
@@ -313,10 +407,12 @@ end $$;
 
 revoke all on function public.famille_inviter(), public.famille_accepter(text), public.famille_refuser(text),
   public.famille_retirer(), public.famille_quitter(), public.famille_voir_invitation(text), public.famille_mon_etat(),
-  public.hype_droits(uuid), public.famille_ouvrir(uuid, text, text, timestamptz), public.famille_maj(text, text, timestamptz),
-  public.famille_fin_rattachements() from public, anon, authenticated;
+  public.hype_droits(uuid), public.famille_ouvrir(uuid, text, text, timestamptz, timestamptz),
+  public.famille_maj(text, text, timestamptz, timestamptz), public.famille_du_compte(uuid),
+  public.famille_controle_code(text), public.famille_de_moi(), public.famille_fin_rattachements() from public, anon, authenticated;
 grant execute on function public.famille_inviter(), public.famille_accepter(text), public.famille_refuser(text),
   public.famille_retirer(), public.famille_quitter(), public.famille_voir_invitation(text), public.famille_mon_etat(),
-  public.hype_droits(uuid) to authenticated;
--- Ouvrir / mettre à jour une famille : uniquement le relais Stripe (clé serveur), jamais l'appli.
-grant execute on function public.famille_ouvrir(uuid, text, text, timestamptz), public.famille_maj(text, text, timestamptz) to service_role;
+  public.hype_droits(uuid), public.famille_de_moi() to authenticated;
+-- Ouvrir / mettre à jour une famille, savoir si un compte est en famille : uniquement le serveur (clé secrète), jamais l'appli.
+grant execute on function public.famille_ouvrir(uuid, text, text, timestamptz, timestamptz),
+  public.famille_maj(text, text, timestamptz, timestamptz), public.famille_du_compte(uuid) to service_role;

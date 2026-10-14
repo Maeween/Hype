@@ -18,6 +18,11 @@ create table public.abonnements_premium (
   user_id uuid primary key, email text, stripe_customer text, stripe_subscription text,
   plan text, statut text, expire_le timestamptz, maj_le timestamptz,
   notif_motif text, notif_ancien_plan text, notifie_le timestamptz);
+create table public.paiements_a_verifier (
+  id bigint generated always as identity primary key, stripe_event_id text not null unique, type_evenement text not null,
+  reference_stripe text, identifiant_offre text, user_id uuid, email text, montant_centimes integer,
+  anomalie text not null check (anomalie in ('offre_inconnue','double_abonnement','paiement_non_confirme','changement_formule')),
+  statut text not null default 'a_verifier', note text, cree_le timestamptz not null default now(), maj_le timestamptz not null default now());
 create table public.hype_ambassadeurs (email text primary key, nom text, ajoute_le timestamptz default now());
 create or replace function public.hype_est_moderatrice() returns boolean
 language sql stable security definer set search_path = public, auth as $$

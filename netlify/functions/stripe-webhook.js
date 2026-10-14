@@ -133,9 +133,39 @@ const FAMILLE_PRIX = new Set([
    Famille : il fonctionne même si le SQL Famille n'est pas encore passé. */
 const FAMILLE_EN_VENTE = Object.keys(FAMILLE_LIENS).length > 0 || FAMILLE_PRIX.size > 0;
 /* Met à jour une famille par son abonnement Stripe ; 0 si aucune (ou si pas en vente). */
-async function majFamille(service, sub, statut, expire) {
+/* 3 bis : on transmet la DATE du message Stripe. La base ignore les messages plus
+   anciens que le dernier appliqué, ne réactive jamais une famille résiliée et ne fait
+   jamais reculer la date de fin (vieille facture rejouée = sans effet).          */
+function dateEvenement(evenement) {
+    return (evenement && evenement.created) ? new Date(evenement.created * 1000).toISOString() : null;
+}
+async function majFamille(service, evenement, sub, statut, expire) {
     if (!FAMILLE_EN_VENTE || !sub) return 0;
-    return Number(await appelRpc(service, "famille_maj", { p_sub: sub, p_statut: statut, p_expire: expire || null })) || 0;
+    return Number(await appelRpc(service, "famille_maj",
+        { p_sub: sub, p_statut: statut, p_expire: expire || null, p_evenement_le: dateEvenement(evenement) })) || 0;
+}
+/* ── 3 bis : DOUBLE ABONNEMENT DANS L'AUTRE SENS ─────────────────────────────────
+   Un membre d'une famille en cours (titulaire ou deuxième cavalier) achète en plus
+   un abonnement personnel. Le paiement est TOUJOURS enregistré (rien n'est bloqué,
+   retiré ni résilié) ; on prévient seulement Blandine avec une note qui dit quoi faire.
+     · Premium Cavalier ou Crystal : Premium payé deux fois  → doublon complet.
+     · Pack Duo : Premium en double, mais les 20 questions IA servent → doublon partiel.
+     · Hype IA : complémentaire (IA en plus) → aucune alerte.
+   Si la vérification est impossible (tables Famille absentes, panne), on n'empêche
+   rien : l'achat reste valable, l'incident est seulement écrit dans le journal.   */
+const NOTES_DOUBLE = {
+    mensuel: "Famille + Premium Cavalier : Premium payé deux fois. Proposer d'arrêter l'un des deux (avec l'accord du cavalier).",
+    annuel: "Famille + Cercle Crystal : Premium payé deux fois. Proposer un remboursement partiel ou de quitter la famille (avec accord).",
+    duo: "Famille + Pack Duo : Premium en double, mais les 20 questions IA servent. Proposer Hype IA seule à la place (avec accord).",
+};
+async function signalerSiFamille(service, evenement, userId, plan, infos) {
+    if (!userId || !NOTES_DOUBLE[plan]) return true;
+    let role = null;
+    try { role = await appelRpc(service, "famille_du_compte", { p_uid: userId }); }
+    catch (e) { log("vérification Famille impossible (achat conservé) :", e && e.message); return true; }
+    if (!role) return true;
+    return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement",
+        note: NOTES_DOUBLE[plan] + " (" + (role === "titulaire" ? "titulaire" : "deuxième cavalier") + " d'une famille)" });
 }
 
 async function appelRpc(service, nom, params) {
@@ -153,16 +183,26 @@ function premiumPersoPaye(ligne) {
 /* Ouvre la famille ; rend true si tout est bien enregistré (sinon Stripe réessaiera). */
 async function ouvrirFamille(service, evenement, userId, sub, client, expire, infos) {
     const res = await appelRpc(service, "famille_ouvrir",
-        { p_titulaire: userId, p_sub: sub, p_customer: client, p_expire: expire });
+        { p_titulaire: userId, p_sub: sub, p_customer: client, p_expire: expire, p_evenement_le: dateEvenement(evenement) });
     log("Famille :", res, "—", sub, "—", infos.email || "");
     if (res === "autre_famille") {
         // Le titulaire paie déjà une AUTRE famille en cours : rien de plus, à vérifier.
-        return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement" });
+        return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement",
+            note: "Deuxième abonnement Famille payé par le même titulaire : à rembourser (avec accord)." });
     }
-    if (res === "cree" && premiumPersoPaye(await ligneParUtilisateur(service, userId))) {
+    if (res === "cree" || res === "deja") {
         // Cas B : il payait déjà Premium Cavalier/Duo/Crystal → famille ouverte (il a payé),
         // et signalée pour arrêter ou rembourser l'ancien, AVEC son accord. Rien d'automatique.
-        return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement" });
+        // (« deja » aussi : si Stripe renvoie le message, l'alerte n'est pas perdue — une seule ligne par message.)
+        const ligne = await ligneParUtilisateur(service, userId);
+        if (premiumPersoPaye(ligne)) {
+            return anomalie(service, evenement, { ...infos, user_id: userId, anomalie: "double_abonnement",
+                note: (ligne.plan === "duo"
+                    ? "Pack Duo puis Famille : Premium en double, les 20 questions IA servent. Proposer Hype IA seule à la place (avec accord)."
+                    : ligne.plan === "annuel"
+                        ? "Cercle Crystal puis Famille : Premium payé deux fois. Proposer un remboursement partiel (avec accord)."
+                        : "Premium Cavalier puis Famille : Premium payé deux fois. Arrêter l'abonnement Cavalier (avec accord).") });
+        }
     }
     return true;
 }
@@ -293,6 +333,7 @@ async function anomalie(service, evenement, infos) {
             user_id: infos.user_id || null, email: infos.email || null,
             montant_centimes: (typeof infos.montant === "number") ? infos.montant : null,
             anomalie: infos.anomalie,
+            note: infos.note || null,
         }),
     });
     if (!r.ok) log("anomalie NON enregistrée", r.status, (await r.text().catch(() => "")).slice(0, 300));
@@ -459,6 +500,7 @@ export default async (req) => {
                 if (dejaFait) {
                     // Même achat déjà enregistré (message reçu deux fois) : rien à refaire.
                     log("achat déjà enregistré, rien à refaire :", refS);
+                    ecritureOk = await signalerSiFamille(service, evenement, userId, plan, infosBase);
                 } else if (accesPayeConcurrent(ligneU, objet.subscription || null)) {
                     // Le compte a déjà un AUTRE accès payé valable : on n'écrase rien.
                     ecritureOk = await anomalie(service, evenement, { ...infosBase, anomalie: "double_abonnement" });
@@ -479,6 +521,7 @@ export default async (req) => {
                 log("Accès activé :", plan, "—", email,
                     "— mode :", modeSession,
                     modeSession === "payment" ? "(paiement unique : aucun renouvellement automatique)" : "");
+                if (ecritureOk) ecritureOk = await signalerSiFamille(service, evenement, userId, plan, infosBase);
                 }
             }
         }
@@ -502,7 +545,7 @@ export default async (req) => {
             const ligneAbo = await ligneParAbonnement(service, aboFacture);
             const touchees = ligneAbo ? await majParAbonnement(service, aboFacture, champs) : 0;
             // Une famille n'est cherchée QUE si aucune ligne d'abonnement classique ne correspond.
-            const familleTouchee = ligneAbo ? 0 : await majFamille(service, aboFacture, "actif", expire);
+            const familleTouchee = ligneAbo ? 0 : await majFamille(service, evenement, aboFacture, "actif", expire);
 
             if (familleTouchee) {
                 // Renouvellement Premium Famille : les deux comptes sont prolongés ensemble.
@@ -556,6 +599,7 @@ export default async (req) => {
                         maj_le: new Date().toISOString(),
                     });
                     log("Ligne créée depuis invoice.paid pour", email);
+                    if (ecritureOk) ecritureOk = await signalerSiFamille(service, evenement, userId, tF.plan, { ...infosF, user_id: userId });
                 } else {
                     log("ALERTE : facture payée non rattachable — email :", email,
                         "· client :", objet.customer, "· abonnement :", aboFacture);
@@ -569,7 +613,7 @@ export default async (req) => {
             const aboRefus = aboDeFacture(objet);
             let touchees = await majParAbonnement(service, aboRefus,
                 { statut: "impaye", maj_le: new Date().toISOString() });
-            if (touchees === 0 && await majFamille(service, aboRefus, "impaye")) { touchees = 1; log("Famille : paiement refusé", aboRefus); }
+            if (touchees === 0 && await majFamille(service, evenement, aboRefus, "impaye")) { touchees = 1; log("Famille : paiement refusé", aboRefus); }
             if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", aboRefus);
             log("Paiement refusé enregistré :", aboRefus);
         }
@@ -578,7 +622,7 @@ export default async (req) => {
         else if (evenement.type === "customer.subscription.deleted" && objet && objet.id) {
             let touchees = await majParAbonnement(service, objet.id,
                 { statut: "annule", maj_le: new Date().toISOString() });
-            if (touchees === 0 && await majFamille(service, objet.id, "annule")) { touchees = 1; log("Famille résiliée", objet.id); }
+            if (touchees === 0 && await majFamille(service, evenement, objet.id, "annule")) { touchees = 1; log("Famille résiliée", objet.id); }
             if (touchees === 0) log("annulation, aucune ligne correspondante :", objet.id);
             log("Abonnement annulé :", objet.id);
         }

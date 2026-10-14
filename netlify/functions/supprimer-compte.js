@@ -182,6 +182,21 @@ async function inserer(cfg, table, ligne) {
   return r.ok ? null : table + " : " + r.status;
 }
 
+/* 3 bis : un abonnement Stripe tourne peut-être encore pour ce compte → une ligne
+   dans « paiements à vérifier » pour que Blandine vérifie et résilie AVEC la personne.
+   Jamais d'annulation automatique. Une seule ligne par compte et par abonnement. */
+async function signalerAbonnement(cfg, uid, email, sub, note) {
+  try {
+    const e = await inserer(cfg, "paiements_a_verifier", {
+      stripe_event_id: "suppression-" + uid + "-" + sub,
+      type_evenement: "demande_suppression_compte",
+      reference_stripe: sub, user_id: uid, email: email || null,
+      anomalie: "compte_supprime_abonnement_actif", note: note,
+    });
+    if (e && !/409/.test(e)) log("alerte abonnement non enregistrée :", e);
+  } catch (e) { log("alerte abonnement impossible :", e && e.message); }
+}
+
 /* Qui est la personne derrière ce jeton de session ? */
 async function utilisateurDuJeton(cfg, jeton) {
   const r = await fetch(cfg.url + "/auth/v1/user", {
@@ -249,12 +264,18 @@ async function purgerUn(cfg, uid) {
   try { const e = await supprimerPhotos(cfg, uid); if (e) echecs.push(e); } catch (e) { }
 
   // Premium Famille : les familles TERMINÉES de ce titulaire partent avec lui
-  // (sinon la base refuse d'effacer le compte). Une famille encore en cours
-  // n'est PAS touchée : l'effacement du compte échouera et sera signalé, à voir à la main.
+  // (sinon la base refuse d'effacer le compte). Une famille PAS résiliée n'est pas
+  // touchée : la base refuse alors d'effacer le compte de connexion, le titulaire reste
+  // donc identifiable, et Blandine est prévenue pour vérifier Stripe.
   try {
     const e = await supprimerLignes(cfg, "familles", "titulaire_id=eq." + encodeURIComponent(uid) + "&statut=eq.annule");
     if (e) echecs.push(e);
-  } catch (e) { echecs.push("familles : " + String(e && e.message ? e.message : e)); }
+    const restantes = await lire(cfg, "familles", "select=stripe_subscription&titulaire_id=eq." + encodeURIComponent(uid));
+    for (const f of (restantes || [])) {
+      await signalerAbonnement(cfg, uid, null, f.stripe_subscription || ("famille-" + uid),
+        "Purge bloquée : famille non résiliée. Vérifier dans Stripe, résilier avec la personne, puis passer la famille en « annule ».");
+    }
+  } catch (e) { if (!/does not exist|schema cache|Could not find the table/i.test(String(e && e.message))) echecs.push("familles : " + String(e && e.message ? e.message : e)); }
 
   // Le compte de connexion, TOUJOURS EN DERNIER : si une étape précédente
   // échoue, on veut pouvoir retrouver le compte et recommencer.
@@ -349,18 +370,35 @@ exports.handler = async (event) => {
     }
   } catch (e) { }
 
-  // PREMIUM FAMILLE (cas G) : un TITULAIRE dont l'abonnement Famille est en cours
-  // ne peut pas lancer la suppression — sinon Stripe continuerait de facturer
-  // sans titulaire, et le deuxième cavalier perdrait tout sans prévenir.
-  // Il doit d'abord résilier. (Table absente = Famille pas encore en place : on continue.)
+  // PREMIUM FAMILLE (cas G) : un TITULAIRE dont l'abonnement Famille est EN COURS
+  // (statut actif/impayé ET date de fin pas encore passée) ne peut pas lancer la
+  // suppression — sinon Stripe continuerait de facturer sans titulaire, et le deuxième
+  // cavalier perdrait tout sans prévenir. Il doit d'abord résilier.
+  // 3 bis : une famille « active » mais ÉCHUE (message Stripe perdu) ne bloque plus ;
+  // on laisse supprimer et on prévient Blandine. (Table absente = Famille pas encore en place.)
   try {
-    const fam = await lire(cfg, "familles",
-      "select=id&titulaire_id=eq." + encodeURIComponent(uid) + "&statut=in.(actif,impaye)&limit=1");
-    if (fam && fam.length) {
+    const fams = await lire(cfg, "familles",
+      "select=id,statut,expire_le,stripe_subscription&titulaire_id=eq." + encodeURIComponent(uid) + "&statut=in.(actif,impaye)");
+    const enCours = (fams || []).filter((f) => !f.expire_le || new Date(f.expire_le).getTime() > Date.now());
+    if (enCours.length) {
       log("suppression refusée : abonnement Famille en cours");
       return reponse(409, { erreur: "famille_active", code: "FAMILLE_ACTIVE" }, enTetesRep);
     }
+    for (const f of (fams || [])) {
+      if (f.stripe_subscription) await signalerAbonnement(cfg, uid, utilisateur.email, f.stripe_subscription,
+        "Suppression de compte demandée : famille échue mais pas résiliée dans la base. Vérifier dans Stripe que l'abonnement est bien arrêté.");
+    }
   } catch (e) { log("vérification Famille impossible :", e && e.message); }
+  // Abonnement PERSONNEL encore ouvert (Cavalier, Duo, Hype IA) : la suppression continue
+  // (comme avant), mais Blandine est prévenue pour vérifier Stripe avec la personne.
+  try {
+    const abos = await lire(cfg, "abonnements_premium",
+      "select=stripe_subscription,statut,plan&user_id=eq." + encodeURIComponent(uid) + "&stripe_subscription=not.is.null&statut=neq.annule");
+    for (const a of (abos || [])) {
+      await signalerAbonnement(cfg, uid, utilisateur.email, a.stripe_subscription,
+        "Suppression de compte demandée avec un abonnement " + a.plan + " (" + a.statut + ") encore ouvert. Vérifier dans Stripe et résilier avec la personne.");
+    }
+  } catch (e) { log("vérification abonnement impossible :", e && e.message); }
 
   const maintenant = new Date();
   const prevue = new Date(maintenant.getTime() + JOURS_DELAI * 86400000);
