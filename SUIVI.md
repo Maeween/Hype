@@ -12562,3 +12562,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 🟥 Fichiers envoyés : hype-stories.js ET index.html (+ SUIVI.md).
 - Checks : node --check hype-stories.js OK ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
 - Leçon : vérifier qu'un nouveau nom de variable n'existe pas déjà dans la fonction avant de l'utiliser (je ne l'avais pas fait).
+
+## 14/10/2026 — Build 1120 : Cavalier V2 — les stories flottent sous le haut de page, sans titre
+- Demande (18 h 07) : « on est vraiment obligé de définir la story avec un titre ? On peut pas juste les laisser flotter sous le hero ? »
+- index.html (build 20261014-1120), V2 : le bloc « Ma story » (titre + phrase) sous l'écurie est retiré ; les stories (ronds fondus, centrés, taille selon leur nombre, rail sans fond) s'affichent juste sous le haut de page, sans titre ni phrase, avant les accès.
+- (Le correctif 1119 du plantage est inclus : hype-stories.js ?v=20ce.)
+- Checks : marqueur unique 20261014-1120 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
