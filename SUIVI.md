@@ -12592,3 +12592,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html (build 20261014-1124), V2 : la colonne est posée à droite de la photo du haut de page (sous les boutons) ; les stories de toute la communauté ne sont plus affichées sur la page Cavalier V2.
 - 🟥 Fichiers envoyés : hype-stories.js ET index.html (+ SUIVI.md).
 - Checks : node --check hype-stories.js OK ; essai hors appli : sa page avec 4 stories → 3 ronds + « +1 » + « + » ; visite d'un cavalier avec 1 story → 1 rond ; cavalier sans story → rien ; bandeau classique des autres pages → inchangé, sans erreur. 16 scripts 0 erreur ; marqueurs de garde inchangés.
+
+## 14/10/2026 — Build 1125 : 🟢 la page Cavalier V2 est OUVERTE À TOUS
+- Demande (18 h 31) : « Active-la oui » (après les builds 1104 à 1124, testés sur son compte).
+- index.html (build 20261014-1125) : `var CAV_V2 = true;` (avant : vrai seulement sur le compte de Blandine).
+- Ce que tout le monde voit désormais : haut de page photo fondue + stories du cavalier en colonne à droite, accès en menu discret (N), écurie(s) côte à côte, Mon/Son récit, Mes/Ses chevaux (grilles toujours pleines), Mes/Ses amis (par niveau), Mes/Ses résultats (principaux + derniers), fin de page remontée. Mur des songes retiré de la page (textes conservés).
+- RETOUR ARRIÈRE en une ligne (commentaire posé au-dessus de CAV_V2) : `false` = ancienne page pour tous ; l'ancienne formule = V2 pour Blandine seule.
+- À surveiller : premiers retours des cavaliers (pages visitées, cavaliers sans cheval → Hey Baby Please / Rizotto d'Emery à découvrir, cavaliers sans écurie).
+- Checks : marqueur unique 20261014-1125 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
