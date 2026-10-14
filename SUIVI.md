@@ -12536,3 +12536,4 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Demande (17 h 55) : « Retire le mur des songes ».
 - index.html (build 20261014-1115) : en V2, le bloc du Mur des songes n'est plus affiché sur la page Cavalier (une ligne en tête du bloc). Le code, la fenêtre d'écriture et le texte enregistré (ma_voix) sont conservés ; l'ancienne page (hors V2) l'affiche toujours.
 - Checks : marqueur unique 20261014-1115 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
+- ⚠️ ERREUR DE MA PART, corrigée tout de suite : le premier envoi « Build 1115 » (4f27eb0) ne contenait QUE le suivi — la modification d'index.html avait échoué (texte de repère introuvable) et je l'ai envoyé quand même. Renvoyé juste après avec index.html réellement modifié (marqueur 20261014-1115).
