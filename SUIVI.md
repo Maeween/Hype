@@ -12612,3 +12612,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - ERREUR DE MA PART : dans la 1126, une parenthèse manquait (fin du libellé traduit « Modifier ma deuxième écurie »). Le contrôle de syntaxe l'a SIGNALÉ (« 1 erreur »), mais ma commande a quand même envoyé et publié, car le contrôle ne bloquait pas l'envoi. Conséquence possible : pendant quelques minutes, l'appli publiée pouvait ne plus démarrer.
 - Correction : parenthèse remise ; build 20261014-1127 ; 16 scripts 0 erreur ; marqueurs de garde inchangés.
 - Règle que je m'applique désormais : je lis le résultat du contrôle AVANT d'envoyer, et l'envoi ne part que si le résultat dit « 0 erreur ».
+
+## 14/10/2026 — Page « L'association » : visuel allégé, photos d'attente
+- Demandes (18 h 37-38) : « ah la vache le visuel est hard » → « oui vas-y ».
+- outils/association-generer.py : en attendant les vraies photos de FEINN (images/asso/hero.jpg, jeune.jpg, retraite.jpg, espaces.jpg), la page prend des images de Hype déjà dans le dépôt (écurie au coucher du soleil, concours, cheval au couchant, paysage de fin de page) au lieu des cadres vides « Photo FEINN à venir » ; dès qu'un fichier images/asso/… existe, il passe devant. Titre « FEINN » plus petit (54-104 px au lieu de 76-150), titres de parties plus petits, fonds moins pétrole (plus proches du noir de Hype).
+- Pages régénérées (7 langues) : ar, de, en, es, fr, it, ja /association/index.html. ⚠️ Le script se lance avec python3.12 (python3 = 3.11 refuse une ligne du script).
+- Rappels (non faits) : lien « L'association » dans Mon compte (appli) ; pages CGV / conditions d'utilisation et politique de confidentialité à créer — l'écran d'inscription dit déjà « vous acceptez les conditions d'utilisation et la politique de confidentialité » sans lien vers ces pages.

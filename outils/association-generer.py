@@ -8,6 +8,10 @@ LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_J
 e=html.escape
 # Photos : fichiers à déposer par Blandine dans images/asso/ ; tant qu'ils manquent → emplacement sobre
 PHOTOS={k:f"images/asso/{k}.jpg" for k in ["hero","jeune","retraite","espaces"]}
+# 14/10 : en attendant les vraies photos de FEINN, images de Hype deja dans le depot (Blandine : « le visuel est hard », cadres vides)
+PHOTOS_ATTENTE={"hero":"images/fond-cavaliers-ecurie.webp","jeune":"images/team-competition-performances-hero.webp","retraite":"images/mes-chevaux-fond-couchant.webp","espaces":"images/accueil_v2_fin_de_page_v1.webp"}
+for _k in list(PHOTOS):
+    if not os.path.exists(os.path.join(RACINE,PHOTOS[_k])) and os.path.exists(os.path.join(RACINE,PHOTOS_ATTENTE[_k])): PHOTOS[_k]=PHOTOS_ATTENTE[_k]
 def photo(k): return os.path.exists(os.path.join(RACINE,PHOTOS[k]))
 ICO={
  "cap":'<path d="M3 9.5 12 5l9 4.5-9 4.5-9-4.5Z"/><path d="M7 11.6V16c0 1.3 2.2 2.5 5 2.5s5-1.2 5-2.5v-4.4"/><path d="M21 9.5v5"/>',
@@ -189,7 +193,7 @@ body{margin:0;background:var(--noir);color:var(--ivoire);font:15px/1.65 Montserr
 a{color:var(--champ)}a:focus-visible{outline:2px solid var(--champ);outline-offset:3px}
 .serif{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif}
 /* emplacement photo sobre (en attendant les vraies photos FEINN) */
-.ph{position:relative;background:radial-gradient(120% 90% at 70% 20%,rgba(12,87,99,.55),rgba(4,37,42,.55) 50%,rgba(5,8,11,.9));display:flex;align-items:center;justify-content:center;color:rgba(201,166,107,.55);overflow:hidden}
+.ph{position:relative;background:radial-gradient(120% 90% at 70% 20%,rgba(37,79,96,.55),rgba(10,20,24,.55) 50%,rgba(5,8,11,.9));display:flex;align-items:center;justify-content:center;color:rgba(201,166,107,.55);overflow:hidden}
 .ph .phl{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;letter-spacing:.08em;text-align:center;padding:8px}
 .ph .ico{width:26px;height:26px}
 .ph img,.photo img{width:100%;height:100%;object-fit:cover;display:block}
@@ -197,7 +201,7 @@ a{color:var(--champ)}a:focus-visible{outline:2px solid var(--champ);outline-offs
 .hero{position:relative;min-height:min(86svh,720px);display:flex;align-items:flex-end;overflow:hidden}
 .hero .fond{position:absolute;inset:0}
 .hero .fond.ph{align-items:flex-start;padding-top:22svh}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.15) 0%,rgba(5,8,11,0) 30%,rgba(4,37,42,.55) 62%,var(--noir) 100%);pointer-events:none}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.15) 0%,rgba(5,8,11,0) 35%,rgba(5,8,11,.6) 70%,var(--noir) 100%);pointer-events:none}
 .haut{position:absolute;inset-block-start:0;inset-inline:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:max(14px,env(safe-area-inset-top)) 16px 0}
 .rond{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(5,8,11,.55);border:1px solid var(--trait2);color:var(--ivoire);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .rond .ico{width:20px;height:20px}
@@ -205,20 +209,20 @@ a{color:var(--champ)}a:focus-visible{outline:2px solid var(--champ);outline-offs
 .langue{font-size:12.5px;color:var(--ivoire);text-decoration:none;border:1px solid var(--trait);border-radius:999px;padding:6px 13px;background:rgba(5,8,11,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .hero .titre{position:relative;z-index:2;width:100%;max-width:1120px;margin:0 auto;padding:0 24px 34px}
 .sur{font-size:11.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--champ);margin:0 0 4px}
-.feinn{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(76px,24vw,150px);line-height:.88;letter-spacing:.04em;margin:0;color:var(--ivoire)}
+.feinn{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(54px,15vw,104px);line-height:.92;letter-spacing:.04em;margin:0;color:var(--ivoire)}
 .sous{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(23px,6.3vw,34px);margin:8px 0 18px;color:var(--ivoire)}
 .filet{width:92px;height:1px;background:linear-gradient(90deg,var(--champ),rgba(201,166,107,0))}
 [dir=rtl] .filet{background:linear-gradient(270deg,var(--champ),rgba(201,166,107,0))}
 /* CONTENU */
 main{max-width:1120px;margin:0 auto;padding:0 20px 20px}
-h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(32px,8.6vw,46px);line-height:1.08;margin:42px 0 6px;color:var(--ivoire)}
+h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(27px,7vw,38px);line-height:1.1;margin:42px 0 6px;color:var(--ivoire)}
 h2+.trait{width:44px;height:1px;background:var(--champ);margin:10px 0 18px}
 .texte p{margin:0 0 14px;color:#E3E7E3}
 .missions{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-wrap:wrap;justify-content:center;row-gap:18px;text-align:center}
 .missions li{flex:0 0 33.33%;padding:0 4px}
 @media (min-width:640px){.missions li{flex-basis:20%}}
 .missions li{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11.5px;line-height:1.35;color:#D9DEDB;min-width:0;-webkit-hyphens:manual;hyphens:manual}
-.missions .cercle{width:54px;height:54px;border-radius:50%;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;color:var(--champ);background:radial-gradient(circle,rgba(12,87,99,.35),rgba(5,8,11,0) 70%)}
+.missions .cercle{width:54px;height:54px;border-radius:50%;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;color:var(--champ);background:radial-gradient(circle,rgba(37,79,96,.35),rgba(5,8,11,0) 70%)}
 .missions .ico{width:25px;height:25px}
 .bande{position:relative;margin:26px 0 0;border-radius:16px;overflow:hidden;border:1px solid var(--trait2);min-height:210px;display:flex;align-items:center}
 .bande .fond{position:absolute;inset:0}
@@ -230,7 +234,7 @@ h2+.trait{width:44px;height:1px;background:var(--champ);margin:10px 0 18px}
 .sep span{width:6px;height:6px;transform:rotate(45deg);background:var(--champ);opacity:.8}
 .intro2{color:#D9DEDB;margin:0 0 18px}
 .projets{list-style:none;padding:0;margin:0;display:grid;gap:14px}
-.projet{display:grid;grid-template-columns:38% 1fr;gap:16px;padding:12px;border-radius:16px;border:1px solid var(--trait2);background:linear-gradient(150deg,rgba(12,87,99,.32),rgba(4,37,42,.38) 55%,rgba(7,19,25,.75))}
+.projet{display:grid;grid-template-columns:38% 1fr;gap:16px;padding:12px;border-radius:16px;border:1px solid var(--trait2);background:linear-gradient(150deg,rgba(37,79,96,.32),rgba(10,20,24,.38) 55%,rgba(7,19,25,.75))}
 .projet .photo{border-radius:11px;overflow:hidden;aspect-ratio:3/4;min-height:150px}
 .projet h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:25px;line-height:1.12;margin:6px 0 8px;color:var(--ivoire)}
 .projet .deco{display:flex;align-items:center;gap:10px;color:var(--champ);margin:0 0 10px}
@@ -239,7 +243,7 @@ h2+.trait{width:44px;height:1px;background:var(--champ);margin:10px 0 18px}
 .projet p{margin:0;font-size:13.4px;line-height:1.6;color:#D3DAD8}
 /* MENTIONS LÉGALES */
 .legal{display:grid;gap:14px;margin-top:4px}
-.carte{border:1px solid var(--trait2);border-radius:16px;background:linear-gradient(160deg,rgba(12,87,99,.16),rgba(5,8,11,.6));padding:4px 16px}
+.carte{border:1px solid var(--trait2);border-radius:16px;background:linear-gradient(160deg,rgba(37,79,96,.16),rgba(5,8,11,.6));padding:4px 16px}
 .ligne{display:grid;grid-template-columns:24px minmax(0,.9fr) minmax(0,1.4fr);gap:12px;padding:15px 0;border-bottom:1px solid rgba(201,166,107,.12);align-items:start;font-size:13px}
 .ligne:last-child{border-bottom:0}
 .ligne .ico{width:21px;height:21px;color:var(--champ);margin-top:1px}
