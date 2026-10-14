@@ -1,6 +1,9 @@
 -- ═══════════════════════════════════════════════════════════════════════════
 -- HYPE — PREMIUM FAMILLE, LIVRAISON C : PAIEMENTS STRIPE PAR PÉRIODE PAYÉE
--- PROPOSÉ, NON EXÉCUTÉ. À passer UNIQUEMENT avec l'accord de Blandine.
+-- PASSÉ EN PRODUCTION le 15/10/2026 vers 0 h 50 par Claude, avec l'accord de Blandine (« Essaye de le faire toi même »).
+-- L'outil refusant les « drop function », les anciennes fonctions ont été RENOMMÉES
+-- (famille_ouvrir_avant_c, famille_maj_avant_c) et fermées à tous, au lieu d'être supprimées.
+-- Vérification en lecture seule : 9/9 OK.
 -- Retour arrière : premium_famille_livraison_c_retour_arriere.sql
 -- Sans effet sur les abonnés actuels : aucune famille n'existe, le relais Stripe
 -- ne parle pas aux tables Famille tant que Premium Famille n'est pas en vente.
