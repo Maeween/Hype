@@ -9,7 +9,7 @@ e=html.escape
 # Photos : fichiers à déposer par Blandine dans images/asso/ ; tant qu'ils manquent → emplacement sobre
 PHOTOS={k:f"images/asso/{k}.jpg" for k in ["hero","jeune","retraite","espaces"]}
 # 14/10 : en attendant les vraies photos de FEINN, images de Hype deja dans le depot (Blandine : « le visuel est hard », cadres vides)
-PHOTOS_ATTENTE={"hero":"images/fond-cavaliers-ecurie.webp","jeune":"images/team-competition-performances-hero.webp","retraite":"images/mes-chevaux-fond-couchant.webp","espaces":"images/accueil_v2_fin_de_page_v1.webp"}
+PHOTOS_ATTENTE={"hero":"images/fond-cavaliers-ecurie.webp","jeune":"images/team-competition-performances-hero.webp","retraite":"images/fond-recit.webp","espaces":"images/ecurie-couverture-defaut-2.webp"}
 for _k in list(PHOTOS):
     if not os.path.exists(os.path.join(RACINE,PHOTOS[_k])) and os.path.exists(os.path.join(RACINE,PHOTOS_ATTENTE[_k])): PHOTOS[_k]=PHOTOS_ATTENTE[_k]
 def photo(k): return os.path.exists(os.path.join(RACINE,PHOTOS[k]))
@@ -241,6 +241,48 @@ def bandeau(lg):
     li="".join(f'<li><span class="pic">{svg(i)}</span><span class="tit"><span class="long">{e(a)}</span><span class="court" aria-hidden="true">{e(c)}</span></span><span class="phr">{e(f)}</span></li>' for i,a,c,f in zip(ic,titres,courts,phrases))
     return f'<section class="engag" id="engagements" aria-labelledby="engag-t"><h2 class="vh" id="engag-t">{e(T[lg]["engag"])}</h2><ul>{li}</ul></section>'
 
+# ═══ ÉTAPE 3 (14/10) : « Trois projets pour faire la différence » (section ivoire, carrousel iPhone, détail sur la page) ═══
+PJ={
+"fr":dict(pj_titre="Trois projets pour faire la différence",pj_voir="Découvrir ce projet",pj_tous="Découvrir tous nos projets",pj_detail="Nos projets en détail",pj_prec="Projet précédent",pj_suiv="Projet suivant",
+ pj_courts=["Aider un jeune cavalier prometteur à acquérir un cheval adapté à ses ambitions sportives.","Contribuer à l'alimentation, aux soins et au bien-être des chevaux qui ont accompagné les cavaliers pendant des années.","Participer à la rénovation des clôtures, prés et installations équestres, en respectant l'environnement naturel."]),
+"en":dict(pj_titre="Three projects to make a difference",pj_voir="Discover this project",pj_tous="Discover all our projects",pj_detail="Our projects in detail",pj_prec="Previous project",pj_suiv="Next project",
+ pj_courts=["Helping a promising young rider acquire a horse suited to his sporting ambitions.","Contributing to the feeding, care and well-being of the horses that have carried riders for years.","Taking part in renovating fences, fields and equestrian facilities, with respect for the natural environment."]),
+"es":dict(pj_titre="Tres proyectos para marcar la diferencia",pj_voir="Descubrir este proyecto",pj_tous="Descubrir todos nuestros proyectos",pj_detail="Nuestros proyectos en detalle",pj_prec="Proyecto anterior",pj_suiv="Proyecto siguiente",
+ pj_courts=["Ayudar a un joven jinete prometedor a adquirir un caballo acorde con sus ambiciones deportivas.","Contribuir a la alimentación, los cuidados y el bienestar de los caballos que han acompañado a los jinetes durante años.","Participar en la renovación de cercas, prados e instalaciones ecuestres, respetando el entorno natural."]),
+"it":dict(pj_titre="Tre progetti per fare la differenza",pj_voir="Scopri il progetto",pj_tous="Scopri tutti i nostri progetti",pj_detail="I nostri progetti nel dettaglio",pj_prec="Progetto precedente",pj_suiv="Progetto successivo",
+ pj_courts=["Aiutare un giovane cavaliere promettente ad acquistare un cavallo adatto alle sue ambizioni sportive.","Contribuire all'alimentazione, alle cure e al benessere dei cavalli che hanno accompagnato i cavalieri per anni.","Partecipare al rinnovo di recinzioni, prati e strutture equestri, nel rispetto dell'ambiente naturale."]),
+"de":dict(pj_titre="Drei Projekte, die etwas bewegen",pj_voir="Projekt entdecken",pj_tous="Alle Projekte entdecken",pj_detail="Unsere Projekte im Detail",pj_prec="Vorheriges Projekt",pj_suiv="Nächstes Projekt",
+ pj_courts=["Einem vielversprechenden jungen Reiter helfen, ein Pferd zu erwerben, das zu seinen sportlichen Zielen passt.","Zur Fütterung, Pflege und zum Wohlbefinden der Pferde beitragen, die Reiter jahrelang begleitet haben.","Bei der Erneuerung von Zäunen, Weiden und Reitanlagen mithelfen, mit Rücksicht auf die Natur."]),
+"ja":dict(pj_titre="違いを生む3つのプロジェクト",pj_voir="プロジェクトを見る",pj_tous="すべてのプロジェクトを見る",pj_detail="プロジェクトの詳細",pj_prec="前のプロジェクト",pj_suiv="次のプロジェクト",
+ pj_courts=["将来有望な若いライダーが、競技の目標に合った馬を手に入れられるよう支援します。","長年ライダーを支えてきた馬たちの飼料、ケア、健やかさに貢献します。","自然環境に配慮しながら、柵、放牧地、乗馬施設の改修に参加します。"]),
+"ar":dict(pj_titre="ثلاثة مشاريع لإحداث الفرق",pj_voir="اكتشف هذا المشروع",pj_tous="اكتشف جميع مشاريعنا",pj_detail="مشاريعنا بالتفصيل",pj_prec="المشروع السابق",pj_suiv="المشروع التالي",
+ pj_courts=["مساعدة فارس شاب واعد على اقتناء حصان يناسب طموحاته الرياضية.","المساهمة في تغذية الخيول التي رافقت الفرسان لسنوات ورعايتها وراحتها.","المشاركة في تجديد الأسوار والمراعي والمنشآت الفروسية مع احترام البيئة الطبيعية."]),
+}
+for _l in L: T[_l].update(PJ[_l])
+ICO["fg"]='<path d="M15 6l-6 6 6 6"/>'
+ICO["fd"]='<path d="M9 6l6 6-6 6"/>'
+PROJ_IDS=["jeune-espoir","retraite-chevaux-club","espaces"]; PROJ_PH=["jeune","retraite","espaces"]
+def section_projets(lg):
+    t=T[lg]; cartes=""; details=""
+    for i,(pid,k,(titre,long_),court) in enumerate(zip(PROJ_IDS,PROJ_PH,t["projets"],t["pj_courts"]),1):
+        img=f'<img src="/{PHOTOS[k]}" alt="" loading="lazy">' if photo(k) else ""
+        cartes+=f'<li class="pcarte"><div class="pimg">{img}<span class="num">0{i}</span></div><div class="pcorps"><h3>{e(titre)}</h3><p>{e(court)}</p><a class="plien" href="#projet-{pid}" data-projet="projet-{pid}">{e(t["pj_voir"])} {svg("fleche","ico dir")}</a></div></li>'
+        details+=f'<details class="pdet" id="projet-{pid}"><summary><span class="num">0{i}</span><span class="t">{e(titre)}</span>{svg("chevron")}</summary><p>{e(long_)}</p></details>'
+    return f'''<section class="projets2" id="projets" aria-labelledby="pj-t"><div class="in">
+<div class="pj-tete"><div><p class="sur2">{e(t["nprojets"])}</p><h2 id="pj-t">{e(t["pj_titre"])}</h2></div><a class="pj-tous" href="#projets-detail">{e(t["pj_tous"])} {svg("fleche","ico dir")}</a></div>
+<div class="carrousel"><ul class="pistes" id="pistes">{cartes}</ul>
+<button class="nav-c prec" type="button" aria-label="{e(t["pj_prec"])}" aria-controls="pistes">{svg("fg","ico dir")}</button><button class="nav-c suiv" type="button" aria-label="{e(t["pj_suiv"])}" aria-controls="pistes">{svg("fd","ico dir")}</button></div>
+<div class="points" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+<div class="pj-detail" id="projets-detail"><h3 class="pj-dt">{e(t["pj_detail"])}</h3><p class="pj-intro">{e(t["projets_intro"])}</p>{details}</div>
+</div></section>'''
+def json_projets():
+    d={"maj":"2026-10-14","beneficiaire":"Association FEINN Équitation et Environnement (SIREN 898 028 980)","dons_en_ligne":False,"projets":[]}
+    for i,(pid,k) in enumerate(zip(PROJ_IDS,PROJ_PH)):
+        d["projets"].append({"id":pid,"numero":f"0{i+1}","photo":PHOTOS[k] if photo(k) else None,"photo_definitive":os.path.exists(os.path.join(RACINE,f"images/asso/{k}.jpg")),
+          "ancre":f"/{{lang}}/association/#projet-{pid}",
+          "textes":{lg:{"titre":T[lg]["projets"][i][0],"court":T[lg]["pj_courts"][i],"long":T[lg]["projets"][i][1]} for lg in L}})
+    return json.dumps(d,ensure_ascii=False,indent=1)
+
 CSS=r"""
 :root{--noir:#05080B;--noir2:#070A08;--petrole:#0D1518;--ivoire:#F3EEE4;--doux:#C9CFCB;--gris:#9AA39F;--champ:#C9A66B;--trait:rgba(201,166,107,.42);--trait2:rgba(201,166,107,.18);
 --serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--cinzel:Cinzel,"Cormorant Garamond",Georgia,serif;--sans:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
@@ -334,6 +376,56 @@ img{max-width:100%}
 }
 @media (min-width:1024px){.engag ul{padding:30px 32px 34px}.engag .tit{font-size:12.5px}.engag .phr{font-size:14.5px}}
 :lang(ja) .engag .tit,:lang(ar) .engag .tit{letter-spacing:.02em;text-transform:none;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Naskh Arabic",Georgia,serif}
+/* ── PROJETS (section ivoire) ── */
+.projets2{background:var(--ivoire);color:#191D1C}
+.projets2 .in{max-width:1240px;margin:0 auto;padding:30px 16px 34px}
+.pj-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:18px}
+.sur2{font:500 11px/1.4 var(--cinzel);letter-spacing:.22em;text-transform:uppercase;color:#9A7A45;margin:0 0 6px}
+.projets2 h2{font:400 clamp(27px,7vw,38px)/1.12 var(--serif);margin:0;color:#14181A;text-wrap:balance}
+.pj-tous{display:none;align-items:center;gap:10px;color:#14181A;text-decoration:none;font:500 15px var(--serif);white-space:nowrap}
+.pj-tous .ico{width:17px;height:17px}
+.carrousel{position:relative}
+.pistes{list-style:none;margin:0;padding:0 0 4px;display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pistes::-webkit-scrollbar{display:none}
+.pcarte{flex:0 0 100%;scroll-snap-align:start;background:#FBF8F2;border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(20,24,26,.06),0 10px 28px rgba(20,24,26,.08);display:flex;flex-direction:column;min-width:0}
+.pimg{position:relative;aspect-ratio:16/11;background:#D9D2C4;overflow:hidden}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.pimg::after{content:"";position:absolute;inset:55% 0 0;background:linear-gradient(180deg,rgba(5,8,11,0),rgba(5,8,11,.55))}
+.pimg .num{position:absolute;inset-inline-start:16px;bottom:8px;z-index:1;font:400 30px/1 var(--serif);color:#F3EEE4}
+.pcorps{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pcorps h3{font:500 22px/1.2 var(--serif);margin:0;color:#14181A}
+.pcorps p{margin:0;font:400 14px/1.55 var(--sans);color:#4A504D}
+.plien{margin-top:auto;padding-top:8px;display:inline-flex;align-items:center;gap:10px;color:#14181A;text-decoration:none;font:500 16px var(--serif)}
+.plien .ico{width:17px;height:17px}
+.nav-c{position:absolute;top:calc((100vw - 32px) * 11 / 32 - 21px);display:none;width:42px;height:42px;border-radius:50%;border:0;background:rgba(251,248,242,.94);color:#14181A;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;align-items:center;justify-content:center}
+.js .nav-c{display:flex}
+.nav-c.prec{inset-inline-start:-6px}.nav-c.suiv{inset-inline-end:-6px}
+.nav-c[disabled]{opacity:.35;cursor:default}
+.points{display:flex;justify-content:center;gap:8px;margin:14px 0 0}
+.points span{width:7px;height:7px;border-radius:50%;background:#CDBF9F}
+.points span.on{background:#14181A}
+.pj-detail{margin-top:30px;border-top:1px solid rgba(20,24,26,.12);padding-top:22px}
+.pj-dt{font:500 22px var(--serif);margin:0 0 6px;color:#14181A}
+.pj-intro{margin:0 0 10px;font-size:14px;color:#4A504D}
+.pdet{border-bottom:1px solid rgba(20,24,26,.12)}
+.pdet summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;min-height:54px;font:500 19px/1.25 var(--serif);color:#14181A}
+.pdet summary::-webkit-details-marker{display:none}
+.pdet summary .num{font:400 15px var(--serif);color:#9A7A45;min-width:22px}
+.pdet summary .t{flex:1}
+.pdet summary .ico{width:18px;height:18px;color:#9A7A45;transition:transform .2s}
+.pdet[open] summary .ico{transform:rotate(180deg)}
+.pdet p{margin:0 0 18px;padding-inline-start:36px;font-size:14.5px;line-height:1.65;color:#3E4441;max-width:62em}
+.pdet:target summary{color:#7A5E30}
+@media (min-width:640px){.pcarte{flex-basis:calc(50% - 7px)}.nav-c{top:calc((100vw - 78px) * 11 / 64 - 21px)}.projets2 .in{padding:40px 32px 44px}}
+@media (min-width:1024px){
+ .projets2 .in{padding:50px 32px 56px}
+ .pj-tous{display:inline-flex}
+ .pistes{overflow:visible;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+ .pcarte{flex:none}
+ .js .nav-c,.points{display:none}
+ .pj-detail{margin-top:40px}
+}
+@media (prefers-reduced-motion:reduce){.pistes{scroll-behavior:auto}.pdet summary .ico{transition:none}}
 /* ── CONTENU (sections actuelles, refondues aux étapes suivantes) ── */
 main{max-width:1120px;margin:0 auto;padding:0 20px 20px}
 h2{font:500 clamp(28px,7vw,38px)/1.1 var(--serif);margin:42px 0 6px;color:var(--ivoire)}
@@ -433,13 +525,12 @@ def page(lg):
 <p class="hero-desc">{e(t["hero_desc"])}</p><a class="btn" href="#association">{e(t["btn_asso"])} {svg("fleche","ico dir")}</a></div>
 </section>
 {bandeau(lg)}
+{section_projets(lg)}
 <main>
 <section class="presentation" id="association"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div>
 </section>
 <div class="bande"><blockquote>{e(t["citation1"])}</blockquote></div>
 <div class="sep"><span></span></div>
-<section id="projets"><h2>{e(t["projets_t"])}</h2><div class="trait"></div><p class="intro2">{e(t["projets_intro"])}</p>
-<ul class="projets">{"".join(f'<li class="projet">{slot(k,"photo",t)}<div><h3>{e(a)}</h3><div class="deco">{svg(i)}</div><p>{e(b)}</p></div></li>' for k,i,(a,b) in zip(pph,pico,t["projets"]))}</ul></section>
 <div class="bande"><blockquote>{e(t["citation2"])}</blockquote></div>
 <div class="sep"><span></span></div>
 <section id="mentions-legales"><h2>{e(t["ml_t"])}</h2><div class="trait"></div>
@@ -461,7 +552,16 @@ def page(lg):
 {selecteur(lg,"langues")}
 <p class="cit">« {e(t["cit_pied"])} »</p>
 </div></footer>
-<script>document.querySelectorAll('.burger nav a').forEach(function(a){{a.addEventListener('click',function(){{var d=a.closest('details');if(d)d.open=false;}});}});
+<script>document.documentElement.classList.add('js');
+(function(){{var p=document.getElementById('pistes');if(!p)return;var c=p.children,pts=document.querySelectorAll('.points span'),pr=document.querySelector('.nav-c.prec'),sv=document.querySelector('.nav-c.suiv');
+function idx(){{var w=c[0].getBoundingClientRect().width+14;return Math.round(Math.abs(p.scrollLeft)/w);}}
+function maj(){{var i=Math.min(idx(),c.length-1);pts.forEach(function(s,k){{s.classList.toggle('on',k===i);}});if(pr)pr.disabled=i<=0;if(sv)sv.disabled=i>=c.length-1;}}
+function aller(d){{var i=Math.max(0,Math.min(c.length-1,idx()+d));c[i].scrollIntoView({{behavior:'smooth',block:'nearest',inline:'start'}});}}
+p.addEventListener('scroll',function(){{window.requestAnimationFrame(maj);}},{{passive:true}});if(pr)pr.addEventListener('click',function(){{aller(-1);}});if(sv)sv.addEventListener('click',function(){{aller(1);}});maj();
+function ouvrir(id){{var d=document.getElementById(id);if(d&&d.tagName==='DETAILS'){{d.open=true;}}}}
+document.querySelectorAll('[data-projet]').forEach(function(a){{a.addEventListener('click',function(){{ouvrir(a.getAttribute('data-projet'));}});}});
+if(location.hash)ouvrir(location.hash.slice(1));}})();
+document.querySelectorAll('.burger nav a').forEach(function(a){{a.addEventListener('click',function(){{var d=a.closest('details');if(d)d.open=false;}});}});
 document.addEventListener('click',function(ev){{document.querySelectorAll('details.lng[open]').forEach(function(d){{if(!d.contains(ev.target))d.open=false;}});}});</script>'''
     og="images/asso/hero.jpg" if vrai_hero else HERO_ATTENTE_LARGE
     return f"""<!doctype html>
@@ -495,4 +595,6 @@ SORTIE=sys.argv[2] if len(sys.argv)>2 else RACINE
 for lg in L:
     os.makedirs(f"{SORTIE}/{lg}/{CHEMIN}",exist_ok=True)
     open(f"{SORTIE}/{lg}/{CHEMIN}index.html","w",encoding="utf-8").write(page(lg))
+os.makedirs(f"{SORTIE}/data",exist_ok=True)
+open(f"{SORTIE}/data/projets-feinn.json","w",encoding="utf-8").write(json_projets())
 print("ok", {k:photo(k) for k in PHOTOS})
