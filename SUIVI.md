@@ -12403,3 +12403,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Non touché : tout le reste. Aucun SQL, aucune image, aucun nouveau texte.
 - Fichiers : index.html + SUIVI.md. hype-import-ffe.js inchangé (`?v=25`).
 - Checks : marqueur unique 20261014-1100, 16 scripts node --check 0 erreur, marqueurs de garde inchangés (liensClub, chevalCommunDemoData, palmTech, EcranSanteCheval).
+
+## Build 1101 (14/10) — Corrections des cours de théorie, étape 1 (index.html)
+- Demande : audit des cours du 13/10 (« il manquait parfois des mots… fautes de français ») ; étape 1 validée d'un « Ok » le 13/10, reprise le 14/10 sur « Ok continue ».
+- Compléments « L'abord » et « Le saut » (Galop 3, hype-cours-galop3.js) : Hey Baby et « Pour aller plus loin » disaient « Galop 4 » → « Galop 3 », 7 langues.
+- « Le saut » : « cinq pastilles » → « six pastilles » (la scène « Les phases du saut » a 6 phases), 7 langues.
+- Soins après le travail : « plutôt que de répéter les mêmes gestes ». Obstacles et équilibre : « pour distinguer un abord qui part bien… ». Protections : « Les protections ne sont jamais les mêmes… » (au lieu de « Elles »). Vitesse : « l'une sans l'autre » (cadence, amplitude).
+- Impulsion : « Pendant combien de foulées… » (+ espagnol), « sans que l'impulsion atteigne jamais la bouche », règle d'or « Demander, obtenir une réponse, cesser » alignée sur la synthèse (fr, es, it, ja, ar ; en et de l'étaient déjà).
+- Équilibre du cavalier (biomécanique) : « en le redressant » retiré (6 langues) → « Redresse d'abord ta propre position, puis redemande de l'engagement derrière. » ; coquille japonaise 姓勢 → 姿勢. ⚠️ Ce bloc n'a pas d'arabe (repli français) — à traduire.
+- Badges : « 100 % », « 80 % » (espace insécable, français).
+- Nouveautés : l'annonce « Horse Lingo est opérationnel » ouvre https://horselingo.fr (au lieu de lingo.html, redirigé).
+- Marqueur 20261014-1101. 16 scripts 0 erreur ; dictionnaires JSON valides ; marqueurs de garde inchangés.
+- Étape 2 (fichiers de cours hype-cours-*.js, ?v= à monter) : à faire.
