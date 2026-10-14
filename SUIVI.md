@@ -12415,3 +12415,15 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouveautés : l'annonce « Horse Lingo est opérationnel » ouvre https://horselingo.fr (au lieu de lingo.html, redirigé).
 - Marqueur 20261014-1101. 16 scripts 0 erreur ; dictionnaires JSON valides ; marqueurs de garde inchangés.
 - Étape 2 (fichiers de cours hype-cours-*.js, ?v= à monter) : à faire.
+
+## Build 1102 (14/10) — Arabe des blocs de cours restants + corrections des cours, étape 2
+- Demande : « Oui traduis tout » (02 h 27), après la 1101.
+- index.html — arabe ajouté là où il manquait (repli français jusqu'ici) : complément de biomécanique Galop 4 (`COMPL_I18N`, défi, Hey Baby, science, synthèse, glossaire), navigation des compléments (`COMPL_NAV`), cartes « M'expliquer plus en détail » (`CARTE_LABELS`), « Le cheval porte aussi son cavalier » (`CAVALIER_I18N`), partage d'un cours (`PARTAGE_COURS_I18N`), suppression de compte (`SUPPR_I18N`). Structure identique au français vérifiée clé par clé. Féminin singulier, sans voyelles.
+- Fichiers de cours (?v= montés : galop1 v=3, galop2 v=3, galop3 v=4, galops-sup v=3) :
+  · Galop 1 : « te rassois », « hypervigilant ».
+  · Galop 2 : « puis la glisser vers l'arrière », « faire ouvrir la bouche », « du talon vers la pince », « les voir, les sentir ».
+  · Galop 3 : « » avant de chercher à le corriger » (fr, it), balzanes « petites, mi-canon, hautes ou irrégulières », « par paires », « Les deux figures sont composées des mêmes éléments » (« presque » retiré), « croise correctement ses antérieurs ».
+  · Galop 4 : « Aucun cheval ne ressemble à un autre. C'est écrit sur lui. » (+ es « Ningún »), « mal digérée », friandise : « sans faire bêtiser le cheval » retiré dans les 7 langues (+ coquille japonaise 騒がしい), « Ne jamais forcer un passage dangereux ».
+- ⚠️ Points de l'audit du 13/10 NON appliqués faute de détail retrouvé (à revérifier avec Blandine) : titre baby-c18, quiz 4 de baby-c22 (« immédiatement »), g3-c13 (« Les aides intérieures »), quiz de g3-saut (« fait passer »), g4-c5 (liste santé), g4-soins-travail (phrase de la douche), quiz 5 de g4-vitesse, g5-c2, g5-c3, g6-c1.
+- ⚠️ Galops 5, 6, 7 : toujours en français seul (en-tête de hype-cours-galops-sup.js) — gros chantier de traduction à part.
+- Marqueur 20261014-1102. 16 scripts 0 erreur ; 4 fichiers de cours : syntaxe OK ; marqueurs de garde inchangés.
