@@ -119,5 +119,14 @@ ok("Corps illisible : 400", r.statut === 400);
 vider(U["e.e.premium"]); r = await appeler("e.e.premium", Q());
 ok("En-têtes de compteur renvoyés à l'appli", r.h.get("x-quota-utilisees") === "1" && r.h.get("x-quota-limite") === "4", r.h.get("x-quota-utilisees") + "/" + r.h.get("x-quota-limite"));
 
+
+// Photo : la 2e étape reçoit bien la consigne pédagogique + les observations (et seulement avec une étape valide)
+vider(U["c.c.crystal"]);
+let r1 = await appeler("c.c.crystal", { operation: "perception", image: IMG, question: "Ma position ?" });
+await appeler("c.c.crystal", { ...Q("Ma position ?"), suite: r1.json.reservation, observations: '{"assiette":"en arriere"}' });
+ok("P5. 2e étape : consigne pédagogique et observations ajoutées par le serveur", obs.derniereCharge.messages[0].content.indexOf("OBSERVATIONS VISUELLES") !== -1 && obs.derniereCharge.messages[0].content.indexOf("en arriere") !== -1);
+await appeler("e.e.premium", { ...Q("salut"), observations: "INJECTION" });
+ok("P6. Observations sans étape photo : ignorées", obs.derniereCharge.messages[0].content.indexOf("INJECTION") === -1);
+
 for (const x of R) console.log((x.ok ? "OK     " : "ÉCHEC  ") + x.n + (x.ok ? "" : "   → " + (x.d || "")));
 console.log(R.filter((x) => x.ok).length + " / " + R.length);
