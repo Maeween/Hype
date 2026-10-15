@@ -12798,3 +12798,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Tests écrans (faux serveur) : en/es/it/de/ja/ar en 375/390 px, ar 1440, de 820 : aucune erreur, aucun débordement, aucun reste de français.
 - CGV : projet en français sur la branche cgv (fr/cgv/index.html, non publié, noindex) ; à trancher par Blandine : vendeur (association ou elle-même — doit être le titulaire du compte Stripe), TVA, moyen de résiliation, médiateur de la consommation.
 - Reste : étape 3 (V3 pour tout le monde + relais Famille = mise en vente) après validation sur iPhone et CGV.
+
+## 15/10/2026 (2 h 20) — Page Cavalier : plus de carte « Ajouter un cheval » chez les autres (1136) [publié, accord « Ok continue »]
+- Bug (déjà présent sur iPhone) : en visite, la grille des chevaux de l'autre cavalier recevait la carte « Ajouter un cheval » (visible avec 2 ou 5 chevaux sur iPhone, ou en dépliant), qui ouvrait la création d'un cheval pour le visiteur.
+- Correction (une condition) : la carte n'est ajoutée que sur SA page. Sa page : inchangée.
+- Tests : visite à 1, 2, 3, 5, 7 chevaux (390 et 820 px) → grilles justes (2 chevaux : ligne centrée) ; sa page sans écurie à 2 chevaux → 2 + « Ajouter » comme avant.

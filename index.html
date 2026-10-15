@@ -35148,7 +35148,8 @@ function EcranMonCavalier() {
            carte d ajout se retrouvait SEULE sur une quatrieme ligne. Quand la barre du
            deroulant existe, l ajout y monte ; la carte n est donc plus poussee ici. */
         var __barreChv = (__estVisite || premium) && source.length > PLAFOND_CHV;
-        if (!__barreChv && !clubCarteMil) cartes.push(h("button", { key: "ajout", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
+        /* 15/10 (1136) la carte « Ajouter un cheval » n apparait plus chez un autre cavalier (visite) : elle ouvrait la creation d un cheval pour le visiteur. */
+        if (!__barreChv && !clubCarteMil && !__estVisite) cartes.push(h("button", { key: "ajout", onClick: function () { if (window.__ouvrirCreationCheval) window.__ouvrirCreationCheval(); }, style: { background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, textAlign: "center" } },
           h("div", { style: { width: "100%", aspectRatio: "10 / 11", borderRadius: 14, border: "1.5px dashed " + __ta(0.5) + "", background: __ta(0.04), display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8 } },
             h("span", { style: { width: 34, height: 34, borderRadius: "50%", border: "1.5px solid #C5AA78", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#C5AA78" } }, "+"),
             h("span", { style: { fontSize: 9.5, color: "#C5AA78", fontFamily: M, fontWeight: 600, letterSpacing: 0.4, padding: "0 6px", lineHeight: 1.3 } }, T("Ajouter un cheval", "Add a horse", "A\u00f1adir un caballo", "Aggiungi un cavallo", "\u99ac\u3092\u8ffd\u52a0", "Pferd hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u062d\u0635\u0627\u0646")))));
