@@ -66343,7 +66343,7 @@ async function supprimerSouvenirOuvert() {
     var og = c.origines || {};
     var carteSt = { borderRadius: 18, border: "1px solid rgba(201,166,107,0.20)", background: "linear-gradient(165deg, rgba(16,26,29,0.92), rgba(9,15,18,0.95))", boxSizing: "border-box", minWidth: 0 };
     var fleche = rtlV ? " ←" : " →";
-    function lienBtn(txt, onC) { return h("button", { type: "button", onClick: onC, style: { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: MO, fontSize: D ? 13 : 12, fontWeight: 500, color: CH, whiteSpace: "nowrap", WebkitTapHighlightColor: "transparent" } }, txt + fleche); }
+    function lienBtn(txt, onC) { return h("button", { type: "button", onClick: onC, style: { background: "none", border: "none", padding: 0, cursor: "pointer", fontFamily: MO, fontSize: D ? 13 : (L ? 12.5 : 13.5), fontWeight: 500, color: CH, whiteSpace: "nowrap", WebkitTapHighlightColor: "transparent" } }, txt + fleche); }
     function titre(txt, lien, onLien) {
       return h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: 12, marginBottom: 14, flexWrap: "wrap" } },
         h("h2", { style: { margin: 0, fontFamily: SERIF, fontWeight: 500, fontSize: D ? 30 : (L ? 27 : 24), color: IV, lineHeight: 1.1 } }, txt),
@@ -66426,10 +66426,10 @@ async function supprimerSouvenirOuvert() {
     ];
     var raccourcis = h("div", { style: { display: "grid", gridTemplateColumns: (D || L) ? "repeat(7, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))", gap: D ? 14 : 10, rowGap: 14, margin: (D ? "8px " : (L ? "6px " : "4px ")) + pad + "px 0" } },
       racs.map(function (r) {
-        var cote = D ? 66 : (L ? 56 : 54);
+        var cote = D ? 66 : (L ? 56 : 58);
         return h("button", { key: "v4r" + r[0], type: "button", onClick: r[3], style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 8, background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, WebkitTapHighlightColor: "transparent" } },
           h("span", { style: { width: cote, height: cote, borderRadius: 16, border: "1px solid rgba(201,166,107,0.30)", background: "linear-gradient(165deg, #111B1F, #0B1215)", display: "flex", alignItems: "center", justifyContent: "center", boxSizing: "border-box" } }, ico(r[2], D ? 27 : 24)),
-          h("span", { style: { fontFamily: MO, fontSize: D ? 13 : (L ? 12 : 11), fontWeight: 500, color: IV, textAlign: "center", lineHeight: 1.2, maxWidth: "100%", overflowWrap: "anywhere" } }, r[1]));
+          h("span", { style: { fontFamily: MO, fontSize: D ? 13 : (L ? 12 : 12.5), fontWeight: 500, color: IV, textAlign: "center", lineHeight: 1.2, maxWidth: "100%", overflowWrap: "anywhere" } }, r[1]));
       }));
 
     /* ── 3. A PROPOS + IDENTITE ── */
@@ -66449,7 +66449,7 @@ async function supprimerSouvenirOuvert() {
         return h("div", { key: "li" + out.length, style: { display: "flex", alignItems: "flex-start", gap: 12, padding: "7px 0" } }, ico(icoC, 20),
           h("div", { style: { minWidth: 0 } },
             h("div", { style: { fontFamily: SERIF, fontSize: D ? 18 : 16.5, lineHeight: 1.2, color: IV, overflowWrap: "anywhere" } }, texte),
-            sous ? h("div", { style: { marginTop: 3, fontFamily: MO, fontSize: 11, lineHeight: 1.3, color: DX, overflowWrap: "break-word" } }, sous) : null));
+            sous ? h("div", { style: { marginTop: 3, fontFamily: MO, fontSize: 12.5, lineHeight: 1.3, color: DX, overflowWrap: "break-word" } }, sous) : null));
       }
       try {
         var partsI = String(c.info || "").split("·").map(function (x) { return x.trim(); }).filter(Boolean);
@@ -66498,7 +66498,7 @@ async function supprimerSouvenirOuvert() {
       return h("div", { key: opts.k, role: idAsc ? "button" : null, onClick: idAsc ? function () { try { window.__chevalOuvert = idAsc; } catch (eAs) { } setEcran("cheval"); } : null,
         style: { gridColumn: opts.col, gridRow: opts.row, display: "flex", flexDirection: "column", justifyContent: "center", minWidth: 0, padding: opts.grand ? "10px 14px" : "7px 12px", borderInlineStart: "2px solid " + (opts.grand ? "rgba(201,166,107,0.55)" : "rgba(201,166,107,0.25)"), cursor: idAsc ? "pointer" : "default" } },
         opts.label ? h("div", { style: { fontFamily: MO, fontSize: 9, letterSpacing: "0.2em", textTransform: "uppercase", color: CH, fontWeight: 700, marginBottom: 4 } }, opts.label) : null,
-        h("div", { style: { fontFamily: opts.grand ? SERIF : CIN, fontSize: opts.grand ? (D ? 21 : 18) : (opts.moyen ? 12.5 : 11), fontWeight: opts.grand ? 600 : 600, color: idAsc ? "#E4D2AE" : (nomN ? IV : DX), lineHeight: 1.25, overflowWrap: "anywhere" } }, nomN || "—"),
+        h("div", { style: { fontFamily: opts.grand ? SERIF : CIN, fontSize: opts.grand ? (D ? 22 : 19) : (opts.moyen ? 14.5 : 12.5), fontWeight: opts.grand ? 600 : 600, color: idAsc ? "#E4D2AE" : (nomN ? IV : DX), lineHeight: 1.25, overflowWrap: "anywhere" } }, nomN || "—"),
         (detail && (opts.grand || opts.moyen)) ? h("div", { style: { marginTop: 3, fontFamily: MO, fontSize: 10, color: "#A39D92", lineHeight: 1.3 } }, detail) : null);
     }
     var gen3 = v4Ped && aG3;
@@ -66615,8 +66615,8 @@ async function supprimerSouvenirOuvert() {
         phR ? h("div", { style: { flex: (D || L) ? "0 0 44%" : "0 0 auto", height: (D || L) ? "auto" : 130, position: "relative" } }, h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(phR, 420, 320) : phR, alt: "", loading: "lazy", decoding: "async", style: { position: (D || L) ? "absolute" : "static", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : null,
         h("div", { style: { padding: "14px 16px", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" } },
           h("div", { style: { fontFamily: SERIF, fontSize: D ? 34 : 30, fontWeight: 500, color: "#E4D2AE", lineHeight: 1 } }, placeTxt(f.pl)),
-          f.ep ? h("div", { style: { marginTop: 8, fontFamily: MO, fontSize: 13, fontWeight: 500, color: IV, lineHeight: 1.3, overflowWrap: "anywhere" } }, abrEpreuve(f.ep)) : null,
-          f.nom ? h("div", { style: { marginTop: 4, fontFamily: MO, fontSize: 12, color: DX, lineHeight: 1.3, overflowWrap: "anywhere" } }, f.nom) : null,
+          f.ep ? h("div", { style: { marginTop: 8, fontFamily: MO, fontSize: 13.5, fontWeight: 500, color: IV, lineHeight: 1.3, overflowWrap: "anywhere" } }, abrEpreuve(f.ep)) : null,
+          f.nom ? h("div", { style: { marginTop: 4, fontFamily: MO, fontSize: 13, color: DX, lineHeight: 1.3, overflowWrap: "anywhere" } }, f.nom) : null,
           (dateR(f)) ? h("div", { style: { marginTop: 4, fontFamily: MO, fontSize: 11.5, color: "rgba(243,238,228,0.5)" } }, dateR(f)) : null));
     }
     var coupes = (c.flots && c.flots.length) ? h("div", { style: { display: "flex", gap: D ? 20 : 14, overflowX: "auto", padding: "4px 0 6px", marginTop: 20 } },
@@ -66625,7 +66625,7 @@ async function supprimerSouvenirOuvert() {
           style: { flex: (D || L) ? "1 1 0" : "0 0 108px", minWidth: (D || L) ? 120 : 108, maxWidth: D ? 220 : 180, cursor: "pointer", textAlign: "center", marginInlineStart: iF === 0 ? "auto" : 0, marginInlineEnd: iF === c.flots.length - 1 ? "auto" : 0 } },
           fl.img ? h("img", { src: fl.img, alt: fl.lab || "", loading: "lazy", style: { width: "100%", aspectRatio: "108 / 132", objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
             : h("div", { style: { width: "100%", aspectRatio: "108 / 132", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "🏆" : "🏅"),
-          fl.lab ? h("div", { style: { marginTop: 6, fontFamily: MO, fontSize: (D || L) ? 10.5 : 8.5, lineHeight: 1.3, color: "rgba(243,238,228,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
+          fl.lab ? h("div", { style: { marginTop: 6, fontFamily: MO, fontSize: 10.5, lineHeight: 1.3, color: "rgba(243,238,228,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
       })) : null;
     var resultats = h("div", { style: Object.assign({}, carteSt, { margin: "0 " + pad + "px", padding: D ? "24px 26px" : "20px 18px" }) },
       titre(T("Principaux résultats", "Main results", "Resultados principales", "Risultati principali", "主な成績", "Wichtigste Ergebnisse", "أبرز النتائج"),
@@ -66675,7 +66675,7 @@ async function supprimerSouvenirOuvert() {
 
     var esp = D ? 34 : (L ? 28 : 24);
     function sp(k) { return h("div", { key: k, style: { height: esp } }); }
-    return h("div", { className: "chv4", style: { position: "relative", background: "#05080B", paddingBottom: L ? 30 : 100, color: IV } },
+    return h("div", { className: "chv4", style: { position: "relative", background: "#05080B", paddingBottom: D ? 30 : 0 /* (1156) plus de marges cumulees sous la fin de page : seul le cadre de l appli garde la place de la barre du bas */, color: IV } },
       hero, raccourcis, sp("s1"), blocAI, sp("s2"), origines, bandeauIpo ? sp("s3") : null, bandeauIpo, sp("s4"), resultats, sp("s5"), medias, sp("s6"), partage,
       finPageCh());
   }
@@ -66685,7 +66685,7 @@ async function supprimerSouvenirOuvert() {
     h("style", { dangerouslySetInnerHTML: { __html: ECHV_CSS } }),
     h("style", { dangerouslySetInnerHTML: { __html: ECHV_R_CSS } }),
     largeCh ? h("style", { dangerouslySetInnerHTML: { __html: ECHV_L_CSS } }) : null,   /* 15/10 (1149) mise en page grand ecran (iPhone inchange) */
-    nouvV4 ? h("style", { dangerouslySetInnerHTML: { __html: ".chvN>.app,.chvN>#chapPerf{display:none!important}" } }) : null,   /* 15/10 (1153) ancienne mise en page masquee sous la nouvelle */
+    nouvV4 ? h("style", { dangerouslySetInnerHTML: { __html: ".chvN>.app,.chvN>#chapPerf{display:none!important}.chvN{padding-bottom:0!important}" } }) : null,   /* 15/10 (1153) ancienne mise en page masquee sous la nouvelle */
     nouvV4 ? ficheV4() : null,
     h("div", { className: "app", style: { background: "transparent" } /* (975) le fond est porte par .chv (voir plus haut) */ },
 
