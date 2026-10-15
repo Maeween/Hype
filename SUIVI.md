@@ -13031,3 +13031,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Contrôle juillet-août (règle 1er septembre) : un résultat du 18/07/2026 est rangé en 2025-2026 (testé). En base, 195 résultats de juillet-août (2017 → 2026) sont tous rangés dans la saison qui se termine cet été-là ; avec l ancienne règle du 1er juillet ils étaient dans la saison suivante.
 - Tests (données simulées, scratchpad perf/test_tableau.cjs) : 42/42 — chiffres 11·5·10·14·37 (carrière), puis 6·3·7·7·23 avec le filtre Evan ; 5 saisons séparées ; ouverture par défaut ; plusieurs ouvertes ; refermer ; points par catégorie et nb d épreuves ; 2 sans points ; filtres 3/3/2 sans effet sur les chiffres ; élimination listée, comptée et dans la barre ; compteur 14 puis 15 avec la ligne masquée ; ordre des sections ; visiteuse sans commandes ; page vide intacte ; 7 langues (arabe RTL) ; 375 / 390 / 820 / 1440 sans débordement ; ancienne fiche intacte. node --check des 16 blocs : OK.
 - PAS PUBLIÉ (attente du « publie » de Blandine).
+
+## 15/10/2026 (23 h 30) — CHANTIER PERFORMANCES · BUILD « MOMENTS FORTS + CORRECTIONS VISUELLES » (NON PUBLIÉ, branche perf-forts, au-dessus de perf-tableau)
+- Retour de Blandine (23 h) : tableau des saisons VALIDÉ, on le garde ; build suivant = moments forts fidèles à la maquette + corrections visuelles ; moments forts = toute la carrière même avec un cavalier choisi ; outils de gestion au build d après.
+- index.html, EcranPerformancesCheval uniquement :
+  · mosaïque de la maquette : une grande carte à gauche sur deux rangées + quatre petites en 2 × 2 (grille 1,3 / 1 / 1, 2 × 128 px) ; la tuile « + Ajouter un moment fort » prend la place libre ; au-delà de 5, bouton sous la mosaïque ;
+  · cartes : rang (coupe pour une victoire), « sur N » partants, concours + année sur 2 lignes, épreuve (grande carte), cavalier ;
+  · photo : choisie à la main, sinon portrait du cavalier relié (règle historique 596), album du concours, photo de ses albums ; PLUS JAMAIS la photo du hero en repli ; sans photo : fond pétrole + coupe champagne discrète ;
+  · commandes selon les droits réels : crayon (photo) = propriétaire seulement (la base n autorise qu elle à modifier la fiche) ; « − » = propriétaire ou modératrice (fort_force / fort_exclu) ; visiteur : rien ;
+  · toucher un moment fort ouvre sa saison, fait défiler jusqu au résultat et le met en évidence 2,4 s ; si le filtre cavalier l exclut → retour à « Tous » ; si le filtre secondaire de la saison le cache → retour à « Tous » ; sans saison connue → carte non cliquable ;
+  · corrections : carte Team sur 2 lignes (plus de texte coupé) ; barre des places 8 px avec séparations, légende plus lisible ; espacement des saisons 12 px.
+- Non touché : base, SQL, calculs, règles Team, tableau des saisons, ancienne fiche.
+- Tests (données simulées, perf/test_forts.cjs + perf/test_tableau.cjs) : 26/26 + 42/42 — disposition mesurée (grande à gauche = 2 rangées, petites en 2 × 2), textes, jamais la photo du hero, crayon / moins selon propriétaire, visiteuse, modératrice sur le cheval d une autre ; ouverture de la saison, mise en évidence visible à l écran puis effacée, retour à « Tous » (cavalier et filtre secondaire) ; carte Team non tronquée ; barre 8 px ; 375 / 390 / 820 / 1440, arabe, japonais, allemand sans débordement ni erreur. node --check : OK.
+- PAS PUBLIÉ.
