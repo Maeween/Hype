@@ -12912,3 +12912,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (9 h 40) — Page Histoire du cavalier : 9 chevaux de cœur + fin de page Hype — PUBLIÉ
 - Demande de Blandine (« sur la page histoire du cavalier autorisé 9 chevaux favoris », « et mets la fin de page Hype ») : « Mes chevaux de cœur » passe de 6 à 9 (affichage, choix « Coche jusqu'à 9 chevaux · n / 9 » en 7 langues, enregistrement profiles.chevaux_coeur limité à 9 ; aucune limite en base) ; la page se termine par la fin de page Hype commune (FinPageHype : paysage fondu + « HYPE »).
 - Tests (faux serveur, 12 chevaux) : iPhone 390 et ordinateur 1440 → 9 chevaux en 3 × 3, feuille de choix 9 / 9, fin de page visible, aucune erreur, aucun débordement.
+
+## 15/10/2026 (9 h 40) — Actualité du cheval, refonte étape 4 (1150) : grand écran [publié, accord « Ok continue »]
+- Dès 1280 px : publications sur trois colonnes (deux colonnes de 768 à 1279 px, une sur iPhone).
+- Tablette et ordinateur : titre « PUBLICATIONS » et champ de publication centrés sur 720 px (moins étirés).
+- Toutes tailles, page Actualité seulement : les publications sans photo ont un léger fond champagne, un filet champagne et plus d'air, pour être aussi soignées que les cartes photo.
+- Technique : option deuxColonnes de MurHype (utilisée seulement par la page Actualité du cheval) ; autres fils inchangés. Aucun nouveau texte.
+- Tests (publications simulées) : 390 / 820 / 1280 (arabe) / 1440 px, 0 erreur. Refonte Actualité terminée (étapes 1 à 4).

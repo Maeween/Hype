@@ -58490,6 +58490,7 @@ var __murPhotoOuvrir = {};
 function MurHype(props) {
   var h = React.createElement;
   var largeMur = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 15/10 (1142) deux colonnes (prop deuxColonnes) */
+  var tresLargeMur = (typeof useHypeLargeur === "function") ? useHypeLargeur(1280) : false;   /* 15/10 (1150) trois colonnes des 1280 px (prop deuxColonnes) */
   var TEzM = (typeof hypeTeinteEcurie === "function") ? hypeTeinteEcurie() : null;   /* (536) mode sobre sur la page Ecurie */
   var ctx = useApp(); var tr = ctx.tr; var langue = ctx.langue || "fr";
   function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }   /* 27/09 (414) : arabe */
@@ -60247,7 +60248,7 @@ function MurHype(props) {
       enfants.push(h("div", { key: p.id, "data-post": p.id, style: Object.assign({}, carte, { marginBottom: 10, padding: 0, overflow: "hidden" }) }, rangV, ratOkV, panneauRatV, errSupprV, repV));
       return;
     }
-    enfants.push(h("div", { key: p.id, "data-post": p.id, style: Object.assign({}, carte, { marginBottom: 10, padding: mediaP ? 0 : "13px 14px", overflow: "hidden" }, estAnn ? { border: "1px solid rgba(232,200,135,0.45)", background: "linear-gradient(180deg, rgba(232,200,135,0.08), rgba(12,15,20,0.75))" } : {}) },
+    enfants.push(h("div", { key: p.id, "data-post": p.id, style: Object.assign({}, carte, { marginBottom: 10, padding: mediaP ? 0 : "13px 14px", overflow: "hidden" }, (props.deuxColonnes && !mediaP && !estAnn) ? { padding: "18px 18px 14px", border: "1px solid rgba(201,166,107,0.20)", background: "linear-gradient(170deg, rgba(201,166,107,0.07), rgba(12,15,20,0.80) 55%)" } : {} /* 15/10 (1150) page Actualite : cartes texte seul aussi soignees que les cartes photo */, estAnn ? { border: "1px solid rgba(232,200,135,0.45)", background: "linear-gradient(180deg, rgba(232,200,135,0.08), rgba(12,15,20,0.75))" } : {}) },
       mediaP,
       h("div", { style: mediaP ? { padding: "11px 14px 13px" } : null },
         h("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: (p.texte || interactif) ? 8 : 0 } },
@@ -60438,14 +60439,17 @@ function MurHype(props) {
     if (elAmb) { elAmb = h("div", { key: "__ambiance" }, elAmb); if (iIns < 0) enfants.unshift(elAmb); else enfants.splice(iIns + 1, 0, elAmb); }
   }
   if (props.deuxColonnes && largeMur && !props.rail) {
-    var colG = [], colD = [], iPost = 0, posGrille = -1, autres = [];
+    /* 15/10 (1150) titre et champ de publication centres sur 720 px (moins etires) ; trois colonnes des 1280 px */
+    enfants = enfants.map(function (el) { var kE = (el && el.key != null) ? String(el.key) : ""; if (kE === "comp" || kE === "comp-off" || kE === "co" || kE === "verrou" || kE === "off" || kE === "tt") return h("div", { key: kE, style: { maxWidth: 720, margin: "0 auto" } }, el); return el; });
+    var nbCol = tresLargeMur ? 3 : 2, cols = [], iPost = 0, posGrille = -1, autres = [];
+    for (var iC = 0; iC < nbCol; iC++) cols.push([]);
     enfants.forEach(function (el) {
-      if (el && el.props && el.props["data-post"]) { if (posGrille < 0) posGrille = autres.length; (iPost++ % 2 === 0 ? colG : colD).push(el); }
+      if (el && el.props && el.props["data-post"]) { if (posGrille < 0) posGrille = autres.length; cols[iPost++ % nbCol].push(el); }
       else autres.push(el);
     });
     if (posGrille >= 0) {
-      var grille = h("div", { key: "__deuxCol", style: { display: "flex", alignItems: "flex-start", gap: 14 } },
-        h("div", { style: { flex: "1 1 0", minWidth: 0 } }, colG), h("div", { style: { flex: "1 1 0", minWidth: 0 } }, colD));
+      var grille = h("div", { key: "__deuxCol", style: { display: "flex", alignItems: "flex-start", gap: tresLargeMur ? 16 : 14 } },
+        cols.map(function (cl, iCl) { return h("div", { key: "col" + iCl, style: { flex: "1 1 0", minWidth: 0 } }, cl); }));
       enfants = autres.slice(0, posGrille).concat([grille], autres.slice(posGrille));
     }
   }
