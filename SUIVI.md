@@ -12791,3 +12791,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Contenu, ordre, rails (stories, amis, derniers résultats) et différences propriétaire / visiteur : inchangés.
 - iPhone : 4 cas comparés avant/après au pixel (0 et 2 chevaux avec écurie, 3 sans écurie, visite à 5), 0 différence. Tests 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
 - Fin du plan iPad / ordinateur de la page Cavalier (builds 1130 à 1135). Restent en question chez Blandine : photo par défaut sur Progression / Photos / Vidéos ; cartes chevaux plus petites et en largeur sur ordinateur (maquette) ; corrections « Ajouter un cheval » en visite et « ⋯ » en arabe.
+
+## 15/10/2026 (2 h) — PAGE PREMIUM V3, étape 2 : 7 langues — PUBLIÉE ~2 h (accord « Ok continue »), toujours modératrices seulement
+- PV3_TXT complété en anglais, espagnol, italien, allemand, japonais, arabe (124 textes chacun, contrôle automatique : aucun texte manquant).
+- Arabe : page de droite à gauche (dir="rtl"), flèche retour inversée, ombre de la photo du haut inversée sur ordinateur. Sélecteur de langue ajouté en haut de la V3. Liens projets vers /{langue}/association/.
+- Tests écrans (faux serveur) : en/es/it/de/ja/ar en 375/390 px, ar 1440, de 820 : aucune erreur, aucun débordement, aucun reste de français.
+- CGV : projet en français sur la branche cgv (fr/cgv/index.html, non publié, noindex) ; à trancher par Blandine : vendeur (association ou elle-même — doit être le titulaire du compte Stripe), TVA, moyen de résiliation, médiateur de la consommation.
+- Reste : étape 3 (V3 pour tout le monde + relais Famille = mise en vente) après validation sur iPhone et CGV.
