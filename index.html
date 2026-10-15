@@ -65597,7 +65597,7 @@ function EcranCheval() {
   var menuCh = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
   var largeCh = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : menuCh;
   /* 15/10 (1153) NOUVELLE FICHE (ficheV4) : tablette / ordinateur, ou apercu cache #chevalv4-<id> sur telephone */
-  var nouvV4 = !!largeCh || (function () { try { var tv = window.__ficheV4TelId; return !!(tv && (String(tv) === String(id) || String(tv) === String((c && c.dbId) || ""))); } catch (eV4) { return false; } })();
+  var nouvV4 = true;   /* 15/10 (1162) Blandine (« Ok ») : la nouvelle fiche est branchee pour tout le monde, iPhone compris. L ancienne mise en page reste dans le code, masquee (.chvN) ; l adresse #chevalv4-<id> reste valable. */
   var v4mSt = React.useState(null); var v4Med = v4mSt[0], setV4Med = v4mSt[1];
   var v4tSt = React.useState(false); var v4Team = v4tSt[0], setV4Team = v4tSt[1];
   var v4pSt = React.useState(false); var v4Ped = v4pSt[0], setV4Ped = v4pSt[1];

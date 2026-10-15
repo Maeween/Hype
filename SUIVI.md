@@ -12985,3 +12985,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - 1161 États vides Photos / Vidéos : même hauteur compacte (150 px).
 - Effet : toutes les fiches sur tablette et ordinateur (et l'aperçu iPhone caché #chevalv4-). Fiche iPhone actuelle inchangée (capture identique au pixel). Aucune donnée, droit ou action modifiés ; aucun nouveau texte.
 - Tests (base simulée) : 375 (arabe) / 390 / 820 / 1440 px en capture ; 390 → 1600 px en français, allemand, arabe : 0 débordement, 0 erreur ; raccourcis, Voir tous les résultats, pedigree complet vérifiés au clic.
+
+## 15/10/2026 (16 h 40) — Nouvelle fiche cheval branchée sur iPhone pour tout le monde (1162) [publié, accord « Ok »]
+- La nouvelle fiche (ficheV4) s'affiche maintenant sur tous les écrans, iPhone compris (avant : tablette / ordinateur + aperçu caché). L'ancienne mise en page reste dans le code, masquée, pour pouvoir revenir en arrière en une ligne (nouvV4).
+- Tests iPhone (base simulée) : 375 / 390 px en français, allemand, arabe : 0 débordement, 0 erreur ; Son histoire, Performances, Photos, Vidéos, Actualité, Santé, Origines, Voir tous les résultats, pedigree complet vérifiés au clic.
