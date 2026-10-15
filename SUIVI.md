@@ -12867,3 +12867,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (2 h 50) — CGV dans Stripe + Hey Baby : la « mémoire » ne part plus deux fois — PUBLIÉ (accord « Oui vas y »)
 - Stripe : page « Gérer mon abonnement » → liens vers les CGV (2hype.fr/fr/cgv/) et les mentions légales ; les 5 liens de paiement d'abonnement (Cavalier, Crystal, Duo, Hype IA, Famille) affichent sous le bouton payer « En payant, vous acceptez les conditions générales de vente de Hype » avec le lien. Liens de mécénat non modifiés.
 - Hey Baby : la synthèse des fiches (opération « memoire ») partait à chaque sortie de l'écran, même sans nouvel échange (vu en base le 14/10 : 2 appels à 7 s d'écart). Elle retient maintenant la conversation déjà résumée (nombre d'échanges + questions du cavalier, quel que soit l'ordre d'affichage) : pas de nouvel appel sans nouvel échange. Test (faux serveur) : avant 2 appels, après 1.
+
+## 15/10/2026 (3 h 20) — Actualité du cheval, refonte étape 2 (1145) : onglets de navigation [publié, accord « Oui va s'y »]
+- Sous la photo du haut de la page Actualité : Histoire, Photos, Résultats, Vidéos, Actualité (actif, souligné en champagne), Santé. Mêmes routes que les autres pages du cheval (Santé ouvre la page Santé & soins).
+- iPhone : une rangée qui défile horizontalement (le geste ne change pas de page), sans barre de défilement visible. iPad et ordinateur (dès 768 px) : une seule ligne répartie.
+- Technique : ajout de l'onglet « actualite » dans ongletsPanCh (libellés traduits dans les 7 langues) et appel de ongletsPanCh dans le panneau Actualité. Les autres pages qui affichent déjà la rangée ne changent pas, sauf le défilement sur iPhone.
+- Tests (publications simulées) : 390 / 820 / 1440 px, arabe en 390 et 820 ; test de débordement 21 cas, 0 débordement, 0 erreur.
+- Étapes suivantes : 3) fond bleu pétrole et lueurs discrètes ; 4) grand écran (3 colonnes à partir de 1280 px, éditeur moins large, cartes texte seul soignées).

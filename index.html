@@ -65442,8 +65442,12 @@ function EcranCheval() {
       ["photos", T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631")],
       ["palmares", T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")],   /* (939) « Performances » -> « Resultats » (place pour Sante, accord de Blandine) */
       ["videos", T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a")],
+      ["actualite", T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631")],   /* 15/10 (1145) 6e onglet : la page Actualite */
       ["sante", T("Sant\u00e9", "Health", "Salud", "Salute", "\u5065\u5eb7", "Gesundheit", "\u0627\u0644\u0635\u062d\u0629")]];   /* (939) 5e onglet : ouvre la page Sante & soins de ce cheval */
-    return h("div", { style: { display: "flex", justifyContent: "space-between", gap: 8, margin: marge || "0 16px 22px", borderBottom: "1px solid rgba(255,255,255,0.05)" } },
+    /* (1145) 6 onglets : sur iPhone ils defilent au doigt (defilement horizontal, le geste ne change pas de page) ; des 768 px, une seule ligne. */
+    var largeOn = false; try { largeOn = window.innerWidth >= 768; } catch (eLo) { }
+    return h("div", { className: largeOn ? undefined : "hype-onglets-defil", style: Object.assign({ display: "flex", justifyContent: "space-between", gap: largeOn ? 8 : 22, margin: marge || "0 16px 22px", borderBottom: "1px solid rgba(255,255,255,0.05)" }, largeOn ? {} : { overflowX: "auto", overflowY: "hidden", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" }) },
+      largeOn ? null : h("style", { key: "stDef" }, ".hype-onglets-defil::-webkit-scrollbar{display:none}"),
       lst.map(function (tb) {
         var onTb = panneau === tb[0];
         return h("button", { key: "tb" + tb[0], type: "button", onClick: function () { if (tb[0] === "sante") { try { window.__santeCheval = { id: (c && c.dbId) || id, nom: (c && c.nom) || "" }; } catch (eSc) { } setEcran("sante-cheval"); return; } setPanneau(tb[0]); }, style: { flex: "0 0 auto", padding: "6px 2px 7px", border: "none", borderBottom: "1.5px solid " + (onTb ? "rgba(214,196,161,0.85)" : "transparent"), marginBottom: -1, background: "none", cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, fontWeight: onTb ? 600 : 500, letterSpacing: "0.02em", color: onTb ? "rgba(217,190,140,0.95)" : "rgba(243,238,228,0.42)", textShadow: "0 1px 8px rgba(0,0,0,0.6)"   /* (978) plus transparents (Blandine) */, whiteSpace: "nowrap" } }, tb[1]);
@@ -68556,6 +68560,8 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
            avec « ACTUALITE » et son nom (meme encart que Videos / Photos) ; sans photo : l alezan au couchant fourni par Blandine
            (images/cheval-defaut-alezan.webp). Des 768 px, les publications sur deux colonnes (prop deuxColonnes du fil). */
         encartIdentiteCh(T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631"), "images/cheval-defaut-alezan.webp"),
+        /* 15/10 (1145) navigation entre les pages du cheval (Histoire, Photos, Resultats, Videos, Actualite, Sante), sous la photo */
+        ongletsPanCh("16px 16px 18px"),
         h("div", { style: { height: 10 } }),
         h(MurHype, {
           cible: cibleCh, teinte: teinte, vignette: false /* (1142) maquette : grandes cartes avec la photo (avant : vignettes) */, deuxColonnes: true,
