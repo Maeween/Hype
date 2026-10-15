@@ -480,7 +480,10 @@ export default async (req) => {
            et la cavalière devra repayer. C'est cohérent avec un tarif « Fondateur »
            payé une fois, mais il faut le savoir.                                  */
         const modeSession = objet && objet.mode;
-        if (evenement.type === "checkout.session.completed" && objet && (modeSession === "subscription" || modeSession === "payment")) {
+        // Livraison 2 : un paiement différé confirmé plus tard arrive par
+        // checkout.session.async_payment_succeeded (même traitement, payment_status = "paid").
+        if ((evenement.type === "checkout.session.completed" || evenement.type === "checkout.session.async_payment_succeeded")
+            && objet && (modeSession === "subscription" || modeSession === "payment")) {
             const email = (objet.customer_details && objet.customer_details.email) || objet.customer_email || null;
             let userId = objet.client_reference_id || null;
 
