@@ -12817,3 +12817,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - CGV (branche cgv, non publiée) : vendeur = Association FEINN Équitation et Environnement (choix de Blandine) ; « TVA non applicable, article 293 B du CGI » (choix de Blandine, à confirmer avec la personne qui tient les comptes) ; résiliation en ligne via « Gérer mon abonnement » ou par mail.
 - ⏳ À FAIRE (demande de Blandine, « Médiateur mets ça en suivi ») : choisir un médiateur de la consommation agréé (liste officielle du ministère de l'Économie), y adhérer au nom de l'association, puis compléter l'article 11 des CGV avec son nom et son adresse. Obligatoire pour vendre aux particuliers.
 - ⏳ À FAIRE : basculer les paiements Hype sur le compte Stripe de l'association (vendeur des CGV) — recréer alors produits, liens, relais et portail sur ce compte.
+
+## 15/10/2026 (2 h 40) — Progression (Mon apprentissage) : photo du haut = la photo de Mes chevaux (1138) [publié, accord « Ok continue »]
+- Demande : la photo de Mes chevaux sur toutes les sous-pages du cavalier. Progression : images/APPRENTISSAGE_HAUT.webp remplacée par IMG_CAVALIER_HERO_DEFAUT (mes-chevaux-fond-couchant.webp), cadrée sur la tête (70 % 18 %). L'ancienne image reste dans le dépôt (retour arrière : remettre son adresse).
+- Textes, voile et boutons inchangés. Vérifié 390 et 1440 px.

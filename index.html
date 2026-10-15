@@ -51065,7 +51065,7 @@ function EcranMonApprentissage() {
     h("style", null, CSS),
     h(HypeDrapeauLangue, null),   /* (491) */
     h("header", { className: "hype-apprentissage-haut" },
-      h("img", { src: "images/APPRENTISSAGE_HAUT.webp", alt: "", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (eI) { } } }),
+      h("img", { src: IMG_CAVALIER_HERO_DEFAUT /* 15/10 (1138) Blandine : la photo de Mes chevaux sur toutes les sous-pages du cavalier (avant : images/APPRENTISSAGE_HAUT.webp, gardee dans le depot) */, style: { objectPosition: "70% 18%" }, alt: "", decoding: "async", onError: function (e) { try { e.target.style.display = "none"; } catch (eI) { } } }),
       h("div", { className: "hype-apprentissage-voile" }),
       h("button", { type: "button", className: "hype-apprentissage-retour", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "\u0631\u062c\u0648\u0639") }, "‹"),
       h("div", { className: "hype-apprentissage-titres" },
