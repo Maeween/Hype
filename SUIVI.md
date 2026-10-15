@@ -12989,3 +12989,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (16 h 40) — Nouvelle fiche cheval branchée sur iPhone pour tout le monde (1162) [publié, accord « Ok »]
 - La nouvelle fiche (ficheV4) s'affiche maintenant sur tous les écrans, iPhone compris (avant : tablette / ordinateur + aperçu caché). L'ancienne mise en page reste dans le code, masquée, pour pouvoir revenir en arrière en une ligne (nouvV4).
 - Tests iPhone (base simulée) : 375 / 390 px en français, allemand, arabe : 0 débordement, 0 erreur ; Son histoire, Performances, Photos, Vidéos, Actualité, Santé, Origines, Voir tous les résultats, pedigree complet vérifiés au clic.
+
+## 15/10/2026 (17 h 35) — Fiche cheval : raccourci Origines retiré, 6 raccourcis (1163) [publié, demande de Blandine]
+- Blandine : « Pourquoi 4 et 3 onglets en haut, on n'a pas de page Origines ». Le raccourci Origines (qui descendait seulement au bloc) est retiré ; le bloc Origines reste sur la fiche.
+- 6 raccourcis : 3 + 3 sur téléphone, une ligne de 6 sur tablette et ordinateur. Tests 390 / 1440 px, 0 erreur.
