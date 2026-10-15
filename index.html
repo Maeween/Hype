@@ -66363,7 +66363,7 @@ async function supprimerSouvenirOuvert() {
     var sigleV = ""; try { sigleV = (raceV && typeof hypeSigleOrigine === "function") ? (hypeSigleOrigine(raceV) || "") : ""; } catch (eSg) { }
     var anV = (String(og.naissance || "").match(/(?:^|\D)((?:19|20)\d{2})(?:\D|$)/) || [])[1] || "";
     var ligneId = [sxL, sigleV || raceV, anV].filter(Boolean).join("  •  ");
-    var ixLeg = (og.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("−", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
+    var ixLeg = (og.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("−", "-").replace("+", "")); return isFinite(v) && v >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */; })[0];
     var lblLeg = ixLeg ? rareteIndice(parseFloat(String(ixLeg[1]).replace("−", "-").replace("+", ""))) : null;
     var badgeSt = { display: "inline-flex", alignItems: "center", gap: 7, padding: "6px 13px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", background: "rgba(5,8,11,0.45)", color: "#E4D2AE", fontFamily: MO, fontSize: D ? 11 : 10, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap" };
     var ecurieV = (function () {
@@ -66469,7 +66469,7 @@ async function supprimerSouvenirOuvert() {
         if (og.robe) out.push(li(h("path", { d: "M12 3c4 4.5 6 7.6 6 10.2A6 6 0 0 1 6 13.2C6 10.6 8 7.5 12 3z" }), String(og.robe)));
         if (autresI.length) out.push(li(h("path", { d: "M4 18c3-6 6-9 8-9s5 3 8 9M8 18h8" }), autresI.join(" · ")));
         var ixL = (og.indices || [])[0];
-        if (ixL && ixL[1]) out.push(li(h("path", { d: "m12 3 2.7 5.5 6 .9-4.3 4.2 1 6L12 16.8 6.6 19.6l1-6L3.3 9.4l6-.9z" }), String(ixL[0]) + " " + String(ixL[1])));
+        if (ixL && ixL[1] && parseFloat(String(ixL[1]).replace("\u2212", "-").replace("+", "")) >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */) out.push(li(h("path", { d: "m12 3 2.7 5.5 6 .9-4.3 4.2 1 6L12 16.8 6.6 19.6l1-6L3.3 9.4l6-.9z" }), String(ixL[0]) + " " + String(ixL[1])));
       } catch (eLi) { }
       return out;
     })();
@@ -66557,7 +66557,7 @@ async function supprimerSouvenirOuvert() {
 
     /* ── 5. BANDEAU IPO (inchange sur le fond : meme calcul que l ancien bandeau) ── */
     var bandeauIpo = (function () {
-      var ixI = (og.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("−", "-").replace("+", "")); return isFinite(v) && v >= 80; });
+      var ixI = (og.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("−", "-").replace("+", "")); return isFinite(v) && v >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */; });
       if (!ixI.length) return null;
       var vI = parseFloat(String(ixI[0][1]).replace("−", "-").replace("+", ""));
       var lblI = rareteIndice(vI);
@@ -66805,7 +66805,7 @@ async function supprimerSouvenirOuvert() {
         h("div", { style: { padding: "18px 16px 2px", display: "flex", alignItems: "flex-start", gap: 12 } }, /* 31/07 : bloc titre dedie sous la photo */
           (function () {
             var ogT2 = c.origines || {};
-            var ixT2 = (ogT2.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; })[0];
+            var ixT2 = (ogT2.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */; })[0];
             var vT2 = ixT2 ? parseFloat(String(ixT2[1]).replace("\u2212", "-").replace("+", "")) : 0;
             var lblT2 = rareteIndice(vT2);
             /* 03/09 (Blandine) — LE SURNOM PASSE DEVANT.
@@ -67000,7 +67000,7 @@ async function supprimerSouvenirOuvert() {
                     : ligneR("orig", T("Origines non renseignées", "Bloodline not provided", "Orígenes no indicados", "Origini non indicate", "血統は未登録", "Herkunft nicht angegeben", "النسب غير مُدخل")));
                   var ixL = (ogB.indices || [])[0];
                   var monCh = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
-                  if (ixL && ixL[1]) lignes.push(ligneR("ipo", String(ixL[0]) + " " + String(ixL[1])));
+                  if (ixL && ixL[1] && parseFloat(String(ixL[1]).replace("\u2212", "-").replace("+", "")) >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */) lignes.push(ligneR("ipo", String(ixL[0]) + " " + String(ixL[1])));
                   /* 13/10 (1091) Blandine : « indice a renseigner avec un bouton a cote, on s attend a pouvoir le renseigner » : ligne retiree du recto ; explication au verso, sous le bouton d import */
                 } catch (eLg) { }
                 var peutOrigR = !!((!CHEVAUX_FICHE[id] || NOMS_MIGRES[id]) && chevalDyn && chevalDyn.dbId && c.dbId && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi) || gereClubCh));   /* (820) + moderatrice + responsable du club */
@@ -67308,7 +67308,7 @@ async function supprimerSouvenirOuvert() {
            le disait INTOUCHABLE : cela vaut pour son contenu et son style). */
         (ongletPerf === "coupes") ? (function () { /* 31/07 soir : carte IPO REMISE sous les coupes — elle etait piegee dans l etat vide, donc jamais affichee pour un cheval ayant coupes ou resultats */
           var ogI = c.origines || {};
-          var ixI = (ogI.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= 80; });
+          var ixI = (ogI.indices || []).filter(function (ix) { var v = parseFloat(String(ix[1]).replace("\u2212", "-").replace("+", "")); return isFinite(v) && v >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */; });
           if (!ixI.length) return null;
           var vI = parseFloat(String(ixI[0][1]).replace("\u2212", "-").replace("+", ""));
           var pI = vI >= 120 ? Math.min(5, Math.floor((vI - 110) / 10)) : 0;
