@@ -12874,3 +12874,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Technique : ajout de l'onglet « actualite » dans ongletsPanCh (libellés traduits dans les 7 langues) et appel de ongletsPanCh dans le panneau Actualité. Les autres pages qui affichent déjà la rangée ne changent pas, sauf le défilement sur iPhone.
 - Tests (publications simulées) : 390 / 820 / 1440 px, arabe en 390 et 820 ; test de débordement 21 cas, 0 débordement, 0 erreur.
 - Étapes suivantes : 3) fond bleu pétrole et lueurs discrètes ; 4) grand écran (3 colonnes à partir de 1280 px, éditeur moins large, cartes texte seul soignées).
+
+## 15/10/2026 (2 h 55) — ⏳ À FAIRE PLUS TARD (décision de Blandine : « On peut faire prochaine fois ») : vidéos Hey Baby côté serveur
+- Constat : la voie vidéo de la fonction Supabase hey-baby-vision (images clés d'une vidéo, en un seul appel en flux) ne passe pas encore par le compteur IA côté serveur (hype_ia_reserver / hype_ia_terminer) et sa réponse n'est pas enregistrée par le serveur : si l'appli est quittée pendant l'analyse, la réponse peut se perdre.
+- Pas de risque aujourd'hui : cette voie n'est ouverte qu'au compte de Blandine (estCompteFeinnHype), sans limite de questions. Les vidéos des autres cavalières passent par le relais Netlify (assistant.js), qui compte déjà les questions depuis la livraison A.
+- À faire : même régime que les photos (mode « vidéo complète » : réservation, analyse en arrière-plan, réponse enregistrée dans conversations_heybaby, reprise au retour), puis déploiement en deux temps (fonction [fonctions], puis appli [publier]). Estimation : 1 à 2 h avec tests.
