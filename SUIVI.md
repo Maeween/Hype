@@ -12835,3 +12835,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - PortraitChevalSpectral (utilisé seulement dans « Mes chevaux » de la page Cavalier : chevaux sans photo et chevaux à découvrir) prenait UV3_H1, l'image bleu cyan. Il prend maintenant CHEVAL_DEFAUT (mes-chevaux-fond-couchant.webp), la photo par défaut des chevaux décidée le 12/10 (1063), cadrée sur la tête (65 % 28 %). « Personnalise son portrait » reste.
 - Vérifié 390 / 820 (visite) / 1440 px, 0 erreur, 0 débordement.
 - Reçu de Blandine le 15/10 vers 2 h 20 : une photo panoramique (alezan au couchant, barrière) — usage à confirmer (photo du haut de la page Cavalier ?).
+
+## 15/10/2026 (3 h 30) — Page Actualité du cheval, iPhone / iPad / ordinateur (1142) — BRANCHE actualite-cheval, NON PUBLIÉ (visuels envoyés pour validation)
+- D'après la maquette de Blandine : la photo du cheval en haut avec « ACTUALITÉ » et son nom (même encart que Vidéos / Photos du cheval, flèche et langue flottantes) ; sans photo du cheval : images/cheval-defaut-alezan.webp (photo fournie par Blandine le 15/10, « pour les chevaux si besoin »).
+- Les publications en grandes cartes avec la photo (avant : vignettes compactes) ; dès 768 px, sur deux colonnes (la plus récente en haut à gauche, puis à droite…). Le reste du fil (champ « Partage un moment… », j'aime, réponses, droits de publication) inchangé ; nouvelle option deuxColonnes de MurHype, utilisée seulement ici (autres fils inchangés).
+- Aucun nouveau texte (« Actualité » déjà traduit dans les 7 langues). Bouton « Publier » : style actuel gardé (pas de doré plein, charte).
+- Tests (publications simulées) : 390 / 820 / 1440 px, arabe 820, 0 erreur.
+- À valider par Blandine avant publication.
