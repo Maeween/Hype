@@ -444,6 +444,11 @@ export default async (req) => {
     try { evenement = JSON.parse(corps); } catch (e) { return new Response("JSON invalide", { status: 400 }); }
     const objet = evenement.data && evenement.data.object;
     log("événement", evenement.type);
+    // Livraison 2 : message déjà traité → on répond OK sans rien refaire.
+    try {
+        const deja = await fetch(SUPABASE_URL + "/rest/v1/relais_evenements_traites?select=stripe_event_id&stripe_event_id=eq." + encodeURIComponent(evenement.id), { headers: entetesSupabase(service) });
+        if (deja.ok && (await deja.json()).length > 0) { log("doublon ignoré :", evenement.id); return new Response("OK (doublon)", { status: 200 }); }
+    } catch (e) { log("contrôle de doublon indisponible :", e && e.message); }
 
     // Vrai tant qu'aucun travail n'a été demandé ; passe à false si une écriture
     // attendue n'a pas abouti. C'est lui qui décide de la réponse à Stripe.
@@ -673,9 +678,38 @@ export default async (req) => {
         else if ((evenement.type === "charge.refunded" || evenement.type === "credit_note.created") && objet) {
             ecritureOk = await signalerRemboursementFamille(service, evenement, objet);
         }
+
+        // ----- Livraison 2 : litige ouvert (contestation de paiement) -----
+        // Rien n'est retiré automatiquement : une ligne « litige » à vérifier à la main.
+        else if (evenement.type === "charge.dispute.created" && objet) {
+            ecritureOk = await anomalie(service, evenement, {
+                reference_stripe: objet.payment_intent || objet.charge || objet.id,
+                identifiant_offre: null, user_id: null, email: null,
+                montant: objet.amount, anomalie: "litige",
+                note: "Litige ouvert sur " + (objet.payment_intent || objet.charge || "?") + " — décision humaine.",
+            });
+        }
+
+        // ----- Livraison 2 : paiement différé échoué -----
+        // Aucun droit n'a été donné : on journalise seulement, la réponse reste OK.
+        else if (evenement.type === "checkout.session.async_payment_failed" && objet) {
+            log("paiement différé échoué (aucun droit) :", objet.id);
+        }
     } catch (e) {
         log("erreur de traitement :", e && e.message);
         ecritureOk = false;
+    }
+
+    // Livraison 2 : un message déjà traité n'est pas refait (doublon Stripe).
+    // La marque est posée SEULEMENT après un succès, pour qu'un réessai ne soit pas bloqué.
+    if (ecritureOk && evenement && evenement.id) {
+        try {
+            await fetch(SUPABASE_URL + "/rest/v1/relais_evenements_traites", {
+                method: "POST",
+                headers: { ...entetesSupabase(service), Prefer: "resolution=ignore-duplicates,return=minimal" },
+                body: JSON.stringify({ stripe_event_id: evenement.id, type_evenement: evenement.type }),
+            });
+        } catch (e) { log("marque de doublon non posée :", e && e.message); }
     }
 
     if (!ecritureOk) {

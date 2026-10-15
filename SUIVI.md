@@ -12965,3 +12965,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « Il peut s'afficher à partir de 100. Mais le bandeau comme celui que Rizotto a n'est qu'à partir de 120. »
 - Ligne IPO de la carte Identité : dès 100 (nouvelle fiche tablette / ordinateur et fiche iPhone). Bandeau IPO et badge « Légende Hype » : toujours dès 120.
 - Tests (cheval simulé) : 161 → tout ; 110 → ligne seule ; 90 → rien. iPhone et ordinateur, 0 erreur.
+
+## 15/10/2026 — RELAIS STRIPE · LIVRAISON 2 [publié, netlify/functions/stripe-webhook.js]
+- Accord Blandine (14 h 54 : « 1 et 2 », puis « 3 enchaîne tout ») : Stripe, SQL, mise en ligne.
+- STRIPE (compte Feinn, live) : le point d'arrivée we_1Tpn0SHnB1OJ7FOmnwktg1k0 écoute 3 nouveaux messages : checkout.session.async_payment_succeeded (paiement différé confirmé), checkout.session.async_payment_failed (paiement différé échoué), charge.dispute.created (litige). Les 6 anciens sont gardés.
+- SQL (lu avant, vérifié après) : type d'alerte « litige » ajouté ; table relais_evenements_traites créée (accès fermé aux appareils des utilisateurs). Fichier : supabase/sql/relais_livraison_2.sql.
+- CODE : paiement différé confirmé → même traitement que le paiement normal (accès donné) ; litige → alerte « litige » à vérifier à la main, AUCUN retrait automatique ; paiement différé échoué → simplement noté, aucun droit ; doublon de message déjà traité → répondu OK sans rien refaire (la marque n'est posée qu'après succès, pour qu'un réessai ne soit pas bloqué).
+- TESTS (base simulée, aucune écriture réelle) : 3/3 cas attendus OK (litige → alerte ; doublon ignoré ; alerte impossible → 500 sans marque). Cas « paiement différé échoué » : réponse OK et marqué traité, c'est voulu.
+- NON TESTÉ ici : un vrai paiement différé (Stripe ne sait pas encore les envoyer sans essai réel) ; un vrai litige.
+- À FAIRE plus tard : test réel quand Blandine le décide.
