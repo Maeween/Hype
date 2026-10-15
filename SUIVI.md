@@ -12842,3 +12842,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Aucun nouveau texte (« Actualité » déjà traduit dans les 7 langues). Bouton « Publier » : style actuel gardé (pas de doré plein, charte).
 - Tests (publications simulées) : 390 / 820 / 1440 px, arabe 820, 0 erreur.
 - À valider par Blandine avant publication.
+
+## 15/10/2026 (2 h 45) — Actualité du cheval : fond noir uni (1143) [publié, accord « Ok continue »]
+- La page Actualité prenait le fond de la page Santé (traits bleus). Elle a maintenant le noir uni de la charte (#05080B). Les autres pages du cheval (Santé, Photos, Vidéos, Histoire, Résultats) : fond inchangé.
+- Vérifié 390 et 1440 px, 0 erreur.
