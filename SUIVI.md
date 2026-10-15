@@ -12919,3 +12919,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Toutes tailles, page Actualité seulement : les publications sans photo ont un léger fond champagne, un filet champagne et plus d'air, pour être aussi soignées que les cartes photo.
 - Technique : option deuxColonnes de MurHype (utilisée seulement par la page Actualité du cheval) ; autres fils inchangés. Aucun nouveau texte.
 - Tests (publications simulées) : 390 / 820 / 1280 (arabe) / 1440 px, 0 erreur. Refonte Actualité terminée (étapes 1 à 4).
+
+## 15/10/2026 (10 h 10) — Fiche cheval grand écran : coupes sur la largeur et centrées (1151) [publié, demande de Blandine]
+- Blandine (capture iPad) : « Les coupes doivent être sur la largeur et centrées ».
+- Tablette et ordinateur : les coupes se partagent la largeur, centrées (jusqu'à 230 px chacune sur iPad, 300 px sur ordinateur), même cadrage que sur iPhone (108 × 132, agrandi) pour qu'elles aient toutes la même hauteur. S'il y en a beaucoup, la rangée défile toujours au doigt sans rien couper à gauche.
+- iPhone identique au pixel. Tests 390 → 1600 px en français, allemand, arabe : 0 débordement, 0 erreur.

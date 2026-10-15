@@ -56193,7 +56193,7 @@ var CHEVAUX_SPECTRAL = {
   tully:   { teinte: "#EAC77A" }
 };
 /* 15/10/2026 (1149) FICHE CHEVAL SUR TABLETTE / ORDINATEUR. Ne s applique que si la fiche porte .chvL (>= 768 px) ou .chvD (>= 1024 px) :
-   l iPhone ne change pas. Raccourcis sur une ligne (Sante en dernier, ordre de la maquette), trophees plus grands,
+   l iPhone ne change pas. Raccourcis sur une ligne (Sante en dernier, ordre de la maquette), trophees sur la largeur et centres (1151),
    carte « Le voir en mouvement » et encart photos cote a cote. Aucune fonction modifiee. */
 const ECHV_L_CSS = `
 .chvL .scroll,.chvL #chapMedias{box-sizing:border-box}
@@ -56204,9 +56204,12 @@ const ECHV_L_CSS = `
 .chvD .chvRac>div{min-height:98px!important;border-radius:18px!important}
 .chvD .chvRac>div>span:first-child,.chvD .chvRac>div>span:first-child svg{width:30px!important;height:30px!important}
 .chvD .chvRac>div>span:last-child{font-size:16px!important}
-.chvL .chvCoupes{gap:16px!important}
-.chvL .chvCoupes>div{width:136px!important}
-.chvD .chvCoupes>div{width:160px!important}
+.chvL .chvCoupes{gap:20px!important;padding:0 24px 6px!important}
+.chvL .chvCoupes>div{flex:1 1 0!important;width:auto!important;min-width:130px;max-width:230px}
+.chvD .chvCoupes>div{max-width:300px}
+.chvL .chvCoupes>div:first-child{margin-inline-start:auto}
+.chvL .chvCoupes>div:last-child{margin-inline-end:auto}
+.chvL .chvCoupes>div img{width:100%!important;height:auto!important;aspect-ratio:108/132;object-fit:cover}
 .chvL .chvCoupes>div>div{font-size:10.5px!important}
 .chvL #chapMedias>div>div>div.rise{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;align-items:stretch;padding:0 16px}
 .chvL #chapMedias>div>div>div.rise>div{min-width:0;margin-left:0!important;margin-right:0!important}
