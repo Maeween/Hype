@@ -66469,7 +66469,7 @@ async function supprimerSouvenirOuvert() {
         if (og.robe) out.push(li(h("path", { d: "M12 3c4 4.5 6 7.6 6 10.2A6 6 0 0 1 6 13.2C6 10.6 8 7.5 12 3z" }), String(og.robe)));
         if (autresI.length) out.push(li(h("path", { d: "M4 18c3-6 6-9 8-9s5 3 8 9M8 18h8" }), autresI.join(" · ")));
         var ixL = (og.indices || [])[0];
-        if (ixL && ixL[1] && parseFloat(String(ixL[1]).replace("\u2212", "-").replace("+", "")) >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */) out.push(li(h("path", { d: "m12 3 2.7 5.5 6 .9-4.3 4.2 1 6L12 16.8 6.6 19.6l1-6L3.3 9.4l6-.9z" }), String(ixL[0]) + " " + String(ixL[1])));
+        if (ixL && ixL[1] && parseFloat(String(ixL[1]).replace("\u2212", "-").replace("+", "")) >= 100 /* 15/10 (1155) Blandine : la ligne IPO s affiche des 100 (le bandeau, lui, des 120) */) out.push(li(h("path", { d: "m12 3 2.7 5.5 6 .9-4.3 4.2 1 6L12 16.8 6.6 19.6l1-6L3.3 9.4l6-.9z" }), String(ixL[0]) + " " + String(ixL[1])));
       } catch (eLi) { }
       return out;
     })();
@@ -67000,7 +67000,7 @@ async function supprimerSouvenirOuvert() {
                     : ligneR("orig", T("Origines non renseignées", "Bloodline not provided", "Orígenes no indicados", "Origini non indicate", "血統は未登録", "Herkunft nicht angegeben", "النسب غير مُدخل")));
                   var ixL = (ogB.indices || [])[0];
                   var monCh = !!(c.dbId && moi && chevalDyn && chevalDyn.ownerId === moi.id);
-                  if (ixL && ixL[1] && parseFloat(String(ixL[1]).replace("\u2212", "-").replace("+", "")) >= (typeof HYPE_IPO_BON === "number" ? HYPE_IPO_BON : 120) /* 15/10 (1154) Blandine : IPO seulement a partir de 120 */) lignes.push(ligneR("ipo", String(ixL[0]) + " " + String(ixL[1])));
+                  if (ixL && ixL[1] && parseFloat(String(ixL[1]).replace("\u2212", "-").replace("+", "")) >= 100 /* 15/10 (1155) Blandine : la ligne IPO s affiche des 100 (le bandeau, lui, des 120) */) lignes.push(ligneR("ipo", String(ixL[0]) + " " + String(ixL[1])));
                   /* 13/10 (1091) Blandine : « indice a renseigner avec un bouton a cote, on s attend a pouvoir le renseigner » : ligne retiree du recto ; explication au verso, sous le bouton d import */
                 } catch (eLg) { }
                 var peutOrigR = !!((!CHEVAUX_FICHE[id] || NOMS_MIGRES[id]) && chevalDyn && chevalDyn.dbId && c.dbId && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi) || gereClubCh));   /* (820) + moderatrice + responsable du club */

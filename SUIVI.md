@@ -12960,3 +12960,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine : « le bandeau et l'IPO ne sont que pour Rizotto. En fait l'IPO est prévu uniquement pour les chevaux avec un IPO au-dessus de 120 ».
 - Seuil passé de 80 à 120 (HYPE_IPO_BON, déjà utilisé pour le « bon IPO » du pedigree) pour : le badge « Légende Hype », le bandeau IPO (« 1 sur … chevaux de sport ») et la ligne IPO de la carte Identité — sur la nouvelle fiche (tablette / ordinateur) ET sur la fiche iPhone actuelle. Les données ne changent pas.
 - Tests : Rizotto (161) garde badge, bandeau et ligne ; même cheval simulé à 100 : plus rien, iPhone et ordinateur, 0 erreur.
+
+## 15/10/2026 (12 h 30) — Ligne IPO dès 100, bandeau dès 120 (1155) [publié, précision de Blandine]
+- Blandine : « Il peut s'afficher à partir de 100. Mais le bandeau comme celui que Rizotto a n'est qu'à partir de 120. »
+- Ligne IPO de la carte Identité : dès 100 (nouvelle fiche tablette / ordinateur et fiche iPhone). Bandeau IPO et badge « Légende Hype » : toujours dès 120.
+- Tests (cheval simulé) : 161 → tout ; 110 → ligne seule ; 90 → rien. iPhone et ordinateur, 0 erreur.
