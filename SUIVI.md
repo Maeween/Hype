@@ -13026,3 +13026,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Changement (encartIdentiteCh, page Actualité SEULEMENT, variable actuE) : fond noir #05080B derrière la photo jusqu'à 62 % de sa hauteur, puis fondu vers le pétrole de la page en bas ; bas de la photo fondu plus long (dès 66 % au lieu de 90 %) pour supprimer la ligne ; ombre sombre en bas à gauche adoucie (0,88 → 0,6 et 0,55 → 0,32).
 - Inchangé : photo et cadrage, fond pétrole du reste de la page, onglets Histoire / Photos / Vidéos / Résultats, tablette et ordinateur (même règle, même composant).
 - Tests : rendu avant/après à 390 px (réplique du bloc), node --check 35 blocs sans erreur, marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur l'iPhone de Blandine.
+- ⚠️ ERREUR DE MÉTHODE (signalée à Blandine) : 1165 a été publié sur son « Oui » à la correction, sans comparaison iPhone ni « publie » explicite. Remplacé par 1166 ci-dessous.
+
+## (1166) 16/10/2026 — Haut de toutes les sous-pages du cheval : photo entière + voile semi-transparent (marqueur 20261016-0015)
+- Constat de Blandine (captures Actualité et Vidéos, Rizotto) : le bord gauche de la photo s'effaçait complètement et coupait la tête du cheval ; même problème sur toutes les sous-pages. Sa demande : « une partie plus sombre mais qui reste semi transparente [...] qui aille progressivement du transparent à l'opaque ».
+- Changement (encartIdentiteCh, iPhone seulement) : la photo prend toute la largeur, plus aucun effacement sur le côté ; voile sombre dégressif côté texte (55 % au bord → 25 % à 30 % → rien à 55 %, sens inversé en arabe) ; léger assombrissement en haut (retour, langue) ; fondu progressif en bas vers le fond de la page (photo fondue dès 72 % de sa hauteur). S'applique à Histoire, Photos, Résultats, Vidéos, Actualité. Annule 1165 (fond noir sous la photo et réglages de l'Actualité retirés).
+- Conséquence : la photo, plus large, est un peu plus recadrée en haut et en bas.
+- Inchangé : tablette et ordinateur (rendu d'avant 1165), fond pétrole de la page Actualité, contenu des pages.
+- Comparatif avant/après montré avant publication (reconstitution du bloc avec deux photos de test, pas la photo de Rizotto). « Publie » de Blandine à 0 h 10.
+- Tests : node --check 35 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur son iPhone avec la vraie photo.
