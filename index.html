@@ -66393,7 +66393,7 @@ async function supprimerSouvenirOuvert() {
     var rondSt = { width: 44, height: 44, borderRadius: "50%", border: "1px solid " + CHL, background: "rgba(5,8,11,0.42)", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", WebkitBackdropFilter: "blur(6px)", backdropFilter: "blur(6px)", boxSizing: "border-box", padding: 0, color: CHL };
     var lie = !!estLieFiche;
     var hero = h("header", { style: { position: "relative", height: D ? 420 : (L ? 330 : "calc(env(safe-area-inset-top) + 400px)"), overflow: "hidden" } },
-      photoCh ? h("img", { src: photoCh, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: (D || L) ? "62% 26%" : "60% 22%", display: "block" } }) : null,
+      h("img", { src: photoCh || "images/cheval-defaut-alezan.webp" /* (1157) cheval sans photo : le cheval de la page Actualite (Blandine) */, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: (D || L) ? "62% 26%" : "60% 22%", display: "block" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlV ? "270deg" : "90deg") + ", rgba(5,8,11,0.94) 0%, rgba(5,8,11,0.72) " + ((D || L) ? "28%" : "20%") + ", rgba(5,8,11,0.18) " + ((D || L) ? "58%" : "62%") + ", rgba(5,8,11,0) 80%)" } }),
       h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(5,8,11,0.55) 0%, rgba(5,8,11,0) 22%, rgba(5,8,11,0) 52%, rgba(5,8,11,0.72) 84%, #05080B 100%)" } }),
       h("div", { style: { position: "absolute", top: (D || L) ? 18 : "calc(env(safe-area-inset-top) + 14px)", insetInlineStart: pad, insetInlineEnd: pad, zIndex: 3, display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 } },
@@ -66406,10 +66406,10 @@ async function supprimerSouvenirOuvert() {
           h("button", { type: "button", "aria-label": T("Menu de la fiche", "Card menu", "Menú", "Menu", "メニュー", "Menü", "قائمة الصفحة"), onClick: function () { setMenuFiche(true); }, style: rondSt },
             h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: CHL }, h("circle", { cx: 6, cy: 12, r: 1.6 }), h("circle", { cx: 12, cy: 12, r: 1.6 }), h("circle", { cx: 18, cy: 12, r: 1.6 }))))),
       h("div", { style: { position: "absolute", zIndex: 2, insetInlineStart: pad, insetInlineEnd: pad, bottom: D ? 44 : (L ? 32 : 26), maxWidth: D ? 640 : (L ? 520 : "none") } },
-        h("h1", { style: { margin: 0, fontFamily: SERIF, fontWeight: 500, fontSize: D ? (nmV.length > 22 ? 48 : 60) : (L ? (nmV.length > 22 ? 40 : 50) : (nmV.length > 20 ? 31 : 40)), lineHeight: 1.04, color: IV, overflowWrap: "anywhere", textShadow: "0 2px 18px rgba(0,0,0,0.65)" } }, nmV),
+        h("h1", { style: { margin: 0, fontFamily: SERIF, fontWeight: 500, fontSize: D ? (nmV.length > 22 ? 54 : 68) : (L ? (nmV.length > 22 ? 44 : 54) : (nmV.length > 20 ? 32 : 42)) /* (1157) nom plus present */, lineHeight: 1.04, color: IV, overflowWrap: "anywhere", textShadow: "0 2px 18px rgba(0,0,0,0.65)" } }, nmV),
         montrerOffi ? h("div", { style: { marginTop: 6, fontFamily: MO, fontSize: 10.5, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(243,238,228,0.62)" } }, nomOffi) : null,
-        ligneId ? h("div", { style: { marginTop: 10, fontFamily: MO, fontSize: D ? 14 : (L ? 13 : 12), fontWeight: 500, letterSpacing: "0.16em", textTransform: "uppercase", color: "rgba(243,238,228,0.88)" } }, ligneId) : null,
-        (ecurieV || v4Team || lblLeg) ? h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 12, rowGap: 8, marginTop: 14 } },
+        ligneId ? h("div", { style: { marginTop: D ? 14 : 12, fontFamily: MO, fontSize: D ? 15 : (L ? 13.5 : 12), fontWeight: 500, letterSpacing: "0.18em", textTransform: "uppercase", color: "rgba(243,238,228,0.88)" } }, ligneId) : null,
+        (ecurieV || v4Team || lblLeg) ? h("div", { style: { display: "flex", alignItems: "center", flexWrap: "wrap", columnGap: 12, rowGap: 8, marginTop: D ? 20 : 16 } },
           v4Team ? h("span", { style: badgeSt }, ico(h("path", { d: "M4 17h16l-1.5-9-4.5 4-2-6-2 6-4.5-4z" }), 14), T("Équipe compétition", "Competition team", "Equipo de competición", "Squadra agonistica", "競技チーム", "Turnierteam", "فريق المنافسات")) : null,
           lblLeg ? h("span", { style: badgeSt }, "✦ " + T("LÉGENDE HYPE", "HYPE LEGEND", "LEYENDA HYPE", "LEGGENDA HYPE", "伝説", "HYPE-LEGENDE", "أسطورة HYPE")) : null,
           ecurieV) : null));
@@ -66424,7 +66424,7 @@ async function supprimerSouvenirOuvert() {
       ["ac", T("Actualité", "News", "Actualidad", "Attualità", "ニュース", "Aktuelles", "الأخبار"), h("path", { d: "M6 3.5h9l3 3v14H6zM9 10h6M9 13.5h6M9 17h4" }), function () { setPanneau("actualite"); }],
       ["sa", T("Santé", "Health", "Salud", "Salute", "健康", "Gesundheit", "الصحة"), h("path", { d: "M12 20s-7-4.5-9-9c-1.2-2.8.6-6 3.7-6 2 0 3.4 1.2 4.3 2.6C12 6.2 13.4 5 15.4 5c3.1 0 4.9 3.2 3.7 6-2 4.5-9 9-9 9zM6 11.5h3l1.5-2.5 2 4.5 1.5-2h4" }), function () { try { window.__santeCheval = { id: (c && c.dbId) || id, nom: (c && c.nom) || "" }; } catch (eSc) { } setEcran("sante-cheval"); }]
     ];
-    var raccourcis = h("div", { style: { display: "grid", gridTemplateColumns: (D || L) ? "repeat(7, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))", gap: D ? 14 : 10, rowGap: 14, margin: (D ? "8px " : (L ? "6px " : "4px ")) + pad + "px 0" } },
+    var raccourcis = h("div", { style: { display: "grid", gridTemplateColumns: (D || L) ? "repeat(7, minmax(0, 1fr))" : "repeat(4, minmax(0, 1fr))", gap: D ? 14 : 10, rowGap: 14, margin: (D ? "8px " : (L ? "10px " : "16px ")) + pad + "px 0" /* (1157) air sous la photo */ } },
       racs.map(function (r) {
         var cote = D ? 66 : (L ? 56 : 58);
         return h("button", { key: "v4r" + r[0], type: "button", onClick: r[3], style: { display: "flex", flexDirection: "column", alignItems: "center", gap: 8, background: "none", border: "none", padding: 0, cursor: "pointer", minWidth: 0, WebkitTapHighlightColor: "transparent" } },
