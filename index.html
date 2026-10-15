@@ -23526,6 +23526,7 @@ const CIBLE_DIRECTE = (function () {
         if (cle === "chevalcommun") { try { window.__chevalCommunDemo = true; } catch (eDm) { } return { ecran: "cheval-commun" }; } /* 25/08 : apercu page commune (donnees demo, zero reseau) */
         if (cle && cle.indexOf("chevalcommun-") === 0 && !MAP[cle]) { try { window.__chevalCommunOuvert = cle.slice(13); } catch (eCcO) { } return { ecran: "cheval-commun" }; }
         if (cle && cle.indexOf("chevalv4-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(9); window.__ficheV4TelId = cle.slice(9); } catch (eCV4) { } return { ecran: "cheval" }; } /* 15/10 (1153) APERCU CACHE de la nouvelle fiche cheval sur telephone (pas branchee pour les cavalieres) */
+        if (cle && cle.indexOf("perf-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(5); } catch (ePf) { } return { ecran: "performances-cheval" }; } /* 15/10 chantier Performances : apercu cache de la nouvelle page Performances du cheval, #perf-<id> */
         if (cle && cle.indexOf("chevalv3-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(9); } catch (eCV3) { } return { ecran: "cheval-v3" }; } /* (1069) FICHE CHEVAL V3 : maquette visuelle, adresse cachee #chevalv3-<id> */
         if (cle && cle.indexOf("chevalv2-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(9); } catch (eCV2) { } return { ecran: "cheval-v2" }; } /* (735) FICHE CHEVAL V2 : adresse cachee de test #chevalv2-<id>. Ouvre la NOUVELLE fiche (EcranChevalV2) ; l ancienne fiche (#cheval-<id>) ne change pas. */
         if (cle && cle.indexOf("chevalhist-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(11); window.__hypePanneauReprise = "souvenirs"; } catch (eCH) { } return { ecran: "cheval" }; } /* 12/10 (1007) lien partage de la page Histoire d un cheval sans adresse publique */
@@ -28572,7 +28573,7 @@ function Router() {
                     } catch (eC2) { return { error: String((eC2 && eC2.message) || eC2) }; }
                   },
                   nomCheval: (typeof window !== "undefined" && !window.HYPE_IMPORT_CAVALIERE && window.HYPE_CHEVAL_IMPORT_NOM) || null, /* 26/08 : la cible s AFFICHE sur l ecran d import */
-                  onFermer: function () { var multF = !!(typeof window !== "undefined" && window.HYPE_IMPORT_MULTI); var cavF = !!(typeof window !== "undefined" && window.HYPE_IMPORT_CAVALIERE); try { window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false; } catch (eCf) { } setEcran(multF ? "team-competition" : (cavF ? "resultats-cavalier" : "cheval")); },   /* 07/10 (694) */
+                  onFermer: function () { var multF = !!(typeof window !== "undefined" && window.HYPE_IMPORT_MULTI); var cavF = !!(typeof window !== "undefined" && window.HYPE_IMPORT_CAVALIERE); try { window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false; } catch (eCf) { } var retF = null; try { retF = window.HYPE_IMPORT_RETOUR || null; window.HYPE_IMPORT_RETOUR = null; } catch (eRf) { } setEcran(multF ? "team-competition" : (cavF ? "resultats-cavalier" : (retF || "cheval"))); },   /* 07/10 (694) ; 15/10 chantier Performances : retour vers la page qui a lance l import (HYPE_IMPORT_RETOUR) */
                   onOrigines: function (originesOff) { /* 26/08 : conflit tranche par le cavalier */
                     var chId2 = window.HYPE_CHEVAL_IMPORT || null; /* 26/08 : cible fraiche obligatoire (voir onEnregistrer) */
                     if (!chId2) return Promise.resolve({ error: "cheval introuvable" });
@@ -28643,6 +28644,7 @@ function Router() {
                 ecran === "perf-concours" && React.createElement(EcranPerfConcours, null),
                 /* 22/09 (346) : la page « Résultats » d une cavalière. */
                 ecran === "resultats-cavalier" && React.createElement(EcranResultatsCavaliere, null),
+                ecran === "performances-cheval" && React.createElement(EcranPerformancesCheval, null),   /* 15/10 chantier Performances, build 1 (non branche : #perf-<id>) */
                 /* 22/09 (351) : la page « Actualité » d une cavalière. */
                 ecran === "actualite-cavalier" && React.createElement(EcranActualiteCavaliere, null),
                 /* 22/09 (352) : la page « Vidéos » d une cavalière. */
@@ -40249,6 +40251,571 @@ function hypeRecompense(place, partants) {
      (choix de photo d en-tête, choix des médias des moments forts, corbeille) : page de lecture ;
    · pas de « palmarès écrit en dur » (il n existe que sur les chevaux).
    Aucun SQL, aucune table, route nouvelle « resultats-cavalier ». */
+/* ════════════════════════════════════════════════════════════════════════════
+   15/10/2026 — CHANTIER PERFORMANCES, BUILD 1 : « PERFORMANCES DU CHEVAL » (vue d'ensemble, iPhone)
+   Nouvelle page A PART (ecran "performances-cheval"), construite A COTE : l ancien panneau
+   « Resultats » de la fiche cheval n est PAS touche. Pas encore branchee aux autres pages :
+   apercu cache par l adresse #perf-<identifiant du cheval>.
+   Reutilise, sans copier : hypeLireFicheCheval, hypeResultatsCheval, hypePrincipauxResultats
+   (regle unifiee des moments forts du 08/10), hypeClassementTeamChevaux (carte Classement saison),
+   FeuilleAjoutResultatV2 (ajout d un resultat), VideoResultatsOfficiels, l ecran d import FFE
+   (et sa garde Premium), FinPageHype, chargerPhotosSouvenirs / listerAlbumsCheval.
+   Regles posees par l audit du 15/10 (« Ok » de Blandine) :
+     · saison = 1er septembre -> 31 aout (HYPE_PERF_SAISON_DEBUT) ; onglets = saisons AVEC resultats,
+       les trois plus recentes puis « Anterieures » ;
+     · « concours » = sorties (journees regroupees par concours, jours consecutifs fusionnes : la
+       definition d avant, inchangee) ;
+     · « classes » = 8 premiers ET premier quart (regle du 13/09, celle de la vue SQL) ; en
+       preparatoire seule la victoire compte (regle du 02/09) ;
+     · les 5 chiffres et les derniers resultats suivent la saison ET le cavalier choisis ; les moments
+       forts restent ceux de toute la carriere (choix a la main en tete, puis victoires, podiums) ;
+     · une ligne masquee (visible = false) reste exclue partout, comme aujourd hui, tant que la colonne
+       « masque_public » n existe pas (SQL en attente) ; la proprietaire peut les afficher ;
+     · aucune ligne de resultat n est cliquable : rien en base ne relie un resultat a un rendez-vous
+       (colonne agenda_id en attente) ; aucune photo de remplacement sur une ligne sans photo ;
+     · « Masquer la video » est retenu dans ce telephone (localStorage), pas en base ;
+     · « Sans faute » en toutes lettres, jamais « SF » ; « SF » reste la race.
+   Tablette / ordinateur : colonne telephone centree pour ce build (composition large = build dedie).
+   ════════════════════════════════════════════════════════════════════════════ */
+var HYPE_PERF_SAISON_DEBUT = "09-01";   /* jour de debut de saison (mois-jour) ; une seule ligne a changer */
+function hypePerfPlace(r) {
+  if (!r) return null;
+  if (r.place != null && r.place !== "") { var n = Number(r.place); return isNaN(n) ? null : n; }
+  var m = String(r.classement || "").match(/^\s*(\d+)/);
+  return m ? Number(m[1]) : null;
+}
+function hypePerfSaisonDe(d, annee) {
+  var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) return ((m[2] + "-" + m[3]) >= HYPE_PERF_SAISON_DEBUT) ? Number(m[1]) : Number(m[1]) - 1;
+  var mA = String(annee || "").match(/^(\d{4})/);
+  if (mA) return Number(mA[1]) - 1;   /* annee seule (4 lignes en base) : la saison qui se termine cette annee-la */
+  return null;
+}
+function hypePerfEstPrepa(ep) { return /pr[ée]pa/i.test(String(ep || "")); }
+function hypePerfEstClasse(f) {
+  if (!f || f.pl == null) return false;
+  if (hypePerfEstPrepa(f.ep)) return f.pl === 1;
+  if (f.pl > 8) return false;
+  if (f.q != null) return f.q === 1;
+  return !!(f.part && f.pl * 4 <= f.part);
+}
+function hypePerfEstSansFaute(f) {
+  var t = String((f && f.mn) || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  if (!t) return false;
+  return /(^|[^a-z])sf([^a-z]|$)/.test(t) || /sans\s*-?\s*faute/.test(t);
+}
+/* Sorties : une journee de concours = un concours (par son nom) a une date ; deux jours consecutifs
+   du meme concours ne font qu une sortie. Meme definition que l ancien panneau (sortiesDe). */
+function hypePerfSorties(fs) {
+  var parLieu = {};
+  (fs || []).forEach(function (f) { if (!f.d) return; var k = String(f.nom || "").toLowerCase().trim(); (parLieu[k] = parLieu[k] || {})[f.d] = true; });
+  var tot = 0;
+  Object.keys(parLieu).forEach(function (k) {
+    var js = Object.keys(parLieu[k]).sort(); var prec = null;
+    js.forEach(function (j) { var t = Date.parse(j + "T00:00:00Z"); if (prec == null || isNaN(t) || (t - prec) > 86400000) tot++; if (!isNaN(t)) prec = t; });
+  });
+  return tot;
+}
+/* Les lignes de la table, preparees pour l ecran. voirMasques = la proprietaire veut aussi les lignes
+   decochees / masquees. Seules les lignes AVEC une place entrent dans les chiffres et les listes
+   (eliminations et abandons restent en base, ils reviendront dans « Tous les resultats »). */
+function hypePerfLignes(lignes, voirMasques) {
+  return (lignes || []).filter(function (r) { return r && (voirMasques || r.visible !== false); }).map(function (r) {
+    return {
+      id: r.id, og: (r.origine || "main"), mn: String(r.mention || ""), pl: hypePerfPlace(r),
+      pts: ((r.points == null || r.points === "") ? null : Number(r.points)),
+      part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "",
+      cav: r.cavalier || "", cavId: r.cavalier_id || null, q: (r.quart == null ? null : Number(r.quart)),
+      d: String(r.date_epreuve || "").slice(0, 10), saison: hypePerfSaisonDe(r.date_epreuve, r.annee),
+      photo: r.photo_url || null, masque: (r.visible === false), ff: (r.fort_force === true), fx: (r.fort_exclu === true)
+    };
+  }).filter(function (f) { return f.pl != null; });
+}
+function hypePerfStats(fs) {
+  var pts = 0, avecPts = 0;
+  fs.forEach(function (f) { if (f.pts != null && !isNaN(f.pts)) { pts += f.pts; avecPts++; } });
+  return {
+    concours: hypePerfSorties(fs),
+    victoires: fs.filter(function (f) { return f.pl === 1; }).length,
+    podiums: fs.filter(function (f) { return hypePerfEstPrepa(f.ep) ? f.pl === 1 : f.pl <= 3; }).length,
+    classes: fs.filter(hypePerfEstClasse).length,
+    points: Math.round(pts * 100) / 100, avecPoints: avecPts, sansPoints: fs.length - avecPts
+  };
+}
+
+function EcranPerformancesCheval() {
+  var h = React.createElement;
+  var app = useApp();
+  var tr = app.tr || function (o) { return (o && o.fr) || ""; };
+  function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }
+  var setEcran = app.setEcran;
+  var langue = app.langue || "fr";
+  var rtl = (langue === "ar");
+  var NOIR = "#070A08", PETROLE = "#101A1D", PETROLE2 = "#101D22", IVOIRE = "#F3EEE4", CHAMP = "#C9A66B";
+  var SERIF = "'Cormorant Garamond', Georgia, serif", SANS = "'Montserrat', system-ui, sans-serif";
+  var MUET = "rgba(243,238,228,0.62)", MUET2 = "rgba(243,238,228,0.42)", FILET = "rgba(201,166,107,0.32)";
+
+  /* ── le cheval ouvert : meme ordre que la fiche V2 (window.__chevalOuvert, puis l adresse) ── */
+  var idSt = React.useState(function () {
+    try { if (typeof window !== "undefined" && window.__chevalOuvert) return String(window.__chevalOuvert); } catch (eW) { }
+    try { var hs = (typeof location !== "undefined" && location.hash) || ""; var m = hs.match(/perf-([\w-]+)/); if (m && m[1]) return m[1]; } catch (eH) { }
+    return "";
+  });
+  var id = idSt[0];
+  var etSt = React.useState({ charge: false, cheval: null, erreur: null }); var etat = etSt[0], setEtat = etSt[1];
+  React.useEffect(function () {
+    var vivant = true;
+    setEtat({ charge: false, cheval: null, erreur: null });
+    if (!id || typeof hypeLireFicheCheval !== "function") { setEtat({ charge: true, cheval: null, erreur: "introuvable" }); return; }
+    hypeLireFicheCheval(id).then(function (r) { if (vivant) setEtat({ charge: true, cheval: (r && r.cheval) || null, erreur: (r && r.erreur) || null }); })
+      .catch(function (eC) { if (vivant) setEtat({ charge: true, cheval: null, erreur: String((eC && eC.message) || eC || "?") }); });
+    return function () { vivant = false; };
+  }, [id]);
+  var chV = etat.cheval;
+  var dbId = (chV && chV.dbId) || null;
+  var ligneCh = (chV && chV.ligne) || {};
+  var secours = (chV && chV.secours) || {};
+  var nomCh = (chV && (String(ligneCh.alias || "").trim() || chV.nom)) || "";
+
+  /* ── qui regarde ── */
+  var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
+  React.useEffect(function () { var v = true; try { utilisateurActuel().then(function (u) { if (v) setMoi(u || null); }).catch(function () { }); } catch (eU) { } return function () { v = false; }; }, []);
+  var estProprio = !!(moi && dbId && ligneCh.user_id === moi.id);
+  var estMod = !!(moi && typeof estModerateurHype === "function" && estModerateurHype(moi));
+  var droitsSt = React.useState({ lie: false, memeEcurie: false }); var droits = droitsSt[0], setDroits = droitsSt[1];
+  React.useEffect(function () {
+    var v = true; setDroits({ lie: false, memeEcurie: false });
+    if (!moi || !dbId || typeof supa === "undefined" || !supa) return;
+    (async function () {
+      var lie = false, meme = false;
+      try { var rL = await supa.from("chevaux_liens").select("cheval_id").eq("cheval_id", dbId).eq("user_id", moi.id).limit(1); lie = !!(rL && !rL.error && rL.data && rL.data.length); } catch (eL) { }
+      try {
+        var mesC = (typeof mesClubs === "function") ? await mesClubs() : [];
+        var cCh = String(ligneCh.club || "").trim(); if (!cCh || cCh === "__perso__") cCh = String(ligneCh.ecurie || "").trim();
+        if (cCh && cCh !== "__perso__" && mesC.length) {
+          var noy = function (x) { return String((typeof noyauEcurie === "function" ? (noyauEcurie(x) || x) : x)).toLowerCase(); };
+          var nCh = noy(cCh); meme = mesC.some(function (mC) { var nM = noy(mC); return !!nM && nM === nCh; });
+        }
+      } catch (eM) { }
+      if (v) setDroits({ lie: lie, memeEcurie: meme });
+    })();
+    return function () { v = false; };
+  }, [moi && moi.id, dbId]);
+  var peutSaisir = !!(moi && dbId && (estProprio || estMod || droits.lie || droits.memeEcurie));
+  var peutImporter = !!(moi && dbId && (estProprio || estMod || droits.lie));
+  var peutForts = !!(moi && dbId && (estProprio || estMod));
+  var premiumOk = !!(app.premium || estMod);
+
+  /* ── les resultats (table resultats, lecture partagee avec la fiche V2) ── */
+  var resSt = React.useState(null); var lignes = resSt[0], setLignes = resSt[1];
+  var relSt = React.useState(0); var relire = relSt[0], setRelire = relSt[1];
+  React.useEffect(function () {
+    var v = true; setLignes(null);
+    if (!etat.charge) return;
+    if (!dbId) { setLignes([]); return; }
+    if (typeof hypeResultatsCheval !== "function") { setLignes([]); return; }
+    hypeResultatsCheval(dbId).then(function (r) { if (v) setLignes((r && r.lignes) || []); }).catch(function () { if (v) setLignes([]); });
+    return function () { v = false; };
+  }, [dbId, etat.charge, relire]);
+  var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1];
+  var fortsLocSt = React.useState({}); var fortsLocal = fortsLocSt[0], setFortsLocal = fortsLocSt[1];   /* reponse immediate au tap, par id */
+  var lignesVues = React.useMemo(function () {
+    return (lignes || []).map(function (r) { var loc = r && r.id && fortsLocal[r.id]; return loc ? Object.assign({}, r, { fort_force: loc.ff, fort_exclu: loc.fx }) : r; });
+  }, [lignes, fortsLocal]);
+  var tous = React.useMemo(function () { return hypePerfLignes(lignesVues, voirMasques && estProprio); }, [lignesVues, voirMasques, estProprio]);
+  var nbMasques = (lignes || []).filter(function (r) { return r && r.visible === false && hypePerfPlace(r) != null; }).length;
+
+  /* ── saisons et cavaliers ── */
+  var saisons = React.useMemo(function () {
+    var par = {}; tous.forEach(function (f) { if (f.saison == null) return; (par[f.saison] = par[f.saison] || []).push(f); });
+    var cles = Object.keys(par).map(Number).sort(function (a, b) { return b - a; });
+    var out = cles.slice(0, 3).map(function (k) { return { cle: String(k), lib: k + "-" + (k + 1), lignes: par[k] }; });
+    if (cles.length > 3) { var reste = []; cles.slice(3).forEach(function (k) { reste = reste.concat(par[k]); }); out.push({ cle: "ant", lib: T("Antérieures", "Earlier", "Anteriores", "Precedenti", "それ以前", "Frühere", "سابقة"), lignes: reste }); }
+    return out;
+  }, [tous]);
+  var saSt = React.useState(null); var saisonChoisie = saSt[0], setSaisonChoisie = saSt[1];
+  var saisonActive = saisons.filter(function (s) { return s.cle === saisonChoisie; })[0] || saisons[0] || null;
+  var cavSt = React.useState("tous"); var cavChoisi = cavSt[0], setCavChoisi = cavSt[1];
+  var lignesSaison = (saisonActive && saisonActive.lignes) || [];
+  var cavaliers = React.useMemo(function () {
+    var st = {}; lignesSaison.forEach(function (f) { if (!f.cav) return; if (!st[f.cav]) st[f.cav] = { n: 0, d: "" }; st[f.cav].n++; if (f.d > st[f.cav].d) st[f.cav].d = f.d; });
+    return Object.keys(st).sort(function (a, b) { return (st[b].n - st[a].n) || st[b].d.localeCompare(st[a].d); });
+  }, [lignesSaison]);
+  var cavEffectif = (cavChoisi !== "tous" && cavaliers.indexOf(cavChoisi) >= 0) ? cavChoisi : "tous";
+  var lignesVue = (cavEffectif === "tous") ? lignesSaison : lignesSaison.filter(function (f) { return f.cav === cavEffectif; });
+  var stats = hypePerfStats(lignesVue);
+  var recents = lignesVue.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 5);
+
+  /* ── moments forts : regle unifiee (choisis a la main, victoires, podiums…), toute la carriere ── */
+  var forts = React.useMemo(function () {
+    if (typeof hypePrincipauxResultats !== "function") return [];
+    var vis = lignesVues.filter(function (r) { return r && (r.visible !== false || (voirMasques && estProprio)); });
+    return hypePrincipauxResultats(vis, (chV && chV.demo && secours.palmares) || [], 5);
+  }, [lignesVues, voirMasques, estProprio, chV]);
+
+  /* ── portraits des cavaliers relies a un compte ── */
+  var avSt = React.useState({}); var avatars = avSt[0], setAvatars = avSt[1];
+  var idsCav = React.useMemo(function () { var ids = []; forts.concat(recents).forEach(function (f) { if (f && f.cavId && ids.indexOf(f.cavId) < 0) ids.push(f.cavId); }); return ids; }, [forts, recents]);
+  React.useEffect(function () {
+    var v = true; if (!idsCav.length || typeof supa === "undefined" || !supa) { setAvatars({}); return; }
+    supa.from("profiles").select("id, avatar_url").in("id", idsCav).then(function (rA) {
+      if (!v) return; var m = {}; ((rA && !rA.error && rA.data) || []).forEach(function (p) { if (p && p.id && p.avatar_url && String(p.avatar_url).charAt(0) !== "@") m[String(p.id)] = p.avatar_url; }); setAvatars(m);
+    }, function () { });
+    return function () { v = false; };
+  }, [idsCav.join(",")]);
+
+  /* ── photos du cheval (pour les moments forts sans media choisi) : album au nom du concours, sinon tirage stable dans la journee ── */
+  var cibleCh = "cheval:" + (dbId || id);
+  var phSt = React.useState(null); var photosPool = phSt[0], setPhotosPool = phSt[1];
+  var alSt = React.useState([]); var albums = alSt[0], setAlbums = alSt[1];
+  React.useEffect(function () {
+    var v = true; if (!dbId) { setPhotosPool([]); setAlbums([]); return; }
+    var estVid = function (u) { return u && typeof estUrlVideo === "function" && estUrlVideo(u); };
+    Promise.all([
+      Promise.resolve(typeof chargerPhotosSouvenirs === "function" ? chargerPhotosSouvenirs(cibleCh) : []),
+      Promise.resolve(typeof listerAlbumsCheval === "function" ? listerAlbumsCheval(cibleCh) : { data: [] })
+    ]).then(function (res) {
+      if (!v) return;
+      setPhotosPool((res[0] || []).filter(function (u) { return u && !estVid(u); }).slice(0, 24));
+      try { setAlbums(((res[1] && res[1].data) || []).map(function (a) { return { nom: String((a && a.nom) || ""), photos: ((a && a.photos) || []).filter(function (u) { return u && !estVid(u); }) }; }).filter(function (a) { return a.photos.length; })); } catch (eA) { setAlbums([]); }
+    }).catch(function () { if (v) { setPhotosPool([]); setAlbums([]); } });
+    return function () { v = false; };
+  }, [dbId]);
+  var mfSt = React.useState(null); var mfLocal = mfSt[0], setMfLocal = mfSt[1];
+  var mfMedias = React.useMemo(function () {
+    if (mfLocal) return mfLocal;
+    try { var vM = ligneCh.moments_forts_medias; if (typeof vM === "string") vM = JSON.parse(vM); return (vM && typeof vM === "object") ? vM : {}; } catch (eM) { return {}; }
+  }, [mfLocal, ligneCh.moments_forts_medias]);
+  var photoCh = (function () { var loc = ""; try { loc = localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (eL) { } return loc || ligneCh.photo_url || secours.photo || (typeof UV3_H1 !== "undefined" ? UV3_H1 : ""); })();
+  var photosForts = React.useMemo(function () {
+    var mots = function (t) { return String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9 ]+/g, " ").split(" ").filter(function (m) { return m.length >= 4; }); };
+    var graine = (function () { var t = String(id || "") + "|" + Math.floor(Date.now() / 86400000), n = 0; for (var i = 0; i < t.length; i++) n = (n * 31 + t.charCodeAt(i)) >>> 0; return n; })();
+    var pioche = (photosPool || []).slice();
+    (function () { var a = graine; function rnd() { a |= 0; a = (a + 0x6D2B79F5) | 0; var t = Math.imul(a ^ (a >>> 15), 1 | a); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; } for (var i = pioche.length - 1; i > 0; i--) { var j = Math.floor(rnd() * (i + 1)); var tmp = pioche[i]; pioche[i] = pioche[j]; pioche[j] = tmp; } })();
+    var prises = {}, out = [];
+    forts.forEach(function (f, idx) {
+      var sur = mfMedias[f.jeton] || null;
+      if (sur && sur.url) { out.push({ url: sur.url, video: sur.type === "video" }); return; }
+      var ph = (f.cavId && avatars[String(f.cavId)]) || null;
+      if (!ph) { var ms = mots(f.nom).concat(mots(f.ep)); albums.forEach(function (a) { if (ph) return; var nA = a.nom.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); for (var i = 0; i < ms.length; i++) if (nA.indexOf(ms[i]) >= 0) { ph = a.photos[0]; return; } }); }
+      if (ph && prises[ph]) ph = null;
+      if (!ph) { for (var k = 0; k < pioche.length; k++) if (!prises[pioche[k]]) { ph = pioche[k]; break; } }
+      if (!ph && idx === 0) ph = photoCh;
+      if (ph) prises[ph] = 1;
+      out.push(ph ? { url: ph, video: false } : null);
+    });
+    return out;
+  }, [forts, mfMedias, avatars, albums, photosPool, photoCh, id]);
+
+  /* ── Team : carte Classement saison, seulement si le cheval est REELLEMENT dans la Team ── */
+  var tmSt = React.useState(null); var teamInfo = tmSt[0], setTeamInfo = tmSt[1];
+  React.useEffect(function () {
+    var v = true; setTeamInfo(null);
+    if (!dbId || typeof hypeClassementTeamChevaux !== "function") return;
+    hypeClassementTeamChevaux().then(function (rT) { if (!v || !rT) return; var moiT = (rT.classement || []).filter(function (c) { return String(c.id) === String(dbId); })[0]; setTeamInfo(moiT ? { rang: moiT.rang, pts: moiT.pts, nom: rT.nom || "", saison: rT.saison, total: (rT.classement || []).length } : null); }).catch(function () { });
+    return function () { v = false; };
+  }, [dbId]);
+
+  /* ── video pedagogique : masquage retenu dans ce telephone ── */
+  var cleVid = "hype_perf_video_masquee_" + ((moi && moi.id) || "");
+  var vdSt = React.useState(false); var videoMasquee = vdSt[0], setVideoMasquee = vdSt[1];
+  React.useEffect(function () { try { setVideoMasquee(localStorage.getItem(cleVid) === "1"); } catch (eV) { } }, [cleVid]);
+  function poserVideoMasquee(val) { setVideoMasquee(val); try { if (val) localStorage.setItem(cleVid, "1"); else localStorage.removeItem(cleVid); } catch (eV) { } }
+
+  /* ── feuilles et toasts ── */
+  var ajSt = React.useState(false); var ajoutOuvert = ajSt[0], setAjoutOuvert = ajSt[1];
+  var cfSt = React.useState(false); var choixFortOuvert = cfSt[0], setChoixFortOuvert = cfSt[1];
+  var pkSt = React.useState(null); var pickerJeton = pkSt[0], setPickerJeton = pkSt[1];
+  var mdSt = React.useState(null); var mediasTous = mdSt[0], setMediasTous = mdSt[1];
+  var toSt = React.useState(null); var toast = toSt[0], setToast = toSt[1];
+  function annonce(msg) { setToast(msg); setTimeout(function () { setToast(null); }, 2600); }
+  React.useEffect(function () {
+    if (!pickerJeton || mediasTous !== null || !dbId) return;
+    var v = true;
+    Promise.resolve(typeof chargerPhotosSouvenirs === "function" ? chargerPhotosSouvenirs(cibleCh) : []).then(function (l) { if (v) setMediasTous((l || []).filter(Boolean)); }).catch(function () { if (v) setMediasTous([]); });
+    return function () { v = false; };
+  }, [pickerJeton, dbId]);
+
+  function poserFort(f, champs) {
+    if (!f || !f.id || typeof supa === "undefined" || !supa) return;
+    var avant = fortsLocal[f.id] || null;
+    var base = { ff: avant ? !!avant.ff : !!f.ff, fx: avant ? !!avant.fx : !!f.fx };
+    var apres = { ff: (champs.fort_force != null) ? !!champs.fort_force : base.ff, fx: (champs.fort_exclu != null) ? !!champs.fort_exclu : base.fx };
+    setFortsLocal(function (p) { var n = Object.assign({}, p); n[f.id] = apres; return n; });
+    function revenir() { setFortsLocal(function (p) { var n = Object.assign({}, p); if (avant) n[f.id] = avant; else delete n[f.id]; return n; }); }
+    supa.from("resultats").update(champs).eq("id", f.id).select("id").then(function (rF) {
+      if (rF && rF.error) { annonce(T("Le choix n'a pas pu être enregistré.", "The choice could not be saved.", "No se pudo guardar.", "Impossibile salvare.", "保存できません。", "Auswahl nicht gespeichert.", "تعذر حفظ الاختيار.")); revenir(); return; }
+      if (!rF || !rF.data || !rF.data.length) { annonce(T("Pas autorisé sur ce résultat.", "Not allowed on this result.", "Sin permiso en este resultado.", "Non autorizzato su questo risultato.", "この結果は変更できません。", "Bei diesem Ergebnis nicht erlaubt.", "غير مسموح لهذه النتيجة.")); revenir(); }
+    }, function () { revenir(); });
+  }
+  async function definirMedia(jeton, url) {
+    if (!dbId || typeof supa === "undefined" || !supa) return;
+    var actuel = Object.assign({}, mfMedias);
+    if (url) actuel[jeton] = { url: url, type: (typeof estUrlVideo === "function" && estUrlVideo(url)) ? "video" : "photo" }; else delete actuel[jeton];
+    var rM = await supa.from("chevaux").update({ moments_forts_medias: actuel }).eq("id", dbId).select("id");
+    if ((rM && rM.error) || !(rM && rM.data && rM.data.length)) { annonce(T("Enregistrement impossible.", "Could not save.", "No se pudo guardar.", "Salvataggio non riuscito.", "保存できません。", "Speichern nicht möglich.", "تعذر الحفظ.")); return; }
+    setMfLocal(actuel); setPickerJeton(null);
+    annonce(url ? T("Moment fort mis à jour ✨", "Highlight updated ✨", "Momento actualizado ✨", "Momento aggiornato ✨", "更新しました ✨", "Aktualisiert ✨", "تم التحديث ✨") : T("Photo automatique rétablie", "Automatic photo restored", "Foto automática restablecida", "Foto automatica ripristinata", "自動の写真に戻しました", "Automatisches Foto wiederhergestellt", "تمت استعادة الصورة التلقائية"));
+  }
+  async function supprimerLigne(f) {
+    var quoi = (f.nom || "") + (f.ep ? " · " + f.ep : "");
+    var ok = false; try { ok = window.confirm(T("Retirer définitivement ce résultat saisi à la main ?", "Permanently remove this hand-entered result?", "¿Quitar definitivamente este resultado escrito a mano?", "Rimuovere definitivamente questo risultato inserito a mano?", "手入力のこの結果を削除しますか？", "Dieses von Hand erfasste Ergebnis endgültig entfernen?", "إزالة هذه النتيجة المدخلة يدويا نهائيا؟") + "\n" + quoi); } catch (eC) { ok = false; }
+    if (!ok) return;
+    try {
+      var r = await supprimerResultat(f.id);
+      if (r && r.error) { annonce(T("Suppression impossible.", "Could not delete.", "No se pudo eliminar.", "Eliminazione impossibile.", "削除できません。", "Löschen nicht möglich.", "تعذر الحذف.")); return; }
+      if (r && r.aucuneLigne) { annonce(T("Suppression refusée : ce résultat n'est pas le tien.", "Refused: this result is not yours.", "Rechazado: este resultado no es tuyo.", "Rifiutato: questo risultato non è tuo.", "拒否：あなたの結果ではありません。", "Abgelehnt: dieses Ergebnis ist nicht deins.", "مرفوض: هذه النتيجة ليست لك.")); return; }
+      setLignes(function (av) { return (av || []).filter(function (x) { return x && x.id !== f.id; }); });
+      annonce(T("Résultat retiré.", "Result removed.", "Resultado eliminado.", "Risultato rimosso.", "結果を削除しました。", "Ergebnis entfernt.", "تمت إزالة النتيجة."));
+    } catch (eS) { annonce(T("Suppression impossible.", "Could not delete.", "No se pudo eliminar.", "Eliminazione impossibile.", "削除できません。", "Löschen nicht möglich.", "تعذر الحذف.")); }
+  }
+  function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }
+  function ouvrirImport() {
+    if (!peutImporter) return;
+    try { window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false; window.HYPE_CHEVAL_IMPORT = dbId; window.HYPE_CHEVAL_IMPORT_NOM = nomCh || null; window.HYPE_IMPORT_RETOUR = "performances-cheval"; window.localStorage.removeItem("hype_cheval_import"); } catch (eI) { }
+    setEcran("import-resultats");
+  }
+  function ouvrirClassementTeam() { try { window.__perfGroupe = null; window.__perfGroupeCourant = null; } catch (eG) { } setEcran("performances-chevaux"); }
+
+  /* ── petits rendus ── */
+  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", ja: "ja-JP", de: "de-DE", ar: "ar-u-nu-latn" };
+  function dateLisible(d) { try { var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; return new Date(Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]))).toLocaleDateString(LOCALES[langue] || "fr-FR", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }); } catch (eD) { return String(d || ""); } }
+  function rangTxt(pl) { if (pl == null) return ""; if (langue === "fr") return pl === 1 ? "1er" : pl + "e"; if (langue === "en") return pl === 1 ? "1st" : pl === 2 ? "2nd" : pl === 3 ? "3rd" : pl + "th"; if (langue === "ja") return pl + "位"; if (langue === "de") return pl + "."; if (langue === "ar") return String(pl); return pl + "º"; }
+  function libMasques() {
+    if (voirMasques) return T("Masquer de nouveau les lignes masquées", "Hide the hidden lines again", "Volver a ocultar las líneas", "Nascondi di nuovo le righe", "非表示の行を再び隠す", "Ausgeblendete Zeilen wieder verbergen", "إخفاء الأسطر المخفية مجددا");
+    if (nbMasques === 1) return T("Afficher aussi la ligne masquée", "Also show the hidden line", "Mostrar también la línea oculta", "Mostra anche la riga nascosta", "非表示の1行も表示", "Auch die ausgeblendete Zeile zeigen", "عرض السطر المخفي أيضا");
+    return T("Afficher aussi les " + nbMasques + " lignes masquées", "Also show the " + nbMasques + " hidden lines", "Mostrar también las " + nbMasques + " líneas ocultas", "Mostra anche le " + nbMasques + " righe nascoste", nbMasques + " 件の非表示行も表示", "Auch die " + nbMasques + " ausgeblendeten Zeilen zeigen", "عرض الأسطر المخفية أيضا (" + nbMasques + ")");
+  }
+  /* nom complet lisible (« Evan Roux »), comme la maquette — pas le nom court « Evan R. » de l ancienne page */
+  function nomCourt(x) {
+    try {
+      var t = (typeof netNomCavalierFFE === "function") ? netNomCavalierFFE(x) : String(x || "").replace(/\s+/g, " ").trim();
+      if (!t) return String(x || "");
+      return t.split(" ").map(function (mot) { return mot.split("-").map(function (p) { return p ? p.charAt(0).toUpperCase() + p.slice(1).toLowerCase() : p; }).join("-"); }).join(" ");
+    } catch (eN) { return String(x || ""); }
+  }
+  function initiales(nom) { return String(nom || "").split(/\s+/).filter(Boolean).slice(0, 2).map(function (p) { return p.charAt(0).toUpperCase(); }).join(""); }
+  function titreSection(txt, droite) {
+    return h("div", { style: { display: "flex", alignItems: "baseline", justifyContent: "space-between", margin: "30px 18px 12px" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, letterSpacing: ".01em" } }, txt), droite || null);
+  }
+  function pilule(txt, actif, onClick, cle) {
+    return h("button", { key: cle, type: "button", onClick: onClick, style: { flex: "0 0 auto", minHeight: 34, padding: "0 11px", borderRadius: 999, border: "1px solid " + (actif ? "rgba(201,166,107,0.85)" : "rgba(243,238,228,0.16)"), background: actif ? "rgba(201,166,107,0.14)" : "transparent", color: actif ? "#E6CF9C" : MUET, fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, txt);
+  }
+  function boutonContour(txt, onClick, icone, cle, desactive) {
+    return h("button", { key: cle, type: "button", onClick: onClick, disabled: !!desactive, style: { flex: 1, minHeight: 50, padding: "0 12px", borderRadius: 14, border: "1px solid " + (desactive ? "rgba(201,166,107,0.3)" : "rgba(201,166,107,0.7)"), background: "rgba(16,26,29,0.85)", color: desactive ? MUET : IVOIRE, fontFamily: SANS, fontSize: 12.5, fontWeight: 600, cursor: desactive ? "default" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7 } }, icone || null, h("span", null, txt));
+  }
+  var ICO_CADENAS = h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: CHAMP, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("rect", { x: 5, y: 11, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 11V8a4 4 0 0 1 8 0v3" }));
+  var ICO_COUPE = h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#1b1205", strokeWidth: 1.9, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" }));
+  function carteFort(f, grande, idx) {
+    if (!f) return null;
+    var ph = photosForts[idx] || null;
+    var gagne = (f.pl === 1);
+    var loc = f.id && fortsLocal[f.id];
+    var ffCour = loc ? !!loc.ff : !!f.ff;
+    return h("div", { key: "mf" + idx, style: { position: "relative", borderRadius: 16, overflow: "hidden", border: "1px solid " + FILET, background: "linear-gradient(165deg, " + PETROLE2 + " 0%, " + NOIR + " 100%)", height: grande ? 200 : 156 } },
+      ph ? (ph.video ? hypeMiniatureVideo(ph.url, { largeur: 900, objectPosition: "center 30%", picto: false, style: { position: "absolute", inset: 0, opacity: .86 } })
+        : h("img", { src: ph.url, alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%", opacity: .86 } })) : null,
+      h("div", { "aria-hidden": "true", style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0.05) 0%, rgba(7,10,8,0.15) 40%, rgba(7,10,8,0.72) 70%, rgba(7,10,8,0.96) 100%)" } }),
+      h("div", { style: { position: "absolute", top: 10, insetInlineStart: 10, minWidth: grande ? 34 : 28, height: grande ? 34 : 28, padding: "0 7px", borderRadius: 999, display: "flex", alignItems: "center", justifyContent: "center", gap: 4, background: gagne ? "linear-gradient(135deg, #E9CF93, #B8893F)" : "rgba(7,10,8,0.72)", border: "1px solid " + (gagne ? "rgba(255,255,255,0.35)" : "rgba(201,166,107,0.6)"), color: gagne ? "#1b1205" : "#E6CF9C", fontFamily: SERIF, fontWeight: 700, fontSize: grande ? 15 : 13 } }, gagne ? ICO_COUPE : rangTxt(f.pl)),
+      peutForts ? h("div", { style: { position: "absolute", top: 8, insetInlineEnd: 8, display: "flex", gap: 6 } },
+        f.id ? h("button", { type: "button", onClick: function () { setMediasTous(null); setPickerJeton(f.jeton); }, "aria-label": T("Changer la photo", "Change the photo", "Cambiar la foto", "Cambia la foto", "写真を変更", "Foto ändern", "تغيير الصورة"), style: { width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.3)", background: "rgba(7,10,8,0.62)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+          h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))) : null,
+        f.id ? h("button", { type: "button", onClick: function () { poserFort(f, ffCour ? { fort_force: false } : { fort_exclu: true }); }, "aria-label": T("Retirer ce moment fort", "Remove this highlight", "Quitar este momento", "Rimuovi questo momento", "このハイライトを外す", "Diesen Moment entfernen", "إزالة هذه اللحظة"), style: { width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.3)", background: "rgba(7,10,8,0.62)", color: IVOIRE, fontSize: 18, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } }, "−") : null) : null,
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 14px 13px" : "0 11px 10px" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: grande ? 26 : 19, fontWeight: 700, color: IVOIRE, lineHeight: 1.05, textShadow: "0 2px 10px rgba(0,0,0,0.6)" } }, rangTxt(f.pl) + (f.part ? " " + T("sur", "of", "de", "su", "/", "von", "من") + " " + f.part : "")),
+        h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: grande ? 12 : 10.5, fontWeight: 600, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (f.nom || "") + (f.an ? " " + f.an : "")),
+        f.ep ? h("div", { style: { marginTop: 1, fontFamily: SANS, fontSize: grande ? 11 : 9.8, color: MUET, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.ep) : null,
+        f.cav ? h("div", { style: { marginTop: 1, fontFamily: SANS, fontSize: grande ? 11 : 9.8, color: "#E6CF9C", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, nomCourt(f.cav)) : null));
+  }
+  function tuileAjoutFort() {
+    return h("button", { type: "button", onClick: function () { setChoixFortOuvert(true); }, style: { height: 156, borderRadius: 16, border: "1px dashed rgba(201,166,107,0.55)", background: "rgba(16,26,29,0.5)", color: "#E6CF9C", fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 8, padding: 10, textAlign: "center" } },
+      h("span", { style: { fontFamily: SERIF, fontSize: 30, lineHeight: 1, color: CHAMP } }, "+"),
+      T("Ajouter un moment fort", "Add a highlight", "Añadir un momento", "Aggiungi un momento", "ハイライトを追加", "Moment hinzufügen", "إضافة لحظة بارزة"));
+  }
+  function ligneResultat(f, i) {
+    var av = f.cavId && avatars[String(f.cavId)];
+    var peutCorb = !!(f.id && f.og !== "import" && (estProprio || estMod));
+    return h("div", { key: "lr" + (f.id || i), style: { display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderTop: i ? "1px solid rgba(243,238,228,0.07)" : "none" } },
+      f.photo ? h("img", { src: f.photo, alt: "", loading: "lazy", decoding: "async", style: { width: 54, height: 54, borderRadius: 12, objectFit: "cover", flex: "0 0 auto", border: "1px solid " + FILET } }) : null,
+      h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET2, letterSpacing: ".04em" } }, f.d ? dateLisible(f.d) : (f.saison != null ? (f.saison + "-" + (f.saison + 1)) : "")),
+        h("div", { style: { marginTop: 2, fontFamily: SANS, fontSize: 13, fontWeight: 600, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, [f.ep, f.nom].filter(Boolean).join(" · ")),
+        h("div", { style: { marginTop: 4, display: "flex", alignItems: "center", gap: 6, minWidth: 0 } },
+          f.cav ? (av ? h("img", { src: av, alt: "", loading: "lazy", style: { width: 18, height: 18, borderRadius: "50%", objectFit: "cover", flex: "0 0 auto" } }) : h("span", { style: { width: 18, height: 18, borderRadius: "50%", background: "rgba(201,166,107,0.2)", color: "#E6CF9C", fontFamily: SANS, fontSize: 8, fontWeight: 700, display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" } }, initiales(f.cav))) : null,
+          f.cav ? h("span", { style: { fontFamily: SANS, fontSize: 11, color: MUET, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, nomCourt(f.cav)) : null,
+          hypePerfEstSansFaute(f) ? h("span", { style: { fontFamily: SANS, fontSize: 9, fontWeight: 600, color: "#E6CF9C", border: "1px solid rgba(201,166,107,0.5)", borderRadius: 999, padding: "1px 6px", whiteSpace: "nowrap", flex: "0 0 auto" } }, T("Sans faute", "Clear round", "Sin faltas", "Netto", "クリア", "Fehlerfrei", "بلا أخطاء")) : null,
+          f.masque ? h("span", { style: { fontFamily: SANS, fontSize: 9, color: MUET2, border: "1px solid rgba(243,238,228,0.18)", borderRadius: 999, padding: "1px 6px", whiteSpace: "nowrap", flex: "0 0 auto" } }, T("masqué", "hidden", "oculto", "nascosto", "非表示", "ausgeblendet", "مخفي")) : null)),
+      h("div", { style: { flex: "0 0 auto", textAlign: "end" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 700, color: f.pl === 1 ? "#E6CF9C" : IVOIRE, lineHeight: 1 } }, rangTxt(f.pl)),
+        f.part ? h("div", { style: { fontFamily: SANS, fontSize: 10.5, color: MUET2, marginTop: 2, direction: "ltr", unicodeBidi: "isolate" } }, "/ " + f.part) : null,
+        (f.pts != null && !isNaN(f.pts)) ? h("div", { style: { fontFamily: SANS, fontSize: 10, color: "#E6CF9C", marginTop: 2, direction: "ltr", unicodeBidi: "isolate" } }, "+" + (Math.round(f.pts * 100) / 100) + " pts") : null),
+      peutCorb ? h("button", { type: "button", onClick: function () { supprimerLigne(f); }, "aria-label": T("Retirer ce résultat", "Remove this result", "Quitar este resultado", "Rimuovi questo risultato", "この結果を削除", "Dieses Ergebnis entfernen", "إزالة هذه النتيجة"), style: { flex: "0 0 auto", width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.16)", background: "transparent", color: "#C8706A", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+        h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" }))) : null);
+  }
+  /* les feuilles et le toast passent par un portail vers <body> : la barre d onglets du bas y vit aussi, sinon elle passe devant */
+  function portail(el, cle) { return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal && typeof document !== "undefined" && document.body) ? ReactDOM.createPortal(el, document.body, cle) : el; }
+  function feuille(contenu, fermer, cle) {
+    return portail(h("div", { key: cle, onClick: fermer, "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,5,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center", direction: rtl ? "rtl" : "ltr" } },
+      h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "80vh", display: "flex", flexDirection: "column", background: "#0C1316", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))", boxSizing: "border-box" } }, contenu)), cle);
+  }
+  function boutonFermer(fermer) {
+    return h("button", { type: "button", onClick: fermer, style: { marginTop: 12, width: "100%", minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق"));
+  }
+
+  /* ── etats de chargement ── */
+  var racineSt = { minHeight: "100vh", background: NOIR, color: IVOIRE, fontFamily: SANS, direction: rtl ? "rtl" : "ltr", paddingBottom: "calc(96px + env(safe-area-inset-bottom))" /* la barre d onglets du bas */ };
+  if (!etat.charge || lignes === null) {
+    return h("div", { "data-ecran": "performances-cheval", style: Object.assign({}, racineSt, { display: "flex", alignItems: "center", justifyContent: "center" }) },
+      h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 18, color: MUET } }, "…"));
+  }
+  if (!chV) {
+    return h("div", { "data-ecran": "performances-cheval", style: Object.assign({}, racineSt, { display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, padding: 24, textAlign: "center" }) },
+      h("div", { style: { fontFamily: SERIF, fontSize: 24, color: IVOIRE } }, T("Cheval introuvable", "Horse not found", "Caballo no encontrado", "Cavallo non trovato", "馬が見つかりません", "Pferd nicht gefunden", "الحصان غير موجود")),
+      h("button", { type: "button", onClick: retour, style: { minHeight: 44, padding: "0 22px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "transparent", color: IVOIRE, fontFamily: SANS, fontSize: 13, cursor: "pointer" } }, T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع")));
+  }
+
+  /* ── haut de page : photo, nom, infos, badge Team ── */
+  var og = (function () { try { var o = ligneCh.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object") ? o : (secours.origines || {}); } catch (eO) { return secours.origines || {}; } })() || {};
+  var SEXES = { hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي"), jument: T("Jument", "Mare", "Yegua", "Giumenta", "牡馬", "Stute", "فرس"), entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل") };
+  var infos = [SEXES[String(og.sexe || "").toLowerCase().trim()] || "", String(ligneCh.race || secours.race || "").trim(), (function () { var m = String(og.naissance || "").match(/^(\d{4})/); return m ? m[1] : ""; })()].filter(Boolean);
+  var hero = h("div", { style: { position: "relative", height: 320, overflow: "hidden", background: PETROLE } },
+    photoCh ? h("img", { src: photoCh, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%" } }) : null,
+    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0.55) 0%, rgba(7,10,8,0.05) 30%, rgba(7,10,8,0.1) 55%, rgba(7,10,8,0.86) 82%, " + NOIR + " 100%)" } }),
+    h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", insetInlineStart: 14, insetInlineEnd: 14, display: "flex", alignItems: "center", gap: 12 } },
+      h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع"), style: { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "rgba(7,10,8,0.45)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, flex: "0 0 auto" } },
+        h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" }))),
+      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE, textShadow: "0 2px 10px rgba(0,0,0,0.6)" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج"))),
+    h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 14px" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
+      infos.length ? h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(243,238,228,0.78)" } }, infos.join("  ·  ")) : null,
+      teamInfo ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 11px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(7,10,8,0.5)", color: "#E6CF9C", fontFamily: SANS, fontSize: 9.5, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase" } },
+        h("svg", { viewBox: "0 0 24 24", width: 12, height: 12, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 17h16l-1.5-9-4.5 4-2-6-2 6-4.5-4z" })),
+        T("Équipe compétition", "Competition team", "Equipo de competición", "Squadra agonistica", "競技チーム", "Turnierteam", "فريق المنافسات")) : null));
+
+  /* ── video pedagogique (proprietaire seulement) ── */
+  var blocVideo = (estProprio && typeof VideoResultatsOfficiels === "function") ? (videoMasquee
+    ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { poserVideoMasquee(false); }, style: { background: "none", border: "none", padding: "6px 10px", color: MUET2, fontFamily: SERIF, fontStyle: "italic", fontSize: 13.5, cursor: "pointer" } }, T("Revoir la petite vidéo ▸", "Watch the short video again ▸", "Volver a ver el vídeo ▸", "Rivedi il breve video ▸", "動画をもう一度見る ▸", "Das kurze Video erneut ansehen ▸", "مشاهدة الفيديو مجددا ▸")))
+    : h(VideoResultatsOfficiels, { marge: "22px 18px 0", ouverte: true, masquable: true, onMasquer: function () { poserVideoMasquee(true); } })) : null;
+
+  /* ── boutons du bas ── */
+  var boutons = (peutSaisir || peutImporter) ? h("div", { style: { display: "flex", gap: 10, margin: "26px 18px 0" } },
+    peutSaisir ? boutonContour("+ " + T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة"), function () { setAjoutOuvert(true); }, null, "bAj") : null,
+    peutImporter ? boutonContour(T("Importer mes résultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE成績を取り込む", "Meine FFE-Ergebnisse importieren", "استيراد نتائج FFE"), ouvrirImport, premiumOk ? null : ICO_CADENAS, "bImp") : null) : null;
+
+  /* ── page vide : aucun resultat ── */
+  if (!tous.length) {
+    return h("div", { "data-ecran": "performances-cheval", "data-perf-vide": "1", style: racineSt },
+      hero,
+      h("div", { style: { padding: "26px 24px 0", textAlign: "center" } },
+        h("div", { "aria-hidden": "true", style: { width: 64, height: 64, margin: "0 auto 16px", borderRadius: "50%", border: "1px solid rgba(201,166,107,0.5)", display: "flex", alignItems: "center", justifyContent: "center" } },
+          h("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none", stroke: CHAMP, strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round" }, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" }))),
+        h("div", { style: { fontFamily: SERIF, fontSize: 28, fontWeight: 600, lineHeight: 1.15, color: IVOIRE } }, T("Aucun résultat pour le moment", "No results yet", "Ningún resultado por ahora", "Ancora nessun risultato", "まだ結果はありません", "Noch keine Ergebnisse", "لا توجد نتائج بعد")),
+        h("div", { style: { margin: "10px auto 0", maxWidth: 320, fontFamily: SANS, fontSize: 13, lineHeight: 1.6, color: MUET } },
+          peutSaisir ? T("Ajoute les résultats de " + nomCh + " pour suivre sa régularité, conserver sa mémoire et la partager avec ta communauté.", "Add " + nomCh + "'s results to follow their consistency, keep their memory and share it with your community.", "Añade los resultados de " + nomCh + " para seguir su regularidad, conservar su memoria y compartirla con tu comunidad.", "Aggiungi i risultati di " + nomCh + " per seguirne la regolarità, conservarne la memoria e condividerla con la tua comunità.", nomCh + " の結果を追加して、成長を記録し、コミュニティと共有しましょう。", "Füge die Ergebnisse von " + nomCh + " hinzu, um die Konstanz zu verfolgen, die Erinnerung zu bewahren und sie mit deiner Community zu teilen.", "أضف نتائج " + nomCh + " لمتابعة انتظامه وحفظ ذكراه ومشاركتها مع مجتمعك.")
+            : T("Ses premiers résultats l'attendent.", "Its first results are yet to come.", "Sus primeros resultados están por llegar.", "I suoi primi risultati sono ancora da scrivere.", "最初の結果はこれからです。", "Die ersten Ergebnisse stehen noch aus.", "نتائجه الأولى بانتظاره."))),
+      boutons ? h("div", { style: { marginTop: -4 } }, boutons) : null,
+      blocVideo,
+      (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
+      typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
+      ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
+      toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToast") : null);
+  }
+
+  /* ── page avec resultats ── */
+  var chiffres = [
+    [stats.concours, T("concours", "shows", "concursos", "concorsi", "大会", "Turniere", "مسابقات")],
+    [stats.victoires, T("victoires", "wins", "victorias", "vittorie", "優勝", "Siege", "انتصارات")],
+    [stats.podiums, T("podiums", "podiums", "podios", "podi", "表彰台", "Podien", "منصات")],
+    [stats.classes, T("classés", "placings", "clasificados", "piazzamenti", "入賞", "Platzierungen", "تصنيفات")],
+    [stats.avecPoints ? stats.points : "—", T("points", "points", "puntos", "punti", "ポイント", "Punkte", "نقاط")]
+  ];
+  return h("div", { "data-ecran": "performances-cheval", style: racineSt },
+    hero,
+    /* saisons */
+    saisons.length ? h("div", { style: { display: "flex", gap: 8, padding: "16px 18px 0", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
+      saisons.map(function (s) { return pilule(s.lib, saisonActive && s.cle === saisonActive.cle, function () { setSaisonChoisie(s.cle); setCavChoisi("tous"); }, "sa" + s.cle); })) : null,
+    /* cavaliers (seulement s il y en a au moins deux dans la saison) */
+    (cavaliers.length >= 2) ? h("div", { style: { display: "flex", gap: 8, padding: "10px 18px 0", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
+      [pilule(T("Tous", "All", "Todos", "Tutti", "全員", "Alle", "الكل"), cavEffectif === "tous", function () { setCavChoisi("tous"); }, "cavTous")].concat(cavaliers.map(function (cv) { return pilule(nomCourt(cv), cavEffectif === cv, function () { setCavChoisi(cv); }, "cav" + cv); }))) : null,
+    /* les cinq chiffres */
+    h("div", { style: { display: "flex", margin: "16px 18px 0", padding: "14px 4px 12px", borderRadius: 16, background: "rgba(16,26,29,0.8)", border: "1px solid " + FILET } },
+      chiffres.map(function (cq, i) {
+        return h("div", { key: "ch" + i, style: { flex: 1, textAlign: "center", minWidth: 0, borderInlineStart: i ? "1px solid rgba(243,238,228,0.06)" : "none" } },
+          h("div", { style: { fontFamily: SERIF, fontSize: 24, fontWeight: 700, color: "#E6CF9C", lineHeight: 1 } }, String(cq[0])),
+          h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 8.2, letterSpacing: ".1em", color: MUET, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1]));
+      })),
+    (stats.sansPoints > 0 && stats.avecPoints > 0) ? h("div", { style: { margin: "6px 18px 0", fontFamily: SANS, fontSize: 10.5, color: MUET2, textAlign: "center" } }, stats.sansPoints + " " + (stats.sansPoints > 1 ? T("résultats sans points connus", "results with no known points", "resultados sin puntos conocidos", "risultati senza punti noti", "件はポイント不明", "Ergebnisse ohne bekannte Punkte", "نتائج بلا نقاط معروفة") : T("résultat sans points connus", "result with no known points", "resultado sin puntos conocidos", "risultato senza punti noti", "件はポイント不明", "Ergebnis ohne bekannte Punkte", "نتيجة بلا نقاط معروفة"))) : null,
+    /* ses moments forts */
+    (forts.length || peutForts) ? h(React.Fragment, null,
+      titreSection(T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
+      h("div", { style: { margin: "0 18px" } },
+        forts[0] ? carteFort(forts[0], true, 0) : (peutForts ? tuileAjoutFort() : null),
+        (forts.length > 1 || (peutForts && forts.length >= 1 && forts.length < 5)) ? h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 12 } },
+          [1, 2, 3, 4].map(function (k) {
+            if (forts[k]) return carteFort(forts[k], false, k);
+            if (peutForts && k === forts.length) return h("div", { key: "ajf" }, tuileAjoutFort());
+            return null;
+          })) : null,
+        (peutForts && forts.length >= 5) ? h("div", { style: { textAlign: "center", marginTop: 12 } }, h("button", { type: "button", onClick: function () { setChoixFortOuvert(true); }, style: { minHeight: 40, padding: "0 18px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", background: "transparent", color: "#E6CF9C", fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, "+ " + T("Ajouter un moment fort", "Add a highlight", "Añadir un momento", "Aggiungi un momento", "ハイライトを追加", "Moment hinzufügen", "إضافة لحظة بارزة"))) : null)) : null,
+    /* classement saison (Team seulement) */
+    teamInfo ? h("div", { role: "button", onClick: ouvrirClassementTeam, style: { margin: "22px 18px 0", padding: "14px 16px", borderRadius: 16, border: "1px solid " + FILET, background: "linear-gradient(165deg, " + PETROLE2 + " 0%, " + NOIR + " 100%)", display: "flex", alignItems: "center", gap: 14, cursor: "pointer" } },
+      h("div", { style: { flex: 1, minWidth: 0 } },
+        h("div", { style: { fontFamily: SANS, fontSize: 9.5, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase", color: "#E6CF9C" } }, T("Classement saison", "Season ranking", "Clasificación de la temporada", "Classifica di stagione", "シーズン順位", "Saisonwertung", "ترتيب الموسم")),
+        h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 12, color: MUET, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (teamInfo.nom || "Team") + (teamInfo.saison ? " · " + teamInfo.saison + "-" + (Number(teamInfo.saison) + 1) : ""))),
+      h("div", { style: { textAlign: "end", flex: "0 0 auto" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: 28, fontWeight: 700, color: IVOIRE, lineHeight: 1, direction: "ltr", unicodeBidi: "isolate" } }, rangTxt(teamInfo.rang), teamInfo.total ? h("span", { style: { fontSize: 14, color: MUET2 } }, " / " + teamInfo.total) : null),
+        h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 11, color: "#E6CF9C", direction: "ltr", unicodeBidi: "isolate" } }, (Math.round((teamInfo.pts || 0) * 100) / 100) + " pts")),
+      h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 20, lineHeight: 1 } }, "›")) : null,
+    /* derniers resultats */
+    recents.length ? h(React.Fragment, null,
+      titreSection(T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "آخر النتائج")),
+      h("div", { style: { margin: "0 18px", padding: "2px 16px", borderRadius: 16, background: "rgba(16,26,29,0.8)", border: "1px solid " + FILET } }, recents.map(ligneResultat))) : null,
+    (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "14px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
+    boutons,
+    blocVideo,
+    typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerf" }) : null,
+    /* feuille : ajouter un moment fort */
+    choixFortOuvert ? feuille(h(React.Fragment, null,
+      h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, textAlign: "center" } }, T("Ajouter un moment fort", "Add a highlight", "Añadir un momento", "Aggiungi un momento", "ハイライトを追加", "Moment hinzufügen", "إضافة لحظة بارزة")),
+      h("div", { style: { margin: "6px 0 14px", fontFamily: SANS, fontSize: 11.5, color: MUET, textAlign: "center", lineHeight: 1.5 } }, T("Touche un résultat pour le mettre en vitrine. Un moment choisi à la main passe devant le choix automatique.", "Tap a result to showcase it. A hand-picked highlight comes before the automatic choice.", "Toca un resultado para destacarlo. Un momento elegido a mano pasa delante de la selección automática.", "Tocca un risultato per metterlo in vetrina. Un momento scelto a mano precede la scelta automatica.", "結果をタップしてハイライトに追加。手動で選んだものが自動選択より優先されます。", "Tippe ein Ergebnis an, um es hervorzuheben. Ein von Hand gewählter Moment steht vor der automatischen Auswahl.", "المس نتيجة لإبرازها. اللحظة المختارة يدويا تتقدم على الاختيار التلقائي.")),
+      h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
+        (function () {
+          var deja = {}; forts.forEach(function (f) { if (f && f.id) deja[f.id] = 1; });
+          var cands = tous.filter(function (f) { return f.id && !deja[f.id]; }).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).slice(0, 80);
+          if (!cands.length) return h("div", { style: { color: MUET, fontFamily: SANS, fontSize: 12.5, textAlign: "center", padding: "18px 0" } }, T("Aucun autre résultat à proposer.", "No other result to offer.", "Ningún otro resultado.", "Nessun altro risultato.", "他に結果はありません。", "Kein weiteres Ergebnis.", "لا توجد نتيجة أخرى."));
+          return cands.map(function (f) {
+            var loc = fortsLocal[f.id]; var fxC = loc ? !!loc.fx : !!f.fx;
+            return h("div", { key: "cf" + f.id, role: "button", onClick: function () { poserFort(f, { fort_force: true, fort_exclu: false }); setChoixFortOuvert(false); }, style: { display: "flex", alignItems: "center", gap: 10, padding: "10px 2px", minHeight: 48, borderBottom: "1px solid rgba(243,238,228,0.06)", cursor: "pointer" } },
+              h("div", { style: { flex: "0 0 84px", fontFamily: SANS, fontSize: 10.5, color: MUET2, lineHeight: 1.3 } }, f.d ? dateLisible(f.d) : ""),
+              h("div", { style: { flex: 1, minWidth: 0 } },
+                h("div", { style: { fontFamily: SANS, fontSize: 13, fontWeight: 600, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, f.nom || ""),
+                h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, (f.ep || "") + (f.cav ? " · " + (nomCourt(f.cav)) : "") + (fxC ? " · " + T("retiré", "removed", "quitado", "rimosso", "外した", "entfernt", "مُزال") : ""))),
+              h("div", { style: { flex: "0 0 auto", fontFamily: SERIF, fontSize: 17, fontWeight: 700, color: "#E6CF9C" } }, rangTxt(f.pl) + (f.part ? " / " + f.part : "")));
+          });
+        })()),
+      boutonFermer(function () { setChoixFortOuvert(false); })), function () { setChoixFortOuvert(false); }, "fChoix") : null,
+    /* feuille : photo ou video d un moment fort */
+    pickerJeton ? feuille(h(React.Fragment, null,
+      h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, textAlign: "center" } }, T("Photo ou vidéo de ce moment", "Photo or video for this highlight", "Foto o vídeo de este momento", "Foto o video di questo momento", "この瞬間の写真・動画", "Foto oder Video für diesen Moment", "صورة أو فيديو لهذه اللحظة")),
+      h("div", { style: { margin: "6px 0 14px", fontFamily: SANS, fontSize: 11.5, color: MUET, textAlign: "center" } }, T("Choisis parmi les photos et vidéos déjà envoyées sur ce cheval.", "Pick from the photos and videos already sent for this horse.", "Elige entre las fotos y vídeos ya enviados de este caballo.", "Scegli tra le foto e i video già inviati per questo cavallo.", "この馬に送信済みの写真や動画から選びます。", "Wähle aus den bereits gesendeten Fotos und Videos dieses Pferdes.", "اختر من الصور والفيديوهات المرسلة لهذا الحصان.")),
+      h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
+        (mediasTous === null) ? h("div", { style: { color: MUET2, fontFamily: SANS, fontSize: 12.5, textAlign: "center", padding: "22px 0" } }, "…")
+          : (!mediasTous.length ? h("div", { style: { color: MUET2, fontFamily: SANS, fontSize: 12.5, fontStyle: "italic", textAlign: "center", padding: "22px 0" } }, T("Aucune photo ni vidéo pour l'instant.", "No photo or video yet.", "Aún ninguna foto ni vídeo.", "Ancora nessuna foto o video.", "まだ写真も動画もありません。", "Noch kein Foto oder Video.", "لا توجد صور أو فيديوهات بعد."))
+            : h("div", { style: { display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 7 } },
+              mediasTous.map(function (u, i) {
+                var vid = typeof estUrlVideo === "function" && estUrlVideo(u);
+                return h("div", { key: "pm" + i, role: "button", onClick: function () { definirMedia(pickerJeton, u); }, style: { position: "relative", paddingBottom: "100%", borderRadius: 10, overflow: "hidden", cursor: "pointer", background: PETROLE } },
+                  vid ? hypeMiniatureVideo(u, { largeur: 400, style: { position: "absolute", inset: 0 } }) : h("img", { src: u, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
+                  vid ? h("div", { style: { position: "absolute", insetInlineEnd: 4, bottom: 4, fontSize: 13 } }, "▶️") : null);
+              })))),
+      mfMedias[pickerJeton] ? h("button", { type: "button", onClick: function () { definirMedia(pickerJeton, null); }, style: { marginTop: 12, width: "100%", minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: MUET, fontFamily: SANS, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, T("Revenir à la photo automatique", "Back to the automatic photo", "Volver a la foto automática", "Torna alla foto automatica", "自動の写真に戻す", "Zurück zum automatischen Foto", "العودة إلى الصورة التلقائية")) : null,
+      boutonFermer(function () { setPickerJeton(null); })), function () { setPickerJeton(null); }, "fPick") : null,
+    ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
+    toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToast") : null);
+}
+/* ═══ fin du build 1 Performances du cheval ═══ */
+
 function EcranResultatsCavaliere() {
   var h = React.createElement;
   var app = useApp();
@@ -63620,7 +64187,7 @@ function VideoResultatsOfficiels(props) {
   return h("div", { style: { margin: (props && props.marge) || "10px 16px 4px" } },
     /* 13/10 (1087) Blandine : « avec possibilite de la masquer la-bas egalement » */
     (props && props.masquable) ? h("div", { style: { textAlign: "end", maxWidth: 260, margin: "0 auto 6px" } },
-      h("span", { role: "button", onClick: function () { setOuv(false); }, style: { fontSize: 12, color: "rgba(243,238,228,.5)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer" } },
+      h("span", { role: "button", onClick: function () { setOuv(false); try { if (props && typeof props.onMasquer === "function") props.onMasquer(); } catch (eOm) { } }, style: { fontSize: 12, color: "rgba(243,238,228,.5)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer" } },   /* 15/10 chantier Performances : onMasquer (facultatif) */
         T7("Masquer la vidéo", "Hide the video", "Ocultar el vídeo", "Nascondi il video", "動画を隠す", "Video ausblenden", "إخفاء الفيديو") + " \u25be")) : null,
     h("div", { style: { position: "relative", width: "100%", maxWidth: 260, margin: "0 auto", borderRadius: 16, overflow: "hidden", background: "#000", border: "1px solid rgba(255,255,255,.07)" } },
       h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1", autoPlay: true, muted: true, loop: true, playsInline: true, "webkit-playsinline": "true", preload: "metadata", style: { width: "100%", display: "block" } }),
