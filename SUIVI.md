@@ -12946,7 +12946,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - index.html : lien du projet retraite de la page Premium V3 corrigé (#projet-retraite → #projet-retraite-chevaux-club). Rien d'autre de changé dans l'appli.
 - Ancien lien des mentions légales (#mentions-legales sur la page L'association, utilisé par le portail Stripe) : repère gardé en bas de page, à côté du lien vers la nouvelle page → rien de cassé.
 - Tests : 2 pages × 7 langues × 375 / 390 / 820 / 1440 px = 56/56 (aucun débordement, aucune erreur, aucun fichier manquant, arabe de droite à gauche).
-- À FAIRE (Blandine, Stripe) : remplacer dans le portail client l'adresse « confidentialité » par https://2hype.fr/fr/association/mentions-legales/#donnees (pas fait : aucune modification Stripe sans accord).
+- FAIT (12 h 22, accord Blandine « fais-le si tu peux ») : dans le portail client Stripe (bpc_1UQcEOHnB1OJ7FOmgE1MCv0I), l'adresse « confidentialité » est maintenant https://2hype.fr/fr/association/mentions-legales/#donnees (seul changement ; CGV, résiliation et le reste inchangés).
 - Note : outils/association-generer.py demande Python 3.12 ou plus récent (ne tourne pas en 3.11) ; pages non régénérées, ce sont celles de la branche.
 
 ## 15/10/2026 (12 h 30) — NOUVELLE FICHE CHEVAL sur tablette et ordinateur + aperçu iPhone caché (1153) [publié, accord « ok pour tout… fais ça de façon autonome, mets en ligne »]
