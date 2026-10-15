@@ -60361,7 +60361,7 @@ function MurHype(props) {
     ? T("Replier", "Collapse", "Reducir", "Riduci", "\u9589\u3058\u308b", "Einklappen", "\u0637\u064a")
     : (T("Voir la suite", "See more", "Ver m\u00e1s", "Vedi altro", "\u7d9a\u304d\u3092\u898b\u308b", "Mehr anzeigen", "\u0639\u0631\u0636 \u0627\u0644\u0645\u0632\u064a\u062f") + "  (" + (liste.length - limiteM) + ")")));
   if (props.compact && !props.rail && liste.length > 2 && props.onVoirTout) enfants.push(h("button", { key: "vt", onClick: props.onVoirTout, style: { display: "block", margin: "2px auto 0", background: "" + tAm(0.07) + "", border: "1px solid " + tAm(0.35) + "", color: TQm, fontSize: 12, fontWeight: 700, fontFamily: M2, padding: "9px 20px", borderRadius: 999 } }, T("Voir tout le fil", "See the full feed", "Ver todo el hilo", "Vedi tutto il filo", "すべて見る", "Ganzen Feed ansehen", "\u0639\u0631\u0636 \u0643\u0644 \u0627\u0644\u0645\u0646\u0634\u0648\u0631\u0627\u062a") + " →"));
-  if (!charge && dispo && !liste.length && !props.sansListe) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, props.momentsSeuls ? T("Raconte le premier moment ici \u2014 les photos seules vivent dans la galerie.", "Tell the first moment here \u2014 photos alone live in the gallery.", "Cuenta el primer momento aqu\u00ed \u2014 las fotos solas viven en la galer\u00eda.", "Racconta il primo momento qui \u2014 le foto da sole vivono nella galleria.", "\u6700\u521d\u306e\u77ac\u9593\u3092\u3053\u3053\u3067\u8a9e\u308d\u3046\u3002\u5199\u771f\u3060\u3051\u306f\u30ae\u30e3\u30e9\u30ea\u30fc\u3078\u3002", "Erz\u00e4hle hier den ersten Moment \u2013 Fotos allein leben in der Galerie.", "\u0627\u062d\u0643\u064a \u0623\u0648\u0644 \u0644\u062d\u0638\u0629 \u0647\u0646\u0627 \u2014 \u0627\u0644\u0635\u0648\u0631 \u0648\u062d\u062f\u0647\u0627 \u062a\u0639\u064a\u0634 \u0641\u064a \u0627\u0644\u0645\u0639\u0631\u0636.") : T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002", "Sei der Erste, der hier postet.", "\u0643\u0648\u0646\u064a \u0623\u0648\u0644 \u0645\u0646 \u064a\u0646\u0634\u0631 \u0647\u0646\u0627.")));
+  if (!charge && dispo && !liste.length && !props.sansListe && !props.apresComposer /* (1144) la composition d ambiance remplace ce message */) enfants.push(h("div", { key: "vide", style: { color: "#5B646E", fontSize: 12.5, textAlign: "center", padding: "6px 0 2px", fontStyle: "italic", fontFamily: M2 } }, props.momentsSeuls ? T("Raconte le premier moment ici \u2014 les photos seules vivent dans la galerie.", "Tell the first moment here \u2014 photos alone live in the gallery.", "Cuenta el primer momento aqu\u00ed \u2014 las fotos solas viven en la galer\u00eda.", "Racconta il primo momento qui \u2014 le foto da sole vivono nella galleria.", "\u6700\u521d\u306e\u77ac\u9593\u3092\u3053\u3053\u3067\u8a9e\u308d\u3046\u3002\u5199\u771f\u3060\u3051\u306f\u30ae\u30e3\u30e9\u30ea\u30fc\u3078\u3002", "Erz\u00e4hle hier den ersten Moment \u2013 Fotos allein leben in der Galerie.", "\u0627\u062d\u0643\u064a \u0623\u0648\u0644 \u0644\u062d\u0638\u0629 \u0647\u0646\u0627 \u2014 \u0627\u0644\u0635\u0648\u0631 \u0648\u062d\u062f\u0647\u0627 \u062a\u0639\u064a\u0634 \u0641\u064a \u0627\u0644\u0645\u0639\u0631\u0636.") : T("Sois le premier \u00e0 publier ici.", "Be the first to post here.", "S\u00e9 el primero en publicar.", "Sii il primo a pubblicare.", "\u6700\u521d\u306e\u6295\u7a3f\u3092\u3057\u3088\u3046\u3002", "Sei der Erste, der hier postet.", "\u0643\u0648\u0646\u064a \u0623\u0648\u0644 \u0645\u0646 \u064a\u0646\u0634\u0631 \u0647\u0646\u0627.")));
   if (props.sansComposer && !charge && !posts.length) return null;
   /* 15/09 (176) - LE CHAMP DE PUBLICATION PEUT PASSER SOUS LES MESSAGES (prop
      `composerEnBas`). Blandine, capture de 23 h 15 : « pour l endroit ou on met les publications
@@ -60406,6 +60406,15 @@ function MurHype(props) {
   }
   /* 15/10 (1142) DEUX COLONNES (page Actualite du cheval, des 768 px) : les publications se repartissent a gauche puis a droite,
      dans l ordre (la plus recente en haut a gauche) ; tout le reste (champ de publication, messages) garde sa place, pleine largeur. */
+  /* 15/10 (1144) PAGE ACTUALITE DU CHEVAL : une composition (photo d ambiance + texte) se place juste apres le champ de publication
+     (ou apres le titre si on ne peut pas publier), avant les publications. La page la fabrique ; le fil lui dit seulement s il y a
+     des publications et si le champ de publication existe (le bouton « Creer une publication » n apparait que dans ce cas). */
+  if (props.apresComposer) {
+    var aComp = false, iIns = -1;
+    enfants.forEach(function (el, iE) { var kE = (el && el.key != null) ? String(el.key) : ""; if (kE === "comp") aComp = true; if (kE === "comp" || kE === "comp-off" || kE === "co" || kE === "verrou" || kE === "off" || kE === "tt") iIns = iE; });
+    var elAmb = props.apresComposer({ vide: !charge && !liste.length, peutPublier: aComp, charge: !!charge });
+    if (elAmb) { elAmb = h("div", { key: "__ambiance" }, elAmb); if (iIns < 0) enfants.unshift(elAmb); else enfants.splice(iIns + 1, 0, elAmb); }
+  }
   if (props.deuxColonnes && largeMur && !props.rail) {
     var colG = [], colD = [], iPost = 0, posGrille = -1, autres = [];
     enfants.forEach(function (el) {
@@ -60418,7 +60427,7 @@ function MurHype(props) {
       enfants = autres.slice(0, posGrille).concat([grille], autres.slice(posGrille));
     }
   }
-  return h("div", { style: { padding: props.compact ? "0 10px" : "0 16px" } }, enfants); /* 30/07: fil elargi sur la fiche cheval (mode compact), les autres murs inchanges */
+  return h("div", { "data-mur": "1", style: { padding: props.compact ? "0 10px" : "0 16px" } }, enfants); /* (1144) data-mur : le bouton de la composition retrouve le champ ; 30/07: fil elargi sur la fiche cheval (mode compact), les autres murs inchanges */
 }
 
 function InvitationsEcurieHype() {
@@ -65476,6 +65485,37 @@ function EcranCheval() {
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 27, fontWeight: 500, lineHeight: 1.15, color: "#F3EEE4", marginTop: 6, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, titre),
         h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,0.88)", marginTop: 8, maxWidth: 330, textShadow: "0 1px 10px rgba(0,0,0,0.7)" } }, phrase)));
   }
+  /* 15/10 (1144) PAGE ACTUALITE : LA COMPOSITION D AMBIANCE (maquette de Blandine). Toujours visible sous le champ de publication :
+     le cheval vu de dos au couchant (images/actualite-ambiance*.webp, decorative, la meme pour tous les chevaux), fondue dans le noir,
+     « Son histoire s ecrit ici… », filet champagne et petit fer a cheval, phrase avec le nom du cheval. Le bouton « Creer une
+     publication » n apparait que s il n y a aucune publication ET que le visiteur peut publier : il remonte au champ du haut et
+     y place le curseur (aucun deuxieme formulaire). Tutoiement comme le reste de l appli (accord de Blandine). */
+  function ambianceActuCh(etatA) {
+    var nomA = String((c && c.nom) || "");
+    var rtlA = rtlCh;
+    var ordiA = menuCh, largeA = largeCh;
+    var hA = ordiA ? 440 : (largeA ? 420 : 430);
+    var masqueCote = largeA ? "linear-gradient(90deg, rgba(0,0,0,0) 0%, #000 22%, #000 78%, rgba(0,0,0,0) 100%)" : "none";
+    var CHA = "#C9A66B";
+    var boutonA = (etatA && etatA.vide && etatA.peutPublier) ? h("button", { type: "button", onClick: function (eA) {
+        try { var racA = eA.currentTarget.closest("[data-mur]"); var taA = racA && racA.querySelector("textarea"); if (taA) { taA.scrollIntoView({ behavior: "smooth", block: "center" }); setTimeout(function () { try { taA.focus(); } catch (eF) { } }, 350); } } catch (eB) { }
+      }, style: { marginTop: 22, display: "inline-flex", alignItems: "center", gap: 10, minHeight: 46, padding: "0 26px", borderRadius: 999, border: "1px solid " + CHA, background: "rgba(5,8,11,0.55)", color: CHA, fontFamily: "'Montserrat',sans-serif", fontSize: 14, fontWeight: 600, cursor: "pointer", backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" } },
+      h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4" })),
+      T("Cr\u00e9er une publication", "Create a post", "Crear una publicaci\u00f3n", "Crea un post", "\u6295\u7a3f\u3092\u4f5c\u6210", "Beitrag erstellen", "\u0625\u0646\u0634\u0627\u0621 \u0645\u0646\u0634\u0648\u0631")) : null;
+    var fer = h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: CHA, strokeWidth: 1.6, strokeLinecap: "round", "aria-hidden": "true" }, h("path", { d: "M6 4.5c-1.5 2-2.2 4.4-2.2 7 0 4.6 3.7 8 8.2 8s8.2-3.4 8.2-8c0-2.6-.7-5-2.2-7M9 4.6c-1 1.6-1.5 3.6-1.5 5.8 0 2.7 2 4.6 4.5 4.6s4.5-1.9 4.5-4.6c0-2.2-.5-4.2-1.5-5.8" }));
+    var filet = function (sens) { return h("span", { style: { flex: "0 1 130px", height: 1, background: "linear-gradient(" + sens + ", rgba(201,166,107,0) 0%, rgba(201,166,107,0.85) 100%)" } }); };
+    return h("div", { style: { position: "relative", margin: largeA ? "26px 0 18px" : "22px -16px 14px", minHeight: hA, overflow: "hidden" } },
+      h("div", { "aria-hidden": "true", style: largeA ? { position: "absolute", top: 0, bottom: 0, left: 0, right: 0, margin: "0 auto", width: "100%", maxWidth: 680, WebkitMaskImage: masqueCote, maskImage: masqueCote } /* (1144) grand ecran : cadre centre, la tete du cheval reste entiere */ : { position: "absolute", inset: 0 } },
+        h("img", { src: "images/actualite-ambiance.webp", srcSet: "images/actualite-ambiance-mobile.webp 720w, images/actualite-ambiance.webp 1086w", sizes: largeA ? "900px" : "100vw", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: largeA ? "40% 26%" : "40% 32%", display: "block", transform: rtlA ? "scaleX(-1)" : "none" } })),
+      h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, #05080B 0%, rgba(5,8,11,0.15) 18%, rgba(5,8,11,0.10) 42%, rgba(5,8,11,0.72) 70%, #05080B 100%)" } }),
+      h("div", { style: { position: "relative", zIndex: 1, minHeight: hA, display: "flex", flexDirection: "column", justifyContent: "flex-end", alignItems: "center", textAlign: "center", padding: largeA ? "0 32px 30px" : "0 22px 26px", boxSizing: "border-box" } },
+        h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: ordiA ? 40 : (largeA ? 38 : 32), fontWeight: 500, lineHeight: 1.12, color: "#F3EEE4", textShadow: "0 2px 18px rgba(0,0,0,0.75)" } },
+          T("Son histoire s\u2019\u00e9crit ici\u2026", "Their story is written here\u2026", "Su historia se escribe aqu\u00ed\u2026", "La sua storia si scrive qui\u2026", "\u305d\u306e\u7269\u8a9e\u306f\u3001\u3053\u3053\u3067\u7db4\u3089\u308c\u308b\u2026", "Seine Geschichte wird hier geschrieben\u2026", "\u0642\u0635\u062a\u0647 \u062a\u064f\u0643\u062a\u0628 \u0647\u0646\u0627\u2026")),
+        h("div", { style: { display: "flex", alignItems: "center", justifyContent: "center", gap: 12, width: "100%", maxWidth: 420, margin: "14px 0 12px" } }, filet("90deg"), fer, filet("270deg")),
+        h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: largeA ? 15 : 14, lineHeight: 1.6, color: "rgba(243,238,228,0.82)", maxWidth: 440, textShadow: "0 1px 10px rgba(0,0,0,0.8)" } },
+          T("Partage les moments importants, les belles victoires, les petites victoires et le quotidien de {nom}.", "Share the important moments, the big wins, the small victories and the everyday life of {nom}.", "Comparte los momentos importantes, las grandes victorias, las peque\u00f1as victorias y el d\u00eda a d\u00eda de {nom}.", "Condividi i momenti importanti, le belle vittorie, le piccole vittorie e la quotidianit\u00e0 di {nom}.", "{nom}\u306e\u5927\u5207\u306a\u77ac\u9593\u3001\u8f1d\u304b\u3057\u3044\u52dd\u5229\u3001\u5c0f\u3055\u306a\u52dd\u5229\u3001\u305d\u3057\u3066\u65e5\u3005\u306e\u66ae\u3089\u3057\u3092\u30b7\u30a7\u30a2\u3057\u3088\u3046\u3002", "Teile die wichtigen Momente, die gro\u00dfen Siege, die kleinen Erfolge und den Alltag von {nom}.", "\u0634\u0627\u0631\u0643\u064a \u0627\u0644\u0644\u062d\u0638\u0627\u062a \u0627\u0644\u0645\u0647\u0645\u0629 \u0648\u0627\u0644\u0627\u0646\u062a\u0635\u0627\u0631\u0627\u062a \u0627\u0644\u0643\u0628\u064a\u0631\u0629 \u0648\u0627\u0644\u0635\u063a\u064a\u0631\u0629 \u0648\u0627\u0644\u062d\u064a\u0627\u0629 \u0627\u0644\u064a\u0648\u0645\u064a\u0629 \u0644\u0640{nom}.").split("{nom}").join(nomA)),
+        boutonA));
+  }
   function encartIdentiteCh(titrePage, secoursPhoto) {   /* (1142) secoursPhoto : photo si le cheval n en a pas (page Actualite) */
     var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh || secoursPhoto || "";
     var rtlE = false; try { rtlE = document.documentElement.dir === "rtl"; } catch (eR) { }
@@ -68519,6 +68559,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         h("div", { style: { height: 10 } }),
         h(MurHype, {
           cible: cibleCh, teinte: teinte, vignette: false /* (1142) maquette : grandes cartes avec la photo (avant : vignettes) */, deuxColonnes: true,
+          apresComposer: function (etatA) { return ambianceActuCh(etatA); },   /* (1144) */
           chargerEnPlus: function () { return hypePostsIdentifiesCheval((c && c.dbId) || id); }
         })) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
