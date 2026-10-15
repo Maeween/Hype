@@ -66612,19 +66612,19 @@ async function supprimerSouvenirOuvert() {
       peutAjR ? capsule(T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ein Ergebnis hinzufügen", "إضافة نتيجة") + "  +", function () { ouvrirAjoutResultat(); }) : null) : null;
     function carteR(f, i) {
       var sur = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonFort(f)]) || null;
-      var phR = (sur && sur.type !== "video" && sur.url) ? sur.url : ((chevalDyn && chevalDyn.photo_palmares) || photoCh || "");
-      return h("div", { key: "v4f" + i, role: "button", onClick: function () { setPanneau("palmares"); }, style: Object.assign({}, carteSt, { overflow: "hidden", cursor: "pointer", display: "flex", flexDirection: (D || L) ? "row" : "column", flex: (D || L) ? "1 1 0" : "0 0 240px", minHeight: (D || L) ? 128 : 0 }) },
-        phR ? h("div", { style: { flex: (D || L) ? "0 0 44%" : "0 0 auto", height: (D || L) ? "auto" : 130, position: "relative" } }, h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(phR, 420, 320) : phR, alt: "", loading: "lazy", decoding: "async", style: { position: (D || L) ? "absolute" : "static", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : null,
+      var phR = (sur && sur.type !== "video" && sur.url) ? sur.url : ((chevalDyn && chevalDyn.photo_palmares) || (typeof IMG_LABAULE !== "undefined" ? IMG_LABAULE : "") || photoCh || "");   /* (1160) plus la photo du cheval repetee : photo choisie, sinon photo de palmares, sinon l image « concours » de l appli */
+      return h("div", { key: "v4f" + i, role: "button", onClick: function () { setPanneau("palmares"); }, style: Object.assign({}, carteSt, { overflow: "hidden", cursor: "pointer", display: "flex", flexDirection: (D || L) ? "row" : "column", flex: (D || L) ? "initial" : "0 0 82%", scrollSnapAlign: "start", minHeight: D ? 220 : (L ? 190 : 0) }) },
+        phR ? h("div", { style: { flex: (D || L) ? "0 0 50%" : "0 0 auto", height: (D || L) ? "auto" : 160, position: "relative" } }, h("img", { src: (typeof vignetteHype === "function") ? vignetteHype(phR, 420, 320) : phR, alt: "", loading: "lazy", decoding: "async", style: { position: (D || L) ? "absolute" : "static", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } })) : null,
         h("div", { style: { padding: "14px 16px", minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center" } },
-          h("div", { style: { fontFamily: SERIF, fontSize: D ? 34 : 30, fontWeight: 500, color: "#E4D2AE", lineHeight: 1 } }, placeTxt(f.pl)),
+          h("div", { style: { fontFamily: SERIF, fontSize: D ? 46 : (L ? 40 : 36), fontWeight: 500, color: "#E4D2AE", lineHeight: 1 } }, placeTxt(f.pl)),
           f.ep ? h("div", { style: { marginTop: 8, fontFamily: MO, fontSize: 13.5, fontWeight: 500, color: IV, lineHeight: 1.3, overflowWrap: "anywhere" } }, abrEpreuve(f.ep)) : null,
           f.nom ? h("div", { style: { marginTop: 4, fontFamily: MO, fontSize: 13, color: DX, lineHeight: 1.3, overflowWrap: "anywhere" } }, f.nom) : null,
           (dateR(f)) ? h("div", { style: { marginTop: 4, fontFamily: MO, fontSize: 11.5, color: "rgba(243,238,228,0.5)" } }, dateR(f)) : null));
     }
-    var coupes = (c.flots && c.flots.length) ? h("div", { style: { display: "flex", gap: D ? 20 : 14, overflowX: "auto", padding: "4px 0 6px", marginTop: 20 } },
+    var coupes = (c.flots && c.flots.length) ? h("div", { style: { display: "flex", gap: D ? 16 : 12, overflowX: "auto", padding: "4px 0 6px", marginTop: 24, borderTop: "1px solid rgba(201,166,107,0.12)", paddingTop: 18 } },
       c.flots.map(function (fl, iF) {
         return h("div", { key: "v4fl" + iF, role: "button", onClick: function () { try { if (fl.img && typeof setVisionneuse === "function") { setVisionneuseAlbumId(null); setVisionneuse(fl.img); } else setPanneau("palmares"); } catch (eFz) { setPanneau("palmares"); } },
-          style: { flex: (D || L) ? "1 1 0" : "0 0 108px", minWidth: (D || L) ? 120 : 108, maxWidth: D ? 220 : 180, cursor: "pointer", textAlign: "center", marginInlineStart: iF === 0 ? "auto" : 0, marginInlineEnd: iF === c.flots.length - 1 ? "auto" : 0 } },
+          style: { flex: "0 0 auto", width: D ? 110 : (L ? 100 : 84) /* (1160) galerie secondaire */, cursor: "pointer", textAlign: "center", marginInlineStart: iF === 0 ? "auto" : 0, marginInlineEnd: iF === c.flots.length - 1 ? "auto" : 0 } },
           fl.img ? h("img", { src: fl.img, alt: fl.lab || "", loading: "lazy", style: { width: "100%", aspectRatio: "108 / 132", objectFit: "cover", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "block" } })
             : h("div", { style: { width: "100%", aspectRatio: "108 / 132", borderRadius: 14, border: "1px solid rgba(217,181,108,0.45)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 34, background: "radial-gradient(80% 60% at 50% 30%, rgba(217,181,108,0.2), rgba(6,7,9,0.9))" } }, fl.med === "1" ? "🏆" : "🏅"),
           fl.lab ? h("div", { style: { marginTop: 6, fontFamily: MO, fontSize: 10.5, lineHeight: 1.3, color: "rgba(243,238,228,0.75)", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, fl.lab) : null);
@@ -66633,7 +66633,8 @@ async function supprimerSouvenirOuvert() {
       titre(T("Principaux résultats", "Main results", "Resultados principales", "Risultati principali", "主な成績", "Wichtigste Ergebnisse", "أبرز النتائج"),
         tousR.length ? T("Voir tous les résultats", "See all results", "Ver todos los resultados", "Vedi tutti i risultati", "すべての成績を見る", "Alle Ergebnisse ansehen", "عرض كل النتائج") : null,
         function () { setPanneau("palmares"); }),
-      fortsR.length ? h("div", { style: { display: "flex", gap: D ? 18 : 12, overflowX: (D || L) ? "visible" : "auto", paddingBottom: (D || L) ? 0 : 4 } }, fortsR.map(carteR))
+      fortsR.length ? ((D || L) ? h("div", { style: { display: "grid", gridTemplateColumns: "repeat(" + (D ? fortsR.length : Math.min(2, fortsR.length)) + ", minmax(0, 1fr))", gap: D ? 18 : 14 } }, fortsR.map(carteR))   /* (1160) cartes sur toute la largeur */
+        : h("div", { style: { display: "flex", gap: 12, overflowX: "auto", scrollSnapType: "x mandatory", paddingBottom: 4 } }, fortsR.map(carteR)))
         : h("div", { style: { display: "flex", alignItems: "center", gap: 18, flexDirection: (D || L) ? "row" : "column", textAlign: (D || L) ? "start" : "center", padding: "6px 0" } },
           h("svg", { viewBox: "0 0 64 64", width: 64, height: 64, fill: "none", stroke: CH, strokeWidth: 1.3, strokeLinecap: "round", strokeLinejoin: "round", style: { flexShrink: 0 } }, h("path", { d: "M22 50c-6-8-6-20 2-30 4-5 10-7 14-6l-3 6c5 1 9 5 9 10 0 7-6 9-6 14M30 50h20" }), h("circle", { cx: 46, cy: 50, r: 6 })),
           h("div", { style: { minWidth: 0 } },
