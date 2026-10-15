@@ -12826,3 +12826,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Les deux pages n'avaient qu'un bandeau (flèche, « PHOTOS » / « VIDÉOS », nom). Elles ont maintenant une photo du haut (230 px) fondue dans le noir : la photo du cavalier s'il en a une, sinon la photo de Mes chevaux (IMG_CAVALIER_HERO_DEFAUT). Flèche retour en haut, titre et nom en bas (nom en Cormorant). Partage et drapeau inchangés.
 - Une seule fonction pour les deux pages : hypeHeroSousPageCavalier. Aucun nouveau texte (mêmes traductions). Contenu des pages inchangé.
 - Vérifié 390 et 1440 px, 0 erreur. Note : ces deux pages restent en colonne étroite (480 px) sur ordinateur — leur adaptation grand écran n'est pas faite.
+
+## 15/10/2026 (3 h) — Cavalier V2 sur ordinateur : cartes chevaux en largeur (1140) [publié, accord « Ok continue »]
+- Ordinateur (≥ 1024 px) seulement : les cartes de « Mes chevaux » (chevaux, « Les chevaux de l'écurie », « Ajouter mon cheval », chevaux à découvrir) passent du format en hauteur (10/11) au format en largeur (3/2), comme la maquette : 275 × 183 px au lieu de 275 × 300. Grille, règles et contenu inchangés.
+- iPhone et iPad : comparaison au pixel avant/après, 0 différence. Tests 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
