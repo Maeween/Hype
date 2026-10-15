@@ -12846,3 +12846,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (2 h 45) — Actualité du cheval : fond noir uni (1143) [publié, accord « Ok continue »]
 - La page Actualité prenait le fond de la page Santé (traits bleus). Elle a maintenant le noir uni de la charte (#05080B). Les autres pages du cheval (Santé, Photos, Vidéos, Histoire, Résultats) : fond inchangé.
 - Vérifié 390 et 1440 px, 0 erreur.
+
+## 15/10/2026 (2 h 45) — MISE EN VENTE : page Premium V3 pour tout le monde, Premium Famille en vente, CGV en ligne — PUBLIÉE (accord « Ok »)
+- Décisions de Blandine : vendeur = Association FEINN Équitation et Environnement ; TVA non applicable (art. 293 B du CGI) ; résiliation en ligne (« Gérer mon abonnement ») ; médiateur de la consommation « en cours de désignation » pour l'instant (« On peut sauter le médiateur pour l'instant ? » → « Ok »). CGV publiées sans relecture juridique extérieure (signalé).
+- CGV : 7 pages /{fr,en,es,it,de,ja,ar}/cgv/ (arabe de droite à gauche), générées par outils/cgv-generer.py (relancer ce script après toute modification du texte) ; version du 15 octobre 2026 ; la version française fait foi.
+- Appli : page Premium V3 pour TOUS (bouton « Ancienne page » réservé aux modératrices) ; liens CGV sous « Paiement sécurisé par Stripe » et en bas de la page Premium, et en bas de Mon compte (7 langues) ; la fenêtre avant paiement (renonciation aux 14 jours) cite désormais l'acceptation des CGV avec l'adresse de la page, dans les 7 langues.
+- Relais Stripe (stripe-webhook.js) : Premium Famille branché (plink_1UQbSCHnB1OJ7FOmzXn56OBq / price_1UQbS7HnB1OJ7FOm5fRCm686) → un paiement Famille ouvre la famille (règles livraison C en base). Tests : Famille 43/43, Premium classique 20/20 (tables Famille simulées vides, comme en vrai).
+- Tests écrans (faux serveur) : cavalière → V3, CGV ouvertes, paiement Famille avec compte joint, fenêtre de paiement citant les CGV ; modératrice → V3 + bouton ancienne page ; lien CGV arabe et japonais ; 7 pages CGV : 12 sections chacune, aucun débordement.
+- ⏳ À FAIRE : médiateur (voir plus haut) puis compléter l'article 11 des CGV dans outils/cgv-generer.py (7 langues) ; compte Stripe de l'association ; premier vrai achat Famille à surveiller (famille ouverte, invitation, renouvellement).

@@ -39,7 +39,8 @@ import fs from "node:fs"; import os from "node:os"; import path from "node:path"
 const ici=path.dirname(fileURLToPath(import.meta.url));
 const vrai=fs.readFileSync(path.join(ici,"../../netlify/functions/stripe-webhook.js"),"utf8")
   .replace('    // "plink_…": { jours: 32 },   // Premium Famille 19,99 €/mois','    "plink_FAMILLE_TEST": { jours: 32 },')
-  .replace('    // "price_…",                   // Premium Famille 19,99 €/mois','    "price_FAMILLE_TEST",');
+  .replace('    // "price_…",                   // Premium Famille 19,99 €/mois','    "price_FAMILLE_TEST",')
+  .replace(/"plink_1UQbSCHnB1OJ7FOmzXn56OBq"/,'"plink_FAMILLE_TEST"').replace(/"price_1UQbS7HnB1OJ7FOm5fRCm686"/,'"price_FAMILLE_TEST"');
 if((vrai.match(/FAMILLE_TEST/g)||[]).length!==2) throw new Error("copie de test impossible");
 const copie=path.join(fs.mkdtempSync(path.join(os.tmpdir(),"relais-")),"relais.mjs"); fs.writeFileSync(copie,vrai);
 const mod=await import(copie);
