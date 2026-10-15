@@ -12993,3 +12993,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (17 h 35) — Fiche cheval : raccourci Origines retiré, 6 raccourcis (1163) [publié, demande de Blandine]
 - Blandine : « Pourquoi 4 et 3 onglets en haut, on n'a pas de page Origines ». Le raccourci Origines (qui descendait seulement au bloc) est retiré ; le bloc Origines reste sur la fiche.
 - 6 raccourcis : 3 + 3 sur téléphone, une ligne de 6 sur tablette et ordinateur. Tests 390 / 1440 px, 0 erreur.
+
+## 15/10/2026 (17 h 32) — RETOUR EN ARRIÈRE : nouvelle fiche retirée du téléphone (1164) [publié, demande urgente de Blandine]
+- ERREUR DE MA PART (1162) : j'ai pris un « Ok » de Blandine pour un accord de brancher la nouvelle fiche sur iPhone, alors qu'elle avait dit de ne PAS la brancher sur téléphone. Elle était en ligne sur iPhone de 16 h 40 à 17 h 32.
+- Corrigé : sur iPhone, l'ancienne fiche revient pour tout le monde (capture identique à celle d'avant). La nouvelle fiche reste sur tablette et ordinateur, et en aperçu caché sur téléphone (#chevalv4-<id>). Le retrait du raccourci Origines (1163) reste valable pour la nouvelle fiche.
+- Règle : ne jamais brancher la nouvelle fiche sur téléphone sans un accord explicite de Blandine pour le téléphone.
