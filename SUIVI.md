@@ -12924,3 +12924,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Blandine (capture iPad) : « Les coupes doivent être sur la largeur et centrées ».
 - Tablette et ordinateur : les coupes se partagent la largeur, centrées (jusqu'à 230 px chacune sur iPad, 300 px sur ordinateur), même cadrage que sur iPhone (108 × 132, agrandi) pour qu'elles aient toutes la même hauteur. S'il y en a beaucoup, la rangée défile toujours au doigt sans rien couper à gauche.
 - iPhone identique au pixel. Tests 390 → 1600 px en français, allemand, arabe : 0 débordement, 0 erreur.
+
+## 15/10/2026 (10 h 40) — Photos et Vidéos du cavalier sur tablette et ordinateur (1152) [publié, accord « Ok continue »]
+- Les deux pages restaient dans une colonne de 480 px sur grand écran. Elles prennent maintenant la largeur des autres pages adaptées.
+- Photo du haut : 300 px sur iPad, 340 px sur ordinateur ; titre et nom plus grands, marges de 32 px.
+- Grille : 4 colonnes sur iPad, 6 sur ordinateur (3 sur iPhone, inchangé).
+- Technique : « photos-cavalier » et « videos-cavalier » ajoutés aux pages élargies ; hypeHeroSousPageCavalier reçoit large / ordi (appelée seulement par ces deux pages). Albums (AlbumsCheval, partagé) non modifiés. Aucun nouveau texte.
+- Tests (photos simulées) : iPhone identique au pixel sur les deux pages ; 390 / 820 / 1024 / 1440 / 1600 px en français, allemand, arabe : 30 cas, 0 débordement, 0 erreur.

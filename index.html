@@ -28394,7 +28394,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */];
+    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28473,7 +28473,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -41239,13 +41239,15 @@ function EcranActualiteCavaliere() {
 function hypeHeroSousPageCavalier(o) {
   var h = React.createElement;
   var src = o.photo || ((typeof IMG_CAVALIER_HERO_DEFAUT !== "undefined") ? IMG_CAVALIER_HERO_DEFAUT : "");
-  return h("div", { style: { position: "relative", height: "calc(env(safe-area-inset-top) + 230px)", overflow: "hidden", marginBottom: 6 } },
+  /* 15/10 (1152) tablette (o.large) : 300 px ; ordinateur (o.ordi) : 340 px ; titre plus grand ; iPhone inchange */
+  var hH = o.ordi ? "340px" : (o.large ? "300px" : "calc(env(safe-area-inset-top) + 230px)");
+  return h("div", { style: { position: "relative", height: hH, overflow: "hidden", marginBottom: o.large ? 12 : 6 } },
     src ? h("img", { src: src, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: o.photo ? "50% 30%" : "68% 20%", display: "block" } }) : null,
     h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.45) 0%, rgba(6,7,9,0.05) 34%, rgba(6,7,9,0.72) 76%, #060709 100%)" } }),
     h("button", { onClick: o.retour, "aria-label": o.labelRetour, style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.18)", background: "rgba(6,7,9,0.45)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-    h("div", { style: { position: "absolute", left: 16, right: 16, bottom: 12, minWidth: 0 } },
-      h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: o.teinte || "#C9A66B", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, o.libelle),
-      o.nom ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 30, fontWeight: 500, lineHeight: 1.1, marginTop: 4, color: "#F3EEE4", overflowWrap: "anywhere", textShadow: "0 2px 14px rgba(0,0,0,0.8)" } }, o.nom) : null));
+    h("div", { style: { position: "absolute", left: o.large ? 32 : 16, right: o.large ? 32 : 16, bottom: o.large ? 22 : 12, minWidth: 0 } },
+      h("div", { style: { fontSize: o.large ? 11.5 : 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: o.teinte || "#C9A66B", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, o.libelle),
+      o.nom ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: o.ordi ? 46 : (o.large ? 40 : 30), fontWeight: 500, lineHeight: 1.1, marginTop: 4, color: "#F3EEE4", overflowWrap: "anywhere", textShadow: "0 2px 14px rgba(0,0,0,0.8)" } }, o.nom) : null));
 }
 function EcranVideosCavaliere() {
   var h = React.createElement;
@@ -41253,6 +41255,8 @@ function EcranVideosCavaliere() {
   var tr = app.tr, setEcran = app.setEcran;
   function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }
   var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif", TQL = "#CFE3E8";
+  var largeP = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 15/10 (1152) tablette */
+  var ordiP = (typeof useHypeLarge === "function") ? useHypeLarge() : false;   /* (1152) ordinateur */
   var stId = React.useState(function () { try { return String(window.__videosCavaliereId || ""); } catch (e) { return ""; } });
   var cid = stId[0];
   var stP = React.useState(null); var prof = stP[0], setProf = stP[1];
@@ -41344,13 +41348,13 @@ function EcranVideosCavaliere() {
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pv", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
     /* 15/10 (1139) Blandine : la photo de Mes chevaux en haut de toutes les sous-pages du cavalier. Photo du cavalier s il en a une,
        sinon IMG_CAVALIER_HERO_DEFAUT ; meme retour, meme titre, meme nom (ancien bandeau sans photo). */
-    hypeHeroSousPageCavalier({ retour: retour, libelle: T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
-    h("div", { style: { padding: "12px 16px 0" } },
+    hypeHeroSousPageCavalier({ large: largeP, ordi: ordiP /* (1152) */, retour: retour, libelle: T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
+    h("div", { style: { padding: largeP ? "12px 32px 0" : "12px 16px 0" } },
       (vids === null)
         ? h("div", { style: { padding: "30px 0", textAlign: "center", color: "#8A929C", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
         : (!vids.length
             ? h("div", { style: { borderRadius: 14, border: "1px solid rgba(255,255,255,0.08)", padding: 16, color: "#8A929C", fontSize: 12.5, lineHeight: 1.55 } }, erreur || T("Aucune vid\u00e9o publi\u00e9e pour l\u2019instant.", "No video posted yet.", "A\u00fan no hay v\u00eddeos.", "Nessun video per ora.", "\u307e\u3060\u52d5\u753b\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Videos.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a \u0645\u0646\u0634\u0648\u0631\u0629 \u062d\u0627\u0644\u064a\u0627."))
-            : h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 } },
+            : h("div", { style: { display: "grid", gridTemplateColumns: ordiP ? "repeat(6, minmax(0, 1fr))" : (largeP ? "repeat(4, minmax(0, 1fr))" : "1fr 1fr 1fr") /* (1152) */, gap: ordiP ? 14 : (largeP ? 12 : 8) } },
                 vids.map(function (v, i) {
                   return h("div", { key: "v" + i, role: "button", onClick: function () { setVisu(v.u); }, style: { cursor: "pointer", minWidth: 0 } },
                     h("div", { style: { position: "relative", width: "100%", aspectRatio: "3 / 4", borderRadius: 12, overflow: "hidden", background: "#10161C", border: "1px solid rgba(255,255,255,0.08)" } },
@@ -41373,6 +41377,8 @@ function EcranPhotosCavaliere() {
   var tr = app.tr, setEcran = app.setEcran;
   function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }
   var C = "'Cinzel',Georgia,serif", M = "'Montserrat',sans-serif", TQL = "#CFE3E8";
+  var largeP = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 15/10 (1152) tablette */
+  var ordiP = (typeof useHypeLarge === "function") ? useHypeLarge() : false;   /* (1152) ordinateur */
   var stId = React.useState(function () { try { return String(window.__photosCavaliereId || ""); } catch (e) { return ""; } });
   var cid = stId[0];
   var stP = React.useState(null); var prof = stP[0], setProf = stP[1];
@@ -41473,16 +41479,16 @@ function EcranPhotosCavaliere() {
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pp", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
     /* 15/10 (1139) Blandine : la photo de Mes chevaux en haut de toutes les sous-pages du cavalier. Photo du cavalier s il en a une,
        sinon IMG_CAVALIER_HERO_DEFAUT ; meme retour, meme titre, meme nom (ancien bandeau sans photo). */
-    hypeHeroSousPageCavalier({ retour: retour, libelle: T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
+    hypeHeroSousPageCavalier({ large: largeP, ordi: ordiP /* (1152) */, retour: retour, libelle: T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
     /* 28/09 (484) : LES ALBUMS « souvenirs » de son profil arrivent ici (retires de la page Histoire, choix de
        Blandine). Meme composant qu avant (creation, ajout, visionneuse). */
     cid ? h("div", { style: { paddingTop: 6 } }, h(AlbumsCheval, { cible: "cavalier:" + cid, teinte: (typeof teinteHypeActive === "function" ? teinteHypeActive().principal : "#7FA3AD") })) : null,
-    h("div", { style: { padding: "12px 16px 0" } },
+    h("div", { style: { padding: largeP ? "12px 32px 0" : "12px 16px 0" } },
       (vids === null)
         ? h("div", { style: { padding: "30px 0", textAlign: "center", color: "#8A929C", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
         : (!vids.length
             ? h("div", { style: { borderRadius: 14, border: "1px solid rgba(255,255,255,0.08)", padding: 16, color: "#8A929C", fontSize: 12.5, lineHeight: 1.55 } }, erreur || T("Aucune photo publi\u00e9e pour l\u2019instant.", "No photo posted yet.", "A\u00fan no hay fotos.", "Nessuna foto per ora.", "\u307e\u3060\u5199\u771f\u306f\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine Fotos.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0635\u0648\u0631 \u0628\u0639\u062f."))
-            : h("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 } },
+            : h("div", { style: { display: "grid", gridTemplateColumns: ordiP ? "repeat(6, minmax(0, 1fr))" : (largeP ? "repeat(4, minmax(0, 1fr))" : "1fr 1fr 1fr") /* (1152) */, gap: ordiP ? 14 : (largeP ? 12 : 8) } },
                 vids.map(function (v, i) {
                   return h("div", { key: "v" + i, role: "button", onClick: function () { setVisu(v.u); }, style: { cursor: "pointer", minWidth: 0 } },
                     h("div", { style: { position: "relative", width: "100%", aspectRatio: "3 / 4", borderRadius: 12, overflow: "hidden", background: "#10161C", border: "1px solid rgba(255,255,255,0.08)" } },
