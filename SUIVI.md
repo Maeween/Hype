@@ -13035,3 +13035,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Inchangé : tablette et ordinateur (rendu d'avant 1165), fond pétrole de la page Actualité, contenu des pages.
 - Comparatif avant/après montré avant publication (reconstitution du bloc avec deux photos de test, pas la photo de Rizotto). « Publie » de Blandine à 0 h 10.
 - Tests : node --check 35 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur son iPhone avec la vraie photo.
+- ⚠️ ERREUR (signalée par Blandine à 0 h 13, capture) : en pleine largeur, la photo était recadrée et la tête du cheval se retrouvait sous le titre. Remplacé par 1167.
+
+## (1167) 16/10/2026 — Haut des sous-pages du cheval : photo remise à sa place, effets seulement (marqueur 20261016-0020)
+- iPhone : la photo reprend exactement sa largeur (80 % à droite), sa position et son cadrage d'avant 1165. Seuls les effets changent : bord gauche qui s'efface sur une bande courte et progressive (0 → 60 % à 5 % → 92 % à 11 % → plein à 16 %, au lieu de plein à 26 %), fond noir derrière la photo qui se fond vers le fond de la page en bas (plus de vert-bleu ni de ligne), bas de la photo fondu dès 82 %, ombre du bas à gauche adoucie (0,88 → 0,6). Toutes les sous-pages ; tablette et ordinateur inchangés.
+- Comparatif avant/après montré à Blandine (photo de Rizotto reprise de sa capture) ; « Ok mieux » à 0 h 15.
+- Tests : node --check 35 blocs sans erreur, marqueurs inchangés. Non vérifié : son iPhone après publication.
