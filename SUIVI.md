@@ -12803,3 +12803,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Bug (déjà présent sur iPhone) : en visite, la grille des chevaux de l'autre cavalier recevait la carte « Ajouter un cheval » (visible avec 2 ou 5 chevaux sur iPhone, ou en dépliant), qui ouvrait la création d'un cheval pour le visiteur.
 - Correction (une condition) : la carte n'est ajoutée que sur SA page. Sa page : inchangée.
 - Tests : visite à 1, 2, 3, 5, 7 chevaux (390 et 820 px) → grilles justes (2 chevaux : ligne centrée) ; sa page sans écurie à 2 chevaux → 2 + « Ajouter » comme avant.
+
+## 15/10/2026 (2 h 30) — Page Cavalier en arabe : le bouton « ⋯ » (Mes actions) n'est plus caché (1137) [publié, accord « Ok continue »]
+- Bug (déjà présent sur iPhone) : en arabe, le bouton « ⋯ » se plaçait à gauche, sous la flèche retour (invisible, impossible à toucher).
+- Correction : le bouton reste à droite dans toutes les langues, comme le partage et le drapeau ; son menu s'ouvre dessous. Ordinateur en arabe : le menu s'ouvre à gauche de la barre de menu (sinon il passait dessous).
+- Français et autres langues : position inchangée. Tests : arabe 390 / 820 / 1440, français 1440 (menu ouvert) ; 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
