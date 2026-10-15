@@ -66434,11 +66434,12 @@ async function supprimerSouvenirOuvert() {
 
     /* ── 3. A PROPOS + IDENTITE ── */
     var histV = String((chevalDyn && chevalDyn.histoire) || c.histoire || "").trim();
-    var aPropos = histV ? h("div", { style: Object.assign({}, carteSt, { padding: D ? "24px 26px" : "20px 18px", display: "flex", flexDirection: "column" }) },
+    var padCarte = D ? "28px 30px" : (L ? "24px 24px" : "22px 20px");   /* (1158) cartes plus aerees */
+    var aPropos = histV ? h("div", { style: Object.assign({}, carteSt, { padding: padCarte, display: "flex", flexDirection: "column" }) },
         titre(T("À propos", "About", "Acerca de", "Informazioni", "紹介", "Über", "نبذة")),
-        h("div", { style: { fontFamily: MO, fontSize: D ? 14.5 : 13.5, lineHeight: 1.65, color: "rgba(243,238,228,0.86)", whiteSpace: "pre-line", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: D ? 7 : 6, WebkitBoxOrient: "vertical" } }, histV),
-        h("div", { style: { marginTop: "auto", paddingTop: 16 } }, lienBtn(T("Lire son histoire", "Read its story", "Leer su historia", "Leggi la sua storia", "物語を読む", "Seine Geschichte lesen", "اقرأ قصته"), function () { setPanneau("souvenirs"); })))
-      : (estMonChevalFiche ? h("div", { style: Object.assign({}, carteSt, { padding: D ? "24px 26px" : "20px 18px" }) },
+        h("div", { style: { fontFamily: MO, fontSize: D ? 14.5 : 14, lineHeight: 1.7, color: "rgba(243,238,228,0.86)", whiteSpace: "pre-line", overflow: "hidden", display: "-webkit-box", WebkitLineClamp: D ? 7 : 6, WebkitBoxOrient: "vertical", WebkitMaskImage: histV.length > 320 ? "linear-gradient(180deg, #000 68%, rgba(0,0,0,0.22) 100%)" : "none", maskImage: histV.length > 320 ? "linear-gradient(180deg, #000 68%, rgba(0,0,0,0.22) 100%)" : "none" /* (1158) fondu : le recit continue dans Lire son histoire */ } }, histV),
+        h("div", { style: { marginTop: "auto", paddingTop: 20 } }, lienBtn(T("Lire son histoire", "Read its story", "Leer su historia", "Leggi la sua storia", "物語を読む", "Seine Geschichte lesen", "اقرأ قصته"), function () { setPanneau("souvenirs"); })))
+      : (estMonChevalFiche ? h("div", { style: Object.assign({}, carteSt, { padding: padCarte }) },
           titre(T("À propos", "About", "Acerca de", "Informazioni", "紹介", "Über", "نبذة")),
           h("div", { style: { fontFamily: SERIF, fontStyle: "italic", fontSize: 17, color: DX, marginBottom: 14 } }, T("Son histoire n’est pas encore écrite.", "Its story hasn’t been written yet.", "Su historia aún no está escrita.", "La sua storia non è ancora stata scritta.", "物語はまだ書かれていません。", "Seine Geschichte ist noch nicht geschrieben.", "لم تُكتب قصته بعد.")),
           lienBtn(T("Écris son histoire", "Write its story", "Escribe su historia", "Scrivi la sua storia", "物語を書く", "Schreib seine Geschichte", "اكتب قصته"), function () { setPanneau("souvenirs"); }))
@@ -66446,7 +66447,7 @@ async function supprimerSouvenirOuvert() {
     var lignesId = (function () {
       var out = [];
       function li(icoC, texte, sous) {
-        return h("div", { key: "li" + out.length, style: { display: "flex", alignItems: "flex-start", gap: 12, padding: "7px 0" } }, ico(icoC, 20),
+        return h("div", { key: "li" + out.length, style: { display: "flex", alignItems: "center", gap: 14, padding: "8px 0" } }, h("span", { style: { width: 22, display: "flex", justifyContent: "center", flexShrink: 0 } }, ico(icoC, 20)),
           h("div", { style: { minWidth: 0 } },
             h("div", { style: { fontFamily: SERIF, fontSize: D ? 18 : 16.5, lineHeight: 1.2, color: IV, overflowWrap: "anywhere" } }, texte),
             sous ? h("div", { style: { marginTop: 3, fontFamily: MO, fontSize: 12.5, lineHeight: 1.3, color: DX, overflowWrap: "break-word" } }, sous) : null));
@@ -66473,7 +66474,7 @@ async function supprimerSouvenirOuvert() {
       } catch (eLi) { }
       return out;
     })();
-    var identite = h("div", { style: Object.assign({}, carteSt, { padding: D ? "24px 26px" : "20px 18px" }) },
+    var identite = h("div", { style: Object.assign({}, carteSt, { padding: padCarte }) },
       titre(T("Identité", "Identity", "Identidad", "Identità", "プロフィール", "Identität", "الهوية")),
       h("div", { style: { display: "flex", gap: D ? 22 : 16, alignItems: "stretch" } },
         photoCh ? h("div", { style: { flex: "0 0 " + (D ? "38%" : (L ? "36%" : "38%")), maxWidth: D ? 230 : 190, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(201,166,107,0.25)", minHeight: 150 } },
