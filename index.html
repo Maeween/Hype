@@ -41232,6 +41232,19 @@ function EcranActualiteCavaliere() {
    de 3, du plus récent au plus ancien, la date dessous ; toucher = lecture en grand dans la
    visionneuse existante (hypeCalquePhoto, qui lit les vidéos). (353) + vidéos des albums de ses chevaux et vidéos où elle est identifiée (acceptées). Privé : policy « commentaires
    lecture ». Aucun SQL ; route « videos-cavalier » (window.__videosCavaliereId). */
+/* 15/10 (1139) PHOTO DU HAUT DES PAGES PHOTOS ET VIDEOS DU CAVALIER (meme famille que Histoire / Progression) :
+   photo pleine largeur fondue dans le noir, fleche retour en haut, titre et nom en bas. Aucun nouveau texte. */
+function hypeHeroSousPageCavalier(o) {
+  var h = React.createElement;
+  var src = o.photo || ((typeof IMG_CAVALIER_HERO_DEFAUT !== "undefined") ? IMG_CAVALIER_HERO_DEFAUT : "");
+  return h("div", { style: { position: "relative", height: "calc(env(safe-area-inset-top) + 230px)", overflow: "hidden", marginBottom: 6 } },
+    src ? h("img", { src: src, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: o.photo ? "50% 30%" : "68% 20%", display: "block" } }) : null,
+    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.45) 0%, rgba(6,7,9,0.05) 34%, rgba(6,7,9,0.72) 76%, #060709 100%)" } }),
+    h("button", { onClick: o.retour, "aria-label": o.labelRetour, style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.18)", background: "rgba(6,7,9,0.45)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
+    h("div", { style: { position: "absolute", left: 16, right: 16, bottom: 12, minWidth: 0 } },
+      h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: o.teinte || "#C9A66B", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, o.libelle),
+      o.nom ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 30, fontWeight: 500, lineHeight: 1.1, marginTop: 4, color: "#F3EEE4", overflowWrap: "anywhere", textShadow: "0 2px 14px rgba(0,0,0,0.8)" } }, o.nom) : null));
+}
 function EcranVideosCavaliere() {
   var h = React.createElement;
   var app = useApp();
@@ -41327,11 +41340,9 @@ function EcranVideosCavaliere() {
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110, fontFamily: M } },
     h(HypeDrapeauLangue, null),   /* (491) */
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pv", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
-    h("div", { style: { padding: "calc(env(safe-area-inset-top) + 14px) 14px 6px", display: "flex", alignItems: "center", gap: 10 } },
-      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-      h("div", { style: { minWidth: 0 } },
-        h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: TQL } }, T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a") + (vids && vids.length ? " \u00b7 " + vids.length : "")),
-        nom ? h("div", { style: { fontFamily: C, fontSize: 18, fontWeight: 700, marginTop: 2, overflowWrap: "anywhere" } }, nom) : null)),
+    /* 15/10 (1139) Blandine : la photo de Mes chevaux en haut de toutes les sous-pages du cavalier. Photo du cavalier s il en a une,
+       sinon IMG_CAVALIER_HERO_DEFAUT ; meme retour, meme titre, meme nom (ancien bandeau sans photo). */
+    hypeHeroSousPageCavalier({ retour: retour, libelle: T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
     h("div", { style: { padding: "12px 16px 0" } },
       (vids === null)
         ? h("div", { style: { padding: "30px 0", textAlign: "center", color: "#8A929C", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
@@ -41458,11 +41469,9 @@ function EcranPhotosCavaliere() {
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110, fontFamily: M } },
     h(HypeDrapeauLangue, null),   /* (491) */
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pp", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
-    h("div", { style: { padding: "calc(env(safe-area-inset-top) + 14px) 14px 6px", display: "flex", alignItems: "center", gap: 10 } },
-      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-      h("div", { style: { minWidth: 0 } },
-        h("div", { style: { fontSize: 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: TQL } }, T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631") + (vids && vids.length ? " \u00b7 " + vids.length : "")),
-        nom ? h("div", { style: { fontFamily: C, fontSize: 18, fontWeight: 700, marginTop: 2, overflowWrap: "anywhere" } }, nom) : null)),
+    /* 15/10 (1139) Blandine : la photo de Mes chevaux en haut de toutes les sous-pages du cavalier. Photo du cavalier s il en a une,
+       sinon IMG_CAVALIER_HERO_DEFAUT ; meme retour, meme titre, meme nom (ancien bandeau sans photo). */
+    hypeHeroSousPageCavalier({ retour: retour, libelle: T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
     /* 28/09 (484) : LES ALBUMS « souvenirs » de son profil arrivent ici (retires de la page Histoire, choix de
        Blandine). Meme composant qu avant (creation, ajout, visionneuse). */
     cid ? h("div", { style: { paddingTop: 6 } }, h(AlbumsCheval, { cible: "cavalier:" + cid, teinte: (typeof teinteHypeActive === "function" ? teinteHypeActive().principal : "#7FA3AD") })) : null,

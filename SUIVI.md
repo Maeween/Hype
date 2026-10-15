@@ -12821,3 +12821,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (2 h 40) — Progression (Mon apprentissage) : photo du haut = la photo de Mes chevaux (1138) [publié, accord « Ok continue »]
 - Demande : la photo de Mes chevaux sur toutes les sous-pages du cavalier. Progression : images/APPRENTISSAGE_HAUT.webp remplacée par IMG_CAVALIER_HERO_DEFAUT (mes-chevaux-fond-couchant.webp), cadrée sur la tête (70 % 18 %). L'ancienne image reste dans le dépôt (retour arrière : remettre son adresse).
 - Textes, voile et boutons inchangés. Vérifié 390 et 1440 px.
+
+## 15/10/2026 (2 h 50) — Photos et Vidéos du cavalier : photo en haut de page (1139) [publié, accord « Ok continue »]
+- Les deux pages n'avaient qu'un bandeau (flèche, « PHOTOS » / « VIDÉOS », nom). Elles ont maintenant une photo du haut (230 px) fondue dans le noir : la photo du cavalier s'il en a une, sinon la photo de Mes chevaux (IMG_CAVALIER_HERO_DEFAUT). Flèche retour en haut, titre et nom en bas (nom en Cormorant). Partage et drapeau inchangés.
+- Une seule fonction pour les deux pages : hypeHeroSousPageCavalier. Aucun nouveau texte (mêmes traductions). Contenu des pages inchangé.
+- Vérifié 390 et 1440 px, 0 erreur. Note : ces deux pages restent en colonne étroite (480 px) sur ordinateur — leur adaptation grand écran n'est pas faite.
