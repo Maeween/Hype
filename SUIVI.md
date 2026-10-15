@@ -12884,3 +12884,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Idée de Blandine : un accès à la page L'association en bas de la page Premium → nouvelle ligne dans les raccourcis « Choisissez votre accès », 7 langues, ouvre /{langue}/association/ dans un nouvel onglet.
 - Demande de Blandine (« en 4 pages on l'a écrit 4 fois ») : l'encart vide des albums photo du cheval (et l'encart « aucune photo » de la fiche) dit maintenant « Conserve tes moments les plus précieux… » au lieu de « Chaque cheval a son histoire… » (7 langues). Les deux phrases « Chaque cheval a son histoire, … » des autres pages ne sont pas touchées (en attente de son choix).
 - Signalé à Blandine, NON corrigé ici : depuis la publication « Actualité du cheval, étape 2 : onglets de navigation » (autre conversation, 15/10 ~2 h 53), les pages du cheval sont décalées vers la droite sur iPhone (rangée de 6 onglets trop large). À corriger dans la conversation qui mène ce chantier.
+
+## 15/10/2026 (3 h 30) — Correctif : pages du cheval décalées vers la droite sur iPhone (1146) [publié, signalé par Blandine]
+- Symptôme signalé (capture iPhone) : sur les pages Vidéos et Résultats du cheval, le contenu était décalé vers la droite et coupé à droite (cartes et statistiques).
+- Cause probable : la rangée d'onglets défilante (1145) dans un écran plein qui défilait déjà verticalement ; Safari peut alors glisser tout l'écran sur le côté. Correctif : l'écran du cheval ne peut plus défiler horizontalement, et la rangée d'onglets n'utilise plus le défilement « inertiel » de Safari (source de décalages).
+- Non reproduit dans le navigateur de test (390, 375, 430, 820, 1440 px : aucun débordement, aucun décalage). À vérifier sur votre iPhone.
