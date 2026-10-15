@@ -40331,6 +40331,27 @@ function hypePerfLignes(lignes, voirMasques) {
     };
   }).filter(function (f) { return f.pl != null; });
 }
+/* Famille d epreuve lue dans son nom (regle validee par Blandine le 06/09 : As a part, W, Elite, indice 1-4 ;
+   la taille du poney A/B/C/D ignoree). COPIE de familleEp de l ancienne fiche (locale, inaccessible) : si la regle change, la changer aux deux endroits. */
+function hypePerfFamille(ep) {
+  var t = String(ep || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (!t) return "Autres";
+  if (/pr[e]?para/.test(t)) return "Pr\u00e9paratoire";
+  if (/hunter/.test(t)) return "Hunter";
+  if (/dressage/.test(t)) return "Dressage";
+  if (/\bas\s*(?:poney\s*)?w\b/.test(t)) return "As Poney W";
+  var mAs = /\bas\s*(?:poney\s*)?(elite|[1-4])/.exec(t);
+  if (mAs) return "As Poney " + (mAs[1] === "elite" ? "Elite" : mAs[1]);
+  if (/\bas\s*poney/.test(t)) return "As Poney";
+  var mW = /(poney|club|amateur|pro)\s*w\b/.exec(t);
+  if (mW) return mW[1].charAt(0).toUpperCase() + mW[1].slice(1) + " W";
+  var mEl = /(poney|club|amateur|pro)\s*(elite|[1-4])/.exec(t);
+  if (mEl) return mEl[1].charAt(0).toUpperCase() + mEl[1].slice(1) + " " + (mEl[2] === "elite" ? "Elite" : mEl[2]);
+  if (/poney/.test(t)) return "Poney";
+  if (/club/.test(t)) return "Club";
+  if (/amateur/.test(t)) return "Amateur";
+  return "Autres";
+}
 function hypePerfStats(fs) {
   var pts = 0, avecPts = 0;
   fs.forEach(function (f) { if (f.pts != null && !isNaN(f.pts)) { pts += f.pts; avecPts++; } });
@@ -40418,6 +40439,8 @@ function EcranPerformancesCheval() {
     return function () { v = false; };
   }, [dbId, etat.charge, relire]);
   var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1];
+  var vueSt = React.useState("apercu"); var vue = vueSt[0], setVue = vueSt[1];   /* build 2 : « apercu » ou « saison » (Details de la saison) */
+  var flSt = React.useState("tous"); var filtre = flSt[0], setFiltre = flSt[1];
   var fortsLocSt = React.useState({}); var fortsLocal = fortsLocSt[0], setFortsLocal = fortsLocSt[1];   /* reponse immediate au tap, par id */
   var lignesVues = React.useMemo(function () {
     return (lignes || []).map(function (r) { var loc = r && r.id && fortsLocal[r.id]; return loc ? Object.assign({}, r, { fort_force: loc.ff, fort_exclu: loc.fx }) : r; });
@@ -40722,6 +40745,63 @@ function EcranPerformancesCheval() {
       toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToast") : null);
   }
 
+  /* ── BUILD 2 : DÉTAILS DE LA SAISON (maquette écran 2) ──
+     Points de qualification par catégorie réelle (barres champagne, total connu, « N résultats sans points connus » :
+     une donnée inconnue n est jamais un zéro), puis TOUS les résultats de la saison et du cavalier choisis, avec le filtre
+     Tous / Classés (premier quart) / Podiums / Sans faute (ce dernier réservé à la propriétaire, comme la maquette).
+     Les points sont ceux de la FFE (colonne points), jamais recalculés, jamais les points Team.
+     « Régler ce qui est visible » N EST PAS ici : il écrit la colonne visible, qui retire aussi les points (dette connue) ;
+     il attend le SQL masque_public. Lignes non cliquables (pas de lien vers un événement en base). */
+  if (vue === "saison" && tous.length) {
+    var filtres = [["tous", T("Tous", "All", "Todos", "Tutti", "すべて", "Alle", "الكل")], ["classes", T("Classés", "Placed", "Clasificados", "Piazzati", "入賞", "Platziert", "المصنفون")], ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "表彰台", "Podien", "منصات")]];
+    if (estProprio) filtres.push(["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "クリア", "Fehlerfrei", "بلا أخطاء")]);
+    var filtreEff = (filtre === "sf" && !estProprio) ? "tous" : filtre;
+    var lignesF = lignesVue.filter(function (f) {
+      if (filtreEff === "classes") return hypePerfEstClasse(f);
+      if (filtreEff === "podiums") return hypePerfEstPrepa(f.ep) ? f.pl === 1 : f.pl <= 3;
+      if (filtreEff === "sf") return hypePerfEstSansFaute(f);
+      return true;
+    }).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
+    var parFam = {}, totalPts = 0, avecP = 0;
+    lignesVue.forEach(function (f) { if (f.pts == null || isNaN(f.pts)) return; var k = hypePerfFamille(f.ep); if (!parFam[k]) parFam[k] = 0; parFam[k] += f.pts; totalPts += f.pts; avecP++; });
+    var fams = Object.keys(parFam).sort(function (a, b) { return parFam[b] - parFam[a]; });
+    var maxF = fams.length ? Math.max.apply(null, fams.map(function (k) { return parFam[k]; })) : 0;
+    var sansP = lignesVue.length - avecP;
+    var arr = function (x) { return Math.round(x * 100) / 100; };
+    return h("div", { "data-ecran": "performances-cheval", "data-perf-vue": "saison", style: racineSt },
+      h("div", { style: { display: "flex", alignItems: "center", gap: 12, padding: "calc(env(safe-area-inset-top) + 12px) 16px 6px" } },
+        h("button", { type: "button", onClick: function () { setVue("apercu"); try { window.scrollTo(0, 0); } catch (eS) { } }, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع"), style: { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "transparent", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, flex: "0 0 auto" } },
+          h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" }))),
+        h("div", { style: { minWidth: 0 } },
+          h("div", { style: { fontFamily: SERIF, fontSize: 24, fontWeight: 600, color: IVOIRE, lineHeight: 1.1 } }, T("Détails de la saison", "Season details", "Detalles de la temporada", "Dettagli della stagione", "シーズン詳細", "Saisondetails", "تفاصيل الموسم")),
+          h("div", { style: { fontFamily: SANS, fontSize: 11.5, color: MUET, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, nomCh))),
+      saisons.length ? h("div", { style: { display: "flex", gap: 8, padding: "12px 18px 0", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
+        saisons.map(function (sx) { return pilule(sx.lib, saisonActive && sx.cle === saisonActive.cle, function () { setSaisonChoisie(sx.cle); setCavChoisi("tous"); }, "dsa" + sx.cle); })) : null,
+      (cavaliers.length >= 2) ? h("div", { style: { display: "flex", gap: 8, padding: "10px 18px 0", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
+        [pilule(T("Tous", "All", "Todos", "Tutti", "全員", "Alle", "الكل"), cavEffectif === "tous", function () { setCavChoisi("tous"); }, "dcavTous")].concat(cavaliers.map(function (cv) { return pilule(nomCourt(cv), cavEffectif === cv, function () { setCavChoisi(cv); }, "dcav" + cv); }))) : null,
+      titreSection(T("Points de qualification", "Qualification points", "Puntos de calificación", "Punti di qualifica", "資格ポイント", "Qualifikationspunkte", "نقاط التأهل")),
+      h("div", { "data-perf-points": "1", style: { margin: "0 18px", padding: "14px 16px", borderRadius: 16, background: "rgba(16,26,29,0.8)", border: "1px solid " + FILET } },
+        avecP ? h("div", { style: { display: "flex", alignItems: "baseline", gap: 8 } },
+          h("div", { style: { fontFamily: SERIF, fontSize: 34, fontWeight: 700, color: "#E6CF9C", lineHeight: 1 } }, String(arr(totalPts))),
+          h("div", { style: { fontFamily: SANS, fontSize: 12, color: MUET } }, T("points connus · saison ", "known points · season ", "puntos conocidos · temporada ", "punti noti · stagione ", "判明ポイント · シーズン ", "bekannte Punkte · Saison ", "نقاط معروفة · موسم ") + ((saisonActive && saisonActive.lib) || ""))) :
+          h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: MUET } }, T("Aucun point connu sur cette saison.", "No known points this season.", "Ningún punto conocido esta temporada.", "Nessun punto noto in questa stagione.", "このシーズンの判明ポイントはありません。", "Keine bekannten Punkte in dieser Saison.", "لا توجد نقاط معروفة في هذا الموسم.")),
+        fams.length ? h("div", { style: { marginTop: 12 } }, fams.map(function (k, i) {
+          var pc = maxF > 0 ? Math.max(4, Math.round(parFam[k] / maxF * 100)) : 0;
+          return h("div", { key: "fam" + k, style: { display: "flex", alignItems: "center", gap: 10, padding: "6px 0" } },
+            h("div", { style: { flex: "0 0 92px", fontFamily: SANS, fontSize: 12, color: IVOIRE, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, k),
+            h("div", { style: { flex: 1, height: 6, borderRadius: 3, background: "rgba(243,238,228,0.07)", overflow: "hidden" } }, h("div", { style: { width: pc + "%", height: "100%", borderRadius: 3, background: "linear-gradient(90deg, rgba(201,166,107,0.55), #C9A66B)" } })),
+            h("div", { style: { flex: "0 0 auto", minWidth: 48, textAlign: "end", fontFamily: SANS, fontSize: 11.5, color: "#E6CF9C", direction: "ltr", unicodeBidi: "isolate" } }, arr(parFam[k]) + " pts"));
+        })) : null,
+        sansP > 0 ? h("div", { style: { marginTop: 10, fontFamily: SANS, fontSize: 11, color: MUET2 } }, sansP + " " + (sansP > 1 ? T("résultats sans points connus", "results with no known points", "resultados sin puntos conocidos", "risultati senza punti noti", "件はポイント不明", "Ergebnisse ohne bekannte Punkte", "نتائج بلا نقاط معروفة") : T("résultat sans points connus", "result with no known points", "resultado sin puntos conocidos", "risultato senza punti noti", "件はポイント不明", "Ergebnis ohne bekannte Punkte", "نتيجة بلا نقاط معروفة"))) : null),
+      titreSection(T("Tous les résultats", "All results", "Todos los resultados", "Tutti i risultati", "すべての成績", "Alle Ergebnisse", "كل النتائج") + " (" + lignesF.length + ")"),
+      h("div", { style: { display: "flex", gap: 8, padding: "0 18px 12px", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
+        filtres.map(function (fx) { return pilule(fx[1], filtreEff === fx[0], function () { setFiltre(fx[0]); }, "flt" + fx[0]); })),
+      lignesF.length ? h("div", { style: { margin: "0 18px", padding: "2px 16px", borderRadius: 16, background: "rgba(16,26,29,0.8)", border: "1px solid " + FILET } }, lignesF.map(ligneResultat))
+        : h("div", { style: { margin: "0 18px", padding: "18px 16px", borderRadius: 16, border: "1px solid " + FILET, fontFamily: SANS, fontSize: 12.5, color: MUET, textAlign: "center" } }, T("Aucun résultat pour ce filtre.", "No result for this filter.", "Ningún resultado con este filtro.", "Nessun risultato per questo filtro.", "この条件の成績はありません。", "Kein Ergebnis für diesen Filter.", "لا توجد نتيجة لهذا الفلتر.")),
+      (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "14px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
+      typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfS" }) : null,
+      toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToastS") : null);
+  }
   /* ── page avec resultats ── */
   var chiffres = [
     [stats.concours, T("concours", "shows", "concursos", "concorsi", "大会", "Turniere", "مسابقات")],
@@ -40769,7 +40849,7 @@ function EcranPerformancesCheval() {
       h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 20, lineHeight: 1 } }, "›")) : null,
     /* derniers resultats */
     recents.length ? h(React.Fragment, null,
-      titreSection(T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "آخر النتائج")),
+      titreSection(T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "آخر النتائج"), h("button", { type: "button", "data-perf-voir-tous": "1", onClick: function () { setFiltre("tous"); setVue("saison"); try { window.scrollTo(0, 0); } catch (eS) { } }, style: { background: "none", border: "none", padding: "6px 0", color: "#E6CF9C", fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, T("Voir tous", "See all", "Ver todos", "Vedi tutti", "すべて見る", "Alle ansehen", "عرض الكل") + (rtl ? " \u2039" : " \u203a"))),
       h("div", { style: { margin: "0 18px", padding: "2px 16px", borderRadius: 16, background: "rgba(16,26,29,0.8)", border: "1px solid " + FILET } }, recents.map(ligneResultat))) : null,
     (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "14px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
     boutons,
