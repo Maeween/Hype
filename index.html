@@ -83939,7 +83939,12 @@ const FAMILLE_I18N = {
     err: { INVITATION_INVALIDE: "هذا الرابط لم يعد صالحًا. اطلب رابطًا جديدًا.", LIMITE_30_JOURS: "يمكن تغيير الفارس الثاني مرة واحدة كل 30 يومًا.", LIMITE_ANNUELLE: "تم بلوغ الحد الأقصى للتغييرات لهذا العام.", DEJA_DANS_UNE_FAMILLE: "أنت بالفعل عضو في عائلة أخرى.", DEJA_TITULAIRE: "لديك بالفعل اشتراك عائلي خاص بك.", TITULAIRE_NE_PEUT_PAS_ACCEPTER: "هذا رابطك أنت: أرسله إلى الفارس الثاني.", FAMILLE_INACTIVE: "هذا الاشتراك العائلي لم يعد نشطًا.", DEJA_UN_DEUXIEME_CAVALIER: "لدى عائلتك فارس ثانٍ بالفعل.", FAMILLE_INTROUVABLE: "الاشتراك العائلي غير موجود أو غير نشط.", CONNEXION_REQUISE: "سجّل الدخول أولًا.", TROP_D_ESSAIS: "تمت تجربة روابط غير صالحة كثيرة. حاول مرة أخرى بعد ساعة.", PAS_DE_FAMILLE: "لم تعد عضوًا في هذه العائلة.", autre: "حدث خطأ. حاول مرة أخرى." } },
 };
 /* Lien de gestion Stripe (portail client) : vide tant qu'il n'est pas créé → bouton masqué. */
-const HYPE_PORTAIL_STRIPE = "";
+const HYPE_PORTAIL_STRIPE = "https://billing.stripe.com/p/login/aFa5kDbvjbtud0J0CzfQI00"; /* 15/10/2026 : portail client Stripe activé (résilier, changer de carte, factures) — choix B de Blandine */
+window.hypeOuvrirPortail = async function () {
+  let u = null; try { u = await utilisateurActuel(); } catch (e) { }
+  const url = HYPE_PORTAIL_STRIPE + (u && u.email ? "?prefilled_email=" + encodeURIComponent(u.email) : "");
+  try { const w = window.open(url, "_blank", "noopener"); if (!w) window.location.href = url; } catch (e) { window.location.href = url; }
+};
 function famT(lg, cle, vars) {
   const D = FAMILLE_I18N[lg] || FAMILLE_I18N.fr;
   let s = (D[cle] !== undefined ? D[cle] : FAMILLE_I18N.fr[cle]) || "";
@@ -84049,7 +84054,7 @@ function BlocFamille() {
     if (etat.statut === "actif" && !etat.deuxieme) enfants.push(bouton(famT(lg, etat.invitation_en_cours ? "nouveauLien" : "inviter"), inviter, "inv"));
     if (etat.deuxieme) enfants.push(bouton(famT(lg, "retirer"), () => agir("famille_retirer", null, famT(lg, "confirmRetirer", { nom: etat.deuxieme })), "ret", true));
     else if (etat.invitation_en_cours) enfants.push(bouton(famT(lg, "annulerInvit"), () => { setLien(""); agir("famille_retirer"); }, "ann", true));
-    if (HYPE_PORTAIL_STRIPE) enfants.push(bouton(tr7(lg), () => { try { window.open(HYPE_PORTAIL_STRIPE, "_blank"); } catch (e) { } }, "gerer", true));
+    if (HYPE_PORTAIL_STRIPE) enfants.push(bouton(tr7(lg), () => { try { window.hypeOuvrirPortail(); } catch (e) { } }, "gerer", true));
   } else {
     enfants.push(bouton(famT(lg, "quitter"), () => agir("famille_quitter", null, famT(lg, "confirmQuitter")), "quit", true));
   }
@@ -84429,6 +84434,15 @@ function EcranProfilInterne() {
             })(),
             /* Premium Famille (étape 3) : n'apparaît que si le compte a une famille */
             React.createElement(BlocFamille, { key: "famille" }),
+            /* 15/10/2026 : « Gérer mon abonnement » (portail Stripe : résilier en ligne, changer de carte, factures).
+               Seulement pour les abonnements qui se renouvellent (mensuel, Duo, Hype IA) ; le Cercle Crystal se paie une fois. */
+            (HYPE_PORTAIL_STRIPE && aboMoi && typeof aboMoi === "object" && ["mensuel", "duo", "ai"].indexOf(aboMoi.plan) !== -1 && aboMoi.statut !== "annule") ? tuile({
+                cle: "gerer-abo", large: true,
+                titre: tr({ fr: "Gérer mon abonnement", en: "Manage my subscription", es: "Gestionar mi suscripción", it: "Gestisci il mio abbonamento", ja: "サブスクリプションを管理", de: "Mein Abo verwalten", ar: "\u0625\u062f\u0627\u0631\u0629 \u0627\u0634\u062a\u0631\u0627\u0643\u064a" }),
+                sous: tr({ fr: "Résilier, changer de carte, voir mes factures", en: "Cancel, change card, see my invoices", es: "Cancelar, cambiar de tarjeta, ver mis facturas", it: "Disdire, cambiare carta, vedere le fatture", ja: "解約・カード変更・請求書の確認", de: "Kündigen, Karte ändern, Rechnungen ansehen", ar: "\u0627\u0644\u0625\u0644\u063a\u0627\u0621\u060c \u062a\u063a\u064a\u064a\u0631 \u0627\u0644\u0628\u0637\u0627\u0642\u0629\u060c \u0639\u0631\u0636 \u0641\u0648\u0627\u062a\u064a\u0631\u064a" }),
+                onClick: () => { try { window.hypeOuvrirPortail(); } catch (e) { } },
+                ico: [React.createElement("rect", { key: "a", x: "3.5", y: "6", width: "17", height: "12", rx: "2" }), React.createElement("path", { key: "b", d: "M3.5 10h17" })],
+            }) : null,
 
             /* 22/09 (345) : la tuile « Ma licence FFE » (340) est RETIREE de Mon compte, sur sa decision :
                elle doublonnait « Relier les resultats FFE » (EcranRattacherFFE, 13/09) et n etait reliee

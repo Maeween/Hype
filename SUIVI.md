@@ -12808,3 +12808,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Bug (déjà présent sur iPhone) : en arabe, le bouton « ⋯ » se plaçait à gauche, sous la flèche retour (invisible, impossible à toucher).
 - Correction : le bouton reste à droite dans toutes les langues, comme le partage et le drapeau ; son menu s'ouvre dessous. Ordinateur en arabe : le menu s'ouvre à gauche de la barre de menu (sinon il passait dessous).
 - Français et autres langues : position inchangée. Tests : arabe 390 / 820 / 1440, français 1440 (menu ouvert) ; 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
+
+## 15/10/2026 (2 h 15) — « Gérer mon abonnement » : résiliation en ligne (choix B de Blandine) — PUBLIÉ
+- Stripe (accord « Ok B résiliation ») : portail client créé sur le compte « Feinn » (bpc_1UQcEOHnB1OJ7FOmgE1MCv0I) — résiliation à la fin de la période payée (rien n'est remboursé au prorata), changement de carte, historique des factures ; changement de formule et modification des coordonnées DÉSACTIVÉS (l'adresse doit rester celle du compte Hype). Page de connexion : https://billing.stripe.com/p/login/aFa5kDbvjbtud0J0CzfQI00
+- Appli : HYPE_PORTAIL_STRIPE rempli ; nouvelle tuile « Gérer mon abonnement » dans Mon compte (7 langues), visible seulement pour les abonnements qui se renouvellent (mensuel, Duo, Hype IA) ; le bouton du bloc Famille (titulaire) utilise le même portail. Adresse du compte pré-remplie.
+- Résiliation : Stripe envoie la fin d'abonnement (customer.subscription.deleted) à la fin du mois payé → le relais passe la ligne en « annule » à ce moment-là ; l'accès reste ouvert jusque-là.
+- Tests (faux serveur) : mensuel fr, Duo ar, Hype IA de (ordinateur) → bouton présent, portail ouvert avec l'adresse ; Crystal et sans abonnement → pas de bouton ; aucune erreur.
+- CGV (branche cgv, non publiée) : vendeur = Association FEINN Équitation et Environnement (choix de Blandine) ; « TVA non applicable, article 293 B du CGI » (choix de Blandine, à confirmer avec la personne qui tient les comptes) ; résiliation en ligne via « Gérer mon abonnement » ou par mail.
+- ⏳ À FAIRE (demande de Blandine, « Médiateur mets ça en suivi ») : choisir un médiateur de la consommation agréé (liste officielle du ministère de l'Économie), y adhérer au nom de l'association, puis compléter l'article 11 des CGV avec son nom et son adresse. Obligatoire pour vendre aux particuliers.
+- ⏳ À FAIRE : basculer les paiements Hype sur le compte Stripe de l'association (vendeur des CGV) — recréer alors produits, liens, relais et portail sur ce compte.
