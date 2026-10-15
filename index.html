@@ -58467,6 +58467,7 @@ function BlocSouvenirsVide(props) {
 var __murPhotoOuvrir = {};
 function MurHype(props) {
   var h = React.createElement;
+  var largeMur = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 15/10 (1142) deux colonnes (prop deuxColonnes) */
   var TEzM = (typeof hypeTeinteEcurie === "function") ? hypeTeinteEcurie() : null;   /* (536) mode sobre sur la page Ecurie */
   var ctx = useApp(); var tr = ctx.tr; var langue = ctx.langue || "fr";
   function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }   /* 27/09 (414) : arabe */
@@ -60402,6 +60403,20 @@ function MurHype(props) {
   if (vuRep) {
     /* 14/09 (153) : meme correctif - calque obligatoire. */
     enfants.push(h("div", { key: "vuRep" }, hypeCalquePhoto(vuRep, function () { setVuRep(null); })));
+  }
+  /* 15/10 (1142) DEUX COLONNES (page Actualite du cheval, des 768 px) : les publications se repartissent a gauche puis a droite,
+     dans l ordre (la plus recente en haut a gauche) ; tout le reste (champ de publication, messages) garde sa place, pleine largeur. */
+  if (props.deuxColonnes && largeMur && !props.rail) {
+    var colG = [], colD = [], iPost = 0, posGrille = -1, autres = [];
+    enfants.forEach(function (el) {
+      if (el && el.props && el.props["data-post"]) { if (posGrille < 0) posGrille = autres.length; (iPost++ % 2 === 0 ? colG : colD).push(el); }
+      else autres.push(el);
+    });
+    if (posGrille >= 0) {
+      var grille = h("div", { key: "__deuxCol", style: { display: "flex", alignItems: "flex-start", gap: 14 } },
+        h("div", { style: { flex: "1 1 0", minWidth: 0 } }, colG), h("div", { style: { flex: "1 1 0", minWidth: 0 } }, colD));
+      enfants = autres.slice(0, posGrille).concat([grille], autres.slice(posGrille));
+    }
   }
   return h("div", { style: { padding: props.compact ? "0 10px" : "0 16px" } }, enfants); /* 30/07: fil elargi sur la fiche cheval (mode compact), les autres murs inchanges */
 }
@@ -65461,8 +65476,8 @@ function EcranCheval() {
         h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 27, fontWeight: 500, lineHeight: 1.15, color: "#F3EEE4", marginTop: 6, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, titre),
         h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.55, color: "rgba(243,238,228,0.88)", marginTop: 8, maxWidth: 330, textShadow: "0 1px 10px rgba(0,0,0,0.7)" } }, phrase)));
   }
-  function encartIdentiteCh(titrePage) {
-    var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh;
+  function encartIdentiteCh(titrePage, secoursPhoto) {   /* (1142) secoursPhoto : photo si le cheval n en a pas (page Actualite) */
+    var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh || secoursPhoto || "";
     var rtlE = false; try { rtlE = document.documentElement.dir === "rtl"; } catch (eR) { }
     var nomE = String(c.nom || "");
     var lgN = nomE.length;
@@ -65490,7 +65505,7 @@ function EcranCheval() {
     var forme = menuCh ? "ordinateur" : (largeCh ? "tablette" : "mobile");
     return "images/" + (tousSouvCh ? "souvenirs" : "photos") + "-fond-" + forme + ".webp";
   }
-  function panHeroCh() { return !!panneau && (["souvenirs", "photos", "videos"].indexOf(panneau) >= 0 || (panneau === "palmares" && !palmTech)); }
+  function panHeroCh() { return !!panneau && (["souvenirs", "photos", "videos", "actualite" /* 15/10 (1142) */].indexOf(panneau) >= 0 || (panneau === "palmares" && !palmTech)); }
   /* 30/08 02h20 : la galerie previent quand elle est vide, pour que la mascotte
      s'affiche EN HAUT de l'onglet Photos (demande Blandine). 🟥 05/09 : Galerie retiree ;
      galVideCh n'a plus de source (personne ne l'active plus) et disparait avec elle. */
@@ -67333,7 +67348,7 @@ async function supprimerSouvenirOuvert() {
         (largeCh && panneau) ? { left: (rtlCh || !menuCh) ? 0 : 210, right: (rtlCh && menuCh) ? 210 : 0, paddingLeft: "max(24px, calc((100% - 1240px) / 2))", paddingRight: "max(24px, calc((100% - 1240px) / 2))", paddingBottom: 80 } : {}) },   /* (882) Photos ; (884) Blandine : tous les onglets (Histoire, Performances, Videos...) laissent aussi le menu visible */
       h("div", { style: Object.assign({ display: "flex", alignItems: "center", gap: 12, padding: "calc(14px + env(safe-area-inset-top)) 16px 8px" }, panHeroCh() ? { position: "absolute", top: 0, left: 0, right: 0, zIndex: 5, padding: "calc(10px + env(safe-area-inset-top)) 16px 8px", pointerEvents: "none" } : {}) },   /* (978) flottante sur le hero, comme Sante */
         h("button", { onClick: function () { setPanneau(null); }, style: panHeroCh() ? { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(214,196,161,0.75)", background: "rgba(6,7,9,0.35)", color: "#D6C4A1", fontSize: 18, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", padding: 0, cursor: "pointer", pointerEvents: "auto" } : { width: 38, height: 38, borderRadius: "50%", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.14)", color: "#F3EEE4", fontSize: 17, flexShrink: 0 } }, "‹"),
-        (["souvenirs", "photos", "palmares", "videos"].indexOf(panneau) >= 0) ? null /* (910) titre retire : la carte du cheval le dit deja */ : h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
+        (["souvenirs", "photos", "palmares", "videos", "actualite" /* (1142) le titre est dans la photo */].indexOf(panneau) >= 0) ? null /* (910) titre retire : la carte du cheval le dit deja */ : h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 19, fontWeight: 700, color: "#F4F6F7" } },
           panneau === "flots" ? T("Flots", "Rosettes", "Escarapelas", "Coccarde", "ロゼット", "Flots", "\u0627\u0644\u0634\u0627\u0631\u0627\u062a")
           : panneau === "palmares" ? T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")
           : panneau === "photos" ? (T("Photos", "Photos", "Fotos", "Foto", "写真", "Fotos", "\u0627\u0644\u0635\u0648\u0631") ): panneau === "videos" ? (T("Vidéos", "Videos", "Vídeos", "Video", "動画", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a")) : panneau === "souvenirs" ? (T("Histoire", "Story", "Historia", "Storia", "物語", "Geschichte", "\u0627\u0644\u0642\u0635\u0629"))
@@ -68496,9 +68511,14 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
          videos marchent ici comme partout ailleurs, sans une deuxieme copie du code.
          QUI PEUT PUBLIER n a PAS change : ce sont les regles deja en place sur le mur du
          cheval, cette question-la n a pas ete tranchee. */
-      panneau === "actualite" ? h("div", { style: { padding: "4px 0 24px" } },
+      panneau === "actualite" ? h("div", { style: { padding: "0 0 24px" } },
+        /* 15/10 (1142) PAGE ACTUALITE DU CHEVAL, maquette de Blandine (iPhone / iPad / ordinateur) : la photo du cheval en haut
+           avec « ACTUALITE » et son nom (meme encart que Videos / Photos) ; sans photo : l alezan au couchant fourni par Blandine
+           (images/cheval-defaut-alezan.webp). Des 768 px, les publications sur deux colonnes (prop deuxColonnes du fil). */
+        encartIdentiteCh(T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631"), "images/cheval-defaut-alezan.webp"),
+        h("div", { style: { height: 10 } }),
         h(MurHype, {
-          cible: cibleCh, teinte: teinte, vignette: true,
+          cible: cibleCh, teinte: teinte, vignette: false /* (1142) maquette : grandes cartes avec la photo (avant : vignettes) */, deuxColonnes: true,
           chargerEnPlus: function () { return hypePostsIdentifiesCheval((c && c.dbId) || id); }
         })) : null,
       panneau === "passeport" ? h("div", { style: { padding: "18px 22px 0", textAlign: "center" } },
