@@ -45358,9 +45358,10 @@ function PortraitChevalSpectral({ mien, compact }) {
   var h = React.createElement;
   var ctxP = useApp(); var trP = ctxP.tr;
   var imgDefP = null;
-  try { imgDefP = (typeof UV3_H1 !== "undefined" && UV3_H1) || (typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || null; } catch (e) { imgDefP = null; }
+  /* 15/10 (1141) Blandine : « faut les changer aussi » — plus de portrait bleu cyan (UV3_H1) : la photo par defaut des chevaux de Mes chevaux (CHEVAL_DEFAUT), comme partout ailleurs. */
+  try { imgDefP = (typeof CHEVAL_DEFAUT !== "undefined" && CHEVAL_DEFAUT) || null; } catch (e) { imgDefP = null; }
   return h("div", { style: { position: "relative", width: "100%", height: "100%", background: CAV_PETIT, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" } },
-    imgDefP ? h("img", { src: imgDefP, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } })
+    imgDefP ? h("img", { src: imgDefP, alt: "", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "65% 28%" /* (1141) la tete du cheval, comme Mes chevaux */ } })
       : h("svg", { viewBox: "0 0 44 44", "aria-hidden": true, style: { width: compact ? "64%" : "42%", height: compact ? "64%" : "42%", filter: "drop-shadow(0 0 9px rgba(197,170,120,0.35))" } },
         h("path", { d: "M9 22.5C9 20 10.2 17.8 12.8 16.4 15.2 15.1 17 13.2 18.4 11.2L20.3 11.8 21.3 5.6 23.4 11.5 24.6 11.3 26.8 5.9 28.7 11.9C31.4 13.2 33.4 15.8 34.6 19 36.2 23.3 36.9 30.2 35.2 37L25.4 37C25.4 31.4 23.9 28.3 21.2 25.8 18.8 23.7 15 24.8 12 26.2 10.1 24.7 9 23.8 9 22.5Z", fill: "rgba(197,170,120,0.07)", stroke: "rgba(197,170,120,0.8)", strokeWidth: 0.9, strokeLinejoin: "round" })),
     (mien && !compact) ? h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "16px 8px 8px", textAlign: "center", fontSize: 8.5, fontWeight: 700, letterSpacing: "1.3px", textTransform: "uppercase", color: "#C5AA78", fontFamily: "'Montserrat',sans-serif", background: "linear-gradient(180deg, rgba(4,6,9,0), rgba(4,6,9,0.74))" } }, "\u270E " + trP({ fr: "Personnalise son portrait", en: "Personalise its portrait", es: "Personaliza su retrato", it: "Personalizza il suo ritratto", ja: "\u30dd\u30fc\u30c8\u30ec\u30fc\u30c8\u3092\u8a2d\u5b9a", de: "Gestalte sein Portr\u00e4t", ar: "\u062e\u0635\u0635\u064a \u0635\u0648\u0631\u062a\u0647" })) : null);

@@ -12830,3 +12830,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 15/10/2026 (3 h) — Cavalier V2 sur ordinateur : cartes chevaux en largeur (1140) [publié, accord « Ok continue »]
 - Ordinateur (≥ 1024 px) seulement : les cartes de « Mes chevaux » (chevaux, « Les chevaux de l'écurie », « Ajouter mon cheval », chevaux à découvrir) passent du format en hauteur (10/11) au format en largeur (3/2), comme la maquette : 275 × 183 px au lieu de 275 × 300. Grille, règles et contenu inchangés.
 - iPhone et iPad : comparaison au pixel avant/après, 0 différence. Tests 390 → 1600 px × fr/ar/de, 0 erreur, 0 débordement.
+
+## 15/10/2026 (3 h 10) — Page Cavalier : plus de portraits bleus pour les chevaux sans photo (1141) [publié, accord « Oui faut les changer aussi »]
+- PortraitChevalSpectral (utilisé seulement dans « Mes chevaux » de la page Cavalier : chevaux sans photo et chevaux à découvrir) prenait UV3_H1, l'image bleu cyan. Il prend maintenant CHEVAL_DEFAUT (mes-chevaux-fond-couchant.webp), la photo par défaut des chevaux décidée le 12/10 (1063), cadrée sur la tête (65 % 28 %). « Personnalise son portrait » reste.
+- Vérifié 390 / 820 (visite) / 1440 px, 0 erreur, 0 débordement.
+- Reçu de Blandine le 15/10 vers 2 h 20 : une photo panoramique (alezan au couchant, barrière) — usage à confirmer (photo du haut de la page Cavalier ?).
