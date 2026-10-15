@@ -12895,3 +12895,8 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Même fond sur iPhone, iPad et ordinateur (le fond est celui de la page entière).
 - Tests : 390 / 820 / 1440 px ; aucun texte ajouté, donc pas de traduction à faire.
 - Étape suivante : 4) grand écran (3 colonnes à partir de 1280 px, éditeur moins large, cartes texte seul soignées).
+
+## 15/10/2026 (3 h 45) — Page Premium V3 : tutoiement (1148) [publié, signalé par Blandine]
+- Les textes français de la page Premium V3 vouvoyaient (« Connectez-vous », « Choisissez votre formule », « Vous faites avancer Hype »…) ; ils tutoient maintenant (« Connecte-toi », « Choisis ta formule », « Tu fais avancer Hype »…).
+- Autres langues inchangées. Aucun nouveau texte, donc pas de traduction à faire.
+- À faire ensuite : Blandine a dit « faudra changer ça après » ; le reste des vouvoiements éventuels (autres pages) sera repéré et proposé avant modification.
