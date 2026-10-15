@@ -82479,6 +82479,17 @@ function EcranAssistantIA() {
             const msgs = (messagesRef.current || []).filter((m) => !m.intro && (m.contenu || "").trim());
             const echangesUtiles = msgs.filter((m) => m.role === "user").length;
             if (echangesUtiles < 2) return; // pas assez de matière pour apprendre quoi que ce soit
+            /* 15/10 : la synthèse partait DEUX fois pour la même conversation (constaté en base le 14/10 :
+               23:13:24 et 23:13:31) — chaque passage sur l'écran Hey Baby la relançait en le quittant, même
+               sans nouvel échange. On retient la dernière conversation résumée (dernier message du cavalier
+               + nombre d'échanges) : sans nouvel échange, pas de nouvel appel. */
+            /* signature indépendante de l'ordre d'affichage (l'historique rechargé peut arriver dans un autre ordre) */
+            const signature = echangesUtiles + "|" + msgs.filter((m) => m.role === "user").map((m) => String(m.contenu || "").replace(/\s+/g, " ").slice(0, 80)).sort().join("\u241e").slice(0, 1500);
+            let dejaFaite = false;
+            try { dejaFaite = sessionStorage.getItem("hype_hb_synthese_sig") === signature; } catch (eS) { dejaFaite = window.__hbSyntheseSig === signature; }
+            if (dejaFaite) { syntheseFaiteRef.current = true; hbLog("synthèse fiches : déjà faite pour cette conversation"); return; }
+            try { sessionStorage.setItem("hype_hb_synthese_sig", signature); } catch (eS) { }
+            window.__hbSyntheseSig = signature;
             syntheseFaiteRef.current = true;
             const conv = msgs.slice(-16).map((m) => (m.role === "user" ? "Cavalier" : "Hey Baby") + " : " + String(m.contenu || "").replace(/\s+/g, " ").slice(0, 600)).join("\n");
             const nomsChevaux = (chevaux || []).map((c) => c && c.nom).filter(Boolean).slice(0, 8);

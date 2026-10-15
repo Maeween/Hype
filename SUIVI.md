@@ -12863,3 +12863,7 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Technique : nouvelle option apresComposer de MurHype (utilisée seulement ici) ; message « aucune publication » remplacé par la composition sur cette page. Autres fils inchangés.
 - Tests (publications simulées, compte simulé) : 390 / 820 / 1440 px, vide et rempli, arabe ; Cavalier 21 cas, 0 erreur.
 - Étapes suivantes : 2) onglets (Histoire, Photos, Résultats, Vidéos, Actualité, Santé) ; 3) fond pétrole et lueurs ; 4) grand écran (3 colonnes ≥ 1280 px, éditeur moins large, cartes texte seul soignées).
+
+## 15/10/2026 (2 h 50) — CGV dans Stripe + Hey Baby : la « mémoire » ne part plus deux fois — PUBLIÉ (accord « Oui vas y »)
+- Stripe : page « Gérer mon abonnement » → liens vers les CGV (2hype.fr/fr/cgv/) et les mentions légales ; les 5 liens de paiement d'abonnement (Cavalier, Crystal, Duo, Hype IA, Famille) affichent sous le bouton payer « En payant, vous acceptez les conditions générales de vente de Hype » avec le lien. Liens de mécénat non modifiés.
+- Hey Baby : la synthèse des fiches (opération « memoire ») partait à chaque sortie de l'écran, même sans nouvel échange (vu en base le 14/10 : 2 appels à 7 s d'écart). Elle retient maintenant la conversation déjà résumée (nombre d'échanges + questions du cavalier, quel que soit l'ordre d'affichage) : pas de nouvel appel sans nouvel échange. Test (faux serveur) : avant 2 appels, après 1.
