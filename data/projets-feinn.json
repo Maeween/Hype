@@ -1,0 +1,139 @@
+{
+ "maj": "2026-10-14",
+ "beneficiaire": "Association FEINN Équitation et Environnement (SIREN 898 028 980)",
+ "dons_en_ligne": false,
+ "projets": [
+  {
+   "id": "jeune-espoir",
+   "numero": "01",
+   "photo": "images/team-competition-performances-hero.webp",
+   "photo_definitive": false,
+   "ancre": "/{lang}/association/#projet-jeune-espoir",
+   "textes": {
+    "fr": {
+     "titre": "Un cheval pour un jeune espoir",
+     "court": "Aider un jeune cavalier prometteur à acquérir un cheval adapté à ses ambitions sportives.",
+     "long": "Accompagner un jeune cavalier prometteur qui ne dispose pas aujourd'hui des moyens nécessaires pour acquérir un cheval de niveau professionnel. Ce projet lui permettrait de préparer son diplôme d'enseignant d'équitation (DE) et de poursuivre sa progression dans les épreuves Pro."
+    },
+    "en": {
+     "titre": "A horse for a young talent",
+     "court": "Helping a promising young rider acquire a horse suited to his sporting ambitions.",
+     "long": "Supporting a promising young rider who does not currently have the means to acquire a professional-level horse. This project would allow him to prepare his riding instructor diploma (DE) and keep progressing in Pro classes."
+    },
+    "es": {
+     "titre": "Un caballo para una joven promesa",
+     "court": "Ayudar a un joven jinete prometedor a adquirir un caballo acorde con sus ambiciones deportivas.",
+     "long": "Acompañar a un joven jinete prometedor que hoy no dispone de los medios necesarios para adquirir un caballo de nivel profesional. Este proyecto le permitiría preparar su título de instructor de equitación (DE) y seguir progresando en las pruebas Pro."
+    },
+    "it": {
+     "titre": "Un cavallo per una giovane promessa",
+     "court": "Aiutare un giovane cavaliere promettente ad acquistare un cavallo adatto alle sue ambizioni sportive.",
+     "long": "Accompagnare un giovane cavaliere promettente che oggi non dispone dei mezzi necessari per acquistare un cavallo di livello professionale. Questo progetto gli permetterebbe di preparare il diploma di istruttore di equitazione (DE) e di continuare a progredire nelle prove Pro."
+    },
+    "de": {
+     "titre": "Ein Pferd für ein junges Talent",
+     "court": "Einem vielversprechenden jungen Reiter helfen, ein Pferd zu erwerben, das zu seinen sportlichen Zielen passt.",
+     "long": "Einen vielversprechenden jungen Reiter begleiten, dem heute die Mittel fehlen, um ein Pferd auf Profiniveau zu erwerben. Dieses Projekt würde es ihm ermöglichen, sein Reitlehrerdiplom (DE) vorzubereiten und sich in Profi-Prüfungen weiterzuentwickeln."
+    },
+    "ja": {
+     "titre": "若い才能に一頭の馬を",
+     "court": "将来有望な若いライダーが、競技の目標に合った馬を手に入れられるよう支援します。",
+     "long": "プロレベルの馬を手に入れる資金をいまは持たない、将来有望な若いライダーを支えます。このプロジェクトにより、乗馬指導者資格（DE）の準備と、プロクラスでのさらなる成長が可能になります。"
+    },
+    "ar": {
+     "titre": "حصان لموهبة شابة",
+     "court": "مساعدة فارس شاب واعد على اقتناء حصان يناسب طموحاته الرياضية.",
+     "long": "مرافقة فارس شاب واعد لا يملك اليوم الإمكانيات اللازمة لاقتناء حصان بمستوى احترافي. سيتيح له هذا المشروع الاستعداد لشهادة مدرب الفروسية (DE) ومواصلة تقدمه في مسابقات المحترفين."
+    }
+   }
+  },
+  {
+   "id": "retraite-chevaux-club",
+   "numero": "02",
+   "photo": "images/fond-recit.webp",
+   "photo_definitive": false,
+   "ancre": "/{lang}/association/#projet-retraite-chevaux-club",
+   "textes": {
+    "fr": {
+     "titre": "La retraite de nos chevaux de club",
+     "court": "Contribuer à l'alimentation, aux soins et au bien-être des chevaux qui ont accompagné les cavaliers pendant des années.",
+     "long": "Prendre soin des chevaux qui ont accompagné des générations de cavaliers et qui profitent aujourd'hui d'une retraite paisible à l'écurie. Leur assurer une retraite sereine implique de continuer à veiller à leur alimentation, à leurs soins et à leur bien-être."
+    },
+    "en": {
+     "titre": "Retirement for our riding-school horses",
+     "court": "Contributing to the feeding, care and well-being of the horses that have carried riders for years.",
+     "long": "Caring for the horses that have accompanied generations of riders and now enjoy a peaceful retirement at the stable. Giving them a serene retirement means continuing to look after their feeding, their care and their well-being."
+    },
+    "es": {
+     "titre": "La jubilación de nuestros caballos de escuela",
+     "court": "Contribuir a la alimentación, los cuidados y el bienestar de los caballos que han acompañado a los jinetes durante años.",
+     "long": "Cuidar de los caballos que han acompañado a generaciones de jinetes y que hoy disfrutan de una jubilación tranquila en la cuadra. Asegurarles una jubilación serena implica seguir velando por su alimentación, sus cuidados y su bienestar."
+    },
+    "it": {
+     "titre": "La pensione dei nostri cavalli di scuola",
+     "court": "Contribuire all'alimentazione, alle cure e al benessere dei cavalli che hanno accompagnato i cavalieri per anni.",
+     "long": "Prendersi cura dei cavalli che hanno accompagnato generazioni di cavalieri e che oggi si godono una pensione serena in scuderia. Garantire loro una pensione tranquilla significa continuare a vegliare sulla loro alimentazione, sulle loro cure e sul loro benessere."
+    },
+    "de": {
+     "titre": "Der Ruhestand unserer Schulpferde",
+     "court": "Zur Fütterung, Pflege und zum Wohlbefinden der Pferde beitragen, die Reiter jahrelang begleitet haben.",
+     "long": "Für die Pferde sorgen, die Generationen von Reitern begleitet haben und heute einen ruhigen Lebensabend im Stall genießen. Ihnen einen gelassenen Ruhestand zu sichern heißt, weiterhin auf ihre Fütterung, ihre Pflege und ihr Wohlbefinden zu achten."
+    },
+    "ja": {
+     "titre": "乗馬クラブの馬たちの引退生活",
+     "court": "長年ライダーを支えてきた馬たちの飼料、ケア、健やかさに貢献します。",
+     "long": "何世代ものライダーとともに歩み、いま厩舎で穏やかな引退生活を送る馬たちを大切にします。穏やかな引退を保証するには、飼料、ケア、健やかさに引き続き気を配る必要があります。"
+    },
+    "ar": {
+     "titre": "تقاعد خيول نادينا",
+     "court": "المساهمة في تغذية الخيول التي رافقت الفرسان لسنوات ورعايتها وراحتها.",
+     "long": "رعاية الخيول التي رافقت أجيالًا من الفرسان وتنعم اليوم بتقاعد هادئ في الإسطبل. ويعني ضمان تقاعد هادئ لها مواصلة الاهتمام بغذائها ورعايتها وراحتها."
+    }
+   }
+  },
+  {
+   "id": "espaces",
+   "numero": "03",
+   "photo": "images/ecurie-couverture-defaut-2.webp",
+   "photo_definitive": false,
+   "ancre": "/{lang}/association/#projet-espaces",
+   "textes": {
+    "fr": {
+     "titre": "Entretenir et réhabiliter nos espaces",
+     "court": "Participer à la rénovation des clôtures, prés et installations équestres, en respectant l'environnement naturel.",
+     "long": "Réhabiliter les clôtures, les prés et les installations du site pour offrir aux chevaux un cadre de vie adapté, tout en entretenant et en préservant les espaces naturels qui nous entourent."
+    },
+    "en": {
+     "titre": "Maintaining and restoring our grounds",
+     "court": "Taking part in renovating fences, fields and equestrian facilities, with respect for the natural environment.",
+     "long": "Restoring the fences, fields and facilities of the site to give the horses a suitable living environment, while maintaining and preserving the natural spaces around us."
+    },
+    "es": {
+     "titre": "Mantener y rehabilitar nuestros espacios",
+     "court": "Participar en la renovación de cercas, prados e instalaciones ecuestres, respetando el entorno natural.",
+     "long": "Rehabilitar las cercas, los prados y las instalaciones para ofrecer a los caballos un entorno de vida adecuado, manteniendo y preservando los espacios naturales que nos rodean."
+    },
+    "it": {
+     "titre": "Curare e rinnovare i nostri spazi",
+     "court": "Partecipare al rinnovo di recinzioni, prati e strutture equestri, nel rispetto dell'ambiente naturale.",
+     "long": "Rinnovare recinzioni, prati e strutture del sito per offrire ai cavalli un ambiente di vita adatto, curando e preservando gli spazi naturali che ci circondano."
+    },
+    "de": {
+     "titre": "Unser Gelände pflegen und erneuern",
+     "court": "Bei der Erneuerung von Zäunen, Weiden und Reitanlagen mithelfen, mit Rücksicht auf die Natur.",
+     "long": "Zäune, Weiden und Anlagen des Geländes erneuern, um den Pferden ein passendes Lebensumfeld zu bieten, und dabei die umgebenden Naturflächen pflegen und erhalten."
+    },
+    "ja": {
+     "titre": "施設と土地の手入れと再生",
+     "court": "自然環境に配慮しながら、柵、放牧地、乗馬施設の改修に参加します。",
+     "long": "柵、放牧地、施設を再生し、馬たちにふさわしい暮らしの場を整えるとともに、私たちを取り巻く自然を手入れし、守ります。"
+    },
+    "ar": {
+     "titre": "صيانة مساحاتنا وتأهيلها",
+     "court": "المشاركة في تجديد الأسوار والمراعي والمنشآت الفروسية مع احترام البيئة الطبيعية.",
+     "long": "إعادة تأهيل الأسوار والمراعي ومنشآت الموقع لتوفير بيئة عيش ملائمة للخيول، مع صيانة المساحات الطبيعية المحيطة بنا والحفاظ عليها."
+    }
+   }
+  }
+ ]
+}

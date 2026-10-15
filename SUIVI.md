@@ -12931,3 +12931,20 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Grille : 4 colonnes sur iPad, 6 sur ordinateur (3 sur iPhone, inchangé).
 - Technique : « photos-cavalier » et « videos-cavalier » ajoutés aux pages élargies ; hypeHeroSousPageCavalier reçoit large / ordi (appelée seulement par ces deux pages). Albums (AlbumsCheval, partagé) non modifiés. Aucun nouveau texte.
 - Tests (photos simulées) : iPhone identique au pixel sur les deux pages ; 390 / 820 / 1024 / 1440 / 1600 px en français, allemand, arabe : 30 cas, 0 débordement, 0 erreur.
+
+## 14/10/2026 — Nouveau compte Stripe AU NOM DE L'ASSOCIATION (créé par Blandine, 19 h 10 → 19 h 36)
+- Organisation Stripe « Hype » = 2 comptes : « Feinn » (ancien, PARTICULIER Blandine Pronost — porte toujours les 4 abonnements et les liens actuels) + « Feinn Équitation et Environnement » (nouveau).
+- Nouveau compte : Association / Association déclarée ; dénomination FEINN EQUITATION ET ENVIRONNEMENT ; SIREN 898028980 ; pas de n° TVA ; site https://2hype.fr/fr/association/ ; catégorie Enseignement → Autres services d'enseignement ; libellé relevé « HYPE APP » (abrégé « Hype ») ; vérification par attestation électronique ; virements MANUELS (choix Blandine) ; Radar Lite (gratuit) ; Stripe Tax NON activé et Managed Payments refusé (en attente avis comptable sur la TVA).
+- En attente : validation par Stripe ; accès du connecteur Claude au nouveau compte (pas encore visible).
+- À FAIRE ensuite (une étape à la fois) : 1) produits/prix/liens de paiement dans le nouveau compte ; 2) relais (webhook) sur le nouveau compte + son secret dans Netlify ; 3) remplacer les liens dans index.html ; 4) abonnés existants (laisser courir / réabonnement / migration par le support Stripe) ; 5) avis comptable (TVA, 278 € encaissés sur l'ancien compte).
+- À corriger dans les DEUX comptes : téléphone public du support = portable de Blandine (visible sur les reçus) → Paramètres → Entreprise → Informations publiques ; site « https://live.fr » erroné sur l'ancien compte.
+
+## 15/10/2026 — PAGE L'ASSOCIATION (refonte FEINN) MISE EN LIGNE [publié]
+- Accord Blandine (12 h 09) : « Vas y » (après l'explication des 3 points à régler).
+- Branche refonte-asso fusionnée dans main : nouvelle page L'association en 7 langues + mentions légales sur une page à part (/{langue}/association/mentions-legales/), sitemap.
+- Conflits réglés : on garde la nouvelle page ; les repères des projets existent toujours (projet-jeune-espoir, projet-retraite-chevaux-club, projet-espaces). SUIVI : les deux historiques gardés.
+- index.html : lien du projet retraite de la page Premium V3 corrigé (#projet-retraite → #projet-retraite-chevaux-club). Rien d'autre de changé dans l'appli.
+- Ancien lien des mentions légales (#mentions-legales sur la page L'association, utilisé par le portail Stripe) : repère gardé en bas de page, à côté du lien vers la nouvelle page → rien de cassé.
+- Tests : 2 pages × 7 langues × 375 / 390 / 820 / 1440 px = 56/56 (aucun débordement, aucune erreur, aucun fichier manquant, arabe de droite à gauche).
+- À FAIRE (Blandine, Stripe) : remplacer dans le portail client l'adresse « confidentialité » par https://2hype.fr/fr/association/mentions-legales/#donnees (pas fait : aucune modification Stripe sans accord).
+- Note : outils/association-generer.py demande Python 3.12 ou plus récent (ne tourne pas en 3.11) ; pages non régénérées, ce sont celles de la branche.

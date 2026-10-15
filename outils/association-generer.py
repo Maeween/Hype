@@ -9,7 +9,7 @@ e=html.escape
 # Photos : fichiers à déposer par Blandine dans images/asso/ ; tant qu'ils manquent → emplacement sobre
 PHOTOS={k:f"images/asso/{k}.jpg" for k in ["hero","jeune","retraite","espaces"]}
 # 14/10 : en attendant les vraies photos de FEINN, images de Hype deja dans le depot (Blandine : « le visuel est hard », cadres vides)
-PHOTOS_ATTENTE={"hero":"images/fond-cavaliers-ecurie.webp","jeune":"images/team-competition-performances-hero.webp","retraite":"images/mes-chevaux-fond-couchant.webp","espaces":"images/accueil_v2_fin_de_page_v1.webp"}
+PHOTOS_ATTENTE={"hero":"images/fond-cavaliers-ecurie.webp","jeune":"images/team-competition-performances-hero.webp","retraite":"images/fond-recit.webp","espaces":"images/ecurie-couverture-defaut-2.webp"}
 for _k in list(PHOTOS):
     if not os.path.exists(os.path.join(RACINE,PHOTOS[_k])) and os.path.exists(os.path.join(RACINE,PHOTOS_ATTENTE[_k])): PHOTOS[_k]=PHOTOS_ATTENTE[_k]
 def photo(k): return os.path.exists(os.path.join(RACINE,PHOTOS[k]))
@@ -186,176 +186,533 @@ T["ar"]=dict(title="جمعية FEINN Équitation et Environnement | Hype",
  abos="الاشتراكات", abos_v="المعلومات المتعلقة بالاشتراكات وإدارة المدفوعات مبيّنة في الشروط المطبقة على Hype.",
  decouvrir="اكتشف Hype")
 
+# ═══ REFONTE 14/10/2026 (maquette validée par Blandine) — ÉTAPE 1 : base, menu, hero, pied de page ═══
+# Nouveaux textes (7 langues). « Équitation et Environnement » reste en français partout (nom propre).
+NV={}
+NV["fr"]=dict(accueil="Accueil",asso="L'association",engag="Nos engagements",nprojets="Nos projets",lieu="Notre lieu",soutenir="Nous soutenir",menu="Menu",fermer="Fermer",
+ accroche="Des chevaux, des cavaliers et un avenir plus durable.",hero_desc="Une association loi 1901 engagée pour l'enseignement, la solidarité, le bien-être animal et la préservation de l'environnement.",
+ btn_asso="Découvrir notre association",loi1901="Association loi 1901",contacter="Nous contacter",cit_pied="Ensemble, pour des chevaux d'aujourd'hui et de demain.",logo_alt="Logo FEINN Équitation et Environnement")
+NV["en"]=dict(accueil="Home",asso="The association",engag="Our commitments",nprojets="Our projects",lieu="Our grounds",soutenir="Support us",menu="Menu",fermer="Close",
+ accroche="Horses, riders and a more sustainable future.",hero_desc="A non-profit association (French law of 1901) committed to teaching, solidarity, animal welfare and protecting the environment.",
+ btn_asso="Discover our association",loi1901="Non-profit association (law of 1901)",contacter="Contact us",cit_pied="Together, for the horses of today and tomorrow.",logo_alt="FEINN Équitation et Environnement logo")
+NV["es"]=dict(accueil="Inicio",asso="La asociación",engag="Nuestros compromisos",nprojets="Nuestros proyectos",lieu="Nuestro lugar",soutenir="Apóyanos",menu="Menú",fermer="Cerrar",
+ accroche="Caballos, jinetes y un futuro más sostenible.",hero_desc="Una asociación sin ánimo de lucro (ley francesa de 1901) comprometida con la enseñanza, la solidaridad, el bienestar animal y la preservación del medio ambiente.",
+ btn_asso="Descubrir nuestra asociación",loi1901="Asociación sin ánimo de lucro (ley de 1901)",contacter="Contáctanos",cit_pied="Juntos, por los caballos de hoy y de mañana.",logo_alt="Logotipo de FEINN Équitation et Environnement")
+NV["it"]=dict(accueil="Home",asso="L'associazione",engag="I nostri impegni",nprojets="I nostri progetti",lieu="Il nostro luogo",soutenir="Sostienici",menu="Menu",fermer="Chiudi",
+ accroche="Cavalli, cavalieri e un futuro più sostenibile.",hero_desc="Un'associazione senza scopo di lucro (legge francese del 1901) impegnata per l'insegnamento, la solidarietà, il benessere animale e la tutela dell'ambiente.",
+ btn_asso="Scopri la nostra associazione",loi1901="Associazione senza scopo di lucro (legge del 1901)",contacter="Contattaci",cit_pied="Insieme, per i cavalli di oggi e di domani.",logo_alt="Logo di FEINN Équitation et Environnement")
+NV["de"]=dict(accueil="Startseite",asso="Der Verein",engag="Unsere Anliegen",nprojets="Unsere Projekte",lieu="Unser Gelände",soutenir="Unterstützen",menu="Menü",fermer="Schließen",
+ accroche="Pferde, Reiter und eine nachhaltigere Zukunft.",hero_desc="Ein gemeinnütziger Verein (französisches Gesetz von 1901), der sich für Unterricht, Solidarität, Tierwohl und den Schutz der Umwelt einsetzt.",
+ btn_asso="Unseren Verein entdecken",loi1901="Gemeinnütziger Verein (Gesetz von 1901)",contacter="Kontakt",cit_pied="Gemeinsam für die Pferde von heute und morgen.",logo_alt="Logo von FEINN Équitation et Environnement")
+NV["ja"]=dict(accueil="ホーム",asso="協会について",engag="私たちの取り組み",nprojets="プロジェクト",lieu="私たちの場所",soutenir="支援する",menu="メニュー",fermer="閉じる",
+ accroche="馬と、ライダーと、より持続可能な未来のために。",hero_desc="教育、連帯、動物福祉、そして環境保全に取り組む非営利協会（フランス1901年法）です。",
+ btn_asso="協会について知る",loi1901="非営利協会（1901年法）",contacter="お問い合わせ",cit_pied="今日の馬たち、そして明日の馬たちのために、ともに。",logo_alt="FEINN Équitation et Environnement のロゴ")
+NV["ar"]=dict(accueil="الرئيسية",asso="الجمعية",engag="التزاماتنا",nprojets="مشاريعنا",lieu="موقعنا",soutenir="ادعمونا",menu="القائمة",fermer="إغلاق",
+ accroche="خيول وفرسان ومستقبل أكثر استدامة.",hero_desc="جمعية غير ربحية (القانون الفرنسي لعام 1901) ملتزمة بالتعليم والتضامن ورفاهية الحيوان والحفاظ على البيئة.",
+ btn_asso="اكتشف جمعيتنا",loi1901="جمعية غير ربحية (قانون 1901)",contacter="تواصل معنا",cit_pied="معًا، من أجل خيول اليوم والغد.",logo_alt="شعار FEINN Équitation et Environnement")
+for _l in L: T[_l].update(NV[_l])
+# 14/10 (refonte) : la phrase « les abonnements Hype+ financent l'association » est retirée (inexacte : Stripe est au nom de Blandine — voir SUIVI)
+for _l in L: T[_l]["intro"]=T[_l]["intro"][:2]
+
+LOGO="images/asso/logo-feinn-embleme.png"
+# Hero : photo FEINN si déposée (images/asso/hero.jpg), sinon images d'attente de Hype (paysage ordinateur / portrait téléphone)
+HERO_ATTENTE_LARGE="images/histoire-continue.webp"; HERO_ATTENTE_PORTRAIT="images/mes-chevaux-fond-couchant.webp"
+ICO["fleche"]='<path d="M5 12h14M13 6l6 6-6 6"/>'
+ICO["chevron"]='<path d="m6 9 6 6 6-6"/>'
+ICO["burger"]='<path d="M4 7h16M4 12h16M4 17h16"/>'
+ICO["insta"]='<rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".7"/>'
+ICO["fb"]='<path d="M14.5 8H16V5.2c-.3 0-1.2-.2-2.3-.2-2.3 0-3.7 1.4-3.7 3.9V11H7.5v3H10v6.5h3V14h2.5l.4-3H13V9.2c0-.8.3-1.2 1.5-1.2Z"/>'
+ICO["croix"]='<path d="M6 6l12 12M18 6 6 18"/>'
+
+# ═══ ÉTAPE 2 (14/10) : bandeau des 5 engagements ═══
+ENG={
+"fr":(["Enseignement et formation","Jeunes espoirs","Retraite des chevaux","Petit élevage","Environnement"],["Enseignement","Jeunes espoirs","Retraite","Petit élevage","Environnement"],["Transmettre la passion et les savoirs équestres.","Accompagner les talents de demain.","Offrir une seconde vie à nos compagnons.","Une approche raisonnée et respectueuse.","Préserver un cadre naturel durable."]),
+"en":(["Teaching and training","Young talents","Horse retirement","Small-scale breeding","Environment"],["Teaching","Young talents","Retirement","Breeding","Environment"],["Passing on our passion and equestrian know-how.","Supporting tomorrow's talents.","Giving our companions a second life.","A thoughtful, respectful approach.","Preserving a lasting natural setting."]),
+"es":(["Enseñanza y formación","Jóvenes promesas","Jubilación de los caballos","Pequeña cría","Medio ambiente"],["Enseñanza","Jóvenes promesas","Jubilación","Cría","Medio ambiente"],["Transmitir la pasión y los saberes ecuestres.","Acompañar a los talentos del mañana.","Ofrecer una segunda vida a nuestros compañeros.","Un enfoque razonado y respetuoso.","Preservar un entorno natural duradero."]),
+"it":(["Insegnamento e formazione","Giovani promesse","Pensione dei cavalli","Piccolo allevamento","Ambiente"],["Insegnamento","Giovani promesse","Pensione","Allevamento","Ambiente"],["Trasmettere la passione e i saperi equestri.","Accompagnare i talenti di domani.","Offrire una seconda vita ai nostri compagni.","Un approccio ragionato e rispettoso.","Preservare un ambiente naturale duraturo."]),
+"de":(["Unterricht und Ausbildung","Junge Talente","Ruhestand der Pferde","Kleine Zucht","Umwelt"],["Unterricht","Junge Talente","Ruhestand","Zucht","Umwelt"],["Die Leidenschaft und das Reitwissen weitergeben.","Die Talente von morgen begleiten.","Unseren Gefährten ein zweites Leben schenken.","Ein durchdachter, respektvoller Ansatz.","Eine dauerhaft natürliche Umgebung bewahren."]),
+"ja":(["指導と育成","若い才能","馬の引退生活","小さな生産","環境"],["指導","若い才能","引退生活","生産","環境"],["乗馬への情熱と技術を伝えます。","明日の才能を支えます。","仲間である馬たちに第二の人生を。","理にかなった、思いやりのある取り組み。","持続する自然環境を守ります。"]),
+"ar":(["التعليم والتكوين","المواهب الشابة","تقاعد الخيول","تربية صغيرة","البيئة"],["التعليم","المواهب الشابة","التقاعد","التربية","البيئة"],["نقل الشغف والمعارف الفروسية.","مرافقة مواهب الغد.","منح رفاقنا حياة ثانية.","نهج مدروس ومحترم.","الحفاظ على بيئة طبيعية مستدامة."]),
+}
+ICO["groupe"]='<circle cx="12" cy="7.5" r="2.6"/><circle cx="5.8" cy="9.6" r="2.1"/><circle cx="18.2" cy="9.6" r="2.1"/><path d="M7.4 19c.4-3.2 2.3-5 4.6-5s4.2 1.8 4.6 5"/><path d="M2.5 18c.3-2.3 1.6-3.8 3.3-3.8 1 0 1.8.4 2.4 1.1"/><path d="M21.5 18c-.3-2.3-1.6-3.8-3.3-3.8-1 0-1.8.4-2.4 1.1"/>'
+ICO["tete"]='<path d="M8 20.5c0-3 .7-5.7 2.1-7.6l-3.6 1c-1 .3-1.9-.3-2-1.2L4.2 10.8c-.1-.6.2-1.2.7-1.5L10 5.6 11.2 3l1.5 2.3c3.6.7 6.3 4 6.3 8.2v7"/><circle cx="10.3" cy="8.7" r=".55"/>'
+def bandeau(lg):
+    titres,courts,phrases=ENG[lg]; ic=["cap","groupe","coeur","tete","pousse"]
+    li="".join(f'<li><span class="pic">{svg(i)}</span><span class="tit"><span class="long">{e(a)}</span><span class="court" aria-hidden="true">{e(c)}</span></span><span class="phr">{e(f)}</span></li>' for i,a,c,f in zip(ic,titres,courts,phrases))
+    return f'<section class="engag" id="engagements" aria-labelledby="engag-t"><h2 class="vh" id="engag-t">{e(T[lg]["engag"])}</h2><ul>{li}</ul></section>'
+
+# ═══ ÉTAPE 3 (14/10) : « Trois projets pour faire la différence » (section ivoire, carrousel iPhone, détail sur la page) ═══
+PJ={
+"fr":dict(pj_titre="Trois projets pour faire la différence",pj_voir="Découvrir ce projet",pj_tous="Découvrir tous nos projets",pj_detail="Nos projets en détail",pj_prec="Projet précédent",pj_suiv="Projet suivant",
+ pj_courts=["Aider un jeune cavalier prometteur à acquérir un cheval adapté à ses ambitions sportives.","Contribuer à l'alimentation, aux soins et au bien-être des chevaux qui ont accompagné les cavaliers pendant des années.","Participer à la rénovation des clôtures, prés et installations équestres, en respectant l'environnement naturel."]),
+"en":dict(pj_titre="Three projects to make a difference",pj_voir="Discover this project",pj_tous="Discover all our projects",pj_detail="Our projects in detail",pj_prec="Previous project",pj_suiv="Next project",
+ pj_courts=["Helping a promising young rider acquire a horse suited to his sporting ambitions.","Contributing to the feeding, care and well-being of the horses that have carried riders for years.","Taking part in renovating fences, fields and equestrian facilities, with respect for the natural environment."]),
+"es":dict(pj_titre="Tres proyectos para marcar la diferencia",pj_voir="Descubrir este proyecto",pj_tous="Descubrir todos nuestros proyectos",pj_detail="Nuestros proyectos en detalle",pj_prec="Proyecto anterior",pj_suiv="Proyecto siguiente",
+ pj_courts=["Ayudar a un joven jinete prometedor a adquirir un caballo acorde con sus ambiciones deportivas.","Contribuir a la alimentación, los cuidados y el bienestar de los caballos que han acompañado a los jinetes durante años.","Participar en la renovación de cercas, prados e instalaciones ecuestres, respetando el entorno natural."]),
+"it":dict(pj_titre="Tre progetti per fare la differenza",pj_voir="Scopri il progetto",pj_tous="Scopri tutti i nostri progetti",pj_detail="I nostri progetti nel dettaglio",pj_prec="Progetto precedente",pj_suiv="Progetto successivo",
+ pj_courts=["Aiutare un giovane cavaliere promettente ad acquistare un cavallo adatto alle sue ambizioni sportive.","Contribuire all'alimentazione, alle cure e al benessere dei cavalli che hanno accompagnato i cavalieri per anni.","Partecipare al rinnovo di recinzioni, prati e strutture equestri, nel rispetto dell'ambiente naturale."]),
+"de":dict(pj_titre="Drei Projekte, die etwas bewegen",pj_voir="Projekt entdecken",pj_tous="Alle Projekte entdecken",pj_detail="Unsere Projekte im Detail",pj_prec="Vorheriges Projekt",pj_suiv="Nächstes Projekt",
+ pj_courts=["Einem vielversprechenden jungen Reiter helfen, ein Pferd zu erwerben, das zu seinen sportlichen Zielen passt.","Zur Fütterung, Pflege und zum Wohlbefinden der Pferde beitragen, die Reiter jahrelang begleitet haben.","Bei der Erneuerung von Zäunen, Weiden und Reitanlagen mithelfen, mit Rücksicht auf die Natur."]),
+"ja":dict(pj_titre="違いを生む3つのプロジェクト",pj_voir="プロジェクトを見る",pj_tous="すべてのプロジェクトを見る",pj_detail="プロジェクトの詳細",pj_prec="前のプロジェクト",pj_suiv="次のプロジェクト",
+ pj_courts=["将来有望な若いライダーが、競技の目標に合った馬を手に入れられるよう支援します。","長年ライダーを支えてきた馬たちの飼料、ケア、健やかさに貢献します。","自然環境に配慮しながら、柵、放牧地、乗馬施設の改修に参加します。"]),
+"ar":dict(pj_titre="ثلاثة مشاريع لإحداث الفرق",pj_voir="اكتشف هذا المشروع",pj_tous="اكتشف جميع مشاريعنا",pj_detail="مشاريعنا بالتفصيل",pj_prec="المشروع السابق",pj_suiv="المشروع التالي",
+ pj_courts=["مساعدة فارس شاب واعد على اقتناء حصان يناسب طموحاته الرياضية.","المساهمة في تغذية الخيول التي رافقت الفرسان لسنوات ورعايتها وراحتها.","المشاركة في تجديد الأسوار والمراعي والمنشآت الفروسية مع احترام البيئة الطبيعية."]),
+}
+for _l in L: T[_l].update(PJ[_l])
+for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل'}.items(): T[_l]['pj_reduire']=_v
+ICO["fg"]='<path d="M15 6l-6 6 6 6"/>'
+ICO["fd"]='<path d="M9 6l6 6-6 6"/>'
+PROJ_IDS=["jeune-espoir","retraite-chevaux-club","espaces"]; PROJ_PH=["jeune","retraite","espaces"]
+def section_projets(lg):
+    t=T[lg]; cartes=""; details=""
+    for i,(pid,k,(titre,long_),court) in enumerate(zip(PROJ_IDS,PROJ_PH,t["projets"],t["pj_courts"]),1):
+        img=f'<img src="/{PHOTOS[k]}" alt="" loading="lazy">' if photo(k) else ""
+        cartes+=f'<li class="pcarte"><div class="pimg">{img}<span class="num">0{i}</span></div><div class="pcorps"><h3>{e(titre)}</h3><p>{e(court)}</p><details class="plus" id="projet-{pid}"><summary class="plien"><span class="o">{e(t["pj_voir"])}</span><span class="f">{e(t["pj_reduire"])}</span> {svg("chevron")}</summary><p>{e(long_)}</p></details></div></li>'
+    return f'''<section class="projets2" id="projets" aria-labelledby="pj-t"><div class="in">
+<div class="pj-tete"><div><p class="sur2">{e(t["nprojets"])}</p><h2 id="pj-t">{e(t["pj_titre"])}</h2></div></div>
+<div class="carrousel"><ul class="pistes" id="pistes">{cartes}</ul>
+<button class="nav-c prec" type="button" aria-label="{e(t["pj_prec"])}" aria-controls="pistes">{svg("fg","ico dir")}</button><button class="nav-c suiv" type="button" aria-label="{e(t["pj_suiv"])}" aria-controls="pistes">{svg("fd","ico dir")}</button></div>
+<div class="points" aria-hidden="true"><span class="on"></span><span></span><span></span></div>
+</div></section>'''
+def json_projets():
+    d={"maj":"2026-10-14","beneficiaire":"Association FEINN Équitation et Environnement (SIREN 898 028 980)","dons_en_ligne":False,"projets":[]}
+    for i,(pid,k) in enumerate(zip(PROJ_IDS,PROJ_PH)):
+        d["projets"].append({"id":pid,"numero":f"0{i+1}","photo":PHOTOS[k] if photo(k) else None,"photo_definitive":os.path.exists(os.path.join(RACINE,f"images/asso/{k}.jpg")),
+          "ancre":f"/{{lang}}/association/#projet-{pid}",
+          "textes":{lg:{"titre":T[lg]["projets"][i][0],"court":T[lg]["pj_courts"][i],"long":T[lg]["projets"][i][1]} for lg in L}})
+    return json.dumps(d,ensure_ascii=False,indent=1)
+
+# ═══ ÉTAPE 4 (14/10) : « Notre lieu » (sans dire que l'association est propriétaire du site) ═══
+LIEU={
+"fr":("Un lieu de vie et de partage","Le site équestre d'Itteville, utilisé par l'association depuis 2020, accueille nos chevaux et nos cavaliers dans un cadre naturel privilégié.",["12 boxes","Une carrière","Un rond de longe","Des prés et paddocks"]),
+"en":("A place to live and share","The Itteville equestrian site, used by the association since 2020, welcomes our horses and riders in a privileged natural setting.",["12 stables","An arena","A lunging ring","Fields and paddocks"]),
+"es":("Un lugar de vida y de encuentro","El centro ecuestre de Itteville, utilizado por la asociación desde 2020, acoge a nuestros caballos y jinetes en un entorno natural privilegiado.",["12 boxes","Una pista","Un picadero redondo","Prados y paddocks"]),
+"it":("Un luogo di vita e di condivisione","Il centro equestre di Itteville, utilizzato dall'associazione dal 2020, accoglie i nostri cavalli e cavalieri in una cornice naturale privilegiata.",["12 box","Un campo","Un tondino","Prati e paddock"]),
+"de":("Ein Ort zum Leben und Teilen","Die Reitanlage in Itteville, die der Verein seit 2020 nutzt, bietet unseren Pferden und Reitern eine besonders schöne natürliche Umgebung.",["12 Boxen","Ein Reitplatz","Ein Longierzirkel","Weiden und Paddocks"]),
+"ja":("暮らしと分かち合いの場所","協会が2020年から利用しているイッテヴィルの乗馬施設は、恵まれた自然の中で私たちの馬とライダーを迎えています。",["12の馬房","馬場","丸馬場","放牧地とパドック"]),
+"ar":("مكان للحياة والمشاركة","يستقبل الموقع الفروسي في إيتفيل، الذي تستخدمه الجمعية منذ عام 2020، خيولنا وفرساننا في إطار طبيعي مميز.",["12 إسطبلًا","ساحة تدريب","حلبة دائرية للترويض","مراعٍ وحظائر"]),
+}
+ICO["carriere"]='<rect x="3" y="7" width="18" height="10" rx="1"/><path d="M3 10.5h18M3 13.5h18M7.5 7v10M16.5 7v10"/>'
+ICO["rond"]='<ellipse cx="12" cy="10.5" rx="8.5" ry="4.5"/><path d="M3.5 10.5v3c0 2.5 3.8 4.5 8.5 4.5s8.5-2 8.5-4.5v-3"/>'
+ICO["cloture"]='<path d="M5.5 5v14M10.5 5v14M15.5 5v14M20.5 5v14M3 9h19M3 14h19"/>'
+LIEU_ATTENTE="images/fond-cavaliers-ecurie.webp"
+def section_lieu(lg):
+    titre,texte,atouts=LIEU[lg]; ic=["maison","carriere","rond","cloture"]
+    img="images/asso/lieu.jpg" if os.path.exists(os.path.join(RACINE,"images/asso/lieu.jpg")) else LIEU_ATTENTE
+    li="".join(f'<li>{svg(i)}<span>{e(a)}</span></li>' for i,a in zip(ic,atouts))
+    return f'''<section class="lieu" id="lieu" aria-labelledby="lieu-t"><img class="lieu-fond" src="/{img}" alt="" loading="lazy">
+<div class="in"><div class="lieu-txt"><p class="sur">{e(T[lg]["lieu"])}</p><h2 id="lieu-t">{e(titre)}</h2><p>{e(texte)}</p></div><ul class="atouts">{li}</ul></div></section>'''
+
+# ═══ ÉTAPE 5 (14/10) : « Nous soutenir » (aucun paiement : contact par e-mail en attendant le compte Stripe de l'association) ═══
+SOUT={
+"fr":("Agir ensemble pour nos chevaux et notre environnement","Votre soutien permet de faire vivre nos projets et d'accompagner durablement nos actions. Les dons en ligne seront bientôt disponibles. En attendant, vous pouvez nous contacter pour en savoir plus.","Nous contacter pour soutenir un projet","Parce qu'un cheval change une vie, il mérite toute notre attention.","Soutenir un projet FEINN"),
+"en":("Acting together for our horses and our environment","Your support keeps our projects alive and helps us sustain our work over time. Online donations will be available soon. In the meantime, contact us to find out more.","Contact us to support a project","Because a horse changes a life, it deserves all our attention.","Supporting a FEINN project"),
+"es":("Actuar juntos por nuestros caballos y nuestro entorno","Tu apoyo da vida a nuestros proyectos y nos ayuda a mantener nuestras acciones en el tiempo. Las donaciones en línea estarán disponibles pronto. Mientras tanto, puedes contactarnos para saber más.","Contáctanos para apoyar un proyecto","Porque un caballo cambia una vida, merece toda nuestra atención.","Apoyar un proyecto de FEINN"),
+"it":("Agire insieme per i nostri cavalli e il nostro ambiente","Il vostro sostegno fa vivere i nostri progetti e accompagna nel tempo le nostre azioni. Le donazioni online saranno presto disponibili. Nel frattempo, potete contattarci per saperne di più.","Contattaci per sostenere un progetto","Perché un cavallo cambia una vita, merita tutta la nostra attenzione.","Sostenere un progetto FEINN"),
+"de":("Gemeinsam für unsere Pferde und unsere Umwelt","Ihre Unterstützung hält unsere Projekte lebendig und begleitet unsere Arbeit dauerhaft. Online-Spenden sind bald möglich. Bis dahin können Sie uns gerne kontaktieren, um mehr zu erfahren.","Kontaktieren Sie uns, um ein Projekt zu unterstützen","Weil ein Pferd ein Leben verändert, verdient es unsere ganze Aufmerksamkeit.","Ein FEINN-Projekt unterstützen"),
+"ja":("馬たちと環境のために、ともに行動を","皆さまのご支援が、私たちのプロジェクトを支え、活動を長く続ける力になります。オンラインでの寄付はまもなく開始します。それまでは、お気軽にお問い合わせください。","プロジェクトの支援について問い合わせる","馬は人生を変えてくれる。だからこそ、心を尽くして向き合いたい。","FEINNのプロジェクト支援について"),
+"ar":("معًا من أجل خيولنا وبيئتنا","دعمكم يُحيي مشاريعنا ويساعدنا على مواصلة أعمالنا على المدى الطويل. سيتوفر التبرع عبر الإنترنت قريبًا. وفي الأثناء، يمكنكم التواصل معنا لمعرفة المزيد.","تواصل معنا لدعم مشروع","لأن الحصان يغيّر حياة، فهو يستحق كل اهتمامنا.","دعم مشروع لجمعية FEINN"),
+}
+SOUT_ATTENTE="images/evenements-passes-large.webp"
+def section_soutenir(lg):
+    titre,texte,btn,cit,objet=SOUT[lg]
+    img="images/asso/soutenir.jpg" if os.path.exists(os.path.join(RACINE,"images/asso/soutenir.jpg")) else SOUT_ATTENTE
+    from urllib.parse import quote
+    return f'''<section class="soutenir" id="soutenir" aria-labelledby="sout-t"><div class="sout-txt"><p class="sur2">{e(T[lg]["soutenir"])}</p><h2 id="sout-t">{e(titre)}</h2><p>{e(texte)}</p>
+<div class="sout-actions"><a class="btn2" href="mailto:feinn@live.fr?subject={quote(objet)}">{e(btn)} {svg("fleche","ico dir")}</a><span class="mail">feinn@live.fr</span></div></div>
+<figure class="sout-photo"><img src="/{img}" alt="" loading="lazy"><blockquote>« {e(cit)} »</blockquote></figure></section>'''
+
 CSS=r"""
-:root{--noir:#05080B;--nuit:#071319;--petrole:#0C5763;--petrole2:#254F60;--petrole3:#04252A;--ivoire:#F3EEE4;--doux:#B7C2C0;--champ:#C9A66B;--trait:rgba(201,166,107,.32);--trait2:rgba(201,166,107,.16)}
-*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;background:var(--noir);color:var(--ivoire);font:15px/1.65 Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
-a{color:var(--champ)}a:focus-visible{outline:2px solid var(--champ);outline-offset:3px}
-.serif{font-family:"Cormorant Garamond",Georgia,"Times New Roman",serif}
-/* emplacement photo sobre (en attendant les vraies photos FEINN) */
-.ph{position:relative;background:radial-gradient(120% 90% at 70% 20%,rgba(37,79,96,.55),rgba(10,20,24,.55) 50%,rgba(5,8,11,.9));display:flex;align-items:center;justify-content:center;color:rgba(201,166,107,.55);overflow:hidden}
-.ph .phl{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:11px;letter-spacing:.08em;text-align:center;padding:8px}
-.ph .ico{width:26px;height:26px}
-.ph img,.photo img{width:100%;height:100%;object-fit:cover;display:block}
-/* HERO */
-.hero{position:relative;min-height:min(86svh,720px);display:flex;align-items:flex-end;overflow:hidden}
-.hero .fond{position:absolute;inset:0}
-.hero .fond.ph{align-items:flex-start;padding-top:22svh}
-.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.15) 0%,rgba(5,8,11,0) 35%,rgba(5,8,11,.6) 70%,var(--noir) 100%);pointer-events:none}
-.haut{position:absolute;inset-block-start:0;inset-inline:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:max(14px,env(safe-area-inset-top)) 16px 0}
-.rond{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(5,8,11,.55);border:1px solid var(--trait2);color:var(--ivoire);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.rond .ico{width:20px;height:20px}
-[dir=rtl] .rond .ico{transform:scaleX(-1)}
-.langue{font-size:12.5px;color:var(--ivoire);text-decoration:none;border:1px solid var(--trait);border-radius:999px;padding:6px 13px;background:rgba(5,8,11,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
-.hero .titre{position:relative;z-index:2;width:100%;max-width:1120px;margin:0 auto;padding:0 24px 34px}
-.sur{font-size:11.5px;letter-spacing:.42em;text-transform:uppercase;color:var(--champ);margin:0 0 4px}
-.feinn{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(54px,15vw,104px);line-height:.92;letter-spacing:.04em;margin:0;color:var(--ivoire)}
-.sous{font-family:"Cormorant Garamond",Georgia,serif;font-size:clamp(23px,6.3vw,34px);margin:8px 0 18px;color:var(--ivoire)}
-.filet{width:92px;height:1px;background:linear-gradient(90deg,var(--champ),rgba(201,166,107,0))}
-[dir=rtl] .filet{background:linear-gradient(270deg,var(--champ),rgba(201,166,107,0))}
-/* CONTENU */
-main{max-width:1120px;margin:0 auto;padding:0 20px 20px}
-h2{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:clamp(27px,7vw,38px);line-height:1.1;margin:42px 0 6px;color:var(--ivoire)}
+:root{--noir:#05080B;--noir2:#070A08;--petrole:#0D1518;--ivoire:#F3EEE4;--doux:#C9CFCB;--gris:#9AA39F;--champ:#C9A66B;--trait:rgba(201,166,107,.42);--trait2:rgba(201,166,107,.18);
+--serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--cinzel:Cinzel,"Cormorant Garamond",Georgia,serif;--sans:Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--noir);color:var(--ivoire);font:15px/1.65 var(--sans);overflow-x:hidden}
+a{color:var(--champ)}a:focus-visible,summary:focus-visible,.btn:focus-visible{outline:2px solid var(--champ);outline-offset:3px}
+img{max-width:100%}
+.ico{width:20px;height:20px;flex:none}
+[dir=rtl] .ico.dir{transform:scaleX(-1)}
+/* ── EN-TÊTE ── */
+.entete{position:relative;z-index:20;background:#05080B;border-bottom:1px solid rgba(201,166,107,.12)}
+.entete .in{max-width:1240px;margin:0 auto;height:60px;display:flex;align-items:center;gap:14px;padding:0 max(16px,env(safe-area-inset-right)) 0 max(16px,env(safe-area-inset-left))}
+.marque{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ivoire);min-width:0}
+.marque img{width:44px;height:auto;display:block}
+.marque b{display:block;font:500 21px/1 var(--serif);letter-spacing:.12em}
+.marque small{display:block;font:400 11.5px/1.25 var(--serif);color:var(--doux);margin-top:3px;white-space:nowrap}
+.nav{display:none}
+.droite{margin-inline-start:auto;display:flex;align-items:center;gap:10px}
+.lng{position:relative}
+.lng summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border:1px solid var(--trait2);border-radius:999px;font:500 12.5px var(--sans);color:var(--ivoire)}
+.lng summary::-webkit-details-marker{display:none}
+.lng summary .ico{width:14px;height:14px;color:var(--champ)}
+.lng ul{position:absolute;inset-inline-end:0;top:44px;margin:0;padding:6px;list-style:none;background:#0B1114;border:1px solid var(--trait2);border-radius:12px;min-width:150px;box-shadow:0 18px 40px rgba(0,0,0,.5)}
+.lng li a,.lng li strong{display:block;padding:8px 12px;border-radius:8px;font-size:13.5px;color:var(--ivoire);text-decoration:none}
+.lng li strong{color:var(--champ);font-weight:500}
+.lng li a:hover{background:rgba(201,166,107,.08)}
+.btn-hype{display:none;align-items:center;height:36px;padding:0 20px;border:1px solid var(--champ);border-radius:999px;color:var(--ivoire);text-decoration:none;font:500 15px var(--serif);letter-spacing:.04em}
+.burger summary{list-style:none;cursor:pointer;width:42px;height:42px;display:flex;align-items:center;justify-content:center;color:var(--ivoire)}
+.burger summary::-webkit-details-marker{display:none}
+.burger summary .ico{width:26px;height:26px}
+.burger .x{display:none}.burger[open] .x{display:block}.burger[open] .b{display:none}
+.burger nav{position:absolute;left:0;right:0;top:100%;height:calc(100svh - 60px);background:#05080B;padding:18px 24px 40px;overflow-y:auto}
+.burger nav a{display:flex;align-items:center;justify-content:space-between;min-height:54px;border-bottom:1px solid rgba(201,166,107,.14);color:var(--ivoire);text-decoration:none;font:500 23px var(--serif)}
+.burger nav a .ico{color:var(--champ)}
+.burger nav a.hype{justify-content:center;margin-top:26px;border:1px solid var(--champ);border-radius:999px;min-height:48px;font-size:19px}
+@media (min-width:1024px){
+ .entete{position:sticky;top:env(safe-area-inset-top);padding-top:0}
+ .entete .in{height:76px;padding:0 32px}
+ .marque b{font-size:25px}.marque small{font-size:12.5px}
+ .marque img{width:58px}
+ .nav{display:flex;align-items:center;gap:clamp(14px,1.9vw,28px);margin-inline-start:auto}
+ .nav a{color:var(--ivoire);text-decoration:none;font:500 15.5px var(--serif);letter-spacing:.01em;white-space:nowrap;opacity:.92}
+ .nav a:hover{color:var(--champ)}
+ .droite{margin-inline-start:28px}
+ .btn-hype{display:inline-flex}
+ .marque small{display:none}
+ .burger{display:none}
+ html{scroll-padding-top:84px}
+}
+@media (min-width:1200px){.marque small{display:block}}
+@media (min-width:1024px) and (max-width:1199px){.nav a{font-size:14.5px}.nav{gap:16px}}
+/* ── HERO ── */
+.hero{position:relative;overflow:hidden;min-height:0;display:flex;align-items:flex-end;background:var(--noir)}
+.hero picture,.hero picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:68% 30%}
+.hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.05) 0%,rgba(5,8,11,.10) 38%,rgba(5,8,11,.72) 70%,var(--noir) 100%);pointer-events:none}
+.hero .txt{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:0 16px 26px}
+.sur{font:500 11px/1.4 var(--cinzel);letter-spacing:.22em;text-transform:uppercase;color:var(--ivoire);opacity:.9;margin:0 0 10px}
+.feinn{font:400 clamp(50px,13.5vw,96px)/.95 var(--serif);letter-spacing:.14em;margin:0;color:var(--ivoire)}
+.accroche{font:400 clamp(25px,7vw,34px)/1.2 var(--serif);margin:0;color:var(--ivoire);max-width:15em}
+.filet{width:44px;height:1px;background:var(--champ);margin:16px 0 14px}
+.hero-desc{display:none;margin:0 0 22px;max-width:30em;font:400 15px/1.6 var(--sans);color:var(--doux)}
+.btn{display:inline-flex;align-items:center;gap:12px;min-height:46px;padding:0 22px;border:1px solid var(--champ);border-radius:999px;color:var(--ivoire);text-decoration:none;font:500 16px var(--serif);background:rgba(5,8,11,.35);letter-spacing:.02em}
+.btn .ico{width:18px;height:18px;color:var(--ivoire)}
+.btn:hover{background:rgba(201,166,107,.12)}
+@media (min-width:640px){.hero-desc{display:block}.hero .txt{padding:0 32px 46px}}
+/* 14/10 (haut de page) : sous 1024 px, la photo occupe le haut et le texte se pose dans la zone sombre en dessous — rien ne masque la tête du cheval */
+@media (max-width:1023px){
+ .hero{display:block}
+ .hero picture{position:relative;display:block;height:300px}
+ .hero picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 22%}
+ .hero::after{background:linear-gradient(180deg,rgba(5,8,11,0) 0%,rgba(5,8,11,0) 210px,rgba(5,8,11,.85) 270px,var(--noir) 300px)}
+ .hero .txt{margin-top:-46px;padding:0 16px 24px}
+ .accroche{max-width:17em}
+}
+@media (min-width:640px) and (max-width:1023px){.hero picture{height:360px}.hero picture img{object-position:70% 35%}.hero::after{background:linear-gradient(180deg,rgba(5,8,11,0) 0%,rgba(5,8,11,0) 260px,rgba(5,8,11,.85) 330px,var(--noir) 360px)}.hero .txt{padding:0 32px 30px}}
+
+@media (min-width:1024px){
+ .hero{min-height:520px;align-items:flex-end}
+ .hero picture img{object-position:right 35%}
+ .hero::after{background:linear-gradient(90deg,var(--noir) 0%,rgba(5,8,11,.86) 26%,rgba(5,8,11,.35) 50%,rgba(5,8,11,0) 68%),linear-gradient(180deg,rgba(5,8,11,0) 75%,var(--noir) 100%)}
+ .hero .txt{padding:60px 32px 64px}
+ .hero .accroche{max-width:13em;font-size:38px}
+ .accroche{font-size:34px}
+}
+[dir=rtl] .hero picture img{transform:scaleX(-1)}
+@media (min-width:1024px){[dir=rtl] .hero::after{background:linear-gradient(270deg,var(--noir) 0%,rgba(5,8,11,.86) 26%,rgba(5,8,11,.35) 50%,rgba(5,8,11,0) 68%),linear-gradient(180deg,rgba(5,8,11,0) 75%,var(--noir) 100%)}}
+/* ── 5 ENGAGEMENTS ── */
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.engag{background:var(--noir2);border-top:1px solid rgba(201,166,107,.10);border-bottom:1px solid rgba(201,166,107,.10)}
+.engag ul{list-style:none;margin:0 auto;max-width:1240px;padding:20px 8px 22px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+.engag li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;min-width:0}
+.engag .pic{width:50px;height:50px;border-radius:50%;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;color:var(--champ)}
+.engag .pic .ico{width:24px;height:24px;stroke-width:1.2}
+.engag .tit{font:500 11px/1.25 var(--serif);color:var(--ivoire)}
+.engag .long,.engag .phr{display:none}
+@media (min-width:640px){
+ .engag ul{padding:28px 24px 30px;gap:0}
+ .engag li{padding:0 12px;gap:10px}
+ .engag li+li{border-inline-start:1px solid rgba(201,166,107,.22)}
+ .engag .pic{border:0;width:auto;height:auto}
+ .engag .pic .ico{width:34px;height:34px;stroke-width:1.1}
+ .engag .court{display:none}.engag .long{display:inline}
+ .engag .tit{font:500 11.5px/1.35 var(--cinzel);letter-spacing:.12em;text-transform:uppercase}
+ .engag .phr{display:block;font:400 13.5px/1.4 var(--serif);color:var(--doux);max-width:15em}
+}
+@media (min-width:1024px){.engag ul{padding:30px 32px 34px}.engag .tit{font-size:12.5px}.engag .phr{font-size:14.5px}}
+:lang(ja) .engag .tit,:lang(ar) .engag .tit{letter-spacing:.02em;text-transform:none;font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Naskh Arabic",Georgia,serif}
+/* ── PROJETS (section ivoire) ── */
+.projets2{background:var(--ivoire);color:#191D1C}
+.projets2 .in{max-width:1240px;margin:0 auto;padding:30px 16px 34px}
+.pj-tete{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:18px}
+.sur2{font:500 11px/1.4 var(--cinzel);letter-spacing:.22em;text-transform:uppercase;color:#9A7A45;margin:0 0 6px}
+.projets2 h2{font:400 clamp(27px,7vw,38px)/1.12 var(--serif);margin:0;color:#14181A;text-wrap:balance}
+.pj-tous{display:none;align-items:center;gap:10px;color:#14181A;text-decoration:none;font:500 15px var(--serif);white-space:nowrap}
+.pj-tous .ico{width:17px;height:17px}
+.carrousel{position:relative}
+.pistes{list-style:none;margin:0;padding:0 0 4px;display:flex;align-items:flex-start;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.pistes::-webkit-scrollbar{display:none}
+.pcarte{flex:0 0 100%;scroll-snap-align:start;background:#FBF8F2;border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(20,24,26,.06),0 10px 28px rgba(20,24,26,.08);display:flex;flex-direction:column;min-width:0}
+.pimg{position:relative;aspect-ratio:16/11;background:#D9D2C4;overflow:hidden}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.pimg::after{content:"";position:absolute;inset:55% 0 0;background:linear-gradient(180deg,rgba(5,8,11,0),rgba(5,8,11,.55))}
+.pimg .num{position:absolute;inset-inline-start:16px;bottom:8px;z-index:1;font:400 30px/1 var(--serif);color:#F3EEE4}
+.pcorps{padding:16px 18px 18px;display:flex;flex-direction:column;gap:8px;flex:1}
+.pcorps h3{font:500 22px/1.2 var(--serif);margin:0;color:#14181A}
+.pcorps p{margin:0;font:400 14px/1.55 var(--sans);color:#4A504D}
+.plus{margin-top:auto;padding-top:6px}
+.plien{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:40px;color:#14181A;font:500 16px var(--serif);border-bottom:1px solid rgba(154,122,69,.45)}
+.plien::-webkit-details-marker{display:none}
+.plien .ico{width:16px;height:16px;color:#9A7A45;transition:transform .2s}
+.plus .f,.plus[open] .o{display:none}.plus[open] .f{display:inline}
+.plus[open] .plien .ico{transform:rotate(180deg)}
+.plus p{margin:10px 0 0;font:400 14px/1.6 var(--sans);color:#3E4441}
+.nav-c{position:absolute;top:calc((100vw - 32px) * 11 / 32 - 21px);display:none;width:42px;height:42px;border-radius:50%;border:0;background:rgba(251,248,242,.94);color:#14181A;box-shadow:0 4px 14px rgba(0,0,0,.25);cursor:pointer;align-items:center;justify-content:center}
+.js .nav-c{display:flex}
+.nav-c.prec{inset-inline-start:-6px}.nav-c.suiv{inset-inline-end:-6px}
+.nav-c[disabled]{opacity:.35;cursor:default}
+.points{display:flex;justify-content:center;gap:8px;margin:14px 0 0}
+.points span{width:7px;height:7px;border-radius:50%;background:#CDBF9F}
+.points span.on{background:#14181A}
+@media (min-width:640px){.pcarte{flex-basis:calc(50% - 7px)}.nav-c{top:calc((100vw - 78px) * 11 / 64 - 21px)}.projets2 .in{padding:40px 32px 44px}}
+@media (min-width:1024px){
+ .projets2 .in{padding:50px 32px 56px}
+ .pj-tous{display:inline-flex}
+ .pistes{overflow:visible;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:stretch}
+ .pcarte{flex:none}
+ .js .nav-c,.points{display:none}
+}
+@media (prefers-reduced-motion:reduce){.pistes{scroll-behavior:auto}.plien .ico{transition:none}}
+/* ── NOTRE LIEU ── */
+.lieu{position:relative;background:var(--noir2);overflow:hidden}
+.lieu-fond{position:absolute;inset:0 0 auto 0;width:100%;height:270px;object-fit:cover;object-position:center 40%}
+.lieu::before{content:"";position:absolute;inset:0 0 auto 0;height:270px;background:linear-gradient(180deg,rgba(5,8,11,.25) 0%,rgba(5,8,11,.35) 45%,var(--noir2) 100%);z-index:1}
+.lieu .in{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 16px}
+.lieu-txt{min-height:270px;display:flex;flex-direction:column;justify-content:flex-end;padding-bottom:14px}
+.lieu h2{font:400 clamp(26px,7vw,38px)/1.12 var(--serif);margin:0 0 8px;color:var(--ivoire);text-wrap:balance}
+.lieu-txt p:last-child{margin:0;max-width:30em;font:400 14px/1.55 var(--sans);color:var(--doux)}
+.atouts{list-style:none;margin:0;padding:12px 0 18px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;border-top:1px solid rgba(201,166,107,.16)}
+.atouts li{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;min-width:0;font:500 12.5px/1.25 var(--serif);color:var(--ivoire)}
+.atouts .ico{width:24px;height:24px;color:var(--champ);stroke-width:1.1}
+@media (min-width:640px){.lieu .in{padding:0 32px}.atouts li{font-size:14.5px}.atouts .ico{width:30px;height:30px}.lieu-fond,.lieu::before{height:340px}.lieu-txt{min-height:340px}}
+@media (min-width:1024px){
+ .lieu{min-height:440px}
+ .lieu-fond{height:100%}
+ .lieu::before{height:100%;background:linear-gradient(90deg,rgba(5,8,11,.92) 0%,rgba(5,8,11,.66) 30%,rgba(5,8,11,.12) 55%,rgba(5,8,11,0) 75%)}
+ .lieu .in{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:40px;min-height:440px}
+ .lieu-txt{min-height:0;padding:56px 0}
+ .atouts{border:1px solid rgba(201,166,107,.28);border-radius:10px;background:rgba(7,10,8,.72);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:22px 8px;gap:0;align-self:end;margin-bottom:44px;width:min(520px,44vw)}
+ .atouts li{padding:0 10px}
+ .atouts li+li{border-inline-start:1px solid rgba(201,166,107,.22)}
+}
+[dir=rtl] .lieu-fond{transform:scaleX(-1)}
+@media (min-width:1024px){[dir=rtl] .lieu::before{background:linear-gradient(270deg,rgba(5,8,11,.92) 0%,rgba(5,8,11,.66) 30%,rgba(5,8,11,.12) 55%,rgba(5,8,11,0) 75%)}}
+/* ── NOUS SOUTENIR ── */
+.soutenir{background:var(--ivoire);color:#191D1C;display:grid;grid-template-columns:minmax(0,1fr)}
+.sout-txt{padding:24px 16px 22px;max-width:640px}
+.soutenir h2{font:400 clamp(26px,6.8vw,34px)/1.14 var(--serif);margin:0 0 10px;color:#14181A;text-wrap:balance}
+.sout-txt>p:not(.sur2){margin:0 0 16px;font:400 14px/1.55 var(--sans);color:#4A504D}
+.sout-actions{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px}
+.btn2{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 20px;border-radius:999px;background:#0F1416;color:#F3EEE4;text-decoration:none;font:500 16px var(--serif);border:1px solid #0F1416}
+.btn2 .ico{width:18px;height:18px}
+.btn2:hover{background:#1C2427}
+.mail{font:400 14px var(--sans);color:#4A504D;user-select:all}
+.sout-photo{position:relative;margin:0;min-height:150px;background:var(--noir);overflow:hidden}
+.sout-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:70% 40%}
+.sout-photo::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,8,11,.15),rgba(5,8,11,.65))}
+.sout-photo blockquote{position:absolute;inset-inline:16px;bottom:14px;z-index:1;margin:0;font:italic 500 17px/1.35 var(--serif);color:#F3EEE4;text-align:start}
+@media (min-width:640px){.sout-txt{padding:40px 32px}.sout-photo{min-height:240px}.sout-photo blockquote{font-size:19px;bottom:22px;inset-inline:24px}}
+@media (min-width:1024px){
+ .soutenir{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);min-height:300px}
+ .sout-txt{padding:44px 32px 44px max(32px,calc((100vw - 1240px)/2 + 32px));max-width:none;align-self:center}
+ .sout-photo{min-height:0}
+ .sout-photo::after{background:linear-gradient(90deg,var(--ivoire) 0%,rgba(243,238,228,.55) 14%,rgba(5,8,11,.10) 38%,rgba(5,8,11,.35) 100%),linear-gradient(0deg,rgba(5,8,11,.7) 0%,rgba(5,8,11,0) 45%)}
+ [dir=rtl] .sout-photo::after{background:linear-gradient(270deg,var(--ivoire) 0%,rgba(243,238,228,.55) 14%,rgba(5,8,11,.10) 38%,rgba(5,8,11,.35) 100%)}
+ .sout-photo blockquote{inset-inline:auto 36px;max-width:19em;bottom:30px;text-align:end;font-size:21px;text-shadow:0 1px 12px rgba(0,0,0,.6)}
+ .sout-photo{background:linear-gradient(0deg,rgba(5,8,11,.55),rgba(5,8,11,0) 45%)}
+}
+/* ── L'ASSOCIATION (texte) ── */
+.asso-txt{margin:0;padding:40px 0 8px}
+.asso-txt h2{margin-top:0}
+.asso-txt p{max-width:42em}
+@media (min-width:640px){.asso-txt{padding:52px 0 8px}}
+/* ── PAGE MENTIONS LÉGALES ── */
+.ml-page{padding-top:28px;padding-bottom:44px}
+.ml-sur{color:var(--champ)}
+.ml-h1{font:400 clamp(30px,8vw,44px)/1.1 var(--serif);margin:0 0 6px;color:var(--ivoire)}
+.ml-h1+.trait{width:44px;height:1px;background:var(--champ);margin:10px 0 18px}
+.ml-retour{margin:28px 0 0}
+/* ── CONTENU (sections actuelles, refondues aux étapes suivantes) ── */
+main{max-width:1240px;margin:0 auto;padding:0 16px 20px}
+h2{font:500 clamp(28px,7vw,38px)/1.1 var(--serif);margin:42px 0 6px;color:var(--ivoire)}
 h2+.trait{width:44px;height:1px;background:var(--champ);margin:10px 0 18px}
-.texte p{margin:0 0 14px;color:#E3E7E3}
+.texte p{margin:0 0 14px;color:var(--doux)}
 .missions{list-style:none;padding:0;margin:22px 0 0;display:flex;flex-wrap:wrap;justify-content:center;row-gap:18px;text-align:center}
-.missions li{flex:0 0 33.33%;padding:0 4px}
+.missions li{flex:0 0 33.33%;padding:0 4px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11.5px;line-height:1.35;color:var(--doux);min-width:0}
 @media (min-width:640px){.missions li{flex-basis:20%}}
-.missions li{display:flex;flex-direction:column;align-items:center;gap:8px;font-size:11.5px;line-height:1.35;color:#D9DEDB;min-width:0;-webkit-hyphens:manual;hyphens:manual}
-.missions .cercle{width:54px;height:54px;border-radius:50%;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;color:var(--champ);background:radial-gradient(circle,rgba(37,79,96,.35),rgba(5,8,11,0) 70%)}
+.missions .cercle{width:54px;height:54px;border-radius:50%;border:1px solid var(--trait);display:flex;align-items:center;justify-content:center;color:var(--champ)}
 .missions .ico{width:25px;height:25px}
-.bande{position:relative;margin:26px 0 0;border-radius:16px;overflow:hidden;border:1px solid var(--trait2);min-height:210px;display:flex;align-items:center}
-.bande .fond{position:absolute;inset:0}
-.bande::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(5,8,11,0) 20%,rgba(5,8,11,.65))}
-[dir=rtl] .bande::after{background:linear-gradient(270deg,rgba(5,8,11,0) 20%,rgba(5,8,11,.65))}
-.bande blockquote{position:relative;z-index:2;margin:0 0 0 auto;padding:24px;max-width:62%;font-family:"Cormorant Garamond",Georgia,serif;font-style:italic;font-size:clamp(24px,6.4vw,34px);line-height:1.2;color:var(--ivoire);text-align:end}
+.bande{position:relative;margin:26px 0 0;border-radius:16px;overflow:hidden;border:1px solid var(--trait2);min-height:180px;display:flex;align-items:center;background:var(--petrole)}
+.bande blockquote{position:relative;margin:0 0 0 auto;padding:24px;max-width:70%;font:italic 500 clamp(24px,6.4vw,34px)/1.2 var(--serif);color:var(--ivoire);text-align:end}
 .sep{display:flex;align-items:center;gap:10px;margin:40px 0 0;color:var(--champ)}
 .sep::before,.sep::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,rgba(201,166,107,0),var(--trait),rgba(201,166,107,0))}
 .sep span{width:6px;height:6px;transform:rotate(45deg);background:var(--champ);opacity:.8}
-.intro2{color:#D9DEDB;margin:0 0 18px}
+.intro2{color:var(--doux);margin:0 0 18px}
 .projets{list-style:none;padding:0;margin:0;display:grid;gap:14px}
-.projet{display:grid;grid-template-columns:38% 1fr;gap:16px;padding:12px;border-radius:16px;border:1px solid var(--trait2);background:linear-gradient(150deg,rgba(37,79,96,.32),rgba(10,20,24,.38) 55%,rgba(7,19,25,.75))}
+.projet{display:grid;grid-template-columns:38% 1fr;gap:16px;padding:12px;border-radius:16px;border:1px solid var(--trait2);background:var(--petrole)}
 .projet .photo{border-radius:11px;overflow:hidden;aspect-ratio:3/4;min-height:150px}
-.projet h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:500;font-size:25px;line-height:1.12;margin:6px 0 8px;color:var(--ivoire)}
+.projet .photo img{width:100%;height:100%;object-fit:cover;display:block}
+.projet h3{font:500 25px/1.12 var(--serif);margin:6px 0 8px;color:var(--ivoire)}
 .projet .deco{display:flex;align-items:center;gap:10px;color:var(--champ);margin:0 0 10px}
-.projet .deco .ico{width:22px;height:22px;flex:none}
-.projet .deco::after{content:"";flex:1;max-width:90px;height:1px;background:var(--trait)}
-.projet p{margin:0;font-size:13.4px;line-height:1.6;color:#D3DAD8}
-/* MENTIONS LÉGALES */
+.projet .deco .ico{width:22px;height:22px}
+.projet p{margin:0;font-size:13.4px;line-height:1.6;color:var(--doux)}
 .legal{display:grid;gap:14px;margin-top:4px}
-.carte{border:1px solid var(--trait2);border-radius:16px;background:linear-gradient(160deg,rgba(37,79,96,.16),rgba(5,8,11,.6));padding:4px 16px}
+.carte{border:1px solid var(--trait2);border-radius:16px;background:var(--petrole);padding:4px 16px}
 .ligne{display:grid;grid-template-columns:24px minmax(0,.9fr) minmax(0,1.4fr);gap:12px;padding:15px 0;border-bottom:1px solid rgba(201,166,107,.12);align-items:start;font-size:13px}
 .ligne:last-child{border-bottom:0}
 .ligne .ico{width:21px;height:21px;color:var(--champ);margin-top:1px}
-.ligne .lab{color:#E3E7E3;font-weight:500}
-.ligne .val{color:var(--doux);line-height:1.55}
+.ligne .lab{color:var(--ivoire);font-weight:500}
+.ligne .val{color:var(--gris);line-height:1.55}
 .ligne .val span{display:block}
 .note{display:grid;grid-template-columns:24px 1fr;gap:12px;padding:16px 0;border-bottom:1px solid rgba(201,166,107,.12)}
 .note:last-child{border-bottom:0}
 .note .ico{width:22px;height:22px;color:var(--champ)}
-.note h3{font-family:"Cormorant Garamond",Georgia,serif;font-weight:600;font-size:19px;margin:0 0 3px;color:var(--ivoire)}
-.note p{margin:0;font-size:12.8px;color:var(--doux)}
-.fin{text-align:center;margin:46px 0 0;padding:34px 0 10px;position:relative}
-.fin .h{letter-spacing:.6em;font-size:13px;color:var(--ivoire);font-family:"Cormorant Garamond",Georgia,serif;margin-inline-start:.6em}
-.btn{display:inline-block;margin-top:18px;text-decoration:none;font-size:14px;font-weight:500;padding:12px 26px;border-radius:999px;border:1px solid var(--champ);color:var(--ivoire);background:transparent}
-footer{max-width:1120px;margin:0 auto;padding:18px 20px max(26px,env(safe-area-inset-bottom));font-size:12.5px;color:#8B9592;border-top:1px solid rgba(201,166,107,.1);text-align:center}
-footer a{color:#A9B3B0}
-/* TABLETTE */
-@media (min-width:640px){
- main{padding:0 32px 24px}
- .hero .titre{padding:0 32px 44px}
- .missions li{font-size:12px}.missions .cercle{width:64px;height:64px}
- .projet{grid-template-columns:34% 1fr;gap:22px;padding:14px}
- .projet .photo{aspect-ratio:4/5}
- .projet p{font-size:14px}
- .legal{grid-template-columns:1fr 1fr;align-items:start}
+.note h3{font:600 19px var(--serif);margin:0 0 3px;color:var(--ivoire)}
+.note p{margin:0;font-size:12.8px;color:var(--gris)}
+@media (min-width:640px){main{padding:0 32px 24px}.missions .cercle{width:64px;height:64px}.projet{grid-template-columns:34% 1fr;gap:22px;padding:14px}.legal{grid-template-columns:1fr 1fr;align-items:start}}
+@media (min-width:1000px){.presentation{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}.projets{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}.projet{grid-template-columns:1fr}.projet .photo{aspect-ratio:4/3;min-height:0}h2{margin-top:60px}}
+/* ── PIED DE PAGE ── */
+.pied{margin-top:0;background:var(--noir);border-top:1px solid rgba(201,166,107,.14)}
+.pied .in{max-width:1240px;margin:0 auto;padding:34px 20px max(30px,env(safe-area-inset-bottom));display:grid;gap:26px;justify-items:center;text-align:center}
+.pied .logo{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:var(--ivoire)}
+.pied .logo img{width:72px;height:auto}
+.pied .logo b{font:500 24px/1 var(--serif);letter-spacing:.14em}
+.pied .logo small{font:400 12.5px var(--serif);color:var(--doux)}
+.pied .infos,.pied .liens{font:400 13.5px/1.75 var(--serif);color:var(--doux)}
+.pied .infos span{display:block}
+.pied .infos a,.pied .liens a{color:var(--doux);text-decoration:none}
+.pied .liens a{display:block}
+@media (max-width:1023px){
+ .pied .in{grid-template-columns:1fr auto;grid-template-areas:"logo lng" "infos infos" "liens liens" "res cit";justify-items:start;text-align:start;gap:14px 16px;padding:22px max(16px,env(safe-area-inset-right)) max(20px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+ .pied .logo{grid-area:logo;flex-direction:row;gap:10px}.pied .logo img{width:40px}.pied .logo b{font-size:18px}.pied .logo small{display:none}
+ .pied .lng{grid-area:lng;justify-self:end}
+ .pied .infos{grid-area:infos;font-size:12.5px;line-height:1.55}.pied .infos span{display:inline}.pied .infos span::after{content:" · "}.pied .infos span:last-of-type::after{content:""}.pied .infos a{display:block}
+ .pied .liens{grid-area:liens;display:flex;flex-wrap:wrap;gap:4px 16px;font-size:13.5px;padding-top:12px;border-top:1px solid rgba(201,166,107,.14);width:100%}.pied .liens a{display:inline}
+ .pied .reseaux{grid-area:res}.pied .reseaux a{width:36px;height:36px}
+ .pied .cit{grid-area:cit;justify-self:end;text-align:end;font-size:13.5px;max-width:15em}
 }
-/* ORDINATEUR */
-@media (min-width:1000px){
- .hero{min-height:620px}
- .hero .fond.ph{padding-top:120px}
- .hero .titre{padding:0 40px 60px}
- .presentation{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
- .presentation .missions{margin:0;row-gap:26px}
- .presentation .missions li{flex-basis:33.33%}
- .missions li{font-size:12.5px}
- .bande{min-height:260px}
- .projets{grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
- .projet{grid-template-columns:1fr;padding:14px;align-content:start}
- .projet .photo{aspect-ratio:4/3;min-height:0}
- h2{margin-top:60px}
+.pied .liens a:hover,.pied .infos a:hover{color:var(--champ)}
+.reseaux{display:flex;gap:14px}.reseaux a{width:40px;height:40px;display:flex;align-items:center;justify-content:center;border:1px solid var(--trait2);border-radius:50%;color:var(--ivoire)}.reseaux a:hover{color:var(--champ)}
+.pied .cit{font:italic 500 16px/1.5 var(--serif);color:var(--ivoire);max-width:17em;margin:0}
+.pied .lng ul{top:auto;bottom:44px}
+@media (min-width:1024px){
+ .pied .in{grid-template-columns:auto auto auto auto auto 1fr;align-items:center;justify-items:start;text-align:start;gap:44px;padding:30px 48px 34px}
+ .pied .logo{align-items:center}
+ .pied .infos{padding-inline-start:28px;border-inline-start:1px solid rgba(201,166,107,.2)}
+ .pied .cit{justify-self:end;text-align:end}
 }
-:lang(ja) .feinn,:lang(ar) .feinn{letter-spacing:.02em}
+:lang(ja) .feinn,:lang(ar) .feinn{letter-spacing:.06em}
+:lang(ja) .sur,:lang(ar) .sur{letter-spacing:.08em}
 :lang(ar) body{font-family:system-ui,-apple-system,"Segoe UI",Tahoma,Arial,sans-serif}
-:lang(ar) .sur{letter-spacing:.1em}
+:lang(ja) .accroche,:lang(ar) .accroche,:lang(ja) .nav a,:lang(ar) .nav a,:lang(ja) .burger nav a,:lang(ar) .burger nav a,:lang(ja) .btn,:lang(ar) .btn{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP","Noto Naskh Arabic",Georgia,serif}
 """
 def slot(k,cls,t):
-    if photo(k): return f'<div class="{cls} photo"><img src="/{PHOTOS[k]}" alt="" loading="{"eager" if k=="hero" else "lazy"}"></div>'
-    return f'<div class="{cls} ph" role="img" aria-label="{e(t["photo"])}"><span class="phl">{svg("photo")}{e(t["photo"])}</span></div>'
+    if photo(k): return f'<div class="{cls} photo"><img src="/{PHOTOS[k]}" alt="" loading="lazy"></div>'
+    return f'<div class="{cls} ph" role="img" aria-label="{e(t["photo"])}"></div>'
 
-def page(lg):
-    t=T[lg]; url=f"{DOM}/{lg}/{CHEMIN}"
-    alts="\n".join(f'<link rel="alternate" hreflang="{x}" href="{DOM}/{x}/{CHEMIN}">' for x in L)
-    jl={"@context":"https://schema.org","@type":"NGO","name":"FEINN Équitation et Environnement","url":url,"email":"feinn@live.fr","foundingDate":"2020-11-19",
+def selecteur(lg, ident=""):
+    items="".join((f'<li><strong lang="{x}" aria-current="page">{NOMS[x]}</strong></li>' if x==lg else f'<li><a href="{DOM}/{x}/{CHEMIN}" hreflang="{x}" lang="{x}">{NOMS[x]}</a></li>') for x in L)
+    return f'<details class="lng"{(" id="+chr(34)+ident+chr(34)) if ident else ""}><summary aria-label="{e(T[lg]["langue"])}">{lg.upper()} {svg("chevron")}</summary><ul>{items}</ul></details>'
+
+def page(lg, ml=False):
+    t=T[lg]; url=f"{DOM}/{lg}/{CHEMIN}"+("mentions-legales/" if ml else ""); pre=f"/{lg}/{CHEMIN}" if ml else ""
+    alts="\n".join(f'<link rel="alternate" hreflang="{x}" href="{DOM}/{x}/{CHEMIN}{"mentions-legales/" if ml else ""}">' for x in L)
+    jl={"@context":"https://schema.org","@type":"NGO","name":"FEINN Équitation et Environnement","url":url,"logo":f"{DOM}/{LOGO}","email":"feinn@live.fr","foundingDate":"2020-11-19",
         "address":{"@type":"PostalAddress","streetAddress":"3 chemin des Prés Picard","postalCode":"91760","addressLocality":"Itteville","addressCountry":"FR"},
         "identifier":"SIREN 898 028 980","description":t["desc"]}
     mico=["cap","fer","coeur","pousse","arbre"]; pico=["fer","coeur","pousse"]; pph=["jeune","retraite","espaces"]
-    h=f'''<header class="hero">
-{slot("hero","fond",t)}
-<div class="haut"><a class="rond" href="{DOM}/{lg}/" aria-label="{e(t["retour"])}">{svg("retour")}</a><a class="langue" href="#langues">{lg.upper()} · {e(t["langue"])}</a></div>
-<div class="titre"><p class="sur">{e(t["sur"])}</p><h1 class="feinn">FEINN</h1><p class="sous">{e(t["sous"])}</p><div class="filet"></div></div>
-</header>
+    liens=[("#haut",t["accueil"]),("#association",t["asso"]),("#engagements",t["engag"]),("#projets",t["nprojets"]),("#lieu",t["lieu"]),("#soutenir",t["soutenir"])]
+    nav="".join(f'<a href="{pre}{h}">{e(x)}</a>' for h,x in liens)
+    navm="".join(f'<a href="{pre}{h}">{e(x)}<span>{svg("fleche","ico dir")}</span></a>' for h,x in liens)
+    vrai_hero=os.path.exists(os.path.join(RACINE,"images/asso/hero.jpg"))
+    if vrai_hero:
+        pic=f'<picture><img src="/images/asso/hero.jpg" alt="" fetchpriority="high"></picture>'
+    else:
+        pic=f'<picture><source media="(max-width:639px)" srcset="/{HERO_ATTENTE_PORTRAIT}"><img src="/{HERO_ATTENTE_LARGE}" alt="" fetchpriority="high"></picture>'
+    corps=f'''<section class="hero">{pic}
+<div class="txt"><h1 class="accroche">{e(t["accroche"])}</h1><div class="filet"></div>
+<a class="btn" href="#association">{e(t["btn_asso"])} {svg("fleche","ico dir")}</a></div>
+</section>
+{bandeau(lg)}
+{section_projets(lg)}
+{section_lieu(lg)}
+{section_soutenir(lg)}
 <main>
-<section class="presentation"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div>
-<ul class="missions">{"".join(f'<li><span class="cercle">{svg(i)}</span>{e(m)}</li>' for i,m in zip(mico,t["missions"]))}</ul></section>
-<div class="bande">{slot("bande1","fond",t) if False else '<div class="fond ph"></div>'}<blockquote>{e(t["citation1"])}</blockquote></div>
-<div class="sep"><span></span></div>
-<section><h2>{e(t["projets_t"])}</h2><div class="trait"></div><p class="intro2">{e(t["projets_intro"])}</p>
-<ul class="projets">{"".join(f'<li class="projet" id="{pid}">{slot(k,"ph-projet",t).replace("ph-projet","photo")}<div><h3>{e(a)}</h3><div class="deco">{svg(i)}</div><p>{e(b)}</p></div></li>' for pid,k,i,(a,b) in zip(["projet-jeune-espoir","projet-retraite","projet-espaces"],pph,pico,t["projets"]))}</ul></section>
-<div class="bande"><div class="fond ph"></div><blockquote>{e(t["citation2"])}</blockquote></div>
-<div class="sep"><span></span></div>
-<section id="mentions-legales"><h2>{e(t["ml_t"])}</h2><div class="trait"></div>
+<section class="presentation asso-txt" id="association"><div class="texte"><h2>{e(t["notre"])}</h2><div class="trait"></div>{"".join(f"<p>{e(p)}</p>" for p in t["intro"])}</div></section>
+</main>
+''' if not ml else f'''<main class="ml-page">
+<p class="sur2 ml-sur">FEINN · Équitation et Environnement</p>
+<section><h1 class="ml-h1">{e(t["ml_t"])}</h1><div class="trait"></div>
 <div class="legal"><div class="carte">
 <div class="ligne">{svg("maison")}<span class="lab">{e(t["editeur"])}</span><span class="val">{"".join(f"<span>{e(x)}</span>" for x in t["editeur_v"])}</span></div>
 <div class="ligne">{svg("perso")}<span class="lab">{e(t["resp"])}</span><span class="val">{"".join(f"<span>{e(x)}</span>" for x in t["resp_v"])}</span></div>
 <div class="ligne">{svg("mail")}<span class="lab">{e(t["contact"])}</span><span class="val"><a href="mailto:feinn@live.fr">feinn@live.fr</a></span></div>
 <div class="ligne">{svg("serveur")}<span class="lab">{e(t["hebergeur"])}</span><span class="val">{"".join(f"<span>{e(x)}</span>" for x in t["heb_v"])}</span></div>
 </div><div class="carte">
-<div class="note">{svg("bouclier")}<div><h3>{e(t["donnees"])}</h3><p>{e(t["donnees_v"])} <a href="mailto:feinn@live.fr">feinn@live.fr</a></p></div></div>
+<div class="note" id="donnees">{svg("bouclier")}<div><h3>{e(t["donnees"])}</h3><p>{e(t["donnees_v"])} <a href="mailto:feinn@live.fr">feinn@live.fr</a></p></div></div>
 <div class="note">{svg("doc")}<div><h3>{e(t["abos"])}</h3><p>{e(t["abos_v"])}</p></div></div>
 </div></div></section>
-<div class="fin"><div class="h">HYPE</div><a class="btn" href="{DOM}/{lg}/">{e(t["decouvrir"])}</a></div>
-</main>'''
-    langs=" · ".join((f'<strong lang="{x}">{NOMS[x]}</strong>' if x==lg else f'<a href="{DOM}/{x}/{CHEMIN}" hreflang="{x}" lang="{x}">{NOMS[x]}</a>') for x in L)
+<p class="ml-retour"><a class="btn" href="{pre}">{svg("fg","ico dir")} {e(t["asso"])}</a></p>
+</main>
+'''
+    h=f'''<header class="entete" id="haut"><div class="in">
+<a class="marque" href="{pre}#haut"><img src="/{LOGO}" alt="{e(t["logo_alt"])}" width="58" height="33"><span><b>FEINN</b><small>Équitation et Environnement</small></span></a>
+<nav class="nav" aria-label="{e(t["menu"])}">{nav}</nav>
+<div class="droite">{selecteur(lg)}<a class="btn-hype" href="{DOM}/{lg}/">Hype</a>
+<details class="burger"><summary aria-label="{e(t["menu"])}"><span class="b">{svg("burger")}</span><span class="x">{svg("croix")}</span></summary><nav aria-label="{e(t["menu"])}">{navm}<a class="hype" href="{DOM}/{lg}/">Hype</a></nav></details></div>
+</div></header>
+{corps}
+<span id="mentions-legales" class="vh"></span><span id="donnees" class="vh"></span>
+<footer class="pied"><div class="in">
+<a class="logo" href="{pre}#haut"><img src="/{LOGO}" alt="" width="72" height="40"><b>FEINN</b><small>Équitation et Environnement</small></a>
+<div class="infos"><span>{e(t["loi1901"])}</span><span>SIREN 898 028 980</span><span>3 chemin des Prés Picard, 91760 Itteville</span><a href="mailto:feinn@live.fr">feinn@live.fr</a></div>
+<div class="liens"><a href="/{lg}/{CHEMIN}mentions-legales/">{e(t["ml_t"])}</a><a href="/{lg}/{CHEMIN}mentions-legales/#donnees">{e(t["donnees"])}</a><a href="mailto:feinn@live.fr">{e(t["contacter"])}</a><a href="{DOM}/{lg}/">Hype</a></div>
+<div class="reseaux"><a href="https://www.instagram.com/team_feinn/" rel="noopener" target="_blank" aria-label="Instagram">{svg("insta")}</a><a href="https://www.facebook.com/share/1FKSP18HTk/" rel="noopener" target="_blank" aria-label="Facebook">{svg("fb")}</a></div>
+{selecteur(lg,"langues")}
+<p class="cit">« {e(t["cit_pied"])} »</p>
+</div></footer>
+<script>document.documentElement.classList.add('js');
+(function(){{var p=document.getElementById('pistes');if(!p)return;var c=p.children,pts=document.querySelectorAll('.points span'),pr=document.querySelector('.nav-c.prec'),sv=document.querySelector('.nav-c.suiv');
+function idx(){{var w=c[0].getBoundingClientRect().width+14;return Math.round(Math.abs(p.scrollLeft)/w);}}
+function maj(){{var i=Math.min(idx(),c.length-1);pts.forEach(function(s,k){{s.classList.toggle('on',k===i);}});if(pr)pr.disabled=i<=0;if(sv)sv.disabled=i>=c.length-1;}}
+function aller(d){{var i=Math.max(0,Math.min(c.length-1,idx()+d));c[i].scrollIntoView({{behavior:'smooth',block:'nearest',inline:'start'}});}}
+p.addEventListener('scroll',function(){{window.requestAnimationFrame(maj);}},{{passive:true}});if(pr)pr.addEventListener('click',function(){{aller(-1);}});if(sv)sv.addEventListener('click',function(){{aller(1);}});maj();
+function ouvrir(id){{var d=document.getElementById(id);if(d&&d.tagName==='DETAILS'){{d.open=true;var li=d.closest('.pcarte');if(li)li.scrollIntoView({{block:'nearest',inline:'start'}});}}}}
+if(location.hash)ouvrir(location.hash.slice(1));}})();
+document.querySelectorAll('.burger nav a').forEach(function(a){{a.addEventListener('click',function(){{var d=a.closest('details');if(d)d.open=false;}});}});
+document.addEventListener('click',function(ev){{document.querySelectorAll('details.lng[open]').forEach(function(d){{if(!d.contains(ev.target))d.open=false;}});}});</script>'''
+    og="images/asso/hero.jpg" if vrai_hero else HERO_ATTENTE_LARGE
     return f"""<!doctype html>
 <html lang="{lg}"{' dir="rtl"' if lg=="ar" else ""}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>{e(t["title"])}</title>
+<title>{e((t["ml_t"]+" · FEINN Équitation et Environnement") if ml else t["title"])}</title>
 <meta name="description" content="{e(t["desc"])}">
 <link rel="canonical" href="{url}">
 {alts}
-<link rel="alternate" hreflang="x-default" href="{DOM}/fr/{CHEMIN}">
+<link rel="alternate" hreflang="x-default" href="{DOM}/fr/{CHEMIN}{"mentions-legales/" if ml else ""}">
 <meta name="theme-color" content="#05080B">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta property="og:type" content="website"><meta property="og:site_name" content="Hype"><meta property="og:locale" content="{LOC[lg]}">
-<meta property="og:title" content="{e(t["title"])}"><meta property="og:description" content="{e(t["desc"])}"><meta property="og:url" content="{url}">
-<meta property="og:image" content="{DOM}/{PHOTOS["hero"] if photo("hero") else "images/hype-partage-1200x630.jpg"}">
+<meta property="og:title" content="{e((t["ml_t"]+" · FEINN Équitation et Environnement") if ml else t["title"])}"><meta property="og:description" content="{e(t["desc"])}"><meta property="og:url" content="{url}">
+<meta property="og:image" content="{DOM}/{og}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
-<script type="application/ld+json">{json.dumps(jl,ensure_ascii=False).replace("<","\\u003c")}</script>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+{"" if ml else chr(60)+"script type=\"application/ld+json\">"+json.dumps(jl,ensure_ascii=False).replace("<","\\u003c")+chr(60)+"/script>"}
 <style>{CSS}</style>
 </head>
 <body>
 {h}
-<footer><p id="langues">{langs}</p></footer>
 </body>
 </html>
 """
+SORTIE=sys.argv[2] if len(sys.argv)>2 else RACINE
 for lg in L:
-    os.makedirs(f"{RACINE}/{lg}/{CHEMIN}",exist_ok=True)
-    open(f"{RACINE}/{lg}/{CHEMIN}index.html","w",encoding="utf-8").write(page(lg))
+    os.makedirs(f"{SORTIE}/{lg}/{CHEMIN}",exist_ok=True)
+    open(f"{SORTIE}/{lg}/{CHEMIN}index.html","w",encoding="utf-8").write(page(lg))
+    os.makedirs(f"{SORTIE}/{lg}/{CHEMIN}mentions-legales",exist_ok=True)
+    open(f"{SORTIE}/{lg}/{CHEMIN}mentions-legales/index.html","w",encoding="utf-8").write(page(lg,ml=True))
+os.makedirs(f"{SORTIE}/data",exist_ok=True)
+open(f"{SORTIE}/data/projets-feinn.json","w",encoding="utf-8").write(json_projets())
 print("ok", {k:photo(k) for k in PHOTOS})

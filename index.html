@@ -86500,7 +86500,7 @@ function pv3Html(lg, info) {
     + [20, 40, 80, 150, 250, 500].map(function (m, i) { return '<button class="niv" type="button" data-don="' + i + '"><span class="n">' + e(t.niv[i]) + '</span><span class="m">' + m + ' €</span><span class="d">' + e(t.niv_d[i]) + '</span></button>'; }).join("")
     + '</div><p class="petit">' + e(t.stripe) + ' · <a href="/' + lg + '/cgv/" data-asso="1">' + e(t.cgv) + '</a></p></section>'
     + '<section class="feinn" data-sec="feinn"><div class="wrap"><p class="sur">' + e(t.feinn_sur) + '</p><h2>' + e(t.feinn_t) + '</h2><p class="exp">' + e(t.feinn_exp) + '</p><ul class="pistes">'
-    + [["team-competition-performances-hero.webp", t.pj1_t, t.pj1_d, "projet-jeune-espoir"], ["fond-recit.webp", t.pj2_t, t.pj2_d, "projet-retraite"], ["ecurie-couverture-defaut-2.webp", t.pj3_t, t.pj3_d, "projet-espaces"]].map(function (p, i) {
+    + [["team-competition-performances-hero.webp", t.pj1_t, t.pj1_d, "projet-jeune-espoir"], ["fond-recit.webp", t.pj2_t, t.pj2_d, "projet-retraite-chevaux-club"], ["ecurie-couverture-defaut-2.webp", t.pj3_t, t.pj3_d, "projet-espaces"]].map(function (p, i) {
         return '<li class="pc"><div class="ph"><img src="images/' + p[0] + '" alt=""><span class="num">0' + (i + 1) + '</span></div><div class="c"><h3>' + e(p[1]) + '</h3><p>' + e(p[2]) + '</p><a href="' + asso + '#' + p[3] + '" data-asso="1">' + e(t.decouvrir) + '</a></div></li>'; }).join("")
     + '</ul><div class="points" aria-hidden="true"><span class="on"></span><span></span><span></span></div>'
     + '<div class="don-feinn"><div><b>' + e(t.don_t) + '</b><p>' + e(t.don_d) + '</p></div><span class="mail">feinn@live.fr</span></div>'
