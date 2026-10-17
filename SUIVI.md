@@ -13088,3 +13088,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Statistiques comme la maquette : posées sur le fond, sans cadre, chiffres ivoire en serif, libellés en minuscules, filet fin dessous. Valeurs et définitions inchangées.
 - Pastille cavalier choisie remplie de champagne clair (comme les filtres de saison du build 1).
 - Tests : tableau 42/42, moments forts 26/26 (adaptés : libellés en minuscules, couleur de la pastille choisie ; mêmes vérifications de valeurs) ; vérifié au banc : propriétaire = « ••• » seul, visiteuse = cœur + « ••• », la feuille « Partager » s'ouvre. node --check 35 blocs sans erreur, marqueurs inchangés.
+
+## 17/10/2026 — Performances, build graphique 3 (NON publié) : moments forts d'après l'écran 1
+- Demande : « Ok continue » de Blandine (17/10, 2 h 13).
+- Photos (règle de Blandine) : seulement la photo choisie à la main. RETIRÉ : portrait du cavalier en repli, album « au nom proche » du concours, photo tirée au hasard dans les photos du cheval. Sans photo choisie : état sobre (icône). Les albums et photos du cheval restent proposés dans le choix manuel (crayon > Changer la photo).
+- Carte : la photo occupe toute la carte (opacité pleine), dégradé sombre discret en bas, plus de pastille de rang en haut à gauche ; rang en champagne (« 1er sur 22 » sur la grande carte) ; grande carte : épreuve, concours + année, cavalier ; petites cartes : épreuve abrégée comme la maquette (« P1 Grand Prix »), concours, « année · cavalier ». Le « CSO » du nom FFE est retiré à l'affichage seulement.
+- Commandes : UN seul petit crayon discret par carte, selon les droits réels (propriétaire : photo + retrait ; modératrice sur le cheval d'une autre : retrait seulement), qui ouvre une feuille « Changer la photo » / « Retirer des moments forts » (« Le résultat reste dans ses saisons »). Navigation vers la saison inchangée.
+- Tests : moments forts 26/26 (réécrits sur les nouvelles règles : aucune photo automatique, un crayon par carte, contenu de la feuille selon les droits), tableau 42/42, node --check 35 blocs sans erreur, marqueurs inchangés.
