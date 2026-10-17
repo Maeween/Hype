@@ -13081,3 +13081,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Gardé volontairement (règles de Blandine) : pas de miniature sans vraie photo, pas de chevron sans lien fiable vers la journée de concours, pas de « Régler ce qui est visible » avant la décision sur le masquage, pas de bouton « Filtrer » (il ferait doublon avec les filtres). Nombre d'épreuves par catégorie gardé en tout petit sous le nom (question posée à Blandine).
 - Écart restant : sur iPhone 390, le 4e filtre « Sans faute » dépasse et se fait glisser au doigt (la saison est dans une carte, la maquette est en pleine largeur).
 - Calculs inchangés. Tests adaptés à la nouvelle présentation (mêmes vérifications de calcul) : tableau 42/42, moments forts 26/26, node --check 35 blocs sans erreur, marqueurs inchangés.
+
+## 17/10/2026 — Performances, build graphique 2 (NON publié) : haut de page d'après l'écran 1
+- Demande : « Ok continue » de Blandine (17/10, 1 h 57). Questions restées ouvertes, réglages gardés en attendant : filtres de saison qui glissent au doigt ; nombre d'épreuves en petit sous la catégorie.
+- Cœur et « ••• » de la maquette, branchés sur des fonctions existantes (aucun bouton décoratif) : cœur = « Ajouter à mes chevaux / Retirer de mes chevaux » (lierCheval / delierCheval, comme la fiche cheval ; jamais pour la propriétaire, qui ne peut pas lier son propre cheval) ; « ••• » = petite feuille « Partager » (même adresse que « Partager sa fiche » : /cheval/<slug> ou /#cheval-<id>) et « Voir sa fiche ». « Voir tous » : absent (le tableau dépliable remplit cette fonction).
+- Statistiques comme la maquette : posées sur le fond, sans cadre, chiffres ivoire en serif, libellés en minuscules, filet fin dessous. Valeurs et définitions inchangées.
+- Pastille cavalier choisie remplie de champagne clair (comme les filtres de saison du build 1).
+- Tests : tableau 42/42, moments forts 26/26 (adaptés : libellés en minuscules, couleur de la pastille choisie ; mêmes vérifications de valeurs) ; vérifié au banc : propriétaire = « ••• » seul, visiteuse = cœur + « ••• », la feuille « Partager » s'ouvre. node --check 35 blocs sans erreur, marqueurs inchangés.

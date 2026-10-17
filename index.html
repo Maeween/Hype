@@ -40526,6 +40526,7 @@ function EcranPerformancesCheval() {
     }).catch(function () { if (v) { setPhotosPool([]); setAlbums([]); } });
     return function () { v = false; };
   }, [dbId]);
+  var mnSt = React.useState(false); var menuOuvert = mnSt[0], setMenuOuvert = mnSt[1];   /* (g2) feuille du « ••• » */
   var mfSt = React.useState(null); var mfLocal = mfSt[0], setMfLocal = mfSt[1];
   var mfMedias = React.useMemo(function () {
     if (mfLocal) return mfLocal;
@@ -40645,7 +40646,7 @@ function EcranPerformancesCheval() {
       h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, letterSpacing: ".01em" } }, txt), droite || null);
   }
   function pilule(txt, actif, onClick, cle) {
-    return h("button", { key: cle, type: "button", onClick: onClick, style: { flex: "0 0 auto", minHeight: 34, padding: "0 11px", borderRadius: 999, border: "1px solid " + (actif ? "rgba(201,166,107,0.85)" : "rgba(243,238,228,0.16)"), background: actif ? "rgba(201,166,107,0.14)" : "transparent", color: actif ? "#E6CF9C" : MUET, fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, txt);
+    return h("button", { key: cle, type: "button", onClick: onClick, style: { flex: "0 0 auto", minHeight: 34, padding: "0 14px", borderRadius: 10, border: "1px solid " + (actif ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: actif ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: actif ? "#1A1408" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap" } }, txt);   /* (g2) pastille choisie remplie de champagne clair, comme la maquette */
   }
   function boutonContour(txt, onClick, icone, cle, desactive) {
     return h("button", { key: cle, type: "button", onClick: onClick, disabled: !!desactive, style: { flex: 1, minHeight: 50, padding: "0 12px", borderRadius: 14, border: "1px solid " + (desactive ? "rgba(201,166,107,0.3)" : "rgba(201,166,107,0.7)"), background: "rgba(16,26,29,0.85)", color: desactive ? MUET : IVOIRE, fontFamily: SANS, fontSize: 12.5, fontWeight: 600, cursor: desactive ? "default" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 7 } }, icone || null, h("span", null, txt));
@@ -40759,13 +40760,40 @@ function EcranPerformancesCheval() {
   var og = (function () { try { var o = ligneCh.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object") ? o : (secours.origines || {}); } catch (eO) { return secours.origines || {}; } })() || {};
   var SEXES = { hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي"), jument: T("Jument", "Mare", "Yegua", "Giumenta", "牡馬", "Stute", "فرس"), entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل") };
   var infos = [SEXES[String(og.sexe || "").toLowerCase().trim()] || "", String(ligneCh.race || secours.race || "").trim(), (function () { var m = String(og.naissance || "").match(/^(\d{4})/); return m ? m[1] : ""; })()].filter(Boolean);
+  var rondHaut = { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "rgba(7,10,8,0.45)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, flex: "0 0 auto" };
+  var peutLier = !!(moi && dbId && !estProprio && typeof lierCheval === "function" && typeof delierCheval === "function");
+  async function basculerLien() {
+    try {
+      var rB = droits.lie ? await delierCheval(dbId) : await lierCheval(dbId);
+      var msgB = rB && rB.error ? String((rB.error && rB.error.message) || rB.error) : "";
+      if (rB && rB.error && !(!droits.lie && /duplicate|23505|unique/i.test(msgB))) { annonce(T("Impossible pour l’instant — réessaie", "Not possible right now — try again", "No es posible ahora — reinténtalo", "Impossibile per ora — riprova", "今はできません — もう一度", "Derzeit nicht möglich — versuche es erneut", "غير ممكن حاليا — أعيدي المحاولة")); return; }
+      var lieN = !droits.lie; setDroits(Object.assign({}, droits, { lie: lieN }));
+      annonce(lieN ? T("Ajouté à tes chevaux ✓", "Added to your horses ✓", "Añadido a tus caballos ✓", "Aggiunto ai tuoi cavalli ✓", "私の馬に追加しました ✓", "Zu deinen Pferden hinzugefügt ✓", "تمت الإضافة إلى خيولك ✓") : T("Retiré de tes chevaux ✓", "Removed from your horses ✓", "Retirado de tus caballos ✓", "Rimosso dai tuoi cavalli ✓", "私の馬から削除しました ✓", "Aus deinen Pferden entfernt ✓", "تمت الإزالة من خيولك ✓"));
+    } catch (eB) { annonce(T("Impossible pour l’instant — réessaie", "Not possible right now — try again", "No es posible ahora — reinténtalo", "Impossibile per ora — riprova", "今はできません — もう一度", "Derzeit nicht möglich — versuche es erneut", "غير ممكن حاليا — أعيدي المحاولة")); }
+  }
+  /* meme adresse que « Partager sa fiche » : adresse publique /cheval/<slug> si la base en donne une, sinon /#cheval-<id> */
+  async function partagerCheval() {
+    setMenuOuvert(false);
+    var sl = typeof ligneCh.slug === "string" ? ligneCh.slug : "";
+    var u = /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(sl) ? (location.origin + "/cheval/" + sl) : (location.origin + "/#cheval-" + (dbId || id));
+    var tx = (nomCh || "Hype") + " \u2014 Hype \uD83D\uDC0E";
+    try { if (navigator.share) { await navigator.share({ title: tx, text: tx, url: u }); return; } } catch (eS) { return; }
+    try { await navigator.clipboard.writeText(u); annonce(T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!", "تم نسخ الرابط!")); } catch (eC) { annonce(u); }
+  }
   var hero = h("div", { style: { position: "relative", height: 260, overflow: "hidden", background: PETROLE } },   /* (tableau) 320 -> 260 : demande de Blandine, le hero repoussait les resultats */
     photoCh ? h("img", { src: photoCh, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%" } }) : null,
     h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0.55) 0%, rgba(7,10,8,0.05) 30%, rgba(7,10,8,0.1) 55%, rgba(7,10,8,0.86) 82%, " + NOIR + " 100%)" } }),
     h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", insetInlineStart: 14, insetInlineEnd: 14, display: "flex", alignItems: "center", gap: 12 } },
       h("button", { type: "button", onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "戻る", "Zurück", "رجوع"), style: { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "rgba(7,10,8,0.45)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, flex: "0 0 auto" } },
         h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { transform: rtl ? "scaleX(-1)" : "none" } }, h("path", { d: "M15 5l-7 7 7 7" }))),
-      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE, textShadow: "0 2px 10px rgba(0,0,0,0.6)" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج"))),
+      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE, textShadow: "0 2px 10px rgba(0,0,0,0.6)" } }, T("Performances", "Performances", "Rendimiento", "Prestazioni", "成績", "Leistungen", "النتائج")),
+      /* (g2) coeur et « ••• » de la maquette, branches sur des fonctions qui existent deja : coeur = Ajouter a mes chevaux / Retirer
+         (lierCheval / delierCheval, comme la fiche ; jamais pour la proprietaire) ; ••• = petite feuille Partager / Voir sa fiche. */
+      h("div", { style: { marginInlineStart: "auto", display: "flex", gap: 8 } },
+        peutLier ? h("button", { type: "button", "data-perf-coeur": droits.lie ? "1" : "0", onClick: basculerLien, "aria-pressed": droits.lie ? "true" : "false", "aria-label": droits.lie ? T("Retirer de mes chevaux", "Remove from my horses", "Quitar de mis caballos", "Rimuovi dai miei cavalli", "マイ馬から外す", "Aus meinen Pferden entfernen", "إزالة من خيولي") : T("Ajouter à mes chevaux", "Add to my horses", "Añadir a mis caballos", "Aggiungi ai miei cavalli", "マイ馬に追加", "Zu meinen Pferden hinzufügen", "إضافة إلى خيولي"), style: rondHaut },
+          h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: droits.lie ? "#E6CF9C" : "none", stroke: droits.lie ? "#E6CF9C" : "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" }))) : null,
+        h("button", { type: "button", "data-perf-plus": "1", onClick: function () { setMenuOuvert(true); }, "aria-label": T("Plus d'options", "More options", "Más opciones", "Altre opzioni", "その他", "Weitere Optionen", "خيارات أخرى"), style: rondHaut },
+          h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "currentColor", "aria-hidden": "true" }, h("circle", { cx: 5.5, cy: 12, r: 1.6 }), h("circle", { cx: 12, cy: 12, r: 1.6 }), h("circle", { cx: 18.5, cy: 12, r: 1.6 }))))),
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 14px" } },
       h("div", { style: { fontFamily: SERIF, fontSize: 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
       infos.length ? h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(243,238,228,0.78)" } }, infos.join("  ·  ")) : null,
@@ -40799,6 +40827,11 @@ function EcranPerformancesCheval() {
       (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
       typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
       ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
+      menuOuvert ? feuille(h(React.Fragment, null,
+        h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE, marginBottom: 12 } }, nomCh),
+        h("button", { type: "button", "data-perf-partager": "1", onClick: partagerCheval, style: { width: "100%", minHeight: 46, marginBottom: 8, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Partager", "Share", "Compartir", "Condividi", "共有", "Teilen", "مشاركة")),
+        h("button", { type: "button", onClick: function () { setMenuOuvert(false); try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }, style: { width: "100%", minHeight: 46, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Voir sa fiche", "View profile", "Ver su ficha", "Vedi la scheda", "プロフィールを見る", "Steckbrief ansehen", "عرض بطاقته")),
+        boutonFermer(function () { setMenuOuvert(false); })), function () { setMenuOuvert(false); }, "fMenu") : null,
       toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToast") : null);
   }
 
@@ -40908,12 +40941,13 @@ function EcranPerformancesCheval() {
   return h("div", { "data-ecran": "performances-cheval", style: racineSt },
     hero,
     /* les cinq chiffres (carriere, definitions historiques ; points = saison en cours) */
-    h("div", { "data-perf-chiffres": "1", style: { display: "flex", margin: "14px 18px 0", padding: "13px 4px 11px", borderRadius: 16, background: "rgba(16,26,29,0.8)", border: "1px solid " + FILET } },
+    /* (g2) comme la maquette : chiffres poses sur le fond, sans cadre, chiffres ivoire en serif, libelles en minuscules, filet fin dessous */
+    h("div", { "data-perf-chiffres": "1", style: { display: "flex", margin: "16px 14px 0", padding: "4px 0 14px", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
       chiffres.map(function (cq, i) {
-        return h("div", { key: "ch" + i, "data-perf-chiffre": String(i), style: { flex: 1, textAlign: "center", minWidth: 0, borderInlineStart: i ? "1px solid rgba(243,238,228,0.06)" : "none" } },
-          h("div", { style: { display: "flex", justifyContent: "center", marginBottom: 5 } }, cq[2]),
-          h("div", { style: { fontFamily: SERIF, fontSize: 23, fontWeight: 700, color: "#E6CF9C", lineHeight: 1 } }, String(cq[0])),
-          h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 8, letterSpacing: ".08em", color: MUET, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", direction: "ltr", unicodeBidi: "isolate" } }, cq[1]));
+        return h("div", { key: "ch" + i, "data-perf-chiffre": String(i), style: { flex: 1, textAlign: "center", minWidth: 0 } },
+          h("div", { style: { display: "flex", justifyContent: "center", marginBottom: 6 } }, cq[2]),
+          h("div", { style: { fontFamily: SERIF, fontSize: 27, fontWeight: 600, color: IVOIRE, lineHeight: 1 } }, String(cq[0])),
+          h("div", { style: { marginTop: 4, fontFamily: SANS, fontSize: 10.5, color: MUET, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", direction: "ltr", unicodeBidi: "isolate" } }, cq[1]));
       })),
     /* filtre cavalier : seulement s il y a au moins deux cavaliers ; il agit sur les chiffres et le tableau */
     (cavaliers.length >= 2) ? h("div", { "data-perf-cavaliers": "1", style: { display: "flex", gap: 8, padding: "12px 18px 0", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
@@ -40991,7 +41025,12 @@ function EcranPerformancesCheval() {
       mfMedias[pickerJeton] ? h("button", { type: "button", onClick: function () { definirMedia(pickerJeton, null); }, style: { marginTop: 12, width: "100%", minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: MUET, fontFamily: SANS, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, T("Revenir à la photo automatique", "Back to the automatic photo", "Volver a la foto automática", "Torna alla foto automatica", "自動の写真に戻す", "Zurück zum automatischen Foto", "العودة إلى الصورة التلقائية")) : null,
       boutonFermer(function () { setPickerJeton(null); })), function () { setPickerJeton(null); }, "fPick") : null,
     ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
-    toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToast") : null);
+    menuOuvert ? feuille(h(React.Fragment, null,
+        h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE, marginBottom: 12 } }, nomCh),
+        h("button", { type: "button", "data-perf-partager": "1", onClick: partagerCheval, style: { width: "100%", minHeight: 46, marginBottom: 8, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Partager", "Share", "Compartir", "Condividi", "共有", "Teilen", "مشاركة")),
+        h("button", { type: "button", onClick: function () { setMenuOuvert(false); try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }, style: { width: "100%", minHeight: 46, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Voir sa fiche", "View profile", "Ver su ficha", "Vedi la scheda", "プロフィールを見る", "Steckbrief ansehen", "عرض بطاقته")),
+        boutonFermer(function () { setMenuOuvert(false); })), function () { setMenuOuvert(false); }, "fMenu") : null,
+      toast ? portail(h("div", { style: { position: "fixed", left: 16, right: 16, bottom: "calc(24px + env(safe-area-inset-bottom))", zIndex: 9000, padding: "12px 16px", borderRadius: 14, background: "rgba(16,26,29,0.96)", border: "1px solid " + FILET, color: IVOIRE, fontFamily: SANS, fontSize: 13, textAlign: "center" } }, toast), "fToast") : null);
 }
 /* ═══ fin du build 1 Performances du cheval ═══ */
 
