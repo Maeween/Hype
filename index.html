@@ -41704,7 +41704,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
                     var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
                     return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
-                      style: { flex: "0 0 112px", height: 176, boxSizing: "border-box", overflow: "hidden", padding: "9px 9px 10px", borderRadius: 16, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      style: { flex: "0 0 112px", height: 176, boxSizing: "border-box", overflow: "hidden", padding: "9px 9px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, #070A08 100%)", border: "1px solid rgba(214,196,161,0.35)", boxShadow: "none", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", cursor: "pointer" } },   /* 18/10 : carte de la maquette (texte centre, couleurs de la nouvelle page) */
                       h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
                         h("span", { style: { fontSize: 13, lineHeight: 1 } }, coup),
                         /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
@@ -41719,12 +41719,12 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                           txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
                         }
                       } catch (eD) { }
-                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 8.5, color: "#E6CF9C", letterSpacing: ".04em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
+                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 8.5, color: "rgba(243,238,228,0.62)", letterSpacing: ".04em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
                     })()),
                       photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 46, height: 46, borderRadius: "50%", objectFit: "cover", marginTop: 7, border: "1px solid " + tA(0.35) } }) : null,
                       h("div", { style: { fontSize: 10, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F3EEE4", marginTop: 6, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
                         (rangTxt ? (rangTxt + " ") : "") + (meilleur.cav_reel || meilleur.cavalier || ""),
-                        (meilleur.cheval || nomChR) ? h("span", { style: { color: "#E6CF9C", fontWeight: 600 } }, " sur " + (meilleur.cheval || nomChR)) : null),
+                        (meilleur.cheval || nomChR) ? h("span", { style: { color: "#F3EEE4", fontWeight: 700 } }, " sur " + (meilleur.cheval || nomChR)) : null),
                       h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 10, fontWeight: 700, color: "#F3EEE4", marginTop: 5, lineHeight: 1.25, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
                       /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
                       (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 8.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
@@ -69705,7 +69705,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
                     var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
                     return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
-                      style: { flex: "0 0 112px", height: 176, boxSizing: "border-box", overflow: "hidden", padding: "9px 9px 10px", borderRadius: 16, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (1077) */, border: "1px solid rgba(214,196,161,0.45)" /* (962) */, boxShadow: "none", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      style: { flex: "0 0 112px", height: 176, boxSizing: "border-box", overflow: "hidden", padding: "9px 9px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, #070A08 100%)", border: "1px solid rgba(214,196,161,0.35)", boxShadow: "none", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", cursor: "pointer" } },   /* 18/10 : carte de la maquette (texte centre, couleurs de la nouvelle page) */
                       h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
                         h("span", { style: { fontSize: 13, lineHeight: 1 } }, coup),
                         /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
@@ -69720,12 +69720,12 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                           txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
                         }
                       } catch (eD) { }
-                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 8.5, color: "#E6CF9C", letterSpacing: ".04em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
+                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 8.5, color: "rgba(243,238,228,0.62)", letterSpacing: ".04em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
                     })()),
                       photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 46, height: 46, borderRadius: "50%", objectFit: "cover", marginTop: 7, border: "1px solid rgba(214,196,161,0.45)" /* (962) */ } }) : null,
                       h("div", { style: { fontSize: 10, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F3EEE4", marginTop: 6, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
                         (rangTxt ? (rangTxt + " ") : "") + (meilleur.cavalier || ""),
-                        nomChR ? h("span", { style: { color: "#E6CF9C", fontWeight: 600 } }, " sur " + nomChR) : null),
+                        nomChR ? h("span", { style: { color: "#F3EEE4", fontWeight: 700 } }, " sur " + nomChR) : null),
                       h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 10, fontWeight: 700, color: "#F3EEE4", marginTop: 5, lineHeight: 1.25, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
                       /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
                       (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 8.5, color: "rgba(243,238,228,0.62)", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
