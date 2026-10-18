@@ -13375,3 +13375,9 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Hors périmètre, inchangés : hero, citation, accès rapides, grille et cartes chevaux, encart « Un box virtuel », résultats, événements, Souvenirs (laissés absents), données, droits, textes.
 - Tests : rendu local (faux client Supabase) à 375, 390, 820, 1024 et 1440 px pour 3 écuries (complète, 2 chevaux, vide), menu latéral visible sur ordinateur ; arabe (miroir) et allemand (libellés longs) à 820 et 1440 ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
 - Second lot prévu (non fait) : résultats et événements sur ordinateur (flèches, hauteur des cartes, section seule, pastilles d'événement en contour au lieu du doré plein).
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0205, demande de Blandine 01:00, captures à l'appui) : la mosaïque en BLOCS espacés
+- Demande : « des blocs de la taille que je te mets en photo max, sinon ça fait trop », « en les espaçant à chaque fois », « 1 mais on peut voir plusieurs blocs en dessous, juste espacés un peu que ça fasse pas bloc ».
+- hypeMosaiqueActu seule touchée (pages Actualité du cheval et du cavalier) : la grille est découpée en blocs de 3 rangées (iPhone : 1 grande case + 5 petites ; tablette 9 cases ; ordinateur 12), les blocs se suivent avec un petit espace (14 px iPhone, 22 px grand écran). Dans chaque bloc, la 1re photo parmi les 3 premières cases est la grande ; elle est à gauche dans un bloc, à droite dans le suivant. Tous les blocs restent visibles (pas de « Voir tout »).
+- Repart de la version en ligne 20261019-0145 (page Écurie de l'autre conversation), marqueur 0205.
+- Tests : rendus 390 / 820 / 1280, page pleine et vide ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
