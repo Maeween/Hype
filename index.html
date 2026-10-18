@@ -64638,18 +64638,90 @@ function BlocLicenceFFE() {
    on ne l apporte QUE lorsqu on ouvre l ecran, jamais au demarrage.
    Meme methode que l app pour OpenCV du Fond Studio.
    Si le fichier ne se charge pas, on le dit — pas d ecran blanc.      */
+/* 18/10 MOSAIQUE DES MOMENTS FORTS (Blandine : « conserve les moments forts de la nouvelle page a la place de ceux de l ancienne »).
+   Rendu repris de la nouvelle page Performances (g3) : une grande carte a gauche + quatre petites (2 x 2), photo SEULEMENT si elle a
+   ete choisie a la main (sinon une petite coupe dessinee, jamais de photo au hasard ni de portrait), rang en serif champagne, epreuve,
+   concours, annee, cavalier ; UN seul petit crayon qui ouvre une feuille « Changer la photo » / « Retirer des moments forts » ; la case
+   « + Ajouter un moment fort » prend la place libre suivante. Le choix des moments forts et les droits restent ceux de la page qui
+   l appelle (memes colonnes fort_force / fort_exclu, memes medias moments_forts_medias). Toucher une carte fait ce que la page decide. */
+function MosaiqueFortsHype(props) {
+  var h = React.createElement;
+  var T7 = (typeof hypeT7 === "function") ? hypeT7 : function (fr) { return fr; };
+  var gSt = React.useState(null); var gere = gSt[0], setGere = gSt[1];
+  var forts = (props.forts || []).filter(Boolean).slice(0, 5);
+  var IVOIRE = "#F3EEE4", CHAMP = "#C9A66B", MUET = "rgba(243,238,228,0.62)", NOIR = "#070A08", PETROLE2 = "#101D22";
+  var SERIF = "'Cormorant Garamond',Georgia,serif", SANS = "'Montserrat',sans-serif";
+  var rtl = false; try { rtl = document.documentElement.dir === "rtl"; } catch (eR) { }
+  function rang(pl) { if (pl == null) return ""; return T7(pl === 1 ? "1er" : pl + "e", pl === 1 ? "1st" : pl === 2 ? "2nd" : pl === 3 ? "3rd" : pl + "th", pl + "º", pl + "º", pl + "位", pl + ".", String(pl)); }
+  function nomCourt(x) { var m = String(x || "").trim().split(/\s+/); if (m.length < 2) return String(x || ""); return m[0].charAt(0).toUpperCase() + m[0].slice(1).toLowerCase() + " " + m.slice(1).map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1).toLowerCase(); }).join(" "); }
+  var icoSansPhoto = h("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none", stroke: "rgba(201,166,107,0.45)", strokeWidth: 1.3, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M8 4h8v5a4 4 0 0 1-8 0V4zM8 5H5a3 3 0 0 0 3 4M16 5h3a3 3 0 0 1-3 4M12 13v4m-3 3h6" }));
+  function carte(f, grande, idx) {
+    var ph = props.photoDe ? props.photoDe(f, idx) : null;
+    var peutPhoto = !!(props.peutPhoto && props.peutPhoto(f));
+    var peutRetirer = !!(props.peutRetirer && props.peutRetirer(f));
+    var annee = f.an || (f.d ? String(f.d).slice(0, 4) : "");
+    var concoursC = String(f.nom || "").replace(/^\s*CSO\s+/i, "");
+    var ombre = "0 1px 8px rgba(0,0,0,0.75)";
+    return h("div", { key: "mf" + idx, "data-fort-carte": String(idx), role: props.onCarte ? "button" : undefined, onClick: props.onCarte ? function () { props.onCarte(f); } : undefined,
+      style: { position: "relative", borderRadius: grande ? 16 : 13, overflow: "hidden", border: "1px solid rgba(201,166,107,0.22)", background: "radial-gradient(120% 90% at 30% 20%, " + PETROLE2 + " 0%, " + NOIR + " 75%)", gridRow: grande ? "span 2" : undefined, minHeight: 0, cursor: props.onCarte ? "pointer" : "default" } },
+      ph ? (ph.video && typeof hypeMiniatureVideo === "function" ? hypeMiniatureVideo(ph.url, { largeur: grande ? 900 : 500, objectPosition: "center 30%", picto: false, style: { position: "absolute", inset: 0 } })
+        : h("img", { src: ph.url, alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 30%" } }))
+        : h("div", { "aria-hidden": "true", style: { position: "absolute", top: grande ? "26%" : "22%", left: 0, right: 0, display: "flex", justifyContent: "center" } }, icoSansPhoto),
+      h("div", { "aria-hidden": "true", style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0) 40%, rgba(7,10,8,0.5) 66%, rgba(7,10,8,0.9) 100%)" } }),
+      (peutPhoto || peutRetirer) ? h("button", { type: "button", "data-fort-crayon": String(idx), "aria-label": T7("Gérer ce moment fort", "Manage this highlight", "Gestionar este momento", "Gestisci questo momento", "このハイライトを管理", "Diesen Moment verwalten", "إدارة هذه اللحظة"), onClick: function (e) { try { e.stopPropagation(); } catch (eS) { } setGere({ f: f, peutPhoto: peutPhoto, peutRetirer: peutRetirer }); },
+        style: { position: "absolute", top: grande ? 8 : 6, insetInlineEnd: grande ? 8 : 6, width: 26, height: 26, borderRadius: 8, border: "none", background: "rgba(7,10,8,0.55)", color: "#E6CF9C", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+        h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))) : null,
+      h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: grande ? "0 12px 12px" : "0 8px 8px" } },
+        h("div", { style: { fontFamily: SERIF, fontSize: grande ? 34 : 25, fontWeight: 600, color: "#E6CF9C", lineHeight: 1, textShadow: ombre, direction: "ltr", unicodeBidi: "isolate", textAlign: "start" } },
+          rang(f.pl || 1), (grande && f.part) ? h("span", { style: { fontSize: 19, color: "#E6CF9C" } }, " " + T7("sur", "of", "de", "su", "/", "von", "من") + " " + f.part) : null),
+        f.ep ? h("div", { style: { marginTop: grande ? 6 : 4, fontFamily: SANS, fontSize: grande ? 12 : 10, fontWeight: 500, color: IVOIRE, lineHeight: 1.25, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombre } }, grande ? f.ep : String(f.ep).replace(/^\s*Poney\s+(\d|Elite)\b/i, "P$1")) : null,
+        h("div", { style: { marginTop: 1, fontFamily: SANS, fontSize: grande ? 12 : 10, fontWeight: 500, color: IVOIRE, lineHeight: 1.25, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombre } }, grande ? (concoursC + (annee ? " " + annee : "")) : concoursC),
+        (grande ? f.cav : (annee || f.cav)) ? h("div", { style: { marginTop: 2, fontFamily: SANS, fontSize: grande ? 11 : 9, color: "rgba(230,207,156,0.92)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombre } }, grande ? nomCourt(f.cav) : [annee, f.cav ? nomCourt(f.cav) : ""].filter(Boolean).join(" · ")) : null));
+  }
+  function tuileAjout() {
+    return h("button", { type: "button", key: "ajf", "data-fort-ajouter": "1", onClick: function () { props.onAjouter(); }, style: { minHeight: 0, borderRadius: 13, border: "1px dashed rgba(201,166,107,0.55)", background: "rgba(16,26,29,0.5)", color: "#E6CF9C", fontFamily: SANS, fontSize: 10, fontWeight: 600, cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6, padding: 8, textAlign: "center", lineHeight: 1.25 } },
+      h("span", { style: { fontFamily: SERIF, fontSize: 26, lineHeight: 1, color: CHAMP } }, "+"),
+      T7("Ajouter un moment fort", "Add a highlight", "Añadir un momento", "Aggiungi un momento", "ハイライトを追加", "Moment hinzufügen", "إضافة لحظة بارزة"));
+  }
+  var peutAjouter = typeof props.onAjouter === "function";
+  if (!forts.length && !peutAjouter) return null;
+  var cases = [];
+  if (forts[0]) cases.push(carte(forts[0], true, 0)); else cases.push(tuileAjout());
+  for (var k = 1; k <= 4; k++) {
+    if (forts[k]) cases.push(carte(forts[k], false, k));
+    else if (peutAjouter && forts.length && k === forts.length) cases.push(tuileAjout());
+  }
+  var seule = (cases.length === 1);
+  var btnSt = { width: "100%", minHeight: 46, borderRadius: 12, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer", color: IVOIRE };
+  var feuille = gere ? h("div", { key: "fFort", onClick: function () { setGere(null); }, "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,5,0.82)", display: "flex", alignItems: "flex-end", justifyContent: "center", direction: rtl ? "rtl" : "ltr" } },
+    h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "80vh", display: "flex", flexDirection: "column", background: "#0C1316", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))", boxSizing: "border-box" } },
+      h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rang(gere.f.pl || 1) + (gere.f.part ? " / " + gere.f.part : "")),
+      h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [gere.f.ep, String(gere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" • ")),
+      gere.peutPhoto ? h("button", { type: "button", "data-fort-photo": "1", onClick: function () { var fx = gere.f; setGere(null); props.onPhoto(fx); }, style: Object.assign({ marginBottom: 8, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)" }, btnSt) }, T7("Changer la photo", "Change the photo", "Cambiar la foto", "Cambia la foto", "写真を変更", "Foto ändern", "تغيير الصورة")) : null,
+      gere.peutRetirer ? h("button", { type: "button", "data-fort-retirer": "1", onClick: function () { var fx = gere.f; setGere(null); props.onRetirer(fx); }, style: Object.assign({ border: "1px solid rgba(243,238,228,0.2)", background: "transparent" }, btnSt) }, T7("Retirer des moments forts", "Remove from highlights", "Quitar de los momentos", "Rimuovi dai momenti forti", "ハイライトから外す", "Aus den Highlights entfernen", "إزالة من اللحظات البارزة")) : null,
+      h("div", { style: { marginTop: 8, fontFamily: SANS, fontSize: 11, color: "rgba(243,238,228,0.45)", textAlign: "center" } }, T7("Le résultat reste dans ses saisons.", "The result stays in its seasons.", "El resultado sigue en sus temporadas.", "Il risultato resta nelle sue stagioni.", "成績はシーズン一覧に残ります。", "Das Ergebnis bleibt in seinen Saisons.", "تبقى النتيجة في مواسمها.")),
+      h("button", { type: "button", onClick: function () { setGere(null); }, style: Object.assign({ marginTop: 12, minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent" }, btnSt) }, T7("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق")))) : null;
+  return h("div", { "data-mosaique-forts": "1", style: { margin: props.marge || "0 16px" } },
+    h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, letterSpacing: ".01em", margin: "30px 2px 12px" } }, T7("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
+    h("div", { style: { display: "grid", gridTemplateColumns: seule ? "1fr" : "1.3fr 1fr 1fr", gridTemplateRows: seule ? "190px" : "128px 128px", gap: 8 } }, cases),
+    feuille ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body) ? ReactDOM.createPortal(feuille, document.body) : feuille) : null);
+}
 /* 10/10 (839) LA PETITE VIDEO « resultats officiels », MASQUEE PAR DEFAUT : une ligne « Voir la petite video » l affiche
    (avec la phrase). Posee sur la page d import et sur les Performances d un cheval sans resultat. */
 function VideoResultatsOfficiels(props) {
   var h = React.createElement;
-  var st = React.useState(!!(props && props.ouverte)), ouv = st[0], setOuv = st[1];   /* (1087) ouverte d office si demande */
+  /* 18/10 Blandine : « que la video pour mettre les resultats en ligne reste masquee quand ca a deja ete fait » : avec props.cle,
+     le choix « Masquer la video » est retenu sur l appareil (meme cle que la nouvelle page Performances) ; « Voir la petite video » l annule. */
+  function lireMasque() { try { return !!(props && props.cle && localStorage.getItem(props.cle) === "1"); } catch (eLm) { return false; } }
+  function poserMasque(v) { try { if (props && props.cle) { if (v) localStorage.setItem(props.cle, "1"); else localStorage.removeItem(props.cle); } } catch (ePm) { } }
+  var st = React.useState(function () { return !!(props && props.ouverte) && !lireMasque(); }), ouv = st[0], setOuv = st[1];   /* (1087) ouverte d office si demande */
   var T7 = (typeof hypeT7 === "function") ? hypeT7 : function (fr) { return fr; };
   if (!ouv) return h("div", { style: { textAlign: "center", padding: (props && props.marge) || "10px 0 4px" } },
-    h("span", { role: "button", onClick: function () { setOuv(true); }, style: { fontSize: 12.5, color: "rgba(237,242,245,.5)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer", letterSpacing: ".02em" } }, hypeT7("Voir la petite vid\u00e9o \u25b8", "Watch the short video \u25b8", "Ver el v\u00eddeo \u25b8", "Guarda il video \u25b8", "\u77ed\u3044\u52d5\u753b\u3092\u898b\u308b \u25b8", "Kurzes Video ansehen \u25b8", "\u0645\u0634\u0627\u0647\u062f\u0629 \u0627\u0644\u0641\u064a\u062f\u064a\u0648 \u0627\u0644\u0642\u0635\u064a\u0631 \u25b8")));
+    h("span", { role: "button", onClick: function () { poserMasque(false); setOuv(true); }, style: { fontSize: 12.5, color: "rgba(237,242,245,.5)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer", letterSpacing: ".02em" } }, hypeT7("Voir la petite vid\u00e9o \u25b8", "Watch the short video \u25b8", "Ver el v\u00eddeo \u25b8", "Guarda il video \u25b8", "\u77ed\u3044\u52d5\u753b\u3092\u898b\u308b \u25b8", "Kurzes Video ansehen \u25b8", "\u0645\u0634\u0627\u0647\u062f\u0629 \u0627\u0644\u0641\u064a\u062f\u064a\u0648 \u0627\u0644\u0642\u0635\u064a\u0631 \u25b8")));
   return h("div", { style: { margin: (props && props.marge) || "10px 16px 4px" } },
     /* 13/10 (1087) Blandine : « avec possibilite de la masquer la-bas egalement » */
     (props && props.masquable) ? h("div", { style: { textAlign: "end", maxWidth: 260, margin: "0 auto 6px" } },
-      h("span", { role: "button", onClick: function () { setOuv(false); try { if (props && typeof props.onMasquer === "function") props.onMasquer(); } catch (eOm) { } }, style: { fontSize: 12, color: "rgba(243,238,228,.5)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer" } },   /* 15/10 chantier Performances : onMasquer (facultatif) */
+      h("span", { role: "button", onClick: function () { poserMasque(true); setOuv(false); try { if (props && typeof props.onMasquer === "function") props.onMasquer(); } catch (eOm) { } }, style: { fontSize: 12, color: "rgba(243,238,228,.5)", fontStyle: "italic", fontFamily: "'Cormorant Garamond',Georgia,serif", cursor: "pointer" } },   /* 15/10 chantier Performances : onMasquer (facultatif) */
         T7("Masquer la vidéo", "Hide the video", "Ocultar el vídeo", "Nascondi il video", "動画を隠す", "Video ausblenden", "إخفاء الفيديو") + " \u25be")) : null,
     h("div", { style: { position: "relative", width: "100%", maxWidth: 260, margin: "0 auto", borderRadius: 16, overflow: "hidden", background: "#000", border: "1px solid rgba(255,255,255,.07)" } },
       h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1", autoPlay: true, muted: true, loop: true, playsInline: true, "webkit-playsinline": "true", preload: "metadata", style: { width: "100%", display: "block" } }),
@@ -69015,7 +69087,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
           h("video", { src: "https://ldpjebgtskzdokrublfg.supabase.co/storage/v1/object/public/photos/Untitled%20folder/Ui/" + (((teinte || "").toUpperCase() === "#D6C4A1" || (teinte || "").toUpperCase() === "#D6C4A1" || (teinte || "").toUpperCase() === "#C9A66B") ? "palmares-dore.mp4" : (teinte || "").toUpperCase() === "#5C7A5E" ? "palmares-vert.mp4" : (teinte || "").toUpperCase() === "#C64B5C" ? "palmares-bordeaux.mp4" : "palmares-crystal.mp4"), muted: true, loop: true, autoPlay: true, playsInline: true, preload: "auto", ref: function (elV) { try { if (!elV) return; elV.muted = true; elV.setAttribute("playsinline", ""); var pV = elV.play(); if (pV && pV.catch) pV.catch(function () { setTimeout(function () { try { var p2 = elV.play(); if (p2 && p2.catch) p2.catch(function () { }); } catch (e7) { } }, 120); }); } catch (e8) { } }, onError: function (eV) { try { eV.currentTarget.parentNode.style.display = "none"; } catch (e9) { } }, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center" } }),
           h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.15) 0%, rgba(6,7,9,0) 35%, rgba(6,7,9,0.55) 78%, #060709 100%)" } })),
         (c.flots && c.flots.length) ? h("div", { className: "rbstrip" }, c.flots.map(rubanCard)) : null,
-        ((chevalDyn && moi && chevalDyn.ownerId === moi.id) && resDb !== null) ? h(VideoResultatsOfficiels, { marge: "4px 0 14px", ouverte: true, masquable: true }) : null,   /* (839) ; 13/10 (1087) Blandine : « mets-la plutot sur la page resultats apres celle qui est en ligne » : visible directement (plus repliee), pour la proprietaire, avec ou sans resultat */
+        ((chevalDyn && moi && chevalDyn.ownerId === moi.id) && resDb !== null) ? h(VideoResultatsOfficiels, { marge: "4px 0 14px", ouverte: true, masquable: true , cle: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }) : null,   /* (839) ; 13/10 (1087) Blandine : « mets-la plutot sur la page resultats apres celle qui est en ligne » : visible directement (plus repliee), pour la proprietaire, avec ou sans resultat */
         /* ═══ 23/08 session 153 — LA PAGE DES RÉSULTATS ══════════════════
            Maquette validée par Blandine : tuiles « Fraction » (place en
            grand + le mot PLACE + « sur N partants »), pondérée (les gros
@@ -69556,20 +69628,20 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 h("div", { style: { textAlign: "center", marginTop: 8 } }, h("button", { onClick: function () { setNiveauOuvert(true); }, style: { minHeight: 40, padding: "8px 14px", borderRadius: 999, border: "1px solid rgba(217,168,92,.4)", background: "transparent", color: "#D9C7A3", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 700, cursor: "pointer" } }, T("R\u00e9gler ce qui est enregistr\u00e9 comme visible \u203a", "Set what is saved as visible \u203a", "Ajustar lo que se guarda como visible \u203a", "Regolare cosa resta visibile \u203a", "\u8868\u793a\u3059\u308b\u7bc4\u56f2\u3092\u8a2d\u5b9a \u203a", "Festlegen, was sichtbar bleibt \u203a", "\u0636\u0628\u0637 \u0645\u0627 \u064a\u064f\u062d\u0641\u0638 \u0643\u0638\u0627\u0647\u0631 \u203a"))));
             })(),
             /* 13/10 (1087) la petite video « resultats officiels » (retiree de la fiche) : ici, ouverte, pour la proprietaire, avec « Masquer la video » */
-            (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h(VideoResultatsOfficiels, { marge: "26px 16px 0", ouverte: true, masquable: true }) : null,
-            /* — 3 · SES MOMENTS FORTS — */
-            forts.length ? h(React.Fragment, null,
-              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "32px 22px 14px" } }, filetOr(),
-                h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, letterSpacing: ".1em", color: "#EFE9DC", whiteSpace: "nowrap" } }, T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "\u30cf\u30a4\u30e9\u30a4\u30c8", "Seine Highlights", "\u0644\u062d\u0638\u0627\u062a\u0647 \u0627\u0644\u0645\u0645\u064a\u0632\u0629").toUpperCase()), filetOr()),
-              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ h("div", { style: { margin: "0 16px" } },
-                carteFort(forts[0], true, 0),
-                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null,
-                (forts[3] || forts[4]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[3], false, 3), carteFort(forts[4], false, 4)) : null,
-                /* (600) « + » : choisir soi-meme un resultat a mettre en vitrine */
-                peutChoisirForts ? h("div", { style: { textAlign: "center", marginTop: 12 } }, h("button", { onClick: function () { setChoixFortOuvert(true); }, style: { minHeight: 40, padding: "9px 18px", borderRadius: 999, border: "1px solid rgba(217,168,92,.55)", background: "rgba(217,168,92,.08)", color: "#E9D3A2", fontFamily: "'Montserrat',sans-serif", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter un moment fort", "Add a highlight", "A\u00f1adir un momento", "Aggiungi un momento", "\u30cf\u30a4\u30e9\u30a4\u30c8\u3092\u8ffd\u52a0", "Moment hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0644\u062d\u0638\u0629 \u0628\u0627\u0631\u0632\u0629"))) : null),
-              /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
-                 resultats, elle a pas a envoyer encore ailleurs »). */
-              null) : null,
+            (chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h(VideoResultatsOfficiels, { marge: "26px 16px 0", ouverte: true, masquable: true , cle: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }) : null,
+            /* — 3 · SES MOMENTS FORTS — 18/10 : rendu de la nouvelle page Performances (MosaiqueFortsHype) ; meme choix des moments
+               forts (forts, fort_force / fort_exclu), memes droits, meme feuille photo (picker), une carte ouvre toujours sa saison.
+               Photo : seulement celle choisie a la main (moments_forts_medias) — plus de portrait ni de photo d album au hasard. */
+            (forts.length || peutChoisirForts) ? h(MosaiqueFortsHype, {
+              forts: forts,
+              photoDe: function (f) { var sF = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonFort(f)]) || null; return (sF && sF.url) ? { url: sF.url, video: sF.type === "video" } : null; },
+              peutPhoto: function () { return peutChoisirMediaF; },
+              peutRetirer: function (f) { return !!(peutChoisirForts && f && f.id); },
+              onPhoto: function (f) { ouvrirPickerMomentF(jetonFort(f)); },
+              onRetirer: function (f) { var eF = etatFort(f); poserFort(f, eF.ff ? { fort_force: false } : { fort_exclu: true }); },
+              onAjouter: peutChoisirForts ? function () { setChoixFortOuvert(true); } : null,
+              onCarte: function (f) { if (!f || !f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }
+            }) : null,
             /* \U0001f7e9 06/09 (Blandine : "vrai bouton pour choisir photo/video sur un moment
                fort") \u2014 le picker s'ouvre en tapant le crayon d'une carte moment fort. Choix
                fait DANS les photos/videos deja envoyees sur ce cheval (chargerPhotosSouvenirs) :
