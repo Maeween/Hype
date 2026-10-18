@@ -41503,7 +41503,7 @@ function EcranResultatsCavaliere() {
   /* 07/10 (694) — IMPORTER MES RESULTATS depuis la page Performances de la cavaliere (SA page seulement) : meme video
      que la fiche cheval, meme phrase, meme bouton. L import range chaque ligne sur son cheval et verifie son nom FFE. */
   var sienPerf = !!(moi && riderId && String(moi.id) === String(riderId));
-  var blocAjoutCav = (sienPerf && resDb !== null) ? h("div", { style: { margin: "10px 16px 0" } },
+  var blocAjoutCav = (sienPerf && resDb !== null && resDb.length > 0) ? h("div", { style: { margin: "10px 16px 0" } },   /* 18/10 : page vide -> le bouton est dans PageVideResultatsHype */
     h("button", { "data-ajout-resultat": "performances", onClick: function () { setAjoutPerf(true); },
       style: { display: "block", width: "100%", minHeight: 48, borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
       "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir un resultado", "Aggiungi un risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629"))) : null;
@@ -41530,9 +41530,8 @@ function EcranResultatsCavaliere() {
       ? h("div", { style: { padding: "40px 20px", textAlign: "center", color: "#8A929C", fontFamily: "'Montserrat',sans-serif", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
       : (!resDb.length
           ? h("div", null, encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
-              h("div", { style: { margin: "0 16px", borderRadius: 14, border: "1px solid rgba(255,255,255,0.08)", padding: 16, color: "#8A929C", fontSize: 12.5, lineHeight: 1.55, fontFamily: "'Montserrat',sans-serif" } },
-                erreur ? erreur : T("Aucun r\u00e9sultat reli\u00e9 \u00e0 ce compte pour l\u2019instant. Ils apparaissent ici une fois son nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Relier les r\u00e9sultats FFE \u00bb).", "No result linked to this account yet.", "A\u00fan no hay resultados vinculados.", "Nessun risultato collegato per ora.", "\u307e\u3060\u6210\u7e3e\u304c\u3042\u308a\u307e\u305b\u3093\u3002", "Noch keine verkn\u00fcpften Ergebnisse.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u062a\u0627\u0626\u062c \u0645\u0631\u062a\u0628\u0637\u0629 \u0628\u0647\u0630\u0627 \u0627\u0644\u062d\u0633\u0627\u0628 \u062d\u0627\u0644\u064a\u0627. \u062a\u0638\u0647\u0631 \u0647\u0646\u0627 \u0628\u0639\u062f \u0631\u0628\u0637 \u0627\u0633\u0645\u0647 \u0641\u064a FFE (\u062d\u0633\u0627\u0628\u064a \u2190 \u00ab\u0631\u0628\u0637 \u0646\u062a\u0627\u0626\u062c FFE\u00bb).")),
-              blocImportCav)   /* 18/10 : la page vide garde la video et le bouton d import (remontes en haut de la page pleine) */
+              /* 18/10 : page vide de la maquette (trophee, phrase, boutons selon les droits, carte video) */
+              h(PageVideResultatsHype, { cavalier: true, nom: nomCav, message: erreur || null, peutAjouter: !!sienPerf, onAjouter: function () { setAjoutPerf(true); }, peutImporter: !!sienPerf, onImporter: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); } }))
           : h("div", { style: { padding: "0 0 28px" } },
         (function () {
           var lignesBrutes = (resDb || []).filter(function (r) { return r && (voirMasques || r.visible !== false) && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
@@ -41699,6 +41698,21 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           var OR9 = "#C9A66B";   /* 18/10 : champagne de la nouvelle page */
           var aImpF = (resDb || []).some(function (rI) { return rI && rI.origine === "import"; });   /* 18/10 : des resultats deja importes ? */
           var COUL_SAIS = [["p1", "#C9A66B", T("1re", "1st", "1.º", "1º", "1位", "1.", "الأول")], ["p2", "rgba(243,238,228,0.75)", T("2e", "2nd", "2.º", "2º", "2位", "2.", "الثاني")], ["p3", "#A9713C", T("3e", "3rd", "3.º", "3º", "3位", "3.", "الثالث")], ["aut", "rgba(243,238,228,0.22)", T("autres places", "other places", "otros puestos", "altri posti", "その他", "andere Plätze", "مراكز أخرى")], ["elab", "#7A3B34", T("élim. / abandon", "elim. / retired", "elim. / abandono", "elim. / ritiro", "失権/棄権", "ausgesch. / aufgeg.", "استبعاد / انسحاب")]];
+          /* 18/10 (Blandine : proposition 4 « dans le bandeau du graphique ») : le choix Tous / Classes / Podiums / Sans faute en petits mots
+             en haut du cadre du graphique, le reglage « enregistre comme visible » en icone dans le coin, la mention des masques dessous.
+             Proprietaire seulement ; ne touche RIEN en base ni aux compteurs (seulement les listes). */
+          function bandeauAff() {
+            var proprioB = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+            if (!proprioB) return null;
+            var choixB = [["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")], ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")], ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a")], ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]];
+            var nMasqB = tousF.length - vueF.length;
+            return h("div", { "data-saisons-affichage": "1", style: { margin: "0 4px 12px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5 } },
+                choixB.map(function (cB) { var onB = (vueRes === cB[0]); return h("span", { key: "vb" + cB[0], role: "button", onClick: function () { poserVueRes(cB[0]); }, style: { cursor: "pointer", color: onB ? "#E6CF9C" : "rgba(243,238,228,0.6)", fontWeight: onB ? 600 : 500, textDecoration: onB ? "underline" : "none", textUnderlineOffset: 4, whiteSpace: "nowrap" } }, cB[1]); }),
+                h("button", { type: "button", "aria-label": T("R\u00e9gler ce qui est enregistr\u00e9 comme visible", "Set what is saved as visible", "Ajustar lo visible", "Regolare cosa resta visibile", "\u8868\u793a\u7bc4\u56f2\u3092\u8a2d\u5b9a", "Sichtbarkeit festlegen", "\u0636\u0628\u0637 \u0645\u0627 \u064a\u0638\u0647\u0631"), onClick: function () { setNiveauOuvert(true); }, style: { marginInlineStart: "auto", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", background: "rgba(7,10,8,0.4)", color: "#C9A66B", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+                  h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("circle", { cx: 12, cy: 12, r: 3 }), h("path", { d: "M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" })))),
+              (vueRes !== "tous" && nMasqB > 0) ? h("div", { style: { marginTop: 6, fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nMasqB + " " + T("masqu\u00e9s \u00b7 compteurs complets", "hidden \u00b7 counters complete", "ocultos \u00b7 contadores completos", "nascosti \u00b7 contatori completi", "\u4ef6\u975e\u8868\u793a\uff08\u96c6\u8a08\u306f\u5168\u4ef6\uff09", "ausgeblendet \u00b7 Z\u00e4hler vollst\u00e4ndig", "\u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0643\u0627\u0645\u0644\u0629")) : null);
+          }
           var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(201,166,107,.5))" } }); }
           /* 02/09 (Blandine) — UNE PHOTO PAR MOMENT FORT, JAMAIS LA MEME TROIS FOIS.
@@ -41973,9 +41987,10 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                   nG.push(Math.max(0, rG.length - nG[0] - nG[1] - nG[2] - nG[3]));
                   return { an: anG, sorties: sortiesDe(fsG), n: nG, tot: rG.length };
                 }).filter(Boolean);
-                if (colsG.length < 2) return null;
+                if (colsG.length < 2) { var bSeul = bandeauAff(); return bSeul ? h("div", { style: { margin: "0 16px 20px", padding: "14px 10px 4px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } }, bSeul) : null; }
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
                 return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 20px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                  bandeauAff(),
                   h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
                       var onG = (saisonOuv === cG.an);
@@ -41988,42 +42003,6 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     })),
                   h("div", { style: { marginTop: 6, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, T("sorties au-dessus de chaque colonne", "outings above each column", "salidas encima de cada columna", "uscite sopra ogni colonna", "各列の上は出場回数", "Starts über jeder Säule", "عدد المشاركات فوق كل عمود")));
               })(),
-            /* 02/09 — LE MENU D AFFICHAGE. 18/10 (Blandine, croix sur sa capture) : deplace SOUS le graphique des saisons, en tete de la liste des annees (avant : sous les quatre chiffres).
-               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
-               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
-               c est la que la question se pose.
-               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
-               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
-            (function () {
-              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-              if (!proprioF) return null;
-              var choix = [
-                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")],
-                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")],
-                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c")],
-                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
-                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]
-              ];
-              var nMasq = tousF.length - vueF.length;
-              return h("div", { style: { margin: "6px 16px 18px" } },   /* 18/10 (Blandine) : entre le graphique et la liste des annees */
-                h("div", { style: { display: "flex", gap: 7 } },
-                  choix.map(function (cH) {
-                    var onV = (vueRes === cH[0]);
-                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
-                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"),
-                        background: onV ? "rgba(201,166,107,0.12)" : "rgba(16,26,29,0.7)",   /* 18/10 Blandine : pas de pastille doree pleine */
-                        color: onV ? "#E6CF9C" : "rgba(237,242,245,0.62)",
-                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
-                  })),
-                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
-                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
-                                  "results hidden \u00b7 the counters above stay complete",
-                                  "resultados ocultos \u00b7 los contadores siguen completos",
-                                  "risultati nascosti \u00b7 i contatori restano completi",
-                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
-                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null);
-            })(),
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
@@ -64863,6 +64842,31 @@ function BlocLicenceFFE() {
    on ne l apporte QUE lorsqu on ouvre l ecran, jamais au demarrage.
    Meme methode que l app pour OpenCV du Fond Studio.
    Si le fichier ne se charge pas, on le dit — pas d ecran blanc.      */
+/* 18/10 PAGE SANS RESULTAT (ecran 5 de la maquette, demande de Blandine pour les pages actuelles Resultats du cheval et Performances du
+   cavalier) : trophee dans un cercle, « Aucun resultat pour le moment », une phrase, deux grands boutons l un sous l autre selon les droits
+   reels (ajouter / importer), la petite carte video. Aucun chiffre a zero ni moment fort fictif. Le visiteur voit le trophee et la phrase. */
+function PageVideResultatsHype(props) {
+  var h = React.createElement;
+  var T7 = (typeof hypeT7 === "function") ? hypeT7 : function (fr) { return fr; };
+  var IVOIRE = "#F3EEE4", CHAMP = "#C9A66B", MUET = "rgba(243,238,228,0.62)";
+  var nom = String(props.nom || "");
+  var phrase = props.cavalier
+    ? (props.peutAjouter ? T7("Ajoute tes r\u00e9sultats pour suivre ta progression, conserver ta r\u00e9gularit\u00e9 et les partager avec ta communaut\u00e9.", "Add your results to follow your progress, keep track of your consistency and share them with your community.", "A\u00f1ade tus resultados para seguir tu progresi\u00f3n, conservar tu regularidad y compartirlos con tu comunidad.", "Aggiungi i tuoi risultati per seguire i tuoi progressi, la tua regolarit\u00e0 e condividerli con la tua comunit\u00e0.", "\u6210\u7e3e\u3092\u8ffd\u52a0\u3057\u3066\u3001\u6210\u9577\u3068\u5b89\u5b9a\u611f\u3092\u8a18\u9332\u3057\u3001\u30b3\u30df\u30e5\u30cb\u30c6\u30a3\u3068\u5171\u6709\u3057\u3088\u3046\u3002", "F\u00fcge deine Ergebnisse hinzu, um deine Entwicklung und Best\u00e4ndigkeit zu verfolgen und mit deiner Community zu teilen.", "\u0623\u0636\u064a\u0641\u064a \u0646\u062a\u0627\u0626\u062c\u0643 \u0644\u062a\u062a\u0627\u0628\u0639\u064a \u062a\u0642\u062f\u0645\u0643 \u0648\u062a\u0634\u0627\u0631\u0643\u064a\u0647\u0627 \u0645\u0639 \u0645\u062c\u062a\u0645\u0639\u0643.")
+       : T7("Ses premiers r\u00e9sultats l'attendent.", "The first results are yet to come.", "Sus primeros resultados est\u00e1n por llegar.", "I primi risultati sono ancora da scrivere.", "\u6700\u521d\u306e\u7d50\u679c\u306f\u3053\u308c\u304b\u3089\u3067\u3059\u3002", "Die ersten Ergebnisse stehen noch aus.", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c \u0627\u0644\u0623\u0648\u0644\u0649 \u0628\u0627\u0646\u062a\u0638\u0627\u0631\u0647."))
+    : (props.peutAjouter ? T7("Ajoute les r\u00e9sultats de " + nom + " pour suivre sa progression, conserver sa r\u00e9gularit\u00e9 et les partager avec ta communaut\u00e9.", "Add " + nom + "'s results to follow their progress, keep track of their consistency and share them with your community.", "A\u00f1ade los resultados de " + nom + " para seguir su progresi\u00f3n y compartirlos con tu comunidad.", "Aggiungi i risultati di " + nom + " per seguirne i progressi e condividerli con la tua comunit\u00e0.", nom + " \u306e\u7d50\u679c\u3092\u8ffd\u52a0\u3057\u3066\u3001\u6210\u9577\u3092\u8a18\u9332\u3057\u3088\u3046\u3002", "F\u00fcge die Ergebnisse von " + nom + " hinzu, um die Entwicklung zu verfolgen und mit deiner Community zu teilen.", "\u0623\u0636\u064a\u0641\u064a \u0646\u062a\u0627\u0626\u062c " + nom + " \u0644\u062a\u062a\u0627\u0628\u0639\u064a \u062a\u0642\u062f\u0645\u0647.")
+       : T7("Ses premiers r\u00e9sultats l'attendent.", "Its first results are yet to come.", "Sus primeros resultados est\u00e1n por llegar.", "I suoi primi risultati sono ancora da scrivere.", "\u6700\u521d\u306e\u7d50\u679c\u306f\u3053\u308c\u304b\u3089\u3067\u3059\u3002", "Die ersten Ergebnisse stehen noch aus.", "\u0646\u062a\u0627\u0626\u062c\u0647 \u0627\u0644\u0623\u0648\u0644\u0649 \u0628\u0627\u0646\u062a\u0638\u0627\u0631\u0647."));
+  function grand(contenu, onClick, cle) { return h("button", { key: cle, type: "button", onClick: onClick, style: { width: "100%", minHeight: 58, padding: "0 16px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.75)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: "'Montserrat',sans-serif", fontSize: 13.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 } }, contenu); }
+  return h("div", { "data-page-vide": "1", style: { maxWidth: 520, margin: "0 auto", padding: "34px 0 10px" } },
+    h("div", { style: { padding: "0 26px", textAlign: "center" } },
+      h("div", { "aria-hidden": "true", style: { width: 84, height: 84, margin: "0 auto 18px", borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", background: "radial-gradient(circle at 50% 40%, rgba(201,166,107,0.12), rgba(7,10,8,0) 70%)", display: "flex", alignItems: "center", justifyContent: "center" } },
+        h("svg", { viewBox: "0 0 24 24", width: 38, height: 38, fill: CHAMP, stroke: "#E6CF9C", strokeWidth: 0.8, strokeLinejoin: "round" }, h("path", { d: "M7 3.5h10v5.2a5 5 0 0 1-10 0z" }), h("path", { fill: "none", stroke: CHAMP, strokeWidth: 1.5, strokeLinecap: "round", d: "M7 5H4.5a3 3 0 0 0 3 4.2M17 5h2.5a3 3 0 0 1-3 4.2" }), h("path", { d: "M11 13.6h2v3.2h-2z" }), h("path", { d: "M8.5 17h7l.8 3.5H7.7z" }))),
+      h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 31, fontWeight: 600, lineHeight: 1.12, color: IVOIRE, maxWidth: 215, margin: "0 auto" } }, T7("Aucun r\u00e9sultat pour le moment", "No results yet", "Ning\u00fan resultado por ahora", "Ancora nessun risultato", "\u307e\u3060\u7d50\u679c\u306f\u3042\u308a\u307e\u305b\u3093", "Noch keine Ergebnisse", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0646\u062a\u0627\u0626\u062c \u0628\u0639\u062f")),
+      h("div", { style: { margin: "12px auto 0", maxWidth: 320, fontFamily: "'Montserrat',sans-serif", fontSize: 13, lineHeight: 1.6, color: MUET } }, props.message || phrase)),
+    (props.peutAjouter || props.peutImporter) ? h("div", { "data-page-vide-actions": "1", style: { display: "flex", flexDirection: "column", gap: 12, margin: "26px 22px 0" } },
+      props.peutAjouter ? grand([h("span", { key: "p", "aria-hidden": "true", style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 24, lineHeight: 1, color: CHAMP } }, "+"), h("span", { key: "t" }, T7("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir un resultado", "Aggiungi un risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629"))], props.onAjouter, "vAj") : null,
+      props.peutImporter ? grand(h("span", null, T7("Importer mes r\u00e9sultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "Meine FFE-Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c FFE")), props.onImporter, "vImp") : null) : null,
+    props.peutImporter ? h(CarteImportHype, { onClick: props.onImporter, marge: "22px 22px 0" }) : null);
+}
 /* 18/10 CARTE « IMPORTER TES RESULTATS FFE » (proposition 3 choisie par Blandine) : quand des resultats sont deja importes, elle
    remplace la petite video en haut des pages Resultats (cheval) et Performances (cavalier) ; elle ouvre la page d import, ou la
    video s affiche ouverte avec ses explications. Proprietaire seulement (c est la page appelante qui decide). */
@@ -69717,6 +69721,21 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           var aImpF = (resDb || []).some(function (rI) { return rI && rI.origine === "import"; });   /* 18/10 : des resultats deja importes ? */
           /* 18/10 : couleurs et legende des saisons = celles de la nouvelle page Performances (1re, 2e, 3e, autres places, elim. / abandon) */
           var COUL_SAIS = [["p1", "#C9A66B", T("1re", "1st", "1.º", "1º", "1位", "1.", "الأول")], ["p2", "rgba(243,238,228,0.75)", T("2e", "2nd", "2.º", "2º", "2位", "2.", "الثاني")], ["p3", "#A9713C", T("3e", "3rd", "3.º", "3º", "3位", "3.", "الثالث")], ["aut", "rgba(243,238,228,0.22)", T("autres places", "other places", "otros puestos", "altri posti", "その他", "andere Plätze", "مراكز أخرى")], ["elab", "#7A3B34", T("élim. / abandon", "elim. / retired", "elim. / abandono", "elim. / ritiro", "失権/棄権", "ausgesch. / aufgeg.", "استبعاد / انسحاب")]];
+          /* 18/10 (Blandine : proposition 4 « dans le bandeau du graphique ») : le choix Tous / Classes / Podiums / Sans faute en petits mots
+             en haut du cadre du graphique, le reglage « enregistre comme visible » en icone dans le coin, la mention des masques dessous.
+             Proprietaire seulement ; ne touche RIEN en base ni aux compteurs (seulement les listes). */
+          function bandeauAff() {
+            var proprioB = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+            if (!proprioB) return null;
+            var choixB = [["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")], ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")], ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a")], ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]];
+            var nMasqB = tousF.length - vueF.length;
+            return h("div", { "data-saisons-affichage": "1", style: { margin: "0 4px 12px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 14, flexWrap: "wrap", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5 } },
+                choixB.map(function (cB) { var onB = (vueRes === cB[0]); return h("span", { key: "vb" + cB[0], role: "button", onClick: function () { poserVueRes(cB[0]); }, style: { cursor: "pointer", color: onB ? "#E6CF9C" : "rgba(243,238,228,0.6)", fontWeight: onB ? 600 : 500, textDecoration: onB ? "underline" : "none", textUnderlineOffset: 4, whiteSpace: "nowrap" } }, cB[1]); }),
+                h("button", { type: "button", "aria-label": T("R\u00e9gler ce qui est enregistr\u00e9 comme visible", "Set what is saved as visible", "Ajustar lo visible", "Regolare cosa resta visibile", "\u8868\u793a\u7bc4\u56f2\u3092\u8a2d\u5b9a", "Sichtbarkeit festlegen", "\u0636\u0628\u0637 \u0645\u0627 \u064a\u0638\u0647\u0631"), onClick: function () { setNiveauOuvert(true); }, style: { marginInlineStart: "auto", width: 32, height: 32, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", background: "rgba(7,10,8,0.4)", color: "#C9A66B", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+                  h("svg", { viewBox: "0 0 24 24", width: 15, height: 15, fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("circle", { cx: 12, cy: 12, r: 3 }), h("path", { d: "M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" })))),
+              (vueRes !== "tous" && nMasqB > 0) ? h("div", { style: { marginTop: 6, fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nMasqB + " " + T("masqu\u00e9s \u00b7 compteurs complets", "hidden \u00b7 counters complete", "ocultos \u00b7 contadores completos", "nascosti \u00b7 contatori completi", "\u4ef6\u975e\u8868\u793a\uff08\u96c6\u8a08\u306f\u5168\u4ef6\uff09", "ausgeblendet \u00b7 Z\u00e4hler vollst\u00e4ndig", "\u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0643\u0627\u0645\u0644\u0629")) : null);
+          }
           var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(201,166,107,.5))" } }); }
           /* 02/09 (Blandine) — UNE PHOTO PAR MOMENT FORT, JAMAIS LA MEME TROIS FOIS.
@@ -69831,6 +69850,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 h("div", { style: { marginTop: 2, fontSize: grande ? 11 : 9.3, color: "#D8D2C6", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
                   h("span", { style: { color: OR9, fontWeight: 700 } }, (f.pl && f.pl !== 1) ? (f.pl + "e") : "1er"), " sur " + (f.part || "?") /* 22/09 (350) : le vrai rang - un podium ajoute aux moments forts affichait « 1er » */, f.cav ? " \u00b7 " : null, f.cav ? h("span", { style: { color: "#F3EEE4", fontWeight: 700 } }, f.cav) : null)));
           }
+          /* 18/10 : cheval sans aucun resultat -> la page vide de la maquette (plus de chiffres a zero ni de video seule) */
+          if (!tousF.length) return h(React.Fragment, null,
+            encartIdentiteCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
+            ongletsPanCh("20px 16px 4px"),
+            h(PageVideResultatsHype, { nom: (chevalDyn && chevalDyn.nom) || c.nom || "", peutAjouter: !!peutSaisirResultat, onAjouter: function () { ouvrirAjoutResultat(); }, peutImporter: !!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))), onImporter: ouvrirImportFFE }));
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
             encartIdentiteCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c") /* (962) comme l onglet */),
@@ -70019,9 +70043,10 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                   nG.push(Math.max(0, rG.length - nG[0] - nG[1] - nG[2] - nG[3]));
                   return { an: anG, sorties: sortiesDe(fsG), n: nG, tot: rG.length };
                 }).filter(Boolean);
-                if (colsG.length < 2) return null;
+                if (colsG.length < 2) { var bSeul = bandeauAff(); return bSeul ? h("div", { style: { margin: "0 16px 20px", padding: "14px 10px 4px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } }, bSeul) : null; }
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
                 return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 20px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                  bandeauAff(),
                   h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
                       var onG = (saisonOuv === cG.an);
@@ -70034,44 +70059,6 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     })),
                   h("div", { style: { marginTop: 6, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, T("sorties au-dessus de chaque colonne", "outings above each column", "salidas encima de cada columna", "uscite sopra ogni colonna", "各列の上は出場回数", "Starts über jeder Säule", "عدد المشاركات فوق كل عمود")));
               })(),
-            /* 02/09 — LE MENU D AFFICHAGE. 18/10 (Blandine, croix sur sa capture) : deplace SOUS le graphique des saisons, en tete de la liste des annees (avant : sous les quatre chiffres).
-               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
-               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
-               c est la que la question se pose.
-               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
-               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
-            (function () {
-              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-              if (!proprioF) return null;
-              var choix = [
-                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")],
-                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")],
-                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c")],
-                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
-                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]
-              ];
-              var nMasq = tousF.length - vueF.length;
-              return h("div", { style: { margin: "6px 16px 18px" } },   /* 18/10 (Blandine) : entre le graphique et la liste des annees */
-                h("div", { style: { display: "flex", gap: 7 } },
-                  choix.map(function (cH) {
-                    var onV = (vueRes === cH[0]);
-                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
-                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"),
-                        background: onV ? "rgba(201,166,107,0.12)" : "rgba(16,26,29,0.7)",   /* 18/10 Blandine : pas de pastille doree pleine */
-                        color: onV ? "#E6CF9C" : "rgba(243,238,228,0.82)",
-                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
-                  })),
-                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
-                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
-                                  "results hidden \u00b7 the counters above stay complete",
-                                  "resultados ocultos \u00b7 los contadores siguen completos",
-                                  "risultati nascosti \u00b7 i contatori restano completi",
-                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
-                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null,
-                /* (601) l entree de la feuille « niveau enregistre comme visible » (proprietaire ou moderatrice) */
-                h("div", { style: { textAlign: "center", marginTop: 8 } }, h("button", { onClick: function () { setNiveauOuvert(true); }, style: { minHeight: 40, padding: "8px 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 700, cursor: "pointer" } }, T("R\u00e9gler ce qui est enregistr\u00e9 comme visible \u203a", "Set what is saved as visible \u203a", "Ajustar lo que se guarda como visible \u203a", "Regolare cosa resta visibile \u203a", "\u8868\u793a\u3059\u308b\u7bc4\u56f2\u3092\u8a2d\u5b9a \u203a", "Festlegen, was sichtbar bleibt \u203a", "\u0636\u0628\u0637 \u0645\u0627 \u064a\u064f\u062d\u0641\u0638 \u0643\u0638\u0627\u0647\u0631 \u203a"))));
-            })(),
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
