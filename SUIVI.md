@@ -13138,3 +13138,10 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 ## 18/10/2026 — Performances, build 10 (NON publié) : taille du cheval
 - La ligne d'infos du haut ajoute la taille comme la maquette (« JUMENT · SF · 2017 · 1,68 m »), seulement si les origines du cheval la donnent (origines.taille, déjà importée avec les origines) ; « 168 » ou « 168 cm » → « 1,68 m », « 1.68 » → « 1,68 m », autre texte affiché tel quel ; jamais inventée. Le « m » reste en minuscule.
 - Vérifications : 7 langues + arabe de droite à gauche et iPhone 375 / tablette 820 / ordinateur 1440 sans débordement (tests du tableau) ; tableau 44/44, moments forts 28/28, node --check 35 blocs sans erreur, marqueurs inchangés.
+
+## 18/10/2026 — Performances : vérification finale de la série (NON publiée)
+- Titre de la page sans résultat coupé comme la maquette (« Aucun résultat / pour le moment »).
+- Série complète sur la branche perf-g1 (10 builds), construite sur la version en ligne actuelle (b478aac), RIEN de publié : chiffres droits + intérieur des saisons, haut de page, moments forts, vidéo + boutons, page sans résultat, modification des saisies manuelles, lecture de capture (outil partagé), tablette + ordinateur, page Performances du cavalier, taille du cheval.
+- Vérifié : tableau 44/44, moments forts 28/28, banc fidèle (vraies polices) propriétaire / visiteuse / sans résultat / cavalier / tablette / ordinateur, node --check 35 blocs sans erreur, marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+- Qualifications championnats : rien de codé (aucun moteur validé). Requête de LECTURE préparée pour Blandine (comparaison par cheval : bloc historique au 1er juillet, Team vue Critérium, Team vue Championnat, et points Amateur du 15/06 au 27/09/2026 que la vue Championnat ne compte nulle part).
+- Restent soumis à décision : publication de la série ; moteur des qualifications ; masquage des 904 lignes (réglage de visibilité) ; lien résultat → journée de concours (SQL agenda_id).
