@@ -69634,7 +69634,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             /* — 3 · SES MOMENTS FORTS — 18/10 : rendu de la nouvelle page Performances (MosaiqueFortsHype) ; meme choix des moments
                forts (forts, fort_force / fort_exclu), memes droits, meme feuille photo (picker), une carte ouvre toujours sa saison.
                Photo : seulement celle choisie a la main (moments_forts_medias) — plus de portrait ni de photo d album au hasard. */
-            (forts.length || peutChoisirForts) ? h(MosaiqueFortsHype, {
+            (forts.length || (peutChoisirForts && fortsPool.length)) ? h(MosaiqueFortsHype, {   /* cheval sans resultat : pas de case vide */
               forts: forts,
               photoDe: function (f) { var sF = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonFort(f)]) || null; return (sF && sF.url) ? { url: sF.url, video: sF.type === "video" } : null; },
               peutPhoto: function () { return peutChoisirMediaF; },
