@@ -13222,3 +13222,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Changement : window.open(…, "_blank") puis w.opener = null (même protection que noopener), et on ne quitte Hype QUE si la fenêtre n'a vraiment pas pu s'ouvrir.
 - Inchangé : les liens eux-mêmes, montants, Stripe, verrou de renonciation à la rétractation, achats Apple (endormis), bouton de paiement Premium (déjà correct).
 - Tests (Chromium, vraie fonction) : avant → nouvelle fenêtre + Hype quittée ; après → nouvelle fenêtre, Hype reste, fenêtre détachée de Hype (opener null) ; fenêtre bloquée → Hype va sur le lien (repli conservé). Don Crystal idem. node --check 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone et app installée.
+
+## 18/10/2026 — Doublons de résultats supprimés en base (fait par Blandine)
+- 15 lignes en double (import relu sur 1 000 lignes seulement + textes abîmés) supprimées par Blandine avec la requête préparée ; sauvegarde des 15 lignes gardée avant suppression. Vérifié après coup (lecture) : 0 doublon restant, les 14 lignes conservées sont bien présentes. L'import réparé (20261018-1710) empêche le retour du problème.
+
+## 18/10/2026 — Page Performances du cavalier : nom, photo et écurie (marqueur 20261018-1740)
+- Défaut trouvé en préparant les liens : la page cavalier (#perfcav-<id du compte>) demandait au profil les colonnes « prenom » et « nom », qui n'existent pas dans profiles → la demande échouait entièrement : ni nom, ni photo, ni écurie (les résultats, chargés à part, s'affichaient).
+- Changement : demande limitée aux colonnes réelles (id, pseudo, avatar_url, avatar, ecurie) ; nom affiché = pseudo du compte ; photo = avatar_url, sinon avatar.
+- Contrôle de toute l'appli : plus aucune lecture de profiles ne demande une colonne inexistante. Banc de test corrigé (son faux profil avait prénom et nom, d'où le défaut non vu).
+- Tests : page cavalier (banc) nom, chevaux, chiffres, filtres, droits visiteur OK ; node --check sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
