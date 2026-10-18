@@ -41646,7 +41646,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             aImpF ? null : blocImportCav,
             /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) cartes de la maquette (112 x 176, trois par ecran) ; : remontes en haut, comme sur la page Resultats du cheval */
             recents.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 12px" } }, /* 18/10 : remonte en haut, plus d air (40 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 16px 14px" } }, /* 18/10 : espaces homogenes : 44 px au-dessus de chaque titre, 14 px dessous ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
               h("div", { className: "rise", style: { display: "flex", gap: 9, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
                 (function () {
@@ -41759,7 +41759,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642"))))) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 16px 14px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison", "\u062d\u0633\u0628 \u0627\u0644\u0645\u0648\u0633\u0645").toUpperCase()), filetOr()),
               (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
                 [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle", "\u0627\u0644\u0643\u0644")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
@@ -41778,7 +41778,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                       return (cible === "tous") ? ligs.length > 0 : ligs.some(function (lg) { return lg.cav === cible; });
                     });
                     setSaisonOuv(candidats.length ? candidats[0] : null);
-                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: onC ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: onC ? "#1A1408" : "rgba(243,238,228,0.82)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
+                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"), background: onC ? "rgba(201,166,107,0.12)" : "rgba(16,26,29,0.7)", color: onC ? "#E6CF9C" : "rgba(243,238,228,0.82)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
                 })) : null,
               /* 18/10 (maquette 1 + graphique validee par Blandine) : legende des couleurs (celles de la nouvelle page) puis un graphique,
                  une colonne par annee (hauteur = parcours de l annee, sorties au-dessus) ; toucher une colonne deplie cette annee juste dessous.
@@ -41831,8 +41831,8 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var onV = (vueRes === cH[0]);
                     return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
                       style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
-                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
+                        border: "1px solid " + (onV ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"),
+                        background: onV ? "rgba(201,166,107,0.12)" : "rgba(16,26,29,0.7)",   /* 18/10 Blandine : pas de pastille doree pleine */
                         color: onV ? "#E6CF9C" : "rgba(237,242,245,0.62)",
                         fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
                   })),
@@ -41925,7 +41925,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               var sansPts = filtreCav(tousF).length - avecPts.length;
               var arrondi = function (x) { return Math.round(x * 100) / 100; };
               return h(React.Fragment, null,
-                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 16px 14px" } },
                   h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
                     T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
                 (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
@@ -41984,7 +41984,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")));
         })() /* (348) : le bloc copie est une fonction A APPELER - sans ces () la page restait vide */)),
     /* 18/10 (Blandine : « relier les deux boutons ») : en bas, « Importer tes resultats FFE » puis « + Ajouter un resultat » */
-    (sienPerf && resDb !== null && (resDb || []).some(function (rI) { return rI && rI.origine === "import"; })) ? h(CarteImportHype, { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); }, marge: "26px 16px 0" }) : null,
+    (sienPerf && resDb !== null && (resDb || []).some(function (rI) { return rI && rI.origine === "import"; })) ? h(CarteImportHype, { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); }, marge: "44px 16px 0" }) : null,
     blocAjoutCav,   /* (697) */
     /* 18/10 : blocImportCav remonte en haut de la page (voir « derniers resultats ») */
     ajoutPerf ? h(HypeAjoutResultatCavaliere, { onFermer: function () { setAjoutPerf(false); }, onAjoute: function (av) { setRechargeRes(function (n) { return n + 1; }); if (av) { try { window.alert(av === "nom" ? "R\u00e9sultat enregistr\u00e9. Il n'appara\u00eetra ici qu'une fois ton nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb)." : "R\u00e9sultat enregistr\u00e9, mais pas encore rattach\u00e9 \u00e0 ton compte : " + av); } catch (eAl) { } } } }) : null,
@@ -64751,7 +64751,9 @@ function MosaiqueFortsHype(props) {
       h("div", { style: { marginTop: 8, fontFamily: SANS, fontSize: 11, color: "rgba(243,238,228,0.45)", textAlign: "center" } }, T7("Le résultat reste dans ses saisons.", "The result stays in its seasons.", "El resultado sigue en sus temporadas.", "Il risultato resta nelle sue stagioni.", "成績はシーズン一覧に残ります。", "Das Ergebnis bleibt in seinen Saisons.", "تبقى النتيجة في مواسمها.")),
       h("button", { type: "button", onClick: function () { setGere(null); }, style: Object.assign({ marginTop: 12, minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent" }, btnSt) }, T7("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق")))) : null;
   return h("div", { "data-mosaique-forts": "1", style: { margin: props.marge || "0 16px" } },
-    h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, letterSpacing: ".01em", margin: "48px 2px 14px" } }, T7("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
+    h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 0 14px" } },   /* 18/10 Blandine : meme dessin que les autres titres de la page */
+      h("div", { style: { fontFamily: SANS, fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: CHAMP, textTransform: "uppercase", whiteSpace: "nowrap" } }, T7("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
+      h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg, rgba(201,166,107,.5), transparent)" } })),
     h("div", { style: { display: "grid", gridTemplateColumns: seule ? "1fr" : "1.3fr 1fr 1fr", gridTemplateRows: seule ? "190px" : "128px 128px", gap: 8 } }, cases),
     feuille ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body) ? ReactDOM.createPortal(feuille, document.body) : feuille) : null);
 }
@@ -69645,7 +69647,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             (!aImpF && chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h(VideoResultatsOfficiels, { marge: "26px 16px 0", ouverte: !(resDb || []).some(function (rV) { return rV && rV.origine === "import"; }) /* 18/10 Blandine : repliee s il y a deja des resultats importes, se rouvre au toucher */, masquable: true , cle: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }) : null,
             /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) cartes de la maquette (112 x 176, trois par ecran) ; : remontes en haut, a la place de la video quand des resultats sont deja importes */
             recents.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 12px" } }, /* 18/10 : remonte en haut, plus d air (40 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 16px 14px" } }, /* 18/10 : espaces homogenes : 44 px au-dessus de chaque titre, 14 px dessous ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
               h("div", { className: "rise", style: { display: "flex", gap: 9, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
                 (function () {
@@ -69707,7 +69709,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                Photo : seulement celle choisie a la main (moments_forts_medias) — plus de portrait ni de photo d album au hasard. */
             (forts.length || (peutChoisirForts && fortsPool.length)) ? h(MosaiqueFortsHype, {   /* cheval sans resultat : pas de case vide */
               forts: forts,
-              photoDe: function (f) { var sF = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonFort(f)]) || null; return (sF && sF.url) ? { url: sF.url, video: sF.type === "video" } : null; },
+              photoDe: function (f) { var sF = (chevalDyn && chevalDyn.moments_forts_medias && chevalDyn.moments_forts_medias[jetonFort(f)]) || null; if (sF && sF.url) return { url: sF.url, video: sF.type === "video" }; var avF = f && f.cavId && avatarsCav && avatarsCav[String(f.cavId)]; return avF ? { url: avF, video: false } : null; },   /* 18/10 Blandine : sinon le portrait du cavalier du resultat */
               peutPhoto: function () { return peutChoisirMediaF; },
               peutRetirer: function (f) { return !!(peutChoisirForts && f && f.id); },
               onPhoto: function (f) { ouvrirPickerMomentF(jetonFort(f)); },
@@ -69759,6 +69761,16 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               h("div", { onClick: function (ePk) { ePk.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1316", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#F3EEE4", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Photo ou vid\u00e9o de ce moment", "Photo or video for this highlight", "Foto o v\u00eddeo de este momento", "Foto o video di questo momento", "\u3053\u306e\u77ac\u9593\u306e\u5199\u771f\u30fb\u52d5\u753b", "Foto oder Video f\u00fcr diesen Moment", "\u0635\u0648\u0631\u0629 \u0623\u0648 \u0641\u064a\u062f\u064a\u0648 \u0644\u0647\u0630\u0647 \u0627\u0644\u0644\u062d\u0638\u0629")),
                 h("div", { style: { fontSize: 11, color: "rgba(243,238,228,.45)", textAlign: "center", marginBottom: 14, fontFamily: "'Montserrat',sans-serif" } }, T("Choisis parmi les photos et vid\u00e9os d\u00e9j\u00e0 envoy\u00e9es sur ce cheval.", "Pick from the photos and videos already sent for this horse.", "Elige entre las fotos y v\u00eddeos ya enviados de este caballo.", "Scegli tra le foto e i video gi\u00e0 inviati per questo cavallo.", "\u3053\u306e\u99ac\u306b\u3059\u3067\u306b\u9001\u3089\u308c\u305f\u5199\u771f\u30fb\u52d5\u753b\u304b\u3089\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle aus den bereits gesendeten Fotos und Videos dieses Pferdes.", "\u0627\u062e\u062a\u0627\u0631\u064a \u0645\u0646 \u0628\u064a\u0646 \u0627\u0644\u0635\u0648\u0631 \u0648\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a \u0627\u0644\u062a\u064a \u0623\u0631\u0633\u0644\u062a \u0644\u0647\u0630\u0627 \u0627\u0644\u062d\u0635\u0627\u0646.")),
+                /* 18/10 (Blandine : « choisir ou importer une photo sur chacun des moments forts ») : importer une photo depuis le telephone */
+                h("label", { "data-fort-importer-photo": "1", style: { display: "block", textAlign: "center", marginBottom: 12, padding: "11px 14px", borderRadius: 12, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: 600, cursor: "pointer" } },
+                  "+ " + T("Importer une photo", "Upload a photo", "Subir una foto", "Carica una foto", "\u5199\u771f\u3092\u30a2\u30c3\u30d7\u30ed\u30fc\u30c9", "Foto hochladen", "\u0631\u0641\u0639 \u0635\u0648\u0631\u0629"),
+                  h("input", { type: "file", accept: "image/*", style: { display: "none" }, onChange: async function (eFi) {
+                    var fic = eFi && eFi.target && eFi.target.files && eFi.target.files[0]; if (!fic) return;
+                    var jtF = pickerMomentF;
+                    setToast(T("Envoi de la photo\u2026", "Uploading the photo\u2026", "Subiendo la foto\u2026", "Caricamento della foto\u2026", "\u5199\u771f\u3092\u9001\u4fe1\u4e2d\u2026", "Foto wird hochgeladen\u2026", "\u062c\u0627\u0631\u064d \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0635\u0648\u0631\u0629\u2026"));
+                    try { var rFi = await envoyerPhoto(fic); if (rFi && rFi.url) { await definirMediaMomentFort(jtF, rFi.url); return; } } catch (eUp) { }
+                    setToast(T("Envoi impossible", "Upload failed", "No se pudo subir", "Caricamento non riuscito", "\u9001\u4fe1\u3067\u304d\u307e\u305b\u3093", "Hochladen fehlgeschlagen", "\u062a\u0639\u0630\u0631 \u0627\u0644\u0631\u0641\u0639")); setTimeout(function () { setToast(null); }, 2400);
+                  } })),
                 h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
                   (mediaTousMF === null) ? h("div", { style: { color: "rgba(243,238,228,0.45)", fontSize: 12.5, fontFamily: "'Montserrat',sans-serif", textAlign: "center", padding: "22px 0" } }, "\u2026")
                     : (!mediaTousMF.length ? h("div", { style: { color: "rgba(243,238,228,0.45)", fontSize: 12.5, fontFamily: "'Montserrat',sans-serif", fontStyle: "italic", textAlign: "center", padding: "22px 0" } }, T("Aucune photo ni vid\u00e9o pour l'instant.", "No photo or video yet.", "A\u00fan ninguna foto ni v\u00eddeo.", "Ancora nessuna foto o video.", "\u307e\u3060\u5199\u771f\u3082\u52d5\u753b\u3082\u3042\u308a\u307e\u305b\u3093\u3002", "Noch kein Foto oder Video.", "\u0644\u0627 \u062a\u0648\u062c\u062f \u0635\u0648\u0631 \u0648\u0644\u0627 \u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a \u062d\u0627\u0644\u064a\u0627."))
@@ -69775,7 +69787,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#D8D2C6", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642"))))) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 16px 14px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison", "\u062d\u0633\u0628 \u0627\u0644\u0645\u0648\u0633\u0645").toUpperCase()), filetOr()),
               (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
                 [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle", "\u0627\u0644\u0643\u0644")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
@@ -69794,7 +69806,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                       return (cible === "tous") ? ligs.length > 0 : ligs.some(function (lg) { return lg.cav === cible; });
                     });
                     setSaisonOuv(candidats.length ? candidats[0] : null);
-                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: onC ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: onC ? "#1A1408" : "rgba(243,238,228,0.82)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
+                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"), background: onC ? "rgba(201,166,107,0.12)" : "rgba(16,26,29,0.7)", color: onC ? "#E6CF9C" : "rgba(243,238,228,0.82)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
                 })) : null,
               /* 18/10 (maquette 1 + graphique validee par Blandine) : legende des couleurs (celles de la nouvelle page) puis un graphique,
                  une colonne par annee (hauteur = parcours de l annee, sorties au-dessus) ; toucher une colonne deplie cette annee juste dessous.
@@ -69847,9 +69859,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var onV = (vueRes === cH[0]);
                     return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
                       style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
-                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
-                        color: onV ? "#1A1408" : "rgba(243,238,228,0.82)",
+                        border: "1px solid " + (onV ? "rgba(201,166,107,0.75)" : "rgba(243,238,228,0.14)"),
+                        background: onV ? "rgba(201,166,107,0.12)" : "rgba(16,26,29,0.7)",   /* 18/10 Blandine : pas de pastille doree pleine */
+                        color: onV ? "#E6CF9C" : "rgba(243,238,228,0.82)",
                         fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
                   })),
                 (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
@@ -69943,7 +69955,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               var sansPts = filtreCav(tousF).length - avecPts.length;
               var arrondi = function (x) { return Math.round(x * 100) / 100; };
               return h(React.Fragment, null,
-                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "44px 16px 14px" } },
                   h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
                     T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
                 (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
@@ -70001,7 +70013,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             })(),
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")),
             /* 18/10 (Blandine : « plutot en bas ») : la carte « Importer tes resultats FFE », en bas de page, quand des resultats sont deja importes (proprietaire ou moderatrice) */
-            (aImpF && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h(CarteImportHype, { onClick: ouvrirImportFFE, marge: "40px 16px 0" }) : null);
+            (aImpF && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h(CarteImportHype, { onClick: ouvrirImportFFE, marge: "44px 16px 0" }) : null);
         })(), finPageCh() /* (962) meme fin de page que Photos / Videos */))  : null,
       /* 03/09 — 🟥 CE BLOC DE STYLE EST REMONTE HORS DE L ONGLET SOUVENIRS.
          Il y vivait depuis toujours ; le 29/08 la Galerie a demenage sur
