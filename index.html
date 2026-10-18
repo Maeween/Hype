@@ -40527,6 +40527,7 @@ function EcranPerformancesCheval() {
     return function () { v = false; };
   }, [dbId]);
   var mnSt = React.useState(false); var menuOuvert = mnSt[0], setMenuOuvert = mnSt[1];
+  var edSt = React.useState(null); var ligneEdit = edSt[0], setLigneEdit = edSt[1];   /* (g6) resultat saisi a la main en cours de modification */
   var vgSt = React.useState(false); var videoGrande = vgSt[0], setVideoGrande = vgSt[1];   /* (g4) video en grand */
   var fgSt = React.useState(null); var fortGere = fgSt[0], setFortGere = fgSt[1];   /* (g3) feuille du crayon d un moment fort */   /* (g2) feuille du « ••• » */
   var mfSt = React.useState(null); var mfLocal = mfSt[0], setMfLocal = mfSt[1];
@@ -40705,6 +40706,7 @@ function EcranPerformancesCheval() {
   function ligneResultat(f, i) {
     var av = f.cavId && avatars[String(f.cavId)];
     var peutCorb = !!(f.id && f.og !== "import" && (estProprio || estMod));
+    var brutEdit = (f.id && f.og !== "import" && moi) ? ((lignes || []).filter(function (r) { return r && String(r.id) === String(f.id) && r.user_id === moi.id; })[0] || null) : null;
     var enEvidence = !!(f.id && surligne === f.id);
     return h("div", { key: "lr" + (f.id || i), id: f.id ? "perf-r-" + f.id : undefined, style: { display: "flex", alignItems: "center", gap: 12, padding: "11px 6px", margin: "0 -6px", borderRadius: 10, borderTop: "1px solid rgba(243,238,228,0.07)", background: enEvidence ? "rgba(201,166,107,0.16)" : "transparent", boxShadow: enEvidence ? "inset 0 0 0 1px rgba(201,166,107,0.6)" : "none", transition: "background .4s ease, box-shadow .4s ease" } },
       f.photo ? h("img", { src: f.photo, alt: "", loading: "lazy", decoding: "async", style: { width: 54, height: 54, borderRadius: 12, objectFit: "cover", flex: "0 0 auto", border: "1px solid " + FILET } }) : null,
@@ -40720,6 +40722,10 @@ function EcranPerformancesCheval() {
         h("div", { style: { fontFamily: SERIF, fontSize: f.pl != null ? 28 : 15, fontWeight: 600, color: f.pl != null ? "#E6CF9C" : "#C8908A", lineHeight: 1 } },   /* (g1) place en grand champagne, comme la maquette */ f.pl != null ? rangTxt(f.pl) : (f.statut === "el" ? T("Élim.", "Elim.", "Elim.", "Elim.", "失権", "Ausg.", "مستبعد") : (f.statut === "ab" ? T("Abandon", "Retired", "Abandono", "Ritiro", "棄権", "Aufgabe", "انسحاب") : (f.clTxt || "—")))),
         f.part ? h("div", { style: { fontFamily: SANS, fontSize: 11, color: MUET, marginTop: 3, direction: "ltr", unicodeBidi: "isolate" } }, "/" + f.part) : null,
         (f.pts != null && !isNaN(f.pts)) ? h("div", { style: { fontFamily: SANS, fontSize: 10, color: "#E6CF9C", marginTop: 2, direction: "ltr", unicodeBidi: "isolate" } }, "+" + (Math.round(f.pts * 100) / 100) + " pts") : null),
+      /* (g6) MODIFIER un resultat saisi a la main : meme fenetre que l ajout, en mode modification (FeuilleAjoutResultatV2, ligneEdition),
+         seulement pour la personne qui l a saisi (regle du mode modification) ; les resultats importes FFE ne se modifient pas ici. */
+      brutEdit ? h("button", { type: "button", "data-perf-modifier": f.id, onClick: function () { setLigneEdit(brutEdit); }, "aria-label": T("Modifier ce résultat", "Edit this result", "Editar este resultado", "Modifica questo risultato", "この結果を編集", "Dieses Ergebnis bearbeiten", "تعديل هذه النتيجة"), style: { flex: "0 0 auto", width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.16)", background: "transparent", color: "#E6CF9C", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+        h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z" }))) : null,
       peutCorb ? h("button", { type: "button", onClick: function () { supprimerLigne(f); }, "aria-label": T("Retirer ce résultat", "Remove this result", "Quitar este resultado", "Rimuovi questo risultato", "この結果を削除", "Dieses Ergebnis entfernen", "إزالة هذه النتيجة"), style: { flex: "0 0 auto", width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.16)", background: "transparent", color: "#C8706A", display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
         h("svg", { viewBox: "0 0 24 24", width: 13, height: 13, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3" }))) : null);
   }
@@ -40838,7 +40844,8 @@ function EcranPerformancesCheval() {
       typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
       ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
       videoPlein,
-      fortGere ? feuille(h(React.Fragment, null,
+      ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
+            fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
         h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [fortGere.f.ep, String(fortGere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" \u2022 ")),
         fortGere.peutPhoto ? h("button", { type: "button", "data-perf-fort-photo": "1", onClick: function () { var fx = fortGere.f; setFortGere(null); setMediasTous(null); setPickerJeton(fx.jeton); }, style: { width: "100%", minHeight: 46, marginBottom: 8, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Changer la photo", "Change the photo", "Cambiar la foto", "Cambia la foto", "写真を変更", "Foto ändern", "تغيير الصورة")) : null,
@@ -41049,7 +41056,8 @@ function EcranPerformancesCheval() {
       boutonFermer(function () { setPickerJeton(null); })), function () { setPickerJeton(null); }, "fPick") : null,
     ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
     videoPlein,
-      fortGere ? feuille(h(React.Fragment, null,
+      ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
+            fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
         h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [fortGere.f.ep, String(fortGere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" \u2022 ")),
         fortGere.peutPhoto ? h("button", { type: "button", "data-perf-fort-photo": "1", onClick: function () { var fx = fortGere.f; setFortGere(null); setMediasTous(null); setPickerJeton(fx.jeton); }, style: { width: "100%", minHeight: 46, marginBottom: 8, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Changer la photo", "Change the photo", "Cambiar la foto", "Cambia la foto", "写真を変更", "Foto ändern", "تغيير الصورة")) : null,
