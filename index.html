@@ -41642,47 +41642,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: "#F3EEE4" } }, String(cq[0])),
                   h("div", { style: { marginTop: 2, fontSize: 8.2, letterSpacing: ".13em", color: "#8A929C", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1])); })),
-            /* 02/09 — LE MENU D AFFICHAGE, sous les quatre chiffres.
-               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
-               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
-               c est la que la question se pose.
-               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
-               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
-            (function () {
-              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-              if (!proprioF) return null;
-              var choix = [
-                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")],
-                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")],
-                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c")],
-                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
-                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]
-              ];
-              var nMasq = tousF.length - vueF.length;
-              return h("div", { style: { margin: "10px 16px 0" } },
-                h("div", { style: { display: "flex", gap: 7 } },
-                  choix.map(function (cH) {
-                    var onV = (vueRes === cH[0]);
-                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
-                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
-                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
-                        color: onV ? "#E6CF9C" : "rgba(237,242,245,0.62)",
-                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
-                  })),
-                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
-                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
-                                  "results hidden \u00b7 the counters above stay complete",
-                                  "resultados ocultos \u00b7 los contadores siguen completos",
-                                  "risultati nascosti \u00b7 i contatori restano completi",
-                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
-                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null);
-            })(),
             /* 18/10 : sans resultat importe, la video et le bouton d import (blocImportCav, avant en bas) ; sinon les derniers resultats puis la carte « Importer tes resultats FFE » */
             aImpF ? null : blocImportCav,
             /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) cartes de la maquette (112 x 176, trois par ecran) ; : remontes en haut, comme sur la page Resultats du cheval */
             recents.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 9px" } }, /* 18/10 : remonte en haut (26 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 12px" } }, /* 18/10 : remonte en haut, plus d air (40 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
               h("div", { className: "rise", style: { display: "flex", gap: 9, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
                 (function () {
@@ -41795,7 +41759,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642"))))) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison", "\u062d\u0633\u0628 \u0627\u0644\u0645\u0648\u0633\u0645").toUpperCase()), filetOr()),
               (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
                 [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle", "\u0627\u0644\u0643\u0644")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
@@ -41831,7 +41795,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 }).filter(Boolean);
                 if (colsG.length < 2) return null;
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
-                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 14px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 20px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
                   h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
                       var onG = (saisonOuv === cG.an);
@@ -41844,6 +41808,42 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     })),
                   h("div", { style: { marginTop: 6, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, T("sorties au-dessus de chaque colonne", "outings above each column", "salidas encima de cada columna", "uscite sopra ogni colonna", "各列の上は出場回数", "Starts über jeder Säule", "عدد المشاركات فوق كل عمود")));
               })(),
+            /* 02/09 — LE MENU D AFFICHAGE. 18/10 (Blandine, croix sur sa capture) : deplace SOUS le graphique des saisons, en tete de la liste des annees (avant : sous les quatre chiffres).
+               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
+               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
+               c est la que la question se pose.
+               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
+               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
+            (function () {
+              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              if (!proprioF) return null;
+              var choix = [
+                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")],
+                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")],
+                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c")],
+                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
+                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]
+              ];
+              var nMasq = tousF.length - vueF.length;
+              return h("div", { style: { margin: "6px 16px 18px" } },   /* 18/10 (Blandine) : entre le graphique et la liste des annees */
+                h("div", { style: { display: "flex", gap: 7 } },
+                  choix.map(function (cH) {
+                    var onV = (vueRes === cH[0]);
+                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
+                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
+                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
+                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
+                        color: onV ? "#E6CF9C" : "rgba(237,242,245,0.62)",
+                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
+                  })),
+                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
+                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
+                                  "results hidden \u00b7 the counters above stay complete",
+                                  "resultados ocultos \u00b7 los contadores siguen completos",
+                                  "risultati nascosti \u00b7 i contatori restano completi",
+                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
+                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null);
+            })(),
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
@@ -41925,7 +41925,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               var sansPts = filtreCav(tousF).length - avecPts.length;
               var arrondi = function (x) { return Math.round(x * 100) / 100; };
               return h(React.Fragment, null,
-                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
                   h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
                     T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
                 (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
@@ -64751,7 +64751,7 @@ function MosaiqueFortsHype(props) {
       h("div", { style: { marginTop: 8, fontFamily: SANS, fontSize: 11, color: "rgba(243,238,228,0.45)", textAlign: "center" } }, T7("Le résultat reste dans ses saisons.", "The result stays in its seasons.", "El resultado sigue en sus temporadas.", "Il risultato resta nelle sue stagioni.", "成績はシーズン一覧に残ります。", "Das Ergebnis bleibt in seinen Saisons.", "تبقى النتيجة في مواسمها.")),
       h("button", { type: "button", onClick: function () { setGere(null); }, style: Object.assign({ marginTop: 12, minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.22)", background: "transparent" }, btnSt) }, T7("Fermer", "Close", "Cerrar", "Chiudi", "閉じる", "Schließen", "إغلاق")))) : null;
   return h("div", { "data-mosaique-forts": "1", style: { margin: props.marge || "0 16px" } },
-    h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, letterSpacing: ".01em", margin: "30px 2px 12px" } }, T7("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
+    h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, letterSpacing: ".01em", margin: "48px 2px 14px" } }, T7("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
     h("div", { style: { display: "grid", gridTemplateColumns: seule ? "1fr" : "1.3fr 1fr 1fr", gridTemplateRows: seule ? "190px" : "128px 128px", gap: 8 } }, cases),
     feuille ? ((typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body) ? ReactDOM.createPortal(feuille, document.body) : feuille) : null);
 }
@@ -69641,49 +69641,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
                   h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: "#F3EEE4" } }, String(cq[0])),
                   h("div", { style: { marginTop: 2, fontSize: 8.2, letterSpacing: ".13em", color: "rgba(243,238,228,0.62)", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1])); })),
-            /* 02/09 — LE MENU D AFFICHAGE, sous les quatre chiffres.
-               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
-               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
-               c est la que la question se pose.
-               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
-               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
-            (function () {
-              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
-              if (!proprioF) return null;
-              var choix = [
-                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")],
-                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")],
-                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c")],
-                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
-                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]
-              ];
-              var nMasq = tousF.length - vueF.length;
-              return h("div", { style: { margin: "10px 16px 0" } },
-                h("div", { style: { display: "flex", gap: 7 } },
-                  choix.map(function (cH) {
-                    var onV = (vueRes === cH[0]);
-                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
-                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
-                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
-                        color: onV ? "#1A1408" : "rgba(243,238,228,0.82)",
-                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
-                  })),
-                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
-                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
-                                  "results hidden \u00b7 the counters above stay complete",
-                                  "resultados ocultos \u00b7 los contadores siguen completos",
-                                  "risultati nascosti \u00b7 i contatori restano completi",
-                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
-                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null,
-                /* (601) l entree de la feuille « niveau enregistre comme visible » (proprietaire ou moderatrice) */
-                h("div", { style: { textAlign: "center", marginTop: 8 } }, h("button", { onClick: function () { setNiveauOuvert(true); }, style: { minHeight: 40, padding: "8px 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 700, cursor: "pointer" } }, T("R\u00e9gler ce qui est enregistr\u00e9 comme visible \u203a", "Set what is saved as visible \u203a", "Ajustar lo que se guarda como visible \u203a", "Regolare cosa resta visibile \u203a", "\u8868\u793a\u3059\u308b\u7bc4\u56f2\u3092\u8a2d\u5b9a \u203a", "Festlegen, was sichtbar bleibt \u203a", "\u0636\u0628\u0637 \u0645\u0627 \u064a\u064f\u062d\u0641\u0638 \u0643\u0638\u0627\u0647\u0631 \u203a"))));
-            })(),
             /* 13/10 (1087) la petite video « resultats officiels » (retiree de la fiche) : ici, ouverte, pour la proprietaire, avec « Masquer la video » */
             (!aImpF && chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h(VideoResultatsOfficiels, { marge: "26px 16px 0", ouverte: !(resDb || []).some(function (rV) { return rV && rV.origine === "import"; }) /* 18/10 Blandine : repliee s il y a deja des resultats importes, se rouvre au toucher */, masquable: true , cle: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }) : null,
             /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) cartes de la maquette (112 x 176, trois par ecran) ; : remontes en haut, a la place de la video quand des resultats sont deja importes */
             recents.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 9px" } }, /* 18/10 : remonte en haut (26 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 12px" } }, /* 18/10 : remonte en haut, plus d air (40 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
               h("div", { className: "rise", style: { display: "flex", gap: 9, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
                 (function () {
@@ -69813,7 +69775,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 h("button", { onClick: function () { setPickerMomentF(null); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#D8D2C6", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642"))))) : null,
             /* — 4 · PAR SAISON (fermées ; chevrons prêts pour le dépliage) — */
             listeAns.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 10px" } },
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Par saison", "By season", "Por temporada", "Per stagione", "\u30b7\u30fc\u30ba\u30f3\u5225", "Nach Saison", "\u062d\u0633\u0628 \u0627\u0644\u0645\u0648\u0633\u0645").toUpperCase()), filetOr()),
               (cavsPalm.length >= 2) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } }, /* 26/08 : les resultats propres a chaque cavalier (demande Blandine) */
                 [["tous", T("Tous", "All", "Todos", "Tutti", "\u5168\u54e1", "Alle", "\u0627\u0644\u0643\u0644")]].concat(cavsPalm.map(function (cV) { return [cV, cV]; })).map(function (oC) {
@@ -69849,7 +69811,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 }).filter(Boolean);
                 if (colsG.length < 2) return null;
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
-                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 14px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 20px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
                   h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
                       var onG = (saisonOuv === cG.an);
@@ -69862,6 +69824,44 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     })),
                   h("div", { style: { marginTop: 6, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, T("sorties au-dessus de chaque colonne", "outings above each column", "salidas encima de cada columna", "uscite sopra ogni colonna", "各列の上は出場回数", "Starts über jeder Säule", "عدد المشاركات فوق كل عمود")));
               })(),
+            /* 02/09 — LE MENU D AFFICHAGE. 18/10 (Blandine, croix sur sa capture) : deplace SOUS le graphique des saisons, en tete de la liste des annees (avant : sous les quatre chiffres).
+               ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
+               pas (« faut une bonne loupe »). Il remonte la ou on lit « 83 classes »,
+               c est la que la question se pose.
+               ⚠️ Reserve a la proprietaire du cheval. ⚠️ Ne touche RIEN en base et
+               ne change PAS les quatre chiffres au-dessus — seulement les listes. */
+            (function () {
+              var proprioF = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
+              if (!proprioF) return null;
+              var choix = [
+                ["tous", T("Tous", "All", "Todos", "Tutti", "\u3059\u3079\u3066", "Alle", "\u0627\u0644\u0643\u0644")],
+                ["classes", T("Class\u00e9s", "Placed", "Clasificados", "Piazzati", "\u5165\u8cde", "Platziert", "\u0627\u0644\u0645\u0635\u0646\u0641")],
+                ["podiums", T("Podiums", "Podiums", "Podios", "Podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u0627\u0644\u062a\u062a\u0648\u064a\u062c")],
+                /* 06/09 (Blandine) : « proposer d'afficher les classements et sans fautes ». */
+                ["sf", T("Sans faute", "Clear round", "Sin faltas", "Netto", "\u30af\u30ea\u30a2", "Fehlerfrei", "\u0628\u0644\u0627 \u0623\u062e\u0637\u0627\u0621")]
+              ];
+              var nMasq = tousF.length - vueF.length;
+              return h("div", { style: { margin: "6px 16px 18px" } },   /* 18/10 (Blandine) : entre le graphique et la liste des annees */
+                h("div", { style: { display: "flex", gap: 7 } },
+                  choix.map(function (cH) {
+                    var onV = (vueRes === cH[0]);
+                    return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
+                      style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
+                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
+                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
+                        color: onV ? "#1A1408" : "rgba(243,238,228,0.82)",
+                        fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
+                  })),
+                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
+                  nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
+                                  "results hidden \u00b7 the counters above stay complete",
+                                  "resultados ocultos \u00b7 los contadores siguen completos",
+                                  "risultati nascosti \u00b7 i contatori restano completi",
+                                  "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
+                                  "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null,
+                /* (601) l entree de la feuille « niveau enregistre comme visible » (proprietaire ou moderatrice) */
+                h("div", { style: { textAlign: "center", marginTop: 8 } }, h("button", { onClick: function () { setNiveauOuvert(true); }, style: { minHeight: 40, padding: "8px 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 11.5, fontWeight: 700, cursor: "pointer" } }, T("R\u00e9gler ce qui est enregistr\u00e9 comme visible \u203a", "Set what is saved as visible \u203a", "Ajustar lo que se guarda como visible \u203a", "Regolare cosa resta visibile \u203a", "\u8868\u793a\u3059\u308b\u7bc4\u56f2\u3092\u8a2d\u5b9a \u203a", "Festlegen, was sichtbar bleibt \u203a", "\u0636\u0628\u0637 \u0645\u0627 \u064a\u064f\u062d\u0641\u0638 \u0643\u0638\u0627\u0647\u0631 \u203a"))));
+            })(),
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
@@ -69943,7 +69943,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               var sansPts = filtreCav(tousF).length - avecPts.length;
               var arrondi = function (x) { return Math.round(x * 100) / 100; };
               return h(React.Fragment, null,
-                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "34px 16px 10px" } },
+                h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "48px 16px 14px" } },
                   h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } },
                     T("Points de qualification", "Qualification points", "Puntos de calificaci\u00f3n", "Punti di qualifica", "\u8cc7\u683c\u30dd\u30a4\u30f3\u30c8", "Qualifikationspunkte", "\u0646\u0642\u0627\u0637 \u0627\u0644\u062a\u0623\u0647\u0644").toUpperCase()), filetOr()),
                 (clesS.length > 1) ? h("div", { style: { display: "flex", gap: 7, margin: "0 16px 11px", overflowX: "auto", WebkitOverflowScrolling: "touch", paddingBottom: 2 } },
@@ -70001,7 +70001,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             })(),
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")),
             /* 18/10 (Blandine : « plutot en bas ») : la carte « Importer tes resultats FFE », en bas de page, quand des resultats sont deja importes (proprietaire ou moderatrice) */
-            (aImpF && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h(CarteImportHype, { onClick: ouvrirImportFFE, marge: "26px 16px 0" }) : null);
+            (aImpF && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h(CarteImportHype, { onClick: ouvrirImportFFE, marge: "40px 16px 0" }) : null);
         })(), finPageCh() /* (962) meme fin de page que Photos / Videos */))  : null,
       /* 03/09 — 🟥 CE BLOC DE STYLE EST REMONTE HORS DE L ONGLET SOUVENIRS.
          Il y vivait depuis toujours ; le 29/08 la Galerie a demenage sur
