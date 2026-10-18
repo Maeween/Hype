@@ -13315,3 +13315,10 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Non fait : style des médailles (victoires / podiums / classés) — propositions envoyées, pas de choix ; droits photos des moments forts pour modératrice / responsable (« oublie »).
 - Tests : nouvelle page 45/45 et 28/28 ; captures des pages pleines, vides (propriétaire / visiteur), heros des 4 sous-pages, détail des points ; node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
 
+## 18/10/2026 — PUBLICATION (marqueur 20261018-2355, vers 23 h 05) : feuilles du bas et espace avant le bas de page
+- Sur son « Publié * » (= publie, correction de « oublie »).
+- Défaut signalé par Blandine (capture 23 h) : la feuille ouverte par la petite roue du graphique (« Enregistré comme visible ») s'affichait trop bas et on ne pouvait plus la fermer. Cause : feuilles en position fixe à l'intérieur du panneau Résultats (contexte d'empilement sous la barre du bas). Correctif : les feuilles « Enregistré comme visible », « Ajouter un moment fort » et « Photo du moment fort » (fiche cheval) et « Ajouter un moment fort » (page cavalier) sont rendues directement dans la page (hypePortailBody). Testé : « Fermer » visible en bas d'un écran de 844 px et la feuille se ferme.
+- Plus d'air entre la carte « Importer tes résultats FFE » et le bas de page (36 px), sur les deux pages.
+- Page vide : on garde la proposition 1 (en ligne), bas de page déjà présent.
+- Tests : node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
