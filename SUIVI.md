@@ -13119,3 +13119,9 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Nouvelle page : bouton discret « ⤓ Lire une capture (IFCE, Horsetelex…) » réservé à la modératrice (sous les boutons d'action, et sur la page sans résultat) ; feuille « Lecture d'une capture » : messages de l'outil (nom de cheval différent refusé, rien reconnu, lecture impossible), liste à cocher avec « Déjà dans tes résultats », « Annuler l'import » / « Ajouter » ; après ajout, la page se recharge.
 - Remarque : dans l'ancienne fiche, la plupart des entrées vers l'ancienne fenêtre d'ajout (qui contient cet outil) ont été coupées lors des builds 1079 et 1092 ; l'outil n'y est plus atteignable que par quelques chemins.
 - Tests : moments forts 28/28 (2 nouveaux : modératrice — capture lue avec IA simulée, 2 lignes à cocher, « 2 résultat(s) ajouté(s) », fenêtre fermée ; propriétaire non modératrice — pas d'outil), tableau 44/44 dont « ancienne fiche intacte », node --check 35 blocs sans erreur, marqueurs inchangés.
+
+## 18/10/2026 — Performances, build 8 (NON publié) : tablette 820 et ordinateur 1440
+- Demande : « Ok continue … règle la totalité sans revenir vers moi avant la fin » (Blandine, 18/10, 15 h 33). Aucune publication sans son « publie ».
+- La page entre dans la liste des écrans en grand (ECRANS_TABLETTE + conteneur 1280 px sur ordinateur, barre latérale Hype de 210 px conservée par l'appli).
+- Dès 768 px : deux colonnes — à gauche chiffres, cavaliers, moments forts, carte Team, boutons, outil capture, vidéo ; à droite « Toutes ses saisons » (le tableau profite de la largeur, les 4 filtres tiennent). Ordinateur : colonnes 1 / 1,25, écart 28 px. Bandeau photo plus haut (320 px tablette, 380 px ordinateur) et nom plus grand. Page sans résultat : colonne centrée de 620 px. iPhone : inchangé (une colonne, même ordre).
+- Tests : tableau 44/44 (dont les tailles 375 / 820 / 1440 sans débordement), moments forts 28/28, node --check 35 blocs sans erreur, marqueurs inchangés.

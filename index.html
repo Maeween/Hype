@@ -28396,7 +28396,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */];
+    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28475,7 +28475,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -40527,6 +40527,8 @@ function EcranPerformancesCheval() {
     return function () { v = false; };
   }, [dbId]);
   var mnSt = React.useState(false); var menuOuvert = mnSt[0], setMenuOuvert = mnSt[1];
+  var largeP = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* (g8) tablette et plus : deux colonnes */
+  var ordiP = (typeof useHypeLargeur === "function") ? useHypeLargeur(1024) : false;   /* (g8) ordinateur */
   /* (g6) lecture d une capture de palmares (moderatrice) : outil historique partage (hypeLireCapturePalmares / hypeEnregistrerCapturePalmares) */
   var cpE = React.useState(false); var capEnCours = cpE[0], setCapEnCours = cpE[1];
   var cpM = React.useState(null); var capMsg = cpM[0], setCapMsg = cpM[1];
@@ -40809,7 +40811,7 @@ function EcranPerformancesCheval() {
         h("button", { type: "button", onClick: function () { setCapTrouves(null); setCapOuvert(false); }, style: { flex: 1, minHeight: 44, borderRadius: 12, border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IVOIRE, fontFamily: SANS, fontSize: 13, cursor: "pointer" } }, T("Annuler l'import", "Cancel import", "Cancelar la importación", "Annulla l'importazione", "取り込みをキャンセル", "Import abbrechen", "إلغاء الاستيراد")),
         h("button", { type: "button", "data-perf-capture-ajouter": "1", onClick: validerCapture, style: { flex: 1, minHeight: 44, borderRadius: 12, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة")))) : boutonFermer(function () { setCapOuvert(false); setCapMsg(null); })), function () { if (!capEnCours) { setCapOuvert(false); setCapMsg(null); } }, "fCapture") : null;
   var heroVide = !tous.length;   /* (g5) page sans resultat : la photo prend plus de place, comme l ecran 5 de la maquette */
-  var hero = h("div", { style: { position: "relative", height: heroVide ? 340 : 260, overflow: "hidden", background: PETROLE } },   /* (tableau) 320 -> 260 : demande de Blandine, le hero repoussait les resultats */
+  var hero = h("div", { style: { position: "relative", height: heroVide ? (largeP ? 380 : 340) : (largeP ? (ordiP ? 380 : 320) : 260), overflow: "hidden", background: PETROLE, borderRadius: ordiP ? "0 0 18px 18px" : 0 } },   /* (tableau) 320 -> 260 : demande de Blandine, le hero repoussait les resultats */
     photoCh ? h("img", { src: photoCh, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%" } }) : null,
     h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(7,10,8,0.55) 0%, rgba(7,10,8,0.05) 30%, rgba(7,10,8,0.1) 55%, rgba(7,10,8,0.86) 82%, " + NOIR + " 100%)" } }),
     h("div", { style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 10px)", insetInlineStart: 14, insetInlineEnd: 14, display: "flex", alignItems: "center", gap: 12 } },
@@ -40824,7 +40826,7 @@ function EcranPerformancesCheval() {
         h("button", { type: "button", "data-perf-plus": "1", onClick: function () { setMenuOuvert(true); }, "aria-label": T("Plus d'options", "More options", "Más opciones", "Altre opzioni", "その他", "Weitere Optionen", "خيارات أخرى"), style: rondHaut },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "currentColor", "aria-hidden": "true" }, h("circle", { cx: 5.5, cy: 12, r: 1.6 }), h("circle", { cx: 12, cy: 12, r: 1.6 }), h("circle", { cx: 18.5, cy: 12, r: 1.6 }))))),
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 14px" } },
-      h("div", { style: { fontFamily: SERIF, fontSize: 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
+      h("div", { style: { fontFamily: SERIF, fontSize: largeP ? 48 : 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
       infos.length ? h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(243,238,228,0.78)" } }, infos.join("  ·  ")) : null,
       teamInfo ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 11px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(7,10,8,0.5)", color: "#E6CF9C", fontFamily: SANS, fontSize: 9.5, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase" } },
         h("svg", { viewBox: "0 0 24 24", width: 12, height: 12, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 17h16l-1.5-9-4.5 4-2-6-2 6-4.5-4z" })),
@@ -40862,6 +40864,7 @@ function EcranPerformancesCheval() {
     var grandBouton = function (contenu, onClick, cle) { return h("button", { key: cle, type: "button", onClick: onClick, style: { width: "100%", minHeight: 58, padding: "0 16px", borderRadius: 14, border: "1px solid rgba(201,166,107,0.75)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13.5, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10 } }, contenu); };
     return h("div", { "data-ecran": "performances-cheval", "data-perf-vide": "1", style: racineSt },
       hero,
+      h("div", { style: { maxWidth: largeP ? 620 : "none", margin: "0 auto" } },   /* (g8) page sans resultat en grand : colonne centree */
       h("div", { style: { padding: "22px 26px 0", textAlign: "center" } },
         h("div", { "aria-hidden": "true", style: { width: 84, height: 84, margin: "0 auto 18px", borderRadius: "50%", border: "1px solid rgba(201,166,107,0.45)", background: "radial-gradient(circle at 50% 40%, rgba(201,166,107,0.12), rgba(7,10,8,0) 70%)", display: "flex", alignItems: "center", justifyContent: "center" } },
           h("svg", { viewBox: "0 0 24 24", width: 38, height: 38, fill: CHAMP, stroke: "#E6CF9C", strokeWidth: 0.8, strokeLinejoin: "round" }, h("path", { d: "M7 3.5h10v5.2a5 5 0 0 1-10 0z" }), h("path", { fill: "none", stroke: CHAMP, strokeWidth: 1.5, strokeLinecap: "round", d: "M7 5H4.5a3 3 0 0 0 3 4.2M17 5h2.5a3 3 0 0 1-3 4.2" }), h("path", { d: "M11 13.6h2v3.2h-2z" }), h("path", { d: "M8.5 17h7l.8 3.5H7.7z" }))),
@@ -40873,7 +40876,7 @@ function EcranPerformancesCheval() {
         peutSaisir ? grandBouton([h("span", { key: "p", "aria-hidden": "true", style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1, color: CHAMP } }, "+"), h("span", { key: "t" }, T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة"))], function () { setAjoutOuvert(true); }, "vAj") : null,
         peutImporter ? grandBouton([premiumOk ? null : h("span", { key: "c", style: { display: "inline-flex" } }, ICO_CADENAS), h("span", { key: "t", style: { textAlign: "start" } }, h("span", { style: { display: "block" } }, T("Importer mes résultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE成績を取り込む", "Meine FFE-Ergebnisse importieren", "استيراد نتائج FFE")), premiumOk ? null : h("span", { style: { display: "block", marginTop: 2, fontSize: 10.5, fontWeight: 500, color: MUET2 } }, "Premium"))], ouvrirImport, "vImp") : null) : null,
       outilCapture,
-      blocVideo,
+      blocVideo),
       (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
       typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
       ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
@@ -41003,8 +41006,9 @@ function EcranPerformancesCheval() {
       premiumOk ? null : ICO_CADENAS,
       h("span", { style: { minWidth: 0 } }, h("span", { style: { display: "block", lineHeight: 1.25 } }, T("Importer mes résultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE成績を取り込む", "Meine FFE-Ergebnisse importieren", "استيراد نتائج FFE")),
         premiumOk ? null : h("span", { style: { display: "block", marginTop: 2, fontSize: 10, fontWeight: 500, color: MUET2 } }, "Premium"))) : null) : null;
-  return h("div", { "data-ecran": "performances-cheval", style: racineSt },
-    hero,
+  /* (g8) TABLETTE / ORDINATEUR : deux colonnes (ecrans 7 a 9 de la maquette) — a gauche chiffres, cavaliers, moments forts, Team,
+     actions et video ; a droite le tableau des saisons, qui profite de la largeur. Sur iPhone : la meme suite, en une colonne. */
+  var elG = [
     /* les cinq chiffres (carriere, definitions historiques ; points = saison en cours) */
     /* (g2) comme la maquette : chiffres poses sur le fond, sans cadre, chiffres ivoire en serif, libelles en minuscules, filet fin dessous */
     h("div", { "data-perf-chiffres": "1", style: { display: "flex", margin: "16px 14px 0", padding: "4px 0 14px", borderBottom: "1px solid rgba(243,238,228,0.08)" } },
@@ -41043,6 +41047,8 @@ function EcranPerformancesCheval() {
     /* actions compactes */
     actionsCompactes,
     outilCapture,
+  ];
+  var elD = [
     /* toutes ses saisons : le tableau depliable */
     titreSection(T("Toutes ses saisons", "All seasons", "Todas sus temporadas", "Tutte le stagioni", "全シーズン", "Alle Saisons", "كل مواسمه")),
     h("div", { style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "-4px 18px 12px" } }, LEGENDE.map(function (lg, i) {
@@ -41051,8 +41057,13 @@ function EcranPerformancesCheval() {
     h("div", { "data-perf-tableau": "1" }, saisons.map(ligneSaison)),
     (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "6px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer", padding: "8px" } }, libMasques())) : null,
     h("div", { "data-perf-compteur": "1", style: { textAlign: "center", margin: "6px 18px 0", fontFamily: SANS, fontSize: 10.5, color: MUET2 } }, places.length + " " + (places.length > 1 ? T("résultats enregistrés", "recorded results", "resultados registrados", "risultati registrati", "件の成績", "erfasste Ergebnisse", "نتائج مسجلة") : T("résultat enregistré", "recorded result", "resultado registrado", "risultato registrato", "件の成績", "erfasstes Ergebnis", "نتيجة مسجلة"))),
-    /* video pedagogique, en bas, discrete et masquable */
-    blocVideo,
+  ];
+  return h("div", { "data-ecran": "performances-cheval", style: racineSt },
+    hero,
+    largeP ? h("div", { "data-perf-colonnes": "1", style: { display: "grid", gridTemplateColumns: ordiP ? "minmax(0, 1fr) minmax(0, 1.25fr)" : "minmax(0, 1fr) minmax(0, 1.1fr)", gap: ordiP ? 28 : 18, alignItems: "start", padding: ordiP ? "0 14px" : "0 4px" } },
+      h.apply(null, ["div", { style: { minWidth: 0 } }].concat(elG, [blocVideo])),
+      h.apply(null, ["div", { style: { minWidth: 0, paddingTop: 6 } }].concat(elD)))
+      : h.apply(null, [React.Fragment, null].concat(elG, elD, [blocVideo])),
     typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerf" }) : null,
     /* feuille : ajouter un moment fort */
     choixFortOuvert ? feuille(h(React.Fragment, null,
