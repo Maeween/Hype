@@ -220,3 +220,680 @@
   to = "https://horselingo.fr/lingo-sellerie.html"
   status = 302
   force = true
+
+# ============================================================
+#  18/10/2026 — ANCIENNES COPIES COMPLÈTES DE L'APPLI → LA VRAIE APPLI
+#  Pourquoi : Dominique (abonné Duo) ouvrait une copie d'aperçu figée de l'été :
+#  Galops 2-4 « Prochainement », vidéos de démonstration, formule Duo inconnue
+#  donc « paie pour accéder ». Ces 105 pages (aperçus, previews, tests,
+#  secours) sont des copies entières et figées d'index.html : elles renvoient
+#  désormais vers l'accueil de la vraie appli. Accord de Blandine le 18/10.
+#  302 volontairement (retour arrière : supprimer ces blocs). Les fichiers restent
+#  dans le dépôt. DEV_OUVRIR_PAGE.html et DEV_PALMARES.html NE sont PAS redirigés
+#  (outils de travail). Pas de joker : chaque page est nommée une par une.
+# ============================================================
+[[redirects]]
+  from = "/_SC_0031.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-accueil.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-aides-g2.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-article-gof.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-connexion.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-fiche-cheval.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-galops.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-heritage.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-heybaby.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-installer.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-materiel.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-moncavalier.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-moncompte.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-monde-globe.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-monde.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-pansage.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-premium.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-sante.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-securite.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/apercu-supabase.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/c.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-DEMO-souvenirs.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-accueil-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-album-legende-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-ecurie.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-fiche-cheval-videos.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-fiche-cheval.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-fiche.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-galerie.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-heybaby-video.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-origines.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-apercu-profil.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-cheval-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-clinique-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-communaute-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-ecurie-hype-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-ecurie-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-encart-veto-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-memoirescavalier-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-moncavalier-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-monde-onboarding-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-sellerie-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/hype-souvenirs-preview.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-accueil.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-articles.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-cheval.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-communaute.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-ecurie.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-heybaby.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-premium.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-profil.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-PREVIEW-sante.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-aides.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-cavalier.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-fiche.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-heybaby.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-incurvation.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-intro.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-lamotte.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-mur.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-resultatquiz.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-souvenirs.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-stories.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-apercu-voyage.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-accueil.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-baby-galop.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-communaute.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-connexion.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-galops.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-mag.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-memory.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-moncavalier.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-monclub.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-moncompte.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-monde.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-parcours.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-preview-sante.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/index-secours.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview accueil double tap.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview%20accueil%20double%20tap.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview accueil titre.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview%20accueil%20titre.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview ecurie chevaux.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview%20ecurie%20chevaux.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview installer.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview%20installer.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview video cheval.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview%20video%20cheval.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview video.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview%20video.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-100.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-101.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-102.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-106.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-107.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-92.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-93.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-94.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-95.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-96.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-97.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-carrousel-c1.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-carte.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-final.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-galops.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-heybaby.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-jeux-pages.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-memory.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-premium.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/preview-puzzle-clic.html"
+  to = "/"
+  status = 302
+  force = true
+
+[[redirects]]
+  from = "/test-heybaby.html"
+  to = "/"
+  status = 302
+  force = true
