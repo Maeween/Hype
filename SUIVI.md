@@ -13268,3 +13268,15 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Non touché : la page d'import garde ses anciennes couleurs (proposé à Blandine, pas encore décidé) ; nouvelle page Performances toujours cachée ; aucune donnée en base, aucun SQL.
 - Tests : nouvelle page 45/45 et 28/28 ; captures des deux pages actuelles (propriétaire, visiteur, cheval sans résultat, clic sur une colonne, clic sur la carte d'import → page d'import) ; node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone réel.
 
+## 18/10/2026 — PUBLICATION (marqueur 20261018-2205) : retouches des pages Résultats (cheval) et Performances (cavalier) après essai sur iPhone
+- Sur les captures de Blandine (21 h 40) et son « Publié » (= publie, 22 h 01).
+- Filtres « Tous / Classés / Podiums / Sans faute » et « Régler ce qui est enregistré comme visible » déplacés SOUS le graphique des saisons, en tête de la liste des années (croix de Blandine) ; avant : sous les quatre chiffres.
+- Pastilles choisies : plus de fond doré plein (fond sombre, contour et texte champagne) — filtres et onglets cavaliers / chevaux.
+- Titre « Ses moments forts » : même dessin que les autres titres (capitales champagne + filet).
+- Photos des moments forts : photo choisie à la main d'abord ; sinon page du cheval = portrait du cavalier du résultat (compte relié), page du cavalier = photo du cheval du résultat ; sinon la petite coupe.
+- Choix de la photo d'un moment fort (crayon > Changer la photo) : nouveau bouton « + Importer une photo » depuis le téléphone (envoyerPhoto puis enregistrement dans moments_forts_medias), 7 langues.
+- Espaces homogènes : 44 px au-dessus de chaque titre de partie, 14 px dessous (Derniers résultats, Ses moments forts, Par saison, Points de qualification, carte d'import).
+- Cartes « Derniers résultats » : celles de la maquette (112 × 176, texte centré, fond pétrole, liseré champagne, ivoire / gris doux) — déjà décrit, finalisé ici.
+- NON FAIT (Blandine : « oublie ») : ouvrir le choix de photo des moments forts aux modératrices et responsables d'écurie — la base (RLS chevaux : auth.uid() = user_id) ne laisse modifier moments_forts_medias qu'à la propriétaire ; il faudrait une fonction SQL, non passée.
+- Tests : nouvelle page 45/45 et 28/28 ; captures des deux pages actuelles, feuille du crayon avec « Importer une photo » ; node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
