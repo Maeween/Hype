@@ -13209,3 +13209,16 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Visible par tous : le classement Team compte désormais les résultats masqués (saison en cours : Dakota ca 20 → 25, Cirrus des lauriers 0 → 5, ordre de tête inchangé). Pages Performances du cheval (#perf-<id>) et du cavalier (#perfcav-<id du compte>) : toujours cachées, anciennes pages inchangées et toujours utilisées.
 - Tests sur la version fusionnée : tableau 45/45, moments forts 28/28, page cavalier (banc), import 1 ligne neuve / 2 doublons reconnus, node --check 35 blocs sans erreur, marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
 - Restent : 15 doublons en base (requête de suppression donnée à Blandine), moteur des qualifications championnats, décision masquage des 904 lignes (réglage de visibilité), lien résultat → journée de concours.
+
+## 18/10/2026 — Anciennes copies de l'appli redirigées vers la vraie (netlify.toml, publié vers 17 h 10)
+- Cause trouvée sur les captures de Dominique Wirtschafter (Duo payé et valable) : il ouvrait une copie d'aperçu figée de l'été (Galops 2-4 « Prochainement », vidéos de démonstration, formule Duo inconnue → traité comme gratuit).
+- 105 copies complètes d'index.html (index-preview-*, index-PREVIEW-*, index-apercu-*, apercu-*, preview-*, hype-*-preview, hype-apercu-*, index-secours, test-heybaby, c.html, _SC_0031) renvoient vers « / » (302, force, une règle par page, sans joker). Fichiers gardés dans le dépôt. NON redirigés : DEV_OUVRIR_PAGE.html, DEV_PALMARES.html. Retour arrière : supprimer le bloc du 18/10 dans netlify.toml.
+- Limite : une adresse Netlify figée (lien de déploiement) ne peut pas être redirigée → supprimer l'icône et repasser par https://2hype.fr.
+- (Entrée écrite à la publication suivante d'index.html, comme le veut la règle du suivi.)
+
+## 18/10/2026 — Liens externes : une seule ouverture, Hype ne se quitte plus (marqueur 20261018-1730)
+- Défaut : quatre ouvertures de lien utilisaient window.open(…, "noopener") puis « si rien n'est revenu, aller sur le lien ». Avec « noopener », le navigateur ne renvoie JAMAIS rien, même quand la fenêtre s'est ouverte : l'appli quittait donc aussi Hype pour le lien (double ouverture, retour obligatoire dans l'appli).
+- Touchés : window.hypeOuvrirLien (21 boutons : liens d'articles, cartes Google Maps, liens Stripe passés par là), dons Crystal (montant unique et choix du montant), portail Stripe « Gérer mon abonnement ».
+- Changement : window.open(…, "_blank") puis w.opener = null (même protection que noopener), et on ne quitte Hype QUE si la fenêtre n'a vraiment pas pu s'ouvrir.
+- Inchangé : les liens eux-mêmes, montants, Stripe, verrou de renonciation à la rétractation, achats Apple (endormis), bouton de paiement Premium (déjà correct).
+- Tests (Chromium, vraie fonction) : avant → nouvelle fenêtre + Hype quittée ; après → nouvelle fenêtre, Hype reste, fenêtre détachée de Hype (opener null) ; fenêtre bloquée → Hype va sur le lien (repli conservé). Don Crystal idem. node --check 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone et app installée.
