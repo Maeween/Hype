@@ -13366,3 +13366,12 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Cavalier (EcranActualiteCavaliere) : même grille ; toucher une publication l'ouvre avec sa carte encadrée (♡, croix « retirer », ouverture du mur) ; toucher un concours → ses résultats. « Liste » = les cartes encadrées du build 0110.
 - Rien en base, rien dans Stripe.
 - Tests : rendus iPhone 390 et ordinateur 1280 des deux pages, ouverture d'un moment, sans erreur ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0145, choix de Blandine 00:54 « B centrée partout ») : page Écurie, étape A — espacements, titres, contact et bas de page sur tablette et ordinateur
+- Page Écurie (EcranEcurieV2) uniquement. Téléphone (375/390 px) strictement identique : captures avant/après comparées au pixel près, écurie complète, petite et vide.
+- Tablette (768 px et plus) / ordinateur (1024 px et plus, avec menu latéral) : 48 / 56 px entre les sections, 40 px avant « Contacter l'écurie » ; titres de section 26 / 28 px (24 sur téléphone).
+- Contenu limité à 1 120 px de large sur ordinateur (centré). Le bloc contact n'est plus enfermé dans 900 px : son titre s'aligne sur les autres titres ; boutons 3 par rangée au plus, centrés dans 640 px au plus (variante B choisie, partout ; sur téléphone ils remplissaient déjà la largeur, rendu inchangé).
+- Bas de page HYPE (paysage) : 150 px sur tablette, 180 px sur ordinateur (118 sur téléphone), image jamais déformée.
+- Hors périmètre, inchangés : hero, citation, accès rapides, grille et cartes chevaux, encart « Un box virtuel », résultats, événements, Souvenirs (laissés absents), données, droits, textes.
+- Tests : rendu local (faux client Supabase) à 375, 390, 820, 1024 et 1440 px pour 3 écuries (complète, 2 chevaux, vide), menu latéral visible sur ordinateur ; arabe (miroir) et allemand (libellés longs) à 820 et 1440 ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+- Second lot prévu (non fait) : résultats et événements sur ordinateur (flèches, hauteur des cartes, section seule, pastilles d'événement en contour au lieu du doré plein).
