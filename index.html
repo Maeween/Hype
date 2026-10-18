@@ -40527,6 +40527,7 @@ function EcranPerformancesCheval() {
     return function () { v = false; };
   }, [dbId]);
   var mnSt = React.useState(false); var menuOuvert = mnSt[0], setMenuOuvert = mnSt[1];
+  var vgSt = React.useState(false); var videoGrande = vgSt[0], setVideoGrande = vgSt[1];   /* (g4) video en grand */
   var fgSt = React.useState(null); var fortGere = fgSt[0], setFortGere = fgSt[1];   /* (g3) feuille du crayon d un moment fort */   /* (g2) feuille du « ••• » */
   var mfSt = React.useState(null); var mfLocal = mfSt[0], setMfLocal = mfSt[1];
   var mfMedias = React.useMemo(function () {
@@ -40790,9 +40791,24 @@ function EcranPerformancesCheval() {
         T("Équipe compétition", "Competition team", "Equipo de competición", "Squadra agonistica", "競技チーム", "Turnierteam", "فريق المنافسات")) : null));
 
   /* ── video pedagogique (proprietaire seulement) ── */
-  var blocVideo = (estProprio && typeof VideoResultatsOfficiels === "function") ? (videoMasquee
+  /* (g4) VIDEO PEDAGOGIQUE en petite carte horizontale, comme la maquette : miniature + bouton lecture, « Tes resultats officiels »,
+     une phrase, « Masquer la video ». Toucher la miniature ouvre la video en grand par-dessus la page. Proprietaire seulement ;
+     meme video et meme preference de masquage qu avant (VideoResultatsOfficiels reste inchange pour les autres pages). */
+  var blocVideo = estProprio ? (videoMasquee
     ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { poserVideoMasquee(false); }, style: { background: "none", border: "none", padding: "6px 10px", color: MUET2, fontFamily: SERIF, fontStyle: "italic", fontSize: 13.5, cursor: "pointer" } }, T("Revoir la petite vidéo ▸", "Watch the short video again ▸", "Volver a ver el vídeo ▸", "Rivedi il breve video ▸", "動画をもう一度見る ▸", "Das kurze Video erneut ansehen ▸", "مشاهدة الفيديو مجددا ▸")))
-    : h(VideoResultatsOfficiels, { marge: "22px 18px 0", ouverte: true, masquable: true, onMasquer: function () { poserVideoMasquee(true); } })) : null;
+    : h("div", { "data-perf-video": "1", style: { display: "flex", alignItems: "center", gap: 14, margin: "22px 18px 0", padding: 10, borderRadius: 16, border: "1px solid rgba(201,166,107,0.24)", background: "linear-gradient(165deg, " + PETROLE2 + " 0%, " + NOIR + " 100%)" } },
+        h("button", { type: "button", "data-perf-video-lire": "1", onClick: function () { setVideoGrande(true); }, "aria-label": T("Lire la vidéo", "Play the video", "Ver el vídeo", "Guarda il video", "動画を再生", "Video abspielen", "تشغيل الفيديو"), style: { position: "relative", flex: "0 0 112px", height: 74, borderRadius: 11, overflow: "hidden", border: "1px solid rgba(201,166,107,0.35)", padding: 0, background: "#000", cursor: "pointer" } },
+          h("img", { src: "palmares-video-2.jpg?v=1", alt: "", loading: "lazy", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" } }),
+          h("span", { "aria-hidden": "true", style: { position: "absolute", left: "50%", top: "50%", width: 34, height: 34, marginLeft: -17, marginTop: -17, borderRadius: "50%", background: "rgba(7,10,8,0.6)", border: "1px solid rgba(243,238,228,0.7)", display: "flex", alignItems: "center", justifyContent: "center" } },
+            h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: IVOIRE }, h("path", { d: "M8 5v14l11-7z" })))),
+        h("div", { style: { flex: 1, minWidth: 0 } },
+          h("div", { style: { fontFamily: SERIF, fontSize: 18, fontWeight: 600, color: IVOIRE, lineHeight: 1.15 } }, T("Tes résultats officiels", "Your official results", "Tus resultados oficiales", "I tuoi risultati ufficiali", "あなたの公式成績", "Deine offiziellen Ergebnisse", "نتائجك الرسمية")),
+          h("div", { style: { marginTop: 3, fontFamily: SANS, fontSize: 11, lineHeight: 1.45, color: MUET } }, T("Comment importer tes résultats FFE et les retrouver dans Hype.", "How to import your FFE results and find them in Hype.", "Cómo importar tus resultados FFE y encontrarlos en Hype.", "Come importare i tuoi risultati FFE e ritrovarli in Hype.", "FFE成績を取り込んでHypeで見る方法。", "So importierst du deine FFE-Ergebnisse und findest sie in Hype.", "كيف تستوردين نتائج FFE وتجدينها في Hype.")),
+          h("button", { type: "button", onClick: function () { poserVideoMasquee(true); }, style: { marginTop: 4, padding: 0, background: "none", border: "none", color: "#E6CF9C", fontFamily: SANS, fontSize: 11, fontWeight: 600, textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer" } }, T("Masquer la vidéo", "Hide the video", "Ocultar el vídeo", "Nascondi il video", "動画を隠す", "Video ausblenden", "إخفاء الفيديو") + " \u02c4")))) : null;
+  var videoPlein = videoGrande ? portail(h("div", { key: "vidG", onClick: function () { setVideoGrande(false); }, "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 8800, background: "rgba(4,6,5,0.94)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 } },
+    h("div", { onClick: function (e) { e.stopPropagation(); }, style: { width: "100%", maxWidth: 360 } },
+      h("video", { src: "palmares-video-2.mp4?v=1", poster: "palmares-video-2.jpg?v=1", autoPlay: true, controls: true, playsInline: true, "webkit-playsinline": "true", style: { width: "100%", display: "block", borderRadius: 16, background: "#000" } }),
+      boutonFermer(function () { setVideoGrande(false); }))), "vidG") : null;
 
   /* ── boutons du bas ── */
   var boutons = (peutSaisir || peutImporter) ? h("div", { style: { display: "flex", gap: 10, margin: "26px 18px 0" } },
@@ -40815,6 +40831,7 @@ function EcranPerformancesCheval() {
       (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
       typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
       ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
+      videoPlein,
       fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
         h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [fortGere.f.ep, String(fortGere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" \u2022 ")),
@@ -40930,9 +40947,14 @@ function EcranPerformancesCheval() {
       ouverte ? corpsSaison(sx) : null);
   }
   var LEGENDE = [[COUL_BARRE.p1, T("1re", "1st", "1.º", "1º", "1位", "1.", "الأول")], [COUL_BARRE.p2, T("2e", "2nd", "2.º", "2º", "2位", "2.", "الثاني")], [COUL_BARRE.p3, T("3e", "3rd", "3.º", "3º", "3位", "3.", "الثالث")], [COUL_BARRE.autres, T("autres places", "other places", "otros puestos", "altri posti", "その他", "andere Plätze", "مراكز أخرى")], [COUL_BARRE.elab, T("élim. / abandon", "elim. / retired", "elim. / abandono", "elim. / ritiro", "失権/棄権", "Ausg./Aufgabe", "استبعاد/انسحاب")]];
-  var actionsCompactes = (peutSaisir || peutImporter) ? h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap", margin: "22px 18px 0" } },
-    peutSaisir ? h("button", { type: "button", onClick: function () { setAjoutOuvert(true); }, style: { flex: "1 1 auto", minHeight: 40, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer" } }, "+ " + T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة")) : null,
-    peutImporter ? h("button", { type: "button", onClick: ouvrirImport, style: { flex: "1 1 auto", minHeight: 40, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center", gap: 6 } }, premiumOk ? null : ICO_CADENAS, T("Importer mes résultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE成績を取り込む", "Meine FFE-Ergebnisse importieren", "استيراد نتائج FFE")) : null) : null;
+  /* (g4) deux boutons cote a cote, sombres a contour champagne, comme la maquette ; « Premium » sous l import si l abonnement manque */
+  var actionsCompactes = (peutSaisir || peutImporter) ? h("div", { "data-perf-actions": "1", style: { display: "flex", gap: 10, margin: "22px 18px 0" } },
+    peutSaisir ? h("button", { type: "button", onClick: function () { setAjoutOuvert(true); }, style: { flex: 1, minWidth: 0, minHeight: 56, padding: "0 10px", borderRadius: 13, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 7 } },
+      h("span", { "aria-hidden": "true", style: { fontFamily: SERIF, fontSize: 22, lineHeight: 1, color: CHAMP } }, "+"), T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة")) : null,
+    peutImporter ? h("button", { type: "button", onClick: ouvrirImport, style: { flex: 1, minWidth: 0, minHeight: 56, padding: "0 10px", borderRadius: 13, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 12, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8, textAlign: "start" } },
+      premiumOk ? null : ICO_CADENAS,
+      h("span", { style: { minWidth: 0 } }, h("span", { style: { display: "block", lineHeight: 1.25 } }, T("Importer mes résultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE成績を取り込む", "Meine FFE-Ergebnisse importieren", "استيراد نتائج FFE")),
+        premiumOk ? null : h("span", { style: { display: "block", marginTop: 2, fontSize: 10, fontWeight: 500, color: MUET2 } }, "Premium"))) : null) : null;
   return h("div", { "data-ecran": "performances-cheval", style: racineSt },
     hero,
     /* les cinq chiffres (carriere, definitions historiques ; points = saison en cours) */
@@ -41020,7 +41042,8 @@ function EcranPerformancesCheval() {
       mfMedias[pickerJeton] ? h("button", { type: "button", onClick: function () { definirMedia(pickerJeton, null); }, style: { marginTop: 12, width: "100%", minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: MUET, fontFamily: SANS, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, T("Revenir à la photo automatique", "Back to the automatic photo", "Volver a la foto automática", "Torna alla foto automatica", "自動の写真に戻す", "Zurück zum automatischen Foto", "العودة إلى الصورة التلقائية")) : null,
       boutonFermer(function () { setPickerJeton(null); })), function () { setPickerJeton(null); }, "fPick") : null,
     ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
-    fortGere ? feuille(h(React.Fragment, null,
+    videoPlein,
+      fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
         h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [fortGere.f.ep, String(fortGere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" \u2022 ")),
         fortGere.peutPhoto ? h("button", { type: "button", "data-perf-fort-photo": "1", onClick: function () { var fx = fortGere.f; setFortGere(null); setMediasTous(null); setPickerJeton(fx.jeton); }, style: { width: "100%", minHeight: 46, marginBottom: 8, borderRadius: 12, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Changer la photo", "Change the photo", "Cambiar la foto", "Cambia la foto", "写真を変更", "Foto ändern", "تغيير الصورة")) : null,
