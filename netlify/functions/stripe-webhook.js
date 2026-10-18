@@ -8,7 +8,7 @@
 //
 // Événements écoutés :
 //   checkout.session.completed · invoice.paid · invoice.payment_failed
-//   · customer.subscription.deleted
+//   · customer.subscription.deleted · customer.subscription.updated (18/10 : changement de formule)
 //
 // ─────────────────────────────────────────────────────────────────────────────
 // RÉVISION DU 21/08/2026 — après la soirée où trois cavalières ont payé sans
@@ -114,6 +114,8 @@ const LIENS_DONS = new Set([
     "plink_1TpvvFHnB1OJ7FOmJ3VdMPMA", // 500 €
 ]);
 const PLANS_PAYES = { mensuel: 1, annuel: 1, duo: 1, ai: 1 };
+/* 18/10/2026 : formules entre lesquelles on peut passer dans l'espace « Gérer mon abonnement ». */
+const FORMULES_ECHANGEABLES = { mensuel: 1, duo: 1, ai: 1 };
 
 /* ── PREMIUM FAMILLE (étape 3, branche premium-famille — PAS ENCORE EN VENTE) ──
    19,99 €/mois, deux comptes cavaliers. Rangé dans les tables familles /
@@ -613,7 +615,13 @@ export default async (req) => {
                 // Renouvellement d'une ligne existante : on prolonge SEULEMENT ses droits
                 // (la formule n'est jamais changée ici).
                 log("Renouvellement enregistré, expire le", expire || "(période inconnue)");
-                if (!offreF) {
+                /* 18/10 : facture d'un CHANGEMENT DE FORMULE fait dans l'espace « Gérer mon abonnement ».
+                   La formule est changée par customer.subscription.updated ; ici, la première ligne peut être
+                   l'avoir de l'ancienne formule : on ne crie pas à l'anomalie. */
+                const factureChangement = objet.billing_reason === "subscription_update";
+                if (factureChangement) {
+                    log("Facture de changement de formule payée :", aboFacture);
+                } else if (!offreF) {
                     ecritureOk = await anomalie(service, evenement, { ...infosF, user_id: ligneAbo.user_id, anomalie: "offre_inconnue" });
                 } else if (ligneAbo.plan && offreF.plan !== ligneAbo.plan) {
                     ecritureOk = await anomalie(service, evenement, { ...infosF, user_id: ligneAbo.user_id, anomalie: "changement_formule" });
@@ -662,6 +670,48 @@ export default async (req) => {
             if (touchees === 0 && await majFamille(service, evenement, aboRefus, "impaye", null, periodeFacture(objet))) { touchees = 1; log("Famille : paiement refusé", aboRefus); }
             if (touchees === 0) log("paiement refusé, aucune ligne correspondante :", aboRefus);
             log("Paiement refusé enregistré :", aboRefus);
+        }
+
+        /* ----- 18/10/2026 : CHANGEMENT DE FORMULE (espace Stripe « Gérer mon abonnement ») -----
+           Seules les trois formules mensuelles passent de l'une à l'autre : Premium 12,99 · Pack Duo 24,99 ·
+           Hype IA 14,99 (Crystal est un paiement unique, Famille a son propre circuit). On ne change la formule
+           en base QUE si :
+             · ce message est bien celui qui a changé le prix (previous_attributes.items présent), ou celui où
+               l'abonnement redevient en règle après un changement pas encore payé (previous_attributes.status),
+               pour qu'un vieux message sans rapport ne remette pas l'ancienne formule ;
+             · l'abonnement est en règle (active) : un changement non payé ne donne rien ;
+             · le nouveau prix est l'une des trois formules connues (sinon : anomalie, aucun droit).
+           Aucune ligne Hype pour cet abonnement (Famille, ancien abonnement) : rien n'est touché. */
+        else if (evenement.type === "customer.subscription.updated" && objet && objet.id) {
+            const avant = (evenement.data && evenement.data.previous_attributes) || {};
+            const item = objet.items && objet.items.data && objet.items.data[0];
+            const prixN = item && item.price ? (typeof item.price === "string" ? item.price : item.price.id) : null;
+            const offreN = prixN ? OFFRES_PAR_PRIX[prixN] : null;
+            /* le prix vient de changer, OU l'abonnement vient de redevenir en règle après un changement pas encore payé */
+            const devenuEnRegle = !!avant.status && (objet.status === "active" || objet.status === "trialing");
+            if (!avant.items && !devenuEnRegle) {
+                log("abonnement mis à jour sans changement de formule :", objet.id);
+            } else {
+                const ligneN = await ligneParAbonnement(service, objet.id);
+                if (!ligneN) {
+                    log("changement de prix sur un abonnement sans ligne Hype (Famille ou ancien) :", objet.id);
+                } else if (!offreN || !FORMULES_ECHANGEABLES[offreN.plan]) {
+                    ecritureOk = await anomalie(service, evenement, { reference_stripe: objet.id, identifiant_offre: prixN,
+                        user_id: ligneN.user_id, email: ligneN.email, anomalie: "offre_inconnue",
+                        note: "Changement de formule vers un prix inconnu : la formule en base n'a pas été changée." });
+                } else if (objet.status !== "active" && objet.status !== "trialing") {
+                    log("changement de formule pas encore payé (", objet.status, ") — formule inchangée :", objet.id);
+                } else if (offreN.plan === ligneN.plan) {
+                    log("changement de formule déjà enregistré :", objet.id, offreN.plan);
+                } else {
+                    const champsN = { plan: offreN.plan, maj_le: new Date().toISOString() };
+                    const finN = item && Number(item.current_period_end);
+                    if (finN) champsN.expire_le = new Date((finN + 2 * 86400) * 1000).toISOString();
+                    const n = await majParAbonnement(service, objet.id, champsN);
+                    if (n > 0) log("Formule changée :", ligneN.plan, "→", offreN.plan, "—", ligneN.email || "", "—", objet.id);
+                    else ecritureOk = false; // Stripe réessaiera
+                }
+            }
         }
 
         // ----- Annulation définitive -----
