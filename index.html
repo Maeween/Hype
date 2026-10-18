@@ -40804,7 +40804,9 @@ function EcranPerformancesCheval(props) {
   var og = (function () { try { var o = ligneCh.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object") ? o : (secours.origines || {}); } catch (eO) { return secours.origines || {}; } })() || {};
   var SEXES = { hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي"), jument: T("Jument", "Mare", "Yegua", "Giumenta", "牡馬", "Stute", "فرس"), entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل") };
   var infos = modeCav ? [String(ligneCh.ecurie || "").trim()].filter(Boolean)   /* (g9) cavalier : son ecurie */
-    : [SEXES[String(og.sexe || "").toLowerCase().trim()] || "", String(ligneCh.race || secours.race || "").trim(), (function () { var m = String(og.naissance || "").match(/^(\d{4})/); return m ? m[1] : ""; })()].filter(Boolean);
+    : [SEXES[String(og.sexe || "").toLowerCase().trim()] || "", String(ligneCh.race || secours.race || "").trim(), (function () { var m = String(og.naissance || "").match(/^(\d{4})/); return m ? m[1] : ""; })(),
+       /* (g10) taille du cheval comme la maquette (« 1,68 m »), seulement si les origines la donnent ; jamais inventee */
+       (function () { var t = String(og.taille || "").trim(); if (!t) return ""; var mC = t.match(/^(\d{3})\s*(cm)?$/i); if (mC) return (Number(mC[1]) / 100).toFixed(2).replace(".", ",") + " m"; var mM = t.match(/^(\d)[.,](\d{1,2})\s*m?$/i); if (mM) return mM[1] + "," + (mM[2].length === 1 ? mM[2] + "0" : mM[2]) + " m"; return t; })()].filter(Boolean);
   var rondHaut = { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "rgba(7,10,8,0.45)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, flex: "0 0 auto" };
   var peutLier = !!(moi && dbId && !estProprio && typeof lierCheval === "function" && typeof delierCheval === "function");
   async function basculerLien() {
@@ -40869,7 +40871,7 @@ function EcranPerformancesCheval(props) {
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "currentColor", "aria-hidden": "true" }, h("circle", { cx: 5.5, cy: 12, r: 1.6 }), h("circle", { cx: 12, cy: 12, r: 1.6 }), h("circle", { cx: 18.5, cy: 12, r: 1.6 }))))),
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 14px" } },
       h("div", { style: { fontFamily: SERIF, fontSize: largeP ? 48 : 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
-      infos.length ? h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".16em", textTransform: "uppercase", color: "rgba(243,238,228,0.78)" } }, infos.join("  ·  ")) : null,
+      infos.length ? h("div", { style: { marginTop: 5, fontFamily: SANS, fontSize: 10.5, fontWeight: 600, letterSpacing: ".16em", color: "rgba(243,238,228,0.78)" } }, infos.map(function (x) { return /\d,\d{2} m$/.test(x) ? x : String(x).toUpperCase(); }).join("  ·  ")) : null,   /* (g10) « 1,68 m » garde son m minuscule */
       teamInfo ? h("div", { style: { marginTop: 9, display: "inline-flex", alignItems: "center", gap: 6, padding: "4px 11px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.6)", background: "rgba(7,10,8,0.5)", color: "#E6CF9C", fontFamily: SANS, fontSize: 9.5, fontWeight: 700, letterSpacing: ".14em", textTransform: "uppercase" } },
         h("svg", { viewBox: "0 0 24 24", width: 12, height: 12, fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M4 17h16l-1.5-9-4.5 4-2-6-2 6-4.5-4z" })),
         T("Équipe compétition", "Competition team", "Equipo de competición", "Squadra agonistica", "競技チーム", "Turnierteam", "فريق المنافسات")) : null));
