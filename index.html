@@ -41335,12 +41335,12 @@ function EcranResultatsCavaliere() {
         style: { width: "100%", display: "block" } }),
       h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, height: "32%", pointerEvents: "none", background: "linear-gradient(180deg,rgba(6,7,9,0),rgba(6,7,9,.9))" } })),
     h("div", { style: { position: "relative", margin: "26px auto 0", maxWidth: "17em", padding: "19px 0", textAlign: "center" } },
-      h("div", { style: { position: "absolute", top: 0, left: "32%", right: "32%", height: 1, background: "#2A323D" } }),
-      h("div", { style: { fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: 24, lineHeight: 1.3, fontWeight: 400, color: "#F4F7FA" } }, T("Tes résultats officiels, à redécouvrir sur Hype.", "Your official results, to rediscover on Hype.", "Tus resultados oficiales, para redescubrir en Hype.", "I tuoi risultati ufficiali, da riscoprire su Hype.", "公式成績を Hype で見つけ直そう。", "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.", "\u0646\u062a\u0627\u0626\u062c\u0643 \u0627\u0644\u0631\u0633\u0645\u064a\u0629\u060c \u0644\u062a\u0639\u064a\u062f\u064a \u0627\u0643\u062a\u0634\u0627\u0641\u0647\u0627 \u0639\u0644\u0649 Hype.")),
-      h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%", height: 1, background: "#2A323D" } })),
+      h("div", { style: { position: "absolute", top: 0, left: "32%", right: "32%", height: 1, background: "rgba(201,166,107,0.35)" } }),
+      h("div", { style: { fontFamily: "'Cormorant Garamond',serif", fontStyle: "italic", fontSize: 24, lineHeight: 1.3, fontWeight: 400, color: "#F3EEE4" } }, T("Tes résultats officiels, à redécouvrir sur Hype.", "Your official results, to rediscover on Hype.", "Tus resultados oficiales, para redescubrir en Hype.", "I tuoi risultati ufficiali, da riscoprire su Hype.", "公式成績を Hype で見つけ直そう。", "Deine offiziellen Ergebnisse, neu entdeckt auf Hype.", "\u0646\u062a\u0627\u0626\u062c\u0643 \u0627\u0644\u0631\u0633\u0645\u064a\u0629\u060c \u0644\u062a\u0639\u064a\u062f\u064a \u0627\u0643\u062a\u0634\u0627\u0641\u0647\u0627 \u0639\u0644\u0649 Hype.")),
+      h("div", { style: { position: "absolute", bottom: 0, left: "32%", right: "32%", height: 1, background: "rgba(201,166,107,0.35)" } })),
     h("button", { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); },
-      style: { position: "relative", width: "100%", marginTop: 16, padding: "14px 34px", border: 0, borderLeft: "2px solid #5C8792", borderRadius: "0 12px 12px 0", background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)", color: "#F4F7FA", fontSize: 12.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", textAlign: "center", cursor: "pointer" } },
-      T("Importer mes résultats officiels", "Import my official results", "Importar mis resultados oficiales", "Importa i miei risultati ufficiali", "公式成績を取り込む", "Meine offiziellen Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c\u064a \u0627\u0644\u0631\u0633\u0645\u064a\u0629"), h("span", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: "#8FB3BD", fontWeight: 400 } }, "\u2192"))) : null;
+      style: { position: "relative", width: "100%", marginTop: 16, padding: "14px 34px", border: 0, borderLeft: "2px solid #C9A66B", borderRadius: "0 12px 12px 0", background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)", color: "#F3EEE4", fontSize: 12.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", textAlign: "center", cursor: "pointer" } },
+      T("Importer mes résultats officiels", "Import my official results", "Importar mis resultados oficiales", "Importa i miei risultati ufficiali", "公式成績を取り込む", "Meine offiziellen Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c\u064a \u0627\u0644\u0631\u0633\u0645\u064a\u0629"), h("span", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: "#C9A66B", fontWeight: 400 } }, "\u2192"))) : null;
   var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110 } },
     h(HypeDrapeauLangue, null),   /* (491) */
@@ -41516,9 +41516,11 @@ function EcranResultatsCavaliere() {
 var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
           function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
-          var OR9 = "#D9A85C";
+          var OR9 = "#C9A66B";   /* 18/10 : champagne de la nouvelle page */
+          var aImpF = (resDb || []).some(function (rI) { return rI && rI.origine === "import"; });   /* 18/10 : des resultats deja importes ? */
+          var COUL_SAIS = [["p1", "#C9A66B", T("1re", "1st", "1.º", "1º", "1位", "1.", "الأول")], ["p2", "rgba(243,238,228,0.75)", T("2e", "2nd", "2.º", "2º", "2位", "2.", "الثاني")], ["p3", "#A9713C", T("3e", "3rd", "3.º", "3º", "3位", "3.", "الثالث")], ["aut", "rgba(243,238,228,0.22)", T("autres places", "other places", "otros puestos", "altri posti", "その他", "andere Plätze", "مراكز أخرى")], ["elab", "#7A3B34", T("élim. / abandon", "elim. / retired", "elim. / abandono", "elim. / ritiro", "失権/棄権", "ausgesch. / aufgeg.", "استبعاد / انسحاب")]];
           var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
-          function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
+          function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(201,166,107,.5))" } }); }
           /* 02/09 (Blandine) — UNE PHOTO PAR MOMENT FORT, JAMAIS LA MEME TROIS FOIS.
              Ordre de recherche :
                1. un album dont le NOM evoque le concours -> photo vraiment liee au moment ;
@@ -41612,12 +41614,12 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               if (phF) dejaPrises[phF] = 1;
             }
             var estVidF = surchargeF && surchargeF.type === "video";
-            return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(217,168,92," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", /* 🟩 06/09 (Blandine : "rallonge un peu la partie ou y a la photo, a chaque fois tu la coupes en deux, ca gache l'effet visuel") */ /* 🟩 06/09 (Blandine : "on garde le format large mais large ne veut pas dire tres court en hauteur, rallonge un peu sa hauteur") */ height: grande ? 280 : 178, flex: grande ? null : 1, minWidth: 0 } },
+            return h("div", { key: "mf" + idx, role: "button", onClick: function () { if (!f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }, /* 26/08 : un moment fort OUVRE sa saison (fini les cartes qui n'emmenent nulle part) */ style: { cursor: "pointer", position: "relative", borderRadius: 15, overflow: "hidden", border: "1px solid rgba(201,166,107," + (grande ? ".3" : ".2") + ")", background: "#0A0D11", /* 🟩 06/09 (Blandine : "rallonge un peu la partie ou y a la photo, a chaque fois tu la coupes en deux, ca gache l'effet visuel") */ /* 🟩 06/09 (Blandine : "on garde le format large mais large ne veut pas dire tres court en hauteur, rallonge un peu sa hauteur") */ height: grande ? 280 : 178, flex: grande ? null : 1, minWidth: 0 } },
               phF ? (estVidF
                 ? hypeMiniatureVideo(phF, { largeur: 900, objectPosition: "center 28%", picto: false, style: { position: "absolute", inset: 0, opacity: .82 } })
                 : h("img", { src: phF, style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%", opacity: .82 } })) : null,
               h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,6,9,0) 30%, rgba(4,6,9,.55) 58%, rgba(4,6,9,.93) 86%)" } }),
-              h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.74)", color: grande ? "#241503" : "#E9D3A2", border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid rgba(217,168,92,.8)" } },
+              h("div", { style: { position: "absolute", top: 9, left: 9, width: grande ? 36 : 27, height: grande ? 36 : 27, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Cinzel',serif", fontWeight: 800, fontSize: grande ? 16 : 12.5, background: grande ? "radial-gradient(circle at 35% 30%, #F0CE8C, #B9873C)" : "rgba(4,10,12,.74)", color: grande ? "#241503" : "#E6CF9C", border: grande ? "1px solid rgba(255,255,255,.3)" : "1.5px solid rgba(201,166,107,.8)" } },
                 /* (601) Blandine : « plutot qu un 1 bleu fluo, un petit dessin de coupe sur les victoires » : une coupe au trait pour une victoire, le rang en champagne sinon (plus de turquoise). (596) le vrai rang dans la pastille. */
                 (!f.pl || f.pl === 1) ? h("span", { "aria-label": "1er", style: { fontSize: grande ? 18 : 13, lineHeight: 1, display: "block" } }, "\uD83C\uDFC6") : String(f.pl)), /* (603) Blandine : « mets celle-la tout simplement » — la coupe emoji, pas le dessin au trait */
               /* \U0001f7e9 06/09 : petit crayon discret, reserve a peutChoisirMediaF — n'empeche pas
@@ -41638,7 +41640,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", margin: "18px 16px 0", padding: "15px 6px 14px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
               [[nS, T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts", "\u0645\u0634\u0627\u0631\u0643\u0627\u062a")], [nV, T("victoires", "wins", "victorias", "vittorie", "\u512a\u52dd", "Siege", "\u0627\u0646\u062a\u0635\u0627\u0631\u0627\u062a")], [nP, T("podiums", "podiums", "podios", "podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u062a\u062a\u0648\u064a\u062c")], [nC, T("class\u00e9s", "placings", "clasificados", "piazzamenti", "\u5165\u8cde", "Platzierungen", "\u0645\u0635\u0646\u0641")]].map(function (cq, iq) {
                 return h("div", { key: "q" + iq, style: { flex: 1, textAlign: "center", minWidth: 0 } },
-                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: teinteCl } }, String(cq[0])),
+                  h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 20, fontWeight: 700, color: "#F3EEE4" } }, String(cq[0])),
                   h("div", { style: { marginTop: 2, fontSize: 8.2, letterSpacing: ".13em", color: "#8A929C", textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, cq[1])); })),
             /* 02/09 — LE MENU D AFFICHAGE, sous les quatre chiffres.
                ⚠️ Il etait plus bas et en gris minuscule : Blandine ne le trouvait
@@ -41663,12 +41665,12 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var onV = (vueRes === cH[0]);
                     return h("div", { key: "vr" + cH[0], role: "button", onClick: function () { poserVueRes(cH[0]); },
                       style: { flex: 1, textAlign: "center", padding: "8px 6px", borderRadius: 999, cursor: "pointer",
-                        border: "1px solid " + (onV ? "rgba(217,199,163,0.7)" : "rgba(255,255,255,0.13)"),
-                        background: onV ? "rgba(217,199,163,0.14)" : "rgba(255,255,255,0.03)",
-                        color: onV ? "#D9C7A3" : "rgba(237,242,245,0.62)",
+                        border: "1px solid " + (onV ? "#E6CF9C" : "rgba(243,238,228,0.14)"),
+                        background: onV ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)",
+                        color: onV ? "#E6CF9C" : "rgba(237,242,245,0.62)",
                         fontSize: 10.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, cH[1]); /* 06/09 : 11.5 -> 10.5, quatre pastilles au lieu de trois sur la meme largeur */
                   })),
-                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "#6F7883", fontFamily: "'Montserrat',sans-serif" } },
+                (vueRes !== "tous" && nMasq > 0) ? h("div", { style: { marginTop: 5, textAlign: "center", fontSize: 10.5, color: "rgba(243,238,228,0.5)", fontFamily: "'Montserrat',sans-serif" } },
                   nMasq + " " + T("r\u00e9sultats masqu\u00e9s \u00b7 les compteurs ci-dessus restent complets",
                                   "results hidden \u00b7 the counters above stay complete",
                                   "resultados ocultos \u00b7 los contadores siguen completos",
@@ -41676,26 +41678,86 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                                   "\u4ef6\u975e\u8868\u793a\uff08\u4e0a\u306e\u96c6\u8a08\u306f\u5168\u4ef6\uff09",
                                   "Ergebnisse ausgeblendet \u00b7 Z\u00e4hler bleiben vollst\u00e4ndig", "\u0646\u062a\u0627\u0626\u062c \u0645\u062e\u0641\u064a\u0629 \u00b7 \u0627\u0644\u0639\u062f\u0627\u062f\u0627\u062a \u0623\u0639\u0644\u0627\u0647 \u062a\u0628\u0642\u0649 \u0643\u0627\u0645\u0644\u0629")) : null);
             })(),
-            /* — 3 · SES MOMENTS FORTS — */
-            forts.length ? h(React.Fragment, null,
-              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", alignItems: "center", gap: 11, margin: "32px 22px 14px" } }, filetOr(),
-                h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontStyle: "italic", fontSize: 15.5, letterSpacing: ".1em", color: "#EFE9DC", whiteSpace: "nowrap" } }, T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "\u30cf\u30a4\u30e9\u30a4\u30c8", "Seine Highlights", "\u0644\u062d\u0638\u0627\u062a\u0647 \u0627\u0644\u0645\u0645\u064a\u0632\u0629").toUpperCase()), filetOr()),
-              /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ /* 🟩 06/09 (Blandine : "5 sur la page resultat, rajoute une ligne avec deux encarts") */ h("div", { style: { margin: "0 16px" } },
-                carteFort(forts[0], true, 0),
-                (forts[1] || forts[2]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[1], false, 1), carteFort(forts[2], false, 2)) : null,
-                (forts[3] || forts[4]) ? h("div", { style: { display: "flex", gap: 12, marginTop: 12 } }, carteFort(forts[3], false, 3), carteFort(forts[4], false, 4)) : null,
-                /* (600) « + » : choisir soi-meme un resultat a mettre en vitrine */
-                peutChoisirForts ? h("div", { style: { textAlign: "center", marginTop: 12 } }, h("button", { onClick: function () { setChoixFortOuvert(true); }, style: { minHeight: 40, padding: "9px 18px", borderRadius: 999, border: "1px solid rgba(217,168,92,.55)", background: "rgba(217,168,92,.08)", color: "#E9D3A2", fontFamily: "'Montserrat',sans-serif", fontSize: 12, fontWeight: 700, cursor: "pointer" } }, "+ " + T("Ajouter un moment fort", "Add a highlight", "A\u00f1adir un momento", "Aggiungi un momento", "\u30cf\u30a4\u30e9\u30a4\u30c8\u3092\u8ffd\u52a0", "Moment hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0644\u062d\u0638\u0629 \u0628\u0627\u0631\u0632\u0629"))) : null),
-              /* 02/09 : porte vers la page technique RETIREE (Blandine : « la page
-                 resultats, elle a pas a envoyer encore ailleurs »). */
-              null) : null,
+            /* 18/10 : sans resultat importe, la video et le bouton d import (blocImportCav, avant en bas) ; sinon les derniers resultats puis la carte « Importer tes resultats FFE » */
+            aImpF ? null : blocImportCav,
+            /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) : remontes en haut, comme sur la page Resultats du cheval */
+            recents.length ? h(React.Fragment, null,
+              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 9px" } }, /* 18/10 : remonte en haut (26 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
+                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
+              h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
+                (function () {
+                  var grpR = {}, ordreR = [];
+                  recents.forEach(function (rr) {
+                    if (!rr) return;
+                    var cle = String(rr.nom || "") + "|" + String(rr.ep || "") + "|" + String(rr.d || rr.an || "");
+                    /* 14/09 (155) : le SECOND rail garde aussi la date complete, sinon il
+                       serait reste a l annee (son groupe s appelle grpR, pas grp). */
+                    if (!grpR[cle]) { grpR[cle] = { concours: rr.nom || "", epreuve: rr.ep || "", an: rr.an || "", date: rr.d || "", partants: rr.part || null, places: [] }; ordreR.push(cle); }
+                    grpR[cle].places.push({ rang: rr.pl || null, cavalier: c.nom || "", cheval: rr.cav || "" }); /* (348) page cavaliere : la cavaliere, SUR le cheval */
+                    if (!grpR[cle].partants && rr.part) grpR[cle].partants = rr.part;
+                  });
+                  var nomChR = (chevalDyn && chevalDyn.nom) || c.nom || "";
+                  return ordreR.slice(0, 6).map(function (cle, iR) {
+                    var gr = grpR[cle];
+                    var tries = (gr.places || []).slice().sort(function (a5, b5) { return (a5.rang || 99) - (b5.rang || 99); });
+                    var meilleur = tries[0] || {};
+                    var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
+                    var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
+                    return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
+                      style: { flex: "0 0 46%", height: 240, boxSizing: "border-box", overflow: "hidden", padding: "12px 13px 14px", borderRadius: 20, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
+                        h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
+                        /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
+                       repli sur la seule annee si la date est absente ou illisible. Les DEUX
+                       rails identiques du fichier sont corriges : c est le meme element. */
+                    (function () {
+                      var txtD = gr.an || "";
+                      try {
+                        var mD = String(gr.date || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
+                        if (mD) {
+                          var MO = ["janv.", "f\u00e9vr.", "mars", "avril", "mai", "juin", "juil.", "ao\u00fbt", "sept.", "oct.", "nov.", "d\u00e9c."];
+                          txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
+                        }
+                      } catch (eD) { }
+                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: "#E6CF9C", letterSpacing: ".08em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
+                    })()),
+                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 56, height: 56, borderRadius: "50%", objectFit: "cover", marginTop: 8, border: "1px solid " + tA(0.35) } }) : null,
+                      h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F1F6F8", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
+                        (rangTxt ? (rangTxt + " ") : "") + (meilleur.cav_reel || meilleur.cavalier || ""),
+                        (meilleur.cheval || nomChR) ? h("span", { style: { color: "#E6CF9C", fontWeight: 600 } }, " sur " + (meilleur.cheval || nomChR)) : null),
+                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
+                      /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
+                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
+                      null,
+                      (function () {
+                        /* 21/09 (316) : une seule ligne « + N autres classees » (carte a hauteur fixe) ;
+                           les noms restent dans le panneau Performances, ouvert au toucher de la carte. */
+                        var nAutresF = Math.max(0, tries.length - 1);
+                        if (!nAutresF) return null;
+                        return h("div", { style: { marginTop: 7, paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 9.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                          "+ " + nAutresF + " " + (nAutresF === 1 ? hypeT7("autre class\u00e9e", "other placed", "otra clasificada", "altra classificata", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierung", "\u0645\u0635\u0646\u0641\u0629 \u0623\u062e\u0631\u0649") : hypeT7("autres class\u00e9es", "others placed", "otras clasificadas", "altre classificate", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierungen", "\u0645\u0635\u0646\u0641\u0627\u062a \u0623\u062e\u0631\u064a\u0627\u062a")));
+                      })());
+                  });
+                })())) : null,
+            (aImpF && sienPerf) ? h(CarteImportHype, { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); } }) : null,
+            /* — 3 · SES MOMENTS FORTS — 18/10 : mosaique de la nouvelle page (MosaiqueFortsHype) ; memes moments forts et memes droits ;
+               photo = celle du cheval du resultat (page cavalier : c est bien lui), sinon la petite coupe. */
+            (forts.length || (peutChoisirForts && fortsPool.length)) ? h(MosaiqueFortsHype, {
+              forts: forts,
+              photoDe: function (f) { return (f && f.chPh) ? { url: String(f.chPh), video: false } : null; },
+              peutPhoto: function () { return false; },
+              peutRetirer: function (f) { return !!(peutChoisirForts && f && f.id); },
+              onRetirer: function (f) { var eF = etatFort(f); poserFort(f, eF.ff ? { fort_force: false } : { fort_exclu: true }); },
+              onAjouter: peutChoisirForts ? function () { setChoixFortOuvert(true); } : null,
+              onCarte: function (f) { if (!f || !f.an) return; try { setSaisonOuv(String(f.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + f.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eMF) { } }
+            }) : null,
             /* \U0001f7e9 06/09 (Blandine : "vrai bouton pour choisir photo/video sur un moment
                fort") \u2014 le picker s'ouvre en tapant le crayon d'une carte moment fort. Choix
                fait DANS les photos/videos deja envoyees sur ce cheval (chargerPhotosSouvenirs) :
                pas de nouvel envoi ici, la photo/video existe deja quelque part sur la fiche. */
             /* (600) la feuille « Ajouter un moment fort » : tous ses resultats visibles qui ne sont pas deja en vitrine, du plus recent au plus ancien. */
             choixFortOuvert ? h("div", { onClick: function () { setChoixFortOuvert(false); }, "data-noswipe": "1", style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
-              h("div", { onClick: function (eCf) { eCf.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(217,168,92,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
+              h("div", { onClick: function (eCf) { eCf.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1316", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Ajouter un moment fort", "Add a highlight", "A\u00f1adir un momento", "Aggiungi un momento", "\u30cf\u30a4\u30e9\u30a4\u30c8\u3092\u8ffd\u52a0", "Moment hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0644\u062d\u0638\u0629 \u0628\u0627\u0631\u0632\u0629")),
                 h("div", { style: { fontSize: 11, color: "rgba(234,242,244,.45)", textAlign: "center", marginBottom: 14, fontFamily: "'Montserrat',sans-serif" } }, T("Touche un r\u00e9sultat pour le mettre en vitrine. Un moment fort choisi \u00e0 la main passe devant le classement automatique.", "Tap a result to showcase it. A hand-picked highlight comes before the automatic ranking.", "Toca un resultado para destacarlo. Un momento elegido a mano pasa delante del orden autom\u00e1tico.", "Tocca un risultato per metterlo in vetrina. Un momento scelto a mano precede l\u2019ordine automatico.", "\u7d50\u679c\u3092\u30bf\u30c3\u30d7\u3057\u3066\u30cf\u30a4\u30e9\u30a4\u30c8\u306b\u3057\u307e\u3059\u3002\u624b\u52d5\u3067\u9078\u3093\u3060\u3082\u306e\u304c\u512a\u5148\u3055\u308c\u307e\u3059\u3002", "Tippe ein Ergebnis an, um es hervorzuheben. Ein von Hand gew\u00e4hlter Moment steht vor der automatischen Reihenfolge.", "\u0627\u0644\u0645\u0633\u064a \u0646\u062a\u064a\u062c\u0629 \u0644\u0625\u0628\u0631\u0627\u0632\u0647\u0627. \u0627\u0644\u0644\u062d\u0638\u0629 \u0627\u0644\u0645\u062e\u062a\u0627\u0631\u0629 \u064a\u062f\u0648\u064a\u0627 \u062a\u0633\u0628\u0642 \u0627\u0644\u062a\u0631\u062a\u064a\u0628 \u0627\u0644\u062a\u0644\u0642\u0627\u0626\u064a.")),
                 h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
@@ -41715,7 +41777,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                   })()),
                 h("button", { onClick: function () { setChoixFortOuvert(false); }, style: { marginTop: 10, width: "100%", padding: "11px 0", borderRadius: 999, border: "1px solid rgba(255,255,255,0.22)", background: "transparent", color: "#C9D3D8", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "'Montserrat',sans-serif" } }, T("Fermer", "Close", "Cerrar", "Chiudi", "\u9589\u3058\u308b", "Schlie\u00dfen", "\u0625\u063a\u0644\u0627\u0642")))) : null,
             pickerMomentF ? h("div", { onClick: function () { setPickerMomentF(null); }, style: { position: "fixed", inset: 0, zIndex: 8700, background: "rgba(4,6,9,0.8)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
-              h("div", { onClick: function (ePk) { ePk.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1016", borderRadius: "22px 22px 0 0", border: "1px solid rgba(217,168,92,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
+              h("div", { onClick: function (ePk) { ePk.stopPropagation(); }, style: { width: "100%", maxWidth: 480, maxHeight: "78vh", display: "flex", flexDirection: "column", background: "#0C1316", borderRadius: "22px 22px 0 0", border: "1px solid rgba(201,166,107,0.35)", borderBottom: "none", padding: "20px 18px calc(18px + env(safe-area-inset-bottom))" } },
                 h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 15, letterSpacing: 1.6, color: "#EDF2F5", textAlign: "center", textTransform: "uppercase", marginBottom: 6 } }, T("Photo ou vid\u00e9o de ce moment", "Photo or video for this highlight", "Foto o v\u00eddeo de este momento", "Foto o video di questo momento", "\u3053\u306e\u77ac\u9593\u306e\u5199\u771f\u30fb\u52d5\u753b", "Foto oder Video f\u00fcr diesen Moment", "\u0635\u0648\u0631\u0629 \u0623\u0648 \u0641\u064a\u062f\u064a\u0648 \u0644\u0647\u0630\u0647 \u0627\u0644\u0644\u062d\u0638\u0629")),
                 h("div", { style: { fontSize: 11, color: "rgba(234,242,244,.45)", textAlign: "center", marginBottom: 14, fontFamily: "'Montserrat',sans-serif" } }, T("Choisis parmi les photos et vid\u00e9os d\u00e9j\u00e0 envoy\u00e9es sur ce cheval.", "Pick from the photos and videos already sent for this horse.", "Elige entre las fotos y v\u00eddeos ya enviados de este caballo.", "Scegli tra le foto e i video gi\u00e0 inviati per questo cavallo.", "\u3053\u306e\u99ac\u306b\u3059\u3067\u306b\u9001\u3089\u308c\u305f\u5199\u771f\u30fb\u52d5\u753b\u304b\u3089\u9078\u3093\u3067\u304f\u3060\u3055\u3044\u3002", "W\u00e4hle aus den bereits gesendeten Fotos und Videos dieses Pferdes.", "\u0627\u062e\u062a\u0627\u0631\u064a \u0645\u0646 \u0628\u064a\u0646 \u0627\u0644\u0635\u0648\u0631 \u0648\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a \u0627\u0644\u062a\u064a \u0623\u0631\u0633\u0644\u062a \u0644\u0647\u0630\u0627 \u0627\u0644\u062d\u0635\u0627\u0646.")),
                 h("div", { style: { overflowY: "auto", WebkitOverflowScrolling: "touch", flex: 1, minHeight: 120 } },
@@ -41753,8 +41815,36 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                       return (cible === "tous") ? ligs.length > 0 : ligs.some(function (lg) { return lg.cav === cible; });
                     });
                     setSaisonOuv(candidats.length ? candidats[0] : null);
-                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
+                  }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: onC ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: onC ? "#1A1408" : "rgba(243,238,228,0.82)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
                 })) : null,
+              /* 18/10 (maquette 1 + graphique validee par Blandine) : legende des couleurs (celles de la nouvelle page) puis un graphique,
+                 une colonne par annee (hauteur = parcours de l annee, sorties au-dessus) ; toucher une colonne deplie cette annee juste dessous.
+                 Suit l onglet cavalier choisi. */
+              h("div", { "data-saisons-legende": "1", style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "0 18px 12px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.62)" } },
+                COUL_SAIS.map(function (cL) { return h("span", { key: "lg" + cL[0], style: { display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" } }, h("i", { style: { display: "inline-block", width: 10, height: 6, borderRadius: 2, background: cL[1] } }), cL[2]); })),
+              (function () {
+                var colsG = listeAns.slice().reverse().map(function (anG) {
+                  var fsG = filtreCav(ans[anG] || []); if (!fsG.length) return null;
+                  var rG = filtreCav(ansR[anG] || []);
+                  var nG = [rG.filter(function (f) { return f.pl === 1; }).length, rG.filter(function (f) { return f.pl === 2; }).length, rG.filter(function (f) { return f.pl === 3; }).length, rG.filter(function (f) { return f.pl != null && f.pl > 3; }).length];
+                  nG.push(Math.max(0, rG.length - nG[0] - nG[1] - nG[2] - nG[3]));
+                  return { an: anG, sorties: sortiesDe(fsG), n: nG, tot: rG.length };
+                }).filter(Boolean);
+                if (colsG.length < 2) return null;
+                var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
+                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 14px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                  h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
+                    colsG.map(function (cG) {
+                      var onG = (saisonOuv === cG.an);
+                      return h("div", { key: "gc" + cG.an, role: "button", "data-saisons-colonne": cG.an, onClick: function () { setSaisonOuv(cG.an); setTimeout(function () { try { var eG = document.getElementById("hype-saison-" + cG.an); if (eG) eG.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eSg) { } }, 90); },
+                        style: { flex: 1, minWidth: 0, maxWidth: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" } },
+                        h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.62)" } }, String(cG.sorties)),
+                        h("div", { style: { width: "100%", height: Math.max(6, Math.round(125 * (cG.tot || 0) / maxG)), display: "flex", flexDirection: "column-reverse", borderRadius: 5, overflow: "hidden", background: "rgba(243,238,228,0.06)", outline: onG ? "1px solid #E6CF9C" : "none", outlineOffset: 2 } },
+                          cG.n.map(function (vG, iG) { return vG ? h("span", { key: "gs" + iG, style: { flex: vG, background: COUL_SAIS[iG][1] } }) : null; })),
+                        h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 15, fontWeight: 600, color: onG ? "#E6CF9C" : "#F3EEE4" } }, String(cG.an).slice(2)));
+                    })),
+                  h("div", { style: { marginTop: 6, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, T("sorties au-dessus de chaque colonne", "outings above each column", "salidas encima de cada columna", "uscite sopra ogni colonna", "各列の上は出場回数", "Starts über jeder Säule", "عدد المشاركات فوق كل عمود")));
+              })(),
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
@@ -41768,28 +41858,27 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 var s4 = nPlR(function (f) { return f.pl != null && f.pl > 3; });
                 var sVide = Math.max(0, totR - s1 - s2 - s3 - s4);
                                 var ouvA = (saisonOuv === anK);
-                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "#14161a", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
+                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", scrollMarginTop: 16, margin: "0 16px 10px", padding: "16px 14px 15px", borderRadius: 14, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid " + (ouvA ? "rgba(201,166,107,0.55)" : "rgba(243,238,228,0.08)") } }, /* 18/10 : plus de hauteur, fond et couleurs de la nouvelle page (maquette 1) */ /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
                   h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
-                    h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
-                    h("span", { style: { fontSize: 10.3, color: "#8A929C", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts", "\u0645\u0634\u0627\u0631\u0643\u0627\u062a") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start", "\u0645\u0634\u0627\u0631\u0643\u0629"))),
-                    h("span", { style: { marginLeft: "auto", fontSize: 10.8, color: "#C8CDD3", whiteSpace: "nowrap" } },
+                    h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 26, fontWeight: 600, lineHeight: 1, color: "#F3EEE4" } }, anK),
+                    h("span", { style: { fontSize: 11.5, color: "rgba(243,238,228,0.62)", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts", "\u0645\u0634\u0627\u0631\u0643\u0627\u062a") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start", "\u0645\u0634\u0627\u0631\u0643\u0629"))),
+                    h("span", { style: { marginLeft: "auto", fontSize: 12, color: "rgba(243,238,228,0.8)", whiteSpace: "nowrap" } },
                       h("span", { style: { color: OR9 } }, "\uD83C\uDFC6 " + vA), "\u2003",
-                      h("span", { style: { color: "#B9BEC4" } }, "\uD83E\uDD48 " + pA), "\u2003",
-                      h("span", { style: { color: "#8A929C" } }, "\uD83C\uDFC5 " + cA)),
-                    h("span", { style: { marginLeft: 7, color: ouvA ? OR9 : "#5B646E", fontSize: 12, display: "inline-block", transition: "transform .25s ease", transform: ouvA ? "rotate(180deg)" : "none" } }, "\u02c5")),
-                  h("div", { style: { marginTop: 9, height: 6, borderRadius: 3, background: "rgba(255,255,255,.05)", overflow: "hidden", display: "flex" } }, /* 30/08 : l ancienne barre etait un TAUX DE PODIUM non libelle (victoires+podiums / total) — illisible, prise pour un separateur, et fausse : denominateur deja purge des non-classes, donc 100 % sur une saison a 1 sortie et 0 victoire. Remplacee par une barre EMPILEE dont le tout = les parcours de la saison, El./Ab. compris. Le fond qui reste nu EST l information : ce qui n a pas ete classe. */
-                    [[s1, OR9], [s2, "#B9BEC4"], [s3, "#A9713C"], [s4, "#2E5A78"]].map(function (sg, ig) {
-                      return sg[0] ? h("div", { key: "sg" + ig, style: { flex: sg[0], minWidth: 5, background: sg[1] } }) : null;
-                    }),
-                    sVide ? h("div", { key: "sgv", style: { flex: sVide } }) : null),
+                      h("span", { style: { color: "#D8D2C6" } }, "\uD83E\uDD48 " + pA), "\u2003",
+                      h("span", { style: { color: "rgba(243,238,228,0.62)" } }, "\uD83C\uDFC5 " + cA)),
+                    h("span", { style: { marginLeft: 7, color: ouvA ? OR9 : "rgba(243,238,228,0.45)", fontSize: 12, display: "inline-block", transition: "transform .25s ease", transform: ouvA ? "rotate(180deg)" : "none" } }, "\u02c5")),
+                  h("div", { style: { marginTop: 13, height: 8, borderRadius: 4, background: "rgba(243,238,228,.06)", overflow: "hidden", display: "flex" } }, /* 30/08 : l ancienne barre etait un TAUX DE PODIUM non libelle (victoires+podiums / total) — illisible, prise pour un separateur, et fausse : denominateur deja purge des non-classes, donc 100 % sur une saison a 1 sortie et 0 victoire. Remplacee par une barre EMPILEE dont le tout = les parcours de la saison, El./Ab. compris. Le fond qui reste nu EST l information : ce qui n a pas ete classe. */
+                    [s1, s2, s3, s4, sVide].map(function (vS, ig) {   /* 18/10 : couleurs de la nouvelle page ; le reste (sans place : elimine / abandon) en bordeaux, comme sa legende */
+                      return vS ? h("div", { key: "sg" + ig, style: { flex: vS, minWidth: 4, background: COUL_SAIS[ig][1] } }) : null;
+                    })),
                   ouvA ? h("div", { onClick: function (eDp) { try { eDp.stopPropagation(); } catch (eS9) { } }, style: { marginTop: 9, borderTop: "1px solid rgba(255,255,255,0.06)", cursor: "default" } },
                     fsA.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).map(function (rS, iS) {
                       return h("div", { key: "sr" + iS, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 2px", borderTop: iS ? "1px solid rgba(255,255,255,0.045)" : "none", minWidth: 0 } },
-                        h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "#8A929C", textTransform: "uppercase" } }, rS.d ? dateFr(rS.d) : anK),
+                        h("div", { style: { width: 66, flex: "0 0 auto", fontSize: 8.8, letterSpacing: ".04em", color: "rgba(243,238,228,0.62)", textTransform: "uppercase" } }, rS.d ? dateFr(rS.d) : anK),
                         h("div", { style: { flex: 1, minWidth: 0 } },
-                          h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#EDF2F5", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
-                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "#9AA0A8", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F4F7FA", fontWeight: 700 } }, rS.cav) : null)),
-                        estSFf(rS) ? h("span", { style: { flex: "0 0 auto", fontSize: 9.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", color: "#CFE3E8", border: "1px solid rgba(127,163,173,0.45)", borderRadius: 999, padding: "2px 7px" } }, "SF") : null,
+                          h("div", { style: { fontSize: 12.3, fontWeight: 600, color: "#F3EEE4", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.nom),
+                          h("div", { style: { marginTop: 1, fontSize: 10.2, color: "rgba(243,238,228,0.62)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, rS.ep || "", (rS.ep && rS.cav) ? " \u00b7 " : null, rS.cav ? h("span", { style: { color: "#F3EEE4", fontWeight: 700 } }, rS.cav) : null)),
+                        estSFf(rS) ? h("span", { style: { flex: "0 0 auto", fontSize: 9.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", color: "#E6CF9C", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 999, padding: "2px 7px" } }, "SF") : null,
                         h("div", { style: { flex: "0 0 auto", fontFamily: "'Cinzel',serif", fontSize: 14.5, fontWeight: 700, color: OR9 } }, rS.pl + "/" + (rS.part || "?")),
                         /* 06/09 (Blandine : « je voudrais retirer a la main des resultats
                            ajoutes a la main qui chevauchent avec ceux telecharges ») — la
@@ -41813,68 +41902,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                                   } catch (eSp) { setToast(T("Suppression impossible : ", "Could not delete: ", "No se pudo eliminar: ", "Eliminazione impossibile: ", "\u524a\u9664\u3067\u304d\u307e\u305b\u3093\uff1a", "L\u00f6schen nicht m\u00f6glich: ", "\u062a\u0639\u0630\u0631 \u0627\u0644\u062d\u0630\u0641: ") + String((eSp && eSp.message) || eSp)); }
                                 })();
                               },
-                              style: { flex: "0 0 auto", marginLeft: 8, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.03)", color: "rgba(237,242,245,0.55)", fontSize: 13, lineHeight: 1, cursor: "pointer" } }, "\ud83d\uddd1") : null);
+                              style: { flex: "0 0 auto", marginLeft: 8, width: 30, height: 30, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.03)", color: "rgba(243,238,228,0.55)", fontSize: 13, lineHeight: 1, cursor: "pointer" } }, "\ud83d\uddd1") : null);
                     })) : null);
               })) : null,
-            /* — 5 · DERNIERS RÉSULTATS — */
-            recents.length ? h(React.Fragment, null,
-              h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "40px 16px 9px" } }, /* 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
-                h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
-              h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
-                (function () {
-                  var grpR = {}, ordreR = [];
-                  recents.forEach(function (rr) {
-                    if (!rr) return;
-                    var cle = String(rr.nom || "") + "|" + String(rr.ep || "") + "|" + String(rr.d || rr.an || "");
-                    /* 14/09 (155) : le SECOND rail garde aussi la date complete, sinon il
-                       serait reste a l annee (son groupe s appelle grpR, pas grp). */
-                    if (!grpR[cle]) { grpR[cle] = { concours: rr.nom || "", epreuve: rr.ep || "", an: rr.an || "", date: rr.d || "", partants: rr.part || null, places: [] }; ordreR.push(cle); }
-                    grpR[cle].places.push({ rang: rr.pl || null, cavalier: c.nom || "", cheval: rr.cav || "" }); /* (348) page cavaliere : la cavaliere, SUR le cheval */
-                    if (!grpR[cle].partants && rr.part) grpR[cle].partants = rr.part;
-                  });
-                  var nomChR = (chevalDyn && chevalDyn.nom) || c.nom || "";
-                  return ordreR.slice(0, 6).map(function (cle, iR) {
-                    var gr = grpR[cle];
-                    var tries = (gr.places || []).slice().sort(function (a5, b5) { return (a5.rang || 99) - (b5.rang || 99); });
-                    var meilleur = tries[0] || {};
-                    var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
-                    var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
-                    return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
-                      style: { flex: "0 0 46%", height: 240, boxSizing: "border-box", overflow: "hidden", padding: "12px 13px 14px", borderRadius: 20, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
-                      h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
-                        h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
-                        /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
-                       repli sur la seule annee si la date est absente ou illisible. Les DEUX
-                       rails identiques du fichier sont corriges : c est le meme element. */
-                    (function () {
-                      var txtD = gr.an || "";
-                      try {
-                        var mD = String(gr.date || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
-                        if (mD) {
-                          var MO = ["janv.", "f\u00e9vr.", "mars", "avril", "mai", "juin", "juil.", "ao\u00fbt", "sept.", "oct.", "nov.", "d\u00e9c."];
-                          txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
-                        }
-                      } catch (eD) { }
-                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: teinteCl, letterSpacing: ".08em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
-                    })()),
-                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 56, height: 56, borderRadius: "50%", objectFit: "cover", marginTop: 8, border: "1px solid " + tA(0.35) } }) : null,
-                      h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F1F6F8", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
-                        (rangTxt ? (rangTxt + " ") : "") + (meilleur.cav_reel || meilleur.cavalier || ""),
-                        (meilleur.cheval || nomChR) ? h("span", { style: { color: teinteCl, fontWeight: 600 } }, " sur " + (meilleur.cheval || nomChR)) : null),
-                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
-                      /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
-                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
-                      null,
-                      (function () {
-                        /* 21/09 (316) : une seule ligne « + N autres classees » (carte a hauteur fixe) ;
-                           les noms restent dans le panneau Performances, ouvert au toucher de la carte. */
-                        var nAutresF = Math.max(0, tries.length - 1);
-                        if (!nAutresF) return null;
-                        return h("div", { style: { marginTop: 7, paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 9.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
-                          "+ " + nAutresF + " " + (nAutresF === 1 ? hypeT7("autre class\u00e9e", "other placed", "otra clasificada", "altra classificata", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierung", "\u0645\u0635\u0646\u0641\u0629 \u0623\u062e\u0631\u0649") : hypeT7("autres class\u00e9es", "others placed", "otras clasificadas", "altre classificate", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierungen", "\u0645\u0635\u0646\u0641\u0627\u062a \u0623\u062e\u0631\u064a\u0627\u062a")));
-                      })());
-                  });
-                })())) : null,
             /* — 5bis · LES POINTS DE QUALIFICATION (06/09, demande de Blandine) — (598) Blandine : « mets les points de qualif en dessous des derniers résultats » : le bloc, inchangé, passe sous « Derniers résultats » (il était entre les moments forts et « Par saison »).
                Le total suit l'onglet cavalier choisi au-dessus, comme les cartes
                « Derniers résultats ». Rien ne s'affiche tant qu'aucune ligne ne
@@ -41904,15 +41934,15 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var onS = (String(sK) === String(sCour));
                     return h("button", { key: "sp" + sK, onClick: function () { setSaisonPts(sK); },
                       style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, cursor: "pointer", whiteSpace: "nowrap",
-                        border: "1px solid " + (onS ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"),
-                        background: onS ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)",
+                        border: "1px solid " + (onS ? "rgba(201,166,107,.75)" : "rgba(255,255,255,0.14)"),
+                        background: onS ? "rgba(201,166,107,.12)" : "rgba(255,255,255,0.03)",
                         color: onS ? OR9 : "rgba(237,242,245,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif" } },
                       sK + " / " + (Number(sK) + 1));
                   })) : null,
-                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "#14161a", border: "1px solid rgba(217,168,92,.28)" } },
+                h("div", { style: { margin: "0 16px", padding: "14px 16px", borderRadius: 14, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(201,166,107,.28)" } },
                   h("div", { style: { display: "flex", alignItems: "baseline", gap: 9 } },
                     h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 27, fontWeight: 700, color: OR9 } }, arrondi(totalS)),
-                    h("div", { style: { fontSize: 11.5, color: "#C8CDD3", fontFamily: "'Montserrat',sans-serif" } },
+                    h("div", { style: { fontSize: 11.5, color: "rgba(243,238,228,0.8)", fontFamily: "'Montserrat',sans-serif" } },
                       T("points \u00b7 ", "points \u00b7 ", "puntos \u00b7 ", "punti \u00b7 ", "\u30dd\u30a4\u30f3\u30c8 \u00b7 ", "Punkte \u00b7 ", "\u0646\u0642\u0627\u0637 \u00b7 ") + lignesS.length + " " +
                       T("\u00e9preuves", "classes", "pruebas", "prove", "\u7af6\u6280", "Pr\u00fcfungen", "\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
                   h("div", { style: { marginTop: 3, fontSize: 10.5, color: "#8A929C", fontFamily: "'Montserrat',sans-serif" } },
@@ -41947,15 +41977,15 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
               var proprioP = !!(chevalDyn && moi && chevalDyn.ownerId === moi.id);
               var nMq = ((resDb) || []).filter(function (rM) { return rM && rM.visible === false; }).length;
               if (!proprioP || !nMq) return null;
-              return h("div", { role: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { textAlign: "center", margin: "22px 16px 0", fontSize: 11.5, color: voirMasques ? teinteCl : "#8A929C", cursor: "pointer" } },
+              return h("div", { role: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { textAlign: "center", margin: "22px 16px 0", fontSize: 11.5, color: voirMasques ? "#E6CF9C" : "#8A929C", cursor: "pointer" } },
                 (voirMasques ? "\u2611 " : "\u2610 ") + (voirMasques
                   ? T("Les lignes masqu\u00e9es sont affich\u00e9es", "Hidden lines are shown", "L\u00edneas ocultas visibles", "Righe nascoste visibili", "\u975e\u8868\u793a\u306e\u884c\u3092\u8868\u793a\u4e2d", "Ausgeblendete Zeilen sichtbar", "\u0627\u0644\u0623\u0633\u0637\u0631 \u0627\u0644\u0645\u062e\u0641\u064a\u0629 \u0645\u0639\u0631\u0648\u0636\u0629")
                   : T("Afficher aussi les " + nMq + " lignes masqu\u00e9es", "Also show the " + nMq + " hidden lines", "Mostrar tambi\u00e9n las " + nMq + " l\u00edneas ocultas", "Mostra anche le " + nMq + " righe nascoste", nMq + " \u4ef6\u306e\u975e\u8868\u793a\u884c\u3082\u8868\u793a", "Auch die " + nMq + " ausgeblendeten Zeilen zeigen", "\u0639\u0631\u0636 \u0627\u0644\u0623\u0633\u0637\u0631 \u0627\u0644\u0645\u062e\u0641\u064a\u0629 \u0623\u064a\u0636\u0627 (" + nMq + ")")));
             })(),
-            h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "#7A828C" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")));
+            h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")));
         })() /* (348) : le bloc copie est une fonction A APPELER - sans ces () la page restait vide */)),
     blocAjoutCav,   /* (697) */
-    blocImportCav,   /* (694) */
+    /* 18/10 : blocImportCav remonte en haut de la page (voir « derniers resultats ») */
     ajoutPerf ? h(HypeAjoutResultatCavaliere, { onFermer: function () { setAjoutPerf(false); }, onAjoute: function (av) { setRechargeRes(function (n) { return n + 1; }); if (av) { try { window.alert(av === "nom" ? "R\u00e9sultat enregistr\u00e9. Il n'appara\u00eetra ici qu'une fois ton nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb)." : "R\u00e9sultat enregistr\u00e9, mais pas encore rattach\u00e9 \u00e0 ton compte : " + av); } catch (eAl) { } } } }) : null,
     toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(96px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", background: "#12161C", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 14px", fontSize: 12.5, color: "#EDF2F5", zIndex: 60 } }, toast) : null);
 }
@@ -69821,11 +69851,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 if (colsG.length < 2) return null;
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
                 return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 14px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
-                  h("div", { style: { display: "flex", alignItems: "flex-end", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
+                  h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
                       var onG = (saisonOuv === cG.an);
                       return h("div", { key: "gc" + cG.an, role: "button", "data-saisons-colonne": cG.an, onClick: function () { setSaisonOuv(cG.an); setTimeout(function () { try { var eG = document.getElementById("hype-saison-" + cG.an); if (eG) eG.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eSg) { } }, 90); },
-                        style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" } },
+                        style: { flex: 1, minWidth: 0, maxWidth: 56, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" } },
                         h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.62)" } }, String(cG.sorties)),
                         h("div", { style: { width: "100%", height: Math.max(6, Math.round(125 * (cG.tot || 0) / maxG)), display: "flex", flexDirection: "column-reverse", borderRadius: 5, overflow: "hidden", background: "rgba(243,238,228,0.06)", outline: onG ? "1px solid #E6CF9C" : "none", outlineOffset: 2 } },
                           cG.n.map(function (vG, iG) { return vG ? h("span", { key: "gs" + iG, style: { flex: vG, background: COUL_SAIS[iG][1] } }) : null; })),
