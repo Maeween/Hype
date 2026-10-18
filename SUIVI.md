@@ -13249,8 +13249,22 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 ## 18/10/2026 — Doublons de résultats supprimés en base (fait par Blandine)
 - 15 lignes en double (import relu sur 1 000 lignes seulement + textes abîmés) supprimées par Blandine avec la requête préparée ; sauvegarde des 15 lignes gardée avant suppression. Vérifié après coup (lecture) : 0 doublon restant, les 14 lignes conservées sont bien présentes. L'import réparé (20261018-1710) empêche le retour du problème.
 
-## 18/10/2026 — Page Performances du cavalier : nom, photo et écurie (marqueur 20261018-1750)
+## 18/10/2026 — Page Performances du cavalier (nouvelle page cachée) : nom, photo et écurie (publié avec 20261018-2140)
 - Défaut trouvé en préparant les liens : la page cavalier (#perfcav-<id du compte>) demandait au profil les colonnes « prenom » et « nom », qui n'existent pas dans profiles → la demande échouait entièrement : ni nom, ni photo, ni écurie (les résultats, chargés à part, s'affichaient).
 - Changement : demande limitée aux colonnes réelles (id, pseudo, avatar_url, avatar, ecurie) ; nom affiché = pseudo du compte ; photo = avatar_url, sinon avatar.
 - Contrôle de toute l'appli : plus aucune lecture de profiles ne demande une colonne inexistante. Banc de test corrigé (son faux profil avait prénom et nom, d'où le défaut non vu).
 - Tests : page cavalier (banc) nom, chevaux, chiffres, filtres, droits visiteur OK ; node --check sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 18/10/2026 — PUBLICATION (marqueur 20261018-2140) : pages actuelles Résultats du cheval et Performances du cavalier aux couleurs de la nouvelle page
+- Décision de Blandine (17 h 45) : « les pages actuelles sont mieux » → la nouvelle page Performances reste cachée ; on reprend sur les pages actuelles seulement ce qu'elle a choisi. Hero et fond des pages actuelles NON touchés. Publié sur son « Ok mets tout ça en ligne » (21 h 34), en une seule publication (« grouper pour publier »).
+- Page Résultats du cheval (EcranCheval, onglet Résultats) et page Performances du cavalier (EcranResultatsCavaliere) :
+  - couleurs de la nouvelle page sur toute la page sauf hero et fond : chiffres ivoire, titres champagne #C9A66B, pastilles choisies champagne (dégradé #F1DCAE→#D8B676, texte foncé), boutons sombres à contour champagne, gris doux, plus aucun ancien bleu ;
+  - « Derniers résultats » remontés en haut (sous les chiffres et filtres) ; cartes de la maquette : 112 × 176, trois par écran, texte centré, fond pétrole, liseré champagne ;
+  - vidéo d'import : affichée en haut seulement s'il n'y a encore aucun résultat importé (masquage retenu sur l'appareil, même clé que la nouvelle page) ; sinon carte « Importer tes résultats FFE · Voir comment faire, en vidéo » (proposition 3) en BAS de page — page cavalier : juste au-dessus de « + Ajouter un résultat » ; elle ouvre la page d'import avec la vidéo déjà ouverte ;
+  - moments forts : mosaïque de la nouvelle page (composant partagé MosaiqueFortsHype : grande carte + 2 × 2, un seul crayon → Changer la photo / Retirer, case « + Ajouter » à la place libre). Cheval : photo seulement si choisie à la main. Cavalier : photo du cheval du résultat. Mêmes colonnes fort_force / fort_exclu, mêmes droits. Cheval sans résultat : pas de case vide ;
+  - « Par saison » (maquette 1 + graphique validée) : légende des couleurs (1re, 2e, 3e, autres places, élim. / abandon), graphique une colonne par année (hauteur = parcours, sorties au-dessus ; toucher une colonne ouvre l'année), lignes plus hautes aux couleurs de la nouvelle page.
+- Nouveaux composants partagés : MosaiqueFortsHype, CarteImportHype. VideoResultatsOfficiels : option cle (masquage retenu) ; écran d'import : vidéo ouverte si on arrive par la carte.
+- Avec la même publication : correction de la nouvelle page cavalier cachée (#perfcav-) : demande au profil limitée aux colonnes réelles (pseudo, avatar_url, avatar, ecurie) — nom, photo et écurie s'affichent.
+- Non touché : la page d'import garde ses anciennes couleurs (proposé à Blandine, pas encore décidé) ; nouvelle page Performances toujours cachée ; aucune donnée en base, aucun SQL.
+- Tests : nouvelle page 45/45 et 28/28 ; captures des deux pages actuelles (propriétaire, visiteur, cheval sans résultat, clic sur une colonne, clic sur la carte d'import → page d'import) ; node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone réel.
+
