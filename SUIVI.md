@@ -13073,3 +13073,12 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Fichiers : index.html (page cachée seulement) + SUIVI.md. Aucun SQL, aucune donnée, aucune règle Team modifiée. Ancienne fiche intacte et toujours utilisée.
 - Accès : uniquement par l'adresse #perf-<id du cheval> (ex. Rizotto : #perf-4462edac-8c8a-4ad6-817c-58b3ec0c5161). ⚠️ Vraie base : ajouter ou retirer un moment fort y est réellement enregistré.
 - Tests sur la version fusionnée : tableau 42/42, moments forts 26/26, node --check 35 blocs sans erreur, marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 18/10/2026 — Accueil, carte Hype Universe : retrait de la promesse « 8 événements près de chez toi » (marqueur 20261018-1600)
+- Origine : audit ChatGPT du 17-18/10 (correction 1 de la passation). Le chiffre « 8 » était écrit en dur, sans lien avec les vrais événements.
+- Changement (index.html, dictionnaire D de l'accueil, clé wsub seulement) : nouveau sous-titre dans les 7 langues — FR « Découvre la communauté équestre Hype », EN « Explore the Hype equestrian community », ES « Descubre la comunidad ecuestre Hype », IT « Scopri la comunità equestre Hype », JA « Hypeの馬術コミュニティを見つけよう », DE « Entdecke die Hype-Reitcommunity », AR « اكتشفي مجتمع Hype للفروسية ».
+- Oubli de la copie ChatGPT corrigé : l'arabe gardait encore « 8 événements ».
+- À savoir : cette ligne n'est visible qu'en français et en anglais (les autres langues affichent la bannière image à la place du globe). Les 5 autres langues sont mises à jour pour rester cohérentes.
+- Inchangé : tout le reste de l'accueil, lien vers le monde, globe, bannière des autres langues.
+- Tests : réplique de la carte à 375 / 820 / 1440 px en FR, EN et AR (droite à gauche) : texte sur une seule ligne, aucun débordement. node --check des 16 blocs de script : aucune erreur. Marqueurs de garde liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur l'iPhone de Blandine.
+- Publié sur la version en ligne du 16/10 (b478aac), après accord de Blandine (« tu peux publier », 16 h 04). L autre conversation qui travaille sur index.html n avait rien publié entre-temps.
