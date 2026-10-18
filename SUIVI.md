@@ -13357,3 +13357,12 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Gardé : concours, publications identifiées, croix « retirer de ton actualité » + confirmation, ♡ cliquable, compteur de réponses, photo en grand au toucher, ouverture du mur. Tablette 2 colonnes, ordinateur 3 colonnes.
 - Le crayon vu au test précédent venait bien du test (photos en file://) : avec de vraies adresses les photos s'affichent.
 - Tests : rendus iPhone 390 et ordinateur 1280, page pleine et vide, sans erreur ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0130, « Ok pour la mosaïque sur les deux pages » de Blandine 00:51) : MOSAÏQUE PHOTO sur les pages Actualité du cheval et du cavalier
+- Maquette validée : « Rizotto · mosaïque photo » (canevas « Page Actualité du cheval »).
+- Nouvelles fonctions communes (juste avant MurHype) : hypeLireVueActu / hypeEcrireVueActu (choix retenu sur l'appareil, clé localStorage « hype_actu_vue », mosaïque par défaut), hypeConcoursParJourActu, hypeBarreVueActu (« N moments · N concours » + bouton Mosaïque / Liste), hypeMosaiqueActu (la grille), HypeCalqueMoment (le moment ouvert en grand, ‹ ›, balayage, compteur « 2 / 11 »), 7 langues.
+- Grille : 3 colonnes iPhone, 4 tablette, 5 ordinateur (centrée, 1080 px au plus). La 1re photo parmi les 3 premières cases en grande case 2x2 avec sa légende. Plusieurs photos = une case avec l'icône « plusieurs » (les photos regroupées du même jour comptent). Vidéo = rond lecture. Texte seul = case ivoire avec la citation. Concours = case dorée (meilleure place du jour, lieu, date, « sur N » ou « N épreuves »).
+- Cheval (MurHype, nouvelle prop `mosaique`, seulement sur la page Actualité) : les cartes encadrées existantes sont réutilisées telles quelles dans le calque (J'aime, Répondre, Modifier, croix…). Concours : jours des 12 derniers mois (12 au plus) depuis les résultats déjà chargés par la fiche ; toucher → onglet Résultats. En « Liste », la page est exactement comme avant.
+- Cavalier (EcranActualiteCavaliere) : même grille ; toucher une publication l'ouvre avec sa carte encadrée (♡, croix « retirer », ouverture du mur) ; toucher un concours → ses résultats. « Liste » = les cartes encadrées du build 0110.
+- Rien en base, rien dans Stripe.
+- Tests : rendus iPhone 390 et ordinateur 1280 des deux pages, ouverture d'un moment, sans erreur ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
