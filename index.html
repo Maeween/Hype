@@ -23526,6 +23526,7 @@ const CIBLE_DIRECTE = (function () {
         if (cle === "chevalcommun") { try { window.__chevalCommunDemo = true; } catch (eDm) { } return { ecran: "cheval-commun" }; } /* 25/08 : apercu page commune (donnees demo, zero reseau) */
         if (cle && cle.indexOf("chevalcommun-") === 0 && !MAP[cle]) { try { window.__chevalCommunOuvert = cle.slice(13); } catch (eCcO) { } return { ecran: "cheval-commun" }; }
         if (cle && cle.indexOf("chevalv4-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(9); window.__ficheV4TelId = cle.slice(9); } catch (eCV4) { } return { ecran: "cheval" }; } /* 15/10 (1153) APERCU CACHE de la nouvelle fiche cheval sur telephone (pas branchee pour les cavalieres) */
+        if (cle && cle.indexOf("perfcav-") === 0 && !MAP[cle]) { try { window.__perfCavalierId = cle.slice(8); } catch (ePc) { } return { ecran: "performances-cavalier" }; } /* 18/10 (perf g9) apercu cache de la nouvelle page Performances du cavalier, #perfcav-<id du compte> */
         if (cle && cle.indexOf("perf-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(5); } catch (ePf) { } return { ecran: "performances-cheval" }; } /* 15/10 chantier Performances : apercu cache de la nouvelle page Performances du cheval, #perf-<id> */
         if (cle && cle.indexOf("chevalv3-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(9); } catch (eCV3) { } return { ecran: "cheval-v3" }; } /* (1069) FICHE CHEVAL V3 : maquette visuelle, adresse cachee #chevalv3-<id> */
         if (cle && cle.indexOf("chevalv2-") === 0 && !MAP[cle]) { try { window.__chevalOuvert = cle.slice(9); } catch (eCV2) { } return { ecran: "cheval-v2" }; } /* (735) FICHE CHEVAL V2 : adresse cachee de test #chevalv2-<id>. Ouvre la NOUVELLE fiche (EcranChevalV2) ; l ancienne fiche (#cheval-<id>) ne change pas. */
@@ -28396,7 +28397,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */];
+    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28475,7 +28476,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -28644,7 +28645,8 @@ function Router() {
                 ecran === "perf-concours" && React.createElement(EcranPerfConcours, null),
                 /* 22/09 (346) : la page « Résultats » d une cavalière. */
                 ecran === "resultats-cavalier" && React.createElement(EcranResultatsCavaliere, null),
-                ecran === "performances-cheval" && React.createElement(EcranPerformancesCheval, null),   /* 15/10 chantier Performances, build 1 (non branche : #perf-<id>) */
+                ecran === "performances-cheval" && React.createElement(EcranPerformancesCheval, null),
+                ecran === "performances-cavalier" && React.createElement(EcranPerformancesCheval, { cavalierId: (function () { try { return String(window.__perfCavalierId || ""); } catch (eCv) { return ""; } })() }),   /* 18/10 (perf g9) meme page, mode cavalier (cachee, #perfcav-<id>) */   /* 15/10 chantier Performances, build 1 (non branche : #perf-<id>) */
                 /* 22/09 (351) : la page « Actualité » d une cavalière. */
                 ecran === "actualite-cavalier" && React.createElement(EcranActualiteCavaliere, null),
                 /* 22/09 (352) : la page « Vidéos » d une cavalière. */
@@ -40329,7 +40331,7 @@ function hypePerfLignes(lignes, voirMasques, garderSansPlace) {
       part: r.partants ? Number(r.partants) : null, nom: r.concours || "", ep: r.epreuve || "",
       cav: r.cavalier || "", cavId: r.cavalier_id || null, q: (r.quart == null ? null : Number(r.quart)),
       d: String(r.date_epreuve || "").slice(0, 10), saison: hypePerfSaisonDe(r.date_epreuve, r.annee),
-      photo: r.photo_url || null, masque: (r.visible === false), ff: (r.fort_force === true), fx: (r.fort_exclu === true)
+      photo: r.photo_url || null, masque: (r.visible === false), ff: (r.fort_force === true), fx: (r.fort_exclu === true), chId: r.cheval_id || null
     };
   }).filter(function (f) { return f.pl != null || (garderSansPlace && (f.statut || f.nom)); });
 }
@@ -40380,8 +40382,13 @@ function hypePerfStats(fs) {
   };
 }
 
-function EcranPerformancesCheval() {
+function EcranPerformancesCheval(props) {
   var h = React.createElement;
+  /* 18/10 (perf g9) MODE CAVALIER : la meme page sert aux Performances du cavalier (ecran 6 de la maquette). Resultats = ceux
+     rattaches au compte (resultats.cavalier_id, hors masque_cavaliere), MEME REGLE que l ancienne page Resultats de la cavaliere ;
+     le filtre porte sur les CHEVAUX ; droits = ceux du cavalier (ajout et import a son nom, choix des moments forts comme avant). */
+  var riderId = (props && props.cavalierId) ? String(props.cavalierId) : "";
+  var modeCav = !!riderId;
   var app = useApp();
   var tr = app.tr || function (o) { return (o && o.fr) || ""; };
   function T(fr, en, es, it, ja, de, ar) { return tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar }); }
@@ -40403,11 +40410,37 @@ function EcranPerformancesCheval() {
   React.useEffect(function () {
     var vivant = true;
     setEtat({ charge: false, cheval: null, erreur: null });
+    if (modeCav) return;   /* (g9) le cavalier est charge plus bas */
     if (!id || typeof hypeLireFicheCheval !== "function") { setEtat({ charge: true, cheval: null, erreur: "introuvable" }); return; }
     hypeLireFicheCheval(id).then(function (r) { if (vivant) setEtat({ charge: true, cheval: (r && r.cheval) || null, erreur: (r && r.erreur) || null }); })
       .catch(function (eC) { if (vivant) setEtat({ charge: true, cheval: null, erreur: String((eC && eC.message) || eC || "?") }); });
     return function () { vivant = false; };
   }, [id]);
+  /* (g9) mode cavalier : profil, resultats a son nom, chevaux (nom, photo, photos de moments forts choisies par leur proprietaire) */
+  var cvSt = React.useState(null); var cav = cvSt[0], setCav = cvSt[1];
+  var relCSt = React.useState(0); var relireCav = relCSt[0], setRelireCav = relCSt[1];
+  React.useEffect(function () {
+    if (!modeCav) return;
+    var v = true; setCav(null);
+    (async function () {
+      try {
+        if (typeof supa === "undefined" || !supa) { if (v) setCav({ prof: { id: riderId }, lignes: [], chevaux: {} }); return; }
+        var rp = await supa.from("profiles").select("id, pseudo, prenom, nom, avatar_url, ecurie").eq("id", riderId).maybeSingle();
+        var rr = await supa.from("resultats").select("*").eq("cavalier_id", riderId).limit(2000);
+        var ls = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x && x.masque_cavaliere !== true; });
+        var ids = []; ls.forEach(function (x) { if (x.cheval_id && ids.indexOf(x.cheval_id) === -1) ids.push(x.cheval_id); });
+        var chx = {};
+        if (ids.length) { var rc = await supa.from("chevaux").select("id, nom, alias, photo_url, moments_forts_medias").in("id", ids.slice(0, 300)); ((rc && !rc.error && rc.data) || []).forEach(function (c) { if (c && c.id) chx[String(c.id)] = c; }); }
+        ls = ls.map(function (x) { var c = x.cheval_id && chx[String(x.cheval_id)]; var nomC = (c && (String(c.alias || "").trim() || c.nom)) || x.cheval_nom || ""; return Object.assign({}, x, { cav_reel: x.cavalier || "", cavalier: nomC || x.cavalier || "", cavalier_id: null }); });
+        if (v) setCav({ prof: (rp && rp.data) || { id: riderId }, lignes: ls, chevaux: chx });
+      } catch (eC) { if (v) setCav({ prof: { id: riderId }, lignes: [], chevaux: {} }); }
+    })();
+    return function () { v = false; };
+  }, [riderId, relireCav]);
+  if (modeCav) {
+    var nomCavC = cav ? ([cav.prof.prenom, cav.prof.nom].filter(Boolean).join(" ") || cav.prof.pseudo || "") : "";
+    etat = { charge: !!cav, cheval: cav ? { dbId: null, nom: nomCavC, ligne: { photo_url: cav.prof.avatar_url || "", ecurie: cav.prof.ecurie || "" }, secours: {} } : null, erreur: null };
+  }
   var chV = etat.cheval;
   var dbId = (chV && chV.dbId) || null;
   var ligneCh = (chV && chV.ligne) || {};
@@ -40417,7 +40450,7 @@ function EcranPerformancesCheval() {
   /* ── qui regarde ── */
   var moiSt = React.useState(null); var moi = moiSt[0], setMoi = moiSt[1];
   React.useEffect(function () { var v = true; try { utilisateurActuel().then(function (u) { if (v) setMoi(u || null); }).catch(function () { }); } catch (eU) { } return function () { v = false; }; }, []);
-  var estProprio = !!(moi && dbId && ligneCh.user_id === moi.id);
+  var estProprio = modeCav ? !!(moi && moi.id === riderId) : !!(moi && dbId && ligneCh.user_id === moi.id);
   var estMod = !!(moi && typeof estModerateurHype === "function" && estModerateurHype(moi));
   var droitsSt = React.useState({ lie: false, memeEcurie: false }); var droits = droitsSt[0], setDroits = droitsSt[1];
   React.useEffect(function () {
@@ -40438,22 +40471,24 @@ function EcranPerformancesCheval() {
     })();
     return function () { v = false; };
   }, [moi && moi.id, dbId]);
-  var peutSaisir = !!(moi && dbId && (estProprio || estMod || droits.lie || droits.memeEcurie));
-  var peutImporter = !!(moi && dbId && (estProprio || estMod || droits.lie));
-  var peutForts = !!(moi && dbId && (estProprio || estMod));
+  var peutSaisir = modeCav ? estProprio : !!(moi && dbId && (estProprio || estMod || droits.lie || droits.memeEcurie));
+  var peutImporter = modeCav ? estProprio : !!(moi && dbId && (estProprio || estMod || droits.lie));
+  var peutForts = modeCav ? !!(moi && (estProprio || estMod)) : !!(moi && dbId && (estProprio || estMod));   /* (g9) cavalier : choix des moments forts comme l ancienne page (la base reste juge) */
   var premiumOk = !!(app.premium || estMod);
 
   /* ── les resultats (table resultats, lecture partagee avec la fiche V2) ── */
   var resSt = React.useState(null); var lignes = resSt[0], setLignes = resSt[1];
   var relSt = React.useState(0); var relire = relSt[0], setRelire = relSt[1];
+  React.useEffect(function () { if (modeCav && relire) setRelireCav(function (n) { return n + 1; }); }, [relire]);   /* (g9) apres un ajout / une modification : relire les resultats du cavalier */
   React.useEffect(function () {
     var v = true; setLignes(null);
     if (!etat.charge) return;
+    if (modeCav) { setLignes((cav && cav.lignes) || []); return; }
     if (!dbId) { setLignes([]); return; }
     if (typeof hypeResultatsCheval !== "function") { setLignes([]); return; }
     hypeResultatsCheval(dbId).then(function (r) { if (v) setLignes((r && r.lignes) || []); }).catch(function () { if (v) setLignes([]); });
     return function () { v = false; };
-  }, [dbId, etat.charge, relire]);
+  }, [dbId, etat.charge, relire, cav]);
   var vmSt = React.useState(false); var voirMasques = vmSt[0], setVoirMasques = vmSt[1];
   var ouvSt = React.useState(null); var ouvertes = ouvSt[0], setOuvertes = ouvSt[1];   /* saisons depliees (plusieurs possibles) ; null = la plus recente */
   var flSt = React.useState({}); var filtres = flSt[0], setFiltres = flSt[1];   /* filtre secondaire, par saison */
@@ -40463,7 +40498,7 @@ function EcranPerformancesCheval() {
   }, [lignes, fortsLocal]);
   /* toutes les lignes (eliminations et abandons compris) ; la proprietaire peut afficher les lignes masquees */
   var tous = React.useMemo(function () { return hypePerfLignes(lignesVues, voirMasques && estProprio, true); }, [lignesVues, voirMasques, estProprio]);
-  var nbMasques = (lignes || []).filter(function (r) { return r && r.visible === false; }).length;
+  var nbMasques = modeCav ? 0 : (lignes || []).filter(function (r) { return r && r.visible === false; }).length;   /* (g9) les masquages restent ceux de la page du cheval */
 
   /* ── filtre cavalier (decision D3 : il agit sur les chiffres du haut ET sur le tableau) ── */
   var cavSt = React.useState("tous"); var cavChoisi = cavSt[0], setCavChoisi = cavSt[1];
@@ -40543,14 +40578,19 @@ function EcranPerformancesCheval() {
     if (mfLocal) return mfLocal;
     try { var vM = ligneCh.moments_forts_medias; if (typeof vM === "string") vM = JSON.parse(vM); return (vM && typeof vM === "object") ? vM : {}; } catch (eM) { return {}; }
   }, [mfLocal, ligneCh.moments_forts_medias]);
-  var photoCh = (function () { var loc = ""; try { loc = localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (eL) { } return loc || ligneCh.photo_url || secours.photo || (typeof UV3_H1 !== "undefined" ? UV3_H1 : ""); })();
+  var photoCh = modeCav ? ((ligneCh.photo_url ? ((typeof avSrc === "function") ? avSrc(ligneCh.photo_url) : ligneCh.photo_url) : "") || (typeof IMG_CAVALIER_HERO_DEFAUT !== "undefined" ? IMG_CAVALIER_HERO_DEFAUT : ""))   /* (g9) portrait du cavalier, sinon le fond des pages cavalier (comme l ancienne page) */
+    : (function () { var loc = ""; try { loc = localStorage.getItem("hype_cheval_photo_" + id) || ""; } catch (eL) { } return loc || ligneCh.photo_url || secours.photo || (typeof UV3_H1 !== "undefined" ? UV3_H1 : ""); })();
   /* (g3) Regle de Blandine pour les photos des moments forts : 1) photo choisie a la main ; 2) photo REELLEMENT associee au concours
      (aucune association fiable en base aujourd hui) ; 3) photo du couple si lien fiable (aucun aujourd hui) ; 4) etat sans photo.
      Donc : seulement le choix manuel. Plus de portrait du cavalier, plus d album « au nom proche », plus de photo tiree au hasard.
      Les albums et photos du cheval restent proposes DANS le choix manuel (crayon > Changer la photo), a confirmer par la proprietaire. */
   var photosForts = React.useMemo(function () {
-    return forts.map(function (f) { var sur = mfMedias[f.jeton] || null; return (sur && sur.url) ? { url: sur.url, video: sur.type === "video" } : null; });
-  }, [forts, mfMedias]);
+    return forts.map(function (f) {
+      var med = mfMedias;
+      if (modeCav) { var lg = (lignes || []).filter(function (r) { return r && String(r.id) === String(f.id); })[0]; var cvx = lg && lg.cheval_id && cav && cav.chevaux[String(lg.cheval_id)]; med = {}; try { var mm = cvx && cvx.moments_forts_medias; if (typeof mm === "string") mm = JSON.parse(mm); med = (mm && typeof mm === "object") ? mm : {}; } catch (eM) { med = {}; } }   /* (g9) photo choisie par la proprietaire du cheval pour ce resultat */
+      var sur = med[f.jeton] || null; return (sur && sur.url) ? { url: sur.url, video: sur.type === "video" } : null;
+    });
+  }, [forts, mfMedias, lignes, cav]);
 
   /* ── Team : carte Classement saison, seulement si le cheval est REELLEMENT dans la Team ── */
   var tmSt = React.useState(null); var teamInfo = tmSt[0], setTeamInfo = tmSt[1];
@@ -40614,9 +40654,10 @@ function EcranPerformancesCheval() {
       annonce(T("Résultat retiré.", "Result removed.", "Resultado eliminado.", "Risultato rimosso.", "結果を削除しました。", "Ergebnis entfernt.", "تمت إزالة النتيجة."));
     } catch (eS) { annonce(T("Suppression impossible.", "Could not delete.", "No se pudo eliminar.", "Eliminazione impossibile.", "削除できません。", "Löschen nicht möglich.", "تعذر الحذف.")); }
   }
-  function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }
+  function retour() { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } if (modeCav) { setEcran("dashboard"); return; } /* (g9) */ try { window.__chevalOuvert = id; } catch (eO) { } setEcran("cheval"); }
   function ouvrirImport() {
     if (!peutImporter) return;
+    if (modeCav) { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.HYPE_IMPORT_RETOUR = "performances-cavalier"; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); return; }   /* (g9) import a son nom, comme l ancienne page cavaliere */
     try { window.HYPE_IMPORT_CAVALIERE = false; window.HYPE_IMPORT_MULTI = false; window.HYPE_CHEVAL_IMPORT = dbId; window.HYPE_CHEVAL_IMPORT_NOM = nomCh || null; window.HYPE_IMPORT_RETOUR = "performances-cheval"; window.localStorage.removeItem("hype_cheval_import"); } catch (eI) { }
     setEcran("import-resultats");
   }
@@ -40685,7 +40726,7 @@ function EcranPerformancesCheval() {
     var loc = f.id && fortsLocal[f.id];
     var ffCour = loc ? !!loc.ff : !!f.ff;
     var cliquable = saisonDeFort(f) != null;
-    var peutPhoto = !!(estProprio && f.id && f.jeton);   /* la base ne laisse modifier la fiche (moments_forts_medias) qu a sa proprietaire */
+    var peutPhoto = !!(!modeCav && estProprio && f.id && f.jeton);   /* la base ne laisse modifier la fiche (moments_forts_medias) qu a sa proprietaire ; (g9) jamais depuis la page du cavalier */
     var peutRetirer = !!(peutForts && f.id);             /* resultats.fort_force / fort_exclu : proprietaire du cheval ou moderatrice */
     var annee = f.an || (f.d ? String(f.d).slice(0, 4) : "");
     var concoursC = String(f.nom || "").replace(/^\s*CSO\s+/i, "");
@@ -40762,7 +40803,8 @@ function EcranPerformancesCheval() {
   /* ── haut de page : photo, nom, infos, badge Team ── */
   var og = (function () { try { var o = ligneCh.origines; if (typeof o === "string") o = JSON.parse(o); return (o && typeof o === "object") ? o : (secours.origines || {}); } catch (eO) { return secours.origines || {}; } })() || {};
   var SEXES = { hongre: T("Hongre", "Gelding", "Castrado", "Castrone", "せん馬", "Wallach", "مخصي"), jument: T("Jument", "Mare", "Yegua", "Giumenta", "牡馬", "Stute", "فرس"), entier: T("Entier", "Stallion", "Entero", "Stallone", "牡馬", "Hengst", "فحل") };
-  var infos = [SEXES[String(og.sexe || "").toLowerCase().trim()] || "", String(ligneCh.race || secours.race || "").trim(), (function () { var m = String(og.naissance || "").match(/^(\d{4})/); return m ? m[1] : ""; })()].filter(Boolean);
+  var infos = modeCav ? [String(ligneCh.ecurie || "").trim()].filter(Boolean)   /* (g9) cavalier : son ecurie */
+    : [SEXES[String(og.sexe || "").toLowerCase().trim()] || "", String(ligneCh.race || secours.race || "").trim(), (function () { var m = String(og.naissance || "").match(/^(\d{4})/); return m ? m[1] : ""; })()].filter(Boolean);
   var rondHaut = { width: 40, height: 40, borderRadius: "50%", border: "1px solid rgba(243,238,228,0.28)", background: "rgba(7,10,8,0.45)", color: IVOIRE, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0, flex: "0 0 auto" };
   var peutLier = !!(moi && dbId && !estProprio && typeof lierCheval === "function" && typeof delierCheval === "function");
   async function basculerLien() {
@@ -40823,7 +40865,7 @@ function EcranPerformancesCheval() {
       h("div", { style: { marginInlineStart: "auto", display: "flex", gap: 8 } },
         peutLier ? h("button", { type: "button", "data-perf-coeur": droits.lie ? "1" : "0", onClick: basculerLien, "aria-pressed": droits.lie ? "true" : "false", "aria-label": droits.lie ? T("Retirer de mes chevaux", "Remove from my horses", "Quitar de mis caballos", "Rimuovi dai miei cavalli", "マイ馬から外す", "Aus meinen Pferden entfernen", "إزالة من خيولي") : T("Ajouter à mes chevaux", "Add to my horses", "Añadir a mis caballos", "Aggiungi ai miei cavalli", "マイ馬に追加", "Zu meinen Pferden hinzufügen", "إضافة إلى خيولي"), style: rondHaut },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: droits.lie ? "#E6CF9C" : "none", stroke: droits.lie ? "#E6CF9C" : "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" }))) : null,
-        h("button", { type: "button", "data-perf-plus": "1", onClick: function () { setMenuOuvert(true); }, "aria-label": T("Plus d'options", "More options", "Más opciones", "Altre opzioni", "その他", "Weitere Optionen", "خيارات أخرى"), style: rondHaut },
+        modeCav ? null : h("button", { type: "button", "data-perf-plus": "1", onClick: function () { setMenuOuvert(true); }, "aria-label": T("Plus d'options", "More options", "Más opciones", "Altre opzioni", "その他", "Weitere Optionen", "خيارات أخرى"), style: rondHaut },
           h("svg", { viewBox: "0 0 24 24", width: 18, height: 18, fill: "currentColor", "aria-hidden": "true" }, h("circle", { cx: 5.5, cy: 12, r: 1.6 }), h("circle", { cx: 12, cy: 12, r: 1.6 }), h("circle", { cx: 18.5, cy: 12, r: 1.6 }))))),
     h("div", { style: { position: "absolute", left: 0, right: 0, bottom: 0, padding: "0 18px 14px" } },
       h("div", { style: { fontFamily: SERIF, fontSize: largeP ? 48 : 36, fontWeight: 600, color: IVOIRE, lineHeight: 1.02, textShadow: "0 2px 14px rgba(0,0,0,0.7)", overflowWrap: "anywhere" } }, nomCh),
@@ -40870,7 +40912,8 @@ function EcranPerformancesCheval() {
           h("svg", { viewBox: "0 0 24 24", width: 38, height: 38, fill: CHAMP, stroke: "#E6CF9C", strokeWidth: 0.8, strokeLinejoin: "round" }, h("path", { d: "M7 3.5h10v5.2a5 5 0 0 1-10 0z" }), h("path", { fill: "none", stroke: CHAMP, strokeWidth: 1.5, strokeLinecap: "round", d: "M7 5H4.5a3 3 0 0 0 3 4.2M17 5h2.5a3 3 0 0 1-3 4.2" }), h("path", { d: "M11 13.6h2v3.2h-2z" }), h("path", { d: "M8.5 17h7l.8 3.5H7.7z" }))),
         h("div", { style: { fontFamily: SERIF, fontSize: 31, fontWeight: 600, lineHeight: 1.12, color: IVOIRE, maxWidth: 250, margin: "0 auto" } }, T("Aucun résultat pour le moment", "No results yet", "Ningún resultado por ahora", "Ancora nessun risultato", "まだ結果はありません", "Noch keine Ergebnisse", "لا توجد نتائج بعد")),
         h("div", { style: { margin: "12px auto 0", maxWidth: 320, fontFamily: SANS, fontSize: 13, lineHeight: 1.6, color: MUET } },
-          peutSaisir ? T("Ajoute les résultats de " + nomCh + " pour suivre sa progression, conserver sa régularité et les partager avec ta communauté.", "Add " + nomCh + "'s results to follow their progress, keep track of their consistency and share them with your community.", "Añade los resultados de " + nomCh + " para seguir su progresión, conservar su regularidad y compartirlos con tu comunidad.", "Aggiungi i risultati di " + nomCh + " per seguirne i progressi, la regolarità e condividerli con la tua comunità.", nomCh + " の結果を追加して、成長と安定感を記録し、コミュニティと共有しよう。", "Füge die Ergebnisse von " + nomCh + " hinzu, um die Entwicklung und Beständigkeit zu verfolgen und mit deiner Community zu teilen.", "أضيفي نتائج " + nomCh + " لمتابعة تقدمه والحفاظ على انتظامه ومشاركتها مع مجتمعك.")
+          (peutSaisir && modeCav) ? T("Ajoute tes résultats pour suivre ta progression, conserver ta régularité et les partager avec ta communauté.", "Add your results to follow your progress, keep track of your consistency and share them with your community.", "Añade tus resultados para seguir tu progresión, conservar tu regularidad y compartirlos con tu comunidad.", "Aggiungi i tuoi risultati per seguire i tuoi progressi, la tua regolarità e condividerli con la tua comunità.", "成績を追加して、成長と安定感を記録し、コミュニティと共有しよう。", "Füge deine Ergebnisse hinzu, um deine Entwicklung und Beständigkeit zu verfolgen und mit deiner Community zu teilen.", "أضيفي نتائجك لمتابعة تقدمك والحفاظ على انتظامك ومشاركتها مع مجتمعك.")
+            : peutSaisir ? T("Ajoute les résultats de " + nomCh + " pour suivre sa progression, conserver sa régularité et les partager avec ta communauté.", "Add " + nomCh + "'s results to follow their progress, keep track of their consistency and share them with your community.", "Añade los resultados de " + nomCh + " para seguir su progresión, conservar su regularidad y compartirlos con tu comunidad.", "Aggiungi i risultati di " + nomCh + " per seguirne i progressi, la regolarità e condividerli con la tua comunità.", nomCh + " の結果を追加して、成長と安定感を記録し、コミュニティと共有しよう。", "Füge die Ergebnisse von " + nomCh + " hinzu, um die Entwicklung und Beständigkeit zu verfolgen und mit deiner Community zu teilen.", "أضيفي نتائج " + nomCh + " لمتابعة تقدمه والحفاظ على انتظامه ومشاركتها مع مجتمعك.")
             : T("Ses premiers résultats l'attendent.", "Its first results are yet to come.", "Sus primeros resultados están por llegar.", "I suoi primi risultati sono ancora da scrivere.", "最初の結果はこれからです。", "Die ersten Ergebnisse stehen noch aus.", "نتائجه الأولى بانتظاره."))),
       (peutSaisir || peutImporter) ? h("div", { "data-perf-vide-actions": "1", style: { display: "flex", flexDirection: "column", gap: 12, margin: "24px 22px 0" } },
         peutSaisir ? grandBouton([h("span", { key: "p", "aria-hidden": "true", style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1, color: CHAMP } }, "+"), h("span", { key: "t" }, T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة"))], function () { setAjoutOuvert(true); }, "vAj") : null,
@@ -40879,10 +40922,11 @@ function EcranPerformancesCheval() {
       blocVideo),
       (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
       typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
-      ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
+      (modeCav && ajoutOuvert && typeof HypeAjoutResultatCavaliere === "function") ? h(HypeAjoutResultatCavaliere, { onFermer: function () { setAjoutOuvert(false); }, onAjoute: function (av) { setRelireCav(function (n) { return n + 1; }); if (av) { try { window.alert(av === "nom" ? "R\u00e9sultat enregistr\u00e9. Il n'appara\u00eetra ici qu'une fois ton nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb)." : "R\u00e9sultat enregistr\u00e9, mais pas encore rattach\u00e9 \u00e0 ton compte : " + av); } catch (eAl) { } } } })   /* (g9) mode cavalier : le formulaire historique de la page cavaliere (memes messages) */
+      : ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
       videoPlein,
       feuilleCapture,
-      ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
+      ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: modeCav ? { dbId: ligneEdit.cheval_id, nom: ligneEdit.cavalier || "" } : chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
             fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
         h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [fortGere.f.ep, String(fortGere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" \u2022 ")),
@@ -41020,7 +41064,15 @@ function EcranPerformancesCheval() {
       })),
     /* filtre cavalier : seulement s il y a au moins deux cavaliers ; il agit sur les chiffres et le tableau */
     (cavaliers.length >= 2) ? h("div", { "data-perf-cavaliers": "1", style: { display: "flex", gap: 8, padding: "12px 18px 0", overflowX: "auto", WebkitOverflowScrolling: "touch", scrollbarWidth: "none" } },
-      [pilule(T("Tous", "All", "Todos", "Tutti", "全員", "Alle", "الكل"), cavEffectif === "tous", function () { setCavChoisi("tous"); setOuvertes(null); }, "cavTous")].concat(cavaliers.map(function (cv) { return pilule(nomCourt(cv), cavEffectif === cv, function () { setCavChoisi(cv); setOuvertes(null); }, "cav" + cv); })).concat([h("span", { key: "finPil", "aria-hidden": "true", style: { flex: "0 0 6px" } })])) : null,
+      [pilule(T("Tous", "All", "Todos", "Tutti", "全員", "Alle", "الكل"), cavEffectif === "tous", function () { setCavChoisi("tous"); setOuvertes(null); }, "cavTous")].concat(cavaliers.map(function (cv) {
+        if (!modeCav) return pilule(nomCourt(cv), cavEffectif === cv, function () { setCavChoisi(cv); setOuvertes(null); }, "cav" + cv);
+        /* (g9) page du cavalier : le filtre porte sur les chevaux, avec leur photo (maquette, ecran 6) */
+        var cvx = null; try { Object.keys((cav && cav.chevaux) || {}).forEach(function (k) { var c = cav.chevaux[k]; if (c && ((String(c.alias || "").trim() || c.nom) === cv)) cvx = c; }); } catch (eCx) { }
+        var on = cavEffectif === cv;
+        return h("button", { key: "cav" + cv, type: "button", onClick: function () { setCavChoisi(cv); setOuvertes(null); }, style: { flex: "0 0 auto", minHeight: 34, padding: "0 12px 0 4px", borderRadius: 10, border: "1px solid " + (on ? "#E6CF9C" : "rgba(243,238,228,0.14)"), background: on ? "linear-gradient(180deg, #F1DCAE, #D8B676)" : "rgba(16,26,29,0.7)", color: on ? "#1A1408" : "rgba(243,238,228,0.82)", fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: 7 } },
+          (cvx && cvx.photo_url) ? h("img", { src: cvx.photo_url, alt: "", loading: "lazy", style: { width: 26, height: 26, borderRadius: 7, objectFit: "cover", flex: "0 0 auto" } }) : h("span", { style: { width: 4 } }),
+          cv);
+      })).concat([h("span", { key: "finPil", "aria-hidden": "true", style: { flex: "0 0 6px" } })])) : null,
     /* ses moments forts : mosaique de la maquette, une grande a gauche + quatre petites (2 x 2) ; toute la carriere, tous cavaliers */
     (forts.length || peutForts) ? h(React.Fragment, null,
       titreSection(T("Ses moments forts", "Career highlights", "Sus grandes momentos", "I suoi momenti forti", "ハイライト", "Seine Highlights", "لحظاته المميزة")),
@@ -41101,10 +41153,11 @@ function EcranPerformancesCheval() {
               })))),
       mfMedias[pickerJeton] ? h("button", { type: "button", onClick: function () { definirMedia(pickerJeton, null); }, style: { marginTop: 12, width: "100%", minHeight: 44, borderRadius: 999, border: "1px solid rgba(243,238,228,0.18)", background: "transparent", color: MUET, fontFamily: SANS, fontSize: 12.5, fontWeight: 600, cursor: "pointer" } }, T("Revenir à la photo automatique", "Back to the automatic photo", "Volver a la foto automática", "Torna alla foto automatica", "自動の写真に戻す", "Zurück zum automatischen Foto", "العودة إلى الصورة التلقائية")) : null,
       boutonFermer(function () { setPickerJeton(null); })), function () { setPickerJeton(null); }, "fPick") : null,
-    ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
+    (modeCav && ajoutOuvert && typeof HypeAjoutResultatCavaliere === "function") ? h(HypeAjoutResultatCavaliere, { onFermer: function () { setAjoutOuvert(false); }, onAjoute: function (av) { setRelireCav(function (n) { return n + 1; }); if (av) { try { window.alert(av === "nom" ? "R\u00e9sultat enregistr\u00e9. Il n'appara\u00eetra ici qu'une fois ton nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb)." : "R\u00e9sultat enregistr\u00e9, mais pas encore rattach\u00e9 \u00e0 ton compte : " + av); } catch (eAl) { } } } })   /* (g9) mode cavalier : le formulaire historique de la page cavaliere (memes messages) */
+      : ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
     videoPlein,
       feuilleCapture,
-      ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
+      ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: modeCav ? { dbId: ligneEdit.cheval_id, nom: ligneEdit.cavalier || "" } : chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
             fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
         h("div", { style: { marginTop: 2, marginBottom: 14, fontFamily: SANS, fontSize: 12, color: MUET } }, [fortGere.f.ep, String(fortGere.f.nom || "").replace(/^\s*CSO\s+/i, "")].filter(Boolean).join(" \u2022 ")),
