@@ -13415,3 +13415,8 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Sécurité signalée, NON corrigée (accord séparé nécessaire) : hype_peut_creer_album ne contrôle que les cibles « cheval: » → tout compte connecté peut créer un album « cavalier:<id> » sur le profil d'un autre ; « + Nouvel album » aussi affiché aux visiteurs.
 - Décisions de Blandine pour la suite : filtres Année et Cavalier visibles mais grisés tant que les données manquent ; sur ordinateur 6 photos par ligne, 5 quand une photo resterait seule ; vignettes 3/4 ; 18 photos puis « Afficher 18 photos de plus ».
 - Prochaines étapes : 2) 18 + 18 et règle des colonnes ; 3) filtre Cheval (Année / Cavalier grisés) ; 4) gestion cachée aux visiteurs ; puis harmonisation du bloc Albums via une option propre à cette page.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0310, Blandine 01:43 : « on peut éviter la case blanche et rester dans les couleurs Hype »)
+- hypeMosaiqueActu seule touchée : la case « texte seul » de la mosaïque n'est plus ivoire. Fond sombre #171411 avec un léger reflet doré, fin bord champagne, citation en crème (Cormorant italique), auteur et date en gris doux. Pages Actualité du cheval et du cavalier.
+- Repart de la version en ligne 20261019-0300 (autre conversation : Photos du cavalier étape 1).
+- Tests : rendu iPhone 390 ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
