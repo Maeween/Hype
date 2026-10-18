@@ -13082,3 +13082,11 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Inchangé : tout le reste de l'accueil, lien vers le monde, globe, bannière des autres langues.
 - Tests : réplique de la carte à 375 / 820 / 1440 px en FR, EN et AR (droite à gauche) : texte sur une seule ligne, aucun débordement. node --check des 16 blocs de script : aucune erreur. Marqueurs de garde liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur l'iPhone de Blandine.
 - Publié sur la version en ligne du 16/10 (b478aac), après accord de Blandine (« tu peux publier », 16 h 04). L autre conversation qui travaille sur index.html n avait rien publié entre-temps.
+
+## 18/10/2026 — Écran « Partager Hype » : le message de partage présente toute l'appli, plus seulement les Galops (marqueur 20261018-1620)
+- Origine : audit ChatGPT du 17-18/10 (correction 3 de la passation). L'ancien message ne parlait que des Galops.
+- Changement (index.html, dictionnaire DICT de l'écran Partager, clé shareText seulement) : FR « Découvre Hype : tes chevaux, ta progression et ton univers équestre au même endroit. », EN « Discover Hype: your horses, your progress and your equestrian world in one place. », ES, IT, DE sur le même modèle, JA « Hypeで愛馬の情報や上達の記録をひとつにまとめよう。 », AR « اكتشفي Hype: خيولك وتقدمك وعالمك للفروسية في مكان واحد. ».
+- C'est le texte envoyé avec le lien quand on touche « Partager » (feuille de partage de l'iPhone). L'écran lui-même ne change pas : titre, QR code, boutons identiques.
+- Inchangé : lien partagé, QR code, bouton Copier le lien, tous les autres textes.
+- Tests : les 7 langues lues dans le code (9 entrées chacune, aucune manquante) ; node --check des 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : partage réel depuis l'iPhone de Blandine.
+- Publié sur fddb360 (étape 1) après le « publie » de Blandine (16 h 21). L autre conversation n avait toujours rien publié.
