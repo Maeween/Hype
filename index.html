@@ -40491,7 +40491,7 @@ function EcranPerformancesCheval(props) {
     (async function () {
       try {
         if (typeof supa === "undefined" || !supa) { if (v) setCav({ prof: { id: riderId }, lignes: [], chevaux: {} }); return; }
-        var rp = await supa.from("profiles").select("id, pseudo, prenom, nom, avatar_url, ecurie").eq("id", riderId).maybeSingle();
+        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, avatar, ecurie").eq("id", riderId).maybeSingle();
         var rr = await supa.from("resultats").select("*").eq("cavalier_id", riderId).limit(2000);
         var ls = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x && x.masque_cavaliere !== true; });
         var ids = []; ls.forEach(function (x) { if (x.cheval_id && ids.indexOf(x.cheval_id) === -1) ids.push(x.cheval_id); });
@@ -40504,8 +40504,8 @@ function EcranPerformancesCheval(props) {
     return function () { v = false; };
   }, [riderId, relireCav]);
   if (modeCav) {
-    var nomCavC = cav ? ([cav.prof.prenom, cav.prof.nom].filter(Boolean).join(" ") || cav.prof.pseudo || "") : "";
-    etat = { charge: !!cav, cheval: cav ? { dbId: null, nom: nomCavC, ligne: { photo_url: cav.prof.avatar_url || "", ecurie: cav.prof.ecurie || "" }, secours: {} } : null, erreur: null };
+    var nomCavC = cav ? (cav.prof.pseudo || "") : "";
+    etat = { charge: !!cav, cheval: cav ? { dbId: null, nom: nomCavC, ligne: { photo_url: cav.prof.avatar_url || cav.prof.avatar || "", ecurie: cav.prof.ecurie || "" }, secours: {} } : null, erreur: null };
   }
   var chV = etat.cheval;
   var dbId = (chV && chV.dbId) || null;
