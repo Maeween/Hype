@@ -69465,6 +69465,8 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           var MOIS9 = ["JANV.", "F\u00c9VR.", "MARS", "AVR.", "MAI", "JUIN", "JUIL.", "AO\u00dbT", "SEPT.", "OCT.", "NOV.", "D\u00c9C."];
           function dateFr(d) { try { var p = d.split("-"); return Number(p[2]) + " " + MOIS9[Number(p[1]) - 1] + " " + p[0]; } catch (e9) { return d; } }
           var OR9 = "#D9A85C";
+          /* 18/10 : couleurs et legende des saisons = celles de la nouvelle page Performances (1re, 2e, 3e, autres places, elim. / abandon) */
+          var COUL_SAIS = [["p1", "#C9A66B", T("1re", "1st", "1.º", "1º", "1位", "1.", "الأول")], ["p2", "rgba(243,238,228,0.75)", T("2e", "2nd", "2.º", "2º", "2位", "2.", "الثاني")], ["p3", "#A9713C", T("3e", "3rd", "3.º", "3º", "3位", "3.", "الثالث")], ["aut", "rgba(243,238,228,0.22)", T("autres places", "other places", "otros puestos", "altri posti", "その他", "andere Plätze", "مراكز أخرى")], ["elab", "#7A3B34", T("élim. / abandon", "elim. / retired", "elim. / abandono", "elim. / ritiro", "失権/棄権", "ausgesch. / aufgeg.", "استبعاد / انسحاب")]];
           var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh; /* 25/08 : en-tete = surcharge admin si posee, sinon la tete du cheval */
           function filetOr() { return h("span", { style: { flex: 1, height: 1, background: "linear-gradient(90deg,transparent,rgba(217,168,92,.5))" } }); }
           /* 02/09 (Blandine) — UNE PHOTO PAR MOMENT FORT, JAMAIS LA MEME TROIS FOIS.
@@ -69723,6 +69725,34 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     setSaisonOuv(candidats.length ? candidats[0] : null);
                   }, style: { flex: "0 0 auto", padding: "6px 13px", borderRadius: 999, border: "1px solid " + (onC ? "rgba(217,168,92,.75)" : "rgba(255,255,255,0.14)"), background: onC ? "rgba(217,168,92,.12)" : "rgba(255,255,255,0.03)", color: onC ? OR9 : "rgba(243,238,228,0.7)", fontSize: 11.3, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", cursor: "pointer", whiteSpace: "nowrap" } }, (oC[0] === "tous" ? oC[1] : hypeNomCourt(oC[1])));
                 })) : null,
+              /* 18/10 (maquette 1 + graphique validee par Blandine) : legende des couleurs (celles de la nouvelle page) puis un graphique,
+                 une colonne par annee (hauteur = parcours de l annee, sorties au-dessus) ; toucher une colonne deplie cette annee juste dessous.
+                 Suit l onglet cavalier choisi. */
+              h("div", { "data-saisons-legende": "1", style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "0 18px 12px", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.62)" } },
+                COUL_SAIS.map(function (cL) { return h("span", { key: "lg" + cL[0], style: { display: "inline-flex", alignItems: "center", gap: 5, whiteSpace: "nowrap" } }, h("i", { style: { display: "inline-block", width: 10, height: 6, borderRadius: 2, background: cL[1] } }), cL[2]); })),
+              (function () {
+                var colsG = listeAns.slice().reverse().map(function (anG) {
+                  var fsG = filtreCav(ans[anG] || []); if (!fsG.length) return null;
+                  var rG = filtreCav(ansR[anG] || []);
+                  var nG = [rG.filter(function (f) { return f.pl === 1; }).length, rG.filter(function (f) { return f.pl === 2; }).length, rG.filter(function (f) { return f.pl === 3; }).length, rG.filter(function (f) { return f.pl != null && f.pl > 3; }).length];
+                  nG.push(Math.max(0, rG.length - nG[0] - nG[1] - nG[2] - nG[3]));
+                  return { an: anG, sorties: sortiesDe(fsG), n: nG, tot: rG.length };
+                }).filter(Boolean);
+                if (colsG.length < 2) return null;
+                var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
+                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 14px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                  h("div", { style: { display: "flex", alignItems: "flex-end", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
+                    colsG.map(function (cG) {
+                      var onG = (saisonOuv === cG.an);
+                      return h("div", { key: "gc" + cG.an, role: "button", "data-saisons-colonne": cG.an, onClick: function () { setSaisonOuv(cG.an); setTimeout(function () { try { var eG = document.getElementById("hype-saison-" + cG.an); if (eG) eG.scrollIntoView({ behavior: "smooth", block: "start" }); } catch (eSg) { } }, 90); },
+                        style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", alignItems: "center", gap: 6, cursor: "pointer" } },
+                        h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.62)" } }, String(cG.sorties)),
+                        h("div", { style: { width: "100%", height: Math.max(6, Math.round(125 * (cG.tot || 0) / maxG)), display: "flex", flexDirection: "column-reverse", borderRadius: 5, overflow: "hidden", background: "rgba(243,238,228,0.06)", outline: onG ? "1px solid #E6CF9C" : "none", outlineOffset: 2 } },
+                          cG.n.map(function (vG, iG) { return vG ? h("span", { key: "gs" + iG, style: { flex: vG, background: COUL_SAIS[iG][1] } }) : null; })),
+                        h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 15, fontWeight: 600, color: onG ? "#E6CF9C" : "#F3EEE4" } }, String(cG.an).slice(2)));
+                    })),
+                  h("div", { style: { marginTop: 6, textAlign: "center", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, T("sorties au-dessus de chaque colonne", "outings above each column", "salidas encima de cada columna", "uscite sopra ogni colonna", "各列の上は出場回数", "Starts über jeder Säule", "عدد المشاركات فوق كل عمود")));
+              })(),
               listeAns.map(function (anK) {
                 var fsA = filtreCav(ans[anK]); if (!fsA.length) return null; var sA = sortiesDe(fsA);
                 var vA = fsA.filter(function (f) { return f.pl === 1; }).length;
@@ -69736,20 +69766,19 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                 var s4 = nPlR(function (f) { return f.pl != null && f.pl > 3; });
                 var sVide = Math.max(0, totR - s1 - s2 - s3 - s4);
                                 var ouvA = (saisonOuv === anK);
-                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", margin: "0 16px 9px", padding: "10px 12px 9px", borderRadius: 12, background: "#14161a", border: "1px solid " + (ouvA ? "rgba(217,168,92,.4)" : "rgba(255,255,255,0.06)") } }, /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
+                return h("div", { key: "an" + anK, id: "hype-saison-" + anK, role: "button", onClick: function () { setSaisonOuv(ouvA ? null : anK); }, style: { cursor: "pointer", scrollMarginTop: 16, margin: "0 16px 10px", padding: "16px 14px 15px", borderRadius: 14, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid " + (ouvA ? "rgba(201,166,107,0.55)" : "rgba(243,238,228,0.08)") } }, /* 18/10 : plus de hauteur, fond et couleurs de la nouvelle page (maquette 1) */ /* 27/08 : fond ramene au NEUTRE exact de la page d accueil (#14161a) — demande Blandine, « trop de couleur » (26/08 : la saison se DEPLIE au tap et montre ses classements) */
                   h("div", { style: { display: "flex", alignItems: "baseline", gap: 8, minWidth: 0 } },
-                    h("span", { style: { fontFamily: "'Cinzel',serif", fontSize: 16.5, fontWeight: 700, color: "#F2F4F6" } }, anK),
-                    h("span", { style: { fontSize: 10.3, color: "#A39D92", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts", "\u0645\u0634\u0627\u0631\u0643\u0627\u062a") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start", "\u0645\u0634\u0627\u0631\u0643\u0629"))),
-                    h("span", { style: { marginLeft: "auto", fontSize: 10.8, color: "#C8CDD3", whiteSpace: "nowrap" } },
+                    h("span", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 26, fontWeight: 600, lineHeight: 1, color: "#F3EEE4" } }, anK),
+                    h("span", { style: { fontSize: 11.5, color: "rgba(243,238,228,0.62)", whiteSpace: "nowrap" } }, sA + " " + (sA > 1 ? T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts", "\u0645\u0634\u0627\u0631\u0643\u0627\u062a") : T("sortie", "outing", "salida", "uscita", "\u51fa\u5834", "Start", "\u0645\u0634\u0627\u0631\u0643\u0629"))),
+                    h("span", { style: { marginLeft: "auto", fontSize: 12, color: "#C8CDD3", whiteSpace: "nowrap" } },
                       h("span", { style: { color: OR9 } }, "\uD83C\uDFC6 " + vA), "\u2003",
                       h("span", { style: { color: "#D8D2C6" } }, "\uD83E\uDD48 " + pA), "\u2003",
                       h("span", { style: { color: "#A39D92" } }, "\uD83C\uDFC5 " + cA)),
                     h("span", { style: { marginLeft: 7, color: ouvA ? OR9 : "#7D776D", fontSize: 12, display: "inline-block", transition: "transform .25s ease", transform: ouvA ? "rotate(180deg)" : "none" } }, "\u02c5")),
-                  h("div", { style: { marginTop: 9, height: 6, borderRadius: 3, background: "rgba(255,255,255,.05)", overflow: "hidden", display: "flex" } }, /* 30/08 : l ancienne barre etait un TAUX DE PODIUM non libelle (victoires+podiums / total) — illisible, prise pour un separateur, et fausse : denominateur deja purge des non-classes, donc 100 % sur une saison a 1 sortie et 0 victoire. Remplacee par une barre EMPILEE dont le tout = les parcours de la saison, El./Ab. compris. Le fond qui reste nu EST l information : ce qui n a pas ete classe. */
-                    [[s1, OR9], [s2, "#D8D2C6"], [s3, "#A9713C"], [s4, "#2E5A78"]].map(function (sg, ig) {
-                      return sg[0] ? h("div", { key: "sg" + ig, style: { flex: sg[0], minWidth: 5, background: sg[1] } }) : null;
-                    }),
-                    sVide ? h("div", { key: "sgv", style: { flex: sVide } }) : null),
+                  h("div", { style: { marginTop: 13, height: 8, borderRadius: 4, background: "rgba(243,238,228,.06)", overflow: "hidden", display: "flex" } }, /* 30/08 : l ancienne barre etait un TAUX DE PODIUM non libelle (victoires+podiums / total) — illisible, prise pour un separateur, et fausse : denominateur deja purge des non-classes, donc 100 % sur une saison a 1 sortie et 0 victoire. Remplacee par une barre EMPILEE dont le tout = les parcours de la saison, El./Ab. compris. Le fond qui reste nu EST l information : ce qui n a pas ete classe. */
+                    [s1, s2, s3, s4, sVide].map(function (vS, ig) {   /* 18/10 : couleurs de la nouvelle page ; le reste (sans place : elimine / abandon) en bordeaux, comme sa legende */
+                      return vS ? h("div", { key: "sg" + ig, style: { flex: vS, minWidth: 4, background: COUL_SAIS[ig][1] } }) : null;
+                    })),
                   ouvA ? h("div", { onClick: function (eDp) { try { eDp.stopPropagation(); } catch (eS9) { } }, style: { marginTop: 9, borderTop: "1px solid rgba(255,255,255,0.06)", cursor: "default" } },
                     fsA.slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); }).map(function (rS, iS) {
                       return h("div", { key: "sr" + iS, style: { display: "flex", alignItems: "center", gap: 10, padding: "8px 2px", borderTop: iS ? "1px solid rgba(255,255,255,0.045)" : "none", minWidth: 0 } },
