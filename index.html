@@ -27959,8 +27959,12 @@ function HypeApp() {
        Un humain ne recule pas deux fois en moins d une demi-seconde. */
     const __retourTs = useRef(0);
     const retourEcran = () => {
-        if (historiqueEcrans.length === 0)
+        /* 18/10 (Blandine : « ni le swipe ni la fleche ne fonctionnent sur la page resultats du cavalier ») : quand l appli rouvre
+           directement sur cette page (relance), l historique est vide et le retour ne faisait rien. Repli limite a cet ecran : sa page parente. */
+        if (historiqueEcrans.length === 0) {
+            if (["resultats-cavalier", "actualite-cavalier", "videos-cavalier", "photos-cavalier"].indexOf(ecran) >= 0) { const tR = Date.now(); if (tR - (__retourTs.current || 0) < 450) return; __retourTs.current = tR; setEcran("cavalier"); }
             return;
+        }
         const t = Date.now();
         if (t - (__retourTs.current || 0) < 450)
             return;
@@ -41520,18 +41524,17 @@ function EcranResultatsCavaliere() {
     h("button", { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); },
       style: { position: "relative", width: "100%", marginTop: 16, padding: "14px 34px", border: 0, borderLeft: "2px solid #C9A66B", borderRadius: "0 12px 12px 0", background: "linear-gradient(90deg,rgba(255,255,255,.045),transparent 60%)", color: "#F3EEE4", fontSize: 12.5, fontWeight: 700, fontFamily: "'Montserrat',sans-serif", textAlign: "center", cursor: "pointer" } },
       T("Importer mes résultats officiels", "Import my official results", "Importar mis resultados oficiales", "Importa i miei risultati ufficiali", "公式成績を取り込む", "Meine offiziellen Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c\u064a \u0627\u0644\u0631\u0633\u0645\u064a\u0629"), h("span", { style: { position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)", color: "#C9A66B", fontWeight: 400 } }, "\u2192"))) : null;
-  var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
+  var retour = function () { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };   /* 18/10 : sans page precedente, retour a la page Cavalier (avant : rien) */
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110 } },
     h(HypeDrapeauLangue, null),   /* (491) */
-    h("div", { style: { padding: "calc(env(safe-area-inset-top) + 14px) 14px 8px", display: "flex", alignItems: "center", gap: 10 } },
-      h("button", { onClick: retour, "aria-label": T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), style: { width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.14)", background: "rgba(255,255,255,0.05)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-      h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: teinteCl } }, T("R\u00e9sultats en concours", "Competition results", "Resultados", "Risultati", "\u5927\u4f1a\u306e\u6210\u7e3e", "Turnierergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c \u0641\u064a \u0627\u0644\u0645\u0633\u0627\u0628\u0642\u0627\u062a"))),
+    /* 18/10 (Blandine) : meme hero que la page Cavalier (hypeHeroSousPageCavalier), a la place de la ligne « Resultats en concours » et de l encart */
+    hypeHeroSousPageCavalier({ large: (typeof window !== "undefined" && window.innerWidth >= 768), ordi: (typeof window !== "undefined" && window.innerWidth >= 1024), retour: retour, labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), libelle: T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c"), nom: nomCav, photo: (prof && prof.avatar_url) ? photoCh : "", ecurie: (prof && prof.ecurie && prof.ecurie !== "__perso__") ? prof.ecurie : "" }),
     (resDb === null)
       ? h("div", { style: { padding: "40px 20px", textAlign: "center", color: "#8A929C", fontFamily: "'Montserrat',sans-serif", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
       : (!resDb.length
-          ? h("div", null, encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
+          ? h("div", null, null /* 18/10 : encart remplace par le hero commun en haut de page */,
               /* 18/10 : page vide de la maquette (trophee, phrase, boutons selon les droits, carte video) */
-              h(PageVideResultatsHype, { cavalier: true, nom: nomCav, message: erreur || null, peutAjouter: !!sienPerf, onAjouter: function () { setAjoutPerf(true); }, peutImporter: !!sienPerf, onImporter: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); } }))
+              h(PageVideResultatsHype, { cavalier: true, cleVideo: "hype_perf_video_masquee_" + ((moi && moi.id) || ""), nom: nomCav, message: erreur || null, peutAjouter: !!sienPerf, onAjouter: function () { setAjoutPerf(true); }, peutImporter: !!sienPerf, onImporter: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); } }))
           : h("div", { style: { padding: "0 0 28px" } },
         (function () {
           var lignesBrutes = (resDb || []).filter(function (r) { return r && (voirMasques || r.visible !== false) && (r.place != null || r.classement); }); /* 26/08 : LA COCHE DE L IMPORT EST RESPECTEE — decochee = gardee en base, PAS affichee (reproche Blandine 08h45) ; compteurs, saisons et listes suivent */
@@ -41829,7 +41832,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           }
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
-            encartIdentiteCh(T("Performances", "Performances", "Rendimiento", "Prestazioni", "\u6210\u7e3e", "Leistungen", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
+            null /* 18/10 : encart remplace par le hero commun en haut de page */,
             /* — 2 · LE BANDEAU DES QUATRE CHIFFRES — */
             /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", margin: "18px 16px 0", padding: "15px 6px 14px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(255,255,255,0.06)" } },
               [[nS, T("sorties", "outings", "salidas", "uscite", "\u51fa\u5834", "Starts", "\u0645\u0634\u0627\u0631\u0643\u0627\u062a")], [nV, T("victoires", "wins", "victorias", "vittorie", "\u512a\u52dd", "Siege", "\u0627\u0646\u062a\u0635\u0627\u0631\u0627\u062a")], [nP, T("podiums", "podiums", "podios", "podi", "\u8868\u5f70\u53f0", "Podien", "\u0645\u0646\u0635\u0627\u062a \u062a\u062a\u0648\u064a\u062c")], [nC, T("class\u00e9s", "placings", "clasificados", "piazzamenti", "\u5165\u8cde", "Platzierungen", "\u0645\u0635\u0646\u0641")]].map(function (cq, iq) {
@@ -41987,9 +41990,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                   nG.push(Math.max(0, rG.length - nG[0] - nG[1] - nG[2] - nG[3]));
                   return { an: anG, sorties: sortiesDe(fsG), n: nG, tot: rG.length };
                 }).filter(Boolean);
-                if (colsG.length < 2) { var bSeul = bandeauAff(); return bSeul ? h("div", { style: { margin: "0 16px 20px", padding: "14px 10px 4px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } }, bSeul) : null; }
+                if (colsG.length < 2) { var bSeul = bandeauAff(); return bSeul ? h("div", { style: { margin: "22px 16px 30px", padding: "14px 10px 4px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } }, bSeul) : null; }
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
-                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 20px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                return h("div", { "data-saisons-graphique": "1", style: { margin: "22px 16px 30px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
                   bandeauAff(),
                   h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
@@ -42159,6 +42162,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
     /* 18/10 (Blandine : « relier les deux boutons ») : en bas, « Importer tes resultats FFE » puis « + Ajouter un resultat » */
     (sienPerf && resDb !== null && (resDb || []).some(function (rI) { return rI && rI.origine === "import"; })) ? h(CarteImportHype, { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); }, marge: "44px 16px 0" }) : null,
     blocAjoutCav,   /* (697) */
+    typeof FinPageHype === "function" ? h(FinPageHype, { key: "finResCav" }) : null,   /* 18/10 (Blandine) : le bas de page habituel */
     /* 18/10 : blocImportCav remonte en haut de la page (voir « derniers resultats ») */
     ajoutPerf ? h(HypeAjoutResultatCavaliere, { onFermer: function () { setAjoutPerf(false); }, onAjoute: function (av) { setRechargeRes(function (n) { return n + 1; }); if (av) { try { window.alert(av === "nom" ? "R\u00e9sultat enregistr\u00e9. Il n'appara\u00eetra ici qu'une fois ton nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb)." : "R\u00e9sultat enregistr\u00e9, mais pas encore rattach\u00e9 \u00e0 ton compte : " + av); } catch (eAl) { } } } }) : null,
     toast ? h("div", { style: { position: "fixed", left: "50%", bottom: "calc(96px + env(safe-area-inset-bottom))", transform: "translateX(-50%)", background: "#12161C", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 12, padding: "10px 14px", fontSize: 12.5, color: "#EDF2F5", zIndex: 60 } }, toast) : null);
@@ -42399,7 +42403,7 @@ function EcranActualiteCavaliere() {
       h("div", { role: "button", onClick: function () { ouvrirMur(po.cible); }, style: { display: "flex", alignItems: "stretch", minHeight: 96, cursor: "pointer" } }, colPhoto, colTexte),
       confirmation(it));
   }
-  var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
+  var retour = function () { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };   /* 18/10 : sans page precedente, retour a la page Cavalier (avant : rien) */
   var nom = (prof && prof.pseudo) || "";
   /* (477) la tete de la page Actualites de l ecurie : grande photo (la plus recente de son fil,
      hors video), petit libelle, « ACTUALITES », son ecurie. Sans photo : la meme tete, sans fond. */
@@ -42421,7 +42425,8 @@ function EcranActualiteCavaliere() {
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110, fontFamily: M } },
     h(HypeDrapeauLangue, null),   /* (491) */
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pa", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
-    tete,
+    /* 18/10 (Blandine) : meme hero que la page Cavalier (hypeHeroSousPageCavalier) ; l ancienne tete (photo du fil) n est plus affichee */
+    hypeHeroSousPageCavalier({ large: (typeof window !== "undefined" && window.innerWidth >= 768), ordi: (typeof window !== "undefined" && window.innerWidth >= 1024), retour: retour, labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), libelle: T("Actualit\u00e9s", "News", "Novedades", "Novit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Neuigkeiten", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631"), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), ecurie: (prof && prof.ecurie && prof.ecurie !== "__perso__") ? prof.ecurie : "" }),
     h("div", { style: { padding: "12px 16px 0" } },
       (liste === null)
         ? h("div", { style: { padding: "30px 0", textAlign: "center", color: "#8A929C", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
@@ -42439,17 +42444,22 @@ function EcranActualiteCavaliere() {
 /* 15/10 (1139) PHOTO DU HAUT DES PAGES PHOTOS ET VIDEOS DU CAVALIER (meme famille que Histoire / Progression) :
    photo pleine largeur fondue dans le noir, fleche retour en haut, titre et nom en bas. Aucun nouveau texte. */
 function hypeHeroSousPageCavalier(o) {
+  /* 18/10 (Blandine : « sur les sous-pages cavaliers garde le hero et le design de celui-ci comme sur la page cavaliers elle-meme ») :
+     meme dessin que cavV2Hero de la page Cavalier : photo a droite (84 % sur iPhone, 60 % tablette, 64 % ordinateur) fondue a gauche
+     et en haut/bas, texte en bas a gauche : petit titre champagne espace (ici le nom de la sous-page), nom en Cormorant, ecurie dessous. */
   var h = React.createElement;
   var src = o.photo || ((typeof IMG_CAVALIER_HERO_DEFAUT !== "undefined") ? IMG_CAVALIER_HERO_DEFAUT : "");
-  /* 15/10 (1152) tablette (o.large) : 300 px ; ordinateur (o.ordi) : 340 px ; titre plus grand ; iPhone inchange */
-  var hH = o.ordi ? "340px" : (o.large ? "300px" : "calc(env(safe-area-inset-top) + 230px)");
-  return h("div", { style: { position: "relative", height: hH, overflow: "hidden", marginBottom: o.large ? 12 : 6 } },
-    src ? h("img", { src: src, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: o.photo ? "50% 30%" : "68% 20%", display: "block" } }) : null,
-    h("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(6,7,9,0.45) 0%, rgba(6,7,9,0.05) 34%, rgba(6,7,9,0.72) 76%, #060709 100%)" } }),
+  var rtlH = false; try { rtlH = document.documentElement.dir === "rtl"; } catch (eR) { }
+  var hH = o.ordi ? 400 : (o.large ? 340 : 360);
+  var masqueH = "linear-gradient(" + (rtlH ? "270deg" : "90deg") + ", transparent 0%, #000 40%), linear-gradient(180deg, transparent 0%, #000 14%, #000 66%, transparent 100%)";
+  var ombreH = "0 2px 16px rgba(0,0,0,0.75)";
+  return h("div", { "data-hero-sous-cavalier": "1", style: { position: "relative", height: "calc(env(safe-area-inset-top) + " + hH + "px)", overflow: "hidden", marginBottom: o.large ? 12 : 6 } },
+    src ? h("img", { src: src, alt: "", decoding: "async", style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 58px)", bottom: 0, insetInlineEnd: 0, width: o.ordi ? "64%" : (o.large ? "60%" : "84%"), height: "calc(100% - env(safe-area-inset-top) - 58px)", objectFit: "cover", objectPosition: "center 22%", display: "block", WebkitMaskImage: masqueH, maskImage: masqueH, WebkitMaskComposite: "source-in", maskComposite: "intersect", pointerEvents: "none" } }) : null,
     h("button", { onClick: o.retour, "aria-label": o.labelRetour, style: { position: "absolute", zIndex: 2, top: "calc(env(safe-area-inset-top) + 14px)", left: 14, width: 44, height: 44, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.18)", background: "rgba(6,7,9,0.45)", color: "#EDF2F5", fontSize: 18, cursor: "pointer" } }, "\u2039"),
-    h("div", { style: { position: "absolute", left: o.large ? 32 : 16, right: o.large ? 32 : 16, bottom: o.large ? 22 : 12, minWidth: 0 } },
-      h("div", { style: { fontSize: o.large ? 11.5 : 10.5, fontWeight: 700, letterSpacing: 2.2, textTransform: "uppercase", color: o.teinte || "#C9A66B", textShadow: "0 1px 8px rgba(0,0,0,0.9)" } }, o.libelle),
-      o.nom ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: o.ordi ? 46 : (o.large ? 40 : 30), fontWeight: 500, lineHeight: 1.1, marginTop: 4, color: "#F3EEE4", overflowWrap: "anywhere", textShadow: "0 2px 14px rgba(0,0,0,0.8)" } }, o.nom) : null));
+    h("div", { style: { position: "absolute", left: 0, right: 0, bottom: o.large ? 26 : 20, zIndex: 2, padding: o.ordi ? "0 34px" : "0 26px", minWidth: 0 } },
+      h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 11, letterSpacing: "0.38em", textTransform: "uppercase", color: "#C9A66B", fontWeight: 600, textShadow: ombreH } }, o.libelle),
+      o.nom ? h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 500, fontSize: o.ordi ? 52 : (o.large ? 48 : 40), lineHeight: 1, marginTop: 8, color: "#F3EEE4", textShadow: ombreH, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, o.nom) : null,
+      o.ecurie ? h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 13, color: "#F3EEE4", marginTop: 10, textShadow: ombreH } }, o.ecurie) : null));
 }
 function EcranVideosCavaliere() {
   var h = React.createElement;
@@ -42471,7 +42481,7 @@ function EcranVideosCavaliere() {
     (async function () {
       try {
         if (!cid || typeof supa === "undefined" || !supa) { if (vif) setVids([]); return; }
-        var rp = await supa.from("profiles").select("id, pseudo").eq("id", cid).maybeSingle();
+        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie").eq("id", cid).maybeSingle();   /* 18/10 : photo et ecurie pour le hero */
         if (vif) setProf((rp && rp.data) || { id: cid, pseudo: "" });
         var r = await supa.from("commentaires").select("id, cible, photo_url, medias, created_at")
           .eq("user_id", cid).or("cible.like.ecurie:%,cible.like.club:%,cible.like.agenda:%,cible.like.cheval:%")
@@ -42543,14 +42553,14 @@ function EcranVideosCavaliere() {
   function dateCourte(d) {
     try { var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; var MO = ["janv.", "f\u00e9vr.", "mars", "avr.", "mai", "juin", "juil.", "ao\u00fbt", "sept.", "oct.", "nov.", "d\u00e9c."]; return Number(m[3]) + " " + MO[Number(m[2]) - 1] + " " + m[1]; } catch (e) { return ""; }
   }
-  var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
+  var retour = function () { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };   /* 18/10 : sans page precedente, retour a la page Cavalier (avant : rien) */
   var nom = (prof && prof.pseudo) || "";
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110, fontFamily: M } },
     h(HypeDrapeauLangue, null),   /* (491) */
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pv", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
     /* 15/10 (1139) Blandine : la photo de Mes chevaux en haut de toutes les sous-pages du cavalier. Photo du cavalier s il en a une,
        sinon IMG_CAVALIER_HERO_DEFAUT ; meme retour, meme titre, meme nom (ancien bandeau sans photo). */
-    hypeHeroSousPageCavalier({ large: largeP, ordi: ordiP /* (1152) */, retour: retour, libelle: T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
+    hypeHeroSousPageCavalier({ large: largeP, ordi: ordiP /* (1152) */, retour: retour, libelle: T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), ecurie: (prof && prof.ecurie && prof.ecurie !== "__perso__") ? prof.ecurie : "" }),
     h("div", { style: { padding: largeP ? "12px 32px 0" : "12px 16px 0" } },
       (vids === null)
         ? h("div", { style: { padding: "30px 0", textAlign: "center", color: "#8A929C", fontSize: 13 } }, T("Chargement\u2026", "Loading\u2026", "Cargando\u2026", "Caricamento\u2026", "\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "L\u00e4dt\u2026", "\u062c\u0627\u0631 \u0627\u0644\u062a\u062d\u0645\u064a\u0644\u2026"))
@@ -42595,7 +42605,7 @@ function EcranPhotosCavaliere() {
     (async function () {
       try {
         if (!cid || typeof supa === "undefined" || !supa) { if (vif) setVids([]); return; }
-        var rp = await supa.from("profiles").select("id, pseudo").eq("id", cid).maybeSingle();
+        var rp = await supa.from("profiles").select("id, pseudo, avatar_url, ecurie").eq("id", cid).maybeSingle();   /* 18/10 : photo et ecurie pour le hero */
         if (vif) setProf((rp && rp.data) || { id: cid, pseudo: "" });
         var r = await supa.from("commentaires").select("id, cible, photo_url, medias, created_at")
           .eq("user_id", cid).or("cible.like.ecurie:%,cible.like.club:%,cible.like.agenda:%,cible.like.cheval:%")
@@ -42674,14 +42684,14 @@ function EcranPhotosCavaliere() {
   function dateCourte(d) {
     try { var m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/); if (!m) return ""; var MO = ["janv.", "f\u00e9vr.", "mars", "avr.", "mai", "juin", "juil.", "ao\u00fbt", "sept.", "oct.", "nov.", "d\u00e9c."]; return Number(m[3]) + " " + MO[Number(m[2]) - 1] + " " + m[1]; } catch (e) { return ""; }
   }
-  var retour = function () { try { if (app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };
+  var retour = function () { try { if (app.peutReculer && app.retourEcran) { app.retourEcran(); return; } } catch (eR) { } setEcran("cavalier"); };   /* 18/10 : sans page precedente, retour a la page Cavalier (avant : rien) */
   var nom = (prof && prof.pseudo) || "";
   return h("div", { style: { minHeight: "100vh", background: "#060709", color: "#EDF2F5", paddingBottom: 110, fontFamily: M } },
     h(HypeDrapeauLangue, null),   /* (491) */
     h(HypeBoutonPartagerPage, { obtenir: function () { return cid ? { fam: "pp", val: cid, titre: (prof && prof.pseudo) || "" } : null; } }),   /* (492) */
     /* 15/10 (1139) Blandine : la photo de Mes chevaux en haut de toutes les sous-pages du cavalier. Photo du cavalier s il en a une,
        sinon IMG_CAVALIER_HERO_DEFAUT ; meme retour, meme titre, meme nom (ancien bandeau sans photo). */
-    hypeHeroSousPageCavalier({ large: largeP, ordi: ordiP /* (1152) */, retour: retour, libelle: T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), teinte: TQL }),
+    hypeHeroSousPageCavalier({ large: largeP, ordi: ordiP /* (1152) */, retour: retour, libelle: T("Photos", "Photos", "Fotos", "Foto", "\u5199\u771f", "Fotos", "\u0627\u0644\u0635\u0648\u0631") + (vids && vids.length ? " \u00b7 " + vids.length : ""), nom: nom, photo: ((prof && prof.avatar_url) ? ((typeof avSrc === "function") ? avSrc(prof.avatar_url) : prof.avatar_url) : ""), labelRetour: T("Retour", "Back", "Volver", "Indietro", "\u623b\u308b", "Zur\u00fcck", "\u0631\u062c\u0648\u0639"), ecurie: (prof && prof.ecurie && prof.ecurie !== "__perso__") ? prof.ecurie : "" }),
     /* 28/09 (484) : LES ALBUMS « souvenirs » de son profil arrivent ici (retires de la page Histoire, choix de
        Blandine). Meme composant qu avant (creation, ajout, visionneuse). */
     cid ? h("div", { style: { paddingTop: 6 } }, h(AlbumsCheval, { cible: "cavalier:" + cid, teinte: (typeof teinteHypeActive === "function" ? teinteHypeActive().principal : "#7FA3AD") })) : null,
@@ -64865,7 +64875,8 @@ function PageVideResultatsHype(props) {
     (props.peutAjouter || props.peutImporter) ? h("div", { "data-page-vide-actions": "1", style: { display: "flex", flexDirection: "column", gap: 12, margin: "26px 22px 0" } },
       props.peutAjouter ? grand([h("span", { key: "p", "aria-hidden": "true", style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 24, lineHeight: 1, color: CHAMP } }, "+"), h("span", { key: "t" }, T7("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir un resultado", "Aggiungi un risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629"))], props.onAjouter, "vAj") : null,
       props.peutImporter ? grand(h("span", null, T7("Importer mes r\u00e9sultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE\u6210\u7e3e\u3092\u53d6\u308a\u8fbc\u3080", "Meine FFE-Ergebnisse importieren", "\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0646\u062a\u0627\u0626\u062c FFE")), props.onImporter, "vImp") : null) : null,
-    props.peutImporter ? h(CarteImportHype, { onClick: props.onImporter, marge: "22px 22px 0" }) : null);
+    /* 18/10 (Blandine) : page vide -> un seul bouton d import (au-dessus) et la petite video elle-meme, pas la carte */
+    props.peutImporter ? h(VideoResultatsOfficiels, { marge: "28px 16px 0", ouverte: true, masquable: true, cle: props.cleVideo || "" }) : null);
 }
 /* 18/10 CARTE « IMPORTER TES RESULTATS FFE » (proposition 3 choisie par Blandine) : quand des resultats sont deja importes, elle
    remplace la petite video en haut des pages Resultats (cheval) et Performances (cavalier) ; elle ouvre la page d import, ou la
@@ -69854,7 +69865,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           if (!tousF.length) return h(React.Fragment, null,
             encartIdentiteCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
             ongletsPanCh("20px 16px 4px"),
-            h(PageVideResultatsHype, { nom: (chevalDyn && chevalDyn.nom) || c.nom || "", peutAjouter: !!peutSaisirResultat, onAjouter: function () { ouvrirAjoutResultat(); }, peutImporter: !!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))), onImporter: ouvrirImportFFE }));
+            h(PageVideResultatsHype, { nom: (chevalDyn && chevalDyn.nom) || c.nom || "", peutAjouter: !!peutSaisirResultat, onAjouter: function () { ouvrirAjoutResultat(); }, peutImporter: !!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))), onImporter: ouvrirImportFFE, cleVideo: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }));
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
             encartIdentiteCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c") /* (962) comme l onglet */),
@@ -70043,9 +70054,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                   nG.push(Math.max(0, rG.length - nG[0] - nG[1] - nG[2] - nG[3]));
                   return { an: anG, sorties: sortiesDe(fsG), n: nG, tot: rG.length };
                 }).filter(Boolean);
-                if (colsG.length < 2) { var bSeul = bandeauAff(); return bSeul ? h("div", { style: { margin: "0 16px 20px", padding: "14px 10px 4px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } }, bSeul) : null; }
+                if (colsG.length < 2) { var bSeul = bandeauAff(); return bSeul ? h("div", { style: { margin: "22px 16px 30px", padding: "14px 10px 4px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } }, bSeul) : null; }
                 var maxG = Math.max.apply(null, colsG.map(function (cG) { return cG.tot || 1; }));
-                return h("div", { "data-saisons-graphique": "1", style: { margin: "0 16px 20px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
+                return h("div", { "data-saisons-graphique": "1", style: { margin: "22px 16px 30px", padding: "16px 10px 10px", borderRadius: 16, background: "linear-gradient(165deg, #101D22 0%, rgba(7,10,8,0.9) 100%)", border: "1px solid rgba(243,238,228,0.08)" } },
                   bandeauAff(),
                   h("div", { style: { display: "flex", alignItems: "flex-end", justifyContent: "center", gap: colsG.length > 10 ? 4 : 8, height: 170, direction: "ltr" } },
                     colsG.map(function (cG) {
