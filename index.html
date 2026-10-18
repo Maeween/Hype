@@ -40527,6 +40527,12 @@ function EcranPerformancesCheval() {
     return function () { v = false; };
   }, [dbId]);
   var mnSt = React.useState(false); var menuOuvert = mnSt[0], setMenuOuvert = mnSt[1];
+  /* (g6) lecture d une capture de palmares (moderatrice) : outil historique partage (hypeLireCapturePalmares / hypeEnregistrerCapturePalmares) */
+  var cpE = React.useState(false); var capEnCours = cpE[0], setCapEnCours = cpE[1];
+  var cpM = React.useState(null); var capMsg = cpM[0], setCapMsg = cpM[1];
+  var cpT = React.useState(null); var capTrouves = cpT[0], setCapTrouves = cpT[1];
+  var cpO = React.useState(false); var capOuvert = cpO[0], setCapOuvert = cpO[1];
+  var refCapture = React.useRef(null);
   var edSt = React.useState(null); var ligneEdit = edSt[0], setLigneEdit = edSt[1];   /* (g6) resultat saisi a la main en cours de modification */
   var vgSt = React.useState(false); var videoGrande = vgSt[0], setVideoGrande = vgSt[1];   /* (g4) video en grand */
   var fgSt = React.useState(null); var fortGere = fgSt[0], setFortGere = fgSt[1];   /* (g3) feuille du crayon d un moment fort */   /* (g2) feuille du « ••• » */
@@ -40775,6 +40781,33 @@ function EcranPerformancesCheval() {
     try { if (navigator.share) { await navigator.share({ title: tx, text: tx, url: u }); return; } } catch (eS) { return; }
     try { await navigator.clipboard.writeText(u); annonce(T("Lien copié !", "Link copied!", "¡Enlace copiado!", "Link copiato!", "リンクをコピーしました！", "Link kopiert!", "تم نسخ الرابط!")); } catch (eC) { annonce(u); }
   }
+  function ctxCapture() { return { T: T, setImportResEnCours: setCapEnCours, setImportResMsg: setCapMsg, setImportResTrouves: setCapTrouves, chevalDyn: { nom: nomCh, dbId: dbId }, c: { nom: nomCh }, resDb: lignes || [], moi: moi }; }
+  function lireCapture(fichier) { setCapOuvert(true); hypeLireCapturePalmares(fichier, ctxCapture()); }
+  function validerCapture() {
+    hypeEnregistrerCapturePalmares({ T: T, importResTrouves: capTrouves, setImportResTrouves: setCapTrouves, setAjoutRes: function (v) { if (!v) setCapOuvert(false); }, setToast: setToast, setResDb: function () { setRelire(function (n) { return n + 1; }); }, chevalDyn: { nom: nomCh, dbId: dbId }, moi: moi });
+  }
+  function libRangCap(r) { r = String(r || ""); if (r === "1") return T("1er", "1st", "1.º", "1°", "1位", "1.", "الأول"); if (r === "classe") return T("Classé", "Placed", "Clasificado", "Classificato", "入賞", "Platziert", "مصنف"); return r ? (r + T("e", "th", ".º", "°", "位", ".", "")) : ""; }
+  var outilCapture = (estMod && dbId && typeof hypeLireCapturePalmares === "function") ? h("div", { style: { margin: "10px 18px 0", textAlign: "center" } },
+    h("input", { ref: refCapture, type: "file", accept: "image/*", style: { display: "none" }, onChange: function (eIm) { var fIm = (eIm.target && eIm.target.files && eIm.target.files[0]) || null; try { eIm.target.value = ""; } catch (eRi) { } if (fIm) lireCapture(fIm); } }),
+    h("button", { type: "button", "data-perf-capture": "1", onClick: function () { if (!capEnCours && refCapture.current) refCapture.current.click(); }, style: { minHeight: 38, padding: "0 14px", borderRadius: 999, border: "1px dashed rgba(201,166,107,0.55)", background: "transparent", color: "#E6CF9C", fontFamily: SANS, fontSize: 11.5, fontWeight: 600, cursor: "pointer" } },
+      capEnCours ? T("Lecture de la capture…", "Reading the screenshot…", "Leyendo la captura…", "Lettura della schermata…", "キャプチャを読み取り中…", "Screenshot wird gelesen…", "جار قراءة اللقطة…") : ("\u2913 " + T("Lire une capture (IFCE, Horsetelex…)", "Read a screenshot (IFCE, Horsetelex…)", "Leer una captura (IFCE, Horsetelex…)", "Leggi una schermata (IFCE, Horsetelex…)", "キャプチャを読む（IFCE、Horsetelex…）", "Screenshot lesen (IFCE, Horsetelex…)", "قراءة لقطة (IFCE، Horsetelex…)")))) : null;
+  var feuilleCapture = (capOuvert && (capEnCours || capMsg || capTrouves)) ? feuille(h(React.Fragment, null,
+    h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE, marginBottom: 10 } }, T("Lecture d'une capture", "Reading a screenshot", "Lectura de una captura", "Lettura di una schermata", "キャプチャの読み取り", "Screenshot lesen", "قراءة لقطة")),
+    capEnCours ? h("div", { style: { fontFamily: SANS, fontSize: 12.5, color: MUET, padding: "8px 0" } }, T("Lecture de la capture…", "Reading the screenshot…", "Leyendo la captura…", "Lettura della schermata…", "キャプチャを読み取り中…", "Screenshot wird gelesen…", "جار قراءة اللقطة…")) : null,
+    capMsg ? h("div", { style: { fontFamily: SANS, fontSize: 12, lineHeight: 1.5, color: "#E8A79F", padding: "8px 10px", borderRadius: 10, background: "rgba(122,59,52,0.18)", marginBottom: 10 } }, capMsg.texte) : null,
+    capTrouves ? h(React.Fragment, null,
+      h("div", { style: { fontFamily: SANS, fontSize: 11.5, color: MUET, marginBottom: 8, lineHeight: 1.5 } }, capTrouves.length + " " + T("résultat(s) trouvé(s) — vérifie puis coche ceux à ajouter.", "result(s) found — check them, then tick the ones to add.", "resultado(s) encontrado(s) — revísalos y marca los que quieras añadir.", "risultato/i trovato/i — controlla e spunta quelli da aggiungere.", "件見つかりました — 確認して追加する結果を選んでください。", "Ergebnis(se) gefunden — prüfen und die gewünschten ankreuzen.", "تم العثور على نتيجة/نتائج — تحققي ثم اختاري ما تريدين إضافته.")),
+      h("div", { style: { overflowY: "auto", flex: "1 1 auto", minHeight: 0, marginBottom: 10 } }, capTrouves.map(function (rIt, iIt) {
+        return h("label", { key: rIt.cle, style: { display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 2px", borderTop: iIt ? "1px solid rgba(243,238,228,0.07)" : "none", opacity: rIt.dejaLa ? 0.55 : 1 } },
+          h("input", { type: "checkbox", checked: !!rIt.coche, onChange: function () { setCapTrouves(function (li) { return (li || []).map(function (x, iX) { return iX === iIt ? Object.assign({}, x, { coche: !x.coche }) : x; }); }); }, style: { width: 18, height: 18, marginTop: 2, flexShrink: 0, accentColor: CHAMP } }),
+          h("div", { style: { flex: 1, minWidth: 0 } },
+            h("div", { style: { color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, wordBreak: "break-word" } }, (rIt.annee ? (rIt.annee + " \u00b7 ") : "") + rIt.event),
+            h("div", { style: { color: MUET, fontFamily: SANS, fontSize: 11.5, marginTop: 2 } }, [rIt.ds, libRangCap(rIt.rang)].filter(Boolean).join(" \u00b7 ") || "\u2014"),
+            rIt.dejaLa ? h("div", { style: { color: "#E6CF9C", fontFamily: SANS, fontSize: 10.5, marginTop: 2, fontStyle: "italic" } }, T("Déjà dans tes résultats", "Already in your results", "Ya en tus resultados", "Già nei tuoi risultati", "既に登録済み", "Bereits in deinen Ergebnissen", "موجودة بالفعل في نتائجك")) : null));
+      })),
+      h("div", { style: { display: "flex", gap: 10 } },
+        h("button", { type: "button", onClick: function () { setCapTrouves(null); setCapOuvert(false); }, style: { flex: 1, minHeight: 44, borderRadius: 12, border: "1px solid rgba(243,238,228,0.2)", background: "transparent", color: IVOIRE, fontFamily: SANS, fontSize: 13, cursor: "pointer" } }, T("Annuler l'import", "Cancel import", "Cancelar la importación", "Annulla l'importazione", "取り込みをキャンセル", "Import abbrechen", "إلغاء الاستيراد")),
+        h("button", { type: "button", "data-perf-capture-ajouter": "1", onClick: validerCapture, style: { flex: 1, minHeight: 44, borderRadius: 12, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: IVOIRE, fontFamily: SANS, fontSize: 13, fontWeight: 600, cursor: "pointer" } }, T("Ajouter", "Add", "Añadir", "Aggiungi", "追加", "Hinzufügen", "إضافة")))) : boutonFermer(function () { setCapOuvert(false); setCapMsg(null); })), function () { if (!capEnCours) { setCapOuvert(false); setCapMsg(null); } }, "fCapture") : null;
   var heroVide = !tous.length;   /* (g5) page sans resultat : la photo prend plus de place, comme l ecran 5 de la maquette */
   var hero = h("div", { style: { position: "relative", height: heroVide ? 340 : 260, overflow: "hidden", background: PETROLE } },   /* (tableau) 320 -> 260 : demande de Blandine, le hero repoussait les resultats */
     photoCh ? h("img", { src: photoCh, alt: "", decoding: "async", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", objectPosition: "center 28%" } }) : null,
@@ -40839,11 +40872,13 @@ function EcranPerformancesCheval() {
       (peutSaisir || peutImporter) ? h("div", { "data-perf-vide-actions": "1", style: { display: "flex", flexDirection: "column", gap: 12, margin: "24px 22px 0" } },
         peutSaisir ? grandBouton([h("span", { key: "p", "aria-hidden": "true", style: { fontFamily: SERIF, fontSize: 24, lineHeight: 1, color: CHAMP } }, "+"), h("span", { key: "t" }, T("Ajouter un résultat", "Add a result", "Añadir un resultado", "Aggiungi un risultato", "結果を追加", "Ergebnis hinzufügen", "إضافة نتيجة"))], function () { setAjoutOuvert(true); }, "vAj") : null,
         peutImporter ? grandBouton([premiumOk ? null : h("span", { key: "c", style: { display: "inline-flex" } }, ICO_CADENAS), h("span", { key: "t", style: { textAlign: "start" } }, h("span", { style: { display: "block" } }, T("Importer mes résultats FFE", "Import my FFE results", "Importar mis resultados FFE", "Importa i miei risultati FFE", "FFE成績を取り込む", "Meine FFE-Ergebnisse importieren", "استيراد نتائج FFE")), premiumOk ? null : h("span", { style: { display: "block", marginTop: 2, fontSize: 10.5, fontWeight: 500, color: MUET2 } }, "Premium"))], ouvrirImport, "vImp") : null) : null,
+      outilCapture,
       blocVideo,
       (estProprio && nbMasques) ? h("div", { style: { textAlign: "center", margin: "18px 18px 0" } }, h("button", { type: "button", onClick: function () { setVoirMasques(!voirMasques); }, style: { background: "none", border: "none", color: MUET2, fontFamily: SANS, fontSize: 11.5, cursor: "pointer" } }, libMasques())) : null,
       typeof FinPageHype === "function" ? h(FinPageHype, { key: "finPerfVide" }) : null,
       ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
       videoPlein,
+      feuilleCapture,
       ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
             fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
@@ -41007,6 +41042,7 @@ function EcranPerformancesCheval() {
       h("span", { "aria-hidden": "true", style: { color: CHAMP, fontSize: 20, lineHeight: 1 } }, rtl ? "‹" : "›")) : null,
     /* actions compactes */
     actionsCompactes,
+    outilCapture,
     /* toutes ses saisons : le tableau depliable */
     titreSection(T("Toutes ses saisons", "All seasons", "Todas sus temporadas", "Tutte le stagioni", "全シーズン", "Alle Saisons", "كل مواسمه")),
     h("div", { style: { display: "flex", flexWrap: "wrap", gap: "4px 12px", margin: "-4px 18px 12px" } }, LEGENDE.map(function (lg, i) {
@@ -41056,6 +41092,7 @@ function EcranPerformancesCheval() {
       boutonFermer(function () { setPickerJeton(null); })), function () { setPickerJeton(null); }, "fPick") : null,
     ajoutOuvert && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], nomDefaut: (app.profil && [app.profil.prenom, app.profil.nom].filter(Boolean).join(" ")) || "", T: T, onFermer: function () { setAjoutOuvert(false); }, onEnregistre: function () { setAjoutOuvert(false); setRelire(function (n) { return n + 1; }); annonce(T("Résultat ajouté 🏆", "Result added 🏆", "Resultado añadido 🏆", "Risultato aggiunto 🏆", "結果を追加しました 🏆", "Ergebnis hinzugefügt 🏆", "تمت إضافة النتيجة 🏆")); } }), "fAjout") : null,
     videoPlein,
+      feuilleCapture,
       ligneEdit && typeof FeuilleAjoutResultatV2 === "function" ? portail(h(FeuilleAjoutResultatV2, { cheval: chV, moi: moi, lignes: lignes || [], ligneEdition: ligneEdit, nomDefaut: "", T: T, onFermer: function () { setLigneEdit(null); }, onEnregistre: function () { setLigneEdit(null); setRelire(function (n) { return n + 1; }); annonce(T("Résultat modifié ✓", "Result updated ✓", "Resultado modificado ✓", "Risultato modificato ✓", "結果を更新しました ✓", "Ergebnis geändert ✓", "تم تعديل النتيجة ✓")); } }), "fModif") : null,
             fortGere ? feuille(h(React.Fragment, null,
         h("div", { style: { fontFamily: SERIF, fontSize: 21, fontWeight: 600, color: IVOIRE } }, rangTxt(fortGere.f.pl) + (fortGere.f.part ? " / " + fortGere.f.part : "")),
@@ -64640,6 +64677,104 @@ function FeuilleEcurieCheval(props) {
   return (typeof hypePortailBody === "function") ? hypePortailBody(voile) : voile;
 }
 
+/* 18/10 (perf g6, choix A de Blandine) : LECTURE D UNE CAPTURE DE PALMARES, sortie de l ancienne fiche (EcranCheval) pour etre
+   partagee avec la nouvelle page Performances du cheval. MEME CODE, mot pour mot : seules les variables de l ecran
+   (T, etats, chevalDyn, c, resDb, moi) arrivent maintenant par « ctx ». L ancienne fiche l appelle avec ses propres etats. */
+async function hypeLireCapturePalmares(fichier, ctx) {
+  var T = ctx.T, setImportResEnCours = ctx.setImportResEnCours, setImportResMsg = ctx.setImportResMsg, setImportResTrouves = ctx.setImportResTrouves, chevalDyn = ctx.chevalDyn, c = ctx.c, resDb = ctx.resDb, moi = ctx.moi;
+    if (!fichier) return;
+    setImportResEnCours(true); setImportResMsg(null); setImportResTrouves(null);
+    try {
+      var b64 = await new Promise(function (resoudre, rejeter) {
+        var lecteur = new FileReader();
+        lecteur.onload = function () { resoudre(String(lecteur.result || "")); };
+        lecteur.onerror = function () { rejeter(new Error("lecture")); };
+        lecteur.readAsDataURL(fichier);
+      });
+      b64 = await hypeAllegerImageB64(b64);   /* (838) */
+      var virg = b64.indexOf(",");
+      var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
+      var donnees = b64.slice(virg + 1);
+      /* 🟩 05/09 22h50 (Blandine : "il verifie pas que le cheval concerne est bien le
+         bon") — `nomCheval` s'ajoute a la demande, meme principe que l'import origines. */
+      /* 14/10 (livraison A) : la consigne de lecture est désormais écrite par le serveur (assistant.js) ; on envoie seulement l'opération et l'image. */
+      var rep = await hypeAppelIA({ operation: "lecture_palmares", langue: hypeLangueIA(), image: { type: "image", source: { type: "base64", media_type: typeImg, data: donnees } } });
+      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; } if (data && data.ok === false && hypeMessageIA(data.code)) { setImportResMsg({ ok: false, texte: hypeMessageIA(data.code) }); setImportResEnCours(false); return; }
+      var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
+      texte = String(texte || "").replace(/```json|```/g, "").trim();
+      var brut = null; try { brut = JSON.parse(texte); } catch (eP) { brut = null; }
+      /* 🟩 22h50 : repli si l'IA renvoie encore un simple tableau (ancienne forme) — on
+         continue de le lire correctement, juste sans nom a verifier dans ce cas-la. */
+      var nomVu = (brut && !Array.isArray(brut) && brut.nomCheval) ? String(brut.nomCheval).trim() : "";
+      var trouve = (brut && !Array.isArray(brut) && Array.isArray(brut.resultats)) ? brut.resultats : (Array.isArray(brut) ? brut : null);
+      if (!Array.isArray(trouve) || !trouve.length) {
+        setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.", "\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0639\u0631\u0641 \u0639\u0644\u0649 \u0623\u064a \u0646\u062a\u064a\u062c\u0629 \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629.") });
+        setImportResEnCours(false);
+        return;
+      }
+      var nomCible = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
+      if (nomVu && nomCible && !nomsHippiquesProches(nomVu, nomCible)) {
+        setImportResMsg({ ok: false, texte: T("Cette capture semble \u00eatre celle de \u00ab " + nomVu + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour ne pas m\u00e9langer les deux.", "This screenshot looks like it's about \u00ab " + nomVu + " \u00bb, but the profile open is \u00ab " + nomCible + " \u00bb. Import refused so the two don't get mixed up.", "Esta captura parece ser de \u00ab " + nomVu + " \u00bb, pero la ficha abierta es \u00ab " + nomCible + " \u00bb. Importaci\u00f3n rechazada para no mezclarlos.", "Questa schermata sembra riguardare \u00ab " + nomVu + " \u00bb, ma la scheda aperta \u00e8 \u00ab " + nomCible + " \u00bb. Importazione rifiutata per non mescolarli.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u306f\u300c" + nomVu + "\u300d\u306e\u3082\u306e\u306e\u3088\u3046\u3067\u3059\u304c\u3001\u958b\u3044\u3066\u3044\u308b\u30da\u30fc\u30b8\u306f\u300c" + nomCible + "\u300d\u3067\u3059\u3002\u6df7\u540c\u3092\u9632\u3050\u305f\u3081\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\u3002", "Dieser Screenshot scheint \u00ab " + nomVu + " \u00bb zu zeigen, aber das ge\u00f6ffnete Profil ist \u00ab " + nomCible + " \u00bb. Import abgelehnt, um beide nicht zu vermischen.", "\u064a\u0628\u062f\u0648 \u0623\u0646 \u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629 \u062a\u062e\u0635 \u00ab " + nomVu + " \u00bb\u060c \u0644\u0643\u0646 \u0627\u0644\u0635\u0641\u062d\u0629 \u0627\u0644\u0645\u0641\u062a\u0648\u062d\u0629 \u0647\u064a \u00ab " + nomCible + " \u00bb. \u062a\u0645 \u0631\u0641\u0636 \u0627\u0644\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0644\u0639\u062f\u0645 \u0627\u0644\u062e\u0644\u0637 \u0628\u064a\u0646\u0647\u0645\u0627.") });
+        setImportResEnCours(false);
+        return;
+      }
+      /* Meme detection de doublon que la saisie manuelle (03/09), sans la boite de confirmation
+         bloquante : ici on coche/decoche simplement, la case reste visible mais decochee par defaut. */
+      var normC = function (t) { try { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); } catch (eN) { return String(t || "").toLowerCase().trim(); } };
+      var monId = moi && moi.id;
+      var avecDoublon = trouve.map(function (r, iR) {
+        var evV = String((r && r.event) || "").trim();
+        var anV = String((r && r.annee) || "").trim();
+        var dejaLa = (resDb || []).some(function (rD) {
+          if (!rD || rD.user_id !== monId) return false;
+          if (normC(rD.concours) !== normC(evV)) return false;
+          if (anV && rD.annee && String(rD.annee).trim() !== anV) return false;
+          return true;
+        });
+        return { annee: anV, event: evV, ds: String((r && r.ds) || "").trim(), rang: String((r && r.rang) || ""), dejaLa: dejaLa, coche: !!evV && !dejaLa, cle: "ir" + iR };
+      }).filter(function (r) { return r.event; });
+      if (!avecDoublon.length) {
+        setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.", "\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0639\u0631\u0641 \u0639\u0644\u0649 \u0623\u064a \u0646\u062a\u064a\u062c\u0629 \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629.") });
+      } else {
+        setImportResTrouves(avecDoublon);
+      }
+    } catch (eG) {
+      setImportResMsg({ ok: false, texte: T("Lecture impossible \u2014 r\u00e9essaie.", "Could not read it \u2014 try again.", "No se pudo leer \u2014 int\u00e9ntalo de nuevo.", "Lettura impossibile \u2014 riprova.", "\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Konnte nicht gelesen werden \u2014 versuch es nochmal.", "\u062a\u0639\u0630\u0631\u062a \u0627\u0644\u0642\u0631\u0627\u0621\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629.") });
+    }
+    setImportResEnCours(false);
+  }
+async function hypeEnregistrerCapturePalmares(ctx) {
+  var T = ctx.T, importResTrouves = ctx.importResTrouves, setImportResTrouves = ctx.setImportResTrouves, setAjoutRes = ctx.setAjoutRes, setToast = ctx.setToast, setResDb = ctx.setResDb, chevalDyn = ctx.chevalDyn, moi = ctx.moi;
+    var choisis = (importResTrouves || []).filter(function (r) { return r.coche; });
+    if (!choisis.length) { setImportResTrouves(null); setAjoutRes(false); return; }
+    if (!(chevalDyn && chevalDyn.dbId) || typeof supa === "undefined" || !supa) {
+      setToast(T("Fiche non enregistr\u00e9e en base \u2014 impossible d'ajouter un r\u00e9sultat.", "Profile not saved in the database \u2014 cannot add a result.", "Ficha no guardada en la base \u2014 imposible a\u00f1adir un resultado.", "Scheda non salvata nel database \u2014 impossibile aggiungere un risultato.", "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u306b\u4fdd\u5b58\u3055\u308c\u3066\u3044\u306a\u3044\u305f\u3081\u7d50\u679c\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3002", "Profil nicht in der Datenbank gespeichert \u2014 Ergebnis kann nicht hinzugef\u00fcgt werden.", "\u0627\u0644\u0635\u0641\u062d\u0629 \u063a\u064a\u0631 \u0645\u062d\u0641\u0648\u0638\u0629 \u0641\u064a \u0642\u0627\u0639\u062f\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u2014 \u062a\u0639\u0630\u0631\u062a \u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629."));
+      return;
+    }
+    var uR = moi; if (!uR) { try { uR = await utilisateurActuel(); } catch (eU) { } }
+    if (!uR) { setToast(T("Connecte-toi pour ajouter un r\u00e9sultat.", "Sign in to add a result.", "Con\u00e9ctate para a\u00f1adir un resultado.", "Accedi per aggiungere un risultato.", "\u7d50\u679c\u3092\u8ffd\u52a0\u3059\u308b\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u304f\u3060\u3055\u3044", "Melde dich an, um ein Ergebnis hinzuzuf\u00fcgen.", "\u0633\u062c\u0644\u064a \u0627\u0644\u062f\u062e\u0648\u0644 \u0644\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629.")); return; }
+    var ajoutes = 0;
+    for (var i = 0; i < choisis.length; i++) {
+      var rEl = choisis[i];
+      var evV = (rEl.event || "").trim(); if (!evV) continue;
+      var rgV = rEl.rang === "1" ? "1\u1d49\u02b3" : rEl.rang === "2" ? "2\u1d49" : rEl.rang === "3" ? "3\u1d49" : rEl.rang === "classe" ? T("Class\u00e9", "Placed", "Clasificado", "Classificato", "\u5165\u8ce3", "Platziert", "\u0645\u0635\u0646\u0641") : "";
+      var anV = (rEl.annee || "").trim();
+      var base = { user_id: uR.id, cheval_id: chevalDyn.dbId, concours: evV, classement: rgV || null };
+      try {
+        var rR = await supa.from("resultats").insert(Object.assign({}, base, anV ? { annee: anV } : {})).select().single();
+        if (rR && rR.error && anV) rR = await supa.from("resultats").insert(base).select().single();
+        if (!(rR && rR.error)) {
+          var ligne = (rR && rR.data) || Object.assign({}, base, { created_at: new Date().toISOString() });
+          setResDb(function (av) { return [ligne].concat(av || []); });
+          ajoutes++;
+        }
+      } catch (eIns) { }
+    }
+    setImportResTrouves(null); setAjoutRes(false);
+    setToast(ajoutes ? (ajoutes + " " + T("r\u00e9sultat(s) ajout\u00e9(s) \ud83c\udfc6", "result(s) added \ud83c\udfc6", "resultado(s) a\u00f1adido(s) \ud83c\udfc6", "risultato/i aggiunto/i \ud83c\udfc6", "\u7d50\u679c\u3092\u8ffd\u52a0 \ud83c\udfc6", "Ergebnis(se) hinzugef\u00fcgt \ud83c\udfc6", "\u0646\u062a\u064a\u062c\u0629 (\u0646\u062a\u0627\u0626\u062c) \u0623\u0636\u064a\u0641\u062a \ud83c\udfc6")) : T("Enregistrement impossible pour le moment", "Could not save right now", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern derzeit nicht m\u00f6glich", "\u062a\u0639\u0630\u0631 \u0627\u0644\u062d\u0641\u0638 \u062d\u0627\u0644\u064a\u0627"));
+    setTimeout(function () { setToast(null); }, 2400);
+  }
+
 function EcranCheval() {
   function rareteIndice(v) {
     if (!(v >= 120)) return null;
@@ -65448,97 +65583,12 @@ function EcranCheval() {
       : r === "classe" ? T("Class\u00e9", "Placed", "Clasificado", "Classificato", "\u5165\u8ce3", "Platziert", "\u0645\u0635\u0646\u0641")
       : (r || "\u2014");
   }
+  /* 18/10 (perf g6) : le code vit desormais dans hypeLireCapturePalmares / hypeEnregistrerCapturePalmares (memes lignes, partagees). */
   async function importerResultatsDepuisCapture(fichier) {
-    if (!fichier) return;
-    setImportResEnCours(true); setImportResMsg(null); setImportResTrouves(null);
-    try {
-      var b64 = await new Promise(function (resoudre, rejeter) {
-        var lecteur = new FileReader();
-        lecteur.onload = function () { resoudre(String(lecteur.result || "")); };
-        lecteur.onerror = function () { rejeter(new Error("lecture")); };
-        lecteur.readAsDataURL(fichier);
-      });
-      b64 = await hypeAllegerImageB64(b64);   /* (838) */
-      var virg = b64.indexOf(",");
-      var typeImg = b64.slice(5, b64.indexOf(";")) || "image/jpeg";
-      var donnees = b64.slice(virg + 1);
-      /* 🟩 05/09 22h50 (Blandine : "il verifie pas que le cheval concerne est bien le
-         bon") — `nomCheval` s'ajoute a la demande, meme principe que l'import origines. */
-      /* 14/10 (livraison A) : la consigne de lecture est désormais écrite par le serveur (assistant.js) ; on envoie seulement l'opération et l'image. */
-      var rep = await hypeAppelIA({ operation: "lecture_palmares", langue: hypeLangueIA(), image: { type: "image", source: { type: "base64", media_type: typeImg, data: donnees } } });
-      var data = null; try { data = await rep.json(); } catch (eJ) { data = null; } if (data && data.ok === false && hypeMessageIA(data.code)) { setImportResMsg({ ok: false, texte: hypeMessageIA(data.code) }); setImportResEnCours(false); return; }
-      var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).filter(Boolean).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
-      texte = String(texte || "").replace(/```json|```/g, "").trim();
-      var brut = null; try { brut = JSON.parse(texte); } catch (eP) { brut = null; }
-      /* 🟩 22h50 : repli si l'IA renvoie encore un simple tableau (ancienne forme) — on
-         continue de le lire correctement, juste sans nom a verifier dans ce cas-la. */
-      var nomVu = (brut && !Array.isArray(brut) && brut.nomCheval) ? String(brut.nomCheval).trim() : "";
-      var trouve = (brut && !Array.isArray(brut) && Array.isArray(brut.resultats)) ? brut.resultats : (Array.isArray(brut) ? brut : null);
-      if (!Array.isArray(trouve) || !trouve.length) {
-        setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.", "\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0639\u0631\u0641 \u0639\u0644\u0649 \u0623\u064a \u0646\u062a\u064a\u062c\u0629 \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629.") });
-        setImportResEnCours(false);
-        return;
-      }
-      var nomCible = (chevalDyn && chevalDyn.nom) || (c && c.nom) || "";
-      if (nomVu && nomCible && !nomsHippiquesProches(nomVu, nomCible)) {
-        setImportResMsg({ ok: false, texte: T("Cette capture semble \u00eatre celle de \u00ab " + nomVu + " \u00bb, mais la fiche ouverte est \u00ab " + nomCible + " \u00bb. Import refus\u00e9 pour ne pas m\u00e9langer les deux.", "This screenshot looks like it's about \u00ab " + nomVu + " \u00bb, but the profile open is \u00ab " + nomCible + " \u00bb. Import refused so the two don't get mixed up.", "Esta captura parece ser de \u00ab " + nomVu + " \u00bb, pero la ficha abierta es \u00ab " + nomCible + " \u00bb. Importaci\u00f3n rechazada para no mezclarlos.", "Questa schermata sembra riguardare \u00ab " + nomVu + " \u00bb, ma la scheda aperta \u00e8 \u00ab " + nomCible + " \u00bb. Importazione rifiutata per non mescolarli.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u306f\u300c" + nomVu + "\u300d\u306e\u3082\u306e\u306e\u3088\u3046\u3067\u3059\u304c\u3001\u958b\u3044\u3066\u3044\u308b\u30da\u30fc\u30b8\u306f\u300c" + nomCible + "\u300d\u3067\u3059\u3002\u6df7\u540c\u3092\u9632\u3050\u305f\u3081\u30a4\u30f3\u30dd\u30fc\u30c8\u3092\u62d2\u5426\u3057\u307e\u3057\u305f\u3002", "Dieser Screenshot scheint \u00ab " + nomVu + " \u00bb zu zeigen, aber das ge\u00f6ffnete Profil ist \u00ab " + nomCible + " \u00bb. Import abgelehnt, um beide nicht zu vermischen.", "\u064a\u0628\u062f\u0648 \u0623\u0646 \u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629 \u062a\u062e\u0635 \u00ab " + nomVu + " \u00bb\u060c \u0644\u0643\u0646 \u0627\u0644\u0635\u0641\u062d\u0629 \u0627\u0644\u0645\u0641\u062a\u0648\u062d\u0629 \u0647\u064a \u00ab " + nomCible + " \u00bb. \u062a\u0645 \u0631\u0641\u0636 \u0627\u0644\u0627\u0633\u062a\u064a\u0631\u0627\u062f \u0644\u0639\u062f\u0645 \u0627\u0644\u062e\u0644\u0637 \u0628\u064a\u0646\u0647\u0645\u0627.") });
-        setImportResEnCours(false);
-        return;
-      }
-      /* Meme detection de doublon que la saisie manuelle (03/09), sans la boite de confirmation
-         bloquante : ici on coche/decoche simplement, la case reste visible mais decochee par defaut. */
-      var normC = function (t) { try { return String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, " ").trim(); } catch (eN) { return String(t || "").toLowerCase().trim(); } };
-      var monId = moi && moi.id;
-      var avecDoublon = trouve.map(function (r, iR) {
-        var evV = String((r && r.event) || "").trim();
-        var anV = String((r && r.annee) || "").trim();
-        var dejaLa = (resDb || []).some(function (rD) {
-          if (!rD || rD.user_id !== monId) return false;
-          if (normC(rD.concours) !== normC(evV)) return false;
-          if (anV && rD.annee && String(rD.annee).trim() !== anV) return false;
-          return true;
-        });
-        return { annee: anV, event: evV, ds: String((r && r.ds) || "").trim(), rang: String((r && r.rang) || ""), dejaLa: dejaLa, coche: !!evV && !dejaLa, cle: "ir" + iR };
-      }).filter(function (r) { return r.event; });
-      if (!avecDoublon.length) {
-        setImportResMsg({ ok: false, texte: T("Aucun r\u00e9sultat reconnu dans cette capture.", "No result recognised in this screenshot.", "No se ha reconocido ning\u00fan resultado en esta captura.", "Nessun risultato riconosciuto in questa schermata.", "\u3053\u306e\u30ad\u30e3\u30d7\u30c1\u30e3\u304b\u3089\u7d50\u679c\u3092\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002", "In diesem Screenshot wurde kein Ergebnis erkannt.", "\u0644\u0645 \u064a\u062a\u0645 \u0627\u0644\u062a\u0639\u0631\u0641 \u0639\u0644\u0649 \u0623\u064a \u0646\u062a\u064a\u062c\u0629 \u0641\u064a \u0647\u0630\u0647 \u0627\u0644\u0644\u0642\u0637\u0629.") });
-      } else {
-        setImportResTrouves(avecDoublon);
-      }
-    } catch (eG) {
-      setImportResMsg({ ok: false, texte: T("Lecture impossible \u2014 r\u00e9essaie.", "Could not read it \u2014 try again.", "No se pudo leer \u2014 int\u00e9ntalo de nuevo.", "Lettura impossibile \u2014 riprova.", "\u8aad\u307f\u53d6\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u3082\u3046\u4e00\u5ea6\u304a\u8a66\u3057\u304f\u3060\u3055\u3044\u3002", "Konnte nicht gelesen werden \u2014 versuch es nochmal.", "\u062a\u0639\u0630\u0631\u062a \u0627\u0644\u0642\u0631\u0627\u0621\u0629 \u2014 \u0623\u0639\u064a\u062f\u064a \u0627\u0644\u0645\u062d\u0627\u0648\u0644\u0629.") });
-    }
-    setImportResEnCours(false);
+    return hypeLireCapturePalmares(fichier, { T: T, setImportResEnCours: setImportResEnCours, setImportResMsg: setImportResMsg, setImportResTrouves: setImportResTrouves, chevalDyn: chevalDyn, c: c, resDb: resDb, moi: moi });
   }
   async function validerImportResultats() {
-    var choisis = (importResTrouves || []).filter(function (r) { return r.coche; });
-    if (!choisis.length) { setImportResTrouves(null); setAjoutRes(false); return; }
-    if (!(chevalDyn && chevalDyn.dbId) || typeof supa === "undefined" || !supa) {
-      setToast(T("Fiche non enregistr\u00e9e en base \u2014 impossible d'ajouter un r\u00e9sultat.", "Profile not saved in the database \u2014 cannot add a result.", "Ficha no guardada en la base \u2014 imposible a\u00f1adir un resultado.", "Scheda non salvata nel database \u2014 impossibile aggiungere un risultato.", "\u30c7\u30fc\u30bf\u30d9\u30fc\u30b9\u306b\u4fdd\u5b58\u3055\u308c\u3066\u3044\u306a\u3044\u305f\u3081\u7d50\u679c\u3092\u8ffd\u52a0\u3067\u304d\u307e\u305b\u3093\u3002", "Profil nicht in der Datenbank gespeichert \u2014 Ergebnis kann nicht hinzugef\u00fcgt werden.", "\u0627\u0644\u0635\u0641\u062d\u0629 \u063a\u064a\u0631 \u0645\u062d\u0641\u0648\u0638\u0629 \u0641\u064a \u0642\u0627\u0639\u062f\u0629 \u0627\u0644\u0628\u064a\u0627\u0646\u0627\u062a \u2014 \u062a\u0639\u0630\u0631\u062a \u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629."));
-      return;
-    }
-    var uR = moi; if (!uR) { try { uR = await utilisateurActuel(); } catch (eU) { } }
-    if (!uR) { setToast(T("Connecte-toi pour ajouter un r\u00e9sultat.", "Sign in to add a result.", "Con\u00e9ctate para a\u00f1adir un resultado.", "Accedi per aggiungere un risultato.", "\u7d50\u679c\u3092\u8ffd\u52a0\u3059\u308b\u306b\u306f\u30ed\u30b0\u30a4\u30f3\u3057\u3066\u304f\u3060\u3055\u3044", "Melde dich an, um ein Ergebnis hinzuzuf\u00fcgen.", "\u0633\u062c\u0644\u064a \u0627\u0644\u062f\u062e\u0648\u0644 \u0644\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629.")); return; }
-    var ajoutes = 0;
-    for (var i = 0; i < choisis.length; i++) {
-      var rEl = choisis[i];
-      var evV = (rEl.event || "").trim(); if (!evV) continue;
-      var rgV = rEl.rang === "1" ? "1\u1d49\u02b3" : rEl.rang === "2" ? "2\u1d49" : rEl.rang === "3" ? "3\u1d49" : rEl.rang === "classe" ? T("Class\u00e9", "Placed", "Clasificado", "Classificato", "\u5165\u8ce3", "Platziert", "\u0645\u0635\u0646\u0641") : "";
-      var anV = (rEl.annee || "").trim();
-      var base = { user_id: uR.id, cheval_id: chevalDyn.dbId, concours: evV, classement: rgV || null };
-      try {
-        var rR = await supa.from("resultats").insert(Object.assign({}, base, anV ? { annee: anV } : {})).select().single();
-        if (rR && rR.error && anV) rR = await supa.from("resultats").insert(base).select().single();
-        if (!(rR && rR.error)) {
-          var ligne = (rR && rR.data) || Object.assign({}, base, { created_at: new Date().toISOString() });
-          setResDb(function (av) { return [ligne].concat(av || []); });
-          ajoutes++;
-        }
-      } catch (eIns) { }
-    }
-    setImportResTrouves(null); setAjoutRes(false);
-    setToast(ajoutes ? (ajoutes + " " + T("r\u00e9sultat(s) ajout\u00e9(s) \ud83c\udfc6", "result(s) added \ud83c\udfc6", "resultado(s) a\u00f1adido(s) \ud83c\udfc6", "risultato/i aggiunto/i \ud83c\udfc6", "\u7d50\u679c\u3092\u8ffd\u52a0 \ud83c\udfc6", "Ergebnis(se) hinzugef\u00fcgt \ud83c\udfc6", "\u0646\u062a\u064a\u062c\u0629 (\u0646\u062a\u0627\u0626\u062c) \u0623\u0636\u064a\u0641\u062a \ud83c\udfc6")) : T("Enregistrement impossible pour le moment", "Could not save right now", "No se pudo guardar", "Salvataggio non riuscito", "\u4fdd\u5b58\u3067\u304d\u307e\u305b\u3093", "Speichern derzeit nicht m\u00f6glich", "\u062a\u0639\u0630\u0631 \u0627\u0644\u062d\u0641\u0638 \u062d\u0627\u0644\u064a\u0627"));
-    setTimeout(function () { setToast(null); }, 2400);
+    return hypeEnregistrerCapturePalmares({ T: T, importResTrouves: importResTrouves, setImportResTrouves: setImportResTrouves, setAjoutRes: setAjoutRes, setToast: setToast, setResDb: setResDb, chevalDyn: chevalDyn, moi: moi });
   }
   /* 03/09 (Blandine) : « elle doit egalement pouvoir ajouter ses resultats ».
      La saisie etait reservee a la PROPRIETAIRE du cheval, a CINQ endroits de la
