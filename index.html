@@ -40497,7 +40497,10 @@ function EcranPerformancesCheval(props) {
     return (lignes || []).map(function (r) { var loc = r && r.id && fortsLocal[r.id]; return loc ? Object.assign({}, r, { fort_force: loc.ff, fort_exclu: loc.fx }) : r; });
   }, [lignes, fortsLocal]);
   /* toutes les lignes (eliminations et abandons compris) ; la proprietaire peut afficher les lignes masquees */
-  var tous = React.useMemo(function () { return hypePerfLignes(lignesVues, voirMasques && estProprio, true); }, [lignesVues, voirMasques, estProprio]);
+  /* (g11) masquer = affichage seulement : chiffres, points et saisons comptent TOUTES les lignes ; seules les listes de resultats
+     cachent les lignes masquees (la proprietaire peut les afficher). */
+  var tous = React.useMemo(function () { return hypePerfLignes(lignesVues, true, true); }, [lignesVues]);
+  var montreMasques = !!(voirMasques && estProprio);
   var nbMasques = modeCav ? 0 : (lignes || []).filter(function (r) { return r && r.visible === false; }).length;   /* (g9) les masquages restent ceux de la page du cheval */
 
   /* ── filtre cavalier (decision D3 : il agit sur les chiffres du haut ET sur le tableau) ── */
@@ -40989,8 +40992,9 @@ function EcranPerformancesCheval(props) {
     var maxF = fams.length ? Math.max.apply(null, fams.map(function (k) { return parFam[k]; })) : 0;
     var sansP = pl.length - avecP;
     var cleF = filtres[sx.cle] || "tous"; if (cleF === "sf" && !estProprio) cleF = "tous";
-    var liste = filtrer(fs, cleF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
-    var nbF = {}; FILTRES_SEC.forEach(function (fx) { nbF[fx[0]] = filtrer(fs, fx[0]).length; });
+    var fsAff = montreMasques ? fs : fs.filter(function (f) { return !f.masque; });   /* (g11) liste affichee : sans les lignes masquees */
+    var liste = filtrer(fsAff, cleF).slice().sort(function (a, b) { return (b.d || "").localeCompare(a.d || ""); });
+    var nbF = {}; FILTRES_SEC.forEach(function (fx) { nbF[fx[0]] = filtrer(montreMasques ? fs : fs.filter(function (f) { return !f.masque; }), fx[0]).length; });
     var titreSec = function (txt, extra) { return h("div", { style: { display: "flex", alignItems: "center", gap: 8 } }, h("div", { style: { fontFamily: SERIF, fontSize: 22, fontWeight: 600, color: IVOIRE, lineHeight: 1.1 } }, txt), extra || null); };
     /* (g1) l INTERIEUR D UNE SAISON reprend l ecran 2 de la maquette (Details de la saison) : plus de chiffres repetes, titre serif,
        barres epaisses + encadre « Total saison » a droite, « Tous les resultats » avec les filtres et leurs nombres. Calculs inchanges. */
@@ -42522,7 +42526,9 @@ function EcranPerformancesChevaux() {
         if (vif) setLignesBrutes(chevs);
         try {
           var rr = await supa.from("resultats").select("cheval_id, points, date_epreuve, epreuve, concours, visible").in("cheval_id", ids.slice(0, 300)).limit(5000);
-          var lr = ((rr && !rr.error && rr.data) || []).filter(function (x) { return x && x.visible !== false; });
+          /* 18/10 (perf g11) regle de Blandine (15/10, rappelee le 18/10 : « ca empeche pas de compter les points evidemment ») :
+             masquer un resultat ne touche QUE l affichage ; ses points comptent toujours. Avant : lignes masquees retirees du classement. */
+          var lr = ((rr && !rr.error && rr.data) || []).filter(function (x) { return !!x; });
           if (vif) setResChev(lr);
         } catch (eR) { }
       } catch (eL) { if (vif) { setErreur(String((eL && eL.message) || eL)); setLignesBrutes(function (l) { return l || []; }); } }
@@ -70770,7 +70776,7 @@ async function hypeClassementTeamChevaux() {
     var chevs = (rc && rc.data) || [];
     var rr = await supa.from("resultats").select("cheval_id, points, date_epreuve, epreuve, concours, visible").in("cheval_id", ids.slice(0, 300)).limit(5000);
     if (rr && rr.error) return { classement: [], erreur: String(rr.error.message || rr.error) };
-    var lr = ((rr && rr.data) || []).filter(function (x) { return x && x.visible !== false; });
+    var lr = ((rr && rr.data) || []).filter(function (x) { return !!x; });   /* (perf g11) masquer = affichage seulement : les points des lignes masquees comptent */
     var aj = new Date();
     var ajIso = aj.getFullYear() + "-" + ("0" + (aj.getMonth() + 1)).slice(-2) + "-" + ("0" + aj.getDate()).slice(-2);
     var sCour = hypeSaisonTeam(ajIso, "poney");
