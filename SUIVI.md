@@ -13392,3 +13392,8 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Plus de rail qui défile : les cartes (6 au plus, comme avant) remplissent la ligne. Au plus 3 par ligne sur téléphone, 4 sur tablette, 6 sur ordinateur, lignes équilibrées (5 = 3 + 2, 6 = 3 + 3). 1 carte = bandeau horizontal (photo à gauche, texte à droite) ; 2 = carrés (320 px de haut au plus, jamais moins que leur contenu) ; 3 et plus = cartes verticales de la maquette, agrandies selon la place, contenu centré. Téléphone à 3 par ligne : même taille de carte qu'avant (112 × 176 environ).
 - Inchangé : informations des cartes, couleurs, toucher (ouvre la saison), aucun nouveau texte (rien à traduire), données, droits, aucun SQL. Page cavalier sur tablette / ordinateur : toujours la colonne de 480 px (l'élargissement de la page est l'étape suivante).
 - Tests : rendus locaux (faux client Supabase, données d'Evan) à 390 / 820 / 1440 px avec 1, 2, 4, 5 et 6 résultats, sans texte coupé ; node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone réel.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0240, Blandine 01:32 : « dans une même mosaïque laisse moins d'espace entre les parois mais laisse l'espace entre deux mosaïques »)
+- hypeMosaiqueActu seule touchée : espace entre les cases d'un même bloc 10 → 4 px (iPhone) et 16 → 6 px (tablette / ordinateur). Espace entre deux blocs inchangé (36 / 48 px).
+- Repart de la version en ligne 20261019-0225 (autre conversation : derniers résultats pleine largeur).
+- Tests : rendu iPhone 390 ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
