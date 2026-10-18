@@ -33518,7 +33518,7 @@ function HypeAjoutResultatCavaliere(props) {
         chevaux.map(function (c) { return h("option", { key: c.id, value: c.id }, c.nom); })),
       !chevalId ? h("input", { value: chevalNom, maxLength: 60, placeholder: T("Nom du cheval (facultatif)", "Horse name (optional)", "Nombre del caballo (opcional)", "Nome del cavallo (facoltativo)", "馬の名前（任意）", "Name des Pferdes (optional)", "اسم الحصان (اختياري)"), onChange: function (e) { setChevalNom(e.target.value); }, style: champ }) : null,
       err ? h("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontFamily: M, fontSize: 12, lineHeight: 1.5 } }, err) : null,
-      h("button", { onClick: enregistrer, disabled: occupe, style: { display: "block", width: "100%", marginTop: 22, minHeight: 48, borderRadius: 999, border: "1px solid rgba(197,170,120,0.58)", background: "rgba(5,8,11,0.72)", color: "#C5AA78", fontFamily: M, fontSize: 14, fontWeight: 800, cursor: "pointer", opacity: occupe ? 0.55 : 1 } }, occupe ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ")),
+      h("button", { onClick: enregistrer, disabled: occupe, style: { display: "block", width: "100%", marginTop: 22, minHeight: 48, borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: M, fontSize: 14, fontWeight: 800, cursor: "pointer", opacity: occupe ? 0.55 : 1 } }, occupe ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ")),
       h("div", { role: "button", onClick: props.onFermer, style: { marginTop: 14, textAlign: "center", fontFamily: M, fontSize: 12, color: "#878D8E", cursor: "pointer", textDecoration: "underline", textUnderlineOffset: 3 } }, T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء"))));
   return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal) ? ReactDOM.createPortal(contenu, document.body) : contenu;
 }
@@ -41324,9 +41324,9 @@ function EcranResultatsCavaliere() {
   /* 07/10 (694) — IMPORTER MES RESULTATS depuis la page Performances de la cavaliere (SA page seulement) : meme video
      que la fiche cheval, meme phrase, meme bouton. L import range chaque ligne sur son cheval et verifie son nom FFE. */
   var sienPerf = !!(moi && riderId && String(moi.id) === String(riderId));
-  var blocAjoutCav = (sienPerf && resDb !== null) ? h("div", { style: { margin: "22px 16px 0" } },
+  var blocAjoutCav = (sienPerf && resDb !== null) ? h("div", { style: { margin: "10px 16px 0" } },
     h("button", { "data-ajout-resultat": "performances", onClick: function () { setAjoutPerf(true); },
-      style: { display: "block", width: "100%", minHeight: 48, borderRadius: 999, border: "1px solid rgba(197,170,120,0.58)", background: "rgba(5,8,11,0.72)", color: "#C5AA78", fontFamily: "'Montserrat',sans-serif", fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
+      style: { display: "block", width: "100%", minHeight: 48, borderRadius: 999, border: "1px solid rgba(201,166,107,0.7)", background: "rgba(16,26,29,0.85)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 13.5, fontWeight: 700, cursor: "pointer" } },
       "+ " + T("Ajouter un r\u00e9sultat", "Add a result", "A\u00f1adir un resultado", "Aggiungi un risultato", "\u7d50\u679c\u3092\u8ffd\u52a0", "Ergebnis hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0646\u062a\u064a\u062c\u0629"))) : null;
   var blocImportCav = (moi && riderId && String(moi.id) === String(riderId) && resDb !== null) ? h("div", { "data-import-cavaliere": "1", style: { margin: "30px 16px 0" } },
     h("div", { style: { position: "relative", width: "100%", maxWidth: 280, margin: "0 auto", borderRadius: 16, overflow: "hidden", background: "#000", border: "1px solid rgba(255,255,255,.07)" } },
@@ -41680,11 +41680,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             })(),
             /* 18/10 : sans resultat importe, la video et le bouton d import (blocImportCav, avant en bas) ; sinon les derniers resultats puis la carte « Importer tes resultats FFE » */
             aImpF ? null : blocImportCav,
-            /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) : remontes en haut, comme sur la page Resultats du cheval */
+            /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) cartes de la maquette (112 x 176, trois par ecran) ; : remontes en haut, comme sur la page Resultats du cheval */
             recents.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 9px" } }, /* 18/10 : remonte en haut (26 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
-              h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
+              h("div", { className: "rise", style: { display: "flex", gap: 9, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
                 (function () {
                   var grpR = {}, ordreR = [];
                   recents.forEach(function (rr) {
@@ -41704,9 +41704,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
                     var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
                     return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
-                      style: { flex: "0 0 46%", height: 240, boxSizing: "border-box", overflow: "hidden", padding: "12px 13px 14px", borderRadius: 20, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      style: { flex: "0 0 112px", height: 176, boxSizing: "border-box", overflow: "hidden", padding: "9px 9px 10px", borderRadius: 16, background: "rgba(16,21,24,0.86)", border: "1px solid " + tA(0.32), boxShadow: "inset 0 1px 0 rgba(255,255,255,0.05)", display: "flex", flexDirection: "column", cursor: "pointer" } },
                       h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
-                        h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
+                        h("span", { style: { fontSize: 13, lineHeight: 1 } }, coup),
                         /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
                        repli sur la seule annee si la date est absente ou illisible. Les DEUX
                        rails identiques du fichier sont corriges : c est le meme element. */
@@ -41719,27 +41719,26 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                           txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
                         }
                       } catch (eD) { }
-                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: "#E6CF9C", letterSpacing: ".08em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
+                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 8.5, color: "#E6CF9C", letterSpacing: ".04em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
                     })()),
-                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 56, height: 56, borderRadius: "50%", objectFit: "cover", marginTop: 8, border: "1px solid " + tA(0.35) } }) : null,
-                      h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F1F6F8", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
+                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 46, height: 46, borderRadius: "50%", objectFit: "cover", marginTop: 7, border: "1px solid " + tA(0.35) } }) : null,
+                      h("div", { style: { fontSize: 10, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F3EEE4", marginTop: 6, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
                         (rangTxt ? (rangTxt + " ") : "") + (meilleur.cav_reel || meilleur.cavalier || ""),
                         (meilleur.cheval || nomChR) ? h("span", { style: { color: "#E6CF9C", fontWeight: 600 } }, " sur " + (meilleur.cheval || nomChR)) : null),
-                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#E4EAEE", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
+                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 10, fontWeight: 700, color: "#F3EEE4", marginTop: 5, lineHeight: 1.25, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
                       /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
-                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 9.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
+                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 8.5, color: "#A9B2BA", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
                       null,
                       (function () {
                         /* 21/09 (316) : une seule ligne « + N autres classees » (carte a hauteur fixe) ;
                            les noms restent dans le panneau Performances, ouvert au toucher de la carte. */
                         var nAutresF = Math.max(0, tries.length - 1);
                         if (!nAutresF) return null;
-                        return h("div", { style: { marginTop: 7, paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 9.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                        return h("div", { style: { marginTop: 5, paddingTop: 4, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 8.5, color: "#98A2AA", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
                           "+ " + nAutresF + " " + (nAutresF === 1 ? hypeT7("autre class\u00e9e", "other placed", "otra clasificada", "altra classificata", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierung", "\u0645\u0635\u0646\u0641\u0629 \u0623\u062e\u0631\u0649") : hypeT7("autres class\u00e9es", "others placed", "otras clasificadas", "altre classificate", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierungen", "\u0645\u0635\u0646\u0641\u0627\u062a \u0623\u062e\u0631\u064a\u0627\u062a")));
                       })());
                   });
                 })())) : null,
-            (aImpF && sienPerf) ? h(CarteImportHype, { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); } }) : null,
             /* — 3 · SES MOMENTS FORTS — 18/10 : mosaique de la nouvelle page (MosaiqueFortsHype) ; memes moments forts et memes droits ;
                photo = celle du cheval du resultat (page cavalier : c est bien lui), sinon la petite coupe. */
             (forts.length || (peutChoisirForts && fortsPool.length)) ? h(MosaiqueFortsHype, {
@@ -41984,6 +41983,8 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             })(),
             h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")));
         })() /* (348) : le bloc copie est une fonction A APPELER - sans ces () la page restait vide */)),
+    /* 18/10 (Blandine : « relier les deux boutons ») : en bas, « Importer tes resultats FFE » puis « + Ajouter un resultat » */
+    (sienPerf && resDb !== null && (resDb || []).some(function (rI) { return rI && rI.origine === "import"; })) ? h(CarteImportHype, { onClick: function () { try { window.HYPE_IMPORT_MULTI = false; window.HYPE_IMPORT_CAVALIERE = true; window.HYPE_CHEVAL_IMPORT = null; window.HYPE_CHEVAL_IMPORT_NOM = null; window.localStorage.removeItem("hype_cheval_import"); } catch (eIc) { } setEcran("import-resultats"); }, marge: "26px 16px 0" }) : null,
     blocAjoutCav,   /* (697) */
     /* 18/10 : blocImportCav remonte en haut de la page (voir « derniers resultats ») */
     ajoutPerf ? h(HypeAjoutResultatCavaliere, { onFermer: function () { setAjoutPerf(false); }, onAjoute: function (av) { setRechargeRes(function (n) { return n + 1; }); if (av) { try { window.alert(av === "nom" ? "R\u00e9sultat enregistr\u00e9. Il n'appara\u00eetra ici qu'une fois ton nom FFE reli\u00e9 (Mon compte \u2192 \u00ab Mes r\u00e9sultats de concours \u00bb)." : "R\u00e9sultat enregistr\u00e9, mais pas encore rattach\u00e9 \u00e0 ton compte : " + av); } catch (eAl) { } } } }) : null,
@@ -69680,11 +69681,11 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
             })(),
             /* 13/10 (1087) la petite video « resultats officiels » (retiree de la fiche) : ici, ouverte, pour la proprietaire, avec « Masquer la video » */
             (!aImpF && chevalDyn && moi && chevalDyn.ownerId === moi.id) ? h(VideoResultatsOfficiels, { marge: "26px 16px 0", ouverte: !(resDb || []).some(function (rV) { return rV && rV.origine === "import"; }) /* 18/10 Blandine : repliee s il y a deja des resultats importes, se rouvre au toucher */, masquable: true , cle: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }) : null,
-            /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) : remontes en haut, a la place de la video quand des resultats sont deja importes */
+            /* — 5 · DERNIERS RÉSULTATS — 18/10 (Blandine) cartes de la maquette (112 x 176, trois par ecran) ; : remontes en haut, a la place de la video quand des resultats sont deja importes */
             recents.length ? h(React.Fragment, null,
               h("div", { style: { display: "flex", alignItems: "center", gap: 10, margin: "26px 16px 9px" } }, /* 18/10 : remonte en haut (26 px) ; 27/08 : 24 -> 40px, davantage de respiration entre les deux blocs (demande Blandine) */
                 h("div", { style: { fontSize: 11.5, letterSpacing: ".14em", fontWeight: 700, color: OR9 } }, T("Derniers résultats", "Latest results", "Últimos resultados", "Ultimi risultati", "最新の成績", "Letzte Ergebnisse", "\u0622\u062e\u0631 \u0627\u0644\u0646\u062a\u0627\u0626\u062c").toUpperCase()), filetOr()),
-              h("div", { className: "rise", style: { display: "flex", gap: 10, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
+              h("div", { className: "rise", style: { display: "flex", gap: 9, overflowX: "auto", WebkitOverflowScrolling: "touch", padding: "2px 16px 4px" } },
                 (function () {
                   var grpR = {}, ordreR = [];
                   recents.forEach(function (rr) {
@@ -69704,9 +69705,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                     var coup = meilleur.rang === 1 ? "🏆" : meilleur.rang === 2 ? "🥈" : meilleur.rang === 3 ? "🥉" : "🎖️";
                     var rangTxt = meilleur.rang ? (String(meilleur.rang) + (meilleur.rang === 1 ? "er" : "e")) : "";
                     return h("div", { key: "dr" + iR, role: "button", onClick: function () { if (gr.an) { try { setSaisonOuv(String(gr.an)); setTimeout(function () { var eSc = document.getElementById("hype-saison-" + gr.an); if (eSc) eSc.scrollIntoView({ behavior: "smooth", block: "center" }); }, 90); } catch (eDR) { } } },
-                      style: { flex: "0 0 46%", height: 240, boxSizing: "border-box", overflow: "hidden", padding: "12px 13px 14px", borderRadius: 20, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (1077) */, border: "1px solid rgba(214,196,161,0.45)" /* (962) */, boxShadow: "none", display: "flex", flexDirection: "column", cursor: "pointer" } },
+                      style: { flex: "0 0 112px", height: 176, boxSizing: "border-box", overflow: "hidden", padding: "9px 9px 10px", borderRadius: 16, background: "linear-gradient(165deg, #111B1F 0%, #0B1215 100%)" /* (1077) */, border: "1px solid rgba(214,196,161,0.45)" /* (962) */, boxShadow: "none", display: "flex", flexDirection: "column", cursor: "pointer" } },
                       h("div", { style: { display: "flex", alignItems: "center", gap: 6, width: "100%" } },
-                        h("span", { style: { fontSize: 18, lineHeight: 1 } }, coup),
+                        h("span", { style: { fontSize: 13, lineHeight: 1 } }, coup),
                         /* 14/09 (155) : la date entiere, ecrite en clair (« 12 sept. 2026 »), avec
                        repli sur la seule annee si la date est absente ou illisible. Les DEUX
                        rails identiques du fichier sont corriges : c est le meme element. */
@@ -69719,28 +69720,26 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                           txtD = Number(mD[3]) + " " + MO[Number(mD[2]) - 1] + " " + mD[1];
                         }
                       } catch (eD) { }
-                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 9, color: "#E6CF9C", letterSpacing: ".08em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
+                      return txtD ? h("span", { style: { marginLeft: "auto", fontSize: 8.5, color: "#E6CF9C", letterSpacing: ".04em", fontFamily: "'Montserrat',sans-serif", whiteSpace: "nowrap" } }, txtD) : null;
                     })()),
-                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 56, height: 56, borderRadius: "50%", objectFit: "cover", marginTop: 8, border: "1px solid rgba(214,196,161,0.45)" /* (962) */ } }) : null,
-                      h("div", { style: { fontSize: 11.5, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F3EEE4", marginTop: 8, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
+                      photoCh ? h("img", { src: photoCh, alt: "", loading: "lazy", onError: function (eIm) { try { eIm.target.style.display = "none"; } catch (e9) { } }, style: { width: 46, height: 46, borderRadius: "50%", objectFit: "cover", marginTop: 7, border: "1px solid rgba(214,196,161,0.45)" /* (962) */ } }) : null,
+                      h("div", { style: { fontSize: 10, fontFamily: "'Montserrat',sans-serif", fontWeight: 700, color: "#F3EEE4", marginTop: 6, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } },
                         (rangTxt ? (rangTxt + " ") : "") + (meilleur.cavalier || ""),
                         nomChR ? h("span", { style: { color: "#E6CF9C", fontWeight: 600 } }, " sur " + nomChR) : null),
-                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 11, fontWeight: 700, color: "#F3EEE4", marginTop: 10, lineHeight: 1.3, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
+                      h("div", { style: { fontFamily: "'Cinzel',serif", fontSize: 10, fontWeight: 700, color: "#F3EEE4", marginTop: 5, lineHeight: 1.25, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", width: "100%" } }, gr.concours || "—"),
                       /* 21/09 (316) : epreuve et partants sur UNE ligne, coupee proprement - la carte a une hauteur FIXE. */
-                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 9.5, color: "rgba(243,238,228,0.62)", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
+                      (gr.epreuve || gr.partants) ? h("div", { style: { fontSize: 8.5, color: "rgba(243,238,228,0.62)", fontFamily: "'Montserrat',sans-serif", marginTop: 3, lineHeight: 1.35, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%" } }, [gr.epreuve || "", gr.partants ? ("/ " + gr.partants) : ""].filter(Boolean).join("  \u00b7  ")) : null,
                       null,
                       (function () {
                         /* 21/09 (316) : une seule ligne « + N autres classees » (carte a hauteur fixe) ;
                            les noms restent dans le panneau Performances, ouvert au toucher de la carte. */
                         var nAutresF = Math.max(0, tries.length - 1);
                         if (!nAutresF) return null;
-                        return h("div", { style: { marginTop: 7, paddingTop: 6, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 9.5, color: "rgba(243,238,228,0.62)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
+                        return h("div", { style: { marginTop: 5, paddingTop: 4, borderTop: "1px solid rgba(255,255,255,0.07)", fontSize: 8.5, color: "rgba(243,238,228,0.62)", fontFamily: "'Montserrat',sans-serif", lineHeight: 1.35, width: "100%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } },
                           "+ " + nAutresF + " " + (nAutresF === 1 ? hypeT7("autre class\u00e9e", "other placed", "otra clasificada", "altra classificata", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierung", "\u0645\u0635\u0646\u0641\u0629 \u0623\u062e\u0631\u0649") : hypeT7("autres class\u00e9es", "others placed", "otras clasificadas", "altre classificate", "\u4ef6\u306e\u5165\u8cde", "weitere Platzierungen", "\u0645\u0635\u0646\u0641\u0627\u062a \u0623\u062e\u0631\u064a\u0627\u062a")));
                       })());
                   });
                 })())) : null,
-            /* 18/10 : la carte « Importer tes resultats FFE » remplace la video quand des resultats sont deja importes (proprietaire ou moderatrice) */
-            (aImpF && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h(CarteImportHype, { onClick: ouvrirImportFFE }) : null,
             /* — 3 · SES MOMENTS FORTS — 18/10 : rendu de la nouvelle page Performances (MosaiqueFortsHype) ; meme choix des moments
                forts (forts, fort_force / fort_exclu), memes droits, meme feuille photo (picker), une carte ouvre toujours sa saison.
                Photo : seulement celle choisie a la main (moments_forts_medias) — plus de portrait ni de photo d album au hasard. */
@@ -70000,7 +69999,9 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
                   ? T("Les lignes masqu\u00e9es sont affich\u00e9es", "Hidden lines are shown", "L\u00edneas ocultas visibles", "Righe nascoste visibili", "\u975e\u8868\u793a\u306e\u884c\u3092\u8868\u793a\u4e2d", "Ausgeblendete Zeilen sichtbar", "\u0627\u0644\u0623\u0633\u0637\u0631 \u0627\u0644\u0645\u062e\u0641\u064a\u0629 \u0645\u0639\u0631\u0648\u0636\u0629")
                   : T("Afficher aussi les " + nMq + " lignes masqu\u00e9es", "Also show the " + nMq + " hidden lines", "Mostrar tambi\u00e9n las " + nMq + " l\u00edneas ocultas", "Mostra anche le " + nMq + " righe nascoste", nMq + " \u4ef6\u306e\u975e\u8868\u793a\u884c\u3082\u8868\u793a", "Auch die " + nMq + " ausgeblendeten Zeilen zeigen", "\u0639\u0631\u0636 \u0627\u0644\u0623\u0633\u0637\u0631 \u0627\u0644\u0645\u062e\u0641\u064a\u0629 \u0623\u064a\u0636\u0627 (" + nMq + ")")));
             })(),
-            h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")));
+            h("div", { style: { textAlign: "center", marginTop: 7, fontSize: 10.5, color: "rgba(243,238,228,0.5)" } }, nC + " " + T("r\u00e9sultats enregistr\u00e9s", "recorded results", "resultados registrados", "risultati registrati", "\u4ef6\u306e\u6210\u7e3e", "erfasste Ergebnisse", "\u0646\u062a\u0627\u0626\u062c \u0645\u062d\u0641\u0648\u0638\u0629")),
+            /* 18/10 (Blandine : « plutot en bas ») : la carte « Importer tes resultats FFE », en bas de page, quand des resultats sont deja importes (proprietaire ou moderatrice) */
+            (aImpF && chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))) ? h(CarteImportHype, { onClick: ouvrirImportFFE, marge: "26px 16px 0" }) : null);
         })(), finPageCh() /* (962) meme fin de page que Photos / Videos */))  : null,
       /* 03/09 — 🟥 CE BLOC DE STYLE EST REMONTE HORS DE L ONGLET SOUVENIRS.
          Il y vivait depuis toujours ; le 29/08 la Galerie a demenage sur
