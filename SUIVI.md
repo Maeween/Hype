@@ -13322,3 +13322,4 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Page vide : on garde la proposition 1 (en ligne), bas de page déjà présent.
 - Tests : node --check 16 blocs sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
 
+- Résultat (18/10, 22 h 33 – 22 h 45) : relais en ligne à 22 h 33 (commit 7113e9d). Stripe : customer.subscription.updated ajouté aux messages envoyés au relais ; espace « Gérer mon abonnement » : changement de formule activé entre Premium, Pack Duo et Hype IA, plus cher = différence facturée tout de suite, moins cher = à la fin de la période payée, nombre d'exemplaires NON modifiable (Stripe l'ouvrait par défaut, refermé). Annulation : inchangée (à la fin de la période).
