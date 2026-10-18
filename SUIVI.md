@@ -13222,3 +13222,14 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Changement : window.open(…, "_blank") puis w.opener = null (même protection que noopener), et on ne quitte Hype QUE si la fenêtre n'a vraiment pas pu s'ouvrir.
 - Inchangé : les liens eux-mêmes, montants, Stripe, verrou de renonciation à la rétractation, achats Apple (endormis), bouton de paiement Premium (déjà correct).
 - Tests (Chromium, vraie fonction) : avant → nouvelle fenêtre + Hype quittée ; après → nouvelle fenêtre, Hype reste, fenêtre détachée de Hype (opener null) ; fenêtre bloquée → Hype va sur le lien (repli conservé). Don Crystal idem. node --check 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone et app installée.
+
+## 18/10/2026 — « Tu as déjà un abonnement ? » sur tout ce qui demande un abonnement (marqueur 20261018-1745)
+- Demande de Blandine : sur tout ce qui nécessite un abonnement, détecter d'abord si la personne est connectée et, sinon, lui proposer de se connecter. Origine : Dominique (Duo payé), déconnecté, ne voyait que « abonne-toi ».
+- Nouveau composant BandeauDejaAbonne (index.html), posé à 3 endroits par où passent tous les verrous : la page Premium (les 44 boutons « Premium » de l'appli y mènent), l'écran « Premium requis » des Galops 2-7 (avant le bouton Premium), la fenêtre « Épingler ce conseil » de Hey Baby.
+  · pas connecté → « Tu as déjà un abonnement ? Connecte-toi : ton accès revient tout seul. Ne repaie pas. » + bouton « Me connecter » (écran de connexion, mode connexion) ;
+  · connecté sans Premium visible → lien « Déjà abonné ? Vérifier mon abonnement » : relit l'abonnement en base ; si rien après 3,5 s → « Aucun abonnement trouvé pour <adresse>. Si tu as payé avec une autre adresse, déconnecte-toi et reconnecte-toi avec celle-là. » ;
+  · Premium → rien.
+- 7 langues, tutoiement (arabe au féminin comme le reste de l'appli). iPhone, tablette et ordinateur : même bandeau, centré, 360 px max.
+- Inchangé : les verrous eux-mêmes (aucun accès donné par le bandeau), la page Premium, Stripe, les tarifs. L'ancienne page Premium (visible seulement des modératrices) n'a pas le bandeau.
+- Après connexion, la personne arrive sur l'accueil (pas de retour automatique sur l'écran verrouillé).
+- Tests (vrai composant, vrai React de l'appli, Chromium 390 px) : pas connecté → bandeau + bouton vers la connexion ; connecté sans Premium → lien, « Vérification… », relecture demandée, puis message avec l'adresse ; Premium → rien ; arabe (droite à gauche) et japonais OK ; aucune erreur. node --check 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur l'iPhone de Blandine (place du bandeau en haut de la page Premium V3).
