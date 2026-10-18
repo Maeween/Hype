@@ -13397,3 +13397,9 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - hypeMosaiqueActu seule touchée : espace entre les cases d'un même bloc 10 → 4 px (iPhone) et 16 → 6 px (tablette / ordinateur). Espace entre deux blocs inchangé (36 / 48 px).
 - Repart de la version en ligne 20261019-0225 (autre conversation : derniers résultats pleine largeur).
 - Tests : rendu iPhone 390 ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0250, Blandine 01:37 « oui plus courte » puis 01:38 « on peut faire 1 et 2 ? ») : mosaïques plus courtes sur ordinateur, jamais de case seule, tailles réparties
+- hypeMosaiqueActu seule touchée.
+- Ordinateur (5 colonnes) : une mosaïque = 2 rangées (1 grande case + 6 petites) au lieu de 3. iPhone (6) et tablette (9) inchangés.
+- (1) + (2) : les tailles des mosaïques sont choisies au plus près de la taille voulue et à peu près égales entre elles ; la dernière rangée de chaque mosaïque a 0 ou au moins 2 cases, et sa dernière case s'élargit pour remplir la rangée (plus de trou, plus de case seule). Exemples iPhone : 13 cases → 8 + 5 ; 17 → 6 + 6 + 5. Ordinateur : 13 → 9 + 4 ; 19 → 10 + 9. Une mosaïque sans grande case seulement quand il n'y a pas d'autre solution.
+- Tests : rendus 390 / 820 / 1280 ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
