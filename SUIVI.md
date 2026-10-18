@@ -13100,3 +13100,22 @@ le sens droite-gauche, même méthode que l'arabe de Linguae.
 - Tests (répliques des blocs avec le vrai code) : encart en FR et AR sur iPhone, AR et JA sur Android (bouton Installer) : textes, boutons, fermeture au clavier, mémorisation « déjà vu », croix sans chevauchement ; fenêtre Crystal en FR, AR, JA : titre, Tab qui boucle, Échap, retour du focus, Annuler, toucher le fond, montant qui ouvre le bon lien, pas de double fenêtre ; message de confirmation affiché dans les 7 langues. node --check des 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur l'iPhone de Blandine, VoiceOver réel.
 - Conséquence de la publication groupée : si un souci apparaît, il faudra voir lequel des trois blocs est en cause.
 - Publié sur a2f0b50 (étape 2). L'autre conversation n'avait toujours rien publié.
+
+## 18/10/2026 — Premium : l'appli ne garde plus une formule que la base n'a pas (marqueur 20261018-1700)
+- Trouvé pendant l'examen des droits après paiement (lecture seule, 18/10). Quand la base répondait « aucun abonnement pour ce compte », l'appli gardait la formule mémorisée sur le téléphone. Conséquences : Premium retiré à la main toujours affiché ; Premium obtenu en modifiant la mémoire du navigateur.
+- Changement (index.html, lecture de l'abonnement dans HypeApp) : aucune ligne en base = plus de formule ; panne ou refus de la base = on ne change rien (pas de cadenas sur une coupure). À la déconnexion, le Premium Famille est aussi remis à zéro (il restait pour le compte suivant tant que la base n'avait pas répondu).
+- Inchangé : Premium Famille (lu à part), ambassadeurs, Evan et Liam (accès complet), relais Stripe, base, tarifs, verrous des écrans.
+- Conséquence possible : juste après l'ouverture, si la connexion n'est pas encore prête, un cadenas peut apparaître un instant puis disparaître à la relecture suivante.
+- Tests (vraie fonction, base simulée) : formule mémorisée « mensuel » puis — aucune ligne → retirée ; panne → gardée ; réponse vide → gardée ; Duo valable → duo ; expirée → retirée ; annulée → retirée ; IA seule → ai ; sans date de fin → annuel. node --check 16 blocs : aucune erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : sur l'iPhone de Blandine.
+- Publié le 18/10 vers 16 h 55 sur l accord de Blandine (« Ok continue »).
+
+### Constats de l'examen des droits (18/10), sans modification
+- Relais Stripe : formules reconnues par lien et prix ; dons sans droit ; paiements_a_verifier vide. Dominique Wirtschafter : Duo payé (prélèvement du 14/10), actif jusqu'au 16/11, rien à faire en base ; son « il me demande de m'inscrire » = très probablement pas connecté dans l'autre espace (app de l'écran d'accueil ≠ Safari).
+- Accès sans date de fin, voulus (confirmé par Blandine) : Evan, Liam, Malicia (Duo), Mégane rizeamegane@gmail.com (Crystal).
+- À DÉCIDER par Blandine : abonné Premium qui achète en plus Hype IA (aujourd'hui : alerte, pas de questions IA en plus) ; changement de formule dans Stripe (aujourd'hui : alerte, formule non changée).
+- La colonne « source » (achats Apple) n'existe pas dans abonnements_premium : sans effet tant qu'Apple n'est pas branché.
+- Fonctions Premium (Galops 2-7, santé, import FFE, nombre de chevaux) : verrous seulement dans l'appli, la base ne revérifie pas. Chantier à part.
+
+### À FAIRE PLUS TARD (décision de Blandine le 18/10 : « on verra ça plus tard »)
+- Limite d'appareils par compte : la fonction hype_signaler_appareil plante pour tout le monde (« column reference appareil is ambiguous ») → table hype_appareils vide, AUCUNE limite appliquée aujourd'hui. Blandine hésite entre garder 3 et passer à 5. ⚠️ La réparer active la limite d'un coup : prévenir avant.
+- Au changement de compte sur un téléphone, la purge efface aussi hype_appareil_id (le téléphone compte alors pour un nouvel appareil). À corriger en même temps.
