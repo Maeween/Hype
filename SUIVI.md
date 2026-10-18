@@ -13381,3 +13381,7 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - hypeMosaiqueActu seule touchée (pages Actualité du cheval et du cavalier) : la grille est découpée en blocs de 3 rangées (iPhone : 1 grande case + 5 petites ; tablette 9 cases ; ordinateur 12), les blocs se suivent avec un petit espace (14 px iPhone, 22 px grand écran). Dans chaque bloc, la 1re photo parmi les 3 premières cases est la grande ; elle est à gauche dans un bloc, à droite dans le suivant. Tous les blocs restent visibles (pas de « Voir tout »).
 - Repart de la version en ligne 20261019-0145 (page Écurie de l'autre conversation), marqueur 0205.
 - Tests : rendus 390 / 820 / 1280, page pleine et vide ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0215, Blandine 01:05 : « les blocs sont beaucoup trop collés l'un à l'autre, espace-moi tout ça ») : mosaïque aérée
+- hypeMosaiqueActu seule touchée : espace entre les cases 3 → 10 px (iPhone) et 6 → 16 px (tablette / ordinateur) ; espace entre les blocs 14 → 36 px et 22 → 48 px ; coins des cases 6 → 12 px ; la grille ne déborde plus sur les marges (alignée sur le reste de la page).
+- Tests : rendu iPhone 390 ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
