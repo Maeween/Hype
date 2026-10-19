@@ -13440,3 +13440,9 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Nouveaux textes dans les 7 langues (tutoiement).
 - Tests (faux client Supabase) : 7, 13, 19 et 537 photos à 390 et 1440 px ; 5 colonnes vérifiées sur 7 photos ; filtre sur un cheval, « Sans cheval », bouton « +18 » (23 → 41 vignettes) ; visiteur sans « Nouvel album » ni propositions ; arabe (miroir, filtres) ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
 - Restant connu : les dates sous les photos sont écrites en français dans toutes les langues (fonction dateCourte d'avant) ; harmonisation du bloc Albums (titre « ALBUMS », ✓ bleuté) à faire via une option propre à cette page.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0415, « Ok continue » de Blandine 02:02) : page Photos du cavalier — bloc Albums harmonisé, dates traduites
+- Bloc Albums de la page Photos du cavalier : teinte champagne #C9A66B (avant : teinte de l'appli, bleutée) et nouvelle option habillageHype d'AlbumsCheval, passée UNIQUEMENT par cette page : titre « Albums » en Cormorant ivoire 24 / 26 / 28 px (comme les autres sections), sans losange ; boutons ✓ des propositions en contour champagne au lieu du dégradé bleu clair. Légende « ★ = à la une (3 max) », étoiles, compteur et fonctions inchangés. Autres pages utilisant AlbumsCheval inchangées (option absente).
+- Dates sous les photos dans la langue de l'appli (Intl, 7 langues) au lieu du français partout.
+- Tests : rendu local 390 et 1440 px en français, arabe et japonais ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+- En attente d'accord explicite (SQL) : correction de hype_peut_creer_album pour réserver les albums « cavalier:<id> » au cavalier lui-même et à la modération.
