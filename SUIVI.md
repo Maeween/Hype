@@ -13571,3 +13571,9 @@ Blandine : « Ok continue » (22:13), captures validées, « Ok vas-y » (22:32)
 - Nouveau hypeVideoLecteur(u, ancien) : une vidéo Mux dans une carte de publication (tous les fils, l'Actualité en liste, la publication ouverte depuis la mosaïque) ou dans un commentaire (SectionCommentaires) est lue par <mux-player> (qualité adaptative, plein écran, sans lecture automatique, préchargement léger) ; les anciennes vidéos stockées directement et les aperçus avant envoi gardent l'ancien lecteur. Retour automatique à l'ancien lecteur si Mux ne se charge pas.
 - Non changés volontairement : les vidéos d'ambiance (fichiers du dépôt en boucle, sans son), la grille d'administration de l'écurie (EcranGererEcurie, cases carrées).
 - Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; test à 390 et 1440 px : vidéo Mux ouverte depuis la mosaïque → lecteur Mux demandé, retour à l'ancien lecteur hors ligne, aucune erreur.
+
+## 19/10/2026 (soir, 23 h 50) — VIDÉO OUVERTE DEPUIS LA MOSAÏQUE : passage par la grande visionneuse (build 20261019-2350)
+- Blandine 23:19–23:20 : depuis une vidéo de la mosaïque, le bouton plein écran « marche au début mais pas ensuite ».
+- Dans la publication ouverte depuis la mosaïque (Actualité, mode Mosaïque), une vidéo est maintenant une image (miniature Mux) avec un bouton lecture ; la toucher ouvre la grande visionneuse (PhotoZoomHype + lecteur Mux), celle où le plein écran a été validé par Blandine. Fils et mode Liste : inchangés (lecteur Mux dans la carte).
+- Ordinateur (Actualité du cheval) : la grande visionneuse passe hors page comme la publication ouverte, pour s'afficher par-dessus elle et par-dessus le menu.
+- Vérifications : 16 blocs <script> OK ; test à 390 et 1440 px : bouton lecture présent, visionneuse au premier plan, aucune erreur.
