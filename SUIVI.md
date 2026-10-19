@@ -13461,3 +13461,8 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - hypeMosaiqueActu seule touchée : chaque mosaïque est entourée d'un fin liseré doré (rgba(201,166,107,0.85)), coins arrondis (18 px iPhone, 22 px grand écran), petite marge intérieure (6 / 10 px) et fond bleu pétrole dedans (dégradé). Pages Actualité du cheval et du cavalier.
 - Repart de la version en ligne 20261019-0425 (autre conversation : Sans faute en toutes lettres, cartes Derniers résultats). La version A (bleu pétrole seul) n'a jamais été publiée.
 - Tests : rendus 390 et 1280 des deux pages ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 19/10/2026 (nuit) — PUBLICATION (marqueur 20261019-0450, Blandine 02:16 « ok continue, il y a bien la fin de page habituelle ? »)
+- La page Actualité du CHEVAL n'avait pas le bandeau de fin « HYPE » (paysage fondu + filets champagne) ; celle du cavalier l'avait déjà. Ajout de finPageCh() après le fil (EcranCheval, panneau « actualite »), page pleine comme vide. Rien d'autre touché.
+- Repart de la version en ligne 20261019-0440.
+- Tests : rendus 390 et 1280, page pleine et vide ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
