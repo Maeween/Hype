@@ -13487,3 +13487,9 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - Les trois filtres se combinent ; « Tout afficher » les remet tous à zéro ; chaque choix remet l'affichage à 18 et remonte en haut de la galerie. Aucune déduction, aucune écriture, aucune règle de base changée.
 - Tests (faux client Supabase, 537 photos) : listes Année (2026/2025/2024/2023/2021 + Sans date, la source « album » bien exclue) et Cavalier (Evan, Liam + Non identifiées) ; année seule à 1440 px, année + cavalier, « Sans date » à 390 px ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
 - Proposé, non fait (accord à demander) : sélection multiple pour dater / identifier plusieurs photos d'un coup ; relance de l'outil de reprise des dates (#dates-photos) sans repli sur la date d'album ; resserrer deux règles (l'auteur d'une identification peut lui-même la passer « acceptée » ; n'importe quel compte peut dater une photo non datée).
+
+## 19/10/2026 (matin) — PUBLICATION (marqueur 20261019-0905, « Ok continue » de Blandine 08:59) : vérification de la tournée « fin de page »
+- Classement : vérifié en rendu, le bandeau HYPE s'affiche bien en bas.
+- Stats : c'est la page de progression des Galops (cours terminés, moyenne des quiz, série, avatars de galop) → retirée de la liste ECRANS_FIN_PAGE, comme le reste de la partie Galops (consigne du 02:17).
+- Repart de la version en ligne 20261019-0530 (autre conversation : filtres Photos du cavalier).
+- Tests : node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
