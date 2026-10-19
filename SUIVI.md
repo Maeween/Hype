@@ -13577,3 +13577,8 @@ Blandine : « Ok continue » (22:13), captures validées, « Ok vas-y » (22:32)
 - Dans la publication ouverte depuis la mosaïque (Actualité, mode Mosaïque), une vidéo est maintenant une image (miniature Mux) avec un bouton lecture ; la toucher ouvre la grande visionneuse (PhotoZoomHype + lecteur Mux), celle où le plein écran a été validé par Blandine. Fils et mode Liste : inchangés (lecteur Mux dans la carte).
 - Ordinateur (Actualité du cheval) : la grande visionneuse passe hors page comme la publication ouverte, pour s'afficher par-dessus elle et par-dessus le menu.
 - Vérifications : 16 blocs <script> OK ; test à 390 et 1440 px : bouton lecture présent, visionneuse au premier plan, aucune erreur.
+
+## 20/10/2026 (minuit) — VIDÉOS : vrai bouton « Plein écran » sous chaque vidéo Mux (build 20261020-0000)
+- Blandine 23:22 : « quand je veux cliquer sur les flèches pour agrandir, il croit que je veux le mettre sur pause » (le bouton plein écran du lecteur Mux est trop petit sur iPhone, le doigt touche la vidéo).
+- Sous chaque vidéo lue par le lecteur Mux (visionneuse, cartes de publication, commentaires) : un bouton « Plein écran » large (46 px de haut), traduit dans les 7 langues, qui passe la vidéo elle-même en plein écran (webkitEnterFullscreen sur iPhone, sinon plein écran du navigateur). La lecture continue.
+- Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; test (lecteur simulé, 390 px, toucher) : le bouton appelle bien le plein écran d'iPhone, aucune erreur.
