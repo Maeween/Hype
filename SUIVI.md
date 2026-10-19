@@ -13557,3 +13557,10 @@ Blandine : « Ok continue » (22:13), captures validées, « Ok vas-y » (22:32)
 
 ## 19/10/2026 (soir) — AUDIT en lecture seule : pages Performances du cavalier et Résultats du cheval sur tablette et ordinateur (aucune modification)
 - Constat : plus de colonne de 480 px (cavalier : 820 / 814 / 1 230 px ; cheval : ~1 000 px). Restent étirés sur ordinateur : graphique et années « Par saison », points de qualification, carte d'import, bouton « Ajouter ». Défauts : chevauchement de texte sur iPhone dans les cartes « Derniers résultats » marquées « + 1 autre classée » (RailDerniersHype, composant partagé) ; rangée des 20 cavaliers de la page cheval coupée à droite sur ordinateur (pas de défilement à la souris) ; ordre des mots cassé en arabe dans les cartes. Page cheval : bloc points caché quand le cheval n'a aucun point (question posée à Blandine). Décisions en attente.
+
+## 19/10/2026 (soir, 23 h 30) — VIDÉOS : lecteur officiel Mux pour TOUT LE MONDE dans la visionneuse (build 20261019-2330)
+- Test validé par Blandine (23:04 « la qualité est 100 fois meilleure », 23:06 plein écran iPhone « nickel »). Le test réservé à son compte est retiré : toute vidéo Mux ouverte dans la visionneuse (PhotoZoomHype) est lue par <mux-player> 3.13.0 (qualité adaptative, plein écran du lecteur), pour tous les comptes. Retour automatique à l'ancien lecteur si Mux ne se charge pas (erreur ou 8 s).
+- L'étiquette « Test lecteur Mux » est retirée (« elle gêne »).
+- Repris sur la version en ligne de l'autre conversation (631eb22, marqueur 20261019-2320) : seules les deux lignes du lecteur changent.
+- Pas encore concernés : les vidéos lues directement dans les cartes de publication et les autres petits lecteurs intégrés ; les vidéos d'ambiance des pages (fichiers du dépôt, en boucle et sans son, pas sur Mux).
+- Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; test hors ligne : chargement du lecteur demandé pour tout compte, retour à l'ancien lecteur quand il est bloqué, aucune erreur.
