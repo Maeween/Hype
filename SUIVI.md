@@ -13466,3 +13466,8 @@ Accord de Blandine (17 h 52) : « Fais tout l'ensemble et dis-moi quand tout est
 - La page Actualité du CHEVAL n'avait pas le bandeau de fin « HYPE » (paysage fondu + filets champagne) ; celle du cavalier l'avait déjà. Ajout de finPageCh() après le fil (EcranCheval, panneau « actualite »), page pleine comme vide. Rien d'autre touché.
 - Repart de la version en ligne 20261019-0440.
 - Tests : rendus 390 et 1280, page pleine et vide ; node --check 16 blocs ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 19/10/2026 (nuit) — BASE (passé par Claude, accord de Blandine 02:17 « Tu peux la passer oui ») : albums du profil cavalier protégés
+- hype_peut_creer_album : une cible « cavalier:<id> » n'est autorisée qu'au cavalier lui-même et à la modération (avant : autorisée à tout compte connecté). Cibles « cheval: » et « ecurie: » inchangées. Fichier : sql/build_albums_cavalier.sql.
+- Vérifié avant : 9 albums « cavalier: » en base, tous créés par leur propriétaire (aucune donnée touchée). Vérifié après (transaction annulée) : autre compte sur le profil de Blandine → refusé ; un compte sur son propre profil → autorisé ; album d'écurie → autorisé comme avant.
+- Ce fichier SUIVI et sql/build_albums_cavalier.sql partent avec la prochaine publication d'index.html (jamais seuls).
