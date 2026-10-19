@@ -13604,3 +13604,9 @@ Blandine : « Ok continue » (22:13), captures validées, « Ok vas-y » (22:32)
 - Réponses de Blandine sur l'audit : 1 bloc Points d'un cheval sans point → reste caché ; 3 position du drapeau → abandonné.
 - Repart de la version en ligne 20261020-0010. Aucun SQL.
 - Tests : rendus 390 / 1440 (hero Photos du cheval, mosaïque Actualité d'Evan, 6 cartes à 1440 et 3 + 3 à 1024) ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone réel.
+
+## 20/10/2026 (nuit) — PHOTOS : vignettes plus nettes sur tablette / ordinateur + mémoire longue des nouveaux envois (Blandine « Ok continue » 23:39) (build 20261020-0050)
+- vignetteHype / vignetteHypeContain : les tailles demandées (choisies pour l'iPhone) sont multipliées par 1,3 sur tablette (≥ 768 px) et 1,6 sur ordinateur (≥ 1024 px), toujours plafonnées à 1600 px. Concerne albums, grilles, souvenirs, cartes et grandes images de page. iPhone : strictement inchangé (vérifié : mêmes largeurs demandées qu'avant à 390 px). Exemple vérifié à 1440 px : une vignette de groupe passe de 420 à 672 px (écran normal) et de 840 à 1344 px (Retina).
+- Nouveaux envois dans le compartiment « photos » (envoyerPhoto, envoi du recadrage, couverture choisie) : cacheControl 31536000 (1 an) au lieu de 3600 (1 h). Les noms de fichiers sont uniques et jamais réécrits, donc aucun risque d'ancienne image affichée. Photos déjà en ligne : inchangées (elles gardent 1 h).
+- Repris sur la version en ligne de l'autre conversation (7b7fb00, marqueur 20261020-0040).
+- Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; tailles demandées testées à 390 px (3x) et 1440 px (1x, 2x), aucune erreur.
