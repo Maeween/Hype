@@ -13611,7 +13611,7 @@ Blandine : « Ok continue » (22:13), captures validées, « Ok vas-y » (22:32)
 - Repris sur la version en ligne de l'autre conversation (7b7fb00, marqueur 20261020-0040).
 - Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; tailles demandées testées à 390 px (3x) et 1440 px (1x, 2x), aucune erreur.
 
-## 20/10/2026 (nuit, 00 h 50) — PUBLICATION (marqueur 20261020-0050, Blandine 23:38 « Oui sur les autres aussi ») : hero des pages cavalier sur tous les onglets d'un cheval
+## 20/10/2026 (nuit, 00 h 50) — PUBLICATION (marqueur 20261020-0055 — d'abord publié par erreur avec le même marqueur 0050 que l'autre conversation, corrigé tout de suite —, Blandine 23:38 « Oui sur les autres aussi ») : hero des pages cavalier sur tous les onglets d'un cheval
 - Après la page Photos (20261020-0040), les onglets Vidéos, Résultats (page normale et page technique), Histoire et Actualité de la fiche cheval utilisent aussi hypeHeroSousPageCavalier (via heroSousPageCh) : photo du cheval (photo_palmares, sinon sa photo ; Actualité : photo par défaut si le cheval n'en a pas), fondue à gauche et en haut / bas, petit titre champagne, nom en Cormorant. La fiche garde sa flèche, Partager et le drapeau (sansRetour). encartIdentiteCh n'est plus appelé (gardé dans le code).
-- Repart de la version en ligne 20261020-0040. Aucun SQL.
+- Repart de la version en ligne 20261020-0050 (autre conversation : vignettes plus nettes). Aucun SQL.
 - Tests : hero présent sur les 4 onglets à 390 et 1440 ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : Safari sur iPhone réel.
