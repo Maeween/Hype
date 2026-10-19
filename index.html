@@ -68473,6 +68473,11 @@ function EcranCheval() {
           T("Partage les moments importants, les belles victoires, les petites victoires et le quotidien de {nom}.", "Share the important moments, the big wins, the small victories and the everyday life of {nom}.", "Comparte los momentos importantes, las grandes victorias, las peque\u00f1as victorias y el d\u00eda a d\u00eda de {nom}.", "Condividi i momenti importanti, le belle vittorie, le piccole vittorie e la quotidianit\u00e0 di {nom}.", "{nom}\u306e\u5927\u5207\u306a\u77ac\u9593\u3001\u8f1d\u304b\u3057\u3044\u52dd\u5229\u3001\u5c0f\u3055\u306a\u52dd\u5229\u3001\u305d\u3057\u3066\u65e5\u3005\u306e\u66ae\u3089\u3057\u3092\u30b7\u30a7\u30a2\u3057\u3088\u3046\u3002", "Teile die wichtigen Momente, die gro\u00dfen Siege, die kleinen Erfolge und den Alltag von {nom}.", "\u0634\u0627\u0631\u0643\u064a \u0627\u0644\u0644\u062d\u0638\u0627\u062a \u0627\u0644\u0645\u0647\u0645\u0629 \u0648\u0627\u0644\u0627\u0646\u062a\u0635\u0627\u0631\u0627\u062a \u0627\u0644\u0643\u0628\u064a\u0631\u0629 \u0648\u0627\u0644\u0635\u063a\u064a\u0631\u0629 \u0648\u0627\u0644\u062d\u064a\u0627\u0629 \u0627\u0644\u064a\u0648\u0645\u064a\u0629 \u0644\u0640{nom}.").split("{nom}").join(nomA)),
         boutonA));
   }
+  /* 19/10 (soir) Blandine : « Oui sur les autres aussi » - le hero des sous-pages d un cavalier sur TOUS les onglets du cheval
+     (Photos, Videos, Resultats, Histoire, Actualite), avec la photo du cheval ; la fiche garde sa fleche, Partager et le drapeau. */
+  function heroSousPageCh(titrePage, secoursPhoto) {
+    return hypeHeroSousPageCavalier({ large: largeCh, ordi: menuCh, sansRetour: true, libelle: titrePage, nom: String(c.nom || ""), photo: (chevalDyn && chevalDyn.photo_palmares) || photoCh || secoursPhoto || "" });
+  }
   function encartIdentiteCh(titrePage, secoursPhoto) {   /* (1142) secoursPhoto : photo si le cheval n en a pas (page Actualite) */
     var photoPalmId = (chevalDyn && chevalDyn.photo_palmares) || photoCh || secoursPhoto || "";
     var rtlE = false; try { rtlE = document.documentElement.dir === "rtl"; } catch (eR) { }
@@ -70804,7 +70809,7 @@ panneau === "flots" ? h("div", { style: { padding: "8px 16px 0" } },
         h("button", { className: "addbtn", onClick: bientot }, "+ " + T("Ajouter un flot", "Add a rosette", "Añadir escarapela", "Aggiungi coccarda", "ロゼットを追加", "Einen Flot hinzufügen", "\u0625\u0636\u0627\u0641\u0629 \u0634\u0627\u0631\u0629"))) : null,
       panneau === "videos" ? h("div", null,
         feuilleComVidCh() /* 19/10 (soir) : feuille des commentaires d une video */,
-        encartIdentiteCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a")),
+        heroSousPageCh(T("Vid\u00e9os", "Videos", "V\u00eddeos", "Video", "\u52d5\u753b", "Videos", "\u0627\u0644\u0641\u064a\u062f\u064a\u0648\u0647\u0627\u062a")),
         /* (894) Blandine : la deuxieme barre grise, comme sur la page Photos, entre la carte du cheval et « Videos » */
         null /* (978) barre grise retiree : design de la page Sante */,
         ongletsPanCh(),
@@ -71442,12 +71447,12 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
           }
           /* 18/10 : cheval sans aucun resultat -> la page vide de la maquette (plus de chiffres a zero ni de video seule) */
           if (!tousF.length) return h(React.Fragment, null,
-            encartIdentiteCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
+            heroSousPageCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c")),
             ongletsPanCh("20px 16px 4px"),
             h(PageVideResultatsHype, { nom: (chevalDyn && chevalDyn.nom) || c.nom || "", peutAjouter: !!peutSaisirResultat, onAjouter: function () { ouvrirAjoutResultat(); }, peutImporter: !!(chevalDyn && moi && (chevalDyn.ownerId === moi.id || estModerateurHype(moi))), onImporter: ouvrirImportFFE, cleVideo: "hype_perf_video_masquee_" + ((moi && moi.id) || "") }));
           return h(React.Fragment, null,
             /* — 1 · IDENTITÉ — (encart commun, voir encartIdentiteCh) */
-            encartIdentiteCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c") /* (962) comme l onglet */),
+            heroSousPageCh(T("R\u00e9sultats", "Results", "Resultados", "Risultati", "\u7d50\u679c", "Ergebnisse", "\u0627\u0644\u0646\u062a\u0627\u0626\u062c") /* (962) comme l onglet */),
             ongletsPanCh("20px 16px 4px"),
             /* — 2 · LE BANDEAU DES QUATRE CHIFFRES — */
             /* 🟩 06/09 (Blandine : espace un peu plus tout ca) */ h("div", { style: { display: "flex", margin: "18px 16px 0", padding: "15px 6px 14px", borderRadius: 14, background: "rgba(255,255,255,0.028)", border: "1px solid rgba(214,196,161,0.45)" /* (962) */ } },
@@ -71819,7 +71824,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
          la page Photos pour la meme raison. */
       h("style", null, "@keyframes souvIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}} @keyframes souvPop{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}} @keyframes souvKen{from{transform:scale(1)}to{transform:scale(1.09)}} @keyframes souvSweep{from{background-position:-180% 0}to{background-position:280% 0}} .souvin{opacity:0;animation:souvIn .55s cubic-bezier(.2,.7,.3,1) forwards} .souvshim{background:linear-gradient(100deg," + teinte + " 30%," + teinteCl + " 50%," + teinte + " 70%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:souvSweep 5s linear infinite} @keyframes souvPose{from{opacity:0;transform:translateY(-14px);filter:blur(5px)}to{opacity:1;transform:translateY(0);filter:blur(0)}} @keyframes souvFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(var(--fx,2px),var(--fy,-3px),0)}} @keyframes souvHaloVie{0%,100%{opacity:.25}50%{opacity:.6}} @keyframes souvLuciole{0%,40%{opacity:0;transform:translate3d(0,0,0)}52%{opacity:.5}68%{opacity:.3}80%,100%{opacity:0;transform:translate3d(-16px,-54px,0)}} @keyframes souvVoileIn{from{opacity:0}to{opacity:1}} @keyframes souvVoileOut{to{opacity:0}} @keyframes souvOuvre{from{opacity:0;transform:scale(.94) translateY(8px);filter:brightness(.8) blur(5px)}to{opacity:1;transform:scale(1) translateY(0);filter:brightness(1.05) blur(0)}} @keyframes souvFerme{to{opacity:0;transform:scale(.955) translateY(6px);filter:brightness(.72) blur(3px)}} @keyframes souvHaloIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}} @keyframes souvHaloResp{0%,100%{opacity:.85;transform:scale(1)}50%{opacity:1;transform:scale(1.04)}} .souvCell{position:relative;overflow:hidden;border-radius:16px;min-height:0;background:#0A0D11} .souvFlot{position:relative;width:100%;height:100%;border-radius:16px;overflow:hidden;animation:souvFloat 12s ease-in-out infinite alternate;will-change:transform} .souvImg{width:100%;height:100%;object-fit:cover;display:block;transition:filter .6s var(--cm-ease)} .souvCell.souvNet .souvImg{filter:contrast(1.05) saturate(1.05) brightness(1.02)} .souvCell.souvDoux .souvImg{filter:brightness(.9) saturate(.92)} .souvHaloCell{position:absolute;inset:0;pointer-events:none;background:radial-gradient(85% 85% at 50% 28%," + tA(.10) + ",transparent 70%);mix-blend-mode:screen;animation:souvHaloVie 8s ease-in-out infinite} .souvLuciole{position:fixed;width:3px;height:3px;border-radius:50%;background:" + tACl(.85) + ";box-shadow:0 0 8px " + tA(.8) + ";pointer-events:none;opacity:0;animation:souvLuciole 26s ease-in-out infinite;z-index:5} .souvVoile{animation:souvVoileIn .4s var(--cm-ease) both} .souvVoile.souvQuitte{animation:souvVoileOut .6s var(--cm-ease-in) both} .souvVue{animation:souvOuvre .6s var(--cm-ease-out) both;position:relative;z-index:2} .souvVue.souvQuitte{animation:souvFerme .6s var(--cm-ease-in) both} .souvGrandHalo{position:absolute;inset:0;margin:auto;width:82vw;max-width:420px;aspect-ratio:1 / 1;border-radius:50%;background:radial-gradient(circle," + tA(.22) + ",transparent 65%);filter:blur(24px);pointer-events:none;animation:souvHaloIn 1.2s var(--cm-ease-out) both,souvHaloResp 7s ease-in-out 1.2s infinite} @media(prefers-reduced-motion:reduce){.souvFlot,.souvHaloCell,.souvLuciole,.souvVue,.souvGrandHalo{animation:none!important}}"),
       panneau === "souvenirs" ? h("div", null,
-        encartIdentiteCh(T("Histoire", "Story", "Historia", "Storia", "\u7269\u8a9e", "Geschichte", "\u0627\u0644\u0642\u0635\u0629") /* (978) comme l onglet */),
+        heroSousPageCh(T("Histoire", "Story", "Historia", "Storia", "\u7269\u8a9e", "Geschichte", "\u0627\u0644\u0642\u0635\u0629") /* (978) comme l onglet */),
         ongletsPanCh("20px 16px 18px"),
         h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),        h("i", { className: "souvLuciole", style: { left: "24%", top: "32%" } }),
         h("i", { className: "souvLuciole", style: { left: "66%", top: "50%", animationDelay: "9s" } }),
@@ -71996,7 +72001,7 @@ var recents = filtreCav(vueF).slice().sort(function (a, b) { return (b.d || "").
         /* 15/10 (1142) PAGE ACTUALITE DU CHEVAL, maquette de Blandine (iPhone / iPad / ordinateur) : la photo du cheval en haut
            avec « ACTUALITE » et son nom (meme encart que Videos / Photos) ; sans photo : l alezan au couchant fourni par Blandine
            (images/cheval-defaut-alezan.webp). Des 768 px, les publications sur deux colonnes (prop deuxColonnes du fil). */
-        encartIdentiteCh(T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631"), "images/cheval-defaut-alezan.webp"),
+        heroSousPageCh(T("Actualit\u00e9", "News", "Actualidad", "Attualit\u00e0", "\u30cb\u30e5\u30fc\u30b9", "Aktuelles", "\u0627\u0644\u0623\u062e\u0628\u0627\u0631"), "images/cheval-defaut-alezan.webp"),
         /* 15/10 (1145) navigation entre les pages du cheval (Histoire, Photos, Resultats, Videos, Actualite, Sante), sous la photo */
         ongletsPanCh("16px 16px 18px"),
         h("div", { style: { height: 10 } }),
