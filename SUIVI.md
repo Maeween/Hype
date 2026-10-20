@@ -13852,3 +13852,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Aussi en ligne avec cet envoi : les entrées de suivi de 16 h 05 (recette de l'effet photo — déjà publiée) et de 16 h 33 (règle de lecture des résultats corrigée en base).
 - index.html : seulement le marqueur. Aucune donnée, aucun calcul, aucune permission modifiés.
 - Tests : encadré → ouvre bien le règlement (fr) ; captures avant / après du règlement (iPhone fr et arabe, ordinateur) ; ancres, visiteur / membre / gestionnaire, 7 langues — aucune erreur ; node --check OK (challenge et règlement) ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
+
+## 20/10/2026 (17 h 46) — PUBLICATION (marqueur 20261020-1746, Blandine « Ok merci » 17:45) — CHALLENGE : nouvelles citations Dressage et CSO
+- Dressage : « Main sans jambes, jambes sans main. » — François Baucher (remplace « Calme, en avant et droit » — Général L'Hotte).
+- CSO : « Moins on fait, mieux on fait. » — signé « D'après le Vicomte d'Aure » (maxime qui lui est attribuée, non retrouvée mot pour mot dans ses écrits ; remplace « Le saut d'obstacles, l'audace en confiance »).
+- 7 langues pour les deux citations et leurs signatures. Equifun inchangé. Fichier : challenge.html (textes seulement) ; index.html : seulement le marqueur.
+- Tests : affichage fr, ar, ja ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
