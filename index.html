@@ -44611,6 +44611,10 @@ function EcranChallenge() {
   var rtl = lg === "ar";
   function sortir() { if (peutReculer && retourEcran) retourEcran(); else setEcran("guilde"); }
   try { window.hypeSupaPont = supa; window.hypeChallengeRetour = sortir; } catch (eP) { }
+  /* 20/10 (06 h 31) Blandine : « je peux pas ajouter de photo ». Les photos d une journee du challenge sont les publications
+     de son rendez-vous de l agenda : le bouton « Ajouter des photos » de la page ouvre la page Souvenir de ce rendez-vous
+     (EcranEvenementPasse, son mur permet d y publier) ; le retour ramene au challenge, qui relit les photos. */
+  try { window.hypeChallengeOuvrirJournee = function (idAg) { if (!idAg) return; try { window.__evPasse = null; window.__evPasseId = String(idAg); } catch (e) { } setEcran("evenement-passe"); }; } catch (eJ) { }
   /* 20/10 (04 h 45) Blandine : « pas de retour en arriere » + « le drapeau pour changer de langue partout ».
      Le retour et le drapeau sont ceux de l appli, poses PAR-DESSUS la page (toujours visibles en defilant).
      Le retour ferme d abord ce qui est ouvert dans la page (journee, photo en grand, import), sinon il quitte. */
@@ -44641,10 +44645,10 @@ function CarteChallengesEcurie(props) {
     });
     return function () { vivant = false; };
   }, [clef]);
-  if (!liste.length) return null;
+  if (!liste.length) return null;   /* sans challenge visible, rien (ni carte, ni titre) */
   var T = props.T, rtl = props.rtl, lg = "fr"; try { lg = window.__hypeLangue || "fr"; } catch (e) { }
   var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',sans-serif";
-  return h("div", { style: { marginTop: 14, display: "grid", gap: 10 } },
+  var grille = h("div", { key: "chg", style: { marginTop: props.enveloppe ? 0 : 14, display: "grid", gap: 10 } },
     liste.map(function (c) {
       var nom = (c.nom && (c.nom[lg] || c.nom.fr)) || c.cle;
       return h("button", { key: c.cle, type: "button", onClick: function () { try { window.__challengeCle = c.cle; } catch (e) { } props.setEcran("challenge"); },
@@ -44658,6 +44662,7 @@ function CarteChallengesEcurie(props) {
           c.publie ? null : h("span", { style: { display: "block", fontFamily: M, fontSize: 11, color: "#E8B84B", marginTop: 3 } }, "Visible par toi seule (non publié)")),
         h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: "#C9A66B", fontSize: 18 } }, rtl ? "←" : "→"));
     }));
+  return props.enveloppe ? props.enveloppe(grille) : grille;   /* 20/10 : la page Ecurie l habille de son titre de section */
 }
 function EcranEcurieV2(props) {
   var h = React.createElement;
@@ -44874,8 +44879,7 @@ function EcranEcurieV2(props) {
           h("span", { "aria-hidden": "true", style: { width: 34, height: 34, borderRadius: "50%", border: "0.8px solid rgba(201,166,107,0.7)" /* (663) cercle transparent, comme avant le 662 : « c etait sympa » */, background: "radial-gradient(circle at 50% 30%, rgba(243,238,228,0.07), rgba(0,0,0,0.28) 75%)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.55), 0 1px 0 rgba(243,238,228,0.1)" /* (849) le cercle creuse */, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" } }, svg(IC_ONG[o[0]], 16, CH, 1.3)),
           h("span", { style: { maxWidth: "100%", fontFamily: SERIF, fontSize: (String(o[1]).length > 10 || (large && String(o[1]).length > 8 && (function () { try { return (window.innerWidth || 1280) < 1100; } catch (eW) { return false; } })())) ? 11 : 13 /* (1029) tablette : les mots longs (ACTUALITES) tiennent dans la tuile */, fontWeight: 600, letterSpacing: (String(o[1]).length > 10 || (large && String(o[1]).length > 8 && (function () { try { return (window.innerWidth || 1280) < 1100; } catch (eW) { return false; } })())) ? 0.5 : 1.1, textTransform: "uppercase", color: IV, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o[1]),
           h("span", { "aria-hidden": "true", style: { width: 14, height: 1, background: "rgba(201,166,107,0.4)" } }));
-      })),
-    h(CarteChallengesEcurie, { club: d.monClub, T: T, rtl: rtl, setEcran: setEcran }));   /* 20/10 challenges de club */
+      })));
 
   /* ── 3. CITATION (texte « philosophie » de l'écurie, crayon discret pour la propriétaire) ── */
   var citation = h("div", { style: { padding: "24px 18px 0" } }, d.citationProps ? h(TableauxSpectralHype, Object.assign({}, d.citationProps, { rendu: "citation-v2" })) : null);
@@ -45137,6 +45141,10 @@ function EcranEcurieV2(props) {
                     h("button", { type: "button", onClick: function () { traiterDemandeEc(dm, false); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "1px solid " + BORD, background: "transparent", color: IV, fontFamily: M, fontSize: 13, cursor: "pointer" } }, T("Refuser", "Decline", "Rechazar", "Rifiuta", "却下", "Ablehnen", "رفض")),
                     h("button", { type: "button", onClick: function () { traiterDemandeEc(dm, true); }, style: { flex: 1, minHeight: 42, borderRadius: 999, border: "none", background: CH, color: NOIR, fontFamily: M, fontSize: 13, fontWeight: 700, cursor: "pointer" } }, T("Accepter", "Accept", "Aceptar", "Accetta", "承認", "Annehmen", "قبول"))));
           })));
+  /* 20/10 (06 h 31) Blandine : la carte du challenge quitte les acces rapides et passe sous « Prochains evenements »,
+     dans sa propre section « Evenements en cours » (titre et carte n apparaissent que si le club a un challenge visible). */
+  var blocChal = h(CarteChallengesEcurie, { key: "chal", club: d.monClub, T: T, rtl: rtl, setEcran: setEcran,
+    enveloppe: function (grille) { return section([h("div", { key: "chT" }, titreSection(T("\u00c9v\u00e9nements en cours", "Ongoing events", "Eventos en curso", "Eventi in corso", "\u958b\u50ac\u4e2d\u306e\u30a4\u30d9\u30f3\u30c8", "Laufende Veranstaltungen", "\u0627\u0644\u0641\u0639\u0627\u0644\u064a\u0627\u062a \u0627\u0644\u062c\u0627\u0631\u064a\u0629"), null, null, null)), grille], 34); } });
   var blocEv = (evs === null || !listeEv.length) ? null : section([   /* (545) sans evenement, la section n apparait pas */
     titreSection(T("Prochains \u00e9v\u00e9nements", "Upcoming events", "Pr\u00f3ximos eventos", "Prossimi eventi", "\u4eca\u5f8c\u306e\u30a4\u30d9\u30f3\u30c8", "N\u00e4chste Termine", "\u0627\u0644\u0641\u0639\u0627\u0644\u064a\u0627\u062a \u0627\u0644\u0642\u0627\u062f\u0645\u0629"), ouvrirAgenda, null, null),
     h("div", { key: "evh", style: { display: "flex", flexDirection: "column", gap: 14 } }, listeEv.map(carteEvH))
@@ -45444,6 +45452,7 @@ function EcranEcurieV2(props) {
       /* (865) etape 5 : derniers resultats (a gauche) et prochains evenements (a droite) cote a cote, comme sur la maquette ;
          en dessous de 1 280 px de large, l un sous l autre (classe ev2-resev) */
       (blocRes && blocEv) ? h("div", { className: "ev2-resev" }, h("div", { style: { minWidth: 0 } }, blocRes), h("div", { style: { minWidth: 0 } }, blocEv)) : h(React.Fragment, null, blocRes, blocEv),
+      blocChal,   /* 20/10 « Evenements en cours » (challenge) sous les prochains evenements */
       blocContact, lienReclamer)
     : h(React.Fragment, { key: "ev2-tel" },
     invite,
@@ -45453,6 +45462,7 @@ function EcranEcurieV2(props) {
     blocCh,
     blocRes,
     blocEv,   /* (548) sous les chevaux ; (550) Blandine : puis sous les resultats */
+    blocChal,   /* 20/10 « Evenements en cours » (challenge) sous les prochains evenements */
     blocContact,   /* (861) */
     lienReclamer),   /* (866) */
     /* (589) Blandine : « retire la partie actualites de l ecurie ». Le code de blocActu est garde (remettre

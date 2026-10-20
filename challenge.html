@@ -200,7 +200,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 .regl-intro{margin:12px 0 0;font-size:14.5px;color:var(--grisClair)}
 
 /* ═════ FIN ═════ */
-.fin{position:relative;margin-top:72px;height:220px;background:url(images/challenge/bandeau.webp) 60% center/cover no-repeat}
+.fin{position:relative;margin-top:72px;min-height:220px;padding-bottom:22px;background:url(images/challenge/bandeau.webp) 60% center/cover no-repeat}
 .fin:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--nuit) 0%,rgba(6,7,9,.35) 45%,rgba(6,7,9,.55) 100%)}
 .fin p{position:relative;margin:0;padding:96px 0 0;font-family:var(--serif);font-weight:500;font-size:27px;line-height:1.15}
 .fin p:after{content:"";display:block;width:56px;height:1px;background:var(--champ);margin-top:14px}
@@ -284,7 +284,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
   .galerie .plus.m{display:none}
   .galerie .plus.d{display:flex}
   .finale-x2{padding:24px 28px}
-  .fin{height:260px;margin-top:96px}
+  .fin{min-height:260px;margin-top:96px}
   .fin p{font-size:34px;padding-top:120px}
   /* page d'une journée */
   .vue-hero{height:460px;background-image:var(--imgL)}
@@ -411,10 +411,12 @@ body.sans-donnees .challenge-contenu{display:none}
   background:radial-gradient(closest-side,rgba(6,7,9,.62),rgba(6,7,9,.3) 60%,rgba(6,7,9,0))}
 .nav{margin-top:44px}
 /* accès discret à la gestion */
-#gestion{margin:16px 0 0;display:flex;justify-content:flex-end}
-.g-acces{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 15px;border:1px solid var(--filet);border-radius:99px;font-size:13px;color:var(--grisClair);background:rgba(11,15,19,.5)}
+/* accès gestion : boutons discrets posés dans le bandeau de fin (gestionnaires seulement) */
+#gestion{position:relative;display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.g-acces{display:inline-flex;align-items:center;gap:7px;min-height:38px;padding:7px 14px;border:1px solid rgba(244,239,228,.22);border-radius:99px;font-size:12.5px;white-space:nowrap;color:var(--ivoire);background:rgba(6,7,9,.5);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.g-acces b{font-weight:500;color:var(--champ)}
 .g-pastille{font-size:12px;color:var(--ambre)}
-.g-pastille:before{content:"·";margin-inline-end:6px;color:var(--gris)}
+.g-pastille:before{content:"·";margin:0 6px;color:var(--gris)}
 #gerer{position:fixed;inset:0;z-index:93;background:var(--nuit);overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
 #gerer.ouverte{display:block}
 .g-bloc{margin-top:22px}
@@ -584,6 +586,8 @@ table.grand .tiret{color:var(--gris)}
 }
 /* ═════ CORRECTIONS V2 (20/10, relecture) ═════ */
 #s-classement{padding-top:34px}
+.ph-ajout{display:inline-flex;align-items:center;gap:9px;min-height:44px;margin-top:14px;padding:9px 18px;border:1px solid var(--champDoux);border-radius:99px;font-size:13.5px;color:var(--champ)}
+.ph-ajout span{font-size:17px;line-height:1}
 .g-legende{margin:6px 0 4px;font-size:13px;line-height:1.55;color:var(--grisClair)}
 .g-legende b{color:var(--ivoire);font-weight:600}
 .g-ok{color:#9FD3A8}
@@ -612,7 +616,6 @@ body.dans-hype .nav.colle .nav-in,body.dans-hype .vue-nav.colle .nav-in{margin-l
       <p class="intro" data-t="intro"></p>
     </div>
     <div class="etapes" id="etapes"></div>
-    <div id="gestion" hidden></div>
   </div>
 </header>
 
@@ -630,7 +633,7 @@ body.dans-hype .nav.colle .nav-in,body.dans-hype .vue-nav.colle .nav-in{margin-l
   </div>
 </main>
 
-<div class="fin"><div class="page"><p data-t="citation"></p></div></div>
+<div class="fin"><div class="page"><p data-t="citation"></p><div id="gestion" hidden></div></div></div>
 <div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
 </div>
 </div>
@@ -741,6 +744,7 @@ var TX2 = {
   voirJournee: { fr: "Voir la journée", en: "See the day", es: "Ver la jornada", it: "Vedi la giornata", de: "Tag ansehen", ja: "この日を見る", ar: "عرض اليوم" },
   souvenirs: { fr: "Souvenirs", en: "Memories", es: "Recuerdos", it: "Ricordi", de: "Erinnerungen", ja: "思い出", ar: "ذكريات" },
   enResume: { fr: "En résumé", en: "In short", es: "En resumen", it: "In sintesi", de: "Kurz gesagt", ja: "要点", ar: "باختصار" },
+  ajoutPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "Añadir fotos", it: "Aggiungi foto", de: "Fotos hinzufügen", ja: "写真を追加", ar: "إضافة صور" },
   parNiveau: { fr: "Par niveau", en: "By level", es: "Por nivel", it: "Per livello", de: "Nach Niveau", ja: "レベル別", ar: "حسب المستوى" }
 };
 
@@ -857,6 +861,9 @@ function documents(cats) {
     }).join("") + "</div></div>";
   }).join("") + "</div>";
 }
+/* « Ajouter des photos » : ouvre, dans Hype, la page Souvenir du rendez-vous de l'étape (son mur permet d'y publier) */
+function peutAjouterPhotos(e) { try { return !!(e && e.agenda && e.date && e.date <= AUJOURDHUI && P && typeof P.hypeChallengeOuvrirJournee === "function"); } catch (x) { return false; } }
+function boutonAjoutPhotos(e, avecEtape) { return peutAjouterPhotos(e) ? '<button class="ph-ajout" data-ajout-photo="' + esc(e.agenda) + '"><span>+</span>' + T("ajoutPhotos") + (avecEtape ? " · " + nomEtape(e) : "") + "</button>" : ""; }
 function aDesResultats(n) { return RESULTATS.some(function (r) { return r.e === n; }); }
 function lienEtape(e) { return 'data-etape="' + e.n + '"' + (aDesResultats(e.n) ? ' data-vers="v-resultats"' : ""); }
 function lienReglement() { return "reglement-challenge.html?lang=" + LANG + (PARAMS.get("dansHype") ? "&dansHype=1" : ""); }
@@ -940,7 +947,8 @@ function rendrePhotos() {
   E.slice().reverse().forEach(function (e) { (PHOTOS[e.n] || []).forEach(function (u, i) { toutes.push({ n: e.n, u: u, i: i }); }); });
   var avec = E.filter(function (e) { return (PHOTOS[e.n] || []).length; });
   var h = '<div class="tete"><div><span class="surtitre">' + T("souvenirs") + '</span><h2 class="titre">' + T("oPhotos") + "</h2></div></div>";
-  if (!toutes.length) h += '<p class="ph-vide"><span>✦</span>' + T("pasPhotosTout") + "</p>";
+  var derniere = E.filter(function (e) { return e.date && e.date <= AUJOURDHUI; }).pop();
+  if (!toutes.length) h += '<p class="ph-vide"><span>✦</span>' + T("pasPhotosTout") + "</p>" + boutonAjoutPhotos(derniere, true);
   else {
     var sel = toutes.slice(0, 5);
     h += '<div class="edito n' + sel.length + '">' + sel.map(function (p, k) {
@@ -951,6 +959,7 @@ function rendrePhotos() {
       return '<button class="ph-lien" data-etape="' + e.n + '" data-vers="v-photos"><span class="num">' + e.n + '</span><span class="ph-t"><b>' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</b><small>" + T("oPhotos") + " · " + PHOTOS[e.n].length + "</small></span><i>" + T("voirJournee") + " →</i></button>";
     }).join("") + "</div>";
   }
+  if (toutes.length) h += boutonAjoutPhotos(derniere, true);
   document.getElementById("s-photos").innerHTML = h;
 }
 function rendreReprises() {
@@ -987,7 +996,7 @@ function rendreVue() {
   if (aRes) h += '<div class="panneau photo">' + pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre) + "</div>";
   else h += '<div class="attente"><b>' + T("attTitre") + "</b><p>" + T("attTexte") + '</p><button class="lien" data-vue-aller="v-reprises">' + T("voirReprises") + " <i>→</i></button></div>";
   h += "</section>";
-  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + galerie(e.n) + "</section></div>";
+  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + galerie(e.n) + boutonAjoutPhotos(e, false) + "</section></div>";
   h += '<section class="section" id="v-reprises"><div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" + documents(CHALLENGE.categories) + "</section>";
   h += '</div>' + document.querySelector('.fin-hype').outerHTML;
   document.getElementById("vueC").innerHTML = h;
@@ -1032,6 +1041,7 @@ document.addEventListener("click", function (ev) {
   var t = ev.target.closest("button,[data-photo]"); if (!t) return;
   var d = t.dataset;
   if (d.adm) { gestionClic(t, d); return; }
+  if (d.ajoutPhoto) { try { P.hypeChallengeOuvrirJournee(d.ajoutPhoto); } catch (eA) { } return; }
   if (d.etape) { ouvrirVue(+d.etape, d.vers); return; }
   if (d.aller) { etat.onglet = d.aller; rendreNav(); var s = document.getElementById(d.aller); window.scrollTo({ top: s.getBoundingClientRect().top + window.scrollY - 30, behavior: "smooth" }); return; }
   if (d.cat) { etat.cat = d.cat; etat.complet = false; rendreClassement(); return; }
@@ -1174,8 +1184,8 @@ function rendreGestion() {
   if (!GERE) { z.hidden = true; z.innerHTML = ""; GP.ouvert = false; o.classList.remove("ouverte"); o.innerHTML = ""; return; }
   var nbBrou = RESULTATS.filter(function (r) { return !r.publie; }).length;
   z.hidden = false;
-  z.innerHTML = '<button class="g-acces" data-adm="ouvrir-gestion">Gérer le challenge' +
-    (nbBrou ? '<span class="g-pastille">' + nbBrou + " en brouillon</span>" : "") + (CHALLENGE.publie ? "" : '<span class="g-pastille">page masquée</span>') + "</button>";
+  z.innerHTML = '<button class="g-acces" data-adm="importer"><b>+</b>Importer des résultats</button>' +
+    '<button class="g-acces" data-adm="ouvrir-gestion">Gérer le challenge' + (nbBrou ? '<span class="g-pastille">' + nbBrou + " en brouillon</span>" : "") + "</button>";
   if (!GP.ouvert) { o.classList.remove("ouverte"); o.innerHTML = ""; return; }
   o.classList.add("ouverte");
   var parEtape = CHALLENGE.etapes.map(function (e) {
