@@ -130,6 +130,17 @@ Deno.serve(async (req) => {
         await table("POST", "hype_import_mux", { source_url: u0, statut: "a_copier" }, { Prefer: "resolution=ignore-duplicates" });
       }
     }
+    /* v4 (20/10) : un nouveau toucher met aussi à jour l'état des copies en préparation chez Mux. */
+    const enCoursT = await table("GET", "hype_import_mux?select=source_url,asset_id,statut&statut=in.(preparing,waiting)");
+    for (const l of (enCoursT.ok ? (enCoursT.donnees as Array<Record<string, unknown>>) : []) || []) {
+      if (!l.asset_id) continue;
+      try {
+        const r = await fetch(`https://api.mux.com/video/v1/assets/${l.asset_id}`, { headers: { Authorization: authMux } });
+        if (!r.ok) continue;
+        const a = (await r.json())?.data || {};
+        await table("PATCH", `hype_import_mux?source_url=eq.${encodeURIComponent(String(l.source_url))}`, { statut: String(a.status || l.statut), duree_s: typeof a.duration === "number" ? a.duration : null, maj_le: new Date().toISOString() });
+      } catch (_e) { /* état connu conservé */ }
+    }
     const aFaire = await table("GET", "hype_import_mux?select=source_url,statut&statut=in.(a_copier,errored)");
     if (!aFaire.ok) return repondre({ error: "Table hype_import_mux illisible", detail: aFaire.donnees }, 500);
     let lancees = 0, refusees = 0;
