@@ -13872,3 +13872,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
   - cartes (journal, outils, Hey Baby) semi-transparentes avec flou ; le journal chevauche le bas de la photo (-44 px).
 - Aucune donnée, aucun calcul, aucune permission modifiés.
 - Tests : captures avant / après (classement, résultats, reprises fr / ar / ordinateur) ; maquette Mon apprentissage 390 / 820 / 1230 ; liens, ancres, visiteur, 7 langues, pastilles — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone ; Mon apprentissage vérifié en maquette (pas dans l'appli connectée).
+
+## 20/10/2026 (18 h 23) — PUBLICATION (marqueur 20261020-1823, Blandine « Ok oublie » 18:22, compris « Ok publie » comme à 15:49) — CHALLENGE : Règlement et Reprises comme les cartes d'étape, phrase d'intro centrée
+- Demandes de 18:16 à 18:18 : rapprocher Règlement et Reprises, Règlement au-dessus ; mêmes taille et espacement que les trois cartes d'étape ; « justifie / centre l'écriture sous le titre ».
+- challenge.html : ordre Règlement puis Reprises (page et barre d'onglets) ; les deux encadrés à la hauteur des cartes d'étape (158 / 196 / 210 / 220 px selon l'écran) et au même écart (12 px sur téléphone) ; côte à côte sur tablette et ordinateur (écart 16 / 20 px) ; phrase d'intro centrée sur téléphone avec le bouton Partager (justifié essayé : trous entre les mots, écarté).
+- index.html : seulement le marqueur.
+- Tests : hauteurs mesurées (identiques aux cartes d'étape à 390 / 820 / 1440) ; liens, ancres, visiteur, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
