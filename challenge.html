@@ -923,6 +923,19 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 .rg-rep.ouvert .rg-pli .rg-fl{transform:rotate(180deg)}
 [dir=rtl] .rg-rep.ouvert .rg-pli .rg-fl{transform:rotate(180deg)}
 .rg-rep.ouvert .rg-corps{padding-top:0}
+/* Règlement puis Reprises, rapprochés (20/10) */
+/* Règlement et Reprises : deux encadrés de la même taille et du même espacement que les cartes d'étape du haut */
+.r-docs .rg{max-width:none}
+.r-docs .rg-lien{min-height:158px}
+@container ch (max-width:699px){.r-docs #s-reprises{padding-top:12px}.r-docs .rg-lien .rg-haut{padding:16px 0 16px 18px}[dir=rtl] .r-docs .rg-lien .rg-haut{padding:16px 18px 16px 0}.r-docs .rg-lien .rg-titre{font-size:25px}.r-docs .rg-lien .sous-t{font-size:12.5px;margin-top:4px}}
+@container ch (min-width:700px){
+  .r-duo.r-docs{display:grid !important;grid-template-columns:1fr 1fr;column-gap:16px;align-items:start}
+  .r-docs .rg-lien{min-height:196px}
+}
+@container ch (min-width:1100px){.r-duo.r-docs{column-gap:20px}.r-docs .rg-lien{min-height:210px}}
+@container ch (min-width:1200px){.r-docs .rg-lien{min-height:220px}}
+/* téléphone : phrase sous le titre centrée, avec le bouton Partager (20/10) */
+@container ch (max-width:699px){.hero-texte .intro{text-align:center;margin-inline:auto;max-width:330px}.hero-texte .partage{display:flex;margin-inline:auto;width:max-content}}
 </style>
 </head>
 <body>
@@ -956,8 +969,8 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
   </div>
   <section class="section" id="s-photos"></section>
   <div class="rangee r-duo r-docs">
-    <section class="section" id="s-reprises"></section>
     <section class="section" id="s-reglement"></section>
+    <section class="section" id="s-reprises"></section>
   </div>
 </main>
 
@@ -1463,7 +1476,7 @@ function rendreEtapes() {
       '</span><span class="fleche"><span>→</span></span></button>';
   }).join("");
 }
-var SECTIONS = [["s-classement", "oClassement"], ["s-photos", "oPhotos"], ["s-reprises", "oReprisesCourt"], ["s-reglement", "oReglement"]];
+var SECTIONS = [["s-classement", "oClassement"], ["s-photos", "oPhotos"], ["s-reglement", "oReglement"], ["s-reprises", "oReprisesCourt"]];
 function sansDates() { return !!CHALLENGE && !CHALLENGE.etapes.length; }
 function sectionsVisibles() { return SECTIONS.filter(function (x) { if (x[0] === "s-reprises") return CHALLENGE.reprises.length; if (x[0] === "s-classement" || x[0] === "s-photos") return !sansDates(); return true; }); }
 function rendreNav() {
