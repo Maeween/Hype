@@ -53115,6 +53115,9 @@ function EcranMonApprentissage() {
     ".hype-apprentissage-titres{bottom:60px}",
     ".hype-apprentissage-corps{position:relative;z-index:1;margin-top:-44px;padding-top:0}",
     ".hype-apprentissage-journal,.hype-apprentissage-outil,.hype-apprentissage-hb{background:rgba(18,22,23,.48);-webkit-backdrop-filter:blur(14px) saturate(1.1);backdrop-filter:blur(14px) saturate(1.1)}",
+    /* tablette / ordinateur : la photo (verticale) occupe la droite en entier, tete du cheval visible ; titre a gauche sur le fond sombre */
+    "@media (min-width:700px){.hype-apprentissage-haut{height:calc(env(safe-area-inset-top) + 460px)}.hype-apprentissage-haut img{left:auto;right:0;width:64%;object-position:50% 14% !important;-webkit-mask-image:linear-gradient(90deg,transparent 0%,#000 34%);mask-image:linear-gradient(90deg,transparent 0%,#000 34%)}.hype-apprentissage-voile{background:linear-gradient(180deg,rgba(8,10,11,.3) 0%,rgba(8,10,11,0) 26%,rgba(8,10,11,0) 62%,rgba(8,10,11,.8) 88%,#080A0B 100%)}.hype-apprentissage-titres{right:auto;max-width:52%}[dir=rtl] .hype-apprentissage-haut img{right:auto;left:0;-webkit-mask-image:linear-gradient(270deg,transparent 0%,#000 34%);mask-image:linear-gradient(270deg,transparent 0%,#000 34%)}[dir=rtl] .hype-apprentissage-titres{left:auto;right:24px}}",
+    "@media (min-width:1100px){.hype-apprentissage-haut{height:calc(env(safe-area-inset-top) + 540px)}.hype-apprentissage-haut img{width:46%;object-position:50% 6% !important}.hype-apprentissage-titres{left:40px}}",
     "@media (prefers-reduced-motion: reduce){.hype-apprentissage-chev{transition:none}.hype-apprentissage-apercu{animation:none}}"
   ].join("");
 
