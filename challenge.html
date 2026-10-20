@@ -34,7 +34,7 @@ button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
 .hero{position:relative}
 .hero-img{position:relative;height:430px;background:url(images/challenge/hero-mobile.webp) 58% 20%/cover no-repeat}
 .hero-img:after{content:"";position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(6,7,9,.4) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 58%,rgba(6,7,9,.7) 84%,var(--nuit) 100%)}
+  background:linear-gradient(180deg,rgba(6,7,9,.3) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 66%,rgba(6,7,9,.45) 86%,var(--nuit) 100%)}
 .hero-haut{position:absolute;top:0;left:0;right:0;z-index:2;padding:calc(env(safe-area-inset-top) + 14px) 20px 0}
 .retour{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ivoire);opacity:.9}
 .retour b{font-weight:400;font-size:18px;line-height:1}
@@ -48,9 +48,9 @@ h1 .l2{display:block;color:var(--ivoire)}
 
 /* ═════ ÉTAPES ═════ */
 .etapes{display:grid;grid-template-columns:1fr;gap:12px;margin-top:52px}
-.etape{position:relative;display:block;width:100%;height:var(--hEtape,158px);border-radius:16px;overflow:hidden;border:1px solid var(--ligne);background:var(--carte) var(--img) center/cover no-repeat;text-align:start}
-.etape:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,.82) 0%,rgba(6,7,9,.5) 40%,rgba(6,7,9,0) 72%),linear-gradient(0deg,rgba(6,7,9,.45),rgba(6,7,9,0) 40%)}
-[dir=rtl] .etape:after{background:linear-gradient(270deg,rgba(6,7,9,.92) 0%,rgba(6,7,9,.7) 42%,rgba(6,7,9,.1) 78%),linear-gradient(0deg,rgba(6,7,9,.55),rgba(6,7,9,0) 45%)}
+.etape{position:relative;display:block;width:100%;height:var(--hEtape,158px);border-radius:16px;overflow:hidden;border:0;background:var(--carte) var(--img) center/cover no-repeat;text-align:start;text-shadow:0 1px 14px rgba(6,7,9,.55)}
+.etape:after{content:"";position:absolute;inset:0;background:radial-gradient(90% 70% at 0% 0%,rgba(6,7,9,.5),rgba(6,7,9,0) 70%),linear-gradient(90deg,rgba(6,7,9,.62) 0%,rgba(6,7,9,.28) 42%,rgba(6,7,9,0) 66%),linear-gradient(0deg,rgba(6,7,9,.42),rgba(6,7,9,0) 38%)}
+[dir=rtl] .etape:after{background:radial-gradient(90% 70% at 100% 0%,rgba(6,7,9,.5),rgba(6,7,9,0) 70%),linear-gradient(270deg,rgba(6,7,9,.66) 0%,rgba(6,7,9,.3) 42%,rgba(6,7,9,0) 66%),linear-gradient(0deg,rgba(6,7,9,.42),rgba(6,7,9,0) 38%)}
 .etape-in{position:absolute;inset:0;z-index:1;padding:16px 18px 14px;display:flex;flex-direction:column}
 .etape-haut{display:flex;align-items:center;gap:12px}
 .num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--champ);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-weight:600;color:var(--champ)}
@@ -94,13 +94,13 @@ h1 .l2{display:block;color:var(--ivoire)}
 .vide{margin-top:16px;padding:26px 18px;text-align:center;color:var(--grisClair);font-size:14px;line-height:1.6;border-top:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
 .vide .ico{display:block;font-family:var(--serif);font-size:24px;color:var(--champ);margin-bottom:6px}
 
-.panneau.photo:before{content:"";position:absolute;z-index:0;top:0;bottom:0;right:0;width:75%;pointer-events:none;
-  background:var(--fond) var(--fondPos,55% 20%)/cover no-repeat;opacity:.45;
-  -webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%)}
+/* photo de l'encart : seulement en haut (derrière les catégories), jamais derrière les lignes */
+.panneau.photo:before{content:"";position:absolute;z-index:0;top:0;left:0;right:0;height:170px;pointer-events:none;
+  background:linear-gradient(90deg,#0C1116 0%,rgba(12,17,22,.6) 42%,rgba(12,17,22,0) 78%),var(--fond) var(--fondPos,55% 20%)/cover no-repeat;opacity:.38;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.5) 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.5) 55%,transparent 100%)}
 [dir=rtl] .panneau.photo:before{right:auto;left:0;transform:scaleX(-1)}
 .panneau.photo>*{position:relative;z-index:1}
-#s-classement .panneau{--fond:url(images/challenge/hero-mobile.webp)}
-#s-resultats .panneau,#v-resultats .panneau{--fond:url(images/challenge/etape2.webp);--fondPos:30% 30%}
+#v-resultats .panneau{--fond:url(images/challenge/etape2.webp);--fondPos:30% 30%}
 .panneau select.choix{margin-top:14px;background-color:rgba(11,15,19,.85)}
 /* rangs, points */
 .rang{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--grisClair)}
@@ -283,8 +283,6 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
   .galerie .petites button:nth-child(4){display:block}
   .galerie .plus.m{display:none}
   .galerie .plus.d{display:flex}
-  .r-docs .docs{display:grid;grid-template-columns:1fr 1fr;column-gap:32px}
-  .r-docs .doc:nth-child(2){border-top:0}
   .finale-x2{padding:24px 28px}
   .fin{height:260px;margin-top:96px}
   .fin p{font-size:34px;padding-top:120px}
@@ -296,16 +294,14 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
   .vue .page{max-width:1100px}
   .vue-intro{font-size:17px;max-width:640px}
   .infos{max-width:640px}
-  .vue .docs{display:grid;grid-template-columns:1fr 1fr;column-gap:32px}
-  .vue .doc:nth-child(2){border-top:0}
+  .vue .docs{max-width:760px}
 }
 
 /* ═════ ORDINATEUR (≥ 1024 px) ═════ */
 @container ch (min-width:1100px){
   .page{padding:0 48px}
   .hero-img{height:640px;background-position:50% 28%}
-  .panneau.photo:before{width:55%;opacity:.34}
-  .hero-img:after{background:linear-gradient(90deg,rgba(6,7,9,.88) 0%,rgba(6,7,9,.62) 30%,rgba(6,7,9,.1) 48%,rgba(6,7,9,0) 60%),linear-gradient(180deg,rgba(6,7,9,.45) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 62%,var(--nuit) 100%)}
+  .hero-img:after{background:linear-gradient(180deg,rgba(6,7,9,.35) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 66%,var(--nuit) 100%)}
   .hero-haut{padding:24px 48px 0}
   .hero-texte{margin-top:-500px;max-width:560px}
   h1{font-size:80px}
@@ -318,27 +314,21 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
   .etape .nom{font-size:34px}
   .nav-in{justify-content:flex-start;gap:44px}
   .rangee{display:grid;column-gap:40px;align-items:start}
-  .r-classement{grid-template-columns:minmax(0,1fr)}
+  .r-classement{grid-template-columns:minmax(0,1fr) 290px;column-gap:44px}
   .r-duo{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:48px}
-  .bareme-cote{display:block;padding-top:68px}
-  .cote-in{margin-top:76px;border:1px solid var(--filet);border-radius:16px;padding:22px 22px 18px;background:rgba(11,15,19,.35)}
-  .cote-in .bareme{font-size:13px}
   .galerie{grid-template-rows:150px 150px;margin-top:22px}
-  .r-docs .docs{display:block}
-  .r-docs .doc:nth-child(2){border-top:1px solid var(--filet)}
   .vue-hero{height:520px}
   .vue-hero .bas{padding:0 48px 36px}
   .vue-hero .hero-haut{padding:24px 48px 0}
   .vue-hero h2{font-size:64px}
-  .vue .r-vue{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:48px;align-items:start}
+  .vue .r-vue{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);column-gap:48px;align-items:start}
   [dir=rtl] .hero-img{background:none}
   [dir=rtl] .hero-img:before{content:"";position:absolute;inset:0;background:url(images/challenge/hero.webp) 50% 28%/cover no-repeat;transform:scaleX(-1)}
-  [dir=rtl] .hero-img:after{background:linear-gradient(270deg,rgba(6,7,9,.88) 0%,rgba(6,7,9,.62) 30%,rgba(6,7,9,.1) 48%,rgba(6,7,9,0) 60%),linear-gradient(180deg,rgba(6,7,9,.45) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 62%,var(--nuit) 100%)}
+
 }
 @container ch (min-width:1200px){
   [dir=rtl] .hero-img:before{background-position:47% 28%}
   .hero-img{height:680px;background-position:47% 28%}
-  .panneau.photo:before{width:48%;opacity:.32}
   .hero-texte{margin-top:-520px}
   h1{font-size:88px}
   .etape{--hEtape:220px}
@@ -414,6 +404,184 @@ body.sans-donnees .challenge-contenu{display:none}
   .i-ligne{grid-template-columns:56px 1.4fr 1.1fr 90px 120px 36px;grid-template-areas:"pl cav che note st x"}
 }
 .galerie.peu .petites{grid-template-columns:repeat(2,1fr)}
+
+/* ═════════════ FINITION 20/10 : accueil simplifié ═════════════ */
+/* hero : dégradé localisé sous le texte, sans assombrir la photo */
+.hero-texte:before{content:"";position:absolute;z-index:-1;inset:-70px -20px -30px -20px;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(6,7,9,.62),rgba(6,7,9,.3) 60%,rgba(6,7,9,0))}
+.nav{margin-top:44px}
+/* accès discret à la gestion */
+#gestion{margin:16px 0 0;display:flex;justify-content:flex-end}
+.g-acces{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:7px 14px;border:1px solid var(--filet);border-radius:99px;font-size:12.5px;color:var(--grisClair);background:rgba(11,15,19,.5)}
+.g-pastille{font-size:11px;color:var(--ambre)}
+.g-pastille:before{content:"·";margin-inline-end:6px;color:var(--gris)}
+#gerer{position:fixed;inset:0;z-index:93;background:var(--nuit);overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+#gerer.ouverte{display:block}
+.g-bloc{margin-top:22px}
+.g-bloc .i-label{margin:0 0 4px}
+.g-etape-b{display:flex;gap:8px;flex:0 0 auto}
+
+/* ── classement général ── */
+.cl{position:relative;overflow:hidden;margin-top:0;border:1px solid var(--filet);border-radius:20px;background:linear-gradient(180deg,#0D1318,#0A0E12 60%)}
+.cl-haut{position:relative;padding:28px 20px 20px}
+.cl-haut:before{content:"";position:absolute;z-index:0;inset:0 0 -30px 0;pointer-events:none;opacity:.3;
+  background:linear-gradient(90deg,#0D1318 0%,rgba(13,19,24,.75) 40%,rgba(13,19,24,0) 80%),url(images/challenge/hero-mobile.webp) 62% 28%/cover no-repeat;
+  -webkit-mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,rgba(0,0,0,.55) 55%,transparent 100%)}
+[dir=rtl] .cl-haut:before{transform:scaleX(-1)}
+.cl-haut>*{position:relative;z-index:1}
+.cl-titre{font-size:42px;line-height:1;letter-spacing:.2px}
+.cl .surtitre{color:var(--champ);opacity:.85}
+.cl-cats .pills{margin-top:22px;margin-inline:-20px;padding-inline:20px;gap:10px}
+.cl-cats .pill{padding:10px 18px;background:rgba(6,7,9,.55)}
+.cl-cats .pill.actif{background:rgba(217,199,163,.12)}
+.cl-cols{display:none}
+.cl-lignes{border-top:1px solid var(--ligne)}
+.cr{position:relative;border-top:1px solid var(--filet)}
+.cr:first-child{border-top:0}
+.cr.top:before{content:"";position:absolute;inset-inline-start:0;top:12px;bottom:12px;width:2px;background:var(--champ);opacity:.55}
+.cr.r2:before{opacity:.38}.cr.r3:before{opacity:.25}
+.cr-h{width:100%;display:grid;grid-template-columns:38px minmax(0,1fr) auto 14px;align-items:center;gap:14px;min-height:72px;padding:10px 20px;text-align:start}
+.cr-rang{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:50%;font-family:var(--serif);font-weight:600;font-size:20px;color:var(--grisClair)}
+.cr.top .cr-rang{border:1px solid var(--champDoux);color:var(--champ)}
+.cr.r1 .cr-rang{background:var(--champ);border-color:var(--champ);color:var(--nuit)}
+.cr-nom{min-width:0;font-size:17px;font-weight:500;line-height:1.25;color:var(--ivoire);overflow-wrap:anywhere}
+.cr-e{display:none}
+.cr-tot{font-family:var(--serif);font-weight:600;font-size:30px;line-height:1;color:var(--ivoire);text-align:end;white-space:nowrap}
+.cr.top .cr-tot{color:var(--champ)}
+.cr-tot small{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--gris);margin-inline-start:4px}
+.cr .chev{width:14px}
+.cr.ouverte{background:linear-gradient(90deg,rgba(217,199,163,.05),rgba(217,199,163,0) 85%)}
+.cr.ouverte .chev{transform:rotate(180deg)}
+.cr .detail{margin:0 20px 0 72px;padding:0 0 16px}
+[dir=rtl] .cr .detail{margin:0 72px 0 20px}
+.cr.ouverte .detail{display:grid}
+.cr .case{display:block;width:100%}
+.cl .vide{margin:0;border:0;padding:30px 20px}
+.cl .pied{margin:6px 0 18px}
+.cl-res{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;padding:16px 20px 20px;border-top:1px solid var(--filet)}
+.cl-res>span{width:100%;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--gris)}
+.cl-res-l{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:8px 15px;border:1px solid var(--ligne);border-radius:99px;font-size:13px;color:var(--champ)}
+.cl-res-l i,.ph-lien i,.cote-d i{font-style:normal}
+[dir=rtl] .cl-res-l i,[dir=rtl] .cote-d i{display:inline-block;transform:scaleX(-1)}
+/* colonne secondaire (ordinateur uniquement) */
+.cote{display:none}
+.cote-in{border:1px solid var(--filet);border-radius:18px;padding:22px 22px 24px;background:rgba(11,15,19,.4)}
+.cote-dates{margin-top:12px}
+.cote-d{width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--filet);text-align:start}
+.cote-d:first-child{border-top:0}
+.cote-d .num{width:28px;height:28px;font-size:16px}
+.cote-dt{flex:1;min-width:0}
+.cote-dt b{display:block;font-family:var(--serif);font-weight:600;font-size:19px;color:var(--ivoire);line-height:1.2}
+.cote-dt small{display:block;font-size:12px;color:var(--gris);margin-top:2px}
+.cote-d i{color:var(--champ);font-size:13px}
+.cote-x2{display:flex;align-items:center;gap:14px;margin-top:16px;padding:14px 16px;border:1px solid var(--champDoux);border-radius:14px;background:linear-gradient(120deg,rgba(217,199,163,.07),transparent 70%);font-size:13px;line-height:1.5;color:var(--grisClair)}
+.cote-x2 .x{font-family:var(--serif);font-weight:600;font-size:38px;line-height:.9;color:var(--champ)}
+.cote-txt{margin:16px 0 18px;font-size:13.5px;line-height:1.6;color:var(--grisClair)}
+
+/* ── galerie éditoriale ── */
+.ph-vide{display:flex;gap:10px;align-items:baseline;margin:14px 0 0;font-size:14px;line-height:1.6;color:var(--gris)}
+.ph-vide span{color:var(--champ);font-size:12px}
+.edito{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:20px}
+.ed{position:relative;display:block;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--carte2) center 35%/cover no-repeat}
+.ed.g{grid-column:1/-1;aspect-ratio:4/3;border-radius:16px}
+.edito.n2 .ed:not(.g),.edito.n4 .ed:last-child{grid-column:1/-1;aspect-ratio:16/9}
+.ed-leg{position:absolute;inset-inline-start:0;bottom:0;right:0;padding:26px 12px 10px;font-size:11.5px;letter-spacing:.4px;color:var(--ivoire);background:linear-gradient(0deg,rgba(6,7,9,.7),rgba(6,7,9,0));text-align:start}
+.ph-etapes{margin-top:14px}
+.ph-lien{width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--filet);text-align:start}
+.ph-lien:first-child{border-top:0}
+.ph-lien .num{width:28px;height:28px;font-size:16px}
+.ph-t{flex:1;min-width:0}
+.ph-t b{display:block;font-weight:500;font-size:15px;color:var(--ivoire)}
+.ph-t small{display:block;font-size:12px;color:var(--gris)}
+.ph-lien i{font-size:12.5px;color:var(--champ);white-space:nowrap}
+
+/* ── reprises : liste simple par niveau ── */
+.niv{padding:12px 0;border-top:1px solid var(--filet)}
+.niv:first-child{border-top:0}
+.niv-t{display:block;font-size:11px;letter-spacing:2.2px;text-transform:uppercase;color:var(--champ);opacity:.85;margin:4px 0 2px}
+.niv .doc{min-height:54px;padding:7px 0;border-top:0;gap:14px}
+.niv .doc-ico{width:24px;height:31px}
+.niv .doc-t b{font-size:20px}
+.niv .doc-t span{font-size:12.5px;margin-top:1px}
+.niv .doc-t span.manque{color:var(--gris)}
+
+/* ── règlement en synthèse ── */
+.regl-court{margin:18px 0 0;font-size:14.5px;line-height:1.65;color:var(--grisClair);max-width:560px}
+
+/* ── pages d'étape : lisibilité des résultats ── */
+.panneau{background:#0B1015}
+.vue-nav{background:rgba(13,19,24,.96)}
+.vue-nav .nav-in{gap:8px;align-items:center;padding-top:10px;padding-bottom:10px}
+.vue-nav .onglet{min-height:38px;padding:8px 16px;border:1px solid var(--ligne);border-radius:99px;font-size:13.5px}
+.vue-nav .onglet.actif{border-color:var(--champ);background:var(--champVoile)}
+.vn-et{display:none;align-items:center;gap:10px;margin-inline-end:auto;font-family:var(--serif);font-weight:600;font-size:18px;color:var(--ivoire);white-space:nowrap}
+.vn-et .num{width:28px;height:28px;font-size:15px}
+.vue .ligne-h{min-height:70px;padding:10px 4px}
+.vue .ligne-h .nm b{font-size:16.5px;font-weight:500;white-space:normal;line-height:1.25;overflow-wrap:anywhere}
+.ligne-h .nm .che{font-size:12px;letter-spacing:.9px;text-transform:uppercase;color:#B3BBBF;margin-top:4px}
+.ligne-h .chev{order:9}
+.note-det{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px}
+.note-l{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--gris)}
+.note-p{display:inline-block;padding:3px 11px;border:1px solid var(--champDoux);border-radius:99px;font-size:13px;font-weight:500;color:var(--champ);white-space:nowrap}
+.note-p.vide{border-color:var(--filet);color:var(--gris);font-weight:400}
+.note-rep{font-size:12.5px;color:var(--grisClair)}
+.ligne.ouverte .chev{transform:rotate(180deg)}
+table.grand th{color:#9AA2AA;letter-spacing:.3px}
+table.grand td{border-bottom-color:rgba(244,239,228,.07)}
+table.grand tbody tr:hover td{background:rgba(217,199,163,.03)}
+table.grand .t-cav{font-size:16px;font-weight:500;color:var(--ivoire)}
+table.grand .t-cav small{display:block;font-size:12px;font-weight:400;color:var(--gris)}
+table.grand .t-che{font-size:12.5px;letter-spacing:.9px;text-transform:uppercase;color:#B3BBBF}
+table.grand .tiret{color:var(--gris)}
+.vue .ph-vide{padding:16px 0;border-top:1px solid var(--filet);border-bottom:1px solid var(--filet)}
+
+@container ch (min-width:700px){
+  .nav{margin-top:52px}
+  .cl{border-radius:22px}
+  .cl-haut{padding:36px 30px 24px}
+  .cl-haut:before{background-image:linear-gradient(90deg,#0D1318 0%,rgba(13,19,24,.75) 40%,rgba(13,19,24,0) 80%),url(images/challenge/hero.webp);background-position:0 0,60% 30%}
+  .cl-titre{font-size:54px}
+  .cl-cats .pills{margin-inline:0;padding-inline:0}
+  .cl-cols{display:grid;grid-template-columns:44px minmax(0,1fr) repeat(var(--ne),74px) 104px;gap:14px;align-items:end;padding:14px 30px 10px;border-top:1px solid var(--ligne);font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gris)}
+  .cl-cols .c{text-align:center}.cl-cols .c-tot{text-align:end}
+  .cl-cols small{display:block;letter-spacing:.3px;text-transform:none;font-size:11px;color:#6E767F;margin-top:2px}
+  .cl-lignes{border-top:1px solid var(--filet)}
+  .cr-h{grid-template-columns:44px minmax(0,1fr) repeat(var(--ne),74px) 104px;min-height:76px;padding:10px 30px;cursor:default}
+  .cr-rang{width:40px;height:40px;font-size:21px}
+  .cr-nom{font-size:18px}
+  .cr-e{display:block;text-align:center;font-family:var(--serif);font-weight:600;font-size:21px;color:var(--grisClair)}
+  .cr-e .tiret{color:#4F565E;font-weight:400}
+  .cr-tot{font-size:32px}
+  .cr .chev,.cr .detail,.cr.ouverte .detail{display:none}
+  .cr.ouverte{background:none}
+  .cl-res{padding:18px 30px 24px}
+  .cl-res>span{width:auto;margin-inline-end:6px}
+  .edito{grid-template-columns:2fr 1fr 1fr;grid-template-rows:200px 200px;gap:10px}
+  .ed,.ed.g,.edito.n2 .ed:not(.g),.edito.n4 .ed:last-child{aspect-ratio:auto;height:100%;grid-column:auto}
+  .ed.g{grid-row:span 2}
+  .edito.n1{grid-template-columns:1fr;grid-template-rows:380px}
+  .edito.n2,.edito.n3{grid-template-columns:2fr 1fr}
+  .edito.n2 .ed:not(.g){grid-row:span 2}
+  .edito.n4 .ed:last-child{grid-column:span 2}
+  .ph-etapes{display:flex;flex-wrap:wrap;gap:0 28px}
+  .ph-lien{width:auto;flex:1 1 260px;border-top:0;border-bottom:1px solid var(--filet)}
+  .niv{display:grid;grid-template-columns:120px minmax(0,1fr);gap:16px;align-items:start}
+  .niv-t{margin-top:20px}
+  .vn-et{display:inline-flex}
+  .vue-nav .nav-in{justify-content:flex-end}
+  table.grand td{padding:16px 14px}
+}
+@container ch (min-width:1100px){
+  .hero-texte:before{inset:-110px -140px -50px -110px;background:radial-gradient(closest-side,rgba(6,7,9,.72),rgba(6,7,9,.42) 62%,rgba(6,7,9,0))}
+  .etapes{margin-top:150px}
+  .cote{display:block;padding-top:68px}
+  .cl-titre{font-size:62px}
+  .r-duo.r-docs{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);column-gap:64px}
+  .edito{grid-template-rows:230px 230px}
+  .edito.n1{grid-template-rows:440px}
+  .vue .r-vue .edito,.vue .r-vue .galerie{margin-top:18px}
+  .vue .r-vue .section+.section{margin-top:0}
+}
 </style>
 </head>
 <body>
@@ -440,11 +608,9 @@ body.sans-donnees .challenge-contenu{display:none}
 <main class="page">
   <div class="rangee r-classement">
     <section class="section" id="s-classement"></section>
+    <aside class="cote" id="s-cote"></aside>
   </div>
-  <div class="rangee r-duo">
-    <section class="section" id="s-resultats"></section>
-    <section class="section" id="s-photos"></section>
-  </div>
+  <section class="section" id="s-photos"></section>
   <div class="rangee r-duo r-docs">
     <section class="section" id="s-reprises"></section>
     <section class="section" id="s-reglement"></section>
@@ -456,6 +622,7 @@ body.sans-donnees .challenge-contenu{display:none}
 </div>
 </div>
 <div class="vue" id="vue"><div class="vue-c" id="vueC"></div></div>
+<div id="gerer" class="challenge"></div>
 <div id="import" class="challenge"></div>
 <div class="lb" id="lb">
   <button class="x" id="lbX" aria-label="×">×</button>
@@ -554,7 +721,14 @@ var TX2 = {
   elimine: { fr: "Éliminé", en: "Eliminated", es: "Eliminado", it: "Eliminato", de: "Ausgeschieden", ja: "失格", ar: "إقصاء" },
   lireRegl: { fr: "Lire le règlement complet", en: "Read the full rules", es: "Leer el reglamento completo", it: "Leggi il regolamento completo", de: "Ganzes Reglement lesen", ja: "規定全文を読む", ar: "قراءة النظام الكامل" },
   classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
-  abandon: { fr: "Abandon", en: "Retired", es: "Abandono", it: "Ritiro", de: "Aufgegeben", ja: "途中棄権", ar: "انسحب" }
+  abandon: { fr: "Abandon", en: "Retired", es: "Abandono", it: "Ritiro", de: "Aufgegeben", ja: "途中棄権", ar: "انسحب" },
+  resDetail: { fr: "Résultats détaillés", en: "Detailed results", es: "Resultados detallados", it: "Risultati dettagliati", de: "Detaillierte Ergebnisse", ja: "詳細結果", ar: "النتائج المفصّلة" },
+  enBref: { fr: "Le challenge en bref", en: "The challenge at a glance", es: "El challenge en resumen", it: "Il challenge in breve", de: "Die Challenge auf einen Blick", ja: "チャレンジ概要", ar: "التحدي باختصار" },
+  pasPhotosTout: { fr: "Les photos des journées apparaîtront ici dès qu'elles seront publiées.", en: "Photos from each day will appear here as soon as they are posted.", es: "Las fotos de las jornadas aparecerán aquí en cuanto se publiquen.", it: "Le foto delle giornate appariranno qui appena pubblicate.", de: "Die Fotos der Tage erscheinen hier, sobald sie veröffentlicht sind.", ja: "各日程の写真は公開され次第ここに表示されます。", ar: "ستظهر صور الأيام هنا فور نشرها." },
+  voirJournee: { fr: "Voir la journée", en: "See the day", es: "Ver la jornada", it: "Vedi la giornata", de: "Tag ansehen", ja: "この日を見る", ar: "عرض اليوم" },
+  souvenirs: { fr: "Souvenirs", en: "Memories", es: "Recuerdos", it: "Ricordi", de: "Erinnerungen", ja: "思い出", ar: "ذكريات" },
+  enResume: { fr: "En résumé", en: "In short", es: "En resumen", it: "In sintesi", de: "Kurz gesagt", ja: "要点", ar: "باختصار" },
+  parNiveau: { fr: "Par niveau", en: "By level", es: "Por nivel", it: "Per livello", de: "Nach Niveau", ja: "レベル別", ar: "حسب المستوى" }
 };
 
 var LANG = "fr";
@@ -632,29 +806,25 @@ function pills(cle, liste, actif, libelle) {
     return '<button class="pill' + (v === actif ? " actif" : "") + '" data-' + cle + '="' + esc(v) + '">' + esc(libelle ? libelle(v) : v) + "</button>";
   }).join("") + "</div>";
 }
-function selectCategorie(filtre) {
-  return '<select class="choix" data-res-filtre="1">' + CHALLENGE.categories.map(function (c) {
-    var noms = CHALLENGE.reprises.filter(function (x) { return x.cat === c && x.nom !== c; }).map(function (x) { return x.nom; }).join(" · ");
-    return '<option value="' + esc(c) + '"' + (c === filtre ? " selected" : "") + ">" + esc(c + (noms ? " — " + noms : "")) + "</option>";
-  }).join("") + "</select>";
-}
+function noteHtml(r) { return r.note != null ? '<span class="note-p">' + Number(r.note).toLocaleString(LOCALES[LANG]) + " %</span>" : '<span class="note-p vide">' + T("sansNote") + "</span>"; }
 function listeResultats(n, filtre) {
   var l = resultatsEtape(n, filtre);
   if (!l.length) return '<div class="vide"><span class="ico">✦</span>' + T("aucunRes") + "</div>";
+  var plusieurs = function (r) { return r.rep && CHALLENGE.reprises.filter(function (x) { return x.cat === r.cat; }).length > 1; };
   var liste = '<div class="lignes">' + l.map(function (r) {
     return '<div class="ligne' + (r.publie ? "" : " brouillon") + '"><button class="ligne-h" data-ouvrir="1">' + rangHtml(classe(r) ? r.pl : 0) +
-      '<span class="nm"><b>' + esc(r.cav) + "</b><span>" + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</button>" +
-      '<div class="note-det">' + (r.note != null ? T("note") + " " + Number(r.note).toLocaleString(LOCALES[LANG]) + " %" : T("sansNote")) + (r.rep && CHALLENGE.reprises.filter(function (x) { return x.cat === r.cat; }).length > 1 ? " · " + esc(r.rep) : "") + "</div></div>";
+      '<span class="nm"><b>' + esc(r.cav) + '</b><span class="che">' + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + '<span class="chev">▾</span></button>' +
+      '<div class="note-det"><span class="note-l">' + T("note") + "</span>" + noteHtml(r) + (plusieurs(r) ? '<span class="note-rep">' + esc(r.rep) + "</span>" : "") + "</div></div>";
   }).join("") + "</div>";
-  var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("points") + "</th></tr></thead><tbody>" +
+  var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("note") + '</th><th class="c">' + T("points") + "</th></tr></thead><tbody>" +
     l.map(function (r) {
-      return '<tr class="' + (r.publie ? "" : "brouillon") + '"><td class="c">' + rangHtml(classe(r) ? r.pl : 0) + "</td><td>" + esc(r.cav) + '</td><td style="color:var(--grisClair)">' + esc(r.che || "") + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
+      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && r.pl <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? r.pl : 0) + '</td><td class="t-cav">' + esc(r.cav) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
     }).join("") + "</tbody></table>";
   return liste + table;
 }
 function galerie(n) {
   var p = PHOTOS[n] || [];
-  if (!p.length) return '<div class="attente-photo"><div class="ico">◌</div><p>' + T("pasPhotos") + "</p></div>";
+  if (!p.length) return '<p class="ph-vide"><span>✦</span>' + T("pasPhotos") + "</p>";
   var petites = p.slice(1, 5), resteM = p.length - 4, resteD = p.length - 5;
   return '<div class="galerie' + (p.length < 4 ? " peu" : "") + '"><button class="grande" data-photo="' + n + ':0" style="background-image:url(\'' + esc(p[0]) + '\')" aria-label="' + T("oPhotos") + ' 1"></button>' +
     (petites.length ? '<div class="petites">' + petites.map(function (u, i) {
@@ -662,57 +832,78 @@ function galerie(n) {
         (i === 2 && resteM > 0 ? '<span class="plus m">+' + resteM + "</span>" : "") + (i === 3 && resteD > 0 ? '<span class="plus d">+' + resteD + "</span>" : "") + "</button>";
     }).join("") + "</div>" : "") + "</div>";
 }
+/* reprises : liste simple, rangée par niveau */
 function documents(cats) {
-  return '<div class="docs">' + CHALLENGE.reprises.filter(function (r) { return cats.indexOf(r.cat) >= 0; }).map(function (r) {
-    return '<div class="doc">' + DOC_SVG + '<span class="doc-t"><b>' + esc(r.nom) + "</b>" +
-      (r.pdf ? "<span>" + esc(r.cat) + " · " + T("repriseOff") + "</span>" : '<span class="manque">' + esc(r.cat) + " · " + T("bientot") + "</span>") + "</span>" +
-      (r.pdf ? '<a class="dl" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">↓ ' + T("telecharger") + "</a>" : '<span class="dl" aria-disabled="true">↓ ' + T("telecharger") + "</span>") + "</div>";
+  return '<div class="docs">' + cats.map(function (c) {
+    var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === c; });
+    if (!reps.length) return "";
+    return '<div class="niv"><span class="niv-t">' + esc(c) + '</span><div class="niv-l">' + reps.map(function (r) {
+      return '<div class="doc">' + DOC_SVG + '<span class="doc-t"><b>' + esc(r.nom) + "</b>" +
+        (r.pdf ? "<span>" + T("repriseOff") + "</span>" : '<span class="manque">' + T("bientot") + "</span>") + "</span>" +
+        (r.pdf ? '<a class="dl" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">↓ ' + T("telecharger") + "</a>" : '<span class="dl" aria-disabled="true">↓ ' + T("telecharger") + "</span>") + "</div>";
+    }).join("") + "</div></div>";
   }).join("") + "</div>";
 }
+function aDesResultats(n) { return RESULTATS.some(function (r) { return r.e === n; }); }
+function lienEtape(e) { return 'data-etape="' + e.n + '"' + (aDesResultats(e.n) ? ' data-vers="v-resultats"' : ""); }
+function lienReglement() { return "reglement-challenge.html?lang=" + LANG + (PARAMS.get("dansHype") ? "&dansHype=1" : ""); }
 
 /* ══════ PAGE PRINCIPALE ══════ */
 function rendreEtapes() {
   document.getElementById("etapes").innerHTML = CHALLENGE.etapes.map(function (e) {
     var s = statutEtape(e), fin = e.coef > 1;
-    return '<button class="etape" data-etape="' + e.n + '" style="--img:url(' + e.img + ')"><span class="etape-in">' +
+    return '<button class="etape" ' + lienEtape(e) + ' style="--img:url(' + e.img + ')"><span class="etape-in">' +
       '<span class="etape-haut"><span class="num">' + e.n + '</span><span class="date">' + esc(dateLongue(e.date)) + "</span></span>" +
       '<span class="nom">' + (fin ? T("finale") + " <em>×" + e.coef + "</em>" : nomEtape(e)) + "</span>" +
       '<span class="etape-bas">' + (fin ? '<span class="statut double">✦ ' + T("double") + "</span>" : '<span class="statut ' + s.cls + '">' + T(s.k) + "</span>") + "</span>" +
       '</span><span class="fleche"><span>→</span></span></button>';
   }).join("");
 }
+var SECTIONS = [["s-classement", "oClassement"], ["s-photos", "oPhotos"], ["s-reprises", "oReprisesCourt"], ["s-reglement", "oReglement"]];
 function rendreNav() {
-  var o = [["s-classement", "oClassement"], ["s-resultats", "oResultatsCourt"], ["s-photos", "oPhotos"], ["s-reprises", "oReprisesCourt"], ["s-reglement", "oReglement"]];
-  document.getElementById("navIn").innerHTML = o.map(function (x) {
+  document.getElementById("navIn").innerHTML = SECTIONS.map(function (x) {
     return '<button class="onglet' + (etat.onglet === x[0] ? " actif" : "") + '" data-aller="' + x[0] + '">' + T(x[1]) + "</button>";
   }).join("");
 }
 function rendreClassement() {
   var l = classementGeneral(etat.cat), vis = etat.complet ? l : l.slice(0, 5), E = CHALLENGE.etapes;
   var brou = marqueBrouillon(RESULTATS.filter(function (r) { return r.cat === etat.cat; }));
-  var h = '<div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre">' + T("provisoire") + "</h2></div>" + brou + "</div>";
-  h += '<div class="panneau photo">' + pills("cat", CHALLENGE.categories, etat.cat);
-  if (!l.length) h += '<div class="vide"><span class="ico">✦</span>' + T("aucunRes") + "</div>";
+  var h = '<div class="cl" style="--ne:' + E.length + '"><div class="cl-haut"><div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre cl-titre">' + T("provisoire") + "</h2></div>" + brou + "</div>" +
+    '<div class="cl-cats">' + pills("cat", CHALLENGE.categories, etat.cat) + "</div></div>";
+  if (!l.length) h += '<div class="vide">' + T("aucunRes") + "</div>";
   else {
-    h += '<div class="lignes">' + vis.map(function (c) {
-      return '<div class="ligne"><button class="ligne-h" data-ouvrir="1">' + rangHtml(c.rang) +
-        '<span class="nm"><b>' + esc(c.cav) + "</b></span>" + ptsHtml(c.total, true) + '<span class="chev">▾</span></button>' +
-        '<div class="detail">' + E.map(function (e) {
-          return '<div class="case"><small>' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "</small>" + (c.e[e.n] == null ? '<b class="tiret">–</b>' : "<b>" + c.e[e.n] + "</b>") + "</div>";
+    h += '<div class="cl-cols" aria-hidden="true"><span>' + T("rang") + "</span><span>" + T("cavalier") + "</span>" +
+      E.map(function (e) { return '<span class="c">' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "<small>" + dateCourte(e.date) + "</small></span>"; }).join("") +
+      '<span class="c c-tot">' + T("total") + "</span></div>";
+    h += '<div class="cl-lignes">' + vis.map(function (c) {
+      var cases = E.map(function (e) { return c.e[e.n] == null ? '<b class="tiret">–</b>' : "<b>" + c.e[e.n] + "</b>"; });
+      return '<div class="cr' + (c.rang <= 3 ? " top r" + c.rang : "") + '"><button class="cr-h" data-ouvrir="1"><span class="cr-rang">' + c.rang + '</span><span class="cr-nom">' + esc(c.cav) + "</span>" +
+        cases.map(function (x) { return '<span class="cr-e">' + x + "</span>"; }).join("") +
+        '<span class="cr-tot">' + c.total + "<small>" + T("pts") + '</small></span><span class="chev">▾</span></button>' +
+        '<div class="detail">' + E.map(function (e, i) {
+          return '<button class="case" ' + lienEtape(e) + '><small>' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "</small>" + cases[i] + "</button>";
         }).join("") + "</div></div>";
     }).join("") + "</div>";
-    h += '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th>" +
-      E.map(function (e) { return '<th class="c">' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "<br>" + dateCourte(e.date) + "</th>"; }).join("") +
-      '<th class="c">' + T("total") + "</th></tr></thead><tbody>" +
-      vis.map(function (c) {
-        return '<tr><td class="c">' + rangHtml(c.rang) + "</td><td>" + esc(c.cav) + "</td>" +
-          E.map(function (e) { return '<td class="c">' + (c.e[e.n] == null ? '<span style="color:var(--gris)">–</span>' : '<span style="font-family:var(--serif);font-size:20px;color:var(--champ)">' + c.e[e.n] + "</span>") + "</td>"; }).join("") +
-          '<td class="c">' + ptsHtml(c.total, true) + "</td></tr>";
-      }).join("") + "</tbody></table>";
     if (l.length > 5) h += '<div class="pied"><button class="lien" data-complet="1">' + (etat.complet ? T("voirMoins") : T("voirComplet")) + " <i>" + (etat.complet ? "↑" : "→") + "</i></button></div>";
   }
+  var avecRes = E.filter(function (e) { return aDesResultats(e.n); });
+  if (avecRes.length) h += '<div class="cl-res"><span>' + T("resDetail") + "</span>" + avecRes.map(function (e) {
+    return '<button class="cl-res-l" data-etape="' + e.n + '" data-vers="v-resultats">' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + " <i>→</i></button>";
+  }).join("") + "</div>";
   h += "</div>";
   document.getElementById("s-classement").innerHTML = h;
+}
+/* colonne secondaire (ordinateur) : l'essentiel du challenge à côté du classement */
+function rendreCote() {
+  var E = CHALLENGE.etapes;
+  document.getElementById("s-cote").innerHTML = '<div class="cote-in"><span class="surtitre">' + T("enBref") + "</span>" +
+    '<div class="cote-dates">' + E.map(function (e) {
+      var s = statutEtape(e), fin = e.coef > 1;
+      return '<button class="cote-d" ' + lienEtape(e) + '><span class="num">' + e.n + '</span><span class="cote-dt"><b>' + esc(dateJourMoisLong(e.date)) + "</b><small>" + nomEtape(e) + (fin ? " ×" + e.coef : "") + " · " + (fin && s.k === "aVenir" ? T("double") : T(s.k)) + '</small></span><i>→</i></button>';
+    }).join("") + "</div>" +
+    '<div class="cote-x2"><span class="x">×2</span><span>' + TF("x2texte", { d3: d3() }) + "</span></div>" +
+    '<p class="cote-txt">' + T("r3") + "</p>" +
+    '<a class="lien" href="' + lienReglement() + '">' + T("lireRegl") + " <i>→</i></a></div>";
 }
 function d3() { var f = CHALLENGE.etapes.filter(function (e) { return e.coef > 1; })[0]; return f ? dateJourMoisLong(f.date) : ""; }
 function baremeHtml() {
@@ -723,33 +914,37 @@ function baremeHtml() {
       return '<div class="bcase"><small>' + T("place") + " " + c[0] + "</small><b>" + c[1] + "</b><i>" + T("finale") + " " + c[1] * k + "</i></div>";
     }).join("") + '</div><div class="bareme-legende"><span>✦ ' + TF("finaleDouble", { d3: d3() }) + "</span></div></details>";
 }
-function rendreResultats() {
-  var vis = RESULTATS.filter(function (r) { return r.e === etat.resEtape && r.cat === etat.resFiltre; });
-  document.getElementById("s-resultats").innerHTML = '<div class="tete"><h2 class="titre">' + T("oResultats") + "</h2>" + marqueBrouillon(vis) + "</div>" +
-    '<div class="panneau photo">' +
-    pills("res-etape", CHALLENGE.etapes.map(function (e) { return String(e.n); }), String(etat.resEtape), function (v) { var e = etape(+v); return nomEtape(e) + " · " + dateJourMois(e.date); }) +
-    selectCategorie(etat.resFiltre) + listeResultats(etat.resEtape, etat.resFiltre) +
-    '<div class="pied"><button class="lien" data-etape="' + etat.resEtape + '">' + T("voirEtape") + " <i>→</i></button></div></div>";
-}
+/* galerie éditoriale : une grande photo + des secondaires, chacune rattachée à sa journée */
 function rendrePhotos() {
-  document.getElementById("s-photos").innerHTML = '<div class="tete"><h2 class="titre">' + T("oPhotos") + "</h2></div>" +
-    pills("photo-etape", CHALLENGE.etapes.map(function (e) { return String(e.n); }), String(etat.photoEtape), function (v) { return nomEtape(etape(+v)); }) +
-    galerie(etat.photoEtape) +
-    ((PHOTOS[etat.photoEtape] || []).length > 1 ? '<div class="pied"><button class="lien" data-etape="' + etat.photoEtape + '" data-vers="v-photos">' + T("voirPhotos") + " <i>→</i></button></div>" : "");
+  var E = CHALLENGE.etapes, toutes = [];
+  E.slice().reverse().forEach(function (e) { (PHOTOS[e.n] || []).forEach(function (u, i) { toutes.push({ n: e.n, u: u, i: i }); }); });
+  var avec = E.filter(function (e) { return (PHOTOS[e.n] || []).length; });
+  var h = '<div class="tete"><div><span class="surtitre">' + T("souvenirs") + '</span><h2 class="titre">' + T("oPhotos") + "</h2></div></div>";
+  if (!toutes.length) h += '<p class="ph-vide"><span>✦</span>' + T("pasPhotosTout") + "</p>";
+  else {
+    var sel = toutes.slice(0, 5);
+    h += '<div class="edito n' + sel.length + '">' + sel.map(function (p, k) {
+      var e = etape(p.n);
+      return '<button class="ed' + (k ? "" : " g") + '" data-photo="' + p.n + ":" + p.i + '" style="background-image:url(\'' + esc(p.u) + '\')" aria-label="' + T("oPhotos") + '"><span class="ed-leg">' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</span></button>";
+    }).join("") + "</div>";
+    h += '<div class="ph-etapes">' + avec.map(function (e) {
+      return '<button class="ph-lien" data-etape="' + e.n + '" data-vers="v-photos"><span class="num">' + e.n + '</span><span class="ph-t"><b>' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</b><small>" + T("oPhotos") + " · " + PHOTOS[e.n].length + "</small></span><i>" + T("voirJournee") + " →</i></button>";
+    }).join("") + "</div>";
+  }
+  document.getElementById("s-photos").innerHTML = h;
 }
 function rendreReprises() {
-  document.getElementById("s-reprises").innerHTML = '<div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" +
-    pills("rep-cat", CHALLENGE.categories, etat.repCat) + documents([etat.repCat]);
+  document.getElementById("s-reprises").innerHTML = '<div class="tete"><div><span class="surtitre">' + T("parNiveau") + '</span><h2 class="titre">' + T("oReprises") + "</h2></div></div>" +
+    documents(CHALLENGE.categories);
 }
+/* règlement en synthèse sur l'accueil ; le texte complet est sur sa page */
 function rendreReglement() {
-  var E = CHALLENGE.etapes, cats = CHALLENGE.categories;
-  var catsTxt = cats.length > 1 ? cats[0] + " → " + cats[cats.length - 1] : (cats[0] || "");
-  document.getElementById("s-reglement").innerHTML = '<div class="tete"><h2 class="titre">' + T("reglTitre") + "</h2>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + "</div>" +
+  document.getElementById("s-reglement").innerHTML = '<div class="tete"><div><span class="surtitre">' + T("enResume") + '</span><h2 class="titre">' + T("reglTitre") + "</h2></div>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + "</div>" +
     (CHALLENGE.bareme.valide ? "" : '<p class="regl-intro">' + T("reglIntro") + "</p>") +
     '<div class="finale-x2"><span class="x">×2</span><span><b>' + T("x2titre") + "</b><span>" + TF("x2texte", { d3: d3() }) + "</span></span></div>" +
+    '<p class="regl-court">' + T("r3") + " " + T("r4") + "</p>" +
     baremeHtml() +
-    '<a class="lien lien-regl" href="reglement-challenge.html?lang=' + LANG + (PARAMS.get("dansHype") ? "&dansHype=1" : "") + '">' + T("lireRegl") + ' <i>→</i></a>' +
-    '<ol class="regles"><li>' + TF("r1", { d1: dateJourMoisLong(E[0] && E[0].date), d2: dateJourMoisLong(E[1] && E[1].date), d3: d3() }) + "</li><li>" + TF("r2", { cats: catsTxt }) + "</li><li>" + T("r3") + "</li><li>" + T("r4") + '</li>' + (CHALLENGE.bareme.valide ? "" : '<li class="acf"><span>' + T("r5") + " <em>" + T("aConfirmer").toLowerCase() + ".</em></span></li>") + "</ol>";
+    '<a class="lien lien-regl" href="' + lienReglement() + '">' + T("lireRegl") + " <i>→</i></a>";
 }
 
 /* ══════ PAGE D'UNE JOURNÉE ══════ */
@@ -762,7 +957,7 @@ function rendreVue() {
     '<div class="bas"><div class="sur"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + esc(e.titre || "") + "</div>" +
     "<h2>" + esc(dateLongue(e.date)) + "</h2>" +
     '<div class="lignestat">' + (fin ? '<span class="statut double">✦ ' + T("finale") + " ×" + e.coef + " · " + T("double") + "</span>" : "") + '<span class="statut ' + s.cls + '">' + T(s.k) + "</span></div></div></div>";
-  h += '<nav class="vue-nav"><div class="page nav-in">' + ongl.map(function (o) {
+  h += '<nav class="vue-nav"><div class="page nav-in"><span class="vn-et"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</span>" + ongl.map(function (o) {
     return '<button class="onglet' + (vueEtat.onglet === o[0] ? " actif" : "") + '" data-vue-aller="' + o[0] + '">' + T(o[1]) + "</button>";
   }).join("") + "</div></nav>";
   h += '<div class="page">';
@@ -783,7 +978,7 @@ function rendreNavVue() {
 function allerDansVue(id) {
   var v = document.getElementById("vue"), s = document.getElementById(id);
   vueEtat.onglet = id; rendreNavVue();
-  if (s) v.scrollTo({ top: s.offsetTop - 52, behavior: "smooth" });
+  if (s) v.scrollTo({ top: s.offsetTop - 64, behavior: "smooth" });
 }
 function ouvrirVue(n, vers) {
   vueEtat.n = n; vueEtat.onglet = "v-journee";
@@ -798,7 +993,8 @@ function ouvrirVue(n, vers) {
 function fermerVue() { document.getElementById("vue").classList.remove("ouverte"); document.body.style.overflow = ""; }
 document.getElementById("vue").addEventListener("scroll", function () {
   var ids = ["v-journee", "v-resultats", "v-photos", "v-reprises"], cur = ids[0];
-  ids.forEach(function (id) { var s = document.getElementById(id); if (s && s.getBoundingClientRect().top < 120) cur = id; });
+  /* sur ordinateur, Résultats et Photos sont côte à côte : à hauteur égale, on garde le premier */
+  var best = -1e9; ids.forEach(function (id) { var s = document.getElementById(id); if (!s) return; var t = s.getBoundingClientRect().top; if (t < 120 && t > best + 12) { best = t; cur = id; } });
   if (cur !== vueEtat.onglet) { vueEtat.onglet = cur; rendreNavVue(); }
 }, { passive: true });
 
@@ -819,23 +1015,16 @@ document.addEventListener("click", function (ev) {
   if (d.cat) { etat.cat = d.cat; etat.complet = false; rendreClassement(); return; }
   if (d.complet) { etat.complet = !etat.complet; rendreClassement(); return; }
   if (d.ouvrir) { t.parentNode.classList.toggle("ouverte"); return; }
-  if (d.resEtape) { etat.resEtape = +d.resEtape; rendreResultats(); return; }
-  if (d.photoEtape) { etat.photoEtape = +d.photoEtape; rendrePhotos(); return; }
-  if (d.repCat) { etat.repCat = d.repCat; rendreReprises(); return; }
   if (d.vueCat) { vueEtat.filtre = d.vueCat; var v = document.getElementById("vue"), y = v.scrollTop; rendreVue(); v.scrollTop = y; return; }
   if (d.photo) { var p = d.photo.split(":"); ouvrirLb(+p[0], +p[1]); return; }
   if (d.vueAller) { allerDansVue(d.vueAller); return; }
   if (d.fermerVue) { fermerVue(); return; }
 });
-document.addEventListener("change", function (ev) {
-  var t = ev.target;
-  if (t.dataset.resFiltre !== undefined) { etat.resFiltre = t.value; rendreResultats(); }
-});
 document.getElementById("lbX").onclick = fermerLb;
 document.getElementById("lbPr").onclick = function () { pasLb(LANG === "ar" ? 1 : -1); };
 document.getElementById("lbSv").onclick = function () { pasLb(LANG === "ar" ? -1 : 1); };
 document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") { if (document.getElementById("lb").classList.contains("ouverte")) fermerLb(); else fermerVue(); }
+  if (e.key === "Escape") { if (document.getElementById("lb").classList.contains("ouverte")) fermerLb(); else if (!IMP.ouvert && GP.ouvert) { GP.ouvert = false; rendreGestion(); } else if (!IMP.ouvert) fermerVue(); }
   if (document.getElementById("lb").classList.contains("ouverte")) { if (e.key === "ArrowLeft") pasLb(LANG === "ar" ? 1 : -1); if (e.key === "ArrowRight") pasLb(LANG === "ar" ? -1 : 1); }
 });
 (function () { var x0 = null, el = document.getElementById("lb");
@@ -844,7 +1033,7 @@ document.addEventListener("keydown", function (e) {
 })();
 window.addEventListener("scroll", function () {
   if (!CHALLENGE) return;
-  var ids = ["s-classement", "s-resultats", "s-photos", "s-reprises", "s-reglement"], cur = ids[0];
+  var ids = SECTIONS.map(function (x) { return x[0]; }), cur = ids[0];
   ids.forEach(function (id) { if (document.getElementById(id).getBoundingClientRect().top < 120) cur = id; });
   if (cur !== etat.onglet) { etat.onglet = cur; rendreNav(); }
 }, { passive: true });
@@ -857,7 +1046,7 @@ function tout() {
   document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr";
   document.querySelectorAll("[data-t]").forEach(function (el) { el.innerHTML = T(el.dataset.t); });
   if (!CHALLENGE) return;
-  rendreEtapes(); rendreNav(); rendreClassement(); rendreResultats(); rendrePhotos(); rendreReprises(); rendreReglement(); rendreGestion();
+  rendreEtapes(); rendreNav(); rendreClassement(); rendreCote(); rendrePhotos(); rendreReprises(); rendreReglement(); rendreGestion();
   if (document.getElementById("vue").classList.contains("ouverte")) rendreVue();
 }
 function message(cle, avecLien) {
@@ -945,6 +1134,7 @@ try { if (PARAMS.get("dansHype")) document.body.classList.add("dans-hype"); } ca
 window.__challengeRetour = function () {
   if (document.getElementById("lb").classList.contains("ouverte")) { fermerLb(); return true; }
   if (IMP.ouvert) { if (IMP.epreuves.length && !confirm("Fermer sans enregistrer ? La lecture sera perdue.")) return true; IMP.ouvert = false; IMP.epreuves = []; IMP.erreur = ""; rendreImport(); return true; }
+  if (GP.ouvert) { GP.ouvert = false; rendreGestion(); return true; }
   if (document.getElementById("vue").classList.contains("ouverte")) { fermerVue(); return true; }
   return false;
 };
@@ -954,20 +1144,31 @@ window.__challengeRetour = function () {
    Import d'une feuille : photo → lecture automatique → vérification → brouillon → publication
    ══════════════════════════════════════════════════════════════ */
 var IMP = { ouvert: false, etape: 1, enCours: false, erreur: "", info: "", epreuves: [] };
+var GP = { ouvert: false };
+/* accès discret sous les étapes + panneau « Gérer le challenge » (mêmes fonctions qu'avant, rangées dans un panneau) */
 function rendreGestion() {
-  var z = document.getElementById("gestion");
-  if (!GERE) { z.hidden = true; z.innerHTML = ""; return; }
+  var z = document.getElementById("gestion"), o = document.getElementById("gerer");
+  if (!GERE) { z.hidden = true; z.innerHTML = ""; GP.ouvert = false; o.classList.remove("ouverte"); o.innerHTML = ""; return; }
+  var nbBrou = RESULTATS.filter(function (r) { return !r.publie; }).length;
   z.hidden = false;
+  z.innerHTML = '<button class="g-acces" data-adm="ouvrir-gestion">Gérer le challenge' +
+    (nbBrou ? '<span class="g-pastille">' + nbBrou + " en brouillon</span>" : "") + (CHALLENGE.publie ? "" : '<span class="g-pastille">page masquée</span>') + "</button>";
+  if (!GP.ouvert) { o.classList.remove("ouverte"); o.innerHTML = ""; return; }
+  o.classList.add("ouverte");
   var parEtape = CHALLENGE.etapes.map(function (e) {
     var l = RESULTATS.filter(function (r) { return r.e === e.n; }), brou = l.filter(function (r) { return !r.publie; }).length;
-    return '<div class="g-etape"><span><b>' + nomEtape(e) + "</b> · " + l.length + " résultat" + (l.length > 1 ? "s" : "") + (brou ? ' · <em>' + brou + " en brouillon</em>" : (l.length ? " · publiés" : "")) + "</span>" +
-      (brou ? '<button class="g-btn" data-adm="publier-etape" data-n="' + e.n + '">Publier</button>' : (l.length ? '<button class="g-btn discret" data-adm="depublier-etape" data-n="' + e.n + '">Repasser en brouillon</button>' : "")) + "</div>";
+    return '<div class="g-etape"><span><b>' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</b><br>" + l.length + " résultat" + (l.length > 1 ? "s" : "") + (brou ? ' · <em>' + brou + " en brouillon</em>" : (l.length ? " · publiés" : "")) + "</span>" +
+      '<span class="g-etape-b">' + (l.length ? '<button class="g-btn discret" data-adm="voir-etape" data-n="' + e.n + '">Voir</button>' : "") +
+      (brou ? '<button class="g-btn" data-adm="publier-etape" data-n="' + e.n + '">Publier</button>' : (l.length ? '<button class="g-btn discret" data-adm="depublier-etape" data-n="' + e.n + '">Repasser en brouillon</button>' : "")) + "</span></div>";
   }).join("");
-  z.innerHTML = '<div class="g-in"><div class="g-tete"><span class="g-titre">Gestion du challenge</span><span class="g-etat">' +
-    (CHALLENGE.publie ? "Page visible par les membres" : "Page masquée — visible par toi seule") + "</span></div>" +
-    '<div class="g-actions"><button class="g-btn plein" data-adm="importer">Importer une feuille de résultats</button>' +
-    '<button class="g-btn" data-adm="publier-page">' + (CHALLENGE.publie ? "Masquer la page" : "Rendre la page visible") + "</button></div>" +
-    parEtape + (IMP.info ? '<p class="g-info">' + esc(IMP.info) + "</p>" : "") + "</div>";
+  o.innerHTML = '<div class="i-in"><div class="i-tete"><b>Gérer le challenge</b><button class="i-x" data-adm="fermer-gestion" aria-label="Fermer">×</button></div>' +
+    '<p class="i-aide">Réservé aux gestionnaires du club : les membres ne voient ni ce panneau ni le bouton qui l\'ouvre.</p>' +
+    (IMP.info ? '<p class="g-info">' + esc(IMP.info) + "</p>" : "") +
+    '<div class="g-bloc"><div class="i-label">Visibilité de la page</div><div class="g-etape"><span><b>' + (CHALLENGE.publie ? "Page visible par les membres" : "Page masquée") + "</b><br>" + (CHALLENGE.publie ? "Seuls les résultats publiés apparaissent." : "Visible seulement par les gestionnaires.") + "</span>" +
+    '<button class="g-btn" data-adm="publier-page">' + (CHALLENGE.publie ? "Masquer la page" : "Rendre la page visible") + "</button></div></div>" +
+    '<div class="g-bloc"><div class="i-label">Ajouter des résultats</div><div class="g-actions"><button class="g-btn plein" data-adm="importer">Importer une feuille de résultats</button>' +
+    '<button class="g-btn" data-adm="gerer-manuel">Saisir une épreuve à la main</button></div></div>' +
+    '<div class="g-bloc"><div class="i-label">Brouillons et publication</div>' + parEtape + "</div></div>";
 }
 function catDepuisTitre(t) {
   var s = String(t || "").toLowerCase();
@@ -1135,6 +1336,10 @@ async function enregistrerImport() {
 async function gestionClic(t, d) {
   var a = d.adm;
   if (a === "importer") { IMP.ouvert = true; IMP.erreur = ""; IMP.info = ""; var dern = CHALLENGE.etapes.filter(function (e) { return e.date && e.date <= AUJOURDHUI; }).pop(); IMP.etape = dern ? dern.n : 1; rendreImport(); document.getElementById("import").scrollTop = 0; return; }
+  if (a === "ouvrir-gestion") { GP.ouvert = true; rendreGestion(); document.getElementById("gerer").scrollTop = 0; return; }
+  if (a === "fermer-gestion") { GP.ouvert = false; IMP.info = ""; rendreGestion(); return; }
+  if (a === "voir-etape") { GP.ouvert = false; rendreGestion(); ouvrirVue(+d.n, "v-resultats"); return; }
+  if (a === "gerer-manuel") { gestionClic(t, { adm: "importer" }); gestionClic(t, { adm: "imp-manuel" }); return; }
   if (a === "fermer-import") { if (IMP.epreuves.length && !confirm("Fermer sans enregistrer ? La lecture sera perdue.")) return; IMP.ouvert = false; IMP.epreuves = []; IMP.erreur = ""; rendreImport(); return; }
   if (a === "imp-etape") { IMP.etape = +d.n; rendreImport(); return; }
   if (a === "imp-manuel") { IMP.epreuves.push({ titre: "Épreuve saisie à la main", cat: "", rep: null, lignes: [ligneVide(), ligneVide(), ligneVide()] }); rendreImport(); return; }
