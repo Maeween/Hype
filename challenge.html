@@ -366,7 +366,6 @@ body.dans-hype .vue-hero .hero-haut{display:none}
 #etat-page p{margin:0;font-family:var(--serif);font-size:24px;line-height:1.3;color:var(--ivoire);max-width:420px}
 body.sans-donnees .challenge-contenu{display:none}
 .statut-r{font-size:12.5px;color:var(--grisClair);letter-spacing:.3px;white-space:nowrap}
-.ligne.brouillon .nm b:after,tr.brouillon td:nth-child(2):after{content:" · brouillon";font-size:11px;font-weight:400;color:var(--ambre)}
 
 /* ═════ GESTION (modératrices / gestionnaires) ═════ */
 #gestion{margin:22px 0 0}
@@ -635,7 +634,7 @@ function pills(cle, liste, actif, libelle) {
 }
 function selectCategorie(filtre) {
   return '<select class="choix" data-res-filtre="1">' + CHALLENGE.categories.map(function (c) {
-    var noms = CHALLENGE.reprises.filter(function (x) { return x.cat === c; }).map(function (x) { return x.nom; }).join(" · ");
+    var noms = CHALLENGE.reprises.filter(function (x) { return x.cat === c && x.nom !== c; }).map(function (x) { return x.nom; }).join(" · ");
     return '<option value="' + esc(c) + '"' + (c === filtre ? " selected" : "") + ">" + esc(c + (noms ? " — " + noms : "")) + "</option>";
   }).join("") + "</select>";
 }
