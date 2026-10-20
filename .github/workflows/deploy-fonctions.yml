@@ -37,3 +37,7 @@ jobs:
       # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton
       # (sans ce drapeau, la ligne de commande remet le contrôle et tout appel est refusé).
       - run: supabase functions deploy notifier-abonnement --no-verify-jwt --project-ref $PROJECT_ID
+
+      # 20/10 : notifications personnelles (mention, commentaire) envoyées sur le téléphone.
+      # --no-verify-jwt OBLIGATOIRE : c'est la base qui l'appelle, sans jeton (comme notifier-abonnement).
+      - run: supabase functions deploy notifier-notif --no-verify-jwt --project-ref $PROJECT_ID
