@@ -13796,3 +13796,13 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - challenge.html : sur les vignettes de l'accueil (bloc Photos) et de la page d'étape (aperçu) : même voile sombre que les cartes d'étape (haut, coin de début de ligne, bas, bords ; version arabe en miroir), fin liseré clair, légende « Étape 1 · 11 oct. » avec ombre portée ; légère teinte chaude (sépia 0,22, saturation 0,85, contraste 1,06, luminosité 0,9). La photo ouverte en grand, la galerie et les fichiers d'origine ne changent pas.
 - index.html : seulement le marqueur.
 - Tests : rendu sur une vraie photo du concours (390 px) ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 20/10/2026 (15 h 35) — PUBLICATION (marqueur 20261020-1535, Blandine « Publié » 15:34) — CHALLENGE : corrections après relecture des 20 captures
+- Demande de 15:25 (relecture ChatGPT des 20 captures) : haut de l'iPhone, photos de test, Equifun sans dates, CSO sans résultat, cohérence, lisibilité, arabe. Validation des captures corrigées par Blandine avant publication.
+- challenge.html :
+  - haut de l'écran : fond plein (et non plus transparent à 96 %) sous l'heure ; barre d'onglets collée : les onglets qui dépassent s'estompent avant le bouton retour et le drapeau (défilement visible, rien caché sous le drapeau) ;
+  - challenge sans aucune étape (Equifun) : encadré « Programme — Dates à venir — Les dates et les informations seront communiquées dès que le programme sera défini. » (7 langues) ; classement, photos et barre d'onglets masqués (un seul onglet restant) ; règlement conservé ; tout réapparaît dès qu'une étape existe ;
+  - challenge sans aucun résultat (CSO) : « Classement général » gardé avec un message court, sans pastilles ni colonnes vides ; présentation normale dès le premier résultat ;
+  - photos de test : présentes uniquement dans l'outil de capture, jamais dans l'appli (rien à corriger, rien supprimé).
+- Aucune donnée, aucun calcul, aucune règle d'accès modifiés. index.html : seulement le marqueur.
+- Tests : captures 390 / 820 / 1024 / 1230 dans Hype / 1440, arabe ; liens, onglets, ancres, barème, catégories, gestion, règlement complet, visiteur / membre / gestionnaire, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
