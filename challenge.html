@@ -1057,7 +1057,9 @@ function majBandeau() {
   var vue = document.getElementById("vue"), ouverte = vue && vue.classList.contains("ouverte");
   var n = ouverte ? document.querySelector("#vue .vue-nav") : document.querySelector(".nav");
   var c = estCollee(n); if (n && n.classList.contains("colle") !== c) { n.classList.toggle("colle", c); ongletVisible(n.querySelector(".nav-in")); }
-  var b = document.getElementById("bandeauHaut"); if (b) b.classList.toggle("on", c);
+  /* le fond apparaît dès qu'on fait défiler : le texte ne passe plus sous l'heure et la batterie */
+  var y = ouverte ? vue.scrollTop : (window.scrollY || document.documentElement.scrollTop || 0);
+  var b = document.getElementById("bandeauHaut"); if (b) b.classList.toggle("on", c || y > 4);
 }
 
 /* décor (photos d'ambiance de la maquette, jamais présentées comme des photos du concours) */
