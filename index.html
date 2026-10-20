@@ -44623,9 +44623,14 @@ function EcranChallenge() {
     try { var w = cadre.current && cadre.current.contentWindow; if (w && typeof w.__challengeRetour === "function") fait = !!w.__challengeRetour(); } catch (e) { }
     if (!fait) sortir();
   }
-  return h("div", { style: { position: "relative" } },
+  /* 20/10 (06 h 53) Blandine : sur iPhone, l heure, la batterie et les onglets du challenge se chevauchaient, et le bas passait
+     sous la barre de l appli. Sur telephone et tablette (barre en bas), la page est donc posee en FIXE : du haut de l ecran
+     jusqu au-dessus de la barre (77 px + zone du trait d accueil de l iPhone). Elle ne peut plus glisser sous la barre ni
+     faire defiler l appli derriere elle. La page du challenge mesure elle-meme la zone de l heure (env safe-area) dans l appli.
+     Ordinateur (barre laterale) : inchange. Les autres ecrans et la barre de l appli ne sont pas touches. */
+  return h("div", { style: large ? { position: "relative" } : { position: "fixed", top: 0, left: 0, right: 0, bottom: "calc(77px + env(safe-area-inset-bottom))", zIndex: 5, background: "#060709" } },
     h("iframe", { ref: cadre, key: cle + lg, src: "challenge.html?c=" + encodeURIComponent(cle) + "&lang=" + encodeURIComponent(lg) + "&dansHype=1", title: "Challenge",
-      style: { display: "block", width: "100%", height: large ? "100dvh" : "calc(100dvh - 84px)", border: 0, background: "#060709" } }),
+      style: { display: "block", width: "100%", height: large ? "100dvh" : "100%", border: 0, background: "#060709" } }),
     h("button", { type: "button", onClick: retour, "aria-label": "Retour",
       style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 30, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(6,7,9,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "#F4EFE4", fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
       rtl ? "›" : "‹"),

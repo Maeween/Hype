@@ -20,6 +20,7 @@
   --champ:#D9C7A3; --champDoux:rgba(217,199,163,.36); --champVoile:rgba(217,199,163,.09);
   --ligne:rgba(217,199,163,.18); --filet:rgba(244,239,228,.08);
   --ambre:#E8B84B;
+  --sat:env(safe-area-inset-top,0px); --navTop:var(--sat);
   --serif:'Cormorant Garamond',Georgia,serif; --sans:'Montserrat',system-ui,sans-serif;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -35,7 +36,7 @@ button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
 .hero-img{position:relative;height:430px;background:url(images/challenge/hero-mobile.webp) 58% 20%/cover no-repeat}
 .hero-img:after{content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(6,7,9,.3) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 66%,rgba(6,7,9,.45) 86%,var(--nuit) 100%)}
-.hero-haut{position:absolute;top:0;left:0;right:0;z-index:2;padding:calc(env(safe-area-inset-top) + 14px) 20px 0}
+.hero-haut{position:absolute;top:0;left:0;right:0;z-index:2;padding:calc(var(--sat) + 14px) 20px 0}
 .retour{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ivoire);opacity:.9}
 .retour b{font-weight:400;font-size:18px;line-height:1}
 [dir=rtl] .retour b{transform:scaleX(-1)}
@@ -67,7 +68,7 @@ h1 .l2{display:block;color:var(--ivoire)}
 [dir=rtl] .fleche span{transform:scaleX(-1);display:inline-block}
 
 /* ═════ NAVIGATION ═════ */
-.nav{position:sticky;top:0;z-index:40;margin-top:60px;background:rgba(6,7,9,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
+.nav{position:sticky;top:var(--navTop);z-index:40;margin-top:60px;background:rgba(6,7,9,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
 .nav-in{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none;padding-top:2px}
 .nav-in::-webkit-scrollbar{display:none}
 .onglet{flex:0 0 auto;min-height:48px;padding:15px 0 13px;font-size:14px;color:var(--grisClair);border-bottom:2px solid transparent;white-space:nowrap}
@@ -200,9 +201,9 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 .regl-intro{margin:12px 0 0;font-size:14.5px;color:var(--grisClair)}
 
 /* ═════ FIN ═════ */
-.fin{position:relative;margin-top:72px;min-height:220px;padding-bottom:22px;background:url(images/challenge/bandeau.webp) 60% center/cover no-repeat}
-.fin:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--nuit) 0%,rgba(6,7,9,.35) 45%,rgba(6,7,9,.55) 100%)}
-.fin p{position:relative;margin:0;padding:96px 0 0;font-family:var(--serif);font-weight:500;font-size:27px;line-height:1.15}
+.fin{position:relative;margin-top:40px;min-height:220px;padding-bottom:22px;background:url(images/challenge/bandeau.webp) 60% center/cover no-repeat}
+.fin:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--nuit) 0%,rgba(6,7,9,.1) 28%,rgba(6,7,9,.18) 55%,rgba(6,7,9,.6) 100%)}
+.fin p{position:relative;margin:0;padding:96px 0 0;text-shadow:0 1px 16px rgba(6,7,9,.6);font-family:var(--serif);font-weight:500;font-size:27px;line-height:1.15}
 .fin p:after{content:"";display:block;width:56px;height:1px;background:var(--champ);margin-top:14px}
 
 /* ═════ PAGE D'UNE JOURNÉE ═════ */
@@ -216,7 +217,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 .vue-hero .sur .num{width:30px;height:30px;font-size:17px;letter-spacing:0}
 .vue-hero h2{margin:12px 0 0;font-family:var(--serif);font-weight:600;font-size:42px;line-height:1;color:var(--ivoire)}
 .vue-hero .lignestat{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
-.vue-nav{position:sticky;top:0;z-index:5;background:rgba(6,7,9,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
+.vue-nav{position:sticky;top:var(--navTop);z-index:5;background:rgba(6,7,9,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
 .vue .section{padding-top:44px}
 .vue .titre{font-size:36px}
 .vue-intro{margin:0;font-size:15.5px;line-height:1.7;color:var(--ivoire)}
@@ -234,7 +235,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 .lb{position:fixed;inset:0;z-index:90;background:rgba(3,8,12,.96);display:none;align-items:center;justify-content:center}
 .lb.ouverte{display:flex}
 .lb img{max-width:94vw;max-height:78vh;border-radius:10px}
-.lb .x{position:absolute;top:calc(env(safe-area-inset-top) + 14px);inset-inline-end:16px;width:42px;height:42px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:20px}
+.lb .x{position:absolute;top:calc(var(--sat) + 14px);inset-inline-end:16px;width:42px;height:42px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:20px}
 .lb .pr,.lb .sv{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:20px;background:rgba(6,7,9,.6)}
 .lb .pr{inset-inline-start:12px}.lb .sv{inset-inline-end:12px}
 [dir=rtl] .lb .pr span,[dir=rtl] .lb .sv span{display:inline-block;transform:scaleX(-1)}
@@ -284,7 +285,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
   .galerie .plus.m{display:none}
   .galerie .plus.d{display:flex}
   .finale-x2{padding:24px 28px}
-  .fin{min-height:260px;margin-top:96px}
+  .fin{min-height:260px;margin-top:64px}
   .fin p{font-size:34px;padding-top:120px}
   /* page d'une journée */
   .vue-hero{height:460px;background-image:var(--imgL)}
@@ -373,7 +374,7 @@ body.sans-donnees .challenge-contenu{display:none}
 .g-info{margin:10px 0 0;font-size:13px;color:var(--ambre)}
 #import{position:fixed;inset:0;z-index:95;background:var(--nuit);overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
 #import.ouverte{display:block}
-.i-in{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px 120px}
+.i-in{max-width:760px;margin:0 auto;padding:calc(var(--sat) + 14px) 16px 120px}
 .i-tete{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .i-tete b{font-family:var(--serif);font-weight:600;font-size:26px}
 .i-x{width:42px;height:42px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:22px}
@@ -599,9 +600,53 @@ body.dans-hype .nav.colle .nav-in,body.dans-hype .vue-nav.colle .nav-in{margin-l
 @container ch (min-width:700px){
   #s-classement{padding-top:52px}
 }
+/* ═════ HAUT D'ÉCRAN (iPhone) ═════
+   --sat = hauteur de la zone de l'heure et de la batterie (mesurée dans l'appli, car un cadre ne la reçoit pas) ;
+   --navTop = où se colle la barre d'onglets ; dans Hype, elle se cale sur le bouton retour et le drapeau de l'appli. */
+body.dans-hype{--navTop:calc(var(--sat) + 6px)}
+#bandeauHaut{position:fixed;top:0;left:0;right:0;height:var(--navTop);z-index:80;background:rgba(6,7,9,.96);pointer-events:none;display:none}
+#bandeauHaut.on{display:block}
+body.dans-hype .i-in{padding-top:calc(var(--sat) + 62px)}
+body.dans-hype .lb .x{top:calc(var(--sat) + 62px)}
+/* ═════ REPRISES + RÈGLEMENT (accueil, version légère) ═════ */
+.t-bas{font-size:30px}
+.sous-t{margin:6px 0 0;font-size:14px;line-height:1.5;color:var(--grisClair)}
+#s-reprises .pills{margin-top:16px}
+@container ch (max-width:699px){#s-reglement{padding-top:40px}#s-photos{padding-top:48px}}
+.rep-l{margin-top:6px}
+.rep{display:flex;align-items:center;gap:14px;min-height:68px;padding:10px 0;border-top:1px solid var(--filet)}
+.rep:first-child{border-top:0}
+.rep .doc-ico{width:24px;height:31px}
+.rep .doc-t b{font-size:20px}
+.rep .doc-t span{font-size:13px;color:var(--grisClair)}
+.rep .doc-t span.manque{color:var(--grisClair);opacity:.85}
+.dl[disabled]{opacity:.45;cursor:default;border-color:var(--filet);color:var(--gris)}
+.x2-l{display:flex;align-items:center;gap:14px;min-height:56px;margin-top:16px;padding:8px 16px;border:1px solid rgba(217,199,163,.3);border-radius:12px}
+.x2-l .x{flex:0 0 auto;font-family:var(--serif);font-weight:600;font-size:30px;line-height:1;color:var(--champ);opacity:.9}
+.x2-t{font-size:14px;line-height:1.4;color:var(--grisClair)}
+.x2-t b{font-weight:500;color:var(--ivoire)}
+.regles-b{list-style:none;margin:12px 0 0;padding:0}
+.regles-b li{display:flex;gap:14px;padding:12px 0;border-top:1px solid var(--filet);font-size:14.5px;line-height:1.55;color:var(--ivoire)}
+.regles-b li:first-child{border-top:0}
+.regles-b .n{flex:0 0 26px;font-family:var(--serif);font-weight:600;font-size:17px;line-height:1.35;color:var(--champ)}
+#s-reglement details.bareme-pli{margin-top:12px}
+.lien-d{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:8px;font-size:14px;color:var(--champ);text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(217,199,163,.4)}
+.lien-d i{font-style:normal}
+[dir=rtl] .lien-d i{display:inline-block;transform:scaleX(-1)}
+@container ch (min-width:700px){
+  .t-bas{font-size:34px}
+  .rep-l,.regles-b,.x2-l,#s-reglement details.bareme-pli{max-width:640px}
+}
+@container ch (min-width:1100px){
+  .t-bas{font-size:36px}
+  /* Reprises et Règlement l'un sous l'autre : leurs contenus sont trop inégaux pour deux colonnes */
+  .r-duo.r-docs{display:block}
+  .x2-l,#s-reglement details.bareme-pli{max-width:640px}
+}
 </style>
 </head>
 <body>
+<div id="bandeauHaut" aria-hidden="true"></div>
 <div class="challenge">
 <div id="etat-page"><p data-t="chargement"></p></div>
 <div class="challenge-contenu">
@@ -688,7 +733,6 @@ var TX = {
   place: { fr: "Place", en: "Place", es: "Puesto", it: "Posto", de: "Platz", ja: "順位", ar: "المركز" },
   etapes12: { fr: "Étapes 1 et 2", en: "Legs 1 & 2", es: "Etapas 1 y 2", it: "Tappe 1 e 2", de: "Etappen 1 und 2", ja: "第1・2戦", ar: "المرحلتان 1 و2" },
   etSuivants: { fr: "et +", en: "and +", es: "y +", it: "e +", de: "und +", ja: "以下", ar: "وما بعده" },
-  finaleDouble: { fr: "La finale du 30 mai compte double.", en: "The 30 May final counts double.", es: "La final del 30 de mayo cuenta doble.", it: "La finale del 30 maggio conta doppio.", de: "Das Finale am 30. Mai zählt doppelt.", ja: "5月30日の決勝はポイント2倍。", ar: "نهائي 30 مايو يُحتسب مضاعفًا." },
   voirEtape: { fr: "Voir toute l'étape", en: "See the whole leg", es: "Ver toda la etapa", it: "Vedi tutta la tappa", de: "Ganze Etappe ansehen", ja: "この戦をすべて見る", ar: "عرض المرحلة كاملة" },
   photosDe: { fr: "Photos de la journée", en: "Photos of the day", es: "Fotos de la jornada", it: "Foto della giornata", de: "Fotos des Tages", ja: "当日の写真", ar: "صور اليوم" },
   voirPhotos: { fr: "Voir toutes les photos", en: "See all photos", es: "Ver todas las fotos", it: "Vedi tutte le foto", de: "Alle Fotos ansehen", ja: "すべての写真を見る", ar: "عرض كل الصور" },
@@ -699,9 +743,6 @@ var TX = {
   reglTitre: { fr: "Règlement du challenge", en: "Challenge rules", es: "Reglamento del challenge", it: "Regolamento del challenge", de: "Reglement der Challenge", ja: "チャレンジ規定", ar: "نظام التحدي" },
   reglIntro: { fr: "Version provisoire : le règlement officiel n'est pas encore validé.", en: "Provisional version: the official rules are not yet approved.", es: "Versión provisional: el reglamento oficial aún no está validado.", it: "Versione provvisoria: il regolamento ufficiale non è ancora approvato.", de: "Vorläufige Fassung: Das offizielle Reglement ist noch nicht bestätigt.", ja: "暫定版：正式な規定はまだ承認されていません。", ar: "نسخة مؤقتة: النظام الرسمي لم يُعتمد بعد." },
   x2titre: { fr: "Finale à points doublés", en: "Double-points final", es: "Final con puntos dobles", it: "Finale a punti doppi", de: "Finale mit doppelten Punkten", ja: "決勝はポイント2倍", ar: "نهائي بنقاط مضاعفة" },
-  x2texte: { fr: "Le 30 mai, chaque place rapporte deux fois plus de points.", en: "On 30 May, every placing earns twice as many points.", es: "El 30 de mayo, cada puesto vale el doble de puntos.", it: "Il 30 maggio ogni piazzamento vale il doppio dei punti.", de: "Am 30. Mai bringt jede Platzierung doppelt so viele Punkte.", ja: "5月30日は各順位のポイントが2倍。", ar: "في 30 مايو، يمنح كل مركز ضعف النقاط." },
-  r1: { fr: "Trois journées : 11 octobre, 10 janvier et finale le 30 mai.", en: "Three days: 11 October, 10 January and the final on 30 May.", es: "Tres jornadas: 11 de octubre, 10 de enero y la final el 30 de mayo.", it: "Tre giornate: 11 ottobre, 10 gennaio e finale il 30 maggio.", de: "Drei Tage: 11. Oktober, 10. Januar und Finale am 30. Mai.", ja: "全3日程：10月11日、1月10日、決勝5月30日。", ar: "ثلاثة أيام: 11 أكتوبر و10 يناير والنهائي في 30 مايو." },
-  r2: { fr: "Un classement séparé par catégorie, du Galop 3 au Galop 7.", en: "A separate ranking for each category, Galop 3 to Galop 7.", es: "Una clasificación separada por categoría, del Galop 3 al Galop 7.", it: "Una classifica separata per categoria, dal Galop 3 al Galop 7.", de: "Eine eigene Wertung je Kategorie, von Galop 3 bis Galop 7.", ja: "ギャロップ3から7まで、カテゴリー別の順位。", ar: "ترتيب منفصل لكل فئة، من غالوب 3 إلى غالوب 7." },
   r3: { fr: "Les points sont cumulés par cavalier : tu peux changer de cheval d'une étape à l'autre.", en: "Points add up per rider: you may change horse between legs.", es: "Los puntos se suman por jinete: puedes cambiar de caballo entre etapas.", it: "I punti si sommano per cavaliere: puoi cambiare cavallo tra le tappe.", de: "Die Punkte zählen pro Reiter/in: Du darfst das Pferd zwischen den Etappen wechseln.", ja: "ポイントは騎乗者ごとに合算。戦ごとに馬を替えてもよい。", ar: "تُجمع النقاط لكل فارس: يمكنك تغيير الحصان بين المراحل." },
   r4: { fr: "Les points dépendent de la place ; la note n'est pas nécessaire.", en: "Points depend on the placing; the score is not required.", es: "Los puntos dependen del puesto; la nota no es necesaria.", it: "I punti dipendono dal piazzamento; il punteggio non è necessario.", de: "Die Punkte richten sich nach der Platzierung; die Note ist nicht nötig.", ja: "ポイントは順位で決まり、得点は不要。", ar: "تعتمد النقاط على المركز؛ العلامة غير ضرورية." },
   r5: { fr: "Égalités, forfaits, éliminations, changements de catégorie et conditions pour être classé :", en: "Ties, withdrawals, eliminations, category changes and eligibility:", es: "Empates, retiradas, eliminaciones, cambios de categoría y condiciones de clasificación:", it: "Parità, ritiri, eliminazioni, cambi di categoria e condizioni di classifica:", de: "Gleichstände, Rückzüge, Ausschlüsse, Kategoriewechsel und Wertungsbedingungen:", ja: "同点・棄権・失格・カテゴリー変更・順位対象条件：", ar: "التعادل والانسحاب والإقصاء وتغيير الفئة وشروط التصنيف:" },
@@ -744,6 +785,7 @@ var TX2 = {
   voirJournee: { fr: "Voir la journée", en: "See the day", es: "Ver la jornada", it: "Vedi la giornata", de: "Tag ansehen", ja: "この日を見る", ar: "عرض اليوم" },
   souvenirs: { fr: "Souvenirs", en: "Memories", es: "Recuerdos", it: "Ricordi", de: "Erinnerungen", ja: "思い出", ar: "ذكريات" },
   enResume: { fr: "En résumé", en: "In short", es: "En resumen", it: "In sintesi", de: "Kurz gesagt", ja: "要点", ar: "باختصار" },
+  repSous: { fr: "Les reprises officielles par catégorie.", en: "The official tests for each category.", es: "Las reprises oficiales por categoría.", it: "Le riprese ufficiali per categoria.", de: "Die offiziellen Aufgaben je Kategorie.", ja: "カテゴリー別の公式課目。", ar: "البرامج الرسمية حسب الفئة." },
   ajoutPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "Añadir fotos", it: "Aggiungi foto", de: "Fotos hinzufügen", ja: "写真を追加", ar: "إضافة صور" },
   parNiveau: { fr: "Par niveau", en: "By level", es: "Por nivel", it: "Per livello", de: "Nach Niveau", ja: "レベル別", ar: "حسب المستوى" }
 };
@@ -768,6 +810,25 @@ var PARAMS = new URLSearchParams(location.search);
 var CLE_CH = PARAMS.get("c") || "dressage-sep-2026";
 try { LANG = PARAMS.get("lang") || (P && P.__hypeLangue) || "fr"; } catch (eL) { LANG = "fr"; }
 if (!TX.evenements[LANG]) LANG = "fr";
+/* zone de l'heure / batterie : un cadre ne reçoit pas cette valeur, on la mesure dans l'appli (moins la position du cadre) */
+function majHaut() {
+  var sat = null;
+  try { if (P && window.frameElement) { var t = P.document.createElement("div"); t.style.cssText = "position:fixed;top:0;left:0;width:1px;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none"; P.document.body.appendChild(t); var v = t.getBoundingClientRect().height; P.document.body.removeChild(t); sat = Math.max(0, v - Math.max(0, window.frameElement.getBoundingClientRect().top)); } } catch (eH) { sat = null; }
+  if (window.__satForce != null) sat = window.__satForce;
+  if (sat != null) document.documentElement.style.setProperty("--sat", sat + "px");
+}
+window.__challengeHaut = function (px) { window.__satForce = px; majHaut(); majBandeau(); };   /* pour les essais */
+majHaut(); window.addEventListener("resize", majHaut); window.addEventListener("orientationchange", function () { setTimeout(majHaut, 300); });
+/* hauteur occupée en haut par une barre d'onglets collée (son point d'accroche + sa hauteur) */
+function hautBarre(sel) { var n = document.querySelector(sel); if (!n) return 60; return (parseFloat(getComputedStyle(n).top) || 0) + n.offsetHeight; }
+function estCollee(n) { return !!n && n.getBoundingClientRect().top <= (parseFloat(getComputedStyle(n).top) || 0) + 1; }
+/* un fond sous l'heure et la batterie dès qu'une barre est collée en haut */
+function majBandeau() {
+  var vue = document.getElementById("vue"), ouverte = vue && vue.classList.contains("ouverte");
+  var n = ouverte ? document.querySelector("#vue .vue-nav") : document.querySelector(".nav");
+  var c = estCollee(n); if (n) n.classList.toggle("colle", c);
+  var b = document.getElementById("bandeauHaut"); if (b) b.classList.toggle("on", c);
+}
 
 /* décor (photos d'ambiance de la maquette, jamais présentées comme des photos du concours) */
 var DECOR = {
@@ -962,18 +1023,26 @@ function rendrePhotos() {
   if (toutes.length) h += boutonAjoutPhotos(derniere, true);
   document.getElementById("s-photos").innerHTML = h;
 }
+/* reprises de l'accueil : pastilles de catégorie + seulement les reprises de la catégorie choisie */
 function rendreReprises() {
-  document.getElementById("s-reprises").innerHTML = '<div class="tete"><div><span class="surtitre">' + T("parNiveau") + '</span><h2 class="titre">' + T("oReprises") + "</h2></div></div>" +
-    documents(CHALLENGE.categories);
+  var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === etat.repCat; });
+  document.getElementById("s-reprises").innerHTML = '<div class="tete"><div><h2 class="titre t-bas">' + T("oReprises") + '</h2><p class="sous-t">' + T("repSous") + "</p></div></div>" +
+    pills("rep-cat", CHALLENGE.categories, etat.repCat) +
+    '<div class="rep-l">' + (reps.length ? reps.map(function (r) {
+      return '<div class="rep">' + DOC_SVG + '<span class="doc-t"><b>' + esc(r.nom) + "</b><span" + (r.pdf ? "" : ' class="manque"') + "><bdi>" + esc(r.cat) + "</bdi> · " + T(r.pdf ? "repriseOff" : "bientot") + "</span></span>" +
+        (r.pdf ? '<a class="dl" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">↓ ' + T("telecharger") + "</a>" : '<button class="dl" type="button" disabled aria-disabled="true">↓ ' + T("telecharger") + "</button>") + "</div>";
+    }).join("") : '<p class="ph-vide"><span>✦</span>' + T("bientot") + "</p>") + "</div>";
 }
-/* règlement en synthèse sur l'accueil ; le texte complet est sur sa page */
+/* règlement en synthèse sur l'accueil (direction B, légère) : une ligne ×2, quatre règles, barème replié, lien */
 function rendreReglement() {
-  document.getElementById("s-reglement").innerHTML = '<div class="tete"><div><span class="surtitre">' + T("enResume") + '</span><h2 class="titre">' + T("reglTitre") + "</h2></div>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + "</div>" +
+  var E = CHALLENGE.etapes;
+  var regles = [TF("r1", { d1: dateJourMoisLong(E[0] && E[0].date), d2: dateJourMoisLong(E[1] && E[1].date), d3: d3() }), TF("r2", { cats: CHALLENGE.categories.map(function (c) { return "<bdi>" + esc(String(c).replace(/ /g, "\u00a0")) + "</bdi>"; }).join(", ") }), T("r3"), T("r4")];
+  document.getElementById("s-reglement").innerHTML = '<div class="tete"><div><h2 class="titre t-bas">' + T("reglTitre") + "</h2></div>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + "</div>" +
     (CHALLENGE.bareme.valide ? "" : '<p class="regl-intro">' + T("reglIntro") + "</p>") +
-    '<div class="finale-x2"><span class="x">×2</span><span><b>' + T("x2titre") + "</b><span>" + TF("x2texte", { d3: d3() }) + "</span></span></div>" +
-    '<p class="regl-court">' + T("r3") + " " + T("r4") + "</p>" +
+    '<div class="x2-l"><span class="x">×2</span><span class="x2-t"><b>' + T("x2titre") + "</b> — " + esc(d3()) + "</span></div>" +
+    '<ol class="regles-b">' + regles.map(function (r, i) { return '<li><span class="n">' + String(i + 1).padStart(2, "0") + "</span><span>" + r + "</span></li>"; }).join("") + "</ol>" +
     baremeHtml() +
-    '<a class="lien lien-regl" href="' + lienReglement() + '">' + T("lireRegl") + " <i>→</i></a>";
+    '<a class="lien-d" href="' + lienReglement() + '">' + T("lireRegl") + " <i>→</i></a>";
 }
 
 /* ══════ PAGE D'UNE JOURNÉE ══════ */
@@ -1008,7 +1077,7 @@ function rendreNavVue() {
 function allerDansVue(id) {
   var v = document.getElementById("vue"), s = document.getElementById(id);
   vueEtat.onglet = id; rendreNavVue();
-  if (s) v.scrollTo({ top: s.offsetTop - 64, behavior: "smooth" });
+  if (s) { var c = s.firstElementChild || s; v.scrollTo({ top: v.scrollTop + c.getBoundingClientRect().top - hautBarre("#vue .vue-nav") - 18, behavior: "smooth" }); }
 }
 function ouvrirVue(n, vers) {
   vueEtat.n = n; vueEtat.onglet = "v-journee";
@@ -1018,14 +1087,16 @@ function ouvrirVue(n, vers) {
   if (catsJour.length && catsJour.indexOf(vueEtat.filtre) < 0) vueEtat.filtre = catsJour[0];
   rendreVue(); var v = document.getElementById("vue"); v.classList.add("ouverte"); v.scrollTop = 0;
   document.body.style.overflow = "hidden";
+  majBandeau();
   if (vers) setTimeout(function () { allerDansVue(vers); }, 30);
 }
-function fermerVue() { document.getElementById("vue").classList.remove("ouverte"); document.body.style.overflow = ""; }
+function fermerVue() { document.getElementById("vue").classList.remove("ouverte"); document.body.style.overflow = ""; majBandeau(); }
 document.getElementById("vue").addEventListener("scroll", function () {
-  var vn = document.querySelector("#vue .vue-nav"); if (vn) vn.classList.toggle("colle", vn.getBoundingClientRect().top <= 1);
+  majBandeau();
   var ids = ["v-journee", "v-resultats", "v-photos", "v-reprises"], cur = ids[0];
   /* sur ordinateur, Résultats et Photos sont côte à côte : à hauteur égale, on garde le premier */
-  var best = -1e9; ids.forEach(function (id) { var s = document.getElementById(id); if (!s) return; var t = s.getBoundingClientRect().top; if (t < 120 && t > best + 12) { best = t; cur = id; } });
+  var seuilV = hautBarre("#vue .vue-nav") + 40;
+  var best = -1e9; ids.forEach(function (id) { var s = document.getElementById(id); if (!s) return; var t = s.getBoundingClientRect().top; if (t < seuilV && t > best + 12) { best = t; cur = id; } });
   if (cur !== vueEtat.onglet) { vueEtat.onglet = cur; rendreNavVue(); }
 }, { passive: true });
 
@@ -1041,9 +1112,10 @@ document.addEventListener("click", function (ev) {
   var t = ev.target.closest("button,[data-photo]"); if (!t) return;
   var d = t.dataset;
   if (d.adm) { gestionClic(t, d); return; }
+  if (d.repCat) { etat.repCat = d.repCat; rendreReprises(); return; }
   if (d.ajoutPhoto) { try { P.hypeChallengeOuvrirJournee(d.ajoutPhoto); } catch (eA) { } return; }
   if (d.etape) { ouvrirVue(+d.etape, d.vers); return; }
-  if (d.aller) { etat.onglet = d.aller; rendreNav(); var s = document.getElementById(d.aller); window.scrollTo({ top: s.getBoundingClientRect().top + window.scrollY - 30, behavior: "smooth" }); return; }
+  if (d.aller) { etat.onglet = d.aller; rendreNav(); var s = document.getElementById(d.aller), c = s.firstElementChild || s; window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - hautBarre(".nav") - 18, behavior: "smooth" }); return; }
   if (d.cat) { etat.cat = d.cat; etat.complet = false; rendreClassement(); return; }
   if (d.complet) { etat.complet = !etat.complet; rendreClassement(); return; }
   if (d.ouvrir) { t.parentNode.classList.toggle("ouverte"); return; }
@@ -1064,10 +1136,11 @@ document.addEventListener("keydown", function (e) {
   el.addEventListener("touchend", function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) pasLb((dx < 0 ? 1 : -1) * (LANG === "ar" ? -1 : 1)); x0 = null; });
 })();
 window.addEventListener("scroll", function () {
-  var nv = document.querySelector(".nav"); if (nv) nv.classList.toggle("colle", nv.getBoundingClientRect().top <= 1);
+  majBandeau();
   if (!CHALLENGE) return;
   var ids = SECTIONS.map(function (x) { return x[0]; }), cur = ids[0];
-  ids.forEach(function (id) { if (document.getElementById(id).getBoundingClientRect().top < 120) cur = id; });
+  var seuil = hautBarre(".nav") + 40;
+  ids.forEach(function (id) { if (document.getElementById(id).getBoundingClientRect().top < seuil) cur = id; });
   if (cur !== etat.onglet) { etat.onglet = cur; rendreNav(); }
 }, { passive: true });
 document.getElementById("retour").addEventListener("click", function () {
