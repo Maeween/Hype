@@ -13817,3 +13817,13 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
   - vignettes photos de la page (accueil et aperçu d'étape) : lumière dorée « coucher de soleil » au centre (dégradé orangé en mode overlay), bords assombris dans un brun chaud, légère teinte chaude (sépia 0,25) ; remplace le voile précédent ; version arabe en miroir ; photo ouverte, galerie et fichiers inchangés.
 - index.html : seulement le marqueur. Aucune donnée, aucun calcul, aucune permission modifiés.
 - Tests : captures avant / après (Equifun 390 et 1440, plein écran iPhone et ordinateur, onglets premier / avant-dernier / dernier en fr et ar, bande de gestion) ; liens, ancres, barème, gestion, visiteur / membre / gestionnaire, 7 langues, pastilles sur une ligne — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
+
+## 20/10/2026 (16 h 05) — À RETENIR : effet photo « Coucher de soleil » (validé par Blandine : « top », à réutiliser)
+- Où il est utilisé : challenge.html, petites photos de la page (accueil .ed et aperçu d'étape .ap). Jamais sur la photo ouverte en grand ni dans la galerie ; les fichiers ne sont jamais modifiés (effet d'affichage seulement).
+- Recette (3 couches) :
+  1. teinte de la photo : filter: sepia(.25) saturate(1.05) contrast(1.05)
+  2. lumière dorée au centre (pseudo-élément :before, mix-blend-mode: overlay) : radial-gradient(ellipse 66% 60% at 52% 40%, rgba(255,155,55,.75), rgba(255,130,50,.3) 48%, rgba(255,120,45,.08) 75%)
+  3. bords assombris en brun chaud (pseudo-élément :after) : radial-gradient(ellipse 78% 72% at 52% 42%, rgba(14,8,3,0) 45%, rgba(14,8,3,.68) 100%) + linear-gradient(0deg, rgba(12,7,3,.55), rgba(12,7,3,0) 40%) ; fin liseré inset 0 0 0 1px rgba(244,239,228,.07)
+- Arabe : centre de la lumière en miroir (48 % au lieu de 52 %).
+- Attention : si la photo est une balise img dans un bouton, mettre :before et :after en z-index 1 (sinon l'image passe par-dessus la lumière) et les textes posés sur la photo en z-index 2.
+- Historique du choix : 4 propositions (Doré doux, Coucher de soleil, Halo lumineux, Ambre cinéma), puis versions « plus chaudes » ; Blandine a choisi Coucher de soleil plus chaud.
