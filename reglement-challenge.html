@@ -107,6 +107,22 @@ h1 span{display:block;color:var(--champ)}
   .art:before{font-size:42px}
 }
 
+/* AMBIANCE « DORÉ + PLUS CLAIR » (20/10, comme la page du challenge) : lumière coucher de soleil sur la photo du haut,
+   encadrés et textes un peu plus clairs, fin de page Hype habituelle (paysage fondu). */
+:root{--carte:#151B21;--carte2:#192027;--gris:#AEB5BC;--grisClair:#D0D5D9}
+.ent-lum{position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:overlay;
+  background:radial-gradient(ellipse 70% 60% at 58% 34%,rgba(255,160,60,.7),rgba(255,135,50,.25) 50%,rgba(255,120,45,0) 78%)}
+[dir=rtl] .ent-lum{background:radial-gradient(ellipse 70% 60% at 42% 34%,rgba(255,160,60,.7),rgba(255,135,50,.25) 50%,rgba(255,120,45,0) 78%)}
+.entete:after{background:linear-gradient(180deg,rgba(6,7,9,.3) 0%,rgba(6,7,9,0) 20%,rgba(6,7,9,0) 55%,rgba(6,7,9,.7) 85%,var(--nuit) 100%)}
+@media (min-width:700px){.entete:after{background:linear-gradient(90deg,rgba(6,7,9,.75) 0%,rgba(6,7,9,.3) 40%,rgba(6,7,9,0) 65%),linear-gradient(180deg,rgba(6,7,9,0) 55%,var(--nuit) 100%)}}
+.jour{background:linear-gradient(180deg,#151C22,#11171C)}
+.jour.finale{background:linear-gradient(180deg,rgba(217,199,163,.12),#11171C)}
+.exemple{background:#121820}
+.x2{background:linear-gradient(120deg,rgba(217,199,163,.1),#11171C 70%)}
+.fin-hype{padding-top:40px}
+.fh-img img{opacity:.92;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 30%,#000 62%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 30%,#000 62%,transparent 100%)}
+.fh-img:after{background:linear-gradient(90deg,var(--nuit) 0%,rgba(6,7,9,0) 12%,rgba(6,7,9,0) 88%,var(--nuit) 100%)}
+
 /* IMPRESSION : version claire, économe en encre */
 @media print{
   @page{size:A4;margin:16mm 16mm 18mm}
@@ -114,7 +130,8 @@ h1 span{display:block;color:var(--champ)}
   body{background:#fff;font-size:11pt}
   .doc{max-width:none;padding:0}
   .entete{height:auto;background:none}
-  .entete:after,.retour,.imprimer,.fin-hype .fh-img{display:none}
+  .entete:after,.ent-lum,.retour,.imprimer,.fin-hype .fh-img{display:none}
+  .jour,.exemple,.x2,.jour.finale{background:none}
   .titre-doc{margin-top:0;max-width:none}
   h1{font-size:34pt}
   .cal{margin-top:20px}
@@ -124,7 +141,7 @@ h1 span{display:block;color:var(--champ)}
 </style>
 </head>
 <body>
-<header class="entete"><button class="retour" id="retour"><b>‹</b><span id="tRetour"></span></button></header>
+<header class="entete"><span class="ent-lum" aria-hidden="true"></span><button class="retour" id="retour"><b>‹</b><span id="tRetour"></span></button></header>
 <div class="doc" id="doc"></div>
 <div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
 <script>
