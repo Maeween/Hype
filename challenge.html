@@ -489,7 +489,12 @@ body.sans-donnees .challenge-contenu{display:none}
 .ed{position:relative;display:block;aspect-ratio:1/1;border-radius:12px;overflow:hidden;background:var(--carte2) center 35%/cover no-repeat}
 .ed.g{grid-column:1/-1;aspect-ratio:4/3;border-radius:16px}
 .edito.n2 .ed:not(.g),.edito.n4 .ed:last-child{grid-column:1/-1;aspect-ratio:16/9}
-.ed-leg{position:absolute;inset-inline-start:0;bottom:0;right:0;padding:26px 12px 10px;font-size:12.5px;letter-spacing:.4px;color:var(--ivoire);background:linear-gradient(0deg,rgba(6,7,9,.7),rgba(6,7,9,0));text-align:start}
+.ed-leg{position:absolute;z-index:1;inset-inline-start:0;bottom:0;right:0;padding:26px 12px 10px;font-size:12.5px;letter-spacing:.4px;color:var(--ivoire);text-shadow:0 1px 12px rgba(6,7,9,.7);text-align:start}
+/* même voile que les cartes d'étape, seulement sur les vignettes de la page (la photo ouverte reste intacte) */
+.ed:after,.ap button:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;
+  background:linear-gradient(180deg,rgba(6,7,9,.42) 0%,rgba(6,7,9,0) 40%),radial-gradient(90% 70% at 0% 0%,rgba(6,7,9,.45),rgba(6,7,9,0) 70%),linear-gradient(0deg,rgba(6,7,9,.62) 0%,rgba(6,7,9,0) 45%),radial-gradient(130% 100% at 50% 45%,rgba(6,7,9,0) 55%,rgba(6,7,9,.45) 100%);
+  box-shadow:inset 0 0 0 1px rgba(244,239,228,.07)}
+[dir=rtl] .ed:after,[dir=rtl] .ap button:after{background:linear-gradient(180deg,rgba(6,7,9,.42) 0%,rgba(6,7,9,0) 40%),radial-gradient(90% 70% at 100% 0%,rgba(6,7,9,.45),rgba(6,7,9,0) 70%),linear-gradient(0deg,rgba(6,7,9,.62) 0%,rgba(6,7,9,0) 45%),radial-gradient(130% 100% at 50% 45%,rgba(6,7,9,0) 55%,rgba(6,7,9,.45) 100%)}
 .ph-etapes{margin-top:14px}
 .ph-lien{width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--filet);text-align:start}
 .ph-lien:first-child{border-top:0}
@@ -746,7 +751,7 @@ body.dans-hype .gx-tete{padding-left:64px;padding-right:64px}
 .ap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ap.ap-peu{grid-template-columns:1fr 1fr}
 .ap.ap-peu button:first-child{grid-column:auto;grid-row:auto}
-.ap-plus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,7,9,.55);font-family:var(--serif);font-weight:600;font-size:26px;color:var(--ivoire)}
+.ap-plus{position:absolute;z-index:1;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,7,9,.55);font-family:var(--serif);font-weight:600;font-size:26px;color:var(--ivoire)}
 .ap-tout{margin-top:14px}
 /* visionneuse : photo entière */
 .lb img{object-fit:contain;max-height:calc(100% - var(--sat) - 150px)}
