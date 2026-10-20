@@ -1,0 +1,1137 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Challenge — Hype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- HYPE ▸ Page des challenges de club (Dressage, CSO, Equifun) — un seul modèle.
+     Ouverte dans Hype (écran « challenge ») : elle emprunte la session de l'appli.
+     Données : tables challenges / challenge_resultats ; photos = publications du rendez-vous de l'agenda.
+     Les points ne sont jamais stockés : place + barème + coefficient, recalculés à l'affichage. -->
+<style>
+:root{
+  /* palette Hype (COLORS.nuit + pages Team / Agenda / Événements passés) */
+  --nuit:#060709; --petrole:#0B0F13; --carte:#0D1318; --carte2:#11171C;
+  --ivoire:#F4EFE4; --gris:#8A929C; --grisClair:#B9C0C6;
+  --champ:#D9C7A3; --champDoux:rgba(217,199,163,.36); --champVoile:rgba(217,199,163,.09);
+  --ligne:rgba(217,199,163,.18); --filet:rgba(244,239,228,.08);
+  --ambre:#E8B84B;
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Montserrat',system-ui,sans-serif;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{overflow-x:clip;overscroll-behavior:none}
+body{margin:0;font-variant-numeric:lining-nums;background:var(--nuit);color:var(--ivoire);font-family:var(--sans);font-size:15px;line-height:1.55;overflow-x:clip}
+button,select{font-family:inherit;color:inherit;font-size:inherit;font-variant-numeric:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+.page{max-width:1240px;margin:0 auto;padding:0 20px}
+
+
+/* ═════ HERO ═════ */
+.hero{position:relative}
+.hero-img{position:relative;height:430px;background:url(images/challenge/hero-mobile.webp) 58% 20%/cover no-repeat}
+.hero-img:after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(6,7,9,.4) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 58%,rgba(6,7,9,.7) 84%,var(--nuit) 100%)}
+.hero-haut{position:absolute;top:0;left:0;right:0;z-index:2;padding:calc(env(safe-area-inset-top) + 14px) 20px 0}
+.retour{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ivoire);opacity:.9}
+.retour b{font-weight:400;font-size:18px;line-height:1}
+[dir=rtl] .retour b{transform:scaleX(-1)}
+.hero-texte{position:relative;z-index:2;margin-top:-118px}
+h1{font-family:var(--serif);font-weight:600;margin:0;line-height:.95;font-size:50px;letter-spacing:.2px}
+h1 .l1{display:block;color:var(--champ)}
+h1 .l2{display:block;color:var(--ivoire)}
+.sous{margin:16px 0 0;font-family:var(--serif);font-weight:500;font-size:14.5px;letter-spacing:3.6px;text-transform:uppercase;color:var(--grisClair)}
+.intro{margin:18px 0 0;font-size:15px;line-height:1.65;color:var(--ivoire);opacity:.92;max-width:420px}
+
+/* ═════ ÉTAPES ═════ */
+.etapes{display:grid;grid-template-columns:1fr;gap:12px;margin-top:52px}
+.etape{position:relative;display:block;width:100%;height:var(--hEtape,158px);border-radius:16px;overflow:hidden;border:1px solid var(--ligne);background:var(--carte) var(--img) center/cover no-repeat;text-align:start}
+.etape:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(6,7,9,.82) 0%,rgba(6,7,9,.5) 40%,rgba(6,7,9,0) 72%),linear-gradient(0deg,rgba(6,7,9,.45),rgba(6,7,9,0) 40%)}
+[dir=rtl] .etape:after{background:linear-gradient(270deg,rgba(6,7,9,.92) 0%,rgba(6,7,9,.7) 42%,rgba(6,7,9,.1) 78%),linear-gradient(0deg,rgba(6,7,9,.55),rgba(6,7,9,0) 45%)}
+.etape-in{position:absolute;inset:0;z-index:1;padding:16px 18px 14px;display:flex;flex-direction:column}
+.etape-haut{display:flex;align-items:center;gap:12px}
+.num{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--champ);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;font-weight:600;color:var(--champ)}
+.etape .date{font-family:var(--serif);font-weight:600;font-size:17px;letter-spacing:1.4px;text-transform:uppercase;color:var(--ivoire)}
+.etape .nom{margin-top:10px;font-family:var(--serif);font-weight:600;font-size:31px;line-height:1;color:var(--ivoire)}
+.etape .nom em{font-style:normal;color:var(--champ)}
+.etape-bas{margin-top:auto;display:flex;align-items:center;gap:10px}
+.statut{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.3px;color:var(--grisClair)}
+.statut:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--gris)}
+.statut.fini:before{background:var(--champ)}
+.statut.double{color:var(--champ)}
+.statut.double:before{display:none}
+.fleche{position:absolute;bottom:14px;inset-inline-end:14px;z-index:2;width:36px;height:36px;border-radius:50%;border:1px solid var(--champDoux);background:rgba(6,7,9,.45);display:flex;align-items:center;justify-content:center;color:var(--champ);font-size:15px}
+[dir=rtl] .fleche span{transform:scaleX(-1);display:inline-block}
+
+/* ═════ NAVIGATION ═════ */
+.nav{position:sticky;top:0;z-index:40;margin-top:60px;background:rgba(6,7,9,.93);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
+.nav-in{display:flex;gap:22px;overflow-x:auto;scrollbar-width:none;padding-top:2px}
+.nav-in::-webkit-scrollbar{display:none}
+.onglet{flex:0 0 auto;min-height:48px;padding:15px 0 13px;font-size:14px;color:var(--grisClair);border-bottom:1.5px solid transparent;white-space:nowrap}
+.onglet.actif{color:var(--champ);border-bottom-color:var(--champ)}
+
+/* ═════ SECTIONS ═════ */
+.section{padding-top:56px;scroll-margin-top:52px}
+.section+.section{margin-top:8px}
+.titre{margin:0;font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.08;color:var(--ivoire)}
+.surtitre{display:block;font-size:11px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gris);margin-bottom:8px}
+.tete{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:flex-start;gap:10px 16px}
+.tete .marque{margin-bottom:8px}
+.marque{display:inline-block;padding:2px 9px;border:1px dashed rgba(226,185,140,.5);border-radius:99px;font-size:10.5px;letter-spacing:.3px;color:var(--ambre);vertical-align:middle;font-family:var(--sans);font-weight:500}
+.panneau{position:relative;overflow:hidden;margin-top:22px;border:1px solid var(--ligne);border-radius:18px;background:linear-gradient(180deg,rgba(17,23,28,.55),rgba(11,15,19,.35));padding:20px 18px}
+.pills{display:flex;gap:9px;margin-top:20px;overflow-x:auto;scrollbar-width:none;margin-inline:-20px;padding-inline:20px}
+.pills::-webkit-scrollbar{display:none}
+.panneau .pills{margin-top:0;margin-inline:-18px;padding-inline:18px;padding-bottom:16px;border-bottom:1px solid var(--filet)}
+.pill{flex:0 0 auto;padding:9px 17px;border:1px solid var(--ligne);border-radius:99px;font-size:13px;color:var(--grisClair)}
+.pill.actif{border-color:var(--champ);color:var(--champ);background:var(--champVoile)}
+.lien{display:inline-flex;align-items:center;gap:9px;padding:11px 20px;border:1px solid var(--champDoux);border-radius:99px;font-size:13px;color:var(--champ)}
+.lien i{font-style:normal}
+[dir=rtl] .lien i{display:inline-block;transform:scaleX(-1)}
+.pied{display:flex;justify-content:center;margin-top:20px}
+.vide{margin-top:16px;padding:26px 18px;text-align:center;color:var(--grisClair);font-size:14px;line-height:1.6;border-top:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
+.vide .ico{display:block;font-family:var(--serif);font-size:24px;color:var(--champ);margin-bottom:6px}
+
+#s-classement .panneau:before{content:"";position:absolute;z-index:0;top:0;bottom:0;right:0;width:75%;pointer-events:none;
+  background:url(images/challenge/hero-mobile.webp) 55% 20%/cover no-repeat;opacity:.45;
+  -webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%)}
+[dir=rtl] #s-classement .panneau:before{right:auto;left:0;transform:scaleX(-1)}
+#s-classement .panneau>*{position:relative;z-index:1}
+/* rangs, points */
+.rang{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--grisClair)}
+.rang.p{border:1px solid var(--champDoux);color:var(--champ);background:var(--champVoile)}
+.pts{font-family:var(--serif);font-weight:600;font-size:26px;line-height:1;color:var(--ivoire);white-space:nowrap}
+.pts small{font-family:var(--sans);font-size:11px;font-weight:500;color:var(--gris);margin-inline-start:4px}
+.pts.or{color:var(--champ)}
+
+/* ═════ LISTES TÉLÉPHONE (classement, résultats) ═════ */
+.lignes{margin-top:8px}
+.ligne{border-top:1px solid var(--filet);transition:background .2s}
+.ligne.ouverte{background:linear-gradient(90deg,rgba(217,199,163,.05),rgba(217,199,163,0) 85%)}
+.ligne.ouverte+.ligne{border-top-color:transparent}
+.ligne:first-child{border-top:0}
+.ligne-h{width:100%;display:flex;align-items:center;gap:14px;min-height:66px;padding:8px 4px;text-align:start}
+.ligne-h .nm{flex:1;min-width:0}
+.ligne-h .nm b{display:block;font-weight:500;font-size:16px;color:var(--ivoire);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ligne-h .nm span{display:block;font-size:14px;color:#AEB7B8;margin-top:2px}
+.chev{flex:0 0 auto;width:16px;color:var(--gris);font-size:11px;transition:transform .2s;text-align:center}
+.ligne.ouverte .chev{transform:rotate(180deg)}
+.detail{display:none;grid-template-columns:repeat(3,1fr);margin:0 4px 0 52px;padding:0 0 16px}
+[dir=rtl] .detail{margin:0 52px 0 4px}
+.ligne.ouverte .detail{display:grid}
+.case{padding:4px 6px;text-align:center}
+.case+.case{border-inline-start:1px solid var(--ligne)}
+.case small{display:block;font-size:11.5px;color:var(--gris);line-height:1.3;margin-bottom:2px}
+.case b{font-family:var(--serif);font-size:22px;font-weight:600;color:var(--ivoire)}
+.case b.tiret{color:var(--gris)}
+.note-det{padding:0 4px 14px 52px;font-size:13.5px;color:var(--grisClair)}
+[dir=rtl] .note-det{padding:0 52px 14px 4px}
+.ligne:not(.ouverte) .note-det{display:none}
+
+/* barème replié sous le classement */
+details.bareme-pli{margin-top:18px;border:1px solid var(--ligne);border-radius:14px;padding:14px 16px}
+details.bareme-pli summary{list-style:none;display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;font-size:13.5px;color:var(--grisClair)}
+details.bareme-pli summary::-webkit-details-marker{display:none}
+details.bareme-pli summary b{font-family:var(--serif);font-weight:600;font-size:19px;color:var(--ivoire);margin-inline-end:6px}
+details.bareme-pli[open] summary .chev{transform:rotate(180deg)}
+.bareme{width:100%;border-collapse:collapse;margin-top:12px;font-size:13.5px}
+.bareme th{font-weight:500;font-size:11.5px;color:var(--gris);text-align:center;padding:7px 4px;border-bottom:1px solid var(--ligne)}
+.bareme th:first-child,.bareme td:first-child{text-align:start}
+.bareme td{text-align:center;padding:7px 4px;color:var(--grisClair);border-bottom:1px solid var(--filet)}
+.bareme td.f{color:var(--champ)}
+.bareme-note{margin-top:10px;font-size:12.5px;color:var(--grisClair)}
+
+.bareme-grille{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;border-top:1px solid var(--filet)}
+.bcase{padding:10px 4px 9px;text-align:center;border-bottom:1px solid var(--filet)}
+.bcase:not(:nth-child(4n+1)){border-inline-start:1px solid var(--filet)}
+.bcase small{display:block;font-size:11px;color:var(--gris)}
+.bcase b{display:block;font-family:var(--serif);font-weight:600;font-size:21px;line-height:1.15;color:var(--ivoire)}
+.bcase i{display:block;font-style:normal;font-size:11px;color:var(--champ)}
+.bareme-legende{display:flex;gap:16px;margin-top:10px;font-size:11.5px;color:var(--gris)}
+.bareme-legende span:last-child{color:var(--champ)}
+/* tableaux (tablette / ordinateur) */
+table.grand{display:none;width:100%;border-collapse:collapse;margin-top:18px}
+table.grand th{font-weight:500;font-size:12px;color:var(--gris);text-align:start;padding:10px 12px;border-bottom:1px solid var(--ligne)}
+table.grand td{padding:13px 12px;border-bottom:1px solid var(--filet);font-size:15px}
+table.grand th.c,table.grand td.c{text-align:center}
+table.grand tr:last-child td{border-bottom:0}
+
+select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;background:var(--petrole) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23D9C7A3' fill='none' stroke-width='1.4'/%3E%3C/svg%3E") no-repeat right 14px center;border:1px solid var(--ligne);border-radius:12px;padding:12px 40px 12px 14px;font-size:14.5px}
+[dir=rtl] select.choix{background-position:left 14px center;padding:12px 14px 12px 40px}
+
+/* ═════ PHOTOS ═════ */
+.galerie{margin-top:18px}
+.galerie .grande{display:block;width:100%;aspect-ratio:4/3;border-radius:14px;background:var(--carte2) center 35%/cover no-repeat;border:1px solid var(--filet)}
+.galerie .petites{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:6px}
+.galerie .petites button{position:relative;aspect-ratio:1/1;border-radius:10px;overflow:hidden;background:var(--carte2) center/cover no-repeat;border:1px solid var(--filet)}
+.galerie .plus{position:absolute;inset:0;background:rgba(6,7,9,.58);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:26px;color:var(--ivoire)}
+.legende{margin-top:10px;font-size:12px;color:var(--gris)}
+.attente-photo{margin-top:16px;border-radius:14px;border:1px solid var(--ligne);padding:18px 20px;text-align:center;background:radial-gradient(120% 100% at 50% 0%,rgba(217,199,163,.06),transparent 70%)}
+.attente-photo .ico{font-family:var(--serif);font-size:28px;color:var(--champ);line-height:1}
+.attente-photo p{margin:10px 0 0;font-size:14px;color:var(--grisClair);line-height:1.6}
+
+/* ═════ REPRISES ═════ */
+.docs{margin-top:16px}
+.doc{display:flex;align-items:center;gap:16px;min-height:70px;padding:14px 0;border-top:1px solid var(--filet)}
+.doc:first-child{border-top:0}
+.doc-ico{flex:0 0 auto;width:34px;height:44px}
+.doc-t{flex:1;min-width:0}
+.doc-t b{display:block;font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.15;color:var(--ivoire)}
+.doc-t span{display:block;margin-top:3px;font-size:13px;color:var(--grisClair)}
+.doc-t span.manque{color:var(--ambre)}
+.dl{flex:0 0 auto;display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border:1px solid var(--champDoux);border-radius:99px;font-size:12.5px;color:var(--champ);text-decoration:none}
+.dl[aria-disabled=true]{border-color:var(--filet);color:var(--gris);cursor:default}
+
+/* ═════ RÈGLEMENT ═════ */
+.finale-x2{margin-top:22px;display:flex;align-items:center;gap:18px;padding:20px;border:1px solid var(--champDoux);border-radius:16px;background:linear-gradient(120deg,rgba(217,199,163,.07),transparent 70%)}
+.finale-x2 .x{flex:0 0 auto;font-family:var(--serif);font-weight:600;font-size:56px;line-height:.9;color:var(--champ)}
+.finale-x2 b{display:block;font-family:var(--serif);font-weight:600;font-size:21px;color:var(--ivoire)}
+.finale-x2 span span{display:block;margin-top:3px;font-size:14px;color:var(--grisClair);line-height:1.55}
+.regles{list-style:none;margin:22px 0 0;padding:0;counter-reset:r}
+.regles li{counter-increment:r;display:flex;gap:16px;padding:17px 0;border-top:1px solid var(--filet);font-size:15px;line-height:1.6;color:var(--ivoire)}
+.regles li:before{content:counter(r,decimal-leading-zero);flex:0 0 auto;width:28px;font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.3;color:var(--champ)}
+.regles li.acf{color:var(--grisClair)}
+.regles li.acf em{font-style:normal;color:var(--ambre)}
+.regl-intro{margin:12px 0 0;font-size:14.5px;color:var(--grisClair)}
+
+/* ═════ FIN ═════ */
+.fin{position:relative;margin-top:72px;height:220px;background:url(images/challenge/bandeau.webp) 60% center/cover no-repeat}
+.fin:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--nuit) 0%,rgba(6,7,9,.35) 45%,rgba(6,7,9,.55) 100%)}
+.fin p{position:relative;margin:0;padding:96px 0 0;font-family:var(--serif);font-weight:500;font-size:27px;line-height:1.15}
+.fin p:after{content:"";display:block;width:56px;height:1px;background:var(--champ);margin-top:14px}
+
+/* ═════ PAGE D'UNE JOURNÉE ═════ */
+.vue{position:fixed;inset:0;z-index:70;background:var(--nuit);overflow-y:auto;display:none}
+.vue.ouverte{display:block}
+.vue-hero{position:relative;height:380px;background:var(--carte) var(--img) center/cover no-repeat}
+.vue-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,.55) 0%,rgba(6,7,9,0) 22%,rgba(6,7,9,.15) 45%,rgba(6,7,9,.85) 82%,var(--nuit) 100%)}
+.vue-hero .hero-haut{z-index:3}
+.vue-hero .bas{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 20px 22px}
+.vue-hero .sur{display:flex;align-items:center;gap:10px;font-size:11.5px;letter-spacing:2.4px;text-transform:uppercase;color:var(--champ)}
+.vue-hero .sur .num{width:30px;height:30px;font-size:17px;letter-spacing:0}
+.vue-hero h2{margin:12px 0 0;font-family:var(--serif);font-weight:600;font-size:42px;line-height:1;color:var(--ivoire)}
+.vue-hero .lignestat{margin-top:12px;display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center}
+.vue-nav{position:sticky;top:0;z-index:5;background:rgba(6,7,9,.94);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--ligne)}
+.vue .section{padding-top:44px}
+.vue .titre{font-size:36px}
+.vue-intro{margin:0;font-size:15.5px;line-height:1.7;color:var(--ivoire)}
+.infos{margin-top:20px;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
+.info{padding:14px 8px;text-align:center}
+.info+.info{border-inline-start:1px solid var(--ligne)}
+.info small{display:block;font-size:10.5px;letter-spacing:1.6px;text-transform:uppercase;color:var(--gris)}
+.info b{display:block;margin-top:4px;font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.2;color:var(--ivoire)}
+.attente{margin-top:18px;padding:22px 20px;border:1px solid var(--ligne);border-radius:16px;background:radial-gradient(120% 120% at 0% 0%,rgba(217,199,163,.07),transparent 65%)}
+.attente b{display:block;font-family:var(--serif);font-weight:600;font-size:22px;color:var(--ivoire)}
+.attente p{margin:6px 0 14px;font-size:14px;line-height:1.6;color:var(--grisClair)}
+.vue-fin{height:60px}
+
+/* ═════ VISIONNEUSE ═════ */
+.lb{position:fixed;inset:0;z-index:90;background:rgba(3,8,12,.96);display:none;align-items:center;justify-content:center}
+.lb.ouverte{display:flex}
+.lb img{max-width:94vw;max-height:78vh;border-radius:10px}
+.lb .x{position:absolute;top:calc(env(safe-area-inset-top) + 14px);inset-inline-end:16px;width:42px;height:42px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:20px}
+.lb .pr,.lb .sv{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:20px;background:rgba(6,7,9,.6)}
+.lb .pr{inset-inline-start:12px}.lb .sv{inset-inline-end:12px}
+[dir=rtl] .lb .pr span,[dir=rtl] .lb .sv span{display:inline-block;transform:scaleX(-1)}
+.lb .cpt{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 20px);left:0;right:0;text-align:center;font-size:13px;color:var(--grisClair)}
+
+/* ═════ CONTENEUR (la mise en page suit la largeur réellement disponible) ═════ */
+.challenge,.vue-c{container-type:inline-size;container-name:ch}
+/* ═════ ÉLÉMENTS PROPRES AUX GRANDS ÉCRANS (masqués sur téléphone) ═════ */
+.bareme-cote{display:none}
+.petit-titre{margin:0;font-family:var(--serif);font-weight:600;font-size:24px;color:var(--ivoire)}
+.galerie .petites button:nth-child(4){display:none}
+.galerie .plus.d{display:none}
+
+/* ═════ TABLETTE (700 – 1023 px) ═════ */
+@container ch (min-width:700px){
+  .page{padding:0 36px}
+  .hero-img{height:480px;background-image:url(images/challenge/hero.webp);background-position:80% 30%}
+  .hero-haut{padding:22px 36px 0}
+  .hero-texte{margin-top:-120px;max-width:560px}
+  h1{font-size:66px}
+  .sous{font-size:15.5px;letter-spacing:4.2px;margin-top:20px}
+  .intro{font-size:16px;max-width:380px;margin-top:22px}
+  .etapes{grid-template-columns:repeat(3,1fr);gap:16px;margin-top:64px}
+  .etape{--hEtape:196px}
+  .etape-in{padding:18px 16px 16px}
+  .num{width:30px;height:30px;font-size:17px}
+  .etape-haut{gap:10px}
+  .etape .date{font-size:14.5px;letter-spacing:1px}
+  .etape .nom{font-size:30px;margin-top:16px}
+  .nav{margin-top:56px}
+  .nav-in{justify-content:space-between;gap:12px}
+  .onglet{font-size:14px}
+  .section{padding-top:68px}
+  .titre{font-size:40px}
+  .pills{margin-inline:0;padding-inline:0;flex-wrap:wrap}
+  .panneau{padding:26px 28px}
+  .panneau .pills{margin-inline:0;padding-inline:0}
+  .lignes{display:none}
+  table.grand{display:table}
+  table.grand td{padding:15px 12px}
+  select.choix{max-width:420px}
+  .galerie{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:170px 170px;gap:10px}
+  .galerie .grande{grid-row:span 2;aspect-ratio:auto;height:100%}
+  .galerie .petites{display:contents}
+  .galerie .petites button{aspect-ratio:auto;height:100%}
+  .galerie .petites button:nth-child(4){display:block}
+  .galerie .plus.m{display:none}
+  .galerie .plus.d{display:flex}
+  .r-docs .docs{display:grid;grid-template-columns:1fr 1fr;column-gap:32px}
+  .r-docs .doc:nth-child(2){border-top:0}
+  .finale-x2{padding:24px 28px}
+  .fin{height:260px;margin-top:96px}
+  .fin p{font-size:34px;padding-top:120px}
+  /* page d'une journée */
+  .vue-hero{height:460px;background-image:var(--imgL)}
+  .vue-hero .bas{padding:0 36px 30px}
+  .vue-hero h2{font-size:56px}
+  .vue-hero .hero-haut{padding:22px 36px 0}
+  .vue .page{max-width:1100px}
+  .vue-intro{font-size:17px;max-width:640px}
+  .infos{max-width:640px}
+  .vue .docs{display:grid;grid-template-columns:1fr 1fr;column-gap:32px}
+  .vue .doc:nth-child(2){border-top:0}
+}
+
+/* ═════ ORDINATEUR (≥ 1024 px) ═════ */
+@container ch (min-width:1100px){
+  .page{padding:0 48px}
+  .hero-img{height:640px;background-position:50% 28%}
+  #s-classement .panneau:before{width:55%;opacity:.34}
+  .hero-img:after{background:linear-gradient(90deg,rgba(6,7,9,.88) 0%,rgba(6,7,9,.62) 30%,rgba(6,7,9,.1) 48%,rgba(6,7,9,0) 60%),linear-gradient(180deg,rgba(6,7,9,.45) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 62%,var(--nuit) 100%)}
+  .hero-haut{padding:24px 48px 0}
+  .hero-texte{margin-top:-500px;max-width:560px}
+  h1{font-size:80px}
+  .intro{font-size:16.5px;max-width:400px}
+  .etapes{gap:20px;margin-top:160px}
+  .etape{--hEtape:210px}
+  .etape-in{padding:20px 20px 18px}
+  .num{width:34px;height:34px;font-size:19px}
+  .etape .date{font-size:16px;letter-spacing:1.3px}
+  .etape .nom{font-size:34px}
+  .nav-in{justify-content:flex-start;gap:44px}
+  .rangee{display:grid;column-gap:40px;align-items:start}
+  .r-classement{grid-template-columns:minmax(0,1fr)}
+  .r-duo{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:48px}
+  .bareme-cote{display:block;padding-top:68px}
+  .cote-in{margin-top:76px;border:1px solid var(--filet);border-radius:16px;padding:22px 22px 18px;background:rgba(11,15,19,.35)}
+  .cote-in .bareme{font-size:13px}
+  .galerie{grid-template-rows:150px 150px;margin-top:22px}
+  .r-docs .docs{display:block}
+  .r-docs .doc:nth-child(2){border-top:1px solid var(--filet)}
+  .vue-hero{height:520px}
+  .vue-hero .bas{padding:0 48px 36px}
+  .vue-hero .hero-haut{padding:24px 48px 0}
+  .vue-hero h2{font-size:64px}
+  .vue .r-vue{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);column-gap:48px;align-items:start}
+  [dir=rtl] .hero-img{background:none}
+  [dir=rtl] .hero-img:before{content:"";position:absolute;inset:0;background:url(images/challenge/hero.webp) 50% 28%/cover no-repeat;transform:scaleX(-1)}
+  [dir=rtl] .hero-img:after{background:linear-gradient(270deg,rgba(6,7,9,.88) 0%,rgba(6,7,9,.62) 30%,rgba(6,7,9,.1) 48%,rgba(6,7,9,0) 60%),linear-gradient(180deg,rgba(6,7,9,.45) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 62%,var(--nuit) 100%)}
+}
+@container ch (min-width:1200px){
+  [dir=rtl] .hero-img:before{background-position:47% 28%}
+  .hero-img{height:680px;background-position:47% 28%}
+  #s-classement .panneau:before{width:48%;opacity:.32}
+  .hero-texte{margin-top:-520px}
+  h1{font-size:88px}
+  .etape{--hEtape:220px}
+  .galerie{grid-template-rows:170px 170px}
+}
+
+/* ═════ ÉTATS DE LA PAGE ═════ */
+#etat-page[hidden]{display:none}
+#etat-page{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px 24px;text-align:center}
+#etat-page p{margin:0;font-family:var(--serif);font-size:24px;line-height:1.3;color:var(--ivoire);max-width:420px}
+body.sans-donnees .challenge-contenu{display:none}
+.statut-r{font-size:12.5px;color:var(--grisClair);letter-spacing:.3px;white-space:nowrap}
+.ligne.brouillon .nm b:after,tr.brouillon td:nth-child(2):after{content:" · brouillon";font-size:11px;font-weight:400;color:var(--ambre)}
+
+/* ═════ GESTION (modératrices / gestionnaires) ═════ */
+#gestion{margin:22px 0 0}
+.g-in{border:1px dashed rgba(232,184,75,.45);border-radius:16px;padding:16px;background:rgba(232,184,75,.04)}
+.g-tete{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;align-items:baseline}
+.g-titre{font-family:var(--serif);font-weight:600;font-size:21px;color:var(--ivoire)}
+.g-etat{font-size:12px;color:var(--ambre)}
+.g-actions{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 6px}
+.g-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:9px 16px;border:1px solid var(--champDoux);border-radius:99px;font-size:13px;color:var(--champ);background:transparent;cursor:pointer}
+.g-btn.plein{background:var(--champVoile);border-color:var(--champ)}
+.g-btn.discret{border-color:var(--filet);color:var(--grisClair);min-height:36px;padding:6px 14px;font-size:12.5px}
+.g-btn[disabled]{opacity:.45;cursor:default}
+.g-etape{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-top:1px solid var(--filet);font-size:13.5px;color:var(--grisClair)}
+.g-etape b{color:var(--ivoire);font-weight:600}.g-etape em{font-style:normal;color:var(--ambre)}
+.g-info{margin:10px 0 0;font-size:13px;color:var(--ambre)}
+#import{position:fixed;inset:0;z-index:95;background:var(--nuit);overflow-y:auto;display:none;-webkit-overflow-scrolling:touch}
+#import.ouverte{display:block}
+.i-in{max-width:760px;margin:0 auto;padding:calc(env(safe-area-inset-top) + 14px) 16px 120px}
+.i-tete{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.i-tete b{font-family:var(--serif);font-weight:600;font-size:26px}
+.i-x{width:42px;height:42px;border-radius:50%;border:1px solid var(--champDoux);color:var(--champ);font-size:22px}
+.i-aide{font-size:13.5px;line-height:1.6;color:var(--grisClair);margin:10px 0}
+.i-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gris);margin-top:14px}
+.i-label+.pills{margin-top:8px}
+.i-boutons{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.i-fichier{position:relative;overflow:hidden}
+.i-fichier input{position:absolute;inset:0;opacity:0;cursor:pointer}
+.i-attente{color:var(--champ);font-size:14px}
+.i-erreur{margin-top:14px;padding:14px;border:1px solid rgba(255,139,107,.6);border-radius:12px;background:rgba(255,139,107,.08);color:#FFB49E;font-size:14px;line-height:1.55}
+.i-erreur .g-btn{margin-top:10px}
+.i-epreuve{margin-top:18px;padding:14px;border:1px solid var(--ligne);border-radius:14px;background:rgba(255,255,255,.015)}
+.i-epreuve.a-choisir{border-color:rgba(232,184,75,.55)}
+.i-ep-tete{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.i-ep-titre{font-family:var(--serif);font-weight:600;font-size:20px}
+.i-ep-choix{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px}
+.i-ep-choix select,.i-ligne input,.i-ligne select{background:var(--petrole);border:1px solid var(--ligne);border-radius:9px;color:var(--ivoire);font-size:16px;padding:8px 10px;min-width:0}
+.i-ligne{display:grid;grid-template-columns:52px 44px 1fr 36px;grid-template-areas:"pl cav cav x" "che che che che" "note note st st";gap:6px;padding:10px 0;border-top:1px solid var(--filet)}
+.i-pl{grid-area:pl;text-align:center}.i-cav{grid-area:cav}.i-che{grid-area:che}.i-note{grid-area:note}.i-st{grid-area:st}
+.i-ligne .i-suppr{grid-area:x}
+.i-ligne.douteuse input,.i-ligne.douteuse select{border-color:rgba(232,184,75,.7)}
+.i-doute{grid-column:1/-1;margin:2px 0 0;font-size:12.5px;color:var(--ambre)}
+.i-suppr{color:var(--grisClair);font-size:12.5px;border:1px solid var(--filet);border-radius:99px;min-height:34px;padding:0 10px}
+.i-pied{position:sticky;bottom:0;margin-top:20px;padding:14px 0 calc(env(safe-area-inset-bottom) + 14px);background:linear-gradient(180deg,rgba(6,7,9,0),var(--nuit) 30%)}
+.i-pied .g-btn{width:100%}
+@container ch (min-width:700px){
+  .i-ligne{grid-template-columns:56px 1.4fr 1.1fr 90px 120px 36px;grid-template-areas:"pl cav che note st x"}
+}
+.galerie.peu .petites{grid-template-columns:repeat(2,1fr)}
+</style>
+</head>
+<body>
+<div class="challenge">
+<div id="etat-page"><p data-t="chargement"></p></div>
+<div class="challenge-contenu">
+<header class="hero">
+  <div class="hero-img">
+    <div class="hero-haut"><button class="retour" id="retour"><b>‹</b><span data-t="evenements"></span></button></div>
+  </div>
+  <div class="page">
+    <div class="hero-texte">
+      <h1><span class="l1" data-t="titre1"></span><span class="l2" data-t="titre2"></span></h1>
+      <p class="sous" data-t="sep"></p>
+      <p class="intro" data-t="intro"></p>
+    </div>
+    <div class="etapes" id="etapes"></div>
+    <div id="gestion" hidden></div>
+  </div>
+</header>
+
+<nav class="nav"><div class="page nav-in" id="navIn"></div></nav>
+
+<main class="page">
+  <div class="rangee r-classement">
+    <section class="section" id="s-classement"></section>
+  </div>
+  <div class="rangee r-duo">
+    <section class="section" id="s-resultats"></section>
+    <section class="section" id="s-photos"></section>
+  </div>
+  <div class="rangee r-duo r-docs">
+    <section class="section" id="s-reprises"></section>
+    <section class="section" id="s-reglement"></section>
+  </div>
+</main>
+
+<div class="fin"><div class="page"><p data-t="citation"></p></div></div>
+</div>
+</div>
+<div class="vue" id="vue"><div class="vue-c" id="vueC"></div></div>
+<div id="import" class="challenge"></div>
+<div class="lb" id="lb">
+  <button class="x" id="lbX" aria-label="×">×</button>
+  <button class="pr" id="lbPr"><span>‹</span></button>
+  <img id="lbImg" alt="">
+  <button class="sv" id="lbSv"><span>›</span></button>
+  <div class="cpt" id="lbCpt"></div>
+</div>
+<script>
+"use strict";
+var TX = {
+  evenements: { fr: "Événements", en: "Events", es: "Eventos", it: "Eventi", de: "Veranstaltungen", ja: "イベント", ar: "الفعاليات" },
+  titre1: { fr: "Challenge", en: "Open Dressage", es: "Challenge", it: "Challenge", de: "Challenge", ja: "オープン馬場馬術", ar: "تحدي" },
+  titre2: { fr: "Open Dressage", en: "Challenge", es: "Open de Doma", it: "Open Dressage", de: "Open Dressur", ja: "チャレンジ", ar: "الترويض المفتوح" },
+  sep: { fr: "Société d'Équitation de Paris", en: "Société d'Équitation de Paris", es: "Société d'Équitation de Paris", it: "Société d'Équitation de Paris", de: "Société d'Équitation de Paris", ja: "ソシエテ・デキタシオン・ド・パリ", ar: "جمعية الفروسية في باريس" },
+  intro: { fr: "Trois dates pour progresser, te mesurer et vivre le dressage dans une ambiance conviviale.", en: "Three dates to progress, test yourself and enjoy dressage in a friendly atmosphere.", es: "Tres fechas para progresar, medirte y vivir la doma en un ambiente cercano.", it: "Tre date per progredire, metterti alla prova e vivere il dressage in un clima amichevole.", de: "Drei Termine, um dich zu verbessern, dich zu messen und Dressur in geselliger Atmosphäre zu erleben.", ja: "3つの日程で上達し、腕を試し、和やかな雰囲気で馬場馬術を楽しもう。", ar: "ثلاثة مواعيد لتتقدّم وتختبر نفسك وتعيش الترويض في أجواء ودّية." },
+  etape1: { fr: "Étape 1", en: "Leg 1", es: "Etapa 1", it: "Tappa 1", de: "Etappe 1", ja: "第1戦", ar: "المرحلة 1" },
+  etape2: { fr: "Étape 2", en: "Leg 2", es: "Etapa 2", it: "Tappa 2", de: "Etappe 2", ja: "第2戦", ar: "المرحلة 2" },
+  finale: { fr: "Finale", en: "Final", es: "Final", it: "Finale", de: "Finale", ja: "決勝", ar: "النهائي" },
+  aVenir: { fr: "À venir", en: "Upcoming", es: "Próximamente", it: "In arrivo", de: "Demnächst", ja: "開催予定", ar: "قادم" },
+  terminee: { fr: "Terminée", en: "Completed", es: "Terminada", it: "Conclusa", de: "Beendet", ja: "終了", ar: "انتهت" },
+  resAttente: { fr: "Résultats à venir", en: "Results pending", es: "Resultados pendientes", it: "Risultati in arrivo", de: "Ergebnisse folgen", ja: "結果待ち", ar: "النتائج قريبًا" },
+  aujourdhui: { fr: "Aujourd'hui", en: "Today", es: "Hoy", it: "Oggi", de: "Heute", ja: "本日", ar: "اليوم" },
+  double: { fr: "Points doublés", en: "Double points", es: "Puntos dobles", it: "Punti doppi", de: "Doppelte Punkte", ja: "ポイント2倍", ar: "نقاط مضاعفة" },
+  oClassement: { fr: "Classement", en: "Ranking", es: "Clasificación", it: "Classifica", de: "Wertung", ja: "順位", ar: "الترتيب" },
+  oResultats: { fr: "Résultats par étape", en: "Results by leg", es: "Resultados por etapa", it: "Risultati per tappa", de: "Ergebnisse je Etappe", ja: "各戦の結果", ar: "النتائج حسب المرحلة" },
+  oResultatsCourt: { fr: "Résultats", en: "Results", es: "Resultados", it: "Risultati", de: "Ergebnisse", ja: "結果", ar: "النتائج" },
+  oPhotos: { fr: "Photos", en: "Photos", es: "Fotos", it: "Foto", de: "Fotos", ja: "写真", ar: "الصور" },
+  oReprises: { fr: "Reprises à dérouler", en: "Dressage tests", es: "Reprises a realizar", it: "Riprese da eseguire", de: "Aufgaben zum Reiten", ja: "演技課目", ar: "برامج الترويض" },
+  oReprisesCourt: { fr: "Reprises", en: "Tests", es: "Reprises", it: "Riprese", de: "Aufgaben", ja: "課目", ar: "البرامج" },
+  oReglement: { fr: "Règlement", en: "Rules", es: "Reglamento", it: "Regolamento", de: "Reglement", ja: "規定", ar: "النظام" },
+  oPresentation: { fr: "La journée", en: "The day", es: "La jornada", it: "La giornata", de: "Der Tag", ja: "当日", ar: "اليوم" },
+  provisoire: { fr: "Classement général", en: "Overall ranking", es: "Clasificación general", it: "Classifica generale", de: "Gesamtwertung", ja: "総合順位", ar: "الترتيب العام" },
+  surProvisoire: { fr: "Provisoire · saison", en: "Provisional · season", es: "Provisional · temporada", it: "Provvisoria · stagione", de: "Vorläufig · Saison", ja: "暫定・シーズン", ar: "مؤقت · الموسم" },
+  rang: { fr: "Rang", en: "Rank", es: "Puesto", it: "Pos.", de: "Rang", ja: "順位", ar: "الترتيب" },
+  cavalier: { fr: "Cavalier / Cavalière", en: "Rider", es: "Jinete", it: "Cavaliere", de: "Reiter/in", ja: "騎乗者", ar: "الفارس / الفارسة" },
+  cheval: { fr: "Cheval", en: "Horse", es: "Caballo", it: "Cavallo", de: "Pferd", ja: "馬", ar: "الحصان" },
+  points: { fr: "Points", en: "Points", es: "Puntos", it: "Punti", de: "Punkte", ja: "ポイント", ar: "النقاط" },
+  pts: { fr: "pts", en: "pts", es: "pts", it: "pt", de: "Pkt.", ja: "pt", ar: "نقطة" },
+  total: { fr: "Total", en: "Total", es: "Total", it: "Totale", de: "Gesamt", ja: "合計", ar: "المجموع" },
+  voirComplet: { fr: "Voir le classement complet", en: "See full ranking", es: "Ver la clasificación completa", it: "Vedi classifica completa", de: "Gesamte Wertung ansehen", ja: "全順位を見る", ar: "عرض الترتيب الكامل" },
+  voirMoins: { fr: "Réduire", en: "Show less", es: "Mostrar menos", it: "Mostra meno", de: "Weniger anzeigen", ja: "閉じる", ar: "عرض أقل" },
+  aucunRes: { fr: "Aucun résultat publié pour l'instant dans cette catégorie.", en: "No results published yet in this category.", es: "Aún no hay resultados publicados en esta categoría.", it: "Ancora nessun risultato pubblicato in questa categoria.", de: "Noch keine Ergebnisse in dieser Kategorie veröffentlicht.", ja: "このカテゴリーの結果はまだ公開されていません。", ar: "لا توجد نتائج منشورة بعد في هذه الفئة." },
+  voirBareme: { fr: "Voir le barème de points", en: "See the points scale", es: "Ver el baremo de puntos", it: "Vedi la tabella punti", de: "Punkteskala ansehen", ja: "ポイント表を見る", ar: "عرض سلّم النقاط" },
+  bareme: { fr: "Barème de points", en: "Points scale", es: "Baremo de puntos", it: "Tabella punti", de: "Punkteskala", ja: "ポイント表", ar: "سلّم النقاط" },
+  aConfirmer: { fr: "À confirmer", en: "To be confirmed", es: "Por confirmar", it: "Da confermare", de: "Noch zu bestätigen", ja: "確認中", ar: "قيد التأكيد" },
+  place: { fr: "Place", en: "Place", es: "Puesto", it: "Posto", de: "Platz", ja: "順位", ar: "المركز" },
+  etapes12: { fr: "Étapes 1 et 2", en: "Legs 1 & 2", es: "Etapas 1 y 2", it: "Tappe 1 e 2", de: "Etappen 1 und 2", ja: "第1・2戦", ar: "المرحلتان 1 و2" },
+  etSuivants: { fr: "et +", en: "and +", es: "y +", it: "e +", de: "und +", ja: "以下", ar: "وما بعده" },
+  finaleDouble: { fr: "La finale du 30 mai compte double.", en: "The 30 May final counts double.", es: "La final del 30 de mayo cuenta doble.", it: "La finale del 30 maggio conta doppio.", de: "Das Finale am 30. Mai zählt doppelt.", ja: "5月30日の決勝はポイント2倍。", ar: "نهائي 30 مايو يُحتسب مضاعفًا." },
+  voirEtape: { fr: "Voir toute l'étape", en: "See the whole leg", es: "Ver toda la etapa", it: "Vedi tutta la tappa", de: "Ganze Etappe ansehen", ja: "この戦をすべて見る", ar: "عرض المرحلة كاملة" },
+  photosDe: { fr: "Photos de la journée", en: "Photos of the day", es: "Fotos de la jornada", it: "Foto della giornata", de: "Fotos des Tages", ja: "当日の写真", ar: "صور اليوم" },
+  voirPhotos: { fr: "Voir toutes les photos", en: "See all photos", es: "Ver todas las fotos", it: "Vedi tutte le foto", de: "Alle Fotos ansehen", ja: "すべての写真を見る", ar: "عرض كل الصور" },
+  pasPhotos: { fr: "Les photos de cette journée apparaîtront ici dès qu'elles seront publiées.", en: "Photos of this day will appear here as soon as they are posted.", es: "Las fotos de esta jornada aparecerán aquí en cuanto se publiquen.", it: "Le foto di questa giornata appariranno qui appena pubblicate.", de: "Die Fotos dieses Tages erscheinen hier, sobald sie veröffentlicht sind.", ja: "この日の写真は公開され次第ここに表示されます。", ar: "ستظهر صور هذا اليوم هنا فور نشرها." },
+  repriseOff: { fr: "Reprise officielle FFE", en: "Official FFE test", es: "Reprise oficial FFE", it: "Ripresa ufficiale FFE", de: "Offizielle FFE-Aufgabe", ja: "FFE公式課目", ar: "برنامج رسمي FFE" },
+  bientot: { fr: "Bientôt disponible", en: "Coming soon", es: "Disponible pronto", it: "Disponibile a breve", de: "Folgt in Kürze", ja: "近日公開", ar: "متاح قريبًا" },
+  telecharger: { fr: "PDF", en: "PDF", es: "PDF", it: "PDF", de: "PDF", ja: "PDF", ar: "PDF" },
+  reglTitre: { fr: "Règlement du challenge", en: "Challenge rules", es: "Reglamento del challenge", it: "Regolamento del challenge", de: "Reglement der Challenge", ja: "チャレンジ規定", ar: "نظام التحدي" },
+  reglIntro: { fr: "Version provisoire : le règlement officiel n'est pas encore validé.", en: "Provisional version: the official rules are not yet approved.", es: "Versión provisional: el reglamento oficial aún no está validado.", it: "Versione provvisoria: il regolamento ufficiale non è ancora approvato.", de: "Vorläufige Fassung: Das offizielle Reglement ist noch nicht bestätigt.", ja: "暫定版：正式な規定はまだ承認されていません。", ar: "نسخة مؤقتة: النظام الرسمي لم يُعتمد بعد." },
+  x2titre: { fr: "Finale à points doublés", en: "Double-points final", es: "Final con puntos dobles", it: "Finale a punti doppi", de: "Finale mit doppelten Punkten", ja: "決勝はポイント2倍", ar: "نهائي بنقاط مضاعفة" },
+  x2texte: { fr: "Le 30 mai, chaque place rapporte deux fois plus de points.", en: "On 30 May, every placing earns twice as many points.", es: "El 30 de mayo, cada puesto vale el doble de puntos.", it: "Il 30 maggio ogni piazzamento vale il doppio dei punti.", de: "Am 30. Mai bringt jede Platzierung doppelt so viele Punkte.", ja: "5月30日は各順位のポイントが2倍。", ar: "في 30 مايو، يمنح كل مركز ضعف النقاط." },
+  r1: { fr: "Trois journées : 11 octobre, 10 janvier et finale le 30 mai.", en: "Three days: 11 October, 10 January and the final on 30 May.", es: "Tres jornadas: 11 de octubre, 10 de enero y la final el 30 de mayo.", it: "Tre giornate: 11 ottobre, 10 gennaio e finale il 30 maggio.", de: "Drei Tage: 11. Oktober, 10. Januar und Finale am 30. Mai.", ja: "全3日程：10月11日、1月10日、決勝5月30日。", ar: "ثلاثة أيام: 11 أكتوبر و10 يناير والنهائي في 30 مايو." },
+  r2: { fr: "Un classement séparé par catégorie, du Galop 3 au Galop 7.", en: "A separate ranking for each category, Galop 3 to Galop 7.", es: "Una clasificación separada por categoría, del Galop 3 al Galop 7.", it: "Una classifica separata per categoria, dal Galop 3 al Galop 7.", de: "Eine eigene Wertung je Kategorie, von Galop 3 bis Galop 7.", ja: "ギャロップ3から7まで、カテゴリー別の順位。", ar: "ترتيب منفصل لكل فئة، من غالوب 3 إلى غالوب 7." },
+  r3: { fr: "Les points sont cumulés par cavalier : tu peux changer de cheval d'une étape à l'autre.", en: "Points add up per rider: you may change horse between legs.", es: "Los puntos se suman por jinete: puedes cambiar de caballo entre etapas.", it: "I punti si sommano per cavaliere: puoi cambiare cavallo tra le tappe.", de: "Die Punkte zählen pro Reiter/in: Du darfst das Pferd zwischen den Etappen wechseln.", ja: "ポイントは騎乗者ごとに合算。戦ごとに馬を替えてもよい。", ar: "تُجمع النقاط لكل فارس: يمكنك تغيير الحصان بين المراحل." },
+  r4: { fr: "Les points dépendent de la place ; la note n'est pas nécessaire.", en: "Points depend on the placing; the score is not required.", es: "Los puntos dependen del puesto; la nota no es necesaria.", it: "I punti dipendono dal piazzamento; il punteggio non è necessario.", de: "Die Punkte richten sich nach der Platzierung; die Note ist nicht nötig.", ja: "ポイントは順位で決まり、得点は不要。", ar: "تعتمد النقاط على المركز؛ العلامة غير ضرورية." },
+  r5: { fr: "Égalités, forfaits, éliminations, changements de catégorie et conditions pour être classé :", en: "Ties, withdrawals, eliminations, category changes and eligibility:", es: "Empates, retiradas, eliminaciones, cambios de categoría y condiciones de clasificación:", it: "Parità, ritiri, eliminazioni, cambi di categoria e condizioni di classifica:", de: "Gleichstände, Rückzüge, Ausschlüsse, Kategoriewechsel und Wertungsbedingungen:", ja: "同点・棄権・失格・カテゴリー変更・順位対象条件：", ar: "التعادل والانسحاب والإقصاء وتغيير الفئة وشروط التصنيف:" },
+  citation: { fr: "Le dressage,<br>une autre façon de se dépasser.", en: "Dressage,<br>another way to surpass yourself.", es: "La doma,<br>otra forma de superarse.", it: "Il dressage,<br>un altro modo per superarsi.", de: "Dressur,<br>eine andere Art, über sich hinauszuwachsen.", ja: "馬場馬術、<br>自分を超えるもうひとつの方法。", ar: "الترويض،<br>طريقة أخرى لتتجاوز نفسك." },
+  date: { fr: "Date", en: "Date", es: "Fecha", it: "Data", de: "Datum", ja: "日付", ar: "التاريخ" },
+  lieu: { fr: "Lieu", en: "Venue", es: "Lugar", it: "Luogo", de: "Ort", ja: "会場", ar: "المكان" },
+  coef: { fr: "Points", en: "Points", es: "Puntos", it: "Punti", de: "Punkte", ja: "ポイント", ar: "النقاط" },
+  normal: { fr: "Normaux", en: "Standard", es: "Normales", it: "Normali", de: "Normal", ja: "通常", ar: "عادية" },
+  note: { fr: "Note", en: "Score", es: "Nota", it: "Punteggio", de: "Note", ja: "得点", ar: "العلامة" },
+  sansNote: { fr: "Note non publiée", en: "Score not published", es: "Nota no publicada", it: "Punteggio non pubblicato", de: "Note nicht veröffentlicht", ja: "得点未公開", ar: "العلامة غير منشورة" },
+  retour: { fr: "Challenge", en: "Challenge", es: "Challenge", it: "Challenge", de: "Challenge", ja: "チャレンジ", ar: "التحدي" },
+  openDressage: { fr: "Open Dressage SEP", en: "SEP Open Dressage", es: "Open de Doma SEP", it: "Open Dressage SEP", de: "SEP Open Dressur", ja: "SEPオープン馬場馬術", ar: "ترويض SEP المفتوح" },
+  introE1: { fr: "Première journée du challenge : on découvre les reprises, on pose ses premiers points.", en: "First day of the challenge: discover the tests and score your first points.", es: "Primera jornada del challenge: descubres las reprises y sumas tus primeros puntos.", it: "Prima giornata del challenge: scopri le riprese e conquisti i primi punti.", de: "Erster Tag der Challenge: Aufgaben kennenlernen, erste Punkte sammeln.", ja: "チャレンジ初日：課目に挑み、最初のポイントを獲得。", ar: "اليوم الأول من التحدي: تكتشف البرامج وتجمع نقاطك الأولى." },
+  introE2: { fr: "Deuxième journée : l'occasion de confirmer et de remonter au classement.", en: "Second day: the chance to confirm and move up the ranking.", es: "Segunda jornada: la ocasión de confirmar y subir en la clasificación.", it: "Seconda giornata: l'occasione per confermarsi e risalire in classifica.", de: "Zweiter Tag: die Chance, dich zu bestätigen und aufzusteigen.", ja: "第2戦：実力を示し、順位を上げるチャンス。", ar: "اليوم الثاني: فرصة للتأكيد والتقدّم في الترتيب." },
+  introE3: { fr: "La grande finale : toutes les places comptent double.", en: "The grand final: every placing counts double.", es: "La gran final: todos los puestos cuentan doble.", it: "La grande finale: ogni piazzamento conta doppio.", de: "Das große Finale: Jede Platzierung zählt doppelt.", ja: "グランドファイナル：すべての順位がポイント2倍。", ar: "النهائي الكبير: كل مركز يُحتسب مضاعفًا." },
+  attTitre: { fr: "Résultats après la journée", en: "Results after the day", es: "Resultados tras la jornada", it: "Risultati dopo la giornata", de: "Ergebnisse nach dem Tag", ja: "結果は当日終了後に", ar: "النتائج بعد اليوم" },
+  attTexte: { fr: "Les classements seront publiés ici. En attendant, prépare ta reprise.", en: "Rankings will be posted here. Meanwhile, prepare your test.", es: "Las clasificaciones se publicarán aquí. Mientras tanto, prepara tu reprise.", it: "Le classifiche saranno pubblicate qui. Nel frattempo, prepara la tua ripresa.", de: "Die Wertungen erscheinen hier. Bereite bis dahin deine Aufgabe vor.", ja: "順位はここに掲載されます。それまで課目の準備をしよう。", ar: "ستُنشر الترتيبات هنا. في الأثناء، حضّر برنامجك." },
+  voirReprises: { fr: "Voir les reprises", en: "See the tests", es: "Ver las reprises", it: "Vedi le riprese", de: "Aufgaben ansehen", ja: "課目を見る", ar: "عرض البرامج" }
+};
+
+/* textes dont une date ou une liste change selon le challenge : {d1} {d2} {d3} {cats} */
+var TX2 = {
+  r1: { fr: "Trois journées : {d1}, {d2} et finale le {d3}.", en: "Three days: {d1}, {d2} and the final on {d3}.", es: "Tres jornadas: {d1}, {d2} y la final el {d3}.", it: "Tre giornate: {d1}, {d2} e finale il {d3}.", de: "Drei Tage: {d1}, {d2} und Finale am {d3}.", ja: "全3日程：{d1}、{d2}、決勝{d3}。", ar: "ثلاثة أيام: {d1} و{d2} والنهائي في {d3}." },
+  r2: { fr: "Un classement séparé par catégorie : {cats}.", en: "A separate ranking for each category: {cats}.", es: "Una clasificación separada por categoría: {cats}.", it: "Una classifica separata per categoria: {cats}.", de: "Eine eigene Wertung je Kategorie: {cats}.", ja: "カテゴリー別の順位：{cats}。", ar: "ترتيب منفصل لكل فئة: {cats}." },
+  finaleDouble: { fr: "La finale du {d3} compte double.", en: "The {d3} final counts double.", es: "La final del {d3} cuenta doble.", it: "La finale del {d3} conta doppio.", de: "Das Finale am {d3} zählt doppelt.", ja: "{d3}の決勝はポイント2倍。", ar: "نهائي {d3} يُحتسب مضاعفًا." },
+  x2texte: { fr: "Le {d3}, chaque place rapporte deux fois plus de points.", en: "On {d3}, every placing earns twice as many points.", es: "El {d3}, cada puesto vale el doble de puntos.", it: "Il {d3} ogni piazzamento vale il doppio dei punti.", de: "Am {d3} bringt jede Platzierung doppelt so viele Punkte.", ja: "{d3}は各順位のポイントが2倍。", ar: "في {d3}، يمنح كل مركز ضعف النقاط." },
+  connecte: { fr: "Connecte-toi à Hype pour voir le challenge.", en: "Log in to Hype to see the challenge.", es: "Inicia sesión en Hype para ver el challenge.", it: "Accedi a Hype per vedere il challenge.", de: "Melde dich bei Hype an, um die Challenge zu sehen.", ja: "チャレンジを見るにはHypeにログインしてね。", ar: "سجّل الدخول إلى Hype لرؤية التحدي." },
+  ouvrirHype: { fr: "Ouvrir Hype", en: "Open Hype", es: "Abrir Hype", it: "Apri Hype", de: "Hype öffnen", ja: "Hypeを開く", ar: "فتح Hype" },
+  indispo: { fr: "Ce challenge n'est pas encore disponible.", en: "This challenge is not available yet.", es: "Este challenge aún no está disponible.", it: "Questo challenge non è ancora disponibile.", de: "Diese Challenge ist noch nicht verfügbar.", ja: "このチャレンジはまだ公開されていません。", ar: "هذا التحدي غير متاح بعد." },
+  chargement: { fr: "Chargement…", en: "Loading…", es: "Cargando…", it: "Caricamento…", de: "Wird geladen…", ja: "読み込み中…", ar: "جارٍ التحميل…" },
+  erreurCharge: { fr: "Impossible de charger le challenge. Vérifie ta connexion et réessaie.", en: "Could not load the challenge. Check your connection and try again.", es: "No se pudo cargar el challenge. Revisa tu conexión e inténtalo de nuevo.", it: "Impossibile caricare il challenge. Controlla la connessione e riprova.", de: "Die Challenge konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.", ja: "チャレンジを読み込めませんでした。接続を確認して再試行してね。", ar: "تعذّر تحميل التحدي. تحقّق من اتصالك وحاول مجددًا." },
+  forfait: { fr: "Forfait", en: "Withdrawn", es: "Retirada", it: "Ritirato", de: "Zurückgezogen", ja: "棄権", ar: "انسحاب" },
+  elimine: { fr: "Éliminé", en: "Eliminated", es: "Eliminado", it: "Eliminato", de: "Ausgeschieden", ja: "失格", ar: "إقصاء" },
+  classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
+  abandon: { fr: "Abandon", en: "Retired", es: "Abandono", it: "Ritiro", de: "Aufgegeben", ja: "途中棄権", ar: "انسحب" }
+};
+
+var LANG = "fr";
+function T(k) { var o = TX[k] || TX2[k]; return o ? (o[LANG] || o.fr) : k; }
+function TF(k, v) { var s = T(k); Object.keys(v || {}).forEach(function (x) { s = s.split("{" + x + "}").join(v[x]); }); return s; }
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar" };
+function dateLongue(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "numeric", month: "long", year: "numeric" }) : "—"; }
+function dateCourte(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "2-digit", month: "2-digit" }) : "—"; }
+function dateJourMois(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "numeric", month: "short" }) : "—"; }
+function dateJourMoisLong(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "numeric", month: "long" }) : "—"; }
+
+/* ══════ CONNEXION — dans Hype, on emprunte le client (et donc la session) de l'appli ══════ */
+var P = null;
+try { if (window.parent && window.parent !== window && window.parent.location.origin === location.origin) P = window.parent; } catch (eP) { P = null; }
+var SUPA_URL = "https://ldpjebgtskzdokrublfg.supabase.co", SUPA_CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
+var supa = null;
+try { supa = (P && P.hypeSupaPont) || (window.supabase ? window.supabase.createClient(SUPA_URL, SUPA_CLE, { auth: { persistSession: true, autoRefreshToken: true } }) : null); } catch (eS) { supa = null; }
+var PARAMS = new URLSearchParams(location.search);
+var CLE_CH = PARAMS.get("c") || "dressage-sep-2026";
+try { LANG = PARAMS.get("lang") || (P && P.__hypeLangue) || "fr"; } catch (eL) { LANG = "fr"; }
+if (!TX.evenements[LANG]) LANG = "fr";
+
+/* décor (photos d'ambiance de la maquette, jamais présentées comme des photos du concours) */
+var DECOR = {
+  dressage: { etapes: ["images/challenge/etape1.webp", "images/challenge/etape2.webp", "images/challenge/etape3.webp"], pageEtape: { 3: ["images/challenge/hero-mobile.webp", "images/challenge/hero.webp"] } }
+};
+
+/* ══════ ÉTAT ══════ */
+var CHALLENGE = null, RESULTATS = [], PHOTOS = {}, GERE = false, MOI = null;
+var etat = { cat: null, complet: false, resEtape: 1, resFiltre: null, photoEtape: 1, repCat: null, onglet: "s-classement" };
+
+/* ══════ CALCULS ══════ */
+var AUJOURDHUI = (function () { var d = new Date(); return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); })();
+function pointsPour(place, coef) {
+  var b = CHALLENGE.bareme, base = place >= 1 && place <= b.points.length ? b.points[place - 1] : b.suivants;
+  return base * coef;
+}
+function etape(n) { return CHALLENGE.etapes.filter(function (e) { return e.n === n; })[0]; }
+function classe(r) { return r.statut === "classe" && r.pl >= 1; }
+function resultatsEtape(n, filtre) {
+  return RESULTATS.filter(function (r) { return r.e === n && (!filtre || r.cat === filtre || r.rep === filtre); })
+    .sort(function (a, b) { var ca = classe(a), cb = classe(b); if (ca !== cb) return ca ? -1 : 1; return (a.pl || 99) - (b.pl || 99) || a.cav.localeCompare(b.cav); })
+    .map(function (r) { return Object.assign({}, r, { pts: classe(r) ? pointsPour(r.pl, etape(r.e).coef) : null }); });
+}
+function statutEtape(e) {
+  var aRes = RESULTATS.some(function (r) { return r.e === e.n; });
+  if (e.date && e.date > AUJOURDHUI) return { k: "aVenir", cls: "" };
+  if (e.date === AUJOURDHUI) return { k: "aujourdhui", cls: "" };
+  return aRes ? { k: "terminee", cls: "fini" } : { k: "resAttente", cls: "" };
+}
+function classementGeneral(cat) {
+  var parCav = {};
+  RESULTATS.filter(function (r) { return r.cat === cat && classe(r); }).forEach(function (r) {
+    var cle = r.cav.toLowerCase();
+    var c = parCav[cle] || (parCav[cle] = { cav: r.cav, e: {}, total: 0 });
+    var p = pointsPour(r.pl, etape(r.e).coef);
+    c.e[r.e] = (c.e[r.e] || 0) + p; c.total += p;
+  });
+  var l = Object.keys(parCav).map(function (k) { return parCav[k]; })
+    .sort(function (a, b) { return b.total - a.total || a.cav.localeCompare(b.cav); });
+  l.forEach(function (c, i) { c.rang = (i > 0 && l[i - 1].total === c.total) ? l[i - 1].rang : i + 1; });
+  return l;
+}
+function nomEtape(e) { return e.coef > 1 ? T("finale") : (e.n === 1 ? T("etape1") : e.n === 2 ? T("etape2") : T("etape1").replace("1", String(e.n))); }
+function rangHtml(r) { return r ? '<span class="rang' + (r <= 3 ? " p" : "") + '">' + r + "</span>" : '<span class="rang">–</span>'; }
+function ptsHtml(v, or) { return v == null ? '<span class="pts" style="color:var(--gris)">–</span>' : '<span class="pts' + (or ? " or" : "") + '">' + v + "<small>" + T("pts") + "</small></span>"; }
+function statutHtml(r) { return '<span class="statut-r">' + T(r.statut) + "</span>"; }
+function marqueBrouillon(liste) { return (GERE && liste.some(function (r) { return !r.publie; })) ? '<span class="marque">Brouillon</span>' : ""; }
+var DOC_SVG = '<svg class="doc-ico" viewBox="0 0 38 48" fill="none"><path d="M4 2.5h21l9 9v32a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-39a2 2 0 0 1 2-2z" stroke="#D9C7A3" stroke-opacity=".55"/><path d="M25 2.5v9h9" stroke="#D9C7A3" stroke-opacity=".55"/><path d="M9 22h18M9 28h18M9 34h12" stroke="#D9C7A3" stroke-opacity=".35"/></svg>';
+
+/* ══════ COMPOSANTS PARTAGÉS (page + journée) ══════ */
+function pills(cle, liste, actif, libelle) {
+  return '<div class="pills">' + liste.map(function (v) {
+    return '<button class="pill' + (v === actif ? " actif" : "") + '" data-' + cle + '="' + esc(v) + '">' + esc(libelle ? libelle(v) : v) + "</button>";
+  }).join("") + "</div>";
+}
+function selectCategorie(filtre) {
+  return '<select class="choix" data-res-filtre="1">' + CHALLENGE.categories.map(function (c) {
+    var noms = CHALLENGE.reprises.filter(function (x) { return x.cat === c; }).map(function (x) { return x.nom; }).join(" · ");
+    return '<option value="' + esc(c) + '"' + (c === filtre ? " selected" : "") + ">" + esc(c + (noms ? " — " + noms : "")) + "</option>";
+  }).join("") + "</select>";
+}
+function listeResultats(n, filtre) {
+  var l = resultatsEtape(n, filtre);
+  if (!l.length) return '<div class="vide"><span class="ico">✦</span>' + T("aucunRes") + "</div>";
+  var liste = '<div class="lignes">' + l.map(function (r) {
+    return '<div class="ligne' + (r.publie ? "" : " brouillon") + '"><button class="ligne-h" data-ouvrir="1">' + rangHtml(classe(r) ? r.pl : 0) +
+      '<span class="nm"><b>' + esc(r.cav) + "</b><span>" + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</button>" +
+      '<div class="note-det">' + (r.note != null ? T("note") + " " + Number(r.note).toLocaleString(LOCALES[LANG]) + " %" : T("sansNote")) + (r.rep && CHALLENGE.reprises.filter(function (x) { return x.cat === r.cat; }).length > 1 ? " · " + esc(r.rep) : "") + "</div></div>";
+  }).join("") + "</div>";
+  var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("points") + "</th></tr></thead><tbody>" +
+    l.map(function (r) {
+      return '<tr class="' + (r.publie ? "" : "brouillon") + '"><td class="c">' + rangHtml(classe(r) ? r.pl : 0) + "</td><td>" + esc(r.cav) + '</td><td style="color:var(--grisClair)">' + esc(r.che || "") + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
+    }).join("") + "</tbody></table>";
+  return liste + table;
+}
+function galerie(n) {
+  var p = PHOTOS[n] || [];
+  if (!p.length) return '<div class="attente-photo"><div class="ico">◌</div><p>' + T("pasPhotos") + "</p></div>";
+  var petites = p.slice(1, 5), resteM = p.length - 4, resteD = p.length - 5;
+  return '<div class="galerie' + (p.length < 4 ? " peu" : "") + '"><button class="grande" data-photo="' + n + ':0" style="background-image:url(\'' + esc(p[0]) + '\')" aria-label="' + T("oPhotos") + ' 1"></button>' +
+    (petites.length ? '<div class="petites">' + petites.map(function (u, i) {
+      return '<button data-photo="' + n + ":" + (i + 1) + '" style="background-image:url(\'' + esc(u) + '\')" aria-label="' + T("oPhotos") + " " + (i + 2) + '">' +
+        (i === 2 && resteM > 0 ? '<span class="plus m">+' + resteM + "</span>" : "") + (i === 3 && resteD > 0 ? '<span class="plus d">+' + resteD + "</span>" : "") + "</button>";
+    }).join("") + "</div>" : "") + "</div>";
+}
+function documents(cats) {
+  return '<div class="docs">' + CHALLENGE.reprises.filter(function (r) { return cats.indexOf(r.cat) >= 0; }).map(function (r) {
+    return '<div class="doc">' + DOC_SVG + '<span class="doc-t"><b>' + esc(r.nom) + "</b>" +
+      (r.pdf ? "<span>" + esc(r.cat) + " · " + T("repriseOff") + "</span>" : '<span class="manque">' + esc(r.cat) + " · " + T("bientot") + "</span>") + "</span>" +
+      (r.pdf ? '<a class="dl" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">↓ ' + T("telecharger") + "</a>" : '<span class="dl" aria-disabled="true">↓ ' + T("telecharger") + "</span>") + "</div>";
+  }).join("") + "</div>";
+}
+
+/* ══════ PAGE PRINCIPALE ══════ */
+function rendreEtapes() {
+  document.getElementById("etapes").innerHTML = CHALLENGE.etapes.map(function (e) {
+    var s = statutEtape(e), fin = e.coef > 1;
+    return '<button class="etape" data-etape="' + e.n + '" style="--img:url(' + e.img + ')"><span class="etape-in">' +
+      '<span class="etape-haut"><span class="num">' + e.n + '</span><span class="date">' + esc(dateLongue(e.date)) + "</span></span>" +
+      '<span class="nom">' + (fin ? T("finale") + " <em>×" + e.coef + "</em>" : nomEtape(e)) + "</span>" +
+      '<span class="etape-bas">' + (fin ? '<span class="statut double">✦ ' + T("double") + "</span>" : '<span class="statut ' + s.cls + '">' + T(s.k) + "</span>") + "</span>" +
+      '</span><span class="fleche"><span>→</span></span></button>';
+  }).join("");
+}
+function rendreNav() {
+  var o = [["s-classement", "oClassement"], ["s-resultats", "oResultatsCourt"], ["s-photos", "oPhotos"], ["s-reprises", "oReprisesCourt"], ["s-reglement", "oReglement"]];
+  document.getElementById("navIn").innerHTML = o.map(function (x) {
+    return '<button class="onglet' + (etat.onglet === x[0] ? " actif" : "") + '" data-aller="' + x[0] + '">' + T(x[1]) + "</button>";
+  }).join("");
+}
+function rendreClassement() {
+  var l = classementGeneral(etat.cat), vis = etat.complet ? l : l.slice(0, 5), E = CHALLENGE.etapes;
+  var brou = marqueBrouillon(RESULTATS.filter(function (r) { return r.cat === etat.cat; }));
+  var h = '<div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre">' + T("provisoire") + "</h2></div>" + brou + "</div>";
+  h += '<div class="panneau">' + pills("cat", CHALLENGE.categories, etat.cat);
+  if (!l.length) h += '<div class="vide"><span class="ico">✦</span>' + T("aucunRes") + "</div>";
+  else {
+    h += '<div class="lignes">' + vis.map(function (c) {
+      return '<div class="ligne"><button class="ligne-h" data-ouvrir="1">' + rangHtml(c.rang) +
+        '<span class="nm"><b>' + esc(c.cav) + "</b></span>" + ptsHtml(c.total, true) + '<span class="chev">▾</span></button>' +
+        '<div class="detail">' + E.map(function (e) {
+          return '<div class="case"><small>' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "</small>" + (c.e[e.n] == null ? '<b class="tiret">–</b>' : "<b>" + c.e[e.n] + "</b>") + "</div>";
+        }).join("") + "</div></div>";
+    }).join("") + "</div>";
+    h += '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th>" +
+      E.map(function (e) { return '<th class="c">' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "<br>" + dateCourte(e.date) + "</th>"; }).join("") +
+      '<th class="c">' + T("total") + "</th></tr></thead><tbody>" +
+      vis.map(function (c) {
+        return '<tr><td class="c">' + rangHtml(c.rang) + "</td><td>" + esc(c.cav) + "</td>" +
+          E.map(function (e) { return '<td class="c">' + (c.e[e.n] == null ? '<span style="color:var(--gris)">–</span>' : '<span style="font-family:var(--serif);font-size:20px;color:var(--champ)">' + c.e[e.n] + "</span>") + "</td>"; }).join("") +
+          '<td class="c">' + ptsHtml(c.total, true) + "</td></tr>";
+      }).join("") + "</tbody></table>";
+    if (l.length > 5) h += '<div class="pied"><button class="lien" data-complet="1">' + (etat.complet ? T("voirMoins") : T("voirComplet")) + " <i>" + (etat.complet ? "↑" : "→") + "</i></button></div>";
+  }
+  h += "</div>";
+  document.getElementById("s-classement").innerHTML = h;
+}
+function d3() { var f = CHALLENGE.etapes.filter(function (e) { return e.coef > 1; })[0]; return f ? dateJourMoisLong(f.date) : ""; }
+function baremeHtml() {
+  var b = CHALLENGE.bareme, fin = CHALLENGE.etapes.filter(function (e) { return e.coef > 1; })[0], k = fin ? fin.coef : 1;
+  var cases = b.points.map(function (p, i) { return [String(i + 1), p]; }).concat([[(b.points.length + 1) + " " + T("etSuivants"), b.suivants]]);
+  return '<details class="bareme-pli"><summary><span><b>' + T("voirBareme") + "</b>" + (b.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + '</span><span class="chev">▾</span></summary>' +
+    '<div class="bareme-grille">' + cases.map(function (c) {
+      return '<div class="bcase"><small>' + T("place") + " " + c[0] + "</small><b>" + c[1] + "</b><i>" + T("finale") + " " + c[1] * k + "</i></div>";
+    }).join("") + '</div><div class="bareme-legende"><span>✦ ' + TF("finaleDouble", { d3: d3() }) + "</span></div></details>";
+}
+function rendreResultats() {
+  var vis = RESULTATS.filter(function (r) { return r.e === etat.resEtape && r.cat === etat.resFiltre; });
+  document.getElementById("s-resultats").innerHTML = '<div class="tete"><h2 class="titre">' + T("oResultats") + "</h2>" + marqueBrouillon(vis) + "</div>" +
+    pills("res-etape", CHALLENGE.etapes.map(function (e) { return String(e.n); }), String(etat.resEtape), function (v) { var e = etape(+v); return nomEtape(e) + " · " + dateJourMois(e.date); }) +
+    selectCategorie(etat.resFiltre) + listeResultats(etat.resEtape, etat.resFiltre) +
+    '<div class="pied"><button class="lien" data-etape="' + etat.resEtape + '">' + T("voirEtape") + " <i>→</i></button></div>";
+}
+function rendrePhotos() {
+  document.getElementById("s-photos").innerHTML = '<div class="tete"><h2 class="titre">' + T("oPhotos") + "</h2></div>" +
+    pills("photo-etape", CHALLENGE.etapes.map(function (e) { return String(e.n); }), String(etat.photoEtape), function (v) { return nomEtape(etape(+v)); }) +
+    galerie(etat.photoEtape) +
+    ((PHOTOS[etat.photoEtape] || []).length > 1 ? '<div class="pied"><button class="lien" data-etape="' + etat.photoEtape + '" data-vers="v-photos">' + T("voirPhotos") + " <i>→</i></button></div>" : "");
+}
+function rendreReprises() {
+  document.getElementById("s-reprises").innerHTML = '<div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" +
+    pills("rep-cat", CHALLENGE.categories, etat.repCat) + documents([etat.repCat]);
+}
+function rendreReglement() {
+  var E = CHALLENGE.etapes, cats = CHALLENGE.categories;
+  var catsTxt = cats.length > 1 ? cats[0] + " → " + cats[cats.length - 1] : (cats[0] || "");
+  document.getElementById("s-reglement").innerHTML = '<div class="tete"><h2 class="titre">' + T("reglTitre") + "</h2>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + "</div>" +
+    (CHALLENGE.bareme.valide ? "" : '<p class="regl-intro">' + T("reglIntro") + "</p>") +
+    '<div class="finale-x2"><span class="x">×2</span><span><b>' + T("x2titre") + "</b><span>" + TF("x2texte", { d3: d3() }) + "</span></span></div>" +
+    baremeHtml() +
+    '<ol class="regles"><li>' + TF("r1", { d1: dateJourMoisLong(E[0] && E[0].date), d2: dateJourMoisLong(E[1] && E[1].date), d3: d3() }) + "</li><li>" + TF("r2", { cats: catsTxt }) + "</li><li>" + T("r3") + "</li><li>" + T("r4") + '</li><li class="acf"><span>' + T("r5") + " <em>" + T("aConfirmer").toLowerCase() + ".</em></span></li></ol>";
+}
+
+/* ══════ PAGE D'UNE JOURNÉE ══════ */
+var vueEtat = { n: 1, filtre: null, onglet: "v-journee" };
+function rendreVue() {
+  var e = etape(vueEtat.n), s = statutEtape(e), fin = e.coef > 1, aRes = RESULTATS.some(function (r) { return r.e === e.n; });
+  var ongl = [["v-journee", "oPresentation"], ["v-resultats", "oResultatsCourt"], ["v-photos", "oPhotos"], ["v-reprises", "oReprisesCourt"]];
+  var h = '<div class="vue-hero" style="--img:url(' + e.imgPage + ');--imgL:url(' + e.imgPageL + ')">' +
+    '<div class="hero-haut"><button class="retour" data-fermer-vue="1"><b>‹</b><span>' + T("retour") + "</span></button></div>" +
+    '<div class="bas"><div class="sur"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + esc(e.titre || "") + "</div>" +
+    "<h2>" + esc(dateLongue(e.date)) + "</h2>" +
+    '<div class="lignestat">' + (fin ? '<span class="statut double">✦ ' + T("finale") + " ×" + e.coef + " · " + T("double") + "</span>" : "") + '<span class="statut ' + s.cls + '">' + T(s.k) + "</span></div></div></div>";
+  h += '<nav class="vue-nav"><div class="page nav-in">' + ongl.map(function (o) {
+    return '<button class="onglet' + (vueEtat.onglet === o[0] ? " actif" : "") + '" data-vue-aller="' + o[0] + '">' + T(o[1]) + "</button>";
+  }).join("") + "</div></nav>";
+  h += '<div class="page">';
+  h += '<section class="section" id="v-journee"><p class="vue-intro">' + T(e.n === 1 ? "introE1" : fin ? "introE3" : "introE2") + "</p>" +
+    '<div class="infos"><div class="info"><small>' + T("date") + "</small><b>" + esc(dateJourMois(e.date)) + '</b></div><div class="info"><small>' + T("lieu") + "</small><b>" + esc(e.lieu || CHALLENGE.lieuCourt) + '</b></div><div class="info"><small>' + T("coef") + "</small><b>" + (fin ? "×" + e.coef : T("normal")) + "</b></div></div></section>";
+  h += '<div class="r-vue"><section class="section" id="v-resultats"><div class="tete"><h2 class="titre">' + T("oResultatsCourt") + "</h2>" + marqueBrouillon(RESULTATS.filter(function (r) { return r.e === e.n; })) + "</div>";
+  if (aRes) h += pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre);
+  else h += '<div class="attente"><b>' + T("attTitre") + "</b><p>" + T("attTexte") + '</p><button class="lien" data-vue-aller="v-reprises">' + T("voirReprises") + " <i>→</i></button></div>";
+  h += "</section>";
+  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + galerie(e.n) + "</section></div>";
+  h += '<section class="section" id="v-reprises"><div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" + documents(CHALLENGE.categories) + "</section>";
+  h += '</div><div class="vue-fin"></div>';
+  document.getElementById("vueC").innerHTML = h;
+}
+function rendreNavVue() {
+  document.querySelectorAll("#vue .onglet").forEach(function (b) { b.classList.toggle("actif", b.dataset.vueAller === vueEtat.onglet); });
+}
+function allerDansVue(id) {
+  var v = document.getElementById("vue"), s = document.getElementById(id);
+  vueEtat.onglet = id; rendreNavVue();
+  if (s) v.scrollTo({ top: s.offsetTop - 52, behavior: "smooth" });
+}
+function ouvrirVue(n, vers) {
+  vueEtat.n = n; vueEtat.onglet = "v-journee";
+  if (!vueEtat.filtre) vueEtat.filtre = etat.cat;
+  /* la journée s'ouvre sur une catégorie qui a des résultats ce jour-là */
+  var catsJour = CHALLENGE.categories.filter(function (c) { return RESULTATS.some(function (r) { return r.e === n && r.cat === c; }); });
+  if (catsJour.length && catsJour.indexOf(vueEtat.filtre) < 0) vueEtat.filtre = catsJour[0];
+  rendreVue(); var v = document.getElementById("vue"); v.classList.add("ouverte"); v.scrollTop = 0;
+  document.body.style.overflow = "hidden";
+  if (vers) setTimeout(function () { allerDansVue(vers); }, 30);
+}
+function fermerVue() { document.getElementById("vue").classList.remove("ouverte"); document.body.style.overflow = ""; }
+document.getElementById("vue").addEventListener("scroll", function () {
+  var ids = ["v-journee", "v-resultats", "v-photos", "v-reprises"], cur = ids[0];
+  ids.forEach(function (id) { var s = document.getElementById(id); if (s && s.getBoundingClientRect().top < 120) cur = id; });
+  if (cur !== vueEtat.onglet) { vueEtat.onglet = cur; rendreNavVue(); }
+}, { passive: true });
+
+/* ══════ VISIONNEUSE ══════ */
+var lb = { liste: [], i: 0 };
+function ouvrirLb(n, i) { lb.liste = PHOTOS[n] || []; lb.i = i; majLb(); document.getElementById("lb").classList.add("ouverte"); }
+function majLb() { document.getElementById("lbImg").src = lb.liste[lb.i]; document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length; }
+function pasLb(d) { if (!lb.liste.length) return; lb.i = (lb.i + d + lb.liste.length) % lb.liste.length; majLb(); }
+function fermerLb() { document.getElementById("lb").classList.remove("ouverte"); }
+
+/* ══════ ÉVÉNEMENTS ══════ */
+document.addEventListener("click", function (ev) {
+  var t = ev.target.closest("button,[data-photo]"); if (!t) return;
+  var d = t.dataset;
+  if (d.adm) { gestionClic(t, d); return; }
+  if (d.etape) { ouvrirVue(+d.etape, d.vers); return; }
+  if (d.aller) { etat.onglet = d.aller; rendreNav(); var s = document.getElementById(d.aller); window.scrollTo({ top: s.getBoundingClientRect().top + window.scrollY - 30, behavior: "smooth" }); return; }
+  if (d.cat) { etat.cat = d.cat; etat.complet = false; rendreClassement(); return; }
+  if (d.complet) { etat.complet = !etat.complet; rendreClassement(); return; }
+  if (d.ouvrir) { t.parentNode.classList.toggle("ouverte"); return; }
+  if (d.resEtape) { etat.resEtape = +d.resEtape; rendreResultats(); return; }
+  if (d.photoEtape) { etat.photoEtape = +d.photoEtape; rendrePhotos(); return; }
+  if (d.repCat) { etat.repCat = d.repCat; rendreReprises(); return; }
+  if (d.vueCat) { vueEtat.filtre = d.vueCat; var v = document.getElementById("vue"), y = v.scrollTop; rendreVue(); v.scrollTop = y; return; }
+  if (d.photo) { var p = d.photo.split(":"); ouvrirLb(+p[0], +p[1]); return; }
+  if (d.vueAller) { allerDansVue(d.vueAller); return; }
+  if (d.fermerVue) { fermerVue(); return; }
+});
+document.addEventListener("change", function (ev) {
+  var t = ev.target;
+  if (t.dataset.resFiltre !== undefined) { etat.resFiltre = t.value; rendreResultats(); }
+});
+document.getElementById("lbX").onclick = fermerLb;
+document.getElementById("lbPr").onclick = function () { pasLb(LANG === "ar" ? 1 : -1); };
+document.getElementById("lbSv").onclick = function () { pasLb(LANG === "ar" ? -1 : 1); };
+document.addEventListener("keydown", function (e) {
+  if (e.key === "Escape") { if (document.getElementById("lb").classList.contains("ouverte")) fermerLb(); else fermerVue(); }
+  if (document.getElementById("lb").classList.contains("ouverte")) { if (e.key === "ArrowLeft") pasLb(LANG === "ar" ? 1 : -1); if (e.key === "ArrowRight") pasLb(LANG === "ar" ? -1 : 1); }
+});
+(function () { var x0 = null, el = document.getElementById("lb");
+  el.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
+  el.addEventListener("touchend", function (e) { if (x0 == null) return; var dx = e.changedTouches[0].clientX - x0; if (Math.abs(dx) > 40) pasLb((dx < 0 ? 1 : -1) * (LANG === "ar" ? -1 : 1)); x0 = null; });
+})();
+window.addEventListener("scroll", function () {
+  if (!CHALLENGE) return;
+  var ids = ["s-classement", "s-resultats", "s-photos", "s-reprises", "s-reglement"], cur = ids[0];
+  ids.forEach(function (id) { if (document.getElementById(id).getBoundingClientRect().top < 120) cur = id; });
+  if (cur !== etat.onglet) { etat.onglet = cur; rendreNav(); }
+}, { passive: true });
+document.getElementById("retour").addEventListener("click", function () {
+  try { if (P && typeof P.hypeChallengeRetour === "function") { P.hypeChallengeRetour(); return; } } catch (e) { }
+  if (history.length > 1) history.back(); else location.href = "/";
+});
+
+function tout() {
+  document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr";
+  document.querySelectorAll("[data-t]").forEach(function (el) { el.innerHTML = T(el.dataset.t); });
+  if (!CHALLENGE) return;
+  rendreEtapes(); rendreNav(); rendreClassement(); rendreResultats(); rendrePhotos(); rendreReprises(); rendreReglement(); rendreGestion();
+  if (document.getElementById("vue").classList.contains("ouverte")) rendreVue();
+}
+function message(cle, avecLien) {
+  document.querySelectorAll("[data-t]").forEach(function (el) { el.innerHTML = T(el.dataset.t); });
+  document.getElementById("etat-page").innerHTML = '<p>' + T(cle) + "</p>" + (avecLien ? '<a class="lien" href="/">' + T("ouvrirHype") + " <i>→</i></a>" : "");
+  document.getElementById("etat-page").hidden = false;
+  document.body.classList.add("sans-donnees");
+}
+
+/* ══════ LECTURE EN BASE ══════ */
+function estImage(u) { return /\.(jpe?g|png|webp|gif|heic|avif)(\?|$)/i.test(String(u || "")) || (/\/storage\/v1\/object\/public\/photos\//.test(String(u || "")) && !/\.(mp4|mov|m4v|webm)(\?|$)/i.test(String(u || ""))); }
+async function photosDuRendezVous(idAg, dateJour) {
+  var urls = [];
+  /* photos DE LA JOURNEE : publiees le jour meme ou apres (l affiche ou les horaires, postes avant, ne sont pas des photos du concours) */
+  var debut = dateJour ? new Date(dateJour + "T00:00:00").getTime() : 0;
+  function ajoute(po) {
+    if (!po) return;
+    if (po.prive && !(MOI && po.user_id === MOI.id)) return;
+    if (debut && po.created_at && new Date(po.created_at).getTime() < debut) return;
+    [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (u) { if (u && typeof u === "string" && estImage(u) && urls.indexOf(u) < 0) urls.push(u); });
+  }
+  var r1 = await supa.from("commentaires").select("id,user_id,photo_url,medias,prive,created_at").eq("cible", "agenda:" + idAg).order("created_at", { ascending: true });
+  ((r1 && r1.data) || []).forEach(ajoute);
+  /* publications rattachées après coup au rendez-vous (même lecture que la page Souvenir) */
+  var rI = await supa.from("identifications").select("photo_url").eq("type", "agenda").eq("cible_id", String(idAg)).eq("statut", "accepte");
+  var ids = ((rI && rI.data) || []).map(function (l) { return String(l.photo_url || ""); }).filter(function (v) { return v.indexOf("post:") === 0; }).map(function (v) { return v.slice(5); });
+  if (ids.length) {
+    var r2 = await supa.from("commentaires").select("id,user_id,photo_url,medias,prive,created_at").in("id", ids);
+    ((r2 && r2.data) || []).forEach(ajoute);
+  }
+  return urls;
+}
+async function charger() {
+  if (!supa) { message("erreurCharge"); return; }
+  var sess = null; try { sess = await supa.auth.getSession(); } catch (e) { sess = null; }
+  MOI = sess && sess.data && sess.data.session && sess.data.session.user;
+  if (!MOI) { message("connecte", true); return; }
+  var rc = await supa.from("challenges").select("*").eq("cle", CLE_CH).maybeSingle();
+  if (rc.error) { message("erreurCharge"); return; }
+  if (!rc.data) { message("indispo"); return; }
+  var ch = rc.data;
+  try { var rg = await supa.rpc("hype_peut_gerer_challenge", { p_club: ch.club_clef }); GERE = !rg.error && rg.data === true; } catch (eG) { GERE = false; }
+  var et = Array.isArray(ch.etapes) ? ch.etapes : [];
+  var idsAg = et.map(function (e) { return e.agenda_id; }).filter(Boolean);
+  var ag = {};
+  if (idsAg.length) {
+    var ra = await supa.from("club_agenda").select("id,titre,date_jour,lieu").in("id", idsAg);
+    ((ra && ra.data) || []).forEach(function (a) { ag[a.id] = a; });
+  }
+  var decor = DECOR[ch.discipline] || DECOR.dressage;
+  var reprises = [];
+  (Array.isArray(ch.categories) ? ch.categories : []).forEach(function (c) { (c.reprises || []).forEach(function (r) { reprises.push({ cat: c.cat, nom: r.nom, pdf: r.pdf || null }); }); });
+  CHALLENGE = {
+    id: ch.id, cle: ch.cle, discipline: ch.discipline, club_clef: ch.club_clef, publie: ch.publie,
+    saison: ch.saison, lieuCourt: "SEP · Paris",
+    bareme: Object.assign({ points: [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2], suivants: 1, valide: false }, ch.bareme || {}),
+    etapes: et.map(function (e, i) {
+      var a = ag[e.agenda_id] || {};
+      var pe = (decor.pageEtape && decor.pageEtape[e.n]) || [decor.etapes[i % decor.etapes.length], decor.etapes[i % decor.etapes.length]];
+      return { n: e.n, coef: e.coef || 1, agenda: e.agenda_id, date: a.date_jour || null, titre: a.titre || "", lieu: a.lieu || "", img: decor.etapes[i % decor.etapes.length], imgPage: pe[0], imgPageL: pe[1] };
+    }),
+    categories: (Array.isArray(ch.categories) ? ch.categories : []).map(function (c) { return c.cat; }),
+    reprises: reprises
+  };
+  var rr = await supa.from("challenge_resultats").select("*").eq("challenge_id", ch.id);
+  RESULTATS = ((rr && rr.data) || []).map(function (r) {
+    return { id: r.id, e: r.etape, cat: r.categorie, rep: r.reprise, cav: r.cavalier_nom, che: r.cheval_nom, pl: r.place, note: r.note, statut: r.statut || "classe", publie: !!r.publie };
+  });
+  PHOTOS = {};
+  await Promise.all(CHALLENGE.etapes.map(async function (e) { PHOTOS[e.n] = (e.agenda && e.date && e.date <= AUJOURDHUI) ? await photosDuRendezVous(e.agenda, e.date) : []; }));
+  /* catégorie affichée au départ : la première qui a des résultats */
+  var avecRes = CHALLENGE.categories.filter(function (c) { return RESULTATS.some(function (r) { return r.cat === c; }); });
+  etat.cat = etat.cat && CHALLENGE.categories.indexOf(etat.cat) >= 0 ? etat.cat : (avecRes[0] || CHALLENGE.categories[0]);
+  etat.resFiltre = etat.resFiltre && CHALLENGE.categories.indexOf(etat.resFiltre) >= 0 ? etat.resFiltre : etat.cat;
+  etat.repCat = etat.repCat || etat.cat;
+  var dernier = CHALLENGE.etapes.filter(function (e) { return RESULTATS.some(function (r) { return r.e === e.n; }); }).pop();
+  if (!etat._init) { etat.resEtape = dernier ? dernier.n : 1; etat.photoEtape = dernier ? dernier.n : 1; etat._init = true; }
+  document.getElementById("etat-page").hidden = true;
+  document.body.classList.remove("sans-donnees");
+  tout();
+}
+window.__challengeRecharger = charger;
+
+/* ══════════════════════════════════════════════════════════════
+   GESTION (modératrices et gestionnaires du club) — écrans en français
+   Import d'une feuille : photo → lecture automatique → vérification → brouillon → publication
+   ══════════════════════════════════════════════════════════════ */
+var IMP = { ouvert: false, etape: 1, enCours: false, erreur: "", info: "", epreuves: [] };
+function rendreGestion() {
+  var z = document.getElementById("gestion");
+  if (!GERE) { z.hidden = true; z.innerHTML = ""; return; }
+  z.hidden = false;
+  var parEtape = CHALLENGE.etapes.map(function (e) {
+    var l = RESULTATS.filter(function (r) { return r.e === e.n; }), brou = l.filter(function (r) { return !r.publie; }).length;
+    return '<div class="g-etape"><span><b>' + nomEtape(e) + "</b> · " + l.length + " résultat" + (l.length > 1 ? "s" : "") + (brou ? ' · <em>' + brou + " en brouillon</em>" : (l.length ? " · publiés" : "")) + "</span>" +
+      (brou ? '<button class="g-btn" data-adm="publier-etape" data-n="' + e.n + '">Publier</button>' : (l.length ? '<button class="g-btn discret" data-adm="depublier-etape" data-n="' + e.n + '">Repasser en brouillon</button>' : "")) + "</div>";
+  }).join("");
+  z.innerHTML = '<div class="g-in"><div class="g-tete"><span class="g-titre">Gestion du challenge</span><span class="g-etat">' +
+    (CHALLENGE.publie ? "Page visible par les membres" : "Page masquée — visible par toi seule") + "</span></div>" +
+    '<div class="g-actions"><button class="g-btn plein" data-adm="importer">Importer une feuille de résultats</button>' +
+    '<button class="g-btn" data-adm="publier-page">' + (CHALLENGE.publie ? "Masquer la page" : "Rendre la page visible") + "</button></div>" +
+    parEtape + (IMP.info ? '<p class="g-info">' + esc(IMP.info) + "</p>" : "") + "</div>";
+}
+function catDepuisTitre(t) {
+  var s = String(t || "").toLowerCase();
+  var cats = CHALLENGE.categories;
+  for (var i = 0; i < cats.length; i++) { if (s.indexOf(cats[i].toLowerCase()) >= 0) return cats[i]; }
+  var m = s.match(/galop\s*(\d)/); if (m) { var g = "Galop " + m[1]; if (cats.indexOf(g) >= 0) return g; }
+  return "";
+}
+function noteNum(v) { var s = String(v == null ? "" : v).replace("%", "").replace(",", ".").replace(/[^\d.]/g, ""); var n = parseFloat(s); return isNaN(n) || n <= 0 || n > 100 ? null : Math.round(n * 100) / 100; }
+function placeNum(v) { var n = parseInt(String(v == null ? "" : v).replace(/[^\d]/g, ""), 10); return isNaN(n) || n < 1 || n > 200 ? null : n; }
+function ligneVide() { return { cavalier: "", cheval: "", note: "", place: "", statut: "classe", doute: "" }; }
+
+function rendreImport() {
+  var o = document.getElementById("import");
+  if (!IMP.ouvert) { o.classList.remove("ouverte"); o.innerHTML = ""; return; }
+  o.classList.add("ouverte");
+  var h = '<div class="i-in"><div class="i-tete"><b>Importer une feuille de résultats</b><button class="i-x" data-adm="fermer-import" aria-label="Fermer">×</button></div>';
+  h += '<p class="i-aide">Prends en photo la feuille (une page à la fois, bien à plat et nette). Les résultats sont lus automatiquement, puis <b>tu vérifies tout</b> avant d\'enregistrer. Rien n\'est publié à cette étape.</p>';
+  h += '<div class="i-label">Journée</div><div class="pills">' + CHALLENGE.etapes.map(function (e) {
+    return '<button class="pill' + (e.n === IMP.etape ? " actif" : "") + '" data-adm="imp-etape" data-n="' + e.n + '">' + esc(nomEtape(e) + " · " + dateJourMois(e.date)) + "</button>";
+  }).join("") + "</div>";
+  h += '<div class="i-boutons"><label class="g-btn plein i-fichier">' + (IMP.enCours ? "Lecture en cours…" : "Choisir ou prendre la photo") +
+    '<input type="file" accept="image/*" id="impFichier" ' + (IMP.enCours ? "disabled" : "") + "></label>" +
+    '<button class="g-btn" data-adm="imp-manuel">Saisir une épreuve à la main</button></div>';
+  if (IMP.enCours) h += '<p class="i-attente">Lecture de la feuille… cela peut prendre jusqu\'à une minute.</p>';
+  if (IMP.erreur) h += '<div class="i-erreur"><b>Ça n\'a pas marché.</b><br>' + esc(IMP.erreur) + '<br><button class="g-btn discret" data-adm="imp-erreur-ok">J\'ai compris</button></div>';
+  IMP.epreuves.forEach(function (ep, iE) {
+    var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === ep.cat; });
+    h += '<div class="i-epreuve' + (ep.cat ? "" : " a-choisir") + '"><div class="i-ep-tete"><span class="i-ep-titre">' + esc(ep.titre || "Épreuve " + (iE + 1)) + "</span>" +
+      '<button class="i-suppr" data-adm="imp-suppr-ep" data-e="' + iE + '">Retirer</button></div>' +
+      '<div class="i-ep-choix"><select data-imp="cat" data-e="' + iE + '"><option value="">— Catégorie du challenge ? —</option>' +
+      CHALLENGE.categories.map(function (c) { return '<option value="' + esc(c) + '"' + (c === ep.cat ? " selected" : "") + ">" + esc(c) + "</option>"; }).join("") + "</select>" +
+      (reps.length > 1 ? '<select data-imp="rep" data-e="' + iE + '">' + reps.map(function (r) { return '<option value="' + esc(r.nom) + '"' + (r.nom === ep.rep ? " selected" : "") + ">" + esc(r.nom) + "</option>"; }).join("") + "</select>" : "") + "</div>" +
+      (ep.cat ? "" : '<p class="i-doute">Choisis la catégorie, sinon cette épreuve ne sera pas enregistrée.</p>');
+    ep.lignes.forEach(function (l, iL) {
+      h += '<div class="i-ligne' + (l.doute ? " douteuse" : "") + '">' +
+        '<input class="i-pl" inputmode="numeric" placeholder="Pl." value="' + esc(l.place) + '" data-imp="place" data-e="' + iE + '" data-l="' + iL + '">' +
+        '<input class="i-cav" placeholder="Cavalier" value="' + esc(l.cavalier) + '" data-imp="cavalier" data-e="' + iE + '" data-l="' + iL + '">' +
+        '<input class="i-che" placeholder="Cheval" value="' + esc(l.cheval) + '" data-imp="cheval" data-e="' + iE + '" data-l="' + iL + '">' +
+        '<input class="i-note" inputmode="decimal" placeholder="Note %" value="' + esc(l.note) + '" data-imp="note" data-e="' + iE + '" data-l="' + iL + '">' +
+        '<select class="i-st" data-imp="statut" data-e="' + iE + '" data-l="' + iL + '">' + ["classe", "forfait", "elimine", "abandon"].map(function (s) { return '<option value="' + s + '"' + (s === l.statut ? " selected" : "") + ">" + { classe: "Classé", forfait: "Forfait", elimine: "Éliminé", abandon: "Abandon" }[s] + "</option>"; }).join("") + "</select>" +
+        '<button class="i-suppr" data-adm="imp-suppr-l" data-e="' + iE + '" data-l="' + iL + '" aria-label="Retirer la ligne">×</button>' +
+        (l.doute ? '<p class="i-doute">⚠ ' + esc(l.doute) + "</p>" : "") + "</div>";
+    });
+    h += '<button class="g-btn discret" data-adm="imp-ajout-l" data-e="' + iE + '">+ Ajouter une ligne</button></div>';
+  });
+  if (IMP.epreuves.length) {
+    var n = IMP.epreuves.filter(function (e) { return e.cat; }).reduce(function (s, e) { return s + e.lignes.filter(function (l) { return String(l.cavalier).trim(); }).length; }, 0);
+    h += '<div class="i-pied"><button class="g-btn plein" data-adm="imp-enregistrer"' + (n ? "" : " disabled") + '>Enregistrer ' + n + " résultat" + (n > 1 ? "s" : "") + " en brouillon</button>" +
+      '<p class="i-aide">Si des résultats existent déjà pour la même journée et la même catégorie, ils seront remplacés (on te le demande avant).</p></div>';
+  }
+  h += "</div>";
+  o.innerHTML = h;
+  var f = document.getElementById("impFichier");
+  if (f) f.addEventListener("change", function () { if (f.files && f.files[0]) lireFeuille(f.files[0]); });
+}
+document.addEventListener("input", function (ev) {
+  var t = ev.target, d = t.dataset; if (!d || !d.imp) return;
+  var ep = IMP.epreuves[+d.e]; if (!ep) return;
+  if (d.l !== undefined) ep.lignes[+d.l][d.imp] = t.value;
+});
+document.addEventListener("change", function (ev) {
+  var t = ev.target, d = t.dataset; if (!d || !d.imp) return;
+  var ep = IMP.epreuves[+d.e]; if (!ep) return;
+  if (d.imp === "cat") { ep.cat = t.value; var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === ep.cat; }); ep.rep = reps.length ? reps[0].nom : null; rendreImport(); return; }
+  if (d.imp === "rep") { ep.rep = t.value; return; }
+  if (d.l !== undefined) ep.lignes[+d.l][d.imp] = t.value;
+});
+
+/* photo → JPEG raisonnable (2048 px max) → base64 */
+function prepareImage(fichier) {
+  return new Promise(function (ok, ko) {
+    var url = URL.createObjectURL(fichier), img = new Image();
+    img.onload = function () {
+      var m = 2048, w = img.naturalWidth, hh = img.naturalHeight, k = Math.min(1, m / Math.max(w, hh));
+      var c = document.createElement("canvas"); c.width = Math.round(w * k); c.height = Math.round(hh * k);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      URL.revokeObjectURL(url);
+      var q = 0.9, d = c.toDataURL("image/jpeg", q);
+      while (d.length > 2500000 && q > 0.5) { q -= 0.1; d = c.toDataURL("image/jpeg", q); }
+      ok(d.slice(d.indexOf(",") + 1));
+    };
+    img.onerror = function () { URL.revokeObjectURL(url); ko(new Error("image illisible")); };
+    img.src = url;
+  });
+}
+async function appelIA(corps) {
+  if (P && typeof P.hypeAppelIA === "function") return P.hypeAppelIA(corps);
+  var s = await supa.auth.getSession(); var j = s && s.data && s.data.session && s.data.session.access_token;
+  var h = { "Content-Type": "application/json" }; if (j) h.Authorization = "Bearer " + j;
+  return fetch("/.netlify/functions/assistant", { method: "POST", headers: h, body: JSON.stringify(corps) });
+}
+async function lireFeuille(fichier) {
+  IMP.enCours = true; IMP.erreur = ""; rendreImport();
+  try {
+    var b64 = await prepareImage(fichier);
+    var rep = await appelIA({ operation: "lecture_challenge", langue: "fr", image: { type: "image", source: { type: "base64", media_type: "image/jpeg", data: b64 } } });
+    var data = null; try { data = await rep.json(); } catch (eJ) { data = null; }
+    if (!rep.ok || (data && data.ok === false)) {
+      var msg = (data && data.code && P && typeof P.hypeMessageIA === "function" && P.hypeMessageIA(data.code)) || (data && data.message) || ("Erreur " + rep.status + " du service de lecture.");
+      if (data && data.code === "OPERATION_INVALIDE") msg = "La lecture automatique des feuilles n'est pas encore installée sur le serveur (fichier assistant.js à publier).";
+      throw new Error(msg);
+    }
+    var texte = ""; try { texte = (data && data.content) ? data.content.map(function (b) { return (b && b.type === "text") ? b.text : ""; }).join("") : ((data && data.text) || ""); } catch (eT) { texte = ""; }
+    texte = String(texte || "").replace(/```json|```/g, "").trim();
+    var brut = null; try { brut = JSON.parse(texte); } catch (eP) { brut = null; }
+    var eps = brut && Array.isArray(brut.epreuves) ? brut.epreuves : null;
+    if (!eps || !eps.length) throw new Error("Aucun tableau de résultats reconnu sur cette photo. Essaie une photo plus nette et bien à plat, ou saisis l'épreuve à la main.");
+    eps.forEach(function (e) {
+      var cat = catDepuisTitre(e.titre), reps = CHALLENGE.reprises.filter(function (r) { return r.cat === cat; });
+      IMP.epreuves.push({
+        titre: String(e.titre || ""), cat: cat, rep: reps.length ? reps[0].nom : null,
+        lignes: (Array.isArray(e.lignes) ? e.lignes : []).map(function (l) {
+          var st = ["classe", "forfait", "elimine", "abandon"].indexOf(l.statut) >= 0 ? l.statut : "classe";
+          var doute = String(l.doute || "").trim();
+          if (st === "classe" && !placeNum(l.place) && !doute) doute = "Pas de place écrite sur la feuille.";
+          return { cavalier: String(l.cavalier || "").trim(), cheval: String(l.cheval || "").trim(), note: String(l.note || "").trim(), place: String(l.place || "").trim(), statut: st, doute: doute };
+        })
+      });
+    });
+  } catch (e) {
+    IMP.erreur = (e && e.message) || "Erreur inconnue.";
+  }
+  IMP.enCours = false; rendreImport();
+}
+async function enregistrerImport() {
+  var aGarder = IMP.epreuves.filter(function (e) { return e.cat && e.lignes.some(function (l) { return String(l.cavalier).trim(); }); });
+  if (!aGarder.length) return;
+  /* contrôle : places manquantes chez des classés */
+  var sansPlace = 0;
+  aGarder.forEach(function (e) { e.lignes.forEach(function (l) { if (String(l.cavalier).trim() && l.statut === "classe" && !placeNum(l.place)) sansPlace++; }); });
+  if (sansPlace && !confirm(sansPlace + " cavalier(s) classé(s) n'ont pas de place : ils apparaîtront sans points. Enregistrer quand même ?")) return;
+  /* doublons à remplacer */
+  var aRemplacer = [];
+  aGarder.forEach(function (e) {
+    var plusieurs = CHALLENGE.reprises.filter(function (r) { return r.cat === e.cat; }).length > 1;
+    var ex = RESULTATS.filter(function (r) { return r.e === IMP.etape && r.cat === e.cat && (!plusieurs || r.rep === e.rep); });
+    if (ex.length) aRemplacer.push({ e: e, n: ex.length, plusieurs: plusieurs });
+  });
+  if (aRemplacer.length && !confirm("Des résultats existent déjà pour cette journée :\n" + aRemplacer.map(function (x) { return "· " + x.e.cat + (x.plusieurs ? " (" + x.e.rep + ")" : "") + " : " + x.n + " ligne(s)"; }).join("\n") + "\n\nIls vont être REMPLACÉS par ceux-ci. Continuer ?")) return;
+  IMP.enCours = true; IMP.erreur = ""; rendreImport();
+  try {
+    for (var i = 0; i < aRemplacer.length; i++) {
+      var x = aRemplacer[i];
+      var q = supa.from("challenge_resultats").delete().eq("challenge_id", CHALLENGE.id).eq("etape", IMP.etape).eq("categorie", x.e.cat);
+      if (x.plusieurs) q = q.eq("reprise", x.e.rep);
+      var rd = await q; if (rd.error) throw new Error("Suppression des anciens résultats refusée : " + rd.error.message);
+    }
+    var lignes = [];
+    aGarder.forEach(function (e) {
+      e.lignes.forEach(function (l) {
+        if (!String(l.cavalier).trim()) return;
+        lignes.push({ challenge_id: CHALLENGE.id, etape: IMP.etape, categorie: e.cat, reprise: e.rep || null, cavalier_nom: String(l.cavalier).trim(), cheval_nom: String(l.cheval).trim() || null,
+          place: l.statut === "classe" ? placeNum(l.place) : null, statut: l.statut, note: noteNum(l.note), publie: false });
+      });
+    });
+    var ri = await supa.from("challenge_resultats").insert(lignes);
+    if (ri.error) throw new Error("Enregistrement refusé : " + ri.error.message);
+    IMP.info = lignes.length + " résultat(s) enregistrés en brouillon pour " + nomEtape(etape(IMP.etape)) + ". Vérifie-les sur la page, puis appuie sur « Publier ».";
+    IMP.ouvert = false; IMP.epreuves = [];
+    await charger();
+  } catch (e) { IMP.erreur = (e && e.message) || "Erreur inconnue."; }
+  IMP.enCours = false; rendreImport();
+}
+async function gestionClic(t, d) {
+  var a = d.adm;
+  if (a === "importer") { IMP.ouvert = true; IMP.erreur = ""; IMP.info = ""; var dern = CHALLENGE.etapes.filter(function (e) { return e.date && e.date <= AUJOURDHUI; }).pop(); IMP.etape = dern ? dern.n : 1; rendreImport(); document.getElementById("import").scrollTop = 0; return; }
+  if (a === "fermer-import") { if (IMP.epreuves.length && !confirm("Fermer sans enregistrer ? La lecture sera perdue.")) return; IMP.ouvert = false; IMP.epreuves = []; IMP.erreur = ""; rendreImport(); return; }
+  if (a === "imp-etape") { IMP.etape = +d.n; rendreImport(); return; }
+  if (a === "imp-manuel") { IMP.epreuves.push({ titre: "Épreuve saisie à la main", cat: "", rep: null, lignes: [ligneVide(), ligneVide(), ligneVide()] }); rendreImport(); return; }
+  if (a === "imp-erreur-ok") { IMP.erreur = ""; rendreImport(); return; }
+  if (a === "imp-suppr-ep") { if (confirm("Retirer cette épreuve de l'import ?")) { IMP.epreuves.splice(+d.e, 1); rendreImport(); } return; }
+  if (a === "imp-suppr-l") { IMP.epreuves[+d.e].lignes.splice(+d.l, 1); rendreImport(); return; }
+  if (a === "imp-ajout-l") { IMP.epreuves[+d.e].lignes.push(ligneVide()); rendreImport(); return; }
+  if (a === "imp-enregistrer") { enregistrerImport(); return; }
+  if (a === "publier-etape" || a === "depublier-etape") {
+    var pub = a === "publier-etape", n = +d.n;
+    if (!confirm(pub ? "Publier les résultats de " + nomEtape(etape(n)) + " ? Les membres les verront " + (CHALLENGE.publie ? "tout de suite." : "dès que la page sera visible.") : "Repasser les résultats de " + nomEtape(etape(n)) + " en brouillon ? Les membres ne les verront plus.")) return;
+    var r = await supa.from("challenge_resultats").update({ publie: pub }).eq("challenge_id", CHALLENGE.id).eq("etape", n);
+    if (r.error) { IMP.info = "Erreur : " + r.error.message; rendreGestion(); return; }
+    IMP.info = pub ? "Résultats publiés." : "Résultats repassés en brouillon."; await charger(); return;
+  }
+  if (a === "publier-page") {
+    var vis = !CHALLENGE.publie;
+    if (!confirm(vis ? "Rendre la page du challenge visible par tous les membres connectés ? (seuls les résultats publiés apparaîtront)" : "Masquer la page du challenge aux membres ?")) return;
+    var r2 = await supa.from("challenges").update({ publie: vis }).eq("id", CHALLENGE.id);
+    if (r2.error) { IMP.info = "Erreur : " + r2.error.message; rendreGestion(); return; }
+    IMP.info = vis ? "La page est maintenant visible par les membres." : "La page est masquée."; await charger(); return;
+  }
+}
+
+tout();
+charger().catch(function (e) { try { console.error(e); } catch (x) { } message("erreurCharge"); });
+</script>
+</body>
+</html>

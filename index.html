@@ -28555,7 +28555,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */, "resultats-cavalier" /* 19/10 Performances du cavalier en grand */, "actualite-cavalier" /* 19/10 soir : Actualite du cavalier en grand */];
+    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */, "resultats-cavalier" /* 19/10 Performances du cavalier en grand */, "actualite-cavalier" /* 19/10 soir : Actualite du cavalier en grand */, "challenge" /* 20/10 */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28634,7 +28634,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -28813,6 +28813,7 @@ function Router() {
                 ecran === "agenda-club" && React.createElement(EcranAgendaClub, null),
                 ecran === "evenements-passes" && React.createElement(EcranAgendaClub, { vuePasses: true }),   /* 12/10 (1055) page Evenements passes */
                 ecran === "performances-chevaux" && React.createElement(EcranPerformancesChevaux, null),   /* 07/10 (703) */
+                ecran === "challenge" && React.createElement(EcranChallenge, null),   /* 20/10 challenges de club (page challenge.html) */
                 ecran === "team-competition" && React.createElement(EcranTeamCompetition, null),   /* 01/10 (519) : page Team Competition, lien cache #team-competition */
                 ecran === "gerer-ecurie" && React.createElement(EcranGererEcurie, null),
                 ecran === "moncompte" && React.createElement(EcranMonCompte, null),
@@ -44382,6 +44383,55 @@ function useHypeLarge() {
   }, []);
   return st[0];
 }
+/* ═══ 20/10 — CHALLENGES DE CLUB (Dressage, CSO, Equifun) ═══
+   La page vit dans son propre fichier (challenge.html) : l index ne porte que l ecran qui l ouvre et la carte d acces.
+   L ecran prete a la page le client Supabase de l appli (meme session) et sa fonction de retour. */
+function EcranChallenge() {
+  var h = React.createElement;
+  var ctx = ((typeof useApp === "function") ? useApp() : null) || {};
+  var setEcran = ctx.setEcran || function () { }, retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
+  var large = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
+  var cle = "dressage-sep-2026"; try { cle = (window.__challengeCle || cle); } catch (e) { }
+  var lg = "fr"; try { lg = window.__hypeLangue || "fr"; } catch (e) { }
+  try {
+    window.hypeSupaPont = supa;
+    window.hypeChallengeRetour = function () { if (peutReculer && retourEcran) retourEcran(); else setEcran("guilde"); };
+  } catch (eP) { }
+  return h("iframe", { key: cle + lg, src: "challenge.html?c=" + encodeURIComponent(cle) + "&lang=" + encodeURIComponent(lg), title: "Challenge",
+    style: { display: "block", width: "100%", height: large ? "100dvh" : "calc(100dvh - 84px)", border: 0, background: "#060709" } });
+}
+/* Carte « Challenges » sur la page Ecurie : n apparait que si le club a un challenge que la personne peut voir
+   (publie, ou pas encore publie mais elle le gere : c est la base qui decide, pas l ecran). */
+function CarteChallengesEcurie(props) {
+  var h = React.createElement;
+  var st = React.useState([]); var liste = st[0], setListe = st[1];
+  var clef = String(props.club || "").trim().toLowerCase();
+  React.useEffect(function () {
+    var vivant = true;
+    if (!clef || typeof supa === "undefined" || !supa) return;
+    supa.from("challenges").select("cle, nom, discipline, publie, saison").eq("club_clef", clef).order("cree_le", { ascending: true }).then(function (r) {
+      if (vivant && r && !r.error && Array.isArray(r.data)) setListe(r.data);
+    });
+    return function () { vivant = false; };
+  }, [clef]);
+  if (!liste.length) return null;
+  var T = props.T, rtl = props.rtl, lg = "fr"; try { lg = window.__hypeLangue || "fr"; } catch (e) { }
+  var SERIF = "'Cormorant Garamond',Georgia,serif", M = "'Montserrat',sans-serif";
+  return h("div", { style: { marginTop: 14, display: "grid", gap: 10 } },
+    liste.map(function (c) {
+      var nom = (c.nom && (c.nom[lg] || c.nom.fr)) || c.cle;
+      return h("button", { key: c.cle, type: "button", onClick: function () { try { window.__challengeCle = c.cle; } catch (e) { } props.setEcran("challenge"); },
+        style: { position: "relative", display: "flex", alignItems: "center", gap: 14, width: "100%", minHeight: 76, padding: "12px 16px", borderRadius: 14, overflow: "hidden", textAlign: rtl ? "right" : "left", cursor: "pointer",
+          border: "1px solid rgba(201,166,107,0.45)", color: "#F3EEE4", background: "linear-gradient(" + (rtl ? "270deg" : "90deg") + ", rgba(6,7,9,0.92) 0%, rgba(6,7,9,0.7) 45%, rgba(6,7,9,0.2) 100%), url(images/challenge/etape1.webp) center/cover no-repeat" } },
+        h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", width: 34, height: 34, borderRadius: "50%", border: "0.8px solid rgba(201,166,107,0.7)", display: "flex", alignItems: "center", justifyContent: "center", color: "#C9A66B", fontFamily: SERIF, fontSize: 17 } }, "✦"),
+        h("span", { style: { flex: 1, minWidth: 0 } },
+          h("span", { style: { display: "block", fontFamily: M, fontSize: 10.5, letterSpacing: 2, textTransform: "uppercase", color: "#BDB6AA" } },
+            T("Challenge", "Challenge", "Challenge", "Challenge", "チャレンジ", "Challenge", "التحدي") + " · " + (c.saison || "")),
+          h("span", { style: { display: "block", fontFamily: SERIF, fontSize: 21, fontWeight: 600, lineHeight: 1.15, marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" } }, nom),
+          c.publie ? null : h("span", { style: { display: "block", fontFamily: M, fontSize: 11, color: "#E8B84B", marginTop: 3 } }, "Visible par toi seule (non publié)")),
+        h("span", { "aria-hidden": "true", style: { flex: "0 0 auto", color: "#C9A66B", fontSize: 18 } }, rtl ? "←" : "→"));
+    }));
+}
 function EcranEcurieV2(props) {
   var h = React.createElement;
   var large = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : useHypeLarge();   /* (859) ; (1019) aussi tablette (>= 768 px) */
@@ -44597,7 +44647,8 @@ function EcranEcurieV2(props) {
           h("span", { "aria-hidden": "true", style: { width: 34, height: 34, borderRadius: "50%", border: "0.8px solid rgba(201,166,107,0.7)" /* (663) cercle transparent, comme avant le 662 : « c etait sympa » */, background: "radial-gradient(circle at 50% 30%, rgba(243,238,228,0.07), rgba(0,0,0,0.28) 75%)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.55), 0 1px 0 rgba(243,238,228,0.1)" /* (849) le cercle creuse */, display: "flex", alignItems: "center", justifyContent: "center", flex: "0 0 auto" } }, svg(IC_ONG[o[0]], 16, CH, 1.3)),
           h("span", { style: { maxWidth: "100%", fontFamily: SERIF, fontSize: (String(o[1]).length > 10 || (large && String(o[1]).length > 8 && (function () { try { return (window.innerWidth || 1280) < 1100; } catch (eW) { return false; } })())) ? 11 : 13 /* (1029) tablette : les mots longs (ACTUALITES) tiennent dans la tuile */, fontWeight: 600, letterSpacing: (String(o[1]).length > 10 || (large && String(o[1]).length > 8 && (function () { try { return (window.innerWidth || 1280) < 1100; } catch (eW) { return false; } })())) ? 0.5 : 1.1, textTransform: "uppercase", color: IV, lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, o[1]),
           h("span", { "aria-hidden": "true", style: { width: 14, height: 1, background: "rgba(201,166,107,0.4)" } }));
-      })));
+      })),
+    h(CarteChallengesEcurie, { club: d.monClub, T: T, rtl: rtl, setEcran: setEcran }));   /* 20/10 challenges de club */
 
   /* ── 3. CITATION (texte « philosophie » de l'écurie, crayon discret pour la propriétaire) ── */
   var citation = h("div", { style: { padding: "24px 18px 0" } }, d.citationProps ? h(TableauxSpectralHype, Object.assign({}, d.citationProps, { rendu: "citation-v2" })) : null);
