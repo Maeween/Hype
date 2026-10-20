@@ -13858,3 +13858,17 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - CSO : « Moins on fait, mieux on fait. » — signé « D'après le Vicomte d'Aure » (maxime qui lui est attribuée, non retrouvée mot pour mot dans ses écrits ; remplace « Le saut d'obstacles, l'audace en confiance »).
 - 7 langues pour les deux citations et leurs signatures. Equifun inchangé. Fichier : challenge.html (textes seulement) ; index.html : seulement le marqueur.
 - Tests : affichage fr, ar, ja ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 20/10/2026 (18 h 13) — PUBLICATION (marqueur 20261020-1813, Blandine « Publié tout ça » 18:12) — CHALLENGE (résultats, poneys, reprises) + MON APPRENTISSAGE (photo du haut, cartes)
+- Demandes de 17:46 à 17:57.
+- challenge.html :
+  - téléphone : classement et résultats d'étape plus petits (titre 28, noms 13,5–14, points 20–21, lignes 50–54 px, cases d'étape 18) ;
+  - catégories poneys (nom de catégorie contenant « Poney ») : prénom + initiale du nom (« MORIZOT Quitterie » → « Quitterie M. ») dans le classement et les résultats ; affichage seulement (données, calculs, gestion inchangés ; fonctions nomCourt / nomVu) ;
+  - encadré « Résultats détaillés » retiré (les points par étape restent en dépliant une cavalière, et chaque case ouvre l'étape) ;
+  - « Reprises à dérouler » : encadré replié par défaut (comme celui du règlement), qui se déplie avec les catégories et les reprises à télécharger (etat.repOuvert).
+- index.html — page « Mon apprentissage » (CSS du composant seulement) :
+  - téléphone : photo du haut 540 px (au lieu de 300), titre descendu (bas 60 px) sous la tête du cheval, voile ajusté ;
+  - tablette (≥ 700 px) : photo 64 % à droite, fondue vers la gauche, tête entière ; titre à gauche ; ordinateur (≥ 1100 px) : photo 46 %, hauteur 540 px ; arabe : en miroir ;
+  - cartes (journal, outils, Hey Baby) semi-transparentes avec flou ; le journal chevauche le bas de la photo (-44 px).
+- Aucune donnée, aucun calcul, aucune permission modifiés.
+- Tests : captures avant / après (classement, résultats, reprises fr / ar / ordinateur) ; maquette Mon apprentissage 390 / 820 / 1230 ; liens, ancres, visiteur, 7 langues, pastilles — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone ; Mon apprentissage vérifié en maquette (pas dans l'appli connectée).
