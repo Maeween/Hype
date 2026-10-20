@@ -13636,3 +13636,15 @@ Blandine : « Ok continue » (22:13), captures validées, « Ok vas-y » (22:32)
 - Au 20/10 : un seul compte (Blandine, 2 appareils) avait activé les notifications (jusqu'ici le bouton n'existait que dans la fiche d'un rendez-vous).
 - Repart de la version en ligne 20261020-0430 (autre conversation : Challenge Open Dressage SEP).
 - Tests : fonction serveur sur base simulée (titre en allemand, lien #hp) et appel réel (200) ; case et bandeau rendus (téléphone simulé acceptant les notifications) ; taps de notifications albumcom / videocom / photocom vérifiés ; 16 blocs de script sans erreur ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : réception réelle sur iPhone (à faire par Blandine : Activer dans la cloche, puis se faire mentionner).
+
+## 20/10/2026 (nuit, 4 h 45) — VIDÉOS : étape 1 « copier les anciennes vidéos sur Mux » — fonction + bouton d'essai (build 20261020-0445)
+Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse n'est changée à cette étape.
+- Constat (lecture seule) : 46 vidéos (.mov / .mp4, ≈ 2 060 Mo) stockées dans le compartiment « photos », hors Mux. 24 sont reliées à l'appli (commentaires.photo_url 17, identifications 14, video_couvertures 19, collections_videos 3, souvenirs_vedette 3, chevaux.moments_forts_medias 1, photo_likes / photo_comments 5 — une vidéo peut être citée plusieurs fois) ; 22 (≈ 734 Mo) ne sont citées dans aucune de ces tables (albums lus directement dans le stockage ? à vérifier une par une).
+- Nouvelle fonction serveur mux-import (déployée le 20/10 à 04:4x, version 1, contrôle du jeton actif ; ajoutée au fichier de déploiement) : réservée au compte feinn@live.fr (vérifié côté serveur). « importer » : demande à Mux d'aller chercher une vidéo du compartiment photos à son adresse publique (qualité basic, lecture publique, MP4 capped-1080p, passthrough « import-hype:<chemin> »), pas de doublon ; « etat » : met à jour l'état des copies. Enregistre chaque copie dans la table hype_import_mux (à créer par Blandine, SQL ci-dessous).
+- Appli : dans la grande visionneuse, pour une ancienne vidéo stockée dans Supabase et seulement sur le compte de Blandine, bouton « Copier sur Mux (admin) » (7 langues) avec message de résultat. Autres comptes : rien ne change.
+- SQL à passer par Blandine AVANT l'essai :
+  create table if not exists public.hype_import_mux (source_url text primary key, asset_id text, playback_id text, mux_url text, statut text, duree_s numeric, cree_le timestamptz default now(), maj_le timestamptz default now());
+  alter table public.hype_import_mux enable row level security;
+  (aucune règle d'accès : seule la fonction, avec la clé de service, y lit et écrit)
+- Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; test : bouton absent pour un autre compte, présent pour Blandine, appel de la fonction avec la bonne adresse, message affiché.
+- Prochaine étape après l'essai réussi : copie des 24 vidéos utilisées, puis SQL de remplacement des adresses avec table de sauvegarde (à passer par Blandine).
