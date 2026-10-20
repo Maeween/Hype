@@ -887,6 +887,15 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 .citation-fin .page:before{content:"";display:block;width:44px;height:1px;margin:0 auto 22px;background:var(--champ);opacity:.7}
 .citation-fin + .gestion-zone{margin-top:36px;border-top:1px solid var(--filet)}
 @container ch (min-width:700px){.citation-fin p{font-size:34px}}
+/* encadré « Règlement » qui ouvre la page du règlement complet */
+.rg-lien{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;cursor:pointer}
+.rg-lien .rg-haut{position:static;display:block;flex:1;padding:22px 0 22px 20px}
+.rg-lien .surtitre,.rg-lien .rg-titre,.rg-lien .sous-t{display:block}
+.rg-lien .rg-titre{font-family:var(--serif);font-weight:600;margin-top:2px}
+.rg-lien .sous-t{margin-top:6px;font-size:13.5px;line-height:1.5;color:var(--grisClair)}
+.rg-lien .rg-fl{position:relative;z-index:1;flex:0 0 42px;height:42px;margin-inline-end:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ligne);border-radius:50%;color:var(--champ);font-size:18px;background:rgba(6,7,9,.35)}
+[dir=rtl] .rg-lien .rg-haut{padding:22px 20px 22px 0}
+[dir=rtl] .rg-lien .rg-fl{transform:scaleX(-1)}
 </style>
 </head>
 <body>
@@ -1030,6 +1039,7 @@ var TX2 = {
   classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
   introG1: { fr: "Première étape du challenge : on pose ses premiers points.", en: "First leg of the challenge: score your first points.", es: "Primera etapa del challenge: sumas tus primeros puntos.", it: "Prima tappa del challenge: conquisti i primi punti.", de: "Erste Etappe der Challenge: erste Punkte sammeln.", ja: "チャレンジ第1戦：最初のポイントを獲得。", ar: "المرحلة الأولى من التحدي: تجمع نقاطك الأولى." },
   attTexteG: { fr: "Les classements seront publiés ici après la journée.", en: "Rankings will be posted here after the day.", es: "Las clasificaciones se publicarán aquí tras la jornada.", it: "Le classifiche saranno pubblicate qui dopo la giornata.", de: "Die Wertungen erscheinen hier nach dem Tag.", ja: "順位は当日終了後にここに掲載されます。", ar: "ستُنشر الترتيبات هنا بعد اليوم." },
+  reglLienTxt: { fr: "Dates, catégories, barème des points et finale à points doublés.", en: "Dates, categories, points table and the double-points final.", es: "Fechas, categorías, baremo de puntos y final con puntos dobles.", it: "Date, categorie, tabella punti e finale a punti doppi.", de: "Termine, Kategorien, Punktetabelle und Finale mit doppelten Punkten.", ja: "日程、カテゴリー、得点表、ポイント2倍の決勝。", ar: "المواعيد والفئات وجدول النقاط والنهائي بنقاط مضاعفة." },
   reglPrep: { fr: "Règlement en préparation", en: "Rules in preparation", es: "Reglamento en preparación", it: "Regolamento in preparazione", de: "Reglement in Vorbereitung", ja: "規定は準備中です", ar: "النظام قيد الإعداد" },
   reglPrepTxt: { fr: "Les modalités du challenge seront communiquées prochainement.", en: "The challenge details will be shared soon.", es: "Las modalidades del challenge se comunicarán próximamente.", it: "Le modalità del challenge saranno comunicate a breve.", de: "Die Einzelheiten des Challenge werden bald mitgeteilt.", ja: "チャレンジの詳細は近日お知らせします。", ar: "سيتم الإعلان عن تفاصيل التحدي قريبًا." },
   surProgramme: { fr: "Programme", en: "Programme", es: "Programa", it: "Programma", de: "Programm", ja: "プログラム", ar: "البرنامج" },
@@ -1540,6 +1550,11 @@ function rendreReprises() {
 /* règlement en synthèse sur l'accueil (direction B, légère) : une ligne ×2, quatre règles, barème replié, lien */
 function rendreReglement() {
   var E = CHALLENGE.etapes;
+  /* règlement complet disponible (dressage) : un simple encadré qui ouvre la page du règlement */
+  if (aReglementComplet()) {
+    document.getElementById("s-reglement").innerHTML = '<a class="rg rg-lien" href="' + lienReglement() + '"><span class="rg-haut"><span class="surtitre">' + T("oReglement") + '</span><span class="titre rg-titre">' + T("reglTitre") + '</span><span class="sous-t">' + T("reglLienTxt") + '</span></span><span class="rg-fl" aria-hidden="true">→</span></a>';
+    return;
+  }
   /* challenge sans dates ni règlement validé (Equifun pour l'instant) : pas de règles provisoires présentées comme applicables */
   if (!E.length && !CHALLENGE.bareme.valide) {
     document.getElementById("s-reglement").innerHTML = '<div class="rg rg-prep"><div class="rg-haut"><span class="surtitre">' + T("oReglement") + '</span><h2 class="titre rg-titre">' + T("reglPrep") + '</h2><p class="sous-t">' + T("reglPrepTxt") + "</p></div></div>";
