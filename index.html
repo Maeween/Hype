@@ -44458,14 +44458,27 @@ function EcranChallenge() {
   var ctx = ((typeof useApp === "function") ? useApp() : null) || {};
   var setEcran = ctx.setEcran || function () { }, retourEcran = ctx.retourEcran, peutReculer = ctx.peutReculer;
   var large = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
+  var cadre = React.useRef(null);
   var cle = "dressage-sep-2026"; try { cle = (window.__challengeCle || cle); } catch (e) { }
-  var lg = "fr"; try { lg = window.__hypeLangue || "fr"; } catch (e) { }
-  try {
-    window.hypeSupaPont = supa;
-    window.hypeChallengeRetour = function () { if (peutReculer && retourEcran) retourEcran(); else setEcran("guilde"); };
-  } catch (eP) { }
-  return h("iframe", { key: cle + lg, src: "challenge.html?c=" + encodeURIComponent(cle) + "&lang=" + encodeURIComponent(lg), title: "Challenge",
-    style: { display: "block", width: "100%", height: large ? "100dvh" : "calc(100dvh - 84px)", border: 0, background: "#060709" } });
+  var lg = ctx.langue || "fr"; try { if (!ctx.langue) lg = window.__hypeLangue || "fr"; } catch (e) { }
+  var rtl = lg === "ar";
+  function sortir() { if (peutReculer && retourEcran) retourEcran(); else setEcran("guilde"); }
+  try { window.hypeSupaPont = supa; window.hypeChallengeRetour = sortir; } catch (eP) { }
+  /* 20/10 (04 h 45) Blandine : « pas de retour en arriere » + « le drapeau pour changer de langue partout ».
+     Le retour et le drapeau sont ceux de l appli, poses PAR-DESSUS la page (toujours visibles en defilant).
+     Le retour ferme d abord ce qui est ouvert dans la page (journee, photo en grand, import), sinon il quitte. */
+  function retour() {
+    var fait = false;
+    try { var w = cadre.current && cadre.current.contentWindow; if (w && typeof w.__challengeRetour === "function") fait = !!w.__challengeRetour(); } catch (e) { }
+    if (!fait) sortir();
+  }
+  return h("div", { style: { position: "relative" } },
+    h("iframe", { ref: cadre, key: cle + lg, src: "challenge.html?c=" + encodeURIComponent(cle) + "&lang=" + encodeURIComponent(lg) + "&dansHype=1", title: "Challenge",
+      style: { display: "block", width: "100%", height: large ? "100dvh" : "calc(100dvh - 84px)", border: 0, background: "#060709" } }),
+    h("button", { type: "button", onClick: retour, "aria-label": "Retour",
+      style: { position: "absolute", top: "calc(env(safe-area-inset-top) + 12px)", left: 14, zIndex: 30, width: 38, height: 38, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.22)", background: "rgba(6,7,9,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "#F4EFE4", fontSize: 20, lineHeight: 1, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 0 } },
+      rtl ? "›" : "‹"),
+    (typeof HypeDrapeauLangue === "function") ? h(HypeDrapeauLangue, { top: "calc(env(safe-area-inset-top) + 12px)", right: 14 }) : null);
 }
 /* Carte « Challenges » sur la page Ecurie : n apparait que si le club a un challenge que la personne peut voir
    (publie, ou pas encore publie mais elle le gere : c est la base qui decide, pas l ecran). */
