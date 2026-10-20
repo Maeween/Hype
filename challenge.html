@@ -354,6 +354,7 @@ body.dans-hype .vue-hero .hero-haut{display:none}
 .lien-regl{margin-top:18px}
 /* ═════ ÉTATS DE LA PAGE ═════ */
 #etat-page[hidden]{display:none}
+.rangee[hidden],.section[hidden],.nav[hidden]{display:none !important}
 #etat-page{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px 24px;text-align:center}
 #etat-page p{margin:0;font-family:var(--serif);font-size:24px;line-height:1.3;color:var(--ivoire);max-width:420px}
 body.sans-donnees .challenge-contenu{display:none}
@@ -605,6 +606,8 @@ table.grand .tiret{color:var(--gris)}
 .vue-nav .onglet:not(.actif){color:var(--ivoire)}
 /* dans Hype, le bouton retour rond (à gauche) et le drapeau (à droite) de l'appli restent posés en haut : les onglets collés en haut s'écartent pour ne pas passer dessous */
 body.dans-hype .nav.colle .nav-in,body.dans-hype .vue-nav.colle .nav-in{margin-left:60px;margin-right:60px;padding-left:6px;padding-right:6px}
+/* barre collée : les onglets qui dépassent s'estompent avant le bouton retour et le drapeau (on voit qu'on peut faire défiler) */
+body.dans-hype .nav.colle .nav-in{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 22px),transparent 100%);mask-image:linear-gradient(90deg,transparent 0,#000 12px,#000 calc(100% - 22px),transparent 100%)}
 @container ch (min-width:700px){
   #s-classement{padding-top:52px}
 }
@@ -612,7 +615,7 @@ body.dans-hype .nav.colle .nav-in,body.dans-hype .vue-nav.colle .nav-in{margin-l
    --sat = hauteur de la zone de l'heure et de la batterie (mesurée dans l'appli, car un cadre ne la reçoit pas) ;
    --navTop = où se colle la barre d'onglets ; dans Hype, elle se cale sur le bouton retour et le drapeau de l'appli. */
 body.dans-hype{--navTop:calc(var(--sat) + 6px)}
-#bandeauHaut{position:fixed;top:0;left:0;right:0;height:var(--navTop);z-index:80;background:rgba(6,7,9,.96);pointer-events:none;display:none}
+#bandeauHaut{position:fixed;top:0;left:0;right:0;height:var(--navTop);z-index:80;background:var(--nuit);pointer-events:none;display:none}
 #bandeauHaut.on{display:block}
 body.dans-hype .i-in{padding-top:calc(var(--sat) + 62px)}
 body.dans-hype .lb .x{top:calc(var(--sat) + 62px)}
@@ -768,6 +771,13 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 .vue-hero .lignestat .partage{margin-inline-start:4px}
 #toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));z-index:99;transform:translate(-50%,20px);opacity:0;pointer-events:none;padding:10px 18px;border-radius:99px;background:rgba(13,19,24,.96);border:1px solid var(--ligne);color:var(--ivoire);font-size:14px;transition:.25s}
 #toast.on{opacity:1;transform:translate(-50%,0)}
+.dates-avenir{grid-column:1/-1;position:relative;padding:22px 20px 20px;border:1px solid var(--filet);border-radius:18px;background:linear-gradient(180deg,rgba(13,19,24,.92),rgba(10,14,18,.96))}
+.dates-avenir .surtitre{color:var(--champ);opacity:.85}
+.dates-avenir .titre{margin:4px 0 0;font-size:30px;line-height:1.1}
+.dates-avenir p{margin:10px 0 0;max-width:46ch;font-size:14.5px;line-height:1.6;color:var(--grisClair)}
+.cl-attente .cl-haut{padding-bottom:20px}
+.cl-msg{display:flex;gap:10px;align-items:baseline;margin:14px 0 0;font-size:14.5px;line-height:1.6;color:var(--grisClair)}
+.cl-msg span{color:var(--champ);font-size:12px}
 .dates-bientot{grid-column:1/-1;display:flex;gap:10px;align-items:baseline;margin:0;padding:18px 0;border-top:1px solid var(--filet);border-bottom:1px solid var(--filet);font-family:var(--serif);font-size:22px;color:var(--ivoire)}
 .dates-bientot span{color:var(--champ);font-size:14px}
 /* ═════ RÈGLEMENT : encadré décoré, compact ═════ */
@@ -974,6 +984,9 @@ var TX2 = {
   classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
   introG1: { fr: "Première étape du challenge : on pose ses premiers points.", en: "First leg of the challenge: score your first points.", es: "Primera etapa del challenge: sumas tus primeros puntos.", it: "Prima tappa del challenge: conquisti i primi punti.", de: "Erste Etappe der Challenge: erste Punkte sammeln.", ja: "チャレンジ第1戦：最初のポイントを獲得。", ar: "المرحلة الأولى من التحدي: تجمع نقاطك الأولى." },
   attTexteG: { fr: "Les classements seront publiés ici après la journée.", en: "Rankings will be posted here after the day.", es: "Las clasificaciones se publicarán aquí tras la jornada.", it: "Le classifiche saranno pubblicate qui dopo la giornata.", de: "Die Wertungen erscheinen hier nach dem Tag.", ja: "順位は当日終了後にここに掲載されます。", ar: "ستُنشر الترتيبات هنا بعد اليوم." },
+  surProgramme: { fr: "Programme", en: "Programme", es: "Programa", it: "Programma", de: "Programm", ja: "プログラム", ar: "البرنامج" },
+  datesAvenir: { fr: "Dates à venir", en: "Dates to come", es: "Fechas por anunciar", it: "Date in arrivo", de: "Termine folgen", ja: "日程は未定です", ar: "المواعيد قادمة" },
+  programmeTxt: { fr: "Les dates et les informations seront communiquées dès que le programme sera défini.", en: "Dates and details will be shared as soon as the programme is set.", es: "Las fechas y la información se comunicarán en cuanto se defina el programa.", it: "Date e informazioni saranno comunicate appena il programma sarà definito.", de: "Termine und Infos werden mitgeteilt, sobald das Programm feststeht.", ja: "プログラムが決まり次第、日程と詳細をお知らせします。", ar: "سيتم الإعلان عن المواعيد والمعلومات فور تحديد البرنامج." },
   datesBientot: { fr: "Dates bientôt annoncées.", en: "Dates coming soon.", es: "Fechas próximamente.", it: "Date in arrivo.", de: "Termine folgen in Kürze.", ja: "日程は近日発表。", ar: "المواعيد قريبًا." },
   rDates: { fr: "Étapes : {liste}.", en: "Legs: {liste}.", es: "Etapas: {liste}.", it: "Tappe: {liste}.", de: "Etappen: {liste}.", ja: "日程：{liste}。", ar: "المراحل: {liste}." },
   resPlusTard: { fr: "Le classement apparaîtra ici après la première étape.", en: "The ranking will appear here after the first leg.", es: "La clasificación aparecerá aquí tras la primera etapa.", it: "La classifica apparirà qui dopo la prima tappa.", de: "Die Wertung erscheint hier nach der ersten Etappe.", ja: "順位は第1戦の後にここに表示されます。", ar: "سيظهر الترتيب هنا بعد المرحلة الأولى." },
@@ -1343,7 +1356,8 @@ function lienReglement() { return "reglement-challenge.html?lang=" + LANG + (PAR
 
 /* ══════ PAGE PRINCIPALE ══════ */
 function rendreEtapes() {
-  if (!CHALLENGE.etapes.length) { document.getElementById("etapes").innerHTML = '<p class="dates-bientot"><span>✦</span>' + T("datesBientot") + "</p>"; return; }
+  /* aucune date programmée : un seul message soigné, sans classement ni photos vides */
+  if (!CHALLENGE.etapes.length) { document.getElementById("etapes").innerHTML = '<div class="dates-avenir"><span class="surtitre">' + T("surProgramme") + '</span><h2 class="titre">' + T("datesAvenir") + "</h2><p>" + T("programmeTxt") + "</p></div>"; return; }
   document.getElementById("etapes").innerHTML = CHALLENGE.etapes.map(function (e) {
     var s = statutEtape(e), fin = e.coef > 1;
     return '<button class="etape" ' + lienEtape(e) + ' style="--img:url(' + e.img + ')"><span class="etape-in">' +
@@ -1354,9 +1368,15 @@ function rendreEtapes() {
   }).join("");
 }
 var SECTIONS = [["s-classement", "oClassement"], ["s-photos", "oPhotos"], ["s-reprises", "oReprisesCourt"], ["s-reglement", "oReglement"]];
-function sectionsVisibles() { return SECTIONS.filter(function (x) { return x[0] !== "s-reprises" || CHALLENGE.reprises.length; }); }
+function sansDates() { return !!CHALLENGE && !CHALLENGE.etapes.length; }
+function sectionsVisibles() { return SECTIONS.filter(function (x) { if (x[0] === "s-reprises") return CHALLENGE.reprises.length; if (x[0] === "s-classement" || x[0] === "s-photos") return !sansDates(); return true; }); }
 function rendreNav() {
-  document.getElementById("navIn").innerHTML = (CHALLENGE ? sectionsVisibles() : SECTIONS).map(function (x) {
+  var L = CHALLENGE ? sectionsVisibles() : SECTIONS;
+  if (!L.some(function (x) { return x[0] === etat.onglet; }) && L.length) etat.onglet = L[0][0];
+  /* sections masquées (challenge sans dates) ; une barre d'un seul onglet ne sert à rien */
+  var sd = sansDates(), rc = document.querySelector(".r-classement"), sp = document.getElementById("s-photos"), nv = document.querySelector(".nav");
+  if (rc) rc.hidden = sd; if (sp) sp.hidden = sd; if (nv) nv.hidden = L.length < 2;
+  document.getElementById("navIn").innerHTML = L.map(function (x) {
     return '<button class="onglet' + (etat.onglet === x[0] ? " actif" : "") + '" data-aller="' + x[0] + '">' + T(x[1]) + "</button>";
   }).join("");
   ongletVisible(document.getElementById("navIn"));
@@ -1369,6 +1389,10 @@ function ongletVisible(barre) {
 }
 function rendreClassement() {
   var l = classementGeneral(etat.cat), vis = etat.complet ? l : l.slice(0, 5), E = CHALLENGE.etapes;
+  if (!RESULTATS.length) {
+    document.getElementById("s-classement").innerHTML = '<div class="cl cl-attente"><div class="cl-haut"><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre cl-titre">' + T("provisoire") + '</h2><p class="cl-msg"><span>✦</span>' + T("resPlusTard") + "</p></div></div>";
+    return;
+  }
   var brou = marqueBrouillon(RESULTATS.filter(function (r) { return r.cat === etat.cat; }));
   var h = '<div class="cl" style="--ne:' + E.length + '"><div class="cl-haut"><div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre cl-titre">' + T("provisoire") + "</h2></div>" + brou + "</div>" +
     '<div class="cl-cats">' + pills("cat", CHALLENGE.categories, etat.cat) + "</div></div>";
