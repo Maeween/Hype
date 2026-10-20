@@ -13648,3 +13648,8 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
   (aucune règle d'accès : seule la fonction, avec la clé de service, y lit et écrit)
 - Vérifications : 16 blocs <script> OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; test : bouton absent pour un autre compte, présent pour Blandine, appel de la fonction avec la bonne adresse, message affiché.
 - Prochaine étape après l'essai réussi : copie des 24 vidéos utilisées, puis SQL de remplacement des adresses avec table de sauvegarde (à passer par Blandine).
+
+## 20/10/2026 (nuit, 4 h 55) — VIDÉOS : bouton « Copier sur Mux (admin) » dans toutes les visionneuses (build 20261020-0455)
+- Blandine 04:51 (capture) : la vidéo s'ouvrait dans la visionneuse des albums (Identifier, poubelle, Mettre en vedette), où le bouton n'existait pas : il n'était que dans hypeCalquePhoto.
+- Le bouton est maintenant posé par PhotoZoomHype (en haut à gauche de la vidéo), utilisé par toutes les visionneuses (fils, albums, souvenirs, chronologie) ; retiré de hypeCalquePhoto pour éviter un doublon. Toujours seulement pour une ancienne vidéo du compartiment photos et seulement sur le compte feinn@live.fr. Table hype_import_mux créée par Blandine (04:49, « Success »).
+- Vérifications : 16 blocs <script> OK ; marqueurs inchangés ; test : absent pour un autre compte, présent et fonctionnel pour Blandine.
