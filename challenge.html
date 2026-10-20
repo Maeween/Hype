@@ -896,6 +896,33 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 .rg-lien .rg-fl{position:relative;z-index:1;flex:0 0 42px;height:42px;margin-inline-end:18px;display:flex;align-items:center;justify-content:center;border:1px solid var(--ligne);border-radius:50%;color:var(--champ);font-size:18px;background:rgba(6,7,9,.35)}
 [dir=rtl] .rg-lien .rg-haut{padding:22px 20px 22px 0}
 [dir=rtl] .rg-lien .rg-fl{transform:scaleX(-1)}
+/* téléphone : classement et résultats un peu plus petits (20/10, « encore écrit super gros ») */
+@container ch (max-width:699px){
+  .cl-haut{padding:22px 18px 16px}
+  .cl-titre{font-size:28px}
+  .cr-h{grid-template-columns:28px minmax(0,1fr) auto 10px;gap:10px;min-height:50px;padding:6px 16px}
+  .cr-rang{width:27px;height:27px;font-size:15px}
+  .cr-nom{font-size:13.5px}
+  .cr-tot{font-size:20px}
+  .cr-tot small{font-size:11px;margin-inline-start:3px}
+  .ligne-h{gap:12px;min-height:54px;padding:6px 4px}
+  .ligne-h .nm b,.vue .ligne-h .nm b{font-size:14px}
+  .ligne-h .nm span{font-size:12.5px}
+  .ligne-h .nm .che{font-size:11px}
+  .pts{font-size:21px}
+  .pts small{font-size:11px}
+  .rg-res .rg-titre{font-size:22px}
+  .detail{margin-inline-start:44px;padding-bottom:12px}
+  .case small{font-size:11.5px}
+  .case b{font-size:18px}
+  .res-t b{font-size:14px}
+}
+/* Reprises : encadré qui se déplie */
+.rg-pli{width:100%;border:0;background:none;padding:0;text-align:start;font:inherit}
+.rg-pli .rg-fl{font-size:14px;transition:transform .2s}
+.rg-rep.ouvert .rg-pli .rg-fl{transform:rotate(180deg)}
+[dir=rtl] .rg-rep.ouvert .rg-pli .rg-fl{transform:rotate(180deg)}
+.rg-rep.ouvert .rg-corps{padding-top:0}
 </style>
 </head>
 <body>
@@ -1098,6 +1125,15 @@ var TXD = {
   }
 };
 var DISC = "dressage";
+/* catégories poneys (enfants) : prénom + initiale du nom seulement (« MORIZOT Quitterie » → « Quitterie M. »).
+   Affichage seulement : les données, les calculs et les écrans de gestion gardent le nom complet. */
+function nomCourt(nom) {
+  var m = String(nom || "").trim().split(/\s+/), noms = [], prenoms = [];
+  m.forEach(function (x) { var l = x.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ]/g, ""); if (l && l === l.toUpperCase() && l.length > 1) noms.push(x); else prenoms.push(x); });
+  if (!prenoms.length || !noms.length) return String(nom || "");
+  return prenoms.join(" ") + " " + noms[0].charAt(0) + ".";
+}
+function nomVu(nom, cat) { return /poney/i.test(String(cat || "")) ? nomCourt(nom) : String(nom || ""); }
 function T(k) { var o = (TXD[DISC] && TXD[DISC][k]) || TX[k] || TX2[k]; return o ? (o[LANG] || o.fr) : k; }
 function TF(k, v) { var s = T(k); Object.keys(v || {}).forEach(function (x) { s = s.split("{" + x + "}").join(v[x]); }); return s; }
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
@@ -1213,12 +1249,12 @@ function listeResultats(n, filtre) {
   var plusieurs = function (r) { return r.rep && CHALLENGE.reprises.filter(function (x) { return x.cat === r.cat; }).length > 1; };
   var liste = '<div class="lignes">' + l.map(function (r) {
     return '<div class="ligne' + (r.publie ? "" : " brouillon") + '"><button class="ligne-h" data-ouvrir="1">' + rangHtml(classe(r) ? r.pl : 0) +
-      '<span class="nm"><b>' + esc(r.cav) + '</b><span class="che">' + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + '<span class="chev">▾</span></button>' +
+      '<span class="nm"><b>' + esc(nomVu(r.cav, r.cat)) + '</b><span class="che">' + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + '<span class="chev">▾</span></button>' +
       '<div class="note-det"><span class="note-l">' + T("note") + "</span>" + noteHtml(r) + (plusieurs(r) ? '<span class="note-rep">' + esc(r.rep) + "</span>" : "") + "</div></div>";
   }).join("") + "</div>";
   var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("note") + '</th><th class="c">' + T("points") + "</th></tr></thead><tbody>" +
     l.map(function (r) {
-      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && r.pl <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? r.pl : 0) + '</td><td class="t-cav">' + esc(r.cav) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
+      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && r.pl <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? r.pl : 0) + '</td><td class="t-cav">' + esc(nomVu(r.cav, r.cat)) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
     }).join("") + "</tbody></table>";
   return liste + table;
 }
@@ -1476,7 +1512,7 @@ function rendreClassement() {
       '<span class="c c-tot">' + T("total") + "</span></div>";
     h += '<div class="cl-lignes">' + vis.map(function (c) {
       var cases = E.map(function (e) { return c.e[e.n] == null ? '<b class="tiret">–</b>' : "<b>" + c.e[e.n] + "</b>"; });
-      return '<div class="cr' + (c.rang <= 3 ? " top r" + c.rang : "") + '"><button class="cr-h" data-ouvrir="1"><span class="cr-rang">' + c.rang + '</span><span class="cr-nom">' + esc(c.cav) + "</span>" +
+      return '<div class="cr' + (c.rang <= 3 ? " top r" + c.rang : "") + '"><button class="cr-h" data-ouvrir="1"><span class="cr-rang">' + c.rang + '</span><span class="cr-nom">' + esc(nomVu(c.cav, etat.cat)) + "</span>" +
         cases.map(function (x) { return '<span class="cr-e">' + x + "</span>"; }).join("") +
         '<span class="cr-tot">' + c.total + "<small>" + T("pts") + '</small></span><span class="chev">▾</span></button>' +
         '<div class="detail">' + E.map(function (e, i) {
@@ -1485,13 +1521,8 @@ function rendreClassement() {
     }).join("") + "</div>";
     if (l.length > 5) h += '<div class="pied"><button class="lien" data-complet="1">' + (etat.complet ? T("voirMoins") : T("voirComplet")) + " <i>" + (etat.complet ? "↑" : "→") + "</i></button></div>";
   }
-  var avecRes = E.filter(function (e) { return aDesResultats(e.n); });
   h += "</div>";
-  /* résultats détaillés : petite carte décorée séparée, sous le classement général */
-  if (avecRes.length) h += '<div class="rg rg-res"><div class="rg-haut"><span class="surtitre">' + T("parEtape") + '</span><h3 class="titre rg-titre">' + T("resDetail") + "</h3></div>" +
-    '<div class="rg-corps">' + avecRes.map(function (e) {
-      return '<button class="res-l" data-etape="' + e.n + '" data-vers="v-resultats"><span class="num">' + e.n + '</span><span class="res-t"><b>' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "</b><small>" + esc(dateJourMoisLong(e.date)) + "</small></span><i>→</i></button>";
-    }).join("") + "</div></div>";
+
   document.getElementById("s-classement").innerHTML = h;
 }
 /* colonne secondaire (ordinateur) : l'essentiel du challenge à côté du classement */
@@ -1540,7 +1571,11 @@ function rendrePhotos() {
 function rendreReprises() {
   var zr = document.getElementById("s-reprises"); zr.hidden = !CHALLENGE.reprises.length; if (zr.hidden) { zr.innerHTML = ""; return; }
   var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === etat.repCat; });
-  document.getElementById("s-reprises").innerHTML = '<div class="rg rg-rep"><div class="rg-haut"><span class="surtitre">' + T("parNiveau") + '</span><h2 class="titre rg-titre">' + T("oReprises") + '</h2><p class="sous-t">' + T("repSous") + '</p></div><div class="rg-corps">' +
+  /* encadré replié comme celui du règlement : on touche, il se déplie avec les reprises à télécharger */
+  var ouv = !!etat.repOuvert;
+  var tete = '<button class="rg-lien rg-pli" data-rep-pli="1" aria-expanded="' + ouv + '"><span class="rg-haut"><span class="surtitre">' + T("parNiveau") + '</span><span class="titre rg-titre">' + T("oReprises") + '</span><span class="sous-t">' + T("repSous") + '</span></span><span class="rg-fl" aria-hidden="true">▾</span></button>';
+  if (!ouv) { document.getElementById("s-reprises").innerHTML = '<div class="rg rg-rep">' + tete + "</div>"; return; }
+  document.getElementById("s-reprises").innerHTML = '<div class="rg rg-rep ouvert">' + tete + '<div class="rg-corps">' +
     pills("rep-cat", CHALLENGE.categories, etat.repCat) +
     '<div class="rep-l">' + (reps.length ? reps.map(function (r) {
       return '<div class="rep">' + DOC_SVG + '<span class="doc-t"><b>' + esc(r.nom) + "</b><span" + (r.pdf ? "" : ' class="manque"') + "><bdi>" + esc(r.cat) + "</bdi> · " + T(r.pdf ? "repriseOff" : "bientot") + "</span></span>" +
@@ -1641,6 +1676,7 @@ document.addEventListener("click", function (ev) {
   var d = t.dataset;
   if (d.adm) { gestionClic(t, d); return; }
   if (d.repCat) { etat.repCat = d.repCat; rendreReprises(); return; }
+  if (d.repPli) { etat.repOuvert = !etat.repOuvert; rendreReprises(); return; }
   if (d.uplEnvoyer) { var fa = UP.attente || []; UP.attente = null; envoyerPhotosEtape(+d.uplEnvoyer, fa); return; }
   if (d.uplAnnuler) { UP.attente = null; majZoneAjout(); return; }
   if (d.fermerVers) { fermerVue(); var sv = document.getElementById(d.fermerVers); if (sv) setTimeout(function () { window.scrollTo({ top: (sv.firstElementChild || sv).getBoundingClientRect().top + window.scrollY - hautBarre(".nav") - 18 }); }, 30); return; }
