@@ -613,7 +613,7 @@ table.grand .tiret{color:var(--gris)}
 .g-legende b{color:var(--ivoire);font-weight:600}
 .g-ok{color:#9FD3A8}
 .challenge-contenu .fin-hype{padding-top:26px}
-.challenge-contenu .fh-img{display:none}
+
 .vue-nav .onglet:not(.actif){color:var(--ivoire)}
 /* dans Hype, le bouton retour rond (à gauche) et le drapeau (à droite) de l'appli restent posés en haut : les onglets collés en haut s'écartent pour ne pas passer dessous */
 body.dans-hype .nav.colle .nav-in,body.dans-hype .vue-nav.colle .nav-in{margin-left:60px;margin-right:60px;padding-left:6px;padding-right:6px}
@@ -860,6 +860,33 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
   .cl-cats .pills,.panneau .pills,.rg-rep .pills{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:5px;overflow:visible;margin-inline:0;padding-inline:0}
   .cl-cats .pills .pill,.panneau .pills .pill,.rg-rep .pills .pill{min-width:0;padding:7px 2px;font-size:12px;text-align:center;white-space:nowrap}
 }
+
+/* ═════════════ AMBIANCE « DORÉ + PLUS CLAIR » (20/10, choix de Blandine : proposition B) ═════════════
+   Lumière coucher de soleil sur les photos du haut (hero, cartes d'étape), encadrés et textes un peu plus clairs,
+   fond noir bleuté de Hype conservé. Fin de page : la signature Hype habituelle (paysage fondu + HYPE) à la place du bandeau. */
+:root{--carte:#151B21;--carte2:#192027;--gris:#AEB5BC;--grisClair:#D0D5D9}
+.hero-lum{position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:overlay;
+  background:radial-gradient(ellipse 70% 60% at 55% 38%,rgba(255,160,60,.7),rgba(255,135,50,.25) 50%,rgba(255,120,45,0) 78%)}
+[dir=rtl] .hero-lum{background:radial-gradient(ellipse 70% 60% at 45% 38%,rgba(255,160,60,.7),rgba(255,135,50,.25) 50%,rgba(255,120,45,0) 78%)}
+.hero-img:after{background:linear-gradient(180deg,rgba(6,7,9,.22) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 72%,rgba(6,7,9,.35) 88%,var(--nuit) 100%)}
+@container ch (min-width:1100px){.hero-img:after{background:linear-gradient(180deg,rgba(6,7,9,.3) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 66%,var(--nuit) 100%)}}
+.etape{background:radial-gradient(ellipse 70% 70% at 62% 40%,rgba(255,160,60,.65),rgba(255,135,50,.2) 55%,rgba(255,120,45,0) 80%) center/cover no-repeat,var(--carte) var(--img) center/cover no-repeat;background-blend-mode:overlay,normal}
+.etape:after{opacity:.72}
+.cl,.rg,.dates-avenir{background:linear-gradient(180deg,#141B21,#10161B 60%)}
+.rg-haut:before{opacity:.75}
+.cl-haut:before{opacity:.55}
+.cote-in{background:rgba(20,27,33,.55)}
+.panneau{background:#121820}
+.fin-hype{padding-top:40px}
+.fh-img img{opacity:.92;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 30%,#000 62%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 30%,#000 62%,transparent 100%)}
+.fh-img:after{background:linear-gradient(90deg,var(--nuit) 0%,rgba(6,7,9,0) 12%,rgba(6,7,9,0) 88%,var(--nuit) 100%)}
+.citation-fin{padding:64px 0 8px;text-align:center}
+.citation-fin p{margin:0;font-family:var(--serif);font-weight:500;font-style:italic;font-size:28px;line-height:1.2;color:var(--ivoire)}
+.citation-fin small{display:block;margin-top:12px;font-size:11px;letter-spacing:2.4px;text-transform:uppercase;color:var(--champ)}
+.citation-fin small:empty{display:none}
+.citation-fin .page:before{content:"";display:block;width:44px;height:1px;margin:0 auto 22px;background:var(--champ);opacity:.7}
+.citation-fin + .gestion-zone{margin-top:36px;border-top:1px solid var(--filet)}
+@container ch (min-width:700px){.citation-fin p{font-size:34px}}
 </style>
 </head>
 <body>
@@ -869,6 +896,7 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 <div class="challenge-contenu">
 <header class="hero">
   <div class="hero-img">
+    <span class="hero-lum" aria-hidden="true"></span>
     <div class="hero-haut"><button class="retour" id="retour"><b>‹</b><span data-t="evenements"></span></button></div>
   </div>
   <div class="page">
@@ -897,7 +925,7 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
   </div>
 </main>
 
-<div class="fin"><div class="page"><p data-t="citation"></p></div></div>
+<div class="citation-fin"><div class="page"><p data-t="citation"></p><small data-t="citationAuteur"></small></div></div>
 <div class="gestion-zone" id="gestionZone" hidden><div class="page"><span class="gz-t">Gestion · visible des gestionnaires seulement</span><div id="gestion"></div></div></div>
 <div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
 </div>
@@ -967,7 +995,8 @@ var TX = {
   r3: { fr: "Les points sont cumulés par cavalier : tu peux changer de cheval d'une étape à l'autre.", en: "Points add up per rider: you may change horse between legs.", es: "Los puntos se suman por jinete: puedes cambiar de caballo entre etapas.", it: "I punti si sommano per cavaliere: puoi cambiare cavallo tra le tappe.", de: "Die Punkte zählen pro Reiter/in: Du darfst das Pferd zwischen den Etappen wechseln.", ja: "ポイントは騎乗者ごとに合算。戦ごとに馬を替えてもよい。", ar: "تُجمع النقاط لكل فارس: يمكنك تغيير الحصان بين المراحل." },
   r4: { fr: "Les points dépendent de la place ; la note n'est pas nécessaire.", en: "Points depend on the placing; the score is not required.", es: "Los puntos dependen del puesto; la nota no es necesaria.", it: "I punti dipendono dal piazzamento; il punteggio non è necessario.", de: "Die Punkte richten sich nach der Platzierung; die Note ist nicht nötig.", ja: "ポイントは順位で決まり、得点は不要。", ar: "تعتمد النقاط على المركز؛ العلامة غير ضرورية." },
   r5: { fr: "Égalités, forfaits, éliminations, changements de catégorie et conditions pour être classé :", en: "Ties, withdrawals, eliminations, category changes and eligibility:", es: "Empates, retiradas, eliminaciones, cambios de categoría y condiciones de clasificación:", it: "Parità, ritiri, eliminazioni, cambi di categoria e condizioni di classifica:", de: "Gleichstände, Rückzüge, Ausschlüsse, Kategoriewechsel und Wertungsbedingungen:", ja: "同点・棄権・失格・カテゴリー変更・順位対象条件：", ar: "التعادل والانسحاب والإقصاء وتغيير الفئة وشروط التصنيف:" },
-  citation: { fr: "Le dressage,<br>une autre façon de se dépasser.", en: "Dressage,<br>another way to surpass yourself.", es: "La doma,<br>otra forma de superarse.", it: "Il dressage,<br>un altro modo per superarsi.", de: "Dressur,<br>eine andere Art, über sich hinauszuwachsen.", ja: "馬場馬術、<br>自分を超えるもうひとつの方法。", ar: "الترويض،<br>طريقة أخرى لتتجاوز نفسك." },
+  citation: { fr: "« Calme, en avant et droit. »", en: "“Calm, forward and straight.”", es: "«Calma, adelante y recto.»", it: "«Calmo, in avanti e dritto.»", de: "„Ruhig, vorwärts und gerade.“", ja: "「静かに、前へ、まっすぐに。」", ar: "«الهدوء، إلى الأمام، والاستقامة.»" },
+  citationAuteur: { fr: "Général L'Hotte", en: "General L'Hotte", es: "General L'Hotte", it: "Generale L'Hotte", de: "General L'Hotte", ja: "ロット将軍", ar: "الجنرال لوت" },
   date: { fr: "Date", en: "Date", es: "Fecha", it: "Data", de: "Datum", ja: "日付", ar: "التاريخ" },
   lieu: { fr: "Lieu", en: "Venue", es: "Lugar", it: "Luogo", de: "Ort", ja: "会場", ar: "المكان" },
   coef: { fr: "Points", en: "Points", es: "Puntos", it: "Punti", de: "Punkte", ja: "ポイント", ar: "النقاط" },
@@ -1049,13 +1078,13 @@ var TXD = {
     titre1: { fr: "Challenge", en: "Show Jumping Open", es: "Challenge", it: "Challenge", de: "Challenge", ja: "オープン障害飛越", ar: "تحدي" },
     titre2: { fr: "Open de Saut", en: "Challenge", es: "Open de Salto", it: "Open di Salto", de: "Spring-Open", ja: "チャレンジ", ar: "القفز المفتوح" },
     intro: { fr: "Trois dates pour progresser, te mesurer et vivre le saut d'obstacles dans une ambiance conviviale.", en: "Three dates to progress, test yourself and enjoy show jumping in a friendly atmosphere.", es: "Tres fechas para progresar, medirte y vivir el salto en un ambiente cercano.", it: "Tre date per progredire, metterti alla prova e vivere il salto ostacoli in un clima amichevole.", de: "Drei Termine, um dich zu verbessern, dich zu messen und Springreiten in geselliger Atmosphäre zu erleben.", ja: "3つの日程で上達し、腕を試し、和やかな雰囲気で障害飛越を楽しもう。", ar: "ثلاثة مواعيد لتتقدّم وتختبر نفسك وتعيش قفز الحواجز في أجواء ودّية." },
-    citation: { fr: "Le saut d'obstacles,<br>l'audace en confiance.", en: "Show jumping,<br>daring with confidence.", es: "El salto,<br>audacia con confianza.", it: "Il salto ostacoli,<br>audacia con fiducia.", de: "Springreiten,<br>Mut mit Vertrauen.", ja: "障害飛越、<br>信頼とともに挑む。", ar: "قفز الحواجز،<br>جرأة بثقة." }
+    citationAuteur: { fr: "" }, citation: { fr: "Le saut d'obstacles,<br>l'audace en confiance.", en: "Show jumping,<br>daring with confidence.", es: "El salto,<br>audacia con confianza.", it: "Il salto ostacoli,<br>audacia con fiducia.", de: "Springreiten,<br>Mut mit Vertrauen.", ja: "障害飛越、<br>信頼とともに挑む。", ar: "قفز الحواجز،<br>جرأة بثقة." }
   },
   equifun: {
     titre1: { fr: "Challenge", en: "Equifun", es: "Challenge", it: "Challenge", de: "Challenge", ja: "イクイファン", ar: "تحدي" },
     titre2: { fr: "Equifun", en: "Challenge", es: "Equifun", it: "Equifun", de: "Equifun", ja: "チャレンジ", ar: "إكويفان" },
     intro: { fr: "Des parcours ludiques pour progresser, s'amuser et partager en équipe.", en: "Fun courses to progress, enjoy yourself and share as a team.", es: "Recorridos lúdicos para progresar, divertirse y compartir en equipo.", it: "Percorsi ludici per progredire, divertirsi e condividere in squadra.", de: "Spielerische Parcours, um besser zu werden, Spaß zu haben und im Team zu teilen.", ja: "遊び心のあるコースで、上達し、楽しみ、仲間と分かち合おう。", ar: "مسارات ممتعة لتتقدّم وتستمتع وتشارك مع الفريق." },
-    citation: { fr: "L'Equifun,<br>jouer pour mieux progresser.", en: "Equifun,<br>play to progress.", es: "El Equifun,<br>jugar para progresar.", it: "L'Equifun,<br>giocare per progredire.", de: "Equifun,<br>spielend besser werden.", ja: "イクイファン、<br>遊びながら上達しよう。", ar: "الإكويفان،<br>العب لتتقدّم." }
+    citationAuteur: { fr: "" }, citation: { fr: "L'Equifun,<br>jouer pour mieux progresser.", en: "Equifun,<br>play to progress.", es: "El Equifun,<br>jugar para progresar.", it: "L'Equifun,<br>giocare per progredire.", de: "Equifun,<br>spielend besser werden.", ja: "イクイファン、<br>遊びながら上達しよう。", ar: "الإكويفان،<br>العب لتتقدّم." }
   }
 };
 var DISC = "dressage";
