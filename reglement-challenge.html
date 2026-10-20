@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Règlement — Challenge Open Dressage SEP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+<!-- HYPE ▸ 20/10/2026 — Règlement du Challenge Open Dressage SEP 2026-2027, aux couleurs du challenge.
+     Ouvert depuis la section « Règlement » de challenge.html. Imprimable (version claire à l'impression). -->
+<style>
+:root{
+  --nuit:#060709; --carte:#0D1318; --carte2:#11171C;
+  --ivoire:#F4EFE4; --gris:#8A929C; --grisClair:#B9C0C6;
+  --champ:#D9C7A3; --champDoux:rgba(217,199,163,.36); --champVoile:rgba(217,199,163,.09);
+  --ligne:rgba(217,199,163,.18); --filet:rgba(244,239,228,.08);
+  --serif:'Cormorant Garamond',Georgia,serif; --sans:'Montserrat',system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{overflow-x:clip}
+body{margin:0;background:var(--nuit);color:var(--ivoire);font-family:var(--sans);font-size:15px;line-height:1.65;font-variant-numeric:lining-nums;overflow-x:clip}
+.doc{max-width:860px;margin:0 auto;padding:0 20px 40px}
+a{color:var(--champ)}
+
+/* en-tête */
+.entete{position:relative;height:340px;background:url(images/challenge/hero-mobile.webp) 58% 22%/cover no-repeat}
+.entete:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,.45) 0%,rgba(6,7,9,0) 20%,rgba(6,7,9,0) 50%,rgba(6,7,9,.85) 85%,var(--nuit) 100%)}
+.retour{position:absolute;z-index:2;top:calc(env(safe-area-inset-top) + 14px);left:20px;display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--ivoire);text-decoration:none;background:none;border:0;cursor:pointer;font-family:inherit}
+.retour b{font-weight:400;font-size:18px;line-height:1}
+body.dans-hype .retour{visibility:hidden}
+.titre-doc{position:relative;z-index:2;margin-top:-96px}
+.surtitre{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--champ)}
+h1{margin:10px 0 0;font-family:var(--serif);font-weight:600;font-size:46px;line-height:.98}
+h1 span{display:block;color:var(--champ)}
+.club{margin:14px 0 0;font-family:var(--serif);font-weight:500;font-size:14px;letter-spacing:3.4px;text-transform:uppercase;color:var(--grisClair)}
+.chapo{margin:22px 0 0;font-size:15.5px;color:var(--ivoire);max-width:600px}
+
+/* calendrier */
+.cal{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:34px}
+.jour{border:1px solid var(--ligne);border-radius:14px;padding:14px 12px;text-align:center;background:linear-gradient(180deg,rgba(17,23,28,.7),rgba(13,19,24,.3))}
+.jour .n{display:inline-flex;width:30px;height:30px;border-radius:50%;border:1px solid var(--champ);align-items:center;justify-content:center;font-family:var(--serif);font-weight:600;font-size:17px;color:var(--champ)}
+.jour .d{display:block;margin-top:8px;font-family:var(--serif);font-weight:600;font-size:18px;line-height:1.15}
+@media (min-width:700px){.jour .d{font-size:22px}}
+.jour .t{display:block;margin-top:3px;font-size:12px;color:var(--grisClair)}
+.jour.finale{border-color:var(--champDoux);background:linear-gradient(180deg,rgba(217,199,163,.08),rgba(13,19,24,.3))}
+.jour.finale .t{color:var(--champ)}
+
+/* articles */
+.articles{margin-top:44px;counter-reset:art}
+.art{position:relative;padding:22px 0 22px 64px;border-top:1px solid var(--filet);counter-increment:art}
+.art:before{content:counter(art,decimal-leading-zero);position:absolute;left:0;top:20px;font-family:var(--serif);font-weight:600;font-size:34px;line-height:1;color:var(--champ)}
+.art h2{margin:0;font-family:var(--serif);font-weight:600;font-size:25px;line-height:1.2}
+.art p{margin:8px 0 0;color:var(--ivoire)}
+.art ul{margin:8px 0 0;padding-inline-start:18px}
+.art li{margin:5px 0}
+.art .discret{color:var(--grisClair);font-size:14px}
+
+/* tableaux */
+.tableau{width:100%;border-collapse:collapse;margin-top:14px;font-size:14.5px}
+.tableau th{font-weight:500;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;color:var(--gris);text-align:start;padding:8px 10px;border-bottom:1px solid var(--ligne)}
+.tableau td{padding:10px;border-bottom:1px solid var(--filet)}
+.tableau td.cat{font-family:var(--serif);font-weight:600;font-size:19px;white-space:nowrap;color:var(--champ)}
+.bareme{display:grid;grid-template-columns:repeat(4,1fr);margin-top:14px;border-top:1px solid var(--filet)}
+.bc{padding:10px 4px;text-align:center;border-bottom:1px solid var(--filet)}
+.bc:not(:nth-child(4n+1)){border-inline-start:1px solid var(--filet)}
+.bc small{display:block;font-size:11px;color:var(--gris)}
+.bc b{display:block;font-family:var(--serif);font-weight:600;font-size:24px;line-height:1.1}
+.bc i{display:block;font-style:normal;font-size:11.5px;color:var(--champ)}
+.x2{display:flex;align-items:center;gap:16px;margin-top:14px;padding:16px 18px;border:1px solid var(--champDoux);border-radius:14px;background:linear-gradient(120deg,rgba(217,199,163,.07),transparent 70%)}
+.x2 b{flex:0 0 auto;font-family:var(--serif);font-weight:600;font-size:46px;line-height:.9;color:var(--champ)}
+.x2 span{font-size:14.5px}
+
+/* signature */
+.signature{margin-top:40px;padding-top:24px;border-top:1px solid var(--ligne);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:13.5px;color:var(--grisClair)}
+.signature b{display:block;font-family:var(--serif);font-weight:600;font-size:20px;color:var(--ivoire)}
+.imprimer{display:inline-flex;align-items:center;gap:8px;margin-top:26px;padding:11px 20px;border:1px solid var(--champDoux);border-radius:99px;background:transparent;color:var(--champ);font-family:inherit;font-size:13px;cursor:pointer}
+
+/* fin HYPE */
+.fin-hype{padding:56px 0 12px}
+.fh-img{position:relative;height:118px;overflow:hidden}
+.fh-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fh-img:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#05080B 0%,rgba(5,8,11,0) 12%,rgba(5,8,11,0) 88%,#05080B 100%)}
+.fh-trait{display:flex;align-items:center;gap:14px;padding:6px 24px calc(env(safe-area-inset-bottom) + 6px)}
+.fh-trait span{flex:1;height:1px;background:linear-gradient(90deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
+.fh-trait span:last-child{background:linear-gradient(270deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
+.fh-trait b{font-family:var(--serif);font-weight:400;font-size:13px;letter-spacing:4px;color:#C5AA78}
+
+@media (min-width:700px){
+  .doc{padding:0 40px 50px}
+  .entete{height:420px;background-image:url(images/challenge/hero.webp);background-position:62% 30%}
+  .entete:after{background:linear-gradient(90deg,rgba(6,7,9,.85) 0%,rgba(6,7,9,.4) 40%,rgba(6,7,9,0) 65%),linear-gradient(180deg,rgba(6,7,9,0) 55%,var(--nuit) 100%)}
+  .titre-doc{margin-top:-300px;max-width:560px}
+  h1{font-size:64px}
+  .cal{margin-top:110px;gap:16px}
+  .art{padding-left:84px}
+  .art:before{font-size:42px}
+}
+
+/* IMPRESSION : version claire, économe en encre */
+@media print{
+  @page{size:A4;margin:16mm 16mm 18mm}
+  :root{--ivoire:#1B1E22;--gris:#6B7178;--grisClair:#4A5057;--champ:#8C6D2F;--champDoux:rgba(140,109,47,.45);--ligne:rgba(140,109,47,.35);--filet:rgba(0,0,0,.12)}
+  body{background:#fff;font-size:11pt}
+  .doc{max-width:none;padding:0}
+  .entete{height:auto;background:none}
+  .entete:after,.retour,.imprimer,.fin-hype .fh-img{display:none}
+  .titre-doc{margin-top:0;max-width:none}
+  h1{font-size:34pt}
+  .cal{margin-top:20px}
+  .jour,.x2{background:none}
+  .art{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header class="entete"><button class="retour" id="retour"><b>‹</b><span>Challenge</span></button></header>
+<div class="doc">
+  <div class="titre-doc">
+    <div class="surtitre">Règlement · Saison 2026 – 2027</div>
+    <h1><span>Challenge</span>Open Dressage</h1>
+    <p class="club">Société d'Équitation de Paris</p>
+    <p class="chapo">Trois journées de dressage pour progresser, se mesurer dans une ambiance conviviale et décrocher le titre de sa catégorie. Le présent règlement fixe les conditions de participation, l'attribution des points et l'établissement des classements.</p>
+  </div>
+
+  <div class="cal">
+    <div class="jour"><span class="n">1</span><span class="d">11 octobre 2026</span><span class="t">Étape 1</span></div>
+    <div class="jour"><span class="n">2</span><span class="d">10 janvier 2027</span><span class="t">Étape 2</span></div>
+    <div class="jour finale"><span class="n">3</span><span class="d">30 mai 2027</span><span class="t">Finale · points ×2</span></div>
+  </div>
+
+  <div class="articles">
+    <section class="art"><h2>Organisation</h2>
+      <p>Le Challenge Open Dressage est un concours interne organisé par la Société d'Équitation de Paris (SEP). Il se dispute en trois étapes : le 11 octobre 2026, le 10 janvier 2027 et la finale le 30 mai 2027. Toutes les épreuves ont lieu à la SEP.</p></section>
+
+    <section class="art"><h2>Participation</h2>
+      <p>Le challenge est ouvert aux cavaliers et cavalières de la SEP. Chaque participant s'inscrit, pour chaque étape, dans la catégorie correspondant à son niveau. Il peut monter un cheval différent d'une étape à l'autre.</p></section>
+
+    <section class="art"><h2>Catégories et reprises</h2>
+      <p>Le challenge comprend cinq catégories, avec un classement séparé pour chacune. Les reprises à dérouler sont les reprises officielles de la Fédération Française d'Équitation, téléchargeables depuis la page du challenge dans l'application Hype.</p>
+      <table class="tableau">
+        <thead><tr><th>Catégorie</th><th>Reprise</th></tr></thead>
+        <tbody>
+          <tr><td class="cat">Poney 4</td><td>Reprise Poney 4</td></tr>
+          <tr><td class="cat">Galop 4</td><td>Club 2 Préliminaire</td></tr>
+          <tr><td class="cat">Galop 5</td><td>Club 2 Classique</td></tr>
+          <tr><td class="cat">Galop 6</td><td>Club 1 Préliminaire · Club 1 Classique</td></tr>
+          <tr><td class="cat">Galop 7</td><td>Club Élite Préliminaire · Club Élite Classique</td></tr>
+        </tbody>
+      </table></section>
+
+    <section class="art"><h2>Déroulement des journées</h2>
+      <p>Les horaires de détente et de passage sont communiqués avant chaque étape. La détente commence trente minutes avant le passage. La tenue de concours est obligatoire et les chevaux sont présentés soignés. La remise des prix a lieu à l'issue de chaque journée.</p></section>
+
+    <section class="art"><h2>Attribution des points</h2>
+      <p>À chaque étape, des points sont attribués selon la place obtenue dans sa catégorie. C'est la place qui compte : la note n'est pas nécessaire pour attribuer les points.</p>
+      <div class="bareme">
+        <div class="bc"><small>1<sup>re</sup> place</small><b>15</b><i>Finale 30</i></div>
+        <div class="bc"><small>2<sup>e</sup> place</small><b>12</b><i>Finale 24</i></div>
+        <div class="bc"><small>3<sup>e</sup> place</small><b>10</b><i>Finale 20</i></div>
+        <div class="bc"><small>4<sup>e</sup> place</small><b>9</b><i>Finale 18</i></div>
+        <div class="bc"><small>5<sup>e</sup> place</small><b>8</b><i>Finale 16</i></div>
+        <div class="bc"><small>6<sup>e</sup> place</small><b>7</b><i>Finale 14</i></div>
+        <div class="bc"><small>7<sup>e</sup> place</small><b>6</b><i>Finale 12</i></div>
+        <div class="bc"><small>8<sup>e</sup> place</small><b>5</b><i>Finale 10</i></div>
+        <div class="bc"><small>9<sup>e</sup> place</small><b>4</b><i>Finale 8</i></div>
+        <div class="bc"><small>10<sup>e</sup> place</small><b>3</b><i>Finale 6</i></div>
+        <div class="bc"><small>11<sup>e</sup> place</small><b>2</b><i>Finale 4</i></div>
+        <div class="bc"><small>12<sup>e</sup> et suivantes</small><b>1</b><i>Finale 2</i></div>
+      </div>
+      <div class="x2"><b>×2</b><span>La finale du 30 mai 2027 compte double : chaque place y rapporte deux fois plus de points.</span></div>
+      <p class="discret">Deux cavaliers classés à la même place dans une épreuve reçoivent le même nombre de points. Un cavalier forfait, éliminé ou qui abandonne ne marque pas de point pour cette étape.</p></section>
+
+    <section class="art"><h2>Classement général</h2>
+      <p>Le classement général de chaque catégorie additionne les points obtenus par le cavalier sur les trois étapes, quel que soit le cheval monté. Il est mis à jour après chaque étape dans l'application Hype.</p>
+      <ul>
+        <li>Pour figurer au classement final du challenge, il faut avoir participé à au moins deux étapes.</li>
+        <li>Un cavalier qui ne court que la finale est classé dans l'épreuve du jour, mais pas au challenge.</li>
+        <li>En cas d'égalité de points au classement final, la meilleure place obtenue lors de la finale départage les cavaliers.</li>
+        <li>Les points restent attachés à la catégorie dans laquelle ils ont été gagnés.</li>
+      </ul></section>
+
+    <section class="art"><h2>Récompenses</h2>
+      <p>Les vainqueurs de chaque catégorie sont récompensés à l'issue de la finale, lors de la remise des prix du challenge.</p></section>
+
+    <section class="art"><h2>Résultats et photos</h2>
+      <p>Les résultats, les classements et les photos de chaque journée sont publiés dans l'application Hype, visibles uniquement par les membres connectés. Toute personne peut demander le retrait d'une photo la concernant auprès de l'organisation.</p></section>
+
+    <section class="art"><h2>Réclamations</h2>
+      <p>Toute réclamation est adressée à l'organisation le jour de l'étape concernée. Les décisions du jury et de l'organisation sont sans appel. L'organisation se réserve le droit de modifier le présent règlement ; toute modification est communiquée aux participants.</p></section>
+  </div>
+
+  <div class="signature">
+    <div><b>Société d'Équitation de Paris</b>Challenge Open Dressage · Saison 2026 – 2027</div>
+    <div>Règlement en vigueur au 20 octobre 2026</div>
+  </div>
+  <button class="imprimer" onclick="window.print()">↓ Imprimer ou enregistrer en PDF</button>
+</div>
+<div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
+<script>
+"use strict";
+(function () {
+  var dansHype = false; try { dansHype = !!new URLSearchParams(location.search).get("dansHype"); } catch (e) { }
+  if (dansHype) document.body.classList.add("dans-hype");
+  function revenir() { if (history.length > 1) history.back(); else location.href = "challenge.html"; }
+  document.getElementById("retour").addEventListener("click", revenir);
+  /* dans Hype, le bouton retour de l'appli ramène à la page du challenge */
+  window.__challengeRetour = function () { revenir(); return true; };
+  try { window.scrollTo(0, 0); } catch (e) { }
+})();
+</script>
+</body>
+</html>

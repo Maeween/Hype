@@ -94,11 +94,14 @@ h1 .l2{display:block;color:var(--ivoire)}
 .vide{margin-top:16px;padding:26px 18px;text-align:center;color:var(--grisClair);font-size:14px;line-height:1.6;border-top:1px solid var(--ligne);border-bottom:1px solid var(--ligne)}
 .vide .ico{display:block;font-family:var(--serif);font-size:24px;color:var(--champ);margin-bottom:6px}
 
-#s-classement .panneau:before{content:"";position:absolute;z-index:0;top:0;bottom:0;right:0;width:75%;pointer-events:none;
-  background:url(images/challenge/hero-mobile.webp) 55% 20%/cover no-repeat;opacity:.45;
+.panneau.photo:before{content:"";position:absolute;z-index:0;top:0;bottom:0;right:0;width:75%;pointer-events:none;
+  background:var(--fond) var(--fondPos,55% 20%)/cover no-repeat;opacity:.45;
   -webkit-mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%);mask-image:linear-gradient(270deg,#000 0%,rgba(0,0,0,.6) 45%,transparent 100%)}
-[dir=rtl] #s-classement .panneau:before{right:auto;left:0;transform:scaleX(-1)}
-#s-classement .panneau>*{position:relative;z-index:1}
+[dir=rtl] .panneau.photo:before{right:auto;left:0;transform:scaleX(-1)}
+.panneau.photo>*{position:relative;z-index:1}
+#s-classement .panneau{--fond:url(images/challenge/hero-mobile.webp)}
+#s-resultats .panneau,#v-resultats .panneau{--fond:url(images/challenge/etape2.webp);--fondPos:30% 30%}
+.panneau select.choix{margin-top:14px;background-color:rgba(11,15,19,.85)}
 /* rangs, points */
 .rang{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:50%;font-family:var(--serif);font-size:19px;font-weight:600;color:var(--grisClair)}
 .rang.p{border:1px solid var(--champDoux);color:var(--champ);background:var(--champVoile)}
@@ -301,7 +304,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 @container ch (min-width:1100px){
   .page{padding:0 48px}
   .hero-img{height:640px;background-position:50% 28%}
-  #s-classement .panneau:before{width:55%;opacity:.34}
+  .panneau.photo:before{width:55%;opacity:.34}
   .hero-img:after{background:linear-gradient(90deg,rgba(6,7,9,.88) 0%,rgba(6,7,9,.62) 30%,rgba(6,7,9,.1) 48%,rgba(6,7,9,0) 60%),linear-gradient(180deg,rgba(6,7,9,.45) 0%,rgba(6,7,9,0) 16%,rgba(6,7,9,0) 62%,var(--nuit) 100%)}
   .hero-haut{padding:24px 48px 0}
   .hero-texte{margin-top:-500px;max-width:560px}
@@ -335,13 +338,28 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 @container ch (min-width:1200px){
   [dir=rtl] .hero-img:before{background-position:47% 28%}
   .hero-img{height:680px;background-position:47% 28%}
-  #s-classement .panneau:before{width:48%;opacity:.32}
+  .panneau.photo:before{width:48%;opacity:.32}
   .hero-texte{margin-top:-520px}
   h1{font-size:88px}
   .etape{--hEtape:220px}
   .galerie{grid-template-rows:170px 170px}
 }
 
+
+/* bandeau de fin « HYPE » avec son trait (même dessin que la fin des pages de l'appli) */
+.fin-hype{padding:56px 0 12px;position:relative}
+.fh-img{position:relative;height:118px;overflow:hidden}
+.fh-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.fh-img:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#05080B 0%,rgba(5,8,11,0) 12%,rgba(5,8,11,0) 88%,#05080B 100%)}
+.fh-trait{display:flex;align-items:center;gap:14px;padding:6px 24px calc(env(safe-area-inset-bottom) + 6px)}
+.fh-trait span{flex:1;height:1px;background:linear-gradient(90deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
+.fh-trait span:last-child{background:linear-gradient(270deg,rgba(197,170,120,0),rgba(197,170,120,.55))}
+.fh-trait b{font-family:var(--serif);font-weight:400;font-size:13px;letter-spacing:4px;padding-inline-start:4px;color:#C5AA78}
+.fin{margin-bottom:0}
+/* dans Hype : le retour et le drapeau sont ceux de l'appli, posés par-dessus */
+body.dans-hype .hero-haut .retour{visibility:hidden}
+body.dans-hype .vue-hero .hero-haut{display:none}
+.lien-regl{margin-top:18px}
 /* ═════ ÉTATS DE LA PAGE ═════ */
 #etat-page[hidden]{display:none}
 #etat-page{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:40px 24px;text-align:center}
@@ -435,6 +453,7 @@ body.sans-donnees .challenge-contenu{display:none}
 </main>
 
 <div class="fin"><div class="page"><p data-t="citation"></p></div></div>
+<div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
 </div>
 </div>
 <div class="vue" id="vue"><div class="vue-c" id="vueC"></div></div>
@@ -534,6 +553,7 @@ var TX2 = {
   erreurCharge: { fr: "Impossible de charger le challenge. Vérifie ta connexion et réessaie.", en: "Could not load the challenge. Check your connection and try again.", es: "No se pudo cargar el challenge. Revisa tu conexión e inténtalo de nuevo.", it: "Impossibile caricare il challenge. Controlla la connessione e riprova.", de: "Die Challenge konnte nicht geladen werden. Prüfe deine Verbindung und versuche es erneut.", ja: "チャレンジを読み込めませんでした。接続を確認して再試行してね。", ar: "تعذّر تحميل التحدي. تحقّق من اتصالك وحاول مجددًا." },
   forfait: { fr: "Forfait", en: "Withdrawn", es: "Retirada", it: "Ritirato", de: "Zurückgezogen", ja: "棄権", ar: "انسحاب" },
   elimine: { fr: "Éliminé", en: "Eliminated", es: "Eliminado", it: "Eliminato", de: "Ausgeschieden", ja: "失格", ar: "إقصاء" },
+  lireRegl: { fr: "Lire le règlement complet", en: "Read the full rules", es: "Leer el reglamento completo", it: "Leggi il regolamento completo", de: "Ganzes Reglement lesen", ja: "規定全文を読む", ar: "قراءة النظام الكامل" },
   classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
   abandon: { fr: "Abandon", en: "Retired", es: "Abandono", it: "Ritiro", de: "Aufgegeben", ja: "途中棄権", ar: "انسحب" }
 };
@@ -672,7 +692,7 @@ function rendreClassement() {
   var l = classementGeneral(etat.cat), vis = etat.complet ? l : l.slice(0, 5), E = CHALLENGE.etapes;
   var brou = marqueBrouillon(RESULTATS.filter(function (r) { return r.cat === etat.cat; }));
   var h = '<div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre">' + T("provisoire") + "</h2></div>" + brou + "</div>";
-  h += '<div class="panneau">' + pills("cat", CHALLENGE.categories, etat.cat);
+  h += '<div class="panneau photo">' + pills("cat", CHALLENGE.categories, etat.cat);
   if (!l.length) h += '<div class="vide"><span class="ico">✦</span>' + T("aucunRes") + "</div>";
   else {
     h += '<div class="lignes">' + vis.map(function (c) {
@@ -707,9 +727,10 @@ function baremeHtml() {
 function rendreResultats() {
   var vis = RESULTATS.filter(function (r) { return r.e === etat.resEtape && r.cat === etat.resFiltre; });
   document.getElementById("s-resultats").innerHTML = '<div class="tete"><h2 class="titre">' + T("oResultats") + "</h2>" + marqueBrouillon(vis) + "</div>" +
+    '<div class="panneau photo">' +
     pills("res-etape", CHALLENGE.etapes.map(function (e) { return String(e.n); }), String(etat.resEtape), function (v) { var e = etape(+v); return nomEtape(e) + " · " + dateJourMois(e.date); }) +
     selectCategorie(etat.resFiltre) + listeResultats(etat.resEtape, etat.resFiltre) +
-    '<div class="pied"><button class="lien" data-etape="' + etat.resEtape + '">' + T("voirEtape") + " <i>→</i></button></div>";
+    '<div class="pied"><button class="lien" data-etape="' + etat.resEtape + '">' + T("voirEtape") + " <i>→</i></button></div></div>";
 }
 function rendrePhotos() {
   document.getElementById("s-photos").innerHTML = '<div class="tete"><h2 class="titre">' + T("oPhotos") + "</h2></div>" +
@@ -728,6 +749,7 @@ function rendreReglement() {
     (CHALLENGE.bareme.valide ? "" : '<p class="regl-intro">' + T("reglIntro") + "</p>") +
     '<div class="finale-x2"><span class="x">×2</span><span><b>' + T("x2titre") + "</b><span>" + TF("x2texte", { d3: d3() }) + "</span></span></div>" +
     baremeHtml() +
+    '<a class="lien lien-regl" href="reglement-challenge.html' + (PARAMS.get("dansHype") ? "?dansHype=1" : "") + '">' + T("lireRegl") + ' <i>→</i></a>' +
     '<ol class="regles"><li>' + TF("r1", { d1: dateJourMoisLong(E[0] && E[0].date), d2: dateJourMoisLong(E[1] && E[1].date), d3: d3() }) + "</li><li>" + TF("r2", { cats: catsTxt }) + "</li><li>" + T("r3") + "</li><li>" + T("r4") + '</li><li class="acf"><span>' + T("r5") + " <em>" + T("aConfirmer").toLowerCase() + ".</em></span></li></ol>";
 }
 
@@ -748,12 +770,12 @@ function rendreVue() {
   h += '<section class="section" id="v-journee"><p class="vue-intro">' + T(e.n === 1 ? "introE1" : fin ? "introE3" : "introE2") + "</p>" +
     '<div class="infos"><div class="info"><small>' + T("date") + "</small><b>" + esc(dateJourMois(e.date)) + '</b></div><div class="info"><small>' + T("lieu") + "</small><b>" + esc(e.lieu || CHALLENGE.lieuCourt) + '</b></div><div class="info"><small>' + T("coef") + "</small><b>" + (fin ? "×" + e.coef : T("normal")) + "</b></div></div></section>";
   h += '<div class="r-vue"><section class="section" id="v-resultats"><div class="tete"><h2 class="titre">' + T("oResultatsCourt") + "</h2>" + marqueBrouillon(RESULTATS.filter(function (r) { return r.e === e.n; })) + "</div>";
-  if (aRes) h += pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre);
+  if (aRes) h += '<div class="panneau photo">' + pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre) + "</div>";
   else h += '<div class="attente"><b>' + T("attTitre") + "</b><p>" + T("attTexte") + '</p><button class="lien" data-vue-aller="v-reprises">' + T("voirReprises") + " <i>→</i></button></div>";
   h += "</section>";
   h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + galerie(e.n) + "</section></div>";
   h += '<section class="section" id="v-reprises"><div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" + documents(CHALLENGE.categories) + "</section>";
-  h += '</div><div class="vue-fin"></div>';
+  h += '</div>' + document.querySelector('.fin-hype').outerHTML;
   document.getElementById("vueC").innerHTML = h;
 }
 function rendreNavVue() {
@@ -919,6 +941,14 @@ async function charger() {
   tout();
 }
 window.__challengeRecharger = charger;
+try { if (PARAMS.get("dansHype")) document.body.classList.add("dans-hype"); } catch (eD) { }
+/* le bouton retour de l'appli ferme d'abord ce qui est ouvert ici ; renvoie false s'il n'y a rien à fermer */
+window.__challengeRetour = function () {
+  if (document.getElementById("lb").classList.contains("ouverte")) { fermerLb(); return true; }
+  if (IMP.ouvert) { if (IMP.epreuves.length && !confirm("Fermer sans enregistrer ? La lecture sera perdue.")) return true; IMP.ouvert = false; IMP.epreuves = []; IMP.erreur = ""; rendreImport(); return true; }
+  if (document.getElementById("vue").classList.contains("ouverte")) { fermerVue(); return true; }
+  return false;
+};
 
 /* ══════════════════════════════════════════════════════════════
    GESTION (modératrices et gestionnaires du club) — écrans en français
