@@ -749,8 +749,8 @@ function rendreReglement() {
     (CHALLENGE.bareme.valide ? "" : '<p class="regl-intro">' + T("reglIntro") + "</p>") +
     '<div class="finale-x2"><span class="x">×2</span><span><b>' + T("x2titre") + "</b><span>" + TF("x2texte", { d3: d3() }) + "</span></span></div>" +
     baremeHtml() +
-    '<a class="lien lien-regl" href="reglement-challenge.html' + (PARAMS.get("dansHype") ? "?dansHype=1" : "") + '">' + T("lireRegl") + ' <i>→</i></a>' +
-    '<ol class="regles"><li>' + TF("r1", { d1: dateJourMoisLong(E[0] && E[0].date), d2: dateJourMoisLong(E[1] && E[1].date), d3: d3() }) + "</li><li>" + TF("r2", { cats: catsTxt }) + "</li><li>" + T("r3") + "</li><li>" + T("r4") + '</li><li class="acf"><span>' + T("r5") + " <em>" + T("aConfirmer").toLowerCase() + ".</em></span></li></ol>";
+    '<a class="lien lien-regl" href="reglement-challenge.html?lang=' + LANG + (PARAMS.get("dansHype") ? "&dansHype=1" : "") + '">' + T("lireRegl") + ' <i>→</i></a>' +
+    '<ol class="regles"><li>' + TF("r1", { d1: dateJourMoisLong(E[0] && E[0].date), d2: dateJourMoisLong(E[1] && E[1].date), d3: d3() }) + "</li><li>" + TF("r2", { cats: catsTxt }) + "</li><li>" + T("r3") + "</li><li>" + T("r4") + '</li>' + (CHALLENGE.bareme.valide ? "" : '<li class="acf"><span>' + T("r5") + " <em>" + T("aConfirmer").toLowerCase() + ".</em></span></li>") + "</ol>";
 }
 
 /* ══════ PAGE D'UNE JOURNÉE ══════ */

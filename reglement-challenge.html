@@ -71,6 +71,13 @@ h1 span{display:block;color:var(--champ)}
 .x2 b{flex:0 0 auto;font-family:var(--serif);font-weight:600;font-size:46px;line-height:.9;color:var(--champ)}
 .x2 span{font-size:14.5px}
 
+.exemple{margin:14px 0 4px;padding:14px 16px;border:1px solid var(--ligne);border-radius:14px;background:rgba(255,255,255,.02)}
+.ex-t{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--gris);margin-bottom:6px}
+.ex-l{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-top:1px solid var(--filet);font-size:14.5px}
+.ex-l:first-of-type{border-top:0}
+.ex-l b{font-family:var(--serif);font-weight:600;font-size:20px;line-height:1.1}
+.ex-tot{border-top:1px solid var(--champDoux)}
+.ex-tot span{font-weight:600}.ex-tot b{color:var(--champ);font-size:24px}
 /* signature */
 .signature{margin-top:40px;padding-top:24px;border-top:1px solid var(--ligne);display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-size:13.5px;color:var(--grisClair)}
 .signature b{display:block;font-family:var(--serif);font-weight:600;font-size:20px;color:var(--ivoire)}
@@ -114,97 +121,152 @@ h1 span{display:block;color:var(--champ)}
 </style>
 </head>
 <body>
-<header class="entete"><button class="retour" id="retour"><b>‹</b><span>Challenge</span></button></header>
-<div class="doc">
-  <div class="titre-doc">
-    <div class="surtitre">Règlement · Saison 2026 – 2027</div>
-    <h1><span>Challenge</span>Open Dressage</h1>
-    <p class="club">Société d'Équitation de Paris</p>
-    <p class="chapo">Trois journées de dressage pour progresser, se mesurer dans une ambiance conviviale et décrocher le titre de sa catégorie. Le présent règlement fixe les conditions de participation, l'attribution des points et l'établissement des classements.</p>
-  </div>
-
-  <div class="cal">
-    <div class="jour"><span class="n">1</span><span class="d">11 octobre 2026</span><span class="t">Étape 1</span></div>
-    <div class="jour"><span class="n">2</span><span class="d">10 janvier 2027</span><span class="t">Étape 2</span></div>
-    <div class="jour finale"><span class="n">3</span><span class="d">30 mai 2027</span><span class="t">Finale · points ×2</span></div>
-  </div>
-
-  <div class="articles">
-    <section class="art"><h2>Organisation</h2>
-      <p>Le Challenge Open Dressage est un concours interne organisé par la Société d'Équitation de Paris (SEP). Il se dispute en trois étapes : le 11 octobre 2026, le 10 janvier 2027 et la finale le 30 mai 2027. Toutes les épreuves ont lieu à la SEP.</p></section>
-
-    <section class="art"><h2>Participation</h2>
-      <p>Le challenge est ouvert aux cavaliers et cavalières de la SEP. Chaque participant s'inscrit, pour chaque étape, dans la catégorie correspondant à son niveau. Il peut monter un cheval différent d'une étape à l'autre.</p></section>
-
-    <section class="art"><h2>Catégories et reprises</h2>
-      <p>Le challenge comprend cinq catégories, avec un classement séparé pour chacune. Les reprises à dérouler sont les reprises officielles de la Fédération Française d'Équitation, téléchargeables depuis la page du challenge dans l'application Hype.</p>
-      <table class="tableau">
-        <thead><tr><th>Catégorie</th><th>Reprise</th></tr></thead>
-        <tbody>
-          <tr><td class="cat">Poney 4</td><td>Reprise Poney 4</td></tr>
-          <tr><td class="cat">Galop 4</td><td>Club 2 Préliminaire</td></tr>
-          <tr><td class="cat">Galop 5</td><td>Club 2 Classique</td></tr>
-          <tr><td class="cat">Galop 6</td><td>Club 1 Préliminaire · Club 1 Classique</td></tr>
-          <tr><td class="cat">Galop 7</td><td>Club Élite Préliminaire · Club Élite Classique</td></tr>
-        </tbody>
-      </table></section>
-
-    <section class="art"><h2>Déroulement des journées</h2>
-      <p>Les horaires de détente et de passage sont communiqués avant chaque étape. La détente commence trente minutes avant le passage. La tenue de concours est obligatoire et les chevaux sont présentés soignés. La remise des prix a lieu à l'issue de chaque journée.</p></section>
-
-    <section class="art"><h2>Attribution des points</h2>
-      <p>À chaque étape, des points sont attribués selon la place obtenue dans sa catégorie. C'est la place qui compte : la note n'est pas nécessaire pour attribuer les points.</p>
-      <div class="bareme">
-        <div class="bc"><small>1<sup>re</sup> place</small><b>15</b><i>Finale 30</i></div>
-        <div class="bc"><small>2<sup>e</sup> place</small><b>12</b><i>Finale 24</i></div>
-        <div class="bc"><small>3<sup>e</sup> place</small><b>10</b><i>Finale 20</i></div>
-        <div class="bc"><small>4<sup>e</sup> place</small><b>9</b><i>Finale 18</i></div>
-        <div class="bc"><small>5<sup>e</sup> place</small><b>8</b><i>Finale 16</i></div>
-        <div class="bc"><small>6<sup>e</sup> place</small><b>7</b><i>Finale 14</i></div>
-        <div class="bc"><small>7<sup>e</sup> place</small><b>6</b><i>Finale 12</i></div>
-        <div class="bc"><small>8<sup>e</sup> place</small><b>5</b><i>Finale 10</i></div>
-        <div class="bc"><small>9<sup>e</sup> place</small><b>4</b><i>Finale 8</i></div>
-        <div class="bc"><small>10<sup>e</sup> place</small><b>3</b><i>Finale 6</i></div>
-        <div class="bc"><small>11<sup>e</sup> place</small><b>2</b><i>Finale 4</i></div>
-        <div class="bc"><small>12<sup>e</sup> et suivantes</small><b>1</b><i>Finale 2</i></div>
-      </div>
-      <div class="x2"><b>×2</b><span>La finale du 30 mai 2027 compte double : chaque place y rapporte deux fois plus de points.</span></div>
-      <p class="discret">Deux cavaliers classés à la même place dans une épreuve reçoivent le même nombre de points. Un cavalier forfait, éliminé ou qui abandonne ne marque pas de point pour cette étape.</p></section>
-
-    <section class="art"><h2>Classement général</h2>
-      <p>Le classement général de chaque catégorie additionne les points obtenus par le cavalier sur les trois étapes, quel que soit le cheval monté. Il est mis à jour après chaque étape dans l'application Hype.</p>
-      <ul>
-        <li>Pour figurer au classement final du challenge, il faut avoir participé à au moins deux étapes.</li>
-        <li>Un cavalier qui ne court que la finale est classé dans l'épreuve du jour, mais pas au challenge.</li>
-        <li>En cas d'égalité de points au classement final, la meilleure place obtenue lors de la finale départage les cavaliers.</li>
-        <li>Les points restent attachés à la catégorie dans laquelle ils ont été gagnés.</li>
-      </ul></section>
-
-    <section class="art"><h2>Récompenses</h2>
-      <p>Les vainqueurs de chaque catégorie sont récompensés à l'issue de la finale, lors de la remise des prix du challenge.</p></section>
-
-    <section class="art"><h2>Résultats et photos</h2>
-      <p>Les résultats, les classements et les photos de chaque journée sont publiés dans l'application Hype, visibles uniquement par les membres connectés. Toute personne peut demander le retrait d'une photo la concernant auprès de l'organisation.</p></section>
-
-    <section class="art"><h2>Réclamations</h2>
-      <p>Toute réclamation est adressée à l'organisation le jour de l'étape concernée. Les décisions du jury et de l'organisation sont sans appel. L'organisation se réserve le droit de modifier le présent règlement ; toute modification est communiquée aux participants.</p></section>
-  </div>
-
-  <div class="signature">
-    <div><b>Société d'Équitation de Paris</b>Challenge Open Dressage · Saison 2026 – 2027</div>
-    <div>Règlement en vigueur au 20 octobre 2026</div>
-  </div>
-  <button class="imprimer" onclick="window.print()">↓ Imprimer ou enregistrer en PDF</button>
-</div>
+<header class="entete"><button class="retour" id="retour"><b>‹</b><span id="tRetour"></span></button></header>
+<div class="doc" id="doc"></div>
 <div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
 <script>
 "use strict";
+/* Règlement du Challenge Open Dressage SEP 2026-2027 — validé par Blandine le 20/10/2026 (04:56), 7 langues. */
+var CATS = [["Poney 4", { fr: "Reprise Poney 4", en: "Poney 4 test", es: "Reprise Poney 4", it: "Ripresa Poney 4", de: "Aufgabe Poney 4", ja: "ポニー4課目", ar: "برنامج Poney 4" }],
+  ["Galop 4", "Club 2 Préliminaire"], ["Galop 5", "Club 2 Classique"], ["Galop 6", "Club 1 Préliminaire · Club 1 Classique"], ["Galop 7", "Club Élite Préliminaire · Club Élite Classique"]];
+var BAREME = [15, 12, 10, 9, 8, 7, 6, 5, 4, 3, 2], SUIVANTS = 1;
+var R = {
+fr: { retour: "Challenge", sur: "Règlement · Saison 2026 – 2027", t1: "Challenge", t2: "Open Dressage", club: "Société d'Équitation de Paris",
+  chapo: "Trois journées de dressage pour progresser, se mesurer dans une ambiance conviviale et décrocher le titre de sa catégorie. Le présent règlement fixe les conditions de participation, l'attribution des points et l'établissement des classements.",
+  d1: "11 octobre 2026", d2: "10 janvier 2027", d3: "30 mai 2027", e1: "Étape 1", e2: "Étape 2", e3: "Finale · points ×2",
+  cat: "Catégorie", rep: "Reprise", place: function (n) { return n === 1 ? "1<sup>re</sup> place" : n + "<sup>e</sup> place"; }, suiv: "12<sup>e</sup> et suivantes", fin: "Finale",
+  x2: "La finale du 30 mai 2027 compte double : chaque place y rapporte deux fois plus de points.",
+  arts: [
+   ["Organisation", "<p>Le Challenge Open Dressage est un concours interne organisé par la Société d'Équitation de Paris (SEP). Il se dispute en trois étapes : le 11 octobre 2026, le 10 janvier 2027 et la finale le 30 mai 2027. Toutes les épreuves ont lieu à la SEP.</p>"],
+   ["Participation", "<p>Le challenge est ouvert aux cavaliers et cavalières de la SEP. Chaque participant s'inscrit, pour chaque étape, dans la catégorie correspondant à son niveau. Il peut monter un cheval différent d'une étape à l'autre.</p>"],
+   ["Catégories et reprises", "<p>Le challenge comprend cinq catégories, avec un classement séparé pour chacune. Les reprises à dérouler sont les reprises officielles de la Fédération Française d'Équitation, téléchargeables depuis la page du challenge dans l'application Hype.</p>{CATS}"],
+   ["Déroulement des journées", "<p>Les horaires de détente et de passage sont communiqués avant chaque étape. La détente commence trente minutes avant le passage. La remise des prix a lieu à l'issue de chaque journée.</p><ul><li>La tenue de concours est obligatoire et les chevaux sont présentés soignés.</li><li>Le port des gants est obligatoire.</li><li>Les éperons sont interdits, sauf accord de l'enseignant.</li></ul>"],
+   ["Attribution des points", "<p>À chaque étape, des points sont attribués selon la place obtenue dans sa catégorie. C'est la place qui compte : la note n'est pas nécessaire pour attribuer les points.</p>{BAREME}<p class=\"discret\">Deux cavaliers classés à la même place dans une épreuve reçoivent le même nombre de points. Un cavalier forfait, éliminé ou qui abandonne ne marque pas de point pour cette étape.</p>"],
+   ["Classement général", "<p>Le classement général de chaque catégorie additionne les points obtenus par le cavalier sur les trois étapes, quel que soit le cheval monté. Il est mis à jour après chaque étape dans l'application Hype.</p><div class=\"exemple\"><div class=\"ex-t\">Exemple de décompte</div><div class=\"ex-l\"><span>Étape 1 : 1<sup>re</sup> place</span><b>15</b></div><div class=\"ex-l\"><span>Étape 2 : 3<sup>e</sup> place</span><b>10</b></div><div class=\"ex-l\"><span>Finale : 2<sup>e</sup> place (12 × 2)</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>Total</span><b>49</b></div></div><ul><li>Pour figurer au classement final du challenge, il faut avoir participé à au moins deux étapes.</li><li>Un cavalier qui ne court que la finale est classé dans l'épreuve du jour, mais pas au challenge.</li><li>En cas d'égalité de points au classement final, la meilleure place obtenue lors de la finale départage les cavaliers.</li><li>Les points restent attachés à la catégorie dans laquelle ils ont été gagnés.</li></ul>"],
+   ["Récompenses", "<p>Les vainqueurs de chaque catégorie sont récompensés à l'issue de la finale, lors de la remise des prix du challenge.</p>"],
+   ["Résultats et photos", "<p>Les résultats, les classements et les photos de chaque journée sont publiés dans l'application Hype, visibles uniquement par les membres connectés. Toute personne peut demander le retrait d'une photo la concernant auprès de l'organisation.</p>"],
+   ["Réclamations", "<p>Toute réclamation est adressée à l'organisation le jour de l'étape concernée. Les décisions du jury et de l'organisation sont sans appel. L'organisation se réserve le droit de modifier le présent règlement ; toute modification est communiquée aux participants.</p>"]],
+  sig: "Challenge Open Dressage · Saison 2026 – 2027", vig: "Règlement en vigueur au 20 octobre 2026", imp: "Imprimer ou enregistrer en PDF" },
+en: { retour: "Challenge", sur: "Rules · 2026 – 2027 season", t1: "Open Dressage", t2: "Challenge", club: "Société d'Équitation de Paris",
+  chapo: "Three days of dressage to progress, test yourself in a friendly atmosphere and win the title in your category. These rules set the conditions of entry, how points are awarded and how rankings are established.",
+  d1: "11 October 2026", d2: "10 January 2027", d3: "30 May 2027", e1: "Leg 1", e2: "Leg 2", e3: "Final · points ×2",
+  cat: "Category", rep: "Test", place: function (n) { return n === 1 ? "1<sup>st</sup> place" : n === 2 ? "2<sup>nd</sup> place" : n === 3 ? "3<sup>rd</sup> place" : n + "<sup>th</sup> place"; }, suiv: "12<sup>th</sup> and below", fin: "Final",
+  x2: "The 30 May 2027 final counts double: every placing earns twice as many points.",
+  arts: [
+   ["Organisation", "<p>The Open Dressage Challenge is an internal competition organised by the Société d'Équitation de Paris (SEP). It is held over three legs: 11 October 2026, 10 January 2027 and the final on 30 May 2027. All classes take place at the SEP.</p>"],
+   ["Entry", "<p>The challenge is open to SEP riders. For each leg, every rider enters the category matching their level. A rider may ride a different horse from one leg to the next.</p>"],
+   ["Categories and tests", "<p>The challenge has five categories, each with its own ranking. The tests to ride are the official tests of the French Equestrian Federation (FFE), downloadable from the challenge page in the Hype app.</p>{CATS}"],
+   ["On the day", "<p>Warm-up and test times are sent before each leg. Warm-up starts thirty minutes before your test. Prizes are given at the end of each day.</p><ul><li>Competition dress is compulsory and horses are presented well groomed.</li><li>Gloves are compulsory.</li><li>Spurs are not allowed without the instructor's agreement.</li></ul>"],
+   ["Points", "<p>At each leg, points are awarded according to the placing in your category. The placing is what counts: the score is not needed to award points.</p>{BAREME}<p class=\"discret\">Two riders placed equal in a class receive the same number of points. A rider who withdraws, is eliminated or retires scores no points for that leg.</p>"],
+   ["Overall ranking", "<p>The overall ranking of each category adds up the points scored by the rider over the three legs, whatever horse they ride. It is updated after each leg in the Hype app.</p><div class=\"exemple\"><div class=\"ex-t\">Example</div><div class=\"ex-l\"><span>Leg 1: 1<sup>st</sup> place</span><b>15</b></div><div class=\"ex-l\"><span>Leg 2: 3<sup>rd</sup> place</span><b>10</b></div><div class=\"ex-l\"><span>Final: 2<sup>nd</sup> place (12 × 2)</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>Total</span><b>49</b></div></div><ul><li>To appear in the final challenge ranking, a rider must have taken part in at least two legs.</li><li>A rider who only rides the final is ranked in that day's class, but not in the challenge.</li><li>If riders are level on points in the final ranking, the best placing in the final decides.</li><li>Points stay with the category in which they were won.</li></ul>"],
+   ["Prizes", "<p>The winners of each category are rewarded after the final, at the challenge prize-giving.</p>"],
+   ["Results and photos", "<p>Results, rankings and photos of each day are published in the Hype app, visible only to logged-in members. Anyone may ask the organisers to remove a photo of themselves.</p>"],
+   ["Complaints", "<p>Any complaint must be made to the organisers on the day of the leg concerned. Decisions of the judges and organisers are final. The organisers may amend these rules; any change is communicated to the riders.</p>"]],
+  sig: "Open Dressage Challenge · 2026 – 2027 season", vig: "Rules in force as of 20 October 2026", imp: "Print or save as PDF" },
+es: { retour: "Challenge", sur: "Reglamento · Temporada 2026 – 2027", t1: "Challenge", t2: "Open de Doma", club: "Société d'Équitation de Paris",
+  chapo: "Tres jornadas de doma para progresar, medirse en un ambiente cercano y ganar el título de su categoría. Este reglamento fija las condiciones de participación, la atribución de puntos y la elaboración de las clasificaciones.",
+  d1: "11 de octubre de 2026", d2: "10 de enero de 2027", d3: "30 de mayo de 2027", e1: "Etapa 1", e2: "Etapa 2", e3: "Final · puntos ×2",
+  cat: "Categoría", rep: "Reprise", place: function (n) { return n + ".º puesto"; }, suiv: "12.º y siguientes", fin: "Final",
+  x2: "La final del 30 de mayo de 2027 cuenta doble: cada puesto vale el doble de puntos.",
+  arts: [
+   ["Organización", "<p>El Challenge Open de Doma es un concurso interno organizado por la Société d'Équitation de Paris (SEP). Se disputa en tres etapas: el 11 de octubre de 2026, el 10 de enero de 2027 y la final el 30 de mayo de 2027. Todas las pruebas se celebran en la SEP.</p>"],
+   ["Participación", "<p>El challenge está abierto a los jinetes de la SEP. En cada etapa, cada participante se inscribe en la categoría que corresponde a su nivel. Puede montar un caballo distinto de una etapa a otra.</p>"],
+   ["Categorías y reprises", "<p>El challenge tiene cinco categorías, cada una con su propia clasificación. Las reprises son las reprises oficiales de la Federación Francesa de Hípica (FFE), que se pueden descargar desde la página del challenge en la app Hype.</p>{CATS}"],
+   ["Desarrollo de las jornadas", "<p>Los horarios de calentamiento y de paso se comunican antes de cada etapa. El calentamiento empieza treinta minutos antes del paso. La entrega de premios tiene lugar al final de cada jornada.</p><ul><li>La vestimenta de concurso es obligatoria y los caballos se presentan bien arreglados.</li><li>Los guantes son obligatorios.</li><li>Las espuelas están prohibidas, salvo acuerdo del profesor.</li></ul>"],
+   ["Atribución de puntos", "<p>En cada etapa se atribuyen puntos según el puesto obtenido en su categoría. Lo que cuenta es el puesto: la nota no es necesaria para atribuir los puntos.</p>{BAREME}<p class=\"discret\">Dos jinetes clasificados en el mismo puesto reciben los mismos puntos. Un jinete que se retira, es eliminado o abandona no suma puntos en esa etapa.</p>"],
+   ["Clasificación general", "<p>La clasificación general de cada categoría suma los puntos obtenidos por el jinete en las tres etapas, sea cual sea el caballo montado. Se actualiza después de cada etapa en la app Hype.</p><div class=\"exemple\"><div class=\"ex-t\">Ejemplo de cálculo</div><div class=\"ex-l\"><span>Etapa 1: 1.<sup>er</sup> puesto</span><b>15</b></div><div class=\"ex-l\"><span>Etapa 2: 3.<sup>er</sup> puesto</span><b>10</b></div><div class=\"ex-l\"><span>Final: 2.º puesto (12 × 2)</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>Total</span><b>49</b></div></div><ul><li>Para figurar en la clasificación final del challenge hay que haber participado en al menos dos etapas.</li><li>Un jinete que solo corre la final se clasifica en la prueba del día, pero no en el challenge.</li><li>En caso de empate a puntos en la clasificación final, decide el mejor puesto obtenido en la final.</li><li>Los puntos se quedan en la categoría en la que se ganaron.</li></ul>"],
+   ["Premios", "<p>Los ganadores de cada categoría reciben su premio al final de la final, en la entrega de premios del challenge.</p>"],
+   ["Resultados y fotos", "<p>Los resultados, las clasificaciones y las fotos de cada jornada se publican en la app Hype, visibles solo para los miembros conectados. Cualquier persona puede pedir a la organización que se retire una foto en la que aparece.</p>"],
+   ["Reclamaciones", "<p>Toda reclamación se dirige a la organización el día de la etapa correspondiente. Las decisiones del jurado y de la organización son inapelables. La organización puede modificar este reglamento; cualquier cambio se comunica a los participantes.</p>"]],
+  sig: "Challenge Open de Doma · Temporada 2026 – 2027", vig: "Reglamento vigente a 20 de octubre de 2026", imp: "Imprimir o guardar en PDF" },
+it: { retour: "Challenge", sur: "Regolamento · Stagione 2026 – 2027", t1: "Challenge", t2: "Open Dressage", club: "Société d'Équitation de Paris",
+  chapo: "Tre giornate di dressage per progredire, mettersi alla prova in un clima amichevole e conquistare il titolo della propria categoria. Il presente regolamento stabilisce le condizioni di partecipazione, l'attribuzione dei punti e la definizione delle classifiche.",
+  d1: "11 ottobre 2026", d2: "10 gennaio 2027", d3: "30 maggio 2027", e1: "Tappa 1", e2: "Tappa 2", e3: "Finale · punti ×2",
+  cat: "Categoria", rep: "Ripresa", place: function (n) { return n + "° posto"; }, suiv: "12° e seguenti", fin: "Finale",
+  x2: "La finale del 30 maggio 2027 conta doppio: ogni piazzamento vale il doppio dei punti.",
+  arts: [
+   ["Organizzazione", "<p>Il Challenge Open Dressage è un concorso interno organizzato dalla Société d'Équitation de Paris (SEP). Si disputa in tre tappe: l'11 ottobre 2026, il 10 gennaio 2027 e la finale il 30 maggio 2027. Tutte le prove si svolgono alla SEP.</p>"],
+   ["Partecipazione", "<p>Il challenge è aperto ai cavalieri e alle amazzoni della SEP. Per ogni tappa, ciascuno si iscrive nella categoria corrispondente al proprio livello. Si può montare un cavallo diverso da una tappa all'altra.</p>"],
+   ["Categorie e riprese", "<p>Il challenge comprende cinque categorie, ciascuna con la propria classifica. Le riprese sono quelle ufficiali della Federazione Francese di Equitazione (FFE), scaricabili dalla pagina del challenge nell'app Hype.</p>{CATS}"],
+   ["Svolgimento delle giornate", "<p>Gli orari di riscaldamento e di passaggio sono comunicati prima di ogni tappa. Il riscaldamento inizia trenta minuti prima del passaggio. La premiazione si svolge al termine di ogni giornata.</p><ul><li>La tenuta da concorso è obbligatoria e i cavalli sono presentati curati.</li><li>I guanti sono obbligatori.</li><li>Gli speroni sono vietati, salvo accordo dell'istruttore.</li></ul>"],
+   ["Attribuzione dei punti", "<p>A ogni tappa i punti sono attribuiti in base al piazzamento nella propria categoria. Conta il piazzamento: il punteggio non è necessario per attribuire i punti.</p>{BAREME}<p class=\"discret\">Due cavalieri classificati allo stesso posto ricevono gli stessi punti. Chi si ritira, viene eliminato o abbandona non ottiene punti per quella tappa.</p>"],
+   ["Classifica generale", "<p>La classifica generale di ogni categoria somma i punti ottenuti dal cavaliere nelle tre tappe, qualunque sia il cavallo montato. Viene aggiornata dopo ogni tappa nell'app Hype.</p><div class=\"exemple\"><div class=\"ex-t\">Esempio di calcolo</div><div class=\"ex-l\"><span>Tappa 1: 1° posto</span><b>15</b></div><div class=\"ex-l\"><span>Tappa 2: 3° posto</span><b>10</b></div><div class=\"ex-l\"><span>Finale: 2° posto (12 × 2)</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>Totale</span><b>49</b></div></div><ul><li>Per comparire nella classifica finale del challenge bisogna aver partecipato ad almeno due tappe.</li><li>Chi corre solo la finale è classificato nella prova del giorno, ma non nel challenge.</li><li>In caso di parità di punti nella classifica finale, decide il miglior piazzamento ottenuto in finale.</li><li>I punti restano legati alla categoria in cui sono stati conquistati.</li></ul>"],
+   ["Premi", "<p>I vincitori di ogni categoria sono premiati al termine della finale, durante la premiazione del challenge.</p>"],
+   ["Risultati e foto", "<p>Risultati, classifiche e foto di ogni giornata sono pubblicati nell'app Hype, visibili solo ai membri connessi. Chiunque può chiedere all'organizzazione di rimuovere una foto che lo riguarda.</p>"],
+   ["Reclami", "<p>Ogni reclamo va presentato all'organizzazione il giorno della tappa interessata. Le decisioni della giuria e dell'organizzazione sono inappellabili. L'organizzazione può modificare il presente regolamento; ogni modifica è comunicata ai partecipanti.</p>"]],
+  sig: "Challenge Open Dressage · Stagione 2026 – 2027", vig: "Regolamento in vigore al 20 ottobre 2026", imp: "Stampa o salva in PDF" },
+de: { retour: "Challenge", sur: "Reglement · Saison 2026 – 2027", t1: "Challenge", t2: "Open Dressur", club: "Société d'Équitation de Paris",
+  chapo: "Drei Dressurtage, um sich zu verbessern, sich in geselliger Atmosphäre zu messen und den Titel seiner Kategorie zu gewinnen. Dieses Reglement legt die Teilnahmebedingungen, die Punktevergabe und die Erstellung der Wertungen fest.",
+  d1: "11. Oktober 2026", d2: "10. Januar 2027", d3: "30. Mai 2027", e1: "Etappe 1", e2: "Etappe 2", e3: "Finale · Punkte ×2",
+  cat: "Kategorie", rep: "Aufgabe", place: function (n) { return n + ". Platz"; }, suiv: "12. Platz und folgende", fin: "Finale",
+  x2: "Das Finale am 30. Mai 2027 zählt doppelt: Jede Platzierung bringt doppelt so viele Punkte.",
+  arts: [
+   ["Organisation", "<p>Die Open Dressur Challenge ist ein interner Wettbewerb der Société d'Équitation de Paris (SEP). Sie wird in drei Etappen ausgetragen: am 11. Oktober 2026, am 10. Januar 2027 und das Finale am 30. Mai 2027. Alle Prüfungen finden an der SEP statt.</p>"],
+   ["Teilnahme", "<p>Die Challenge steht den Reiterinnen und Reitern der SEP offen. Für jede Etappe meldet sich jeder in der Kategorie seines Niveaus an. Das Pferd darf von einer Etappe zur nächsten wechseln.</p>"],
+   ["Kategorien und Aufgaben", "<p>Die Challenge umfasst fünf Kategorien mit jeweils eigener Wertung. Geritten werden die offiziellen Aufgaben des Französischen Reitverbands (FFE), die auf der Seite der Challenge in der Hype-App heruntergeladen werden können.</p>{CATS}"],
+   ["Ablauf der Tage", "<p>Abreite- und Startzeiten werden vor jeder Etappe mitgeteilt. Das Abreiten beginnt dreißig Minuten vor dem Start. Die Siegerehrung findet am Ende jedes Tages statt.</p><ul><li>Turnierkleidung ist Pflicht und die Pferde werden gepflegt vorgestellt.</li><li>Handschuhe sind Pflicht.</li><li>Sporen sind nur mit Zustimmung der Reitlehrerin bzw. des Reitlehrers erlaubt.</li></ul>"],
+   ["Punktevergabe", "<p>Bei jeder Etappe werden Punkte nach der Platzierung in der eigenen Kategorie vergeben. Es zählt die Platzierung: Die Note ist für die Punktevergabe nicht nötig.</p>{BAREME}<p class=\"discret\">Zwei gleich platzierte Reiter erhalten dieselbe Punktzahl. Wer zurückzieht, ausscheidet oder aufgibt, erhält für diese Etappe keine Punkte.</p>"],
+   ["Gesamtwertung", "<p>Die Gesamtwertung jeder Kategorie addiert die Punkte des Reiters aus den drei Etappen, unabhängig vom gerittenen Pferd. Sie wird nach jeder Etappe in der Hype-App aktualisiert.</p><div class=\"exemple\"><div class=\"ex-t\">Rechenbeispiel</div><div class=\"ex-l\"><span>Etappe 1: 1. Platz</span><b>15</b></div><div class=\"ex-l\"><span>Etappe 2: 3. Platz</span><b>10</b></div><div class=\"ex-l\"><span>Finale: 2. Platz (12 × 2)</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>Gesamt</span><b>49</b></div></div><ul><li>Um in der Schlusswertung der Challenge zu erscheinen, muss man an mindestens zwei Etappen teilgenommen haben.</li><li>Wer nur das Finale reitet, wird in der Prüfung des Tages gewertet, aber nicht in der Challenge.</li><li>Bei Punktgleichheit in der Schlusswertung entscheidet die beste Platzierung im Finale.</li><li>Die Punkte bleiben in der Kategorie, in der sie gewonnen wurden.</li></ul>"],
+   ["Preise", "<p>Die Siegerinnen und Sieger jeder Kategorie werden nach dem Finale bei der Siegerehrung der Challenge ausgezeichnet.</p>"],
+   ["Ergebnisse und Fotos", "<p>Ergebnisse, Wertungen und Fotos jedes Tages werden in der Hype-App veröffentlicht und sind nur für angemeldete Mitglieder sichtbar. Jede Person kann bei der Organisation die Entfernung eines Fotos von sich verlangen.</p>"],
+   ["Einsprüche", "<p>Einsprüche sind am Tag der betreffenden Etappe an die Organisation zu richten. Die Entscheidungen der Richter und der Organisation sind endgültig. Die Organisation kann dieses Reglement ändern; jede Änderung wird den Teilnehmenden mitgeteilt.</p>"]],
+  sig: "Open Dressur Challenge · Saison 2026 – 2027", vig: "Reglement gültig ab 20. Oktober 2026", imp: "Drucken oder als PDF speichern" },
+ja: { retour: "チャレンジ", sur: "規定 · 2026 – 2027 シーズン", t1: "オープン馬場馬術", t2: "チャレンジ", club: "ソシエテ・デキタシオン・ド・パリ",
+  chapo: "3日間の馬場馬術で上達し、和やかな雰囲気の中で腕を競い、各カテゴリーのタイトルを目指します。本規定は参加条件、ポイントの付与、順位の決め方を定めるものです。",
+  d1: "2026年10月11日", d2: "2027年1月10日", d3: "2027年5月30日", e1: "第1戦", e2: "第2戦", e3: "決勝 · ポイント2倍",
+  cat: "カテゴリー", rep: "課目", place: function (n) { return n + "位"; }, suiv: "12位以下", fin: "決勝",
+  x2: "2027年5月30日の決勝はポイント2倍：各順位のポイントが2倍になります。",
+  arts: [
+   ["主催", "<p>オープン馬場馬術チャレンジは、ソシエテ・デキタシオン・ド・パリ（SEP）が主催する内部競技会です。2026年10月11日、2027年1月10日、そして2027年5月30日の決勝の3戦で行われます。すべての競技はSEPで開催されます。</p>"],
+   ["参加", "<p>チャレンジはSEPの騎乗者に開かれています。各戦ごとに、自分のレベルに合ったカテゴリーにエントリーします。戦ごとに異なる馬に騎乗できます。</p>"],
+   ["カテゴリーと課目", "<p>チャレンジは5つのカテゴリーで構成され、それぞれ別の順位がつきます。演技する課目はフランス馬術連盟（FFE）の公式課目で、Hypeアプリのチャレンジページからダウンロードできます。</p>{CATS}"],
+   ["当日の流れ", "<p>準備運動と演技の時間は各戦の前にお知らせします。準備運動は演技の30分前に始まります。表彰式は各日の終わりに行います。</p><ul><li>競技会の服装が必須で、馬はきちんと手入れして出場します。</li><li>手袋の着用は必須です。</li><li>拍車は指導者の許可がない限り禁止です。</li></ul>"],
+   ["ポイントの付与", "<p>各戦では、カテゴリー内の順位に応じてポイントが与えられます。重要なのは順位で、得点はポイントの付与に必要ありません。</p>{BAREME}<p class=\"discret\">同順位の2人には同じポイントが与えられます。棄権・失格・途中棄権の場合、その戦のポイントはありません。</p>"],
+   ["総合順位", "<p>各カテゴリーの総合順位は、騎乗した馬にかかわらず、3戦で得たポイントを合計します。各戦の後にHypeアプリで更新されます。</p><div class=\"exemple\"><div class=\"ex-t\">ポイント計算の例</div><div class=\"ex-l\"><span>第1戦：1位</span><b>15</b></div><div class=\"ex-l\"><span>第2戦：3位</span><b>10</b></div><div class=\"ex-l\"><span>決勝：2位（12 × 2）</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>合計</span><b>49</b></div></div><ul><li>チャレンジの最終順位に入るには、少なくとも2戦に参加している必要があります。</li><li>決勝のみ出場した騎乗者は当日の競技では順位がつきますが、チャレンジでは順位がつきません。</li><li>最終順位でポイントが同点の場合は、決勝での順位が上の方を上位とします。</li><li>ポイントは獲得したカテゴリーに残ります。</li></ul>"],
+   ["表彰", "<p>各カテゴリーの優勝者は、決勝の後のチャレンジ表彰式で表彰されます。</p>"],
+   ["結果と写真", "<p>各日の結果、順位、写真はHypeアプリで公開され、ログインしたメンバーのみが閲覧できます。自分が写っている写真の削除は、主催者にいつでも依頼できます。</p>"],
+   ["異議申し立て", "<p>異議申し立ては該当する戦の当日に主催者へ行ってください。審査員と主催者の決定は最終的なものです。主催者は本規定を変更することがあり、変更は参加者にお知らせします。</p>"]],
+  sig: "オープン馬場馬術チャレンジ · 2026 – 2027 シーズン", vig: "2026年10月20日現在の規定", imp: "印刷またはPDFで保存" },
+ar: { retour: "التحدي", sur: "النظام · موسم 2026 – 2027", t1: "تحدي", t2: "الترويض المفتوح", club: "جمعية الفروسية في باريس",
+  chapo: "ثلاثة أيام من الترويض للتقدّم والتنافس في أجواء ودّية والفوز بلقب الفئة. يحدّد هذا النظام شروط المشاركة وطريقة منح النقاط ووضع الترتيبات.",
+  d1: "11 أكتوبر 2026", d2: "10 يناير 2027", d3: "30 مايو 2027", e1: "المرحلة 1", e2: "المرحلة 2", e3: "النهائي · نقاط ×2",
+  cat: "الفئة", rep: "البرنامج", place: function (n) { return "المركز " + n; }, suiv: "المركز 12 وما بعده", fin: "النهائي",
+  x2: "نهائي 30 مايو 2027 يُحتسب مضاعفًا: كل مركز يمنح ضعف النقاط.",
+  arts: [
+   ["التنظيم", "<p>تحدي الترويض المفتوح مسابقة داخلية تنظّمها جمعية الفروسية في باريس (SEP). يُقام على ثلاث مراحل: 11 أكتوبر 2026 و10 يناير 2027 والنهائي في 30 مايو 2027. تُقام جميع المسابقات في SEP.</p>"],
+   ["المشاركة", "<p>التحدي مفتوح لفرسان وفارسات SEP. في كل مرحلة يسجّل كل مشارك في الفئة التي تناسب مستواه. ويمكنه ركوب حصان مختلف من مرحلة إلى أخرى.</p>"],
+   ["الفئات والبرامج", "<p>يضمّ التحدي خمس فئات، لكل منها ترتيب مستقل. البرامج المطلوبة هي البرامج الرسمية للاتحاد الفرنسي للفروسية (FFE)، ويمكن تنزيلها من صفحة التحدي في تطبيق Hype.</p>{CATS}"],
+   ["سير الأيام", "<p>تُرسل مواعيد الإحماء والأداء قبل كل مرحلة. يبدأ الإحماء قبل الأداء بثلاثين دقيقة. ويُقام توزيع الجوائز في نهاية كل يوم.</p><ul><li>لباس المسابقات إلزامي، وتُقدَّم الخيول بمظهر معتنى به.</li><li>ارتداء القفازات إلزامي.</li><li>المهاميز ممنوعة إلا بموافقة المدرّب.</li></ul>"],
+   ["منح النقاط", "<p>في كل مرحلة تُمنح النقاط حسب المركز المحقَّق في الفئة. المركز هو ما يُحتسب: العلامة ليست ضرورية لمنح النقاط.</p>{BAREME}<p class=\"discret\">يحصل فارسان في المركز نفسه على عدد النقاط نفسه. ولا يحصل المنسحب أو المُقصى أو من توقّف على أي نقطة في تلك المرحلة.</p>"],
+   ["الترتيب العام", "<p>يجمع الترتيب العام لكل فئة النقاط التي حصل عليها الفارس في المراحل الثلاث، أيًّا كان الحصان. ويُحدَّث بعد كل مرحلة في تطبيق Hype.</p><div class=\"exemple\"><div class=\"ex-t\">مثال على احتساب النقاط</div><div class=\"ex-l\"><span>المرحلة 1: المركز 1</span><b>15</b></div><div class=\"ex-l\"><span>المرحلة 2: المركز 3</span><b>10</b></div><div class=\"ex-l\"><span>النهائي: المركز 2 (12 × 2)</span><b>24</b></div><div class=\"ex-l ex-tot\"><span>المجموع</span><b>49</b></div></div><ul><li>للظهور في الترتيب النهائي للتحدي يجب المشاركة في مرحلتين على الأقل.</li><li>من يشارك في النهائي فقط يُصنَّف في مسابقة اليوم، لا في التحدي.</li><li>عند تعادل النقاط في الترتيب النهائي، يُحسم الأمر بأفضل مركز في النهائي.</li><li>تبقى النقاط في الفئة التي كُسبت فيها.</li></ul>"],
+   ["الجوائز", "<p>يُكرَّم الفائزون في كل فئة بعد النهائي خلال حفل توزيع جوائز التحدي.</p>"],
+   ["النتائج والصور", "<p>تُنشر النتائج والترتيبات وصور كل يوم في تطبيق Hype، ولا يراها إلا الأعضاء المسجّلون. ويمكن لأي شخص أن يطلب من المنظّمين حذف صورة تخصّه.</p>"],
+   ["الاعتراضات", "<p>يُقدَّم أي اعتراض إلى المنظّمين في يوم المرحلة المعنية. قرارات الحكّام والمنظّمين نهائية. ويحتفظ المنظّمون بحق تعديل هذا النظام، ويُبلَّغ المشاركون بأي تعديل.</p>"]],
+  sig: "تحدي الترويض المفتوح · موسم 2026 – 2027", vig: "النظام المعمول به في 20 أكتوبر 2026", imp: "طباعة أو حفظ بصيغة PDF" }
+};
 (function () {
-  var dansHype = false; try { dansHype = !!new URLSearchParams(location.search).get("dansHype"); } catch (e) { }
-  if (dansHype) document.body.classList.add("dans-hype");
+  var P = null; try { if (window.parent && window.parent !== window && window.parent.location.origin === location.origin) P = window.parent; } catch (e) { P = null; }
+  var q = new URLSearchParams(location.search);
+  var LANG = q.get("lang") || (P && P.__hypeLangue) || "fr"; if (!R[LANG]) LANG = "fr";
+  var t = R[LANG];
+  document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr";
+  if (q.get("dansHype")) document.body.classList.add("dans-hype");
+  var cats = '<table class="tableau"><thead><tr><th>' + t.cat + "</th><th>" + t.rep + "</th></tr></thead><tbody>" +
+    CATS.map(function (c) { return '<tr><td class="cat">' + c[0] + "</td><td>" + (typeof c[1] === "string" ? c[1] : (c[1][LANG] || c[1].fr)) + "</td></tr>"; }).join("") + "</tbody></table>";
+  var bar = '<div class="bareme">' + BAREME.map(function (p, i) { return '<div class="bc"><small>' + t.place(i + 1) + "</small><b>" + p + "</b><i>" + t.fin + " " + p * 2 + "</i></div>"; }).join("") +
+    '<div class="bc"><small>' + t.suiv + "</small><b>" + SUIVANTS + "</b><i>" + t.fin + " " + SUIVANTS * 2 + "</i></div></div>" +
+    '<div class="x2"><b>×2</b><span>' + t.x2 + "</span></div>";
+  document.getElementById("tRetour").textContent = t.retour;
+  document.getElementById("doc").innerHTML =
+    '<div class="titre-doc"><div class="surtitre">' + t.sur + "</div><h1><span>" + t.t1 + "</span>" + t.t2 + '</h1><p class="club">' + t.club + '</p><p class="chapo">' + t.chapo + "</p></div>" +
+    '<div class="cal"><div class="jour"><span class="n">1</span><span class="d">' + t.d1 + '</span><span class="t">' + t.e1 + '</span></div><div class="jour"><span class="n">2</span><span class="d">' + t.d2 + '</span><span class="t">' + t.e2 + '</span></div><div class="jour finale"><span class="n">3</span><span class="d">' + t.d3 + '</span><span class="t">' + t.e3 + "</span></div></div>" +
+    '<div class="articles">' + t.arts.map(function (a) { return '<section class="art"><h2>' + a[0] + "</h2>" + a[1].replace("{CATS}", cats).replace("{BAREME}", bar) + "</section>"; }).join("") + "</div>" +
+    '<div class="signature"><div><b>' + t.club + "</b>" + t.sig + "</div><div>" + t.vig + "</div></div>" +
+    '<button class="imprimer" id="imprimer">↓ ' + t.imp + "</button>";
+  document.title = t.t1 + " " + t.t2 + " — " + t.sur;
+  document.getElementById("imprimer").addEventListener("click", function () { window.print(); });
   function revenir() { if (history.length > 1) history.back(); else location.href = "challenge.html"; }
   document.getElementById("retour").addEventListener("click", revenir);
-  /* dans Hype, le bouton retour de l'appli ramène à la page du challenge */
   window.__challengeRetour = function () { revenir(); return true; };
   try { window.scrollTo(0, 0); } catch (e) { }
 })();
