@@ -13790,3 +13790,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - index.html : seulement le marqueur.
 - Toujours ouvert (à valider par Blandine) : règle de lecture en base qui laisse un membre connecté lire les résultats en brouillon s'il contourne la page (la page ne les affiche pas) ; catégories CSO (P4) ; dates Equifun.
 - Tests : visiteur (page masquée → « Connecte-toi », page visible → noms raccourcis, sans gestion ni ajout), membre, gestionnaire (27 brouillons) ; ajout de photos en nombre (crédit, une seule notification) ; liens, ancres, 7 langues ; 20 captures téléphone / tablette / ordinateur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
+
+## 20/10/2026 (12 h 56) — PUBLICATION (marqueur 20261020-1256, Blandine « Ok ajoute le et remets tout en ligne » 12:55) — CHALLENGE : voile et teinte chaude sur les vignettes photos
+- Demande de 12:51 : « ajouter les mêmes effets sur les photos sur la page avant qu'elles soient ouvertes » ; visuel avant / A (voile seul) / B (voile + teinte chaude) ; Blandine choisit d'ajouter la teinte (B).
+- challenge.html : sur les vignettes de l'accueil (bloc Photos) et de la page d'étape (aperçu) : même voile sombre que les cartes d'étape (haut, coin de début de ligne, bas, bords ; version arabe en miroir), fin liseré clair, légende « Étape 1 · 11 oct. » avec ombre portée ; légère teinte chaude (sépia 0,22, saturation 0,85, contraste 1,06, luminosité 0,9). La photo ouverte en grand, la galerie et les fichiers d'origine ne changent pas.
+- index.html : seulement le marqueur.
+- Tests : rendu sur une vraie photo du concours (390 px) ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
