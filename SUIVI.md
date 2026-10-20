@@ -13806,3 +13806,14 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
   - photos de test : présentes uniquement dans l'outil de capture, jamais dans l'appli (rien à corriger, rien supprimé).
 - Aucune donnée, aucun calcul, aucune règle d'accès modifiés. index.html : seulement le marqueur.
 - Tests : captures 390 / 820 / 1024 / 1230 dans Hype / 1440, arabe ; liens, onglets, ancres, barème, catégories, gestion, règlement complet, visiteur / membre / gestionnaire, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
+
+## 20/10/2026 (15 h 50) — PUBLICATION (marqueur 20261020-1550, Blandine « Publié » 15:50) — CHALLENGE : trois dernières corrections + lumière « coucher de soleil » sur les vignettes
+- Demandes de 15:38 (relecture des captures corrigées : 3 corrections) et de 15:44-15:48 (maquette d'effets photo : 4 propositions, puis versions plus chaudes ; Blandine choisit la 2, « Coucher de soleil »).
+- challenge.html :
+  - challenge sans dates ni règlement validé (Equifun seulement aujourd'hui) : encadré « Règlement en préparation — Les modalités du challenge seront communiquées prochainement. » (7 langues), sans règles ni barème provisoires ; Dressage et CSO inchangés ; données du barème non touchées ;
+  - boutons « Importer des résultats » / « Gérer le challenge » : sortis du bandeau photo de fin, dans une petite bande séparée « Gestion · visible des gestionnaires seulement » (trois challenges) ; mêmes actions et droits ; masquée aux membres et visiteurs ;
+  - visionneuse plein écran : fond opaque #060709 (la galerie ne se voit plus derrière) ; crédit, numéro, flèches, clavier, Échap, retour à la galerie vérifiés ;
+  - onglets (iPhone) : marge en fin de défilement, dégradé léger seulement du côté où il reste des onglets cachés (aucun quand tout tient, ex. arabe), onglet choisi recentré (calcul à l'écran, valable en arabe) ;
+  - vignettes photos de la page (accueil et aperçu d'étape) : lumière dorée « coucher de soleil » au centre (dégradé orangé en mode overlay), bords assombris dans un brun chaud, légère teinte chaude (sépia 0,25) ; remplace le voile précédent ; version arabe en miroir ; photo ouverte, galerie et fichiers inchangés.
+- index.html : seulement le marqueur. Aucune donnée, aucun calcul, aucune permission modifiés.
+- Tests : captures avant / après (Equifun 390 et 1440, plein écran iPhone et ordinateur, onglets premier / avant-dernier / dernier en fr et ar, bande de gestion) ; liens, ancres, barème, gestion, visiteur / membre / gestionnaire, 7 langues, pastilles sur une ligne — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
