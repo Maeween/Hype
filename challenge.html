@@ -643,6 +643,23 @@ body.dans-hype .lb .x{top:calc(var(--sat) + 62px)}
   .r-duo.r-docs{display:block}
   .x2-l,#s-reglement details.bareme-pli{max-width:640px}
 }
+/* ═════ PHOTOS D'UNE JOURNÉE : ajout en nombre + grille complète ═════ */
+.ajout-ph{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:6px}
+.ajout-ph .ph-ajout{position:relative;margin-top:0;cursor:pointer}
+.ajout-ph .ph-ajout input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%}
+.ph-credit{flex:1 1 180px;min-width:0;min-height:44px;padding:9px 14px;border:1px solid var(--ligne);border-radius:99px;background:transparent;color:var(--ivoire);font-family:var(--sans);font-size:16px}
+.ph-credit::placeholder{color:var(--gris)}
+.up-etat{width:100%;margin:4px 0 0;font-size:14px;color:var(--grisClair)}
+.up-barre{display:block;height:4px;margin-bottom:8px;border-radius:9px;background:var(--filet);overflow:hidden}
+.up-barre i{display:block;height:100%;background:var(--champ);transition:width .3s}
+.up-msg{width:100%;margin:2px 0 0;font-size:14px;color:var(--champ)}
+.up-msg .lien-d{min-height:auto;margin:0 0 0 6px}
+.ph-nb{margin:18px 0 8px;font-size:13px;color:var(--gris)}
+.grille-ph{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.grille-ph button{position:relative;aspect-ratio:1/1;overflow:hidden;border-radius:6px;background:var(--carte2)}
+.grille-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+@container ch (min-width:700px){ .grille-ph{grid-template-columns:repeat(4,1fr);gap:6px} }
+@container ch (min-width:1100px){ .vue .r-vue .grille-ph{grid-template-columns:repeat(3,1fr)} }
 </style>
 </head>
 <body>
@@ -786,6 +803,14 @@ var TX2 = {
   souvenirs: { fr: "Souvenirs", en: "Memories", es: "Recuerdos", it: "Ricordi", de: "Erinnerungen", ja: "思い出", ar: "ذكريات" },
   enResume: { fr: "En résumé", en: "In short", es: "En resumen", it: "In sintesi", de: "Kurz gesagt", ja: "要点", ar: "باختصار" },
   repSous: { fr: "Les reprises officielles par catégorie.", en: "The official tests for each category.", es: "Las reprises oficiales por categoría.", it: "Le riprese ufficiali per categoria.", de: "Die offiziellen Aufgaben je Kategorie.", ja: "カテゴリー別の公式課目。", ar: "البرامج الرسمية حسب الفئة." },
+  nbPhotos: { fr: "{n} photos", en: "{n} photos", es: "{n} fotos", it: "{n} foto", de: "{n} Fotos", ja: "写真{n}枚", ar: "{n} صورة" },
+  ajoutEnCours: { fr: "Envoi des photos : {a} / {b}… Garde l'appli ouverte.", en: "Uploading photos: {a} / {b}… Keep the app open.", es: "Subiendo fotos: {a} / {b}… Mantén la app abierta.", it: "Invio foto: {a} / {b}… Tieni l'app aperta.", de: "Fotos werden hochgeladen: {a} / {b}… Lass die App geöffnet.", ja: "写真を送信中：{a} / {b}… アプリを開いたままにしてね。", ar: "جارٍ إرسال الصور: {a} / {b}… أبقِ التطبيق مفتوحًا." },
+  ajoutFini: { fr: "{n} photos ajoutées.", en: "{n} photos added.", es: "{n} fotos añadidas.", it: "{n} foto aggiunte.", de: "{n} Fotos hinzugefügt.", ja: "写真{n}枚を追加しました。", ar: "تمت إضافة {n} صورة." },
+  ajoutEchec: { fr: "{n} n'ont pas pu partir.", en: "{n} could not be sent.", es: "{n} no se pudieron enviar.", it: "{n} non sono partite.", de: "{n} konnten nicht gesendet werden.", ja: "{n}枚は送信できませんでした。", ar: "تعذّر إرسال {n}." },
+  reessayer: { fr: "Réessayer", en: "Try again", es: "Reintentar", it: "Riprova", de: "Erneut versuchen", ja: "再試行", ar: "إعادة المحاولة" },
+  creditPh: { fr: "Photographe (facultatif)", en: "Photographer (optional)", es: "Fotógrafo/a (opcional)", it: "Fotografo/a (facoltativo)", de: "Fotograf/in (optional)", ja: "撮影者（任意）", ar: "المصوّر (اختياري)" },
+  creditPrefix: { fr: "Photos : ", en: "Photos: ", es: "Fotos: ", it: "Foto: ", de: "Fotos: ", ja: "写真：", ar: "الصور: " },
+  ajoutDansHype: { fr: "Ouvre le challenge depuis l'appli Hype pour ajouter des photos.", en: "Open the challenge from the Hype app to add photos.", es: "Abre el challenge desde la app Hype para añadir fotos.", it: "Apri il challenge dall'app Hype per aggiungere foto.", de: "Öffne die Challenge in der Hype-App, um Fotos hinzuzufügen.", ja: "写真を追加するにはHypeアプリからチャレンジを開いてね。", ar: "افتح التحدي من تطبيق Hype لإضافة الصور." },
   ajoutPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "Añadir fotos", it: "Aggiungi foto", de: "Fotos hinzufügen", ja: "写真を追加", ar: "إضافة صور" },
   parNiveau: { fr: "Par niveau", en: "By level", es: "Por nivel", it: "Per livello", de: "Nach Niveau", ja: "レベル別", ar: "حسب المستوى" }
 };
@@ -826,7 +851,7 @@ function estCollee(n) { return !!n && n.getBoundingClientRect().top <= (parseFlo
 function majBandeau() {
   var vue = document.getElementById("vue"), ouverte = vue && vue.classList.contains("ouverte");
   var n = ouverte ? document.querySelector("#vue .vue-nav") : document.querySelector(".nav");
-  var c = estCollee(n); if (n) n.classList.toggle("colle", c);
+  var c = estCollee(n); if (n && n.classList.contains("colle") !== c) { n.classList.toggle("colle", c); ongletVisible(n.querySelector(".nav-in")); }
   var b = document.getElementById("bandeauHaut"); if (b) b.classList.toggle("on", c);
 }
 
@@ -836,6 +861,7 @@ var DECOR = {
 };
 
 /* ══════ ÉTAT ══════ */
+var CREDITS = {};
 var CHALLENGE = null, RESULTATS = [], PHOTOS = {}, GERE = false, MOI = null;
 var etat = { cat: null, complet: false, resEtape: 1, resFiltre: null, photoEtape: 1, repCat: null, onglet: "s-classement" };
 
@@ -900,15 +926,13 @@ function listeResultats(n, filtre) {
     }).join("") + "</tbody></table>";
   return liste + table;
 }
+/* galerie d'une journée : TOUTES les photos (il peut y en avoir des dizaines), en grille légère chargée au défilement */
 function galerie(n) {
   var p = PHOTOS[n] || [];
   if (!p.length) return '<p class="ph-vide"><span>✦</span>' + T("pasPhotos") + "</p>";
-  var petites = p.slice(1, 5), resteM = p.length - 4, resteD = p.length - 5;
-  return '<div class="galerie' + (p.length < 4 ? " peu" : "") + '"><button class="grande" data-photo="' + n + ':0" style="background-image:url(\'' + esc(p[0]) + '\')" aria-label="' + T("oPhotos") + ' 1"></button>' +
-    (petites.length ? '<div class="petites">' + petites.map(function (u, i) {
-      return '<button data-photo="' + n + ":" + (i + 1) + '" style="background-image:url(\'' + esc(u) + '\')" aria-label="' + T("oPhotos") + " " + (i + 2) + '">' +
-        (i === 2 && resteM > 0 ? '<span class="plus m">+' + resteM + "</span>" : "") + (i === 3 && resteD > 0 ? '<span class="plus d">+' + resteD + "</span>" : "") + "</button>";
-    }).join("") + "</div>" : "") + "</div>";
+  return '<p class="ph-nb">' + TF("nbPhotos", { n: p.length }) + '</p><div class="grille-ph">' + p.map(function (u, i) {
+    return '<button data-photo="' + n + ":" + i + '" aria-label="' + T("oPhotos") + " " + (i + 1) + '"><img src="' + esc(u) + '" alt="" loading="lazy" decoding="async"></button>';
+  }).join("") + "</div>";
 }
 /* reprises : liste simple, rangée par niveau */
 function documents(cats) {
@@ -922,9 +946,54 @@ function documents(cats) {
     }).join("") + "</div></div>";
   }).join("") + "</div>";
 }
-/* « Ajouter des photos » : ouvre, dans Hype, la page Souvenir du rendez-vous de l'étape (son mur permet d'y publier) */
-function peutAjouterPhotos(e) { try { return !!(e && e.agenda && e.date && e.date <= AUJOURDHUI && P && typeof P.hypeChallengeOuvrirJournee === "function"); } catch (x) { return false; } }
-function boutonAjoutPhotos(e, avecEtape) { return peutAjouterPhotos(e) ? '<button class="ph-ajout" data-ajout-photo="' + esc(e.agenda) + '"><span>+</span>' + T("ajoutPhotos") + (avecEtape ? " · " + nomEtape(e) : "") + "</button>" : ""; }
+/* « Ajouter des photos » : tout se passe sur la page de l'étape (une seule page par manche).
+   Tout membre connecté peut ajouter des photos d'une journée passée (mêmes droits qu'avant sur le rendez-vous). */
+function peutAjouterPhotos(e) { return !!(e && e.agenda && e.date && e.date <= AUJOURDHUI && MOI); }
+function boutonAjoutPhotos(e, avecEtape) { return peutAjouterPhotos(e) ? '<button class="ph-ajout" data-etape="' + e.n + '" data-vers="v-photos"><span>+</span>' + T("ajoutPhotos") + (avecEtape ? " · " + nomEtape(e) : "") + "</button>" : ""; }
+/* sur la page de l'étape : choix de toutes les photos d'un coup, envoi une par une avec compteur */
+var UP = { n: 0, enCours: false, total: 0, faits: 0, echecs: [], msg: "" };
+function zoneAjout(e) {
+  if (!peutAjouterPhotos(e)) return "";
+  var enc = UP.enCours && UP.n === e.n, fin = !UP.enCours && UP.n === e.n && UP.msg;
+  return '<div class="ajout-ph" id="ajoutPh">' +
+    (enc ? '<p class="up-etat"><span class="up-barre"><i style="width:' + Math.round(100 * UP.faits / Math.max(1, UP.total)) + '%"></i></span>' + TF("ajoutEnCours", { a: UP.faits, b: UP.total }) + "</p>"
+      : '<label class="ph-ajout"><input type="file" accept="image/*" multiple data-upl="' + e.n + '"><span>+</span>' + T("ajoutPhotos") + "</label>" +
+        '<input class="ph-credit" id="phCredit" type="text" maxlength="60" placeholder="' + T("creditPh") + '" value="' + esc(UP.credit || "") + '">') +
+    (fin ? '<p class="up-msg">' + esc(UP.msg) + (UP.echecs.length ? ' <button class="lien-d" data-upl-reprise="' + e.n + '">' + T("reessayer") + "</button>" : "") + "</p>" : "") + "</div>";
+}
+function majZoneAjout() { var z = document.getElementById("ajoutPh"), e = etape(UP.n); if (z && e) z.outerHTML = zoneAjout(e); }
+async function envoyerPhotosEtape(n, fichiers) {
+  var e = etape(n); if (!e || !fichiers.length || UP.enCours) return;
+  if (!(P && typeof P.envoyerPhoto === "function")) { UP = { n: n, enCours: false, total: 0, faits: 0, echecs: [], msg: T("ajoutDansHype") }; majZoneAjout(); return; }
+  var cr = document.getElementById("phCredit"), credit = cr ? String(cr.value || "").trim() : (UP.credit || "");
+  UP = { n: n, enCours: true, total: fichiers.length, faits: 0, echecs: [], msg: "", credit: credit };
+  majZoneAjout();
+  var urls = new Array(fichiers.length), i0 = 0;
+  async function ouvrier() {
+    while (i0 < fichiers.length) {
+      var i = i0++;
+      try { var r = await P.envoyerPhoto(fichiers[i]); if (r && r.url) urls[i] = r.url; else UP.echecs.push(fichiers[i]); } catch (x) { UP.echecs.push(fichiers[i]); }
+      UP.faits++; majZoneAjout();
+    }
+  }
+  await Promise.all([ouvrier(), ouvrier()]);   /* deux envois à la fois : sans saturer un téléphone */
+  var ok = urls.filter(Boolean), premier = null, texte = credit ? T("creditPrefix") + credit : null;
+  /* rangées comme toute publication du rendez-vous : 4 photos par publication (même format que le reste de l'appli) */
+  for (var k = 0; k < ok.length; k += 4) {
+    var lot = ok.slice(k, k + 4);
+    try {
+      var ri = await supa.from("commentaires").insert({ user_id: MOI.id, cible: "agenda:" + e.agenda, texte: texte, photo_url: lot[0], medias: lot.slice(1) }).select("id").single();
+      if (ri.error) throw ri.error; if (!premier) premier = ri.data.id;
+    } catch (eI) { UP.echecs = UP.echecs.concat(lot.map(function () { return null; })); }
+  }
+  /* une seule notification pour tout l'envoi */
+  try { if (premier && typeof P.hypeNotifierCommentaire === "function") P.hypeNotifierCommentaire("agenda:" + e.agenda, texte, MOI, premier, true); } catch (eN) { }
+  UP.echecs = UP.echecs.filter(Boolean);
+  UP.enCours = false;
+  UP.msg = TF("ajoutFini", { n: ok.length }) + (UP.echecs.length ? " " + TF("ajoutEchec", { n: UP.echecs.length }) : "");
+  try { PHOTOS[n] = await photosDuRendezVous(e.agenda, e.date); } catch (eR) { }
+  var v = document.getElementById("vue"), y = v.scrollTop; rendreVue(); v.scrollTop = y; rendrePhotos();
+}
 function aDesResultats(n) { return RESULTATS.some(function (r) { return r.e === n; }); }
 function lienEtape(e) { return 'data-etape="' + e.n + '"' + (aDesResultats(e.n) ? ' data-vers="v-resultats"' : ""); }
 function lienReglement() { return "reglement-challenge.html?lang=" + LANG + (PARAMS.get("dansHype") ? "&dansHype=1" : ""); }
@@ -1065,7 +1134,7 @@ function rendreVue() {
   if (aRes) h += '<div class="panneau photo">' + pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre) + "</div>";
   else h += '<div class="attente"><b>' + T("attTitre") + "</b><p>" + T("attTexte") + '</p><button class="lien" data-vue-aller="v-reprises">' + T("voirReprises") + " <i>→</i></button></div>";
   h += "</section>";
-  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + galerie(e.n) + boutonAjoutPhotos(e, false) + "</section></div>";
+  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + zoneAjout(e) + galerie(e.n) + "</section></div>";
   h += '<section class="section" id="v-reprises"><div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" + documents(CHALLENGE.categories) + "</section>";
   h += '</div>' + document.querySelector('.fin-hype').outerHTML;
   document.getElementById("vueC").innerHTML = h;
@@ -1103,7 +1172,7 @@ document.getElementById("vue").addEventListener("scroll", function () {
 /* ══════ VISIONNEUSE ══════ */
 var lb = { liste: [], i: 0 };
 function ouvrirLb(n, i) { lb.liste = PHOTOS[n] || []; lb.i = i; majLb(); document.getElementById("lb").classList.add("ouverte"); }
-function majLb() { document.getElementById("lbImg").src = lb.liste[lb.i]; document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length; }
+function majLb() { var u = lb.liste[lb.i]; document.getElementById("lbImg").src = u; document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length + (CREDITS[u] ? " · " + CREDITS[u] : ""); }
 function pasLb(d) { if (!lb.liste.length) return; lb.i = (lb.i + d + lb.liste.length) % lb.liste.length; majLb(); }
 function fermerLb() { document.getElementById("lb").classList.remove("ouverte"); }
 
@@ -1113,7 +1182,7 @@ document.addEventListener("click", function (ev) {
   var d = t.dataset;
   if (d.adm) { gestionClic(t, d); return; }
   if (d.repCat) { etat.repCat = d.repCat; rendreReprises(); return; }
-  if (d.ajoutPhoto) { try { P.hypeChallengeOuvrirJournee(d.ajoutPhoto); } catch (eA) { } return; }
+  if (d.uplReprise) { var fr = UP.echecs.slice(); UP.echecs = []; envoyerPhotosEtape(+d.uplReprise, fr); return; }
   if (d.etape) { ouvrirVue(+d.etape, d.vers); return; }
   if (d.aller) { etat.onglet = d.aller; rendreNav(); var s = document.getElementById(d.aller), c = s.firstElementChild || s; window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - hautBarre(".nav") - 18, behavior: "smooth" }); return; }
   if (d.cat) { etat.cat = d.cat; etat.complet = false; rendreClassement(); return; }
@@ -1124,6 +1193,12 @@ document.addEventListener("click", function (ev) {
   if (d.vueAller) { allerDansVue(d.vueAller); return; }
   if (d.fermerVue) { fermerVue(); return; }
 });
+document.addEventListener("change", function (ev) {
+  var t = ev.target; if (!t || !t.dataset || !t.dataset.upl) return;
+  var fs = t.files ? Array.prototype.slice.call(t.files) : []; t.value = "";
+  if (fs.length) envoyerPhotosEtape(+t.dataset.upl, fs);
+});
+document.addEventListener("input", function (ev) { if (ev.target && ev.target.id === "phCredit") UP.credit = ev.target.value; });
 document.getElementById("lbX").onclick = fermerLb;
 document.getElementById("lbPr").onclick = function () { pasLb(LANG === "ar" ? 1 : -1); };
 document.getElementById("lbSv").onclick = function () { pasLb(LANG === "ar" ? -1 : 1); };
@@ -1172,15 +1247,16 @@ async function photosDuRendezVous(idAg, dateJour) {
     if (!po) return;
     if (po.prive && !(MOI && po.user_id === MOI.id)) return;
     if (debut && po.created_at && new Date(po.created_at).getTime() < debut) return;
-    [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (u) { if (u && typeof u === "string" && estImage(u) && urls.indexOf(u) < 0) urls.push(u); });
+    var cr = (po.texte && String(po.texte).length <= 80) ? String(po.texte) : "";
+    [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (u) { if (u && typeof u === "string" && estImage(u) && urls.indexOf(u) < 0) { urls.push(u); if (cr) CREDITS[u] = cr; } });
   }
-  var r1 = await supa.from("commentaires").select("id,user_id,photo_url,medias,prive,created_at").eq("cible", "agenda:" + idAg).order("created_at", { ascending: true });
+  var r1 = await supa.from("commentaires").select("id,user_id,texte,photo_url,medias,prive,created_at").eq("cible", "agenda:" + idAg).order("created_at", { ascending: true });
   ((r1 && r1.data) || []).forEach(ajoute);
   /* publications rattachées après coup au rendez-vous (même lecture que la page Souvenir) */
   var rI = await supa.from("identifications").select("photo_url").eq("type", "agenda").eq("cible_id", String(idAg)).eq("statut", "accepte");
   var ids = ((rI && rI.data) || []).map(function (l) { return String(l.photo_url || ""); }).filter(function (v) { return v.indexOf("post:") === 0; }).map(function (v) { return v.slice(5); });
   if (ids.length) {
-    var r2 = await supa.from("commentaires").select("id,user_id,photo_url,medias,prive,created_at").in("id", ids);
+    var r2 = await supa.from("commentaires").select("id,user_id,texte,photo_url,medias,prive,created_at").in("id", ids);
     ((r2 && r2.data) || []).forEach(ajoute);
   }
   return urls;
@@ -1233,6 +1309,7 @@ async function charger() {
   document.getElementById("etat-page").hidden = true;
   document.body.classList.remove("sans-donnees");
   tout();
+  if (!etat._direct && PARAMS.get("etape")) { etat._direct = true; var nD = +PARAMS.get("etape"); if (etape(nD)) ouvrirVue(nD, PARAMS.get("vers") || null); }
 }
 window.__challengeRecharger = charger;
 try { if (PARAMS.get("dansHype")) document.body.classList.add("dans-hype"); } catch (eD) { }
