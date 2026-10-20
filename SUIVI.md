@@ -13839,3 +13839,8 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - reglement-challenge.html : même correction text-size-adjust.
 - index.html : seulement le marqueur. Aucune donnée, aucun calcul, aucune permission modifiés.
 - Tests : captures avant / après (iPhone, tablette 820, ordinateur 1440, arabe, CSO, bas de page) ; liens, visiteur / membre / gestionnaire, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
+
+## 20/10/2026 (16 h 33) — BASE (Supabase, lancé par Blandine dans le SQL Editor) — règle de lecture des résultats du challenge
+- Faille : la règle challenge_res_lecture vérifiait « c.publie AND c.publie » (le « publie » non préfixé visait le challenge, pas le résultat) : un membre connecté pouvait lire les résultats en brouillon d'un challenge publié en passant sous la page.
+- Corrigé : drop + create policy challenge_res_lecture (select, authenticated) : (c.publie AND challenge_resultats.publie) OR hype_peut_gerer_challenge(c.club_clef). Écriture (challenge_res_ecriture) et données inchangées ; visiteurs sans compte : inchangés (fonction hype_challenge_public, résultats publiés seulement).
+- Vérifié par Claude dans pg_policies après exécution : règle en place.
