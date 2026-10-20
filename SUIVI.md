@@ -13827,3 +13827,15 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Arabe : centre de la lumière en miroir (48 % au lieu de 52 %).
 - Attention : si la photo est une balise img dans un bouton, mettre :before et :after en z-index 1 (sinon l'image passe par-dessus la lumière) et les textes posés sur la photo en z-index 2.
 - Historique du choix : 4 propositions (Doré doux, Coucher de soleil, Halo lumineux, Ambre cinéma), puis versions « plus chaudes » ; Blandine a choisi Coucher de soleil plus chaud.
+
+## 20/10/2026 (16 h 25) — PUBLICATION (marqueur 20261020-1625, Blandine « Ok top merci publié » 16:24) — CHALLENGE : ambiance « doré + plus clair », fin de page Hype, nouvelle citation, textes iPhone
+- Demandes de 16:07 à 16:14 : « la page est un peu sombre » → 3 propositions (A hero doré, B doré + plus clair, C doré chaleureux) ; Blandine choisit C puis se ravise : B ; « à la place de l'onglet avec le bâtiment, notre fin de page habituelle Hype » ; « la citation sur le dressage est nulle, plutôt Calme, en avant et droit ».
+- challenge.html :
+  - lumière « coucher de soleil » (même recette que les vignettes, voir l'entrée de 16 h 05) sur la grande photo du haut (calque .hero-lum, mode overlay, miroir en arabe) et sur les 3 cartes d'étape (calque de fond en overlay) ; voile des cartes d'étape allégé (opacité 0,72) ;
+  - encadrés plus clairs (Classement, Résultats détaillés, Reprises, Règlement, Dates à venir : #141B21 → #10161B), photos de fond des encadrés plus visibles (0,75 et 0,55), gris des textes plus clairs (--gris #AEB5BC, --grisClair #D0D5D9), cartes --carte #151B21 ; fond noir bleuté de Hype conservé ;
+  - bandeau photo de fin (bâtiment + citation) retiré ; à la place : citation centrée en italique avec filet champagne, puis la bande Gestion (gestionnaires seulement), puis la fin de page habituelle de Hype (paysage fondu accueil_v2_fin_de_page_v1.webp + « HYPE », même masque que l'Accueil) ;
+  - citation du Dressage : « Calme, en avant et droit. » — Général L'Hotte (7 langues) ; CSO et Equifun gardent leur phrase, sans auteur ;
+  - iPhone : -webkit-text-size-adjust:100% (Safari grossissait certains textes tout seul : « Poney 4 · Bientôt disponible », règle 02 plus grosse que la 01).
+- reglement-challenge.html : même correction text-size-adjust.
+- index.html : seulement le marqueur. Aucune donnée, aucun calcul, aucune permission modifiés.
+- Tests : captures avant / après (iPhone, tablette 820, ordinateur 1440, arabe, CSO, bas de page) ; liens, visiteur / membre / gestionnaire, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone.
