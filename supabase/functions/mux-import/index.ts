@@ -118,6 +118,41 @@ Deno.serve(async (req) => {
     return repondre({ copies: liste });
   }
 
+  /* ---------- TOUT IMPORTER (20/10, Blandine « vas-y ») ----------
+     Copie d'un coup toutes les vidéos de la liste hype_import_mux en statut « a_copier » (liste préparée
+     en base) ou « errored » (nouvel essai), plus la vidéo ouverte (url) si elle n'y est pas encore.
+     Les copies déjà en préparation ou prêtes ne sont jamais renvoyées à Mux. */
+  if (body?.action === "importer_tout") {
+    const prefixeT = `${SUPABASE_URL}/storage/v1/object/public/photos/`;
+    if (typeof body.url === "string") {
+      const u0 = body.url.trim().split("?")[0];
+      if (u0.startsWith(prefixeT) && /\.(mov|mp4)$/i.test(u0)) {
+        await table("POST", "hype_import_mux", { source_url: u0, statut: "a_copier" }, { Prefer: "resolution=ignore-duplicates" });
+      }
+    }
+    const aFaire = await table("GET", "hype_import_mux?select=source_url,statut&statut=in.(a_copier,errored)");
+    if (!aFaire.ok) return repondre({ error: "Table hype_import_mux illisible", detail: aFaire.donnees }, 500);
+    let lancees = 0, refusees = 0;
+    for (const l of (aFaire.donnees as Array<Record<string, unknown>>) || []) {
+      const urlT = String(l.source_url || "");
+      if (!urlT.startsWith(prefixeT) || !/\.(mov|mp4)$/i.test(urlT)) { refusees++; continue; }
+      try {
+        const r = await fetch("https://api.mux.com/video/v1/assets", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: authMux },
+          body: JSON.stringify({ input: [{ url: urlT }], playback_policy: ["public"], video_quality: "basic", mp4_support: "capped-1080p", passthrough: "import-hype:" + urlT.slice(prefixeT.length) }),
+        });
+        const d = await r.json().catch(() => null);
+        if (!r.ok) { refusees++; await table("PATCH", `hype_import_mux?source_url=eq.${encodeURIComponent(urlT)}`, { statut: "errored", maj_le: new Date().toISOString() }); continue; }
+        const a1 = d?.data || {};
+        const pb = Array.isArray(a1.playback_ids) && a1.playback_ids[0] ? a1.playback_ids[0].id : null;
+        await table("PATCH", `hype_import_mux?source_url=eq.${encodeURIComponent(urlT)}`, { asset_id: a1.id || null, playback_id: pb, mux_url: pb ? `https://stream.mux.com/${pb}.m3u8` : null, statut: String(a1.status || "preparing"), maj_le: new Date().toISOString() });
+        lancees++;
+      } catch (_e) { refusees++; }
+    }
+    return repondre({ lancees, refusees });
+  }
+
   /* ---------- IMPORTER UNE VIDÉO ---------- */
   if (body?.action === "importer" && typeof body.url === "string") {
     const url = body.url.trim().split("?")[0];
@@ -129,7 +164,21 @@ Deno.serve(async (req) => {
     const deja = await table("GET", `hype_import_mux?select=*&source_url=eq.${encodeURIComponent(url)}`);
     if (!deja.ok) return repondre({ error: "Table hype_import_mux illisible (SQL passé ?)", detail: deja.donnees }, 500);
     const existante = (deja.donnees as Array<Record<string, unknown>>)?.[0];
-    if (existante && existante.statut !== "errored") return repondre({ deja: true, copie: existante });
+    if (existante && existante.statut !== "errored") {
+      /* 20/10 : deuxieme toucher = nouvelles de la copie (etat a jour chez Mux), sans rien relancer */
+      if (existante.asset_id && existante.statut !== "ready") {
+        try {
+          const r = await fetch(`https://api.mux.com/video/v1/assets/${existante.asset_id}`, { headers: { Authorization: authMux } });
+          if (r.ok) {
+            const a0 = (await r.json())?.data || {};
+            const maj = { statut: String(a0.status || existante.statut), duree_s: typeof a0.duration === "number" ? a0.duration : null, maj_le: new Date().toISOString() };
+            await table("PATCH", `hype_import_mux?source_url=eq.${encodeURIComponent(url)}`, maj);
+            Object.assign(existante, maj);
+          }
+        } catch (_e) { /* etat connu conserve */ }
+      }
+      return repondre({ deja: true, copie: existante });
+    }
 
     const rep = await fetch("https://api.mux.com/video/v1/assets", {
       method: "POST",
