@@ -13746,3 +13746,18 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Nouveaux textes en 7 langues (compteur, fin d'envoi, échec, Réessayer, Photographe, « Photos : »).
 - Album Facebook (Natacha Esquerre) : en attente du zip ; Blandine peut aussi l'ajouter elle-même avec le nouveau bouton en écrivant son nom dans « Photographe ».
 - Tests (hors ligne, envoi simulé) : arrivée depuis un rendez-vous passé → étape 1 ouverte ; autre rendez-vous → page Souvenir ; 11 photos dont 1 en échec → 10 ajoutées en 3 publications (4+4+2) avec le crédit, 1 notification, « Réessayer » ; ancres, liens, 7 langues ; 16 blocs de script OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifiable ici : envoi réel vers le stockage depuis un iPhone.
+
+## 20/10/2026 (09 h 00) — PUBLICATION (marqueur 20261020-0900, Blandine « mets en ligne, on verra bien ce que ça donne » 08:56) — CHALLENGE : galerie photo des étapes
+- Briefs de 07:50 (refonte de la galerie d'après une maquette) et de 08:44 (finitions). Seul fichier de fond : challenge.html ; index.html ne change que par son marqueur.
+- Audit : les photos d'une journée sont les publications du rendez-vous de l'agenda (commentaires, cible agenda:<id>, photo_url + medias). Le 11/10 : 26 photos (ajoutées par Blandine le 20/10), AUCUNE catégorie (pas de légende, aucune cavalière identifiée). Une catégorie n'est donnée que si une cavalière classée à cette étape est identifiée sur la photo (identifications type cavalier, statut accepte). Aucune déduction depuis l'image ou le nom de fichier ; aucun changement de base.
+- Page de l'étape : aperçu (1 grande + 5 petites, « +N »), « Voir toutes les photos · N », ajout de photos dessous.
+- Galerie (plein écran dans la page) :
+  - iPhone : albums 2 colonnes (« Toutes les photos » d'abord), puis mosaïque 2 colonnes aux proportions des photos, 5 px d'écart, 30 photos de plus à chaque approche du bas ; un seul album → directement la mosaïque. En-tête : « Étape 1 · 11 octobre 2026 ».
+  - Tablette : bande d'albums (s'il y en a plusieurs) puis mosaïque 3 colonnes.
+  - Ordinateur : galerie immersive (grande photo object-fit contain, agrandissement limité à 1,5×, flèches, « 7 / 26 », catégorie, crédit, plein écran, bande de miniatures, catégories, clavier, Échap).
+  - Plein écran partout (visionneuse existante, améliorée) : photo HD servie par le stockage (pas l'original), glissement, compteur, catégorie, crédit, retour à la même photo et à la même position.
+  - Dans Hype : titre entre le bouton retour et le drapeau ; le retour de l'appli ferme le plein écran, puis revient aux albums, puis à la journée.
+- Miniatures servies par le stockage Supabase (render/image, resize=contain, taille d'affichage × densité, au plus 2×) ; original seulement en secours.
+- Nouveaux textes en 7 langues : Toutes les photos, Toutes, Albums, Plein écran.
+- Tests : 26 photos réelles (simulées hors ligne) + jeu de 60 photos avec catégories fictives, photos de test à 2 048 px ; 390, 820, 1024, 1230 (dans Hype), 1440 px, arabe ; navigation, clavier, crédits, cas sans catégorie et sans photo ; ancres, liens, 7 langues, ajout de photos, arrivée depuis l'agenda sans régression ; node --check OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5 ; 16 blocs de l'index OK.
+- Blandine 08:56 : « ça semble pas correspondre du tout » à la maquette — publié pour juger sur iPhone ; écarts à recueillir sur ses captures réelles.

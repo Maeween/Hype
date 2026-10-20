@@ -660,6 +660,98 @@ body.dans-hype .lb .x{top:calc(var(--sat) + 62px)}
 .grille-ph img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
 @container ch (min-width:700px){ .grille-ph{grid-template-columns:repeat(4,1fr);gap:6px} }
 @container ch (min-width:1100px){ .vue .r-vue .grille-ph{grid-template-columns:repeat(3,1fr)} }
+/* ═════ GALERIE D'UNE JOURNÉE (plein écran dans la page) ═════ */
+#galerie{position:fixed;inset:0;margin:0;z-index:85;background:#060709;display:none}
+#galerie.ouverte{display:block}
+.galerie-in{position:absolute;inset:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.g-barre{position:sticky;top:0;z-index:3;background:rgba(6,7,9,.96);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding-top:var(--navTop);border-bottom:1px solid var(--filet)}
+.gx-tete{display:flex;align-items:center;gap:12px;min-height:52px;padding:6px 16px}
+.g-ret{flex:0 0 auto;width:38px;height:38px;border-radius:50%;border:1px solid rgba(244,239,228,.22);display:flex;align-items:center;justify-content:center;color:var(--ivoire);font-size:20px}
+[dir=rtl] .g-ret span{display:inline-block;transform:scaleX(-1)}
+.g-tt{min-width:0}
+.g-tt b{display:block;font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.15;color:var(--ivoire);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.g-tt small{display:block;font-size:12.5px;color:var(--gris)}
+.g-tt .g-ctx{font-family:var(--sans);font-weight:500;font-size:14px;letter-spacing:.2px;color:var(--grisClair)}
+/* dans Hype : le bouton retour et le drapeau de l'appli sont posés au-dessus ; le titre se cale entre les deux */
+body.dans-hype .g-ret{display:none}
+body.dans-hype .gx-tete{padding-left:64px;padding-right:64px}
+.g-corps{padding:18px 16px calc(40px + env(safe-area-inset-bottom))}
+.g-intro h2{margin:0;font-family:var(--serif);font-weight:600;font-size:34px;line-height:1.05;color:var(--ivoire)}
+.g-intro p{margin:6px 0 0;font-size:14px;color:var(--grisClair)}
+.albs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+.alb{position:relative;display:block;aspect-ratio:7/8;border-radius:12px;overflow:hidden;background:var(--carte);border:1px solid var(--filet);text-align:start}
+.alb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.alb:after{content:"";position:absolute;inset:auto 0 0 0;height:55%;background:linear-gradient(0deg,rgba(6,7,9,.82),rgba(6,7,9,0))}
+.alb-t{position:absolute;z-index:1;left:12px;right:30px;bottom:11px}
+[dir=rtl] .alb-t{left:30px;right:12px}
+.alb-t b{display:block;font-family:var(--serif);font-weight:600;font-size:19px;line-height:1.15;color:var(--ivoire)}
+.alb-t small{display:block;font-size:12px;color:var(--grisClair)}
+.alb i{position:absolute;z-index:1;bottom:12px;inset-inline-end:11px;font-style:normal;font-size:20px;line-height:1;color:var(--ivoire)}
+[dir=rtl] .alb i{transform:scaleX(-1)}
+.alb.actif{border-color:var(--champ)}
+.g-alb-tete h2{margin:6px 0 0;font-family:var(--serif);font-weight:600;font-size:30px;line-height:1.05;color:var(--ivoire)}
+.g-alb-tete p{margin:4px 0 0;font-size:13.5px;color:var(--grisClair)}
+.g-alb-tete .lien-d{margin:0;min-height:36px}
+.g-alb-tete .lien-d i{font-style:normal}
+[dir=rtl] .g-alb-tete .lien-d i{display:inline-block;transform:scaleX(-1)}
+.g-pills{margin:14px 0 0}
+/* mosaïque : proportions naturelles des photos, 5 px entre elles, 2 colonnes (téléphone) / 3 (tablette) */
+.mosa{column-count:2;column-gap:5px;margin-top:16px}
+.mo{display:block;width:100%;margin:0 0 5px;break-inside:avoid;border-radius:6px;overflow:hidden;background:var(--carte2);aspect-ratio:4/5}
+.mo.pret{aspect-ratio:auto}
+.mo img{display:block;width:100%;height:100%;object-fit:cover}
+.mo.pret img{height:auto;max-height:520px}
+.mo-suite{height:1px}
+.g-vide{margin:40px auto 0;max-width:420px;text-align:center;color:var(--grisClair);font-size:14.5px;line-height:1.6}
+.g-vide span{color:var(--champ)}
+.g-vide p{margin:8px 0 16px}
+/* tablette */
+.g-tablette .g-corps{padding:22px 32px 48px}
+.g-tablette .albs-l{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin-top:0}
+.g-tablette .albs-l::-webkit-scrollbar{display:none}
+.g-tablette .albs-l .alb{flex:0 0 150px;aspect-ratio:3/4}
+.g-tablette .mosa{column-count:3;column-gap:6px}
+.g-tablette .albs-l+.g-alb-tete{margin-top:22px}
+.g-tablette .mo{margin-bottom:6px}
+/* ordinateur : galerie immersive */
+.g-immersif .g-corps{padding:12px 24px 14px;max-width:1600px;margin:0 auto}
+.g-immersif .g-pills{margin:0 0 14px}
+/* la galerie occupe toute la hauteur : en-tête, (catégories), grande photo qui prend le reste, miniatures juste dessous */
+.g-immersif .galerie-in{display:flex;flex-direction:column}
+.g-immersif .g-corps{flex:1;min-height:0;display:flex;flex-direction:column;width:100%}
+.gi{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:20px;align-items:stretch}
+.gi-scene{position:relative;height:100%;min-height:320px;border-radius:10px;overflow:hidden;background:#090C10}
+.gi-img{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:zoom-in}
+.gi-img img{width:100%;height:100%;object-fit:contain;display:block}
+.gi-fl{position:absolute;top:50%;z-index:2;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;border:1px solid rgba(244,239,228,.25);background:rgba(6,7,9,.5);color:var(--ivoire);font-size:22px;display:flex;align-items:center;justify-content:center}
+.gi-p{inset-inline-start:14px}.gi-s{inset-inline-end:14px}
+[dir=rtl] .gi-fl span{display:inline-block;transform:scaleX(-1)}
+.gi-info{display:flex;flex-direction:column;gap:6px;padding-top:6px}
+.gi-num{font-size:13px;letter-spacing:.5px;color:var(--grisClair)}
+.gi-info b{margin-top:10px;font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.15;color:var(--ivoire)}
+.gi-info small{font-size:13px;color:var(--grisClair)}
+.gi-info .gi-cr{color:var(--champ)}
+.gi-trait{display:block;width:34px;height:1px;background:var(--champDoux);margin:12px 0}
+.gi-pe{align-self:flex-start;min-height:40px;padding:8px 14px;border:1px solid var(--ligne);border-radius:99px;font-size:13px;color:var(--ivoire)}
+.gi-bande{flex:0 0 auto;display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:rgba(217,199,163,.3) transparent}
+.gi-v{flex:0 0 auto;width:96px;height:68px;border-radius:6px;overflow:hidden;opacity:.6;border:1px solid transparent;transition:opacity .15s}
+.gi-v img{width:100%;height:100%;object-fit:cover;display:block}
+.gi-v.actif{opacity:1;border-color:var(--champ)}
+.gi-v:hover{opacity:.9}
+/* aperçu dans la page de l'étape */
+.ap{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:16px}
+.ap button{position:relative;aspect-ratio:1/1;border-radius:6px;overflow:hidden;background:var(--carte2)}
+.ap button:first-child{grid-column:span 2;grid-row:span 2}
+.ap img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ap.ap-peu{grid-template-columns:1fr 1fr}
+.ap.ap-peu button:first-child{grid-column:auto;grid-row:auto}
+.ap-plus{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(6,7,9,.55);font-family:var(--serif);font-weight:600;font-size:26px;color:var(--ivoire)}
+.ap-tout{margin-top:14px}
+/* visionneuse : photo entière */
+.lb img{object-fit:contain;max-height:calc(100% - var(--sat) - 150px)}
+.lb{padding-top:var(--sat)}
+body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
+.lb{touch-action:pan-y pinch-zoom}
 </style>
 </head>
 <body>
@@ -702,10 +794,11 @@ body.dans-hype .lb .x{top:calc(var(--sat) + 62px)}
 <div class="vue" id="vue"><div class="vue-c" id="vueC"></div></div>
 <div id="gerer" class="challenge"></div>
 <div id="import" class="challenge"></div>
+<div id="galerie"><div class="galerie-in" id="galerieIn"></div></div>
 <div class="lb" id="lb">
   <button class="x" id="lbX" aria-label="×">×</button>
   <button class="pr" id="lbPr"><span>‹</span></button>
-  <img id="lbImg" alt="">
+  <img id="lbImg" alt="" onerror="imgSecours(this)">
   <button class="sv" id="lbSv"><span>›</span></button>
   <div class="cpt" id="lbCpt"></div>
 </div>
@@ -811,6 +904,10 @@ var TX2 = {
   creditPh: { fr: "Photographe (facultatif)", en: "Photographer (optional)", es: "Fotógrafo/a (opcional)", it: "Fotografo/a (facoltativo)", de: "Fotograf/in (optional)", ja: "撮影者（任意）", ar: "المصوّر (اختياري)" },
   creditPrefix: { fr: "Photos : ", en: "Photos: ", es: "Fotos: ", it: "Foto: ", de: "Fotos: ", ja: "写真：", ar: "الصور: " },
   ajoutDansHype: { fr: "Ouvre le challenge depuis l'appli Hype pour ajouter des photos.", en: "Open the challenge from the Hype app to add photos.", es: "Abre el challenge desde la app Hype para añadir fotos.", it: "Apri il challenge dall'app Hype per aggiungere foto.", de: "Öffne die Challenge in der Hype-App, um Fotos hinzuzufügen.", ja: "写真を追加するにはHypeアプリからチャレンジを開いてね。", ar: "افتح التحدي من تطبيق Hype لإضافة الصور." },
+  toutesPhotos: { fr: "Toutes les photos", en: "All photos", es: "Todas las fotos", it: "Tutte le foto", de: "Alle Fotos", ja: "すべての写真", ar: "كل الصور" },
+  toutes: { fr: "Toutes", en: "All", es: "Todas", it: "Tutte", de: "Alle", ja: "すべて", ar: "الكل" },
+  albums: { fr: "Albums", en: "Albums", es: "Álbumes", it: "Album", de: "Alben", ja: "アルバム", ar: "الألبومات" },
+  pleinEcran: { fr: "Plein écran", en: "Full screen", es: "Pantalla completa", it: "Schermo intero", de: "Vollbild", ja: "全画面", ar: "ملء الشاشة" },
   ajoutPhotos: { fr: "Ajouter des photos", en: "Add photos", es: "Añadir fotos", it: "Aggiungi foto", de: "Fotos hinzufügen", ja: "写真を追加", ar: "إضافة صور" },
   parNiveau: { fr: "Par niveau", en: "By level", es: "Por nivel", it: "Per livello", de: "Nach Niveau", ja: "レベル別", ar: "حسب المستوى" }
 };
@@ -934,6 +1031,106 @@ function galerie(n) {
     return '<button data-photo="' + n + ":" + i + '" aria-label="' + T("oPhotos") + " " + (i + 1) + '"><img src="' + esc(u) + '" alt="" loading="lazy" decoding="async"></button>';
   }).join("") + "</div>";
 }
+/* ══════ GALERIE D'UNE JOURNÉE ══════
+   Une seule collection (PHOTOS[n]) pour trois présentations :
+   · téléphone : albums par catégorie (« Toutes les photos » d'abord), puis mosaïque sur 2 colonnes ;
+   · tablette : albums en bandeau, mosaïque sur 3 colonnes ;
+   · ordinateur : galerie immersive (grande photo, flèches, bande de miniatures, catégories).
+   Partout : toucher / cliquer une photo ouvre la visionneuse plein écran.
+   Catégorie d'une photo : seulement si l'information existe déjà (cavalière identifiée sur la photo ET présente
+   dans les résultats de cette étape). Aucune déduction depuis l'image ni le nom du fichier. */
+var CATPHOTO = {};
+/* miniature servie par le stockage (même transformation que le reste de Hype : render/image, sans recadrage) */
+function mini(u, w) {
+  var s = String(u || ""); if (s.indexOf("/storage/v1/object/public/") < 0) return s;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  return s.split("?")[0].replace("/storage/v1/object/public/", "/storage/v1/render/image/public/") + "?width=" + Math.min(2000, Math.round(w * dpr)) + "&resize=contain&quality=72";
+}
+/* si la miniature échoue, on repose l'original une seule fois */
+function imgSecours(img) { try { if (img.dataset.orig && img.src !== img.dataset.orig) { var o = img.dataset.orig; img.removeAttribute("data-orig"); img.src = o; } } catch (e) { } }
+var GAL = { ouverte: false, n: 1, album: null, i: 0, nb: 30 };
+function modeGal() { var w = window.innerWidth || 390; return w >= 1100 ? "immersif" : (w >= 700 ? "tablette" : "tel"); }
+function albumsDe(n) {
+  var p = PHOTOS[n] || [], l = [{ k: "__tout", nom: T("toutesPhotos"), photos: p }];
+  CHALLENGE.categories.forEach(function (c) { var ph = p.filter(function (u) { return CATPHOTO[u] === c; }); if (ph.length) l.push({ k: c, nom: c, photos: ph }); });
+  return l;
+}
+function photosAlbum() { var a = albumsDe(GAL.n).filter(function (x) { return x.k === (GAL.album || "__tout"); })[0]; return a ? a.photos : (PHOTOS[GAL.n] || []); }
+function ouvrirGalerie(n, album) {
+  GAL.n = n; GAL.i = 0; GAL.nb = 30;
+  var albs = albumsDe(n);
+  /* un seul album (pas encore de catégories) : on va droit aux photos */
+  GAL.album = album || (albs.length > 1 && modeGal() === "tel" ? null : "__tout");
+  document.getElementById("galerie").classList.add("ouverte"); rendreGalerie(); document.getElementById("galerieIn").scrollTop = 0;
+}
+function fermerGalerie() { GAL.ouverte = false; document.getElementById("galerie").classList.remove("ouverte"); }
+function galerieOuverte() { return document.getElementById("galerie").classList.contains("ouverte"); }
+function carteAlbum(a) {
+  var c = a.photos[0];
+  return '<button class="alb' + ((GAL.album || "") === a.k ? " actif" : "") + '" data-gal-album="' + esc(a.k) + '">' +
+    '<img src="' + esc(mini(c, 420)) + '" data-orig="' + esc(c) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async">' +
+    '<span class="alb-t"><b>' + esc(a.nom) + "</b><small>" + TF("nbPhotos", { n: a.photos.length }) + '</small></span><i aria-hidden="true">›</i></button>';
+}
+function mosaique(liste) {
+  var vis = liste.slice(0, GAL.nb);
+  return '<div class="mosa">' + vis.map(function (u, i) {
+    return '<button class="mo" data-gal-photo="' + i + '"><img src="' + esc(mini(u, 380)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" onload="this.parentNode.classList.add(\'pret\')" alt="" loading="lazy" decoding="async"></button>';
+  }).join("") + "</div>" + (liste.length > vis.length ? '<div class="mo-suite" id="moSuite"></div>' : "");
+}
+function pillsCats(albs) {
+  if (albs.length < 2) return "";
+  return '<div class="pills g-pills">' + albs.map(function (a) { return '<button class="pill' + ((GAL.album || "__tout") === a.k ? " actif" : "") + '" data-gal-album="' + esc(a.k) + '">' + esc(a.k === "__tout" ? T("toutes") : a.nom) + "</button>"; }).join("") + "</div>";
+}
+function rendreGalerie() {
+  var e = etape(GAL.n), albs = albumsDe(GAL.n), mode = modeGal(), tout = PHOTOS[GAL.n] || [];
+  var ctx = nomEtape(e) + " · " + esc(dateLongue(e.date));
+  /* ordinateur : le titre « Photos de la journée » n'existe qu'en haut ; téléphone / tablette : seulement le contexte en haut (le titre est dans la page) */
+  var titreH = '<div class="gx-tete"><button class="g-ret" data-gal-retour="1" aria-label="‹"><span>‹</span></button><span class="g-tt">' + (mode === "immersif" ? "<b>" + T("photosDe") + "</b><small>" + ctx + "</small>" : '<b class="g-ctx">' + ctx + "</b>") + "</span></div>";
+  document.getElementById("galerie").className = "ouverte g-" + mode;
+  var h = '<div class="g-barre">' + titreH + "</div><div class=\"g-corps\">";
+  if (!tout.length) {
+    h += '<div class="g-vide"><span>✦</span><p>' + T("pasPhotos") + "</p>" + (peutAjouterPhotos(e) ? '<button class="ph-ajout" data-gal-fermer="1" data-etape="' + e.n + '" data-vers="v-photos"><span>+</span>' + T("ajoutPhotos") + "</button>" : "") + "</div>";
+  } else if (mode === "immersif") {
+    var l = photosAlbum(); if (GAL.i >= l.length) GAL.i = 0; var u = l[GAL.i];
+    h += pillsCats(albs) +
+      '<div class="gi"><div class="gi-scene"><button class="gi-fl gi-p" data-gal-pas="-1" aria-label="‹"><span>‹</span></button>' +
+      '<button class="gi-img" data-gal-plein="1"><img id="giImg" src="' + esc(mini(u, 1800)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" onload="bornerAgrandi(this)" alt=""></button>' +
+      '<button class="gi-fl gi-s" data-gal-pas="1" aria-label="›"><span>›</span></button></div>' +
+      '<aside class="gi-info"><span class="gi-num">' + (GAL.i + 1) + " / " + l.length + "</span><b>" + esc((GAL.album && GAL.album !== "__tout") ? GAL.album : (CATPHOTO[u] || T("toutesPhotos"))) + "</b><small>" + nomEtape(e) + " · " + esc(dateLongue(e.date)) + "</small>" +
+      (CREDITS[u] ? '<small class="gi-cr">' + esc(CREDITS[u]) + "</small>" : "") + '<span class="gi-trait"></span><button class="gi-pe" data-gal-plein="1">⤢ ' + T("pleinEcran") + "</button></aside></div>" +
+      '<div class="gi-bande" id="giBande">' + l.map(function (x, i) { return '<button class="gi-v' + (i === GAL.i ? " actif" : "") + '" data-gal-voir="' + i + '"><img src="' + esc(mini(x, 150)) + '" data-orig="' + esc(x) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>";
+  } else if (mode === "tel" && !GAL.album) {
+    h += '<div class="g-intro"><h2>' + T("photosDe") + "</h2><p>" + esc(dateLongue(e.date)) + "</p></div>" + '<div class="albs">' + albs.map(carteAlbum).join("") + "</div>";
+  } else {
+    var la = photosAlbum(), a = albs.filter(function (x) { return x.k === (GAL.album || "__tout"); })[0] || albs[0];
+    if (mode === "tablette") h += (albs.length > 1 ? '<div class="albs albs-l">' + albs.map(carteAlbum).join("") + "</div>" : "") + '<div class="g-alb-tete"><h2>' + esc(a.nom) + "</h2><p>" + TF("nbPhotos", { n: la.length }) + "</p></div>";
+    else h += '<div class="g-alb-tete">' + (albs.length > 1 ? '<button class="lien-d" data-gal-albums="1"><i>‹</i> ' + T("albums") + "</button>" : "") + "<h2>" + esc(a.nom) + "</h2><p>" + TF("nbPhotos", { n: la.length }) + "</p></div>";
+    h += mosaique(la);
+  }
+  h += "</div>";
+  document.getElementById("galerieIn").innerHTML = h;
+  /* chargement progressif : 30 photos de plus quand on approche du bas */
+  var s = document.getElementById("moSuite");
+  if (s && "IntersectionObserver" in window) {
+    var ob = new IntersectionObserver(function (en) { if (en[0].isIntersecting) { ob.disconnect(); GAL.nb += 30; var z = document.getElementById("galerieIn"), y = z.scrollTop; rendreGalerie(); z.scrollTop = y; } }, { root: document.getElementById("galerieIn"), rootMargin: "600px" });
+    ob.observe(s);
+  }
+  var bd = document.getElementById("giBande"), act = bd && bd.querySelector(".actif");
+  if (act) { try { act.scrollIntoView({ block: "nearest", inline: "center" }); } catch (eSc) { } }
+}
+function bornerAgrandi(img) { try { var k = 1.5; img.style.maxWidth = Math.round(img.naturalWidth * k) + "px"; img.style.maxHeight = Math.round(img.naturalHeight * k) + "px"; } catch (e) { } }
+function pasGalerie(d) { var l = photosAlbum(); if (!l.length) return; GAL.i = (GAL.i + d + l.length) % l.length; rendreGalerie(); }
+/* aperçu dans la page de l'étape : quelques photos et l'accès à la galerie complète */
+function apercuPhotos(n) {
+  var p = PHOTOS[n] || [];
+  if (!p.length) return '<p class="ph-vide"><span>✦</span>' + T("pasPhotos") + "</p>";
+  var vis = p.slice(0, 6), reste = p.length - vis.length;
+  return '<div class="ap' + (vis.length < 3 ? " ap-peu" : "") + '">' + vis.map(function (u, i) {
+    var dernier = i === vis.length - 1 && reste > 0;
+    return '<button ' + (dernier ? 'data-galerie="' + n + '"' : 'data-photo="' + n + ":" + i + '"') + '><img src="' + esc(mini(u, 420)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async">' + (dernier ? '<span class="ap-plus">+' + reste + "</span>" : "") + "</button>";
+  }).join("") + '</div><button class="lien ap-tout" data-galerie="' + n + '">' + T("voirPhotos") + " · " + p.length + " <i>→</i></button>";
+}
+
 /* reprises : liste simple, rangée par niveau */
 function documents(cats) {
   return '<div class="docs">' + cats.map(function (c) {
@@ -991,7 +1188,7 @@ async function envoyerPhotosEtape(n, fichiers) {
   UP.echecs = UP.echecs.filter(Boolean);
   UP.enCours = false;
   UP.msg = TF("ajoutFini", { n: ok.length }) + (UP.echecs.length ? " " + TF("ajoutEchec", { n: UP.echecs.length }) : "");
-  try { PHOTOS[n] = await photosDuRendezVous(e.agenda, e.date); } catch (eR) { }
+  try { PHOTOS[n] = await photosDuRendezVous(e.agenda, e.date, e.n); } catch (eR) { }
   var v = document.getElementById("vue"), y = v.scrollTop; rendreVue(); v.scrollTop = y; rendrePhotos();
 }
 function aDesResultats(n) { return RESULTATS.some(function (r) { return r.e === n; }); }
@@ -1134,7 +1331,7 @@ function rendreVue() {
   if (aRes) h += '<div class="panneau photo">' + pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre) + "</div>";
   else h += '<div class="attente"><b>' + T("attTitre") + "</b><p>" + T("attTexte") + '</p><button class="lien" data-vue-aller="v-reprises">' + T("voirReprises") + " <i>→</i></button></div>";
   h += "</section>";
-  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + zoneAjout(e) + galerie(e.n) + "</section></div>";
+  h += '<section class="section" id="v-photos"><div class="tete"><h2 class="titre">' + T("photosDe") + "</h2></div>" + apercuPhotos(e.n) + zoneAjout(e) + "</section></div>";
   h += '<section class="section" id="v-reprises"><div class="tete"><h2 class="titre">' + T("oReprises") + "</h2></div>" + documents(CHALLENGE.categories) + "</section>";
   h += '</div>' + document.querySelector('.fin-hype').outerHTML;
   document.getElementById("vueC").innerHTML = h;
@@ -1169,12 +1366,15 @@ document.getElementById("vue").addEventListener("scroll", function () {
   if (cur !== vueEtat.onglet) { vueEtat.onglet = cur; rendreNavVue(); }
 }, { passive: true });
 
+function retourGalerie() { if (modeGal() === "tel" && GAL.album && albumsDe(GAL.n).length > 1) { GAL.album = null; rendreGalerie(); document.getElementById("galerieIn").scrollTop = 0; } else fermerGalerie(); }
+var tGalR = null; window.addEventListener("resize", function () { if (!galerieOuverte()) return; clearTimeout(tGalR); tGalR = setTimeout(rendreGalerie, 150); });
 /* ══════ VISIONNEUSE ══════ */
 var lb = { liste: [], i: 0 };
-function ouvrirLb(n, i) { lb.liste = PHOTOS[n] || []; lb.i = i; majLb(); document.getElementById("lb").classList.add("ouverte"); }
-function majLb() { var u = lb.liste[lb.i]; document.getElementById("lbImg").src = u; document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length + (CREDITS[u] ? " · " + CREDITS[u] : ""); }
+function ouvrirLb(n, i) { ouvrirLbListe(PHOTOS[n] || [], i); }
+function ouvrirLbListe(l, i) { lb.liste = l; lb.i = i; majLb(); document.getElementById("lb").classList.add("ouverte"); }
+function majLb() { var u = lb.liste[lb.i], im = document.getElementById("lbImg"); im.setAttribute("data-orig", u); im.src = mini(u, 2000); document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length + (CATPHOTO[u] ? " · " + CATPHOTO[u] : "") + (CREDITS[u] ? " · " + CREDITS[u] : ""); }
 function pasLb(d) { if (!lb.liste.length) return; lb.i = (lb.i + d + lb.liste.length) % lb.liste.length; majLb(); }
-function fermerLb() { document.getElementById("lb").classList.remove("ouverte"); }
+function fermerLb() { document.getElementById("lb").classList.remove("ouverte"); if (galerieOuverte() && modeGal() === "immersif" && lb.liste === photosAlbum()) { GAL.i = lb.i; rendreGalerie(); } }
 
 /* ══════ ÉVÉNEMENTS ══════ */
 document.addEventListener("click", function (ev) {
@@ -1183,6 +1383,15 @@ document.addEventListener("click", function (ev) {
   if (d.adm) { gestionClic(t, d); return; }
   if (d.repCat) { etat.repCat = d.repCat; rendreReprises(); return; }
   if (d.uplReprise) { var fr = UP.echecs.slice(); UP.echecs = []; envoyerPhotosEtape(+d.uplReprise, fr); return; }
+  if (d.galFermer) fermerGalerie();
+  if (d.galerie) { ouvrirGalerie(+d.galerie); return; }
+  if (d.galAlbum) { GAL.album = d.galAlbum; GAL.i = 0; GAL.nb = 30; rendreGalerie(); document.getElementById("galerieIn").scrollTop = 0; return; }
+  if (d.galAlbums) { GAL.album = null; rendreGalerie(); document.getElementById("galerieIn").scrollTop = 0; return; }
+  if (d.galRetour) { retourGalerie(); return; }
+  if (d.galPhoto) { ouvrirLbListe(photosAlbum(), +d.galPhoto); return; }
+  if (d.galVoir) { GAL.i = +d.galVoir; rendreGalerie(); return; }
+  if (d.galPas) { pasGalerie(+d.galPas * (LANG === "ar" ? 1 : 1)); return; }
+  if (d.galPlein) { ouvrirLbListe(photosAlbum(), GAL.i); return; }
   if (d.etape) { ouvrirVue(+d.etape, d.vers); return; }
   if (d.aller) { etat.onglet = d.aller; rendreNav(); var s = document.getElementById(d.aller), c = s.firstElementChild || s; window.scrollTo({ top: c.getBoundingClientRect().top + window.scrollY - hautBarre(".nav") - 18, behavior: "smooth" }); return; }
   if (d.cat) { etat.cat = d.cat; etat.complet = false; rendreClassement(); return; }
@@ -1203,8 +1412,10 @@ document.getElementById("lbX").onclick = fermerLb;
 document.getElementById("lbPr").onclick = function () { pasLb(LANG === "ar" ? 1 : -1); };
 document.getElementById("lbSv").onclick = function () { pasLb(LANG === "ar" ? -1 : 1); };
 document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") { if (document.getElementById("lb").classList.contains("ouverte")) fermerLb(); else if (!IMP.ouvert && GP.ouvert) { GP.ouvert = false; rendreGestion(); } else if (!IMP.ouvert) fermerVue(); }
-  if (document.getElementById("lb").classList.contains("ouverte")) { if (e.key === "ArrowLeft") pasLb(LANG === "ar" ? 1 : -1); if (e.key === "ArrowRight") pasLb(LANG === "ar" ? -1 : 1); }
+  var lbO = document.getElementById("lb").classList.contains("ouverte");
+  if (e.key === "Escape") { if (lbO) fermerLb(); else if (galerieOuverte()) retourGalerie(); else if (!IMP.ouvert && GP.ouvert) { GP.ouvert = false; rendreGestion(); } else if (!IMP.ouvert) fermerVue(); }
+  if (lbO) { if (e.key === "ArrowLeft") pasLb(LANG === "ar" ? 1 : -1); if (e.key === "ArrowRight") pasLb(LANG === "ar" ? -1 : 1); }
+  else if (galerieOuverte() && modeGal() === "immersif") { if (e.key === "ArrowLeft") pasGalerie(LANG === "ar" ? 1 : -1); if (e.key === "ArrowRight") pasGalerie(LANG === "ar" ? -1 : 1); }
 });
 (function () { var x0 = null, el = document.getElementById("lb");
   el.addEventListener("touchstart", function (e) { x0 = e.touches[0].clientX; }, { passive: true });
@@ -1239,8 +1450,8 @@ function message(cle, avecLien) {
 
 /* ══════ LECTURE EN BASE ══════ */
 function estImage(u) { return /\.(jpe?g|png|webp|gif|heic|avif)(\?|$)/i.test(String(u || "")) || (/\/storage\/v1\/object\/public\/photos\//.test(String(u || "")) && !/\.(mp4|mov|m4v|webm)(\?|$)/i.test(String(u || ""))); }
-async function photosDuRendezVous(idAg, dateJour) {
-  var urls = [];
+async function photosDuRendezVous(idAg, dateJour, nEtape) {
+  var urls = [], postDe = {};
   /* photos DE LA JOURNEE : publiees le jour meme ou apres (l affiche ou les horaires, postes avant, ne sont pas des photos du concours) */
   var debut = dateJour ? new Date(dateJour + "T00:00:00").getTime() : 0;
   function ajoute(po) {
@@ -1248,7 +1459,7 @@ async function photosDuRendezVous(idAg, dateJour) {
     if (po.prive && !(MOI && po.user_id === MOI.id)) return;
     if (debut && po.created_at && new Date(po.created_at).getTime() < debut) return;
     var cr = (po.texte && String(po.texte).length <= 80) ? String(po.texte) : "";
-    [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (u) { if (u && typeof u === "string" && estImage(u) && urls.indexOf(u) < 0) { urls.push(u); if (cr) CREDITS[u] = cr; } });
+    [po.photo_url].concat(Array.isArray(po.medias) ? po.medias : []).forEach(function (u) { if (u && typeof u === "string" && estImage(u) && urls.indexOf(u) < 0) { urls.push(u); postDe[u] = po.id; if (cr) CREDITS[u] = cr; } });
   }
   var r1 = await supa.from("commentaires").select("id,user_id,texte,photo_url,medias,prive,created_at").eq("cible", "agenda:" + idAg).order("created_at", { ascending: true });
   ((r1 && r1.data) || []).forEach(ajoute);
@@ -1258,6 +1469,19 @@ async function photosDuRendezVous(idAg, dateJour) {
   if (ids.length) {
     var r2 = await supa.from("commentaires").select("id,user_id,texte,photo_url,medias,prive,created_at").in("id", ids);
     ((r2 && r2.data) || []).forEach(ajoute);
+  }
+  if (nEtape && urls.length) {
+    try {
+      var cles = urls.concat(Object.keys(postDe).map(function (u) { return "post:" + postDe[u]; })).filter(function (v, i, a) { return a.indexOf(v) === i; }).slice(0, 400);
+      var rC = await supa.from("identifications").select("photo_url,cible_nom").eq("type", "cavalier").eq("statut", "accepte").in("photo_url", cles);
+      var catDe = {}; RESULTATS.filter(function (r) { return r.e === nEtape; }).forEach(function (r) { catDe[String(r.cav).toLowerCase().trim()] = r.cat; });
+      ((rC && rC.data) || []).forEach(function (l) {
+        var c = catDe[String(l.cible_nom || "").toLowerCase().trim()]; if (!c) return;
+        var pu = String(l.photo_url || "");
+        if (pu.indexOf("post:") === 0) urls.forEach(function (u) { if ("post:" + postDe[u] === pu && !CATPHOTO[u]) CATPHOTO[u] = c; });
+        else if (urls.indexOf(pu) >= 0 && !CATPHOTO[pu]) CATPHOTO[pu] = c;
+      });
+    } catch (eCat) { }
   }
   return urls;
 }
@@ -1298,7 +1522,7 @@ async function charger() {
     return { id: r.id, e: r.etape, cat: r.categorie, rep: r.reprise, cav: r.cavalier_nom, che: r.cheval_nom, pl: r.place, note: r.note, statut: r.statut || "classe", publie: !!r.publie };
   });
   PHOTOS = {};
-  await Promise.all(CHALLENGE.etapes.map(async function (e) { PHOTOS[e.n] = (e.agenda && e.date && e.date <= AUJOURDHUI) ? await photosDuRendezVous(e.agenda, e.date) : []; }));
+  await Promise.all(CHALLENGE.etapes.map(async function (e) { PHOTOS[e.n] = (e.agenda && e.date && e.date <= AUJOURDHUI) ? await photosDuRendezVous(e.agenda, e.date, e.n) : []; }));
   /* catégorie affichée au départ : la première qui a des résultats */
   var avecRes = CHALLENGE.categories.filter(function (c) { return RESULTATS.some(function (r) { return r.cat === c; }); });
   etat.cat = etat.cat && CHALLENGE.categories.indexOf(etat.cat) >= 0 ? etat.cat : (avecRes[0] || CHALLENGE.categories[0]);
@@ -1317,6 +1541,7 @@ try { if (PARAMS.get("dansHype")) document.body.classList.add("dans-hype"); } ca
 window.__challengeRetour = function () {
   if (document.getElementById("lb").classList.contains("ouverte")) { fermerLb(); return true; }
   if (IMP.ouvert) { if (IMP.epreuves.length && !confirm("Fermer sans enregistrer ? La lecture sera perdue.")) return true; IMP.ouvert = false; IMP.epreuves = []; IMP.erreur = ""; rendreImport(); return true; }
+  if (galerieOuverte()) { retourGalerie(); return true; }
   if (GP.ouvert) { GP.ouvert = false; rendreGestion(); return true; }
   if (document.getElementById("vue").classList.contains("ouverte")) { fermerVue(); return true; }
   return false;
