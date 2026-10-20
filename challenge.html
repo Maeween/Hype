@@ -495,13 +495,17 @@ body.sans-donnees .challenge-contenu{display:none}
 .ed.g{grid-column:1/-1;aspect-ratio:4/3;border-radius:16px}
 .edito.n2 .ed:not(.g),.edito.n4 .ed:last-child{grid-column:1/-1;aspect-ratio:16/9}
 .ed-leg{position:absolute;z-index:1;inset-inline-start:0;bottom:0;right:0;padding:26px 12px 10px;font-size:12.5px;letter-spacing:.4px;color:var(--ivoire);text-shadow:0 1px 12px rgba(6,7,9,.7);text-align:start}
-/* même voile que les cartes d'étape, seulement sur les vignettes de la page (la photo ouverte reste intacte) */
+/* vignettes photos de la page : lumière « coucher de soleil » dorée au centre, bords assombris dans un brun chaud
+   (seulement les vignettes : la photo ouverte en grand, la galerie et les fichiers restent intacts) */
+.ed,.ap img{filter:sepia(.25) saturate(1.05) contrast(1.05)}
+.ed:before,.ap button:before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;
+  background:radial-gradient(ellipse 66% 60% at 52% 40%,rgba(255,155,55,.75),rgba(255,130,50,.3) 48%,rgba(255,120,45,.08) 75%);mix-blend-mode:overlay}
 .ed:after,.ap button:after{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;border-radius:inherit;
-  background:linear-gradient(180deg,rgba(6,7,9,.42) 0%,rgba(6,7,9,0) 40%),radial-gradient(90% 70% at 0% 0%,rgba(6,7,9,.45),rgba(6,7,9,0) 70%),linear-gradient(0deg,rgba(6,7,9,.62) 0%,rgba(6,7,9,0) 45%),radial-gradient(130% 100% at 50% 45%,rgba(6,7,9,0) 55%,rgba(6,7,9,.45) 100%);
+  background:radial-gradient(ellipse 78% 72% at 52% 42%,rgba(14,8,3,0) 45%,rgba(14,8,3,.68) 100%),linear-gradient(0deg,rgba(12,7,3,.55),rgba(12,7,3,0) 40%);
   box-shadow:inset 0 0 0 1px rgba(244,239,228,.07)}
-/* teinte chaude légère (vignettes seulement) */
-.ed,.ap img{filter:sepia(.22) saturate(.85) contrast(1.06) brightness(.9)}
-[dir=rtl] .ed:after,[dir=rtl] .ap button:after{background:linear-gradient(180deg,rgba(6,7,9,.42) 0%,rgba(6,7,9,0) 40%),radial-gradient(90% 70% at 100% 0%,rgba(6,7,9,.45),rgba(6,7,9,0) 70%),linear-gradient(0deg,rgba(6,7,9,.62) 0%,rgba(6,7,9,0) 45%),radial-gradient(130% 100% at 50% 45%,rgba(6,7,9,0) 55%,rgba(6,7,9,.45) 100%)}
+.ap button:before,.ap button:after{z-index:1}
+.ap .ap-plus{z-index:2}
+[dir=rtl] .ed:before,[dir=rtl] .ap button:before{background:radial-gradient(ellipse 66% 60% at 48% 40%,rgba(255,155,55,.75),rgba(255,130,50,.3) 48%,rgba(255,120,45,.08) 75%)}
 .ph-etapes{margin-top:14px}
 .ph-lien{width:100%;display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--filet);text-align:start}
 .ph-lien:first-child{border-top:0}
