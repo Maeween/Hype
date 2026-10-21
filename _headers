@@ -27,6 +27,10 @@
 /lingo-globe.html
   Cache-Control: public, max-age=0, must-revalidate
 
+# 21/10/2026 : la liste des chapitres, refaite à chaque publication sous la même adresse : jamais en cache.
+/hype-cours-sommaire.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 /hype-cours-baby.js
   Cache-Control: public, max-age=0, must-revalidate
 
@@ -36,6 +40,19 @@
 # Galops 4 a 7, sortis de l'index le 06/09 (session galops-sup). Meme recette
 # que hype-cours-baby.js : jamais en cache, et une adresse neuve (?v=N) a
 # chaque livraison — c'est le ?v= qui compte pour l'app installee.
+# 21/10/2026 : Galops 4 à 7, un fichier chacun (mêmes règles que les autres cours).
+/hype-cours-galop4.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-cours-galop5.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-cours-galop6.js
+  Cache-Control: public, max-age=0, must-revalidate
+
+/hype-cours-galop7.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 /hype-cours-galops-sup.js
   Cache-Control: public, max-age=0, must-revalidate
 

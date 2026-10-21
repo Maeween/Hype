@@ -104,7 +104,8 @@ function chargerCours() {
   const ctx = { window: {}, console: { log() {}, warn() {}, error() {} } };
   ctx.HYPE_IMGS = new Proxy({}, { get: () => undefined });
   vm.createContext(ctx);
-  for (const f of ["hype-cours-galop1.js", "hype-cours-galop2.js", "hype-cours-galop3.js", "hype-cours-galops-sup.js"]) {
+  /* 21/10/2026 : Galops 4 à 7 lus dans leurs fichiers séparés (hype-cours-galops-sup.js n'est plus mis à jour). */
+  for (const f of ["hype-cours-galop1.js", "hype-cours-galop2.js", "hype-cours-galop3.js", "hype-cours-galop4.js", "hype-cours-galop5.js", "hype-cours-galop6.js", "hype-cours-galop7.js"]) {
     try { vm.runInContext(fs.readFileSync(path.join(RACINE, f), "utf8"), ctx, { filename: f, timeout: 20000 }); }
     catch (e) { log(f + " illisible, sauté :", String(e).slice(0, 160)); }
   }

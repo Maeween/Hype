@@ -22528,7 +22528,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><!-- 21/10 : les 5 fichiers de cours (Baby, Galops 1 à 7) ne se chargent plus au démarrage : voir hypeChargerCours --><script src="hype-memory-poney.js?v=6"></script><script src="hype-modeles-db.js?v=6"></script><script src="hype-stories.js?v=20ch"></script><script src="hype-resultats.js?v=4"></script><script>
+</script><script src="hype-cours-sommaire.js"></script><!-- 21/10 : les 5 fichiers de cours ne se chargent plus au démarrage, seulement la liste des chapitres : voir hypeChargerGalop --><script src="hype-memory-poney.js?v=6"></script><script src="hype-modeles-db.js?v=6"></script><script src="hype-stories.js?v=20ch"></script><script src="hype-resultats.js?v=4"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -28887,18 +28887,18 @@ function Router() {
                 ecran === "profil-setup" && React.createElement(EcranProfilSetup, null),
                 ecran === "voyage" && React.createElement(EcranVoyage, null),
                 ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
-                ecran === "galops" && React.createElement(GardeCoursCharges, null, React.createElement(EcranBibliothequeGalops, null)),
-                ecran === "galop-detail" && React.createElement(GardeCoursCharges, null, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetail, null))),   /* 09/10 (764) : verrou Premium a l arrivee */
-                ecran === "cours" && React.createElement(GardeCoursCharges, null, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranCours, null))),
+                ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
+                ecran === "galop-detail" && React.createElement(GardeCoursRoute, { mode: "galop" }, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetail, null))),   /* 09/10 (764) : verrou Premium a l arrivee */
+                ecran === "cours" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranCours, null))),
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
                 ecran === "trace-anime" && React.createElement(EcranTraceAnime, null),
                 ecran === "phases-saut" && React.createElement(EcranPhasesSaut, null),
                 ecran === "entrainer-tracer" && React.createElement(EcranEntrainerTracer, null),
                 ecran === "challenge-reprise" && React.createElement(EcranChallengeReprise, null),
-                ecran === "quiz" && React.createElement(GardeCoursCharges, null, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranQuiz, null))),
-                ecran === "examen-blanc" && React.createElement(GardeCoursCharges, null, React.createElement(EcranExamenBlanc, null)),
-                ecran === "examen" && React.createElement(GardeCoursCharges, null, React.createElement(EcranExamen, null)),
+                ecran === "quiz" && React.createElement(GardeCoursRoute, { mode: "cours" }, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranQuiz, null))),
+                ecran === "examen-blanc" && React.createElement(GardeCoursRoute, { mode: "examen-blanc" }, React.createElement(EcranExamenBlanc, null)),
+                ecran === "examen" && React.createElement(GardeCoursRoute, { galops: [1, 2] }, React.createElement(EcranExamen, null)),
                 ecran === "articles" && React.createElement(EcranArticles, null),
                 ecran === "cadre-noir" && React.createElement(EcranCadreNoir, null),
                 ecran === "ecole-portugaise" && React.createElement(EcranEcolePortugaise, null),
@@ -29151,20 +29151,32 @@ let COURS_GALOP4_FR = (typeof window !== "undefined" && window.COURS_GALOP4_FR) 
 let COURS_GALOP5_FR = (typeof window !== "undefined" && window.COURS_GALOP5_FR) || [];
 let COURS_GALOP6_FR = (typeof window !== "undefined" && window.COURS_GALOP6_FR) || [];
 let COURS_GALOP7_FR = (typeof window !== "undefined" && window.COURS_GALOP7_FR) || [];
-/* 21/10 (audit de la page d'arrivée, Blandine : « charger les galops que quand on allait sur leur page » → « Ok fais ça »).
-   LES COURS SE CHARGENT À LA DEMANDE. Avant : les 5 fichiers (Chemin Baby, Galops 1 à 7 = 7,9 Mo, 2,7 Mo compressés)
-   partaient à chaque ouverture de l'appli, avant même la page d'arrivée d'un visiteur. Désormais :
-   · hypeChargerCours() les ajoute à la page, dans le MÊME ordre et avec les MÊMES clés ?v= qu'avant (async=false garde
-     l'ordre d'exécution), une seule fois ; puis hypeCoursRafraichir() relit les tables (let au lieu de const) et
-     l'examen blanc du Galop 3, et l'évènement « hype-cours-prets » redessine l'appli (HypeApp) ;
-   · les écrans des cours (galops, galop-detail, cours, quiz, examen-blanc, examen) attendent les cours derrière
-     GardeCoursCharges (petit écran « Chargement des cours… ») : leurs états de départ voient donc les vraies tables ;
-   · les autres lecteurs (statistiques, profil, Hey Baby, admin…) passent par obtenirCoursParGalop, qui lance le
-     chargement s'il n'est pas fait et rend [] en attendant : ils se redessinent tout seuls à l'arrivée.
-   Fichier en échec (hors ligne) : tables vides comme avant (même repli), et un nouvel essai à la prochaine page de cours.
+/* 21/10 (audit de la page d'arrivée). Blandine : « charger les galops que quand on allait sur leur page », puis
+   « on ouvre galop 2 ça charge galop 2 ? » → « Ok oui on fait ça » (Galops 4 à 7 laissés ensemble : « séparé les
+   plus tard, ils seront bcp plus remplis »).
+   CHAQUE GALOP SE CHARGE QUAND ON L'OUVRE. Avant : les 5 fichiers (Chemin Baby, Galops 1, 2, 3, Galops 4-7 = 7,9 Mo,
+   2,7 Mo compressés) partaient à chaque ouverture de l'appli, avant même la page d'arrivée d'un visiteur. Désormais :
+   · hypeChargerGalop(g) ajoute à la page le SEUL fichier de ce Galop (mêmes adresses et clés ?v= qu'avant), une fois ;
+     hypeCoursRafraichir() relit les tables (let au lieu de const) et l'examen blanc du Galop 3 ; l'évènement
+     « hype-cours-prets » redessine l'appli (HypeApp) ;
+   · les écrans qui lisent le CONTENU (page d'un Galop, chapitre, quiz, examen blanc du Galop 3, examen) attendent leur
+     fichier derrière GardeCoursCharges (« Chargement des cours… ») : leurs états de départ voient les vraies tables ;
+   · la bibliothèque des Galops, les statistiques et le profil n'ont besoin que de la LISTE des chapitres (identifiant,
+     icône, titre) : obtenirSommaireGalop la prend dans hype-cours-sommaire.js (quelques Ko, chargé au démarrage,
+     FABRIQUÉ par outils/sommaire-cours.cjs à partir des 5 fichiers, à chaque publication Netlify) ;
+   · les autres lecteurs (Hey Baby, impression, admin…) passent par obtenirCoursParGalop, qui lance le chargement du
+     Galop demandé et rend [] en attendant ; ils se redessinent à l'arrivée.
+   Fichier en échec (hors ligne) : Galop vide comme avant (même repli), nouvel essai à la prochaine ouverture.
    ⚠ À chaque livraison d'un fichier de cours : incrémenter sa clé ?v= ICI (HYPE_COURS_FICHIERS), plus dans une balise. */
-var HYPE_COURS_FICHIERS = ["hype-cours-baby.js?v=114", "hype-cours-galops-sup.js?v=5", "hype-cours-galop3.js?v=6", "hype-cours-galop2.js?v=4", "hype-cours-galop1.js?v=5"];
-var __hypeCoursPromesse = null;
+var HYPE_COURS_FICHIERS = { baby: "hype-cours-baby.js?v=114", g1: "hype-cours-galop1.js?v=5", g2: "hype-cours-galop2.js?v=4", g3: "hype-cours-galop3.js?v=6", g4: "hype-cours-galop4.js?v=1", g5: "hype-cours-galop5.js?v=1", g6: "hype-cours-galop6.js?v=1", g7: "hype-cours-galop7.js?v=1" };   /* Galops 4 à 7 : un fichier chacun depuis le 21/10 (hype-cours-galops-sup.js reste dans le dépôt pour les anciennes versions de l'appli, ne plus le modifier) */
+var __hypeCoursPromesses = {}, __hypeCoursCharges = {}, __hypeCoursEchecs = {};
+function hypeFichierDuGalop(g) {
+    if (g === "baby") return "baby";
+    var n = parseInt(String(g == null ? "" : g).replace(/[^0-9]/g, ""), 10);
+    if (n === 1) return "g1"; if (n === 2) return "g2"; if (n === 3) return "g3";
+    if (n >= 4 && n <= 7) return "g" + n;
+    return null;
+}
 function hypeCoursRafraichir() {
     try {
         var w = window;
@@ -29181,35 +29193,51 @@ function hypeCoursRafraichir() {
         if (typeof EXAMENS_BLANCS !== "undefined" && Array.isArray(QCM_GLOBAL_GALOP3_FR) && QCM_GLOBAL_GALOP3_FR.length) EXAMENS_BLANCS[3] = QCM_GLOBAL_GALOP3_FR;
     } catch (eRf) { }
 }
-function hypeCoursPrets() { try { return !!window.__hypeCoursPrets; } catch (e) { return false; } }
-function hypeChargerCours() {
-    if (__hypeCoursPromesse) return __hypeCoursPromesse;
-    __hypeCoursPromesse = new Promise(function (fini) {
-        var restants = HYPE_COURS_FICHIERS.length, echecs = 0;
-        HYPE_COURS_FICHIERS.forEach(function (src) {
-            var sc = document.createElement("script");
-            sc.src = src; sc.async = false;
-            sc.onload = sc.onerror = function (ev) {
-                if (ev && ev.type === "error") echecs++;
-                if (--restants > 0) return;
-                hypeCoursRafraichir();
-                try { window.__hypeCoursPrets = true; } catch (eP) { }
-                if (echecs) __hypeCoursPromesse = null;   /* nouvel essai à la prochaine page de cours */
-                fini();
-                try { window.dispatchEvent(new Event("hype-cours-prets")); } catch (eEv) { }
-            };
-            (document.head || document.body).appendChild(sc);
-        });
+function hypeGalopPret(g) { var f = hypeFichierDuGalop(g); return !f || !!__hypeCoursCharges[f]; }
+function hypeChargerGalop(g, nouvelEssai) {
+    var f = hypeFichierDuGalop(g);
+    if (!f || __hypeCoursCharges[f]) return Promise.resolve();
+    /* Échec réseau : on ne réessaie PAS tout seul (sinon boucle : échec → l'appli se redessine → nouvel essai…) ;
+       seulement quand quelqu'un rouvre une page de ce Galop (GardeCoursCharges passe nouvelEssai). */
+    if (__hypeCoursEchecs[f] && !nouvelEssai) return Promise.resolve();
+    __hypeCoursEchecs[f] = false;
+    if (__hypeCoursPromesses[f]) return __hypeCoursPromesses[f];
+    __hypeCoursPromesses[f] = new Promise(function (fini) {
+        var sc = document.createElement("script");
+        sc.src = HYPE_COURS_FICHIERS[f];
+        sc.onload = sc.onerror = function (ev) {
+            hypeCoursRafraichir();
+            __hypeCoursCharges[f] = true;
+            if (ev && ev.type === "error") { __hypeCoursCharges[f] = false; __hypeCoursPromesses[f] = null; __hypeCoursEchecs[f] = true; }   /* nouvel essai à la prochaine ouverture */
+            fini();
+            try { window.dispatchEvent(new Event("hype-cours-prets")); } catch (eEv) { }
+        };
+        (document.head || document.body).appendChild(sc);
     });
-    return __hypeCoursPromesse;
+    return __hypeCoursPromesses[f];
+}
+/* La liste des chapitres d'un Galop (id, icône, titre traduit), sans télécharger ses cours : depuis le Galop s'il est déjà là,
+   sinon depuis hype-cours-sommaire.js ; à défaut (fichier absent) on charge le Galop, comme avant. */
+function obtenirSommaireGalop(galopId, langue) {
+    if (hypeGalopPret(galopId)) return obtenirCoursParGalop(galopId, langue);
+    var som = null;
+    try { som = window.HYPE_COURS_SOMMAIRE && window.HYPE_COURS_SOMMAIRE[String(galopId)]; } catch (eS) { som = null; }
+    if (!Array.isArray(som)) return obtenirCoursParGalop(galopId, langue);
+    return som.map(function (c) {
+        var t = c.titre;
+        var titre = (typeof t === "string") ? t : ((t && (t[langue] || (langue === "zh" && t.en) || t.fr)) || "");
+        return { id: c.id, icone: c.icone, titre: titre };
+    });
 }
 function GardeCoursCharges(props) {
     var h = React.createElement;
-    var st = React.useState(hypeCoursPrets()); var pret = st[0], setPret = st[1];
+    var galops = (props.galops || []).filter(function (g) { return g != null; });
+    function tousPrets() { return galops.every(hypeGalopPret); }
+    var st = React.useState(tousPrets()); var pret = st[0], setPret = st[1];
     React.useEffect(function () {
         if (pret) return;
         var vivant = true;
-        hypeChargerCours().then(function () { if (vivant) setPret(true); });
+        Promise.all(galops.map(function (g) { return hypeChargerGalop(g, true); })).then(function () { if (vivant) setPret(true); });
         return function () { vivant = false; };
     }, []);
     if (pret) return props.children;
@@ -29217,6 +29245,18 @@ function GardeCoursCharges(props) {
         h("style", null, "@keyframes hypeCoursTourne{to{transform:rotate(360deg)}}@media (prefers-reduced-motion: reduce){.hype-cours-roue{animation-duration:3s!important}}"),
         h("span", { className: "hype-cours-roue", "aria-hidden": "true", style: { width: 34, height: 34, borderRadius: "50%", border: "2px solid rgba(32,217,245,0.18)", borderTopColor: "#20D9F5", animation: "hypeCoursTourne 0.9s linear infinite" } }),
         hypeT7("Chargement des cours…", "Loading the lessons…", "Cargando los cursos…", "Caricamento dei corsi…", "レッスンを読み込み中…", "Kurse werden geladen…", "جارٍ تحميل الدروس…", "正在加载课程…"));
+}
+/* Les routes du contenu des cours, chacune derrière son Galop (lit galopOuvert dans le contexte). */
+function GardeCoursRoute(props) {
+    var app = useApp();
+    var g = props.galops;
+    if (!g) {
+        var go = app.galopOuvert;
+        if (props.mode === "cours" && (go == null || go === "")) { try { go = hypeGalopDuCours(app.coursOuvert); } catch (eG) { } }
+        if (props.mode === "examen-blanc") { var n = parseInt(String(go == null ? "" : go).replace(/[^0-9]/g, ""), 10) || 1; g = n === 3 ? [3] : []; }
+        else g = [go];
+    }
+    return React.createElement(GardeCoursCharges, { key: g.join(","), galops: g }, props.children);
 }
 // Conversion du format Galop 1 i18n vers le format interne unifié utilisé par les écrans
 function convertirCoursI18nVersInterne(coursI18n, langue) {
@@ -29261,7 +29301,7 @@ function convertirCoursI18nVersInterne(coursI18n, langue) {
     }));
 }
 function obtenirCoursParGalop(galopId, langue) {
-    if (!hypeCoursPrets()) { try { hypeChargerCours(); } catch (eCh) { } }   /* 21/10 : cours à la demande (voir hypeChargerCours) */
+    if (!hypeGalopPret(galopId)) { try { hypeChargerGalop(galopId); } catch (eCh) { } }   /* 21/10 : chaque Galop se charge quand on l'ouvre (voir hypeChargerGalop) */
     if (galopId === "baby")
         return convertirCoursI18nVersInterne(COURS_BABY_I18N, langue);
     if (galopId === 1)
@@ -77361,7 +77401,7 @@ function LienQuoiDeNeuf(props) {
     className: "qdnlien",
     style: props && props.compte ? { marginTop: 22 } : undefined,
     onClick: function () { ctx.setEcran("quoi-de-neuf"); }
-  }, majM("lien", langue), " \u00B7 ", h("b", null, majM("reprise", langue).toLowerCase() + " " + HYPE_VERSION_APP + " \u00B7 index " + hypeBuildIndex() + hypeIndexAllegeTexte(langue) + " \u00B7 baby " + ((typeof window !== "undefined" && window.COURS_BABY_VERSION) ? window.COURS_BABY_VERSION : "?") + " \u00B7 memo " + ((typeof window !== "undefined" && window.MEMORY_PONEY_VERSION) ? window.MEMORY_PONEY_VERSION : "?") + " \u00B7 stories " + ((typeof window !== "undefined" && window.HYPE_STORIES_VERSION) ? window.HYPE_STORIES_VERSION : "?") + " \u00B7 galops-sup " + ((typeof window !== "undefined" && window.COURS_GALOPS_SUP_VERSION) ? window.COURS_GALOPS_SUP_VERSION : "?") + " \u00B7 g3 " + ((typeof window !== "undefined" && window.COURS_GALOP3_VERSION) ? window.COURS_GALOP3_VERSION : "?") + " \u00B7 g2 " + ((typeof window !== "undefined" && window.COURS_GALOP2_VERSION) ? window.COURS_GALOP2_VERSION : "?") + " \u00B7 g1 " + ((typeof window !== "undefined" && window.COURS_GALOP1_VERSION) ? window.COURS_GALOP1_VERSION : "?")));
+  }, majM("lien", langue), " \u00B7 ", h("b", null, majM("reprise", langue).toLowerCase() + " " + HYPE_VERSION_APP + " \u00B7 index " + hypeBuildIndex() + hypeIndexAllegeTexte(langue) + " \u00B7 baby " + ((typeof window !== "undefined" && window.COURS_BABY_VERSION) ? window.COURS_BABY_VERSION : (hypeGalopPret("baby") ? "?" : "\u2013")) + " \u00B7 memo " + ((typeof window !== "undefined" && window.MEMORY_PONEY_VERSION) ? window.MEMORY_PONEY_VERSION : "?") + " \u00B7 stories " + ((typeof window !== "undefined" && window.HYPE_STORIES_VERSION) ? window.HYPE_STORIES_VERSION : "?") + " \u00B7 g4-7 " + [4, 5, 6, 7].map(function (nV) { return (typeof window !== "undefined" && window["COURS_GALOP" + nV + "_VERSION"]) || (hypeGalopPret(nV) ? "?" : "\u2013"); }).join("/") + " \u00B7 g3 " + ((typeof window !== "undefined" && window.COURS_GALOP3_VERSION) ? window.COURS_GALOP3_VERSION : (hypeGalopPret(3) ? "?" : "\u2013")) + " \u00B7 g2 " + ((typeof window !== "undefined" && window.COURS_GALOP2_VERSION) ? window.COURS_GALOP2_VERSION : (hypeGalopPret(2) ? "?" : "\u2013")) + " \u00B7 g1 " + ((typeof window !== "undefined" && window.COURS_GALOP1_VERSION) ? window.COURS_GALOP1_VERSION : (hypeGalopPret(1) ? "?" : "\u2013"))));
 }
 
 
@@ -77439,7 +77479,7 @@ function EcranBibliothequeGalops() {
             var galopActObj = GALOPS_I18N.find(function(g){ return g.id === gActBrut; });
             var gAct = (galopActObj && (galopActObj.disponible || estModGal)) ? gActBrut : 1;
             var coursG = [];
-            try { coursG = obtenirCoursParGalop(gAct, langue) || []; } catch (ePB) { coursG = []; }
+            try { coursG = obtenirSommaireGalop(gAct, langue) || []; } catch (ePB) { coursG = []; }
             var finis = coursG.filter(function(c){ return coursTermines.includes(c.id); }).length;
             var prochainC = coursG.find(function(c){ return !coursTermines.includes(c.id); });
             var titreP = prochainC ? (typeof prochainC.titre === "string" ? prochainC.titre : ((prochainC.titre || {})[langue] || (prochainC.titre || {}).fr || "")) : "";
@@ -77557,7 +77597,7 @@ function EcranBibliothequeGalops() {
                 " ", React.createElement("span", { className: "etoile", style: { animationDelay: "1.4s" } }, "\u2726"))),
 
         React.createElement("div", { style: { padding: "12px 20px 8px" } }, GALOPS_I18N.map((galop, i) => {
-            const coursGalop = obtenirCoursParGalop(galop.id, langue) || [];
+            const coursGalop = obtenirSommaireGalop(galop.id, langue) || [];
             const verrouille = !galop.debloque && !premium && !estModGal;
             const aVenir = !galop.disponible && !estModGal;
             /* etoiles du Galop : moyenne des scores de quiz de ses chapitres, via la logique deja en place. */
@@ -86238,7 +86278,7 @@ function EcranStats() {
     const avatarsParGalop = { 1: { f: CELEB_F, m: CELEB_M } };
     const genreAvatar = profil.genre || "f";
     const avatarsGalop = GALOPS_I18N.map((g) => {
-        const cours = obtenirCoursParGalop(g.id, langue);
+        const cours = obtenirSommaireGalop(g.id, langue);
         const grand = cours.find((c) => c.icone === "🏆");
         const img = (avatarsParGalop[g.id] || {})[genreAvatar] || null;
         return { id: g.id, img, debloque: !!grand && quizResultats[grand.id] === 100 && !!img };
@@ -88581,7 +88621,7 @@ function EcranProfilInterne() {
     const rangCl = rangCavalier(profil, planAbo);
     const galopMot = t("nav_galops").replace(/s$/, "");
     const galopSuivant = Math.min(profil.galopActuel + 1, 7);
-    const coursDuGalopP = obtenirCoursParGalop(profil.galopActuel, langue);
+    const coursDuGalopP = obtenirSommaireGalop(profil.galopActuel, langue);
     const terminesP = coursDuGalopP.filter((c) => coursTermines.includes(c.id)).length;
     const pctCours = coursDuGalopP.length ? Math.round((terminesP / coursDuGalopP.length) * 100) : 0;
     const quizDuGalopP = coursDuGalopP.map((c) => quizResultats[c.id]).filter((v) => typeof v === "number");
