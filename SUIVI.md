@@ -14100,3 +14100,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Blandine (19 h 03) : « pour la page premium tu peux remonter l'image et mettre les drapeaux en haut à droite de la page comme sur les autres pages ».
 - index.html (EcranPremiumV3 / pv3Html / PV3_CSS) : bouton retour à gauche, sélecteur de langue (drapeaux) à droite, posés sur la photo ; la photo commence tout en haut (léger fondu sombre en haut pour lire les boutons) ; la ligne « Connectée avec … · Vérifier mon abonnement » passe sous la photo, avant les onglets de la page.
 - Testé : 390 (fr, ar : retour à droite, drapeaux à gauche, en miroir) et 1440, sans erreur.
+
+## 21/10/2026 — 22 h 15 — À FAIRE (signalé par Blandine) : l'adresse contact@hypequestrian.app n'est pas lue
+- Constat de Blandine (capture) : en choisissant « Enseignant » dans les questions d'accueil, Hype ouvre un e-mail « Demande Hype Pro - » vers contact@hypequestrian.app. Elle n'a PAS accès à cette messagerie : toute demande envoyée là est perdue.
+- Ampleur : l'adresse est écrite 26 fois dans index.html (demande Hype Pro dans EcranIntro.validerSetup, messages « écris-nous à … » pour un paiement qui n'apparaît pas, changement de formule sans payer deux fois, etc.). Les autres fichiers du dépôt sont à vérifier aussi.
+- À trancher par Blandine avant tout code : quelle adresse mettre à la place (une adresse qu'elle lit vraiment).
+- Constaté au passage, à vérifier : `HYPE_PRO_AUTODEBLOQUE = true` — choisir « Enseignant » ou « Professionnel / Autre » donne `estPro: true` tout de suite, sans contrôle (vu sur le compte de test Claude : estPro true, demandeProType Enseignant). Champ « Structure » vide si on valide la question sans nom d'école. Dire à Blandine ce que « Pro » débloque exactement avant de décider s'il faut une validation.
