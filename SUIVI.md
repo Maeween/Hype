@@ -14108,11 +14108,15 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Pages association / mentions légales / CGV : le russe vient des générateurs (outils/association-generer.py, cgv-generer.py, data/projets-feinn.json) ; les pages des 11 autres langues n'ont reçu QUE les liens/hreflang sv et ru (les sélecteurs de ces pages n'avaient pas encore le suédois : ajouté).
 - Versions ?v= relevées (suffixe ru1) pour hype-video/stories/resultats/memory-poney/dressage-conseils et HYPE_COURS_FICHIERS ; hype-trad-fr-seul.js?v=6.
 - Vérifié sur une copie construite (outils/*.cjs) : node --check de tous les fichiers, plus aucun objet sv sans ru, JSON-LD et sitemap valides, 12 hreflang sur les 120 pages, scan Playwright de 36 écrans en russe : 0 erreur, 0 débordement, aucun texte français oublié (hors noms propres). NON testé : site en ligne, page d'entrée, iPhone, déploiement des fonctions Supabase.
-## 21/10 — EN ATTENTE (non publié) : écran « Premium requis » sans grand cadre bleu
+## 21/10 — PUBLIÉ (marqueur 20261021-2240) : écran « Premium requis » sans grand cadre bleu
 - Suite de « ça gâche un peu la page » (page Premium) : BandeauDejaAbonne n'est plus un grand cadre bleu, mais une simple ligne discrète : « Déjà abonné ? Vérifier mon abonnement » (lien champagne souligné) quand on est connecté, « Tu as déjà un abonnement ? Me connecter » sinon ; message « Aucun abonnement trouvé… » inchangé. Concerne l'écran « Premium requis » d'un Galop verrouillé et la fenêtre d'épinglage (seuls endroits où il reste).
 - Testé : Galop 5 verrouillé ouvert directement (#g=5), connecté / pas connecté, fr 390 et sv 1440, sans erreur.
 
-## 21/10 — EN ATTENTE (non publié) : fiche cavalier, cartes des chevaux au dessin de la page Écurie
+## 21/10 — PUBLIÉ (marqueur 20261021-2240) : fiche cavalier, cartes des chevaux au dessin de la page Écurie
 - Blandine (22 h 22, capture « Mes chevaux ») : « pourquoi il est écrit des choses sous certaines photos ? aligne le design des cartes des chevaux et du carré sur celui de la page Écurie ».
 - index.html (EcranMonCavalier, V2 seulement) : chaque carte cheval = même carte que la mosaïque de la page Écurie (coins 10 px, cadre champagne fin, ombre, fondu noir en bas, nom en Cormorant posé sur la photo, 2 lignes au plus) ; plus rien sous la photo (ni race · âge · discipline, ni « ◇ Cheval de l'écurie », ni « Premium ✦ » : le cadenas reste sur la photo). Puis Blandine (22 h 29) : « j'aimais bien les noms écrits en dessous des cases, mais juste le nom et rien d'autre » → le nom n'est plus posé sur la photo : il est écrit SOUS la carte (Cormorant, 2 lignes au plus), sans autre ligne. Le carré « Les chevaux de l'écurie / Voir tout → » (cavV2Milieu) reprend celui de la page Écurie (surface pétrole, filets champagne, capitales Cormorant, « Voir tout → »). Format des cartes inchangé (10/11, 3/2 sur ordinateur).
 - Testé : page d'un autre cavalier (7 chevaux) et sa propre page (5 et 6 chevaux), 390 et 1440, sans erreur.
+
+## 21/10 22 h 40 — Publication 20261021-2240
+- Publié : ligne discrète « Premium requis » + cartes chevaux de la fiche cavalier (nom seul dessous) + carré « Les chevaux de l'écurie » au dessin de la page Écurie.
+- Reconstruit sur main après l'arrivée du russe (12e langue) : les textes touchés portent leur traduction russe.
