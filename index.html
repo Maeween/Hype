@@ -90928,7 +90928,7 @@ const PV3_CSS = ".pv3{container-type:inline-size;color-scheme:dark;--fond:#070A0
   ".pv3 .pv3-haut{position:absolute;top:calc(10px + env(safe-area-inset-top));left:12px;right:12px;z-index:20;display:flex;justify-content:space-between;align-items:center;pointer-events:none}" +
   ".pv3 .pv3-haut button{pointer-events:auto;width:40px;height:40px;border-radius:50%;border:1px solid var(--trait);background:rgba(7,10,8,.62);color:var(--ivoire);font-size:18px;display:grid;place-items:center;cursor:pointer;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}" +
   ".pv3 .pv3-haut .pv3-ancienne{width:auto;height:34px;padding:0 14px;border-radius:999px;font:500 11.5px var(--sans)}" +
-  ".pv3 .compte{padding:calc(60px + env(safe-area-inset-top)) 16px 10px}" +
+  ".pv3 .compte{padding:4px 16px 14px;border-bottom:1px solid var(--trait2)}.pv3 .hero .photo::before{content:\"\";position:absolute;inset:0 0 auto;height:120px;z-index:1;background:linear-gradient(180deg,rgba(7,10,8,.55),rgba(7,10,8,0))}" +
   ".pv3 .compte .lien-verif{color:var(--champ);text-decoration:underline;text-underline-offset:3px;white-space:nowrap}.pv3 .compte .verif-rien{color:var(--gris)}" +
   ".pv3 .carte .ph.fam img{object-position:50% 40%}" +
   ".pv3 .lc dl{grid-template-columns:repeat(5,minmax(0,1fr))}" +
@@ -91016,10 +91016,10 @@ function pv3Html(lg, info) {
         ? e(t.connecte) + ' <b>' + e(info.email) + '</b> · ' + e(info.premium ? (info.plan || t.actif) : t.aucun) + (info.premium ? '' : ' · <a href="#" class="lien-verif" data-verif-abo="1">' + e(tv.verif) + '</a>')
         : e(t.invite) + ' · <a href="#" class="lien-verif" data-connexion-abo="1">' + e(tv.deja) + '</a>';
     return ''
-    + '<p class="compte">' + compte + '</p>'
     + '<header class="hero"><div class="photo"><img src="images/TEAM_COMPETITION.webp" alt=""></div><div class="wrap"><div class="txt">'
     + '<p class="sur">' + e(t.sur) + '</p><h1>' + e(t.h1) + '</h1><p class="intro">' + e(t.intro) + '</p>'
     + '<ul class="benef">' + li([t.b1, t.b2, t.b3]) + '</ul></div></div></header>'
+    + '<p class="compte">' + compte + '</p>'   /* 21/10 : sous la photo (avant : tout en haut, la photo commençait plus bas) */
     + '<nav class="navsec" aria-label="Sections"><a href="#" data-aller="offres">' + e(t.nav1) + '</a><a href="#" data-aller="comparer">' + e(t.nav2) + '</a><a href="#" data-aller="soutenir">' + e(t.nav3) + '</a><a href="#" data-aller="feinn">' + e(t.nav4) + '</a></nav>'
     + '<section class="offres wrap" data-sec="offres"><div class="offres-tete"><div><p class="sur">' + e(t.offres_sur) + '</p><h2>' + e(t.offres_t) + '</h2></div></div>'
     + '<div class="onglets" role="tablist"><button role="tab" aria-selected="true" data-g="prem">' + e(t.og_prem) + '</button><button role="tab" aria-selected="false" data-g="ia">' + e(t.og_ia) + '</button><button role="tab" aria-selected="false" data-g="pro">' + e(t.og_pro) + '</button></div>'
@@ -91111,11 +91111,12 @@ function EcranPremiumV3(props) {
     var t = PV3_TXT[langue] || PV3_TXT.fr;
     return React.createElement("div", { className: "pv3", dir: langue === "ar" ? "rtl" : "ltr", lang: langue },
         React.createElement("style", { dangerouslySetInnerHTML: { __html: PV3_CSS } }),
+        /* 21/10 (Blandine) : comme sur les autres pages, retour à gauche et drapeaux en haut à droite, posés sur la photo */
         React.createElement("div", { className: "pv3-haut" },
+            React.createElement("button", { type: "button", onClick: props.onRetour, "aria-label": t.retour }, langue === "ar" ? "\u203a" : "\u2039"),
             React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 8, pointerEvents: "auto" } },
-                React.createElement("button", { type: "button", onClick: props.onRetour, "aria-label": t.retour }, langue === "ar" ? "\u203a" : "\u2039"),
-                (typeof SelecteurLangue === "function") ? React.createElement(SelecteurLangue, { compact: true }) : null),
-            props.onAncienne ? React.createElement("button", { type: "button", className: "pv3-ancienne", onClick: props.onAncienne }, t.ancienne) : null),
+                props.onAncienne ? React.createElement("button", { type: "button", className: "pv3-ancienne", onClick: props.onAncienne }, t.ancienne) : null,
+                (typeof SelecteurLangue === "function") ? React.createElement(SelecteurLangue, { compact: true }) : null)),
         React.createElement("div", { ref: refPage, dangerouslySetInnerHTML: { __html: html } }));
 }
 
