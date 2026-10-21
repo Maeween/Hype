@@ -21,7 +21,7 @@ const SUJET = Deno.env.get("VAPID_SUBJECT") || "mailto:feinn@live.fr"
 const PUBLIQUE = "BP-1TH_5bpRxes4Z2DsVTMa3y8ItFEqsGwizTGy8NLb86OX3X1A-QYuDDaMQXBBIQO0_hD5Va-BMR96rctn4wZM"
 if (PRIVEE) webpush.setVapidDetails(SUJET, PUBLIQUE, PRIVEE)
 
-const TYPES = ["identification", "identification_post", "identification_reponse", "identification_photos", "commentaire", "photo", "video"]
+const TYPES = ["identification", "identification_post", "identification_reponse", "identification_photos", "commentaire", "photo", "video", "heybaby"]   // 21/10 : + « Hey Baby t'a répondu » (créée par le relais assistant quand le téléphone est parti avant la fin)
 
 function json(c: unknown, s = 200) { return new Response(JSON.stringify(c), { status: s, headers: { "content-type": "application/json; charset=utf-8" } }) }
 const ent = (x: Record<string, string> = {}) => ({ apikey: SERVICE, Authorization: "Bearer " + SERVICE, "Content-Type": "application/json", ...x })
@@ -36,6 +36,7 @@ type L = "fr" | "en" | "es" | "it" | "ja" | "de" | "ar" | "zh" | "nl" | "pt" | "
 const T7 = (lg: L, o: Partial<Record<L, string>> & { fr: string }) => o[lg] || o.en || o.fr
 
 function phrase(type: string, lg: L, nom: string, sur: string): string {
+  if (type === "heybaby") return T7(lg, { fr: "Hey Baby t'a répondu", en: "Hey Baby answered you", es: "Hey Baby te ha respondido", it: "Hey Baby ti ha risposto", ja: "Hey Babyが返信しました", de: "Hey Baby hat dir geantwortet", ar: "Hey Baby ردّ عليكِ", zh: "Hey Baby 回复了你", nl: "Hey Baby heeft je geantwoord", pt: "O Hey Baby respondeu você", sv: "Hey Baby har svarat dig", ru: "Hey Baby ответил тебе", pl: "Hey Baby ci odpowiedział" })
   const n = nom || T7(lg, { fr: "Quelqu'un", en: "Someone", es: "Alguien", it: "Qualcuno", ja: "誰か", de: "Jemand", ar: "شخص ما", zh: "有人", nl: "Iemand", pt: "Alguém", sv: "Någon", ru: "Кто-то", pl: "Ktoś" })
   if (type.indexOf("identification") === 0) {
     if (type === "identification_photos") return T7(lg, { fr: n + " t'a identifié(e) sur des photos", en: n + " tagged you in photos", es: n + " te etiquetó en fotos", it: n + " ti ha taggato in alcune foto", ja: n + "が写真であなたをタグ付けしました", de: n + " hat dich auf Fotos markiert", ar: n + " أشار إليك في صور", zh: n + "在照片中标记了你", nl: n + " heeft je getagd op foto's", pt: n + " marcou você em fotos", sv: n + " har taggat dig i foton", ru: n + " отметил(а) тебя на фото", pl: n + " oznaczył(a) cię na zdjęciach" })
@@ -50,6 +51,7 @@ function phrase(type: string, lg: L, nom: string, sur: string): string {
 async function lien(cible: string): Promise<{ url: string; sur: (lg: L) => string }> {
   const rien = { url: "/", sur: (_: L) => "" }
   if (!cible) return rien
+  if (cible === "heybaby") return { url: "/#hb=1", sur: (_: L) => "" }   // 21/10 : ouvre Hey Baby, qui affiche la réponse gardée
   let pu = "", cb = cible
   const m = cible.match(/^(photocom|albumcom|videocom):(.+)$/)
   if (m) {
@@ -84,6 +86,7 @@ Deno.serve(async (req) => {
       { method: "PATCH", headers: ent({ Prefer: "return=representation" }), body: JSON.stringify({ pousse_le: new Date().toISOString() }) })
     const n = pris && pris[0]
     if (!n) return json({ ok: true, envoyes: 0, raison: "rien a envoyer" })
+    if (n.type === "heybaby" && n.acteur) return json({ ok: true, envoyes: 0, raison: "heybaby sans serveur" })   // 21/10 : seule une ligne créée par le serveur (acteur vide) est envoyée
     const dest = String(n.destinataire)
     const appareils = await rest("push_abonnements?user_id=eq." + encodeURIComponent(dest) + "&select=endpoint,p256dh,auth", { headers: ent() }) || []
     if (!appareils.length) return json({ ok: true, envoyes: 0, raison: "aucun telephone" })

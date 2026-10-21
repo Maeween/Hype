@@ -657,6 +657,15 @@ export default async (req, context) => {
             if (!termine) { termine = true; await terminer(service, reqId, idRes, total > 0); }
             if (garderEnBase) {
                 if (complet && !erreurSurvenue) await jobHB(service, reqId, "PATCH", idRes, { statut: "termine", resultat: complet, updated_at: new Date().toISOString() });
+                // 21/10 (Blandine « Ok continue », option B) : téléphone parti avant la fin → notification « Hey Baby t'a répondu »
+                // (table notifications ; la règle en base appelle notifier-notif, qui l'envoie sur ses téléphones abonnés).
+                if (complet && !erreurSurvenue && clientParti) {
+                    try {
+                        const rn = await fetch(SUPABASE_URL + "/rest/v1/notifications", { method: "POST", headers: { apikey: service, Authorization: "Bearer " + service, "Content-Type": "application/json", Prefer: "return=minimal" },
+                            body: JSON.stringify({ destinataire: uid, type: "heybaby", cible: "heybaby", extrait: complet.replace(/\s+/g, " ").trim().slice(0, 140) }) });
+                        log(reqId, rn.ok ? "notification « Hey Baby t'a répondu » créée" : "notification refusée (HTTP " + rn.status + ")");
+                    } catch (eN) { log(reqId, "notification impossible —", eN && eN.message); }
+                }
                 else await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", resultat: complet || null, erreur_code: erreurSurvenue || "INVALID_RESPONSE", updated_at: new Date().toISOString() });
             }
             if (erreurSurvenue) envoyerAuTel(marqueurErreur(erreurSurvenue, reqId));
