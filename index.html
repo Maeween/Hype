@@ -23095,7 +23095,7 @@ const I18N = {
     limite_atteinte_texte_ia: { fr: "Vous avez utilis\u00e9 vos 15 questions du jour. Hey Baby vous retrouve demain !", en: "You\u2019ve used your 15 questions for today. Hey Baby will see you tomorrow!", ja: "本日の15回の質問を使い切りました。また明日！", es: "Ha usado sus 15 preguntas de hoy. \u00a1Hey Baby le espera ma\u00f1ana!", it: "Hai usato le tue 15 domande di oggi. Hey Baby ti aspetta domani!", de: "Du hast deine 15 Fragen f\u00fcr heute verbraucht. Hey Baby ist morgen wieder da!" ,"ar":"استخدمتِ أسئلتكِ الخمسة عشر لليوم. تلقاكِ Hey Baby غدا!", zh: "你今天的 15 次提问已用完。Hey Baby 明天再见！", nl: "Je hebt je 15 vragen van vandaag gebruikt. Hey Baby ziet je morgen weer!", pt: "Você usou suas 15 perguntas de hoje. A Hey Baby encontra você amanhã!", sv: "Du har använt dina 15 frågor för idag. Hey Baby ses igen imorgon!"},
     decouvrir_hype_ia: { fr: "D\u00e9couvrir Hype IA", en: "Discover Hype AI", ja: "Hype IA\u3092\u898b\u308b", es: "Descubrir Hype IA", it: "Scopri Hype IA", de: "Hype KI entdecken" ,"ar":"اكتشفي Hype IA", zh: "了解 Hype IA", nl: "Ontdek Hype AI", pt: "Conheça o Hype IA", sv: "Upptäck Hype AI"},
     decouvrir_premium: { fr: "Découvrir Premium", en: "Discover Premium", ja: "プレミアムを見る", es: "Descubrir Premium", it: "Scopri Premium", de: "Premium entdecken" ,"ar":"اكتشفي Premium", zh: "了解 Premium", nl: "Ontdek Premium", pt: "Conheça o Premium", sv: "Upptäck Premium"},
-    poser_question_placeholder: { fr: "Posez votre question…", en: "Ask your question…", ja: "質問を入力…", es: "Escriba su pregunta…", it: "Scrivi la tua domanda…", de: "Stelle deine Frage…" ,"ar":"اطرحي سؤالكِ…", zh: "输入你的问题…", nl: "Stel je vraag…", pt: "Faça a sua pergunta…", sv: "Ställ din fråga…"},
+    poser_question_placeholder: { fr: "Pose ta question…", en: "Ask your question…", ja: "質問を入力…", es: "Escribe tu pregunta…", it: "Scrivi la tua domanda…", de: "Stelle deine Frage…" ,"ar":"اطرحي سؤالكِ…", zh: "输入你的问题…", nl: "Stel je vraag…", pt: "Faça a sua pergunta…", sv: "Ställ din fråga…"},
     limite_atteinte_court: { fr: "Limite atteinte", en: "Limit reached", ja: "上限到達", es: "Límite alcanzado", it: "Limite raggiunto", de: "Limit erreicht" ,"ar":"الحد بُلِغ", zh: "已达上限", nl: "Limiet bereikt", pt: "Limite atingido", sv: "Gränsen nådd"},
     souci_connexion: { fr: "Petit souci de connexion. Réessayez dans un instant.", en: "Connection issue. Please try again shortly.", ja: "接続エラーが発生しました。しばらくしてから再試行してください。", es: "Problema de conexión. Inténtelo de nuevo en un momento.", it: "Piccolo problema di connessione. Riprova tra un istante.", de: "Kleines Verbindungsproblem. Versuche es gleich noch einmal." ,"ar":"مشكلة اتصال بسيطة. حاولي مجددا بعد لحظة.", zh: "网络有点问题，请稍后再试。", nl: "Even een verbindingsprobleem. Probeer het zo meteen opnieuw.", pt: "Probleminha de conexão. Tente novamente em instantes.", sv: "Litet anslutningsproblem. Försök igen om en stund."},
     mon_profil: { fr: "Mon profil", en: "My profile", ja: "マイプロフィール", es: "Mi perfil", it: "Il mio profilo", de: "Mein Profil" ,"ar":"ملفي الشخصي", zh: "我的主页", nl: "Mijn profiel", pt: "Meu perfil", sv: "Min profil"},
@@ -87783,10 +87783,10 @@ function EcranAssistantIA() {
             /* 21/10 : coupure de connexion PENDANT une reponse deja commencee -> relance automatique, une fois, sans la
                recompter. Si l appli est en arriere-plan, on attend qu elle revienne au premier plan. En cas d echec,
                on garde le debut de reponse et le diagnostic habituel s affiche plus bas. */
-            if (!interrompu && relanceHB && texteFluxHB) {
+            if (!interrompu && relanceHB) {   /* 21/10 : aussi quand la coupure arrive avant le premier mot (appli quittee juste apres l envoi) */
                 let relanceOk = false;
                 try {
-                    hbLog("connexion coupée après " + (Date.now() - t0) + " ms — " + texteFluxHB.length + " caractères reçus — relance (suite " + relanceHB.reservation + ")");
+                    hbLog("connexion coupée après " + (Date.now() - t0) + " ms — " + (texteFluxHB || "").length + " caractères reçus — relance (suite " + relanceHB.reservation + ")");
                     await new Promise((ok) => setTimeout(ok, 1500));   /* laisse le serveur clore l envoi coupe */
                     if (typeof document !== "undefined" && document.hidden) {
                         await new Promise((ok) => { const f = () => { if (!document.hidden) { document.removeEventListener("visibilitychange", f); ok(); } }; document.addEventListener("visibilitychange", f); });
@@ -87821,7 +87821,7 @@ function EcranAssistantIA() {
                 } catch (eRel) { hbLog("relance impossible : " + ((eRel && eRel.message) || String(eRel))); }
                 if (relanceOk) return;
                 /* Echec de la relance : la reponse partielle reste affichee, on la garde aussi dans l historique. */
-                try { sauverMessageHB("assistant", texteFluxHB, false, conversationId); } catch (e) { }
+                if (texteFluxHB) { try { sauverMessageHB("assistant", texteFluxHB, false, conversationId); } catch (e) { } }
             }
             const detailTech = err && err.hbCode ? (" — code " + err.hbCode + (err.hbReqId ? " — reqId " + err.hbReqId : "")) : "";
             hbLog(interrompu ? "requête interrompue" : "erreur", (err && err.message) ? err.message : String(err), "après " + (Date.now() - t0) + " ms" + detailTech);
