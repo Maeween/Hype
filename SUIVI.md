@@ -14003,3 +14003,11 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - 🟡 Incident de parcours, corrigé avant publication : une modification d'index.html faite entre le relevé et l'insertion avait décalé 93 insertions de 8 caractères ; tout a été remis à l'état publié puis réappliqué proprement (blocs contrôlés, 0 erreur).
 - NON testé : iPhone réel, Hey Baby en portugais en direct, pages /pt/ en ligne (déploiement : quelques minutes après la publication).
 - Publication : marqueur 20261021-1930 ; index.html, modules, pages /pt/ et toutes les pages publiques, edge functions, générateurs, sitemap-pages.xml, SUIVI.md.
+
+## 21/10 — 18 h, PRÊT, NON PUBLIÉ (Blandine : « attends pour publier, une autre travaille sur l'index ») : inscription — deux cases, dégradé, mascotte
+- Branche GitHub `inscription-v3`, partie de main au marqueur 20261021-1930 (10 langues). À fusionner dans la version en ligne au moment de publier, en repartant de la dernière version.
+- Deux cases obligatoires, jamais cochées d'avance, sur téléphone ET ordinateur/tablette : « J'accepte les conditions générales. » (lien /{langue}/cgv/, nouvel onglet) et « J'ai 15 ans ou plus, ou l'accord d'un parent. » Nouvelle fonction validerInscription() : sans les deux cases, bouton atténué + « Coche les deux cases pour continuer. » ; sinon valider(), inchangée. Rien enregistré en base. Textes en 10 langues (fr, en, es, it, ja, de, ar, zh, nl, pt).
+- Fond ordinateur/tablette : essai 3 choisi par Blandine — noir profond derrière le formulaire, pétrole autour (dégradé centré sur le formulaire : 74 % ordinateur, 70 % tablette paysage, miroir en arabe ; tablette portrait centré sous la photo). Colonne photo en noir profond pour qu'aucun rectangle ne se voie.
+- Téléphone : la mascotte descend (écart 84 → 112 px) pour ne plus chevaucher les cases — 25 px de marge mesurés.
+- Tests : captures 1440/1280/1024/820/768/390 en fr et ar, pas de débordement, ordinateur sans défilement ; node --check 17 blocs OK. Tests des cases (blocage, message, clic sur le texte, inscription lancée) faits sur la version précédente du même code.
+- Décidé : pas de case « photos » à l'inscription ; plus tard, bouton « Demander le retrait d'une photo » dans Mon compte.
