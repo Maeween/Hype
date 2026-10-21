@@ -34584,6 +34584,37 @@ function EcranMonCavalier() {
   var fileRef = React.useRef(null);
   var _moiAlb = React.useState(null); var moiIdAlb = _moiAlb[0], setMoiIdAlb = _moiAlb[1];
   React.useEffect(function () { (async function () { try { var uA = await utilisateurActuel(); setMoiIdAlb(uA ? uA.id : null); } catch (eA) { } })(); }, []);
+  /* 21/10 (Blandine, brief « groupes cavaliers ») : LES GROUPES D ECURIE DU CAVALIER. Rien n est recopié dans le
+     profil : on lit groupes_membres (son identifiant) joint à groupes, puis on garde seulement les groupes de SES
+     écuries (même clé de club que la page Écurie : hypeClefClubPiquets), écurie principale d abord, puis l ordre
+     de la gestion des groupes. Retirer le cavalier d un groupe, ou supprimer le groupe (cascade), fait disparaître
+     la ligne d elle-même. Lecture soumise à la RLS existante, rien n est contourné. */
+  var uidGrp = __estVisite ? (__visitePub && __visitePub.id) : moiIdAlb;
+  var nomGrp1 = String((profil && (profil.club || profil.ecurie)) || "").trim();
+  var nomGrp2 = String((profil && (profil.club2 || profil.ecurie2)) || "").trim();
+  var _grpCav = React.useState([]); var groupesCav = _grpCav[0], setGroupesCav = _grpCav[1];
+  React.useEffect(function () {
+    var vivant = true;
+    if (!uidGrp || (!nomGrp1 && !nomGrp2) || typeof supa === "undefined" || !supa || typeof hypeClefClubPiquets !== "function") { setGroupesCav([]); return; }
+    (async function () {
+      try {
+        var r = await supa.from("groupes_membres").select("groupe_id, groupes(id, nom, nature, club_clef, discipline, niveau, saison, photo_url, ordre, cree_le)").eq("user_id", uidGrp);
+        if (!vivant || !r || r.error || !Array.isArray(r.data)) { if (vivant) setGroupesCav([]); return; }
+        var k1 = nomGrp1 ? hypeClefClubPiquets(nomGrp1) : null, k2 = nomGrp2 ? hypeClefClubPiquets(nomGrp2) : null;
+        var vus = {}, l = [];
+        r.data.forEach(function (x) {
+          var g = x && x.groupes; if (!g || !g.id || vus[g.id]) return;
+          var rang = (k1 && g.club_clef === k1) ? 0 : ((k2 && g.club_clef === k2 && k2 !== k1) ? 1 : -1);
+          if (rang < 0) return;   /* groupe d une écurie qui n est plus la sienne : on ne l affiche pas */
+          vus[g.id] = true;
+          l.push(Object.assign({}, g, { __rang: rang, __club: rang === 0 ? nomGrp1 : nomGrp2 }));
+        });
+        l.sort(function (a, b) { return (a.__rang - b.__rang) || ((a.ordre == null ? 9999 : a.ordre) - (b.ordre == null ? 9999 : b.ordre)) || String(a.cree_le || "").localeCompare(String(b.cree_le || "")) || String(a.nom || "").localeCompare(String(b.nom || "")); });
+        if (vivant) setGroupesCav(l);
+      } catch (eG) { if (vivant) setGroupesCav([]); }
+    })();
+    return function () { vivant = false; };
+  }, [uidGrp, nomGrp1, nomGrp2]);
   var _albO = React.useState(false); var albumOuvert = _albO[0], setAlbumOuvert = _albO[1];
   function appliquerNouvelAvatar(res) {
     if (!res) return;
@@ -35478,27 +35509,61 @@ function EcranMonCavalier() {
         var labV2 = autreV2 ? T("Son \u00e9curie", "Their stable", "Su cuadra", "La sua scuderia", "\u6240\u5c5e\u53a9\u820e", "Ihr Stall", "\u0625\u0633\u0637\u0628\u0644\u0647\u0627") : T("Mon \u00e9curie", "My stable", "Mi cuadra", "La mia scuderia", "\u79c1\u306e\u53a9\u820e", "Mein Stall", "\u0625\u0633\u0637\u0628\u0644\u064a");
         var ombreV2 = "0 1px 10px rgba(0,0,0,0.8)";
         var deuxV2 = !!nom2;
-        var encartV2 = function (cleE, nomX, lieuX, onOpen, onEdit, labelEdit) {
-          return h("div", { key: cleE, onClick: onOpen, role: "button", style: { position: "relative", isolation: "isolate", flex: 1, minWidth: 0, height: cavOrdi ? 112 : (cavTab ? 100 : 84) /* 15/10 (1132) iPad / ordinateur : bandeau plus haut */, borderRadius: 16, overflow: "hidden", cursor: "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", display: "flex", alignItems: "center", padding: cavTab ? (deuxV2 ? "0 34px 0 20px" : "0 52px 0 28px") : (deuxV2 ? "0 30px 0 13px" : "0 40px 0 16px"), boxSizing: "border-box" } },
-            nomX ? h(FondBanniereClub, { nom: nomX, fondu: true, defaut: "images/fond-cavaliers-ecurie.webp", largeur: deuxV2 ? "100%" : "68%" }) : null,
+        /* 21/10 (brief groupes cavaliers) : deux écuries = côte à côte sur tablette et ordinateur (mêmes largeur et hauteur),
+           l une sous l autre sur iPhone ; la première porte « Écurie principale » ; la localisation sur les deux cartes.
+           Une seule écurie : inchangé. */
+        var coteV2 = deuxV2 && cavTab;
+        var labPrinc = T("\u00c9curie principale", "Main stable", "Cuadra principal", "Scuderia principale", "\u30e1\u30a4\u30f3\u53a9\u820e", "Hauptstall", "\u0627\u0644\u0625\u0633\u0637\u0628\u0644 \u0627\u0644\u0631\u0626\u064a\u0633\u064a");
+        var encartV2 = function (cleE, nomX, lieuX, onOpen, onEdit, labelEdit, labX) {
+          return h("div", { key: cleE, onClick: onOpen, role: "button", style: { position: "relative", isolation: "isolate", flex: (deuxV2 && !coteV2) ? "0 0 auto" : 1 /* empilées : la hauteur compte, pas la base 0 */, minWidth: 0, height: cavOrdi ? 112 : (cavTab ? 100 : ((deuxV2 && !coteV2) ? 96 : 84)) /* 15/10 (1132) iPad / ordinateur : bandeau plus haut ; 21/10 deux écuries empilées sur iPhone : label + nom + lieu */, borderRadius: 16, overflow: "hidden", cursor: "pointer", border: "1px solid rgba(201,166,107,0.34)", background: "linear-gradient(160deg, rgba(40,86,104,0.34), rgba(5,8,11,0.10))", boxShadow: "0 16px 34px rgba(0,0,0,0.45)", display: "flex", alignItems: "center", padding: cavTab ? (coteV2 ? "0 34px 0 20px" : "0 52px 0 28px") : (coteV2 ? "0 30px 0 13px" : "0 40px 0 16px"), boxSizing: "border-box" } },
+            nomX ? h(FondBanniereClub, { nom: nomX, fondu: true, defaut: "images/fond-cavaliers-ecurie.webp", largeur: coteV2 ? "100%" : (deuxV2 ? "78%" : "68%") }) : null,
             h("div", { style: { minWidth: 0 } },
-              h("div", { style: { fontFamily: M, fontSize: cavTab ? (deuxV2 ? 9.5 : 11) : (deuxV2 ? 8.5 : 10), fontWeight: 500, letterSpacing: deuxV2 ? "0.18em" : "0.24em", textTransform: "uppercase", color: "#C9A66B", textShadow: ombreV2 } }, labV2),
-              h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? (deuxV2 ? 24 : (cavOrdi ? 30 : 28)) : (deuxV2 ? 19 : 22), fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, nomX || T("Choisir mon club", "Choose my club", "Elegir mi club", "Scegli il mio club", "\u30af\u30e9\u30d6\u3092\u9078\u3076", "Meinen Verein w\u00e4hlen", "\u0627\u062e\u062a\u064a\u0627\u0631 \u0646\u0627\u062f\u064a\u064a")),
-              (!deuxV2 && lieuX) ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12 : 10.5, color: "rgba(243,238,228,0.72)", marginTop: cavTab ? 5 : 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, lieuX) : null),
+              h("div", { style: { fontFamily: M, fontSize: cavTab ? (coteV2 ? 9.5 : 11) : (coteV2 ? 8.5 : 10), fontWeight: 500, letterSpacing: coteV2 ? "0.18em" : "0.24em", textTransform: "uppercase", color: "#C9A66B", textShadow: ombreV2 } }, labX === undefined ? labV2 : labX),
+              h("div", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavTab ? (coteV2 ? 24 : (cavOrdi ? 30 : 28)) : (coteV2 ? 19 : (deuxV2 ? 21 : 22)), fontWeight: 500, color: "#F3EEE4", lineHeight: 1.15, marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", textShadow: ombreV2 } }, nomX || T("Choisir mon club", "Choose my club", "Elegir mi club", "Scegli il mio club", "\u30af\u30e9\u30d6\u3092\u9078\u3076", "Meinen Verein w\u00e4hlen", "\u0627\u062e\u062a\u064a\u0627\u0631 \u0646\u0627\u062f\u064a\u064a")),
+              lieuX ? h("div", { style: { fontFamily: M, fontSize: cavTab ? 12 : 10.5, color: "rgba(243,238,228,0.72)", marginTop: cavTab ? 5 : 3, textShadow: ombreV2, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, lieuX) : null),
             (!__estVisite && onEdit) ? h("button", { onClick: onEdit, "aria-label": labelEdit, style: { position: "absolute", top: 7, insetInlineEnd: 7, width: 24, height: 24, borderRadius: "50%", background: "rgba(5,8,11,0.6)", border: "1px solid rgba(243,238,228,0.22)", color: "#F3EEE4", fontSize: 11, lineHeight: 1, cursor: "pointer", padding: 0 } }, "\u270E") : null,
             h("span", { "aria-hidden": "true", style: { position: "absolute", bottom: 9, insetInlineEnd: 10, color: "#C9A66B", fontSize: 18, lineHeight: 1, textShadow: ombreV2 } }, (function () { try { return document.documentElement.dir === "rtl" ? "\u2039" : "\u203a"; } catch (eD) { return "\u203a"; } })()));
         };
-        return h("div", { style: { display: "flex", gap: 10, margin: "48px 16px 0" } },
+        var titreEc = deuxV2 ? h("div", { style: { marginBottom: 14 } }, cavV2Titre(autreV2 ? T("Ses \u00e9curies", "Their stables", "Sus cuadras", "Le sue scuderie", "\u6240\u5c5e\u53a9\u820e", "Ihre St\u00e4lle", "\u0625\u0633\u0637\u0628\u0644\u0627\u062a\u0647\u0627") : T("Mes \u00e9curies", "My stables", "Mis cuadras", "Le mie scuderie", "\u79c1\u306e\u53a9\u820e", "Meine St\u00e4lle", "\u0625\u0633\u0637\u0628\u0644\u0627\u062a\u064a"))) : null;
+        var cartesEc = h("div", { style: { display: "flex", flexDirection: (deuxV2 && !coteV2) ? "column" : "row", gap: 10 } },
           encartV2("e1", nom1, lieu1, function () { if (nom1) { setEcran("guilde"); } else { setClubLocal({ club: "" }); setEditClub(true); } },
-            function (eE1) { if (eE1 && eE1.stopPropagation) eE1.stopPropagation(); setClubLocal({ club: nom1 }); setEditClub(true); }, T("Modifier mon club", "Edit my club", "Editar mi club", "Modifica il mio club", "\u30af\u30e9\u30d6\u3092\u7de8\u96c6", "Meinen Verein bearbeiten", "\u062a\u0639\u062f\u064a\u0644 \u0646\u0627\u062f\u064a\u064a")),
+            function (eE1) { if (eE1 && eE1.stopPropagation) eE1.stopPropagation(); setClubLocal({ club: nom1 }); setEditClub(true); }, T("Modifier mon club", "Edit my club", "Editar mi club", "Modifica il mio club", "\u30af\u30e9\u30d6\u3092\u7de8\u96c6", "Meinen Verein bearbeiten", "\u062a\u0639\u062f\u064a\u0644 \u0646\u0627\u062f\u064a\u064a"), deuxV2 ? labPrinc : undefined),
           deuxV2
             ? encartV2("e2", nom2, lieu2, function () { try { window.__guildeEcurie = nom2.trim(); } catch (eG2) { } setEcran("guilde"); },
-                function (eE2) { if (eE2 && eE2.stopPropagation) eE2.stopPropagation(); setClub2Local({ club: nom2 }); setEditClub2(true); }, T("Modifier ma deuxi\u00e8me \u00e9curie", "Edit my second stable", "Editar mi segunda cuadra", "Modifica la mia seconda scuderia", "2\u3064\u76ee\u306e\u53a9\u820e\u3092\u7de8\u96c6", "Meinen zweiten Stall bearbeiten", "\u062a\u0639\u062f\u064a\u0644 \u0625\u0633\u0637\u0628\u0644\u064a \u0627\u0644\u062b\u0627\u0646\u064a"))
+                function (eE2) { if (eE2 && eE2.stopPropagation) eE2.stopPropagation(); setClub2Local({ club: nom2 }); setEditClub2(true); }, T("Modifier ma deuxi\u00e8me \u00e9curie", "Edit my second stable", "Editar mi segunda cuadra", "Modifica la mia seconda scuderia", "2\u3064\u76ee\u306e\u53a9\u820e\u3092\u7de8\u96c6", "Meinen zweiten Stall bearbeiten", "\u062a\u0639\u062f\u064a\u0644 \u0625\u0633\u0637\u0628\u0644\u064a \u0627\u0644\u062b\u0627\u0646\u064a"), "")
             : (!__estVisite
                 ? h("button", { key: "aj", onClick: function () { setClub2Local({ club: "" }); setEditClub2(true); }, "aria-label": T("Ajouter une \u00e9curie", "Add a stable", "A\u00f1adir una cuadra", "Aggiungi una scuderia", "\u53a9\u820e\u3092\u8ffd\u52a0", "Stall hinzuf\u00fcgen", "\u0625\u0636\u0627\u0641\u0629 \u0625\u0633\u0637\u0628\u0644"), style: { flex: cavTab ? "0 0 78px" : "0 0 64px", height: cavOrdi ? 112 : (cavTab ? 100 : 84) /* (1132) */, borderRadius: 16, border: "1px dashed rgba(201,166,107,0.42)", background: "rgba(5,8,11,0.35)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 4, cursor: "pointer", padding: 0, color: "#BDB6AA" } },
                     h("span", { style: { fontSize: 20, lineHeight: 1, color: "#C9A66B" } }, "+"),
                     h("span", { style: { fontFamily: M, fontSize: 9, fontWeight: 500, letterSpacing: "0.08em", textTransform: "uppercase" } }, T("\u00c9curie", "Stable", "Cuadra", "Scuderia", "\u53a9\u820e", "Stall", "\u0625\u0633\u0637\u0628\u0644")))
                 : null));
+        /* « Mes groupes à l écurie » : section à part, SOUS les écuries, seulement s il y a au moins un groupe. */
+        var rtlG = false; try { rtlG = document.documentElement.dir === "rtl"; } catch (eRg) { }
+        var lignesG = (groupesCav || []).map(function (g) {
+          var photoG = g.nature === "equipe" ? (g.photo_url || "images/TEAM_COMPETITION.webp") : hypePhotoPiquet(g);
+          var niv = (typeof hypeBadgePiquet === "function") ? hypeBadgePiquet(g.niveau) : "";
+          var meta = [g.__club, g.saison ? (T("Saison", "Season", "Temporada", "Stagione", "\u30b7\u30fc\u30ba\u30f3", "Saison", "\u0627\u0644\u0645\u0648\u0633\u0645") + " " + g.saison) : "", niv].filter(Boolean);
+          var hG = cavOrdi ? 92 : (cavTab ? 84 : 96);
+          return h("button", { key: "grp" + g.id, type: "button", "data-groupe-cavalier": g.id,
+              onClick: function () {
+                if (g.nature === "equipe") { setEcran("team-competition"); return; }
+                try { window.__ecurieHypeClub = g.__club; window.__ecurieHypePiquet = g.id; } catch (eGo) { }
+                setEcran("ecurie-hype");
+              },
+              style: { display: "flex", alignItems: "stretch", width: "100%", height: hG, padding: 0, borderRadius: 16, overflow: "hidden", cursor: "pointer", textAlign: "start", border: "1px solid rgba(201,166,107,0.30)", background: "linear-gradient(160deg, rgba(16,29,34,0.92), rgba(7,10,8,0.85))", boxShadow: "0 12px 26px rgba(0,0,0,0.38)", color: "#F3EEE4", boxSizing: "border-box" } },
+            h("span", { style: { position: "relative", flex: "0 0 " + (cavOrdi ? 240 : (cavTab ? 180 : 92)) + "px", overflow: "hidden", background: "#0F1B19" } },
+              h("img", { src: photoG, alt: "", loading: "lazy", style: { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" } }),
+              h("span", { "aria-hidden": "true", style: { position: "absolute", inset: 0, background: "linear-gradient(" + (rtlG ? "270deg" : "90deg") + ", transparent 55%, rgba(12,22,26,0.95) 100%)" } })),
+            h("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "center", padding: cavTab ? "0 18px" : "0 12px" } },
+              h("span", { style: { fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: cavOrdi ? 25 : (cavTab ? 23 : 19), fontWeight: 500, lineHeight: 1.12, overflow: "hidden", display: "-webkit-box", WebkitLineClamp: cavTab ? 1 : 2, WebkitBoxOrient: "vertical", overflowWrap: "anywhere" } }, h("bdi", null, g.nom || "")),
+              h("span", { style: { fontFamily: M, fontSize: cavTab ? 12.5 : 11, color: "rgba(243,238,228,0.70)", marginTop: cavTab ? 4 : 3, lineHeight: 1.35, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" } },
+                meta.map(function (m, iM) { return h(React.Fragment, { key: iM }, iM ? " \u00b7 " : null, h("bdi", null, m)); }))),
+            h("span", { style: { flex: "0 0 auto", display: "flex", alignItems: "center", paddingInlineEnd: cavTab ? 18 : 12 } },
+              h("span", { "aria-hidden": "true", style: { width: cavTab ? 38 : 32, height: cavTab ? 38 : 32, borderRadius: "50%", border: "1px solid rgba(201,166,107,0.7)", color: "#C9A66B", display: "flex", alignItems: "center", justifyContent: "center", fontSize: cavTab ? 17 : 15, lineHeight: 1 } }, rtlG ? "\u2190" : "\u2192")));
+        });
+        var sectionG = lignesG.length ? h("div", { "data-groupes-cavalier": "1", style: { marginTop: cavTab ? 34 : 30 } },
+          h("div", { style: { marginBottom: 14 } }, cavV2Titre(autreV2 ? T("Ses groupes \u00e0 l\u2019\u00e9curie", "Their stable groups", "Sus grupos en la cuadra", "I suoi gruppi in scuderia", "\u53a9\u820e\u306e\u30b0\u30eb\u30fc\u30d7", "Ihre Stallgruppen", "\u0645\u062c\u0645\u0648\u0639\u0627\u062a\u0647\u0627 \u0641\u064a \u0627\u0644\u0625\u0633\u0637\u0628\u0644") : T("Mes groupes \u00e0 l\u2019\u00e9curie", "My stable groups", "Mis grupos en la cuadra", "I miei gruppi in scuderia", "\u79c1\u306e\u53a9\u820e\u30b0\u30eb\u30fc\u30d7", "Meine Stallgruppen", "\u0645\u062c\u0645\u0648\u0639\u0627\u062a\u064a \u0641\u064a \u0627\u0644\u0625\u0633\u0637\u0628\u0644"))),
+          h("div", { style: { display: "flex", flexDirection: "column", gap: 10 } }, lignesG)) : null;
+        return h("div", { "data-zone-ecuries": "1", style: { margin: "48px 16px 0" } }, titreEc, cartesEc, sectionG);
       }
       return h("div", { style: nom2 ? { margin: "46px 16px 0", display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 10, alignItems: "stretch" } : { margin: "46px 16px 0" } },
         h("div", { onClick: function () { if (nom1) { setEcran("guilde"); } else { setClubLocal({ club: "" }); setEditClub(true); } }, role: "button", style: { position: "relative", isolation: "isolate", minHeight: nom2 ? 0 : 92, aspectRatio: nom2 ? "3 / 2" : "auto", padding: nom2 ? "12px 38px 12px 13px" : "14px 48px 14px 15px", /* 30/09 (517) deux ecuries : carres -> rectangles horizontaux (3/2), texte en haut, crayon a droite */ borderRadius: 18, cursor: "pointer", overflow: "hidden", border: "1px solid " + CAV_BORD, background: CAV_GRAND, WebkitBackdropFilter: CAV_FLOU, backdropFilter: CAV_FLOU, boxSizing: "border-box" } },
@@ -74612,6 +74677,7 @@ function hypeLibPiquet(nom) {   /* seul « Loisir » est traduit : les autres so
 /* 10/10 (788) photo d'un piquet selon sa discipline et son niveau (fichiers images/piquet-*.webp ; Club et Amateur
    partagent la photo quand il n'y en a qu'une). Piquet personnalisé : photo neutre « loisir ». */
 function hypePhotoPiquet(p) {
+  if (p && p.photo_url) return p.photo_url;   /* 21/10 : photo choisie par la gestion de l'écurie */
   var d = String((p && p.discipline) || ""), n = String((p && p.niveau) || "");
   var f = { cso: n === "poney" ? "cso-poney" : "cso",
             dressage: n === "poney" ? "dressage-poney" : (n === "amateur" ? "dressage-2" : "dressage"),
@@ -74700,21 +74766,49 @@ function CreationPiquetEH(props) {
    ceux du piquet déjà cochés ; « Enregistrer » ajoute les nouveaux et retire les décochés (groupes_chevaux), la base
    tranche (hype_peut_gerer_club). Un cheval peut rester dans plusieurs piquets. Le piquet n'est jamais supprimé ici. */
 function GestionPiquetEH(props) {
+  /* 21/10 (Blandine, groupes sur la fiche cavalier) : en plus des chevaux, la gestion du piquet choisit ses CAVALIERS
+     (cavaliers rattachés à l'écurie, table groupes_membres comme la Team), sa SAISON et sa PHOTO (vide = photo
+     automatique de la discipline). Mêmes droits que pour les chevaux : la base tranche (hype_peut_gerer_club). */
   var h = React.createElement;
   var T = hypeT7;
   var depart = {}; (props.ids || []).forEach(function (i) { depart[i] = true; });
+  var departM = {}; (props.membres || []).forEach(function (i) { departM[i] = true; });
   var _s = React.useState(depart), sel = _s[0], setSel = _s[1];
+  var _m = React.useState(departM), selM = _m[0], setSelM = _m[1];
+  var _sa = React.useState(props.saison || ""), saison = _sa[0], setSaison = _sa[1];
+  var _ph = React.useState(props.photo || ""), photo = _ph[0], setPhoto = _ph[1];
+  var _up = React.useState(false), envoi = _up[0], setEnvoi = _up[1];
+  var _cv = React.useState(null), cavs = _cv[0], setCavs = _cv[1];
   var _b = React.useState(false), busy = _b[0], setBusy = _b[1];
   var _e = React.useState(""), err = _e[0], setErr = _e[1];
   var CH = "#C9A66B", IV = "#F3EEE4", IV2 = "rgba(243,238,228,0.62)", M = "'Montserrat',sans-serif", SERIF = "'Cormorant Garamond',Georgia,serif";
+  React.useEffect(function () { var ok = true; (async function () {
+    try { var l = props.club ? await hypeCavaliersDuClub(props.club, "id, pseudo, handle, avatar_url") : []; if (ok) setCavs(l || []); } catch (eC) { if (ok) setCavs([]); }
+  })(); return function () { ok = false; }; }, []);
   var chevaux = (props.chevaux || []).slice().sort(function (a, b) { return String(a.nom || "").localeCompare(String(b.nom || "")); });
+  function nomCav(p) { return p.pseudo || (p.handle ? "@" + p.handle : "?"); }
+  var cavaliers = (cavs || []).slice().sort(function (a, b) { return nomCav(a).localeCompare(nomCav(b)); });
   var ajouts = Object.keys(sel).filter(function (i) { return !depart[i]; });
   var retraits = Object.keys(depart).filter(function (i) { return !sel[i]; });
-  var change = ajouts.length + retraits.length > 0;
+  var ajoutsM = Object.keys(selM).filter(function (i) { return !departM[i]; });
+  var retraitsM = Object.keys(departM).filter(function (i) { return !selM[i]; });
+  var changeG = saison.trim() !== String(props.saison || "").trim() || photo !== (props.photo || "");
+  var change = ajouts.length + retraits.length + ajoutsM.length + retraitsM.length > 0 || changeG;
+  async function choisirPhoto(ev) {
+    var f = ev && ev.target && ev.target.files && ev.target.files[0]; if (!f) return;
+    setEnvoi(true); setErr("");
+    try { var r = await envoyerPhoto(f); if (r && r.url) setPhoto(r.url); else throw new Error((r && r.error && (r.error.message || r.error)) || "envoi"); }
+    catch (eP) { setErr(T("La photo n'a pas pu être envoyée : ", "The photo could not be sent: ", "No se pudo enviar la foto: ", "Impossibile inviare la foto: ", "写真を送信できませんでした：", "Das Foto konnte nicht gesendet werden: ", "تعذّر إرسال الصورة: ") + String((eP && eP.message) || eP).slice(0, 120)); }
+    setEnvoi(false);
+  }
   async function enregistrer() {
     if (!change || busy) return;
     setBusy(true); setErr("");
     try {
+      if (changeG) {
+        var rg = await supa.from("groupes").update({ saison: saison.trim() || null, photo_url: photo || null }).eq("id", props.groupeId);
+        if (rg && rg.error) throw new Error(rg.error.message || String(rg.error));
+      }
       if (ajouts.length) {
         var ra = await supa.from("groupes_chevaux").insert(ajouts.map(function (i) { return { groupe_id: props.groupeId, cheval_id: i }; }));
         if (ra && ra.error) throw new Error(ra.error.message || String(ra.error));
@@ -74723,6 +74817,14 @@ function GestionPiquetEH(props) {
         var rr = await supa.from("groupes_chevaux").delete().eq("groupe_id", props.groupeId).in("cheval_id", retraits);
         if (rr && rr.error) throw new Error(rr.error.message || String(rr.error));
       }
+      if (ajoutsM.length) {
+        var ram = await supa.from("groupes_membres").insert(ajoutsM.map(function (i) { return { groupe_id: props.groupeId, user_id: i }; }));
+        if (ram && ram.error) throw new Error(ram.error.message || String(ram.error));
+      }
+      if (retraitsM.length) {
+        var rrm = await supa.from("groupes_membres").delete().eq("groupe_id", props.groupeId).in("user_id", retraitsM);
+        if (rrm && rrm.error) throw new Error(rrm.error.message || String(rrm.error));
+      }
       setBusy(false);
       if (props.onFini) props.onFini();
     } catch (e) {
@@ -74730,26 +74832,52 @@ function GestionPiquetEH(props) {
       setErr(T("Les changements n'ont pas pu être enregistrés : ", "Changes could not be saved: ", "No se pudieron guardar los cambios: ", "Impossibile salvare le modifiche: ", "変更を保存できませんでした：", "Änderungen konnten nicht gespeichert werden: ", "تعذّر حفظ التغييرات: ") + String((e && e.message) || e).slice(0, 160));
     }
   }
+  function sousTitre(txt) { return h("div", { style: { fontFamily: SERIF, fontSize: 22, marginTop: 22 } }, txt); }
+  function ligneChoix(cle, on, imgSrc, imgPos, rond, txt, onClick) {
+    return h("button", { key: cle, type: "button", onClick: onClick,
+      style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, padding: "6px 12px", borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(255,255,255,0.08)"), background: on ? "rgba(201,166,107,0.10)" : "rgba(6,7,9,0.35)", color: IV, fontFamily: M } },
+      h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: rond ? "50%" : 10, overflow: "hidden", background: "#0F1B19", display: "flex", alignItems: "center", justifyContent: "center", color: CH, fontFamily: SERIF, fontSize: 18 } }, imgSrc ? h("img", { src: imgSrc, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: imgPos || "center", display: "block" } }) : String(txt || "?").replace(/^@/, "").charAt(0).toUpperCase()),
+      h("span", { style: { flex: 1, minWidth: 0, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, txt),
+      h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.35)"), background: on ? "rgba(201,166,107,0.18)" : "transparent", color: CH, fontSize: 14, lineHeight: "22px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""));
+  }
   var feuille = h("div", { "data-noswipe": "1", onClick: function (e) { if (e.target === e.currentTarget && !busy && props.onFermer) props.onFermer(); },
     style: { position: "fixed", inset: 0, zIndex: 10000, background: "rgba(3,5,6,0.72)", display: "flex", alignItems: "flex-end", justifyContent: "center" } },
     h("div", { style: { width: "100%", maxWidth: 520, maxHeight: "88vh", overflowY: "auto", WebkitOverflowScrolling: "touch", boxSizing: "border-box", background: "linear-gradient(180deg,#101A1D 0%,#0B1215 100%)", borderTop: "1px solid rgba(201,166,107,0.35)", borderRadius: "22px 22px 0 0", padding: "20px 20px calc(24px + env(safe-area-inset-bottom))", color: IV, fontFamily: M } },
       h("div", { style: { fontSize: 10, letterSpacing: 2.6, textTransform: "uppercase", color: CH, fontWeight: 600 } }, hypeLibPiquet(props.nom || "")),
-      h("div", { style: { fontFamily: SERIF, fontSize: 26, marginTop: 6, lineHeight: 1.15 } }, T("Les chevaux du piquet", "The group's horses", "Los caballos del grupo", "I cavalli del gruppo", "グループの馬", "Die Pferde der Gruppe", "خيول المجموعة")),
+      h("div", { style: { fontFamily: SERIF, fontSize: 26, marginTop: 6, lineHeight: 1.15 } }, T("Gérer le piquet", "Manage the group", "Gestionar el grupo", "Gestisci il gruppo", "グループを管理", "Gruppe verwalten", "إدارة المجموعة")),
+      /* photo et saison */
+      h("div", { style: { display: "flex", gap: 12, alignItems: "center", marginTop: 14 } },
+        h("span", { style: { flex: "0 0 96px", width: 96, height: 60, borderRadius: 12, overflow: "hidden", background: "#0F1B19", border: "1px solid rgba(201,166,107,0.25)" } }, h("img", { src: photo || props.photoAuto, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })),
+        h("div", { style: { display: "flex", flexDirection: "column", gap: 6, minWidth: 0 } },
+          h("label", { style: { display: "inline-flex", alignItems: "center", minHeight: 36, padding: "0 14px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.4)", color: CH, fontSize: 13, cursor: "pointer", whiteSpace: "nowrap" } },
+            envoi ? "…" : T("Changer la photo", "Change the photo", "Cambiar la foto", "Cambia la foto", "写真を変更", "Foto ändern", "تغيير الصورة"),
+            h("input", { type: "file", accept: "image/*", onChange: choisirPhoto, style: { display: "none" } })),
+          photo ? h("button", { type: "button", onClick: function () { setPhoto(""); }, style: { background: "none", border: "none", padding: 0, color: IV2, fontSize: 12, textAlign: "start", cursor: "pointer", textDecoration: "underline" } }, T("Revenir à la photo automatique", "Back to the automatic photo", "Volver a la foto automática", "Torna alla foto automatica", "自動の写真に戻す", "Zurück zum automatischen Foto", "العودة إلى الصورة التلقائية")) : null)),
+      h("label", { style: { display: "block", marginTop: 16, fontSize: 12, color: IV2 } }, T("Saison", "Season", "Temporada", "Stagione", "シーズン", "Saison", "الموسم"),
+        h("input", { value: saison, maxLength: 20, onChange: function (e) { setSaison(e.target.value); }, placeholder: "2026–2027", dir: "ltr",
+          style: { display: "block", width: "100%", boxSizing: "border-box", marginTop: 6, minHeight: 44, padding: "0 14px", borderRadius: 12, border: "1px solid rgba(201,166,107,0.3)", background: "rgba(6,7,9,0.5)", color: IV, fontFamily: M, fontSize: 15 } })),
+      /* cavaliers */
+      sousTitre(T("Les cavaliers du piquet", "The group's riders", "Los jinetes del grupo", "I cavalieri del gruppo", "グループの騎乗者", "Die Reiter der Gruppe", "فرسان المجموعة")),
+      h("div", { style: { fontSize: 12, color: IV2, marginTop: 4 } }, T("Seulement les cavaliers rattachés à l'écurie. Le groupe apparaîtra sur leur fiche.", "Only riders attached to the stable. The group will appear on their profile.", "Solo los jinetes vinculados a la cuadra. El grupo aparecerá en su ficha.", "Solo i cavalieri legati alla scuderia. Il gruppo apparirà nella loro scheda.", "厩舎に所属する騎乗者のみ。グループはそのプロフィールに表示されます。", "Nur Reiter des Stalls. Die Gruppe erscheint auf ihrem Profil.", "الفرسان المرتبطون بالإسطبل فقط. ستظهر المجموعة في ملفهم.")),
+      h("div", { style: { marginTop: 10, display: "flex", flexDirection: "column", gap: 6 } },
+        cavs === null ? h("div", { style: { fontSize: 13, color: IV2 } }, "…")
+          : (cavaliers.length ? cavaliers.map(function (p) {
+              var on = !!selM[p.id];
+              return ligneChoix("m" + p.id, on, p.avatar_url || null, "center", true, nomCav(p), function () { var n = Object.assign({}, selM); if (n[p.id]) delete n[p.id]; else n[p.id] = true; setSelM(n); });
+            }) : h("div", { style: { fontSize: 13, color: IV2, fontStyle: "italic" } }, T("Aucun cavalier rattaché à l'écurie pour l'instant.", "No rider attached to the stable yet.", "Aún no hay jinetes vinculados a la cuadra.", "Ancora nessun cavaliere legato alla scuderia.", "厩舎に所属する騎乗者はまだいません。", "Noch keine Reiter im Stall.", "لا يوجد فرسان مرتبطون بالإسطبل بعد.")))),
+      /* chevaux */
+      sousTitre(T("Les chevaux du piquet", "The group's horses", "Los caballos del grupo", "I cavalli del gruppo", "グループの馬", "Die Pferde der Gruppe", "خيول المجموعة")),
       h("div", { style: { fontSize: 12, color: IV2, marginTop: 4 } }, T("Coche pour ajouter, décoche pour retirer. Retirer un cheval du piquet ne supprime pas sa fiche.", "Tick to add, untick to remove. Removing a horse from the group does not delete its profile.", "Marca para añadir, desmarca para quitar. Quitar un caballo del grupo no borra su ficha.", "Spunta per aggiungere, togli per rimuovere. Togliere un cavallo dal gruppo non cancella la sua scheda.", "チェックで追加、外すと削除。グループから外しても馬のプロフィールは消えません。", "Anhaken zum Hinzufügen, abhaken zum Entfernen. Das Entfernen aus der Gruppe löscht das Profil nicht.", "ضع علامة للإضافة وأزلها للحذف. إخراج الحصان من المجموعة لا يحذف ملفه.")),
       h("div", { style: { marginTop: 12, display: "flex", flexDirection: "column", gap: 6 } },
         chevaux.map(function (c) {
           var on = !!sel[c.id];
-          return h("button", { key: "g" + c.id, type: "button", onClick: function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setSel(n); },
-            style: { display: "flex", alignItems: "center", gap: 12, minHeight: 50, padding: "6px 12px", borderRadius: 14, cursor: "pointer", textAlign: "start", border: "1px solid " + (on ? "rgba(201,166,107,0.6)" : "rgba(255,255,255,0.08)"), background: on ? "rgba(201,166,107,0.10)" : "rgba(6,7,9,0.35)", color: IV, fontFamily: M } },
-            h("span", { style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: 10, overflow: "hidden", background: "#0F1B19" } }, h("img", { src: c.photo_url || CHEVAL_DEFAUT, alt: "", loading: "lazy", style: { width: "100%", height: "100%", objectFit: "cover", objectPosition: c.photo_url ? "center" : "65% 28%", display: "block" } })),   /* (1063) */
-            h("span", { style: { flex: 1, minWidth: 0, fontSize: 14.5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" } }, c.nom || "?"),
-            h("span", { "aria-hidden": "true", style: { flex: "0 0 22px", width: 22, height: 22, borderRadius: 7, border: "1px solid " + (on ? CH : "rgba(243,238,228,0.35)"), background: on ? CH : "transparent", color: "#060709", fontSize: 14, lineHeight: "22px", textAlign: "center", fontWeight: 700 } }, on ? "✓" : ""));
+          return ligneChoix("g" + c.id, on, c.photo_url || CHEVAL_DEFAUT, c.photo_url ? "center" : "65% 28%", false, c.nom || "?", function () { var n = Object.assign({}, sel); if (n[c.id]) delete n[c.id]; else n[c.id] = true; setSel(n); });   /* (1063) */
         })),
       err ? h("div", { style: { marginTop: 14, padding: "10px 12px", borderRadius: 12, border: "1px solid rgba(255,107,107,0.35)", background: "rgba(255,107,107,0.07)", color: "#FF9B9B", fontSize: 12.5 } }, err) : null,
       h("div", { style: { display: "flex", gap: 10, marginTop: 20 } },
         h("button", { type: "button", disabled: busy, onClick: function () { if (props.onFermer) props.onFermer(); }, style: { flex: "0 0 auto", minHeight: 48, padding: "0 18px", borderRadius: 999, border: "1px solid rgba(243,238,228,0.3)", background: "transparent", color: IV, fontFamily: M, fontSize: 14, cursor: "pointer" } },
           T("Annuler", "Cancel", "Cancelar", "Annulla", "キャンセル", "Abbrechen", "إلغاء")),
-        h("button", { type: "button", "data-enregistrer-piquet": "1", disabled: !change || busy, onClick: enregistrer, style: { flex: 1, minHeight: 48, borderRadius: 999, border: "1px solid rgba(201,166,107,0.45)", background: change ? "linear-gradient(165deg, rgba(55,107,125,0.42) 0%, rgba(16,26,29,0.78) 55%, rgba(6,7,9,0.85) 100%)" : "rgba(55,107,125,0.14)", boxShadow: change ? "0 8px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.08)" : "none", color: change ? "#F3EEE4" : "rgba(243,238,228,0.45)", fontFamily: M, fontSize: 14.5, fontWeight: 600, cursor: change ? "pointer" : "default" } },
+        h("button", { type: "button", "data-enregistrer-piquet": "1", disabled: !change || busy || envoi, onClick: enregistrer, style: { flex: 1, minHeight: 48, borderRadius: 999, border: "1px solid rgba(201,166,107,0.45)", background: change ? "linear-gradient(165deg, rgba(55,107,125,0.42) 0%, rgba(16,26,29,0.78) 55%, rgba(6,7,9,0.85) 100%)" : "rgba(55,107,125,0.14)", boxShadow: change ? "0 8px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.08)" : "none", color: change ? "#F3EEE4" : "rgba(243,238,228,0.45)", fontFamily: M, fontSize: 14.5, fontWeight: 600, cursor: change ? "pointer" : "default" } },
           busy ? "…" : T("Enregistrer", "Save", "Guardar", "Salva", "保存", "Speichern", "حفظ")))));
   return (typeof ReactDOM !== "undefined" && ReactDOM.createPortal && document.body) ? ReactDOM.createPortal(feuille, document.body) : feuille;
 }
@@ -75205,14 +75333,17 @@ function EcranEcurieHype() {
       try { gereP = !!(uP && typeof clubRevendiquePar === "function" && clubRevendiquePar(nomP, uP)); } catch (eRv) { }
       if (!gereP && uP) { var rgP = await supa.from("club_gestionnaires").select("user_id").eq("club_clef", clefP).eq("user_id", uP.id).limit(1); gereP = !!(rgP && rgP.data && rgP.data.length); }
       if (okP) setPiqClub({ nom: nomP, clef: clefP, gere: gereP });
-      var rG = await supa.from("groupes").select("id, nom, discipline, niveau, type, ordre, cree_le").eq("club_clef", clefP).eq("nature", "piquet").order("cree_le", { ascending: true });
+      var rG = await supa.from("groupes").select("id, nom, discipline, niveau, type, ordre, cree_le, saison, photo_url").eq("club_clef", clefP).eq("nature", "piquet").order("cree_le", { ascending: true });
+      if (rG && rG.error) rG = await supa.from("groupes").select("id, nom, discipline, niveau, type, ordre, cree_le").eq("club_clef", clefP).eq("nature", "piquet").order("cree_le", { ascending: true });
       var gs = (rG && !rG.error && rG.data) || [];
-      var parG = {};
+      var parG = {}, parM = {};
       if (gs.length) {
         var rGC = await supa.from("groupes_chevaux").select("groupe_id, cheval_id").in("groupe_id", gs.map(function (g) { return g.id; }));
         ((rGC && !rGC.error && rGC.data) || []).forEach(function (x) { (parG[x.groupe_id] = parG[x.groupe_id] || []).push(x.cheval_id); });
+        /* 21/10 : les cavaliers du groupe (même table que la Team) */
+        try { var rGM = await supa.from("groupes_membres").select("groupe_id, user_id").in("groupe_id", gs.map(function (g) { return g.id; })); ((rGM && !rGM.error && rGM.data) || []).forEach(function (x) { (parM[x.groupe_id] = parM[x.groupe_id] || []).push(x.user_id); }); } catch (eGM) { }
       }
-      if (okP) setPiquets(gs.map(function (g) { return Object.assign({}, g, { ids: parG[g.id] || [] }); }));
+      if (okP) setPiquets(gs.map(function (g) { return Object.assign({}, g, { ids: parG[g.id] || [], membres: parM[g.id] || [] }); }));
       try {   /* (796) les Teams de la même écurie (jamais montrées comme piquets) */
         var rEq = await supa.from("groupes").select("id, nom").eq("club_clef", clefP).eq("nature", "equipe");
         var eqs = (rEq && !rEq.error && rEq.data) || [];
@@ -75561,7 +75692,7 @@ function EcranEcurieHype() {
         }),
         (piqClub && piqClub.gere) ? h("button", { key: "pq+", type: "button", "data-ajout-piquet": "1", onClick: function () { setPiqFeuille(true); }, "aria-label": T("Nouveau piquet", "New group", "Nuevo grupo", "Nuovo gruppo", "新しいグループ", "Neue Gruppe", "مجموعة جديدة"),
           style: { flex: "0 0 38px", width: 38, height: 38, borderRadius: "50%", cursor: "pointer", border: "1px solid rgba(201,166,107,0.3)", background: "linear-gradient(165deg, rgba(17,27,31,0.55) 0%, rgba(6,7,9,0.3) 100%)", boxShadow: "0 4px 12px rgba(0,0,0,0.35)", color: "#C9A66B", fontSize: 20, lineHeight: "36px", padding: 0 } }, "+") : null) : null,   /* (798) même fond dégradé ombré */
-      (piqGestion && piqActifObj && piqClub) ? h(GestionPiquetEH, { groupeId: piqActifObj.id, nom: piqActifObj.nom, ids: piqActifObj.ids, chevaux: commList || [],
+      (piqGestion && piqActifObj && piqClub) ? h(GestionPiquetEH, { groupeId: piqActifObj.id, nom: piqActifObj.nom, ids: piqActifObj.ids, chevaux: commList || [], club: piqClub.nom, membres: piqActifObj.membres || [], saison: piqActifObj.saison || "", photo: piqActifObj.photo_url || "", photoAuto: hypePhotoPiquet(Object.assign({}, piqActifObj, { photo_url: null })),
         onFermer: function () { setPiqGestion(false); },
         onFini: function () { setPiqGestion(false); setPiqVersion(piqVersion + 1); flashEH(T("Piquet mis à jour ✓", "Group updated ✓", "Grupo actualizado ✓", "Gruppo aggiornato ✓", "グループを更新しました ✓", "Gruppe aktualisiert ✓", "تم تحديث المجموعة ✓")); } }) : null,
       piqFeuille && piqClub ? h(CreationPiquetEH, { clef: piqClub.clef, chevaux: commList || [], existants: piquets.map(function (pE) { return pE.nom; }),
@@ -75583,7 +75714,8 @@ function EcranEcurieHype() {
             h("div", { style: { position: "absolute", insetInline: 18, bottom: 14 } },
               h("div", { style: { display: "flex", alignItems: "center", gap: 10 } },
                 h("span", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 2.6, textTransform: "uppercase", color: "#C9A66B" } }, T("Piquet", "Group", "Grupo", "Gruppo", "グループ", "Gruppe", "مجموعة")),
-                badgeP ? h("span", { style: { padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#D2B07A" } }, badgeP) : null),
+                badgeP ? h("span", { style: { padding: "3px 10px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.55)", fontFamily: "'Montserrat',sans-serif", fontSize: 9.5, fontWeight: 600, letterSpacing: 2, textTransform: "uppercase", color: "#D2B07A" } }, badgeP) : null,
+                piqActifObj.saison ? h("span", { dir: "ltr", style: { fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, letterSpacing: 1, color: "rgba(243,238,228,0.78)" } }, piqActifObj.saison) : null),
               h("div", { style: { fontFamily: "'Cormorant Garamond',Georgia,serif", fontSize: 32, fontWeight: 500, lineHeight: 1.05, color: "#F3EEE4", marginTop: 6 } }, nomP))),
           h("div", { style: { padding: "12px 18px 16px" } },
             h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, lineHeight: 1.55, color: "rgba(243,238,228,0.84)" } }, phraseP),
@@ -75595,7 +75727,7 @@ function EcranEcurieHype() {
               style: { display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "1 1 0", minWidth: 0, minHeight: 42, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.45)", background: "linear-gradient(165deg, rgba(55,107,125,0.42) 0%, rgba(16,26,29,0.78) 55%, rgba(6,7,9,0.85) 100%)", boxShadow: "0 8px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.08)", color: "#F3EEE4", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", whiteSpace: "nowrap", cursor: "pointer" } },
               T("Voir les résultats", "See the results", "Ver los resultados", "Vedi i risultati", "成績を見る", "Ergebnisse ansehen", "عرض النتائج")) : null,
             (piqClub && piqClub.gere) ? h("button", { type: "button", "data-gerer-piquet": "1", onClick: function () { setPiqGestion(true); }, style: { display: "inline-flex", alignItems: "center", justifyContent: "center", flex: "1 1 0", minWidth: 0, minHeight: 42, padding: "0 12px", borderRadius: 999, border: "1px solid rgba(201,166,107,0.45)", background: "linear-gradient(165deg, rgba(55,107,125,0.42) 0%, rgba(16,26,29,0.78) 55%, rgba(6,7,9,0.85) 100%)", boxShadow: "0 8px 18px rgba(0,0,0,0.45), inset 0 1px 0 rgba(243,238,228,0.08)", color: "#D2B07A", fontFamily: "'Montserrat',sans-serif", fontSize: 10.5, fontWeight: 600, letterSpacing: 1.2, textTransform: "uppercase", whiteSpace: "nowrap", cursor: "pointer" } },
-              nbP ? T("Gérer les chevaux", "Manage horses", "Gestionar caballos", "Gestisci i cavalli", "馬を管理", "Pferde verwalten", "إدارة الخيول") : T("Ajouter un cheval", "Add a horse", "Añadir un caballo", "Aggiungi un cavallo", "馬を追加", "Pferd hinzufügen", "إضافة حصان")) : null)));
+              nbP ? T("Gérer le piquet", "Manage the group", "Gestionar el grupo", "Gestisci il gruppo", "グループを管理", "Gruppe verwalten", "إدارة المجموعة") : T("Ajouter un cheval", "Add a horse", "Añadir un caballo", "Aggiungi un cavallo", "馬を追加", "Pferd hinzufügen", "إضافة حصان")) : null)));
       })() : null,
       /* (796) ÉTAPE I : PASSERELLE PIQUET → TEAM. Un bloc discret par Team de la même écurie qui partage au moins un cheval
          avec le piquet (intersection calculée ici). Aucune Team, ou aucun cheval commun : rien. Ce n'est pas un piquet. */
