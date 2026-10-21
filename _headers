@@ -28,6 +28,10 @@
   Cache-Control: public, max-age=0, must-revalidate
 
 # 21/10/2026 : la liste des chapitres, refaite à chaque publication sous la même adresse : jamais en cache.
+# 21/10/2026 : les cours par langue (cours-l/), refaits à chaque publication : jamais en cache, comme les fichiers de cours.
+/cours-l/*
+  Cache-Control: public, max-age=0, must-revalidate
+
 /hype-cours-sommaire.js
   Cache-Control: public, max-age=0, must-revalidate
 
