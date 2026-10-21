@@ -26,7 +26,7 @@ import type { Context } from "https://edge.netlify.com";
 const DOMAINE = "https://2hype.fr";
 const TITRE = "Hype — l'appli des cavaliers : ton cheval, ton écurie et une IA équestre";
 const DESCRIPTION = "Photos, souvenirs, vidéos, résultats en concours, santé et soins de ton cheval, " +
-  "agenda de ton écurie et Hey Baby, l'IA équestre. En 11 langues.";
+  "agenda de ton écurie et Hey Baby, l'IA équestre. En 12 langues.";
 const IMAGE = DOMAINE + "/images/hype-partage-1200x630.jpg";
 
 /* Robots qui fabriquent les cartes d'aperçu. iMessage / Messages se présente

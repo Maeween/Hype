@@ -8,7 +8,7 @@
    - 09/10 : Galop 1 est gratuit ; les Galops 2 à 7 sont réservés aux abonnés Hype+. Donc :
        Galop 1  → chaque chapitre a sa page complète (texte, encadrés, quiz avec réponses à déplier) ;
        Galops 2 à 7 → une page par Galop avec la liste des chapitres (titre, durée) et « Réservé à Hype+ ».
-   - Les 11 langues de l'appli (fr, en, es, it, de, ja, ar, zh, nl, pt, sv ; chinois : clé zh des cours, sinon anglais ; arabe de droite à gauche).
+   - Les 12 langues de l'appli (fr, en, es, it, de, ja, ar, zh, nl, pt, sv, ru ; chinois : clé zh des cours, sinon anglais ; arabe de droite à gauche).
 
    CE QUI EST FABRIQUÉ, pour chaque langue <lg> :
      /<lg>/galops/                  le sommaire des 7 Galops
@@ -27,13 +27,13 @@ const path = require("path");
 const vm = require("vm");
 const RACINE = path.join(__dirname, "..");
 const DOM = "https://2hype.fr";
-const LANGS = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv"];
-const NOMS = { fr: "Français", en: "English", es: "Español", it: "Italiano", de: "Deutsch", ja: "日本語", ar: "العربية", zh: "简体中文", nl: "Nederlands", pt: "Português", sv: "Svenska" };
-const LOCALES = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE" };
+const LANGS = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru"];
+const NOMS = { fr: "Français", en: "English", es: "Español", it: "Italiano", de: "Deutsch", ja: "日本語", ar: "العربية", zh: "简体中文", nl: "Nederlands", pt: "Português", sv: "Svenska", ru: "Русский" };
+const LOCALES = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU" };
 /* code interne (dossier /zh/) → code de langue HTML / hreflang / inLanguage : le chinois simplifié s'écrit zh-Hans */
-const HL = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv" };
+const HL = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru" };
 /* valeur d'une langue dans un objet de cours { fr, en, … } ; le chinois, le néerlandais et le portugais, tant qu'un cours n'a pas leur clé, retombent sur l'anglais */
-function lk(o, lg) { if (!o || typeof o !== "object") return undefined; if (o[lg] != null) return o[lg]; return (lg === "zh" || lg === "nl" || lg === "pt" || lg === "sv") ? o.en : undefined; }
+function lk(o, lg) { if (!o || typeof o !== "object") return undefined; if (o[lg] != null) return o[lg]; return (lg === "zh" || lg === "nl" || lg === "pt" || lg === "sv" || lg === "ru") ? o.en : undefined; }
 function log() { console.log.apply(console, ["[seo-galops]"].concat([].slice.call(arguments))); }
 
 /* ---------- Textes de l'interface ---------- */
@@ -115,6 +115,13 @@ const UI = {
     reponse: "Visa svaret", vrai: "Sant", faux: "Falskt", appli: "Hitta det här kapitlet i appen Hype, med bilder, ett quiz med poäng och uppföljning av dina framsteg.",
     legal: "Utbildningsinnehåll från Hype, uppbyggt kring det franska «Galop»-programmet. Hype är en oberoende app utan officiell koppling till det franska ridsportförbundet (FFE).",
     langue: "Språk", decouvrir: "Upptäck Hype" },
+  ru: { theorie: "Теория верховой езды, уровни с 1 по 7", galop: (n) => "Galop " + n, chap: "главы", ouvrir: "Открыть Hype", accueil: "Главная",
+    sousTitre: "Теория верховой езды по французским уровням «Galop» с 1 по 7, на 12 языках: иллюстрированные главы и квизы для тренировки.",
+    gratuit: "Бесплатно", reserve: "Для подписчиков Hype+", reserveTxt: "Главы этого уровня читаются в приложении Hype по подписке Hype+, со схемами, плакатами и квизами.",
+    lire: "Читать в приложении", suivant: "Следующая глава", precedent: "Предыдущая глава", sommaire: "Содержание уровня", quiz: "Потренируйся",
+    reponse: "Показать ответ", vrai: "Верно", faux: "Неверно", appli: "Найди эту главу в приложении Hype: с картинками, квизом с оценкой и отслеживанием твоего прогресса.",
+    legal: "Учебные материалы Hype, построенные вокруг французской программы Galop. Hype — независимое приложение, не имеющее официальной связи с Французской федерацией конного спорта (FFE).",
+    langue: "Язык", decouvrir: "Узнай Hype" },
 };
 /* Sous-titres des Galops : ceux de l'appli (GALOPS_I18N), plus l'arabe, absent de l'appli pour ces 7 lignes. */
 const SOUS_ZH = { 1: "认识马", 2: "基础自主能力", 3: "马场内自主骑乘", 4: "掌握户外骑乘", 5: "技术精进", 6: "经验丰富的骑手", 7: "迈向联邦 Galop 7" };

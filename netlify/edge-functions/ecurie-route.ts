@@ -46,7 +46,7 @@ const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/ecurie/…, /es/…, /it/…, /de/…, /ja/…, /ar/… — seulement pour les écuries qui ont
 // au moins un cheval ou un rendez-vous sur Hype ; sinon l'adresse étrangère renvoie vers la page française.
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const FORME_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
@@ -58,11 +58,11 @@ const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TX: Record<Lg, Record<string, any>> = {
   fr: { ecA: (v: string) => "Écurie à " + v, ec: "Écurie", ecAd: (v: string) => "écurie à " + v, ecd: "écurie",
@@ -153,6 +153,14 @@ const TX: Record<Lg, Record<string, any>> = {
     sesChevaux: "Stallets hästar på Hype", rdv: "Kommande evenemang", compte: "Skapa ditt Hype-konto för att upptäcka stallets hästar, resultat och agenda.", contacter: "Kontakta stallet",
     boxT: "En virtuell box på Hype?", boxP: "Här behöver du inte mocka: bara din hästs profil, foton, tävlingar, minnen och uppföljning … och andra ryttare att dela dem med. Teori, tips och en virtuell coach hjälper dig också att utvecklas.",
     pied: "Hype är en oberoende app utan officiell koppling till det här stallet eller FFE. Stalldata: © OpenStreetMap-bidragsgivare.", cheval: "Häst", rendezVous: "Evenemang", dp: ": " },
+  ru: { ecA: (v: string) => "Конюшня: " + v, ec: "Конюшня", ecAd: (v: string) => "конюшня: " + v, ecd: "конюшня",
+    descTel: "Телефон, маршрут, лошади, результаты и афиша конюшни на Hype.", desc: "Лошади, результаты и афиша конюшни на Hype.",
+    descInvite: "Твоя лошадь здесь? Создай её профиль на Hype: фото, родословная, результаты соревнований.",
+    adresse: "Адрес", tel: "Телефон", email: "E-mail", site: "Сайт", horaires: "Часы работы",
+    nbCh: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "лошадь" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "лошади" : "лошадей"), nbRdv: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "предстоящее событие" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "предстоящих события" : "предстоящих событий"), surHype: (t: string) => t + " на Hype.", sep: " · ",
+    sesChevaux: "Лошади конюшни на Hype", rdv: "Ближайшие события", compte: "Создай аккаунт Hype, чтобы увидеть лошадей этой конюшни, их результаты и афишу.", contacter: "Связаться с конюшней",
+    boxT: "Виртуальный денник в Hype?", boxP: "Убирать денник здесь не нужно: только профиль твоей лошади, её фото, соревнования, воспоминания и уход… и другие всадники, с которыми всем этим можно поделиться. Теория, советы и виртуальный тренер тоже помогут тебе прогрессировать.",
+    pied: "Hype — независимое приложение, не связанное официально ни с этой конюшней, ни с FFE. Данные конюшни: © участники OpenStreetMap.", cheval: "Лошадь", rendezVous: "Событие", dp: ": " },
 };
 function liensLangues(chemin: string): string {
   return LANGUES.map((l) => `<link rel="alternate" hreflang="${HL[l]}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
@@ -214,6 +222,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["nl", "Deze stal is niet beschikbaar."],
   ["pt", "Esta cocheira não está disponível."],
   ["sv", "Det här stallet är inte tillgängligt."],
+  ["ru", "Эта конюшня недоступна."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -227,6 +236,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["nl", "Hype is tijdelijk niet beschikbaar. Probeer het zo meteen opnieuw."],
   ["pt", "O Hype está temporariamente indisponível. Tente novamente em instantes."],
   ["sv", "Hype är tillfälligt otillgängligt. Försök igen om en stund."],
+  ["ru", "Hype временно недоступен. Попробуй ещё раз через минуту."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -565,4 +575,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*", "/pt/ecurie/*", "/sv/ecurie/*"] };
+export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*", "/pt/ecurie/*", "/sv/ecurie/*", "/ru/ecurie/*"] };
