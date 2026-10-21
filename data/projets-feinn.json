@@ -59,6 +59,11 @@
      "titre": "Um cavalo para um jovem talento",
      "court": "Ajudar um jovem cavaleiro promissor a adquirir um cavalo à altura de suas ambições esportivas.",
      "long": "Acompanhar um jovem cavaleiro promissor que hoje não tem condições de comprar um cavalo de nível profissional. Graças a este projeto, ele poderá se preparar para o diploma de instrutor de equitação (DE) e continuar a evoluir nas provas Pro."
+    },
+    "sv": {
+     "titre": "En häst till en ung talang",
+     "court": "Att stödja en lovande ung ryttare att skaffa en häst som motsvarar hens sportsliga ambitioner.",
+     "long": "Att följa en lovande ung ryttare som i dag inte har de medel som krävs för att skaffa en häst på professionell nivå. Projektet skulle göra det möjligt för hen att förbereda sig för ridinstruktörsexamen (DE) och fortsätta utvecklas i Pro-tävlingarna."
     }
    }
   },
@@ -118,6 +123,11 @@
      "titre": "A aposentadoria dos nossos cavalos de clube",
      "court": "Contribuir com a alimentação, os cuidados e o bem-estar dos cavalos que acompanharam cavaleiros por anos.",
      "long": "Cuidar dos cavalos que acompanharam gerações de cavaleiros e hoje desfrutam de uma aposentadoria tranquila na cocheira. Garantir uma aposentadoria serena é continuar atento à alimentação, aos cuidados e ao bem-estar deles."
+    },
+    "sv": {
+     "titre": "Pension för våra ridskolehästar",
+     "court": "Att bidra till foder, vård och välbefinnande för hästarna som har följt ryttare i många år.",
+     "long": "Att ta hand om hästarna som har följt generationer av ryttare och nu njuter av en lugn pension i stallet. Att garantera dem ett stilla otium är att fortsätta ge dem omsorg om foder, vård och välbefinnande."
     }
    }
   },
@@ -177,6 +187,11 @@
      "titre": "Manter e recuperar o nosso espaço",
      "court": "Participar da reforma das cercas, dos pastos e das instalações equestres, respeitando o ambiente natural.",
      "long": "Recuperar as cercas, os pastos e as instalações do espaço para oferecer aos cavalos um ambiente de vida adequado, preservando e protegendo ao mesmo tempo a natureza ao nosso redor."
+    },
+    "sv": {
+     "titre": "Att underhålla och återställa vår plats",
+     "court": "Att hjälpa till med renoveringen av stängsel, hagar och ridanläggningar, med respekt för den naturliga miljön.",
+     "long": "Att återställa stängsel, hagar och anläggningar på platsen för att ge hästarna en lämplig livsmiljö, samtidigt som vi underhåller och bevarar naturen omkring oss."
     }
    }
   }

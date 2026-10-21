@@ -2,8 +2,8 @@
 # Génère les 7 pages CGV : /{langue}/cgv/index.html  (15/10/2026)
 # La version française fait foi. Lancer : python3 outils/cgv-generer.py
 import os, html
-LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt"]
-NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português"}
+LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt","sv"]
+NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português","sv":"Svenska"}
 MAIL = '<a href="mailto:feinn@live.fr">feinn@live.fr</a>'
 VEND = "Association FEINN Équitation et Environnement"
 ADR = "3 chemin des Prés Picard, 91760 Itteville, France — SIREN 898 028 980"
@@ -254,6 +254,31 @@ T["pt"] = dict(
  ("10. Dados pessoais", f"<p>Os dados necessários para a conta e as assinaturas são tratados para fornecer o serviço. Você pode solicitar o acesso aos seus dados ou a exclusão deles escrevendo para {MAIL}.</p>"),
  ("11. Reclamações e mediação", f"<p>Para qualquer reclamação, escreva primeiro para {MAIL}. Mediador de consumo: em fase de designação; seus dados de contato serão indicados aqui. Enquanto isso, qualquer reclamação pode ser enviada para {MAIL}. Você também pode usar a plataforma europeia de resolução de litígios on-line.</p>"),
  ("12. Lei aplicável", "<p>Estas condições estão sujeitas ao direito francês. Podem ser atualizadas; a versão aplicável é a vigente no dia do pagamento.</p>"),
+ ])
+
+T["sv"] = dict(
+ title="Allmänna villkor", desc="Allmänna villkor för Hype Premium-prenumerationer och Hype-mecenatskap.",
+ sous="Hype Premium-prenumerationer och Hype-mecenatskap · version från 15 oktober 2026", asso="Föreningen", foi="Detta är en översättning; den franska versionen gäller i första hand.",
+ bref="<b>Kort sagt.</b> Månadsprenumerationerna har ingen bindningstid och kan sägas upp online när som helst. Cercle Crystal betalas en enda gång för 12 månader, utan automatisk förnyelse. Åtkomsten är omedelbar efter betalningen: när du begär den avstår du från ångerrätten på 14 dagar. Mecenatskapet är ett stöd till appen, inte en gåva till föreningen.",
+ s=[
+ ("1. Vem som säljer", f"<p>Dessa villkor gäller för köp som görs i appen Hype (2hype.fr) hos <b>{VEND}</b>, en anmäld förening, {ADR}, företrädd av sin ordförande Blandine Pronost. Kontakt: {MAIL}. Nedan kallad ”föreningen”.</p>"),
+ ("2. Syfte", "<p>Hype är en app för ryttare: lektioner och quiz för Galop-nivåerna, hästpass, community, uppföljning av hästarna och AI-coachen ”Hey Baby”. Vissa funktioner är gratis; andra är förbehållna Premium-prenumeranter. Dessa villkor beskriver de betalda erbjudandena, deras pris, betalning, löptid och uppsägning.</p>"),
+ ("3. Erbjudanden och priser", "<p>Priserna anges i euro. Moms tillämpas inte, artikel 293 B i den franska skattelagen (Code général des impôts).</p>" + tab([
+   ["Premium Ryttare","12,99 € / månad","månadsvis, förnyas varje månad","Premium-åtkomst för 1 konto, AI-coach: 4 frågor per dag"],
+   ["Premium Familj","19,99 € / månad","månadsvis, förnyas varje månad","Premium-åtkomst för 2 separata konton (innehavaren och en inbjuden andra ryttare), AI-coach: 4 frågor per dag var"],
+   ["Cercle Crystal","99,99 € för 12 månader","12 månader, engångsbetalning, ingen automatisk förnyelse","Premium-åtkomst för 1 konto, AI-coach: 4 frågor per dag"],
+   ["Duopaket","24,99 € / månad","månadsvis, förnyas varje månad","Premium + Hype AI för 1 konto, AI-coach: 20 frågor per dag, videor ingår"],
+   ["Hype AI","14,99 € / månad","månadsvis, förnyas varje månad","AI-coach: upp till 15 frågor per dag, för 1 konto. Ger inte tillgång till Premium."]],
+   ["Erbjudande","Pris","Löptid","Vad som ingår"]) + "<p>Frågorna till AI-coachen räknas per dag, från midnatt till midnatt (Paristid). En outnyttjad fråga förs inte över till nästa dag. Föreningen kan ändra innehållet i erbjudandena för att förbättra appen, utan att väsentligt minska det som köpts för den pågående perioden.</p>"),
+ ("4. Beställning och betalning", ul(["Ett Hype-konto krävs: prenumerationen aktiveras på det konto som är inloggat vid betalningen. Innan du betalar visar appen kontots e-postadress och ber dig bekräfta den.","Betalningen sker med bankkort på Stripes säkra sida. Hype har aldrig tillgång till kortnummer.","För månadserbjudandena dras betalningen vid teckningen och därefter varje månad samma datum, tills du säger upp.","Om en månadsbetalning misslyckas kan Premium-åtkomsten stängas av tills det är reglerat."])),
+ ("5. Omedelbar åtkomst och ångerrätt", "<p>Erbjudandena ger tillgång till digitalt innehåll från och med betalningen. Innan du betalar ber appen dig bekräfta att du vill ha denna omedelbara åtkomst och att du därmed avstår från din ångerrätt på 14 dagar (artikel L221-28, 13° i den franska konsumentlagen, Code de la consommation). Utan denna bekräftelse öppnas inte betalningen.</p>"),
+ ("6. Löptid, förnyelse och uppsägning", ul(["<b>Månadserbjudanden</b> (Premium Ryttare, Premium Familj, Duopaket, Hype AI): ingen bindningstid. Du kan säga upp när som helst; uppsägningen gäller från slutet av den redan betalda månaden, och åtkomsten förblir öppen fram till dess. Ingen påbörjad månad återbetalas.","<b>Cercle Crystal</b>: 12 månader från betalningen, därefter upphör åtkomsten av sig själv. Inget mer dras därefter.",f"<b>Så säger du upp</b>: online, när som helst, med knappen ”Hantera min prenumeration” under Mitt konto (Stripes säkra sida, där du också kan byta kort och hitta dina fakturor). Du kan också skriva till {MAIL} från ditt kontos e-postadress.","Om du raderar ditt Hype-konto medan en prenumeration pågår, kom ihåg att säga upp den: radering av kontot stoppar inte betalningarna automatiskt. För Premium Familj måste innehavaren säga upp först."])),
+ ("7. Särskilda regler för Premium Familj", ul(["Den som betalar är <b>innehavaren</b>. Hen bjuder in en andra ryttare från Mitt konto, med en länk som gäller i 7 dagar.","Var och en behåller sitt eget konto, sina egna uppgifter och sina 4 AI-frågor per dag; ingenting delas mellan de två kontona.","Innehavaren kan ta bort den andra ryttaren, och den andra ryttaren kan lämna familjen. Ett byte är möjligt högst en gång var 30:e dag, med högst 4 olika andra ryttare per år.","Ingen släktskap krävs. Innehavaren ansvarar för valet av den inbjudna personen.","Om prenumerationen upphör (uppsägning, uteblivd betalning) upphör Premium-åtkomsten för båda kontona."])),
+ ("8. Hype-mecenatskap", f"<p>Mecenatsnivåerna (från 20 € till 500 €) är ett frivilligt engångsstöd till utvecklingen av appen. De ger inte tillgång till Premium, är inte en gåva till föreningen FEINN och ger ingen skatteavdragsrätt. De kan inte återbetalas, utom vid ett uppenbart fel som snabbt meddelas till {MAIL}.</p>"),
+ ("9. Tjänstens funktion", "<p>Föreningen gör sitt bästa för att Hype ska fungera utan avbrott, men avbrott kan förekomma (underhåll, fel hos en leverantör). AI-coachens svar är allmänna råd som tas fram av en artificiell intelligens: de ersätter varken en behörig instruktör eller en veterinär och kan innehålla fel.</p>"),
+ ("10. Personuppgifter", f"<p>De uppgifter som behövs för kontot och prenumerationerna behandlas för att tillhandahålla tjänsten. Du kan begära åtkomst till dina uppgifter eller radering av dem genom att skriva till {MAIL}.</p>"),
+ ("11. Klagomål och medling", f"<p>För alla klagomål, skriv först till {MAIL}. Konsumentmedlare: utses för närvarande; kontaktuppgifterna anges här. Under tiden kan alla klagomål skickas till {MAIL}. Du kan också använda EU:s plattform för tvistlösning online.</p>"),
+ ("12. Tillämplig lag", "<p>Dessa villkor lyder under fransk lag. De kan uppdateras; den tillämpliga versionen är den som gäller på betalningsdagen.</p>"),
  ])
 
 CSS = """:root{--noir:#05080B;--carte:#0B1418;--ivoire:#F3EEE4;--doux:#B7C2C0;--gris:#8E9893;--champ:#C9A66B;--trait:rgba(201,166,107,.32);--trait2:rgba(201,166,107,.16)}

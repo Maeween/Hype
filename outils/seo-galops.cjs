@@ -8,7 +8,7 @@
    - 09/10 : Galop 1 est gratuit ; les Galops 2 à 7 sont réservés aux abonnés Hype+. Donc :
        Galop 1  → chaque chapitre a sa page complète (texte, encadrés, quiz avec réponses à déplier) ;
        Galops 2 à 7 → une page par Galop avec la liste des chapitres (titre, durée) et « Réservé à Hype+ ».
-   - Les 10 langues de l'appli (fr, en, es, it, de, ja, ar, zh, nl, pt ; chinois : clé zh des cours, sinon anglais ; arabe de droite à gauche).
+   - Les 11 langues de l'appli (fr, en, es, it, de, ja, ar, zh, nl, pt, sv ; chinois : clé zh des cours, sinon anglais ; arabe de droite à gauche).
 
    CE QUI EST FABRIQUÉ, pour chaque langue <lg> :
      /<lg>/galops/                  le sommaire des 7 Galops
@@ -27,13 +27,13 @@ const path = require("path");
 const vm = require("vm");
 const RACINE = path.join(__dirname, "..");
 const DOM = "https://2hype.fr";
-const LANGS = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt"];
-const NOMS = { fr: "Français", en: "English", es: "Español", it: "Italiano", de: "Deutsch", ja: "日本語", ar: "العربية", zh: "简体中文", nl: "Nederlands", pt: "Português" };
-const LOCALES = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR" };
+const LANGS = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv"];
+const NOMS = { fr: "Français", en: "English", es: "Español", it: "Italiano", de: "Deutsch", ja: "日本語", ar: "العربية", zh: "简体中文", nl: "Nederlands", pt: "Português", sv: "Svenska" };
+const LOCALES = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE" };
 /* code interne (dossier /zh/) → code de langue HTML / hreflang / inLanguage : le chinois simplifié s'écrit zh-Hans */
-const HL = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR" };
+const HL = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv" };
 /* valeur d'une langue dans un objet de cours { fr, en, … } ; le chinois, le néerlandais et le portugais, tant qu'un cours n'a pas leur clé, retombent sur l'anglais */
-function lk(o, lg) { if (!o || typeof o !== "object") return undefined; if (o[lg] != null) return o[lg]; return (lg === "zh" || lg === "nl" || lg === "pt") ? o.en : undefined; }
+function lk(o, lg) { if (!o || typeof o !== "object") return undefined; if (o[lg] != null) return o[lg]; return (lg === "zh" || lg === "nl" || lg === "pt" || lg === "sv") ? o.en : undefined; }
 function log() { console.log.apply(console, ["[seo-galops]"].concat([].slice.call(arguments))); }
 
 /* ---------- Textes de l'interface ---------- */
@@ -108,6 +108,13 @@ const UI = {
     reponse: "Ver a resposta", vrai: "Verdadeiro", faux: "Falso", appli: "Encontre este capítulo no app Hype, com suas imagens, um quiz com nota e o acompanhamento do seu progresso.",
     legal: "Conteúdo educativo do Hype, construído em torno do programa francês dos «Galops». O Hype é um aplicativo independente, sem vínculo oficial com a Federação Francesa de Equitação (FFE).",
     langue: "Idioma", decouvrir: "Conheça o Hype" },
+  sv: { theorie: "Ridteori, nivå 1 till 7", galop: (n) => "Galop " + n, chap: "kapitel", ouvrir: "Öppna Hype", accueil: "Startsida",
+    sousTitre: "Ridteorin baserad på de franska «Galop»-nivåerna 1 till 7, på 11 språk: illustrerade kapitel och quiz att öva med.",
+    gratuit: "Gratis", reserve: "För Hype+-prenumeranter", reserveTxt: "Kapitlen på den här nivån finns i appen Hype med Hype+-prenumerationen, med scheman, affischer och quiz.",
+    lire: "Läs i appen", suivant: "Nästa kapitel", precedent: "Föregående kapitel", sommaire: "Nivåns innehåll", quiz: "Öva själv",
+    reponse: "Visa svaret", vrai: "Sant", faux: "Falskt", appli: "Hitta det här kapitlet i appen Hype, med bilder, ett quiz med poäng och uppföljning av dina framsteg.",
+    legal: "Utbildningsinnehåll från Hype, uppbyggt kring det franska «Galop»-programmet. Hype är en oberoende app utan officiell koppling till det franska ridsportförbundet (FFE).",
+    langue: "Språk", decouvrir: "Upptäck Hype" },
 };
 /* Sous-titres des Galops : ceux de l'appli (GALOPS_I18N), plus l'arabe, absent de l'appli pour ces 7 lignes. */
 const SOUS_ZH = { 1: "认识马", 2: "基础自主能力", 3: "马场内自主骑乘", 4: "掌握户外骑乘", 5: "技术精进", 6: "经验丰富的骑手", 7: "迈向联邦 Galop 7" };
