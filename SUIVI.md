@@ -14199,3 +14199,19 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Non touchés : les vieux fichiers d'aperçu / DEV du dépôt (preview-*.html, index-apercu-*.html, DEV_*.html…), qui ne sont pas l'appli.
 - Rappel du marqueur : la publication de 23 h 35 a posé 20261021-2335 alors que 20261021-2345 était déjà en ligne (erreur de ma part) ; celle-ci repasse au-dessus.
 - node --check 17/17.
+
+## 21/10 — EN ATTENTE (branche hey-baby-responsive, NON publié) : Hey Baby responsive
+Brief « Claude-Hype-Hey-Baby-responsive ». Ne rien publier sans validation explicite de Blandine.
+- Zones de index.html touchées :
+  - après `sauverMessageHB` : dictionnaire HB_RESP_TXT (12 langues) + listerConversationsHB, supprimerEchangeHB, viderConversationHB, supprimerConversationHB, renommerConversationHB ;
+  - EcranAssistantIA : bloc « HEY BABY RESPONSIVE » (état, menus, confirmations, Échap/focus), bloc « rendu Hey Baby responsive », nouvelle charpente du `return` (colonne Historique / en-tête / zone de messages / barre de saisie) ; modales d'épinglage et de correction sans cyan ni bouton doré plein ;
+  - BulleMessage : couleurs pétrole/champagne, prop `avant` (le « ⋯ » d'un échange) ;
+  - coquille de l'appli : "assistant" ajouté aux écrans en grand (ordinateur et tablette).
+- Ordinateur ≥ 1024 : colonne Historique 260 px ; tablette : 205 px ; téléphone : bouton « Historique » + panneau 85 % (depuis la droite en arabe), un seul « + », 4 suggestions puis « Voir 2 autres suggestions ».
+- Six suggestions du brief (12 langues). Visage du cheval jamais recouvert ; image passée en noir et blanc chaud (plus de turquoise).
+- Supprimer un échange / Vider / Supprimer la conversation / Renommer : confirmation, chargement, erreur sans rien retirer, filtre par utilisatrice, rien si une réponse est en cours (on demande de l'arrêter).
+- Corrigé au passage : sur téléphone, le défilement automatique faisait glisser toute la page (en-tête caché) ; le bouton d'envoi était coupé à droite.
+- PASSÉ EN BASE le 21/10 à 23 h (validé par Blandine) : sql/2026-10-21-heybaby-noms-conversations.sql — table conversations_heybaby_meta, vide, 4 règles (chacune ne voit et ne modifie que ses lignes). Les 630 messages existants sont intacts. Elle ne sert qu'une fois cette branche publiée.
+- Anciens messages sans conversation_id : ni listés, ni migrés, ni supprimés.
+- 21/10 23 h 40 : refonte reposée sur la version en ligne 20261021-2350 (relance, réponse gardée en base, photos gardées dans le carnet, polonais, contact feinn@live.fr) — rien de ces changements n'est perdu. Ajouts : textes en polonais (13 langues), photo gardée affichée dans les bulles, et la photo gardée est effacée de l'espace carnet quand on supprime son échange, qu'on vide ou qu'on supprime la conversation (après l'effacement des messages, seulement dans le dossier de la cavalière). 44 vérifications automatiques passées.
+- EN ATTENTE DU CHOIX DE BLANDINE avant publication : la refonte met un filtre noir et blanc sur la photo du cheval de fond et sur l'avatar (pour enlever le turquoise), alors que la règle est « jamais de filtre ni de voile sur une photo de cheval ».

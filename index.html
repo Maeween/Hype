@@ -3064,6 +3064,178 @@ async function rangerPhotoHB(dataUrl) {
     return (r && !r.error) ? chemin : null;
   } catch (e) { return null; }
 }
+const HB_RESP_TXT = {
+  historique: {fr: "Historique", en: "History", es: "Historial", it: "Cronologia", ja: "履歴", de: "Verlauf", ar: "السجل", zh: "历史记录", nl: "Geschiedenis", pt: "Histórico", sv: "Historik", ru: "История", pl: "Historia"},
+  nouvelle: {fr: "Nouvelle conversation", en: "New conversation", es: "Nueva conversación", it: "Nuova conversazione", ja: "新しい会話", de: "Neue Unterhaltung", ar: "محادثة جديدة", zh: "新对话", nl: "Nieuw gesprek", pt: "Nova conversa", sv: "Ny konversation", ru: "Новый разговор", pl: "Nowa rozmowa"},
+  sansTitre: {fr: "Nouvelle conversation", en: "New conversation", es: "Nueva conversación", it: "Nuova conversazione", ja: "新しい会話", de: "Neue Unterhaltung", ar: "محادثة جديدة", zh: "新对话", nl: "Nieuw gesprek", pt: "Nova conversa", sv: "Ny konversation", ru: "Новый разговор", pl: "Nowa rozmowa"},
+  photo: {fr: "Photo envoyée", en: "Photo sent", es: "Foto enviada", it: "Foto inviata", ja: "写真を送信", de: "Foto gesendet", ar: "صورة مرسلة", zh: "已发送照片", nl: "Foto verstuurd", pt: "Foto enviada", sv: "Foto skickat", ru: "Фото отправлено", pl: "Zdjęcie wysłane"},
+  vide: {fr: "Aucune conversation pour l’instant.", en: "No conversations yet.", es: "Todavía no hay conversaciones.", it: "Ancora nessuna conversazione.", ja: "まだ会話はありません。", de: "Noch keine Unterhaltungen.", ar: "لا توجد محادثات حتى الآن.", zh: "暂时还没有对话。", nl: "Nog geen gesprekken.", pt: "Nenhuma conversa por enquanto.", sv: "Inga konversationer än.", ru: "Пока нет ни одного разговора.", pl: "Nie masz jeszcze żadnej rozmowy."},
+  chargeErr: {fr: "L’historique n’a pas pu être chargé.", en: "The history couldn’t be loaded.", es: "No se ha podido cargar el historial.", it: "Non è stato possibile caricare la cronologia.", ja: "履歴を読み込めませんでした。", de: "Der Verlauf konnte nicht geladen werden.", ar: "تعذّر تحميل السجل.", zh: "无法加载历史记录。", nl: "De geschiedenis kon niet worden geladen.", pt: "Não foi possível carregar o histórico.", sv: "Historiken kunde inte laddas.", ru: "Не удалось загрузить историю.", pl: "Nie udało się wczytać historii."},
+  reessayer: {fr: "Réessayer", en: "Try again", es: "Reintentar", it: "Riprova", ja: "再試行", de: "Erneut versuchen", ar: "إعادة المحاولة", zh: "重试", nl: "Opnieuw proberen", pt: "Tentar de novo", sv: "Försök igen", ru: "Повторить", pl: "Spróbuj ponownie"},
+  renommer: {fr: "Renommer", en: "Rename", es: "Cambiar nombre", it: "Rinomina", ja: "名前を変更", de: "Umbenennen", ar: "إعادة التسمية", zh: "重命名", nl: "Naam wijzigen", pt: "Renomear", sv: "Byt namn", ru: "Переименовать", pl: "Zmień nazwę"},
+  supprimer: {fr: "Supprimer", en: "Delete", es: "Eliminar", it: "Elimina", ja: "削除", de: "Löschen", ar: "حذف", zh: "删除", nl: "Verwijderen", pt: "Excluir", sv: "Radera", ru: "Удалить", pl: "Usuń"},
+  vider: {fr: "Vider", en: "Clear", es: "Vaciar", it: "Svuota", ja: "空にする", de: "Leeren", ar: "إفراغ", zh: "清空", nl: "Leegmaken", pt: "Esvaziar", sv: "Töm", ru: "Очистить", pl: "Wyczyść"},
+  annuler: {fr: "Annuler", en: "Cancel", es: "Cancelar", it: "Annulla", ja: "キャンセル", de: "Abbrechen", ar: "إلغاء", zh: "取消", nl: "Annuleren", pt: "Cancelar", sv: "Avbryt", ru: "Отмена", pl: "Anuluj"},
+  enregistrer: {fr: "Enregistrer", en: "Save", es: "Guardar", it: "Salva", ja: "保存", de: "Speichern", ar: "حفظ", zh: "保存", nl: "Opslaan", pt: "Salvar", sv: "Spara", ru: "Сохранить", pl: "Zapisz"},
+  viderConv: {fr: "Vider cette conversation", en: "Clear this conversation", es: "Vaciar esta conversación", it: "Svuota questa conversazione", ja: "この会話を空にする", de: "Diese Unterhaltung leeren", ar: "إفراغ هذه المحادثة", zh: "清空此对话", nl: "Dit gesprek leegmaken", pt: "Esvaziar esta conversa", sv: "Töm den här konversationen", ru: "Очистить этот разговор", pl: "Wyczyść tę rozmowę"},
+  supprimerConv: {fr: "Supprimer la conversation", en: "Delete the conversation", es: "Eliminar la conversación", it: "Elimina la conversazione", ja: "会話を削除", de: "Unterhaltung löschen", ar: "حذف المحادثة", zh: "删除对话", nl: "Gesprek verwijderen", pt: "Excluir a conversa", sv: "Radera konversationen", ru: "Удалить разговор", pl: "Usuń rozmowę"},
+  supprimerEch: {fr: "Supprimer cet échange", en: "Delete this exchange", es: "Eliminar este intercambio", it: "Elimina questo scambio", ja: "このやり取りを削除", de: "Diesen Austausch löschen", ar: "حذف هذا التبادل", zh: "删除这段问答", nl: "Deze uitwisseling verwijderen", pt: "Excluir esta troca", sv: "Radera det här utbytet", ru: "Удалить этот обмен", pl: "Usuń tę wymianę"},
+  echT: {fr: "Supprimer cet échange ?", en: "Delete this exchange?", es: "¿Eliminar este intercambio?", it: "Eliminare questo scambio?", ja: "このやり取りを削除しますか？", de: "Diesen Austausch löschen?", ar: "هل تريدين حذف هذا التبادل؟", zh: "删除这段问答？", nl: "Deze uitwisseling verwijderen?", pt: "Excluir esta troca?", sv: "Radera det här utbytet?", ru: "Удалить этот обмен?", pl: "Usunąć tę wymianę?"},
+  echX: {fr: "La question et la réponse associée seront définitivement supprimées.", en: "The question and its answer will be permanently deleted.", es: "La pregunta y su respuesta se eliminarán definitivamente.", it: "La domanda e la risposta collegata verranno eliminate definitivamente.", ja: "質問とその回答は完全に削除されます。", de: "Die Frage und die zugehörige Antwort werden endgültig gelöscht.", ar: "سيتم حذف السؤال والإجابة المرتبطة به نهائيًا.", zh: "该问题及其回答将被永久删除。", nl: "De vraag en het bijbehorende antwoord worden definitief verwijderd.", pt: "A pergunta e a resposta associada serão excluídas definitivamente.", sv: "Frågan och svaret som hör till raderas permanent.", ru: "Вопрос и ответ на него будут удалены безвозвратно.", pl: "Pytanie i powiązana z nim odpowiedź zostaną trwale usunięte."},
+  vidT: {fr: "Vider cette conversation ?", en: "Clear this conversation?", es: "¿Vaciar esta conversación?", it: "Svuotare questa conversazione?", ja: "この会話を空にしますか？", de: "Diese Unterhaltung leeren?", ar: "هل تريدين إفراغ هذه المحادثة؟", zh: "清空此对话？", nl: "Dit gesprek leegmaken?", pt: "Esvaziar esta conversa?", sv: "Tömma den här konversationen?", ru: "Очистить этот разговор?", pl: "Wyczyścić tę rozmowę?"},
+  vidX: {fr: "Tous les échanges seront supprimés, mais la conversation restera dans ton historique.", en: "All exchanges will be deleted, but the conversation will stay in your history.", es: "Se eliminarán todos los intercambios, pero la conversación seguirá en tu historial.", it: "Tutti gli scambi verranno eliminati, ma la conversazione resterà nella tua cronologia.", ja: "すべてのやり取りは削除されますが、会話は履歴に残ります。", de: "Alle Austausche werden gelöscht, die Unterhaltung bleibt aber in deinem Verlauf.", ar: "سيتم حذف كل التبادلات، لكن المحادثة ستبقى في سجلك.", zh: "所有问答都将被删除，但此对话会保留在你的历史记录中。", nl: "Alle uitwisselingen worden verwijderd, maar het gesprek blijft in je geschiedenis staan.", pt: "Todas as trocas serão excluídas, mas a conversa continuará no seu histórico.", sv: "Alla utbyten raderas, men konversationen finns kvar i din historik.", ru: "Все обмены будут удалены, но разговор останется в твоей истории.", pl: "Wszystkie wymiany zostaną usunięte, ale rozmowa pozostanie w twojej historii."},
+  supT: {fr: "Supprimer cette conversation ?", en: "Delete this conversation?", es: "¿Eliminar esta conversación?", it: "Eliminare questa conversazione?", ja: "この会話を削除しますか？", de: "Diese Unterhaltung löschen?", ar: "هل تريدين حذف هذه المحادثة؟", zh: "删除此对话？", nl: "Dit gesprek verwijderen?", pt: "Excluir esta conversa?", sv: "Radera den här konversationen?", ru: "Удалить этот разговор?", pl: "Usunąć tę rozmowę?"},
+  supX: {fr: "Cette conversation et tous ses échanges seront définitivement supprimés.", en: "This conversation and all its exchanges will be permanently deleted.", es: "Esta conversación y todos sus intercambios se eliminarán definitivamente.", it: "Questa conversazione e tutti i suoi scambi verranno eliminati definitivamente.", ja: "この会話とすべてのやり取りは完全に削除されます。", de: "Diese Unterhaltung und alle ihre Austausche werden endgültig gelöscht.", ar: "سيتم حذف هذه المحادثة وكل تبادلاتها نهائيًا.", zh: "此对话及其所有问答都将被永久删除。", nl: "Dit gesprek en alle uitwisselingen worden definitief verwijderd.", pt: "Esta conversa e todas as suas trocas serão excluídas definitivamente.", sv: "Den här konversationen och alla dess utbyten raderas permanent.", ru: "Этот разговор и все его обмены будут удалены безвозвратно.", pl: "Ta rozmowa i wszystkie jej wymiany zostaną trwale usunięte."},
+  occT: {fr: "Hey Baby est en train de répondre", en: "Hey Baby is answering", es: "Hey Baby está respondiendo", it: "Hey Baby sta rispondendo", ja: "Hey Baby が回答中です", de: "Hey Baby antwortet gerade", ar: "Hey Baby تجيب الآن", zh: "Hey Baby 正在回答", nl: "Hey Baby is aan het antwoorden", pt: "Hey Baby está respondendo", sv: "Hey Baby svarar just nu", ru: "Hey Baby сейчас отвечает", pl: "Hey Baby właśnie odpowiada"},
+  occX: {fr: "Arrête d’abord la réponse en cours, puis recommence.", en: "Stop the current answer first, then try again.", es: "Detén primero la respuesta en curso y vuelve a intentarlo.", it: "Interrompi prima la risposta in corso, poi riprova.", ja: "まず進行中の回答を止めてから、もう一度お試しください。", de: "Stoppe zuerst die laufende Antwort und versuche es dann erneut.", ar: "أوقفي الإجابة الجارية أولًا، ثم أعيدي المحاولة.", zh: "请先停止当前的回答，然后再试一次。", nl: "Stop eerst het lopende antwoord en probeer het dan opnieuw.", pt: "Pare primeiro a resposta em andamento e tente de novo.", sv: "Stoppa först svaret som pågår och försök sedan igen.", ru: "Сначала останови текущий ответ, потом попробуй снова.", pl: "Najpierw zatrzymaj trwającą odpowiedź, potem spróbuj ponownie."},
+  arreter: {fr: "Arrêter la réponse", en: "Stop the answer", es: "Detener la respuesta", it: "Interrompi la risposta", ja: "回答を止める", de: "Antwort stoppen", ar: "إيقاف الإجابة", zh: "停止回答", nl: "Antwoord stoppen", pt: "Parar a resposta", sv: "Stoppa svaret", ru: "Остановить ответ", pl: "Zatrzymaj odpowiedź"},
+  erreur: {fr: "Impossible pour le moment : rien n’a été supprimé. Vérifie ta connexion et réessaie.", en: "Not possible right now: nothing was deleted. Check your connection and try again.", es: "Ahora no es posible: no se ha eliminado nada. Revisa tu conexión y vuelve a intentarlo.", it: "Al momento non è possibile: non è stato eliminato nulla. Controlla la connessione e riprova.", ja: "現在実行できません。何も削除されていません。接続を確認して、もう一度お試しください。", de: "Gerade nicht möglich: Es wurde nichts gelöscht. Prüfe deine Verbindung und versuche es erneut.", ar: "غير ممكن حاليًا: لم يُحذف أي شيء. تحققي من اتصالك وأعيدي المحاولة.", zh: "暂时无法操作：没有删除任何内容。请检查网络连接后重试。", nl: "Nu niet mogelijk: er is niets verwijderd. Controleer je verbinding en probeer het opnieuw.", pt: "Não é possível agora: nada foi excluído. Verifique sua conexão e tente de novo.", sv: "Det går inte just nu: inget har raderats. Kontrollera din anslutning och försök igen.", ru: "Сейчас не получилось: ничего не удалено. Проверь подключение и попробуй снова.", pl: "Teraz się nie udało: nic nie zostało usunięte. Sprawdź połączenie i spróbuj ponownie."},
+  erreurNom: {fr: "Le nom n’a pas pu être enregistré. Vérifie ta connexion et réessaie.", en: "The name couldn’t be saved. Check your connection and try again.", es: "No se ha podido guardar el nombre. Revisa tu conexión y vuelve a intentarlo.", it: "Non è stato possibile salvare il nome. Controlla la connessione e riprova.", ja: "名前を保存できませんでした。接続を確認して、もう一度お試しください。", de: "Der Name konnte nicht gespeichert werden. Prüfe deine Verbindung und versuche es erneut.", ar: "تعذّر حفظ الاسم. تحققي من اتصالك وأعيدي المحاولة.", zh: "无法保存名称。请检查网络连接后重试。", nl: "De naam kon niet worden opgeslagen. Controleer je verbinding en probeer het opnieuw.", pt: "Não foi possível salvar o nome. Verifique sua conexão e tente de novo.", sv: "Namnet kunde inte sparas. Kontrollera din anslutning och försök igen.", ru: "Не удалось сохранить название. Проверь подключение и попробуй снова.", pl: "Nie udało się zapisać nazwy. Sprawdź połączenie i spróbuj ponownie."},
+  renT: {fr: "Renommer la conversation", en: "Rename the conversation", es: "Cambiar el nombre de la conversación", it: "Rinomina la conversazione", ja: "会話の名前を変更", de: "Unterhaltung umbenennen", ar: "إعادة تسمية المحادثة", zh: "重命名对话", nl: "Gesprek een andere naam geven", pt: "Renomear a conversa", sv: "Byt namn på konversationen", ru: "Переименовать разговор", pl: "Zmień nazwę rozmowy"},
+  nomLabel: {fr: "Nom de la conversation", en: "Conversation name", es: "Nombre de la conversación", it: "Nome della conversazione", ja: "会話の名前", de: "Name der Unterhaltung", ar: "اسم المحادثة", zh: "对话名称", nl: "Naam van het gesprek", pt: "Nome da conversa", sv: "Konversationens namn", ru: "Название разговора", pl: "Nazwa rozmowy"},
+  suppEnCours: {fr: "Suppression…", en: "Deleting…", es: "Eliminando…", it: "Eliminazione…", ja: "削除中…", de: "Wird gelöscht…", ar: "جارٍ الحذف…", zh: "正在删除…", nl: "Bezig met verwijderen…", pt: "Excluindo…", sv: "Raderar…", ru: "Удаление…", pl: "Usuwanie…"},
+  videEnCours: {fr: "Vidage…", en: "Clearing…", es: "Vaciando…", it: "Svuotamento…", ja: "空にしています…", de: "Wird geleert…", ar: "جارٍ الإفراغ…", zh: "正在清空…", nl: "Bezig met leegmaken…", pt: "Esvaziando…", sv: "Tömmer…", ru: "Очистка…", pl: "Czyszczenie…"},
+  enregEnCours: {fr: "Enregistrement…", en: "Saving…", es: "Guardando…", it: "Salvataggio…", ja: "保存中…", de: "Wird gespeichert…", ar: "جارٍ الحفظ…", zh: "正在保存…", nl: "Bezig met opslaan…", pt: "Salvando…", sv: "Sparar…", ru: "Сохранение…", pl: "Zapisywanie…"},
+  toastEch: {fr: "Échange supprimé", en: "Exchange deleted", es: "Intercambio eliminado", it: "Scambio eliminato", ja: "やり取りを削除しました", de: "Austausch gelöscht", ar: "تم حذف التبادل", zh: "问答已删除", nl: "Uitwisseling verwijderd", pt: "Troca excluída", sv: "Utbytet raderat", ru: "Обмен удалён", pl: "Wymiana usunięta"},
+  toastVid: {fr: "Conversation vidée", en: "Conversation cleared", es: "Conversación vaciada", it: "Conversazione svuotata", ja: "会話を空にしました", de: "Unterhaltung geleert", ar: "تم إفراغ المحادثة", zh: "对话已清空", nl: "Gesprek leeggemaakt", pt: "Conversa esvaziada", sv: "Konversationen tömd", ru: "Разговор очищен", pl: "Rozmowa wyczyszczona"},
+  toastSup: {fr: "Conversation supprimée", en: "Conversation deleted", es: "Conversación eliminada", it: "Conversazione eliminata", ja: "会話を削除しました", de: "Unterhaltung gelöscht", ar: "تم حذف المحادثة", zh: "对话已删除", nl: "Gesprek verwijderd", pt: "Conversa excluída", sv: "Konversationen raderad", ru: "Разговор удалён", pl: "Rozmowa usunięta"},
+  toastNom: {fr: "Nom enregistré", en: "Name saved", es: "Nombre guardado", it: "Nome salvato", ja: "名前を保存しました", de: "Name gespeichert", ar: "تم حفظ الاسم", zh: "名称已保存", nl: "Naam opgeslagen", pt: "Nome salvo", sv: "Namnet sparat", ru: "Название сохранено", pl: "Nazwa zapisana"},
+  voirPlus: {fr: "Voir 2 autres suggestions", en: "See 2 more suggestions", es: "Ver 2 sugerencias más", it: "Vedi altri 2 suggerimenti", ja: "ほかの提案を2件見る", de: "2 weitere Vorschläge anzeigen", ar: "عرض اقتراحين آخرين", zh: "查看另外 2 条建议", nl: "Nog 2 suggesties bekijken", pt: "Ver mais 2 sugestões", sv: "Visa 2 förslag till", ru: "Ещё 2 подсказки", pl: "Zobacz 2 kolejne propozycje"},
+  masquer: {fr: "Masquer les 2 suggestions", en: "Hide the 2 suggestions", es: "Ocultar las 2 sugerencias", it: "Nascondi i 2 suggerimenti", ja: "2件の提案を隠す", de: "Die 2 Vorschläge ausblenden", ar: "إخفاء الاقتراحين", zh: "隐藏这 2 条建议", nl: "De 2 suggesties verbergen", pt: "Ocultar as 2 sugestões", sv: "Dölj de 2 förslagen", ru: "Скрыть 2 подсказки", pl: "Ukryj 2 propozycje"},
+  optConv: {fr: "Options de la conversation", en: "Conversation options", es: "Opciones de la conversación", it: "Opzioni della conversazione", ja: "会話のオプション", de: "Optionen der Unterhaltung", ar: "خيارات المحادثة", zh: "对话选项", nl: "Opties voor het gesprek", pt: "Opções da conversa", sv: "Alternativ för konversationen", ru: "Параметры разговора", pl: "Opcje rozmowy"},
+  optLigne: {fr: "Options de la conversation « %s »", en: "Options for the conversation “%s”", es: "Opciones de la conversación «%s»", it: "Opzioni della conversazione «%s»", ja: "会話「%s」のオプション", de: "Optionen der Unterhaltung „%s“", ar: "خيارات المحادثة «%s»", zh: "对话“%s”的选项", nl: "Opties voor het gesprek ‘%s’", pt: "Opções da conversa “%s”", sv: "Alternativ för konversationen ”%s”", ru: "Параметры разговора «%s»", pl: "Opcje rozmowy „%s”"},
+  optEch: {fr: "Options de cet échange", en: "Options for this exchange", es: "Opciones de este intercambio", it: "Opzioni di questo scambio", ja: "このやり取りのオプション", de: "Optionen dieses Austauschs", ar: "خيارات هذا التبادل", zh: "这段问答的选项", nl: "Opties voor deze uitwisseling", pt: "Opções desta troca", sv: "Alternativ för det här utbytet", ru: "Параметры этого обмена", pl: "Opcje tej wymiany"},
+  fermer: {fr: "Fermer", en: "Close", es: "Cerrar", it: "Chiudi", ja: "閉じる", de: "Schließen", ar: "إغلاق", zh: "关闭", nl: "Sluiten", pt: "Fechar", sv: "Stäng", ru: "Закрыть", pl: "Zamknij"},
+  active: {fr: "conversation ouverte", en: "open conversation", es: "conversación abierta", it: "conversazione aperta", ja: "表示中の会話", de: "geöffnete Unterhaltung", ar: "المحادثة المفتوحة", zh: "当前对话", nl: "geopend gesprek", pt: "conversa aberta", sv: "öppen konversation", ru: "открытый разговор", pl: "otwarta rozmowa"},
+  s1: {fr: "Peux-tu analyser ma position sur ce saut à partir d’une photo ?", en: "Can you analyse my position over this jump from a photo?", es: "¿Puedes analizar mi posición en este salto a partir de una foto?", it: "Puoi analizzare la mia posizione su questo salto partendo da una foto?", ja: "写真から、このジャンプでの私の姿勢を分析してくれる？", de: "Kannst du meinen Sitz bei diesem Sprung anhand eines Fotos analysieren?", ar: "هل يمكنك تحليل وضعيتي في هذه القفزة من خلال صورة؟", zh: "你能根据一张照片分析我在这次跳跃中的姿势吗？", nl: "Kun je mijn houding bij deze sprong analyseren aan de hand van een foto?", pt: "Você pode analisar minha posição neste salto a partir de uma foto?", sv: "Kan du analysera min sits i det här hoppet utifrån ett foto?", ru: "Можешь проанализировать мою посадку на этом прыжке по фото?", pl: "Czy możesz przeanalizować mój dosiad na tym skoku na podstawie zdjęcia?"},
+  s2: {fr: "Quel exercice faire sur le plat pour améliorer l’équilibre de mon cheval ?", en: "Which flatwork exercise can improve my horse’s balance?", es: "¿Qué ejercicio de trabajo en plano puedo hacer para mejorar el equilibrio de mi caballo?", it: "Quale esercizio in piano posso fare per migliorare l’equilibrio del mio cavallo?", ja: "馬のバランスを良くするには、フラットワークでどんな運動をすればいい？", de: "Welche Übung auf dem Viereck verbessert das Gleichgewicht meines Pferdes?", ar: "ما التمرين على الأرض المستوية الذي يحسّن توازن حصاني؟", zh: "做哪种平地练习可以改善我的马的平衡？", nl: "Welke oefening op de vlakke kan het evenwicht van mijn paard verbeteren?", pt: "Que exercício no plano posso fazer para melhorar o equilíbrio do meu cavalo?", sv: "Vilken övning på plan mark kan förbättra min hästs balans?", ru: "Какое упражнение в манеже поможет улучшить баланс моей лошади?", pl: "Jakie ćwiczenie na płaskim poprawi równowagę mojego konia?"},
+  s3: {fr: "Prépare-moi un cours d’une heure sur les transitions pour un groupe Galop 4.", en: "Plan me a one-hour lesson on transitions for a Galop 4 group.", es: "Prepárame una clase de una hora sobre las transiciones para un grupo de Galop 4.", it: "Preparami una lezione di un’ora sulle transizioni per un gruppo Galop 4.", ja: "Galop 4 のグループ向けに、移行をテーマにした1時間のレッスンを作って。", de: "Bereite mir eine einstündige Reitstunde zu Übergängen für eine Galop-4-Gruppe vor.", ar: "حضّري لي درسًا مدته ساعة عن الانتقالات لمجموعة Galop 4.", zh: "帮我为 Galop 4 小组准备一节关于转换的一小时课程。", nl: "Maak een les van een uur over overgangen voor een Galop 4-groep.", pt: "Prepare uma aula de uma hora sobre transições para um grupo de Galop 4.", sv: "Planera en lektion på en timme om övergångar för en Galop 4-grupp.", ru: "Подготовь мне часовое занятие по переходам для группы Galop 4.", pl: "Przygotuj mi godzinną lekcję o przejściach dla grupy Galop 4."},
+  s4: {fr: "Quels signes doivent m’alerter en cas de coliques ?", en: "Which signs should alert me to colic?", es: "¿Qué señales deben alertarme en caso de cólico?", it: "Quali segnali devono mettermi in allarme in caso di colica?", ja: "疝痛のとき、どんなサインに注意すればいい？", de: "Welche Anzeichen sollten mich bei einer Kolik alarmieren?", ar: "ما العلامات التي يجب أن تنبّهني في حالة المغص؟", zh: "出现哪些迹象时我应该警惕疝痛？", nl: "Welke signalen moeten me alarmeren bij koliek?", pt: "Que sinais devem me alertar em caso de cólica?", sv: "Vilka tecken ska få mig att reagera vid kolik?", ru: "Какие признаки должны насторожить меня при колике?", pl: "Jakie objawy powinny mnie zaniepokoić w przypadku kolki?"},
+  s5: {fr: "Quelle est la différence entre la cession à la jambe et l’appuyer ?", en: "What’s the difference between leg-yield and half-pass?", es: "¿Cuál es la diferencia entre la cesión a la pierna y el apoyo?", it: "Qual è la differenza tra la cessione alla gamba e l’appoggiata?", ja: "レッグイールドとハーフパスの違いは何？", de: "Was ist der Unterschied zwischen Schenkelweichen und Traversale?", ar: "ما الفرق بين التنحي عن الساق والانتقال الجانبي المائل؟", zh: "腿部让步和斜横步有什么区别？", nl: "Wat is het verschil tussen wijken en appuyement?", pt: "Qual é a diferença entre a cessão à perna e o appuyer?", sv: "Vad är skillnaden mellan skänkelvikning och halvpass?", ru: "Чем отличается уступка шенкелю от принимания?", pl: "Czym różni się ustępowanie od łydki od ciągu?"},
+  s6: {fr: "Comment vérifier si mon mors est correctement réglé ?", en: "How can I check that my bit is fitted correctly?", es: "¿Cómo compruebo si mi bocado está bien ajustado?", it: "Come verifico che il mio morso sia regolato correttamente?", ja: "ハミが正しく調整されているか、どう確認すればいい？", de: "Wie prüfe ich, ob mein Gebiss richtig verschnallt ist?", ar: "كيف أتحقق من أن الشكيمة مضبوطة بشكل صحيح؟", zh: "怎样检查我的衔铁是否调整得当？", nl: "Hoe controleer ik of mijn bit goed is afgesteld?", pt: "Como verificar se a minha embocadura está bem ajustada?", sv: "Hur kontrollerar jag att mitt bett sitter rätt?", ru: "Как проверить, правильно ли подогнано мое удило?", pl: "Jak sprawdzić, czy wędzidło jest dobrze dopasowane?"}
+};
+function hbRTxt(langue, k, x) { var e = HB_RESP_TXT[k]; if (!e) return k; var s = e[langue] || e.en || e.fr; return x != null ? s.replace("%s", x) : s; }
+/* 21/10 — HEY BABY RESPONSIVE : LISTE DES CONVERSATIONS, RENOMMAGE, SUPPRESSIONS.
+   Aucun second stockage des messages : une conversation = les lignes de `conversations_heybaby`
+   qui partagent le même `conversation_id` (le système en place depuis le cloisonnement).
+   Les anciens messages SANS conversation_id ne sont ni listés, ni migrés, ni supprimés.
+   Seul ajout : la petite table `conversations_heybaby_meta` (un nom choisi par la cavalière,
+   et la place d'une conversation vidée dans l'historique). Tant qu'elle n'existe pas en base,
+   tout marche sans elle : « Renommer » est simplement masqué.
+   Toutes les requêtes sont filtrées par l'utilisatrice connectée (en plus des règles RLS).
+   Photos gardées (image_chemin, espace privé « carnet », depuis le 21/10) : supprimées avec leur échange, par le même
+   appel que la page Carnet (storage « carnet » .remove), seulement dans le dossier de l'utilisatrice. On efface d'abord
+   les lignes (si ça échoue, rien n'est retiré), puis les fichiers (au pire un fichier orphelin, jamais une perte). */
+const HB_META_TABLE = "conversations_heybaby_meta";
+const HB_TITRE_MAX = 80;
+let __hbMetaDispo = null;
+async function _hbNettoyerPhotos(user, chemins) {
+  try {
+    const propres = (chemins || []).filter((c) => c && String(c).indexOf(user.id + "/heybaby/") === 0);
+    if (!propres.length) return;
+    const rs = await supa.storage.from("carnet").remove(propres);
+    if (rs && rs.error) console.warn("[hey-baby] photos non effacées :", rs.error);
+  } catch (e) { }
+}
+async function _hbCheminsPhotos(user, conversationId) {
+  try {
+    const r = await supa.from("conversations_heybaby").select("image_chemin").eq("user_id", user.id).eq("conversation_id", conversationId).not("image_chemin", "is", null).limit(5000);
+    return (r && !r.error && r.data) ? r.data.map((x) => x.image_chemin) : [];
+  } catch (e) { return []; }
+}
+function _hbTitreAuto(q) { const s = String(q || "").replace(/\s+/g, " ").trim(); return s.length > 70 ? (s.slice(0, 68).trim() + "…") : s; }
+async function listerConversationsHB() {
+  try {
+    const user = await utilisateurActuel();
+    if (!user) return { data: [], meta: false, error: null };
+    const r = await supa.from("conversations_heybaby").select("conversation_id, contenu, avec_image, created_at").eq("user_id", user.id).eq("role", "user").not("conversation_id", "is", null).order("created_at", { ascending: false }).limit(1000);
+    if (r.error) return { data: null, meta: !!__hbMetaDispo, error: r.error };
+    const parId = {};
+    (r.data || []).forEach((row) => {
+      const id = row.conversation_id; if (!id) return;
+      let c = parId[id];
+      if (!c) { c = parId[id] = { id: id, titre: "", titreAuto: "", photo: false, date: row.created_at, nb: 0 }; }
+      c.nb++;
+      /* lignes du plus récent au plus ancien : la dernière vue est la PREMIÈRE question = nom automatique */
+      c.titreAuto = _hbTitreAuto(row.contenu); c.photo = !String(row.contenu || "").trim() && !!row.avec_image;
+    });
+    let meta = [];
+    try {
+      const m = await supa.from(HB_META_TABLE).select("conversation_id, titre, updated_at").eq("user_id", user.id).limit(1000);
+      if (m.error) __hbMetaDispo = false; else { __hbMetaDispo = true; meta = m.data || []; }
+    } catch (eM) { __hbMetaDispo = false; }
+    meta.forEach((mt) => {
+      const id = mt.conversation_id; if (!id) return;
+      if (!parId[id]) parId[id] = { id: id, titre: "", titreAuto: "", photo: false, date: mt.updated_at, nb: 0 };
+      if (mt.titre) parId[id].titre = String(mt.titre).slice(0, HB_TITRE_MAX);
+    });
+    const liste = Object.keys(parId).map((k) => parId[k]).sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+    return { data: liste, meta: !!__hbMetaDispo, error: null };
+  } catch (e) { return { data: null, meta: !!__hbMetaDispo, error: String(e) }; }
+}
+/* Un échange = une question de la cavalière + les réponses de Hey Baby qui la suivent, jusqu'à la question
+   suivante. On le retrouve en base par le texte de la question et son rang en partant de la fin (l'écran
+   n'affiche que les derniers messages : compter depuis la fin reste juste). */
+async function supprimerEchangeHB(conversationId, question, rangDepuisFin) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user || !conversationId) return { error: "Pas connecté" };
+    let r = await supa.from("conversations_heybaby").select("id, role, contenu, image_chemin, created_at").eq("user_id", user.id).eq("conversation_id", conversationId).order("created_at", { ascending: true }).limit(5000);
+    if (r.error) r = await supa.from("conversations_heybaby").select("id, role, contenu, created_at").eq("user_id", user.id).eq("conversation_id", conversationId).order("created_at", { ascending: true }).limit(5000);
+    if (r.error) return { error: r.error };
+    const echanges = []; let cur = null;
+    (r.data || []).forEach((row) => { if (row.role === "user") { cur = { q: String(row.contenu || ""), ids: [row.id], photos: [] }; echanges.push(cur); } else if (cur) cur.ids.push(row.id); if (cur && row.image_chemin) cur.photos.push(row.image_chemin); });
+    const cible = String(question || "").slice(0, 12000);
+    const memes = echanges.filter((e) => e.q === cible);
+    const ech = memes[memes.length - 1 - (rangDepuisFin || 0)];
+    if (!ech) return { error: null, absent: true };   /* jamais enregistré (envoi hors ligne…) : rien en base */
+    const d = await supa.from("conversations_heybaby").delete().in("id", ech.ids).eq("user_id", user.id).eq("conversation_id", conversationId).select("id");
+    if (d.error) return { error: d.error };
+    if (!d.data || !d.data.length) return { error: "aucune ligne supprimée" };
+    await _hbNettoyerPhotos(user, ech.photos);
+    return { error: null };
+  } catch (e) { return { error: String(e) }; }
+}
+async function viderConversationHB(conversationId, titreAGarder) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user || !conversationId) return { error: "Pas connecté" };
+    /* la place dans l'historique d'abord (et le nom automatique, qui disparaîtrait avec les questions) */
+    if (__hbMetaDispo) {
+      const mt = await supa.from(HB_META_TABLE).upsert({ user_id: user.id, conversation_id: conversationId, titre: titreAGarder ? String(titreAGarder).slice(0, HB_TITRE_MAX) : null, updated_at: new Date().toISOString() }, { onConflict: "user_id,conversation_id" });
+      if (mt.error) return { error: mt.error };
+    }
+    const photos = await _hbCheminsPhotos(user, conversationId);
+    const d = await supa.from("conversations_heybaby").delete().eq("user_id", user.id).eq("conversation_id", conversationId).select("id");
+    if (d.error) return { error: d.error };
+    await _hbNettoyerPhotos(user, photos);
+    return { error: null };
+  } catch (e) { return { error: String(e) }; }
+}
+async function supprimerConversationHB(conversationId) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user || !conversationId) return { error: "Pas connecté" };
+    const photos = await _hbCheminsPhotos(user, conversationId);
+    const d = await supa.from("conversations_heybaby").delete().eq("user_id", user.id).eq("conversation_id", conversationId).select("id");
+    if (d.error) return { error: d.error };
+    await _hbNettoyerPhotos(user, photos);
+    if (__hbMetaDispo) {
+      const m = await supa.from(HB_META_TABLE).delete().eq("user_id", user.id).eq("conversation_id", conversationId);
+      if (m.error) return { error: m.error };
+    }
+    return { error: null };
+  } catch (e) { return { error: String(e) }; }
+}
+async function renommerConversationHB(conversationId, titre) {
+  try {
+    const user = await utilisateurActuel();
+    if (!user || !conversationId) return { error: "Pas connecté" };
+    if (!__hbMetaDispo) return { error: "indisponible" };
+    const t = String(titre || "").replace(/\s+/g, " ").trim().slice(0, HB_TITRE_MAX);
+    return await supa.from(HB_META_TABLE).upsert({ user_id: user.id, conversation_id: conversationId, titre: t || null, updated_at: new Date().toISOString() }, { onConflict: "user_id,conversation_id" });
+  } catch (e) { return { error: String(e) }; }
+}
 async function chargerEpinglesHB(chevalId) {
   try {
     const user = await utilisateurActuel();
@@ -28895,7 +29067,7 @@ function Router() {
     useEffect(() => { hypeFiletScroll(); }, [ecran]);
     const largeEcranApp = useHypeLarge();   /* 10/10 (859) ordinateur : la page Ecurie s elargit */
     const tabletteApp = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;   /* 12/10 (1018) tablette : les pages deja prevues pour l ordinateur s elargissent aussi (liste ECRANS_TABLETTE) */
-    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */, "resultats-cavalier" /* 19/10 Performances du cavalier en grand */, "actualite-cavalier" /* 19/10 soir : Actualite du cavalier en grand */, "challenge" /* 20/10 */];
+    const ECRANS_TABLETTE = ["premium" /* 15/10 V3 */, "cavalier", "moncavalier" /* (1130) Cavalier V2 */, "sante-cheval", "guilde", "dashboard", "cavaliers-club", "chevaux" /* (1039) */, "decouvrir" /* (1051) */, "evenements-passes" /* (1055) */, "agenda-club" /* (1058) */, "cheval-v2" /* (1067) fiche V2 */, "cheval-v3" /* (1069) */, "cheval" /* 15/10 (1149) fiche cheval principale sur tablette */, "photos-cavalier", "videos-cavalier" /* 15/10 (1152) */, "performances-cheval" /* 18/10 (perf g8) page Performances du cheval en grand */, "performances-cavalier" /* (perf g9) */, "resultats-cavalier" /* 19/10 Performances du cavalier en grand */, "actualite-cavalier" /* 19/10 soir : Actualite du cavalier en grand */, "challenge" /* 20/10 */, "assistant" /* 21/10 Hey Baby responsive */];
     /* 12/10 (1022) Blandine : « ajoute le bandeau de fin avec Hype sur toutes les pages qui ne l ont pas (hormis Au galop et
        les pages d arrivee) ». Liste validee, par groupes (un build par groupe). Pas les outils d admin, ni Reprises, Challenge
        reprise, Hey Baby (« laisse pour l instant »). */
@@ -28974,7 +29146,7 @@ function Router() {
         }
     };
     return (React.createElement("div", { style: { minHeight: "100vh", background: COLORS.nuit, boxSizing: "border-box", [langue === "ar" ? "paddingRight" : "paddingLeft"]: (largeEcranApp && showNav) ? 210 : 0 /* (862) place de la barre verticale sur ordinateur */, fontFamily: "'Inter', 'Noto Sans JP', sans-serif" } },
-        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
+        React.createElement("div", { style: { maxWidth: (!largeEcranApp && tabletteApp && ECRANS_TABLETTE.indexOf(ecran) >= 0) ? (ecran === "dashboard" ? 1400 : 1280) : (largeEcranApp && (ecran === "guilde" || ecran === "cavaliers-club" /* (874) */ || ecran === "sante-cheval" /* (942) */ || ecran === "chevaux" /* (1039) */ || ecran === "decouvrir" /* (1051) */ || ecran === "evenements-passes" /* (1055) */ || ecran === "agenda-club" /* (1058) */ || ecran === "cheval-v2" /* (1067) */ || ecran === "cheval-v3" /* (1069) */ || ecran === "cavalier" || ecran === "moncavalier" /* (1130) */ || ecran === "premium" /* 15/10 V3 */ || ecran === "cheval" /* 15/10 (1149) fiche cheval principale */ || ecran === "photos-cavalier" || ecran === "videos-cavalier" /* 15/10 (1152) */ || ecran === "performances-cheval" /* (perf g8) */ || ecran === "performances-cavalier" /* (perf g9) */ || ecran === "resultats-cavalier" /* 19/10 */ || ecran === "actualite-cavalier" /* 19/10 soir */ || ecran === "challenge" /* 20/10 */ || ecran === "assistant" /* 21/10 Hey Baby responsive */)) ? 1280 : (largeEcranApp && ecran === "dashboard") ? 1400 /* (870) accueil sur ordinateur */ : 480 /* (859) page Ecurie en grand sur ordinateur */, margin: "0 auto", minHeight: "100vh", background: COLORS.nuit, position: "relative", boxShadow: showNav ? "0 0 40px rgba(10,26,36,0.088)" : "none", paddingBottom: (showNav && !largeEcranApp) ? 84 : 0 /* (862) */,
           /* 🟥 23/08 — clip, PAS hidden. `overflow:hidden` fait de ce conteneur
              un conteneur de defilement, et WebKit y accroche parfois la NavBar
              en `position:fixed` : elle restait plantee au milieu de l ecran
@@ -87795,7 +87967,7 @@ function EcranAssistantIA() {
     useEffect(() => {
         let actif = true;
         const suite = () => { if (!actif) return; try { reprendreJobHB(); } catch (eS) { } }; /* 26/09 (401) */
-        if (coursCtx) { suite(); return () => { actif = false; }; } // arrivée depuis un cours : accueil + suggestions du chapitre restent visibles
+        if (coursCtx && !hbChoixRef.current) { suite(); return () => { actif = false; }; } // arrivée depuis un cours : accueil + suggestions du chapitre restent visibles
         try {
             chargerConversationHB(30, conversationId).then((r) => {
                 if (!actif) return;
@@ -87812,7 +87984,7 @@ function EcranAssistantIA() {
     const limiteAffichee = (quotaIA && quotaIA.limite != null) ? quotaIA.limite : LIMITE_JOUR;
     const questionsUtilisees = quotaIA ? quotaIA.utilisees : questionsPosees;
     const limiteAtteinte = !estModoHB && (quotaIA ? (quotaIA.limite != null && quotaIA.utilisees >= quotaIA.limite) : questionsPosees >= LIMITE_JOUR); /* 26/09 (399) : aucune limite pour les moderatrices */
-    useEffect(() => { var _a; (_a = finRef.current) === null || _a === void 0 ? void 0 : _a.scrollIntoView({ behavior: "smooth" }); }, [messages, enCours]);
+    /* 21/10 : le défilement vers le bas se fait dans la zone des messages (voir hbScrollRef) */
     const arreter = () => { try { if (abortRef.current) { hbLog("arrêt demandé par le cavalier"); abortRef.current.abort("stop"); } } catch (e) { } };
     const TXT = (fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl) => tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl });
     /* 19/08/2026 (décision de Blandine) — PLAFONDS D'ÉPINGLES RELEVÉS.
@@ -88338,56 +88510,411 @@ function EcranAssistantIA() {
         }
     };
     envoyerRef.current = envoyer; /* 26/09 (401) : la reprise appelle toujours la derniere version de envoyer */
+    /* ===== 21/10 — HEY BABY RESPONSIVE (brief « Claude-Hype-Hey-Baby-responsive ») =====
+       Ordinateur ≥ 1024 px : colonne Historique permanente (260 px) ; tablette 768-1023 : colonne de 205 px ;
+       téléphone : une colonne, bouton « Historique » qui ouvre un panneau à 85 %.
+       Conversations = lignes de conversations_heybaby groupées par conversation_id (aucun second stockage).
+       Palette : #070A08, pétrole #101D22 / #101A1D, ivoire #F3EEE4, champagne #C9A66B — plus aucun cyan ici. */
+    const HBR = (k, x) => hbRTxt(langue, k, x);
+    const hbBureau = (typeof useHypeLarge === "function") ? useHypeLarge() : false;
+    const hbTabletteMq = (typeof useHypeLargeur === "function") ? useHypeLargeur(768) : false;
+    const hbVue = hbBureau ? "bureau" : (hbTabletteMq ? "tablette" : "tel");
+    const hbRtl = langue === "ar";
+    const hbColW = hbVue === "bureau" ? 260 : (hbVue === "tablette" ? 205 : 0);
+    const hbMainRef = useRef(null);
+    const hbScrollRef = useRef(null);
+    const [hbTaille, setHbTaille] = useState({ w: 0, h: 0 });
+    useEffect(() => {
+        const el = hbMainRef.current; if (!el) return;
+        const lire = () => { try { const r = el.getBoundingClientRect(); setHbTaille((p) => (Math.abs(p.w - r.width) < 1 && Math.abs(p.h - r.height) < 1) ? p : { w: r.width, h: r.height }); } catch (e) { } };
+        lire();
+        let ro = null;
+        try { if (typeof ResizeObserver !== "undefined") { ro = new ResizeObserver(lire); ro.observe(el); } } catch (e) { ro = null; }
+        window.addEventListener("resize", lire);
+        return () => { try { if (ro) ro.disconnect(); } catch (e) { } window.removeEventListener("resize", lire); };
+    }, [hbVue]);
+    useEffect(() => { if (hbVue !== "tel" && histoOuvert) setHistoOuvert(false); }, [hbVue]);
+    const [hbConvs, setHbConvs] = useState(null);          /* null = chargement */
+    const [hbConvsErr, setHbConvsErr] = useState(false);
+    const [hbMeta, setHbMeta] = useState(false);
+    const [hbMenu, setHbMenu] = useState(null);            /* { type: "entete"|"ligne"|"echange", id, idx, rect } */
+    const [hbConfirm, setHbConfirm] = useState(null);      /* { type: "echange"|"vider"|"supprimer"|"occupe", id, idx, envoi, erreur } */
+    const [hbRenom, setHbRenom] = useState(null);          /* { id, valeur, envoi, erreur } */
+    const [hbVoirPlus, setHbVoirPlus] = useState(false);
+    const hbOpenerRef = useRef(null);
+    const hbMenuRef = useRef(null);
+    const hbDialogRef = useRef(null);
+    const hbPanneauRef = useRef(null);
+    const hbHistoBtnRef = useRef(null);
+    const hbChoixRef = useRef(false);
+    const hbRendreFocus = () => { const el = hbOpenerRef.current; hbOpenerRef.current = null; setTimeout(() => { try { if (el && document.body.contains(el)) el.focus(); } catch (e) { } }, 0); };
+    const hbChargerConvs = () => {
+        setHbConvsErr(false);
+        try {
+            listerConversationsHB().then((r) => {
+                if (r.error || !r.data) { setHbConvsErr(true); setHbConvs((p) => p || []); return; }
+                setHbMeta(!!r.meta);
+                setHbConvs((p) => {
+                    /* une conversation vidée reste listée tant que l'écran est ouvert, même sans la table des noms */
+                    const ids = {}; r.data.forEach((c) => { ids[c.id] = 1; });
+                    const gardees = (p || []).filter((c) => c.garder && !ids[c.id]);
+                    return r.data.concat(gardees).sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
+                });
+            }).catch(() => { setHbConvsErr(true); setHbConvs((p) => p || []); });
+        } catch (e) { setHbConvsErr(true); setHbConvs((p) => p || []); }
+    };
+    useEffect(() => { hbChargerConvs(); }, [conversationId]);
+    const hbEnCoursAvant = useRef(false);
+    useEffect(() => {
+        if (hbEnCoursAvant.current && !enCours) { const tm = setTimeout(hbChargerConvs, 1500); hbEnCoursAvant.current = enCours; return () => clearTimeout(tm); }
+        hbEnCoursAvant.current = enCours;
+    }, [enCours]);
+    /* l'écran défile dans sa propre zone : plus de scrollIntoView, qui faisait aussi glisser la page entière (en-tête caché sur téléphone) */
+    useEffect(() => { try { const sc = hbScrollRef.current; if (sc && messages.length > 1) sc.scrollTo({ top: sc.scrollHeight, behavior: "smooth" }); } catch (e) { } }, [messages, enCours]);
+    const hbQuestionsUI = messages.filter((m) => m.role === "user");
+    const hbListe = (() => {
+        const l = (hbConvs || []).slice();
+        if (conversationId && !l.some((c) => c.id === conversationId) && hbQuestionsUI.length) {
+            const q0 = hbQuestionsUI[0];
+            l.unshift({ id: conversationId, titre: "", titreAuto: _hbTitreAuto(q0.contenu), photo: !String(q0.contenu || "").trim(), date: new Date().toISOString(), nb: hbQuestionsUI.length });
+        }
+        return l;
+    })();
+    const hbConvActive = hbListe.find((c) => c.id === conversationId) || null;
+    const hbNom = (c) => (c && (c.titre || c.titreAuto)) || (c && c.photo ? HBR("photo") : HBR("sansTitre"));
+    const hbDate = (iso) => {
+        try {
+            const d = new Date(iso); if (isNaN(d.getTime())) return "";
+            const jours = Math.round((new Date().setHours(0, 0, 0, 0) - new Date(d.getTime()).setHours(0, 0, 0, 0)) / 86400000);
+            if (jours < 7 && typeof Intl !== "undefined" && Intl.RelativeTimeFormat) return new Intl.RelativeTimeFormat(langue, { numeric: "auto" }).format(-jours, "day");
+            return d.toLocaleDateString(langue, { day: "numeric", month: "short" });
+        } catch (e) { return ""; }
+    };
+    const hbOuvrirMenu = (e, menu) => {
+        try { e.stopPropagation(); } catch (eS) { }
+        const btn = e.currentTarget; hbOpenerRef.current = btn;
+        let rect = null; try { rect = btn.getBoundingClientRect(); } catch (eR) { }
+        setHbMenu(Object.assign({ rect: rect }, menu));
+    };
+    const hbFermerMenu = (rendre) => { setHbMenu(null); if (rendre) hbRendreFocus(); };
+    /* fermer le menu AVANT d'ouvrir la confirmation (le focus reviendra au bouton « ⋯ » d'origine) */
+    const hbDemander = (conf) => { setHbMenu(null); setHbConfirm(Object.assign({ envoi: false, erreur: "" }, enCours ? { type: "occupe" } : conf)); };
+    const hbFermerConfirm = () => { setHbConfirm((c) => (c && c.envoi) ? c : null); hbRendreFocus(); };
+    const hbOuvrirConv = (id) => {
+        if (enCours) { hbDemander({ type: "occupe" }); return; }
+        setHistoOuvert(false);
+        if (id === conversationId) return;
+        try { localStorage.setItem(CLE_CONV_HB, id); } catch (e) { }
+        hbChoixRef.current = true;
+        setMessages([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]);
+        setHbVoirPlus(false);
+        setConversationId(id);
+    };
+    const hbNouvelle = () => {
+        if (enCours) { hbDemander({ type: "occupe" }); return; }
+        if (hbQuestionsUI.length) {
+            const msg = tr({ fr: "Démarrer une nouvelle conversation ? L'historique actuel restera consultable mais Hey Baby ne s'en souviendra plus.", en: "Start a new conversation? The current history stays available, but Hey Baby won't remember it anymore.", es: "¿Iniciar una nueva conversación? El historial actual seguirá disponible, pero Hey Baby ya no lo recordará.", it: "Avviare una nuova conversazione? La cronologia attuale resterà consultabile, ma Hey Baby non se ne ricorderà più.", ja: "新しい会話を始めますか？現在の履歴は閲覧できますが、Hey Babyはそれを覚えなくなります。", de: "Eine neue Konversation starten? Der aktuelle Verlauf bleibt einsehbar, aber Hey Baby wird sich nicht mehr daran erinnern.", ar: "بدء محادثة جديدة؟ سيبقى السجل الحالي متاحا للاطلاع لكن Hey Baby لن يتذكره.", zh: "要开始新的对话吗？当前的历史记录仍可查看，但 Hey Baby 将不再记得它。", nl: "Een nieuw gesprek starten? De huidige geschiedenis blijft te raadplegen, maar Hey Baby zal zich er niets meer van herinneren.", pt: "Iniciar uma nova conversa? O histórico atual continuará disponível para consulta, mas a Hey Baby não vai mais se lembrar dele.", sv: "Starta en ny konversation? Den nuvarande historiken finns kvar att läsa, men Hey Baby kommer inte att minnas den längre.", ru: "Начать новый разговор? Текущая история останется доступной, но Hey Baby больше не будет её помнить.", pl: "Rozpocząć nową rozmowę? Obecna historia nadal będzie dostępna, ale Hey Baby już jej nie zapamięta." });
+            if (!window.confirm(msg)) return;
+        }
+        setHistoOuvert(false);
+        const id = nouvelleConversationHB();
+        hbChoixRef.current = true;
+        setConversationId(id);
+        setHbVoirPlus(false);
+        setMessages([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]);
+    };
+    const hbToast = (txt) => { setToastHB(txt); setTimeout(() => setToastHB(null), 2400); };
+    const hbValider = async () => {
+        const c = hbConfirm; if (!c || c.envoi) return;
+        if (c.type === "occupe") { arreter(); setHbConfirm(null); hbRendreFocus(); return; }
+        if (enCours) { setHbConfirm({ type: "occupe", envoi: false, erreur: "" }); return; }
+        setHbConfirm(Object.assign({}, c, { envoi: true, erreur: "" }));
+        let r = { error: "?" };
+        try {
+            if (c.type === "echange") {
+                const i = c.idx; const m = messages[i];
+                if (!m || m.role !== "user") throw new Error("echange");
+                let rang = 0; for (let k = i + 1; k < messages.length; k++) if (messages[k].role === "user" && String(messages[k].contenu || "") === String(m.contenu || "")) rang++;
+                r = await supprimerEchangeHB(conversationId, m.contenu, rang);
+                if (!r.error) {
+                    setMessages((prev) => { if (prev[i] !== m) return prev; let j = i + 1; while (j < prev.length && prev[j].role !== "user") j++; return prev.slice(0, i).concat(prev.slice(j)); });
+                    hbToast(HBR("toastEch"));
+                }
+            } else if (c.type === "vider") {
+                const conv = hbListe.find((x) => x.id === c.id);
+                r = await viderConversationHB(c.id, conv ? (conv.titre || conv.titreAuto || null) : null);
+                if (!r.error) {
+                    setHbConvs((p) => { const l = (p || []).slice(); const ix = l.findIndex((x) => x.id === c.id); const base = conv || { id: c.id, titre: "", titreAuto: "", photo: false }; const nv = Object.assign({}, base, { titre: hbMeta ? (base.titre || base.titreAuto || "") : base.titre, nb: 0, garder: true, date: new Date().toISOString() }); if (ix >= 0) l[ix] = nv; else l.unshift(nv); return l; });
+                    if (c.id === conversationId) { setMessages([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]); setHbVoirPlus(false); }
+                    hbToast(HBR("toastVid"));
+                }
+            } else if (c.type === "supprimer") {
+                r = await supprimerConversationHB(c.id);
+                if (!r.error) {
+                    setHbConvs((p) => (p || []).filter((x) => x.id !== c.id));
+                    if (c.id === conversationId) { const id = nouvelleConversationHB(); hbChoixRef.current = true; setConversationId(id); setMessages([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]); setHbVoirPlus(false); }
+                    hbToast(HBR("toastSup"));
+                }
+            }
+        } catch (e) { r = { error: String(e) }; }
+        if (r.error) { setHbConfirm(Object.assign({}, c, { envoi: false, erreur: HBR("erreur") })); return; }
+        setHbConfirm(null);
+        /* le bouton d'origine a pu disparaître (ligne supprimée) : on rend le focus au bouton Historique ou au champ */
+        hbRendreFocus();
+    };
+    const hbOuvrirRenom = (id) => { const c = hbListe.find((x) => x.id === id); setHbMenu(null); setHbRenom({ id: id, valeur: (c && (c.titre || c.titreAuto)) || "", envoi: false, erreur: "" }); };
+    const hbValiderRenom = async () => {
+        const rn = hbRenom; if (!rn || rn.envoi) return;
+        setHbRenom(Object.assign({}, rn, { envoi: true, erreur: "" }));
+        let r; try { r = await renommerConversationHB(rn.id, rn.valeur); } catch (e) { r = { error: String(e) }; }
+        if (r && r.error) { setHbRenom(Object.assign({}, rn, { envoi: false, erreur: HBR("erreurNom") })); return; }
+        const t2 = String(rn.valeur || "").replace(/\s+/g, " ").trim().slice(0, HB_TITRE_MAX);
+        setHbConvs((p) => { const l = (p || []).slice(); const ix = l.findIndex((x) => x.id === rn.id); if (ix >= 0) l[ix] = Object.assign({}, l[ix], { titre: t2 }); else { const c = hbListe.find((x) => x.id === rn.id); if (c) l.unshift(Object.assign({}, c, { titre: t2 })); } return l; });
+        setHbRenom(null); hbToast(HBR("toastNom")); hbRendreFocus();
+    };
+    /* Échap ferme menu, confirmation, renommage ou panneau ; Tab reste dans la fenêtre ouverte */
+    useEffect(() => {
+        const ouvert = hbMenu || hbConfirm || hbRenom || histoOuvert;
+        if (!ouvert) return;
+        const onKey = (e) => {
+            if (e.key === "Escape") {
+                e.preventDefault();
+                if (hbMenu) hbFermerMenu(true);
+                else if (hbRenom) { if (!hbRenom.envoi) { setHbRenom(null); hbRendreFocus(); } }
+                else if (hbConfirm) hbFermerConfirm();
+                else if (histoOuvert) { setHistoOuvert(false); setTimeout(() => { try { hbHistoBtnRef.current && hbHistoBtnRef.current.focus(); } catch (eF) { } }, 0); }
+                return;
+            }
+            if (e.key === "Tab") {
+                const boite = hbMenu ? hbMenuRef.current : ((hbConfirm || hbRenom) ? hbDialogRef.current : (histoOuvert ? hbPanneauRef.current : null));
+                if (!boite) return;
+                const f = Array.prototype.slice.call(boite.querySelectorAll("button:not([disabled]), input, [tabindex='0']"));
+                if (!f.length) return;
+                const premier = f[0], dernier = f[f.length - 1];
+                if (e.shiftKey && document.activeElement === premier) { e.preventDefault(); dernier.focus(); }
+                else if (!e.shiftKey && document.activeElement === dernier) { e.preventDefault(); premier.focus(); }
+                else if (!boite.contains(document.activeElement)) { e.preventDefault(); premier.focus(); }
+            }
+            if (hbMenu && (e.key === "ArrowDown" || e.key === "ArrowUp")) {
+                const f = Array.prototype.slice.call((hbMenuRef.current || document).querySelectorAll("[role='menuitem']"));
+                if (!f.length) return; e.preventDefault();
+                const ix = f.indexOf(document.activeElement);
+                f[(ix + (e.key === "ArrowDown" ? 1 : -1) + f.length) % f.length].focus();
+            }
+        };
+        document.addEventListener("keydown", onKey);
+        return () => document.removeEventListener("keydown", onKey);
+    }, [hbMenu, hbConfirm, hbRenom, histoOuvert]);
+    useEffect(() => { if (!hbMenu) return; const tm = setTimeout(() => { try { const b = hbMenuRef.current && hbMenuRef.current.querySelector("[role='menuitem']"); if (b) b.focus(); } catch (e) { } }, 0); return () => clearTimeout(tm); }, [hbMenu]);
+    useEffect(() => { if (!hbConfirm && !hbRenom) return; const tm = setTimeout(() => { try { const d = hbDialogRef.current; if (!d || d.contains(document.activeElement)) return; const b = d.querySelector("input") || d.querySelector("button:not([disabled])"); if (b) b.focus(); } catch (e) { } }, 0); return () => clearTimeout(tm); }, [!!hbConfirm, !!hbRenom]);
+    useEffect(() => { if (!histoOuvert) return; const tm = setTimeout(() => { try { const b = hbPanneauRef.current && hbPanneauRef.current.querySelector("button"); if (b) b.focus(); } catch (e) { } }, 30); return () => clearTimeout(tm); }, [histoOuvert]);
     const suggestions = coursCtx ? [
         coursCtx.cheval ? ("\uD83D\uDC34 " + tr({ fr: "Comment appliquer ce cours avec " + coursCtx.cheval + " ?", en: "How can I apply this lesson with " + coursCtx.cheval + "?", es: "\u00bfC\u00f3mo aplicar este curso con " + coursCtx.cheval + "?", it: "Come applicare questo corso con " + coursCtx.cheval + "?", ja: coursCtx.cheval + "\u3068\u3053\u306e\u30ec\u30c3\u30b9\u30f3\u3092\u3069\u3046\u5b9f\u8df5\u3067\u304d\u307e\u3059\u304b\uff1f", de: "Wie wende ich diesen Kurs bei " + coursCtx.cheval + " an?", ar: "\u0643\u064a\u0641 \u0623\u0637\u0628\u0642 \u0647\u0630\u0627 \u0627\u0644\u062f\u0631\u0633 \u0645\u0639 " + coursCtx.cheval + "\u061f", zh: ("怎样和 " + coursCtx.cheval + " 一起应用这节课？"), nl: ("Hoe pas ik deze les toe met " + coursCtx.cheval + "?"), pt: ("Como aplicar esta aula com " + coursCtx.cheval + "?"), sv: ("Hur kan jag tillämpa den här lektionen med " + coursCtx.cheval + "?"), ru: ("Как применить этот урок с " + coursCtx.cheval + "?"), pl: ("Jak zastosować tę lekcję w pracy z koniem (" + coursCtx.cheval + ")?") })) : null,
         tr({ fr: "Explique-moi ce chapitre autrement", en: "Explain this chapter another way", es: "Expl\u00edcame este cap\u00edtulo de otra manera", it: "Spiegami questo capitolo in un altro modo", ja: "\u3053\u306e\u7ae0\u3092\u5225\u306e\u8a00\u3044\u65b9\u3067\u8aac\u660e\u3057\u3066" , de: "Erkl\u00e4re mir dieses Kapitel anders", ar: "\u0627\u0634\u0631\u062d\u064a \u0644\u064a \u0647\u0630\u0627 \u0627\u0644\u0641\u0635\u0644 \u0628\u0637\u0631\u064a\u0642\u0629 \u0623\u062e\u0631\u0649", zh: "换一种方式给我讲讲这一章", nl: "Leg dit hoofdstuk op een andere manier uit", pt: "Explique este capítulo de outro jeito", sv: "Förklara det här kapitlet på ett annat sätt", ru: "Объясни мне эту главу по-другому", pl: "Wyjaśnij mi ten rozdział inaczej"}),
         tr({ fr: "Donne-moi un exercice", en: "Give me an exercise", es: "Dame un ejercicio", it: "Dammi un esercizio", ja: "\u7df4\u7fd2\u3092\u51fa\u3057\u3066" , de: "Gib mir eine \u00dcbung", ar: "\u0623\u0639\u0637\u064a\u0646\u064a \u062a\u0645\u0631\u064a\u0646\u0627", zh: "给我一个练习", nl: "Geef me een oefening", pt: "Me dê um exercício", sv: "Ge mig en övning", ru: "Дай мне упражнение", pl: "Daj mi ćwiczenie"}),
         tr({ fr: "R\u00e9sume-moi ce chapitre", en: "Summarise this chapter for me", es: "Res\u00fameme este cap\u00edtulo", it: "Riassumimi questo capitolo", ja: "\u3053\u306e\u7ae0\u3092\u8981\u7d04\u3057\u3066" , de: "Fasse mir dieses Kapitel zusammen", ar: "\u0644\u062e\u0635\u064a \u0644\u064a \u0647\u0630\u0627 \u0627\u0644\u0641\u0635\u0644", zh: "帮我总结这一章节", nl: "Vat dit hoofdstuk voor me samen", pt: "Resuma este capítulo para mim", sv: "Sammanfatta det här kapitlet åt mig", ru: "Перескажи мне эту главу кратко", pl: "Podsumuj mi ten rozdział"})
     ].filter(Boolean) : [t("suggestion_1"), t("suggestion_2"), t("suggestion_3"), t("suggestion_4")];
-    return (React.createElement("div", { style: { height: "100dvh", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" } },
-        React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: `linear-gradient(rgba(4,5,7,0.58), rgba(4,5,7,0.72)), url(${IMG_HEYBABY_FOND}) center/cover no-repeat #040507` } }),
-        histoOuvert ? React.createElement("div", { onClick: () => setHistoOuvert(false), "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(10,26,36,0.121)", animation: "fadeIn 0.2s ease-out" } },
-            React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { position: "absolute", left: 0, top: 0, height: "100%", width: "80%", maxWidth: 320, background: "rgba(11,14,19,0.97)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", borderRight: "1px solid rgba(255,255,255,0.10)", display: "flex", flexDirection: "column", boxSizing: "border-box", animation: "fadeIn 0.25s ease-out" } },
-                React.createElement("div", { style: { padding: "20px 18px 14px", borderBottom: "1px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", justifyContent: "space-between" } },
-                    React.createElement("span", { style: { fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 17, letterSpacing: 1, color: COLORS.blanc } }, t("historique")),
-                    React.createElement("button", { onClick: () => setHistoOuvert(false), "aria-label": tr({ fr: "Fermer", en: "Close", es: "Cerrar", it: "Chiudi", ja: "\u9589\u3058\u308b", de: "Schlie\u00dfen", ar: "\u0625\u063a\u0644\u0627\u0642", zh: "关闭", nl: "Sluiten", pt: "Fechar", sv: "Stäng", ru: "Закрыть", pl: "Zamknij" }), style: { width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.08)", color: COLORS.blanc, fontSize: 15, flexShrink: 0 } }, "\u2715")),
-                React.createElement("div", { style: { flex: 1, overflowY: "auto", padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 } },
-                    (function () { const qs = messages.filter((m) => m.role === "user" && m.contenu).map((m) => m.contenu); return qs.length ? qs.map((q, i) => React.createElement("button", { key: i, onClick: () => { setHistoOuvert(false); envoyer(q); }, style: { textAlign: "left", padding: "11px 13px", borderRadius: 12, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.86)", fontSize: 13, lineHeight: 1.4, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" } }, q)) : React.createElement("p", { style: { color: COLORS.encreDoux, fontSize: 13, textAlign: "center", marginTop: 20 } }, t("historique_vide")); })()))) : null,
-        React.createElement("div", { style: { position: "relative", zIndex: 3, minHeight: 138, padding: "16px 16px 12px", borderBottom: "1px solid rgba(255,255,255,0.06)", background: "rgba(10,26,36,0.066)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", flexShrink: 0 } },
-            React.createElement("button", { onClick: retourAssistant, "aria-label": tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る" , de: "Zurück", ar: "\u0631\u062c\u0648\u0639", zh: "返回", nl: "Terug", pt: "Voltar", sv: "Tillbaka", ru: "Назад", pl: "Wróć"}), style: { position: "absolute", left: 12, top: 12, height: 36, padding: "0 12px", borderRadius: 11, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: COLORS.blanc, fontSize: 13, fontWeight: 700, display: "flex", alignItems: "center", gap: 5 } }, "\u2039", React.createElement("span", null, tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る" , de: "Zurück", ar: "\u0631\u062c\u0648\u0639", zh: "返回", nl: "Terug", pt: "Voltar", sv: "Tillbaka", ru: "Назад", pl: "Wróć"}))),
-            React.createElement("button", { onClick: () => setHistoOuvert(true), "aria-label": t("historique"), style: { position: "absolute", left: 12, top: 54, width: 36, height: 36, borderRadius: 11, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: COLORS.blanc, fontSize: 16, display: "flex", alignItems: "center", justifyContent: "center" } }, "☰"),
-            React.createElement("button", { onClick: () => { const msg = tr({ fr: "Démarrer une nouvelle conversation ? L'historique actuel restera consultable mais Hey Baby ne s'en souviendra plus.", en: "Start a new conversation? The current history stays available, but Hey Baby won't remember it anymore.", es: "¿Iniciar una nueva conversación? El historial actual seguirá disponible, pero Hey Baby ya no lo recordará.", it: "Avviare una nuova conversazione? La cronologia attuale resterà consultabile, ma Hey Baby non se ne ricorderà più.", ja: "新しい会話を始めますか？現在の履歴は閲覧できますが、Hey Babyはそれを覚えなくなります。" , de: "Eine neue Konversation starten? Der aktuelle Verlauf bleibt einsehbar, aber Hey Baby wird sich nicht mehr daran erinnern.", ar: "\u0628\u062f\u0621 \u0645\u062d\u0627\u062f\u062b\u0629 \u062c\u062f\u064a\u062f\u0629\u061f \u0633\u064a\u0628\u0642\u0649 \u0627\u0644\u0633\u062c\u0644 \u0627\u0644\u062d\u0627\u0644\u064a \u0645\u062a\u0627\u062d\u0627 \u0644\u0644\u0627\u0637\u0644\u0627\u0639 \u0644\u0643\u0646 Hey Baby \u0644\u0646 \u064a\u062a\u0630\u0643\u0631\u0647.", zh: "要开始新的对话吗？当前的历史记录仍可查看，但 Hey Baby 将不再记得它。", nl: "Een nieuw gesprek starten? De huidige geschiedenis blijft te raadplegen, maar Hey Baby zal zich er niets meer van herinneren.", pt: "Iniciar uma nova conversa? O histórico atual continuará disponível para consulta, mas a Hey Baby não vai mais se lembrar dele.", sv: "Starta en ny konversation? Den nuvarande historiken finns kvar att läsa, men Hey Baby kommer inte att minnas den längre.", ru: "Начать новый разговор? Текущая история останется доступной, но Hey Baby её уже не будет помнить.", pl: "Rozpocząć nową rozmowę? Obecna historia nadal będzie dostępna, ale Hey Baby już jej nie zapamięta."}); if (!window.confirm(msg)) return; const id = nouvelleConversationHB(); setConversationId(id); setMessages([{ role: "assistant", contenu: t("assistant_msg_intro"), intro: true }]); }, "aria-label": tr({ fr: "Nouvelle conversation", en: "New conversation", es: "Nueva conversación", it: "Nuova conversazione", ja: "新しい会話" , de: "Neue Konversation", ar: "\u0645\u062d\u0627\u062f\u062b\u0629 \u062c\u062f\u064a\u062f\u0629", zh: "新对话", nl: "Nieuw gesprek", pt: "Nova conversa", sv: "Ny konversation", ru: "Новый разговор", pl: "Nowa rozmowa"}), style: { position: "absolute", left: 12, top: 96, width: 36, height: 36, borderRadius: 11, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", color: COLORS.blanc, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center" } }, "✚"),
-            React.createElement("span", { style: { position: "absolute", right: 12, top: 12, fontSize: 12.5, fontWeight: 800, color: "#20D9F5", background: `${"#20D9F5"}1A`, border: `1px solid ${"#20D9F5"}55`, minWidth: 30, height: 30, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" } }, Math.max(0, limiteAffichee - questionsUtilisees))),
-        React.createElement("div", { style: { position: "relative", zIndex: 2, flex: 1, minHeight: 0, padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" } },   /* (552) plus de defilement de cote */
-            React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", flexShrink: 0 } },
-                React.createElement("div", { style: { width: 156, height: 156, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: `3px solid ${"#20D9F5"}`, boxShadow: `0 0 28px ${"#20D9F5"}66`, marginTop: 8 } },
-                    React.createElement("img", { src: IMG_HEYBABY_AVATAR, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block" } })),
-                React.createElement("p", { style: { margin: "14px 0 0", fontFamily: "'Cinzel', serif", fontWeight: 600, fontSize: 28, letterSpacing: 2, color: COLORS.blanc, lineHeight: 1.1, textShadow: "0 2px 14px rgba(10,26,36,0.132)" } }, t("assistant_titre")),
-                React.createElement("p", { style: { margin: "5px 0 0", fontSize: 12, color: "#20D9F5", fontWeight: 600, textShadow: "0 1px 8px rgba(10,26,36,0.132)" } }, "● ", t("en_ligne")),
-                React.createElement("p", { style: { margin: "8px 0 0", fontStyle: "italic", color: "rgba(255,255,255,0.92)", fontSize: 13.5, lineHeight: 1.45, maxWidth: 290, textShadow: "0 1px 10px rgba(10,26,36,0.154)" } }, t("heybaby_phrase"))),
-            messages.map((m, i) => React.createElement(BulleMessage, { key: i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, intro: m.intro, enCours: m.pending, onEpingler: (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirEpingle(i)) : null, onCorriger: (estModoHB && m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirCorrection(i)) : null })),
-            messages.length <= 1 && !limiteAtteinte && (React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8, marginTop: 6 } }, suggestions.map((s) => (React.createElement("button", { key: s, onClick: () => envoyer(s), style: { textAlign: "left", padding: "12px 14px", borderRadius: 14, background: "rgba(20,26,34,0.5)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid rgba(255,255,255,0.10)", fontSize: 13.5, color: "#20D9F5", fontWeight: 600 } }, s))))),
-            limiteAtteinte && (React.createElement("div", { style: { background: `linear-gradient(135deg, ${"#1B4A4E"}, ${COLORS.nuitElevee})`, border: `1px solid ${COLORS.soleil}55`, borderRadius: 18, padding: 18, textAlign: "center", marginTop: 8 } },
-                React.createElement("p", { style: { color: COLORS.blanc, fontWeight: 700, fontSize: 15, margin: "0 0 6px" } }, t("limite_atteinte_titre")),
-                React.createElement("p", { style: { color: "rgba(255,255,255,0.75)", fontSize: 13, margin: "0 0 16px" } }, t(planAbo === "duo" ? "limite_atteinte_texte_duo" : planAbo === "ai" ? "limite_atteinte_texte_ia" : premium ? "limite_atteinte_texte_premium" : "limite_atteinte_texte")),
-                (planAbo === "ai" || planAbo === "duo") ? null : React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: COLORS.soleil, onClick: () => setEcran("premium") }))),
-            React.createElement("div", { ref: finRef })),
-        React.createElement("div", { style: { position: "relative", zIndex: 2, flexShrink: 0, padding: "10px 16px calc(12px + 58px + env(safe-area-inset-bottom, 0px))", borderTop: "1px solid rgba(255,255,255,0.08)", background: "rgba(8,12,16,0.86)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)" } },
+    /* ----- rendu Hey Baby responsive ----- */
+    const HB_C = { fond: "#070A08", petrole: "#101D22", petrole2: "#101A1D", ivoire: "#F3EEE4", champ: "#C9A66B", doux: "rgba(243,238,228,0.62)", filet: "rgba(201,166,107,0.22)", rouge: "#E08A80" };
+    const HB_SERIF = "'Cormorant Garamond', Georgia, serif";
+    const HB_SANS = "'Montserrat', 'Inter', sans-serif";
+    const hbDebut = hbRtl ? "right" : "left";
+    const hbFin = hbRtl ? "left" : "right";
+    const hbIconeBulles = (taille) => React.createElement("svg", { width: taille || 18, height: taille || 18, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { flexShrink: 0, transform: hbRtl ? "scaleX(-1)" : "none" } },
+        React.createElement("path", { d: "M14.5 4H5.5A2.5 2.5 0 0 0 3 6.5v5A2.5 2.5 0 0 0 5.5 14H6v3l3.5-3h5a2.5 2.5 0 0 0 2.5-2.5v-5A2.5 2.5 0 0 0 14.5 4z" }),
+        React.createElement("path", { d: "M17 8.5h1.5A2.5 2.5 0 0 1 21 11v4.5a2.5 2.5 0 0 1-2.5 2.5H18v2.5L15 18h-3.5a2.5 2.5 0 0 1-2-1" }));
+    const hbIconeCorbeille = () => React.createElement("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { flexShrink: 0 } }, React.createElement("path", { d: "M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13M10 11v6M14 11v6" }));
+    const hbIconeBalai = () => React.createElement("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { flexShrink: 0 } }, React.createElement("path", { d: "M5 12h14M7 12l1 8h8l1-8M10 12V4h4v8" }));
+    const hbIconeCrayon = () => React.createElement("svg", { width: 16, height: 16, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { flexShrink: 0 } }, React.createElement("path", { d: "M4 20l4-1 11-11-3-3L5 16l-1 4zM14 6l3 3" }));
+    const hbBtnRond = (props, contenu) => React.createElement("button", Object.assign({ type: "button" }, props, { style: Object.assign({ width: 44, height: 44, borderRadius: "50%", background: "rgba(7,10,8,0.55)", border: "1px solid " + HB_C.filet, color: HB_C.ivoire, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer", fontFamily: HB_SANS, padding: 0, backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" }, props.style || {}) }), contenu);
+    const hbAPoser = hbQuestionsUI.length > 0;
+    const hbCompteur = React.createElement("span", { role: "status", "aria-label": tr({ fr: "Questions restantes aujourd'hui", en: "Questions left today", es: "Preguntas restantes hoy", it: "Domande rimaste oggi", ja: "今日の残り質問数", de: "Heute verbleibende Fragen", ar: "الأسئلة المتبقية اليوم", zh: "今日剩余提问次数", nl: "Resterende vragen vandaag", pt: "Perguntas restantes hoje", sv: "Frågor kvar i dag", ru: "Осталось вопросов на сегодня", pl: "Pytania pozostałe na dziś" }) + " : " + Math.max(0, limiteAffichee - questionsUtilisees), style: { fontSize: 14, fontWeight: 700, fontFamily: HB_SANS, color: HB_C.champ, background: "rgba(7,10,8,0.55)", border: "1.5px solid " + HB_C.champ, width: 44, height: 44, borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxSizing: "border-box" } }, Math.max(0, limiteAffichee - questionsUtilisees));
+    const hbBoutonsFin = React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, flexShrink: 0 } },
+        (hbAPoser || hbConvActive) ? hbBtnRond({ onClick: (e) => hbOuvrirMenu(e, { type: "entete", id: conversationId }), "aria-label": HBR("optConv"), "aria-haspopup": "menu", "aria-expanded": !!(hbMenu && hbMenu.type === "entete") }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 18, lineHeight: 1, letterSpacing: 1, marginTop: -6 } }, "…")) : null,
+        hbBtnRond({ onClick: hbNouvelle, "aria-label": HBR("nouvelle"), title: HBR("nouvelle") }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 22, fontWeight: 300, lineHeight: 1 } }, "+")),
+        hbCompteur);
+    const hbBoutonRetour = (extra) => React.createElement("button", { type: "button", onClick: retourAssistant, "aria-label": tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る", de: "Zurück", ar: "رجوع", zh: "返回", nl: "Terug", pt: "Voltar", sv: "Tillbaka", ru: "Назад", pl: "Wróć" }), style: Object.assign({ height: 40, padding: "0 14px", borderRadius: 12, background: "rgba(7,10,8,0.55)", border: "1px solid " + HB_C.filet, color: HB_C.ivoire, fontSize: 13, fontWeight: 600, fontFamily: HB_SANS, display: "inline-flex", alignItems: "center", gap: 6, cursor: "pointer", flexShrink: 0 }, extra || {}) },
+        React.createElement("span", { "aria-hidden": "true", style: { fontSize: 17, lineHeight: 1, marginTop: -2 } }, hbRtl ? "›" : "‹"),
+        React.createElement("span", null, tr({ fr: "Retour", en: "Back", es: "Volver", it: "Indietro", ja: "戻る", de: "Zurück", ar: "رجوع", zh: "返回", nl: "Terug", pt: "Voltar", sv: "Tillbaka", ru: "Назад", pl: "Wróć" })));
+    /* liste de l'historique : colonne permanente (ordinateur, tablette) ou panneau (téléphone) */
+    const hbRendreHistorique = (panneau) => React.createElement("nav", { "aria-label": HBR("historique"), style: { display: "flex", flexDirection: "column", height: "100%", minHeight: 0, boxSizing: "border-box", fontFamily: HB_SANS } },
+        React.createElement("div", { style: { padding: panneau ? "calc(env(safe-area-inset-top) + 18px) 16px 12px" : "18px 14px 12px", display: "flex", flexDirection: "column", gap: 14, flexShrink: 0 } },
+            panneau
+                ? React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } },
+                    React.createElement("h2", { style: { margin: 0, fontFamily: HB_SERIF, fontWeight: 600, fontSize: 28, color: HB_C.ivoire, letterSpacing: 0.3 } }, HBR("historique")),
+                    hbBtnRond({ onClick: () => { setHistoOuvert(false); setTimeout(() => { try { hbHistoBtnRef.current && hbHistoBtnRef.current.focus(); } catch (e) { } }, 0); }, "aria-label": HBR("fermer") }, React.createElement("span", { "aria-hidden": "true", style: { fontSize: 15 } }, "✕")))
+                : React.createElement(React.Fragment, null,
+                    React.createElement("div", null, hbBoutonRetour()),
+                    React.createElement("h2", { style: { margin: "6px 0 0", fontFamily: HB_SERIF, fontWeight: 600, fontSize: hbVue === "bureau" ? 30 : 26, color: HB_C.ivoire, letterSpacing: 0.3 } }, HBR("historique"))),
+            React.createElement("button", { type: "button", onClick: hbNouvelle, style: { minHeight: 44, padding: "10px 14px", borderRadius: 12, background: "rgba(7,10,8,0.5)", border: "1px solid " + HB_C.champ, color: HB_C.ivoire, fontFamily: HB_SANS, fontSize: hbVue === "tablette" ? 12.5 : 13.5, fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, cursor: "pointer", textAlign: "center", lineHeight: 1.25 } },
+                React.createElement("span", { "aria-hidden": "true", style: { fontSize: 19, fontWeight: 300, lineHeight: 1, color: HB_C.champ } }, "+"), HBR("nouvelle"))),
+        React.createElement("div", { style: { flex: 1, minHeight: 0, overflowY: "auto", overscrollBehavior: "contain", padding: (hbVue === "tablette" && !panneau) ? "4px 8px calc(env(safe-area-inset-bottom) + 84px)" : "4px 8px calc(env(safe-area-inset-bottom) + 16px)" } },
+            hbConvs === null && !hbListe.length
+                ? React.createElement("p", { style: { color: HB_C.doux, fontSize: 13, textAlign: "center", margin: "18px 0" } }, "…")
+                : null,
+            hbConvsErr ? React.createElement("div", { style: { margin: "6px 6px 10px", fontSize: 12.5, color: HB_C.doux, lineHeight: 1.45 } }, HBR("chargeErr"), " ",
+                React.createElement("button", { type: "button", onClick: hbChargerConvs, style: { background: "none", border: "none", color: HB_C.champ, textDecoration: "underline", fontSize: 12.5, padding: "6px 2px", cursor: "pointer", fontFamily: HB_SANS } }, HBR("reessayer"))) : null,
+            (hbConvs !== null && !hbListe.length && !hbConvsErr) ? React.createElement("p", { style: { color: HB_C.doux, fontSize: 13, textAlign: "center", margin: "18px 8px", lineHeight: 1.5 } }, HBR("vide")) : null,
+            React.createElement("ul", { style: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 2 } },
+                hbListe.map((c) => {
+                    const actif = c.id === conversationId; const nom = hbNom(c);
+                    return React.createElement("li", { key: c.id, style: { position: "relative", display: "flex", alignItems: "stretch", borderRadius: 10, background: actif ? "rgba(26,45,52,0.92)" : "transparent", boxShadow: actif ? ("inset " + (hbRtl ? "-2px" : "2px") + " 0 0 " + HB_C.champ) : "none" } },
+                        React.createElement("button", { type: "button", onClick: () => hbOuvrirConv(c.id), "aria-current": actif ? "true" : undefined, title: nom, style: { flex: 1, minWidth: 0, minHeight: 48, padding: "9px 6px 9px 12px", paddingInlineStart: 12, paddingInlineEnd: 4, background: "none", border: "none", color: actif ? HB_C.ivoire : "rgba(243,238,228,0.84)", display: "flex", alignItems: "center", gap: 10, cursor: "pointer", textAlign: "start", fontFamily: HB_SANS } },
+                            React.createElement("span", { style: { color: actif ? HB_C.champ : "rgba(201,166,107,0.7)", display: "flex" } }, hbIconeBulles(17)),
+                            React.createElement("span", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: 2 } },
+                                React.createElement("span", { style: { fontSize: hbVue === "tablette" ? 12.5 : 13, fontWeight: actif ? 600 : 500, lineHeight: 1.3, overflow: "hidden", textOverflow: "ellipsis", display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflowWrap: "anywhere", unicodeBidi: "plaintext" } }, nom),
+                                c.date ? React.createElement("span", { style: { fontSize: 11, color: "rgba(243,238,228,0.5)" } }, hbDate(c.date), actif ? React.createElement("span", { style: { position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" } }, " · " + HBR("active")) : null) : null)),
+                        React.createElement("button", { type: "button", onClick: (e) => hbOuvrirMenu(e, { type: "ligne", id: c.id }), "aria-label": HBR("optLigne", nom), "aria-haspopup": "menu", "aria-expanded": !!(hbMenu && hbMenu.type === "ligne" && hbMenu.id === c.id), style: { width: 40, minHeight: 44, background: "none", border: "none", color: "rgba(243,238,228,0.7)", cursor: "pointer", fontSize: 18, lineHeight: 1, flexShrink: 0, borderRadius: 8, padding: 0 } }, React.createElement("span", { "aria-hidden": "true", style: { display: "block", marginTop: -6 } }, "…")));
+                }))));
+    /* image du cheval : désaturée (plus de bleu turquoise), visage jamais recouvert */
+    const hbVide = messages.length <= 1;
+    const hbMainW = hbTaille.w || (typeof window !== "undefined" ? (window.innerWidth - hbColW) : 390);
+    const hbMainH = hbTaille.h || (typeof window !== "undefined" ? window.innerHeight : 800);
+    const hbGrand = hbVue !== "tel";
+    const hbSplit = hbGrand && hbVide && hbMainW >= 860;
+    const hbImgH = !hbGrand ? 0 : (hbSplit ? hbMainH : Math.round(hbMainH * (hbVide ? 0.58 : 0.72)));
+    const hbImgW = Math.round(hbImgH * 0.707);
+    const hbVisageDebut = Math.round(hbImgW * 0.58);          /* le visage occupe 28 % à 55 % de la largeur, côté fin */
+    const hbVisageBas = Math.round(hbImgH * 0.48);            /* et 8 % à 46 % de la hauteur */
+    const hbEnteteH = hbGrand ? 68 : 0;
+    const hbLecture = (() => { if (!hbGrand) return null; const libre = hbMainW - hbVisageDebut - 64; return libre >= 480 ? Math.min(720, libre) : Math.min(720, hbMainW - 56); })();
+    const hbAssombrir = hbGrand && !hbVide && (hbMainW - hbVisageDebut - 64) < 480;
+    const hbFondCheval = hbGrand
+        ? React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: HB_C.fond, overflow: "hidden", pointerEvents: "none" } },
+            React.createElement("div", { style: { position: "absolute", top: 0, [hbFin]: 0, width: hbImgW, height: hbImgH, backgroundImage: `url(${IMG_HEYBABY_FOND})`, backgroundSize: "cover", backgroundPosition: "center top", filter: "grayscale(1) sepia(0.18) brightness(0.9) contrast(1.05)", transform: hbRtl ? "scaleX(-1)" : "none", opacity: hbAssombrir ? 0.22 : 1, transition: "opacity .3s" } }),
+            React.createElement("div", { style: { position: "absolute", top: 0, [hbFin]: 0, width: hbImgW, height: hbImgH, background: `linear-gradient(to ${hbDebut}, rgba(7,10,8,0) 55%, ${HB_C.fond} 100%), linear-gradient(to bottom, rgba(7,10,8,0) 60%, ${HB_C.fond} 100%)` } }))
+        : React.createElement("div", { "aria-hidden": "true", style: { position: "absolute", inset: 0, zIndex: 0, background: HB_C.fond, overflow: "hidden", pointerEvents: "none" } },
+            React.createElement("div", { style: { position: "absolute", inset: 0, background: `url(${IMG_HEYBABY_FOND}) center/cover no-repeat`, filter: "grayscale(1) sepia(0.18) brightness(0.9)", transform: hbRtl ? "scaleX(-1)" : "none" } }),
+            React.createElement("div", { style: { position: "absolute", inset: 0, background: "linear-gradient(rgba(7,10,8,0.58), rgba(7,10,8,0.74))" } }));
+    const hbIdentite = (aligne) => React.createElement("div", { style: { display: "flex", flexDirection: "column", alignItems: aligne === "debut" ? "flex-start" : "center", textAlign: aligne === "debut" ? "start" : "center", flexShrink: 0 } },
+        React.createElement("div", { style: { width: hbGrand ? 132 : 128, height: hbGrand ? 132 : 128, borderRadius: "50%", overflow: "hidden", flexShrink: 0, border: "2px solid " + HB_C.champ, boxShadow: "0 0 26px rgba(201,166,107,0.28)", marginTop: 4, background: HB_C.petrole } },
+            React.createElement("img", { src: IMG_HEYBABY_AVATAR, alt: "", style: { width: "100%", height: "100%", objectFit: "cover", display: "block", filter: "grayscale(1) sepia(0.15)" } })),
+        React.createElement("h1", { style: { margin: "12px 0 0", fontFamily: HB_SERIF, fontWeight: 600, fontSize: hbGrand ? 40 : 34, letterSpacing: 0.5, color: HB_C.ivoire, lineHeight: 1.05, textShadow: "0 2px 14px rgba(0,0,0,0.6)" } }, t("assistant_titre")),
+        React.createElement("p", { style: { margin: "6px 0 0", fontSize: 13, color: HB_C.champ, fontWeight: 600, fontFamily: HB_SANS, display: "flex", alignItems: "center", gap: 6 } }, React.createElement("span", { "aria-hidden": "true", style: { width: 8, height: 8, borderRadius: "50%", background: HB_C.champ, boxShadow: "0 0 8px rgba(201,166,107,0.7)" } }), t("en_ligne")),
+        React.createElement("p", { style: { margin: "8px 0 0", fontFamily: HB_SERIF, fontStyle: "italic", fontWeight: 500, color: "rgba(243,238,228,0.92)", fontSize: hbGrand ? 20 : 18, lineHeight: 1.3, maxWidth: 320, textShadow: "0 1px 10px rgba(0,0,0,0.6)" } }, t("heybaby_phrase")));
+    const hbSuggestionsBase = coursCtx ? suggestions : [HBR("s1"), HBR("s2"), HBR("s3"), HBR("s4"), HBR("s5"), HBR("s6")];
+    const hbCarteSugg = (s) => React.createElement("button", { key: s, type: "button", onClick: () => envoyer(s), style: { display: "flex", alignItems: "center", gap: 10, textAlign: "start", minHeight: 52, padding: "12px 14px", borderRadius: 12, background: "rgba(16,29,34,0.86)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", border: "1px solid rgba(201,166,107,0.42)", fontSize: 13.5, lineHeight: 1.4, color: HB_C.ivoire, fontWeight: 500, fontFamily: HB_SANS, cursor: "pointer", width: "100%", boxSizing: "border-box", overflowWrap: "anywhere" } },
+        React.createElement("span", { style: { flex: 1, minWidth: 0 } }, s),
+        React.createElement("span", { "aria-hidden": "true", style: { color: HB_C.champ, fontSize: 18, lineHeight: 1, flexShrink: 0 } }, hbRtl ? "‹" : "›"));
+    const hbBlocSuggestions = (colonnes) => {
+        if (limiteAtteinte) return null;
+        const tel = !hbGrand && !coursCtx;
+        const liste = (tel && !hbVoirPlus) ? hbSuggestionsBase.slice(0, 4) : hbSuggestionsBase;
+        return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 8 } },
+            React.createElement("div", { style: { display: "grid", gridTemplateColumns: colonnes === 2 ? "repeat(2, minmax(0, 1fr))" : "minmax(0, 1fr)", gap: hbGrand ? 12 : 8 } }, liste.map(hbCarteSugg)),
+            (tel && hbSuggestionsBase.length > 4) ? React.createElement("button", { type: "button", onClick: () => setHbVoirPlus(!hbVoirPlus), "aria-expanded": hbVoirPlus, style: { alignSelf: "center", background: "none", border: "none", color: HB_C.champ, fontSize: 13, fontWeight: 600, fontFamily: HB_SANS, padding: "10px 12px", minHeight: 44, cursor: "pointer", display: "flex", alignItems: "center", gap: 6 } },
+                hbVoirPlus ? HBR("masquer") : HBR("voirPlus"), React.createElement("span", { "aria-hidden": "true", style: { display: "inline-block", transform: hbVoirPlus ? "rotate(180deg)" : "none", fontSize: 11 } }, "▾")) : null);
+    };
+    const hbIntro = messages[0] && messages[0].intro ? React.createElement(BulleMessage, { key: "intro", role: "assistant", contenu: messages[0].contenu, intro: true }) : null;
+    const hbBlocLimite = limiteAtteinte ? React.createElement("div", { style: { background: "linear-gradient(135deg, #14262C, " + HB_C.petrole + ")", border: "1px solid rgba(201,166,107,0.45)", borderRadius: 16, padding: 18, textAlign: "center", marginTop: 8, fontFamily: HB_SANS } },
+        React.createElement("p", { style: { color: HB_C.ivoire, fontWeight: 700, fontSize: 15, margin: "0 0 6px" } }, t("limite_atteinte_titre")),
+        React.createElement("p", { style: { color: "rgba(243,238,228,0.75)", fontSize: 13, margin: "0 0 16px" } }, t(planAbo === "duo" ? "limite_atteinte_texte_duo" : planAbo === "ai" ? "limite_atteinte_texte_ia" : premium ? "limite_atteinte_texte_premium" : "limite_atteinte_texte")),
+        (planAbo === "ai" || planAbo === "duo") ? null : React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: HB_C.champ, secondaire: true, onClick: () => setEcran("premium") })) : null;
+    const hbBulles = messages.map((m, i) => {
+        if (i === 0 && m.intro) return null;
+        const bulle = React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, intro: m.intro, enCours: m.pending, onEpingler: (m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirEpingle(i)) : null, onCorriger: (estModoHB && m.role === "assistant" && !m.intro && !m.pending && m.contenu) ? (() => ouvrirCorrection(i)) : null });
+        if (m.role !== "user") return bulle;
+        /* le « ⋯ » d'un échange se pose juste à côté de la question (prop `avant` de BulleMessage) */
+        return React.createElement(BulleMessage, { key: "b" + i, role: m.role, contenu: m.contenu, image: m.image || m.imageVue, imageMarque: m.imageMarque, avant: React.createElement("button", { type: "button", onClick: (e) => hbOuvrirMenu(e, { type: "echange", idx: i }), "aria-label": HBR("optEch"), "aria-haspopup": "menu", "aria-expanded": !!(hbMenu && hbMenu.type === "echange" && hbMenu.idx === i), style: { width: 36, height: 44, flexShrink: 0, background: "none", border: "none", color: "rgba(243,238,228,0.55)", cursor: "pointer", fontSize: 18, lineHeight: 1, padding: 0, borderRadius: 8 } }, React.createElement("span", { "aria-hidden": "true", style: { display: "block", marginTop: -6 } }, "…")) });
+    });
+    const hbContenu = (() => {
+        if (hbSplit) {
+            /* ordinateur, conversation vide : identité à gauche, six suggestions en 2 × 3 sous le visage du cheval */
+            return React.createElement("div", { style: { display: "flex", gap: 36, minHeight: "100%", boxSizing: "border-box", padding: "0 28px 20px" } },
+                React.createElement("div", { style: { width: 330, flexShrink: 0, display: "flex", flexDirection: "column", gap: 18 } }, hbIdentite("centre"), hbIntro),
+                React.createElement("div", { style: { flex: 1, minWidth: 0, display: "flex", flexDirection: "column", justifyContent: "flex-end", paddingTop: Math.max(0, hbVisageBas - hbEnteteH), maxWidth: 640 } }, hbBlocSuggestions(2), hbBlocLimite));
+        }
+        if (hbGrand) {
+            const idMax = Math.max(240, hbMainW - hbVisageDebut - 40);
+            return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 14, padding: "0 28px 20px", maxWidth: hbVide ? 760 : (hbLecture + 56), boxSizing: "border-box" } },
+                React.createElement("div", { style: { maxWidth: idMax, minHeight: Math.max(0, hbVisageBas - hbEnteteH), display: "flex", flexDirection: "column", justifyContent: "flex-start" } }, hbIdentite("debut")),
+                hbIntro,
+                hbBulles,
+                hbVide ? hbBlocSuggestions(hbMainW >= 520 ? 2 : 1) : null,
+                hbVide ? null : hbBlocLimite,
+                React.createElement("div", { ref: finRef }));
+        }
+        return React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 12, padding: "8px 16px 16px" } },
+            hbIdentite("centre"), hbIntro, hbBulles,
+            hbVide ? hbBlocSuggestions(1) : null,
+            hbBlocLimite,
+            React.createElement("div", { ref: finRef }));
+    })();
+    const hbBarreSaisie = React.createElement("div", { style: { position: "relative", zIndex: 2, flexShrink: 0, padding: hbBureau ? "12px 28px calc(14px + env(safe-area-inset-bottom, 0px))" : (hbGrand ? "10px 24px calc(12px + 58px + env(safe-area-inset-bottom, 0px))" : "10px 14px calc(12px + 58px + env(safe-area-inset-bottom, 0px))"), borderTop: "1px solid rgba(201,166,107,0.12)", background: "rgba(7,10,8,0.9)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontFamily: HB_SANS } },
+        React.createElement("div", { style: { maxWidth: hbGrand ? (hbVide ? 900 : (hbLecture + 0)) : "none", marginInlineStart: hbGrand && !hbVide ? 0 : undefined } },
             React.createElement("input", { ref: fichierRef, type: "file", accept: "image/*,video/*", onChange: choisirImage, style: { display: "none" } }),
             extractionVideo ? React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
-                React.createElement("div", { style: { width: 54, height: 54, borderRadius: 10, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.14)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 } }, "\uD83C\uDFAC"),
-                React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: "rgba(255,255,255,0.7)" } }, TXT("Lecture de la vid\u00e9o\u2026", "Reading the video\u2026", "Leyendo el v\u00eddeo\u2026", "Lettura del video\u2026", "\u52d5\u753b\u3092\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "Video wird gelesen\u2026", "جارٍ قراءة الفيديو…", "正在读取视频……", "Video wordt gelezen…", "Lendo o vídeo…", "Läser videon…", "Загрузка видео…", "Wczytywanie wideo…"))) : null,
+                React.createElement("div", { style: { width: 54, height: 54, borderRadius: 10, background: "rgba(243,238,228,0.06)", border: "1px solid " + HB_C.filet, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 } }, "🎬"),
+                React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: HB_C.doux } }, TXT("Lecture de la vid\u00e9o\u2026", "Reading the video\u2026", "Leyendo el v\u00eddeo\u2026", "Lettura del video\u2026", "\u52d5\u753b\u3092\u8aad\u307f\u8fbc\u307f\u4e2d\u2026", "Video wird gelesen\u2026", "جارٍ قراءة الفيديو…", "正在读取视频……", "Video wordt gelezen…", "Lendo o vídeo…", "Läser videon…", "Загрузка видео…", "Wczytywanie wideo…"))) : null,
             imageJointe ? React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 } },
                 React.createElement("div", { style: { position: "relative", flexShrink: 0, width: 54, height: 54 } },
                     React.createElement("img", { src: imageJointe, alt: "", style: { width: 54, height: 54, borderRadius: 10, objectFit: "cover", display: "block" } }),
-                    framesVideo ? React.createElement("span", { style: { position: "absolute", right: -5, bottom: -5, fontSize: 12, lineHeight: 1, background: "rgba(6,7,9,0.88)", borderRadius: 8, padding: "3px 4px", border: "1px solid rgba(255,255,255,0.22)" } }, "\uD83C\uDFAC") : null),
-                React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: "rgba(255,255,255,0.7)" } }, framesVideo ? TXT("Vid\u00e9o jointe \u00b7 " + framesVideo.length + " images cl\u00e9s", "Video attached \u00b7 " + framesVideo.length + " key frames", "V\u00eddeo adjunto \u00b7 " + framesVideo.length + " fotogramas", "Video allegato \u00b7 " + framesVideo.length + " fotogrammi", "\u52d5\u753b\u3092\u6dfb\u4ed8 \u00b7 \u30ad\u30fc\u30d5\u30ec\u30fc\u30e0" + framesVideo.length + "\u679a", "Video angehängt \u00b7 " + framesVideo.length + " Keyframes", "تم إرفاق فيديو · " + framesVideo.length + " إطارات رئيسية", "已附视频 · " + framesVideo.length + " 张关键帧", "Video bijgevoegd · " + framesVideo.length + " sleutelbeelden", "Vídeo anexado · " + framesVideo.length + " quadros-chave", ("Video bifogad · " + framesVideo.length + " nyckelbilder"), ("Видео прикреплено · ключевых кадров: " + framesVideo.length), ("Dołączono wideo · " + framesVideo.length + " " + (framesVideo.length === 1 ? "kluczowa klatka" : (framesVideo.length % 10 >= 2 && framesVideo.length % 10 <= 4 && (framesVideo.length % 100 < 10 || framesVideo.length % 100 >= 20)) ? "kluczowe klatki" : "kluczowych klatek"))) : t("photo_jointe")),
-                React.createElement("button", { onClick: () => { setImageJointe(null); setFramesVideo(null); }, style: { width: 30, height: 30, borderRadius: "50%", background: "rgba(255,255,255,0.12)", color: COLORS.blanc, fontSize: 14, flexShrink: 0 } }, "\u2715")) : null,
+                    framesVideo ? React.createElement("span", { style: { position: "absolute", right: -5, bottom: -5, fontSize: 12, lineHeight: 1, background: "rgba(6,7,9,0.88)", borderRadius: 8, padding: "3px 4px", border: "1px solid rgba(243,238,228,0.22)" } }, "🎬") : null),
+                React.createElement("span", { style: { flex: 1, fontSize: 12.5, color: HB_C.doux } }, framesVideo ? TXT("Vid\u00e9o jointe \u00b7 " + framesVideo.length + " images cl\u00e9s", "Video attached \u00b7 " + framesVideo.length + " key frames", "V\u00eddeo adjunto \u00b7 " + framesVideo.length + " fotogramas", "Video allegato \u00b7 " + framesVideo.length + " fotogrammi", "\u52d5\u753b\u3092\u6dfb\u4ed8 \u00b7 \u30ad\u30fc\u30d5\u30ec\u30fc\u30e0" + framesVideo.length + "\u679a", "Video angehängt \u00b7 " + framesVideo.length + " Keyframes", "تم إرفاق فيديو · " + framesVideo.length + " إطارات رئيسية", "已附视频 · " + framesVideo.length + " 张关键帧", "Video bijgevoegd · " + framesVideo.length + " sleutelbeelden", "Vídeo anexado · " + framesVideo.length + " quadros-chave", ("Video bifogad · " + framesVideo.length + " nyckelbilder"), ("Видео прикреплено · ключевых кадров: " + framesVideo.length), ("Dołączono wideo · " + framesVideo.length + " " + (framesVideo.length === 1 ? "kluczowa klatka" : (framesVideo.length % 10 >= 2 && framesVideo.length % 10 <= 4 && (framesVideo.length % 100 < 10 || framesVideo.length % 100 >= 20)) ? "kluczowe klatki" : "kluczowych klatek"))) : t("photo_jointe")),
+                React.createElement("button", { type: "button", onClick: () => { setImageJointe(null); setFramesVideo(null); }, "aria-label": HBR("supprimer"), style: { width: 44, height: 44, borderRadius: "50%", background: "rgba(243,238,228,0.08)", border: "1px solid " + HB_C.filet, color: HB_C.ivoire, fontSize: 14, flexShrink: 0, cursor: "pointer" } }, "✕")) : null,
             React.createElement("div", { style: { display: "flex", gap: 9, alignItems: "center" } },
-                HEYBABY_ANALYSE_VISUELLE ? React.createElement("button", { onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte || extractionVideo, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.16)", color: "#20D9F5", fontSize: 20, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", opacity: extractionVideo ? 0.5 : 1 } }, "\uD83D\uDCF7") : null,
-                React.createElement("input", { value: saisie, onChange: (e) => setSaisie(e.target.value), onKeyDown: (e) => e.key === "Enter" && !enCours && envoyer(), placeholder: limiteAtteinte ? t("limite_atteinte_court") : t("poser_question_placeholder"), disabled: limiteAtteinte, style: { flex: 1, padding: "13px 16px", borderRadius: 16, border: "2px solid rgba(255,255,255,0.14)", fontSize: 16 /* 20/08 s145 : etait 14 ; sous 16px iOS zoome sur le champ et ne dezoome jamais */, color: COLORS.blanc, background: "rgba(255,255,255,0.06)" } }),
-                enCours ? React.createElement("button", { onClick: arreter, "aria-label": t("heybaby_stop"), title: t("heybaby_stop"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(255,255,255,0.08)", border: `1px solid ${"#20D9F5"}`, color: "#20D9F5", fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u25A0")
-                    : React.createElement("button", { onClick: () => envoyer(), disabled: limiteAtteinte || (!saisie.trim() && !imageJointe), style: { width: 48, height: 48, borderRadius: 14, background: limiteAtteinte || (!saisie.trim() && !imageJointe) ? "rgba(255,255,255,0.12)" : "#20D9F5", color: COLORS.blanc, fontSize: 17, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 } }, "\u27A4"))),
+                HEYBABY_ANALYSE_VISUELLE ? React.createElement("button", { type: "button", onClick: () => fichierRef.current && fichierRef.current.click(), disabled: limiteAtteinte || extractionVideo, "aria-label": t("joindre_photo"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(7,10,8,0.6)", border: "1px solid " + HB_C.filet, color: HB_C.champ, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", opacity: extractionVideo ? 0.5 : 1, cursor: "pointer" } },
+                    React.createElement("svg", { width: 22, height: 22, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.7, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, React.createElement("path", { d: "M4 8.5A1.5 1.5 0 0 1 5.5 7h2l1.5-2h6l1.5 2h2A1.5 1.5 0 0 1 20 8.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 17.5z" }), React.createElement("circle", { cx: 12, cy: 13, r: 3.5 }))) : null,
+                React.createElement("input", { value: saisie, onChange: (e) => setSaisie(e.target.value), onKeyDown: (e) => e.key === "Enter" && !enCours && envoyer(), placeholder: limiteAtteinte ? t("limite_atteinte_court") : t("poser_question_placeholder"), "aria-label": t("poser_question_placeholder"), disabled: limiteAtteinte, style: { flex: 1, minWidth: 0, padding: "13px 16px", borderRadius: 14, border: "1px solid rgba(243,238,228,0.16)", fontSize: 16 /* 20/08 s145 : sous 16px iOS zoome sur le champ */, color: HB_C.ivoire, background: "rgba(16,29,34,0.7)", fontFamily: HB_SANS, boxSizing: "border-box" } }),
+                enCours ? React.createElement("button", { type: "button", onClick: arreter, "aria-label": t("heybaby_stop"), title: t("heybaby_stop"), style: { width: 48, height: 48, borderRadius: 14, background: "rgba(7,10,8,0.6)", border: "1px solid " + HB_C.champ, color: HB_C.champ, fontSize: 15, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer" } }, "■")
+                    : React.createElement("button", { type: "button", onClick: () => envoyer(), disabled: limiteAtteinte || (!saisie.trim() && !imageJointe), "aria-label": tr({ fr: "Envoyer", en: "Send", es: "Enviar", it: "Invia", ja: "送信", de: "Senden", ar: "إرسال", zh: "发送", nl: "Versturen", pt: "Enviar", sv: "Skicka", ru: "Отправить", pl: "Wyślij" }), style: { width: 48, height: 48, borderRadius: 14, background: (limiteAtteinte || (!saisie.trim() && !imageJointe)) ? "rgba(243,238,228,0.06)" : HB_C.petrole, border: "1px solid " + ((limiteAtteinte || (!saisie.trim() && !imageJointe)) ? "rgba(243,238,228,0.12)" : HB_C.champ), color: (limiteAtteinte || (!saisie.trim() && !imageJointe)) ? "rgba(243,238,228,0.4)" : HB_C.ivoire, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, cursor: "pointer" } },
+                        React.createElement("svg", { width: 20, height: 20, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true", style: { transform: hbRtl ? "scaleX(-1)" : "none" } }, React.createElement("path", { d: "M4 12l16-8-6 16-2.5-6.5z" }))))));
+    /* menus « ⋯ », confirmations et renommage (sortis dans <body> pour ne jamais être coupés) */
+    const hbItem = (props, icone, texte, danger) => React.createElement("button", Object.assign({ type: "button", role: "menuitem" }, props, { style: { display: "flex", alignItems: "center", gap: 10, width: "100%", minHeight: 44, padding: "10px 14px", background: "none", border: "none", borderRadius: 8, color: danger ? HB_C.rouge : HB_C.ivoire, fontSize: 13.5, fontWeight: 500, fontFamily: HB_SANS, cursor: "pointer", textAlign: "start" } }), icone, React.createElement("span", null, texte));
+    const hbMenuRendu = hbMenu ? hypePortailBody(React.createElement("div", { "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 400 }, onMouseDown: () => hbFermerMenu(false), onTouchStart: () => hbFermerMenu(false) },
+        React.createElement("div", { ref: hbMenuRef, role: "menu", "aria-label": hbMenu.type === "echange" ? HBR("optEch") : HBR("optConv"), dir: hbRtl ? "rtl" : "ltr", onMouseDown: (e) => e.stopPropagation(), onTouchStart: (e) => e.stopPropagation(), style: (() => {
+            const r = hbMenu.rect || { top: 60, bottom: 100, left: 20, right: 60 }; const vw = window.innerWidth, vh = window.innerHeight; const W = 250;
+            const st = { position: "absolute", width: W, maxWidth: "calc(100vw - 24px)", padding: 6, boxSizing: "border-box", background: HB_C.petrole2, border: "1px solid rgba(201,166,107,0.3)", borderRadius: 12, boxShadow: "0 14px 34px rgba(0,0,0,0.6)", fontFamily: HB_SANS };
+            const bas = r.bottom + 6; if (bas + 150 > vh) st.bottom = Math.max(12, vh - r.top + 6); else st.top = bas;
+            /* le menu s'ouvre vers l'intérieur de l'écran */
+            const gauche = (hbMenu.type === "ligne") ? (hbRtl ? r.right - W : r.left) : (hbRtl ? r.left : r.right - W);
+            st.left = Math.max(12, Math.min(vw - W - 12, gauche)); return st; })() },
+            hbMenu.type === "entete" ? React.createElement(React.Fragment, null,
+                hbItem({ onClick: () => hbDemander({ type: "vider", id: conversationId }) }, hbIconeBalai(), HBR("viderConv")),
+                hbItem({ onClick: () => hbDemander({ type: "supprimer", id: conversationId }) }, hbIconeCorbeille(), HBR("supprimerConv"), true))
+            : hbMenu.type === "ligne" ? React.createElement(React.Fragment, null,
+                hbMeta ? hbItem({ onClick: () => hbOuvrirRenom(hbMenu.id) }, hbIconeCrayon(), HBR("renommer")) : null,
+                hbItem({ onClick: () => hbDemander({ type: "supprimer", id: hbMenu.id }) }, hbIconeCorbeille(), HBR("supprimer"), true))
+            : hbItem({ onClick: () => hbDemander({ type: "echange", idx: hbMenu.idx }) }, hbIconeCorbeille(), HBR("supprimerEch"), true)))) : null;
+    const hbFenetre = (titre, enfants, fermer) => hypePortailBody(React.createElement("div", { "data-noswipe": "true", onMouseDown: fermer, style: { position: "fixed", inset: 0, zIndex: 410, background: "rgba(4,6,5,0.74)", display: "flex", alignItems: "center", justifyContent: "center", padding: 18, fontFamily: HB_SANS } },
+        React.createElement("div", { ref: hbDialogRef, role: "alertdialog", "aria-modal": "true", "aria-labelledby": "hb-dlg-titre", "aria-describedby": "hb-dlg-texte", dir: hbRtl ? "rtl" : "ltr", onMouseDown: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 400, background: HB_C.petrole, border: "1px solid rgba(201,166,107,0.32)", borderRadius: 16, padding: "20px 18px 16px", boxShadow: "0 20px 50px rgba(0,0,0,0.6)", color: HB_C.ivoire, boxSizing: "border-box", textAlign: "start" } },
+            React.createElement("h2", { id: "hb-dlg-titre", style: { margin: "0 0 8px", fontFamily: HB_SERIF, fontWeight: 600, fontSize: 24, lineHeight: 1.2, color: HB_C.ivoire } }, titre),
+            enfants)));
+    const hbBoutonsDlg = (annuler, valider, texteValider, danger, envoi) => React.createElement("div", { style: { display: "flex", gap: 10, marginTop: 16, justifyContent: "flex-end", flexWrap: "wrap" } },
+        React.createElement("button", { type: "button", onClick: annuler, disabled: envoi, style: { minHeight: 44, padding: "0 18px", borderRadius: 12, background: "transparent", border: "1px solid rgba(243,238,228,0.22)", color: HB_C.ivoire, fontSize: 14, fontWeight: 600, fontFamily: HB_SANS, cursor: "pointer", opacity: envoi ? 0.5 : 1 } }, HBR("annuler")),
+        React.createElement("button", { type: "button", onClick: valider, disabled: envoi, "aria-busy": envoi ? "true" : undefined, style: { minHeight: 44, padding: "0 18px", borderRadius: 12, background: danger ? "rgba(224,138,128,0.10)" : "rgba(7,10,8,0.5)", border: "1px solid " + (danger ? "rgba(224,138,128,0.6)" : HB_C.champ), color: danger ? HB_C.rouge : HB_C.ivoire, fontSize: 14, fontWeight: 700, fontFamily: HB_SANS, cursor: envoi ? "default" : "pointer", display: "inline-flex", alignItems: "center", gap: 8 } },
+            texteValider));
+    const hbConfirmRendu = hbConfirm ? (() => {
+        const c = hbConfirm;
+        const T2 = c.type === "echange" ? ["echT", "echX", "supprimer", true] : c.type === "vider" ? ["vidT", "vidX", "vider", false] : c.type === "supprimer" ? ["supT", "supX", "supprimer", true] : ["occT", "occX", "arreter", false];
+        const enCoursTxt = c.type === "vider" ? HBR("videEnCours") : HBR("suppEnCours");
+        return hbFenetre(HBR(T2[0]), React.createElement(React.Fragment, null,
+            React.createElement("p", { id: "hb-dlg-texte", style: { margin: 0, fontSize: 14, lineHeight: 1.5, color: "rgba(243,238,228,0.8)" } }, HBR(T2[1])),
+            c.erreur ? React.createElement("p", { role: "alert", style: { margin: "12px 0 0", fontSize: 13, lineHeight: 1.45, color: HB_C.rouge } }, c.erreur) : null,
+            hbBoutonsDlg(hbFermerConfirm, hbValider, c.envoi ? enCoursTxt : HBR(T2[2]), T2[3], c.envoi)), () => { if (!c.envoi) hbFermerConfirm(); });
+    })() : null;
+    const hbRenomRendu = hbRenom ? hbFenetre(HBR("renT"), React.createElement(React.Fragment, null,
+        React.createElement("label", { id: "hb-dlg-texte", htmlFor: "hb-renom", style: { display: "block", fontSize: 12.5, color: HB_C.doux, margin: "0 0 6px" } }, HBR("nomLabel")),
+        React.createElement("input", { id: "hb-renom", value: hbRenom.valeur, maxLength: HB_TITRE_MAX, disabled: hbRenom.envoi, onChange: (e) => setHbRenom(Object.assign({}, hbRenom, { valeur: e.target.value, erreur: "" })), onKeyDown: (e) => { if (e.key === "Enter") { e.preventDefault(); hbValiderRenom(); } }, style: { width: "100%", boxSizing: "border-box", minHeight: 46, padding: "10px 12px", borderRadius: 10, border: "1px solid rgba(201,166,107,0.4)", background: "rgba(7,10,8,0.5)", color: HB_C.ivoire, fontSize: 16, fontFamily: HB_SANS, unicodeBidi: "plaintext" } }),
+        React.createElement("div", { style: { fontSize: 11, color: "rgba(243,238,228,0.45)", textAlign: "end", marginTop: 4 } }, String(hbRenom.valeur || "").length + " / " + HB_TITRE_MAX),
+        hbRenom.erreur ? React.createElement("p", { role: "alert", style: { margin: "10px 0 0", fontSize: 13, color: HB_C.rouge, lineHeight: 1.45 } }, hbRenom.erreur) : null,
+        hbBoutonsDlg(() => { if (!hbRenom.envoi) { setHbRenom(null); hbRendreFocus(); } }, hbValiderRenom, hbRenom.envoi ? HBR("enregEnCours") : HBR("enregistrer"), false, hbRenom.envoi)), () => { if (!hbRenom.envoi) { setHbRenom(null); hbRendreFocus(); } }) : null;
+    const hbPanneau = (!hbGrand && histoOuvert) ? React.createElement("div", { onClick: () => { setHistoOuvert(false); setTimeout(() => { try { hbHistoBtnRef.current && hbHistoBtnRef.current.focus(); } catch (e) { } }, 0); }, "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 60, background: "rgba(4,6,5,0.6)", animation: "fadeIn 0.2s ease-out" } },
+        React.createElement("div", { ref: hbPanneauRef, role: "dialog", "aria-modal": "true", "aria-label": HBR("historique"), onClick: (e) => e.stopPropagation(), style: { position: "absolute", [hbDebut]: 0, top: 0, height: "100%", width: "85%", maxWidth: 360, background: HB_C.petrole2, [hbRtl ? "borderLeft" : "borderRight"]: "1px solid rgba(201,166,107,0.2)", boxShadow: "0 0 40px rgba(0,0,0,0.6)", boxSizing: "border-box", animation: "fadeIn 0.25s ease-out" } }, hbRendreHistorique(true))) : null;
+    return (React.createElement("div", { dir: hbRtl ? "rtl" : "ltr", style: { height: "100dvh", display: "flex", flexDirection: "row", position: "relative", overflow: "hidden", background: HB_C.fond, fontFamily: HB_SANS, color: HB_C.ivoire } },
+        hbGrand ? React.createElement("aside", { style: { width: hbColW, flexShrink: 0, height: "100%", boxSizing: "border-box", background: HB_C.petrole2, borderInlineEnd: "1px solid rgba(201,166,107,0.14)", position: "relative", zIndex: 4 } }, hbRendreHistorique(false)) : null,
+        React.createElement("div", { ref: hbMainRef, style: { flex: 1, minWidth: 0, height: "100%", display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" } },
+            hbFondCheval,
+            hbGrand
+                ? React.createElement("div", { style: { position: "relative", zIndex: 3, height: hbEnteteH, boxSizing: "border-box", padding: "12px 28px 0", display: "flex", alignItems: "flex-start", justifyContent: "flex-end", flexShrink: 0 } }, hbBoutonsFin)
+                : React.createElement("div", { style: { position: "relative", zIndex: 3, padding: "12px 14px 10px", display: "flex", flexDirection: "column", gap: 8, borderBottom: "1px solid rgba(201,166,107,0.10)", background: "rgba(7,10,8,0.42)", backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", flexShrink: 0 } },
+                    React.createElement("div", { style: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10 } }, hbBoutonRetour(), hbBoutonsFin),
+                    React.createElement("div", null,
+                        React.createElement("button", { type: "button", ref: hbHistoBtnRef, onClick: () => setHistoOuvert(true), "aria-haspopup": "dialog", "aria-expanded": !!histoOuvert, style: { minHeight: 40, padding: "0 14px", borderRadius: 12, background: "rgba(7,10,8,0.55)", border: "1px solid " + HB_C.filet, color: HB_C.ivoire, fontSize: 13, fontWeight: 600, fontFamily: HB_SANS, display: "inline-flex", alignItems: "center", gap: 8, cursor: "pointer" } },
+                            React.createElement("span", { style: { color: HB_C.champ, display: "flex" } }, hbIconeBulles(18)), HBR("historique")))),
+            React.createElement("div", { ref: hbScrollRef, style: { position: "relative", zIndex: 2, flex: 1, minHeight: 0, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch", overscrollBehavior: "contain" } }, hbContenu),
+            hbBarreSaisie),
+        hbPanneau,
         corrCible ? hypePortailBody(React.createElement("div", { onClick: () => { if (!corrCible.envoi) { setCorrCible(null); setCorrListe(null); } }, "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 200, background: "rgba(8,10,13,0.82)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 } },
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 420, maxHeight: "86dvh", overflowY: "auto", background: "#12161C", border: "1px solid rgba(232,194,122,0.45)", borderRadius: 18, padding: 18, color: COLORS.blanc, boxSizing: "border-box" } },
                 React.createElement("p", { style: { margin: "0 0 4px", fontSize: 16, fontWeight: 800, color: "#E8C27A" } }, corrListe ? "\u270F\uFE0F Toutes les corrections" : "\u270F\uFE0F Corriger Hey Baby"),
@@ -88407,7 +88934,7 @@ function EcranAssistantIA() {
                     React.createElement("button", { onClick: () => setCorrListe(null), style: { width: "100%", marginTop: 14, padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.08)", color: COLORS.blanc, fontWeight: 700, fontSize: 15, border: "1px solid rgba(255,255,255,0.18)" } }, "\u2190 Retour")) :
                 corrCible.ok ? React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "8px 0 14px", fontSize: 14, lineHeight: 1.5 } }, "Enregistrée. Hey Baby en tient compte dès la prochaine question, pour toutes les cavalières."),
-                    React.createElement("button", { onClick: () => setCorrCible(null), style: { width: "100%", padding: "12px", borderRadius: 12, background: "#E8C27A", color: "#12161C", fontWeight: 800, fontSize: 15, border: "none" } }, "Fermer")) : React.createElement(React.Fragment, null,
+                    React.createElement("button", { onClick: () => setCorrCible(null), style: { width: "100%", padding: "12px", borderRadius: 12, background: "rgba(7,10,8,0.5)", color: "#F3EEE4", boxShadow: "inset 0 0 0 1px #C9A66B", fontWeight: 800, fontSize: 15, border: "none" } }, "Fermer")) : React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 10px", fontSize: 12.5, lineHeight: 1.45, color: "rgba(255,255,255,0.7)" } }, "Écris ce qui ne va pas, avec tes mots. Hey Baby s'en servira comme d'une règle pour toutes les cavalières, et la reformulera toujours proprement. Visible par les modératrices seulement."),
                     React.createElement("div", { style: { fontSize: 11.5, color: "rgba(255,255,255,0.5)", margin: "0 0 10px", maxHeight: 90, overflow: "hidden", borderLeft: "2px solid rgba(255,255,255,0.15)", paddingLeft: 8 } }, String(corrCible.reponse || "").slice(0, 280) + (String(corrCible.reponse || "").length > 280 ? "\u2026" : "")),
                     React.createElement("textarea", { value: corrCible.texte, autoFocus: true, rows: 5, maxLength: 500, placeholder: "Ex. : ne dis jamais « dos neutre », ça ne veut rien dire.", onChange: (e) => setCorrCible({ ...corrCible, texte: e.target.value, erreur: "" }), style: { width: "100%", boxSizing: "border-box", fontSize: 16, lineHeight: 1.4, padding: 10, borderRadius: 10, background: "rgba(255,255,255,0.06)", color: COLORS.blanc, border: "1px solid rgba(255,255,255,0.18)", resize: "vertical" } }),
@@ -88416,14 +88943,14 @@ function EcranAssistantIA() {
                     React.createElement("button", { onClick: chargerListeCorrections, style: { display: "block", margin: "0 0 12px", padding: 0, background: "none", border: "none", color: "#E8C27A", fontSize: 13, fontWeight: 700, textDecoration: "underline" } }, "Toutes les corrections \u2192"),
                     React.createElement("div", { style: { display: "flex", gap: 10 } },
                         React.createElement("button", { onClick: () => { setCorrCible(null); setCorrListe(null); }, disabled: corrCible.envoi, style: { flex: 1, padding: "12px", borderRadius: 12, background: "rgba(255,255,255,0.08)", color: COLORS.blanc, fontWeight: 700, fontSize: 15, border: "1px solid rgba(255,255,255,0.18)" } }, "Annuler"),
-                        React.createElement("button", { onClick: enregistrerCorrection, disabled: corrCible.envoi, style: { flex: 1, padding: "12px", borderRadius: 12, background: "#E8C27A", color: "#12161C", fontWeight: 800, fontSize: 15, border: "none", opacity: corrCible.envoi ? 0.6 : 1 } }, corrCible.envoi ? "Envoi\u2026" : "Enregistrer")))))) : null,
+                        React.createElement("button", { onClick: enregistrerCorrection, disabled: corrCible.envoi, style: { flex: 1, padding: "12px", borderRadius: 12, background: "rgba(7,10,8,0.5)", color: "#F3EEE4", boxShadow: "inset 0 0 0 1px #C9A66B", fontWeight: 800, fontSize: 15, border: "none", opacity: corrCible.envoi ? 0.6 : 1 } }, corrCible.envoi ? "Envoi\u2026" : "Enregistrer")))))) : null,
         epingleCible ? React.createElement("div", { onClick: () => setEpingleCible(null), "data-noswipe": "true", style: { position: "fixed", inset: 0, zIndex: 90, background: "rgba(8,10,13,0.78)", display: "flex", alignItems: "center", justifyContent: "center", padding: 22, animation: "fadeIn 0.2s ease-out" } },
             React.createElement("div", { onClick: (e) => e.stopPropagation(), style: { width: "100%", maxWidth: 360, background: COLORS.nuitClaire, border: `1px solid ${COLORS.ligne}`, borderRadius: 20, padding: "20px 18px" } },
                 epingleCible.paywall ? React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler ce conseil", "Pin this advice", "Fijar este consejo", "Fissa questo consiglio", "\u3053\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30d4\u30f3\u7559\u3081", "Diesen Rat anheften", "ثبّتي هذه النصيحة", "置顶这条建议", "Deze tip vastzetten", "Fixar este conselho", "Fäst det här rådet", "Закрепить этот совет", "Przypnij tę wskazówkę")),
                     React.createElement("p", { style: { margin: "0 0 14px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("R\u00e9serv\u00e9 aux membres du Cercle Crystal : garde tes meilleurs conseils sur ta page cavalier et tes fiches chevaux.", "Reserved for Crystal Circle members: keep your best advice on your rider page and horse profiles.", "Reservado a los miembros del C\u00edrculo Crystal: guarda tus mejores consejos en tu p\u00e1gina y tus fichas de caballos.", "Riservato ai membri del Cerchio Crystal: conserva i migliori consigli sulla tua pagina e sulle schede dei tuoi cavalli.", "Crystal\u30b5\u30fc\u30af\u30eb\u4f1a\u54e1\u9650\u5b9a\uff1a\u304a\u6c17\u306b\u5165\u308a\u306e\u30a2\u30c9\u30d0\u30a4\u30b9\u3092\u30da\u30fc\u30b8\u306b\u4fdd\u5b58\u3067\u304d\u307e\u3059\u3002", "Nur für Mitglieder des Crystal-Kreises: bewahre deine besten Ratschläge auf deiner Reiterseite und den Seiten deiner Pferde auf.", "مخصص لأعضاء Cercle Crystal: احتفظي بأفضل نصائحك في صفحتك كفارسة وفي بطاقات خيولك.", "仅限 Crystal 圈会员：把你最好的建议保存在你的骑手主页和马的档案里。", "Alleen voor leden van de Crystal-kring: bewaar je beste tips op je ruiterpagina en je paardenprofielen.", "Reservado aos membros do Círculo Crystal: guarde seus melhores conselhos na sua página de cavaleiro e nas fichas dos seus cavalos.", "Förbehållet medlemmar i Crystal-cirkeln: spara dina bästa råd på din ryttarsida och dina hästprofiler.", "Только для участников Crystal: сохраняй свои лучшие советы на странице всадника и в карточках лошадей.", "Tylko dla członków Cercle Crystal: zachowaj swoje najlepsze wskazówki na stronie jeźdźca i w kartach koni.")),
                     React.createElement(BandeauDejaAbonne, { marge: "0 0 12px", onAvant: () => setEpingleCible(null) }),
-                    React.createElement(BoutonPrincipal, { texte: t("decouvrir_premium"), couleur: "#20D9F5", onClick: () => { setEpingleCible(null); setEcran("premium"); } }))
+                    React.createElement(BoutonPrincipal, { texte: t("decouvrir_premium"), couleur: "#C9A66B", secondaire: true, onClick: () => { setEpingleCible(null); setEcran("premium"); } }))
                 : epingleCible.limite ? React.createElement(React.Fragment, null,
                     /* 19/08/2026 (choix de Blandine, maquette A) — LA MASCOTTE.
                        Fichier à la racine du dépôt, appelé en chemin direct :
@@ -88432,17 +88959,17 @@ function EcranAssistantIA() {
                        la détache du fond sombre — un JPEG poserait un carré
                        blanc. ⚠️ si le fichier n'est pas poussé, onError efface
                        simplement l'image : la modale reste entière. */
-                    React.createElement("img", { src: "mascotte-abo.webp", alt: "", onError: (e) => { try { e.target.style.display = "none"; } catch (eI) { } }, style: { display: "block", width: 104, height: "auto", margin: "0 auto 6px", filter: "drop-shadow(0 6px 20px rgba(32,217,245,0.28))" } }),
+                    React.createElement("img", { src: "mascotte-abo.webp", alt: "", onError: (e) => { try { e.target.style.display = "none"; } catch (eI) { } }, style: { display: "block", width: 104, height: "auto", margin: "0 auto 6px", filter: "drop-shadow(0 6px 20px rgba(201,166,107,0.28))" } }),
                     React.createElement("p", { style: { margin: "0 0 6px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("Limite atteinte", "Limit reached", "L\u00edmite alcanzado", "Limite raggiunto", "\u4e0a\u9650\u306b\u9054\u3057\u307e\u3057\u305f", "Limit erreicht", "تم بلوغ الحد الأقصى", "已达上限", "Limiet bereikt", "Limite atingido", "Gränsen nådd", "Лимит исчерпан", "Limit osiągnięty")),
                     React.createElement("p", { style: { margin: "0 0 4px", fontSize: 13, color: COLORS.encreDoux, textAlign: "center", lineHeight: 1.5 } }, TXT("Tu as d\u00e9j\u00e0 " + (epingleCible.plafond || 20) + " conseils \u00e9pingl\u00e9s, le maximum de ton abonnement.", "You already have " + (epingleCible.plafond || 20) + " pinned pieces of advice, your plan's maximum.", "Ya tienes " + (epingleCible.plafond || 20) + " consejos fijados, el m\u00e1ximo de tu suscripci\u00f3n.", "Hai gi\u00e0 " + (epingleCible.plafond || 20) + " consigli fissati, il massimo del tuo abbonamento.", (epingleCible.plafond || 20) + "\u4ef6\u3092\u3059\u3067\u306b\u30d4\u30f3\u7559\u3081\u3057\u3066\u3044\u307e\u3059\u3002\u3054\u5951\u7d04\u306e\u4e0a\u9650\u3067\u3059\u3002", "Du hast bereits " + (epingleCible.plafond || 20) + " Ratschläge angeheftet, das Maximum deines Abos.", "لديكِ بالفعل " + (epingleCible.plafond || 20) + " نصيحة مثبّتة، وهو الحد الأقصى لاشتراكك.", "你已经置顶了 " + (epingleCible.plafond || 20) + " 条建议，已达到你当前订阅的上限。", "Je hebt al " + (epingleCible.plafond || 20) + " vastgepinde tips, het maximum van je abonnement.", "Você já tem " + (epingleCible.plafond || 20) + " conselhos fixados, o máximo da sua assinatura.", ("Du har redan " + (epingleCible.plafond || 20) + " fästa råd, maxgränsen för din prenumeration."), ("У тебя уже " + (epingleCible.plafond || 20) + " закреплённых советов — это максимум для твоей подписки."), ("Masz już " + (epingleCible.plafond || 20) + " przypiętych wskazówek — to maksimum w twojej subskrypcji."))),
-                    planAbo === "duo" ? null : React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12.5, color: "#20D9F5", textAlign: "center", fontWeight: 700, lineHeight: 1.5 } }, TXT("Souhaites-tu passer \u00e0 l'abonnement sup\u00e9rieur ? L'abonnement Duo en propose " + PLAFOND_DUO + ".", "Would you like to move up a plan? The Duo plan offers " + PLAFOND_DUO + ".", "\u00bfQuieres pasar a la suscripci\u00f3n superior? La suscripci\u00f3n Duo ofrece " + PLAFOND_DUO + ".", "Vuoi passare all'abbonamento superiore? L'abbonamento Duo ne offre " + PLAFOND_DUO + ".", "\u4e0a\u4f4d\u30d7\u30e9\u30f3\u306b\u5909\u66f4\u3057\u307e\u3059\u304b\uff1fDuo\u30d7\u30e9\u30f3\u306a\u3089" + PLAFOND_DUO + "\u4ef6\u307e\u3067\u53ef\u80fd\u3067\u3059\u3002", "Möchtest du auf das höhere Abo wechseln? Das Duo-Abo bietet " + PLAFOND_DUO + ".", "هل ترغبين في الانتقال إلى الاشتراك الأعلى؟ يتيح اشتراك Duo " + PLAFOND_DUO + ".", "想升级到更高级的订阅吗？Duo 订阅可置顶 " + PLAFOND_DUO + " 条。", "Wil je overstappen op een hoger abonnement? Het Duo-abonnement biedt er " + PLAFOND_DUO + ".", "Quer mudar para uma assinatura superior? A assinatura Duo oferece " + PLAFOND_DUO + ".", ("Vill du byta till nästa prenumerationsnivå? Duo-prenumerationen ger dig " + PLAFOND_DUO + "."), ("Хочешь перейти на подписку повыше? В подписке Duo лимит — " + PLAFOND_DUO + "."), ("Chcesz przejść na wyższą subskrypcję? Subskrypcja Duo oferuje " + PLAFOND_DUO + "."))),
+                    planAbo === "duo" ? null : React.createElement("p", { style: { margin: "0 0 12px", fontSize: 12.5, color: "#C9A66B", textAlign: "center", fontWeight: 700, lineHeight: 1.5 } }, TXT("Souhaites-tu passer \u00e0 l'abonnement sup\u00e9rieur ? L'abonnement Duo en propose " + PLAFOND_DUO + ".", "Would you like to move up a plan? The Duo plan offers " + PLAFOND_DUO + ".", "\u00bfQuieres pasar a la suscripci\u00f3n superior? La suscripci\u00f3n Duo ofrece " + PLAFOND_DUO + ".", "Vuoi passare all'abbonamento superiore? L'abbonamento Duo ne offre " + PLAFOND_DUO + ".", "\u4e0a\u4f4d\u30d7\u30e9\u30f3\u306b\u5909\u66f4\u3057\u307e\u3059\u304b\uff1fDuo\u30d7\u30e9\u30f3\u306a\u3089" + PLAFOND_DUO + "\u4ef6\u307e\u3067\u53ef\u80fd\u3067\u3059\u3002", "Möchtest du auf das höhere Abo wechseln? Das Duo-Abo bietet " + PLAFOND_DUO + ".", "هل ترغبين في الانتقال إلى الاشتراك الأعلى؟ يتيح اشتراك Duo " + PLAFOND_DUO + ".", "想升级到更高级的订阅吗？Duo 订阅可置顶 " + PLAFOND_DUO + " 条。", "Wil je overstappen op een hoger abonnement? Het Duo-abonnement biedt er " + PLAFOND_DUO + ".", "Quer mudar para uma assinatura superior? A assinatura Duo oferece " + PLAFOND_DUO + ".", ("Vill du byta till nästa prenumerationsnivå? Duo-prenumerationen ger dig " + PLAFOND_DUO + "."), ("Хочешь перейти на подписку повыше? В подписке Duo лимит — " + PLAFOND_DUO + "."), ("Chcesz przejść na wyższą subskrypcję? Subskrypcja Duo oferuje " + PLAFOND_DUO + "."))),
                     /* 19/08/2026 (demande de Blandine) — LE MESSAGE MÈNE À L'OFFRE.
                        Même bouton et mêmes libellés que la limite de questions
                        quotidiennes (ligne ~43285) : on recopie le mécanisme en
                        place plutôt que d'en inventer un. ⚠️ setEcran("premium")
                        ouvre la page générale des formules, il n'existe aucun
                        moyen d'atterrir directement sur l'offre Duo. */
-                    planAbo === "duo" ? null : React.createElement("div", { style: { marginBottom: 10 } }, React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: "#20D9F5", onClick: () => { setEpingleCible(null); setEcran("premium"); } })),
+                    planAbo === "duo" ? null : React.createElement("div", { style: { marginBottom: 10 } }, React.createElement(BoutonPrincipal, { texte: t(premium ? "decouvrir_pack_duo" : "decouvrir_premium"), couleur: "#C9A66B", secondaire: true, onClick: () => { setEpingleCible(null); setEcran("premium"); } })),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", padding: "12px 0", borderRadius: 14, background: COLORS.creme, color: COLORS.encre, fontWeight: 700, fontSize: 14, border: "none" } }, TXT("Compris", "Got it", "Entendido", "Capito", "\u4e86\u89e3", "Verstanden", "فهمت", "知道了", "Begrepen", "Entendi", "Uppfattat", "Понятно", "Rozumiem")))
                 : epingleCible.etapeCav
                 ? React.createElement(React.Fragment, null,
@@ -88465,9 +88992,9 @@ function EcranAssistantIA() {
                            ⚠️ REGLE : ne jamais appeler une fonction de traduction depuis le
                            corps d un composant si elle y est declaree en `const` plus bas. */
                         hypeThemesHB(TXT).map((th) => { const pris = (themesEp || []).indexOf(th[0]) !== -1; return React.createElement("button", { key: th[0], onClick: () => basculerTheme(th[0]),
-                            style: { flex: "0 0 auto", padding: "9px 14px", borderRadius: 999, minHeight: 42, border: `1px solid ${pris ? "#20D9F5" + "88" : "rgba(255,255,255,0.14)"}`, background: pris ? `${"#20D9F5"}18` : "transparent", color: pris ? "#20D9F5" : COLORS.encreDoux, fontWeight: pris ? 800 : 500, fontSize: 12.5, cursor: "pointer", whiteSpace: "nowrap" } }, th[1]); })),
+                            style: { flex: "0 0 auto", padding: "9px 14px", borderRadius: 999, minHeight: 42, border: `1px solid ${pris ? "#C9A66B" + "88" : "rgba(255,255,255,0.14)"}`, background: pris ? `${"#C9A66B"}18` : "transparent", color: pris ? "#C9A66B" : COLORS.encreDoux, fontWeight: pris ? 800 : 500, fontSize: 12.5, cursor: "pointer", whiteSpace: "nowrap" } }, th[1]); })),
                     React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9, maxHeight: "46vh", overflowY: "auto", overscrollBehavior: "contain" } },
-                        React.createElement("button", { onClick: () => validerEpingle(epingleCible.chevalId, epingleCible.chevalNom, null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${"#20D9F5"}14`, border: `1px solid ${"#20D9F5"}55`, color: "#20D9F5", fontWeight: 800, fontSize: 14, cursor: "pointer", textAlign: "left" } },
+                        React.createElement("button", { onClick: () => validerEpingle(epingleCible.chevalId, epingleCible.chevalNom, null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${"#C9A66B"}14`, border: `1px solid ${"#C9A66B"}55`, color: "#C9A66B", fontWeight: 800, fontSize: 14, cursor: "pointer", textAlign: "left" } },
                             TXT("Personne", "Nobody", "Nadie", "Nessuno", "\u306a\u3057", "Niemand", "لا أحد", "无人", "Niemand", "Ninguém", "Ingen", "Никого", "Nikt")),
                         (cavEpListe === null)
                             ? React.createElement("p", { style: { margin: "4px 0", fontSize: 12.5, color: COLORS.encreDoux, textAlign: "center" } }, "\u2026")
@@ -88483,7 +89010,7 @@ function EcranAssistantIA() {
                 : React.createElement(React.Fragment, null,
                     React.createElement("p", { style: { margin: "0 0 12px", fontSize: 16, fontWeight: 800, color: COLORS.encre, textAlign: "center" } }, "\uD83D\uDCCC " + TXT("\u00c9pingler sur\u2026", "Pin to\u2026", "Fijar en\u2026", "Fissa su\u2026", "\u30d4\u30f3\u7559\u3081\u5148\u2026", "Anheften an\u2026", "ثبّتي في…", "置顶到…", "Vastzetten op…", "Fixar em…", "Fäst på…", "Закрепить в…", "Przypnij do…")),
                     React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: 9, maxHeight: "46vh", overflowY: "auto", overscrollBehavior: "contain" } },
-                        React.createElement("button", { onClick: () => choisirChevalEpingle(null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${"#20D9F5"}14`, border: `1px solid ${"#20D9F5"}55`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83C\uDFC7 " + TXT("Ma page cavalier", "My rider page", "Mi p\u00e1gina de jinete", "La mia pagina cavaliere", "\u30de\u30a4\u9a0e\u624b\u30da\u30fc\u30b8", "Meine Reiterseite", "صفحتي كفارسة", "我的骑手主页", "Mijn ruiterpagina", "Minha página de cavaleiro", "Min ryttarsida", "Моя страница всадника", "Moja strona jeźdźca")),
+                        React.createElement("button", { onClick: () => choisirChevalEpingle(null, null), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: `${"#C9A66B"}14`, border: `1px solid ${"#C9A66B"}55`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83C\uDFC7 " + TXT("Ma page cavalier", "My rider page", "Mi p\u00e1gina de jinete", "La mia pagina cavaliere", "\u30de\u30a4\u9a0e\u624b\u30da\u30fc\u30b8", "Meine Reiterseite", "صفحتي كفارسة", "我的骑手主页", "Mijn ruiterpagina", "Minha página de cavaleiro", "Min ryttarsida", "Моя страница всадника", "Moja strona jeźdźca")),
                         /* 16/09 (207) : SES chevaux d abord - elle les trouve sans chercher. */
                         chevauxCibles.map((cv) => React.createElement("button", { key: cv.id, onClick: () => choisirChevalEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: COLORS.nuit, border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 700, fontSize: 14, textAlign: "left" } }, "\uD83D\uDC34 " + cv.nom))),
                         /* 16/09 (207) : PUIS les chevaux de l ecurie, sous un intertitre, pour
@@ -88494,15 +89021,17 @@ function EcranAssistantIA() {
                             : null,
                         (chevauxEcurie || []).map((cv) => React.createElement("button", { key: "ec" + cv.id, onClick: () => choisirChevalEpingle(cv.id, cv.nom), style: { width: "100%", padding: "13px 14px", borderRadius: 14, background: "transparent", border: `1px solid ${COLORS.ligne}`, color: COLORS.encre, fontWeight: 600, fontSize: 14, textAlign: "left", cursor: "pointer" } }, cv.nom)),
                     React.createElement("button", { onClick: () => setEpingleCible(null), style: { width: "100%", marginTop: 12, padding: "11px 0", borderRadius: 14, background: "transparent", color: COLORS.encreDoux, fontWeight: 700, fontSize: 13, border: "none" } }, TXT("Annuler", "Cancel", "Cancelar", "Annulla", "\u30ad\u30e3\u30f3\u30bb\u30eb", "Abbrechen", "إلغاء", "取消", "Annuleren", "Cancelar", "Avbryt", "Отмена", "Anuluj"))))) : null,
-        toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${"#20D9F5"}66`, color: COLORS.blanc, borderRadius: Array.isArray(toastHB) ? 16 : 999, padding: Array.isArray(toastHB) ? "10px 18px" : "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: Array.isArray(toastHB) ? "normal" : "nowrap", maxWidth: Array.isArray(toastHB) ? "78vw" : undefined, textAlign: "center", lineHeight: 1.45 } }, Array.isArray(toastHB) ? toastHB.map((ln, i) => React.createElement("div", { key: i, style: i ? { fontSize: 12, fontWeight: 500, color: "#20D9F5", marginTop: 3 } : null }, ln)) : toastHB) : null));
+        toastHB ? React.createElement("div", { style: { position: "fixed", bottom: 96, left: "50%", transform: "translateX(-50%)", zIndex: 99, background: "rgba(18,24,32,0.92)", border: `1px solid ${"#C9A66B"}66`, color: COLORS.blanc, borderRadius: Array.isArray(toastHB) ? 16 : 999, padding: Array.isArray(toastHB) ? "10px 18px" : "9px 18px", fontSize: 13, fontWeight: 600, whiteSpace: Array.isArray(toastHB) ? "normal" : "nowrap", maxWidth: Array.isArray(toastHB) ? "78vw" : undefined, textAlign: "center", lineHeight: 1.45 } }, Array.isArray(toastHB) ? toastHB.map((ln, i) => React.createElement("div", { key: i, style: i ? { fontSize: 12, fontWeight: 500, color: "#C9A66B", marginTop: 3 } : null }, ln)) : toastHB) : null,
+        hbMenuRendu, hbConfirmRendu, hbRenomRendu));
 }
 
-function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpingler, onCorriger }) {
+function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpingler, onCorriger, avant }) {
     const { t, tr, setZoomImg } = useApp();
     const estUser = role === "user";
-    if (intro) { return React.createElement("div", { style: { width: "100%", padding: "14px 18px", borderRadius: 16, background: "rgba(18,24,32,0.5)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: COLORS.blanc, border: "1px solid rgba(255,255,255,0.10)", fontSize: 14.5, lineHeight: 1.55, textAlign: "center", boxSizing: "border-box", animation: "slideUp 0.25s ease-out" } }, contenu); }
-    return (React.createElement("div", { style: { display: "flex", justifyContent: estUser ? "flex-end" : "flex-start", animation: "slideUp 0.25s ease-out" } },
-        React.createElement("div", { style: { maxWidth: "82%", padding: "12px 15px", borderRadius: estUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: estUser ? "rgba(127,163,173,0.92)" : "rgba(18,24,32,0.55)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: estUser ? COLORS.nuit : COLORS.blanc, border: estUser ? "none" : "1px solid rgba(255,255,255,0.10)", fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-wrap", overflowWrap: "anywhere", wordBreak: "break-word", minWidth: 0 } },   /* (552) un texte colle sans espace (journaux, liens) ne fait plus deborder la page */
+    if (intro) { return React.createElement("div", { style: { width: "100%", padding: "14px 18px", borderRadius: 16, background: "rgba(16,29,34,0.82)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "#F3EEE4", border: "1px solid rgba(201,166,107,0.22)", fontSize: 14.5, lineHeight: 1.55, textAlign: "center", boxSizing: "border-box", animation: "slideUp 0.25s ease-out" } }, contenu); }
+    return (React.createElement("div", { style: { display: "flex", justifyContent: estUser ? "flex-end" : "flex-start", alignItems: "flex-start", gap: 4, animation: "slideUp 0.25s ease-out" } },
+        avant || null,
+        React.createElement("div", { style: { maxWidth: "82%", padding: "12px 15px", borderRadius: estUser ? "16px 16px 4px 16px" : "16px 16px 16px 4px", background: estUser ? "rgba(201,166,107,0.16)" : "rgba(16,29,34,0.86)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "#F3EEE4", border: estUser ? "1px solid rgba(201,166,107,0.45)" : "1px solid rgba(243,238,228,0.10)", unicodeBidi: "plaintext", textAlign: "start", fontSize: 14, lineHeight: 1.5, whiteSpace: "pre-wrap", overflowWrap: "anywhere", wordBreak: "break-word", minWidth: 0 } },   /* (552) un texte colle sans espace (journaux, liens) ne fait plus deborder la page */
             (enCours && !contenu) ? React.createElement("div", { style: { display: "flex", alignItems: "center", gap: 9 } },
                 React.createElement(SpinnerPoints, null),
                 React.createElement("span", { style: { fontSize: 13, fontStyle: "italic", color: "rgba(255,255,255,0.72)" } }, t("heybaby_analyse"))) : React.createElement(React.Fragment, null,
@@ -88510,7 +89039,7 @@ function BulleMessage({ role, contenu, enCours, image, imageMarque, intro, onEpi
                 (!image && imageMarque) ? React.createElement("div", { style: { fontSize: 12, opacity: 0.8, marginBottom: contenu ? 6 : 0 } }, "\uD83D\uDCF7 " + tr({ fr: "Photo envoy\u00e9e", en: "Photo sent", es: "Foto enviada", it: "Foto inviata", ja: "\u5199\u771f\u3092\u9001\u4fe1\u3057\u307e\u3057\u305f", de: "Foto gesendet", ar: "\u062a\u0645 \u0625\u0631\u0633\u0627\u0644 \u0627\u0644\u0635\u0648\u0631\u0629", zh: "照片已发送", nl: "Foto verstuurd", pt: "Foto enviada", sv: "Foto skickat", ru: "Фото отправлено", pl: "Zdjęcie wysłane" })) : null,
                 contenu,
                 (onEpingler || onCorriger) ? React.createElement("div", { style: { marginTop: 9, display: "flex", gap: 8, flexWrap: "wrap" } },
-                    onEpingler ? React.createElement("button", { onClick: onEpingler, style: { fontSize: 12, fontWeight: 700, color: COLORS.turquoise, background: "rgba(127,163,173,0.10)", border: "1px solid rgba(127,163,173,0.4)", borderRadius: 999, padding: "5px 12px" } }, "\uD83D\uDCCC " + tr({ fr: "\u00c9pingler", en: "Pin", es: "Fijar", it: "Fissa", ja: "\u30d4\u30f3\u7559\u3081", de: "Anheften", ar: "\u062a\u062b\u0628\u064a\u062a", zh: "置顶", nl: "Vastzetten", pt: "Fixar", sv: "Fäst", ru: "Закрепить", pl: "Przypnij" })) : null,
+                    onEpingler ? React.createElement("button", { onClick: onEpingler, style: { fontSize: 12, fontWeight: 700, color: "#C9A66B", background: "rgba(201,166,107,0.08)", border: "1px solid rgba(201,166,107,0.4)", borderRadius: 999, padding: "5px 12px" } }, "\uD83D\uDCCC " + tr({ fr: "\u00c9pingler", en: "Pin", es: "Fijar", it: "Fissa", ja: "\u30d4\u30f3\u7559\u3081", de: "Anheften", ar: "\u062a\u062b\u0628\u064a\u062a", zh: "置顶", nl: "Vastzetten", pt: "Fixar", sv: "Fäst", ru: "Закрепить", pl: "Przypnij" })) : null,
                     onCorriger ? React.createElement("button", { onClick: onCorriger, style: { fontSize: 12, fontWeight: 700, color: "#E8C27A", background: "rgba(232,194,122,0.10)", border: "1px solid rgba(232,194,122,0.45)", borderRadius: 999, padding: "5px 12px" } }, "\u270F\uFE0F Corriger") : null) : null))));
 }
 function SpinnerPoints() {
