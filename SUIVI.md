@@ -13887,3 +13887,10 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Rappels : seul un challenge publié est lisible sans compte (Dressage ; CSO et Equifun encore masqués) ; résultats en brouillon invisibles des visiteurs.
 - Vérification demandée (« tout est traduit ? ») : 3 challenges × 7 langues × tablette 820 et ordinateur 1440 — toutes les entrées de traduction complètes, aucun texte français restant hors bande Gestion (réservée à la gestionnaire), aucun débordement, aucune erreur.
 - Tests : appli chargée sans session (lien #challenge=dressage-sep-2026:1 → challenge ouvert, « Accueil » → écran de compte, « ‹ » → retour au challenge) et avec session (aucune porte) ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone sans compte.
+
+## 21/10/2026 (12 h 22) — PUBLICATION (marqueur 20261021-1222, Blandine « Ok » 12:21) — CHALLENGE : bloc « Chargement… » au-dessus de la page
+- Signalé à 12:17 (capture tablette) : « souvent la partie du haut met Chargement avec un gros bloc noir » au-dessus du début du challenge.
+- Cause : au démarrage, le message de chargement et la page vide s'affichaient ensemble (la page n'était pas masquée au départ), et l'affichage attendait les photos de toutes les étapes.
+- challenge.html : page masquée tant que les données ne sont pas lues (<body class="sans-donnees">) ; la page s'affiche dès que le challenge et les résultats sont lus ; les photos se chargent ensuite (PHOTOS_PRETES) et la zone Photos / l'aperçu d'étape affichent « Chargement… » en attendant (au lieu de « pas de photos »).
+- index.html : seulement le marqueur.
+- Tests : chargement, photos (ajout en nombre), liens, visiteur, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
