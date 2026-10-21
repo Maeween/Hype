@@ -237,6 +237,31 @@ async function supprimerPhotos(cfg, uid) {
   } catch (e) { return "storage : " + String(e && e.message ? e.message : e); }
 }
 
+/* 21/10/2026 : l'espace PRIVÉ « carnet » (fichiers du carnet, photos gardées de Hey Baby dans <uid>/heybaby/)
+   est vidé aussi, sous-dossiers compris. */
+async function supprimerDossierPrive(cfg, bucket, prefixe, profondeur) {
+  if ((profondeur || 0) > 4) return null;
+  try {
+    const rl = await fetch(cfg.url + "/storage/v1/object/list/" + bucket, {
+      method: "POST", headers: entetes(cfg), body: JSON.stringify({ prefix: prefixe, limit: 1000 }),
+    });
+    if (!rl.ok) return null;
+    const entrees = await rl.json().catch(() => []);
+    if (!entrees || !entrees.length) return null;
+    const fichiers = [], erreurs = [];
+    for (const f of entrees) {
+      if (!f || !f.name) continue;
+      if (f.id) fichiers.push(prefixe + "/" + f.name);
+      else { const e = await supprimerDossierPrive(cfg, bucket, prefixe + "/" + f.name, (profondeur || 0) + 1); if (e) erreurs.push(e); }
+    }
+    if (fichiers.length) {
+      const rd = await fetch(cfg.url + "/storage/v1/object/" + bucket, { method: "DELETE", headers: entetes(cfg), body: JSON.stringify({ prefixes: fichiers }) });
+      if (!rd.ok) erreurs.push("storage " + bucket + " : " + rd.status);
+    }
+    return erreurs.length ? erreurs.join(" ; ") : null;
+  } catch (e) { return "storage " + bucket + " : " + String(e && e.message ? e.message : e); }
+}
+
 // ---------- La purge d'un compte ----------
 
 async function purgerUn(cfg, uid) {
@@ -262,6 +287,7 @@ async function purgerUn(cfg, uid) {
   } catch (e) { echecs.push("profiles : " + String(e && e.message ? e.message : e)); }
 
   try { const e = await supprimerPhotos(cfg, uid); if (e) echecs.push(e); } catch (e) { }
+  try { const e = await supprimerDossierPrive(cfg, "carnet", uid, 0); if (e) echecs.push(e); } catch (e) { }   /* 21/10 */
 
   // Premium Famille : les familles TERMINÉES de ce titulaire partent avec lui
   // (sinon la base refuse d'effacer le compte). Une famille PAS résiliée n'est pas
