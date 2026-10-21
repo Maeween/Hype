@@ -14096,7 +14096,7 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Tests (Playwright, Supabase simulé hors ligne, sur l'ancienne et la nouvelle version) : inscription après un autre compte → ancienne : fuite en base et sur le téléphone ; nouvelle : aucune. Connexion à un autre compte existant → ancienne : fuite + récit du compte d'arrivée écrasé ; nouvelle : aucune fuite, récit gardé. Retour sur son propre compte → rien perdu. node --check 17/17.
 - À faire après publication : nettoyer la ligne `progression` du compte de test Claude (dc6720bd-…), une fois ce compte déconnecté du téléphone de Blandine (sinon l'ancienne version la renverrait).
 
-## 21/10 — EN ATTENTE (non publié) : page Premium, photo tout en haut et drapeaux à droite
+## 21/10 — PUBLIÉ vers 19 h 20 (« Ok ») : page Premium, photo tout en haut et drapeaux à droite (refait par-dessus 20261021-1915, marqueur 20261021-1920)
 - Blandine (19 h 03) : « pour la page premium tu peux remonter l'image et mettre les drapeaux en haut à droite de la page comme sur les autres pages ».
 - index.html (EcranPremiumV3 / pv3Html / PV3_CSS) : bouton retour à gauche, sélecteur de langue (drapeaux) à droite, posés sur la photo ; la photo commence tout en haut (léger fondu sombre en haut pour lire les boutons) ; la ligne « Connectée avec … · Vérifier mon abonnement » passe sous la photo, avant les onglets de la page.
 - Testé : 390 (fr, ar : retour à droite, drapeaux à gauche, en miroir) et 1440, sans erreur.
