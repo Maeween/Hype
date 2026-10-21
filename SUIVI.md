@@ -14066,3 +14066,8 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Non touché : les 11 images écrites en chemin direct dans les Galops 1 et 2 (petite part).
 - Repéré : images/couv-g1-c11-de.jpg (affiche ALLEMANDE du chapitre g1-c11) était appelée par hype-cours-galop1.js mais n'existe pas → image cassée en allemand. Blandine : « mets une image toi-même » → l'allemand prend l'affiche anglaise (k208), comme le chinois, le néerlandais et le portugais. hype-cours-galop1.js : COURS_GALOP1_VERSION 6 → 7 ; clé ?v=7 → ?v=8 dans HYPE_COURS_FICHIERS (index.html).
 - Testé : les 118 images WebP se chargent toutes (Chrome, iPhone iOS 17) ; iOS 13 garde les originaux ; affiche la plus large comparée avant/après (texte identique à l'œil).
+
+## 21/10 — EN ATTENTE (non publié) : page Premium sans le grand bandeau « Déjà abonné ? »
+- Blandine (18 h 55, capture) : « ça gâche un peu la page ça » (grand cadre « Déjà abonné ? Vérifier mon abonnement » tout en haut de la page Premium).
+- index.html : la page Premium V3 n'affiche plus BandeauDejaAbonne en tête (le composant reste utilisé ailleurs). À la place, dans la ligne du compte : « Connectée avec … · Aucun abonnement sur ce compte · Vérifier mon abonnement » (petit lien champagne souligné) → relance la vérification (hype-resync-abo), « Vérification… », puis soit la page passe d'elle-même à « Abonnement actif », soit « rien trouvé. Si tu as payé avec une autre adresse, reconnecte-toi avec celle-là. ». Non connecté : « Connecte-toi pour t'abonner · Déjà abonné ? Connecte-toi » (lien vers la connexion). Textes PV3_VERIF en 10 langues.
+- Testé : 390 (fr, ar) et 1440, bandeau absent, lien, vérification sans abonnement, aucune erreur.
