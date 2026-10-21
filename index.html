@@ -23532,12 +23532,14 @@ function hypeResoudreLienPage(fam, val) {
     /* 19/10 (soir) Blandine : « je voudrais partager la page photo de Dakota mais impossible » puis « Ok oui vas y » - les pages
        d un cheval ont maintenant leur lien : #hp=<id> Photos, #hv=<id> Videos, #ha=<id> Actualite, #hr=<id> Resultats.
        La fiche ouvre directement le bon onglet (window.__hypePanneauReprise, deja lu a l ouverture de la fiche). */
+    /* 21/10 Blandine : lien partage d un challenge (ou d une etape) ouvert sans compte ; apres inscription / connexion, on y revient */
+    if (fam === "challenge") { var pCh2 = v.split(":"); window.__challengeCle = pCh2[0]; window.__challengeEtape = pCh2[1] ? Number(pCh2[1]) || null : null; window.__challengeVers = ""; return "challenge"; }
     var PAN_CH = { hp: "photos", hv: "videos", ha: "actualite", hr: "palmares" };
     if (PAN_CH[fam]) { window.__chevalOuvert = v; window.__hypePanneauReprise = PAN_CH[fam]; return "cheval"; }
   } catch (e) { }
   return null;
 }
-var HYPE_FAMILLES_PAGE = ["p", "pa", "pp", "pv", "ec", "eg", "ea", "cc", "hp", "hv", "ha", "hr" /* 19/10 (soir) pages d un cheval */];
+var HYPE_FAMILLES_PAGE = ["p", "pa", "pp", "pv", "ec", "eg", "ea", "cc", "hp", "hv", "ha", "hr" /* 19/10 (soir) pages d un cheval */, "challenge" /* 21/10 challenge partage */];
 function hypeMemoriserRetourPage(fam, val) {
   try {
     var ecrire = function () { try { sessionStorage.setItem("hype_retour_apres_auth", JSON.stringify({ type: "page", fam: fam, val: String(val || "").slice(0, 200) })); } catch (eS) { } };
@@ -27926,6 +27928,28 @@ function HypeApp() {
        qui doit rester ouvert aux visiteurs, et lien de mot de passe oublie) et a chaque fin de session (SIGNED_OUT), on vide
        le profil, l abonnement et les droits de responsable gardes en memoire, puis on ouvre l ecran de connexion avec un
        message. Rien n est efface en base ; la reconnexion recharge tout. */
+    /* 21/10 Blandine : « quand je partage le lien du challenge, les gens doivent pouvoir y acceder sans compte, ainsi que les pages
+       des etapes ; des qu ils veulent aller sur une autre page, il faut que ca les oblige a en creer un ». Arrivee par #challenge=
+       SANS session : seul l ecran challenge reste ouvert (les etapes sont dans la meme page) ; tout autre ecran ouvre l entree
+       du compte (creer / se connecter). Le lien est memorise (hypeMemoriserRetourPage) : apres inscription ou connexion, on revient
+       au challenge. La porte s ouvre des qu une session existe. */
+    const [visiteurChallenge, setVisiteurChallenge] = useState(false);
+    useEffect(() => {
+        let actifV = true, aboV = null;
+        try {
+            if (CIBLE_DIRECTE && CIBLE_DIRECTE.ecran === "challenge" && typeof utilisateurActuel === "function")
+                utilisateurActuel().then((u) => { if (actifV && !u) setVisiteurChallenge(true); }).catch(() => { });
+            const rV = supa.auth.onAuthStateChange((ev, sess) => { if (sess && sess.user) setVisiteurChallenge(false); });
+            aboV = rV && rV.data && rV.data.subscription;
+        } catch (eV) { }
+        return () => { actifV = false; try { if (aboV) aboV.unsubscribe(); } catch (e) { } };
+    }, []);
+    useEffect(() => {
+        try { window.__hypeVisiteurChallenge = !!visiteurChallenge; } catch (eW) { }
+        if (!visiteurChallenge) return;
+        const PERMIS = { challenge: 1, connexion: 1, intro: 1, splash: 1, "onboarding-1": 1, "onboarding-2": 1, "profil-setup": 1, installer: 1 };
+        if (!PERMIS[ecran]) { try { AUTH_MODE_SPECTRAL = "seuil"; } catch (eA) { } setEcran("connexion"); }
+    }, [ecran, visiteurChallenge]);
     const refProfil828 = useRef(profil); refProfil828.current = profil;
     useEffect(() => {
         let actif = true;
@@ -30184,7 +30208,7 @@ function EcranConnexionSpectral() {
   var RETOURS = { connexion: "seuil", inscription: "seuil", confirmation: "inscription", oubli: "connexion", reset: "connexion" };
   function allerA(m) { setErreur(""); setMode(m); }
   function revenir() {
-    if (mode === "seuil") { setEcran("intro"); return; }
+    if (mode === "seuil") { if (window.__hypeVisiteurChallenge) { setEcran("challenge"); return; } /* 21/10 : visiteur venu d un challenge partage -> retour au challenge */ setEcran("intro"); return; }
     allerA(RETOURS[mode] || "seuil");
   }
   /* 21/08 (session 151) — regle scrollTop : chaque changement d'ecran remet le
