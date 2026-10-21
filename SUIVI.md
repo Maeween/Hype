@@ -14100,3 +14100,7 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Blandine (19 h 03) : « pour la page premium tu peux remonter l'image et mettre les drapeaux en haut à droite de la page comme sur les autres pages ».
 - index.html (EcranPremiumV3 / pv3Html / PV3_CSS) : bouton retour à gauche, sélecteur de langue (drapeaux) à droite, posés sur la photo ; la photo commence tout en haut (léger fondu sombre en haut pour lire les boutons) ; la ligne « Connectée avec … · Vérifier mon abonnement » passe sous la photo, avant les onglets de la page.
 - Testé : 390 (fr, ar : retour à droite, drapeaux à gauche, en miroir) et 1440, sans erreur.
+
+## 21/10 — EN ATTENTE (non publié) : écran « Premium requis » sans grand cadre bleu
+- Suite de « ça gâche un peu la page » (page Premium) : BandeauDejaAbonne n'est plus un grand cadre bleu, mais une simple ligne discrète : « Déjà abonné ? Vérifier mon abonnement » (lien champagne souligné) quand on est connecté, « Tu as déjà un abonnement ? Me connecter » sinon ; message « Aucun abonnement trouvé… » inchangé. Concerne l'écran « Premium requis » d'un Galop verrouillé et la fenêtre d'épinglage (seuls endroits où il reste).
+- Testé : Galop 5 verrouillé ouvert directement (#g=5), connecté / pas connecté, fr 390 et sv 1440, sans erreur.

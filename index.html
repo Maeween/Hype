@@ -78185,23 +78185,26 @@ function BandeauDejaAbonne(props) {
   if (moi === undefined || app.premium) return null;
   /* 18/10 : en tête de la page Premium, le bandeau porte lui-même son espace du haut : rien du tout quand il est caché. */
   function env(el) { return (props && props.enTete) ? h("div", { style: { display: "flex", justifyContent: "center", padding: "calc(env(safe-area-inset-top) + 14px) 16px 0", background: "#070A08" } }, el) : el; }
-  var boite = { margin: (props && props.marge) || "0 0 18px", padding: "14px 16px", borderRadius: 16, border: "1px solid rgba(127,163,173,0.55)", background: "rgba(127,163,173,0.12)", textAlign: "center", boxSizing: "border-box", width: "100%", maxWidth: 360, fontFamily: "'Montserrat',sans-serif" };
+  /* 21/10 (Blandine : « ça gâche un peu la page ») : plus de grand cadre bleu, une simple ligne discrète */
+  var boite = { margin: (props && props.marge) || "0 0 18px", padding: "4px 8px", textAlign: "center", boxSizing: "border-box", width: "100%", maxWidth: 360, fontFamily: "'Montserrat',sans-serif", fontSize: 12.5, lineHeight: 1.5, color: "rgba(243,238,228,0.62)" };
+  var lien = { background: "none", border: "none", padding: "4px 2px", color: "#C9A66B", fontSize: 12.5, fontWeight: 500, textDecoration: "underline", textUnderlineOffset: 3, cursor: "pointer", fontFamily: "inherit" };
   if (!moi) {
     return env(h("div", { style: boite },
-      h("div", { style: { fontSize: 15, fontWeight: 700, color: "#EAF1F4", marginBottom: 4 } }, T("Tu as déjà un abonnement ?", "Already subscribed?", "¿Ya tienes una suscripción?", "Hai già un abbonamento?", "すでに登録済みですか？", "Du hast schon ein Abo?", "هل لديك اشتراك بالفعل؟", "你已经订阅了吗？", "Heb je al een abonnement?", "Você já tem uma assinatura?", "Har du redan en prenumeration?")),
-      h("div", { style: { fontSize: 13, lineHeight: 1.45, color: "#BFD3D8", marginBottom: 12 } }, T("Connecte-toi : ton accès revient tout seul. Ne repaie pas.", "Sign in: your access comes back on its own. Don't pay again.", "Inicia sesión: tu acceso vuelve solo. No vuelvas a pagar.", "Accedi: il tuo accesso torna da solo. Non pagare di nuovo.", "ログインすれば利用が自動で戻ります。再度お支払いしないでください。", "Melde dich an: Dein Zugang kommt von selbst zurück. Zahl nicht noch einmal.", "سجّلي الدخول: يعود وصولك تلقائيًا. لا تدفعي مرة أخرى.", "请登录：你的权限会自动恢复，不要重复付款。", "Log in: je toegang komt vanzelf terug. Betaal niet opnieuw.", "Entre na sua conta: seu acesso volta sozinho. Não pague de novo.", "Logga in: din åtkomst kommer tillbaka av sig själv. Betala inte igen.")),
+      h("span", null, T("Tu as déjà un abonnement ?", "Already subscribed?", "¿Ya tienes una suscripción?", "Hai già un abbonamento?", "すでに登録済みですか？", "Du hast schon ein Abo?", "هل لديك اشتراك بالفعل؟", "你已经订阅了吗？", "Heb je al een abonnement?", "Você já tem uma assinatura?", "Har du redan en prenumeration?")),
+      " ",
+      h("span", { style: { display: "none" } }, T("Connecte-toi : ton accès revient tout seul. Ne repaie pas.", "Sign in: your access comes back on its own. Don't pay again.", "Inicia sesión: tu acceso vuelve solo. No vuelvas a pagar.", "Accedi: il tuo accesso torna da solo. Non pagare di nuovo.", "ログインすれば利用が自動で戻ります。再度お支払いしないでください。", "Melde dich an: Dein Zugang kommt von selbst zurück. Zahl nicht noch einmal.", "سجّلي الدخول: يعود وصولك تلقائيًا. لا تدفعي مرة أخرى.", "请登录：你的权限会自动恢复，不要重复付款。", "Log in: je toegang komt vanzelf terug. Betaal niet opnieuw.", "Entre na sua conta: seu acesso volta sozinho. Não pague de novo.", "Logga in: din åtkomst kommer tillbaka av sig själv. Betala inte igen.")),
       h("button", { type: "button", onClick: function () { try { if (props && props.onAvant) props.onAvant(); } catch (eP) { } try { AUTH_MODE_SPECTRAL = "connexion"; } catch (eM) { } app.setEcran("connexion"); },
-        style: { minHeight: 46, padding: "0 26px", borderRadius: 999, border: "none", background: "#EAF1F4", color: "#060709", fontSize: 15, fontWeight: 800, cursor: "pointer", fontFamily: "inherit" } },
+        style: lien },
         T("Me connecter", "Sign in", "Iniciar sesión", "Accedi", "ログイン", "Anmelden", "تسجيل الدخول", "登录", "Inloggen", "Entrar", "Logga in"))));
   }
   var mail = (moi && moi.email) || "";
-  return env(h("div", { style: Object.assign({}, boite, { padding: "10px 14px" }) },
+  return env(h("div", { style: boite },
     verif === "rien"
-      ? h("div", { style: { fontSize: 12.5, lineHeight: 1.5, color: "#BFD3D8" } },
+      ? h("div", null,
           T("Aucun abonnement trouvé pour ", "No subscription found for ", "No se encontró ninguna suscripción para ", "Nessun abbonamento trovato per ", "次のアドレスに登録が見つかりません：", "Kein Abo gefunden für ", "لم يتم العثور على اشتراك لـ ", "没有找到以下账号的订阅：", "Geen abonnement gevonden voor ", "Nenhuma assinatura encontrada para ", "Ingen prenumeration hittades för ") + mail + ". " +
           T("Si tu as payé avec une autre adresse, déconnecte-toi et reconnecte-toi avec celle-là.", "If you paid with another email, sign out and sign in with that one.", "Si pagaste con otro correo, cierra sesión y vuelve a entrar con ese.", "Se hai pagato con un altro indirizzo, esci e accedi con quello.", "別のメールで支払った場合は、ログアウトしてそのメールでログインしてください。", "Wenn du mit einer anderen Adresse bezahlt hast, melde dich ab und mit dieser wieder an.", "إذا دفعتِ بعنوان آخر، سجّلي الخروج ثم الدخول بذلك العنوان.", "如果你用的是另一个邮箱地址付款，请退出登录，再用那个地址登录。", "Als je met een ander e-mailadres hebt betaald, log dan uit en log opnieuw in met dat adres.", "Se você pagou com outro e-mail, saia da conta e entre de novo com esse.", "Om du betalade med en annan e-postadress, logga ut och logga in med den."))
       : h("button", { type: "button", disabled: verif === "encours", onClick: function () { setVerif("encours"); try { window.dispatchEvent(new Event("hype-resync-abo")); } catch (eR) { } },
-          style: { background: "none", border: "none", color: "#CFE3E8", fontSize: 13, fontWeight: 700, textDecoration: "underline", cursor: "pointer", fontFamily: "inherit", padding: 4 } },
+          style: lien },
           verif === "encours"
             ? T("Vérification…", "Checking…", "Comprobando…", "Verifica…", "確認中…", "Wird geprüft…", "جارٍ التحقق…", "正在验证……", "Controleren…", "Verificando…", "Kontrollerar…")
             : T("Déjà abonné ? Vérifier mon abonnement", "Already subscribed? Check my subscription", "¿Ya suscrito? Comprobar mi suscripción", "Già abbonato? Verifica il mio abbonamento", "登録済みですか？登録を確認する", "Schon Abo? Mein Abo prüfen", "مشتركة بالفعل؟ تحققي من اشتراكي", "已经订阅？验证我的订阅", "Al abonnee? Mijn abonnement controleren", "Já é assinante? Verificar minha assinatura", "Redan prenumerant? Kontrollera min prenumeration"))));
