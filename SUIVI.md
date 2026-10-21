@@ -14011,3 +14011,4 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Téléphone : la mascotte descend (écart 84 → 112 px) pour ne plus chevaucher les cases — 25 px de marge mesurés.
 - Tests : captures 1440/1280/1024/820/768/390 en fr et ar, pas de débordement, ordinateur sans défilement ; node --check 17 blocs OK. Tests des cases (blocage, message, clic sur le texte, inscription lancée) faits sur la version précédente du même code.
 - Décidé : pas de case « photos » à l'inscription ; plus tard, bouton « Demander le retrait d'une photo » dans Mon compte.
+- 18 h : tablette debout corrigée (Blandine : « ça va pas du tout ») — il y avait une coupure franche sous la photo ; la règle de fond était mal écrite et ignorée. Désormais noir sous le bandeau, pétrole seulement sur les côtés et le bas, noir derrière le formulaire.
