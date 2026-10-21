@@ -1,3 +1,6 @@
+/* ⚠ 21/10/2026 : FICHIER REMPLACÉ par hype-cours-galop4.js, galop5.js, galop6.js et galop7.js (un Galop par fichier).
+   Gardé tel quel pour les anciennes versions de l'appli encore ouvertes sur les téléphones. NE PLUS LE MODIFIER :
+   les corrections des Galops 4 à 7 se font dans leurs nouveaux fichiers. */
 /* =====================================================================================
    hype-cours-galops-sup.js — GALOPS 4, 5, 6 ET 7 (cours + quiz) — GALOP 4 : 6 langues + ARABE (15/15 chapitres) ; GALOPS 5, 6, 7 : encore français seul, voir note ci-dessous
    Sortis de index.html le 06/09/2026 (lignes 24465-24824 de l'index 958ea2f6…, 870 059 octets),
