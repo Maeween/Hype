@@ -13894,3 +13894,25 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - challenge.html : page masquée tant que les données ne sont pas lues (<body class="sans-donnees">) ; la page s'affiche dès que le challenge et les résultats sont lus ; les photos se chargent ensuite (PHOTOS_PRETES) et la zone Photos / l'aperçu d'étape affichent « Chargement… » en attendant (au lieu de « pas de photos »).
 - index.html : seulement le marqueur.
 - Tests : chargement, photos (ajout en nombre), liens, visiteur, 7 langues — aucune erreur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 21/10/2026 (13 h 30) — PUBLICATION (marqueur 20261021-1330, brief de 12:28 « Effectue toutes les corrections… puis un seul build final ») — CHALLENGE : 15 corrections après relecture
+- Fichiers : challenge.html, reglement-challenge.html ; index.html = seulement le marqueur. Aucune donnée, aucun calcul de points, aucune permission, aucune autre page de Hype modifiés.
+- challenge.html :
+  1. Égalités : résultats d'une étape en classement sportif standard (1, 2, 3, 3, 5, 6, 7), comme le classement général ; les points restent ceux de la place importée.
+  2. Onglet « Règlement » : ouvre directement reglement-challenge.html quand un règlement complet existe (Dressage) ; carte décorée conservée ; ordre Classement / Photos / Reprises / Règlement partout (le brief annule l'ordre Règlement avant Reprises du 20/10 18:16) ; CSO : encadré compact intitulé « Règles essentielles » (7 langues).
+  3. Page d'étape : vrais onglets (La journée / Résultats / Photos), un seul panneau visible, rôles ARIA tablist / tab / tabpanel, clavier (flèches, Début, Fin ; inversé en arabe), état actif filet champagne sans aplat doré ; lien direct vers Résultats ou Photos conservé ; pas de reprises sur les étapes.
+  4. CSO sans résultat : classement pleine largeur, colonne « en bref » masquée tant qu'il n'y a pas de résultat ; « Règles essentielles » seules = pleine largeur.
+  5. Equifun : « Dates à venir » et « Règlement en préparation » côte à côte à même largeur et hauteur sur ordinateur, empilés sur tablette et téléphone.
+  6. Arabe : noms latins en sens propre (unicode-bidi plaintext, alignés à droite), dates courtes 30/05, saison 2026 – 2027, ×2 et intitulé de l'étape isolés (fonction LTR → <bdi dir=ltr>) ; règlement : bouton retour à droite avec ›.
+  7. Galerie tablette : plus de carrousel d'albums, une seule ligne de filtres (défilement discret) au-dessus de la mosaïque.
+  8. « + Ajouter » : visible aussi pour un visiteur sans compte, il propose de créer un compte.
+  9. Chargement des grandes photos : miniature floutée en attendant (galerie immersive et plein écran), même taille d'image pour les deux (cache réutilisé), préchargement de la suivante et de la précédente seulement.
+  10. CSO : point focal propre à la couverture cso-saut.webp (38 % 6 %) sur la carte et la page d'étape.
+  11. CSO : « Challenge Open de Saut CSO » (titre, onglet du navigateur) et « Étape 1 · Open de Saut CSO » (7 langues).
+  12. Textes (7 langues) : citation CSO « L'équilibre avant la vitesse. » sans auteur (remplace d'Aure) ; règle 4 « Les points sont attribués selon la place obtenue, indépendamment du pourcentage. » (CSO : « …selon la place obtenue. »).
+  13. Reprises : seules celles qui ont un vrai PDF ; sinon une seule phrase « Les PDF seront publiés avant la prochaine étape. » (7 langues).
+  14. Lisibilité : statuts des cartes d'étape 13,5 px plus contrastés avec dégradé sombre renforcé, légendes des photos 13,5 px plus marquées.
+  15. Libellés accessibles : « Ouvrir la photo i sur n — Étape x » sur toutes les vignettes, « Photo suivante / précédente », « Fermer le plein écran », « Afficher en plein écran » (7 langues).
+  Identité : fond #070A08, surfaces pétrole #101D22, ivoire #F3EEE4.
+- reglement-challenge.html : « Attribution des points » et « Réclamations » reformulés dans les 7 langues ; retour en arabe à droite avec › ; 8 articles et bouton imprimer conservés.
+- Tests : 390 / 820 / 1024 / 1230 dans Hype / 1440, français et arabe, visiteur et gestionnaire, Dressage accueil et étape 1, galerie et plein écran, CSO sans résultat, Equifun sans date, règlement (8 articles) ; rangs 1,2,3,3,5 et 1,2,3,3,5,6,7 ; un seul panneau visible ; clavier ; 7 langues sans clé brute ni texte français restant ; aucun débordement ; aucun badge brouillon pour un visiteur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone ; filtres de la galerie tablette visibles seulement quand des photos sont identifiées par catégorie (aucune pour l'instant).

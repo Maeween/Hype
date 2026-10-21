@@ -213,7 +213,7 @@ select.choix{margin-top:12px;width:100%;appearance:none;-webkit-appearance:none;
 /* ═════ PAGE D'UNE JOURNÉE ═════ */
 .vue{position:fixed;inset:0;z-index:70;background:var(--nuit);overflow-y:auto;display:none}
 .vue.ouverte{display:block}
-.vue-hero{position:relative;height:380px;background:var(--carte) var(--img) center/cover no-repeat}
+.vue-hero{position:relative;height:380px;background:var(--carte) var(--img) var(--pos,center)/cover no-repeat}
 .vue-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(6,7,9,.55) 0%,rgba(6,7,9,0) 22%,rgba(6,7,9,.15) 45%,rgba(6,7,9,.85) 82%,var(--nuit) 100%)}
 .vue-hero .hero-haut{z-index:3}
 .vue-hero .bas{position:absolute;left:0;right:0;bottom:0;z-index:2;padding:0 20px 22px}
@@ -722,6 +722,7 @@ body.dans-hype .gx-tete{padding-left:64px;padding-right:64px}
 .g-alb-tete .lien-d i{font-style:normal}
 [dir=rtl] .g-alb-tete .lien-d i{display:inline-block;transform:scaleX(-1)}
 .g-pills{margin:14px 0 0}
+.g-tablette .g-pills{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:6px 0 4px}.g-tablette .g-pills::-webkit-scrollbar{display:none}.g-tablette .g-pills .pill{flex:0 0 auto}
 /* mosaïque : proportions naturelles des photos, 5 px entre elles, 2 colonnes (téléphone) / 3 (tablette) */
 .mosa{column-count:2;column-gap:5px;margin-top:16px}
 .mo{display:block;width:100%;margin:0 0 5px;break-inside:avoid;border-radius:6px;overflow:hidden;background:var(--carte2);aspect-ratio:4/5}
@@ -864,15 +865,15 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 /* ═════════════ AMBIANCE « DORÉ + PLUS CLAIR » (20/10, choix de Blandine : proposition B) ═════════════
    Lumière coucher de soleil sur les photos du haut (hero, cartes d'étape), encadrés et textes un peu plus clairs,
    fond noir bleuté de Hype conservé. Fin de page : la signature Hype habituelle (paysage fondu + HYPE) à la place du bandeau. */
-:root{--carte:#151B21;--carte2:#192027;--gris:#AEB5BC;--grisClair:#D0D5D9}
+:root{--nuit:#070A08;--carte:#101D22;--carte2:#13222A;--ivoire:#F3EEE4;--gris:#AEB5BC;--grisClair:#D0D5D9}
 .hero-lum{position:absolute;inset:0;z-index:0;pointer-events:none;mix-blend-mode:overlay;
   background:radial-gradient(ellipse 70% 60% at 55% 38%,rgba(255,160,60,.7),rgba(255,135,50,.25) 50%,rgba(255,120,45,0) 78%)}
 [dir=rtl] .hero-lum{background:radial-gradient(ellipse 70% 60% at 45% 38%,rgba(255,160,60,.7),rgba(255,135,50,.25) 50%,rgba(255,120,45,0) 78%)}
 .hero-img:after{background:linear-gradient(180deg,rgba(6,7,9,.22) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 72%,rgba(6,7,9,.35) 88%,var(--nuit) 100%)}
 @container ch (min-width:1100px){.hero-img:after{background:linear-gradient(180deg,rgba(6,7,9,.3) 0%,rgba(6,7,9,0) 14%,rgba(6,7,9,0) 66%,var(--nuit) 100%)}}
-.etape{background:radial-gradient(ellipse 70% 70% at 62% 40%,rgba(255,160,60,.65),rgba(255,135,50,.2) 55%,rgba(255,120,45,0) 80%) center/cover no-repeat,var(--carte) var(--img) center/cover no-repeat;background-blend-mode:overlay,normal}
+.etape{background:radial-gradient(ellipse 70% 70% at 62% 40%,rgba(255,160,60,.65),rgba(255,135,50,.2) 55%,rgba(255,120,45,0) 80%) center/cover no-repeat,var(--carte) var(--img) var(--pos,center)/cover no-repeat;background-blend-mode:overlay,normal}
 .etape:after{opacity:.72}
-.cl,.rg,.dates-avenir{background:linear-gradient(180deg,#141B21,#10161B 60%)}
+.cl,.rg,.dates-avenir{background:linear-gradient(180deg,#101D22,#0D171B 60%)}
 .rg-haut:before{opacity:.75}
 .cl-haut:before{opacity:.55}
 .cote-in{background:rgba(20,27,33,.55)}
@@ -927,7 +928,7 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 /* Règlement et Reprises : deux encadrés de la même taille et du même espacement que les cartes d'étape du haut */
 .r-docs .rg{max-width:none}
 .r-docs .rg-lien{min-height:158px}
-@container ch (max-width:699px){.r-docs #s-reprises{padding-top:12px}.r-docs .rg-lien .rg-haut{padding:16px 0 16px 18px}[dir=rtl] .r-docs .rg-lien .rg-haut{padding:16px 18px 16px 0}.r-docs .rg-lien .rg-titre{font-size:25px}.r-docs .rg-lien .sous-t{font-size:12.5px;margin-top:4px}}
+@container ch (max-width:699px){.r-docs #s-reprises:not([hidden]) + #s-reglement{padding-top:12px}.r-docs .rg-lien .rg-haut{padding:16px 0 16px 18px}[dir=rtl] .r-docs .rg-lien .rg-haut{padding:16px 18px 16px 0}.r-docs .rg-lien .rg-titre{font-size:25px}.r-docs .rg-lien .sous-t{font-size:12.5px;margin-top:4px}}
 @container ch (min-width:700px){
   .r-duo.r-docs{display:grid !important;grid-template-columns:1fr 1fr;column-gap:16px;align-items:start}
   .r-docs .rg-lien{min-height:196px}
@@ -937,6 +938,37 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 /* téléphone : phrase sous le titre centrée, avec le bouton Partager (20/10) */
 @container ch (max-width:699px){.hero-texte .intro{text-align:center;margin-inline:auto;max-width:330px}.hero-texte .partage{display:flex;margin-inline:auto;width:max-content}}
 .ph-attente{opacity:.6}
+/* page d'étape : un seul panneau à la fois, donc plus de colonnes côte à côte */
+.vue .r-vue{display:block !important}
+.vue .section[hidden]{display:none !important}
+.vue .vue-nav .onglet.actif{background:rgba(201,166,107,.1) !important;border-color:var(--champ) !important;color:var(--champ) !important}
+.vue .vue-nav .onglet:focus-visible{outline:1px solid var(--champ);outline-offset:2px}
+a.onglet{display:inline-flex;align-items:center;text-decoration:none}
+/* arabe : noms latins (« Quitterie M. ») dans leur propre sens, alignés à droite */
+[dir=rtl] .cr-nom,[dir=rtl] .ligne-h .nm b,[dir=rtl] td.t-cav,[dir=rtl] .ligne-h .nm .che,[dir=rtl] td.t-che{unicode-bidi:plaintext;text-align:right}
+bdi[dir=ltr]{unicode-bidi:isolate}
+/* chargement des grandes photos : miniature floutée en attendant, pas d'écran noir */
+.gi-img{position:relative}
+.gi-img:before{content:"";position:absolute;inset:0;background:var(--flou) center/contain no-repeat;filter:blur(14px);opacity:.55;transition:opacity .3s}
+.gi-img img{position:relative;opacity:0;transition:opacity .3s}
+.gi-img img.pret{opacity:1}
+.gi-img:has(img.pret):before{opacity:0}
+#lbFond{position:absolute;inset:14% 4%;background:center/contain no-repeat;filter:blur(16px);opacity:.55;transition:opacity .3s;pointer-events:none}
+#lbFond.cache{opacity:0}
+#lbImg{position:relative;z-index:1;opacity:0;transition:opacity .25s}
+#lbImg.pret{opacity:1}
+/* 21/10 lisibilité : statuts des cartes d'étape et légendes des photos un peu plus contrastés */
+.etape-in{background:linear-gradient(0deg,rgba(6,7,9,.62) 0%,rgba(6,7,9,.25) 30%,rgba(6,7,9,0) 52%)}
+.etape .statut{font-size:13.5px;color:#F3EEE4;text-shadow:0 1px 10px rgba(6,7,9,.85)}
+.ed-leg{font-size:13.5px;font-weight:500;text-shadow:0 1px 3px rgba(6,7,9,.9),0 1px 14px rgba(6,7,9,.8)}
+/* 21/10 : pages sans résultat / sans date mieux équilibrées sur grand écran */
+.r-classement.vide #s-cote{display:none !important}
+.r-classement.vide:not([hidden]){display:block !important}
+.r-classement.vide .cl{max-width:none}
+@container ch (min-width:700px){.r-duo.r-docs.seul{display:block !important}}
+.etapes.duo{grid-template-columns:1fr}
+.etapes.duo .dates-avenir{grid-column:auto}
+@container ch (min-width:1100px){.etapes.duo{grid-template-columns:1fr 1fr;align-items:stretch}}
 </style>
 </head>
 <body class="sans-donnees">
@@ -970,8 +1002,8 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
   </div>
   <section class="section" id="s-photos"></section>
   <div class="rangee r-duo r-docs">
-    <section class="section" id="s-reglement"></section>
     <section class="section" id="s-reprises"></section>
+    <section class="section" id="s-reglement"></section>
   </div>
 </main>
 
@@ -987,6 +1019,7 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 <div class="lb" id="lb">
   <button class="x" id="lbX" aria-label="×">×</button>
   <button class="pr" id="lbPr"><span>‹</span></button>
+  <div id="lbFond" aria-hidden="true"></div>
   <img id="lbImg" alt="" onerror="imgSecours(this)">
   <button class="sv" id="lbSv"><span>›</span></button>
   <div class="cpt" id="lbCpt"></div>
@@ -1043,7 +1076,7 @@ var TX = {
   reglIntro: { fr: "Version provisoire : le règlement officiel n'est pas encore validé.", en: "Provisional version: the official rules are not yet approved.", es: "Versión provisional: el reglamento oficial aún no está validado.", it: "Versione provvisoria: il regolamento ufficiale non è ancora approvato.", de: "Vorläufige Fassung: Das offizielle Reglement ist noch nicht bestätigt.", ja: "暫定版：正式な規定はまだ承認されていません。", ar: "نسخة مؤقتة: النظام الرسمي لم يُعتمد بعد." },
   x2titre: { fr: "Finale à points doublés", en: "Double-points final", es: "Final con puntos dobles", it: "Finale a punti doppi", de: "Finale mit doppelten Punkten", ja: "決勝はポイント2倍", ar: "نهائي بنقاط مضاعفة" },
   r3: { fr: "Les points sont cumulés par cavalier : tu peux changer de cheval d'une étape à l'autre.", en: "Points add up per rider: you may change horse between legs.", es: "Los puntos se suman por jinete: puedes cambiar de caballo entre etapas.", it: "I punti si sommano per cavaliere: puoi cambiare cavallo tra le tappe.", de: "Die Punkte zählen pro Reiter/in: Du darfst das Pferd zwischen den Etappen wechseln.", ja: "ポイントは騎乗者ごとに合算。戦ごとに馬を替えてもよい。", ar: "تُجمع النقاط لكل فارس: يمكنك تغيير الحصان بين المراحل." },
-  r4: { fr: "Les points dépendent de la place ; la note n'est pas nécessaire.", en: "Points depend on the placing; the score is not required.", es: "Los puntos dependen del puesto; la nota no es necesaria.", it: "I punti dipendono dal piazzamento; il punteggio non è necessario.", de: "Die Punkte richten sich nach der Platzierung; die Note ist nicht nötig.", ja: "ポイントは順位で決まり、得点は不要。", ar: "تعتمد النقاط على المركز؛ العلامة غير ضرورية." },
+  r4: { fr: "Les points sont attribués selon la place obtenue, indépendamment du pourcentage.", en: "Points depend on your placing, whatever your percentage.", es: "Los puntos dependen del puesto obtenido, sea cual sea el porcentaje.", it: "I punti dipendono dal piazzamento ottenuto, indipendentemente dalla percentuale.", de: "Die Punkte richten sich nach der erreichten Platzierung, unabhängig vom Prozentwert.", ja: "ポイントはパーセンテージに関係なく、獲得した順位に応じて与えられます。", ar: "تُمنح النقاط حسب المركز المحقَّق، بصرف النظر عن النسبة المئوية." },
   r5: { fr: "Égalités, forfaits, éliminations, changements de catégorie et conditions pour être classé :", en: "Ties, withdrawals, eliminations, category changes and eligibility:", es: "Empates, retiradas, eliminaciones, cambios de categoría y condiciones de clasificación:", it: "Parità, ritiri, eliminazioni, cambi di categoria e condizioni di classifica:", de: "Gleichstände, Rückzüge, Ausschlüsse, Kategoriewechsel und Wertungsbedingungen:", ja: "同点・棄権・失格・カテゴリー変更・順位対象条件：", ar: "التعادل والانسحاب والإقصاء وتغيير الفئة وشروط التصنيف:" },
   citation: { fr: "« Main sans jambes, jambes sans main. »", en: "“Hand without legs, legs without hand.”", es: "«Mano sin piernas, piernas sin mano.»", it: "«Mano senza gambe, gambe senza mano.»", de: "„Hand ohne Beine, Beine ohne Hand.“", ja: "「脚なしの拳、拳なしの脚。」", ar: "«اليد بلا ساقين، والساقان بلا يد.»" },
   citationAuteur: { fr: "François Baucher", en: "François Baucher", es: "François Baucher", it: "François Baucher", de: "François Baucher", ja: "フランソワ・ボーシェ", ar: "فرانسوا بوشيه" },
@@ -1080,6 +1113,13 @@ var TX2 = {
   classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
   introG1: { fr: "Première étape du challenge : on pose ses premiers points.", en: "First leg of the challenge: score your first points.", es: "Primera etapa del challenge: sumas tus primeros puntos.", it: "Prima tappa del challenge: conquisti i primi punti.", de: "Erste Etappe der Challenge: erste Punkte sammeln.", ja: "チャレンジ第1戦：最初のポイントを獲得。", ar: "المرحلة الأولى من التحدي: تجمع نقاطك الأولى." },
   attTexteG: { fr: "Les classements seront publiés ici après la journée.", en: "Rankings will be posted here after the day.", es: "Las clasificaciones se publicarán aquí tras la jornada.", it: "Le classifiche saranno pubblicate qui dopo la giornata.", de: "Die Wertungen erscheinen hier nach dem Tag.", ja: "順位は当日終了後にここに掲載されます。", ar: "ستُنشر الترتيبات هنا بعد اليوم." },
+  reglesEss: { fr: "Règles essentielles", en: "Key rules", es: "Reglas esenciales", it: "Regole essenziali", de: "Die wichtigsten Regeln", ja: "主なルール", ar: "القواعد الأساسية" },
+  pdfBientot: { fr: "Les PDF seront publiés avant la prochaine étape.", en: "The PDFs will be posted before the next leg.", es: "Los PDF se publicarán antes de la próxima etapa.", it: "I PDF saranno pubblicati prima della prossima tappa.", de: "Die PDFs werden vor der nächsten Etappe veröffentlicht.", ja: "PDFは次のステージ前に公開されます。", ar: "ستُنشر ملفات PDF قبل المرحلة القادمة." },
+  ouvrirPhoto: { fr: "Ouvrir la photo {i} sur {n} — {e}", en: "Open photo {i} of {n} — {e}", es: "Abrir la foto {i} de {n} — {e}", it: "Apri la foto {i} di {n} — {e}", de: "Foto {i} von {n} öffnen — {e}", ja: "{n}枚中{i}枚目の写真を開く — {e}", ar: "فتح الصورة {i} من {n} — {e}" },
+  photoSuiv: { fr: "Photo suivante", en: "Next photo", es: "Foto siguiente", it: "Foto successiva", de: "Nächstes Foto", ja: "次の写真", ar: "الصورة التالية" },
+  photoPrec: { fr: "Photo précédente", en: "Previous photo", es: "Foto anterior", it: "Foto precedente", de: "Vorheriges Foto", ja: "前の写真", ar: "الصورة السابقة" },
+  fermerPE: { fr: "Fermer le plein écran", en: "Close full screen", es: "Cerrar pantalla completa", it: "Chiudi schermo intero", de: "Vollbild schließen", ja: "全画面を閉じる", ar: "إغلاق ملء الشاشة" },
+  afficherPE: { fr: "Afficher en plein écran", en: "Show full screen", es: "Ver en pantalla completa", it: "Mostra a schermo intero", de: "Im Vollbild anzeigen", ja: "全画面で表示", ar: "عرض بملء الشاشة" },
   reglLienTxt: { fr: "Dates, catégories, barème des points et finale à points doublés.", en: "Dates, categories, points table and the double-points final.", es: "Fechas, categorías, baremo de puntos y final con puntos dobles.", it: "Date, categorie, tabella punti e finale a punti doppi.", de: "Termine, Kategorien, Punktetabelle und Finale mit doppelten Punkten.", ja: "日程、カテゴリー、得点表、ポイント2倍の決勝。", ar: "المواعيد والفئات وجدول النقاط والنهائي بنقاط مضاعفة." },
   reglPrep: { fr: "Règlement en préparation", en: "Rules in preparation", es: "Reglamento en preparación", it: "Regolamento in preparazione", de: "Reglement in Vorbereitung", ja: "規定は準備中です", ar: "النظام قيد الإعداد" },
   reglPrepTxt: { fr: "Les modalités du challenge seront communiquées prochainement.", en: "The challenge details will be shared soon.", es: "Las modalidades del challenge se comunicarán próximamente.", it: "Le modalità del challenge saranno comunicate a breve.", de: "Die Einzelheiten des Challenge werden bald mitgeteilt.", ja: "チャレンジの詳細は近日お知らせします。", ar: "سيتم الإعلان عن تفاصيل التحدي قريبًا." },
@@ -1126,10 +1166,12 @@ var LANG = "fr";
 /* textes propres à chaque discipline (même page pour Dressage, CSO, Equifun) */
 var TXD = {
   cso: {
-    titre1: { fr: "Challenge", en: "Show Jumping Open", es: "Challenge", it: "Challenge", de: "Challenge", ja: "オープン障害飛越", ar: "تحدي" },
-    titre2: { fr: "Open de Saut", en: "Challenge", es: "Open de Salto", it: "Open di Salto", de: "Spring-Open", ja: "チャレンジ", ar: "القفز المفتوح" },
+    titre1: { fr: "Challenge", en: "Show Jumping Open CSO", es: "Challenge", it: "Challenge", de: "Challenge", ja: "オープン障害飛越 CSO", ar: "تحدي" },
+    titre2: { fr: "Open de Saut CSO", en: "Challenge", es: "Open de Salto CSO", it: "Open di Salto CSO", de: "Spring-Open CSO", ja: "チャレンジ", ar: "القفز المفتوح CSO" },
+    nomCh: { fr: "Open de Saut CSO", en: "Show Jumping Open CSO", es: "Open de Salto CSO", it: "Open di Salto CSO", de: "Spring-Open CSO", ja: "オープン障害飛越 CSO", ar: "القفز المفتوح CSO" },
     intro: { fr: "Trois dates pour progresser, te mesurer et vivre le saut d'obstacles dans une ambiance conviviale.", en: "Three dates to progress, test yourself and enjoy show jumping in a friendly atmosphere.", es: "Tres fechas para progresar, medirte y vivir el salto en un ambiente cercano.", it: "Tre date per progredire, metterti alla prova e vivere il salto ostacoli in un clima amichevole.", de: "Drei Termine, um dich zu verbessern, dich zu messen und Springreiten in geselliger Atmosphäre zu erleben.", ja: "3つの日程で上達し、腕を試し、和やかな雰囲気で障害飛越を楽しもう。", ar: "ثلاثة مواعيد لتتقدّم وتختبر نفسك وتعيش قفز الحواجز في أجواء ودّية." },
-    citationAuteur: { fr: "D'après le Vicomte d'Aure", en: "After the Vicomte d'Aure", es: "Según el vizconde d'Aure", it: "Secondo il visconte d'Aure", de: "Nach Vicomte d'Aure", ja: "ドール子爵の言葉より", ar: "عن الفيكونت دور" }, citation: { fr: "« Moins on fait, mieux on fait. »", en: "“The less you do, the better you ride.”", es: "«Cuanto menos haces, mejor lo haces.»", it: "«Meno fai, meglio fai.»", de: "„Je weniger man tut, desto besser.“", ja: "「やりすぎないほど、うまくいく。」", ar: "«كلما قلّ ما تفعله، كان أفضل.»" }
+    citationAuteur: { fr: "" }, citation: { fr: "« L'équilibre avant la vitesse. »", en: "“Balance before speed.”", es: "«El equilibrio antes que la velocidad.»", it: "«L'equilibrio prima della velocità.»", de: "„Gleichgewicht vor Tempo.“", ja: "「速さより、まずバランス。」", ar: "«التوازن قبل السرعة.»" },
+    r4: { fr: "Les points sont attribués selon la place obtenue.", en: "Points are awarded according to your placing.", es: "Los puntos se atribuyen según el puesto obtenido.", it: "I punti sono attribuiti in base al piazzamento.", de: "Die Punkte werden nach der Platzierung vergeben.", ja: "ポイントは獲得した順位に応じて与えられます。", ar: "تُمنح النقاط حسب المركز المحقَّق." }
   },
   equifun: {
     titre1: { fr: "Challenge", en: "Equifun", es: "Challenge", it: "Challenge", de: "Challenge", ja: "イクイファン", ar: "تحدي" },
@@ -1153,7 +1195,10 @@ function TF(k, v) { var s = T(k); Object.keys(v || {}).forEach(function (x) { s 
 function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
 var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar" };
 function dateLongue(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "numeric", month: "long", year: "numeric" }) : "—"; }
-function dateCourte(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "2-digit", month: "2-digit" }) : "—"; }
+/* 21/10 : fragments latins ou chiffrés isolés (en arabe, « 30/05 », « 2026 – 2027 », « ×2 » ne s'inversent plus) */
+function libPhoto(i, n, nEt) { var e = etape(nEt); return esc(TF("ouvrirPhoto", { i: i + 1, n: n, e: e ? nomEtape(e) : "" })); }
+function LTR(x) { return '<bdi dir="ltr">' + x + "</bdi>"; }
+function dateCourte(iso) { if (!iso) return "—"; var d = new Date(iso + "T12:00:00"); return LTR(LANG === "ar" ? String(d.getDate()).padStart(2, "0") + "/" + String(d.getMonth() + 1).padStart(2, "0") : d.toLocaleDateString(LOCALES[LANG], { day: "2-digit", month: "2-digit" })); }
 function dateJourMois(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "numeric", month: "short" }) : "—"; }
 function dateJourMoisLong(iso) { return iso ? new Date(iso + "T12:00:00").toLocaleDateString(LOCALES[LANG], { day: "numeric", month: "long" }) : "—"; }
 
@@ -1195,7 +1240,7 @@ function majBandeau() {
 /* décor (photos d'ambiance de la maquette, jamais présentées comme des photos du concours) */
 var DECOR = {
   dressage: { etapes: ["images/challenge/etape1.webp", "images/challenge/etape2.webp", "images/challenge/etape3.webp"], pageEtape: { 3: ["images/challenge/hero-mobile.webp", "images/challenge/hero.webp"] } },
-  cso: { rg: "images/piquet-cso-poney.webp", heroM: "images/challenge/cso-saut.webp", heroL: "images/piquet-cso.webp", posM: "62% 30%", posL: "70% 40%", etapes: ["images/challenge/cso-saut.webp", "images/piquet-cso.webp", "images/piquet-cso-poney.webp"] },
+  cso: { foyer: { "images/challenge/cso-saut.webp": "38% 6%" }, rg: "images/piquet-cso-poney.webp", heroM: "images/challenge/cso-saut.webp", heroL: "images/piquet-cso.webp", posM: "62% 30%", posL: "70% 40%", etapes: ["images/challenge/cso-saut.webp", "images/piquet-cso.webp", "images/piquet-cso-poney.webp"] },
   equifun: { rg: "images/piquet-equifun.webp", heroM: "images/piquet-equifun.webp", heroL: "images/piquet-equifun.webp", posM: "48% 40%", posL: "60% 40%", etapes: ["images/piquet-equifun.webp"] }
 };
 function appliquerDecor(d) {
@@ -1261,14 +1306,16 @@ function listeResultats(n, filtre) {
   var l = resultatsEtape(n, filtre);
   if (!l.length) return '<div class="vide"><span class="ico">✦</span>' + T("aucunRes") + "</div>";
   var plusieurs = function (r) { return r.rep && CHALLENGE.reprises.filter(function (x) { return x.cat === r.cat; }).length > 1; };
+  /* 21/10 : classement sportif standard, comme le classement général (1, 2, 3, 3, 5…) ; les points restent ceux de la place importée */
+  var rangS = function (r) { return 1 + l.filter(function (x) { return classe(x) && x.cat === r.cat && (x.rep || "") === (r.rep || "") && x.pl < r.pl; }).length; };
   var liste = '<div class="lignes">' + l.map(function (r) {
-    return '<div class="ligne' + (r.publie ? "" : " brouillon") + '"><button class="ligne-h" data-ouvrir="1">' + rangHtml(classe(r) ? r.pl : 0) +
+    return '<div class="ligne' + (r.publie ? "" : " brouillon") + '"><button class="ligne-h" data-ouvrir="1">' + rangHtml(classe(r) ? rangS(r) : 0) +
       '<span class="nm"><b>' + esc(nomVu(r.cav, r.cat)) + '</b><span class="che">' + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + '<span class="chev">▾</span></button>' +
       '<div class="note-det"><span class="note-l">' + T("note") + "</span>" + noteHtml(r) + (plusieurs(r) ? '<span class="note-rep">' + esc(r.rep) + "</span>" : "") + "</div></div>";
   }).join("") + "</div>";
   var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("note") + '</th><th class="c">' + T("points") + "</th></tr></thead><tbody>" +
     l.map(function (r) {
-      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && r.pl <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? r.pl : 0) + '</td><td class="t-cav">' + esc(nomVu(r.cav, r.cat)) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
+      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && rangS(r) <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? rangS(r) : 0) + '</td><td class="t-cav">' + esc(nomVu(r.cav, r.cat)) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
     }).join("") + "</tbody></table>";
   return liste + table;
 }
@@ -1277,7 +1324,7 @@ function galerie(n) {
   var p = PHOTOS[n] || [];
   if (!p.length) return '<p class="ph-vide"><span>✦</span>' + T("pasPhotos") + "</p>";
   return '<p class="ph-nb">' + TF("nbPhotos", { n: p.length }) + '</p><div class="grille-ph">' + p.map(function (u, i) {
-    return '<button data-photo="' + n + ":" + i + '" aria-label="' + T("oPhotos") + " " + (i + 1) + '"><img src="' + esc(u) + '" alt="" loading="lazy" decoding="async"></button>';
+    return '<button data-photo="' + n + ":" + i + '" aria-label="' + libPhoto(i, p.length, n) + '"><img src="' + esc(u) + '" alt="" loading="lazy" decoding="async"></button>';
   }).join("") + "</div>";
 }
 /* ══════ GALERIE D'UNE JOURNÉE ══════
@@ -1323,7 +1370,7 @@ function carteAlbum(a) {
 function mosaique(liste) {
   var vis = liste.slice(0, GAL.nb);
   return '<div class="mosa">' + vis.map(function (u, i) {
-    return '<button class="mo" data-gal-photo="' + i + '"><img src="' + esc(mini(u, 380)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" onload="this.parentNode.classList.add(\'pret\')" alt="" loading="lazy" decoding="async"></button>';
+    return '<button class="mo" data-gal-photo="' + i + '" aria-label="' + libPhoto(i, liste.length, GAL.n) + '"><img src="' + esc(mini(u, 380)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" onload="this.parentNode.classList.add(\'pret\')" alt="" loading="lazy" decoding="async"></button>';
   }).join("") + "</div>" + (liste.length > vis.length ? '<div class="mo-suite" id="moSuite"></div>' : "");
 }
 function pillsCats(albs) {
@@ -1334,7 +1381,7 @@ function rendreGalerie() {
   var e = etape(GAL.n), albs = albumsDe(GAL.n), mode = modeGal(), tout = PHOTOS[GAL.n] || [];
   var ctx = nomEtape(e) + " · " + esc(dateLongue(e.date));
   /* ordinateur : le titre « Photos de la journée » n'existe qu'en haut ; téléphone / tablette : seulement le contexte en haut (le titre est dans la page) */
-  var titreH = '<div class="gx-tete"><button class="g-ret" data-gal-retour="1" aria-label="‹"><span>‹</span></button><span class="g-tt">' + (mode === "immersif" ? "<b>" + T("photosDe") + "</b><small>" + ctx + "</small>" : '<b class="g-ctx">' + ctx + "</b>") + '</span><button class="partage petit g-part" data-partage="' + GAL.n + '" aria-label="' + T("partager") + '">' + ICONE_PARTAGE + "</button></div>";
+  var titreH = '<div class="gx-tete"><button class="g-ret" data-gal-retour="1" aria-label="' + esc(T("retour")) + '"><span>‹</span></button><span class="g-tt">' + (mode === "immersif" ? "<b>" + T("photosDe") + "</b><small>" + ctx + "</small>" : '<b class="g-ctx">' + ctx + "</b>") + '</span><button class="partage petit g-part" data-partage="' + GAL.n + '" aria-label="' + T("partager") + '">' + ICONE_PARTAGE + "</button></div>";
   document.getElementById("galerie").className = "ouverte g-" + mode;
   var h = '<div class="g-barre">' + titreH + "</div><div class=\"g-corps\">";
   if (!tout.length) {
@@ -1342,17 +1389,17 @@ function rendreGalerie() {
   } else if (mode === "immersif") {
     var l = photosAlbum(); if (GAL.i >= l.length) GAL.i = 0; var u = l[GAL.i];
     h += pillsCats(albs) +
-      '<div class="gi"><div class="gi-scene"><button class="gi-fl gi-p" data-gal-pas="-1" aria-label="‹"><span>‹</span></button>' +
-      '<button class="gi-img" data-gal-plein="1"><img id="giImg" src="' + esc(mini(u, 1800)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" onload="bornerAgrandi(this)" alt=""></button>' +
-      '<button class="gi-fl gi-s" data-gal-pas="1" aria-label="›"><span>›</span></button></div>' +
+      '<div class="gi"><div class="gi-scene"><button class="gi-fl gi-p" data-gal-pas="-1" aria-label="' + esc(T("photoPrec")) + '"><span>‹</span></button>' +
+      '<button class="gi-img" data-gal-plein="1" aria-label="' + esc(T("afficherPE")) + '" style="--flou:url(' + esc(mini(u, 150)) + ')"><img id="giImg" src="' + esc(mini(u, 1800)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" onload="bornerAgrandi(this);this.classList.add(\'pret\')" alt=""></button>' +
+      '<button class="gi-fl gi-s" data-gal-pas="1" aria-label="' + esc(T("photoSuiv")) + '"><span>›</span></button></div>' +
       '<aside class="gi-info"><span class="gi-num">' + (GAL.i + 1) + " / " + l.length + "</span><b>" + esc((GAL.album && GAL.album !== "__tout") ? GAL.album : (CATPHOTO[u] || T("toutesPhotos"))) + "</b><small>" + nomEtape(e) + " · " + esc(dateLongue(e.date)) + "</small>" +
       (CREDITS[u] ? '<small class="gi-cr">' + esc(CREDITS[u]) + "</small>" : "") + '<span class="gi-trait"></span><button class="gi-pe" data-gal-plein="1">⤢ ' + T("pleinEcran") + "</button></aside></div>" +
-      '<div class="gi-bande" id="giBande">' + l.map(function (x, i) { return '<button class="gi-v' + (i === GAL.i ? " actif" : "") + '" data-gal-voir="' + i + '"><img src="' + esc(mini(x, 150)) + '" data-orig="' + esc(x) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>";
+      '<div class="gi-bande" id="giBande">' + l.map(function (x, i) { return '<button class="gi-v' + (i === GAL.i ? " actif" : "") + '" data-gal-voir="' + i + '" aria-label="' + libPhoto(i, l.length, GAL.n) + '"><img src="' + esc(mini(x, 150)) + '" data-orig="' + esc(x) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async"></button>'; }).join("") + "</div>";
   } else if (mode === "tel" && !GAL.album) {
     h += '<div class="g-intro"><h2>' + T("photosDe") + "</h2><p>" + esc(dateLongue(e.date)) + "</p></div>" + '<div class="albs">' + albs.map(carteAlbum).join("") + "</div>";
   } else {
     var la = photosAlbum(), a = albs.filter(function (x) { return x.k === (GAL.album || "__tout"); })[0] || albs[0];
-    if (mode === "tablette") h += (albs.length > 1 ? '<div class="albs albs-l">' + albs.map(carteAlbum).join("") + "</div>" : "") + '<div class="g-alb-tete"><h2>' + esc(a.nom) + "</h2><p>" + TF("nbPhotos", { n: la.length }) + "</p></div>";
+    if (mode === "tablette") h += pillsCats(albs) /* 21/10 : une seule ligne de filtres sur tablette, plus de carrousel d'albums */ + '<div class="g-alb-tete"><h2>' + esc(a.nom) + "</h2><p>" + TF("nbPhotos", { n: la.length }) + "</p></div>";
     else h += '<div class="g-alb-tete">' + (albs.length > 1 ? '<button class="lien-d" data-gal-albums="1"><i>‹</i> ' + T("albums") + "</button>" : "") + "<h2>" + esc(a.nom) + "</h2><p>" + TF("nbPhotos", { n: la.length }) + "</p></div>";
     h += mosaique(la);
   }
@@ -1377,7 +1424,7 @@ function apercuPhotos(n) {
   var vis = p.slice(0, 6), reste = p.length - vis.length;
   return '<div class="ap' + (vis.length < 3 ? " ap-peu" : "") + '">' + vis.map(function (u, i) {
     var dernier = i === vis.length - 1 && reste > 0;
-    return '<button ' + (dernier ? 'data-galerie="' + n + '"' : 'data-photo="' + n + ":" + i + '"') + '><img src="' + esc(mini(u, 420)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async">' + (dernier ? '<span class="ap-plus">+' + reste + "</span>" : "") + "</button>";
+    return '<button ' + (dernier ? 'data-galerie="' + n + '" aria-label="' + esc(T("voirPhotos")) + " · " + p.length + '"' : 'data-photo="' + n + ":" + i + '" aria-label="' + libPhoto(i, p.length, n) + '"') + '><img src="' + esc(mini(u, 420)) + '" data-orig="' + esc(u) + '" onerror="imgSecours(this)" alt="" loading="lazy" decoding="async">' + (dernier ? '<span class="ap-plus">+' + reste + "</span>" : "") + "</button>";
   }).join("") + '</div><button class="lien ap-tout" data-galerie="' + n + '">' + T("voirPhotos") + " · " + p.length + " <i>→</i></button>";
 }
 
@@ -1400,6 +1447,8 @@ function inviteCompte(court) { return VISITEUR ? '<div class="invite-c' + (court
 function peutAjouterPhotos(e) { return !!(e && e.agenda && e.date && e.date <= AUJOURDHUI && MOI); }
 /* petit bouton « + Ajouter » à droite du titre Photos : sur l'accueil il ouvre l'étape, sur l'étape il ouvre directement la galerie du téléphone */
 function boutonAjoutMini(e, surEtape) {
+  /* 21/10 : visiteur sans compte — le bouton est là aussi, et propose de créer un compte */
+  if (VISITEUR && e && e.agenda && e.date && e.date <= AUJOURDHUI) return '<button class="ajout-mini" data-compte="1" title="' + esc(T("inviteTxt")) + '"><span>+</span>' + T("ajouter") + "</button>";
   if (!peutAjouterPhotos(e)) return "";
   if (!surEtape) return '<button class="ajout-mini" data-etape="' + e.n + '" data-vers="v-photos"><span>+</span>' + T("ajouter") + "</button>";
   return UP.enCours ? "" : '<label class="ajout-mini"><input type="file" accept="image/*" multiple data-upl="' + e.n + '"><span>+</span>' + T("ajouter") + "</label>";
@@ -1468,17 +1517,22 @@ function lienReglement() { return "reglement-challenge.html?lang=" + LANG + (PAR
 /* ══════ PAGE PRINCIPALE ══════ */
 function rendreEtapes() {
   /* aucune date programmée : un seul message soigné, sans classement ni photos vides */
-  if (!CHALLENGE.etapes.length) { document.getElementById("etapes").innerHTML = '<div class="dates-avenir"><span class="surtitre">' + T("surProgramme") + '</span><h2 class="titre">' + T("datesAvenir") + "</h2><p>" + T("programmeTxt") + "</p></div>"; return; }
+  var zE = document.getElementById("etapes"); zE.classList.toggle("duo", !CHALLENGE.etapes.length && !CHALLENGE.bareme.valide);
+  if (!CHALLENGE.etapes.length) {
+    zE.innerHTML = '<div class="dates-avenir"><span class="surtitre">' + T("surProgramme") + '</span><h2 class="titre">' + T("datesAvenir") + "</h2><p>" + T("programmeTxt") + "</p></div>" +
+      (!CHALLENGE.bareme.valide ? '<div class="dates-avenir"><span class="surtitre">' + T("oReglement") + '</span><h2 class="titre">' + T("reglPrep") + "</h2><p>" + T("reglPrepTxt") + "</p></div>" : "");
+    return;
+  }
   document.getElementById("etapes").innerHTML = CHALLENGE.etapes.map(function (e) {
     var s = statutEtape(e), fin = e.coef > 1;
-    return '<button class="etape" ' + lienEtape(e) + ' style="--img:url(' + e.img + ')"><span class="etape-in">' +
+    return '<button class="etape" ' + lienEtape(e) + ' style="--img:url(' + e.img + ')' + (e.pos ? ";--pos:" + e.pos : "") + '"><span class="etape-in">' +
       '<span class="etape-haut"><span class="num">' + e.n + '</span><span class="date">' + esc(dateLongue(e.date)) + "</span></span>" +
-      '<span class="nom">' + (fin ? T("finale") + " <em>×" + e.coef + "</em>" : nomEtape(e)) + "</span>" +
+      '<span class="nom">' + (fin ? T("finale") + " <em>" + LTR("×" + e.coef) + "</em>" : nomEtape(e)) + "</span>" +
       '<span class="etape-bas">' + (fin ? '<span class="statut double">✦ ' + T("double") + "</span>" : '<span class="statut ' + s.cls + '">' + T(s.k) + "</span>") + "</span>" +
       '</span><span class="fleche"><span>→</span></span></button>';
   }).join("");
 }
-var SECTIONS = [["s-classement", "oClassement"], ["s-photos", "oPhotos"], ["s-reglement", "oReglement"], ["s-reprises", "oReprisesCourt"]];
+var SECTIONS = [["s-classement", "oClassement"], ["s-photos", "oPhotos"], ["s-reprises", "oReprisesCourt"], ["s-reglement", "oReglement"]];
 function sansDates() { return !!CHALLENGE && !CHALLENGE.etapes.length; }
 function sectionsVisibles() { return SECTIONS.filter(function (x) { if (x[0] === "s-reprises") return CHALLENGE.reprises.length; if (x[0] === "s-classement" || x[0] === "s-photos") return !sansDates(); return true; }); }
 function rendreNav() {
@@ -1488,6 +1542,8 @@ function rendreNav() {
   var sd = sansDates(), rc = document.querySelector(".r-classement"), sp = document.getElementById("s-photos"), nv = document.querySelector(".nav");
   if (rc) rc.hidden = sd; if (sp) sp.hidden = sd; if (nv) nv.hidden = L.length < 2;
   document.getElementById("navIn").innerHTML = L.map(function (x) {
+    /* 21/10 : quand un règlement complet existe (Dressage), l'onglet Règlement l'ouvre directement */
+    if (x[0] === "s-reglement" && aReglementComplet()) return '<a class="onglet" href="' + lienReglement() + '">' + T(x[1]) + "</a>";
     return '<button class="onglet' + (etat.onglet === x[0] ? " actif" : "") + '" data-aller="' + x[0] + '">' + T(x[1]) + "</button>";
   }).join("");
   ongletVisible(document.getElementById("navIn"));
@@ -1513,17 +1569,18 @@ function ongletVisible(barre) {
 }
 function rendreClassement() {
   var l = classementGeneral(etat.cat), vis = etat.complet ? l : l.slice(0, 5), E = CHALLENGE.etapes;
+  var rcl = document.querySelector(".r-classement"); if (rcl) rcl.classList.toggle("vide", !RESULTATS.length);
   if (!RESULTATS.length) {
-    document.getElementById("s-classement").innerHTML = '<div class="cl cl-attente"><div class="cl-haut"><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre cl-titre">' + T("provisoire") + '</h2><p class="cl-msg"><span>✦</span>' + T("resPlusTard") + "</p></div></div>";
+    document.getElementById("s-classement").innerHTML = '<div class="cl cl-attente"><div class="cl-haut"><span class="surtitre">' + T("surProvisoire") + " " + LTR(esc(CHALLENGE.saison)) + '</span><h2 class="titre cl-titre">' + T("provisoire") + '</h2><p class="cl-msg"><span>✦</span>' + T("resPlusTard") + "</p></div></div>";
     return;
   }
   var brou = marqueBrouillon(RESULTATS.filter(function (r) { return r.cat === etat.cat; }));
-  var h = '<div class="cl" style="--ne:' + E.length + '"><div class="cl-haut"><div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + esc(CHALLENGE.saison) + '</span><h2 class="titre cl-titre">' + T("provisoire") + "</h2></div>" + brou + "</div>" +
+  var h = '<div class="cl" style="--ne:' + E.length + '"><div class="cl-haut"><div class="tete"><div><span class="surtitre">' + T("surProvisoire") + " " + LTR(esc(CHALLENGE.saison)) + '</span><h2 class="titre cl-titre">' + T("provisoire") + "</h2></div>" + brou + "</div>" +
     '<div class="cl-cats">' + pills("cat", CHALLENGE.categories, etat.cat) + "</div></div>";
   if (!l.length) h += '<div class="vide">' + T(RESULTATS.length ? "aucunRes" : "resPlusTard") + "</div>";
   else {
     h += '<div class="cl-cols" aria-hidden="true"><span>' + T("rang") + "</span><span>" + T("cavalier") + "</span>" +
-      E.map(function (e) { return '<span class="c">' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "<small>" + dateCourte(e.date) + "</small></span>"; }).join("") +
+      E.map(function (e) { return '<span class="c">' + nomEtape(e) + (e.coef > 1 ? " " + LTR(LTR("×" + e.coef)) : "") + "<small>" + dateCourte(e.date) + "</small></span>"; }).join("") +
       '<span class="c c-tot">' + T("total") + "</span></div>";
     h += '<div class="cl-lignes">' + vis.map(function (c) {
       var cases = E.map(function (e) { return c.e[e.n] == null ? '<b class="tiret">–</b>' : "<b>" + c.e[e.n] + "</b>"; });
@@ -1531,7 +1588,7 @@ function rendreClassement() {
         cases.map(function (x) { return '<span class="cr-e">' + x + "</span>"; }).join("") +
         '<span class="cr-tot">' + c.total + "<small>" + T("pts") + '</small></span><span class="chev">▾</span></button>' +
         '<div class="detail">' + E.map(function (e, i) {
-          return '<button class="case" ' + lienEtape(e) + '><small>' + nomEtape(e) + (e.coef > 1 ? " ×" + e.coef : "") + "</small>" + cases[i] + "</button>";
+          return '<button class="case" ' + lienEtape(e) + '><small>' + nomEtape(e) + (e.coef > 1 ? " " + LTR(LTR("×" + e.coef)) : "") + "</small>" + cases[i] + "</button>";
         }).join("") + "</div></div>";
     }).join("") + "</div>";
     if (l.length > 5) h += '<div class="pied"><button class="lien" data-complet="1">' + (etat.complet ? T("voirMoins") : T("voirComplet")) + " <i>" + (etat.complet ? "↑" : "→") + "</i></button></div>";
@@ -1546,7 +1603,7 @@ function rendreCote() {
   document.getElementById("s-cote").innerHTML = '<div class="cote-in"><span class="surtitre">' + T("enBref") + "</span>" +
     '<div class="cote-dates">' + E.map(function (e) {
       var s = statutEtape(e), fin = e.coef > 1;
-      return '<button class="cote-d" ' + lienEtape(e) + '><span class="num">' + e.n + '</span><span class="cote-dt"><b>' + esc(dateJourMoisLong(e.date)) + "</b><small>" + nomEtape(e) + (fin ? " ×" + e.coef : "") + " · " + (fin && s.k === "aVenir" ? T("double") : T(s.k)) + '</small></span><i>→</i></button>';
+      return '<button class="cote-d" ' + lienEtape(e) + '><span class="num">' + e.n + '</span><span class="cote-dt"><b>' + esc(dateJourMoisLong(e.date)) + "</b><small>" + nomEtape(e) + (fin ? " " + LTR(LTR("×" + e.coef)) : "") + " · " + (fin && s.k === "aVenir" ? T("double") : T(s.k)) + '</small></span><i>→</i></button>';
     }).join("") + "</div>" +
     (E.length ? "" : '<p class="cote-txt">' + T("datesBientot") + "</p>") +
     (d3() ? '<div class="cote-x2"><span class="x">×2</span><span>' + TF("x2texte", { d3: d3() }) + "</span></div>" : "") +
@@ -1576,7 +1633,7 @@ function rendrePhotos() {
     var sel = toutes.slice(0, 5);
     h += '<div class="edito n' + sel.length + '">' + sel.map(function (p, k) {
       var e = etape(p.n);
-      return '<button class="ed' + (k ? "" : " g") + '" data-photo="' + p.n + ":" + p.i + '" style="background-image:url(\'' + esc(p.u) + '\')" aria-label="' + T("oPhotos") + '"><span class="ed-leg">' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</span></button>";
+      return '<button class="ed' + (k ? "" : " g") + '" data-photo="' + p.n + ":" + p.i + '" style="background-image:url(\'' + esc(p.u) + '\')" aria-label="' + libPhoto(p.i, (PHOTOS[p.n] || []).length, p.n) + '"><span class="ed-leg">' + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</span></button>";
     }).join("") + "</div>";
     h += '<div class="ph-liens">' + avec.map(function (e) {
       return '<button class="lien-d" data-galerie="' + e.n + '">' + T("voirPhotos") + (avec.length > 1 ? " · " + nomEtape(e) : "") + " · " + PHOTOS[e.n].length + " <i>→</i></button>";
@@ -1586,8 +1643,10 @@ function rendrePhotos() {
 }
 /* reprises de l'accueil : pastilles de catégorie + seulement les reprises de la catégorie choisie */
 function rendreReprises() {
-  var zr = document.getElementById("s-reprises"); zr.hidden = !CHALLENGE.reprises.length; if (zr.hidden) { zr.innerHTML = ""; return; }
-  var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === etat.repCat; });
+  var zr = document.getElementById("s-reprises"); zr.hidden = !CHALLENGE.reprises.length;
+  var rdo = document.querySelector(".r-docs"); if (rdo) rdo.classList.toggle("seul", zr.hidden); if (zr.hidden) { zr.innerHTML = ""; return; }
+  /* 21/10 : seulement les reprises dont le PDF existe ; sinon une seule phrase claire (pas de rangée de boutons désactivés) */
+  var reps = CHALLENGE.reprises.filter(function (r) { return r.cat === etat.repCat && r.pdf; });
   /* encadré replié comme celui du règlement : on touche, il se déplie avec les reprises à télécharger */
   var ouv = !!etat.repOuvert;
   var tete = '<button class="rg-lien rg-pli" data-rep-pli="1" aria-expanded="' + ouv + '"><span class="rg-haut"><span class="surtitre">' + T("parNiveau") + '</span><span class="titre rg-titre">' + T("oReprises") + '</span><span class="sous-t">' + T("repSous") + '</span></span><span class="rg-fl" aria-hidden="true">▾</span></button>';
@@ -1597,7 +1656,7 @@ function rendreReprises() {
     '<div class="rep-l">' + (reps.length ? reps.map(function (r) {
       return '<div class="rep">' + DOC_SVG + '<span class="doc-t"><b>' + esc(r.nom) + "</b><span" + (r.pdf ? "" : ' class="manque"') + "><bdi>" + esc(r.cat) + "</bdi> · " + T(r.pdf ? "repriseOff" : "bientot") + "</span></span>" +
         (r.pdf ? '<a class="dl" href="' + esc(r.pdf) + '" target="_blank" rel="noopener">↓ ' + T("telecharger") + "</a>" : '<button class="dl" type="button" disabled aria-disabled="true">↓ ' + T("telecharger") + "</button>") + "</div>";
-    }).join("") : '<p class="ph-vide"><span>✦</span>' + T("bientot") + "</p>") + "</div></div></div>";
+    }).join("") : '<p class="ph-vide rep-attente"><span>✦</span>' + T("pdfBientot") + "</p>") + "</div></div></div>";
 }
 /* règlement en synthèse sur l'accueil (direction B, légère) : une ligne ×2, quatre règles, barème replié, lien */
 function rendreReglement() {
@@ -1608,13 +1667,14 @@ function rendreReglement() {
     return;
   }
   /* challenge sans dates ni règlement validé (Equifun pour l'instant) : pas de règles provisoires présentées comme applicables */
+  document.getElementById("s-reglement").hidden = !E.length && !CHALLENGE.bareme.valide;
   if (!E.length && !CHALLENGE.bareme.valide) {
     document.getElementById("s-reglement").innerHTML = '<div class="rg rg-prep"><div class="rg-haut"><span class="surtitre">' + T("oReglement") + '</span><h2 class="titre rg-titre">' + T("reglPrep") + '</h2><p class="sous-t">' + T("reglPrepTxt") + "</p></div></div>";
     return;
   }
   var rDates = !E.length ? T("datesBientot") : (E.length === 3 && d3() ? TF("r1", { d1: dateJourMoisLong(E[0].date), d2: dateJourMoisLong(E[1].date), d3: d3() }) : TF("rDates", { liste: E.map(function (e) { return dateJourMoisLong(e.date); }).join(", ") }));
   var regles = [rDates].concat(CHALLENGE.categories.length ? [TF("r2", { cats: CHALLENGE.categories.map(function (c) { return "<bdi>" + esc(String(c).replace(/ /g, "\u00a0")) + "</bdi>"; }).join(", ") })] : []).concat([T("r3"), T("r4")]);
-  document.getElementById("s-reglement").innerHTML = '<div class="rg"><div class="rg-haut"><span class="surtitre">' + T("enResume") + '</span><h2 class="titre rg-titre">' + T("reglTitre") + "</h2>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + '</div><div class="rg-corps">' +
+  document.getElementById("s-reglement").innerHTML = '<div class="rg"><div class="rg-haut"><span class="surtitre">' + T("enResume") + '</span><h2 class="titre rg-titre">' + T(aReglementComplet() ? "reglTitre" : "reglesEss") + "</h2>" + (CHALLENGE.bareme.valide ? "" : '<span class="marque">' + T("aConfirmer") + "</span>") + '</div><div class="rg-corps">' +
     (CHALLENGE.bareme.valide ? "" : '<p class="regl-intro">' + T("reglIntro") + "</p>") +
     (d3() ? '<div class="x2-l"><span class="x">×2</span><span class="x2-t"><b>' + T("x2titre") + "</b> — " + esc(d3()) + "</span></div>" : "") +
     '<ol class="regles-b">' + regles.map(function (r, i) { return '<li><span class="n">' + String(i + 1).padStart(2, "0") + "</span><span>" + r + "</span></li>"; }).join("") + "</ol>" +
@@ -1627,33 +1687,40 @@ var vueEtat = { n: 1, filtre: null, onglet: "v-journee" };
 function rendreVue() {
   var e = etape(vueEtat.n), s = statutEtape(e), fin = e.coef > 1, aRes = RESULTATS.some(function (r) { return r.e === e.n; });
   var ongl = [["v-journee", "oPresentation"], ["v-resultats", "oResultatsCourt"], ["v-photos", "oPhotos"]];
-  var h = '<div class="vue-hero" style="--img:url(' + e.imgPage + ');--imgL:url(' + e.imgPageL + ')">' +
+  var h = '<div class="vue-hero" style="--img:url(' + e.imgPage + ');--imgL:url(' + e.imgPageL + ')' + (e.posPage ? ";--pos:" + e.posPage : "") + '">' +
     '<div class="hero-haut"><button class="retour" data-fermer-vue="1"><b>‹</b><span>' + T("retour") + "</span></button></div>" +
-    '<div class="bas"><div class="sur"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + esc(e.titre || "") + "</div>" +
+    '<div class="bas"><div class="sur"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + LTR(DISC === "cso" ? T("nomCh") : esc(e.titre || "")) + "</div>" +
     "<h2>" + esc(dateLongue(e.date)) + "</h2>" +
-    '<div class="lignestat">' + (fin ? '<span class="statut double">✦ ' + T("finale") + " ×" + e.coef + " · " + T("double") + "</span>" : "") + '<span class="statut ' + s.cls + '">' + T(s.k) + '</span><button class="partage petit" data-partage="' + e.n + '">' + ICONE_PARTAGE + "<span>" + T("partager") + "</span></button></div></div></div>";
-  h += '<nav class="vue-nav"><div class="page nav-in"><span class="vn-et"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</span>" + ongl.map(function (o) {
-    return '<button class="onglet' + (vueEtat.onglet === o[0] ? " actif" : "") + '" data-vue-aller="' + o[0] + '">' + T(o[1]) + "</button>";
+    '<div class="lignestat">' + (fin ? '<span class="statut double">✦ ' + T("finale") + " " + LTR(LTR("×" + e.coef)) + " · " + T("double") + "</span>" : "") + '<span class="statut ' + s.cls + '">' + T(s.k) + '</span><button class="partage petit" data-partage="' + e.n + '">' + ICONE_PARTAGE + "<span>" + T("partager") + "</span></button></div></div></div>";
+  /* 21/10 : vrais onglets — un seul panneau visible à la fois (La journée / Résultats / Photos) */
+  h += '<nav class="vue-nav"><div class="page nav-in" role="tablist" aria-label="' + esc(nomEtape(e)) + '"><span class="vn-et"><span class="num">' + e.n + "</span>" + nomEtape(e) + " · " + esc(dateJourMois(e.date)) + "</span>" + ongl.map(function (o) {
+    var on = vueEtat.onglet === o[0];
+    return '<button class="onglet' + (on ? " actif" : "") + '" role="tab" id="t-' + o[0] + '" aria-controls="' + o[0] + '" aria-selected="' + on + '" tabindex="' + (on ? 0 : -1) + '" data-vue-aller="' + o[0] + '">' + T(o[1]) + "</button>";
   }).join("") + "</div></nav>";
   h += '<div class="page">';
-  h += '<section class="section" id="v-journee"><p class="vue-intro">' + T(e.n === 1 ? (DISC === "dressage" ? "introE1" : "introG1") : fin ? "introE3" : "introE2") + "</p>" +
-    '<div class="infos"><div class="info"><small>' + T("date") + "</small><b>" + esc(dateJourMois(e.date)) + '</b></div><div class="info"><small>' + T("lieu") + "</small><b>" + esc(e.lieu || CHALLENGE.lieuCourt) + '</b></div><div class="info"><small>' + T("coef") + "</small><b>" + (fin ? "×" + e.coef : T("normal")) + "</b></div></div></section>";
-  h += '<div class="r-vue"><section class="section" id="v-resultats"><div class="tete"><h2 class="titre">' + T("oResultatsCourt") + "</h2>" + marqueBrouillon(RESULTATS.filter(function (r) { return r.e === e.n; })) + "</div>";
+  var cache = function (id) { return ' role="tabpanel" aria-labelledby="t-' + id + '"' + (vueEtat.onglet === id ? "" : " hidden"); };
+  h += '<section class="section"' + cache("v-journee") + ' id="v-journee"><p class="vue-intro">' + T(e.n === 1 ? (DISC === "dressage" ? "introE1" : "introG1") : fin ? "introE3" : "introE2") + "</p>" +
+    '<div class="infos"><div class="info"><small>' + T("date") + "</small><b>" + esc(dateJourMois(e.date)) + '</b></div><div class="info"><small>' + T("lieu") + "</small><b>" + esc(e.lieu || CHALLENGE.lieuCourt) + '</b></div><div class="info"><small>' + T("coef") + "</small><b>" + (fin ? LTR("×" + e.coef) : T("normal")) + "</b></div></div></section>";
+  h += '<div class="r-vue"><section class="section"' + cache("v-resultats") + ' id="v-resultats"><div class="tete"><h2 class="titre">' + T("oResultatsCourt") + "</h2>" + marqueBrouillon(RESULTATS.filter(function (r) { return r.e === e.n; })) + "</div>";
   if (aRes) h += '<div class="panneau photo">' + pills("vue-cat", CHALLENGE.categories, vueEtat.filtre) + listeResultats(e.n, vueEtat.filtre) + "</div>";
   else h += '<div class="attente"><b>' + T("attTitre") + "</b><p>" + T(CHALLENGE.reprises.length ? "attTexte" : "attTexteG") + "</p>" + (CHALLENGE.reprises.length ? '<button class="lien" data-fermer-vers="s-reprises">' + T("voirReprises") + " <i>→</i></button>" : "") + "</div>";
   h += "</section>";
-  h += '<section class="section" id="v-photos"><div class="tete t-ph"><h2 class="titre">' + T("photosDe") + '</h2><span id="ajoutMiniV">' + boutonAjoutMini(e, true) + "</span></div>" + zoneAjout(e) + apercuPhotos(e.n) + (e.date && e.date <= AUJOURDHUI ? inviteCompte(true) : "") + "</section></div>";
+  h += '<section class="section"' + cache("v-photos") + ' id="v-photos"><div class="tete t-ph"><h2 class="titre">' + T("photosDe") + '</h2><span id="ajoutMiniV">' + boutonAjoutMini(e, true) + "</span></div>" + zoneAjout(e) + apercuPhotos(e.n) + (e.date && e.date <= AUJOURDHUI ? inviteCompte(true) : "") + "</section></div>";
   h += '</div>' + document.querySelector('.fin-hype').outerHTML;
   document.getElementById("vueC").innerHTML = h;
 }
 function rendreNavVue() {
-  document.querySelectorAll("#vue .onglet").forEach(function (b) { b.classList.toggle("actif", b.dataset.vueAller === vueEtat.onglet); });
+  document.querySelectorAll("#vue .onglet").forEach(function (b) { var on = b.dataset.vueAller === vueEtat.onglet; b.classList.toggle("actif", on); b.setAttribute("aria-selected", on); b.tabIndex = on ? 0 : -1; });
+  ["v-journee", "v-resultats", "v-photos"].forEach(function (id) { var s = document.getElementById(id); if (s) s.hidden = id !== vueEtat.onglet; });
   ongletVisible(document.querySelector("#vue .nav-in"));
 }
+/* changement d'onglet instantané : seul le panneau choisi est affiché ; la barre d'onglets reste en haut si on était descendu */
 function allerDansVue(id) {
-  var v = document.getElementById("vue"), s = document.getElementById(id);
-  vueEtat.onglet = id; vueEtat.verrou = Date.now() + 900; rendreNavVue();   /* l'onglet choisi reste allumé, même en bas de page */
-  if (s) { var c = s.firstElementChild || s; v.scrollTo({ top: v.scrollTop + c.getBoundingClientRect().top - hautBarre("#vue .vue-nav") - 18, behavior: "smooth" }); }
+  if (["v-journee", "v-resultats", "v-photos"].indexOf(id) < 0) id = "v-journee";
+  var v = document.getElementById("vue"), nav = document.querySelector("#vue .vue-nav");
+  vueEtat.onglet = id; rendreNavVue();
+  if (nav && v) { var haut = v.scrollTop + nav.getBoundingClientRect().top - (parseFloat(getComputedStyle(nav).top) || 0); if (v.scrollTop > haut) v.scrollTop = haut; }
+  majBandeau();
 }
 function ouvrirVue(n, vers) {
   vueEtat.n = n; vueEtat.onglet = "v-journee";
@@ -1664,18 +1731,21 @@ function ouvrirVue(n, vers) {
   rendreVue(); var v = document.getElementById("vue"); v.classList.add("ouverte"); v.scrollTop = 0;
   document.body.style.overflow = "hidden";
   majBandeau();
-  if (vers) setTimeout(function () { allerDansVue(vers); }, 30);
+  if (vers) allerDansVue(vers);
 }
 function fermerVue() { document.getElementById("vue").classList.remove("ouverte"); document.body.style.overflow = ""; majBandeau(); }
 document.getElementById("vue").addEventListener("scroll", function () {
   majBandeau();
-  var ids = ["v-journee", "v-resultats", "v-photos", "v-reprises"], cur = ids[0];
-  /* sur ordinateur, Résultats et Photos sont côte à côte : à hauteur égale, on garde le premier */
-  if (vueEtat.verrou && Date.now() < vueEtat.verrou) return;
-  var seuilV = hautBarre("#vue .vue-nav") + 40;
-  var best = -1e9; ids.forEach(function (id) { var s = document.getElementById(id); if (!s) return; var t = s.getBoundingClientRect().top; if (t < seuilV && t > best + 12) { best = t; cur = id; } });
-  if (cur !== vueEtat.onglet) { vueEtat.onglet = cur; rendreNavVue(); }
 }, { passive: true });
+/* clavier : flèches gauche / droite (inversées en arabe), Début, Fin */
+document.getElementById("vue").addEventListener("keydown", function (ev) {
+  var t = ev.target; if (!t || t.getAttribute("role") !== "tab") return;
+  var l = Array.prototype.slice.call(document.querySelectorAll("#vue [role=tab]")), i = l.indexOf(t), rtl = document.documentElement.dir === "rtl", j = -1;
+  if (ev.key === "ArrowRight") j = rtl ? i - 1 : i + 1; else if (ev.key === "ArrowLeft") j = rtl ? i + 1 : i - 1; else if (ev.key === "Home") j = 0; else if (ev.key === "End") j = l.length - 1;
+  if (j === -1 && ev.key !== "ArrowLeft" && ev.key !== "ArrowRight") return;
+  j = (j + l.length) % l.length; ev.preventDefault();
+  allerDansVue(l[j].dataset.vueAller); var nb = document.getElementById("t-" + l[j].dataset.vueAller); if (nb) nb.focus();
+});
 
 function retourGalerie() { if (modeGal() === "tel" && GAL.album && albumsDe(GAL.n).length > 1) { GAL.album = null; rendreGalerie(); document.getElementById("galerieIn").scrollTop = 0; } else fermerGalerie(); }
 var tGalR = null; window.addEventListener("resize", function () { if (!galerieOuverte()) return; clearTimeout(tGalR); tGalR = setTimeout(rendreGalerie, 150); });
@@ -1683,7 +1753,13 @@ var tGalR = null; window.addEventListener("resize", function () { if (!galerieOu
 var lb = { liste: [], i: 0 };
 function ouvrirLb(n, i) { ouvrirLbListe(PHOTOS[n] || [], i); }
 function ouvrirLbListe(l, i) { lb.liste = l; lb.i = i; majLb(); document.getElementById("lb").classList.add("ouverte"); }
-function majLb() { var u = lb.liste[lb.i], im = document.getElementById("lbImg"); im.setAttribute("data-orig", u); im.src = mini(u, 2000); document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length + (CATPHOTO[u] ? " · " + CATPHOTO[u] : "") + (CREDITS[u] ? " · " + CREDITS[u] : ""); }
+/* 21/10 : pendant le chargement, la miniature déjà affichée sert de fond flouté ; même taille que la galerie immersive (déjà en cache) ;
+   on prépare la suivante et la précédente, une seule à la fois (pas les 26 en pleine définition) */
+function majLb() { var u = lb.liste[lb.i], im = document.getElementById("lbImg"), f = document.getElementById("lbFond");
+  if (f) { f.style.backgroundImage = "url(" + mini(u, 380) + ")"; f.classList.remove("cache"); }
+  im.classList.remove("pret"); im.onload = function () { im.classList.add("pret"); if (f) f.classList.add("cache"); };
+  im.setAttribute("data-orig", u); im.src = mini(u, 1800);
+  try { [1, -1].forEach(function (d) { var v = lb.liste[(lb.i + d + lb.liste.length) % lb.liste.length]; if (v && v !== u) { var pre = new Image(); pre.src = mini(v, 1800); } }); } catch (ePr) { } document.getElementById("lbCpt").textContent = (lb.i + 1) + " / " + lb.liste.length + (CATPHOTO[u] ? " · " + CATPHOTO[u] : "") + (CREDITS[u] ? " · " + CREDITS[u] : ""); }
 function pasLb(d) { if (!lb.liste.length) return; lb.i = (lb.i + d + lb.liste.length) % lb.liste.length; majLb(); }
 function fermerLb() { document.getElementById("lb").classList.remove("ouverte"); if (galerieOuverte() && modeGal() === "immersif" && lb.liste === photosAlbum()) { GAL.i = lb.i; rendreGalerie(); } }
 
@@ -1726,6 +1802,7 @@ document.addEventListener("change", function (ev) {
 });
 document.addEventListener("input", function (ev) { if (ev.target && ev.target.id === "phCredit") UP.credit = ev.target.value; });
 document.getElementById("lbX").onclick = fermerLb;
+try { document.getElementById("lbX").setAttribute("aria-label", T("fermerPE")); document.getElementById("lbPr").setAttribute("aria-label", T("photoPrec")); document.getElementById("lbSv").setAttribute("aria-label", T("photoSuiv")); } catch (eLb) { }
 document.getElementById("lbPr").onclick = function () { pasLb(LANG === "ar" ? 1 : -1); };
 document.getElementById("lbSv").onclick = function () { pasLb(LANG === "ar" ? -1 : 1); };
 document.addEventListener("keydown", function (e) {
@@ -1828,7 +1905,7 @@ async function charger() {
   }
   DISC = TXD[ch.discipline] ? ch.discipline : "dressage";
   var decor = DECOR[ch.discipline] || DECOR.dressage; appliquerDecor(decor);
-  var nomCh = (ch.nom && (ch.nom[LANG] || ch.nom.fr)) || ""; try { if (nomCh) document.title = nomCh + " — Hype"; } catch (eTi) { }
+  var nomCh = (ch.nom && (ch.nom[LANG] || ch.nom.fr)) || ""; if (DISC === "cso") nomCh = "Challenge " + T("nomCh"); try { if (nomCh) document.title = nomCh + " — Hype"; } catch (eTi) { }
   var reprises = [];
   (Array.isArray(ch.categories) ? ch.categories : []).forEach(function (c) { (c.reprises || []).forEach(function (r) { reprises.push({ cat: c.cat, nom: r.nom, pdf: r.pdf || null }); }); });
   CHALLENGE = {
@@ -1838,7 +1915,7 @@ async function charger() {
     etapes: et.map(function (e, i) {
       var a = ag[e.agenda_id] || {};
       var pe = (decor.pageEtape && decor.pageEtape[e.n]) || [decor.etapes[i % decor.etapes.length], decor.etapes[i % decor.etapes.length]];
-      return { n: e.n, coef: e.coef || 1, agenda: e.agenda_id || null, date: a.date_jour || e.date || null, titre: a.titre || nomCh, lieu: a.lieu || "", img: decor.etapes[i % decor.etapes.length], imgPage: pe[0], imgPageL: pe[1] };
+      return { n: e.n, coef: e.coef || 1, agenda: e.agenda_id || null, date: a.date_jour || e.date || null, titre: a.titre || nomCh, lieu: a.lieu || "", pos: (decor.foyer || {})[decor.etapes[i % decor.etapes.length]] || "", posPage: (decor.foyer || {})[pe[0]] || "", img: decor.etapes[i % decor.etapes.length], imgPage: pe[0], imgPageL: pe[1] };
     }),
     nom: nomCh,
     categories: (Array.isArray(ch.categories) ? ch.categories : []).map(function (c) { return c.cat; }),
