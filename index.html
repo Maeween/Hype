@@ -87537,6 +87537,13 @@ function EcranAssistantIA() {
                     .catch(() => { });
             } catch (e) { }
         };
+        /* 21/10 (Blandine, capture 21 h 58 : reponse coupee net, « [Netlify] envoi — Load failed — apres 91 s ») :
+           le journal Netlify montre que le serveur avait ENTIEREMENT repondu en 13 s (1 438 caracteres). C est le
+           telephone qui a perdu la connexion pendant la lecture (appli quittee ou ecran verrouille : iOS coupe le
+           telechargement ; ou reseau faible). On garde ici de quoi relancer UNE fois la meme question, sans la
+           recompter : le serveur accepte une « suite » rattachee a la reservation de l envoi coupe (meme regle
+           que la 2e etape d une photo, 15 min max, une seule fois). Voie Netlify, texte, hors 2e etape photo. */
+        let relanceHB = null, texteFluxHB = "";
         try {
             const API_ASSISTANT = voieSupa ? voieSupa.url : (typeof window !== "undefined" && (window.HYPE_API || window.AUGALOP_API)) ? (window.HYPE_API || window.AUGALOP_API) : "/.netlify/functions/assistant" /* 23/09 (387) : adresse RELATIVE - l app parle au relais de l adresse ou elle se trouve (2hype.fr bloquait l appel vers 2hype.netlify.app) */;
             // --- Construction de l'appel principal (comportement historique, inchangé pour texte et vidéo) ---
@@ -87716,6 +87723,7 @@ function EcranAssistantIA() {
                 } else { throw ePremier; }
             }
             if (!voieSupa) hypeNoterQuotaIA(response);
+            try { const resaHB = response.headers.get("X-Reservation"); if (!voieSupa && !suiteIA && resaHB) relanceHB = { url: API_ASSISTANT, reservation: resaHB, corps: { operation: "question", stream: true, langue: langue, contexte: ctxIA, messages: messagesEnvoyes } }; } catch (eRz) { }   /* 21/10 */
             if (!response.ok) {
                 let detailErr = null;
                 try { detailErr = await response.clone().json(); } catch (e) { }
@@ -87753,6 +87761,7 @@ function EcranAssistantIA() {
                     if (!morceau) continue;
                     if (premier) { hbLog("premier fragment en " + (Date.now() - t0) + " ms"); premier = false; }
                     total += morceau;
+                    texteFluxHB = total;   /* 21/10 : ce qui est deja arrive, pour la relance si la connexion coupe */
                     majDerniere((d) => { d.contenu = total.replace(/\u0000HEYBABY_ERROR:[^\u0000]*\u0000/, ""); d.pending = false; });
                 }
                 // Le serveur signale une coupure en cours de flux par un marqueur invisible en fin
@@ -87771,6 +87780,49 @@ function EcranAssistantIA() {
         }
         catch (err) {
             const interrompu = ctrl.signal.aborted;
+            /* 21/10 : coupure de connexion PENDANT une reponse deja commencee -> relance automatique, une fois, sans la
+               recompter. Si l appli est en arriere-plan, on attend qu elle revienne au premier plan. En cas d echec,
+               on garde le debut de reponse et le diagnostic habituel s affiche plus bas. */
+            if (!interrompu && relanceHB && texteFluxHB) {
+                let relanceOk = false;
+                try {
+                    hbLog("connexion coupée après " + (Date.now() - t0) + " ms — " + texteFluxHB.length + " caractères reçus — relance (suite " + relanceHB.reservation + ")");
+                    await new Promise((ok) => setTimeout(ok, 1500));   /* laisse le serveur clore l envoi coupe */
+                    if (typeof document !== "undefined" && document.hidden) {
+                        await new Promise((ok) => { const f = () => { if (!document.hidden) { document.removeEventListener("visibilitychange", f); ok(); } }; document.addEventListener("visibilitychange", f); });
+                    }
+                    const ctrl2 = new AbortController(); abortRef.current = ctrl2;
+                    clearTimeout(minuteur); minuteur = setTimeout(() => { try { ctrl2.abort("timeout"); } catch (e) { } }, HEYBABY_TIMEOUT_MS);
+                    const corps2 = Object.assign({}, relanceHB.corps, { suite: relanceHB.reservation });
+                    const rep2 = await fetch(relanceHB.url, { method: "POST", headers: await hypeEntetesIA(), body: JSON.stringify(corps2), signal: ctrl2.signal });
+                    try { hypeNoterQuotaIA(rep2); } catch (eQ2) { }
+                    const ctype2 = rep2.headers.get("content-type") || "";
+                    if (rep2.ok && ctype2.indexOf("application/json") === -1 && rep2.body && rep2.body.getReader) {
+                        const rd2 = rep2.body.getReader(); const dec2 = new TextDecoder(); let t2 = "";
+                        while (true) {
+                            const lu2 = await rd2.read(); if (lu2.done) break;
+                            t2 += dec2.decode(lu2.value, { stream: true });
+                            const vis2 = t2.replace(/\u0000HEYBABY_ERROR:[^\u0000]*\u0000/, "");
+                            if (vis2.length > texteFluxHB.length) majDerniere((d) => { d.contenu = vis2; d.pending = false; });
+                        }
+                        const m2 = t2.match(/\u0000HEYBABY_ERROR:([A-Z_]+):([^\u0000]*)\u0000/);
+                        t2 = t2.replace(/\u0000HEYBABY_ERROR:[^\u0000]*\u0000/, "");
+                        if (t2 && !m2) {
+                            relanceOk = true;
+                            majDerniere((d) => { d.contenu = t2; d.pending = false; });
+                            hbLog("relance réussie en " + (Date.now() - t0) + " ms — " + t2.length + " caractères");
+                            try { sauverMessageHB("assistant", t2, false, conversationId); } catch (e) { }
+                            try { memoriserAnalyse(t2); } catch (e) { }
+                        }
+                    } else {
+                        let d2 = null; try { d2 = await rep2.json(); } catch (eJ) { }
+                        hbLog("relance refusée — HTTP " + rep2.status + (d2 && d2.code ? " — " + d2.code : ""));
+                    }
+                } catch (eRel) { hbLog("relance impossible : " + ((eRel && eRel.message) || String(eRel))); }
+                if (relanceOk) return;
+                /* Echec de la relance : la reponse partielle reste affichee, on la garde aussi dans l historique. */
+                try { sauverMessageHB("assistant", texteFluxHB, false, conversationId); } catch (e) { }
+            }
             const detailTech = err && err.hbCode ? (" — code " + err.hbCode + (err.hbReqId ? " — reqId " + err.hbReqId : "")) : "";
             hbLog(interrompu ? "requête interrompue" : "erreur", (err && err.message) ? err.message : String(err), "après " + (Date.now() - t0) + " ms" + detailTech);
             majDerniere((d) => { d.pending = false; if (!d.contenu) d.contenu = interrompu ? t("heybaby_interrompu") : (hypeMessageIA(err && err.hbCode, langue) || t("souci_connexion")); });

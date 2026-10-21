@@ -14100,3 +14100,11 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - Blandine (19 h 03) : « pour la page premium tu peux remonter l'image et mettre les drapeaux en haut à droite de la page comme sur les autres pages ».
 - index.html (EcranPremiumV3 / pv3Html / PV3_CSS) : bouton retour à gauche, sélecteur de langue (drapeaux) à droite, posés sur la photo ; la photo commence tout en haut (léger fondu sombre en haut pour lire les boutons) ; la ligne « Connectée avec … · Vérifier mon abonnement » passe sous la photo, avant les onglets de la page.
 - Testé : 390 (fr, ar : retour à droite, drapeaux à gauche, en miroir) et 1440, sans erreur.
+
+## 21/10/2026 (22 h 40) — BRANCHE `heybaby-relance`, NON PUBLIÉE — HEY BABY : RÉPONSE COUPÉE (« [Netlify] envoi — Load failed — après 91 s »)
+- Capture de Blandine (21 h 58) : réponse arrêtée au milieu d'une phrase, diagnostic « Load failed ».
+- Journal Netlify de la requête (19:56:30 UTC) : « flux terminé en 12697 ms — 1438 caractères », statut 200. Le serveur avait donc TOUT envoyé en 13 s ; c'est le téléphone qui a perdu la connexion pendant la lecture (91 s > délai de 65 s de l'appli : les minuteurs étaient figés, signe que l'appli était en arrière-plan ou l'écran verrouillé ; réseau faible possible aussi).
+- Correction (appli seulement, aucun changement serveur ni SQL) : si la connexion coupe alors qu'une réponse a commencé, Hey Baby relance UNE fois la même question, après 1,5 s, et attend que l'appli revienne au premier plan si besoin. La relance n'est PAS recomptée : elle s'appuie sur la règle « suite » déjà en base (même mécanisme que la 2e étape d'une photo, 15 min max, une seule fois). La réponse complète remplace le début. Si la relance échoue, le début de réponse reste affiché, il est gardé dans l'historique, et le diagnostic s'affiche comme avant.
+- Non concernés : voie Supabase (photos et vidéos du compte de Blandine), 2e étape d'une photo (déjà une suite), arrêt volontaire ou délai dépassé.
+- Test (navigateur automatique, coupure simulée après le premier morceau) : 2 appels (le 2e avec la suite), réponse complète affichée, aucun diagnostic, 0 erreur ; cas normal : 1 seul appel, inchangé.
+- NON testé : iPhone réel.
