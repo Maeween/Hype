@@ -13922,3 +13922,10 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - challenge.html : encadré retiré du haut ; une ligne centrée, petite et discrète, entre la citation et la fin de page Hype : « Photos, j'aime, commentaires : Créer mon compte → » (nouveau texte court, 7 langues) ; visiteurs sans compte seulement ; l'invitation de l'onglet Photos d'une étape ne change pas.
 - index.html : seulement le marqueur.
 - Tests : une seule ligne à 360 et 390 px (fr, de, ja, ar) et sur ordinateur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
+
+## 21/10/2026 (13 h 08) — PUBLICATION (marqueur 20261021-1308, Blandine « Publié ») — CHALLENGE (gestion) : saisie d'une épreuve à la main
+- Signalé à 13:00 : « j'arrive pas à écrire à la main pour saisir un résultat, quand je clique dessus il ne se passe rien » (capture : bouton Enregistrer par-dessus la carte).
+- Causes : (1) le pied « Enregistrer … en brouillon » était collé en bas de l'écran (sticky) avec une zone transparente qui recouvrait la catégorie et les premières lignes ; (2) le compteur du bouton ne se mettait à jour qu'au redessin (restait « 0 résultat », grisé, après avoir tapé un nom).
+- challenge.html : pied du formulaire à sa place (plus collé) ; à l'ajout d'une épreuve à la main, l'écran descend sur elle ; compteur et activation du bouton suivent la saisie (majPiedImport).
+- index.html : seulement le marqueur. (NB : marqueur numéroté 1308 alors que le précédent était 1340, c'est l'heure réelle de cette publication.)
+- Tests : 390 × 640 tactile — catégorie sélectionnable, place et nom saisis, bouton « Enregistrer 1 résultat » actif ; saisie manuelle dans les tests de liens ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
