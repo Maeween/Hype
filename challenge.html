@@ -404,7 +404,8 @@ body.sans-donnees .challenge-contenu{display:none}
 .i-ligne.douteuse input,.i-ligne.douteuse select{border-color:rgba(232,184,75,.7)}
 .i-doute{grid-column:1/-1;margin:2px 0 0;font-size:12.5px;color:var(--ambre)}
 .i-suppr{color:var(--grisClair);font-size:12.5px;border:1px solid var(--filet);border-radius:99px;min-height:34px;padding:0 10px}
-.i-pied{position:sticky;bottom:0;margin-top:20px;padding:14px 0 calc(env(safe-area-inset-bottom) + 14px);background:linear-gradient(180deg,rgba(6,7,9,0),var(--nuit) 30%)}
+/* 21/10 : le bouton Enregistrer n'est plus « collé » en bas : il recouvrait la catégorie et les lignes de la saisie à la main (les touches ne passaient plus) */
+.i-pied{position:static;margin-top:20px;padding:14px 0 calc(env(safe-area-inset-bottom) + 90px);background:none}
 .i-pied .g-btn{width:100%}
 @container ch (min-width:700px){
   .i-ligne{grid-template-columns:56px 1.4fr 1.1fr 90px 120px 36px;grid-template-areas:"pl cav che note st x"}
@@ -2051,10 +2052,17 @@ function rendreImport() {
   var f = document.getElementById("impFichier");
   if (f) f.addEventListener("change", function () { if (f.files && f.files[0]) lireFeuille(f.files[0]); });
 }
+/* le compteur du bouton Enregistrer suit la saisie (avant : il restait à 0 et grisé tant que la page n'était pas redessinée) */
+function majPiedImport() {
+  var bt = document.querySelector('#import [data-adm="imp-enregistrer"]'); if (!bt) return;
+  var n = IMP.epreuves.filter(function (e) { return e.cat; }).reduce(function (s, e) { return s + e.lignes.filter(function (l) { return String(l.cavalier).trim(); }).length; }, 0);
+  bt.disabled = !n; bt.textContent = "Enregistrer " + n + " résultat" + (n > 1 ? "s" : "") + " en brouillon";
+}
 document.addEventListener("input", function (ev) {
   var t = ev.target, d = t.dataset; if (!d || !d.imp) return;
   var ep = IMP.epreuves[+d.e]; if (!ep) return;
   if (d.l !== undefined) ep.lignes[+d.l][d.imp] = t.value;
+  majPiedImport();
 });
 document.addEventListener("change", function (ev) {
   var t = ev.target, d = t.dataset; if (!d || !d.imp) return;
@@ -2168,7 +2176,10 @@ async function gestionClic(t, d) {
   if (a === "gerer-manuel") { gestionClic(t, { adm: "importer" }); gestionClic(t, { adm: "imp-manuel" }); return; }
   if (a === "fermer-import") { if (IMP.epreuves.length && !confirm("Fermer sans enregistrer ? La lecture sera perdue.")) return; IMP.ouvert = false; IMP.epreuves = []; IMP.erreur = ""; rendreImport(); return; }
   if (a === "imp-etape") { IMP.etape = +d.n; rendreImport(); return; }
-  if (a === "imp-manuel") { IMP.epreuves.push({ titre: "Épreuve saisie à la main", cat: "", rep: null, lignes: [ligneVide(), ligneVide(), ligneVide()] }); rendreImport(); return; }
+  if (a === "imp-manuel") { IMP.epreuves.push({ titre: "Épreuve saisie à la main", cat: "", rep: null, lignes: [ligneVide(), ligneVide(), ligneVide()] }); rendreImport();
+    /* on amène la nouvelle épreuve à l'écran, catégorie en premier */
+    try { var cartes = document.querySelectorAll("#import .i-epreuve"), der = cartes[cartes.length - 1]; var oI = document.getElementById("import"); if (der && oI) oI.scrollTop += der.getBoundingClientRect().top - 24; } catch (eSc) { }
+    return; }
   if (a === "imp-erreur-ok") { IMP.erreur = ""; rendreImport(); return; }
   if (a === "imp-suppr-ep") { if (confirm("Retirer cette épreuve de l'import ?")) { IMP.epreuves.splice(+d.e, 1); rendreImport(); } return; }
   if (a === "imp-suppr-l") { IMP.epreuves[+d.e].lignes.splice(+d.l, 1); rendreImport(); return; }
