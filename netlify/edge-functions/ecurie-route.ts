@@ -46,7 +46,7 @@ const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/ecurie/…, /es/…, /it/…, /de/…, /ja/…, /ar/… — seulement pour les écuries qui ont
 // au moins un cheval ou un rendez-vous sur Hype ; sinon l'adresse étrangère renvoie vers la page française.
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const FORME_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
@@ -58,11 +58,11 @@ const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TX: Record<Lg, Record<string, any>> = {
   fr: { ecA: (v: string) => "Écurie à " + v, ec: "Écurie", ecAd: (v: string) => "écurie à " + v, ecd: "écurie",
@@ -137,6 +137,14 @@ const TX: Record<Lg, Record<string, any>> = {
     sesChevaux: "Zijn paarden op Hype", rdv: "Komende afspraken", compte: "Maak je Hype-account aan om de paarden, resultaten en agenda van deze stal te ontdekken.", contacter: "Contact opnemen met de stal",
     boxT: "Een virtuele box op Hype?", boxP: "Hier hoef je niet uit te mesten: alleen het profiel van je paard, zijn foto's, wedstrijden, herinneringen en verzorging… en andere ruiters met wie je het deelt. Theorie, tips en een virtuele coach helpen je bovendien vooruit.",
     pied: "Hype is een onafhankelijke app zonder officiële band met deze stal of met de FFE. Gegevens van de stal: © OpenStreetMap-bijdragers.", cheval: "Paard", rendezVous: "Afspraak", dp: ": " },
+  pt: { ecA: (v: string) => "Cocheira em " + v, ec: "Cocheira", ecAd: (v: string) => "cocheira em " + v, ecd: "cocheira",
+    descTel: "Telefone, rota, cavalos, resultados e agenda da cocheira no Hype.", desc: "Cavalos, resultados e agenda da cocheira no Hype.",
+    descInvite: "Seu cavalo está aqui? Crie o perfil dele no Hype: fotos, genealogia, resultados de provas.",
+    adresse: "Endereço", tel: "Telefone", email: "E-mail", site: "Site", horaires: "Horários",
+    nbCh: (n: number) => n + (n > 1 ? " cavalos" : " cavalo"), nbRdv: (n: number) => n + (n > 1 ? " compromissos futuros" : " compromisso futuro"), surHype: (t: string) => t + " no Hype.", sep: " · ",
+    sesChevaux: "Os cavalos dela no Hype", rdv: "Próximos compromissos", compte: "Crie sua conta no Hype para descobrir os cavalos, os resultados e a agenda desta cocheira.", contacter: "Entrar em contato com a cocheira",
+    boxT: "Uma baia virtual no Hype?", boxP: "Aqui não precisa limpar baia: só o perfil do seu cavalo, as fotos, as provas, as lembranças e os cuidados… e outros cavaleiros para compartilhar tudo isso. Teoria, dicas e um treinador virtual ainda ajudam você a evoluir.",
+    pied: "O Hype é um app independente, sem vínculo oficial com esta cocheira nem com a FFE. Dados da cocheira: © colaboradores do OpenStreetMap.", cheval: "Cavalo", rendezVous: "Compromisso", dp: ": " },
 };
 function liensLangues(chemin: string): string {
   return LANGUES.map((l) => `<link rel="alternate" hreflang="${HL[l]}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
@@ -196,6 +204,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["ar", "هذا الإسطبل غير متاح."],
   ["zh", "这家马厩暂时无法显示。"],
   ["nl", "Deze stal is niet beschikbaar."],
+  ["pt", "Esta cocheira não está disponível."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -207,6 +216,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["ar", "هايب غير متاح مؤقتًا. حاول مرة أخرى بعد قليل."],
   ["zh", "Hype 暂时无法使用，请稍后再试。"],
   ["nl", "Hype is tijdelijk niet beschikbaar. Probeer het zo meteen opnieuw."],
+  ["pt", "O Hype está temporariamente indisponível. Tente novamente em instantes."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -545,4 +555,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*"] };
+export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*", "/pt/ecurie/*"] };

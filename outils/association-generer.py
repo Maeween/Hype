@@ -2,10 +2,10 @@
 import os, json, html, sys
 RACINE = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/hype"
 DOM="https://2hype.fr"; CHEMIN="association/"
-L=["fr","en","es","it","de","ja","ar","zh","nl"]
-HL={"zh":"zh-Hans"}  # code de langue HTML/hreflang quand il diffère du dossier
-NOMS={"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands"}
-LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_JP","ar":"ar_AR","zh":"zh_CN","nl":"nl_NL"}
+L=["fr","en","es","it","de","ja","ar","zh","nl","pt"]
+HL={"zh":"zh-Hans","pt":"pt-BR"}  # code de langue HTML/hreflang quand il diffère du dossier
+NOMS={"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português"}
+LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_JP","ar":"ar_AR","zh":"zh_CN","nl":"nl_NL","pt":"pt_BR"}
 e=html.escape
 # Photos : fichiers à déposer par Blandine dans images/asso/ ; tant qu'ils manquent → emplacement sobre
 PHOTOS={k:f"images/asso/{k}.jpg" for k in ["hero","jeune","retraite","espaces"]}
@@ -233,6 +233,29 @@ T["nl"]=dict(title="De vereniging FEINN Équitation et Environnement | Hype",
  abos="Abonnementen", abos_v="Informatie over abonnementen en het beheer van betalingen staat in de voorwaarden die voor Hype gelden.",
  decouvrir="Ontdek Hype")
 
+T["pt"]=dict(title="Associação FEINN Équitation et Environnement | Hype",
+ desc="Desde 2020, a associação FEINN Équitation et Environnement reúne quem ama os cavalos, quer transmitir conhecimento e respeita a natureza. Suas missões, seus projetos e as menções legais.",
+ sur="A associação", sous="Équitation et Environnement", retour="Início", langue="Idioma", photo="Foto FEINN em breve",
+ notre="Nossa associação",
+ intro=["Desde 2020, a associação FEINN Équitation et Environnement reúne quem ama os cavalos, quer transmitir conhecimento e respeita a natureza.",
+        "Atuamos por uma equitação atenta ao bem-estar dos cavalos e do meio em que vivem, por meio do ensino, do acompanhamento de jovens cavaleiros na competição, do acolhimento de cavalos de clube aposentados, de uma pequena criação e da preservação do nosso espaço natural.",
+        "A associação também edita o Hype, o app para cavaleiros: as assinaturas Hype+ financiam suas atividades e seus projetos."],
+ missions=["Ensino de equitação","Apoio a jovens talentos","Aposentadoria de cavalos de clube","Pequena criação","Meio ambiente e preservação do espaço"],
+ citation1="O cavalo, um elo entre o ser humano e a natureza",
+ projets_t="Nossos projetos para apoiar",
+ projets_intro="Estes projetos são muito importantes para nós e dão vida aos valores da associação. Apresentamos aqui para dar a conhecer o nosso compromisso.",
+ projets=[("Um cavalo para um jovem talento","Acompanhar um jovem cavaleiro promissor que hoje não tem condições de comprar um cavalo de nível profissional. Graças a este projeto, ele poderá se preparar para o diploma de instrutor de equitação (DE) e continuar a evoluir nas provas Pro."),
+          ("A aposentadoria dos nossos cavalos de clube","Cuidar dos cavalos que acompanharam gerações de cavaleiros e hoje desfrutam de uma aposentadoria tranquila na cocheira. Garantir uma aposentadoria serena é continuar atento à alimentação, aos cuidados e ao bem-estar deles."),
+          ("Manter e recuperar o nosso espaço","Recuperar as cercas, os pastos e as instalações do espaço para oferecer aos cavalos um ambiente de vida adequado, preservando e protegendo ao mesmo tempo a natureza ao nosso redor.")],
+ citation2="Preservar hoje para o amanhã…",
+ ml_t="Menções legais",
+ editeur="Editor", editeur_v=["Associação FEINN Équitation et Environnement","Associação sem fins lucrativos regida pela lei francesa de 1901, declarada","3 chemin des Prés Picard","91760 Itteville, França","SIREN: 898 028 980"],
+ resp="Responsável pela publicação", resp_v=["Blandine Pronost","Presidente da associação"],
+ contact="Contato", hebergeur="Hospedagem", heb_v=["Netlify, Inc.","101 2nd Street, Suite 575","San Francisco, CA, Estados Unidos","Telefone: +1 415 691 1573"],
+ donnees="Dados pessoais", donnees_v="Os usuários podem solicitar à associação o acesso aos seus dados pessoais ou a exclusão deles.",
+ abos="Assinaturas", abos_v="As informações sobre assinaturas e gestão de pagamentos constam nas condições aplicáveis ao Hype.",
+ decouvrir="Conheça o Hype")
+
 # ═══ REFONTE 14/10/2026 (maquette validée par Blandine) — ÉTAPE 1 : base, menu, hero, pied de page ═══
 # Nouveaux textes (7 langues). « Équitation et Environnement » reste en français partout (nom propre).
 NV={}
@@ -263,6 +286,9 @@ NV["zh"]=dict(accueil="首页",asso="协会简介",engag="我们的承诺",nproj
 NV["nl"]=dict(accueil="Home",asso="De vereniging",engag="Onze doelen",nprojets="Onze projecten",lieu="Onze locatie",soutenir="Steun ons",menu="Menu",fermer="Sluiten",
  accroche="Paarden, ruiters en een duurzamere toekomst.",hero_desc="Een Franse vereniging volgens de wet van 1901 die zich inzet voor lesgeven, solidariteit, dierenwelzijn en het behoud van het milieu.",
  btn_asso="Ontdek onze vereniging",loi1901="Franse vereniging (wet van 1901)",contacter="Neem contact op",cit_pied="Samen, voor de paarden van vandaag en morgen.",logo_alt="Logo van FEINN Équitation et Environnement")
+NV["pt"]=dict(accueil="Início",asso="A associação",engag="Nossos compromissos",nprojets="Nossos projetos",lieu="Nosso espaço",soutenir="Apoie-nos",menu="Menu",fermer="Fechar",
+ accroche="Cavalos, cavaleiros e um futuro mais sustentável.",hero_desc="Uma associação regida pela lei francesa de 1901, dedicada ao ensino, à solidariedade, ao bem-estar animal e à preservação do meio ambiente.",
+ btn_asso="Conheça nossa associação",loi1901="Associação francesa (lei de 1901)",contacter="Fale conosco",cit_pied="Juntos, pelos cavalos de hoje e de amanhã.",logo_alt="Logotipo da FEINN Équitation et Environnement")
 for _l in L: T[_l].update(NV[_l])
 # 14/10 (refonte) : la phrase « les abonnements Hype+ financent l'association » est retirée (inexacte : Stripe est au nom de Blandine — voir SUIVI)
 for _l in L: T[_l]["intro"]=T[_l]["intro"][:2]
@@ -288,6 +314,7 @@ ENG={
 "ar":(["التعليم والتكوين","المواهب الشابة","تقاعد الخيول","تربية صغيرة","البيئة"],["التعليم","المواهب الشابة","التقاعد","التربية","البيئة"],["نقل الشغف والمعارف الفروسية.","مرافقة مواهب الغد.","منح رفاقنا حياة ثانية.","نهج مدروس ومحترم.","الحفاظ على بيئة طبيعية مستدامة."]),
 "zh":(["教学与培训","年轻新秀","马匹退役","小规模繁育","环境"],["教学","新秀","退役","繁育","环境"],["传承对马术的热爱与知识。","陪伴未来的人才。","给我们的伙伴第二次生命。","理性而尊重的方式。","守护可持续的自然环境。"]),
 "nl":(["Lesgeven en opleiding","Jong talent","Pensioen voor paarden","Kleinschalige fokkerij","Milieu"],["Lesgeven","Jong talent","Pensioen","Fokkerij","Milieu"],["De passie en kennis van het paardrijden doorgeven.","De talenten van morgen begeleiden.","Onze maatjes een tweede leven geven.","Een doordachte en respectvolle aanpak.","Een duurzame natuurlijke omgeving behouden."]),
+"pt":(["Ensino e formação","Jovem talento","Aposentadoria dos cavalos","Pequena criação","Meio ambiente"],["Ensino","Jovem talento","Aposentadoria","Criação","Meio ambiente"],["Transmitir a paixão e o conhecimento da equitação.","Acompanhar os talentos de amanhã.","Dar uma segunda vida aos nossos companheiros.","Uma abordagem ponderada e respeitosa.","Preservar um ambiente natural sustentável."]),
 }
 ICO["groupe"]='<circle cx="12" cy="7.5" r="2.6"/><circle cx="5.8" cy="9.6" r="2.1"/><circle cx="18.2" cy="9.6" r="2.1"/><path d="M7.4 19c.4-3.2 2.3-5 4.6-5s4.2 1.8 4.6 5"/><path d="M2.5 18c.3-2.3 1.6-3.8 3.3-3.8 1 0 1.8.4 2.4 1.1"/><path d="M21.5 18c-.3-2.3-1.6-3.8-3.3-3.8-1 0-1.8.4-2.4 1.1"/>'
 ICO["tete"]='<path d="M8 20.5c0-3 .7-5.7 2.1-7.6l-3.6 1c-1 .3-1.9-.3-2-1.2L4.2 10.8c-.1-.6.2-1.2.7-1.5L10 5.6 11.2 3l1.5 2.3c3.6.7 6.3 4 6.3 8.2v7"/><circle cx="10.3" cy="8.7" r=".55"/>'
@@ -316,9 +343,11 @@ PJ={
  pj_courts=["帮助一位有潜力的年轻骑手获得一匹适合他竞技目标的马。","为多年来陪伴骑手的马匹提供饲料、护理，保障它们的福祉。","参与修缮围栏、草场和马术设施，同时尊重自然环境。"]),
 "nl":dict(pj_titre="Drie projecten die het verschil maken",pj_voir="Ontdek dit project",pj_tous="Ontdek al onze projecten",pj_detail="Onze projecten in detail",pj_prec="Vorig project",pj_suiv="Volgend project",
  pj_courts=["Een veelbelovende jonge ruiter helpen een paard te kopen dat past bij zijn sportieve ambities.","Bijdragen aan de voeding, de verzorging en het welzijn van de paarden die ruiters jarenlang hebben begeleid.","Meehelpen aan de renovatie van hekken, weides en rijfaciliteiten, met respect voor de natuurlijke omgeving."]),
+"pt":dict(pj_titre="Três projetos que fazem a diferença",pj_voir="Conheça este projeto",pj_tous="Conheça todos os nossos projetos",pj_detail="Nossos projetos em detalhe",pj_prec="Projeto anterior",pj_suiv="Próximo projeto",
+ pj_courts=["Ajudar um jovem cavaleiro promissor a adquirir um cavalo à altura de suas ambições esportivas.","Contribuir com a alimentação, os cuidados e o bem-estar dos cavalos que acompanharam cavaleiros por anos.","Participar da reforma das cercas, dos pastos e das instalações equestres, respeitando o ambiente natural."]),
 }
 for _l in L: T[_l].update(PJ[_l])
-for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل', 'zh': '收起', 'nl': 'Minder tonen'}.items(): T[_l]['pj_reduire']=_v
+for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل', 'zh': '收起', 'nl': 'Minder tonen', 'pt': 'Mostrar menos'}.items(): T[_l]['pj_reduire']=_v
 ICO["fg"]='<path d="M15 6l-6 6 6 6"/>'
 ICO["fd"]='<path d="M9 6l6 6-6 6"/>'
 PROJ_IDS=["jeune-espoir","retraite-chevaux-club","espaces"]; PROJ_PH=["jeune","retraite","espaces"]
@@ -352,6 +381,7 @@ LIEU={
 "ar":("مكان للحياة والمشاركة","يستقبل الموقع الفروسي في إيتفيل، الذي تستخدمه الجمعية منذ عام 2020، خيولنا وفرساننا في إطار طبيعي مميز.",["12 إسطبلًا","ساحة تدريب","حلبة دائرية للترويض","مراعٍ وحظائر"]),
 "zh":("生活与分享之地","协会自2020年起使用的伊特维尔（Itteville）马术场地，在得天独厚的自然环境中迎接我们的马和骑手。",["12 间马房","一个室外马场","一个圆形练马场","草场和围场"]),
 "nl":("Een plek om te leven en te delen","Het ruitersportterrein in Itteville, dat de vereniging sinds 2020 gebruikt, verwelkomt onze paarden en ruiters in een bevoorrechte natuurlijke omgeving.",["12 boxen","Een buitenbak","Een longeercirkel","Weides en paddocks"]),
+"pt":("Um lugar para viver e compartilhar","O espaço equestre de Itteville, utilizado pela associação desde 2020, recebe nossos cavalos e cavaleiros em um cenário natural privilegiado.",["12 baias","Uma pista externa","Um picadeiro redondo","Pastos e piquetes"]),
 }
 ICO["carriere"]='<rect x="3" y="7" width="18" height="10" rx="1"/><path d="M3 10.5h18M3 13.5h18M7.5 7v10M16.5 7v10"/>'
 ICO["rond"]='<ellipse cx="12" cy="10.5" rx="8.5" ry="4.5"/><path d="M3.5 10.5v3c0 2.5 3.8 4.5 8.5 4.5s8.5-2 8.5-4.5v-3"/>'
@@ -375,6 +405,7 @@ SOUT={
 "ar":("معًا من أجل خيولنا وبيئتنا","دعمكم يُحيي مشاريعنا ويساعدنا على مواصلة أعمالنا على المدى الطويل. سيتوفر التبرع عبر الإنترنت قريبًا. وفي الأثناء، يمكنكم التواصل معنا لمعرفة المزيد.","تواصل معنا لدعم مشروع","لأن الحصان يغيّر حياة، فهو يستحق كل اهتمامنا.","دعم مشروع لجمعية FEINN"),
 "zh":("携手为我们的马和环境行动","你的支持让我们的项目得以延续，也帮助我们长期开展各项行动。在线捐赠即将开通。在此之前，你可以联系我们了解更多。","联系我们，支持一个项目","因为一匹马可以改变一个人的生活，所以它值得我们倾注全部关注。","支持 FEINN 的一个项目"),
 "nl":("Samen aan de slag voor onze paarden en onze omgeving","Jouw steun houdt onze projecten levend en helpt ons om onze acties op lange termijn voort te zetten. Online doneren is binnenkort mogelijk. Tot die tijd kun je contact met ons opnemen om meer te weten te komen.","Neem contact op om een project te steunen","Omdat een paard een leven kan veranderen, verdient het al onze aandacht.","Een FEINN-project steunen"),
+"pt":("Juntos pelos nossos cavalos e pelo nosso meio ambiente","O seu apoio dá vida aos nossos projetos e nos ajuda a manter nossas ações a longo prazo. As doações online estarão disponíveis em breve. Enquanto isso, entre em contato conosco para saber mais.","Entre em contato para apoiar um projeto","Porque um cavalo pode mudar uma vida, ele merece toda a nossa atenção.","Apoiar um projeto da FEINN"),
 }
 SOUT_ATTENTE="images/evenements-passes-large.webp"
 def section_soutenir(lg):

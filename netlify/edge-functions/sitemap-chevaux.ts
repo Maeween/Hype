@@ -20,8 +20,8 @@ const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 
 /* 13/10/2026 : chaque page existe en 8 langues — on donne à Google les 8 adresses, chacune avec ses sœurs (hreflang). */
-const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl"];
-const HL: Record<string, string> = { zh: "zh-Hans" };   // le chinois simplifié s'écrit zh-Hans dans hreflang
+const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt"];
+const HL: Record<string, string> = { zh: "zh-Hans", pt: "pt-BR" };   // le chinois simplifié s'écrit zh-Hans dans hreflang
 function sept(chemin: string): string {
   const alt = LANGUES.map((l) => `    <xhtml:link rel="alternate" hreflang="${HL[l] || l}" href="${DOMAINE}${l === "fr" ? "" : "/" + l}${chemin}"/>`).join("\n") +
     `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}"/>`;

@@ -12,7 +12,7 @@ const TYPES_IMAGE = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const LIMITE_IMAGE_B64 = 2600000;
 const DUREE_OBSERVATION_MS = 230000;   // les deux étapes doivent tenir sous les 400 s de Supabase
 const DUREE_REDACTION_MS = 150000;
-const QUESTION_PAR_DEFAUT = { fr: "Analyse cette photo.", en: "Analyse this photo.", es: "Analiza esta foto.", it: "Analizza questa foto.", ja: "この写真を分析してください。", de: "Analysiere dieses Foto.", ar: "حللي هذه الصورة.", zh: "请分析这张照片。", nl: "Analyseer deze foto." };
+const QUESTION_PAR_DEFAUT = { fr: "Analyse cette photo.", en: "Analyse this photo.", es: "Analiza esta foto.", it: "Analizza questa foto.", ja: "この写真を分析してください。", de: "Analysiere dieses Foto.", ar: "حللي هذه الصورة.", zh: "请分析这张照片。", nl: "Analyseer deze foto.", pt: "Analise esta foto." };
 
 // d = { req, corps, reqId, t0, cle, env(nom), createClient, waitUntil(promesse), log(...), json(obj, statut), erreur(code, msg, statut, extra), jetonsPerception, jetonsStandard }
 export async function photoComplete(d) {
@@ -33,7 +33,7 @@ export async function photoComplete(d) {
     && TYPES_IMAGE.indexOf(String(img.source.media_type || "")) !== -1
     && typeof img.source.data === "string" && img.source.data.length > 0 && img.source.data.length <= LIMITE_IMAGE_B64;
   if (!ok) return erreur("MEDIA_REFUSE", "Cette photo ne peut pas être analysée (format ou poids).", 400);
-  const langue = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl"].indexOf(corps.langue) !== -1 ? corps.langue : "fr";
+  const langue = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt"].indexOf(corps.langue) !== -1 ? corps.langue : "fr";
   const question = String(corps.question || "").slice(0, 2000);
   const contexte = contexteSur(corps.contexte);
   const conversationId = corps.conversationId ? String(corps.conversationId).slice(0, 80) : null;

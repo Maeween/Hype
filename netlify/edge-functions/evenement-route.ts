@@ -26,7 +26,7 @@ const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/evenement/…, /es/…, /it/…, /de/…, /ja/…, /ar/… (pages traduites)
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");
 const REPERE_RACINE = new TextEncoder().encode('<div id="root">');
@@ -35,12 +35,12 @@ const DELAI_BASE_MS = 2500;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues (titre, lieu et description du rendez-vous restent tels qu'écrits) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl" };
-const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR" };
+const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
   en: { stage: "Clinic", concours: "Competition", sortie: "Outing", cours: "Lesson", soiree: "Evening event", reunion: "Meeting" },
@@ -51,6 +51,7 @@ const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
   ar: { stage: "دورة تدريبية", concours: "مسابقة", sortie: "نزهة", cours: "درس", soiree: "سهرة", reunion: "اجتماع" },
   zh: { stage: "培训班", concours: "比赛", sortie: "外出活动", cours: "课程", soiree: "晚间活动", reunion: "会议" },
   nl: { stage: "Clinic", concours: "Wedstrijd", sortie: "Uitstapje", cours: "Les", soiree: "Avondactiviteit", reunion: "Bijeenkomst" },
+  pt: { stage: "Clínica", concours: "Competição", sortie: "Passeio", cours: "Aula", soiree: "Noite", reunion: "Reunião" },
 };
 const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   en: { rdv: "Event", du: (a: string, b: string) => "from " + a + " to " + b, le: (a: string) => "on " + a, a: (l: string) => "at " + l, heure: (h: string) => "At " + h, lieu: "Venue", org: (c: string) => "Organised by the stable " + c, defaut: "All the event details on Hype.", pied: "Hype is an independent app with no official link to this stable or to the FFE.", dp: ": " },
@@ -61,6 +62,7 @@ const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   ar: { rdv: "موعد", du: (a: string, b: string) => "من " + a + " إلى " + b, le: (a: string) => "في " + a, a: (l: string) => "في " + l, heure: (h: string) => "الساعة " + h, lieu: "المكان", org: (c: string) => "ينظمه إسطبل " + c, defaut: "كل تفاصيل الموعد على Hype.", pied: "Hype تطبيق مستقل لا تربطه أي صلة رسمية بهذا الإسطبل ولا بالاتحاد الفرنسي للفروسية (FFE).", dp: ": " },
   zh: { rdv: "活动", du: (a: string, b: string) => a + "至" + b, le: (a: string) => a, a: (l: string) => "地点：" + l, heure: (h: string) => h + "开始", lieu: "地点", org: (c: string) => "主办：" + c + "马厩", defaut: "活动详情，尽在Hype。", pied: "Hype 是一款独立的应用，与这家马厩及FFE没有任何官方关系。", dp: "：" },
   nl: { rdv: "Evenement", du: (a: string, b: string) => "van " + a + " tot " + b, le: (a: string) => "op " + a, a: (l: string) => "in " + l, heure: (h: string) => "Om " + h + " uur", lieu: "Locatie", org: (c: string) => "Georganiseerd door stal " + c, defaut: "Alle details van het evenement op Hype.", pied: "Hype is een onafhankelijke app zonder officiële band met deze stal of met de FFE.", dp: ": " },
+  pt: { rdv: "Evento", du: (a: string, b: string) => "de " + a + " a " + b, le: (a: string) => "em " + a, a: (l: string) => "em " + l, heure: (h: string) => "Às " + h, lieu: "Local", org: (c: string) => "Organizado pela cocheira " + c, defaut: "Todos os detalhes do evento no Hype.", pied: "O Hype é um app independente, sem vínculo oficial com esta cocheira nem com a FFE.", dp: ": " },
 };
 function dateLongueLg(d: unknown, lg: Lg): string {
   const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -131,6 +133,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["ar", "هذا الموعد غير متاح."],
   ["zh", "这个活动暂时无法显示。"],
   ["nl", "Dit evenement is niet beschikbaar."],
+  ["pt", "Este evento não está disponível."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -142,6 +145,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["ar", "هايب غير متاح مؤقتًا. حاول مرة أخرى بعد قليل."],
   ["zh", "Hype 暂时无法使用，请稍后再试。"],
   ["nl", "Hype is tijdelijk niet beschikbaar. Probeer het zo meteen opnieuw."],
+  ["pt", "O Hype está temporariamente indisponível. Tente novamente em instantes."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -444,4 +448,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*", "/zh/evenement/*", "/nl/evenement/*"] };
+export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*", "/zh/evenement/*", "/nl/evenement/*", "/pt/evenement/*"] };

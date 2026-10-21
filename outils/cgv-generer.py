@@ -2,8 +2,8 @@
 # Génère les 7 pages CGV : /{langue}/cgv/index.html  (15/10/2026)
 # La version française fait foi. Lancer : python3 outils/cgv-generer.py
 import os, html
-LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl"]
-NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands"}
+LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt"]
+NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português"}
 MAIL = '<a href="mailto:feinn@live.fr">feinn@live.fr</a>'
 VEND = "Association FEINN Équitation et Environnement"
 ADR = "3 chemin des Prés Picard, 91760 Itteville, France — SIREN 898 028 980"
@@ -231,6 +231,31 @@ T["nl"] = dict(
  ("12. Toepasselijk recht", "<p>Op deze voorwaarden is het Franse recht van toepassing. Ze kunnen worden bijgewerkt; de toepasselijke versie is die welke op de dag van de betaling geldt.</p>"),
  ])
 
+T["pt"] = dict(
+ title="Condições Gerais de Venda", desc="Condições Gerais de Venda das assinaturas Hype Premium e do mecenato Hype.",
+ sous="Assinaturas Hype Premium e mecenato Hype · versão de 15 de outubro de 2026", asso="A associação", foi="Esta é uma tradução; a versão em francês prevalece.",
+ bref="<b>Em resumo.</b> As assinaturas mensais não têm fidelidade e podem ser canceladas on-line a qualquer momento. O Círculo Crystal é pago uma única vez por 12 meses, sem renovação automática. O acesso é imediato após o pagamento: ao solicitá-lo, você renuncia ao prazo de retratação de 14 dias. O mecenato é um apoio ao aplicativo, não uma doação à associação.",
+ s=[
+ ("1. Quem vende", f"<p>Estas condições se aplicam às compras feitas no aplicativo Hype (2hype.fr) junto à <b>{VEND}</b>, associação declarada, {ADR}, representada por sua presidente, Blandine Pronost. Contato: {MAIL}. A seguir, “a associação”.</p>"),
+ ("2. Objeto", "<p>O Hype é um aplicativo para cavaleiros e amazonas: aulas e quizzes dos Galops, passaporte equestre, comunidade, acompanhamento dos cavalos e coach de inteligência artificial “Hey Baby”. Algumas funções são gratuitas; outras são reservadas aos assinantes Premium. Estas condições descrevem as ofertas pagas, seu preço, pagamento, duração e cancelamento.</p>"),
+ ("3. As ofertas e seus preços", "<p>Os preços são indicados em euros. IVA não aplicável, artigo 293 B do Código Geral de Impostos francês.</p>" + tab([
+   ["Premium Cavaleiro","€ 12,99 / mês","mensal, renovada a cada mês","Acesso Premium para 1 conta, coach de IA: 4 perguntas por dia"],
+   ["Premium Família","€ 19,99 / mês","mensal, renovada a cada mês","Acesso Premium para 2 contas separadas (o titular e um segundo cavaleiro convidado), coach de IA: 4 perguntas por dia para cada um"],
+   ["Círculo Crystal","€ 99,99 por 12 meses","12 meses, pagamento único, sem renovação automática","Acesso Premium para 1 conta, coach de IA: 4 perguntas por dia"],
+   ["Pacote Duo","€ 24,99 / mês","mensal, renovada a cada mês","Acesso Premium + Hype IA para 1 conta, coach de IA: 20 perguntas por dia, vídeos incluídos"],
+   ["Hype IA","€ 14,99 / mês","mensal, renovada a cada mês","Coach de IA: até 15 perguntas por dia, para 1 conta. Não dá acesso ao Premium."]],
+   ["Oferta","Preço","Duração","O que inclui"]) + "<p>As perguntas ao coach de IA são contadas por dia, da meia-noite à meia-noite (horário de Paris). Uma pergunta não utilizada não é transferida para o dia seguinte. A associação pode alterar o conteúdo das ofertas para melhorar o aplicativo, sem reduzir de forma significativa o que foi comprado durante o período em curso.</p>"),
+ ("4. Pedido e pagamento", ul(["É necessária uma conta Hype: a assinatura é ativada na conta conectada no momento do pagamento. Antes de pagar, o aplicativo exibe o endereço da conta em questão e pede que você o confirme.","O pagamento é feito por cartão bancário na página segura da Stripe. O Hype nunca tem acesso aos números de cartão.","Nas ofertas mensais, o pagamento é cobrado na contratação e depois a cada mês na mesma data, até o cancelamento.","Se um pagamento mensal falhar, o acesso Premium poderá ser suspenso até a regularização."])),
+ ("5. Acesso imediato e direito de retratação", "<p>As ofertas dão acesso a um conteúdo digital a partir do pagamento. Antes de pagar, o aplicativo pede que você confirme que deseja esse acesso imediato e que, com isso, renuncia ao seu direito de retratação de 14 dias (artigo L221-28, 13º do Código de Defesa do Consumidor francês). Sem essa confirmação, o pagamento não é aberto.</p>"),
+ ("6. Duração, renovação e cancelamento", ul(["<b>Ofertas mensais</b> (Premium Cavaleiro, Premium Família, Pacote Duo, Hype IA): sem fidelidade. Você pode cancelar a qualquer momento; o cancelamento produz efeito ao final do mês já pago, e o acesso permanece aberto até lá. Nenhum mês iniciado é reembolsado.","<b>Círculo Crystal</b>: 12 meses a partir do pagamento, depois o acesso se encerra por si só. Nada é cobrado em seguida.",f"<b>Como cancelar</b>: on-line, a qualquer momento, com o botão “Gerenciar minha assinatura” em Minha conta (página segura da Stripe, onde você também pode trocar de cartão e encontrar suas faturas). Você também pode escrever para {MAIL} a partir do endereço da sua conta.","Se você excluir sua conta Hype enquanto houver uma assinatura em andamento, lembre-se de cancelá-la: a exclusão da conta não interrompe automaticamente a cobrança. No Premium Família, o titular deve cancelar primeiro."])),
+ ("7. Regras específicas do Premium Família", ul(["A pessoa que paga é o <b>titular</b>. Ela convida um segundo cavaleiro a partir de Minha conta, com um link válido por 7 dias.","Cada um mantém sua própria conta, seus dados e suas 4 perguntas de IA por dia; nada é compartilhado entre as duas contas.","O titular pode remover o segundo cavaleiro, e este pode sair da família. Uma substituição é possível no máximo uma vez a cada 30 dias, com no máximo 4 segundos cavaleiros diferentes por ano.","Nenhum parentesco é exigido. O titular é responsável pela escolha da pessoa convidada.","Se a assinatura terminar (cancelamento, inadimplência), o acesso Premium termina para as duas contas."])),
+ ("8. Mecenato do Hype", f"<p>Os níveis de mecenato (de € 20 a € 500) são um apoio voluntário ao desenvolvimento do aplicativo, pago uma única vez. Eles não dão acesso ao Premium, não são uma doação à associação FEINN e não dão direito a nenhuma redução de imposto. Não são reembolsáveis, salvo erro manifesto comunicado rapidamente a {MAIL}.</p>"),
+ ("9. Funcionamento do serviço", "<p>A associação faz o possível para que o Hype funcione de forma contínua, mas podem ocorrer interrupções (manutenção, falha de um prestador). As respostas do coach de IA são conselhos gerais produzidos por uma inteligência artificial: não substituem um instrutor habilitado nem um veterinário e podem conter erros.</p>"),
+ ("10. Dados pessoais", f"<p>Os dados necessários para a conta e as assinaturas são tratados para fornecer o serviço. Você pode solicitar o acesso aos seus dados ou a exclusão deles escrevendo para {MAIL}.</p>"),
+ ("11. Reclamações e mediação", f"<p>Para qualquer reclamação, escreva primeiro para {MAIL}. Mediador de consumo: em fase de designação; seus dados de contato serão indicados aqui. Enquanto isso, qualquer reclamação pode ser enviada para {MAIL}. Você também pode usar a plataforma europeia de resolução de litígios on-line.</p>"),
+ ("12. Lei aplicável", "<p>Estas condições estão sujeitas ao direito francês. Podem ser atualizadas; a versão aplicável é a vigente no dia do pagamento.</p>"),
+ ])
+
 CSS = """:root{--noir:#05080B;--carte:#0B1418;--ivoire:#F3EEE4;--doux:#B7C2C0;--gris:#8E9893;--champ:#C9A66B;--trait:rgba(201,166,107,.32);--trait2:rgba(201,166,107,.16)}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:var(--noir);color:var(--ivoire);font:15px/1.7 Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
@@ -254,7 +279,7 @@ th{color:var(--ivoire);font-weight:500}td{color:var(--doux)}
 .langues a{text-decoration:none}.langues b{color:var(--ivoire)}
 .fin{margin-top:18px;color:var(--gris);font-size:12.5px;text-align:center}"""
 
-HL = {"zh": "zh-Hans"}  # code de langue HTML/hreflang quand il diffère du dossier
+HL = {"zh": "zh-Hans", "pt": "pt-BR"}  # code de langue HTML/hreflang quand il diffère du dossier
 def page(lg):
     t = T[lg]; e = html.escape
     dirr = ' dir="rtl"' if lg == "ar" else ""
