@@ -292,6 +292,20 @@ async function rpc(service, nom, params) {
     return r.json();
 }
 // Termine une réservation sans jamais faire échouer la réponse (au pire elle reste « réservée » = comptée).
+// 21/10/2026 (Blandine : « ajoute ça dans supabase ») — RÉPONSE GARDÉE EN BASE. Chaque question écrite en flux est
+// suivie dans la table EXISTANTE heybaby_analyses (déjà utilisée pour les analyses photo/vidéo différées : RLS
+// lecture = son propre compte, écriture = clé de service). Ligne id = réservation, statut en_cours → termine / erreur.
+// L'appli peut ainsi quitter la page ou être fermée : la réponse continue d'être écrite et elle la relit au retour.
+async function jobHB(service, reqId, methode, idRes, champs) {
+    if (!idRes) return;
+    try {
+        const url = SUPABASE_URL + "/rest/v1/heybaby_analyses" + (methode === "PATCH" ? "?id=eq." + encodeURIComponent(idRes) : "");
+        const r = await fetch(url, { method: methode, headers: { apikey: service, Authorization: "Bearer " + service, "Content-Type": "application/json",
+            Prefer: methode === "POST" ? "resolution=merge-duplicates,return=minimal" : "return=minimal" }, body: JSON.stringify(champs) });
+        if (!r.ok) log(reqId, "réponse gardée en base : écriture refusée (HTTP " + r.status + ")");
+    } catch (e) { log(reqId, "réponse gardée en base : écriture impossible —", e && e.message); }
+}
+
 async function terminer(service, reqId, idRes, consommee) {
     if (!idRes) return;
     try { await rpc(service, "hype_ia_terminer", { p_id: idRes, p_consommee: !!consommee }); }
@@ -366,7 +380,7 @@ function contexteSur(c) {
     };
 }
 
-export default async (req) => {
+export default async (req, context) => {
     const reqId = genererReqId();
     const CORS = entetesCORS(req);
     const reponseJSON = (objet, statut, extra) => new Response(JSON.stringify(objet), {
@@ -557,6 +571,8 @@ export default async (req) => {
     }
 
     // ----- 5b. Appel standard -----
+    const garderEnBase = streaming && operation === "question";   // 21/10 : réponse gardée en base (voir jobHB)
+    if (garderEnBase) await jobHB(service, reqId, "POST", idRes, { id: idRes, user_id: uid, statut: "en_cours", resultat: null, erreur_code: null, erreur_message: null });
     const ctrl = new AbortController();
     let futTimeout = false;
     const minuteur = setTimeout(() => { futTimeout = true; try { ctrl.abort(); } catch (e) { } }, TIMEOUT_OPENAI_MS);
@@ -568,6 +584,7 @@ export default async (req) => {
     } catch (e) {
         clearTimeout(minuteur);
         await terminer(service, reqId, idRes, false);   // rien n'a été produit : rendu
+        if (garderEnBase) await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", erreur_code: futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR", updated_at: new Date().toISOString() });
         log(reqId, futTimeout ? "OpenAI : délai dépassé" : "OpenAI : connexion impossible", "après", Date.now() - t0, "ms (rendue)");
         return erreurJSON(futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR", futTimeout ? "L'analyse a pris trop de temps." : "Connexion au fournisseur IA impossible.", { quota: quota }, entetesQuota);
     }
@@ -576,6 +593,7 @@ export default async (req) => {
         const detailTxt = await amont.text().catch(() => "");
         await terminer(service, reqId, idRes, false);
         const code = classerErreurAmont(amont.status, detailTxt);
+        if (garderEnBase) await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", erreur_code: code, updated_at: new Date().toISOString() });
         log(reqId, "OpenAI HTTP", amont.status, "→", code, "(rendue)");
         return erreurJSON(code, "Le fournisseur IA a renvoyé une erreur.", { statutAmont: amont.status, quota: quota }, entetesQuota);
     }
@@ -591,48 +609,57 @@ export default async (req) => {
     }
 
     // Flux : comptée dès le premier mot reçu ; rendue seulement si rien n'a été produit.
-    let termine = false;
+    // 21/10 : la LECTURE de la réponse d'OpenAI est indépendante du téléphone. Si le téléphone part (appli quittée,
+    // écran verrouillé, page changée), on n'arrête plus OpenAI : la lecture continue jusqu'au bout (context.waitUntil)
+    // et le texte complet est écrit dans heybaby_analyses, où l'appli le relit au retour.
+    let termine = false, clientParti = false, sortie = null;
+    const encF = new TextEncoder();
     const flux = new ReadableStream({
-        async start(controller) {
-            const lecteur = amont.body.getReader();
-            const dec = new TextDecoder(), enc = new TextEncoder();
-            let tampon = "", total = 0, erreurSurvenue = null;
-            try {
-                while (true) {
-                    const lu = await lecteur.read();
-                    if (lu.done) break;
-                    tampon += dec.decode(lu.value, { stream: true });
-                    const lignes = tampon.split("\n");
-                    tampon = lignes.pop() || "";
-                    for (const brute of lignes) {
-                        const ligne = brute.trim();
-                        if (!ligne.startsWith("data:")) continue;
-                        const c2 = ligne.slice(5).trim();
-                        if (!c2 || c2 === "[DONE]") continue;
-                        try {
-                            const j = JSON.parse(c2);
-                            const delta = j && j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content;
-                            if (delta) { total += delta.length; controller.enqueue(enc.encode(delta)); }
-                        } catch (e) { }
-                    }
-                }
-                log(reqId, "flux terminé en", Date.now() - t0, "ms —", total, "caractères");
-            } catch (e) {
-                erreurSurvenue = futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR";
-                log(reqId, "flux interrompu après", Date.now() - t0, "ms —", total, "caractères — code", erreurSurvenue);
-            } finally {
-                clearTimeout(minuteur);
-                if (!termine) { termine = true; await terminer(service, reqId, idRes, total > 0); }
-                if (erreurSurvenue) { try { controller.enqueue(enc.encode(marqueurErreur(erreurSurvenue, reqId))); } catch (e) { } }
-                try { controller.close(); } catch (e) { }
-            }
-        },
+        start(controller) { sortie = controller; },
         cancel() {
-            clearTimeout(minuteur);
-            try { ctrl.abort(); } catch (e) { }
-            if (!termine) { termine = true; terminer(service, reqId, idRes, true); }   // déconnexion : comptée
-            log(reqId, "flux annulé par le client après", Date.now() - t0, "ms (comptée)");
+            clientParti = true;
+            log(reqId, "téléphone déconnecté après", Date.now() - t0, "ms — la réponse continue d'être écrite en base");
         },
     });
+    const envoyerAuTel = (txt) => { if (clientParti || !sortie) return; try { sortie.enqueue(encF.encode(txt)); } catch (e) { clientParti = true; } };
+    const lecture = (async () => {
+        const lecteur = amont.body.getReader();
+        const dec = new TextDecoder();
+        let tampon = "", total = 0, complet = "", erreurSurvenue = null;
+        try {
+            while (true) {
+                const lu = await lecteur.read();
+                if (lu.done) break;
+                tampon += dec.decode(lu.value, { stream: true });
+                const lignes = tampon.split("\n");
+                tampon = lignes.pop() || "";
+                for (const brute of lignes) {
+                    const ligne = brute.trim();
+                    if (!ligne.startsWith("data:")) continue;
+                    const c2 = ligne.slice(5).trim();
+                    if (!c2 || c2 === "[DONE]") continue;
+                    try {
+                        const j = JSON.parse(c2);
+                        const delta = j && j.choices && j.choices[0] && j.choices[0].delta && j.choices[0].delta.content;
+                        if (delta) { total += delta.length; complet += delta; envoyerAuTel(delta); }
+                    } catch (e) { }
+                }
+            }
+            log(reqId, "flux terminé en", Date.now() - t0, "ms —", total, "caractères" + (clientParti ? " (téléphone parti : réponse gardée en base)" : ""));
+        } catch (e) {
+            erreurSurvenue = futTimeout ? "AI_TIMEOUT" : "OPENAI_SERVER_ERROR";
+            log(reqId, "flux interrompu après", Date.now() - t0, "ms —", total, "caractères — code", erreurSurvenue);
+        } finally {
+            clearTimeout(minuteur);
+            if (!termine) { termine = true; await terminer(service, reqId, idRes, total > 0); }
+            if (garderEnBase) {
+                if (complet && !erreurSurvenue) await jobHB(service, reqId, "PATCH", idRes, { statut: "termine", resultat: complet, updated_at: new Date().toISOString() });
+                else await jobHB(service, reqId, "PATCH", idRes, { statut: "erreur", resultat: complet || null, erreur_code: erreurSurvenue || "INVALID_RESPONSE", updated_at: new Date().toISOString() });
+            }
+            if (erreurSurvenue) envoyerAuTel(marqueurErreur(erreurSurvenue, reqId));
+            if (!clientParti && sortie) { try { sortie.close(); } catch (e) { } }
+        }
+    })();
+    try { if (context && typeof context.waitUntil === "function") context.waitUntil(lecture); } catch (eW) { }
     return new Response(flux, { headers: { ...CORS, ...entetesQuota, "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "no-cache", "X-Accel-Buffering": "no", "X-Request-Id": reqId } });
 };
