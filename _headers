@@ -56,6 +56,10 @@
 /hype-stories.js
   Cache-Control: public, max-age=0, must-revalidate
 
+# 21/10/2026 : dictionnaire des textes restés en français seul (une adresse neuve ?v=N à chaque livraison)
+/hype-trad-fr-seul.js
+  Cache-Control: public, max-age=0, must-revalidate
+
 /hype-resultats.js
   Cache-Control: public, max-age=0, must-revalidate
 

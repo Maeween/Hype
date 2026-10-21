@@ -261,6 +261,11 @@
     box-shadow: 0 6px 22px rgba(32,217,245,0.18);
   }
 
+  /* i18n : en arabe la page passe en dir="rtl" (texte), mais la pellicule, les
+     jauges et la visionneuse restent en ltr : le calcul du defilement
+     (scrollLeft / largeur) suppose ce sens. */
+  [dir="rtl"] .pellicule, [dir="rtl"] .jauges, [dir="rtl"] .visio { direction: ltr; }
+
   .etat { display: flex; flex-direction: column; align-items: center; padding: 90px 30px 0; text-align: center; }
   .etat .titre { font-family: 'Cinzel', serif; font-size: 17px; color: #F4F7FA; margin-bottom: 10px; }
   .etat .texte-etat { font-size: 13.5px; color: #8A929C; line-height: 1.6; max-width: 300px; }
@@ -313,14 +318,14 @@
 
 <div class="scene" id="scene">
   <div class="etat" id="etatChargement">
-    <div class="titre">Ouverture&hellip;</div>
+    <div class="titre" id="titreChargement">Ouverture&hellip;</div>
   </div>
 </div>
 
 <div class="fin" id="zoneCta" style="display:none;">
   <div class="marque">HYPE</div>
-  <div class="baseline">Chevaux · Cavaliers · Clubs · Souvenirs</div>
-  <a href="https://2hype.netlify.app">Découvrir Hype →</a>
+  <div class="baseline" id="baseline">Chevaux · Cavaliers · Clubs · Souvenirs</div>
+  <a href="https://2hype.netlify.app" id="ctaLien">Découvrir Hype →</a>
 </div>
 
 <!-- La visionneuse vit hors de #scene : #scene est reecrit entierement par
@@ -345,6 +350,161 @@
     } catch (e) { return null; }
   }
 
+  /* ── LANGUES ───────────────────────────────────────────────────────
+     fr / en / es / it / de / ja / ar / zh. Ordre de choix : parametre
+     d'adresse `lang`, puis navigator.language (2 premieres lettres),
+     repli fr. Les textes de la story elle-meme (legende, lieu, noms)
+     ne sont jamais traduits. */
+  var LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar", "zh"];
+  function detecterLangue() {
+    var l = "";
+    try { l = String(param("lang") || "").toLowerCase().slice(0, 2); } catch (e) { l = ""; }
+    if (LANGUES.indexOf(l) < 0) {
+      try { l = String(navigator.language || navigator.userLanguage || "").toLowerCase().slice(0, 2); } catch (e2) { l = ""; }
+    }
+    return LANGUES.indexOf(l) >= 0 ? l : "fr";
+  }
+  var LANG = detecterLangue();
+  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar", zh: "zh-CN" };
+
+  var TR = {
+    fr: {
+      ouverture: "Ouverture…",
+      lienT: "Lien incomplet", lienD: "Cette adresse ne pointe vers aucune story.",
+      erreurT: "Impossible d'ouvrir cette story", erreurD: "Réessaie dans un instant, ou ouvre-la directement dans Hype.",
+      introT: "Story introuvable", introD: "Elle a peut-être été retirée.",
+      expT: "Cette story n'est plus visible", expD: "Les stories Hype restent en ligne quelques jours seulement.",
+      anonyme: "Un cavalier Hype", titre: "{n} sur Hype",
+      plus: "Voir plus", moins: "Voir moins",
+      baseline: "Chevaux · Cavaliers · Clubs · Souvenirs", cta: "Découvrir Hype →",
+      fermer: "Fermer", prec: "Photo précédente", suiv: "Photo suivante",
+      ogTitre: "Une story sur Hype 🐎", ogDesc: "Ton univers équestre : clubs, cavaliers, moments de vie d'écurie.",
+      cav: function (n) { return n + " " + (n > 1 ? "cavaliers" : "cavalier"); },
+      che: function (n) { return n + " " + (n > 1 ? "chevaux" : "cheval"); }
+    },
+    en: {
+      ouverture: "Opening…",
+      lienT: "Incomplete link", lienD: "This address doesn't point to any story.",
+      erreurT: "Unable to open this story", erreurD: "Try again in a moment, or open it directly in Hype.",
+      introT: "Story not found", introD: "It may have been removed.",
+      expT: "This story is no longer available", expD: "Hype stories stay online for a few days only.",
+      anonyme: "A Hype rider", titre: "{n} on Hype",
+      plus: "See more", moins: "See less",
+      baseline: "Horses · Riders · Clubs · Memories", cta: "Discover Hype →",
+      fermer: "Close", prec: "Previous photo", suiv: "Next photo",
+      ogTitre: "A story on Hype 🐎", ogDesc: "Your equestrian world: clubs, riders, moments of stable life.",
+      cav: function (n) { return n + " " + (n > 1 ? "riders" : "rider"); },
+      che: function (n) { return n + " " + (n > 1 ? "horses" : "horse"); }
+    },
+    es: {
+      ouverture: "Abriendo…",
+      lienT: "Enlace incompleto", lienD: "Esta dirección no lleva a ninguna story.",
+      erreurT: "No se puede abrir esta story", erreurD: "Inténtalo de nuevo en un momento, o ábrela directamente en Hype.",
+      introT: "Story no encontrada", introD: "Puede que la hayan retirado.",
+      expT: "Esta story ya no está visible", expD: "Las stories de Hype solo permanecen en línea unos días.",
+      anonyme: "Un jinete de Hype", titre: "{n} en Hype",
+      plus: "Ver más", moins: "Ver menos",
+      baseline: "Caballos · Jinetes · Clubes · Recuerdos", cta: "Descubre Hype →",
+      fermer: "Cerrar", prec: "Foto anterior", suiv: "Foto siguiente",
+      ogTitre: "Una story en Hype 🐎", ogDesc: "Tu universo ecuestre: clubes, jinetes, momentos de la vida en la cuadra.",
+      cav: function (n) { return n + " " + (n > 1 ? "jinetes" : "jinete"); },
+      che: function (n) { return n + " " + (n > 1 ? "caballos" : "caballo"); }
+    },
+    it: {
+      ouverture: "Apertura…",
+      lienT: "Link incompleto", lienD: "Questo indirizzo non porta a nessuna story.",
+      erreurT: "Impossibile aprire questa story", erreurD: "Riprova tra un attimo, oppure aprila direttamente in Hype.",
+      introT: "Story non trovata", introD: "Forse è stata rimossa.",
+      expT: "Questa story non è più visibile", expD: "Le story di Hype restano online solo per pochi giorni.",
+      anonyme: "Un cavaliere di Hype", titre: "{n} su Hype",
+      plus: "Mostra altro", moins: "Mostra meno",
+      baseline: "Cavalli · Cavalieri · Club · Ricordi", cta: "Scopri Hype →",
+      fermer: "Chiudi", prec: "Foto precedente", suiv: "Foto successiva",
+      ogTitre: "Una story su Hype 🐎", ogDesc: "Il tuo universo equestre: club, cavalieri, momenti di vita in scuderia.",
+      cav: function (n) { return n + " " + (n > 1 ? "cavalieri" : "cavaliere"); },
+      che: function (n) { return n + " " + (n > 1 ? "cavalli" : "cavallo"); }
+    },
+    de: {
+      ouverture: "Wird geöffnet…",
+      lienT: "Unvollständiger Link", lienD: "Diese Adresse führt zu keiner Story.",
+      erreurT: "Diese Story lässt sich nicht öffnen", erreurD: "Versuch es gleich noch einmal oder öffne sie direkt in Hype.",
+      introT: "Story nicht gefunden", introD: "Sie wurde vielleicht entfernt.",
+      expT: "Diese Story ist nicht mehr sichtbar", expD: "Hype-Storys bleiben nur wenige Tage online.",
+      anonyme: "Ein Hype-Reiter", titre: "{n} auf Hype",
+      plus: "Mehr anzeigen", moins: "Weniger anzeigen",
+      baseline: "Pferde · Reiter · Clubs · Erinnerungen", cta: "Hype entdecken →",
+      fermer: "Schließen", prec: "Vorheriges Foto", suiv: "Nächstes Foto",
+      ogTitre: "Eine Story auf Hype 🐎", ogDesc: "Deine Reitwelt: Clubs, Reiter, Momente aus dem Stallalltag.",
+      cav: function (n) { return n + " Reiter"; },
+      che: function (n) { return n + " " + (n > 1 ? "Pferde" : "Pferd"); }
+    },
+    ja: {
+      ouverture: "開いています…",
+      lienT: "リンクが不完全です", lienD: "このアドレスにはストーリーがありません。",
+      erreurT: "このストーリーを開けません", erreurD: "しばらくしてからもう一度お試しいただくか、Hypeで直接開いてください。",
+      introT: "ストーリーが見つかりません", introD: "削除された可能性があります。",
+      expT: "このストーリーはもう表示できません", expD: "Hypeのストーリーは数日間だけ公開されます。",
+      anonyme: "Hypeの騎手", titre: "{n} - Hype",
+      plus: "もっと見る", moins: "閉じる",
+      baseline: "馬 · 騎手 · クラブ · 思い出", cta: "Hypeを見てみる →",
+      fermer: "閉じる", prec: "前の写真", suiv: "次の写真",
+      ogTitre: "Hypeのストーリー 🐎", ogDesc: "あなたの乗馬の世界：クラブ、騎手、厩舎での日常のひとこま。",
+      cav: function (n) { return n + "人の騎手"; },
+      che: function (n) { return n + "頭の馬"; }
+    },
+    ar: {
+      ouverture: "جار الفتح…",
+      lienT: "رابط غير مكتمل", lienD: "هذا العنوان لا يؤدي إلى أي ستوري.",
+      erreurT: "تعذر فتح هذه الستوري", erreurD: "حاولي مرة أخرى بعد قليل، أو افتحيها مباشرة في Hype.",
+      introT: "لم يتم العثور على الستوري", introD: "ربما تمت إزالتها.",
+      expT: "لم تعد هذه الستوري ظاهرة", expD: "تبقى ستوريات Hype متاحة لبضعة أيام فقط.",
+      anonyme: "فارس من Hype", titre: "{n} على Hype",
+      plus: "عرض المزيد", moins: "عرض أقل",
+      baseline: "الخيول · الفرسان · الأندية · الذكريات", cta: "اكتشفي Hype ←",
+      fermer: "إغلاق", prec: "الصورة السابقة", suiv: "الصورة التالية",
+      ogTitre: "ستوري على Hype 🐎", ogDesc: "عالمك الفروسي: الأندية والفرسان ولحظات من حياة الإسطبل.",
+      cav: function (n) { return n === 1 ? "فارس واحد" : n === 2 ? "فارسان" : n + " " + (n <= 10 ? "فرسان" : "فارسا"); },
+      che: function (n) { return n === 1 ? "حصان واحد" : n === 2 ? "حصانان" : n + " " + (n <= 10 ? "أحصنة" : "حصانا"); }
+    },
+    zh: {
+      ouverture: "正在打开…",
+      lienT: "链接不完整", lienD: "这个地址没有指向任何快拍。",
+      erreurT: "无法打开这条快拍", erreurD: "稍后再试，或者直接在 Hype 中打开。",
+      introT: "找不到这条快拍", introD: "它可能已被删除。",
+      expT: "这条快拍已不再可见", expD: "Hype 快拍只会在线保留几天。",
+      anonyme: "Hype 骑手", titre: "{n} 在 Hype 上",
+      plus: "展开", moins: "收起",
+      baseline: "马 · 骑手 · 俱乐部 · 回忆", cta: "了解 Hype →",
+      fermer: "关闭", prec: "上一张照片", suiv: "下一张照片",
+      ogTitre: "Hype 上的一条快拍 🐎", ogDesc: "你的马术世界：俱乐部、骑手、马厩生活的点滴。",
+      cav: function (n) { return n + " 位骑手"; },
+      che: function (n) { return n + " 匹马"; }
+    }
+  };
+  function t(cle) { var d = TR[LANG] || TR.fr; return d[cle] != null ? d[cle] : TR.fr[cle]; }
+
+  /* Textes fixes de la page, poses des le chargement. */
+  (function appliquerLangue() {
+    try {
+      var h = document.documentElement;
+      h.setAttribute("lang", LANG === "zh" ? "zh-Hans" : LANG);
+      if (LANG === "ar") h.setAttribute("dir", "rtl"); else h.removeAttribute("dir");
+      var el = document.getElementById("titreChargement"); if (el) el.textContent = t("ouverture");
+      el = document.getElementById("baseline"); if (el) el.textContent = t("baseline");
+      el = document.getElementById("ctaLien"); if (el) el.textContent = t("cta");
+      el = document.getElementById("vFermer"); if (el) el.setAttribute("aria-label", t("fermer"));
+      el = document.getElementById("vPrec"); if (el) el.setAttribute("aria-label", t("prec"));
+      el = document.getElementById("vSuiv"); if (el) el.setAttribute("aria-label", t("suiv"));
+      /* Balises d'apercu : on ne touche que celles qui portent encore le
+         texte statique (si le serveur les a reecrites pour cette story,
+         on les laisse telles quelles). */
+      var og = document.querySelector('meta[property="og:title"]');
+      if (og && og.getAttribute("content") === TR.fr.ogTitre) og.setAttribute("content", t("ogTitre"));
+      og = document.querySelector('meta[property="og:description"]');
+      if (og && og.getAttribute("content") === TR.fr.ogDesc) og.setAttribute("content", t("ogDesc"));
+    } catch (eL) { }
+  })();
+
   function echapper(txt) {
     var d = document.createElement("div");
     d.textContent = txt == null ? "" : String(txt);
@@ -361,7 +521,7 @@
   function dateLisible(iso) {
     try {
       var d = new Date(iso);
-      return d.toLocaleDateString("fr-FR", { day: "numeric", month: "long" });
+      return d.toLocaleDateString(LOCALES[LANG] || "fr-FR", { day: "numeric", month: "long" });
     } catch (e) { return ""; }
   }
 
@@ -507,11 +667,10 @@
     }
     return out;
   }
-  function accord(n, singulier, pluriel) { return n + " " + (n > 1 ? pluriel : singulier); }
-
+  
   async function demarrer() {
     var id = param("id");
-    if (!id) { afficherEtat("Lien incomplet", "Cette adresse ne pointe vers aucune story."); return; }
+    if (!id) { afficherEtat(t("lienT"), t("lienD")); return; }
 
     var story;
     try {
@@ -525,13 +684,13 @@
          anonyme est refusee cote Supabase (regle RLS) — voir le
          commentaire d'entete : ce fichier ne peut pas corriger cela
          lui-meme, seule Blandine peut ajuster la politique de la table. */
-      afficherEtat("Impossible d'ouvrir cette story", "Réessaie dans un instant, ou ouvre-la directement dans Hype.");
+      afficherEtat(t("erreurT"), t("erreurD"));
       return;
     }
 
-    if (!story) { afficherEtat("Story introuvable", "Elle a peut-être été retirée."); return; }
+    if (!story) { afficherEtat(t("introT"), t("introD")); return; }
     if (story.expire_le && new Date(story.expire_le).getTime() < Date.now()) {
-      afficherEtat("Cette story n'est plus visible", "Les stories Hype restent en ligne quelques jours seulement.");
+      afficherEtat(t("expT"), t("expD"));
       return;
     }
 
@@ -568,7 +727,7 @@
       auteur = profils && profils[0];
     } catch (eP) { auteur = null; }
 
-    var nomAuteur = (auteur && auteur.pseudo) ? auteur.pseudo : "Un cavalier Hype";
+    var nomAuteur = (auteur && auteur.pseudo) ? auteur.pseudo : t("anonyme");
     var avatarUrl = auteur && auteur.avatar_url;
     var nomClub = (story.ecurie && String(story.ecurie).trim() && String(story.ecurie).trim() !== "__perso__") ? String(story.ecurie).trim() : "";
     var sousLigne = (nomClub ? nomClub : "Hype") + " · " + dateLisible(story.created_at);
@@ -601,8 +760,8 @@
       : '';
 
     var fleches = photos.length > 1
-      ? '<button class="fleche f-prec" id="fPrec" aria-label="Photo précédente">&lsaquo;</button>'
-        + '<button class="fleche f-suiv" id="fSuiv" aria-label="Photo suivante">&rsaquo;</button>'
+      ? '<button class="fleche f-prec" id="fPrec" aria-label="' + echapper(t("prec")) + '">&lsaquo;</button>'
+        + '<button class="fleche f-suiv" id="fSuiv" aria-label="' + echapper(t("suiv")) + '">&rsaquo;</button>'
       : '';
 
     /* ========================================================================
@@ -664,7 +823,7 @@
         + '<div class="corps' + (replier ? ' replie' : '') + '" id="corps"' + styleLegende(story.style_legende) + '>' + echapper(tete)
         + (suite ? '<span class="suite">' + "\n\n" + echapper(suite) + '</span>' : '')
         + '</div>'
-        + (replier ? '<button class="voir-plus" id="voirPlus" style="display:none;">Voir plus</button>' : '')
+        + (replier ? '<button class="voir-plus" id="voirPlus" style="display:none;">' + echapper(t("plus")) + '</button>' : '')
         + '</div>';
     }
 
@@ -789,7 +948,7 @@
         setTimeout(verifier, 400);
         bouton.addEventListener("click", function () {
           var replie = corps.classList.toggle("replie");
-          bouton.textContent = replie ? "Voir plus" : "Voir moins";
+          bouton.textContent = replie ? t("plus") : t("moins");
         });
       }
     } catch (eV) { }
@@ -802,15 +961,15 @@
           if (!c || !c.cavaliers) return;
           var el = document.getElementById("clubChiffres");
           if (!el) return;
-          var bouts = [accord(c.cavaliers, "cavalier", "cavaliers")];
-          if (c.chevaux) bouts.push(accord(c.chevaux, "cheval", "chevaux"));
+          var bouts = [t("cav")(c.cavaliers)];
+          if (c.chevaux) bouts.push(t("che")(c.chevaux));
           el.textContent = bouts.join(" · ");
           el.style.display = "block";
         } catch (eC) { }
       }).catch(function () { });
     }
 
-    try { document.title = nomAuteur + " sur Hype"; } catch (eT2) { }
+    try { document.title = t("titre").replace("{n}", nomAuteur); } catch (eT2) { }
   }
 
   demarrer();

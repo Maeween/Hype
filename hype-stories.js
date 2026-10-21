@@ -49,7 +49,7 @@
    refuse un flux public sans moyen de signalement).
 ============================================================================ */
 
-var HYPE_STORIES_VERSION = "20ch"; /* 21/10/2026 : chinois simplifié (8e langue) */
+var HYPE_STORIES_VERSION = "20ci"; /* 21/10/2026 : chinois simplifié (8e langue) */
 try { if (typeof window !== "undefined") window.HYPE_STORIES_VERSION = HYPE_STORIES_VERSION; } catch (eV) { }
 
 /* 19ae — Les décors portant du TEXTE FRANÇAIS en dur dans l'image.
@@ -5840,12 +5840,12 @@ function ReglagesStyleLegende(props) {
     }, contenu);
   }
   var T = {
-    titre: { fr: "Style du texte", en: "Text style", es: "Estilo del texto", it: "Stile del testo", de: "Textstil", ja: "\u6587\u5b57\u306e\u30b9\u30bf\u30a4\u30eb", zh: "文字样式" },
-    petit: { fr: "Petit", en: "Small", es: "Peque\u00f1o", it: "Piccolo", de: "Klein", ja: "\u5c0f", zh: "小" },
-    normal: { fr: "Normal", en: "Normal", es: "Normal", it: "Normale", de: "Normal", ja: "\u4e2d", zh: "正常" },
-    grand: { fr: "Grand", en: "Large", es: "Grande", it: "Grande", de: "Gro\u00df", ja: "\u5927", zh: "大" },
-    libre: { fr: "Autre couleur", en: "Other colour", es: "Otro color", it: "Altro colore", de: "Andere Farbe", ja: "\u4ed6\u306e\u8272", zh: "其他颜色" },
-    apercu: { fr: "Votre l\u00e9gende", en: "Your caption", es: "Tu pie de foto", it: "La tua didascalia", de: "Deine Bildunterschrift", ja: "\u30ad\u30e3\u30d7\u30b7\u30e7\u30f3", zh: "你的说明" }
+    titre: { fr: "Style du texte", en: "Text style", es: "Estilo del texto", it: "Stile del testo", de: "Textstil", ja: "\u6587\u5b57\u306e\u30b9\u30bf\u30a4\u30eb", zh: "文字样式", ar: "نمط النص" },
+    petit: { fr: "Petit", en: "Small", es: "Peque\u00f1o", it: "Piccolo", de: "Klein", ja: "\u5c0f", zh: "小", ar: "صغير" },
+    normal: { fr: "Normal", en: "Normal", es: "Normal", it: "Normale", de: "Normal", ja: "\u4e2d", zh: "正常", ar: "عادي" },
+    grand: { fr: "Grand", en: "Large", es: "Grande", it: "Grande", de: "Gro\u00df", ja: "\u5927", zh: "大", ar: "كبير" },
+    libre: { fr: "Autre couleur", en: "Other colour", es: "Otro color", it: "Altro colore", de: "Andere Farbe", ja: "\u4ed6\u306e\u8272", zh: "其他颜色", ar: "لون آخر" },
+    apercu: { fr: "Votre l\u00e9gende", en: "Your caption", es: "Tu pie de foto", it: "La tua didascalia", de: "Deine Bildunterschrift", ja: "\u30ad\u30e3\u30d7\u30b7\u30e7\u30f3", zh: "你的说明", ar: "تعليقك" }
   };
   function t(k) { return (T[k] && (T[k][lg] || T[k].fr)) || ""; }
   var apercu = Object.assign(
