@@ -27744,6 +27744,9 @@ async function hypeEcrireProgression(etat) {
         if (typeof supa === "undefined" || !etat) return { error: "indisponible" };
         var u = await utilisateurActuel();
         if (!u) return { error: "non connecte" };
+        /* 21/10 : changement de compte pas encore traite sur ce telephone -> on n ecrit rien (sinon la progression
+           de l ancien compte partirait dans le nouveau). */
+        try { var uidConnu = localStorage.getItem("hype_uid"); if (uidConnu && uidConnu !== u.id) return { error: "changement de compte en cours" }; } catch (eUc) { }
         var paquet = {};
         HYPE_SYNC_CHAMPS.forEach(function (k) { if (etat[k] !== undefined) paquet[k] = hypeAllegerPourSync(etat[k]); });
         try { paquet.extras = hypeCollecterExtras(); } catch (eX) { }
@@ -28071,27 +28074,7 @@ function HypeApp() {
                         }).catch(() => { });
                     }
                 } catch (eSA) { }
-                try {
-                    const ancienUid = localStorage.getItem("hype_uid");
-                    if (ancienUid && ancienUid !== u.id) {
-                        localStorage.removeItem(ETAT_CLE);
-                        /* 27/07 : sur un appareil partage entre plusieurs cavaliers, seul augalop_etat_v1 etait vide
-                           au changement de compte. Les autres caches locaux (photo d'ecurie, avatar,
-                           banniere de club, coach, progression du Memory...) restaient, ce qui pouvait
-                           faire apparaitre un instant le contenu du cavalier precedent avant l'arrivee
-                           des vraies donnees Supabase. Purge complete desormais. */
-                        try {
-                            Object.keys(localStorage).forEach(function (k) {
-                                if (k === "hype_uid" || k === "hype_rappeler" || k === "hype_push_coche" || k === "hype_teinte" || k === "hype_maj_vue" || k === "hype_install_vu" || k === "hype_appareil_id") return;   /* 18/10 (soir) : le telephone garde son identite d appareil au changement de compte */
-                                if (k.indexOf("hype_") === 0 || k.indexOf("hypeBaby") === 0 || k.indexOf("hypeMemory") === 0 || k.indexOf("augalop_") === 0) {
-                                    localStorage.removeItem(k);
-                                }
-                            });
-                        } catch (ePurge) { }
-                        setProfil({ prenom: "", age: "", club: "", galopActuel: 1, galopVise: 3, avatar: null, chevalPhoto: null, genre: "f", vip: false, cercleVIP: true, email: "", infolettre: false, partenaires: false, estPro: false });
-                    }
-                    localStorage.setItem("hype_uid", u.id);
-                } catch (eU) { }
+                try { changerDeCompte(u.id); } catch (eU) { }   /* 21/10 : purge du stockage ET de la memoire, voir changerDeCompte */
                 try {
                     var tamponner = function () { try { supa.from("profiles").update({ last_seen_at: new Date().toISOString() }).eq("id", u.id).then(function () { }); } catch (eH) { } };
                     tamponner();
@@ -28191,6 +28174,38 @@ function HypeApp() {
     const [chevaux, setChevaux] = useState(sauve && Array.isArray(sauve.chevaux) ? sauve.chevaux : [
         { id: "ch-demo", nom: "Quibelle du Pré", discipline: "CSO", robe: "Baie", note: "Jument de club, en or à l'obstacle.", photo: null, aussiMontePar: 3 },
     ]);
+    /* 21/10 (Blandine, compte de test « Claude » cree sur son telephone) — CHANGEMENT DE COMPTE SUR UN MEME APPAREIL.
+       Bug : a la CREATION d un compte, le parcours d inscription ecrivait hype_uid sans purger, donc le compte neuf
+       heritait de tout ce que le telephone gardait du compte precedent (photo, recit, chevaux, amis a l ecran ; et
+       en base, via la sauvegarde de progression : XP, cours termines, quiz, stats de chevaux, recit). Meme risque a
+       la connexion d un autre compte : la purge videait le stockage mais pas la memoire de l appli, et la fusion
+       « on garde le plus avance » recopiait la progression de l ancien compte dans le nouveau.
+       Desormais UN SEUL point decide : si l identifiant connu du telephone differe, on purge le stockage (memes
+       regles que le 27/07 / 18/10), on remet la memoire a l etat d un telephone neuf, on annule l envoi de
+       progression en attente, puis on retient le nouvel identifiant. Renvoie true si une remise a zero a eu lieu. */
+    function changerDeCompte(uid) {
+        try {
+            if (!uid) return false;
+            const ancienUid = localStorage.getItem("hype_uid");
+            if (!ancienUid || ancienUid === uid) { if (!ancienUid) localStorage.setItem("hype_uid", uid); return false; }
+            try { if (__hypeSyncTimer) { clearTimeout(__hypeSyncTimer); __hypeSyncTimer = null; } } catch (eT) { }
+            localStorage.removeItem(ETAT_CLE);
+            try {
+                Object.keys(localStorage).forEach(function (k) {
+                    if (k === "hype_uid" || k === "hype_rappeler" || k === "hype_push_coche" || k === "hype_teinte" || k === "hype_maj_vue" || k === "hype_install_vu" || k === "hype_appareil_id") return;
+                    if (k.indexOf("hype_") === 0 || k.indexOf("hypeBaby") === 0 || k.indexOf("hypeMemory") === 0 || k.indexOf("augalop_") === 0) localStorage.removeItem(k);
+                });
+            } catch (ePurge) { }
+            setProfil({ prenom: "", age: "", club: "", galopActuel: 1, galopVise: 3, avatar: null, chevalPhoto: null, genre: "f", vip: false, cercleVIP: true, email: "", infolettre: false, partenaires: false, estPro: false });
+            setXp(340); setSerie(4); setCoursTermines(["g1-c15", "g1-c2"]); setQuizResultats({});
+            setChevaux([{ id: "ch-demo", nom: "Quibelle du Pré", discipline: "CSO", robe: "Baie", note: "Jument de club, en or à l'obstacle.", photo: null, aussiMontePar: 3 }]);
+            try { setPlanAbo(""); setFamillePremium(false); } catch (eAb) { }
+            localStorage.setItem("hype_uid", uid);
+            try { window.__hypeCompteRemisAZero = uid; } catch (eW) { }
+            return true;
+        } catch (e) { return false; }
+    }
+    try { window.__hypeChangerDeCompte = changerDeCompte; } catch (eWc) { }
     // Fonction de traduction : t("cle") renvoie le texte dans la langue active
     const t = (cle) => {
         const entree = I18N[cle];
@@ -28596,15 +28611,19 @@ function HypeApp() {
         let annule = false;
         async function restaurer() {
             try {
+                /* 21/10 : si le compte a change sur ce telephone, la memoire de l appli est celle de l ANCIEN compte
+                   (valeurs figees a l ouverture) : on la remplace par celle d un telephone neuf avant de fusionner. */
+                let remis = false;
+                try { const uR = await utilisateurActuel(); if (uR) remis = changerDeCompte(uR.id) || window.__hypeCompteRemisAZero === uR.id; } catch (eR0) { }
                 const distant = await hypeLireProgression();
                 if (annule || !distant) return;
-                const local = { profil, xp, serie, coursTermines, quizResultats, langue };
+                const local = remis ? { profil: {}, xp: 340, serie: 4, coursTermines: ["g1-c15", "g1-c2"], quizResultats: {}, langue } : { profil, xp, serie, coursTermines, quizResultats, langue };
                 const f = hypeFusionnerProgression(local, distant);
                 if (typeof f.xp === "number" && f.xp > (Number(xp) || 0)) setXp(f.xp);
                 if (typeof f.serie === "number" && f.serie > (Number(serie) || 0)) setSerie(f.serie);
                 if (f.coursTermines) setCoursTermines(f.coursTermines);
                 if (f.quizResultats) setQuizResultats(f.quizResultats);
-                if (f.profil) setProfil((p) => Object.assign({}, f.profil, p));
+                if (f.profil) setProfil((p) => remis ? Object.assign({}, p, f.profil) : Object.assign({}, f.profil, p));
                 // progressions annexes (quetes, paliers Baby, Memory, stats de chevaux, preferences)
                 try { hypeAppliquerExtras(distant.extras); } catch (eX) { }
                 // On repousse tout de suite la version fusionnee pour que les deux cotes concordent
@@ -30616,7 +30635,7 @@ function EcranConnexionSpectral() {
     h("span", { style: { color: "#7FA3AD", fontSize: 20, opacity: 0.85, flexShrink: 0 } }, "\u203a"));
   function apresConnexion() { (async function () { try {
       var u = await utilisateurActuel();
-      if (u) { try { var anc = localStorage.getItem("hype_uid"); if (anc && anc !== u.id) { localStorage.removeItem("augalop_etat_v1"); /* 27/07 : meme purge complete qu'au point d'entree principal, voir commentaire la-bas. */ try { Object.keys(localStorage).forEach(function (k) { if (k === "hype_uid" || k === "hype_rappeler" || k === "hype_push_coche" || k === "hype_teinte" || k === "hype_maj_vue" || k === "hype_install_vu" || k === "hype_appareil_id") return;   /* 18/10 (soir) : le telephone garde son identite d appareil au changement de compte */ if (k.indexOf("hype_") === 0 || k.indexOf("hypeBaby") === 0 || k.indexOf("hypeMemory") === 0 || k.indexOf("augalop_") === 0) { localStorage.removeItem(k); } }); } catch (ePurge2) { } } localStorage.setItem("hype_uid", u.id); } catch (e) { } }
+      if (u) { try { if (typeof window.__hypeChangerDeCompte === "function") window.__hypeChangerDeCompte(u.id); else localStorage.setItem("hype_uid", u.id); } catch (e) { } }   /* 21/10 : purge stockage + memoire, voir changerDeCompte */
       try { var et = JSON.parse(localStorage.getItem("augalop_etat_v1") || "null"); var pr = (et && et.profil) || {}; var maj = {};
         if (pr.prenom) maj.pseudo = String(pr.prenom).slice(0, 30);
         if (pr.ecurie || pr.club) maj.ecurie = pr.ecurie || pr.club;
@@ -30650,8 +30669,8 @@ function EcranConnexionSpectral() {
            les questions (age, langue, niveau, objectif), puis le globe. Une
            CONNEXION de compte existant, elle, va toujours droit au dashboard :
            on ne redemande jamais ce qui a deja ete repondu. */
+        try { var uI = await utilisateurActuel(); if (uI) { if (typeof window.__hypeChangerDeCompte === "function") window.__hypeChangerDeCompte(uI.id); else localStorage.setItem("hype_uid", uI.id); } } catch (eUi) { }   /* 21/10 : purge AVANT de poser le profil, sinon le compte neuf herite du precedent */
         try { setProfil(function (pp) { return Object.assign({}, pp || {}, { prenom: pseudoDep, pseudo: pseudoDep, email: em }); }); } catch (ePr) { }
-        try { var uI = await utilisateurActuel(); if (uI) localStorage.setItem("hype_uid", uI.id); } catch (eUi) { }
         try { window.HYPE_QUESTIONS = true; } catch (eQ) { }
         try { window.__hypeRetourApresInscription = true; } catch (eRi) { }   /* (459) retour au rendez-vous a la fin des questions d accueil */
         activerPushApresConnexion();   /* 20/10 (nuit) */
