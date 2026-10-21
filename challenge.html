@@ -1359,7 +1359,7 @@ function listeResultats(n, filtre) {
 /* 21/10 (Blandine : « possibilité de modifier des résultats … retirer un cavalier ou un résultat enregistré ») :
    pour les gestionnaires seulement, chaque résultat a « Modifier » et « Retirer », et chaque liste « + Ajouter un résultat ».
    La base vérifie les droits (règle challenge_res_ecriture : hype_peut_gerer_challenge). Les points se recalculent
-   tout seuls depuis la place. Un résultat ajouté prend l'état (brouillon / publié) des autres résultats de la journée. */
+   tout seuls depuis la place. Un résultat ajouté est publié, sauf si la journée a été repassée en brouillon. */
 function boutonsRes(r, compact) {
   if (!GERE || !r.id) return "";
   return '<span class="res-adm' + (compact ? " compact" : "") + '"><button class="g-btn discret" data-adm="res-modif" data-id="' + esc(r.id) + '" aria-label="' + esc(T("resTitreModif")) + '">✎' + (compact ? "" : " " + T("resModifier")) + '</button>' +
@@ -1415,7 +1415,7 @@ async function enregistrerEdition() {
     else {
       var memes = RESULTATS.filter(function (x) { return x.e === ED.n; });
       rq = await supa.from("challenge_resultats").insert(Object.assign(val, { challenge_id: CHALLENGE.id, etape: ED.n, categorie: ED.cat, reprise: reps.length ? (ED.rep || reps[0].nom) : null,
-        publie: memes.length > 0 && memes.every(function (x) { return x.publie; }) }));
+        publie: !(memes.length > 0 && memes.every(function (x) { return !x.publie; })) }));   /* publié, sauf si la journée a été repassée en brouillon */
     }
     if (rq && rq.error) throw new Error(rq.error.message);
     ED = null; rendreEdition(); await charger();
@@ -2101,7 +2101,7 @@ function rendreGestion() {
     '<button class="g-btn" data-adm="publier-page">' + (CHALLENGE.publie ? "Masquer la page" : "Rendre la page visible") + "</button></div></div>" +
     '<div class="g-bloc"><div class="i-label">Ajouter des résultats</div><div class="g-actions"><button class="g-btn plein" data-adm="importer">Importer une feuille de résultats</button>' +
     '<button class="g-btn" data-adm="gerer-manuel">Saisir une épreuve à la main</button></div></div>' +
-    '<div class="g-bloc"><div class="i-label">Brouillons et publication</div><p class="g-legende"><b>Brouillon</b> : seuls les gestionnaires le voient. <b>Publié</b> : les membres le voient (si la page est visible).</p>' + parEtape + "</div></div>";
+    '<div class="g-bloc"><div class="i-label">Publication</div><p class="g-legende">Les résultats sont <b>publiés dès qu\u2019ils sont enregistrés</b> : les membres les voient (si la page est visible). Pour corriger, ouvre un résultat sur la page : « Modifier » ou « Retirer ». « Repasser en brouillon » cache une journée entière le temps de la reprendre.</p>' + parEtape + "</div></div>";
 }
 function catDepuisTitre(t) {
   var s = String(t || "").toLowerCase();
@@ -2150,7 +2150,7 @@ function rendreImport() {
   });
   if (IMP.epreuves.length) {
     var n = IMP.epreuves.filter(function (e) { return e.cat; }).reduce(function (s, e) { return s + e.lignes.filter(function (l) { return String(l.cavalier).trim(); }).length; }, 0);
-    h += '<div class="i-pied"><button class="g-btn plein" data-adm="imp-enregistrer"' + (n ? "" : " disabled") + '>Enregistrer ' + n + " résultat" + (n > 1 ? "s" : "") + " en brouillon</button>" +
+    h += '<div class="i-pied"><button class="g-btn plein" data-adm="imp-enregistrer"' + (n ? "" : " disabled") + '>Enregistrer et publier ' + n + " résultat" + (n > 1 ? "s" : "") + "</button>" +
       '<p class="i-aide">Si des résultats existent déjà pour la même journée et la même catégorie, ils seront remplacés (on te le demande avant).</p></div>';
   }
   h += "</div>";
@@ -2162,7 +2162,7 @@ function rendreImport() {
 function majPiedImport() {
   var bt = document.querySelector('#import [data-adm="imp-enregistrer"]'); if (!bt) return;
   var n = IMP.epreuves.filter(function (e) { return e.cat; }).reduce(function (s, e) { return s + e.lignes.filter(function (l) { return String(l.cavalier).trim(); }).length; }, 0);
-  bt.disabled = !n; bt.textContent = "Enregistrer " + n + " résultat" + (n > 1 ? "s" : "") + " en brouillon";
+  bt.disabled = !n; bt.textContent = "Enregistrer et publier " + n + " résultat" + (n > 1 ? "s" : "");
 }
 document.addEventListener("input", function (ev) {
   var t = ev.target, d = t.dataset; if (!d || !d.imp) return;
@@ -2262,12 +2262,12 @@ async function enregistrerImport() {
       e.lignes.forEach(function (l) {
         if (!String(l.cavalier).trim()) return;
         lignes.push({ challenge_id: CHALLENGE.id, etape: IMP.etape, categorie: e.cat, reprise: e.rep || null, cavalier_nom: String(l.cavalier).trim(), cheval_nom: String(l.cheval).trim() || null,
-          place: l.statut === "classe" ? placeNum(l.place) : null, statut: l.statut, note: noteNum(l.note), publie: false });
+          place: l.statut === "classe" ? placeNum(l.place) : null, statut: l.statut, note: noteNum(l.note), publie: true });   /* 21/10 (Blandine) : publiés tout de suite, on corrige ensuite avec « Modifier » */
       });
     });
     var ri = await supa.from("challenge_resultats").insert(lignes);
     if (ri.error) throw new Error("Enregistrement refusé : " + ri.error.message);
-    IMP.info = lignes.length + " résultat(s) enregistrés en brouillon pour " + nomEtape(etape(IMP.etape)) + ". Vérifie-les sur la page, puis appuie sur « Publier ».";
+    IMP.info = lignes.length + " résultat(s) enregistrés et publiés pour " + nomEtape(etape(IMP.etape)) + ". En cas d'erreur, ouvre un résultat sur la page et appuie sur « Modifier » ou « Retirer ».";
     IMP.ouvert = false; IMP.epreuves = [];
     await charger();
   } catch (e) { IMP.erreur = (e && e.message) || "Erreur inconnue."; }
