@@ -13916,3 +13916,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
   Identité : fond #070A08, surfaces pétrole #101D22, ivoire #F3EEE4.
 - reglement-challenge.html : « Attribution des points » et « Réclamations » reformulés dans les 7 langues ; retour en arabe à droite avec › ; 8 articles et bouton imprimer conservés.
 - Tests : 390 / 820 / 1024 / 1230 dans Hype / 1440, français et arabe, visiteur et gestionnaire, Dressage accueil et étape 1, galerie et plein écran, CSO sans résultat, Equifun sans date, règlement (8 articles) ; rangs 1,2,3,3,5 et 1,2,3,3,5,6,7 ; un seul panneau visible ; clavier ; 7 langues sans clé brute ni texte français restant ; aucun débordement ; aucun badge brouillon pour un visiteur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5. Non vérifié : vrai iPhone ; filtres de la galerie tablette visibles seulement quand des photos sont identifiées par catégorie (aucune pour l'instant).
+
+## 21/10/2026 (13 h 40) — PUBLICATION (marqueur 20261021-1340, Blandine « Ok publié ») — CHALLENGE : invitation visiteur en bas de page
+- Demande : l'encadré « Crée ton compte gratuit… » sous le bouton Partager → « tout en bas sur une seule ligne discrète avant l'onglet de fin ».
+- challenge.html : encadré retiré du haut ; une ligne centrée, petite et discrète, entre la citation et la fin de page Hype : « Photos, j'aime, commentaires : Créer mon compte → » (nouveau texte court, 7 langues) ; visiteurs sans compte seulement ; l'invitation de l'onglet Photos d'une étape ne change pas.
+- index.html : seulement le marqueur.
+- Tests : une seule ligne à 360 et 390 px (fr, de, ja, ar) et sur ordinateur ; node --check OK ; 16 blocs de l'index OK ; marqueurs liensClub 4 · chevalCommunDemoData 2 · palmTech 4 · EcranSanteCheval 5.
