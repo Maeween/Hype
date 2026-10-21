@@ -405,6 +405,25 @@ body.sans-donnees .challenge-contenu{display:none}
 .i-doute{grid-column:1/-1;margin:2px 0 0;font-size:12.5px;color:var(--ambre)}
 .i-suppr{color:var(--grisClair);font-size:12.5px;border:1px solid var(--filet);border-radius:99px;min-height:34px;padding:0 10px}
 /* 21/10 : le bouton Enregistrer n'est plus « collé » en bas : il recouvrait la catégorie et les lignes de la saisie à la main (les touches ne passaient plus) */
+/* 21/10 : modifier / retirer / ajouter un résultat (gestionnaires) */
+.res-adm{display:inline-flex;gap:6px;margin-inline-start:auto}
+.res-adm .g-btn{min-height:32px;padding:4px 12px;font-size:12px}
+.res-adm.compact .g-btn{min-height:30px;min-width:30px;padding:2px 9px}
+.res-ajout{margin:14px 0 4px;text-align:center}
+#edRes{position:fixed;inset:0;z-index:120;display:flex;align-items:flex-end;justify-content:center}
+#edRes .ed-fond{position:absolute;inset:0;background:rgba(3,5,6,.72)}
+#edRes .ed-feuille{position:relative;width:100%;max-width:520px;max-height:90vh;overflow-y:auto;box-sizing:border-box;background:linear-gradient(180deg,#101D22,#0B1215);border-top:1px solid var(--champDoux);border-radius:22px 22px 0 0;padding:20px 18px calc(env(safe-area-inset-bottom) + 22px)}
+@media (min-width:700px){#edRes{align-items:center}#edRes .ed-feuille{border-radius:22px;border:1px solid var(--champDoux)}}
+.ed-k{font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--champ)}
+.ed-tete h3{font-family:var(--serif);font-weight:500;font-size:26px;margin:4px 0 12px;color:var(--ivoire)}
+.ed-ch{display:block;margin-top:10px;font-size:12px;color:var(--grisClair);min-width:0}
+.ed-ch input,.ed-ch select{display:block;width:100%;box-sizing:border-box;margin-top:5px;min-height:44px;background:var(--petrole);border:1px solid var(--ligne);border-radius:10px;color:var(--ivoire);font-size:16px;padding:8px 11px}
+.ed-ch input[disabled]{opacity:.4}
+.ed-ligne{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px}
+.ed-err{margin:12px 0 0;font-size:13px;color:var(--ambre)}
+.ed-pied{display:flex;gap:10px;margin-top:18px}.ed-pied .g-btn{flex:1}
+.ed-retirer{display:block;margin:16px auto 0;background:none;border:none;color:#E3A49B;font-size:13px;text-decoration:underline;min-height:40px;cursor:pointer}
+body.ed-ouvert{overflow:hidden}
 .i-pied{position:static;margin-top:20px;padding:14px 0 calc(env(safe-area-inset-bottom) + 90px);background:none}
 .i-pied .g-btn{width:100%}
 @container ch (min-width:700px){
@@ -1089,6 +1108,19 @@ var TX = {
   coef: { fr: "Points", en: "Points", es: "Puntos", it: "Punti", de: "Punkte", ja: "ポイント", ar: "النقاط", zh: "积分", nl: "Punten", pt: "Pontos" },
   normal: { fr: "Normaux", en: "Standard", es: "Normales", it: "Normali", de: "Normal", ja: "通常", ar: "عادية", zh: "标准组", nl: "Normaal", pt: "Normais" },
   note: { fr: "Note", en: "Score", es: "Nota", it: "Punteggio", de: "Note", ja: "得点", ar: "العلامة", zh: "分数", nl: "Cijfer", pt: "Nota" },
+  /* 21/10 : modifier / retirer / ajouter un résultat (gestionnaires) */
+  resModifier: { fr: "Modifier", en: "Edit", es: "Modificar", it: "Modifica", de: "Bearbeiten", ja: "編集", ar: "تعديل", zh: "修改", nl: "Wijzigen", pt: "Editar" },
+  resRetirer: { fr: "Retirer", en: "Remove", es: "Quitar", it: "Rimuovi", de: "Entfernen", ja: "削除", ar: "حذف", zh: "删除", nl: "Verwijderen", pt: "Remover" },
+  resAjouter: { fr: "Ajouter un résultat", en: "Add a result", es: "Añadir un resultado", it: "Aggiungi un risultato", de: "Ergebnis hinzufügen", ja: "結果を追加", ar: "إضافة نتيجة", zh: "添加成绩", nl: "Resultaat toevoegen", pt: "Adicionar um resultado" },
+  resTitreModif: { fr: "Modifier le résultat", en: "Edit the result", es: "Modificar el resultado", it: "Modifica il risultato", de: "Ergebnis bearbeiten", ja: "結果を編集", ar: "تعديل النتيجة", zh: "修改成绩", nl: "Resultaat wijzigen", pt: "Editar o resultado" },
+  statutL: { fr: "Statut", en: "Status", es: "Estado", it: "Stato", de: "Status", ja: "状態", ar: "الحالة", zh: "状态", nl: "Status", pt: "Situação" },
+  categorieL: { fr: "Catégorie", en: "Category", es: "Categoría", it: "Categoria", de: "Kategorie", ja: "カテゴリー", ar: "الفئة", zh: "组别", nl: "Categorie", pt: "Categoria" },
+  repriseL: { fr: "Reprise", en: "Test", es: "Reprise", it: "Ripresa", de: "Aufgabe", ja: "経路", ar: "الاختبار", zh: "考核项目", nl: "Proef", pt: "Reprise" },
+  enregistrer: { fr: "Enregistrer", en: "Save", es: "Guardar", it: "Salva", de: "Speichern", ja: "保存", ar: "حفظ", zh: "保存", nl: "Opslaan", pt: "Salvar" },
+  resConfirmRetirer: { fr: "Retirer ce résultat ? Il disparaîtra du classement et des points.", en: "Remove this result? It will disappear from the ranking and the points.", es: "¿Quitar este resultado? Desaparecerá de la clasificación y de los puntos.", it: "Rimuovere questo risultato? Sparirà dalla classifica e dai punti.", de: "Dieses Ergebnis entfernen? Es verschwindet aus der Wertung und den Punkten.", ja: "この結果を削除しますか？順位とポイントから消えます。", ar: "حذف هذه النتيجة؟ ستختفي من الترتيب ومن النقاط.", zh: "删除这条成绩？它将从排名和积分中消失。", nl: "Dit resultaat verwijderen? Het verdwijnt uit het klassement en de punten.", pt: "Remover este resultado? Ele vai sumir da classificação e dos pontos." },
+  resErreur: { fr: "Enregistrement refusé : ", en: "Saving refused: ", es: "Guardado rechazado: ", it: "Salvataggio rifiutato: ", de: "Speichern abgelehnt: ", ja: "保存できませんでした：", ar: "تم رفض الحفظ: ", zh: "保存被拒绝：", nl: "Opslaan geweigerd: ", pt: "Gravação recusada: " },
+  resNomVide: { fr: "Écris le nom du cavalier ou de la cavalière.", en: "Write the rider's name.", es: "Escribe el nombre del jinete.", it: "Scrivi il nome del cavaliere.", de: "Gib den Namen des Reiters ein.", ja: "騎乗者の名前を入力してください。", ar: "اكتب اسم الفارس.", zh: "请填写骑手姓名。", nl: "Vul de naam van de ruiter in.", pt: "Escreva o nome do cavaleiro." },
+  resPlaceVide: { fr: "Indique la place, ou choisis un autre statut.", en: "Enter the place, or choose another status.", es: "Indica el puesto o elige otro estado.", it: "Indica il posto o scegli un altro stato.", de: "Gib den Platz an oder wähle einen anderen Status.", ja: "順位を入力するか、別の状態を選んでください。", ar: "أدخل المركز أو اختر حالة أخرى.", zh: "请填写名次，或选择其他状态。", nl: "Vul de plaats in of kies een andere status.", pt: "Informe a colocação ou escolha outra situação." },
   sansNote: { fr: "Note non publiée", en: "Score not published", es: "Nota no publicada", it: "Punteggio non pubblicato", de: "Note nicht veröffentlicht", ja: "得点未公開", ar: "العلامة غير منشورة", zh: "成绩未公布", nl: "Cijfer niet gepubliceerd", pt: "Nota não publicada" },
   retour: { fr: "Challenge", en: "Challenge", es: "Challenge", it: "Challenge", de: "Challenge", ja: "チャレンジ", ar: "التحدي", zh: "挑战", nl: "Challenge", pt: "Desafio" },
   openDressage: { fr: "Open Dressage SEP", en: "SEP Open Dressage", es: "Open de Doma SEP", it: "Open Dressage SEP", de: "SEP Open Dressur", ja: "SEPオープン馬場馬術", ar: "ترويض SEP المفتوح", zh: "Open 盛装舞步 SEP", nl: "Open Dressuur SEP", pt: "Open de Adestramento SEP" },
@@ -1316,14 +1348,95 @@ function listeResultats(n, filtre) {
   var liste = '<div class="lignes">' + l.map(function (r) {
     return '<div class="ligne' + (r.publie ? "" : " brouillon") + '"><button class="ligne-h" data-ouvrir="1">' + rangHtml(classe(r) ? rangS(r) : 0) +
       '<span class="nm"><b>' + esc(nomVu(r.cav, r.cat)) + '</b><span class="che">' + esc(r.che || "") + "</span></span>" + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + '<span class="chev">▾</span></button>' +
-      '<div class="note-det"><span class="note-l">' + T("note") + "</span>" + noteHtml(r) + (plusieurs(r) ? '<span class="note-rep">' + esc(r.rep) + "</span>" : "") + "</div></div>";
+      '<div class="note-det"><span class="note-l">' + T("note") + "</span>" + noteHtml(r) + (plusieurs(r) ? '<span class="note-rep">' + esc(r.rep) + "</span>" : "") + boutonsRes(r) + "</div></div>";
   }).join("") + "</div>";
-  var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("note") + '</th><th class="c">' + T("points") + "</th></tr></thead><tbody>" +
+  var table = '<table class="grand"><thead><tr><th class="c">' + T("rang") + "</th><th>" + T("cavalier") + "</th><th>" + T("cheval") + '</th><th class="c">' + T("note") + '</th><th class="c">' + T("points") + "</th>" + (GERE ? '<th class="c"></th>' : "") + "</tr></thead><tbody>" +
     l.map(function (r) {
-      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && rangS(r) <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? rangS(r) : 0) + '</td><td class="t-cav">' + esc(nomVu(r.cav, r.cat)) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td></tr>";
+      return '<tr class="' + (r.publie ? "" : "brouillon") + (classe(r) && rangS(r) <= 3 ? " top" : "") + '"><td class="c">' + rangHtml(classe(r) ? rangS(r) : 0) + '</td><td class="t-cav">' + esc(nomVu(r.cav, r.cat)) + (plusieurs(r) ? '<small>' + esc(r.rep) + "</small>" : "") + '</td><td class="t-che">' + esc(r.che || "") + '</td><td class="c">' + (r.note != null ? noteHtml(r) : '<span class="tiret">–</span>') + '</td><td class="c">' + (classe(r) ? ptsHtml(r.pts, true) : statutHtml(r)) + "</td>" + (GERE ? '<td class="c">' + boutonsRes(r, true) + "</td>" : "") + "</tr>";
     }).join("") + "</tbody></table>";
-  return liste + table;
+  return liste + table + boutonAjoutRes(n, filtre);
 }
+/* 21/10 (Blandine : « possibilité de modifier des résultats … retirer un cavalier ou un résultat enregistré ») :
+   pour les gestionnaires seulement, chaque résultat a « Modifier » et « Retirer », et chaque liste « + Ajouter un résultat ».
+   La base vérifie les droits (règle challenge_res_ecriture : hype_peut_gerer_challenge). Les points se recalculent
+   tout seuls depuis la place. Un résultat ajouté prend l'état (brouillon / publié) des autres résultats de la journée. */
+function boutonsRes(r, compact) {
+  if (!GERE || !r.id) return "";
+  return '<span class="res-adm' + (compact ? " compact" : "") + '"><button class="g-btn discret" data-adm="res-modif" data-id="' + esc(r.id) + '" aria-label="' + esc(T("resTitreModif")) + '">✎' + (compact ? "" : " " + T("resModifier")) + '</button>' +
+    '<button class="g-btn discret" data-adm="res-suppr" data-id="' + esc(r.id) + '" aria-label="' + esc(T("resRetirer")) + '">' + (compact ? "✕" : T("resRetirer")) + "</button></span>";
+}
+function boutonAjoutRes(n, filtre) {
+  if (!GERE) return "";
+  return '<div class="res-ajout"><button class="g-btn" data-adm="res-ajout" data-n="' + n + '" data-cat="' + esc(filtre || "") + '">+ ' + T("resAjouter") + "</button></div>";
+}
+var ED = null;   /* résultat en cours de modification */
+function ouvrirEdition(id, n, filtre) {
+  var r = id ? RESULTATS.filter(function (x) { return x.id === id; })[0] : null;
+  if (id && !r) return;
+  var cat = r ? r.cat : (CHALLENGE.categories.indexOf(filtre) >= 0 ? filtre : ((CHALLENGE.reprises.filter(function (x) { return x.nom === filtre; })[0] || {}).cat || CHALLENGE.categories[0]));
+  var reps = CHALLENGE.reprises.filter(function (x) { return x.cat === cat; });
+  ED = { id: id || null, n: r ? r.e : n, cat: cat, rep: r ? (r.rep || "") : (CHALLENGE.reprises.filter(function (x) { return x.nom === filtre; })[0] ? filtre : (reps[0] ? reps[0].nom : "")),
+    cav: r ? r.cav : "", che: r ? (r.che || "") : "", pl: r && r.pl ? String(r.pl) : "", note: r && r.note != null ? String(r.note) : "", statut: r ? r.statut : "classe", publie: r ? r.publie : null, err: "", enCours: false };
+  rendreEdition();
+}
+function rendreEdition() {
+  var el = document.getElementById("edRes");
+  if (!ED) { if (el) el.remove(); document.body.classList.remove("ed-ouvert"); return; }
+  if (!el) { el = document.createElement("div"); el.id = "edRes"; el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); document.body.appendChild(el); }
+  document.body.classList.add("ed-ouvert");
+  var reps = CHALLENGE.reprises.filter(function (x) { return x.cat === ED.cat; });
+  var opt = function (v, lib, sel) { return '<option value="' + esc(v) + '"' + (v === sel ? " selected" : "") + ">" + esc(lib) + "</option>"; };
+  el.innerHTML = '<div class="ed-fond" data-ed-fond="1"></div><div class="ed-feuille">' +
+    '<div class="ed-tete"><span class="ed-k">' + esc(nomEtape(etape(ED.n))) + '</span><h3>' + (ED.id ? T("resTitreModif") : T("resAjouter")) + "</h3></div>" +
+    (ED.id ? "" : '<label class="ed-ch"><span>' + T("categorieL") + '</span><select data-ed="cat">' + CHALLENGE.categories.map(function (c) { return opt(c, c, ED.cat); }).join("") + "</select></label>") +
+    (reps.length > 1 ? '<label class="ed-ch"><span>' + T("repriseL") + '</span><select data-ed="rep">' + reps.map(function (x) { return opt(x.nom, x.nom, ED.rep); }).join("") + "</select></label>" : "") +
+    '<label class="ed-ch"><span>' + T("cavalier") + '</span><input data-ed="cav" value="' + esc(ED.cav) + '" autocomplete="off"></label>' +
+    '<label class="ed-ch"><span>' + T("cheval") + '</span><input data-ed="che" value="' + esc(ED.che) + '" autocomplete="off"></label>' +
+    '<div class="ed-ligne"><label class="ed-ch"><span>' + T("statutL") + '</span><select data-ed="statut">' + ["classe", "forfait", "elimine", "abandon"].map(function (x) { return opt(x, T(x), ED.statut); }).join("") + "</select></label>" +
+    '<label class="ed-ch"><span>' + T("place") + '</span><input data-ed="pl" value="' + esc(ED.pl) + '" inputmode="numeric" dir="ltr"' + (ED.statut === "classe" ? "" : " disabled") + "></label>" +
+    '<label class="ed-ch"><span>' + T("note") + ' %</span><input data-ed="note" value="' + esc(ED.note) + '" inputmode="decimal" dir="ltr"></label></div>' +
+    (ED.err ? '<p class="ed-err">' + esc(ED.err) + "</p>" : "") +
+    '<div class="ed-pied"><button class="g-btn discret" data-adm="res-fermer">' + T("annuler") + '</button><button class="g-btn plein" data-adm="res-enr"' + (ED.enCours ? " disabled" : "") + ">" + (ED.enCours ? "…" : T("enregistrer")) + "</button></div>" +
+    (ED.id ? '<button class="ed-retirer" data-adm="res-suppr" data-id="' + esc(ED.id) + '">' + T("resRetirer") + "</button>" : "") +
+    "</div>";
+}
+async function enregistrerEdition() {
+  if (!ED || ED.enCours) return;
+  var cav = String(ED.cav || "").trim();
+  if (!cav) { ED.err = T("resNomVide"); rendreEdition(); return; }
+  var pl = ED.statut === "classe" ? placeNum(ED.pl) : null;
+  if (ED.statut === "classe" && !pl) { ED.err = T("resPlaceVide"); rendreEdition(); return; }
+  var reps = CHALLENGE.reprises.filter(function (x) { return x.cat === ED.cat; });
+  var val = { cavalier_nom: cav, cheval_nom: String(ED.che || "").trim() || null, statut: ED.statut, place: pl, note: noteNum(ED.note) };
+  ED.enCours = true; ED.err = ""; rendreEdition();
+  try {
+    var rq;
+    if (ED.id) rq = await supa.from("challenge_resultats").update(val).eq("id", ED.id);
+    else {
+      var memes = RESULTATS.filter(function (x) { return x.e === ED.n; });
+      rq = await supa.from("challenge_resultats").insert(Object.assign(val, { challenge_id: CHALLENGE.id, etape: ED.n, categorie: ED.cat, reprise: reps.length ? (ED.rep || reps[0].nom) : null,
+        publie: memes.length > 0 && memes.every(function (x) { return x.publie; }) }));
+    }
+    if (rq && rq.error) throw new Error(rq.error.message);
+    ED = null; rendreEdition(); await charger();
+  } catch (e) { if (ED) { ED.enCours = false; ED.err = T("resErreur") + ((e && e.message) || ""); rendreEdition(); } }
+}
+async function retirerResultat(id) {
+  if (!id || !confirm(T("resConfirmRetirer"))) return;
+  var rd = await supa.from("challenge_resultats").delete().eq("id", id);
+  if (rd && rd.error) { if (ED) { ED.err = T("resErreur") + rd.error.message; rendreEdition(); } else alert(T("resErreur") + rd.error.message); return; }
+  ED = null; rendreEdition(); await charger();
+}
+document.addEventListener("input", function (ev) { var t = ev.target; if (!ED || !t || !t.dataset || !t.dataset.ed) return; ED[t.dataset.ed] = t.value; });
+document.addEventListener("change", function (ev) {
+  var t = ev.target; if (!ED || !t || !t.dataset || !t.dataset.ed) return;
+  ED[t.dataset.ed] = t.value;
+  if (t.dataset.ed === "statut" || t.dataset.ed === "cat") {
+    if (t.dataset.ed === "cat") { var rp = CHALLENGE.reprises.filter(function (x) { return x.cat === ED.cat; }); ED.rep = rp[0] ? rp[0].nom : ""; }
+    rendreEdition();
+  }
+});
+document.addEventListener("click", function (ev) { if (ED && ev.target && ev.target.dataset && ev.target.dataset.edFond) { ED = null; rendreEdition(); } });
 /* galerie d'une journée : TOUTES les photos (il peut y en avoir des dizaines), en grille légère chargée au défilement */
 function galerie(n) {
   var p = PHOTOS[n] || [];
@@ -2162,6 +2275,11 @@ async function enregistrerImport() {
 }
 async function gestionClic(t, d) {
   var a = d.adm;
+  if (a === "res-modif") { ouvrirEdition(d.id); return; }
+  if (a === "res-ajout") { ouvrirEdition(null, +d.n, d.cat || null); return; }
+  if (a === "res-suppr") { retirerResultat(d.id); return; }
+  if (a === "res-enr") { enregistrerEdition(); return; }
+  if (a === "res-fermer") { ED = null; rendreEdition(); return; }
   if (a === "importer") { IMP.ouvert = true; IMP.erreur = ""; IMP.info = ""; var dern = CHALLENGE.etapes.filter(function (e) { return e.date && e.date <= AUJOURDHUI; }).pop(); IMP.etape = dern ? dern.n : 1; rendreImport(); document.getElementById("import").scrollTop = 0; return; }
   if (a === "ouvrir-gestion") { GP.ouvert = true; rendreGestion(); document.getElementById("gerer").scrollTop = 0; return; }
   if (a === "fermer-gestion") { GP.ouvert = false; IMP.info = ""; rendreGestion(); return; }

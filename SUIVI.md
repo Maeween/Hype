@@ -14003,3 +14003,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - 🟡 Incident de parcours, corrigé avant publication : une modification d'index.html faite entre le relevé et l'insertion avait décalé 93 insertions de 8 caractères ; tout a été remis à l'état publié puis réappliqué proprement (blocs contrôlés, 0 erreur).
 - NON testé : iPhone réel, Hey Baby en portugais en direct, pages /pt/ en ligne (déploiement : quelques minutes après la publication).
 - Publication : marqueur 20261021-1930 ; index.html, modules, pages /pt/ et toutes les pages publiques, edge functions, générateurs, sitemap-pages.xml, SUIVI.md.
+
+## 21/10 — EN ATTENTE DE VALIDATION (non publié) : Challenge — modifier, retirer ou ajouter un résultat
+- Blandine (17 h 46, capture Galop 7) : « possibilité de modifier des résultats … je me suis trompée … pas moyen de retirer un cavalier ou un résultat enregistré ou même tout simplement de modifier ».
+- challenge.html seul (gestionnaires seulement) : dans une étape, chaque résultat ouvert (téléphone) ou chaque ligne du tableau (tablette/ordinateur) porte « ✎ Modifier » et « Retirer » ; sous chaque liste « + Ajouter un résultat ». Feuille d'édition : catégorie (ajout), reprise s'il y en a plusieurs, cavalier, cheval, statut, place, note. Les points se recalculent depuis la place. Retirer demande confirmation. Un résultat ajouté prend l'état brouillon/publié des autres résultats de la journée.
+- Aucune modification de la base : la règle existante challenge_res_ecriture (hype_peut_gerer_challenge) autorise déjà modifier/supprimer aux gestionnaires.
+- Textes nouveaux dans les 10 langues. Tests (faux client) : modifier nom + place (r0 : place 1 → 3), place vide refusée avec message, retirer (27 → 26), ajouter (note « 65,5 » → 65.5, brouillon) ; 390 et 1440, fr et ar, sans débordement ni erreur.
