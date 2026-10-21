@@ -49,7 +49,7 @@
 <!-- HYPE ▸ 08/09/2026 · ACTION 3a (« Vas y là oui ») — VISIONNEUSE D'ALBUM VIA PhotoZoomHype (pincer zoome la photo, pas la page ; tap ne ferme toujours pas) + BLOCAGE DU PINCEMENT SUR LES DEUX VOILES (album + fiche : gesturestart/change/end et touchmove à deux doigts, non passifs ; touch-action manipulation contre le double-tap zoom). Aide hypeBloquerPincement au niveau global. Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 2 (validée par Blandine) — MINIATURES VIDÉO SANS LECTEUR : les 12 <video preload=metadata> qui servaient de vignettes (grille d'album, onglet Vidéos, onglet Photos, feuille de sélection, couvertures ×4, moments forts ×2, fil) deviennent des <img> vignette Mux (image.mux.com, lazy) sur fond Hype + pictogramme ; anciennes vidéos Supabase = fond + pictogramme, zéro chargement (option A). Lecteur uniquement dans PhotoZoomHype, libéré à la fermeture (hypeLibererVideo). Rien d'autre touché. -->
 <!-- HYPE ▸ 08/09/2026 · ACTION 1 (option B, validée par Blandine) — TRACE PERSISTANTE DES VIDÉOS MUX : table videos_mux (uploading → processing → ready | errored), ligne écrite AVANT le PUT (sans ligne, pas d'envoi), rattachement à l'album par la fonction SQL album_ajouter_media (atomique, idempotente), réconciliation à l'ouverture de l'album, lecture du statut errored, carte « Réessayer ». Photos INCHANGÉES et traitées d'abord. SQL à passer avant : sql-08-09-videos-mux.sql. Détail : bloc « 08/09/2026 — ACTION 1 » dans la partie Mux, et importerFichiers. -->
-<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261021-1920"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
+<!-- HYPE ▸ 27/07/2026 (4) · TROIS CORRECTIONS, demandees par Blandine en direct sur son telephone. (1) PURGE DU CACHE LOCAL AU CHANGEMENT DE COMPTE : le mecanisme existant (hype_uid) ne videait que augalop_etat_v1 au changement de cavalier sur un appareil partage ; les autres caches locaux (photo d'ecurie, avatar, banniere de club, coach, progression du Memory...) restaient, pouvant faire apparaitre un instant le contenu du cavalier precedent. Purge etendue aux deux points d'entree (connexion initiale et apresConnexion()), en excluant volontairement les cles qui doivent survivre au changement de compte sur le meme appareil (hype_rappeler, hype_teinte, hype_maj_vue, hype_install_vu, hype_uid lui-meme). (2) FAILLE CORRIGEE, bouton "Mettre en vedette" (fiche cheval, visionneuse photo) : contrairement au bouton Supprimer juste au-dessus (correctement protege : proprietaire ou moderateur), ce bouton n'avait AUCUNE verification et appelait basculerVedette() sans controle — n'importe quel cavalier connecte pouvait mettre en vedette la photo de n'importe quel autre cavalier, sur n'importe quelle ecurie. Repere par Blandine en testant l'app en direct. Corrige en ajoutant la meme regle que Supprimer (proprietaire ou moderateur) au debut du gestionnaire de clic ; sinon toast explicatif. Structure JSX environnante non touchee (tres imbriquee), seul le corps de la fonction onClick a ete modifie. (3) UNIFICATION Souvenirs / Albums (fiche cheval) : GalerieSouvenirs (le carrousel en tete de fiche) ne lisait que les photos postees en commentaire isole (listerCommentaires), jamais celles ajoutees dans un album nomme (albums_cheval, meme cible "cheval:<id>"). D'ou le "1/1 souvenirs" alors qu'un album contenait plusieurs photos, et un balayage qui ne faisait rien — pas un bug de geste (le code de glissement est correct, garde par n>1), mais un vrai manque de donnees puisque n valait 1. Nouvelle fonction chargerPhotosSouvenirs(cible) qui fusionne les deux sources (commentaires-photos + photos de tous les albums de la cible, dedoublonnees), utilisee aux deux points de chargement du composant. --><!-- HYPE ▸ 27/07/2026 (3) · EcranAlbumEcurie sur le fichier a jour renvoye par Blandine (887 fonctions, 388 const, 10 284 753 octets avant cette correction). Ce fichier contenait deja les correctifs precedents (repli neutre du titre Ecurie, cibleInitiale() sur profil.id) mais pas encore celui-ci. MEME CORRECTIF que documente dans la version precedente : la cible reelle des albums photo (var nomEcurieAl, dans EcranAlbumEcurie, ecran distinct de MurHype) etait construite avec le nom affiche de l'ecurie — deux cavaliers d'un meme club tapant le meme nom auraient partage la meme cible d'albums. Verifie en base : 0 ligne concernee, rien a migrer. Cle de stockage desormais sur profil.id (var idEcurieAl) ; la condition d'affichage du message d'accueil reste sur le nom, inchangee. Diff confine a une seule zone (2 hunks contigus). --><!-- HYPE ▸ 27/07/2026 · CIBLE DES ALBUMS D'ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 386 const). Diff confine a 2 zones. PROBLEME : cibleInitiale() (dans MurHype, utilisee pour les albums d'ecurie) construisait la cible avec le NOM AFFICHE de l'ecurie du cavalier, repli sur "Écurie Feinn" quand aucune ecurie n'etait renseignee. Tout cavalier dans ce cas partageait donc la meme cible d'albums que tous les autres. Verifie en base le 27/07 par Blandine (requete de repérage) : un seul album concerne a ce jour, un seul cavalier — le risque etait reel mais pas encore materialise en melange constate. CORRECTION DE CODE : cibleInitiale() utilise desormais profil.id (= auth.users.id, deja utilise ailleurs dans le fichier de la meme facon), identifiant stable, unique, jamais vide, insensible aux renommages. Deuxieme occurrence corrigee au passage, ecuriePrincipale dans l'ecran de classement (EcranGuilde) : simple affichage, meme repli neutre "Mon ecurie" que le titre de l'ecran Ecurie, aucun impact base de donnees. A EXECUTER DANS SUPABASE : migration_albums_ecurie.sql, fourni a cote. Deplace l'unique album concerne vers sa nouvelle cible "ecurie:<user_id>". A pousser dans cet ordre : SQL d'abord (l'album existant reste accessible entre-temps sous son ancienne cible, rien ne casse si l'ordre est inverse), puis index.html. --><!-- HYPE ▸ 27/07/2026 · SESSION + ECRAN ECURIE. Base : index.html en ligne fourni par Blandine (887 fonctions, 385 const). Diff confine a 6 zones. (1) SESSION : stockageHype ecrivait dans sessionStorage des que la cle hype_rappeler valait "0" — valeur inscrite des que la case "Se rappeler de moi" avait ete decochee UNE SEULE FOIS, puis conservee indefiniment. La session mourait donc a chaque fermeture d'onglet, d'ou les demandes de reconnexion incessantes ; recocher la case ne reparait rien retroactivement. Desormais toujours localStorage, relecture de secours dans sessionStorage pour ne pas perdre une session en cours, et reparation au chargement de la valeur "0" coincee. (2) ECRAN ECURIE — REPLIS : l'ecran etait deja branche sur le cavalier (monClubEc lit profil.ecurie || profil.club), mais ses deux valeurs par defaut etaient celles de Blandine : le titre retombait sur "Écurie Feinn" et l'avatar sur l'initiale "É". Tout cavalier sans ecurie renseignee voyait donc "Ton ecurie — Écurie Feinn". Titre replie desormais sur "Mon ecurie" en 6 langues, avatar sur l'initiale du vrai nom sinon une icone cheval. (3) RENOMMAGE : petit crayon a cote du titre, ouvre un prompt, ecrit profil.ecurie via setProfil puis majProfil({ecurie}) qui accepte deja ce champ. Nom limite a 60 caracteres. La PHOTO d'ecurie etait deja fonctionnelle (appliquerNouvellePhotoEcurie + hypeEnregistrerPhoto, champ ecurie_photo). NON TOUCHE, deux "Écurie Feinn" subsistent volontairement : (a) var ecuriePrincipale dans l'ecran de classement — simple affichage, a corriger de la meme facon ; (b) cibleInitiale() qui construit "ecurie:" + nom pour les ALBUMS — c'est une CLE DE BASE DE DONNEES : la changer orphelinerait les albums deja enregistres sous "ecurie:Écurie Feinn". A noter : tous les cavaliers sans ecurie partagent aujourd'hui cette meme cible d'album, ils voient donc potentiellement les memes albums. A traiter avec une migration, pas par un simple remplacement. ERREUR EVITEE : j'avais d'abord remplace html,body{...#04070d} par .ecv en croyant corriger ECURIE_HYPE_CSS ; cette regle est en fait dans GLOBE_HTML_HYPE, un srcDoc d'iframe. Edit annule. ECURIE_HYPE_CSS ne contient plus aucune regle sur html/body dans cette version. Les 4 autres html,body{overflow:hidden} restants sont tous dans des iframes (FRANCE_MAP_HTML, ANIM_HTML_HYPE, GLOBE_HTML_HYPE) : aucun verrou de defilement au niveau du document. --><!DOCTYPE html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, viewport-fit=cover"><meta name="theme-color" content="#060709"><meta name="hype-build" content="20261021-2245"><link rel="manifest" href="/manifest.json"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Hype"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Hype</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Montserrat:wght@400;500;600&family=Anton&family=Oswald:wght@500;600;700&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet"><style>/* 🔴🔴 INTERDIT DE REVENIR EN ARRIERE — overflow-x doit TOUJOURS etre double ici : hidden (repli) PUIS clip. hidden SEUL fait de body un conteneur de defilement, Chrome Android accroche le geste et tout le defilement de l app meurt (bug majeur 09-10/08/2026, reintroduit par regression de lignee 14/08, re-corrige 17/08). Meme avertissement en bas de cette feuille sur la regle !important : les DEUX doivent rester doublees. */
 html,body{margin:0;background:#14161a;color:#e9ecf0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%;max-width:100%;overflow-x:hidden;overflow-x:clip}#root{min-height:100vh}#boot{position:fixed;inset:0;display:grid;place-items:center;color:#9aa1ab;font-size:14px}pre.err{color:#ffb4a8;white-space:pre-wrap;padding:20px;font-size:12px}.hyperr{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:calc(env(safe-area-inset-top) + 40px) 26px 44px;box-sizing:border-box;background:radial-gradient(120% 68% at 50% 0%,#0d1319 0%,#060709 62%);color:#F4F7FA}.hyperr img{width:112px;height:112px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr-apy{font-size:62px;margin-bottom:18px}.hyperr video{width:170px;height:170px;border-radius:50%;object-fit:cover;background:#0B0E12;box-shadow:0 0 0 1px rgba(127,163,173,.25),0 0 38px rgba(127,163,173,.22);margin-bottom:22px}.hyperr h1{font-family:'Cinzel',serif;font-weight:600;font-size:21px;letter-spacing:.5px;margin:0 0 10px}.hyperr p{font-family:'Montserrat',sans-serif;font-size:13.5px;line-height:1.6;color:#9AA6AE;margin:0 0 26px;max-width:300px}.hyperr #hyperr-go{font-family:'Montserrat',sans-serif;font-size:14px;font-weight:700;color:#04141A;background:linear-gradient(90deg,#7FA3AD,#CFE3E8);border:none;border-radius:999px;padding:14px 32px;cursor:pointer}.hyperr #hyperr-det{margin-top:22px;background:none;border:none;color:#5A646C;font-family:'Montserrat',sans-serif;font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;cursor:pointer}.hyperr pre.err{text-align:left;max-width:100%;overflow:auto;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;margin-top:14px}
 /* HYPE - bloc resume du module cavalier : cadre lumineux anime + reflet miroir */
 .cavResume{ position:relative; padding:2px; border-radius:18px; background:linear-gradient(115deg, rgba(127,163,173,0.15) 0%, rgba(127,163,173,0.95) 18%, rgba(180,245,255,0.9) 30%, rgba(127,163,173,0.25) 45%, rgba(127,163,173,0.10) 65%, rgba(127,163,173,0.9) 88%, rgba(127,163,173,0.15) 100%); background-size:280% 100%; animation:cavCadre 6s linear infinite; box-shadow:0 0 26px rgba(127,163,173,0.16); }
@@ -30279,7 +30279,7 @@ function EcranIntro() {
     /* Drapeau pose par l'ecran d'inscription juste apres la creation du compte :
        on revient sur "intro" mais pour n'y afficher QUE la page des questions,
        sans rejouer l'animation d'ouverture. */
-    const [questions] = useState(() => { try { const q = !!window.HYPE_QUESTIONS; window.HYPE_QUESTIONS = false; return q; } catch (e) { return false; } });
+    const [questions, setQuestions] = useState(() => { try { const q = !!window.HYPE_QUESTIONS; window.HYPE_QUESTIONS = false; return q; } catch (e) { return false; } });
     /* Regle maison : tout ecran defilant s'ouvre en haut. */
     const refQuestions = useRef(null);
     useEffect(() => { if (!questions) return; try { window.scrollTo(0, 0); if (refQuestions.current) refQuestions.current.scrollTop = 0; } catch (e) { } }, [questions]);
@@ -30339,8 +30339,11 @@ function EcranIntro() {
     /* Retour d'inscription : uniquement les questions, plein ecran, sans deck
        ni animation d'ouverture (elle vient d'etre vue il y a une minute). */
     if (questions) {
-        return (React.createElement("div", { ref: refQuestions, style: { position: "relative", height: "100vh", width: "100%", background: COLORS.nuit, overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch" } },
-            React.createElement(EcranPersonnalisation, { local: setup, setLocal: setSetup, onSuivant: validerSetup })));
+        /* 21/10 (onboarding « Qu'aimerais-tu faire avec Hype ? ») : plein ecran sur toutes les tailles (l'appli limite
+           sinon cet ecran a une colonne de 480 px sur ordinateur). Passer -> Accueil sans rien exiger ;
+           Retour -> page d'entree (le compte vient d'etre cree, on ne repasse pas par le formulaire). */
+        return (React.createElement("div", { ref: refQuestions, style: { position: "fixed", inset: 0, height: "100%", width: "100%", background: "#070A08", overflowY: "auto", overflowX: "hidden", WebkitOverflowScrolling: "touch", zIndex: 40 } },
+            React.createElement(EcranPersonnalisation, { local: setup, setLocal: setSetup, onSuivant: validerSetup, onPasser: () => { setEcran("dashboard"); }, onRetour: () => { setQuestions(false); } })));
     }
     return (React.createElement("div", { className: (!entre && !sortie) ? "hu-hold" : "", style: { position: "relative", height: "100vh", width: "100%", background: COLORS.nuit, overflow: "hidden" } },
         React.createElement("style", null, ".intro-deck::-webkit-scrollbar{display:none}.hu-hold .intro-deck *{animation-play-state:paused!important}"),
@@ -30486,11 +30489,38 @@ function EcranConnexionSpectral() {
      dans un nouvel onglet pour ne pas perdre la saisie. Rien n est enregistre en base a ce stade. */
   var accCgvSt = useState(false); var accCgv = accCgvSt[0], setAccCgv = accCgvSt[1];
   var accAgeSt = useState(false); var accAge = accAgeSt[0], setAccAge = accAgeSt[1];
-  var consentOk = accCgv && accAge;
+  /* 21/10 (Blandine « fais ce qui te semble le mieux ») : UNE seule question d age. Boutons - / + de 18 ans (enregistres
+     dans profil.majeur) ; la case « accord d un parent » n apparait et n est exigee que pour - de 18 ans. Remplace la case
+     « J ai 15 ans ou plus, ou l accord d un parent », qui n enregistrait rien. */
+  /* 21/10 (prompt onboarding de Blandine) : la tranche d age (- / + de 18 ans) quitte l ecran des questions et arrive ici,
+     sur Creer mon compte. Obligatoire, jamais choisie d avance ; enregistree dans le profil (profil.majeur) apres l inscription. */
+  var trancheSt = useState(function () { try { var e0 = JSON.parse(localStorage.getItem("augalop_etat_v1") || "null"); var m0 = e0 && e0.profil ? e0.profil.majeur : null; return (m0 === true || m0 === false) ? m0 : null; } catch (eT) { return null; } });
+  var tranche = trancheSt[0], setTranche = trancheSt[1];
+  var trancheRef = React.useRef(tranche); trancheRef.current = tranche;
+  var consentOk = accCgv && (tranche === true || (tranche === false && accAge));
+  function choixTranche(cle) {
+    function pil(val, texte) {
+      var actif = tranche === val;
+      return h("button", { key: String(val), type: "button", role: "radio", "aria-checked": actif ? "true" : "false", onClick: function () { setErreur(""); setTranche(val); },
+        style: { flex: "1 1 0", minHeight: 44, padding: "0 12px", borderRadius: 999, cursor: "pointer", fontFamily: "'Montserrat',sans-serif", fontSize: 13, fontWeight: actif ? 600 : 500, letterSpacing: 0.2,
+          border: "1px solid " + (actif ? "#4E7380" : "rgba(190,215,222,0.22)"), background: actif ? "#101D22" : "transparent", color: actif ? "#F3EEE4" : "#AEB8C0", transition: "all .2s" } }, texte);
+    }
+    var lib = T("Ton âge", "Your age", "Tu edad", "La tua età", "年齢", "Dein Alter", "عمرك", "你的年龄", "Je leeftijd", "Sua idade", "Din ålder");
+    return h("div", { key: cle, role: "radiogroup", "aria-label": lib, style: { marginTop: 14 } },
+      h("div", { style: { fontFamily: "'Montserrat',sans-serif", fontSize: 12, color: "#AEB8C0", marginBottom: 8, textAlign: "start" } }, lib),
+      h("div", { style: { display: "flex", gap: 10 } },
+        pil(false, T("– de 18 ans", "Under 18", "Menos de 18", "Meno di 18", "18歳未満", "Unter 18", "أقل من 18 سنة", "18岁以下", "Jonger dan 18", "Menos de 18", "Under 18")),
+        pil(true, T("+ de 18 ans", "18 and over", "18 o más", "18 o più", "18歳以上", "18 und älter", "18 سنة أو أكثر", "18岁及以上", "18 of ouder", "18 ou mais", "18 eller äldre"))));
+  }
   function validerInscription() {
     if (enCours) return;
+    if (tranche !== true && tranche !== false) {
+      setErreur(T("Indique ton âge pour continuer.", "Tell us your age to continue.", "Indica tu edad para continuar.", "Indica la tua età per continuare.", "続けるには年齢を選んでね。", "Gib dein Alter an, um fortzufahren.", "حدّدي عمرك للمتابعة.", "请选择你的年龄以继续。", "Geef je leeftijd aan om verder te gaan.", "Informe sua idade para continuar.", "Ange din ålder för att fortsätta."));
+      return;
+    }
     if (!consentOk) {
-      setErreur(T("Coche les deux cases pour continuer.", "Tick both boxes to continue.", "Marca las dos casillas para continuar.", "Spunta le due caselle per continuare.", "続けるには2つの項目にチェックしてください。", "Hake beide Kästchen an, um fortzufahren.", "حدّدي المربعين للمتابعة.", "请勾选这两项以继续。", "Vink beide vakjes aan om verder te gaan.", "Marque as duas caixas para continuar.", "Kryssa i båda rutorna för att fortsätta."));
+      if (!accCgv) setErreur(T("Accepte les conditions g\u00e9n\u00e9rales pour continuer.", "Accept the terms and conditions to continue.", "Acepta las condiciones generales para continuar.", "Accetta le condizioni generali per continuare.", "\u7d9a\u3051\u308b\u306b\u306f\u5229\u7528\u898f\u7d04\u306b\u540c\u610f\u3057\u3066\u306d\u3002", "Akzeptiere die AGB, um fortzufahren.", "\u0648\u0627\u0641\u0642\u064a \u0639\u0644\u0649 \u0627\u0644\u0634\u0631\u0648\u0637 \u0627\u0644\u0639\u0627\u0645\u0629 \u0644\u0644\u0645\u062a\u0627\u0628\u0639\u0629.", "\u8bf7\u63a5\u53d7\u901a\u7528\u6761\u6b3e\u4ee5\u7ee7\u7eed\u3002", "Accepteer de algemene voorwaarden om verder te gaan.", "Aceite os termos e condi\u00e7\u00f5es para continuar.", "Godk\u00e4nn de allm\u00e4nna villkoren f\u00f6r att forts\u00e4tta."));
+      else setErreur(T("L'accord d'un parent est n\u00e9cessaire pour continuer.", "A parent's agreement is needed to continue.", "Se necesita el permiso de un padre o madre para continuar.", "Serve il consenso di un genitore per continuare.", "\u7d9a\u3051\u308b\u306b\u306f\u4fdd\u8b77\u8005\u306e\u540c\u610f\u304c\u5fc5\u8981\u3067\u3059\u3002", "Zum Fortfahren ist die Zustimmung eines Elternteils n\u00f6tig.", "\u0645\u0648\u0627\u0641\u0642\u0629 \u0623\u062d\u062f \u0627\u0644\u0648\u0627\u0644\u062f\u064a\u0646 \u0636\u0631\u0648\u0631\u064a\u0629 \u0644\u0644\u0645\u062a\u0627\u0628\u0639\u0629.", "\u9700\u8981\u7236\u6bcd\u4e00\u65b9\u7684\u540c\u610f\u624d\u80fd\u7ee7\u7eed\u3002", "Toestemming van een ouder is nodig om verder te gaan.", "\u00c9 preciso a autoriza\u00e7\u00e3o de um respons\u00e1vel para continuar.", "En f\u00f6r\u00e4lders tillst\u00e5nd beh\u00f6vs f\u00f6r att forts\u00e4tta."));
       return;
     }
     valider();
@@ -30506,7 +30536,7 @@ function EcranConnexionSpectral() {
       ja: [lC, "に同意します。"], de: ["Ich akzeptiere die ", lC, "."],
       ar: ["أوافق على ", lC, "."], zh: ["我接受", lC, "。"], nl: ["Ik accepteer de ", lC, "."], pt: ["Aceito os ", lC, "."], sv: ["Jag godkänner de ", lC, "."]
     }[lg];
-    var texteAge = T("J'ai 15 ans ou plus, ou l'accord d'un parent.", "I'm 15 or older, or a parent agrees.", "Tengo 15 años o más, o permiso de mis padres.", "Ho almeno 15 anni, o il consenso di un genitore.", "15歳以上、または保護者の同意があります。", "Ich bin mindestens 15 oder habe die Zustimmung eines Elternteils.", "عمري 15 سنة أو أكثر، أو لدي موافقة أحد والديّ.", "我已满 15 岁，或已获得父母同意。", "Ik ben 15 jaar of ouder, of een ouder gaat akkoord.", "Tenho 15 anos ou mais, ou a autorização de um responsável.", "Jag är 15 år eller äldre, eller har en förälders tillstånd.");
+    var texteAge = T("J'ai l'accord d'un parent.", "A parent agrees.", "Tengo el permiso de un padre o madre.", "Ho il consenso di un genitore.", "\u4fdd\u8b77\u8005\u306e\u540c\u610f\u304c\u3042\u308a\u307e\u3059\u3002", "Ein Elternteil ist einverstanden.", "\u0644\u062f\u064a \u0645\u0648\u0627\u0641\u0642\u0629 \u0623\u062d\u062f \u0648\u0627\u0644\u062f\u064a\u0651.", "\u6211\u5df2\u83b7\u5f97\u7236\u6bcd\u540c\u610f\u3002", "Een ouder gaat akkoord.", "Tenho a autoriza\u00e7\u00e3o de um respons\u00e1vel.", "En f\u00f6r\u00e4lder har gett sitt tillst\u00e5nd.");   /* 21/10 : remplace « 15 ans ou plus, ou accord d un parent » ; montree seulement pour - de 18 ans */
     function ligne(k, coche, basculer, contenu, nomAccessible) {
       var taille = large ? 20 : 18;
       return h("div", { key: k, style: { display: "flex", alignItems: "center", gap: large ? 12 : 10 } },
@@ -30516,7 +30546,7 @@ function EcranConnexionSpectral() {
     }
     return h("div", { key: cle, style: { marginTop: large ? 24 : 16, display: "flex", flexDirection: "column", gap: large ? 14 : 12 } },
       ligne("cgv", accCgv, setAccCgv, texteCgv, tCgv),
-      ligne("age", accAge, setAccAge, texteAge, texteAge));
+      (tranche === false ? ligne("age", accAge, setAccAge, texteAge, texteAge) : null));
   }
   var aeSt = useState(""); var emailEnAttente = aeSt[0], setEmailEnAttente = aeSt[1];
   var rvSt = useState(""); var renvoiMsg = rvSt[0], setRenvoiMsg = rvSt[1];
@@ -30671,7 +30701,7 @@ function EcranConnexionSpectral() {
            CONNEXION de compte existant, elle, va toujours droit au dashboard :
            on ne redemande jamais ce qui a deja ete repondu. */
         try { var uI = await utilisateurActuel(); if (uI) { if (typeof window.__hypeChangerDeCompte === "function") window.__hypeChangerDeCompte(uI.id); else localStorage.setItem("hype_uid", uI.id); } } catch (eUi) { }   /* 21/10 : purge AVANT de poser le profil, sinon le compte neuf herite du precedent */
-        try { setProfil(function (pp) { return Object.assign({}, pp || {}, { prenom: pseudoDep, pseudo: pseudoDep, email: em }); }); } catch (ePr) { }
+        try { var trI = trancheRef.current; setProfil(function (pp) { var nI = Object.assign({}, pp || {}, { prenom: pseudoDep, pseudo: pseudoDep, email: em }); if (trI === true || trI === false) nI.majeur = trI; return nI; }); } catch (ePr) { }   /* 21/10 : + tranche d age */
         try { window.HYPE_QUESTIONS = true; } catch (eQ) { }
         try { window.__hypeRetourApresInscription = true; } catch (eRi) { }   /* (459) retour au rendez-vous a la fin des questions d accueil */
         activerPushApresConnexion();   /* 20/10 (nuit) */
@@ -30858,6 +30888,7 @@ function EcranConnexionSpectral() {
         champ("ie", icoUser, { type: "email", autoComplete: "email", placeholder: "Email", value: email, onChange: function (e) { setEmail(e.target.value); } }),
         champMdp("im", { autoComplete: "new-password", placeholder: T("Mot de passe : 6 caract\u00e8res minimum", "Password: 6 characters minimum", "Contrase\u00f1a: m\u00ednimo 6 caracteres", "Password: minimo 6 caratteri", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a6\u6587\u5b57\u4ee5\u4e0a", "Passwort: mindestens 6 Zeichen", "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631: 6 \u0623\u062d\u0631\u0641 \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644", "密码：至少 6 个字符", "Wachtwoord: minimaal 6 tekens", "Senha: mínimo de 6 caracteres", "Lösenord: minst 6 tecken"), value: mdp, onChange: function (e) { setMdp(e.target.value); } })),
       jauge(mdp),
+      choixTranche("itranche") /* 21/10 : age deplace depuis l ecran des questions */,
       casesConsentement("iconsent", false) /* 21/10 */,
       casePush("ipush") /* 20/10 (nuit) */,
       ligneErreur(),
@@ -31052,6 +31083,7 @@ function EcranConnexionSpectral() {
                 h("button", { type: "button", className: "hxi-oeil", "aria-pressed": voirMdp ? "true" : "false", onClick: function () { setVoirMdp(!voirMdp); }, "aria-label": T("Afficher le mot de passe", "Show password", "Mostrar la contraseña", "Mostra la password", "パスワードを表示", "Passwort anzeigen", "إظهار كلمة المرور", "显示密码", "Wachtwoord tonen", "Mostrar a senha", "Visa lösenordet") }, icoOeil)),
               h("div", { className: "hxi-aide" }, T("6 caractères minimum", "6 characters minimum", "Mínimo 6 caracteres", "Minimo 6 caratteri", "6文字以上", "Mindestens 6 Zeichen", "6 أحرف على الأقل", "至少 6 个字符", "Minimaal 6 tekens", "Mínimo de 6 caracteres", "Minst 6 tecken")),
               mdp ? h("div", { style: { marginTop: 8 } }, jauge(mdp)) : null)),
+          choixTranche("hxitranche") /* 21/10 : age (- / + de 18 ans) */,
           casesConsentement("hxiconsent", true),
           casePush("hxipush"),
           h("div", { className: "hxi-err-zone" }, ligneErreur()),
@@ -31195,175 +31227,302 @@ function EcranHypeUniverse(props){
       (onConnexion && !retour) ? h("button", { className: "hu-age", onClick: function(e){ try { e.stopPropagation(); } catch(eSt) {} ouvrirPorte("connexion"); }, style: { display: "block", width: "100%", background: "none", border: "none", padding: "6px 0 2px", fontFamily: M, fontSize: 12.5, fontWeight: 600, color: "rgba(233,239,242,.72)", cursor: "pointer" } }, hypeT7("Tu as d\u00e9j\u00e0 un compte\u00a0? ", "Already have an account? ", "\u00bfYa tienes una cuenta? ", "Hai gi\u00e0 un account? ", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u304a\u6301\u3061\u3067\u3059\u304b\uff1f ", "Schon ein Konto? ", "\u0644\u062f\u064a\u0643 \u062d\u0633\u0627\u0628 \u0628\u0627\u0644\u0641\u0639\u0644\u061f ", "你已经有账户了吗？ ", "Heb je al een account? ", "Já tem uma conta? ", "Har du redan ett konto? "), h("span", { style: { color: TQ, textDecoration: "underline" } }, "Se connecter")) : null));
 }
 var IMG_PERSONNALISATION_BG = HYPE_IMGS["k290"];
+/* 21/10/2026 (prompt « onboarding » de Blandine, maquettes 01 ordinateur / 02 telephone) — ECRAN « QU'AIMERAIS-TU FAIRE AVEC HYPE ? ».
+   Remplace l'ancien ecran « Dis-nous qui tu es » (age, langue, niveau, objectif unique). Decisions validees :
+   - plusieurs reponses possibles, toute la carte est cliquable, aucun choix obligatoire (« Passer » existe) ;
+   - l'age est demande sur Creer mon compte, la langue sur la page d'entree : ni l'un ni l'autre ne reviennent ici ;
+   - niveau (profil.galop : 0 = Sans Galop, 1..7, "Professionnel / Autre", "Enseignant") et envies (profil.envies : liste
+     d'identifiants stables, independants des traductions) restent dans le profil, enregistre comme avant (local + ligne
+     progression.donnees en ligne) : aucune modification de la base. Les anciens comptes sans envies -> liste vide.
+   - memes etats et memes fonctions pour telephone, tablette et ordinateur : seule la presentation (CSS) change.
+   - bleu petrole pour les liseres et la selection ; champagne seulement pour la petite coche. */
+var IMG_ONBOARDING_CHEVAL = "images/onboarding-cheval-hd.webp";
+var ENVIES_HYPE = ["souvenirs_progression", "galops", "sante_chevaux", "resultats_competition", "langues", "quotidien", "page_club", "groupes_cavaliers", "pro_ecurie", "culture_equestre"];
+var ONB_TXT = {
+  fr: { titre: "Qu’aimerais-tu faire avec Hype ?", sous: "Choisis tout ce qui t’intéresse — plusieurs réponses possibles.", niveau: "Ton niveau actuel", aChoisir: "À choisir", sans: "Sans Galop", pro: "Professionnel / Autre", ens: "Enseignant", proInfo: "Hype propose des abonnements à tarif pro. Tu en sauras plus dans Mon compte.", retour: "Retour", passer: "Passer", entrer: "Entrer dans Hype", prive: "Tes informations restent privées.", envies: "Tes envies",
+    c: [["Conserver mes souvenirs et suivre ma progression", "Carnet de bord, séances, photos, vidéos, apprentissage théorique et conseils épinglés de l’IA équestre."],
+      ["Préparer mes Galops", "Programmes officiels, théorie et tests de connaissances."],
+      ["Suivre la santé de mes chevaux", "Carnet de santé, soins, articles vétérinaires et IA équestre."],
+      ["Retrouver mes résultats en compétition", "Résultats, classements, performances et saisons sportives."],
+      ["Découvrir l’équitation dans d’autres langues", "Vocabulaire et contenus équestres avec Horse Lingo."],
+      ["Organiser mon quotidien équestre", "Séances, rendez-vous, soins, concours et événements."],
+      ["Découvrir et enrichir la page de mon club", "Chevaux, actualités et événements du club."],
+      ["Échanger avec mes groupes de cavaliers", "Photos, vidéos et événements communautaires."],
+      ["Gérer mon activité professionnelle ou mon écurie", "Équipes, cavalerie, cavaliers, agenda et contenu des événements."],
+      ["Enrichir ma culture équestre", "Articles, vidéos, disciplines et histoires du monde équestre."]] },
+  en: { titre: "What would you like to do with Hype?", sous: "Pick everything that interests you — several answers possible.", niveau: "Your current level", aChoisir: "To choose", sans: "No Galop", pro: "Professional / Other", ens: "Instructor", proInfo: "Hype offers subscriptions at professional rates. Find out more in My account.", retour: "Back", passer: "Skip", entrer: "Enter Hype", prive: "Your information stays private.", envies: "Your interests",
+    c: [["Keep my memories and track my progress", "Logbook, sessions, photos, videos, theory learning and pinned tips from the equestrian AI."],
+      ["Prepare my Galops", "Official programmes, theory and knowledge tests."],
+      ["Track my horses’ health", "Health record, care, veterinary articles and equestrian AI."],
+      ["Find my competition results", "Results, rankings, performances and sports seasons."],
+      ["Discover riding in other languages", "Equestrian vocabulary and content with Horse Lingo."],
+      ["Organise my equestrian daily life", "Sessions, appointments, care, shows and events."],
+      ["Discover and enrich my club’s page", "Horses, news and club events."],
+      ["Connect with my riding groups", "Photos, videos and community events."],
+      ["Manage my professional activity or my yard", "Teams, horses, riders, calendar and event content."],
+      ["Enrich my equestrian culture", "Articles, videos, disciplines and stories from the equestrian world."]] },
+  es: { titre: "¿Qué te gustaría hacer con Hype?", sous: "Elige todo lo que te interese: varias respuestas posibles.", niveau: "Tu nivel actual", aChoisir: "Por elegir", sans: "Sin Galop", pro: "Profesional / Otro", ens: "Instructor", proInfo: "Hype ofrece suscripciones con tarifa profesional. Sabrás más en Mi cuenta.", retour: "Volver", passer: "Omitir", entrer: "Entrar en Hype", prive: "Tu información sigue siendo privada.", envies: "Tus intereses",
+    c: [["Guardar mis recuerdos y seguir mi progreso", "Diario, sesiones, fotos, vídeos, aprendizaje teórico y consejos fijados de la IA ecuestre."],
+      ["Preparar mis Galops", "Programas oficiales, teoría y pruebas de conocimientos."],
+      ["Seguir la salud de mis caballos", "Cartilla sanitaria, cuidados, artículos veterinarios e IA ecuestre."],
+      ["Encontrar mis resultados en competición", "Resultados, clasificaciones, actuaciones y temporadas deportivas."],
+      ["Descubrir la equitación en otros idiomas", "Vocabulario y contenidos ecuestres con Horse Lingo."],
+      ["Organizar mi día a día ecuestre", "Sesiones, citas, cuidados, concursos y eventos."],
+      ["Descubrir y enriquecer la página de mi club", "Caballos, noticias y eventos del club."],
+      ["Compartir con mis grupos de jinetes", "Fotos, vídeos y eventos de la comunidad."],
+      ["Gestionar mi actividad profesional o mi cuadra", "Equipos, caballos, jinetes, agenda y contenido de los eventos."],
+      ["Enriquecer mi cultura ecuestre", "Artículos, vídeos, disciplinas e historias del mundo ecuestre."]] },
+  it: { titre: "Cosa ti piacerebbe fare con Hype?", sous: "Scegli tutto ciò che ti interessa: più risposte possibili.", niveau: "Il tuo livello attuale", aChoisir: "Da scegliere", sans: "Senza Galop", pro: "Professionista / Altro", ens: "Istruttore", proInfo: "Hype offre abbonamenti a tariffa professionale. Scoprirai di più in Il mio account.", retour: "Indietro", passer: "Salta", entrer: "Entra in Hype", prive: "Le tue informazioni restano private.", envies: "I tuoi interessi",
+    c: [["Conservare i miei ricordi e seguire i miei progressi", "Diario di bordo, sessioni, foto, video, apprendimento teorico e consigli fissati dall’IA equestre."],
+      ["Preparare i miei Galop", "Programmi ufficiali, teoria e test di conoscenza."],
+      ["Seguire la salute dei miei cavalli", "Libretto sanitario, cure, articoli veterinari e IA equestre."],
+      ["Ritrovare i miei risultati in gara", "Risultati, classifiche, prestazioni e stagioni sportive."],
+      ["Scoprire l’equitazione in altre lingue", "Vocabolario e contenuti equestri con Horse Lingo."],
+      ["Organizzare la mia quotidianità equestre", "Sessioni, appuntamenti, cure, concorsi ed eventi."],
+      ["Scoprire e arricchire la pagina del mio club", "Cavalli, notizie ed eventi del club."],
+      ["Condividere con i miei gruppi di cavalieri", "Foto, video ed eventi della community."],
+      ["Gestire la mia attività professionale o la mia scuderia", "Squadre, cavalli, cavalieri, agenda e contenuto degli eventi."],
+      ["Arricchire la mia cultura equestre", "Articoli, video, discipline e storie del mondo equestre."]] },
+  de: { titre: "Was möchtest du mit Hype machen?", sous: "Wähle alles, was dich interessiert – mehrere Antworten möglich.", niveau: "Dein aktuelles Niveau", aChoisir: "Bitte wählen", sans: "Ohne Galop", pro: "Profi / Sonstiges", ens: "Reitlehrer/in", proInfo: "Hype bietet Abos zu Profi-Tarifen. Mehr dazu unter Mein Konto.", retour: "Zurück", passer: "Überspringen", entrer: "Hype betreten", prive: "Deine Angaben bleiben privat.", envies: "Deine Wünsche",
+    c: [["Meine Erinnerungen bewahren und meinen Fortschritt verfolgen", "Logbuch, Trainings, Fotos, Videos, Theorie und angeheftete Tipps der Reit-KI."],
+      ["Meine Galops vorbereiten", "Offizielle Programme, Theorie und Wissenstests."],
+      ["Die Gesundheit meiner Pferde verfolgen", "Gesundheitspass, Pflege, Tierarzt-Artikel und Reit-KI."],
+      ["Meine Turnierergebnisse finden", "Ergebnisse, Ranglisten, Leistungen und Sportsaisons."],
+      ["Reiten in anderen Sprachen entdecken", "Reitvokabular und -inhalte mit Horse Lingo."],
+      ["Meinen Reitalltag organisieren", "Trainings, Termine, Pflege, Turniere und Events."],
+      ["Die Seite meines Vereins entdecken und bereichern", "Pferde, Neuigkeiten und Vereinsevents."],
+      ["Mich mit meinen Reitergruppen austauschen", "Fotos, Videos und Community-Events."],
+      ["Meine berufliche Tätigkeit oder meinen Stall verwalten", "Teams, Pferde, Reiter, Kalender und Event-Inhalte."],
+      ["Mein Reitwissen erweitern", "Artikel, Videos, Disziplinen und Geschichten aus der Pferdewelt."]] },
+  ja: { titre: "Hypeで何をしたい？", sous: "興味のあるものをすべて選んでね（複数選択可）。", niveau: "現在のレベル", aChoisir: "未選択", sans: "Galopなし", pro: "プロ／その他", ens: "インストラクター", proInfo: "Hypeにはプロ向け料金のプランがあります。詳しくはマイアカウントで。", retour: "戻る", passer: "スキップ", entrer: "Hypeに入る", prive: "あなたの情報は非公開のままです。", envies: "やりたいこと",
+    c: [["思い出を残して上達を記録する", "日誌、レッスン、写真、動画、理論学習、乗馬AIのピン留めアドバイス。"],
+      ["Galopの準備をする", "公式プログラム、理論、知識テスト。"],
+      ["馬の健康を管理する", "健康手帳、ケア、獣医記事、乗馬AI。"],
+      ["競技会の結果を確認する", "結果、ランキング、成績、シーズン。"],
+      ["他の言語で乗馬を学ぶ", "Horse Lingoで乗馬の語彙とコンテンツ。"],
+      ["毎日の乗馬生活を整理する", "レッスン、予約、ケア、競技会、イベント。"],
+      ["クラブのページを見て、充実させる", "クラブの馬、ニュース、イベント。"],
+      ["ライダー仲間のグループと交流する", "写真、動画、コミュニティイベント。"],
+      ["仕事や厩舎を管理する", "チーム、馬、ライダー、予定、イベント内容。"],
+      ["乗馬の教養を深める", "記事、動画、競技種目、乗馬の世界の物語。"]] },
+  ar: { titre: "ماذا تودّين أن تفعلي مع Hype؟", sous: "اختاري كل ما يهمّك — يمكن اختيار عدة إجابات.", niveau: "مستواك الحالي", aChoisir: "للاختيار", sans: "بدون Galop", pro: "محترفة / أخرى", ens: "مدرّبة", proInfo: "يقدّم Hype اشتراكات بأسعار مهنية. ستعرفين المزيد في حسابي.", retour: "رجوع", passer: "تخطّي", entrer: "ادخلي إلى Hype", prive: "تبقى معلوماتك خاصة.", envies: "رغباتك",
+    c: [["الاحتفاظ بذكرياتي ومتابعة تقدّمي", "دفتر يوميات، حصص، صور، فيديوهات، تعلّم نظري ونصائح مثبّتة من الذكاء الاصطناعي للفروسية."],
+      ["التحضير لـ Galops", "البرامج الرسمية، النظري واختبارات المعرفة."],
+      ["متابعة صحة خيولي", "الدفتر الصحي، العناية، مقالات بيطرية والذكاء الاصطناعي للفروسية."],
+      ["العثور على نتائجي في المسابقات", "النتائج، التصنيفات، الأداء والمواسم الرياضية."],
+      ["اكتشاف الفروسية بلغات أخرى", "مفردات ومحتوى الفروسية مع Horse Lingo."],
+      ["تنظيم حياتي اليومية في الفروسية", "الحصص، المواعيد، العناية، المسابقات والفعاليات."],
+      ["اكتشاف صفحة ناديّ وإثراؤها", "خيول النادي وأخباره وفعالياته."],
+      ["التواصل مع مجموعات الفرسان", "صور، فيديوهات وفعاليات المجتمع."],
+      ["إدارة نشاطي المهني أو إسطبلي", "الفرق، الخيول، الفرسان، الأجندة ومحتوى الفعاليات."],
+      ["إثراء ثقافتي في الفروسية", "مقالات، فيديوهات، تخصصات وقصص من عالم الفروسية."]] },
+  zh: { titre: "你想用 Hype 做什么？", sous: "选择所有你感兴趣的内容——可多选。", niveau: "你目前的水平", aChoisir: "待选择", sans: "无 Galop", pro: "专业人士 / 其他", ens: "教练", proInfo: "Hype 提供专业价格的订阅。在“我的账户”中了解更多。", retour: "返回", passer: "跳过", entrer: "进入 Hype", prive: "你的信息保持私密。", envies: "你的兴趣",
+    c: [["保存我的回忆，跟踪我的进步", "日志、训练、照片、视频、理论学习和马术 AI 置顶建议。"],
+      ["准备我的 Galop 考试", "官方大纲、理论和知识测试。"],
+      ["关注我的马的健康", "健康档案、护理、兽医文章和马术 AI。"],
+      ["查看我的比赛成绩", "成绩、排名、表现和赛季。"],
+      ["用其他语言探索马术", "通过 Horse Lingo 学习马术词汇和内容。"],
+      ["安排我的马术日常", "训练、预约、护理、比赛和活动。"],
+      ["探索并丰富我的俱乐部页面", "俱乐部的马匹、新闻和活动。"],
+      ["与我的骑手群组交流", "照片、视频和社区活动。"],
+      ["管理我的职业活动或马场", "团队、马匹、骑手、日程和活动内容。"],
+      ["丰富我的马术文化", "马术世界的文章、视频、项目和故事。"]] },
+  nl: { titre: "Wat wil je doen met Hype?", sous: "Kies alles wat je interesseert — meerdere antwoorden mogelijk.", niveau: "Je huidige niveau", aChoisir: "Te kiezen", sans: "Geen Galop", pro: "Professional / Anders", ens: "Instructeur", proInfo: "Hype biedt abonnementen tegen pro-tarief. Meer daarover in Mijn account.", retour: "Terug", passer: "Overslaan", entrer: "Naar Hype", prive: "Je gegevens blijven privé.", envies: "Jouw wensen",
+    c: [["Mijn herinneringen bewaren en mijn vooruitgang volgen", "Logboek, trainingen, foto’s, video’s, theorie en vastgezette tips van de paarden-AI."],
+      ["Mijn Galops voorbereiden", "Officiële programma’s, theorie en kennistests."],
+      ["De gezondheid van mijn paarden volgen", "Gezondheidsboekje, verzorging, dierenartsartikelen en paarden-AI."],
+      ["Mijn wedstrijdresultaten terugvinden", "Resultaten, klassementen, prestaties en seizoenen."],
+      ["Paardrijden ontdekken in andere talen", "Paardenwoordenschat en -inhoud met Horse Lingo."],
+      ["Mijn dagelijkse paardenleven organiseren", "Trainingen, afspraken, verzorging, wedstrijden en evenementen."],
+      ["De pagina van mijn club ontdekken en aanvullen", "Paarden, nieuws en evenementen van de club."],
+      ["Uitwisselen met mijn ruitergroepen", "Foto’s, video’s en community-evenementen."],
+      ["Mijn professionele activiteit of stal beheren", "Teams, paarden, ruiters, agenda en inhoud van evenementen."],
+      ["Mijn paardenkennis verrijken", "Artikelen, video’s, disciplines en verhalen uit de paardenwereld."]] },
+  pt: { titre: "O que você gostaria de fazer com o Hype?", sous: "Escolha tudo o que interessa a você — várias respostas possíveis.", niveau: "Seu nível atual", aChoisir: "A escolher", sans: "Sem Galop", pro: "Profissional / Outro", ens: "Instrutor", proInfo: "O Hype oferece assinaturas com preço profissional. Saiba mais em Minha conta.", retour: "Voltar", passer: "Pular", entrer: "Entrar no Hype", prive: "Suas informações continuam privadas.", envies: "Seus interesses",
+    c: [["Guardar minhas lembranças e acompanhar meu progresso", "Diário de bordo, aulas, fotos, vídeos, aprendizado teórico e dicas fixadas da IA equestre."],
+      ["Preparar meus Galops", "Programas oficiais, teoria e testes de conhecimento."],
+      ["Acompanhar a saúde dos meus cavalos", "Carteira de saúde, cuidados, artigos veterinários e IA equestre."],
+      ["Encontrar meus resultados em competição", "Resultados, classificações, desempenhos e temporadas esportivas."],
+      ["Descobrir a equitação em outros idiomas", "Vocabulário e conteúdos equestres com Horse Lingo."],
+      ["Organizar meu dia a dia equestre", "Aulas, compromissos, cuidados, provas e eventos."],
+      ["Descobrir e enriquecer a página do meu clube", "Cavalos, notícias e eventos do clube."],
+      ["Trocar com meus grupos de cavaleiros", "Fotos, vídeos e eventos da comunidade."],
+      ["Gerenciar minha atividade profissional ou meu haras", "Equipes, cavalos, cavaleiros, agenda e conteúdo dos eventos."],
+      ["Enriquecer minha cultura equestre", "Artigos, vídeos, modalidades e histórias do mundo equestre."]] },
+  sv: { titre: "Vad vill du göra med Hype?", sous: "Välj allt som intresserar dig — flera svar möjliga.", niveau: "Din nuvarande nivå", aChoisir: "Välj", sans: "Ingen Galop", pro: "Professionell / Annat", ens: "Ridlärare", proInfo: "Hype erbjuder abonnemang till proffspris. Läs mer under Mitt konto.", retour: "Tillbaka", passer: "Hoppa över", entrer: "Gå in i Hype", prive: "Dina uppgifter förblir privata.", envies: "Dina önskemål",
+    c: [["Spara mina minnen och följa mina framsteg", "Loggbok, pass, foton, videor, teori och fästa tips från rid-AI:n."],
+      ["Förbereda mina Galops", "Officiella program, teori och kunskapstester."],
+      ["Följa mina hästars hälsa", "Hälsojournal, skötsel, veterinärartiklar och rid-AI."],
+      ["Hitta mina tävlingsresultat", "Resultat, rankningar, prestationer och säsonger."],
+      ["Upptäcka ridning på andra språk", "Hästvokabulär och innehåll med Horse Lingo."],
+      ["Organisera min ridvardag", "Pass, möten, skötsel, tävlingar och evenemang."],
+      ["Upptäcka och berika min klubbs sida", "Hästar, nyheter och klubbens evenemang."],
+      ["Umgås med mina ryttargrupper", "Foton, videor och gemenskapens evenemang."],
+      ["Sköta min yrkesverksamhet eller mitt stall", "Team, hästar, ryttare, kalender och evenemangsinnehåll."],
+      ["Berika min ridkultur", "Artiklar, videor, grenar och berättelser från hästvärlden."]] }
+};
+var ONB_CSS = [
+  ".onb{position:relative;min-height:100%;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}",
+  ".onb *{box-sizing:border-box}",
+  ".onb-photo{position:relative;height:calc(132px + env(safe-area-inset-top));overflow:hidden}",
+  ".onb-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 37%;display:block}",
+  ".onb-photo:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,10,8,.55) 0%,rgba(7,10,8,0) 38%,rgba(7,10,8,.35) 72%,#070A08 100%)}",
+  ".onb-nav{position:absolute;top:calc(env(safe-area-inset-top) + 6px);left:0;right:0;z-index:3;display:flex;justify-content:space-between;align-items:center;padding:0 6px}",
+  ".onb-lien{min-height:44px;padding:0 10px;display:inline-flex;align-items:center;gap:8px;background:none;border:none;color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:14px;font-weight:500;letter-spacing:.02em;cursor:pointer}",
+  ".onb-lien .onb-souligne{padding-bottom:2px;border-bottom:1px solid #4E7380}",
+  ".onb-fl{font-size:16px;line-height:1;opacity:.9}",
+  ".onb-main{padding:4px 16px calc(28px + env(safe-area-inset-bottom))}",
+  ".onb-tete{display:flex;flex-direction:column;gap:18px}",
+  ".onb-h1{margin:0;font-family:'Cormorant Garamond',Georgia,serif;font-weight:500;font-size:34px;line-height:1.08;letter-spacing:-.005em;color:#F3EEE4}",
+  ".onb-sous{margin:10px 0 0;font-size:14px;line-height:1.5;color:#9DB4BD}",
+  ".onb-niv-l{display:block;font-size:13px;font-weight:500;color:#F3EEE4;margin-bottom:8px}",
+  ".onb-sel{position:relative}",
+  ".onb-sel select{-webkit-appearance:none;appearance:none;width:100%;min-height:48px;padding:0 44px 0 16px;border-radius:10px;border:1px solid rgba(78,115,128,.75);background:#0B1012;color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:15px;font-weight:500;cursor:pointer}",
+  ".onb-sel select option{background:#0B1012;color:#F3EEE4}",
+  ".onb-sel svg{position:absolute;right:16px;top:50%;margin-top:-6px;pointer-events:none}",
+  ".onb-info{margin-top:12px;padding:10px 12px;border-radius:10px;border:1px solid rgba(78,115,128,.45);background:#101D22;font-size:12.5px;line-height:1.5;color:#C9D3D2}",
+  ".onb-grille{margin-top:20px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}",
+  ".onb-carte{position:relative;width:100%;min-height:72px;display:flex;align-items:center;gap:16px;padding:16px 16px;border-radius:12px;border:1px solid rgba(78,115,128,.32);background:rgba(10,14,15,.85);color:#F3EEE4;text-align:start;cursor:pointer;font-family:'Montserrat',sans-serif;transition:border-color .2s ease,background .2s ease}",
+  ".onb-carte:hover{border-color:rgba(78,115,128,.6)}",
+  ".onb-carte[aria-checked='true']{background:#101D22;border-color:#4E7380;box-shadow:inset 0 0 0 1px rgba(78,115,128,.35)}",
+  ".onb-ico{flex:0 0 28px;display:flex;justify-content:center;color:#E8E2D6}",
+  ".onb-txt{flex:1 1 auto;min-width:0}",
+  ".onb-t{display:block;font-size:14px;font-weight:500;line-height:1.38;color:#F3EEE4}",
+  ".onb-d{display:block;margin-top:4px;font-size:12.5px;line-height:1.45;color:#8FA9B3}",
+  ".onb-coche{flex:0 0 24px;width:24px;height:24px;border-radius:50%;border:1.5px solid rgba(190,205,210,.42);display:flex;align-items:center;justify-content:center;transition:all .2s ease}",
+  ".onb-carte[aria-checked='true'] .onb-coche{border-color:#C9A66B;background:#C9A66B}",
+  ".onb-pied{margin-top:22px;display:flex;flex-direction:column;gap:16px;align-items:stretch}",
+  ".onb-prive{display:flex;align-items:center;gap:10px;font-size:13px;color:#C9D3D2}",
+  ".onb-entrer{min-height:52px;padding:0 28px;border-radius:999px;border:1px solid #4E7380;background:#070A08;color:#F3EEE4;font-family:'Montserrat',sans-serif;font-size:15px;font-weight:500;letter-spacing:.03em;display:inline-flex;align-items:center;justify-content:center;gap:12px;cursor:pointer;transition:background .2s ease}",
+  ".onb-entrer:hover{background:#101D22}",
+  ".onb-entrer[disabled]{opacity:.6;cursor:default}",
+  ".onb button:focus-visible,.onb select:focus-visible{outline:2px solid #7FA3AD;outline-offset:3px}",
+  ".onb-mini{position:fixed;top:0;left:0;right:0;z-index:6;padding:env(safe-area-inset-top) 6px 0;background:rgba(7,10,8,.94);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom:1px solid rgba(78,115,128,.25);display:flex;align-items:center;justify-content:space-between;transform:translateY(-110%);transition:transform .25s ease;pointer-events:none}",
+  ".onb-mini.vu{transform:none;pointer-events:auto}",
+  ".onb-mini-t{font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;font-weight:500;color:#F3EEE4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}",
+  /* Tablette en portrait : bandeau photo plus haut, deux colonnes (cartes lisibles a 1024 px) */
+  "@media (min-width:700px) and (max-aspect-ratio:1/1){",
+  ".onb-photo{height:calc(clamp(250px,24vh,340px) + env(safe-area-inset-top))}",
+  ".onb-photo img{object-position:50% 30%}",
+  ".onb-nav{top:calc(env(safe-area-inset-top) + 14px);padding:0 28px}",
+  ".onb-main{padding:8px 48px calc(48px + env(safe-area-inset-bottom));max-width:1040px;margin:0 auto}",
+  ".onb-h1{font-size:46px}",
+  ".onb-sous{font-size:16px}",
+  ".onb-tete{gap:22px}",
+  ".onb-sel{max-width:340px}",
+  ".onb-grille{grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:14px;margin-top:26px}",
+  ".onb-pied{flex-direction:row;align-items:center;justify-content:space-between;margin-top:28px}",
+  ".onb-entrer{min-width:260px}",
+  "}",
+  /* Ordinateur et tablette en paysage : photo fixe a gauche (~30 %), vrai vide, contenu a droite */
+  "@media (min-width:1000px) and (min-aspect-ratio:1/1){",
+  ".onb-photo{position:fixed;top:0;bottom:0;left:0;width:30vw;height:auto}",
+  ".onb-photo img{object-position:46% 30%}",
+  ".onb-photo:after{background:linear-gradient(90deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0) 55%,rgba(7,10,8,.7) 84%,#070A08 100%)}",
+  ".onb-nav{position:absolute;top:16px;left:calc(30vw + clamp(56px,7vw,110px));right:clamp(28px,3.5vw,56px);padding:0}",
+  ".onb-main{margin-left:calc(30vw + clamp(56px,7vw,110px));margin-right:clamp(28px,3.5vw,56px);padding:clamp(64px,7.5vh,84px) 0 24px;max-width:980px}",
+  ".onb-tete{flex-direction:row;align-items:flex-start;justify-content:space-between;gap:32px}",
+  ".onb-h1{font-size:clamp(36px,3vw,48px)}",
+  ".onb-sous{font-size:clamp(14px,1.15vw,17px)}",
+  ".onb-niv{flex:0 0 clamp(220px,19vw,280px);padding-top:8px}",
+  ".onb-grille{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:clamp(16px,2.6vh,26px)}",
+  ".onb-carte{min-height:84px;padding:12px 16px;gap:14px}",
+  ".onb-d{margin-top:3px;font-size:12.5px;line-height:1.4}",
+  ".onb-pied{flex-direction:row;align-items:center;justify-content:space-between;margin-top:clamp(16px,2.6vh,26px)}",
+  ".onb-entrer{min-width:270px;min-height:50px}",
+  ".onb-mini{display:none}",
+  ".onb[dir='rtl'] .onb-photo{left:auto;right:0}",
+  ".onb[dir='rtl'] .onb-photo:after{background:linear-gradient(270deg,rgba(7,10,8,0) 0%,rgba(7,10,8,0) 55%,rgba(7,10,8,.7) 84%,#070A08 100%)}",
+  ".onb[dir='rtl'] .onb-nav{left:clamp(32px,4vw,64px);right:calc(30vw + clamp(56px,7vw,120px))}",
+  ".onb[dir='rtl'] .onb-main{margin-left:clamp(32px,4vw,64px);margin-right:calc(30vw + clamp(56px,7vw,120px))}",
+  "}",
+  ".onb[dir='rtl'] .onb-sel select{padding:0 16px 0 44px}",
+  ".onb[dir='rtl'] .onb-sel svg{right:auto;left:16px}",
+  "@media (prefers-reduced-motion:reduce){.onb *{transition:none!important}}"
+].join("\n");
 function EcranPersonnalisation(props){
-  var h = React.createElement; var ctx = useApp(); var langue = ctx.langue || "fr"; var setLangue = ctx.setLangue || function(){};
+  var h = React.createElement; var ctx = useApp(); var langue = ctx.langue || "fr";
   var local = props.local || {}; var setLocal = props.setLocal || function(){}; var onSuivant = props.onSuivant || function(){};
-  var C = "'Cinzel',Georgia,serif", G = "Georgia,'Times New Roman',serif", M = "'Montserrat',sans-serif", TQ = "#20D9F5", TQL = "#5FE9F0";
-  var S = React.useState, R = React.useRef;
-  var st1 = S({}); var charged = st1[0], setCharged = st1[1];
-  var st2 = S(null); var ouvert = st2[0], setOuvert = st2[1];
-  var st5 = S(false); var charge = st5[0], setCharge = st5[1];
-  var st6 = S(null); var onde = st6[0], setOnde = st6[1];
-  var rootRef = R(null), btnRef = R(null), chargeRef = R(false);
-  var nCh = Object.keys(charged).length; var plein = nCh >= 4; /* 02/09 : quatre cartes desormais (age, langue, niveau, objectif) */
-  var PT = {fr:{t1:"Dis-nous",niveauPro:"Professionnel / Autre",niveauEns:"Enseignant",proInfo:"Hype propose des abonnements \u00e0 tarif pro. Tu en sauras plus dans Mon compte.",t2:"qui tu es",lLangue:"Langue",lNiveau:"Niveau",lObjectif:"Objectif",q1:"\u201CChaque cavalier a son histoire.\u201D",q2:"\u00C9crivons la tienne.",cont:"Continuer",objectifs:[["progresser","Progresser et me d\u00e9passer"],["galop","Pr\u00e9parer mon prochain Galop"],["reviser","R\u00e9viser mes Galops"],["decouvrir","D\u00e9couvrir l\u2019\u00e9quitation"],["ecurie","Suivre mon \u00e9curie et mes chevaux"]]},en:{t1:"Tell us",niveauPro:"Professional / Other",niveauEns:"Instructor",proInfo:"Hype offers pro-rate subscriptions. You\u2019ll find more in My account.",t2:"who you are",lLangue:"Language",lNiveau:"Level",lObjectif:"Goal",q1:"\u201CEvery rider has a story.\u201D",q2:"Let\u2019s write yours.",cont:"Continue",objectifs:[["progresser","Progress and push my limits"],["galop","Prepare my next Galop"],["reviser","Review my Galops"],["decouvrir","Discover horse riding"],["ecurie","Follow my stable and horses"]]},es:{t1:"Dinos",niveauPro:"Profesional / Otro",niveauEns:"Instructor",proInfo:"Hype ofrece suscripciones a tarifa profesional. M\u00e1s informaci\u00f3n en Mi cuenta.",t2:"qui\u00e9n eres",lLangue:"Idioma",lNiveau:"Nivel",lObjectif:"Objetivo",q1:"\u201CCada jinete tiene su historia.\u201D",q2:"Escribamos la tuya.",cont:"Continuar",objectifs:[["progresser","Progresar y superarme"],["galop","Preparar mi pr\u00f3ximo Galop"],["reviser","Repasar mis Galops"],["decouvrir","Descubrir la equitaci\u00f3n"],["ecurie","Seguir mi cuadra y mis caballos"]]},it:{t1:"Dicci",niveauPro:"Professionale / Altro",niveauEns:"Istruttore",proInfo:"Hype offre abbonamenti a tariffa pro. Ne saprai di pi\u00f9 in Il mio account.",t2:"chi sei",lLangue:"Lingua",lNiveau:"Livello",lObjectif:"Obiettivo",q1:"\u201COgni cavaliere ha la sua storia.\u201D",q2:"Scriviamo la tua.",cont:"Continua",objectifs:[["progresser","Progredire e superarmi"],["galop","Preparare il mio prossimo Galop"],["reviser","Ripassare i miei Galop"],["decouvrir","Scoprire l\u2019equitazione"],["ecurie","Seguire la mia scuderia e i miei cavalli"]]},ja:{t1:"\u3042\u306a\u305f\u306e\u3053\u3068\u3092",niveauPro:"\u30d7\u30ed\u30d5\u30a7\u30c3\u30b7\u30e7\u30ca\u30eb/\u305d\u306e\u4ed6",niveauEns:"\u6559\u5e2b",proInfo:"Hype\u306b\u306f\u30d7\u30ed\u5411\u3051\u306e\u6599\u91d1\u30d7\u30e9\u30f3\u304c\u3042\u308a\u307e\u3059\u3002\u8a73\u3057\u304f\u306f\u30de\u30a4\u30a2\u30ab\u30a6\u30f3\u30c8\u3067\u3002",t2:"\u6559\u3048\u3066",lLangue:"\u8a00\u8a9e",lNiveau:"\u30ec\u30d9\u30eb",lObjectif:"\u76ee\u6a19",q1:"\u300c\u9a0e\u624b\u306b\u306f\u305d\u308c\u305e\u308c\u306e\u7269\u8a9e\u304c\u3042\u308b\u3002\u300d",q2:"\u3042\u306a\u305f\u306e\u7269\u8a9e\u3092\u66f8\u3053\u3046\u3002",cont:"\u7d9a\u3051\u308b",objectifs:[["progresser","\u4e0a\u9054\u3057\u3066\u81ea\u5206\u3092\u8d85\u3048\u308b"],["galop","\u6b21\u306eGalop\u306e\u6e96\u5099"],["reviser","Galop\u306e\u5fa9\u7fd2"],["decouvrir","\u4e57\u99ac\u3092\u77e5\u308b"],["ecurie","\u81ea\u5206\u306e\u53a9\u820e\u3068\u99ac\u3092\u898b\u5b88\u308b"]]},de:{t1:"Erz\u00e4hl uns",t2:"wer du bist",lLangue:"Sprache",lNiveau:"Stufe",lObjectif:"Ziel",niveauPro:"Professionell / Sonstiges",niveauEns:"Ausbilder",proInfo:"Hype bietet Profi-Tarife an. Mehr dazu findest du in Mein Konto.",q1:"\u201eJeder Reiter hat seine eigene Geschichte.\u201c",q2:"Schreiben wir deine.",cont:"Weiter",objectifs:[["progresser","Mich verbessern und \u00fcber mich hinauswachsen"],["galop","Meinen n\u00e4chsten Galop vorbereiten"],["reviser","Meine Galops wiederholen"],["decouvrir","Reiten entdecken"],["ecurie","Meinen Stall und meine Pferde im Blick behalten"]]}, ar: { t1: "\u0623\u062e\u0628\u0631\u064a\u0646\u0627", niveauPro: "\u0645\u0647\u0646\u064a / \u0622\u062e\u0631", niveauEns: "\u0645\u062f\u0631\u0628", proInfo: "\u064a\u0642\u062f\u0645 Hype \u0627\u0634\u062a\u0631\u0627\u0643\u0627\u062a \u0628\u0623\u0633\u0639\u0627\u0631 \u0645\u0647\u0646\u064a\u0629. \u0633\u062a\u0639\u0631\u0641\u064a\u0646 \u0627\u0644\u0645\u0632\u064a\u062f \u0641\u064a \u062d\u0633\u0627\u0628\u064a.", t2: "\u0645\u0646 \u0623\u0646\u062a", lLangue: "\u0627\u0644\u0644\u063a\u0629", lNiveau: "\u0627\u0644\u0645\u0633\u062a\u0648\u0649", lObjectif: "\u0627\u0644\u0647\u062f\u0641", q1: "\u00ab\u0644\u0643\u0644 \u0641\u0627\u0631\u0633 \u0642\u0635\u062a\u0647.\u00bb", q2: "\u0644\u0646\u0643\u062a\u0628 \u0642\u0635\u062a\u0643.", cont: "\u0645\u062a\u0627\u0628\u0639\u0629", objectifs: [["progresser","\u0627\u0644\u062a\u0642\u062f\u0645 \u0648\u062a\u062c\u0627\u0648\u0632 \u0646\u0641\u0633\u064a"],["galop","\u0627\u0644\u062a\u062d\u0636\u064a\u0631 \u0644\u0644\u063a\u0627\u0644\u0648\u0628 \u0627\u0644\u0642\u0627\u062f\u0645"],["reviser","\u0645\u0631\u0627\u062c\u0639\u0629 \u0645\u0633\u062a\u0648\u064a\u0627\u062a \u0627\u0644\u063a\u0627\u0644\u0648\u0628"],["decouvrir","\u0627\u0643\u062a\u0634\u0627\u0641 \u0627\u0644\u0641\u0631\u0648\u0633\u064a\u0629"],["ecurie","\u0645\u062a\u0627\u0628\u0639\u0629 \u0625\u0633\u0637\u0628\u0644\u064a \u0648\u062e\u064a\u0648\u0644\u064a"]] }, zh: {t1:"告诉我们", niveauPro:"专业人士 / 其他", niveauEns:"教师", proInfo:"Hype 提供专业人士优惠价订阅。更多详情请看“我的账户”。", t2:"你是谁", lLangue:"语言", lNiveau:"等级", lObjectif:"目标", q1:"“每位骑手都有自己的故事。”", q2:"一起来写你的故事吧。", cont:"继续", objectifs:[["progresser", "不断进步，超越自己"], ["galop", "备考我的下一个 Galop"], ["reviser", "复习我的 Galop 等级"], ["decouvrir", "探索马术世界"], ["ecurie", "关注我的马厩和我的马"]]}, nl: {t1:"Vertel ons", niveauPro:"Professional / Anders", niveauEns:"Instructeur", proInfo:"Hype biedt abonnementen tegen een professioneel tarief. Meer info vind je in Mijn account.", t2:"wie je bent", lLangue:"Taal", lNiveau:"Niveau", lObjectif:"Doel", q1:"“Elke ruiter heeft een verhaal.”", q2:"Laten we het jouwe schrijven.", cont:"Doorgaan", objectifs:[["progresser", "Vooruitgaan en mezelf overtreffen"], ["galop", "Mijn volgende Galop voorbereiden"], ["reviser", "Mijn Galops herhalen"], ["decouvrir", "Paardrijden ontdekken"], ["ecurie", "Mijn stal en mijn paarden volgen"]]}, pt: {t1:"Conte para a gente", niveauPro:"Profissional / Outro", niveauEns:"Instrutor", proInfo:"O Hype oferece assinaturas com tarifa profissional. Você vai saber mais em Minha conta.", t2:"quem você é", lLangue:"Idioma", lNiveau:"Nível", lObjectif:"Objetivo", q1:"“Todo cavaleiro tem a sua história.”", q2:"Vamos escrever a sua.", cont:"Continuar", objectifs:[["progresser", "Progredir e superar meus limites"], ["galop", "Preparar meu próximo Galop"], ["reviser", "Revisar meus Galops"], ["decouvrir", "Descobrir a equitação"], ["ecurie", "Acompanhar minha cocheira e meus cavalos"]]}, sv: {t1:"Berätta", niveauPro:"Yrkesperson / Annat", niveauEns:"Ridlärare", proInfo:"Hype erbjuder prenumerationer till proffspris. Du får veta mer i Mitt konto.", t2:"vem du är", lLangue:"Språk", lNiveau:"Nivå", lObjectif:"Mål", q1:"”Varje ryttare har sin historia.”", q2:"Låt oss skriva din.", cont:"Fortsätt", objectifs:[["progresser", "Utvecklas och utmana mig själv"], ["galop", "Förbereda mitt nästa Galop"], ["reviser", "Repetera mina Galop-nivåer"], ["decouvrir", "Upptäcka ridsporten"], ["ecurie", "Följa mitt stall och mina hästar"]]}};
-  var TX = PT[langue] || PT.fr;
-  /* 02/09 (nouvel ordre d'entree) : l'age etait pose sur l'accueil, qui ne
-     demande plus rien. Il rejoint les autres questions. Libelles a part pour
-     ne pas toucher au grand dictionnaire ci-dessus. */
-  var PTA = {
-    fr: { lAge: "\u00c2ge", min: "- de 18 ans", maj: "+ de 18 ans", vide: "\u00c0 choisir" },
-    en: { lAge: "Age", min: "Under 18", maj: "18 and over", vide: "To choose" },
-    es: { lAge: "Edad", min: "Menos de 18", maj: "18 o m\u00e1s", vide: "Por elegir" },
-    it: { lAge: "Et\u00e0", min: "Meno di 18", maj: "18 o pi\u00f9", vide: "Da scegliere" },
-    ja: { lAge: "\u5e74\u9f62", min: "18\u6b73\u672a\u6e80", maj: "18\u6b73\u4ee5\u4e0a", vide: "\u672a\u9078\u629e" },
-    de: { lAge: "Alter", min: "Unter 18", maj: "18 und \u00e4lter", vide: "Zu w\u00e4hlen" }, ar: { lAge: "\u0627\u0644\u0639\u0645\u0631", min: "\u0623\u0642\u0644 \u0645\u0646 18 \u0633\u0646\u0629", maj: "\u0623\u0643\u062b\u0631 \u0645\u0646 18 \u0633\u0646\u0629", vide: "\u0644\u0644\u0627\u062e\u062a\u064a\u0627\u0631" }, zh: {lAge: "年龄", min: "18 岁以下", maj: "18 岁以上", vide: "请选择"}, nl: {lAge: "Leeftijd", min: "Jonger dan 18", maj: "18 jaar of ouder", vide: "Kies er een"}, pt: {lAge: "Idade", min: "- de 18 anos", maj: "+ de 18 anos", vide: "A escolher"}, sv: {lAge: "Ålder", min: "Under 18 år", maj: "Över 18 år", vide: "Att välja"}
-  };
-  var TXA = PTA[langue] || PTA.fr;
-  var LANGUES = [["fr","Fran\u00e7ais"],["en","English"],["es","Espa\u00f1ol"],["it","Italiano"],["ja","\u65e5\u672c\u8a9e"],["de","Deutsch"],["ar","\u0627\u0644\u0639\u0631\u0628\u064a\u0629"],["zh","\u4e2d\u6587"],["nl","Nederlands"],["pt","Português"],["sv","Svenska"]];
-  var OBJECTIFS = TX.objectifs;
-  function libelle(liste, val){ for (var i = 0; i < liste.length; i++){ if (liste[i][0] === val) return liste[i][1]; } return liste[0][1]; }
-  var CSS = "@keyframes persUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}" +
-    "@keyframes cardIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}" +
-    "@keyframes letIn{from{opacity:0;filter:blur(5px);transform:translateY(4px)}to{opacity:1;filter:blur(0);transform:none}}" +
-    "@keyframes souffle{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.006)}}" +
-    "@keyframes eyeGlint{0%,54%{opacity:0;transform:translateX(-5px)}58%{opacity:.7;transform:translateX(2px)}62%,100%{opacity:0;transform:translateX(9px)}}" +
-    "@keyframes partFloat{to{transform:translateY(-26px)}}" +
-    "@keyframes partTw{0%,100%{opacity:0}50%{opacity:.85}}" +
-    "@keyframes icoBr{0%,100%{transform:scale(1);filter:drop-shadow(0 0 0 rgba(32,217,245,0))}50%{transform:scale(1.06);filter:drop-shadow(0 0 6px rgba(95,233,240,.6))}}" +
-    "@keyframes ferP{0%,100%{filter:drop-shadow(0 0 5px rgba(32,217,245,0.82))}4%{filter:drop-shadow(0 0 13px rgba(95,233,240,.95))}10%{filter:drop-shadow(0 0 5px rgba(32,217,245,0.82))}}" +
-    "@keyframes streakA{0%,5%{opacity:0;transform:translateY(-6px)}8%{opacity:1;transform:translateY(3px)}13%,100%{opacity:0;transform:translateY(13px)}}" +
-    "@keyframes hypeGl{0%,12%,30%,100%{text-shadow:0 2px 10px rgba(10,26,36,0.132)}18%{text-shadow:0 0 20px rgba(95,233,240,.8),0 2px 10px rgba(10,26,36,0.132)}}" +
-    "@keyframes orbite{to{transform:rotate(360deg)}}" +
-    "@keyframes bgDrift{from{transform:translate(0,0)}to{transform:translate(2px,-2px)}}" +
-    "@keyframes ondeA{from{transform:scale(1);opacity:.95}to{transform:scale(48);opacity:0}}";
-  function centre(el, rr){ var r = el.getBoundingClientRect(); return { x: r.left - rr.left + r.width / 2, y: r.top - rr.top + r.height / 2 }; }
-  function pulserBouton(){
-    try {
-      var w = btnRef.current && btnRef.current.parentElement;
-      if (w && w.animate) w.animate([{ transform: "scale(1)" }, { transform: "scale(1.07)" }, { transform: "scale(1)" }], { duration: 650, easing: "ease" });
-    } catch (err) {}
-  }
-  function choisir(cle, appliquer){
-    appliquer();
-    setCharged(function(p){ var n = Object.assign({}, p); n[cle] = 1; return n; });
-    pulserBouton();
-    setOuvert(null);
-  }
-  function partir(){
-    if (chargeRef.current) return; chargeRef.current = true; setCharge(true); setOuvert(null);
-    var root = rootRef.current, btn = btnRef.current;
-    if (root && btn){ var rr = root.getBoundingClientRect(); setOnde(centre(btn, rr)); }
-    setTimeout(function(){ onSuivant(); }, 840);
-  }
-  function icoSvg(enfants){ return h("svg", { viewBox: "0 0 24 24", width: 19, height: 19, fill: "none", stroke: TQL, strokeWidth: 1.6, strokeLinecap: "round", strokeLinejoin: "round" }, enfants); }
-  var icoGlobe = icoSvg([h("circle", { key: 1, cx: 12, cy: 12, r: 8.6 }), h("path", { key: 2, d: "M3.4 12h17.2" }), h("path", { key: 3, d: "M12 3.4a13.5 13.5 0 0 1 0 17.2a13.5 13.5 0 0 1 0-17.2" })]);
-  var icoMedaille = icoSvg([h("circle", { key: 1, cx: 12, cy: 9, r: 5.2 }), h("path", { key: 2, d: "M9.4 13.5L7.7 20l4.3-2.5L16.3 20l-1.7-6.5" }), h("path", { key: 3, d: "M12 6.9l.8 1.5 1.6.3-1.2 1.1.3 1.6-1.5-.8-1.5.8.3-1.6-1.2-1.1 1.6-.3z", fill: TQL, stroke: "none", opacity: .95 })]);
-  var icoCible = icoSvg([h("circle", { key: 1, cx: 10.6, cy: 13.4, r: 7.4 }), h("circle", { key: 2, cx: 10.6, cy: 13.4, r: 3.6 }), h("circle", { key: 3, cx: 10.6, cy: 13.4, r: 1, fill: TQL, stroke: "none" }), h("path", { key: 4, d: "M21.2 2.8l-9.6 9.6" }), h("path", { key: 5, d: "M21.2 2.8l-3.4.6M21.2 2.8l-.6 3.4" })]);
-  var icoCavalier = icoSvg([h("circle", { key: 1, cx: 12, cy: 8, r: 3.6 }), h("path", { key: 2, d: "M5 19.6c1.6-3.6 4.5-5.4 7-5.4s5.4 1.8 7 5.4" })]);
-  var fer = h("svg", { viewBox: "0 0 24 24", width: 22, height: 22, fill: "none", stroke: TQ, strokeWidth: 2, strokeLinecap: "round", style: { display: "block", margin: "0 auto", animation: "ferP 8s ease-in-out infinite" } },
-    h("path", { d: "M7 20v-6a5 5 0 0 1 10 0v6" }), h("path", { d: "M5.2 20h3.2M15.6 20h3.2" }));
-  function lettres(txt, base){
-    return txt.split("").map(function(ch, i){
-      return h("span", { key: i, style: { display: "inline-block", whiteSpace: "pre", animation: "letIn .9s " + (base + i * 0.045).toFixed(3) + "s both" } }, ch === " " ? "\u00A0" : ch);
+  var onPasser = props.onPasser || function(){}; var onRetour = props.onRetour || function(){};
+  var TX = ONB_TXT[langue] || ((langue === "zh" || langue === "nl" || langue === "pt" || langue === "sv") ? ONB_TXT.en : ONB_TXT.fr);
+  var rtl = langue === "ar";
+  var rootRef = React.useRef(null);
+  var miniSt = React.useState(false); var mini = miniSt[0], setMini = miniSt[1];
+  var envSt = React.useState(false); var envoi = envSt[0], setEnvoi = envSt[1];
+  /* En-tete compact (telephone, tablette) une fois le grand titre passe : Retour, « Tes envies », Passer. */
+  React.useEffect(function(){
+    var el = rootRef.current && rootRef.current.parentElement; if (!el) return;
+    function surDefil(){ try { var y = (el.scrollTop || 0) || (window.scrollY || 0); setMini(y > 240); } catch (e) { } }
+    el.addEventListener("scroll", surDefil, { passive: true }); window.addEventListener("scroll", surDefil, { passive: true });
+    surDefil();
+    return function(){ el.removeEventListener("scroll", surDefil); window.removeEventListener("scroll", surDefil); };
+  }, []);
+  var envies = Array.isArray(local.envies) ? local.envies.filter(function(x){ return ENVIES_HYPE.indexOf(x) >= 0; }) : [];
+  function basculer(id){
+    setLocal(function(p){
+      p = p || {}; var l = Array.isArray(p.envies) ? p.envies.filter(function(x){ return ENVIES_HYPE.indexOf(x) >= 0; }) : [];
+      var i = l.indexOf(id); if (i >= 0) l.splice(i, 1); else l.push(id);
+      l.sort(function(a, b){ return ENVIES_HYPE.indexOf(a) - ENVIES_HYPE.indexOf(b); });
+      return Object.assign({}, p, { envies: l });
     });
   }
-  function separ(delai){
-    return h("div", { style: { position: "relative", height: 9, margin: "16px auto 0", width: 150, animation: "persUp .8s " + delai + "s both" } },
-      h("div", { style: { position: "absolute", left: 0, right: 0, top: 4, height: 1, background: "linear-gradient(90deg,transparent,rgba(255,255,255,.32),transparent)" } }),
-      h("div", { style: { position: "absolute", left: "50%", top: 4, width: 5, height: 5, marginLeft: -2.5, marginTop: -2, borderRadius: "50%", background: TQL, boxShadow: "0 0 8px rgba(95,233,240,.9)" } }));
+  /* Niveau : meme champ qu'avant (profil.galop) ; 0 = Sans Galop (nouveau). */
+  var g = local.galop;
+  var valSel = (g === 0 || (typeof g === "number" && g >= 1 && g <= 7)) ? String(g) : (g === "Professionnel / Autre" ? "pro" : (g === "Enseignant" ? "ens" : ""));
+  function changerNiveau(e){
+    var v = e.target.value; var n = v === "pro" ? "Professionnel / Autre" : (v === "ens" ? "Enseignant" : parseInt(v, 10));
+    if (v === "") return;
+    setLocal(function(p){ return Object.assign({}, p || {}, { galop: n }); });
   }
-  function pilule(cle, actif, texte, appliquer){
-    return h("button", { key: texte, onClick: function(e){ e.stopPropagation(); choisir(cle, appliquer); }, style: { padding: "8px 13px", borderRadius: 999, border: "1px solid " + (actif ? "rgba(95,233,240,.75)" : "rgba(255,255,255,.18)"), background: actif ? "rgba(32,217,245,0.278)" : "rgba(255,255,255,.045)", color: actif ? "#D6FAFC" : "#DFE8EB", fontFamily: M, fontSize: 12, fontWeight: 600, cursor: "pointer", boxShadow: actif ? "0 0 12px rgba(95,233,240,.35)" : "none", transition: "all .25s ease" } }, texte);
-  }
-  function ligneOption(cle, actif, texte, appliquer, premiere){
-    return h("button", { key: texte, onClick: function(e){ e.stopPropagation(); choisir(cle, appliquer); }, style: { display: "flex", alignItems: "center", gap: 10, width: "100%", textAlign: "left", padding: "10px 2px", background: "none", border: "none", borderTop: premiere ? "none" : "1px solid rgba(255,255,255,.07)", cursor: "pointer" } },
-      h("span", { style: { width: 8, height: 8, flex: "0 0 8px", borderRadius: "50%", border: "1px solid " + (actif ? TQL : "rgba(255,255,255,.35)"), background: actif ? TQL : "transparent", boxShadow: actif ? "0 0 8px rgba(95,233,240,.8)" : "none", transition: "all .25s ease" } }),
-      h("span", { style: { fontFamily: M, fontSize: 12.5, fontWeight: actif ? 600 : 500, color: actif ? "#D6FAFC" : "#DFE8EB", lineHeight: 1.35, transition: "color .25s ease" } }, texte));
-  }
-  function carte(cle, icone, label, valeur, delaiIn, delaiIco, contenu){
-    var estOuvert = ouvert === cle;
-    return h("div", { style: { position: "relative", background: "rgba(8,13,18,.5)", border: "1px solid " + (charge ? "rgba(95,233,240,.5)" : (estOuvert ? "rgba(95,233,240,.4)" : "rgba(255,255,255,.16)")), borderRadius: 17, padding: "12px 12px", marginTop: 11, backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)", boxShadow: charge ? "0 0 24px rgba(95,233,240,.25)" : (estOuvert ? "0 0 18px rgba(95,233,240,.14)" : "0 8px 24px rgba(10,26,36,0.077)"), transition: "box-shadow .5s ease, border-color .5s ease", animation: "cardIn .6s " + delaiIn + "s cubic-bezier(.2,.7,.2,1) both" } },
-      h("div", { onClick: function(){ setOuvert(estOuvert ? null : cle); }, style: { display: "flex", alignItems: "center", gap: 11, cursor: "pointer" } },
-        h("div", { style: { width: 37, height: 37, flex: "0 0 37px", borderRadius: "50%", border: "1px solid rgba(32,217,245,0.74)", background: "rgba(32,217,245,0.148)", display: "flex", alignItems: "center", justifyContent: "center", animation: "icoBr 4s ease-in-out " + delaiIco + "s infinite" } }, icone),
-        h("div", { style: { fontFamily: M, fontSize: 10, fontWeight: 700, letterSpacing: 2, color: "#E3ECEF", textTransform: "uppercase" } }, label),
-        h("div", { style: { flex: 1 } }),
-        h("div", { style: { fontFamily: M, fontSize: 12, fontWeight: 500, color: "#F2F7F8", textAlign: "right", lineHeight: 1.35, maxWidth: "47%" } }, valeur),
-        h("span", { style: { color: "rgba(234,253,255,.85)", fontSize: 17, lineHeight: 1, fontFamily: M, display: "inline-block", transform: estOuvert ? "rotate(90deg)" : "none", transition: "transform .3s ease" } }, "\u203A")),
-      h("div", { style: { maxHeight: estOuvert ? 340 : 0, opacity: estOuvert ? 1 : 0, overflow: "hidden", transition: "max-height .45s cubic-bezier(.4,0,.2,1), opacity .3s ease" } }, contenu));
-  }
-  var PARTICULES = [
-    [58, 12, 2.5, 17, 7, 0], [70, 8, 2, 21, 9, 1.5], [84, 15, 3, 15, 6, 3], [92, 26, 2, 19, 8, .8],
-    [63, 34, 2.5, 23, 10, 2.2], [77, 42, 2, 16, 7, 4], [90, 50, 2.5, 20, 9, 1.1], [68, 58, 2, 18, 6, 2.8],
-    [82, 66, 3, 22, 8, .4], [94, 74, 2, 17, 7, 3.5], [72, 82, 2.5, 19, 9, 1.9], [86, 90, 2, 21, 6, 2.5]
+  function entrer(){ if (envoi) return; setEnvoi(true); try { onSuivant(); } catch (e) { setEnvoi(false); } }
+  var flecheAvant = rtl ? "←" : "→", flecheArriere = rtl ? "→" : "←";
+  function lienRetour(k){ return h("button", { key: k, type: "button", className: "onb-lien", onClick: onRetour }, h("span", { className: "onb-fl", "aria-hidden": "true" }, flecheArriere), h("span", null, TX.retour)); }
+  function lienPasser(k){ return h("button", { key: k, type: "button", className: "onb-lien", onClick: onPasser }, h("span", { className: "onb-souligne" }, TX.passer), h("span", { className: "onb-fl", "aria-hidden": "true" }, flecheAvant)); }
+  function ico(d){ return h("svg", { viewBox: "0 0 24 24", width: 26, height: 26, fill: "none", stroke: "currentColor", strokeWidth: 1.4, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, d.map(function(x, i){ return h(x[0], Object.assign({ key: i }, x[1])); })); }
+  var ICONES = [
+    ico([["rect", { x: 3.5, y: 4.5, width: 17, height: 15, rx: 2 }], ["circle", { cx: 9, cy: 9.5, r: 1.6 }], ["path", { d: "M4 17.5l5-4.5 3.5 3 3-2.5 4.5 4" }]]),
+    ico([["path", { d: "M2.5 9.5L12 5l9.5 4.5L12 14z" }], ["path", { d: "M6.5 11.5v4c1.6 1.6 3.5 2.3 5.5 2.3s3.9-.7 5.5-2.3v-4" }], ["path", { d: "M21.5 9.5v5" }]]),
+    ico([["path", { d: "M12 19.5s-7.5-4.4-7.5-10A4.2 4.2 0 0 1 12 7a4.2 4.2 0 0 1 7.5 2.5c0 5.6-7.5 10-7.5 10z" }], ["path", { d: "M7 12h2.5l1.3-2.3 2 4.3 1.4-2h2.8" }]]),
+    ico([["path", { d: "M8 4.5h8v5a4 4 0 0 1-8 0z" }], ["path", { d: "M8 6H5.5a2.5 2.5 0 0 0 2.6 3.6M16 6h2.5a2.5 2.5 0 0 1-2.6 3.6" }], ["path", { d: "M12 13.5v3.5M9 20h6M10 17h4" }]]),
+    ico([["circle", { cx: 12, cy: 12, r: 8.5 }], ["path", { d: "M3.5 12h17" }], ["path", { d: "M12 3.5c2.4 2.4 3.4 5.2 3.4 8.5s-1 6.1-3.4 8.5c-2.4-2.4-3.4-5.2-3.4-8.5s1-6.1 3.4-8.5z" }]]),
+    ico([["rect", { x: 4, y: 5.5, width: 16, height: 14.5, rx: 2 }], ["path", { d: "M4 9.5h16M8.5 3.5v4M15.5 3.5v4" }], ["path", { d: "M8 13h.01M12 13h.01M16 13h.01M8 16.5h.01M12 16.5h.01M16 16.5h.01" }]]),
+    ico([["circle", { cx: 12, cy: 8, r: 3 }], ["path", { d: "M6.5 19c.6-3 2.8-4.8 5.5-4.8s4.9 1.8 5.5 4.8" }], ["circle", { cx: 5.5, cy: 10, r: 2 }], ["circle", { cx: 18.5, cy: 10, r: 2 }], ["path", { d: "M2.5 17c.4-1.8 1.5-2.9 3-3.2M21.5 17c-.4-1.8-1.5-2.9-3-3.2" }]]),
+    ico([["circle", { cx: 9, cy: 8.5, r: 2.8 }], ["circle", { cx: 16.5, cy: 9.5, r: 2.3 }], ["path", { d: "M3.5 18.5c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6" }], ["path", { d: "M14.8 14.3c.6-.2 1.1-.3 1.7-.3 2.2 0 3.9 1.4 4.5 3.8" }]]),
+    ico([["rect", { x: 3.5, y: 7, width: 17, height: 12, rx: 2 }], ["path", { d: "M9 7V5.5A1.5 1.5 0 0 1 10.5 4h3A1.5 1.5 0 0 1 15 5.5V7" }], ["path", { d: "M3.5 12.5h17M10.5 12.5v1.5h3v-1.5" }]]),
+    ico([["path", { d: "M12 6.5C10 5 7 4.5 3.5 5v13c3.5-.5 6.5 0 8.5 1.5 2-1.5 5-2 8.5-1.5V5C17 4.5 14 5 12 6.5z" }], ["path", { d: "M12 6.5v13" }]])
   ];
-  var galopActuel = local.galop || 4;
-  var objActuel = local.objectif || "progresser";
-  return h("div", { ref: rootRef, style: { position: "relative", /* 14/08 (reapplique, session 134) : height:"100%" RETIRE — il figeait la boite a la hauteur de l ecran alors que le contenu la depasse (97px sequestres, boutons inatteignables, et plus rien a faire defiler pour le deck intro qui porte l overflowY:auto). minHeight garde le plein ecran ; la boite grandit avec le contenu et c est la page du deck qui defile. */ minHeight: "100vh", overflow: "hidden", background: "#04070d" } },
-    h("style", null, CSS),
-    h("div", { style: { position: "absolute", inset: 0, animation: "souffle 7.5s ease-in-out infinite", transformOrigin: "20% 62%", willChange: "transform", filter: charge ? "brightness(1.15) saturate(1.06)" : "none", transition: "filter .6s ease" } },
-      h("div", { style: { position: "absolute", inset: 0, backgroundImage: "url(" + IMG_PERSONNALISATION_BG + ")", backgroundSize: "cover", backgroundPosition: "0% center" } }),
-      h("div", { style: { position: "absolute", left: "16%", top: "45%", width: 26, height: 13, marginLeft: -13, marginTop: -7, borderRadius: "50%", background: "radial-gradient(closest-side, rgba(255,255,255,.85), rgba(95,233,240,.5) 42%, transparent 72%)", mixBlendMode: "screen", filter: "blur(1px)", animation: "eyeGlint 13s ease-in-out infinite", pointerEvents: "none" } })),
-    h("div", { style: { pointerEvents: "none", position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(4,7,13,.55) 0%, rgba(4,7,13,.24) 30%, rgba(4,7,13,.48) 66%, rgba(4,7,13,.9) 100%)", pointerEvents: "none" } }),
-    (charge ? h("div", { style: { position: "absolute", inset: 0, background: "rgba(95,233,240,.1)", pointerEvents: "none", animation: "persUp .5s both" } }) : null),
-    h("svg", { viewBox: "0 0 200 300", preserveAspectRatio: "xMidYMid slice", style: { position: "absolute", right: 0, top: "8%", width: "58%", height: "66%", opacity: .32, pointerEvents: "none", animation: "bgDrift 24s ease-in-out infinite alternate" } },
-      h("path", { d: "M40 60 L92 34 L150 70 L128 138 L172 190", fill: "none", stroke: "rgba(95,233,240,.5)", strokeWidth: .7 }),
-      h("path", { d: "M92 34 L128 138 L60 210", fill: "none", stroke: "rgba(95,233,240,.35)", strokeWidth: .6 }),
-      [[40, 60, 1.6], [92, 34, 1.2], [150, 70, 1.8], [128, 138, 1.3], [172, 190, 1.6], [60, 210, 1.2], [110, 250, 1.5]].map(function(p, i){
-        return h("circle", { key: i, cx: p[0], cy: p[1], r: p[2], fill: TQL });
-      })),
-    h("div", { style: { position: "absolute", inset: 0, pointerEvents: "none" } },
-      PARTICULES.map(function(p, i){
-        return h("div", { key: i, style: { position: "absolute", left: p[0] + "%", top: p[1] + "%", width: p[2], height: p[2], borderRadius: "50%", background: TQL, boxShadow: "0 0 6px rgba(95,233,240,.8)", opacity: 0, animation: "partFloat " + p[3] + "s ease-in-out " + p[5] + "s infinite alternate, partTw " + p[4] + "s ease-in-out " + p[5] + "s infinite" } });
-      })),
-    h("div", { style: { position: "relative", minHeight: "100vh", display: "flex", flexDirection: "column", padding: "calc(env(safe-area-inset-top) + 22px) 16px calc(env(safe-area-inset-bottom) + 18px) 25%", boxSizing: "border-box", width: "100%", maxWidth: 430, margin: "0 auto" } },
-      h("div", { style: { textAlign: "center", position: "relative", animation: "persUp .8s .1s both" } },
-        fer,
-        h("div", { style: { position: "relative", height: 14 } },
-          h("div", { style: { position: "absolute", left: "50%", top: 0, width: 1.5, height: 13, marginLeft: -0.75, background: "linear-gradient(180deg, rgba(95,233,240,0), rgba(95,233,240,.9), rgba(95,233,240,0))", animation: "streakA 8s ease-in-out infinite", opacity: 0 } })),
-        h("div", { style: { fontFamily: C, fontSize: 25, fontWeight: 600, letterSpacing: 10, paddingLeft: 10, color: "#EDF3F6", animation: "hypeGl 8s ease-in-out infinite" } }, "HYPE"),
-        h("div", { style: { fontFamily: M, fontSize: 8.5, fontWeight: 600, letterSpacing: 5.5, paddingLeft: 5.5, color: "rgba(226,236,239,.6)", marginTop: 5, textTransform: "uppercase" } }, "Your World")),
-      h("div", { style: { fontFamily: G, fontSize: 33, lineHeight: 1.16, fontWeight: 400, color: "#EDF3F5", textAlign: "center", marginTop: 22, textShadow: "0 2px 12px rgba(10,26,36,0.121)", animation: "persUp .9s .45s both" } }, TX.t1, h("br"), TX.t2),
-      separ(.7),
-      h("div", { style: { marginTop: 8 } },
-        carte("age", icoCavalier, TXA.lAge, (local.majeur === true ? TXA.maj : (local.majeur === false ? TXA.min : TXA.vide)), .84, 0.6,
-          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, paddingTop: 13, paddingBottom: 2 } },
-            [[false, TXA.min], [true, TXA.maj]].map(function(ag){ return pilule("age", local.majeur === ag[0], ag[1], function(){ setLocal(Object.assign({}, local, { majeur: ag[0] })); }); }))),
-        carte("langue", icoGlobe, TX.lLangue, libelle(LANGUES, langue), .9, 0,
-          h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, paddingTop: 13, paddingBottom: 2 } },
-            LANGUES.map(function(l){ return pilule("langue", langue === l[0], l[1], function(){ setLangue(l[0]); }); }))),
-        carte("niveau", icoMedaille, TX.lNiveau, (typeof galopActuel === "number" ? "Galop " + galopActuel : (galopActuel === "Professionnel / Autre" ? TX.niveauPro : TX.niveauEns)), .98, 1.3,
-          h(React.Fragment, null,
-            h("div", { style: { display: "flex", flexWrap: "wrap", gap: 8, paddingTop: 13, paddingBottom: 2 } },
-              [1, 2, 3, 4, 5, 6, 7, "Professionnel / Autre", "Enseignant"].map(function(n){ return pilule("niveau", galopActuel === n, (typeof n === "number" ? "Galop " + n : (n === "Professionnel / Autre" ? TX.niveauPro : TX.niveauEns)), function(){ setLocal(Object.assign({}, local, { galop: n })); }); })),
-            /* 18/08 (demande de Blandine) : quand la cavaliere choisit Professionnel
-               ou Enseignant, une ligne discrete signale les abonnements a tarif pro
-               et renvoie vers Mon compte pour la suite — pas de blocage, pas de
-               formulaire ici, juste l'information au bon moment. */
-            (galopActuel === "Professionnel / Autre" || galopActuel === "Enseignant") ? h("div", { style: { marginTop: 10, padding: "9px 12px", borderRadius: 12, background: "rgba(32,217,245,0.09)", border: "1px solid rgba(32,217,245,0.28)", fontSize: 12, lineHeight: 1.5, color: TQL, fontFamily: M } }, TX.proInfo) : null)),
-        carte("objectif", icoCible, TX.lObjectif, libelle(OBJECTIFS, objActuel), 1.06, 2.6,
-          h("div", { style: { paddingTop: 8 } },
-            OBJECTIFS.map(function(o, i){ return ligneOption("objectif", objActuel === o[0], o[1], function(){ setLocal(Object.assign({}, local, { objectif: o[0] })); }, i === 0); })))),
-      h("div", { style: { textAlign: "center", marginTop: 20 } },
-        h("div", { style: { fontFamily: G, fontSize: 15, color: "#E8EFF1", textShadow: "0 1px 8px rgba(10,26,36,0.132)", animation: "persUp .9s 1.35s both" } }, TX.q1),
-        h("div", { style: { fontFamily: G, fontSize: 16, fontWeight: 700, color: "#F4F9FA", marginTop: 5, textShadow: "0 1px 8px rgba(10,26,36,0.132)" } }, lettres(TX.q2, 1.6))),
-      separ(1.8),
-      h("div", { style: { flex: 1, minHeight: 8 } }),
-      h("div", { style: { position: "relative", width: 116, height: 116, margin: "6px auto 0", animation: "persUp .8s 1.95s both" } },
-        h("div", { style: { position: "absolute", inset: 0, animation: "orbite 70s linear infinite" } },
-          h("svg", { viewBox: "0 0 116 116", style: { position: "absolute", inset: 0, opacity: .85 } },
-            h("circle", { cx: 58, cy: 58, r: 53, fill: "none", stroke: "rgba(95,233,240,.16)", strokeWidth: 1, strokeDasharray: "2 10" }),
-            h("path", { d: "M58 5 A53 53 0 0 1 105 40", fill: "none", stroke: "rgba(95,233,240,.32)", strokeWidth: 1 }),
-            [[58, 5, 1.6], [105, 40, 1.9], [99, 92, 1.3], [30, 104, 1.6], [8, 66, 1.2], [22, 22, 1.4]].map(function(p, i){
-              return h("circle", { key: i, cx: p[0], cy: p[1], r: p[2], fill: TQL, opacity: .8 });
-            }))),
-        h("svg", { viewBox: "0 0 116 116", style: { position: "absolute", inset: 0, transform: "rotate(-90deg)" } },
-          h("circle", { cx: 58, cy: 58, r: 45, fill: "none", stroke: "rgba(255,255,255,.09)", strokeWidth: 2 }),
-          h("circle", { cx: 58, cy: 58, r: 45, fill: "none", stroke: TQL, strokeWidth: 2, strokeLinecap: "round", strokeDasharray: 283, strokeDashoffset: 283 * (1 - nCh / 4), style: { transition: "stroke-dashoffset .9s cubic-bezier(.4,0,.2,1)", filter: plein ? "drop-shadow(0 0 7px rgba(95,233,240,.85))" : "drop-shadow(0 0 3px rgba(95,233,240,.4))" } })),
-        h("button", { ref: btnRef, onPointerDown: partir, onClick: partir, "aria-label": TX.cont, style: { position: "absolute", left: 20, top: 20, width: 76, height: 76, borderRadius: "50%", border: "1px solid rgba(95,233,240," + (plein ? ".7" : ".4") + ")", background: "radial-gradient(circle at 32% 28%, rgba(95,233,240,.3), rgba(10,20,26,.92) 55%, #05090d 100%)", cursor: "pointer", padding: 0, boxShadow: plein ? "0 0 34px rgba(95,233,240,.45), inset 0 0 16px rgba(95,233,240,.25)" : "0 0 18px rgba(95,233,240,.2), inset 0 0 12px rgba(95,233,240,.12)", transition: "box-shadow .8s ease, border-color .8s ease", overflow: "hidden" } },
-          h("div", { style: { position: "absolute", inset: 3, borderRadius: "50%", background: "conic-gradient(from 0deg, transparent 0deg, rgba(95,233,240,.4) 55deg, transparent 140deg)", animation: "orbite 9s linear infinite", WebkitMaskImage: "radial-gradient(circle, transparent 55%, #000 62%)", maskImage: "radial-gradient(circle, transparent 55%, #000 62%)" } }),
-          h("div", { style: { position: "absolute", inset: 3, borderRadius: "50%", background: "radial-gradient(circle at 50% 50%, rgba(147,238,244,.95), rgba(87,220,230,.9) 60%)", transform: "scale(" + (charge ? 1 : 0) + ")", transition: "transform .55s cubic-bezier(.3,.8,.3,1)" } })))),
-    (charge && onde ? h("div", { style: { position: "absolute", left: onde.x, top: onde.y, width: 22, height: 22, marginLeft: -11, marginTop: -11, borderRadius: "50%", border: "1.5px solid rgba(95,233,240,.7)", boxShadow: "0 0 30px rgba(95,233,240,.55)", pointerEvents: "none", zIndex: 70, animation: "ondeA .95s ease-out both" } }) : null));
+  var coche = h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#070A08", strokeWidth: 2.6, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M6 12.5l4 4 8-9" }));
+  var cadenas = h("svg", { viewBox: "0 0 24 24", width: 20, height: 20, fill: "none", stroke: "#C9A66B", strokeWidth: 1.5, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("rect", { x: 5, y: 10.5, width: 14, height: 10, rx: 2 }), h("path", { d: "M8 10.5V7.5a4 4 0 0 1 8 0v3" }), h("path", { d: "M12 14.5v2.5" }));
+  var chevron = h("svg", { viewBox: "0 0 24 24", width: 14, height: 14, fill: "none", stroke: "#F3EEE4", strokeWidth: 1.8, strokeLinecap: "round", strokeLinejoin: "round", "aria-hidden": "true" }, h("path", { d: "M6 9l6 6 6-6" }));
+  var options = [h("option", { key: "v", value: "", disabled: true }, TX.aChoisir), h("option", { key: "0", value: "0" }, TX.sans)]
+    .concat([1, 2, 3, 4, 5, 6, 7].map(function(n){ return h("option", { key: String(n), value: String(n) }, "Galop " + n); }))
+    .concat([h("option", { key: "pro", value: "pro" }, TX.pro), h("option", { key: "ens", value: "ens" }, TX.ens)]);
+  return h("div", { ref: rootRef, className: "onb", dir: rtl ? "rtl" : "ltr", lang: langue },
+    h("style", null, ONB_CSS),
+    h("div", { className: "onb-mini" + (mini ? " vu" : ""), "aria-hidden": mini ? "false" : "true" },
+      lienRetour("mr"), h("span", { className: "onb-mini-t" }, TX.envies), lienPasser("mp")),
+    h("div", { className: "onb-photo" }, h("img", { src: IMG_ONBOARDING_CHEVAL, alt: "", decoding: "async" })),
+    h("nav", { className: "onb-nav" }, lienRetour("r"), lienPasser("p")),
+    h("main", { className: "onb-main" },
+      h("div", { className: "onb-tete" },
+        h("div", null,
+          h("h1", { className: "onb-h1" }, TX.titre),
+          h("p", { className: "onb-sous" }, TX.sous)),
+        h("div", { className: "onb-niv" },
+          h("label", { className: "onb-niv-l", htmlFor: "onb-niveau" }, TX.niveau),
+          h("div", { className: "onb-sel" }, h("select", { id: "onb-niveau", value: valSel, onChange: changerNiveau }, options), chevron))),
+      (valSel === "pro" || valSel === "ens") ? h("div", { className: "onb-info" }, TX.proInfo) : null,
+      h("div", { className: "onb-grille", role: "group", "aria-label": TX.titre },
+        ENVIES_HYPE.map(function(id, i){
+          var on = envies.indexOf(id) >= 0;
+          return h("button", { key: id, type: "button", role: "checkbox", "aria-checked": on ? "true" : "false", className: "onb-carte", "data-envie": id, onClick: function(){ basculer(id); } },
+            h("span", { className: "onb-ico" }, ICONES[i]),
+            h("span", { className: "onb-txt" }, h("span", { className: "onb-t" }, TX.c[i][0]), h("span", { className: "onb-d" }, TX.c[i][1])),
+            h("span", { className: "onb-coche", "aria-hidden": "true" }, on ? coche : null));
+        })),
+      h("div", { className: "onb-pied" },
+        h("div", { className: "onb-prive" }, cadenas, h("span", null, TX.prive)),
+        h("button", { type: "button", className: "onb-entrer", onClick: entrer, disabled: envoi }, h("span", null, TX.entrer), h("span", { className: "onb-fl", "aria-hidden": "true" }, flecheAvant)))));
 }
 function EcranVoyage({ onSuivant }) {
     const fondPage = null;
