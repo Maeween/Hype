@@ -936,9 +936,10 @@ body.dans-hype .lb{padding-top:calc(var(--sat) + 50px)}
 @container ch (min-width:1200px){.r-docs .rg-lien{min-height:220px}}
 /* téléphone : phrase sous le titre centrée, avec le bouton Partager (20/10) */
 @container ch (max-width:699px){.hero-texte .intro{text-align:center;margin-inline:auto;max-width:330px}.hero-texte .partage{display:flex;margin-inline:auto;width:max-content}}
+.ph-attente{opacity:.6}
 </style>
 </head>
-<body>
+<body class="sans-donnees">
 <div id="bandeauHaut" aria-hidden="true"></div>
 <div class="challenge">
 <div id="etat-page"><p data-t="chargement"></p></div>
@@ -1370,6 +1371,7 @@ function bornerAgrandi(img) { try { var k = 1.5; img.style.maxWidth = Math.round
 function pasGalerie(d) { var l = photosAlbum(); if (!l.length) return; GAL.i = (GAL.i + d + l.length) % l.length; rendreGalerie(); }
 /* aperçu dans la page de l'étape : quelques photos et l'accès à la galerie complète */
 function apercuPhotos(n) {
+  if (!PHOTOS_PRETES) return '<p class="ph-vide ph-attente">' + T("chargement") + "</p>";
   var p = PHOTOS[n] || [];
   if (!p.length) return '<p class="ph-vide"><span>✦</span>' + T("pasPhotos") + "</p>";
   var vis = p.slice(0, 6), reste = p.length - vis.length;
@@ -1561,7 +1563,9 @@ function baremeHtml() {
     }).join("") + "</div>" + (fin ? '<div class="bareme-legende"><span>✦ ' + TF("finaleDouble", { d3: d3() }) + "</span></div>" : "") + "</details>";
 }
 /* galerie éditoriale : une grande photo + des secondaires, chacune rattachée à sa journée */
+var PHOTOS_PRETES = false;
 function rendrePhotos() {
+  if (!PHOTOS_PRETES) { document.getElementById("s-photos").innerHTML = '<div class="tete t-ph"><div><span class="surtitre">' + T("souvenirs") + '</span><h2 class="titre">' + T("oPhotos") + '</h2></div></div><p class="ph-vide ph-attente">' + T("chargement") + "</p>"; return; }
   var E = CHALLENGE.etapes, toutes = [];
   E.slice().reverse().forEach(function (e) { (PHOTOS[e.n] || []).forEach(function (u, i) { toutes.push({ n: e.n, u: u, i: i }); }); });
   var avec = E.filter(function (e) { return (PHOTOS[e.n] || []).length; });
@@ -1846,8 +1850,10 @@ async function charger() {
   });
   /* les brouillons ne s'affichent qu'aux gestionnaires (la base les laisse aujourd'hui lire aux membres dès que la page est visible) */
   if (!GERE) RESULTATS = RESULTATS.filter(function (r) { return r.publie; });
-  PHOTOS = {};
-  await Promise.all(CHALLENGE.etapes.map(async function (e) { PHOTOS[e.n] = (e.agenda && e.date && e.date <= AUJOURDHUI) ? await photosDuRendezVous(e.agenda, e.date, e.n) : []; }));
+  /* 21/10 : la page s'affiche tout de suite ; les photos arrivent juste après (avant, tout attendait les photos
+     et l'écran « Chargement… » restait affiché au-dessus de la page) */
+  var premiere = !PHOTOS_PRETES;
+  if (premiere) PHOTOS = {};
   /* catégorie affichée au départ : la première qui a des résultats */
   var avecRes = CHALLENGE.categories.filter(function (c) { return RESULTATS.some(function (r) { return r.cat === c; }); });
   etat.cat = etat.cat && CHALLENGE.categories.indexOf(etat.cat) >= 0 ? etat.cat : (avecRes[0] || CHALLENGE.categories[0]);
@@ -1859,6 +1865,11 @@ async function charger() {
   document.body.classList.remove("sans-donnees");
   tout();
   if (!etat._direct && PARAMS.get("etape")) { etat._direct = true; var nD = +PARAMS.get("etape"); if (etape(nD)) ouvrirVue(nD, PARAMS.get("vers") || null); }
+  var P2 = {};
+  await Promise.all(CHALLENGE.etapes.map(async function (e) { try { P2[e.n] = (e.agenda && e.date && e.date <= AUJOURDHUI) ? await photosDuRendezVous(e.agenda, e.date, e.n) : []; } catch (eP) { P2[e.n] = []; } }));
+  PHOTOS = P2; PHOTOS_PRETES = true;
+  rendrePhotos();
+  if (document.getElementById("vue").classList.contains("ouverte")) { var vv = document.getElementById("vue"), yy = vv.scrollTop; rendreVue(); vv.scrollTop = yy; }
 }
 window.__challengeRecharger = charger;
 try { if (PARAMS.get("dansHype")) document.body.classList.add("dans-hype"); } catch (eD) { }
