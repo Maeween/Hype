@@ -30250,6 +30250,46 @@ function EcranConnexionSpectral() {
         h("span", { style: { width: 18, height: 18, flex: "0 0 auto", borderRadius: 5, border: "1px solid " + (pushCoche ? "#7FA3AD" : "rgba(190,215,222,0.35)"), background: pushCoche ? "rgba(127,163,173,0.9)" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", color: "#060709", fontSize: 12, fontWeight: 800 } }, pushCoche ? "\u2713" : ""),
         h("span", { style: { fontSize: 12, color: "#AEB8C0", fontFamily: "'Montserrat',sans-serif" } }, T("Recevoir les notifications sur ce t\u00e9l\u00e9phone", "Get notifications on this phone", "Recibir notificaciones en este tel\u00e9fono", "Ricevi le notifiche su questo telefono", "\u3053\u306e\u7aef\u672b\u3067\u901a\u77e5\u3092\u53d7\u3051\u53d6\u308b", "Benachrichtigungen auf diesem Handy erhalten", "\u062a\u0644\u0642\u064a \u0627\u0644\u0625\u0634\u0639\u0627\u0631\u0627\u062a \u0639\u0644\u0649 \u0647\u0630\u0627 \u0627\u0644\u0647\u0627\u062a\u0641", "在这部手机上接收通知"))));
   }
+  /* 21/10 (Blandine, version B validee « Ok ça marche ») : a l inscription, deux cases OBLIGATOIRES,
+     jamais cochees d avance (sinon l accord ne vaut rien) : conditions generales + donnees, et age
+     (15 ans ou plus, ou accord d un parent). Tant qu elles ne sont pas cochees, le bouton est attenue
+     et un appui explique quoi faire ; valider() n est appelee qu une fois les deux cochees.
+     Les liens ouvrent les pages publiques (CGV, mentions legales #donnees) dans la langue choisie,
+     dans un nouvel onglet pour ne pas perdre la saisie. Rien n est enregistre en base a ce stade. */
+  var accCgvSt = useState(false); var accCgv = accCgvSt[0], setAccCgv = accCgvSt[1];
+  var accAgeSt = useState(false); var accAge = accAgeSt[0], setAccAge = accAgeSt[1];
+  var consentOk = accCgv && accAge;
+  function validerInscription() {
+    if (enCours) return;
+    if (!consentOk) {
+      setErreur(T("Coche les deux cases pour continuer.", "Tick both boxes to continue.", "Marca las dos casillas para continuar.", "Spunta le due caselle per continuare.", "続けるには2つの項目にチェックしてください。", "Hake beide Kästchen an, um fortzufahren.", "حدّدي المربعين للمتابعة.", "请勾选这两项以继续。"));
+      return;
+    }
+    valider();
+  }
+  function casesConsentement(cle, large) {
+    var lg = ["fr", "en", "es", "it", "ja", "de", "ar", "zh"].indexOf(ctx.langue) >= 0 ? ctx.langue : "fr";
+    /* 21/10 (« tres charge, on peut aerer ? ») : textes courts, un seul lien (les conditions generales
+       contiennent la partie Donnees personnelles), pas d etiquette « obligatoire » : le message d erreur le dit. */
+    var tCgv = T("conditions générales", "terms and conditions", "condiciones generales", "condizioni generali", "利用規約", "AGB", "الشروط العامة", "通用条款");
+    var lC = h("a", { key: "lc", href: "/" + lg + "/cgv/", target: "_blank", rel: "noopener", style: { color: "#9EC3CC", textDecoration: "none", borderBottom: "1px solid rgba(158,195,204,.45)" } }, tCgv);
+    var texteCgv = {
+      fr: ["J'accepte les ", lC, "."], en: ["I accept the ", lC, "."], es: ["Acepto las ", lC, "."], it: ["Accetto le ", lC, "."],
+      ja: [lC, "に同意します。"], de: ["Ich akzeptiere die ", lC, "."],
+      ar: ["أوافق على ", lC, "."], zh: ["我接受", lC, "。"]
+    }[lg];
+    var texteAge = T("J'ai 15 ans ou plus, ou l'accord d'un parent.", "I'm 15 or older, or a parent agrees.", "Tengo 15 años o más, o permiso de mis padres.", "Ho almeno 15 anni, o il consenso di un genitore.", "15歳以上、または保護者の同意があります。", "Ich bin mindestens 15 oder habe die Zustimmung eines Elternteils.", "عمري 15 سنة أو أكثر، أو لدي موافقة أحد والديّ.", "我已满 15 岁，或已获得父母同意。");
+    function ligne(k, coche, basculer, contenu, nomAccessible) {
+      var taille = large ? 20 : 18;
+      return h("div", { key: k, style: { display: "flex", alignItems: "center", gap: large ? 12 : 10 } },
+        h("button", { type: "button", role: "checkbox", "aria-checked": coche ? "true" : "false", "aria-label": nomAccessible, onClick: function () { setErreur(""); basculer(!coche); },
+          style: { width: taille, height: taille, flex: "0 0 auto", borderRadius: large ? 6 : 5, border: "1px solid " + (coche ? "#7FA3AD" : "rgba(190,215,222,0.42)"), background: coche ? "rgba(127,163,173,0.9)" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", color: "#060709", fontSize: 12, fontWeight: 800, cursor: "pointer", padding: 0 } }, coche ? "✓" : ""),
+        h("span", { onClick: function (e) { if (e.target && e.target.tagName === "A") return; setErreur(""); basculer(!coche); }, style: { fontSize: large ? 13 : 12.5, lineHeight: 1.45, color: large ? "#C9D3D2" : "#AEB8C0", fontFamily: "'Montserrat',sans-serif", cursor: "pointer", textAlign: "start" } }, contenu));
+    }
+    return h("div", { key: cle, style: { marginTop: large ? 24 : 16, display: "flex", flexDirection: "column", gap: large ? 14 : 12 } },
+      ligne("cgv", accCgv, setAccCgv, texteCgv, tCgv),
+      ligne("age", accAge, setAccAge, texteAge, texteAge));
+  }
   var aeSt = useState(""); var emailEnAttente = aeSt[0], setEmailEnAttente = aeSt[1];
   var rvSt = useState(""); var renvoiMsg = rvSt[0], setRenvoiMsg = rvSt[1];
   /* Ou mene le retour, depuis chaque ecran. Le seuil sort vers l'intro. */
@@ -30589,6 +30629,7 @@ function EcranConnexionSpectral() {
         champ("ie", icoUser, { type: "email", autoComplete: "email", placeholder: "Email", value: email, onChange: function (e) { setEmail(e.target.value); } }),
         champMdp("im", { autoComplete: "new-password", placeholder: T("Mot de passe : 6 caract\u00e8res minimum", "Password: 6 characters minimum", "Contrase\u00f1a: m\u00ednimo 6 caracteres", "Password: minimo 6 caratteri", "\u30d1\u30b9\u30ef\u30fc\u30c9\uff1a6\u6587\u5b57\u4ee5\u4e0a", "Passwort: mindestens 6 Zeichen", "\u0643\u0644\u0645\u0629 \u0627\u0644\u0645\u0631\u0648\u0631: 6 \u0623\u062d\u0631\u0641 \u0639\u0644\u0649 \u0627\u0644\u0623\u0642\u0644", "密码：至少 6 个字符"), value: mdp, onChange: function (e) { setMdp(e.target.value); } })),
       jauge(mdp),
+      casesConsentement("iconsent", false) /* 21/10 */,
       casePush("ipush") /* 20/10 (nuit) */,
       ligneErreur(),
       /* Le poney est A CHEVAL sur la barre : ses pattes se posent sur le bord
@@ -30596,7 +30637,7 @@ function EcranConnexionSpectral() {
          compte. Il est le seul muet des cinq — il n'a pas besoin de parler. */
       h("div", { key: "i3", style: { position: "relative", marginTop: 84 } },
         h("img", { src: PONEY_BARRE, alt: "", "data-base": PONEY_BARRE, onError: poneyRepli, style: { position: "absolute", left: "50%", transform: "translateX(-50%)", bottom: "calc(100% - 17px)", width: 128, zIndex: 2, pointerEvents: "none", filter: "drop-shadow(0 0 22px rgba(127,163,173,0.30))" } }),
-        boutonPlein(T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen", "\u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u064a", "创建我的账户") + "  \u2192", valider, "iv", true)),
+        h("div", { style: { opacity: consentOk ? 1 : 0.5, transition: "opacity .2s" } }, boutonPlein(T("Cr\u00e9er mon compte", "Create my account", "Crear mi cuenta", "Crea il mio account", "\u30a2\u30ab\u30a6\u30f3\u30c8\u4f5c\u6210", "Mein Konto erstellen", "\u0625\u0646\u0634\u0627\u0621 \u062d\u0633\u0627\u0628\u064a", "创建我的账户") + "  \u2192", validerInscription, "iv", true))),
       basculeBas(
         T("Tu as d\u00e9j\u00e0 un compte ?", "Already have an account?", "\u00bfYa tienes una cuenta?", "Hai gi\u00e0 un account?", "\u30a2\u30ab\u30a6\u30f3\u30c8\u3092\u304a\u6301\u3061\uff1f", "Schon ein Konto?", "\u0644\u062f\u064a\u0643 \u062d\u0633\u0627\u0628 \u0628\u0627\u0644\u0641\u0639\u0644\u061f", "你已经有账户了吗？"),
         T("Se connecter", "Sign in", "Iniciar sesi\u00f3n", "Accedi", "\u30ed\u30b0\u30a4\u30f3", "Anmelden", "\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062f\u062e\u0648\u0644", "登录"),
@@ -30708,6 +30749,7 @@ function EcranConnexionSpectral() {
       ".hxi-btn{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;height:58px;margin-top:30px;border-radius:14px;border:1px solid rgba(127,163,173,.55);background:linear-gradient(180deg,#0E1D22 0%,#0A1519 100%);color:#F3EEE4;font:600 15px 'Montserrat',sans-serif;letter-spacing:.06em;cursor:pointer;box-shadow:inset 0 1px 0 rgba(243,238,228,.06),0 10px 28px rgba(0,0,0,.35);transition:background .18s,border-color .18s}" +
       ".hxi-btn:hover:not(:disabled){background:linear-gradient(180deg,#132A30 0%,#0E1D22 100%);border-color:#8FB3BC}" +
       ".hxi-btn:disabled{opacity:.7;cursor:default}" +
+      ".hxi-btn.attente{opacity:.5}" +
       ".hxi-bas{margin-top:24px;font-size:13px;color:rgba(159,180,186,.85);display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 12px}" +
       ".hxi-lien{background:none;border:0;padding:0 0 2px;border-bottom:1px solid rgba(158,195,204,.55);color:#9EC3CC;font:600 13px 'Montserrat',sans-serif;cursor:pointer}" +
       ".hxi-lien:hover{color:#C8E0E6;border-bottom-color:#C8E0E6}" +
@@ -30780,9 +30822,10 @@ function EcranConnexionSpectral() {
                 h("button", { type: "button", className: "hxi-oeil", "aria-pressed": voirMdp ? "true" : "false", onClick: function () { setVoirMdp(!voirMdp); }, "aria-label": T("Afficher le mot de passe", "Show password", "Mostrar la contraseña", "Mostra la password", "パスワードを表示", "Passwort anzeigen", "إظهار كلمة المرور", "显示密码") }, icoOeil)),
               h("div", { className: "hxi-aide" }, T("6 caractères minimum", "6 characters minimum", "Mínimo 6 caracteres", "Minimo 6 caratteri", "6文字以上", "Mindestens 6 Zeichen", "6 أحرف على الأقل", "至少 6 个字符")),
               mdp ? h("div", { style: { marginTop: 8 } }, jauge(mdp)) : null)),
+          casesConsentement("hxiconsent", true),
           casePush("hxipush"),
           h("div", { className: "hxi-err-zone" }, ligneErreur()),
-          h("button", { type: "button", className: "hxi-btn", onClick: valider, disabled: enCours, "aria-busy": enCours ? "true" : "false" },
+          h("button", { type: "button", className: "hxi-btn" + (consentOk ? "" : " attente"), onClick: validerInscription, disabled: enCours, "aria-busy": enCours ? "true" : "false" },
             enCours ? "…" : [h("span", { key: "t" }, tCreer), h("span", { key: "f", "aria-hidden": "true" }, rtlI ? "←" : "→")]),
           h("div", { className: "hxi-bas" },
             h("span", null, T("Tu as déjà un compte ?", "Already have an account?", "¿Ya tienes una cuenta?", "Hai già un account?", "アカウントをお持ち？", "Schon ein Konto?", "لديك حساب بالفعل؟", "你已经有账户了吗？")),
