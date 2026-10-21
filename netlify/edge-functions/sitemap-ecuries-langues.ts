@@ -15,7 +15,7 @@ import type { Context } from "https://edge.netlify.com";
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
-const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar", "zh"];
+const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl"];
 const HL: Record<string, string> = { zh: "zh-Hans" };   // le chinois simplifié s'écrit zh-Hans dans hreflang
 
 function sept(chemin: string): string {

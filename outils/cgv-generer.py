@@ -2,8 +2,8 @@
 # Génère les 7 pages CGV : /{langue}/cgv/index.html  (15/10/2026)
 # La version française fait foi. Lancer : python3 outils/cgv-generer.py
 import os, html
-LANGUES = ["fr","en","es","it","de","ja","ar","zh"]
-NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文"}
+LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl"]
+NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands"}
 MAIL = '<a href="mailto:feinn@live.fr">feinn@live.fr</a>'
 VEND = "Association FEINN Équitation et Environnement"
 ADR = "3 chemin des Prés Picard, 91760 Itteville, France — SIREN 898 028 980"
@@ -204,6 +204,31 @@ T["zh"] = dict(
  ("10. 个人数据", f"<p>处理账户和订阅所需的数据，是为了提供服务。你可以写信至 {MAIL}，请求查阅或删除你的数据。</p>"),
  ("11. 投诉与调解", f"<p>如有任何投诉，请先写信至 {MAIL}。消费调解员：正在指定中；其联系方式将在此处公布。在此期间，任何投诉都可以发送至 {MAIL}。你也可以使用欧盟在线争议解决平台。</p>"),
  ("12. 适用法律", "<p>本条款受法国法律管辖。条款可能会更新；适用的版本为付款当日有效的版本。</p>"),
+ ])
+
+T["nl"] = dict(
+ title="Algemene verkoopvoorwaarden", desc="Algemene verkoopvoorwaarden voor Hype Premium-abonnementen en het Hype-mecenaat.",
+ sous="Hype Premium-abonnementen en Hype-mecenaat · versie van 15 oktober 2026", asso="De vereniging", foi="Dit is een vertaling; de Franse versie is leidend.",
+ bref="<b>In het kort.</b> Maandabonnementen zijn zonder verplichting en kun je op elk moment online opzeggen. De Cercle Crystal betaal je één keer voor 12 maanden, zonder automatische verlenging. De toegang is direct na betaling: door die te vragen, doe je afstand van de bedenktijd van 14 dagen. Het mecenaat is steun aan de app, geen donatie aan de vereniging.",
+ s=[
+ ("1. Wie verkoopt", f"<p>Deze voorwaarden gelden voor aankopen in de Hype-app (2hype.fr) bij de <b>{VEND}</b>, een in Frankrijk geregistreerde vereniging, {ADR}, vertegenwoordigd door haar voorzitster, Blandine Pronost. Contact: {MAIL}. Hierna “de vereniging”.</p>"),
+ ("2. Doel", "<p>Hype is een app voor ruiters: lessen en quizzen van de Galop-niveaus, paardenpaspoort, community, het bijhouden van je paarden en de coach met kunstmatige intelligentie “Hey Baby”. Sommige functies zijn gratis; andere zijn alleen voor Premium-abonnees. Deze voorwaarden beschrijven de betaalde aanbiedingen, hun prijs, betaling, looptijd en opzegging.</p>"),
+ ("3. Aanbiedingen en prijzen", "<p>De prijzen zijn in euro. Geen btw van toepassing, artikel 293 B van de Franse algemene belastingwet (Code général des impôts).</p>" + tab([
+   ["Premium Ruiter","€12,99 / maand","maandelijks, elke maand verlengd","Premium-toegang voor 1 account, AI-coach: 4 vragen per dag"],
+   ["Premium Familie","€19,99 / maand","maandelijks, elke maand verlengd","Premium-toegang voor 2 aparte accounts (de houder en een uitgenodigde tweede ruiter), AI-coach: 4 vragen per dag voor elk"],
+   ["Cercle Crystal","€99,99 voor 12 maanden","12 maanden, eenmalige betaling, geen automatische verlenging","Premium-toegang voor 1 account, AI-coach: 4 vragen per dag"],
+   ["Duopakket","€24,99 / maand","maandelijks, elke maand verlengd","Premium + Hype AI voor 1 account, AI-coach: 20 vragen per dag, video’s inbegrepen"],
+   ["Hype AI","€14,99 / maand","maandelijks, elke maand verlengd","AI-coach: tot 15 vragen per dag, voor 1 account. Geeft geen toegang tot Premium."]],
+   ["Aanbieding","Prijs","Looptijd","Wat erbij zit"]) + "<p>Vragen aan de AI-coach worden per dag geteld, van middernacht tot middernacht (Parijse tijd). Ongebruikte vragen worden niet overgedragen naar de volgende dag. De vereniging mag de inhoud van de aanbiedingen aanpassen om de app te verbeteren, zonder het voor de lopende periode gekochte aanzienlijk te verminderen.</p>"),
+ ("4. Bestelling en betaling", ul(["Een Hype-account is nodig: het abonnement wordt geactiveerd op het account waarmee je op het moment van betalen bent ingelogd. Voordat je betaalt, toont de app het e-mailadres van het account en vraagt ze je dat te bevestigen.","De betaling gebeurt met een kaart op de beveiligde pagina van Stripe. Hype heeft nooit toegang tot kaartnummers.","Bij maandabonnementen wordt de betaling afgeschreven bij het afsluiten en daarna elke maand op dezelfde datum, tot de opzegging.","Als een maandelijkse betaling mislukt, kan de Premium-toegang worden opgeschort tot de betaling is geregeld."])),
+ ("5. Directe toegang en herroepingsrecht", "<p>De aanbiedingen geven vanaf de betaling toegang tot digitale inhoud. Voordat je betaalt, vraagt de app je te bevestigen dat je deze directe toegang wilt en dat je daarmee afstand doet van je herroepingsrecht van 14 dagen (artikel L221-28, 13° van de Franse Code de la consommation). Zonder deze bevestiging gaat de betaling niet open.</p>"),
+ ("6. Looptijd, verlenging en opzegging", ul(["<b>Maandabonnementen</b> (Premium Ruiter, Premium Familie, Duopakket, Hype AI): zonder verplichting. Je kunt op elk moment opzeggen; de opzegging gaat in aan het einde van de al betaalde maand en de toegang blijft tot dan open. Een begonnen maand wordt niet terugbetaald.","<b>Cercle Crystal</b>: 12 maanden vanaf de betaling, daarna stopt de toegang vanzelf. Er wordt daarna niets meer afgeschreven.",f"<b>Zo zeg je op</b>: online, op elk moment, met de knop “Beheer mijn abonnement” in Mijn account (beveiligde pagina van Stripe, waar je ook je kaart kunt wijzigen en je facturen kunt vinden). Je kunt ook mailen naar {MAIL} vanaf het e-mailadres van je account.","Als je je Hype-account verwijdert terwijl er een abonnement loopt, denk er dan aan het op te zeggen: het verwijderen van het account stopt de afschrijving niet automatisch. Bij Premium Familie moet de houder eerst opzeggen."])),
+ ("7. Regels voor Premium Familie", ul(["Wie betaalt, is de <b>houder</b>. De houder nodigt via Mijn account een tweede ruiter uit, met een link die 7 dagen geldig is.","Ieder houdt een eigen account, eigen gegevens en eigen 4 AI-vragen per dag; er wordt niets gedeeld tussen de twee accounts.","De houder kan de tweede ruiter verwijderen en de tweede ruiter kan de familie verlaten. Een vervanging kan hooguit één keer per 30 dagen, met hooguit 4 verschillende tweede ruiters per jaar.","Een familieband is niet vereist. De houder is verantwoordelijk voor de keuze van de uitgenodigde persoon.","Als het abonnement stopt (opzegging, wanbetaling), stopt de Premium-toegang voor beide accounts."])),
+ ("8. Hype-mecenaat", f"<p>De mecenaatsniveaus (van €20 tot €500) zijn een vrijwillige, eenmalige steun voor de ontwikkeling van de app. Ze geven geen toegang tot Premium, zijn geen donatie aan de vereniging FEINN en geven geen recht op belastingaftrek. Ze worden niet terugbetaald, behalve bij een kennelijke fout die snel wordt gemeld aan {MAIL}.</p>"),
+ ("9. Werking van de dienst", "<p>De vereniging doet haar best om Hype onafgebroken te laten werken, maar er kunnen onderbrekingen voorkomen (onderhoud, storing bij een leverancier). De antwoorden van de AI-coach zijn algemene adviezen die door kunstmatige intelligentie worden gemaakt: ze vervangen geen gediplomeerde instructeur en geen dierenarts en kunnen fouten bevatten.</p>"),
+ ("10. Persoonsgegevens", f"<p>De gegevens die nodig zijn voor het account en de abonnementen worden verwerkt om de dienst te leveren. Je kunt inzage in je gegevens of verwijdering ervan vragen door te mailen naar {MAIL}.</p>"),
+ ("11. Klachten en bemiddeling", f"<p>Stuur bij een klacht eerst een mail naar {MAIL}. Consumentenbemiddelaar: wordt nog aangewezen; de gegevens komen hier te staan. Tot die tijd kan elke klacht worden gestuurd naar {MAIL}. Je kunt ook gebruikmaken van het Europese platform voor onlinegeschillenbeslechting.</p>"),
+ ("12. Toepasselijk recht", "<p>Op deze voorwaarden is het Franse recht van toepassing. Ze kunnen worden bijgewerkt; de toepasselijke versie is die welke op de dag van de betaling geldt.</p>"),
  ])
 
 CSS = """:root{--noir:#05080B;--carte:#0B1418;--ivoire:#F3EEE4;--doux:#B7C2C0;--gris:#8E9893;--champ:#C9A66B;--trait:rgba(201,166,107,.32);--trait2:rgba(201,166,107,.16)}

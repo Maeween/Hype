@@ -365,7 +365,7 @@
     return LANGUES.indexOf(l) >= 0 ? l : "fr";
   }
   var LANG = detecterLangue();
-  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar", zh: "zh-CN" };
+  var LOCALES = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar", zh: "zh-CN", nl: "nl-NL" };
 
   var TR = {
     fr: {
@@ -479,7 +479,7 @@
       ogTitre: "Hype 上的一条快拍 🐎", ogDesc: "你的马术世界：俱乐部、骑手、马厩生活的点滴。",
       cav: function (n) { return n + " 位骑手"; },
       che: function (n) { return n + " 匹马"; }
-    }
+    }, nl: {ouverture: "Openen…", lienT: "Onvolledige link", lienD: "Dit adres verwijst naar geen enkele story.", erreurT: "Deze story kan niet worden geopend", erreurD: "Probeer het zo meteen opnieuw, of open hem direct in Hype.", introT: "Story niet gevonden", introD: "Misschien is hij verwijderd.", expT: "Deze story is niet meer zichtbaar", expD: "Hype-stories blijven maar een paar dagen online.", anonyme: "Een Hype-ruiter", titre: "{n} op Hype", plus: "Meer bekijken", moins: "Minder tonen", baseline: "Paarden · Ruiters · Manèges · Herinneringen", cta: "Ontdek Hype →", fermer: "Sluiten", prec: "Vorige foto", suiv: "Volgende foto", ogTitre: "Een story op Hype 🐎", ogDesc: "Jouw paardenwereld: clubs, ruiters, momenten uit het stalleven.", cav: (function (n) { return n + " " + (n > 1 ? "ruiters" : "ruiter"); }), che: (function (n) { return n + " " + (n > 1 ? "paarden" : "paard"); })}
   };
   function t(cle) { var d = TR[LANG] || TR.fr; return d[cle] != null ? d[cle] : TR.fr[cle]; }
 

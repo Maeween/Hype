@@ -46,7 +46,7 @@ const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/ecurie/…, /es/…, /it/…, /de/…, /ja/…, /ar/… — seulement pour les écuries qui ont
 // au moins un cheval ou un rendez-vous sur Hype ; sinon l'adresse étrangère renvoie vers la page française.
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const FORME_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
@@ -58,9 +58,11 @@ const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL" };
+/* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TX: Record<Lg, Record<string, any>> = {
   fr: { ecA: (v: string) => "Écurie à " + v, ec: "Écurie", ecAd: (v: string) => "écurie à " + v, ecd: "écurie",
@@ -127,9 +129,17 @@ const TX: Record<Lg, Record<string, any>> = {
     sesChevaux: "他在Hype上的马匹", rdv: "近期活动", compte: "创建你的Hype账户，查看这家马厩的马匹、成绩和日程。", contacter: "联系马厩",
     boxT: "在Hype上拥有一间虚拟马房？", boxP: "这里不用铲马粪：只有你爱马的档案、照片、比赛、回忆和日常照料……还有可以一起分享的其他骑手。理论课程、小贴士和虚拟教练也会陪你一路进步。",
     pied: "Hype 是一款独立的应用，与这家马厩及FFE没有任何官方关系。马厩数据：© OpenStreetMap 贡献者。", cheval: "马", rendezVous: "活动", dp: "：" },
+  nl: { ecA: (v: string) => "Stal in " + v, ec: "Stal", ecAd: (v: string) => "stal in " + v, ecd: "stal",
+    descTel: "Telefoon, route, paarden, resultaten en agenda van de stal op Hype.", desc: "Paarden, resultaten en agenda van de stal op Hype.",
+    descInvite: "Staat jouw paard hier? Maak zijn profiel aan op Hype: foto's, afstamming, wedstrijdresultaten.",
+    adresse: "Adres", tel: "Telefoon", email: "E-mail", site: "Website", horaires: "Openingstijden",
+    nbCh: (n: number) => n + (n > 1 ? " paarden" : " paard"), nbRdv: (n: number) => n + (n > 1 ? " komende afspraken" : " komende afspraak"), surHype: (t: string) => t + " op Hype.", sep: " · ",
+    sesChevaux: "Zijn paarden op Hype", rdv: "Komende afspraken", compte: "Maak je Hype-account aan om de paarden, resultaten en agenda van deze stal te ontdekken.", contacter: "Contact opnemen met de stal",
+    boxT: "Een virtuele box op Hype?", boxP: "Hier hoef je niet uit te mesten: alleen het profiel van je paard, zijn foto's, wedstrijden, herinneringen en verzorging… en andere ruiters met wie je het deelt. Theorie, tips en een virtuele coach helpen je bovendien vooruit.",
+    pied: "Hype is een onafhankelijke app zonder officiële band met deze stal of met de FFE. Gegevens van de stal: © OpenStreetMap-bijdragers.", cheval: "Paard", rendezVous: "Afspraak", dp: ": " },
 };
 function liensLangues(chemin: string): string {
-  return LANGUES.map((l) => `<link rel="alternate" hreflang="${l}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
+  return LANGUES.map((l) => `<link rel="alternate" hreflang="${HL[l]}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
     `<link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}">`;
 }
 
@@ -161,7 +171,7 @@ function annuaire(origine: string): Promise<Record<string, Ecurie>> {
 
 /* ---------- Petites pages d'erreur (8 langues) ---------- */
 function pageSimple(statut: number, lignes: string[][]): Response {
-  const corps = lignes.map(([lang, txt]) => `<p lang="${lang}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
+  const corps = lignes.map(([lang, txt]) => `<p lang="${lang === "zh" ? "zh-Hans" : lang}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>Hype</title>
@@ -184,6 +194,8 @@ const PAGE_404 = () => pageSimple(404, [
   ["de", "Dieser Stall ist nicht verfügbar."],
   ["ja", "この厩舎は表示できません。"],
   ["ar", "هذا الإسطبل غير متاح."],
+  ["zh", "这家马厩暂时无法显示。"],
+  ["nl", "Deze stal is niet beschikbaar."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -193,6 +205,8 @@ const PAGE_503 = () => pageSimple(503, [
   ["de", "Hype ist vorübergehend nicht erreichbar. Versuche es gleich noch einmal."],
   ["ja", "Hypeは一時的に利用できません。しばらくしてからもう一度お試しください。"],
   ["ar", "هايب غير متاح مؤقتًا. حاول مرة أخرى بعد قليل."],
+  ["zh", "Hype 暂时无法使用，请稍后再试。"],
+  ["nl", "Hype is tijdelijk niet beschikbaar. Probeer het zo meteen opnieuw."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -203,7 +217,7 @@ function propre(t: unknown): string { return String(t == null ? "" : t).replace(
 function texte(t: unknown): string { return echapper(propre(t)); }
 function dateFr(d: unknown, lg: Lg = "fr"): string {
   const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
-  return m ? (lg === "ja" ? m[1] + "/" + m[2] + "/" + m[3] : m[3] + "/" + m[2] + "/" + m[1]) : "";
+  return m ? (lg === "ja" || lg === "zh" ? m[1] + "/" + m[2] + "/" + m[3] : m[3] + "/" + m[2] + "/" + m[1]) : "";
 }
 function rang(place: unknown, classement: unknown): string {
   const n = parseInt(String(place == null ? "" : place), 10);
@@ -314,7 +328,7 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
   const derniers = hype.resultats.slice(0, 15);
 
   const titre = nom + " – " + (villeAff ? t.ecA(villeAff) : t.ec) + " | Hype";
-  let description = nom + (lg === "ja" ? "、" : lg === "ar" ? "، " : ", ") + (villeAff ? t.ecAd(villeAff) : t.ecd) + (lg === "ja" ? "。" : ". ");
+  let description = nom + (lg === "ja" || lg === "zh" ? "、" : lg === "ar" ? "، " : ", ") + (villeAff ? t.ecAd(villeAff) : t.ecd) + (lg === "ja" || lg === "zh" ? "。" : ". ");
   if (hype.contactSaisi && propre(hype.contactSaisi.phrase)) description += propre(hype.contactSaisi.phrase).replace(/[.!…]?$/, ". ");   /* (868) la phrase d'accueil de l'écurie */
   if (hype.chevaux.length || hype.rdv.length) {
     description += propre(ec.t) ? t.descTel : t.desc;
@@ -322,7 +336,7 @@ function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | nu
     description += t.descInvite;
   }
 
-  let html = `<main id="seo-ecurie" lang="${lg}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  let html = `<main id="seo-ecurie" lang="${HL[lg]}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
   html += `<p>${villeAff ? texte(t.ecA(villeAff)) : t.ec}</p>`;
   const contact: string[] = [];
@@ -531,4 +545,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*"] };
+export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*"] };
