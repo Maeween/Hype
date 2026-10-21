@@ -22528,7 +22528,7 @@ window.HYPE_IMGS["k645"]="images/puzzle-baby-bronze.jpg";
 for (var __k = 611; __k <= 614; __k++) { var __c = "k" + __k; if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; }
 /* memdiag du 10/08 22h30 : 4 dernieres paires orphelines relevees dans l'app — eau2=k455, foin=k457 (Vie du poney), pas=k474 (Allures), casque2=k473 (Obstacles). Meme filet. */
 ["k455","k457","k473","k474"].forEach(function (__c) { if (!window.HYPE_IMGS[__c]) window.HYPE_IMGS[__c] = "images/" + __c + ".jpg?v=1"; });
-</script><script src="hype-cours-baby.js?v=114"></script><script src="hype-cours-galops-sup.js?v=5"></script><script src="hype-cours-galop3.js?v=6"></script><script src="hype-cours-galop2.js?v=4"></script><script src="hype-cours-galop1.js?v=5"></script><script src="hype-memory-poney.js?v=6"></script><script src="hype-modeles-db.js?v=6"></script><script src="hype-stories.js?v=20ch"></script><script src="hype-resultats.js?v=4"></script><script>
+</script><!-- 21/10 : les 5 fichiers de cours (Baby, Galops 1 à 7) ne se chargent plus au démarrage : voir hypeChargerCours --><script src="hype-memory-poney.js?v=6"></script><script src="hype-modeles-db.js?v=6"></script><script src="hype-stories.js?v=20ch"></script><script src="hype-resultats.js?v=4"></script><script>
 "use strict";
 const { useState, useEffect, useRef, createContext, useContext } = React;
 const CELEB_F = HYPE_IMGS["k0"];
@@ -23382,7 +23382,7 @@ const PHOTO_PARC_IT = HYPE_IMGS["k104"];
 /* 07/09 — INFOG_SELLERBRIDER_G1, INFOG_MONTERDESCENDRE_G1 et INFOG_SECURITE_G1 (affiches du Galop 1, utilisées par lui seul — INFOG_MONTERDESCENDRE_G1 par personne) sont parties dans hype-cours-galop1.js avec ses cours. */
 /* Table sortie dans hype-cours-baby.js. Le repli garantit que l'application
    demarre meme si le fichier manque : le Chemin Baby est alors vide, rien de plus. */
-const COURS_BABY_I18N = (typeof window !== "undefined" && window.COURS_BABY_I18N) || [];
+let COURS_BABY_I18N = (typeof window !== "undefined" && window.COURS_BABY_I18N) || [];
 
 /* 07/09/2026 — GALOP 1 SORTI DE L'INDEX → hype-cours-galop1.js (balise avec clé v=1, juste après
    hype-cours-galop2.js, donc APRÈS les images). Ses 19 chapitres y sont copiés à l'identique, avec ses
@@ -23391,7 +23391,7 @@ const COURS_BABY_I18N = (typeof window !== "undefined" && window.COURS_BABY_I18N
    (la tuile Lamotte, qui lit la photo du chapitre g1-c13 dans cette table, a son propre repli plus bas).
    À chaque livraison du fichier : incrémenter COURS_GALOP1_VERSION dedans ET la clé de version (v=N)
    de sa balise. */
-const COURS_GALOP1_I18N = (typeof window !== "undefined" && window.COURS_GALOP1_I18N) || [];
+let COURS_GALOP1_I18N = (typeof window !== "undefined" && window.COURS_GALOP1_I18N) || [];
 /* ============== 01_contexte.jsx ============== */
 /* ---------- CONTEXTE APPLICATIF + FONCTION DE TRADUCTION ---------- */
 const AppContext = createContext(null);
@@ -27810,6 +27810,8 @@ try {
 var ECRANS_RESTAURABLES = { "ecurie-hype": 1, chevaux: 1 /* (1039) */, decouvrir: 1 /* (1051) */, dashboard: 1, galops: 1, communaute: 1, cavalier: 1, moncavalier: 1, guilde: 1, moncompte: 1, profil: 1, premium: 1, assistant: 1, classement: 1, quetes: 1, sellerie: 1, articles: 1 };
 
 function HypeApp() {
+    const [__coursTic, __setCoursTic] = useState(0);   /* 21/10 : redessine l'appli quand les cours arrivent (hypeChargerCours) */
+    useEffect(function () { function f() { __setCoursTic(function (n) { return n + 1; }); } window.addEventListener("hype-cours-prets", f); return function () { window.removeEventListener("hype-cours-prets", f); }; }, []);
     // ----- Reprise de session : on relit la progression sauvegardée -----
     const ETAT_CLE = "augalop_etat_v1";
     const sauve = (() => {
@@ -28885,18 +28887,18 @@ function Router() {
                 ecran === "profil-setup" && React.createElement(EcranProfilSetup, null),
                 ecran === "voyage" && React.createElement(EcranVoyage, null),
                 ecran === "dashboard" && React.createElement((typeof ACCUEIL_V2_ACTIF !== "undefined" && ACCUEIL_V2_ACTIF && typeof EcranAccueilV2 === "function") ? EcranAccueilV2 : EcranUnivers, null),   /* 02/10 (577) : accueil V2 ou ancien accueil, UN SEUL monte ; ACCUEIL_V2_ACTIF = false ramene l ancien */
-                ecran === "galops" && React.createElement(EcranBibliothequeGalops, null),
-                ecran === "galop-detail" && React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetail, null)),   /* 09/10 (764) : verrou Premium a l arrivee */
-                ecran === "cours" && React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranCours, null)),
+                ecran === "galops" && React.createElement(GardeCoursCharges, null, React.createElement(EcranBibliothequeGalops, null)),
+                ecran === "galop-detail" && React.createElement(GardeCoursCharges, null, React.createElement(GardeGalopPremium, { mode: "galop" }, React.createElement(EcranGalopDetail, null))),   /* 09/10 (764) : verrou Premium a l arrivee */
+                ecran === "cours" && React.createElement(GardeCoursCharges, null, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranCours, null))),
                 ecran === "jeu-galop" && React.createElement(EcranJeuGalop, null),
                 ecran === "reprises" && React.createElement(EcranReprisesFiches, null),
                 ecran === "trace-anime" && React.createElement(EcranTraceAnime, null),
                 ecran === "phases-saut" && React.createElement(EcranPhasesSaut, null),
                 ecran === "entrainer-tracer" && React.createElement(EcranEntrainerTracer, null),
                 ecran === "challenge-reprise" && React.createElement(EcranChallengeReprise, null),
-                ecran === "quiz" && React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranQuiz, null)),
-                ecran === "examen-blanc" && React.createElement(EcranExamenBlanc, null),
-                ecran === "examen" && React.createElement(EcranExamen, null),
+                ecran === "quiz" && React.createElement(GardeCoursCharges, null, React.createElement(GardeGalopPremium, { mode: "cours" }, React.createElement(EcranQuiz, null))),
+                ecran === "examen-blanc" && React.createElement(GardeCoursCharges, null, React.createElement(EcranExamenBlanc, null)),
+                ecran === "examen" && React.createElement(GardeCoursCharges, null, React.createElement(EcranExamen, null)),
                 ecran === "articles" && React.createElement(EcranArticles, null),
                 ecran === "cadre-noir" && React.createElement(EcranCadreNoir, null),
                 ecran === "ecole-portugaise" && React.createElement(EcranEcolePortugaise, null),
@@ -29126,7 +29128,7 @@ const INFOG_SAUT_G3 = { fr: HYPE_IMGS["k347"], en: HYPE_IMGS["k348"], it: HYPE_I
    constantes d'images (voir plus haut). Repli, même recette que le parcours Baby : fichier absent → Galop 2
    vide, appli debout, témoin « g2 ? ». À chaque livraison du fichier : incrémenter COURS_GALOP2_VERSION
    dedans ET la clé de version (v=N) de sa balise. Galop 1 : sorti le 07/09 → hype-cours-galop1.js ; GALOPS_I18N et GALOPS_HERO restent ici. */
-const COURS_GALOP2_FR = (typeof window !== "undefined" && window.COURS_GALOP2_FR) || [];
+let COURS_GALOP2_FR = (typeof window !== "undefined" && window.COURS_GALOP2_FR) || [];
 /* 06/09/2026 — GALOP 3 SORTI DE L'INDEX → hype-cours-galop3.js (balise avec clé v=1, juste après
    hype-cours-galops-sup.js, donc APRÈS les images). Ses 16 chapitres, le QCM global et sa carte y sont
    copiés à l'identique, avec les 5 affiches INFOG_…_G3 (voir plus haut). Repli, même recette que le
@@ -29134,9 +29136,9 @@ const COURS_GALOP2_FR = (typeof window !== "undefined" && window.COURS_GALOP2_FR
    carte du QCM global non affichée (les trois lecteurs testent déjà typeof / longueur), appli debout ;
    le témoin de l'accueil affiche « g3 ? ». À chaque livraison du fichier : incrémenter
    COURS_GALOP3_VERSION dedans ET la clé de version (v=N) de sa balise. Galops 2 et 1 : sortis ensuite (06/09 et 07/09), voir ci-dessus. */
-const COURS_GALOP3_FR = (typeof window !== "undefined" && window.COURS_GALOP3_FR) || [];
-const QCM_GLOBAL_GALOP3_FR = (typeof window !== "undefined" && window.QCM_GLOBAL_GALOP3_FR) || [];
-const COURS_QCM_GLOBAL_G3 = (typeof window !== "undefined" && window.COURS_QCM_GLOBAL_G3) || undefined;
+let COURS_GALOP3_FR = (typeof window !== "undefined" && window.COURS_GALOP3_FR) || [];
+let QCM_GLOBAL_GALOP3_FR = (typeof window !== "undefined" && window.QCM_GLOBAL_GALOP3_FR) || [];
+let COURS_QCM_GLOBAL_G3 = (typeof window !== "undefined" && window.COURS_QCM_GLOBAL_G3) || undefined;
 
 /* 06/09/2026 — GALOPS 4, 5, 6 ET 7 SORTIS DE L'INDEX → hype-cours-galops-sup.js (balise avec clé v=1, posée
    juste après hype-cours-baby.js, donc APRÈS tous les hype-images-*.js et le filet d'images : les
@@ -29145,10 +29147,77 @@ const COURS_QCM_GLOBAL_G3 = (typeof window !== "undefined" && window.COURS_QCM_G
    vides et l'appli reste debout ; le témoin de l'accueil affiche alors « galops-sup ? » au lieu du numéro.
    À chaque livraison du fichier : incrémenter COURS_GALOPS_SUP_VERSION dedans ET la clé de version (v=N) de sa balise.
    Galops 1, 2, 3 : restent ici — ils dépendent de 17 constantes de l'index (incident du 02/08, voir SUIVI). */
-const COURS_GALOP4_FR = (typeof window !== "undefined" && window.COURS_GALOP4_FR) || [];
-const COURS_GALOP5_FR = (typeof window !== "undefined" && window.COURS_GALOP5_FR) || [];
-const COURS_GALOP6_FR = (typeof window !== "undefined" && window.COURS_GALOP6_FR) || [];
-const COURS_GALOP7_FR = (typeof window !== "undefined" && window.COURS_GALOP7_FR) || [];
+let COURS_GALOP4_FR = (typeof window !== "undefined" && window.COURS_GALOP4_FR) || [];
+let COURS_GALOP5_FR = (typeof window !== "undefined" && window.COURS_GALOP5_FR) || [];
+let COURS_GALOP6_FR = (typeof window !== "undefined" && window.COURS_GALOP6_FR) || [];
+let COURS_GALOP7_FR = (typeof window !== "undefined" && window.COURS_GALOP7_FR) || [];
+/* 21/10 (audit de la page d'arrivée, Blandine : « charger les galops que quand on allait sur leur page » → « Ok fais ça »).
+   LES COURS SE CHARGENT À LA DEMANDE. Avant : les 5 fichiers (Chemin Baby, Galops 1 à 7 = 7,9 Mo, 2,7 Mo compressés)
+   partaient à chaque ouverture de l'appli, avant même la page d'arrivée d'un visiteur. Désormais :
+   · hypeChargerCours() les ajoute à la page, dans le MÊME ordre et avec les MÊMES clés ?v= qu'avant (async=false garde
+     l'ordre d'exécution), une seule fois ; puis hypeCoursRafraichir() relit les tables (let au lieu de const) et
+     l'examen blanc du Galop 3, et l'évènement « hype-cours-prets » redessine l'appli (HypeApp) ;
+   · les écrans des cours (galops, galop-detail, cours, quiz, examen-blanc, examen) attendent les cours derrière
+     GardeCoursCharges (petit écran « Chargement des cours… ») : leurs états de départ voient donc les vraies tables ;
+   · les autres lecteurs (statistiques, profil, Hey Baby, admin…) passent par obtenirCoursParGalop, qui lance le
+     chargement s'il n'est pas fait et rend [] en attendant : ils se redessinent tout seuls à l'arrivée.
+   Fichier en échec (hors ligne) : tables vides comme avant (même repli), et un nouvel essai à la prochaine page de cours.
+   ⚠ À chaque livraison d'un fichier de cours : incrémenter sa clé ?v= ICI (HYPE_COURS_FICHIERS), plus dans une balise. */
+var HYPE_COURS_FICHIERS = ["hype-cours-baby.js?v=114", "hype-cours-galops-sup.js?v=5", "hype-cours-galop3.js?v=6", "hype-cours-galop2.js?v=4", "hype-cours-galop1.js?v=5"];
+var __hypeCoursPromesse = null;
+function hypeCoursRafraichir() {
+    try {
+        var w = window;
+        COURS_BABY_I18N = w.COURS_BABY_I18N || [];
+        COURS_GALOP1_I18N = w.COURS_GALOP1_I18N || [];
+        COURS_GALOP2_FR = w.COURS_GALOP2_FR || [];
+        COURS_GALOP3_FR = w.COURS_GALOP3_FR || [];
+        QCM_GLOBAL_GALOP3_FR = w.QCM_GLOBAL_GALOP3_FR || [];
+        COURS_QCM_GLOBAL_G3 = w.COURS_QCM_GLOBAL_G3 || undefined;
+        COURS_GALOP4_FR = w.COURS_GALOP4_FR || [];
+        COURS_GALOP5_FR = w.COURS_GALOP5_FR || [];
+        COURS_GALOP6_FR = w.COURS_GALOP6_FR || [];
+        COURS_GALOP7_FR = w.COURS_GALOP7_FR || [];
+        if (typeof EXAMENS_BLANCS !== "undefined" && Array.isArray(QCM_GLOBAL_GALOP3_FR) && QCM_GLOBAL_GALOP3_FR.length) EXAMENS_BLANCS[3] = QCM_GLOBAL_GALOP3_FR;
+    } catch (eRf) { }
+}
+function hypeCoursPrets() { try { return !!window.__hypeCoursPrets; } catch (e) { return false; } }
+function hypeChargerCours() {
+    if (__hypeCoursPromesse) return __hypeCoursPromesse;
+    __hypeCoursPromesse = new Promise(function (fini) {
+        var restants = HYPE_COURS_FICHIERS.length, echecs = 0;
+        HYPE_COURS_FICHIERS.forEach(function (src) {
+            var sc = document.createElement("script");
+            sc.src = src; sc.async = false;
+            sc.onload = sc.onerror = function (ev) {
+                if (ev && ev.type === "error") echecs++;
+                if (--restants > 0) return;
+                hypeCoursRafraichir();
+                try { window.__hypeCoursPrets = true; } catch (eP) { }
+                if (echecs) __hypeCoursPromesse = null;   /* nouvel essai à la prochaine page de cours */
+                fini();
+                try { window.dispatchEvent(new Event("hype-cours-prets")); } catch (eEv) { }
+            };
+            (document.head || document.body).appendChild(sc);
+        });
+    });
+    return __hypeCoursPromesse;
+}
+function GardeCoursCharges(props) {
+    var h = React.createElement;
+    var st = React.useState(hypeCoursPrets()); var pret = st[0], setPret = st[1];
+    React.useEffect(function () {
+        if (pret) return;
+        var vivant = true;
+        hypeChargerCours().then(function () { if (vivant) setPret(true); });
+        return function () { vivant = false; };
+    }, []);
+    if (pret) return props.children;
+    return h("div", { role: "status", "aria-live": "polite", style: { minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 16, background: COLORS.nuit, color: "rgba(234,245,247,0.78)", fontFamily: "'Montserrat',sans-serif", fontSize: 13.5, letterSpacing: 0.4, padding: "0 24px", textAlign: "center" } },
+        h("style", null, "@keyframes hypeCoursTourne{to{transform:rotate(360deg)}}@media (prefers-reduced-motion: reduce){.hype-cours-roue{animation-duration:3s!important}}"),
+        h("span", { className: "hype-cours-roue", "aria-hidden": "true", style: { width: 34, height: 34, borderRadius: "50%", border: "2px solid rgba(32,217,245,0.18)", borderTopColor: "#20D9F5", animation: "hypeCoursTourne 0.9s linear infinite" } }),
+        hypeT7("Chargement des cours…", "Loading the lessons…", "Cargando los cursos…", "Caricamento dei corsi…", "レッスンを読み込み中…", "Kurse werden geladen…", "جارٍ تحميل الدروس…", "正在加载课程…"));
+}
 // Conversion du format Galop 1 i18n vers le format interne unifié utilisé par les écrans
 function convertirCoursI18nVersInterne(coursI18n, langue) {
     const tr = (champ) => (typeof champ === "string" ? champ : ((champ === null || champ === void 0 ? void 0 : champ[langue]) || (langue === "zh" && champ && champ.en) || (champ === null || champ === void 0 ? void 0 : champ.fr) || ""));
@@ -29192,6 +29261,7 @@ function convertirCoursI18nVersInterne(coursI18n, langue) {
     }));
 }
 function obtenirCoursParGalop(galopId, langue) {
+    if (!hypeCoursPrets()) { try { hypeChargerCours(); } catch (eCh) { } }   /* 21/10 : cours à la demande (voir hypeChargerCours) */
     if (galopId === "baby")
         return convertirCoursI18nVersInterne(COURS_BABY_I18N, langue);
     if (galopId === 1)
