@@ -969,6 +969,9 @@ bdi[dir=ltr]{unicode-bidi:isolate}
 .etapes.duo{grid-template-columns:1fr}
 .etapes.duo .dates-avenir{grid-column:auto}
 @container ch (min-width:1100px){.etapes.duo{grid-template-columns:1fr 1fr;align-items:stretch}}
+/* visiteur : invitation à créer un compte = une seule ligne discrète en bas de page (21/10) */
+.invite-bas .invite-c{flex-wrap:nowrap;white-space:nowrap;justify-content:center;margin:40px auto 0;padding:0 20px;border:0;background:none;border-radius:0;font-size:12.5px;color:var(--gris);text-align:center;gap:2px 8px}
+.invite-bas .invite-c .lien-d{min-height:32px;font-size:12.5px}
 </style>
 </head>
 <body class="sans-donnees">
@@ -988,7 +991,6 @@ bdi[dir=ltr]{unicode-bidi:isolate}
       <p class="intro" data-t="intro"></p>
       <button class="partage" data-partage="0"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="M8.3 10.8l7.4-4.3M8.3 13.2l7.4 4.3"/></svg><span data-t="partager"></span></button>
     </div>
-    <div id="inviteCompte"></div>
     <div class="etapes" id="etapes"></div>
   </div>
 </header>
@@ -1008,6 +1010,7 @@ bdi[dir=ltr]{unicode-bidi:isolate}
 </main>
 
 <div class="citation-fin"><div class="page"><p data-t="citation"></p><small data-t="citationAuteur"></small></div></div>
+<div id="inviteCompte" class="invite-bas"></div>
 <div class="gestion-zone" id="gestionZone" hidden><div class="page"><span class="gz-t">Gestion · visible des gestionnaires seulement</span><div id="gestion"></div></div></div>
 <div class="fin-hype" aria-hidden="true"><div class="fh-img"><img src="images/accueil_v2_fin_de_page_v1.webp" alt="" loading="lazy" onerror="this.style.display='none'"></div><div class="fh-trait"><span></span><b dir="ltr">HYPE</b><span></span></div></div>
 </div>
@@ -1113,6 +1116,7 @@ var TX2 = {
   classe: { fr: "Classé", en: "Placed", es: "Clasificado", it: "Classificato", de: "Platziert", ja: "完走", ar: "مصنَّف" },
   introG1: { fr: "Première étape du challenge : on pose ses premiers points.", en: "First leg of the challenge: score your first points.", es: "Primera etapa del challenge: sumas tus primeros puntos.", it: "Prima tappa del challenge: conquisti i primi punti.", de: "Erste Etappe der Challenge: erste Punkte sammeln.", ja: "チャレンジ第1戦：最初のポイントを獲得。", ar: "المرحلة الأولى من التحدي: تجمع نقاطك الأولى." },
   attTexteG: { fr: "Les classements seront publiés ici après la journée.", en: "Rankings will be posted here after the day.", es: "Las clasificaciones se publicarán aquí tras la jornada.", it: "Le classifiche saranno pubblicate qui dopo la giornata.", de: "Die Wertungen erscheinen hier nach dem Tag.", ja: "順位は当日終了後にここに掲載されます。", ar: "ستُنشر الترتيبات هنا بعد اليوم." },
+  inviteCourt: { fr: "Photos, j'aime, commentaires :", en: "Photos, likes, comments:", es: "Fotos, me gusta, comentarios:", it: "Foto, mi piace, commenti:", de: "Fotos, Likes, Kommentare:", ja: "写真・いいね・コメント：", ar: "الصور والإعجابات والتعليقات:" },
   reglesEss: { fr: "Règles essentielles", en: "Key rules", es: "Reglas esenciales", it: "Regole essenziali", de: "Die wichtigsten Regeln", ja: "主なルール", ar: "القواعد الأساسية" },
   pdfBientot: { fr: "Les PDF seront publiés avant la prochaine étape.", en: "The PDFs will be posted before the next leg.", es: "Los PDF se publicarán antes de la próxima etapa.", it: "I PDF saranno pubblicati prima della prossima tappa.", de: "Die PDFs werden vor der nächsten Etappe veröffentlicht.", ja: "PDFは次のステージ前に公開されます。", ar: "ستُنشر ملفات PDF قبل المرحلة القادمة." },
   ouvrirPhoto: { fr: "Ouvrir la photo {i} sur {n} — {e}", en: "Open photo {i} of {n} — {e}", es: "Abrir la foto {i} de {n} — {e}", it: "Apri la foto {i} di {n} — {e}", de: "Foto {i} von {n} öffnen — {e}", ja: "{n}枚中{i}枚目の写真を開く — {e}", ar: "فتح الصورة {i} من {n} — {e}" },
@@ -1832,7 +1836,7 @@ function tout() {
   document.documentElement.lang = LANG; document.documentElement.dir = LANG === "ar" ? "rtl" : "ltr";
   document.querySelectorAll("[data-t]").forEach(function (el) { el.innerHTML = T(el.dataset.t); });
   if (!CHALLENGE) return;
-  var ic = document.getElementById("inviteCompte"); if (ic) ic.innerHTML = inviteCompte(false);
+  var ic = document.getElementById("inviteCompte"); if (ic) ic.innerHTML = VISITEUR ? '<p class="invite-c"><span>' + T("inviteCourt") + '</span> <button class="lien-d" data-compte="1">' + T("creerCompte") + " <i>→</i></button></p>" : "";
   rendreEtapes(); rendreNav(); rendreClassement(); rendreCote(); rendrePhotos(); rendreReprises(); rendreReglement(); rendreGestion();
   if (document.getElementById("vue").classList.contains("ouverte")) rendreVue();
 }
