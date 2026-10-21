@@ -46,7 +46,7 @@ const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/ecurie/…, /es/…, /it/…, /de/…, /ja/…, /ar/… — seulement pour les écuries qui ont
 // au moins un cheval ou un rendez-vous sur Hype ; sinon l'adresse étrangère renvoie vers la page française.
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru|pl)\/)?ecurie\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/;
 const FORME_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
@@ -58,11 +58,11 @@ const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru", "pl"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU", pl: "pl_PL" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru", pl: "pl" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TX: Record<Lg, Record<string, any>> = {
   fr: { ecA: (v: string) => "Écurie à " + v, ec: "Écurie", ecAd: (v: string) => "écurie à " + v, ecd: "écurie",
@@ -161,6 +161,14 @@ const TX: Record<Lg, Record<string, any>> = {
     sesChevaux: "Лошади конюшни на Hype", rdv: "Ближайшие события", compte: "Создай аккаунт Hype, чтобы увидеть лошадей этой конюшни, их результаты и афишу.", contacter: "Связаться с конюшней",
     boxT: "Виртуальный денник в Hype?", boxP: "Убирать денник здесь не нужно: только профиль твоей лошади, её фото, соревнования, воспоминания и уход… и другие всадники, с которыми всем этим можно поделиться. Теория, советы и виртуальный тренер тоже помогут тебе прогрессировать.",
     pied: "Hype — независимое приложение, не связанное официально ни с этой конюшней, ни с FFE. Данные конюшни: © участники OpenStreetMap.", cheval: "Лошадь", rendezVous: "Событие", dp: ": " },
+  pl: { ecA: (v: string) => "Stajnia: " + v, ec: "Stajnia", ecAd: (v: string) => "stajnia: " + v, ecd: "stajnia",
+    descTel: "Telefon, dojazd, konie, wyniki i terminarz stajni w Hype.", desc: "Konie, wyniki i terminarz stajni w Hype.",
+    descInvite: "Twój koń jest tutaj? Załóż jego profil w Hype: zdjęcia, rodowód, wyniki zawodów.",
+    adresse: "Adres", tel: "Telefon", email: "E-mail", site: "Strona internetowa", horaires: "Godziny otwarcia",
+    nbCh: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "koń" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "konie" : "koni"), nbRdv: (n: number) => n + " " + (n % 10 === 1 && n % 100 !== 11 ? "nadchodzące wydarzenie" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) ? "nadchodzące wydarzenia" : "nadchodzących wydarzeń"), surHype: (t: string) => t + " w Hype.", sep: " · ",
+    sesChevaux: "Konie ze stajni w Hype", rdv: "Najbliższe wydarzenia", compte: "Załóż konto w Hype, aby zobaczyć konie tej stajni, ich wyniki i terminarz.", contacter: "Skontaktuj się ze stajnią",
+    boxT: "Wirtualny boks w Hype?", boxP: "Nie musisz tu sprzątać boksu: jest tylko profil twojego konia, jego zdjęcia, zawody, wspomnienia i opieka… oraz inni jeźdźcy, z którymi możesz się tym dzielić. Teoria, wskazówki i wirtualny trener też pomogą ci robić postępy.",
+    pied: "Hype to niezależna aplikacja, bez oficjalnych powiązań z tą stajnią ani z FFE. Dane stajni: © współtwórcy OpenStreetMap.", cheval: "Koń", rendezVous: "Wydarzenie", dp: ": " },
 };
 function liensLangues(chemin: string): string {
   return LANGUES.map((l) => `<link rel="alternate" hreflang="${HL[l]}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
@@ -223,6 +231,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["pt", "Esta cocheira não está disponível."],
   ["sv", "Det här stallet är inte tillgängligt."],
   ["ru", "Эта конюшня недоступна."],
+  ["pl", "Ta stajnia jest niedostępna."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -237,6 +246,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["pt", "O Hype está temporariamente indisponível. Tente novamente em instantes."],
   ["sv", "Hype är tillfälligt otillgängligt. Försök igen om en stund."],
   ["ru", "Hype временно недоступен. Попробуй ещё раз через минуту."],
+  ["pl", "Hype jest chwilowo niedostępny. Spróbuj ponownie za minutę."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -575,4 +585,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*", "/pt/ecurie/*", "/sv/ecurie/*", "/ru/ecurie/*"] };
+export const config = { path: ["/ecurie/*", "/en/ecurie/*", "/es/ecurie/*", "/it/ecurie/*", "/de/ecurie/*", "/ja/ecurie/*", "/ar/ecurie/*", "/zh/ecurie/*", "/nl/ecurie/*", "/pt/ecurie/*", "/sv/ecurie/*", "/ru/ecurie/*", "/pl/ecurie/*"] };

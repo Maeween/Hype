@@ -26,7 +26,7 @@ const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
 // 13/10/2026 : aussi /en/evenement/…, /es/…, /it/…, /de/…, /ja/…, /ar/… (pages traduites)
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh|nl|pt|sv|ru|pl)\/)?evenement\/(?:([a-z0-9]+(?:-[a-z0-9]+)*)-)?([0-9a-f]{8})\/?$/;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");
 const REPERE_RACINE = new TextEncoder().encode('<div id="root">');
@@ -35,12 +35,12 @@ const DELAI_BASE_MS = 2500;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
 /* ---------- 13/10/2026 : les 8 langues (titre, lieu et description du rendez-vous restent tels qu'écrits) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU" };
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh" | "nl" | "pt" | "sv" | "ru" | "pl";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh", "nl", "pt", "sv", "ru", "pl"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN", nl: "nl_NL", pt: "pt_BR", sv: "sv_SE", ru: "ru_RU", pl: "pl_PL" };
 /* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
-const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru" };
-const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU" };
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans", nl: "nl", pt: "pt-BR", sv: "sv", ru: "ru", pl: "pl" };
+const INTL: Record<Lg, string> = { fr: "fr-FR", en: "en-GB", es: "es-ES", it: "it-IT", de: "de-DE", ja: "ja-JP", ar: "ar-u-nu-latn", zh: "zh-CN", nl: "nl-NL", pt: "pt-BR", sv: "sv-SE", ru: "ru-RU", pl: "pl-PL" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
   en: { stage: "Clinic", concours: "Competition", sortie: "Outing", cours: "Lesson", soiree: "Evening event", reunion: "Meeting" },
@@ -54,6 +54,7 @@ const TYPES_LG: Record<Exclude<Lg, "fr">, Record<string, string>> = {
   pt: { stage: "Clínica", concours: "Competição", sortie: "Passeio", cours: "Aula", soiree: "Noite", reunion: "Reunião" },
   sv: { stage: "Kurs", concours: "Tävling", sortie: "Utflykt", cours: "Lektion", soiree: "Kvällsarrangemang", reunion: "Möte" },
   ru: { stage: "Мастер-класс", concours: "Соревнования", sortie: "Выезд", cours: "Занятие", soiree: "Вечер", reunion: "Встреча" },
+  pl: { stage: "Warsztaty", concours: "Zawody", sortie: "Wyjazd", cours: "Lekcja", soiree: "Wieczór", reunion: "Spotkanie" },
 };
 const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   en: { rdv: "Event", du: (a: string, b: string) => "from " + a + " to " + b, le: (a: string) => "on " + a, a: (l: string) => "at " + l, heure: (h: string) => "At " + h, lieu: "Venue", org: (c: string) => "Organised by the stable " + c, defaut: "All the event details on Hype.", pied: "Hype is an independent app with no official link to this stable or to the FFE.", dp: ": " },
@@ -67,6 +68,7 @@ const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   pt: { rdv: "Evento", du: (a: string, b: string) => "de " + a + " a " + b, le: (a: string) => "em " + a, a: (l: string) => "em " + l, heure: (h: string) => "Às " + h, lieu: "Local", org: (c: string) => "Organizado pela cocheira " + c, defaut: "Todos os detalhes do evento no Hype.", pied: "O Hype é um app independente, sem vínculo oficial com esta cocheira nem com a FFE.", dp: ": " },
   sv: { rdv: "Evenemang", du: (a: string, b: string) => "från " + a + " till " + b, le: (a: string) => "den " + a, a: (l: string) => "på " + l, heure: (h: string) => "Kl. " + h, lieu: "Plats", org: (c: string) => "Arrangeras av stallet " + c, defaut: "Alla detaljer om evenemanget på Hype.", pied: "Hype är en oberoende app utan officiell koppling till det här stallet eller FFE.", dp: ": " },
   ru: { rdv: "Событие", du: (a: string, b: string) => "с " + a + " по " + b, le: (a: string) => a, a: (l: string) => "в " + l, heure: (h: string) => "В " + h, lieu: "Место", org: (c: string) => "Организатор: конюшня " + c, defaut: "Все подробности о событии — на Hype.", pied: "Hype — независимое приложение, не связанное официально ни с этой конюшней, ни с FFE.", dp: ": " },
+  pl: { rdv: "Wydarzenie", du: (a: string, b: string) => "od " + a + " do " + b, le: (a: string) => a, a: (l: string) => "w " + l, heure: (h: string) => "Godz. " + h, lieu: "Miejsce", org: (c: string) => "Organizator: stajnia " + c, defaut: "Wszystkie szczegóły wydarzenia znajdziesz w Hype.", pied: "Hype to niezależna aplikacja, bez oficjalnych powiązań z tą stajnią ani z FFE.", dp: ": " },
 };
 function dateLongueLg(d: unknown, lg: Lg): string {
   const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -140,6 +142,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["pt", "Este evento não está disponível."],
   ["sv", "Det här evenemanget är inte tillgängligt."],
   ["ru", "Это событие недоступно."],
+  ["pl", "To wydarzenie jest niedostępne."],
 ]);
 const PAGE_503 = () => pageSimple(503, [
   ["fr", "Hype est momentanément indisponible. Réessaie dans un instant."],
@@ -154,6 +157,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["pt", "O Hype está temporariamente indisponível. Tente novamente em instantes."],
   ["sv", "Hype är tillfälligt otillgängligt. Försök igen om en stund."],
   ["ru", "Hype временно недоступен. Попробуй ещё раз через минуту."],
+  ["pl", "Hype jest chwilowo niedostępny. Spróbuj ponownie za minutę."],
 ]);
 
 /* ---------- Outils de texte ---------- */
@@ -456,4 +460,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*", "/zh/evenement/*", "/nl/evenement/*", "/pt/evenement/*", "/sv/evenement/*", "/ru/evenement/*"] };
+export const config = { path: ["/evenement/*", "/en/evenement/*", "/es/evenement/*", "/it/evenement/*", "/de/evenement/*", "/ja/evenement/*", "/ar/evenement/*", "/zh/evenement/*", "/nl/evenement/*", "/pt/evenement/*", "/sv/evenement/*", "/ru/evenement/*", "/pl/evenement/*"] };

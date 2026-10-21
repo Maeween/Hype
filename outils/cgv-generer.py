@@ -2,8 +2,8 @@
 # Génère les 7 pages CGV : /{langue}/cgv/index.html  (15/10/2026)
 # La version française fait foi. Lancer : python3 outils/cgv-generer.py
 import os, html
-LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru"]
-NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português","sv":"Svenska","ru":"Русский"}
+LANGUES = ["fr","en","es","it","de","ja","ar","zh","nl","pt","sv","ru","pl"]
+NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文","nl":"Nederlands","pt":"Português","sv":"Svenska","ru":"Русский","pl":"Polski"}
 MAIL = '<a href="mailto:feinn@live.fr">feinn@live.fr</a>'
 VEND = "Association FEINN Équitation et Environnement"
 ADR = "3 chemin des Prés Picard, 91760 Itteville, France — SIREN 898 028 980"
@@ -304,6 +304,31 @@ T["ru"] = dict(
  ("10. Персональные данные", f"<p>Данные, необходимые для аккаунта и подписок, обрабатываются для предоставления сервиса. Ты можешь запросить доступ к своим данным или их удаление, написав на {MAIL}.</p>"),
  ("11. Претензии и посредничество", f"<p>По любой претензии сначала напиши на {MAIL}. Посредник по защите прав потребителей: назначается; его контактные данные будут указаны здесь. А пока любую претензию можно направить на {MAIL}. Ты также можешь воспользоваться европейской платформой онлайн-урегулирования споров.</p>"),
  ("12. Применимое право", "<p>Настоящие условия регулируются французским правом. Они могут обновляться; применяется версия, действующая в день оплаты.</p>"),
+ ])
+
+T["pl"] = dict(
+ title="Ogólne warunki sprzedaży", desc="Ogólne warunki sprzedaży subskrypcji Hype Premium i mecenatu Hype.",
+ sous="Subskrypcje Hype Premium i mecenat Hype · wersja z 15 października 2026 r.", asso="Stowarzyszenie", foi="To tłumaczenie; obowiązuje wersja francuska.",
+ bref="<b>W skrócie.</b> Subskrypcje miesięczne są bez zobowiązań i możesz je w każdej chwili anulować online. Cercle Crystal płacisz jednorazowo za 12 miesięcy, bez automatycznego odnawiania. Dostęp jest natychmiastowy po zapłacie: prosząc o niego, rezygnujesz z 14-dniowego terminu na odstąpienie od umowy. Mecenat to wsparcie aplikacji, a nie darowizna na rzecz stowarzyszenia.",
+ s=[
+ ("1. Kto sprzedaje", f"<p>Niniejsze warunki dotyczą zakupów dokonywanych w aplikacji Hype (2hype.fr) u <b>{VEND}</b>, stowarzyszenia zgłoszonego we Francji, {ADR}, reprezentowanego przez jego przewodniczącą, Blandine Pronost. Kontakt: {MAIL}. Dalej: „stowarzyszenie”.</p>"),
+ ("2. Przedmiot", "<p>Hype to aplikacja dla jeźdźców: lekcje i quizy do poziomów Galop, paszport jeździecki, społeczność, śledzenie koni i trener oparty na sztucznej inteligencji „Hey Baby”. Niektóre funkcje są bezpłatne, inne są zarezerwowane dla subskrybentów Premium. Niniejsze warunki opisują płatne oferty, ich ceny, płatność, czas trwania i rezygnację.</p>"),
+ ("3. Oferty i ich ceny", "<p>Ceny podane są w euro. VAT nie dotyczy, art. 293 B francuskiego Code général des impôts (ordynacji podatkowej).</p>" + tab([
+   ["Premium Jeździec","12,99 € / miesiąc","miesięczna, odnawiana co miesiąc","Dostęp Premium dla 1 konta, trener AI: 4 pytania dziennie"],
+   ["Premium Rodzina","19,99 € / miesiąc","miesięczna, odnawiana co miesiąc","Dostęp Premium dla 2 oddzielnych kont (właściciela i drugiego zaproszonego jeźdźca), trener AI: 4 pytania dziennie dla każdego"],
+   ["Cercle Crystal","99,99 € za 12 miesięcy","12 miesięcy, jednorazowa płatność, bez automatycznego odnawiania","Dostęp Premium dla 1 konta, trener AI: 4 pytania dziennie"],
+   ["Pakiet Duo","24,99 € / miesiąc","miesięczna, odnawiana co miesiąc","Dostęp Premium + Hype AI dla 1 konta, trener AI: 20 pytań dziennie, wideo w cenie"],
+   ["Hype AI","14,99 € / miesiąc","miesięczna, odnawiana co miesiąc","Trener AI: do 15 pytań dziennie, dla 1 konta. Nie daje dostępu do Premium."]],
+   ["Oferta","Cena","Czas trwania","Co zawiera"]) + "<p>Pytania do trenera AI liczone są dziennie, od północy do północy (czasu paryskiego). Niewykorzystane pytanie nie przechodzi na następny dzień. Stowarzyszenie może zmieniać zawartość ofert, aby ulepszać aplikację, bez istotnego ograniczania tego, co zostało kupione na bieżący okres.</p>"),
+ ("4. Zamówienie i płatność", ul(["Potrzebne jest konto Hype: subskrypcja aktywuje się na koncie, z którego dokonujesz płatności. Przed zapłatą aplikacja wyświetla adres tego konta i prosi o jego potwierdzenie.","Płatność odbywa się kartą bankową na zabezpieczonej stronie Stripe. Hype nigdy nie ma dostępu do numerów kart.","W przypadku ofert miesięcznych płatność jest pobierana przy zawarciu subskrypcji, a potem co miesiąc tego samego dnia, aż do rezygnacji.","Jeśli płatność miesięczna się nie powiedzie, dostęp Premium może zostać zawieszony do czasu uregulowania należności."])),
+ ("5. Natychmiastowy dostęp i prawo odstąpienia", "<p>Oferty dają dostęp do treści cyfrowych od razu po zapłacie. Przed zapłatą aplikacja prosi cię o potwierdzenie, że chcesz mieć ten natychmiastowy dostęp i tym samym rezygnujesz z 14-dniowego prawa odstąpienia od umowy (art. L221-28 pkt 13° francuskiego Code de la consommation, czyli kodeksu konsumenckiego). Bez tego potwierdzenia płatność się nie otworzy.</p>"),
+ ("6. Czas trwania, odnawianie i rezygnacja", ul(["<b>Oferty miesięczne</b> (Premium Jeździec, Premium Rodzina, Pakiet Duo, Hype AI): bez zobowiązań. Możesz zrezygnować w każdej chwili; rezygnacja zaczyna obowiązywać z końcem już opłaconego miesiąca, a do tego czasu dostęp pozostaje otwarty. Rozpoczęty miesiąc nie jest zwracany.","<b>Cercle Crystal</b>: 12 miesięcy od zapłaty, potem dostęp wygasa sam. Później nic nie jest pobierane.",f"<b>Jak zrezygnować</b>: online, w każdej chwili, przyciskiem „Zarządzaj subskrypcją” w sekcji Moje konto (zabezpieczona strona Stripe, na której możesz też zmienić kartę i znaleźć swoje faktury). Możesz też napisać na {MAIL} z adresu swojego konta.","Jeśli usuniesz konto Hype, gdy subskrypcja jest aktywna, pamiętaj, żeby ją anulować: usunięcie konta nie zatrzymuje automatycznie pobierania opłat. W przypadku Premium Rodzina najpierw musi zrezygnować właściciel."])),
+ ("7. Zasady szczególne Premium Rodzina", ul(["Osoba, która płaci, to <b>właściciel</b>. Zaprasza drugiego jeźdźca w sekcji Moje konto, linkiem ważnym 7 dni.","Każdy zachowuje swoje konto, swoje dane i swoje 4 pytania AI dziennie; nic nie jest współdzielone między tymi dwoma kontami.","Właściciel może usunąć drugiego jeźdźca, a drugi jeździec może opuścić rodzinę. Zmiana jest możliwa najwyżej raz na 30 dni, z co najwyżej 4 różnymi drugimi jeźdźcami w roku.","Pokrewieństwo nie jest wymagane. Właściciel odpowiada za wybór zaproszonej osoby.","Jeśli subskrypcja się kończy (rezygnacja, brak płatności), dostęp Premium wygasa dla obu kont."])),
+ ("8. Mecenat Hype", f"<p>Progi mecenatu (od 20 € do 500 €) to dobrowolne wsparcie rozwoju aplikacji, płatne jednorazowo. Nie dają dostępu do Premium, nie są darowizną na rzecz stowarzyszenia FEINN i nie uprawniają do żadnej ulgi podatkowej. Nie podlegają zwrotowi, z wyjątkiem oczywistego błędu, zgłoszonego szybko na {MAIL}.</p>"),
+ ("9. Działanie usługi", "<p>Stowarzyszenie dokłada starań, aby Hype działał nieprzerwanie, ale mogą zdarzać się przerwy (konserwacja, awaria u dostawcy). Odpowiedzi trenera AI to ogólne porady tworzone przez sztuczną inteligencję: nie zastępują wykwalifikowanego instruktora ani weterynarza i mogą zawierać błędy.</p>"),
+ ("10. Dane osobowe", f"<p>Dane potrzebne do konta i subskrypcji są przetwarzane w celu świadczenia usługi. Możesz poprosić o dostęp do swoich danych lub ich usunięcie, pisząc na {MAIL}.</p>"),
+ ("11. Reklamacje i mediacja", f"<p>W sprawie każdej reklamacji napisz najpierw na {MAIL}. Mediator konsumencki: w trakcie wyznaczania; jego dane kontaktowe zostaną podane tutaj. W międzyczasie każdą reklamację możesz skierować na {MAIL}. Możesz też skorzystać z europejskiej platformy internetowego rozstrzygania sporów.</p>"),
+ ("12. Prawo właściwe", "<p>Niniejsze warunki podlegają prawu francuskiemu. Mogą być aktualizowane; obowiązuje wersja obowiązująca w dniu płatności.</p>"),
  ])
 
 CSS = """:root{--noir:#05080B;--carte:#0B1418;--ivoire:#F3EEE4;--doux:#B7C2C0;--gris:#8E9893;--champ:#C9A66B;--trait:rgba(201,166,107,.32);--trait2:rgba(201,166,107,.16)}

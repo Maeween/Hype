@@ -85,7 +85,7 @@ const JSONLD = {
   applicationCategory: "LifestyleApplication",
   operatingSystem: "iOS, Android, Web",
   description: DESCRIPTION,
-  inLanguage: ["fr", "en", "es", "it", "de", "ja", "ar", "zh-Hans", "nl", "pt-BR", "sv", "ru"],
+  inLanguage: ["fr", "en", "es", "it", "de", "ja", "ar", "zh-Hans", "nl", "pt-BR", "sv", "ru", "pl"],
   offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
   image: IMAGE,
 };

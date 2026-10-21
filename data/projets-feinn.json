@@ -6,7 +6,7 @@
   {
    "id": "jeune-espoir",
    "numero": "01",
-   "photo": "images/team-competition-performances-hero.webp",
+   "photo": null,
    "photo_definitive": false,
    "ancre": "/{lang}/association/#projet-jeune-espoir",
    "textes": {
@@ -62,20 +62,25 @@
     },
     "sv": {
      "titre": "En häst till en ung talang",
-     "court": "Att stödja en lovande ung ryttare att skaffa en häst som motsvarar hens sportsliga ambitioner.",
-     "long": "Att följa en lovande ung ryttare som i dag inte har de medel som krävs för att skaffa en häst på professionell nivå. Projektet skulle göra det möjligt för hen att förbereda sig för ridinstruktörsexamen (DE) och fortsätta utvecklas i Pro-tävlingarna."
+     "court": "Hjälpa en lovande ung ryttare att skaffa en häst som motsvarar hens sportsliga ambitioner.",
+     "long": "Att stödja en lovande ung ryttare som i dag inte har råd att köpa en häst på professionell nivå. Tack vare det här projektet kan hen förbereda sig för ridinstruktörsexamen (DE) och fortsätta utvecklas i Pro-tävlingarna."
     },
     "ru": {
      "titre": "Лошадь для молодого таланта",
      "court": "Помочь перспективному молодому всаднику приобрести лошадь, подходящую для его спортивных амбиций.",
      "long": "Помочь перспективному молодому всаднику, у которого сегодня нет средств на покупку лошади профессионального уровня. Благодаря этому проекту он сможет подготовиться к диплому инструктора по верховой езде (DE) и продолжить расти в стартах Pro."
+    },
+    "pl": {
+     "titre": "Koń dla młodego talentu",
+     "court": "Pomóc obiecującemu młodemu jeźdźcowi zdobyć konia odpowiedniego do jego ambicji sportowych.",
+     "long": "Wesprzeć obiecującego młodego jeźdźca, który dziś nie ma środków na zakup konia na poziomie zawodowym. Dzięki temu projektowi mógłby przygotować się do dyplomu instruktora jazdy konnej (DE) i dalej się rozwijać w konkurencjach Pro."
     }
    }
   },
   {
    "id": "retraite-chevaux-club",
    "numero": "02",
-   "photo": "images/fond-recit.webp",
+   "photo": null,
    "photo_definitive": false,
    "ancre": "/{lang}/association/#projet-retraite-chevaux-club",
    "textes": {
@@ -131,20 +136,25 @@
     },
     "sv": {
      "titre": "Pension för våra ridskolehästar",
-     "court": "Att bidra till foder, vård och välbefinnande för hästarna som har följt ryttare i många år.",
+     "court": "Bidra till foder, vård och välbefinnande för hästarna som har följt ryttare i många år.",
      "long": "Att ta hand om hästarna som har följt generationer av ryttare och nu njuter av en lugn pension i stallet. Att garantera dem ett stilla otium är att fortsätta ge dem omsorg om foder, vård och välbefinnande."
     },
     "ru": {
      "titre": "Заслуженный отдых наших клубных лошадей",
      "court": "Помогать с кормлением, уходом и благополучием лошадей, которые годами сопровождали всадников.",
      "long": "Заботиться о лошадях, которые сопровождали целые поколения всадников, а теперь спокойно живут на покое в конюшне. Чтобы их отдых был безмятежным, нужно и дальше следить за их кормлением, уходом и благополучием."
+    },
+    "pl": {
+     "titre": "Emerytura naszych koni klubowych",
+     "court": "Wesprzeć żywienie, opiekę i dobrostan koni, które przez lata towarzyszyły jeźdźcom.",
+     "long": "Zadbać o konie, które towarzyszyły całym pokoleniom jeźdźców, a dziś spokojnie żyją na emeryturze w stajni. Zapewnienie im spokojnej starości oznacza, że nadal troszczymy się o ich żywienie, opiekę i dobrostan."
     }
    }
   },
   {
    "id": "espaces",
    "numero": "03",
-   "photo": "images/ecurie-couverture-defaut-2.webp",
+   "photo": null,
    "photo_definitive": false,
    "ancre": "/{lang}/association/#projet-espaces",
    "textes": {
@@ -200,13 +210,18 @@
     },
     "sv": {
      "titre": "Att underhålla och återställa vår plats",
-     "court": "Att hjälpa till med renoveringen av stängsel, hagar och ridanläggningar, med respekt för den naturliga miljön.",
-     "long": "Att återställa stängsel, hagar och anläggningar på platsen för att ge hästarna en lämplig livsmiljö, samtidigt som vi underhåller och bevarar naturen omkring oss."
+     "court": "Hjälpa till med renoveringen av stängsel, hagar och ridanläggningar, med respekt för den naturliga miljön.",
+     "long": "Att återställa stängsel, hagar och anläggningar på platsen för att ge hästarna en lämplig livsmiljö, samtidigt som naturen omkring oss bevaras och skyddas."
     },
     "ru": {
      "titre": "Содержать и приводить в порядок наши территории",
      "court": "Участвовать в обновлении оград, пастбищ и конноспортивных сооружений, бережно относясь к природной среде.",
      "long": "Восстановить ограды, пастбища и сооружения площадки, чтобы у лошадей были подходящие условия жизни, и при этом беречь и сохранять окружающие нас природные пространства."
+    },
+    "pl": {
+     "titre": "Utrzymanie i odnowa naszych terenów",
+     "court": "Pomóc w odnowie ogrodzeń, pastwisk i urządzeń jeździeckich, z poszanowaniem środowiska naturalnego.",
+     "long": "Odnowić ogrodzenia, pastwiska i urządzenia na terenie, aby zapewnić koniom odpowiednie warunki życia, a jednocześnie dbać o otaczające nas przestrzenie naturalne i je chronić."
     }
    }
   }
