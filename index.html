@@ -31310,7 +31310,7 @@ function EcranConnexionSpectral() {
       ".hxi-photo{position:relative;flex:0 0 48%;min-height:100%;overflow:hidden;background:#020304}" +
       ".hxi-photo{-webkit-mask-image:linear-gradient(90deg,#000 0%,#000 58%,transparent 100%);mask-image:linear-gradient(90deg,#000 0%,#000 58%,transparent 100%)}" +
       "[dir=rtl] .hxi-photo{-webkit-mask-image:linear-gradient(270deg,#000 0%,#000 58%,transparent 100%);mask-image:linear-gradient(270deg,#000 0%,#000 58%,transparent 100%)}" +
-      ".hxi-photo img{position:absolute;left:50%;bottom:0;height:80%;width:auto;max-width:none;transform:translateX(-50%);display:block;border:0;-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 32%,#000 100%);mask-image:linear-gradient(180deg,transparent 0%,#000 32%,#000 100%)}" +
+      ".hxi-photo img{position:absolute;left:0;top:0;width:100%;height:100%;object-fit:cover;object-position:50% 4%;display:block;border:0;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 78%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 78%,transparent 100%)}" +
       ".hxi-droite{position:relative;flex:1 1 52%;min-width:0;min-height:100%;display:flex;align-items:center;justify-content:center;padding:calc(env(safe-area-inset-top) + 84px) 56px calc(env(safe-area-inset-bottom) + 44px)}" +
       ".hxi-logo{position:absolute;top:calc(env(safe-area-inset-top) + 34px);inset-inline-start:48px;z-index:3;pointer-events:none}" +
       ".hxi-logo b{display:block;font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:30px;letter-spacing:.32em;color:#F3EEE4;line-height:1}" +
@@ -31348,7 +31348,7 @@ function EcranConnexionSpectral() {
       ".hxi-photo{flex:0 0 auto;height:33vh;height:33dvh;min-height:240px}" +
       ".hxi-large,[dir=rtl].hxi-large{background:linear-gradient(180deg,#020304 0%,#020304 34%,rgba(2,3,4,0) 52%),radial-gradient(ellipse 75% 55% at 50% 66%,#020304 0%,#050A0D 50%,#0E2228 82%,#17323A 100%);background-color:#020304}" +
       ".hxi-photo,[dir=rtl] .hxi-photo{-webkit-mask-image:none;mask-image:none}" +
-      ".hxi-photo img,[dir=rtl] .hxi-photo img{left:0;top:0;width:100%;height:100%;transform:none;object-fit:cover;object-position:50% 0%;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%)}" +
+      ".hxi-photo img,[dir=rtl] .hxi-photo img{left:0;top:0;width:100%;height:100%;transform:none;object-fit:cover;object-position:50% 14%;-webkit-mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%);mask-image:linear-gradient(180deg,#000 0%,#000 55%,transparent 100%)}" +
       ".hxi-droite{flex:1 0 auto;min-height:0;align-items:flex-start;padding:8px 32px calc(env(safe-area-inset-bottom) + 40px)}" +
       ".hxi-form{max-width:560px}" +
       ".hxi-logo{top:calc(env(safe-area-inset-top) + 26px);inset-inline-start:32px}.hxi-logo b{font-size:26px}" +
@@ -31367,7 +31367,7 @@ function EcranConnexionSpectral() {
         h("b", null, "HYPE"),
         h("span", null, T("Ton univers équestre", "Your equestrian world", "Tu universo ecuestre", "Il tuo universo equestre", "あなたの乗馬ワールド", "Deine Reitwelt", "عالمك في الفروسية", "你的马术世界", "Jouw paardenwereld", "O seu universo equestre", "Din ridvärld", "Твой конный мир", "Twój jeździecki świat"))),
       h("div", { className: "hxi-photo", "aria-hidden": "true" },
-        h("img", { src: "images/accueil-video-ordi-poster.jpg", alt: "", decoding: "async" })),
+        h("img", { src: "images/inscription-cheval.webp", alt: "", decoding: "async" })),   /* 22/10 : la photo choisie par Blandine (« le cheval ne devrait pas etre si sombre »), sans filtre */
       h("div", { className: "hxi-langue" }, h(SelecteurLangue, { compact: true })),
       h("div", { className: "hxi-droite" },
         h("div", { className: "hxi-form" },
