@@ -1129,7 +1129,16 @@
     ".hv-coach{font-size:12.5px;line-height:1.65;color:#C2CDD8;margin:0;font-style:italic;font-weight:300;font-family:'Cormorant Garamond',Georgia,serif}",
     ".hv-vue{flex:1;padding:13px;border-radius:12px;border:1px solid #2A323D;background:rgba(255,255,255,.04);color:#F4F6F7;",
     "font-size:11px;letter-spacing:.13em;text-transform:uppercase;font-weight:600;font-family:inherit}",
-    ".hv-vue.on{border-color:rgba(32,217,245,.35);background:rgba(32,217,245,.13);color:#20D9F5}"
+    ".hv-vue.on{border-color:rgba(32,217,245,.35);background:rgba(32,217,245,.13);color:#20D9F5}",
+    /* 21/10 (tests Blandine, probleme 5) : grand ecran. Contenu centre (1240 px), animation d en-tete limitee en hauteur,
+       rails horizontaux remplaces par des grilles (3 a 6 affiches selon la largeur). Telephone : rails inchanges. */
+    "@media (min-width:768px){.hv-wrap>*:not(.hv-hero),.hv-hero-in{max-width:1240px;margin-left:auto;margin-right:auto;box-sizing:border-box}" +
+    ".hv-hero-anim{max-height:460px;object-fit:cover}" +
+    ".hv-rail{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));overflow:visible;gap:18px}" +
+    ".hv-rail.hv-rail-l{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}" +
+    ".hv-rail .hv-carte,.hv-rail .hv-large{flex:none;width:auto;min-width:0}" +
+    ".hv-grille{grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:18px}" +
+    ".hv-une,.hv-repr{max-width:880px}}"
   ].join("");
 
   function injecterCss() {
@@ -1498,7 +1507,7 @@
       if (c.format === "liste") {
         corps = h("div", { style: { padding: "0 18px" } }, vs.map(function (v, i) { return carteLigne(v, i + 1); }));
       } else {
-        corps = h("div", { className: "hv-rail" }, vs.map(c.format === "large" ? carteLarge : carteAffiche));
+        corps = h("div", { className: "hv-rail" + (c.format === "large" ? " hv-rail-l" : "") }, vs.map(c.format === "large" ? carteLarge : carteAffiche));
       }
       return h("div", { key: c.id, className: "hv-coll" },
         h("div", { className: "hv-coll-tete" },
