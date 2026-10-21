@@ -14193,3 +14193,9 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 - ⚠️ La mosaïque est partagée : la page Actualité de la cavalière reçoit les mêmes cadres et cases noirs (son fond de page n'est pas touché).
 - Tests : mosaïque rendue avant/après avec des concours réels d'Ecolo louvo (iPhone 390 et ordinateur 1440) ; node --check 17/17. Pas de nouveau texte.
 - 23 h 30 (même publication) : correction de la bande des langues de « Se connecter » — son petit traducteur ne prenait que 11 langues, « Langues » / « Choisir la langue » / « Langue actuelle » sortaient en anglais en russe et en polonais (les textes, eux, avaient bien été ajoutés par l'autre conversation). Vérifié : ru « Языки », pl « Języki ».
+
+## 21/10/2026 — 23 h 40, PRÊT, NON PUBLIÉ (branche `fix/adresse-contact`) : adresse de contact = feinn@live.fr
+- Décision de Blandine (« Mets feinn@live.fr en adresse ») : contact@hypequestrian.app, qu'elle ne lit pas, est remplacée par feinn@live.fr partout dans l'appli — 44 occurrences sur 26 lignes de index.html (e-mail « Demande Hype Pro », messages « écris-nous à … » des paiements et changements de formule, dans toutes les langues). Il n'en reste aucune dans index.html. Les fonctions Netlify / Supabase et les pages publiques (CGV…) ne la contenaient pas.
+- Non touchés : les vieux fichiers d'aperçu / DEV du dépôt (preview-*.html, index-apercu-*.html, DEV_*.html…), qui ne sont pas l'appli.
+- Rappel du marqueur : la publication de 23 h 35 a posé 20261021-2335 alors que 20261021-2345 était déjà en ligne (erreur de ma part) ; celle-ci repasse au-dessus.
+- node --check 17/17.
