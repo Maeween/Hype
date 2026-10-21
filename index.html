@@ -30279,7 +30279,7 @@ function HypeBandeLangues() {
   var interagi = React.useRef(false), boiteRef = React.useRef(null), bandeRef = React.useRef(null), listeRef = React.useRef(null);
   var LG = (typeof LANGUES !== "undefined" && LANGUES.length) ? LANGUES : [{ code: "fr", label: "Français", drapeau: "🇫🇷" }];
   var rtlB = actif === "ar";
-  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv) { return (app.tr ? app.tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv }) : fr); }
+  function T(fr, en, es, it, ja, de, ar, zh, nl, pt, sv, ru, pl) { return (app.tr ? app.tr({ fr: fr, en: en, es: es, it: it, ja: ja, de: de, ar: ar, zh: zh, nl: nl, pt: pt, sv: sv, ru: ru, pl: pl }) : fr); }   /* 21/10 : russe et polonais (avant : anglais a la place) */
   var tLangues = T("Langues", "Languages", "Idiomas", "Lingue", "言語", "Sprachen", "اللغات", "语言", "Talen", "Idiomas", "Språk", "Языки", "Języki");
   var tChoisir = T("Choisir la langue", "Choose language", "Elegir idioma", "Scegli la lingua", "言語を選ぶ", "Sprache wählen", "اختاري اللغة", "选择语言", "Taal kiezen", "Escolher idioma", "Välj språk", "Выбрать язык", "Wybierz język");
   var tActuelle = T("Langue actuelle :", "Current language:", "Idioma actual:", "Lingua attuale:", "現在の言語：", "Aktuelle Sprache:", "اللغة الحالية:", "当前语言：", "Huidige taal:", "Idioma atual:", "Nuvarande språk:", "Текущий язык:", "Aktualny język:");
