@@ -34,7 +34,7 @@ const LECTURE_MAX = 2 * 1024 * 1024;
 const DELAI_BASE_MS = 2500;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
-/* ---------- 13/10/2026 : les 7 langues (titre, lieu et description du rendez-vous restent tels qu'écrits) ---------- */
+/* ---------- 13/10/2026 : les 8 langues (titre, lieu et description du rendez-vous restent tels qu'écrits) ---------- */
 type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar";
 const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar"];
 const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR" };
@@ -55,6 +55,7 @@ const TXE: Record<Exclude<Lg, "fr">, Record<string, any>> = {
   de: { rdv: "Termin", du: (a: string, b: string) => "vom " + a + " bis " + b, le: (a: string) => "am " + a, a: (l: string) => "in " + l, heure: (h: string) => "Um " + h + " Uhr", lieu: "Ort", org: (c: string) => "Veranstaltet vom Stall " + c, defaut: "Alle Infos zum Termin auf Hype.", pied: "Hype ist eine unabhängige App ohne offizielle Verbindung zu diesem Stall oder zur FFE.", dp: ": " },
   ja: { rdv: "イベント", du: (a: string, b: string) => a + "〜" + b, le: (a: string) => a, a: (l: string) => "（" + l + "）", heure: (h: string) => h + "開始", lieu: "場所", org: (c: string) => "主催：" + c, defaut: "イベントの詳細はHypeで。", pied: "Hypeは独立したアプリで、この厩舎およびFFEとは公式な関係はありません。", dp: "：" },
   ar: { rdv: "موعد", du: (a: string, b: string) => "من " + a + " إلى " + b, le: (a: string) => "في " + a, a: (l: string) => "في " + l, heure: (h: string) => "الساعة " + h, lieu: "المكان", org: (c: string) => "ينظمه إسطبل " + c, defaut: "كل تفاصيل الموعد على Hype.", pied: "Hype تطبيق مستقل لا تربطه أي صلة رسمية بهذا الإسطبل ولا بالاتحاد الفرنسي للفروسية (FFE).", dp: ": " },
+  zh: { rdv: "活动", du: (a: string, b: string) => a + "至" + b, le: (a: string) => a, a: (l: string) => "地点：" + l, heure: (h: string) => h + "开始", lieu: "地点", org: (c: string) => "主办：" + c + "马厩", defaut: "活动详情，尽在Hype。", pied: "Hype 是一款独立的应用，与这家马厩及FFE没有任何官方关系。", dp: "：" },
 };
 function dateLongueLg(d: unknown, lg: Lg): string {
   const m = String(d || "").match(/^(\d{4})-(\d{2})-(\d{2})/);
@@ -98,7 +99,7 @@ export function adresseEvenement(titre: string, id: string): string {
   return "/evenement/" + (s ? s + "-" : "") + String(id).slice(0, 8).toLowerCase();
 }
 
-/* ---------- Petites pages d'erreur (7 langues) ---------- */
+/* ---------- Petites pages d'erreur (8 langues) ---------- */
 function pageSimple(statut: number, lignes: string[][]): Response {
   const corps = lignes.map(([lang, txt]) => `<p lang="${lang}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">

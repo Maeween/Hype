@@ -2,9 +2,10 @@
 import os, json, html, sys
 RACINE = sys.argv[1] if len(sys.argv) > 1 else "/home/claude/hype"
 DOM="https://2hype.fr"; CHEMIN="association/"
-L=["fr","en","es","it","de","ja","ar"]
-NOMS={"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية"}
-LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_JP","ar":"ar_AR"}
+L=["fr","en","es","it","de","ja","ar","zh"]
+HL={"zh":"zh-Hans"}  # code de langue HTML/hreflang quand il diffère du dossier
+NOMS={"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文"}
+LOC={"fr":"fr_FR","en":"en_GB","es":"es_ES","it":"it_IT","de":"de_DE","ja":"ja_JP","ar":"ar_AR","zh":"zh_CN"}
 e=html.escape
 # Photos : fichiers à déposer par Blandine dans images/asso/ ; tant qu'ils manquent → emplacement sobre
 PHOTOS={k:f"images/asso/{k}.jpg" for k in ["hero","jeune","retraite","espaces"]}
@@ -186,6 +187,29 @@ T["ar"]=dict(title="جمعية FEINN Équitation et Environnement | Hype",
  abos="الاشتراكات", abos_v="المعلومات المتعلقة بالاشتراكات وإدارة المدفوعات مبيّنة في الشروط المطبقة على Hype.",
  decouvrir="اكتشف Hype")
 
+T["zh"]=dict(title="FEINN Équitation et Environnement 协会 | Hype",
+ desc="自2020年起，FEINN Équitation et Environnement 协会将热爱马、热爱传承、尊重自然的人们聚在一起。协会的使命、项目和法律声明。",
+ sur="协会简介", sous="Équitation et Environnement", retour="首页", langue="语言", photo="FEINN 照片即将上线",
+ notre="我们的协会",
+ intro=["自2020年起，FEINN Équitation et Environnement 协会将热爱马、热爱传承、尊重自然的人们聚在一起。",
+        "我们致力于推广关爱马匹福祉、顾及环境的马术，通过教学、陪伴年轻骑手参加比赛、接收退役的俱乐部马匹、小规模繁育，以及保护我们的自然场地来践行这一理念。",
+        "协会也发行 Hype，这款为骑手打造的应用：Hype+ 订阅为协会的活动和项目提供资金。"],
+ missions=["马术教学","陪伴年轻新秀","俱乐部马匹的退役生活","小规模繁育","环境与场地保护"],
+ citation1="马，是人与自然之间的纽带",
+ projets_t="期待你支持的项目",
+ projets_intro="这些项目是我们格外珍视的，也体现了协会的价值观。在此介绍它们，是为了让更多人了解我们的承诺。",
+ projets=[("给年轻新秀一匹马","陪伴一位有潜力的年轻骑手，他目前还没有足够的条件购买一匹职业水平的马。这个项目将让他能够准备马术教练文凭（DE），并在职业组别的比赛中继续进步。"),
+          ("我们俱乐部马匹的退役生活","照顾那些陪伴了几代骑手、如今在马厩里安享平静晚年的马匹。要让它们安心退役，就要继续关注它们的饲料、护理和福祉。"),
+          ("维护并修复我们的场地","修复场地的围栏、草场和设施，为马匹提供合适的生活环境，同时维护并保护我们周围的自然空间。")],
+ citation2="守护今天，为了明天…",
+ ml_t="法律声明",
+ editeur="出版方", editeur_v=["协会 FEINN Équitation et Environnement","已申报的协会","3 chemin des Prés Picard","91760 Itteville, 法国","SIREN：898 028 980"],
+ resp="出版负责人", resp_v=["Blandine Pronost","协会会长"],
+ contact="联系方式", hebergeur="托管方", heb_v=["Netlify, Inc.","101 2nd Street, Suite 575","San Francisco, CA, 美国","电话：+1 415 691 1573"],
+ donnees="个人数据", donnees_v="用户可以联系协会，请求查阅或删除自己的个人数据。",
+ abos="订阅", abos_v="有关订阅和付款管理的信息，请见适用于 Hype 的相关条款。",
+ decouvrir="了解 Hype")
+
 # ═══ REFONTE 14/10/2026 (maquette validée par Blandine) — ÉTAPE 1 : base, menu, hero, pied de page ═══
 # Nouveaux textes (7 langues). « Équitation et Environnement » reste en français partout (nom propre).
 NV={}
@@ -210,6 +234,9 @@ NV["ja"]=dict(accueil="ホーム",asso="協会について",engag="私たちの�
 NV["ar"]=dict(accueil="الرئيسية",asso="الجمعية",engag="التزاماتنا",nprojets="مشاريعنا",lieu="موقعنا",soutenir="ادعمونا",menu="القائمة",fermer="إغلاق",
  accroche="خيول وفرسان ومستقبل أكثر استدامة.",hero_desc="جمعية غير ربحية (القانون الفرنسي لعام 1901) ملتزمة بالتعليم والتضامن ورفاهية الحيوان والحفاظ على البيئة.",
  btn_asso="اكتشف جمعيتنا",loi1901="جمعية غير ربحية (قانون 1901)",contacter="تواصل معنا",cit_pied="معًا، من أجل خيول اليوم والغد.",logo_alt="شعار FEINN Équitation et Environnement")
+NV["zh"]=dict(accueil="首页",asso="协会简介",engag="我们的承诺",nprojets="我们的项目",lieu="我们的场地",soutenir="支持我们",menu="菜单",fermer="关闭",
+ accroche="马、骑手，和更可持续的未来。",hero_desc="一个依据法国1901年法律成立的协会，致力于教学、互助、动物福利和环境保护。",
+ btn_asso="了解我们的协会",loi1901="1901年法协会",contacter="联系我们",cit_pied="携手，为今天和明天的马。",logo_alt="FEINN Équitation et Environnement 标志")
 for _l in L: T[_l].update(NV[_l])
 # 14/10 (refonte) : la phrase « les abonnements Hype+ financent l'association » est retirée (inexacte : Stripe est au nom de Blandine — voir SUIVI)
 for _l in L: T[_l]["intro"]=T[_l]["intro"][:2]
@@ -233,6 +260,7 @@ ENG={
 "de":(["Unterricht und Ausbildung","Junge Talente","Ruhestand der Pferde","Kleine Zucht","Umwelt"],["Unterricht","Junge Talente","Ruhestand","Zucht","Umwelt"],["Die Leidenschaft und das Reitwissen weitergeben.","Die Talente von morgen begleiten.","Unseren Gefährten ein zweites Leben schenken.","Ein durchdachter, respektvoller Ansatz.","Eine dauerhaft natürliche Umgebung bewahren."]),
 "ja":(["指導と育成","若い才能","馬の引退生活","小さな生産","環境"],["指導","若い才能","引退生活","生産","環境"],["乗馬への情熱と技術を伝えます。","明日の才能を支えます。","仲間である馬たちに第二の人生を。","理にかなった、思いやりのある取り組み。","持続する自然環境を守ります。"]),
 "ar":(["التعليم والتكوين","المواهب الشابة","تقاعد الخيول","تربية صغيرة","البيئة"],["التعليم","المواهب الشابة","التقاعد","التربية","البيئة"],["نقل الشغف والمعارف الفروسية.","مرافقة مواهب الغد.","منح رفاقنا حياة ثانية.","نهج مدروس ومحترم.","الحفاظ على بيئة طبيعية مستدامة."]),
+"zh":(["教学与培训","年轻新秀","马匹退役","小规模繁育","环境"],["教学","新秀","退役","繁育","环境"],["传承对马术的热爱与知识。","陪伴未来的人才。","给我们的伙伴第二次生命。","理性而尊重的方式。","守护可持续的自然环境。"]),
 }
 ICO["groupe"]='<circle cx="12" cy="7.5" r="2.6"/><circle cx="5.8" cy="9.6" r="2.1"/><circle cx="18.2" cy="9.6" r="2.1"/><path d="M7.4 19c.4-3.2 2.3-5 4.6-5s4.2 1.8 4.6 5"/><path d="M2.5 18c.3-2.3 1.6-3.8 3.3-3.8 1 0 1.8.4 2.4 1.1"/><path d="M21.5 18c-.3-2.3-1.6-3.8-3.3-3.8-1 0-1.8.4-2.4 1.1"/>'
 ICO["tete"]='<path d="M8 20.5c0-3 .7-5.7 2.1-7.6l-3.6 1c-1 .3-1.9-.3-2-1.2L4.2 10.8c-.1-.6.2-1.2.7-1.5L10 5.6 11.2 3l1.5 2.3c3.6.7 6.3 4 6.3 8.2v7"/><circle cx="10.3" cy="8.7" r=".55"/>'
@@ -257,9 +285,11 @@ PJ={
  pj_courts=["将来有望な若いライダーが、競技の目標に合った馬を手に入れられるよう支援します。","長年ライダーを支えてきた馬たちの飼料、ケア、健やかさに貢献します。","自然環境に配慮しながら、柵、放牧地、乗馬施設の改修に参加します。"]),
 "ar":dict(pj_titre="ثلاثة مشاريع لإحداث الفرق",pj_voir="اكتشف هذا المشروع",pj_tous="اكتشف جميع مشاريعنا",pj_detail="مشاريعنا بالتفصيل",pj_prec="المشروع السابق",pj_suiv="المشروع التالي",
  pj_courts=["مساعدة فارس شاب واعد على اقتناء حصان يناسب طموحاته الرياضية.","المساهمة في تغذية الخيول التي رافقت الفرسان لسنوات ورعايتها وراحتها.","المشاركة في تجديد الأسوار والمراعي والمنشآت الفروسية مع احترام البيئة الطبيعية."]),
+"zh":dict(pj_titre="三个改变现状的项目",pj_voir="了解这个项目",pj_tous="了解我们所有的项目",pj_detail="项目详情",pj_prec="上一个项目",pj_suiv="下一个项目",
+ pj_courts=["帮助一位有潜力的年轻骑手获得一匹适合他竞技目标的马。","为多年来陪伴骑手的马匹提供饲料、护理，保障它们的福祉。","参与修缮围栏、草场和马术设施，同时尊重自然环境。"]),
 }
 for _l in L: T[_l].update(PJ[_l])
-for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل'}.items(): T[_l]['pj_reduire']=_v
+for _l,_v in {'fr': 'Réduire', 'en': 'Show less', 'es': 'Mostrar menos', 'it': 'Riduci', 'de': 'Weniger anzeigen', 'ja': '閉じる', 'ar': 'عرض أقل', 'zh': '收起'}.items(): T[_l]['pj_reduire']=_v
 ICO["fg"]='<path d="M15 6l-6 6 6 6"/>'
 ICO["fd"]='<path d="M9 6l6 6-6 6"/>'
 PROJ_IDS=["jeune-espoir","retraite-chevaux-club","espaces"]; PROJ_PH=["jeune","retraite","espaces"]
@@ -291,6 +321,7 @@ LIEU={
 "de":("Ein Ort zum Leben und Teilen","Die Reitanlage in Itteville, die der Verein seit 2020 nutzt, bietet unseren Pferden und Reitern eine besonders schöne natürliche Umgebung.",["12 Boxen","Ein Reitplatz","Ein Longierzirkel","Weiden und Paddocks"]),
 "ja":("暮らしと分かち合いの場所","協会が2020年から利用しているイッテヴィルの乗馬施設は、恵まれた自然の中で私たちの馬とライダーを迎えています。",["12の馬房","馬場","丸馬場","放牧地とパドック"]),
 "ar":("مكان للحياة والمشاركة","يستقبل الموقع الفروسي في إيتفيل، الذي تستخدمه الجمعية منذ عام 2020، خيولنا وفرساننا في إطار طبيعي مميز.",["12 إسطبلًا","ساحة تدريب","حلبة دائرية للترويض","مراعٍ وحظائر"]),
+"zh":("生活与分享之地","协会自2020年起使用的伊特维尔（Itteville）马术场地，在得天独厚的自然环境中迎接我们的马和骑手。",["12 间马房","一个室外马场","一个圆形练马场","草场和围场"]),
 }
 ICO["carriere"]='<rect x="3" y="7" width="18" height="10" rx="1"/><path d="M3 10.5h18M3 13.5h18M7.5 7v10M16.5 7v10"/>'
 ICO["rond"]='<ellipse cx="12" cy="10.5" rx="8.5" ry="4.5"/><path d="M3.5 10.5v3c0 2.5 3.8 4.5 8.5 4.5s8.5-2 8.5-4.5v-3"/>'
@@ -312,6 +343,7 @@ SOUT={
 "de":("Gemeinsam für unsere Pferde und unsere Umwelt","Ihre Unterstützung hält unsere Projekte lebendig und begleitet unsere Arbeit dauerhaft. Online-Spenden sind bald möglich. Bis dahin können Sie uns gerne kontaktieren, um mehr zu erfahren.","Kontaktieren Sie uns, um ein Projekt zu unterstützen","Weil ein Pferd ein Leben verändert, verdient es unsere ganze Aufmerksamkeit.","Ein FEINN-Projekt unterstützen"),
 "ja":("馬たちと環境のために、ともに行動を","皆さまのご支援が、私たちのプロジェクトを支え、活動を長く続ける力になります。オンラインでの寄付はまもなく開始します。それまでは、お気軽にお問い合わせください。","プロジェクトの支援について問い合わせる","馬は人生を変えてくれる。だからこそ、心を尽くして向き合いたい。","FEINNのプロジェクト支援について"),
 "ar":("معًا من أجل خيولنا وبيئتنا","دعمكم يُحيي مشاريعنا ويساعدنا على مواصلة أعمالنا على المدى الطويل. سيتوفر التبرع عبر الإنترنت قريبًا. وفي الأثناء، يمكنكم التواصل معنا لمعرفة المزيد.","تواصل معنا لدعم مشروع","لأن الحصان يغيّر حياة، فهو يستحق كل اهتمامنا.","دعم مشروع لجمعية FEINN"),
+"zh":("携手为我们的马和环境行动","你的支持让我们的项目得以延续，也帮助我们长期开展各项行动。在线捐赠即将开通。在此之前，你可以联系我们了解更多。","联系我们，支持一个项目","因为一匹马可以改变一个人的生活，所以它值得我们倾注全部关注。","支持 FEINN 的一个项目"),
 }
 SOUT_ATTENTE="images/evenements-passes-large.webp"
 def section_soutenir(lg):
@@ -609,12 +641,12 @@ def slot(k,cls,t):
     return f'<div class="{cls} ph" role="img" aria-label="{e(t["photo"])}"></div>'
 
 def selecteur(lg, ident=""):
-    items="".join((f'<li><strong lang="{x}" aria-current="page">{NOMS[x]}</strong></li>' if x==lg else f'<li><a href="{DOM}/{x}/{CHEMIN}" hreflang="{x}" lang="{x}">{NOMS[x]}</a></li>') for x in L)
+    items="".join((f'<li><strong lang="{HL.get(x,x)}" aria-current="page">{NOMS[x]}</strong></li>' if x==lg else f'<li><a href="{DOM}/{x}/{CHEMIN}" hreflang="{HL.get(x,x)}" lang="{HL.get(x,x)}">{NOMS[x]}</a></li>') for x in L)
     return f'<details class="lng"{(" id="+chr(34)+ident+chr(34)) if ident else ""}><summary aria-label="{e(T[lg]["langue"])}">{lg.upper()} {svg("chevron")}</summary><ul>{items}</ul></details>'
 
 def page(lg, ml=False):
     t=T[lg]; url=f"{DOM}/{lg}/{CHEMIN}"+("mentions-legales/" if ml else ""); pre=f"/{lg}/{CHEMIN}" if ml else ""
-    alts="\n".join(f'<link rel="alternate" hreflang="{x}" href="{DOM}/{x}/{CHEMIN}{"mentions-legales/" if ml else ""}">' for x in L)
+    alts="\n".join(f'<link rel="alternate" hreflang="{HL.get(x,x)}" href="{DOM}/{x}/{CHEMIN}{"mentions-legales/" if ml else ""}">' for x in L)
     jl={"@context":"https://schema.org","@type":"NGO","name":"FEINN Équitation et Environnement","url":url,"logo":f"{DOM}/{LOGO}","email":"feinn@live.fr","foundingDate":"2020-11-19",
         "address":{"@type":"PostalAddress","streetAddress":"3 chemin des Prés Picard","postalCode":"91760","addressLocality":"Itteville","addressCountry":"FR"},
         "identifier":"SIREN 898 028 980","description":t["desc"]}
@@ -681,7 +713,7 @@ document.querySelectorAll('.burger nav a').forEach(function(a){{a.addEventListen
 document.addEventListener('click',function(ev){{document.querySelectorAll('details.lng[open]').forEach(function(d){{if(!d.contains(ev.target))d.open=false;}});}});</script>'''
     og="images/asso/hero.jpg" if vrai_hero else HERO_ATTENTE_LARGE
     return f"""<!doctype html>
-<html lang="{lg}"{' dir="rtl"' if lg=="ar" else ""}>
+<html lang="{HL.get(lg,lg)}"{' dir="rtl"' if lg=="ar" else ""}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

@@ -2,8 +2,8 @@
 # Génère les 7 pages CGV : /{langue}/cgv/index.html  (15/10/2026)
 # La version française fait foi. Lancer : python3 outils/cgv-generer.py
 import os, html
-LANGUES = ["fr","en","es","it","de","ja","ar"]
-NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية"}
+LANGUES = ["fr","en","es","it","de","ja","ar","zh"]
+NOMS = {"fr":"Français","en":"English","es":"Español","it":"Italiano","de":"Deutsch","ja":"日本語","ar":"العربية","zh":"中文"}
 MAIL = '<a href="mailto:feinn@live.fr">feinn@live.fr</a>'
 VEND = "Association FEINN Équitation et Environnement"
 ADR = "3 chemin des Prés Picard, 91760 Itteville, France — SIREN 898 028 980"
@@ -181,6 +181,31 @@ T["ar"] = dict(
  ("12. القانون المطبّق", "<p>تخضع هذه الشروط للقانون الفرنسي. ويمكن تحديثها؛ والنسخة المطبّقة هي السارية يوم الدفع.</p>"),
  ])
 
+T["zh"] = dict(
+ title="销售条款", desc="Hype Premium 订阅与 Hype 赞助的销售条款。",
+ sous="Hype Premium 订阅与 Hype 赞助 · 2026年10月15日版", asso="协会简介", foi="本页为译文，以法文版为准。",
+ bref="<b>简要说明。</b>月度订阅没有绑定期限，可随时在线取消。Cercle Crystal 一次性支付，有效期 12 个月，不会自动续订。付款后即可立即使用：你提出立即使用，即表示放弃 14 天的撤回权。赞助是对应用的支持，不是对协会的捐赠。",
+ s=[
+ ("1. 销售方", f"<p>本条款适用于在 Hype 应用（2hype.fr）内向<b>{VEND}</b>（已依法申报登记的协会，{ADR}，由其会长 Blandine Pronost 代表）所做的购买。联系方式：{MAIL}。以下简称“协会”。</p>"),
+ ("2. 服务内容", "<p>Hype 是一款为骑手打造的应用：Galop 课程与测验、马术护照、社区、马匹管理，以及人工智能教练“Hey Baby”。部分功能免费，其他功能仅限 Premium 订阅用户使用。本条款说明各项付费套餐的价格、支付、期限和取消方式。</p>"),
+ ("3. 套餐与价格", "<p>价格以欧元标示。依据法国《税法总则》第 293 B 条，不适用增值税（TVA）。</p>" + tab([
+   ["Premium 骑手","12,99 € / 月","月度，每月续订","1 个账户享有 Premium 权限，AI 教练：每天 4 个问题"],
+   ["Premium 家庭","19,99 € / 月","月度，每月续订","2 个独立账户享有 Premium 权限（持有人和受邀的第二位骑手），AI 教练：每人每天 4 个问题"],
+   ["Cercle Crystal","12 个月 99,99 €","12 个月，一次性支付，不自动续订","1 个账户享有 Premium 权限，AI 教练：每天 4 个问题"],
+   ["Duo 套餐","24,99 € / 月","月度，每月续订","1 个账户享有 Premium + Hype AI，AI 教练：每天 20 个问题，含视频"],
+   ["Hype AI","14,99 € / 月","月度，每月续订","AI 教练：每天最多 15 个问题，限 1 个账户。不含 Premium 权限。"]],
+   ["套餐","价格","期限","包含内容"]) + "<p>向 AI 教练提问的次数按自然日计算，从午夜到午夜（巴黎时间）。当天未用完的问题不会顺延到第二天。协会可以为改进应用而调整套餐内容，但不会大幅减少你在当期已购买的内容。</p>"),
+ ("4. 下单与支付", ul(["需要有 Hype 账户：订阅会在付款时已登录的账户上生效。付款前，应用会显示相关账户的邮箱地址，并要求你确认。","通过 Stripe 的安全页面使用银行卡付款。Hype 从不接触你的银行卡号。","月度套餐在订阅时扣款，之后每月同一日期扣款，直到取消为止。","如果某次月度付款失败，Premium 权限可能会被暂停，直至补缴。"])),
+ ("5. 立即使用与撤回权", "<p>各套餐在付款后即可访问数字内容。付款前，应用会请你确认：你希望立即使用，并因此放弃 14 天的撤回权（法国《消费法典》第 L221-28 条第 13 项）。没有这项确认，付款页面不会打开。</p>"),
+ ("6. 期限、续订与取消", ul(["<b>月度套餐</b>（Premium 骑手、Premium 家庭、Duo 套餐、Hype AI）：没有绑定期限。你可以随时取消；取消在已付费的当月结束时生效，在此之前仍可正常使用。已开始的月份不予退款。","<b>Cercle Crystal</b>：自付款起 12 个月，到期后权限自动终止，之后不会再扣款。",f"<b>如何取消</b>：随时可在线取消，在“我的账户”中点击“管理我的订阅”按钮（Stripe 的安全页面，你也可以在那里更换银行卡和查看发票）。你也可以用账户所用的邮箱给 {MAIL} 写信。","如果你在订阅仍有效时删除了 Hype 账户，请记得取消订阅：删除账户不会自动停止扣款。对于 Premium 家庭，必须由持有人先取消。"])),
+ ("7. Premium 家庭的专属规则", ul(["付款的人是<b>持有人</b>。持有人在“我的账户”中邀请第二位骑手，邀请链接有效期为 7 天。","每个人保留各自的账户、数据以及每天 4 个 AI 问题；两个账户之间不共享任何内容。","持有人可以移除第二位骑手，第二位骑手也可以退出家庭。更换最多每 30 天一次，每年最多可更换为 4 位不同的第二位骑手。","不要求有亲属关系。持有人须对所邀请人员的选择负责。","如果订阅终止（取消或欠费），两个账户的 Premium 权限都会终止。"])),
+ ("8. Hype 赞助", f"<p>赞助档位（20 € 至 500 €）是对应用开发的自愿支持，只需支付一次。赞助不提供 Premium 权限，不是对 FEINN 协会的捐赠，也不享受任何税收减免。赞助不可退款，但如有明显错误并及时告知 {MAIL}，则不在此限。</p>"),
+ ("9. 服务运行", "<p>协会会尽力保证 Hype 持续运行，但可能出现中断（维护、服务提供商故障）。AI 教练的回答是由人工智能生成的一般性建议：它们不能取代持证教练或兽医，并且可能包含错误。</p>"),
+ ("10. 个人数据", f"<p>处理账户和订阅所需的数据，是为了提供服务。你可以写信至 {MAIL}，请求查阅或删除你的数据。</p>"),
+ ("11. 投诉与调解", f"<p>如有任何投诉，请先写信至 {MAIL}。消费调解员：正在指定中；其联系方式将在此处公布。在此期间，任何投诉都可以发送至 {MAIL}。你也可以使用欧盟在线争议解决平台。</p>"),
+ ("12. 适用法律", "<p>本条款受法国法律管辖。条款可能会更新；适用的版本为付款当日有效的版本。</p>"),
+ ])
+
 CSS = """:root{--noir:#05080B;--carte:#0B1418;--ivoire:#F3EEE4;--doux:#B7C2C0;--gris:#8E9893;--champ:#C9A66B;--trait:rgba(201,166,107,.32);--trait2:rgba(201,166,107,.16)}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:var(--noir);color:var(--ivoire);font:15px/1.7 Montserrat,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;overflow-x:hidden}
@@ -204,15 +229,16 @@ th{color:var(--ivoire);font-weight:500}td{color:var(--doux)}
 .langues a{text-decoration:none}.langues b{color:var(--ivoire)}
 .fin{margin-top:18px;color:var(--gris);font-size:12.5px;text-align:center}"""
 
+HL = {"zh": "zh-Hans"}  # code de langue HTML/hreflang quand il diffère du dossier
 def page(lg):
     t = T[lg]; e = html.escape
     dirr = ' dir="rtl"' if lg == "ar" else ""
-    alt = "\n".join(f'<link rel="alternate" hreflang="{l}" href="https://2hype.fr/{l}/cgv/">' for l in LANGUES)
+    alt = "\n".join(f'<link rel="alternate" hreflang="{HL.get(l,l)}" href="https://2hype.fr/{l}/cgv/">' for l in LANGUES)
     corps = "".join(f"<h2>{e(titre)}</h2>\n{contenu}\n" for titre, contenu in t["s"])
-    langues = " · ".join((f"<b>{NOMS[l]}</b>" if l == lg else f'<a href="/{l}/cgv/" lang="{l}">{NOMS[l]}</a>') for l in LANGUES)
+    langues = " · ".join((f"<b>{NOMS[l]}</b>" if l == lg else f'<a href="/{l}/cgv/" lang="{HL.get(l,l)}">{NOMS[l]}</a>') for l in LANGUES)
     foi = f'<p class="maj">{e(t["foi"])}</p>' if t["foi"] else ""
     return f"""<!doctype html>
-<html lang="{lg}"{dirr}>
+<html lang="{HL.get(lg,lg)}"{dirr}>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

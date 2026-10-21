@@ -57,7 +57,7 @@ const DELAI_BASE_MS = 2500;
 const DELAI_GEO_MS = 900;
 const IMAGE_APERCU = DOMAINE + "/partage-apercu.jpg";
 
-/* ---------- 13/10/2026 : les 7 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
+/* ---------- 13/10/2026 : les 8 langues de la page (noms, adresses, titres de rendez-vous restent tels quels) ---------- */
 type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar";
 const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar"];
 const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR" };
@@ -119,6 +119,14 @@ const TX: Record<Lg, Record<string, any>> = {
     sesChevaux: "خيوله على Hype", rdv: "المواعيد القادمة", compte: "أنشئ حسابك على Hype لتكتشف خيوله ونتائجه وأجندته.", contacter: "التواصل مع الإسطبل",
     boxT: "مربط افتراضي في Hype؟", boxP: "لا قش لتنظيفه هنا: فقط ملف حصانك وصوره ومسابقاته وذكرياته ومتابعته… وفرسان آخرون تشاركهم إياها. وترافقك أيضًا النظرية والنصائح والمدرب الافتراضي في تقدّمك.",
     pied: "Hype تطبيق مستقل لا تربطه أي صلة رسمية بهذا الإسطبل ولا بالاتحاد الفرنسي للفروسية (FFE). بيانات الإسطبل: © المساهمون في OpenStreetMap.", cheval: "حصان", rendezVous: "موعد", dp: ": " },
+  zh: { ecA: (v: string) => v + "的马厩", ec: "马厩", ecAd: (v: string) => v + "的马厩", ecd: "马厩",
+    descTel: "电话、路线、马匹、比赛成绩和日程，尽在Hype。", desc: "马匹、比赛成绩和日程，尽在Hype。",
+    descInvite: "你的马在这里吗？在Hype上为它建立档案：照片、血统、比赛成绩。",
+    adresse: "地址", tel: "电话", email: "邮箱", site: "网站", horaires: "营业时间",
+    nbCh: (n: number) => "马匹" + n + "匹", nbRdv: (n: number) => "即将举行的活动" + n + "场", surHype: (t: string) => t + "（Hype）", sep: "，",
+    sesChevaux: "他在Hype上的马匹", rdv: "近期活动", compte: "创建你的Hype账户，查看这家马厩的马匹、成绩和日程。", contacter: "联系马厩",
+    boxT: "在Hype上拥有一间虚拟马房？", boxP: "这里不用铲马粪：只有你爱马的档案、照片、比赛、回忆和日常照料……还有可以一起分享的其他骑手。理论课程、小贴士和虚拟教练也会陪你一路进步。",
+    pied: "Hype 是一款独立的应用，与这家马厩及FFE没有任何官方关系。马厩数据：© OpenStreetMap 贡献者。", cheval: "马", rendezVous: "活动", dp: "：" },
 };
 function liensLangues(chemin: string): string {
   return LANGUES.map((l) => `<link rel="alternate" hreflang="${l}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
@@ -151,7 +159,7 @@ function annuaire(origine: string): Promise<Record<string, Ecurie>> {
   return ANNUAIRE;
 }
 
-/* ---------- Petites pages d'erreur (7 langues) ---------- */
+/* ---------- Petites pages d'erreur (8 langues) ---------- */
 function pageSimple(statut: number, lignes: string[][]): Response {
   const corps = lignes.map(([lang, txt]) => `<p lang="${lang}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
@@ -290,7 +298,7 @@ function lienRdv(r: any, lg: Lg = "fr"): string {
 }
 function construire(slug: string, ec: Ecurie, geo: { v: string; d: string } | null, hype: Awaited<ReturnType<typeof contenuHype>>, deps: Record<string, [string, string]> = {}, lg: Lg = "fr") {
   const t = TX[lg];
-  // 13/10/2026 : « active » = au moins un cheval ou un rendez-vous sur Hype → la page existe dans les 7 langues
+  // 13/10/2026 : « active » = au moins un cheval ou un rendez-vous sur Hype → la page existe dans les 8 langues
   const active = ec.x !== 1 && (hype.chevaux.length > 0 || hype.rdv.length > 0);
   const nom = propre(ec.n);
   const ville = propre(ec.v) || (geo ? geo.v : "");

@@ -15,10 +15,11 @@ import type { Context } from "https://edge.netlify.com";
 const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 const DOMAINE = "https://2hype.fr";
-const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar"];
+const LANGUES = ["fr", "en", "es", "it", "de", "ja", "ar", "zh"];
+const HL: Record<string, string> = { zh: "zh-Hans" };   // le chinois simplifié s'écrit zh-Hans dans hreflang
 
 function sept(chemin: string): string {
-  const alt = LANGUES.map((l) => `    <xhtml:link rel="alternate" hreflang="${l}" href="${DOMAINE}${l === "fr" ? "" : "/" + l}${chemin}"/>`).join("\n") +
+  const alt = LANGUES.map((l) => `    <xhtml:link rel="alternate" hreflang="${HL[l] || l}" href="${DOMAINE}${l === "fr" ? "" : "/" + l}${chemin}"/>`).join("\n") +
     `\n    <xhtml:link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}"/>`;
   return LANGUES.map((l) => `  <url>\n    <loc>${DOMAINE}${l === "fr" ? "" : "/" + l}${chemin}</loc>\n${alt}\n  </url>`).join("\n");
 }

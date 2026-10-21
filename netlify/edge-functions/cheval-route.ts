@@ -70,7 +70,7 @@ const SUPABASE_URL = "https://ldpjebgtskzdokrublfg.supabase.co";
 const CLE = "sb_publishable_OoSj7bDnqn2O36myBAXF1g_VjPki8TK";
 
 // 13/10/2026 : aussi /en/cheval/…, /es/…, /it/…, /de/…, /ja/…, /ar/… (pages traduites)
-const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar)\/)?cheval\/([a-z0-9]+(?:-[a-z0-9]+)*)$/;
+const FORME_ADRESSE = /^\/(?:(en|es|it|de|ja|ar|zh)\/)?cheval\/([a-z0-9]+(?:-[a-z0-9]+)*)$/;
 const FORME_UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const REPERE = new TextEncoder().encode('<head><meta charset="utf-8">');
 const REPERE_TITRE = new TextEncoder().encode("<title>Hype</title>");   // build 4 : remplacé par le titre du cheval
@@ -78,10 +78,12 @@ const REPERE_RACINE = new TextEncoder().encode('<div id="root">');      // build
 const NB_RESULTATS_TEXTE = 50;
 const DOMAINE = "https://2hype.fr";
 
-/* ---------- 13/10/2026 : les 7 langues de la page (textes autour des données ; noms, races, épreuves restent tels quels) ---------- */
-type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar";
-const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar"];
-const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR" };
+/* ---------- 13/10/2026 : les 8 langues de la page (textes autour des données ; noms, races, épreuves restent tels quels) ---------- */
+type Lg = "fr" | "en" | "es" | "it" | "de" | "ja" | "ar" | "zh";
+const LANGUES: Lg[] = ["fr", "en", "es", "it", "de", "ja", "ar", "zh"];
+const LOCALE: Record<Lg, string> = { fr: "fr_FR", en: "en_GB", es: "es_ES", it: "it_IT", de: "de_DE", ja: "ja_JP", ar: "ar_AR", zh: "zh_CN" };
+/* code interne → code de langue HTML / hreflang (le chinois simplifié s'écrit zh-Hans) */
+const HL: Record<Lg, string> = { fr: "fr", en: "en", es: "es", it: "it", de: "de", ja: "ja", ar: "ar", zh: "zh-Hans" };
 const prefixe = (lg: Lg) => (lg === "fr" ? "" : "/" + lg);
 const TX: Record<Lg, Record<string, any>> = {
   fr: { profil: "Profil cheval", mots: ["Profil", "photos", "origines", "résultats en concours"], et: " et ", sur: " sur Hype.", surnom: "Surnom", ne: (d: string) => "né(e) le " + d, neAn: (a: string) => "né(e) en " + a, neBrut: (t: string) => "né(e) le " + t, origines: "Origines", ecurie: "Écurie", resultats: "Résultats en concours", rang: (n: number) => (n === 1 ? "1er" : n + "e"), partants: (n: number) => " sur " + n + " partants", sf: "sans faute", autres: "… et d’autres résultats sur Hype.", cheval: "Cheval" },
@@ -91,14 +93,15 @@ const TX: Record<Lg, Record<string, any>> = {
   de: { profil: "Pferdeprofil", mots: ["Profil", "Fotos", "Abstammung", "Turnierergebnisse"], et: " und ", sur: " auf Hype.", surnom: "Rufname", ne: (d: string) => "geboren am " + d, neAn: (a: string) => "geboren " + a, neBrut: (t: string) => "geboren " + t, origines: "Abstammung", ecurie: "Stall", resultats: "Turnierergebnisse", rang: (n: number) => n + ".", partants: (n: number) => " von " + n + " Startern", sf: "fehlerfrei", autres: "… und weitere Ergebnisse auf Hype.", cheval: "Pferd" },
   ja: { profil: "馬のプロフィール", mots: ["プロフィール", "写真", "血統", "競技成績"], et: "、", sur: "をHypeで。", surnom: "愛称", ne: (d: string) => d + "生まれ", neAn: (a: string) => a + "年生まれ", neBrut: (t: string) => t + "生まれ", origines: "血統", ecurie: "厩舎", resultats: "競技成績", rang: (n: number) => n + "位", partants: (n: number) => "（出走" + n + "頭）", sf: "減点なし", autres: "…ほかの成績はHypeで。", cheval: "馬" },
   ar: { profil: "ملف الحصان", mots: ["الملف", "الصور", "النسب", "نتائج المسابقات"], et: " و", sur: " على Hype.", surnom: "اللقب", ne: (d: string) => "مولود في " + d, neAn: (a: string) => "مولود عام " + a, neBrut: (t: string) => "مولود في " + t, origines: "النسب", ecurie: "الإسطبل", resultats: "نتائج المسابقات", rang: (n: number) => "المركز " + n, partants: (n: number) => " من أصل " + n + " مشاركًا", sf: "دون أخطاء", autres: "… ونتائج أخرى على Hype.", cheval: "حصان" },
+  zh: { profil: "马匹档案", mots: ["档案", "照片", "血统", "比赛成绩"], et: "和", sur: "，尽在Hype。", surnom: "昵称", ne: (d: string) => d + "出生", neAn: (a: string) => a + "年出生", neBrut: (t: string) => t + "出生", origines: "血统", ecurie: "马厩", resultats: "比赛成绩", rang: (n: number) => "第" + n + "名", partants: (n: number) => "（共" + n + "名参赛）", sf: "零罚分", autres: "……更多成绩尽在Hype。", cheval: "马" },
 };
 /* Sexe : même lecture que l'appli (sexeEnClair) ; valeur inconnue → telle quelle. */
 function sexeLg(v: unknown, lg: Lg): string {
   const k = String(v || "").toLowerCase().trim();
   if (!k) return "";
-  const J: Record<Lg, string> = { fr: "Jument", en: "Mare", es: "Yegua", it: "Giumenta", de: "Stute", ja: "牝馬", ar: "فرس" };
-  const H: Record<Lg, string> = { fr: "Hongre", en: "Gelding", es: "Castrado", it: "Castrone", de: "Wallach", ja: "せん馬", ar: "حصان مخصي" };
-  const E: Record<Lg, string> = { fr: "Entier", en: "Stallion", es: "Entero", it: "Stallone", de: "Hengst", ja: "牡馬", ar: "فحل" };
+  const J: Record<Lg, string> = { fr: "Jument", en: "Mare", es: "Yegua", it: "Giumenta", de: "Stute", ja: "牝馬", ar: "فرس", zh: "母马" };
+  const H: Record<Lg, string> = { fr: "Hongre", en: "Gelding", es: "Castrado", it: "Castrone", de: "Wallach", ja: "せん馬", ar: "حصان مخصي", zh: "骟马" };
+  const E: Record<Lg, string> = { fr: "Entier", en: "Stallion", es: "Entero", it: "Stallone", de: "Hengst", ja: "牡馬", ar: "فحل", zh: "种公马" };
   if (lg === "fr") return String(v).trim();   // le français reste exactement comme avant
   if (k === "f" || k.startsWith("jument") || k.startsWith("femelle") || k.startsWith("pouliche")) return J[lg];
   if (k === "h" || k.startsWith("hongre")) return H[lg];
@@ -107,14 +110,14 @@ function sexeLg(v: unknown, lg: Lg): string {
 }
 /* Robe : les plus courantes ; une robe inconnue reste en français plutôt que d'être devinée. */
 const ROBES: Record<string, Record<Exclude<Lg, "fr">, string>> = {
-  "bai": { en: "bay", es: "castaño", it: "baio", de: "Brauner", ja: "鹿毛", ar: "كميت" },
-  "bai brun": { en: "dark bay", es: "castaño oscuro", it: "baio scuro", de: "Dunkelbrauner", ja: "黒鹿毛", ar: "كميت داكن" },
-  "alezan": { en: "chestnut", es: "alazán", it: "sauro", de: "Fuchs", ja: "栗毛", ar: "أشقر" },
-  "alezan brule": { en: "liver chestnut", es: "alazán tostado", it: "sauro bruciato", de: "Dunkelfuchs", ja: "栃栗毛", ar: "أشقر داكن" },
-  "noir": { en: "black", es: "negro", it: "morello", de: "Rappe", ja: "青毛", ar: "أدهم" },
-  "gris": { en: "grey", es: "tordo", it: "grigio", de: "Schimmel", ja: "芦毛", ar: "أشهب" },
-  "pie": { en: "pinto", es: "pío", it: "pezzato", de: "Schecke", ja: "駁毛", ar: "أبلق" },
-  "palomino": { en: "palomino", es: "palomino", it: "palomino", de: "Palomino", ja: "パロミノ", ar: "بالومينو" },
+  "bai": { en: "bay", es: "castaño", it: "baio", de: "Brauner", ja: "鹿毛", ar: "كميت", zh: "骝毛" },
+  "bai brun": { en: "dark bay", es: "castaño oscuro", it: "baio scuro", de: "Dunkelbrauner", ja: "黒鹿毛", ar: "كميت داكن", zh: "深骝毛" },
+  "alezan": { en: "chestnut", es: "alazán", it: "sauro", de: "Fuchs", ja: "栗毛", ar: "أشقر", zh: "栗毛" },
+  "alezan brule": { en: "liver chestnut", es: "alazán tostado", it: "sauro bruciato", de: "Dunkelfuchs", ja: "栃栗毛", ar: "أشقر داكن", zh: "深栗毛" },
+  "noir": { en: "black", es: "negro", it: "morello", de: "Rappe", ja: "青毛", ar: "أدهم", zh: "黑毛" },
+  "gris": { en: "grey", es: "tordo", it: "grigio", de: "Schimmel", ja: "芦毛", ar: "أشهب", zh: "青毛" },
+  "pie": { en: "pinto", es: "pío", it: "pezzato", de: "Schecke", ja: "駁毛", ar: "أبلق", zh: "花毛" },
+  "palomino": { en: "palomino", es: "palomino", it: "palomino", de: "Palomino", ja: "パロミノ", ar: "بالومينو", zh: "帕洛米诺毛色" },
 };
 function robeLg(v: unknown, lg: Lg): string {
   const brut = propre(v);
@@ -122,10 +125,10 @@ function robeLg(v: unknown, lg: Lg): string {
   const k = brut.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/\s+/g, " ").trim();
   return (ROBES[k] && ROBES[k][lg as Exclude<Lg, "fr">]) || brut;
 }
-function dateLg(j: string, mo: string, a: string, lg: Lg): string { return lg === "ja" ? a + "/" + mo + "/" + j : j + "/" + mo + "/" + a; }
-/* Les 7 adresses d'une même page, pour Google (hreflang) — x-default = le français. */
+function dateLg(j: string, mo: string, a: string, lg: Lg): string { return lg === "ja" || lg === "zh" ? a + "/" + mo + "/" + j : j + "/" + mo + "/" + a; }
+/* Les 8 adresses d'une même page, pour Google (hreflang) — x-default = le français. */
 function liensLangues(chemin: string): string {
-  return LANGUES.map((l) => `<link rel="alternate" hreflang="${l}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
+  return LANGUES.map((l) => `<link rel="alternate" hreflang="${HL[l]}" href="${DOMAINE}${prefixe(l)}${chemin}">`).join("") +
     `<link rel="alternate" hreflang="x-default" href="${DOMAINE}${chemin}">`;
 }
 const LECTURE_MAX = 2 * 1024 * 1024;   // si le repère n'est pas dans les 2 premiers Mo : on s'arrête
@@ -196,10 +199,10 @@ async function adresseEcurie(club: string, origine: string): Promise<string> {
   }
 }
 
-/* ---------- Petites pages d'erreur (7 langues, sans dépendre de l'appli) ---------- */
+/* ---------- Petites pages d'erreur (8 langues, sans dépendre de l'appli) ---------- */
 function pageSimple(statut: number, lignes: string[][], titre: string): Response {
   const corps = lignes.map(([lang, txt]) =>
-    `<p lang="${lang}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
+    `<p lang="${HL[lang as Lg]}"${lang === "ar" ? ' dir="rtl"' : ""}>${txt}</p>`).join("\n");
   const html = `<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex"><title>${titre}</title>
@@ -223,6 +226,7 @@ const PAGE_404 = () => pageSimple(404, [
   ["de", "Dieses Pferd ist nicht verfügbar."],
   ["ja", "この馬は表示できません。"],
   ["ar", "هذا الحصان غير متاح."],
+  ["zh", "这匹马暂时无法显示。"],
 ], "Hype");
 
 const PAGE_503 = () => pageSimple(503, [
@@ -233,6 +237,7 @@ const PAGE_503 = () => pageSimple(503, [
   ["de", "Hype ist vorübergehend nicht erreichbar. Versuche es gleich noch einmal."],
   ["ja", "Hypeは一時的に利用できません。しばらくしてからもう一度お試しください。"],
   ["ar", "هايب غير متاح مؤقتًا. حاول مرة أخرى بعد قليل."],
+  ["zh", "Hype 暂时无法使用，请稍后再试。"],
 ], "Hype");
 
 /* ---------- Build 4 : titre, description, canonical ---------- */
@@ -274,13 +279,13 @@ function infosSeo(cheval: any, nbResultats: number, slug: string, lg: Lg = "fr")
   if (race) phrase += ", " + race;
   if (annee) phrase += " (" + annee + ")";
   if (club) phrase += " — " + club;
-  phrase += lg === "ja" ? "。" : ". ";
+  phrase += lg === "ja" || lg === "zh" ? "。" : ". ";
   // Build 9A : ce que contient la fiche, SANS chiffre, seulement ce qui existe vraiment.
   const contenu = [t.mots[0]];
   if (propre(cheval.photo_url)) contenu.push(t.mots[1]);
   if (origines && (nomParent(origines.pere) || nomParent(origines.mere))) contenu.push(t.mots[2]);
   if (nbResultats > 0) contenu.push(t.mots[3]);
-  const virgule = lg === "ja" ? "、" : lg === "ar" ? "، " : ", ";
+  const virgule = lg === "ja" || lg === "zh" ? "、" : lg === "ar" ? "، " : ", ";
   const liste = contenu.length === 1 ? contenu[0]
     : contenu.slice(0, -1).join(virgule) + t.et + contenu[contenu.length - 1];
   phrase += liste + t.sur;
@@ -320,9 +325,9 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlu
   if (naiss) infos.push(t.ne(dateLg(naiss[3], naiss[2], naiss[1], lg)));
   else if (propre(og.naissance)) infos.push(/^\d{4}$/.test(propre(og.naissance)) ? t.neAn(texte(og.naissance)) : t.neBrut(texte(og.naissance)));
   const club = (propre(cheval.club) || propre(cheval.ecurie));
-  let html = `<main id="seo-cheval" lang="${lg}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
+  let html = `<main id="seo-cheval" lang="${HL[lg]}"${lg === "ar" ? ' dir="rtl"' : ""} style="padding:64vh 20px 48px;max-width:720px;margin:0 auto;color:#9aa1ab;font:14px/1.6 Georgia,serif">`;
   html += `<h1 style="font-size:22px;color:#d8d2c4;margin:0 0 6px">${texte(nom)}</h1>`;
-  const dp = lg === "fr" ? " : " : lg === "ja" ? "：" : ": ";
+  const dp = lg === "fr" ? " : " : lg === "ja" || lg === "zh" ? "：" : ": ";
   if (propre(cheval.alias)) html += `<p>${t.surnom}${dp}${texte(cheval.alias)}</p>`;
   if (infos.length) html += `<p>${infos.join(" · ")}</p>`;
   const pereN = nomParent(og.pere), mereN = nomParent(og.mere);
@@ -341,7 +346,7 @@ function blocTexte(cheval: any, nbResultats: number, resultats: any[], ecurieSlu
       let fin = cl ? texte(cl) : "";
       const pa = parseInt(String(r.partants == null ? "" : r.partants), 10);
       if (fin && isFinite(pa) && pa > 0) fin += t.partants(pa);
-      if (propre(r.mention)) fin += (fin ? (lg === "ja" ? "、" : lg === "ar" ? "، " : ", ") : "") + (/^sf$/i.test(propre(r.mention)) ? t.sf : texte(r.mention));
+      if (propre(r.mention)) fin += (fin ? (lg === "ja" || lg === "zh" ? "、" : lg === "ar" ? "، " : ", ") : "") + (/^sf$/i.test(propre(r.mention)) ? t.sf : texte(r.mention));
       if (fin) morceaux.push(fin);
       if (morceaux.length) html += `<li>${morceaux.join(" — ")}</li>`;
     }
@@ -551,4 +556,4 @@ export default async (request: Request, _context: Context) => {
   }
 };
 
-export const config = { path: ["/cheval/*", "/en/cheval/*", "/es/cheval/*", "/it/cheval/*", "/de/cheval/*", "/ja/cheval/*", "/ar/cheval/*"] };
+export const config = { path: ["/cheval/*", "/en/cheval/*", "/es/cheval/*", "/it/cheval/*", "/de/cheval/*", "/ja/cheval/*", "/ar/cheval/*", "/zh/cheval/*"] };
