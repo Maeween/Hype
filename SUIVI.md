@@ -14111,3 +14111,8 @@ Plan validé par Blandine (« Ok » 04:35). Rien n'est supprimé, aucune adresse
 ## 21/10 — EN ATTENTE (non publié) : écran « Premium requis » sans grand cadre bleu
 - Suite de « ça gâche un peu la page » (page Premium) : BandeauDejaAbonne n'est plus un grand cadre bleu, mais une simple ligne discrète : « Déjà abonné ? Vérifier mon abonnement » (lien champagne souligné) quand on est connecté, « Tu as déjà un abonnement ? Me connecter » sinon ; message « Aucun abonnement trouvé… » inchangé. Concerne l'écran « Premium requis » d'un Galop verrouillé et la fenêtre d'épinglage (seuls endroits où il reste).
 - Testé : Galop 5 verrouillé ouvert directement (#g=5), connecté / pas connecté, fr 390 et sv 1440, sans erreur.
+
+## 21/10 — EN ATTENTE (non publié) : fiche cavalier, cartes des chevaux au dessin de la page Écurie
+- Blandine (22 h 22, capture « Mes chevaux ») : « pourquoi il est écrit des choses sous certaines photos ? aligne le design des cartes des chevaux et du carré sur celui de la page Écurie ».
+- index.html (EcranMonCavalier, V2 seulement) : chaque carte cheval = même carte que la mosaïque de la page Écurie (coins 10 px, cadre champagne fin, ombre, fondu noir en bas, nom en Cormorant posé sur la photo, 2 lignes au plus) ; plus rien sous la photo (ni race · âge · discipline, ni « ◇ Cheval de l'écurie », ni « Premium ✦ » : le cadenas reste sur la photo). Le carré « Les chevaux de l'écurie / Voir tout → » (cavV2Milieu) reprend celui de la page Écurie (surface pétrole, filets champagne, capitales Cormorant, « Voir tout → »). Format des cartes inchangé (10/11, 3/2 sur ordinateur).
+- Testé : page d'un autre cavalier (7 chevaux) et sa propre page (5 et 6 chevaux), 390 et 1440, sans erreur.
